@@ -1,141 +1,227 @@
-Return-Path: <linux-rdma+bounces-15722-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15723-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C028D3B472
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 18:35:16 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E546AD3B446
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 18:29:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 73CD830F053D
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 17:24:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BCE78300DDBA
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 17:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6011432939F;
-	Mon, 19 Jan 2026 17:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EDAC3033E4;
+	Mon, 19 Jan 2026 17:28:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A7Kh/x2F"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Bgj4l9rx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE90F288515;
-	Mon, 19 Jan 2026 17:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1A330C608;
+	Mon, 19 Jan 2026 17:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768843467; cv=none; b=sgn435CnqZkE6h1BI4yk8+4uja7WL5VXBAudD1Z/8xFZw9g88H/qFuJrg48eboPx1JXsJ8Gv/M5ASGuBhThdAuYNIS23mdDSP8wWtqjQgpaWa+mrSI+0IvIOgTRJS6YO/3vyONXiC6dwdOlNvyKMVg0KSHEbDChLFhkehw6wyJg=
+	t=1768843710; cv=none; b=Z8Adv+e6BCrnV7qDqJUybISTHGkok4K/QGTrZKvoSqjT3gKpezyiqiGUjaqCXNISD0nDyZRej98veEmNpWNkT57narx7dgbdzATJrvuXl9Wh4Peuuz15CSXkk5//l6K2icTJupJlTLWiFYJW+JxeF77VqBQPSdZ5pzFaztzp77k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768843467; c=relaxed/simple;
-	bh=qk3XuufPPEIck/9A121yktRTMzQ3kk4TF/duoWERK0Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=M7H4V4OY/8k5rAgHiBdQOFeYWt/5jklw3an6Kkat0Be8ciOPhzicO2ccs51iZ+L56IQJtPcYQCRPCGEbo9kq5x01ZRVHcCuLdK0l9QOuKX+0PmetjMGD3t6LOkO7D1QilOpEKUWVDHQ8nmamVWvU+U9IvT08zXrNNJBDyJ7zrVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A7Kh/x2F; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768843467; x=1800379467;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=qk3XuufPPEIck/9A121yktRTMzQ3kk4TF/duoWERK0Q=;
-  b=A7Kh/x2FeOZ0vfi0QpXM+KbS9sCp87IyGIm85l0+nB69n9TZivGxJK4C
-   MJysZX0YmjdiMH/5WahD1ZcDfZMtzEI9c2a3jf55UOw6JlLBuN2jDEC57
-   Hyat/tdD6JTYOi88nVgUBCFQT1K0rnPEbxxp7qFAqZ4s9Zf+Ie6Yq/3I9
-   8sIwmRjkBTHPfv8c32OlvxaH0tAWM+K9ex9uvcYZaWnn8Z8eFNNTiDPzx
-   N6WXDuH+fVQuWMhOKROp7YxTLJTH63CAPhzQztKbxnRGcQo5zLN0AhzP/
-   HkBj5M0Hr+ICU2ANQ+I8ct5M0W0o86Df9sXBIUQEXc6ZeBIaMgeiPdoM9
-   Q==;
-X-CSE-ConnectionGUID: rmNVlQMwSASzAIRQvTAdiw==
-X-CSE-MsgGUID: pGMbrTAgQ4qKNJGv/C0H4w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11676"; a="70107680"
-X-IronPort-AV: E=Sophos;i="6.21,238,1763452800"; 
-   d="scan'208";a="70107680"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2026 09:24:26 -0800
-X-CSE-ConnectionGUID: cCp8cmdLTFaKiKQxa3/2oQ==
-X-CSE-MsgGUID: 4scyjDTQQq6KHTJ1sXWYZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,238,1763452800"; 
-   d="scan'208";a="243499496"
-Received: from egrumbac-mobl6.ger.corp.intel.com (HELO [10.245.244.32]) ([10.245.244.32])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2026 09:24:19 -0800
-Message-ID: <9679639cc7d9c2a27c5529484546faa65013f261.camel@linux.intel.com>
-Subject: Re: [PATCH v2 0/4] dma-buf: document revoke mechanism to invalidate
- shared buffers
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, Sumit Semwal
- <sumit.semwal@linaro.org>,  Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>, David
- Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Gerd Hoffmann
- <kraxel@redhat.com>,  Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu	
- <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-  Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
- <tzimmermann@suse.de>, Lucas De Marchi	 <lucas.demarchi@intel.com>, Rodrigo
- Vivi <rodrigo.vivi@intel.com>, Kevin Tian	 <kevin.tian@intel.com>, Joerg
- Roedel <joro@8bytes.org>, Will Deacon	 <will@kernel.org>, Robin Murphy
- <robin.murphy@arm.com>, Alex Williamson	 <alex@shazbot.org>,
- linux-media@vger.kernel.org, 	dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, 	linux-kernel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, 	virtualization@lists.linux.dev,
- intel-xe@lists.freedesktop.org, 	linux-rdma@vger.kernel.org,
- iommu@lists.linux.dev, kvm@vger.kernel.org
-Date: Mon, 19 Jan 2026 18:24:16 +0100
-In-Reply-To: <20260119162424.GE961572@ziepe.ca>
-References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
-	 <f115c91bbc9c6087d8b32917b9e24e3363a91f33.camel@linux.intel.com>
-	 <20260119075229.GE13201@unreal>
-	 <9112a605d2ee382e83b84b50c052dd9e4a79a364.camel@linux.intel.com>
-	 <20260119162424.GE961572@ziepe.ca>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-2.fc41) 
+	s=arc-20240116; t=1768843710; c=relaxed/simple;
+	bh=dAEN621rxaKLniJp++d1mCcqa+hHeDahYePAXwnepds=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CUFZtK4ik9PvwGbsL7+wUkMYTZJMm2n4ZYTLOv7WO58P1MuaDhIpDzz0ibvRennWNaBCZrz3L2Fv+heIx+YRN6iYTjXnI1zvhIhRBqXXOsUW08GBrTYlShvSWmOUWbn3ztTreo424KbTJUtdsiBJNFcp/dv0On++hkmi8SDatjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Bgj4l9rx; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=JMxLJry4AoMWV6osPRsv8deFO4tQ6Q6IX6Od1VSMlo4=; b=Bgj4l9rx3hAFwtF+gr+N63DV6e
+	iBlpVY36M4faTbLJYyxNOO4qD5W99ekNkoEBsHPrthQE0LQVCiet8IRosV9YJJEEvYC0CM0xBQNku
+	LSaN9/h27btm3KPBDZZw8CK0n/sx+LxgMMSk0yTfnmr2tnqgg/EJAo7F+Ovc6hPh00K1BZuePEC3e
+	gtP0PLoToFU3Dj24dFg7Z62o9MqhK14JpIWwEjtpPTVBiRE6HBnMaQa9CmHGj+HV7owwjU4+al29z
+	2OsZEKKM7OPBZ9FCy19LR/njEKXXQ+SbdQY+BcIWTioFczivXeTay++jD2oOYVsrvPVAdQNeQ5DX+
+	uPnMcF80g3YMBWcb2YIUSeuP6l8Pqu5kmszoARG5Dy76Kpw4vt/p1U/k73yxzetvaqiCAn0WdNXeL
+	MWlwy0muGOo5+1FMHKd5wwFVvYfjYuoHw8LTmTqXpg7Y0U0Gasxf1l1w8UMgJ9bsB8rgRwSO+++aA
+	2Z+SO0OHhEQ/BR9KepaQLlxX;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vht35-00000001B4g-3TTx;
+	Mon, 19 Jan 2026 17:28:19 +0000
+Message-ID: <dbd2e0a8-c280-405c-8106-234078181d3d@samba.org>
+Date: Mon, 19 Jan 2026 18:28:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problem with smbdirect rw credits and initiator_depth
+To: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Tom Talpey <tom@talpey.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
+ <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
+ <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
+ <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
+ <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
+ <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
+ <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
+ <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
+ <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
+ <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org>
+ <ee6873d7-6e47-4d42-9822-cb55b2bfb79e@samba.org>
+ <6a248fde-e0cd-489b-a640-d096fb458807@samba.org>
+ <CAKYAXd-42_fSHBL7iZbuOtYFKqKyhPS-4C+nqbX=-Djq5L6Okg@mail.gmail.com>
+ <b58fa352-2386-4145-b42e-9b4b1d484e17@samba.org>
+ <8b4cc986-cf06-42a9-ab5d-8b35615fa809@samba.org>
+ <84554ae8-574c-4476-88df-ed9cfcc347f5@samba.org>
+ <CAKYAXd8np_b1RUkPQj2pz6=F5dciDLooES-gZVkSMSrbWRjWSQ@mail.gmail.com>
+Content-Language: en-US
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <CAKYAXd8np_b1RUkPQj2pz6=F5dciDLooES-gZVkSMSrbWRjWSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2026-01-19 at 12:24 -0400, Jason Gunthorpe wrote:
-> On Mon, Jan 19, 2026 at 10:27:00AM +0100, Thomas Hellstr=C3=B6m wrote:
-> > this sounds like it's not just undocumented but also in some cases
-> > unimplemented. The xe driver for one doesn't expect move_notify()
-> > to be
-> > called on pinned buffers, so if that is indeed going to be part of
-> > the
-> > dma-buf protocol,=C2=A0 wouldn't support for that need to be advertised
-> > by
-> > the importer?
->=20
-> Can you clarify this?
->=20
-> I don't see xe's importer calling dma_buf_pin() or dma_buf_attach()
-> outside of tests? It's importer implements a fully functional looking
-> dynamic attach with move_notify()?
->=20
-> I see the exporer is checking for pinned and then not calling
-> move_notify - is that what you mean?
+Am 18.01.26 um 09:03 schrieb Namjae Jeon:
+> On Sat, Jan 17, 2026 at 10:15 PM Stefan Metzmacher <metze@samba.org> wrote:
+>>
+>> Am 17.01.26 um 00:08 schrieb Stefan Metzmacher:
+>>> Am 15.01.26 um 10:50 schrieb Stefan Metzmacher:
+>>>> Am 15.01.26 um 03:01 schrieb Namjae Jeon:
+>>>>> On Thu, Jan 15, 2026 at 3:13 AM Stefan Metzmacher <metze@samba.org> wrote:
+>>>>>>
+>>>>>> Am 15.12.25 um 21:17 schrieb Stefan Metzmacher:
+>>>>>>> Am 14.12.25 um 23:56 schrieb Stefan Metzmacher:
+>>>>>>>> Am 13.12.25 um 03:14 schrieb Namjae Jeon:
+>>>>>>>>>> I've put these changes a long with rw credit fixes into my
+>>>>>>>>>> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
+>>>>>>>>>> test this?
+>>>>>>>>> Problems still occur. See:
+>>>>>>>>
+>>>>>>>> :-( Would you be able to use rxe and cake a network capture?
+>>>>>>>>
+>>>>>>>> Using test files with all zeros, e.g.
+>>>>>>>> dd if=/dev/zero of=/tmp/4096MBzeros-sparse.dat seek=4096MB bs=1 count=1
+>>>>>>>> would allow gzip --best on the capture file to compress well...
+>>>>>>>
+>>>>>>> I think I found something that explains it and
+>>>>>>> I was able to reproduce and what I have in mind.
+>>>>>>>
+>>>>>>> We increment recv_io.posted.count after ib_post_recv()
+>>>>>>>
+>>>>>>> And manage_credits_prior_sending() uses
+>>>>>>>
+>>>>>>> new_credits = recv_io.posted.count - recv_io.credits.count
+>>>>>>>
+>>>>>>> But there is a race between the hardware receiving a message
+>>>>>>> and recv_done being called in order to decrement recv_io.posted.count
+>>>>>>> again. During that race manage_credits_prior_sending() might grant
+>>>>>>> too much credits.
+>>>>>>>
+>>>>>>> Please test my for-6.18/ksmbd-smbdirect-regression-v5 branch,
+>>>>>>> I haven't tested this branch yet, I'm running out of time
+>>>>>>> for the day.
+>>>>>>>
+>>>>>>> But I tested it with smbclient and having a similar
+>>>>>>> logic in fs/smb/common/smbdirect/smbdirect_connection.c
+>>>>>>
+>>>>>> I was able to reproduce the problem and the fix I created
+>>>>>> for-6.18/ksmbd-smbdirect-regression-v5 was not correct.
+>>>>>>
+>>>>>> I needed to use
+>>>>>>
+>>>>>> available = atomic_xchg(&sc->recv_io.credits.available, 0);
+>>>>>>
+>>>>>> instead of
+>>>>>>
+>>>>>> available = atomic_read(&sc->recv_io.credits.available);
+>>>>>> atomic_sub(new_credits, &sc->recv_io.credits.available);
+>>>>>>
+>>>>>> This following branch works for me:
+>>>>>> for-6.18/ksmbd-smbdirect-regression-v7
+>>>>>> and with the fixes again master this should also work:
+>>>>>> for-6.19/ksmbd-smbdirect-regression-v1
+>>>>>>
+>>>>>> I'll post real patches tomorrow.
+>>>>>>
+>>>>>> Please check.
+>>>>> Okay, I will test it with two branches.
+>>>>> I'll try it too, but I recommend running frametest for performance
+>>>>> difference and stress testing.
+>>>>>
+>>>>> https://support.dvsus.com/hc/en-us/articles/212925466-How-to-use-frametest
+>>>>>
+>>>>> ex) frametest.exe -w 4k -t 20 -n 2000
+>>>>
+>>>> That works fine, but
+>>>>
+>>>>    frametest.exe -r 4k -t 20 -n 2000
+>>>>
+>>>> generates a continues stream of such messages:
+>>>> ksmbd: Failed to send message: -107
+>>>>
+>>>> Both with 6.17.2 and for-6.19/ksmbd-smbdirect-regression-v1,
+>>>> so this is not a regression.
+>>>>
+>>>> I'll now check if the is related to the other problems
+>>>> I found and fixes in for-6.18/ksmbd-smbdirect-regression-v5
+>>>
+>>> Ok, I found the problem.
+>>>
+>>> On send we are not allowed to consume the last send credit
+>>> without granting any credit to the peer.
+>>>
+>>>       MS-SMBD 3.1.5.1 Sending Upper Layer Messages
+>>>
+>>>       ...
+>>>       If Connection.SendCredits is 1 and the CreditsGranted field of the message is 0, stop
+>>>       processing.
+>>>       ...
+>>>
+>>>       MS-SMBD 3.1.5.9 Managing Credits Prior to Sending
+>>>
+>>>       ...
+>>>       If Connection.ReceiveCredits is zero, or if Connection.SendCredits is one and the
+>>>       Connection.SendQueue is not empty, the sender MUST allocate and post at least one receive of size
+>>>       Connection.MaxReceiveSize and MUST increment Connection.ReceiveCredits by the number
+>>>       allocated and posted. If no receives are posted, the processing MUST return a value of zero to indicate
+>>>       to the caller that no Send message can be currently performed.
+>>>       ...
+>>>
+>>> It works in my master-ipproto-smbdirect branch, see the top commit.
+>>>
+>>> I'll backport the related logic to ksmbd on top of
+>>> for-6.19/ksmbd-smbdirect-regression-v1 tomorrow.
+>>
+>> for-6.19/ksmbd-smbdirect-regression-v2 has the fixes and works for
+>> me, I'll prepare official patches (most likely) on Monday.
+> I have tested the for-6.19/ksmbd-smbdirect-regression-v2 branch, and I
+> can confirm that the issues I previously encountered in my test
+> environment have been fixed.
 
-No it was if move_notify() is called on a pinned buffer, things will
-probably blow up.
+Great! Thanks for testing!
 
-And I was under the impression that we'd might be pinning imported
-framebuffers but either we don't get any of those or we're using the
-incorrect interface to pin, so it might not be a big issue from the xe
-side. Need to check this.
+> I have a couple of follow-up questions regarding this fix:
+> 1. Regarding your frametest results, did you not observe any
+> performance degradation or difference compared to linux-6.17.9?
 
-In any case we'd want to support revoking also of pinned buffers moving
-forward, so question really becomes whether in the mean-time we need to
-flag somehow that we don't support it.
+Sorry, I don't understand what you are asking for.
 
-Thanks,
-Thomas
+Do you mean with v6.19-rc5, for-6.19/ksmbd-smbdirect-regression-v1 or
+for-6.19/ksmbd-smbdirect-regression-v2?
 
 
->=20
-> When I looked through all the importers only RDMA obviously didn't
-> support move_notify on pinned buffers.
->=20
-> Jason
+> 2. You mentioned previously testing with Intel E810-CQDA2 NICs. Have
+> you tested both iWARP and RoCEv2 modes on the E810?
+
+Yes, both while there seem to be strange problems with iWarp.
+
+I'll have to re-test with these cards, we'll test if it's possible
+to have both cards installed together both only getting 8 PCIe 5 lanes,
+that would make it easier to test.
+
+At the time I was always testing with KSAN, lockdep and other debugging features
+turned on, so performance was not as expected anyway...
+
+metze
 
 
