@@ -1,168 +1,102 @@
-Return-Path: <linux-rdma+bounces-15732-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15733-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0351AD3B7C5
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 20:56:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C62D3B8F2
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 22:00:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D9EBB302FCCE
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 19:54:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id ACCEA302280C
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 21:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0650F2E7657;
-	Mon, 19 Jan 2026 19:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A382F2F6577;
+	Mon, 19 Jan 2026 21:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Y8xzswM1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STl1syTV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f195.google.com (mail-qk1-f195.google.com [209.85.222.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97AF2DCF58
-	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 19:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EC422652D;
+	Mon, 19 Jan 2026 21:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768852490; cv=none; b=eLRsvkvuj6+Q8wh+1FaaPvZsOHcF3XXwSnxwWbb/zHLgJ3/ecgz91vz018qCdJIlx6s4pH+E6jHPOkjrHTPp3Jn6rDbWViQuTn/EPfWpbZlOsCDI+uYGFPERLUwHsTPm9Ts7QSA8/wVLURaopnTIc9e00NtrjRS9C+31vCYjquw=
+	t=1768856413; cv=none; b=YuGNjCeHJk0UTk77EQwG6jj8IHfdeRowhWOUtiQelgvqMlj0wMzvtYkdm79EuE6PfgelX4qvFnIuIZdB0eB1gEedGbWc7sgne+YMy9R8YrTfHib9ExWVvUetiTq0sa6b9i+Sl6gnIdelKa1q7clTuzaVCxgbkpNN7TlVbwxbD1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768852490; c=relaxed/simple;
-	bh=EgdbrvHnoBh/zDpp9ewcIGQxrvWxBBXiNgVYU0RjdCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NVQo2yWrTGClg/JliYMwi7NqljkXyd7DweQeXRmgd+87RgNBTs8umAtaRcCzQLj9opdBYUHh4gZfjoiSChKncmCRM0r6s5qVeYmu095Y4Nyi/MPEYDAYZ+UokHWNxmlAq42XSImzrb/AXLKqNevW7osobUauBrUq6G18ihhpMC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Y8xzswM1; arc=none smtp.client-ip=209.85.222.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f195.google.com with SMTP id af79cd13be357-8c5265d06c3so561414585a.1
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 11:54:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1768852487; x=1769457287; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zwZ9o3ha19w1BUlcGeJzNZvsy/mlKSz+FRMjn04+Z/c=;
-        b=Y8xzswM1blPsOkAhqH9fGcG5IadYE5sQt0vvRXgZTPwAqYIsRh7nfXeu6jNChZ9hKz
-         pxh03Sf81TJGk6WYR/8QTTKv0398gWd3wYINx05q1DLlmDzVVk/NEVNNQwO+bPsjiEM+
-         DwUUbkbk10s6Fp3bgZ57bQyIFL/QYcj3I6o6+LDJWtvZc2pKLOJKUzT1qPnWdD8nfsB8
-         0yCZUa/cLOmqCmhtbTBryPRqR8QJa6sP4qKlGepQD5Upo2SfzMS2mOKHpFphA7+f7C5J
-         BP85MmGwAh5gJ4jJ++0ltmFsTXWDGrIdPIsFj8/s8hh9WLBQHyZMI9O4mkorRJ3DA1nv
-         FZyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768852487; x=1769457287;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zwZ9o3ha19w1BUlcGeJzNZvsy/mlKSz+FRMjn04+Z/c=;
-        b=E+qzGaizUJ6VOSsUViMQibeqLq+Ym4cN3dmt6R2wszbljg0k2f+FKmFSz75N4xIn1B
-         4pts2E3do87gNMRi6aUsvxf7sahjjjxal1YRXcvI0SL7pFY3EBSRiMeivO0IZz/Cv/Ru
-         cP5G6iGcHft1lddRCIqwf3LaH0uuCOK4ty3/fS9ZuU24imWF7I5VB43TU6hAXO9U0zbP
-         lWV6SHGpsLpDmwbEJ3JP0mpiZuLMibsUrxqpi6X7Yi6OAEJSUI411TPHX/B3aM6sgqpq
-         nPOSc9IhPCz6J+5oy2+subk+b/leq8cwdcRALxD4ElFrmBHef5A25UFKbfrc2eoawCxE
-         Yojw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYDuMonbFPWBDz5Xkl0ybfGXoRK4K5b9BIpwaA91nLla8WXGN65lbrZgbqGxKwxXVRkM3xyUMyg8UZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzH4PwuZC5/yHP05sXcXnL/V+LV73RVAAlo/dHXzjOArkWJQzgI
-	qFwycac0LQq3J04dV911RubcGrRP7IRDE8SXHvv1HzS+YCU4OQZvKvXio4AxSw6sfZ8=
-X-Gm-Gg: AY/fxX5vrlBfojeRzJfeIgYAmvbvBWNaG5Z6y0p7YEHrkESGlVfCRC8VkhVwUkmN8Bp
-	HlJHRhnTbsWPMJM11i6looaHJtr3/X3paNOfYEwl1QEZqGegAEA2yOU/5w2oaviRpsmTWdARs2W
-	tOG65Vy/HmsfXpz3BhpssdNlT1i/WX09x2ws5n79ZHA9kZrhDbB3cKBHFFnGeV8ZE/YgSFJ793g
-	zGZjyQ/x3XxLSj6fKAuc7SUfutf0TCVb1uVU1x876GzR7UkzOJvKrPFgd6sutXnL6bFd63CG+Tf
-	/X3daKMFrPWBtaES7UtGLKqS2YQ7q9MHwCAYtYK98wGfkIvrwU8Rj31FrJ61T3CSUZ9vphcgLEv
-	H5toRFofPklFh47x2MC5o/2z3b+ncBwTZ0436RFZAEtrIt3ZTuvTkbrFZTBxnP+GZE0xnmlnq+G
-	Xko61EzZTqNy7/iBEJPyz9eZif7LM7kl1xMNp7XV7ZAXJVqNRbCk44iaq7AhCbeDaTyXk=
-X-Received: by 2002:a05:620a:4606:b0:8a3:a42e:6e14 with SMTP id af79cd13be357-8c589b9706emr2117693085a.10.1768852486747;
-        Mon, 19 Jan 2026 11:54:46 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8942e6ad75asm86947906d6.31.2026.01.19.11.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 11:54:44 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vhvKm-00000005JRT-0mKA;
-	Mon, 19 Jan 2026 15:54:44 -0400
-Date: Mon, 19 Jan 2026 15:54:44 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Alex Williamson <alex@shazbot.org>, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	virtualization@lists.linux.dev, intel-xe@lists.freedesktop.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] iommufd: Require DMABUF revoke semantics
-Message-ID: <20260119195444.GL961572@ziepe.ca>
-References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
- <20260118-dmabuf-revoke-v2-3-a03bb27c0875@nvidia.com>
- <20260119165951.GI961572@ziepe.ca>
- <20260119182300.GO13201@unreal>
+	s=arc-20240116; t=1768856413; c=relaxed/simple;
+	bh=+24jvhpXOiiRVmskVzSHPuyS9zeJd1ku13wxtjJblfo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ItBHoI8jbKKNIViPhgZMOxb4p2xlT1SJAldDbxX+o5NpaehoMe315dnteRO4GSWCuuQoQnFT585KKR1nGTLX5s7KtYxGHBcCYX7qJFH5TsmlIBdT2OxrBW5mo7JtxcsKx7DIYQsMh21OGembN5BBA1nTNgacVe2+s9Tck6d0sTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STl1syTV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFCB7C116C6;
+	Mon, 19 Jan 2026 21:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768856412;
+	bh=+24jvhpXOiiRVmskVzSHPuyS9zeJd1ku13wxtjJblfo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=STl1syTVgj3phWlYj+9hg4eQJC6wfHTbdBkd9KK/wZdlwd6Z5DqbefsSNBtPCUJEx
+	 eFvqdKgYZmvkuAuwCqtxI34KIuXCZPJQ3O3wbGzb97/k0V4WEkdo4472MlabsOkTCd
+	 3IA7EbMk48e5nzlnGh1C7vgwmutrlkUJ3rJ8ydN8Vat9nI0N2hRU5MLjP6Vhmktsey
+	 YbxkvzacrHists6lGo5LiDLb+L96clREjPR/RHDt+RSsWwPUFXnnkReW9xbxY9F8xG
+	 qOgwD1PnbSBUHIT+3bYPkJONkT/QxVRrW62rpRr+8Gfpfm+ceAHff73qkThQyGkaJI
+	 dQ6+5H12anBRQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 01FF03806907;
+	Mon, 19 Jan 2026 21:00:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260119182300.GO13201@unreal>
+Subject: Re: [PATCH net-next V2 0/4] net/mlx5e: Save per-channel async ICOSQ
+ in
+ default
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176885641079.136413.11790985486873558102.git-patchwork-notify@kernel.org>
+Date: Mon, 19 Jan 2026 21:00:10 +0000
+References: <1768376800-1607672-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1768376800-1607672-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ witu@nvidia.com, toke@redhat.com
 
-On Mon, Jan 19, 2026 at 08:23:00PM +0200, Leon Romanovsky wrote:
-> On Mon, Jan 19, 2026 at 12:59:51PM -0400, Jason Gunthorpe wrote:
-> > On Sun, Jan 18, 2026 at 02:08:47PM +0200, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > IOMMUFD does not support page fault handling, and after a call to
-> > > .invalidate_mappings() all mappings become invalid. Ensure that
-> > > the IOMMUFD DMABUF importer is bound to a revoke‑aware DMABUF exporter
-> > > (for example, VFIO).
-> > > 
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > ---
-> > >  drivers/iommu/iommufd/pages.c | 9 ++++++++-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/iommu/iommufd/pages.c b/drivers/iommu/iommufd/pages.c
-> > > index 76f900fa1687..a5eb2bc4ef48 100644
-> > > --- a/drivers/iommu/iommufd/pages.c
-> > > +++ b/drivers/iommu/iommufd/pages.c
-> > > @@ -1501,16 +1501,22 @@ static int iopt_map_dmabuf(struct iommufd_ctx *ictx, struct iopt_pages *pages,
-> > >  		mutex_unlock(&pages->mutex);
-> > >  	}
-> > >  
-> > > -	rc = sym_vfio_pci_dma_buf_iommufd_map(attach, &pages->dmabuf.phys);
-> > > +	rc = dma_buf_pin(attach);
-> > >  	if (rc)
-> > >  		goto err_detach;
-> > >  
-> > > +	rc = sym_vfio_pci_dma_buf_iommufd_map(attach, &pages->dmabuf.phys);
-> > > +	if (rc)
-> > > +		goto err_unpin;
-> > > +
-> > >  	dma_resv_unlock(dmabuf->resv);
-> > >  
-> > >  	/* On success iopt_release_pages() will detach and put the dmabuf. */
-> > >  	pages->dmabuf.attach = attach;
-> > >  	return 0;
-> > 
-> > Don't we need an explicit unpin after unmapping?
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 14 Jan 2026 09:46:36 +0200 you wrote:
+> Hi,
 > 
-> Yes, but this patch is going to be dropped in v3 because of this
-> suggestion.
-> https://lore.kernel.org/all/a397ff1e-615f-4873-98a9-940f9c16f85c@amd.com
+> This is V2, find V1 here:
+> https://lore.kernel.org/all/1762939749-1165658-1-git-send-email-tariqt@nvidia.com/
+> 
+> This series by William reduces the default number of SQs in a channel
+> from 3 down to 2, by not creating the async ICOSQ (asynchronous
+> internal-communication-operations send-queue).
+> 
+> [...]
 
-That's not right, that suggestion is about changing VFIO. iommufd must
-still act as a pinning importer!
+Here is the summary with links:
+  - [net-next,V2,1/4] net/mlx5e: Move async ICOSQ lock into ICOSQ struct
+    https://git.kernel.org/netdev/net-next/c/ea945f4f3991
+  - [net-next,V2,2/4] net/mlx5e: Use regular ICOSQ for triggering NAPI
+    https://git.kernel.org/netdev/net-next/c/56aca3e0f730
+  - [net-next,V2,3/4] net/mlx5e: Move async ICOSQ to dynamic allocation
+    https://git.kernel.org/netdev/net-next/c/1b080bd74840
+  - [net-next,V2,4/4] net/mlx5e: Conditionally create async ICOSQ
+    https://git.kernel.org/netdev/net-next/c/abed42f9cd80
 
-Jason
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
