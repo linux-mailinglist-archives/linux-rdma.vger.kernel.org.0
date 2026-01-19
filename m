@@ -1,221 +1,630 @@
-Return-Path: <linux-rdma+bounces-15680-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15681-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A001DD39A04
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jan 2026 22:40:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67E01D39C5A
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 03:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 51D61300A379
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jan 2026 21:40:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3D4113006A66
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 02:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8255309EF9;
-	Sun, 18 Jan 2026 21:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E66F23717F;
+	Mon, 19 Jan 2026 02:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mX9O1FGV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JV6aoHDO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012049.outbound.protection.outlook.com [40.107.200.49])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E515CDF1;
-	Sun, 18 Jan 2026 21:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768772425; cv=fail; b=WbJf6CXajlGpp0qhCjAEaJbSVtwMWwW6QErnY811C8jkgvhy6pGr7rrdfUDXD/QzLKt+DFDZ/2FimKG4ZorQNmckEUB+G+uv5rvQxUkacmDIHH0yWvoW2MBHLM+d4Wh/EjQobWRoXvGBaA1OeoFJUZpf/O5cnU//4/IGWcvj21I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768772425; c=relaxed/simple;
-	bh=s/Mh2trR8IsS6VXmFBwKZ35agu4BXFzJNdEVQHv+Ofk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SOaU1I+fqgi+NYukVLo7PWinANPvBICMk6U/qhw7QnyKJ/k9FBYgcrHglXDvB7YRdeKoYTEShqitkwn8OYfOpV1Mll9zASyNwRxjjm4O8CTvjL1Jn0iLv14e+2M24o+DPUkPSg84bHWYJAT7who/WZe5ewZePkWE0Rs++UisGPc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mX9O1FGV; arc=fail smtp.client-ip=40.107.200.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=prbbTWF7t0B6LBvz1v6MS6rvnFlRr5czcKahuqSsBmzf8aEJLY/jJtg6M8nuWNa21jKXMgJqOpDHJ2v2gY7uiNlRHWHOrOoCYPAhFTvSgYmhKoW9hamO4aogNGeeSIdBrU60tEAZu780Ja+rpXW09Icq72YD/rLZrNLSvaP/jl5b+ExGRilLw6PCuEY9XC1qEm2Wo+PNVUOamNW5lD4AKCveXs0aewWonptNNkpJMDG8IAudTVkr9eWrDLZKiYbUypeBqhn6Tt9KD4ehoVq+yHgwHz9PdfOCUQzvOUf4N39Kk6qbNh1n/WYot+/Mk/S0u0sSE4RelhWmBwRz3xtoqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nJZ0Nxj6gCI7kZHGYT/BFIx5HODsda3DnA59ooIk5gw=;
- b=lDST+n0rYTyr+3SMb0Bbiddves21LvGK/YRyaEsF2JG7JhXpQ9tDYcifcepmpkxIatMA0pYDh1RfRFto6lVd+LI2MuyCmTMKB4zFQBpELEPq5DneFR+vejm9IBCUvrlAPC+XIfjqY+lq2utYpZ2Ch/SOUQKMeBpXa1qf2lfe4pmJfFcya1IeeuXe3v8Mwf0oeaJE2lojY6ubOadz44mIyaRzzshXMQTMbpOizFtwkGysdekIq+FPjEfG1iTchFoSBEXO/VDqxAwnsEonI5osIyt5qHn86ADWTplB26lFdM7gkhm0xvbekMfOwZnnPBvCXL0lBPtlK1ZzkJDZAEAuGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nJZ0Nxj6gCI7kZHGYT/BFIx5HODsda3DnA59ooIk5gw=;
- b=mX9O1FGVB1uXeAazTyxksPnu7BJtc9DtcLUADQMY5I6jgOVfXagOXCmq2vC1DfajI2PcGft1t9S/95IMXZGyh0rgYxG48WvALR+iERe5EEPaoGHtwWnRHCjvKP3SF3EW2e43Kp7G5KftM4wUyBb9swnkcFujRMZJPze75CJQ9WY8OUGMi2ilodHyuzN6R1xp7qZdAP7CW9i4Y+NLmaftAWmanSO5wFzS1+yib2hktK7Pcg9kG7C2ElZbfgG2/ZzQwAtSu8JuCDxWrCcBG2DgbxoWSouFtw9jFmx3qGnOMl2Cb+0iUPjRPj7aHwnK4emeQHn+QSEnOjtPFmEbolvthw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM3PR12MB9416.namprd12.prod.outlook.com (2603:10b6:0:4b::8) by
- PH7PR12MB5807.namprd12.prod.outlook.com (2603:10b6:510:1d3::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9520.10; Sun, 18 Jan 2026 21:40:20 +0000
-Received: from DM3PR12MB9416.namprd12.prod.outlook.com
- ([fe80::8cdd:504c:7d2a:59c8]) by DM3PR12MB9416.namprd12.prod.outlook.com
- ([fe80::8cdd:504c:7d2a:59c8%7]) with mapi id 15.20.9520.010; Sun, 18 Jan 2026
- 21:40:20 +0000
-Message-ID: <d41d08e3-6a86-40a4-925c-6a3172670079@nvidia.com>
-Date: Sun, 18 Jan 2026 13:40:11 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] dma-buf: Document revoke semantics
-To: Leon Romanovsky <leon@kernel.org>, Sumit Semwal
- <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?=
- <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>,
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
- Gerd Hoffmann <kraxel@redhat.com>,
- Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Alex Williamson <alex@shazbot.org>
-Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
- intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
- iommu@lists.linux.dev, kvm@vger.kernel.org
-References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
- <20260118-dmabuf-revoke-v2-2-a03bb27c0875@nvidia.com>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <20260118-dmabuf-revoke-v2-2-a03bb27c0875@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR04CA0012.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::22) To DM3PR12MB9416.namprd12.prod.outlook.com
- (2603:10b6:0:4b::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033F28632B
+	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 02:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768789514; cv=none; b=FNUSmaxSZP6nh4ceupcUSg0PIQkKBS9AI0hkecPDhxIDU6IrQ7vJN2tnJeX6PM4manCHUdKDCrCmUxmcPp+VldtF90eqkjzxJ3LIZ81w8daiur0NCSCR736zrZO5gtVhNuKdTb+vWb7+8brcI/IePZ+8EL2odYZrMzRNcD0Nb6U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768789514; c=relaxed/simple;
+	bh=3yKFmu7DjLeWZeTyqIu6PkTM8TlaCXstB/fc1YEozDI=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=s5j0unYEGPmAK306oDehtNRKe79Ysy2oxvF82eGrIqEEJwK9ae/CwmI0Ukx0h0UW70NHYLSIrkt2WRvtn4M0gwpU3QqhJMCjZ1ZJwu8SsLx+vfaw7jJarDDUd5gFrnyARNn6GAuqStwXl8My1JxYPqv9o63GFdC7FsAl5WWx8hA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JV6aoHDO; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7bf4cf88-04cb-4d05-8bd0-174b8e879e1a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768789508;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2ywWX5nkajYEd3gCM3Bk2tyylSWjGTOsZ2s0sQfJZyA=;
+	b=JV6aoHDOZCW9gYd9Uj77d235BpNJ8ztDgpSCdGexQ9dPAySQZWNGLivRURPLPFdnowrGrX
+	PctP4cInBV7XF86Bo+8VJv+ww6cz0LYZA/zlvSWW4bxP25AdKmhxZKWTfM4VBXYpyCXGJs
+	HSKPbphHDoMRXp3AdDE3VigH2IcLMWE=
+Date: Sun, 18 Jan 2026 18:25:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM3PR12MB9416:EE_|PH7PR12MB5807:EE_
-X-MS-Office365-Filtering-Correlation-Id: fed19fe0-f283-461f-a83f-08de56da2d67
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|10070799003|7416014|376014|1800799024|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?L1lvcGpjZHYxQXd1ZFo0TmQ4NFpUU0lqZTFjdWx0SjBwdFZIUGdmaHZJYXVw?=
- =?utf-8?B?ZVpSZXFuTWt6VndmL25mZU1QRFhGaXp5UXVTTHZnYmxUNWg1T3AxNnFsZkl4?=
- =?utf-8?B?VWhMRTBCemdsbld1clVnNkY2dTVGNTdocEpvK0tiVEdRWFJJUTVSQVQvekpQ?=
- =?utf-8?B?Q0Nnalh5emNTdm04V3FRck03YVJHVWgweHkyYmN6QmlrcWpuSUcycmh1N0Zo?=
- =?utf-8?B?YlZtTWRJR1ZsVXAva3NnRVBab3RhZlh3c2UxRkVibTNzMTVXK1EyNzgzMkFN?=
- =?utf-8?B?SC9XNXBnbXV2ZWhQRHVxekM4eHFUL081Slo5TFVyZ2Racm80M2dudTM4cXBh?=
- =?utf-8?B?MDRIaHcrNkNIRnZLck4rZWlwOFFxSVpsSldtLys1eUFQZjArWExjaVVIRUw1?=
- =?utf-8?B?MzRvMGxvTmRMYXVsRFoxUHZVU0hBR3BxbTVjSHgvZ1M5SDNYK2krOGR3NytB?=
- =?utf-8?B?MENhcWtZbFpxcHBiNkEyd2RtLzNidE81V2VqbHgvc3FaTytGY001cmdYNmp3?=
- =?utf-8?B?TVJHRDBuOWovOGFsSFhHVW01M25JWFFXSi9aeGh1ekNGNUJpYmFwMTN1cE14?=
- =?utf-8?B?aFRIc1AybkpaMCttTmFZMlo1WlpJNDhkTnZCR1hjc2pQcFFyTE5pUVdhcERS?=
- =?utf-8?B?TWREVnBDc3hPYURXMFVhSVp6OHErN2ZOaW5ZNlNTMER1OEVVTnZtUGRuMENP?=
- =?utf-8?B?VzR5NXQyUEIyYmpaSWtXVWxwQzdaQ1VNZHIzaitCTjFudVFDWnR2ZDhtYy9N?=
- =?utf-8?B?aGVFYWdUemdVUVBsUzdqL1k3UDlHck02Y0NxMlhyeW9UU3dYYmZZZE51RkE0?=
- =?utf-8?B?L2RPZXN5M09uMi9yRWQ4TlFMa1hlUTQveVNJVWpwNlVhaVEvbStEYThKenY2?=
- =?utf-8?B?UTRDR1ZLcUNJMlQrWVh5MXNvaFI2algwR29hMUxzSytXUmV6Y1YyRlE2aW9M?=
- =?utf-8?B?Z29RQ2oxUVJDTlozWGs2eE8xZkRXMm9LWVBWaXNzSk9iNVVrRkhXZVB2Q1c0?=
- =?utf-8?B?RHFNMTlwZlVBTUhBbldTclVUbU13RHhqbmNSLy9ZSGZ2YXhZd2lDemNoWWtk?=
- =?utf-8?B?U0UrK0wxaTdXM01IbTZITk8vTThjOHJqNkV5SDF2cnp6Wjd1QU9iV3RuQVEv?=
- =?utf-8?B?N3ZOTUZrTy9GaEgrODBVSGZDWkFuZnJpSmszOUdWNFI0L2lnRGdmUVR2aGp4?=
- =?utf-8?B?YkpWMXV0emJTVldWTXNaby9Xc0RaSERnUS8vVGpjM0o2OHhLLzlaRDI1OWs3?=
- =?utf-8?B?ODdLSlJSRklCanpscjU2YXVndmFPTjNXSkgxT3dDUTQyQThBT25DZ1ljWkd0?=
- =?utf-8?B?L01Kd3hYc1NlMFUxQTUvT3grOENUZVRwY2xzK1BzVWpEMHdRcHFFT2h4c2p4?=
- =?utf-8?B?amlSTllVa29IZm1RSGRiMlVvRC9tayttUERFSS9aNlFIbStJZHFVWmVGL0dP?=
- =?utf-8?B?eFBOQVV4ejlhQTFyMm1lZUoraGl2V01yUWt6T2NETWt5dEg3aG5JN2RzUDZ2?=
- =?utf-8?B?S1o3cW95VlZodlpEZ3dyVHpiMDJ4UjRucnVSU1FPMTBKcjRONWlzaDhUeHdp?=
- =?utf-8?B?S3ZlL1o0ZGJlRFVTZDgxdnBueEtuNnRoa2xlU0JYa0lFLzJzTktWVVlEVEU3?=
- =?utf-8?B?Q0RVc25aNUt1TGdWTkNOdmpLWWJTeXBkQjVTOXFBR1RHT1VOOFEvZnd3Z2JC?=
- =?utf-8?B?NU9oMm5zSDZsL0FGYWszeXhJaTdiY1lZZTQvL25vYnN0U0Q2L3cvblN4bnhq?=
- =?utf-8?B?eWVTSlkzd1dOS0JiT3NLL3E3WG9RTlc0T1ByMWx1aVBPZ3VSQTBoVDY1djdX?=
- =?utf-8?B?aW85b2VMaldkc1djQnVDOG80MG0xcGY4dHl6Y1F1TmtQSkFPN1VrKzIrdm83?=
- =?utf-8?B?bktPWW5wSjRJYzFOS1ZJNUFRdGRQZW1reHFLRkhIZ1BQaE01Nkh3U0FKVEky?=
- =?utf-8?B?NkRNbUkzRHRFeWpjMTcySVprWFVqQXB0cWN4WFF5LzA1V1R5QU93UWRiSDVV?=
- =?utf-8?B?ZDlqNUlUVUtCVWtOZzg1cWJZYlUycHRDLy8rS0RNdXhvQzJsZ0doVkE2bklG?=
- =?utf-8?B?LzdVVEtxeU9JVlhINzVNaHpmVmtyZjloVFhCbUxkR21uY3dDTVMyUEU2RjBz?=
- =?utf-8?B?ZWE4eUsrck5GYllCc2hjc28xTmgyUVZMZ0VBcllTbFdiK2NvN0RSNncxRk55?=
- =?utf-8?B?bXc9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM3PR12MB9416.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(10070799003)(7416014)(376014)(1800799024)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Ukx5azllTTFWa0ZzTTdEcm10WlRVcHhmb3FnbnBhbEthVUtIallkOEVyMHFp?=
- =?utf-8?B?K0NPR29qQldIYlZ1Ulh0WVZxMEZEWHc2M0FuSHVqelFwUSs4RlMxcVVlTVpM?=
- =?utf-8?B?MVltU3B0UGdZc3hwRUpuanE5SUxNNXcvZXBTaWlEbExYVC9KZmRPSFpadFVP?=
- =?utf-8?B?RlUyWWxsL0ZabkhWUkRpc041bGRrdUIxUGNicWU2b1dmSU4zc1NtalY3bU9P?=
- =?utf-8?B?MmJ2V1lCVkVrR1RSWXh0Qk5NWklEVWNIN2hIbklPTmVjOTJjN3ZDNENZMWRG?=
- =?utf-8?B?QkVXYjgwYlFuUTAwQitmakk1STdtbEN4SUtram9NMzBxVkhDNC9TKzVPOVhK?=
- =?utf-8?B?QjJxdWxlcE9RbDM3b21LYXExVHc2cDYvWS9mdlo5d0diYkpIMVBkMnY2QzFu?=
- =?utf-8?B?a0Y1ZW5XbThGeDBhVDhOUU1sRHV3aHgrb0VlMFVFVzBJS0xhQVQ2LzZIdzUr?=
- =?utf-8?B?bGRqSjBFZWFZb013S3c2bFdJR3B0eTBXTXltaU5sQ1RaT2NCaiswQ3ludWZu?=
- =?utf-8?B?YlE5WDdMSmE1Sm5WZDhrSTlkQm51N0gwOHpTWmhGbDRWWXdRWGlJVUlmQXdG?=
- =?utf-8?B?YWVXNkVpMFNTdmRwb2kxTDNtaVNEeFMyVDJrempqdEVLYmZFQkh4eVpYN3I1?=
- =?utf-8?B?TWdYSzFtSldqZ0VTTzVod0VyRy9HU3NrRlVqbnVyTGV3TE44bkx5emh3WEFM?=
- =?utf-8?B?UVdpQjF3dXJ6L2YwQThsU1BJamVFL2k0V0dpcU5JZ1FkZGMranNqKzVJVmYv?=
- =?utf-8?B?UVN2L1B4MjRreEVuamVuenMxeXRPR3NpNDR6VThieGFlb01yblFqcWlpYXAr?=
- =?utf-8?B?aU5xVVRNN3ZBRnlrV3RZNTRzemRDaXVyUXI1OE55T0RibzMrNjgyTnZjN2Q3?=
- =?utf-8?B?YkR2M2VNYUJHSmMrN0VCY0djSG43TnVxdDRhVThmcGNkczh1bmR2a251M2oy?=
- =?utf-8?B?N3YyZWlRTUJ5M3k2elpNcjJnRTZzL2pvbVJIczMyTmZvSVRhbms5bVh2NG9z?=
- =?utf-8?B?bGx5a1dzRFNKMm41aU81b2NlK2dyZksrbS8vMGwrYXQwdUlIeWVIdUxrajhW?=
- =?utf-8?B?MkMya2locFM0Mk9HWXh3UTJ1MjRFMXBrUEhjckZmcmc2RjFaRFM4QklBUlZt?=
- =?utf-8?B?M2V1NytvaWl0WW9qdEtBc2ZRL1NSNmE5ejF2b0tqbkZseXBuYSswZHhETEdw?=
- =?utf-8?B?eWxsclpyOWg4T1kva3JHVnJ6YVUwd2FGR2llYkh1SjU5UTEwaFlnc2QwUExr?=
- =?utf-8?B?WGNHSVJ3RzQ5TzNiK2pyTGIwSkgxN0RhWHM5S2UzbEVNdDI1YmU5UnVSby93?=
- =?utf-8?B?SGVQT0JRMHhkdDgvNzlGa3V6RHhSOTFrQUYza0xLTHNzemhsV0crZjVNVW9G?=
- =?utf-8?B?Z2JsOEVZb1RvRFIzRnN6UnRURlFIeFhraExCcS9OcGxFblBpanprT01ORTJs?=
- =?utf-8?B?QU5vdnhyNlp4dGxHbDRCYi9NUFdIUERHRUo3N0xuNHpUTWFjaTZNeFJwWlM4?=
- =?utf-8?B?UkhtZEZPb3hkU3pINmU3bTNIRU5rRW5RdGFBVGZMTWpsVExoeXNTcnVXRkJx?=
- =?utf-8?B?bFdiT3BTeTQxQjVKZFRrV1FNYkErS016SS9rQ3ozL0JnZmE4SFMyL2V4WG5D?=
- =?utf-8?B?WkIvS2VkV3RSTEpyY2pTTHZza3psUXZHS0MraDl1bG15MzVMeGNIVkJ1bis2?=
- =?utf-8?B?VFozYTNLNDdHbWFzaE5NY1lNMmlCa3FJSlZrdTBkRk4zNStQTUljUmZaTkZt?=
- =?utf-8?B?dGdwLzJ1MjlNNHNkTGE0QWVsU09tcHdtZFFEZnZsblF5OEJ6S28yVUtDeGNn?=
- =?utf-8?B?VitzRUI2dkNuOHVRZ25FSWgzWkVwWitjZlBKaTY1blRYQnV2aDBNeE5MVTFV?=
- =?utf-8?B?SnRTdllrSXVZQnRnV0p1Sk1SRkJSVTFGaGJWVUhqNCttak54TUJiQS8xTEky?=
- =?utf-8?B?OGduS2hsUTFLWjFEY0tEZ3F3cVVLa0hkSGdXa3lNWS93a2l5MFBHaWVSUUF2?=
- =?utf-8?B?R1Q4OVdmdkpBb2Y4YWlUcUZwc2RDVWlGeVlMTmxGbEdvNThRQUpLTU9aT2F5?=
- =?utf-8?B?V2lQdTZNcEp3SUpjNnJCYUtUSnorbkNhNVRhOVJ5VElqT0svQ005NCtOcVg2?=
- =?utf-8?B?alhKT2lSeW5CMGk5Qzc5ZDV2N2g0ay9EK1FkVkJEYjNXSzA5a2dGdHdaeG9N?=
- =?utf-8?B?WGNnUHVheWxsU0RJWDFtbjZ1R3pKOFAxTUUrclV1WnNsTnRxRDBHeHZNQkVj?=
- =?utf-8?B?YW1zWUpjYjFxb2ZHaUdSOGk1Q0o2V1UwNHNETHhtZkNINk8xdXJCQlZ0SE5m?=
- =?utf-8?B?SXdSTFI3QTJyM0RDUkZqUnlGemU3SEtNYnVKemxxSnhxa2Z4elhoSUdyRFBJ?=
- =?utf-8?Q?NPVpkbqiXb1ltlVE=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fed19fe0-f283-461f-a83f-08de56da2d67
-X-MS-Exchange-CrossTenant-AuthSource: DM3PR12MB9416.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2026 21:40:19.9663
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7BG5QQMUwBJmnjft2UNgKzrYmPQS5XlulCzZuN8fgDxIzfSMULTNWR3X8axjO1NlidzorHmW7LrHFAU8Xx/Arw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5807
-
-On 1/18/26 4:08 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-...
-> +/**
-> + * dma_buf_attachment_is_revoke - check if a DMA-buf importer implements
-> + * revoke semantics.
-> + * @attach: the DMA-buf attachment to check
-> + *
-> + * Returns true if DMA-buf importer honors revoke semantics, which is
-> + * negotiated with the exporter, by making sure that importer implements
-> + * .invalidate_mappings() callback and calls to dma_buf_pin() after
-> + * DMA-buf attach.
-> + */
-> +static inline bool
-> +dma_buf_attachment_is_revoke(struct dma_buf_attachment *attach)
-
-Maybe a slight rename, to dma_buf_attachment_is_revocable()?
+Subject: Re: [PATCH RFC v2] RDMA/rxe: Fix iova-to-va conversion for MR page
+ sizes != PAGE_SIZE
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
+ leon@kernel.org, Yi Zhang <yi.zhang@redhat.com>
+References: <20260116032753.2574363-1-lizhijian@fujitsu.com>
+ <1bc84ed5-6e06-47fd-a85a-c85ac8cc4118@linux.dev>
+In-Reply-To: <1bc84ed5-6e06-47fd-a85a-c85ac8cc4118@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
-thanks,
+
+在 2026/1/16 9:36, yanjun.zhu 写道:
+> On 1/15/26 7:27 PM, Li Zhijian wrote:
+>> The current implementation incorrectly handles memory regions (MRs) with
+>> page sizes different from the system PAGE_SIZE. The core issue is that
+>> rxe_set_page() is called with mr->page_size step increments, but the
+>> page_list stores individual struct page pointers, each representing
+>> PAGE_SIZE of memory.
+>>
+>> ib_sg_to_page() has ensured that when i>=1 either
+>> a) SG[i-1].dma_end and SG[i].dma_addr are contiguous
+>> or
+>> b) SG[i-1].dma_end and SG[i].dma_addr are mr->page_size aligned.
+>>
+>> This leads to incorrect iova-to-va conversion in scenarios:
+>>
+>> 1) page_size < PAGE_SIZE (e.g., MR: 4K, system: 64K):
+>>     ibmr->iova = 0x181800
+>>     sg[0]: dma_addr=0x181800, len=0x800
+>>     sg[1]: dma_addr=0x173000, len=0x1000
+>>
+>>     Access iova = 0x181800 + 0x810 = 0x182010
+>>     Expected VA: 0x173010 (second SG, offset 0x10)
+>>     Before fix:
+>>       - index = (0x182010 >> 12) - (0x181800 >> 12) = 1
+>>       - page_offset = 0x182010 & 0xFFF = 0x10
+>>       - xarray[1] stores system page base 0x170000
+>>       - Resulting VA: 0x170000 + 0x10 = 0x170010 (wrong)
+>>
+>> 2) page_size > PAGE_SIZE (e.g., MR: 64K, system: 4K):
+>>     ibmr->iova = 0x18f800
+>>     sg[0]: dma_addr=0x18f800, len=0x800
+>>     sg[1]: dma_addr=0x170000, len=0x1000
+>>
+>>     Access iova = 0x18f800 + 0x810 = 0x190010
+>>     Expected VA: 0x170010 (second SG, offset 0x10)
+>>     Before fix:
+>>       - index = (0x190010 >> 16) - (0x18f800 >> 16) = 1
+>>       - page_offset = 0x190010 & 0xFFFF = 0x10
+>>       - xarray[1] stores system page for dma_addr 0x170000
+>>       - Resulting VA: system page of 0x170000 + 0x10 = 0x170010 (wrong)
+>>
+>> Yi Zhang reported a kernel panic[1] years ago related to this defect.
+> 
+> Thanks a lot.
+> I am not sure if this problem also occurs on SIW or not.
+> If yes, can you also add this fix to SIW?
+> If not, can you explain why this problem does not occur on SIW?
+> 
+> I am just curious about this.
+
+Thanks, Zhijian
+
+Based on the latest linux upstream, that is, 6.19-rc5, I applied this 
+commit. On x86_64, all the testcases can pass.
+
+I do not have arm64 test environment. As such, it is difficult for me to 
+verify whether the proglem that Yi Zhang reported is fixed or not.
+
+IMO, it is good to keep this commit in linux upstream for some time. 
+Thus, other developers can verify whether the mentioned problem is fix 
+or not.
+
+Br,
+Zhu Yanjun
+
+> 
+> Best Regards,
+> Zhu Yanjun
+> 
+> 
+>>
+>> Solution:
+>> 1. Replace xarray with pre-allocated rxe_mr_page array for sequential
+>>     indexing (all MR page indices are contiguous)
+>> 2. Each rxe_mr_page stores both struct page* and offset within the
+>>     system page
+>> 3. Handle MR page_size != PAGE_SIZE relationships:
+>>     - page_size > PAGE_SIZE: Split MR pages into multiple system pages
+>>     - page_size <= PAGE_SIZE: Store offset within system page
+>> 4. Add boundary checks and compatibility validation
+>>
+>> This ensures correct iova-to-va conversion regardless of MR page size
+>> and system PAGE_SIZE relationship, while improving performance through
+>> array-based sequential access.
+>>
+>> Tests on 4K and 64K PAGE_SIZE hosts:
+>> - rdma-core/pytests
+>>    $ ./build/bin/run_tests.py  --dev eth0_rxe
+>> - blktest:
+>>    $ TIMEOUT=30 QUICK_RUN=1 USE_RXE=1 NVMET_TRTYPES=rdma ./check nvme 
+>> srp rnbd
+>>
+>> [1] https://lore.kernel.org/all/ 
+>> CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
+>> Fixes: 592627ccbdff ("RDMA/rxe: Replace rxe_map and rxe_phys_buf by 
+>> xarray")
+>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>>
+>> ---
+>> If this patch is too huge, it can be split it to 'convert xarray to 
+>> normal array' first.
+>>
+>> V2:
+>>   - convert xarray to normal array because all MR page indices are 
+>> contiguous
+>>   - Fix cases in 2+ SG entries and their dma_addr is not contiguous
+>>   - Resize page_info to (num_buf * system_page_per_mr) if needed
+>>   - remove set_page_per_mr(), unify back to rxe_set_page()
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe_mr.c    | 281 +++++++++++++++++---------
+>>   drivers/infiniband/sw/rxe/rxe_verbs.h |  10 +-
+>>   2 files changed, 194 insertions(+), 97 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/ 
+>> sw/rxe/rxe_mr.c
+>> index 05710d785a7e..c71ab780e379 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+>> @@ -72,14 +72,46 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr)
+>>       mr->ibmr.type = IB_MR_TYPE_DMA;
+>>   }
+>> +/*
+>> + * Convert iova to page_info index. The page_info stores pages of size
+>> + * PAGE_SIZE, but MRs can have different page sizes. This function
+>> + * handles the conversion for all cases:
+>> + *
+>> + * 1. mr->page_size > PAGE_SIZE:
+>> + *    The MR's iova may not be aligned to mr->page_size. We use the
+>> + *    aligned base (iova & page_mask) as reference, then calculate
+>> + *    which PAGE_SIZE sub-page the iova falls into.
+>> + *
+>> + * 2. mr->page_size <= PAGE_SIZE:
+>> + *    Use simple shift arithmetic since each page_info entry corresponds
+>> + *    to one or more MR pages.
+>> + */
+>>   static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
+>>   {
+>> -    return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
+>> +    int idx;
+>> +
+>> +    if (mr_page_size(mr) > PAGE_SIZE)
+>> +        idx = (iova - (mr->ibmr.iova & mr->page_mask)) >> PAGE_SHIFT;
+>> +    else
+>> +        idx = (iova >> mr->page_shift) -
+>> +            (mr->ibmr.iova >> mr->page_shift);
+>> +
+>> +    WARN_ON(idx >= mr->nbuf);
+>> +    return idx;
+>>   }
+>> +/*
+>> + * Convert iova to offset within the page_info entry.
+>> + *
+>> + * For mr_page_size > PAGE_SIZE, the offset is within the system page.
+>> + * For mr_page_size <= PAGE_SIZE, the offset is within the MR page size.
+>> + */
+>>   static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, 
+>> u64 iova)
+>>   {
+>> -    return iova & (mr_page_size(mr) - 1);
+>> +    if (mr_page_size(mr) > PAGE_SIZE)
+>> +        return iova & (PAGE_SIZE - 1);
+>> +    else
+>> +        return iova & (mr_page_size(mr) - 1);
+>>   }
+>>   static bool is_pmem_page(struct page *pg)
+>> @@ -93,37 +125,69 @@ static bool is_pmem_page(struct page *pg)
+>>   static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct 
+>> sg_table *sgt)
+>>   {
+>> -    XA_STATE(xas, &mr->page_list, 0);
+>>       struct sg_page_iter sg_iter;
+>>       struct page *page;
+>>       bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
+>> +    WARN_ON(mr_page_size(mr) != PAGE_SIZE);
+>> +
+>>       __sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
+>>       if (!__sg_page_iter_next(&sg_iter))
+>>           return 0;
+>> -    do {
+>> -        xas_lock(&xas);
+>> -        while (true) {
+>> -            page = sg_page_iter_page(&sg_iter);
+>> -
+>> -            if (persistent && !is_pmem_page(page)) {
+>> -                rxe_dbg_mr(mr, "Page can't be persistent\n");
+>> -                xas_set_err(&xas, -EINVAL);
+>> -                break;
+>> -            }
+>> +    while (true) {
+>> +        page = sg_page_iter_page(&sg_iter);
+>> -            xas_store(&xas, page);
+>> -            if (xas_error(&xas))
+>> -                break;
+>> -            xas_next(&xas);
+>> -            if (!__sg_page_iter_next(&sg_iter))
+>> -                break;
+>> +        if (persistent && !is_pmem_page(page)) {
+>> +            rxe_dbg_mr(mr, "Page can't be persistent\n");
+>> +            return -EINVAL;
+>>           }
+>> -        xas_unlock(&xas);
+>> -    } while (xas_nomem(&xas, GFP_KERNEL));
+>> -    return xas_error(&xas);
+>> +        mr->page_info[mr->nbuf].page = page;
+>> +        mr->page_info[mr->nbuf].offset = 0;
+>> +        mr->nbuf++;
+>> +
+>> +        if (!__sg_page_iter_next(&sg_iter))
+>> +            break;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int __alloc_mr_page_info(struct rxe_mr *mr, int num_pages)
+>> +{
+>> +    mr->page_info = kcalloc(num_pages, sizeof(struct rxe_mr_page),
+>> +                GFP_KERNEL);
+>> +    if (!mr->page_info)
+>> +        return -ENOMEM;
+>> +
+>> +    mr->max_allowed_buf = num_pages;
+>> +    mr->nbuf = 0;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int alloc_mr_page_info(struct rxe_mr *mr, int num_pages)
+>> +{
+>> +    int ret;
+>> +
+>> +    WARN_ON(mr->num_buf);
+>> +    ret = __alloc_mr_page_info(mr, num_pages);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    mr->num_buf = num_pages;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static void free_mr_page_info(struct rxe_mr *mr)
+>> +{
+>> +    if (!mr->page_info)
+>> +        return;
+>> +
+>> +    kfree(mr->page_info);
+>> +    mr->page_info = NULL;
+>>   }
+>>   int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+>> @@ -134,8 +198,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 
+>> start, u64 length,
+>>       rxe_mr_init(access, mr);
+>> -    xa_init(&mr->page_list);
+>> -
+>>       umem = ib_umem_get(&rxe->ib_dev, start, length, access);
+>>       if (IS_ERR(umem)) {
+>>           rxe_dbg_mr(mr, "Unable to pin memory region err = %d\n",
+>> @@ -143,46 +205,24 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 
+>> start, u64 length,
+>>           return PTR_ERR(umem);
+>>       }
+>> +    err = alloc_mr_page_info(mr, ib_umem_num_pages(umem));
+>> +    if (err)
+>> +        goto err2;
+>> +
+>>       err = rxe_mr_fill_pages_from_sgt(mr, &umem->sgt_append.sgt);
+>> -    if (err) {
+>> -        ib_umem_release(umem);
+>> -        return err;
+>> -    }
+>> +    if (err)
+>> +        goto err1;
+>>       mr->umem = umem;
+>>       mr->ibmr.type = IB_MR_TYPE_USER;
+>>       mr->state = RXE_MR_STATE_VALID;
+>>       return 0;
+>> -}
+>> -
+>> -static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
+>> -{
+>> -    XA_STATE(xas, &mr->page_list, 0);
+>> -    int i = 0;
+>> -    int err;
+>> -
+>> -    xa_init(&mr->page_list);
+>> -
+>> -    do {
+>> -        xas_lock(&xas);
+>> -        while (i != num_buf) {
+>> -            xas_store(&xas, XA_ZERO_ENTRY);
+>> -            if (xas_error(&xas))
+>> -                break;
+>> -            xas_next(&xas);
+>> -            i++;
+>> -        }
+>> -        xas_unlock(&xas);
+>> -    } while (xas_nomem(&xas, GFP_KERNEL));
+>> -
+>> -    err = xas_error(&xas);
+>> -    if (err)
+>> -        return err;
+>> -
+>> -    mr->num_buf = num_buf;
+>> -
+>> -    return 0;
+>> +err1:
+>> +    free_mr_page_info(mr);
+>> +err2:
+>> +    ib_umem_release(umem);
+>> +    return err;
+>>   }
+>>   int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
+>> @@ -192,7 +232,7 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr 
+>> *mr)
+>>       /* always allow remote access for FMRs */
+>>       rxe_mr_init(RXE_ACCESS_REMOTE, mr);
+>> -    err = rxe_mr_alloc(mr, max_pages);
+>> +    err = alloc_mr_page_info(mr, max_pages);
+>>       if (err)
+>>           goto err1;
+>> @@ -205,26 +245,43 @@ int rxe_mr_init_fast(int max_pages, struct 
+>> rxe_mr *mr)
+>>       return err;
+>>   }
+>> +/*
+>> + * I) MRs with page_size >= PAGE_SIZE,
+>> + * Split a large MR page (mr->page_size) into multiple PAGE_SIZE
+>> + * sub-pages and store them in page_info, offset is always 0.
+>> + *
+>> + * Called when mr->page_size > PAGE_SIZE. Each call to rxe_set_page()
+>> + * represents one mr->page_size region, which we must split into
+>> + * (mr->page_size >> PAGE_SHIFT) individual pages.
+>> + *
+>> + * II) MRs with page_size < PAGE_SIZE,
+>> + * Save each PAGE_SIZE page and its offset within the system page in 
+>> page_info.
+>> + */
+>>   static int rxe_set_page(struct ib_mr *ibmr, u64 dma_addr)
+>>   {
+>>       struct rxe_mr *mr = to_rmr(ibmr);
+>> -    struct page *page = ib_virt_dma_to_page(dma_addr);
+>>       bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
+>> -    int err;
+>> +    u32 i, pages_per_mr = mr_page_size(mr) >> PAGE_SHIFT;
+>> -    if (persistent && !is_pmem_page(page)) {
+>> -        rxe_dbg_mr(mr, "Page cannot be persistent\n");
+>> -        return -EINVAL;
+>> -    }
+>> +    pages_per_mr = MAX(1, pages_per_mr);
+>> -    if (unlikely(mr->nbuf == mr->num_buf))
+>> -        return -ENOMEM;
+>> +    for (i = 0; i < pages_per_mr; i++) {
+>> +        u64 addr = dma_addr + i * PAGE_SIZE;
+>> +        struct page *sub_page = ib_virt_dma_to_page(addr);
+>> -    err = xa_err(xa_store(&mr->page_list, mr->nbuf, page, GFP_KERNEL));
+>> -    if (err)
+>> -        return err;
+>> +        if (unlikely(mr->nbuf >= mr->max_allowed_buf))
+>> +            return -ENOMEM;
+>> +
+>> +        if (persistent && !is_pmem_page(sub_page)) {
+>> +            rxe_dbg_mr(mr, "Page cannot be persistent\n");
+>> +            return -EINVAL;
+>> +        }
+>> +
+>> +        mr->page_info[mr->nbuf].page = sub_page;
+>> +        mr->page_info[mr->nbuf].offset = addr & (PAGE_SIZE - 1);
+>> +        mr->nbuf++;
+>> +    }
+>> -    mr->nbuf++;
+>>       return 0;
+>>   }
+>> @@ -234,6 +291,31 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct 
+>> scatterlist *sgl,
+>>       struct rxe_mr *mr = to_rmr(ibmr);
+>>       unsigned int page_size = mr_page_size(mr);
+>> +    /*
+>> +     * Ensure page_size and PAGE_SIZE are compatible for mapping.
+>> +     * We require one to be a multiple of the other for correct
+>> +     * iova-to-page conversion.
+>> +     */
+>> +    if (!IS_ALIGNED(page_size, PAGE_SIZE) &&
+>> +        !IS_ALIGNED(PAGE_SIZE, page_size)) {
+>> +        rxe_dbg_mr(mr, "MR page size %u must be compatible with 
+>> PAGE_SIZE %lu\n",
+>> +               page_size, PAGE_SIZE);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    if (mr_page_size(mr) > PAGE_SIZE) {
+>> +        /* resize page_info if needed */
+>> +        u32 map_mr_pages = (page_size >> PAGE_SHIFT) * mr->num_buf;
+>> +
+>> +        if (map_mr_pages > mr->max_allowed_buf) {
+>> +            rxe_dbg_mr(mr, "requested pages %u exceed max %u\n",
+>> +                   map_mr_pages, mr->max_allowed_buf);
+>> +            free_mr_page_info(mr);
+>> +            if (__alloc_mr_page_info(mr, map_mr_pages))
+>> +                return -ENOMEM;
+>> +        }
+>> +    }
+>> +
+>>       mr->nbuf = 0;
+>>       mr->page_shift = ilog2(page_size);
+>>       mr->page_mask = ~((u64)page_size - 1);
+>> @@ -244,30 +326,30 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct 
+>> scatterlist *sgl,
+>>   static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
+>>                     unsigned int length, enum rxe_mr_copy_dir dir)
+>>   {
+>> -    unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+>> -    unsigned long index = rxe_mr_iova_to_index(mr, iova);
+>>       unsigned int bytes;
+>> -    struct page *page;
+>> -    void *va;
+>> +    u8 *va;
+>>       while (length) {
+>> -        page = xa_load(&mr->page_list, index);
+>> -        if (!page)
+>> +        unsigned long index = rxe_mr_iova_to_index(mr, iova);
+>> +        struct rxe_mr_page *info = &mr->page_info[index];
+>> +        unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+>> +
+>> +        if (!info->page)
+>>               return -EFAULT;
+>> -        bytes = min_t(unsigned int, length,
+>> -                mr_page_size(mr) - page_offset);
+>> -        va = kmap_local_page(page);
+>> +        page_offset += info->offset;
+>> +        bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
+>> +        va = kmap_local_page(info->page);
+>> +
+>>           if (dir == RXE_FROM_MR_OBJ)
+>>               memcpy(addr, va + page_offset, bytes);
+>>           else
+>>               memcpy(va + page_offset, addr, bytes);
+>>           kunmap_local(va);
+>> -        page_offset = 0;
+>>           addr += bytes;
+>> +        iova += bytes;
+>>           length -= bytes;
+>> -        index++;
+>>       }
+>>       return 0;
+>> @@ -425,9 +507,6 @@ int copy_data(
+>>   static int rxe_mr_flush_pmem_iova(struct rxe_mr *mr, u64 iova, 
+>> unsigned int length)
+>>   {
+>> -    unsigned int page_offset;
+>> -    unsigned long index;
+>> -    struct page *page;
+>>       unsigned int bytes;
+>>       int err;
+>>       u8 *va;
+>> @@ -437,15 +516,17 @@ static int rxe_mr_flush_pmem_iova(struct rxe_mr 
+>> *mr, u64 iova, unsigned int leng
+>>           return err;
+>>       while (length > 0) {
+>> -        index = rxe_mr_iova_to_index(mr, iova);
+>> -        page = xa_load(&mr->page_list, index);
+>> -        page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+>> -        if (!page)
+>> +        unsigned long index = rxe_mr_iova_to_index(mr, iova);
+>> +        struct rxe_mr_page *info = &mr->page_info[index];
+>> +        unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+>> +
+>> +        if (!info->page)
+>>               return -EFAULT;
+>> -        bytes = min_t(unsigned int, length,
+>> -                  mr_page_size(mr) - page_offset);
+>> -        va = kmap_local_page(page);
+>> +        page_offset += info->offset;
+>> +        bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
+>> +
+>> +        va = kmap_local_page(info->page);
+>>           arch_wb_cache_pmem(va + page_offset, bytes);
+>>           kunmap_local(va);
+>> @@ -500,6 +581,7 @@ enum resp_states rxe_mr_do_atomic_op(struct rxe_mr 
+>> *mr, u64 iova, int opcode,
+>>       } else {
+>>           unsigned long index;
+>>           int err;
+>> +        struct rxe_mr_page *info;
+>>           err = mr_check_range(mr, iova, sizeof(value));
+>>           if (err) {
+>> @@ -508,9 +590,12 @@ enum resp_states rxe_mr_do_atomic_op(struct 
+>> rxe_mr *mr, u64 iova, int opcode,
+>>           }
+>>           page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+>>           index = rxe_mr_iova_to_index(mr, iova);
+>> -        page = xa_load(&mr->page_list, index);
+>> -        if (!page)
+>> +        info = &mr->page_info[index];
+>> +        if (!info->page)
+>>               return RESPST_ERR_RKEY_VIOLATION;
+>> +
+>> +        page_offset += info->offset;
+>> +        page = info->page;
+>>       }
+>>       if (unlikely(page_offset & 0x7)) {
+>> @@ -549,6 +634,7 @@ enum resp_states rxe_mr_do_atomic_write(struct 
+>> rxe_mr *mr, u64 iova, u64 value)
+>>       } else {
+>>           unsigned long index;
+>>           int err;
+>> +        struct rxe_mr_page *info;
+>>           /* See IBA oA19-28 */
+>>           err = mr_check_range(mr, iova, sizeof(value));
+>> @@ -558,9 +644,12 @@ enum resp_states rxe_mr_do_atomic_write(struct 
+>> rxe_mr *mr, u64 iova, u64 value)
+>>           }
+>>           page_offset = rxe_mr_iova_to_page_offset(mr, iova);
+>>           index = rxe_mr_iova_to_index(mr, iova);
+>> -        page = xa_load(&mr->page_list, index);
+>> -        if (!page)
+>> +        info = &mr->page_info[index];
+>> +        if (!info->page)
+>>               return RESPST_ERR_RKEY_VIOLATION;
+>> +
+>> +        page_offset += info->offset;
+>> +        page = info->page;
+>>       }
+>>       /* See IBA A19.4.2 */
+>> @@ -724,5 +813,5 @@ void rxe_mr_cleanup(struct rxe_pool_elem *elem)
+>>       ib_umem_release(mr->umem);
+>>       if (mr->ibmr.type != IB_MR_TYPE_DMA)
+>> -        xa_destroy(&mr->page_list);
+>> +        free_mr_page_info(mr);
+>>   }
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/ 
+>> infiniband/sw/rxe/rxe_verbs.h
+>> index f94ce85eb807..fb149f37e91d 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> @@ -335,6 +335,11 @@ static inline int rkey_is_mw(u32 rkey)
+>>       return (index >= RXE_MIN_MW_INDEX) && (index <= RXE_MAX_MW_INDEX);
+>>   }
+>> +struct rxe_mr_page {
+>> +    struct page        *page;
+>> +    unsigned int        offset; /* offset in system page */
+>> +};
+>> +
+>>   struct rxe_mr {
+>>       struct rxe_pool_elem    elem;
+>>       struct ib_mr        ibmr;
+>> @@ -350,10 +355,13 @@ struct rxe_mr {
+>>       unsigned int        page_shift;
+>>       u64            page_mask;
+>> +    /* size of page_info when mr allocated */
+>>       u32            num_buf;
+>> +    /* real size of page_info */
+>> +    u32            max_allowed_buf;
+>>       u32            nbuf;
+>> -    struct xarray        page_list;
+>> +    struct rxe_mr_page    *page_info;
+>>   };
+>>   static inline unsigned int mr_page_size(struct rxe_mr *mr)
+> 
+
 -- 
-John Hubbard
+Best Regards,
+Yanjun.Zhu
 
 
