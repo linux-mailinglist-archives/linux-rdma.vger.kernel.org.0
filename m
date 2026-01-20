@@ -1,42 +1,43 @@
-Return-Path: <linux-rdma+bounces-15735-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15736-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DE73D3C149
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 09:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46916D3C14C
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 09:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2AEF144404E
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 07:59:33 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E41224094A2
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 07:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480C53B8D54;
-	Tue, 20 Jan 2026 07:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C253B95F6;
+	Tue, 20 Jan 2026 07:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VmbRLIBO"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dbsqjajU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012040.outbound.protection.outlook.com [52.101.43.40])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011036.outbound.protection.outlook.com [52.101.62.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439223B8D4F;
-	Tue, 20 Jan 2026 07:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942F33B8D78;
+	Tue, 20 Jan 2026 07:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768895915; cv=fail; b=Lz8cfoEG7BNNAj2TTeSWGribQPTuqjQoNzeFlmmXrdhiUmj/OREuqriHPrElUFgKghnrYvjz+gpeTBO5fWR2l+ALfnNfYMbx3bp19xx5z2FIZ6n17awaKOOsITNce6fdr5wDmfGUChbEttmbH/z0u4h26EfzJ+0Ft8O/5N+wA2M=
+	t=1768895920; cv=fail; b=mO9G0DQ3MHQo4rrpMd9DUcpr1GHMs1d75m0gT17pIiVmZfSy9yLTgOKI5hYfBB3Ng9kGNrNWpdSL7FQj0lTmUZpDwmx4L+8IvTpYup8SKHpgvqHeXueWuPPFdsWK073IKbQi72c5egayzEsNkAzpghuC/y2ZaVt9mO4R028mJ94=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768895915; c=relaxed/simple;
-	bh=d8GAWMy1KuTFm9Y6KuATcyvzsZteBEbMd8bfpRjIUGw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J/1IJ83IzxVF5l1bCrSDb5hMFxryFFQe2Zl98UjWwJFKDa4PaRhOzfTQblLtYaEySK8EJ3LhZSIuro9MJItELSOB6SmD4lXyV2KjMLeVBnhy/FQSIkFTuACRcXEtF6Ue7JgXBjywCJKhTQvm+MnCvI6f/ZycL7ZW5RWKhDjMeL4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VmbRLIBO; arc=fail smtp.client-ip=52.101.43.40
+	s=arc-20240116; t=1768895920; c=relaxed/simple;
+	bh=Px4IPIY6SwUyEEZFZ/FdSudSxntNHlDUPcL2co0azRE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OdlMXnzVAVhzDEyPJynaIFIpdpH5IZF6Muepyr7yEJGOGOPstXq7gJjmj7+P+mfEcVeNcccsT1m+X2N3vlql+LsLLmamdczDgu4GA2MYeiFhK1QQ3V0UCCwYAl/DQIGRGwSMJcAUYfrMB4ssqOpktrjksJ2v/H7oipoaEZLnoqc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dbsqjajU; arc=fail smtp.client-ip=52.101.62.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CSVlC0lH1fQpce46Mgh5FAsjbZpGoMHsJmGLxMah5p949bsgAyOvfI/hQqcjYIkMlmXhU61AbHHSCQTKful5olU5NCIlr3m2UWjBNHdHzH1eek/Z9DSBIQeWpU4jzjCkj11NdQRMnw0YE8RiQtLth1LUUumP7SZ4W36cSUl1BrnzLV8kNU4ycv+7QE3kdEwth+ETHyffqpjS/rxIpVGsxKElvx5uLg4HrVC3OpXpGSZyH0AnuY5XTQs7swYyqMwvX+LmUPLAiNUzyvVrN7i0/a6O8Hffb6eiAtpkY0D3zBvE99Tt3GltnchtMQqUUfKumfDjZFqDNOoGtG+XSMLFsg==
+ b=xF1M4nUidc4IsNbZ8Det+qOzxBS3BHDBAPlObBMMbgxbLMIJRL8W6/0Tabf49eh6810bz/kd+naNCK8yQ39Y+d7H7GQJUXzVoW36qyF5+y2FUOpcDYnVBNyvej/ikOWd6Srui0qAonJuzL90OTGSLymJ+Dv4kExLMmIqt7qpyvWJLthluwZd3PnxH3xyVDanxRLyKRnS2E1xYDcTSZdHf42rCl+vdA6Ubd6NJaBA+fvAVtLNqAvIJeqSGb7Sdyxb+HOelu1MGGaLZxVKewipTjEKpy9kfdeQme/ZlegNiKuYOOWBZQSiEQOtmqN2XByyNCMP1siGDmZ6tH+8AV8JXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DZG4oPI1y6nZXALFkPVgYy+fbX4at9MWrt2um0+Nj2A=;
- b=JQ4pFNGNbxyyvR4jb9pJKkxmmcq2ugBQngilYYP3GxqAthQx/YfbkOX/SuK7IHksB60dOypR8QmuZ0eBqW+6jh15wvGOzi63Pb6P99c36lOYeVeltuX4cWXKaOOOYeyPg+fytPVON6DyzFAVnq7ekwYM7q7s2/PGKvEFT35dz6boBZaITmiuraCaxFSplDDRrQ+BUdQblgHVQut1xLmSUnEXS10R+INWU9+CWKBwJSBGmSl3BShLBQhsLJ8LF8bG1i7/yZSUI7preAgTKURizDvXrG5umsD+Oc73Ovu/YkHUxNQK42TL3xMSGn5g8t4M0EMbO1bwL89bk3cG6BE1fg==
+ bh=bYM8Tenv7+fBmCxmfjmrZBh5DZ7QWZYDmeM5IxQxc1A=;
+ b=MUB6WHh7QX7/2K/SuVVL9a2hU78n/szUzWENz4J7O/eaA0GuZxanjwJSZtS4Z071CSfRU6QzNVM4gOmeZnrnddNcCT6lLAowLMRuPW71oW5scfXt4YTKPm9U07QU5qVJs2D7oUIpHrPxAh0Jco8irJH9w6xVtXfTiLzJGnhAEFjvB2cEoCGhogVcVfIATXHNMN2Ge2Gk6m4Mh5NF/sJ1Jvwmt7EwOmjdXdJ//dRYb1rtAuE55jdMKqUpdPQscxRepxTFtXLZ0/J2BcWePAyjiJX3wAb7J6yTL7sL88J8kSznGH/Gg21wWuXAmmwWREF0OvXzeyfv81FxkaB7tw1TsQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -44,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DZG4oPI1y6nZXALFkPVgYy+fbX4at9MWrt2um0+Nj2A=;
- b=VmbRLIBOpSCHNnbOdfzm5wkIAOU0yG3/IcfiGQhbXlDNGjQg6Im3LE51D+cgv/mi/3FoCRam9Y3wZhM2902ni88pZpj5BLknFBSoS8bzBnHD3OAwsweM3U1pUsylwLQtE56IACZgkwnffFN9Yqnc9SIEobB+zrnklQacdHkn7TMyJUmIZDnrDi1OmPkOBr7+BrIkUOsxYgIdhWimjj3BgCrOiGtuKShETmFC9Z8pRAv1gKVsy6WgYA9uW6FbXhSk3k+K0W+4ogHRDOi+h/muoEVEm/OVPn4qPE3rRv8ibeTr6IKRmn3SzMOrpqi09UOuagxFV53du48OSgKK1QARFg==
-Received: from DS7PR05CA0103.namprd05.prod.outlook.com (2603:10b6:8:56::18) by
- CH3PR12MB7521.namprd12.prod.outlook.com (2603:10b6:610:143::14) with
+ bh=bYM8Tenv7+fBmCxmfjmrZBh5DZ7QWZYDmeM5IxQxc1A=;
+ b=dbsqjajU83bPjJsq0/atHtS0pcDh57VcmdQyEHe6eRcKv+l6dscSS1FsSoD4VF5eZX+fXdxr4gy6N6MYrI11q3rWyfmovlcXSsTuvS9NzFhEXv1hubFjXhRkU+fZNbh8o1WmiP1attbUzJ6QhrUtnkXzjQ7zceYyRlDacpp2GHrp4vGENUxaSesi5KfEQPSU9p7PfgCH/SebVOf29W6NpKxT9CEG/hR5Zm3SwsyfhjNyFDWNw8WGz9drH/Wtz0xPJnH7WEmCIR4gELschI1WDfW7fr1iFyHQ4O4qF+cKPmALi+DmcByxznKiiMgSNBInNGMqycNXxJITxXKRKVSNCg==
+Received: from CH2PR14CA0060.namprd14.prod.outlook.com (2603:10b6:610:56::40)
+ by DM4PR12MB7647.namprd12.prod.outlook.com (2603:10b6:8:105::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.12; Tue, 20 Jan
- 2026 07:58:29 +0000
-Received: from CH3PEPF00000012.namprd21.prod.outlook.com
- (2603:10b6:8:56:cafe::8a) by DS7PR05CA0103.outlook.office365.com
- (2603:10b6:8:56::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9542.9 via Frontend Transport; Tue,
- 20 Jan 2026 07:58:22 +0000
+ 2026 07:58:33 +0000
+Received: from CH3PEPF00000014.namprd21.prod.outlook.com
+ (2603:10b6:610:56:cafe::27) by CH2PR14CA0060.outlook.office365.com
+ (2603:10b6:610:56::40) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9542.8 via Frontend Transport; Tue,
+ 20 Jan 2026 07:58:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -63,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.233 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.233) by
- CH3PEPF00000012.mail.protection.outlook.com (10.167.244.117) with Microsoft
+ CH3PEPF00000014.mail.protection.outlook.com (10.167.244.119) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9564.0 via Frontend Transport; Tue, 20 Jan 2026 07:58:29 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ 15.20.9564.0 via Frontend Transport; Tue, 20 Jan 2026 07:58:33 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 19 Jan
- 2026 23:58:20 -0800
+ 2026 23:58:27 -0800
 Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Mon, 19 Jan 2026 23:58:20 -0800
+ 15.2.2562.20; Mon, 19 Jan 2026 23:58:26 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Mon, 19 Jan 2026 23:58:14 -0800
+ Transport; Mon, 19 Jan 2026 23:58:20 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -91,10 +92,12 @@ CC: Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
 	<cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Randy Dunlap
 	<rdunlap@infradead.org>, Simon Horman <horms@kernel.org>, Krzysztof Kozlowski
 	<krzk@kernel.org>
-Subject: [PATCH net-next V5 00/15] devlink and mlx5: Support cross-function rate scheduling
-Date: Tue, 20 Jan 2026 09:57:43 +0200
-Message-ID: <1768895878-1637182-1-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next V5 01/15] documentation: networking: add shared devlink documentation
+Date: Tue, 20 Jan 2026 09:57:44 +0200
+Message-ID: <1768895878-1637182-2-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
+In-Reply-To: <1768895878-1637182-1-git-send-email-tariqt@nvidia.com>
+References: <1768895878-1637182-1-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -105,204 +108,182 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PEPF00000012:EE_|CH3PR12MB7521:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7819a02c-1dfa-40d5-b830-08de57f9b2e2
+X-MS-TrafficTypeDiagnostic: CH3PEPF00000014:EE_|DM4PR12MB7647:EE_
+X-MS-Office365-Filtering-Correlation-Id: c61fc385-8a11-45a7-225e-08de57f9b543
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|30052699003|376014|7416014|13003099007;
+	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|7416014|376014|30052699003;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?V37z3ACluEafbz2ztzyqdSzkw2JMZjJYHe4gbqYC2BOK1ufo/pI5njSsUuYq?=
- =?us-ascii?Q?eKKBK5MmiLdvBWd0aZzGEQG0RHt5MnrixQGnM0KLhvw4Ywyck6dOOntMCv9/?=
- =?us-ascii?Q?5kwj6dRwhhkJ+X8KsgjGism43vf1PiVOhqvjSMSE5hPPlN3rr8jlzvH3vnCw?=
- =?us-ascii?Q?+g/oaSA6xCPHbSynZL/Ee80YEeG5Jc1AE7DFhZ82J7tUBld6Q5sRPuPduI3M?=
- =?us-ascii?Q?oSvk+rU9GRS0ZSHj2L6X/gVMnbu4NPh7TdxlbwGQunsW6ztG69sahAZGRZ36?=
- =?us-ascii?Q?l+WxXfEwy+/cLjq0s4SqAZR2552FjElK8bOijwHTet3Pwgf+2DEByYwOEope?=
- =?us-ascii?Q?CUyRe9vGyBBdJwzgyOQxS5gQmHeSRFdujKnl6ztVrr+14o5k7X/j/4W6NYsp?=
- =?us-ascii?Q?EFUe2kYiYYdxv1ifQwrFmqyvkKlg813L+O0iD7fxWkSc1wt0kKAy/y85To97?=
- =?us-ascii?Q?nGjOhabc8aCLqLABLMUWv0Il3+8t0kyHlhc9kJsOlcr4HDHnZv5ucJHHio+3?=
- =?us-ascii?Q?Ax/7fQvTYFUhdlrSabfZ9wnPoaytnsSBIPjmIE/AdGBtg4BX766/baQ+NDML?=
- =?us-ascii?Q?Rl+Cou0F6F3egS4Y0VqmxwYwdjWmOFdtPLzmioCMsDCvdCK8wChhG1SXv4+e?=
- =?us-ascii?Q?Cr6gLuf6wIS/XRIt9wDYpG+kbZQPiu5FnEtNr/x8TTCdAIT8bOkWZfOrOIy3?=
- =?us-ascii?Q?Lpg3swGBsmZGQa8n68bcQx9UqsHT2D81H2UbB2MXqS2zbGTSt/tttNpqYx5J?=
- =?us-ascii?Q?D1tBBja1igrR469QfKlhWqyxO5Cdj1aj8CH+piJx5bs3pbPocqv5Cneb/Fkr?=
- =?us-ascii?Q?Lvt2l4rDfmtn9DLNgpsPc9nauOTOyKi9B3g+7NaMtVC4/pFk9rbFe+lc5Drh?=
- =?us-ascii?Q?i52Dkmvyg9PhjO15WztY9aZviM0CKiCSmPqgwiM4/ytDTqc0pG53Mp1iOsgY?=
- =?us-ascii?Q?FX+cyH1xqmv9YX+dbpjBp7TmoAstn7+W+FNal+lVx+v6hTWwSD4oqqApP4lA?=
- =?us-ascii?Q?0lORgLA8r/uLEKnur2GDr7+TB6v3u2mcvdlyV/hFG7bhdNxNTTkwj+iR7DtM?=
- =?us-ascii?Q?RmGjKqhiUSvHa4K13h9LTKiGblc/AMc5CJvWMdU93Nb9rYjSsroYqLOeh0JC?=
- =?us-ascii?Q?/2HqnptS2Po7fpW3+hKkQN3pgaxwdTu3horPpZISR58Zw23PKZFKZxVSS8uo?=
- =?us-ascii?Q?mclnp6zIGV/mH8bD0Z4fb5n4WQuqyBAZLayuMtVwpEkBHItjyn3QSl/UMPuQ?=
- =?us-ascii?Q?uLQRNddDFUzBq49HBSuWczfIgZLhiWkuGAgNQyMDmir+81bE7qjXc7blgOm2?=
- =?us-ascii?Q?je8dxbclzHca89gD6JwOGs2lUHmJ666ajWLo4kp5EthLdgSiF2W2VvD84Drc?=
- =?us-ascii?Q?rvtZfvGdOONvF9r6EuI25TcGU/WDspYdZQ4swbE8Tj7bG9ZBj2w0rBVPSm0T?=
- =?us-ascii?Q?bN07nIHjOUJW4JA6EYmhGyr2Xzed6xTyym8z3KmPyUw5IEZ44gzkUp123zHW?=
- =?us-ascii?Q?7MA6ihFbHBsYosWHI/Kni+f/25YoNvremIS+t0eEQLIHM8fyhpYCCCIXK2B5?=
- =?us-ascii?Q?bkYRqCu17F0YPdEuAYcZb/+N+OmP81OIwl4cevU8sA8k8/l1/tM7xMqaNnc4?=
- =?us-ascii?Q?porMwUA0QAf1LnXl1d3R22rqh9jkTko0yDua8B7GUf8LiLaAqok61TMrOQCj?=
- =?us-ascii?Q?PbS8gA=3D=3D?=
+	=?us-ascii?Q?fe2Hrs3kuPWgqNNq+2n1mNxusVCtIWxccJxwxT8DBOVhnQOMob/gg7o5pA94?=
+ =?us-ascii?Q?lrvfaAqedUQlqIoOMzk1hoA96gv38fr/ZLQAHkAtLHwJT2GGjh6jVlCupZFx?=
+ =?us-ascii?Q?SPGWf+o5JGDxuA/Vcdb+yS/fevJXsl8DyaUR4caINXp4rmwBvL0YKbxVDfXf?=
+ =?us-ascii?Q?/PcHn2ABCZgF1FrQwcTAZgq5gPgHv9DBaehl52KgACbw3k+Ypteyw1kdK4Fp?=
+ =?us-ascii?Q?CS8/nHldPxATmnA30i5R5jXjJv0lRXeuZKqk+iK71waoX9EIXZfT3jLyjpdz?=
+ =?us-ascii?Q?ousLb9uGdS+Zc5sNA5QCE2GXSrtDAXkdgPOEIHmfhnakL6PX2UrWb8ciTeFI?=
+ =?us-ascii?Q?Zy5CCmLcqx+6sqmWdzyUucjFk3uFYNmwrK24buRA3y1h2PNPHv7KVj4VgI5G?=
+ =?us-ascii?Q?UiwU+3tftqC31nhMVR1GDbvj8O/Cijy/1CukqvWNhbz9XPhnagk3GXs/cX8Z?=
+ =?us-ascii?Q?58H8h+9DlwgYttJ/bwvxlsAV081gfQvW+Tylh6PnRTo1V7XRZ1v6RkxMXD8a?=
+ =?us-ascii?Q?G05WQyqiizWtYKRbtauL17Fi+qQrMaQhy/LCphB/VaFhDMtUMnx7PILMS3dw?=
+ =?us-ascii?Q?BdLf591g67GT+qQB61GrMDS1tOZ2t6vECHboSq4sPz7DlEsP/yPSw2rcQ957?=
+ =?us-ascii?Q?dKymPQPfsF3xME3rjevDGye4LVkBwoQg4iaH73UoCu1CvTVFPZHY2lMLOlJl?=
+ =?us-ascii?Q?Y7fDFhVZZW1GgfZffKuCH2hLX0dJbVuMSGVpk87CtYspuGfdneRcPKWvk5QO?=
+ =?us-ascii?Q?xgWFQytyjK+TVxTGXTuL5FNy3KlKU6v4AoQaoYM1wbrE25acre+n5IbHaYUF?=
+ =?us-ascii?Q?El8KAy04pvcFZO7FfxAjrHI6PXBLvh6KNgOHprJTZqx3uKn/8nZc/pbSy5a7?=
+ =?us-ascii?Q?6EERAwbrKdemkH8gOpqcDEGb4S5iOObb9CWP6chpe7whG4YCl4tF8OrsT0Vc?=
+ =?us-ascii?Q?WNu3tyIoJS3Twv+0xkHIeiXOxLDkjUWR9n6iM+8GEsgSqU+OMgoi1ConUBgR?=
+ =?us-ascii?Q?jpBKwg7zsAotvXmu5elJLhLh75mVW9CxtO3rSf1UYe7tnWcoODU5worVQnEL?=
+ =?us-ascii?Q?NO264WxPL9LwMk39l0DhTJRiUSXc/YDr7KOBZ6E6LeJTeJOpGy+AWiWvX9qS?=
+ =?us-ascii?Q?sExfkDR59u/l0VitvoA8E0kFxxiNZveG9RiW3CVxBmnFxa1Bd4AipQL+8dQw?=
+ =?us-ascii?Q?wuSci9y36dACvqqsuEqF93t1hwMgh0Pi1rN/0WzwG7xwMJOCX9UjJTXZp3jJ?=
+ =?us-ascii?Q?3D1L3dW6XN6Ty2yDJ1puA4GSaOA/So/QXJWt71Pnv5HZSdPhg63y3ExTrlru?=
+ =?us-ascii?Q?sanqJCQQsnGPM6vp8Un0gFPvMuJjKQP1VHsytQQjzReO1OeNXok6HjLo73gm?=
+ =?us-ascii?Q?N6B6gxfZuSsb3PYXQsp94SF7Ck/hnXFzzclEwBytFCEkN7sJV8hi9CnVP/FU?=
+ =?us-ascii?Q?hSKv3YpKs7VUEz+FX3k+WNVLdFACPoH4eMNj5dbY5fy3FbJiGnGReeS4P33k?=
+ =?us-ascii?Q?1yIHjdslH7qLZwWSyAjIxTi7jL7/nUQ24IqRuu9AegqvDLwelayXx9BTeVBM?=
+ =?us-ascii?Q?fd9IC0CzCK3OPk8TxLVn5sr86Zxak+3PyGfrRm6DiPvYLsmhgRsfTJg9N0cd?=
+ =?us-ascii?Q?YDTYq/N7wQanOBNyluGTc/N5HvPaK/yOu6qTmn5FpbTr3/D5FHsKczmw8YzH?=
+ =?us-ascii?Q?PrkRRQ=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(30052699003)(376014)(7416014)(13003099007);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(7416014)(376014)(30052699003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2026 07:58:29.1665
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2026 07:58:33.1307
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7819a02c-1dfa-40d5-b830-08de57f9b2e2
+X-MS-Exchange-CrossTenant-Network-Message-Id: c61fc385-8a11-45a7-225e-08de57f9b543
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH3PEPF00000012.namprd21.prod.outlook.com
+	CH3PEPF00000014.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7521
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7647
 
-Hi,
+From: Jiri Pirko <jiri@nvidia.com>
 
-This series by Cosmin and Jiri adds support for cross-function rate
-scheduling in devlink and mlx5.
-This is V5, find V4 here:
-https://lore.kernel.org/all/1764101173-1312171-1-git-send-email-tariqt@nvidia.com/
+Document shared devlink instances for multiple PFs on the same chip.
 
-Regards,
-Tariq
-
-
-[1]
-devlink objects support rate management for TX scheduling, which
-involves maintaining a tree of rate nodes that corresponds to TX
-schedulers in hardware. 'man devlink-rate' has the full details.
-
-The tree of rate nodes is maintained per devlink object, protected by
-the devlink lock.
-
-There exists hardware capable of instantiating TX scheduling trees
-spanning multiple functions of the same physical device (and thus
-devlink objects) and therefore the current API and locking scheme is
-insufficient.
-
-This patch series changes the devlink rate implementation and API to
-allow supporting such hardware and managing TX scheduling trees across
-multiple functions of a physical device.
-
-Modeling this requires having devlink rate nodes with parents in other
-devlink objects. A naive approach that relies on the current
-one-lock-per-devlink model is impossible, as it would require in some
-cases acquiring multiple devlink locks in the correct order.
-
-The solution proposed in this patch series consists of two parts:
-
-1. Representing the underlying physical NIC as a shared devlink object
-   on the faux bus and nesting all its PF devlink instances in it.
-
-2. Changing the devlink rate implementation to store rates in this
-   shared devlink object, if it exists, and use its lock to protect
-   against concurrent changes of the scheduling tree.
-
-With these in place, cross-esw scheduling support is added to mlx5.
-The neat part about this approach is that it works for SFs as well,
-which are already nested in their parent PF instances. So with this
-series, complex scheduling trees spanning multiple SFs across multiple
-PFs of the same NIC can now be supported.
-
-V1 of this patch series was sent a long time ago [2], using a different
-approach of storing rates in a shared rate domain with special locking
-rules. This new approach uses standard devlink instances and nesting.
-
-Patches:
-
-devlink rate changes for cross-device TX scheduling:
-devlink: Reverse locking order for nested instances
-documentation: networking: add shared devlink documentation
-devlink: Add helpers to lock nested-in instances
-devlink: Refactor devlink_rate_nodes_check
-devlink: Decouple rate storage from associated devlink object
-devlink: Add parent dev to devlink API
-devlink: Allow parent dev for rate-set and rate-new
-devlink: Allow rate node parents from other devlinks
-devlink: introduce shared devlink instance for PFs on same chip
-
-mlx5 support for cross-device TX scheduling:
-net/mlx5: Add a shared devlink instance for PFs on same chip
-net/mlx5: Expose a function to clear a vport's parent
-net/mlx5: Store QoS sched nodes in the sh_devlink
-net/mlx5: qos: Support cross-esw tx scheduling
-net/mlx5: qos: Enable cross-device scheduling
-net/mlx5: Document devlink rates and cross-esw scheduling
-
-[2] https://lore.kernel.org/netdev/20250213180134.323929-1-tariqt@nvidia.com/
-
-V5:
-- Made parts of shd generic devlink infra (Jakub).
-- Stopped using __free (Krzysztof Kozlowski).
-- Moved some generated netlink in the correct patch (Simon Horman).
-- Addressed cleanup bug (Jakub).
-- Clarified uses of shared devlink in documentation.
-
-V4:
-- Fix typo in documentation (Randy Dunlap).
-
-V3:
-- Remove mistakenly repeated devlink interface in docs (Jakub).
-- Add Jiri's review tags on ML.
-
-V2:
-- Rebase.
-- Add Jiri's review tags on ML.
-
-
-Cosmin Ratiu (12):
-  devlink: Reverse locking order for nested instances
-  devlink: Add helpers to lock nested-in instances
-  devlink: Refactor devlink_rate_nodes_check
-  devlink: Decouple rate storage from associated devlink object
-  devlink: Add parent dev to devlink API
-  devlink: Allow parent dev for rate-set and rate-new
-  devlink: Allow rate node parents from other devlinks
-  net/mlx5: Expose a function to clear a vport's parent
-  net/mlx5: Store QoS sched nodes in the sh_devlink
-  net/mlx5: qos: Support cross-device tx scheduling
-  net/mlx5: qos: Enable cross-device scheduling
-  net/mlx5: Document devlink rates
-
-Jiri Pirko (3):
-  documentation: networking: add shared devlink documentation
-  devlink: introduce shared devlink instance for PFs on same chip
-  net/mlx5: Add a shared devlink instance for PFs on same chip
-
- Documentation/netlink/specs/devlink.yaml      |  22 +-
- .../networking/devlink/devlink-port.rst       |   2 +
- .../networking/devlink/devlink-shared.rst     |  95 +++++
- Documentation/networking/devlink/index.rst    |   1 +
- Documentation/networking/devlink/mlx5.rst     |  33 ++
- .../net/ethernet/mellanox/mlx5/core/Makefile  |   5 +-
- .../net/ethernet/mellanox/mlx5/core/devlink.c |   1 +
- .../mellanox/mlx5/core/esw/devlink_port.c     |   2 +-
- .../net/ethernet/mellanox/mlx5/core/esw/qos.c | 332 ++++++++----------
- .../net/ethernet/mellanox/mlx5/core/esw/qos.h |   3 -
- .../net/ethernet/mellanox/mlx5/core/eswitch.c |   9 +-
- .../net/ethernet/mellanox/mlx5/core/eswitch.h |  14 +-
- .../net/ethernet/mellanox/mlx5/core/main.c    |  17 +
- .../ethernet/mellanox/mlx5/core/sh_devlink.c  |  91 +++++
- .../ethernet/mellanox/mlx5/core/sh_devlink.h  |  14 +
- include/linux/mlx5/driver.h                   |   1 +
- include/net/devlink.h                         |  13 +
- include/uapi/linux/devlink.h                  |   2 +
- net/devlink/Makefile                          |   2 +-
- net/devlink/core.c                            |  48 ++-
- net/devlink/dev.c                             |   7 +-
- net/devlink/devl_internal.h                   |  11 +-
- net/devlink/netlink.c                         |  67 +++-
- net/devlink/netlink_gen.c                     |  23 +-
- net/devlink/netlink_gen.h                     |   8 +
- net/devlink/rate.c                            | 290 +++++++++++----
- net/devlink/sh_dev.c                          | 163 +++++++++
- 27 files changed, 978 insertions(+), 298 deletions(-)
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+---
+ .../networking/devlink/devlink-shared.rst     | 95 +++++++++++++++++++
+ Documentation/networking/devlink/index.rst    |  1 +
+ 2 files changed, 96 insertions(+)
  create mode 100644 Documentation/networking/devlink/devlink-shared.rst
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sh_devlink.c
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sh_devlink.h
- create mode 100644 net/devlink/sh_dev.c
 
-
-base-commit: c5e7b1d1cc8a6cb8b709eef34c93a9458427ab2e
+diff --git a/Documentation/networking/devlink/devlink-shared.rst b/Documentation/networking/devlink/devlink-shared.rst
+new file mode 100644
+index 000000000000..74655dc671bc
+--- /dev/null
++++ b/Documentation/networking/devlink/devlink-shared.rst
+@@ -0,0 +1,95 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++============================
++Devlink Shared Instances
++============================
++
++Overview
++========
++
++Shared devlink instances allow multiple physical functions (PFs) on the same
++chip to share an additional devlink instance for chip-wide operations. This
++is implemented within individual drivers alongside the individual PF devlink
++instances, not replacing them.
++
++Multiple PFs may reside on the same physical chip, running a single firmware.
++Some of the resources and configurations may be shared among these PFs. The
++shared devlink instance provides an object to pin configuration knobs on.
++
++The shared devlink instance is backed by a faux device and provides a common
++interface for operations that affect the entire chip rather than individual PFs.
++A faux device is used as a backing device for the 'entire chip' since there's no
++additional real device instantiated by hardware besides the PF devices.
++
++Implementation
++==============
++
++Architecture
++------------
++
++The implementation uses:
++
++* **Faux device**: Virtual device backing the shared devlink instance
++* **Chip identification**: PFs are grouped by chip using a driver-specific identifier
++* **Shared instance management**: Global list of shared instances with reference counting
++
++API Functions
++-------------
++
++The following functions are provided for managing shared devlink instances:
++
++* ``devlink_shd_get()``: Get or create a shared devlink instance identified by a string ID
++* ``devlink_shd_put()``: Release a reference on a shared devlink instance
++* ``devlink_shd_get_priv()``: Get private data from shared devlink instance
++
++Initialization Flow
++-------------------
++
++1. **PF calls shared devlink init** during driver probe
++2. **Chip identification** using driver-specific method to determine device identity
++3. **Get or create shared instance** using ``devlink_shd_get()``:
++
++   * The function looks up existing instance by identifier
++   * If none exists, creates new instance:
++     - Creates faux device with chip identifier as name
++     - Allocates and registers devlink instance
++     - Adds to global shared instances list
++     - Increments reference count
++
++4. **Set nested devlink instance** for the PF devlink instance using
++   ``devl_nested_devlink_set()`` before registering the PF devlink instance
++
++Cleanup Flow
++------------
++
++1. **Cleanup** when PF is removed
++2. **Call** ``devlink_shd_put()`` to release reference (decrements reference count)
++3. **Shared instance is automatically destroyed** when the last PF removes (device list becomes empty)
++
++Chip Identification
++-------------------
++
++PFs belonging to the same chip are identified using a driver-specific method.
++The driver is free to choose any identifier that is suitable for determining
++whether two PFs are part of the same device. Examples include:
++
++* **PCI VPD serial numbers**: Extract from PCI VPD
++* **Device tree properties**: Read chip identifier from device tree
++* **Other hardware-specific identifiers**: Any unique identifier that groups PFs by chip
++
++Locking
++-------
++
++A global mutex (``shd_mutex``) protects the shared instances list during
++registration/deregistration.
++
++Similarly to other nested devlink instance relationships, devlink lock of
++the shared instance should be always taken after the devlink lock of PF.
++
++Reference Counting
++------------------
++
++Each shared devlink instance maintains a reference count (``refcount_t refcount``).
++The reference count is incremented when ``devlink_shd_get()`` is called and
++decremented when ``devlink_shd_put()`` is called. When the reference count
++reaches zero, the shared instance is automatically destroyed.
+diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
+index 35b12a2bfeba..f7ba7dcf477d 100644
+--- a/Documentation/networking/devlink/index.rst
++++ b/Documentation/networking/devlink/index.rst
+@@ -68,6 +68,7 @@ general.
+    devlink-resource
+    devlink-selftests
+    devlink-trap
++   devlink-shared
+ 
+ Driver-specific documentation
+ -----------------------------
 -- 
 2.44.0
 
