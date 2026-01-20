@@ -1,141 +1,223 @@
-Return-Path: <linux-rdma+bounces-15765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OKdcN4lMcGnXXAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15765-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 04:48:25 +0100
+	id WEAkNJ8ucGkEXAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15766-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 02:40:47 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C81050923
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 04:48:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C33F4F38A
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 02:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3B3BC8AD0E2
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 13:47:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 73B7192BE83
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 14:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CB643635C;
-	Tue, 20 Jan 2026 13:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2CF43D4ED;
+	Tue, 20 Jan 2026 14:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="NOS8B8h0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z9FPLJNH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B762D43634B;
-	Tue, 20 Jan 2026 13:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=101.71.155.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DB042EEDE;
+	Tue, 20 Jan 2026 14:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768916811; cv=none; b=I9auLNeuyOavKxrazCwtrKtoaAkm60SRIaYS7sgy9zY3Ppoj76xNFHtUcxIwiR9NWqO90c3oBgTONn/alDJrugw1s20HVbn22VmX/oR7V6l3oUH0OyfWLPJ6UysH+RGVzGNSr687Ar+NG8rWlsaO1j7LADKRimTOCXyZT7N3rk0=
+	t=1768918038; cv=none; b=sP/XpyfF4vVWds77KSc8ImTl9YWkoJZBrQRkqTY/PG6t/15We+fOKPvRqUSOO8gKBcWESXJ72Rpph62dtlUHMYOT8SV3fdQ6yfK0/k5XhAANW77aiEbuzQ9Z7uuy2hmPKVVZbMA1Q7Yxbdhpy+GUkC03vAqSABVCfMA3dgyWgqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768916811; c=relaxed/simple;
-	bh=opBE8oYKWgsx5SoZfybPFosKnVlsqN/RSAY3ODW+Dk0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AH4HUkpekXoMRbuzRhLKRw4Dva9iyLh8YpoenVaIRIKRyeSL1JZ3+fGcwbNOp+dYXBzZFM9dOHkQKo7AMwmr+NdPkscy2OMYTjzSjFYvgnV5J+2Nn46N+AnFJ36BdSFZpptt6OcldgWVUrCfGWlVOktCf1O4zuAuYMqvihhMxqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=NOS8B8h0; arc=none smtp.client-ip=101.71.155.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
-Received: from LAPTOP-N070L597.localdomain (unknown [221.228.238.82])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 31510a4d2;
-	Tue, 20 Jan 2026 21:46:42 +0800 (GMT+08:00)
-From: Zilin Guan <zilin@seu.edu.cn>
-To: saeedm@nvidia.com
-Cc: leon@kernel.org,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
+	s=arc-20240116; t=1768918038; c=relaxed/simple;
+	bh=ROKkB0mIS7khlsv4KQDOsZjX4a+rHO4aJnOw0MFmrm0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QhjteGRkiu+XR4fC1LCwMdmswioFFca1vvqs7R9wmNpuxO912BgsXlze1oW0ACbZLdIZ4s5HSFEANjnbPRB4+8uGKpAd3sshRAnAwSo5irxL4bZcray06BxJ7n15KIueztg4k1MWF7cgIAiC3qpAA+0AqxQ5Xv+zuO552c5J5bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z9FPLJNH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 347A2C16AAE;
+	Tue, 20 Jan 2026 14:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768918037;
+	bh=ROKkB0mIS7khlsv4KQDOsZjX4a+rHO4aJnOw0MFmrm0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Z9FPLJNHtjmg+g+XBBXJHq1bk31q3tuCG8U641sPe5PuEyRi4qoevHZQgLWvE3BeV
+	 NHcVnzAv548oIrOaPpNs4fPlzIzY8D6OAgDy24afQIILoJ5sUJRw4C9U44GL1Jk1Gs
+	 6mqU9Gb2bBQDbKFny5CeMgMjvN3hpdZnU3hUFMqdq7O8rVtRv92lUsTZvkNBoFIycl
+	 RYDK/SoQiG5vtv2N1Wn7zoWr52yIAtUVuf58teP6LzB3tVY3Xrzd0h81xYeR4xRJwD
+	 Brafxmuv73RoqMNIrYdIQvZy7BhjYWgDSpoh6V83F3ly/524nRWpBY6F66Y2zu5aT3
+	 /oAR4obsvM6mA==
+From: Leon Romanovsky <leon@kernel.org>
+To: Sumit Semwal <sumit.semwal@linaro.org>,
+	=?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?utf-8?q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>
+Cc: linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
 	linux-kernel@vger.kernel.org,
-	jianhao.xu@seu.edu.cn,
-	Zilin Guan <zilin@seu.edu.cn>
-Subject: [PATCH net] net/mlx5: Fix memory leak in esw_acl_ingress_lgcy_setup()
-Date: Tue, 20 Jan 2026 13:46:40 +0000
-Message-Id: <20260120134640.2717808-1-zilin@seu.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	amd-gfx@lists.freedesktop.org,
+	virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org,
+	linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: [PATCH v3 0/7] dma-buf: Use revoke mechanism to invalidate shared buffers
+Date: Tue, 20 Jan 2026 16:07:00 +0200
+Message-ID: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20251221-dmabuf-revoke-b90ef16e4236
+X-Mailer: b4 0.15-dev-a6db3
 Content-Transfer-Encoding: 8bit
-X-HM-Tid: 0a9bdba85bcb03a1kunme7053fe626af57
-X-HM-MType: 10
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSBgaVksYTENNQ0MYGRkdSFYeHw5VEwETFhoSFy
-	QUDg9ZV1kYEgtZQVlJSUpVSUlDVUlIQ1VDSVlXWRYaDxIVHRRZQVlPS0hVSktJSE5DQ1VKS0tVS1
-	kG
-DKIM-Signature: a=rsa-sha256;
-	b=NOS8B8h00nIdFLiLhtaaUQmhUogIq5/vgE/bU1Cn9Bradnx1zrzZwAE3pe//c8IKFYnfyEG8Op5ZbqQyZjoU7L2PL30sal9Z9Kt45T0dn0sfE9mi6BhPg4iPXB7SRUhx5vs3UFbuDzikdo/ZDA+ZOVtjZOIjRu/oH7Fv59oMFtM=; c=relaxed/relaxed; s=default; d=seu.edu.cn; v=1;
-	bh=gFZdwxzfuWXOZeNw1Eankdonx/w8/suQYqCCjfJeHzw=;
-	h=date:mime-version:subject:message-id:from;
-X-Spamd-Result: default: False [1.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[seu.edu.cn:s=default];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-15765-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[seu.edu.cn:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zilin@seu.edu.cn,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[seu.edu.cn,none];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15766-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,seu.edu.cn:email,seu.edu.cn:dkim,seu.edu.cn:mid]
-X-Rspamd-Queue-Id: 4C81050923
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,nvidia.com:email,nvidia.com:mid]
+X-Rspamd-Queue-Id: 3C33F4F38A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In esw_acl_ingress_lgcy_setup(), if esw_acl_table_create() fails,
-the function returns directly without releasing the previously
-created counter, leading to a memory leak.
+Changelog:
+v3:
+ * Used Jason's wordings for commits and cover letter.
+ * Removed IOMMUFD patch.
+ * Renamed dma_buf_attachment_is_revoke() to be dma_buf_attach_revocable().
+ * Added patch to remove CONFIG_DMABUF_MOVE_NOTIFY.
+ * Added Reviewed-by tags.
+ * Called to dma_resv_wait_timeout() after dma_buf_move_notify() in VFIO.
+ * Added dma_buf_attach_revocable() check to VFIO DMABUF attach function.
+ * Slightly changed commit messages.
+v2: https://patch.msgid.link/20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com
+ * Changed series to document the revoke semantics instead of
+   implementing it.
+v1: https://patch.msgid.link/20260111-dmabuf-revoke-v1-0-fb4bcc8c259b@nvidia.com
 
-Fix this by jumping to the out label instead of returning directly,
-which aligns with the error handling logic of other paths in this
-function.
+-------------------------------------------------------------------------
+This series documents a dma-buf “revoke” mechanism: to allow a dma-buf
+exporter to explicitly invalidate (“kill”) a shared buffer after it has
+been distributed to importers, so that further CPU and device access is
+prevented and importers reliably observe failure.
 
-Compile tested only. Issue found using a prototype static analysis tool
-and code review.
+The change in this series is to properly document and use existing core
+“revoked” state on the dma-buf object and a corresponding exporter-triggered
+revoke operation.
 
-Fixes: 07bab9502641 ("net/mlx5: E-Switch, Refactor eswitch ingress acl codes")
-Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+dma-buf has quietly allowed calling move_notify on pinned dma-bufs, even
+though legacy importers using dma_buf_attach() would simply ignore
+these calls.
+
+RDMA saw this and needed to use allow_peer2peer=true, so implemented a
+new-style pinned importer with an explicitly non-working move_notify()
+callback.
+
+This has been tolerable because the existing exporters are thought to
+only call move_notify() on a pinned DMABUF under RAS events and we
+have been willing to tolerate the UAF that results by allowing the
+importer to continue to use the mapping in this rare case.
+
+VFIO wants to implement a pin supporting exporter that will issue a
+revoking move_notify() around FLRs and a few other user triggerable
+operations. Since this is much more common we are not willing to
+tolerate the security UAF caused by interworking with non-move_notify()
+supporting drivers. Thus till now VFIO has required dynamic importers,
+even though it never actually moves the buffer location.
+
+To allow VFIO to work with pinned importers, according to how dma-buf
+was intended, we need to allow VFIO to detect if an importer is legacy
+or RDMA and does not actually implement move_notify().
+
+Introduce a new function that exporters can call to detect these less
+capable importers. VFIO can then refuse to accept them during attach.
+
+In theory all exporters that call move_notify() on pinned dma-buf's
+should call this function, however that would break a number of widely
+used NIC/GPU flows. Thus for now do not spread this further than VFIO
+until we can understand how much of RDMA can implement the full
+semantic.
+
+In the process clarify how move_notify is intended to be used with
+pinned dma-bufs.
+
+Thanks
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Leon Romanovsky (7):
+      dma-buf: Rename .move_notify() callback to a clearer identifier
+      dma-buf: Always build with DMABUF_MOVE_NOTIFY
+      dma-buf: Document RDMA non-ODP invalidate_mapping() special case
+      dma-buf: Add check function for revoke semantics
+      iommufd: Pin dma-buf importer for revoke semantics
+      vfio: Wait for dma-buf invalidation to complete
+      vfio: Validate dma-buf revocation semantics
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-index 1c37098e09ea..49a637829c59 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-@@ -188,7 +188,7 @@ int esw_acl_ingress_lgcy_setup(struct mlx5_eswitch *esw,
- 		if (IS_ERR(vport->ingress.acl)) {
- 			err = PTR_ERR(vport->ingress.acl);
- 			vport->ingress.acl = NULL;
--			return err;
-+			goto out;
- 		}
- 
- 		err = esw_acl_ingress_lgcy_groups_create(esw, vport);
--- 
-2.34.1
+ drivers/dma-buf/Kconfig                     | 12 -----
+ drivers/dma-buf/dma-buf.c                   | 69 +++++++++++++++++++++++------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c | 14 +++---
+ drivers/gpu/drm/amd/amdkfd/Kconfig          |  2 +-
+ drivers/gpu/drm/virtio/virtgpu_prime.c      |  2 +-
+ drivers/gpu/drm/xe/tests/xe_dma_buf.c       |  7 ++-
+ drivers/gpu/drm/xe/xe_dma_buf.c             | 14 +++---
+ drivers/infiniband/core/umem_dmabuf.c       | 13 +-----
+ drivers/infiniband/hw/mlx5/mr.c             |  2 +-
+ drivers/iommu/iommufd/pages.c               | 11 ++++-
+ drivers/vfio/pci/vfio_pci_dmabuf.c          |  8 ++++
+ include/linux/dma-buf.h                     |  9 ++--
+ 12 files changed, 96 insertions(+), 67 deletions(-)
+---
+base-commit: 9ace4753a5202b02191d54e9fdf7f9e3d02b85eb
+change-id: 20251221-dmabuf-revoke-b90ef16e4236
+
+Best regards,
+--  
+Leon Romanovsky <leonro@nvidia.com>
 
 
