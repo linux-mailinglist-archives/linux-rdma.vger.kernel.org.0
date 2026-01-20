@@ -1,51 +1,51 @@
-Return-Path: <linux-rdma+bounces-15768-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15772-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +JOjFn2rb2lUEwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15768-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 17:21:17 +0100
+	id QArsN/Gmb2lDEgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15772-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 17:01:53 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD26D4756E
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 17:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B4646FA5
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 17:01:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 19C6B940B83
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 14:12:36 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 94ACA8CCC21
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 14:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2413244105D;
-	Tue, 20 Jan 2026 14:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AD743C04E;
+	Tue, 20 Jan 2026 14:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSnGk9XF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M3RmBw8O"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7C9439015;
-	Tue, 20 Jan 2026 14:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A6A449EDA;
+	Tue, 20 Jan 2026 14:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768918045; cv=none; b=fTpw8bmTNYtgVBF8RHtlE7FHocA54mCUi3yQZDaLkBuqPe3ehTQuVVnTNtksr99xVjW0pAQjpYwujmcVovf4rzAe1X7BBEjQXcgW1pR+/BN1pFaq2iryxUc/TBkl1QFBLYvufHeDO2T+gQJrsyxm5SJGd90XsoI9Dn6JaCZrZnU=
+	t=1768918061; cv=none; b=VgEwPiyBGbHYxeTHBHi40xTOsBJWQBOTNUGf/j2LtBABtscuAz3+0JupRgGbzfdf0pMG97KIaTIjgTRixZ4q7lOHfIBMPyWChdvSGU2w1ur5nm3IMm4vEmWNkzu5liPxqjbtyWDx1hMDn6xWhptL8ivO+NX5zZpxI7AOYFmehRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768918045; c=relaxed/simple;
-	bh=3eb1V4Rv6TEPo/iUbHVsGnBY7mv0aXK8Ke6NEm2PaJk=;
+	s=arc-20240116; t=1768918061; c=relaxed/simple;
+	bh=L6OTT3mPtqYVA8mPyQyKoyFwZdirdGqFu8l/X01cJfo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jqnFlA/XeqzI+OSCs8gwb2jp+Hz7bR9x43QJx6ehDGphiRcOYMmPKV/3jvqrTq7S1Be8QBUvOn+rRXHV69Xxf9kBFlILHASm8CeQJHzlIT4Cm2npePYU3CnhUnrDzSjL7DrfaGG/G6GM8aWxUspxVEuE7/udeCvFPMNHSMFmC8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSnGk9XF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81CDFC19423;
-	Tue, 20 Jan 2026 14:07:24 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KB/a1wZ7RU+BOSKIPGFEa1jG9LI4q2D7pYmygVn8GE8YoqXWStJ5DVoJJcYsYtMdCiDd/GMT/ng9O2K2V2DYrMGzZkjkRjnDP5e6zDWnSg0m9fzm57Fl1KDX99qz2bfz/lp6CTCBOV6gpXXGAKr1dVJIki+t4LWIwW3+H0d5v78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3RmBw8O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A481BC16AAE;
+	Tue, 20 Jan 2026 14:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768918045;
-	bh=3eb1V4Rv6TEPo/iUbHVsGnBY7mv0aXK8Ke6NEm2PaJk=;
+	s=k20201202; t=1768918060;
+	bh=L6OTT3mPtqYVA8mPyQyKoyFwZdirdGqFu8l/X01cJfo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HSnGk9XFDR4LcBjJZ3PdWo/nLxtHrZYRrbNJIbATZmIMl/oIgDp7Zv3+Iv2FgU217
-	 XVf93XW9pO75mbYU7+mCrG3kSK0it+Br0MlfELbZ31oz+qTMUvDB5n3yGI2SnV3Qrp
-	 D1WvGs3G3WGDLykWT09F9nPjulEAfUuV/7wykEKRBV2yJ7E0cEX5M0sYZgxlnc8sNd
-	 /ouz/Bj0hGmYAAt2OyWdPAEJ9C/gT46X3HvhPjEKYLZSKETXF88S2ATjiB1BsX/IX8
-	 3NXeM8d2pcUK4R9/jjKU8NFqyvNjGSef59Q10YMOdntmwc0NzsTIIUYhhfhlHlaozG
-	 g5RqxzB/E0aRw==
+	b=M3RmBw8Oc4lRgNdb/8GwB0L3CvMNnEvnPKDMWTWvUfIVq6JI4nZJ6uIuLq/vhnaiQ
+	 ITyA88tLQNKl69RqtoPneRB3Z8JQ5mFdAcCfs2O4oLJbm1gsAjG6HHHpIRoGIUzCdd
+	 5MiAcqiZRKbIFwfZBFd+4BAXxfbshgLgVNY6MBojSn78gFZwEKUcTk0qr5cEqlociP
+	 +CiKD2i78akTx548vLZI6+GvlBIfIwdQ7oVKd/NcxyCMHCnwgnsZU0V41p2KdNnT/3
+	 I45GmWSMqRkJH/nVlz1o4avGTI4hjGoVJdHM5p7nTi3LKkMYl8G0FGFznibFGnL6B6
+	 tisqgYNfrTwBQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Sumit Semwal <sumit.semwal@linaro.org>,
 	=?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
@@ -82,9 +82,9 @@ Cc: linux-media@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	iommu@lists.linux.dev,
 	kvm@vger.kernel.org
-Subject: [PATCH v3 3/7] dma-buf: Document RDMA non-ODP invalidate_mapping() special case
-Date: Tue, 20 Jan 2026 16:07:03 +0200
-Message-ID: <20260120-dmabuf-revoke-v3-3-b7e0b07b8214@nvidia.com>
+Subject: [PATCH v3 5/7] iommufd: Pin dma-buf importer for revoke semantics
+Date: Tue, 20 Jan 2026 16:07:05 +0200
+Message-ID: <20260120-dmabuf-revoke-v3-5-b7e0b07b8214@nvidia.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
 References: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
@@ -109,7 +109,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15768-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15772-lists,linux-rdma=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[35];
 	MIME_TRACE(0.00)[0:+];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
@@ -123,103 +123,58 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: DD26D4756E
+X-Rspamd-Queue-Id: D4B4646FA5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-The .invalidate_mapping() callback is documented as optional, yet it
-effectively became mandatory whenever importer_ops were provided. This
-led to cases where RDMA non-ODP code had to supply an empty stub just to
-provide allow_peer2peer.
-
-Document this behavior by creating a dedicated export for the
-dma_buf_unsupported_invalidate_mappings() function. This function is
-intended solely for the RDMA non-ODP case and must not be used by any
-other dma-buf importer.
-
-This makes it possible to rely on a valid .invalidate_mappings()
-callback to determine whether an importer supports revocation.
+IOMMUFD does not support page fault handling, and after a call to
+.invalidate_mappings() all mappings become invalid. Ensure that
+the IOMMUFD dma-buf importer is bound to a revoke‑aware dma-buf
+exporter (for example, VFIO).
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/dma-buf/dma-buf.c             | 14 ++++++++++++++
- drivers/infiniband/core/umem_dmabuf.c | 11 +----------
- include/linux/dma-buf.h               |  4 +++-
- 3 files changed, 18 insertions(+), 11 deletions(-)
+ drivers/iommu/iommufd/pages.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index cd3b60ce4863..c4fa35034b92 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -1238,6 +1238,20 @@ void dma_buf_unmap_attachment_unlocked(struct dma_buf_attachment *attach,
- }
- EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment_unlocked, "DMA_BUF");
+diff --git a/drivers/iommu/iommufd/pages.c b/drivers/iommu/iommufd/pages.c
+index 76f900fa1687..a5eb2bc4ef48 100644
+--- a/drivers/iommu/iommufd/pages.c
++++ b/drivers/iommu/iommufd/pages.c
+@@ -1501,16 +1501,22 @@ static int iopt_map_dmabuf(struct iommufd_ctx *ictx, struct iopt_pages *pages,
+ 		mutex_unlock(&pages->mutex);
+ 	}
  
-+/*
-+ * This function shouldn't be used by anyone except RDMA non-ODP case.
-+ * The reason to it is UAPI mistake where dma-buf was exported to the
-+ * userspace without knowing that .invalidate_mappings() can be called
-+ * for pinned memory too.
-+ *
-+ * This warning shouldn't be seen in real production scenario.
-+ */
-+void dma_buf_unsupported_invalidate_mappings(struct dma_buf_attachment *attach)
-+{
-+	pr_warn("Invalidate callback should not be called when memory is pinned\n");
-+}
-+EXPORT_SYMBOL_FOR_MODULES(dma_buf_unsupported_invalidate_mappings, "ib_uverbs");
+-	rc = sym_vfio_pci_dma_buf_iommufd_map(attach, &pages->dmabuf.phys);
++	rc = dma_buf_pin(attach);
+ 	if (rc)
+ 		goto err_detach;
+ 
++	rc = sym_vfio_pci_dma_buf_iommufd_map(attach, &pages->dmabuf.phys);
++	if (rc)
++		goto err_unpin;
 +
- /**
-  * dma_buf_move_notify - notify attachments that DMA-buf is moving
-  *
-diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index d77a739cfe7a..81442a887b48 100644
---- a/drivers/infiniband/core/umem_dmabuf.c
-+++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -184,18 +184,9 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
- }
- EXPORT_SYMBOL(ib_umem_dmabuf_get);
+ 	dma_resv_unlock(dmabuf->resv);
  
--static void
--ib_umem_dmabuf_unsupported_move_notify(struct dma_buf_attachment *attach)
--{
--	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
--
--	ibdev_warn_ratelimited(umem_dmabuf->umem.ibdev,
--			       "Invalidate callback should not be called when memory is pinned\n");
--}
--
- static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
- 	.allow_peer2peer = true,
--	.invalidate_mappings = ib_umem_dmabuf_unsupported_move_notify,
-+	.invalidate_mappings = dma_buf_unsupported_invalidate_mappings,
- };
+ 	/* On success iopt_release_pages() will detach and put the dmabuf. */
+ 	pages->dmabuf.attach = attach;
+ 	return 0;
  
- struct ib_umem_dmabuf *
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 1b397635c793..7d7d0a4fb762 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -458,7 +458,7 @@ struct dma_buf_attach_ops {
- 	bool allow_peer2peer;
++err_unpin:
++	dma_buf_unpin(attach);
+ err_detach:
+ 	dma_resv_unlock(dmabuf->resv);
+ 	dma_buf_detach(dmabuf, attach);
+@@ -1656,6 +1662,7 @@ void iopt_release_pages(struct kref *kref)
+ 	if (iopt_is_dmabuf(pages) && pages->dmabuf.attach) {
+ 		struct dma_buf *dmabuf = pages->dmabuf.attach->dmabuf;
  
- 	/**
--	 * @invalidate_mappings: [optional] notification that the DMA-buf is moving
-+	 * @invalidate_mappings: notification that the DMA-buf is moving
- 	 *
- 	 * If this callback is provided the framework can avoid pinning the
- 	 * backing store while mappings exists.
-@@ -601,6 +601,8 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *,
- void dma_buf_unmap_attachment(struct dma_buf_attachment *, struct sg_table *,
- 				enum dma_data_direction);
- void dma_buf_move_notify(struct dma_buf *dma_buf);
-+void dma_buf_unsupported_invalidate_mappings(struct dma_buf_attachment *attach);
-+
- int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
- 			     enum dma_data_direction dir);
- int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
++		dma_buf_unpin(pages->dmabuf.attach);
+ 		dma_buf_detach(dmabuf, pages->dmabuf.attach);
+ 		dma_buf_put(dmabuf);
+ 		WARN_ON(!list_empty(&pages->dmabuf.tracker));
 
 -- 
 2.52.0
