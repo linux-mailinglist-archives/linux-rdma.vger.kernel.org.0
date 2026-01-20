@@ -1,133 +1,227 @@
-Return-Path: <linux-rdma+bounces-15760-lists+linux-rdma=lfdr.de@vger.kernel.org>
-X-Original-To: lists+linux-rdma@lfdr.de
+Return-Path: <linux-rdma+bounces-15768-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2642FD3C4B5
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 11:12:10 +0100 (CET)
+Received: from mail.lfdr.de
+	by lfdr with LMTP
+	id +JOjFn2rb2lUEwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15768-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 17:21:17 +0100
+X-Original-To: lists+linux-rdma@lfdr.de
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD26D4756E
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 17:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1B47E54A908
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 09:59:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 19C6B940B83
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jan 2026 14:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B211E3D2FE2;
-	Tue, 20 Jan 2026 09:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2413244105D;
+	Tue, 20 Jan 2026 14:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSnGk9XF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA74346782;
-	Tue, 20 Jan 2026 09:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7C9439015;
+	Tue, 20 Jan 2026 14:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768903154; cv=none; b=Z6XTVxaEPDV4SufUu+JPlyufze/P2ZCVfwu3Gfet/vCmOQu5F4zDEz/eh1ejOSXJGdvjmJ8M/EQnk5dwtSqy8xsB8N419qjYZx106e6Lq7KRvkfqLORRCFJ+MLrPBekCj6mz/IzpWoPPFhr1NZ/naPo/tmYMbwS4YXm5EO7QDq4=
+	t=1768918045; cv=none; b=fTpw8bmTNYtgVBF8RHtlE7FHocA54mCUi3yQZDaLkBuqPe3ehTQuVVnTNtksr99xVjW0pAQjpYwujmcVovf4rzAe1X7BBEjQXcgW1pR+/BN1pFaq2iryxUc/TBkl1QFBLYvufHeDO2T+gQJrsyxm5SJGd90XsoI9Dn6JaCZrZnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768903154; c=relaxed/simple;
-	bh=joqL00WdqKenqaTwc96vjesjQqTc6gkTXH3YfHBem0c=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=qVVu32bbH0GKHFMqy9BpbWSIDZW9d/X2IwohAgl0DQhDtmxyQIxFhW2MT9kXqAmi5tXTT+5GceMtgz7rxU1yIp+yd/JRc4XpnCqpR9KsLukdstF/BMZ17XyOt802MyQSnqETsHRemd1YvP5Gc+X9+ibq3Cv8LkPZVrVNYkht/7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 60K9x128038233;
-	Tue, 20 Jan 2026 18:59:01 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 60K9x1NC038229
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 20 Jan 2026 18:59:01 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c1f9511c-7ad0-444d-aa0c-516674702b4e@I-love.SAKURA.ne.jp>
-Date: Tue, 20 Jan 2026 18:58:58 +0900
+	s=arc-20240116; t=1768918045; c=relaxed/simple;
+	bh=3eb1V4Rv6TEPo/iUbHVsGnBY7mv0aXK8Ke6NEm2PaJk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jqnFlA/XeqzI+OSCs8gwb2jp+Hz7bR9x43QJx6ehDGphiRcOYMmPKV/3jvqrTq7S1Be8QBUvOn+rRXHV69Xxf9kBFlILHASm8CeQJHzlIT4Cm2npePYU3CnhUnrDzSjL7DrfaGG/G6GM8aWxUspxVEuE7/udeCvFPMNHSMFmC8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSnGk9XF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81CDFC19423;
+	Tue, 20 Jan 2026 14:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768918045;
+	bh=3eb1V4Rv6TEPo/iUbHVsGnBY7mv0aXK8Ke6NEm2PaJk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=HSnGk9XFDR4LcBjJZ3PdWo/nLxtHrZYRrbNJIbATZmIMl/oIgDp7Zv3+Iv2FgU217
+	 XVf93XW9pO75mbYU7+mCrG3kSK0it+Br0MlfELbZ31oz+qTMUvDB5n3yGI2SnV3Qrp
+	 D1WvGs3G3WGDLykWT09F9nPjulEAfUuV/7wykEKRBV2yJ7E0cEX5M0sYZgxlnc8sNd
+	 /ouz/Bj0hGmYAAt2OyWdPAEJ9C/gT46X3HvhPjEKYLZSKETXF88S2ATjiB1BsX/IX8
+	 3NXeM8d2pcUK4R9/jjKU8NFqyvNjGSef59Q10YMOdntmwc0NzsTIIUYhhfhlHlaozG
+	 g5RqxzB/E0aRw==
+From: Leon Romanovsky <leon@kernel.org>
+To: Sumit Semwal <sumit.semwal@linaro.org>,
+	=?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	=?utf-8?q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>
+Cc: linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
+	linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org,
+	linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: [PATCH v3 3/7] dma-buf: Document RDMA non-ODP invalidate_mapping() special case
+Date: Tue, 20 Jan 2026 16:07:03 +0200
+Message-ID: <20260120-dmabuf-revoke-v3-3-b7e0b07b8214@nvidia.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
+References: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Huy Nguyen <huyn@mellanox.com>, Parav Pandit <parav@mellanox.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Maher Sanalla <msanalla@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>
-Cc: OFED mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [rdma bug] del_default_gids() is not called upon NETDEV_UNREGISTER
- event
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav202.rs.sakura.ne.jp
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.15-dev-a6db3
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.96 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
+	HAS_LIST_UNSUB(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15768-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: DD26D4756E
+X-Rspamd-Action: no action
+X-Rspamd-Server: lfdr
 
-Hello.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-syzbot found in linux-next-20260116 that one of causes that appear as
+The .invalidate_mapping() callback is documented as optional, yet it
+effectively became mandatory whenever importer_ops were provided. This
+led to cases where RDMA non-ODP code had to supply an empty stub just to
+provide allow_peer2peer.
 
-  unregister_netdevice: waiting for bond1 to become free. Usage count = 2
+Document this behavior by creating a dedicated export for the
+dma_buf_unsupported_invalidate_mappings() function. This function is
+intended solely for the RDMA non-ODP case and must not be used by any
+other dma-buf importer.
 
-problem ( https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84 ) is that
-a refcount for "struct ib_gid_table_entry" is leaking because del_default_gids()
-is not called upon NETDEV_UNREGISTER event; a debug printk() patch revealed that
-only add_default_gids() was called.
+This makes it possible to rely on a valid .invalidate_mappings()
+callback to determine whether an importer supports revocation.
 
-Since "struct ib_gid_table_entry" takes a reference to "struct net_device" via
-"struct roce_gid_ndev_storage", the corresponding NETDEV_UNREGISTER handler
-must release that reference. Something was overlooked when writing commit
-943bd984b108 ("RDMA/core: Allow detaching gid attribute netdevice for RoCE") ?
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/dma-buf/dma-buf.c             | 14 ++++++++++++++
+ drivers/infiniband/core/umem_dmabuf.c | 11 +----------
+ include/linux/dma-buf.h               |  4 +++-
+ 3 files changed, 18 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index cd3b60ce4863..c4fa35034b92 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -1238,6 +1238,20 @@ void dma_buf_unmap_attachment_unlocked(struct dma_buf_attachment *attach,
+ }
+ EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment_unlocked, "DMA_BUF");
+ 
++/*
++ * This function shouldn't be used by anyone except RDMA non-ODP case.
++ * The reason to it is UAPI mistake where dma-buf was exported to the
++ * userspace without knowing that .invalidate_mappings() can be called
++ * for pinned memory too.
++ *
++ * This warning shouldn't be seen in real production scenario.
++ */
++void dma_buf_unsupported_invalidate_mappings(struct dma_buf_attachment *attach)
++{
++	pr_warn("Invalidate callback should not be called when memory is pinned\n");
++}
++EXPORT_SYMBOL_FOR_MODULES(dma_buf_unsupported_invalidate_mappings, "ib_uverbs");
++
+ /**
+  * dma_buf_move_notify - notify attachments that DMA-buf is moving
+  *
+diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+index d77a739cfe7a..81442a887b48 100644
+--- a/drivers/infiniband/core/umem_dmabuf.c
++++ b/drivers/infiniband/core/umem_dmabuf.c
+@@ -184,18 +184,9 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
+ }
+ EXPORT_SYMBOL(ib_umem_dmabuf_get);
+ 
+-static void
+-ib_umem_dmabuf_unsupported_move_notify(struct dma_buf_attachment *attach)
+-{
+-	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
+-
+-	ibdev_warn_ratelimited(umem_dmabuf->umem.ibdev,
+-			       "Invalidate callback should not be called when memory is pinned\n");
+-}
+-
+ static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
+ 	.allow_peer2peer = true,
+-	.invalidate_mappings = ib_umem_dmabuf_unsupported_move_notify,
++	.invalidate_mappings = dma_buf_unsupported_invalidate_mappings,
+ };
+ 
+ struct ib_umem_dmabuf *
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 1b397635c793..7d7d0a4fb762 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -458,7 +458,7 @@ struct dma_buf_attach_ops {
+ 	bool allow_peer2peer;
+ 
+ 	/**
+-	 * @invalidate_mappings: [optional] notification that the DMA-buf is moving
++	 * @invalidate_mappings: notification that the DMA-buf is moving
+ 	 *
+ 	 * If this callback is provided the framework can avoid pinning the
+ 	 * backing store while mappings exists.
+@@ -601,6 +601,8 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *,
+ void dma_buf_unmap_attachment(struct dma_buf_attachment *, struct sg_table *,
+ 				enum dma_data_direction);
+ void dma_buf_move_notify(struct dma_buf *dma_buf);
++void dma_buf_unsupported_invalidate_mappings(struct dma_buf_attachment *attach);
++
+ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
+ 			     enum dma_data_direction dir);
+ int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
 
-unregister_netdevice: waiting for bond1 to become free. Usage count = 2
-Call trace for bond1@ffff888043434a00 +1 at
-     alloc_gid_entry drivers/infiniband/core/cache.c:417 [inline]
-     add_modify_gid+0x317/0xcc0 drivers/infiniband/core/cache.c:557
-     __ib_cache_gid_add+0x230/0x370 drivers/infiniband/core/cache.c:688
-     ib_cache_gid_set_default_gid+0x5f9/0x710 drivers/infiniband/core/cache.c:967
-     add_default_gids drivers/infiniband/core/roce_gid_mgmt.c:492 [inline]
-     enum_all_gids_of_dev_cb+0x17d/0x270 drivers/infiniband/core/roce_gid_mgmt.c:518
-     ib_enum_roce_netdev+0x1ab/0x2e0 drivers/infiniband/core/device.c:2434
-     gid_table_setup_one drivers/infiniband/core/cache.c:1040 [inline]
-     ib_cache_setup_one+0x428/0x5e0 drivers/infiniband/core/cache.c:1719
-     ib_register_device+0xfbe/0x1420 drivers/infiniband/core/device.c:1450
-     rxe_register_device+0x1e3/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:1556
-     rxe_net_add+0x81/0x110 drivers/infiniband/sw/rxe/rxe_net.c:618
-     rxe_newlink+0xdd/0x190 drivers/infiniband/sw/rxe/rxe.c:234
-     nldev_newlink+0x4a5/0x5a0 drivers/infiniband/core/nldev.c:1797
-     rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
-     rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-     rdma_nl_rcv+0x6ae/0x980 drivers/infiniband/core/netlink.c:259
-     netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
-     netlink_unicast+0x82f/0x9e0 net/netlink/af_netlink.c:1344
-     netlink_sendmsg+0x805/0xb30 net/netlink/af_netlink.c:1894
-     sock_sendmsg_nosec+0x18f/0x1d0 net/socket.c:737
-Call trace for bond1@ffff888043434a00 +1 at
-     get_gid_entry drivers/infiniband/core/cache.c:442 [inline]
-     rdma_get_gid_attr+0x2ee/0x3f0 drivers/infiniband/core/cache.c:1307
-     smc_ib_fill_mac net/smc/smc_ib.c:160 [inline]
-     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
-     smc_ib_port_event_work+0x196/0x940 net/smc/smc_ib.c:388
-     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3279
-Call trace for bond1@ffff888043434a00 -1 at
-     put_gid_entry drivers/infiniband/core/cache.c:448 [inline]
-     rdma_put_gid_attr+0x7c/0x130 drivers/infiniband/core/cache.c:1388
-     smc_ib_fill_mac net/smc/smc_ib.c:165 [inline]
-     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
-     smc_ib_port_event_work+0x1d4/0x940 net/smc/smc_ib.c:388
-     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3279
-Call trace for bond1@ffff888043434a00 +1 !NETREG_REGISTERED at
-     get_gid_entry drivers/infiniband/core/cache.c:442 [inline]
-     rdma_get_gid_attr+0x2ee/0x3f0 drivers/infiniband/core/cache.c:1307
-     smc_ib_fill_mac net/smc/smc_ib.c:160 [inline]
-     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
-     smc_ib_port_event_work+0x196/0x940 net/smc/smc_ib.c:388
-     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3279
-Call trace for bond1@ffff888043434a00 -1 !NETREG_REGISTERED at
-     put_gid_entry drivers/infiniband/core/cache.c:448 [inline]
-     rdma_put_gid_attr+0x7c/0x130 drivers/infiniband/core/cache.c:1388
-     smc_ib_fill_mac net/smc/smc_ib.c:165 [inline]
-     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
-     smc_ib_port_event_work+0x1d4/0x940 net/smc/smc_ib.c:388
-     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3279
-infiniband: balance for bond1@ib_gid_table_entry is 1
+-- 
+2.52.0
+
 
