@@ -1,104 +1,341 @@
-Return-Path: <linux-rdma+bounces-15804-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15805-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sBqfCRSWcGlyYgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15804-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:02:12 +0100
+	id CEzLCFKYcGlyYgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15805-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:11:46 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F52B54027
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:02:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77885541F6
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:11:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3789A4E3F0A
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 08:58:51 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 248CE8201C6
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 09:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FC547B437;
-	Wed, 21 Jan 2026 08:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CF447A0AA;
+	Wed, 21 Jan 2026 09:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="D/gS194R"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012041.outbound.protection.outlook.com [40.107.209.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF8147B428;
-	Wed, 21 Jan 2026 08:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768985852; cv=none; b=GmIneNPAhsF4cI5l8MaDwcf9pnTk99HbryinGc7GRQUeDBGeELhL+zQKkNk/8b7xqifAwSaFUgJ/8z2aekjXSq5T1uBbXWYZxEjPebovIEg0yP80tWkfNWMvlSrDI59gOoVgDsf3giNRfZuHw5vfu/WmbOz8IO5QKBMPLzvegPQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768985852; c=relaxed/simple;
-	bh=+Zp5QW66yuDTlQt723imYEQ44amxK86yXzHXrI4WGh4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rpK9yAXhNsCPNAqvryIg2EceShRD7bgqfVwyTDz+O8JfxQ0vzxBWa8wesWrtzB6cTz18sq65sE1wJlzfospXXQ01dKl2T8XMr55w/8FEo6Pj09o5nPdDUOFy/e7fvO8Fy1bH2O9UtcuQ09D5if3N+AeG+vvDNDpNLxJs5bleguw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 4C7C1227AAA; Wed, 21 Jan 2026 09:57:27 +0100 (CET)
-Date: Wed, 21 Jan 2026 09:57:27 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <cel@kernel.org>,
-	Jason Gunthorpe <jgg@nvidia.com>, NeilBrown <neilb@ownmail.net>,
-	Jeff Layton <jlayton@kernel.org>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org,
-	Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH v2 1/4] RDMA/core: add bio_vec based RDMA read/write API
-Message-ID: <20260121085727.GD16458@lst.de>
-References: <20260120143124.1822121-1-cel@kernel.org> <20260120143124.1822121-2-cel@kernel.org> <20260121084217.GA16458@lst.de> <20260121084840.GX13201@unreal>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF913A8FE9;
+	Wed, 21 Jan 2026 09:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768986024; cv=fail; b=Ccl1ELQ6ot08+vES/ofp19s6Chjkg9jXLtysCBWb9kdC7YMhBAH5z7k8EwPQ+V+7goi0GJhulEulsOx9aE+gcmrWoz0b92NcCrvtlIDHRE1dn6nVTxxmsxeRvjSI+dq+qs0l7QhUj8nF3RYU93SsaV54N+Jh9zFJTPzkL9z3nUg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768986024; c=relaxed/simple;
+	bh=oGTwqxeaKHgdFvZUq+5/+RU4ik+YCht4ZJNp7Y/jmLc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=aHuqP2gmSED/Tn42msFucTajryWtco9HtUR2vQHsoQ5tFfrt1KjHX7u9oGPA7TCg9g7A5W+QYhCC+F7MzYo1IG8bLBYvUpENhsjlv9BPMjpMe32M+nUQdrJuFjsuiY3CHyfM069Vp0EclBIfHNSxEk/gV5PPEOFvY93Ps44Jn6M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=D/gS194R; arc=fail smtp.client-ip=40.107.209.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=XKEpkpwr8kzf4Bv5unyhllFte8LSFPsNmtq7GNvbdsJN+/vlhkR6fGvnT/7BUQvOTMLYdU2l65XV2MVtsFdbMvU/qsCcybweDBZBvp4v8NEFQ3d8om2kO0Ue7yJLwSyd1pOBveN4dTf+fnmwTDyRpwK/QcR7LTx0sLZidXqpqP8QUxvpJfCFFbguSkIurfl1GP0C6HrN97ppi2A8X2L+C7wUcvEgIQ79snG7SsgZZ6edHdoLnuBWCJ7PNTPepXlboCwTDjTEzk4hkGhHvoHgwULV3yxUabUeZDiZatxqBGnQOn5hjxmVRdKgLTnYGzmJvZ4h7KKzrFsFYZS7I44ABg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eYipCjYA/WvGERMMwAV1PwxKeo8l3ViBZGkBjH98cX4=;
+ b=xRafVLmtMzrF/bpOGnjbXjzxGY1ZZ+U4DPbDDDOMLG52f6HY/I1BHVj/EXRW6tN9M9fusj1XNEcjP8+OTvXQ+KZe/b6EKVa2Gv9gg36w4cEhlTadrPCupoq+diK0g1+r32brcTQJhQSLCiinBJgMlZwo+oldIFDdyr/n6J8YpGBiX7zchis3fYr5O2kM0o6uWuBaZ/S7h+i2GE74O0pN+qDLbFNGOXPq29lPOl7+tg47cSWfVNGi1Qj6dJoZ3yfLQFHkF5Yc7hpg2k5n3KhwxBCu/WJ8g1PAuIRaAOUgaToPekurQlh3XAuN18Eitg7tqsPpP1s8SBs0bjh2X1SN9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eYipCjYA/WvGERMMwAV1PwxKeo8l3ViBZGkBjH98cX4=;
+ b=D/gS194RpvB9AxiUKYvz9nXcpxEYdhbDf5efCi48j3qBtV4N5n9AW3F+bg/P9m9mofdxK2pFcB9ZiVwLLW/A3CNHLrzJNsieIkATE6y9umhx6EDHCmQtIhQC2euPGUTwC5k+QAkGEodgG/DV8w+wd2uyfHfDI0dyK54wU3Q50HA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SJ1PR12MB6361.namprd12.prod.outlook.com (2603:10b6:a03:455::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.9; Wed, 21 Jan
+ 2026 09:00:18 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%4]) with mapi id 15.20.9542.008; Wed, 21 Jan 2026
+ 09:00:18 +0000
+Message-ID: <4fe42e7e-846c-4aae-8274-3e9a5e7f9a6d@amd.com>
+Date: Wed, 21 Jan 2026 09:59:59 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/7] dma-buf: Document RDMA non-ODP
+ invalidate_mapping() special case
+To: Leon Romanovsky <leon@kernel.org>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Alex Deucher <alexander.deucher@amd.com>,
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+ Gerd Hoffmann <kraxel@redhat.com>,
+ Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Lucas De Marchi <lucas.demarchi@intel.com>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>, Alex Williamson <alex@shazbot.org>,
+ Ankit Agrawal <ankita@nvidia.com>,
+ Vivek Kasireddy <vivek.kasireddy@intel.com>
+Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+ intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ iommu@lists.linux.dev, kvm@vger.kernel.org
+References: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
+ <20260120-dmabuf-revoke-v3-3-b7e0b07b8214@nvidia.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20260120-dmabuf-revoke-v3-3-b7e0b07b8214@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0097.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9c::12) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260121084840.GX13201@unreal>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ1PR12MB6361:EE_
+X-MS-Office365-Filtering-Correlation-Id: 87c2316e-592d-489b-aa5d-08de58cb8028
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?RTVNTWoycVlROVNYdU50WWM0QmhVU2ZodGt0bG5kOHRoTXBwckNsaWRmVkhm?=
+ =?utf-8?B?b050bS95bm9QOHJnWncwaHZMbWJjbDVWRFp6aXVwR2tteGVkSmVFdlJlbFpJ?=
+ =?utf-8?B?anJLTHo4SW4yeU9QKzJ3T2o3bE9oaDIydVM0QVZKTDNBU3J2WmlVZ1VESm1S?=
+ =?utf-8?B?SnI1WlkzUVdkRDJKY0hsOGl6YS9KNXRwLy9Jbm9ERUFzOTR0c0plOUJHUzFI?=
+ =?utf-8?B?T1dYeHcwTER2TXFra1I5RE4vbnc4b1NCOEo1TktFV1pVMDI5dDZNK0lBR05C?=
+ =?utf-8?B?NjlhaTZjYnpYYjU2eGI0aGJkWGVGbUI5bCtPaXF1eHdxSS9iNklxYWRDRmNP?=
+ =?utf-8?B?TjMrMjZkYUVJcXlKbVFXWWw1V3pjazlVRUJjcWJUcVdBVzJkcGEyRmsrSFht?=
+ =?utf-8?B?cmd3TzJGbm9PYVU4a3ZoMDR0OWUyNFp0MjBuYnZ6aTZ2OEdla0YrU1hZMXNP?=
+ =?utf-8?B?eW1KZjhGbXl5WTJ6NVdTSHVaWXVFZ0RZcmJ4clZjMm5aTHliM3lwdjlpZVNq?=
+ =?utf-8?B?SFRxSFVNWUwxaTNDT1poSTRlRzhwM1JsSHJkODlQb0swVDVqZEk5QkxXRll5?=
+ =?utf-8?B?YUw4K2RSSmFKcDNjdnQwek5OTnkxWkEwOUhGN3Zkc0lDdW8xL1BlbTNES1Vs?=
+ =?utf-8?B?enZXWklCbmhWMDdLb09Ra3QrdUE3R1FGRklkRDRNQ0pqYkliTTFrU0oxaDQ3?=
+ =?utf-8?B?dmRnUlNXb0pORzF0eXJqSEdoVHBxYkltSElWb1pCcy9ZNkxDbW83U0NOY29T?=
+ =?utf-8?B?TjRNK09rSXEzVGh6c0xvNHc5TktmM0R5MzlaTkxIM1I3OElBa0N6cUR2cUcx?=
+ =?utf-8?B?UEtxMGVBdDRBTUIvT2ZEZ3VmQmgyeURPYnZvZUZOUmtNY3RabTl6TkYzMytC?=
+ =?utf-8?B?Sy80SC95QlBMYkFSVk85VWhUVlBrV3BmN21ka295dWR4cW5IY05ETGlSS1RN?=
+ =?utf-8?B?bFZmODFlYm02bVA4cXpSSWhucG1GVmZqR3hlb3BheHpOSFlSYUU5R3gzQzVh?=
+ =?utf-8?B?anRtcGltQ3BaQ1A4WWVBb1VvQm1tWWMzQTlXU0c0c3AvWSsvaThnQk5MdUo5?=
+ =?utf-8?B?Y2hhR0lCYjZDdFpLSmZkQUVnajR4ZDhDajNzQ0wvQTRhNHM2ZGhtNk02dWFN?=
+ =?utf-8?B?OW4zeEEyaFBiWTZ5UVkyKzBieTJvM2g3WWRjSXdkN1VCZHkvQ3U0b054RGky?=
+ =?utf-8?B?M09obUI2OTFvWlBieHd5c00xTXJ5dXNrbXZiNnRMazlsSkQ5em5uN09sak1v?=
+ =?utf-8?B?TzZmQ1lxWCtuRE9GOERoei9qS01lbEw3cWFUeWtOS1VJRE8vQ1QrNzB0TERo?=
+ =?utf-8?B?S0Rac2t2cHhjeXBvWW5VSkNaQmJmSjJISGJISDFDKy9nbjdrMXhCOVA3RVI5?=
+ =?utf-8?B?TmY4ZXh1em8zSHJpdERGN01uQ0haUzJ5UU9KdFpnRFo3dk1rcVAxNWxHelA1?=
+ =?utf-8?B?c2RYWjRodDZ4MkpSREsxeldZNXdtdHVEMk9BUjZHNk0vNkhLeVRSTXhSSkJL?=
+ =?utf-8?B?bEpTcTgxNXMyZ05OQWFJZnJIQkEvTTEreDJGQytzUHc2MitRZlArbFE1V2FP?=
+ =?utf-8?B?Q3lQL0F2Q3pueHB5Ty9uVC91bkhVTXNSL24randheitndU1BTG9yRU1XbUVm?=
+ =?utf-8?B?UWhRRDVDTHpjWVA1UmZsK3kvMmVvUHF0YkdPSUg1eEttYVBkdHpETU1KVDRr?=
+ =?utf-8?B?MEMxS3dFU1NWMHgybG5sd0FmcUVTNjlKcUp6YlhDK3NFSmd2WXA1ZUhSZTU3?=
+ =?utf-8?B?UTQ2SkN1bzAzeTh0TVo3UXZxd0c0NFpmMVdjVWpVbEJRVUdFUGZ6RytpalFR?=
+ =?utf-8?B?OWt0QTAvdWt1K3pUNlJYd1U1T2pEV24xSUc3bnpRY1VuUDEyOU5Ub2NlYVNu?=
+ =?utf-8?B?ajhmU3RGUFpNVytwbXNHazhpRlJVSUJCcGkwMTZQWHhkMVd6cFlTNlFGdWNO?=
+ =?utf-8?B?ZGJka25ZQmRaQW00d1I4YmFzYTNycGpINkh4cFZXTzdQck0yM2JEVVB6L3FZ?=
+ =?utf-8?B?S1Mya282RkhFUXNPT05Xa0ZuaGlPVjR3QUFiQ2hIRzFpV094c3pEY0NEZCt1?=
+ =?utf-8?B?TXIvREt1Z2xxbmJPSi9Wcjc3R0tMNjBXalM3bWRGRVprOEprc1MrTXBsb0o2?=
+ =?utf-8?B?ZU0vbmhEY2Rzajg1aUhDZ3YzcisyS0prZ20xSlFsQ1RObDltREE1TXc3NXRp?=
+ =?utf-8?B?ZHc9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZkxzRXd6cnozYkhnam1mNEcyWnZpaENKZmdwU1g5QnpmYTJ5cjRUWDZYelhG?=
+ =?utf-8?B?YXNlbHRpeHBURkNrY0dlUTdMV3RFYndQaUdXOXJHZzdjQUZYb0ZxTmNSZ21j?=
+ =?utf-8?B?QUcxOUlseG5wMDdPMGE2dFFuZERydzZtTnR2WldSeHQ3dmx2SWFUNWFJeDNh?=
+ =?utf-8?B?SVFTU04yWXhzRndVNlNrMkFFUHZnUHd1aVJZVUtpSUkrcGxXcm52UDY4SGVO?=
+ =?utf-8?B?UTRHbjJLYjc2QldkekN0Z3RPVVNkRkgvZmYvTjFPUjcxTFRvbGVnL1JycjZC?=
+ =?utf-8?B?eE1VMFk0UTJZS1k3aDZITlVvMEI5d3R5ZjlRU0Z2N1VNZ3ZHREQrV2l2dnlh?=
+ =?utf-8?B?M2JyZXJjZnVZMVJ1K1hUeTMrekFYZG1HcVYrNDA0VU9wdU9vTVN2WjI4bUgx?=
+ =?utf-8?B?Qkp1Szh3NWt1YXdzNzJndHViaWlRN2dCR2ZSdDR6RkN5bzNpQjdYQmN4emtK?=
+ =?utf-8?B?ZzRBTTZTN3dWL3JEMlpBc3d4QnRtMlc0VENXV2hKY2FsLzlNQTYxeXJNcFJz?=
+ =?utf-8?B?S0R3YnJ5SGNJNDgxK2FhVFJ1WXkra0FUaHVKanpEdFRyR3l4M0wxTzF1NElG?=
+ =?utf-8?B?dCtoOUZoSE5qQ1RUZEc2WVlzM0svTGU1ak45Tk10Q1R1L3FrM0Z0Ymx4RmN2?=
+ =?utf-8?B?V0FtQm5MQXd4UXIybUJEQkR3VEJudzhlcHFGeGV1QWphN3dPK2tqaUtlS3U4?=
+ =?utf-8?B?WWZnLzEvNEJJb21PZGNJYVBCcU43citSejhEb3dVOHlPbUgwNHFZSnlWcHdD?=
+ =?utf-8?B?TWlaejlGYVNFSFdvay92TURubWhYZXlaNTRZUXJtZWY2U1Z0WDhvWS8rVUUr?=
+ =?utf-8?B?QXB3TGt1SlhsdkFnR1Y4YmpxQ3UwSnpiejlUcTA4bjNYSExNSDU2aWRpWG1H?=
+ =?utf-8?B?Y0R6YitoaUpZRlBGZlFHa2lFK09rdnlQaXc3OVJnamh1K0o4NzFaYnRYM1Nl?=
+ =?utf-8?B?bkR5ekJ2dTBKOVpDZkJaMFRHVXU5VDBzSFEwZ3Y5R0pJUnlPdTlVWURHMXky?=
+ =?utf-8?B?NEo3QzdzaWw2NnZhRmNIdTNzRVREYkhJeXlRTFRJVURvVXNHZDNoc3JUTGdn?=
+ =?utf-8?B?d0g5ckFyS01nSEdHT3Q5NTNiM2dGOXUrYWJYUlRiNlg3VEExN0FQSFNacVBH?=
+ =?utf-8?B?WmY2Q0o0bWVRd291VzlNQjA3Q3JjaTVhNUR3UDNncHdEaWY1QjJmdkhoUzYz?=
+ =?utf-8?B?K3N6RU5rQ3dqU1hpdjI0R3NleWwvRVZPZ2NtNWt6QnN0THVvWmYvSCtTWUdN?=
+ =?utf-8?B?YklnWWg5NFp2K1hBb2U2REhMMVAyaEs5L3dBdnFqeWk5M1Y0STdGdDA5S1Bj?=
+ =?utf-8?B?czh3ZU41NW8vWlVIM0JUbHRRbXA0ZUFaekFFWG9uUGhkSFBibVBQMFMwMXRr?=
+ =?utf-8?B?OGRvWGVFcFJ3d0ovdG9FYS9HYUJsUi9XVStrbVltREVaTUFlZzhzdFVpaDN0?=
+ =?utf-8?B?NWloMGdSa1U0RHhVQjZCMjEvOHM1bjZqdWN5Ky9tdVNoakF0aVlseG1kSW1y?=
+ =?utf-8?B?UUZ1RWpEZXZHenA2UUxMa1dwZjE3cEVKWWdpVVJZWlZZeWY4YTZwS0hHcktD?=
+ =?utf-8?B?NloyaWQxTU9jMWU3bVJtYWxLZ21QUjZ6Zi9ualBXTGFib2NHZTFjN04rdnBq?=
+ =?utf-8?B?RzZCaUhReW5vYitvdkEvdjFlT2JEUElSNE1qUDF0MUFDOVFCcUplR2Y3bmc1?=
+ =?utf-8?B?emFWdDhzYkRtWGJGOHVtTWNwMVNjbU8rN2FIK1lkL3BDdXA4aGM2cnNaRnlS?=
+ =?utf-8?B?dURISGZCM3pheE9NV1VnN1F3dllmemNQWmF6UDZNVzRPclBCeVo0T2VhYUlO?=
+ =?utf-8?B?cW9SaWRNMVBWeityNDFLUnRvSlQzbXVqOE9IMHd2bjhva1cyTmU0MDAxRUNw?=
+ =?utf-8?B?clBYSitwUUlybVBsU05JbWt4cFVNMVN3M3lnczN5bTN4d3QrWHo4NXVLNk1B?=
+ =?utf-8?B?Y2VlblFTdzIvdHBzZ2duTmNqNW1pZE9ZeXZrcmxycUhGRFBMZWI5UE1BeG1E?=
+ =?utf-8?B?N0dhQjhYTEFYTTNqVGgwdlkvVm9DVUEvTGNtd2MydDNSYzFOZWRPRHhYbVFB?=
+ =?utf-8?B?TnNDSUUwNVNWdzFrY0lUdVVoOFZJRW8xRWRUZTBFeGNBK0FnemVZdG9oS3I3?=
+ =?utf-8?B?QUxaQjViL1B4U2hjb1Rld21tMWZsK3BaZmZaNTdIUFU1Y2pmVUFxKzVBSGlv?=
+ =?utf-8?B?cFFkazJtYUNvYStBOHd6WmIwU3F0ajdPMG9lckVQdVEvK3NPcWthN1RTQUN1?=
+ =?utf-8?B?anBBZzRxQkxmNFJNTVB2MXYwMGZHc1BMcUlhVDBzdW9qWUpCdkZ6M1lLb2Z5?=
+ =?utf-8?Q?IEF1vO3e+GSvN4J5cc?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87c2316e-592d-489b-aa5d-08de58cb8028
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2026 09:00:18.7370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: suoGQVK1Q7lGfhDo/OTY3zPF/SPfKr0lOyQmnM+OZqk0gpjwscDqdJ4R70b7s5Pn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6361
+X-Spamd-Result: default: False [0.04 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : No valid SPF, No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[lst.de,kernel.org,nvidia.com,ownmail.net,redhat.com,oracle.com,talpey.com,vger.kernel.org];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RCVD_COUNT_THREE(0.00)[4];
-	R_DKIM_NA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-rdma@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_FROM(0.00)[bounces-15804-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15805-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 0F52B54027
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[kernel.org,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_POLICY_ALLOW(0.00)[amd.com,quarantine];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[christian.koenig@amd.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[amd.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:mid,amd.com:dkim,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 77885541F6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Jan 21, 2026 at 10:48:40AM +0200, Leon Romanovsky wrote:
-> > > +static int rdma_rw_init_map_wrs_bvec(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
-> > > +		const struct bio_vec *bvec, u32 nr_bvec,
-> > > +		struct bvec_iter *iter,
-> > > +		u64 remote_addr, u32 rkey, enum dma_data_direction dir)
+On 1/20/26 15:07, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Don't you both think these functions take too many arguments? It might be
-> worth introducing something like "struct rdma_rw_init_attrs" and passing
-> that instead.
+> The .invalidate_mapping() callback is documented as optional, yet it
+> effectively became mandatory whenever importer_ops were provided. This
+> led to cases where RDMA non-ODP code had to supply an empty stub just to
+> provide allow_peer2peer.
+> 
+> Document this behavior by creating a dedicated export for the
+> dma_buf_unsupported_invalidate_mappings() function. This function is
+> intended solely for the RDMA non-ODP case and must not be used by any
+> other dma-buf importer.
+> 
+> This makes it possible to rely on a valid .invalidate_mappings()
+> callback to determine whether an importer supports revocation.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/dma-buf/dma-buf.c             | 14 ++++++++++++++
+>  drivers/infiniband/core/umem_dmabuf.c | 11 +----------
+>  include/linux/dma-buf.h               |  4 +++-
+>  3 files changed, 18 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index cd3b60ce4863..c4fa35034b92 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1238,6 +1238,20 @@ void dma_buf_unmap_attachment_unlocked(struct dma_buf_attachment *attach,
+>  }
+>  EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment_unlocked, "DMA_BUF");
+>  
+> +/*
+> + * This function shouldn't be used by anyone except RDMA non-ODP case.
+> + * The reason to it is UAPI mistake where dma-buf was exported to the
+> + * userspace without knowing that .invalidate_mappings() can be called
+> + * for pinned memory too.
+> + *
+> + * This warning shouldn't be seen in real production scenario.
+> + */
+> +void dma_buf_unsupported_invalidate_mappings(struct dma_buf_attachment *attach)
+> +{
+> +	pr_warn("Invalidate callback should not be called when memory is pinned\n");
+> +}
+> +EXPORT_SYMBOL_FOR_MODULES(dma_buf_unsupported_invalidate_mappings, "ib_uverbs");
+> +
 
-Not sure that buys us much.  Having a {bvec_table, bvec_iter} tuple
-OTOH might be a nice general data structure.  Not really for this
-series, though.
+Well that is exactly the opposite of what I had in mind.
+
+The RDMA non-ODP case should explicitly not provide an invalidate_mappings callback, but only the dma_buf_attach_ops with allow_peer2peer set to true.
+
+This is done to explicitly note that RDMA non-ODP can't do invalidation's.
+
+Regards,
+Christian.
+
+>  /**
+>   * dma_buf_move_notify - notify attachments that DMA-buf is moving
+>   *
+> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+> index d77a739cfe7a..81442a887b48 100644
+> --- a/drivers/infiniband/core/umem_dmabuf.c
+> +++ b/drivers/infiniband/core/umem_dmabuf.c
+> @@ -184,18 +184,9 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
+>  }
+>  EXPORT_SYMBOL(ib_umem_dmabuf_get);
+>  
+> -static void
+> -ib_umem_dmabuf_unsupported_move_notify(struct dma_buf_attachment *attach)
+> -{
+> -	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
+> -
+> -	ibdev_warn_ratelimited(umem_dmabuf->umem.ibdev,
+> -			       "Invalidate callback should not be called when memory is pinned\n");
+> -}
+> -
+>  static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
+>  	.allow_peer2peer = true,
+> -	.invalidate_mappings = ib_umem_dmabuf_unsupported_move_notify,
+> +	.invalidate_mappings = dma_buf_unsupported_invalidate_mappings,
+>  };
+>  
+>  struct ib_umem_dmabuf *
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index 1b397635c793..7d7d0a4fb762 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -458,7 +458,7 @@ struct dma_buf_attach_ops {
+>  	bool allow_peer2peer;
+>  
+>  	/**
+> -	 * @invalidate_mappings: [optional] notification that the DMA-buf is moving
+> +	 * @invalidate_mappings: notification that the DMA-buf is moving
+>  	 *
+>  	 * If this callback is provided the framework can avoid pinning the
+>  	 * backing store while mappings exists.
+> @@ -601,6 +601,8 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *,
+>  void dma_buf_unmap_attachment(struct dma_buf_attachment *, struct sg_table *,
+>  				enum dma_data_direction);
+>  void dma_buf_move_notify(struct dma_buf *dma_buf);
+> +void dma_buf_unsupported_invalidate_mappings(struct dma_buf_attachment *attach);
+> +
+>  int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
+>  			     enum dma_data_direction dir);
+>  int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
+> 
 
 
