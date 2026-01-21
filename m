@@ -1,89 +1,89 @@
-Return-Path: <linux-rdma+bounces-15829-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15830-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2FpWAxPUcGkOaAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15829-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 14:26:43 +0100
+	id 2EYjE0HccGnCaQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15830-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 15:01:37 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE2F57820
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 14:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B642B58152
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 15:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AA74C60CFA1
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 13:19:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2DB3D98D411
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 13:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F36A3D668A;
-	Wed, 21 Jan 2026 13:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C4648B36C;
+	Wed, 21 Jan 2026 13:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="auPHecAk"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="P5aUjMGQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f193.google.com (mail-qk1-f193.google.com [209.85.222.193])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE69270552
-	for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 13:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9DE449EC2
+	for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 13:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769001537; cv=none; b=ABwBmhW6rds3S6NdioE73NjD3WfYk0T+lsnTQupLUCmAFuTaSlbvazCXHUrDSB2NXOF/d/aC5XLYrWxRE0drYKsYE2RIk9ZZKTnE8pLtKXWLi8n1EFSuWjfoO7guw32yqjz0NBJr/3bI9LN+q/xcbJ27CGG4AgIfyDMA2oQxd1I=
+	t=1769002315; cv=none; b=HrtMbvxhzBPVHr02gL4pq5497NyEBs1ySwoDfhuEw1qr7GbyeDf3YSSwgr8ZBq5yVNFLGEFDQU9HShC7rLSA++A6B3Xxh5duw7K9RNkGdD0wP9jVoqbntPY/fab4ILHD3ibj4d/cuZxU1sieJFmDW4AuMu9Kv2GGS8zUXgOmJr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769001537; c=relaxed/simple;
-	bh=wNQCHIWEBRMpiFqsZYjt880FRkRpyp1yzlc3O4lUKsM=;
+	s=arc-20240116; t=1769002315; c=relaxed/simple;
+	bh=DcH9k9Tlh2c03HyU3Zw/7RvqbH8v2zIC0lTji3hhsSM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ppPIsvIdHi7Hw0yqXuS5jL9BVejDIMrLdczJzluUXMYK8CzOJhDn4vknkGMKq6evkgjK8uQhg52Yl8WAX6AxztDkdscDfvGq6znmO5LCQ+iW31nC+IULk57vLTYntQvEA/tVJ9Mg4MA9O93GicNc1947bDtau7rPnNLBf/5NV1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=auPHecAk; arc=none smtp.client-ip=209.85.222.193
+	 Content-Type:Content-Disposition:In-Reply-To; b=C3hoxr1LnBLKBAyz1aQiBKWj4nR+9rnDonz2uT/B3tRe0qTGnbCsiTsRqfxhYOZZ/Wy4bxpxPvLXBqQ9MBLdHJPUeu4xPNb6kOhc3WmyUHO23PmmWKafKlNi5MQIJIHJ4YyEavF/Iji/jIKN3YOHVZxzh6W+cZPUcEewgzbPJl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=P5aUjMGQ; arc=none smtp.client-ip=209.85.160.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f193.google.com with SMTP id af79cd13be357-8c6a822068eso680330885a.3
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 05:18:55 -0800 (PST)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-5029af2b4bcso29276541cf.0
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 05:31:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1769001534; x=1769606334; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1769002311; x=1769607111; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=wNQCHIWEBRMpiFqsZYjt880FRkRpyp1yzlc3O4lUKsM=;
-        b=auPHecAk2iN7ZabTIQ+tkLxDrluU4dCEBlYYIhuQln6eF1Bfx+8IsONn1dD3HP+pHo
-         kiQR9I91Kuww1yFWj/b0sWSrQM/cMs+blizM0NWisDQRXI35HMLsNrpnQCOrCyVfikCe
-         vtv9530cVL0Vy6XHmSQ+tPLww/3r5qwJOlToD/xpraBS24TriW5VROoubZgfTjSQRAzZ
-         HFsaGYZ98Y19cSGkjjghhtYs4sRPm+TZkcQlwRwb8NXzyuUBw1jY450cHKzizuLt8uvP
-         gpEw2V3dp6/9VWMVd7WI8vOGqrUW48hHbYOZvkGvapFeCU43rqCSgClWfcYHPf9PznOv
-         KKVg==
+        bh=aX294P4TliS2B0BrPhrC1yfpgvWNBReUGID/aL6TSBE=;
+        b=P5aUjMGQISabFbWzdwZIeIsxiY/Fo7Sj8NcPubSkJeDIbfKV0j4TE2rUdb+56AcE5T
+         ZLKr8CqC4+gBRW5S0ZIdfWYshrEfWq2QkHCs6J/1Zzbsn1a53UZtNJ5Z1ToViw6htJ4q
+         3R3Cg/7AnC4PEHBR7Rutkjb4sAl/eMo56ydB3XQIkPE2yDm6fDgtrasJT3QCV1u2PiM7
+         lGM3DosoiavJOnvKqIho+6VmGc8+gcBKQSf5iLajfy5PPsdCyLZsrHP3sf5tVsfUF6Ov
+         M/T/PYVqGP7toMUFrbNpfjZoie7MmXMT5ASm5Rs2ZHfGacKQfHrTqzaxW1tfcE65pDLC
+         iwSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769001534; x=1769606334;
+        d=1e100.net; s=20230601; t=1769002311; x=1769607111;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNQCHIWEBRMpiFqsZYjt880FRkRpyp1yzlc3O4lUKsM=;
-        b=ahftiibV0UwZNlGu5LrMMrPk0nsBnXaOFVyPV2IOGqZt8yX2P2rSrQgfnWlQvz3T2A
-         7URwCn/lymwfEf2Ze9z0NZcexFenpxFCjJ+Ly/eHeNzYBaG8xqsXlk82W0Un/Mx/BWFf
-         Of+lMzR73osxhaxNDLfh7IbVuBxLA4lrws7FVX6X5eTN5Z12g8yxYjcYPieXqmVnQdtE
-         fcDZuOFNVm78KUCh467wBEHnQpzCvOjmJeAzxgDK1xVCwH2DdMR/Rm+3J7RV7vbnCHtL
-         wLZM0sHtGGirl84s7K9OM+PtEwOaYlmp/VA8fOefja2fQeff+t7E1y8esE06svl5eWyY
-         6CSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVL10ycInkUE3ZhejPjF9JP9D8V4BpDsDacZnV5NGJgATHEA+UMy6TaMjcqTosqhvNc2GhzQ3+cr8F1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxi6OFs3+glOdXoYWCEKbG/Qea6sgURkOIUQxcbAkpyjVOb92rN
-	RpJro5QhNqE0ziiFae92Er1Os//oOBjTQxiauAXLvfXpg9TZLwQZYvr7j4fk5kdAVHI83iw/y8F
-	TgOWcU14=
-X-Gm-Gg: AZuq6aLUXKszusSTkFJBiyR9UVqzrsQFyIT9uhARB6xqDt8IKpRICWa/5vDI+6G54rF
-	hQxbz23SkM5icp7VQ75y1VLbEaHl/XFcFk2Lp9l8B+mEu9FgyGUaWFAF8fcDcB95SDakikB6oj/
-	WegHRDsPt3Oi2ui3ibizYK9ZyD8EN9Ct/Kx+zMJDe/4dEZDfLh8YDuFNg97AzFDyfJ65RcdXnGD
-	hScc9n+0fRffw7sPk+lJ6JTTtvV80GUA/y2/BEQEcxk+vTFsQ7mHFpW/cGBmWFxt1HCiEm5VrnP
-	9o0SqfpcXCdZv9vzur9SGwqglqK558G9oSwQU3B+ukhRzE7xoxq5uWwTzLbtF91+1+mktUlReb9
-	IgXMmhgAe1RpXfQ5EDCKOP1+tlCLA/rRhFn01fyS0RxlFFqQSbgrJdSwhPYrXgRwPuklvJufj+Y
-	mgjNyybOFGJXEtuUuUJSunUe1w/8cjyKDNnls/qLpu7A15gdoM/pkofxQJZx52syLd+WM=
-X-Received: by 2002:a05:620a:a819:b0:8c6:aaf3:cb44 with SMTP id af79cd13be357-8c6aaf3cd9bmr2247463385a.4.1769001534382;
-        Wed, 21 Jan 2026 05:18:54 -0800 (PST)
+        bh=aX294P4TliS2B0BrPhrC1yfpgvWNBReUGID/aL6TSBE=;
+        b=FZ8aKLeTDbhWVEGZq5X9rSwq0/ow8Um834zHkXts/UhbDy3nyJwshhSAS5tFpwwq4E
+         z/ZrtNa55aZb2sKzE0tBxgSTJuNMjWVcuZ/q6WA3AcdtGHBmVPPk1baBgBZnp1ocWmmH
+         bN/pE/Va7k/2aNxoIp0bn9HM1gyQRhmc+yBscloZO29POEwDhb2fitAWGbJIx0U28mhm
+         KWa2sYOxEmwJWa7wU/EisY8qubt1HehSjwrboR0FK2MBz6EroKhoFBOXJuWo6ItMpLt6
+         Gh3NgZRU2Wv4dpNzt5SgMiUD8FVZxS19/ZcNjLup66cXDN/eu0NGqk4ZDhqp3Taf34Xc
+         0wXw==
+X-Forwarded-Encrypted: i=1; AJvYcCXbz4SHOpT3IGhnDgZhE5jN3fYx/czEow63H4btbQ/KLP7nHWFuFFpxGE+v4Jw5SlafRxTFnRxbjEoz@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGfVFv624SPFJmkDbROW1miAZBkr6jDutQDVEf5zquE8cSBBhT
+	+N7UQHu3FJdaA6tGh/6ZuRrzLcOyJKML4TMNqeBTL67PAsURfQGwPg//4XuXTrVELZI=
+X-Gm-Gg: AZuq6aJq/SBMMYwwDL1aKbPm6BJ4XVrHJhBUvZ9FEM5o7GrV/BKAdq1R+q6lYr6FHN+
+	+sUoYBQY836jg/4Vy1zXNaC9XVL3+peCyWX9uy5UsycK/jQV1vgcD8lYA56eWfGsYKQMvpihdkN
+	450IE0wg6a7Z0DbHM5lFr1Yzhf0If6EIGWJgCwMp38zXRTdoNhuM4VaNhPX3IQRPLVev32PInA2
+	gpy/+xnpt229opp5dxvmY+57siRkZE/TwDo9yWI9S8X3NtZE3BIlHNqi/fq9dwsQ01CN/U7I0fH
+	3/irPxaarKUdI3OftielXI9uLZLzM0ildkIXAFQpiKlA60LeuKGRdTSvG473tcG6lOqul9Ez1Tp
+	AbUq8xJuRBTO9yt9zF+6M3ueJcUdBKrO3FOHaVNmoSX3UaBJrP1F5qUuGu34wdFx0XZioLrQrRE
+	NrAicW6IvCcutbhBLGFVWVVOLcMMHukUc9VlBiTsVUZjB7KgTQpKxjy5PVMXYE0hZFaPvyBk1ek
+	OzBPw==
+X-Received: by 2002:a05:622a:1aa1:b0:4ee:2200:409e with SMTP id d75a77b69052e-502d82772a6mr67009251cf.4.1769002308002;
+        Wed, 21 Jan 2026 05:31:48 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c6a71ad820sm1209794385a.10.2026.01.21.05.18.53
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-502a1f1c1c4sm108692291cf.33.2026.01.21.05.31.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jan 2026 05:18:53 -0800 (PST)
+        Wed, 21 Jan 2026 05:31:47 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1viY6m-00000006DUF-3lkE;
-	Wed, 21 Jan 2026 09:18:52 -0400
-Date: Wed, 21 Jan 2026 09:18:52 -0400
+	id 1viYJG-00000006Dbm-2x5v;
+	Wed, 21 Jan 2026 09:31:46 -0400
+Date: Wed, 21 Jan 2026 09:31:46 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
 Cc: Leon Romanovsky <leon@kernel.org>,
@@ -111,14 +111,11 @@ Cc: Leon Romanovsky <leon@kernel.org>,
 	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
 	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
 	iommu@lists.linux.dev, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] dma-buf: Document RDMA non-ODP
- invalidate_mapping() special case
-Message-ID: <20260121131852.GX961572@ziepe.ca>
+Subject: Re: [PATCH v3 6/7] vfio: Wait for dma-buf invalidation to complete
+Message-ID: <20260121133146.GY961572@ziepe.ca>
 References: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
- <20260120-dmabuf-revoke-v3-3-b7e0b07b8214@nvidia.com>
- <4fe42e7e-846c-4aae-8274-3e9a5e7f9a6d@amd.com>
- <20260121091423.GY13201@unreal>
- <7cfe0495-f654-4f9d-8194-fa5717eeafff@amd.com>
+ <20260120-dmabuf-revoke-v3-6-b7e0b07b8214@nvidia.com>
+ <b129f0c1-b61e-4efb-9e25-d8cdadaca1b3@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -128,7 +125,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7cfe0495-f654-4f9d-8194-fa5717eeafff@amd.com>
+In-Reply-To: <b129f0c1-b61e-4efb-9e25-d8cdadaca1b3@amd.com>
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
@@ -137,7 +134,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[kernel.org,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15829-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15830-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[ziepe.ca];
 	RCPT_COUNT_TWELVE(0.00)[34];
@@ -155,20 +152,46 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 6FE2F57820
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,ziepe.ca:mid,ziepe.ca:dkim,amd.com:email,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: B642B58152
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Jan 21, 2026 at 10:17:16AM +0100, Christian König wrote:
-> The whole idea is to make invalidate_mappings truly optional.
+On Wed, Jan 21, 2026 at 10:20:51AM +0100, Christian König wrote:
+> On 1/20/26 15:07, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > dma-buf invalidation is performed asynchronously by hardware, so VFIO must
+> > wait until all affected objects have been fully invalidated.
+> > 
+> > Fixes: 5d74781ebc86 ("vfio/pci: Add dma-buf export support for MMIO regions")
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Reviewed-by: Christian König <christian.koenig@amd.com>
+> 
+> Please also keep in mind that the while this wait for all fences for
+> correctness you also need to keep the mapping valid until
+> dma_buf_unmap_attachment() was called.
 
-But it's not really optional! It's absence means we are ignoring UAF
-security issues when the exporters do their move_notify() and nothing
-happens.
+Can you elaborate on this more?
 
-Given this I don't want to loose the warning log either, the situation
-needs to be reported..
+I think what we want for dma_buf_attach_revocable() is the strong
+guarentee that the importer stops doing all access to the memory once
+this sequence is completed and the exporter can rely on it. I don't
+think this works any other way.
+
+This is already true for dynamic move capable importers, right?
+
+For the non-revocable importers I can see the invalidate sequence is
+more of an advisory thing and you can't know the access is gone until
+the map is undone.
+
+> In other words you can only redirect the DMA-addresses previously
+> given out into nirvana (or a dummy memory or similar), but you still
+> need to avoid re-using them for something else.
+
+Does any driver do this? If you unload/reload a GPU driver it is
+going to re-use the addresses handed out?
 
 Jason
 
