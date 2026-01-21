@@ -1,202 +1,312 @@
-Return-Path: <linux-rdma+bounces-15811-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15812-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4HdJGAKgcGlyYgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15811-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:44:34 +0100
+	id eESRFg6scGkgZAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15812-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 11:35:58 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1499F549F0
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:44:34 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30BD554D1
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 11:35:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 122DA586349
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 09:36:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E36634FDDF6
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 10:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3313746AEC4;
-	Wed, 21 Jan 2026 09:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD70D48123F;
+	Wed, 21 Jan 2026 10:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FSyJ3XAB"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ETXX0heM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010000.outbound.protection.outlook.com [52.101.193.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7061423A8A;
-	Wed, 21 Jan 2026 09:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768988193; cv=none; b=rrBREvZlqnVdeL91J2rPYukXigSaWSkKjLPVbNR+9QpDseEPFMD1oxNzVhZc15QdhMZ0ReDu2eLp54GQbIr69Cn5NiAelTmuXcEYWkfhxUievtIVmQXF8XYtr8zEji0totT/dLfL2djOkT32IgPVJicmyp1DT9CAvi0q+HUjYC4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768988193; c=relaxed/simple;
-	bh=qL9iu/H5hpUrP/X6+ggfEAqN7pCzi7K6vLcfE1tY/YA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QuMmbgvBSplIwaHBmYOhCah9o6mbgs0+4sM12+qf8KZVl+QWC0VqjoW28tDsF9Z0URh373txQLnwWDhU7nW++w91wz7XHyAl9X6j71ceX12LCXsDldf/qUiOKYp7p83+F5yOiZA1R2drugTRp1Obep5AFJ0zCTjCAhf1IXZDLMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FSyJ3XAB; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768988193; x=1800524193;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=qL9iu/H5hpUrP/X6+ggfEAqN7pCzi7K6vLcfE1tY/YA=;
-  b=FSyJ3XABb80ljOMJ/9cIeF4UIV7Wc08X14kjDXKRuftGTzDNK8Y4X2XU
-   0G8v+Lw7k+ZdcnX6uh1X7aps7oAyREQK69o1aniGj9cRsYwPO2P0zaguP
-   J189q6oXW3mck9vrMwe9CwMB9R9XKgVcwOCqu9AeJry6dK+w5Ibi+Bnys
-   u9iZifGC4W9P4rKzsOERVWoduqxsEuWQ78b0Tpf71xlU6pRr2PFjTFnnD
-   5VxsGpsG1zJ+h8CcG7nf0h7SGz2ghRvCFZbWe2/TaBNJY6w/Au5by0s1R
-   B8kqxDw4x3eTiRlWWGK9sy3nJ/c2RvADXVd5KxfiZ6fN667wW1sCN1uht
-   w==;
-X-CSE-ConnectionGUID: MtkL4GoCR0iUSVgX+NMF+A==
-X-CSE-MsgGUID: R92cg/2mTz+dZvIX24XR6A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11677"; a="87624107"
-X-IronPort-AV: E=Sophos;i="6.21,242,1763452800"; 
-   d="scan'208";a="87624107"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2026 01:36:32 -0800
-X-CSE-ConnectionGUID: 60Hy4B3ETOyz27yzkkUGrg==
-X-CSE-MsgGUID: Cg2+ahF4Sdui1FjdHXerRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,242,1763452800"; 
-   d="scan'208";a="206639396"
-Received: from egrumbac-mobl6.ger.corp.intel.com (HELO [10.245.245.107]) ([10.245.245.107])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2026 01:36:24 -0800
-Message-ID: <107464758df9444a465a3a9e387f5a42827aff51.camel@linux.intel.com>
-Subject: Re: [PATCH v3 6/7] vfio: Wait for dma-buf invalidation to complete
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Leon
- Romanovsky <leon@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Alex
- Deucher	 <alexander.deucher@amd.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter	 <simona@ffwll.ch>, Gerd Hoffmann <kraxel@redhat.com>, Dmitry
- Osipenko	 <dmitry.osipenko@collabora.com>, Gurchetan Singh
- <gurchetansingh@chromium.org>,  Chia-I Wu <olvaffe@gmail.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard	
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Lucas De
- Marchi	 <lucas.demarchi@intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>, Joerg
- Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
- <robin.murphy@arm.com>, Felix Kuehling	 <Felix.Kuehling@amd.com>, Alex
- Williamson <alex@shazbot.org>, Ankit Agrawal	 <ankita@nvidia.com>, Vivek
- Kasireddy <vivek.kasireddy@intel.com>
-Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
-	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev, 
-	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
-	iommu@lists.linux.dev, kvm@vger.kernel.org
-Date: Wed, 21 Jan 2026 10:36:09 +0100
-In-Reply-To: <b129f0c1-b61e-4efb-9e25-d8cdadaca1b3@amd.com>
-References: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
-	 <20260120-dmabuf-revoke-v3-6-b7e0b07b8214@nvidia.com>
-	 <b129f0c1-b61e-4efb-9e25-d8cdadaca1b3@amd.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCE747DD59;
+	Wed, 21 Jan 2026 10:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.0
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768990100; cv=fail; b=VHOSG/dwf18aM5LHfoBkA8PO3170quA1eXAGqzg5Z0stWerSX3gNUbPKeFT4QZCvr4AlYXQapRwe43WN18u4r4s6ilhW7RIr0Xp7Xm3MqyrN0edJogqRygN0MTuwknAQkEj+n9ZK6oUSjFLSHEW7E2/vWwuAooXGmY8b1rRTGKg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768990100; c=relaxed/simple;
+	bh=LO1WpgI68kgytQj/wHYkVT+z6epBlKkRGFtr/vi2Kj8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=QQ/GCqboLGbSoX5NBxuKC+m8VMzQba8QrGBNx5Ez3rNi7sKwtFpYGydk/u12Qu9rUeqf518SmJQMfctP0WE2b3WVcqVoPJL/prhfdtsHDccNczHw34jJgUZmek6nNTKPK0yIO1JvYMAGog3+EF1flXO92y1dcpAlSUil2TvQkSw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ETXX0heM; arc=fail smtp.client-ip=52.101.193.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=V5UsiSB6w5wioa3b58ZjSGFgzcor1teW++NZByvDfdDG5u2UEbsu/SsUFaWxXTZmP97XIb8AuAU1g5D2CEyHgF50QeNUXntRhk7RaoxWB8j5fhOSxL+tXZicvXRlKPJ08o5ztgxO2V1c0HjvkQZdYcGYP2RDX0yKaMl+JYvIr6qbhF4bUyqyh23RDLgDGFywDyd7YBhm/ftgCDoYt8H0UeRDMS8tm0NkhT0LSAai3QjWUWhz38q6L4hiuaccaeMTqxStx5r/Uta9l2JOBfVv0ZS7LWnyCi0TtpcXQ749gcAkMetwmbmi4XjpI2o+82c5ApNku3y9VKgFY/ow1bbBTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oQBpBeThUAXMak56uIpyE2AYV76yFwKtUt+E9SwJmMc=;
+ b=D3hYj8mk+aTZm6RVC/xjUNq7BZX05kMZMuql5KBPFPOXFaRNyFqU6WwmWZFeAuB8tvUzI/hxPVSxW/xHvECKGDllYabr39dV8h4ukRlXfA5cjU6eVXrxm9vScw/J3qbpyI6B8+qytapKPt4GMMNqcfaxsg6J1IhGxPXHz0pONk5jqHhxQ2t8LzcVkydzsdtClyu3SATrWw2wTQ4PWqBba2b5hc81e4NhFOe3PoUgJzu1cbG7BFDXrmBiUw49JOKKjilWMIpmtl9/NxKtY8EbqTv/tDGORz8O6TLZOfJv3AXi9hq+yjEQrq4i0NqOdxZjNKc0DFoE8vH8hwsUwN93iA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oQBpBeThUAXMak56uIpyE2AYV76yFwKtUt+E9SwJmMc=;
+ b=ETXX0heMYs++5orGdHLa5WF9EMkdVzRiriOROwJJd5rdDPRyPqssj3PJZ+q7Ug5C8h/e7J04Tf4sQJc2I9T29sVZvGTiZ+77/4vTUyLUw8b/7M3f98qMyoYMx3WxxDJDv1n8N/xFQ3qWxO7VfK929Gyxr642WobVu4gTe6a/DFAE6osPVdxU+WKDIZnf9lOM7xbEgLO7y30RxLUmhPj/DoxyyLPp/qV6vuQTs6wyzVTeFBplhkzA0VIRzIZKaKfYlWOSrg+XHYeWsgBH2u+A2dOIqtJdcDGoQl87zqWtvGlzFkQerX/ttWHrfzGlh2JN4Zsurt+dq3ceVXI6+8iZvw==
+Received: from SJ0PR03CA0023.namprd03.prod.outlook.com (2603:10b6:a03:33a::28)
+ by SA1PR12MB7366.namprd12.prod.outlook.com (2603:10b6:806:2b3::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.12; Wed, 21 Jan
+ 2026 10:08:13 +0000
+Received: from BY1PEPF0001AE1B.namprd04.prod.outlook.com
+ (2603:10b6:a03:33a:cafe::1a) by SJ0PR03CA0023.outlook.office365.com
+ (2603:10b6:a03:33a::28) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9542.9 via Frontend Transport; Wed,
+ 21 Jan 2026 10:08:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BY1PEPF0001AE1B.mail.protection.outlook.com (10.167.242.103) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9542.4 via Frontend Transport; Wed, 21 Jan 2026 10:08:12 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 21 Jan
+ 2026 02:08:01 -0800
+Received: from [10.221.199.162] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 21 Jan
+ 2026 02:07:58 -0800
+Message-ID: <919266de-f5d2-4f76-8c7f-1aeb55ad99cf@nvidia.com>
+Date: Wed, 21 Jan 2026 12:07:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-1.96 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rdma-next 1/2] RDMA/uverbs: Add DMABUF object type and
+ operations
+To: Jason Gunthorpe <jgg@ziepe.ca>, Edward Srouji <edwards@nvidia.com>
+CC: Leon Romanovsky <leon@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<linaro-mm-sig@lists.linaro.org>
+References: <20260108-dmabuf-export-v1-0-6d47d46580d3@nvidia.com>
+ <20260108-dmabuf-export-v1-1-6d47d46580d3@nvidia.com>
+ <20260120181520.GS961572@ziepe.ca>
+Content-Language: en-US
+From: Yishai Hadas <yishaih@nvidia.com>
+In-Reply-To: <20260120181520.GS961572@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY1PEPF0001AE1B:EE_|SA1PR12MB7366:EE_
+X-MS-Office365-Filtering-Correlation-Id: a9a8aa0c-9bc7-4e8e-fc07-08de58d4fc89
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|376014|1800799024|82310400026;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?UWR2MklMT1RuSVMraVhkNDhMazlrSDI3SitqdVM0MEdHTjZIam51em9meE9x?=
+ =?utf-8?B?TGVxa2g2VVE5Sy84THFLZFp5VXJVd1drUWtkazhNaVBFcU5JblljeGllZmlk?=
+ =?utf-8?B?eE1SbEV2REc0dm8zZlV3VXNzSklHOEEyZzFKSFFsZ3djaURsZ05QSFFTa0gr?=
+ =?utf-8?B?YXcyNmxueXBBclhrTmFEWGI2c1B0WkozNkRqQklJeldaNXEzRnNVc0xXd0N2?=
+ =?utf-8?B?WE93a0Y2ajZtb2MzMzQ0dlJLenBOTUw4dU9NekYwTTZnSWpkWldyYmJFUVZp?=
+ =?utf-8?B?T0lkWGpGNTdiM2lGcWZVQWMyWVM3MXlLKzRRT2NPSkNJVGNraXVnY0g0RXpy?=
+ =?utf-8?B?N3ovdi94dFRKclluVVZJRU11Yk5Pb2t4eDN4WW8rRU5SUmtKOG5pOW4yZFUw?=
+ =?utf-8?B?R01xVDJWY3o2N1JuUFVZdkk4SmxjOEMvM0ttSGIrVXgrNUxlNE91WWFLUTFi?=
+ =?utf-8?B?R2crb1dVKytLWmtRemJIM3VlbDdTZ04zMlFIb1l3STluUG5uZUh0ckUvc3J5?=
+ =?utf-8?B?RElnWnNTdFhEQkFqVXNJbmw1ZVlWY3haNXdKMnFwUVMrQ21TZWQ1WFRMWkFE?=
+ =?utf-8?B?V0U0WU0xN0xWVmgzUkRBOGtDbk1NQ1VDVUo4SjlBTlBTYmdDQ1V4ZElxdytQ?=
+ =?utf-8?B?UU5xM200ZUhUQ3FKQXVFRzRWVUI2bzNUcnlZYXNhb1A3ckNZb1NkZlNiM3p0?=
+ =?utf-8?B?cXNZTTBCQmpsV1pBNkF5OHFzcXUzUmhPQXp6T3lJcEgxV2x2ZWZiRXdXRlhx?=
+ =?utf-8?B?MDdVaTY1N2xtdTVTVndlRXFkd1cxdzF0bmpkNk1XSE1qWGdUNW5qQmxJTGtm?=
+ =?utf-8?B?dk5iYm9ST05BVWFxSFQ2YUFKcmlkMjNtMUhaRVQ5VG1FN0IzK1pUQjFjSklB?=
+ =?utf-8?B?R2V6SnlTc3o1ZmpIdk85NjJjT0FsNGUvTXJPaVFzekhkQitTMEUwNWpGTjBQ?=
+ =?utf-8?B?V1cwMnZDTjlqQkVmRUNwdWl0L01aQkpzMmdmQmtkSmFSMG51UU9wMWM1MzIr?=
+ =?utf-8?B?citqVHNEeU05SVRjajZIQ2RCbEFpUlI2aSt3cm5UVk13U3BqWnZrZUczMDNC?=
+ =?utf-8?B?cWlxcUxnUTFLNnpwV0dsSjBsYVdkMHdUQkUvM3l1RTZCM0UrWWVKL3JUMmtq?=
+ =?utf-8?B?akhXQUh3MThQNFd4UTUwUHZORlNXQXFrNFRTVGR2a1dvNk15RjRRaU1FM3JB?=
+ =?utf-8?B?MDNhTkNtcDQrY295RmdNbUh2NEp5VmJ1ZmZvTVpxME5TeUNjK0o3cnhPeUti?=
+ =?utf-8?B?c3VmRTJwYldsUE9KNitRanRaSzE5YkZSdENWVE5HOG1VNW50RmxzbzJESFY2?=
+ =?utf-8?B?ZWdyVWdlaVRMU2Zoc3FFdDFxN2NxK3hMWHBXWWtsYjBVQkV2WVVNcGh4bDB1?=
+ =?utf-8?B?MFpjc21HaW9ub1czUkNnbTI4Q1krNWV5OERFbzYwMUlnVnVmLzFxbVp5YzR6?=
+ =?utf-8?B?bWR2U2Q4V0QwUUg2TFB6WHVIenNQK1d3akY4TThEUHY3dGFOL3ZUY0tMYWc3?=
+ =?utf-8?B?dzNwVStnRnpSRkdDdXZaKzZMeFFzTzExVDBtTkZxTnRRdTZnK2p6cGhQbExH?=
+ =?utf-8?B?aDBHWkNzMzh1WlhjR3o4YkprMFpNdXFEdUVTeFJWbHo0SW5BRkg5SnpwSmlR?=
+ =?utf-8?B?S040NVI3WkozYXFsYzdFS0ZPQW1CeDRtaVdrUmxndllweXFBSjg3Nm8zenZW?=
+ =?utf-8?B?V25sdTVvMTAybUtSRjNIalhLcGhvSEN3QkxXdk5Udmh2bGs3dTR6TW1oUHZ2?=
+ =?utf-8?B?OUJZZ3dhNUpObTZHbm1NMEY0RTlLMTlZR2xNZFM0Z1BpQmRXM1VuYi9penU4?=
+ =?utf-8?B?UFJpR256NWg5RnFPM1J3MHhiUEhmbHNEamlIUGZ2Ymw5b2Z0MnluQUFsMURx?=
+ =?utf-8?B?NlVPVmZzUTFYOS92Ymx3K1lFSHpMM2c0MGlLU1B0SU04cUVMa3E1am1Pblcx?=
+ =?utf-8?B?a3pveC9CbEpuc0d2blZVQ0VNWnBzcjYwUmJiQnRsTHZJMHp5UStPYUFvR05u?=
+ =?utf-8?B?TzJRVWZJaXhvb3dTL05jNE5iYkV0YVh6OFRWcXVQVU1CVkJseERDT3MrNFl6?=
+ =?utf-8?B?b2tyRzVwWDhuVlVDVSt5RnhuTkhDbkVMeVd0cEpIZEp3QkZrN3VuVlZZdGhI?=
+ =?utf-8?B?V2k1Z2JWQU5ndEJ1WWV1dHpuUmV1clViOURSdDNNWkhITVpFQklmczhvRUk5?=
+ =?utf-8?B?YlZGVzdzcWVodmw3R3ZxTnU3R2tSU3Bqa3hVY3ZkcERWSUVxR2FnQkYvNWFv?=
+ =?utf-8?B?V2J3NEF4dWNNbzJ6QlRZOFgrVXNnPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(376014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2026 10:08:12.5580
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9a8aa0c-9bc7-4e8e-fc07-08de58d4fc89
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BY1PEPF0001AE1B.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7366
+X-Spamd-Result: default: False [0.04 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15811-lists,linux-rdma=lfdr.de];
-	DMARC_POLICY_ALLOW(0.00)[intel.com,none];
-	RCVD_TLS_LAST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[nvidia.com,reject];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	TAGGED_FROM(0.00)[bounces-15812-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,nvidia.com:mid,Nvidia.com:dkim];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	FREEMAIL_TO(0.00)[amd.com,kernel.org,linaro.org,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
-	RCPT_COUNT_TWELVE(0.00)[34];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[yishaih@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,intel.com:dkim,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,linux.intel.com:mid,amd.com:email]
-X-Rspamd-Queue-Id: 1499F549F0
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_COUNT_SEVEN(0.00)[8]
+X-Rspamd-Queue-Id: E30BD554D1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi, Christian,
+On 20/01/2026 20:15, Jason Gunthorpe wrote:
+> On Thu, Jan 08, 2026 at 01:11:14PM +0200, Edward Srouji wrote:
+>>   void rdma_user_mmap_entry_remove(struct rdma_user_mmap_entry *entry)
+>>   {
+>> +	struct ib_uverbs_dmabuf_file *uverbs_dmabuf, *tmp;
+>> +
+>>   	if (!entry)
+>>   		return;
+>>   
+>> +	mutex_lock(&entry->dmabufs_lock);
+>>   	xa_lock(&entry->ucontext->mmap_xa);
+>>   	entry->driver_removed = true;
+>>   	xa_unlock(&entry->ucontext->mmap_xa);
+>> +	list_for_each_entry_safe(uverbs_dmabuf, tmp, &entry->dmabufs, dmabufs_elm) {
+>> +		dma_resv_lock(uverbs_dmabuf->dmabuf->resv, NULL);
+>> +		list_del(&uverbs_dmabuf->dmabufs_elm);
+>> +		uverbs_dmabuf->revoked = true;
+>> +		dma_buf_move_notify(uverbs_dmabuf->dmabuf);
+>> +		dma_resv_unlock(uverbs_dmabuf->dmabuf->resv);
+> 
+> This will need the same wait that Christian pointed out for VFIO..
 
-On Wed, 2026-01-21 at 10:20 +0100, Christian K=C3=B6nig wrote:
-> On 1/20/26 15:07, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >=20
-> > dma-buf invalidation is performed asynchronously by hardware, so
-> > VFIO must
-> > wait until all affected objects have been fully invalidated.
-> >=20
-> > Fixes: 5d74781ebc86 ("vfio/pci: Add dma-buf export support for MMIO
-> > regions")
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->=20
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->=20
-> Please also keep in mind that the while this wait for all fences for
-> correctness you also need to keep the mapping valid until
-> dma_buf_unmap_attachment() was called.
+Sure, I'll add.
 
-I'm wondering shouldn't we require DMA_RESV_USAGE_BOOKKEEP here, as
-*any* unsignaled fence could indicate access through the map?
+> 
+> 
+>> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+>> index 18918f463361..3e0a8b9cd288 100644
+>> --- a/drivers/infiniband/core/rdma_core.c
+>> +++ b/drivers/infiniband/core/rdma_core.c
+>> @@ -465,7 +465,7 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
+>>   
+>>   	fd_type =
+>>   		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
+>> -	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release &&
+>> +	if (WARN_ON(fd_type->fops && fd_type->fops->release != &uverbs_uobject_fd_release &&
+>>   		    fd_type->fops->release != &uverbs_async_event_release)) {
+>>   		ret = ERR_PTR(-EINVAL);
+>>   		goto err_fd;
+>> @@ -477,14 +477,16 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
+>>   		goto err_fd;
+>>   	}
+>>   
+>> -	/* Note that uverbs_uobject_fd_release() is called during abort */
+>> -	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
+>> -				  fd_type->flags);
+>> -	if (IS_ERR(filp)) {
+>> -		ret = ERR_CAST(filp);
+>> -		goto err_getfile;
+>> +	if (fd_type->fops) {
+>> +		/* Note that uverbs_uobject_fd_release() is called during abort */
+>> +		filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
+>> +					  fd_type->flags);
+>> +		if (IS_ERR(filp)) {
+>> +			ret = ERR_CAST(filp);
+>> +			goto err_getfile;
+>> +		}
+>> +		uobj->object = filp;
+>>   	}
+>> -	uobj->object = filp;
+>>   
+>>   	uobj->id = new_fd;
+>>   	return uobj;
+>> @@ -561,7 +563,9 @@ static void alloc_abort_fd_uobject(struct ib_uobject *uobj)
+>>   {
+>>   	struct file *filp = uobj->object;
+>>   
+>> -	fput(filp);
+>> +	if (filp)
+>> +		fput(filp);
+>> +
+>>   	put_unused_fd(uobj->id);
+> 
+> This stuff changing hw the uobjects work should probably be in its own
+> patch with its own explanation about creating a uobject that wrappers
+> an externally allocated file descriptor vs this automatic internal
+> allocation.
 
-/Thomas
+Sure, I’ll split the current patch into two patches.
 
->=20
-> In other words you can only redirect the DMA-addresses previously
-> given out into nirvana (or a dummy memory or similar), but you still
-> need to avoid re-using them for something else.
->=20
-> Regards,
-> Christian.
->=20
-> > ---
-> > =C2=A0drivers/vfio/pci/vfio_pci_dmabuf.c | 5 +++++
-> > =C2=A01 file changed, 5 insertions(+)
-> >=20
-> > diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > index d4d0f7d08c53..33bc6a1909dd 100644
-> > --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > @@ -321,6 +321,9 @@ void vfio_pci_dma_buf_move(struct
-> > vfio_pci_core_device *vdev, bool revoked)
-> > =C2=A0			dma_resv_lock(priv->dmabuf->resv, NULL);
-> > =C2=A0			priv->revoked =3D revoked;
-> > =C2=A0			dma_buf_move_notify(priv->dmabuf);
-> > +			dma_resv_wait_timeout(priv->dmabuf->resv,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> > DMA_RESV_USAGE_KERNEL, false,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> > MAX_SCHEDULE_TIMEOUT);
-> > =C2=A0			dma_resv_unlock(priv->dmabuf->resv);
-> > =C2=A0		}
-> > =C2=A0		fput(priv->dmabuf->file);
-> > @@ -342,6 +345,8 @@ void vfio_pci_dma_buf_cleanup(struct
-> > vfio_pci_core_device *vdev)
-> > =C2=A0		priv->vdev =3D NULL;
-> > =C2=A0		priv->revoked =3D true;
-> > =C2=A0		dma_buf_move_notify(priv->dmabuf);
-> > +		dma_resv_wait_timeout(priv->dmabuf->resv,
-> > DMA_RESV_USAGE_KERNEL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 false,
-> > MAX_SCHEDULE_TIMEOUT);
-> > =C2=A0		dma_resv_unlock(priv->dmabuf->resv);
-> > =C2=A0		vfio_device_put_registration(&vdev->vdev);
-> > =C2=A0		fput(priv->dmabuf->file);
-> >=20
+> 
+>> index 797e2fcc8072..66287e8e7ad7 100644
+>> --- a/drivers/infiniband/core/uverbs.h
+>> +++ b/drivers/infiniband/core/uverbs.h
+>> @@ -133,6 +133,16 @@ struct ib_uverbs_completion_event_file {
+>>   	struct ib_uverbs_event_queue		ev_queue;
+>>   };
+>>   
+>> +struct ib_uverbs_dmabuf_file {
+>> +	struct ib_uobject uobj;
+>> +	struct dma_buf *dmabuf;
+>> +	struct list_head dmabufs_elm;
+>> +	struct rdma_user_mmap_entry *mmap_entry;
+>> +	struct dma_buf_phys_vec phys_vec;
+> 
+> Oh, are we going to have weird merge conflicts with this Leon?
+> 
+>> +static int uverbs_dmabuf_attach(struct dma_buf *dmabuf,
+>> +				struct dma_buf_attachment *attachment)
+>> +{
+>> +	struct ib_uverbs_dmabuf_file *priv = dmabuf->priv;
+>> +
+>> +	if (!attachment->peer2peer)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	if (priv->revoked)
+>> +		return -ENODEV;
+> 
+> This should only be checked in map
+
+Please see Leon's answer on that.
+
+Yishai
 
