@@ -1,107 +1,214 @@
-Return-Path: <linux-rdma+bounces-15792-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15793-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iINMDGNDcGnXXAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15792-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 04:09:23 +0100
+	id uLh0FZNecGkVXwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15793-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 06:05:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0239450403
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 04:09:22 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF9C7514E3
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 06:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 558614E3F95
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 03:09:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9625D4F392E
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 05:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3F33563E9;
-	Wed, 21 Jan 2026 03:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43C833E368;
+	Wed, 21 Jan 2026 05:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+exQdwZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eEysbBxS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8321B3563E0;
-	Wed, 21 Jan 2026 03:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4048633DED8
+	for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 05:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768964955; cv=none; b=Ub4XH+2/EK4Imumr2rLr7nsdz3jAYg4YVhK5QfLPMc8upIzmwD5KpKzx0AbVDlDkQFkqpF30XsE2Pt8iX7uXtKMcKFJFH0G3hxXl7gIyoOqH/QeA1QKMKezVFCSeQ8w1VE96RR95U4m2C9mBbq/L7p4zoUtQXT6rjte4mPzDaVI=
+	t=1768971915; cv=none; b=EKM1540mkwctzxm+JIUjUM+T1JzM1yn1ddWdU2y/GCsINKemT79XaLH2JM7vfgxzx0lH3VVSud5EknNWWDIHMiio8cgUNlYZ/qPfltjf7T2AhCRynBKfkRnRiZKkpYo6SG+FrlQBSsnLQXN6nO0w9JWe52YHDeBR8GvoNvi/T+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768964955; c=relaxed/simple;
-	bh=i8EJvfhAHrx2u7DC/NAzF8B3wu0pX6ZGRg3ukSwxT0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pp0ntPXWzQVwuOlWT5417vP3MXCLKglQHd47tIx6UyE99b8FFIstip0L/yGdxPeN1uq2FFwaoa8xbevAGwxz662FiK3NSc/Oh1QCv2UZ+WI905wCHwqtVb0dblEmZBcm32rdCIaRFFtZqJZ8l8Nej2E0FgrA5dq5+TwI4494Xzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+exQdwZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 962A3C16AAE;
-	Wed, 21 Jan 2026 03:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768964955;
-	bh=i8EJvfhAHrx2u7DC/NAzF8B3wu0pX6ZGRg3ukSwxT0o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=S+exQdwZuUPQGuCtjY62QV9oq09R88Ir5IR1Ya3s21Ii3LGHWkS2S01P0tKTTCT/D
-	 IhnSulBWfey0v8gsWfdA/VaYF4oVEbTtlpUid26Jozo07UV+b5ShKmmVkSrCJXl/xk
-	 zLcaPaw9hdN89mOOC8ozM2hLSRr5PE6nIzw7Bzt3ZcOAviUZ/s/ljOIjF+eOLNqo3i
-	 gFnJr7sZOK9M7eT6tMT8QQ8S2idOMBoAWRqvIlBZxqLxgGkC2N5SRcc7doMWX7FgBq
-	 IzEWhkL4S7e6maeXl+ksoREqb7Vq6Rih8g15j6Jdeaoww7/sdMpsQEw7UkO502v301
-	 Z4adIeTLTpO+w==
-Date: Tue, 20 Jan 2026 19:09:13 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Allison Henderson <achender@kernel.org>
-Cc: netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
- rds-devel@oss.oracle.com, horms@kernel.org, linux-rdma@vger.kernel.org,
- allison.henderson@oracle.com
-Subject: Re: [PATCH net-next v1 0/3] net/rds: RDS-TCP bug fix collection,
- subset 2: lock contention, state machine bugs, message drops
-Message-ID: <20260120190913.20a16e15@kernel.org>
-In-Reply-To: <20260118024911.1203224-1-achender@kernel.org>
-References: <20260118024911.1203224-1-achender@kernel.org>
+	s=arc-20240116; t=1768971915; c=relaxed/simple;
+	bh=/2F3YxYazcp3chVDEiNdJCfgY9xuwk1ucvXalo9C6tY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e65QnxY4aVxGt2oW2t7jA5YC3kPnchJFLBUsfS0+WDhG3F+HaLDFZENVxZuj1Hq6ja78B13f2/zOtqrt/oBbWvZUFxFMWOFwWefeoLdKs6Py1Pwzh5B0fz+U+JKjuT085PBp9Y4byOiBZxCvAVmG07EzvbliQG2xW16wwOZ7AvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eEysbBxS; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0f37cd78-d4d1-4910-95e2-8f91a6417b3a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768971911;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jVv0E2X/BfUN/RnCsT8W19P3ln0+bZdL9P0VfJNSC9Q=;
+	b=eEysbBxSomIZYXKpuhEahD2Ei9KpW8yGhPs43tLMEC9sDA+153HzqgqmaInXDzIiV3gBwN
+	h84DYESPprx8aDbrnHIucwF6td0aW1tQrosEoMaJf84FtQC3eGMbAXcwNdH51vq+scTird
+	qTZRc5K5gseIM26yxPM8eiX+fNd0ZHE=
+Date: Tue, 20 Jan 2026 21:04:27 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] RDMA/rxe: Fix race condition in QP timer handlers
+To: Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
+ leon@kernel.org
+References: <20260120074437.623018-1-lizhijian@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20260120074437.623018-1-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,ziepe.ca,kernel.org];
+	TAGGED_FROM(0.00)[bounces-15793-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15792-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	DMARC_POLICY_ALLOW(0.00)[linux.dev,none];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 0239450403
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+X-Rspamd-Queue-Id: BF9C7514E3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, 17 Jan 2026 19:49:08 -0700 Allison Henderson wrote:
-> net/rds: RDS-TCP bug fix collection, subset 2: lock contention, state machine bugs, message drops
+在 2026/1/19 23:44, Li Zhijian 写道:
+> I encontered the following warning:
+>   WARNING: drivers/infiniband/sw/rxe/rxe_task.c:249 at rxe_sched_task+0x1c8/0x238 [rdma_rxe], CPU#0: swapper/0/0
+> ...
+>    libsha1 [last unloaded: ip6_udp_tunnel]
+>   CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Tainted: G         C          6.19.0-rc5-64k-v8+ #37 PREEMPT
+>   Tainted: [C]=CRAP
+>   Hardware name: Raspberry Pi 4 Model B Rev 1.2
+>   Call trace:
+>    rxe_sched_task+0x1c8/0x238 [rdma_rxe] (P)
+>    retransmit_timer+0x130/0x188 [rdma_rxe]
+>    call_timer_fn+0x68/0x4d0
+>    __run_timers+0x630/0x888
+> ...
+>   WARNING: drivers/infiniband/sw/rxe/rxe_task.c:38 at rxe_sched_task+0x1c0/0x238 [rdma_rxe], CPU#0: swapper/0/0
+> ...
+>   WARNING: drivers/infiniband/sw/rxe/rxe_task.c:111 at do_work+0x488/0x5c8 [rdma_rxe], CPU#3: kworker/u17:4/93400
+> ...
+>   refcount_t: underflow; use-after-free.
+>   WARNING: lib/refcount.c:28 at refcount_warn_saturate+0x138/0x1a0, CPU#3: kworker/u17:4/93400
+> 
+> The issue is caused by a race condition between retransmit_timer() and
+> rxe_destroy_qp, leading to the Queue Pair's (QP) reference count dropping
+> to zero during timer handler execution.
+> 
+> It seems this warning is harmless because rxe_qp_do_cleanup() will flush
+> all pending timers and requests.
+> 
+> Example of flow causing the issue:
+> 
+> CPU0                                   CPU1
+> retransmit_timer() {
+>      spin_lock_irqsave
+>                             rxe_destroy_qp()
+>                              __rxe_cleanup()
+>                                __rxe_put() // qp->ref_count decrease to 0
 
-If these are bug fixes they must have Fixes tags and target net.
-If they are resiliency improvements please don't call them bug
-fixes and remove the Fixes tag on patch 2.
--- 
-pw-bot: cr
+In  __rxe_cleanup, __rxe_put decrease qp->ref_count to 0.
+
+Then in the timer functions retransmit_timer and rnr_nak_timer will 
+check qp and resend the packets. IMO, it may be a solution to use the 
+function rxe_get to check if ref_count is 0 or not.
+
+I am fine with it.
+
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Thanks,
+Zhu Yanjun
+
+>                              rxe_qp_do_cleanup() {
+>      if (qp->valid) {
+>          rxe_sched_task() {
+>              WARN_ON(rxe_read(task->qp) <= 0);
+>          }
+>      }
+>      spin_unlock_irqrestore
+> }
+>                                spin_lock_irqsave
+>                                qp->valid = 0
+>                                spin_unlock_irqrestore
+>                              }
+> 
+> Ensure the QP's reference count is maintained and its validity is checked
+> within the timer callbacks by adding calls to rxe_get(qp) and corresponding
+> rxe_put(qp) after use.
+> 
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_comp.c | 3 +++
+>   drivers/infiniband/sw/rxe/rxe_req.c  | 3 +++
+>   2 files changed, 6 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+> index a5b2b62f596b..1390e861bd1d 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+> @@ -119,12 +119,15 @@ void retransmit_timer(struct timer_list *t)
+>   
+>   	rxe_dbg_qp(qp, "retransmit timer fired\n");
+>   
+> +	if (!rxe_get(qp))
+> +		return;
+>   	spin_lock_irqsave(&qp->state_lock, flags);
+>   	if (qp->valid) {
+>   		qp->comp.timeout = 1;
+>   		rxe_sched_task(&qp->send_task);
+>   	}
+>   	spin_unlock_irqrestore(&qp->state_lock, flags);
+> +	rxe_put(qp);
+>   }
+>   
+>   void rxe_comp_queue_pkt(struct rxe_qp *qp, struct sk_buff *skb)
+> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> index 373b03f223be..12d03f390b09 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> @@ -102,6 +102,8 @@ void rnr_nak_timer(struct timer_list *t)
+>   
+>   	rxe_dbg_qp(qp, "nak timer fired\n");
+>   
+> +	if (!rxe_get(qp))
+> +		return;
+>   	spin_lock_irqsave(&qp->state_lock, flags);
+>   	if (qp->valid) {
+>   		/* request a send queue retry */
+> @@ -110,6 +112,7 @@ void rnr_nak_timer(struct timer_list *t)
+>   		rxe_sched_task(&qp->send_task);
+>   	}
+>   	spin_unlock_irqrestore(&qp->state_lock, flags);
+> +	rxe_put(qp);
+>   }
+>   
+>   static void req_check_sq_drain_done(struct rxe_qp *qp)
+
 
