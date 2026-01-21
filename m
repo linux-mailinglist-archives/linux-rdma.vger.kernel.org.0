@@ -1,247 +1,200 @@
-Return-Path: <linux-rdma+bounces-15835-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15834-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8CtxGJPkcGk+awAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15835-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 15:37:07 +0100
+	id AGF1EAfncGk+awAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15834-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 15:47:35 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 578C758850
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 15:37:06 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B3158ACA
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 15:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AA5C082F153
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 14:10:37 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 00F07722DCB
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jan 2026 14:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A83230BF52;
-	Wed, 21 Jan 2026 14:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1BE48B38D;
+	Wed, 21 Jan 2026 13:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Jze1fF0Q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f196.google.com (mail-qt1-f196.google.com [209.85.160.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B8D1D5174
-	for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 14:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B13732ED21
+	for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 13:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769004020; cv=none; b=HK0Z724nyd05/shCv7KBjt6ANamM05yFsLvfG/z/6fpLx1GxNS3VAbvvayyjrPvIsczuVlXFX/kepIGK9Ad1bNGCnwWFkfPOxJnpdYPbvdjX2yudzy2cF4iegal5bicvzIrTpLox3p8jUtRaPXMLfkIxVyhqILtcCAYRTMQQh7c=
+	t=1769003992; cv=none; b=YO5iqM5mNtkGR+0SIvMB2cLvktzYvuVqhD4n14I9QbokoML+md6PtHb9sDjLdNNvXQvsYWvGGNz6ox6HKwoEXoeCNQgX4B35KnpHF2IKHZNIrP5qI+pYLeIJuoeRw2GCXFsBiZNtSID33LGtlv0WDzFeIbcGldCxqo5DIP9kgMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769004020; c=relaxed/simple;
-	bh=Vzv0SqavBw40oYwbSGipwn6UwSgjqqUTMKTm1aEXNxg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BcUB4oPjLRLzjNQ68w0hz4Q7pMiQhSZU+7qHI3IQnaEZ92LW7a9AKdM4s2gdRTvyXNLxbBp3P/c/32CuiAhAqXAZf8MGSdhJCQikb2TeT+m/4FzSFQxY5naV6XAkB9HqtZVAl+Gide9j9D7VmVwsEddq4J66bccuAS5MqmUjVo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 60LDxmqI083988;
-	Wed, 21 Jan 2026 22:59:48 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 60LDxmIe083981
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 21 Jan 2026 22:59:48 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <a5f2ea72-985a-425b-a626-cde052cd4cd9@I-love.SAKURA.ne.jp>
-Date: Wed, 21 Jan 2026 22:59:45 +0900
+	s=arc-20240116; t=1769003992; c=relaxed/simple;
+	bh=tR+AFnMPEtzcHlOQnrldwGxBaKLMhAwLG9LVsjQDN2E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jK2IU0rwsSudhr804onnrcyhN578lGxi8ED4XQF7LRsT081RnH0ImR7Hk6tuIca8vC4slZ6X2qvErF0Ho0kPB8AbwA3hwUiTm+yDo7zsf2bjB8s8z4PsEWqvv9lQb51hC5csKI49I5YAC0d3M01EOshADote66Tsz5I6fZAh54o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Jze1fF0Q; arc=none smtp.client-ip=209.85.160.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f196.google.com with SMTP id d75a77b69052e-5029901389dso42948741cf.2
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jan 2026 05:59:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1769003989; x=1769608789; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NrFwAYZYjJdV2hWLBqDeijXZcUvvrfRZB3KhQxPCGpU=;
+        b=Jze1fF0Qh0XqI4BuP54hDc4hfELdDetpltdtEDmBXNzTnuSGNNQVroYyi9QrehQ2o9
+         4PoUpTuwKH0WFeXOtdWPP5cSMSEplNmxiH+jdQS+EI+Kyarl3xrrJlpYkMYwv2kuaWPt
+         ZV8Ff+4ClFwnu45Xff3eVIaffTmCx/lCQwGQUrSH7Y0Npj6TbtsTjjjVWFNKiHOySOP4
+         ZaJy5GUCHmmwvgyyugkTYFGvW4Co8LSNP1BN9pYmqtYi7m1exostNPSVMF836p/0m79j
+         dNW7ByNav3nois3lD6T0pQCM0sOhhfAOr+N2WiKOCtyZq+xysFKpplttTYfq8WRty2NR
+         U7hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769003989; x=1769608789;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NrFwAYZYjJdV2hWLBqDeijXZcUvvrfRZB3KhQxPCGpU=;
+        b=lO2KmntjS4MqSGVWmYg0azxHgBQJbKnpt0/cAL8/Pw6VLThxpjmSU7gw9tcvvBUAPf
+         czib5a6Mjqq4bCib6++yEK80PmrC65Oey7TH96nTooCQmeWRMtfX5dGBV93DmA3iV7Yg
+         /cYi2HWObPklbPOJyDTYQf8s5/aRZKRnuEW9zhi3IwE4QCd+uPvgwNmRPb9ZRRljsZ8g
+         KTh2s7FpETBJe4pZQ2UtBsSKxWOEBmZANCWMFmE2oEDX1AqmwYzOnfkmDiUy5NPIzY+J
+         eHQ9Py9mchBhxwJOQ7krHAxWbHxPKkHqw0EuozH/+4dW5Gqi11MNLw8vWNe3GyWde5h1
+         h3ew==
+X-Forwarded-Encrypted: i=1; AJvYcCXeiooRoURUcxPmG3tPpUKMjgcU5xqMS3OZ2UtG+MW50VK6rHflzafz6bdK/kIdzEOPxuS13s7swSdd@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+gEQW/s8duEkblZHtEFnlDeAXLrmKtpF4j7O4WezGDAdDivQR
+	EQbH4lkp0SQhcJ2KYFRdHKW0ACoCMSMmU/YIvnQUpmzTFZduhEA1YofiETwuNHEdyu4=
+X-Gm-Gg: AZuq6aKvqFG1ugKQg7Rne0Wp6po+AS/WlqChPDWXg2adZqzsZQHOBGQ9rU1cNudHnS1
+	XIzyBJUKpn/7fWbN24DnWhrFl7w7I8BelgVL0hbbA5JBES9RN1MQsF2vYx2kuFoa6KNEuG4Dd6Y
+	wOWseoFbR6dlBasjPq5GHrGw2AU32FHN6vv1TMy7PLOtYmpwwGRApX+pGQl2ZuQEA0lF4SKUyVi
+	tN8vEbNOFSomhSQ0YnWKjx+U92kPDHTVDpDQqeBMWSGAIqKiHENoJCY81Ii18BVAZ+O3BiYxVJw
+	cDgL5UkVJ17XPXvTb/SCbVoxKGDh1eqTyJZ5J6358lt+q/vTUy9vuNaGrdHNr9Wg76UYJF8sqGb
+	GCkVOiAseYDFl0kSGvTLvity9asKHmOy8hum2ZTDb09inuiA2HUchxUzHN09C7DgRjO4HbsPOXr
+	yY55dEpMLnqW1z7hFR8vIbCDAueeyWToxZubQYQ9hqUMuMYo6ZhPfVWrc7x36Gj679yx0=
+X-Received: by 2002:ac8:5d14:0:b0:4ff:c5f7:f812 with SMTP id d75a77b69052e-502d855fe29mr65972911cf.38.1769003989233;
+        Wed, 21 Jan 2026 05:59:49 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-502a1d9f480sm113423091cf.13.2026.01.21.05.59.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jan 2026 05:59:48 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1viYkO-00000006E8Z-0XjE;
+	Wed, 21 Jan 2026 09:59:48 -0400
+Date: Wed, 21 Jan 2026 09:59:48 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc: Leon Romanovsky <leon@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] dma-buf: Document RDMA non-ODP
+ invalidate_mapping() special case
+Message-ID: <20260121135948.GB961572@ziepe.ca>
+References: <20260120-dmabuf-revoke-v3-0-b7e0b07b8214@nvidia.com>
+ <20260120-dmabuf-revoke-v3-3-b7e0b07b8214@nvidia.com>
+ <4fe42e7e-846c-4aae-8274-3e9a5e7f9a6d@amd.com>
+ <20260121091423.GY13201@unreal>
+ <7cfe0495-f654-4f9d-8194-fa5717eeafff@amd.com>
+ <20260121131852.GX961572@ziepe.ca>
+ <8a8ba092-6cfa-41d2-8137-e5e9d917e914@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [rdma bug] del_default_gids() is not called upon
- NETDEV_UNREGISTER event
-To: Parav Pandit <parav@mellanox.com>, Huy Nguyen <huyn@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Maher Sanalla <msanalla@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>
-Cc: OFED mailing list <linux-rdma@vger.kernel.org>
-References: <c1f9511c-7ad0-444d-aa0c-516674702b4e@I-love.SAKURA.ne.jp>
- <SJ0PR12MB6806E77B849859B7BAC8CC1CDC89A@SJ0PR12MB6806.namprd12.prod.outlook.com>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <SJ0PR12MB6806E77B849859B7BAC8CC1CDC89A@SJ0PR12MB6806.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav302.rs.sakura.ne.jp
-X-Spamd-Result: default: False [-1.26 / 15.00];
+In-Reply-To: <8a8ba092-6cfa-41d2-8137-e5e9d917e914@amd.com>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[i-love.sakura.ne.jp];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[penguin-kernel@I-love.SAKURA.ne.jp,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-15834-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[ziepe.ca];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
+	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_FROM(0.00)[bounces-15835-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TO_DN_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,I-love.SAKURA.ne.jp:mid]
-X-Rspamd-Queue-Id: 578C758850
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:mid,ziepe.ca:dkim,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: E3B3158ACA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 2026/01/20 20:43, Parav Pandit wrote:
-> I haven’t thought through fully or analyse the code recently,
-> gid_table_cleanup_one() should cleanup and release the reference anyway.
-> If that is done correctly, the reference is held somewhere else.
-> Isn’t it?
+On Wed, Jan 21, 2026 at 02:52:53PM +0100, Christian König wrote:
+> On 1/21/26 14:18, Jason Gunthorpe wrote:
+> > On Wed, Jan 21, 2026 at 10:17:16AM +0100, Christian König wrote:
+> >> The whole idea is to make invalidate_mappings truly optional.
+> > 
+> > But it's not really optional! It's absence means we are ignoring UAF
+> > security issues when the exporters do their move_notify() and nothing
+> > happens.
+> 
+> No that is unproblematic.
+> 
+> See the invalidate_mappings callback just tells the importer that
+> the mapping in question can't be relied on any more.
+> 
+> But the mapping is truly freed only by the importer calling
+> dma_buf_unmap_attachment().
+> 
+> In other words the invalidate_mappings give the signal to the
+> importer to disable all operations and the
+> dma_buf_unmap_attachment() is the signal from the importer that the
+> housekeeping structures can be freed and the underlying address
+> space or backing object re-used.
 
-Indeed, even if del_gid() from _ib_cache_gid_del() from
-ib_cache_gid_set_default_gid() from del_default_gids() is not called upon
-NETDEV_UNREGISTER event, del_gid() from cleanup_gid_table_port() from
-gid_table_cleanup_one() from ib_cache_cleanup_one() from __ib_unregister_device()
-will release the reference.
+I see
 
-But there is a possible pitfall; wait_for_completion() from disable_device() from
-__ib_unregister_device() will hang if there is a refcount leak. Since the
-"unregister_netdevice: waiting for" message is printed after 10 seconds from
-start of netdev unregistration whereas the khungtaskd message is printed after
-140 seconds from start of unintterruptible wait, we haven't confirmed whether
-there is a refcount leak. If wait_for_completion() is blocked due to a refcount
-leak, it will also prevent gid_table_cleanup_one() from ib_cache_cleanup_one()
- from being called.
+Can we document this please, I haven't seen this scheme described
+anyhwere.
 
-> My suspect is the bug that you reported in [1] is the cause, i.e. the ib
-> device REGISTERED and netdev event racing.
+And let's clarify what I said in my other email that this new revoke
+semantic is not just a signal to maybe someday unmap but a hard
+barrier that it must be done once the fences complete, similar to
+non-pinned importers.
 
-Looks like so, for del_gid() would have been called from
-ib_cache_gid_del_all_netdev_gids() from del_netdev_ips() from
-ib_enum_roce_netdev() from ib_enum_all_roce_netdevs() from
-netdevice_event_work_handler() if we didn't hit this race.
+The cover letter should be clarified with this understanding too.
 
-Then,
-
-> However, flushing the wq does not seem the robust solution either because
-> right after flushing the netdev unregister event may arrive.
-
-can we try something like below diff? This diff tries to expedite
-
-	ndev_storage = entry->ndev_storage;
-	if (ndev_storage) {
-		entry->ndev_storage = NULL;
-		rcu_assign_pointer(entry->attr.ndev, NULL);
-		call_rcu(&ndev_storage->rcu_head, put_gid_ndev);
-	}
-
-logic in del_gid() without actually calling del_gid(), by calling
-NETDEV_UNREGISTER event by polling NETREG_UNREGISTERING state.
-I'd like to try using linux-next if you think this approach works.
-
- drivers/infiniband/core/cache.c  |   37 +++++++++++++++++++++++++++++++++++++
- drivers/infiniband/core/device.c |   13 +++++++++++++
- include/rdma/ib_verbs.h          |    3 +++
- 3 files changed, 53 insertions(+)
-
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 6aad66bc5dd7..cd7ca0762add 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2857,6 +2857,7 @@ struct ib_device {
- 	refcount_t refcount;
- 	struct completion unreg_completion;
- 	struct work_struct unregistration_work;
-+	struct work_struct netdev_unregistering_work;
- 
- 	const struct rdma_link_ops *link_ops;
- 
-@@ -5010,4 +5011,6 @@ static inline void ib_mark_name_assigned_by_user(struct ib_device *ibdev)
- 	ibdev->name_assign_type = RDMA_NAME_ASSIGN_TYPE_USER;
- }
- 
-+void ib_check_netdev_unregistering(struct work_struct *work);
-+
- #endif /* IB_VERBS_H */
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 81cf3c902e81..aa1cebe07f1f 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1652,3 +1652,40 @@ void ib_cache_cleanup_one(struct ib_device *device)
- 	 */
- 	flush_workqueue(ib_wq);
- }
-+
-+void ib_check_netdev_unregistering(struct work_struct *work)
-+{
-+	struct ib_device *device = container_of(work, struct ib_device, netdev_unregistering_work);
-+	u32 port;
-+	struct ib_gid_table *table;
-+	struct ib_gid_table_entry *entry;
-+	struct roce_gid_ndev_storage *ndev_storage;
-+	int ix;
-+
-+	rdma_for_each_port(device, port) {
-+		table = rdma_gid_table(device, port);
-+		mutex_lock(&table->lock);
-+		for (ix = 0; ix < table->sz; ix++) {
-+			write_lock_irq(&table->rwlock);
-+			entry = table->data_vec[ix];
-+			ndev_storage = entry->ndev_storage;
-+			if (ndev_storage && ndev_storage->ndev &&
-+			    ndev_storage->ndev->reg_state == NETREG_UNREGISTERING) {
-+				entry->ndev_storage = NULL;
-+				rcu_assign_pointer(entry->attr.ndev, NULL);
-+			} else {
-+				ndev_storage = NULL;
-+			}
-+			write_unlock_irq(&table->rwlock);
-+			if (ndev_storage)
-+				call_rcu(&ndev_storage->rcu_head, put_gid_ndev);
-+		}
-+		mutex_unlock(&table->lock);
-+	}
-+	if (refcount_read(&device->refcount) == 1) {
-+		ib_device_put(device);
-+		return;
-+	}
-+	schedule_timeout_uninterruptible(HZ / 2);
-+	schedule_work(work);
-+}
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 1174ab7da629..ce3d8ab42943 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1304,6 +1304,15 @@ static void disable_device(struct ib_device *device)
- 	xa_clear_mark(&devices, device->index, DEVICE_REGISTERED);
- 	up_write(&devices_rwsem);
- 
-+	/*
-+	 * Start monitoring for NETDEV_UNREGISTER event, for netdevice_event(NETDEV_UNREGISTER)
-+	 * for this device became no-op due to clearing DEVICE_REGISTERED mark. Monitoring will
-+	 * stop after dropping refcount when refcount becomes 1.
-+	 */
-+	INIT_WORK(&device->netdev_unregistering_work, ib_check_netdev_unregistering);
-+	refcount_inc(&device->refcount);
-+	schedule_work(&device->netdev_unregistering_work);
-+
- 	/*
- 	 * Remove clients in LIFO order, see assign_client_id. This could be
- 	 * more efficient if xarray learns to reverse iterate. Since no new
-@@ -1322,6 +1331,10 @@ static void disable_device(struct ib_device *device)
- 
- 	/* Pairs with refcount_set in enable_device */
- 	ib_device_put(device);
-+	/*
-+	 * Monitoring will stop here unless there is a refcount leak.
-+	 * The khungtaskd will complain if there is a refcount leak.
-+	 */
- 	wait_for_completion(&device->unreg_completion);
- 
- 	/*
-
+Jason
 
