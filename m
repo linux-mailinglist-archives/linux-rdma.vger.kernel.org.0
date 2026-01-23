@@ -1,127 +1,160 @@
-Return-Path: <linux-rdma+bounces-15926-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15927-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ALmcDpqMc2l0xAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15926-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:58:34 +0100
+	id IAZGINyQc2l0xAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15927-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 16:16:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE46977527
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:58:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E78F77A67
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 16:16:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 57F11301CF8D
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 14:58:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 723AB303B4F5
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D48330B06;
-	Fri, 23 Jan 2026 14:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E312F25E4;
+	Fri, 23 Jan 2026 15:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SZ+CT3AP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOOBu/Fl"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04262E06EA;
-	Fri, 23 Jan 2026 14:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199C02494ED
+	for <linux-rdma@vger.kernel.org>; Fri, 23 Jan 2026 15:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769180304; cv=none; b=FiS6ckL/9llhaimrw+TQuJc7fCpPmkESXfoHtbRT5VVbTLcMPcAXhwsIPfbLd6ej04uj/W34QOSjuiOleoiLrbIB8GK/rjrzh2j+rSWtjcnX3rjrMlVpXRE4I++z7en1m2LIMxL/RWVEmL+zmQgV54hWr9TqQJCwL/0IZ24gB7M=
+	t=1769180674; cv=none; b=o2Z8zgnIQ4bTsb4holekfvauePazUUhCBmFMO3NFn4Q89KO75n9Fgrb2Mcwqp8MlGDC7M/Nye2iznII4CciR/Dd4UzUlTDytBCQVPESdF8UW5WokVJuGa9A7sIlFEimqZWv6XTfFd6IbPg1yqTFr/NJdWUtZpPXfYKpys/302h8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769180304; c=relaxed/simple;
-	bh=WE1/H+pA0M/3cp7I12EZf75aU5FUoIcUNrJz5plzf+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UDVWJZzCOiMsPE1BX7SMgdxGg4Le6WI9m5LprkEPvrR5/2mvY6FgZgciruzQ6+6EUb/NfImPtPEgru/hhE/2nEgXyi7QksexvUGNYs3CaPG6PGkMtnBjGz/S99DHOjW/YiiC/E6WwdQ8RHQ3DgMMv3vEdiSYoi4wahf/bdtatH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SZ+CT3AP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1860C4CEF1;
-	Fri, 23 Jan 2026 14:58:18 +0000 (UTC)
+	s=arc-20240116; t=1769180674; c=relaxed/simple;
+	bh=SQEkIT8KGpmXjBQ7hOiB1ApldseNUijZtb1nmtU0/2w=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=N8+/pNE/O68REKqmdEgWh/d2JhBQNdYTojhpKFii4qCOaNBQC4haI9RXh067MpLe2MPxcKnaKWeU00qp7Ojo/i3w0y/PL8IaputwjSxxER+ZQuVE/9kfaQdPnygdtF3cOGjIi0iqUDAc394ENJbpyXVsfxo/RNLfZ/IYHwaBP88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOOBu/Fl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84CBEC4AF09;
+	Fri, 23 Jan 2026 15:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769180304;
-	bh=WE1/H+pA0M/3cp7I12EZf75aU5FUoIcUNrJz5plzf+I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SZ+CT3APk84zJsU3fPjS/cljFGrh/epaOwqraMXSnLhGxxPPyuUvd8R2nRHnobE0t
-	 Axzf8KEbqpXEi06s4Tl1EjVi+gcvQTZI85r4qO33j7R+tMRkhgtXN2+TxQToF8hnnU
-	 zvuN90uhpTh5qQjnRUcl0lExnZUhj6iuuKMQJ1L7oL4UXOcxLvu0iC3mPKtdMkVXWZ
-	 HGoS/TwBDJtvzBAbwSrMZKHZI+ccvaar2vfPNFCIwTNqsp87EGAaEb7U06uIPieGbf
-	 qhMFRq0ktMd4DotsSv3Hyl0OT2SJ0ztfEwAk1w3s/NWkhj2W7yhovKjtnDZLEOK3Vm
-	 8ScnkolaB+4nw==
-Date: Fri, 23 Jan 2026 14:58:16 +0000
-From: Simon Horman <horms@kernel.org>
-To: Ivan Vecera <ivecera@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, conor+dt@kernel.org, poros@redhat.com,
-	anthony.l.nguyen@intel.com, linux-rdma@vger.kernel.org,
-	tariqt@nvidia.com, robh@kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, aleksander.lobakin@intel.com,
-	mbloch@nvidia.com, jiri@resnulli.us, Prathosh.Satish@microchip.com,
-	krzk+dt@kernel.org, saeedm@nvidia.com, devicetree@vger.kernel.org,
-	davem@davemloft.net, pabeni@redhat.com,
-	przemyslaw.kitszel@intel.com, arkadiusz.kubalewski@intel.com,
-	jonathan.lemon@gmail.com, saravanak@kernel.org,
-	aleksandr.loktionov@intel.com, mschmidt@redhat.com,
-	edumazet@google.com, leon@kernel.org, vadim.fedorenko@linux.dev,
-	grzegorz.nitka@intel.com, intel-wired-lan@lists.osuosl.org,
-	richardcochran@gmail.com, andrew+netdev@lunn.ch
-Subject: Re: [net-next,v2,08/12] dpll: Enhance and consolidate reference
- counting logic
-Message-ID: <aXOMiAhf-NdQTonz@horms.kernel.org>
-References: <20260116184610.147591-9-ivecera@redhat.com>
- <20260121001650.1904392-2-kuba@kernel.org>
- <f676c151-e871-4b2e-83f6-6d62bc146337@redhat.com>
+	s=k20201202; t=1769180673;
+	bh=SQEkIT8KGpmXjBQ7hOiB1ApldseNUijZtb1nmtU0/2w=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=tOOBu/Fl0Sb1oRJcW1PwSnwDRN/15MQgU91eDslS54k1IxuItlfHKu1TDSo1PVE+v
+	 iO2gRsNMhi2Cj7SPSNUYWSbe5Qnj45/IBJJUSDIUOp+RijPRIua3hPSbOaRNSYzTmv
+	 98cYHnjjywap5BbwUZkPguB6alR6XA60RzxemS/4HQZ7gwlqtiqya2DIPcYR3iogBt
+	 05s4oWtBFIiz+50wbFSXU5/Grt1I74B7eAmDGn7FRuCAq2hdaBC9t5GIgAJwNZyxWL
+	 gN4PeUvd1Hf/AJq+b9YAItH4MoYvbnh368KZiydKkVlyQTveWbZPUb/fVtrC8eqbrX
+	 gwAswm6qc/rTg==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 5FBFAF40068;
+	Fri, 23 Jan 2026 10:04:32 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Fri, 23 Jan 2026 10:04:32 -0500
+X-ME-Sender: <xms:AI5zaZdyR9iiUbiT-DmhBIy0fzo7l0Dua1JYi8JvIlidbvjmndjJGg>
+    <xme:AI5zaSBIIriBEaYEvHLkOIWzfjcqG4uddRMhFgYwWCm46ATk4LRJmIQ8LKxUPWgoQ
+    P_YdrcruTNUlELUTJ_njlcC5Fr9Lc2fPxeYLZNjxyHMHJ12yN3fujM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeelfeeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
+    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
+    hnpefhffekffeftdfgheeiveekudeuhfdvjedvfedvueduvdegleekgeetgfduhfefleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhutg
+    hklhgvvhgvrhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeifeegleel
+    leehledqfedvleekgeegvdefqdgtvghlpeepkhgvrhhnvghlrdhorhhgsehfrghsthhmrg
+    hilhdrtghomhdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgt
+    phhtthhopehjlhgrhihtohhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghonh
+    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgthheslhhsthdruggvpdhrtghpthht
+    ohepjhhgghesnhhvihguihgrrdgtohhmpdhrtghpthhtoheptghhuhgtkhdrlhgvvhgvrh
+    esohhrrggtlhgvrdgtohhmpdhrtghpthhtohepuggrihdrnhhgohesohhrrggtlhgvrdgt
+    ohhmpdhrtghpthhtohepnhgvihhlsgesohifnhhmrghilhdrnhgvthdprhgtphhtthhope
+    hokhhorhhnihgvvhesrhgvughhrghtrdgtohhmpdhrtghpthhtohepthhomhesthgrlhhp
+    vgihrdgtohhm
+X-ME-Proxy: <xmx:AI5zaVAaS5hwhCf5XyueGpN5GBd8kNwz7GOcPuVQOp861ZdjT4HTfg>
+    <xmx:AI5zafbmQuqdChk7-q8KdLkKoVYUA9FJzoP5oQTFZFjPODe016UpoA>
+    <xmx:AI5zadl1kOilZhTmBPun2X_-IS0_WC_Fzyc8WXdizLmIcjxYrxkEUA>
+    <xmx:AI5zaUqOoF4J82W2GBV6psHE1CENPuBFpPDFwIMklF3Y2pkryYFCCA>
+    <xmx:AI5zafBKvKoUdA9SqsLnNALIuTlg0dONMEEHAIeTw1fOakObdrNYo5dO>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 3D723780077; Fri, 23 Jan 2026 10:04:32 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f676c151-e871-4b2e-83f6-6d62bc146337@redhat.com>
+X-ThreadId: A3GYIHtTJmvw
+Date: Fri, 23 Jan 2026 10:04:07 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Christoph Hellwig" <hch@lst.de>
+Cc: "Jason Gunthorpe" <jgg@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>,
+ NeilBrown <neilb@ownmail.net>, "Jeff Layton" <jlayton@kernel.org>,
+ "Olga Kornievskaia" <okorniev@redhat.com>, "Dai Ngo" <dai.ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>, linux-rdma@vger.kernel.org,
+ linux-nfs@vger.kernel.org, "Chuck Lever" <chuck.lever@oracle.com>
+Message-Id: <d70b5896-2de8-4417-a149-0fd1c55f4d2d@app.fastmail.com>
+In-Reply-To: <20260123062844.GB25786@lst.de>
+References: <20260122220401.1143331-1-cel@kernel.org>
+ <20260122220401.1143331-3-cel@kernel.org> <20260123062844.GB25786@lst.de>
+Subject: Re: [PATCH v3 2/5] RDMA/core: use IOVA-based DMA mapping for bvec RDMA
+ operations
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15926-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,redhat.com,intel.com,vger.kernel.org,nvidia.com,resnulli.us,microchip.com,davemloft.net,gmail.com,google.com,linux.dev,lists.osuosl.org,lunn.ch];
-	RCPT_COUNT_TWELVE(0.00)[32];
+	FREEMAIL_CC(0.00)[nvidia.com,kernel.org,ownmail.net,redhat.com,oracle.com,talpey.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.986];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,dt,netdev];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15927-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[app.fastmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,horms.kernel.org:mid]
-X-Rspamd-Queue-Id: CE46977527
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.985];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 2E78F77A67
 X-Rspamd-Action: no action
 
-On Wed, Jan 21, 2026 at 09:18:02AM +0100, Ivan Vecera wrote:
-> On 1/21/26 1:16 AM, Jakub Kicinski wrote:
-> > This is an AI-generated review of your patch.
-> > 
-> > Dunno if there's a reason for having this fixed by a later patch,
-> > if not let's fix. I'm sending the review mostly because of the
-> > comments on patch 12.
-> Will reorder these patches... Maybe it would be better to send patch 9
-> separately to net as this is the fix for the bug we found during
-> development of this series.
 
-Hi Ivan,
 
-If it is a but in net, then yes, that sounds like a good idea to me.
+On Fri, Jan 23, 2026, at 1:28 AM, Christoph Hellwig wrote:
+>> +	/* Link all bvecs into the IOVA space */
+>> +	link_iter = *iter;
+>> +	while (link_iter.bi_size) {
+>> +		struct bio_vec bv = mp_bvec_iter_bvec(bvec, link_iter);
+>> +
+>> +		ret = dma_iova_link(dma_dev, &ctx->iova.state, bvec_phys(&bv),
+>> +				    mapped_len, bv.bv_len, dir, 0);
+>> +		if (ret)
+>> +			goto out_destroy;
+>> +
+>> +		mapped_len += bv.bv_len;
+>> +		bvec_iter_advance(bvec, &link_iter, bv.bv_len);
+>> +	}
+>
+> Why is this using a local link_iter?  We're not using iter later.
 
-Please include a Fixes tag if you take that route.
+I think we don't want to leak a partially-updated iter if the
+API call returns an error.
+
+
+-- 
+Chuck Lever
 
