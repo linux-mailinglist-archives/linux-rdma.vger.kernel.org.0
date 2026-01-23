@@ -1,170 +1,120 @@
-Return-Path: <linux-rdma+bounces-15923-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15924-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UGAkHL2Cc2kDxAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15923-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:16:29 +0100
+	id qGdQMYmJc2krxAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15924-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:45:29 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D556076D97
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:16:28 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E2CE77395
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 15:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5629302FA9D
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 14:13:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 51FED300982F
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 14:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24782D5940;
-	Fri, 23 Jan 2026 14:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B9332B985;
+	Fri, 23 Jan 2026 14:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Osvzvb7m"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yD/PCj8t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4323274641;
-	Fri, 23 Jan 2026 14:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA8E32572F;
+	Fri, 23 Jan 2026 14:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769177633; cv=none; b=QKfQrN6nZGjEC/4m0gIvWpq0eHmkiHndgXf9aQNSlQyCIGwSnzc1wbGJXmAremoC6cNapOFmAixH8HQPe26yob3OraU6124QYLlt4Z9Yjutv4r/jqL05ReKMBF+/RuykRc9H8x3aI+kcG+UV8Ojq538ERRRLyw1x9faIjfsD10E=
+	t=1769179502; cv=none; b=bKSHOhfGv0GIqibm9aeTilzsp81M8gLJYhFD76e4gwQB0zzuptd3sKTPcoukUetIWZ78AZfQKrjwBD2A1Cz/qxOZtrhy32m4M4tscYVsIRo5LOPKZCcZ6VJDxlYaFsMYbMuo2PXrP8tPUexOOx6rrMBXKpqm5BFnRghnUkUYh5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769177633; c=relaxed/simple;
-	bh=5Jq9ngGjUGPz3WSIUdzUhPNpP4sVGNNZMaI7LmtLhXw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UHbqR8U4vYLt1o8Xy+k/i4vr4aRLtyERGcWpLbYzAq3+D/B6SWhms8d5+IZXafdUuhRA7tyj3lzxBnoBr9TvpYV8dFViBlydHd4rj23e+GrhL+uE09npitN3cLSb0uKkKc08jHwTkY1wNdTvYXORGTjZt/ku7zxLkSEmMkh5Ayg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Osvzvb7m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D649C4CEF1;
-	Fri, 23 Jan 2026 14:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769177633;
-	bh=5Jq9ngGjUGPz3WSIUdzUhPNpP4sVGNNZMaI7LmtLhXw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Osvzvb7mXtQRETaJ+y19L7kDJM4Fdt1GDi0Cs6mpN0kbOhtdHNiBlgRjZoIz5jUny
-	 z7jmW3yA2zg/NW8qlchp1geoP3Hp5HrZ8iBjg4xaV6Pi8ngYrCnQ2g3Ode/m0RDiFB
-	 1dtN+6jnXSpti49F/Dw5BGXd+6ByQwUkyd2vJglgZlhDjboLoiiDmOG5Se9FXLo3+Y
-	 utAHxgzs7NkQZAox1/pjyq/J3a/rBEVsYtpD4JTaD/YAN1j9znbGNilye8172qJJhF
-	 H4XrDs5tMpHfTWbejkkY1500s8Xy1UT/xHtIWwh0j+WPI0K0OHm6zbuNeVQVNyn4Nd
-	 ow/cWOF2/lEWg==
-Message-ID: <d67a30a0-5ff1-4e31-a168-81f8b7bee97f@kernel.org>
-Date: Fri, 23 Jan 2026 09:13:47 -0500
+	s=arc-20240116; t=1769179502; c=relaxed/simple;
+	bh=1fsOFH6vEkmEjbUP8ep2GCcNgAXEKeAW1MDUSgfC5ok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XQmk5oSdTU1y0PF3m7mBepcuNgV5XMsTSNDZWtMBtkS4xpI1scdUurNdrHBtVod+lDz6vGNBoneZlS9iiSoziT1QaDILuiklUUleOlaVUfcT+kN3sW3qDEwpN0XqTYG5Un3QP2jTb4Ske9GgKCS1wdcefoYr+8Z0FzB0VzqWHdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yD/PCj8t; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=snVK1veFV1gsSfQW62KqY7I36fn5Lz9zL5oe6gesiPw=; b=yD/PCj8tH8iUKwuLmGuuaRZAZ4
+	b9Y4GP+ZFXRJxd8IETUTeRpoMA9EGtzEYyd7gQRocXKZRkzAHfuVOV4PzfLQKIDyOXkcfW4Zl6viQ
+	xh9Yo++ttvJ18GBsu1YZsP44o10p3mUEuX2PUV3lwLmTeWHAWERBvlPHzJHKp1ZEia+p4LwwOPgoG
+	LKQRfArxUM71d08Br/pmTk2inJo4ASiFz15PEufQYhrwjyh1XJiHBCzG1eKScbTU5xR3UEQeyqIuH
+	fxPqKM4C9Yhsb/7bPjVv5KH1i+PTsMRKCmZ5iqxgYrtnr8lbdWgmo3r6UkTGnNG/uAlx9TfvyD1tF
+	4aDcDj+g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vjIP6-000000093cF-1yfQ;
+	Fri, 23 Jan 2026 14:44:52 +0000
+Date: Fri, 23 Jan 2026 06:44:52 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	oliver.yang@linux.alibaba.com
+Subject: Re: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
+Message-ID: <aXOJZBZCjjsbv7-e@infradead.org>
+References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
+ <20260123082349.42663-3-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/5] Add a bio_vec based API to core/rw.c
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc: NeilBrown <neilb@ownmail.net>, Jeff Layton <jlayton@kernel.org>,
- Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <dai.ngo@oracle.com>,
- Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org,
- linux-nfs@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
-References: <20260122220401.1143331-1-cel@kernel.org>
- <c02ab348-5243-4e97-b916-6bd59ffe769a@linux.dev>
-From: Chuck Lever <cel@kernel.org>
-Content-Language: en-US
-Organization: kernel.org
-In-Reply-To: <c02ab348-5243-4e97-b916-6bd59ffe769a@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260123082349.42663-3-alibuda@linux.alibaba.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[ownmail.net,kernel.org,redhat.com,oracle.com,talpey.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-15923-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	HAS_ORG_HEADER(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15924-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[davemloft.net,linux-foundation.org,linux.alibaba.com,google.com,kernel.org,redhat.com,linux.ibm.com,gmail.com,vger.kernel.org,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-0.967];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email]
-X-Rspamd-Queue-Id: D556076D97
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,infradead.org:mid,infradead.org:dkim]
+X-Rspamd-Queue-Id: 7E2CE77395
 X-Rspamd-Action: no action
 
-On 1/23/26 1:04 AM, Zhu Yanjun wrote:
-> 在 2026/1/22 14:03, Chuck Lever 写道:
->> From: Chuck Lever <chuck.lever@oracle.com>
->>
->> This series introduces a bio_vec based API for RDMA read and write
->> operations in the RDMA core, eliminating unnecessary scatterlist
->> conversions for callers that already work with bvecs.
->>
->> Current users of rdma_rw_ctx_init() must convert their native data
->> structures into scatterlists. For subsystems like svcrdma that
->> maintain data in bvec format, this conversion adds overhead both in
->> CPU cycles and memory footprint. The new API accepts bvec arrays
->> directly.
->>
->> For hardware RDMA devices, the implementation uses the IOVA-based
->> DMA mapping API to reduce IOTLB synchronization overhead from O(n)
->> per-page syncs to a single O(1) sync after all mappings complete.
->> Software RDMA devices (rxe, siw) continue using virtual addressing.
->>
->> The series includes MR registration support for bvec arrays,
->> enabling iWARP devices and the force_mr debug parameter. The MR
->> path reuses existing ib_map_mr_sg() infrastructure by constructing
->> a synthetic scatterlist from the bvec DMA addresses.
-> 
-> Hi, Chuck Lever
-> 
-> I’ve read through the patch series. As I understand it, the new bio_vec–
-> based RDMA read/write API allows callers that already operate on bvecs
-> (for example, svcrdma and potentially NVMe-oF) to avoid converting their
-> data into scatterlists, which should reduce CPU overhead and memory
-> usage in the data path.
-> 
-> For hardware RDMA devices, the use of the IOVA-based DMA mapping API
-> also seems likely to reduce IOTLB synchronization overhead compared to
-> the existing per-page approach, while software devices (rxe, siw) retain
-> the current virtual-addressing model.
-> 
-> Do you happen to have any performance or functional test results you
-> could share for this series, in particular:
-> 
-> Hardware RDMA devices (e.g., latency, bandwidth, or CPU utilization
-> changes), and/or
+On Fri, Jan 23, 2026 at 04:23:48PM +0800, D. Wythe wrote:
+> find_vm_area() provides a way to find the vm_struct associated with a
+> virtual address. Export this symbol to modules so that modularized
+> subsystems can perform lookups on vmalloc addresses.
 
-Functional tests with CX-5 Infiniband and NFS/RDMA show no regression.
+No, they have absolutely no business doing that.  This functionality
+is very intentionally kept private.
 
-Performance tests are difficult to evaluate because I don't have a
-multi-client set-up here to drive a heavy workload, plus filesystems
-bottleneck long before the network transport does. The changes are
-designed to improve scalability (eg lower CPU utilization for the same
-workload and less interaction between host and RNIC) more than improve
-raw throughput. So far I have seen no throughput regression and perhaps
-a bit of improvement for tail latencies.
-
-The main purpose of the series, however, is part of an effort to enable
-kernel-wide replacement of the use of scatter-gather lists, which are
-technical debt. Socket APIs already support struct bio_vec.
-
-
-> Software RDMA devices such as rxe or siw?
-
-Software providers are not likely to see much change. However, you will
-need to test the series with your own preferred configuration and
-workload to assess performance and scalability delta.
-
-
--- 
-Chuck Lever
 
