@@ -1,73 +1,69 @@
-Return-Path: <linux-rdma+bounces-15917-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15920-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2COzNyYwc2kStAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15917-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 09:24:06 +0100
+	id SNDIHsM4c2l/tQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15920-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 10:00:51 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E26C72692
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 09:24:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24EF172E31
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 10:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6AA703008D5F
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 08:24:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 63E15304AAC6
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 08:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A7A353ED9;
-	Fri, 23 Jan 2026 08:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5DE354AD4;
+	Fri, 23 Jan 2026 08:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dDKh9u0C"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="UH0AJJLf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15A63195FD;
-	Fri, 23 Jan 2026 08:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752543370FE;
+	Fri, 23 Jan 2026 08:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769156641; cv=none; b=lwhvBZRzFVTXzx52ttfzUF+O6RcgPY69xTTmkzq2Q2Y9R6bhr7k3QtY8yggeiqVlHJ9LGxfu2kibeGEpHzoVv6E9xBvf6+Kgcc+Qk6W6dz7UypK0K6zlUST324pPImFfBa92ZjVPuLz86CnEjW+kNRKQVhJ9FSlcfoNVOQWOc8A=
+	t=1769158734; cv=none; b=XRRky47t7CKdUPfI7r/WiuGfuIeIs1XKUZSRcwASt819pJlRarha4PUgvmfc5HRn2B44A/YvmhJT8qHuJSQffUeuu+lcJOIPhhIz72A+rA58f4vHLJITIeQ/HGv/wXhkAJjTk76qYVJtIfE2foOKf6VbgHSFKoCw8Z46CeVZX0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769156641; c=relaxed/simple;
-	bh=59DKB/VaktxKecnGsajFsV8KKJSNeWl2YpkeV1l9kvs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g3EOrZjsRbsS0vpNTcqYaswWCB1KKG6Rzl8gmPTwes9aftDh54U6tdI6W9ViLW+8cXuob3/z+orlI11bGkGugWG3IbnHA2AxmsiVT/SSg+W+lpqYI8v8XqI6fCB8bTp+mzA0bJz4E6CoQFKDZz2E4nksDnzyGnf45dyGp6lZmo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dDKh9u0C; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1769156636; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=S1bjNuHUrGPdJip9CidbGVSG4Xe7mlDtcxJDAR5+R0s=;
-	b=dDKh9u0C2/6CwA61LrupXXv7Iy8pKePZelbPzySVA39rNQJRFjJE7V4BrYqqPubDuGQxVqyM0Wsirsj1KSDB8Y3DZRG0jWfjuJWAUZdOigZ8kKxiaITif+c6vOzEbcks7QykzA/M6Fcnh0ElS9r08rcO5c5HaswE+gOqtuhpHCY=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wxf8owG_1769156635 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 23 Jan 2026 16:23:55 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
+	s=arc-20240116; t=1769158734; c=relaxed/simple;
+	bh=FQk32BMzHESc1g+auuhE1AY09RGLD+GUzhW85HGfTDs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GQepOXbA7O+U9j+wF7zvxk6nyPSkv04H2D4Sop1w+G1jeQO17S9QtS4HTdqAtfJRZXZEEqsM9O4xkYYFSMnhNS65deI0tQ9aR2G5D39kRto64zKj6tFHenrjsuv+mF/uYqeQD0YTk/v+2c56IOHrNueKcc+scMI0r4ubk4EyDZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=UH0AJJLf; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=3Q
+	9PIHHsmNzz5nXOAMH+AINGqxXgNMHvUZUnjZZ5X0U=; b=UH0AJJLfVGfqLO9OXM
+	kIZL8rLVIE7y3AHZ1vq1F//w3rHvdY7xsGmOyBfUpHa7dk8GGIF8Pfi1f3/zs4hv
+	z7XK3DcoVQDML3Bap2i41z4Qq7H6xU0QSO+5qKroQBnMlQ++EEZ/bzc84QB3mUeA
+	W+dBHDxm7teiOqOZtrHLmhuqI=
+Received: from zengchi (unknown [])
+	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wBHsLcOOHNpG8j6HQ--.35229S2;
+	Fri, 23 Jan 2026 16:57:51 +0800 (CST)
+From: Zeng Chi <zeng_chi911@163.com>
+To: saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	davem@davemloft.net,
+	andrew+netdev@lunn.ch,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	feliu@nvidia.com,
+	parav@nvidia.com,
+	witu@nvidia.com,
+	ajayachandra@nvidia.com
+Cc: netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com
-Subject: [PATCH net-next 3/3] net/smc: optimize MTTE consumption for SMC-R buffers
-Date: Fri, 23 Jan 2026 16:23:49 +0800
-Message-ID: <20260123082349.42663-4-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20260123082349.42663-1-alibuda@linux.alibaba.com>
-References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
+	linux-kernel@vger.kernel.org,
+	Zeng Chi <zengchi@kylinos.cn>
+Subject: [PATCH v3 net] net/mlx5: Fix return type mismatch in mlx5_esw_vport_vhca_id()
+Date: Fri, 23 Jan 2026 16:57:49 +0800
+Message-Id: <20260123085749.1401969-1-zeng_chi911@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,126 +71,81 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBHsLcOOHNpG8j6HQ--.35229S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr43JrWDCrW5uFWfury5twb_yoW8XF4xp3
+	yUGryxZFyktFWUXw4UWayrX3yrCayUK3y29F4Sk3WSqr1ktFWUtrn5KFZruF1DCrWUGr98
+	trs7Z3s5Zas8Aa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaHq7UUUUU=
+X-CM-SenderInfo: 52hqws5fklmiqr6rljoofrz/xtbC6A9IBGlzOA-wWwAA3t
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15917-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-15920-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[163.com];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[davemloft.net,linux-foundation.org,linux.alibaba.com,google.com,kernel.org,redhat.com,linux.ibm.com,gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[163.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[zeng_chi911@163.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email]
-X-Rspamd-Queue-Id: 6E26C72692
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email,nvidia.com:email]
+X-Rspamd-Queue-Id: 24EF172E31
 X-Rspamd-Action: no action
 
-SMC-R buffers currently use 4KB page mapping for IB registration.
-Each page consumes one MTTE, which is inefficient and quickly depletes
-limited IB hardware resources for large buffers.
+From: Zeng Chi <zengchi@kylinos.cn>
 
-For virtual contiguous buffer, switch to vmalloc_huge() to leverage
-huge page support. By using larger page sizes during IB MR registration,
-we can drastically reduce MTTE consumption.
+The function mlx5_esw_vport_vhca_id() is declared to return bool,
+but returns -EOPNOTSUPP (-45), which is an int error code. This
+causes a signedness bug as reported by smatch.
 
-For physically contiguous buffer, the entire buffer now requires only
-one single MTTE.
+This patch fixes this smatch report:
+drivers/net/ethernet/mellanox/mlx5/core/eswitch.h:981 mlx5_esw_vport_vhca_id()
+warn: signedness bug returning '(-45)'
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+Fixes: 1baf30426553 ("net/mlx5: E-Switch, Set/Query hca cap via vhca id")
+Reviewed-by: Parav Pandit <parav@nvidia.com>
+Signed-off-by: Zeng Chi <zengchi@kylinos.cn>
 ---
- net/smc/smc_core.c |  3 ++-
- net/smc/smc_ib.c   | 23 ++++++++++++++++++++---
- 2 files changed, 22 insertions(+), 4 deletions(-)
+v2 -> v3:
+- Shortened the commit ID in the `Fixes:` tag to 12 characters as suggested.
+- Added a `Reviewed-by:` tag from Parav Pandit <parav@nvidia.com>.
 
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 6219db498976..8aca5dc54be7 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -2348,7 +2348,8 @@ static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
- 			goto out;
- 		fallthrough;	// try virtually contiguous buf
- 	case SMCR_VIRT_CONT_BUFS:
--		buf_desc->cpu_addr = vzalloc(PAGE_SIZE << buf_desc->order);
-+		buf_desc->cpu_addr = vmalloc_huge(PAGE_SIZE << buf_desc->order,
-+						  GFP_KERNEL | __GFP_ZERO);
- 		if (!buf_desc->cpu_addr)
- 			goto out;
- 		buf_desc->pages = NULL;
-diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-index 1154907c5c05..67211d44a1db 100644
---- a/net/smc/smc_ib.c
-+++ b/net/smc/smc_ib.c
-@@ -20,6 +20,7 @@
- #include <linux/wait.h>
- #include <linux/mutex.h>
- #include <linux/inetdevice.h>
-+#include <linux/vmalloc.h>
- #include <rdma/ib_verbs.h>
- #include <rdma/ib_cache.h>
- 
-@@ -697,6 +698,18 @@ void smc_ib_put_memory_region(struct ib_mr *mr)
- 	ib_dereg_mr(mr);
- }
- 
-+static inline int smc_buf_get_vm_page_order(struct smc_buf_desc *buf_slot)
-+{
-+#ifdef CONFIG_HAVE_ARCH_HUGE_VMALLOC
-+	struct vm_struct *vm;
-+
-+	vm = find_vm_area(buf_slot->cpu_addr);
-+	return vm ? vm->page_order : 0;
-+#else
-+	return 0;
-+#endif
-+}
-+
- static int smc_ib_map_mr_sg(struct smc_buf_desc *buf_slot, u8 link_idx)
+v2:Added the required Fixes tag and specified target branch net in subject prefix
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+index ad1073f7b79f..e7fe43799b23 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+@@ -1009,7 +1009,7 @@ mlx5_esw_host_functions_enabled(const struct mlx5_core_dev *dev)
+ static inline bool
+ mlx5_esw_vport_vhca_id(struct mlx5_eswitch *esw, u16 vportn, u16 *vhca_id)
  {
- 	unsigned int offset = 0;
-@@ -706,8 +719,9 @@ static int smc_ib_map_mr_sg(struct smc_buf_desc *buf_slot, u8 link_idx)
- 	sg_num = ib_map_mr_sg(buf_slot->mr[link_idx],
- 			      buf_slot->sgt[link_idx].sgl,
- 			      buf_slot->sgt[link_idx].orig_nents,
--			      &offset, PAGE_SIZE);
--
-+			      &offset,
-+			      buf_slot->is_vm ? PAGE_SIZE << smc_buf_get_vm_page_order(buf_slot) :
-+			      PAGE_SIZE << buf_slot->order);
- 	return sg_num;
+-	return -EOPNOTSUPP;
++	return false;
  }
  
-@@ -719,7 +733,10 @@ int smc_ib_get_memory_region(struct ib_pd *pd, int access_flags,
- 		return 0; /* already done */
- 
- 	buf_slot->mr[link_idx] =
--		ib_alloc_mr(pd, IB_MR_TYPE_MEM_REG, 1 << buf_slot->order);
-+		ib_alloc_mr(pd, IB_MR_TYPE_MEM_REG,
-+			    buf_slot->is_vm ?
-+			    1 << (buf_slot->order - smc_buf_get_vm_page_order(buf_slot)) : 1);
-+
- 	if (IS_ERR(buf_slot->mr[link_idx])) {
- 		int rc;
- 
+ #endif /* CONFIG_MLX5_ESWITCH */
 -- 
-2.45.0
+2.25.1
 
 
