@@ -1,45 +1,45 @@
-Return-Path: <linux-rdma+bounces-15918-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15917-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qKCHByowc2mTswAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15918-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 09:24:10 +0100
+	id 2COzNyYwc2kStAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15917-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 09:24:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DE5726A1
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 09:24:09 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E26C72692
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 09:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E73AD30089AD
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 08:24:04 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6AA703008D5F
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jan 2026 08:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E280F357A5A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A7A353ED9;
 	Fri, 23 Jan 2026 08:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="iThvwSmC"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dDKh9u0C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570A32EDD52;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15A63195FD;
 	Fri, 23 Jan 2026 08:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769156641; cv=none; b=BvqBxZW6wbDvz1C4YIz/W7j/0H3zZ9cKHJA6C5eJAXvBw7Uxg6+IZ+yA0bu0jfm5BKNVieYGMwoxwtke8XCRa53WaPFyFUnVlIeiPKadO9hKBvoXb9OG0ZuaN94l+QrACbTLk5B9u/66VuGocEU0+pESJ39hbORIcNI106E5jz8=
+	t=1769156641; cv=none; b=lwhvBZRzFVTXzx52ttfzUF+O6RcgPY69xTTmkzq2Q2Y9R6bhr7k3QtY8yggeiqVlHJ9LGxfu2kibeGEpHzoVv6E9xBvf6+Kgcc+Qk6W6dz7UypK0K6zlUST324pPImFfBa92ZjVPuLz86CnEjW+kNRKQVhJ9FSlcfoNVOQWOc8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769156641; c=relaxed/simple;
-	bh=12BYwHefeCHvg6DzgrKy0FPgd9W5v3eEwpoFFWFX9Rk=;
+	bh=59DKB/VaktxKecnGsajFsV8KKJSNeWl2YpkeV1l9kvs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jbiYhHaiOViPayADtMY+CWmGJrAwR+S6iRQHoO/Nu++HeInlnf9elKK/X/tZCCNhC3GahVLvkDNf8JpKpuQU6rczR7VjcUTFdZMVxBAF4+ssIvp1zxr6eg9F0KsmthfpQRdm7NEwI2qiFdrsym2jKQQrErsZaX3OgKJTlPqwGE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=iThvwSmC; arc=none smtp.client-ip=115.124.30.99
+	 MIME-Version; b=g3EOrZjsRbsS0vpNTcqYaswWCB1KKG6Rzl8gmPTwes9aftDh54U6tdI6W9ViLW+8cXuob3/z+orlI11bGkGugWG3IbnHA2AxmsiVT/SSg+W+lpqYI8v8XqI6fCB8bTp+mzA0bJz4E6CoQFKDZz2E4nksDnzyGnf45dyGp6lZmo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dDKh9u0C; arc=none smtp.client-ip=115.124.30.118
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
 	t=1769156636; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=hBm0JDk7EhK8byASx/pot4VMZ/7c5vuPMnvsfOBUnCE=;
-	b=iThvwSmCe9zTcBWIDB1rbrn1vrh94TL4bCYPVBTMxdUevCygeT6x8Ap5G17RYKMSlLRReGp2R8UqAnE7phsCgTiYhai58xbGeG+AmPziVjMEAehhoKQ657R1jkugzvEFLqyzGslvoDW0kLkkC43dLSCFwvE7a6wH59MhfBxNdaI=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wxf8ovm_1769156634 cluster:ay36)
+	bh=S1bjNuHUrGPdJip9CidbGVSG4Xe7mlDtcxJDAR5+R0s=;
+	b=dDKh9u0C2/6CwA61LrupXXv7Iy8pKePZelbPzySVA39rNQJRFjJE7V4BrYqqPubDuGQxVqyM0Wsirsj1KSDB8Y3DZRG0jWfjuJWAUZdOigZ8kKxiaITif+c6vOzEbcks7QykzA/M6Fcnh0ElS9r08rcO5c5HaswE+gOqtuhpHCY=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wxf8owG_1769156635 cluster:ay36)
           by smtp.aliyun-inc.com;
           Fri, 23 Jan 2026 16:23:55 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
@@ -62,9 +62,9 @@ Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
 	linux-s390@vger.kernel.org,
 	netdev@vger.kernel.org,
 	oliver.yang@linux.alibaba.com
-Subject: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
-Date: Fri, 23 Jan 2026 16:23:48 +0800
-Message-ID: <20260123082349.42663-3-alibuda@linux.alibaba.com>
+Subject: [PATCH net-next 3/3] net/smc: optimize MTTE consumption for SMC-R buffers
+Date: Fri, 23 Jan 2026 16:23:49 +0800
+Message-ID: <20260123082349.42663-4-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20260123082349.42663-1-alibuda@linux.alibaba.com>
 References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
@@ -82,12 +82,12 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15918-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15917-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[davemloft.net,linux-foundation.org,linux.alibaba.com,google.com,kernel.org,redhat.com,linux.ibm.com,gmail.com];
@@ -102,32 +102,98 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,alibaba.com:email]
-X-Rspamd-Queue-Id: E6DE5726A1
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email]
+X-Rspamd-Queue-Id: 6E26C72692
 X-Rspamd-Action: no action
 
-find_vm_area() provides a way to find the vm_struct associated with a
-virtual address. Export this symbol to modules so that modularized
-subsystems can perform lookups on vmalloc addresses.
+SMC-R buffers currently use 4KB page mapping for IB registration.
+Each page consumes one MTTE, which is inefficient and quickly depletes
+limited IB hardware resources for large buffers.
+
+For virtual contiguous buffer, switch to vmalloc_huge() to leverage
+huge page support. By using larger page sizes during IB MR registration,
+we can drastically reduce MTTE consumption.
+
+For physically contiguous buffer, the entire buffer now requires only
+one single MTTE.
 
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 ---
- mm/vmalloc.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/smc/smc_core.c |  3 ++-
+ net/smc/smc_ib.c   | 23 ++++++++++++++++++++---
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index ecbac900c35f..3eb9fe761c34 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3292,6 +3292,7 @@ struct vm_struct *find_vm_area(const void *addr)
+diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+index 6219db498976..8aca5dc54be7 100644
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -2348,7 +2348,8 @@ static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
+ 			goto out;
+ 		fallthrough;	// try virtually contiguous buf
+ 	case SMCR_VIRT_CONT_BUFS:
+-		buf_desc->cpu_addr = vzalloc(PAGE_SIZE << buf_desc->order);
++		buf_desc->cpu_addr = vmalloc_huge(PAGE_SIZE << buf_desc->order,
++						  GFP_KERNEL | __GFP_ZERO);
+ 		if (!buf_desc->cpu_addr)
+ 			goto out;
+ 		buf_desc->pages = NULL;
+diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+index 1154907c5c05..67211d44a1db 100644
+--- a/net/smc/smc_ib.c
++++ b/net/smc/smc_ib.c
+@@ -20,6 +20,7 @@
+ #include <linux/wait.h>
+ #include <linux/mutex.h>
+ #include <linux/inetdevice.h>
++#include <linux/vmalloc.h>
+ #include <rdma/ib_verbs.h>
+ #include <rdma/ib_cache.h>
  
- 	return va->vm;
+@@ -697,6 +698,18 @@ void smc_ib_put_memory_region(struct ib_mr *mr)
+ 	ib_dereg_mr(mr);
  }
-+EXPORT_SYMBOL_GPL(find_vm_area);
  
- /**
-  * remove_vm_area - find and remove a continuous kernel virtual area
++static inline int smc_buf_get_vm_page_order(struct smc_buf_desc *buf_slot)
++{
++#ifdef CONFIG_HAVE_ARCH_HUGE_VMALLOC
++	struct vm_struct *vm;
++
++	vm = find_vm_area(buf_slot->cpu_addr);
++	return vm ? vm->page_order : 0;
++#else
++	return 0;
++#endif
++}
++
+ static int smc_ib_map_mr_sg(struct smc_buf_desc *buf_slot, u8 link_idx)
+ {
+ 	unsigned int offset = 0;
+@@ -706,8 +719,9 @@ static int smc_ib_map_mr_sg(struct smc_buf_desc *buf_slot, u8 link_idx)
+ 	sg_num = ib_map_mr_sg(buf_slot->mr[link_idx],
+ 			      buf_slot->sgt[link_idx].sgl,
+ 			      buf_slot->sgt[link_idx].orig_nents,
+-			      &offset, PAGE_SIZE);
+-
++			      &offset,
++			      buf_slot->is_vm ? PAGE_SIZE << smc_buf_get_vm_page_order(buf_slot) :
++			      PAGE_SIZE << buf_slot->order);
+ 	return sg_num;
+ }
+ 
+@@ -719,7 +733,10 @@ int smc_ib_get_memory_region(struct ib_pd *pd, int access_flags,
+ 		return 0; /* already done */
+ 
+ 	buf_slot->mr[link_idx] =
+-		ib_alloc_mr(pd, IB_MR_TYPE_MEM_REG, 1 << buf_slot->order);
++		ib_alloc_mr(pd, IB_MR_TYPE_MEM_REG,
++			    buf_slot->is_vm ?
++			    1 << (buf_slot->order - smc_buf_get_vm_page_order(buf_slot)) : 1);
++
+ 	if (IS_ERR(buf_slot->mr[link_idx])) {
+ 		int rc;
+ 
 -- 
 2.45.0
 
