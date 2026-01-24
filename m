@@ -1,168 +1,152 @@
-Return-Path: <linux-rdma+bounces-15937-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15938-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MFEKKUUddGkW2QAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15937-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 02:15:49 +0100
+	id eNqEFGGPdGmw7AAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15938-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 10:22:41 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F27E07BE7E
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 02:15:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AADCC7D11D
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 10:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3DD4A305E9C9
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 01:14:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 43D2B30138AF
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 09:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CEC1EF091;
-	Sat, 24 Jan 2026 01:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5BA21C9FD;
+	Sat, 24 Jan 2026 09:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="gb0uiZMy"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jJdKJg/Y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9631E2606
-	for <linux-rdma@vger.kernel.org>; Sat, 24 Jan 2026 01:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53213EBF34;
+	Sat, 24 Jan 2026 09:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769217285; cv=none; b=c4L84PlkY/8fzg0CQAu72qUy7UqNIqHlMgpwNsvxnTMjWvav+D7i1WA/OGdReOu1nSepmhQ1o2DwQF6Jvn5f4jbpcWedmEvTXroZJX2tWoS8yY2u0v7gsrp13VWRl94uTmTL4FqX/QQcZOh/Be9FgR6PO4edjNoMEHUTbhzVi6I=
+	t=1769246557; cv=none; b=pKjsmZ2JMOiaZw4R+Nmizf+PnU/vt9TvNiBQHdxUEk46euqwBkgAFOQn6ycaoUoxqJFF+0ZqQlGnQyE5bKHM3hls3bZn9QkFPwNwJNb6RXHHB5veR+ZcJz7dQooXo/Zi7uy9wsQExdavMgeLSjhrdBeyHZwBkydevoNWtv0E27k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769217285; c=relaxed/simple;
-	bh=LWbEQ6Qb58mba99fQT7Bo/qzaqprFSHHlGLGlnboiA8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K6jeGoMZK/mWssGEJUdMI1pkYKdrckpdbCrQhhQXzIBT1D/w2nR0HxLtZKaYEyHsw1daAzqu7NPqOyntreXb512pQ5duzOmpUyaeAoESecz3+uUwlkoqFvkTwq5pQzlQ0MfzyDCBqEA70JquKOwAehWg6tlqYDs9sxwh/c3sbgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=gb0uiZMy; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 60NN8D0N2798914
-	for <linux-rdma@vger.kernel.org>; Fri, 23 Jan 2026 17:14:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=YdlSP3kPdploWJS5aUMnMwLO0/mqjo3Jlr7WAS5cl7E=; b=gb0uiZMy98B8
-	CFSsITssaKCwAC6SVh6xqW/32q1ZrO0ZgEI+xA3QOSDqHzvIl8zovPc0C81FAyw4
-	Z0lIdKYOvxXvfSo/E52n+wBO3lktItLxqZNJxeTFkagXBk3Gq0LnumMeb3iOh6Q1
-	oXBGvvi5YwJZFXQfNcYnBMQ/RMjyEOqTzTkHu0xZ/vXegWeJobOd0R211do/+i0h
-	2f7Ua4zWqN74xmkjvhM1FJUVgQFUvbUig/sFK6S65KE3kH/4BO2U/0TupBOEk73s
-	7/YWyICV79oCSncBBrt6Cdg1CrxqrNATF7Cs5qA0nhtabB384HB5sLoYQbuzWE0P
-	Tolyr6sfGA==
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 4bvdcg3va8-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-rdma@vger.kernel.org>; Fri, 23 Jan 2026 17:14:42 -0800 (PST)
-Received: from twshared26141.04.snb1.facebook.com (2620:10d:c0a8:fe::f072) by
- mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.29; Sat, 24 Jan 2026 01:14:40 +0000
-Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
-	id D15DAF2FB2F3; Fri, 23 Jan 2026 17:14:36 -0800 (PST)
-From: Zhiping Zhang <zhipingz@meta.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Keith Busch <kbusch@kernel.org>,
-        Yochai Cohen
-	<yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
-        Zhiping Zhang
-	<zhipingz@meta.com>
-Subject: Re: [RFC 2/2] Set steering-tag directly for PCIe P2P memory access
-Date: Fri, 23 Jan 2026 17:13:19 -0800
-Message-ID: <20260124011436.172058-1-zhipingz@meta.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260113164923.GQ745888@ziepe.ca>
-References: <20260113164923.GQ745888@ziepe.ca>
+	s=arc-20240116; t=1769246557; c=relaxed/simple;
+	bh=QmWvenW9ze+OPCIN43D1aT/M5hDWbE0p8JTYbw2Ap94=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SNkhIJ33A0DHeCnbeFwD/aMprTCaNldYrxkgIH+Zd10FsoGCS/9OB1wt+KVZ+Jpvfob9M61LUxb7dNmuwaIAG7EFfh7fsbD5VbiYTy5QW04dCXmTrGODHZ05aDT929jq9UdPPGPE79wfxFjDwaK2ksH6BFXrOK93aOm9lPX83oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jJdKJg/Y; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1769246547; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=JJIvyfyanGB9J6au1bCV2+bGjwvOLICjUu5CtLQtQkg=;
+	b=jJdKJg/YACnJdaykw8f82QUI7lAfTu8ACkvAGoUUJv92nYDCQZfFSRTqHCtdpNSUAiBk/BkqtUJhf6vXemr5DyYQgJbJGCPV3BFZjIrgyXpBQO8TBwBCi85temLwJZEw9MM9jEkdvuy+9cfiLQLJxz2MK+dZYHEgM8dr6aMPEOE=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wxia0AB_1769246545 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Sat, 24 Jan 2026 17:22:26 +0800
+Date: Sat, 24 Jan 2026 17:22:25 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Alexandra Winter <wintera@linux.ibm.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	oliver.yang@linux.alibaba.com
+Subject: Re: [PATCH net-next 1/3] net/smc: cap allocation order for SMC-R
+ physically contiguous buffers
+Message-ID: <20260124092225.GA85316@j66a10360.sqa.eu95>
+References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
+ <20260123082349.42663-2-alibuda@linux.alibaba.com>
+ <6f8de95e-b034-4ea8-a246-605047d142db@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-Proofpoint-ORIG-GUID: nVCfaqBmMTfTLBHLMCFnIoZ1JbumtBxC
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI0MDAwNyBTYWx0ZWRfX/KmfxygFtVuH
- Es8FWjlMUpPczkFELgxNtC+1Ve7v2xy744y/zVyz+43lOpczDQzTVc8MnQPOcMVUAJKZDIod2Uj
- FRx5dyd7NghbwFUCf3zeB1vCc3BbFPYSYZb+XWTiUrMI79F8XaDCnLzLVPw0JdZKdsfqeh5ZwqA
- 6jio7xAz4uJlKtKcRggRIFL20B6r00YQuVFqkPpAywBx1FN3KK6sZqih7SJ8/SpV5duRhwxh8LC
- 4UtumvcxmW6DnMXeG3ygjNL2Dkfi1Rr0wZTyoDjDBzJA/qNtmNAr/5ugea+I0stvTNlGv4tFGUO
- 2hnGQccgF2GUaNLA9+oPq062iUt85fS7AE4BX/v0fvFB2iL3Sgo1S1BjWhvqOC6ta06OQ89iqPU
- TyJReLI8h7bB71K0Fpo9bSB9Tq9rFyiRg3ZytOWvb02dKsiBXPTYv4NCD1ZO/xNMWgf863kBtg0
- fdNg8jPKY/xN7EcNZQA==
-X-Authority-Analysis: v=2.4 cv=K88v3iWI c=1 sm=1 tr=0 ts=69741d02 cx=c_pps
- a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=zHM-U5WPLxhMletD85EA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: nVCfaqBmMTfTLBHLMCFnIoZ1JbumtBxC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.20,FMLib:17.12.100.49
- definitions=2026-01-23_04,2026-01-22_02,2025-10-01_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f8de95e-b034-4ea8-a246-605047d142db@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[meta.com:+];
+	TAGGED_FROM(0.00)[bounces-15938-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15937-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,meta.com:mid,meta.com:dkim];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FREEMAIL_CC(0.00)[linux.alibaba.com,davemloft.net,linux-foundation.org,google.com,kernel.org,redhat.com,linux.ibm.com,gmail.com,vger.kernel.org,kvack.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: F27E07BE7E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: AADCC7D11D
 X-Rspamd-Action: no action
 
-On Tue, 13 Jan 2026 12:49:23 -0400, Jason Gunthorpe wrote:
+On Fri, Jan 23, 2026 at 11:54:37AM +0100, Alexandra Winter wrote:
+> 
+> 
+> On 23.01.26 09:23, D. Wythe wrote:
+> Describe your changes in imperative mood.
+> https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+> 
+> 
+> > For SMCR_PHYS_CONT_BUFS, the allocation order is now capped to
+> > MAX_PAGE_ORDER, ensures the attempts to allocate the largest possible
+> > physically contiguous chunk instead of failing with an invalid order,
+> > which also avoid redundant "try-fail-degrade" cycles in __smc_buf_create().
+> > 
+> > For SMCR_MIXED_BUFS, If it's order exceeds MAX_PAGE_ORDER, skips the
+> > doomed physical allocation attempt and fallback to virtual memory
+> > immediately.
+> > 
+> 
+> Proposal for a version in imperative mood (iiuc):
+> "
+> For SMCR_PHYS_CONT_BUFS, cap the allocation order to MAX_PAGE_ORDER. This
+> ensures the attempts to allocate the largest possible physically contiguous
+> chunk succeed, instead of failing with an invalid order. This also avoids
+> redundant "try-fail-degrade" cycles in __smc_buf_create().
+> 
+> For SMCR_MIXED_BUFS, if its order exceeds MAX_PAGE_ORDER, skip the doomed
+> physical allocation attempt and fallback to virtual memory immediately.
+> "
+> 
+> 
+> > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> 
+> Other than that: LGTM
+> Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
 
-> On Mon, Jan 12, 2026 at 11:43:13PM -0800, Zhiping Zhang wrote:
-> > Got it, thanks for pointing out the security concern! To address this=
-, I
-> > propose that we still pass the TPH value when allocating the dmah, bu=
-t we add
-> > a verification callback in the reg_mr_dmabuf flow to the dmabuf expor=
-ter. This
-> > callback will ensure that the TPH value is correctly linked to the ex=
-porting
-> > device=E2=80=99s MMIO, and only the exporter can authorize the TPH/ta=
-g association.
+Hi Alexandra,
 
-> That still sounds messy because we have to protect CPU memory.
+Thank you for your review and for providing the refined description.
+I will use your suggested wording for the commit message in V2.
 
-> I think you should not use dmah possibly and make it so the dmabuf
-entirely supplies the TPH value.
-
-> Jason
-
-Thanks Jason.
-
-We already have an end-to-end workflow around dmah (perftest =E2=86=92 rd=
-ma-core =E2=86=92 kernel)
-to carry the TPH hint, across multiple patch sets. References:
-  https://github.com/linux-rdma/perftest/commit/98bfb3679a1e71ec96df6a6d6=
-c8124ac66ebce25
-  https://github.com/linux-rdma/rdma-core/pull/1623/commits
-  https://lore.kernel.org/all/cover.1752752567.git.leon@kernel.org/
-
-Given that, I=E2=80=99d like to minimize churn and use the existing dmah-=
-based flow, while
-addressing the CPU-memory protection concern you raised. Would you be ope=
-n to
-reconsidering this approach?
-
-Zhiping
+Best regards,
+D. Wythe
 
