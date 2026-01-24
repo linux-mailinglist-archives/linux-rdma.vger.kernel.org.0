@@ -1,154 +1,328 @@
-Return-Path: <linux-rdma+bounces-15940-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15941-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uG5jDFiSdGle7QAAu9opvQ
-	(envelope-from <linux-rdma+bounces-15940-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 10:35:20 +0100
+	id aP+PFw2hdGmd8AAAu9opvQ
+	(envelope-from <linux-rdma+bounces-15941-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 11:38:05 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF7CC7D1DC
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 10:35:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9B17D429
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 11:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 14BAC300B111
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 09:35:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 55B373012BDB
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jan 2026 10:38:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3443C258CE5;
-	Sat, 24 Jan 2026 09:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="TwNZbzKF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A72258CE5;
+	Sat, 24 Jan 2026 10:38:00 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B20D3EBF1C;
-	Sat, 24 Jan 2026 09:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7C33EBF3A
+	for <linux-rdma@vger.kernel.org>; Sat, 24 Jan 2026 10:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769247312; cv=none; b=F3G3cZb98D/ZSrLQbmhluz02bNUGd12RZOvYW7Y+c2/gKxxuy4+8AwATvPjzSE1EtBDIg1rQhlplvL6DAk90tEq27daNjkl6l0upyTs6EoeJWsP7X/J8LGdlyXUSEEH49G1Dx6eocNT8VBpD+YQnAoKwV09U3K+O6WT2KtyeP5I=
+	t=1769251080; cv=none; b=IeAy8Wv3xI/tsm9SudIfNCSZ/xBLnhU2NM+7MozP9m1AaCozooT4jP3URmhujpRTaTT9/NjFow+hGpjZ8sO0zX6E+yRpijEHaMl9+VkpLAKqFPqvmvP4Gh6Vvw/Hyr5BDQH3ephAwQmkHpaNAZGyvKj9XH7WBJM+S+ItMgtHMKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769247312; c=relaxed/simple;
-	bh=mvrl+9yu+c5NMxDnTa+G28wB4wke8rkkdtPdNod0PUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WdzRMdErmschBuQBKud3QjEWUfnZqquEmssX/CJDokSPDB0P9KFlAHI+cCiAyXF0o89hmU9P55lLArBoax9YChmRmmXDDOZasauLYEfnNPyMmA7taAm7owzlRdWBfFTmdJ94+JA69+yD0dUoX86uytuUiPiGn063D9oiilOu/lA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=TwNZbzKF; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1769247306; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=YM0UILcJR/4TkkLhadUMFOx0cYmqNgriWCYaevIhEXQ=;
-	b=TwNZbzKFt0yGFN3B2M6vc9Z/ODqoj/LOsV0kDADN49MyUsehO39sPgy8iXZLQt+QgnjAPZ+fO37EKFwqAXd7tG6W+/YEfz+Rs33lC9cEvDc8A82R8HV7ollNNNODrLmzmg3upSkakA+GWP1JFXTyMhoDTpBZssa1pxq1klXoI0s=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WxiX9Q3_1769247305 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Sat, 24 Jan 2026 17:35:05 +0800
-Date: Sat, 24 Jan 2026 17:35:05 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com
-Subject: Re: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
-Message-ID: <20260124093505.GA98529@j66a10360.sqa.eu95>
-References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
- <20260123082349.42663-3-alibuda@linux.alibaba.com>
- <aXPEFdEdtSmd6AzF@milan>
+	s=arc-20240116; t=1769251080; c=relaxed/simple;
+	bh=KGXI6hVtjw7RMcTKSmN8RvNleI4H2qRYrhduA9/Rz+M=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SSSWiRlEWHMuiBssECJlzuQWpmVMMqDEwa0n4B+l8sS2Kv53QsAL+/pkVl9cVHUUvb1Ng9EcTqxj1AT1ilV+YDGb8RsXnJdDDyiiw2vH8fNG2u0NAZESS9u0vXZsmgXyCO8qW1WgchrTDA+iPRApEnBkLyl63DWlXSVKwLb6qFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 60OAbVH2045637;
+	Sat, 24 Jan 2026 19:37:31 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 60OAbV2E045634
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 24 Jan 2026 19:37:31 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <b4a09ad8-97cc-4fe1-b02a-6192248694a8@I-love.SAKURA.ne.jp>
+Date: Sat, 24 Jan 2026 19:37:31 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aXPEFdEdtSmd6AzF@milan>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [rdma bug] del_default_gids() is not called upon
+ NETDEV_UNREGISTER event
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: Parav Pandit <parav@mellanox.com>, Huy Nguyen <huyn@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Maher Sanalla <msanalla@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>
+Cc: OFED mailing list <linux-rdma@vger.kernel.org>
+References: <c1f9511c-7ad0-444d-aa0c-516674702b4e@I-love.SAKURA.ne.jp>
+ <SJ0PR12MB6806E77B849859B7BAC8CC1CDC89A@SJ0PR12MB6806.namprd12.prod.outlook.com>
+ <a5f2ea72-985a-425b-a626-cde052cd4cd9@I-love.SAKURA.ne.jp>
+Content-Language: en-US
+In-Reply-To: <a5f2ea72-985a-425b-a626-cde052cd4cd9@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Anti-Virus-Server: fsav205.rs.sakura.ne.jp
+X-Virus-Status: clean
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	TAGGED_FROM(0.00)[bounces-15940-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_FROM(0.00)[bounces-15941-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_ALL(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[i-love.sakura.ne.jp];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:dkim]
-X-Rspamd-Queue-Id: CF7CC7D1DC
+	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[penguin-kernel@I-love.SAKURA.ne.jp,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,I-love.SAKURA.ne.jp:mid]
+X-Rspamd-Queue-Id: 5C9B17D429
 X-Rspamd-Action: no action
 
-On Fri, Jan 23, 2026 at 07:55:17PM +0100, Uladzislau Rezki wrote:
-> On Fri, Jan 23, 2026 at 04:23:48PM +0800, D. Wythe wrote:
-> > find_vm_area() provides a way to find the vm_struct associated with a
-> > virtual address. Export this symbol to modules so that modularized
-> > subsystems can perform lookups on vmalloc addresses.
-> > 
-> > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> > ---
-> >  mm/vmalloc.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index ecbac900c35f..3eb9fe761c34 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -3292,6 +3292,7 @@ struct vm_struct *find_vm_area(const void *addr)
-> >  
-> >  	return va->vm;
-> >  }
-> > +EXPORT_SYMBOL_GPL(find_vm_area);
-> >  
-> This is internal. We can not just export it.
-> 
-> --
-> Uladzislau Rezki
+I think that the diff shown below makes the NETDEV_UNREGISTER event handler
+valid until wait_for_completion(&device->unreg_completion) in disable_device()
+returns. What do you think about this change? Is this change safe?
 
-Hi Uladzislau,
+Comparing gid_table_cleanup_one() and del_netdev_ips(), the latter seems
+to be a subset of the former because of rdma_protocol_roce() check; the
+NETDEV_UNREGISTER event handler can call dev_put() on only "struct net_device"
+references where rdma_protocol_roce() returned true.
 
-Thank you for the feedback. I agree that we should avoid exposing
-internal implementation details like struct vm_struct to external
-subsystems.
+  int ib_cache_gid_del_all_netdev_gids(struct ib_device *ib_dev, u32 port,
+                                       struct net_device *ndev)
+  {
+          struct ib_gid_table *table;
+          int ix;
+          bool deleted = false;
+  
+          table = rdma_gid_table(ib_dev, port);
+  
+          mutex_lock(&table->lock);
+  
+          for (ix = 0; ix < table->sz; ix++) {
+                  if (is_gid_entry_valid(table->data_vec[ix]) &&
+                      table->data_vec[ix]->attr.ndev == ndev) {
+                          del_gid(ib_dev, port, table, ix);
+                          deleted = true;
+                  }
+          }
+  
+          mutex_unlock(&table->lock);
+  
+          if (deleted)
+                  dispatch_gid_change_event(ib_dev, port);
+  
+          return 0;
+  }
+  
+  void ib_enum_roce_netdev(struct ib_device *ib_dev,
+                           roce_netdev_filter filter,
+                           void *filter_cookie,
+                           roce_netdev_callback cb,
+                           void *cookie)
+  {
+          u32 port;
+  
+          rdma_for_each_port(ib_dev, port)
+                  if (rdma_protocol_roce(ib_dev, port))
+                          ib_cache_gid_del_all_netdev_gids(ib_dev, port, cookie); // <= assume del_netdev_ips() case
+  }
+  
+  static void cleanup_gid_table_port(struct ib_device *ib_dev, u32 port,
+                                     struct ib_gid_table *table)
+  {
+          int i;
+  
+          if (!table)
+                  return;
+  
+          mutex_lock(&table->lock);
+          for (i = 0; i < table->sz; ++i) {
+                  if (is_gid_entry_valid(table->data_vec[i]))
+                          del_gid(ib_dev, port, table, i);
+          }
+          mutex_unlock(&table->lock);
+  }
+  
+  static void gid_table_cleanup_one(struct ib_device *ib_dev)
+  {
+          u32 p;
+  
+          rdma_for_each_port(ib_dev, p)
+                  cleanup_gid_table_port(ib_dev, p, ib_dev->port_data[p].cache.gid);
+  }
 
-Following Christoph's suggestion, I'm planning to encapsulate the page
-order lookup into a minimal helper instead:
+Therefore, even if the diff shown below is safe, there will be a race window
+where dev_put() cannot be called on some of "struct net_device" references in
+the gid table.
 
-unsigned int vmalloc_page_order(const void *addr){
-	struct vm_struct *vm;
- 	vm = find_vm_area(addr);
-	return vm ? vm->page_order : 0;
-}
-EXPORT_SYMBOL_GPL(vmalloc_page_order);
+Is there a guarantee that cleanup operations after
+wait_for_completion(&device->unreg_completion) from disable_device() from
+__ib_unregister_device() returned can continue running until
+gid_table_cleanup_one() from __ib_unregister_device() returns?
 
-Does this approach look reasonable to you? It would keep the vm_struct
-layout private while satisfying the optimization needs of SMC.
+ drivers/infiniband/core/core_priv.h     |    2 +-
+ drivers/infiniband/core/device.c        |   12 +++++++++++-
+ drivers/infiniband/core/roce_gid_mgmt.c |   11 +++++++----
+ include/rdma/ib_verbs.h                 |    1 +
+ 4 files changed, 20 insertions(+), 6 deletions(-)
 
-Thanks,
-D. Wythe
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 6aad66bc5dd7..2e3eacedfa9a 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2857,6 +2857,7 @@ struct ib_device {
+ 	refcount_t refcount;
+ 	struct completion unreg_completion;
+ 	struct work_struct unregistration_work;
++	struct work_struct netdev_unregistering_work;
+ 
+ 	const struct rdma_link_ops *link_ops;
+ 
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 05102769a918..68eaf706af4a 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -98,7 +98,7 @@ void ib_enum_roce_netdev(struct ib_device *ib_dev,
+ void ib_enum_all_roce_netdevs(roce_netdev_filter filter,
+ 			      void *filter_cookie,
+ 			      roce_netdev_callback cb,
+-			      void *cookie);
++			      void *cookie, bool is_unregister);
+ 
+ typedef int (*nldev_callback)(struct ib_device *device,
+ 			      struct sk_buff *skb,
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 1174ab7da629..4ee91175d9c8 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -93,6 +93,7 @@ static struct workqueue_struct *ib_unreg_wq;
+ static DEFINE_XARRAY_FLAGS(devices, XA_FLAGS_ALLOC);
+ static DECLARE_RWSEM(devices_rwsem);
+ #define DEVICE_REGISTERED XA_MARK_1
++#define DEVICE_UNREGISTERING XA_MARK_2
+ 
+ static u32 highest_client_id;
+ #define CLIENT_REGISTERED XA_MARK_1
+@@ -1302,6 +1303,7 @@ static void disable_device(struct ib_device *device)
+ 
+ 	down_write(&devices_rwsem);
+ 	xa_clear_mark(&devices, device->index, DEVICE_REGISTERED);
++	xa_set_mark(&devices, device->index, DEVICE_UNREGISTERING);
+ 	up_write(&devices_rwsem);
+ 
+ 	/*
+@@ -1324,6 +1326,10 @@ static void disable_device(struct ib_device *device)
+ 	ib_device_put(device);
+ 	wait_for_completion(&device->unreg_completion);
+ 
++	down_write(&devices_rwsem);
++	xa_clear_mark(&devices, device->index, DEVICE_UNREGISTERING);
++	up_write(&devices_rwsem);
++
+ 	/*
+ 	 * compat devices must be removed after device refcount drops to zero.
+ 	 * Otherwise init_net() may add more compatdevs after removing compat
+@@ -2427,6 +2433,7 @@ void ib_enum_roce_netdev(struct ib_device *ib_dev,
+  * @filter_cookie: Cookie passed to filter
+  * @cb: Callback to call for each found RoCE ports
+  * @cookie: Cookie passed back to the callback
++ * @is_unregister: Whether this is NETDEV_UNREGISTER callback
+  *
+  * Enumerates all RoCE devices' physical ports which are related
+  * to netdevices and calls callback() on each device for which
+@@ -2435,7 +2442,7 @@ void ib_enum_roce_netdev(struct ib_device *ib_dev,
+ void ib_enum_all_roce_netdevs(roce_netdev_filter filter,
+ 			      void *filter_cookie,
+ 			      roce_netdev_callback cb,
+-			      void *cookie)
++			      void *cookie, bool is_unregister)
+ {
+ 	struct ib_device *dev;
+ 	unsigned long index;
+@@ -2443,6 +2450,9 @@ void ib_enum_all_roce_netdevs(roce_netdev_filter filter,
+ 	down_read(&devices_rwsem);
+ 	xa_for_each_marked (&devices, index, dev, DEVICE_REGISTERED)
+ 		ib_enum_roce_netdev(dev, filter, filter_cookie, cb, cookie);
++	if (is_unregister)
++		xa_for_each_marked(&devices, index, dev, DEVICE_UNREGISTERING)
++			ib_enum_roce_netdev(dev, filter, filter_cookie, cb, cookie);
+ 	up_read(&devices_rwsem);
+ }
+ 
+diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+index a9f2c6b1b29e..658f50e113e8 100644
+--- a/drivers/infiniband/core/roce_gid_mgmt.c
++++ b/drivers/infiniband/core/roce_gid_mgmt.c
+@@ -67,6 +67,7 @@ struct netdev_event_work_cmd {
+ struct netdev_event_work {
+ 	struct work_struct		work;
+ 	struct netdev_event_work_cmd	cmds[ROCE_NETDEV_CALLBACK_SZ];
++	bool				is_unregister;
+ };
+ 
+ static const struct {
+@@ -648,7 +649,8 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+ 		ib_enum_all_roce_netdevs(work->cmds[i].filter,
+ 					 work->cmds[i].filter_ndev,
+ 					 work->cmds[i].cb,
+-					 work->cmds[i].ndev);
++					 work->cmds[i].ndev,
++					 work->is_unregister);
+ 		dev_put(work->cmds[i].ndev);
+ 		dev_put(work->cmds[i].filter_ndev);
+ 	}
+@@ -657,7 +659,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+ }
+ 
+ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+-				struct net_device *ndev)
++				struct net_device *ndev, bool is_unregister)
+ {
+ 	unsigned int i;
+ 	struct netdev_event_work *ndev_work =
+@@ -666,6 +668,7 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+ 	if (!ndev_work)
+ 		return NOTIFY_DONE;
+ 
++	ndev_work->is_unregister = is_unregister;
+ 	memcpy(ndev_work->cmds, cmds, sizeof(ndev_work->cmds));
+ 	for (i = 0; i < ARRAY_SIZE(ndev_work->cmds) && ndev_work->cmds[i].cb; i++) {
+ 		if (!ndev_work->cmds[i].ndev)
+@@ -820,7 +823,7 @@ static int netdevice_event(struct notifier_block *this, unsigned long event,
+ 		return NOTIFY_DONE;
+ 	}
+ 
+-	return netdevice_queue_work(cmds, ndev);
++	return netdevice_queue_work(cmds, ndev, event == NETDEV_UNREGISTER);
+ }
+ 
+ static void update_gid_event_work_handler(struct work_struct *_work)
+@@ -830,7 +833,7 @@ static void update_gid_event_work_handler(struct work_struct *_work)
+ 
+ 	ib_enum_all_roce_netdevs(is_eth_port_of_netdev_filter,
+ 				 work->gid_attr.ndev,
+-				 callback_for_addr_gid_device_scan, work);
++				 callback_for_addr_gid_device_scan, work, false);
+ 
+ 	dev_put(work->gid_attr.ndev);
+ 	kfree(work);
+
 
