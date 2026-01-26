@@ -1,66 +1,66 @@
-Return-Path: <linux-rdma+bounces-16023-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16024-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id tn0aBXyod2nrjwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16023-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Jan 2026 18:46:36 +0100
+	id oPCKAhGpd2nrjwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16024-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Jan 2026 18:49:05 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05418BA24
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Jan 2026 18:46:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 674BA8BAA8
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Jan 2026 18:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AEFDB3024150
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Jan 2026 17:46:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BCDCA30347AB
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Jan 2026 17:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE4E1F4CBC;
-	Mon, 26 Jan 2026 17:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF7834D4F1;
+	Mon, 26 Jan 2026 17:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SOseg3Jk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dl5BnoZ7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0BA3C38;
-	Mon, 26 Jan 2026 17:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF93734D4D2;
+	Mon, 26 Jan 2026 17:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769449588; cv=none; b=BIWqdVBN8YAbenBPz3h8B+8Us48FUYEtu0xjswpRyH0b4hVp1o1wtvj6Pfi2jOPZGrz68tXx6Pz/uB2t2E/b9IgDtFJdxRoN2gQqUjt1WkdM1ErZixXCy+grFGEw5R1FN4JWIbn3CuseTUAa22Vm1zIM8kU0/AaXl1OcvwDMjzQ=
+	t=1769449699; cv=none; b=R2O7YX8Q8k+aKDSsHxCbkGcuKNSECpkkAG0cTMGL8oUxPa+Qg1HPCucfb0134o7/oRqnqCvlwabL++DsLfHfYzr5zAGmxHkslUun9tr+IJgDIqSl11xGUousTAOIQYF9A5UH/T174rFc4MdtCcbA7sjPwwLRjGm6sZdeziFge7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769449588; c=relaxed/simple;
-	bh=MkMz063z61trmJHAkmyu5zxLK56OJbD+64xxAoF0lyM=;
+	s=arc-20240116; t=1769449699; c=relaxed/simple;
+	bh=RsYSuliAGyXfu7amtjytPEnCvLsy+vVf24yR5uPC0pE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Mcibjhi6xtXXggwT9Q2CUq07DJKG2gvrZJiFcht09kwO4EX8zLYh02DbWlIFSsgZf1mXEvz3tUhY9hBqRFnbkTnoh0zBJ+pzuzqij9IhQxtPcWCZNTQLuFZvI7KL0kyV8pcEPwizqtVu6fO04ygHOkUJTsg3u/ZSX8fcFBQMCes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SOseg3Jk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45B1FC116C6;
-	Mon, 26 Jan 2026 17:46:26 +0000 (UTC)
+	 MIME-Version; b=EcJcd5ehyCMs/aFoIzVb3vamXBETSwV4CEIzL+uEyTTqFH77n245dVBNdpxPYYssvpKCK/ZojI5S45fI8J0z5mMTVe1oDDVajXPT+Arc7P1cEq+eZcQ89wHfg0m6XotEQvMBKy4SFf5wDJw0JV9sNstfRzosOElFMyYK0TbmcyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dl5BnoZ7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DF10C19425;
+	Mon, 26 Jan 2026 17:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769449588;
-	bh=MkMz063z61trmJHAkmyu5zxLK56OJbD+64xxAoF0lyM=;
+	s=k20201202; t=1769449699;
+	bh=RsYSuliAGyXfu7amtjytPEnCvLsy+vVf24yR5uPC0pE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SOseg3JkwZQUiosWnMiF5Rk2nzbSn/o3iwAgcI+rQvimy01qGVka43UiXWDtKtp6U
-	 PC7adp9+f8M+/1PVSRAU4HmB/uhOAr8IWxO1pLiqflEwHY7aX5gMTkg68ncNihMisL
-	 CceSaESURC6KMPmkJKtOhD7KOBPCAP9sTt25O7jQt3ZeQzAm6SSvwk5aCAdPMyquYc
-	 CK2KmSyb8hhMSKqVuPV4GV5bAfBvcYu2b5sS9g8mtby+4lUnmLKqEoLfyJyFPyPxq0
-	 vqCWgc7Hv1B2qAnAg/hDRoAokmno/4AwGzw5rjdDxTuhooxdgFGjMMD7rzzq9v2ijT
-	 pd3JVLG9fmqrw==
+	b=dl5BnoZ7qaHOYO4trP9UdK5tV4uq7Y1inMJKubhuJiTUS262YQ4v6mxlWuCeLyq4d
+	 PAlzmBHIdZuLO/EGWJ6lHjsKa7BINJcs8pbHMp/gAD4947UQ+OMQB/2Ct9hMvhmGQS
+	 7wDAxACL+XkjP/sM1jD3fHpHXJailvIsU9i0Tg3Pw5AvX7yjZK0Zqlw08An2wlJSiL
+	 Op7O/ke6q0tW/VbViZUveHmlS6hbOWjOP0eWcoph/4JO2BUtZ5Z6Jty6zRqQ6mWwrL
+	 CmZxSr9Ch8yeBGGJ2bzLgO2CMRVO4SvjzjUmE/6/wSq26j+wVbg28m69INzsDaIJfq
+	 d4Dn5wtw8VmUw==
 From: Simon Horman <horms@kernel.org>
 To: achender@kernel.org
 Cc: Simon Horman <horms@kernel.org>,
-	pabeni@redhat.com,
+	allison.henderson@oracle.com,
 	rds-devel@oss.oracle.com,
 	netdev@vger.kernel.org,
-	allison.henderson@oracle.com,
 	edumazet@google.com,
+	pabeni@redhat.com,
+	linux-rdma@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
-	kuba@kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [net-next,v1,1/7] net/rds: new extension header: rdma bytes
-Date: Mon, 26 Jan 2026 17:46:20 +0000
-Message-ID: <20260126174620.1393182-1-horms@kernel.org>
+	kuba@kernel.org
+Subject: Re: [net-next,v1,7/7] net/rds: Trigger rds_send_ping() more than once
+Date: Mon, 26 Jan 2026 17:47:54 +0000
+Message-ID: <20260126174754.1393215-1-horms@kernel.org>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260125070651.207042-2-achender@kernel.org>
-References: <20260125070651.207042-2-achender@kernel.org>
+In-Reply-To: <20260125070651.207042-8-achender@kernel.org>
+References: <20260125070651.207042-8-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16023-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16024-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -94,9 +94,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:url]
-X-Rspamd-Queue-Id: B05418BA24
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 674BA8BAA8
 X-Rspamd-Action: no action
 
 This is an AI-generated review of your patch. The human sending this
@@ -104,72 +104,42 @@ email has considered the AI review valid, or at least plausible.
 
 For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
 ---
-net/rds: new extension header: rdma bytes
+net/rds: Trigger rds_send_ping() more than once
 
-This patch introduces a new extension header type RDS_EXTHDR_RDMA_BYTES
-to allow RDMA initiators to exchange byte counts with their targets for
-statistics and policy purposes. It also expands rds_message_add_extension()
-to support multiple extensions per message.
+This commit ensures that rds_send_ping() is triggered after reconnect
+to properly communicate path capabilities, especially after an RDS
+module reload. It also validates source port modulo during fan-out.
 
-> diff --git a/net/rds/rds.h b/net/rds/rds.h
-> index 8a549fe687ac..cadfd7ec0ba9 100644
-> --- a/net/rds/rds.h
-> +++ b/net/rds/rds.h
+> diff --git a/net/rds/send.c b/net/rds/send.c
+> index ea3b57e9191b..8e7ece085ff1 100644
+> --- a/net/rds/send.c
+> +++ b/net/rds/send.c
+> @@ -1328,6 +1328,23 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+>  		cpath = &conn->c_path[0];
+>  	}
+>
+> +	/* c_npaths == 0 if we have not talked to this peer
+> +	 * before.  Initiate a connection request to the
+> +	 * peer right away.
+> +	 */
+> +	if (conn->c_trans->t_mp_capable &&
+> +	    !rds_conn_path_up(&conn->c_path[0])) {
+
+This isn't a bug, but the comment says "c_npaths == 0" while the code
+checks "!rds_conn_path_up()". These conditions are different:
+c_npaths == 0 means no paths negotiated yet, while !rds_conn_path_up()
+is true for any state other than RDS_CONN_UP (DOWN, CONNECTING,
+DISCONNECTING, ERROR, RESETTING).
+
+The commit message mentions "after a re-connect to any peer" which
+aligns with the code, but the comment specifically mentions c_npaths
+which isn't checked. Should the comment be updated to reflect the
+actual logic?
+
+> +		/* Ensures that only one request is queued.  And
+> +		 * rds_send_ping() ensures that only one ping is
+> +		 * outstanding.
+> +		 */
 
 [ ... ]
-
-> @@ -258,6 +259,19 @@ struct rds_ext_header_rdma_dest {
->  	__be32			h_rdma_offset;
->  };
->
-> +/*
-> + * This extension header tells the peer about delivered RDMA byte count.
-> + */
-> +#define RDS_EXTHDR_RDMA_BYTES	4
-> +
-> +struct rds_ext_header_rdma_bytes {
-> +	__be32		h_rdma_bytes;	/* byte count */
-> +	u8		h_rflags;	/* direction of RDMA, write or read */
-> +};
-
-This struct has 5 bytes of actual data but sizeof() will return 8 bytes
-due to alignment padding. The 3 padding bytes after h_rflags are not
-initialized when this struct is used in rds_ib_xmit(). Since
-rds_message_add_extension() copies sizeof(struct) bytes via memcpy(),
-those uninitialized padding bytes get transmitted to the peer.
-
-Should this struct be marked __packed, or should the declaration in
-rds_ib_xmit() use a zeroing initializer like = {} to avoid leaking
-kernel stack contents over the network?
-
-> diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
-> index f9d28ddd168d..8282ff61b0b3 100644
-> --- a/net/rds/ib_send.c
-> +++ b/net/rds/ib_send.c
-> @@ -578,10 +578,27 @@ int rds_ib_xmit(struct rds_connection *conn, struct rds_message *rm,
->  		 * used by the peer to release use-once RDMA MRs. */
->  		if (rm->rdma.op_active) {
->  			struct rds_ext_header_rdma ext_hdr;
-> +			struct rds_ext_header_rdma_bytes rdma_bytes_ext_hdr;
->
->  			ext_hdr.h_rdma_rkey = cpu_to_be32(rm->rdma.op_rkey);
->  			rds_message_add_extension(&rm->m_inc.i_hdr,
-> -					RDS_EXTHDR_RDMA, &ext_hdr, sizeof(ext_hdr));
-> +						  RDS_EXTHDR_RDMA, &ext_hdr);
-> +
-> +			/* prepare the rdma bytes ext header */
-> +			rdma_bytes_ext_hdr.h_rflags = rm->rdma.op_write ?
-> +				RDS_FLAG_RDMA_WR_BYTES : RDS_FLAG_RDMA_RD_BYTES;
-> +			rdma_bytes_ext_hdr.h_rdma_bytes =
-> +				cpu_to_be32(rm->rdma.op_bytes);
-
-Here rdma_bytes_ext_hdr is declared on the stack without initialization.
-Only h_rflags and h_rdma_bytes are assigned, leaving the 3 padding bytes
-uninitialized. When rds_message_add_extension() calls memcpy() with
-len = sizeof(struct rds_ext_header_rdma_bytes) = 8, those uninitialized
-bytes are copied into the header and sent to the peer.
-
-[ ... ]
--- 
-pw-bot: cr
 
