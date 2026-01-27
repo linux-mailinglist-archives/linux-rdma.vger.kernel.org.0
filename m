@@ -1,169 +1,171 @@
-Return-Path: <linux-rdma+bounces-16069-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16070-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UHM7KZyeeGn4rQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16069-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 12:16:44 +0100
+	id GBV7ERGleGmGrgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16070-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 12:44:17 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A3DC9375D
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 12:16:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D38A93CC0
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 12:44:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A3F493004DEA
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 11:16:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 64931304C04C
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 11:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DC030E828;
-	Tue, 27 Jan 2026 11:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B625D349B05;
+	Tue, 27 Jan 2026 11:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u+LJdlmU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C10A30C366
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 11:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F664346E5F;
+	Tue, 27 Jan 2026 11:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769512602; cv=none; b=Tn2D8p9IeUkXygkxqBV7KwhCx+nneIcC3P7okfoaZk0f1oIlFuV6NLA0YGdqouMvO1SIXFIlRTNjbl2rZ6Mmmc7tRv43JN59D4avE/CT/uq03FAc3AY3k9nlASoI7WnY0B7JSQZ+7fkFgX4V7zVQAQwRGbjgY86xYX+9quxpNcE=
+	t=1769514170; cv=none; b=qisvrVL5LU+hrkIY4gNmJG8L1NSB+O2I51atWUZIQ0cCV24dAAKW1qhA8rYpHpDlA/C0msVTgMnmPLRPkNjDJGkjtuuY4T/jJ5cF/jVHWbdxlqmUVt6x0jIDQrbuYCLEz1bVg1sC4YH41ozEM5bFQKaJiKKzIoqrRaE7qdF+tEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769512602; c=relaxed/simple;
-	bh=5LigbZBUhyRrm6RrON4tQ6DQXC2YTLahgBenfoMHUt4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kexHG1X0lxYmoaSeuvJXpO7q0VKut02Qr6jqeLmI4AhXgT4iRXaqGLcSHuzu0c033D4cBArbUNvXaxA1rhqoYDNtzuXk0sQSBg8wtVQfHZliNnxAsh+Uqb45RtxhGFMPj5UanT19u851HUYg7CANYqACFOrUfsSm3YBJB0wJWUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 60RBExx0070443;
-	Tue, 27 Jan 2026 20:14:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 60RBExg5070439
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 27 Jan 2026 20:14:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <21d63279-79a2-47aa-b305-30a55b8f40f4@I-love.SAKURA.ne.jp>
-Date: Tue, 27 Jan 2026 20:14:58 +0900
+	s=arc-20240116; t=1769514170; c=relaxed/simple;
+	bh=fAHM5q9wQLwXxl3T67WPkBrXvMLT3XUbL9WwMpc1kVY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljykHbRvNRHcD1W2ia42it4n2KD/WxzsgzOHmiJ2SGPcB81ZEp0EQDlPdiuPyXcGaF1DUeLhaqj3Jb10bO5F1HrW5Eh6t7n74VjpNJ/PjxGfqbHQjw+WSXrNBA81tEdQedhUgSoRwhc3/iiHIts3ieLdA0socGf/q7wLIPpY2tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u+LJdlmU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FC54C116C6;
+	Tue, 27 Jan 2026 11:42:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769514170;
+	bh=fAHM5q9wQLwXxl3T67WPkBrXvMLT3XUbL9WwMpc1kVY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u+LJdlmUXoEUT+qS8vdwdGhuVoxoBM8bpGP76IPFvQ2hPoxYogjUoZQMHsGTlLuGz
+	 Wi1irQ+OaS9vZIPoRwJ+ZcylK5RTFC8tosvgADB6cn79OhFqjwAcYfUY+jEfyh0gAc
+	 G9aEoU5cSdAHZ8YsIePIVVTAmiXeu42p78b7GyUNEn73EnF8KjSdfazGrSHPHfrsXS
+	 8PC3zJHRPg8aEyB+5F/ILhQ28gUQjagLmvBzA+Zjn/8gYldm16hilAft/cMikzCr/f
+	 a3q1yoFN+jz33KmtrEztFNuoUNKjPnSSBkf5e/DweEwIKaeqez+OKWtP4O4t1ZC7q0
+	 KgHBtLPJo2YYg==
+Date: Tue, 27 Jan 2026 13:42:43 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 3/8] dma-buf: Always build with DMABUF_MOVE_NOTIFY
+Message-ID: <20260127114243.GS13967@unreal>
+References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
+ <20260124-dmabuf-revoke-v5-3-f98fca917e96@nvidia.com>
+ <0d2ec2d6-c999-45d8-a2bd-b5b21883db47@amd.com>
+ <20260127095831.GR13967@unreal>
+ <83cd911c-99ea-4fab-821e-fcf703209731@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/core: Fix stale RoCE GIDs during netdev events at
- registration
-To: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, msanalla@nvidia.com, maorg@nvidia.com,
-        parav@nvidia.com, mbloch@nvidia.com, markzhang@nvidia.com,
-        marco.crivellari@suse.com, roman.gushchin@linux.dev,
-        wangliang74@huawei.com, yanjun.zhu@linux.dev
-References: <20260127093839.126291-1-jiri@resnulli.us>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20260127093839.126291-1-jiri@resnulli.us>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Anti-Virus-Server: fsav304.rs.sakura.ne.jp
-X-Virus-Status: clean
+In-Reply-To: <83cd911c-99ea-4fab-821e-fcf703209731@amd.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16069-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[i-love.sakura.ne.jp];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-16070-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
+	RCPT_COUNT_TWELVE(0.00)[34];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[penguin-kernel@I-love.SAKURA.ne.jp,linux-rdma@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,I-love.SAKURA.ne.jp:mid,syzkaller.appspot.com:url,appspotmail.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4A3DC9375D
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,amd.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9D38A93CC0
 X-Rspamd-Action: no action
 
-On 2026/01/27 18:38, Jiri Pirko wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
+On Tue, Jan 27, 2026 at 11:02:03AM +0100, Christian K�nig wrote:
+> On 1/27/26 10:58, Leon Romanovsky wrote:
+> > On Tue, Jan 27, 2026 at 10:26:26AM +0100, Christian K�nig wrote:
+> >> On 1/24/26 20:14, Leon Romanovsky wrote:
+> >>> From: Leon Romanovsky <leonro@nvidia.com>
+> >>>
+> >>> DMABUF_MOVE_NOTIFY was introduced in 2018 and has been marked as
+> >>> experimental and disabled by default ever since. Six years later,
+> >>> all new importers implement this callback.
+> >>>
+> >>> It is therefore reasonable to drop CONFIG_DMABUF_MOVE_NOTIFY and
+> >>> always build DMABUF with support for it enabled.
+> >>>
+> >>> Suggested-by: Christian K�nig <christian.koenig@amd.com>
+> >>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >>
+> >> Reviewed-by: Christian K�nig <christian.koenig@amd.com>
+> >>
+> >> As long as nobody starts screaming in the last second or I encounter some other problem I'm going to push the first three patches to drm-misc-next now.
+> > 
+> > How do you see progress of other patches?
+> > Can they be queued for that tree as well?
 > 
-> RoCE GID entries become stale when netdev properties change during the
-> IB device registration window. This is reproducible with a udev rule
-> that sets a MAC address when a VF netdev appears:
+> I was hoping to get through them by the end of the week.
 > 
->   ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth4", \
->     RUN+="/sbin/ip link set eth4 address 88:22:33:44:55:66"
-> 
-> After VF creation, show_gids displays GIDs derived from the original
-> random MAC rather than the configured one.
-> 
-> The root cause is a race between netdev event processing and device
-> registration:
-> 
->   CPU 0 (driver)                    CPU 1 (udev/workqueue)
->   ──────────────                    ──────────────────────
->   ib_register_device()
->     ib_cache_setup_one()
->       gid_table_setup_one()
->         _gid_table_setup_one()
->           ← GID table allocated
->         rdma_roce_rescan_device()
->           ← GIDs populated with
->             OLD MAC
->                                     ip link set eth4 addr NEW_MAC
->                                     NETDEV_CHANGEADDR queued
->                                     netdevice_event_work_handler()
->                                       ib_enum_all_roce_netdevs()
->                                         ← Iterates DEVICE_REGISTERED
->                                         ← Device NOT marked yet, SKIP!
->     enable_device_and_get()
->       xa_set_mark(DEVICE_REGISTERED)
->           ← Too late, event was lost
-> 
-> The netdev event handler uses ib_enum_all_roce_netdevs() which only
-> iterates devices marked DEVICE_REGISTERED. However, this mark is set
-> late in the registration process, after the GID cache is already
-> populated. Events arriving in this window are silently dropped.
-> 
-> Fix this by introducing a new xarray mark DEVICE_GID_UPDATES that is
-> set immediately after the GID table is allocated and initialized. Use
-> the new mark in ib_enum_all_roce_netdevs() function to iterate devices
-> instead of DEVICE_REGISTERED.
-> 
-> This is safe because:
-> - After _gid_table_setup_one(), all required structures exist (port_data,
->   immutable, cache.gid)
-> - The GID table mutex serializes concurrent access between the initial
->   rescan and event handlers
-> - Event handlers correctly update stale GIDs even when racing with rescan
-> - The mark is cleared in ib_cache_cleanup_one() before teardown
-> 
-> This also fixes similar races for IP address events (inetaddr_event,
-> inet6addr_event) which use the same enumeration path.
-> 
-> Fixes: 0df91bb67334 ("RDMA/devices: Use xarray to store the client_data")
-> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+> Just wanted to make sure that CI systems start to see the first three patches (who affect everybody), so that we get early feedback should we have missed something.
 
-I was thinking making the NETDEV_UNREGISTER event handler valid until
-wait_for_completion(&device->unreg_completion) in disable_device() returns
-( https://lkml.kernel.org/r/b4a09ad8-97cc-4fe1-b02a-6192248694a8@I-love.SAKURA.ne.jp ).
+Perfect, I based my patches on these two commits:
+61ceaf236115 (vfio/for-linus) vfio: Prevent from pinned DMABUF importers to attach to VFIO DMABUF
+24d479d26b25 (tag: v6.19-rc6) Linux 6.19-rc6
 
-Since your patch includes what I was trying to address, you can add
+Thanks
 
-Reported-by: syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
-
-lines.
-
+> 
+> Regards,
+> Christian.
+> 
+> > 
+> > Thanks
+> > 
+> >>
+> >> They are basically just cleanups we should have done a long time ago.
+> >>
+> >> Regards,
+> >> Christian.
+> >>
+> 
 
