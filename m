@@ -1,84 +1,84 @@
-Return-Path: <linux-rdma+bounces-16047-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16048-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cIZhDPtaeGkupgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16047-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 07:28:11 +0100
+	id qD2CFTxueGl2pwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16048-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 08:50:20 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8254790630
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 07:28:10 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBCC590D7C
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 08:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A8DE6303D709
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 06:26:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B754D30089AC
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 07:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 259A832AAAA;
-	Tue, 27 Jan 2026 06:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4902848A8;
+	Tue, 27 Jan 2026 07:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MD2gHp1h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W0l9RlVJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE9D17D2
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 06:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14251F4181
+	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 07:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769495212; cv=none; b=TWvQUNyluPw3KpZ2eJEW5R0q91BJoC0Y9/p2eMdzL6uZZkvo7x7rt9e/U3I6NsOKnu6tLMFabpiOgdfy2XSc6TK91bpJqnJUPF0F58mQYeeJS0OWWd4aOuAEjDIqwmAJliCeIE91295+lix+sOUvilydW22uSM8dXOEJ286XtsI=
+	t=1769500216; cv=none; b=th7ZFKQT0mCkX/0ZWsbZJUEMqp/khsyB3bpk4U/TZDmUeHRtJubN6CCxlknKyFuWCeVu9giPdrMI/TTDoYmDwD5g2vc9ptd90LKMLCe06HB7gSOFE+OwrXIaAnhl0WVD7ySG2j6B6zBSGwHTMtSK2GgFWaKD5E+Wt+t92NNC8uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769495212; c=relaxed/simple;
-	bh=3ZMwlMDdcZOeFSfV+NKz7u07M2f8knHtILiYPoeGklM=;
+	s=arc-20240116; t=1769500216; c=relaxed/simple;
+	bh=jhKN+FIotpia4REEgeIZnDqef/WVtVZ0T34Ox+kFDUY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O6ifEAFav1bOIeFQAKHT4TOL5TaxeOFQ2y7Sj5kLEvQzFTKRHNU5ED2I0nRUmIUekFD3sTkGoKyrd8DsH1jFEA3JFaB5hPchB1Jf4hFMG7ddgfoeJhfiuy+oYuIgv0l/BGdRRNXP39EVyd/G9JCrhbpJPJ6Sb3i/QJhZ/dVJ9IE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MD2gHp1h; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:Content-Type; b=NeRgYPi/4AdfKF3QfqWNHUKvU7Zrkf7tjLDuOX3NqakFvEQKPwe9EebsdCK0Anb6HXepQ2j98lXwLtVNCGOpSRqlyqUXX2b7gUxQmeSBnz2aoemydfdDOp182VrabH4yjRoKHVcMGSzkKUSFlgvklt0tqx98Ek9UuOGEvXCI5CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W0l9RlVJ; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47ee4338e01so29950835e9.2
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Jan 2026 22:26:51 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4801eb2c0a5so52409825e9.3
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Jan 2026 23:50:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769495210; x=1770100010; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1769500213; x=1770105013; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SWD55duaNuQRMmraETqUDpWummec5E+B5H4qqlJvJhs=;
-        b=MD2gHp1hOmczY8b85TcOvXXekJLF/TgM/lINdHzTxvIuHa5eWNjcj6mt3FgXiMnO04
-         kEBNAerDLhInEdkhdrXBHgu6SHsb+eZLDAAidXux+OQdBBa0+PZlKFY+4voA4yooGW4M
-         ZYOnlf+JZH3pEcaHPcdYaiCnEpVccwsjIGIV0cejUKD1wvkVztfInWQ0H+TqfTBwhdIm
-         KWtcUsttNyuJ/vemqG0PBs/sN0R1QnQuUwUyF3xK6u6SAUnwGmHBpvwXNmTRfr5NqYkm
-         ndbFPznm2illzItGmOBAUC/R/ypmiZH4qtTpviytxNdBDc/rc8eQzqbhXNRWZMFw2EBG
-         yM4A==
+        bh=1F+pwf4TDg/OxTQCcbJAJWg75eTnF2WjrBMDZZbHuLY=;
+        b=W0l9RlVJdLmlLLyoidvWqwuiwrembZwluVDEpncVqR5V1AqgNWJw5YRBT2oNnPG0bc
+         njJY3GWyDYt143xTIx2ukz0OS2CTyfhym+97RJFwb3AxLMZ6byhudNrgCEZA3q03RsYT
+         5OtGZG5DHBczXKlDxXIe/OK8DNlyoEpsZd4kZtL80wVAgFjEeahzBOhWN6jUoA/RJCbl
+         Kd5zlvvd2wF6jVlnDlfmFvpVJBL5tEkAXvbkS5aNgv25lNPCOJwPlg/BOY7c/yBKa3i7
+         qQ9vTe6Qc2lUu6tJ71nPaZsnm+7m+vFmMCZYCMGdlmeiC1IaHREWvhul9Noj7MDKsPv2
+         9mUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769495210; x=1770100010;
+        d=1e100.net; s=20230601; t=1769500213; x=1770105013;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SWD55duaNuQRMmraETqUDpWummec5E+B5H4qqlJvJhs=;
-        b=hrxwSfDrlWupA2w9uzaQ7QyiKPBtaEmPBzMe8VPVshDtUfGAsjkczLibA+q0PF7ncX
-         uyStgEzStJOfxLs2HB1dw7v/3fsfFBeAwFkmGXQWeRWJjWq8LyzpLIucTR8553jUQuMF
-         Nwq3fMIe/+uez0hle6LnliO/SL1zEGaWQ3goj1x25LDdW0i7IGY4xsZm0eVEkWXVEg+n
-         3jegQH01PwQMT3jvUWvEvPWto0EwVCr31bs6ZrdXq43ItiZaZou48TUI63sJ7QdKYl9W
-         A4M+rMuUb5R8zoAj8igLuVmanBQN0qU/fMgXIm7wZXNdmCkKGKTEtDDgbpbLfGtFuc4v
-         AWmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWN+KDTZi3+1uTGRL4I2yDkb11riHgq5kWWHy+uIUwb2BdMJ3aopTF6TzEmV2zwsF7y9V5ObIA4+u7k@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvbRb85+MmdfebzVKDsfe0EeOl++PAh5tSRB/J8o+T1PREIzv9
-	JKUkkhL25UfhT+mCxOLYxvKFsADlpCXfmfgp2qUAF+RPi3uhSgfcL+Nl
-X-Gm-Gg: AZuq6aJ0fN0B5oHPP/5kw2wwGX0Gl8bI1147HxEG3atISI9FseSJAh7xRPDF4MQ+khY
-	Irm3RVSzMljaPrHymGN5JzfQkWsIrgMyqcD9XZpAOgZiQ/NtBWHBlyyZSQzesfptY0BMK7SRqur
-	yharqahQq+tT9xilb/3OlDima5eoRKKZ07howCOCWc+KrK74Grp9Ci4N2RKqgsZsK+LcLCdR/ve
-	91OCa2Tqi5JofKJ+IAHRoM8ZOz2Q7f1DXkToh883VNyiyArf+onEPjQZjr57i3GbLMcj7c2eKXY
-	HdizuXria6oq6H1phg4NFVJC2g02l5PAmJJMt1IAEQieosF/DWxUG/sFa3NkPSrD2d9TCuIxu1H
-	Wfo5Adx0/v6U6bQcZz1t0Yk5Y5lHiQwSJAKwtompzoSTr+38JmmiPHnJ29mzhcUZxVvYElSBKPB
-	EPAEbNHRzcA0IWKfjFeiH1o2ckp0KmPNWOCNk=
-X-Received: by 2002:a05:600c:8719:b0:480:1aae:676c with SMTP id 5b1f17b1804b1-48069c78706mr7026885e9.18.1769495209781;
-        Mon, 26 Jan 2026 22:26:49 -0800 (PST)
+        bh=1F+pwf4TDg/OxTQCcbJAJWg75eTnF2WjrBMDZZbHuLY=;
+        b=wlH6C57yWtoteTlaF0kTRu6EMv3AOb3MXCTW9JIgNP9vOH6N/odQSjVKTRAOzv25zZ
+         DR2Qnmi5lgdcnyFfE3kKVUobt6YdV+Tw0NTwLI2zE/zin/580If9kDay7HNLavLXs/Sr
+         Ut4XUB4K0vnIoy+n7ySGvYYGvycHWQhQeiGj8u2AzDu7k+rjY42BMIqwoszBotyu0EPZ
+         fm16luWyvm+9QmptdORSBZ4znHsE8aW4O5tX8FEKVuEbWuJUG++kk1pb+K/dm7IdZ50f
+         7cjAjYiiLkz8YmwjRoNdAdF4+vZLGIiz5IGmlUvCr+RTe3mzfN3kBoFTvbGz0UNipeZE
+         +82A==
+X-Forwarded-Encrypted: i=1; AJvYcCWzTDxCRPjB6nLd1kyX6C60dERFu1tYaP/f0uLzLTabWqL65xzLtThJJpNuPxWbijRumOf7inDdiI4L@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr4ix3wV+4wDJu5nKMtANtFtlzFZua/Ake/MRB2U41je/fUJio
+	a+N7XZaPtFUmXqeRZNixOL8uu8D2kXBgK8EEoaDSuJGAYmIH3YykkqT2
+X-Gm-Gg: AZuq6aJI7031pverZIR+PcMnu/sxloyWUvzjbaUMf1kcrcpw0IrPIgAA4yGGneJKOCf
+	kvFk0D1CJqALPRzT1VgO8vrUAi2mMjieku9UWMYOkwohbl8KP0x+ixTanxsFdfqKQg+7f5/yw2W
+	fHsVxNU7a8uI/8JYgKF7EzhH0blAw/OmXDnaZucIL0nmxMi/b2nodnxiniRbv05W61wlU2sjksm
+	MH+aLljttYaJ1T3GyrQINsL1/F1CCdyJO+gp2tNG9kCpV8kbTTLdJswWL4KTru2GiryCYF8EYS1
+	v9INQYpIRrdl0Jn1ailKYuIGaXle9b4NVvqyE3/sVxN17noO4Yd4Ci/umRZRoBWKYWJh2S0D3pa
+	6Eur6an4L164kb7XV6wz6Gw+ljDAqeU8UnZorBL3nIaOlEnfDCMUfTrOg2/JqByyNMr1UMjeU6L
+	LGRn+Q7WVdriNtmZkd6z/zP2L/iS0IddeTtwE=
+X-Received: by 2002:a05:6000:1865:b0:435:b020:30ab with SMTP id ffacd0b85a97d-435dd030439mr1215295f8f.15.1769500212866;
+        Mon, 26 Jan 2026 23:50:12 -0800 (PST)
 Received: from [10.221.205.245] ([165.85.126.46])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48066c37420sm42358365e9.9.2026.01.26.22.26.48
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435b1e717cbsm36432550f8f.24.2026.01.26.23.50.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jan 2026 22:26:49 -0800 (PST)
-Message-ID: <85b9a197-9957-4646-8f97-5aa4d90eb415@gmail.com>
-Date: Tue, 27 Jan 2026 08:26:49 +0200
+        Mon, 26 Jan 2026 23:50:12 -0800 (PST)
+Message-ID: <3b58208d-c2a3-4623-8fc8-e1ad2b71d2f7@gmail.com>
+Date: Tue, 27 Jan 2026 09:50:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -86,17 +86,23 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/mlx4: fix MAC table total count corruption in
- __mlx4_unregister_mac()
-To: Kery Qi <qikeyu2017@gmail.com>, tariqt@nvidia.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: jackm@dev.mellanox.co.il, ogerlitz@mellanox.com, monis@mellanox.com,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260122183906.2015-2-qikeyu2017@gmail.com>
+Subject: Re: [PATCH net-next 2/3] net/mlx5e: Remove redundant UDP length
+ adjustment with GSO_PARTIAL
+To: Gal Pressman <gal@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ netdev@vger.kernel.org
+Cc: Igor Russkikh <irusskikh@marvell.com>, Boris Pismenny
+ <borisp@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>, David Ahern <dsahern@kernel.org>,
+ Simon Horman <horms@kernel.org>, Alexander Duyck <alexanderduyck@fb.com>,
+ linux-rdma@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>
+References: <20260125121649.778086-1-gal@nvidia.com>
+ <20260125121649.778086-3-gal@nvidia.com>
 Content-Language: en-US
 From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20260122183906.2015-2-qikeyu2017@gmail.com>
+In-Reply-To: <20260125121649.778086-3-gal@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
@@ -104,90 +110,45 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16047-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16048-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com,nvidia.com,lunn.ch,davemloft.net,google.com,kernel.org,redhat.com];
+	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ttoukanlinux@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8254790630
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: EBCC590D7C
 X-Rspamd-Action: no action
 
 
 
-On 22/01/2026 20:39, Kery Qi wrote:
-> In __mlx4_unregister_mac(), when operating in mf_bonded mode
-> (SR-IOV with bonding), it appears that the code might be incorrectly
-> decrementing table->total instead of dup_table->total when cleaning
-> up the duplicate table entry.
+On 25/01/2026 14:16, Gal Pressman wrote:
+> GSO_PARTIAL now takes care of updating the UDP header length,
+> mlx5e_udp_gso_handle_tx_skb() is redundant, remove it.
 > 
-> If this is the case, it would cause the primary table's total counter
-> to be decremented twice (once for itself and once when it should
-> decrement the duplicate table), leading to counter corruption.
-> Over time, table->total could become negative, which would
-> break the "table->total == table->max" fullness check in
-> __mlx4_register_mac().
-> 
-> The registration path correctly increments both counters:
->    ++table->total;
->    if (dup) {
->        ...
->        ++dup_table->total;
->    }
-> 
-> However, the unregistration path seems to have a typo:
->    --table->total;
->    if (dup) {
->        ...
->        --table->total; // Should this be --dup_table->total?
-> 
-> Fixes: 5f61385d2ebc2 ("net/mlx4_core: Keep VLAN/MAC tables mirrored in multifunc HA mode")
-> Signed-off-by: Kery Qi <qikeyu2017@gmail.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Gal Pressman <gal@nvidia.com>
 > ---
-
-Hi Kery,
-
-1. Commit message is phrased as an RFC, with questions and uncertainty.
-Please re-phrase.
-2. Do you hit an actual failure here? What are the steps? What error do 
-you see?
-
-Other than that, code LGTM.
-
->   drivers/net/ethernet/mellanox/mlx4/port.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   .../mellanox/mlx5/core/en_accel/en_accel.h      | 17 -----------------
+>   1 file changed, 17 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
-> index e3d0b13c1610..6d0295c471da 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/port.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/port.c
-> @@ -410,7 +410,7 @@ void __mlx4_unregister_mac(struct mlx4_dev *dev, u8 port, u64 mac)
->   		if (mlx4_set_port_mac_table(dev, dup_port, dup_table->entries))
->   			mlx4_warn(dev, "Fail to set mac in duplicate port %d during unregister\n", dup_port);
->   
-> -		--table->total;
-> +		--dup_table->total;
->   	}
->   out:
->   	if (dup) {
 
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
