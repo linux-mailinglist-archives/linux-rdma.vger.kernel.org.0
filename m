@@ -1,71 +1,97 @@
-Return-Path: <linux-rdma+bounces-16080-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16081-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id pNW0DPLDeGnqtAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16080-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:56:02 +0100
+	id iHa8EiLJeGmNtQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16081-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 15:18:10 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFB7095342
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EB5957E0
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 15:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 772AA3070598
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 13:50:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EB7793050D36
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6B726ED54;
-	Tue, 27 Jan 2026 13:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD27280018;
+	Tue, 27 Jan 2026 14:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1ngN13m"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="KITYtOGz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC2D2D979F;
-	Tue, 27 Jan 2026 13:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91649198E91
+	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 14:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769521798; cv=none; b=eupEqadJaX/YttSmsMXOdWVZrRWVmccThcavkNycjUqyWVFCdrbJx0cbJdfOhpLNori46pqhhuLv6xIo1QXNSTw8l+XWSF6tCXoTxiBLb6Q6WksGfWnoCo9pMgc0iLy5o5xlMKBbpMhgy0bfJxtylyChllU6VWzvaTjQB4q4CPI=
+	t=1769523350; cv=none; b=ewbfnTr7sjm6JmHLiLeUyt0CEsO/s2lFtf/fl6vp/ZDlbvdphMGrRdqVZrnITm6/3Zm0ZIUInEpEkIzNv0Er9799Z1BFxSjF3U1/dW6106r93p/Yd1jMn/idefqm9qoZNlpVY9q88y4FvCKh6y/RANXBZS5arP+XKh3pMX76Azg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769521798; c=relaxed/simple;
-	bh=xJU6Yuhq5fJsCgB2olMgIDeTq7BGYRCyFgfx+0nnVog=;
+	s=arc-20240116; t=1769523350; c=relaxed/simple;
+	bh=zhH1S0B2GQ1eFFQmqQn5PepUl9TNnrx1RB6ej+OpzAw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n/zu9L6VDpqS73QaxTIFbFECmI9lHobZgok4wegqZGHRgRub+8mGh4woLHYUCLrBZtvHzSzhLYTmgVf8HTWO7kSdFULgQ199tVEX/JWWKgSqSDVOBvkjX0K6h3t1wwPzuy1BNVRTpIv91UMS6G3wNwFz04YZZs49TYTDF8s3YXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1ngN13m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85131C116C6;
-	Tue, 27 Jan 2026 13:49:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769521797;
-	bh=xJU6Yuhq5fJsCgB2olMgIDeTq7BGYRCyFgfx+0nnVog=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d1ngN13m7IgYqLmjsuowA02OOYZy8cHLn1RTksWhhAMFWrvDA+LGB+6ow9o9sl4MK
-	 LCkjI2qoQOX04TJ7DpYdAE+Fd+E3qbFgj8/I2PD9TgdbcAZjDTbZ7EJNIFQwrOVzsE
-	 53IAUNkNQxaLkdTq5n5PCji4nDUen0ewG/JMZqaq1dBnR3Js4jib3Il5AS09xiS8Uz
-	 XKRsqEf8Vd1B7KDdeF4oe//mZ3D56UePRhJkFXwk61n/S2IXfi4AVpBu9HW+tigH5i
-	 N5KrzCKJIXUc2WJRkTGmOcnA4njPJDdYJExYjr7pBxjtJs6MMaQ1iYUTlIHHYT67X8
-	 6JwI2v/f7oA2w==
-Date: Tue, 27 Jan 2026 13:49:51 +0000
-From: Simon Horman <horms@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
-	Carolina Jubran <cjubran@nvidia.com>,
-	Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH net-next V6 07/14] devlink: Add parent dev to devlink API
-Message-ID: <aXjCf2iRC5VsRC5A@horms.kernel.org>
-References: <1769340723-14199-1-git-send-email-tariqt@nvidia.com>
- <1769340723-14199-8-git-send-email-tariqt@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Low7jGD/b6/CiaWOqqk4D9ynfL7Pn0ictSRHO16w+yBbA3tfsJngUoaSadWsJteQnJAtdgWljJ5+MelcZbfcEDCNsCgKzHzjiG1kDPh//szA4Mgn7RHKJY738KwMdimn3KzG9hZX/SnXQhPv6QmA+lJlqdEBs99QCAJZRupvZMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=KITYtOGz; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-88a288811a4so81528746d6.3
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 06:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1769523347; x=1770128147; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KU4OGngicriB7L6MJLKoLJCB4/X+V04zhdmCbcuq2gI=;
+        b=KITYtOGz4CYHyIHRQMcn5NeINbG5Wqi+cs8f5JuBfEO+R8bSNrl6eevgfAF7DiJYHG
+         W3FojtjJBPVU1FvXdT+FrZqmP4UAc6obJjsLhNaTt/W9d7S5zSkpxENaaq7OqhXs58EN
+         Pa/fkI7HD47N2aKtfphj2U4qEaVuTard/GkxIxGM3Uf60Gk3Nd7HOeLf6znCh2Q/aza7
+         hCLpkS8TW9whoNV+uy9IEwz+ge9oZb37rcC+MKwIXOjvzzVX64mi6rCHW4b5uCz6ivmF
+         au+63uVCD9y0tfD73BqYJdaR4K2tQPl4PrE27epK+oXgWdKzr7o6jw2NKrtFGAXZ4rSQ
+         ghqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769523347; x=1770128147;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KU4OGngicriB7L6MJLKoLJCB4/X+V04zhdmCbcuq2gI=;
+        b=dhDtnmumQTjlrnuA8o+3SqtBC1+Fp79Zk1teUqeeb1UsgkaOYXoMdHJOb+fcRpiVhV
+         CRyDhBl7+/wCCcV0/ZhmiigULy738lXWdY+/XqotZEDN6PSuZKdLpf0g7Op/fPfPlepL
+         B0lSyoeV/tdBUX9RRHehvR5SeB3ACPypaGkdC/EnvP1tGn717LpdfPJAcEfw/bvCRGq/
+         7nN/IPFoxuUI8Bnejcuz8+b86hRKjsG60ZDdp018s9ugcLmhf1VrT098CwB7yIee0J4l
+         QOt53ZJmBpr309uS2z4ZWkatYAtcpGhlnBRoXrBMa6PRihS4zycjQVwKK0xIuisHNSzC
+         ti+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWqyBceaU/VPiRLdCFHDXbhBwfKtGkn8FRMY2XSieFMR+coYgvIrT6YRxU17ULi1T8kVi7aAXV4EwWQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCGZnvfHM20/3Tl2+LCPaG9Hv729ONmVKRJdH+FMAfA0BTOGc0
+	+u2u03Wbl4k2ZkU5y84fEMAZZWaEV2KXgLkLbijxVrBAR0R/f5uyQanuC9b4D/VClOE=
+X-Gm-Gg: AZuq6aJyMkILXT2HdcRC7wg0bVf3HpKHETcbHAFwoX/zd+Bwt7JUdU6G1ml4MxmynuJ
+	LnKSBSz8jja2rsHmwDA04856rnzDcvJssam0oyGuqE8wOflMseIMCwI8eQQ6aKtiiiP8XKSd/mB
+	HOrqJR3hB8b35pr7zBfoMcRFxhTSXioVOaKjDIl4P3njr0nlnKxDhOvmeRtb6FRSv5nUTKumBdq
+	osbAO32N/KxQmCMF2E+sOvBzEToUTxSDCe75eFRYk2jXPJFzVlBy/lmV67A6pFlSBUFYXSvKIvO
+	iWTv3r6sdiNt1Azn1qyQwitE5YuUayGqwnNeHmaLCnK7IqhvLqugv72Y7aGYU6lkJ0xaS9lpctt
+	kRFzQyD8ovaHMasNeqrM17HlkBLkIImRRYPd8EV1r1Tk5z1aR16Kun+mwp1JNNtl3T6PO8YxlaU
+	QtZaBZtzolO58bxKbfeLdZX/viZQrmFrimraOOj7P+QkrVwTpLDxgQ3ZVgGVs2Fs53rmE=
+X-Received: by 2002:ad4:5aec:0:b0:888:853c:4f55 with SMTP id 6a1803df08f44-894cc95c83dmr24036396d6.70.1769523346963;
+        Tue, 27 Jan 2026 06:15:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-894a908d67csm83631906d6.20.2026.01.27.06.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jan 2026 06:15:46 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vkjr7-000000094FI-2zPP;
+	Tue, 27 Jan 2026 10:15:45 -0400
+Date: Tue, 27 Jan 2026 10:15:45 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+	leon@kernel.org, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH rdma-next v9 4/5] RDMA/bnxt_re: Direct Verbs: Support DBR
+ verbs
+Message-ID: <20260127141545.GE1641016@ziepe.ca>
+References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
+ <20260127103109.32163-5-sriharsha.basavapatna@broadcom.com>
+ <pynbf5lh5azbblvoygivvzxjcmnvffrtdz5zbjzsg4rccbpvud@277svcow3ra4>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -74,116 +100,68 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1769340723-14199-8-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <pynbf5lh5azbblvoygivvzxjcmnvffrtdz5zbjzsg4rccbpvud@277svcow3ra4>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16080-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,gmail.com,resnulli.us,lwn.net,nvidia.com,vger.kernel.org,infradead.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	TAGGED_FROM(0.00)[bounces-16081-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[ziepe.ca];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DFB7095342
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 95EB5957E0
 X-Rspamd-Action: no action
 
-On Sun, Jan 25, 2026 at 01:31:56PM +0200, Tariq Toukan wrote:
-> From: Cosmin Ratiu <cratiu@nvidia.com>
+On Tue, Jan 27, 2026 at 01:30:03PM +0100, Jiri Pirko wrote:
+> Tue, Jan 27, 2026 at 11:31:08AM +0100, sriharsha.basavapatna@broadcom.com wrote:
+> >From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> >
+> >The following Direct Verbs (DV) methods have been implemented in
+> >this patch.
+> >
+> >Doorbell Region Direct Verbs:
+> >-----------------------------
+> >- BNXT_RE_METHOD_DBR_ALLOC:
+> >  This will allow the appliation to create extra doorbell regions
+> >  and use the associated doorbell page index in DV_CREATE_QP and
+> >  use the associated DB address while ringing the doorbell.
+> >
+> >- BNXT_RE_METHOD_DBR_FREE:
+> >  Free the allocated doorbell region.
+> >
+> >- BNXT_RE_METHOD_GET_DEFAULT_DBR:
+> >  Return the default doorbell page index and doorbell page address
+> >  associated with the ucontext.
+> >
 > 
-> Upcoming changes to the rate commands need the parent devlink specified.
-> This change adds a nested 'parent-dev' attribute to the API and helpers
-> to obtain and put a reference to the parent devlink instance in
-> info->user_ptr[1].
-> 
-> To avoid deadlocks, the parent devlink is unlocked before obtaining the
-> main devlink instance that is the target of the request.
-> A reference to the parent is kept until the end of the request to avoid
-> it suddenly disappearing.
-> 
-> This means that this reference is of limited use without additional
-> protection.
-> 
-> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-> Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> Similar to CQ/QP, why this is bnxt specific? I know a little about rdma,
+> but I believe we use it in mlx5 too, no?
 
-...
+mlx5 has a specific thing too, the doorbell has enough fairly hw
+specific properties and never leaks outside the userspace provider.
 
-Hi Cosmin, all,
+We consolidated the internal code to manage the mmaps, beyond that
+there hasn't been a big push to consolidate more.
 
-The netlink_gen.[ch] and spec changes in this patch do not seem consistent.
-
-$ tools/net/ynl/ynl-regen.sh -f
-$ git diff
-diff --git a/net/devlink/netlink_gen.c b/net/devlink/netlink_gen.c
-index 6b691bdbf037..f4c61c2b4f22 100644
---- a/net/devlink/netlink_gen.c
-+++ b/net/devlink/netlink_gen.c
-@@ -39,11 +39,6 @@ devlink_attr_param_type_validate(const struct nlattr *attr,
- }
-
- /* Common nested types */
--const struct nla_policy devlink_dl_parent_dev_nl_policy[DEVLINK_ATTR_DEV_NAME + 1] = {
--       [DEVLINK_ATTR_BUS_NAME] = { .type = NLA_NUL_STRING, },
--       [DEVLINK_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING, },
--};
--
- const struct nla_policy devlink_dl_port_function_nl_policy[DEVLINK_PORT_FN_ATTR_CAPS + 1] = {
-        [DEVLINK_PORT_FUNCTION_ATTR_HW_ADDR] = { .type = NLA_BINARY, },
-        [DEVLINK_PORT_FN_ATTR_STATE] = NLA_POLICY_MAX(NLA_U8, 1),
-diff --git a/net/devlink/netlink_gen.h b/net/devlink/netlink_gen.h
-index d4db82a00522..2817d53a0eba 100644
---- a/net/devlink/netlink_gen.h
-+++ b/net/devlink/netlink_gen.h
-@@ -13,7 +13,6 @@
- #include <uapi/linux/devlink.h>
-
- /* Common nested types */
--extern const struct nla_policy devlink_dl_parent_dev_nl_policy[DEVLINK_ATTR_DEV_NAME + 1];
- extern const struct nla_policy devlink_dl_port_function_nl_policy[DEVLINK_PORT_FN_ATTR_CAPS + 1];
- extern const struct nla_policy devlink_dl_rate_tc_bws_nl_policy[DEVLINK_RATE_TC_ATTR_BW + 1];
- extern const struct nla_policy devlink_dl_selftest_id_nl_policy[DEVLINK_ATTR_SELFTEST_ID_FLASH + 1];
-@@ -30,19 +29,12 @@ int devlink_nl_pre_doit_dev_lock(const struct genl_split_ops *ops,
- int devlink_nl_pre_doit_port_optional(const struct genl_split_ops *ops,
-                                      struct sk_buff *skb,
-                                      struct genl_info *info);
--int devlink_nl_pre_doit_parent_dev_optional(const struct genl_split_ops *ops,
--                                           struct sk_buff *skb,
--                                           struct genl_info *info);
- void
- devlink_nl_post_doit(const struct genl_split_ops *ops, struct sk_buff *skb,
-                     struct genl_info *info);
- void
- devlink_nl_post_doit_dev_lock(const struct genl_split_ops *ops,
-                              struct sk_buff *skb, struct genl_info *info);
--void
--devlink_nl_post_doit_parent_dev_optional(const struct genl_split_ops *ops,
--                                        struct sk_buff *skb,
--                                        struct genl_info *info);
-
- int devlink_nl_get_doit(struct sk_buff *skb, struct genl_info *info);
- int devlink_nl_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
-;
+Jason
 
