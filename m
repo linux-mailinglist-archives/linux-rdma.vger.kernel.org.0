@@ -1,98 +1,121 @@
-Return-Path: <linux-rdma+bounces-16088-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16089-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uPPAH//qeGmHtwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16088-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 17:42:39 +0100
+	id wDf4MpnneGmHtwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16089-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 17:28:09 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F4597E46
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 17:42:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 353C697C33
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 17:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 71651304C38E
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 16:00:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E3D56302D96C
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 16:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A9135EDCC;
-	Tue, 27 Jan 2026 16:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D84E35CBA5;
+	Tue, 27 Jan 2026 16:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Ur6vPhi5"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="KlTE7ocJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f66.google.com (mail-qv1-f66.google.com [209.85.219.66])
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9697235FF47
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 16:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D0535FF52
+	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 16:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769529604; cv=none; b=dCgcAvkbj3BleoCK1bi4UpCFGmErsn2dg0Gv8FQJwG52I4n/vwhXITZCw2Yp/sZg3WzoEY+zn65cOh49uqJc66RJi1B7HIvQHU1VNrYkbIBaUjHJ4paFjKw2VpFEdrCXHFwiSTVr/WcPFMEvmRDfoPfRG7sZ3VfN6+xfkMEcx/A=
+	t=1769531279; cv=none; b=JYzfGjFE8yEwv3MTsCpg9EprcV5erMsSHhL8iXO1BEJp5pGxIxySZO3Tw58iiPVCbBlBIt+SrydpCXENV4lEutwNl9d6lxPbWWzdyaiY16lg1EEiNh6WznkRgdvUJQRCv5YTspS33s2nRXU2n07cmF3XbJQxzusVqsBP59fAz1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769529604; c=relaxed/simple;
-	bh=VoVRxOPctJx9Sl9Txsie0vhB5OIxm2OrIfdEk+xmTkk=;
+	s=arc-20240116; t=1769531279; c=relaxed/simple;
+	bh=EzvzbPpROKuqvVQCoJHluXwjW5pJqoCNcXzstaHV6s4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MJ+mk0wfF8tZ0+qrfbDr0q0NzSNUQWsPifYfcjXyJssyp0eYiPxXfUpG5rFCvadHsXOMB1FnKkisQ53LQuFiagD4h9ZN7gKXwAbwwPgnpd2xLK+cXKP4jlVJ16OGCyDPZhRO4q/AvU62xLTGtY39utso/b1PpZ6gf5Zx9t3rRV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Ur6vPhi5; arc=none smtp.client-ip=209.85.219.66
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ml7Nv0JGFC6gsOesN8hHFZG1rQj/f8aqY6ZSGVaB7c5Khz0o7zlbQz/o6HQ57YpVgJTePofJAYltfQ6iRuIlYr6RHDO9jEN9msCtIWU4ri2hRtexsFlaSYvZrTF6cL0OIO+EheDt5hABWXx0N+tPoDpHcKAZhejRq5F+SA6lLxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=KlTE7ocJ; arc=none smtp.client-ip=209.85.160.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f66.google.com with SMTP id 6a1803df08f44-88fcc71dbf4so37721806d6.2
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 08:00:02 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-501469b598fso44445021cf.3
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 08:27:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1769529601; x=1770134401; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1769531276; x=1770136076; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GeRjWwa/qFGDjqE4yc4G2OC2vQNqoVBsa6n1QBSh9JI=;
-        b=Ur6vPhi5TGRY2bD+HzQXHovN9fZbXgZbcH6/vhQmUPnsmnyG9GvsLWRulEexbxI3aM
-         kRTNrAOXCkTB/11hjAbsy8GhrDChBErSGLM5pvVMIJPkJgYHW4rnsLI9sqgq1VCkeUll
-         wq+Kes4TZ2XYWOK8QmZsXKcXCQK+68IbT0wb6vF1IoFE1yPGZJLgS2AUtEAMR4uoOnuQ
-         XrnQL8FR6GIsF7PtxugzPgea/24325qZCeRe9pMUqODJeErenpfLHmmewivIAT0oYtHf
-         xCEmO8nuRxKoqbv5wnhZ5i0Ktc+K2Som0mT8Jbw/aKuh6BrK007fz5BGC+wIo7xSBCd0
-         fgKw==
+        bh=3Kat2TyZxDqTgTm8MMhUVYtoZ/z4BzE2I09fTuJqEpw=;
+        b=KlTE7ocJAtXhGsD/ZpW2fgoxgrYuaHqmg4qYKFaH4AXvMmVwIXr2XDqLtaHCHYsBVs
+         3x9kX3XNrOnS0sERj5ESgrOvOgAVZeWTt5suRDq+z2e1SFDjUB9rYGpHfiuklViAPQrc
+         phlR/hBmICpevDQXsuIWf24zo+0lqSC31hlFBRxrF2TZPyjfx1oJKPyfV82E7wkMKpdH
+         2dSIj92u+OTq5VNGOBvsOvBr+lc4pYFiAAHD9tNGfTbwO5J0KEI38nKkkt+Ex+fzPY4O
+         fRdqZXrfnSawNSosTfCjM1qcm003ArXEnRXTHsLhZikFi/xGsVMfpCWwHf/IG6cMhY64
+         MWyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769529601; x=1770134401;
+        d=1e100.net; s=20230601; t=1769531276; x=1770136076;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GeRjWwa/qFGDjqE4yc4G2OC2vQNqoVBsa6n1QBSh9JI=;
-        b=XF96BiIdyAvGmS643tqvKpMcyLKo3P+Q53cuUMt77O3kIe8Y6NFL7Nb3taVgxY+sD3
-         sw31TKEvXXm5OySlT2m5WWQfxIOOTSUlQN4q8e5P33UzmASIHTxvzwEn+bX/sj5IcrbL
-         QwZVV3eZVJu/E5e3luJfUKHHj3mbU4U7H0zejPcVafVYmBbFi3aTuy3VI8yeQ1dTZCyo
-         hGeRkcJUZrvD9Aund10zwM2ITL7cDrXuNppkZszLjXzhVucxMFq2gFDQ/sN2FFsUtbMK
-         N9/1CWG0QMtH+/DcYJBDzipOiPU4RE9FQ6KfMxHk8OohawngoHdxE14biVW8Fqk+xC2w
-         6YrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWjkw2NkjS/j1jU+8JdugVzXsy3MueP9u90oHMIKI7QuNjZ+3N6P2/7kAU847JULH6UR35oDZMsriDy@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcxKkvMgQK5jsu3wcVIa/AH+nhKYEP1EKCay9+2H1qMwJULSe/
-	cNhFZ61mf2/S8BKQDs2+n/RG97rN2JzOIHoTwVQbF+R5RuGsFHCoxNrJu1I/0KwTcas=
-X-Gm-Gg: AZuq6aLAHdgqVbSu8PlDTPcuHfMM1rNGxA0CjYaozzVW8cJ/8EHV1ojNCHimLeqnGdu
-	PNuojf13UYcqRRsU4qJohZkuU08V5TZNL8ykN/vbIkb1y5wDJmXXPpJieq/iYHYWMHTWRD1VuIq
-	239gzj6WJwQea/VRdK+Bl4oz8Y2rCHHN981MAWBi8wF7qcUdqrklvCG2kS09aRN3+xHOu5tG/3f
-	GgU/UbsDQkbz1pyMNu+63C991GN4dItK6I8t+2Rw4ByLeuYp2Z4fMqSVZQTB7BQKy0to4FOJS01
-	FGHyiIdUPWoo650AAk59Vz2dVXVvk4cGerAWK7d9XoHozk84RvJzVA1YvUKKnUkDrgHxn/Ae1HO
-	sErZlVOA+0Ojh6bv7EtraPtVDrK239uTYKxWSvgnh3JngeaOqbd7vOkgktJjjBF0qSEhHwVgbFY
-	/UUQ5iy3qiXJ+LWOYnwmbmmLPGmoKC2E8I+odxKNOMv4ScbH7LuWiU7x4tsWeWmgankWQ=
-X-Received: by 2002:ad4:5cad:0:b0:892:6f04:50bc with SMTP id 6a1803df08f44-894cc7cecdfmr31317406d6.3.1769529601326;
-        Tue, 27 Jan 2026 08:00:01 -0800 (PST)
+        bh=3Kat2TyZxDqTgTm8MMhUVYtoZ/z4BzE2I09fTuJqEpw=;
+        b=VyZtSS4fy2Wj9PwvcqDgLjbgnLmVY0sFe4xJntS5rAdojaF1PCcnD1eMXdqwVvLHeC
+         kKxIiuZbfHHuPJ08N6mFPWWsOivtlP3dq1bKQA1YNMnev5BAJQxrOrLYj+/6UIy7BMmd
+         QfoGjeVEOjP45ftXjwuTnelZeScXxG2HgqoC1qx63B6WXoUOHRj7vFai2VmJU4+yjE2r
+         ikpZ2RvJK4b4p+I1A8RWo2b6WYgZ2CtXCjSdKBvSrJq96f7QMkjg8UmxQnIbe450uTLb
+         wzED9yI4Q9ef4+XltqTKcbY1g9+ElZXeF4R7/7bZrxBgrzx+Qoq+bEOpE0yv90JkkA8B
+         HEZg==
+X-Forwarded-Encrypted: i=1; AJvYcCVzpXyFvoxcsOktFW2fG1IkVUuVAkt0yOGhIH4OPaXwzs6/ZmqRv56JPu5Zj9IoXJzncQGSyowD4PTa@vger.kernel.org
+X-Gm-Message-State: AOJu0Yylvc1IuPAK14OldVUB77dcKz1pYMPSHOT4n/iwqZ6y3lKcJElt
+	Jaw7qqgQr8wD1J0XwPACwpaTXhzdJ3TOuZfDTp4lrIU20qsb0G+E9UY3iPKr/L9Oojw=
+X-Gm-Gg: AZuq6aIj8/WtpQQk2c2PXW/aeqgqb51LxKKnBTbYwhThIGFgWY3EtgJDy6LuQFojKeu
+	XgNU0uYMUuKi6A2lj8pz82WTD1yghWrRnp+7tk8P2e8R0aHYaM/bwpMLeG1FiNbQf0Y+kdRZrl+
+	bjYkjGk8d9IKPf1e8kwLUpf4fw28AvxSKh1tSty1IDMnDs+n7QJLXDy2/tTBtFoCreCS/7eel43
+	eujL8Ut9GIVEnkb+EmDeF3OhTMPqABwkLkjm/rlfANMM6f5Y3fZ0e8gsiv1c0wZh1WHqV+7Xw88
+	BWEHqb0bsAODdhJ6xpVsXDpvkw+Wcy9uFctXtzxs7OGka/T412zM8bYR3UIYPxorplYex7xek7q
+	7p9vxWYeGSvppTVUJLWL6un/x3kdnifQ5B6TL2Tzyu8TxwmwaF7Wl0TAveZKzKvLj7bfO3DnmOG
+	FufZL0YJGgibORd9nDB+aEuxErlwo4PqYN3IvBGceANz3ngnT/37b/UC959oakncCtYe+MT53ln
+	PoxRg==
+X-Received: by 2002:a05:622a:612:b0:4f1:ba00:4cc6 with SMTP id d75a77b69052e-5032fc167d4mr25702421cf.79.1769531275530;
+        Tue, 27 Jan 2026 08:27:55 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8949dcf5c5asm98799596d6.36.2026.01.27.08.00.00
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-502fb8e74ebsm102277581cf.0.2026.01.27.08.27.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jan 2026 08:00:00 -0800 (PST)
+        Tue, 27 Jan 2026 08:27:55 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1vklU0-00000009595-1RnA;
-	Tue, 27 Jan 2026 12:00:00 -0400
-Date: Tue, 27 Jan 2026 12:00:00 -0400
+	id 1vklv0-000000095Ys-1TUe;
+	Tue, 27 Jan 2026 12:27:54 -0400
+Date: Tue, 27 Jan 2026 12:27:54 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org,
-	leon@kernel.org, msanalla@nvidia.com, maorg@nvidia.com,
-	parav@nvidia.com, mbloch@nvidia.com, markzhang@nvidia.com,
-	marco.crivellari@suse.com, roman.gushchin@linux.dev,
-	wangliang74@huawei.com, yanjun.zhu@linux.dev
-Subject: Re: [PATCH] RDMA/core: Fix stale RoCE GIDs during netdev events at
- registration
-Message-ID: <20260127160000.GG1641016@ziepe.ca>
-References: <20260127093839.126291-1-jiri@resnulli.us>
- <21d63279-79a2-47aa-b305-30a55b8f40f4@I-love.SAKURA.ne.jp>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Pranjal Shrivastava <praan@google.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 4/8] vfio: Wait for dma-buf invalidation to complete
+Message-ID: <20260127162754.GH1641016@ziepe.ca>
+References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
+ <20260124-dmabuf-revoke-v5-4-f98fca917e96@nvidia.com>
+ <aXfUZcSEr9N18o6w@google.com>
+ <20260127085835.GQ13967@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -102,120 +125,97 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <21d63279-79a2-47aa-b305-30a55b8f40f4@I-love.SAKURA.ne.jp>
+In-Reply-To: <20260127085835.GQ13967@unreal>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[google.com,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-16089-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16088-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
 	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	RCPT_COUNT_TWELVE(0.00)[35];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:mid,ziepe.ca:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:email]
-X-Rspamd-Queue-Id: B1F4597E46
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 353C697C33
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 08:14:58PM +0900, Tetsuo Handa wrote:
-> On 2026/01/27 18:38, Jiri Pirko wrote:
-> > From: Jiri Pirko <jiri@nvidia.com>
+On Tue, Jan 27, 2026 at 10:58:35AM +0200, Leon Romanovsky wrote:
+> > > @@ -333,7 +359,37 @@ void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
+> > >  			dma_resv_lock(priv->dmabuf->resv, NULL);
+> > >  			priv->revoked = revoked;
+> > >  			dma_buf_invalidate_mappings(priv->dmabuf);
+> > > +			dma_resv_wait_timeout(priv->dmabuf->resv,
+> > > +					      DMA_RESV_USAGE_BOOKKEEP, false,
+> > > +					      MAX_SCHEDULE_TIMEOUT);
+> > >  			dma_resv_unlock(priv->dmabuf->resv);
+> > > +			if (revoked) {
+> > > +				kref_put(&priv->kref, vfio_pci_dma_buf_done);
+> > > +				/* Let's wait till all DMA unmap are completed. */
+> > > +				wait = wait_for_completion_timeout(
+> > > +					&priv->comp, secs_to_jiffies(1));
 > > 
-> > RoCE GID entries become stale when netdev properties change during the
-> > IB device registration window. This is reproducible with a udev rule
-> > that sets a MAC address when a VF netdev appears:
+> > Is the 1-second constant sufficient for all hardware, or should the 
+> > invalidate_mappings() contract require the callback to block until 
+> > speculative reads are strictly fenced? I'm wondering about a case where
+> > a device's firmware has a high response latency, perhaps due to internal
+> > management tasks like error recovery or thermal and it exceeds the 1s 
+> > timeout. 
 > > 
-> >   ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth4", \
-> >     RUN+="/sbin/ip link set eth4 address 88:22:33:44:55:66"
+> > If the device is in the middle of a large DMA burst and the firmware is
+> > slow to flush the internal pipelines to a fully "quiesced"
+> > read-and-discard state, reclaiming the memory at exactly 1.001 seconds
+> > risks triggering platform-level faults..
 > > 
-> > After VF creation, show_gids displays GIDs derived from the original
-> > random MAC rather than the configured one.
+> > Since the wen explicitly permit these speculative reads until unmap is
+> > complete, relying on a hardcoded timeout in the exporter seems to 
+> > introduce a hardware-dependent race condition that could compromise
+> > system stability via IOMMU errors or AER faults. 
 > > 
-> > The root cause is a race between netdev event processing and device
-> > registration:
-> > 
-> >   CPU 0 (driver)                    CPU 1 (udev/workqueue)
-> >   ──────────────                    ──────────────────────
-> >   ib_register_device()
-> >     ib_cache_setup_one()
-> >       gid_table_setup_one()
-> >         _gid_table_setup_one()
-> >           ← GID table allocated
-> >         rdma_roce_rescan_device()
-> >           ← GIDs populated with
-> >             OLD MAC
-> >                                     ip link set eth4 addr NEW_MAC
-> >                                     NETDEV_CHANGEADDR queued
-> >                                     netdevice_event_work_handler()
-> >                                       ib_enum_all_roce_netdevs()
-> >                                         ← Iterates DEVICE_REGISTERED
-> >                                         ← Device NOT marked yet, SKIP!
-> >     enable_device_and_get()
-> >       xa_set_mark(DEVICE_REGISTERED)
-> >           ← Too late, event was lost
-> > 
-> > The netdev event handler uses ib_enum_all_roce_netdevs() which only
-> > iterates devices marked DEVICE_REGISTERED. However, this mark is set
-> > late in the registration process, after the GID cache is already
-> > populated. Events arriving in this window are silently dropped.
-> > 
-> > Fix this by introducing a new xarray mark DEVICE_GID_UPDATES that is
-> > set immediately after the GID table is allocated and initialized. Use
-> > the new mark in ib_enum_all_roce_netdevs() function to iterate devices
-> > instead of DEVICE_REGISTERED.
-> > 
-> > This is safe because:
-> > - After _gid_table_setup_one(), all required structures exist (port_data,
-> >   immutable, cache.gid)
-> > - The GID table mutex serializes concurrent access between the initial
-> >   rescan and event handlers
-> > - Event handlers correctly update stale GIDs even when racing with rescan
-> > - The mark is cleared in ib_cache_cleanup_one() before teardown
-> > 
-> > This also fixes similar races for IP address events (inetaddr_event,
-> > inet6addr_event) which use the same enumeration path.
-> > 
-> > Fixes: 0df91bb67334 ("RDMA/devices: Use xarray to store the client_data")
-> > Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+> > Should the importer instead be required to guarantee that all 
+> > speculative access has ceased before the invalidation call returns?
 > 
-> I was thinking making the NETDEV_UNREGISTER event handler valid until
-> wait_for_completion(&device->unreg_completion) in disable_device() returns
-> ( https://lkml.kernel.org/r/b4a09ad8-97cc-4fe1-b02a-6192248694a8@I-love.SAKURA.ne.jp ).
-> 
-> Since your patch includes what I was trying to address, you can add
-> 
-> Reported-by: syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
-> 
-> lines.
+> It is guaranteed by the dma_resv_wait_timeout() call above. That call ensures
+> that the hardware has completed all pending operations. The 1‑second delay is
+> meant to catch cases where an in-kernel DMA unmap call is missing, which should
+> not trigger any DMA activity at that point.
 
-Can we feed it to syzkaller please and see if it does actually clear
-it's repo? That particular bug already has 5 patches claiming to fix
-it.
+Christian may know actual examples, but my general feeling is he was
+worrying about drivers that have pushed the DMABUF to visibility on
+the GPU and the move notify & fences only shoot down some access. So
+it has to wait until the DMABUF is finally unmapped.
 
-It has become some kind of catch all of all kinds of refcounting errors
+Pranjal's example should be covered by the driver adding a fence and
+then the unbounded fence wait will complete it.
 
-[  247.188486][ T6052] unregister_netdevice: waiting for vcan0 to become free. Usage count = 2
+I think the open question here is if drivers that can't rely on their
+fences should return dma_buf_attach_revocable() = false ? It depends
+on how long they will leave the buffers mapped, and if it is "bounded
+time".
 
-Does this actually change the refcounting around that could fix that?
-Looked like no?
+The converse is we want to detect bugs where drivers have wrongly set
+dma_buf_attach_revocable() = true and this turns into an infinite
+sleep, so the logging is necessary, IMHO.
+
+At worst the code should sleep 1s, print, then keep sleeping..
 
 Jason
 
