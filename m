@@ -1,167 +1,337 @@
-Return-Path: <linux-rdma+bounces-16081-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16082-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iHa8EiLJeGmNtQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16081-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 15:18:10 +0100
+	id OO0hMZvJeGmNtQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16082-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 15:20:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95EB5957E0
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 15:18:09 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0AA295847
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 15:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EB7793050D36
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:15:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id EE1AC3006230
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD27280018;
-	Tue, 27 Jan 2026 14:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0939B33B6FC;
+	Tue, 27 Jan 2026 14:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="KITYtOGz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N0dbYMwT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91649198E91
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 14:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC40C2BE02A;
+	Tue, 27 Jan 2026 14:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769523350; cv=none; b=ewbfnTr7sjm6JmHLiLeUyt0CEsO/s2lFtf/fl6vp/ZDlbvdphMGrRdqVZrnITm6/3Zm0ZIUInEpEkIzNv0Er9799Z1BFxSjF3U1/dW6106r93p/Yd1jMn/idefqm9qoZNlpVY9q88y4FvCKh6y/RANXBZS5arP+XKh3pMX76Azg=
+	t=1769523574; cv=none; b=LWlFGcL7bPW3f08j1RHU/KK5PQMEXqpSB4Syls9IBpZBkPHs5yrOTCUD1+bmWlReyLajct+k6Rcz+7OpLcShSX1Sv5Jm0B34uVajAp1AR/SSE12KVnYGzZezplY5mMiBEENd4Q1xUmGbd9SCjQs3HQPs/pVKbqpmZjihhpysVjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769523350; c=relaxed/simple;
-	bh=zhH1S0B2GQ1eFFQmqQn5PepUl9TNnrx1RB6ej+OpzAw=;
+	s=arc-20240116; t=1769523574; c=relaxed/simple;
+	bh=viHJjh6LIbvYjL0rcjh5lUrLaxMl+LZACm67W+FPSKU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Low7jGD/b6/CiaWOqqk4D9ynfL7Pn0ictSRHO16w+yBbA3tfsJngUoaSadWsJteQnJAtdgWljJ5+MelcZbfcEDCNsCgKzHzjiG1kDPh//szA4Mgn7RHKJY738KwMdimn3KzG9hZX/SnXQhPv6QmA+lJlqdEBs99QCAJZRupvZMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=KITYtOGz; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-88a288811a4so81528746d6.3
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 06:15:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1769523347; x=1770128147; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KU4OGngicriB7L6MJLKoLJCB4/X+V04zhdmCbcuq2gI=;
-        b=KITYtOGz4CYHyIHRQMcn5NeINbG5Wqi+cs8f5JuBfEO+R8bSNrl6eevgfAF7DiJYHG
-         W3FojtjJBPVU1FvXdT+FrZqmP4UAc6obJjsLhNaTt/W9d7S5zSkpxENaaq7OqhXs58EN
-         Pa/fkI7HD47N2aKtfphj2U4qEaVuTard/GkxIxGM3Uf60Gk3Nd7HOeLf6znCh2Q/aza7
-         hCLpkS8TW9whoNV+uy9IEwz+ge9oZb37rcC+MKwIXOjvzzVX64mi6rCHW4b5uCz6ivmF
-         au+63uVCD9y0tfD73BqYJdaR4K2tQPl4PrE27epK+oXgWdKzr7o6jw2NKrtFGAXZ4rSQ
-         ghqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769523347; x=1770128147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KU4OGngicriB7L6MJLKoLJCB4/X+V04zhdmCbcuq2gI=;
-        b=dhDtnmumQTjlrnuA8o+3SqtBC1+Fp79Zk1teUqeeb1UsgkaOYXoMdHJOb+fcRpiVhV
-         CRyDhBl7+/wCCcV0/ZhmiigULy738lXWdY+/XqotZEDN6PSuZKdLpf0g7Op/fPfPlepL
-         B0lSyoeV/tdBUX9RRHehvR5SeB3ACPypaGkdC/EnvP1tGn717LpdfPJAcEfw/bvCRGq/
-         7nN/IPFoxuUI8Bnejcuz8+b86hRKjsG60ZDdp018s9ugcLmhf1VrT098CwB7yIee0J4l
-         QOt53ZJmBpr309uS2z4ZWkatYAtcpGhlnBRoXrBMa6PRihS4zycjQVwKK0xIuisHNSzC
-         ti+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWqyBceaU/VPiRLdCFHDXbhBwfKtGkn8FRMY2XSieFMR+coYgvIrT6YRxU17ULi1T8kVi7aAXV4EwWQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCGZnvfHM20/3Tl2+LCPaG9Hv729ONmVKRJdH+FMAfA0BTOGc0
-	+u2u03Wbl4k2ZkU5y84fEMAZZWaEV2KXgLkLbijxVrBAR0R/f5uyQanuC9b4D/VClOE=
-X-Gm-Gg: AZuq6aJyMkILXT2HdcRC7wg0bVf3HpKHETcbHAFwoX/zd+Bwt7JUdU6G1ml4MxmynuJ
-	LnKSBSz8jja2rsHmwDA04856rnzDcvJssam0oyGuqE8wOflMseIMCwI8eQQ6aKtiiiP8XKSd/mB
-	HOrqJR3hB8b35pr7zBfoMcRFxhTSXioVOaKjDIl4P3njr0nlnKxDhOvmeRtb6FRSv5nUTKumBdq
-	osbAO32N/KxQmCMF2E+sOvBzEToUTxSDCe75eFRYk2jXPJFzVlBy/lmV67A6pFlSBUFYXSvKIvO
-	iWTv3r6sdiNt1Azn1qyQwitE5YuUayGqwnNeHmaLCnK7IqhvLqugv72Y7aGYU6lkJ0xaS9lpctt
-	kRFzQyD8ovaHMasNeqrM17HlkBLkIImRRYPd8EV1r1Tk5z1aR16Kun+mwp1JNNtl3T6PO8YxlaU
-	QtZaBZtzolO58bxKbfeLdZX/viZQrmFrimraOOj7P+QkrVwTpLDxgQ3ZVgGVs2Fs53rmE=
-X-Received: by 2002:ad4:5aec:0:b0:888:853c:4f55 with SMTP id 6a1803df08f44-894cc95c83dmr24036396d6.70.1769523346963;
-        Tue, 27 Jan 2026 06:15:46 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-894a908d67csm83631906d6.20.2026.01.27.06.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jan 2026 06:15:46 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vkjr7-000000094FI-2zPP;
-	Tue, 27 Jan 2026 10:15:45 -0400
-Date: Tue, 27 Jan 2026 10:15:45 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-	leon@kernel.org, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v9 4/5] RDMA/bnxt_re: Direct Verbs: Support DBR
- verbs
-Message-ID: <20260127141545.GE1641016@ziepe.ca>
-References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
- <20260127103109.32163-5-sriharsha.basavapatna@broadcom.com>
- <pynbf5lh5azbblvoygivvzxjcmnvffrtdz5zbjzsg4rccbpvud@277svcow3ra4>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CwAo1INKdSA9462sEAeZpvgPccJExWlnp1G4i6JWFpcKyERu9B+3L1CJgeqWtLtBKCnLJc0HDi0Aaz72bG0yFLHyBEG8RUR9tl4i0DhMy5qy/fdl0Hr6aV3frf0olGj/4vuuuDd5bo0G2gE/FjObUfH0t69zNlz8vKm94OBESbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N0dbYMwT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03967C116C6;
+	Tue, 27 Jan 2026 14:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769523574;
+	bh=viHJjh6LIbvYjL0rcjh5lUrLaxMl+LZACm67W+FPSKU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N0dbYMwT77CdBv2Vk24BSd9FNozwePu43Ehc5vpGQzc4j0ieLakhw9EsWSPEgtyQs
+	 iZAY3r+3g7FstiQr2xmfisIm3GblzEpA9TA0C6cBI0c9Uo/OQbIymFmPN36bvEWGqo
+	 N+4/8dgItMotxpG83mCxS6te8DQRY/uy6Q4ZXcDwOk59lBXpvR/X7xkP8VzSYhQRFI
+	 M0Ogy+Wuu7dKAr56vNWaYndm2qd2TNRxTqblsopr9Fh3yWS9o14Tz1o2k4wC34Mu7J
+	 IERdNvKMgrc9hoUB847YXJ6nYP9fhrLDfBIVsyqA6hN70ovKOfbYmPpVVE8L+Szhpw
+	 SANfvv/3oSliQ==
+Date: Tue, 27 Jan 2026 16:19:29 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, shirazsaleem@microsoft.com,
+	longli@microsoft.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v2 1/1] RDMA/mana_ib: device memory support
+Message-ID: <20260127141929.GV13967@unreal>
+References: <20260127082649.429018-1-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <pynbf5lh5azbblvoygivvzxjcmnvffrtdz5zbjzsg4rccbpvud@277svcow3ra4>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260127082649.429018-1-kotaranov@linux.microsoft.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-16081-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16082-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 95EB5957E0
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E0AA295847
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 01:30:03PM +0100, Jiri Pirko wrote:
-> Tue, Jan 27, 2026 at 11:31:08AM +0100, sriharsha.basavapatna@broadcom.com wrote:
-> >From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> >
-> >The following Direct Verbs (DV) methods have been implemented in
-> >this patch.
-> >
-> >Doorbell Region Direct Verbs:
-> >-----------------------------
-> >- BNXT_RE_METHOD_DBR_ALLOC:
-> >  This will allow the appliation to create extra doorbell regions
-> >  and use the associated doorbell page index in DV_CREATE_QP and
-> >  use the associated DB address while ringing the doorbell.
-> >
-> >- BNXT_RE_METHOD_DBR_FREE:
-> >  Free the allocated doorbell region.
-> >
-> >- BNXT_RE_METHOD_GET_DEFAULT_DBR:
-> >  Return the default doorbell page index and doorbell page address
-> >  associated with the ucontext.
-> >
+On Tue, Jan 27, 2026 at 12:26:49AM -0800, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> Similar to CQ/QP, why this is bnxt specific? I know a little about rdma,
-> but I believe we use it in mlx5 too, no?
+> Basic implementation of DM allowing to create and register
+> DM memory and use its memory keys for networking.
+> 
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+> v2 removed debug prints. Removed comment and made destroy dm to fail,
+> which can be useful when mana adds support of binding to DM memory.
+>  drivers/infiniband/hw/mana/device.c  |   7 ++
+>  drivers/infiniband/hw/mana/mana_ib.h |  12 +++
+>  drivers/infiniband/hw/mana/mr.c      | 130 +++++++++++++++++++++++++++
+>  include/net/mana/gdma.h              |  47 +++++++++-
+>  4 files changed, 193 insertions(+), 3 deletions(-)
 
-mlx5 has a specific thing too, the doorbell has enough fairly hw
-specific properties and never leaks outside the userspace provider.
+<...>
 
-We consolidated the internal code to manage the mmaps, beyond that
-there hasn't been a big push to consolidate more.
+> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+> +	if (err || resp.hdr.status) {
+> +		if (!err)
+> +			err = -EPROTO;
+> +
+> +		return err;
+> +	}
 
-Jason
+Please submit a patch that adds the `resp.hdr.status` check to  
+`mana_gd_send_request()`, and update all callers to rely solely on this  
+function's return value.
+
+➜  kernel git:(wip/leon-for-next) git grep -A 1 mana_gd_send_request
+...
+drivers/infiniband/hw/mana/mr.c:        err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+drivers/infiniband/hw/mana/mr.c-        if (err || resp.hdr.status) {
+--
+drivers/infiniband/hw/mana/mr.c:        err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+drivers/infiniband/hw/mana/mr.c-        if (err || resp.hdr.status) {
+--
+drivers/infiniband/hw/mana/mr.c:        err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+drivers/infiniband/hw/mana/mr.c-        if (err || resp.hdr.status) {
+....
+
+Thanks
+
+
+> +
+> +	dm->dm_handle = resp.dm_handle;
+> +
+> +	return 0;
+> +}
+> +
+> +struct ib_dm *mana_ib_alloc_dm(struct ib_device *ibdev,
+> +			       struct ib_ucontext *context,
+> +			       struct ib_dm_alloc_attr *attr,
+> +			       struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct mana_ib_dev *dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+> +	struct mana_ib_dm *dm;
+> +	int err;
+> +
+> +	dm = kzalloc(sizeof(*dm), GFP_KERNEL);
+> +	if (!dm)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	err = mana_ib_gd_alloc_dm(dev, dm, attr);
+> +	if (err)
+> +		goto err_free;
+> +
+> +	return &dm->ibdm;
+> +
+> +err_free:
+> +	kfree(dm);
+> +	return ERR_PTR(err);
+> +}
+> +
+> +static int mana_ib_gd_destroy_dm(struct mana_ib_dev *mdev, struct mana_ib_dm *dm)
+> +{
+> +	struct gdma_context *gc = mdev_to_gc(mdev);
+> +	struct gdma_destroy_dm_resp resp = {};
+> +	struct gdma_destroy_dm_req req = {};
+> +	int err;
+> +
+> +	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_DM, sizeof(req), sizeof(resp));
+> +	req.dm_handle = dm->dm_handle;
+> +
+> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+> +	if (err || resp.hdr.status) {
+> +		if (!err)
+> +			err = -EPROTO;
+> +
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int mana_ib_dealloc_dm(struct ib_dm *ibdm, struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct mana_ib_dev *dev = container_of(ibdm->device, struct mana_ib_dev, ib_dev);
+> +	struct mana_ib_dm *dm = container_of(ibdm, struct mana_ib_dm, ibdm);
+> +	int err;
+> +
+> +	err = mana_ib_gd_destroy_dm(dev, dm);
+> +	if (err)
+> +		return err;
+> +
+> +	kfree(dm);
+> +	return 0;
+> +}
+> +
+> +struct ib_mr *mana_ib_reg_dm_mr(struct ib_pd *ibpd, struct ib_dm *ibdm,
+> +				struct ib_dm_mr_attr *attr,
+> +				struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct mana_ib_dev *dev = container_of(ibpd->device, struct mana_ib_dev, ib_dev);
+> +	struct mana_ib_dm *mana_dm = container_of(ibdm, struct mana_ib_dm, ibdm);
+> +	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
+> +	struct gdma_create_mr_params mr_params = {};
+> +	struct mana_ib_mr *mr;
+> +	int err;
+> +
+> +	attr->access_flags &= ~IB_ACCESS_OPTIONAL;
+> +	if (attr->access_flags & ~VALID_MR_FLAGS)
+> +		return ERR_PTR(-EOPNOTSUPP);
+> +
+> +	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+> +	if (!mr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	mr_params.pd_handle = pd->pd_handle;
+> +	mr_params.mr_type = GDMA_MR_TYPE_DM;
+> +	mr_params.da.dm_handle = mana_dm->dm_handle;
+> +	mr_params.da.offset = attr->offset;
+> +	mr_params.da.length = attr->length;
+> +	mr_params.da.access_flags =
+> +		mana_ib_verbs_to_gdma_access_flags(attr->access_flags);
+> +
+> +	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
+> +	if (err)
+> +		goto err_free;
+> +
+> +	return &mr->ibmr;
+> +
+> +err_free:
+> +	kfree(mr);
+> +	return ERR_PTR(err);
+> +}
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+> index eaa27483f..8649eb789 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+> @@ -35,6 +35,8 @@ enum gdma_request_type {
+>  	GDMA_CREATE_MR			= 31,
+>  	GDMA_DESTROY_MR			= 32,
+>  	GDMA_QUERY_HWC_TIMEOUT		= 84, /* 0x54 */
+> +	GDMA_ALLOC_DM			= 96, /* 0x60 */
+> +	GDMA_DESTROY_DM			= 97, /* 0x61 */
+>  };
+>  
+>  #define GDMA_RESOURCE_DOORBELL_PAGE	27
+> @@ -861,6 +863,8 @@ enum gdma_mr_type {
+>  	GDMA_MR_TYPE_GVA = 2,
+>  	/* Guest zero-based address MRs */
+>  	GDMA_MR_TYPE_ZBVA = 4,
+> +	/* Device address MRs */
+> +	GDMA_MR_TYPE_DM = 5,
+>  };
+>  
+>  struct gdma_create_mr_params {
+> @@ -876,6 +880,12 @@ struct gdma_create_mr_params {
+>  			u64 dma_region_handle;
+>  			enum gdma_mr_access_flags access_flags;
+>  		} zbva;
+> +		struct {
+> +			u64 dm_handle;
+> +			u64 offset;
+> +			u64 length;
+> +			enum gdma_mr_access_flags access_flags;
+> +		} da;
+>  	};
+>  };
+>  
+> @@ -890,13 +900,23 @@ struct gdma_create_mr_request {
+>  			u64 dma_region_handle;
+>  			u64 virtual_address;
+>  			enum gdma_mr_access_flags access_flags;
+> -		} gva;
+> +		} __packed gva;
+>  		struct {
+>  			u64 dma_region_handle;
+>  			enum gdma_mr_access_flags access_flags;
+> -		} zbva;
+> -	};
+> +		} __packed zbva;
+> +		struct {
+> +			u64 dm_handle;
+> +			u64 offset;
+> +			enum gdma_mr_access_flags access_flags;
+> +		} __packed da;
+> +	} __packed;
+>  	u32 reserved_2;
+> +	union {
+> +		struct {
+> +			u64 length;
+> +		} da_ext;
+> +	};
+>  };/* HW DATA */
+>  
+>  struct gdma_create_mr_response {
+> @@ -915,6 +935,27 @@ struct gdma_destroy_mr_response {
+>  	struct gdma_resp_hdr hdr;
+>  };/* HW DATA */
+>  
+> +struct gdma_alloc_dm_req {
+> +	struct gdma_req_hdr hdr;
+> +	u64 length;
+> +	u32 alignment;
+> +	u32 flags;
+> +}; /* HW Data */
+> +
+> +struct gdma_alloc_dm_resp {
+> +	struct gdma_resp_hdr hdr;
+> +	u64 dm_handle;
+> +}; /* HW Data */
+> +
+> +struct gdma_destroy_dm_req {
+> +	struct gdma_req_hdr hdr;
+> +	u64 dm_handle;
+> +}; /* HW Data */
+> +
+> +struct gdma_destroy_dm_resp {
+> +	struct gdma_resp_hdr hdr;
+> +}; /* HW Data */
+> +
+>  int mana_gd_verify_vf_version(struct pci_dev *pdev);
+>  
+>  int mana_gd_register_device(struct gdma_dev *gd);
+> -- 
+> 2.43.0
+> 
 
