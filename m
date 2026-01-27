@@ -1,127 +1,179 @@
-Return-Path: <linux-rdma+bounces-16091-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16092-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sLfJDxj4eGnYuAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16091-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 18:38:32 +0100
+	id 4ESnKfkjeWnmvgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16092-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 21:45:45 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 607ED98881
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 18:38:31 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 103C59A6EE
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 21:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2E5FC3001A58
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 17:38:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9A2623025F69
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 20:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212CF30E82B;
-	Tue, 27 Jan 2026 17:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408E2281341;
+	Tue, 27 Jan 2026 20:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZgXLaWun"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B23TEVsJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81FE30BF69;
-	Tue, 27 Jan 2026 17:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F084AEAC7;
+	Tue, 27 Jan 2026 20:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769535505; cv=none; b=gO7xRTXK/Y1INi5gG+KieDySf2mEjw+q7y/u2A+C9487IZyTNQLEjVXj/OQzolCxzoNEbgo1kFAHJstwex1H3uGGSA0eWcPju+cPqSlSaTK7wdkW8hSA4HsgujfGit8I7sppcpF1ans4X5awG38aaPlENCZ+Fui4J7cTnL6KUdw=
+	t=1769546735; cv=none; b=unKvMGuU3EH+E8DmBgqgFW8i/H7L77PYtKfXl6BQ2GTdchIHBPQcSDKWbjtwHpWdDJbM2OpMqtBnNd8e0HVUyZcXk8GmY3T2JUnXg669Xod6x73A9bNbCsLPtEGnseRK34MG2d2ZFwyxsoWMxjhryqa3E431D+6zeuIQUz147qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769535505; c=relaxed/simple;
-	bh=1sORWrip5h6GNkhsP9WIl4kdoR8RvObly6DZBUxgvTk=;
+	s=arc-20240116; t=1769546735; c=relaxed/simple;
+	bh=kWJnczCRjQfP3+mri2axksFFudA/BEKhqvdeAp2MhAU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iCxXYc5/1Dn5B9uXDfverQ4S6dIQ0kOm1dL+lc0x3BL2vU+T/BEGxgdgD3YEA/p7FrnrCLRcJ4MIWdRQ7vEio8fEPneu6TJBQ8Y3QaA1L/zX55IK64Tb8CUHzGzuxhILUCtE9MkEVoRQg60e99PYIvHPfC6WCfGuJpz2d8URQEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZgXLaWun; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 933A8C116C6;
-	Tue, 27 Jan 2026 17:38:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=edsSGT7EuxKAHQQWZZpRvL0oOtGLpo4tDc1gFhwINb1FYHG/Fh2sKyYqrCnNzUwzvCLR5CjuJndJOkVJP5SIeZ7e/WNc+fwf/OB2CN9VbF7q+Shs6F6th4kWjtjTY/NCxB2gkLwDgQpNK4jD6LCnJwVUdSvev3UHbE9H/wtXl/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B23TEVsJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B6BC116C6;
+	Tue, 27 Jan 2026 20:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769535505;
-	bh=1sORWrip5h6GNkhsP9WIl4kdoR8RvObly6DZBUxgvTk=;
+	s=k20201202; t=1769546734;
+	bh=kWJnczCRjQfP3+mri2axksFFudA/BEKhqvdeAp2MhAU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZgXLaWun9sMrq5KJ0SaGzj5XTqZK0BSObFq1hUCfnmNHC/cXT/wsoueX43VMXECMt
-	 ODvvxFIGdS3TcYix6deKoFmT1jJgAFWjHRG1MRss0+HeUvhtYFtHXMqYBbZS+Jy3ZM
-	 lf7KIFTn0WvKF7gr5uUvjICUyS9nVfW3mr0cX6rOGj3eCdnhBIQYtjHO2iao7jRNVp
-	 Ln30/m6R/6lpLJJe/aGx36zklndO9Ss4RwXiXLS/WvoWvvDCopHaC1ho/3el4oIqyK
-	 WAxoAX7VCNHNfsCzAgBKfhmlZT++JPWgo8bGXs0HTRk8nIkJpOq/K83U57VZT6fqjg
-	 y5OBGa4YSd/kg==
-Date: Tue, 27 Jan 2026 17:38:20 +0000
-From: Simon Horman <horms@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
-	Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net 0/3] mlx5 misc fixes 2026-01-26
-Message-ID: <aXj4DJFkgUpL6ad8@horms.kernel.org>
-References: <1769411695-18820-1-git-send-email-tariqt@nvidia.com>
+	b=B23TEVsJccWQDX9Mjx22xVlETkMrrPsVBBGPzr1/qClDRQwwIBUEpOC/B3atxGcBl
+	 s1GNk7zvmuHc8Ak8BzI57RVpONP9viPDQ9AUq4FK45Mh9JRYYIuCMLbbwyCrKLuUy2
+	 3aLWXhw79ygY0VefybeyuREyCYmCj2aKCHAwuwZhODd1oUQnKU0/D5zUmNMPWwzGhS
+	 VccjJRVDi7QyNxVnNABics3aPJZgWOd2TGAtA390Bkrtkg6RWzFHRZfK9zJpPGzack
+	 wBItE/Q3nIcFifOKrFXt7u9v+WwsoBkT+i0QyYk4WRkirXYn1QmRecC+jpiFNhqN5u
+	 ri0eOMMXGeg9w==
+Date: Tue, 27 Jan 2026 22:45:30 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 3/8] dma-buf: Always build with DMABUF_MOVE_NOTIFY
+Message-ID: <20260127204530.GX13967@unreal>
+References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
+ <20260124-dmabuf-revoke-v5-3-f98fca917e96@nvidia.com>
+ <0d2ec2d6-c999-45d8-a2bd-b5b21883db47@amd.com>
+ <20260127095831.GR13967@unreal>
+ <83cd911c-99ea-4fab-821e-fcf703209731@amd.com>
+ <20260127114243.GS13967@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1769411695-18820-1-git-send-email-tariqt@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260127114243.GS13967@unreal>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16091-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16092-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 607ED98881
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email]
+X-Rspamd-Queue-Id: 103C59A6EE
 X-Rspamd-Action: no action
 
-On Mon, Jan 26, 2026 at 09:14:52AM +0200, Tariq Toukan wrote:
-> Hi,
+On Tue, Jan 27, 2026 at 01:42:43PM +0200, Leon Romanovsky wrote:
+> On Tue, Jan 27, 2026 at 11:02:03AM +0100, Christian König wrote:
+> > On 1/27/26 10:58, Leon Romanovsky wrote:
+> > > On Tue, Jan 27, 2026 at 10:26:26AM +0100, Christian König wrote:
+> > >> On 1/24/26 20:14, Leon Romanovsky wrote:
+> > >>> From: Leon Romanovsky <leonro@nvidia.com>
+> > >>>
+> > >>> DMABUF_MOVE_NOTIFY was introduced in 2018 and has been marked as
+> > >>> experimental and disabled by default ever since. Six years later,
+> > >>> all new importers implement this callback.
+> > >>>
+> > >>> It is therefore reasonable to drop CONFIG_DMABUF_MOVE_NOTIFY and
+> > >>> always build DMABUF with support for it enabled.
+> > >>>
+> > >>> Suggested-by: Christian König <christian.koenig@amd.com>
+> > >>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > >>
+> > >> Reviewed-by: Christian König <christian.koenig@amd.com>
+> > >>
+> > >> As long as nobody starts screaming in the last second or I encounter some other problem I'm going to push the first three patches to drm-misc-next now.
+> > > 
+> > > How do you see progress of other patches?
+> > > Can they be queued for that tree as well?
+> > 
+> > I was hoping to get through them by the end of the week.
+> > 
+> > Just wanted to make sure that CI systems start to see the first three patches (who affect everybody), so that we get early feedback should we have missed something.
 > 
-> This patchset provides misc bug fixes from the team to the mlx5 core and
-> Eth drivers.
-> 
-> Thanks,
-> Tariq.
-> 
-> 
-> Gal Pressman (1):
->   net/mlx5e: Account for netdev stats in ndo_get_stats64
-> 
-> Mark Bloch (1):
->   net/mlx5e: TC, delete flows only for existing peers
-> 
-> Shay Drory (1):
->   net/mlx5: Fix Unbinding uplink-netdev in switchdev mode
+> Perfect, I based my patches on these two commits:
+> 61ceaf236115 (vfio/for-linus) vfio: Prevent from pinned DMABUF importers to attach to VFIO DMABUF
+> 24d479d26b25 (tag: v6.19-rc6) Linux 6.19-rc6
 
-Thanks,
+The fix was merged https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1f97d9dcf53649c41c33227b345a36902cbb08ad
 
-For the series:
+Thanks
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-
+> 
+> Thanks
+> 
+> > 
+> > Regards,
+> > Christian.
+> > 
+> > > 
+> > > Thanks
+> > > 
+> > >>
+> > >> They are basically just cleanups we should have done a long time ago.
+> > >>
+> > >> Regards,
+> > >> Christian.
+> > >>
+> > 
+> 
 
