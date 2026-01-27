@@ -1,151 +1,160 @@
-Return-Path: <linux-rdma+bounces-16074-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16075-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gLGDItmveGlasAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16074-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 13:30:17 +0100
+	id KLH4LT63eGlzsQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16075-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:01:50 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A32CE94588
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 13:30:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5778949C0
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 14:01:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1E561300372D
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 12:30:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E830130C3457
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 12:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64353350D42;
-	Tue, 27 Jan 2026 12:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8EF3570CD;
+	Tue, 27 Jan 2026 12:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ltJyof6X"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bYpoprn9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1743F3502BA
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 12:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769517012; cv=none; b=Ivf+8wCWjpgNmtXx95nqnGrKL9I1IL6nBB8WNaNI55NQbc43HUb4MnYsbLls8YRVahbqb7eC3wmOXPbAYfKlFU9EuhsyBax4WJ8I5DQLgqG1Rmvh9iHPMPY0bhAnUcHJ20FwCg5raG79Wdv08p4dJSoxgl61aztImZYENVcb58M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769517012; c=relaxed/simple;
-	bh=gC/Qbs/UjBmEVREaATKtToRZnQ74ATstXDShzpx9DAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z0urX5eO1MLctuFokyg4/C6gfr2z0g5LzZnyBHFi2x/H+63rxxgk4DLQ5fIx7GnfI9q0K0Iq4CsuHj5YP5faLMhz8Yb3n6RIGJjgxVh7sNett3RlFQmZ6oA7q3mXk3NaUa1gIze8cxEHh1p9y3ecaE1/gT/yyT9pDpHkwdmfAkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ltJyof6X; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47fedb7c68dso57009125e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 04:30:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A70F3563C5
+	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 12:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.179
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769518593; cv=pass; b=hcJpHQQPmUU1v7BBqcGwYeyz8R6O+zrfcE+ea//Y8QcfjlHmkdOhLT5VhSLceBFJc24dgp0PuoyUSNBsEHR9aaVbYM+nq/yipVh2jVsiWth/CpmnzMyzJPLZSKD/njovzEeKwfYEc9Uqt9vRs7VU4WbdjvU5OXBK8TPMd9JUG58=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769518593; c=relaxed/simple;
+	bh=Kec1cFY+HbyNTGIK32aZqfqQW/BaaYnVG+pQ+omEY1k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XjG+6lLbLiwyqWQT5j9gW6ZLG5JwNtBBR3YpoaaWhpDDzRFONEHlbpRzRXI0r8rfShpYHfx2daCZ3evYNr9M+GMiA17flsQC8/rRL8g5yHDe7YD3j9znMiWSacB5UzAyWGTbudZ4vf9SF+ue/mkTRWGJ/k0m4To3mrzGSm4IRQk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bYpoprn9; arc=pass smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-50331ac1fedso4054951cf.0
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 04:56:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1769518591; cv=none;
+        d=google.com; s=arc-20240605;
+        b=WAWkYECBgDgVfNghV3GxUzahLEtwN83Fi3SfFHx9SFfzL0PJR65T4zZtRpkegsoSzX
+         3ftxohosDzDSETMtiC2qGpmcuANDyFpYi6wQgpKUYDUlQUtmeG9COeY35HJcuEjvpzR7
+         ipMga/XHcRp8+aGaHofSLCBBDKH19rLNALCcsmaG/GqsDJItEr0jwLDO4ZGsDaT+XtJT
+         wLrYbmP9kyD4jwQdpN2I2Gd8KdeN3fL8404dDG82GOV8zEquFUWn83xyjsxTfggpX8or
+         3t7rv7H97fcCxWarLwVXANJG9TvgLvcNzccjq+g8p64e9h4qED9IJw8Ui5G6PGVGCDR3
+         MPpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Kec1cFY+HbyNTGIK32aZqfqQW/BaaYnVG+pQ+omEY1k=;
+        fh=0c49rabnJRjQXe3vlegB8mcbcmwFAzfcIZ+r7R9GZ3U=;
+        b=TjTj61iScB3OvWanZluhRx8rlI0Fho8Mc2Js1uG8Zi60Yh4Hizcm0tXjn/WXgFNuyl
+         1JPR7OIIl0gSc3F6vPhbnMOTEazpEdB7LsHHy4YmQQdoh8qzz12CWy5gJyVk0U+bYZP3
+         4ZmK7mfkceWBqoOexiEsQ8JxKoXisjc+hMGpyzlW/PJXkXsvohCnQFnr4YsnM2MAPQqK
+         LtQqqCe8nJSJmbY/kxUUQuioUpXWaOrupjxibtMSPCo91WXx2VfklgahohQy7T8qE3uc
+         oJGl8KDci8t0knq8zLFM9W7QEgQ0wS5V546A6YCt0F50c1JYAttmF1eKIFHc9E8o1lW7
+         PPCg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1769517005; x=1770121805; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I5N9xujYcbfHdktc32ZLm1wNTUARj0aYDTBM30nfb9I=;
-        b=ltJyof6XwRqO9m6WA5Vf3zNo/pM/qyIe4Mh+eJA8Cd7VAA8Plc2OiM+n1IpiJYlYyp
-         +D2viUTTEbIqzTlw70X1W94FwsuuDJ6x1LkLy9LeWDr6RKojKpio7VowNTab7qQzUz4i
-         JaoyYaaOIxEf2DNBwsxkI46CCFWasSejlEGxOs+PEnYe0Ah3r1FIxU6kmA0g3Hw7lJdA
-         XWtXDneLiAJEq6lL3nH9JuJmEXczjWLZ07/DVhaPnpnz+QfSdZnnzmtZLWaqtuMBZQh7
-         jW0++llZm5fsbs37qIo4EYq5wL7fYfXDJriRIjUBoLQib4VtjIIHD/VJMmo1Q2nnIAPv
-         31Kg==
+        d=google.com; s=20230601; t=1769518591; x=1770123391; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kec1cFY+HbyNTGIK32aZqfqQW/BaaYnVG+pQ+omEY1k=;
+        b=bYpoprn9zPYFJvVEouZndT3wiWPW6VgdJdpQhnEW9kDYzUXXX+Ux2rNPYUYcMdj5/3
+         PFnS5LEpqhRxbudQVO2QIgoO217+gURozLf84x2WDYxO1l+f8qGRTH5541cfgoTxSjMv
+         kK7jVz8w8aPMEsx9ETGIsuI3R1pOXE4E3YVgi6odpTysufpgls8bu3kxUAcWh14XaBas
+         MpBNe0JbrimZLasMc3snwNdNnWmYi9WIvoD0d2qnwn4vLseZsA9qREvfLzrTG6rBeOui
+         0P8gpHCRy+1wYzmpsrkpSFJXng3Ncr+S7VxsNrHb3em9T+N2JxEgB3H/NHjq/Eg4d0fR
+         SI3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769517005; x=1770121805;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I5N9xujYcbfHdktc32ZLm1wNTUARj0aYDTBM30nfb9I=;
-        b=iX+FgUCw0LnS8H8UgN/nM+9zVkR2ptfVbv23gkE8qCVaoY23b605ctJigv8tCnqlX/
-         71bAd/c4rgIS2nbRMQ7IKT/wFm74r1Se4pAirinGJpb/yuZqY+UPLBGhWTSS+DC9E2c9
-         11S2RBiUZFdknZ667JbAMoQX1UiuQiPV4zakUof/J6XfDNJQdEP9m4lhRSjuOREZKqMS
-         sfcSk3NQIMfJ8k2lTZv0tHy9EKVlcTLEqN3LZF3H5e4QUh0OpMUIrsu8tmAhAZDYw59S
-         xmkkFxIMTAraCUvw5PPcEfaErPzXxxKqOr3rPf+sYdKdh+DAy+/xw33NyFw1MB2GHYwg
-         VA+g==
-X-Forwarded-Encrypted: i=1; AJvYcCW+geE556s0WK8FkFDjN1OOWzhGloEvqIzDcfEkvxaePmxOqx6IAlcxLdObrtYO//n4YlGsamVhRqEt@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkZ0D9ftqPvVL7rB+A9jDNAMX1Gx4JH5dMADalfvHf0IveFVjz
-	hFSjuh9Fq23/7PuvcOXMQsF0A92osO7BlfFB/wYtATQ6Xd5OVPTRfX/fiFATVLN3/kU=
-X-Gm-Gg: AZuq6aIBxP6eA5yxkM2lrU8CPIKURgyIGy2EYBkIM+j6c0Ao7lBvfU81t8C/MzwidlK
-	yI4YLghmydtULzxeWdNsdNp3R3MAef/Uyf3wxGyh5ZoFk5W2o6vJ/joaQDMENt20n+YFYcpVEsk
-	VZuNrIANJ//zdrx8QhXr/jJPUfOqhhEFMZlhsXyhslPKLu/nndIu8LjB/Mhm1EN85oHvRMkdbeA
-	S6tMP10M87k3oYGPpg5bYI4M2qQjqpbnWbYzvmCYvjBYINHDnHYMv1uJr377bz5aAr4sjxPdfo3
-	ZUj4Q99ecxEyvZ3+HF+1/ejcHRxuT0jpm+EbMQvLvC5ciueK8yzVMNiX39YFuVOV2qVE1SiqpTn
-	raVyfb3GhmWk/RdQbuIM1fjpcn/n/SyM2ifdWggDjwmqNogmBCVpZXLtm++YbV5j42DZuGeIQbV
-	AcBf7twFdb23mc9G/ZNm6tswU=
-X-Received: by 2002:a05:600c:4689:b0:47e:e7e5:ff32 with SMTP id 5b1f17b1804b1-48069c6077fmr18198785e9.34.1769517005263;
-        Tue, 27 Jan 2026 04:30:05 -0800 (PST)
-Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48066c05edbsm61365205e9.12.2026.01.27.04.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jan 2026 04:30:04 -0800 (PST)
-Date: Tue, 27 Jan 2026 13:30:03 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: leon@kernel.org, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v9 4/5] RDMA/bnxt_re: Direct Verbs: Support DBR
- verbs
-Message-ID: <pynbf5lh5azbblvoygivvzxjcmnvffrtdz5zbjzsg4rccbpvud@277svcow3ra4>
-References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
- <20260127103109.32163-5-sriharsha.basavapatna@broadcom.com>
+        d=1e100.net; s=20230601; t=1769518591; x=1770123391;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Kec1cFY+HbyNTGIK32aZqfqQW/BaaYnVG+pQ+omEY1k=;
+        b=EFGROY9dOMu8QzU9xhmZTlDM6ry17ywiu/gOT97qLTl+aqUgW3LzGIwhNm6bkAcdUS
+         KcY16/jhP4fUEWHDRDBWRD+tShh2o585y4oWtwqBH4G8P90kifYox/otOfIEHwsJ8rma
+         mBQhdiNINBG/giopS23eoIzeNt9nBZK9CDJZOvYIFW5pITBpVnwocLL1L22wa/C+0WX0
+         orRpMev6HA3RnMDnGM0ldFzZxQUSshdmslejj73X5il1Z3H9OuUsrIpMX0oM+PAnp0qm
+         A/PEKRCFXfbpXX0bBM9Fy8BML17+9P7YhwYQEgmvYizc87FVGw3xDPvAvueRrv+HFbzu
+         ADIg==
+X-Forwarded-Encrypted: i=1; AJvYcCUo/DaM0fm/vtKJK1mecPZlfmWBNN35LVio4fwz23nBDvPjDZc7NKZdGyGgVMjb0pT4t6bF/PIUTGsL@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIAco+N2hqB4aFu+jCic0Ps9fEr/O6jTYHhfb08EmJTAhLcCsx
+	GGlX3Z82jJJ7DAnBLIAeWgNymQeqhSnHomevbmwAJuNUhxK4v0itthGv/eQNmkltWPc4W/1Bmxk
+	tUAomopdu8FPHVp0oeQXsg9/cbvcQfOC10+BPQg2S
+X-Gm-Gg: AZuq6aJysAV/3172XBF4NW9F0DYhYoykgUd0802URG6Pl4VP3CxW/ACywC1R5t172r3
+	Lsaqytw+RezJi756/ixVohk+IngdHkXbiN8cuxNrGn1ZrmFuYzuDmgz6LW7d78y1gP0EVz7A1TZ
+	UshcTjjOVb2V6iOpgFQFSkGjT4M+hMQ52Wv9/EB4w2IJ6b0+kd7d+WkqmwpkaAy17JRcygSls7Z
+	NU0Ex7wt9G/orOOsXVp0qdd0hVMNOd97V1vI4vtFhHVHE0nS74IDj6ZcCqnk5rN2uKq0tw=
+X-Received: by 2002:a05:622a:95:b0:501:1813:4165 with SMTP id
+ d75a77b69052e-5032fb1e136mr18371991cf.70.1769518590674; Tue, 27 Jan 2026
+ 04:56:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260127103109.32163-5-sriharsha.basavapatna@broadcom.com>
+References: <20260126-dzahka-fix-tx-csum-partial-v2-1-0a905590ea5f@gmail.com>
+In-Reply-To: <20260126-dzahka-fix-tx-csum-partial-v2-1-0a905590ea5f@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 27 Jan 2026 13:56:19 +0100
+X-Gm-Features: AZwV_Qj2KzUhSRnQshlLMp6CWqqzx7W1z7GHrToYMhWl_sOMG8tn60ohHqZx0Lo
+Message-ID: <CANn89i+OEP2xxNjExxxE81uT-U+nZSSFLT37gKk+25CpU6ZEsg@mail.gmail.com>
+Subject: Re: [PATCH v2] net/mlx5e: don't assume psp tx skbs are ipv6 csum handling
+To: Daniel Zahka <daniel.zahka@gmail.com>
+Cc: Boris Pismenny <borisp@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rahul Rameshbabu <rrameshbabu@nvidia.com>, Raed Salem <raeds@nvidia.com>, 
+	Cosmin Ratiu <cratiu@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	TAGGED_FROM(0.00)[bounces-16074-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN_FAIL(0.00)[1.2.3.5.c.f.2.1.0.0.0.0.0.0.0.0.b.d.0.0.1.0.0.e.a.0.c.3.0.0.6.2.asn6.rspamd.com:query timed out];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[edumazet@google.com,linux-rdma@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-16075-lists,linux-rdma=lfdr.de];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: A32CE94588
+	MISSING_XM_UA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E5778949C0
 X-Rspamd-Action: no action
 
-Tue, Jan 27, 2026 at 11:31:08AM +0100, sriharsha.basavapatna@broadcom.com wrote:
->From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+On Mon, Jan 26, 2026 at 8:38=E2=80=AFPM Daniel Zahka <daniel.zahka@gmail.co=
+m> wrote:
 >
->The following Direct Verbs (DV) methods have been implemented in
->this patch.
+> mlx5e_psp_handle_tx_skb() assumes skbs are ipv6 when doing a partial
+> TCP checksum with tso. Make correctly mlx5e_psp_handle_tx_skb() handle
+> ipv4 packets.
 >
->Doorbell Region Direct Verbs:
->-----------------------------
->- BNXT_RE_METHOD_DBR_ALLOC:
->  This will allow the appliation to create extra doorbell regions
->  and use the associated doorbell page index in DV_CREATE_QP and
->  use the associated DB address while ringing the doorbell.
->
->- BNXT_RE_METHOD_DBR_FREE:
->  Free the allocated doorbell region.
->
->- BNXT_RE_METHOD_GET_DEFAULT_DBR:
->  Return the default doorbell page index and doorbell page address
->  associated with the ucontext.
->
+> Fixes: e5a1861a298e ("net/mlx5e: Implement PSP Tx data path")
+> Signed-off-by: Daniel Zahka <daniel.zahka@gmail.com>
 
-Similar to CQ/QP, why this is bnxt specific? I know a little about rdma,
-but I believe we use it in mlx5 too, no?
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
