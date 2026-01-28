@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-16108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qDxtHFFjeWlhwwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16108-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 02:16:01 +0100
+	id UMEFG2djeWlhwwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16109-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 02:16:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 046F59BDCB
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 02:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B941F9BDE1
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 02:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 516CE3049EC5
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 01:14:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E75E230541C3
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 01:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DECE23D7CF;
-	Wed, 28 Jan 2026 01:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FE623185D;
+	Wed, 28 Jan 2026 01:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bkmgSTvW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gz3JH4Bc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E376323B63C;
-	Wed, 28 Jan 2026 01:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B839023BCF7;
+	Wed, 28 Jan 2026 01:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769562838; cv=none; b=plXU6Ta/yswqhwBNk5ltKQXwKLgQYL9B8OCZQFDLIj5KJClntdzv4UGvzhjDYkjE9qNMVEDOUDne+ZBiSPXFL6TWnryshgxe8AsJsFjj3+C7oWu0uUSgFkCgQoLK8pXc+aCQk3bpUIll8jTIkXfDuZ80OU7gZTQLZaaqoloDgC8=
+	t=1769562838; cv=none; b=AVc6SYPuJmOe+Pb4ZOD81EAfA4C18VtTs1FVsqavBpwSYn+zsCAkSaENV24wx9IizQMyBnR0MnTAALJv4yKCEuR1rZrbFc0kUP7Rcu7jHwhRvMeXpuOeJ7bdlWCUn0CRiaYJz448HShTQ6SDxmWBAV/QYxErNMHQc+PqNLNF/Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769562838; c=relaxed/simple;
-	bh=az96FLWx5r4mbD8cFQZsiThrXAqpwlEx0pBiwv189Us=;
+	bh=CnY2yyQuycb6hQgMr4nKM5II5eO9Cte0UHBOW/ImI3A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j99VgS1jAUXIM15gIododTdJ0c0cUKrMToUz80fl8JxfiR69Ze39ktMkiNIZTqxW8SWVT4xHi9HFPl4yj+MdswrPzSnJ20m//7847CEI9cNubtoyPx2HUqyScYpnqWv5UXGc7UY0bEQvRCyLmC1msPydnYrHm5bhrt6RpHTGOqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bkmgSTvW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DADEC116D0;
+	 MIME-Version; b=WhfpVkEE0ffJQeF7tdetC5hnnRb2uNLHw2Dmc/eG/Je6ne9I7o6SzBm0uqsorepBEFlOZd/jKbb9bul6pikEl5tknaYmNrCJuyAef2ktrEEKh94Aa2eFLAr/wM6+wxmOGMOy9Ulrsdbj5i5xjT7R+XTzG7iHWMI3P0XnJ0NqIvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gz3JH4Bc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06501C116C6;
 	Wed, 28 Jan 2026 01:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769562837;
-	bh=az96FLWx5r4mbD8cFQZsiThrXAqpwlEx0pBiwv189Us=;
+	s=k20201202; t=1769562838;
+	bh=CnY2yyQuycb6hQgMr4nKM5II5eO9Cte0UHBOW/ImI3A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bkmgSTvWNxtp/msA1FAbsOllnrZcKqtNvU8CexBgQiitn//Cfbp/ildrRmjNlYk3v
-	 nXOpkQ8myaMFIQvAAOu9F2+nQulE7mktFAIIC2SNy99rNumMCXNJzn4DkFTurC8TBi
-	 172VCbPLwlEuUrLYRYM4q+KGfweap17GNbAbF7jqneu9yzHD45bia1nSLcFMmNQ/Ry
-	 XDTT2GUog82XKDmUltu3KJ8LRyRbBcDTDs6P/TPjejQ320fNjOsjMarjMK33JEJqxZ
-	 BJ1JmAitW62okoMix9yLLOlufZUizMyyEpInQA7Aab/Rj2N6tEp0TRsh9v+7HHHCds
-	 l7/aVL2dbD6rQ==
+	b=Gz3JH4Bcvm8Z6rVePOGvW/G17DgctModl94ss9r1F1esLrTxZNip5sxPaQe/yYDbn
+	 PBS9Yowg7yhZT+ctNIvJSM6CHR/4uwr2DR8YodfKzjdO/PASzSF6Dh7zeYdi9f57+O
+	 ObwMCWPrZDA6UwsbA9Rlsqj3c5UWtmPOSkzPd+Doerzh/wWOwrwGvNZloirMGCxbCE
+	 SI3jk9Mmw57wy7XBWNBpd3Kzp9ryisxZz7U3qQeOjAHZEJQPumdEmahx2u8DexzSJB
+	 BxjT/lx8iYD1nuI1cdMe99PJ1bGodxsvY6MenfoWRISmgOXlogBh8Q5JoLvKiOO1cz
+	 3amOtEf1VV6LQ==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org
 Cc: linux-kselftest@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc: linux-kselftest@vger.kernel.org,
 	horms@kernel.org,
 	linux-rdma@vger.kernel.org,
 	allison.henderson@oracle.com
-Subject: [PATCH net-next v2 6/7] net/rds: Use the first lane until RDS_EXTHDR_NPATHS arrives
-Date: Tue, 27 Jan 2026 18:13:50 -0700
-Message-ID: <20260128011351.78511-7-achender@kernel.org>
+Subject: [PATCH net-next v2 7/7] net/rds: Trigger rds_send_ping() more than once
+Date: Tue, 27 Jan 2026 18:13:51 -0700
+Message-ID: <20260128011351.78511-8-achender@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260128011351.78511-1-achender@kernel.org>
 References: <20260128011351.78511-1-achender@kernel.org>
@@ -81,7 +81,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-16108-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16109-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -94,264 +94,266 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[9];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 046F59BDCB
+X-Rspamd-Queue-Id: B941F9BDE1
 X-Rspamd-Action: no action
 
 From: Gerd Rausch <gerd.rausch@oracle.com>
 
-Instead of just blocking the sender until "c_npaths" is known
-(it gets updated upon the receipt of a MPRDS PONG message),
-simply use the first lane (cp_index#0).
+Even though a peer may have already received a
+non-zero value for "RDS_EXTHDR_NPATHS" from a node in the past,
+the current peer may not.
 
-But just using the first lane isn't enough.
+Therefore it is important to initiate another rds_send_ping()
+after a re-connect to any peer:
+It is unknown at that time if we're still talking to the same
+instance of RDS kernel modules on the other side.
 
-As soon as we enqueue messages on a different lane, we'd run the risk
-of out-of-order delivery of RDS messages.
+Otherwise, the peer may just operate on a single lane
+("c_npaths == 0"), not knowing that more lanes are available.
 
-Earlier messages enqueued on "cp_index == 0" could be delivered later
-than more recent messages enqueued on "cp_index > 0", mostly because of
-possible head of line blocking issues causing the first lane to be
-slower.
+However, if "c_with_sport_idx" is supported,
+we also need to check that the connection we accepted on lane#0
+meets the proper source port modulo requirement, as we fan out:
 
-To avoid that, we simply take a snapshot of "cp_next_tx_seq" at the
-time we're about to fan-out to more lanes.
+Since the exchange of "RDS_EXTHDR_NPATHS" and "RDS_EXTHDR_SPORT_IDX"
+is asynchronous, initially we have no choice but to accept an incoming
+connection (via "accept") in the first slot ("cp_index == 0")
+for backwards compatibility.
 
-Then we delay the transmission of messages enqueued on other lanes
-with "cp_index > 0" until cp_index#0 caught up with the delivery of
-new messages (from "cp_send_queue") as well as in-flight
-messages (from "cp_retrans") that haven't been acknowledged yet
-by the receiver.
+But that very connection may have come from a different lane
+with "cp_index != 0", since the peer thought that we already understood
+and handled "c_with_sport_idx" properly, as indicated by a previous
+exchange before a module was reloaded.
 
-We also add a new counter "mprds_catchup_tx0_retries" to keep track
-of how many times "rds_send_xmit" had to suspend activities,
-because it was waiting for the first lane to catch up.
+In short:
+If a module gets reloaded, we recover from that, but do *not*
+allow a downgrade to support fewer lanes.
+
+Downgrades would require us to merge messages from separate lanes,
+which is rather tricky with the current RDS design.
+Each lane has its own sequence number space and all messages
+would need to be re-sequenced as we merge, all while
+handling "RDS_FLAG_RETRANSMITTED" and "cp_retrans" properly.
 
 Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
 Signed-off-by: Allison Henderson <allison.henderson@oracle.com>
 ---
- net/rds/rds.h   |   3 ++
- net/rds/recv.c  |  23 +++++++++--
- net/rds/send.c  | 102 +++++++++++++++++++++++++++++++-----------------
- net/rds/stats.c |   1 +
- 4 files changed, 90 insertions(+), 39 deletions(-)
+ net/rds/connection.c |  5 +++-
+ net/rds/rds.h        |  2 +-
+ net/rds/recv.c       |  7 +++++-
+ net/rds/send.c       | 18 +++++++++++++++
+ net/rds/tcp.h        |  2 +-
+ net/rds/tcp_listen.c | 55 +++++++++++++++++++++++++++++++++-----------
+ 6 files changed, 72 insertions(+), 17 deletions(-)
 
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index 4b7715eb2111..185f73b01694 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -447,13 +447,16 @@ void rds_conn_shutdown(struct rds_conn_path *cp)
+ 	rcu_read_lock();
+ 	if (!hlist_unhashed(&conn->c_hash_node)) {
+ 		rcu_read_unlock();
++		if (conn->c_trans->t_mp_capable &&
++		    cp->cp_index == 0)
++			rds_send_ping(conn, 0);
+ 		rds_queue_reconnect(cp);
+ 	} else {
+ 		rcu_read_unlock();
+ 	}
+ 
+ 	if (conn->c_trans->conn_slots_available)
+-		conn->c_trans->conn_slots_available(conn);
++		conn->c_trans->conn_slots_available(conn, false);
+ }
+ 
+ /* destroy a single rds_conn_path. rds_conn_destroy() iterates over
 diff --git a/net/rds/rds.h b/net/rds/rds.h
-index d942057b91ee..f78477912e7c 100644
+index f78477912e7c..eab396ef2c2d 100644
 --- a/net/rds/rds.h
 +++ b/net/rds/rds.h
-@@ -170,6 +170,8 @@ struct rds_connection {
+@@ -548,7 +548,7 @@ struct rds_transport {
+ 	 * messages received on the new socket are not discarded when no
+ 	 * connection path was available at the time.
+ 	 */
+-	void (*conn_slots_available)(struct rds_connection *conn);
++	void (*conn_slots_available)(struct rds_connection *conn, bool fan_out);
+ 	int (*conn_path_connect)(struct rds_conn_path *cp);
  
- 	u32			c_my_gen_num;
- 	u32			c_peer_gen_num;
-+
-+	u64			c_cp0_mprds_catchup_tx_seq;
- };
- 
- static inline
-@@ -748,6 +750,7 @@ struct rds_statistics {
- 	uint64_t	s_recv_bytes_added_to_socket;
- 	uint64_t	s_recv_bytes_removed_from_socket;
- 	uint64_t	s_send_stuck_rm;
-+	uint64_t	s_mprds_catchup_tx0_retries;
- };
- 
- /* af_rds.c */
+ 	/*
 diff --git a/net/rds/recv.c b/net/rds/recv.c
-index ddf128a02347..889a5b7935e5 100644
+index 889a5b7935e5..4b3f9e4a8bfd 100644
 --- a/net/rds/recv.c
 +++ b/net/rds/recv.c
-@@ -208,6 +208,9 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
- 	} buffer;
+@@ -209,6 +209,7 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
  	bool new_with_sport_idx = false;
  	u32 new_peer_gen_num = 0;
-+	int new_npaths;
-+
-+	new_npaths = conn->c_npaths;
+ 	int new_npaths;
++	bool fan_out;
  
- 	while (1) {
- 		len = sizeof(buffer);
-@@ -217,8 +220,8 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
- 		/* Process extension header here */
- 		switch (type) {
- 		case RDS_EXTHDR_NPATHS:
--			conn->c_npaths = min_t(int, RDS_MPATH_WORKERS,
--					       be16_to_cpu(buffer.rds_npaths));
-+			new_npaths = min_t(int, RDS_MPATH_WORKERS,
-+					   be16_to_cpu(buffer.rds_npaths));
- 			break;
- 		case RDS_EXTHDR_GEN_NUM:
- 			new_peer_gen_num = be32_to_cpu(buffer.rds_gen_num);
-@@ -233,8 +236,22 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
+ 	new_npaths = conn->c_npaths;
+ 
+@@ -248,7 +249,11 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
+ 		spin_lock_irqsave(&cp0->cp_lock, flags);
+ 		conn->c_cp0_mprds_catchup_tx_seq = cp0->cp_next_tx_seq;
+ 		spin_unlock_irqrestore(&cp0->cp_lock, flags);
++		fan_out = true;
++	} else {
++		fan_out = false;
  	}
- 
- 	conn->c_with_sport_idx = new_with_sport_idx;
 +
-+	if (new_npaths > 1 && new_npaths != conn->c_npaths) {
-+		/* We're about to fan-out.
-+		 * Make sure that messages from cp_index#0
-+		 * are sent prior to handling other lanes.
-+		 */
-+		struct rds_conn_path *cp0 = conn->c_path;
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&cp0->cp_lock, flags);
-+		conn->c_cp0_mprds_catchup_tx_seq = cp0->cp_next_tx_seq;
-+		spin_unlock_irqrestore(&cp0->cp_lock, flags);
-+	}
  	/* if RDS_EXTHDR_NPATHS was not found, default to a single-path */
--	conn->c_npaths = max_t(int, conn->c_npaths, 1);
-+	conn->c_npaths = max_t(int, new_npaths, 1);
-+
- 	conn->c_ping_triggered = 0;
- 	rds_conn_peer_gen_update(conn, new_peer_gen_num);
+ 	conn->c_npaths = max_t(int, new_npaths, 1);
  
+@@ -257,7 +262,7 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
+ 
+ 	if (conn->c_npaths > 1 &&
+ 	    conn->c_trans->conn_slots_available)
+-		conn->c_trans->conn_slots_available(conn);
++		conn->c_trans->conn_slots_available(conn, fan_out);
+ }
+ 
+ /* rds_start_mprds() will synchronously start multiple paths when appropriate.
 diff --git a/net/rds/send.c b/net/rds/send.c
-index 85e1c5352ad8..599c2cfb7a1d 100644
+index 599c2cfb7a1d..68f6b12c60ef 100644
 --- a/net/rds/send.c
 +++ b/net/rds/send.c
-@@ -119,6 +119,57 @@ static void release_in_xmit(struct rds_conn_path *cp)
- 		wake_up_all(&cp->cp_waitq);
- }
- 
-+/*
-+ * Helper function for multipath fanout to ensure lane 0 transmits queued
-+ * messages before other lanes to prevent out-of-order delivery.
-+ *
-+ * Returns true if lane 0 still has messages or false otherwise
-+ */
-+static bool rds_mprds_cp0_catchup(struct rds_connection *conn)
-+{
-+	struct rds_conn_path *cp0 = conn->c_path;
-+	struct rds_message *rm0;
-+	unsigned long flags;
-+	bool ret = false;
-+
-+	spin_lock_irqsave(&cp0->cp_lock, flags);
-+
-+	/* the oldest / first message in the retransmit queue
-+	 * has to be at or beyond c_cp0_mprds_catchup_tx_seq
-+	 */
-+	if (!list_empty(&cp0->cp_retrans)) {
-+		rm0 = list_entry(cp0->cp_retrans.next, struct rds_message,
-+				 m_conn_item);
-+		if (be64_to_cpu(rm0->m_inc.i_hdr.h_sequence) <
-+		    conn->c_cp0_mprds_catchup_tx_seq) {
-+			/* the retransmit queue of cp_index#0 has not
-+			 * quite caught up yet
-+			 */
-+			ret = true;
-+			goto unlock;
-+		}
-+	}
-+
-+	/* the oldest / first message of the send queue
-+	 * has to be at or beyond c_cp0_mprds_catchup_tx_seq
-+	 */
-+	rm0 = cp0->cp_xmit_rm;
-+	if (!rm0 && !list_empty(&cp0->cp_send_queue))
-+		rm0 = list_entry(cp0->cp_send_queue.next, struct rds_message,
-+				 m_conn_item);
-+	if (rm0 && be64_to_cpu(rm0->m_inc.i_hdr.h_sequence) <
-+	    conn->c_cp0_mprds_catchup_tx_seq) {
-+		/* the send queue of cp_index#0 has not quite
-+		 * caught up yet
-+		 */
-+		ret = true;
-+	}
-+
-+unlock:
-+	spin_unlock_irqrestore(&cp0->cp_lock, flags);
-+	return ret;
-+}
-+
- /*
-  * We're making the conscious trade-off here to only send one message
-  * down the connection at a time.
-@@ -248,6 +299,14 @@ int rds_send_xmit(struct rds_conn_path *cp)
- 			if (batch_count >= send_batch_count)
- 				goto over_batch;
- 
-+			/* make sure cp_index#0 caught up during fan-out in
-+			 * order to avoid lane races
-+			 */
-+			if (cp->cp_index > 0 && rds_mprds_cp0_catchup(conn)) {
-+				rds_stats_inc(s_mprds_catchup_tx0_retries);
-+				goto over_batch;
-+			}
-+
- 			spin_lock_irqsave(&cp->cp_lock, flags);
- 
- 			if (!list_empty(&cp->cp_send_queue)) {
-@@ -1042,39 +1101,6 @@ static int rds_cmsg_send(struct rds_sock *rs, struct rds_message *rm,
- 	return ret;
- }
- 
--static int rds_send_mprds_hash(struct rds_sock *rs,
--			       struct rds_connection *conn, int nonblock)
--{
--	int hash;
--
--	if (conn->c_npaths == 0)
--		hash = RDS_MPATH_HASH(rs, RDS_MPATH_WORKERS);
--	else
--		hash = RDS_MPATH_HASH(rs, conn->c_npaths);
--	if (conn->c_npaths == 0 && hash != 0) {
--		rds_send_ping(conn, 0);
--
--		/* The underlying connection is not up yet.  Need to wait
--		 * until it is up to be sure that the non-zero c_path can be
--		 * used.  But if we are interrupted, we have to use the zero
--		 * c_path in case the connection ends up being non-MP capable.
--		 */
--		if (conn->c_npaths == 0) {
--			/* Cannot wait for the connection be made, so just use
--			 * the base c_path.
--			 */
--			if (nonblock)
--				return 0;
--			if (wait_event_interruptible(conn->c_hs_waitq,
--						     conn->c_npaths != 0))
--				hash = 0;
--		}
--		if (conn->c_npaths == 1)
--			hash = 0;
--	}
--	return hash;
--}
--
- static int rds_rdma_bytes(struct msghdr *msg, size_t *rdma_bytes)
- {
- 	struct rds_rdma_args *args;
-@@ -1304,10 +1330,14 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
- 		rs->rs_conn = conn;
+@@ -1339,6 +1339,24 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+ 		cpath = &conn->c_path[0];
  	}
  
--	if (conn->c_trans->t_mp_capable)
--		cpath = &conn->c_path[rds_send_mprds_hash(rs, conn, nonblock)];
--	else
-+	if (conn->c_trans->t_mp_capable) {
-+		/* Use c_path[0] until we learn that
-+		 * the peer supports more (c_npaths > 1)
++	/* Check to see if we have talked to this peer before.
++	 * If not, this means conn->c_npaths will be zero,
++	 * and we should initiate a connection request to the
++	 * peer right away.
++	 */
++	if (conn->c_trans->t_mp_capable &&
++	    !rds_conn_path_up(&conn->c_path[0])) {
++		/* Ensures that only one request is queued.  And
++		 * rds_send_ping() ensures that only one ping is
++		 * outstanding.
 +		 */
-+		cpath = &conn->c_path[RDS_MPATH_HASH(rs, conn->c_npaths ? : 1)];
-+	} else {
- 		cpath = &conn->c_path[0];
++		if (!test_and_set_bit(RDS_RECONNECT_PENDING,
++				      &conn->c_path[0].cp_flags))
++			queue_delayed_work(conn->c_path[0].cp_wq,
++					   &conn->c_path[0].cp_conn_w, 0);
++		rds_send_ping(conn, 0);
 +	}
- 
++
  	rm->m_conn_path = cpath;
  
-diff --git a/net/rds/stats.c b/net/rds/stats.c
-index cb2e3d2cdf73..24ee22d09e8c 100644
---- a/net/rds/stats.c
-+++ b/net/rds/stats.c
-@@ -79,6 +79,7 @@ static const char *const rds_stat_names[] = {
- 	"recv_bytes_added_to_sock",
- 	"recv_bytes_freed_fromsock",
- 	"send_stuck_rm",
-+	"mprds_catchup_tx0_retries",
- };
+ 	/* Parse any control messages the user may have included. */
+diff --git a/net/rds/tcp.h b/net/rds/tcp.h
+index b36af0865a07..39c86347188c 100644
+--- a/net/rds/tcp.h
++++ b/net/rds/tcp.h
+@@ -90,7 +90,7 @@ void rds_tcp_state_change(struct sock *sk);
+ struct socket *rds_tcp_listen_init(struct net *net, bool isv6);
+ void rds_tcp_listen_stop(struct socket *sock, struct work_struct *acceptor);
+ void rds_tcp_listen_data_ready(struct sock *sk);
+-void rds_tcp_conn_slots_available(struct rds_connection *conn);
++void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out);
+ int rds_tcp_accept_one(struct rds_tcp_net *rtn);
+ void rds_tcp_keepalive(struct socket *sock);
+ void *rds_tcp_listen_sock_def_readable(struct net *net);
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index c628f62421d4..04fafdf59d72 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -56,14 +56,8 @@ void rds_tcp_keepalive(struct socket *sock)
+ 	tcp_sock_set_keepintvl(sock->sk, keepidle);
+ }
  
- void rds_stats_info_copy(struct rds_info_iterator *iter,
+-/* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
+- * client's ipaddr < server's ipaddr. Otherwise, close the accepted
+- * socket and force a reconneect from smaller -> larger ip addr. The reason
+- * we special case cp_index 0 is to allow the rds probe ping itself to itself
+- * get through efficiently.
+- */
+-static struct rds_tcp_connection *
+-rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
++static int
++rds_tcp_get_peer_sport(struct socket *sock)
+ {
+ 	union {
+ 		struct sockaddr_storage storage;
+@@ -71,11 +65,9 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
+ 		struct sockaddr_in sin;
+ 		struct sockaddr_in6 sin6;
+ 	} saddr;
+-	int sport, npaths, i_min, i_max, i;
++	int sport;
+ 
+-	if (conn->c_with_sport_idx &&
+-	    kernel_getpeername(sock, &saddr.addr) == 0) {
+-		/* cp->cp_index is encoded in lowest bits of source-port */
++	if (kernel_getpeername(sock, &saddr.addr) == 0) {
+ 		switch (saddr.addr.sa_family) {
+ 		case AF_INET:
+ 			sport = ntohs(saddr.sin.sin_port);
+@@ -90,6 +82,26 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
+ 		sport = -1;
+ 	}
+ 
++	return sport;
++}
++
++/* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
++ * client's ipaddr < server's ipaddr. Otherwise, close the accepted
++ * socket and force a reconneect from smaller -> larger ip addr. The reason
++ * we special case cp_index 0 is to allow the rds probe ping itself to itself
++ * get through efficiently.
++ */
++static struct rds_tcp_connection *
++rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
++{
++	int sport, npaths, i_min, i_max, i;
++
++	if (conn->c_with_sport_idx)
++		/* cp->cp_index is encoded in lowest bits of source-port */
++		sport = rds_tcp_get_peer_sport(sock);
++	else
++		sport = -1;
++
+ 	npaths = max_t(int, 1, conn->c_npaths);
+ 
+ 	if (sport >= 0) {
+@@ -111,10 +123,12 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
+ 	return NULL;
+ }
+ 
+-void rds_tcp_conn_slots_available(struct rds_connection *conn)
++void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
+ {
+ 	struct rds_tcp_connection *tc;
+ 	struct rds_tcp_net *rtn;
++	struct socket *sock;
++	int sport, npaths;
+ 
+ 	if (rds_destroy_pending(conn))
+ 		return;
+@@ -124,6 +138,21 @@ void rds_tcp_conn_slots_available(struct rds_connection *conn)
+ 	if (!rtn)
+ 		return;
+ 
++	sock = tc->t_sock;
++
++	/* During fan-out, check that the connection we already
++	 * accepted in slot#0 carried the proper source port modulo.
++	 */
++	if (fan_out && conn->c_with_sport_idx && sock &&
++	    rds_addr_cmp(&conn->c_laddr, &conn->c_faddr) > 0) {
++		/* cp->cp_index is encoded in lowest bits of source-port */
++		sport = rds_tcp_get_peer_sport(sock);
++		npaths = max_t(int, 1, conn->c_npaths);
++		if (sport >= 0 && sport % npaths != 0)
++			/* peer initiated with a non-#0 lane first */
++			rds_conn_path_drop(conn->c_path, 0);
++	}
++
+ 	/* As soon as a connection went down,
+ 	 * it is safe to schedule a "rds_tcp_accept_one"
+ 	 * attempt even if there are no connections pending:
 -- 
 2.43.0
 
