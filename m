@@ -1,159 +1,230 @@
-Return-Path: <linux-rdma+bounces-16156-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16157-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KDiZOJsSemkl2QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16156-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 14:43:55 +0100
+	id sPYsHaAUemlS2QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16157-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 14:52:32 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E1DA242C
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 14:43:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 200DDA2517
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 14:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9EB24300CE75
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:43:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1FAE43077127
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79CD353EC9;
-	Wed, 28 Jan 2026 13:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C53735FF48;
+	Wed, 28 Jan 2026 13:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="2dRmVAod"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hxnzsa9S"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CB5350A2B
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 13:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B9E35B12D;
+	Wed, 28 Jan 2026 13:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769607831; cv=none; b=XGGKNckGxZRF4Xoie7dGdlS00lujVuQX9xEyPt9yp3ERE1sz7P5GaSKrdOO6LPhB5vxjxFS7rpKxX81AJ8XM2ydPgVtM5k/43RCAUiYobBYy2WZgg8SBcQ5IAKAiuzftLXYKT8iOp6FpLIE+BQZx+bMKvlmYMcFzPi3IfQ4DxVA=
+	t=1769608178; cv=none; b=FSqHmWnNym375An2fu8tw8xcU5dG5+BxMN7ta3ZE1cGr6fnDGfch9dOQlpNAP/uOZarlkEPMLyRybFUN01WVvnve039nP+L2cD6ZG2r1kvq99hQKSLyQUhmK7bJHuR2G57TKE5QYbpv32IJO0o5oxmwkqzsOp9p3T1+/mpZcjcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769607831; c=relaxed/simple;
-	bh=CmD5m+lRl2FaqvqzvO+WzqbaYeMItPNtZ1dwe28xVpo=;
+	s=arc-20240116; t=1769608178; c=relaxed/simple;
+	bh=/bMLpYYhrg2xoMlUik6YRGll+7ObCydAAbWlBqc3cqk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qpMWe7OwVM9QS1QcnFiyYFh8Ve5fIUTwjjiwHkQaR4RnGubkzGM04eRJQRmcOewFQHT7wTJwEZoaxx3GF2CynI6xfyOJTkqz0Cfd1DpnWEg049dj6SPEnnqIyD5mDRRWCITOSrHEnciU1/ZMmHUev7kcF1Kr55VcXYmCrPNQlDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=2dRmVAod; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-480706554beso5951725e9.1
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 05:43:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1769607828; x=1770212628; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nz99cdeOjvrjZChisvnF8cIKoEPTY9x5v04DZ1VsVJE=;
-        b=2dRmVAod+MnR0SSpBfO3U4n8BDVkrsOHVt+SBd7oxobj75RETixmcs3/UuVIQMsNdy
-         jZc+Ugqiyb5OC/0664DpsQ/XKbv3BkIe7DuZP5KR3j/pt0FnwCFPUX1M482pfS1rsEXG
-         YCg/rriSyf5oaqW7yMQJlsWtH4L+6UkTijy2vF8wY1pl1FHZ7/zfOpyfT9/dEIOP9K41
-         eWXvsdXuySJt1krXQ7mkR3pZyUfoJa1lY5ZSB9xbpStrc0UPQL8Y/b+0IiLrdCnaIIvn
-         aN59BaB/pDzMoU1U76Uic2yz2EDyfN5sgzfd6/5f6sSvmyRMSF7HAaxp8WedjqUxPUwg
-         +Krw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769607828; x=1770212628;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nz99cdeOjvrjZChisvnF8cIKoEPTY9x5v04DZ1VsVJE=;
-        b=kAMzbjJWcNB8T81BbcdR0P8H+bLyY5JZRmKyd7V68w4W+n40bEE2RC6xxXBL+764Bn
-         U+9ZbUI21n3Atj5fYz6rNImtr+B67tivBBt4AdplEJuvFXJpyTD0Qq/VnIebb1/d+sxw
-         KgmtfiZ4G7rZruHkFaD8DPfBQr9VIxn6s1edmpLzTObF31YB1UKLdFUp4W+Hzi58sqr6
-         CUlr1ceoKGh0QAWe0mK4OzLOY9EA24QUGchewUUsdHVML5j2mnRZYJ+HGpadoypOcvsP
-         pbgp5vHhD2R3z7w5SRCA6l8MTYpELHhLJ2qqGx7fjrwy4Ptp24LmzxvwmzncA+J0Fgjq
-         xwXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCXSqO4vt2xHlR0NmDwLehzAt63dn7XKSKl1x4Ix1UIev2QJRJ9wOo6JwuW2rdFZOGHKe6qtikxBQV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFe80ruWD4ofSxc3slQeE2Ce9aRdwpQftToYVx0gp/QBKYAu51
-	NdYJbXXW7q5Myq4dmlvMzLf1PLd5fQGgnW0gc2tBL91AbDIY15qvs7yl3g8revAGn6g=
-X-Gm-Gg: AZuq6aIFe5HsOJP3wh/oYGSMvDx0p/L2onNLo3c91Qtve6AkyrYoTe4l5UqEUd3T3+s
-	Hl12ovPBmXoF10N/wdmSCY6ArUAL0OwOqT3Lmp2RqYCZhFs9dCdelIEBfTWB0voOnNHWELnVrfb
-	LOjqHOFQzoSjjQ9+4DX4jrcpnd4mKh4L+Ikh2VcCImTCbJ/pz8CCXlX0fLlfjdWil5UXxkFTTob
-	r6zQes6w7l6JPgPPRfoOEmN5rPEofnph295MtY2opYw+3mV3CWqXWj7qgCjjR7suDn7N8YKH+Vo
-	2Y9TOO0goNRg5/LGEYd/kU0gEXSbJmvBH10f1rZyioopqFcOf7Ma567/D50gOAzBv5/d0he03v+
-	2Mo40OjTq5sEyxSXXt0fW80V6n46RIQXk6eZGdlES4Tf7J96+ns1tJ+tawwV5tXMyD66eMgn0cd
-	1bfN+AnQUZk31s4JNhVYWfC75xbqIQvbbf
-X-Received: by 2002:a05:600c:348d:b0:480:1a3a:5ce6 with SMTP id 5b1f17b1804b1-48069c1a8aemr61842905e9.14.1769607827901;
-        Wed, 28 Jan 2026 05:43:47 -0800 (PST)
-Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4806e2a0581sm65095e9.5.2026.01.28.05.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jan 2026 05:43:47 -0800 (PST)
-Date: Wed, 28 Jan 2026 14:43:45 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: "Yanjun.Zhu" <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	linux-rdma@vger.kernel.org, leon@kernel.org, msanalla@nvidia.com, maorg@nvidia.com, 
-	parav@nvidia.com, mbloch@nvidia.com, markzhang@nvidia.com, 
-	marco.crivellari@suse.com, roman.gushchin@linux.dev
-Subject: Re: [PATCH] RDMA/core: Fix stale RoCE GIDs during netdev events at
- registration
-Message-ID: <frj7x3bda5txsccw2pj4aydjkvjvfpegscruytyln557or4uvp@benl4wdd6fbe>
-References: <20260127093839.126291-1-jiri@resnulli.us>
- <21d63279-79a2-47aa-b305-30a55b8f40f4@I-love.SAKURA.ne.jp>
- <20260127160000.GG1641016@ziepe.ca>
- <05b40f3c-0d21-411a-b61a-156246482327@linux.dev>
- <9975b59a-58e2-4766-9e4e-c927a1d7a3d0@I-love.SAKURA.ne.jp>
- <f3402d0f-40a1-4792-a8e2-be65c71a176b@linux.dev>
- <af4866d0-2e50-477c-b823-1c4a8a86f7e5@I-love.SAKURA.ne.jp>
+	 Content-Type:Content-Disposition:In-Reply-To; b=J/GW86RL1SMqKrNNvZ4zcHxV6cRpRl3ju6s5WPckxkZ3CsAyazTlW1rwkFbVn66jdVlqkYrNK9kupJcPfkQxeIo2lKWqdqsTP9f50u7BrX1aWsDHB3HZj2rtOoTYKl/GAwlTScVq6bLHwNSAtl2905BXSdR7omEZZX/6bUD7J5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hxnzsa9S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ECFDC4CEF1;
+	Wed, 28 Jan 2026 13:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769608177;
+	bh=/bMLpYYhrg2xoMlUik6YRGll+7ObCydAAbWlBqc3cqk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hxnzsa9SymJfwM0JDsvFVTzLKPBPnWxmxKo4dYTtl/xhZ7P4Lt+TYqOcxLhG2wQBv
+	 o6pp6Pf2UnwuiCcOZHiXk6jVeNFVux8z+4XdE30H0gZH5TIfMdROXDP3Asbg37gWm/
+	 YGH/3Q5sq2hrdv/QMRDT69RsSR1OkbXe0Gk5jgDkomgNEycYnK6KEvrrniJXiXCAeP
+	 qEH1opxERlbo4FXPs5dVBBNI+Fle4IgiTSjm/XmEWohnBvSwXH0OR0hf1GA4KKXyb+
+	 k2X50QA2iAb41y3uEuPk2YaLQ9g/yrBxGGztyb9w5PIQ5s8ai04J+lvzDZyU138oV3
+	 KWYDotS335PvQ==
+Date: Wed, 28 Jan 2026 15:49:34 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	oliver.yang@linux.alibaba.com
+Subject: Re: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
+Message-ID: <20260128134934.GD40916@unreal>
+References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
+ <20260123082349.42663-3-alibuda@linux.alibaba.com>
+ <aXPEFdEdtSmd6AzF@milan>
+ <20260124093505.GA98529@j66a10360.sqa.eu95>
+ <aXSjm1DXm6yP62tD@pc636>
+ <20260124145754.GA57116@j66a10360.sqa.eu95>
+ <20260127133417.GU13967@unreal>
+ <20260128034558.GA126415@j66a10360.sqa.eu95>
+ <20260128111346.GD12149@unreal>
+ <20260128124404.GA96868@j66a10360.sqa.eu95>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <af4866d0-2e50-477c-b823-1c4a8a86f7e5@I-love.SAKURA.ne.jp>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260128124404.GA96868@j66a10360.sqa.eu95>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
+	TAGGED_FROM(0.00)[bounces-16157-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16156-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	FREEMAIL_CC(0.00)[gmail.com,davemloft.net,linux-foundation.org,linux.alibaba.com,google.com,kernel.org,redhat.com,linux.ibm.com,vger.kernel.org,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[i-love.sakura.ne.jp:email,resnulli-us.20230601.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 10E1DA242C
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 200DDA2517
 X-Rspamd-Action: no action
 
-Wed, Jan 28, 2026 at 05:52:42AM +0100, penguin-kernel@I-love.SAKURA.ne.jp wrote:
+On Wed, Jan 28, 2026 at 08:44:04PM +0800, D. Wythe wrote:
+> On Wed, Jan 28, 2026 at 01:13:46PM +0200, Leon Romanovsky wrote:
+> > On Wed, Jan 28, 2026 at 11:45:58AM +0800, D. Wythe wrote:
+> > > On Tue, Jan 27, 2026 at 03:34:17PM +0200, Leon Romanovsky wrote:
+> > > > On Sat, Jan 24, 2026 at 10:57:54PM +0800, D. Wythe wrote:
+> > > > > On Sat, Jan 24, 2026 at 11:48:59AM +0100, Uladzislau Rezki wrote:
+> > > > > > Hello, D. Wythe!
+> > > > > > 
+> > > > > > > On Fri, Jan 23, 2026 at 07:55:17PM +0100, Uladzislau Rezki wrote:
+> > > > > > > > On Fri, Jan 23, 2026 at 04:23:48PM +0800, D. Wythe wrote:
+> > > > > > > > > find_vm_area() provides a way to find the vm_struct associated with a
+> > > > > > > > > virtual address. Export this symbol to modules so that modularized
+> > > > > > > > > subsystems can perform lookups on vmalloc addresses.
+> > > > > > > > > 
+> > > > > > > > > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> > > > > > > > > ---
+> > > > > > > > >  mm/vmalloc.c | 1 +
+> > > > > > > > >  1 file changed, 1 insertion(+)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > > > > > > index ecbac900c35f..3eb9fe761c34 100644
+> > > > > > > > > --- a/mm/vmalloc.c
+> > > > > > > > > +++ b/mm/vmalloc.c
+> > > > > > > > > @@ -3292,6 +3292,7 @@ struct vm_struct *find_vm_area(const void *addr)
+> > > > > > > > >  
+> > > > > > > > >  	return va->vm;
+> > > > > > > > >  }
+> > > > > > > > > +EXPORT_SYMBOL_GPL(find_vm_area);
+> > > > > > > > >  
+> > > > > > > > This is internal. We can not just export it.
+> > > > > > > > 
+> > > > > > > > --
+> > > > > > > > Uladzislau Rezki
+> > > > > > > 
+> > > > > > > Hi Uladzislau,
+> > > > > > > 
+> > > > > > > Thank you for the feedback. I agree that we should avoid exposing
+> > > > > > > internal implementation details like struct vm_struct to external
+> > > > > > > subsystems.
+> > > > > > > 
+> > > > > > > Following Christoph's suggestion, I'm planning to encapsulate the page
+> > > > > > > order lookup into a minimal helper instead:
+> > > > > > > 
+> > > > > > > unsigned int vmalloc_page_order(const void *addr){
+> > > > > > > 	struct vm_struct *vm;
+> > > > > > >  	vm = find_vm_area(addr);
+> > > > > > > 	return vm ? vm->page_order : 0;
+> > > > > > > }
+> > > > > > > EXPORT_SYMBOL_GPL(vmalloc_page_order);
+> > > > > > > 
+> > > > > > > Does this approach look reasonable to you? It would keep the vm_struct
+> > > > > > > layout private while satisfying the optimization needs of SMC.
+> > > > > > > 
+> > > > > > Could you please clarify why you need info about page_order? I have not
+> > > > > > looked at your second patch.
+> > > > > > 
+> > > > > > Thanks!
+> > > > > > 
+> > > > > > --
+> > > > > > Uladzislau Rezki
+> > > > > 
+> > > > > Hi Uladzislau,
+> > > > > 
+> > > > > This stems from optimizing memory registration in SMC-R. To provide the
+> > > > > RDMA hardware with direct access to memory buffers, we must register
+> > > > > them with the NIC. During this process, the hardware generates one MTT
+> > > > > entry for each physically contiguous block. Since these hardware entries
+> > > > > are a finite and scarce resource, and SMC currently defaults to a 4KB
+> > > > > registration granularity, a single 2MB buffer consumes 512 entries. In
+> > > > > high-concurrency scenarios, this inefficiency quickly exhausts NIC
+> > > > > resources and becomes a major bottleneck for system scalability.
+> > > > 
+> > > > I believe this complexity can be avoided by using the RDMA MR pool API,
+> > > > as other ULPs do, for example NVMe.
+> > > > 
+> > > > Thanks
+> > > > 
+> > > 
+> > > Hi Leon,
+> > > 
+> > > Am I correct in assuming you are suggesting mr_pool to limit the number
+> > > of MRs as a way to cap MTTE consumption?
+> > 
+> > I don't see this a limit, but something that is considered standard
+> > practice to reduce MTT consumption.
+> > 
+> > > 
+> > > However, our goal is to maximize the total registered memory within
+> > > the MTTE limits rather than to cap it. In SMC-R, each connection
+> > > occupies a configurable, fixed-size registered buffer; consequently,
+> > > the more memory we can register, the more concurrent connections
+> > > we can support.
+> > 
+> > It is not cap, but more efficient use of existing resources.
+> 
+> Got it. While MRs pool might be more standard practice, but it doesn't
+> address our specific bottleneck. In fact, smc already has its own internal
+> MR reuse; our core issue remains reducing MTTE consumption by increasing the
+> registration granularity to maximize the memory size mapped per MTT entry.
 
-[...]
+And this is something MR pools can handle as well. We are going in circles,
+so let's summarize.
 
->
->Two things I worry about Jiri's patch are that
->
->  refcount_set(&device->refcount, 2) in enable_device_and_get() becomes unsafe if 
->  DEVICE_GID_UPDATES notifications can let someone to call ib_device_put()
+I see SMC‑R as one of the RDMA ULPs, and it should ideally rely on the
+existing ULP API used by NVMe, NFS, and others, rather than maintaining its
+own internal logic.
 
-Perhaps I'm missing something, but where exactly in the notifications
-related to this patch is someone calling ib_device_put()?
+I also do not know whether vmalloc_page_order() is an appropriate solution;
+I only want to show that we can probably achieve the same result without
+introducing a new function.
 
-
->
->and
->
->  I'm not convinced that it is safe/meaningful to keep DEVICE_GID_UPDATES notifications valid
->  between wait_for_completion(&device->unreg_completion) in disable_device() and the beginning
->  of ib_cache_cleanup_one() because I don't know whether DEVICE_GID_UPDATES notifications can
->  make sense after device->refcount became 0
-
-Could you please clearly elaborate what seems to be a problem? I don't
-see why notifications related to this patchset can't update gids for
-devices with refcount 0. Do you?
+Thanks
 
