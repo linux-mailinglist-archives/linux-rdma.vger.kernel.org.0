@@ -1,381 +1,220 @@
-Return-Path: <linux-rdma+bounces-16120-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16121-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kCS4M0W1eWk0ygEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16120-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 08:05:41 +0100
+	id 0MjiEPO3eWlHygEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16121-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 08:17:07 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322E99D947
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 08:05:41 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86249DA8C
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 08:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 417AA3021EB1
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 07:04:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D7E4D30313D3
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 07:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EA62E8B6B;
-	Wed, 28 Jan 2026 07:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E0B3358BA;
+	Wed, 28 Jan 2026 07:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="FOoqjp3m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UT6cLG9s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f98.google.com (mail-qv1-f98.google.com [209.85.219.98])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047A329A30E
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 07:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.219.98
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769583854; cv=pass; b=Vcgxnz60IccfgJS5A/gfiCBM5wFDxAYTNJkweyaeUzSgWPJj9MQ/NO7JCZJIYW+m+BXB9gSufAkzUwqF7wxIpVIqo9amE8pTfNUKXvfjQoDCxkY39xUfeTjZnbusLY041PfQV+ycCJp6TLSzrFO1KOqbLHKzgjby5WgXIeOcA6k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769583854; c=relaxed/simple;
-	bh=KlMrf8PVe5BDNDac9yLQ29sDTXUjzugqK7nFIJ5EmKM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f1OvNMEtj0QPEwsPh1R+P9G/hVk1NAIGko5fWZAiVFsmLNBkqYJFIGKeE/4JUobjjViK265UL5g4LRiWNLkgJWxll1/omX157SFfapRFbyJjCDV3Bpvtsk/QcuXdQJGx2Au1usr9US+RrBbK8lwklyQKn5lNz8jwYK1J4n0B0uw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=FOoqjp3m; arc=pass smtp.client-ip=209.85.219.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qv1-f98.google.com with SMTP id 6a1803df08f44-894638da330so73507396d6.1
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 23:04:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769583852; x=1770188652;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tkGDnMOngowFAW8t+9+qJjq8Cg7avmhI7XOVG93iJ7M=;
-        b=CX6ANSxXNq3TDstAxCVVG12mdLZTYGVbNdaEKXc6CXFPMvo13FkpsjfhPWZx76duhR
-         1Tw+FlWadneeiJdqCpLhGjqSQKzVlix5Q7qbTF+P72Cz6F5o/vBalKOzrWp5OEYqgRKA
-         HtHcpVnitRnwYDXpuLpZr5NtlhLRsdg8LSQ8uEfhZWlxKmEE9bxMSGbHfLC1XYqPPUVX
-         fZFCLo0WsJ/Q/TwN6rv5Rf6I02Cjp4/wDWmlOOvF/5+QvFwxxIQW7n4xE/hQy7Nhp5Of
-         MAuYQHPJ8uR5ZeDkb1pa+pGKBlNuGJqxUBNXL4nzmV0xcK7BpPW2w7/wkzMGgrRwHGaM
-         ZHbQ==
-X-Forwarded-Encrypted: i=2; AJvYcCWG48WWYV/ReeNzqm6g9cnDQLWC7Nk/k7NtUii39uqSWICr2JtmFD+5zNVWVtwvM4MjQk9n2pGroq1E@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDz3pui4f825u8I6FSmWUoq4uDwUGcWtKUMX0arGpuP4nzYyDV
-	xDH9vt4XgzIIfXwikne1FBGjI+81WJaNySRqT8YcrxjzpG+G3JYWqJ35LtWooUMr2s/AjrixNpI
-	lzLZlAPrEYH3VNDAhNb2BeyVboH2M9S36Ci/cBO/ATq8JGJo0+8KHMjMwIIOf4tTXeaxU1sriy1
-	y2lBv3DqK2CNd79Xd1ovL7YcvO09OdGPLbJwOjTRhkPyKyGcC5QDnjLrZHdY6+QGI1SEx0qlyd1
-	4ZcmNOAVQSz7nBuMQ==
-X-Gm-Gg: AZuq6aJM9Juul8l/sCVaNRgl+3q3KvhBPOd42ltr+nUGX7h2NjxWhPU2Z4fNX3/NX/b
-	D9wLpWUaDmzBQTEMTqsXrDNFnBMBl1FvkRX2vW9eNBirdNtSv/nHY/gW5T4PUCH7IdjMK87SJeP
-	Wma2dRMGcS8MVnK3gf2mbUGHbgWFcONHL3DKBcQp5i53461ymeILDqgSwrTRu99jrr3aUwBWp66
-	rLNoUtobT01THbvG+qJ0XGJcYA8MT3czjbFrHlk/ubQTDi4aOosfTAULgFChmmXujhRaB+OKP6W
-	L19Grf3tS50+1AMmq+qKu8zgCDSGCb6B3k98OQZkYiFjCqKZvl8RY5/TA7k/MVeZ8TeyfinryfL
-	aHhiSAteB3m1OaQCG1W0AS0c7LwsCFvz7rKt8V/08+m6kR/CUjEXqjDNGXalkWBisb1F3MG+K/J
-	DymW1MXRtEfYTN9iwlUxgRVinYBCD54O8ZrvJyoewyGe8=
-X-Received: by 2002:a05:6214:234c:b0:894:7c8b:1213 with SMTP id 6a1803df08f44-894cc8a74ebmr55673956d6.37.1769583851855;
-        Tue, 27 Jan 2026 23:04:11 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-0.dlp.protect.broadcom.com. [144.49.247.0])
-        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-894d36c1262sm2383596d6.8.2026.01.27.23.04.11
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Jan 2026 23:04:11 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-8c7166a4643so39732885a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 23:04:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769583851; cv=none;
-        d=google.com; s=arc-20240605;
-        b=CtLQdIAg/NxA8dtSIvqovlbEoJQILVBvpTkcqY30qnL/jUS5rkBr/Rm7tgefSRuAZF
-         OgvpkPOqtHPQ+dWF/jzDdiUFzyxiBpCtdiLHnrc9cc0PaeQiIi4jWkatLxpKuJ/0IU1f
-         dMW2ky4kZhFkLMQSn2YiXv3j0VxYTOVvPQWfpEKJ3l4L2kKXAlXlrsU98Hhfm4aQUuBq
-         47DRjgRsTeXInZpy5pZ3JpWoKFeBqrrN7Ubttz1utaeegawMYm/Y/DVCqtHS+nmfOek+
-         XHJV+PGXLcirBZs++r7Zykgap1kdLzb4OVMVgI4WyGDxyDVXSRqkL0wXnbVOGhWGGFR/
-         tNTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=tkGDnMOngowFAW8t+9+qJjq8Cg7avmhI7XOVG93iJ7M=;
-        fh=IrcLYZ4l7IcINTGnSf//AsPJPXX8CnVv+1Xwn+mgkgQ=;
-        b=DxVukGNcYaJOecZQuLWzGQEMv/DoWPleqiKxR07p0VbOme59PCwF3UI0zmB3XVlSl5
-         N42DXupAIo+EOdJQzE+3ADZ7uA0SaeSYuV8H676PxFtLN3NlDZbhLxgIysSGzQjewK35
-         CQw65FyBPZKurti7wYLjwJjvILPhCXoQTkVVka82wy9FEFQTsbc76B+bP45pPVIslKGI
-         pI3gbgRRQUusX+19mKCdsZXmlTTWzW4ANzw2xEQYsVyxBFP7RS08zH16LzFysynvaN9x
-         cNMw91buPM2IkTgx+JIV8PFMXbe1K3zpbNDW+7l+nDkQMqlDErsoDMQRQFlUqdr3Ssbg
-         fAaQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0C93271E0
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 07:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769584501; cv=none; b=DeD3OR3U8/YBuVUYJ4rxguIUmI8v+WK1L0yc3XdYSy6Jbnz7KvP5YSnFfaX6A8Y1wHtx/KQ7U0nlQ5rb77q7W5T3AbjGxCw4jOMnPw9TWrApH0a/vTzuKdWpQO479pSpqEcXv4OG6WFbJcyolbFQZRiUfeVrD0uQU7HBv1yVvLI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769584501; c=relaxed/simple;
+	bh=V02HxfQ9RsspwOQYXSjiv9STuyAvNPhJsf92qGNWRO8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XVPPE9AFhDR/IzsQDcsZDwLMjAOjr9XJCF6lJ/8R6a+86R56j9DF127fyGMYidjhpwMZ74TvNGCbK01XN0p4+6lraFINElBReCWdM9Dd8H9ws2KQ5y9gQgV+ZVVkf+VUpllhaG2tpCJhrlJX4b2kupJWVPManB0+xLeHwGz2ERM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UT6cLG9s; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4806bf39419so3280285e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 23:14:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1769583851; x=1770188651; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tkGDnMOngowFAW8t+9+qJjq8Cg7avmhI7XOVG93iJ7M=;
-        b=FOoqjp3miIgu/FDpbF+d8b7l/A5IKJgSTGkvxPapYM4a+2KEDInaIoKB6tzK6ZZ5j7
-         8HUnQujTjfLKKJGDU22d9HqwsBNV9MgdvhiSIVhmHYczG3nVeqlnaTvEj7zWacsZTe/R
-         +GzvPbIbi845qyogwMAxfb0uizkrQom8ls9ZM=
-X-Forwarded-Encrypted: i=1; AJvYcCW2tJrdkijgPzwGxlFpwJSmChp/ioZ9nMBGP0HqdGkOKDetB4am6gFpDE/M94CC/02Y/zcIniYyH0uA@vger.kernel.org
-X-Received: by 2002:a05:620a:2904:b0:8b2:e990:5114 with SMTP id af79cd13be357-8c70b8eef80mr494540585a.42.1769583851125;
-        Tue, 27 Jan 2026 23:04:11 -0800 (PST)
-X-Received: by 2002:a05:620a:2904:b0:8b2:e990:5114 with SMTP id
- af79cd13be357-8c70b8eef80mr494538685a.42.1769583850650; Tue, 27 Jan 2026
- 23:04:10 -0800 (PST)
+        d=gmail.com; s=20230601; t=1769584498; x=1770189298; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d4mHnmREA3ivtce+rHh5XeeKRw0SRT5qe2A7xs9am0M=;
+        b=UT6cLG9sayoG2B72rocJ2Vho62g0ZnQwAzV/ivmMSRR11QxtGXwU8VI9FxY/gEFxLv
+         hFTD/I19i/ccCn1hpbkzrFbMhPD/268Iut+AtLHEMeEM29IZc3iC9NDyOJTnmqUt+mcq
+         jdMBaRgk1fLTMAJ0mFaIdm8irDQWV4eYIEJ/fklnjOpVdYgivWh+CTV7Cp0/kf1JVbjx
+         fQSZsLOZrgV5YsdHw7po6t3Nl96erC04yDFTi3ksCzvvxqbxwL+HGaDxmJiALTV7/Px2
+         5fCPPtawYGu7svSEVqn2rzDBOmSgBGPAlH5A4YsjNwa4HKi9/eFDObG6jvv2XOJV9ial
+         QFdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769584498; x=1770189298;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d4mHnmREA3ivtce+rHh5XeeKRw0SRT5qe2A7xs9am0M=;
+        b=j6TpTOy/ctd7xeyi4A1Nx8ZRszhNkQYadLvt9R37FxZj5fDz4Cf6NZsfYxVLT+SHav
+         l2/79hI43MDnNpVeeplP8MW47NF4H7LFKsDSxIv6+urQZGsP1gUMc8dybMHJxUFy6bJn
+         wGV8zf2quYpW0x7TW8C5k9nMoZyEzaN8lJjuAZE/oFAb5jI5Vemr3hTl+O2J8JnatvKs
+         QUN6QFa7xLaTwoyHmkCJ3UrxYYMvjKNuT420lgk5pKGbVAzuRNJJmLFVIPOcaElj6dqG
+         uzxLGCEBSfpimUS13QcBNN9smjQWVW4AYsOU0wkfOThtel+VKJ1RDjmysVtt63rf9e93
+         aJBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+Fjb+Qfc9J34lyMRFoi2wG5Ihsr8623HgJDtxE1qvT2VSGKApYLEzn1Nxi/AUrneTPR409xaDPn6T@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyk40Vy2+nVGI0Az1yuCdsiWalxNdXjczxP93OicHs3AyI+01lJ
+	Fg89SgZDOueaaqUbr+ycVH81TIEiNG7Z5biiTK+i178p7JN1xt1DSH4t
+X-Gm-Gg: AZuq6aK98vR8+dFyYZAmSDS2xGyCqdE5LqA6u24wP1faCjfIC2ZPs0vRQJfM0zwTwm2
+	CBltp3lE9rcLu0zC+BSaJj9eKFejTKZFxN/1+XYUOej8Md8/NlD7L2kivO7vwXASLitbDGkTjaq
+	AvV7VZC1HSh4v5qkybu3MppnZbck3clnQD3ibccHIT1eu3fOBwDlbFRAPkFivyHKXIbf99/ey4L
+	eXP82oMIDEfYGQE3YjQiCRv7PqhPv0R6tVqTjv6eAncRLJZYTNrYzbBefapfZAecPkUkTbTJ0t1
+	83+vorUk8LtR0mLOwNZRiVQABBM4Q10omnPnNI5doe6i75FAdjGm3S35khpjteD/MFRSDK/FloZ
+	hj+n+GXgWvpXJAxnBFH1AT1gDYTCQvzfdUHTO1Q4M+rF2jb9xc8r/PRi7hRKbhnQZ1kPMVRClLg
+	mgnFvPRllFGPpBD4hacsBEHa6+F/xA
+X-Received: by 2002:a05:600c:620b:b0:47e:e981:78b4 with SMTP id 5b1f17b1804b1-48069e79968mr50923575e9.12.1769584497835;
+        Tue, 27 Jan 2026 23:14:57 -0800 (PST)
+Received: from [10.80.1.200] ([72.25.96.16])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4806d255d2fsm19375925e9.1.2026.01.27.23.14.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jan 2026 23:14:57 -0800 (PST)
+Message-ID: <ba9b732c-7c83-4837-9310-02b6a133169f@gmail.com>
+Date: Wed, 28 Jan 2026 09:14:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260116091808.2028633-1-kalesh-anakkur.purayil@broadcom.com>
- <CAH-L+nNFR8broz0i6ddQPrGL38AO1ZVaSRdXe9AcEafT3Sqeaw@mail.gmail.com> <20260126201857.GP13967@unreal>
-In-Reply-To: <20260126201857.GP13967@unreal>
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Wed, 28 Jan 2026 12:33:57 +0530
-X-Gm-Features: AZwV_QgJRhRRXqkL2_PqlpELFXcQzRHqI06nVI9GB7AxkanTuTebGRHop8qfQwI
-Message-ID: <CA+sbYW3dLsVqXcaG9xYdh-YRpdf6-ZjrMKRCBnapMY+gFzoA2w@mail.gmail.com>
-Subject: Re: [PATCH rdma-rext 0/4] RDMA/bnxt_re: Add QP rate limit support
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>, jgg@ziepe.ca, 
-	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000df855806496d58ca"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC mlx5-next 0/1] net/mlx5e: Expose physical received
+ bits counters to ethtool
+To: Kenta Akagi <k@mgml.me>, saeedm@nvidia.com, tariqt@nvidia.com,
+ mbloch@nvidia.com, leon@kernel.org, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <0106019bb70737d5-06bcc3e0-d534-4e42-b8a3-71dc3b53f318-000000@ap-northeast-1.amazonses.com>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <0106019bb70737d5-06bcc3e0-d534-4e42-b8a3-71dc3b53f318-000000@ap-northeast-1.amazonses.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_SMIME(-2.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16120-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16121-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	HAS_ATTACHMENT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[broadcom.com:+];
+	FROM_NEQ_ENVFROM(0.00)[ttoukanlinux@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,broadcom.com:email,broadcom.com:dkim]
-X-Rspamd-Queue-Id: 322E99D947
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C86249DA8C
 X-Rspamd-Action: no action
 
---000000000000df855806496d58ca
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 27, 2026 at 1:49=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Sun, Jan 25, 2026 at 09:47:05AM +0530, Kalesh Anakkur Purayil wrote:
-> > Hi Leon, Jason,
-> >
-> > A gentle reminder. Could you please review the patch series?
->
-> Sorry for the delayed response. The idea and implementation look fine to =
-me.
-Thanks you for your response.
-> What is missing is a clear and well-documented definition of the semantic=
-s
-> of QP rate limiting for RC QPs.
-
-man page of ibv_modify_qp doesn't have much information about rate limit
-
- struct ibv_qp_attr {
-...
-          uint32_t                rate_limit;             /* Rate
-limit in kbps for packet pacing */
-       };
 
 
-attr_mask:IBV_QP_RATE_LIMIT  Set rate_limit
+On 13/01/2026 13:04, Kenta Akagi wrote:
+> On 2026/01/13 15:43, Tariq Toukan wrote:
+>>
+>>
+>> On 13/01/2026 8:31, Tariq Toukan wrote:
+>>>
+>>>
+>>> On 12/01/2026 9:03, Kenta Akagi wrote:
+>>>> Hi,
+>>>>
+>>>> I would like to measure the cable BER on ConnectX.
+>>>>
+>>>> According to the documentation[1][2], there are counters that can be used
+>>>> for this purpose: rx_corrected_bits_phy, rx_pcs_symbol_err_phy and
+>>>> rx_bits_phy. However, rx_bits_phy does not show up in ethtool
+>>>> statistics.
+>>>>
+>>>> This patch exposes the PPCNT phy_received_bits as rx_bits_phy.
+>>>>
+>>>>
+>>>> On a ConnectX-5 with 25Gbase connection, it works as expected.
+>>>>
+>>>> On the other hand, although I have not verified it, in an 800Gbps
+>>>> environment rx_bits_phy would likely overflow after about 124 days.
+>>>> Since I cannot judge whether this is acceptable, I am posting this as an
+>>>> RFC first.
+>>>>
+>>>
+>>> Hi,
+>>>
+>>> This is a 64-bits counter so no overflow is expected.
+>>>
+>>
+>> Sorry, ignore my comment, your numbers make sense.
+>> Maybe it's ~248 days, but same idea.
+>>
+> 
+> Hi, thank you for checking.
+> 
+> Ah, it seems I didn't realize it was unsigned, and I also forgot to
+> include the expression. Sorry about that.
+> Yes - at 800 Gbps, 0xFFFFFFFFFFFFFFFF / (800 * (2^30) * 86400) = 248.55 days,
+> so it will overflow.
+> 
+> In practice, is it possible to expose this as a statistic via ethtool?
+> Or is there some other value that could be exposed for BER calculation - e.g.,
+> a register that indicates the elapsed seconds since link-up?
+> 
+> Thanks.
+> 
 
-This man page contains only the required field for each transition and
-doesn't mention about the optional flags. Do you want us to add a
-section for the QP rate limit in the notes?
+Hi Kenta,
 
->
-> How should RDMA_READ or small RDMA_REQ packets be treated? Are response
-> packets included in the rate limit as well? It must be documented in
-> man pages.
+You will find "FEC histogram" feature useful.
+It splits the errors into ranges (bins), and plots a counter for each bin.
+There's also a bin for 0-errors, which is what you're looking for.
 
-All transmitted packets (including rdma_read request and other request
-packets) will be part of rate limiting setting for the QP. In our
-implementation, the ack packets are not part of the rate limiting of
-the normal transmit path. READ data response will be rate limited at
-the peer side, if the rate limit is configured on the peer side.
+Example output:
 
-We have another question. Existing implementation of IB_QP_RATE_LIMIT
-is applicable only for raw ethernet QP. With this change, we will
-start supporting for RC QPs also. So mlx driver can also get this
-request for RC QPs, but it will silently ignored as the QP type is not
-Raw ethernet QP. Should we fail the request instead?
-
-Thanks,
-Selvin Xavier
->
-> Thanks
->
-> >
-> > On Fri, Jan 16, 2026 at 2:43=E2=80=AFPM Kalesh AP
-> > <kalesh-anakkur.purayil@broadcom.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > This patchset supports QP rate limit in the bnxt_re driver.
-> > >
-> > > Broadcom P7 devices supports setting the rate limit while changing
-> > > RC QP state from INIT to RTR, RTR to RTS and RTS to RTS. Or, once
-> > > the QP is transitioned to RTR or RTS state.
-> > >
-> > > First patch adds stack support for rate limit for RC QPs.
-> > >
-> > > Second patch adds support for QP rate limiting in the bnxt_re driver.
-> > >
-> > > Third patch adds support to report packet pacing capabilities in the
-> > > query_device.
-> > >
-> > > Forth patch adds support to report QP rate limit in debugfs QP info.
-> > >
-> > > The pull request for rdma-core changes are at:
-> > >
-> > > https://github.com/linux-rdma/rdma-core/pull/1692
-> > >
-> > > Regards,
-> > > Kalesh
-> > >
-> > > Kalesh AP (4):
-> > >   IB/core: Extend rate limit support for RC QPs
-> > >   RDMA/bnxt_re: Add support for QP rate limiting
-> > >   RDMA/bnxt_re: Report packet pacing capabilities when querying devic=
-e
-> > >   RDMA/bnxt_re: Report QP rate limit in debugfs
-> > >
-> > >  drivers/infiniband/core/verbs.c           |  9 ++++--
-> > >  drivers/infiniband/hw/bnxt_re/debugfs.c   | 14 ++++++--
-> > >  drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 39 +++++++++++++++++++++=
---
-> > >  drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 12 ++++++-
-> > >  drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  3 ++
-> > >  drivers/infiniband/hw/bnxt_re/qplib_res.h |  6 ++++
-> > >  drivers/infiniband/hw/bnxt_re/qplib_sp.c  |  5 +++
-> > >  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 ++
-> > >  drivers/infiniband/hw/bnxt_re/roce_hsi.h  | 13 +++++---
-> > >  include/uapi/rdma/bnxt_re-abi.h           | 16 ++++++++++
-> > >  10 files changed, 107 insertions(+), 12 deletions(-)
-> > >
-> > > --
-> > > 2.43.5
-> > >
-> >
-> >
-> > --
-> > Regards,
-> > Kalesh AP
->
->
->
-
---000000000000df855806496d58ca
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-zJH6Ivyz2skA36zh/px/UmF2ORX4Y0CY6GtU8/vxuN2j4rd2medlyifwALUm+KI3SsD782IwKLCf
-8bNhYGiw4YxsbyX7dV7O4SNQc5U9ktrSKH3D4SuTnK/xdjca5PiNI2NTcBVmP7+u2bvVLdRqISop
-9dpRkJ6xxhGJjxakljIxHdcZLXltxX4YM0Onf3agcjY3boIqnVlDjBwSZX674ZU+YVrcIlcRcqs/
-W83e6PmIRFwpkKOhuLNKSpW5mZoEQdpnxGwE9U7qLGECAwEAAaOCAd4wggHaMA4GA1UdDwEB/wQE
-AwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcBAQSBhjCBgzBGBggrBgEFBQcwAoY6aHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyNnNtaW1lY2EyMDIzLmNydDA5Bggr
-BgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUG
-A1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUF
-BwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDag
-NKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjZzbWltZWNhMjAyMy5jcmwwJQYD
-VR0RBB4wHIEac2VsdmluLnhhdmllckBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQw
-HwYDVR0jBBgwFoAUACk2nlx6ug+vLVAt26AjhRiwoJIwHQYDVR0OBBYEFJA9fV7cOoiN64ws5XPC
-J5qtayo5MA0GCSqGSIb3DQEBCwUAA4ICAQBFCIF4AxAiXVz6gX5YfFEbIYtbGFifcfe+QGc5cfac
-CSzIrQWUPXAYAef3G5WouD2AKwa2tPGJgK2L7n1r2W4NIvr93588EDVnGgfMfWaFsB8VlLsPlH8Y
-fLfaTdN3OQPnFFp54yK9wv8AtTIiTQcailMw7QX5x5GE6HVZElxf0V0Ljc2NrUQLoYzHzAU+sysl
-6JQzomxjIfuXiIiUfmnWQdhO95kQchRdOUAaguLTV+RRfPZ1p54dRmgGEpJtzjGLdsrLkZ2rCN5j
-cOTTXyxJmvlgm9jfT0Uy5SOPHdq1jtZbQyXrNT4fQ07Odmq3xQCUTi+a59IiC+6V7nFJ8zyCSk+p
-n/iGouvun/owYzTmFxB6sVLWZcaWz2Ufcm7b6nOYV+pwUS/n6+6oFRKmGLrl0CRCF0AOph5p81aV
-kgKuS5oXBoDefJfjKHuu5lJVelBx3n++iMGMW9FWFmXErCHy2d+L42Raai5X2PL8jAmh+lpPRDX4
-CT9jL6xWM5QkCBtxyVKuxGxxUY2wczmVcQ1nGh9mGghI04Scs4OtE8Qh9LMOe2PXzxcV6lpF+yay
-B3fwJWxl7miwNFjWuu9M6Z+rcjm3JF5srcAu2fp/VzQD4AE5Kq7ywukMvlU4Y3X2t+D2eU1DH8pk
-c8mM1CtQWfWUboaoLABVmYmYfihDvTURkzGCAlcwggJTAgEBMGIwUjELMAkGA1UEBhMCQkUxGTAX
-BgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gR0NDIFI2IFNNSU1F
-IENBIDIwMjMCDDy76dRYp65lyF2c4zANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQg
-kdwqWGd+Pu0QPIQx4Fzad9i9B4Kho7M2XSHTIvWa2LYwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
-ATAcBgkqhkiG9w0BCQUxDxcNMjYwMTI4MDcwNDExWjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFl
-AwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBBzAL
-BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAOvRdRkTb5zJ3z7/donlsC2ds+EhVmHIUUAhz
-l78VdVFntPicjI3aQVXScbtnp2ejqzs1upkvTQurbFeV4hbXg8fpYjadmeFWr3Gqntc4yNTewti5
-qm51KSgtvYWCadyH0r0o8gB2oUfIawybccR81WkI5M8tuLXQ6bVkmiLfca8J/nrmcXTfzQs/0BLm
-W3FuWqwkNV06/qgdkEilCIOiWmjoZYStLlq3CdiwhPS+8pwvAr6o+gmxhdT0ZctybMJv6JHZyAau
-qzu4xnFP4FQCkqyra0w7td53ZiUFHNHx/0KvAE3IIxg0WGzkZj3OvhzdYQPMJm/C7gtEe5uP2WjA
-wQ==
---000000000000df855806496d58ca--
+# ./tools/net/ynl/pyynl/cli.py --spec 
+Documentation/netlink/specs/ethtool.yaml --do fec-get --json 
+'{"header":{"dev-index": 5, "flags": 4}}'
+{'active': 50,
+'auto': 1,
+'header': {'dev-index': 5, 'dev-name': 'eth3'},
+'modes': {'bits': {}, 'nomask': True, 'size': 125},
+'stats': {'corr-bits': [2810],
+            'corrected': [2123],
+            'hist': [{'bin-high': 0, 'bin-low': 0, 'bin-val': 235826196705},
+                     {'bin-high': 1, 'bin-low': 1, 'bin-val': 1436},
+                     {'bin-high': 2, 'bin-low': 2, 'bin-val': 687},
+                     {'bin-high': 3, 'bin-low': 3, 'bin-val': 0},
+                     {'bin-high': 4, 'bin-low': 4, 'bin-val': 0},
+                     {'bin-high': 5, 'bin-low': 5, 'bin-val': 0},
+                     {'bin-high': 6, 'bin-low': 6, 'bin-val': 0},
+                     {'bin-high': 7, 'bin-low': 7, 'bin-val': 0},
+                     {'bin-high': 8, 'bin-low': 8, 'bin-val': 0},
+                     {'bin-high': 9, 'bin-low': 9, 'bin-val': 0},
+                     {'bin-high': 10, 'bin-low': 10, 'bin-val': 0},
+                     {'bin-high': 11, 'bin-low': 11, 'bin-val': 0},
+                     {'bin-high': 12, 'bin-low': 12, 'bin-val': 0},
+                     {'bin-high': 13, 'bin-low': 13, 'bin-val': 0},
+                     {'bin-high': 14, 'bin-low': 14, 'bin-val': 0},
+                     {'bin-high': 15, 'bin-low': 15, 'bin-val': 0}],
+            'uncorr': [0]}}
 
