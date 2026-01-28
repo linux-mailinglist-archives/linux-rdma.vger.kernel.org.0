@@ -1,166 +1,147 @@
-Return-Path: <linux-rdma+bounces-16124-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16125-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aAonAtnVeWntzwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16124-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 10:24:41 +0100
+	id uKMUMAjVeWntzwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16125-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 10:21:12 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D18C9EC3F
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 10:24:40 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B719EBE1
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 10:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5F5B030158AA
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 09:14:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0783230254F4
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 09:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8489733F38C;
-	Wed, 28 Jan 2026 09:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0F7344DAC;
+	Wed, 28 Jan 2026 09:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloud.ru header.i=@cloud.ru header.b="XKBQq/d0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B6RzYceK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx02.cloud.ru (mx02.cloud.ru [37.18.109.87])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB5433D51F
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 09:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.109.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33EB221DB1;
+	Wed, 28 Jan 2026 09:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769591673; cv=none; b=bYcFZi3mXIWFKJ1pXxlKjnWTqNr9vIqfmHfZQqyPsxOHJwDaDj6BjfTOu59bWhXQTNZZIbwQXGMOOojK7+EllWBnsveQKvnQipEbjz0m0I8BFORMDLsQwr0Ysvb3NKV3bu0gTVQPH9JGAwPbRYHHboKXTZGUJy+kyxjyF4OCDMo=
+	t=1769592064; cv=none; b=OSwUxRBKBcjc9gRH+QOK9v6/giQ3R6P0JUYLHIRwQOOxiIqYJPnH/pEM1lYX5XNkqiB1R9wPeAQbB9tjAi54vKhPBB01uzHA+7icyAbAhYxXckDSkNMYVrTtT+wdu9980/XmMZDrZOqU4e9O1cei0mYNu/+NehZkynXP481IWu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769591673; c=relaxed/simple;
-	bh=CZkvlW1bj/OoUfpK10ZsRfctWXd3Oa9kACtGmpSWz8o=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=HHtgo/ey+swGlwQ/3C3rnWMQE2PzXQ0szVNZTmcfpXAn1Rel63MCMMAal47crGHrzW1GKkanUoWBfbqYu/Q2cpeus6vawUdqHx4ASOpH03llK7ReSXN3l6QyE7QGUNgnLEnRsjIt5Wi+J3oo1vXVUU7Ow3uFqwMp9nA9Yr2WHHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cloud.ru; spf=pass smtp.mailfrom=cloud.ru; dkim=pass (2048-bit key) header.d=cloud.ru header.i=@cloud.ru header.b=XKBQq/d0; arc=none smtp.client-ip=37.18.109.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cloud.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.ru
-Received: from mx02.cloud.ru (localhost [127.0.0.1])
-	by mx02.cloud.ru (Postfix) with ESMTP id C7B7D180037
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 12:14:29 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx02.cloud.ru C7B7D180037
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cloud.ru; s=mail;
-	t=1769591669; bh=JciuqMD6Pc6t38KINVPA0quVBzwLZjOwoUxkViNNaLI=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=XKBQq/d0pn9AzohAL41pNoFvvG/KseuIwl/P4BrZaQMNRpMAZPbA/ej/f7Hx+VRvZ
-	 aIcHE/UsOGabLucuHh+TWFWRW+XiWtE8c7ST7JOScoYSQ68T+HXOH/SvCQ5NZyDVnX
-	 iGFqSybveSD8NCJZDJYYcqtuBUi4UrwopXAA1ZDz0Oz9JJgY/PWGHP+mXd86YMg14V
-	 N92koNzd0QynBkzOO3WLlUJjalyoUDlR/7xoiTnhAstGFsX9tUPIChmR+G5m2Nnh4c
-	 2hqGQD58ESLEomNtEEmpYcowfxipVUD76OpcvIf3WgKHYGOlGer1++V54YumfM6l1P
-	 l0urZOEskQz7g==
-Received: from ksmg.sbercloud.ru (dc01-mail-02.corp.sbercloud.ru [172.23.0.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx02.cloud.ru (Postfix) with ESMTPS
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 12:14:29 +0300 (MSK)
-From: =?koi8-r?B?58HMwdPYIPPF0sfFyg==?= <ssgalas@cloud.ru>
-To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RDMA/mlx5: Impact of mlx5_roce::last_port_state initial value on
- ibv_async_event port state change notifications
-Thread-Topic: RDMA/mlx5: Impact of mlx5_roce::last_port_state initial value on
- ibv_async_event port state change notifications
-Thread-Index: AdyQNmxWl2kBOv3VSPiHv97g/SeDEw==
-Date: Wed, 28 Jan 2026 09:14:28 +0000
-Message-ID: <e84b5bf1a4e74b0eaa80385b6054e7b5@cloud.ru>
-Accept-Language: ru-RU, en-US
-Content-Language: ru-RU
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1769592064; c=relaxed/simple;
+	bh=qGYL5CXdMuNwNQRl6Uiafr57gwii2N73jtRm6IxCK5c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YS7hleapRKTuzs/JWNgzLJgAJ+YuoTCgF+EZxOyb5j6dymkdFSL7JQJUVd+hhT2QeNN6TsGIbmMMewZJ3juDj2IcKis+bF124i4RhyLmhcC4upsAUzPBDSZxTQJqV4sq3ZG4946gwcfqRCmc1NDcBODfebL7QepsO5F9EKgudnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B6RzYceK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C3A9C4CEF1;
+	Wed, 28 Jan 2026 09:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769592064;
+	bh=qGYL5CXdMuNwNQRl6Uiafr57gwii2N73jtRm6IxCK5c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B6RzYceKRbx9FdjqYP1hp9zBjNNuzEzChYhc5u7AdSjSi5fafL+AN9dvSuZ/sOZn+
+	 L8RaBLUt+j89auH3oPJxDGPClHRn4vT5qsQfZehCUjA11ZQ4N5aPaP3mZaWqTWJ4Yp
+	 h3iAGbY2AnupuYRuXrbV9c7STYH+5XYpvE7kZY5EZFsAacPvZWG84IwooGbIQOZdZn
+	 u4jV0GwRzYgS3zdSP5LSMCR5bpcDYyIKxAhS/7qc7M8A8tvnwkplVfDGxNlxKWkMKx
+	 iMRflWz+zzhNkSx4h12tAIktXu3AcyIdq2E6HlKYiBQP5dM8ZTv8ERxAjR4lhI41V3
+	 5MjHqU4ZojZbA==
+Date: Wed, 28 Jan 2026 09:20:58 +0000
+From: Simon Horman <horms@kernel.org>
+To: Cosmin Ratiu <cratiu@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, "corbet@lwn.net" <corbet@lwn.net>,
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
+	"donald.hunter@gmail.com" <donald.hunter@gmail.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"jiri@resnulli.us" <jiri@resnulli.us>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	Carolina Jubran <cjubran@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	"rdunlap@infradead.org" <rdunlap@infradead.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
+	"krzk@kernel.org" <krzk@kernel.org>
+Subject: Re: [PATCH net-next V6 07/14] devlink: Add parent dev to devlink API
+Message-ID: <aXnU-klD1_rHY0D0@horms.kernel.org>
+References: <1769340723-14199-1-git-send-email-tariqt@nvidia.com>
+ <1769340723-14199-8-git-send-email-tariqt@nvidia.com>
+ <aXjCf2iRC5VsRC5A@horms.kernel.org>
+ <3a000e6a2fcdfb6dc8d18e24d6ee1e7f9f89bc0e.camel@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSMG-AntiPhishing: NotDetected
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.1.8310, bases: 2026/01/28 07:01:00 #28158508
-X-KSMG-AntiVirus-Status: NotDetected, skipped
-X-KSMG-LinksScanning: NotDetected
-X-KSMG-Message-Action: skipped
-X-KSMG-Rule-ID: 3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a000e6a2fcdfb6dc8d18e24d6ee1e7f9f89bc0e.camel@nvidia.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [4.34 / 15.00];
-	RSPAMD_URIBL(4.50)[cloud.ru:dkim];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_EQ_ADDR_ALL(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16124-lists,linux-rdma=lfdr.de];
-	DMARC_POLICY_ALLOW(0.00)[cloud.ru,quarantine];
+	TAGGED_FROM(0.00)[bounces-16125-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[cloud.ru:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[nvidia.com,lwn.net,lunn.ch,gmail.com,davemloft.net,kernel.org,vger.kernel.org,google.com,resnulli.us,redhat.com,infradead.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
-	R_DKIM_ALLOW(0.00)[cloud.ru:s=mail];
-	RCPT_COUNT_ONE(0.00)[1];
-	GREYLIST(0.00)[pass,body];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ssgalas@cloud.ru,linux-rdma@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.963];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c04:e001:36c::/64];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cloud.ru:mid,cloud.ru:dkim]
-X-Rspamd-Queue-Id: 6D18C9EC3F
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,horms.kernel.org:mid]
+X-Rspamd-Queue-Id: 25B719EBE1
 X-Rspamd-Action: no action
 
-Hi everyone,
+On Tue, Jan 27, 2026 at 02:25:51PM +0000, Cosmin Ratiu wrote:
+> On Tue, 2026-01-27 at 13:49 +0000, Simon Horman wrote:
+> > On Sun, Jan 25, 2026 at 01:31:56PM +0200, Tariq Toukan wrote:
+> > > From: Cosmin Ratiu <cratiu@nvidia.com>
 
-Kernel version: 5.14.0-570.23.1.el9_6.
+...
 
-Reproducible scenario: Load mlx5_ib module, then execute "ip link set dev <=
-active mlx5 device> down" - the InfiniBand subsystem doesn't
-send the expected IBV_EVENT_PORT_ERR event. Subsequent "ip link set dev up/=
-down" operations on the same device correctly generate
-ibv_async_event port state change events.
-Investigation revealed that the driver initializes the last_port_state fiel=
-d for all mlx5 devices to IB_PORT_DOWN value. Then, the
-comparison between last_port_state and actual device status inside mlx5_net=
-dev_event after the first "down" operation concludes that the
-status hasn't changed, and doesn't generate an event.
+Hi Cosmin,
 
-So far I haven't found anyone else reporting this issue.
+> Hi Simon,
+> 
+> We had this conversation during v4, I replied then [1].
 
-I would like to ask:
-1. The last_port_state is used only to prevent sending redundant port state=
- change events. What is the reason for choosing IB_PORT_DOWN as
-the initial value? It seems that choosing IB_PORT_NOP would be just as good=
-, but would prevent incorrect interpretation of the first device
-state event.
-2. Is there any additional acceptable way provided by the InfiniBand subsys=
-tem to detect the first mlx5 device down event, in addition to
-processing ibv_async_event events?
-        =F5=F7=E5=E4=EF=ED=EC=E5=EE=E9=E5=EF=EB=EF=EE=E6=E9=E4=E5=EE=E3=E9=
-=E1=EC=F8=EE=EF=F3=F4=E9:=FC=D4=CF=DC=CC=C5=CB=D4=D2=CF=CE=CE=CF=C5=D3=CF=
-=CF=C2=DD=C5=CE=C9=C5=C9=CC=C0=C2=D9=C5=C4=CF=CB=D5=CD=C5=CE=D4=D9,=D0=D2=
-=C9=CC=CF=D6=C5=CE=CE=D9=C5=CB=CE=C5=CD=D5,=D3=CF=C4=C5=D2=D6=C1=D4=CB=CF=
-=CE=C6=C9=C4=C5=CE=C3=C9=C1=CC=D8=CE=D5=C0=C9=CE=C6=CF=D2=CD=C1=C3=C9=C0.=
-=EE=C1=D3=D4=CF=D1=DD=C9=CD=D5=D7=C5=C4=CF=CD=CC=D1=C5=CD=F7=C1=D3=CF=D4=CF=
-=CD,=DE=D4=CF=C5=D3=CC=C9=DC=D4=CF=D3=CF=CF=C2=DD=C5=CE=C9=C5=CE=C5=D0=D2=
-=C5=C4=CE=C1=DA=CE=C1=DE=C5=CE=CF=F7=C1=CD,=C9=D3=D0=CF=CC=D8=DA=CF=D7=C1=
-=CE=C9=C5,=CB=CF=D0=C9=D2=CF=D7=C1=CE=C9=C5,=D2=C1=D3=D0=D2=CF=D3=D4=D2=C1=
-=CE=C5=CE=C9=C5=C9=CE=C6=CF=D2=CD=C1=C3=C9=C9,=D3=CF=C4=C5=D2=D6=C1=DD=C5=
-=CA=D3=D1=D7=CE=C1=D3=D4=CF=D1=DD=C5=CD=D3=CF=CF=C2=DD=C5=CE=C9=C9,=C1=D4=
-=C1=CB=D6=C5=CF=D3=D5=DD=C5=D3=D4=D7=CC=C5=CE=C9=C5=CC=C0=C2=D9=C8=C4=C5=CA=
-=D3=D4=D7=C9=CA=CE=C1=CF=D3=CE=CF=D7=C5=DC=D4=CF=CA=C9=CE=C6=CF=D2=CD=C1=C3=
-=C9=C9,=D3=D4=D2=CF=C7=CF=DA=C1=D0=D2=C5=DD=C5=CE=CF.=E5=D3=CC=C9=F7=D9=D0=
-=CF=CC=D5=DE=C9=CC=C9=DC=D4=CF=D3=CF=CF=C2=DD=C5=CE=C9=C5=D0=CF=CF=DB=C9=C2=
-=CB=C5,=D0=CF=D6=C1=CC=D5=CA=D3=D4=C1,=D3=CF=CF=C2=DD=C9=D4=C5=CF=C2=DC=D4=
-=CF=CD=CF=D4=D0=D2=C1=D7=C9=D4=C5=CC=C0=D0=CF=DC=CC=C5=CB=D4=D2=CF=CE=CE=CF=
-=CA=D0=CF=DE=D4=C5=C9=D5=C4=C1=CC=C9=D4=C5=DC=D4=CF=D3=CF=CF=C2=DD=C5=CE=C9=
-=C5.
-CONFIDENTIALITY NOTICE: This email and any files attached to it are confide=
-ntial. If you are not the intended recipient you are notified that using, c=
-opying, distributing or taking any action in reliance on the contents of th=
-is information is strictly prohibited. If you have received this email in e=
-rror please notify the sender and delete this email.
+Sorry, I had forgotten about that.
+
+> But thinking about it a bit more, I think it's indeed slightly cleaner
+> to move the policy and the new pre/post doit handlers to the next
+> patch, where they are actually used. The only bit is that the policy is
+> used from devlink_get_parent_from_attrs_lock from this function, but it
+> appears safe to use NULL there until next patch (the underlying parse
+> functions tolerate NULL policies).
+> 
+> So I'll do that in the next submission.
+
+Thanks, that makes sense.
+And I'll try to remember this conversation when looking at the next version :)
+
+> 
+> [1]
+> https://lore.kernel.org/netdev/3ec956ea1d0a1c6e56865b2ded6d83ed773ccd4d.camel@nvidia.com/
 
