@@ -1,128 +1,119 @@
-Return-Path: <linux-rdma+bounces-16151-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16152-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kOrwOWX/eWm71QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16151-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:21:57 +0100
+	id iLw5GH8Cemn31QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16152-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:35:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A7EA124D
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:21:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFCE8A1514
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:35:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B7664306707B
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 12:19:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D34A73077107
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 12:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E862F60CB;
-	Wed, 28 Jan 2026 12:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F5434F253;
+	Wed, 28 Jan 2026 12:31:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1gnAvhm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PRlKumqp"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE59A29992A;
-	Wed, 28 Jan 2026 12:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AB634EF1F
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 12:31:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769602743; cv=none; b=rKmM3t9yM7imyxysAz3geWuMx+YFWLkAWNsW+TE0o9O6STA2/c0mt1Lip+DV7z6oe3xM0lC92rDX9Jrst3bdsyGcpacPmEDGqBkV3QUEq4FCs7mqD9aWOngHqViHdBySqZZuiqis/EuPFXB5uACyaaGx96mNavq0OSrAyI9z0oM=
+	t=1769603473; cv=none; b=nQHffDMwbsISan2Hy1woIO8o3FmlLY2Je88iclFzKoTbq7XlOb2HZa20mY0VQmAtzVhTdRZYL4zwNJ8zaeb0OWHEnVu0spz77lHQKgfHjY0/K7vxrkPzmz6X196TgYBHXyFdFMkPkQu2n/N66znyreeg62Gcexj4p9koBoCa5rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769602743; c=relaxed/simple;
-	bh=IFWBxhKoTmPQ8RDTQi/dRri3f191zGwMNlxoXnHsDZ4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=luMehvwf1tFft/ry/XrRrlr3NVVFH1WbqJ/S5KltXMcw1JWW0G1ECjkQdDw8gKOEnBKavWGWdM9Z1O2uNTCamyaiAxG3uJO2A7aXAwVKoEvswUpBL5cpFkqCRDP/Y1urcc08Tkx0sEJWBLHRQekJTFT3b36l0L/xCbCyRSjlpv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1gnAvhm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D7FEC16AAE;
-	Wed, 28 Jan 2026 12:19:02 +0000 (UTC)
+	s=arc-20240116; t=1769603473; c=relaxed/simple;
+	bh=+IXb032ARu2hzERwL/5X/RoWUmkELYJGAtjlIbIKCjg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gzGAtFLnBBJoRJPNSf2TspoATFi6adWC2TXTFCfyDpvYvtq2Rbp6VgNfZQZTdxa7YX84P73/p7XMEFFwVc+pF+TBWXqTwKTGxLlBi9Y6JKFuNxlRdSgmIQFR/x9ijIL8aM7TzESsP/rTiFlsTe5/ysFocqRlInUXOHJ7Cixe26I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PRlKumqp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0454FC16AAE;
+	Wed, 28 Jan 2026 12:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769602742;
-	bh=IFWBxhKoTmPQ8RDTQi/dRri3f191zGwMNlxoXnHsDZ4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=d1gnAvhmYC50gQ6rPNszcE7YN4PAKNESIjD43VXZdsGkbQVJ/8Zqz6fMKfk4DFIoG
-	 RE0dSaKC89zEjkNS/0U+uRNZA4wmYUBHx5KuIWUafBS7pBCrroUgem/zQlPLDEb8aw
-	 DFuMexeKXUj9DNeB5mWA7VyHLXaHX6c6QIuo9sEBLrc1djFf9Cxj7s3+wr/01yU17+
-	 M3DpbSjGj+1/EyaBp2+WZGN137/l1QVYfa2TbT0ZBUfzZfnYERlu/0zef16eWCuRsz
-	 yEwv+gqZ/IHMEYC8mvbfCkkwRifqxmO+6fNdR+XdOIJnIh5Ls6hDwCdlrxZcPORjIU
-	 E4n4NNZ5Nc6vw==
+	s=k20201202; t=1769603473;
+	bh=+IXb032ARu2hzERwL/5X/RoWUmkELYJGAtjlIbIKCjg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PRlKumqpPpOzikFptzY75hgxk/S/4HicbZy+s2y2EUZhOP8khzp0TlfMkzhfLCrZI
+	 ooH6rRBOFEPx5wJ5ORd2bjh4+an4o8jHUSUm5MqD1/Lk5DdrHQ8i9R1UN3SJGDpqZS
+	 6yvU/wIJPUY3TsRgKg6mPOY7TRB8857MjtcxH211Kuj/sk+9OpYqCFS3XbaWcsT0n/
+	 DY3SBGnMkoO2NuOtPHwF73LRQCD/XxXq60Vvkta1+hjTgOGR7BWOnyr36i7P8w3Dxj
+	 ATTn+6BQnY7aQ990OUzVpAYCqTcyG2meKIRpFWehti6Q8CJ4gh4ie/xzt6tm+tINfw
+	 2TquabMfnG3zw==
+Date: Wed, 28 Jan 2026 14:31:10 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>, 
- Chuck Lever <chuck.lever@oracle.com>
-Cc: linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org, 
- Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20260128005400.25147-1-cel@kernel.org>
-References: <20260128005400.25147-1-cel@kernel.org>
-Subject: Re: [PATCH v5 0/5] Add a bio_vec based API to core/rw.c
-Message-Id: <176960273949.35487.9902637864188191212.b4-ty@kernel.org>
-Date: Wed, 28 Jan 2026 07:18:59 -0500
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com, Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [PATCH rdma-next v9 1/5] RDMA/uverbs: Support QP creation with
+ user allocated memory
+Message-ID: <20260128123110.GB40916@unreal>
+References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
+ <20260127103109.32163-2-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-47773
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260127103109.32163-2-sriharsha.basavapatna@broadcom.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16151-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-16152-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 96A7EA124D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli.us:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BFCE8A1514
 X-Rspamd-Action: no action
 
-
-On Tue, 27 Jan 2026 19:53:55 -0500, Chuck Lever wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
+On Tue, Jan 27, 2026 at 04:01:05PM +0530, Sriharsha Basavapatna wrote:
+> From: Jiri Pirko <jiri@resnulli.us>
 > 
-> This series introduces a bio_vec based API for RDMA read and write
-> operations in the RDMA core, eliminating unnecessary scatterlist
-> conversions for callers that already work with bvecs.
+> This patch supports creation of QPs with user allocated memory (umem).
+> This is similar to the existing CQ umem support. This enables userspace
+> applications to provide pre-allocated buffers for QP send and receive
+> queues.
 > 
-> Current users of rdma_rw_ctx_init() must convert their native data
-> structures into scatterlists. For subsystems like svcrdma that
-> maintain data in bvec format, this conversion adds overhead both in
-> CPU cycles and memory footprint. The new API accepts bvec arrays
-> directly.
-> 
-> [...]
+> - Add create_qp_umem device operation to the RDMA device ops.
+> - Implement get_qp_buffer_umem() helper function to handle both VA-based
+>   and dmabuf-based umem allocation.
+> - Extend QP creation handler to support umem attributes for SQ and RQ.
+> - Add new uAPI attributes to specify umem buffers (VA/length or
+>   FD/offset combinations).
 
-Applied, thanks!
+In addition to Jiri's feedback, there is no need to copy and paste an
+AI‑generated summary of mechanical changes. We can all read the code.
 
-[1/5] RDMA/core: add bio_vec based RDMA read/write API
-      https://git.kernel.org/rdma/rdma/c/5e541553588d49
-[2/5] RDMA/core: use IOVA-based DMA mapping for bvec RDMA operations
-      https://git.kernel.org/rdma/rdma/c/853e892076ba56
-[3/5] RDMA/core: add MR support for bvec-based RDMA operations
-      https://git.kernel.org/rdma/rdma/c/bea28ac14cab25
-[4/5] RDMA/core: add rdma_rw_max_sge() helper for SQ sizing
-      https://git.kernel.org/rdma/rdma/c/afcae7d7b8a278
-[5/5] svcrdma: use bvec-based RDMA read/write API
-      https://git.kernel.org/rdma/rdma/c/5ee62b4a911375
+Your commit message should focus on the motivation and any relevant caveats.
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks
 
