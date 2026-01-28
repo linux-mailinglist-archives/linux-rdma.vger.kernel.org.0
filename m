@@ -1,344 +1,179 @@
-Return-Path: <linux-rdma+bounces-16167-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16168-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2GEPIH1Pemnk5AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16167-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 19:03:41 +0100
+	id MB56Ny1Temnk5AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16168-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 19:19:25 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC283A76CD
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 19:03:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A8AA7AF0
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 19:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E632B300CFEA
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 18:03:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 54DFA311E575
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 18:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7060836D4EA;
-	Wed, 28 Jan 2026 18:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4933837105C;
+	Wed, 28 Jan 2026 18:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QwIQtdRe"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="emuyim7T"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f100.google.com (mail-oa1-f100.google.com [209.85.160.100])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D72125742F
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 18:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769623417; cv=pass; b=f/uYCN9M4Rj3fnyqZuv7G/mzYfaRrjQW/sF6QmwzFVLtLGMAbTSmSPx7j8d4YBM+nWLV2oj/4KqOro5qODiBbY2a6HodQbgKqV5XsaNwSA76E0QkHeIj4d3U2OmbWhmZ07ny/pZ2KybiR5hLihC3cg2TN+KxOOohh2c0OIfsWfM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769623417; c=relaxed/simple;
-	bh=ymnhmo6ZGqPYHgSfI3qDPR4Fft/WW4HQxQ5/BE1yMA8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HHjR9miHjzKSt9yYNt8No1UZtb0Gsdw87epJo9ixhqitCdWuZoyK22LtzmS28BEuZ0rLmBrKvyXZYiBakRsHJP50FE7DHhpx1z4nJ0HRaNDbDgX2egPtsT2icnGCDcJNg8NNL+Gp6FZWCa7MSd1X366/0EIXKu7MmCrimo+tJH0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QwIQtdRe; arc=pass smtp.client-ip=209.85.160.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oa1-f100.google.com with SMTP id 586e51a60fabf-408199852c5so80107fac.0
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 10:03:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769623414; x=1770228214;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TK3AgJWEiObSOmkZz5FzVbg50RlgVJYJP/C177YdONg=;
-        b=sKFLV4209a9Vaa0oqtWIw/qS/A0nlaDSCUXcyI+gaYKvSfRwntSiW/0yWs9ifdMgR8
-         XW69cNCNpZ0tkeak1akRFcnU5zo6bG6Qb96l6Hnt2+nQrOLSFhNBTux7awoUX/y0mANK
-         79MambOMUT7+P51ayfQ/TxvsJwOlq1wBFs3K6eCARoHUFsL0LVFPjPvWCf/kp5AXBhia
-         VYRXaqRRakQ4xpySwiPFMo0V2jLPDX7Thhyk3vJDjV6KmvUVPlc1hzYv9Z9Dl1kUZ0pd
-         BS9jYvPK0lst0o4COFppJb8Zil8y7vZ62xuO4DWrMZirbdDBYkfQR7N2zD8RVXZM7r9U
-         xT1g==
-X-Forwarded-Encrypted: i=2; AJvYcCXFc7IZly2zdPXsWBdlv7np64/o33nSu6UqycWVo3tVAG258AB4m1YA1gDvV7EnlKKGv6Ug0KTSejOP@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRqNS+BlfbD0px7iHfYL02GjTUIyILoBM+/5JwE+/dIGxd+Xm0
-	9syhmsHa158FC8fplMcqyJKDvNavII2iznf/r0J2kyd4A5wtQtu1ULqSxZCEbMr14qVsO4T6cp6
-	kMSwRleR99pietubo5Ppg4fN9q87S2iRuiQB4gvM+fTUZddHJP0lZ3WFV1yDfts4UwTGXuyHQxz
-	iMpqwh/IMZ+YA3SqhFvfPFGe4M5FvTDSW7Q4LhGYVdfO7hUxP432h9qBh0utuLnGT6DM+Rhg4VK
-	4M29HYldRhfmMfTdyamJpRk9fZx
-X-Gm-Gg: AZuq6aKwFlCO00B6knnF1SGf9N19QIoUnetk3zh+scDiRenf/ArYhNypnHLGGY7rW78
-	Rr6Rnv93poL9u711mWxCoIHdwHq0++rmhG+0Xalf0C0Sea0EANJnqVE/QrRAYYcZ80I/ImD9jaV
-	KevSdYHNHkSSnR5eYOH/OV4Y8qI2CwFoFYmboNKnNVh8GI+fCrkVPQvHzUPaZec3iznkNLxh6nj
-	/i/7pyAX+myqUZkAyH/PUFLrJul23RUrA60SDmIGPOugguANT43Or+7YgWPOhL9AZvr+z09hAfU
-	qifrunCMz+r+cSRdOfX2v4cvXJRo38FpEPYL11h3qpFk9aqD94Jg9fb7wPBstNE4c/iEluImn1E
-	3stfU5L3rtvQp90KoYPGWdYc2D28tV9wO/MAmcw2r/xgdk5kZ5pvcjQXySkM2G3VT3RPIYk5zpy
-	uLT6HiUavh1O4cD50DipjeBmZoYeS9Zw2qKno8wAR0mb1Hga7+CtbW9Thy
-X-Received: by 2002:a05:6870:8612:b0:3ff:4663:3562 with SMTP id 586e51a60fabf-4093fd0641cmr3466626fac.13.1769623412618;
-        Wed, 28 Jan 2026 10:03:32 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-20.dlp.protect.broadcom.com. [144.49.247.20])
-        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-40957123e84sm313986fac.1.2026.01.28.10.03.32
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Jan 2026 10:03:32 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-47d62cc05daso730055e9.3
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 10:03:31 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769623411; cv=none;
-        d=google.com; s=arc-20240605;
-        b=H572z7WwwZntF0Fzj7G8pAngdb23DZlnfMHGY+412N2DjeC2X6zX2IILH6yPWMy3/0
-         0tX0f5dQYs08d6zISJ9DadqmrsR+xnXjSfvjEJJQPOvVkjcfXR9JsNmxcg13ppHWnj0w
-         xXyzJCRxX6s/z0udnzOCSqkjUEZGiGymuav6W3nyahGHaYUm0fuuhExWSoSv/DdteLtE
-         TB+staz5PjtUMVr6oIZSx2KreaZjyy6sSG+ovYauNWHR+w3K5nvbCpM0VignGeCSfrfA
-         QLkaFcYBu3MFeMw83Jad1AyF7lJVnYubXa6KmcbJeULlpRJXeik53PfXCBUBvq/h82bt
-         cjWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=TK3AgJWEiObSOmkZz5FzVbg50RlgVJYJP/C177YdONg=;
-        fh=ygRAgyW0sQM+QoqGEBrwVeD4KjR/LxMH02OSMktC88g=;
-        b=fJsUPO/b+8TiiAL9xhuf282j5ps3iugbYaZA4nuHpDZNmItOZQcObm2bKjhlaQV/C9
-         EuPghIeRf5vaSuuEIH1NgSEI1Ffh8bWFW6riWV+Gd1GWTcSlsPrThPebKYVVMPAACTg7
-         /zvLbnMOzKJ7C5ON8nXSs72C9HKaeCXS3QI5Rzg5hlM/2AMRtV6ZiWbT0IiCT5GAlXNj
-         4AAgDe/h18AKCBNYDKI0J2dVNmJWPbqhT2rJttl0uZxjaCqYUD9n23Rad2rIlNKVboPn
-         clposEYJnRyNdEZpwAOkY6cD95evVS8rX9Y/wJ0YkUrCaRZ7Fg104uSqggqjb8OSFnxW
-         J5ug==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D2F371066
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 18:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769623986; cv=none; b=Cq1Rux2QNQF5k1k3eVch/W5ntRRMFQV7W7auvKcVBkDNk9zHQsIkrsqAj5Y+XzZZo8cJbNxfjAbawCM3O6DEd79PmxfDW6oeezjkn8q1+VTlb7GaMOvzHGW1pi+p0ylnzYw48yBGNb99sw0PJjyhYR1+0qoRLO+PnF10fxGsofk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769623986; c=relaxed/simple;
+	bh=YaIZPczUt0JTVA89TpBrq/++CRfdlHNIhDlOkzrTVzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CZZL8VLr9vSjWEzjGluPZceuc2GMZ9g1Qh7GfOcWA8EqOqh80VXQW96HBKv8nw+H5y6C95Lh9CA3cdCwJxYTkobBkUwonDQf8dpIA4Vk5Q5V489HhB6CauQGiQDVz4ww6J7JERGElNTrNOssfNrRLyOuOv5wrNFZlv23nrVqZRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=emuyim7T; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8c7120353f1so16652885a.3
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 10:13:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1769623411; x=1770228211; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TK3AgJWEiObSOmkZz5FzVbg50RlgVJYJP/C177YdONg=;
-        b=QwIQtdReVjwPI/gdV9pUsrwPmu11YSjzQaN4eNvZIEoCYHrEEDLmcfgtJ88OfSqAZn
-         mUx3UfDG9Zy2e4aywSMHKTnnKl65sjozchRMtYy/nDogcb3Ska1OJGz7JwMpLoa/Fwar
-         P5yI5HczPWbzKoD0lZfkifULDOVYMjdScBdYg=
-X-Forwarded-Encrypted: i=1; AJvYcCXAehgBgQN2z5vfoJ3Iq1QY/TpQmBvjfFRn8MRsndok+l3a67mTnGdR6KmFAKHgywAudy0kmUtAyZzj@vger.kernel.org
-X-Received: by 2002:a05:600c:1992:b0:477:7ab8:aba with SMTP id 5b1f17b1804b1-48069c1c300mr80033945e9.1.1769623410676;
-        Wed, 28 Jan 2026 10:03:30 -0800 (PST)
-X-Received: by 2002:a05:600c:1992:b0:477:7ab8:aba with SMTP id
- 5b1f17b1804b1-48069c1c300mr80033525e9.1.1769623410233; Wed, 28 Jan 2026
- 10:03:30 -0800 (PST)
+        d=ziepe.ca; s=google; t=1769623983; x=1770228783; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YaIZPczUt0JTVA89TpBrq/++CRfdlHNIhDlOkzrTVzQ=;
+        b=emuyim7TvBe01y2dJMnjEtmtlTymOnFGE7QzSIKOn1RDR6jEGW76994v0XfsyY059Y
+         DEaAvxyG7zNxBWWkP84kf+ls4MH4pWN/l8V81hJAHaYraMiJ012KGMsXmrI0Fs6/DuIL
+         WIKJJE3AmR8MDfBtodzVXFXP01lNSksXMlayRgYv7t3zxPavh62/zSYS3lt36Kv2yCF7
+         ZAxgbLC+bI05lcBtFopE8cJFnACQC0l+qXc+RPDq/OGZolRHLUCT+44hzONJmkz6Ua/A
+         7p8nSimfltiW9AvwOQRHSCiUOYn8/lJsgO63SZDq7ladnJ/N4rVKlBZ3M2FREqOenkI7
+         Iz9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769623983; x=1770228783;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YaIZPczUt0JTVA89TpBrq/++CRfdlHNIhDlOkzrTVzQ=;
+        b=BVhjyfF4+le580ApjgEeCyCpqyCp1qQ+pb/i/wVzH853NHV561rGm5DmSCxBiD+Nsf
+         6QXYPNOsr0+odM1rOWhoHWYgts2dM08jVClz+a99aYcLXRgeF0G5FC6I4E2pahqEDiIO
+         YFPyuaRAMcgipiez+k5RXcK0hbEBXFeZbIl82uhc0q++Q3jXuVbqyYH9xahOTdDxbAWm
+         +LkDXazOVgYxtvdfXs3I1QmrGm5ljcBOjSWXgnC6bkb6/lnGdZFU8Y0dKY1KaiiBFTKa
+         Bov1HavoiN6XQPLS5NtFsef0M+oDRYKT9IAodkd7xIGsYfccGQRF2NHVovlpffIPZ2+5
+         37oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTn9RymRTAk0EhbZ5S3G4FhmAxjIEb4tgZugdPb2G+7AD8PhDuAqsTqT/FR9KFl7pep3zaih8AMiry@vger.kernel.org
+X-Gm-Message-State: AOJu0YymPy5ZV2XO7SfWZ7aZIU0uqom96zcCSTJ3CRHE4PgCXohRkYUP
+	V6KCyKfKT+lJ7bj85Lzy94D9wOuAwv5LYtG139np+5rJ5RuSUmwwBYYVQ64PFZzUg1vXN8sB004
+	St5C7
+X-Gm-Gg: AZuq6aKJGxeHr11wxxw6mVNpM85cJX238VCCTOF4l9kK7ryEzYXW0oL9/OHoPSR34xZ
+	N+y2cDv62zn1LYVRWbCv57s+dYJpiTPhuZfEalCqF5IYX9d5mhbXcjunr+z6FJyxL0nSWLvrG9c
+	wRAEd59APQ+FO6zD3nlZSdY8dEiPZ/h4IWHTP6wL0oEnhD8SdLB1xwsK7rGKXkHeMLAL7zBRTjm
+	H++iNl+Dz/u2znp2iM+0f8gITpcGezh8gwqHFtshdthzVyxLThxlufVWOYl2Vy6Q3t0k5HzrrbM
+	BiahynZremIE77NOo353hBIXfeTOBlYZ2ow2VuMI8HKpurvcPkzk7PJ/tiB7yv9v1+vkfM/QfPW
+	3SeEKuxDDWn7SBPc82RpyaUFL8zWNml7i9+W0fJKkB4nVyvQbXtdJAMHJHW4bdJwoVtcipJs3lz
+	cirIP6crzKrGaX0opU4fKCinBsQFuqO5fYZAfTGvsPQ92vcKTlF/BvWCn9HGQDcZA2wBA=
+X-Received: by 2002:ae9:f404:0:b0:8c7:136e:bad7 with SMTP id af79cd13be357-8c7136ebb3cmr341643785a.85.1769623591045;
+        Wed, 28 Jan 2026 10:06:31 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-894d375ce71sm21598586d6.45.2026.01.28.10.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jan 2026 10:06:30 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vl9vx-00000009aHB-3e3a;
+	Wed, 28 Jan 2026 14:06:29 -0400
+Date: Wed, 28 Jan 2026 14:06:29 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	oliver.yang@linux.alibaba.com
+Subject: Re: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
+Message-ID: <20260128180629.GT1641016@ziepe.ca>
+References: <20260123082349.42663-1-alibuda@linux.alibaba.com>
+ <20260123082349.42663-3-alibuda@linux.alibaba.com>
+ <aXPEFdEdtSmd6AzF@milan>
+ <20260124093505.GA98529@j66a10360.sqa.eu95>
+ <aXSjm1DXm6yP62tD@pc636>
+ <20260124145754.GA57116@j66a10360.sqa.eu95>
+ <20260127133417.GU13967@unreal>
+ <20260128034558.GA126415@j66a10360.sqa.eu95>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
- <20260127103109.32163-6-sriharsha.basavapatna@broadcom.com>
- <20260128153248.GK1641016@ziepe.ca> <20260128155101.GN1641016@ziepe.ca>
-In-Reply-To: <20260128155101.GN1641016@ziepe.ca>
-From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Date: Wed, 28 Jan 2026 23:33:18 +0530
-X-Gm-Features: AZwV_Qj2nDfQSwhci85xA7m1qIMG8GqiaTd70aEpYttrVU-tr8arfEC7YrZRL1k
-Message-ID: <CAHHeUGU6drR==eT5tdHADYdLeGuhHkPZB97JvAKqMiug5OQd=Q@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v9 5/5] RDMA/bnxt_re: Direct Verbs: Support CQ
- and QP verbs
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com, 
-	kalesh-anakkur.purayil@broadcom.com, 
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000cdb5070649768e01"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260128034558.GA126415@j66a10360.sqa.eu95>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_SMIME(-2.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16167-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[broadcom.com:+];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,davemloft.net,linux-foundation.org,linux.alibaba.com,google.com,redhat.com,linux.ibm.com,vger.kernel.org,kvack.org];
+	TAGGED_FROM(0.00)[bounces-16168-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mail.gmail.com:mid,ziepe.ca:email]
-X-Rspamd-Queue-Id: EC283A76CD
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
+X-Rspamd-Queue-Id: 43A8AA7AF0
 X-Rspamd-Action: no action
 
---000000000000cdb5070649768e01
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 28, 2026 at 11:45:58AM +0800, D. Wythe wrote:
 
-On Wed, Jan 28, 2026 at 9:21=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Wed, Jan 28, 2026 at 11:32:48AM -0400, Jason Gunthorpe wrote:
-> > On Tue, Jan 27, 2026 at 04:01:09PM +0530, Sriharsha Basavapatna wrote:
-> >
-> > >  struct bnxt_re_cq_resp {
-> > > @@ -121,6 +124,7 @@ struct bnxt_re_resize_cq_req {
-> > >
-> > >  enum bnxt_re_qp_mask {
-> > >     BNXT_RE_QP_REQ_MASK_VAR_WQE_SQ_SLOTS =3D 0x1,
-> > > +   BNXT_RE_QP_DV_SUPPORT =3D 0x2,
-> > >  };
-> >
-> > This is set on the response but there are no new response fields? That =
-seems
-> > backwards?
-> >
-> > >  struct bnxt_re_qp_req {
-> > > @@ -129,11 +133,22 @@ struct bnxt_re_qp_req {
-> > >     __aligned_u64 qp_handle;
-> > >     __aligned_u64 comp_mask;
-> > >     __u32 sq_slots;
-> > > +   __u32 pd_id;
-> > > +   __u32 sq_wqe_sz;
-> > > +   __u32 sq_psn_sz;
-> > > +   __u32 sq_npsn;
-> > > +   __u32 rq_slots;
-> > > +   __u32 rq_wqe_sz;
-> > > +};
-> >
-> > How does compatablity work here? Old userspace will send a short
-> > structure, the new kernel should effectively see 0 at all these fields
-> > is that OK? Sizes of 0 sound bad don't they?
-> >
-> > New userspace will send a long structure and old kernels will ignore
-> > the new bits. Is that OK?
-> >
-> > I would expect you to set QP_REQ_MASK_SIZES in the *req* comp_mask. If
-> > old kernel then the kernel fails the creation and userspace can do
-> > something else.
->
-> ugh, WTF, this driver isn't doing comp_mask *at all* !?!
->
-> BNXT_RE_QP_REQ_MASK_VAR_WQE_SQ_SLOTS isn't even referenced!? Why is it
-> there?
->
-> According to clangd nothing reads bnxt_re_qp_req.comp_mask, so nothing
-> today will fail if it is !0.
->
-> So you need to add a flag to the init/ucontext create path that says
-> "I support QP comp_mask", and user space cannot send a non-zero comp
-> mask without that flag, then check comp_mask for supported bits *like
-> it should have been done* and follow the above remarks.
->
-> CQ has the same issue, if you add comp_mask nothing in current kernels
-> will check it and nothing will check the sizes either. So you need the
-> same global flag to say the kernel supports comp_mask for cq before
-> userspace can inject a non-zero comp_mask.
-VAR_WQE_MODE was initially planned to be controlled per-QP level, so
-we added the mask definition. But the current implementation uses
-per-device variable WQE mode and it uses the ucontext level flag
-BNXT_RE_UCNTX_CAP_VAR_WQE_ENABLED. So
-BNXT_RE_QP_REQ_MASK_VAR_WQE_SQ_SLOTS comp mask can be ignored until we
-support a per QP variable wqe setting.
+> By leveraging vmalloc_huge() and the proposed helper to increase the
+> page_size in ib_map_mr_sg(), each MTTE covers a much larger contiguous
+> physical block.
 
-Thanks,
--Harsha
->
-> Jason
+This doesn't seem right, if your goal is to take a vmalloc() pointer
+and convert it to a MR via a scatterlist and ib_map_mr_sg() then you
+should be asking for a helper to convert a kernel pointer into a
+scatterlist.
 
---000000000000cdb5070649768e01
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Even if you do this in a naive way and call the
+sg_alloc_append_table_from_pages() function it will automatically join
+physically contiguous ranges together for you.
 
-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
-tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
-2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
-phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
-a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
-ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
-07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
-SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
-rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGszCCBJug
-AwIBAgIMPiCpKhlPGjqoQ++SMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
-MDIzMB4XDTI1MDYyMDEzNTQwNVoXDTI3MDYyMTEzNTQwNVowgfIxCzAJBgNVBAYTAlVTMRMwEQYD
-VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
-MDExNzEUMBIGA1UEBBMLQmFzYXZhcGF0bmExEjAQBgNVBCoTCVNyaWhhcnNoYTEWMBQGA1UEChMN
-QlJPQURDT00gSU5DLjErMCkGA1UEAwwic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNv
-bTExMC8GCSqGSIb3DQEJARYic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKS3kXt4zVFK0i5F3y88WV5rV0rr2S3nOVTaCGMB
-o6Se8pIb2HJcdpQ4rMiJuIRSyG2XDWv6OB+66eM/6cD2oklFcdzpC4/eYOQFWJ/XM8+ms6HT7P5e
-uE7sY6CeUzLzHNjcRwVgZRWlELghY7DIW9fbMzRNDFsbxuIN/7eSofavP1q7PF3+DqhHZpmrVkDu
-vcEBTRZSn8NWZ0Xhy4a+Y3KN2W55hh6pWQWO0lt2TtpyaqYp95egJGqDUPtqydci+qrBzXbL05Q0
-gcK0NfqGJwLsEVqxHwzz/jRrzKBYKQEK4Bpau91oxVGLmxy1nQDiyI1121xyvsJBDctKH245XZkC
-AwEAAaOCAeYwggHiMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcBAQSB
-hjCBgzBGBggrBgEFBQcwAoY6aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3Nn
-Y2NyNnNtaW1lY2EyMDIzLmNydDA5BggrBgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5j
-b20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUGA1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAyASgw
-QgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9y
-ZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dz
-Z2NjcjZzbWltZWNhMjAyMy5jcmwwLQYDVR0RBCYwJIEic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJy
-b2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBQAKTaeXHq6D68tUC3b
-oCOFGLCgkjAdBgNVHQ4EFgQU9Dwqof/Zp1ZdK6zi7XdRGdBWQt0wDQYJKoZIhvcNAQELBQADggIB
-AKzx/6ognUMhNv+rh7iQOeHdGA7WMDixk+zrD7TZL6O5DPqXfFqaTLpswyruTymA3AVxZkMJyF6D
-zOAsRfU23BjVlgC95zl1glr7DorZW7B/CQDwbLHlkFy92Oa3E+gBzwdiDMjnq6tOW5p83zoVqiV4
-qm4OwC9JILEkslV4uZVXHPm5cZoOQURTECE2BN34Qhg5qD3EKYqOTeMVRed1qQiIPqQv1b4xjPVS
-qBwNPl7/4TJGiZGnRB7FsNnNUQRJONnEFifM3KGqjbqA4F8BhLXCYjqtBxxCGA5506StNfsjT8UU
-28E6lcuJXC4hQXau+xXQ5GWqS4ecWwm22FAVy/i8FJVfXPTJnZeixmqaadbIU3fOJs5+XfyNkU2T
-mlCafSr7KgV570M6tITSyminW/7rc8hdznGYypCNa+45JYJTaK4x1+Ejptaxc7TCS12B1zQNCxa7
-AHX5PZra3SpDb7g1p1i1Ax0JVJTkThiCSNDbiauVn7xIJpf+H8HC6O2ddGmtKUxe6NseFnSGJsi6
-7lO/cU+TpduV7w3weUy+nHhp+GsbClfvAGhFAs/GkyONExCwwIEVlFp9Mj5JLAgB+ceMbojBIoaO
-d5rOzdIII5FDwKAAqyjHuniYLrP0xIH4L5kWOAy+LudP4PSze7uAxTiCiSJg5AaNBTa5NuwTnSX6
-MYICVzCCAlMCAQEwYjBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEo
-MCYGA1UEAxMfR2xvYmFsU2lnbiBHQ0MgUjYgU01JTUUgQ0EgMjAyMwIMPiCpKhlPGjqoQ++SMA0G
-CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCBb6+oOjRVX7Hss4HiavWqGpMtyqA5zvUxf
-HZYGUOCmQDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjAxMjgx
-ODAzMzFaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
-ZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
-AASCAQCiDlIjBXeXrV7lSSpbk9T7oEsHBjLm2GTJqil7S8dGYRG8YbjcK3RWDk3dugAGUEpX5e36
-8OYSpr0+UllSSqvNOL0Bx94sArrFSiZJCkpI1KRZe1Tidiv3bdy922oQpl+MILK+Tr/qWRSBIl7R
-aFLrmz786ynT6Tt2Vh3qvxew76s/XiwlUkulRPy90MJlP1l1cMQCnE28yipU+ccW39w3AsS8Jdji
-HZhe9cLlT6nLwyTEQxArcIpCag2l14oJXiN6VzDUzNXa/b/iKzryTzRpCgBUkhtUFm14/yRyHVNB
-fVlRFJO9dX+Ljw+KRnlTDAyzo9OZEssE1CTCy9dY9iA8
---000000000000cdb5070649768e01--
+From there you can check the resulting scatterlist and compute the
+page_size to pass to ib_map_mr_sg().
+
+No need to ask the MM for anything other than the list of physicals to
+build the scatterlist with.
+
+Still, I wouldn't mind seeing a helper to convert a kernel pointer
+into a scatterlist because I have see that opencoded in a few places,
+and maybe there are ways to optimize that using more information from
+the MM - but it should be APIs used only by this helper not exposed to
+drivers.
+
+Jason
 
