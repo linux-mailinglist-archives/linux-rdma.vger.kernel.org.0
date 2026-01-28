@@ -1,245 +1,164 @@
-Return-Path: <linux-rdma+bounces-16154-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16155-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eNfZOvgGemlE1gEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16154-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:54:16 +0100
+	id 6ETwLS8SemnH2AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16155-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 14:42:07 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5554EA1A2C
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD5BA241C
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 14:42:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8B3E430890BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 12:50:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6AE1B300EF86
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 13:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6A3350A34;
-	Wed, 28 Jan 2026 12:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED38353EC9;
+	Wed, 28 Jan 2026 13:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="OMK/xqpk"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="qgzw8USD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE3B350A0F;
-	Wed, 28 Jan 2026 12:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C84E29D273
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 13:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769604647; cv=none; b=mYn2P9WVQURHFSJBd6jEiuz5iRC7kRQFcoJm+boQLVC16dUbRXT5qMvfADqBQkAz93Zs/SzEGrkxBSLmJRfJpgZbMXky+xdJOapn+G0g/YPu8Uvh0NJQ+viojmVjEc+eavOgrSW4Hdduw5CFkAo60YgGOx34x+r0kCRG39HcHto=
+	t=1769607670; cv=none; b=G1UMNscKW6HkKFfeL2L3p1CGOCyzdcvhOXIREz3/8jf1LSgKQHJ7dosKz6odkYc3RFGvJPTq332mSDIsD8ulSWKdQZeKMRlc35DJUfdJPhiU571uMbUv0STcrg74YDosYK+AaYt54Oen1W3koHUbpk9EmajtnXgDUl75DJKuNxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769604647; c=relaxed/simple;
-	bh=yWDW3QkG+QPR1rIiRsOy8Q9Ai5y5RyeuxRbLeZwLASM=;
+	s=arc-20240116; t=1769607670; c=relaxed/simple;
+	bh=tjY3MSRlto3xmanc+UkvG+x9Vqg6LImD4tnOFfB9HcY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uk1zEmcPq6y71THbLxA3WKUoA0iyB+Xnl7rUe5F/ebDLu+kWa0uodjTH6mle7nduEUupT/pIT691N5Kj9S4vijhKe31sBwuD6X5YBOsMUE9C19QcVda46yWmY71fegkbGwz8xdKw89o6v4JjQGQ7t5dZuQuE2xczJWJBzPv1i3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=OMK/xqpk; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1769604634; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=IhGx0I6bZoii/1oPBzX5dugB47PlvVIILrTKQWUizSs=;
-	b=OMK/xqpki5+yujBe3zv6DGWWo5CGBWUxstlk5jsUtgYj/UGTHqcCNdtPLTGRiZ7yQRkiYcmfBmpofzG6RRHLff+lly7y7UHI+GWu2ZK4fXyXjZYxgwQgpPA6sysW8uv2CFYDkNUueiLecCs9L2p48IJfaaarJb3IGWo54GUXx5g=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wy3RrJO_1769604633 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 28 Jan 2026 20:50:33 +0800
-Date: Wed, 28 Jan 2026 20:50:33 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Leon Romanovsky <leon@kernel.org>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, Liu Jian <liujian56@huawei.com>,
-	dust.li@linux.alibaba.com, sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
-	tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org,
-	guangguan.wang@linux.alibaba.com, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net v2] net/smc: fix one NULL pointer dereference in
- smc_ib_is_sg_need_sync()
-Message-ID: <20260128125033.GA116672@j66a10360.sqa.eu95>
-References: <20250828124117.2622624-1-liujian56@huawei.com>
- <20250909094532.GD341237@unreal>
- <20260126044501.GA18724@j66a10360.sqa.eu95>
- <20260127120004.GT13967@unreal>
- <20260128055051.GA79132@j66a10360.sqa.eu95>
- <20260128112122.GE12149@unreal>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LV2jJOYLkCXD6vqDRLkyC+9PW4IUjcIuCjbmw8PJHIVzoWkR2HMObrMnXUJ6GAIM7yG6ScrjEGfm1DIw6fsLoTEwBiCkbH9uH/N0PE8bAAJA+U4RXCe5xehGqiL07vt4u8VI2Mls+yY8p4/uH1neDncYf+DIKniaEsNDkiguG38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=qgzw8USD; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-432d256c2e6so6623092f8f.3
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Jan 2026 05:41:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1769607664; x=1770212464; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IEjnNRBV1cO1ALg4JqFXNSzXrH1mabkMvlpmuN+ROc8=;
+        b=qgzw8USDylBPPJc+Ls7wrJob583h3yCnzc17zHkdo8jneCI/iI6+MxcCgwedBhHrgM
+         Kag1GnDMYpQEW49qLgiKOZUWOcqIGtqp7j/43eD+0pR6RQFK0CSt29ODXLlt//256vQa
+         se28oBi0FKC6pj6zVymJ/6Wa7AQErGGx1VkfpVJ4iA+51MYXsVQoQjlPhtqXe4yQQGKO
+         /sOi6i9s5zg/TEmM8IKwM4Ml9fMMqxMxvxCh4pc1nCJ6iixzaAN4Qf135tIQeSEujuz9
+         yRaHLKhPLzs2eboy/IJ1okSx0MdaFMIqKXVqeJFBTzpSuwLr+IBDvMbKBJYSXoYlR9BC
+         X0bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769607664; x=1770212464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IEjnNRBV1cO1ALg4JqFXNSzXrH1mabkMvlpmuN+ROc8=;
+        b=Li359+VF5z8IPrcaEkEqwn4tU7GxBAm1YF8kCG8X4HVzniTQTv25PLqi4/CA+UUlV1
+         vuTWzF+g0jjtvZ5BltBbzfwMYBQKl7dlUnbFIP30WgaFyk2y5TaenMpcym8gFEuKQtoz
+         XImT4NXVhC5Ya+NLoo40WdrjEUasAoKs7iYzPlEmbUlYsZRHX/tIJo08jJa98US2V8pA
+         +PloHUyc+Hvau+Ek9vMMiLaai9cptwlmk36rjdHt1SpVhlufY+mCi0Oek6C0JwvZBSmA
+         w48AYSpEd2wgEybRUd3SuRVW++3SglWoxR4ucousx5hiHFjn9qKYk9hQvtlfzI/p22QZ
+         PDnw==
+X-Gm-Message-State: AOJu0Ywr5fRyXK/hnMbGx6vcD9s3nN3sXEhBjrZrbsVUjvVFX/fAzQ2S
+	BFMl+wKt/NCdckWJ96AkXX4BkASqfpGK2WVHYusrO625tnNjYb9GNNC2XOo7RrvYl/Q=
+X-Gm-Gg: AZuq6aJVbSuebDPIsCtZ20RlNEnp1DAMba6brcR7Wu8MFvasPttxkxXObrFHSvspt6t
+	/voQOYbDT+jLxnfaDAH/3xMQQ2peHWordJJqcLPAbtpbZ5r0gsFKibkJ5Dve8Jf9c4/7fD+9XOJ
+	kX4fxuoYjHZ6K3hx7jC/bA7PNaVAaI3huO+sM/dBy8DDyG013jDtoPz1MEWmnjAe36jcMsuUJOD
+	I3uoJQKJMUQo1MBpto+Wja98VW6EUu4nfg6WnQ67IIzfe1Nt6HimKkXvcL+FRtqHJ50eiqb/ad+
+	dF4tDl8tL1sJBsXcnZMlU4rkTaJaxZConPaUwVJmHkg89JGY2Hyf2GAbLE5VygVX8d0we7oeXm+
+	ADW5abd50rckZ/Uh/JZ/nsWR7am0F9GLnyqiWEs0rmO69zHEX464Pp2e233GRMjyxkHz7hwZ2VY
+	pwJ17tK+xTVycBFVz8NlGnXxg=
+X-Received: by 2002:a05:6000:420c:b0:435:dbc4:3af0 with SMTP id ffacd0b85a97d-435dd05a4bamr7274160f8f.14.1769607664111;
+        Wed, 28 Jan 2026 05:41:04 -0800 (PST)
+Received: from FV6GYCPJ69 ([140.209.217.211])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435e1354d43sm7674665f8f.43.2026.01.28.05.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jan 2026 05:41:03 -0800 (PST)
+Date: Wed, 28 Jan 2026 14:40:59 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, msanalla@nvidia.com, 
+	maorg@nvidia.com, parav@nvidia.com, mbloch@nvidia.com, markzhang@nvidia.com, 
+	marco.crivellari@suse.com, roman.gushchin@linux.dev, "Yanjun.Zhu" <yanjun.zhu@linux.dev>, 
+	Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH] RDMA/core: Fix stale RoCE GIDs during netdev events at
+ registration
+Message-ID: <u7t7kha66tqngzyoryly6pltiur4wtz6gm3nui3zeb32dmtctp@54rr6gcsqtap>
+References: <20260127093839.126291-1-jiri@resnulli.us>
+ <21d63279-79a2-47aa-b305-30a55b8f40f4@I-love.SAKURA.ne.jp>
+ <20260127160000.GG1641016@ziepe.ca>
+ <05b40f3c-0d21-411a-b61a-156246482327@linux.dev>
+ <9975b59a-58e2-4766-9e4e-c927a1d7a3d0@I-love.SAKURA.ne.jp>
+ <f3402d0f-40a1-4792-a8e2-be65c71a176b@linux.dev>
+ <af4866d0-2e50-477c-b823-1c4a8a86f7e5@I-love.SAKURA.ne.jp>
+ <0952d053-0de4-469c-88b4-509e6d29296c@I-love.SAKURA.ne.jp>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260128112122.GE12149@unreal>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <0952d053-0de4-469c-88b4-509e6d29296c@I-love.SAKURA.ne.jp>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16154-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16155-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,j66a10360.sqa.eu95:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:dkim]
-X-Rspamd-Queue-Id: 5554EA1A2C
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim,i-love.sakura.ne.jp:email]
+X-Rspamd-Queue-Id: 1BD5BA241C
 X-Rspamd-Action: no action
 
-On Wed, Jan 28, 2026 at 01:21:22PM +0200, Leon Romanovsky wrote:
-> On Wed, Jan 28, 2026 at 01:50:51PM +0800, D. Wythe wrote:
-> > On Tue, Jan 27, 2026 at 02:00:04PM +0200, Leon Romanovsky wrote:
-> > > On Mon, Jan 26, 2026 at 12:45:01PM +0800, D. Wythe wrote:
-> > > > On Tue, Sep 09, 2025 at 12:45:32PM +0300, Leon Romanovsky wrote:
-> > > > > On Thu, Aug 28, 2025 at 08:41:17PM +0800, Liu Jian wrote:
-> > > > > > BUG: kernel NULL pointer dereference, address: 00000000000002ec
-> > > > > > PGD 0 P4D 0
-> > > > > > Oops: Oops: 0000 [#1] SMP PTI
-> > > > > > CPU: 28 UID: 0 PID: 343 Comm: kworker/28:1 Kdump: loaded Tainted: G        OE       6.17.0-rc2+ #9 NONE
-> > > > > > Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-> > > > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-> > > > > > Workqueue: smc_hs_wq smc_listen_work [smc]
-> > > > > > RIP: 0010:smc_ib_is_sg_need_sync+0x9e/0xd0 [smc]
-> > > > > > ...
-> > > > > > Call Trace:
-> > > > > >  <TASK>
-> > > > > >  smcr_buf_map_link+0x211/0x2a0 [smc]
-> > > > > >  __smc_buf_create+0x522/0x970 [smc]
-> > > > > >  smc_buf_create+0x3a/0x110 [smc]
-> > > > > >  smc_find_rdma_v2_device_serv+0x18f/0x240 [smc]
-> > > > > >  ? smc_vlan_by_tcpsk+0x7e/0xe0 [smc]
-> > > > > >  smc_listen_find_device+0x1dd/0x2b0 [smc]
-> > > > > >  smc_listen_work+0x30f/0x580 [smc]
-> > > > > >  process_one_work+0x18c/0x340
-> > > > > >  worker_thread+0x242/0x360
-> > > > > >  kthread+0xe7/0x220
-> > > > > >  ret_from_fork+0x13a/0x160
-> > > > > >  ret_from_fork_asm+0x1a/0x30
-> > > > > >  </TASK>
-> > > > > > 
-> > > > > > If the software RoCE device is used, ibdev->dma_device is a null pointer.
-> > > > > > As a result, the problem occurs. Null pointer detection is added to
-> > > > > > prevent problems.
-> > > > > > 
-> > > > > > Fixes: 0ef69e788411c ("net/smc: optimize for smc_sndbuf_sync_sg_for_device and smc_rmb_sync_sg_for_cpu")
-> > > > > > Signed-off-by: Liu Jian <liujian56@huawei.com>
-> > > > > > ---
-> > > > > > v1->v2:
-> > > > > > move the check outside of loop.
-> > > > > >  net/smc/smc_ib.c | 3 +++
-> > > > > >  1 file changed, 3 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> > > > > > index 53828833a3f7..a42ef3f77b96 100644
-> > > > > > --- a/net/smc/smc_ib.c
-> > > > > > +++ b/net/smc/smc_ib.c
-> > > > > > @@ -742,6 +742,9 @@ bool smc_ib_is_sg_need_sync(struct smc_link *lnk,
-> > > > > >  	unsigned int i;
-> > > > > >  	bool ret = false;
-> > > > > >  
-> > > > > > +	if (!lnk->smcibdev->ibdev->dma_device)
-> > > > > > +		return ret;
-> > > > > 
-> > > > > Please use ib_uses_virt_dma() function for that.
-> > > > > 
-> > > > > It is clearly stated in the code:
-> > > > >   2784 struct ib_device {
-> > > > >   2785         /* Do not access @dma_device directly from ULP nor from HW drivers. */
-> > > > >   2786         struct device                *dma_device;     
-> > > > > 
-> > > > > Thanks
-> > > > > 
-> > > > >
-> > > > 
-> > > > Hi Leon,
-> > > > 
-> > > > Sorry for the late reply, I just noticed this and thank you for your review.
-> > > > I agree completely with your feedback: we should not be accessing ibdev->dma_device
-> > > > directly. Following your advice, replacing the
-> > > > 
-> > > > 	if (!lnk->smcibdev->ibdev->dma_device)
-> > > > 
-> > > > check with ib_uses_virt_dma() is straightforward and absolutely the correct
-> > > > thing to do for that part of the logic.
-> > > > 
-> > > > However, this has led me to a further challenge. The main purpose of the
-> > > > smc_ib_is_sg_need_sync() function is to get the result of dma_need_sync().
-> > > > This means that even after correctly using ib_uses_virt_dma(), the function
-> > > > still needs to call dma_need_sync(ibdev->dma_device, ...), which forces us
-> > > > right back into the direct access pattern we are trying to eliminate.
-> > > 
-> > > I would like to challenge the use of dma_need_sync() in smc_ib.c. From
-> > > what I see, it is used to avoid calls to dma_sync_single_*_device()
-> > > which will be NOP anyway in that case.
-> > > 
-> > > Why did you copy that logic from XSK?
-> > > 
-> > 
-> > You are right. I just noticed that the DMA has already introduced a
-> > similar optimization.
-> > 
-> > The check in SMC was added back in 2022, while the DMA introduced
-> > the internal "skip redundant sync" mechanism in 2024 (commit f406c8e4b770).
-> > 
-> > Given this, it might be better to simply remove this redundant check
-> > from SMC now, which would also eliminate the need for direct access to
-> > ibdev->dma_device. I need to perform some tests to confirm this.
-> 
-> It may also be worth looking at this series from Chuck, which reuses the
-> recently introduced DMA API to remove the SG conversions:
-> https://lore.kernel.org/linux-rdma/20260128005400.25147-1-cel@kernel.org/
-> 
-> You might be able to apply a similar approach and drop SG from your
-> datapath entirely.
-> 
-> Thanks.
-> 
+Wed, Jan 28, 2026 at 09:26:52AM +0100, penguin-kernel@I-love.SAKURA.ne.jp wrote:
+>On 2026/01/28 13:52, Tetsuo Handa wrote:
+>> Two things I worry about Jiri's patch are that
+>> 
+>>   refcount_set(&device->refcount, 2) in enable_device_and_get() becomes unsafe if 
+>>   DEVICE_GID_UPDATES notifications can let someone to call ib_device_put()
+>
+>Well, since siw_netdev_event() is calling ib_device_put()
+>( https://elixir.bootlin.com/linux/v6.19-rc5/source/drivers/infiniband/sw/siw/siw_main.c#L403 ),
+>calling refcount_set() immediately before setting
+>xa_set_mark(&devices, device->index, DEVICE_REGISTERED) is no longer safe.
 
-Thanks for the pointer. I'll take some time to look into this series and
-see if we can adopt a similar approach.
+I may be missing something. How exactly is the notifier in siw_main
+related to this patch? I don't see it depends on DEVICE_GID_UPDATES
+mark.
 
-> > 
-> > Thanks for your feedback.
-> > 
-> > D. Wythe
-> > 
-> > > > 
-> > > > Since the RDMA doesn't currently offer a helper for this "check" functionality,
-> > > > I'd like to propose adding one. What are your thoughts on a new helper like
-> > > > the one below, which would allow us to solve this cleanly?
-> > > > 
-> > > > /* ib_verbs.h */
-> > > > static inline bool ib_dma_need_sync(struct ib_device *dev, dma_addr_t dma_addr) {
-> > > > 	return !ib_uses_virt_dma(dev) && dma_need_sync(dev->dma_device, dma_addr);
-> > > > }
-> > > 
-> > > If we're discussing wrappers, it's likely better to provide a wrapper around
-> > > dma_sync_sg_for_cpu() for use in ib_dma_sync_sg_for_cpu(), rather than
-> > > open‑coding the logic.
-> > > 
-> > > Thanks
-> > > 
-> > > > 
-> > > > Best wishes,
-> > > > D. Wythe
-> > > > 
-> > > > 
-> > 
+
+>
+>> 
+>> and
+>> 
+>>   I'm not convinced that it is safe/meaningful to keep DEVICE_GID_UPDATES notifications valid
+>>   between wait_for_completion(&device->unreg_completion) in disable_device() and the beginning
+>>   of ib_cache_cleanup_one() because I don't know whether DEVICE_GID_UPDATES notifications can
+>>   make sense after device->refcount became 0
+>> 
+>> .
+>> 
+>
 
