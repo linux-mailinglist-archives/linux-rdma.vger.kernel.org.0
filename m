@@ -1,155 +1,159 @@
-Return-Path: <linux-rdma+bounces-16095-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16096-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id COHdLrBCeWmAwAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16095-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 23:56:48 +0100
+	id gDBaIjNeeWn+wgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16096-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 01:54:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A6899B479
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 23:56:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3F79BC33
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 01:54:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AF3F3302002A
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jan 2026 22:54:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CCDAC301A514
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jan 2026 00:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A982EA171;
-	Tue, 27 Jan 2026 22:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B472B1B3B19;
+	Wed, 28 Jan 2026 00:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S88eXmBE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/oby3Wa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7AC2D7DE9
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Jan 2026 22:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A837A13A;
+	Wed, 28 Jan 2026 00:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769554492; cv=none; b=u0qk1/cKXAO7KcdGprFWKFEifS+STk+2VlwyR1SgqKM4MZ30HDRHaFea0YAY4FFqM0zmSoKEMDugufeKjq+T13p9OVMvriTHfF7b5Ur0V80M35thgXFC1caaW5b3cCfJv29yzA8IvIt5S0D43ozpH42CRn1SnFCwz5Wlz2ejLDI=
+	t=1769561644; cv=none; b=M4XM+eBrQA0H25z/0joK8XY2mcz9DEPnGPVHfdm+8lmmapeVKyw7prSVY0FeVHvjslKxye/sG30DdEiJqSjacRznlNBr7+i1Nsy779ES9TaJ24yc30d0gEU/ReGRmW4NE+nu0Bh4MMcoipLycRZRQLrimN9111VQJEifG3VNuz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769554492; c=relaxed/simple;
-	bh=dRjEAIOD3vwwb+g58amczMp25XHVjlLmuSWKRLMMi4s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Sv9rSgksAux+bvYgZsU8aZPl9A5OkPV1pZLgebWdj7re452KAkk1Mp3Mu+K9ghyNqgR7BJEISAFm7jv8HKF9xgg1qvJfi+CACi2Oo7ljkIbj5EXzT7LGRdUFB8cKJJ2pvD+aCpdEPH+8xduDjv+DwYNCgfig0afZ9tpPQVLHaJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S88eXmBE; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f3402d0f-40a1-4792-a8e2-be65c71a176b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769554487;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VrRCEjBxGLG3qptlHBDYU9bJ3gKYsa+WLnudLXQJNws=;
-	b=S88eXmBESekyn/oaMiePv8Obvxc14A9SjC1v8QIe8qILTE5/3L6vaOYa/UuTJuXTgOxdKq
-	UJTKHbojND9ohoVHzuYmgntac1K4xIb1kWPrDL4zjXJctZ09DoOBiXk27pIgCOohh/lF2b
-	Dk87u0Ph60rxYj6TUqAA65vbk+76inM=
-Date: Tue, 27 Jan 2026 14:54:42 -0800
+	s=arc-20240116; t=1769561644; c=relaxed/simple;
+	bh=+krboppBsLTFk3zRHe9ldWyamLfY9PsIu3CD1UkdQkg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JH03t6IxRUjrBx6FQL5/7LtTmuxdx1LbqaoNyVZlPQyYOQg1UyZNWVcw28EEQd5+Bi22McmXXLncNaUQjYBm3OEvpJ7dpeHZmFBjuAN2oVJp5dO7DQwHjGI1S5/tXpwb76UDIPVcy2+Cj+QAt0CdMRy/wB7fzQWAccEPcFur0Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/oby3Wa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D5BEC116C6;
+	Wed, 28 Jan 2026 00:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769561644;
+	bh=+krboppBsLTFk3zRHe9ldWyamLfY9PsIu3CD1UkdQkg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=P/oby3WaX0S8+13T61xhnh3gMB6WJ8pGJrVW2D3xF7PDXddTvWc6OrkZ9nw7fc/7R
+	 RE1OEixGsZf9vi9oWREsHa3FZwktO4pCLJKeWXGLr0BmQQyqe/7f5Z9gc6fVHWzK65
+	 6FBvlMDlQv7oplG8rLoEosjq+aqJZhM5I+FaCkj1SSMrgqJgjfJfiOl3ng8V/bNa+l
+	 oE1jGR7hoS8JWZQIAchQjo30tiAEMTuzeELp+h/qWkriDzzXxnJDazce9RwCouLIMS
+	 Vy47HsewTJd6hR6QzRg2jqGn6MynpBTXTC6bOCe0l/zeLktUg6ACRy9ApayIv1vmw2
+	 tGaOiHeLM5DPA==
+From: Chuck Lever <cel@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Cc: <linux-rdma@vger.kernel.org>,
+	<linux-nfs@vger.kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH v5 0/5] Add a bio_vec based API to core/rw.c
+Date: Tue, 27 Jan 2026 19:53:55 -0500
+Message-ID: <20260128005400.25147-1-cel@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/core: Fix stale RoCE GIDs during netdev events at
- registration
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
- Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org,
- leon@kernel.org, msanalla@nvidia.com, maorg@nvidia.com, parav@nvidia.com,
- mbloch@nvidia.com, markzhang@nvidia.com, marco.crivellari@suse.com,
- roman.gushchin@linux.dev, wangliang74@huawei.com
-References: <20260127093839.126291-1-jiri@resnulli.us>
- <21d63279-79a2-47aa-b305-30a55b8f40f4@I-love.SAKURA.ne.jp>
- <20260127160000.GG1641016@ziepe.ca>
- <05b40f3c-0d21-411a-b61a-156246482327@linux.dev>
- <9975b59a-58e2-4766-9e4e-c927a1d7a3d0@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <9975b59a-58e2-4766-9e4e-c927a1d7a3d0@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16095-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16096-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1A6899B479
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0A3F79BC33
 X-Rspamd-Action: no action
 
+From: Chuck Lever <chuck.lever@oracle.com>
 
-On 1/27/26 2:16 PM, Tetsuo Handa wrote:
-> On 2026/01/28 6:17, Yanjun.Zhu wrote:
->>> Can we feed it to syzkaller please and see if it does actually clear
->>> it's repo? That particular bug already has 5 patches claiming to fix
->>> it.
->>
->> #syz test: repository_link branch
->>
->> The above command will make syzkaller test your commit.
->>
->> BTW, your commit should be the topmost commit.
-> No, we can't ask syzbot to test this patch.
->
-> All kinds of refcounting errors that appear as
->
->    unregister_netdevice: waiting for $dev to become free. Usage count = $count
->
-> problem are reported there, but syzbot has not found a reproducer for
-> the bug this patch addresses.
->
-> I can test this patch using linux-next tree via my tree if you like.
+This series introduces a bio_vec based API for RDMA read and write
+operations in the RDMA core, eliminating unnecessary scatterlist
+conversions for callers that already work with bvecs.
 
-Thanks. Currently, syzbot does not have a reproducer to reproduce and 
-verify this issue.
+Current users of rdma_rw_ctx_init() must convert their native data
+structures into scatterlists. For subsystems like svcrdma that
+maintain data in bvec format, this conversion adds overhead both in
+CPU cycles and memory footprint. The new API accepts bvec arrays
+directly.
 
-However, you have a test environment to reproduce the problem, and you 
-can verify this commit.
+For hardware RDMA devices, the implementation uses the IOVA-based
+DMA mapping API to reduce IOTLB synchronization overhead from O(n)
+per-page syncs to a single O(1) sync after all mappings complete.
+Software RDMA devices (rxe, siw) continue using virtual addressing.
 
-Is that correct?
+The series includes MR registration support for bvec arrays,
+enabling iWARP devices and the force_mr debug parameter. The MR
+path reuses existing ib_map_mr_sg() infrastructure by constructing
+a synthetic scatterlist from the bvec DMA addresses.
 
-If so, that would be very helpful.
+The final patch adds the first consumer for the new API: svcrdma.
 
+Based on v6.19-rc7.
 
-Zhu Yanjun
+---
 
->
->>
->> Thanks,
->>
->> Zhu Yanjun
->>
->>> It has become some kind of catch all of all kinds of refcounting errors
->>>
->>> [  247.188486][ T6052] unregister_netdevice: waiting for vcan0 to become free. Usage count = 2
->>>
->>> Does this actually change the refcounting around that could fix that?
->>> Looked like no?
->>>
->>> Jason
+Changes since v4:
+- Move the synthetic SGL into struct rdma_rw_reg_ctx
+
+Changes since v3:
+- Remove the local iter from rdma_rw_init_iova_wrs_bvec()
+- Refactor common per-MR handling into a helper
+
+Changes since v2:
+- Add bvec iter arguments to the new API
+- Add a synthetic SGL in the MR mapping function
+- Try IOVA coalescing before max_sgl_rd triggers MR in bvec path
+- Attempt once again to address SQ/CQ/max_rdma_ctxs sizing issues
+
+Changes since v1:
+- Simplify rw.c by using bvec iters internally
+- IOVA mapping produces a contiguous DMA address range
+- Clarify the comment that documents struct svc_rdma_rw_ctxt
+- svcrdma now uses pre-allocated bio_vec arrays
+
+Chuck Lever (5):
+  RDMA/core: add bio_vec based RDMA read/write API
+  RDMA/core: use IOVA-based DMA mapping for bvec RDMA operations
+  RDMA/core: add MR support for bvec-based RDMA operations
+  RDMA/core: add rdma_rw_max_sge() helper for SQ sizing
+  svcrdma: use bvec-based RDMA read/write API
+
+ drivers/infiniband/core/rw.c             | 521 +++++++++++++++++++++--
+ include/rdma/ib_verbs.h                  |  42 ++
+ include/rdma/rw.h                        |  22 +
+ net/sunrpc/xprtrdma/svc_rdma_rw.c        | 155 ++++---
+ net/sunrpc/xprtrdma/svc_rdma_transport.c |   8 +-
+ 5 files changed, 638 insertions(+), 110 deletions(-)
+
+-- 
+2.49.0
+
 
