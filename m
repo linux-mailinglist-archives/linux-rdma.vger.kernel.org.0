@@ -1,113 +1,74 @@
-Return-Path: <linux-rdma+bounces-16181-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16182-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4O1wKp0Ie2k6AwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16181-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jan 2026 08:13:33 +0100
+	id sPFaElgNe2nqAwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16182-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jan 2026 08:33:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B610AC79D
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jan 2026 08:13:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6768ACBB6
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jan 2026 08:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9EEE9301AB8D
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jan 2026 07:09:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 54B22302293E
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jan 2026 07:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A106E379992;
-	Thu, 29 Jan 2026 07:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AF737AA6C;
+	Thu, 29 Jan 2026 07:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nj/utuTj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nd7XKBpW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1104A2DC762;
-	Thu, 29 Jan 2026 07:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769670547; cv=fail; b=DgLyNewz3Iu3fsgdhthZA5Mj/RApLcOLO9zu0zZzCsRcUdbDdgb+VQo2Kb/s8+jPFacZmb/SPgTG1+PWJ6YdJBlx6Jvf2mpPBqe5A2kH/SKIRwXU06NIdAppNYN7ALFm3mHVSBXhDlUZT1x8YD/Ag/Y9X1+5y5YuWgHXwReXCtQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769670547; c=relaxed/simple;
-	bh=6LkeuP0rij75gHyrVE7S5jJdMhP2Le3RGepYo41PPkY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=BBOAFyfUEAnabPoveke00xyQjjdz2a3a+RGSoL2gYONDjBoYuroC64SreuC7I9tr8+YKdrcKYMYwt1GlYvf/gnv6BoVL5VRbiYxGHRqJuchUhDcm+XEctKP/ezBCiR39ZsY6ycypoV/ZEJMHyhsGoJqUG7ti2IT9X0xM7JPiz5o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nj/utuTj; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1769670546; x=1801206546;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=6LkeuP0rij75gHyrVE7S5jJdMhP2Le3RGepYo41PPkY=;
-  b=nj/utuTjtyRrsMxazZjV134ssUtuka8kyk4zIg//tsO3qZE6LvXPW42E
-   6CQPAGqhQkJFk7Az6sd51ReomixyhvKT13gfZ0e8fwSqepN7FESvKkof5
-   LTqaspUR1FJJm3zW6K6ILksoCVGtCr2GJyq93C3EY36aBcQTXwfol7xMT
-   QNGu2lWn0FsPpYfwPG2fxMRwQICJgXLSfUv2GCU5ulSrKOIt/5QinuNTu
-   pzV1luFRnaYWi7SPutnCRoB5jet4dMxV4emxFV67SDQbOkHcvIFfixnba
-   OnfXswuMNgYS8qFLPAzrQy6X5yNxAI6Mcmg7St/+g+pHBClBqsdt/41+4
-   w==;
-X-CSE-ConnectionGUID: f+fCIDULT9SSH1TDz/bG3g==
-X-CSE-MsgGUID: crDYmNeYTpecBBuQaB0/oQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11685"; a="81629426"
-X-IronPort-AV: E=Sophos;i="6.21,260,1763452800"; 
-   d="scan'208";a="81629426"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2026 23:09:05 -0800
-X-CSE-ConnectionGUID: Xnqni3m8TV+5G6m7aWBQjw==
-X-CSE-MsgGUID: PJBalU+JSyi/E4nUfoGKzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,260,1763452800"; 
-   d="scan'208";a="212575794"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2026 23:09:05 -0800
-Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.35; Wed, 28 Jan 2026 23:09:04 -0800
-Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.35 via Frontend Transport; Wed, 28 Jan 2026 23:09:04 -0800
-Received: from BL2PR02CU003.outbound.protection.outlook.com (52.101.52.25) by
- edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.35; Wed, 28 Jan 2026 23:09:03 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IU31uztTmH89X89EJlnSYgMn4t0gyi987pHXoruFbsZPji57VImfwKQnajLBgv3yRhRNFymzi+dGzpsXRuMRQx6DdC6NejDsLIlM3eU3ZNBNtRB4JkBOPJSyvYJLlntTh5Hv7dG9am6z/Jdkx7dYzY9x8FT72na0Jun7ARi022kWcvnCgRTuvKctOt2Ax/B+TRYjkvdb02OdGMowaodqr+XymU5+7Aic/yW/hdtD7M+6LL5lmZA6fS1v/ElrIbcR3IZWvm/QjG2gCZm0EulhhW2B7onZt5hT0/vAFlgsAPvPpuvrS872AN8SclpwmsFZOEa8fvYEZ/tn828Z93D2Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6LkeuP0rij75gHyrVE7S5jJdMhP2Le3RGepYo41PPkY=;
- b=CvrsgfavmiwKxWxlydRx+5E2LvcSX18DzLwMgmKfkZp0JrbKjWekyCAuMxd0Nm2sB7ifUwRVhrraIz38Ja08POsgFP7p8jAPs0Dmy2+7l4wBNTzicNI05/zJUTAw86ww4dAn9mrfoU5U/kt+oFhkIIOWBUEmyTtl/9Zs75K9OmX+TwmmTgPROC4iBC0j9sFq4ARZk2E0iWg6RdutHog8tzNPHi6VQFIJBiPVc3wCd1LvNmDlnMTwkCOaKbWsvlcc8aoEQ7/ubeQEsrRToP4hXPKIQz+guqpBntAW7QAapwVYQxtwFvblUlPNvmYMalNmAhQ9v7WdkLMhAq2yvG6bbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by DS0PR11MB6496.namprd11.prod.outlook.com (2603:10b6:8:c0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.8; Thu, 29 Jan
- 2026 07:09:00 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::f997:762f:f079:134f]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::f997:762f:f079:134f%5]) with mapi id 15.20.9542.010; Thu, 29 Jan 2026
- 07:08:59 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Leon Romanovsky <leon@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>, Alex Deucher
-	<alexander.deucher@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter
-	<simona@ffwll.ch>, Gerd Hoffmann <kraxel@redhat.com>, Dmitry Osipenko
-	<dmitry.osipenko@collabora.com>, Gurchetan Singh
-	<gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>, "Maarten
- Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, "Lucas De
- Marchi" <lucas.demarchi@intel.com>, =?utf-8?B?VGhvbWFzIEhlbGxzdHLDtm0=?=
-	<thomas.hellstrom@linux.intel.com>, "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>, Will Deacon
-	<will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Felix Kuehling
-	<Felix.Kuehling@amd.com>, Alex Williamson <alex@shazbot.org>, Ankit Agrawal
-	<ankita@nvidia.com>, "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
-CC: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED13374170;
+	Thu, 29 Jan 2026 07:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769672016; cv=none; b=HeXZJzUp9JBT6RhFVTw4Yx/nA98yUJErs6p9y87tSnrCCG7AgDmjFytts+BmVEuwnQmSa6PMcrVlq1zmQbZXQq06EhaMPQE+uyNJqNv1AVNBjdcPUfRYqHP1DkHV6GLM4rxtqw+57TYL5M03l5vZZrulsTc0FwWjHSemrhS6PJU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769672016; c=relaxed/simple;
+	bh=QBIwpAtD3x2QlngJHpmtfy+I0xZag8/IoNN2nefvD44=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ap6ZPucrVd8bYEJOz3V8Ac1frBzcgzzhZLhplUdqIAhGeGiDAh2QRxoNS20oykH/4qHAURyIzUWWYFcdwR0Ys+sBZ3OsI0D2uJDEH74wUcCk1EZVGQNmpehnm7e0w1CTWL+mg6YPMJOGXOhfJy/xkJOMBAhEetzgwBodAmvo4fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nd7XKBpW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81028C4CEF7;
+	Thu, 29 Jan 2026 07:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769672016;
+	bh=QBIwpAtD3x2QlngJHpmtfy+I0xZag8/IoNN2nefvD44=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nd7XKBpWVASqj2PQ5+O26lNzR2owwrjZ+UFhzwzV5C7rfonAJCymlbkRGjNsekjom
+	 he9rYeseZjNSy/0uUsYtu2rE0V9B2obwvYr84gMEMsIXfMHbRpIOLQG8VKcUj1EDWG
+	 RCL32sfCprWk7ujIe52D/CGmaJLCftvBy9NNCh9toQxOiXhsAaRnM3ffpkajAH1ZpM
+	 fXNq2C3mRiG9ylqGldO5M8PS6KozilVEFN97LtMCnv+QZPbZmSb3kvTLNumwZq3+2a
+	 cXHUw1JolJPAOY7ZZE4cbJzciDN3W68iIBcC3s0kcCkl9sD9ehst1O+sHirdqoPJBu
+	 OQUMpJRWtxn7A==
+Date: Thu, 29 Jan 2026 09:33:31 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Pranjal Shrivastava <praan@google.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	"Kasireddy, Vivek" <vivek.kasireddy@intel.com>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
 	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
 	"linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -115,173 +76,147 @@ CC: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
 	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
 	"intel-xe@lists.freedesktop.org" <intel-xe@lists.freedesktop.org>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>
-Subject: RE: [PATCH v5 8/8] iommufd: Add dma_buf_pin()
-Thread-Topic: [PATCH v5 8/8] iommufd: Add dma_buf_pin()
-Thread-Index: AQHcjWXCdTdshQRjGE6hMiPa6zXPPrVowVog
-Date: Thu, 29 Jan 2026 07:08:59 +0000
-Message-ID: <BN9PR11MB52760473C89570B5D87386568C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v5 4/8] vfio: Wait for dma-buf invalidation to complete
+Message-ID: <20260129073331.GB10992@unreal>
 References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
- <20260124-dmabuf-revoke-v5-8-f98fca917e96@nvidia.com>
-In-Reply-To: <20260124-dmabuf-revoke-v5-8-f98fca917e96@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DS0PR11MB6496:EE_
-x-ms-office365-filtering-correlation-id: ba638341-549b-4384-113e-08de5f0546b6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024|38070700021|921020;
-x-microsoft-antispam-message-info: =?utf-8?B?clpyeEUyUUptbVZmemJSUVJOMEJ1TVoybkhZdXVEL2p1cm1haU9ZZFhmRVpt?=
- =?utf-8?B?NTlJd2M3bEM5b2hOQnN1Q1Vvbm5wY2YvczBlUSs0TTFISUU1N0ZOVWZ5R04v?=
- =?utf-8?B?RC85MHR3TDJmN0dkcTR4Rm1YQnJXU3N2WlZwcEN6M2hZZHJEOTlhK1RMMWo1?=
- =?utf-8?B?WitrWGZwc1FNOFVwRnJQdG5iWFQzdmE4aGkrOHAvTHJ3b3lYYUxjWXhkMzRx?=
- =?utf-8?B?OHRzMDl0Z1dKSWpCNnBnYktSV1JzZ1ZObmJuQjgxcllnWWRjdjQ3dFdzc3o1?=
- =?utf-8?B?Vmg1cGNFMUpGNzdZaWNJZGduMC9kekwvY1M4MVZrTk1oUWxJVSs2ZTUrSjN2?=
- =?utf-8?B?cW93OWF5Vmt3TFpWUGtVSkdVaTJYbThDK2hHN1dUVFZjVEJIK3Z4ditBVkp5?=
- =?utf-8?B?NldlRTBuZGR0TUZZZFF6ZUtLd09HMG8wYU15K2RHdkRVdHhRL2VPNDU3cnB1?=
- =?utf-8?B?Sy8wNU5uSHdIMDBibDhkM21BbWpMaU1na0UzME5UWmt6bUNMcE1SMTEvNVhq?=
- =?utf-8?B?K1RoZGFyNmZHQ291ZzFRV0ZsMzJxdDBVRkdDU0c3dmxqYUlML2xrSVNyZEYr?=
- =?utf-8?B?aTNmeXpBMmJjdmF2MzZMdFFqanhxOGx3RXZPKzVsWTFrdHNVaGFQb1pObFpR?=
- =?utf-8?B?RGYwVDlYaHl6WEFqdmlQK0NFMnRETEdDUmpaT0FLSnlyN1NoYlV0WGVFMWpZ?=
- =?utf-8?B?OXhYMHF1MG5WR0Y3V1ZxTTlGUHNKSy9kMkdRb1JoWjZnNndzdWg1TkkxVnoz?=
- =?utf-8?B?d0NFWVYyTlBPWEt0M09oRkhYY3VIT0ZGQlRuS2djWmlKaEo0dzR4WGF5ZTN5?=
- =?utf-8?B?OURNdnlDV05LT0RZdnRRUVg2eWFSQ0xsUzJ3dW1xUXBsNThac1gweHYyam90?=
- =?utf-8?B?M1ZJbkhSRmU1RWNhZk9hb3B5M2lPUVN0K3FwTk5aSXYyeGxtN2E5bis4VG0r?=
- =?utf-8?B?YkUyMDN3SkFCa0plOWl6eHptWmcyejRxejVuN2FTVXNnVEdCMWhYOTA3T3BJ?=
- =?utf-8?B?Z1NqZlBLL2srTXlYL3V3QUVlcmliWTcvZTg5UDZtZlVURmR1NFVpSWNlWHc2?=
- =?utf-8?B?UFlFakQ1L0MyejNhVXk4YkpldHJHWVJETlR0S3lqZTRkUHptSFN3RXErWlAz?=
- =?utf-8?B?Sk9oN1RraEJrNko3VlBoMzhFc3pJQ3BrWEpRS0E0bjlWRUd5Q1lHVkUrSVJ6?=
- =?utf-8?B?aTdJdkFiK0hjbG43bG11VllQeVJSbjJSVEVjT05BRk8xVFo0VmY4NzAxVExu?=
- =?utf-8?B?c2RVbHJmQ2VTeVJ5U2N4Ny9UZmdhZFRYaGNUbDVjTS9VUFBZWmFoLzF0RTRp?=
- =?utf-8?B?elR2QTA4dXBlaG9MczBKTHNzNFFjNXoxUE55UXRyc3p4bUIzQzg0NjEwMVRY?=
- =?utf-8?B?ZllubG0xdHhRTlRZcmVaUW1FTkpFY1BhekdENDZuUmdyc1dlYlJDWHRJT1dI?=
- =?utf-8?B?VnorckZzaFpFMTV2OUxoYTQvaE9pbytpVmtXZ0xGNlJpdDc0ckhIUzlzakM3?=
- =?utf-8?B?RUhwaS92Q3EyWlU4TEdoZ2x6bVAxeTVtamFzaHBOSk5tR3UwOFRtSnZnMnNu?=
- =?utf-8?B?MDVMdFZpcXEyTDZibGM4NU1ONTVGOFN0ZE15ZzR1S0JuREtsRnBMSzZxeVVh?=
- =?utf-8?B?N2tFcWhEUy9udkR2bXlOemxWTktUSGNIUnNCVDNCOC9qRkp6UTREcDVYUys0?=
- =?utf-8?B?eGNxZVlaMGVZMUlSNGlzU3RJalN3ZlVyc084SlhVYTdzY3BMSWVDcFZrbE1X?=
- =?utf-8?B?aWJ6dDlPWTBGVzhLMVVNRTFSYm9IV0krNXliMFlrT0J0WmxqMVBJdzZEcmpC?=
- =?utf-8?B?WFJrZytSVlJRYnFldDhJUU5XWG8vN1ZJd2tOdCtDL3RJbTJuQnhpQlBscWc5?=
- =?utf-8?B?cU9OdXltUzVXdXJhTS9TSEdSeWticEVJaGtmQVhvY1M4USsxeloxSVBBZWdl?=
- =?utf-8?B?S2dQUVJvOS9NRnZtNFpQdG9ZT2hTeUhONUdMZnQxYjc2RG5jMldrNnJyKzZR?=
- =?utf-8?B?bDBLbm02ZlNrNXQzRm9mRDVkSGRNQ0E4cWpOY1lQb0E5QWVteWZpLzNkYzdF?=
- =?utf-8?B?SW5Wb1d5bjk1cDlWVkJIYlJrekxlZEw2VU5lMnBYZUJNY1cwcURUQkk3Qi9u?=
- =?utf-8?B?dHRoT2dsUktlSDIzNWgvT245SVMzNU1kYUx3QnlHbWExVUtXZ29Kcm4rZG1q?=
- =?utf-8?Q?+LXX3nMxSFOQf7aHPF/S94BLFDB0Fic7/IHK1JSyAU2W?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(38070700021)(921020);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TkQ2Tnd1dDJOOTJOanZxditLUy8vWG1FcTZCcHdKeDFFb2RqbldYZTVQZVBL?=
- =?utf-8?B?cVBYbmxlM1dIcG94bU1ZbTI2VnNxbFF1YndLY0UyL1NLS0kvRDRubUR6SVBC?=
- =?utf-8?B?VHQvaGt6QVI2VWE1eGxEbUpOSGF6anUvaWQybHpTNnZvaW5OWHRTSHRUYTlz?=
- =?utf-8?B?aUk1UWF3SFg3SXhvYjd5Y1I0WXJ3VEEyRUZQZ2RKMWVuWi8yeUF5QUZILzdu?=
- =?utf-8?B?N3hXWWVOMzA2Tk9Sdzg0RmJrZVczaUFpSVZVY1ZuUkNNZ1c3ZlE2SXJHQzFm?=
- =?utf-8?B?SnpldDZEQlNIOFJTdlBMZnQxNVgyZVN5LytjNG9GcXdBK3VrYlRldWpUampP?=
- =?utf-8?B?Tkh2cHQwRDA1aDFIczRSam9sSDFyWWtyRnYvRFFET0pOQkJ4YkZ5Y3hVVlNR?=
- =?utf-8?B?eUNvOWZBZWRzaHpVdVZsNXcxaWdYZm5MUjJzN3hUWm1pL1dyUEhTbXR4aXlN?=
- =?utf-8?B?RThsd1RTcHlHdm9UOEZvdm1zNHI3cXdVa1lTWS9WUjA5UUFwNjJJdU91TlFP?=
- =?utf-8?B?RXA4QkF5Q0R0NUszY2k3dElvL2tiWWVYSVFpNnRtYnpwOWtGUkpaZDJySkM2?=
- =?utf-8?B?b2syenRvNS9GM3EwNmhsNjZVa3lwMUQzZGIzdUpOUHkweUk3cDIxSkhUWEZo?=
- =?utf-8?B?STFFVmhMQmZCRFAxZTIvM2FRbms2RGZYaDVobjBFUzNUZTRmZHNtb2ExT3JZ?=
- =?utf-8?B?clVGdFQrdWpXYmduMzVKbkNPYUowV05RaURJNXFTa1NyQkhwMlpvcEFCUFEz?=
- =?utf-8?B?UTgxVUpvb3dJazJ0OFkwdk5xcTJwUkZsQVNPeXZIeWhIQzExVGVmNGM4RW0w?=
- =?utf-8?B?d1FBM1BtNFQ5bHc3bTFiWURjRW5CeWxJMVFaVXZqSHBqeHloRE1vVDArNW5u?=
- =?utf-8?B?WlZGclJCWTVkSEgxbVVxSUxlL2l5eXF1eVFya2lOcTZGUjRDMXdWeWR2SnRh?=
- =?utf-8?B?NmRBVUJST0J1eTZEV3NrcXIzRllzQnVMdnBQTURBRlZwVjR2dHJUd3lycGMr?=
- =?utf-8?B?WENzSFNRWUViaTRDcGlGbUxWTVRGRWxucFk4OFBpYnlnWEExZjF1V3VwNGdG?=
- =?utf-8?B?emFjWlRFSGYrUVFuYytQM1JkUW9QWlR5Q0ZBQURjTThsQVJ2Vm9CLy9BZ3M1?=
- =?utf-8?B?cU1KQVk0WmhWbDg5UUZpTmE0a3ZFbGRqa2RoZGhtbW9Fb2prUmEyK21nMG53?=
- =?utf-8?B?R0g5bm5GTHp4TDNGUGIyeUthL3lJU3Fhb3cxY2xtZEgzNWVaendFM21Sb2dp?=
- =?utf-8?B?TmIvd0NrU0lmNXlvNVhzWXk5c3AyUXlNeEUwUURCcmhmYjRuZjl3NkI1bUox?=
- =?utf-8?B?by9ZRDhPWjFveHRrSjZaSDBrcmNwRTdzajRUNU02aXRQSCtsYlhzQnFIZnVZ?=
- =?utf-8?B?dEtrKzhSbVJ0VlNUUVlQK3FuTFA1ZmVnV1AyajZEem81Z1lOamROUlFtTXRo?=
- =?utf-8?B?YllCVUoyUjZzenovMkdkUE9FVnVic2RMNGFyaUxSN0Rxc1FwaEdYcnF3OE95?=
- =?utf-8?B?SHlTcHowMHFldXU5dGpJR2FoUDFDbHRCTkk0SlBxZFdGaE8vSy9TUS9DblpQ?=
- =?utf-8?B?UEQwdktXQXRPZy9wZWo2ajBITHBhVkkxTDdiN2I5MVYxTW1oZkZ4cjJMam02?=
- =?utf-8?B?WXhXL2xqcGwxWHV0dEw1Y0hZTjhNS1oxc2RNemF4alpaSFdNR2ZyQWRBWlBh?=
- =?utf-8?B?UjBNZWczQUFTZEl4T2RTZzFWVDRJekEwOXp5bjhWeEtZS01qcUVBV1NkTFlG?=
- =?utf-8?B?anovbWt2UXRzNVh6NlkwYjhUc3lHTkhsRGNXcUxpeFhjeVU0Z1NzSHNFaEVH?=
- =?utf-8?B?VGMwRFFXWTFwNFoyNEduemNVdkFGYzZMK0xtTkxOWHF3R0txb0dXQm5GRHRj?=
- =?utf-8?B?S3gzZUlhNUVJY2VPbllxUmhHNnBFQkRtUGFCWFZhUnBnd2NMeGN4MDRCOWF1?=
- =?utf-8?B?a0xzOWZ5NXBNMXB2dGFDaXBHWU12TGVLVi9WWE0rc3pvUEpKdEhlQzNpdTZ2?=
- =?utf-8?B?dXhEK3hrWFRQbDFDbGFNVlg4TiszQU5hUktEV05BU0U2Z1RwdGV1OEpaRFQ5?=
- =?utf-8?B?QmtEWVJjb0ZtYmRyNGZOaVA4M3dSUDBVbUg1emVOM3FtYWptUkJDUEpGSFBv?=
- =?utf-8?B?QmdjODl2YUJseVpQRFNodGRGdUtMRDhKUzhNMEN1MEdybUREM3RLS1Zaemlz?=
- =?utf-8?B?SHhsTEFqZFJWeW1ZV3dsUzBPVUFOeFpZYitUUTNUMExmYUN0TFE5SG80UHFM?=
- =?utf-8?B?M2h3K1lTamdoenFWaHppdnFSeU1WM2d5WWZrVTVzQ0JDZjR1c1J3WWhkQmVZ?=
- =?utf-8?B?SzFZVE1MdENoSHZ1QytZenJDQ2wvWGRwQ0JpTmRQak1RMS80MG01dz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20260124-dmabuf-revoke-v5-4-f98fca917e96@nvidia.com>
+ <aXfUZcSEr9N18o6w@google.com>
+ <20260127085835.GQ13967@unreal>
+ <20260127162754.GH1641016@ziepe.ca>
+ <BN9PR11MB5276B99D4E8C6496B0C447888C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba638341-549b-4384-113e-08de5f0546b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2026 07:08:59.8855
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZqKjDBw0DaCxFn8URlAogoA3fK+dsNvYEkPlxZDKrJuh+y0hUCsxfLJV7V8j3EW+NB8iqF8FCeYRTAlRt12stA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6496
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BN9PR11MB5276B99D4E8C6496B0C447888C9EA@BN9PR11MB5276.namprd11.prod.outlook.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.06 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	MIME_BASE64_TEXT(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16181-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16182-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.org,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,BN9PR11MB5276.namprd11.prod.outlook.com:mid,intel.com:email,intel.com:dkim];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kevin.tian@intel.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
+	FREEMAIL_CC(0.00)[ziepe.ca,google.com,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[10]
-X-Rspamd-Queue-Id: 2B610AC79D
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B6768ACBB6
 X-Rspamd-Action: no action
 
-PiBGcm9tOiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4NCj4gU2VudDogU3VuZGF5
-LCBKYW51YXJ5IDI1LCAyMDI2IDM6MTQgQU0NCj4gDQo+IEZyb206IExlb24gUm9tYW5vdnNreSA8
-bGVvbnJvQG52aWRpYS5jb20+DQo+IA0KPiBJT01NVUZEIHJlbGllcyBvbiBhIHByaXZhdGUgcHJv
-dG9jb2wgd2l0aCBWRklPLCBhbmQgdGhpcyBhbHdheXMgb3BlcmF0ZWQNCj4gaW4gcGlubmVkIG1v
-ZGUuDQo+IA0KPiBOb3cgdGhhdCBWRklPIGNhbiBzdXBwb3J0IHBpbm5lZCBpbXBvcnRlcnMgdXBk
-YXRlIElPTU1VRkQgdG8gaW52b2tlDQo+IHRoZQ0KPiBub3JtYWwgZG1hLWJ1ZiBmbG93IHRvIHJl
-cXVlc3QgcGluLg0KPiANCj4gVGhpcyBpc24ndCBlbm91Z2ggdG8gYWxsb3cgSU9NTVVGRCB0byB3
-b3JrIHdpdGggb3RoZXIgZXhwb3J0ZXJzLCBpdCBzdGlsbA0KPiBuZWVkcyBhIHdheSB0byBnZXQg
-dGhlIHBoeXNpY2FsIGFkZHJlc3MgbGlzdCB3aGljaCBpcyBhbm90aGVyIHNlcmllcy4NCj4gDQo+
-IElPTU1VRkQgc3VwcG9ydHMgdGhlIGRlZmluZWQgcmV2b2tlIHNlbWFudGljcy4gSXQgaW1tZWRp
-YXRlbHkgc3RvcHMgYW5kDQo+IGZlbmNlcyBhY2Nlc3MgdG8gdGhlIG1lbW9yeSBpbnNpZGUgaXQn
-cyBpbnZhbGlkYXRlX21hcHBpbmdzKCkgY2FsbGJhY2ssDQo+IGFuZCBpdCBjdXJyZW50bHkgZG9l
-c24ndCB1c2Ugc2NhdHRlcmxpc3RzIHNvIGRvZXNuJ3QgY2FsbCBtYXAvdW5tYXAgYXQNCj4gYWxs
-Lg0KPiANCj4gSXQgaXMgZXhwZWN0ZWQgdGhhdCBhIGZ1dHVyZSByZXZpc2lvbiBjYW4gc3luY2hy
-b25vdXNseSBjYWxsIHVubWFwIGZyb20NCj4gdGhlIG1vdmVfbm90aWZ5IGNhbGxiYWNrIGFzIHdl
-bGwuDQo+IA0KPiBBY2tlZC1ieTogQ2hyaXN0aWFuIEvDtm5pZyA8Y2hyaXN0aWFuLmtvZW5pZ0Bh
-bWQuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBMZW9uIFJvbWFub3Zza3kgPGxlb25yb0BudmlkaWEu
-Y29tPg0KDQpSZXZpZXdlZC1ieTogS2V2aW4gVGlhbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+DQo=
+On Thu, Jan 29, 2026 at 07:06:37AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > Sent: Wednesday, January 28, 2026 12:28 AM
+> > 
+> > On Tue, Jan 27, 2026 at 10:58:35AM +0200, Leon Romanovsky wrote:
+> > > > > @@ -333,7 +359,37 @@ void vfio_pci_dma_buf_move(struct
+> > vfio_pci_core_device *vdev, bool revoked)
+> > > > >  			dma_resv_lock(priv->dmabuf->resv, NULL);
+> > > > >  			priv->revoked = revoked;
+> > > > >  			dma_buf_invalidate_mappings(priv->dmabuf);
+> > > > > +			dma_resv_wait_timeout(priv->dmabuf->resv,
+> > > > > +					      DMA_RESV_USAGE_BOOKKEEP,
+> > false,
+> > > > > +					      MAX_SCHEDULE_TIMEOUT);
+> > > > >  			dma_resv_unlock(priv->dmabuf->resv);
+> > > > > +			if (revoked) {
+> > > > > +				kref_put(&priv->kref,
+> > vfio_pci_dma_buf_done);
+> > > > > +				/* Let's wait till all DMA unmap are
+> > completed. */
+> > > > > +				wait = wait_for_completion_timeout(
+> > > > > +					&priv->comp, secs_to_jiffies(1));
+> > > >
+> > > > Is the 1-second constant sufficient for all hardware, or should the
+> > > > invalidate_mappings() contract require the callback to block until
+> > > > speculative reads are strictly fenced? I'm wondering about a case where
+> > > > a device's firmware has a high response latency, perhaps due to internal
+> > > > management tasks like error recovery or thermal and it exceeds the 1s
+> > > > timeout.
+> > > >
+> > > > If the device is in the middle of a large DMA burst and the firmware is
+> > > > slow to flush the internal pipelines to a fully "quiesced"
+> > > > read-and-discard state, reclaiming the memory at exactly 1.001 seconds
+> > > > risks triggering platform-level faults..
+> > > >
+> > > > Since the wen explicitly permit these speculative reads until unmap is
+> > > > complete, relying on a hardcoded timeout in the exporter seems to
+> > > > introduce a hardware-dependent race condition that could compromise
+> > > > system stability via IOMMU errors or AER faults.
+> > > >
+> > > > Should the importer instead be required to guarantee that all
+> > > > speculative access has ceased before the invalidation call returns?
+> > >
+> > > It is guaranteed by the dma_resv_wait_timeout() call above. That call
+> > ensures
+> > > that the hardware has completed all pending operations. The 1‑second
+> > delay is
+> > > meant to catch cases where an in-kernel DMA unmap call is missing, which
+> > should
+> > > not trigger any DMA activity at that point.
+> > 
+> > Christian may know actual examples, but my general feeling is he was
+> > worrying about drivers that have pushed the DMABUF to visibility on
+> > the GPU and the move notify & fences only shoot down some access. So
+> > it has to wait until the DMABUF is finally unmapped.
+> > 
+> > Pranjal's example should be covered by the driver adding a fence and
+> > then the unbounded fence wait will complete it.
+> > 
+> 
+> Bear me if it's an ignorant question.
+> 
+> The commit msg of patch6 says that VFIO doesn't tolerate unbounded
+> wait, which is the reason behind the 2nd timeout wait here.
+
+It is not accurate. A second timeout is present both in the
+description of patch 6 and in VFIO implementation. The difference is
+that the timeout is enforced within VFIO.
+
+> 
+> Then why is "the unbounded fence wait" not a problem in the same
+> code path? the use of MAX_SCHEDULE_TIMEOUT imply a worst-case
+> timeout in hundreds of years...
+
+"An unbounded fence wait" is a different class of wait. It indicates broken
+hardware that continues to issue DMA transactions even after it has been told to
+stop.
+
+The second wait exists to catch software bugs or misuse, where the dma-buf
+importer has misrepresented its capabilities.
+
+> 
+> and it'd be helpful to put some words in the code based on what's
+> discussed here.
+
+We've documented as much as we can in dma_buf_attach_revocable() and
+dma_buf_invalidate_mappings(). Do you have any suggestions on what else
+should be added here?
+
+Thanks
 
