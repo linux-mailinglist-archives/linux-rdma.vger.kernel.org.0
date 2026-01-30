@@ -1,221 +1,259 @@
-Return-Path: <linux-rdma+bounces-16236-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16237-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UISgMAN4fGmWNAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16236-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 10:21:07 +0100
+	id OFmZL5J4fGmWNAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16237-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 10:23:30 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D392AB8D55
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 10:21:04 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8816B8E05
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 10:23:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7235D30137AB
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:18:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D3C31300292F
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703E8346E43;
-	Fri, 30 Jan 2026 09:18:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6499350D7D;
+	Fri, 30 Jan 2026 09:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QDsenhYz"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="D5jU8SIl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from TYVP286CU001.outbound.protection.outlook.com (mail-japaneastazon11011021.outbound.protection.outlook.com [52.101.125.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5539F244665;
-	Fri, 30 Jan 2026 09:18:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769764734; cv=none; b=nRiAiVechVuBTS1fo4SSsQOI1w0XKaTcwAg9R+qmKYVRIjbgDrRxZCNwnr9fGdS/pX5eg1fWAUaPLo8jYOiMAP91UAGC/Biju7iRLNJuS5VSEkUEuDp6SaFpN+uqgqdqirPs4vvL38zPKIIAsCOK5xK4ld0d/Wbd4lRhBEpV4lI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769764734; c=relaxed/simple;
-	bh=qGYEFSveyQjRI+xZW9jenCLk3w6BzBS5Pf7t46XDjVI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=claaTdc7wYxp/1BYjtV2hf63Ynawv+0yPLZRRRzMiplUuMctCdPuH7MUhYQ3HUwb40PxUEBmyyjbe6S64kkYvGQkRETrHmqkiRcdEbTDT/sUZF1r6ZK+HS6q2uZfw2D4UD4Ly4+vvEYFEVliNJLzUsO2Z74bRICZT3vNwTSO4dU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QDsenhYz; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1769764729; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=b+N5hpKEHqYXdO7/x7HSMbv7XXcD6Y7cxIhWmqLUT1w=;
-	b=QDsenhYzSKXyIVx63osBoxgVqiFCRj2ZT0JOq42WZxA0XkD/GrB2JeGxX6+fGqu4z1pnjk3uNmLahp0YAXw5fpybycQXpUAYJ9W0YKdqKzakLcvVFbUD4UHhluZJdF7XJUMuuR8h0zpIrMN7Xx43yeBJLfBPjxut1cJIrqvaP+I=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WyAFf78_1769764727 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 30 Jan 2026 17:18:48 +0800
-Date: Fri, 30 Jan 2026 17:18:47 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Leon Romanovsky <leon@kernel.org>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, Liu Jian <liujian56@huawei.com>,
-	dust.li@linux.alibaba.com, sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
-	tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org,
-	guangguan.wang@linux.alibaba.com, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net v2] net/smc: fix one NULL pointer dereference in
- smc_ib_is_sg_need_sync()
-Message-ID: <20260130091847.GA43189@j66a10360.sqa.eu95>
-References: <20250828124117.2622624-1-liujian56@huawei.com>
- <20250909094532.GD341237@unreal>
- <20260126044501.GA18724@j66a10360.sqa.eu95>
- <20260127120004.GT13967@unreal>
- <20260128055051.GA79132@j66a10360.sqa.eu95>
- <20260128112122.GE12149@unreal>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2DA32B9A9
+	for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 09:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.125.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769765005; cv=fail; b=YHScBOjwfVkrwYO170hsNR74UZfL8NlxDTw+QlFzNYhLSIwxVAiyjydPT2YGYJpEnEdtdLtSm8lAE4hxnriWqI+OzPQnzoRsJbrTEWbRbUo4cAGpOVzjzc3Ct+GWq9TziFZ+IWLBhUo/4fhv6TuxM7RLpdKueTItbvwttFGpURI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769765005; c=relaxed/simple;
+	bh=O4dK4JWdsG2yCqdOyZaBPS6VxiCTkc1ShoYy9TaF2FQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=nSufg1Ua3FzPtxIq5xC/mcZiYjG7+FbNvtKNJCf2cSFWmYJiqzZsel+GueM0SNoVcpS6M53pambrDG7hO54w3jfJ2shpCB27qIYIMzEG+4tKk17bmefHUuSvj7kWLqWvtd51rYLaKsw0dTyc0jXq1j2h7fu1ks2nbrj5h5lwvN0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=D5jU8SIl; arc=fail smtp.client-ip=52.101.125.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GfQsDSdn+A52DotUCgozm8VuCEwgwUnD2h/sfFvZbc1VqEym5ytUy0Ay8FHGNB10UEz7dcD6PlbXuWMTYy1ue7nnmkr4mrWq1drV1X44/HLOfZuhc5tmcltQaJQ4k0mdevE/FS2Z3HHr6pUBLAfuSWyic9iMxcUKRSC70+4c6yC+iNwvM3zBoLK/MWm6frMc1M38md6UaZxSWjsfd3nYGjJ7dqDxdqwn++5Grgm1zDzXg4CXsyux9qiLLrLEni37JSEWZ6/qpcCwhqLPFqlUZQtR5xKIaBwIo8Z6HwuFeZbmf289JKGZNcswIpzX7IE3LdCH78oaVHGejwxLoeVjkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O4dK4JWdsG2yCqdOyZaBPS6VxiCTkc1ShoYy9TaF2FQ=;
+ b=cz346YL9vZjnSIUA+OjlPC4skispOaJ9DjJLz5i+Sdgs8RB686BMkm6yprTj5dRfRsixpyL/JditVivowIB6bHHOT8DA5zoHKctotOwHL4d9Z5LkYxM0nDbl6qrZGXAB/0KqFOFGVu4k+7wW1sCfalJcddcy+pZ5KdOOF1PojvCcPROBAN9REzsoFRTJrEACGLe1T+2XMCem4hBK/LW+/+wB+ohL02uo9FeC/MKrc/HBn5/bEhhnHSLn4oNWxYm6N2y82XufbiABCjMGJItmRsGrenptZnE+CqgCotxImnen59CGcmUX6yH40f9MeB4hroOUPFePHlmoj/wljw007g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O4dK4JWdsG2yCqdOyZaBPS6VxiCTkc1ShoYy9TaF2FQ=;
+ b=D5jU8SIlBSGA7UK3x80mIw5H3DdHTjFkyVWF7NZFOeyJUxPGWVmubRp1c96AspfrnS76dwd5zXfw5wytgRxAeRU4N1VAPsVxN431udwc+APHUKP5p6t9YkrG0Hmkw5gIXTpe0h1ch10wSgePPpgup9A9gDv0sGu1Em3zjysIuZmZAppHSXrz4T/CAKQ8hlszIU3wFyXrfx0/689IzBXrGq54l4iWBpJHIcv4mSs69fn9JfC1u/4n/wBDNwILADQ6Vwg4zUu1GPsISLxZnUx49pHcut0F4zHR0Ap6/WxHi5H0NNYD4g7XjcMaXrbZO4AbALykUHWkIy4OH/Rj0Znaag==
+Received: from TY7PR01MB16837.jpnprd01.prod.outlook.com
+ (2603:1096:405:32e::20) by TY4PR01MB14465.jpnprd01.prod.outlook.com
+ (2603:1096:405:238::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.11; Fri, 30 Jan
+ 2026 09:23:21 +0000
+Received: from TY7PR01MB16837.jpnprd01.prod.outlook.com
+ ([fe80::5812:babf:b430:670f]) by TY7PR01MB16837.jpnprd01.prod.outlook.com
+ ([fe80::5812:babf:b430:670f%4]) with mapi id 15.20.9564.006; Fri, 30 Jan 2026
+ 09:23:20 +0000
+From: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+To: YunJe Shin <yjshin0438@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon
+ Romanovsky <leon@kernel.org>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Joonkyoo Jeong
+	<joonkyoj@yonsei.ac.kr>, "ioerts@kookmin.ac.kr" <ioerts@kookmin.ac.kr>
+Subject: Re: [PATCH] RDMA/uverbs: Validate wqe_size in post_send
+Thread-Topic: [PATCH] RDMA/uverbs: Validate wqe_size in post_send
+Thread-Index: AQHckchCHRHhlacY+0OFEaUBGP7skLVqcJOA
+Date: Fri, 30 Jan 2026 09:23:20 +0000
+Message-ID: <151277c7-c155-4b3a-94a5-fe8c9dd70f25@fujitsu.com>
+References:
+ <CAMX6_QHfPsyybbO_79u4RpbGY9H28xhpaVPHUD-wu2U+V5W=7w@mail.gmail.com>
+ <20260130090945.2426003-1-ioerts@kookmin.ac.kr>
+In-Reply-To: <20260130090945.2426003-1-ioerts@kookmin.ac.kr>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY7PR01MB16837:EE_|TY4PR01MB14465:EE_
+x-ms-office365-filtering-correlation-id: 7d50aeb4-7f47-4263-c98e-08de5fe135a0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|376014|1800799024|1580799027|7053199007|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?b21GZlJtSDV0WE9aUVZpWEEydXMwd3R5VGN0MS9CL0Zxc3ZUQ2I5NHhOLy93?=
+ =?utf-8?B?bmd4YkMzK2k1MlJHSE9RVkF6ME9WL1R6UEVYaWhhcDdLU09pSVVtUnhZWVB2?=
+ =?utf-8?B?V0ZML1NlRllWaTBkQmhqNWNaTmVXY0tjV0Z5enJVbkMzRXAxa2JXaHlsSmxQ?=
+ =?utf-8?B?b0pWeG9yMXlCczk3ZWl4akEwd1YzVm1PektKWUxQeDdSNGN5K1dZOEQwUG1J?=
+ =?utf-8?B?cTdlZ2ZVN1NQcGI5ckpLMmgrNnNEWkZVSW8xNjdHVng3ZFJaUWdPSkNXVXlE?=
+ =?utf-8?B?S1E0SFZsU0prQjBKZWxNbDlCblBVVTFhdy9KZXZ4MjFvUmFWSkkrTURGV2FS?=
+ =?utf-8?B?bHVyTEloZTkyNDNNazhCWGZWQzJRd0dCc2creGZUNkh2d2hKLzFoNDJmN2Nj?=
+ =?utf-8?B?bFk5bjRNL1pkOWVLeGZPU25XdE4rMjBsS0Y5ZlVyYWdHM1RnYTgwRmhGYjRu?=
+ =?utf-8?B?NHJ6SXVwNm0rY1kxRnV0WFFSZ0lVeDFCOXQyM3BSOEI2TFpYOFRTd3o1SGdW?=
+ =?utf-8?B?SEhhWkFaWC9sbDA2NDZtRzBXWTdzOUxodTFNSFR1N3Q4WUVVRDBkdWw2WmtZ?=
+ =?utf-8?B?U0pXazR5L0hjc25NeU1JcDhKZFF3YTRqbjZ3bTJvYWFUZUZvVkY2c211RnVi?=
+ =?utf-8?B?OXRsV1hJbGpJSE13d2pWbnVMV1JrbCsrQ3VtNFFVbCsvYjJ5R1c1a1dRK3ln?=
+ =?utf-8?B?YzJ3QktKVFlQUmQyeGJBZmtxMHd5N2g5UnR6WnRLWFRpRlFrWStpQlc3L2xj?=
+ =?utf-8?B?MjNIV09ucnB6a3VVSFVqRHFTaXZMTGlzVkNrdmtUQUdwaTRJWGh3dXF4eEFo?=
+ =?utf-8?B?eW1zeDRFd3RTc1VqTzlTay9mRmlERUZ2S2tZVE5yQ05DaVp2dXFjMEUzNU5x?=
+ =?utf-8?B?Q3dheTY0UmkzM0E4dThSR1hWWkx4cHluUXIzNkM2UFN2ZXhJL2ZhV2VsZUQz?=
+ =?utf-8?B?MDJHbEhuRHgvSzVCemY1akhsalpZMkxtcDhRdlEySHV0TXFkTWlSWTBSSFF2?=
+ =?utf-8?B?cDJyTEc4RTgwc1h2dTV0aURYOUc4NUxUVUJTeHdaaUpqQWYyS2N4ZGYvL2Vp?=
+ =?utf-8?B?eStRU3BQaTdjR0ZQeFBJWUpjL3pKSVJzQVVjVXRBTk1HSkMzUzNqZEZQaXUr?=
+ =?utf-8?B?WXhpWFkxZVhQYVA5ZWltTVlqTURIZ2NPNi9yaVEzK0RMOUpyWFFNWDQ3MHlS?=
+ =?utf-8?B?WDFnUUdxWllCcmpSZHZORVBmZzJpeDBLWVdCKzNlVUFBSERTbEZqejVBVUQv?=
+ =?utf-8?B?WHBteDkzTjBqRzdIb0F2YVZGMHVMelpwUnFNb2xDTzlteERiZGE0cGU2UW81?=
+ =?utf-8?B?UWZUWWFHM3BPcnorWEw3ZTg3NTF3ZGRVRjFEdlYrZlVlQTRHQkZPakpuNnd3?=
+ =?utf-8?B?dlhXOUplOTIzcXJpSjJmQUhKTzR0a2hRdnB5OXJGRzM2MzEvZkxHN3dKY1di?=
+ =?utf-8?B?WEE1SW5EWThZQVVkMXhXZXhsNWkyRDRYMmlXSkhLZ1d5QzE0aGJ6a21pQngx?=
+ =?utf-8?B?aEc0YnRDZDVqY3NicCtaRjhCT2RwNlNYTUZCa0pMcnM1TkRwK09qUmIrenVo?=
+ =?utf-8?B?SitCdTlUaUVzNXZSNW1ha2h4ei9lOHFjc05zNit0YkZIMFY5QmF6eGRQUTVn?=
+ =?utf-8?B?dzB4R1FYcEZNY1VRSG0yb3FWcWVoeXhXZVloazNNQmZPK0NDeUNNdXdMdERp?=
+ =?utf-8?B?VDNHN3ZCcGRwREVCQkV0dG1aU1YzR0x3VWtkNytrZ2dFNHd2eUZybVpVYWd0?=
+ =?utf-8?B?b3AwZGJqOHQxQVdWTFdnb0pNTGs0UXZtRG1LUEgwM3hqSGx3VDBjVlNrc2Y4?=
+ =?utf-8?B?LzBzTDN3bEJyMFZFNktLblNhV0ZPZUF1Sm91Q1pRa0dXUWllMytTeVBhTzA4?=
+ =?utf-8?B?Z2ZEV09BbVg1NXUrUkswUlJieDl2VHFwcjVNUSswMHByMENrSzVwUTlxOVJT?=
+ =?utf-8?B?ejFCajhaRHQvQU04UHByeU5nb2Z6cytaK0svTVp4UXI1NCtpa21KOGxQYlVK?=
+ =?utf-8?B?MmZ5aVFJT3JFZXVPVDAwYzA0cWsxQjhHcW9oalZkVWlteG1yTXl1RlpGb3VZ?=
+ =?utf-8?B?cGk0MncrQ3FUVkl1ZVdkTXRZa0FiUVdjTUVsNDg2VEY5Q3RpWXRlK1VzV0NI?=
+ =?utf-8?B?ZGRxZWZpOEVLRnVOU2ZTS1pERUliZ1pzNklnWlBiRU1ZbmUzeHllTWhCRDZn?=
+ =?utf-8?B?Qm5JVlFIYnRQOWNjWDlVVmtNdWQrT1ExcG5MOGRyeDlidDFiMWtqR3RBbHpq?=
+ =?utf-8?B?cFBIbWRaTTBQMmVsT3RlTmMvaXBnPT0=?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY7PR01MB16837.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(1580799027)(7053199007)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ZTVSVExmYUlubGJiaVBOZ0RRNE94RUZGb0lBTTFRV1J4NXFkNGwwSlZmWjlO?=
+ =?utf-8?B?WGR1d2FqOTRMTDZPL0N5M09WWlZCd2hRUFEzWTRNT3grNFAyN1JpakNrazQz?=
+ =?utf-8?B?UXZhTU5NMVlEZ0pnTEVQd0tiNmxWQjFSZ0gvVmY3UUN4WWIvWkZUNHk5aHR0?=
+ =?utf-8?B?dmRtSDZQSC9zM3p4eGRzMzZIUHZpZnlESHRNNmVOR3ZVT3RpeTF4MWhCaWtQ?=
+ =?utf-8?B?c1JCZTgyakpNZ2xYMjBCRnlZZUhVdTYvNEhkVlRHM2pkd3FRUmYzWFBwTXZY?=
+ =?utf-8?B?QlNtRHhyNVlRZys4RUxWRXVWb2g4TlFxOTZWb28rTmhVK1lnRTBYQWpzNVc3?=
+ =?utf-8?B?RFF6QTBwR0lhKytaWDVSZ0xzSzgrQXRJc0hNUThieGJhUS81QWc1QkR6UWx3?=
+ =?utf-8?B?Y1g5dHdmLzJLUDlEN1NnT3FheUtmNHV5NkFmYzNzRCs4V3FxRmUxcGROZVRD?=
+ =?utf-8?B?dHZncWwxZ0c3SWNDcHJVdmN6VjgvU3hIUlN3cGpwd2VpT3BweTF1NWgvUVJL?=
+ =?utf-8?B?SXk3SEFMNWlEQkRoMzhCTCs0SXFkVEY2SDNabHVDWXh3c24xV1cwVWwrdDBz?=
+ =?utf-8?B?U1lOL1NOUG00RWJpc2d5SGMxTksvMlY4MkZZb0xBQ0pLS1YveFBTNERWWkRI?=
+ =?utf-8?B?dHJsMmNwZXp3cXdTenltQlM4TkpQZlVzL0tBcTJhZHArbXNQbmNjUzMwN3Ux?=
+ =?utf-8?B?SEdQcWpsZXJBSFZjYnlqZHlhbDQyQ1pSblNEeFhMNlRFdEI2UnZzRG9jZ0cw?=
+ =?utf-8?B?VWhCZW11N01BTnlhVUVXZHN6bUc4SFU2d2NYck1hU3Q2aUdIQlY0MHZObTdu?=
+ =?utf-8?B?S1l3blUwMlAyNHF6WUd1RlBrZi9kOWsxdGs1WWMyYm5wY0hieUxMTEIycGZm?=
+ =?utf-8?B?V2JLalQwQW4zdEg3U1NybHNkUUhnVUhOODZ6aVdjNzBvVXY5eW9seng4Sy9L?=
+ =?utf-8?B?N0l0cURDQWhIOXYzSXFDY1R2NTdqMHQvdE5ZdjBrSDBpUW00U2d5clZiV1Fi?=
+ =?utf-8?B?b1NkUUY4aFp5L3hyRWljS1hLY3oza2l5WmpVYnJ5b2VNTjhWemw4MUJmbURz?=
+ =?utf-8?B?eng1K2FxRHVDR2xzVHAxbWU5QmtKQ2U1N0pTd2tMZmlHcFRKUXFid2dLZ1RY?=
+ =?utf-8?B?UGtWTzlWcDNyQXE4QXFMcjRhVklRcmtXYWIxMGVwWThZbWxVSHU4Y0lSUzNC?=
+ =?utf-8?B?R2ZXemJJbGMvVmQxQmVJZWFBTXl4Z3RJN3U2MHBmbUdibjRKTXVrSm8rZ042?=
+ =?utf-8?B?QXpGelkxdjhoU3RCNlY1QlowRHVmZWdmL0xjU1JoSnZGMTR4MGlCVitReEJU?=
+ =?utf-8?B?ckNWeXphYmVLUTR0bGczWWtBY1pBYVpUNFZOa1hobXBRc3RBbWRTUmJRbWdz?=
+ =?utf-8?B?d2NkTzI3UEl4REdIV005cm1RZC84emlqMjJMYldvY3VyKzUxWE0rZm1BK09s?=
+ =?utf-8?B?WHZuR0ZvdjZ0LzNQREN2VXZlMmwzVkt3dGNsVXFQYXNZdDZGTXpHVkQzdmR5?=
+ =?utf-8?B?QTYxVFNxczBwczI2NkJEd1VmMEMvNUhvOWo4UnBlZldtQXJib2FBdnUyaDR2?=
+ =?utf-8?B?ejBBd2wvazJ5TzhxNE5SbGlDU2cyalYwcThNcFdlQ3duMHVpNFpxeW0xU1h3?=
+ =?utf-8?B?Wk9NT2dJdUJUTGZiTE5WU0x5Z28rdXEvOXFMampSMWw2RWFWdnhnRTBXayty?=
+ =?utf-8?B?WmpDL3pZajJZSnhSajYyUHdlV3B0bjhldXVmL3NmNThlVW5NZTlobU9vZytQ?=
+ =?utf-8?B?R0ZuZ21icTVINHVkaCtrRmUxa1VrUGdVdWIvYlZGZ21vSXJTTnBIcXpVNUJo?=
+ =?utf-8?B?MVdhZDE2UisvMzBibzd4a2kzTnZKaXdPQjF4a2c3Nk9DSkRCS0R6RmFEdXdW?=
+ =?utf-8?B?QXc0cDM1RjNoN0RZTmZtcHo4Lzl4M0ZCcXJHeWJLVklkajZOcCtESlVLamtR?=
+ =?utf-8?B?cEY1Wm1QRUNFWHVFUEtYOTdDVS9EM2NobHBCcGM4WGJCNFFMWjBKVlp1NUV2?=
+ =?utf-8?B?MUhSRkNyYU55UEhMSncwbnliVGVnSkNQNnB3YlY2Vmk2bjF1YWlGdWNZRmxI?=
+ =?utf-8?B?SGxkZE5EalBqTjBmMnlVM0JGZnhHcEFhWE90WnRBMjVLR0p3U2JFaUNOeDRN?=
+ =?utf-8?B?RFRUK2loZzFBV05FOU5saWhzSy9UL1d0V0d4czRCTHkrRXI0L0hvTnBHRU9x?=
+ =?utf-8?B?SkRtcFJPOWQ4S2lrVXVOR3VXSExnV3VTU055bDRoVkx0bUFBd2dHNUhrKy9h?=
+ =?utf-8?B?bGtpNDRDbEpZeWY0N2R1cmYyb1lxeEVyUklXR2pXdGlvQWNMMUZCdThHM0Rz?=
+ =?utf-8?B?UDhsY2QxL3ptQm5IUk4zU285Z2ExTVZUTkVReDllOHVNekdNZE1uRUZBNHpm?=
+ =?utf-8?Q?SlI4Qs4dQNJy+oH0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B68AC33E40B20940813BA2003E0F731B@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260128112122.GE12149@unreal>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY7PR01MB16837.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d50aeb4-7f47-4263-c98e-08de5fe135a0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2026 09:23:20.4908
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ky7dIYrIrD7iR7hSSnKiaaTUuNQrtH/e0EaccsXiAv9xRnxBxoK30FdObcYuQCUe3X99xJlV7AZNw9KeJaUjsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY4PR01MB14465
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [0.94 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[fujitsu.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[fujitsu.com:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16237-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16236-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[fujitsu.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lizhijian@fujitsu.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[j66a10360.sqa.eu95:mid,huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:dkim]
-X-Rspamd-Queue-Id: D392AB8D55
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	REDIRECTOR_URL(0.00)[aka.ms];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[aka.ms:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,kookmin.ac.kr:email]
+X-Rspamd-Queue-Id: B8816B8E05
 X-Rspamd-Action: no action
 
-On Wed, Jan 28, 2026 at 01:21:22PM +0200, Leon Romanovsky wrote:
-> On Wed, Jan 28, 2026 at 01:50:51PM +0800, D. Wythe wrote:
-> > On Tue, Jan 27, 2026 at 02:00:04PM +0200, Leon Romanovsky wrote:
-> > > On Mon, Jan 26, 2026 at 12:45:01PM +0800, D. Wythe wrote:
-> > > > On Tue, Sep 09, 2025 at 12:45:32PM +0300, Leon Romanovsky wrote:
-> > > > > On Thu, Aug 28, 2025 at 08:41:17PM +0800, Liu Jian wrote:
-> > > > > > BUG: kernel NULL pointer dereference, address: 00000000000002ec
-> > > > > > PGD 0 P4D 0
-> > > > > > Oops: Oops: 0000 [#1] SMP PTI
-> > > > > > CPU: 28 UID: 0 PID: 343 Comm: kworker/28:1 Kdump: loaded Tainted: G        OE       6.17.0-rc2+ #9 NONE
-> > > > > > Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-> > > > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-> > > > > > Workqueue: smc_hs_wq smc_listen_work [smc]
-> > > > > > RIP: 0010:smc_ib_is_sg_need_sync+0x9e/0xd0 [smc]
-> > > > > > ...
-> > > > > > Call Trace:
-> > > > > >  <TASK>
-> > > > > >  smcr_buf_map_link+0x211/0x2a0 [smc]
-> > > > > >  __smc_buf_create+0x522/0x970 [smc]
-> > > > > >  smc_buf_create+0x3a/0x110 [smc]
-> > > > > >  smc_find_rdma_v2_device_serv+0x18f/0x240 [smc]
-> > > > > >  ? smc_vlan_by_tcpsk+0x7e/0xe0 [smc]
-> > > > > >  smc_listen_find_device+0x1dd/0x2b0 [smc]
-> > > > > >  smc_listen_work+0x30f/0x580 [smc]
-> > > > > >  process_one_work+0x18c/0x340
-> > > > > >  worker_thread+0x242/0x360
-> > > > > >  kthread+0xe7/0x220
-> > > > > >  ret_from_fork+0x13a/0x160
-> > > > > >  ret_from_fork_asm+0x1a/0x30
-> > > > > >  </TASK>
-> > > > > > 
-> > > > > > If the software RoCE device is used, ibdev->dma_device is a null pointer.
-> > > > > > As a result, the problem occurs. Null pointer detection is added to
-> > > > > > prevent problems.
-> > > > > > 
-> > > > > > Fixes: 0ef69e788411c ("net/smc: optimize for smc_sndbuf_sync_sg_for_device and smc_rmb_sync_sg_for_cpu")
-> > > > > > Signed-off-by: Liu Jian <liujian56@huawei.com>
-> > > > > > ---
-> > > > > > v1->v2:
-> > > > > > move the check outside of loop.
-> > > > > >  net/smc/smc_ib.c | 3 +++
-> > > > > >  1 file changed, 3 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> > > > > > index 53828833a3f7..a42ef3f77b96 100644
-> > > > > > --- a/net/smc/smc_ib.c
-> > > > > > +++ b/net/smc/smc_ib.c
-> > > > > > @@ -742,6 +742,9 @@ bool smc_ib_is_sg_need_sync(struct smc_link *lnk,
-> > > > > >  	unsigned int i;
-> > > > > >  	bool ret = false;
-> > > > > >  
-> > > > > > +	if (!lnk->smcibdev->ibdev->dma_device)
-> > > > > > +		return ret;
-> > > > > 
-> > > > > Please use ib_uses_virt_dma() function for that.
-> > > > > 
-> > > > > It is clearly stated in the code:
-> > > > >   2784 struct ib_device {
-> > > > >   2785         /* Do not access @dma_device directly from ULP nor from HW drivers. */
-> > > > >   2786         struct device                *dma_device;     
-> > > > > 
-> > > > > Thanks
-> > > > > 
-> > > > >
-> > > > 
-> > > > Hi Leon,
-> > > > 
-> > > > Sorry for the late reply, I just noticed this and thank you for your review.
-> > > > I agree completely with your feedback: we should not be accessing ibdev->dma_device
-> > > > directly. Following your advice, replacing the
-> > > > 
-> > > > 	if (!lnk->smcibdev->ibdev->dma_device)
-> > > > 
-> > > > check with ib_uses_virt_dma() is straightforward and absolutely the correct
-> > > > thing to do for that part of the logic.
-> > > > 
-> > > > However, this has led me to a further challenge. The main purpose of the
-> > > > smc_ib_is_sg_need_sync() function is to get the result of dma_need_sync().
-> > > > This means that even after correctly using ib_uses_virt_dma(), the function
-> > > > still needs to call dma_need_sync(ibdev->dma_device, ...), which forces us
-> > > > right back into the direct access pattern we are trying to eliminate.
-> > > 
-> > > I would like to challenge the use of dma_need_sync() in smc_ib.c. From
-> > > what I see, it is used to avoid calls to dma_sync_single_*_device()
-> > > which will be NOP anyway in that case.
-> > > 
-> > > Why did you copy that logic from XSK?
-> > > 
-> > 
-> > You are right. I just noticed that the DMA has already introduced a
-> > similar optimization.
-> > 
-> > The check in SMC was added back in 2022, while the DMA introduced
-> > the internal "skip redundant sync" mechanism in 2024 (commit f406c8e4b770).
-> > 
-> > Given this, it might be better to simply remove this redundant check
-> > from SMC now, which would also eliminate the need for direct access to
-> > ibdev->dma_device. I need to perform some tests to confirm this.
-> 
-> It may also be worth looking at this series from Chuck, which reuses the
-> recently introduced DMA API to remove the SG conversions:
-> https://lore.kernel.org/linux-rdma/20260128005400.25147-1-cel@kernel.org/
-> 
-> You might be able to apply a similar approach and drop SG from your
-> datapath entirely.
-> 
-> Thanks.
->
-
-After a quick look at the rdma_rw_ctx, but it doesn't seem
-suitable for SMC. SMC uses a ring buffer for its transmit path and
-requires frequent offset adjustments during data transmission.
-The rdma_rw_ctx model is likely not flexible enough for this
-kind of circular buffer logic.
-
-D. Wythe
+DQpOaWNlIHdvcmsgb24gZmluZGluZyB0aGlzLiBJdCBsb29rcyBsaWtlIGEgc2ltaWxhciBwYXRj
+aCBqdXN0IGxhbmRlZCBpbiB0aGUgZm9yLW5leHQgdHJlZSBhIGZldyBkYXlzIGFnby4NCg0KaHR0
+cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvcmRtYS9yZG1hLmdp
+dC9jb21taXQvP2lkPTE5NTZmMGE3NGNjZjVkYzljM2VmNzE3ZjI5ODVjM2VkMzQwMGFhYjANCg0K
+VGhhbmtzDQpaaGlqaWFuDQoNCg0KT24gMzAvMDEvMjAyNiAxNzowOSwgWXVuSmUgU2hpbiB3cm90
+ZToNCj4gW1lvdSBkb24ndCBvZnRlbiBnZXQgZW1haWwgZnJvbSB5anNoaW4wNDM4QGdtYWlsLmNv
+bS4gTGVhcm4gd2h5IHRoaXMgaXMgaW1wb3J0YW50IGF0IGh0dHBzOi8vYWthLm1zL0xlYXJuQWJv
+dXRTZW5kZXJJZGVudGlmaWNhdGlvbiBdDQo+IA0KPiBpYl91dmVyYnNfcG9zdF9zZW5kKCkgYWxs
+b2NhdGVzIGFuZCBjb3BpZXMgYSB1c2VyLXByb3ZpZGVkIHdxZV9zaXplIGJ1dA0KPiBuZXZlciB2
+YWxpZGF0ZXMgdGhhdCB0aGUgc2l6ZSBpcyBsYXJnZSBlbm91Z2ggZm9yIHN0cnVjdCBpYl91dmVy
+YnNfc2VuZF93ci4NCj4gQSB0b28tc21hbGwgd3FlX3NpemUgbGV0cyB0aGUga2VybmVsIHJlYWQg
+cGFzdCB0aGUgYWxsb2NhdGlvbiB3aGVuIGFjY2Vzc2luZw0KPiB1c2VyX3dyIGZpZWxkcywgd2hp
+Y2ggaXMgb2JzZXJ2YWJsZSB3aXRoIEtBU0FOLg0KPiANCj4gRXhhbXBsZSBLQVNBTiBzcGxhdDoN
+Cj4gQlVHOiBLQVNBTjogc2xhYi1vdXQtb2YtYm91bmRzIGluIGliX3V2ZXJic19wb3N0X3NlbmQr
+MHgxMDZiLzB4MTYwMA0KPiBSZWFkIG9mIHNpemUgNCBhdCBhZGRyIGZmZmY4ODgwMDdkZjQ3NDgg
+YnkgdGFzayByZXByb19oeWJyaWQNCj4gDQo+IEFkZCBhIG1pbmltdW0gc2l6ZSBjaGVjayB0byBy
+ZWplY3QgdW5kZXJzaXplZCBXUUVzLg0KPiANCj4gRml4ZXM6IDY3Y2RiNDBjYTQ0NCAoIltJQl0g
+dXZlcmJzOiBJbXBsZW1lbnQgbW9yZSBjb21tYW5kcyIpDQo+IFJlcG9ydGVkLWJ5OiBZdW5KZSBT
+aGluIDxpb2VydHNAa29va21pbi5hYy5rcj4NCj4gU2lnbmVkLW9mZi1ieTogWXVuSmUgU2hpbiA8
+aW9lcnRzQGtvb2ttaW4uYWMua3I+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvaW5maW5pYmFuZC9jb3Jl
+L3V2ZXJic19jbWQuYyB8IDMgKysrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
+KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3V2ZXJic19jbWQu
+YyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3V2ZXJic19jbWQuYw0KPiBpbmRleCBjZTE2NDA0
+Y2RmYjguLmE4MGI5NTk0ODJlOSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2Nv
+cmUvdXZlcmJzX2NtZC5jDQo+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3V2ZXJic19j
+bWQuYw0KPiBAQCAtMjA0OSw2ICsyMDQ5LDkgQEAgc3RhdGljIGludCBpYl91dmVyYnNfcG9zdF9z
+ZW5kKHN0cnVjdCB1dmVyYnNfYXR0cl9idW5kbGUgKmF0dHJzKQ0KPiAgICAgICAgICBpZiAocmV0
+KQ0KPiAgICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+IA0KPiArICAgICAgIGlmIChjbWQu
+d3FlX3NpemUgPCBzaXplb2Yoc3RydWN0IGliX3V2ZXJic19zZW5kX3dyKSkNCj4gKyAgICAgICAg
+ICAgICAgIHJldHVybiAtRUlOVkFMOw0KPiArDQo+ICAgICAgICAgIHVzZXJfd3IgPSBrbWFsbG9j
+KGNtZC53cWVfc2l6ZSwgR0ZQX0tFUk5FTCk7DQo+ICAgICAgICAgIGlmICghdXNlcl93cikNCj4g
+ICAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsNCj4gLS0NCj4gMi40My4wDQo+IA0KPiAN
+Cg==
 
