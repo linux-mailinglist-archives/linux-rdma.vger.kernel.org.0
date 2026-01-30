@@ -1,211 +1,313 @@
-Return-Path: <linux-rdma+bounces-16239-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16240-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KNfbFSWSfGkQNwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16239-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 12:12:37 +0100
+	id AK+oLxGnfGnCOAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16240-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 13:41:53 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C4DB9EAF
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 12:12:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E608BA99A
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 13:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D7698303CC33
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 11:07:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B0308301990E
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 12:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C73B378D72;
-	Fri, 30 Jan 2026 11:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18628376BF8;
+	Fri, 30 Jan 2026 12:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CricIt6C"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DLd4eOnd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAD0378837
-	for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 11:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.169
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769771235; cv=pass; b=XlpA67k4D+rD+R+XvssquP29/on0Nw/s+XWd87Gx6HkxH/7dhLb2bS3TEYQt6GSnm8odsFKMOAnOe7QrYPAQLI1XvShv5ozTCx5o7Gfu1LdpOpJdUlBeZfTlNqpH/sP9tWjyCWVM1n25/gDqu3YzyVsrR6G6/n+vjvjvNkfBd9Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769771235; c=relaxed/simple;
-	bh=j6eD4mqbfM9sp8yWTMh9QTN/xvebMy5z718cPcq1uF4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VfbSQ7sWjzofWaG5vn8IarnACev0OJjekQJzYzkdWTEQyVQ3DxWgpOljVn1Uv37u4ZIWzIUwLKiQrw0R7hsoQwGFrNpsyzpvIOO59m9e+AsVxhE8pgwLQkLbZ8qMcPvm2Ce0ZtJ4w3NtW2+ADJXX+lR+7iNoaEWc845l0275uSQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CricIt6C; arc=pass smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-8230f2140beso1677669b3a.1
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 03:07:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769771234; cv=none;
-        d=google.com; s=arc-20240605;
-        b=bnyFK6kyc9/tJZ4oJM+xUTLM2hCiwGKVnY2UrwIMiednXnxRMGVRsXbTg3zdDsYyDv
-         aR8+cgjESPdTT+ejEuHZQuKZcEKKq5Ne6ovaTOfq+UgxwxoKrnxJw6+C/oc/0tgtWKvg
-         kp2MO5bu7H6uidCzFJ4yL7L38ed8LiKv6a+5j2BnMR1IsYTfWF2klVN7E8XnCEUreKOL
-         WDK+YU+xqev3xcgT9h4MLkdRiAfyeRyqVcvul/1aG/y+orKIW2gTdfXVd9gVL1qX+6nc
-         Q32ZS0Z6ibTFS2quN/7o4DC/EZW/9hIxDJS1NIJ3J0OLs9eeSlnLHCMiJ6Vu92pedqc6
-         TYNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=QUJZ+dKFSkMHy4heGPWqxikU1+6SvxbG2AZgX2l5DMk=;
-        fh=h5eqfMEHXdad4doUwcRmotlDCBzQd2bcBwBDIlmmlUI=;
-        b=i22gidpRtU+cK+GLECcbGidcHoaJM6wzIE/E2396EZqK+r/Fl/JgQJuYHCV7h8Jofz
-         QvUZbWu4IvaV9HVrUE2grda9RqIAK7V5M23w/SOMTEGCbuNXbDxi11pZDW08x5VNQCAu
-         jPwPw+24AWKOkuXwIUpN8AULrOXGCbGWCodcSfJo/66enARnikW8/3+9UvtrI18KQTF7
-         eP2vpA7a5nBWin461Uqi2s3TxofiCluk3H2CL/2jzKJ2ASiESGm+CF3X9P0XC7FIzHcP
-         GvBy4HkRWMU6pbYppBgSNGXLkM00wvfKy1wDsDaxm7lJfdcEEuCW5reVp3DEmCKu+lmn
-         GEAQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769771234; x=1770376034; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QUJZ+dKFSkMHy4heGPWqxikU1+6SvxbG2AZgX2l5DMk=;
-        b=CricIt6CLWGd1BNAudpEPXawFAjw9pk69ZzmTthBocA8KhTuMhBy5kwg0EwTD80lHm
-         B5Oz82b/sE/YS7/auQk6kJffe7YwUmN+tkfe5PhxOxkfMyTwTVcAp7rngDq2f2fBSYSk
-         xI5JW2vrKIKnTDYz6602Fh9PS1mHTV8m2D8PH1Qfxap04diMK+g5sZXeg/GcDYjALkgq
-         9Vev/fqweL6n7ZffQtvmhqKxr0nriopJHQhBFYcIKZZjoCtuADLFcF4Dv/aZa1C9/9pk
-         DnNDpM837lFRhH1H4lEISwBtbk4F80MLoFKiYAf6nKcQqSSrpubfNhWAAUYatMxpFVZC
-         bsQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769771234; x=1770376034;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=QUJZ+dKFSkMHy4heGPWqxikU1+6SvxbG2AZgX2l5DMk=;
-        b=fIFN7iqEieQex6CE+cOy1vpWETcxuR8wPYbYFcqcV0QAXX+U0LbPTF3rs0tEMOERlD
-         O3IoypuJwsfJKrLfoXHATFEZLlKaeoItgqJM/7Ikvg75/TRPidf6by+gfK9ZmhlrlXjq
-         Ei5XE4dgiH8MFRjU7nnneZZT19AGjuee6SHSE3fOU88Hl7oGDFylrs9HL0aKIZ7n7014
-         v/D2rWM1SEExnLTgtsy8G+jg9VWevUP2uxNQyz3wjhNRWbdm3vGfmsvKrMKMGNcZ9mNZ
-         Bldh/JneqmP5PCUXRCQgSyvZjR8oFYfypagI7JwfGDGIJEPsMcYRLPLP8LXFkLQqvbIG
-         r15Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVdvyip0uLaknLc+AqIRv60Pt6D1HbsoaFM2MQFCDaY5qNmaIfhO44QpwkjchTx1t5grUcWBiLR7HDh@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj4dCbanA3Pjp+Sa95LA/kaPc4RMYWqLRbhHO7yNtzjw4qUGWf
-	z1nVvN8yjs43KMcn6FWPKaKF7EqeRdvpxszawXgeUQhGbbZQM4oREwHOKUZZ0hQbAQJOoAziJrI
-	f15t9lqOKZVTWuVyP9JWtYmxuYlVKWAk=
-X-Gm-Gg: AZuq6aLtKwyQswWdsRu686keReFoWyJ+Y/QH2/XiN8Ikhe7rlyA5kwCdAjnOYgWARG1
-	KoPf1iu/liUyxGPTXhradNPEg9gYWxkVZCq4ePbl5czzIgiCgFBR5ATtgzjx/ZOQRzecbu6JELT
-	2AzkJMZGbznsiA1K5+fWjb/Av4zSu1HmmwwmWZ0aLLilbqrx3lGrEv0SDSv9TD5nGcYHDNwqbMb
-	/EiZBOo3HGkSOkktmzZEJaDfdoEGc/bC9Qe7OjjkoUKahukRCbV1cDQ703DUNxS6KTmoPL/Ow==
-X-Received: by 2002:a05:6a21:6f01:b0:366:1917:54cb with SMTP id
- adf61e73a8af0-392dfa92014mr2668738637.3.1769771233960; Fri, 30 Jan 2026
- 03:07:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B254350A36
+	for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 12:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769776910; cv=none; b=usr1XPWG/Lw94NPzXmtA9XqgjA6Y0E26quSTniEplg5UDjTjJchFCHdPtE4SOyOpQ4AO2Y1UK7YnxOEsSZOIgbPjq5ic4XrynH98sBrPQgcj68HimXBTBcY65izfj+pZsVhX15SOXwo2HbnXsmwOyao2ohtu2bO/B3NA+NI7ZGA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769776910; c=relaxed/simple;
+	bh=ZzR9s3b7KkbkQwk5tgCq+Pqyo89RfW4d06034CluOLY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V1NN1eZ9buyPqun0XH1IXMlne+NI1tW2u5WGfEfYjJtm5ft48+3yGM2Dci4xtDevPkf1IT+qquTJhOyTM9SlLu3apM3CmZE0FjHcysriI5qI24oOpUHUAAjMbLFjg0kx6tftzZXLBUlK049ksDmT3QMHFsQkSAWGD+4Go8VoWFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DLd4eOnd; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <662a7cd7-a1ea-4b9f-8654-c2537e5ef615@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1769776905;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k/E0ZK95dr0YL2WtnUrD8KqCEhh4mZ9cyM5o/6DgkHw=;
+	b=DLd4eOndVVgyGg7Fce6ql57NmGHzie6aRw7kfmMbIsftFD9CBLU4qW4AkMiIzKMQKQwosg
+	C5h9Oj/b8zSiwr7OPgEBGCRkJPRgcNYW2Z1JjC9bAc/o05YYDQvbQfU7galMqRu+7bL6tZ
+	rq57ixXhieC1R0vMd3xEx7cKD5mT5b8=
+Date: Fri, 30 Jan 2026 13:41:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMX6_QHfPsyybbO_79u4RpbGY9H28xhpaVPHUD-wu2U+V5W=7w@mail.gmail.com>
- <20260130090945.2426003-1-ioerts@kookmin.ac.kr> <151277c7-c155-4b3a-94a5-fe8c9dd70f25@fujitsu.com>
-In-Reply-To: <151277c7-c155-4b3a-94a5-fe8c9dd70f25@fujitsu.com>
-From: yunje shin <yjshin0438@gmail.com>
-Date: Fri, 30 Jan 2026 20:07:00 +0900
-X-Gm-Features: AZwV_QiTWh5cIL9yCS5gK5hVI3OWjez50je5ZObnhJJTnDHetk9x-pLUyP08Vwg
-Message-ID: <CAMX6_QGCQSDEHr6wp_MFWd+FKjDEBrwJnL_Oj8z=1CHJRvNQ+g@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/uverbs: Validate wqe_size in post_send
-To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Joonkyoo Jeong <joonkyoj@yonsei.ac.kr>, 
-	"ioerts@kookmin.ac.kr" <ioerts@kookmin.ac.kr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] RDMA/siw: Avoid NULL deref on header parse error
+To: YunJe Shin <yjshin0438@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Joonkyoo Jeong <joonkyoj@yonsei.ac.kr>,
+ Greg KH <gregkh@linuxfoundation.org>, linux-rdma@vger.kernel.org,
+ YunJe Shin <ioerts@kookmin.ac.kr>
+References: <2026012951-diving-silo-3aac@gregkh>
+ <20260130053919.2180043-1-ioerts@kookmin.ac.kr>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20260130053919.2180043-1-ioerts@kookmin.ac.kr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16239-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16240-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.org,ziepe.ca];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yjshin0438@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	REDIRECTOR_URL(0.00)[aka.ms];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[fujitsu.com:email,aka.ms:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,kookmin.ac.kr:email]
-X-Rspamd-Queue-Id: A5C4DB9EAF
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1E608BA99A
 X-Rspamd-Action: no action
 
-Really appreciate the heads-up and the quick review.
+On 30.01.2026 06:38, YunJe Shin wrote:
+> If siw_get_hdr() returns -EINVAL before set_rx_fpdu_context(), qp->rx_fpdu
+> can be NULL. The error path in siw_tcp_rx_data() dereferences
+> qp->rx_fpdu->more_ddp_segs without checking, leading to a NULL pointer
+> deref. Since the state check is redundant, only check more_ddp_segs when
+what redundancy?
+> rx_fpdu is present.
+> 
 
-Thanks
-Yunje
+Add a first standalone line with a FIX message to the PATCH.
+Something like this:
 
-On Fri, Jan 30, 2026 at 6:23=E2=80=AFPM Zhijian Li (Fujitsu)
-<lizhijian@fujitsu.com> wrote:
->
->
-> Nice work on finding this. It looks like a similar patch just landed in t=
-he for-next tree a few days ago.
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?id=
-=3D1956f0a74ccf5dc9c3ef717f2985c3ed3400aab0
->
-> Thanks
-> Zhijian
->
->
-> On 30/01/2026 17:09, YunJe Shin wrote:
-> > [You don't often get email from yjshin0438@gmail.com. Learn why this is=
- important at https://aka.ms/LearnAboutSenderIdentification ]
-> >
-> > ib_uverbs_post_send() allocates and copies a user-provided wqe_size but
-> > never validates that the size is large enough for struct ib_uverbs_send=
-_wr.
-> > A too-small wqe_size lets the kernel read past the allocation when acce=
-ssing
-> > user_wr fields, which is observable with KASAN.
-> >
-> > Example KASAN splat:
-> > BUG: KASAN: slab-out-of-bounds in ib_uverbs_post_send+0x106b/0x1600
-> > Read of size 4 at addr ffff888007df4748 by task repro_hybrid
-> >
-> > Add a minimum size check to reject undersized WQEs.
-> >
-> > Fixes: 67cdb40ca444 ("[IB] uverbs: Implement more commands")
-> > Reported-by: YunJe Shin <ioerts@kookmin.ac.kr>
-> > Signed-off-by: YunJe Shin <ioerts@kookmin.ac.kr>
-> > ---
-> >   drivers/infiniband/core/uverbs_cmd.c | 3 +++
-> >   1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/=
-core/uverbs_cmd.c
-> > index ce16404cdfb8..a80b959482e9 100644
-> > --- a/drivers/infiniband/core/uverbs_cmd.c
-> > +++ b/drivers/infiniband/core/uverbs_cmd.c
-> > @@ -2049,6 +2049,9 @@ static int ib_uverbs_post_send(struct uverbs_attr=
-_bundle *attrs)
-> >          if (ret)
-> >                  return ret;
-> >
-> > +       if (cmd.wqe_size < sizeof(struct ib_uverbs_send_wr))
-> > +               return -EINVAL;
-> > +
-> >          user_wr =3D kmalloc(cmd.wqe_size, GFP_KERNEL);
-> >          if (!user_wr)
-> >                  return -ENOMEM;
-> > --
-> > 2.43.0
-> >
-> >
+RDMA/siw: Fix potential NULL pointer dereference in header processing.
+
+Change text (I don't see what that redundancy discussion contributes
+to the fix) to something like this:
+
+If siw_get_hdr() returns -EINVAL before set_rx_fpdu_context(),
+qp->rx_fpdu can be NULL. Since the error path in siw_tcp_rx_data()
+dereferences qp->rx_fpdu->more_ddp_segs without checking, this
+may lead to a NULL pointer deref. Only check more_ddp_segs when
+rx_fpdu is present.
+
+Add a Fixes line to the end of your patch:
+
+Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+
+Add a 'Signed-off-by:' to your patch.
+
+Appreciated & thanks,
+Bernard.
+
+> 
+> [  101.384271] KASAN: null-ptr-deref in range
+> [0x00000000000000c0-0x00000000000000c7]
+> [  101.385071] CPU: 1 UID: 1000 PID: 265 Comm: exploit_poc Not tainted
+> 6.19.0-rc7-g8dfce8991b95 #1 PREEMPT(voluntary)
+> [  101.385418] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
+> 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> [  101.385869] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
+> [  101.386511] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
+> 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
+> [  101.386979] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
+> [  101.387243] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
+> [  101.387545] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
+> [  101.387829] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
+> [  101.388076] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
+> [  101.388316] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
+> [  101.388599] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
+> knlGS:0000000000000000
+> [  101.388819] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  101.389020] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
+> [  101.389324] Call Trace:
+> [  101.389635]  <IRQ>
+> [  101.389807]  ? lapic_next_event+0x10/0x20
+> [  101.389978]  ? clockevents_program_event+0x1d0/0x280
+> [  101.390121]  ? hrtimer_interrupt+0x319/0x7e0
+> [  101.390269]  __tcp_read_sock+0x1ab/0x810
+> [  101.390412]  ? __pfx_siw_tcp_rx_data+0x10/0x10
+> [  101.390535]  ? __pfx___tcp_read_sock+0x10/0x10
+> [  101.390658]  siw_qp_llp_data_ready+0x185/0x2c0
+> [  101.390759]  ? __pfx_siw_qp_llp_data_ready+0x10/0x10
+> [  101.390871]  ? tcp_event_data_recv+0x36a/0x7b0
+> [  101.390967]  ? tcp_queue_rcv+0x30a/0x620
+> [  101.391062]  tcp_data_queue+0x1ecc/0x4b40
+> [  101.391164]  ? common_startup_64+0x13e/0x148
+> [  101.391265]  ? __pfx_tcp_data_queue+0x10/0x10
+> [  101.391358]  ? tcp_try_undo_loss+0x640/0x710
+> [  101.391459]  ? __pfx_read_tsc+0x10/0x10
+> [  101.391545]  ? ktime_get+0x60/0x140
+> [  101.391669]  ? __pfx_do_sync_core+0x10/0x10
+> [  101.391764]  tcp_rcv_established+0x801/0x35e0
+> [  101.391864]  ? sk_filter_trim_cap+0x4ab/0xb20
+> [  101.391963]  ? __pfx_tcp_inbound_hash+0x10/0x10
+> [  101.392060]  ? __pfx_tcp_rcv_established+0x10/0x10
+> [  101.392167]  ? bpf_skb_net_hdr_push+0x560/0x580
+> [  101.392268]  ? _raw_spin_lock+0x7f/0xd0
+> [  101.392363]  tcp_v4_do_rcv+0x525/0x8a0
+> [  101.392461]  tcp_v4_rcv+0x249d/0x3e50
+> [  101.392558]  ? kernel_text_address+0xa7/0x130
+> [  101.392685]  ? __pfx_tcp_v4_rcv+0x10/0x10
+> [  101.392779]  ? unwind_get_return_address+0x59/0xa0
+> [  101.392897]  ? __pfx_raw_local_deliver+0x10/0x10
+> [  101.393020]  ip_protocol_deliver_rcu+0x61/0x2e0
+> [  101.393122]  ? __pfx_stack_trace_save+0x10/0x10
+> [  101.393233]  ip_local_deliver_finish+0x332/0x4b0
+> [  101.393333]  ? ip_finish_output2+0x71f/0x19a0
+> [  101.393429]  ip_local_deliver+0x18f/0x2d0
+> [  101.393530]  ? __pfx_ip_local_deliver+0x10/0x10
+> [  101.393642]  ? __pfx___netif_receive_skb_core.constprop.0+0x10/0x10
+> [  101.393789]  ? __kasan_mempool_poison_object+0xbb/0x190
+> [  101.393899]  ? napi_skb_cache_put+0x23/0x190
+> [  101.394001]  ? skb_defer_free_flush+0x145/0x1b0
+> [  101.394100]  ? net_rx_action+0x349/0xfb0
+> [  101.394215]  ? __asan_memset+0x23/0x50
+> [  101.394315]  ? __tcp_push_pending_frames+0x8f/0x2f0
+> [  101.394423]  ip_rcv+0x221/0x270
+> [  101.394506]  ? __pfx_ip_rcv+0x10/0x10
+> [  101.394627]  ? __pfx_ip_rcv+0x10/0x10
+> [  101.394735]  __netif_receive_skb_one_core+0x161/0x1b0
+> [  101.394876]  ? __pfx___netif_receive_skb_one_core+0x10/0x10
+> [  101.395029]  ? _raw_spin_lock_irq+0x80/0xe0
+> [  101.395154]  process_backlog+0x1e5/0x5e0
+> [  101.395268]  ? napi_skb_cache_put+0x23/0x190
+> [  101.395423]  __napi_poll+0x9a/0x500
+> [  101.395533]  net_rx_action+0x988/0xfb0
+> [  101.395671]  ? _raw_spin_lock_irq+0x80/0xe0
+> [  101.395797]  ? __pfx_net_rx_action+0x10/0x10
+> [  101.395948]  ? timerqueue_add+0x21b/0x320
+> [  101.396093]  ? __hrtimer_run_queues+0x3de/0x790
+> [  101.396251]  ? __pfx_read_tsc+0x10/0x10
+> [  101.396365]  ? ktime_get+0x60/0x140
+> [  101.396475]  handle_softirqs+0x18c/0x530
+> [  101.396592]  ? __pfx_handle_softirqs+0x10/0x10
+> [  101.396731]  do_softirq+0x3b/0x60
+> [  101.396855]  </IRQ>
+> [  101.396940]  <TASK>
+> [  101.397004]  __local_bh_enable_ip+0x61/0x70
+> [  101.397144]  __dev_queue_xmit+0x618/0x2fe0
+> [  101.397257]  ? __local_bh_enable_ip+0x61/0x70
+> [  101.397380]  ? __pfx___dev_queue_xmit+0x10/0x10
+> [  101.397500]  ? sched_clock+0x10/0x30
+> [  101.397613]  ? __pfx_selinux_ip_postroute_compat+0x10/0x10
+> [  101.397770]  ? _raw_spin_trylock+0xaf/0x120
+> [  101.397883]  ? selinux_ip_postroute+0x3e9/0x9d0
+> [  101.398008]  ip_finish_output2+0x71f/0x19a0
+> [  101.398125]  ? __pfx_ip_finish_output2+0x10/0x10
+> [  101.398251]  ? __pfx_stack_trace_consume_entry+0x10/0x10
+> [  101.398395]  __ip_finish_output.part.0+0x477/0x950
+> [  101.398541]  ? __pfx___ip_finish_output.part.0+0x10/0x10
+> [  101.398691]  ? nf_hook_slow+0xa7/0x1e0
+> [  101.398796]  ip_output+0x260/0x4d0
+> [  101.398903]  ? __pfx_ip_output+0x10/0x10
+> [  101.399015]  ? __pfx_stack_trace_save+0x10/0x10
+> [  101.399132]  ? __pfx_ip_finish_output+0x10/0x10
+> [  101.399236]  ? kasan_save_stack+0x42/0x60
+> [  101.399501]  ? ipv4_dst_check+0x10a/0x160
+> [  101.399665]  __ip_queue_xmit+0xcfb/0x1d60
+> [  101.399813]  ? __tcp_select_window+0xf8/0xed0
+> [  101.399931]  ? __skb_clone+0x550/0x740
+> [  101.400034]  __tcp_transmit_skb+0x29ce/0x3de0
+> [  101.400159]  ? __pfx___tcp_transmit_skb+0x10/0x10
+> [  101.400284]  ? kmem_cache_alloc_node_noprof+0x13b/0x4d0
+> [  101.400423]  ? kasan_save_track+0x14/0x30
+> [  101.400565]  tcp_write_xmit+0x11ba/0x7610
+> [  101.400744]  ? skb_page_frag_refill+0x55/0x430
+> [  101.400872]  __tcp_push_pending_frames+0x8f/0x2f0
+> [  101.400999]  tcp_sendmsg_locked+0x156e/0x3b70
+> [  101.401165]  ? __pfx_tcp_sendmsg_locked+0x10/0x10
+> [  101.401362]  ? __pfx_selinux_socket_sendmsg+0x10/0x10
+> [  101.401528]  ? _raw_spin_lock_bh+0x83/0xe0
+> [  101.401733]  ? ldsem_up_read+0x12/0x40
+> [  101.402061]  tcp_sendmsg+0x26/0x40
+> [  101.402210]  __sys_sendto+0x364/0x430
+> [  101.402346]  ? __pfx___sys_sendto+0x10/0x10
+> [  101.402523]  ? ksys_write+0xf7/0x1c0
+> [  101.402671]  ? __pfx_ksys_write+0x10/0x10
+> [  101.402834]  __x64_sys_sendto+0xdb/0x1b0
+> [  101.402968]  ? fpregs_assert_state_consistent+0x56/0xe0
+> [  101.403107]  do_syscall_64+0xa4/0x320
+> [  101.403254]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> [  101.403554] RIP: 0033:0x42440d
+> [  101.403982] Code: 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 00 f3 0f 1e
+> fa 80 3d 5d fc 08 00 00 41 89 ca 74 20 45 31 c9 45 31 9
+> [  101.404392] RSP: 002b:00007ffc69a5f158 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000002c
+> [  101.404659] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000042440d
+> [  101.404864] RDX: 0000000000000030 RSI: 00007ffc69a5f180 RDI: 0000000000000003
+> [  101.405069] RBP: 00007ffc69a5f200 R08: 0000000000000000 R09: 0000000000000000
+> [  101.405257] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc69a5f318
+> [  101.405416] R13: 00007ffc69a5f340 R14: 00000000004ae868 R15: 0000000000000001
+> [  101.405634]  </TASK>
+> [  101.405771] Modules linked in:
+> [  101.406766] ---[ end trace 0000000000000000 ]---
+> [  101.407214] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
+> [  101.407387] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
+> 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
+> [  101.407946] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
+> [  101.408091] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
+> [  101.408239] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
+> [  101.408375] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
+> [  101.408508] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
+> [  101.408741] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
+> [  101.408897] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
+> knlGS:0000000000000000
+> [  101.409051] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  101.409181] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
+> [  101.409577] Kernel panic - not syncing: Fatal exception in interrupt
+> [  101.410887] Kernel Offset: disabled
+> [  101.411108] Rebooting in 1 seconds..
+> 
+> 
+> 
+> Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+> Signed-off-by: YunJe Shin <ioerts@kookmin.ac.kr>
+> ---
+>   drivers/infiniband/sw/siw/siw_qp_rx.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+> index e8a88b378d51..960f740cf46a 100644
+> --- a/drivers/infiniband/sw/siw/siw_qp_rx.c
+> +++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+> @@ -1434,8 +1434,7 @@ int siw_tcp_rx_data(read_descriptor_t *rd_desc, struct sk_buff *skb,
+>   			run_completion = 0;
+>   		}
+>   		if (unlikely(rv != 0 && rv != -EAGAIN)) {
+> -			if ((srx->state > SIW_GET_HDR ||
+> -			     (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs)) &&
+> +			if (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs &&
+>   			    run_completion)
+>   				siw_rdmap_complete(qp, rv);
+>   
 
