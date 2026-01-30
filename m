@@ -1,145 +1,164 @@
-Return-Path: <linux-rdma+bounces-16234-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16235-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eGmfJCFxfGlIMwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16234-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:51:45 +0100
+	id erdPG3p1fGl7NAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16235-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 10:10:18 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCBDB8A60
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:51:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3EE1B8BD5
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 10:10:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A37ED3002F68
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:51:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3AF83300E72C
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:10:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B6C313E3F;
-	Fri, 30 Jan 2026 08:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACEA346784;
+	Fri, 30 Jan 2026 09:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ul6c6DoD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S7JReE3i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CDA2E0926;
-	Fri, 30 Jan 2026 08:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E023F23BCF7
+	for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 09:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769763098; cv=none; b=PnPs3xJsgw62GWn5GPtTkEFab96mfBowQdRgkW4v8QtvYvLniT2MDU4roaXQNl2c1NpswD7oLDn9AIpHg+WzV2j5p5Gpv+6HwF0mxU3tucItlfpOHYPW6lTk02gvRScbw6IRrmhuiEe3I0jKIlSuDK4Cg5xVswodprL+rGFVnHU=
+	t=1769764215; cv=none; b=eLa1OH9U8sdVmg3urYZaSr6LIdWojnIDoOfK8Idpin8hEODITY5O47a2F4O3sbs84KpeFyqJs7Ca/3l6fC4cMyBYfOJdD4J6FCSGoGgwwhhhmThui6c2DSKsMVcCPV6CHot8b/K+AruevtLywU0E4isHp1VjzZH1mSk02fl3LZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769763098; c=relaxed/simple;
-	bh=FaoWFuc8Lf1DLkdGOsvF+wLgIPVDLi4pj2Mq/rs7om4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ih+ALsAnzySpt4h0aMysaf8HYa8nooLDZtO9uE/z5suHkKwpVY+2sxDj8epWbHL+Pc2hoKCfeFXRT0eQFFkGoldWLyDbEsT39GggG9TrZFJIEIpoSA5OnFiTdrvLpH18mwk26l8Ic47MGYPCyO1dfI2R64jeGay1sxnlAAfVkvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ul6c6DoD; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1769763093; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=DkUtsb7QwZdL+LDizpsEkBxaLkE/G58Yn4o4w4mhoyg=;
-	b=Ul6c6DoDuXzMooXfYNPtaJhBlLlbpvZ6/7jTSiQSyYEGLv7thskdKquSRQLXNTRtVtEXKIvyyxbOWyJa6EH8Q9R0euJGHj1KZvCNRA4MP4Cm0ugQ+CP66Q2YSKWrt0Ds7s9tL4IC8kygseKotFddSw0UQxP32sdRr6185WjuJus=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WyACWjW_1769763091 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 30 Jan 2026 16:51:32 +0800
-Date: Fri, 30 Jan 2026 16:51:31 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com
-Subject: Re: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
-Message-ID: <20260130085131.GA122673@j66a10360.sqa.eu95>
-References: <20260123082349.42663-3-alibuda@linux.alibaba.com>
- <aXPEFdEdtSmd6AzF@milan>
- <20260124093505.GA98529@j66a10360.sqa.eu95>
- <aXSjm1DXm6yP62tD@pc636>
- <20260124145754.GA57116@j66a10360.sqa.eu95>
- <20260127133417.GU13967@unreal>
- <20260128034558.GA126415@j66a10360.sqa.eu95>
- <20260128180629.GT1641016@ziepe.ca>
- <20260129113609.GA37734@j66a10360.sqa.eu95>
- <20260129132058.GC2307128@ziepe.ca>
+	s=arc-20240116; t=1769764215; c=relaxed/simple;
+	bh=6gUSuH3FvYcDRfON0d/gsR4ELKPPhUXoPa4UU3rbWi0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ldfEcHCbCcZX3ImLFsTUlw/5yWaOU1+qsv3g9xxvR3VcmPhn93cptyv0Y/LjgCgXWbp0fB2AoFtfYx45pdrgvuJJsweP5Jpk7WVtjpulR/FXrv8SMDKKGirNNvT9298H5jmR2p8bAYRTuefyIGM42xVpvJVnnq1BFnCckLyI4F8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S7JReE3i; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-8231061d234so1662906b3a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 01:10:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769764213; x=1770369013; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7FBb6805HeHSkRdX5bS4q6RmIIubCh3FTCohlTI/P0Q=;
+        b=S7JReE3i04xQUNaQZjAQt+6nqR5YH8oVobqg6sKfADYwAqB6UYrG1MhWQI/m+JU3Fc
+         kwm9Gr/N88fxC0FJYZhqqlOqCQOHaj1qORlYBT/Pmm/MDIYPwrCFWpuxQmt/chlYZgLB
+         pO+ysxz3jH+jlSCO5EWUVsaM706MPZWFDBiv9p4BN8uo++/4AMRiXLqgbJElANpFbN2W
+         48NAr4Vu11C3dGlm4rmss0k+PdY04Ffr6jlQELHbjNNuybQUpRmteK01FOBEMTQYJ2DR
+         vMs080qf7HGS9b0ZnUz/bKR6dPWMQ64DiYlLfyUvOPeNgyyihfsSE+Mdy6RlqgX6EzSk
+         SSeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769764213; x=1770369013;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=7FBb6805HeHSkRdX5bS4q6RmIIubCh3FTCohlTI/P0Q=;
+        b=NsAV15Z94BDIKMJCrWpkoaLgc6rAT3RFoUt36VGPVeRnz9h3VR19DJoYXKdyWpJKys
+         M+CVwaQXOnOufXHHM6ifgSuA6HWsos84Tiw4VvMgvq9++Na2ELTqNx5iEjlnnxY55nzh
+         kuUS8DJh8WccjvRm6AnFs+mACtzqlKXXLxjwUK0phFK6T4rWFcenis8RBi30ONeTFIeF
+         7mwz6TM2p8QUbjc0TxwpDJdlRjE4vejrubBCLkD6ffzxSWAT4hZqVjtYXZK9L+cdr4ks
+         y2ijT0IkzvxpM4vic9iXXSR38eeV8Ice7RcHAJ3X/qZPKsCQ3PVyjOMHeo99gZVGeAmN
+         Bmow==
+X-Gm-Message-State: AOJu0Yx++B0HJfr270hx+G0XekcoGYecz4MuVySx5khhcnA90MP28M7k
+	Qm661ktHfJR/uWA5mQ3m7wsMJaQgLVbuulJIUwjYYLfrUaOBZcSeH4ME
+X-Gm-Gg: AZuq6aIjsRJPwCzX/tPeHE78RNBnKc3HjVw3LFcb2k732sgtd8mMRXVaVANYWR8IlU1
+	oEE4DgXYZ2kuyVzEHi+RRyFiqI39LkhuWdpRdY7g5zx4tLOVRGqkvUnfE5gIy3LZtmQpQTcyUT+
+	0cba9fKkvUngysOiOGfL32TFbixQlhtr2RoVgVf4fMkc7nx2+V81THjb4GS1+yO+xWtlBnyvQjU
+	GGa8vPViOrnBYsMa3aofAjW3wUQlqPTla7yS6gkzDFYeyt3LUINlpgcpziBM9oIYxpSp4RVunC/
+	eIHr6sYOp6O5aSQySdID21+3FepCqZYO9ABm/zwapYMPvqJX1WnU+cXoH8LJyceBs8O/1put6zn
+	PNNY0qFzNbpbkK4QJEfDHZUmISEj8GapV5UbU7FzLnnD4CoOIz52f+Sq1QyeCYzUVZ2f1mRTN57
+	Soy7jXlntS0kitwbjKlOAXVPH0wPXmRWs6
+X-Received: by 2002:a05:6a00:ad81:b0:81f:3d13:e079 with SMTP id d2e1a72fcca58-823ab747b2amr2425159b3a.45.1769764213082;
+        Fri, 30 Jan 2026 01:10:13 -0800 (PST)
+Received: from user-System-Product-Name.. ([210.121.152.246])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82379b6b2bdsm7431930b3a.30.2026.01.30.01.10.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jan 2026 01:10:12 -0800 (PST)
+From: YunJe Shin <yjshin0438@gmail.com>
+X-Google-Original-From: YunJe Shin <ioerts@kookmin.ac.kr>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org,
+	Joonkyoo Jeong <joonkyoj@yonsei.ac.kr>,
+	ioerts@kookmin.ac.kr
+Subject: [PATCH] RDMA/uverbs: Validate wqe_size in post_send
+Date: Fri, 30 Jan 2026 18:09:23 +0900
+Message-ID: <20260130090945.2426003-1-ioerts@kookmin.ac.kr>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAMX6_QHfPsyybbO_79u4RpbGY9H28xhpaVPHUD-wu2U+V5W=7w@mail.gmail.com>
+References: <CAMX6_QHfPsyybbO_79u4RpbGY9H28xhpaVPHUD-wu2U+V5W=7w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260129132058.GC2307128@ziepe.ca>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16234-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	FREEMAIL_CC(0.00)[linux.alibaba.com,kernel.org,gmail.com,davemloft.net,linux-foundation.org,google.com,redhat.com,linux.ibm.com,vger.kernel.org,kvack.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16235-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yjshin0438@gmail.com,linux-rdma@vger.kernel.org];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[j66a10360.sqa.eu95:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: BDCBDB8A60
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kookmin.ac.kr:mid,kookmin.ac.kr:email]
+X-Rspamd-Queue-Id: B3EE1B8BD5
 X-Rspamd-Action: no action
 
-On Thu, Jan 29, 2026 at 09:20:58AM -0400, Jason Gunthorpe wrote:
-> On Thu, Jan 29, 2026 at 07:36:09PM +0800, D. Wythe wrote:
-> 
-> > > From there you can check the resulting scatterlist and compute the
-> > > page_size to pass to ib_map_mr_sg().
-> 
-> I should clarify this is done after DMA mapping the scatterlist. dma
-> mapping can improve the page size.
-> 
-> And maybe the core code should be helping compute the MR's target page
-> size for a scatterlist.. We already have code to do this in umem, and
-> it is a pretty bit tricky considering the IOVA related rules.
->
+ib_uverbs_post_send() allocates and copies a user-provided wqe_size but
+never validates that the size is large enough for struct ib_uverbs_send_wr.
+A too-small wqe_size lets the kernel read past the allocation when accessing
+user_wr fields, which is observable with KASAN.
 
-Hi Jason,
+Example KASAN splat:
+BUG: KASAN: slab-out-of-bounds in ib_uverbs_post_send+0x106b/0x1600
+Read of size 4 at addr ffff888007df4748 by task repro_hybrid
 
-After a deep dive into ib_umem_find_best_pgsz(), I have to say it is
-much more subtle than it first appears. The IOVA-to-PA relative offset
-rules, in particular, make it quite easy to get wrong.
+Add a minimum size check to reject undersized WQEs.
 
-While SMC could duplicate this logic, it is certainly not ideal for
-maintenance. Are there any plans to refactor this into a generic RDMA
-core helper—for instance, one that can determine the best page size
-directly from an sg_table or scatterlist?
+Fixes: 67cdb40ca444 ("[IB] uverbs: Implement more commands")
+Reported-by: YunJe Shin <ioerts@kookmin.ac.kr>
+Signed-off-by: YunJe Shin <ioerts@kookmin.ac.kr>
+---
+ drivers/infiniband/core/uverbs_cmd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Best regards,
-D. Wythe
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index ce16404cdfb8..a80b959482e9 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -2049,6 +2049,9 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
+ 	if (ret)
+ 		return ret;
+ 
++	if (cmd.wqe_size < sizeof(struct ib_uverbs_send_wr))
++		return -EINVAL;
++
+ 	user_wr = kmalloc(cmd.wqe_size, GFP_KERNEL);
+ 	if (!user_wr)
+ 		return -ENOMEM;
+-- 
+2.43.0
 
 
