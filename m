@@ -1,154 +1,190 @@
-Return-Path: <linux-rdma+bounces-16219-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16220-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4MFBOhdXfGn6LwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16219-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:00:39 +0100
+	id gDXgD7RlfGk/MQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16220-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:03:00 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512F9B7BC5
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:00:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6B2B81CF
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4204C3019517
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 07:00:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6FCFD30136AF
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349012EB860;
-	Fri, 30 Jan 2026 07:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814EB30BF6A;
+	Fri, 30 Jan 2026 08:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XgFgDh/B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SowbgXut"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E8B18E1F;
-	Fri, 30 Jan 2026 07:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438C7218821;
+	Fri, 30 Jan 2026 08:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769756426; cv=none; b=OllqJ5tLolwZlIZSO8cbc4rtZRbvIrBto/lSB+P0UYZtC1tQhYrAFi27sQ0HcHY6is2CegqUZ+lEaDONmqVH+HrbhXsF/J4FxK9HpHA44CPBQpmvBa5G+FSPNCqczaDAvTjRd+TtAe834tw3Wnp6xcK1wLJG2mrCWWgtlvKHIi8=
+	t=1769760172; cv=none; b=d4Y0jmlPttWd1Zwexkszu7Oidge9O5hVcKPHdNNChTNkrXCO5it8WY15AGasAw09as1XrWI+b9IpQN6E21WBvimmvGU1BIHscdyunxp7z827rJYgOdFKe7WXJslj0r3R2OhTne9x8qu0c1Gwh4GLbpkahdlwNztq1xu2aotftFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769756426; c=relaxed/simple;
-	bh=SwKC4Xj637CvF1FqfD2Ffqfuyi88P+/KMhUf6nGE4LM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VDbsPrfMOs6VI7Fo/dL7mE51N5gt6Y4teTFcJZgilkiK0fu7ZB8qyCzBKbrWEV0+mILuPPfa/NpdxHdztOSjBPLJbwzDnU29kBCJV1WHymmc8+0rNqQYscxxuvWeRlPZjxZ0mhszgVvNa50D/w87E6ayT5zsXQqHp9WKzknUBlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XgFgDh/B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D936C4CEF7;
-	Fri, 30 Jan 2026 07:00:24 +0000 (UTC)
+	s=arc-20240116; t=1769760172; c=relaxed/simple;
+	bh=J54oJ4WbesnBUVqGOh1KdeLt/bAseKg0PcZd1rG+qi4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eN8EWXaTVNP8gO9MqW76SDuHSAyW5sk4no8vBLlBQOo/Sb7OJ9Gv/O+3ecI0hjIewMJXhc4iEcerwk5Yv8y5PKLHNlvoj/qCcNyuvMeZwJFvt7V3Slb+SbJtRLapkVwDWObE6K6JzmdYkdGTOtxwrgB37rj6CbuSHgHbqIrrtYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SowbgXut; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38D34C4CEF7;
+	Fri, 30 Jan 2026 08:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769756425;
-	bh=SwKC4Xj637CvF1FqfD2Ffqfuyi88P+/KMhUf6nGE4LM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XgFgDh/B2YishN2dcZMkY4CYAevPBkIu68baPIcKz/BgbT6K1tAsL2PyN3wiTtTdC
-	 jo/kJAT5trQs3MZIEI2HGW5+AMnkxt5iV0ImdQgQsoTCoQBNrmrR0NYasy+oABNKse
-	 2506cQYBt7VCpgmNR0NGwk8KJuGzVDxaTxLm5zv3CFufoJRLo+BJmBbclqkeysqioP
-	 G9FDslcvaLNN+jr1zhicNXavcYV8aWXwLQJxJl1mt6q9n8l+XfSHeCoa1t8NTjNH4p
-	 +u5KQMWBIITybzgApJ5DlFVUHQvpdI2Ck7QaRsJjuRp1K7FbNEEVLaxkSmNyiD2Fm/
-	 rdwqK8S3ocnHQ==
-Date: Fri, 30 Jan 2026 09:00:20 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Alex Williamson <alex@shazbot.org>,
-	Ankit Agrawal <ankita@nvidia.com>,
-	Vivek Kasireddy <vivek.kasireddy@intel.com>,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
-	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, kvm@vger.kernel.org
-Subject: Re: [PATCH v5 3/8] dma-buf: Always build with DMABUF_MOVE_NOTIFY
-Message-ID: <20260130070020.GM10992@unreal>
-References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
- <20260124-dmabuf-revoke-v5-3-f98fca917e96@nvidia.com>
- <0d2ec2d6-c999-45d8-a2bd-b5b21883db47@amd.com>
- <20260127095831.GR13967@unreal>
- <83cd911c-99ea-4fab-821e-fcf703209731@amd.com>
+	s=k20201202; t=1769760171;
+	bh=J54oJ4WbesnBUVqGOh1KdeLt/bAseKg0PcZd1rG+qi4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SowbgXutEN25f93mw99MBhSebcWovLeHlJEZoRtHWOZMM522dBk1BJgGQZOb5I9pM
+	 AB9BcxjFKtvnbf7TCHotVQewDCx2YvEwDGticeVIrLExsnrRzm5S92/fqKLC7t8Th+
+	 89SWc1W8uUtoU6UlIWcGrRcjIiqmUC2tIdDJUROhOyMQoAKq34sDckF7PXUwH/VCID
+	 HVTdmyFKiz4ER7VJ1KBGsFFhwubYBi8y9MHYWzqcDJoCgwiRCfROlfiiY0COa4mwKZ
+	 5F5OIrRC5EFFkxQTlCCac4d+YKsLtxDzcUcQ19BigmhirLM/579fmXPNmy3l2/XYhU
+	 fkgnfT43Li5FA==
+From: Allison Henderson <achender@kernel.org>
+To: netdev@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	rds-devel@oss.oracle.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	allison.henderson@oracle.com
+Subject: [PATCH net-next v3 0/8] net/rds: RDS-TCP protocol and extension improvements
+Date: Fri, 30 Jan 2026 01:02:42 -0700
+Message-ID: <20260130080250.696575-1-achender@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <83cd911c-99ea-4fab-821e-fcf703209731@amd.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16219-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16220-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,amd.com:email]
-X-Rspamd-Queue-Id: 512F9B7BC5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: CF6B2B81CF
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 11:02:03AM +0100, Christian König wrote:
-> On 1/27/26 10:58, Leon Romanovsky wrote:
-> > On Tue, Jan 27, 2026 at 10:26:26AM +0100, Christian König wrote:
-> >> On 1/24/26 20:14, Leon Romanovsky wrote:
-> >>> From: Leon Romanovsky <leonro@nvidia.com>
-> >>>
-> >>> DMABUF_MOVE_NOTIFY was introduced in 2018 and has been marked as
-> >>> experimental and disabled by default ever since. Six years later,
-> >>> all new importers implement this callback.
-> >>>
-> >>> It is therefore reasonable to drop CONFIG_DMABUF_MOVE_NOTIFY and
-> >>> always build DMABUF with support for it enabled.
-> >>>
-> >>> Suggested-by: Christian König <christian.koenig@amd.com>
-> >>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> >>
-> >> Reviewed-by: Christian König <christian.koenig@amd.com>
-> >>
-> >> As long as nobody starts screaming in the last second or I encounter some other problem I'm going to push the first three patches to drm-misc-next now.
-> > 
-> > How do you see progress of other patches?
-> > Can they be queued for that tree as well?
-> 
-> I was hoping to get through them by the end of the week.
+From: Allison Henderson <allison.henderson@oracle.com>
 
-Christian,
+Hi all,
 
-Can we please merge the whole series now?
+This is subset 3 of the larger RDS-TCP patch series I posted last
+Oct.  The greater series aims to correct multiple rds-tcp issues that
+can cause dropped or out of sequence messages.  I've broken it down into
+smaller sets to make reviews more manageable.
 
-Thanks
+In this set, we introduce extension headers for byte accounting
+and fix several RDS/TCP protocol issues including message preservation
+during connection transitions and multipath lane handling.
+
+The entire set can be viewed in the rfc here:
+https://lore.kernel.org/netdev/20251022191715.157755-1-achender@kernel.org/
+
+Questions, comments, flames appreciated!
+Thanks!
+Allison
+
+Change Log:
+v2:
+   [PATCH net-next v2 1/7] net/rds: new extension header: rdma bytes
+     - Fixed AI complaints for uninitalized structs
+
+   [PATCH net-next v2 2/7] net/rds: Encode cp_index in TCP source port
+     - Fixed line length checkpatch complaints
+
+   [PATCH net-next v2 3/7] net/rds: rds_tcp_conn_path_shutdown must not
+   discard messages
+     - Added sk convenience variable to reduce dereferencing and line
+       wrapping
+     - Fixed line length checkpatch complaints
+
+   [PATCH net-next v2 6/7] net/rds: Use the first lane until
+     - Added rds_mprds_cp0_catchup helper to de-nest rds_send_xmit
+     - Fixed line length checkpatch complaints
+
+   [PATCH net-next v2 7/7] net/rds: Trigger rds_send_ping() more than
+   once
+     - Fixed ai complaints for comment clarification
+
+v3:
+  [PATCH net-next v3 1/8] net/rds: new extension header: rdma bytes
+    - Addressed ai complaints about unpacked/unpadded rds_ext_header_rdma_bytes
+    - Added return code checks to rds_message_add_extension 
+
+  [PATCH net-next v3 06/8] net/rds: Update struct rds_statistics to
+  use u64 instead of uint64_t
+     - NEW
+
+  [PATCH net-next v3 6/8] net/rds: Use the first lane until
+    - Fixed Prefer kernel type 'u64' over 'uint64_t' warnings
+
+  [PATCH net-next v3 08/8] net/rds: Trigger rds_send_ping() more than once
+    - Addressed ai complaints for comment clarification
+
+
+Allison Henderson (1):
+  net/rds: Update struct rds_statistics to use u64 instead of uint64_t
+
+Gerd Rausch (5):
+  net/rds: Encode cp_index in TCP source port
+  net/rds: rds_tcp_conn_path_shutdown must not discard messages
+  net/rds: Kick-start TCP receiver after accept
+  net/rds: Use the first lane until RDS_EXTHDR_NPATHS arrives
+  net/rds: Trigger rds_send_ping() more than once
+
+HÃ¥kon Bugge (1):
+  net/rds: Clear reconnect pending bit
+
+Shamir Rabinovitch (1):
+  net/rds: new extension header: rdma bytes
+
+ net/rds/connection.c  |   7 ++-
+ net/rds/ib_send.c     |  38 +++++++++---
+ net/rds/message.c     |  66 ++++++++++++++++-----
+ net/rds/rds.h         | 105 ++++++++++++++++++++--------------
+ net/rds/recv.c        |  37 ++++++++++--
+ net/rds/send.c        | 130 +++++++++++++++++++++++++++++-------------
+ net/rds/stats.c       |   1 +
+ net/rds/tcp.c         |   1 +
+ net/rds/tcp.h         |   7 ++-
+ net/rds/tcp_connect.c |  79 +++++++++++++++++++++++--
+ net/rds/tcp_listen.c  |  92 +++++++++++++++++++++++++++---
+ net/rds/tcp_recv.c    |   4 ++
+ net/rds/tcp_send.c    |   2 +-
+ 13 files changed, 448 insertions(+), 121 deletions(-)
+
+-- 
+2.43.0
+
 
