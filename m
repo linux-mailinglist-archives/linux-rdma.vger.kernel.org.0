@@ -1,410 +1,247 @@
-Return-Path: <linux-rdma+bounces-16230-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16231-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MH+eFqNsfGkSMgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16230-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:32:35 +0100
+	id cPNdGwptfGkSMgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16231-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:34:18 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B75C0B8620
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:32:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB95DB866B
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CFC33301226A
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:32:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 87889300FEFC
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F840313E3F;
-	Fri, 30 Jan 2026 08:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57D231AAA7;
+	Fri, 30 Jan 2026 08:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="f1XLMRiy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VZNdV/H5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012013.outbound.protection.outlook.com [52.101.43.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B953093CE;
-	Fri, 30 Jan 2026 08:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8062F8BCA
+	for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 08:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.179
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769761947; cv=fail; b=YyoySBoFBeYAL2sRHQVbvIQ430z0NgrDc/+iNIvG3iyu7isqqdu/rp3z/3yHx8b7tL7i5oFMK9j0QXvKvEqRIycOLJhwbAj7uc9Ht0iANN88qLZ3rAwMeyWsb84tPpaBN/ZVwtbW5fxud7tTKqFxiBmaS0g/CNTeBnTr/we4/S0=
+	t=1769762039; cv=pass; b=Yn+8Dk425GM4aTUbmkKJIJsLEeEbUmcT11C8CT0vYGLXrfhUyFSyvJGPhPwBboE1fyLk7/wcZuAD/H4tUI6SeBnKCoI+96dPh8vTkzAEax6PXBMiF9bVv8Ds0wHY5j5PXi3qUkom6bOYCvL/dFgUWzZh3zs4NSl1WLm1JmHSciM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769761947; c=relaxed/simple;
-	bh=+L71pLwerLnLdQLturp7qCLq4Q9TfRtO2ccui2X6mY4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZxyETQZU6Ml+wrWnLr8xxFAQD4Nlu9IiNWtpIzype87LwmJJw6TxEdcFAszkHbHJzUb0zaLSfI8YB/+eNyrgZ3kVQ+1gbcAu7jPBolYyq4BwucVtevxB5gROxGHUgl7UNismuUuU//QJe1/HoOvYEKaoClebk3Ujvs2uscZOnuE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=f1XLMRiy; arc=fail smtp.client-ip=52.101.43.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hda+PbGRQEInNw5Uh8ON5cvFwT0g3hCnT8yQfvoHaoTvnmxVVIed5cT5mlh9/Fsv2FfboWRepaqBCvb3l+uON4/mZ5+RkouiXS1WXMvOWANrI7UXFG5sJJgPgtzqegEF98NLi1AVKipRhwSi7hHmHYq3qa3rX0YViPAACN/9CXg85NtAWRUArB/7ivsmdaAUrjquVjnZZ88F4vbN3qIALEJ81q70dJ/8xv1+02F3WpnkAyRXphPuHBWRyBgsn+2c8FFtFBOj5CMVJBQldYJnboUQbqN806CWHrvUflmilqwrreX2anEjXJz3bscfW+KWiM2AYrdkNTLng1DY0dHCMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=adr/mMi/Fgz04f2PhBuIJEu6mtoSa08dfKoWfZ7Z/kk=;
- b=v6CoU1y8cEbm6YnlSXxNBfqE47ZgrBSmWy2MzhBZi46TQkkEsYB0xtO6f7R0fYBpYV1lvc8Wxr83LNvUquSBgRv9aAV0l+atmXz4BppvMrwxt9kTJLMNR7quVylmRGG+5404c7bmTOLJ70YwBOTzNG3f3lXEG2XzDBXSxShSWObVoplXLAlrya/KUknRZN8sFkdbrviFaKQWPqPXe5DKKNAtkWllVIDGw8OjcBEe+tlyrQiFDB3wh8r3M8rJF8xf7owToN9Qt/0CU27ABIL9W1t7sK+i8CF+Np9rOathiQ+h7Rm/Wk3/+o4W2hl/cmieSnmWQ2NIT0dBrwPF+umO1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adr/mMi/Fgz04f2PhBuIJEu6mtoSa08dfKoWfZ7Z/kk=;
- b=f1XLMRiykKDS7UVmd0g74E+CmeX5IafphRodP6Z9IM08zTynXl+VrsvtlkNOsc5FZROrnbn5wIPHxyhhJZZ9BtFpx6ORdo3wwAzXPfxAPA1RBlpx3LhfLCiuQYLp/ylpPCX3eUtZEoUltMGeVLcR4nJsoz2dQi4N2y9GYG6Fmx0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CH2PR12MB4215.namprd12.prod.outlook.com (2603:10b6:610:ab::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.11; Fri, 30 Jan
- 2026 08:31:10 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c%5]) with mapi id 15.20.9564.010; Fri, 30 Jan 2026
- 08:31:10 +0000
-Message-ID: <31872c87-5cba-4081-8196-72cc839c6122@amd.com>
-Date: Fri, 30 Jan 2026 09:30:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/8] vfio: Wait for dma-buf invalidation to complete
-To: Leon Romanovsky <leon@kernel.org>, Sumit Semwal
- <sumit.semwal@linaro.org>, Alex Deucher <alexander.deucher@amd.com>,
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
- Gerd Hoffmann <kraxel@redhat.com>,
- Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Felix Kuehling <Felix.Kuehling@amd.com>, Alex Williamson <alex@shazbot.org>,
- Ankit Agrawal <ankita@nvidia.com>,
- Vivek Kasireddy <vivek.kasireddy@intel.com>
-Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
- intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
- iommu@lists.linux.dev, kvm@vger.kernel.org
-References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
- <20260124-dmabuf-revoke-v5-4-f98fca917e96@nvidia.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20260124-dmabuf-revoke-v5-4-f98fca917e96@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0244.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f5::13) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	s=arc-20240116; t=1769762039; c=relaxed/simple;
+	bh=8tf1URBwx6eLsuwhSotWuKRJBsyyfuyjrtScjeWrlQo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=o05Gg4JdLSemofzXp8DeDogjl5tgWuRYYKNm8G06xCN3IDl3JlWyBYuUmuuCuG3uw0BawKDVFJip2f1ZDxpqz5TY1F63mUowYy2Czc/joQkkhL3rlSWqxR2JL+aE40WRnIL8Qema36wl5ZIDVAUdlhtvfdpFHnDmyjaKAQi5FM4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VZNdV/H5; arc=pass smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2a0834769f0so12395645ad.2
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Jan 2026 00:33:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1769762038; cv=none;
+        d=google.com; s=arc-20240605;
+        b=bLGa5gKiDGn0JNC/pAwTVw48xeKzQH/opgALGlftXzkTbWuiS0dnl2WM3WtAosv272
+         1vDQfiqLbU9+w5VQdn+s0C5cGce9Ed+UQ7C8jIQoTg8U3FYuv6xIkSznUTgexL/Qtpba
+         8CPIY3IwA2MYVAoel2OiT2aoIFn3oeZAtZMMWlY6BdnjTyYgamLupg77w6hvGswSNBdH
+         sj61S7d0gGUGPrrASRpJnfPxNS6fYI64ModZTQlBRH54rmm8mNEEZkYvoiuoX/VTCoRH
+         PE1kfwKg90Bv8y+9EEa3/1DqU6434sm/v7A/MhpBxsg14EcM1CbNVmrxVy8JvKaGKBuU
+         owWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=vWQ+u7TayfftUmeu2Jh/Gll91sSdUpkw8fM2bQTtlgc=;
+        fh=Qop92I+m7/U5F3p7FSy+iLS3BpbTUw93QkNoLucOliw=;
+        b=KnJ6LWIqnq0HXC8Owlmm7JiLDWLV5WyoThDsBKMS5oJGqwvZABaw+RYF350D2Ixeo+
+         WksSw5esqXE/e5ufGjAP5eQ2Rm7lf52/n1pGVnGMqJ9eEAJVIpOGU+/EZfSntS/Ct60R
+         NsyAMfw+rw/6IAaRyoSZA8QQKWn6WMvLnB26+5rsj5MFWakRsg4/kq8HHlwRLENCBqsy
+         gTpmdyCjltuyuFHl07dsXouqlMbdXZz6b16QfUbkb6/TFN2yqX+dD/TOjSXpkpSf3BLU
+         dnloMafv5Feiggz5eSgxBIpuxj1MCXSF/9WkUbG8C0XIaNfdbEfmd9qErnpGELRD0qvU
+         qpmA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769762038; x=1770366838; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vWQ+u7TayfftUmeu2Jh/Gll91sSdUpkw8fM2bQTtlgc=;
+        b=VZNdV/H5P6mlklJtkSPYNlhF6w1BZf1dCAO178U59Dnx9iBigBA2erlK0Ci1IAxO12
+         G7LTVohG0Hf8iJ8u5vxjc0CMHf26imE1bmWvaaRxm+VRosNVsOfOvCwVVFJ3vIpGxHtA
+         ZSP6rQRTAP/K9KC1BOnRsaBLKV6jbQXh08fYbHe8RLUGHi1Qd8RNMi2k0IpTv5ZJSX9q
+         ltVYoykGp1X92rVAqd7Nuh/saTDFhCX7p4GlMINgHBhCO/8qkUqoqAQG8aCowlRhSG0r
+         Nrq1hW7KshMNjDdFcjKtIZV3znWy1fsPVrgCs/5Cn2aR4+OjvNG1vLerTzklmEwjd5aR
+         2wvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769762038; x=1770366838;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vWQ+u7TayfftUmeu2Jh/Gll91sSdUpkw8fM2bQTtlgc=;
+        b=KqzY2Ru/herQRhLHf948z5ZsFOlRjiWaJOUJ/tY66ULMfPIlvlEChRpyGha0hiYrQe
+         W6xudqVMr5iZTg1sPhReNXl5p0WpMd7sXS4FE2j+fDgdn+uXROQc+FzVa7ZSpxbBg2Ua
+         INIIXvNBbKRhw60hLyL7+ReDmrLmv7InS26XcZ+8oPXVEB9VCeXVBnAl97RU7wuF6SZT
+         W3tId/LDCEIrL2N5PE8HoWDjAXlltSjzLdx0VmYQBDYG7vnm7418d0qAPOFzK++aIK3l
+         JR3kVo28yrAPIiEXK99ssJyWTZ+pIuTL0WrQ+AjAGxzIM2DZAp2VdDkCuX0jSeHH2dXG
+         EwOQ==
+X-Gm-Message-State: AOJu0YyO0A89Tmw7lhV1AfqSQQc78sLgQVYGSuyzOJCEwIMt/WBLjSWL
+	gNJmIQiIAjwGKLMs6XKdGQQikai9rsshThS7bqUstNjvyS0mMx93f+ULqo1SPqw8AJ1DY1/Y/mv
+	3141UxF/846t7yP43I9MFlzZ/j8Yj4No=
+X-Gm-Gg: AZuq6aIyycQ72aMi3ZKgYCG7938lt9dNZHd3ZGmnp4tRr5IwYU0fUVu9ASSWukpgLgX
+	l1k/3VLJk/m8a8CFAku8dn9ili0l37+oE15OjdJjPoa8PN7Hp1m6a8DBb/hY3Z2Nq5c7YTOCeGF
+	WPXmHdJM6I7vM77R+nSj/WURNmWL4rKNasZLt4B2SYIAR4FknToqOd8MNhTeFVN3Lk4yZWRGamv
+	mC8xQhRONaaMKmrztPkHLbSpIhhoKkN1HE5eBT3t1xQRdJS8eCbqqMtqxupraroCuZizMSt2g==
+X-Received: by 2002:a17:903:2f8e:b0:2a7:51bf:3b89 with SMTP id
+ d9443c01a7336-2a8d96a6dabmr21168115ad.19.1769762037543; Fri, 30 Jan 2026
+ 00:33:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CH2PR12MB4215:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3f5bd8b8-856e-423a-a37e-08de5fd9ebe4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?VHptNVRmNUpReHNNRjE1TVBCZmVibS8yVmdhWFA0djgrWXNMMFN3WW5ZakxH?=
- =?utf-8?B?NmFkbE00L3NUM1NadWRpd3M5QmxuQUVjYmRwZXFIVHlCWnVBbjhTdWRBVWpa?=
- =?utf-8?B?anJqOXVxejM0SG5TcmxUakZRNVNlcWFMSXRUNC9RTkxzU0drSWVwcjhNaHRH?=
- =?utf-8?B?QnF0MnRVdDhIM3pRcXpOWkovKzN0WVlNc05qTitObVo2NVJUeUFCYWUyaUZO?=
- =?utf-8?B?TzN0ZzhXcGliQmNMNS9tcnRodGZZdnoyU2pCWHlibkRCWVVQT0Yyak9yc1Rl?=
- =?utf-8?B?ZzU2NkpEYW0wRFJWTmN3K3daYmdPUFdXZTNVQnA2Qm5WUEtlU0lrbWpUcE1s?=
- =?utf-8?B?SFZRdW9GcitYWlZFZVJRRWNwdURDK3doMWlWTVpIOWZhTmg1d1k5ZVJMMWE2?=
- =?utf-8?B?ZkZaWk9JZHpQOUJQNjRpUUdJS0kxV3FhZ0o2THhYalM2VmxXRVgzY0JyNkZL?=
- =?utf-8?B?WHRGMWhTT2dObEdYcVBhSlFvOWFrOGU4NDZ0VG9JRENETXhadzhWY0FNZ1RV?=
- =?utf-8?B?RmJEdkNSdWxpSng1WVRmSGJDQ1h2NDBHeDQwRjVWNzhIWVoxM3EzcHpnQXNy?=
- =?utf-8?B?SDN1OGtrKytYRG1JMXdCN2J1MUxqLzgxMU5DcUcwcWlBT1dHZktsS2Z6QStw?=
- =?utf-8?B?RjNaNEJwYjlQbUZ5YUFIN1I2MkVFVjhQenFjSW5SQmJTVzM1emFuK2tiVWZD?=
- =?utf-8?B?TlhsT3NKNW5BbUZoUm9KdWdRYXE5VFh6OWdpNitjRlpRMCs1Q3RqbmtSN1Zp?=
- =?utf-8?B?Znl4Mjd2emYzS0EyUXU3T3ZraWRGd3djbjdkZmttaC94NUwvVzhuMFlkajh0?=
- =?utf-8?B?SHUxb3Y2czRYRXB4d1doaUJ1akxqLzlaTXpLVFlOWVNNeTJiV2cxTU5UVncy?=
- =?utf-8?B?NG1tSlp1U1ZRU1JyZ2tMNjRCSlJ2SkU3K245L0NHVEhwMmRFQlE0dllYZGs1?=
- =?utf-8?B?NEJTb3N6azRUbEdaY0gxYVdlWmdSY2VYVXRrMFFzSDFUaXkxdWJ3UXRhQ3hX?=
- =?utf-8?B?bDEyOUxSa2UzWVdXUFNQUHFkYjcwbzl6ZTVoWkZKSmx3SERxcndBcllERU1r?=
- =?utf-8?B?WktyZ0dMdFFnMUZMcEIyaDF5ZnNEYzJXVUZDVGxzVDFNVmNDVHp1R1NpWE9C?=
- =?utf-8?B?dkJ2SURHSXpORzcxTlVEbDRVbTBtbXRBcDl5QzZDK3lmY3d1cGFObjdjdlVT?=
- =?utf-8?B?NEVnNG1laDhTbjZ2SU5SNENBTmJ0WkVDSGRBaEJsaFFzMkdmNllUNi9ZV2wx?=
- =?utf-8?B?enhSZnU1K3lMbHFwcndteFJjMVpFd0FBY2dqU1lvNnpWWVo1M2hVVi9TOTBD?=
- =?utf-8?B?RkE4bno0REgyYnZWcWx4a1p0Vk9acVgvTmRmd29NL0JXUFp1SExyWHFxZmRo?=
- =?utf-8?B?dG9RVGtsTG94N2NuYmFMOWtLYkh1SmZKb3VlVmNYLzhhNXQ3a3NHaUlnOG80?=
- =?utf-8?B?VFNZT1pHN0UvVkVIWmlDbngrZDZjT0tTVTUxR0p5WERVcmhqT252WlVISlhx?=
- =?utf-8?B?cWorb2tycktxcFNJUSsydGVQM3dQOWlNanN4cjBuVFFaT253SHRYaE9OUVNU?=
- =?utf-8?B?bE9FcGxMWjREL1dsMDR1MWF2bWNhQ2FXbHBSejgzaWJsSS9KUlpzYXlGaXAw?=
- =?utf-8?B?NFM2MmUrKzNDUHlVMXhDNmt4emtjNzV5c2hJaXQvRGplSFRCWW5lcnR2QlVK?=
- =?utf-8?B?QW1keGZoVnJVaFQwZHVNejhIeXpIN0J3ZVZHT2doQ1JzRGlycElaZ3pBUUpR?=
- =?utf-8?B?WkExMmdad0tsNWlEWExGZG9YM09NeHVlaWxCaTVRUXlqQ1pVdXF1UCs2S3RC?=
- =?utf-8?B?Q25DcmkzZUNhbTB3VDdwTFJrRWtsWDlnNTUrVi9SUnV3R3VNN1JwbmlML242?=
- =?utf-8?B?M1N6RXpQbHR5MXA4TXZCV2dqUFl6Z2p5Mk9Db3daZlhuUnlrckFSNHNRY1I1?=
- =?utf-8?B?N2tVZUNxOFFiaWRxTzQ3OFZEaTdsSjJwOXgzeGZHZlZmY0czWm5zVm1hRDdw?=
- =?utf-8?B?UHl0ZFRUNE55bDB2b1NSUjlRc3dYOGl6K3pYekNyalIrNlBGY1dFeER6Q1NR?=
- =?utf-8?B?Q01POStMMVFPV3YrNHhZVDV5Z1BBMDN4SndmRzZOclQyMnJhaXY0emJBVEhL?=
- =?utf-8?B?YnpUK0dsUE9JR3Z3U0hrT1prZ043YVI3MTRuMVRCK3Q1RzdLckUyb1J0dGdy?=
- =?utf-8?B?dFE9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?R1ZjOTJQNEZlRTkzWHRaTUxkQUVJT21xREgxTjVtSzYxUEtidG9qZXdPcHJF?=
- =?utf-8?B?YldvMS96NGJvYXhCWldsTUI0bU44ZlVnRWJSc1QwczFtdUJvS1JkSytjSXNB?=
- =?utf-8?B?TkNBcENac2E1Ky9NSGJlYXJzQ245b0d0d0IzQlg1bURWUEgzUVY0c2ZmVlc2?=
- =?utf-8?B?MWJPeFpOWSswcVIrZXdQeTBzclZFaHNaSjBEWGFnNkNPc1MyQ3F4cnN4cXpl?=
- =?utf-8?B?RVdnZUQ4Q2tGOEV3d0JYczEvc29qN1BhL3d3SXJsRW1tQzZUZG1aMFJSWkkw?=
- =?utf-8?B?TEtMVXNRNUJ1Y0RXZlZ1QlFqcFJMZTQ2M0R0TWxrbURWYVFjeE5QVnFqbS90?=
- =?utf-8?B?ZExpeHBwYi9iZ0lOQldpdE1GQmYvRXFwWEVrWTVLZkJrYzNRSUtSL2pDSHFI?=
- =?utf-8?B?UEVabUpnLzlyTFljRlFsTnhyVTVYemlEY1AzT1JGbzJCVUQ0c3U0cndLWlE0?=
- =?utf-8?B?TnkvN3BOUXdjV05vbFJPeEJtM0tINnlhWjJGZ2VYczhhc2FUTEpjd3M1WjE3?=
- =?utf-8?B?ZVVIeGVrM0dVSDAxRGpWMXUyZm56MXBYNzdvTmtrRmFUeC9kVFJMdlhpMWR3?=
- =?utf-8?B?MjdYOXlwR3Z4M29ZSm0vd3h0WmxFLzUzTU4rRGZYNjcrY3piUm9SeGFXTVJE?=
- =?utf-8?B?bWthQVU0cEVJd0k1UXEydjZwbFVaMU42MUEzdkYyU1VtZnVXU0U0L3M4ak1B?=
- =?utf-8?B?T2l3d0FsTkY0S3p5Q0dFMDBzWXFRS0tHRDZPQVJSQmZramgwY0tGQkxVelli?=
- =?utf-8?B?NFptdi9yU3g4cW4rWWM2c0VnZU85cVBXV21JSEllNDNxaDFrVldqM2U2S09n?=
- =?utf-8?B?Mk1kSEw2TFNQc0I4QXluWnVQRSs1bkl6a3FaVlpxYVlnU3NMVU0vWHVzVEhu?=
- =?utf-8?B?V3Azd0xRMkxrT1lvSERwZTRieDNuejZnSzFzRXdwNzdtckVNZ29PaDI2bHdx?=
- =?utf-8?B?YjRkQ1FBM3JveUt5ZE11V0IrdFRiVHIxYVk3RHF1VHRGUzdaS1Rka1dHVTJY?=
- =?utf-8?B?ZTVPa0l4dG9jdFl3Z1NkNlVPamthbzV3K2xZT1U5bzA5VFBnOC9sZkxTQUFZ?=
- =?utf-8?B?Rlg3cWhXT3cwSm5YMFhoK0JrT1JkTXJyMTN5ejVQVGM0Wkg1Y1lvTVlzMUxh?=
- =?utf-8?B?QXpmdXRVdVA3SzdvODVMOEw4NmZ6WWxOMlp5VGRYcWt6N2NrYjhqa0VkUVgr?=
- =?utf-8?B?NWdYaEpVcVVjQVhHQWlnQkNOOUFrRUZxM3ExVTZTMURoZGx3Zk1SRWhwV2xM?=
- =?utf-8?B?VHA0c052R3pEUmw1RzlSWG5jMFIrNUc5MVg3ZmNoM3lXTDVVZEJWYVNRTXBQ?=
- =?utf-8?B?dUNLZ3dTSjA2eHovc2JPSVRtSEc1RFo4UzF0ZHV6MzVmbzQzYUNyZUN5eHhz?=
- =?utf-8?B?bXB1ZzRsOHZuSjVONGN6WS95NEJaNFg1a2liK0hRM0dERXNiRkNOS0NLQkl0?=
- =?utf-8?B?Nk54ampFTGVYUmJ2NWNJS2ZuTTRoR3JiTFN5ZUxPSTN0LzF4OUxNQ2ZHaDBq?=
- =?utf-8?B?R3NocytTQzdLU01SRUJkcGJIcFlqeUJWOEQ1Ukx0Rmx3MXpOYm5lTlQzRHZ3?=
- =?utf-8?B?U0craE9JWTVJd1F5eGIwb3NGNlpFRXJweUNTbG51a3RsZThuQWxubXFMc1JD?=
- =?utf-8?B?TTI1dGI1aXp0aTQzRGYxUDIyM3hTS3ZsdmhNcU5FamEyOHBLQmxZcFNqcHlZ?=
- =?utf-8?B?WXkvYUhOODB0OWY0aGtzVi9ieUIwTG85R3E1cnZUSFFZUElDTWhtRm9GVFgv?=
- =?utf-8?B?dXpEZld0a1dOdUNIeTA0dWt1UE5jdmhad1h0OXVIQmpOdi9MbW5KNTRvbFhQ?=
- =?utf-8?B?RHFuY0FIRUJpR2NzY2dIem9md0M3ZGk0V2ZUb1ArdjlvRmpoSm9ldFdVZnIr?=
- =?utf-8?B?Mjh6QUxoR1lJZjNYd21SSnZ3cko2K0dIN2dVcU01anp4RlJPUkpmM3lNNy80?=
- =?utf-8?B?V0FEaURucWR1SnFXOERMS2hqTEIwTzJqQ2E1UU5naUswcmZDazZLN3NZa2N3?=
- =?utf-8?B?VmtnWTJweGM4TGlsbWRVZkp0enJCWDA0T0gwNWp5MGNZV1JKZGRObWloUUVH?=
- =?utf-8?B?V0V6U21odW1hcWhnRmQweHUzR2V2VkNIOTdyNXpJNFErbGZIQU82V0p1cElq?=
- =?utf-8?B?UWZPMlRKcXpkYjdPaTVmUEVnSENEUENrSmMwYjEwMWc3YVhWYTlOVXIzb25I?=
- =?utf-8?B?ZHpSc1dyMTB2WHBXRVFISE1DcnJGbkZtNnQzeThNTEd4elFseVlwMEJBazR3?=
- =?utf-8?B?OUp6NlBnZmxJaFR1NlllenRJS0g5SU83T1hDWm9mTE95YzJEb0Q4cThBd0V4?=
- =?utf-8?Q?1OC4z1ShsniCNO1Nku?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f5bd8b8-856e-423a-a37e-08de5fd9ebe4
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2026 08:31:10.6601
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FqLSC6UrmYaDP1lvszjFZ7/XJVmVjoAzjoFHYFvVeyIjhDGEbwQKX/orZrnJqH/J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4215
+From: yunje shin <yjshin0438@gmail.com>
+Date: Fri, 30 Jan 2026 17:33:46 +0900
+X-Gm-Features: AZwV_QiXJvCHX3ANP8w91BlGAT4xpSwA52b6P2YvP-_RDPdB7P6dJycS5NRvR6k
+Message-ID: <CAMX6_QHfPsyybbO_79u4RpbGY9H28xhpaVPHUD-wu2U+V5W=7w@mail.gmail.com>
+Subject: [BUG: KASAN: slab-out-of-bounds in ib_uverbs_post_send+0x0]
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, Joonkyoo Jeong <joonkyoj@yonsei.ac.kr>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	TAGGED_FROM(0.00)[bounces-16230-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16231-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.org,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[christian.koenig@amd.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[amd.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yjshin0438@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amd.com:mid,amd.com:dkim]
-X-Rspamd-Queue-Id: B75C0B8620
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DB95DB866B
 X-Rspamd-Action: no action
 
-On 1/24/26 20:14, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> dma-buf invalidation is handled asynchronously by the hardware, so VFIO
-> must wait until all affected objects have been fully invalidated.
-> 
-> In addition, the dma-buf exporter is expecting that all importers unmap any
-> buffers they previously mapped.
-> 
-> Fixes: 5d74781ebc86 ("vfio/pci: Add dma-buf export support for MMIO regions")
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/vfio/pci/vfio_pci_dmabuf.c | 71 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 68 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> index d8ceafabef48..485515629fe4 100644
-> --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
-> +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> @@ -17,6 +17,8 @@ struct vfio_pci_dma_buf {
->  	struct dma_buf_phys_vec *phys_vec;
->  	struct p2pdma_provider *provider;
->  	u32 nr_ranges;
-> +	struct kref kref;
-> +	struct completion comp;
->  	u8 revoked : 1;
->  };
->  
-> @@ -44,27 +46,46 @@ static int vfio_pci_dma_buf_attach(struct dma_buf *dmabuf,
->  	return 0;
->  }
->  
-> +static void vfio_pci_dma_buf_done(struct kref *kref)
-> +{
-> +	struct vfio_pci_dma_buf *priv =
-> +		container_of(kref, struct vfio_pci_dma_buf, kref);
-> +
-> +	complete(&priv->comp);
-> +}
-> +
->  static struct sg_table *
->  vfio_pci_dma_buf_map(struct dma_buf_attachment *attachment,
->  		     enum dma_data_direction dir)
->  {
->  	struct vfio_pci_dma_buf *priv = attachment->dmabuf->priv;
-> +	struct sg_table *ret;
->  
->  	dma_resv_assert_held(priv->dmabuf->resv);
->  
->  	if (priv->revoked)
->  		return ERR_PTR(-ENODEV);
->  
-> -	return dma_buf_phys_vec_to_sgt(attachment, priv->provider,
-> -				       priv->phys_vec, priv->nr_ranges,
-> -				       priv->size, dir);
-> +	ret = dma_buf_phys_vec_to_sgt(attachment, priv->provider,
-> +				      priv->phys_vec, priv->nr_ranges,
-> +				      priv->size, dir);
-> +	if (IS_ERR(ret))
-> +		return ret;
-> +
-> +	kref_get(&priv->kref);
-> +	return ret;
->  }
->  
->  static void vfio_pci_dma_buf_unmap(struct dma_buf_attachment *attachment,
->  				   struct sg_table *sgt,
->  				   enum dma_data_direction dir)
->  {
-> +	struct vfio_pci_dma_buf *priv = attachment->dmabuf->priv;
-> +
-> +	dma_resv_assert_held(priv->dmabuf->resv);
-> +
->  	dma_buf_free_sgt(attachment, sgt, dir);
-> +	kref_put(&priv->kref, vfio_pci_dma_buf_done);
->  }
->  
->  static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
-> @@ -287,6 +308,9 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
->  		goto err_dev_put;
->  	}
->  
-> +	kref_init(&priv->kref);
-> +	init_completion(&priv->comp);
-> +
->  	/* dma_buf_put() now frees priv */
->  	INIT_LIST_HEAD(&priv->dmabufs_elm);
->  	down_write(&vdev->memory_lock);
-> @@ -326,6 +350,8 @@ void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
->  	lockdep_assert_held_write(&vdev->memory_lock);
->  
->  	list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm) {
-> +		unsigned long wait;
-> +
->  		if (!get_file_active(&priv->dmabuf->file))
->  			continue;
->  
-> @@ -333,7 +359,37 @@ void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
->  			dma_resv_lock(priv->dmabuf->resv, NULL);
->  			priv->revoked = revoked;
->  			dma_buf_invalidate_mappings(priv->dmabuf);
-> +			dma_resv_wait_timeout(priv->dmabuf->resv,
-> +					      DMA_RESV_USAGE_BOOKKEEP, false,
-> +					      MAX_SCHEDULE_TIMEOUT);
->  			dma_resv_unlock(priv->dmabuf->resv);
-> +			if (revoked) {
-> +				kref_put(&priv->kref, vfio_pci_dma_buf_done);
-> +				/* Let's wait till all DMA unmap are completed. */
-> +				wait = wait_for_completion_timeout(
-> +					&priv->comp, secs_to_jiffies(1));
-> +				/*
-> +				 * If you see this WARN_ON, it means that
-> +				 * importer didn't call unmap in response to
-> +				 * dma_buf_invalidate_mappings() which is not
-> +				 * allowed.
-> +				 */
-> +				WARN(!wait,
-> +				     "Timed out waiting for DMABUF unmap, importer has a broken invalidate_mapping()");
+i think need check
 
-You can do the revoke to do your resource management, for example re-use the backing store for something else.
+if (cmd.wqe_size < sizeof(struct ib_uverbs_send_wr))
+    return -EINVAL;
 
-But it is mandatory that you keep the mapping around indefinitely until the importer closes it.
 
-Before that you can't do things like runtime PM or remove or anything which would make the DMA addresses invalid.
+Linux lkd-debian-qemu 6.19.0-rc7-g8dfce8991b95 #1 SMP PREEMPT_DYNAMIC
+Thu Jan 29 13:39:52 KST 2026 x86_64x
 
-As far as I can see vfio_pci_dma_buf_move() is used exactly for that use case so this here is an absolutely clear NAK from my side for this approach.
+[  962.692908] BUG: KASAN: slab-out-of-bounds in ib_uverbs_post_send+0x0
+[  962.693478] Read of size 4 at addr ffff888007df4748 by task repro_hy5
+[  962.693677]
+[  962.694271] CPU: 1 UID: 0 PID: 435 Comm: repro_hybrid Not tainted 6.
+[  962.694340] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 19964
+[  962.694529] Call Trace:
+[  962.694589]  <TASK>
+[  962.694659]  dump_stack_lvl+0x53/0x70
+[  962.694734]  print_report+0xd0/0x660
+[  962.694764]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+[  962.694787]  ? ib_uverbs_post_send+0x106b/0x1600
+[  962.694802]  kasan_report+0xce/0x100
+[  962.694820]  ? ib_uverbs_post_send+0x106b/0x1600
+[  962.694838]  ib_uverbs_post_send+0x106b/0x1600
+[  962.694858]  ? __pfx_ib_uverbs_post_send+0x10/0x10
+[  962.694878]  ? n_tty_write+0x8da/0x1090
+[  962.694900]  ib_uverbs_write+0x87d/0xd10
+[  962.694920]  ? __pfx_ib_uverbs_write+0x10/0x10
+[  962.694937]  ? __pfx___fsnotify_parent+0x10/0x10
+[  962.694959]  ? selinux_file_permission+0x367/0x500
+[  962.694980]  vfs_write+0x21e/0xd30
+[  962.694998]  ? __pfx___handle_mm_fault+0x10/0x10
+[  962.695014]  ? __pfx_vfs_write+0x10/0x10
+[  962.695034]  ? fdget_pos+0x53/0x4b0
+[  962.695052]  ksys_write+0x17c/0x1c0
+[  962.695068]  ? __pfx_ksys_write+0x10/0x10
+[  962.695083]  ? do_user_addr_fault+0x43b/0x9c0
+[  962.695103]  do_syscall_64+0xa4/0x320
+[  962.695121]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+[  962.695186] RIP: 0033:0x7f250d402513
+[  962.695391] Code: 8b 15 81 29 0e 00 f7 d8 64 89 02 48 c7 c0 ff ff ff8
+[  962.695445] RSP: 002b:00007ffe153312b8 EFLAGS: 00000246 ORIG_RAX: 001
+[  962.695515] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f23
+[  962.695547] RDX: 0000000000000028 RSI: 00007ffe153312d0 RDI: 00000003
+[  962.695586] RBP: 00007ffe15331380 R08: 0000000000000037 R09: 00007ff7
+[  962.695617] R10: fffffffffffffd8e R11: 0000000000000246 R12: 00005610
+[  962.695647] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000
+[  962.695690]  </TASK>
+[  962.695750]
+[  962.697943] Allocated by task 435:
+[  962.698093]  kasan_save_stack+0x33/0x60
+[  962.698203]  kasan_save_track+0x14/0x30
+[  962.698292]  __kasan_kmalloc+0x8f/0xa0
+[  962.698362]  __kmalloc_noprof+0x1b7/0x550
+[  962.698431]  ib_uverbs_post_send+0x1b8/0x1600
+[  962.698503]  ib_uverbs_write+0x87d/0xd10
+[  962.698592]  vfs_write+0x21e/0xd30
+[  962.698657]  ksys_write+0x17c/0x1c0
+[  962.698726]  do_syscall_64+0xa4/0x320
+[  962.698806]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+[  962.698904]
+[  962.698981] The buggy address belongs to the object at ffff888007df40
+[  962.698981]  which belongs to the cache kmalloc-8 of size 8
+[  962.699258] The buggy address is located 0 bytes to the right of
+[  962.699258]  allocated 8-byte region [ffff888007df4740, ffff888007df)
+[  962.699490]
+[  962.699566] The buggy address belongs to the physical page:
+[  962.699932] page: refcount:0 mapcount:0 mapping:0000000000000000 ind4
+[  962.700210] flags: 0x100000000000000(node=0|zone=1)
+[  962.700600] page_type: f5(slab)
+[  962.700915] raw: 0100000000000000 ffff888007441500 ffffea00001f6c00 2
+[  962.701065] raw: 0000000000000000 0000000080800080 00000000f5000000 0
+[  962.701284] page dumped because: kasan: bad access detected
+[  962.701407]
+[  962.701485] Memory state around the buggy address:
+[  962.701885]  ffff888007df4600: fa fc fc fc fa fc fc fc fa fc fc fc fc
+[  962.702089]  ffff888007df4680: fa fc fc fc fa fc fc fc fa fc fc fc 0c
+[  962.702268] >ffff888007df4700: 00 fc fc fc 00 fc fc fc 00 fc fc fc fc
+[  962.702425]                                               ^
+[  962.702578]  ffff888007df4780: fa fc fc fc fa fc fc fc fa fc fc fc fc
+[  962.702708]  ffff888007df4800: fa fc fc fc fa fc fc fc fa fc fc fc fc
+[  962.702849] =========================================================
+[  962.704326] Disabling lock debugging due to kernel taint
+post_send trigger: Invalid argument
+[  962.698362]  __kmalloc_noprof+0x1b7/0x550
+[  962.698431]  ib_uverbs_post_send+0x1b8/0x1600
+[  962.698503]  ib_uverbs_write+0x87d/0xd10
+[  962.698592]  vfs_write+0x21e/0xd30
+[  962.698657]  ksys_write+0x17c/0x1c0
+[  962.698726]  do_syscall_64+0xa4/0x320
+[  962.698806]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-You can either split up the functionality of vfio_pci_dma_buf_move() into vfio_pci_dma_buf_invalidate_mappings() and vfio_pci_dma_buf_flush() and then call the later whenever necessary or you keep it in one function and block everybody until the importer has dropped all mappings.
+[  962.698981] The buggy address belongs to the object at ffff888007df40
+                which belongs to the cache kmalloc-8 of size 8
+[  962.699258] The buggy address is located 0 bytes to the right of
+                allocated 8-byte region [ffff888007df4740, ffff888007df)
 
-> +			} else {
-> +				/*
-> +				 * Kref is initialize again, because when revoke
-> +				 * was performed the reference counter was decreased
-> +				 * to zero to trigger completion.
-> +				 */
-> +				kref_init(&priv->kref);
-> +				/*
-> +				 * There is no need to wait as no mapping was
-> +				 * performed when the previous status was
-> +				 * priv->revoked == true.
-> +				 */
-> +				reinit_completion(&priv->comp);
-> +			}
->  		}
->  		fput(priv->dmabuf->file);
+[  962.699566] The buggy address belongs to the physical page:
+[  962.699932] page: refcount:0 mapcount:0 mapping:0000000000000000 ind4
+[  962.700210] flags: 0x100000000000000(node=0|zone=1)
+[  962.700600] page_type: f5(slab)
+[  962.700915] raw: 0100000000000000 ffff888007441500 ffffea00001f6c00 2
+[  962.701065] raw: 0000000000000000 0000000080800080 00000000f5000000 0
+[  962.701284] page dumped because: kasan: bad access detected
 
-This is also extremely questionable. Why doesn't the dmabuf have a reference while on the linked list?
-
-Regards,
-Christian.
-
->  	}
-> @@ -346,6 +402,8 @@ void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
->  
->  	down_write(&vdev->memory_lock);
->  	list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm) {
-> +		unsigned long wait;
-> +
->  		if (!get_file_active(&priv->dmabuf->file))
->  			continue;
->  
-> @@ -354,7 +412,14 @@ void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
->  		priv->vdev = NULL;
->  		priv->revoked = true;
->  		dma_buf_invalidate_mappings(priv->dmabuf);
-> +		dma_resv_wait_timeout(priv->dmabuf->resv,
-> +				      DMA_RESV_USAGE_BOOKKEEP, false,
-> +				      MAX_SCHEDULE_TIMEOUT);
->  		dma_resv_unlock(priv->dmabuf->resv);
-> +		kref_put(&priv->kref, vfio_pci_dma_buf_done);
-> +		wait = wait_for_completion_timeout(&priv->comp,
-> +						   secs_to_jiffies(1));
-> +		WARN_ON(!wait);
->  		vfio_device_put_registration(&vdev->vdev);
->  		fput(priv->dmabuf->file);
->  	}
-> 
-
+[  962.701485] Memory state around the buggy address:
+[  962.701885]  ffff888007df4600: fa fc fc fc fa fc fc fc fa fc fc fc fc
+[  962.702089]  ffff888007df4680: fa fc fc fc fa fc fc fc fa fc fc fc 0c
+[  962.702268] >ffff888007df4700: 00 fc fc fc 00 fc fc fc 00 fc fc fc fc
+[  962.702425]                                               ^
+[  962.702578]  ffff888007df4780: fa fc fc fc fa fc fc fc fa fc fc fc fc
+[  962.702708]  ffff888007df4800: fa fc fc fc fa fc fc fc fa fc fc fc fc
+[  962.702849] =========================================================
 
