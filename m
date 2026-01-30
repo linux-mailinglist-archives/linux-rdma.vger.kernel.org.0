@@ -1,361 +1,318 @@
-Return-Path: <linux-rdma+bounces-16228-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16229-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WA/oLXlmfGk/MQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16228-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:06:17 +0100
+	id qHDiDi9sfGkSMgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16229-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:30:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62BB1B827E
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:06:17 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5265B85B6
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3DED43053BB3
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:03:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7DF9D301E9BA
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E4B346777;
-	Fri, 30 Jan 2026 08:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4622232BF55;
+	Fri, 30 Jan 2026 08:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LpNisSU3"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t67dWimQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012035.outbound.protection.outlook.com [40.107.200.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D56B313267;
-	Fri, 30 Jan 2026 08:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769760179; cv=none; b=WgyprDKEuP32oaOD6YgoFqMurvsk/B2oAqysNg0H8Un/B9QiEIhpyvVMo0nqF3euJWvcc8bSwjkooFsUHBvdht2cFl5g1UePmKy/o7+sHNuDREVmHeH/oWWF1u+nLkBmLUYaN73dckp9iQJNQnlJ9EkSBOou8gZaFkm8uj1uMps=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769760179; c=relaxed/simple;
-	bh=kuo/bpQcZBtBXWTSV/ztj+mmjW8gKNvB1ng213v2Vqc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QB7Ep+y7F2lyXtwtOPK8l0VowMTR12QnQmRGO+YNq2XpiOnN4HZ4jDrfbNbYfeRnUij9JJZIDzz6yHDqheFKKRB79RoECoB5KeSxO3Xgoc2lWkMRJ8pfzIgH9ZI5c92zYVp/BoNaLK8uGfAcQZvdP4lEwuXxwBk4OPzZEU/wkaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LpNisSU3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A6BCC19425;
-	Fri, 30 Jan 2026 08:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769760178;
-	bh=kuo/bpQcZBtBXWTSV/ztj+mmjW8gKNvB1ng213v2Vqc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LpNisSU3wcMguKZMp7lPSDLJ8daACD0rPd33pNAONHaXB/p/ph4Vq5oYQnIszOk7u
-	 M9q0SnqvVd7SBDVfCyGT9wBu9nb0POoCu+01H4VAUdB0/b/UdxKZVIXNVmG019I3Ts
-	 17SFEydL5zd7Zo7nMcgh5XVdmr+UxFZYSzq9TH6KWuVVXd425WBLEOkpxtJO0PO054
-	 lW/NUeNs85wEFyeXUQB4eMT57E2uFwmynkwIgrlY3ETgP+88g0T+1ZgFYSmNlFammW
-	 udLHQpZ1cvhFvkzHjvzN+Yqimy5/vSiaTmYOU8AbnSb3UD/KPqavZsowVgKP2NnzQl
-	 tMHZ5fBuLEIrA==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	rds-devel@oss.oracle.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	allison.henderson@oracle.com
-Subject: [PATCH net-next v3 8/8] net/rds: Trigger rds_send_ping() more than once
-Date: Fri, 30 Jan 2026 01:02:50 -0700
-Message-ID: <20260130080250.696575-9-achender@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260130080250.696575-1-achender@kernel.org>
-References: <20260130080250.696575-1-achender@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B40C30E82C;
+	Fri, 30 Jan 2026 08:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.35
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769761825; cv=fail; b=HnisD50tEfBGrwKHBx2U1RnOyG8SN2ISOZQ93SpGu3eqrTEsePTyf6QkGpTBcdpHupVVXcZ3DNPELlTmVS/gldz/KDqDzjYNqfUBfOMgSHpGr47CYZDtv0YeQHdw8qhNH6jrBsakYl0dmE4s900JXMvjD/+LXzEuTYt1Bcn9Kqk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769761825; c=relaxed/simple;
+	bh=9XxPjBqQrovbLFIy4QO39XFxuS7dcP59CEbTry3GW0s=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=uhUFMjLC08Haqq53LgWo/yv43Q8x+nhA4LFnj3dKKiDhiZ6SiA7sJkBJlWpDN+oEkqa2qwh2ulwplu+v99N78T2CkFmmKZ+FlseAmmJEBm505FsDR79WMkan/HFojhWAOHwHc9wOLir0AdDrz2D1vehnIcjxVKQ860Nmnq9hN6c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t67dWimQ; arc=fail smtp.client-ip=40.107.200.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cW9YwVs6yjkBv3pT7EQY2XVWJ3gArj7c2g5pavv6C8Z8gX2gHZ3FpP0Pm4ODi6Cfc2wUFT7mhiuy4VgFy5TNHsrAWbUiDw2II0WUviHy5Ar+RrOPty4BuR1CEcFtW8TwHKGSDZQm7T3cpn+eKWvs2oEkDIItTnHBEcFldvUiKBqkFP7f6jxR5gsjpTTTTZPpVZZOkAe89ur3SKSP9Z5P32xjO0y0jb+VgEi6wc8M0XSvUTVn5OrqGZPbTePDCoP2AUuBLnO2/qyg35hRuHxnNliHN3eOF7IIv/p3a6MWiS6NjswDDa6wG/DuhXkU0QDx/SJL08JeDzUwJfF+rssXyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kr/H89Z7jjZGo9rWY0Tlj2gEetQIBI+/D5eXe0Hcoko=;
+ b=CIVauqvfG2CMmuJ9A2FnAku/uAdotR6blQSkLl80Y5ZzPWf4qN+jU69ZZ1oVaYoHnf8u4e15zWBxcZjCOCMd7HnNQ5XIU778Vs8DifVhf+733Pgf/pFxNlky5kpSTKt7uc+1qIPkjCsI7bvMuSSfPaY0fXEvfKjt08W6fWF8o79yzcdjF69WfWd6qGHBeGQcH4S9hE4ZAhKF5g7nJUptqO/NrgQ8DZat9l8ws+v6HdPbaGpOyaWsw8vkB8rI63ZKMnAvRpVlOm6TqdH5L1Ht7vREfTNukE6BK6n/Y9K4nqtKrW4O6W88Y4k0JAz5V3v8vbWv+W9klhnPxY7Fb7AVHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kr/H89Z7jjZGo9rWY0Tlj2gEetQIBI+/D5eXe0Hcoko=;
+ b=t67dWimQo1K2NGas3LW691QrZIj4STZqV42604miGVq81BkDzyyoa3sUku1Ab3XIt5gdHJtnNpKxc0TqJqUgxncs6VWIt6cjYOMOw9UNMYAmG8tWOgn1I6KT5qqDCOAKeZYhQFmk3YBuwtdCJ+YwyDQGdcZDzJZPwzWrOdE9MEk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by CH2PR12MB4215.namprd12.prod.outlook.com (2603:10b6:610:ab::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.11; Fri, 30 Jan
+ 2026 08:30:20 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::ce69:cfae:774d:a65c]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::ce69:cfae:774d:a65c%5]) with mapi id 15.20.9564.010; Fri, 30 Jan 2026
+ 08:30:19 +0000
+Message-ID: <3dec1de0-0e5b-4a47-b2cc-949edea16328@amd.com>
+Date: Fri, 30 Jan 2026 09:30:05 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/8] dma-buf: Make .invalidate_mapping() truly optional
+To: Leon Romanovsky <leon@kernel.org>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Alex Deucher <alexander.deucher@amd.com>,
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+ Gerd Hoffmann <kraxel@redhat.com>,
+ Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Lucas De Marchi <lucas.demarchi@intel.com>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>, Alex Williamson <alex@shazbot.org>,
+ Ankit Agrawal <ankita@nvidia.com>,
+ Vivek Kasireddy <vivek.kasireddy@intel.com>
+Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+ intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ iommu@lists.linux.dev, kvm@vger.kernel.org
+References: <20260124-dmabuf-revoke-v5-0-f98fca917e96@nvidia.com>
+ <20260124-dmabuf-revoke-v5-5-f98fca917e96@nvidia.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20260124-dmabuf-revoke-v5-5-f98fca917e96@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0253.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f5::7) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CH2PR12MB4215:EE_
+X-MS-Office365-Filtering-Correlation-Id: 633ba243-86e0-4b0b-a9d6-08de5fd9cd66
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?NXZtelBrVEFJSXBMYVhjL2F3cEJrZ1E3ZFdKYzZlR2RkWjBxOWtlOHZqTWRF?=
+ =?utf-8?B?d0ZjMW03Q20rTUcvQ3dJYkZEL2drdjdiTWxVUWh5dmlYVWZXdHpVZXcxVmRQ?=
+ =?utf-8?B?b2Y1a01ucUtBSUQ2SnI3SEFkVHNqREpuUHBCaklzb0FpTGFaMUNnMUpZT2kw?=
+ =?utf-8?B?UUg5QmIzMUhMbFRWdTZXalljQVVJeWFqd1A4ak9EWU84YUNPRkJsL0EyV21o?=
+ =?utf-8?B?Tnk4YUpkM01VejBvcUttdDY4bld2UncwUkErRGV0djIrUkk2YTZnSkpiem9E?=
+ =?utf-8?B?ZVFKSVB5R2poNVdSMmFTOWpyVDFhNFZiWDBJN1RQUWwrbDgvaHFGQUVKUDJH?=
+ =?utf-8?B?YlNIUkdlNTg1ZjIwNkw2QXBFQjNWazMyMDZHWmdWWEEzL2UvSFdxbWIzdGxP?=
+ =?utf-8?B?blYyMzhsTTN2bG9pL2tEWEl0V2ljZzJMNTlhNGJtT3ZtekQ5UXpsN3M2RzRs?=
+ =?utf-8?B?elJ1K244diswa3FqanFSd2VXcnhWcWtMUlBiZWJnbXNBVVA3UlJ1dFJwb2ND?=
+ =?utf-8?B?V2RQcVVkd1NadVBmNi90RGc5cWlJTjYzNHp4ZW5LcEw3R3g0N1l0b2JJcmlu?=
+ =?utf-8?B?QVpmaDJId2NpWklBOElLVUhZNUs1RDJkNXV3ZkMvTUVrNE1YT1R0NUdEeDR5?=
+ =?utf-8?B?L2tsWm9JcWdHbUhOVW1ZS3pWQUhkU3h4TzhXM2V4UkJGcC9rQTFBT2tmeUtX?=
+ =?utf-8?B?bVBDNEtlWlZoY0VKRUkxbHQ5d1c0WlpaSHN2Tm9XR2MyNW9EVGxuY0ZTWkUv?=
+ =?utf-8?B?cHZYYXhiL2gya3lrM3lBRkp6RVhlNzFUR2tUSGFwNzY2QjU0NjBieFRCSnda?=
+ =?utf-8?B?SkU0Sml1azJodzUxcFB0eThzRmZtRngwWEF6YVJCWWdXMEMvdXFtQWh1TXRU?=
+ =?utf-8?B?RlQvc0NwOGhaZUVvNkxCOUxtNGVVaEpPc1NRWHg5TGFnWkZNZFRvZFNtM2M5?=
+ =?utf-8?B?eDlUcUo1Rk1IbVR6Z3V2eW1xUFNYZ1NlN3haam9tV0VvQzVmeVlPc1gwbGRN?=
+ =?utf-8?B?bGFEbGNObEJiNS9sRVB5NjRXUndVL1ZKNmlkMmRHSGw0cVlFOU5oVGRaL1dQ?=
+ =?utf-8?B?R1RvbzlmMlZULzQwN2lCRkE3eGQrMCs1bkdiVUxuQzc2cFRaTHFaTW1OQmM4?=
+ =?utf-8?B?TStlVDF5ZUNUZFJDNUxxTkdUN3FvK2owZU13enFVSnltUGMxRWZkVDlacVhS?=
+ =?utf-8?B?WFhWNDdrUUVkUldtb293NVB0eGJPQTR0YjRjLzZ4U2JyRStON2VJcVlsOW1a?=
+ =?utf-8?B?WTB1c3paQkl3ZHgrei9oeUFTQXl4VjEyZDBwTWU2OGhNTmp4TGVUbWtJdjVI?=
+ =?utf-8?B?eEhqS1JHeEU3WXliUjY0M2FlaUhTWlBqUEoyVmlYMjdZVTNHQVRrSHVrNlAw?=
+ =?utf-8?B?UjlIcG1DdFE0ZlBFTmJUdDVnbFo2L0x6NjVrMUFjdW5tQlExWWVrWThlVlB3?=
+ =?utf-8?B?WVhmdloyNk4rZHFoOHl0WmZVM0krczBEeTRKSnFFZk9IdGErV0pHWGxXWDlV?=
+ =?utf-8?B?Qk04SkdKdGlmWVB4dGUwQk5CODRyNUUrR3FqeVRQeTZmOGJub3EyOGk5L0xj?=
+ =?utf-8?B?aEwyUjhxQzVidE5aQTBPL05NelNkbE81MEZ5YVVKeG9rS3o4WHRyS2FzSERv?=
+ =?utf-8?B?WXRaeXpna0RHTTdhTWYydjZYdlg3TE1SemJsSDJtM1RUMEZReENYZDVtZWpl?=
+ =?utf-8?B?cDMrMmdZVjh0SkRsbEppVHpvWWQ1Nld6TmpVT1FycEdzSDlJaHlHbWZNbVJl?=
+ =?utf-8?B?eW04M1YrNWZMRU44c0pKY2VXbXpjOGdTWWU0emVSVnVZYlJkVlUwYitOMzQr?=
+ =?utf-8?B?cUh1ZGpDVm1rTE1zYmFJVTlRWXlyQ0ZiWlI5aEJoN2RNUkJZU1VZOEZ6K3lN?=
+ =?utf-8?B?aUl1ZVMxK3ZKZGxKL3NPaFBoS2h5a0s2VEtNaERxaGF3SDhETi8yRFhvOVZC?=
+ =?utf-8?B?OFFFaDkzK09zQXN5WkF3UzJDNmRJbGVhL0ZXcTcyUHhyVjVTclpMazhWV2Fk?=
+ =?utf-8?B?eTBjOWR4VTBIdGp6S243bG4xS2ZHMytOS09CQmRYSXc0ZkdsWXB5V0lzNFlo?=
+ =?utf-8?B?UmIzdTNRWElqS016bTRHZU13Z0J2dFNCSUhQdm9acnRySkFPUDNQYkF2alZZ?=
+ =?utf-8?B?bXEyMGpSNGZ5YmMrTVUwY21BMTYyRnJVa3RHcmd1TmExU0ZCVkc5bTBaRnJv?=
+ =?utf-8?B?NVE9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?L1RiakppOXZOQUw0YnQzY0taUHhtWFozdXllNk5hQlpzemZPT0toK0ExNVha?=
+ =?utf-8?B?cjVYWWVobWFHelVXYTJIaWNOT2pnT3JwNVFqSUZtbDBOZStQeW1TK3NiMlcv?=
+ =?utf-8?B?UTBBOENnWE5RUmRnV2lnRmtEQkcreHVrMGlhRGJ2dnBQamRtUkExbWI3VWJy?=
+ =?utf-8?B?dG9VOXI2ZTBxcU9oTnNraHh2MWRBNUlUU29DQXkwUSsyVDJmY3UxYm5rTGZi?=
+ =?utf-8?B?SFZ5ditWMTFzcmc5WitRajRqbFpETHU0ZkF1RHAwTHhmYnArMzFicDZYV0NX?=
+ =?utf-8?B?ZE9HUzdnYWdPeDZRQ2paVWdqajhWWjZzSlNMZWY4Z2Zzb3ZlVDYwTXhHbk40?=
+ =?utf-8?B?cDNVdmE2WW9FNnF0SExJbGc3QW1iSGN2ZGozWDVac3ZRZ21nN2xtckxpT1ds?=
+ =?utf-8?B?eHk4V2l4bTJUOUk2dmJvTWY0bnFhcG9WRit3aEllVE5laS9GdTl1aFlrWThr?=
+ =?utf-8?B?R2ZBUlZVdURLK1VwYUp3c0dVNzg4bERuMk8xL2RuaVhtOHo1MWdRSTNpeUk3?=
+ =?utf-8?B?dnJCay8rbW9Zc3Bwa29nRy8vaVNwMjdpa3Z5WnNMY0FlV3JIVGh6ZllhRmoy?=
+ =?utf-8?B?ZFJOVktjMTBuMzV1b2xTb2ZLRFFqdXA0eGYvbUp2UjI4Q2RJOHQ3cW1IZGVa?=
+ =?utf-8?B?T3RHMkRFRDlyVHNqNm1KWVZ3MWw4d0xHUXpOTWtCMXZSOERPdG5BS2UvU2lw?=
+ =?utf-8?B?ajI3K3FTdGFzbnVaRW5ub0VMdlNQZUJUYWZCOUxXblhZS0lDWUJiaUhCR1BT?=
+ =?utf-8?B?Z0NPaUl2WE9CVnAvYkZ2emlqbmRYbytmZ2szbC82aTh1a0RZSytPTWxvSnB5?=
+ =?utf-8?B?dS9yeVZkL3lrdVU2SnhESyt0K3g0Q2RPY1hUS21WL3VmaHRFSFczSU1zWnZx?=
+ =?utf-8?B?ZUJFWVBFNmpkcitocDlFbERUYTVWcnBpYmZBakY0S2hiNWpjT2F3MGpuN2FT?=
+ =?utf-8?B?aml1VHhUd0p0NERsbSsxMHYwTWFJb21iaTFQZ0xyVGJ0UXVqVTBBVTVwMVh5?=
+ =?utf-8?B?SHBqYTVUazhqbktMSWpEdUdUTklkRHd4QlAxM05Qc011R3N2Y0dIUFdyL2lr?=
+ =?utf-8?B?UVptMVFySnNtMFZuU3kxNWovZUN4bjlUSjRGSC9ybVJPS0pYSU1yZFRpRzg3?=
+ =?utf-8?B?TjBTNkpjUklBcTJMaklYLzArOHdxcTRFVENzN1g1N3pVVVhWYytBS1pSQ29o?=
+ =?utf-8?B?ZDZqLy91dzlRQU5lZlZ2VUEzdTYrSER1MW1XSGhxM2UxeWNsWDlMczFJNXNR?=
+ =?utf-8?B?NEJpbHF6aGFKOXJaZFl6Vk0ycGdOaGpRazloSHFWWXdiRTNJc2E4blZnRUpO?=
+ =?utf-8?B?RTdObDdJS0dDSE1ENWxxMVFic3dLVmZWK0h1UlNBdDhSeXhOaU9GUHQrYTVl?=
+ =?utf-8?B?ZTA5bENiQm12MXlzbG9HU0lLSWhFaGZpcWJMRWkzKzhnNHlsU0EyUFFYUEQ2?=
+ =?utf-8?B?VWhxNFlYMHZnVm1kSHJyeVBKYkM4UmFQNkxsSVFCcE9TT1p5WWtVYVJJR1E2?=
+ =?utf-8?B?NEgybG82Rkp1bTVMUHBZVjZwQ0VVT0lVQUIvMXNQMjN6aVVFS2l3dEJ4VWM1?=
+ =?utf-8?B?Q0tmcVUxU29wZUZkUWdoMzQ4NW55MEVQNVlHdVF5NStrMnpMTG5nUVZSTTB4?=
+ =?utf-8?B?NWNpYmh1WVlvbG1EN2xRbUxHTi9FYWU4Y0NCQ2w0Z0l4K0ZDTytVWlBJV1hB?=
+ =?utf-8?B?SlQ0Z2VYMnVlQzVaUHVhVzRtaThpRXpoaHN3bnpPNlFNbXhPWlcxOENyUGky?=
+ =?utf-8?B?K01zOXl3WnpRY2pSZVM4Rlh0UkpJT0Faam5YMDExc0J4eXFDMk13VDdtRFhJ?=
+ =?utf-8?B?TkNuRmxRUGU5cUorbFF3WGVRWGl3TW5mNithcUpOK0FwL0RZNzNwMmcrVDgw?=
+ =?utf-8?B?QnJjdXkvVXlHenorR29SV2dTL1lYVk56RTBoeDQzTXhIQjRrdWpUMnJPK29U?=
+ =?utf-8?B?bFd0clA5ZUp5TloxNEljN0ZCSnZYSjNXTVlVLzBONDVYZHp3dzJnblhzSVBX?=
+ =?utf-8?B?dGZ2SlVTaDd1YkNPTHY3Z0FSSmZhRlZIdFZCNHFpYmRROWphTTdOMmdTbHNX?=
+ =?utf-8?B?SmRWdzduVnlTTG52Z1RxMDcrdWdJZVdBVEtrSWRqYk1OYklHZ0N0bWRUUmJE?=
+ =?utf-8?B?dFh4VVBkc2NzendEWElXbjJjOVFFNWZwSEJRNmZLYlZYVHBnb0xHZ2tlZVJ6?=
+ =?utf-8?B?bUd6bjBaSmdwVWcwSGlRSThUbTRhZENJR3VFeGRjL0hnOVlBNUNFUlk5Q1ZZ?=
+ =?utf-8?B?YkErbTBod2dXYkN3VlJ1QjlmVG5XL2RlM05Yd1dyTFlJZUdRMFhMNDBiNHMx?=
+ =?utf-8?Q?skhrZFBtSWITgZjwZu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 633ba243-86e0-4b0b-a9d6-08de5fd9cd66
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2026 08:30:19.5229
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1AxeDv2n2Vj2spDq+7UrRp3zVQi7cK5cSnMAZYkNgZiSidS/umLYUZWEnZ85erGN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4215
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-16228-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	TAGGED_FROM(0.00)[bounces-16229-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_TO(0.00)[kernel.org,linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[christian.koenig@amd.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[amd.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 62BB1B827E
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:mid,amd.com:dkim,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A5265B85B6
 X-Rspamd-Action: no action
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+On 1/24/26 20:14, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The .invalidate_mapping() callback is documented as optional, yet it
+> effectively became mandatory whenever importer_ops were provided. This
+> led to cases where RDMA non-ODP code had to supply an empty stub.
+> 
+> Relax the checks in the dma-buf core so the callback can be omitted,
+> allowing RDMA code to drop the unnecessary function.
+> 
+> Removing the stub allows the next patch to tell that RDMA does not support
+> .invalidate_mapping() by checking for a NULL op.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/dma-buf/dma-buf.c             |  6 ++----
+>  drivers/infiniband/core/umem_dmabuf.c | 13 -------------
+>  2 files changed, 2 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index cd68c1c0bfd7..1629312d364a 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -947,9 +947,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>  	if (WARN_ON(!dmabuf || !dev))
+>  		return ERR_PTR(-EINVAL);
+>  
+> -	if (WARN_ON(importer_ops && !importer_ops->invalidate_mappings))
+> -		return ERR_PTR(-EINVAL);
+> -
+>  	attach = kzalloc(sizeof(*attach), GFP_KERNEL);
+>  	if (!attach)
+>  		return ERR_PTR(-ENOMEM);
+> @@ -1260,7 +1257,8 @@ void dma_buf_invalidate_mappings(struct dma_buf *dmabuf)
+>  	dma_resv_assert_held(dmabuf->resv);
+>  
+>  	list_for_each_entry(attach, &dmabuf->attachments, node)
+> -		if (attach->importer_ops)
+> +		if (attach->importer_ops &&
+> +		    attach->importer_ops->invalidate_mappings)
+>  			attach->importer_ops->invalidate_mappings(attach);
+>  }
+>  EXPORT_SYMBOL_NS_GPL(dma_buf_invalidate_mappings, "DMA_BUF");
+> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+> index d77a739cfe7a..256e34c15e6b 100644
+> --- a/drivers/infiniband/core/umem_dmabuf.c
+> +++ b/drivers/infiniband/core/umem_dmabuf.c
+> @@ -129,9 +129,6 @@ ib_umem_dmabuf_get_with_dma_device(struct ib_device *device,
+>  	if (check_add_overflow(offset, (unsigned long)size, &end))
+>  		return ret;
+>  
+> -	if (unlikely(!ops || !ops->invalidate_mappings))
 
-Even though a peer may have already received a
-non-zero value for "RDS_EXTHDR_NPATHS" from a node in the past,
-the current peer may not.
+You should probably keep "if (unlikely(!ops)).." here.
 
-Therefore it is important to initiate another rds_send_ping()
-after a re-connect to any peer:
-It is unknown at that time if we're still talking to the same
-instance of RDS kernel modules on the other side.
+Apart from that the patch looks good to me.
 
-Otherwise, the peer may just operate on a single lane
-("c_npaths == 0"), not knowing that more lanes are available.
+Regards,
+Christian.
 
-However, if "c_with_sport_idx" is supported,
-we also need to check that the connection we accepted on lane#0
-meets the proper source port modulo requirement, as we fan out:
-
-Since the exchange of "RDS_EXTHDR_NPATHS" and "RDS_EXTHDR_SPORT_IDX"
-is asynchronous, initially we have no choice but to accept an incoming
-connection (via "accept") in the first slot ("cp_index == 0")
-for backwards compatibility.
-
-But that very connection may have come from a different lane
-with "cp_index != 0", since the peer thought that we already understood
-and handled "c_with_sport_idx" properly, as indicated by a previous
-exchange before a module was reloaded.
-
-In short:
-If a module gets reloaded, we recover from that, but do *not*
-allow a downgrade to support fewer lanes.
-
-Downgrades would require us to merge messages from separate lanes,
-which is rather tricky with the current RDS design.
-Each lane has its own sequence number space and all messages
-would need to be re-sequenced as we merge, all while
-handling "RDS_FLAG_RETRANSMITTED" and "cp_retrans" properly.
-
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Signed-off-by: Allison Henderson <allison.henderson@oracle.com>
----
- net/rds/connection.c |  5 +++-
- net/rds/rds.h        |  2 +-
- net/rds/recv.c       |  7 +++++-
- net/rds/send.c       | 18 +++++++++++++++
- net/rds/tcp.h        |  2 +-
- net/rds/tcp_listen.c | 55 +++++++++++++++++++++++++++++++++-----------
- 6 files changed, 72 insertions(+), 17 deletions(-)
-
-diff --git a/net/rds/connection.c b/net/rds/connection.c
-index 4b7715eb2111..185f73b01694 100644
---- a/net/rds/connection.c
-+++ b/net/rds/connection.c
-@@ -447,13 +447,16 @@ void rds_conn_shutdown(struct rds_conn_path *cp)
- 	rcu_read_lock();
- 	if (!hlist_unhashed(&conn->c_hash_node)) {
- 		rcu_read_unlock();
-+		if (conn->c_trans->t_mp_capable &&
-+		    cp->cp_index == 0)
-+			rds_send_ping(conn, 0);
- 		rds_queue_reconnect(cp);
- 	} else {
- 		rcu_read_unlock();
- 	}
- 
- 	if (conn->c_trans->conn_slots_available)
--		conn->c_trans->conn_slots_available(conn);
-+		conn->c_trans->conn_slots_available(conn, false);
- }
- 
- /* destroy a single rds_conn_path. rds_conn_destroy() iterates over
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index 6d9f4a08b0ee..6e0790e4b570 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -549,7 +549,7 @@ struct rds_transport {
- 	 * messages received on the new socket are not discarded when no
- 	 * connection path was available at the time.
- 	 */
--	void (*conn_slots_available)(struct rds_connection *conn);
-+	void (*conn_slots_available)(struct rds_connection *conn, bool fan_out);
- 	int (*conn_path_connect)(struct rds_conn_path *cp);
- 
- 	/*
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index 889a5b7935e5..4b3f9e4a8bfd 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -209,6 +209,7 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
- 	bool new_with_sport_idx = false;
- 	u32 new_peer_gen_num = 0;
- 	int new_npaths;
-+	bool fan_out;
- 
- 	new_npaths = conn->c_npaths;
- 
-@@ -248,7 +249,11 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
- 		spin_lock_irqsave(&cp0->cp_lock, flags);
- 		conn->c_cp0_mprds_catchup_tx_seq = cp0->cp_next_tx_seq;
- 		spin_unlock_irqrestore(&cp0->cp_lock, flags);
-+		fan_out = true;
-+	} else {
-+		fan_out = false;
- 	}
-+
- 	/* if RDS_EXTHDR_NPATHS was not found, default to a single-path */
- 	conn->c_npaths = max_t(int, new_npaths, 1);
- 
-@@ -257,7 +262,7 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
- 
- 	if (conn->c_npaths > 1 &&
- 	    conn->c_trans->conn_slots_available)
--		conn->c_trans->conn_slots_available(conn);
-+		conn->c_trans->conn_slots_available(conn, fan_out);
- }
- 
- /* rds_start_mprds() will synchronously start multiple paths when appropriate.
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 599c2cfb7a1d..6e96f108473e 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1339,6 +1339,24 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
- 		cpath = &conn->c_path[0];
- 	}
- 
-+	 /* If we're multipath capable and path 0 is down, queue reconnect
-+	  * and send a ping. This initiates the multipath handshake through
-+	  * rds_send_probe(), which sends RDS_EXTHDR_NPATHS to the peer,
-+	  * starting multipath capability negotiation.
-+	  */
-+	if (conn->c_trans->t_mp_capable &&
-+	    !rds_conn_path_up(&conn->c_path[0])) {
-+		/* Ensures that only one request is queued.  And
-+		 * rds_send_ping() ensures that only one ping is
-+		 * outstanding.
-+		 */
-+		if (!test_and_set_bit(RDS_RECONNECT_PENDING,
-+				      &conn->c_path[0].cp_flags))
-+			queue_delayed_work(conn->c_path[0].cp_wq,
-+					   &conn->c_path[0].cp_conn_w, 0);
-+		rds_send_ping(conn, 0);
-+	}
-+
- 	rm->m_conn_path = cpath;
- 
- 	/* Parse any control messages the user may have included. */
-diff --git a/net/rds/tcp.h b/net/rds/tcp.h
-index b36af0865a07..39c86347188c 100644
---- a/net/rds/tcp.h
-+++ b/net/rds/tcp.h
-@@ -90,7 +90,7 @@ void rds_tcp_state_change(struct sock *sk);
- struct socket *rds_tcp_listen_init(struct net *net, bool isv6);
- void rds_tcp_listen_stop(struct socket *sock, struct work_struct *acceptor);
- void rds_tcp_listen_data_ready(struct sock *sk);
--void rds_tcp_conn_slots_available(struct rds_connection *conn);
-+void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out);
- int rds_tcp_accept_one(struct rds_tcp_net *rtn);
- void rds_tcp_keepalive(struct socket *sock);
- void *rds_tcp_listen_sock_def_readable(struct net *net);
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index c628f62421d4..04fafdf59d72 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -56,14 +56,8 @@ void rds_tcp_keepalive(struct socket *sock)
- 	tcp_sock_set_keepintvl(sock->sk, keepidle);
- }
- 
--/* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
-- * client's ipaddr < server's ipaddr. Otherwise, close the accepted
-- * socket and force a reconneect from smaller -> larger ip addr. The reason
-- * we special case cp_index 0 is to allow the rds probe ping itself to itself
-- * get through efficiently.
-- */
--static struct rds_tcp_connection *
--rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
-+static int
-+rds_tcp_get_peer_sport(struct socket *sock)
- {
- 	union {
- 		struct sockaddr_storage storage;
-@@ -71,11 +65,9 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
- 		struct sockaddr_in sin;
- 		struct sockaddr_in6 sin6;
- 	} saddr;
--	int sport, npaths, i_min, i_max, i;
-+	int sport;
- 
--	if (conn->c_with_sport_idx &&
--	    kernel_getpeername(sock, &saddr.addr) == 0) {
--		/* cp->cp_index is encoded in lowest bits of source-port */
-+	if (kernel_getpeername(sock, &saddr.addr) == 0) {
- 		switch (saddr.addr.sa_family) {
- 		case AF_INET:
- 			sport = ntohs(saddr.sin.sin_port);
-@@ -90,6 +82,26 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
- 		sport = -1;
- 	}
- 
-+	return sport;
-+}
-+
-+/* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
-+ * client's ipaddr < server's ipaddr. Otherwise, close the accepted
-+ * socket and force a reconneect from smaller -> larger ip addr. The reason
-+ * we special case cp_index 0 is to allow the rds probe ping itself to itself
-+ * get through efficiently.
-+ */
-+static struct rds_tcp_connection *
-+rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
-+{
-+	int sport, npaths, i_min, i_max, i;
-+
-+	if (conn->c_with_sport_idx)
-+		/* cp->cp_index is encoded in lowest bits of source-port */
-+		sport = rds_tcp_get_peer_sport(sock);
-+	else
-+		sport = -1;
-+
- 	npaths = max_t(int, 1, conn->c_npaths);
- 
- 	if (sport >= 0) {
-@@ -111,10 +123,12 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
- 	return NULL;
- }
- 
--void rds_tcp_conn_slots_available(struct rds_connection *conn)
-+void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
- {
- 	struct rds_tcp_connection *tc;
- 	struct rds_tcp_net *rtn;
-+	struct socket *sock;
-+	int sport, npaths;
- 
- 	if (rds_destroy_pending(conn))
- 		return;
-@@ -124,6 +138,21 @@ void rds_tcp_conn_slots_available(struct rds_connection *conn)
- 	if (!rtn)
- 		return;
- 
-+	sock = tc->t_sock;
-+
-+	/* During fan-out, check that the connection we already
-+	 * accepted in slot#0 carried the proper source port modulo.
-+	 */
-+	if (fan_out && conn->c_with_sport_idx && sock &&
-+	    rds_addr_cmp(&conn->c_laddr, &conn->c_faddr) > 0) {
-+		/* cp->cp_index is encoded in lowest bits of source-port */
-+		sport = rds_tcp_get_peer_sport(sock);
-+		npaths = max_t(int, 1, conn->c_npaths);
-+		if (sport >= 0 && sport % npaths != 0)
-+			/* peer initiated with a non-#0 lane first */
-+			rds_conn_path_drop(conn->c_path, 0);
-+	}
-+
- 	/* As soon as a connection went down,
- 	 * it is safe to schedule a "rds_tcp_accept_one"
- 	 * attempt even if there are no connections pending:
--- 
-2.43.0
+> -		return ret;
+> -
+>  	dmabuf = dma_buf_get(fd);
+>  	if (IS_ERR(dmabuf))
+>  		return ERR_CAST(dmabuf);
+> @@ -184,18 +181,8 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
+>  }
+>  EXPORT_SYMBOL(ib_umem_dmabuf_get);
+>  
+> -static void
+> -ib_umem_dmabuf_unsupported_move_notify(struct dma_buf_attachment *attach)
+> -{
+> -	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
+> -
+> -	ibdev_warn_ratelimited(umem_dmabuf->umem.ibdev,
+> -			       "Invalidate callback should not be called when memory is pinned\n");
+> -}
+> -
+>  static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
+>  	.allow_peer2peer = true,
+> -	.invalidate_mappings = ib_umem_dmabuf_unsupported_move_notify,
+>  };
+>  
+>  struct ib_umem_dmabuf *
+> 
 
 
