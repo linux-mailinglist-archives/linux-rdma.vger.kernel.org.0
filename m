@@ -1,48 +1,49 @@
-Return-Path: <linux-rdma+bounces-16220-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16221-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gDXgD7RlfGk/MQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16220-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:03:00 +0100
+	id cLygAMtlfGk/MQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16221-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:03:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6B2B81CF
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:02:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C34B820B
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 09:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6FCFD30136AF
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:02:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A90E030210C6
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jan 2026 08:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814EB30BF6A;
-	Fri, 30 Jan 2026 08:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D05327783;
+	Fri, 30 Jan 2026 08:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SowbgXut"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ftYTaRvV"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438C7218821;
-	Fri, 30 Jan 2026 08:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D17314B77;
+	Fri, 30 Jan 2026 08:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769760172; cv=none; b=d4Y0jmlPttWd1Zwexkszu7Oidge9O5hVcKPHdNNChTNkrXCO5it8WY15AGasAw09as1XrWI+b9IpQN6E21WBvimmvGU1BIHscdyunxp7z827rJYgOdFKe7WXJslj0r3R2OhTne9x8qu0c1Gwh4GLbpkahdlwNztq1xu2aotftFI=
+	t=1769760173; cv=none; b=f6xrUj/uGPzBDFY/skEapEXdAdAjib65HQO+xRbIVByQT2EbcShjzBANC1hFouuZ/1GWCmzLRcpbXDjRRmo/rXh73WFsCn58ypn/eqHwW7Dgg9DZz4E8qco9Grn9tmsNaTnwpoKWvESL/A/KXu1Riu0nfY0uxV8gktO1nIQmM4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769760172; c=relaxed/simple;
-	bh=J54oJ4WbesnBUVqGOh1KdeLt/bAseKg0PcZd1rG+qi4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eN8EWXaTVNP8gO9MqW76SDuHSAyW5sk4no8vBLlBQOo/Sb7OJ9Gv/O+3ecI0hjIewMJXhc4iEcerwk5Yv8y5PKLHNlvoj/qCcNyuvMeZwJFvt7V3Slb+SbJtRLapkVwDWObE6K6JzmdYkdGTOtxwrgB37rj6CbuSHgHbqIrrtYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SowbgXut; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38D34C4CEF7;
-	Fri, 30 Jan 2026 08:02:51 +0000 (UTC)
+	s=arc-20240116; t=1769760173; c=relaxed/simple;
+	bh=WpNDa6NVgchhFsg5/YG9aCS9s0AtU56twIPzVtY1Esc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FmrDMIyZwvRgSOMj1YW9HSUw9iA3CDvGQWnkp3NFWRJC1DvH8ZxsaU3h4h6H6IMfFOZYsjkjGLOv467pjf8Y0Vh8T7t2lN5PM/eN1OdyNVkalzh5xf5DiI5Blsa3N5UUfCHIDPxvzhJGVVOPfwcohqatK039Le+Qd9W5grOxkS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ftYTaRvV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC62C19421;
+	Fri, 30 Jan 2026 08:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769760171;
-	bh=J54oJ4WbesnBUVqGOh1KdeLt/bAseKg0PcZd1rG+qi4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=SowbgXutEN25f93mw99MBhSebcWovLeHlJEZoRtHWOZMM522dBk1BJgGQZOb5I9pM
-	 AB9BcxjFKtvnbf7TCHotVQewDCx2YvEwDGticeVIrLExsnrRzm5S92/fqKLC7t8Th+
-	 89SWc1W8uUtoU6UlIWcGrRcjIiqmUC2tIdDJUROhOyMQoAKq34sDckF7PXUwH/VCID
-	 HVTdmyFKiz4ER7VJ1KBGsFFhwubYBi8y9MHYWzqcDJoCgwiRCfROlfiiY0COa4mwKZ
-	 5F5OIrRC5EFFkxQTlCCac4d+YKsLtxDzcUcQ19BigmhirLM/579fmXPNmy3l2/XYhU
-	 fkgnfT43Li5FA==
+	s=k20201202; t=1769760173;
+	bh=WpNDa6NVgchhFsg5/YG9aCS9s0AtU56twIPzVtY1Esc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ftYTaRvVRY4rbkrW4abxktmFFXIdmYUQ4xSyyWnuUBm9KJM88YuP8eFjo6CQKHBlW
+	 EtKgXIV8Iw6Z5zeoW2y5kxBxFSciDOYq8Y5BJ9LMrr+ODAP8Qb5O2K4HyWT9SqUL53
+	 XqEL7V/d7si+GMYRKiy1dY4IQEfkKxFOxKRZJ7ztgOJ714zElB5DDCTT3S46JiK68e
+	 eoNNw7AFkJQGfJfLVrmYkKaJv4wlhl7qJWthan8C/TdZKcxbhbkcvRsNCzovq8LB+p
+	 LWReVKwo7yhz3SCK10z854jKRX5u0j2lrISVkA38rNZ6b05cxQClTh9+bQ978iGFFe
+	 f0KFwXrvE+L6w==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org
 Cc: linux-kselftest@vger.kernel.org,
@@ -53,137 +54,297 @@ Cc: linux-kselftest@vger.kernel.org,
 	horms@kernel.org,
 	linux-rdma@vger.kernel.org,
 	allison.henderson@oracle.com
-Subject: [PATCH net-next v3 0/8] net/rds: RDS-TCP protocol and extension improvements
-Date: Fri, 30 Jan 2026 01:02:42 -0700
-Message-ID: <20260130080250.696575-1-achender@kernel.org>
+Subject: [PATCH net-next v3 1/8] net/rds: new extension header: rdma bytes
+Date: Fri, 30 Jan 2026 01:02:43 -0700
+Message-ID: <20260130080250.696575-2-achender@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260130080250.696575-1-achender@kernel.org>
+References: <20260130080250.696575-1-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-16221-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16220-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CF6B2B81CF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email]
+X-Rspamd-Queue-Id: 51C34B820B
 X-Rspamd-Action: no action
 
-From: Allison Henderson <allison.henderson@oracle.com>
+From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 
-Hi all,
+Introduce a new extension header type RDSV3_EXTHDR_RDMA_BYTES for
+an RDMA initiator to exchange rdma byte counts to its target.
+Currently, RDMA operations cannot precisely account how many bytes a
+peer just transferred via RDMA, which limits per-connection statistics
+and future policy (e.g., monitoring or rate/cgroup accounting of RDMA
+traffic).
 
-This is subset 3 of the larger RDS-TCP patch series I posted last
-Oct.  The greater series aims to correct multiple rds-tcp issues that
-can cause dropped or out of sequence messages.  I've broken it down into
-smaller sets to make reviews more manageable.
+In this patch we expand rds_message_add_extension to accept multiple
+extensions, and add new flag to RDS header: RDS_FLAG_EXTHDR_EXTENSION,
+along with a new extension to RDS header: rds_ext_header_rdma_bytes.
 
-In this set, we introduce extension headers for byte accounting
-and fix several RDS/TCP protocol issues including message preservation
-during connection transitions and multipath lane handling.
+Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Signed-off-by: Guangyu Sun <guangyu.sun@oracle.com>
+Signed-off-by: Allison Henderson <allison.henderson@oracle.com>
+---
+ net/rds/ib_send.c | 38 ++++++++++++++++++++++-----
+ net/rds/message.c | 65 +++++++++++++++++++++++++++++++++++++----------
+ net/rds/rds.h     | 25 ++++++++++++++----
+ net/rds/send.c    |  6 ++---
+ 4 files changed, 105 insertions(+), 29 deletions(-)
 
-The entire set can be viewed in the rfc here:
-https://lore.kernel.org/netdev/20251022191715.157755-1-achender@kernel.org/
-
-Questions, comments, flames appreciated!
-Thanks!
-Allison
-
-Change Log:
-v2:
-   [PATCH net-next v2 1/7] net/rds: new extension header: rdma bytes
-     - Fixed AI complaints for uninitalized structs
-
-   [PATCH net-next v2 2/7] net/rds: Encode cp_index in TCP source port
-     - Fixed line length checkpatch complaints
-
-   [PATCH net-next v2 3/7] net/rds: rds_tcp_conn_path_shutdown must not
-   discard messages
-     - Added sk convenience variable to reduce dereferencing and line
-       wrapping
-     - Fixed line length checkpatch complaints
-
-   [PATCH net-next v2 6/7] net/rds: Use the first lane until
-     - Added rds_mprds_cp0_catchup helper to de-nest rds_send_xmit
-     - Fixed line length checkpatch complaints
-
-   [PATCH net-next v2 7/7] net/rds: Trigger rds_send_ping() more than
-   once
-     - Fixed ai complaints for comment clarification
-
-v3:
-  [PATCH net-next v3 1/8] net/rds: new extension header: rdma bytes
-    - Addressed ai complaints about unpacked/unpadded rds_ext_header_rdma_bytes
-    - Added return code checks to rds_message_add_extension 
-
-  [PATCH net-next v3 06/8] net/rds: Update struct rds_statistics to
-  use u64 instead of uint64_t
-     - NEW
-
-  [PATCH net-next v3 6/8] net/rds: Use the first lane until
-    - Fixed Prefer kernel type 'u64' over 'uint64_t' warnings
-
-  [PATCH net-next v3 08/8] net/rds: Trigger rds_send_ping() more than once
-    - Addressed ai complaints for comment clarification
-
-
-Allison Henderson (1):
-  net/rds: Update struct rds_statistics to use u64 instead of uint64_t
-
-Gerd Rausch (5):
-  net/rds: Encode cp_index in TCP source port
-  net/rds: rds_tcp_conn_path_shutdown must not discard messages
-  net/rds: Kick-start TCP receiver after accept
-  net/rds: Use the first lane until RDS_EXTHDR_NPATHS arrives
-  net/rds: Trigger rds_send_ping() more than once
-
-Håkon Bugge (1):
-  net/rds: Clear reconnect pending bit
-
-Shamir Rabinovitch (1):
-  net/rds: new extension header: rdma bytes
-
- net/rds/connection.c  |   7 ++-
- net/rds/ib_send.c     |  38 +++++++++---
- net/rds/message.c     |  66 ++++++++++++++++-----
- net/rds/rds.h         | 105 ++++++++++++++++++++--------------
- net/rds/recv.c        |  37 ++++++++++--
- net/rds/send.c        | 130 +++++++++++++++++++++++++++++-------------
- net/rds/stats.c       |   1 +
- net/rds/tcp.c         |   1 +
- net/rds/tcp.h         |   7 ++-
- net/rds/tcp_connect.c |  79 +++++++++++++++++++++++--
- net/rds/tcp_listen.c  |  92 +++++++++++++++++++++++++++---
- net/rds/tcp_recv.c    |   4 ++
- net/rds/tcp_send.c    |   2 +-
- 13 files changed, 448 insertions(+), 121 deletions(-)
-
+diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
+index f9d28ddd168d..a0d9c84be9ab 100644
+--- a/net/rds/ib_send.c
++++ b/net/rds/ib_send.c
+@@ -577,16 +577,40 @@ int rds_ib_xmit(struct rds_connection *conn, struct rds_message *rm,
+ 		/* If it has a RDMA op, tell the peer we did it. This is
+ 		 * used by the peer to release use-once RDMA MRs. */
+ 		if (rm->rdma.op_active) {
+-			struct rds_ext_header_rdma ext_hdr;
++			struct rds_ext_header_rdma ext_hdr = {};
++			struct rds_ext_header_rdma_bytes
++				rdma_bytes_ext_hdr = {};
+ 
+ 			ext_hdr.h_rdma_rkey = cpu_to_be32(rm->rdma.op_rkey);
+-			rds_message_add_extension(&rm->m_inc.i_hdr,
+-					RDS_EXTHDR_RDMA, &ext_hdr, sizeof(ext_hdr));
++			if (rds_message_add_extension(&rm->m_inc.i_hdr,
++						      RDS_EXTHDR_RDMA, &ext_hdr)) {
++
++				/* prepare the rdma bytes ext header */
++				rdma_bytes_ext_hdr.h_rflags = rm->rdma.op_write ?
++					RDS_FLAG_RDMA_WR_BYTES : RDS_FLAG_RDMA_RD_BYTES;
++				rdma_bytes_ext_hdr.h_rdma_bytes =
++					cpu_to_be32(rm->rdma.op_bytes);
++			} else {
++				rdsdebug("RDS_EXTHDR_RDMA dropped");
++			}
++
++			if (rds_message_add_extension(&rm->m_inc.i_hdr,
++						      RDS_EXTHDR_RDMA_BYTES,
++						      &rdma_bytes_ext_hdr)) {
++				/* rdma bytes ext header was added successfully,
++				 * notify the remote side via flag in header
++				 */
++				rm->m_inc.i_hdr.h_flags |=
++					RDS_FLAG_EXTHDR_EXTENSION;
++			} else {
++				rdsdebug("RDS_EXTHDR_RDMA_BYTES dropped");
++			}
+ 		}
+-		if (rm->m_rdma_cookie) {
+-			rds_message_add_rdma_dest_extension(&rm->m_inc.i_hdr,
+-					rds_rdma_cookie_key(rm->m_rdma_cookie),
+-					rds_rdma_cookie_offset(rm->m_rdma_cookie));
++		if (rm->m_rdma_cookie &&
++		    !rds_message_add_rdma_dest_extension(&rm->m_inc.i_hdr,
++				rds_rdma_cookie_key(rm->m_rdma_cookie),
++				rds_rdma_cookie_offset(rm->m_rdma_cookie))) {
++			rdsdebug("RDS_EXTHDR_RDMA_DEST dropped\n");
+ 		}
+ 
+ 		/* Note - rds_ib_piggyb_ack clears the ACK_REQUIRED bit, so
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 199a899a43e9..591a27c9c62f 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -44,6 +44,7 @@ static unsigned int	rds_exthdr_size[__RDS_EXTHDR_MAX] = {
+ [RDS_EXTHDR_VERSION]	= sizeof(struct rds_ext_header_version),
+ [RDS_EXTHDR_RDMA]	= sizeof(struct rds_ext_header_rdma),
+ [RDS_EXTHDR_RDMA_DEST]	= sizeof(struct rds_ext_header_rdma_dest),
++[RDS_EXTHDR_RDMA_BYTES] = sizeof(struct rds_ext_header_rdma_bytes),
+ [RDS_EXTHDR_NPATHS]	= sizeof(__be16),
+ [RDS_EXTHDR_GEN_NUM]	= sizeof(__be32),
+ };
+@@ -191,31 +192,69 @@ void rds_message_populate_header(struct rds_header *hdr, __be16 sport,
+ 	hdr->h_sport = sport;
+ 	hdr->h_dport = dport;
+ 	hdr->h_sequence = cpu_to_be64(seq);
+-	hdr->h_exthdr[0] = RDS_EXTHDR_NONE;
++	/* see rds_find_next_ext_space for reason why we memset the
++	 * ext header
++	 */
++	memset(hdr->h_exthdr, RDS_EXTHDR_NONE, RDS_HEADER_EXT_SPACE);
+ }
+ EXPORT_SYMBOL_GPL(rds_message_populate_header);
+ 
+-int rds_message_add_extension(struct rds_header *hdr, unsigned int type,
+-			      const void *data, unsigned int len)
++/*
++ * Find the next place we can add an RDS header extension with
++ * specific length. Extension headers are pushed one after the
++ * other. In the following, the number after the colon is the number
++ * of bytes:
++ *
++ * [ type1:1 dta1:len1 [ type2:1 dta2:len2 ] ... ] RDS_EXTHDR_NONE
++ *
++ * If the extension headers fill the complete extension header space
++ * (16 bytes), the trailing RDS_EXTHDR_NONE is omitted.
++ */
++static int rds_find_next_ext_space(struct rds_header *hdr, unsigned int len,
++				   u8 **ext_start)
+ {
+-	unsigned int ext_len = sizeof(u8) + len;
+-	unsigned char *dst;
++	unsigned int ext_len;
++	unsigned int type;
++	int ind = 0;
++
++	while ((ind + 1 + len) <= RDS_HEADER_EXT_SPACE) {
++		if (hdr->h_exthdr[ind] == RDS_EXTHDR_NONE) {
++			*ext_start = hdr->h_exthdr + ind;
++			return 0;
++		}
+ 
+-	/* For now, refuse to add more than one extension header */
+-	if (hdr->h_exthdr[0] != RDS_EXTHDR_NONE)
+-		return 0;
++		type = hdr->h_exthdr[ind];
++
++		ext_len = (type < __RDS_EXTHDR_MAX) ? rds_exthdr_size[type] : 0;
++		WARN_ONCE(!ext_len, "Unknown ext hdr type %d\n", type);
++		if (!ext_len)
++			return -EINVAL;
++
++		/* ind points to a valid ext hdr with known length */
++		ind += 1 + ext_len;
++	}
++
++	/* no room for extension */
++	return -ENOSPC;
++}
++
++/* The ext hdr space is prefilled with zero from the kzalloc() */
++int rds_message_add_extension(struct rds_header *hdr,
++			      unsigned int type, const void *data)
++{
++	unsigned char *dst;
++	unsigned int len;
+ 
+-	if (type >= __RDS_EXTHDR_MAX || len != rds_exthdr_size[type])
++	len = (type < __RDS_EXTHDR_MAX) ? rds_exthdr_size[type] : 0;
++	if (!len)
+ 		return 0;
+ 
+-	if (ext_len >= RDS_HEADER_EXT_SPACE)
++	if (rds_find_next_ext_space(hdr, len, &dst))
+ 		return 0;
+-	dst = hdr->h_exthdr;
+ 
+ 	*dst++ = type;
+ 	memcpy(dst, data, len);
+ 
+-	dst[len] = RDS_EXTHDR_NONE;
+ 	return 1;
+ }
+ EXPORT_SYMBOL_GPL(rds_message_add_extension);
+@@ -272,7 +311,7 @@ int rds_message_add_rdma_dest_extension(struct rds_header *hdr, u32 r_key, u32 o
+ 
+ 	ext_hdr.h_rdma_rkey = cpu_to_be32(r_key);
+ 	ext_hdr.h_rdma_offset = cpu_to_be32(offset);
+-	return rds_message_add_extension(hdr, RDS_EXTHDR_RDMA_DEST, &ext_hdr, sizeof(ext_hdr));
++	return rds_message_add_extension(hdr, RDS_EXTHDR_RDMA_DEST, &ext_hdr);
+ }
+ EXPORT_SYMBOL_GPL(rds_message_add_rdma_dest_extension);
+ 
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index 8a549fe687ac..4b6bf523b412 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -183,10 +183,11 @@ void rds_conn_net_set(struct rds_connection *conn, struct net *net)
+ 	write_pnet(&conn->c_net, net);
+ }
+ 
+-#define RDS_FLAG_CONG_BITMAP	0x01
+-#define RDS_FLAG_ACK_REQUIRED	0x02
+-#define RDS_FLAG_RETRANSMITTED	0x04
+-#define RDS_MAX_ADV_CREDIT	255
++#define RDS_FLAG_CONG_BITMAP		0x01
++#define RDS_FLAG_ACK_REQUIRED		0x02
++#define RDS_FLAG_RETRANSMITTED		0x04
++#define RDS_FLAG_EXTHDR_EXTENSION	0x20
++#define RDS_MAX_ADV_CREDIT		255
+ 
+ /* RDS_FLAG_PROBE_PORT is the reserved sport used for sending a ping
+  * probe to exchange control information before establishing a connection.
+@@ -258,6 +259,20 @@ struct rds_ext_header_rdma_dest {
+ 	__be32			h_rdma_offset;
+ };
+ 
++/*
++ * This extension header tells the peer about delivered RDMA byte count.
++ */
++#define RDS_EXTHDR_RDMA_BYTES	4
++
++struct rds_ext_header_rdma_bytes {
++	__be32		h_rdma_bytes;	/* byte count */
++	u8		h_rflags;	/* direction of RDMA, write or read */
++	u8		h_pad[3];
++};
++
++#define RDS_FLAG_RDMA_WR_BYTES	0x01
++#define RDS_FLAG_RDMA_RD_BYTES	0x02
++
+ /* Extension header announcing number of paths.
+  * Implicit length = 2 bytes.
+  */
+@@ -871,7 +886,7 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ void rds_message_populate_header(struct rds_header *hdr, __be16 sport,
+ 				 __be16 dport, u64 seq);
+ int rds_message_add_extension(struct rds_header *hdr,
+-			      unsigned int type, const void *data, unsigned int len);
++			      unsigned int type, const void *data);
+ int rds_message_next_extension(struct rds_header *hdr,
+ 			       unsigned int *pos, void *buf, unsigned int *buflen);
+ int rds_message_add_rdma_dest_extension(struct rds_header *hdr, u32 r_key, u32 offset);
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 3e3d028bc21e..306785fa7065 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1459,12 +1459,10 @@ rds_send_probe(struct rds_conn_path *cp, __be16 sport,
+ 		__be32 my_gen_num = cpu_to_be32(cp->cp_conn->c_my_gen_num);
+ 
+ 		rds_message_add_extension(&rm->m_inc.i_hdr,
+-					  RDS_EXTHDR_NPATHS, &npaths,
+-					  sizeof(npaths));
++					  RDS_EXTHDR_NPATHS, &npaths);
+ 		rds_message_add_extension(&rm->m_inc.i_hdr,
+ 					  RDS_EXTHDR_GEN_NUM,
+-					  &my_gen_num,
+-					  sizeof(u32));
++					  &my_gen_num);
+ 	}
+ 	spin_unlock_irqrestore(&cp->cp_lock, flags);
+ 
 -- 
 2.43.0
 
