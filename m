@@ -1,393 +1,234 @@
-Return-Path: <linux-rdma+bounces-16303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4hasLD8af2nGjwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16303-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 10:17:51 +0100
+	id 9xRfDiQdf2mukAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16304-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 10:30:12 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A9EC552D
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 10:17:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8262EC5564
+	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 10:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B92F7300DE3B
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Feb 2026 09:17:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ACA9C300FED2
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Feb 2026 09:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D453931D362;
-	Sun,  1 Feb 2026 09:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078BF2DFF1D;
+	Sun,  1 Feb 2026 09:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZMFwtY5D";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="g9teKUJW"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pL0tvwBT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010068.outbound.protection.outlook.com [52.101.61.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8882E6CD2
-	for <linux-rdma@vger.kernel.org>; Sun,  1 Feb 2026 09:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769937467; cv=none; b=C8VD8gKuii82vsJkK9V7cIhepg0EgpBEZC3UvRB1AVT1hc3yje2SoVt1iiSEoa2ftxr+tCUS010zB0fZsoQa7yH1Q7aNsBAVJ9vzuU0v0PS6crZgtkF3WRg7ogIDlePC2bvqcuoMB4N93jfkFJLIkl1iEA3I30YiPN7u88emmdA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769937467; c=relaxed/simple;
-	bh=LaKEqrgvYkhsFwqyindBMnW1p2HUBq4DbwnLjR4F0Go=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GSNwTIhDlVhixALScRT7vJqGTpu3SeqkrOzf54h7c3eJeJoc01WS366AV5k4kwoOw2m4UZsRuqhQ2do9c3piSpPr3GttENBp9jbyKPvWVxitbz7RRu2j0gJAfVKKxbeeror7b4V1rQpUvo98O7l0jMUIDv1zpOGOA+CevM/rzWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZMFwtY5D; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=g9teKUJW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1769937464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b1F5jlC4KkSLd9axs6reavDIsao7rIgQww1rrTaK/DA=;
-	b=ZMFwtY5D0nzd7Rwx24Llyd63vm7hRPECVEJRDLS4JD0U/MlcwMU8150DsyqP4unL2zk2QH
-	UNsY8llyJATtkZwsUjzx97MASvD6xSVy9higavJCL5KL5GxxqA4S30xq0mPXVY6PZLE5fB
-	z/GNPKAzBJeQhKZTBHVxQkUGtXlj0SA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-615-45FwaJWvNfOMh_D_YhVc1A-1; Sun, 01 Feb 2026 04:17:43 -0500
-X-MC-Unique: 45FwaJWvNfOMh_D_YhVc1A-1
-X-Mimecast-MFC-AGG-ID: 45FwaJWvNfOMh_D_YhVc1A_1769937462
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-435db9425ebso3781151f8f.1
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Feb 2026 01:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1769937462; x=1770542262; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b1F5jlC4KkSLd9axs6reavDIsao7rIgQww1rrTaK/DA=;
-        b=g9teKUJWmIzv/YgFxs39Hoalac8WQQJPdt107OW4pXtEuUor7a5B9Rj5vqSNoNgAkq
-         vSlkUQ7qa36Zrls1J/kwCVyA3cTTG5Hni3IX78LwWUcHCdlfxBZTQ3JFKtGhd3tUgbPn
-         cDC6piFB7ylW9ABQNIDmkA7APgPltel6CcSAyJxth1f1qTfmc0yppwOdvAQbE7bKuGbo
-         myG1p6y/eNJ4qOz/tTEHR1OPDB5gG65OfIkKvXMBVHjWlvpY2jNCTz1qXSCDjIz4JPHb
-         6CP5hgWYUbQ66smXlP52Kp6Ov+3ngDYIPh0csoTfzjAF3/tLo+0nNpTRpIBMcMfhun+F
-         Z/Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769937462; x=1770542262;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b1F5jlC4KkSLd9axs6reavDIsao7rIgQww1rrTaK/DA=;
-        b=K/IAzwAoqtLK7tl6GNWSHyHaXRClTnWX4NuqbdhbVUEBfHMrVDB06D3OvjVW1eHWpR
-         bqBECEpozMoAadC2qtWo1Gyduffo1Wh3PAqyME4mM+ktEo9INjE+U47VJPFDIg22f7Ki
-         sZ+SIY1+crPtvZyJsIH/QsgWnEC7JP9uWhTH3F3+BIpNewGZFOXqxuS2p/+gk7ofR3+U
-         /s4nR77fDkDiseVSfnfNVmQDThYMeukyaI2B+Iz9GyQYXaUaO6qEiOhCrdyeR8/+/qsr
-         dnjWtBHN7+jneBzCXAI4bHexyyaiEKPI946/SpSSz0zRbW+lRj02Zsa3o7wNJ+PAliZJ
-         RA1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUg2iFnhFWX8WD17GL19Db1OzjnNhdsdob+oW2Xuk03qLBAgpxp6Kt1YKEcvOO7aul2ICS/4mANG06M@vger.kernel.org
-X-Gm-Message-State: AOJu0YzN+H5YnZqYbW5oTfg6a/+SpVeFsn3NARfPWSMJfnoSuSLzseee
-	G/4HhCzIJb3gOchB0M5LbGnOcLo20pweV/BzYAapTm2wrqMX8ZepfPp4bwLnpNjxbDaLdmHxbxI
-	kUiFRO/ZwBb2hi6RURJ4NHPhE/hen5IRvjy5iMG9O95QolKD87r/Opcve/gIqbbQ=
-X-Gm-Gg: AZuq6aINqNemrSEQejpkE0cA9igp8Ed4f9wp/KgVo5Vjw6BLsPVc+LZ/hLvtM8eRYco
-	OEzQj3M7LehX9wpxvpHe9N77zQrGszMoQeHxWCZLF81Pp8B2uegw3girYQTyxy80I2ffnpf0+sQ
-	L+hCXToNr2mPVl8pvt/Dy5iuku2/0pLBeqLlk/VRXkIA+mztPRZTvaX9C3oh3OzVgC1kwS5g7y4
-	OiLH6i65Kve3ALHJlU5CKpxr/pwJ5EFvln7LK3L7mhf2UGw5yg1eBp1o/5NnHEV6tAO6QXMnE3g
-	PMNWSV1Qth60aubPhTVcZX7MciI13WNvjBo/mBZhfB3FSbMAoUFO5XqgcgNg4lK7eJE7HV6EGX3
-	WppUfnsIMOk3whd39uPIPZf4wYOeRAsMFeg==
-X-Received: by 2002:a05:6000:4313:b0:432:dfea:1fa8 with SMTP id ffacd0b85a97d-435f3abc65cmr11406043f8f.45.1769937461791;
-        Sun, 01 Feb 2026 01:17:41 -0800 (PST)
-X-Received: by 2002:a05:6000:4313:b0:432:dfea:1fa8 with SMTP id ffacd0b85a97d-435f3abc65cmr11405975f8f.45.1769937461191;
-        Sun, 01 Feb 2026 01:17:41 -0800 (PST)
-Received: from redhat.com (IGLD-80-230-34-155.inter.net.il. [80.230.34.155])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435e131ce58sm34407293f8f.20.2026.02.01.01.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Feb 2026 01:17:40 -0800 (PST)
-Date: Sun, 1 Feb 2026 04:17:35 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: chia-yu.chang@nokia-bell-labs.com
-Cc: tariqt@nvidia.com, linux-rdma@vger.kernel.org, shaojijie@huawei.com,
-	shenjian15@huawei.com, salil.mehta@huawei.com, mbloch@nvidia.com,
-	saeedm@nvidia.com, leon@kernel.org, eperezma@redhat.com,
-	brett.creeley@amd.com, jasowang@redhat.com,
-	virtualization@lists.linux.dev, xuanzhuo@linux.alibaba.com,
-	pabeni@redhat.com, edumazet@google.com, parav@nvidia.com,
-	linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
-	dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
-	kuba@kernel.org, stephen@networkplumber.org,
-	xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-	andrew+netdev@lunn.ch, donald.hunter@gmail.com, ast@fiberby.net,
-	liuhangbin@gmail.com, shuah@kernel.org,
-	linux-kselftest@vger.kernel.org, ij@kernel.org,
-	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
-	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
-	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
-	Jason_Livingood@comcast.com, vidhi_goel@apple.com
-Subject: Re: [PATCH v1 net-next 3/3] virtio_net: Accurate ECN flag in
- virtio_net_hdr
-Message-ID: <20260201035912-mutt-send-email-mst@kernel.org>
-References: <20260131225510.2946-1-chia-yu.chang@nokia-bell-labs.com>
- <20260131225510.2946-4-chia-yu.chang@nokia-bell-labs.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525FE217733
+	for <linux-rdma@vger.kernel.org>; Sun,  1 Feb 2026 09:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769938207; cv=fail; b=lWAI4lfUD5eecPhyoI/nBsgU6iw1IDbN9BDLMl+T5anq4573zwg46ArXFOLp/uyRnNOEJE+oONApOpUiNrx5WMS2gYzbWfcsJpUad59rThprbDEp2m9huywdPJq9mG/QPxqR9uL1aqQUTbh+Vp2Yy+a15RA1F3isNkSo+LMo3Vs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769938207; c=relaxed/simple;
+	bh=IkNa/Q5O+e0ahiZDyVoLFE8wBVX8zbmUphfjH/Lh700=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ehMbxztEFmbi99rJxBURfC/uiRyEAOeOQ+b/8REmc0mwow70Y0XtFNctMu8icitHy44h3wP+x1XDtLLXc37861cN+pKi+BNLce7YrIUwcC/Qbs8vSplSAOYAJnB0Rmwtz8yzhmmKY5b/E5f4DsK6y8vuV2fwl/FRawS2RHvXosU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pL0tvwBT; arc=fail smtp.client-ip=52.101.61.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Y/eGVvjF7pdS4eJP5oWhMxkVFNgPR50Lotu/ULqapXb3w4KKNGFYLOKqw5U9ufFaao4+BApNj6i0USR0tWvWLS+T1bt9EPufg1PXceS31ZLxpBkJyd/TcEaIPIs7NBmxFabveYvhG/KENH7WGcMjz3Ri1wz0L0bRtNSTetovCf+vr82RNZb2t8DoZKdLC2JETiUodYVB+jPelFIdTGZAfH3C5oMmweCoqEesy4rO5YRlDqhowXfCq+IVU86JrS47KmhJZhcMUISeJWZkRblfVqLGytXkXfqDk670n8JZXiVivtjjvTLPWVTdk4rBdsg/4bkexukL05+DocB2g9OqEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EOF8Tu9SBD0WT5y8ssb0TymPBlSVN7DeZYBUj5DE/Zs=;
+ b=hrk0btfSCf93QWr3KAh0dQduY1KAwpl3vHRdS405Eu56GU+QadMCY4x3ihyvc11Wss68PrRKr8XJyQuS3/HG+yG3lRfovxX9UhuJ9OvUUzexT5ZO0qWaFIe/BxQ4HBr0vOjL+Jc88gIEYwQonLcjmx7xRib3aMKIX0xncP1K19lPIz7vEM2sZarLqRFJWTKiQPlFpxTqDNcXRMQ5sGlLgnUVvN/YRzuYAhMGrkptmqV5VG1Hwvs6vIWAU5bNV3jCfV2BgwWRUKz5dekhjgDP37t+B/kebAPIv/vvz8/xFD8HnJTX05IMszZO6LtY5S5OJVlafUF3KC94SBevFuwS1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EOF8Tu9SBD0WT5y8ssb0TymPBlSVN7DeZYBUj5DE/Zs=;
+ b=pL0tvwBTwriTpULCNA9mxtKu5E/8RGBdHBVZSf+dG60vH+1v+F3KwkyLtE8gG4U/rfWUJk7SY78w+Spp7RsaARB3jirCxCP43PFXT/W8sHyV0ot8UUHZ94bEX325tlQdYgo6qE5Q7pf2W3BEm4buFxUvVD9RknAMrvF+YUW5jUqvJQvVQi4hWFjItWIy8aFeRX0+U7jfglsXDqU1WZhhRnSA8nfG8fQFGyZrlQ88116SO/qf+RGXovMnOkW8gAnkMVckx5PT5Ag8e6OEJTz3RrvQvKtpKStnjteGCElseEPTVVh7LewYStD2RVJmxnod4cF6+tKnk4J6EftuYCLBUg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV8PR12MB9715.namprd12.prod.outlook.com (2603:10b6:408:2a0::7)
+ by BN7PPF7B4E3DFF8.namprd12.prod.outlook.com (2603:10b6:40f:fc02::6d4) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.16; Sun, 1 Feb
+ 2026 09:30:02 +0000
+Received: from LV8PR12MB9715.namprd12.prod.outlook.com
+ ([fe80::e74f:2cf8:cf2c:142]) by LV8PR12MB9715.namprd12.prod.outlook.com
+ ([fe80::e74f:2cf8:cf2c:142%4]) with mapi id 15.20.9564.014; Sun, 1 Feb 2026
+ 09:30:02 +0000
+Message-ID: <19aa2e0b-f486-428c-be32-fa3f728eaf94@nvidia.com>
+Date: Sun, 1 Feb 2026 11:30:00 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/umad: Reject negative data_len in ib_umad_write
+To: YunJe Shin <yjshin0438@gmail.com>
+Cc: ioerts@kookmin.ac.kr, jgg@ziepe.ca, joonkyoj@yonsei.ac.kr,
+ leon@kernel.org, linux-rdma@vger.kernel.org
+References: <CAMX6_QHrodOD1KD6qtK2A=tHOocrpSWJh7VTSYR+fMiHRgsktQ@mail.gmail.com>
+ <20260131140954.89165-1-ioerts@kookmin.ac.kr>
+Content-Language: en-US
+From: Michael Gur <michaelgur@nvidia.com>
+In-Reply-To: <20260131140954.89165-1-ioerts@kookmin.ac.kr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TLZP290CA0013.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:9::6)
+ To LV8PR12MB9715.namprd12.prod.outlook.com (2603:10b6:408:2a0::7)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260131225510.2946-4-chia-yu.chang@nokia-bell-labs.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9715:EE_|BN7PPF7B4E3DFF8:EE_
+X-MS-Office365-Filtering-Correlation-Id: 308e8f8b-59e1-4578-592c-08de617479ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?RTVUcFVmeUY1TitVdXZNK2VSRHZJSjVIcmR3V25VK2lma1pvZzNpRU9RWGRn?=
+ =?utf-8?B?VTRSc1dPZlArTEZSWUNjeHFjcEpWZGRLNkJkTmRnR3B3V2gwQ3FWWVk3QVFS?=
+ =?utf-8?B?YlRYMG8wNmxmUHJDcmdUWXFYbDZQNUNHdC9ldkhmNjJtbE9YOThVNiszckYv?=
+ =?utf-8?B?VWo3NGZQWTNmUVZ4M0pTZ1ovRmZPZzNMdUxUWS9xRElrZWJDYkhlaXduVERY?=
+ =?utf-8?B?cDVrTTBuZGQ1cXR2VUJrQyt3T2orOTE1dllaOUdIenZxU2srQWlkaXFON0JU?=
+ =?utf-8?B?UzBEVDRKUXptVWxWLzNFYVE4dFl4ZG1LZlhqSHQvWE1ud3NvbGFoTUZ2Yk1I?=
+ =?utf-8?B?S3lOQXNEcEdPS0VXVE50bFZQQmFEUS9zMlZjcjZUU1Vwc2tHWHdNR3lhTmJx?=
+ =?utf-8?B?RFQ2VGp3L3JFUXZYM1YvaTAwNDFobStmQ3QwaFFTcnV1UWkyRkppNVR0TG1h?=
+ =?utf-8?B?YS9BUzJydHcza2R0R3hDODI2QU0wQkpUem11MUZ5M2ZzdTNxTGNJeWdYSTZh?=
+ =?utf-8?B?dEVwVEZYSENOM2wyZzlVOXNEOU5Vd0xoczBmN3VIbDVBOHptbklna01EUVZH?=
+ =?utf-8?B?bUVMSGZqN0srK3pJUmJjQTVDcDBLZld5cHBDVHFkWlo1MGM0L3BQOExCVHpx?=
+ =?utf-8?B?WEhGcTBGcE94UmwxcFMyRUkvalJZVUVXYkNNaGpwZS9Gb1Q4YTIvZHU5UEk4?=
+ =?utf-8?B?VUV1L0l1WTFDa2xvbWtrODFBNDZzMzhNWVZONHI2Y05NQXNqREdnSmFMdU1Y?=
+ =?utf-8?B?eC9nVHpFem54RmlZZnpIWUdIcWNzeWd2ZStjTS9sNE82RGxhVEo2OUI5ZHRw?=
+ =?utf-8?B?YlgyL1VoNWdEM1JlUzU1UkJnL0Z0aklYbG9JcnNERC9tdnRWY2NqNUtra0Mz?=
+ =?utf-8?B?TjFNMytETnNmZUhzMW1qZngvUDBJa29JMzRBRnlEVU1nV3hURmlhbndHaXo5?=
+ =?utf-8?B?REhYdFNQdUtWMGF3eW0wM296RkZTVFlZQW1yQlgvalo5c2lLK083d0hPNWVr?=
+ =?utf-8?B?T3o0R0FSaTZ4amtVYUt3cE1yMnhlNTBwL1kwb21LUWdqci9iL3kzemUwM3pn?=
+ =?utf-8?B?bW9nTE85UDNhU0xnUEwxcXI0NVB1VXNtVVFITE1TVmYyZldFN1hVRnNqM2lz?=
+ =?utf-8?B?NDYxWFdwbklOVUFueWNVZnRpT0d0Z3lrRmdWNHVmdnBCdm5LWXZiTzdVQytN?=
+ =?utf-8?B?dVQrakxnMHdXKzhiTStDMFBsdml1K1N6dHA5dWV6WHk0OUtnd3lrTjRWMmI1?=
+ =?utf-8?B?ZVpDNFkxSmtNWFZod3dwSS9NWmtwV0hEYVBuN1JxNnJTSGJ5MDkvWW1IZjFm?=
+ =?utf-8?B?eFhXRXRUeE5rc1QzeURtVVNqWjk1Q0V1Mk1YY1F0cEhGYVpHNGQxVlJNNkIz?=
+ =?utf-8?B?cXpBRHBKRCtxRGZsZXp3cjFSaXY3K1NyUGJVL0tyVHg4ZDd2NEVhQUNpWlZO?=
+ =?utf-8?B?eFhaT0JORFNDZkoyQnc3ZlByNTRCS25RNkp3ZXN0UkVFMmZsbzAzTERVdUVI?=
+ =?utf-8?B?SDQwc1JjM2QreDFkckt1dDZWNHBMMzEvV0tHbW1SZFM1a1RGZUZTaUNtRjNO?=
+ =?utf-8?B?U29nMzVVTmd4TE4xTEcrTTB1S0NLVWFxRk1jUS9sR0llUWR5UERPZXN0eWw1?=
+ =?utf-8?B?K3VDTGtWVHFNa3FmMDNsczR3WmZDVUFzZW9DbkpSdnMwSGEwcTlGVWUydFZN?=
+ =?utf-8?B?MjgzUnBWTEEvWUhFTmUzSUZTNXl0TTY2TmhMUXFiYVE1WWpGa1hpaW01aEly?=
+ =?utf-8?B?NVRKSElNVjYyOUVZR1FheGxxbUw4T2JXMW9XU0hnUFE3ejlqN1RWMHlGekc4?=
+ =?utf-8?B?ejBRczVVbU9iWHgwbVl1emcxSUx5azl2ZngyNFkyancvN2liaHVXNC9aSm5S?=
+ =?utf-8?B?cEs0SGJKNTRPQ2tUZzQvTTkxTHUweFlOSFNHeW9OYWFqQTh2MU5BcXk4YVBa?=
+ =?utf-8?B?a2xReFQ0M3YvM3lCVFlBRjBVSW82L0FWMkFSd3ZReE5FS0hIQ1hVYUt4R1hq?=
+ =?utf-8?B?WTcyU21MNXNxVCsxRjRNSE1wanlSazRBTEhmelV6cVdqNUhPNENINWh6TTFS?=
+ =?utf-8?B?bm01OXVkQlFmYTlkVzM0L1R6REZFcWFHRll4TmNzaDE5MzhYMDJLNzBWQVlM?=
+ =?utf-8?Q?Qjdg=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9715.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TWFHd3hNWGpoQ3ZaK1pzbWU2cmxaajVaY1FDbTcvdE10WXU1ZmFCbkwvdlpi?=
+ =?utf-8?B?ZTlXMWhReUJmUmx3bjVnSS8wanpISEhjT0JyTDNtL1NmKzIzUkZzL1ZldEpS?=
+ =?utf-8?B?RDQzTDFSaFZOMCtlMFp2Zy9pc2loTUtJV25FVlRIdzV3Zkl6WDdTYWtkd1dJ?=
+ =?utf-8?B?N08rZTh6M04rK051dmZQaXJBK1RVVWNhTStRN240b2JVUFR6ek5VRElkcWZ6?=
+ =?utf-8?B?algva0h6UkVkR2ZIdTZOTFpYbnV5WmxFU0Rpc085cGRrVzRpaTIycy9WdzBH?=
+ =?utf-8?B?V2xibWsxSjRxQ1lGamhaRVpuVGR6OWtOUy9zY1hqcFBDMlRsajhmTW1sajIz?=
+ =?utf-8?B?MEYrMk1IYnk5ZFl1clJsV0d3SzN5RkxjZE9lWllWWWNXK3kzWHdyMnpoUytO?=
+ =?utf-8?B?UEUrdDBrZGw4dERyZGZOc2dkam1xWkdYUytDQ2xFRUpVK1hPWkQyRnBNQlBO?=
+ =?utf-8?B?cjllVEdOZEFLRjVkamx1T05ud21TVEJyNEVVTEdLLzJxTCtVVE5WUHRUbUlr?=
+ =?utf-8?B?akxkR0dkUnFGMFFwaG4rVEJhM2cxR3lJb3RuWjJFQ0N0OVB2NGJHdkdpdFVx?=
+ =?utf-8?B?ME1wSzVxVmIyK0VYS2hTMTBsUVoxeGxYVVdQM2thTW9kRENqdnRZK0IxK3Bk?=
+ =?utf-8?B?ZlhYb2xaTnZGN3JLOVJlSTBjZG5xeThRNk00WlZueVA4Y2x3VG85QWVFU3Z3?=
+ =?utf-8?B?WXI0TXNYYmZodDBvT05xNDJRcGZWaEg4RU90d0ZCN08wbm5ieDc3dklIbEIz?=
+ =?utf-8?B?bjZ4K0txbUVDck8xWlFaUWNlalFyOHN0SnY1Q2FHcU95UzZJUVBtNWpQZTJ6?=
+ =?utf-8?B?N3pLbnFOR3gwVkxrbzFGK2xMbHZtd3IyeW9ycENFbGdZenZDS0FHWXVWeUVG?=
+ =?utf-8?B?T3lmckVYT0JsNktiVVlFZ09RSCt6MlZualVGbXdDY0NZSzlyUk5BZU1nZnR6?=
+ =?utf-8?B?MU9BUHRkeUFmUDVEWTVBTms5LzFxK1Awakg5cHN0TjZvcWsrM200WDhaNVM3?=
+ =?utf-8?B?S0RUendaSmlsSmVyVysraE95cGdLNEgwYVNuWmlQYTlCWXBIcXk5MUxGcmNl?=
+ =?utf-8?B?NGZkMVdkU3RoU29MUHg1YUI5WnpQZjhQT3RVVzRQbm9NcWNObWNURWhCUEdZ?=
+ =?utf-8?B?d00zMUdiNUIvQ2cxWjB6RHNYNXh0K2hyS3RqWkRoNkRsUnBIem1jMmJSZFRI?=
+ =?utf-8?B?RjVuMXZ2TnprMTAvbnVnNTczLzlxc1VkWTh4akZHc3I4Q2h5N3Z3VnowNmVw?=
+ =?utf-8?B?ajhMYWQwNHRHUG56UC9Yb3EzazZERUdEbE44dTZmeEc1cXBBS0NRUW1Ua2RK?=
+ =?utf-8?B?WGdwY0JhMHczRU1vbjNuQjRPRjU4TVEyWHJKT285RXo3YVF0dXNEcG9zWHRr?=
+ =?utf-8?B?WVV6ejN1Q0NhQnpTWHN0WE1TRVBOTHNHS0YyNlJvNk1Oa3VQR1YxalZRNUxx?=
+ =?utf-8?B?S0UxSWYvL0MrU1MvZUVjL1lUbEZvZDlVUHpmUzF0cnNUY0hwUk1tS2FaYU5K?=
+ =?utf-8?B?QVFFNHBJVXFNbUh1Q1l3dHcvQUI5NWhoaWNlSTUxZ1hub0xrU1Z3b2JSYzdi?=
+ =?utf-8?B?WUFRK1B6UFF2YVNKVkIxY1JsNjl3R3ZIU1pJbVRod3NGeEZ6dGpiaXJHeVFR?=
+ =?utf-8?B?VzZub29zNFpDTU41TlFaczl4Wmw2ZzIzcGVMUWJHSUkzQ1NaRUxJMEpIYmNw?=
+ =?utf-8?B?YnBYK2doYmU4dWV6RFVqeHJiQWU3RXd3ejV3N095UHpueVg2OVpmVE5QblN4?=
+ =?utf-8?B?aGtNM3Yza2thQnIyd0hpK0tUdVNQSWlvMjV4a0syQlVlcVoxMXR2QTFSZS9C?=
+ =?utf-8?B?WkUyVW5LalhsWnVicWhNMHlWUjVDbHVqTkJDMGszSldDUTAxeUdCWXg1bTVP?=
+ =?utf-8?B?UVd2Tm1KT1NLbFhMaVhhNzJMMFdjWmplL3lDWmd2UTRkWFROM3pLVVRLU2Zh?=
+ =?utf-8?B?cGdWQXV0S2p1MDRHb0VlV0R3WGZCczB4amFhaVJTMTdFdVJ4Znl2dGM3QTc4?=
+ =?utf-8?B?MjZrc2o0S09SdDlQMlBVYlRnK2hNRWxQK2JuQ2I2OG5JeUtKdGdWT1Jlak9o?=
+ =?utf-8?B?aVEwS3hsTG50eHpRTk5SNFpPU2VnTUJQMmNNb3MrQ3ZMNTZNa3I0ZVNucDY3?=
+ =?utf-8?B?aE9qZ2l1bXU5SEx4L1YyaGo4Ym1nY2ZuTnpzNXU4WlhRVG1PQUZhSjdzcHpF?=
+ =?utf-8?B?Y0dLeENXMUErY2hHLzMzNmVLdzJOa0o0VE01RnpRbFFXTEV5a3U3N0E5M2tP?=
+ =?utf-8?B?K1laaG9DVTZla3FVYmxLV01qRDIzelJ3dTgwem1lcDVYUlNORnlYT09ORSt4?=
+ =?utf-8?B?MC9sY3ZxVUtoRXlEdk54dDZoSXV5bGFMamMrOE9aZzBFTU9FNk82UT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 308e8f8b-59e1-4578-592c-08de617479ac
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9715.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2026 09:30:01.9586
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rUpbjut9Z4yXWMCigOQdrgWUs1kbapXOvH2KgYuI+uj8YWqD4lSFi78GAI4r9qje1JXiH4WljtVYx/9mhAfAyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PPF7B4E3DFF8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[nvidia.com,vger.kernel.org,huawei.com,kernel.org,redhat.com,amd.com,lists.linux.dev,linux.alibaba.com,google.com,lwn.net,gmail.com,mojatatu.com,networkplumber.org,resnulli.us,davemloft.net,lunn.ch,fiberby.net,nokia-bell-labs.com,cablelabs.com,ericsson.com,apple.com,gmx.at,comcast.com];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16303-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16304-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[47];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mst@redhat.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[michaelgur@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nokia-bell-labs.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 06A9EC552D
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:mid]
+X-Rspamd-Queue-Id: 8262EC5564
 X-Rspamd-Action: no action
 
-Thanks for the patch! Yet something to improve:
 
-On Sat, Jan 31, 2026 at 11:55:10PM +0100, chia-yu.chang@nokia-bell-labs.com wrote:
-> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> 
-> Unlike RFC 3168 ECN, accurate ECN uses the CWR flag as part of the ACE
-> field to count new packets with CE mark; however, it will be corrupted
-> by the RFC 3168 ECN-aware TSO. Therefore, fallback shall be applied by
-> seting NETIF_F_GSO_ACCECN to ensure that the CWR flag should not be
-> changed within a super-skb.
-> 
-> To apply the aforementieond new AccECN GSO for virtio, new featue bits
-> for host and guest are added for feature negotiation between driver and
-> device. And the translation of Accurate ECN GSO flag between
-> virtio_net_hdr and skb header for NETIF_F_GSO_ACCECN is also added to
-> avoid CWR flag corruption due to RFC3168 ECN TSO.
-> 
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+On 1/31/2026 4:09 PM, YunJe Shin wrote:
+> @@ -588,7 +588,15 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+>   	}
+>   
+>   	base_version = ((struct ib_mad_hdr *)&packet->mad.data)->base_version;
+> +	if (count < hdr_size(file) + hdr_len) {
+> +		ret = -EINVAL;
+> +		goto err_ah;
+> +	}
+>   	data_len = count - hdr_size(file) - hdr_len;
+> +	if (data_len < 0) {
+> +		ret = -EINVAL;
+> +		goto err_ah;
+> +	}
 
+The second check is redundant.
+The first already ensures data_len >= 0.
 
-To the best of my understanding, this is a new feature - support
-for VIRTIO_NET_F_HOST_ACCECN, VIRTIO_NET_F_GUEST_ACCECN?
-The commit log makes it sound like it fixes some behaviour for
-existing hardware, but that is not the case.
-
-
-
-
-
-> ---
-> v2:
-> - Replace VIRTIO_NET_HDR_GSO_ECN with VIRTIO_NET_HDR_GSO_ECN_FLAGS
-
-but where is v2? this is v1...
-
-> ---
->  drivers/net/virtio_net.c        | 14 +++++++++++---
->  drivers/vdpa/pds/debugfs.c      |  6 ++++++
->  include/linux/virtio_net.h      | 18 +++++++++++-------
->  include/uapi/linux/virtio_net.h |  5 +++++
->  4 files changed, 33 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index db88dcaefb20..103fb87c690e 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -75,6 +75,7 @@ static const unsigned long guest_offloads[] = {
->  	VIRTIO_NET_F_GUEST_TSO4,
->  	VIRTIO_NET_F_GUEST_TSO6,
->  	VIRTIO_NET_F_GUEST_ECN,
-> +	VIRTIO_NET_F_GUEST_ACCECN,
->  	VIRTIO_NET_F_GUEST_UFO,
->  	VIRTIO_NET_F_GUEST_CSUM,
->  	VIRTIO_NET_F_GUEST_USO4,
-> @@ -87,6 +88,7 @@ static const unsigned long guest_offloads[] = {
->  #define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
->  			(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
->  			(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
-> +			(1ULL << VIRTIO_NET_F_GUEST_ACCECN) | \
->  			(1ULL << VIRTIO_NET_F_GUEST_UFO)  | \
->  			(1ULL << VIRTIO_NET_F_GUEST_USO4) | \
->  			(1ULL << VIRTIO_NET_F_GUEST_USO6) | \
-> @@ -5976,6 +5978,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->  	    && (virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO4) ||
->  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
->  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
-> +		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ACCECN) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) ||
-> @@ -6635,6 +6638,7 @@ static bool virtnet_check_guest_gso(const struct virtnet_info *vi)
->  	return virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO4) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
-> +		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ACCECN) ||
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
->  		(virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) &&
->  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO6));
-> @@ -6749,6 +6753,8 @@ static int virtnet_probe(struct virtio_device *vdev)
->  			dev->hw_features |= NETIF_F_TSO6;
->  		if (virtio_has_feature(vdev, VIRTIO_NET_F_HOST_ECN))
->  			dev->hw_features |= NETIF_F_TSO_ECN;
-> +		if (virtio_has_feature(vdev, VIRTIO_NET_F_HOST_ACCECN))
-> +			dev->hw_features |= NETIF_F_GSO_ACCECN;
->  		if (virtio_has_feature(vdev, VIRTIO_NET_F_HOST_USO))
->  			dev->hw_features |= NETIF_F_GSO_UDP_L4;
->  
-> @@ -7169,9 +7175,11 @@ static struct virtio_device_id id_table[] = {
->  	VIRTIO_NET_F_CSUM, VIRTIO_NET_F_GUEST_CSUM, \
->  	VIRTIO_NET_F_MAC, \
->  	VIRTIO_NET_F_HOST_TSO4, VIRTIO_NET_F_HOST_UFO, VIRTIO_NET_F_HOST_TSO6, \
-> -	VIRTIO_NET_F_HOST_ECN, VIRTIO_NET_F_GUEST_TSO4, VIRTIO_NET_F_GUEST_TSO6, \
-> -	VIRTIO_NET_F_GUEST_ECN, VIRTIO_NET_F_GUEST_UFO, \
-> -	VIRTIO_NET_F_HOST_USO, VIRTIO_NET_F_GUEST_USO4, VIRTIO_NET_F_GUEST_USO6, \
-> +	VIRTIO_NET_F_HOST_ECN, VIRTIO_NET_F_HOST_ACCECN, \
-> +	VIRTIO_NET_F_GUEST_TSO4, VIRTIO_NET_F_GUEST_TSO6, \
-> +	VIRTIO_NET_F_GUEST_ECN, VIRTIO_NET_F_GUEST_ACCECN, \
-> +	VIRTIO_NET_F_GUEST_UFO, VIRTIO_NET_F_HOST_USO, \
-> +	VIRTIO_NET_F_GUEST_USO4, VIRTIO_NET_F_GUEST_USO6, \
->  	VIRTIO_NET_F_MRG_RXBUF, VIRTIO_NET_F_STATUS, VIRTIO_NET_F_CTRL_VQ, \
->  	VIRTIO_NET_F_CTRL_RX, VIRTIO_NET_F_CTRL_VLAN, \
->  	VIRTIO_NET_F_GUEST_ANNOUNCE, VIRTIO_NET_F_MQ, \
-> diff --git a/drivers/vdpa/pds/debugfs.c b/drivers/vdpa/pds/debugfs.c
-> index c328e694f6e7..90bd95db0245 100644
-> --- a/drivers/vdpa/pds/debugfs.c
-> +++ b/drivers/vdpa/pds/debugfs.c
-> @@ -78,6 +78,9 @@ static void print_feature_bits_all(struct seq_file *seq, u64 features)
->  		case BIT_ULL(VIRTIO_NET_F_GUEST_ECN):
->  			seq_puts(seq, " VIRTIO_NET_F_GUEST_ECN");
->  			break;
-> +		case BIT_ULL(VIRTIO_NET_F_GUEST_ACCECN):
-> +			seq_puts(seq, " VIRTIO_NET_F_GUEST_ACCECN");
-> +			break;
->  		case BIT_ULL(VIRTIO_NET_F_GUEST_UFO):
->  			seq_puts(seq, " VIRTIO_NET_F_GUEST_UFO");
->  			break;
-> @@ -90,6 +93,9 @@ static void print_feature_bits_all(struct seq_file *seq, u64 features)
->  		case BIT_ULL(VIRTIO_NET_F_HOST_ECN):
->  			seq_puts(seq, " VIRTIO_NET_F_HOST_ECN");
->  			break;
-> +		case BIT_ULL(VIRTIO_NET_F_HOST_ACCECN):
-> +			seq_puts(seq, " VIRTIO_NET_F_HOST_ACCECN");
-> +			break;
->  		case BIT_ULL(VIRTIO_NET_F_HOST_UFO):
->  			seq_puts(seq, " VIRTIO_NET_F_HOST_UFO");
->  			break;
-> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-> index 75dabb763c65..0cf86b026828 100644
-> --- a/include/linux/virtio_net.h
-> +++ b/include/linux/virtio_net.h
-> @@ -11,7 +11,7 @@
->  
->  static inline bool virtio_net_hdr_match_proto(__be16 protocol, __u8 gso_type)
->  {
-> -	switch (gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
-> +	switch (gso_type & ~VIRTIO_NET_HDR_GSO_ECN_FLAGS) {
->  	case VIRTIO_NET_HDR_GSO_TCPV4:
->  		return protocol == cpu_to_be16(ETH_P_IP);
->  	case VIRTIO_NET_HDR_GSO_TCPV6:
-> @@ -31,7 +31,7 @@ static inline int virtio_net_hdr_set_proto(struct sk_buff *skb,
->  	if (skb->protocol)
->  		return 0;
->  
-> -	switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
-> +	switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN_FLAGS) {
->  	case VIRTIO_NET_HDR_GSO_TCPV4:
->  	case VIRTIO_NET_HDR_GSO_UDP:
->  	case VIRTIO_NET_HDR_GSO_UDP_L4:
-> @@ -58,7 +58,7 @@ static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
->  	unsigned int ip_proto;
->  
->  	if (hdr_gso_type != VIRTIO_NET_HDR_GSO_NONE) {
-> -		switch (hdr_gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
-> +		switch (hdr_gso_type & ~VIRTIO_NET_HDR_GSO_ECN_FLAGS) {
->  		case VIRTIO_NET_HDR_GSO_TCPV4:
->  			gso_type = SKB_GSO_TCPV4;
->  			ip_proto = IPPROTO_TCP;
-> @@ -84,7 +84,9 @@ static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
->  			return -EINVAL;
->  		}
->  
-> -		if (hdr_gso_type & VIRTIO_NET_HDR_GSO_ECN)
-> +		if (hdr_gso_type & VIRTIO_NET_HDR_GSO_ACCECN)
-> +			gso_type |= SKB_GSO_TCP_ACCECN;
-> +		else if (hdr_gso_type & VIRTIO_NET_HDR_GSO_ECN)
->  			gso_type |= SKB_GSO_TCP_ECN;
->  
->  		if (hdr->gso_size == 0)
-> @@ -159,7 +161,7 @@ static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
->  		unsigned int nh_off = p_off;
->  		struct skb_shared_info *shinfo = skb_shinfo(skb);
->  
-> -		switch (gso_type & ~SKB_GSO_TCP_ECN) {
-> +		switch (gso_type & ~(SKB_GSO_TCP_ECN | SKB_GSO_TCP_ACCECN)) {
->  		case SKB_GSO_UDP:
->  			/* UFO may not include transport header in gso_size. */
->  			nh_off -= thlen;
-> @@ -231,7 +233,9 @@ static inline int virtio_net_hdr_from_skb(const struct sk_buff *skb,
->  			hdr->gso_type = VIRTIO_NET_HDR_GSO_UDP_L4;
->  		else
->  			return -EINVAL;
-> -		if (sinfo->gso_type & SKB_GSO_TCP_ECN)
-> +		if (sinfo->gso_type & SKB_GSO_TCP_ACCECN)
-> +			hdr->gso_type |= VIRTIO_NET_HDR_GSO_ACCECN;
-> +		else if (sinfo->gso_type & SKB_GSO_TCP_ECN)
->  			hdr->gso_type |= VIRTIO_NET_HDR_GSO_ECN;
->  	} else
->  		hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
-> @@ -282,7 +286,7 @@ virtio_net_hdr_tnl_to_skb(struct sk_buff *skb,
->  		return -EINVAL;
->  
->  	/* The UDP tunnel must carry a GSO packet, but no UFO. */
-> -	gso_inner_type = hdr->gso_type & ~(VIRTIO_NET_HDR_GSO_ECN |
-> +	gso_inner_type = hdr->gso_type & ~(VIRTIO_NET_HDR_GSO_ECN_FLAGS |
->  					   VIRTIO_NET_HDR_GSO_UDP_TUNNEL);
->  	if (!gso_inner_type || gso_inner_type == VIRTIO_NET_HDR_GSO_UDP)
->  		return -EINVAL;
-> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-> index 1db45b01532b..af5bfe45aa1f 100644
-> --- a/include/uapi/linux/virtio_net.h
-> +++ b/include/uapi/linux/virtio_net.h
-> @@ -56,6 +56,8 @@
->  #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
->  					 * Steering */
->  #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
-> +#define VIRTIO_NET_F_HOST_ACCECN 25	/* Host can handle GSO of AccECN */
-> +#define VIRTIO_NET_F_GUEST_ACCECN 26	/* Guest can handle GSO of AccECN */
->  #define VIRTIO_NET_F_DEVICE_STATS 50	/* Device can provide device-level statistics. */
->  #define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
->  #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
-> @@ -165,6 +167,9 @@ struct virtio_net_hdr_v1 {
->  #define VIRTIO_NET_HDR_GSO_UDP_TUNNEL (VIRTIO_NET_HDR_GSO_UDP_TUNNEL_IPV4 | \
->  				       VIRTIO_NET_HDR_GSO_UDP_TUNNEL_IPV6)
->  #define VIRTIO_NET_HDR_GSO_ECN		0x80	/* TCP has ECN set */
-> +#define VIRTIO_NET_HDR_GSO_ACCECN	0x10	/* TCP AccECN segmentation */
-> +#define VIRTIO_NET_HDR_GSO_ECN_FLAGS	(VIRTIO_NET_HDR_GSO_ECN | \
-> +					 VIRTIO_NET_HDR_GSO_ACCECN)
->  	__u8 gso_type;
->  	__virtio16 hdr_len;	/* Ethernet + IP + tcp/udp hdrs */
->  	__virtio16 gso_size;	/* Bytes to append to hdr_len per frame */
-
-
-UAPI changes need to be added to the virtio spec.
-Pls get this approved by the virtio TC.
-Thanks!
-
-
-> -- 
-> 2.34.1
-
+>   	packet->msg = ib_create_send_mad(agent,
+>   					 be32_to_cpu(packet->mad.hdr.qpn),
+>   					 packet->mad.hdr.pkey_index, rmpp_active,
 
