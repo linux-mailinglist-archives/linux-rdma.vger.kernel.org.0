@@ -1,336 +1,299 @@
-Return-Path: <linux-rdma+bounces-16312-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16313-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +I0sKuZlf2mwpgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16312-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 15:40:38 +0100
+	id cujGFiWMf2m4tQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16313-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 18:23:49 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 249D8C6369
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 15:40:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51FB4C6B76
+	for <lists+linux-rdma@lfdr.de>; Sun, 01 Feb 2026 18:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7FEF0306B794
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Feb 2026 14:35:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F5433005D1B
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Feb 2026 17:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C8D352937;
-	Sun,  1 Feb 2026 14:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A463D24DCE5;
+	Sun,  1 Feb 2026 17:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Dlmm23tp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RWnAy3NK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010044.outbound.protection.outlook.com [52.101.56.44])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5C422759C;
-	Sun,  1 Feb 2026 14:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769956532; cv=fail; b=SbT89mhsIPto7fY3DP6b08SmHFfEQBJRA9m43YKMsIlttNeUeH7osB+IihMoaUucQrwrBqHMkRf4XzqCnjTOgYNewWYdG0pwB8Q8G+M5068RCi0aaAS5B0EeUJCapMS+SB7X55o6DmDv1mOL0hH0FT2PLjLhWl5J5L/6NXxyYW8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769956532; c=relaxed/simple;
-	bh=9j8gLuW+jzS5bKfgisnNh28fi0pym4Vlj+laH3Fde2U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=BBtsgPWotLARi6PMJgkSRH7rIget5DjZrAE3gP/wEMl2uF5Zksw1oD7SoHmsktwPQ8rvUt6AT8bavUyIUXtLPqqWWNeTI8iXIH8U5AoLoGdYcCupijz7VCUGNyT2ee3H+DUzL+yxXEV6Xcg7mYU7BnaD2DR42NeIj7peB8UjDPM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Dlmm23tp; arc=fail smtp.client-ip=52.101.56.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IUGfmJ3cL4GgpEWMN/koMmZPJL/AsnU/wO6Wd8XWCHtbotNHSxTY7U19PcOqMdC2rqwpg4CcIMRnUj5sAOR9ISIawqI/4DvGvnAf+9sRUZBHolRcqmWmnWqVNGw1szWbiE7xe+qc5jWnWvoYl0J3eUK3V2hSqx99w11dnMq37hhMIUr+i1PzKcCysCBkIdNFMuf2dbOhruW8sGOdmnPchgG9epeUIqDL42XzIbJv1qQ37OClwusXIc5CpKFpLriD4JBUqCVZYE+IbrTRGQGdDADbiHAxzDymk+l7UTTpsmGzeT/drYVWv7t1EXdlBJJoLOSg7yK5xXjFAKwbSdgYwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=etM0H50chfQ8pMIhJKKZEvR9cAJMMGv8G3uw51dJjes=;
- b=fMNSJLOpTfdvTb8gENBm9AOvSJBZJHSTcIr3mrTOT7JwVYH0oW8AeKwsvcgccLROxqdR4q8V1Wwkh5/18M7bOGqwTwD90ip/Xh71oYaFlGi+hu6E+SfZNFoqRTVn9XefAFuMxNAtNj7fr5q+vm8Bb6pPPiypSUEWXw++ySrhm05kzg7aehttKiFtd1JhzAOEl8E+TV+/eJSAr8Uk9PQ32cDwsB+UXKOKE6feZVV1KJJz3LS4Rlpjz34UnITtkCs7HBeA+0/lrJme/JpzA0BCWQpPmytzl/uTtqvKl66Czj4Q1CLl1ZE5Bc+r5aWQsVa7K/wUWu/eANZbpAFVjtXUBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=etM0H50chfQ8pMIhJKKZEvR9cAJMMGv8G3uw51dJjes=;
- b=Dlmm23tpB1ZakClBNGJiMCPVfy7rxpZg+HJbcQuzC/9lT7q0kpWzTFvUNMYy2P+9z7ccfBYVtxg0CComvcQzK2QU65kVwbvba4mkTUku9JNASq064aL4GXuUrhalHbIX8cTD0HfMER7nAN1EUwsY7/6IUVwr/237q9axAZuT/kPbYcReNZEQ4MQiNyVO+jqU7+VjZlv7OzLAEqTRhz1zPtjdNRMoUKNK9z4RVmycgRZyLBQHddxv13cPn8yrI5b0CWcPkf5tVw9fzP7EwPcV6ESIYk2CxDLiV03jnZmR0/RHMEnr+xPo0BPzU2i572txSTInpLkBlpScJdk04BwUKQ==
-Received: from MN2PR01CA0024.prod.exchangelabs.com (2603:10b6:208:10c::37) by
- IA0PR12MB8277.namprd12.prod.outlook.com (2603:10b6:208:3de::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.16; Sun, 1 Feb
- 2026 14:35:24 +0000
-Received: from BN3PEPF0000B070.namprd21.prod.outlook.com
- (2603:10b6:208:10c:cafe::4) by MN2PR01CA0024.outlook.office365.com
- (2603:10b6:208:10c::37) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9564.15 via Frontend Transport; Sun,
- 1 Feb 2026 14:35:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN3PEPF0000B070.mail.protection.outlook.com (10.167.243.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9587.0 via Frontend Transport; Sun, 1 Feb 2026 14:35:24 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 1 Feb
- 2026 06:35:07 -0800
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 1 Feb
- 2026 06:35:07 -0800
-Received: from c-237-169-180-181.mtl.labs.mlnx (10.127.8.12) by
- mail.nvidia.com (10.129.68.6) with Microsoft SMTP Server id 15.2.2562.20 via
- Frontend Transport; Sun, 1 Feb 2026 06:35:03 -0800
-From: Edward Srouji <edwards@nvidia.com>
-Date: Sun, 1 Feb 2026 16:34:06 +0200
-Subject: [PATCH rdma-next v3 3/3] RDMA/mlx5: Implement DMABUF export ops
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD188632B
+	for <linux-rdma@vger.kernel.org>; Sun,  1 Feb 2026 17:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769966623; cv=none; b=N/QZvXIkzcpO+NlFMip+xCIX87AtJO34c3vvJ4CbZ3Ogc9mCKCehinYOd6LJyOukQmVo5e7WnByd7/InagiDPnihcgDebzQvq5LnUtts36VJvjYSsUX+LpEvsQo9SQu75gteSJTdLz86Ob15GvH4fiyJHPkj4cQBdy59vydhHgk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769966623; c=relaxed/simple;
+	bh=Tl6779vE9FPM4bFnmmi99rqpcMbvBAI7q/au7un4rJg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lnb8N+MDhm2XSQFDYRMSjvcGlGfwi3VlwShPV8Vl6i8T/mB60hqKwf9oP7OpzQ3oz1NZvP8tPgfautRw8Le7cox/asEqScaWP0+Pta+bSGiy5wphgmDA3jR/sIGw014MftfAI/7DsXVzHOBHXxIJsOfz8agUV3qpsH33Yhi+pnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RWnAy3NK; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <674871c0-1136-47ec-a5eb-907adda487ac@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1769966619;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gWazNdQBHDkMW3oVDOSnUnlDzq6RKiBUV4CvaeCZ0Ag=;
+	b=RWnAy3NKcSK9UvU2XtccO0I/Vu1Z88Pk0maohMVsdTke854jIgWeIZ+YSvcD4lupC+NfNh
+	mzuQCf9SJUDcLjD0bsuImB14obFhpvo4fP8LIJ2DcvllSFNkESVYEwsMMhiySyklWWyw7r
+	uWlZKTyW89rl+ibAnlvXq7VSfrOYJmE=
+Date: Sun, 1 Feb 2026 18:23:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH] RDMA/siw: Fix potential NULL pointer dereference in
+ header processing
+To: YunJe Shin <yjshin0438@gmail.com>
+Cc: jgg@ziepe.ca, leon@kernel.org, joonkyoj@yonsei.ac.kr,
+ linux-rdma@vger.kernel.org, ioerts@kookmin.ac.kr
+References: <662a7cd7-a1ea-4b9f-8654-c2537e5ef615@linux.dev>
+ <20260131111335.4069021-1-ioerts@kookmin.ac.kr>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20260131111335.4069021-1-ioerts@kookmin.ac.kr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <20260201-dmabuf-export-v3-3-da238b614fe3@nvidia.com>
-References: <20260201-dmabuf-export-v3-0-da238b614fe3@nvidia.com>
-In-Reply-To: <20260201-dmabuf-export-v3-0-da238b614fe3@nvidia.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Sumit
- Semwal" <sumit.semwal@linaro.org>, =?utf-8?q?Christian_K=C3=B6nig?=
-	<christian.koenig@amd.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<linaro-mm-sig@lists.linaro.org>, Yishai Hadas <yishaih@nvidia.com>, "Edward
- Srouji" <edwards@nvidia.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1769956492; l=3906;
- i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
- bh=hrI5fWihP4FczMXXbh00GHcjyD2++jtKryVnX4Jyft4=;
- b=vdLJOY5jw3ITJG9c/JjQ1/0LF/XJdq1Q0EkPwU+TptD4zzP7IOJMhEvdyACZ/FCu3JwaYggt/
- NpJY/1MhBOPCmwtMaMlahk6icMGm5zsWBxr3Frmhc2HCEies2lh5jLi
-X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
- pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B070:EE_|IA0PR12MB8277:EE_
-X-MS-Office365-Filtering-Correlation-Id: dba21f91-ed40-4db8-c324-08de619f22f9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|376014|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dHM5T2d1c0Vydk9PQ0tVMzc4NjVnSHFSRUUyODEreUhONmdRME43dlFUY0RE?=
- =?utf-8?B?elZKT0FhenI1MDliKzdVTnRUd1Z2RkVSNFRxZGY3R3RUa0R5UjRSWmpWUEJk?=
- =?utf-8?B?WTBYWEgrYWFIcHJieEQzUDY4MVVCQ3ROVnRCTFIwR0hPZ1E1QyttUEpUOXJU?=
- =?utf-8?B?OU9HOWQxVzdyRVpVR1o4cnVTekcvSGdDa2tjYVBTYnVpZ0swRDQ5VXpmUnZj?=
- =?utf-8?B?TzdJNko0MFR5RExVYkovWTl2L1JIeHNxK3paUFlJUlNkVGFBMU8vbEVuaWRC?=
- =?utf-8?B?cnk5RnNpcjIyd3hoNE0rS29uM3ZKN1c0T1o0aktyb0JGd1VsaHhPYlU4dXJJ?=
- =?utf-8?B?V2pSYS9JRkRObGo0UGRJanE3bVF3aTBnZFpRMVpONU5DeXRZam9CYU1KUnQ2?=
- =?utf-8?B?ZE1vMUJOYmNSY0dhV1FIdFRTZWMxSVF5enR1TDd1Z0g4aC9HWTgyQWRXdnFn?=
- =?utf-8?B?TllYREZDTGtZMXl6Y2pmTGdrUmtVekQ2WVVPb0VzaVBBWHIyM051Q3pRRHVN?=
- =?utf-8?B?Q2phYlpTU0pzRHlEcEJ6azB0cEJJcXorWjFBeXJLSE12Wnc5cFNhbVFLTXpH?=
- =?utf-8?B?QytvelhMVUZST3drQWkyMUZyYXdua2lJUDYrTUVYWEtvNTlBcWlUUWFiaEpR?=
- =?utf-8?B?bzVFVkV3VnZKMHFZK3hrMnovaWtQVnljNUw3UXJ3QktHT1kveTF6VjU3SVZl?=
- =?utf-8?B?d2tjQlVxU2RrUXpXZHQ0bUhUUzV0MWRGQ0RwUmphT3R0THlZaHZGRnNIVDdm?=
- =?utf-8?B?VWNrVkhkV01MZ3laOU1Cd2o5Sy9VdHV6dFQ3aHRSYzVWYStTL2k0VHFUQnpH?=
- =?utf-8?B?SmdLbk9uS3phMDhXQ2hCeUkrelRLSU5LMSsrR3hOSlhSSkJKUjQ2d1BwQ3Jw?=
- =?utf-8?B?bFdleVJiNmVrZW11MFdvR1BjQ28yVWVkR211anliY0JKaXFjMEdzU3gxeUN6?=
- =?utf-8?B?bDhmNjdIcVh1UzlZWmJHazh0d2UzZGE1ckxYQmlWaWI5aE5Hd29abjBiSmFG?=
- =?utf-8?B?QlovSnZzbFdzN0d3dTdlSlBHQzRtZzBab044QS9rcHFOTW1WeWI5cUhQSWwv?=
- =?utf-8?B?SFp3VWlwejZwSXp0YVJKRi9ncDlGVE1RQWhkTGFWR1NLZ3ZBTERhQWhna0wz?=
- =?utf-8?B?MWtQVytnbll0ZXpHdE1KQ2Urb1ZxckNCNTZidE1FdDNPK2VHSVIwSGV4anZm?=
- =?utf-8?B?OEpHVU5SV0FuelpONFVOYmtteE80YTVDdHZtdWZCaUNVRS9yWFRjRmtILzR0?=
- =?utf-8?B?QmptNE1lUkw4Nml1d3pVS21zVU5pTC9YZHB5RmdXT0pFWjBWaTNTZHlwR0NT?=
- =?utf-8?B?WEFjRDZGcy9nWFJtcVZnMWVLVDEvcXRwMTZaVHpKeFk0dC84clhxU1ZzQUJE?=
- =?utf-8?B?Yy9JN0M2dEFtU2ZFZXhSdUJhb1dmVXdLc0pHMWlkK1pqNE0wTXRGcm1oOWwv?=
- =?utf-8?B?Q0R0YmhVdXlDbHhYeDFlb2lwL3V1TWtRVGJpNUZGc2o3K2ZqNmwxMm9wdlZK?=
- =?utf-8?B?ajczNjBTdkFES0pYMDVHcG1xRmtwcEpmeEY2OTJZUThLT3NtWkQ1cHZrL1oy?=
- =?utf-8?B?bXBUWW1jTXdKZWd4bUU0eGxZQ2hYaGVIV1RSbi9MQVFENlNJdDhIZU53Qkw2?=
- =?utf-8?B?QkZyRC96WmlCUXNnSkxTbDJiemJqbm5CM2ZNSGpyU0lOTCtsem5sc2lMd2da?=
- =?utf-8?B?a042ZUxoTDQ3aUdUSE1kRkhVNjgvd0NOdU1aZEJNNVJjSlgxT0ovMFZ4bzAz?=
- =?utf-8?B?cmdnSXFKVkd5U2JkU0hWcGZMb21Va2RmOTI1c2dGaUNHaXlxK2p4ZXN1bWt3?=
- =?utf-8?B?anlEVTZPdm44N3JzSlljd24zc2hXZXZ5VXgwTE1ESHpHV3QvNStEOGhybFFY?=
- =?utf-8?B?Z0VKaDcyOHA0WnJvSDdrSFp3SWRnbDRDYVFRdHV0WmRwQlZBeHZKYjZYa2pq?=
- =?utf-8?B?Y3FFekRtUmxXZ2crTGtORkFnSHdoeHAzVElJU2JCU3dzdGtGeE5VT0dFT2ty?=
- =?utf-8?B?YkxiTGdiZGZ3aVN0M0VXTXRSdW1kUEVKMVk5WEJkZWZJV2JxVjZ0eEF1bVR2?=
- =?utf-8?B?L2kxT3g2RTR5SWNxOG9PSkpUUXpIUzRETkVmN0NVOU51aS95V2VDcVJ0Z2Nx?=
- =?utf-8?B?c09sOXJqRkx4SVFKNVBITEd3MGR2dThDeGxwN0ZsNFFCUEdBd2piaVFHbGU2?=
- =?utf-8?B?S0hIRUEvQ1QvSWsvUFNGTFNMdExTUDIrZE5qV21vYTZZV1JZKzQ4MnhpZno2?=
- =?utf-8?B?MkFldWlaa3MwOXc4LzhUaDFKMFF3PT0=?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(82310400026);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	0+kHjo5gv891JuMXnKTsNxp3fwyX/3m7ODA8376tip/IRzZeV2g9+9bMaCWaU3pqSzyu4uZM+nok4/g/bAnE9D+/lJiinqizy877kygvf4bohIxfcqryN1j+k5VMg7bUqV2kt7oSiGQkkAr43v8yYG+LKg8Hxo/9xvIuN4/xMcqMNrPQ5hMrjPnW5OFzJNHHajsOjFs5fe9DgpeBx0Vud4hn1wptpB+bGIHfquAfFPK5KPgt0ANEaOnP/1HJIPEtPwdqJs1j2CIEJjhuombZ70EtpfrM0cAZrIsLbxjNugbHnWgqlOxBhnXAzZZ7l+9Hp/sx2dWk1NKC0747LDK6IeQEfByIKb1H9mr+1jpboBr5MdUr/ixha4j+j9QcluoBPLxb88V9wFpfCKsWFTaeUNk+qPuSXElbgexZx2JZWwkxlS5dCmM9ZWm7e2zel8ww
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2026 14:35:24.5831
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dba21f91-ed40-4db8-c324-08de619f22f9
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B070.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8277
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16312-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:mid,nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16313-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[edwards@nvidia.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 249D8C6369
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: 51FB4C6B76
 X-Rspamd-Action: no action
 
-From: Yishai Hadas <yishaih@nvidia.com>
+On 31.01.2026 12:13, YunJe Shin wrote:
+> If siw_get_hdr() returns -EINVAL before set_rx_fpdu_context(),
+> qp->rx_fpdu can be NULL. Since the error path in siw_tcp_rx_data()
+> dereferences qp->rx_fpdu->more_ddp_segs without checking, this
+> may lead to a NULL pointer deref. Only check more_ddp_segs when
+> rx_fpdu is present.
+> 
+> 
+> [  101.384271] KASAN: null-ptr-deref in range
+> [0x00000000000000c0-0x00000000000000c7]
+> [  101.385071] CPU: 1 UID: 1000 PID: 265 Comm: exploit_poc Not tainted
+> 6.19.0-rc7-g8dfce8991b95 #1 PREEMPT(voluntary)
+> [  101.385418] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
+> 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+> [  101.385869] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
+> [  101.386511] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
+> 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
+> [  101.386979] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
+> [  101.387243] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
+> [  101.387545] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
+> [  101.387829] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
+> [  101.388076] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
+> [  101.388316] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
+> [  101.388599] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
+> knlGS:0000000000000000
+> [  101.388819] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  101.389020] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
+> [  101.389324] Call Trace:
+> [  101.389635]  <IRQ>
+> [  101.389807]  ? lapic_next_event+0x10/0x20
+> [  101.389978]  ? clockevents_program_event+0x1d0/0x280
+> [  101.390121]  ? hrtimer_interrupt+0x319/0x7e0
+> [  101.390269]  __tcp_read_sock+0x1ab/0x810
+> [  101.390412]  ? __pfx_siw_tcp_rx_data+0x10/0x10
+> [  101.390535]  ? __pfx___tcp_read_sock+0x10/0x10
+> [  101.390658]  siw_qp_llp_data_ready+0x185/0x2c0
+> [  101.390759]  ? __pfx_siw_qp_llp_data_ready+0x10/0x10
+> [  101.390871]  ? tcp_event_data_recv+0x36a/0x7b0
+> [  101.390967]  ? tcp_queue_rcv+0x30a/0x620
+> [  101.391062]  tcp_data_queue+0x1ecc/0x4b40
+> [  101.391164]  ? common_startup_64+0x13e/0x148
+> [  101.391265]  ? __pfx_tcp_data_queue+0x10/0x10
+> [  101.391358]  ? tcp_try_undo_loss+0x640/0x710
+> [  101.391459]  ? __pfx_read_tsc+0x10/0x10
+> [  101.391545]  ? ktime_get+0x60/0x140
+> [  101.391669]  ? __pfx_do_sync_core+0x10/0x10
+> [  101.391764]  tcp_rcv_established+0x801/0x35e0
+> [  101.391864]  ? sk_filter_trim_cap+0x4ab/0xb20
+> [  101.391963]  ? __pfx_tcp_inbound_hash+0x10/0x10
+> [  101.392060]  ? __pfx_tcp_rcv_established+0x10/0x10
+> [  101.392167]  ? bpf_skb_net_hdr_push+0x560/0x580
+> [  101.392268]  ? _raw_spin_lock+0x7f/0xd0
+> [  101.392363]  tcp_v4_do_rcv+0x525/0x8a0
+> [  101.392461]  tcp_v4_rcv+0x249d/0x3e50
+> [  101.392558]  ? kernel_text_address+0xa7/0x130
+> [  101.392685]  ? __pfx_tcp_v4_rcv+0x10/0x10
+> [  101.392779]  ? unwind_get_return_address+0x59/0xa0
+> [  101.392897]  ? __pfx_raw_local_deliver+0x10/0x10
+> [  101.393020]  ip_protocol_deliver_rcu+0x61/0x2e0
+> [  101.393122]  ? __pfx_stack_trace_save+0x10/0x10
+> [  101.393233]  ip_local_deliver_finish+0x332/0x4b0
+> [  101.393333]  ? ip_finish_output2+0x71f/0x19a0
+> [  101.393429]  ip_local_deliver+0x18f/0x2d0
+> [  101.393530]  ? __pfx_ip_local_deliver+0x10/0x10
+> [  101.393642]  ? __pfx___netif_receive_skb_core.constprop.0+0x10/0x10
+> [  101.393789]  ? __kasan_mempool_poison_object+0xbb/0x190
+> [  101.393899]  ? napi_skb_cache_put+0x23/0x190
+> [  101.394001]  ? skb_defer_free_flush+0x145/0x1b0
+> [  101.394100]  ? net_rx_action+0x349/0xfb0
+> [  101.394215]  ? __asan_memset+0x23/0x50
+> [  101.394315]  ? __tcp_push_pending_frames+0x8f/0x2f0
+> [  101.394423]  ip_rcv+0x221/0x270
+> [  101.394506]  ? __pfx_ip_rcv+0x10/0x10
+> [  101.394627]  ? __pfx_ip_rcv+0x10/0x10
+> [  101.394735]  __netif_receive_skb_one_core+0x161/0x1b0
+> [  101.394876]  ? __pfx___netif_receive_skb_one_core+0x10/0x10
+> [  101.395029]  ? _raw_spin_lock_irq+0x80/0xe0
+> [  101.395154]  process_backlog+0x1e5/0x5e0
+> [  101.395268]  ? napi_skb_cache_put+0x23/0x190
+> [  101.395423]  __napi_poll+0x9a/0x500
+> [  101.395533]  net_rx_action+0x988/0xfb0
+> [  101.395671]  ? _raw_spin_lock_irq+0x80/0xe0
+> [  101.395797]  ? __pfx_net_rx_action+0x10/0x10
+> [  101.395948]  ? timerqueue_add+0x21b/0x320
+> [  101.396093]  ? __hrtimer_run_queues+0x3de/0x790
+> [  101.396251]  ? __pfx_read_tsc+0x10/0x10
+> [  101.396365]  ? ktime_get+0x60/0x140
+> [  101.396475]  handle_softirqs+0x18c/0x530
+> [  101.396592]  ? __pfx_handle_softirqs+0x10/0x10
+> [  101.396731]  do_softirq+0x3b/0x60
+> [  101.396855]  </IRQ>
+> [  101.396940]  <TASK>
+> [  101.397004]  __local_bh_enable_ip+0x61/0x70
+> [  101.397144]  __dev_queue_xmit+0x618/0x2fe0
+> [  101.397257]  ? __local_bh_enable_ip+0x61/0x70
+> [  101.397380]  ? __pfx___dev_queue_xmit+0x10/0x10
+> [  101.397500]  ? sched_clock+0x10/0x30
+> [  101.397613]  ? __pfx_selinux_ip_postroute_compat+0x10/0x10
+> [  101.397770]  ? _raw_spin_trylock+0xaf/0x120
+> [  101.397883]  ? selinux_ip_postroute+0x3e9/0x9d0
+> [  101.398008]  ip_finish_output2+0x71f/0x19a0
+> [  101.398125]  ? __pfx_ip_finish_output2+0x10/0x10
+> [  101.398251]  ? __pfx_stack_trace_consume_entry+0x10/0x10
+> [  101.398395]  __ip_finish_output.part.0+0x477/0x950
+> [  101.398541]  ? __pfx___ip_finish_output.part.0+0x10/0x10
+> [  101.398691]  ? nf_hook_slow+0xa7/0x1e0
+> [  101.398796]  ip_output+0x260/0x4d0
+> [  101.398903]  ? __pfx_ip_output+0x10/0x10
+> [  101.399015]  ? __pfx_stack_trace_save+0x10/0x10
+> [  101.399132]  ? __pfx_ip_finish_output+0x10/0x10
+> [  101.399236]  ? kasan_save_stack+0x42/0x60
+> [  101.399501]  ? ipv4_dst_check+0x10a/0x160
+> [  101.399665]  __ip_queue_xmit+0xcfb/0x1d60
+> [  101.399813]  ? __tcp_select_window+0xf8/0xed0
+> [  101.399931]  ? __skb_clone+0x550/0x740
+> [  101.400034]  __tcp_transmit_skb+0x29ce/0x3de0
+> [  101.400159]  ? __pfx___tcp_transmit_skb+0x10/0x10
+> [  101.400284]  ? kmem_cache_alloc_node_noprof+0x13b/0x4d0
+> [  101.400423]  ? kasan_save_track+0x14/0x30
+> [  101.400565]  tcp_write_xmit+0x11ba/0x7610
+> [  101.400744]  ? skb_page_frag_refill+0x55/0x430
+> [  101.400872]  __tcp_push_pending_frames+0x8f/0x2f0
+> [  101.400999]  tcp_sendmsg_locked+0x156e/0x3b70
+> [  101.401165]  ? __pfx_tcp_sendmsg_locked+0x10/0x10
+> [  101.401362]  ? __pfx_selinux_socket_sendmsg+0x10/0x10
+> [  101.401528]  ? _raw_spin_lock_bh+0x83/0xe0
+> [  101.401733]  ? ldsem_up_read+0x12/0x40
+> [  101.402061]  tcp_sendmsg+0x26/0x40
+> [  101.402210]  __sys_sendto+0x364/0x430
+> [  101.402346]  ? __pfx___sys_sendto+0x10/0x10
+> [  101.402523]  ? ksys_write+0xf7/0x1c0
+> [  101.402671]  ? __pfx_ksys_write+0x10/0x10
+> [  101.402834]  __x64_sys_sendto+0xdb/0x1b0
+> [  101.402968]  ? fpregs_assert_state_consistent+0x56/0xe0
+> [  101.403107]  do_syscall_64+0xa4/0x320
+> [  101.403254]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> [  101.403554] RIP: 0033:0x42440d
+> [  101.403982] Code: 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 00 f3 0f 1e
+> fa 80 3d 5d fc 08 00 00 41 89 ca 74 20 45 31 c9 45 31 9
+> [  101.404392] RSP: 002b:00007ffc69a5f158 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000002c
+> [  101.404659] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000042440d
+> [  101.404864] RDX: 0000000000000030 RSI: 00007ffc69a5f180 RDI: 0000000000000003
+> [  101.405069] RBP: 00007ffc69a5f200 R08: 0000000000000000 R09: 0000000000000000
+> [  101.405257] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc69a5f318
+> [  101.405416] R13: 00007ffc69a5f340 R14: 00000000004ae868 R15: 0000000000000001
+> [  101.405634]  </TASK>
+> [  101.405771] Modules linked in:
+> [  101.406766] ---[ end trace 0000000000000000 ]---
+> [  101.407214] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
+> [  101.407387] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
+> 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
+> [  101.407946] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
+> [  101.408091] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
+> [  101.408239] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
+> [  101.408375] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
+> [  101.408508] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
+> [  101.408741] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
+> [  101.408897] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
+> knlGS:0000000000000000
+> [  101.409051] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  101.409181] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
+> [  101.409577] Kernel panic - not syncing: Fatal exception in interrupt
+> [  101.410887] Kernel Offset: disabled
+> [  101.411108] Rebooting in 1 seconds..
+> 
+> 
+> 
+> Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+> Signed-off-by: YunJe Shin <ioerts@kookmin.ac.kr>
+> ---
+>   drivers/infiniband/sw/siw/siw_qp_rx.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+> index e8a88b378d51..960f740cf46a 100644
+> --- a/drivers/infiniband/sw/siw/siw_qp_rx.c
+> +++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+> @@ -1434,8 +1434,7 @@ int siw_tcp_rx_data(read_descriptor_t *rd_desc, struct sk_buff *skb,
+>   			run_completion = 0;
+>   		}
+>   		if (unlikely(rv != 0 && rv != -EAGAIN)) {
+> -			if ((srx->state > SIW_GET_HDR ||
 
-Enable p2pdma on the mlx5 PCI device to allow DMABUF-based peer-to-peer
-DMA mappings.
+We cannot remove that state > SIW_GET_HDR condition.
 
-Add implementation of the mmap_get_pfns and pgoff_to_mmap_entry device
-operations required for DMABUF support in the mlx5 RDMA driver.
+Consider this error case:
+We received a header of say a short SEND comprising only
+one DDP segment, and started data processing, while
+encountering an error (too much data, no write permission
+for the receive buffer, etc.). We have to complete the
+current RECEIVE processing and surface a local completion,
+since we already fetched the RQE from the receive queue.
 
-The pgoff_to_mmap_entry operation converts a page offset to the
-corresponding rdma_user_mmap_entry by extracting the command and index
-from the offset and looking it up in the ucontext's mmap_xa.
-
-The mmap_get_pfns operation retrieves the physical address and length
-from the mmap entry and obtains the p2pdma provider for the underlying
-PCI device, which is needed for peer-to-peer DMA operations with
-DMABUFs.
-
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Edward Srouji <edwards@nvidia.com>
----
- drivers/infiniband/hw/mlx5/main.c | 72 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index e81080622283..f97c86c96d83 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2446,6 +2446,70 @@ static int mlx5_ib_mmap_clock_info_page(struct mlx5_ib_dev *dev,
- 			      virt_to_page(dev->mdev->clock_info));
- }
- 
-+static int phys_addr_to_bar(struct pci_dev *pdev, phys_addr_t pa)
-+{
-+	resource_size_t start, end;
-+	int bar;
-+
-+	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
-+		/* Skip BARs not present or not memory-mapped */
-+		if (!(pci_resource_flags(pdev, bar) & IORESOURCE_MEM))
-+			continue;
-+
-+		start = pci_resource_start(pdev, bar);
-+		end = pci_resource_end(pdev, bar);
-+
-+		if (!start || !end)
-+			continue;
-+
-+		if (pa >= start && pa <= end)
-+			return bar;
-+	}
-+
-+	return -1;
-+}
-+
-+static int mlx5_ib_mmap_get_pfns(struct rdma_user_mmap_entry *entry,
-+				 struct dma_buf_phys_vec *phys_vec,
-+				 struct p2pdma_provider **provider)
-+{
-+	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
-+	struct pci_dev *pdev = to_mdev(entry->ucontext->device)->mdev->pdev;
-+	int bar;
-+
-+	phys_vec->paddr = mentry->address;
-+	phys_vec->len = entry->npages * PAGE_SIZE;
-+
-+	bar = phys_addr_to_bar(pdev, phys_vec->paddr);
-+	if (bar < 0)
-+		return -EINVAL;
-+
-+	*provider = pcim_p2pdma_provider(pdev, bar);
-+	/* If the kernel was not compiled with CONFIG_PCI_P2PDMA the
-+	 * functionality is not supported.
-+	 */
-+	if (!*provider)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
-+static struct rdma_user_mmap_entry *
-+mlx5_ib_pgoff_to_mmap_entry(struct ib_ucontext *ucontext, off_t pg_off)
-+{
-+	unsigned long entry_pgoff;
-+	unsigned long idx;
-+	u8 command;
-+
-+	pg_off = pg_off >> PAGE_SHIFT;
-+	command = get_command(pg_off);
-+	idx = get_extended_index(pg_off);
-+
-+	entry_pgoff = command << 16 | idx;
-+
-+	return rdma_user_mmap_entry_get_pgoff(ucontext, entry_pgoff);
-+}
-+
- static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
- {
- 	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
-@@ -4360,7 +4424,13 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
- 	if (err)
- 		goto err_mp;
- 
-+	err = pcim_p2pdma_init(mdev->pdev);
-+	if (err && err != -EOPNOTSUPP)
-+		goto err_dd;
-+
- 	return 0;
-+err_dd:
-+	mlx5_ib_data_direct_cleanup(dev);
- err_mp:
- 	mlx5_ib_cleanup_multiport_master(dev);
- err:
-@@ -4412,11 +4482,13 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
- 	.map_mr_sg_pi = mlx5_ib_map_mr_sg_pi,
- 	.mmap = mlx5_ib_mmap,
- 	.mmap_free = mlx5_ib_mmap_free,
-+	.mmap_get_pfns = mlx5_ib_mmap_get_pfns,
- 	.modify_cq = mlx5_ib_modify_cq,
- 	.modify_device = mlx5_ib_modify_device,
- 	.modify_port = mlx5_ib_modify_port,
- 	.modify_qp = mlx5_ib_modify_qp,
- 	.modify_srq = mlx5_ib_modify_srq,
-+	.pgoff_to_mmap_entry = mlx5_ib_pgoff_to_mmap_entry,
- 	.pre_destroy_cq = mlx5_ib_pre_destroy_cq,
- 	.poll_cq = mlx5_ib_poll_cq,
- 	.post_destroy_cq = mlx5_ib_post_destroy_cq,
-
--- 
-2.47.1
+> -			     (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs)) &&
+> +			if (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs &&
+>   			    run_completion)
+>   				siw_rdmap_complete(qp, rv);
+>   
 
 
