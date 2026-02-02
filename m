@@ -1,93 +1,93 @@
-Return-Path: <linux-rdma+bounces-16334-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16335-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iFuCEhWpgGmeAAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16334-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 14:39:33 +0100
+	id cGh4CRypgGmeAAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16335-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 14:39:40 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A21A6CCDF6
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 14:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95592CCDFD
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 14:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 079D730649FD
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Feb 2026 13:32:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9220C3066303
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Feb 2026 13:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BFE369226;
-	Mon,  2 Feb 2026 13:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03919369235;
+	Mon,  2 Feb 2026 13:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Hc/2Fzzd"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="SseO68sz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+Received: from mail-ot1-f100.google.com (mail-ot1-f100.google.com [209.85.210.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA6B19E819
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Feb 2026 13:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F9A36920F
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Feb 2026 13:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770039126; cv=none; b=sKemqAed8apqY34sTFRtGYPo+F5RpnnPa+36N6ZDv0xLribmd1fius3oh5oIyc4a9Kvf5tUL7JCGdnQfPaMH95TqsysSZrI8z85MgT1LAHyOrGQTHlMOVH83tKG7pNmlVAEDkU2cyJaYRPz64uAkOjxvQC9L1+KyUz8krDQ/G64=
+	t=1770039130; cv=none; b=jyyWnTFtFiP18cMH4hFZfb6+cc7bluu/lz0KJ0MnNqLH588pbzzJKEXZNWejVAHIGj8w72EYn0A4qRsJUGcpnGEwNMYjjzhRCICI9PWqjzu5p8d2KNFfL6wH6qeiBPbzggsnohxia3oobe7Wsi+UnAqbRwqS+WJkQF3Sxem7gKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770039126; c=relaxed/simple;
-	bh=r2TIpfuTp14pc0lk1Ay4wEFTQ7reAzTn6BdBxZbRAD0=;
+	s=arc-20240116; t=1770039130; c=relaxed/simple;
+	bh=s9SMeCBIy5OHALS/2Qsmcxx9kO63PUBvELqIlT4pN5s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S0Ax9b0VkubR2Zkc8fYBg/7mAXo+AKwkiqCeOZRUR8dcTAVCE9avZUCjf4gsYbcAfcm1bkwAfKgEc2bT/8c/1oJjdmkeKK3r+L5DYz4lShKQzeFjuRFgrVyH8uhmK1GpIq9FaKlRtKltzXkU8688LtLryipeR0p5Uk8zgOyN4J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Hc/2Fzzd; arc=none smtp.client-ip=209.85.214.226
+	 MIME-Version; b=npZ1TI89Pju1NanBptR9YH+Ed1c6xT8zcDuvayQBq5ruywDKeKY2Opt0o/r0y0QNigM1CTIrsylsYcJq10V6MXf+oWdevy6LRNNuVsp9plHx5OQo/wz0JcwLcIp/tcSAeBfe/hltin4psxGkESEknQAO9zzyodwb1MAa6uB5DzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=SseO68sz; arc=none smtp.client-ip=209.85.210.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2a0c09bb78cso36876465ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 05:32:05 -0800 (PST)
+Received: by mail-ot1-f100.google.com with SMTP id 46e09a7af769-7d18d9503eeso3325263a34.1
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 05:32:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770039125; x=1770643925;
+        d=1e100.net; s=20230601; t=1770039128; x=1770643928;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LEe7e9LSCBQTmJHZsAUM2RL44l4Rxg5zALT27wQHdBY=;
-        b=gQcw2ULrcc0rhyxmRZXnQtyiB75q8QU28X+YJonW8fGL4Km++XvvF8wXRrsRUAqlz7
-         i0h9DoxVJOkJOOpqJmzGxbK6rHfdwiJ6I9uCHr7W3U1SkZR0o+nh1JUn11Y38dttz0ix
-         RgAQg7RrXF2DADsI15VS5INxcYaIDR8mfHWyjdbUeYJXj8LmUrvNQuZGfQD25aDwxDJm
-         zT+vIl4eGOcliI8QW7jfASbMnAXq4j/8NuOqGwWvkr+iH+VttvnZNMgJhLMB6cW+27yq
-         QWYBBOozWfqX6Fatw8Mc4S9P2Tw6WkHLZSJemi9E+AKhrG114yuw4vi1yS3UhYFEzphM
-         sfyw==
-X-Gm-Message-State: AOJu0YywTKKEuFQT6CX75O0Cxpsw+48M3WENdQMfy8kEFUUcj3Aj4lSD
-	f4l22/FmzENmanwuhdXaJeeh8flwAt3IV3giPevWABXwx1c7/D9E5yEE1wJlpI4eUlm68Yi/SvX
-	oA4bTw08wGvyA+39s1BJsiRDpEDxopBDwr0/gAZQAKQaLRxdHDIhDyUV3XmtyfvoKscQvwFFckY
-	Ms9FAva096T2iy171AfGNg7SftZrfYDahm4k11CKMSEtJWCJ7K1BqW/DVTXimbnMpqCemQOY9zm
-	2rbY41ovV6AzMWJGNkfMD+IXwwiPQ==
-X-Gm-Gg: AZuq6aISLzKPASYyttcScE4mySJuqs2hPZkPW1A1Io+PX16oqlVnUbhiLqk1vo6I8K4
-	AmiLt+UvWBEAekCDigdtdwpGdAeNSim9pAy29QSzdpvF+s36yTJyz4XO8JEsrOyfUfdStktEwE+
-	Um8ntb0R7ieGcT3QLnBFwezMhi7xbfs3lb+6ApuuBSF82U8gnnxnUQJrF/S2DueOQfFI9N+6QgD
-	6PSJM3NZvIqAr8yYoSM/CBuNGfHlxmTFqcX/KWd/sMDWvA/IBCtmxwTjPog9vd1gH9ySD5OBDd8
-	Z2h3//JA17b6Xnr0GRulN5QuY3HwMKsbhgxWVi1qnsoXu+ay9OzMlltdeHyo4/wXTlLb3hzY0DX
-	toBH3jIvFQjiBu1XXtPq06195HPvT1/HFAipV27ac8XhPdKdb0bDwODHwhGZcsEaFtPBhQJzKsR
-	/Qg8rOlJPbbJPtX6QMxlcjpD4uirHuSkVfLVsLFQaQX526YRlLU40qcv0=
-X-Received: by 2002:a17:903:1211:b0:294:8c99:f318 with SMTP id d9443c01a7336-2a8d96cb3bdmr110299325ad.3.1770039124923;
-        Mon, 02 Feb 2026 05:32:04 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2a88b6e5c65sm21347395ad.44.2026.02.02.05.32.04
+        bh=9IvWcmc/rx7KaHrgU4HNIJiVjz2WDq/r/o3jl1SWxQ4=;
+        b=ajg/a/VGd8iT7XAXQ91UUrHuYtO2cs3NVrsn7V+DSzWSITWArnM0jCOEd/JuwPaBX1
+         d8lOIIROMigEelKo4SwS5IuGiRJbHgrXctzrv8Eyis6CYXY3LG+MIBxZDOApWWKUULrC
+         hL/JMeJCH2L12ouscxeM+DKK3USRl75jHtyU5CAA2qIRODdkvMGBzWI5nAJWrRQE6Krn
+         YkiFu5Mz0rP4uumB0NHjKhwaFx0uyblw4g/kERYRC6iHfhX5/KAlvkdNSVBLAz6o04Qa
+         phpEHyZWeNv1drUVo5uTxPNEVnrt7bAOJRHgUH2KAAiuMNq461sCYPZKqEw2UVVrhALr
+         NaDg==
+X-Gm-Message-State: AOJu0YxulCujesKs1i8DUd2h/SnBwm/v8zhzQo1dA7m92jUzmeoUZZBG
+	UDIHlcrpaH8k15TSlW7HNcqGaP5O6vO1IXXFD7odduHTn0nBuf79cXmAWHQTpC/OnvH/RyP7gzQ
+	NWNL1OZh9y3L9WSNsYsOUYXnGtVmIP24ZfEBMcNmbTPwXzY5HN8giZNhcgxG0GoTYl4/cn9jchT
+	o8A1O84+YoHPRGmZ7DNALa93JDGjJ0gxQ/XOQpXgcPeVcw7o6TURz10peToc59pKZ5edFzdL13E
+	RqQ2EZD/LAJFNur3joozkWsUOk4nw==
+X-Gm-Gg: AZuq6aLONSAkwhFiU+T2oB79EVVkUVkBAVMCKxFsNvFda9jm1UcIoXVWbSzKJviNRAS
+	sNsdMnMbEon2ZFozAeLgW0gREf3iWE2hGt2F4bU9G2zj09+VgG3CIDjLdtQjeZ+q651veDiwOUX
+	raLmAZA/w5y1m0LID4LMw9NN1M/z+74FEvHq6PoAv3WnAcoTc7u50FG7ZLIS5fsRXku8/fNWyMC
+	ffU/+qOWuDV4ReFN4A0iwe8nMQ+bzd6Kj+zwSCwrW8VumJ2Mk9O4gwUZX7Oq7gnPE2d8dtihcI0
+	L+uA0R87GbS46yrTrYHpKk+LGbd9wr8oS5TdEpbCwnET8LGzgol6Igs/hoYiT0QJyXbzU9ywiws
+	m0+cEnST+kmWvMxFtvq3hUjnfLgqRAD3ROW6q5SCACH5aqKHtaVIo2p0FYdWurrKQrhV9OrVVwx
+	OzxmogNg+7JEyTAF9Vog/hvkhUIT6cc328adgKn5nbhL1VIIvj9LzDY2e4a5jR
+X-Received: by 2002:a05:6820:2d83:10b0:663:1239:9eae with SMTP id 006d021491bc7-6631239a275mr3571608eaf.54.1770039128210;
+        Mon, 02 Feb 2026 05:32:08 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-100.dlp.protect.broadcom.com. [144.49.247.100])
+        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-409574df01dsm1668293fac.14.2026.02.02.05.32.07
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Feb 2026 05:32:04 -0800 (PST)
+        Mon, 02 Feb 2026 05:32:08 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-c6366048135so3287336a12.1
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 05:32:04 -0800 (PST)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-82317005ee6so2252178b3a.0
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 05:32:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1770039123; x=1770643923; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1770039126; x=1770643926; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LEe7e9LSCBQTmJHZsAUM2RL44l4Rxg5zALT27wQHdBY=;
-        b=Hc/2FzzdIIOJfblezfQRxVlbN8boJ9+nYWtS7AmiTXufcqbPKB/KVOsQiljUv8arIl
-         DFYAQ7g1zC9KRPFcTfp7Xd926v3TfLlKFhZysUTRTpPDnRFUzcJoJ5j5XHbOeOk3iVvt
-         z/4RIkj1MJWa0B3tKeAFZn18Vg3538nagK6aI=
-X-Received: by 2002:a17:90b:4d8c:b0:352:be45:1063 with SMTP id 98e67ed59e1d1-35429ac7eebmr14445363a91.10.1770039123451;
-        Mon, 02 Feb 2026 05:32:03 -0800 (PST)
-X-Received: by 2002:a17:90b:4d8c:b0:352:be45:1063 with SMTP id 98e67ed59e1d1-35429ac7eebmr14445342a91.10.1770039122991;
-        Mon, 02 Feb 2026 05:32:02 -0800 (PST)
+        bh=9IvWcmc/rx7KaHrgU4HNIJiVjz2WDq/r/o3jl1SWxQ4=;
+        b=SseO68szke//RlPTXun/SngaFBGx038rVzzRYLRbyQdKXWsvf/0DQKSgo0AsCofo+I
+         UG1+tT3AeHzOJK+dzUppmj7SEq6jxtnS48T0TwN1/2AFHietaHmJ6zOv8rwzsBf1ON2I
+         87Uqyi5hz1D645bD9a+7IYtSdACVOFLvYZcUc=
+X-Received: by 2002:a05:6a21:682:b0:361:2c56:fca8 with SMTP id adf61e73a8af0-392e0108c0bmr10475596637.50.1770039126433;
+        Mon, 02 Feb 2026 05:32:06 -0800 (PST)
+X-Received: by 2002:a05:6a21:682:b0:361:2c56:fca8 with SMTP id adf61e73a8af0-392e0108c0bmr10475572637.50.1770039126078;
+        Mon, 02 Feb 2026 05:32:06 -0800 (PST)
 Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-353f61e0007sm18859382a91.12.2026.02.02.05.32.00
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-353f61e0007sm18859382a91.12.2026.02.02.05.32.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Feb 2026 05:32:02 -0800 (PST)
+        Mon, 02 Feb 2026 05:32:05 -0800 (PST)
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -95,10 +95,10 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
 	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
-Subject: [PATCH rdma-rext V4 3/5] RDMA/bnxt_re: Report QP rate limit in debugfs
-Date: Mon,  2 Feb 2026 19:04:11 +0530
-Message-ID: <20260202133413.3182578-4-kalesh-anakkur.purayil@broadcom.com>
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: [PATCH rdma-rext V4 4/5] RDMA/mlx5: Support rate limit only for Raw Packet QP
+Date: Mon,  2 Feb 2026 19:04:12 +0530
+Message-ID: <20260202133413.3182578-5-kalesh-anakkur.purayil@broadcom.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20260202133413.3182578-1-kalesh-anakkur.purayil@broadcom.com>
 References: <20260202133413.3182578-1-kalesh-anakkur.purayil@broadcom.com>
@@ -124,7 +124,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16334-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16335-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -133,65 +133,43 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[kalesh-anakkur.purayil@broadcom.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: A21A6CCDF6
+X-Rspamd-Queue-Id: 95592CCDFD
 X-Rspamd-Action: no action
 
-Update QP info debugfs hook to report the rate limit applied
-on the QP. 0 means unlimited.
+mlx5 based hardware supports rate limiting only on Raw ethernet QPs.
+Added an explicit check to fail the operation on any other QP types.
+The rate limit support has been enahanced in the stack for RC QPs too.
 
-Signed-off-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Compile tested only.
+
+CC: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/debugfs.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
-index 88817c86ae24..e025217861c2 100644
---- a/drivers/infiniband/hw/bnxt_re/debugfs.c
-+++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
-@@ -87,25 +87,35 @@ static ssize_t qp_info_read(struct file *filep,
- 			    size_t count, loff_t *ppos)
- {
- 	struct bnxt_re_qp *qp = filep->private_data;
-+	struct bnxt_qplib_qp *qplib_qp;
-+	u32 rate_limit = 0;
- 	char *buf;
- 	int len;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 69af20790481..0324909e3151 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4362,6 +4362,11 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
+ 	optpar |= ib_mask_to_mlx5_opt(attr_mask);
+ 	optpar &= opt_mask[mlx5_cur][mlx5_new][mlx5_st];
  
- 	if (*ppos)
- 		return 0;
- 
-+	qplib_qp = &qp->qplib_qp;
-+	if (qplib_qp->shaper_allocation_status)
-+		rate_limit = qplib_qp->rate_limit;
++	if (attr_mask & IB_QP_RATE_LIMIT && qp->type != IB_QPT_RAW_PACKET) {
++		err = -EOPNOTSUPP;
++		goto out;
++	}
 +
- 	buf = kasprintf(GFP_KERNEL,
- 			"QPN\t\t: %d\n"
- 			"transport\t: %s\n"
- 			"state\t\t: %s\n"
- 			"mtu\t\t: %d\n"
- 			"timeout\t\t: %d\n"
--			"remote QPN\t: %d\n",
-+			"remote QPN\t: %d\n"
-+			"shaper allocated : %d\n"
-+			"rate limit\t: %d kbps\n",
- 			qp->qplib_qp.id,
- 			bnxt_re_qp_type_str(qp->qplib_qp.type),
- 			bnxt_re_qp_state_str(qp->qplib_qp.state),
- 			qp->qplib_qp.mtu,
- 			qp->qplib_qp.timeout,
--			qp->qplib_qp.dest_qpn);
-+			qp->qplib_qp.dest_qpn,
-+			qplib_qp->shaper_allocation_status,
-+			rate_limit);
- 	if (!buf)
- 		return -ENOMEM;
- 	if (count < strlen(buf)) {
+ 	if (qp->type == IB_QPT_RAW_PACKET ||
+ 	    qp->flags & IB_QP_CREATE_SOURCE_QPN) {
+ 		struct mlx5_modify_raw_qp_param raw_qp_param = {};
 -- 
 2.43.5
 
