@@ -1,112 +1,112 @@
-Return-Path: <linux-rdma+bounces-16340-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16341-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YC+pKzS0gGl3AgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16340-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 15:27:00 +0100
+	id mMNnLTq0gGl3AgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16341-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 15:27:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04C04CD53E
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 15:26:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 492F3CD545
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 15:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6056B3062235
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Feb 2026 14:19:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 77CEF301E210
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Feb 2026 14:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF65C36C0CF;
-	Mon,  2 Feb 2026 14:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D401B36C0CD;
+	Mon,  2 Feb 2026 14:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NqMp7XEf"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="g1pV+oi2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f225.google.com (mail-pf1-f225.google.com [209.85.210.225])
+Received: from mail-pj1-f100.google.com (mail-pj1-f100.google.com [209.85.216.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87B636C0C8
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Feb 2026 14:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0E01F3B85
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Feb 2026 14:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.100
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770041966; cv=pass; b=p1oz56/V2cBQi320xHIGsQawmf84qFVIt9cq89lpG5+ROxA5MH8wAMb5JGDHW/gCog9RYkliFFQyhQaHE4D8lTSe0rSzmqDvA0pkzpHcyeYQ/kANnWaBjJPTTYL/HRitDsiVjojIPEHGEZyMSkjydavDgnPYVvtX/7UMf4bk+gY=
+	t=1770041985; cv=pass; b=leigE8VJVTwVYuG9Of1hNDLVdRS74nXepdptOyV0yacrscr1ivEjZHPt+i1scwizX1Dqoo5f++266N3OKBgknk9omj6dBRlzLYmbNiswE9Y/76NKHfHORJpUjb9+Ranch2BjCiBOeyCvxUGCaYXm2/fYbP3zKe9600G1zt+OgmA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770041966; c=relaxed/simple;
-	bh=D/YiBKaO/T8r2FQRPMPu1IFkvwX3A0mezICjEC+d2f0=;
+	s=arc-20240116; t=1770041985; c=relaxed/simple;
+	bh=EvBNKkZsI16ACLSIyZLgRsSkv+l2NFmj17i0TmHJPkg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qsZnZ+KEXetQXsKI1hYWxyT1mnFSyQukod10cvnTkv+BihulAsUh/jeL1ppdN0gdHxTphN8Dd15HQTsAnIde5vdLEMEBWoeAUkPVzjGxqIgHaZTKY6lOtlogyEydxv42ILXEwIQpovCvXCzCi0giPfIKFwAhQl39C6gCgrNrqGE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NqMp7XEf; arc=pass smtp.client-ip=209.85.210.225
+	 To:Cc:Content-Type; b=bxVaaxcKapgWFo22IssUZzoFeA484PMoIJT5oUxWf1TdVACEj8rdY5912A+PZMdkgkcJYOGobCtgkQ9mdD0TZQeS+GHTPobjOpognwSmTBjdkSerGukmNa8j2NMS34D+oajgw9F4m5GVaZmgldwXiQQMJ+PxOpINeYuqGZgOuTE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=g1pV+oi2; arc=pass smtp.client-ip=209.85.216.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f225.google.com with SMTP id d2e1a72fcca58-823c56765fdso1139936b3a.1
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 06:19:24 -0800 (PST)
+Received: by mail-pj1-f100.google.com with SMTP id 98e67ed59e1d1-352c414bbbeso3422673a91.0
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 06:19:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770041964; x=1770646764;
+        d=1e100.net; s=20230601; t=1770041984; x=1770646784;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SfOXuqj74TC7uVYdLSw/4IpEZfsiivcRXMsPpj4legc=;
-        b=Xb/5Luic05DLkwfblsLg/B7pUEnKTjnMuAT21JhEVyW2CghrH/c9p/eP4fPZII5Bs+
-         FtBKg82vs0qEU8L1YoofkqeCzudwG8QvojtoIPBCCvWnkGK4OML4ryJE1efL4bfQVEMr
-         8PBer3pfPGRnQim90ee41RfI4Tqq8BbzF343mLbpYlvTePJNNrSLBxDRIb2YqevVtukm
-         kxpU+2PelBlml0dAUomIU5DeyUyJdFrBY/3zNntd5kETBsD3LmEYpw+a6CFMK3OwL7WK
-         5v+S8204mDFl7DQ2jgk/uatOorYqb28gWFMXWMZzajMRibeM2kkn8ZlAg4aBOVdEm1K5
-         HE0w==
-X-Forwarded-Encrypted: i=2; AJvYcCVZtO+G+TC3mt/ieDDR7lgjOgbogIbE7k8RUx07PxmyvtXnHjZBgguVTfjDdoGYxvqqXqSA+9oQgEfM@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBfkY+Lx2COQwQ2OtiEqz+bRy1y2iRGv90BClLva8TgDmEaUUz
-	bYn7j9tQ0adiB51ci4jjd6Knh5oWYymF10jsMFHllXMb2t4oEzDs38xPHvmjt1Vp7aSP5umExTq
-	btT52miRJdsiyXqxCuPLJ7loKYlOb4ZcImLI757H/+NRZ932Odn2MO0MUelkJHL331zJgSLi0pa
-	QrRXCc6Cvw6Ft1Z/NBDU98cT5CjwTnqQiu9GibAKrFvweisqvGn60x0ADVtdPXHw3ofalUGCUkl
-	ehsI4CAot1LfSy0R1uwUNSvoa9i
-X-Gm-Gg: AZuq6aLfE9xcTBE52gQMQU3H1AdVscw1vEG4pKxohypB8aTtxt/9+WLCalrTSQxviKA
-	YPhfhOSQnauj0UKFa4MDyaD76hScPAoU4ppqZyrQM85TnE0iQXsvrIA0RTulXflLLyglHG9OXav
-	pBKEB65AkuYoswAWYj2ojXjwrGYl1WLpLigyZbm/7YDzzyhC3iVmF9zWc0R4On2mUNrjyIkRZXG
-	tWifjqtINXOXEpzDYF1aptEsQzNgBIFDLOtqUvt4LTObcUMZ6lFV+OWMEWWGKRopfn+UUZUAhJe
-	yc5QUjMePf7PIXET9Z1lwfJHlSN8uyvAdnpV07SMEA+UjrIkbKTd+vXYGtLhrcjQmM/Ydb4SOu3
-	qjOMcpZrmWWkMi0WaL917lE9t8bXSkCTb0k+BCQjK119D78DdTWYeKdURjL9KekUe4BKMH2a4Ec
-	RNAixwc1zvC46DqI0u7E++7YzEKrtX5JUSjkPXm06OB1ie+Yklld+kWQ==
-X-Received: by 2002:a05:6300:6682:b0:35d:6b4e:91f1 with SMTP id adf61e73a8af0-392e007f2e6mr11070027637.34.1770041963708;
-        Mon, 02 Feb 2026 06:19:23 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-0.dlp.protect.broadcom.com. [144.49.247.0])
-        by smtp-relay.gmail.com with ESMTPS id 41be03b00d2f7-c65a223d382sm948483a12.9.2026.02.02.06.19.23
+        bh=HGXCvNL1dYZCEjyH838ArokizpJs4nv/Zr7jz0CmQwc=;
+        b=GVHwNBSJn+z3UGr6BC8IEJbAIOJamFG32M8JGZWMl45c9OzO7uZfCR2I0h2RD8ikHk
+         8ar6HSEaW2LJZK9QSyEeXf9o7bJB09Sbot1EuECWrCUmgGGwTdR7Nw20Rv1dn/EVo91h
+         pGbpXiOvacfuoDql80PHdzMXfCLsjON1Wql26kxywEK2uU/a0JNInTYbUxpPIRkOL/g3
+         92i95MMbe8G0nJQsH0c9u64zNhjTGsISOjc/KAu4mqQGGwBmz/p+OKX53R1F7SU26zFV
+         1+KENb4JsVeeJtnlzBUDw4qgHJ0IXRxKnDEp8Y1udAQj594yAc/aPhCW4l2XYA50AM4W
+         Lgbg==
+X-Forwarded-Encrypted: i=2; AJvYcCUhtLGArGtKE8cNAarDLf5ZfFz/aEHUN9JnjAzRprsDL9dspkeUYsxCbvTW+pVOGZfcXZbTjaO+MqZ1@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf4IfilCoVXPd4UukRYfcpmIFGG/9tbzae4czvQUMmu0HfFqip
+	2a8K7J3KEZaHrla1t8dKcsUB38LNvWxa/b6xVHLptL0croFaCH0F6frXmivNsJvIQIqQNhfqOtT
+	hRxfNijD0PcIu6dguHI0ziXaudMAKcd81ObNONk9psS4hLXFR+uwZodW2a1NetcAJSlZPrIoD4G
+	igUsIo7CBJOHzbD3fYiN3ZDbRwvBNjgylI5KD03ZVEHM6gRAt+aZiquPj/dUWqOMj8mT+8hL12Y
+	IEtSJ3xAC2x0XySuZNrIDPCH7dY
+X-Gm-Gg: AZuq6aJx1F8jTsTU+tHMdNC6FuLqukfLVvSqdkDE5vsSpagaSB0PcYA6jNMmC0dlP+8
+	tmblhF2Bfs12LcyaNZ/Sy7iP4AmQ4Geer8EgFYPzDtSRgJMM9msa/xcVEgnbptT+glZPHly56DX
+	pnUmOeIDeifd73SAD8cKTy2pOzCtuatHURzS/pruelU1926jxbvPgBzoDrteAhJaBCpAzcroc/X
+	fxowsqaJbTfyzJ8QArG3ZsMcz5RKYn2q+UqnRPH3HJs4Tp3oPsxXSQLeMJ/BjFHrhsAkjsj1FQg
+	2PMbxXca8CxIDMwUswJlWFY1GxIO+qd130Q34GbSrLrDAIhz+qFRjnO667YcK0YB1btpdmplfuD
+	Nba3n6G4ssgUyNT4ZIPP7kH/TgLHa7VUxAmVz5L8J6HBnWNvMmb+/f/nQh29yNM6VFYtNYXEd6n
+	qZxIKFgFQOmwqRsC7Tp7q7+xncX6x9VIL8uD566dRiQLp7LEW033vOZg==
+X-Received: by 2002:a17:90b:35d2:b0:352:dbcc:d74c with SMTP id 98e67ed59e1d1-3543c504f9bmr11687039a91.15.1770041983610;
+        Mon, 02 Feb 2026 06:19:43 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
+        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-3543baf79b7sm381849a91.0.2026.02.02.06.19.42
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Feb 2026 06:19:23 -0800 (PST)
+        Mon, 02 Feb 2026 06:19:43 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-430ffc4dc83so4734802f8f.3
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 06:19:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770041961; cv=none;
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-435a2de6ec0so2776161f8f.0
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 06:19:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770041981; cv=none;
         d=google.com; s=arc-20240605;
-        b=jbpskNc8cn5ia50eYjKh0jUP04W19HOqLseS5BZEQPj4LFrQCthCeDMMy5MS0bbe6Z
-         akcFncyJjeSXbZaepnCKturbndOreJdBzPlB2+nTIgMfCaLYTRndD/09L4W80kjAAeBG
-         QQr1khLXE+JPBLl4Q47IN3aWe3Gjffpae4Eif9jBxRAB7z5VP3q1gdy6oFL1axbwZEeL
-         wTboaN5Wd7NWiv7Cf7n0gsQSGWR1NbXFeW9L4oIFWRO1kBl4qyMclnGaPSJ50Z+nVU0c
-         30Hqyaou6HGLXSjfZRk/0rPQu0+IjLUzdjuP9i8B1UzlhtzJrPvD5fukLHU7VunVUb0R
-         Dc6Q==
+        b=Aif3WsS2iSu33UgMN8y5rzHs1Bgc4lZaidq1Unr2eIT/7AEKN0siMSWZpRiAqTb7JH
+         rhXDh00wXMQRk/SlNPAISH4PoN3aaM7hOSX4XJYV34zduaWlHyECyRWBFI8wS7H7fHAh
+         yoC+2yoiaVOxmYP5TKMc4l4cDDq/PJ0u4LnQ1kUalNJ41ny9O9n+ucMsdphc72Bdb5JP
+         blTkwBJMcMZF58Ex6GMY9GFiK2geJMoN9N2+jtil6NB1X9R8HV7vooIkSw+fYh8CpplM
+         BCB+MCbBNTf4JitDbt6JvwtnHJfOoxcPCsvkxqk9C3yt1nhmO3WCBtbkkaa5ToAKmKYf
+         oOMA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=SfOXuqj74TC7uVYdLSw/4IpEZfsiivcRXMsPpj4legc=;
-        fh=MNjoWWOsVDef/JMyDfOC3r9n2Z6SDPhpWGlvWKQqT7A=;
-        b=TVsM8nCBxJeoqJ//U6lq5iUNusUs3kv11VlkeBcIHrQFVQ6U/lQahjFv1BSEHfGpGd
-         WUSSqs8pSJ4XNxVMZ8XTxYK4P5GVOfK9SwhxqFKE9lMiOe7Z3S/lYLHxTMTSlMg3nDRZ
-         OGUKWdFUVVX4xFdUBT9+RxJtkNPTfAhDmQzs6k3tX5UDaf3DaRM5qQHN3OEy75wB+gCO
-         asAMkW4wOPIo+8kDIeGhcG6aKEVa0b0Fc3MjP0kB/vZl1gPm7ClNn89VD5fWbao1GD1C
-         zXW34UK9YYTrWAZ9xuMnqooEOQB/lp9yEQuHO/ZV1CkCWYDGLQvtWZ+cuHJjgyMroeG7
-         zBmg==;
+        bh=HGXCvNL1dYZCEjyH838ArokizpJs4nv/Zr7jz0CmQwc=;
+        fh=lvhqbiFNiqIAxit7RcHpV4YLvGRt5z0SY0imUdwrQ3g=;
+        b=ei444aPbAVxxQ4AP/Gnw1jhddIxu7cSyGoaXDSayYxP/6pAvuBo3Wt6ifWWdxGdGEZ
+         7KUaz0+4aREOQCjhGLHh1FuJ3GdGjancsrOvftqwFrI6MTUEBnvTOP+84JlbpZw6k8sT
+         m1bjGCZn3mkvTK06h8+uqEjChfkGI8vT7zDV/zK1mnSRBwFCGCgqos9d0mdcv3pUxCsq
+         fuRq+DTbVgQCe7O4gQ05nh9KcWaoRXbh6oXF/KYx2YITcVhAm/bcNLXVnSvInHr1IvII
+         a60J4HJyUkSLQ5j4ksSpDRJDCek87gTtltAO7lO2UiLfGBqfeI/V/kcqvKOnbfupT1Xy
+         F9KA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1770041961; x=1770646761; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1770041981; x=1770646781; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SfOXuqj74TC7uVYdLSw/4IpEZfsiivcRXMsPpj4legc=;
-        b=NqMp7XEfdiU2WdIxLpowbWexPeqXn6s7arv95OjDyAVml30HbdySQUGJcc8lgRPv22
-         zk1M6Sv/dMJJmspmH5iPSeE55uLbIp19UkkIeBatLuyNCD4/vP7+9At8QUmKcD3Jtvbc
-         V8+gtziMak1Db51XsxiEJ+INu+FgKnV8ub0Nk=
-X-Forwarded-Encrypted: i=1; AJvYcCX7HvpGIqA58UJCu/EspY0S8fIpkHjXtCxtB/aASvuwfgG1xbTTlmHD9dw+LkaIE5k5n3m7XJ+mclO8@vger.kernel.org
-X-Received: by 2002:a05:6000:1863:b0:435:a136:b891 with SMTP id ffacd0b85a97d-435f3a6a7e0mr16313885f8f.13.1770041961328;
-        Mon, 02 Feb 2026 06:19:21 -0800 (PST)
-X-Received: by 2002:a05:6000:1863:b0:435:a136:b891 with SMTP id
- ffacd0b85a97d-435f3a6a7e0mr16313834f8f.13.1770041960819; Mon, 02 Feb 2026
- 06:19:20 -0800 (PST)
+        bh=HGXCvNL1dYZCEjyH838ArokizpJs4nv/Zr7jz0CmQwc=;
+        b=g1pV+oi2orFyzlkUT5bzV6WCcIsNhDERhdKMHnenLyJMCoOFcqpTYHbRO7HcYDIpRd
+         Zx7gAscPrBRM4bGItblpHpBinzXw+klFY6uySaKlcB/S/6g4xcvBneDQ+a6lTcdeDPBT
+         pYwG7GlBSHO4C06W9mPlf2phQvgahvMWGOrXw=
+X-Forwarded-Encrypted: i=1; AJvYcCXkPZ+328nm9bqFIFelOe6VzaRu85u3Tky9WXjNHDujbodHQAyUL9YK6dpPhGpLWTJ8TZaZmdg02uZe@vger.kernel.org
+X-Received: by 2002:a05:6000:61e:b0:435:a2f8:1536 with SMTP id ffacd0b85a97d-435f3ab5008mr15790813f8f.43.1770041981152;
+        Mon, 02 Feb 2026 06:19:41 -0800 (PST)
+X-Received: by 2002:a05:6000:61e:b0:435:a2f8:1536 with SMTP id
+ ffacd0b85a97d-435f3ab5008mr15790774f8f.43.1770041980706; Mon, 02 Feb 2026
+ 06:19:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -114,12 +114,14 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
- <20260127103109.32163-6-sriharsha.basavapatna@broadcom.com> <20260128154654.GM1641016@ziepe.ca>
-In-Reply-To: <20260128154654.GM1641016@ziepe.ca>
+ <20260127103109.32163-6-sriharsha.basavapatna@broadcom.com>
+ <20260128153248.GK1641016@ziepe.ca> <CAHHeUGVLi8ZxK3qpJ+nk6DcDd8365fdru-vPmkKtF6k-P4FAcw@mail.gmail.com>
+ <CAHHeUGVZCojAmjmqm7yPys2N2TYApPnbMN3dcb4dnWDL_sAA0g@mail.gmail.com> <20260128194253.GX1641016@ziepe.ca>
+In-Reply-To: <20260128194253.GX1641016@ziepe.ca>
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Date: Mon, 2 Feb 2026 19:49:09 +0530
-X-Gm-Features: AZwV_QjxglT9P_5oY989KX9uSj94Ityf_lUUayXxv60bKnZ_1a0_xsUbFaVw8-s
-Message-ID: <CAHHeUGXq08KCjS_MiuxvQFtybnfFmo2Z3k1_zYF2KmXF=mUBAw@mail.gmail.com>
+Date: Mon, 2 Feb 2026 19:49:29 +0530
+X-Gm-Features: AZwV_QhGmqjsX4HpzaijiNcX9db9aru9WKS1tlOSnPnpEKRrncFfVuOIFDh9rSU
+Message-ID: <CAHHeUGUNzi3x5bAQeHKkMY2Mb3nE7eFJAVF=NHNXoQ3RRLGzcw@mail.gmail.com>
 Subject: Re: [PATCH rdma-next v9 5/5] RDMA/bnxt_re: Direct Verbs: Support CQ
  and QP verbs
 To: Jason Gunthorpe <jgg@ziepe.ca>
@@ -129,26 +131,26 @@ Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
 	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000005c7d1a0649d802a1"
+	boundary="0000000000008dc7920649d80327"
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-4.26 / 15.00];
 	SIGNED_SMIME(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16340-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16341-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
+	DKIM_TRACE(0.00)[broadcom.com:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[broadcom.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	HAS_ATTACHMENT(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
@@ -157,105 +159,87 @@ X-Spamd-Result: default: False [-4.26 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,broadcom.com:dkim]
-X-Rspamd-Queue-Id: 04C04CD53E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,broadcom.com:email,broadcom.com:dkim,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 492F3CD545
 X-Rspamd-Action: no action
 
---0000000000005c7d1a0649d802a1
+--0000000000008dc7920649d80327
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 28, 2026 at 9:16=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+On Thu, Jan 29, 2026 at 1:12=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
 e:
 >
-> On Tue, Jan 27, 2026 at 04:01:09PM +0530, Sriharsha Basavapatna wrote:
-> > diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniba=
-nd/hw/bnxt_re/bnxt_re.h
-> > index 0999a42c678c..f28acde3a274 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > @@ -234,6 +234,8 @@ struct bnxt_re_dev {
-> >       union ib_gid ugid;
-> >       u32 ugid_index;
-> >       u8 sniffer_flow_created : 1;
-> > +     atomic_t dv_cq_count;
-> > +     atomic_t dv_qp_count;
-> >  };
+> On Wed, Jan 28, 2026 at 11:27:14PM +0530, Sriharsha Basavapatna wrote:
+> > On Wed, Jan 28, 2026 at 10:24=E2=80=AFPM Sriharsha Basavapatna
+> > <sriharsha.basavapatna@broadcom.com> wrote:
+> > >
+> > > On Wed, Jan 28, 2026 at 9:02=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca=
+> wrote:
+> > > >
+> > > > On Tue, Jan 27, 2026 at 04:01:09PM +0530, Sriharsha Basavapatna wro=
+te:
+> > > >
+> > > > >  struct bnxt_re_cq_resp {
+> > > > > @@ -121,6 +124,7 @@ struct bnxt_re_resize_cq_req {
+> > > > >
+> > > > >  enum bnxt_re_qp_mask {
+> > > > >       BNXT_RE_QP_REQ_MASK_VAR_WQE_SQ_SLOTS =3D 0x1,
+> > > > > +     BNXT_RE_QP_DV_SUPPORT =3D 0x2,
+> > > > >  };
+> > > >
+> > > > This is set on the response but there are no new response fields? T=
+hat seems
+> > > > backwards?
+> > > This is set on the response field so that the library can figure out
+> > > if its request for DV QP creation (set through req->comp_mask), was
+> > > successfully executed by the kernel driver or not. If there is an
+> > > older kernel, the resp->comp_mask bit for DV would be 0 and so the ne=
+w
+> > > library would know its request failed.
+> > I will change this to have a separate bit for DV in the response
+> > comp_mask, instead of reusing the same value from the req comp_mask.
+> > Is that ok?
 >
-> Why? Nothing reads these? If they are stats then put them in your
-> stats struct and return them to userspace. I'd drop it and come later
-> with a user visible stat.
-They are debug counters, deleted them.
->
-> This patch is really big now, can you at least split it to cq/qp?
+> No. Do not return anything in the response comp_mask, you must fail
+> unsupported requests. That is how comp_mask is intended to
+> work. Userspace uses the uctx to learn if the request can even be
+> sent.
 Ack.
+- Implemented driver logic to return capability in ucontext for both CQ and=
+ QP.
+- The library adds comp_mask in its CQ/QP creation request, only if
+the driver has exported the capability in ucontext.
+- The driver checks the requested comp_mask against supported bitmasks
+and returns EOPNOTSUPP if invalid.
+- Fixed zero initialization of req/resp structures.
+
 >
-> > @@ -459,11 +463,454 @@ DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_D=
-EFAULT_DBR,
-> >  DECLARE_UVERBS_GLOBAL_METHODS(BNXT_RE_OBJECT_DEFAULT_DBR,
-> >                             &UVERBS_METHOD(BNXT_RE_METHOD_GET_DEFAULT_D=
-BR));
-> >
-> > +static int bnxt_re_dv_create_cq_resp(struct bnxt_re_dev *rdev,
-> > +                                  struct bnxt_re_cq *cq,
-> > +                                  struct bnxt_re_cq_resp *resp)
-> > +{
-> > +     struct bnxt_qplib_cq *qplcq =3D &cq->qplib_cq;
-> > +
-> > +     resp->cqid =3D qplcq->id;
-> > +     resp->tail =3D qplcq->hwq.cons;
-> > +     resp->phase =3D qplcq->period;
-> > +     resp->comp_mask =3D BNXT_RE_CQ_DV_SUPPORT;
-> > +     return 0;
-> > +}
-> > +
-> > +static int bnxt_re_dv_setup_umem(struct bnxt_re_dev *rdev,
-> > +                              struct ib_umem *umem,
-> > +                              struct bnxt_qplib_sg_info *sginfo,
-> > +                              struct ib_umem **umem_ptr)
-> > +{
-> > +     unsigned long page_size;
-> > +
-> > +     if (!umem)
-> > +             return -EINVAL;
-> > +
-> > +     page_size =3D ib_umem_find_best_pgsz(umem, SZ_4K, 0);
-> > +     if (!page_size)
-> > +             return -EINVAL;
-> > +
-> > +     if (umem_ptr)
-> > +             *umem_ptr =3D umem;
+> > > > Also, what is "pd_id"? The other users of pd_id in prior patches se=
+em
+> > > > to be actual RDMA PDs. Why is something like this being passed here=
+?
+> > > > The QP already gets a PD from the core interface, why do you need
+> > > > another pd?
+> > > Let me take a closer look at this and get back to you.
+> > Agree, we had this earlier in our design, but it is not needed anymore
+> > since we are using std QP-extension mechanism now.
 >
-> Why?? Just have the caller store to the right variable.
-Ack.
->
-> > @@ -3324,12 +3418,11 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const=
- struct ib_cq_init_attr *attr,
-> >       cq->qplib_cq.sg_info.pgsize =3D PAGE_SIZE;
-> >       cq->qplib_cq.sg_info.pgshft =3D PAGE_SHIFT;
-> >       if (udata) {
-> > -             struct bnxt_re_cq_req req;
-> > -             if (ib_copy_from_udata(&req, udata, sizeof(req))) {
-> > -                     rc =3D -EFAULT;
-> > +             if (umem) {
-> > +                     /* Standard CQ (non-DV): use req.cq_va */
-> > +                     rc =3D -EINVAL;
-> >                       goto fail;
-> >               }
->
-> I think this should support the umem interface here, it is trivial
-> right, just skip the below if the umem is passed:
-Ack.
->
-> >               cq->umem =3D ib_umem_get(&rdev->ibdev, req.cq_va,
-> >                                      entries * sizeof(struct cq_base),
-> >                                      IB_ACCESS_LOCAL_WRITE);
+> Ok great, because you also were not refcounting the PD properly with
+> that scheme, that is fixed now too.
+Ack. Reverted it back to use the PD object from the QP, deleted pd_id
+in the req structure.
 >
 > Jason
+I have the revised patchset ready. Let me know how you want to proceed
+-  if I should send it out (without the uverbs kernel patch for QP
+umem) or if I should wait for the kernel patch and rebase it before
+sending.
+
 Thanks,
 -Harsha
 
---0000000000005c7d1a0649d802a1
+--0000000000008dc7920649d80327
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -349,14 +333,14 @@ AHX5PZra3SpDb7g1p1i1Ax0JVJTkThiCSNDbiauVn7xIJpf+H8HC6O2ddGmtKUxe6NseFnSGJsi6
 d5rOzdIII5FDwKAAqyjHuniYLrP0xIH4L5kWOAy+LudP4PSze7uAxTiCiSJg5AaNBTa5NuwTnSX6
 MYICVzCCAlMCAQEwYjBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEo
 MCYGA1UEAxMfR2xvYmFsU2lnbiBHQ0MgUjYgU01JTUUgQ0EgMjAyMwIMPiCpKhlPGjqoQ++SMA0G
-CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCAo0KUEbWtaxBgYDaOdPRm6eDUHOInfzj9j
-J7nazSlQYjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjAyMDIx
-NDE5MjFaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
+CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCAu7oGTUL1cr0JsZpk39L8DphnZg48lW/rQ
+Hi2S7qKfjzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjAyMDIx
+NDE5NDFaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
 ZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
-AASCAQA+IFX7h4LULblzZoRl7XXBR8xu+s4ADn8iMXCeLX4FQQ6XdtkcKvrMJGZvRpzc9QD2K1i8
-El+hYM7QYPVB8kor6jaiS0NGzGcFGqXkYDs+/erxZTLJlSj3ye4a9wKLk9DdjIrfU9NA2mZ6p7WB
-svqUgbmjIbfo1tpwaSPR0TIQojQOeOy3TxvW3OFdtbjHGtfP4vatP0R/dlKItWPr+GiNCE7u/Qar
-u+OgGYH4Pk/lpCdLK94bZmnMFVBZMdNbTFgXiTXOUwve1mI6pwJLuPp0Z4efmUI7y27K9YoVD1D8
-/ailf49t1wFyLK0b18C+DuC7Tqg+pgXEXYIHvX1Jxwiv
---0000000000005c7d1a0649d802a1--
+AASCAQB9lQNl7aXMTD1Fo88FYGjdf+fNDhr/EeCcE1uqCOuMSXUirBaKRSrJ2NnNcubCm9ieqNbA
+8YGNVoVhe4ZJ2vnh+k8a+oandmOZx2iFmc7sY1VIOjuChDzTRjyJU7FcxbqZa1e/HSUgwTETx0ce
+ewSddxD1mw9A8Oz5igLWDNqyvIJ1vr01o10xaCP6ZPHfG89AQ6QOEREyWO72ePXqxPODMzw80dCg
+D6wkqhIiQpsUyL5v2atKiTmQ8O+WwgRtQDhBQ6rPLQ0D3/T4m8+pNTQWqi7+TDvlD/na+Y/VW8OB
+KrpycStggeW9f5ZVA/VEe0+g48CU9VP+whqwOFwqS6Kr
+--0000000000008dc7920649d80327--
 
