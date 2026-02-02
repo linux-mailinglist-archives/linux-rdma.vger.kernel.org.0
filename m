@@ -1,306 +1,336 @@
-Return-Path: <linux-rdma+bounces-16326-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16327-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4LbWHk15gGne8gIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16326-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 11:15:41 +0100
+	id AHVrHw6WgGnL/gIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16327-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 13:18:22 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4DACAB2D
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 11:15:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9792CC470
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Feb 2026 13:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E11813084E1A
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Feb 2026 10:06:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2DFE83016C8C
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Feb 2026 12:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592DF2DEA8F;
-	Mon,  2 Feb 2026 10:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB56363C78;
+	Mon,  2 Feb 2026 12:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tdf54tc7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isimbHWP"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1092D63F6
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Feb 2026 10:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326B123EA8B
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Feb 2026 12:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770026772; cv=none; b=KF/8MH2BdpR1Ax0ml7XvrONEaDvb+WQkkn4elfI2KOa6DuG3KMH2vnCZ5TxnQ5mvO/I/HpLIcywsUhjzMQkSghKR0eoo0M+UZu28PEmzkizE5DGB/Qt0JZWCfR43/Ou9aNtyNw87grwJPILlfP7v6pzFKnQiRbEQcbMlAbSUdeQ=
+	t=1770034634; cv=none; b=qeJjmXzwWG5iZBJOvuqxOgBwVzyikfzYZesJO86daC5Cy/q3lVbFe2hX6D0CI8YB2YtVScOEQx7u3vTeTjSfcVKRfs6sRaO5koeWJc9DfUBEPh81TAqT6T6WMyJ6ZgKEUZ0EJ2cUVW5glqDwDYvigFrKYLnv03OshxN1cwybYgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770026772; c=relaxed/simple;
-	bh=SQf4GMrMdgdKsPGSUdsTHKArZVcXG63qKbs6cWt+I8g=;
+	s=arc-20240116; t=1770034634; c=relaxed/simple;
+	bh=/Nwl5ZllXu/6hoWJdgfjmTR+MjI/9d47hFN7D5G7Pjs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bbw5eqNzvm/jcI6OK4f+Y71z+5b8/TRwMFLLSioOyV9Rf9QXasxoCsXoLmPS67TxI69K36SipZa/itzsvFsbgk21wzNPltfvNbd9JZtgfMdlZIuyuR/QY6/4DjHaqW7XtWZ29HmZDU5O9mB+YS4xO3TdDJKBgj9axp4MHIS+/No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tdf54tc7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49B21C116C6;
-	Mon,  2 Feb 2026 10:06:10 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ox/2eM7MsxlyK7h70cC3NxjiuzZYt2UaCswsvq9aQHx0bxwfGEU/GJ7/SgOF1wX+IKV3sDwpTOLP2fLKwGjoGpZTlkJL0L3dteGW40jKjuNG85sLA64g5Z7wy++HHBHCToZBLqbtJB600bkimG/jXX7S6ZLcQF1C+EP2DtMZ8+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isimbHWP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01253C116C6;
+	Mon,  2 Feb 2026 12:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770026771;
-	bh=SQf4GMrMdgdKsPGSUdsTHKArZVcXG63qKbs6cWt+I8g=;
+	s=k20201202; t=1770034633;
+	bh=/Nwl5ZllXu/6hoWJdgfjmTR+MjI/9d47hFN7D5G7Pjs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tdf54tc7sRmQmBur5c45J3dfruGSiaIuty/RQiXC92JBFbKvrvY/YMZlBKR2+b1VW
-	 4awjT+70kZBd3vYEvVv4DwMow0L2E9QgEs7anPku1H+o2BbvF8ExDchJvbrytdVfvh
-	 UgmuVkvVAKS+c2zUF1HaA1KfibRM/jMFVNYktUJP0+dnoVk7JMGIQEOR64nai1MeVS
-	 38odkCdLJAPy012joAWFBPGnCCMgVkzlgGeXhxWHPA6FqiNfP2N8Si0V8v/MQV+TN8
-	 80c6QKTH/jtBodY1QxiTUgid1tyY6Ej3tVIwAt58NlC5UBXjiBCBzUYfUAuHevjlXo
-	 SFOSG3+DzQw+Q==
-Date: Mon, 2 Feb 2026 12:06:05 +0200
+	b=isimbHWPCPOrzUDMDcMvE5whhCxvVgMh/BvzolJxOTDVB+MbdzH2FMA8J8rMrJz2Q
+	 tSvbbdb+KEI1B8V36xJwVGmg/G015BPvoz/fkQUZfYNxoYLTmX/3J/1s+UGMLhENE5
+	 xjkIwn7/UCNs/tCsNAmVEHFbS8DctvAlSx8qLfpl2Xf1fz8KVEiapz1HgK3ol8Uqzq
+	 Dr3qU4bIWImLHtCGQ4/kuw8kKEnfRD6pJj6o/sD2XhLcBylgZFfJpQwT8pJt9HsHpp
+	 uPEHFKX++0n2w3tYsCKQXy2++7UH6+mv1bG3xGJc2L2CoSVJXs5Q1KnznmAUOJBWDa
+	 s+J71xITCTH5g==
+Date: Mon, 2 Feb 2026 14:17:07 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Bernard Metzler <bernard.metzler@linux.dev>
-Cc: YunJe Shin <yjshin0438@gmail.com>, jgg@ziepe.ca, joonkyoj@yonsei.ac.kr,
-	linux-rdma@vger.kernel.org, ioerts@kookmin.ac.kr
-Subject: Re: [PATCH] RDMA/siw: Fix potential NULL pointer dereference in
- header processing
-Message-ID: <20260202100605.GH34749@unreal>
-References: <662a7cd7-a1ea-4b9f-8654-c2537e5ef615@linux.dev>
- <20260131111335.4069021-1-ioerts@kookmin.ac.kr>
- <674871c0-1136-47ec-a5eb-907adda487ac@linux.dev>
+To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>,
+	Hongguang Gao <hongguang.gao@broadcom.com>
+Subject: Re: [PATCH rdma-rext V3 1/5] RDMA/bnxt_re: Add support for QP rate
+ limiting
+Message-ID: <20260202121707.GI34749@unreal>
+References: <20260202045120.3139712-1-kalesh-anakkur.purayil@broadcom.com>
+ <20260202045120.3139712-2-kalesh-anakkur.purayil@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <674871c0-1136-47ec-a5eb-907adda487ac@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260202045120.3139712-2-kalesh-anakkur.purayil@broadcom.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16326-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,yonsei.ac.kr,vger.kernel.org,kookmin.ac.kr];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16327-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DC4DACAB2D
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,broadcom.com:email]
+X-Rspamd-Queue-Id: E9792CC470
 X-Rspamd-Action: no action
 
-On Sun, Feb 01, 2026 at 06:23:37PM +0100, Bernard Metzler wrote:
-> On 31.01.2026 12:13, YunJe Shin wrote:
-> > If siw_get_hdr() returns -EINVAL before set_rx_fpdu_context(),
-> > qp->rx_fpdu can be NULL. Since the error path in siw_tcp_rx_data()
-> > dereferences qp->rx_fpdu->more_ddp_segs without checking, this
-> > may lead to a NULL pointer deref. Only check more_ddp_segs when
-> > rx_fpdu is present.
-> > 
-> > 
-> > [  101.384271] KASAN: null-ptr-deref in range
-> > [0x00000000000000c0-0x00000000000000c7]
-> > [  101.385071] CPU: 1 UID: 1000 PID: 265 Comm: exploit_poc Not tainted
-> > 6.19.0-rc7-g8dfce8991b95 #1 PREEMPT(voluntary)
-> > [  101.385418] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
-> > 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> > [  101.385869] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
-> > [  101.386511] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
-> > 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
-> > [  101.386979] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
-> > [  101.387243] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
-> > [  101.387545] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
-> > [  101.387829] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
-> > [  101.388076] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
-> > [  101.388316] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
-> > [  101.388599] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
-> > knlGS:0000000000000000
-> > [  101.388819] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  101.389020] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
-> > [  101.389324] Call Trace:
-> > [  101.389635]  <IRQ>
-> > [  101.389807]  ? lapic_next_event+0x10/0x20
-> > [  101.389978]  ? clockevents_program_event+0x1d0/0x280
-> > [  101.390121]  ? hrtimer_interrupt+0x319/0x7e0
-> > [  101.390269]  __tcp_read_sock+0x1ab/0x810
-> > [  101.390412]  ? __pfx_siw_tcp_rx_data+0x10/0x10
-> > [  101.390535]  ? __pfx___tcp_read_sock+0x10/0x10
-> > [  101.390658]  siw_qp_llp_data_ready+0x185/0x2c0
-> > [  101.390759]  ? __pfx_siw_qp_llp_data_ready+0x10/0x10
-> > [  101.390871]  ? tcp_event_data_recv+0x36a/0x7b0
-> > [  101.390967]  ? tcp_queue_rcv+0x30a/0x620
-> > [  101.391062]  tcp_data_queue+0x1ecc/0x4b40
-> > [  101.391164]  ? common_startup_64+0x13e/0x148
-> > [  101.391265]  ? __pfx_tcp_data_queue+0x10/0x10
-> > [  101.391358]  ? tcp_try_undo_loss+0x640/0x710
-> > [  101.391459]  ? __pfx_read_tsc+0x10/0x10
-> > [  101.391545]  ? ktime_get+0x60/0x140
-> > [  101.391669]  ? __pfx_do_sync_core+0x10/0x10
-> > [  101.391764]  tcp_rcv_established+0x801/0x35e0
-> > [  101.391864]  ? sk_filter_trim_cap+0x4ab/0xb20
-> > [  101.391963]  ? __pfx_tcp_inbound_hash+0x10/0x10
-> > [  101.392060]  ? __pfx_tcp_rcv_established+0x10/0x10
-> > [  101.392167]  ? bpf_skb_net_hdr_push+0x560/0x580
-> > [  101.392268]  ? _raw_spin_lock+0x7f/0xd0
-> > [  101.392363]  tcp_v4_do_rcv+0x525/0x8a0
-> > [  101.392461]  tcp_v4_rcv+0x249d/0x3e50
-> > [  101.392558]  ? kernel_text_address+0xa7/0x130
-> > [  101.392685]  ? __pfx_tcp_v4_rcv+0x10/0x10
-> > [  101.392779]  ? unwind_get_return_address+0x59/0xa0
-> > [  101.392897]  ? __pfx_raw_local_deliver+0x10/0x10
-> > [  101.393020]  ip_protocol_deliver_rcu+0x61/0x2e0
-> > [  101.393122]  ? __pfx_stack_trace_save+0x10/0x10
-> > [  101.393233]  ip_local_deliver_finish+0x332/0x4b0
-> > [  101.393333]  ? ip_finish_output2+0x71f/0x19a0
-> > [  101.393429]  ip_local_deliver+0x18f/0x2d0
-> > [  101.393530]  ? __pfx_ip_local_deliver+0x10/0x10
-> > [  101.393642]  ? __pfx___netif_receive_skb_core.constprop.0+0x10/0x10
-> > [  101.393789]  ? __kasan_mempool_poison_object+0xbb/0x190
-> > [  101.393899]  ? napi_skb_cache_put+0x23/0x190
-> > [  101.394001]  ? skb_defer_free_flush+0x145/0x1b0
-> > [  101.394100]  ? net_rx_action+0x349/0xfb0
-> > [  101.394215]  ? __asan_memset+0x23/0x50
-> > [  101.394315]  ? __tcp_push_pending_frames+0x8f/0x2f0
-> > [  101.394423]  ip_rcv+0x221/0x270
-> > [  101.394506]  ? __pfx_ip_rcv+0x10/0x10
-> > [  101.394627]  ? __pfx_ip_rcv+0x10/0x10
-> > [  101.394735]  __netif_receive_skb_one_core+0x161/0x1b0
-> > [  101.394876]  ? __pfx___netif_receive_skb_one_core+0x10/0x10
-> > [  101.395029]  ? _raw_spin_lock_irq+0x80/0xe0
-> > [  101.395154]  process_backlog+0x1e5/0x5e0
-> > [  101.395268]  ? napi_skb_cache_put+0x23/0x190
-> > [  101.395423]  __napi_poll+0x9a/0x500
-> > [  101.395533]  net_rx_action+0x988/0xfb0
-> > [  101.395671]  ? _raw_spin_lock_irq+0x80/0xe0
-> > [  101.395797]  ? __pfx_net_rx_action+0x10/0x10
-> > [  101.395948]  ? timerqueue_add+0x21b/0x320
-> > [  101.396093]  ? __hrtimer_run_queues+0x3de/0x790
-> > [  101.396251]  ? __pfx_read_tsc+0x10/0x10
-> > [  101.396365]  ? ktime_get+0x60/0x140
-> > [  101.396475]  handle_softirqs+0x18c/0x530
-> > [  101.396592]  ? __pfx_handle_softirqs+0x10/0x10
-> > [  101.396731]  do_softirq+0x3b/0x60
-> > [  101.396855]  </IRQ>
-> > [  101.396940]  <TASK>
-> > [  101.397004]  __local_bh_enable_ip+0x61/0x70
-> > [  101.397144]  __dev_queue_xmit+0x618/0x2fe0
-> > [  101.397257]  ? __local_bh_enable_ip+0x61/0x70
-> > [  101.397380]  ? __pfx___dev_queue_xmit+0x10/0x10
-> > [  101.397500]  ? sched_clock+0x10/0x30
-> > [  101.397613]  ? __pfx_selinux_ip_postroute_compat+0x10/0x10
-> > [  101.397770]  ? _raw_spin_trylock+0xaf/0x120
-> > [  101.397883]  ? selinux_ip_postroute+0x3e9/0x9d0
-> > [  101.398008]  ip_finish_output2+0x71f/0x19a0
-> > [  101.398125]  ? __pfx_ip_finish_output2+0x10/0x10
-> > [  101.398251]  ? __pfx_stack_trace_consume_entry+0x10/0x10
-> > [  101.398395]  __ip_finish_output.part.0+0x477/0x950
-> > [  101.398541]  ? __pfx___ip_finish_output.part.0+0x10/0x10
-> > [  101.398691]  ? nf_hook_slow+0xa7/0x1e0
-> > [  101.398796]  ip_output+0x260/0x4d0
-> > [  101.398903]  ? __pfx_ip_output+0x10/0x10
-> > [  101.399015]  ? __pfx_stack_trace_save+0x10/0x10
-> > [  101.399132]  ? __pfx_ip_finish_output+0x10/0x10
-> > [  101.399236]  ? kasan_save_stack+0x42/0x60
-> > [  101.399501]  ? ipv4_dst_check+0x10a/0x160
-> > [  101.399665]  __ip_queue_xmit+0xcfb/0x1d60
-> > [  101.399813]  ? __tcp_select_window+0xf8/0xed0
-> > [  101.399931]  ? __skb_clone+0x550/0x740
-> > [  101.400034]  __tcp_transmit_skb+0x29ce/0x3de0
-> > [  101.400159]  ? __pfx___tcp_transmit_skb+0x10/0x10
-> > [  101.400284]  ? kmem_cache_alloc_node_noprof+0x13b/0x4d0
-> > [  101.400423]  ? kasan_save_track+0x14/0x30
-> > [  101.400565]  tcp_write_xmit+0x11ba/0x7610
-> > [  101.400744]  ? skb_page_frag_refill+0x55/0x430
-> > [  101.400872]  __tcp_push_pending_frames+0x8f/0x2f0
-> > [  101.400999]  tcp_sendmsg_locked+0x156e/0x3b70
-> > [  101.401165]  ? __pfx_tcp_sendmsg_locked+0x10/0x10
-> > [  101.401362]  ? __pfx_selinux_socket_sendmsg+0x10/0x10
-> > [  101.401528]  ? _raw_spin_lock_bh+0x83/0xe0
-> > [  101.401733]  ? ldsem_up_read+0x12/0x40
-> > [  101.402061]  tcp_sendmsg+0x26/0x40
-> > [  101.402210]  __sys_sendto+0x364/0x430
-> > [  101.402346]  ? __pfx___sys_sendto+0x10/0x10
-> > [  101.402523]  ? ksys_write+0xf7/0x1c0
-> > [  101.402671]  ? __pfx_ksys_write+0x10/0x10
-> > [  101.402834]  __x64_sys_sendto+0xdb/0x1b0
-> > [  101.402968]  ? fpregs_assert_state_consistent+0x56/0xe0
-> > [  101.403107]  do_syscall_64+0xa4/0x320
-> > [  101.403254]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > [  101.403554] RIP: 0033:0x42440d
-> > [  101.403982] Code: 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 00 f3 0f 1e
-> > fa 80 3d 5d fc 08 00 00 41 89 ca 74 20 45 31 c9 45 31 9
-> > [  101.404392] RSP: 002b:00007ffc69a5f158 EFLAGS: 00000246 ORIG_RAX:
-> > 000000000000002c
-> > [  101.404659] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000042440d
-> > [  101.404864] RDX: 0000000000000030 RSI: 00007ffc69a5f180 RDI: 0000000000000003
-> > [  101.405069] RBP: 00007ffc69a5f200 R08: 0000000000000000 R09: 0000000000000000
-> > [  101.405257] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc69a5f318
-> > [  101.405416] R13: 00007ffc69a5f340 R14: 00000000004ae868 R15: 0000000000000001
-> > [  101.405634]  </TASK>
-> > [  101.405771] Modules linked in:
-> > [  101.406766] ---[ end trace 0000000000000000 ]---
-> > [  101.407214] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
-> > [  101.407387] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
-> > 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
-> > [  101.407946] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
-> > [  101.408091] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
-> > [  101.408239] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
-> > [  101.408375] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
-> > [  101.408508] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
-> > [  101.408741] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
-> > [  101.408897] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
-> > knlGS:0000000000000000
-> > [  101.409051] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  101.409181] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
-> > [  101.409577] Kernel panic - not syncing: Fatal exception in interrupt
-> > [  101.410887] Kernel Offset: disabled
-> > [  101.411108] Rebooting in 1 seconds..
-> > 
-> > 
-> > 
-> > Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
-> > Signed-off-by: YunJe Shin <ioerts@kookmin.ac.kr>
-> > ---
-> >   drivers/infiniband/sw/siw/siw_qp_rx.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-> > index e8a88b378d51..960f740cf46a 100644
-> > --- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-> > +++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-> > @@ -1434,8 +1434,7 @@ int siw_tcp_rx_data(read_descriptor_t *rd_desc, struct sk_buff *skb,
-> >   			run_completion = 0;
-> >   		}
-> >   		if (unlikely(rv != 0 && rv != -EAGAIN)) {
-> > -			if ((srx->state > SIW_GET_HDR ||
+On Mon, Feb 02, 2026 at 10:21:16AM +0530, Kalesh AP wrote:
+> Broadcom P7 chips supports applying rate limit to RC QPs.
+> It allows adjust shaper rate values during the INIT -> RTR,
+> RTR -> RTS, RTS -> RTS state changes or after QP transitions
+> to RTR or RTS.
 > 
-> We cannot remove that state > SIW_GET_HDR condition.
-> 
-> Consider this error case:
-> We received a header of say a short SEND comprising only
-> one DDP segment, and started data processing, while
-> encountering an error (too much data, no write permission
-> for the receive buffer, etc.). We have to complete the
-> current RECEIVE processing and surface a local completion,
-> since we already fetched the RQE from the receive queue.
+> Signed-off-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+> Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
+> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 11 ++++++++++-
+>  drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 12 +++++++++++-
+>  drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  3 +++
+>  drivers/infiniband/hw/bnxt_re/qplib_res.h |  6 ++++++
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c  |  5 +++++
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 ++
+>  drivers/infiniband/hw/bnxt_re/roce_hsi.h  | 13 +++++++++----
+>  7 files changed, 46 insertions(+), 6 deletions(-)
 
-Could you walk me through the code call chain?  
-Don't we start with SIW_GET_HDR, which should initialize the qp->rx_fpdu
-pointer?
+AI generates the following:
+
+Scenario:
+1. User creates an RC QP (ext_modify_flags = 0, zero-initialized)
+2. User calls `ib_modify_qp()` with `IB_QP_RATE_LIMIT` → `ext_modify_flags` becomes `0x8`
+3. User calls `ib_modify_qp()` **without** `IB_QP_RATE_LIMIT` (e.g., just state change)
+4. `modify_flags` is reset to 0, but `ext_modify_flags` still has `0x8`
+5. In `bnxt_qplib_modify_qp()`:
+   - `req.ext_modify_mask = cpu_to_le32(qp->ext_modify_flags);` → sends 0x8 to firmware
+   - `if (bmask_ext & CMDQ_MODIFY_QP_EXT_MODIFY_MASK_RATE_LIMIT_VALID)` → TRUE
+   - `req.rate_limit = cpu_to_le32(qp->rate_limit);` → sends stale rate_limit value
+6. Firmware receives unintended rate limit modification
+
+**Severity**: This is a functional bug that can cause:
+- Unintended rate limiting on subsequent QP modifications
+- The stale `rate_limit` value being sent to firmware on every modify_qp call
+- Unexpected QP behavior
+
+--------------------------------------------------------------------------------
+Is it expected behavior?
 
 Thanks
 
+
+
 > 
-> > -			     (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs)) &&
-> > +			if (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs &&
-> >   			    run_completion)
-> >   				siw_rdmap_complete(qp, rv);
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index f19b55c13d58..2930461be20d 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -2089,7 +2089,7 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
+>  	unsigned int flags;
+>  	u8 nw_type;
+>  
+> -	if (qp_attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
+> +	if (qp_attr_mask & ~(IB_QP_ATTR_STANDARD_BITS | IB_QP_RATE_LIMIT))
+>  		return -EOPNOTSUPP;
+>  
+>  	qp->qplib_qp.modify_flags = 0;
+> @@ -2129,6 +2129,15 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
+>  			bnxt_re_unlock_cqs(qp, flags);
+>  		}
+>  	}
+> +
+> +	if (qp_attr_mask & IB_QP_RATE_LIMIT) {
+> +		if (qp->qplib_qp.type != IB_QPT_RC ||
+> +		    !_is_modify_qp_rate_limit_supported(dev_attr->dev_cap_flags2))
+> +			return -EOPNOTSUPP;
+> +		qp->qplib_qp.ext_modify_flags |=
+> +			CMDQ_MODIFY_QP_EXT_MODIFY_MASK_RATE_LIMIT_VALID;
+> +		qp->qplib_qp.rate_limit = qp_attr->rate_limit;
+> +	}
+>  	if (qp_attr_mask & IB_QP_EN_SQD_ASYNC_NOTIFY) {
+>  		qp->qplib_qp.modify_flags |=
+>  				CMDQ_MODIFY_QP_MODIFY_MASK_EN_SQD_ASYNC_NOTIFY;
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+> index c88f049136fc..3e44311bf939 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+> @@ -1313,8 +1313,8 @@ int bnxt_qplib_modify_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
+>  	struct bnxt_qplib_cmdqmsg msg = {};
+>  	struct cmdq_modify_qp req = {};
+>  	u16 vlan_pcp_vlan_dei_vlan_id;
+> +	u32 bmask, bmask_ext;
+>  	u32 temp32[4];
+> -	u32 bmask;
+>  	int rc;
+>  
+>  	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
+> @@ -1329,9 +1329,16 @@ int bnxt_qplib_modify_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
+>  		    is_optimized_state_transition(qp))
+>  			bnxt_set_mandatory_attributes(res, qp, &req);
+>  	}
+> +
+>  	bmask = qp->modify_flags;
+>  	req.modify_mask = cpu_to_le32(qp->modify_flags);
+> +	bmask_ext = qp->ext_modify_flags;
+> +	req.ext_modify_mask = cpu_to_le32(qp->ext_modify_flags);
+>  	req.qp_cid = cpu_to_le32(qp->id);
+> +
+> +	if (bmask_ext & CMDQ_MODIFY_QP_EXT_MODIFY_MASK_RATE_LIMIT_VALID)
+> +		req.rate_limit = cpu_to_le32(qp->rate_limit);
+> +
+>  	if (bmask & CMDQ_MODIFY_QP_MODIFY_MASK_STATE) {
+>  		req.network_type_en_sqd_async_notify_new_state =
+>  				(qp->state & CMDQ_MODIFY_QP_NEW_STATE_MASK) |
+> @@ -1429,6 +1436,9 @@ int bnxt_qplib_modify_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
+>  	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
+>  	if (rc)
+>  		return rc;
+> +
+> +	if (bmask_ext & CMDQ_MODIFY_QP_EXT_MODIFY_MASK_RATE_LIMIT_VALID)
+> +		qp->shaper_allocation_status = resp.shaper_allocation_status;
+>  	qp->cur_qp_state = qp->state;
+>  	return 0;
+>  }
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+> index 1b414a73b46d..30c3f99be07b 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+> @@ -280,6 +280,7 @@ struct bnxt_qplib_qp {
+>  	u8				state;
+>  	u8				cur_qp_state;
+>  	u64				modify_flags;
+> +	u32				ext_modify_flags;
+>  	u32				max_inline_data;
+>  	u32				mtu;
+>  	u8				path_mtu;
+> @@ -346,6 +347,8 @@ struct bnxt_qplib_qp {
+>  	bool				is_host_msn_tbl;
+>  	u8				tos_dscp;
+>  	u32				ugid_index;
+> +	u32				rate_limit;
+> +	u8				shaper_allocation_status;
+>  };
+>  
+>  #define BNXT_RE_MAX_MSG_SIZE	0x80000000
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+> index 2ea3b7f232a3..9a5dcf97b6f4 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+> @@ -623,4 +623,10 @@ static inline bool _is_max_srq_ext_supported(u16 dev_cap_ext_flags_2)
+>  	return !!(dev_cap_ext_flags_2 & CREQ_QUERY_FUNC_RESP_SB_MAX_SRQ_EXTENDED);
+>  }
+>  
+> +static inline bool _is_modify_qp_rate_limit_supported(u16 dev_cap_ext_flags2)
+> +{
+> +	return dev_cap_ext_flags2 &
+> +		CREQ_QUERY_FUNC_RESP_SB_MODIFY_QP_RATE_LIMIT_SUPPORTED;
+> +}
+> +
+>  #endif /* __BNXT_QPLIB_RES_H__ */
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+> index 408a34df2667..ec9eb52a8ebf 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+> @@ -193,6 +193,11 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw)
+>  		attr->max_dpi = le32_to_cpu(sb->max_dpi);
+>  
+>  	attr->is_atomic = bnxt_qplib_is_atomic_cap(rcfw);
+> +
+> +	if (_is_modify_qp_rate_limit_supported(attr->dev_cap_flags2)) {
+> +		attr->rate_limit_min = le16_to_cpu(sb->rate_limit_min);
+> +		attr->rate_limit_max = le32_to_cpu(sb->rate_limit_max);
+> +	}
+>  bail:
+>  	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
+>  			  sbuf.sb, sbuf.dma_addr);
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+> index 5a45c55c6464..9fadd637cb5b 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+> @@ -76,6 +76,8 @@ struct bnxt_qplib_dev_attr {
+>  	u16                             dev_cap_flags;
+>  	u16                             dev_cap_flags2;
+>  	u32                             max_dpi;
+> +	u16				rate_limit_min;
+> +	u32				rate_limit_max;
+>  };
+>  
+>  struct bnxt_qplib_pd {
+> diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+> index 99ecd72e72e2..aac338f2afd8 100644
+> --- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+> +++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+> @@ -690,10 +690,11 @@ struct cmdq_modify_qp {
+>  	__le32	ext_modify_mask;
+>  	#define CMDQ_MODIFY_QP_EXT_MODIFY_MASK_EXT_STATS_CTX     0x1UL
+>  	#define CMDQ_MODIFY_QP_EXT_MODIFY_MASK_SCHQ_ID_VALID     0x2UL
+> +	#define CMDQ_MODIFY_QP_EXT_MODIFY_MASK_RATE_LIMIT_VALID  0x8UL
+>  	__le32	ext_stats_ctx_id;
+>  	__le16	schq_id;
+>  	__le16	unused_0;
+> -	__le32	reserved32;
+> +	__le32	rate_limit;
+>  };
+>  
+>  /* creq_modify_qp_resp (size:128b/16B) */
+> @@ -716,7 +717,8 @@ struct creq_modify_qp_resp {
+>  	#define CREQ_MODIFY_QP_RESP_PINGPONG_PUSH_INDEX_MASK  0xeUL
+>  	#define CREQ_MODIFY_QP_RESP_PINGPONG_PUSH_INDEX_SFT   1
+>  	#define CREQ_MODIFY_QP_RESP_PINGPONG_PUSH_STATE       0x10UL
+> -	u8	reserved8;
+> +	u8	shaper_allocation_status;
+> +	#define CREQ_MODIFY_QP_RESP_SHAPER_ALLOCATED          0x1UL
+>  	__le32	lag_src_mac;
+>  };
+>  
+> @@ -2179,7 +2181,7 @@ struct creq_query_func_resp {
+>  	u8	reserved48[6];
+>  };
+>  
+> -/* creq_query_func_resp_sb (size:1088b/136B) */
+> +/* creq_query_func_resp_sb (size:1280b/160B) */
+>  struct creq_query_func_resp_sb {
+>  	u8	opcode;
+>  	#define CREQ_QUERY_FUNC_RESP_SB_OPCODE_QUERY_FUNC 0x83UL
+> @@ -2256,12 +2258,15 @@ struct creq_query_func_resp_sb {
+>  	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_LAST	\
+>  			CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_IQM_MSN_TABLE
+>  	#define CREQ_QUERY_FUNC_RESP_SB_MAX_SRQ_EXTENDED                         0x40UL
+> +	#define CREQ_QUERY_FUNC_RESP_SB_MODIFY_QP_RATE_LIMIT_SUPPORTED           0x400UL
+>  	#define CREQ_QUERY_FUNC_RESP_SB_MIN_RNR_RTR_RTS_OPT_SUPPORTED            0x1000UL
+>  	__le16	max_xp_qp_size;
+>  	__le16	create_qp_batch_size;
+>  	__le16	destroy_qp_batch_size;
+>  	__le16  max_srq_ext;
+> -	__le64	reserved64;
+> +	__le16	reserved16;
+> +	__le16  rate_limit_min;
+> +	__le32  rate_limit_max;
+>  };
+>  
+>  /* cmdq_set_func_resources (size:448b/56B) */
+> -- 
+> 2.43.5
 > 
 
