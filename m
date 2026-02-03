@@ -1,161 +1,164 @@
-Return-Path: <linux-rdma+bounces-16475-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16476-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cBSFHp8rgmlxQAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16475-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 18:08:47 +0100
+	id AMmlEwQtgmlFQAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16476-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 18:14:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0737FDC856
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 18:08:47 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B18DC963
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 18:14:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E04F9314F215
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 17:01:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E23C230C271E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 17:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764753D3337;
-	Tue,  3 Feb 2026 17:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB92C3D3D14;
+	Tue,  3 Feb 2026 17:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="nvBSq4FG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rfchg3Dp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AB230171E
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 17:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5A1335073
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 17:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770138101; cv=none; b=MUL3qkzkt4U5QBf3k5bXs1ow5aM2/6kPGtpV0MbaFCV/L19TiYyYz2V2WMMNWY2YB4Nt2wR7e+3wGXPFLT3A+oRBZxoEjqiVeksbxyBAOdAlIbV6nwyad44J+VnyhSAGF55SPXOUTI7wKEkXna6pxhSq43bKVFu7rQHYH68o8I8=
+	t=1770138510; cv=none; b=QNVPYcqy9XXPL+DN+4exlF+VP15lanz0d3irkqHnidPajjQicsPiHSfj++du3Iz6vA+Wuoadhr2nw1EtyhlvU8eTcAP2D7d3SSqeNxmsh6ElTw8eE+/aeuXdVvZUBLFijWizb+U/qP6AtZfAPBiw2dkOSxuL6ERXJjjNgl/IlX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770138101; c=relaxed/simple;
-	bh=t3RwcOUpAxKZljJomDPYjIIiia2Y/M3vNvS5uFx/fgE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZCrMujhnGCp+8alsXLuUkStNNKDUs6m0I22LTgEACVjzmXggYag1KvYyT1c9a6MrbVgrcqR1AY2riM1AfpxhMW/DSSgQPeVISO/LyPgXA0KCbJgW734zFYvRUasynM14C9yfQ/ZfJvsNyylY7zIAWrz9/yYTUatyJhf37tvJ2aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=nvBSq4FG; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-88a35a00506so103487186d6.2
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 09:01:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1770138099; x=1770742899; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IDNqZKwZJA+RRf9ErxFC4XPpNaLdQ6eQtvoonzW/UVE=;
-        b=nvBSq4FG1Q2LVZs+tH17XJoP2LUhfCvDAm660XKBwyxf8/0kFX5pEht05d/lOwWzql
-         hiFYCzd/lKD2Q6bF4fcZU/q/5TTzrsJ48ohsDxaZnqF154n7csnQoEo4xb+SVVvSYx2Y
-         yO9qRDc+3Salv6wXoyGkn9S6bkoWjlDNFQvxhwPS1oDxehPFXn4SRkZaBfxDLRNC4Zv/
-         iO5wyh1OVS6eTshgx9aZZOF8AE0MfXzsIu0SCXfsY9nsUjZqkD7f6FWOmWaOgWPjFFWr
-         ndGwbQI+nkVhLsk37t7Tjqhm1cQMP1T+CvEG1ETtb18j2mVInYAZZAm8c/cyYYryVZv3
-         4eLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770138099; x=1770742899;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IDNqZKwZJA+RRf9ErxFC4XPpNaLdQ6eQtvoonzW/UVE=;
-        b=jf60wt+WyE9VpENUfXZR47Z/8dYI9SzGeBK/qMa28WEmBVAL7+M2DZR5PkCYzrecyS
-         p9V+eYMgDp/aY0BEyrss1w/uy4Y4IWLc/g1BXi8Nxk9kJPlayJ6BxzjNksA3O5YODw7W
-         t4D8/p+NzJbnuzSDJWGstRC6LEUU3qgASeN4rZMdUwcvOW0iTfvgaS5i+HFKj7AVds17
-         +RKnM8YBMKDIw4LcmXtp0PbHqO3TLR+fkwGmzGjT+jPNuiyMmuGw8BdeNZ9nxa/OwXk0
-         Vs4k15OtnMDWyqdcOUilZ8jwOEuAinxt/Wn2aCXLjKqtDClnHcWl1OCdrwvPPlnIBQjq
-         uyhg==
-X-Forwarded-Encrypted: i=1; AJvYcCWoqnfml8/G2aQjkBAn5C8fiGj5usJKhohgxC3Fp4O3Q7wP1BynUIxG7OZ4ZdaSqkAb/PwlzrMknDVk@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOhD3fXR35Om7qe9MqNye4u8U7OkCJiJnVIY7XfRqUfDxq/Hq5
-	0GgysKwMZGXmYvyACfnac+3TOtx3qnSKb5EgFOw9lWGHW2w7TJZeC0IPiTLyuzGXx8l850QAWMF
-	NEl3/
-X-Gm-Gg: AZuq6aJgzFzcgEXVEnLIOcjCP+4oj+c/bcFJAJrModfUZJAXV/IgDB0b7tzd8Mjdp92
-	SCczuseJlOA1MP2fkTHHxfNLmOi8kFR1sTbU5tnd9M7G0tE9xsYUuAhshCgYvD52D+JGSaiwOAi
-	y8nGhrkqniaBz8aXWnLL1ffKoqVJdHDQLf2KMh8ssCTVnvQnaRztcWMpCkjNtUPxooY+z9+nKFp
-	sp3WzVafLDjgFGkkPnb/JIoZhEdsGrUqi4JkLP1AzYKWG++bLoJ/Y/oZCHUB43PCmcIlKKIZBgf
-	JR85Fjl+UehU6RxL9+2Wcr9wiI+ZRCduOZic2tdKFsjYFmnBWXpLw1h0Onq2/scH308iQZgPmoG
-	BzbQUKH5/9g4oT+OZ0HSk4HRVk3ETIKM1nW8HXsrIGAyEqKtI4xN9xKqcNGbVopApE37AohbV6I
-	XPc3mdFVCXa3dKtf/YHEodR+nVIzfKTjJIVfJ4r7PRZmak0/cgBk4OgemqT2v3L1/E+UU+udu0j
-	4gu1A==
-X-Received: by 2002:a05:6214:c21:b0:88f:e332:c009 with SMTP id 6a1803df08f44-895220f5948mr1404626d6.12.1770138098825;
-        Tue, 03 Feb 2026 09:01:38 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89521d3c513sm1460076d6.54.2026.02.03.09.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 09:01:38 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vnJmT-0000000GZqc-2ms6;
-	Tue, 03 Feb 2026 13:01:37 -0400
-Date: Tue, 3 Feb 2026 13:01:37 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org,
-	mrgolin@amazon.com, gal.pressman@linux.dev, sleybo@amazon.com,
-	parav@nvidia.com, mbloch@nvidia.com, yanjun.zhu@linux.dev,
-	wangliang74@huawei.com, marco.crivellari@suse.com,
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
-	ynachum@amazon.com, huangjunxian6@hisilicon.com,
-	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next 01/10] RDMA/umem: Add reference counting to
- ib_umem
-Message-ID: <20260203170137.GT2328995@ziepe.ca>
-References: <20260203085003.71184-1-jiri@resnulli.us>
- <20260203085003.71184-2-jiri@resnulli.us>
- <20260203145138.GQ2328995@ziepe.ca>
- <20260203165600.GW34749@unreal>
+	s=arc-20240116; t=1770138510; c=relaxed/simple;
+	bh=CJw53SBH6XoGayXbPlKjDAs1ctzRcBCG/jxmprupStE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dhSioNzWIwvjnl5k12Cgfm7iFTGJzAAHxL8m+xDs4DajfEWxyRCGM94RMJcaEahO5a3z2g1JqqH1y+cH/m6PRX2rJrXpLHGQ8bBBCvWoKQTv1s3wvATG1npOyC/EPJROoL459geCih/c+oYttOSbilwiEdr29LO8nGtvXb07cpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rfchg3Dp; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770138507;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1RcqX9khIwUR/91ez7NLW9xW23Ib+VX9iSsMAWPU9Og=;
+	b=Rfchg3Dp/4tERB0kZPp6QB+4HAmEnoRCBvPqh24ceAIpRuQ8bKa0vo/F/gKvzBuDnoJpve
+	0VwwP03A2FjiBo3Lsrh6SQjt98OKszwCrT+FEKO2mo2dL7AES1Dy16N3hf0ieT9/oyN/ie
+	Xy5BZxkOtCj6LnH8Bf3SczWJfZvd3DA=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-370-VFWEBYhiOHOgNIjn6uCsUQ-1; Tue,
+ 03 Feb 2026 12:08:23 -0500
+X-MC-Unique: VFWEBYhiOHOgNIjn6uCsUQ-1
+X-Mimecast-MFC-AGG-ID: VFWEBYhiOHOgNIjn6uCsUQ_1770138499
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DE2491956068;
+	Tue,  3 Feb 2026 17:08:18 +0000 (UTC)
+Received: from [10.45.224.28] (unknown [10.45.224.28])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0994F1956048;
+	Tue,  3 Feb 2026 17:08:11 +0000 (UTC)
+Message-ID: <fe7f81a4-281b-473b-8d0b-d04ff042d471@redhat.com>
+Date: Tue, 3 Feb 2026 18:08:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260203165600.GW34749@unreal>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next,v4,7/9] dpll: Add reference count tracking support
+To: Simon Horman <horms@kernel.org>
+Cc: richardcochran@gmail.com, arkadiusz.kubalewski@intel.com,
+ przemyslaw.kitszel@intel.com, aleksandr.loktionov@intel.com,
+ andrew+netdev@lunn.ch, pabeni@redhat.com, saeedm@nvidia.com,
+ kuba@kernel.org, tariqt@nvidia.com, netdev@vger.kernel.org,
+ grzegorz.nitka@intel.com, poros@redhat.com, davem@davemloft.net,
+ vadim.fedorenko@linux.dev, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, aleksander.lobakin@intel.com,
+ jonathan.lemon@gmail.com, jiri@resnulli.us, anthony.l.nguyen@intel.com,
+ intel-wired-lan@lists.osuosl.org, Prathosh.Satish@microchip.com,
+ leon@kernel.org, edumazet@google.com, mbloch@nvidia.com
+References: <20260202171638.17427-8-ivecera@redhat.com>
+ <20260203161102.1894146-1-horms@kernel.org>
+Content-Language: en-US
+From: Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <20260203161102.1894146-1-horms@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16475-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,intel.com,lunn.ch,redhat.com,nvidia.com,kernel.org,vger.kernel.org,davemloft.net,linux.dev,resnulli.us,lists.osuosl.org,microchip.com,google.com];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16476-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[26];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[ivecera@redhat.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: 0737FDC856
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: A3B18DC963
 X-Rspamd-Action: no action
 
-On Tue, Feb 03, 2026 at 06:56:00PM +0200, Leon Romanovsky wrote:
 
-> I opted for an even simpler approach: embed the umem directly in ib_cq, set  
-> cq->umem in ib_core’s create_cq, and clean it up in ib_core’s destroy_cq.
 
-The issue is most drivers create the umem from parameters in their
-driver data so the core code cannot do it at all.
+On 2/3/26 5:11 PM, Simon Horman wrote:
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> 
+> For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+> ---
+> dpll: Add reference count tracking support
+> 
+> This commit adds REF_TRACKER infrastructure support to the DPLL subsystem,
+> allowing developers to track and debug reference counting leaks for
+> dpll_device and dpll_pin objects via debugfs.
+> 
+>> diff --git a/include/linux/dpll.h b/include/linux/dpll.h
+>> --- a/include/linux/dpll.h
+>> +++ b/include/linux/dpll.h
+> 
+> [ ... ]
+> 
+>> @@ -223,16 +231,17 @@ dpll_netdev_add_pin_handle(struct sk_buff *msg, const struct net_device *dev)
+>>   }
+>>
+>>   static inline struct dpll_pin *
+>> -fwnode_dpll_pin_find(struct fwnode_handle *fwnode)
+>> +fwnode_dpll_pin_find(struct fwnode_handle *fwnode, dpll_tracker *tracker);
+>>   {
+>>   	return NULL;
+>>   }
+> 
+> There appears to be a stray semicolon at the end of the function signature
+> on the line with the tracker parameter. This would cause a compile error
+> when CONFIG_DPLL is disabled since the function body follows what looks
+> like a forward declaration.
+> 
+> Should the semicolon be removed so the stub function compiles correctly?
 
-The structure I gave is a way for the drivers to parse their driver
-data while still keeping the umem out of the bowels of the driver.
+Definitely. Will fix as I mentioned previously.
 
-You can lift the umems into the core structures too, but things like
-the DBR with their driver-specific umems would be hard to deal with.
+Thanks,
+Ivan
 
-Jason
 
