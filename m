@@ -1,471 +1,383 @@
-Return-Path: <linux-rdma+bounces-16447-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16448-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GBFFKPrMgWl1JwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16447-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:24:58 +0100
+	id CLKgNmnTgWl1JwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16448-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:52:25 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20B52D78A5
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 819BFD7F84
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6E0AC3027B05
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 10:24:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8F93230159DF
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 10:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022BE318139;
-	Tue,  3 Feb 2026 10:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38854327C13;
+	Tue,  3 Feb 2026 10:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QbHRTG42"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z/enM/G/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010066.outbound.protection.outlook.com [40.93.198.66])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253D13164D6;
-	Tue,  3 Feb 2026 10:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770114295; cv=fail; b=AueIRTNGzhZg3nmu2vdTJjaFVtx/h7t+CQjIiQvm9f/n9+2bHGsuJX9DApayzzUhMrhtxih6RnWB885iqSLLprjjPLiNkaFsDyaT+gF5gCn7u0BkFCQRDHPV7JfGbCo79Y9bT+Kd3h+xym46Yp8ICgO5iaf+oucnZ2bprjaaJjc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770114295; c=relaxed/simple;
-	bh=hJELxiXzXRJlPcamhFc7j/wvlbBeTV5vmKlbXwSR2NI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZFgrgEkN266oHUM1UDShvw6HVdCe4iaSNgFwk3MwnvPf6FeYyYAaqy43QRiF40DriXe4yQK96MSUqC/Pvi3phU3iWbIzv8S8vUWaFW37oJaPRa/yazAg0o43KrWe12KjumCk4U0gC2gpug2qoxOFeudQqaROP1u++wBz/U+aYCE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QbHRTG42; arc=fail smtp.client-ip=40.93.198.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TomzjuCUXeuTibPluHvOGWbIss4w3Hhv2D5noQYl7FVLX7rD7C8iKF0UCAz7a9MQp70m8eqc6AXnHBkgClpzofplNOytiOOwyUmWfO4gs0EJgJYs7jwDOHGkcF3Q2PEq8Y5kfab4HWJ3GWYDzOwEcp3F+sS5Drfp8SGB0Hnc6/UL7TPI4rXFg03TxUQzyw8SNLKc4ZwYDMVrSMaUYqdRKee4j3uB0lmfFYVv40yghdm8K4uu0BUVtBlKVKdv/MLEjcJq+qdC+Tsw07ODrshuEylrxXo6HGL6Pd3HFSox8SlY82FvusjDBv8as3MyUzPcFDGnqtlMhuWvJIDAt+Pw6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bmGyUMGxqUY17mScujVPoAV9t8G8aeLrf3VdfZ/fgwg=;
- b=rkb+A7qdQd/ZnDykyCbZ/yfVXbn2x41QQDtC8bcE/FQ4rLYso36HHQBr9peK9e5G4rFrGKf1QkpjeBuQP+ILxXvw7NF1BkUHirHD4Sdkw31dhX8zOadxJgaP8bkaDxFOccr2EiR6nP8XU3iDC85zOgGqLpGzhwcKwIGR4UJzLJX/EDzepvs7Uu7DInkicvUQ2UOeiS3e/pJXC9vVK4CJJNO55Lit1VZCsxFUWLesxFyOcYX+X/qmr+9JarY1T+W+dHGvOP/82jeVpD8jExl/V3kwuj7DQwl6TEZxwzetQhwUYiD01mvMB0hCC5OMle4a6qDwYvng9k9fysGs/+DhYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bmGyUMGxqUY17mScujVPoAV9t8G8aeLrf3VdfZ/fgwg=;
- b=QbHRTG424NoNtLnyI2eWHDvh1isOmLY9sJRPrFGl5QLBY1VvcCiwrz/meDLcyjaLwAdYOfa8cgGb3MZhyrneGgplHUP9Jmc84jzU+jJXNkhN+yOzyyOeJwp/CJFyvjCPl112KA3fBk/beoZ5sqKDXFA18phVTPjNrbWrANfSzsufMJsMLM3REysq296tRFXQaazh3iw9bGBrls8c3Ldg84JvoprJ1yfO74xUEP+ndx9s3CRTe/KwT/KNidhaqbaLZRLXfE2EooYCXw6gBAYI7qsTcpIz9hegIsOC3C0L/ajl+K5nzCkM3iO4RZx/0ySWaiwGsUmb5JtfayIcV1GGkQ==
-Received: from BL1PR13CA0018.namprd13.prod.outlook.com (2603:10b6:208:256::23)
- by IA0PR12MB7650.namprd12.prod.outlook.com (2603:10b6:208:436::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.16; Tue, 3 Feb
- 2026 10:24:48 +0000
-Received: from BL6PEPF00022572.namprd02.prod.outlook.com
- (2603:10b6:208:256:cafe::65) by BL1PR13CA0018.outlook.office365.com
- (2603:10b6:208:256::23) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9587.12 via Frontend Transport; Tue,
- 3 Feb 2026 10:24:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BL6PEPF00022572.mail.protection.outlook.com (10.167.249.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9587.10 via Frontend Transport; Tue, 3 Feb 2026 10:24:48 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 3 Feb
- 2026 02:24:33 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 3 Feb
- 2026 02:24:33 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Tue, 3 Feb
- 2026 02:24:28 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
-	<moshe@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, Jiri Pirko
-	<jiri@nvidia.com>, Parav Pandit <parav@nvidia.com>
-Subject: [PATCH net-next] net/mlx5: Support devlink port state for host PF
-Date: Tue, 3 Feb 2026 12:24:02 +0200
-Message-ID: <20260203102402.1712218-1-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.44.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B334326D65
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 10:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770115942; cv=none; b=ZDZu9EwiM9HtuTdKWAOkgLnvB1eOIl45C9J7JlFqdw1lVAmIWMhfz6E5rsBJ44+38eQaId9qXODw0F+P71VudHGfSIRvdWkwTbR6s0yYZ6nofgX3/DPFUZRkgQ5YuEDoKceHBudLhuPCzgPAFUe54UcfIEO91MHyLIZ+pu6Fcxg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770115942; c=relaxed/simple;
+	bh=9CATYEhQiu5Ky0zDuc4RS0pSCbSSen26hRTagL4wjn0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FMthmrHHYB16UGyStyMBIh+O/aL0TdloUDHKiIoZbGFXTbZYMKvX/40TD0wUhkrMiwPnM7kW2SiHlQYkOgy/7u6vGiR/5ZWr88nwTdjuQrBh/bxUbKaf61t1RDAHgngC/2tM54icHAzPqq/WSoieiTYBy/6suIwVBIszeK0dh7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z/enM/G/; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a4dd08cd-aa95-4d1b-a18e-412ecb43d543@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1770115935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E2axD/AIM3Mlsb9QLmr0igeG5h/TNQ1KIAJbUWygX0M=;
+	b=Z/enM/G/ao9fRP+zHHtoMYREFqS5QTVQ3EmB9cqtEgrWx0l7wS4YWGMrId88lbfWtWH7EJ
+	ai3vk/adJbudSMi6quGqUaM2LtjXPHalEAn6P7XCiyxc7Wg6VbLm12edQ8L+0V8ZQhV5SG
+	p+wZ7OLOdL+zKcYaMX7fYZ0BZgNq+R4=
+Date: Tue, 3 Feb 2026 11:52:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] RDMA/siw: Fix potential NULL pointer dereference in
+ header processing
+To: yunje shin <yjshin0438@gmail.com>, Leon Romanovsky <leon@kernel.org>
+Cc: jgg@ziepe.ca, joonkyoj@yonsei.ac.kr, linux-rdma@vger.kernel.org,
+ ioerts@kookmin.ac.kr
+References: <662a7cd7-a1ea-4b9f-8654-c2537e5ef615@linux.dev>
+ <20260131111335.4069021-1-ioerts@kookmin.ac.kr>
+ <674871c0-1136-47ec-a5eb-907adda487ac@linux.dev>
+ <20260202100605.GH34749@unreal>
+ <e62a48ce-0cd4-4ff6-a576-d58cba57e132@linux.dev>
+ <20260202133354.GL34749@unreal>
+ <CAMX6_QFNKkg+se5CZTBjLTrq38xZVmAwgcgWmbT4kdAOEoNJfQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <CAMX6_QFNKkg+se5CZTBjLTrq38xZVmAwgcgWmbT4kdAOEoNJfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF00022572:EE_|IA0PR12MB7650:EE_
-X-MS-Office365-Filtering-Correlation-Id: afa2b08a-2b13-4a7d-8d2c-08de630e7596
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|82310400026|36860700013|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dzcxTEg2MEZjZTB5b0o2SGNuT280a2l2TjJDV3cxM2lsanhzSHJtNkxwUVpz?=
- =?utf-8?B?Wmo1UWE4cU1meUJ2L0xPekZ6ak1Nc3hQNFlCdWZlcTl3ZDRyTE1FNFhyZ1F6?=
- =?utf-8?B?dFBCWkJpSVd4QzRoNVlOc2M3Vis5ODFuOWhqTjBSbjBVK0NVeTlNSWoxWXln?=
- =?utf-8?B?dDhoU05NWktSakNwSWNLLzZMeDBWMWVvKzZGMkJNeEwwMW91TmtWVU5xMzQy?=
- =?utf-8?B?UE1xWjl0ZzE0YjUxQUxCTUdKOGljckwxMmpRTXphQmpDRWpERTNZWVBHUWMy?=
- =?utf-8?B?ZDNiVG9KakphOHZLV3hTL2JodjlodHdkTTZ2cmRYQkVWRUJndHBrdXNzZTEw?=
- =?utf-8?B?TkI1Z0JxVFN5Vnp0NjFnRXFYRUlhYlEvZzduQnJ6bERMaG1LRmZXTXFQdDUw?=
- =?utf-8?B?N3VYQUhWNmc2MXA5V1pycngvZHpDZGxVZW1mL3llU1F3ZGNQUmRmWjM4WkxS?=
- =?utf-8?B?ZDlOMHJZUUtXUXF5MkhLQ3A1bzZEcER3QmZxSDdkOU9WRis5K0RrY1djckRR?=
- =?utf-8?B?Ny9mWEh6R0lJYXRhek5HYmgwN3V4U1FYY25QVTJXdHNwS2dyUEI2SG1Jd1FN?=
- =?utf-8?B?OWdxLytBREpubVJ6ajE1amx5WHJoRllqcyt3WGg2SFlVVXJjc3hlK2RETHph?=
- =?utf-8?B?VXhvMnJHU0xKZG5EZnhYQVN2T09RMXU4aHhkVGo5ZWxwRWQ4QWJmNmJSNXAw?=
- =?utf-8?B?K0tIQ013OUdtMVRGNWRFNU9iSkIvYlRqWjB2M2s5dmVWVVZDdlM4clY3U0pE?=
- =?utf-8?B?NmEvZTBlWW5DZ2pPRllzcWI3OFk4clNrWmdyeDhHMzRhTjV4allvSUN6SlQ5?=
- =?utf-8?B?dXpIRTZ1YkVPdnJZOEVsT05YWjZlNEFyZmZqeGh5aE9SaVBWUlFhQS9Ed2Yr?=
- =?utf-8?B?MW4rQlcvUzZaT2JWS2FIVDRZL0FMVVI3UjE2VzlKeitucVBoRGRWa3ZZU3JT?=
- =?utf-8?B?R0QvWit4VW5JQkNPSzhMV2J2K1hZNFRWMWdQTkE1ZDh0cTdIUmFnZ2lpZ1h3?=
- =?utf-8?B?MnVqdXo5VTlDSXhWSUpxSThpdXBLdmpWREhuSHdSWDNUYnFSbmg3dkNuS3Ey?=
- =?utf-8?B?VHA3WDNxa0Rka1lvQVg4VzUzN1REWVN4d2RMYy83WncyMGFEQkVOR2Z5TENo?=
- =?utf-8?B?VHE4WW9Ydy9jOEIxOGxJZDQ1WCtkcFB0NHpmblBWT25HOHRaUktEbWpsNGNL?=
- =?utf-8?B?M3AxUm5KS29JK0pQSGtsMk1XV1M2enJqTElqOG5JYWV1cEx1Q1E4bTZKTTBu?=
- =?utf-8?B?cE1DSDhMOG4zZVA1aStLNEhDY3VvTUM1ellSSmVRNklJaW43RG5Ncy8xNTJo?=
- =?utf-8?B?eUU1dGwwNTNpQktyWjdYU3d5UDNGaU05UmwvcmFibDVRQ3JGaWpkYUF2K1Ew?=
- =?utf-8?B?TzU4MEpQbnIraDJ2b0xBQ2dwYmVtY3VDOEkwaFlCUkN4Y2VGdlROelp3M2cw?=
- =?utf-8?B?YzJIaDJSNlNoKzZ5bU5KeTRRR0xUSmZJS21iQkRMR0t6Uk9Vd1NodmhxbEJT?=
- =?utf-8?B?Rys2bFE4ZW1ZV1dhdkx0b2RVVFYvTUxUQ01BbkROMCtUWUx4QXBSZHFSb1pk?=
- =?utf-8?B?NHdyWHNJS2NBL3psaW1WaDVuamYvUzkvUzJUN1l4QndpOVhSaXVDbjNOUXZX?=
- =?utf-8?B?TEdlWWw2UlpQVENlNXlYT2Nma2l5QmhmTDJGc3IvYkVMMk4yb3d0YWFPUzl1?=
- =?utf-8?B?Z3BtdldWTHA0WFZpUklSdDlwMFFNdHdEa0JickpFSmJveTl2K2RqZmhCd0xN?=
- =?utf-8?B?ZFJ3TnUwSmhuV2gzTXBZTTMxL2g4UGZLWStoZzBWemdZMkdrNWpBL0pHeU0x?=
- =?utf-8?B?OGlpbjYwRVJWMHgvbHRoM1JWS1dBVHlOVVVEb0l1eExrYjBoNjBTcUd5ZWtk?=
- =?utf-8?B?WkVQeGZqUVRSQUhBOFJWMjVVZUxQSW5USGptSThzR0oxRXpFdERwSXY2SEFz?=
- =?utf-8?B?V1VWVGVSeEpYNDNyRWE3Mm5jT1loeGdKMW9pbFNhSFRmUVkvVXZJQ2tzUURh?=
- =?utf-8?B?b2NhOFBsSStwMEYyOE1Zb0t1clQ2L0pZUjlEZmoxNTVPeDc4LzhnVkFEL1kw?=
- =?utf-8?B?N0d0dVFQRXg4MllydUhEMzlKRkhqUVBSRC9vaXZaMXRtQlRjelBNVHIzb29C?=
- =?utf-8?B?MFVRZU1HdzJIaWc5WWowcFJnNWk0ZkJ4bFJhdUlWRDRkSGYvQzU4U2syZ2Jr?=
- =?utf-8?B?bFZIV3UySU5vT2lUNW14OWNxeWZybDA1WHU2NTRKcmYzUUNUcEdpNTRQdE1u?=
- =?utf-8?B?Wm1Od1ZwK01HYUdkdi9ZcHdqeU5RPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700013)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	s6rCk0vOu997jU0Ez5Dp3IPH+SoyCrpQL7116Ldug+jd6rZ05uXZlU2YRLBDeW3gxYg1sjq0zRjvDkiUmHwa58JaQ7IXL55ZZLDwkjDJJGwduj3Y8PhWkm0H8ImZRUJ/X1L94Uf/xaqyb7f1iugr57dt8g3G+QxW/b9tF7ImacmYvKKxk8NKpKnk0s3aGTLaeDAdLZjp8tqWqTGLcyemLfm0QKLYlCS5sVNwWiPZLpqXoOQiraOUIe1egDl4mh0V2/EQESRTZRckwejUKcjikW9mIdrbR75FWCVWP0jAzmxSFdQH/Xb7ZoIHNQk2bhEgcCPS0A+mJudWIcX7hxjofdH2aNEmzK920ARTWUk7287HjY3+dQFAe27WuzdC1RVJaNqJ/EJNGwNDFGi6K89EX21FSEnN6br8wlfBKQFrx7qBNFvofImXUAT+JBzx3iyC
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2026 10:24:48.4883
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: afa2b08a-2b13-4a7d-8d2c-08de630e7596
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF00022572.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7650
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-16447-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16448-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 20B52D78A5
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 819BFD7F84
 X-Rspamd-Action: no action
 
-From: Moshe Shemesh <moshe@nvidia.com>
+On 03.02.2026 02:12, yunje shin wrote:
+> Hi Bernard, Leon,
+> 
+> Based on the follow-up discussion, I will keep the
+> srx->state > SIW_GET_HDR condition intact, and only add a NULL check
+> around qp->rx_fpdu to address the KASAN NULL dereference.
+> 
+> Concretely, the change would be as follows:
+> 
+> if (unlikely(rv != 0 && rv != -EAGAIN)) {
+>          if ((srx->state > SIW_GET_HDR ||
+> -            qp->rx_fpdu->more_ddp_segs) && run_completion)
+> +            (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs)) &&
+> +           run_completion)
+>                  siw_rdmap_complete(qp, rv);
+> 
+>          siw_dbg_qp(qp, "rx error %d, rx state %d\n", rv, srx->state);
+> }
+> 
+> Does this look correct to you before I resend the updated patch?
+> 
 
-Add support for devlink port function state get/set operations for the
-host physical function (PF). Until now, mlx5 only allowed state get/set
-for subfunctions (SFs) ports. This change enables an administrator with
-eSwitch manager privileges to query or modify the host PF’s function
-state, allowing it to be explicitly inactivated or activated. While
-inactivated, the administrator can modify the functions attributes, such
-as enable/disable roce.
+Yes, that looks correct to me.
 
-$ devlink port show pci/0000:03:00.0/196608
-pci/0000:03:00.0/196608: type eth netdev eth1 flavour pcipf controller 1 pfnum 0 external true splittable false
-  function:
-    hw_addr a0:88:c2:45:17:7c state active opstate attached roce enable max_io_eqs 120
-$ devlink port function set pci/0000:03:00.0/196608 state inactive
-$ devlink port show pci/0000:03:00.0/196608
-pci/0000:03:00.0/196608: type eth netdev eth1 flavour pcipf controller 1 pfnum 0 external true splittable false
-  function:
-    hw_addr a0:88:c2:45:17:7c state inactive opstate detached roce enable max_io_eqs 120
+Thank you.
+Bernard.
 
-Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Reviewed-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/ecpf.c    |  5 +-
- .../mellanox/mlx5/core/esw/devlink_port.c     |  2 +
- .../net/ethernet/mellanox/mlx5/core/eswitch.c | 48 ++++++++++++----
- .../net/ethernet/mellanox/mlx5/core/eswitch.h | 10 ++++
- .../mellanox/mlx5/core/eswitch_offloads.c     | 55 +++++++++++++++++++
- 5 files changed, 108 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
-index d000236ddbac..15cb27aea2c9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2019 Mellanox Technologies. */
- 
- #include "ecpf.h"
-+#include "eswitch.h"
- 
- bool mlx5_read_embedded_cpu(struct mlx5_core_dev *dev)
- {
-@@ -49,7 +50,7 @@ static int mlx5_host_pf_init(struct mlx5_core_dev *dev)
- 	/* ECPF shall enable HCA for host PF in the same way a PF
- 	 * does this for its VFs when ECPF is not a eswitch manager.
- 	 */
--	err = mlx5_cmd_host_pf_enable_hca(dev);
-+	err = mlx5_esw_host_pf_enable_hca(dev);
- 	if (err)
- 		mlx5_core_err(dev, "Failed to enable external host PF HCA err(%d)\n", err);
- 
-@@ -63,7 +64,7 @@ static void mlx5_host_pf_cleanup(struct mlx5_core_dev *dev)
- 	if (mlx5_ecpf_esw_admins_host_pf(dev))
- 		return;
- 
--	err = mlx5_cmd_host_pf_disable_hca(dev);
-+	err = mlx5_esw_host_pf_disable_hca(dev);
- 	if (err) {
- 		mlx5_core_err(dev, "Failed to disable external host PF HCA err(%d)\n", err);
- 		return;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/devlink_port.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/devlink_port.c
-index 89a58dee50b3..cd60bc500ec5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/devlink_port.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/devlink_port.c
-@@ -99,6 +99,8 @@ static const struct devlink_port_ops mlx5_esw_pf_vf_dl_port_ops = {
- 	.port_fn_roce_set = mlx5_devlink_port_fn_roce_set,
- 	.port_fn_migratable_get = mlx5_devlink_port_fn_migratable_get,
- 	.port_fn_migratable_set = mlx5_devlink_port_fn_migratable_set,
-+	.port_fn_state_get = mlx5_devlink_pf_port_fn_state_get,
-+	.port_fn_state_set = mlx5_devlink_pf_port_fn_state_set,
- #ifdef CONFIG_XFRM_OFFLOAD
- 	.port_fn_ipsec_crypto_get = mlx5_devlink_port_fn_ipsec_crypto_get,
- 	.port_fn_ipsec_crypto_set = mlx5_devlink_port_fn_ipsec_crypto_set,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-index 4b7a1ce7f406..5fbfabe28bdb 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-@@ -1304,24 +1304,52 @@ static int mlx5_eswitch_load_ec_vf_vports(struct mlx5_eswitch *esw, u16 num_ec_v
- 	return err;
- }
- 
--static int host_pf_enable_hca(struct mlx5_core_dev *dev)
-+int mlx5_esw_host_pf_enable_hca(struct mlx5_core_dev *dev)
- {
--	if (!mlx5_core_is_ecpf(dev))
-+	struct mlx5_eswitch *esw = dev->priv.eswitch;
-+	struct mlx5_vport *vport;
-+	int err;
-+
-+	if (!mlx5_core_is_ecpf(dev) || !mlx5_esw_allowed(esw))
- 		return 0;
- 
-+	vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_PF);
-+	if (IS_ERR(vport))
-+		return PTR_ERR(vport);
-+
- 	/* Once vport and representor are ready, take out the external host PF
- 	 * out of initializing state. Enabling HCA clears the iser->initializing
- 	 * bit and host PF driver loading can progress.
- 	 */
--	return mlx5_cmd_host_pf_enable_hca(dev);
-+	err = mlx5_cmd_host_pf_enable_hca(dev);
-+	if (err)
-+		return err;
-+
-+	vport->pf_activated = true;
-+
-+	return 0;
- }
- 
--static void host_pf_disable_hca(struct mlx5_core_dev *dev)
-+int mlx5_esw_host_pf_disable_hca(struct mlx5_core_dev *dev)
- {
--	if (!mlx5_core_is_ecpf(dev))
--		return;
-+	struct mlx5_eswitch *esw = dev->priv.eswitch;
-+	struct mlx5_vport *vport;
-+	int err;
- 
--	mlx5_cmd_host_pf_disable_hca(dev);
-+	if (!mlx5_core_is_ecpf(dev) || !mlx5_esw_allowed(esw))
-+		return 0;
-+
-+	vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_PF);
-+	if (IS_ERR(vport))
-+		return PTR_ERR(vport);
-+
-+	err = mlx5_cmd_host_pf_disable_hca(dev);
-+	if (err)
-+		return err;
-+
-+	vport->pf_activated = false;
-+
-+	return 0;
- }
- 
- /* mlx5_eswitch_enable_pf_vf_vports() enables vports of PF, ECPF and VFs
-@@ -1347,7 +1375,7 @@ mlx5_eswitch_enable_pf_vf_vports(struct mlx5_eswitch *esw,
- 
- 	if (mlx5_esw_host_functions_enabled(esw->dev)) {
- 		/* Enable external host PF HCA */
--		ret = host_pf_enable_hca(esw->dev);
-+		ret = mlx5_esw_host_pf_enable_hca(esw->dev);
- 		if (ret)
- 			goto pf_hca_err;
- 	}
-@@ -1391,7 +1419,7 @@ mlx5_eswitch_enable_pf_vf_vports(struct mlx5_eswitch *esw,
- 		mlx5_eswitch_unload_pf_vf_vport(esw, MLX5_VPORT_ECPF);
- ecpf_err:
- 	if (mlx5_esw_host_functions_enabled(esw->dev))
--		host_pf_disable_hca(esw->dev);
-+		mlx5_esw_host_pf_disable_hca(esw->dev);
- pf_hca_err:
- 	if (pf_needed && mlx5_esw_host_functions_enabled(esw->dev))
- 		mlx5_eswitch_unload_pf_vf_vport(esw, MLX5_VPORT_PF);
-@@ -1416,7 +1444,7 @@ void mlx5_eswitch_disable_pf_vf_vports(struct mlx5_eswitch *esw)
- 	}
- 
- 	if (mlx5_esw_host_functions_enabled(esw->dev))
--		host_pf_disable_hca(esw->dev);
-+		mlx5_esw_host_pf_disable_hca(esw->dev);
- 
- 	if ((mlx5_core_is_ecpf_esw_manager(esw->dev) ||
- 	     esw->mode == MLX5_ESWITCH_LEGACY) &&
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-index 714ad28e8445..6841caef02d1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-@@ -243,6 +243,7 @@ struct mlx5_vport {
- 	u16 vport;
- 	bool                    enabled;
- 	bool max_eqs_set;
-+	bool pf_activated;
- 	enum mlx5_eswitch_vport_event enabled_events;
- 	int index;
- 	struct mlx5_devlink_port *dl_port;
-@@ -587,6 +588,13 @@ int mlx5_devlink_port_fn_migratable_get(struct devlink_port *port, bool *is_enab
- 					struct netlink_ext_ack *extack);
- int mlx5_devlink_port_fn_migratable_set(struct devlink_port *port, bool enable,
- 					struct netlink_ext_ack *extack);
-+int mlx5_devlink_pf_port_fn_state_get(struct devlink_port *port,
-+				      enum devlink_port_fn_state *state,
-+				      enum devlink_port_fn_opstate *opstate,
-+				      struct netlink_ext_ack *extack);
-+int mlx5_devlink_pf_port_fn_state_set(struct devlink_port *port,
-+				      enum devlink_port_fn_state state,
-+				      struct netlink_ext_ack *extack);
- #ifdef CONFIG_XFRM_OFFLOAD
- int mlx5_devlink_port_fn_ipsec_crypto_get(struct devlink_port *port, bool *is_enabled,
- 					  struct netlink_ext_ack *extack);
-@@ -634,6 +642,8 @@ bool mlx5_esw_multipath_prereq(struct mlx5_core_dev *dev0,
- 			       struct mlx5_core_dev *dev1);
- 
- const u32 *mlx5_esw_query_functions(struct mlx5_core_dev *dev);
-+int mlx5_esw_host_pf_enable_hca(struct mlx5_core_dev *dev);
-+int mlx5_esw_host_pf_disable_hca(struct mlx5_core_dev *dev);
- 
- void mlx5_esw_adjacent_vhcas_setup(struct mlx5_eswitch *esw);
- void mlx5_esw_adjacent_vhcas_cleanup(struct mlx5_eswitch *esw);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 02b7e474586d..1b439cef3719 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -4696,6 +4696,61 @@ int mlx5_devlink_port_fn_roce_set(struct devlink_port *port, bool enable,
- 	return err;
- }
- 
-+int mlx5_devlink_pf_port_fn_state_get(struct devlink_port *port,
-+				      enum devlink_port_fn_state *state,
-+				      enum devlink_port_fn_opstate *opstate,
-+				      struct netlink_ext_ack *extack)
-+{
-+	struct mlx5_vport *vport = mlx5_devlink_port_vport_get(port);
-+	const u32 *query_out;
-+	bool pf_disabled;
-+
-+	if (vport->vport != MLX5_VPORT_PF) {
-+		NL_SET_ERR_MSG_MOD(extack, "State get is not supported for VF");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	*state = vport->pf_activated ?
-+		 DEVLINK_PORT_FN_STATE_ACTIVE : DEVLINK_PORT_FN_STATE_INACTIVE;
-+
-+	query_out = mlx5_esw_query_functions(vport->dev);
-+	if (IS_ERR(query_out))
-+		return PTR_ERR(query_out);
-+
-+	pf_disabled = MLX5_GET(query_esw_functions_out, query_out,
-+			       host_params_context.host_pf_disabled);
-+
-+	*opstate = pf_disabled ? DEVLINK_PORT_FN_OPSTATE_DETACHED :
-+				 DEVLINK_PORT_FN_OPSTATE_ATTACHED;
-+
-+	kvfree(query_out);
-+	return 0;
-+}
-+
-+int mlx5_devlink_pf_port_fn_state_set(struct devlink_port *port,
-+				      enum devlink_port_fn_state state,
-+				      struct netlink_ext_ack *extack)
-+{
-+	struct mlx5_vport *vport = mlx5_devlink_port_vport_get(port);
-+	struct mlx5_core_dev *dev;
-+
-+	if (vport->vport != MLX5_VPORT_PF) {
-+		NL_SET_ERR_MSG_MOD(extack, "State set is not supported for VF");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	dev = vport->dev;
-+
-+	switch (state) {
-+	case DEVLINK_PORT_FN_STATE_ACTIVE:
-+		return mlx5_esw_host_pf_enable_hca(dev);
-+	case DEVLINK_PORT_FN_STATE_INACTIVE:
-+		return mlx5_esw_host_pf_disable_hca(dev);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
- int
- mlx5_eswitch_restore_ipsec_rule(struct mlx5_eswitch *esw, struct mlx5_flow_handle *rule,
- 				struct mlx5_esw_flow_attr *esw_attr, int attr_idx)
-
-base-commit: fae1c659d7bd5640012be21b5b5d6490b83c0df8
--- 
-2.44.0
+> Best regards
+> YunJe
+> 
+> On Mon, Feb 2, 2026 at 10:34 PM Leon Romanovsky <leon@kernel.org> wrote:
+>>
+>> On Mon, Feb 02, 2026 at 01:55:14PM +0100, Bernard Metzler wrote:
+>>> On 02.02.2026 11:06, Leon Romanovsky wrote:
+>>>> On Sun, Feb 01, 2026 at 06:23:37PM +0100, Bernard Metzler wrote:
+>>>>> On 31.01.2026 12:13, YunJe Shin wrote:
+>>>>>> If siw_get_hdr() returns -EINVAL before set_rx_fpdu_context(),
+>>>>>> qp->rx_fpdu can be NULL. Since the error path in siw_tcp_rx_data()
+>>>>>> dereferences qp->rx_fpdu->more_ddp_segs without checking, this
+>>>>>> may lead to a NULL pointer deref. Only check more_ddp_segs when
+>>>>>> rx_fpdu is present.
+>>>>>>
+>>>>>>
+>>>>>> [  101.384271] KASAN: null-ptr-deref in range
+>>>>>> [0x00000000000000c0-0x00000000000000c7]
+>>>>>> [  101.385071] CPU: 1 UID: 1000 PID: 265 Comm: exploit_poc Not tainted
+>>>>>> 6.19.0-rc7-g8dfce8991b95 #1 PREEMPT(voluntary)
+>>>>>> [  101.385418] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
+>>>>>> 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+>>>>>> [  101.385869] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
+>>>>>> [  101.386511] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
+>>>>>> 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
+>>>>>> [  101.386979] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
+>>>>>> [  101.387243] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
+>>>>>> [  101.387545] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
+>>>>>> [  101.387829] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
+>>>>>> [  101.388076] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
+>>>>>> [  101.388316] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
+>>>>>> [  101.388599] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
+>>>>>> knlGS:0000000000000000
+>>>>>> [  101.388819] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>> [  101.389020] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
+>>>>>> [  101.389324] Call Trace:
+>>>>>> [  101.389635]  <IRQ>
+>>>>>> [  101.389807]  ? lapic_next_event+0x10/0x20
+>>>>>> [  101.389978]  ? clockevents_program_event+0x1d0/0x280
+>>>>>> [  101.390121]  ? hrtimer_interrupt+0x319/0x7e0
+>>>>>> [  101.390269]  __tcp_read_sock+0x1ab/0x810
+>>>>>> [  101.390412]  ? __pfx_siw_tcp_rx_data+0x10/0x10
+>>>>>> [  101.390535]  ? __pfx___tcp_read_sock+0x10/0x10
+>>>>>> [  101.390658]  siw_qp_llp_data_ready+0x185/0x2c0
+>>>>>> [  101.390759]  ? __pfx_siw_qp_llp_data_ready+0x10/0x10
+>>>>>> [  101.390871]  ? tcp_event_data_recv+0x36a/0x7b0
+>>>>>> [  101.390967]  ? tcp_queue_rcv+0x30a/0x620
+>>>>>> [  101.391062]  tcp_data_queue+0x1ecc/0x4b40
+>>>>>> [  101.391164]  ? common_startup_64+0x13e/0x148
+>>>>>> [  101.391265]  ? __pfx_tcp_data_queue+0x10/0x10
+>>>>>> [  101.391358]  ? tcp_try_undo_loss+0x640/0x710
+>>>>>> [  101.391459]  ? __pfx_read_tsc+0x10/0x10
+>>>>>> [  101.391545]  ? ktime_get+0x60/0x140
+>>>>>> [  101.391669]  ? __pfx_do_sync_core+0x10/0x10
+>>>>>> [  101.391764]  tcp_rcv_established+0x801/0x35e0
+>>>>>> [  101.391864]  ? sk_filter_trim_cap+0x4ab/0xb20
+>>>>>> [  101.391963]  ? __pfx_tcp_inbound_hash+0x10/0x10
+>>>>>> [  101.392060]  ? __pfx_tcp_rcv_established+0x10/0x10
+>>>>>> [  101.392167]  ? bpf_skb_net_hdr_push+0x560/0x580
+>>>>>> [  101.392268]  ? _raw_spin_lock+0x7f/0xd0
+>>>>>> [  101.392363]  tcp_v4_do_rcv+0x525/0x8a0
+>>>>>> [  101.392461]  tcp_v4_rcv+0x249d/0x3e50
+>>>>>> [  101.392558]  ? kernel_text_address+0xa7/0x130
+>>>>>> [  101.392685]  ? __pfx_tcp_v4_rcv+0x10/0x10
+>>>>>> [  101.392779]  ? unwind_get_return_address+0x59/0xa0
+>>>>>> [  101.392897]  ? __pfx_raw_local_deliver+0x10/0x10
+>>>>>> [  101.393020]  ip_protocol_deliver_rcu+0x61/0x2e0
+>>>>>> [  101.393122]  ? __pfx_stack_trace_save+0x10/0x10
+>>>>>> [  101.393233]  ip_local_deliver_finish+0x332/0x4b0
+>>>>>> [  101.393333]  ? ip_finish_output2+0x71f/0x19a0
+>>>>>> [  101.393429]  ip_local_deliver+0x18f/0x2d0
+>>>>>> [  101.393530]  ? __pfx_ip_local_deliver+0x10/0x10
+>>>>>> [  101.393642]  ? __pfx___netif_receive_skb_core.constprop.0+0x10/0x10
+>>>>>> [  101.393789]  ? __kasan_mempool_poison_object+0xbb/0x190
+>>>>>> [  101.393899]  ? napi_skb_cache_put+0x23/0x190
+>>>>>> [  101.394001]  ? skb_defer_free_flush+0x145/0x1b0
+>>>>>> [  101.394100]  ? net_rx_action+0x349/0xfb0
+>>>>>> [  101.394215]  ? __asan_memset+0x23/0x50
+>>>>>> [  101.394315]  ? __tcp_push_pending_frames+0x8f/0x2f0
+>>>>>> [  101.394423]  ip_rcv+0x221/0x270
+>>>>>> [  101.394506]  ? __pfx_ip_rcv+0x10/0x10
+>>>>>> [  101.394627]  ? __pfx_ip_rcv+0x10/0x10
+>>>>>> [  101.394735]  __netif_receive_skb_one_core+0x161/0x1b0
+>>>>>> [  101.394876]  ? __pfx___netif_receive_skb_one_core+0x10/0x10
+>>>>>> [  101.395029]  ? _raw_spin_lock_irq+0x80/0xe0
+>>>>>> [  101.395154]  process_backlog+0x1e5/0x5e0
+>>>>>> [  101.395268]  ? napi_skb_cache_put+0x23/0x190
+>>>>>> [  101.395423]  __napi_poll+0x9a/0x500
+>>>>>> [  101.395533]  net_rx_action+0x988/0xfb0
+>>>>>> [  101.395671]  ? _raw_spin_lock_irq+0x80/0xe0
+>>>>>> [  101.395797]  ? __pfx_net_rx_action+0x10/0x10
+>>>>>> [  101.395948]  ? timerqueue_add+0x21b/0x320
+>>>>>> [  101.396093]  ? __hrtimer_run_queues+0x3de/0x790
+>>>>>> [  101.396251]  ? __pfx_read_tsc+0x10/0x10
+>>>>>> [  101.396365]  ? ktime_get+0x60/0x140
+>>>>>> [  101.396475]  handle_softirqs+0x18c/0x530
+>>>>>> [  101.396592]  ? __pfx_handle_softirqs+0x10/0x10
+>>>>>> [  101.396731]  do_softirq+0x3b/0x60
+>>>>>> [  101.396855]  </IRQ>
+>>>>>> [  101.396940]  <TASK>
+>>>>>> [  101.397004]  __local_bh_enable_ip+0x61/0x70
+>>>>>> [  101.397144]  __dev_queue_xmit+0x618/0x2fe0
+>>>>>> [  101.397257]  ? __local_bh_enable_ip+0x61/0x70
+>>>>>> [  101.397380]  ? __pfx___dev_queue_xmit+0x10/0x10
+>>>>>> [  101.397500]  ? sched_clock+0x10/0x30
+>>>>>> [  101.397613]  ? __pfx_selinux_ip_postroute_compat+0x10/0x10
+>>>>>> [  101.397770]  ? _raw_spin_trylock+0xaf/0x120
+>>>>>> [  101.397883]  ? selinux_ip_postroute+0x3e9/0x9d0
+>>>>>> [  101.398008]  ip_finish_output2+0x71f/0x19a0
+>>>>>> [  101.398125]  ? __pfx_ip_finish_output2+0x10/0x10
+>>>>>> [  101.398251]  ? __pfx_stack_trace_consume_entry+0x10/0x10
+>>>>>> [  101.398395]  __ip_finish_output.part.0+0x477/0x950
+>>>>>> [  101.398541]  ? __pfx___ip_finish_output.part.0+0x10/0x10
+>>>>>> [  101.398691]  ? nf_hook_slow+0xa7/0x1e0
+>>>>>> [  101.398796]  ip_output+0x260/0x4d0
+>>>>>> [  101.398903]  ? __pfx_ip_output+0x10/0x10
+>>>>>> [  101.399015]  ? __pfx_stack_trace_save+0x10/0x10
+>>>>>> [  101.399132]  ? __pfx_ip_finish_output+0x10/0x10
+>>>>>> [  101.399236]  ? kasan_save_stack+0x42/0x60
+>>>>>> [  101.399501]  ? ipv4_dst_check+0x10a/0x160
+>>>>>> [  101.399665]  __ip_queue_xmit+0xcfb/0x1d60
+>>>>>> [  101.399813]  ? __tcp_select_window+0xf8/0xed0
+>>>>>> [  101.399931]  ? __skb_clone+0x550/0x740
+>>>>>> [  101.400034]  __tcp_transmit_skb+0x29ce/0x3de0
+>>>>>> [  101.400159]  ? __pfx___tcp_transmit_skb+0x10/0x10
+>>>>>> [  101.400284]  ? kmem_cache_alloc_node_noprof+0x13b/0x4d0
+>>>>>> [  101.400423]  ? kasan_save_track+0x14/0x30
+>>>>>> [  101.400565]  tcp_write_xmit+0x11ba/0x7610
+>>>>>> [  101.400744]  ? skb_page_frag_refill+0x55/0x430
+>>>>>> [  101.400872]  __tcp_push_pending_frames+0x8f/0x2f0
+>>>>>> [  101.400999]  tcp_sendmsg_locked+0x156e/0x3b70
+>>>>>> [  101.401165]  ? __pfx_tcp_sendmsg_locked+0x10/0x10
+>>>>>> [  101.401362]  ? __pfx_selinux_socket_sendmsg+0x10/0x10
+>>>>>> [  101.401528]  ? _raw_spin_lock_bh+0x83/0xe0
+>>>>>> [  101.401733]  ? ldsem_up_read+0x12/0x40
+>>>>>> [  101.402061]  tcp_sendmsg+0x26/0x40
+>>>>>> [  101.402210]  __sys_sendto+0x364/0x430
+>>>>>> [  101.402346]  ? __pfx___sys_sendto+0x10/0x10
+>>>>>> [  101.402523]  ? ksys_write+0xf7/0x1c0
+>>>>>> [  101.402671]  ? __pfx_ksys_write+0x10/0x10
+>>>>>> [  101.402834]  __x64_sys_sendto+0xdb/0x1b0
+>>>>>> [  101.402968]  ? fpregs_assert_state_consistent+0x56/0xe0
+>>>>>> [  101.403107]  do_syscall_64+0xa4/0x320
+>>>>>> [  101.403254]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>>>>>> [  101.403554] RIP: 0033:0x42440d
+>>>>>> [  101.403982] Code: 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 00 f3 0f 1e
+>>>>>> fa 80 3d 5d fc 08 00 00 41 89 ca 74 20 45 31 c9 45 31 9
+>>>>>> [  101.404392] RSP: 002b:00007ffc69a5f158 EFLAGS: 00000246 ORIG_RAX:
+>>>>>> 000000000000002c
+>>>>>> [  101.404659] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000042440d
+>>>>>> [  101.404864] RDX: 0000000000000030 RSI: 00007ffc69a5f180 RDI: 0000000000000003
+>>>>>> [  101.405069] RBP: 00007ffc69a5f200 R08: 0000000000000000 R09: 0000000000000000
+>>>>>> [  101.405257] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc69a5f318
+>>>>>> [  101.405416] R13: 00007ffc69a5f340 R14: 00000000004ae868 R15: 0000000000000001
+>>>>>> [  101.405634]  </TASK>
+>>>>>> [  101.405771] Modules linked in:
+>>>>>> [  101.406766] ---[ end trace 0000000000000000 ]---
+>>>>>> [  101.407214] RIP: 0010:siw_tcp_rx_data+0x13ad/0x1e50
+>>>>>> [  101.407387] Code: 0b 89 34 24 e8 b4 49 1b fe 8b 34 24 48 8b ab f8
+>>>>>> 03 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bd c5 00 00 8
+>>>>>> [  101.407946] RSP: 0018:ffff88806d1083a0 EFLAGS: 00000207
+>>>>>> [  101.408091] RAX: dffffc0000000000 RBX: ffff88800d5ef000 RCX: 0000000000000000
+>>>>>> [  101.408239] RDX: 0000000000000018 RSI: 00000000ffffffea RDI: 00000000000000c5
+>>>>>> [  101.408375] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000006
+>>>>>> [  101.408508] R10: ffff88800d5ef5be R11: 0000000000000001 R12: dffffc0000000000
+>>>>>> [  101.408741] R13: ffff88800d5ef3f4 R14: 0000000000000010 R15: ffff88800d5ef384
+>>>>>> [  101.408897] FS:  00000000110e2380(0000) GS:ffff8880e62af000(0000)
+>>>>>> knlGS:0000000000000000
+>>>>>> [  101.409051] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>> [  101.409181] CR2: dffffc0000000018 CR3: 00000000092c7000 CR4: 00000000000006f0
+>>>>>> [  101.409577] Kernel panic - not syncing: Fatal exception in interrupt
+>>>>>> [  101.410887] Kernel Offset: disabled
+>>>>>> [  101.411108] Rebooting in 1 seconds..
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+>>>>>> Signed-off-by: YunJe Shin <ioerts@kookmin.ac.kr>
+>>>>>> ---
+>>>>>>     drivers/infiniband/sw/siw/siw_qp_rx.c | 3 +--
+>>>>>>     1 file changed, 1 insertion(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+>>>>>> index e8a88b378d51..960f740cf46a 100644
+>>>>>> --- a/drivers/infiniband/sw/siw/siw_qp_rx.c
+>>>>>> +++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+>>>>>> @@ -1434,8 +1434,7 @@ int siw_tcp_rx_data(read_descriptor_t *rd_desc, struct sk_buff *skb,
+>>>>>>                          run_completion = 0;
+>>>>>>                  }
+>>>>>>                  if (unlikely(rv != 0 && rv != -EAGAIN)) {
+>>>>>> -                       if ((srx->state > SIW_GET_HDR ||
+>>>>>
+>>>>> We cannot remove that state > SIW_GET_HDR condition.
+>>>>>
+>>>>> Consider this error case:
+>>>>> We received a header of say a short SEND comprising only
+>>>>> one DDP segment, and started data processing, while
+>>>>> encountering an error (too much data, no write permission
+>>>>> for the receive buffer, etc.). We have to complete the
+>>>>> current RECEIVE processing and surface a local completion,
+>>>>> since we already fetched the RQE from the receive queue.
+>>>>
+>>>> Could you walk me through the code call chain?
+>>>> Don't we start with SIW_GET_HDR, which should initialize the qp->rx_fpdu
+>>>> pointer?
+>>>>
+>>>
+>>> Yes, we start with SIW_GET_HDR. If we got the complete header,
+>>> we move on to states for placing data and/or fetching trailer
+>>> CRC.
+>>>
+>>> If we did not complete the header but encounter an error during
+>>> its parsing, such as an unsupported RDMA operation, we do not
+>>> leave SIW_GET_HDR state, but let the outer receive loop handle
+>>> the error case while in SIW_GET_HDR state. So far so good.
+>>>
+>>> We did not consider the special error case that we are in
+>>> SIW_GET_HDR, but may have been unable to set the qp->rx_fpdu
+>>> receive context pointer, since it is a first fragment of a new
+>>> message and the header is malformed. In that case, we do not
+>>> assign a receive context and no local completion must be
+>>> generated.
+>>>
+>>> If, at the other hand, it is the start of an expected consecutive
+>>> DDP fragment of a _fragmented_ message (checked via
+>>> 'qp->rx_fpdu->more_ddp_segs'), we (1) already have a receive context
+>>> (was set during parsing the first correct DDP segment), and (2) we
+>>> shall complete that incomplete RDMA operation in error, since we
+>>> already started it when parsing the previous message fragment(s).
+>>>
+>>> Yes that is all rather complicated ...
+>>
+>> Thanks, so let's leave srx->state > SIW_GET_HDR check intact.
+>>
+>>>
+>>> Thanks,
+>>> Bernard.
+>>>
+>>>
+>>>
+>>>
+>>>> Thanks
+>>>>
+>>>>>
+>>>>>> -                            (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs)) &&
+>>>>>> +                       if (qp->rx_fpdu && qp->rx_fpdu->more_ddp_segs &&
+>>>>>>                              run_completion)
+>>>>>>                                  siw_rdmap_complete(qp, rv);
+>>>>>
+>>>
+>>>
 
 
