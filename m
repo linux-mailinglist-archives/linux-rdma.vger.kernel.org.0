@@ -1,166 +1,153 @@
-Return-Path: <linux-rdma+bounces-16431-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16432-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mAEENW24gWm7JAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16431-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 09:57:17 +0100
+	id sCXVGIa5gWm7JAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16432-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 10:01:58 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34DBBD67B8
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 09:57:17 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A9FD6862
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 10:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BD96830293E4
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 08:57:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 72776300BE0C
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 09:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846A8396B84;
-	Tue,  3 Feb 2026 08:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1860B2DB7AE;
+	Tue,  3 Feb 2026 09:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="N1y6CL8o"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="G24xNmkv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17F4392C4C
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 08:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2AC30C614
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 09:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770109034; cv=none; b=Gw1/iE15c5XbgNH8NgpVDWHbajj7kD+fS8+0+W6opI1wWU9R2acmkEbluMUxzNEcSOU1663HMBVfK41to48tUuy8UAr6ZiU9Gqx8OHeiqgzHo23iRW+Ys6OWecJGIgmulTOrTHYgFy9fTAqJFckI4+8iIjPy6gawAxlOLX7OEdc=
+	t=1770109259; cv=none; b=bQuZUBKKSWOnA8HySR66CIGtMm9RDF2l0Z3Imij1TgywyOcne/d5sK+vhA6JQPAbJMYvnRT4dGIZ095YswaDxdOJxHILxMvxLkm/vPaox+hd2W49cLQb6Oj/drpVHRJvWSAI7w4BMp5Nswbn1FkNwa3Gkq4grQaSxCQvSM2+Nuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770109034; c=relaxed/simple;
-	bh=crBZ5WIC2ojdcL5WCMP1ZEK12YCUbKmswLT+K1hYo6I=;
+	s=arc-20240116; t=1770109259; c=relaxed/simple;
+	bh=0mub+m88Wg+1zSHWUi9Z9P6VHHhlvh4f/Wf7W+hqNWg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u7cRIYm3Mi3NSC98Tv8AnTP+Z5d5V+AS7i1bW1iIorNUOb6D2x7BWZ9h34zWTDa5y59jVjtLoukno/BceXnXHjfy3tyKswsCAdIJ9Ufw8JsFRbVJdGKSriYQkyIE8UCs6RVbkS+3gngV96FwORi2xFob4XGXVFwyccSPOicJbHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=N1y6CL8o; arc=none smtp.client-ip=209.85.128.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=cc79O42DII7ZTSf7F/zaSMUuDZFwBNVS7H6YLPDXkIOjPFK3HDFB6pDErRQtYLORNVJbziAE/lMqTNL6+cwtxOGWgWFa4xmMUoOEVaawXyzwejaFHBgKxkggMjDMK+2TfXgpP5vr8H/Fqj9y9Eg/yaxbJaN7SbeAeFgQVkb7fXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=G24xNmkv; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4806dffc64cso40798725e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 00:57:12 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4806bf39419so2940325e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 01:00:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770109031; x=1770713831; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wD5R2slMnbZSZlcYUfM9xwtbVzBe2col6bRw9OwQ4NE=;
-        b=N1y6CL8oSSq/cVW7f3AaLzU+xr3igGAt0+oMbW3u9RdlW5sMugIqU7CaO6EIPYCecp
-         x0qzMNfpi9C4lakLy2LfT6R2rPLueWo2JEBUeFDeOMRQlWj0cxDUVcqB8Af046WMWNrC
-         4zzWmfMBudXE2zCesOWMLiUOvyi0QebAHdBvzPzPsNMSNeGthS/OCmhyA99ko6YFpblD
-         NN8DB4cETe0W5bUNUYQE53f3xKNlR1WJo5XmG7FPlAlHl18hUffrAJO2YBXVXYy3fzu2
-         HWVNT5+gCiL0CQrI8E7Hjd+1g0gWflD1ra4VoE+Swgx11AjQri2Su87fQ+9/PXXGf2oC
-         aP8w==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770109256; x=1770714056; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0mub+m88Wg+1zSHWUi9Z9P6VHHhlvh4f/Wf7W+hqNWg=;
+        b=G24xNmkvHLhNQmqRne0ktZYcRXcAiZzHlvsTo9SnkxDOUOHNdb1X+RgjTLXtuQh64x
+         52daTPoHHgokvcwhFtV3qQUFCK0elsmMEUS1KLSOFbPrMEva/yplFBZre3N/Qd9GFZ+5
+         t+vtkyVllCTU8g4t7SkMDNkI0JraghDZ2EJz33b6HbkETpBg7XFWaIiYpNLrrhOr//aM
+         Ii2Wd/aEvoVbPVEXjik4h5Kr0JG/yNORudGO2ZhVDr87JxOOqtiTQe1C3KTxuXp/Cflu
+         B6nk1lpKkGHvVhNYvj9HIk7kpIHDj0TjFOwSRS5CUrLYNs1avZRlv/bJCyFaD/UZP8Vp
+         S2Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770109031; x=1770713831;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wD5R2slMnbZSZlcYUfM9xwtbVzBe2col6bRw9OwQ4NE=;
-        b=gCppww2i3o42QAC5VuUl3UeyzwAApxPP5bMmaX9Sytz6HAvhAepxBMUTo5MTOHqnoo
-         ExKNLD/8alsUwQHgfIWFR3Ad+hQa2ksi9W0ARfycj41OWw0DOHPhh6eJSItYeIzZLrdb
-         98yB807ZmQgx/AZkIyNNojxufxj1leizw4bawKrjcFR0tcaxgnfosacR69VYUnFF1izT
-         ordlWh0Ub+Os/ImWTl3mqFYexNrf4+RSs0VRQs/k0yJ1y7ID0MjW4Amy5UewtlOYdMdp
-         qDIc+zue+lxVrAjQUwnf3geoZHAfzMbIPTOPuDOnF9S/6Ph5dHlMKFBfOyCcJRd714WF
-         unmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUl51sBTpY4PPAbEfjJUk6N0N8UaCS7GOygzdTWNmXnPkIBPJZ+hhu0tNVNwlep9OsYOq0arUA+dCyV@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHbKKq95XeI5vInZLLvtcbYutGfS/idOa88bsY4HTWvE1d9kHZ
-	gjay5/89bg8PaKK+xtWsK93Fn0/rqAtStwKjSyM6I0PII6JxJrcK3vZx0F2cIKkDiOc=
-X-Gm-Gg: AZuq6aL+jLlg9SwMA6bMnHcIMWdH++gcrdsGzh2z3oAfCQM7xh1p6RNDyYXCmrwTbtF
-	/4lgBUo/QK4csn6lXO6DKOsC8DxP8ZU9anNLNkVY9FiWvLyCaQ2EuWOoIDURCncROiRqInzh2RX
-	yHG9zWfyhMSYjJ6mbvRnS1z4q8MAnlzcgSq0fEONSjTR1HKRTxBkFFCjjB/EuqNEZwcPJbjnBzx
-	I1TxzYuLCINOfdwl9BJWSX9FYXpP8mdYnkLq4wAY2GFUS/ClxDlkPmrgH5TiaHo+fYhDqhZI7le
-	S9LIxiZnTBo+QCkZHbLRcX6nxNjhWlxpm4nyJ/6/qPP/EODupqV0sgVuKlARX5S4kf7vhpOl77I
-	69xnMAi16z2JQzPy07OEJIhRICjU2YhOwld6AHbydWWEi/BSpbMSfLuJ8nj9kOM5kZ/BkZHgWMH
-	s3PCO7zdyKgwRCMig8W2A=
-X-Received: by 2002:a05:600c:4f8a:b0:47d:92bb:2723 with SMTP id 5b1f17b1804b1-482db456350mr204364215e9.3.1770109030952;
-        Tue, 03 Feb 2026 00:57:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770109256; x=1770714056;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0mub+m88Wg+1zSHWUi9Z9P6VHHhlvh4f/Wf7W+hqNWg=;
+        b=UA/Yj2zPmKDUzhxJzsjHhP/svrxNJ2PTGHvdTV34bqmM7DH3yVsISwG2XDK2Ga9P9N
+         02ZgD5gLDBc9fU61/a1Yfh9pIx3Ti3GHye6CYHyIWMBszn3xZKK3shie4g2/0xn120Dq
+         GVoNUC14i/SSOfLNDtyBcV2Hz9AI75fmK7TZitNKp7vg34NY8mWyw2HrRja8LzMkgFSm
+         OAHrlX1TLRMQu44IRB97fCMbU318QWwrtm35kVLYkcQvjrStMkAHzu5sDMIn76PoXvJY
+         1lvUTWSlKPFPNJLBTZULA5c2y9S67VJiuC+tQsDSt42XrzeanWRj1xJ73GaBhrMGWGzw
+         arOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVv4onfUQKY9+x4RrJyN0aHa4/UBHRQh2hinLTb/FCPieLuzpAdxoE1QodsRaydt/j0vQR6pozaPKmN@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGIIHq2RVjK8JcQyK+SU1d+GVF0TMvwg5LAirjRebSQtLnFRJL
+	uABikwEEN+pt9Q4Ya+LFKlEvuUVCHA+OJh49WPUy1fiO2T7n7kJ5pZtLfSVxAgKHODQ=
+X-Gm-Gg: AZuq6aLolTG41WItub0ntoVaNXGAo++ibFgyA7rov8ZkKjGY6GCunksToyXYpbT1dbw
+	rJvxnSlTxbYNrtdcLE95hGJ0HE3m/DtN6tWjymkgqGs4KhMRPIn3y2MG3slw1Ps9aiO5aMUPtug
+	v34DqXe8hXO+F5Sqejc7dqmnSb/nUeWD5HkpIfCywddqSRlwfiU2rDYQrTGELr5dixF1bAafJUD
+	RVCKU7GwhktA8ryzXEZf00XFR90PtfodurNXRydmBy3GcR0tWHJ65nSB/lTqHiAsmDSnSapav/T
+	Prmv3RKQ6qF7rESdYJjZuiIz1R7lCPu5Q25qHXro7GBRJ6N7boa4G/mLVhNE7SBbK6/Kx74XIky
+	3r7QYLXSas5cb0eSp3dpGTVrTZzq19pfztyrEgUcwC4sCc7iSTsE+DrxDG4IS5j6INgHu5DaWFV
+	aaaFYwbnUcMZ8FMAYa/s7M/LNAAZPBOQ==
+X-Received: by 2002:a05:600c:33a6:b0:47d:52ef:c572 with SMTP id 5b1f17b1804b1-483051314dbmr19408305e9.1.1770109256079;
+        Tue, 03 Feb 2026 01:00:56 -0800 (PST)
 Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483051379c4sm48518245e9.15.2026.02.03.00.57.10
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483051626c1sm45547045e9.13.2026.02.03.01.00.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 00:57:10 -0800 (PST)
-Date: Tue, 3 Feb 2026 09:57:09 +0100
+        Tue, 03 Feb 2026 01:00:55 -0800 (PST)
+Date: Tue, 3 Feb 2026 10:00:54 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Jiri Pirko <jiri@nvidia.com>, 
-	leon@kernel.org, linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
-	selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v9 5/5] RDMA/bnxt_re: Direct Verbs: Support CQ
- and QP verbs
-Message-ID: <diynzidwh5buv4pnr6smlrgjuog5idjewhqh5cugtqtpknjl7a@eqvfvoybppyk>
-References: <20260127103109.32163-1-sriharsha.basavapatna@broadcom.com>
- <20260127103109.32163-6-sriharsha.basavapatna@broadcom.com>
- <20260128153248.GK1641016@ziepe.ca>
- <CAHHeUGVLi8ZxK3qpJ+nk6DcDd8365fdru-vPmkKtF6k-P4FAcw@mail.gmail.com>
- <CAHHeUGVZCojAmjmqm7yPys2N2TYApPnbMN3dcb4dnWDL_sAA0g@mail.gmail.com>
- <20260128194253.GX1641016@ziepe.ca>
- <CAHHeUGUNzi3x5bAQeHKkMY2Mb3nE7eFJAVF=NHNXoQ3RRLGzcw@mail.gmail.com>
- <20260202174845.GK2328995@ziepe.ca>
- <CAHHeUGW=Jced=QcFK=7+rZdHmVZkzDKdvOZ7beTK2u_xcQ2hfw@mail.gmail.com>
+Cc: leon@kernel.org, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH rdma-next v10 1/6] RDMA/uverbs: Support QP creation with
+ user allocated memory
+Message-ID: <bi2d2urxye5qznufyo3safmwrk3inkcbam4yxigiacze5bo2js@6cgsln44phc5>
+References: <20260203050049.171026-1-sriharsha.basavapatna@broadcom.com>
+ <20260203050049.171026-2-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHHeUGW=Jced=QcFK=7+rZdHmVZkzDKdvOZ7beTK2u_xcQ2hfw@mail.gmail.com>
+In-Reply-To: <20260203050049.171026-2-sriharsha.basavapatna@broadcom.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	TAGGED_FROM(0.00)[bounces-16431-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16432-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	RSPAMD_URIBL_FAIL(0.00)[resnulli-us.20230601.gappssmtp.com:query timed out,resnulli.us:query timed out];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RSPAMD_EMAILBL_FAIL(0.00)[jiri.resnulli.us:query timed out,sriharsha.basavapatna.broadcom.com:query timed out];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 34DBBD67B8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,broadcom.com:email,resnulli.us:email]
+X-Rspamd-Queue-Id: 05A9FD6862
 X-Rspamd-Action: no action
 
-Tue, Feb 03, 2026 at 06:05:48AM +0100, sriharsha.basavapatna@broadcom.com wrote:
->On Mon, Feb 2, 2026 at 11:18 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>
->> On Mon, Feb 02, 2026 at 07:49:29PM +0530, Sriharsha Basavapatna wrote:
->> > I have the revised patchset ready. Let me know how you want to proceed
->> > -  if I should send it out (without the uverbs kernel patch for QP
->> > umem) or if I should wait for the kernel patch and rebase it before
->> > sending.
->>
->> How about change the Author on that patch to youself and some
->> co-developed & signed-off for Jiri and send it out, I'd at least like
->> to look at the other changes.
->>
->> Jiri said he would send his series, there is still time I can stitch
->> something together.
->Ok, I will include that patch as a placeholder for now and this patch
->series can be rebased when it is ready.
+Tue, Feb 03, 2026 at 06:00:44AM +0100, sriharsha.basavapatna@broadcom.com wrote:
+>Some applications may need to allocate their own memory for queues,
+>instead of using memory allocated by the library. This patch supports
+>creation of QPs with such user allocated memory. This support already
+>exists for CQs. Along similar lines, add new uverb attributes to
+>specify umem buffers (VA/length or FD/offset combinations), for SQ
+>and RQ. The handler pins these buffers and passes them to the driver
+>through a new 'create_qp_umem' device op.
+>
+>Co-developed-by: Jiri Pirko <jiri@resnulli.us>
+>Signed-off-by: Jiri Pirko <jiri@resnulli.us>
 
-Check out:
+NACK
+Definitelly didn't signed this off. Sigh :/
+
+There are many flaws with this draft your AI tool didn't catch.
+
+Anyway, could you check out:
 https://lore.kernel.org/linux-rdma/20260203085003.71184-11-jiri@resnulli.us/
 
-
->Thanks,
->-Harsha
->>
->> Jason
-
+Tested and debugged version of this draft is there. Btw, I wrote clearly
+I will send it, I don't understand what's the rush....
 
 
