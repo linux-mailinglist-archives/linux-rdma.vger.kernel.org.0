@@ -1,91 +1,93 @@
-Return-Path: <linux-rdma+bounces-16390-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16391-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gFujJgCDgWlNGwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16390-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 06:09:20 +0100
+	id AC0jLQSDgWlNGwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16391-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 06:09:24 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3589D491E
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 06:09:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C04FD4925
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 06:09:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6AF7B30069AB
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 05:09:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D026B302AE2B
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 05:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECFE2F39B1;
-	Tue,  3 Feb 2026 05:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86853246FA;
+	Tue,  3 Feb 2026 05:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Yplf2aBL"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OpQ9fbZA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f225.google.com (mail-pg1-f225.google.com [209.85.215.225])
+Received: from mail-qv1-f98.google.com (mail-qv1-f98.google.com [209.85.219.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F86192B7D
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 05:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AA9192B7D
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 05:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770095356; cv=none; b=ZOrjPovLopTuTz0pJ6/hK6QCHwgU0dAx3XIT8OJeghkQWq1pgwK9ywY/VYWtCEGe1GY8zkKODXn0dOZ3dneF4FVZMkbVuO/FDG52x7CMSaochcj6OdvZTUCuFdRm1Zetu4rKRo798xhkSS0+6ybPOWjErGyoys1ocuCm6iti/Y0=
+	t=1770095359; cv=none; b=bFCnsq8uYvKlAV5zr0SEsrU66A8OCWVp9XzBxrs968Q9+geybps4tUguZ/PXTQUx6asaWptf+j/8p0z9E6JJqpp+qHWV0mbjQ9LBD0dh3Xu1fVAyfBoEdHxlS9ZvoXZqx0oN0Uy94ZW1nA1o2pDg7vcdzA4XopjIXYB5LWFRSNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770095356; c=relaxed/simple;
-	bh=pR4L2rMeyfFKqF0KqSGmPKUoSYc82N9Bk06IH/0c1R8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eoRoPLUCenUC03WWWzzYtGGJBNe4kon8NGCBTVhXTIgQD7KqG3/SPL9jfyk6osnEWg3s6KpqsZVN66Tig8HJCTr7JRBIk8nPSdbrPbTjBGc1qJ0meM88vfczeEucvp6umy2BLQZ8CmHxPQ/zrfieuyX0EI0ni1zj/mVdKPcXzy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Yplf2aBL; arc=none smtp.client-ip=209.85.215.225
+	s=arc-20240116; t=1770095359; c=relaxed/simple;
+	bh=XIsnXHzpbNVG4cgLvd59DiXIL6CS/sShLuO38c0n8eU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Wl32h0Tfr20VYm/8E0Vnn1Cf33Y1BFLgAnKFNAUENBAl6/BFQ0yz1g+Ehod0NDDbVVMxYVJsGHTDkbLjVdm+keWuc0jmhlK0Yhr3i0Kgv1Tpaixx7Dj19ekt9cbyAsd0UrnE97dA0ZL9zuwigv9DH8PGGF3PXhBPvSfZsO89DAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=OpQ9fbZA; arc=none smtp.client-ip=209.85.219.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f225.google.com with SMTP id 41be03b00d2f7-c65822dead7so2062432a12.3
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 21:09:14 -0800 (PST)
+Received: by mail-qv1-f98.google.com with SMTP id 6a1803df08f44-894674a4c4aso93046886d6.3
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 21:09:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770095354; x=1770700154;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W13QsJysAuhzPW1PDBgh2Vqmo6mJ2keoagDseiZ7L0o=;
-        b=fQufqN1tPg+KJffwHDsplwKBVUU0Wy9/jDQ8mbJH294Vh6hPp7yq/X3KS41n1LD8JU
-         ih3Sa80I3TiLPg9keG1Ovc0KFBc9C1LgtFCFHXimD2y8LgBZpmIqvYikFdcQCdTy0JQ6
-         4WarCt+KN32x/yz2vraS2Tw4kbatVdU4Szx+qP8hFJa852DUmUHE4tjusDMVGzudTdfj
-         +KCJAwsAz0uk2+HQqHSXPRDNvHmsQrJj2ZI1nrsjI7Az3WGDGnOBZD6AQtXowptu50dd
-         RbhdezMEMzTwggcuNKceDpgnzm7koJRKASO6MX2ZYrvY6jxofJY4e/eC5vXmgXc8Tk6L
-         iRTQ==
-X-Gm-Message-State: AOJu0Yw+JHoKQFMg+pFet1ry8d8RgN2FmNd6tc3wqQQzDJp9o/PQL2OE
-	0xS9J+sjntTnRcOeiyXLY/yJrv0ggzhZ2eP5rnNw6YMjMFWb/sXdKfilJeELsYSClJpjxRsAplM
-	tB5TuIxvyTVG1367OV5yoQX+Gy8uzUdLZf8FOjcQ0S1Y49kJRZgS5Gp9y6LT+52RiHgx8vdxX1i
-	MCFo1hpw9oj0dIit/RPKXC/cCyPKxgIDiTxrz6SDP1Ba/QO5akpnLGbWHdoT3x1o2oq802fsvCd
-	qWCmpaOZ/h5CKzSHRcZdFGlNOxE
-X-Gm-Gg: AZuq6aLWocOyHGETXE+Qd3Zjf1g+EgjkbYuftRg6tZSd5t2hPzZ6vnU2wAU5hsBe9Zr
-	fpBhX8+1qZWh3PLQr7foGhnBhUxo0RHmeeO4fAaY9tkGD95+QAMUOEouyXGClDphOpSGkkjvDaF
-	WSh1PIBo9wUZTNespM5yVtMpUa/UMu6xyvCaI4XvABMJMMySsfpv9i0dayhQrih69r29p7uOPD0
-	GIef7KE4tPp727kfbpwRBGQU30EmTqb8WCsQckh4nmjXGSjfzHBvFLuf5CQj3mQDJpF0i9GEviz
-	UMFKGNn68P029bSdECHN3HivryRFV4oYFZMCSknQiBhcGfVNoORz6c52u+SHPIaAnqhEphNSW4r
-	jfYTKhxoUHX25QD6PsGTIoPl1hFRo08jYijFgNx4CRoFVK6qZYUW+SUNXSX88BgAGji6lS5D/Q2
-	pLZcGbMKKhmlYho9RRSzQ8P8KbJWcjqIzkWf/Jni0Bux11BH6KeOF5hw==
-X-Received: by 2002:a17:902:cecb:b0:295:54cb:16ac with SMTP id d9443c01a7336-2a8d7ed87e3mr147213125ad.18.1770095353935;
-        Mon, 02 Feb 2026 21:09:13 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2a88b4265d6sm24177035ad.25.2026.02.02.21.09.13
+        d=1e100.net; s=20230601; t=1770095357; x=1770700157;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0+d9QeeN96tmRVPkP62NfL1ey4Ul15qmkoa8q5JR88Y=;
+        b=p58+Z7PWc+ENOfzBPxne4YRAqzrwTaO5eFcqD/2XNZ482rrCNcZR0YeizhGft9jsUg
+         R/ra8XggEdcsHsWsVB5rttGfyjuqLHxCn0CruqYLnCy6w4uRZAT+oX9LIU7fEhOv5euL
+         h0kji0/ACGS0YHDnp5Kf3KVaeh/1KIvmS5qy540b98rvkf2M6v2jbHWzekDUbK8MzsdR
+         c6E9HLePNhGjv6dxeMSfI4pc6bIhCKBcmnDUXKYXoAomn+ncq+j91jYgxYmA2P54rdwC
+         mLB4je83lo5Ys/VE7aXLXek3ctQ38tibdK+T6POrjtuTh+GVxGe+twTOYc1Gj7OlL06Z
+         vjDg==
+X-Gm-Message-State: AOJu0YyM6YpUofbS8QFbDMrYoMvXPT0OCOb0Ywqo8j7FzsrLa7EnA5os
+	nFLXbI/qYZ/ojJ6+PveFHIFhhUQ3V1NWhZt7Ci4ZAM76kcM7FGX6afeUDfWbUPX2jDSxp7SEtB+
+	oyefT31vyZnqgt9oNgNZbxQDBY6OPi1G8t46bC24qjqcLiIS7fzpNXhI3FTOzxcKK6WdVlAzYzy
+	3X4mASSX/QfcgBAkSfjTFmUJfJjwShiXopK9SgMKkTnJkdvZVS2vL8AL0RH5qz5Qrs3XWyhzT2C
+	Q1barH7d3+3ibentCLAD7O8arzO
+X-Gm-Gg: AZuq6aJvQitgF2Wa7YMR2IGvSAsf+Ndcg5DcIzPLnW//HEFY5HHGxiIqOw1bQjNdeDI
+	RmTkltoumBo/fTea/WUdvLp0dUkKgvYKx349ms+R0E8/rBOGMLrqDa31xOANOmpBmZmBALnbT4U
+	xU1VgyHK4a1RtxTX4Z9L/bjRvWbXr0vF9hzPtBbBbW6tQj3N4xwelzLa8HEXRYGFl7mG2Peq5Wl
+	E40M/NkPAGTOu6FEc2uDnV3SAzqJo7gX2FjEFE3p6GQqoQngz7Qlc59QddAw3wLrZEeiLcy7xXN
+	Ya0MY9oA0B+Y1zrZX1vL6HIAZ7QvTmPms/HFMq2St5IzOxpGwZrqsN+FU9uAWfB/8iIp4+yZFGN
+	jveglUvUDEwEE2afsawYKrZy93dRiUM1eDmYlzrVch4N8gTwHf/DxsUDSI+Vt8rMbqQqBDLlQwX
+	40dIP996Y+u35apk9Veh2LwJzm0hQ/78811Pg9gE7T+niq8BuGhO57TQ==
+X-Received: by 2002:a05:6214:519c:b0:81b:23d:55a8 with SMTP id 6a1803df08f44-894ea0e5d80mr185813446d6.59.1770095356848;
+        Mon, 02 Feb 2026 21:09:16 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-0.dlp.protect.broadcom.com. [144.49.247.0])
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-894d375698fsm26056426d6.32.2026.02.02.21.09.16
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Feb 2026 21:09:13 -0800 (PST)
+        Mon, 02 Feb 2026 21:09:16 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-c68b97b7316so1506217a12.3
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 21:09:12 -0800 (PST)
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-34c6e05af6fso4682019a91.1
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Feb 2026 21:09:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1770095352; x=1770700152; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W13QsJysAuhzPW1PDBgh2Vqmo6mJ2keoagDseiZ7L0o=;
-        b=Yplf2aBLkm/9hWjcE9bi2msXzAq1yr6KuIh6wVAZrK6YgZa0M6J5xCdJDgwYNFTkZ1
-         Im4ogPOuXIIWyUf1Pd9dXz/e7yFhjim9uuDe2AI9y/Db/gjtrhaxmf4zTVj6KvtLSjwc
-         wQpqr1FUn6wj+ciWF4f0JgSfJzFjNgh4KLPho=
-X-Received: by 2002:a05:6a21:6490:b0:2dc:40f5:3c6c with SMTP id adf61e73a8af0-392e0145956mr11849567637.54.1770095351784;
-        Mon, 02 Feb 2026 21:09:11 -0800 (PST)
-X-Received: by 2002:a05:6a21:6490:b0:2dc:40f5:3c6c with SMTP id adf61e73a8af0-392e0145956mr11849550637.54.1770095351418;
-        Mon, 02 Feb 2026 21:09:11 -0800 (PST)
+        d=broadcom.com; s=google; t=1770095355; x=1770700155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0+d9QeeN96tmRVPkP62NfL1ey4Ul15qmkoa8q5JR88Y=;
+        b=OpQ9fbZAQ8OZmYZ05RN07h+l0gmB4P6hLDaanBqrNQa1WGF8hTjQ8ugRBTerhUp17F
+         /bjTQyiJkFMCCcIgpf9ecdIolI7UvUatnaZMKQV7E5i4cFlcUakrs0Rp+BfXhGylsmMO
+         cxvvgvv0rxzq4oQuzP+UlLy05whs4wzs9hLlg=
+X-Received: by 2002:a17:90b:2e41:b0:34c:635f:f855 with SMTP id 98e67ed59e1d1-3543b2ebf18mr14130694a91.7.1770095355447;
+        Mon, 02 Feb 2026 21:09:15 -0800 (PST)
+X-Received: by 2002:a17:90b:2e41:b0:34c:635f:f855 with SMTP id 98e67ed59e1d1-3543b2ebf18mr14130684a91.7.1770095355018;
+        Mon, 02 Feb 2026 21:09:15 -0800 (PST)
 Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3547b1306c5sm621948a91.15.2026.02.02.21.09.08
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3547b1306c5sm621948a91.15.2026.02.02.21.09.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Feb 2026 21:09:10 -0800 (PST)
+        Mon, 02 Feb 2026 21:09:14 -0800 (PST)
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -93,11 +95,14 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next v10 0/6] RDMA/bnxt_re: Support direct verbs
-Date: Tue,  3 Feb 2026 10:30:43 +0530
-Message-ID: <20260203050049.171026-1-sriharsha.basavapatna@broadcom.com>
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+	Jiri Pirko <jiri@resnulli.us>
+Subject: [PATCH rdma-next v10 1/6] RDMA/uverbs: Support QP creation with user allocated memory
+Date: Tue,  3 Feb 2026 10:30:44 +0530
+Message-ID: <20260203050049.171026-2-sriharsha.basavapatna@broadcom.com>
 X-Mailer: git-send-email 2.51.2.636.ga99f379adf
+In-Reply-To: <20260203050049.171026-1-sriharsha.basavapatna@broadcom.com>
+References: <20260203050049.171026-1-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -112,7 +117,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -120,7 +125,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16390-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16391-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -128,141 +133,280 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,broadcom.com:mid,broadcom.com:dkim];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:email,broadcom.com:dkim,broadcom.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli.us:email];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: C3589D491E
+X-Rspamd-Queue-Id: 0C04FD4925
 X-Rspamd-Action: no action
 
-Hi,
+Some applications may need to allocate their own memory for queues,
+instead of using memory allocated by the library. This patch supports
+creation of QPs with such user allocated memory. This support already
+exists for CQs. Along similar lines, add new uverb attributes to
+specify umem buffers (VA/length or FD/offset combinations), for SQ
+and RQ. The handler pins these buffers and passes them to the driver
+through a new 'create_qp_umem' device op.
 
-This patchset supports Direct Verbs in the bnxt_re driver.
-
-This is required by vendor specific applications that need to manage
-the HW resources directly and to implement the datapath in the
-application.
-
-To support this, the library and the driver are being enhanced to
-provide Direct Verbs using which the application can allocate and
-manage the HW resources (Queues, Doorbell etc) . The Direct Verbs
-enable the application to implement the control path.
-
-Patch#1 Uverbs support for user allocated QP mem
-Patch#2 Move uapi methods to a separate file
-Patch#3 Refactor existing bnxt_qplib_create_qp() function
-Patch#4 Support dbr direct verbs
-Patch#5 Support cq direct verbs
-Patch#6 Support qp direct verbs
-
-Thanks,
--Harsha
-
-******
-
-Changes:
-
-v10:
-- Fixed comp_mask issues:
-  - Driver returns cmask capability in ucntx for CQ/QP.
-  - Driver checks req comp_mask for supported bitmasks.
-  - Driver returns -EOPNOTSUPP if invalid comp_mask.
-- Fixed zero initialization of req/resp structures.
-- Use PD object from QP; deleted pd_id in ureq.
-- Deleted debug counters.
-- Split CQ/QP changes into two separate patches (#5,#6).
-v9:
-- Added a new uverbs patch (#1) in RDMA core.
-  - Supports user/app allocated memory for QP.
-- Updated Patch#5 (cq/qp) to utilize umem dev op.
-- Updated driver ABI file (deleted dmabuf_fd/len fields).
-v8:
-- Patch#3:
-  - Removed dpi_hash table (and lock/rcu).
-  - Renamed bnxt_re_alloc_dbr_obj->bnxt_re_dbr_obj.
-  - Added an atomic usecnt in dbr_obj.
-- Patch#4:
-  - Registered a driver specific attribute for dbr_handle.
-  - Process dbr_handle during QP creation.
-  - Added refcnt logic to avoid dbr deletion with active QPs.
-  - Reverted dpi hash table lookup and related code.
-  - Removed dpi from req_qp ABI.
-  - Added ib_umem_find_best_pgsz() in umem processing.
-  - Added a wrapper function for dv_cq deletion.
-v7:
-- Patch#3:
-  - DBR_OFFSET attribute changed to PTR_OUT.
-  - Added a reserved field in struct bnxt_re_dv_db_region.
-  - Reordered sequence in DBR_ALLOC (hash_add -> uverbs_finalize).
-  - Synchronized access to dpi hash table.
-- Patch#4:
-  - Changed dmabuf_fd type (u32->s32) in ABI.
-  - Changed num_dma_blocks() arg from PAGE_SIZE to SZ_4K. 
-  - Fixed atomic read/inc race window in bnxt_re_dv_create_qplib_cq().
-  - Deleted bnxt_re_dv_init_ib_cq(). 
-v6:
-- Minor updates in Patch#3:
-  - Removed unused variables.
-  - Renamed & updated a uverbs method to a global.
-- Minor updates in Patch#4:
-  - Removed unused variables, stray hunks.
-v5:
-- Design changes to address previous round of comments:
-  - Reverted changes in rdma-core (removed V4-Patch#1).
-  - Removed driver support for umem-reg/dereg DVs (Patch#3).
-  - Enhanced driver specific udata to avoid new CQ/QP ioctls (Patch#4).
-  - Removed additional driver functions in modify/query QP (Patch#4).
-  - Utilized queue-va in udata for deferred pinning (Patch#4).
-v4:
-- Added a new (rdma core) patch.
-- Addressed code review comments in patch 5.
-v3:
-- Addressed code review comments in patches 1, 2 and 4.
-v2:
-- Fixed build warnings reported by test robot in patches 3 and 4.
-
-v9: https://lore.kernel.org/linux-rdma/20260127103109.32163-1-sriharsha.basavapatna@broadcom.com/
-v8: https://lore.kernel.org/linux-rdma/20260117080052.43279-1-sriharsha.basavapatna@broadcom.com/
-v7: https://lore.kernel.org/linux-rdma/20260113170956.103779-1-sriharsha.basavapatna@broadcom.com/
-v6: https://lore.kernel.org/linux-rdma/20251224042602.56255-1-sriharsha.basavapatna@broadcom.com/
-v5: https://lore.kernel.org/linux-rdma/20251129165441.75274-1-sriharsha.basavapatna@broadcom.com/
-v4: https://lore.kernel.org/linux-rdma/20251117061741.15752-1-sriharsha.basavapatna@broadcom.com/
-v3: https://lore.kernel.org/linux-rdma/20251110145628.290296-1-sriharsha.basavapatna@broadcom.com/
-v2: https://lore.kernel.org/linux-rdma/20251104072320.210596-1-sriharsha.basavapatna@broadcom.com/
-v1: https://lore.kernel.org/linux-rdma/20251103105033.205586-1-sriharsha.basavapatna@broadcom.com/
-
-******
-
-Kalesh AP (3):
-  RDMA/bnxt_re: Move the UAPI methods to a dedicated file
-  RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
-  RDMA/bnxt_re: Direct Verbs: Support DBR verbs
-
-Sriharsha Basavapatna (3):
-  RDMA/uverbs: Support QP creation with user allocated memory
-  RDMA/bnxt_re: Direct Verbs: Support CQ verbs
-  RDMA/bnxt_re: Direct Verbs: Support QP verbs
-
+Co-developed-by: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+---
  drivers/infiniband/core/device.c              |   1 +
- drivers/infiniband/core/uverbs_std_types_qp.c | 157 ++-
- drivers/infiniband/hw/bnxt_re/Makefile        |   2 +-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   4 +
- drivers/infiniband/hw/bnxt_re/dv.c            | 906 ++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c      | 666 ++++++-------
- drivers/infiniband/hw/bnxt_re/ib_verbs.h      |  32 +
- drivers/infiniband/hw/bnxt_re/main.c          |   2 +
- drivers/infiniband/hw/bnxt_re/qplib_fp.c      | 305 ++----
- drivers/infiniband/hw/bnxt_re/qplib_fp.h      |   8 +
- drivers/infiniband/hw/bnxt_re/qplib_res.c     |  43 +
- drivers/infiniband/hw/bnxt_re/qplib_res.h     |  10 +
+ drivers/infiniband/core/uverbs_std_types_qp.c | 157 +++++++++++++++++-
  include/rdma/ib_verbs.h                       |   4 +
- include/uapi/rdma/bnxt_re-abi.h               |  44 +
  include/uapi/rdma/ib_user_ioctl_cmds.h        |   8 +
- 15 files changed, 1623 insertions(+), 569 deletions(-)
- create mode 100644 drivers/infiniband/hw/bnxt_re/dv.c
+ 4 files changed, 165 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 4e09f6e0995e..a9ae03f1e936 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2704,6 +2704,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	SET_DEVICE_OP(dev_ops, create_cq_umem);
+ 	SET_DEVICE_OP(dev_ops, create_flow);
+ 	SET_DEVICE_OP(dev_ops, create_qp);
++	SET_DEVICE_OP(dev_ops, create_qp_umem);
+ 	SET_DEVICE_OP(dev_ops, create_rwq_ind_table);
+ 	SET_DEVICE_OP(dev_ops, create_srq);
+ 	SET_DEVICE_OP(dev_ops, create_user_ah);
+diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
+index be0730e8509e..3bc7a9adbf24 100644
+--- a/drivers/infiniband/core/uverbs_std_types_qp.c
++++ b/drivers/infiniband/core/uverbs_std_types_qp.c
+@@ -79,6 +79,75 @@ static void set_caps(struct ib_qp_init_attr *attr,
+ 	}
+ }
+ 
++static int get_qp_buffer_umem(struct ib_device *ib_dev,
++			      struct uverbs_attr_bundle *attrs,
++			      int va_attr, int len_attr,
++			      int fd_attr, int offset_attr,
++			      struct ib_umem **umem_out)
++{
++	struct ib_umem_dmabuf *umem_dmabuf;
++	u64 buffer_va, buffer_length, buffer_offset;
++	int buffer_fd;
++	int ret;
++
++	*umem_out = NULL;
++
++	if (uverbs_attr_is_valid(attrs, va_attr)) {
++		/* VA mode - use regular umem */
++		ret = uverbs_copy_from(&buffer_va, attrs, va_attr);
++		if (ret)
++			return ret;
++
++		ret = uverbs_copy_from(&buffer_length, attrs, len_attr);
++		if (ret)
++			return ret;
++
++		/* VA and FD are mutually exclusive */
++		if (uverbs_attr_is_valid(attrs, fd_attr) ||
++		    uverbs_attr_is_valid(attrs, offset_attr))
++			return -EINVAL;
++
++		*umem_out = ib_umem_get(ib_dev, buffer_va, buffer_length,
++					IB_ACCESS_LOCAL_WRITE);
++		if (IS_ERR(*umem_out)) {
++			ret = PTR_ERR(*umem_out);
++			*umem_out = NULL;
++			return ret;
++		}
++	} else if (uverbs_attr_is_valid(attrs, fd_attr)) {
++		/* Dmabuf mode */
++		ret = uverbs_get_raw_fd(&buffer_fd, attrs, fd_attr);
++		if (ret)
++			return ret;
++
++		ret = uverbs_copy_from(&buffer_offset, attrs, offset_attr);
++		if (ret)
++			return ret;
++
++		ret = uverbs_copy_from(&buffer_length, attrs, len_attr);
++		if (ret)
++			return ret;
++
++		/* FD and VA are mutually exclusive */
++		if (uverbs_attr_is_valid(attrs, va_attr))
++			return -EINVAL;
++
++		umem_dmabuf = ib_umem_dmabuf_get_pinned(ib_dev, buffer_offset,
++							buffer_length, buffer_fd,
++							IB_ACCESS_LOCAL_WRITE);
++		if (IS_ERR(umem_dmabuf))
++			return PTR_ERR(umem_dmabuf);
++
++		*umem_out = &umem_dmabuf->umem;
++	} else if (uverbs_attr_is_valid(attrs, len_attr) ||
++		   uverbs_attr_is_valid(attrs, offset_attr)) {
++		/* Length or offset without VA/FD is invalid */
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 	struct uverbs_attr_bundle *attrs)
+ {
+@@ -95,6 +164,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 	struct ib_cq *send_cq = NULL;
+ 	struct ib_xrcd *xrcd = NULL;
+ 	struct ib_uobject *xrcd_uobj = NULL;
++	struct ib_umem *sq_umem = NULL;
++	struct ib_umem *rq_umem = NULL;
+ 	struct ib_device *device;
+ 	u64 user_handle;
+ 	int ret;
+@@ -248,11 +319,58 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 	set_caps(&attr, &cap, true);
+ 	mutex_init(&obj->mcast_lock);
+ 
+-	qp = ib_create_qp_user(device, pd, &attr, &attrs->driver_udata, obj,
+-			       KBUILD_MODNAME);
+-	if (IS_ERR(qp)) {
+-		ret = PTR_ERR(qp);
++	/* Get SQ buffer umem (from VA or dmabuf FD) */
++	ret = get_qp_buffer_umem(device, attrs,
++				 UVERBS_ATTR_CREATE_QP_SQ_BUFFER_VA,
++				 UVERBS_ATTR_CREATE_QP_SQ_BUFFER_LENGTH,
++				 UVERBS_ATTR_CREATE_QP_SQ_BUFFER_FD,
++				 UVERBS_ATTR_CREATE_QP_SQ_BUFFER_OFFSET,
++				 &sq_umem);
++	if (ret)
+ 		goto err_put;
++
++	/* Get RQ buffer umem (from VA or dmabuf FD) */
++	ret = get_qp_buffer_umem(device, attrs,
++				 UVERBS_ATTR_CREATE_QP_RQ_BUFFER_VA,
++				 UVERBS_ATTR_CREATE_QP_RQ_BUFFER_LENGTH,
++				 UVERBS_ATTR_CREATE_QP_RQ_BUFFER_FD,
++				 UVERBS_ATTR_CREATE_QP_RQ_BUFFER_OFFSET,
++				 &rq_umem);
++	if (ret)
++		goto err_release_sq_umem;
++
++	/* Use umem-based creation if buffers are provided */
++	if (sq_umem || rq_umem) {
++		if (!device->ops.create_qp_umem) {
++			ret = -EOPNOTSUPP;
++			goto err_release_rq_umem;
++		}
++
++		qp = rdma_zalloc_drv_obj(device, ib_qp);
++		if (!qp) {
++			ret = -ENOMEM;
++			goto err_release_rq_umem;
++		}
++
++		qp->device = device;
++		qp->pd = pd;
++		qp->uobject = obj;
++		qp->real_qp = qp;
++		qp->qp_type = attr.qp_type;
++
++		ret = device->ops.create_qp_umem(qp, &attr, sq_umem, rq_umem,
++						 attrs);
++		if (ret) {
++			kfree(qp);
++			goto err_release_rq_umem;
++		}
++	} else {
++		qp = ib_create_qp_user(device, pd, &attr, &attrs->driver_udata,
++				       obj, KBUILD_MODNAME);
++		if (IS_ERR(qp)) {
++			ret = PTR_ERR(qp);
++			goto err_put;
++		}
+ 	}
+ 	ib_qp_usecnt_inc(qp);
+ 
+@@ -277,11 +395,16 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 			     sizeof(qp->qp_num));
+ 
+ 	return ret;
++
++err_release_rq_umem:
++	ib_umem_release(rq_umem);
++err_release_sq_umem:
++	ib_umem_release(sq_umem);
+ err_put:
+ 	if (obj->uevent.event_file)
+ 		uverbs_uobject_put(&obj->uevent.event_file->uobj);
+ 	return ret;
+-};
++}
+ 
+ DECLARE_UVERBS_NAMED_METHOD(
+ 	UVERBS_METHOD_QP_CREATE,
+@@ -340,6 +463,30 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
+ 			   UVERBS_ATTR_TYPE(u32),
+ 			   UA_MANDATORY),
++	/* SQ buffer attributes - use VA or FD, not both */
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_SQ_BUFFER_VA,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_OPTIONAL),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_SQ_BUFFER_LENGTH,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_OPTIONAL),
++	UVERBS_ATTR_RAW_FD(UVERBS_ATTR_CREATE_QP_SQ_BUFFER_FD,
++			   UA_OPTIONAL),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_SQ_BUFFER_OFFSET,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_OPTIONAL),
++	/* RQ buffer attributes - use VA or FD, not both */
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_BUFFER_VA,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_OPTIONAL),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_BUFFER_LENGTH,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_OPTIONAL),
++	UVERBS_ATTR_RAW_FD(UVERBS_ATTR_CREATE_QP_RQ_BUFFER_FD,
++			   UA_OPTIONAL),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_BUFFER_OFFSET,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_OPTIONAL),
+ 	UVERBS_ATTR_UHW());
+ 
+ static int UVERBS_HANDLER(UVERBS_METHOD_QP_DESTROY)(
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 6c372a37c482..8bbf37b9e823 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2520,6 +2520,10 @@ struct ib_device_ops {
+ 	int (*destroy_srq)(struct ib_srq *srq, struct ib_udata *udata);
+ 	int (*create_qp)(struct ib_qp *qp, struct ib_qp_init_attr *qp_init_attr,
+ 			 struct ib_udata *udata);
++	int (*create_qp_umem)(struct ib_qp *qp,
++			      struct ib_qp_init_attr *qp_init_attr,
++			      struct ib_umem *sq_umem, struct ib_umem *rq_umem,
++			      struct uverbs_attr_bundle *attrs);
+ 	int (*modify_qp)(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
+ 			 int qp_attr_mask, struct ib_udata *udata);
+ 	int (*query_qp)(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
+diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+index 35da4026f452..0d6b4151512d 100644
+--- a/include/uapi/rdma/ib_user_ioctl_cmds.h
++++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+@@ -157,6 +157,14 @@ enum uverbs_attrs_create_qp_cmd_attr_ids {
+ 	UVERBS_ATTR_CREATE_QP_EVENT_FD,
+ 	UVERBS_ATTR_CREATE_QP_RESP_CAP,
+ 	UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
++	UVERBS_ATTR_CREATE_QP_SQ_BUFFER_VA,
++	UVERBS_ATTR_CREATE_QP_SQ_BUFFER_LENGTH,
++	UVERBS_ATTR_CREATE_QP_SQ_BUFFER_FD,
++	UVERBS_ATTR_CREATE_QP_SQ_BUFFER_OFFSET,
++	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_VA,
++	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_LENGTH,
++	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_FD,
++	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_OFFSET,
+ };
+ 
+ enum uverbs_attrs_destroy_qp_cmd_attr_ids {
 -- 
 2.51.2.636.ga99f379adf
 
