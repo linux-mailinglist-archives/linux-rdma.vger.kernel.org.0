@@ -1,164 +1,185 @@
-Return-Path: <linux-rdma+bounces-16434-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16435-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yHzxN766gWm7JAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16434-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 10:07:10 +0100
+	id aF6tE6W8gWm7JAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16435-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 10:15:17 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 819ADD6911
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 10:07:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC414D6AA3
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 10:15:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id CF1343022042
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 09:07:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 45887304D93B
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 09:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBE5395D8C;
-	Tue,  3 Feb 2026 09:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6EB9396D15;
+	Tue,  3 Feb 2026 09:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="dw4OAkal"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="lvIBivLS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DC830C614
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 09:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9839396D09;
+	Tue,  3 Feb 2026 09:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770109626; cv=none; b=gskCJOojPQxqOh+fSLCvAhRlLE7WiisxCqL3hXVlaMgfFFv1HbKpk6Oq3pRqf07YDLv6QDcHAP/1cQLag+Bg6/BNtelEclCAmCMXnqG3f68XvAlQvP8R26U6MGivwDAnEEf4vJ7qTIRBuVn2YHitbmmQt86F42UOuMD2BYBgv9Q=
+	t=1770110111; cv=none; b=KXE6lThOVA1ObGUY5pBRqN5gho5sjvtbm4O5NBLDl20Ekw9LbW4kYewdQ0+KQki5vmW3VOJS4dxqEpnfMLGyw45JJY/wCk0jKbbsswnbytMnJZogZaNm7mhLhF0xInPWhvgeX456wOaHrt3pPZuNUF5wVKNaGABBL+cOlW+GPTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770109626; c=relaxed/simple;
-	bh=zcSdNJ63nbqNzFrhelD/1U1CexVoED2yAqrvFd1PnY4=;
+	s=arc-20240116; t=1770110111; c=relaxed/simple;
+	bh=ZC1CA6vrdOzcMrcHn5G00HpXHg18TikDxYVKMBh9tuI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A1zlOSPuV2qh2bDgZzs2e0pPW3BYC3dU71whfC7ynRmT5c64sCXnsryMos5+BGo88xKP+7zvQNoByhF/DKDddnLVWXs6dTtumpVOvutH/Wi8vhFQllyv5kUE/MLXv/tTHDf+0U/Xq4FWEKkb4f3BPNC7Dick65HbJX15sSepbbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=dw4OAkal; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-482f454be5bso4187555e9.0
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 01:07:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770109624; x=1770714424; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dfKACiWgz9NttY5DwBqL3/0hrGwxZ3rJ0I9+LsVVX+s=;
-        b=dw4OAkalyQq+ZbkO4+DvqsnOMmfljiNweGBszrlk4iCELwc3/2hM8DvaxfDsLmgVFP
-         oDPHgNsumnKL9CVZ+SLvoETk8PlU5UxRPOOJ9iH35J0850EyZG6KTaadyLRfnGwodpP+
-         L8ZGDLuMVv5UoGaUHDZ0SYhxNQTEm6ktwU3OYELWuTcd8uZEGN8bsPasTE4DbkjmC5UV
-         SX3osrnZyGDK9iqfuEH6OdeW0e2ctt8DiKz50CvoIfpXogNMkpwj5BMXo7+01GgYodpz
-         kPJZ0fgmL0f3XQyA6jdsHJEiPp5YtSftkKg6HrXG9BvpdQoDwjOPfyrdDYCEjN+jGko9
-         tM5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770109624; x=1770714424;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dfKACiWgz9NttY5DwBqL3/0hrGwxZ3rJ0I9+LsVVX+s=;
-        b=Ajv12E4DJj7Fre2V7tUydAnTV0VOwJw5VfahdwoQcpf6n3mOqbAIJxffJA/Rl40ir4
-         bk5dwwOF68nCSaT6V542o0kabhm5b9PXaEscWdKre96UrJsF+CaX5IoJZR3LXGnNubhk
-         zjwU6hdAMavOvU+SNcE2bo1rC9TNQDRXOYKURyMT0I4aGxC4uAX55ICnkVTvEO030p+M
-         gKeeSQYyZUbSxxRqbO1iJI4MeUafztzsTGDoItun9/iQXD1w8dv03GhV5zg/CL8fkTlU
-         HyHZyec6nLnecRt49NAlilQR7NN6GDlHzg1343zdJ3KJprWr0Ji2Ppc1WV8GA2SfyKx3
-         OEOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVIiC1cuPKzMMIjAgt9NnjdZyL6pV83KRRoCOcJsC9+HJjgbj4usbrYhZULxr3qzqwwH7zu0MAVVQW0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLvvEQWebDkrPpJoGaDoDhsugyusQmNTcEZtv3TMIMhK6HuGtP
-	gtBY5L8CY4PtGrE67KLM5UOWl+mBFGrnmmNHKgHM8Ovekt3ePXsYp4JV/IXMtuK80q4=
-X-Gm-Gg: AZuq6aLhdsxG2s+jcoPAiA6MqPk9Dfvipgm8/1fZvkNzzO7PzffRO5Y/fCz9NCNdGCw
-	a2OpbpU/m0Tu1L01KT1GKSrbcLyDuKfP69Bx7+b3lqyPjJtuFaM9afDekqnA0IMFDZDohclIxU8
-	9UXPI0GDYFHMdjQY8VRSC6ZQmR67fmz0X4ddWxiMGsPvSmJpQZUmBv1HCffUrvh3YaBeUyhmHME
-	5lfKb4yUKTXDclEOg5VINIUcF+LovnuMG2SDVZOA3kHc7hT9SbETEMVBGCDu9qoFyzsafhbJsgv
-	gdYkmz0aGl+S/6irUn+1z7DJYCTCDWKpiBe7ISRYfnX8NJZsmwYTCgwsmfzBopagGDU8wN4opnI
-	dSvCcqOjswj6CCmvh/Bc/tOowSR3QzNP7YwsA7V9bSC5l+eJQpkvzU/TyPvK97dGbr4CkW7MAgA
-	jjRg1sA23wVfOvB3PPPxQ=
-X-Received: by 2002:a05:6000:2c0e:b0:436:1597:7c7c with SMTP id ffacd0b85a97d-436159780camr879230f8f.13.1770109623796;
-        Tue, 03 Feb 2026 01:07:03 -0800 (PST)
-Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435e10e48a6sm48787403f8f.8.2026.02.03.01.07.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 01:07:03 -0800 (PST)
-Date: Tue, 3 Feb 2026 10:07:01 +0100
-From: Jiri Pirko <jiri@resnulli.us>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lX4uZwkeU5WTIW3HXzl/cJPqvcbREwQt0ZvgEhzD+M1kQUdcVsoJMm1M3V3/l/J/sG3PzMYngQ+znE3nCvywlY4gtMrhyAKFB5xDa/U78Mpgc5XSObjy9Rv5y1d9DeP1lN7T3gJxwNoIECmXvac/AUMnIoiGURzIMRye7RnTA+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=lvIBivLS; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1770110099; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=KV7iB2cX0YsCo/vw3xU3Pyo02q+0048t1T+E30Gigtg=;
+	b=lvIBivLSh9GpQ/9XItSiA5L3Ae5Abhgd3YILZJXyPQApT6jv/boUE3Hb2IC8SoZ58+a26VlUYRi6pGgxBqTIXEPZBFfSFuum5+mKUeAD331FlL00z8ZNIizgZeE9XNN/nZPYS5HRCm17TApalp7+cWnWUI5+1fEpbfNFzRNLYuo=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WySViK7_1770110098 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 03 Feb 2026 17:14:59 +0800
+Date: Tue, 3 Feb 2026 17:14:58 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
 To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	linux-rdma@vger.kernel.org, leon@kernel.org, msanalla@nvidia.com, maorg@nvidia.com, 
-	parav@nvidia.com, mbloch@nvidia.com, markzhang@nvidia.com, 
-	marco.crivellari@suse.com, roman.gushchin@linux.dev, "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-Subject: Re: [PATCH] RDMA/core: Fix stale RoCE GIDs during netdev events at
- registration
-Message-ID: <cvvqenei3atlzl4xhlitn7mibegs7fpz7clwb7odjzkfhbrbyx@rk4jcrndqas2>
-References: <f3402d0f-40a1-4792-a8e2-be65c71a176b@linux.dev>
- <af4866d0-2e50-477c-b823-1c4a8a86f7e5@I-love.SAKURA.ne.jp>
- <0952d053-0de4-469c-88b4-509e6d29296c@I-love.SAKURA.ne.jp>
- <u7t7kha66tqngzyoryly6pltiur4wtz6gm3nui3zeb32dmtctp@54rr6gcsqtap>
- <1dc21045-4030-4d37-9ae6-3dd2c42b8e88@I-love.SAKURA.ne.jp>
- <inp2nyil62tkkvahvjvwvgp63ld5cffgowqhwlbssabhd2gaka@52lfxbmxvbzi>
- <8bdfe8a3-1cdb-43e3-b68e-428f6c5133d5@I-love.SAKURA.ne.jp>
- <j5tnfwmkfqtmmtpkbcdxriu7wlgxydazuvkk4nkfv27nddlq4r@xx4amuxv6y7y>
- <d6aee73d-91cb-4eb3-ad11-6244e973932b@I-love.SAKURA.ne.jp>
- <20260202235133.GP2328995@ziepe.ca>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	oliver.yang@linux.alibaba.com
+Subject: Re: [PATCH net-next 2/3] mm: vmalloc: export find_vm_area()
+Message-ID: <20260203091458.GA89766@j66a10360.sqa.eu95>
+References: <20260124093505.GA98529@j66a10360.sqa.eu95>
+ <aXSjm1DXm6yP62tD@pc636>
+ <20260124145754.GA57116@j66a10360.sqa.eu95>
+ <20260127133417.GU13967@unreal>
+ <20260128034558.GA126415@j66a10360.sqa.eu95>
+ <20260128180629.GT1641016@ziepe.ca>
+ <20260129113609.GA37734@j66a10360.sqa.eu95>
+ <20260129132058.GC2307128@ziepe.ca>
+ <20260130085131.GA122673@j66a10360.sqa.eu95>
+ <20260130151636.GF2328995@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260202235133.GP2328995@ziepe.ca>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260130151636.GF2328995@ziepe.ca>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16435-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16434-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[linux.alibaba.com,kernel.org,gmail.com,davemloft.net,linux-foundation.org,google.com,redhat.com,linux.ibm.com,vger.kernel.org,kvack.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,ziepe.ca:email,resnulli-us.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 819ADD6911
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.alibaba.com:dkim,j66a10360.sqa.eu95:mid]
+X-Rspamd-Queue-Id: BC414D6AA3
 X-Rspamd-Action: no action
 
-Tue, Feb 03, 2026 at 12:51:33AM +0100, jgg@ziepe.ca wrote:
->On Mon, Feb 02, 2026 at 11:20:22PM +0900, Tetsuo Handa wrote:
->
->> > - Event handlers correctly update stale GIDs even when racing with rescan
->> 
->> I couldn't confirm that this is always true. What happens if rdma_roce_rescan_device()
->> is preempted between make_default_gid() and __ib_cache_gid_add(), and NETDEV_CHANGEADDR
->> event runs meanwhile? It sounds to me that stale gid is possible because gid value is
->> calculated before holding the GID table mutex...
->> 
->> rdma_roce_rescan_device() {
->>   ib_enum_roce_netdev() {
->>     enum_all_gids_of_dev_cb() {
->>       add_default_gids() {
->>         ib_cache_gid_set_default_gid() {
->>           make_default_gid(ndev, &gid); // GIDs populated with OLD MAC
->>                                                                 ip link set eth4 addr NEW_MAC
->>                                                                 NETDEV_CHANGEADDR queued
->
->I thought this was impossible because enum_all_gids_of_dev_cb() holds
->the rtnl_lock()?
+On Fri, Jan 30, 2026 at 11:16:36AM -0400, Jason Gunthorpe wrote:
+> On Fri, Jan 30, 2026 at 04:51:31PM +0800, D. Wythe wrote:
+> > On Thu, Jan 29, 2026 at 09:20:58AM -0400, Jason Gunthorpe wrote:
+> > > On Thu, Jan 29, 2026 at 07:36:09PM +0800, D. Wythe wrote:
+> > > 
+> > > > > From there you can check the resulting scatterlist and compute the
+> > > > > page_size to pass to ib_map_mr_sg().
+> > > 
+> > > I should clarify this is done after DMA mapping the scatterlist. dma
+> > > mapping can improve the page size.
+> > > 
+> > > And maybe the core code should be helping compute the MR's target page
+> > > size for a scatterlist.. We already have code to do this in umem, and
+> > > it is a pretty bit tricky considering the IOVA related rules.
+> > >
+> > 
+> > Hi Jason,
+> > 
+> > After a deep dive into ib_umem_find_best_pgsz(), I have to say it is
+> > much more subtle than it first appears. The IOVA-to-PA relative offset
+> > rules, in particular, make it quite easy to get wrong.
+> > 
+> > While SMC could duplicate this logic, it is certainly not ideal for
+> > maintenance. Are there any plans to refactor this into a generic RDMA
+> > core helper—for instance, one that can determine the best page size
+> > directly from an sg_table or scatterlist?
+> 
+> I have not heard of anyone touching this.
+> 
+> It looks like there are only two users in the kernel that pass
+> something other than PAGE_SIZE, so it seems nobody has cared about
+> this till now.
+> 
+> With high order folios being more common it seems like something
+> missing.
+> 
+> However, I wonder what the drivers do with the input page size, 
+> segmenting a scatterlist is a bit hard and we have helpers for that
+> already too.
+> 
+> It is a bigger project but probably the right thing is to remove the
+> page size input, wrap the scatterlist in a umem and fixup the drivers
+> to use the existing umem support for building mtts, splitting
+> scatterlists into blocks and so on.
+> 
+> The kernel side here has been left alone for a long time..
 
-Yep.
+I am also curious about the original design intent behind requiring the 
+caller to explicitly pass `page_size`. From what I can see, its primary 
+role is to define the memory size per MTTE, but calculating the optimal 
+value is surprisingly complex.
 
->
->Jason
+I completely agree that providing an automatic way to optimize or 
+calculate the best page size should be the responsibility of the drivers
+or the RDMA core themselves. Handling such low-level hardware-related 
+details in a ULP like SMC feels misplaced.
+
+Since it appears this isn't a high-priority issue for the community at
+the moment, and a proper fix requires a much larger architectural effort 
+in the RDMA core, I will withdraw this patch series. 
+
+I'll keep an eye on the RDMA subsystem's progress and see if a more 
+generic solution emerges in the future.
+
+Thanks,
+D. Wythe
+
+
 
