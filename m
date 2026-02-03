@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-16443-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16444-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sFDpEOvJgWl1JwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16443-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:11:55 +0100
+	id 6LpJDlzKgWl1JwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16444-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:13:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45EB3D75F2
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:11:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A225CD7630
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 11:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BA9373004403
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 10:11:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 80D60301A434
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 10:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB9139C63B;
-	Tue,  3 Feb 2026 10:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A2939C64A;
+	Tue,  3 Feb 2026 10:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="QEHo3cFY"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="SoKVqs9w"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832F263B9
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 10:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8703241665
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 10:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770113507; cv=none; b=jdaxiBMevb5Cv1Fh0/5TmlZz3uxulVoJmFacVAN0G2uUx6DMT71fWTv76WA8xvcxgy6q8L3lDZtuIFnFBWMbTsWxapTxq3vManze2GzNWbFb64y2bkFrMDJ8916t03MRE9rG4fYScyuSmZj7QLJlUrssr3CukAan2yxfC9VWhy4=
+	t=1770113623; cv=none; b=Upyz2lmRGPMoLt8aAP5FolNPKGhiCJkBzkT0eILexSrbadBcWbJ3E7f5r3635ykoVR5sezNdqpvk7dkQcty3XGXna+Tkwe8bVwv5LypvcX1Ba+szw9khZLKQhqzEk5f3WjZ6I0oyVAlSejAQMBryLrM2nK+FlA3uq77bSOr7JWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770113507; c=relaxed/simple;
-	bh=3spaL0VLlXrH51rqu309a8C5dLuNXM0uz37Cdx47AKE=;
+	s=arc-20240116; t=1770113623; c=relaxed/simple;
+	bh=TeKZGOc9Xvz25crrC20NSAEadK0ejDklNsjXNkboATI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=okZw1sgv67pjsjRtq16tfPhNu2sFoIfpPvorjGvrVfR7Z+U6A2BGNa+GEpYwLrXtvXMm4vcQsEAyEwUwVjBod6Ql8ETqVqFnBZK4RNBHP5PA0+WFlptq2hUuse9FzkqdMZ6NXFSBJXADPhQeY1ATIgx09niGCndVMYQp0uqEDHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=QEHo3cFY; arc=none smtp.client-ip=209.85.221.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=JD3m3eYQZThmGxD92cGmxG6T9eMNPf7yA4ZchOy8ypEr3uCn6bvniEtEsDK9HUkkokjR6M1caX5v1OTigyRvCLBZdK0Lx0OmT1X9ssfdSJY7eBv+XM5SAjQT+uU/tHPGYZ5QiVmKIejfJJl4toizijzRGnMZEDXK8Ofcv9TmyNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=SoKVqs9w; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-430f2ee2f00so3450289f8f.3
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 02:11:44 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47d6a1f08bbso25637305e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 02:13:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770113503; x=1770718303; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770113620; x=1770718420; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=0DYDA5i9EbDel89w8+M5jnadYYzManL/kF9/w4q9W4I=;
-        b=QEHo3cFYLoYZqiAfpxz1Y+uXmx6z2BYF1oSwRISSqE4g/ZMRy+CYJZXr16W42Tv/FH
-         flTRgpvGkztVWtlq+oAGZ1xjzj9zZRtTNyMYBJmbylkfiTolhwh2a7XvQKGTrDr24hTI
-         LOjjGoB+ZsX03FQv20ZRgWxY6stghdIwn8Xv22dvUpahPOuuy5mbj67W7mjfNOjdfVN/
-         qBq3xL+w9ljeUPRuDx9UXTCXTvaL3whYESbVS+8xf/lj+6qPDHEnwCFTo5OmiKoe1Eor
-         UihYHE3zyet1HQQQGbExbuCzVx493AlAOBpwWefKCZntCcNP1r4Xi1GvJxeHp3AToSgK
-         Z5zQ==
+        bh=Qi69d8zzokYhgp+qw3Zk2njXeiMqfE747MZMvYSJbDE=;
+        b=SoKVqs9wpteCg6nsk4nzC1/PMbopbteKlE/Jah0f2+Ef6wgJs2Xkxsx+SVdyO+8GuB
+         N2FYig1cZCNEBZIlMn/WhiGS+4gDKC1LMhfIkuEzukB1+AZ2Yxn+0waZdksZdx56qpSL
+         qZgzzbAAOEWedWa+IV5pCjmfoqtmXiEfSs5vzi4KYlFrTW8hZcwOGRfZTVaciRWn13Vv
+         Ylyx0HQfdF97vbtNE4Ax6y4A4Jm1FAAydTv9+kjtrkAuRZytDWhlRe0bETYWapSqmM9x
+         DQ8GJJ8QI0UIrsfQp6eom6UlOgwCMhJUeAx3PcNUvAVoabYkgcwiBE5piisdpZpeBC5W
+         06Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770113503; x=1770718303;
+        d=1e100.net; s=20230601; t=1770113620; x=1770718420;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0DYDA5i9EbDel89w8+M5jnadYYzManL/kF9/w4q9W4I=;
-        b=VmQSIqgrjkff1NM8QCGUPXbkNL1XIXBzt2ILJcwIfzvDyTWLPkyCtQz41sQHogfOtE
-         CKW0E3ZFin/ref8r6vOBfD6bp7zQHqWDSS/lYWz0wmqRSkxbunzZKijmu1eyLxa1gcbX
-         jS8mXtCh86sJorDdd3jSUnfVdTksr0kdPuDVhSMmku+yfwOFmTno4sMAt8tCTScxRoYX
-         PrCRzU37XsQzr9+R6dwp5I8O+jQvqMJih/bepH2cy+D+r3++sysNjIbtJkmX+LNRJPy2
-         R3HDaiBBIeO66H/d2/my01LzuDYOMgklJq5wXQ2zijtLDjwijnffPk8a5QgpJtkk4P8x
-         uJKQ==
-X-Gm-Message-State: AOJu0YzQLMDH9bxeuLmAkFruj8S9bkP2GdvpemDVt1C6eqLrylnwWLq1
-	NwSwKM6bJyhDiozlEq4/9aVPjFmrBqsQvm7I2v38nbYJHEd8cGxniqHLsWi47+jNFIQ=
-X-Gm-Gg: AZuq6aKmudw1gwQ0HHEWzXKiGMzMEIC2dpL7zMjtXz1lHqC/zOBFXM2C0Ly3lH+fVPu
-	tGDoUnuwN+j9ve4A9zO4+vjgbaYJpulho/DFCmRRv2BdTc7y1FRzMJTOJC+Yew04pdI9QBHOvc8
-	seiq9uRbVSs0+gDomvE6hI7d9LZ1CqJFk3LKZsD4TKPiiKrb1vZP1tIQEwM23xwtDNZd9VTIHov
-	GVj38UDWkxyHKK4O/YvyHP2by3xrqYfTyuoP7GHe3owPD3po5jWjxW9Ok7/3uZtPZIlHDgXYzii
-	t0I+BW5ZfRdMd2asjX7WNC6QKPIsfPZp14AumXMNUYsf7Lm9wdcnIvW8exTM1HX7LnJtdm0ZOb8
-	7QK/FAXdLhnTTSdgvHy4XzqDvJIPrjMtqGvtXWYVzpMP8Vc7uxDtcR6fgo+75HdfnOWduGNg5P0
-	hRtXc5GAzZY4fRBxUJa8sO9Sg=
-X-Received: by 2002:a05:6000:4023:b0:432:851d:35ef with SMTP id ffacd0b85a97d-435f3aaea50mr21930347f8f.42.1770113502511;
-        Tue, 03 Feb 2026 02:11:42 -0800 (PST)
+        bh=Qi69d8zzokYhgp+qw3Zk2njXeiMqfE747MZMvYSJbDE=;
+        b=bAXZ8fl2GXGqmyGD+QZGQNzwZUTvdiKj1dGVFj62CG4fFGUYyq91xYNHrOZfVZmcuf
+         X5qoQSXvv3yFLhao6GgbxQ2KrzjD4HShSAO4op7i3oZdC3NErm8ygMU6ipxTJZKRxTjk
+         Zld44uPk0Htm97rOT3iCeLWr9AKm4j1Y3V5A3sWPhdkBC8hdjGkvMnJiHMZmhZgvOb46
+         eEWGbgy5nG4QxtSuiOsdPcRkuTwNMWkWo+Yh9q0IVIGJxygNaBjTuD4IlFUDq8GhtvRz
+         McPQ3T/K93V+xyYH7uNLQVL83/bwgOy+PdRUpaVCE0zHh3hQFCRIdKjCaEvV/RKO4h9i
+         FEkA==
+X-Gm-Message-State: AOJu0Yw7+2sZSCwE6VTTV/HhjjlBnpvDQJJmjgNfcUTKss5HftAzCoel
+	5023FFuDJARjz9lD9PPst57obyyUcHUAu7BSsI8I6BHxdl+TVcsgJ1tr9CvEHcojw64=
+X-Gm-Gg: AZuq6aJdPBhM9wBy5CY/lnBq1y1wojeAEByGmRKQar+YZuOtTi9JpmNqGjCJyAGMAfY
+	Iv8+63kkpdYnqkJOop7djr+d/MG1nbv7GswKgrN8gcgvcf9DluiaeP5ETKrNQhi+z1muv/wsKmc
+	JA2K29/0eIqf+TNqlnrPzuvyd2t15uonzhAiG1nVs+CfsdBmQrrgz/ViSIPCU3KxAfqXjMHUz4X
+	mTi4kYfCpCVvNwkuMoW4mYX+ad17HICLxtUHPfMGqDtvB6YV5bOhpi8ZouslhB4OWtrNT6Q5j4k
+	6AT9F//c7xOyfrLg1mSyipRJQz7hKTetciZuiaXOzpCpN13zXoyC6ThqbT+vtEDeDWIaiJF6Yqz
+	2OO0wbmvmOqFXnXx0FSdXiCcrDzV2qKPKKJVQmFEyl85st35pj50rAZu6sfmPgtMGleh9U97Nde
+	/XZQOMxmbpV7QzM6Ar8c8RXLo=
+X-Received: by 2002:a05:600c:1da8:b0:477:7b16:5f77 with SMTP id 5b1f17b1804b1-482db493ff1mr208350515e9.3.1770113620102;
+        Tue, 03 Feb 2026 02:13:40 -0800 (PST)
 Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435e1322f40sm49061338f8f.34.2026.02.03.02.11.40
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435e1353ac2sm53545758f8f.38.2026.02.03.02.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 02:11:42 -0800 (PST)
-Date: Tue, 3 Feb 2026 11:11:39 +0100
+        Tue, 03 Feb 2026 02:13:39 -0800 (PST)
+Date: Tue, 3 Feb 2026 11:13:37 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Leon Romanovsky <leon@kernel.org>
 Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca, mrgolin@amazon.com, 
@@ -85,12 +85,11 @@ Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca, mrgolin@amazon.com,
 	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
 	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
 	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next 01/10] RDMA/umem: Add reference counting to
- ib_umem
-Message-ID: <vw3hrr5fsamtsgydvydoewd4fnglas5xzickgfpjgp5y44gxkm@dmmvo36blqtb>
+Subject: Re: [PATCH rdma-next 00/10] RDMA: Extend uverbs umem support for QP
+ buffers and doorbell records
+Message-ID: <n2lj2rw5slpmar6m66jw7pdbwcubpsisjvokawtmlxpka7yaks@fiyzcfwetjtz>
 References: <20260203085003.71184-1-jiri@resnulli.us>
- <20260203085003.71184-2-jiri@resnulli.us>
- <20260203100327.GS34749@unreal>
+ <20260203095933.GR34749@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -100,12 +99,12 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260203100327.GS34749@unreal>
+In-Reply-To: <20260203095933.GR34749@unreal>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -114,11 +113,11 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16443-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16444-lists,linux-rdma=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
@@ -128,172 +127,35 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 45EB3D75F2
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20230601.gappssmtp.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: A225CD7630
 X-Rspamd-Action: no action
 
-Tue, Feb 03, 2026 at 11:03:27AM +0100, leon@kernel.org wrote:
->On Tue, Feb 03, 2026 at 09:49:53AM +0100, Jiri Pirko wrote:
+Tue, Feb 03, 2026 at 10:59:33AM +0100, leon@kernel.org wrote:
+>On Tue, Feb 03, 2026 at 09:49:52AM +0100, Jiri Pirko wrote:
 >> From: Jiri Pirko <jiri@nvidia.com>
 >> 
->> Introduce reference counting for ib_umem objects to simplify memory
->> lifecycle management when umem buffers are shared between the core
->> layer and device drivers.
+>> This patchset extends the existing CQ umem buffer infrastructure to QP
+>> creation and adds doorbell record (DBR) umem support for both CQ and QP.
 >> 
->> When the core RDMA layer allocates an ib_umem and passes it to a driver
->> (e.g., for CQ or QP creation with external buffers), both layers need
->> to manage the umem lifecycle. Without reference counting, this requires
->> complex conditional release logic to avoid double-frees on error paths
->> and leaks on success paths.
+>> The kernel already supports CQ creation with externally provided umem
+>> buffers. This patchset:
+>> 
+>> 1. Adds umem reference counting to simplify memory lifecycle management.
+>> 2. Adds mlx5 driver implementation for the existing CQ buffer umem support.
+>> 3. Extends QP creation to support external SQ/RQ buffer umems.
+>> 4. Adds doorbell record umem support for both CQ and QP.
+>> 5. Implements all extensions in mlx5 driver.
+>> 
+>> This enables integration with dmabuf exporters for specialized memory
+>> types, such as GPU memory for GPU-direct RDMA scenarios.
 >
->This sentence doesn't align with the proposed change.
-
-Hmm, I'm not sure why you think it does not align. It exactly describes
-the code I had it originally without this path in place :)
-
+>What do you mean by that?
 >
->> 
->> With reference counting:
->> - Core allocates umem with refcount=1
->> - Driver calls ib_umem_get_ref() to take a reference
->> - Both layers can unconditionally call ib_umem_release()
->> - The umem is freed only when the last reference is dropped
->> 
->> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
->> Change-Id: Ifb1765ea3b14dab3329294633ea5df063c74420d
->
->Please remove the Change-Ids and write the commit message yourself,
->without relying on AI. The current message provides no meaningful
+>Are you referring to the RDMA dma‑buf exporter from Yishai?  
+>The GPU dma‑buf exporters already work correctly with the existing  
+>RDMA importer.
 
-I'm new in RDMA. Not sure what you mean by meaningful information :)
-I'm always trying to provide it.
-
->information, particularly the auto‑generated summary at the end.
-
-Doh, the changeIDs :) Sorry about that.
-
-
->
->Thanks
->
->> ---
->>  drivers/infiniband/core/umem.c        | 5 +++++
->>  drivers/infiniband/core/umem_dmabuf.c | 1 +
->>  drivers/infiniband/core/umem_odp.c    | 3 +++
->>  include/rdma/ib_umem.h                | 9 +++++++++
->>  4 files changed, 18 insertions(+)
->> 
->> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
->> index 8137031c2a65..09ce694d66ea 100644
->> --- a/drivers/infiniband/core/umem.c
->> +++ b/drivers/infiniband/core/umem.c
->> @@ -192,6 +192,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
->>  	umem = kzalloc(sizeof(*umem), GFP_KERNEL);
->>  	if (!umem)
->>  		return ERR_PTR(-ENOMEM);
->> +	refcount_set(&umem->refcount, 1);
->>  	umem->ibdev      = device;
->>  	umem->length     = size;
->>  	umem->address    = addr;
->> @@ -280,11 +281,15 @@ EXPORT_SYMBOL(ib_umem_get);
->>  /**
->>   * ib_umem_release - release memory pinned with ib_umem_get
->>   * @umem: umem struct to release
->> + *
->> + * Decrement the reference count and free the umem when it reaches zero.
->>   */
->>  void ib_umem_release(struct ib_umem *umem)
->>  {
->>  	if (!umem)
->>  		return;
->> +	if (!refcount_dec_and_test(&umem->refcount))
->> +		return;
->>  	if (umem->is_dmabuf)
->>  		return ib_umem_dmabuf_release(to_ib_umem_dmabuf(umem));
->>  	if (umem->is_odp)
->> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
->> index 939da49b0dcc..5c5286092fca 100644
->> --- a/drivers/infiniband/core/umem_dmabuf.c
->> +++ b/drivers/infiniband/core/umem_dmabuf.c
->> @@ -143,6 +143,7 @@ ib_umem_dmabuf_get_with_dma_device(struct ib_device *device,
->>  	}
->>  
->>  	umem = &umem_dmabuf->umem;
->> +	refcount_set(&umem->refcount, 1);
->>  	umem->ibdev = device;
->>  	umem->length = size;
->>  	umem->address = offset;
->> diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
->> index 572a91a62a7b..7be30fda57e3 100644
->> --- a/drivers/infiniband/core/umem_odp.c
->> +++ b/drivers/infiniband/core/umem_odp.c
->> @@ -144,6 +144,7 @@ struct ib_umem_odp *ib_umem_odp_alloc_implicit(struct ib_device *device,
->>  	if (!umem_odp)
->>  		return ERR_PTR(-ENOMEM);
->>  	umem = &umem_odp->umem;
->> +	refcount_set(&umem->refcount, 1);
->>  	umem->ibdev = device;
->>  	umem->writable = ib_access_writable(access);
->>  	umem->owning_mm = current->mm;
->> @@ -185,6 +186,7 @@ ib_umem_odp_alloc_child(struct ib_umem_odp *root, unsigned long addr,
->>  	if (!odp_data)
->>  		return ERR_PTR(-ENOMEM);
->>  	umem = &odp_data->umem;
->> +	refcount_set(&umem->refcount, 1);
->>  	umem->ibdev = root->umem.ibdev;
->>  	umem->length     = size;
->>  	umem->address    = addr;
->> @@ -245,6 +247,7 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_device *device,
->>  	if (!umem_odp)
->>  		return ERR_PTR(-ENOMEM);
->>  
->> +	refcount_set(&umem_odp->umem.refcount, 1);
->>  	umem_odp->umem.ibdev = device;
->>  	umem_odp->umem.length = size;
->>  	umem_odp->umem.address = addr;
->> diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
->> index 0a8e092c0ea8..44264f78eab3 100644
->> --- a/include/rdma/ib_umem.h
->> +++ b/include/rdma/ib_umem.h
->> @@ -10,6 +10,7 @@
->>  #include <linux/list.h>
->>  #include <linux/scatterlist.h>
->>  #include <linux/workqueue.h>
->> +#include <linux/refcount.h>
->>  #include <rdma/ib_verbs.h>
->>  
->>  struct ib_ucontext;
->> @@ -19,6 +20,7 @@ struct dma_buf_attach_ops;
->>  struct ib_umem {
->>  	struct ib_device       *ibdev;
->>  	struct mm_struct       *owning_mm;
->> +	refcount_t		refcount;
->>  	u64 iova;
->>  	size_t			length;
->>  	unsigned long		address;
->> @@ -110,6 +112,12 @@ static inline bool __rdma_umem_block_iter_next(struct ib_block_iter *biter)
->>  
->>  struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
->>  			    size_t size, int access);
->> +
->> +static inline void ib_umem_get_ref(struct ib_umem *umem)
->> +{
->> +	refcount_inc(&umem->refcount);
->> +}
->> +
->>  void ib_umem_release(struct ib_umem *umem);
->>  int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
->>  		      size_t length);
->> @@ -188,6 +196,7 @@ static inline struct ib_umem *ib_umem_get(struct ib_device *device,
->>  {
->>  	return ERR_PTR(-EOPNOTSUPP);
->>  }
->> +static inline void ib_umem_get_ref(struct ib_umem *umem) { }
->>  static inline void ib_umem_release(struct ib_umem *umem) { }
->>  static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
->>  		      		    size_t length) {
->> -- 
->> 2.51.1
->> 
->> 
+Basically it allows you to use any DMA-buf exported memory for CQ/QP/DBR
+purposes. Currently, only MR works with DMA-buf exported memory.
 
