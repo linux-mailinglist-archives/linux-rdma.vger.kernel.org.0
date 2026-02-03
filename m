@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-16429-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16430-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mEgyGv62gWmEJAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16429-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 09:51:10 +0100
+	id oJJ6KuG2gWkrJAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16430-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 09:50:41 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3174D663A
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 09:51:09 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72F2ED660F
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 09:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 0F4FF300C56D
+	by sto.lore.kernel.org (Postfix) with ESMTP id E9B153022063
 	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 08:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC06D39525B;
-	Tue,  3 Feb 2026 08:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0B6396B63;
+	Tue,  3 Feb 2026 08:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="XQoLRA6K"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="yQPpU0+g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8859396B81
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 08:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD64F396B65
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 08:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770108619; cv=none; b=LQF2kia1BuQ5JXHEzGtKSCCe2W5k683gnlfQIg+uPs9K3jxErUjhgYENBuw/JKrrZ6qhubyKOOJZuC53udYaTFVeA+vL27OMSgpFRQqrWX0hgr/MgGkJu+RuslD5XhUTmveLZdz4Ry/B15taUfs7/bqBRu+Lv8hN60fJwDdMcvQ=
+	t=1770108620; cv=none; b=bSglEtvKAq66soPHhFhK8MbWKQqbAiKFylCwJwt5/6I2dfJfaOzic5KlOiGPettc338/HXxa40yV6OYAEx5ZSl7QQ5MJ9Md/JJEj9PjmQxe+KcIs43aZ9B2qSh8+c09jm/hi4Ze53bf4vc3MouwH7MmeOREmzepLfM2BC5sqtYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770108619; c=relaxed/simple;
-	bh=SfIcxcTBBi074HJP3G9ABWfB8tzS+iaOieilLKCd2sg=;
+	s=arc-20240116; t=1770108620; c=relaxed/simple;
+	bh=/0on0wlvDpCN60nvCUSm+9tdhzVHMZmOAOzTrJJBbNI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QY0+B04OO2k/Ij7OBievzPvBTTQcil1z9kt6JSD1+/3PWLxuHO8AgrHEOpqf0J8bT0jC2c6bEc6YLMlGqiNUcgCz66bq2UzeKQtYe72i1U/gjZ7KdcNovuTn+NiBoLvzDn8LPdtNvnkRsnmGiCGcgL5ID470oE7iG/bruufoU2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=XQoLRA6K; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version; b=XrWuAinaFKTgGp3ddVYDvngVJ5nGfG4o9/fCR8Vz6S60Rgz75Rh/tBVL4zioA8dl643v2HciefmUGZNLyFDiK3aQ/b86iZiKHGeOrC8R6pyAUbWCTtv3a0gJE2sCZV9shJJnhRWtsju8bFyPsXnL8LXHCyFmC37E6bWQTvGE+PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=yQPpU0+g; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-481188b7760so35306625e9.0
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 00:50:17 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4806b43beb6so39211165e9.3
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 00:50:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770108616; x=1770713416; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770108617; x=1770713417; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OKviU2MwGxenqc9fW0Uek87sygf9yWcEsdN5503tbRA=;
-        b=XQoLRA6KhjKXCQSgjtwTwiNPblq+bXnASrfzTdpl84X4/MndAQx/Sn5yRaNApVG9us
-         H6wVSRHz+Pf+Zq6Nf9aMnYlyw2exyz20baG7zrpLoPGJzhBI1OgVqUkcnZQPaVIoaGnW
-         x5CtvSwjdTZc3qF0QQou6cHqXaW4fEUJgsKWeeH+mGFpAzMplgR5BmI+sgA08OWDK8U/
-         XS/6Scgys0F6CHw3Hlc2VI9KJjnjh1CUgOs+MkhqAUX9r21UH1gnNkodWR6cZy01giod
-         D48LGfcm7cElZU73oMjl/MidNxNzYuojhJpL4LNBQ62VgOzCMQA/2pSLiOR9fLjEpwmM
-         bGeA==
+        bh=BBDWSFvHCPkbqnMjbv7wogbWk10TYuEoc3WFye0YiZY=;
+        b=yQPpU0+gROXNuhPuTIHdGzFynUU8qABzSi9WtsFJ6tyejOmCYBlchN08jIKYVBgSbP
+         w4RgdDAzreZsj0tJLS7oujLdx7dgwdY6Kvnej03NUIi/QuwOqSqkWShdfmJbU4znFK1t
+         AX+pHLkJm30NW9V39gTqZOKH5LnTny8CKH8iqH0ChfBxfdyb8oRfynsuaHFPdvFL5VCC
+         Qve3GWWvLwMnuv9ElqvIAerI6tuNqZYtiqyuwbO4QomUz1EHTpjAvFL/q8SwmW7Pn7YE
+         mhVtJFrO6rroWUJ2Bn/qqwzxycrSkzB3r2FeOomPdsA+PYLx0XEhVWolkgn5lcC6U7GS
+         y4PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770108616; x=1770713416;
+        d=1e100.net; s=20230601; t=1770108617; x=1770713417;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=OKviU2MwGxenqc9fW0Uek87sygf9yWcEsdN5503tbRA=;
-        b=VNU2SQ6ch1puZcxsBUoxh11VreG4gMM2S2Gzd76RoK/3GTHoopJX8h+0DZEciUaquA
-         20lnKMb5VowV5MYOJEC/R+NtfIBdHb//EXuPxroeGEGv16uZPcve1gsahvAJgn8y0A4r
-         GO+rW/kHibotp2g/ErCW5KNX5ImMCGAWWchiQTfCnAOQSv2qb4CWWAOHuxVSTBkLDZ5C
-         +V+0wZJSZVyGvgV/chafdmiFfCONMWs/v9EUSaviVttnQdvFXdMxiXte9DLxoEoj3zjF
-         0qo3+HpyNLVGMPm9+ZcSBwBwzg5r+dotcL8kmnoA73aUkv3vxK9qyXGeeqvk4DFjm58C
-         OsWA==
-X-Gm-Message-State: AOJu0Yy4WYOj/Gf/03aTy5aW1irZDi6o98yp3JCgenVYzSphg3bhPpvL
-	xlwrou2rBKXfaO2wh3CADtWLPQ6x8w7von172zifu6FoVVMt1Sx18SzWjjRnlup/zY7DOQj3yKr
-	5ysvH
-X-Gm-Gg: AZuq6aL9JGk1MfuqqUpTocddBE3BsZOw18hi/GkJMK+wvy4l3yFuy88MS8hMYR9UXte
-	NU6BZsRvPT6cN6F0/Ac7aQdLfAm0Jnp1itYkFOBcPjIo/hHAR0sWPCI9ZVO6Wdg60VreATN8lMv
-	b30SlCkfBUD5KT6sJdV/o2hb0VDeXYfIVxaVvGLUO4quaMrW4lO2fgbgFI6nwRCJibWH7YA4w9r
-	njSjifAD4WoCW5zX1ED4HyW9noJH1O/SBPWErR+asZxYkzqRSJbv0TU7H085lu5OWG/hQjcj4ly
-	wUCKiCUe7B9ERVsYS6Mge6jIfS+sZzb+FhGA6BnmieQoTL5caNeeTFAu3G8qk5kGPwlsu4U/hhB
-	KN0ApWfgA8kNh5jL4N68SsqB6i3Gb/z4omDkqNkVUyYEQGS27ZTcnR9KKmbkUXBf5jWJsqfiw61
-	tnHg==
-X-Received: by 2002:a05:600c:a00d:b0:477:89d5:fdb2 with SMTP id 5b1f17b1804b1-482db465e44mr183380805e9.14.1770108615981;
-        Tue, 03 Feb 2026 00:50:15 -0800 (PST)
+        bh=BBDWSFvHCPkbqnMjbv7wogbWk10TYuEoc3WFye0YiZY=;
+        b=YPEHqi6ZqJ2de4wwiu00+TxJjLCEQHV/Fv3gQ2UjS1NYBaMifkhho2pIF7PWs+Gzet
+         2HNjMij8kF50EnHV3rSzVqu9Xf+dQqlL/9Gr9kRbKllMQyfbTiNJf3jMvQcNUjkdnQxt
+         szdYzC3Q5IEbBDP9AfRzbNAwnl8pCh8eCPalgSL7RVzKbUFNs11vd/yKWvHJsnPcDDAP
+         QqSYztP6MK0CTWP6dZzYB7DJyEAvIKqd6jsM4hG+6tXuBOc57QVD0RMXk4PphVtm7BSq
+         jOEVzSsNzxhbvAgBCg/+8nXEpkLFie4tba4q8KQqOpy9Dzf5+QPm5nu3KrJzPTB++4n7
+         nriA==
+X-Gm-Message-State: AOJu0YxEuFpXEddKqvznEGZFa/wgIoNw+E43zHxEMk4+npdo6mfT5HWr
+	fsWqzjN8fWr3UOVxIffPOrZUwKCJ3x13BsK5wP9QFa0dNE6QetsKm+3+iKPrXtyOG/d3SJcuw/h
+	Xak+y
+X-Gm-Gg: AZuq6aLvD6cSYkvy3R2DJ1M0vyIfcC3tYW7a+L8yL3hwDayvvJOkvHnh2knb9anooxr
+	eosYsesOb4by1xsEvxPlyglEEkvapqEDhxPj71sZRe3kIPo5lnSHEItbLh2qcmdB3Im4L18yK4o
+	uCrAj9suZSlJnNxq6XVCCPH30j+jMHULVZpWwQzaE7QQVF20ugGznlHa5FysqJMtFvI8ESi4GAi
+	D/O/j5u4pWPtOTV71QhWtgwPezdmP3EQFY1H9rQJWMYJCPGlf9TZfgvJlK4A2w/x8LzZ6NV1Ysr
+	p/pZ6k2U59bRpKQdcH5K7XORWNwELKpXqT2UkN8zhzfyRUPgzdIo6VDs+pEhpdCbsdpeyExh0aG
+	COUAIXccpzTa97l7gSa8DAWdZUp5+okQvaN0nPwzIROnPauYVZRrpD+a/WGNZ2W6uGa7YPCZTxE
+	CpVw==
+X-Received: by 2002:a05:600c:a01:b0:480:462e:d640 with SMTP id 5b1f17b1804b1-482db4b53f0mr189035855e9.36.1770108617098;
+        Tue, 03 Feb 2026 00:50:17 -0800 (PST)
 Received: from localhost ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4360ef9e804sm8375532f8f.41.2026.02.03.00.50.15
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-482db623407sm145807845e9.0.2026.02.03.00.50.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 00:50:15 -0800 (PST)
+        Tue, 03 Feb 2026 00:50:16 -0800 (PST)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -101,9 +101,9 @@ Cc: jgg@ziepe.ca,
 	sriharsha.basavapatna@broadcom.com,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: [PATCH rdma-next 09/10] RDMA/uverbs: Add doorbell record umem support to QP creation
-Date: Tue,  3 Feb 2026 09:50:01 +0100
-Message-ID: <20260203085003.71184-10-jiri@resnulli.us>
+Subject: [PATCH rdma-next 10/10] RDMA/mlx5: Add external doorbell record umem support for QP
+Date: Tue,  3 Feb 2026 09:50:02 +0100
+Message-ID: <20260203085003.71184-11-jiri@resnulli.us>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20260203085003.71184-1-jiri@resnulli.us>
 References: <20260203085003.71184-1-jiri@resnulli.us>
@@ -119,12 +119,12 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16429-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16430-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
@@ -133,7 +133,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -142,285 +142,112 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_TWELVE(0.00)[24];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20230601.gappssmtp.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:email,resnulli.us:mid]
-X-Rspamd-Queue-Id: A3174D663A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20230601.gappssmtp.com:dkim,resnulli.us:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: 72F2ED660F
 X-Rspamd-Action: no action
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Extend the QP creation path to support passing doorbell record (DBR)
-memory via umem for both SQ and RQ. This allows userspace to provide
-pre-pinned doorbell record buffers.
+Extend the mlx5 QP creation path to support externally provided
+doorbell record (DBR) umem buffers. This enables userspace to pass
+pre-pinned DBR memory for QP creation.
 
-The DBR umem can be provided via:
-- Virtual address (VA) mode: UVERBS_ATTR_CREATE_QP_{SQ,RQ}_DBR_VA + LENGTH
-- DMA-buf file descriptor mode: UVERBS_ATTR_CREATE_QP_{SQ,RQ}_DBR_FD +
-  OFFSET + LENGTH
-
-These modes are mutually exclusive, similar to the QP buffer umem.
+Note that a single doorbell is shared between SQ and RQ for raw-QPs.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
-Change-Id: Id2836b852d114a93c9b5b45c09bcef386386a193
+Change-Id: I641f6412ad99b48f6633da742bf169df2bd1edf3
 ---
- drivers/infiniband/core/core_priv.h           |  2 +
- drivers/infiniband/core/uverbs_std_types_qp.c | 55 ++++++++++++++++++-
- drivers/infiniband/core/verbs.c               | 25 ++++++---
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |  1 +
- drivers/infiniband/hw/mlx5/qp.c               |  1 +
- include/rdma/ib_verbs.h                       |  2 +
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  8 +++
- 7 files changed, 83 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 553326c4eca9..baca8cc120aa 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -324,6 +324,8 @@ struct ib_qp *ib_create_qp_user_umem(struct ib_device *dev, struct ib_pd *pd,
- 				     struct ib_qp_init_attr *attr,
- 				     struct ib_umem *sq_umem,
- 				     struct ib_umem *rq_umem,
-+				     struct ib_umem *sq_dbr_umem,
-+				     struct ib_umem *rq_dbr_umem,
- 				     struct ib_udata *udata,
- 				     struct ib_uqp_object *uobj,
- 				     const char *caller);
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index f1e2cfb27aa5..3c8817f286a2 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -96,7 +96,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 	struct ib_xrcd *xrcd = NULL;
- 	struct ib_uobject *xrcd_uobj = NULL;
- 	struct ib_device *device;
--	struct ib_umem *sq_umem, *rq_umem;
-+	struct ib_umem *sq_umem, *rq_umem, *sq_dbr_umem, *rq_dbr_umem;
- 	u64 user_handle;
- 	int ret;
- 
-@@ -271,14 +271,37 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 	if (ret)
- 		goto err_release_sq_umem;
- 
-+	/* Get SQ DBR umem (from VA or dmabuf FD) */
-+	ret = uverbs_get_buffer_umem(device, attrs,
-+				 UVERBS_ATTR_CREATE_QP_SQ_DBR_VA,
-+				 UVERBS_ATTR_CREATE_QP_SQ_DBR_LENGTH,
-+				 UVERBS_ATTR_CREATE_QP_SQ_DBR_FD,
-+				 UVERBS_ATTR_CREATE_QP_SQ_DBR_OFFSET,
-+				 device->ops.create_qp_umem, 0, &sq_dbr_umem);
-+	if (ret)
-+		goto err_release_rq_umem;
-+
-+	/* Get RQ DBR umem (from VA or dmabuf FD) */
-+	ret = uverbs_get_buffer_umem(device, attrs,
-+				 UVERBS_ATTR_CREATE_QP_RQ_DBR_VA,
-+				 UVERBS_ATTR_CREATE_QP_RQ_DBR_LENGTH,
-+				 UVERBS_ATTR_CREATE_QP_RQ_DBR_FD,
-+				 UVERBS_ATTR_CREATE_QP_RQ_DBR_OFFSET,
-+				 device->ops.create_qp_umem, 0, &rq_dbr_umem);
-+	if (ret)
-+		goto err_release_sq_dbr_umem;
-+
- 	qp = ib_create_qp_user_umem(device, pd, &attr, sq_umem, rq_umem,
-+				    sq_dbr_umem, rq_dbr_umem,
- 				    &attrs->driver_udata, obj, KBUILD_MODNAME);
- 	if (IS_ERR(qp)) {
- 		ret = PTR_ERR(qp);
--		goto err_release_rq_umem;
-+		goto err_release_rq_dbr_umem;
- 	}
- 
- 	/* Driver took a reference, release ours */
-+	ib_umem_release(rq_dbr_umem);
-+	ib_umem_release(sq_dbr_umem);
- 	ib_umem_release(rq_umem);
- 	ib_umem_release(sq_umem);
- 
-@@ -306,6 +329,10 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 
- 	return ret;
- 
-+err_release_rq_dbr_umem:
-+	ib_umem_release(rq_dbr_umem);
-+err_release_sq_dbr_umem:
-+	ib_umem_release(sq_dbr_umem);
- err_release_rq_umem:
- 	ib_umem_release(rq_umem);
- err_release_sq_umem:
-@@ -397,6 +424,30 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_BUFFER_OFFSET,
- 			   UVERBS_ATTR_TYPE(u64),
- 			   UA_OPTIONAL),
-+	/* SQ DBR attributes - use VA or FD, not both */
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_SQ_DBR_VA,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_SQ_DBR_LENGTH,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_RAW_FD(UVERBS_ATTR_CREATE_QP_SQ_DBR_FD,
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_SQ_DBR_OFFSET,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_OPTIONAL),
-+	/* RQ DBR attributes - use VA or FD, not both */
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_DBR_VA,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_DBR_LENGTH,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_RAW_FD(UVERBS_ATTR_CREATE_QP_RQ_DBR_FD,
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_QP_RQ_DBR_OFFSET,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_OPTIONAL),
- 	UVERBS_ATTR_UHW());
- 
- static int UVERBS_HANDLER(UVERBS_METHOD_QP_DESTROY)(
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 97073b50fc30..db0ad750a78a 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1265,6 +1265,8 @@ static struct ib_qp *create_xrc_qp_user(struct ib_qp *qp,
- static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
- 			       struct ib_qp_init_attr *attr,
- 			       struct ib_umem *sq_umem, struct ib_umem *rq_umem,
-+			       struct ib_umem *sq_dbr_umem,
-+			       struct ib_umem *rq_dbr_umem,
- 			       struct ib_udata *udata,
- 			       struct ib_uqp_object *uobj, const char *caller)
- {
-@@ -1272,7 +1274,7 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	struct ib_qp *qp;
- 	int ret;
- 
--	if (sq_umem || rq_umem) {
-+	if (sq_umem || rq_umem || sq_dbr_umem || rq_dbr_umem) {
- 		if (!dev->ops.create_qp_umem)
- 			return ERR_PTR(-EOPNOTSUPP);
- 	} else {
-@@ -1309,9 +1311,9 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	WARN_ONCE(!udata && !caller, "Missing kernel QP owner");
- 	rdma_restrack_set_name(&qp->res, udata ? NULL : caller);
- 
--	if (sq_umem || rq_umem)
-+	if (sq_umem || rq_umem || sq_dbr_umem || rq_dbr_umem)
- 		ret = dev->ops.create_qp_umem(qp, attr, sq_umem, rq_umem,
--					      udata);
-+					      sq_dbr_umem, rq_dbr_umem, udata);
- 	else
- 		ret = dev->ops.create_qp(qp, attr, udata);
- 	if (ret)
-@@ -1349,6 +1351,8 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
-  *   the actual capabilities of the created QP.
-  * @sq_umem: SQ buffer umem (optional)
-  * @rq_umem: RQ buffer umem (optional)
-+ * @sq_dbr_umem: SQ doorbell record umem (optional)
-+ * @rq_dbr_umem: RQ doorbell record umem (optional)
-  * @udata: User data
-  * @uobj: uverbs object
-  * @caller: caller's build-time module name
-@@ -1357,6 +1361,8 @@ struct ib_qp *ib_create_qp_user_umem(struct ib_device *dev, struct ib_pd *pd,
- 				     struct ib_qp_init_attr *attr,
- 				     struct ib_umem *sq_umem,
- 				     struct ib_umem *rq_umem,
-+				     struct ib_umem *sq_dbr_umem,
-+				     struct ib_umem *rq_dbr_umem,
- 				     struct ib_udata *udata,
- 				     struct ib_uqp_object *uobj,
- 				     const char *caller)
-@@ -1364,10 +1370,11 @@ struct ib_qp *ib_create_qp_user_umem(struct ib_device *dev, struct ib_pd *pd,
- 	struct ib_qp *qp, *xrc_qp;
- 
- 	if (attr->qp_type == IB_QPT_XRC_TGT)
--		qp = create_qp(dev, pd, attr, sq_umem, rq_umem, NULL, NULL, caller);
-+		qp = create_qp(dev, pd, attr, NULL, NULL, NULL, NULL, NULL,
-+			       NULL, caller);
- 	else
--		qp = create_qp(dev, pd, attr, sq_umem, rq_umem, udata, uobj,
--			       NULL);
-+		qp = create_qp(dev, pd, attr, sq_umem, rq_umem, sq_dbr_umem,
-+			       rq_dbr_umem, udata, uobj, NULL);
- 	if (attr->qp_type != IB_QPT_XRC_TGT || IS_ERR(qp))
- 		return qp;
- 
-@@ -1399,8 +1406,8 @@ struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
- 				struct ib_udata *udata,
- 				struct ib_uqp_object *uobj, const char *caller)
- {
--	return ib_create_qp_user_umem(dev, pd, attr, NULL, NULL, udata, uobj,
--				      caller);
-+	return ib_create_qp_user_umem(dev, pd, attr, NULL, NULL, NULL, NULL,
-+				      udata, uobj, caller);
- }
- EXPORT_SYMBOL(ib_create_qp_user);
- 
-@@ -1452,7 +1459,7 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
- 		rdma_rw_init_qp(device, qp_init_attr);
- 
- 	qp = create_qp(device, pd, qp_init_attr, NULL, NULL, NULL, NULL,
--		       caller);
-+		       NULL, NULL, caller);
- 	if (IS_ERR(qp))
- 		return qp;
- 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index c1e60f5c1754..f654d0fde3f1 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1358,6 +1358,7 @@ int mlx5_ib_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *init_attr,
- 		      struct ib_udata *udata);
- int mlx5_ib_create_qp_umem(struct ib_qp *qp, struct ib_qp_init_attr *init_attr,
- 			   struct ib_umem *sq_umem, struct ib_umem *rq_umem,
-+			   struct ib_umem *sq_dbr_umem, struct ib_umem *rq_dbr_umem,
- 			   struct ib_udata *udata);
- int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		      int attr_mask, struct ib_udata *udata);
 diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 4b926b6f2461..79d30e68b4cb 100644
+index 79d30e68b4cb..f8c24f66fef5 100644
 --- a/drivers/infiniband/hw/mlx5/qp.c
 +++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -3399,6 +3399,7 @@ int mlx5_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
- 
- int mlx5_ib_create_qp_umem(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
- 			   struct ib_umem *sq_umem, struct ib_umem *rq_umem,
-+			   struct ib_umem *sq_dbr_umem, struct ib_umem *rq_dbr_umem,
- 			   struct ib_udata *udata)
+@@ -944,7 +944,8 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 			   struct mlx5_ib_create_qp_resp *resp, int *inlen,
+ 			   struct mlx5_ib_qp_base *base,
+ 			   struct mlx5_ib_create_qp *ucmd,
+-			   struct ib_umem *ext_umem)
++			   struct ib_umem *ext_umem,
++			   struct ib_umem *ext_dbr_umem)
  {
- 	return __mlx5_ib_create_qp(ibqp, attr, udata, sq_umem, rq_umem);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index eeafa5358b49..36d59e9d45b5 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2524,6 +2524,8 @@ struct ib_device_ops {
- 	int (*create_qp_umem)(struct ib_qp *qp,
- 			      struct ib_qp_init_attr *qp_init_attr,
- 			      struct ib_umem *sq_umem, struct ib_umem *rq_umem,
-+			      struct ib_umem *sq_dbr_umem,
-+			      struct ib_umem *rq_dbr_umem,
- 			      struct ib_udata *udata);
- 	int (*modify_qp)(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
- 			 int qp_attr_mask, struct ib_udata *udata);
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index ef33b96511a8..5e9be458e990 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -169,6 +169,14 @@ enum uverbs_attrs_create_qp_cmd_attr_ids {
- 	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_LENGTH,
- 	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_FD,
- 	UVERBS_ATTR_CREATE_QP_RQ_BUFFER_OFFSET,
-+	UVERBS_ATTR_CREATE_QP_SQ_DBR_VA,
-+	UVERBS_ATTR_CREATE_QP_SQ_DBR_LENGTH,
-+	UVERBS_ATTR_CREATE_QP_SQ_DBR_FD,
-+	UVERBS_ATTR_CREATE_QP_SQ_DBR_OFFSET,
-+	UVERBS_ATTR_CREATE_QP_RQ_DBR_VA,
-+	UVERBS_ATTR_CREATE_QP_RQ_DBR_LENGTH,
-+	UVERBS_ATTR_CREATE_QP_RQ_DBR_FD,
-+	UVERBS_ATTR_CREATE_QP_RQ_DBR_OFFSET,
+ 	struct mlx5_ib_ucontext *context;
+ 	struct mlx5_ib_ubuffer *ubuffer = &base->ubuffer;
+@@ -1064,7 +1065,7 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		resp->bfreg_index = MLX5_IB_INVALID_BFREG;
+ 	qp->bfregn = bfregn;
+ 
+-	err = mlx5_ib_db_map_user(context, ucmd->db_addr, NULL, &qp->db);
++	err = mlx5_ib_db_map_user(context, ucmd->db_addr, ext_dbr_umem, &qp->db);
+ 	if (err) {
+ 		mlx5_ib_dbg(dev, "map failed\n");
+ 		goto err_free;
+@@ -1744,6 +1745,7 @@ struct mlx5_create_qp_params {
+ 	struct mlx5_ib_create_qp_resp resp;
+ 	struct ib_umem *sq_ext_umem;
+ 	struct ib_umem *rq_ext_umem;
++	struct ib_umem *rq_dbr_ext_umem;
  };
  
- enum uverbs_attrs_destroy_qp_cmd_attr_ids {
+ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+@@ -2158,7 +2160,7 @@ static int create_dci(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		return ts_format;
+ 
+ 	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &params->resp,
+-			      &inlen, base, ucmd, NULL);
++			      &inlen, base, ucmd, NULL, NULL);
+ 	if (err)
+ 		return err;
+ 
+@@ -2326,7 +2328,8 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	}
+ 
+ 	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &params->resp,
+-			      &inlen, base, ucmd, params->rq_ext_umem);
++			      &inlen, base, ucmd, params->rq_ext_umem,
++			      params->rq_dbr_ext_umem);
+ 	if (err)
+ 		return err;
+ 
+@@ -3290,7 +3293,8 @@ static int check_ucmd_data(struct mlx5_ib_dev *dev,
+ 
+ static int __mlx5_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 			       struct ib_udata *udata,
+-			       struct ib_umem *sq_umem, struct ib_umem *rq_umem)
++			       struct ib_umem *sq_umem, struct ib_umem *rq_umem,
++			       struct ib_umem *rq_dbr_umem)
+ {
+ 	struct mlx5_create_qp_params params = {};
+ 	struct mlx5_ib_dev *dev = to_mdev(ibqp->device);
+@@ -3317,6 +3321,7 @@ static int __mlx5_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 	params.is_rss_raw = !!attr->rwq_ind_tbl;
+ 	params.sq_ext_umem = sq_umem;
+ 	params.rq_ext_umem = rq_umem;
++	params.rq_dbr_ext_umem = rq_dbr_umem;
+ 
+ 	if (udata) {
+ 		err = process_udata_size(dev, &params);
+@@ -3394,7 +3399,7 @@ static int __mlx5_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ int mlx5_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 		      struct ib_udata *udata)
+ {
+-	return __mlx5_ib_create_qp(ibqp, attr, udata, NULL, NULL);
++	return __mlx5_ib_create_qp(ibqp, attr, udata, NULL, NULL, NULL);
+ }
+ 
+ int mlx5_ib_create_qp_umem(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+@@ -3402,7 +3407,9 @@ int mlx5_ib_create_qp_umem(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 			   struct ib_umem *sq_dbr_umem, struct ib_umem *rq_dbr_umem,
+ 			   struct ib_udata *udata)
+ {
+-	return __mlx5_ib_create_qp(ibqp, attr, udata, sq_umem, rq_umem);
++	/* Single DBR umem for both SQ and RQ. */
++	return __mlx5_ib_create_qp(ibqp, attr, udata, sq_umem, rq_umem,
++				   rq_dbr_umem);
+ }
+ 
+ int mlx5_ib_destroy_qp(struct ib_qp *qp, struct ib_udata *udata)
 -- 
 2.51.1
 
