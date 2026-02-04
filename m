@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-16512-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16513-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kDtaB/UXg2mKhgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16512-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 10:57:09 +0100
+	id 0NlrEo0Yg2mKhgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16513-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 10:59:41 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 782C9E42A0
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 10:57:08 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5106E4329
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 10:59:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C38013010D96
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 09:56:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 816233022F73
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 09:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43483C1995;
-	Wed,  4 Feb 2026 09:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AD5387357;
+	Wed,  4 Feb 2026 09:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="yQXnBIkG"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Km5MWAOq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695D23BFE35
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 09:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401B43AEF5F
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 09:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770199017; cv=none; b=pkxeqDgmwQ0piw7SjG2J3nZN6m75a71JqJQFQFQwrdSnXsBC9an4d2H6mcwf8dQ9UF54IbNx3jRU02IJ/4Pi94toKG6dxnyntS1Iz/XhSp9/0jbR/4BBNr1sYkukl1+/T5kCDH+SdHErDvH8n5mdmNqY6CbzBPX0n0LIqWNJdBo=
+	t=1770199111; cv=none; b=ALXz0c8OFhyrbP5zpYYlmzKq5oQICUlEUZ8awSB3O4uCNujP82AZduWlkFYZyp4WTWbNK6/hVm40jWFtOrlVGQbJjmuKLVTpC9dZuYB5QNO8/Sfj6GO3T1WW6qZhThnFKyi1fSYch8eiLBRVd4v4ZBa3138quL/w0u8OwkHLEsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770199017; c=relaxed/simple;
-	bh=c0SSiNKESavwRZtHeDYtsFbwwGk+w/EGhOCZVlQW4wQ=;
+	s=arc-20240116; t=1770199111; c=relaxed/simple;
+	bh=RqUvHqsbdJMXbroQSbdoa+j17A8Lq78NDNCD6CEhGH8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iYyrJIjVT1mRNb89pntbsBAYIlZ9iwA1+qtytdAcate8kHvakNol+Q+nO6wsodNCQS6NYvDvxF9PUSqC9Jms8ZHYlWP8DbnYygjT/V0/ZjkmkVm8qVRAeV1qtMkcYR+tf3hQT5qFvccwyjEwE7vJtL7xLBD9fCx1J0T9E0kDarw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=yQXnBIkG; arc=none smtp.client-ip=209.85.128.66
+	 Content-Type:Content-Disposition:In-Reply-To; b=MwJbmjffc8yJ7xxybZcB324hp/j8PMHW6WyLRSV35h+rSpnt3NFLUti7YedKAXHCbVHiJVh+trXmmTnHIiT1vy7PiPyJ54K4nZkD+tYUacILZ7tDMf9Jyn5e2RhIGKopMnRky5CTTuSIL4VfkyeM6GshSgpNLKySnz3H7ebicu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=Km5MWAOq; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-4806fbc6bf3so69842465e9.2
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Feb 2026 01:56:57 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-4359228b7c6so4645456f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Feb 2026 01:58:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770199016; x=1770803816; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770199110; x=1770803910; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TaBsez7vELTsNb/sMEe0+EHGenrpZkeztrL57KkgMuE=;
-        b=yQXnBIkGW0ElIC/OXWcyplPwOOU0IIyJdg2coACLZBwEAL3kAFpLZpCqnTmfDTPtiG
-         2zVbqzDrgzqlUL7Ja9XWDQV0ujbRrO5KZL3G5M0n+dPQwbNMj3+CF+EZfFliCM6N5Txa
-         rJDqCgzxoFgzjS0did4KHpryRo02BpSKDJ5y5T0VqSbZTfwlHO0/fFwwV2T0Vf4EIVlY
-         rIOegYO/OE1z3Su9rBc5No3IDgGWqcEHRb9NeGDzU+kEenwKqvCoQoQKtdcWRsUgtQPp
-         lisED1YCVMCvDSG0056FrhEsGYv8OwiFcsE5MZXwmgR35UH9O7JhFcEvjVLyvS3s3WjO
-         DT+Q==
+        bh=XsS2W/JwCUgw6NN0Wz3AYONgmZuWQ5joMlv0dByi4ao=;
+        b=Km5MWAOqgKvfPhv0SPoi64vQ23QnUBw9q2/Ua2FnDxfvG4yejUVVUVKTURAtFCcUsQ
+         xUCskVjp7dw/KAlS1RyxfllziMWMOytV3ZKR2X1uBYv/qoRmNB4kKOafr+v5COwoOt4j
+         475IIpIpCnORYHO+5VkI5u0Qa3VnQ6GCLBIH+Jm2jebh1aNrW9070zKmM/xzFrwzZ9ZN
+         XfVbC+hI94PN9SPGkoTQ4xsLMSMrsnjd0Q6TnATV7JVJzaY47y9QhypUe9962Y3F0k2e
+         IEPuZP6WjrCJh/Oh+mQsSdTDqVILIJWiTyyh/F7ZZaPV4qGikhpvv8UShGn32T6PXqPA
+         zAWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770199016; x=1770803816;
+        d=1e100.net; s=20230601; t=1770199110; x=1770803910;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TaBsez7vELTsNb/sMEe0+EHGenrpZkeztrL57KkgMuE=;
-        b=Wmpe2Ynh+nbpFaskT0mjIcds29OCyCy8Tb4ZQLrnWGZS1aQNFfzqqwfb1P0Qfk/y8y
-         5SzCWQwHL8OxTTQGexAak1suJFRDrrLtgGWZTpBCpHA0yu/Og3EG2/jPVt09E9MMK+hl
-         BnLSYZBrzv0JQMLF6OWJLSgFWInEmqd48D1X0zBawXxujvRledZn+BPfNnkWRr+rj/Zk
-         aj0mIvWzymyzPGA2Na+4FKdLzpjfEWSBeAN+PTYncU5wMTfC4ZCai0aq1BaRAJ+fW1oe
-         RK/ZmPBBgJv3UihAfqATULZ0Xe6C7+M7b64Fa0bekfW0VM486TNkBo03ysn8BPU50FDM
-         HGOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVmgFbsG2sNVoqclUTkrwkPu7YAWbO7cD8om4jGv3qz6b3oa86xrtzEUIr+hJR6ZvhC5XRtVWJ4vm/A@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdqVFzugzwOVp48m38Dfz01+wyFv0z4s+h7029kDmaDkSyOLuj
-	mjz8RPbMe1pNU+bjvJFCEy/dCRQoJ86CKNcUI4+jE6sq4xZwUlyJbWjsxrWmrFj941Q=
-X-Gm-Gg: AZuq6aJress8ic3A+Wd1vCLSEh0VXEyakh3rHW3yer3ymFVh1LGdD+ZA7vJWa77rrm7
-	40bS/PRsMi29l7y/WBRBIIzqTPy4DB17YNTafeauEYSiKHHHFaVn+uHbhhmQh4Zqs3/b/jtCA4D
-	sERqclfPEneVqHAMBK49iP76rGcpsJuLhl1H+ALHzUTiuImwQrNT/0QSXeGVZW9g6VtPHHNzkBx
-	z3N5SWTfGB2yMiHklQSUm8ncCUZvy70qTi7MU+ghewl2qXRDui/b1Z/XSwfOBir2QhPbEm0mnWL
-	oqOal14lDc/Nt1W5esM/EYiAG0EZRKJxVMV4IdDTVOGnfZmP7EA9Mlxx9oaN2tKMPD5buR6hEy8
-	CBsbqWgQZyBj9VYQuHI3583ZqI81VJDDcybf6dugAjKs2fSkuTPN/5iqxpYPW2A9vqIutYvbiGa
-	C+vu6Fem50iw8OpaBC7wY=
-X-Received: by 2002:a05:600c:34c3:b0:480:1a3a:5ce6 with SMTP id 5b1f17b1804b1-4830e93ddd9mr31664665e9.14.1770199015702;
-        Wed, 04 Feb 2026 01:56:55 -0800 (PST)
+        bh=XsS2W/JwCUgw6NN0Wz3AYONgmZuWQ5joMlv0dByi4ao=;
+        b=CUlOG0IT5PzAPSe02dElMimA8YANtE3MhaJhrYXX2ynFQ1YyTuMGzYScKqQCd/MVg6
+         YghjZ9jpKLMtUZX6d/hl8CYodQkaiGIs45NSy7Dn3N8CjJfDj1SvPtiyJo1aijJYmXPU
+         lYHeMhDi4e67UfQ8e8ywEili7uSucjoXNm8wLv0RUDjxfZ0YnWGiZ/kibw/cEp3S8D8h
+         q9TyBvSZAmtV8FZZUn6JKHEv1VRi+Rc/SeB1dE1+0G+AOe40/rt+XdOAtzgXuTx6F/gw
+         6XJ7eP2G2kyhGS58b8cTayMCkXU/f5ItyrFuEV1ZxlBUMwSDn0utQKAUnmDdVekYfZPA
+         zD5A==
+X-Forwarded-Encrypted: i=1; AJvYcCW/zJMXPh/za4lwmTPVSnokSQfUPTyVKEfw5NG3NeMzMUPeERlMpf/r/OYuu1A6aOqPf3XR6dmIhVdy@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaFQwMUZSUYGAac0uDJxRro53VCWHZblfZlcrIk7pNCMXCZQjH
+	ObiFjPC3oVGEF3FJahGsJmwEVFO2L5MDOO5rWTxYISIb1H0XOHuY7MJnKSAS4gCZdL8=
+X-Gm-Gg: AZuq6aIIvQ+0XBL6IQ4EMU/MLqvrnHyc3tSzBn4lgi4LHWxfQc1x2++cdqkCd/Ur6hv
+	sKFgXdCwjfI4Wj6CGvbqc6Konkml7oRWMTjm3s0PiYZbdy1wSHS4dQBlyNyvwMKUD0i50Dyejrw
+	85RaWispC27lFxbVTYggwXGtkJonGjqKcSlij/x4rcy9K73lex90/jPGeK3sUGo9QSVK8j8zdp0
+	CLVdblNiVYFrC+tNik1ClBJiL3nayfr0dr9p+2vEQFGcFPBUCKNZkBUdjg099l4dK5qoIsf9FI1
+	V0SPwKsguzgKuj96qAhzPL4ZR+dAK74c+VX+sdNWrQ7wKuSle/CMVh1bv7QLQNYAf/cU0b5UJvJ
+	TvqdDUA5Ae27F5gfHCxVfnMn7zxkXqY9M3S6/dJSdbu6sIYDbpNc9Zolq3DrbMMkvkiezzZ2g1h
+	FqJ1A2S0APa3uhoJT+/O0=
+X-Received: by 2002:a05:6000:290b:b0:431:b6e:8be3 with SMTP id ffacd0b85a97d-43618053a95mr3496064f8f.38.1770199109610;
+        Wed, 04 Feb 2026 01:58:29 -0800 (PST)
 Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4831089d547sm44206485e9.14.2026.02.04.01.56.54
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43617e25d02sm5028086f8f.3.2026.02.04.01.58.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Feb 2026 01:56:55 -0800 (PST)
-Date: Wed, 4 Feb 2026 10:56:53 +0100
+        Wed, 04 Feb 2026 01:58:29 -0800 (PST)
+Date: Wed, 4 Feb 2026 10:58:27 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
@@ -87,10 +87,11 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
 	Moshe Shemesh <moshe@nvidia.com>, Shay Drori <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
 	Or Har-Toov <ohartoov@nvidia.com>
-Subject: Re: [PATCH net-next 5/5] devlink: Document port-level resources
-Message-ID: <ew6f3nuo3u7cwegwadlmqotxl6ns7c6pa3h4ljbuxkqbq3xxe7@sy74qkffcpze>
+Subject: Re: [PATCH net-next 1/5] devlink: Add port-level resource
+ infrastructure
+Message-ID: <tvw3nu7emtvoozmgsskpqqxej74ku4pprztx7kmy3vyv7gygx5@tpfdfghwmrru>
 References: <20260203071033.1709445-1-tariqt@nvidia.com>
- <20260203071033.1709445-6-tariqt@nvidia.com>
+ <20260203071033.1709445-2-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,19 +100,19 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260203071033.1709445-6-tariqt@nvidia.com>
+In-Reply-To: <20260203071033.1709445-2-tariqt@nvidia.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16512-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16513-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
 	MIME_TRACE(0.00)[0:+];
@@ -128,80 +129,30 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20230601.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email]
-X-Rspamd-Queue-Id: 782C9E42A0
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: B5106E4329
 X-Rspamd-Action: no action
 
-Tue, Feb 03, 2026 at 08:10:33AM +0100, tariqt@nvidia.com wrote:
+Tue, Feb 03, 2026 at 08:10:29AM +0100, tariqt@nvidia.com wrote:
 >From: Or Har-Toov <ohartoov@nvidia.com>
->
->Add documentation for the port-level resource feature to
->devlink-resource.rst. Port-level resources allow viewing resources
->associated with specific devlink ports.
->
->Currently, port-level resources only support the show command for
->viewing resource information.
->
->Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
->Reviewed-by: Shay Drori <shayd@nvidia.com>
->Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
->Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->---
-> .../networking/devlink/devlink-resource.rst   | 36 +++++++++++++++++++
-> 1 file changed, 36 insertions(+)
->
->diff --git a/Documentation/networking/devlink/devlink-resource.rst b/Documentation/networking/devlink/devlink-resource.rst
->index 3d5ae51e65a2..4cdfc1dce180 100644
->--- a/Documentation/networking/devlink/devlink-resource.rst
->+++ b/Documentation/networking/devlink/devlink-resource.rst
->@@ -74,3 +74,39 @@ attribute, which represents the pending change in size. For example:
+
+[...]
+
 > 
-> Note that changes in resource size may require a device reload to properly
-> take effect.
->+
->+Port-level Resources
->+====================
->+
->+In addition to device-level resources, ``devlink`` also supports port-level
->+resources. These resources are associated with a specific devlink port rather
->+than the device as a whole.
->+
->+Currently, port-level resources only support the ``show`` command for viewing
->+resource information.
->+
->+Port-level resources can be viewed for a specific port:
->+
->+.. code:: shell
->+
->+    $ devlink port resource show pci/0000:03:00.0/196608
->+      pci/0000:03:00.0/196608:
->+        name max_sfs size 20 unit entry
->+
->+Or for ports of a specific device:
->+
->+.. code:: shell
->+
->+    $ devlink port resource show pci/0000:03:00.0
->+      pci/0000:03:00.0/196608:
->+        name max_sfs size 20 unit entry
->+
->+Or for all ports across all devices:
->+
->+.. code:: shell
->+
->+    $ devlink port resource show
->+      pci/0000:03:00.0/196608:
->+        name max_sfs size 20 unit entry
->+      pci/0000:03:00.1/262144:
->+        name max_SFs size 20 unit entry
+> 	DEVLINK_CMD_NOTIFY_FILTER_SET,
+> 
+>+	DEVLINK_CMD_PORT_RESOURCE_GET,	/* can dump */
 
-"max_SFs" vs "max_sfs", be consistent. Better to copy-paste actual
-command output :)
+Hmm, I assume that "set" is somehow on the horizon. Wouldn't it make
+sense to add the enum as a placeholder to have the cmds
+together?
 
 
+>+
+> 	/* add new commands above here */
+> 	__DEVLINK_CMD_MAX,
+> 	DEVLINK_CMD_MAX = __DEVLINK_CMD_MAX - 1
 
->-- 
->2.40.1
->
+[...]
 
