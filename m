@@ -1,173 +1,310 @@
-Return-Path: <linux-rdma+bounces-16527-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16528-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eLoeGDBbg2mJlQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16527-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 15:44:00 +0100
+	id MODwFzJcg2mJlQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16528-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 15:48:18 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7113E7458
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 15:43:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7A3E7606
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 15:48:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D127C30136B5
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 14:43:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E45863015897
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 14:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3299410D30;
-	Wed,  4 Feb 2026 14:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4122BE056;
+	Wed,  4 Feb 2026 14:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="M/PX4HwC"
+	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="0o8WaWC+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jzmMz8cj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f194.google.com (mail-qk1-f194.google.com [209.85.222.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029A6280A3B
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 14:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6768A280CD2;
+	Wed,  4 Feb 2026 14:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770216196; cv=none; b=M21PCzWh3IBqeyPKx2xdcbfshFFg8IQ8b/FKM37CSNYbUwQz+xL4FNqGOOkV0DzbMwwdUvrQWkU45qZ6wzwSb8ZN7enipueh1UNohT/MkjquhFW/HbdQZTd/rvUN/lvf2XusDB5gyZfWR3GWUv4lwBbqW5zGFrm8KbQ0YoQfxPI=
+	t=1770216488; cv=none; b=Td3iNlPcmuQeFThy7cXwmYMhj5iFjGd87dEjQR4TRqYfwY+6EI3E7XeyKs2YYIjRoUaheqt9afS//+RLeTMQpomZS8myI5f8nmogtDJpGA5A0SgNG4cEi/qxmlWU5lCvtS8pisWe/vdmIRC+h/cqNkLOXD2Ge84Tyez0V1orq7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770216196; c=relaxed/simple;
-	bh=ydGAetvc65GGmio6x7luIunRpIuzbb/mHy7DYWLMXAE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lk+slz/p4C4IaTEt1tzVVXdUez5TQSqzvvgUPdHFFV+sVoso8Z1rosYrl3/NK6NsmMjVvDazAqtZcV/FtDxnnZAtr8g17xDZuGTAgOpD8hbOEqgYi2PhMHp0fvAIFayL1epTblKihXEsHPIqAwY/iH+S8AjmaWY4PSQnisZL7Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=M/PX4HwC; arc=none smtp.client-ip=209.85.222.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f194.google.com with SMTP id af79cd13be357-8c6a822068eso952389485a.3
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Feb 2026 06:43:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1770216195; x=1770820995; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ydGAetvc65GGmio6x7luIunRpIuzbb/mHy7DYWLMXAE=;
-        b=M/PX4HwCq4OaIxCRHuo5C6rxDiaKOKX0FqcsezloAkHv+e5EzEAD4P85GO5A919bVn
-         5bDBMBdqraPvx/AWLP351gZtDK2sa4Pxk4+N1h2ASiSIjAAW4DtmMpb8MlsS6RHPIH7r
-         CX1vi6PRUrMq5+ltQ3x8CGf5VSZd4S0i8C/2prL3MvJIARSgVLjTyFzrwHPuMHMz05kS
-         Qejy9NlZKt2CldnNGI0aEIW4cc4SPuaI0xqOESeDlZ9+cMlL5xnUyXunl33mijZtZ4wD
-         oGshkiXTFQ8Jp4/nbUxfjVkyjrbqK7l1sTrqpYhx6qet/4b1y06GSwvlZcwe9zjg3Hgw
-         ZAjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770216195; x=1770820995;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ydGAetvc65GGmio6x7luIunRpIuzbb/mHy7DYWLMXAE=;
-        b=YiffrJVBjLuHDKEzW8YNd5rAdyWUOI4+q9LukPxANyOA8LK3kLVKxnKv7eT4ROg/GK
-         ehqw53rdmWNnHvmTcnL173Ho+cEWiTEHZYGkHBR7w18JHGgmu7JJJKqKi2lOGqyEr/1z
-         XuqKzdweevnyBQNSriZdYFtb9z+yWY+OB8DRBreJBnxW6JXQcQ4hSqcmRcZTQy3eefz/
-         0xJDDH1CeacBXvZk1loDUqQyiNOp5VQuxV9hWVEe7wGAcz5TUJl/0+7Cb0iIRhIMx34d
-         QxYgZL4oifWo2DHnqD9efbXxsZg9JdLVfzuJzkyxncLfVvJwckiVh/vR5Akmjhr8qd5d
-         gjmw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQE7iIl3Se5dUipTK2B69Ud/HsjRgWNevtpkxnCXbamEVEgjlfpT+9p+f0odzTyngft3IQYBWq0qNG@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQr6zlp3FPRbNn2UGRONB13j1QZq8zjzGYgQolA5EJrKBx1VRT
-	YtFigrRz8H1fS72LF4m4e4CYdUSNg7SSXjwg5Z1GQBiobE2OP3MTXlhKt5mG4RicrmU=
-X-Gm-Gg: AZuq6aL+guoW3bbvAfW8oLgn8t6OnT9cuSxoWMXkjKt/nDRfyW6Kpcu9SFqpC1uf1AB
-	1w4gK5CmBWAq3v8FocTotLRhfGLp3LcHkW9BLR8uGFjRT+aAsSJe1NJq1mBBVh+xjRVR2tqmzVx
-	mEvwMLXjxZnpBdBMo9JBbpPvPgeCa19P0p0AO2g4T8dMN73jFOQi1tOoLI39vlijm3n/N0lR4pq
-	nXkyPYzOsIp0KvcWUjxyI9z2az85vdyObeTJSCCqwuYnCVwJRpneRz7kIPRHLlFOjXs173LU7EK
-	VJNbuwiY95sZCIEdF8F2zSOo+PFgB0ccxJ+RtIc1xiAQ9/oINyyFkE8zXKf5xdVgzWwSASPjKrg
-	k1lFNWRbL3WjrvF7im0KU5hmBaIiAAU+ah5KbsSEPBrX0MJ3l/IHxRsLIFj2ZrqD7wa6oOdytbD
-	56JdgMoJmV00z1snKbkDKkwZweMMzP3tw0R62rFezswcA83dBRm1Zj7dVTPsHrkfA8emG6D6/SS
-	oUKeA==
-X-Received: by 2002:a05:620a:2989:b0:8c7:acd:eec9 with SMTP id af79cd13be357-8ca2f83bd86mr381255085a.28.1770216194868;
-        Wed, 04 Feb 2026 06:43:14 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8ca2fd4135csm197856085a.42.2026.02.04.06.43.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Feb 2026 06:43:14 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vne65-0000000H2DZ-2xBS;
-	Wed, 04 Feb 2026 10:43:13 -0400
-Date: Wed, 4 Feb 2026 10:43:13 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v10 5/6] RDMA/bnxt_re: Direct Verbs: Support CQ
- verbs
-Message-ID: <20260204144313.GG2328995@ziepe.ca>
-References: <20260203050049.171026-1-sriharsha.basavapatna@broadcom.com>
- <20260203050049.171026-6-sriharsha.basavapatna@broadcom.com>
- <20260204011019.GZ2328995@ziepe.ca>
- <CAHHeUGXky2H8NSWy8ZwCcqKDQEBn=CkMAzsLDT5gBFnZrn0WYg@mail.gmail.com>
+	s=arc-20240116; t=1770216488; c=relaxed/simple;
+	bh=ukFfnHNJ5St3Rj6hRUImngtiQiwt7CXxdu0IEyYKDrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LfxRs5/2G0/9qAJrt8Y4E24AVmWY3M+OC5Jq8N8mUc3Fp3pdo1gyPduh51yuodalFyW3udkNPsF9qdYE4zZ38WG/bOznRw58oVSOCafEhMCXqa32NCz+n1N7QkqATe8/vvuUunzh4MIXZ/LrF8xlGOqFDNB+fODhpEgqaC6NByo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=0o8WaWC+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jzmMz8cj; arc=none smtp.client-ip=202.12.124.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.stl.internal (Postfix) with ESMTP id 459111D00099;
+	Wed,  4 Feb 2026 09:48:05 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Wed, 04 Feb 2026 09:48:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1770216485;
+	 x=1770302885; bh=OAqECMTNWylYMxvQZWo48cfQCG+FzsGTUnm7TRzruJc=; b=
+	0o8WaWC+JS0r9CyNO/nTgXfRQDJ56/yoy70axLrKphXjIXJxrk75jlyRIc0mFozg
+	Lk9yZLXvit+j0LAW6FO4NKvl1M/1uw0AqI/Kv0zLHGMB4xaXYj7dVhwRDcsAdFbe
+	XldCsL0y3BWhA1RU+xIRj0DlrCxgJ+y9G+eS5tdLTz/xq9KeKueV28uAkNWAkYki
+	JFt10+lcANDhqdHiJ+aWcx0rZPmqY4AcPIAS78Sywq78D8ETU6OsQVbv4v/NDVLx
+	tcRW2AWOeJfeGEo9hYpBcCvKQi7VmCM0uEGGCIeEXOrD7uBLnfVA8mCfURXdb+Zo
+	0O72ph1Y+QfDvfTonvb22Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1770216485; x=
+	1770302885; bh=OAqECMTNWylYMxvQZWo48cfQCG+FzsGTUnm7TRzruJc=; b=j
+	zmMz8cjFVoG/rsm+0syFV2GjH1G9Jl5OSmRwqy86uRGwWgXestcZk51Jl2OtfOhi
+	5dT2To2mQwZKbEcO3KiJ6YVzN/OWqj+r5xAY4f4Pcl47DGV+vjJCwJT82kWxuiYI
+	U3D3g6AIwCcaYR2plHhaB4epoyk0ucC5lxbtg6+tuSzhDaJBG2MwMz5qymt6du14
+	u5x4iw9+Urw3wJMot+A2nGSTxrNjdniDBsJvL0IV/uztGqUeYAV7FueJ6jd7hMI2
+	V0Qujs8/84hPQEZQbg81ddFd/smKComYzHat9t/3Z/A9zAv532+oJhyaXykyLIuz
+	/MklR4ShSvjuoAZODm5ow==
+X-ME-Sender: <xms:JFyDabc3NtC5x9d-S5b8xgv_nBJstlaRTFKO2hRPyja2VYX4o8sNZQ>
+    <xme:JFyDaTGLxs7JuKE4V_IA9P4W29Q7v5RsliDeybttbvBXmlhQwQJ1WPvXOy_ADVtQJ
+    e5mu5eIf2Mw1llgw8EuXb9IOb9VYfiAv1zqZFzzC2PoRDuwWF_R>
+X-ME-Received: <xmr:JFyDaZKGg0VtncgyvA-_AYz2KWPpimcRT69PBe7Nym3aMVuNqRimo99sgsg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddukedvjedvucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkjghfofggtgfgsehtjeertdertddvnecuhfhrohhmpeetlhgvgicu
+    hghilhhlihgrmhhsohhnuceorghlvgigsehshhgriigsohhtrdhorhhgqeenucggtffrrg
+    htthgvrhhnpedvkeefjeekvdduhfduhfetkedugfduieettedvueekvdehtedvkefgudeg
+    veeuueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grlhgvgiesshhhrgiisghothdrohhrghdpnhgspghrtghpthhtohepfeegpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopehlvghonheskhgvrhhnvghlrdhorhhgpdhrtghpth
+    htohepshhumhhithdrshgvmhifrghlsehlihhnrghrohdrohhrghdprhgtphhtthhopegt
+    hhhrihhsthhirghnrdhkohgvnhhighesrghmugdrtghomhdprhgtphhtthhopegrlhgvgi
+    grnhguvghrrdguvghutghhvghrsegrmhgurdgtohhmpdhrtghpthhtoheprghirhhlihgv
+    ugesghhmrghilhdrtghomhdprhgtphhtthhopehsihhmohhnrgesfhhffihllhdrtghhpd
+    hrtghpthhtohepkhhrrgigvghlsehrvgguhhgrthdrtghomhdprhgtphhtthhopegumhhi
+    thhrhidrohhsihhpvghnkhhosegtohhllhgrsghorhgrrdgtohhmpdhrtghpthhtohepgh
+    hurhgthhgvthgrnhhsihhnghhhsegthhhrohhmihhumhdrohhrgh
+X-ME-Proxy: <xmx:JFyDabfA6AFufRXzaJSlKz-2t1bgQfl_-vcdUPLYedDqqhfQtD0F4g>
+    <xmx:JFyDaXvtfjlvHHOBDbzIpiei4TfKRK6qgjSvLo_n98W07rjE3fSC_w>
+    <xmx:JFyDaXtAyHrtabg5GCKcPsYXr1EXU3FQH7-j2yI9cGuotG8BnRMRyA>
+    <xmx:JFyDaW-L9op9ODgl26-U7zgoSReG5Hb16hvQv5SKv36wBdcXrSzLXQ>
+    <xmx:JVyDacEzOan8IdGoHVZJwVYbWkrRfU2u-Tob81oE2TJvkvib1I9BFGdR>
+Feedback-ID: i03f14258:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 4 Feb 2026 09:48:01 -0500 (EST)
+Date: Wed, 4 Feb 2026 07:47:59 -0700
+From: Alex Williamson <alex@shazbot.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>,
+ Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+ Gerd Hoffmann <kraxel@redhat.com>,
+ Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>,
+ Chia-I Wu <olvaffe@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Lucas De Marchi <lucas.demarchi@intel.com>,
+ Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= <thomas.hellstrom@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>,
+ Ankit Agrawal <ankita@nvidia.com>,
+ Vivek Kasireddy <vivek.kasireddy@intel.com>, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ virtualization@lists.linux.dev, intel-xe@lists.freedesktop.org,
+ linux-rdma@vger.kernel.org, iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 4/8] vfio: Wait for dma-buf invalidation to complete
+Message-ID: <20260204074759.108f579e@shazbot.org>
+In-Reply-To: <20260131-dmabuf-revoke-v7-4-463d956bd527@nvidia.com>
+References: <20260131-dmabuf-revoke-v7-0-463d956bd527@nvidia.com>
+	<20260131-dmabuf-revoke-v7-4-463d956bd527@nvidia.com>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHHeUGXky2H8NSWy8ZwCcqKDQEBn=CkMAzsLDT5gBFnZrn0WYg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm2,messagingengine.com:s=fm3];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16527-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FREEMAIL_CC(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16528-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: A7113E7458
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email,messagingengine.com:dkim]
+X-Rspamd-Queue-Id: 8C7A3E7606
 X-Rspamd-Action: no action
 
-On Wed, Feb 04, 2026 at 07:25:48PM +0530, Sriharsha Basavapatna wrote:
-> > Here, I made you a branch that takes care of it all:
-> >
-> > https://github.com/jgunthorpe/linux/commits/for-sriharsha/
-> >
-> > And makes the required whole flow a lot clearer since it has evolved
-> > into something that is far too open coded..
-> >
-> > Let me know what you think.
+On Sat, 31 Jan 2026 07:34:14 +0200
+Leon Romanovsky <leon@kernel.org> wrote:
 
-> Thanks for sharing these changes, it looks great. I certainly missed
-> the point that you were suggesting a kernel helper function for
-> structure validation and one that also includes comp_mask validation.
-> For bnxt_re, it also eliminates the need to have a separate compat
-> flag in ucontext for each type of ureq.
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> dma-buf invalidation is handled asynchronously by the hardware, so VFIO
+> must wait until all affected objects have been fully invalidated.
+> 
+> In addition, the dma-buf exporter is expecting that all importers unmap any
+> buffers they previously mapped.
+> 
+> Fixes: 5d74781ebc86 ("vfio/pci: Add dma-buf export support for MMIO regions")
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_dmabuf.c | 61 +++++++++++++++++++++++++++++++++++---
+>  1 file changed, 57 insertions(+), 4 deletions(-)
 
-Yeah, after looking at it the state was much worse than I
-expected.
+Reviewed-by: Alex Williamson <alex@shazbot.org>
 
-> I applied the draft version of QP-umem support patch (not the series),
-> followed by bnxt_re DV patch set, updated bnxt_re to use the new
-> helper for CQ/QP - ib_copy_validate_udata_in_cm(). Tested it and it
-> works fine.
-
-Ok, well let me work on posting this series and you can revise this
-one to drop this UCTX hunk and use the new helpers for the new
-structures. I wanted to look at the other uapi parts of this one
-today too..
-
-> One question (maybe I'm missing something) is, copy_struct_from_user()
-> seems to have similar logic to check for trailing bytes when user-size
-> > kernel-size. Is it also needed in _ib_copy_validate_udata_in()?
-
-Yes, that is a mistake to have left it behind, thanks
-
-Jason
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
+> index d8ceafabef48..78d47e260f34 100644
+> --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
+> +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
+> @@ -17,6 +17,8 @@ struct vfio_pci_dma_buf {
+>  	struct dma_buf_phys_vec *phys_vec;
+>  	struct p2pdma_provider *provider;
+>  	u32 nr_ranges;
+> +	struct kref kref;
+> +	struct completion comp;
+>  	u8 revoked : 1;
+>  };
+>  
+> @@ -44,27 +46,46 @@ static int vfio_pci_dma_buf_attach(struct dma_buf *dmabuf,
+>  	return 0;
+>  }
+>  
+> +static void vfio_pci_dma_buf_done(struct kref *kref)
+> +{
+> +	struct vfio_pci_dma_buf *priv =
+> +		container_of(kref, struct vfio_pci_dma_buf, kref);
+> +
+> +	complete(&priv->comp);
+> +}
+> +
+>  static struct sg_table *
+>  vfio_pci_dma_buf_map(struct dma_buf_attachment *attachment,
+>  		     enum dma_data_direction dir)
+>  {
+>  	struct vfio_pci_dma_buf *priv = attachment->dmabuf->priv;
+> +	struct sg_table *ret;
+>  
+>  	dma_resv_assert_held(priv->dmabuf->resv);
+>  
+>  	if (priv->revoked)
+>  		return ERR_PTR(-ENODEV);
+>  
+> -	return dma_buf_phys_vec_to_sgt(attachment, priv->provider,
+> -				       priv->phys_vec, priv->nr_ranges,
+> -				       priv->size, dir);
+> +	ret = dma_buf_phys_vec_to_sgt(attachment, priv->provider,
+> +				      priv->phys_vec, priv->nr_ranges,
+> +				      priv->size, dir);
+> +	if (IS_ERR(ret))
+> +		return ret;
+> +
+> +	kref_get(&priv->kref);
+> +	return ret;
+>  }
+>  
+>  static void vfio_pci_dma_buf_unmap(struct dma_buf_attachment *attachment,
+>  				   struct sg_table *sgt,
+>  				   enum dma_data_direction dir)
+>  {
+> +	struct vfio_pci_dma_buf *priv = attachment->dmabuf->priv;
+> +
+> +	dma_resv_assert_held(priv->dmabuf->resv);
+> +
+>  	dma_buf_free_sgt(attachment, sgt, dir);
+> +	kref_put(&priv->kref, vfio_pci_dma_buf_done);
+>  }
+>  
+>  static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
+> @@ -287,6 +308,9 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
+>  		goto err_dev_put;
+>  	}
+>  
+> +	kref_init(&priv->kref);
+> +	init_completion(&priv->comp);
+> +
+>  	/* dma_buf_put() now frees priv */
+>  	INIT_LIST_HEAD(&priv->dmabufs_elm);
+>  	down_write(&vdev->memory_lock);
+> @@ -331,9 +355,33 @@ void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
+>  
+>  		if (priv->revoked != revoked) {
+>  			dma_resv_lock(priv->dmabuf->resv, NULL);
+> -			priv->revoked = revoked;
+> +			if (revoked)
+> +				priv->revoked = true;
+>  			dma_buf_invalidate_mappings(priv->dmabuf);
+> +			dma_resv_wait_timeout(priv->dmabuf->resv,
+> +					      DMA_RESV_USAGE_BOOKKEEP, false,
+> +					      MAX_SCHEDULE_TIMEOUT);
+>  			dma_resv_unlock(priv->dmabuf->resv);
+> +			if (revoked) {
+> +				kref_put(&priv->kref, vfio_pci_dma_buf_done);
+> +				wait_for_completion(&priv->comp);
+> +			} else {
+> +				/*
+> +				 * Kref is initialize again, because when revoke
+> +				 * was performed the reference counter was decreased
+> +				 * to zero to trigger completion.
+> +				 */
+> +				kref_init(&priv->kref);
+> +				/*
+> +				 * There is no need to wait as no mapping was
+> +				 * performed when the previous status was
+> +				 * priv->revoked == true.
+> +				 */
+> +				reinit_completion(&priv->comp);
+> +				dma_resv_lock(priv->dmabuf->resv, NULL);
+> +				priv->revoked = false;
+> +				dma_resv_unlock(priv->dmabuf->resv);
+> +			}
+>  		}
+>  		fput(priv->dmabuf->file);
+>  	}
+> @@ -354,7 +402,12 @@ void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
+>  		priv->vdev = NULL;
+>  		priv->revoked = true;
+>  		dma_buf_invalidate_mappings(priv->dmabuf);
+> +		dma_resv_wait_timeout(priv->dmabuf->resv,
+> +				      DMA_RESV_USAGE_BOOKKEEP, false,
+> +				      MAX_SCHEDULE_TIMEOUT);
+>  		dma_resv_unlock(priv->dmabuf->resv);
+> +		kref_put(&priv->kref, vfio_pci_dma_buf_done);
+> +		wait_for_completion(&priv->comp);
+>  		vfio_device_put_registration(&vdev->vdev);
+>  		fput(priv->dmabuf->file);
+>  	}
+> 
 
 
