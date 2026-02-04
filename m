@@ -1,159 +1,226 @@
-Return-Path: <linux-rdma+bounces-16497-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16498-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oFwdO3a2gmnwYgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16497-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 04:01:10 +0100
+	id QK8vCdvugmkifQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16498-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 08:01:47 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6486E118E
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 04:01:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DEB2E2781
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 08:01:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 90EF830B3B21
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 03:01:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B5EAF3014C1C
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 07:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C812DEA7A;
-	Wed,  4 Feb 2026 03:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15DCF23E320;
+	Wed,  4 Feb 2026 07:01:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijxGHV7W"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ohu9i2MK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D6D2D6E70;
-	Wed,  4 Feb 2026 03:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FED01D6AA
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 07:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770174068; cv=none; b=PGXWaJKUX5fq68q06YH39tcaLCi3MPd0MPDYKw1s7h5i95V77ysTaYmVrw4dS4HWo753Tk3O+PWxA+Sn1/XWoKl4FyEfc4hhxbySm9+qgk8DdbqEyQ83Qhh7t+MAqvZtmQccg5TIYvsHbcmGTP2XxBjBPHg1Xbl1wOReDWudDmo=
+	t=1770188499; cv=none; b=VjEF2l89nfOqkRIr6RwSM8zWalCf9udftJlDE8/ihVsBFWas/WCSH4OIWRsfx6m7Y9c2wxh1G7LP7tTnwFSDFPXcq2nOPf1CG11DuNHHShTGrwxMhaRAi96ahNYC5JGXMGWJ8/vVC7+P6kAf+OmylR0U3boPnXC+5NzsrV2G3Ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770174068; c=relaxed/simple;
-	bh=6XAZmg56BsoaiZTScJCBb1Byh+9xOFtrJFKqRLcjVWY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=axcF1SsFwdtWLM32RkbItL5SkhktEjSm9LV/fEOUgoLnHc8hKtw2tMFjoiuo1Ba0qmyChPqmWxjOo65gEb9wC1HN/ltpenzwZ5UGc2Nu7jd/t4riQuoLT7QEUDidp4cTVYxSWgNZ2Iiv3tskPSrJslw26vxdCcGQoqlzCTJ7+D8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijxGHV7W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4251C116D0;
-	Wed,  4 Feb 2026 03:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770174067;
-	bh=6XAZmg56BsoaiZTScJCBb1Byh+9xOFtrJFKqRLcjVWY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ijxGHV7WPzw2Jts6F+OtujuBc6tuo7S7NEUeR44LX7nujRTaVgqFjirA4GdyqP364
-	 3VvBnLUP4c5eEgZGzjJ6MxlAZQkxCwJ9Z6fiBvfRLivvO/HAZJeBnQQhHqnJDBSzA6
-	 xJ1JehE4cI6WmhcwRnu4ZkMtC7hoYZjx1r9D/ap+k72r0BCNUvH2ZmyV+Y/9MDXKjI
-	 E1wAjAH7z34FPumg6A19r63+nrgxxmWM3UIjxkvDzDvxQd2TsSAMXMoAppsHFh+JQB
-	 OWV0B+kspI24L0114h+toZlTINSZiz6jnn4TEonZuhqa1LA4QWcDEb3ZMRw3EuU4eX
-	 hk4oSaMTof6Lw==
-Date: Tue, 3 Feb 2026 19:01:05 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Donald Hunter
- <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, Gal Pressman
- <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Carolina Jubran
- <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Randy Dunlap <rdunlap@infradead.org>, Simon Horman
- <horms@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH net-next V7 01/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <20260203190105.2cc28e71@kernel.org>
-In-Reply-To: <u7uicnxkcirhacpzjimss2pqsuhbngg4ticqrz45iqchkk2ha2@t3eem6w6hhur>
-References: <20260128112544.1661250-1-tariqt@nvidia.com>
-	<20260128112544.1661250-2-tariqt@nvidia.com>
-	<20260202194023.412bb454@kernel.org>
-	<u7uicnxkcirhacpzjimss2pqsuhbngg4ticqrz45iqchkk2ha2@t3eem6w6hhur>
+	s=arc-20240116; t=1770188499; c=relaxed/simple;
+	bh=/2EBBTU89uuKCNOfuS+snDmLqngyqDVtGc6DkuBgh3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NpF5MHrcmkjC2WKPAFZEta2u8jXq+rl3pZRlrJXzkk8dXpYCiVYhKfK7HmGHNtkdVi7wY2zoje4+uW7hviLJQYgYSvdCgL4eVBHtKdvmqPgODcF4D4KgNN8Odq2d4BFBPxqdG8yMvFmYcK1ZwsO+g4M8mBYrBs6Z8v1zWGjvrXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ohu9i2MK; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-43591b55727so5640240f8f.3
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 23:01:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770188496; x=1770793296; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZeN2Rop/Zpv51b8dvtttZgOgu72IkKDLaoUljyWknk=;
+        b=ohu9i2MKS48hVX8Fnw79qqLDeF5DievNGaacm4SbRLhg4vk8D3ZdMLhiAu1y8wi7Rs
+         3lPfnaN2y0RuBJiDO14B3d683Uvcvm7xwNNj4texTnQj8rrdkJO+DfYxRQJIfUE+Ziqz
+         QVLgjL0I2OelnyUHET9um9uPV0Q2CAsu9MpsdavLE6IZQV892wwRF0HRsqx6jr2OhcuE
+         kcQm7YUKEInau4T6sCbMYG6ai7jgakj3fno0Z66JQD5jCid1RfwrK5GUsObCHwFBN+iK
+         LjH55ZbfduVDbgVqjZRPFtU/xhJcODsgw6Ktq3c8o7Wo2yCV1x2gIroIzNM1nsq/hRj2
+         Ivig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770188496; x=1770793296;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pZeN2Rop/Zpv51b8dvtttZgOgu72IkKDLaoUljyWknk=;
+        b=nCqzOGZnFSYDZY/2+Ol6/J7Gd/gLP63UrqbZdYYMscWUWzR6ZXR6h4kjbavdE3RCuE
+         ZRifdMQNpQXeuNTM5y+xA2sOF8XIkGxQgd0VaK80p6e+Bk2ArA0gfCnK5LDlmTp7FtmS
+         bLdAgiuzyZH0QP4SeSeVQbatPGRrBFYJ9+iWYGCRof6VnbRRoNsHq1IG15CW7AOUom+B
+         DKoAXXr3tskP6WjTNkQVr6b1R45an+7c9eUQcFXb/g4HJ/8eMUjTn9E8rEvL2PCtHn8K
+         Zm/q5wJHO7Om9vhqZinuLfq4XTRBxe+uvz6Qc4Kef3TQEpzao/PbTVFq6V/5S4NW1v7p
+         nR6A==
+X-Gm-Message-State: AOJu0YwzEr/ZORoCBT47rzkujEcsfXYt+HHyUNunzGGYCJ7kZLWu+yb3
+	d4zLHSHByUMdNAApeRR3uJ/q+brqZard3CRbEM19kyASptqkLOFLapoAUazm7MPIpWc=
+X-Gm-Gg: AZuq6aIMf/xyoMdBJbKMn0+HVueVQbgCUvsxLkW6ZsyZ5evppKVXPsGQzAHTK5J+PpH
+	ZyJmjA1JvVK4xz7vXCS9wBpVmhoTj49k+YVrv9pJaCRYVDu/qx2oEIdLahpu9Q9ek3MzsZulG24
+	y8EWzwkN59hTfIV19SWueCfco5FXE0FdIrZ6MSM3gFmd7OZ/oKo7MoDo22Qj+jwQ/OItn+51d6H
+	pCPYrNdOHPU0yHAiDsZHqPKEpwjQ2lzyPaaTg8ktsNChlCcs7vI0Kwz61/ytSYN71yeDjwz/DeK
+	odK36b3z2QS0T+cgl6d2QqbO4FHnQJsYjh44xzSghXJb3HVBmJqdzRGSCGBGS84aVDKpyerj/DU
+	xrbDJQKLoyaEnbHzwb6d1gtR9qvc3zk/ktkIXJufCaae5otz6enoS4iUYVyJYfdTCFqkCtT4si7
+	ydrVx+yJJkz5d5nOIHc/DK7TqJxg4n0uZ1tO5zqargKQ==
+X-Received: by 2002:a05:6000:24c9:b0:435:b089:4f46 with SMTP id ffacd0b85a97d-4361805cf3emr2386705f8f.50.1770188495412;
+        Tue, 03 Feb 2026 23:01:35 -0800 (PST)
+Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:9519:b02d:f49f:3f52])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43617e38e38sm4292085f8f.11.2026.02.03.23.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Feb 2026 23:01:34 -0800 (PST)
+Date: Wed, 4 Feb 2026 08:01:33 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com, 
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, mbloch@nvidia.com, 
+	yanjun.zhu@linux.dev, wangliang74@huawei.com, marco.crivellari@suse.com, 
+	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
+	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next 01/10] RDMA/umem: Add reference counting to
+ ib_umem
+Message-ID: <ab5xbswwmttn6kzyqfwulpd4k2mynkuajo5nysw5sqjucqkfw3@r7eh2hmti2x2>
+References: <20260203085003.71184-1-jiri@resnulli.us>
+ <20260203085003.71184-2-jiri@resnulli.us>
+ <20260203145138.GQ2328995@ziepe.ca>
+ <424kifntiluu2rrsqea6k3aatduoqemjccmsun5z6rvx67xo43@6q4t3r44ql3e>
+ <20260203165938.GS2328995@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203165938.GS2328995@ziepe.ca>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16497-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org,infradead.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16498-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A6486E118E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: 6DEB2E2781
 X-Rspamd-Action: no action
 
-On Tue, 3 Feb 2026 10:18:22 +0100 Jiri Pirko wrote:
-> Tue, Feb 03, 2026 at 04:40:23AM +0100, kuba@kernel.org wrote:
-> >There needs to be a note here clearly stating the the use of "shared
-> >devlink instace" is a hack for legacy drivers, and new drivers should
-> >have a single devlink instance for the entire device. The fact that
-> >single instance is always preferred, and *more correct* must be made
-> >very clear to the reader. Ideally the single instance multiple function
-> >implementation would leverage the infra added here for collecting the
-> >functions, however.  
-> 
-> How exactly you can have a single devlink instance for multiple PFs of a
-> same device? I don't really understand how that could work, considering
-> dynamic binds/unbinds of the PFs within single host and/or multiple VMs
-> passing PFs to.
+Tue, Feb 03, 2026 at 05:59:38PM +0100, jgg@ziepe.ca wrote:
+>On Tue, Feb 03, 2026 at 04:39:52PM +0100, Jiri Pirko wrote:
+>> Tue, Feb 03, 2026 at 03:51:38PM +0100, jgg@ziepe.ca wrote:
+>> >On Tue, Feb 03, 2026 at 09:49:53AM +0100, Jiri Pirko wrote:
+>> >> From: Jiri Pirko <jiri@nvidia.com>
+>> >> 
+>> >> Introduce reference counting for ib_umem objects to simplify memory
+>> >> lifecycle management when umem buffers are shared between the core
+>> >> layer and device drivers.
+>> >
+>> >I admit I have reservations about this too.. The flow should not be so
+>> >convoluted that a refcount is necessary. The lifecycle of a umem is
+>> >not uncertain at all.
+>> >
+>> >I imagine'd it would be like:
+>> >
+>> >core code:
+>> >  if (ops->create_cq_umem) {
+>> >     umem = umem_get
+>> >     rc = ops->create_cq_umem(umem)
+>> >     if (rc)
+>> >      umem_free(umem)
+>> >  } else {
+>> >     rc = ops->create_cq()
+>> >  }
+>> >
+>> >Driver:
+>> >  create_cq():
+>> >    copy_from_user(drvdata)
+>> >    umem = umem_get()
+>> >    rc = driver_create_cq_umem(umem, &drvdata))
+>> >    if (rc)
+>> >      umem_free(umem)
+>> >
+>> >   create_cq_umem()
+>> >     copy_from_user(drvdata)
+>> >     return driver_create_cq_umem(umem, &drvdata)
+>> >
+>> >   destroy_cq()
+>> >     destry_hw
+>> >     umem_free()
+>> 
+>> 
+>> This is how it is now. However there are couple of challenges about this
+>> flow:
+>> 1) umem usage. For example, create_qp_umem at the end of the set gets 4
+>>    umem pointers. sq,rq,sq_dbr,rq_dbr. Some driver may use only one of
+>>    those, 2 of those, 3 of those. Depends. mlx5 actually uses 2 or 3.
+>>    If what you suggest, the current approach stands, the user has to
+>>    always take all pointers, store them and eventually release them on
+>>    destroy_qp path.
+>
+>Userspace passing umems that are not used by the driver is an error.
+>Fail the call.
 
-The same way you currently gather up the devlink instances to create
-the shared instance.
+Okay, that makes sense. I just wanted to ignore it :)
 
-> >> +The implementation uses:
-> >> +
-> >> +* **Faux device**: Virtual device backing the shared devlink instance  
-> >
-> >"backing"? It isn't backing anything, its just another hack because we
-> >made the mistake of tying devlink instances to $bus/$device as an id.
-> >Now we need a fake device to have an identifier.  
-> 
-> Okay. I originally wanted to use an id, similar to what we have in
-> the dpll. However I was forced by community to tie the instance to
-> bus/device. It is how it is, any idea how to relax this bond?
 
-Interesting! I was curious to research how we ended up here, found this:
-https://lore.kernel.org/netdev/20160225225803.GA2191@nanopsycho.orion/
-My reading is that Hannes was arguing against the _NAME attribute but
-both _NAME and _INDEX were deleted? I think there's nothing wrong with
-an index.
+>
+>> 2) error path. I found the error path quite odd. Then create_cq/qp_umem
+>>    returns !=0, core releases all umems. However, standard cq/qp
+>>    destroy path takes care of releasing umems. Since a lot of code on
+>>    error path and destroy path is shared, it has to be informed to
+>>    release or not release the umems. That is not nice.
+>
+>Generally I would not assign to the driver's umem storage until the
+>creation is completed to avoid this. ie it stays null until committed.
+>
+>But looking at mlx5 that looks like quite a maze there.. Yikes..
 
-FWIW using devlink day to day, the bus/device is not at all useful as
-an identifier. Most of code touching devlink at Meta either matches
-on devlink dev info or assumes there's one instance on the system.
+Exactly.
 
-> >> +Similarly to other nested devlink instance relationships, devlink lock of
-> >> +the shared instance should be always taken after the devlink lock of PF.  
-> >
-> >of an instance, not a PF  
-> 
-> lock of PF devlink instance. I think that is what the text says, no?
 
-Sorry, I was trying to flag that using PF is not necessary great cause
-we may support this on other functions in the future.
+>
+>So maybe mlx5 adds some NULL assignments on its error paths and less
+>convoluted drivers can use a simpler option?
+
+Yeah, I wanted to avoid that. But sure.
+
+
+>
+>My issue with refcounts is that this isn't a refcounted structure, it
+>has very well defined points where it must become freed.
+>
+>Like we can't get through detroy_qp without the umem being freed, that
+>is illegal.
+
+Sure, even with this patch that never happens. But I get your point.
+
+>
+>Jason
 
