@@ -1,174 +1,169 @@
-Return-Path: <linux-rdma+bounces-16491-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16492-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8FtqA759gmnAVQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16491-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 23:59:10 +0100
+	id eDirEoGcgmlgWwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16492-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 02:10:25 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF46DF794
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Feb 2026 23:59:09 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC2CEE053B
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 02:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 888E6309C972
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Feb 2026 22:59:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 47B6C30531F7
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 01:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5880536CDF7;
-	Tue,  3 Feb 2026 22:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E642A23D2B2;
+	Wed,  4 Feb 2026 01:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AqwgUlF/"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="QFaNOY0U"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f65.google.com (mail-qv1-f65.google.com [209.85.219.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEB6310763
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 22:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FE621576E
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 01:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770159547; cv=none; b=SPn8RKwTGZc52je8WcfsEiwAF/E56f0U7ogBFUGOXRt/QdCzl/9TyIt91lg1TIxBkMbbfbkNrJw5WhDbTu3Jsq9KMdQj8OuolFNeXBsXunxaWVVwEjr+rD8B2pmRU6nFYFl1cur8WVuZuK3FUvmdcrdoRxsfoUA0dWoYIx+Zulo=
+	t=1770167423; cv=none; b=iOrBXn0p8RsdEeAuEdrSZlcSwUkf45oWKUXgi58dxigLALJRJ1MvEFWuHS8mNTG0QpKjLQ6MKQNu+4gMVRjo5R1y4blOuTZyizXeQFLKCBv9/sv8ieZa35x2g5781mNVLnRRNyeV9uFwTzC3PWBMecxV9SdLwBghGxLLPzfuODo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770159547; c=relaxed/simple;
-	bh=tJNadpiFM50O70Wa/xME6qyZkIQ571lLqhqsljcE//s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u5/YW3J7oUUE9aqP/2yji1JYx3WcjTI4qBabxLoVGau14wTeY1gDaFJIxkq372ZpmJ4kvcICiOBHDWeCXssN+Nk3F2vWUwnYuir9/ttCJFxR1eTwGZQ90c5TYF/iZI7GgQMeDbbXl3spLasU9LqAu245CgxUWTSh2cZ+sakhTzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AqwgUlF/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7AB9C116D0
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Feb 2026 22:59:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770159546;
-	bh=tJNadpiFM50O70Wa/xME6qyZkIQ571lLqhqsljcE//s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=AqwgUlF/wVShQbmJtrZJ3WLq/OV3bTA7D2dkMjFZe7PJewiemClCJ9fBY4uLa5lvx
-	 Nlud1I9Nx0cID63r3SMYDWwMGhRhD2HohuzyWBISEjlIeQiyum/V2wV29+nEfvOAwy
-	 X7iImRKP1gmYl1iZhazJoi33jrcnWZWOROdSCt/nttMYWI+dJlZ75uY/ze2BUAgDgm
-	 HcGtqbamfOjVmkZpNrBEV75hb6XI6HaYJcae/nA2wQ5VqAg/cLv1rTI1WLuzhrLyhT
-	 vxrpRvzFb1oiSsNwCeIm4S/pX2TmATAYbC53355OWVtHuW5Y5l8kc1iCCOTZWHWdqs
-	 OQZ6SBi3+gYlg==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-64c893f3a94so515633a12.0
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 14:59:06 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw37+ck0y2GQuAKGj/08Pfv0r0CviGXXypN1SyPV6V0YJZKrqKR
-	pVDk2OtlFi0dZIDW+Cm4XutAZbFOzDm2qccnv4nWiyHplznC6O5VMguAjj/atctMK081QtVg0oK
-	yeW95lgxcfV3GiTbsJ8CaE1NitQ+YQHE=
-X-Received: by 2002:a17:907:971b:b0:b87:85f:4598 with SMTP id
- a640c23a62f3a-b8e837d96bbmr290314266b.14.1770159545347; Tue, 03 Feb 2026
- 14:59:05 -0800 (PST)
+	s=arc-20240116; t=1770167423; c=relaxed/simple;
+	bh=688Xnwj+nvsTxHTxtu9ZWE8D08NIgDhUlPKBrXWKuZE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gslc8/0CHcqJjv2ThJxtmC4VGOaSk+drzHIExEV6VXrpjPx1qyrBGRtU64wQqSqyAumOS6mwQOtvu2pwyLYj1z7qNC1w6iAaSvIWfhn8kYi4mxX1ukX6p+rGXH4wgMsKWrSgGMCmZbMrNfej2NhkQfcj9wKRRMVYbDfxeK5f3/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=QFaNOY0U; arc=none smtp.client-ip=209.85.219.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f65.google.com with SMTP id 6a1803df08f44-8947e6ffd30so74782636d6.0
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 17:10:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1770167421; x=1770772221; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8jr2Nl3tG4nZMa7rRCwDlf6WLWGxE36Di0j4a1LrU0g=;
+        b=QFaNOY0UXGpPok5NCYW3nHCa3wuIakhE6XWxmN7f2xO8MVOtSnSNXaqbObTZi5BYER
+         KKijU7fuNfIFa5vp+SBWcRvMw7h5/pu1Li266U4c077oe54AaIQaosHV+tPr0AkErhvz
+         uIP+3QyLlHoBijBfwUNhZ0XXyseZGhs6BgC7Kj1wGKHMBqbXhOigxsOCyd3mV6oekneS
+         6wkYyVgYh9YFz7oZNfVVBFi1Lk5t0qb/7aNPqDnpGUz6wI6PDhTavFBFYfce6P1+PRog
+         5Cj0urrVWV8VhFLMxfxAtOI+CU9pt298WBp0iYoGWRmMdF7CXUObK/AsIjfd+COEiHx5
+         8NCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770167421; x=1770772221;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8jr2Nl3tG4nZMa7rRCwDlf6WLWGxE36Di0j4a1LrU0g=;
+        b=PEx0BLUkuR32CVIGUexV93vvdu4XMRUToY2sGKQVOs0JSyO8AoZY7+gnNtIjWY4CmV
+         TFWEnJBVYdv9FL8ke3Fa0TEGvM6dzrVedSkfigNyY7KIGDRJoJKy6xerJfN0VOJwWkh+
+         pFbiuvN6oAzXfbiCb9Uj+HB0c5lxQVZ1DnLt2fKt2TR/IWHLF4WrNT6JHEaZcKOdsZFy
+         9qkUpLOcRn6aWjKO/uLC8K7Inaq4GXH/G4JQdvBntkJVgNudruvuZhDVNhFFF4hIqtjK
+         nhh+VCY/vDg0HKZ3k2NURhge6zWclrp7LOUnCJM7F6dWSBTRw0KiKHhpWI+0qrqD68gu
+         /oJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXqrPjYxdpyqWPra8VNwjwESuuKFTcAbyQZD8d6mQMUOqjMAvITVIUPjsrOz8qPVIjGfXnO7nScbTL@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYWG385+GhfkQbeeqc1hIViKriXNDgayImoH6tiHUjwVljV03H
+	byYyjgTq946lGcSng1c/ci7zhpqKVgPyMSnLU4EMRAARx0IY9YFe6pmQmmCZAQzqzPo=
+X-Gm-Gg: AZuq6aJ+v3nHwRXpNFF59S9tB6vhCJCQg8xa83evle7wQ54qt074sz4pn3PNzqU+a0A
+	iVPR8aQN7nrYg6TCuZOKpNrneVA/usXXqb10ATWRvZAAnf78+2CnxenFcTJgBwpjpEkmur1l9KW
+	rlp5Bj57dkSppSovcEd3kBBlea1gjTPxRmW8RJfyklKGZb0vKDtpmxmAJ9jSOoBfsvQXBaXCSZw
+	8QM4vChQjZimyjqmR5TLE52AMSfLOn5U7ZQqud0G4EUWnq/Wu2wtTsTB4f5a6QHNvXFSHfWmUjJ
+	oDc0r2jMFWnd4mjBVwfeQsQ52HKHhjZHAVtYPReLQCQfSr724qJewmWcxe6WHNsVtObC41UFjIM
+	GUgDXujLWz1eRLFRDU43jfJ6v7SdomgZ4dFnWVAlmLNlfBymE2NiZb78txdIt/E1Lf30mhJbkip
+	TlrPydMIYJNMuiLg03zHSo8lkCh6DB4EFQcuHnjuoLITs9XGFliGoxmL3elbtHtjSfpTU=
+X-Received: by 2002:ad4:5beb:0:b0:882:4987:367 with SMTP id 6a1803df08f44-895221d848emr19194156d6.65.1770167420831;
+        Tue, 03 Feb 2026 17:10:20 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8ca2fd41f0asm84420585a.45.2026.02.03.17.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Feb 2026 17:10:20 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vnRPP-0000000Goea-188k;
+	Tue, 03 Feb 2026 21:10:19 -0400
+Date: Tue, 3 Feb 2026 21:10:19 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH rdma-next v10 5/6] RDMA/bnxt_re: Direct Verbs: Support CQ
+ verbs
+Message-ID: <20260204011019.GZ2328995@ziepe.ca>
+References: <20260203050049.171026-1-sriharsha.basavapatna@broadcom.com>
+ <20260203050049.171026-6-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1769025321.git.metze@samba.org>
-In-Reply-To: <cover.1769025321.git.metze@samba.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Wed, 4 Feb 2026 07:58:52 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-eyYhh9E2zkiraJX0ihct=yEpx-tgQvpAJ0fK+q1oUQQ@mail.gmail.com>
-X-Gm-Features: AZwV_QiaxFV2_vq5ig4lbGmwCExyMJg3gUgo8OLH5hhxOtefqrfin2SeP-FVFIQ
-Message-ID: <CAKYAXd-eyYhh9E2zkiraJX0ihct=yEpx-tgQvpAJ0fK+q1oUQQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] RDMA/smbdirect: introduce and use rdma_restrict_node_type()
-To: Stefan Metzmacher <metze@samba.org>
-Cc: linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, Steve French <smfrench@gmail.com>, Tom Talpey <tom@talpey.com>, 
-	Long Li <longli@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203050049.171026-6-sriharsha.basavapatna@broadcom.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.samba.org,ziepe.ca,kernel.org,gmail.com,talpey.com,microsoft.com];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16491-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16492-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[linkinjeon@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8FF46DF794
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EC2CEE053B
 X-Rspamd-Action: no action
 
-On Thu, Jan 22, 2026 at 5:07=E2=80=AFAM Stefan Metzmacher <metze@samba.org>=
- wrote:
->
-> Hi,
->
-> for smbdirect it required to use different ports depending
-> on the RDMA protocol. E.g. for iWarp 5445 is needed
-> (as tcp port 445 already used by the raw tcp transport for SMB),
-> while InfiniBand, RoCEv1 and RoCEv2 use port 445, as they
-> use an independent port range (even for RoCEv2, which uses udp
-> port 4791 itself).
->
-> Currently ksmbd is not able to function correctly at
-> all if the system has iWarp (RDMA_NODE_RNIC) interface(s)
-> and any InfiniBand, RoCEv1 and/or RoCEv2 interface(s)
-> at the same time.
->
-> And cifs.ko uses 5445 with a fallback to 445, which
-> means depending on the available interfaces, it tries
-> 5445 in the RoCE range or may tries iWarp with 445
-> as a fallback. This leads to strange error messages
-> and strange network captures.
->
-> To avoid these problems they will be able to
-> use rdma_restrict_node_type(RDMA_NODE_RNIC) before
-> trying port 5445 and rdma_restrict_node_type(RDMA_NODE_IB_CA)
-> before trying port 445. It means we'll get early
-> -ENODEV early from rdma_resolve_addr() without any
-> network traffic and timeouts.
->
-> This is marked as RFC as I want to get feedback
-> if the rdma_restrict_node_type() function is acceptable
-> for the RDMA layer. And because the current form of
-> the smb patches are not tested, I only tested the
-> rdma part with my branch the prepares IPPROTO_SMBDIRECT
-> sockets.
->
-> I'm not sure if this would be acceptable for 6.19
-> in order to avoid the smb layer problems, if the
-> RDMA layer change is only acceptable for 7.0 that's
-> also fine.
->
-> This is based on the following fix applied:
-> smb: server: reset smb_direct_port =3D SMB_DIRECT_PORT_INFINIBAND on init
-> https://lore.kernel.org/linux-cifs/20251208154919.934760-1-metze@samba.or=
-g/
-> It's not yet in Linus' tree, so if this gets ready
-> before it's merged we can squash it.
-Acked-by: Namjae Jeon <linkinjeon@kernel.org>
+On Tue, Feb 03, 2026 at 10:30:48AM +0530, Sriharsha Basavapatna wrote:
 
-Thanks!
->
-> Stefan Metzmacher (3):
->   RDMA/core: introduce rdma_restrict_node_type()
->   smb: client: make use of rdma_restrict_node_type()
->   smb: server: make use of rdma_restrict_node_type()
->
->  drivers/infiniband/core/cma.c      |  30 ++++++++
->  drivers/infiniband/core/cma_priv.h |   1 +
->  fs/smb/client/smbdirect.c          |  26 +++++++
->  fs/smb/server/transport_rdma.c     | 108 +++++++++++++++++++++--------
->  include/rdma/rdma_cm.h             |  17 +++++
->  5 files changed, 154 insertions(+), 28 deletions(-)
->
-> --
-> 2.43.0
->
+> diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
+> index 51f8614a7c4f..4c079d60b43d 100644
+> --- a/include/uapi/rdma/bnxt_re-abi.h
+> +++ b/include/uapi/rdma/bnxt_re-abi.h
+> @@ -56,6 +56,7 @@ enum {
+>  	BNXT_RE_UCNTX_CMASK_DBR_PACING_ENABLED = 0x08ULL,
+>  	BNXT_RE_UCNTX_CMASK_POW2_DISABLED = 0x10ULL,
+>  	BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED = 0x40,
+> +	BNXT_RE_UCNTX_CMASK_DV_CQ_SUPPORTED = 0x80,
+>  };
+
+This is not what I outlined before.. You should have a patch that
+makes the driver implement the uapi compatability protocol across the
+board.
+
+Then add a UCNTX flag that says 'compatibility works'. I don't want to
+fix these problems peicemeal forever.
+
+This is done by
+1) checking all existing comp_mask for valid values and returning
+   failure
+2) Checking that structs have trailing zeros only by calling
+   ib_is_udata_cleared()
+
+Here, I made you a branch that takes care of it all:
+
+https://github.com/jgunthorpe/linux/commits/for-sriharsha/
+
+And makes the required whole flow a lot clearer since it has evolved
+into something that is far too open coded..
+
+Let me know what you think.
+
+Jason
 
