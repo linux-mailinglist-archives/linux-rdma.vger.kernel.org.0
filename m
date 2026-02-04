@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-16500-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16501-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SEiwCkzxgmmWfQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16500-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 08:12:12 +0100
+	id MMyyFBPygmmWfQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16501-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 08:15:31 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC269E28D7
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 08:12:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id F04CBE2935
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Feb 2026 08:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 24D073022698
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 07:12:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D14333038165
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Feb 2026 07:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C840D38945D;
-	Wed,  4 Feb 2026 07:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8062EC0A1;
+	Wed,  4 Feb 2026 07:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="nrCTIdAB"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="cIJum6Pe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365292DB79D
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 07:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C904238C03
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Feb 2026 07:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770189124; cv=none; b=cE9tROhS094x1wOY00QsjNQD2HLF12C6CKEwf5KbsFn19UYVKj8BXYvbN1xqfUqf898JINf9AQ2QAP5rO7hwPmX6dlrarc/yXg6qOJAFubZ1p6Pvi90zndQONqRrmlF0FyZMh0f53qZ15v5EaZGVp5iOtHNfvzb2g19/hMpDVGc=
+	t=1770189325; cv=none; b=mmpWXSmIqfhI5NDpKup+jSb0t7Gr/qGjZMMkUAAfTXLDt+gFrc8PLkF1DmYWmOzW1wLuyVWx9VGaC7kPvT/ryyX2401h/kQIUFQ/bwD0EGdOUMb1pnmx6BP4v79nYeFxtcltrhHKWUls6qW/KFNF4go8oiFvybwg578ZPDUtzRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770189124; c=relaxed/simple;
-	bh=i2gmBapXr7BeRcHIh6yZN89wQPgVWerFuKcVi5666t4=;
+	s=arc-20240116; t=1770189325; c=relaxed/simple;
+	bh=i7SHrii2V9xume0ZQ/Ds3fTYY3TfRh3hjqvbzH/xuv0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pZOzKEBxRRCge2sUJYf+4f9gBNWLgBe0FkBfCW+a+G5n/lOSxSdeH4ekAEp/3k/TXOoV02vHLQu6dJnbZNCYeJ9Mr7b4S3fOgCZ20QEwUd4eSmS3P13l8qPXT4CruSjZd/D8xPLnP6FFozTGhT6zd4HcKeTQUjw0egxOVwCWCBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=nrCTIdAB; arc=none smtp.client-ip=209.85.128.66
+	 Content-Type:Content-Disposition:In-Reply-To; b=ur/mmMm2sROAoT0jnH9q0r8hLkq3HLnCTxkksnm7+2/hyCHjfrjE7Ilf0JWaw3/yp/zt5KooaW5Pc+WfzfBtyClYsJoGHrZF2E7BYWvXc8DTyknZ3011yVRMD1LmlfTaobT4BrpIibM3+ZAb90bh8rT48VD4iqzas9+ZazD9Ryo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=cIJum6Pe; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-4801ea9bafdso2181885e9.3
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 23:12:03 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4359a302794so4421462f8f.1
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Feb 2026 23:15:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770189122; x=1770793922; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770189323; x=1770794123; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sRhtrQ9/jhzrEfyf0zU6+VS4W6Vs4vnnpMJiEJhAMj4=;
-        b=nrCTIdABlWzStCVMICGz7awLjOO+9UZnyaadW3I1z2UFc7Qg++Ql4kotKvZ3TU8BLB
-         JhrTNOnjdFe++8hMp5uvfUU6H2HT24jRMLT8fPoRch4QdQz8yVe58F0jjIz7i3Wt33oN
-         23jPohArNx1cRghEm+UEkz7baPSQ2JEJVn7JFqsUyy1w2XoH0TlaK0gH4wByDSatc/mB
-         fUjwaUt+40Lgvdo4a7p2uK51zApMYCs2sRFtKi2PqG5tUInlrIECT/XaA0Zi1qM/J8Ef
-         yeqxNSLulBoar3+VgdqMSdDhY2NDpJkQuGyxO3AMESaHfVBRSO+ilwpZqW6eK5p2bmU1
-         IuIA==
+        bh=x92saUYYugyMtUj3313uzdtAS5z3eKHI07XSbNMRFLo=;
+        b=cIJum6PezYHw4GB41rtyZVwGO7yKbwtAJlwIMnsUa6leV32Qk/ylJqxd0rLLxgBAo7
+         iKFUey2n2S1tnBs6ETVCsQozDPsRo7LZKZZ8tQYQOgZJyD8XMINxRgCcDWs/XmZdP8d9
+         EI981owvyMWYXff+bHyw5GFz3LJZCj0bBJP3iPG8wng/6AIlX5mmSTiGBNeEQ1UJfGfm
+         hmiKhkaa1VhoSU8JEHWtt+7+1HdFqyC6iBz3JoI7VMIJtCHjVK8owPRYc8LRLZOhjwSv
+         itCnUNAQMe7T/a0PhAhwBS+yaSXkTx394g32NxHY0U6k3QAr4SgsC7JcBsgSR+JyqOwl
+         aUOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770189122; x=1770793922;
+        d=1e100.net; s=20230601; t=1770189323; x=1770794123;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sRhtrQ9/jhzrEfyf0zU6+VS4W6Vs4vnnpMJiEJhAMj4=;
-        b=v9gIeqBlZAvx5kgHLNqYr9+KEgcc+p1LIPhfM63jp1TfHIvvPmt8KwXYHnFmIqLjSs
-         gWz8SS725yMwWEJy7mL9fePNzYwWjOSQ2zfVu/V5FVHbVLsHJr5ivOHkwfCplNvL0H9J
-         tbdaThwddRvX/KKMWn/LYjoL52Weij9s03UTPS7SfYVSj2yVIuGjwFbUlx5M0uxKywlO
-         Di0Es4v2dJpRDyeH2+FCDDUH+vE/4AkRGq1Zmqz/aFzYUzZW+39Z8JaSaeVmMYB2uzRe
-         luNaXRtqEpwBHa3pTyroB9abZ1aw3KKVcESDzHJ6zDHHy6MvAEDOPXw8ErrjKD5lCD2O
-         rVIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWllyxHFsc3BimOr7YM0ZwVu6lDJSAMLmMS1oniKXtJ9UwezeszOMbvbnhhM3TqNlncLYlEW7mu+rPh@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw794MaIY3vitE1TS8d058g9UNeGgEX8CW7/VrAwMni8NIipGQw
-	zvPB20S/W7CB5dZg3087rq9MT83kpBgfFG2VdW7pIvnEAUZQFwrjSbIVGqvDrmKbDl4=
-X-Gm-Gg: AZuq6aLAoIP9Q3CBF6lf6sEtlB3vCw/0Ujcx+eFvZBXx6gZdqMaKOqDntvcajeQW4CR
-	0wRFriYY+U0gKFDwKYYE6QoQEULk+fU8cLRr7GkeVAl3MoM4sovJu0bzQicrO0pjIundtsjMLWR
-	/ePYHkBMmd0kICITvUBoRrNzBmzPDDaJ37V8CGbI9wWVJJn1Pf3omBhMSGbOY9N+cn518eZ3sMM
-	fGV62MRla/myo8aBuPSERPWKeg/Y+YXI0mVJITXffYyLp4o9aY0R1u3HJbV+umw5ZSIz95/VHGW
-	jGncYzQN90MJ/aNvowQzZ2F+fm2pRTUQjIuNAp3gNi/HdW+VTr9xl5c+EOdGWNWt+fbgCOPnW1H
-	xWenL4TgMmA//HFb1pCzYVQ4zbH+UoG2NKhD5MjY6VyFJdY2T75qOeQUWAvBYD1HRZRPtURiQOm
-	XPIcHzoIpRq38+3hH5argkvON5R6aBdq4=
-X-Received: by 2002:a05:600c:8b30:b0:47d:264e:b435 with SMTP id 5b1f17b1804b1-4830e96ada6mr26786065e9.22.1770189122438;
-        Tue, 03 Feb 2026 23:12:02 -0800 (PST)
+        bh=x92saUYYugyMtUj3313uzdtAS5z3eKHI07XSbNMRFLo=;
+        b=n+3B1A664lVLKRKxXtujzplHEua6Wn3dlenYuqR0ByKtJY0VbUm9UGAbRSM3ZyYQ5N
+         vr2F32n0uD1PNwkvxOam+7G0mcrfiEPh8MKYCjOpGxmXHMiSyPrwV4BU2DvfI9kGsOH4
+         JmRtgUnXNN/skPcG8BXTbSp0keXCcCJxBTebkrNnlbGB0I8/qCM/dx/6xfXYAv97kxDH
+         QSXotYysJqnpTJd79Ai9kYhMjSuymzKUhasm7sN8SoBUenxaNzPw/XHVPQERUBBVImZH
+         IKX2bDJe+vbNFF0aLCPZ0JmJIgQdv3blr+STpf84RroRVEHdbUeVHEkWr7shrtRU/50c
+         lc/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWQJ8dlBpxFGemSCNAdZYn2N2lcszHCf2viFAIOsoLJ3NL9eSRv7QjeIKG4/0/YycGnPVod9oFlI6lp@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywbsa5RabBv/5gSmP5tzAu68ZC1dcWODqofaUKz96XMylPXXfVI
+	I5esd2V2odcJGyTe5tJg9C4OUKugCUs1JMmld7vSeWJD8Q3z/XImitG7WpUxclVm6Us=
+X-Gm-Gg: AZuq6aLlbW+FQCUgjx00r79qE3rVWjoSU1c9hpPEMSSGOnm1pY+JypQbtRRRyxP2/yg
+	1k41ejXHZqVzeXIjoDqlw+9TkIc6UmXfLgzv4HvPL2FGBfE2vsGzjj7Eyg4lPJ5p7uFOqnb7yjB
+	BrCl4zGf9UE6Opx8V+NNFeOwomEIpFe11lMNHTBR0T8OJo9vIP/zH1oF+vwn3lxoYcMfa2/CXnk
+	TgWUskIqGxJhA2twqponqaCQqnjYBngtIFLTe9m/uvUst8xAwWpazz5fQyQqtkM0apypefsf5Vp
+	Pzn6Oy6Bg2BsmxX8WSMS+TnRdBF4uE2bXWguv4bvbmSxsUhO6aTGrnBo4HBOneazaOfXA2l47MZ
+	GWZYqBbUNRAqeHxd+Bksgx5U1S0BVGHOtwAuGNrRU0cm8Izub2qEkeoLNfhk0XrMbAnV0GR44vI
+	dVWIs/o9xlK6p4gMYgBiIIE9aDou+Brm4=
+X-Received: by 2002:a05:600c:4e0f:b0:47a:814c:eea1 with SMTP id 5b1f17b1804b1-4830e98f6fbmr24165955e9.35.1770189323508;
+        Tue, 03 Feb 2026 23:15:23 -0800 (PST)
 Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:9519:b02d:f49f:3f52])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43617e38ec5sm4645607f8f.14.2026.02.03.23.12.00
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483108e3ed5sm19055735e9.5.2026.02.03.23.15.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 23:12:02 -0800 (PST)
-Date: Wed, 4 Feb 2026 08:12:00 +0100
+        Tue, 03 Feb 2026 23:15:23 -0800 (PST)
+Date: Wed, 4 Feb 2026 08:15:21 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
@@ -88,14 +88,14 @@ Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
 	Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
 	Randy Dunlap <rdunlap@infradead.org>, Simon Horman <horms@kernel.org>, 
 	Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH net-next V7 01/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <3edheaanzxgutuyryorfzlfjvizlorpj4y3ard5js7mp44hfii@4a36de6wazfd>
+Subject: Re: [PATCH net-next V7 02/14] devlink: introduce shared devlink
+ instance for PFs on same chip
+Message-ID: <y2q4usbmebqm6vpu32is6m3ga3f3xs5xe3jbk2g5n7l7fmt2eu@4m3guiuc3uuz>
 References: <20260128112544.1661250-1-tariqt@nvidia.com>
- <20260128112544.1661250-2-tariqt@nvidia.com>
- <20260202194023.412bb454@kernel.org>
- <u7uicnxkcirhacpzjimss2pqsuhbngg4ticqrz45iqchkk2ha2@t3eem6w6hhur>
- <20260203190105.2cc28e71@kernel.org>
+ <20260128112544.1661250-3-tariqt@nvidia.com>
+ <20260202194946.64555356@kernel.org>
+ <wdkd7yelgosii7bklmahxf5t6xnn2vydnwiiruiwqpyue722dj@yjnkcdctzeav>
+ <20260203184200.216bb426@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -104,19 +104,19 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260203190105.2cc28e71@kernel.org>
+In-Reply-To: <20260203184200.216bb426@kernel.org>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16500-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16501-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
 	MIME_TRACE(0.00)[0:+];
@@ -133,78 +133,34 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: BC269E28D7
+X-Rspamd-Queue-Id: F04CBE2935
 X-Rspamd-Action: no action
 
-Wed, Feb 04, 2026 at 04:01:05AM +0100, kuba@kernel.org wrote:
->On Tue, 3 Feb 2026 10:18:22 +0100 Jiri Pirko wrote:
->> Tue, Feb 03, 2026 at 04:40:23AM +0100, kuba@kernel.org wrote:
->> >There needs to be a note here clearly stating the the use of "shared
->> >devlink instace" is a hack for legacy drivers, and new drivers should
->> >have a single devlink instance for the entire device. The fact that
->> >single instance is always preferred, and *more correct* must be made
->> >very clear to the reader. Ideally the single instance multiple function
->> >implementation would leverage the infra added here for collecting the
->> >functions, however.  
->> 
->> How exactly you can have a single devlink instance for multiple PFs of a
->> same device? I don't really understand how that could work, considering
->> dynamic binds/unbinds of the PFs within single host and/or multiple VMs
->> passing PFs to.
->
->The same way you currently gather up the devlink instances to create
->the shared instance.
-
-What's the backing device / handle (busname/devname)? Best would be to
-draw a picture, as always :)
-
-
->
->> >> +The implementation uses:
->> >> +
->> >> +* **Faux device**: Virtual device backing the shared devlink instance  
+Wed, Feb 04, 2026 at 03:42:00AM +0100, kuba@kernel.org wrote:
+>On Tue, 3 Feb 2026 10:44:16 +0100 Jiri Pirko wrote:
+>> >> +/* This structure represents a shared devlink instance,
+>> >> + * there is one created per identifier (e.g., serial number).
+>> >> + */
+>> >> +struct devlink_shd {
+>> >> +	struct list_head list; /* Node in shd list */
+>> >> +	const char *id; /* Identifier string (e.g., serial number) */  
 >> >
->> >"backing"? It isn't backing anything, its just another hack because we
->> >made the mistake of tying devlink instances to $bus/$device as an id.
->> >Now we need a fake device to have an identifier.  
+>> >Why does this have to be a string? The identifier should be irrelevant,
+>> >and if something like serial number exists it can be reported in dev
+>> >info for the shared instance?  
 >> 
->> Okay. I originally wanted to use an id, similar to what we have in
->> the dpll. However I was forced by community to tie the instance to
->> bus/device. It is how it is, any idea how to relax this bond?
+>> String gives drivers flexibility to use anything. Perhaps I'm missing
+>> your point. Are you againts free-form or just string and buf+buf_len
+>> would be fine?
 >
->Interesting! I was curious to research how we ended up here, found this:
->https://lore.kernel.org/netdev/20160225225803.GA2191@nanopsycho.orion/
->My reading is that Hannes was arguing against the _NAME attribute but
->both _NAME and _INDEX were deleted? I think there's nothing wrong with
->an index.
+>I was thinking binary buf+len is fine, and we shouldn't really expose
+>this to user space in any shape or form (hence no concern about free
+>form).
 
-He argues for "stable topology indentifiers", which randomly assigned
-index is not.
-
-
->
->FWIW using devlink day to day, the bus/device is not at all useful as
->an identifier. Most of code touching devlink at Meta either matches
->on devlink dev info or assumes there's one instance on the system.
-
-Okay, what's your suggestion going foreward then?
-
-
->
->> >> +Similarly to other nested devlink instance relationships, devlink lock of
->> >> +the shared instance should be always taken after the devlink lock of PF.  
->> >
->> >of an instance, not a PF  
->> 
->> lock of PF devlink instance. I think that is what the text says, no?
->
->Sorry, I was trying to flag that using PF is not necessary great cause
->we may support this on other functions in the future.
-
-You are right, will fix this.
-
-Thanks!
-
+How you imagine to name faux device then? I'm sensing that you want to
+get rid of busname/devname handle for things like this and rely on some
+randomly generated index. But the whole ecosystem is bases on
+busname/devname handle. Any idea how to overcome that?
 
