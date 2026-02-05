@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-16554-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16555-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GFRsMVv6g2nwwQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16554-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 03:03:07 +0100
+	id GFNNEIT7g2kXwgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16555-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 03:08:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81842EDD3F
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 03:03:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDB3EDDC8
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 03:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 29F6A3015D1A
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Feb 2026 02:03:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BEF2830209C0
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Feb 2026 02:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED2923B61B;
-	Thu,  5 Feb 2026 02:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDB225A2DD;
+	Thu,  5 Feb 2026 02:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AlhrAdo5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vCssFMyN"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F32A29CEB;
-	Thu,  5 Feb 2026 02:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB0124677F;
+	Thu,  5 Feb 2026 02:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770256978; cv=none; b=YipBEWRGh1DXhAMXTYfzKp8PXgY9mVAhQKNMTnXPkioTjaiLuf2F2jYOtll96qhfmngGmJju4FRqv9Xf/FDi/ZnCX5ZOJGD0yPA+4qmn8FsABch0ZmQteODnd1sAQ3nNUOI7H157exSUkVlfPL0F0TxrsOrvmLkFFj7D9/mzVdw=
+	t=1770257198; cv=none; b=HMde1tJnmaJNIids8LxIbyKTIsAQGUrdkFkeI2hlwa1Qpkit7EaooMbROIvctz8lgwAQld3y1A3bH5t78eMiWZe3awx+bXWtCOVlP6lcFXz95ZH8yISQMevNM3aButDPIi40T7oU0CYN2N0pIrCEqZZPAMArGI3emJ1f1fKPuRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770256978; c=relaxed/simple;
-	bh=nHi2UCGiCbJ0UnCuBebGdrB9aUOyKoFBhFgFqNuLD50=;
+	s=arc-20240116; t=1770257198; c=relaxed/simple;
+	bh=o5GScY0IkA5GPyQXBW8RFTDzDffTJNoOPmkAuFmcNts=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VboPA/T3BQKzR1srwmaFgpqEqnSx1/3gLxaF0700P+XsPQs+UU9GKr4ixRIUsdyNWO5MjipAv99RNdl9tguSFrdLWCHA+31Od3pqgNyFVGFRwMuTZdQPUx93dR4hK+6+2cuxKWyocUTuKSCXIUN5/RT+d5I2MzmBE0TQJBB/Ke4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AlhrAdo5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED13C4CEF7;
-	Thu,  5 Feb 2026 02:02:57 +0000 (UTC)
+	 MIME-Version:Content-Type; b=M2jyR6KVFMCUpJDPWxUWkmJgMAwUEscQxp9xrAMCQPfsMRxO4Ytycq8jW+og5VNWqbR1MQI0NnSbab6LFOw74gUkIhO3gmH0VFqD31RkPVhXLwwfeaXA2H/fyo9BOl9SKr2Bi7G4ioy5YdNZlCdsLQ8IQuCqaqLHHOmfeH6BFqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vCssFMyN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3836CC4CEF7;
+	Thu,  5 Feb 2026 02:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770256978;
-	bh=nHi2UCGiCbJ0UnCuBebGdrB9aUOyKoFBhFgFqNuLD50=;
+	s=k20201202; t=1770257198;
+	bh=o5GScY0IkA5GPyQXBW8RFTDzDffTJNoOPmkAuFmcNts=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AlhrAdo5TIKMad6/U4CLXKjjKTzvKlYie2xwNvIbUEGMnniorxSiPH8e2PO+Att1S
-	 j3hdtqxYgIsZUtIosEhkpjyVTl80hMP038625drLIt5tajRVjnwM2OpRlkLw1sl1EK
-	 91i87nRcGsbxkisfsKY791B/7NP6TPxSqZH1LxPPTsC+9tTRtUEavXdvD0UhxnJH5H
-	 X+5RzqrnxW3PYZEcWT2KI4XhBlEhr/znQG9x76YUvGcEo6UTaTKzkGQ3qWXiO3B6O9
-	 DQ6ODbhuKVYxyOGmLytrAIK+IsucwMmKStLNtsjEZCMQyCVGF6ZI+udB/MJFtW1cs2
-	 c9aTAT+tRnpBw==
-Date: Wed, 4 Feb 2026 18:02:56 -0800
+	b=vCssFMyN/MYJ3pp6mRt9gbYbxLArpvEIqwxsJ6i0uEg3acxlxvUzLRo9a+35Ank6m
+	 2IIVTHz+jdHtmaGVSxvYqlrwnLRDLddo6Xg1TYeJLeoCjg4w9+PPkzVQgH/EZKM0gu
+	 gGVgT2kHHIm9b1kioqALCaLeTaf2UlFtV+UOCAcYApGSrzPcgVdDGvrA+aszVwBGH5
+	 7IFGaICnk22UIc0Z8J1ppxLU4ZqD89EfJOavzdPXaqX5cj5LwmIqaNDvR8tbHvuTyg
+	 NdmUkgWRWmbb31oqz9GBN2SMrHLX7p04OdA9j9ogl32MQQ2un16OVCRLtxP1beBXhp
+	 RU8qn5JytWVhg==
+Date: Wed, 4 Feb 2026 18:06:36 -0800
 From: Jakub Kicinski <kuba@kernel.org>
 To: Jiri Pirko <jiri@resnulli.us>
 Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
@@ -58,16 +58,16 @@ Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
  <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko
  <jiri@nvidia.com>, Randy Dunlap <rdunlap@infradead.org>, Simon Horman
  <horms@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH net-next V7 01/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <20260204180256.1476f537@kernel.org>
-In-Reply-To: <3edheaanzxgutuyryorfzlfjvizlorpj4y3ard5js7mp44hfii@4a36de6wazfd>
+Subject: Re: [PATCH net-next V7 02/14] devlink: introduce shared devlink
+ instance for PFs on same chip
+Message-ID: <20260204180636.7ae26cb6@kernel.org>
+In-Reply-To: <y2q4usbmebqm6vpu32is6m3ga3f3xs5xe3jbk2g5n7l7fmt2eu@4m3guiuc3uuz>
 References: <20260128112544.1661250-1-tariqt@nvidia.com>
-	<20260128112544.1661250-2-tariqt@nvidia.com>
-	<20260202194023.412bb454@kernel.org>
-	<u7uicnxkcirhacpzjimss2pqsuhbngg4ticqrz45iqchkk2ha2@t3eem6w6hhur>
-	<20260203190105.2cc28e71@kernel.org>
-	<3edheaanzxgutuyryorfzlfjvizlorpj4y3ard5js7mp44hfii@4a36de6wazfd>
+	<20260128112544.1661250-3-tariqt@nvidia.com>
+	<20260202194946.64555356@kernel.org>
+	<wdkd7yelgosii7bklmahxf5t6xnn2vydnwiiruiwqpyue722dj@yjnkcdctzeav>
+	<20260203184200.216bb426@kernel.org>
+	<y2q4usbmebqm6vpu32is6m3ga3f3xs5xe3jbk2g5n7l7fmt2eu@4m3guiuc3uuz>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -82,11 +82,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16554-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16555-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -104,59 +104,34 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 81842EDD3F
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DFDB3EDDC8
 X-Rspamd-Action: no action
 
-On Wed, 4 Feb 2026 08:12:00 +0100 Jiri Pirko wrote:
-> Wed, Feb 04, 2026 at 04:01:05AM +0100, kuba@kernel.org wrote:
-> >On Tue, 3 Feb 2026 10:18:22 +0100 Jiri Pirko wrote:  
-> >> How exactly you can have a single devlink instance for multiple PFs of a
-> >> same device? I don't really understand how that could work, considering
-> >> dynamic binds/unbinds of the PFs within single host and/or multiple VMs
-> >> passing PFs to.  
+On Wed, 4 Feb 2026 08:15:21 +0100 Jiri Pirko wrote:
+> >> String gives drivers flexibility to use anything. Perhaps I'm missing
+> >> your point. Are you againts free-form or just string and buf+buf_len
+> >> would be fine?  
 > >
-> >The same way you currently gather up the devlink instances to create
-> >the shared instance.  
+> >I was thinking binary buf+len is fine, and we shouldn't really expose
+> >this to user space in any shape or form (hence no concern about free
+> >form).  
 > 
-> What's the backing device / handle (busname/devname)? Best would be to
-> draw a picture, as always :)
+> How you imagine to name faux device then? I'm sensing that you want to
+> get rid of busname/devname handle for things like this and rely on some
+> randomly generated index. But the whole ecosystem is bases on
+> busname/devname handle. Any idea how to overcome that?
 
-Either the bus/dev that shows up first or we go back to index.
-(My main point being that the single instance is strictly better
-than shared, ie. no problem exists in single instance multi func
-which does not exist in multi instance + extra instance multi func.
-But some problems do exist in multi instance which do not in single
-like the locking)
+Quoting myself form the other sub-thread:
 
-> >> Okay. I originally wanted to use an id, similar to what we have in
-> >> the dpll. However I was forced by community to tie the instance to
-> >> bus/device. It is how it is, any idea how to relax this bond?  
-> >
-> >Interesting! I was curious to research how we ended up here, found this:
-> >https://lore.kernel.org/netdev/20160225225803.GA2191@nanopsycho.orion/
-> >My reading is that Hannes was arguing against the _NAME attribute but
-> >both _NAME and _INDEX were deleted? I think there's nothing wrong with
-> >an index.  
-> 
-> He argues for "stable topology indentifiers", which randomly assigned
-> index is not.
+  FWIW using devlink day to day, the bus/device is not at all useful as
+  an identifier. Most of code touching devlink at Meta either matches
+  on devlink dev info or assumes there's one instance on the system.
 
-Agreed, I love me a stable identifier myself! :) That does not mean 
-we can't have ID _as well_ as the identifiers. Which lets us add
-more stable identifiers and/or making some optional.
-
-I think I was trying to sell you on "more stable identifiers" 
-as a alternative to ALT_NAMEs for netdevs at some point ;)
-Maybe I'm projecting that conversation onto what Hannes said.
-
-> >FWIW using devlink day to day, the bus/device is not at all useful as
-> >an identifier. Most of code touching devlink at Meta either matches
-> >on devlink dev info or assumes there's one instance on the system.  
-> 
-> Okay, what's your suggestion going foreward then?
-
-Add the ID back, make bus/dev optional, forgo the faux dev?
-Would that work? Would exiting CLI become very unhappy? :S
+IOW I think you over-estimate the value of the bus/dev in real life
+systems. And that's for instances that have a real bus/dev. Having
+a faux bus/dev is completely pointless, right? The only question is
+whether some code will straight up crash when seeing a device without
+bus/dev.
 
