@@ -1,73 +1,73 @@
-Return-Path: <linux-rdma+bounces-16557-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16558-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WCkyGmUphGna0AMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16557-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 06:23:49 +0100
+	id 0O6+DvIqhGla0QMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16558-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 06:30:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F358EEEB15
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 06:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1175EEBA2
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 06:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 893AA3010BA6
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Feb 2026 05:23:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4D9A33014947
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Feb 2026 05:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85ADC10F2;
-	Thu,  5 Feb 2026 05:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A73331ED63;
+	Thu,  5 Feb 2026 05:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i0cMBLpO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KPYe3GG8"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498A32367AC;
-	Thu,  5 Feb 2026 05:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A9A31C576;
+	Thu,  5 Feb 2026 05:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770269016; cv=none; b=E9fF6Kcj4rj7g7c+ZFOhZLWoAacPi750hwEr1jTbJGfcFMU8CCRoV0VV5oXHR2wPBO5Kh8DY1dFAGlTgTOQusQQTGBqjGeoXiM9X6qsP580vcA2sAU6J/AtAyc6M1Ws7IkgN8T1brkvKXoomTiD/RqJQ5tTeyWgV+3/9nIOwzAw=
+	t=1770269412; cv=none; b=OXag0/EIqqC4zGUoR/ubO4BhUUhI+3ZOxQfeWofBdW00gq+QktbpbGwplmJdDdnzcKPsw473mWhUgEZMHZfIjlRmlrvpJgUc9oZ7yzJDd9x0K8oTUVC/DTcMWTaaZlJC9s1/hKakwnvBRRRFQymYJrs6hMQ0BEhHEqq46lZzSTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770269016; c=relaxed/simple;
-	bh=rpQgaMbYOmoPSA+lSQAE3dsBM1LM68YW/eZGMaQU2BA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nWJ4sx1gjqhyVxlMcrrXDtmAKeh0kgkaDISwEe0YTTqM5VLu65kiJMqeo3JLYy3gQs1zI+cYRXDCv1m5KXUdGCozv44XnMh5tpCOCFXf9EOdm1Ux3u9qb8w8hGFtO9ACvYJvaxdUBlzpyjEy368Hzzd7/azP7vTK8qbmLcJfUo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i0cMBLpO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 714C4C4CEF7;
-	Thu,  5 Feb 2026 05:23:35 +0000 (UTC)
+	s=arc-20240116; t=1770269412; c=relaxed/simple;
+	bh=vHr7ZbbZfo7ZAuri5DqQAM2N6o4OzxTGcUMT4tYdpZA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=sFoaO/iT9Bf+qo24Nqe5xGaXyG/k5XylSL06ioV7tBMr8UlagpEz4QKO1QJZ+N9dMlHf1iJi1WZOYQxxM2HUAO/fc32D6JdjuKILDhc24oX2ykI6c1yGKqBJI4qdrC84IkPc98TkeVch58SMqmI49U0bMM7xW3Av9iZjHsF9pA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KPYe3GG8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 940D6C4CEF7;
+	Thu,  5 Feb 2026 05:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770269016;
-	bh=rpQgaMbYOmoPSA+lSQAE3dsBM1LM68YW/eZGMaQU2BA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=i0cMBLpO5CB0sXlAtjWjv/4YsBOYhiXX7/geSoUpEVRX0WKsd5TpTsNGxoX3s7sZr
-	 1uDIqBoNTjbaG2VIipFUoCd6TCLqAb+x1Ri7gQfDRC7RTbjCxi2xK8zDwQO3FLcXuE
-	 wFOzzOqDUcn4R6rSKdfWT2NcGYmgQjDo5iPoPxvjNN1v77PMd3d9Imjr8gXIe/ekC5
-	 kdCj9GN747pDAiBqpS20PZIDghzQfn5UKGej2zmKgek1UosLWsFD7xx9waxw55nn2R
-	 +XYt1OwG8CFsiNSXRVGtGLJmL2fTxL1o/t6ZNkL0dUT5oddbZZX9vlC2aWEgKeC/mt
-	 xaC3i2kIRD9SQ==
-Date: Wed, 4 Feb 2026 21:23:34 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, "Mark Bloch"
- <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe
- Shemesh <moshe@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net-next 2/5] net/mlx5e: Report hw_gro_packets and
- hw_gro_bytes netdev stats
-Message-ID: <20260204212334.72b392af@kernel.org>
-In-Reply-To: <20260204193315.1722983-3-tariqt@nvidia.com>
-References: <20260204193315.1722983-1-tariqt@nvidia.com>
-	<20260204193315.1722983-3-tariqt@nvidia.com>
+	s=k20201202; t=1770269411;
+	bh=vHr7ZbbZfo7ZAuri5DqQAM2N6o4OzxTGcUMT4tYdpZA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KPYe3GG87lRSkcOMc/79b4qaUpO5qyV76k0L8GpXS5thpLp41RnahFYGiOTWttrOj
+	 kTEVGqVY84pqwasdlidvSY85o9lJ7aCG3i3sEV0VeUgatOl/9HIGLz4nX2N9Y7swiV
+	 4wg4NSmGMBKqlNYB54ZBl3r1hhEUTMuGYSOt2a/IRjr2b7sFIbWDEZJ6N+RBJAlMRB
+	 7eiwkCYZj1j/pygoF5n8qywbIXfsIN63PyvfOeUkpK2NTn1NIGP9SdX8FPudzw7e3X
+	 dk7pJdkOBIuGiMA9krmk0y/bIXwEBomSFXjY1A75+GxsS8Olgf0nVrv8/og7gx65jv
+	 Gg2Euan4sMeBQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id C24BB3808200;
+	Thu,  5 Feb 2026 05:30:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V2 0/2] net/mlx5e: RX datapath enhancements
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177026940958.174316.9801512398588540484.git-patchwork-notify@kernel.org>
+Date: Thu, 05 Feb 2026 05:30:09 +0000
+References: <20260203072130.1710255-1-tariqt@nvidia.com>
+In-Reply-To: <20260203072130.1710255-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ mbloch@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ dtatulea@nvidia.com, cratiu@nvidia.com, moshe@nvidia.com
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -78,66 +78,54 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16557-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16558-lists,linux-rdma=lfdr.de,netdevbpf];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F358EEEB15
+X-Rspamd-Queue-Id: A1175EEBA2
 X-Rspamd-Action: no action
 
-On Wed, 4 Feb 2026 21:33:12 +0200 Tariq Toukan wrote:
-> +	stats->hw_gro_packets =
-> +		rq_stats->gro_packets + xskrq_stats->gro_packets;
-> +	stats->hw_gro_bytes = rq_stats->gro_bytes + xskrq_stats->gro_bytes;
+Hello:
 
-Doesn't look right.. 
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-mlx5e_shampo_flush_skb(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe, bool match) 
-{                                                                               
-        struct sk_buff *skb = rq->hw_gro_data->skb;                             
-        struct mlx5e_rq_stats *stats = rq->stats;                               
-        u16 gro_count = NAPI_GRO_CB(skb)->count;                                
-                                                                                
-        if (likely(skb_shinfo(skb)->nr_frags))                                  
-                mlx5e_shampo_align_fragment(skb, rq->mpwqe.log_stride_sz);      
-        if (gro_count > 1) {                                                    
-                stats->gro_skbs++;                                              
-                stats->gro_packets += gro_count;       
+On Tue, 3 Feb 2026 09:21:28 +0200 you wrote:
+> Hi,
+> 
+> This series by Dragos introduces multiple RX datapath enhancements to
+> the mlx5e driver.
+> 
+> First patch adds SW handling for oversized packets in non-linear SKB
+> mode.
+> 
+> [...]
 
-And:
-      -
-        name: rx-hw-gro-packets
-        doc: |
-          Number of packets that were coalesced from smaller packets by the
-          device. Counts only packets coalesced with the HW-GRO netdevice
-          feature, LRO-coalesced packets are not counted.
+Here is the summary with links:
+  - [net-next,V2,1/2] net/mlx5e: RX, Drop oversized packets in non-linear mode
+    https://git.kernel.org/netdev/net-next/c/7ed7a576f20a
+  - [net-next,V2,2/2] net/mlx5e: SHAMPO, Improve allocation recovery
+    https://git.kernel.org/netdev/net-next/c/09e6960e8435
 
-      -
-        name: rx-hw-gro-wire-packets
-        doc: |
-          Number of packets that were coalesced to bigger packetss with the
-          HW-GRO netdevice feature. LRO-coalesced packets are not counted.
-        type: uint
-
-Your gro_packets are "gro-wire-packets" and "gro-packets" are your
-gro_skbs.
-
-I really wish the AI was clever enough to catch uAPI mis-reading :(
+You are awesome, thank you!
 -- 
-pw-bot: cr
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
