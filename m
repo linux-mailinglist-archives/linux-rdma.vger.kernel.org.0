@@ -1,131 +1,219 @@
-Return-Path: <linux-rdma+bounces-16595-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16596-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wJ1AORishGk14QMAu9opvQ
-	(envelope-from <linux-rdma+bounces-16595-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 15:41:28 +0100
+	id +L7BNq6shGk14QMAu9opvQ
+	(envelope-from <linux-rdma+bounces-16596-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 15:43:58 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EBF7F42A5
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 15:41:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25788F42FA
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Feb 2026 15:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CEAB9301F30E
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Feb 2026 14:40:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 267CC3022951
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Feb 2026 14:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C687F40B6CD;
-	Thu,  5 Feb 2026 14:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D7140FD87;
+	Thu,  5 Feb 2026 14:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I9vvM+tL"
+	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="FEf0h2Bc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fVLT4mfc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A15122423A;
-	Thu,  5 Feb 2026 14:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4502F40758B;
+	Thu,  5 Feb 2026 14:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770302407; cv=none; b=R1K4H9K6D+MFWwCbEvnFvl5Hh4/fIS6ef2IOIIhbpN+vZ9UbsKfAaiSdLtS490JkpO/cBRdL1nYSXm4ic6/bys4AZfMMNybyL4dN681M7iY7/oVNxJpAEiPRVbo3RjtfGgTA9qg2vncMoRj8A0MTxTFftRCx9MQjFXRDteMt04w=
+	t=1770302532; cv=none; b=qJfWBwQmrAPIwXEr7t7jYNcELMo964M9GV9cw9HG11qOqO3DdJKrf8WE6R8oTMOd8Y6IsQx0yqls3I7XRaaLrEN913KSZLl8G9iqqf/0QEs3Yf+QHTyhjSuZtdIAgMjBRkBV0mtaQzB0NTOEbBsvma0kpTyyofAqGoDtK7fbjPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770302407; c=relaxed/simple;
-	bh=SZnhW+M1GP44Ww9YIs6L0Vh9fjmfCtWPTOrnOfS4abc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qvNxlJYRgaCe5l//qbXTJKDBQEPNTfBvDH5W6ujEgIxkdG/uf40NJt0WuygmZJfswgq1Qinr0aFY8SlyMkrliw8C8gtzeIkugoZfM2ZvgqqLX1Hbu9FDX9jx7WhcLa9d3KHUxwkFkhl7x4W1FE0ZLYfc5ZhfrCcPhT16y/Tpdnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I9vvM+tL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17AA5C116D0;
-	Thu,  5 Feb 2026 14:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770302407;
-	bh=SZnhW+M1GP44Ww9YIs6L0Vh9fjmfCtWPTOrnOfS4abc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=I9vvM+tL41ttNsTic6yfZJqP3ba0nkqzNgr0vO9nT9IRczlTTaFkPwuYeTMedgNqZ
-	 uGJS1voYjpECnz/bRMA0ZOPIuV3FzslPS1ZqOPKW875FBFtdcCFh2e+qKzRBkWgDgL
-	 BlHolbBKtqnZoPJpNZppipzLP7Xp5WXw7xawxTW7GyzlPgdYIhUtPlv5kUItr+KBjF
-	 E7Fa3c1XnELfMPx2TzFCvH6ZygpfAVAmQrJx/FtE6VD2D199wY1Ope6p20KxbIoVuk
-	 pU3KaxDAxDYzr5ocLchFjv2ewftQXxYB+TZr/LQM6xwZLj9eiUgkHiO/OFLDT4/kAf
-	 GRURlh3lwsCZA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 0B1463808200;
-	Thu,  5 Feb 2026 14:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1770302532; c=relaxed/simple;
+	bh=+irZfXnbAyb6yWhUVT9uTx9aYPDMtL/nMFsGsY93TDg=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=kMEiQBB07YzZIrH4X8N0UBIVAIgYrXYWwoHg+bh/SKQv15OHL56tmLkMQGnCaHpm7F4yofBN3Ocol63yoPfSzyCQrL2TQSHX/RJg9tvUgn/7pWJ6fBJsSLWsh0wJxZvqKxW85lFTOk0Htq6Af5z2Jp9fnaFP85vGFHDGRiZX1Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=FEf0h2Bc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fVLT4mfc; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id F0A547A0066;
+	Thu,  5 Feb 2026 09:42:08 -0500 (EST)
+Received: from phl-imap-18 ([10.202.2.89])
+  by phl-compute-02.internal (MEProxy); Thu, 05 Feb 2026 09:42:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1770302528;
+	 x=1770388928; bh=c2sWSFRwhN1ePbWw0hSzzDPUGT+PUV51S0w9MOaIyks=; b=
+	FEf0h2BcDcZm7G7BDIUK2ADItpwlJ8hNuUMLpKhFD6n01D8okyPnIkq6p81we7L2
+	gIGJ48i+i29M8SF5Umc+j2/hErScJ0HodPUYKew263UE3GLZrJ7hD+mpi7tA1tUX
+	CroIkGk60T8vo4V9I7Cfhb2SMhUSeAwP0kh/1pkZh1xJdlexYo0FdJ5ZcBnF22Gt
+	PcO5FnudagrbQTbq0nW/uUj4MwbWv0LJvy4TiBkSF9/3dPJ/dW8TAz3yrrKGyEcx
+	SXgih4Qq3eCnWAJL/lyYSLwmbXucwl6AUKa54xqHfBzVVIvuk+of2gbkMwwAHZlf
+	LV4/00+M10ZETI1nm733Ig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1770302528; x=
+	1770388928; bh=c2sWSFRwhN1ePbWw0hSzzDPUGT+PUV51S0w9MOaIyks=; b=f
+	VLT4mfcVhduoy9qAwuHpxbxsvmL9WGkexpwwI35BBhmw8JlDnXBk4zHMMQX1hHA6
+	4z5QJMxDN/5SU6v2/oB5bORew2XZ927YqZSyGTD1rcl9RdbaPe9yUSI2BgRvAFmc
+	BzOn8OvFG5gzR5jsTizMM+6Q1M4c3zFzIFNxlcJnGt15yhJ9kNlOoAJxgBhI4IXo
+	HYOdBlgGo0Cb+dwdnPpC3xPczHpGadbVzQgJTrwGwpj8XbRm5Jx/FcIuWT1z2tvu
+	m1hBZ0WCbh+BnVOK3X+cMcFnDmQXkToA8t1ygsnVaHAwifuFcHKpaN9hF3Ey5zw0
+	8BX3dnHzbNHviUYX1vBgw==
+X-ME-Sender: <xms:P6yEadwgIGLmdLTZFzYjRQJOhCyboUfHxc2oeaANaZcpJ6heSz2grA>
+    <xme:P6yEaYF5kpO1z-_A41E_Z7SIL7zoEKRjHdReP7Sy2d9f3QP-wHzYia1OmKJT2l7Wh
+    9s2PLYWhd_ZREldE3WJ6Z3I6M3gecVVIbKvRc9oK4rNhKUGcY1k1j0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddukeehheeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedftehlvgig
+    ucghihhllhhirghmshhonhdfuceorghlvgigsehshhgriigsohhtrdhorhhgqeenucggtf
+    frrghtthgvrhhnpefgleegjeehkeefkefhkeetjedugfdvtdduveehledtteeltedtveff
+    ffegheelffenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhgvgiesshhhrgii
+    sghothdrohhrghdpnhgspghrtghpthhtohepfeehpdhmohguvgepshhmthhpohhuthdprh
+    gtphhtthhopehjohhroheskegshihtvghsrdhorhhgpdhrtghpthhtohepfhgvlhhigidr
+    khhuvghhlhhinhhgsegrmhgurdgtohhmpdhrtghpthhtoheprghlvgigrghnuggvrhdrug
+    gvuhgthhgvrhesrghmugdrtghomhdprhgtphhtthhopegthhhrihhsthhirghnrdhkohgv
+    nhhighesrghmugdrtghomhdprhgtphhtthhopehrohgsihhnrdhmuhhrphhhhiesrghrmh
+    drtghomhdprhgtphhtthhopehguhhrtghhvghtrghnshhinhhghhestghhrhhomhhiuhhm
+    rdhorhhgpdhrtghpthhtohepughmihhtrhihrdhoshhiphgvnhhkohestgholhhlrggsoh
+    hrrgdrtghomhdprhgtphhtthhopehsihhmohhnrgesfhhffihllhdrtghhpdhrtghpthht
+    oheprghirhhlihgvugesghhmrghilhdrtghomh
+X-ME-Proxy: <xmx:P6yEafGe2iZwOtoy1QIujx9JKcXQzVBHGIr7FCMNM53dR4SA7uoFPQ>
+    <xmx:P6yEaeY4v6aLwSLaI-5cCVbJkfoaGXLUwMVMRnaHKWdyT5nGKisVzQ>
+    <xmx:P6yEabMl_SdUrT753Jz4Iu8zYXeBk5mOIBISChHExnjKF4ONkrV_hA>
+    <xmx:P6yEaXzKVHf1zwRQ33ST0VoEQ8N5wtThWPkF8uM3zAbRNMiwOEPh3w>
+    <xmx:QKyEaQhAhMewyYq6yCQSoIXvkGVUwlZLw6u6ZWNTBxx4oxvqxJ3bHWjK>
+Feedback-ID: i03f14258:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id A92B615C0090; Thu,  5 Feb 2026 09:42:07 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/mlx5: Support devlink port state for host PF
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177030240483.437311.1652389703638888050.git-patchwork-notify@kernel.org>
-Date: Thu, 05 Feb 2026 14:40:04 +0000
-References: <20260203102402.1712218-1-tariqt@nvidia.com>
-In-Reply-To: <20260203102402.1712218-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
- moshe@nvidia.com, ohartoov@nvidia.com, jiri@nvidia.com, parav@nvidia.com
+X-ThreadId: ATdnKwv6RJ4o
+Date: Thu, 05 Feb 2026 07:41:11 -0700
+From: "Alex Williamson" <alex@shazbot.org>
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Jason Gunthorpe" <jgg@ziepe.ca>, "Leon Romanovsky" <leon@kernel.org>
+Cc: "Simona Vetter" <simona@ffwll.ch>, "Jani Nikula" <jani.nikula@intel.com>,
+ "Lucas De Marchi" <lucas.demarchi@intel.com>,
+ "Sumit Semwal" <sumit.semwal@linaro.org>,
+ "Alex Deucher" <alexander.deucher@amd.com>,
+ "David Airlie" <airlied@gmail.com>, "Gerd Hoffmann" <kraxel@redhat.com>,
+ "Dmitry Osipenko" <dmitry.osipenko@collabora.com>,
+ "Gurchetan Singh" <gurchetansingh@chromium.org>,
+ "Chia-I Wu" <olvaffe@gmail.com>,
+ "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+ "Maxime Ripard" <mripard@kernel.org>,
+ "Thomas Zimmermann" <tzimmermann@suse.de>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ "Rodrigo Vivi" <rodrigo.vivi@intel.com>,
+ "Kevin Tian" <kevin.tian@intel.com>, "Joerg Roedel" <joro@8bytes.org>,
+ "Will Deacon" <will@kernel.org>, "Robin Murphy" <robin.murphy@arm.com>,
+ "Felix Kuehling" <Felix.Kuehling@amd.com>,
+ "Ankit Agrawal" <ankita@nvidia.com>,
+ "Vivek Kasireddy" <vivek.kasireddy@intel.com>,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+ intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+ iommu@lists.linux.dev, kvm@vger.kernel.org
+Message-Id: <1b7ee5ad-6dde-415a-8e06-93daddc9bcef@app.fastmail.com>
+In-Reply-To: <f27ad57b-d935-4ffa-a65c-9f6b5d9a1f9a@amd.com>
+References: <20260131-dmabuf-revoke-v7-0-463d956bd527@nvidia.com>
+ <20260131-dmabuf-revoke-v7-7-463d956bd527@nvidia.com>
+ <fb9bf53a-7962-451a-bac2-c61eb52c7a0f@amd.com>
+ <20260204095659.5a983af2@shazbot.org>
+ <ac33ad1a-330c-4ab5-bb98-4a4dedccf0da@amd.com>
+ <20260205121945.GC12824@unreal> <20260205142111.GK2328995@ziepe.ca>
+ <f27ad57b-d935-4ffa-a65c-9f6b5d9a1f9a@amd.com>
+Subject: Re: [PATCH v7 7/8] vfio: Permit VFIO to work with pinned importers
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm2,messagingengine.com:s=fm3];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16595-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	XM_UA_NO_VERSION(0.01)[];
+	TAGGED_FROM(0.00)[bounces-16596-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[35];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[ffwll.ch,intel.com,linaro.org,amd.com,gmail.com,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,8bytes.org,arm.com,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4EBF7F42A5
+	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-0.995];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[shazbot.org:dkim,messagingengine.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,anongit.freedesktop.org:url,kaspersky.com:email,app.fastmail.com:mid]
+X-Rspamd-Queue-Id: 25788F42FA
 X-Rspamd-Action: no action
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 3 Feb 2026 12:24:02 +0200 you wrote:
-> From: Moshe Shemesh <moshe@nvidia.com>
-> 
-> Add support for devlink port function state get/set operations for the
-> host physical function (PF). Until now, mlx5 only allowed state get/set
-> for subfunctions (SFs) ports. This change enables an administrator with
-> eSwitch manager privileges to query or modify the host PF’s function
-> state, allowing it to be explicitly inactivated or activated. While
-> inactivated, the administrator can modify the functions attributes, such
-> as enable/disable roce.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] net/mlx5: Support devlink port state for host PF
-    https://git.kernel.org/netdev/net-next/c/0e6c95c98829
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
+On Thu, Feb 5, 2026, at 7:28 AM, Christian K=C3=B6nig wrote:
+> On 2/5/26 15:21, Jason Gunthorpe wrote:
+>> On Thu, Feb 05, 2026 at 02:19:45PM +0200, Leon Romanovsky wrote:
+>>> You don't need any backmerge, SHA-1 version of vfio-v6.19-rc8 tag is=
+ the
+>>> same as in Linus's tree, so the flow is:
+>>=20
+>> I'm confused what is the problem here?
+>>=20
+>> From https://anongit.freedesktop.org/git/drm/drm-misc
+>>  * branch                          drm-misc-next -> FETCH_HEAD
+>>=20
+>> $ git show FETCH_HEAD
+>> commit 779ec12c85c9e4547519e3903a371a3b26a289de
+>> Author: Alexander Konyukhov <Alexander.Konyukhov@kaspersky.com>
+>> Date:   Tue Feb 3 16:48:46 2026 +0300
+>>=20
+>>     drm/komeda: fix integer overflow in AFBC framebuffer size check
+>>=20
+>> $ git merge-base  FETCH_HEAD 61ceaf236115f20f4fdd7cf60f883ada1063349a
+>> 24d479d26b25bce5faea3ddd9fa8f3a6c3129ea7
+>> $ git describe --contains 24d479d26b25bce5faea3ddd9fa8f3a6c3129ea7
+>> v6.19-rc6^0
+>>=20
+>> $ git log --oneline 61ceaf236115f20f4fdd7cf60f883ada1063349a ^FETCH_H=
+EAD
+>> 61ceaf236115f2 vfio: Prevent from pinned DMABUF importers to attach t=
+o VFIO DMABUF
+>>=20
+>> Just pull Alex's tree, the drm-misc-next tree already has v6.19-rc6,
+>> so all they will see is one extra patch from Alex in your PR.
+>>=20
+>> No need to backmerge, this is normal git stuff and there won't be
+>> conflicts when they merge a later Linus tag.
+>
+> Correct, but that would merge the same patch through two different=20
+> trees. That is usually a pretty big no-go.
+
+Applying the patch through two different trees is a no-go, but merging t=
+he same commit from a shared branch or tag is very common and acceptable=
+.  It's the same commit after all, there is no conflict, no duplicate co=
+mmit.  When the trees are merged, the commit will exist once in the log.=
+  Thanks,
+
+Alex
 
