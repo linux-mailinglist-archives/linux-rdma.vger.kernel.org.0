@@ -1,85 +1,85 @@
-Return-Path: <linux-rdma+bounces-16647-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16648-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YB4QA+/QhWmOGwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-16647-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 12:30:55 +0100
+	id wIdLHGTUhWl7HAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-16648-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 12:45:40 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CAE6FD429
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 12:30:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA7EFFD549
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 12:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C711D304482B
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Feb 2026 11:28:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5CD733024137
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Feb 2026 11:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FA039B4AA;
-	Fri,  6 Feb 2026 11:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B87833C501;
+	Fri,  6 Feb 2026 11:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="szsMUJFu"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="urDPkdUp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010043.outbound.protection.outlook.com [52.101.193.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC15B3612FE;
-	Fri,  6 Feb 2026 11:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770377323; cv=none; b=d+w+90sOEMDlsbaEg7EH8FzZCNuylZHkGh2raJbOecqfRFxu/eBePjggXxSoGZIKXNktOtj0WVCVtxavRso+21WhlPBt5EmwlhnFXp42tzyDyTAUxFNgwIPgFyWm7dEe5cwKTTN5r11+pQJxBk4R8/4UrgWbRiRwEisQwtkJ1sg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770377323; c=relaxed/simple;
-	bh=JgSJjFBoJ6G/hvzkLBd8oLvVfz/qLRCc6jya47thU8g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VtMJtst68G+ZT2hHGb1Xu8z28gEmxfq8yWwhpWI6frsM357/GWmfEy2eVYKae927FZBKC14rlpr5uijBRvY/q2g/AIEcnbdGasx9NJXrdX7cVDbh1AJY6eJ3/J+NKPBVUX2KzMwtY+aW5t33/k7TaY16EgVJOiOn3d5lclNRFQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=szsMUJFu; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 615JVshe003785;
-	Fri, 6 Feb 2026 11:28:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=1K0j0X
-	fJNKL0L34vWuNrRH/Z81eur0Fl8eF8ZruQejw=; b=szsMUJFuUZHuLlkFNoIoNf
-	hbuusbYPzPmtDQf2654hSO6i84P+WJORQmEhqihi2F6rRj0306iM2YXohpVDDxOg
-	QpTc4Q8VQRyOSjod2g310jOhcbTTpZQKhVUU7byLwfQ8kji0psUKgxlBbQijNxKu
-	1MwdjUtpdbZxnhUfbc7Q9fnPr0w29pGcTzXP/oxygXGaRye3/8lZ7HH2rKusdCFv
-	T+NOZlPFOrmlZiDQo6W1YbF/01+YQYoco2d2Bh3vAZBTSoC4BWPAR+axsEj4oACf
-	Gfj95t/EPi2Ev4YP2CqMBzLw/zQNimGuKBDsbU8poAzvK/xqDn/D3aBmklmB7VRA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4c19f6ubpq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Feb 2026 11:28:32 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 616BSVab010057;
-	Fri, 6 Feb 2026 11:28:31 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4c19f6ubph-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Feb 2026 11:28:31 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 616B4Mce029068;
-	Fri, 6 Feb 2026 11:28:30 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4c1v2sp10j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Feb 2026 11:28:30 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 616BSTR232244322
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 6 Feb 2026 11:28:30 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DD3DA58059;
-	Fri,  6 Feb 2026 11:28:29 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2679D58057;
-	Fri,  6 Feb 2026 11:28:25 +0000 (GMT)
-Received: from [9.124.217.92] (unknown [9.124.217.92])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  6 Feb 2026 11:28:24 +0000 (GMT)
-Message-ID: <daefb72f-398e-489f-bdbc-db997ef9c5ae@linux.ibm.com>
-Date: Fri, 6 Feb 2026 16:58:23 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FD721767D;
+	Fri,  6 Feb 2026 11:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770378333; cv=fail; b=jIhV/5aRFhQkPguy1vBEVgGbSLr7eD0j4HhndoiMoXYOKjI8zuRqPz3SV+HGGBOpe/5xIHnDvBJv33BBDzcsQluh1lq+j7Dx799BZA/BOXNXowrg2JAKjAj9UxKnmLkSWDLDsHWVP9ibNdyvMUe5BrRkQPVDUhdkPbqDa6gAZZ0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770378333; c=relaxed/simple;
+	bh=kPVnkjyaygVyJ9mVKHyxZORr6nLqn9Gj3xCbBgASzJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qv5tcaFKauxjGWSczaterY4YC4oHdSxjN+fVEw9Bk/BcQrSybOJHnD4ki1Ofm6JoU/2Pd4yjFL+D48B9t3y9+HywsJ0/O64HrPVq9/PBo5ufRp3yTdzeOps/CVaL3lB8l4sxUsEbntDYlRmb+GhcuuTIuXre1nHUIYfEUsRmds8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=urDPkdUp; arc=fail smtp.client-ip=52.101.193.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=h9ZDW/A4/qifgK8DVs2xOrvZpB/I0FF1wDoIb0/oAELRTrERaOaXmqxveMfSR08v3G6elMYEswNj0bUR/iLS6T+YaKj823OZRyYDJrLErAQK5TVHLw6oIGzl+fQZmjTswQaaHduLyzuPtrVsEWjl9La3u5Vlo41IpnKWnWRlSUkO+mbWNJygSU22q6LncThks2zGzgyuThUs8fVlUbWd8Tj+mIPGvlWhP8a9KNF8jd8niMPCHSYkm8qTHPEucPJG0aJX3211ui8hO8RbFWDC4NvPsgTD9ag+9lMz/niRW/w0myyaWLc3+OTEOvbUukFyKaI2fZ9bN6XNcyDBaYi5PA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u5J+0g3f5my0dL+R5SgpaWfjNr0gE4ATodUHqItwf4Y=;
+ b=UCpedjzlVREbS2Z2nvkEG9wLY6wb0FOHDx0xxqPgo4KsjdJmcGDK8a8vkz90Vbj3AvyEiow1tFsfsSSPKazpWOHSLIEOcGKqcpm1E1lX5Ejbgt/fuD7zLwYKx+/Z8bKWCO43iwom8qlnVMSpS6ssd9laEuEHV+EHfoMDHeYyGueYPbJMBW1++I98c6LkU21QPLF8juZK3dNRuptrMPKzsL5h71j9lvELTMlX5GHg+e8bsOaFE+1XswHhrjRsVVm2rfW3PcVto//wDeQX6RiNePFAvFSxMXCQRufXm1Wd5D+KSbCYrl552Ew5zS6P7l34IPxNZVMeo5s3l64GGuKXqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=arndb.de smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u5J+0g3f5my0dL+R5SgpaWfjNr0gE4ATodUHqItwf4Y=;
+ b=urDPkdUpb7tLhZ9urVQK5eaAtPg06L//vRdWrB4DFLgNVZZhxWNeURRtRBEGah4m1j0nf3LTNjCS3QmI7EpotqCqtbVqUpZJjQCiFlNL31aDC5YY2K+HIwUHUU8sFHUuBSVjvWwSoACcLh1m1oCipzZ2zg27Zmeio6cTcG2+v04Zr1m0F1ilMoJ06Zy1485D7zDIsSKwh1F6NGCN6gKOt7aFRZlX7kivPD5p/dFsifC9OeLOGRLRaxBOwubrkopdSkJM7zlhoCV/gaOJBmwwSurXgj03LgfHGmhLmyKDl9/ijcvBEcdJBs9ygoBnH6qDcg/RDbGZDt5YyQkZzdUh3w==
+Received: from PH7PR13CA0018.namprd13.prod.outlook.com (2603:10b6:510:174::22)
+ by IA1PR12MB6529.namprd12.prod.outlook.com (2603:10b6:208:3a6::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.14; Fri, 6 Feb
+ 2026 11:45:28 +0000
+Received: from SA2PEPF000015CD.namprd03.prod.outlook.com
+ (2603:10b6:510:174:cafe::39) by PH7PR13CA0018.outlook.office365.com
+ (2603:10b6:510:174::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9587.15 via Frontend Transport; Fri,
+ 6 Feb 2026 11:45:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF000015CD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9587.10 via Frontend Transport; Fri, 6 Feb 2026 11:45:28 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 6 Feb
+ 2026 03:45:11 -0800
+Received: from [172.29.249.233] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 6 Feb
+ 2026 03:45:07 -0800
+Message-ID: <448e9cf4-f31b-44ca-a352-916d53386843@nvidia.com>
+Date: Fri, 6 Feb 2026 19:45:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -87,163 +87,157 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next] net/smc: transition to RDMA core CQ pooling
-To: "D. Wythe" <alibuda@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dust Li
- <dust.li@linux.alibaba.com>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sidraya Jayagond <sidraya@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, oliver.yang@linux.alibaba.com,
-        pasic@linux.ibm.com
-References: <20260202094800.30373-1-alibuda@linux.alibaba.com>
+Subject: Re: [PATCH] [net-next] net/mlx5e: fix ip6_dst_lookup link failure
+To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>
+CC: Cosmin Ratiu <cratiu@nvidia.com>, Raed Salem <raeds@nvidia.com>, Netdev
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20260204130057.4107804-1-arnd@kernel.org>
+ <8da9781c-4b89-41cc-8810-8312ef7c2c81@nvidia.com>
+ <2ec67d1a-32ae-479e-99c2-dc5042d9f57e@app.fastmail.com>
 Content-Language: en-US
-From: Mahanta Jambigi <mjambigi@linux.ibm.com>
-In-Reply-To: <20260202094800.30373-1-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _eLQlDoxSS_4-LIBWonMyKSASxBRwjxQ
-X-Authority-Analysis: v=2.4 cv=drTWylg4 c=1 sm=1 tr=0 ts=6985d060 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=ZXMefEPHVli-rlfv-woA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: 2bSCMHaMJlFNHQRvMtB2pK9ahYljxBGp
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA2MDA3OSBTYWx0ZWRfX+DJBtek+XVXm
- HgnZ3bFZaNShwqKnQXUN8JjlbtOZD8S2DDYrqYgcZc3Aovc0OlZV+ksgDjT2gA1zy1zGW19MtAQ
- +o1YB65pixEDr+XoaN1IMEOGZUKSF7Z+4QKh1kepNhpNDo7PG5FaPuwb57ZxyBkHgcH1zfYVV1y
- 4K0iEew92cJtmMWoM9wPc66OOuwjB2RQjQgwXMgA1Tce0BSurFBeu1x/uMX8DZsQs+WWwya3Bpa
- kzdKIpvH2zT3DNvTv7F9B5xYVKg3uFQpsfmkXDAVm2aRgEO1ZCK4qqSWZK59+2fOql9XQeafUcV
- 6RU5TAxF1c7iQqpjvBxQxcI5qAfyHkGlGHw2aYfQirkFr+1FhDg5kMJXCXXBLw56t9yZM6v8PQI
- INWK0eQ0cB33kZpdvt51XMWHJ0eYoxsCHE6czohCDlwdEYEQoaSknpbslOU7+fpleWcupm8dAYX
- dK1pnsezu5xcCWHkblg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-06_03,2026-02-05_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 clxscore=1011 spamscore=0 malwarescore=0 bulkscore=0
- phishscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2601150000
- definitions=main-2602060079
+From: Jianbo Liu <jianbol@nvidia.com>
+In-Reply-To: <2ec67d1a-32ae-479e-99c2-dc5042d9f57e@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CD:EE_|IA1PR12MB6529:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce0975fe-3295-4d37-f101-08de65753986
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700013|7416014|376014|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?Y1UwSnFVSlZ6VEFBZ1EzRmdyY012Y1BJbWc0SHR3ZzBKUjBnaUNPNWkxRnNG?=
+ =?utf-8?B?bHpSRlQ3RFc2dFNBV3VpL2dZN3ZQcmR0VkVodGx3NVZFdzNqK3hOZytTWFpV?=
+ =?utf-8?B?Zkd6M25YdmgzeER2UVNyODhBcytmbklveUl1akg0Kzg1eUxjZUFteGcwbzRn?=
+ =?utf-8?B?blZqMGRKcS9pbVNkSFNuSGJlMHJQUUVmcFp5eThENW1YRlAxY0t3ZHBVMDRh?=
+ =?utf-8?B?SWVTSXNxRzVoeExXb0MybE5LQlZmVTQ0RzljUElKUWJrSjRPdFdBZ050Z0l6?=
+ =?utf-8?B?MUY2VU1lZGFKYjdBWEpHclY0a2FVYlJHcUFJNHQvUG5YSGNNVld4WGMzc3cy?=
+ =?utf-8?B?Z1BmeWVyZXFSQ3FuUDJjMXRZQVFZYXNhWmxkUGZiNzdJaGhhWER2YzdBUjM5?=
+ =?utf-8?B?WWhWR2MyOUdnaVlUdElVb2p6MTNEd0VYcldkczREMk5MSlM0N1JoV0xQa09J?=
+ =?utf-8?B?SS9nbGUyRzVmSSs2TFg4dmVLTjZvMHl3eFFuczZLRlgyNEwzRldIRk5XVm4w?=
+ =?utf-8?B?TllJaktVam1DWG9vbUtBWWt5N0dWZTgzTjkvWDJzQ1BTVEJUU3k0VVNsMHF0?=
+ =?utf-8?B?WmhSY2xaUy81RS9zelAySHN5Sk9pL0tJUXRYWFhlM3dpRmMzRGl3VTZCQ1dN?=
+ =?utf-8?B?UGFjb1pwbXcwWkhxSXdkNGpGZ3Y5MTVTSzZkL3puUUtxQzI2cXBhekVzUDAw?=
+ =?utf-8?B?VTNqRWkwbjg4eDI5dTFUL2JPdVF1alFHS25HeDM2M0dUT2pnTHVoL05kS2JZ?=
+ =?utf-8?B?ZFZzMnEzMVkrMUVGdFVUb3lXTnpHdkJ1TjBIZm1GeVFLU2FIT0MwZDJ2cktV?=
+ =?utf-8?B?RlBpTGswOWhPci9jMHZKeEJnM0RCTjlRNDNoOExpWFgrbzZ6ZDZPTVM2MEtZ?=
+ =?utf-8?B?SFVWd0UxSlRwYzJ0VjdZL0dZVWpnK254bW1JWFB3eEZBQ1JmY2w0bTdxUGJt?=
+ =?utf-8?B?aDM5Y25sNEErakhCcE1nN21kajNUcEIzaURNZFBoTnlWZkhtRDVmRklQZGdS?=
+ =?utf-8?B?K0thUGVFV1ppU01QZ2N2VlM2Q2paSHU4MExLeGxmVHBESVpnc2ZRUnZhUUdH?=
+ =?utf-8?B?cVNFc05pZ25vYlpQV1ZVNi90OXQzZ3Jub2FETkxOSjZ6ZzU1QzVEOG5hbEdk?=
+ =?utf-8?B?Q2xDSEhrSThUTExpamM5QUYvdjJ3b2pJYVphbWcyWjhmaWFNWTlvN3pkUWVS?=
+ =?utf-8?B?TG52eVMyeXVYMmtTSnRLZHFBSzVoeXJKZkhFK0VFRWQxN3lqK25YL0tVWGhN?=
+ =?utf-8?B?UmVSSVh5WHdPVFBXQTdXM2V4Nkl4djhlWnB5ZnpqNE9rZHpVNmxBTC9EWXAv?=
+ =?utf-8?B?UjVaYWhyeUR5TGhSQ2syOFFvOVJkT3RiN3I1NHczc0ZaRmFrc1Q0aFgwUkZr?=
+ =?utf-8?B?dkdjUDJNcjR2cnVzc01XZUI0dkpKaUI1ZXNTR0JrYWY1dllYVVZwZnFwaSs4?=
+ =?utf-8?B?SUVxaFU1QjRSS0E4aVVXUmw3a0preXY1RFE2T3lhRCttTVpiWE1oL0d5ajRm?=
+ =?utf-8?B?L1duS2s4aXdWNEI1UE1TNGEzN2VwdVZaYlFjMVhXK2RtRFlMcEJmSHlCWTlr?=
+ =?utf-8?B?dXhJakpBVEZIVW1UZWc4YVNOUWh1LzdmYzNJdHBZZmhZcWtkZDBFd0VKU0hu?=
+ =?utf-8?B?b09MY2owRUo0TEo5akFIZVkzd21Ya2hTTGZpUjhXRENLT2xCeXZYYWx5UlEz?=
+ =?utf-8?B?K29kT2ZBMEc1RVNTRHI5WEhFdXV6WUxxY3JBMjYvV1FpOUJ4YWFWUG1nMWNz?=
+ =?utf-8?B?REFiUTFjc1JtbkxhTCtBd2NBd3JiSGN1MUVYM1AwWndDRUU3RVZCMDY1cFNy?=
+ =?utf-8?B?SnRMdFJRbHdiRUl0aC9GamR2Z3FZbi96dzdyQUNYbHV5cDQxMjdMOVFPOGNr?=
+ =?utf-8?B?TlNydlhxSVRaV3RYbm44RUhTZDdQaS9SdC92MXhVcmFTSlVqa1dlMWpoSXZF?=
+ =?utf-8?B?TWNqQi9WTWZCV1ltV0VIR29ROXhmWGczVmlzRGVrK2Q2Z2t5WnFyY3RiQkFr?=
+ =?utf-8?B?d1BiYThSekJhRTVwY25kRlY3K1lLVm1Uc1NKTGFpRytNRnhkQW85V3VYNlFY?=
+ =?utf-8?B?WXV0VkxwdzhEYThMZnpOeVFDOEg4ZWwyNW1nd1JONzQzcGd2bnMwRjNzSU55?=
+ =?utf-8?B?OWpKNUlhdHJhNHk2ZWQrREhIcjJ2bHNjNU04aWtDTzRES1V5cEJHL0VsOE52?=
+ =?utf-8?B?NVJNYWZObEMxUWhjM0VGL09icG02NHpFUCszSlpwVW1Qay81ek5HWVNnU00x?=
+ =?utf-8?Q?yHuezV9OnBbOfN0abNnbYWudu5DPqyFRXjXxQKXvt4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(7416014)(376014)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	fM6oYD6WmvqQVzx1ULppswKCQGN9k1cuGDGFRuicCqz1/zxv8Quqta679m/lQ+4giswzjl3NIklJJGDrGAzel1HSUxwhoGRsvtaGecTUZ97y+WTkLnYq50mxhpStaR6WGEHZR7/s443zlZxxkkLwagUXc98ua7ubs+7kqmLw1i1b1QSFVElu8DAw20HQpBLVJfo9f3gNDNEdGi254HTHxmOaT/WkWm8Tu1WWhByYz0snvbL2FQKtHGOJpHNze5/Av9xXEphTGigLt88/P2jwT7dx/XS5XUvfQMj8lhMiOfZdIHnwwpI1PZVvnF9s1/ak6CM8D6AA87RiMZGfPsibm39H7FHbWvgPimUqFrtsugawdvUQD44ptLK6Z+S2Hay0acgZGKCG4SmPdtjsU+ZkSLWWuxpo4WnPwBFZmVR+hTvieaHkQfHSDIapaKaTqvJy
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2026 11:45:28.2550
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce0975fe-3295-4d37-f101-08de65753986
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF000015CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6529
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-16648-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16647-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ibm.com:+];
 	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mjambigi@linux.ibm.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_TWELVE(0.00)[13];
+	FROM_NEQ_ENVFROM(0.00)[jianbol@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	NEURAL_HAM(-0.00)[-0.987];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8CAE6FD429
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[8]
+X-Rspamd-Queue-Id: CA7EFFD549
 X-Rspamd-Action: no action
 
 
 
-On 02/02/26 3:18 pm, D. Wythe wrote:
-> The current SMC-R implementation relies on global per-device CQs
-> and manual polling within tasklets, which introduces severe
-> scalability bottlenecks due to global lock contention and tasklet
-> scheduling overhead, resulting in poor performance as concurrency
-> increases.
+On 2/6/2026 6:00 PM, Arnd Bergmann wrote:
+> On Fri, Feb 6, 2026, at 10:56, Jianbo Liu wrote:
+>> On 2/4/2026 9:00 PM, Arnd Bergmann wrote:
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+>>> index 9cf394c66939..c298efe93f97 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+>>> @@ -154,6 +154,7 @@ config MLX5_EN_IPSEC
+>>>    	depends on MLX5_CORE_EN
+>>>    	depends on XFRM_OFFLOAD
+>>>    	depends on INET_ESP_OFFLOAD || INET6_ESP_OFFLOAD
+>>> +	depends on IPV6!=m || MLX5_CORE=m
+>>
+>> Thanks for the fix.
+>> I received a report for this same error here:
+>> https://lore.kernel.org/oe-kbuild-all/202512261850.P5Jp5BSz-lkp@intel.com/
+>>
+>> We were about to send a fix ourselves, it is to simply add:
+>>     depends on IPV6 || !IPV6
+>> Is there a specific reason to prefer "depends on IPV6!=m ||
+>> MLX5_CORE=m"? To me, the IPV6 || !IPV6 syntax seems a bit cleaner.
 > 
-> Refactor the completion handling to utilize the ib_cqe API and
-> standard RDMA core CQ pooling. This transition provides several key
-> advantages:
+> MLX5_EN_IPSEC needs the dependency, but this is a 'bool' symbols.
 > 
-> 1. Multi-CQ: Shift from a single shared per-device CQ to multiple
-> link-specific CQs via the CQ pool. This allows completion processing
-> to be parallelized across multiple CPU cores, effectively eliminating
-> the global CQ bottleneck.
+> The "IPV6 || !IPV6" syntax only works on tristate symbols, so you'd
+> have to put it into CONFIG_MLX5_CORE itself, but MLX5_CORE does
+> not actually have the IPV6 dependency unless MLX5_EN_IPSEC is
+> enabled.
 > 
-> 2. Leverage DIM: Utilizing the standard CQ pool with IB_POLL_SOFTIRQ
-> enables Dynamic Interrupt Moderation from the RDMA core, optimizing
-> interrupt frequency and reducing CPU load under high pressure.
-> 
-> 3. O(1) Context Retrieval: Replaces the expensive wr_id based lookup
-> logic (e.g., smc_wr_tx_find_pending_index) with direct context retrieval
-> using container_of() on the embedded ib_cqe.
-> 
-> 4. Code Simplification: This refactoring results in a reduction of
-> ~150 lines of code. It removes redundant sequence tracking, complex lookup
-> helpers, and manual CQ management, significantly improving maintainability.
-> 
-> Performance Test: redis-benchmark with max 32 connections per QP
-> Data format: Requests Per Second (RPS), Percentage in brackets
-> represents the gain/loss compared to TCP.
-> 
-> | Clients | TCP      | SMC (original)      | SMC (cq_pool)       |
-> |---------|----------|---------------------|---------------------|
-> | c = 1   | 24449    | 31172  (+27%)       | 34039  (+39%)       |
-> | c = 2   | 46420    | 53216  (+14%)       | 64391  (+38%)       |
-> | c = 16  | 159673   | 83668  (-48%)  <--  | 216947 (+36%)       |
-> | c = 32  | 164956   | 97631  (-41%)  <--  | 249376 (+51%)       |
-> | c = 64  | 166322   | 118192 (-29%)  <--  | 249488 (+50%)       |
-> | c = 128 | 167700   | 121497 (-27%)  <--  | 249480 (+48%)       |
-> | c = 256 | 175021   | 146109 (-16%)  <--  | 240384 (+37%)       |
-> | c = 512 | 168987   | 101479 (-40%)  <--  | 226634 (+34%)       |
-> 
-> The results demonstrate that this optimization effectively resolves the
-> scalability bottleneck, with RPS increasing by over 110% at c=64
-> compared to the original implementation.
 
-I applied your patch to the latest kernel(6.19-rc8) & saw below
-Performance results:
+Right, I meant moving the dependency to CONFIG_MLX5_CORE.
+Your patch restricts only MLX5_EN_IPSEC, which causes the link error, 
+even if it silently disables IPsec in that specific config.
 
-1) In my evaluation, I ran several *uperf* based workloads using a
-request/response (RR) pattern, and I observed performance *degradation*
-ranging from *4%* to *59%*, depending on the specific read/write sizes
-used. For example, with a TCP RR workload using 50 parallel clients
-(nprocs=50) sending a 200‑byte request and reading a 1000‑byte response
-over a 60‑second run, I measured approximately 59% degradation compared
-to SMC‑R original performance.
+Acked-by: Jianbo Liu <jianbol@nvidia.com>
 
-2) In contrast, with uperf *streaming‑type* workloads, your patch shows
-clear gains. I observed performance *improvement* ranging from *11%* to
-*75%*, again depending on the specific streaming parameters. One
-representative case is a TCP streaming/bulk‑receive workload with 250
-parallel clients (nprocs=250) performing 640 reads per burst with 30 KB
-per read, running continuously for 60 seconds, where I measured
-approximately *75%* *improvement* over the SMC‑R original performance.
+>       Arnd
 
-Note: I ran above tests with default WR(work request buffers), default
-receive & transmit buffer size with smc_run.
-
-I am looking for additional details regarding the redis-benchmark
-performance results you previously shared. I would like to understand
-whether the workload behaved more like a traditional request/response
-(RR) pattern or a streaming-type workload, and what SMC‑R configuration
-was used during the tests?
-
-1) SMC Work Request (WR) Settings - Did your test environment use the
-default SMC‑R work request buffers?
-  net.smc.smcr_max_recv_wr = 48
-  net.smc.smcr_max_send_wr = 16
-2) SMC-R Buffer sizes used via smc_run - Did you use default transmit &
-receive buffer sizes(smc_run -r <recv_size> -t <send_size>)?
-3) Additional system or network tuning e.g CPU affinity, NIC offload
-settings etc?
 
