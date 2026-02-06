@@ -1,189 +1,157 @@
-Return-Path: <linux-rdma+bounces-16629-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16630-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gOI2KlunhWmYEgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-16629-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 09:33:31 +0100
+	id 2BNFLsyyhWmbFQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-16630-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 10:22:20 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38FD2FB8CB
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 09:33:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E477FBF8F
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Feb 2026 10:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 498973010B9F
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Feb 2026 08:32:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 84C063026580
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Feb 2026 09:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF41A34A3A2;
-	Fri,  6 Feb 2026 08:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7586135CB6E;
+	Fri,  6 Feb 2026 09:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="tGNdjA6m"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDDF349B0A
-	for <linux-rdma@vger.kernel.org>; Fri,  6 Feb 2026 08:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D87329E69
+	for <linux-rdma@vger.kernel.org>; Fri,  6 Feb 2026 09:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770366764; cv=none; b=CQupWBCWsnVNo7e64bGBIdlGTTRn0OfJN6H6L1ASNdUJsDyCdM6/Z/+3S56s7LViWrtEB1VP1EYQSxabmlYH0skrDtzD/TY5kE+lMRw77mn4/HqsV8xtNKYvbksF1e1a6/8++jPOOxVzNQ+w85FN7TzgZ9mqhfMlvA1TP7B3VNw=
+	t=1770369578; cv=none; b=O/1EmuRt8adYBaL7NFJdInXQqrpMMQ1N4EjXWZgVNuq1x+kIArK+cAiSQ74llDLOPEtym5BOfEhWWNAsQDv8AqFmUfdUdXQOHfMSIvmzc2vxLRepVOq8Cnxv7s+95sojDS8pHc9N5BN0UN5lWG8/0UjGmurXluQejTSJQFuIyx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770366764; c=relaxed/simple;
-	bh=yZcU9zqmWydFOpKqECr31syO3KL5FI1L7fu+fuKt0V0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=D6fP+l4EPIP1pse8G+fw73YRRv/JUFUWIIqN8xGtlQNIff0Yql9sLyfvWRBRqt9QbLxxhwE3RZS3/qUPOml2UBgtJZvr/YGY02jAT4Cf7Xe4m58r7EE638MrzvbP0rkvuwKHYPLtOb6LMT7O38NxU1mRFVJxNaZyUpXXO92+7dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-40a5fc701e9so6407336fac.1
-        for <linux-rdma@vger.kernel.org>; Fri, 06 Feb 2026 00:32:44 -0800 (PST)
+	s=arc-20240116; t=1770369578; c=relaxed/simple;
+	bh=NOjMrvXLnxubIJ98sxIqIaFk16kAXp6BZ67WoBvZ684=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lwd/234q7wNjzzAa8G2CiMRSFv+dw4plybKxh50xRx6pdDf8pv2WT+YBQjnFosCWocRcXDICD4ySgdrLbRC3RQi5tEgeqqq3NFNRU439AFbqNOIgy2/D+SCe7n28wkJpf+vcsDrQ6cOXLe0ZVuNHvvweC5Bh2GO2o1bC+j35oE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=tGNdjA6m; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47ff94b46afso18903055e9.1
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Feb 2026 01:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1770369575; x=1770974375; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NOjMrvXLnxubIJ98sxIqIaFk16kAXp6BZ67WoBvZ684=;
+        b=tGNdjA6mjSn1RcZh6sOY3d4GJU3BT5sSZ4BcgHgairWhCv0eS3vXcD0Dbehjh78ipl
+         618Qfv1FxWjfvqsVZdaSy+/sUzOznx5sLmRNyBVeVHYSxUBgmrMoCsvkeAhqJyfYf9Bg
+         ZR7bRpPHQ7jKNsmueVoWYDPb1Aiom9Fw52D3OBLbV01fCoc6ok5WZtJGyMbvf9YcVOVI
+         4WJf1GPk9XMeAzFtTXWzph+9XDoGYOtEj1rq6hR3f9fFhcpoKCdKcXJ9/37MWPZY5/+1
+         tuLDrmhBR//mGNosouBCLR7dFeEJDwDUxwN4ost0VDE/aFBaiQIxladGo/WiQhgJI2Pu
+         uz7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770366763; x=1770971563;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HGcULbifs2XydNzYSTlCyu/fOsNa5SM6If0TWsmBnX0=;
-        b=mwUKsVHkvNvyA1vJbzeKmw9urT5Ur5csdKjS09sJZ7y14CsPKoQRYWDjjyhAWHJaMk
-         AASvBecGox3cXM4tlOxELf7kh8c7CQQV910UNcd3ws7kFa77Iyk/XUna2PK/yBIakm1G
-         hKxQGVNAmQwHNeQoP58lrEsBrkIO7GWC1bLfa9nxWKEaIcMqvEZxCXvCoDnQgmNGYymM
-         GLsKeIFYhdvgiBFRV2QXeXpPtJVpl1DcbkYjgKdqTVJoPdbjNHxIrL5n1Lv691bFxYNV
-         g5k4hJ8C9dco45DsLPSCFpKD7hJqnXkEDrtULk18fXIB2AYX26yq827qzggkH7eeXZd3
-         ke/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVEPGPiZIRaLUIHhdCaEUW/a4tMj5WEBBOc7hVurCtZqAOm5jrcj7VH4FgXbxRYo09quenERoEr578d@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcZ8hjp2cgNPBpBaEidIwNdV93iK51+WZv+RpBzxKgvoIKsz2p
-	FlKqowxDJTSrGQ73i1Y+IGg71AZjLvo+IVQbN9ARDm/K1kiBLlrbZmg7GMJTPTfnHJdS8QdbISk
-	7maZgrMKEOwvCcYV8sIhj0MiBlGnbnuaLpRjQUKsfQch5x4yroZ9oidXplzQ=
+        d=1e100.net; s=20230601; t=1770369575; x=1770974375;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NOjMrvXLnxubIJ98sxIqIaFk16kAXp6BZ67WoBvZ684=;
+        b=PW1WjJmIhvA1jmeIFSmtiwGpjT7rirNlm37MHANcKkgdHK65bpm2OlPWHASDhB5Kpx
+         W/SrIbgo7jM7DKg5SembW0ilCIKp+lhpmh5kW9StjDHJ1jSkQU64D0mEQFWFbB/6Sxde
+         Q4uQp5aaWEmFoc5DRpoxun3+O0trCwZtJPQTi1c/IFnk1pi/xOeLItsyXrmQrGyWwzio
+         RumoMXcg2cadujOuZ6zCgS2Ipy78BDJeyzq3jthJQsz+81LOJTw4neRUVSPjmfGIjzOP
+         eUCKGwkFzSnGjKAZ19bP5AFlRDsQE1U6GFOr67mEDOfGzMmh1nwvyGJKOkFAhIsp5ezg
+         J5iw==
+X-Forwarded-Encrypted: i=1; AJvYcCUm67Ux2+BhGGUTAnSgH0yDQfhSijonlyICeYnOuzIWwsdiTJwAbP/sHn4ggW/HUGqQ4OEusvK1bGPC@vger.kernel.org
+X-Gm-Message-State: AOJu0YwP4dkXJHjZtdIoWo/Jf6Hx5F6JdURsetRPR0ZBJq99/289e80j
+	idnmnfQzZPzBXRDfDczt0r8ilzDan3UtHiCq//4WaihoH9zX/kq72ZSZ/3++6a0kuuI=
+X-Gm-Gg: AZuq6aIVhjFmr0MNqsmxiqO8H1zCj4EsH97zCXtnddUhfYlDy1PGaT506I2Il/Ajy8Q
+	xggigPm0TxO5Jx8t1GMJnMWk5GoR+T0O8crepG9zsfDCJSRM0GYghOXZNlezn496jWt+JkG7dKl
+	LqrtW5p1a2KoqndAmqIatwGGvknezC+miz2Q1v/2XL6yrTkFQtSNZw5tMxKhHFhoQm6CwHTQ9PO
+	0qIueWgsZp/FqdGh9JUbUu7jCSu+UdzBtH/RQrri0fBjbNLxLxHylUBzGQVL7MW6iHDHr2Ig0/r
+	t6tjafH4aIDtVWnVnS91zV2aR3e43VNQ/ZikbcgOz8fYforf1RTuwwDUayS4g2MFUhedQZaerZW
+	h17klRpLdBsuKo6ZI8SscJDDAbtlVIXLTWDDnvXLcBSMUCT3GIKlRX6iJDVCL+jlRssHQGpQit2
+	391+mebZHDVeWbEpe14Ms=
+X-Received: by 2002:a7b:c3d5:0:b0:47e:e38b:a83 with SMTP id 5b1f17b1804b1-483178ebf8emr52443975e9.7.1770369574701;
+        Fri, 06 Feb 2026 01:19:34 -0800 (PST)
+Received: from FV6GYCPJ69 ([85.163.81.98])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48317d8e8d4sm112369355e9.15.2026.02.06.01.19.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Feb 2026 01:19:33 -0800 (PST)
+Date: Fri, 6 Feb 2026 10:19:30 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
+	Moshe Shemesh <moshe@nvidia.com>, Shay Drori <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
+	Or Har-Toov <ohartoov@nvidia.com>
+Subject: Re: [PATCH net-next V2 1/7] devlink: Refactor resource functions to
+ be generic
+Message-ID: <f56e4xngd6byd5gta2hcvfzwwntqbybpbbqv3nw2i7734cc5kx@vwaqvacwxiyp>
+References: <20260205142833.1727929-1-tariqt@nvidia.com>
+ <20260205142833.1727929-2-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:f02a:b0:659:9a49:8efe with SMTP id
- 006d021491bc7-66d09cb2ff0mr939322eaf.15.1770366763404; Fri, 06 Feb 2026
- 00:32:43 -0800 (PST)
-Date: Fri, 06 Feb 2026 00:32:43 -0800
-In-Reply-To: <20260206022419.1357513-1-achender@kernel.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6985a72b.050a0220.3b3015.0035.GAE@google.com>
-Subject: [syzbot ci] Re: net/rds: RDS-TCP reconnect and fanout improvements
-From: syzbot ci <syzbot+ci858e84e8400d24b3@syzkaller.appspotmail.com>
-To: achender@kernel.org, allison.henderson@oracle.com, edumazet@google.com, 
-	horms@kernel.org, kuba@kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	rds-devel@oss.oracle.com
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260205142833.1727929-2-tariqt@nvidia.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,googlesource.com:url,syzbot.org:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlegroups.com:email];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	NEURAL_HAM(-0.00)[-0.994];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16629-lists,linux-rdma=lfdr.de,ci858e84e8400d24b3];
-	TO_DN_NONE(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 38FD2FB8CB
+	TAGGED_FROM(0.00)[bounces-16630-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,nvidia.com,vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20230601.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: 5E477FBF8F
 X-Rspamd-Action: no action
 
-syzbot ci has tested the following series
+Thu, Feb 05, 2026 at 03:28:27PM +0100, tariqt@nvidia.com wrote:
+>From: Or Har-Toov <ohartoov@nvidia.com>
+>
+>Currently the resource functions take devlink pointer as parameter
+>and take the resource list from there.
+>Allows the resource functions to work with other resource lists
 
-[v1] net/rds: RDS-TCP reconnect and fanout improvements
-https://lore.kernel.org/all/20260206022419.1357513-1-achender@kernel.org
-* [PATCH net-next v1 1/3] net/rds: Delegate fan-out to a background worker
-* [PATCH net-next v1 2/3] net/rds: Use proper peer port number even when not connected
-* [PATCH net-next v1 3/3] net/rds: rds_sendmsg should not discard payload_len
-
-and found the following issue:
-BUG: sleeping function called from invalid context in rds_tcp_conn_free
-
-Full report is available here:
-https://ci.syzbot.org/series/1a5ef180-c02c-401d-9df7-670b18570a55
-
-***
-
-BUG: sleeping function called from invalid context in rds_tcp_conn_free
-
-tree:      net-next
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/netdev/net-next.git
-base:      7a4cd71fa4514cd85df39b3cf99da8142660cdcd
-arch:      amd64
-compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-config:    https://ci.syzbot.org/builds/77f47047-43cb-4c25-b0b6-73b8746cea2a/config
-syz repro: https://ci.syzbot.org/findings/49698f1e-4f36-4446-9dd1-c409366e6296/syz_repro
-
-BUG: sleeping function called from invalid context at kernel/workqueue.c:4390
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 6005, name: syz.2.19
-preempt_count: 1, expected: 0
-RCU nest depth: 1, expected: 0
-2 locks held by syz.2.19/6005:
- #0: ffffffff8e35a360 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
- #0: ffffffff8e35a360 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:867 [inline]
- #0: ffffffff8e35a360 (rcu_read_lock){....}-{1:3}, at: __rds_conn_create+0x2e4/0x22d0 net/rds/connection.c:177
- #1: ffffffff8fa00a98 (rds_conn_lock){....}-{3:3}, at: __rds_conn_create+0x18e2/0x22d0 net/rds/connection.c:304
-irq event stamp: 752
-hardirqs last  enabled at (751): [<ffffffff8b7cc843>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
-hardirqs last  enabled at (751): [<ffffffff8b7cc843>] _raw_spin_unlock_irq+0x23/0x50 kernel/locking/spinlock.c:202
-hardirqs last disabled at (752): [<ffffffff8b7cc61a>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
-hardirqs last disabled at (752): [<ffffffff8b7cc61a>] _raw_spin_lock_irqsave+0x1a/0x60 kernel/locking/spinlock.c:162
-softirqs last  enabled at (32): [<ffffffff8ac0cd59>] rds_sendmsg+0x7b9/0x2150 net/rds/send.c:1266
-softirqs last disabled at (30): [<ffffffff89463a1f>] spin_lock_bh include/linux/spinlock.h:356 [inline]
-softirqs last disabled at (30): [<ffffffff89463a1f>] release_sock+0x2f/0x1f0 net/core/sock.c:3793
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 UID: 0 PID: 6005 Comm: syz.2.19 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- __might_resched+0x378/0x4d0 kernel/sched/core.c:8829
- __cancel_work_sync+0x6d/0x110 kernel/workqueue.c:4390
- rds_tcp_conn_free+0x2c/0x170 net/rds/tcp.c:361
- __rds_conn_create+0x1bfb/0x22d0 net/rds/connection.c:334
- rds_conn_create_outgoing+0x43/0x60 net/rds/connection.c:377
- rds_sendmsg+0xff5/0x2150 net/rds/send.c:1321
- sock_sendmsg_nosec net/socket.c:727 [inline]
- __sock_sendmsg+0x21c/0x270 net/socket.c:742
- ____sys_sendmsg+0x4d7/0x810 net/socket.c:2592
- ___sys_sendmsg+0x2a5/0x360 net/socket.c:2646
- __sys_sendmsg net/socket.c:2678 [inline]
- __do_sys_sendmsg net/socket.c:2683 [inline]
- __se_sys_sendmsg net/socket.c:2681 [inline]
- __x64_sys_sendmsg+0x1bd/0x2a0 net/socket.c:2681
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xe2/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5b6bf9acb9
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f5b6cd8b028 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f5b6c216090 RCX: 00007f5b6bf9acb9
-RDX: 0000000000000000 RSI: 0000200000000480 RDI: 0000000000000004
-RBP: 00007f5b6c008bf7 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f5b6c216128 R14: 00007f5b6c216090 R15: 00007ffc17760058
- </TASK>
+s/Allows/Allow/ ?
 
 
-***
+>that will be added in next patches and not only with the devlink's
+>resource list.
+>
+>Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
+>Reviewed-by: Shay Drori <shayd@nvidia.com>
+>Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
+Otherwise, the code looks fine to me:
 
----
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
