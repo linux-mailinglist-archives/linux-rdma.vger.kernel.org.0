@@ -1,196 +1,201 @@
-Return-Path: <linux-rdma+bounces-16667-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16662-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id BMz0AUqzhmnTQAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-16667-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Feb 2026 04:36:42 +0100
+	id uOhIG2iahmnMPAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-16662-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Feb 2026 02:50:32 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5781F104CB1
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Feb 2026 04:36:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EDD510490E
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Feb 2026 02:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6957930185A2
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Feb 2026 03:36:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 939FE302A2F0
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Feb 2026 01:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BB533DEE0;
-	Sat,  7 Feb 2026 03:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5FB330679;
+	Sat,  7 Feb 2026 01:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T99Xo3Al"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z18bC+bK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5880E18BC3B
-	for <linux-rdma@vger.kernel.org>; Sat,  7 Feb 2026 03:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597E51FE47B;
+	Sat,  7 Feb 2026 01:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770435395; cv=none; b=Pi4hRhihtLTFRPodLjdd8bD7YnqVEAdSCFBtaax1JvBhsbH4ruVJ2EfX+e9s9KECUxPk+5y2Qov5qOl6J7b2DI2HQ+s9vv20d3hZx1rXLZMHNpBNCqGkKPW4JCryNu8glHvjF0lUaymJA+eSftjnSPHA1JAdpS74GwDAdZa6wRU=
+	t=1770429025; cv=none; b=Mx/skDxjEiioc5QKDZb9EQu+jD4QtCxPvAqbvxBEaoimNhVkJYsc2qPC00Ok89TykndXaudsmIpXW9XCCyICgA/hmh3k1PW+yJCElbTyQz31Wf1IvjYm56SYSnuS4oJNNX+p5MHMvrkQbKmLbUS4sZlWk7mDL6Pe+zhPTOqQZpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770435395; c=relaxed/simple;
-	bh=F75+iwxlRTLyIzKuJzJ+ID7DQ02GZVbuxnZkr4FlfjY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sBWvJYSzOOxClddT+CTmdb6UrPIud2oT2KpjcpodgyzNuL4J32KN5cr5GCLhgxvUJ94rAHSgNykH8t0FFtdL5gUGvVjOekdr60biSpUX41uD51br1xBUhg98czICz9x3z8cwXW5ZcAyE4lLmqm0US+illieaKN9bzjJacROBBaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T99Xo3Al; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-47ee3a63300so28909945e9.2
-        for <linux-rdma@vger.kernel.org>; Fri, 06 Feb 2026 19:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770435394; x=1771040194; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nV2/pR09fRCKiwS6HhA3KDDNoxylvhh0vYo9VwjMiO8=;
-        b=T99Xo3AlOdOvHhHBTmTgeuXXnaK3A7Jnr16666BMuCxBsUGA7q+CSxfCO7tW0SzKos
-         0DJM6j9/RF74845gprD0ctnPMSpDbSr0OcQIJXjI2+EDwogd3+npq+IEmJwJl8PFEDAg
-         O5wvG4Y76ELcGEBDxD1WznKoDVQ11b+GdTskiclemB3sxDNjhvbvrbVHL61RP2piZ+fv
-         DMxNHsAqlLqFCam/FXnzjj7a22jZndO5mPqdDb8js49ppb1AmtPjliLjM/hB9u+Go5cx
-         ts6bUspDQ4ouN5g/M1nq7vLQ1zVCOBg3dQjTi8c6Jv66Abj3pKCKQBpfFTXtL0ETbNg7
-         7wig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770435394; x=1771040194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nV2/pR09fRCKiwS6HhA3KDDNoxylvhh0vYo9VwjMiO8=;
-        b=G+OsQmh7q/rbd1TwJX/gK6BlPeXKEdfM/ETpnnWA+7nCzayvr4pdVFUaH2j7jN1oYl
-         b1sbdlw5dLMouEeDRuaDYRESe1gBGbiuD7mqJZwJpkWxg83cNkWVUqL+omjEJ4Rw+xfx
-         V5n0FErdvlKzXCtHeYQ4CFfgWPKcdbX3M0Y7yfix3w01mBo2qNFUmzwuS3R7ElYJXHEP
-         FWbgi9EnDAV6LsugXsnzH6EJo7uRjQwgnJmb56DqBplWFOU0tnKY/zpppRgIW5BUhUPK
-         xU4JBB0B9heqEKKDycHPs4ypxTfsuIjcMc/cEaOZmFBuW5FFvJdYOq8S1iyQenBU8Ehz
-         N/7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUrFxjZVUPwzifO4SA4t42YRjmoAx7BHsgLDwjYYylKVoV2eMXfiJnmnNZI7/Z/OyhEVqWCn3g7XmfJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJe+x86usZPbVZzd+BGS9ZbChRzjAZWk6oyHlTtQemh5tctEgu
-	+zWfV5xVcSWiKNPntKm81zJ5vMtBKjh8Zag6S5k8uhiYSeKynVQqcF/RZDQG8UwD
-X-Gm-Gg: AZuq6aLMdT+p+Way14lUnUcCrndQxUONr4Kaz7473Ss4hM8RUzEGeh0PganPUER1V1r
-	dq13Izr1VJ6FXPv8mIuOOddPlVT6CvafXtvUZ9BLrudbYPqXTUZYMfIzT4euXxkCN72XLDnE40r
-	OaW/x0XrY5V6SxrftVDuMZE5343C1dNYZUzVabzboG8gyRHRsY8LcKrMsDIXEjMcsQ6Baf6D69J
-	QLwRZ98yTDI7+ghsil2mUKCNJzkdweoW5MNcNmbPf0V2QsUEagD6/u37QzmvOPaXxtDF5MyYl9g
-	OeACPNrtScz/plHTNwMmQmDeXJsjriHb+gWqqUJA8USzdXUATIooClhkiNttsErnSlfALd+JJ9Y
-	tA1UnM39ZgiM2b1tClT5IkaZ23XJEn/9odI6UcNotGC1cIPujLxtXt5+Xzkf1mVMo5Uj8ZK0AZJ
-	xgVMjfRS4=
-X-Received: by 2002:a05:600c:8b6f:b0:477:7975:30ea with SMTP id 5b1f17b1804b1-48320236963mr61223265e9.29.1770428553506;
-        Fri, 06 Feb 2026 17:42:33 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:7::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48320961701sm59340825e9.5.2026.02.06.17.42.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Feb 2026 17:42:33 -0800 (PST)
-From: Mohsin Bashir <mohsin.bashr@gmail.com>
-To: netdev@vger.kernel.org
-Cc: alexanderduyck@fb.com,
-	andrew+netdev@lunn.ch,
-	andrew@lunn.ch,
-	davem@davemloft.net,
-	donald.hunter@gmail.com,
-	edumazet@google.com,
-	gal@nvidia.com,
-	horms@kernel.org,
-	idosch@nvidia.com,
-	jacob.e.keller@intel.com,
-	kernel-team@meta.com,
-	kory.maincent@bootlin.com,
-	kuba@kernel.org,
-	lee@trager.us,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux@armlinux.org.uk,
-	mbloch@nvidia.com,
-	mohsin.bashr@gmail.com,
-	o.rempel@pengutronix.de,
-	pabeni@redhat.com,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	vadim.fedorenko@linux.dev
-Subject: [PATCH net-next V2 0/5] net: ethtool: Track TX pause storm
-Date: Fri,  6 Feb 2026 17:42:30 -0800
-Message-ID: <20260207010525.3808842-1-mohsin.bashr@gmail.com>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1770429025; c=relaxed/simple;
+	bh=AeZzWJJ3eLzOMDYijrOnV9Cvj9sBq8VrqxbcdEVuF9w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EYYUzj9PiQyv+YzEfo9h7BSVafed0vOkEga51mLqJUa1BnJXc4dOjk0SFnbhtJi/83wEkAUvoU+o9yW0bjty7MP5rB6M2tfsI3Vs4z0VHHcINMD6rqFIOVThWiGR/WccY6Zxf8rEmi/KulvduXjjZKSze4GjJ5Tc9rBdA5XJj9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z18bC+bK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBD81C116C6;
+	Sat,  7 Feb 2026 01:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770429025;
+	bh=AeZzWJJ3eLzOMDYijrOnV9Cvj9sBq8VrqxbcdEVuF9w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Z18bC+bKhdS99kEMAqdiL3lOhQtzzAe24vw1VQN6s4pRbZ/X71enNfEdvDRj0LU6n
+	 e8hj2zTXJ1FGgMcZDkUu/IAOeT/ipsoqE2osqBE1vHkOl8A9GFPHbYttyuCjLwqwqe
+	 FJws9OOttsiv9lIAg+1omzYMwa96uzOhPFa2QcZeKmTxToPpTN2V/d8xNdAO3fuFbD
+	 qwBQUEH3S+BzQVsnGiv/dgKxW9wcQLzgW6HO5PTcI6yRl+IQWLSurt4ZKmvQ+5B5Uz
+	 xyiqJuny1IGalN7NnWRT4FaBlkBWS51JrNjaEcEUuH7QctdZLqfRdI3NRYu9H7e+c9
+	 n2KPnZFcd1ujQ==
+Date: Fri, 6 Feb 2026 17:50:23 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Donald Hunter
+ <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
+ <mbloch@nvidia.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, Gal Pressman
+ <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Carolina Jubran
+ <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko
+ <jiri@nvidia.com>, Randy Dunlap <rdunlap@infradead.org>, Simon Horman
+ <horms@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH net-next V7 01/14] documentation: networking: add shared
+ devlink documentation
+Message-ID: <20260206175023.34ffd9d6@kernel.org>
+In-Reply-To: <khee3ri33uvtp4ssaqu7a6vy4mkbrp2zq6nghpbmyyc5pup6rq@hyryulfrhfl6>
+References: <20260128112544.1661250-1-tariqt@nvidia.com>
+	<20260128112544.1661250-2-tariqt@nvidia.com>
+	<20260202194023.412bb454@kernel.org>
+	<u7uicnxkcirhacpzjimss2pqsuhbngg4ticqrz45iqchkk2ha2@t3eem6w6hhur>
+	<20260203190105.2cc28e71@kernel.org>
+	<3edheaanzxgutuyryorfzlfjvizlorpj4y3ard5js7mp44hfii@4a36de6wazfd>
+	<20260204180256.1476f537@kernel.org>
+	<khee3ri33uvtp4ssaqu7a6vy4mkbrp2zq6nghpbmyyc5pup6rq@hyryulfrhfl6>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16667-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16662-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org,infradead.org];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[fb.com,lunn.ch,davemloft.net,gmail.com,google.com,nvidia.com,kernel.org,intel.com,meta.com,bootlin.com,trager.us,vger.kernel.org,armlinux.org.uk,pengutronix.de,redhat.com,linux.dev];
-	RCPT_COUNT_TWELVE(0.00)[25];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[mohsinbashr@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	NEURAL_HAM(-0.00)[-0.998];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5781F104CB1
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 0EDD510490E
 X-Rspamd-Action: no action
 
-With TX pause enabled, if a device cannot deliver received frames to
-the stack (e.g., during a system hang), it may generate excessive pause
-frames causing a pause storm. This series updates the uAPI to track TX
-pause storm events as part of the pause stats (p1), propose to use the
-existing knob (pfc-prevention-tout) to configure storm watchdog (p2),
-adds pause storm protection support for fbnic (p3), and leverages p1
-to provide observability into these events for fbnic (p4) and mlnx5 (p5)
-drivers.
+On Fri, 6 Feb 2026 11:52:21 +0100 Jiri Pirko wrote:
+> Thu, Feb 05, 2026 at 03:02:56AM +0100, kuba@kernel.org wrote:
+> >On Wed, 4 Feb 2026 08:12:00 +0100 Jiri Pirko wrote: =20
+> >> What's the backing device / handle (busname/devname)? Best would be to
+> >> draw a picture, as always :) =20
+> >
+> >Either the bus/dev that shows up first or we go back to index. =20
+>=20
+> That may be tricky in case you bind/unbind the PFs randomly. You may and
+> up with devlink handle of PF1 with only member PF2. Confusing at least.
+> You need to expose the members to the user anyway somehow. That is
+> exactly the list of nested instances these patchset is adding.
 
----
-Changelog:
-V2:
- - Clarify pfc-prevention-tout applies to general pause, not just PFC
-   (P2)
- - Add pause storm watchdog timeout configuration via pfc-prevention-tout
-   (P3)
- - mlx5: Report device stall prevention events (errors) in pause stats
-   (P5)
+Yes, simpler setup would likely be to have one function designated=20
+as "main". This could get fairly complicated, OTOH most current use
+cases are fairly rigid, with the function config being per device SKU.
+=46rom uAPI perspective having the list of currently present functions
+and ports should be flexible for current and future use cases.
 
-V1: https://lore.kernel.org/20260122192158.428882-1-mohsin.bashr@gmail.com/
+> >(My main point being that the single instance is strictly better
+> >than shared, ie. no problem exists in single instance multi func
+> >which does not exist in multi instance + extra instance multi func.
+> >But some problems do exist in multi instance which do not in single
+> >like the locking) =20
+>=20
+> I think that my shared and your shared are basically the same as far as
+> the nested PF instances are not really used for anything except the
+> modelling purposes. That should be up to the driver how he wants to play
+> it, shouldn't it?
 
-Mohsin Bashir (5):
-  net: ethtool: Track pause storm events
-  net: ethtool: Update doc for tunable
-  eth: fbnic: Add protection against pause storm
-  eth: fbnic: Fetch TX pause storm stats
-  eth: mlx5: Move pause storm errors to pause stats
+Man, seeing the locking shenanigans that the driver developers end up
+doing just in the last two weeks makes me question the "leave it to=20
+the driver" attitude. I'd much rather have code that works than code
+that is adaptive to multiple levels of incompetence.
 
- Documentation/netlink/specs/ethtool.yaml      |  13 +++
- .../ethernet/mellanox/mlx5/core/en_stats.c    |  25 ++++
- drivers/net/ethernet/meta/fbnic/fbnic.h       |   3 +
- drivers/net/ethernet/meta/fbnic/fbnic_csr.h   |  11 ++
- .../net/ethernet/meta/fbnic/fbnic_ethtool.c   |  46 ++++++++
- .../net/ethernet/meta/fbnic/fbnic_hw_stats.h  |   1 +
- drivers/net/ethernet/meta/fbnic/fbnic_irq.c   |   2 +
- drivers/net/ethernet/meta/fbnic/fbnic_mac.c   | 110 ++++++++++++++++++
- drivers/net/ethernet/meta/fbnic/fbnic_mac.h   |  27 +++++
- drivers/net/ethernet/meta/fbnic/fbnic_pci.c   |   5 +
- include/linux/ethtool.h                       |   2 +
- include/uapi/linux/ethtool.h                  |   2 +-
- .../uapi/linux/ethtool_netlink_generated.h    |   1 +
- net/ethtool/pause.c                           |   4 +-
- 14 files changed, 250 insertions(+), 2 deletions(-)
+> >I think I was trying to sell you on "more stable identifiers"=20
+> >as a alternative to ALT_NAMEs for netdevs at some point ;) =20
+>=20
+> I don't recall that. Anyway, everyone loves ALT_NAMEs at this point :)
 
--- 
-2.47.3
+:)
+
+> >> Okay, what's your suggestion going foreward then? =20
+> >
+> >Add the ID back, make bus/dev optional, forgo the faux dev?
+> >Would that work? Would exiting CLI become very unhappy? :S =20
+>=20
+> Ha, that would break so many things, everything is based on
+> bus/dev on UAPI level :/
+>=20
+> I was thinking about having some sort of *special-bus-name* for indexes,
+> like:
+>=20
+> none/1
+> none/2
+> or
+> devlink_id/1
+> devlink_id/2
+> or something like that.
+>=20
+> But it would be either that or original bus/dev, not both :/
+>=20
+> Perhaps we can add ID attr as optional/alternative handle? Then legacy
+> userspace can use existing bus/dev handle and new can use the ID attr?
+> Then the example output would look something like:
+>=20
+> $ devlink dev
+> pci/0000:08:00.0: id 1
+>   nested_devlink:
+>     auxiliary/mlx5_core.eth.0
+> devlink_id/2: id 2
+>   nested_devlink:
+>     pci/0000:08:00.0
+>     pci/0000:08:00.1
+> auxiliary/mlx5_core.eth.0: id 3
+> pci/0000:08:00.1: id 4
+>   nested_devlink:
+>     auxiliary/mlx5_core.eth.1
+> auxiliary/mlx5_core.eth.1: id 5
+>=20
+> Makes sense?
+
+Yup, seems reasonable.
+
+Alternatively we could add a socket or request flag to dumps that
+indicates that user space is aware that some instances will not
+have the bus/dev identifier?
 
 
