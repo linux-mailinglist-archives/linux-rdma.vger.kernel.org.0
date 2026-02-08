@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-16672-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16673-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KOPMLD4hiGmrjQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-16672-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Feb 2026 06:38:06 +0100
+	id IB3NNlYhiGnZjQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-16673-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Feb 2026 06:38:30 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53106107F0B
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Feb 2026 06:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6983E107F13
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Feb 2026 06:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00744302C5CC
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Feb 2026 05:37:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7C3493038A54
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Feb 2026 05:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F08B345754;
-	Sun,  8 Feb 2026 05:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170A8345CBC;
+	Sun,  8 Feb 2026 05:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kGcZkiQV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lkVrHN8W"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F79345724;
-	Sun,  8 Feb 2026 05:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB29B3451BA;
+	Sun,  8 Feb 2026 05:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770529039; cv=none; b=lS9h4xF186OD8Gy/5P4NtjYtitI6a7KQ/hS1CKxdv6evaw3iSP8/nvpKtgFPgXR6Wu2UwKJQOoklkyndO0SVmKuJ/QCXUfQm4PIT6GtnGPtjE6bpVTa7u2qD4wSJ5E3dBOspRxDHjNLEV5zzZ9Sxp2XPa7RXbpbLIHg1OxpgW8E=
+	t=1770529040; cv=none; b=trVkyy9Nw89OlE08HjT0vANcULzLKfoz9CoHtDcoV+k3ZQnGkccDq3f9+AzAlKf5CCDUY33Sgn+J9CfKdkZUDJSilY/UQFqA8jJYv1sC4z2j4UpaqO1BPjEyE6rvSsCGOmIHeKmP/LMuqD7NIAcc6qbU4L6H0ueMOn2EoX6WeZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770529039; c=relaxed/simple;
-	bh=L/7/zH8wTJ82ij+XnvFDUG8oXQtfUqHUiYyKiKa+xjA=;
+	s=arc-20240116; t=1770529040; c=relaxed/simple;
+	bh=JcN9S1fJE/PJc7rNTHFn48csxe3H653En5P0AHO9C+U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Mwo1rNhc15g/8X8qpda75NyJ5qvzE69ljSlA57mRxdju060murNh+s7GbeM6g9ssJF7zD43MdVkZnEpS4iG/AED8pckB+OugBocIm8qyKHWEJ+ElO0yHdDhrP98zVcOPRUMUcb8WF6+DIMhtkhG23YanvUse5Gx/aH8WnYOfmgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kGcZkiQV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14C3AC2BCB0;
+	 MIME-Version; b=YKX4mpql+iiD8G3ciXn+ZrOOKwk87Z9immuzAkVVdu8AUUlCDTGb7dOeDVCjlV6B0KukrgdPmCQObfhgbEr+nPTJXC7oroXerTVLUM/PlULMr1fclRjUaP7w3TC3BptyorSrButIfCosmtyj/Lr8nxUIHCk/31Mi8uO29GdHYUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lkVrHN8W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0238C16AAE;
 	Sun,  8 Feb 2026 05:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770529039;
-	bh=L/7/zH8wTJ82ij+XnvFDUG8oXQtfUqHUiYyKiKa+xjA=;
+	s=k20201202; t=1770529040;
+	bh=JcN9S1fJE/PJc7rNTHFn48csxe3H653En5P0AHO9C+U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kGcZkiQVZwCHVixLb7PP2q6xPO2DeT8m89mxcQr2ZVXET2qOxey+fy6lx+DlCgqGQ
-	 tMQu1YWHCHoubniyPH230dvvluRTek+xg6wSunZeUh1q2YESeYjDEauE2QzxJfn8Xn
-	 bYzPSbOG3ZGTtqkeH60WrsIDnTo8TQ2SzPYy+TQa3twFvAUurZbYfU6j0ubW2rAusH
-	 94FneEQc0g2RKzbLd9dZNi1/gToFo3m/JwITwFCw4Ovfxr2GK8zmqgLmo66OxWsVcU
-	 vnwIAg7YtzH1N347I2WxGqgkaboh3XoP6H7iH6sLQRtBs+B9zb2MG7qeS0ctdcghKZ
-	 6AqijK7f2hpiw==
+	b=lkVrHN8WBV4o0wup8uzALb4HOCdACc3HHu0c+A9adihbA4vfL0jQL7jDYXLWaZdwS
+	 JMe2KdPW1yT30WY/irIihFYQvaLOWjJW4vuhF1hIV2u6wv73mjxwQIRlhnsh41MZ1Q
+	 pdIAOwgIDM00n9IG7e2doSE9KqwH+rC/zR5mXBrXymWZqt5F/mrehv+OCVcCmVhcpt
+	 S8B/68/NFsN2Qv4jgiGGrI4RBwhM0naKEUZ58bX1Ek3C0LolalC6E1OZuxpyrPTtNI
+	 BvISadMrSwkwCUIkreTC2gfTWP7j/UXAP2UrAP6/O76LbAznS9ukONFF4HHn+wbVw1
+	 ujdyxi/rOQbWg==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org
 Cc: linux-kselftest@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc: linux-kselftest@vger.kernel.org,
 	horms@kernel.org,
 	linux-rdma@vger.kernel.org,
 	allison.henderson@oracle.com
-Subject: [PATCH net-next v2 2/4] net/rds: Delegate fan-out to a background worker
-Date: Sat,  7 Feb 2026 22:37:14 -0700
-Message-ID: <20260208053716.1617809-3-achender@kernel.org>
+Subject: [PATCH net-next v2 3/4] net/rds: Use proper peer port number even when not connected
+Date: Sat,  7 Feb 2026 22:37:15 -0700
+Message-ID: <20260208053716.1617809-4-achender@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260208053716.1617809-1-achender@kernel.org>
 References: <20260208053716.1617809-1-achender@kernel.org>
@@ -81,7 +81,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-16672-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16673-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -92,179 +92,58 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,oracle.com:email,syzbot.org:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 53106107F0B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6983E107F13
 X-Rspamd-Action: no action
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: Greg Jumper <greg.jumper@oracle.com>
 
-Delegate fan-out to a background worker in order to allow
-kernel_getpeername() to acquire a lock on the socket.
+The function rds_tcp_get_peer_sport() should return the peer port of a
+socket, even when the socket is not currently connected, so that RDS
+can reliably determine the MPRDS "lane" corresponding to the port.
 
-This has become necessary since the introduction of
-commit "9dfc685e0262d ("inet: remove races in inet{6}_getname()")
+rds_tcp_get_peer_sport() calls kernel_getpeername() to get the port
+number; however, when paths between endpoints frequently drop and
+reconnect, kernel_getpeername() can return -ENOTCONN, causing
+rds_tcp_get_peer_sport() to return an error, and ultimately causing
+RDS to use the wrong lane for a port when reconnecting to a peer.
 
-The socket is already locked in the context that
-"kernel_getpeername" used to get called by either
-rds_tcp_recv_path" or "tcp_v{4,6}_rcv",
-and therefore causing a deadlock.
+This patch modifies rds_tcp_get_peer_sport() to directly call the
+socket-specific get-name function (inet_getname() in this case) that
+kernel_getpeername() also calls.  The socket-specific function offers
+an additional argument which, when set to a value greater than 1,
+causes the function to return the socket's peer name even when the
+socket is not connected, which in turn allows rds_tcp_get_peer_sport()
+to return the correct port number.
 
-Luckily, the fan-out need not happen in-context nor fast,
-so we can easily just do the same in a background worker.
-
-Also, while we're doing this, we get rid of the unused
-struct members "t_conn_w", "t_send_w", "t_down_w" & "t_recv_w".
-
-Reported-by: syzbot+ci858e84e8400d24b3@syzkaller.appspotmail.com
-Link: https://ci.syzbot.org/series/1a5ef180-c02c-401d-9df7-670b18570a55
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Greg Jumper <greg.jumper@oracle.com>
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- net/rds/tcp.c         |  3 +++
- net/rds/tcp.h         |  7 ++----
- net/rds/tcp_connect.c |  2 ++
- net/rds/tcp_listen.c  | 54 +++++++++++++++++++++++++++++++------------
- 4 files changed, 46 insertions(+), 20 deletions(-)
+ net/rds/tcp_listen.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 45484a93d75f..02f8f928c20b 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -358,6 +358,8 @@ static void rds_tcp_conn_free(void *arg)
- 
- 	rdsdebug("freeing tc %p\n", tc);
- 
-+	cancel_work_sync(&tc->t_fan_out_w);
-+
- 	spin_lock_irqsave(&rds_tcp_conn_lock, flags);
- 	if (!tc->t_tcp_node_detached)
- 		list_del(&tc->t_tcp_node);
-@@ -384,6 +386,7 @@ static int rds_tcp_conn_alloc(struct rds_connection *conn, gfp_t gfp)
- 		tc->t_tinc = NULL;
- 		tc->t_tinc_hdr_rem = sizeof(struct rds_header);
- 		tc->t_tinc_data_rem = 0;
-+		INIT_WORK(&tc->t_fan_out_w, rds_tcp_fan_out_w);
- 		init_waitqueue_head(&tc->t_recv_done_waitq);
- 
- 		conn->c_path[i].cp_transport_data = tc;
-diff --git a/net/rds/tcp.h b/net/rds/tcp.h
-index 39c86347188c..9ecb0b6b658a 100644
---- a/net/rds/tcp.h
-+++ b/net/rds/tcp.h
-@@ -44,11 +44,7 @@ struct rds_tcp_connection {
- 	size_t			t_tinc_hdr_rem;
- 	size_t			t_tinc_data_rem;
- 
--	/* XXX error report? */
--	struct work_struct	t_conn_w;
--	struct work_struct	t_send_w;
--	struct work_struct	t_down_w;
--	struct work_struct	t_recv_w;
-+	struct work_struct	t_fan_out_w;
- 
- 	/* for info exporting only */
- 	struct list_head	t_list_item;
-@@ -90,6 +86,7 @@ void rds_tcp_state_change(struct sock *sk);
- struct socket *rds_tcp_listen_init(struct net *net, bool isv6);
- void rds_tcp_listen_stop(struct socket *sock, struct work_struct *acceptor);
- void rds_tcp_listen_data_ready(struct sock *sk);
-+void rds_tcp_fan_out_w(struct work_struct *work);
- void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out);
- int rds_tcp_accept_one(struct rds_tcp_net *rtn);
- void rds_tcp_keepalive(struct socket *sock);
-diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
-index b77c88ffb199..6954b8c479f1 100644
---- a/net/rds/tcp_connect.c
-+++ b/net/rds/tcp_connect.c
-@@ -115,6 +115,8 @@ int rds_tcp_conn_path_connect(struct rds_conn_path *cp)
- 	if (cp->cp_index > 0 && cp->cp_conn->c_npaths < 2)
- 		return -EAGAIN;
- 
-+	cancel_work_sync(&tc->t_fan_out_w);
-+
- 	mutex_lock(&tc->t_conn_path_lock);
- 
- 	if (rds_conn_path_up(cp)) {
 diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 6fb5c928b8fd..8fb8f7d26683 100644
+index 8fb8f7d26683..db4938fd1672 100644
 --- a/net/rds/tcp_listen.c
 +++ b/net/rds/tcp_listen.c
-@@ -123,27 +123,20 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
- 	return NULL;
- }
+@@ -67,7 +67,14 @@ rds_tcp_get_peer_sport(struct socket *sock)
+ 	} saddr;
+ 	int sport;
  
--void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
-+void rds_tcp_fan_out_w(struct work_struct *work)
- {
--	struct rds_tcp_connection *tc;
--	struct rds_tcp_net *rtn;
--	struct socket *sock;
-+	struct rds_tcp_connection *tc = container_of(work,
-+						     struct rds_tcp_connection,
-+						     t_fan_out_w);
-+	struct rds_connection *conn = tc->t_cpath->cp_conn;
-+	struct rds_tcp_net *rtn = tc->t_rtn;
-+	struct socket *sock = tc->t_sock;
- 	int sport, npaths;
- 
--	if (rds_destroy_pending(conn))
--		return;
--
--	tc = conn->c_path->cp_transport_data;
--	rtn = tc->t_rtn;
--	if (!rtn)
--		return;
--
--	sock = tc->t_sock;
--
- 	/* During fan-out, check that the connection we already
- 	 * accepted in slot#0 carried the proper source port modulo.
- 	 */
--	if (fan_out && conn->c_with_sport_idx && sock &&
-+	if (conn->c_with_sport_idx && sock &&
- 	    rds_addr_cmp(&conn->c_laddr, &conn->c_faddr) > 0) {
- 		/* cp->cp_index is encoded in lowest bits of source-port */
- 		sport = rds_tcp_get_peer_sport(sock);
-@@ -167,6 +160,37 @@ void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
- 	rds_tcp_accept_work(rtn);
- }
- 
-+void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
-+{
-+	struct rds_conn_path *cp0;
-+	struct rds_tcp_connection *tc;
-+	struct rds_tcp_net *rtn;
-+
-+	if (rds_destroy_pending(conn))
-+		return;
-+
-+	cp0 = conn->c_path;
-+	tc = cp0->cp_transport_data;
-+	rtn = tc->t_rtn;
-+	if (!rtn)
-+		return;
-+
-+	if (fan_out)
-+		/* Delegate fan-out to a background worker in order
-+		 * to allow "kernel_getpeername" to acquire a lock
-+		 * on the socket.
-+		 * The socket is already locked in this context
-+		 * by either "rds_tcp_recv_path" or "tcp_v{4,6}_rcv",
-+		 * depending on the origin of the dequeue-request.
-+		 */
-+		queue_work(cp0->cp_wq, &tc->t_fan_out_w);
-+	else
-+		/* Fan-out either already happened or is unnecessary.
-+		 * Just go ahead and attempt to accept more connections
-+		 */
-+		rds_tcp_accept_work(rtn);
-+}
-+
- int rds_tcp_accept_one(struct rds_tcp_net *rtn)
- {
- 	struct socket *listen_sock = rtn->rds_tcp_listen_sock;
+-	if (kernel_getpeername(sock, &saddr.addr) >= 0) {
++	/* Call the socket's getname() function (inet_getname() in this case)
++	 * with a final argument greater than 1 to get the peer's port
++	 * regardless of whether the socket is currently connected.
++	 * Using peer=2 will get the peer port even during reconnection states
++	 * (TCPF_CLOSE, TCPF_SYN_SENT). This avoids -ENOTCONN while
++	 * inet_dport still contains the correct peer port.
++	 */
++	if (sock->ops->getname(sock, &saddr.addr, 2) >= 0) {
+ 		switch (saddr.addr.sa_family) {
+ 		case AF_INET:
+ 			sport = ntohs(saddr.sin.sin_port);
 -- 
 2.43.0
 
