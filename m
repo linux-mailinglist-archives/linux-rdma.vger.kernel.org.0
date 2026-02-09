@@ -1,214 +1,207 @@
-Return-Path: <linux-rdma+bounces-16684-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16685-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MDgAGmLqiWmdDwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16684-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 15:08:34 +0100
+	id ANQLGzkAimluFQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16685-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 16:41:45 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD2D7110165
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 15:08:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3C07112059
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 16:41:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 757213012254
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 14:06:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DF01B301584C
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 15:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F74378D8C;
-	Mon,  9 Feb 2026 14:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uhc/fPuJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A2037FF50;
+	Mon,  9 Feb 2026 15:41:24 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011027.outbound.protection.outlook.com [52.101.62.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DACA3783D1
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 14:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.27
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770646006; cv=fail; b=Z8fTjSr96CeWgQ6tmxk0CKe5rMJqk28j0Mee3X4Grsb1Ym703rl9vtfjNpwwz/S5OJKrPtaV98XOqndWnjNy6079JduqVgCv50hcBj5QOxNFZ0RJoVT1ImVson5i4uvMu/TuGRAirR9TVjifQPV9V0kDbGjLi04de6ekPw6b0dM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770646006; c=relaxed/simple;
-	bh=5/n1ibo8xpks2HDjb8Yo8Bs9Lke+wl0YQTHSbh8ONow=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=PJoxhMURNkyfbPy+s2Vl5Osaq4kPNzHc2cFMLbWfcoPpthRALF6I7H/PAzzxqW+Pvn5Iei533+/jwpfrE1T7IvuNztUtyzpT9YnYo8SxDEolQaz19niub/dSkS7GOkX10ukq+G35f1IauHf5d/b6B0Dn8Js69QiEUcbaftflp7c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uhc/fPuJ; arc=fail smtp.client-ip=52.101.62.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=g/xOY4P8/jXMDOSC2vtt5A3WHDg3FTm8QBL84hjtu2A5gYxKQH42W9Z+zJIpTtoB+eOetWkS7rkxhSUQChVabRlLeruqDq2kEWWkG1JX1/nYtHaqLolfO5+Ug6WM6kEuN8aK/8YWsHKPpTbRsFcHJD0p+rV8GTkwwhlrMuXftg2bLw+eXSsxmgRccWyfpaKKZCYihKMNyonFDpqe8sUBiqwz/rb1NLKexLkNUv4vQWx6ChDmj3H0yA3WTFKosxSDuj2cIpECZXaxYa3r5VaVdFR7wzHR4KvplMiSDY5OFdmGKIveiorL8beAx2wryBlQ78QY0Y0dEmw/vonwQi75PA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PSsxq5sKP5sFPvixm74kkjYnt6T1j68lT9lSAP56TkI=;
- b=XEN6x2MlJRuV/NPbXEz8bCRUFUK5XxJcn41jSnu1fmsvpOmg7LIeA6F8vc5dkiUNlsGI+6iFlE8pWg3tzStUU1Gtqjc0D2ibqUash/zB0vYIWwNmHDbblyIaGhAbBJqTprXVBzSaHAfIMQIFliLG9BmPT+8il5Qd4tv0qjSTPbSkgu3JkBlLipi+Xm2vkfSmo/ztdTYELoU/2xURWsDN+kBQAMlTdklYpTGpedoCnYiJXN/sACJAIDXsm/Nh6HIj9qLAOhZBrgAwLvn64tJyl+dtNctucFI3c9L02/LJl+/0sh1p2FwR7GHcwIaMcEb7WdFoe9Spvmz9VxjPDkkmXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PSsxq5sKP5sFPvixm74kkjYnt6T1j68lT9lSAP56TkI=;
- b=uhc/fPuJ5lpoqmuGdK1MJy14WfxPUrLLNolgTtRMWEP6tJE8DArC7TZo+MBRhT/BmzRkZwgxksBYb0uvJoMw2w/lgxnCjr4Sp40N04FFq81pChluojlrQIFhITQvSjooNYlkt4vQDjATxVjZVx+SZhUOD1FNF+lX1c8mEgiHm8iWrJBEst/FvqNaTX40vs0zl+3t5ndTQd6sNNcCECgILoeONp9Yvjp/tuXyc2nUK/AahcqDsvltTlSXogmWyvHZcDM5kLzjtYZjl+BvDw7QN6Cy552uoJ74tAcY6BqSDWwRRSYOzD9YAOwDFXlQVCb6A0Vdk/bfip1Dc3XzgvbVuw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by DS0PR12MB8043.namprd12.prod.outlook.com (2603:10b6:8:14d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.19; Mon, 9 Feb
- 2026 14:06:42 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528%5]) with mapi id 15.20.9587.017; Mon, 9 Feb 2026
- 14:06:42 +0000
-Date: Mon, 9 Feb 2026 10:06:41 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-	patches@lists.linux.dev
-Subject: Re: [PATCH 01/10] RDMA: Add ib_copy_validate_udata_in()
-Message-ID: <20260209140641.GC3076640@nvidia.com>
-References: <1-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
- <5d569a30-832d-fe8d-1227-e409176b75ef@hisilicon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d569a30-832d-fe8d-1227-e409176b75ef@hisilicon.com>
-X-ClientProxiedBy: MN2PR22CA0014.namprd22.prod.outlook.com
- (2603:10b6:208:238::19) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D122F5A1F
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 15:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.77
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770651684; cv=none; b=YOviOeLc5cfQQwb5FTQGsqlE+3uDvrwtACS2nWK9zOLjPGyQhgpBfjxgvHQ6V2PhpGNj+pF4bYWxtfA4QI40QeVWzG6ivq1gBwbvm8eWb+EeRftAxKrvRkFStJ1FimOc+EH70ekBbY+NxPRvYom6SkQT/EvBc/PxN3GiErs7cYI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770651684; c=relaxed/simple;
+	bh=ZafYOtc7L+oFFBIzl+MG4fPmt2i/qy2G91TqRC4LoLo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hAvtIbc1+yDUXsMcfXctcr1BVrYoTWTaBr+4PuGuxP8eSFUexSgjEKNula6a+k6S+IADu4cZZau85IesgWDwsGNvzz8b/s1ThN2PCSN4VdbsH4ZguV22qqv03/UtF+KdCgEI3OahfqKlAs8vGcOAo0LcZukorAikDWoMY7GYW08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-409648bc2a2so17975130fac.3
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Feb 2026 07:41:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770651683; x=1771256483;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hNK9kU9v8v12Dojw7r/qw4vHBzF8h3GteZ5Hpo/f/ZE=;
+        b=wJftwNe1QuQC5VrwKChXj5T/eYqBHvVVrbdCs55krmDoMupZvHLfyvdUEPEXmpy6Ec
+         IkKEFyFBzR1y2erQuBrZLdzuxxzQCUG96dn5oTjOFjUtPwCNeo+4WYupDQpRhCHR5xEh
+         H4wR2k6fgk5szofjRhYFdxLl+daHKdsvclNUbrZwMuGVFahbp/3L/U+lQHkr4bIOzEyd
+         fmdoBMSOruphUH9z8NbD/ii+AjDOEXl6p3s1uSlgt6KQhO83cJzIVk7MzrQh2smF59dp
+         EeDWsOi1ncKD9lOfmLn+QlJn/HLhmGPAOW73ESIoW+EURgECdLLDb6dJ/M1IuXsVcuyl
+         +cHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUNV77V0YDd+2N0m3KMwOXUSVQbObhsN2e9sVC2qnx8kO+4bh94SIdfaVmg+XWvcLfdmiAls6QlIuu4@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRcGna2sIjhdrTEhku9a7LQaioaopVwh5xvNlLtZJInEsFAhaZ
+	sh2URZaoI/sP5pq0wBefedpgFvbNLOja/uoYzAUcyG1E2Yexx2629aUsLeeANlui0LhO3/Qai35
+	wSYYmm/UW6QrV20vigRCnZK9XBW3hmol648NhelXhiBkd06N2bdhjEhnb5yY=
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|DS0PR12MB8043:EE_
-X-MS-Office365-Filtering-Correlation-Id: 874eaca4-096e-4df0-c923-08de67e47396
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?VdJqpI+n9at3i1t2dhl3GZKT2zZBC1f91ibEh+Wr7UcjoHYPk4G8lLoD3csc?=
- =?us-ascii?Q?s75Cw29j2gclf2NRoZrtDNbR++k1mAiyd/FDUJC5YF5bow4NQ6UnG7iVBP9I?=
- =?us-ascii?Q?ffhTEjy8rh/m+ttduDcs1YFEcjQMPjC3ZbO/Ox+o5uD9zD6bWx75kC5a8Uio?=
- =?us-ascii?Q?+/H6jdmZwNBhnYutkCm70rVmePzbd9rm+uG9kUJKiNnbqxXf63veRwdoU+l+?=
- =?us-ascii?Q?c3c5vj37tjG1t7MHW06IFJKU/6iOJj/EJ8pXegXEtfdPrmXpPmInyH2Gv6kt?=
- =?us-ascii?Q?4UFGjsHRWh2okURwu3HMyEVbu5393gp0PC3LUL+HJNalNREe36ICFlmubzRF?=
- =?us-ascii?Q?y4aCMvWzt8lPruvea4d5dsmJG3BHZ2PymhS4V/erSz6b9L4FaCl/CUPPCqzT?=
- =?us-ascii?Q?/HuFmHvnq3mNbFD22bYGuQlPiZl69Fd2utoK5hPBB43KBc7Y78FoluDs3YWM?=
- =?us-ascii?Q?y37u/bAo7/0MwAE//Kak3YrKMLPMcKQH+jkttuoo+BVy1gPUJ6NQtAYvDwrJ?=
- =?us-ascii?Q?Gz9/6UNlnDJktbxY/4G3jRdJyAy8hEAagIpeWwV3O17rh1Ae4o50mBYAxpO6?=
- =?us-ascii?Q?bgVKTb3nrK1QHUf8dHqoef70Wqb8co9GQw08um6fi+3MZJD8w0OcN4broYQd?=
- =?us-ascii?Q?wOx864KoddB8n9bDAU9dHxax0MaF7Oc5AciVBod/KqApY+ZG9GIPPI5zXK4V?=
- =?us-ascii?Q?a92Rnjyn72ztZHVZBu+DytC3xo/lrxbPYTuflJyuWvyFrPkI04otOuYbgGHh?=
- =?us-ascii?Q?Ld1u0uU0Spu6BtCyj6I3eg0ohWQygDDZPHVm4MrTdhTOopfWVmBTxptMK0Au?=
- =?us-ascii?Q?xfPAytBzPonrD2133HrDKCwnh0XBDSv9ly+wh766WboINAb9rexrvjxYbT8Z?=
- =?us-ascii?Q?r6e4DSaqyxgBpediA+l0rLq12uK7CwLVOr6wmXspB5T3AEi3VMZusVi3M56x?=
- =?us-ascii?Q?kKxjN5MKyLtouMVXdrdmlq60xqEYLlXn4sK8anyLICsxinGOBuzN1AA6vkol?=
- =?us-ascii?Q?27YaPvBlPGKRgxrfqp5Pd979RpMcXWoJ1L7iD4Dj2mMk3O5Zu3rAgtMFuMvA?=
- =?us-ascii?Q?/vmmA3537FBiyMEm3gXi0Pr/qBeVVPTQBBk0hoWFIu3sdRvxE9QbJcf62UFB?=
- =?us-ascii?Q?ACFhUE400Hb87upSBbIPHA0jHfSEjCyhbmVeN0jt468CQCvJozOqSOtuO60y?=
- =?us-ascii?Q?4IYDjpzvBfEa2AgJU3SZLiOh/5xbO+535fk1hjk0RS5836HdltJg9Rl3weeL?=
- =?us-ascii?Q?Bot4Hm3Dc8f6kSkgFPZmZzRzH3Ef5uDsFpUAFEfXjHoNvScTaMGlcOrbiV+E?=
- =?us-ascii?Q?z+IgTJWjoMNlQe4VxeHdHEPmqIDMrGb7wmhJ1CiMOgcv4S23fACPreMZhzYY?=
- =?us-ascii?Q?0rjJ+ml5kY/jwysrHl+mJmYSbpggFy0JIOgT0YhFmFraoiLz6IbHmwZbZi1y?=
- =?us-ascii?Q?5rjlmRIOBoW3nn6QDpEKYTSuTHgVB9nZ9lZ3GDAkoduY6gTklN/YlBYSs+bw?=
- =?us-ascii?Q?8LC79QpgsipBAd0KyLRf1USMh9Zk/fRBv6hLUf0Qeyiy70UA/BPPDZrLC/Bc?=
- =?us-ascii?Q?+Dld5xb6Kt/iDXcqmP8=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?HNhngaqZVtCpF9YLPviYvQR6BIcr2vy0LAd2GPipEFZBMVRkeZZ3vS0JuGls?=
- =?us-ascii?Q?P0910Nw5QQn0JFKNPFuey/kkXjxZ1iQrVQPe2dOgJfmGbie4LEX0wQNQZyNz?=
- =?us-ascii?Q?U0e9mkwJ58e/b/GMsT8oZsEm1ITWKT+jQwEJeNkXl55ZGHPy3Z5nK5m7CEg/?=
- =?us-ascii?Q?DW110ZdxWuH7ez0IB+yWDpgPoLAYBMbgwv76dH+u6lx+Kvg2gXZijwwNKA0u?=
- =?us-ascii?Q?VNKHGNAauzCZ1XqqTISpkoRkFsuDHMH5HzQM6l8dloDQMS0RKTzOqLTIWKon?=
- =?us-ascii?Q?bifRz6ImSqsvcz2zkbGJ45I5nLJYZejLWPGtyCc59mfNTk8V1Ofq2KpLG2tX?=
- =?us-ascii?Q?akuPpdRLMaYROyUB8EVflk2qOZzHB/7JXeis+Wn/uU9sd7IQqvWxqgaJZ2NF?=
- =?us-ascii?Q?5noLcar1gJeBTKiBg6MY8SLulCJqxCW9Ret+tDo0HuZB0TdukU0QUfguZG3+?=
- =?us-ascii?Q?Rf4ijrpQ4fC7exMn27+TNvrlINI8QkCBsLzk0rFyQuF+1XaoRuvADGXJenWj?=
- =?us-ascii?Q?P+GHCr0ik+ze9LAe9mkl1KnWP86z3hl9J48GTzmIj0XHW4Ryl9kcJVFItms2?=
- =?us-ascii?Q?hkEN7gH1sKVGYGuSkcpLvehH4NENC17tcHbMsYLejLRyiK5+HiI0/QJgmus6?=
- =?us-ascii?Q?LPcjlFtSjQzeKV2+zY2NYpfG0qMmrs1DB+QxQ60vb5adhzDvK01z6/MDqt5p?=
- =?us-ascii?Q?pxF6aFapbKaQwGiEtJTB2gG8upkRn6rjbpg8XdkbKPHKryyGDc4vI/Zg64Eh?=
- =?us-ascii?Q?6lrzbCbBOM80PovTCsntbbT4gOBA8D1Cse8dxR35SLkkSLO/jHWYhMLyiSAD?=
- =?us-ascii?Q?UusPNHNRdWEBzQH1GyzOA0qcalb63ofK0mLMB8Cm9f2EOQE7J7evdGeOZ9Gp?=
- =?us-ascii?Q?SP7B26zHPEE7GHDb41lpYXXsPzDOcTnjfZlYko7BZ6OqkUjXTl9vdDka0xCL?=
- =?us-ascii?Q?LuZlR/lXPMoX0QsK2gaY1zNgIg5RdHtPkk4W8tVrsMa3Yw77vDRNijHMiRvu?=
- =?us-ascii?Q?ZEEHGqMy9+RuUB3DEJHtHzOhEhEzHQkcm53idUezV3MpEXtk1goGsp6rUMUu?=
- =?us-ascii?Q?OKl0jvqGUoi8cn/2xVSXr2vttyt7xUK2HxquQhoRnKlB7nLa4bdHUKKcdHPs?=
- =?us-ascii?Q?X3OfezgZot6cMZBXrS5Vdb/rcLP20FD1WQFSx95VE0HGYPs/6wzcofpWNXRf?=
- =?us-ascii?Q?DYhhW5560/kf6jWfGBzorpZPWLx0qjc7mZfDEbf4RXYVJMDWwUBDFzTu6z2D?=
- =?us-ascii?Q?Kpz1gvmyxFG/jYC4DeaK6b/BbZsJLV8Cf6wV4uuLuQpLnsJpWYKnEEi3kKur?=
- =?us-ascii?Q?IgU9nkXW9YT095BEcAIetIuL0uErJKd2Es3jBNpPMoNKmPAtqRN1NcuiLmZn?=
- =?us-ascii?Q?ec2D/fdaiRD7W2Dxz/4WyXiOhPcuTIdI1+q8UG1EM9LTF9YJmUYF4CsQAaX7?=
- =?us-ascii?Q?fDgqe5J82Lk/nZ86kRFIqtXXbSGfuT4yeFbG5sOZUxGBp9gC/u7ZgT/2hdpL?=
- =?us-ascii?Q?48xRWmKUmnfcR/3pOu8e+L27fQXPN7Lgv5ZI9Lc9BLSYM5tvsur70DS/76rb?=
- =?us-ascii?Q?KMcWIIHUbYu/ZgGMyTuNmjFm+OUaWphXTfoEZ/nrNun75NxiLyREPhIJgB1y?=
- =?us-ascii?Q?BZ9firohDsMWinXfOHHC2dNXGWOsw4EGkW7hCylb+3k0R5L9jwGvbOBl4XTg?=
- =?us-ascii?Q?i2fuMEtdqhFhIHK39KWPIEQd4pRrmfg9yAonEdflq9gKWnfE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 874eaca4-096e-4df0-c923-08de67e47396
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2026 14:06:42.5045
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kjDdeLrnsXJjrNvbUk1x11u8h0AHLXtvTKA0RH6ODwGemgCmkxRIUHgAg2uOiDk8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8043
+X-Received: by 2002:a05:6820:210b:b0:663:12f:215f with SMTP id
+ 006d021491bc7-66d09cb2a1cmr5054428eaf.15.1770651683338; Mon, 09 Feb 2026
+ 07:41:23 -0800 (PST)
+Date: Mon, 09 Feb 2026 07:41:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <698a0023.050a0220.3b3015.0078.GAE@google.com>
+Subject: [syzbot] [rds?] general protection fault in rds_tcp_accept_one
+From: syzbot <syzbot+96046021045ffe6d7709@syzkaller.appspotmail.com>
+To: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com, 
+	horms@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	rds-devel@oss.oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ac78ce3b6729749e];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16684-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-16685-lists,linux-rdma=lfdr.de,96046021045ffe6d7709];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CD2D7110165
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,googlegroups.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,appspotmail.com:email,storage.googleapis.com:url]
+X-Rspamd-Queue-Id: D3C07112059
 X-Rspamd-Action: no action
 
-On Mon, Feb 09, 2026 at 02:11:32PM +0800, Junxian Huang wrote:
+Hello,
 
-> > +static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
-> > +					     size_t kernel_size,
-> > +					     size_t minimum_size)
-> > +{
-> > +	int err;
-> > +
-> > +	if (udata->inlen < minimum_size)
-> > +		return -EINVAL;
-> > +	err = copy_struct_from_user(req, kernel_size, udata->inbuf,
-> > +				    udata->inlen);
-> > +	if (err) {
-> > +		if (err == E2BIG)
-> 
-> The E2BIG should be negative.
+syzbot found the following issue on:
 
-Oops, thanks!!
+HEAD commit:    9845cf73f7db Add linux-next specific files for 20260205
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ec4a5a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac78ce3b6729749e
+dashboard link: https://syzkaller.appspot.com/bug?extid=96046021045ffe6d7709
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122acb22580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149fc7fa580000
 
-Jason
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9f30334a2431/disk-9845cf73.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0d58741a15a6/vmlinux-9845cf73.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/62204da1452c/bzImage-9845cf73.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+96046021045ffe6d7709@syzkaller.appspotmail.com
+
+netdevsim netdevsim1 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 1 UID: 0 PID: 3485 Comm: kworker/u8:8 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+Workqueue: krdsd rds_tcp_accept_worker
+RIP: 0010:rds_tcp_accept_one+0xa5b/0xd70 net/rds/tcp_listen.c:319
+Code: 00 00 48 83 c3 18 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 63 a9 2f f7 48 8b 1b 48 83 c3 12 49 89 de 49 c1 ee 03 <43> 0f b6 04 2e 84 c0 0f 85 53 02 00 00 44 0f b6 2b bf 08 00 00 00
+RSP: 0018:ffffc9000b64f9a0 EFLAGS: 00010202
+RAX: 1ffff1100dacb173 RBX: 0000000000000012 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: ffffffff8e006fa9 RDI: 00000000ffffffff
+RBP: ffffc9000b64fb18 R08: ffffffff903342b7 R09: 1ffffffff2066856
+R10: dffffc0000000000 R11: fffffbfff2066857 R12: ffff88803286c000
+R13: dffffc0000000000 R14: 0000000000000002 R15: 1ffff920016c9f3c
+FS:  0000000000000000(0000) GS:ffff888125115000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f30359456b8 CR3: 00000000320ee000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ rds_tcp_accept_worker+0x1d/0x70 net/rds/tcp.c:524
+ process_one_work+0x949/0x1650 kernel/workqueue.c:3279
+ process_scheduled_works kernel/workqueue.c:3362 [inline]
+ worker_thread+0xb46/0x1140 kernel/workqueue.c:3443
+ kthread+0x388/0x470 kernel/kthread.c:467
+ ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:rds_tcp_accept_one+0xa5b/0xd70 net/rds/tcp_listen.c:319
+Code: 00 00 48 83 c3 18 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 63 a9 2f f7 48 8b 1b 48 83 c3 12 49 89 de 49 c1 ee 03 <43> 0f b6 04 2e 84 c0 0f 85 53 02 00 00 44 0f b6 2b bf 08 00 00 00
+RSP: 0018:ffffc9000b64f9a0 EFLAGS: 00010202
+RAX: 1ffff1100dacb173 RBX: 0000000000000012 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: ffffffff8e006fa9 RDI: 00000000ffffffff
+RBP: ffffc9000b64fb18 R08: ffffffff903342b7 R09: 1ffffffff2066856
+R10: dffffc0000000000 R11: fffffbfff2066857 R12: ffff88803286c000
+R13: dffffc0000000000 R14: 0000000000000002 R15: 1ffff920016c9f3c
+FS:  0000000000000000(0000) GS:ffff888125115000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f303594da08 CR3: 000000000e74c000 CR4: 00000000003526f0
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	48 83 c3 18          	add    $0x18,%rbx
+   6:	48 89 d8             	mov    %rbx,%rax
+   9:	48 c1 e8 03          	shr    $0x3,%rax
+   d:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1)
+  12:	74 08                	je     0x1c
+  14:	48 89 df             	mov    %rbx,%rdi
+  17:	e8 63 a9 2f f7       	call   0xf72fa97f
+  1c:	48 8b 1b             	mov    (%rbx),%rbx
+  1f:	48 83 c3 12          	add    $0x12,%rbx
+  23:	49 89 de             	mov    %rbx,%r14
+  26:	49 c1 ee 03          	shr    $0x3,%r14
+* 2a:	43 0f b6 04 2e       	movzbl (%r14,%r13,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	0f 85 53 02 00 00    	jne    0x28a
+  37:	44 0f b6 2b          	movzbl (%rbx),%r13d
+  3b:	bf 08 00 00 00       	mov    $0x8,%edi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
