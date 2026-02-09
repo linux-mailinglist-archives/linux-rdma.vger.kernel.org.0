@@ -1,96 +1,102 @@
-Return-Path: <linux-rdma+bounces-16691-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16692-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cM/+FrgjimnqHgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16691-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 19:13:12 +0100
+	id SEuIG8Vfimk9JwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16692-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 23:29:25 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD661136C7
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 19:13:11 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B651150FD
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 23:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EAA053014505
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 18:13:09 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 75EC0300C0D5
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 22:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E44738A71C;
-	Mon,  9 Feb 2026 18:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB153219E8D;
+	Mon,  9 Feb 2026 22:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="AbH3+lvh"
+	dkim=pass (2048-bit key) header.d=dama-to.20230601.gappssmtp.com header.i=@dama-to.20230601.gappssmtp.com header.b="LzMDKqa2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FEB38A2A4
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 18:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A179A314B77
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 22:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770660786; cv=none; b=tYh0SP9XsRIp6UYlDI98/clw7MypSHQM25OLwRCp6j5Gnmr84FwwMAI0dGj0ue5P5eUGcRt0SIHBNu+OEnJNOc1ULc9GOMhxUOdFs3qxl+iNlwdTpOJxNoaE7Ro6rN5rYCQeb9kV6RAWEu+110MguLCw9Tbs8wIk8gRi2qXEk4k=
+	t=1770676160; cv=none; b=hLH7cCq5hqS39hL1HxT6K/JAg32GRcS1RxrckP46j008HrGrmM7Ffj7hcv/AlmH+SfKaG7Cs9ycpGo1CD49Nx71n8OJCnNfdUTm8lAZ21bw9uO8C9Pn5A7CYRWN0PiNZB5/HtGFCqd5uj/ZnAypgRSmqf4yP6Vo3Sa7kQvrF8jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770660786; c=relaxed/simple;
-	bh=PeEEdOtlWgGbz3Jd1O6AJXyAdP02Oo5lyj4NDiwFBIQ=;
+	s=arc-20240116; t=1770676160; c=relaxed/simple;
+	bh=Nr1N0H3pSkP4c8voFYnmLPhyJBsZyqWCpYU6bfP+hJA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lvab8GBYemnjFsUhEJH3fIs5/b6C0rgb9RzvPmfN9f0HPtWhD8D4D+beueMkr1MCXmqipORZ2rp8rt9QePeJigRT73Nj1X4SrwoaNLoh0ZlMsf+/2KQwHChXJrj64KcTijLjOnS2lbJ4jedfc0n8yuzbcynnk9hLSqa+Nqw2LJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=AbH3+lvh; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-8c59bce68a1so3230685a.0
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Feb 2026 10:13:05 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ey0Q8ZAMBI31ma6Nug7i9LIL8fPx0Ckg4kY2RIbyzuH3RnGs0ZGjJmr6ET4m5IWy2VNpaNY051MzpGmanFr7WptCVDreWiAJm5g5Z7XP1rPn8uLHoNxTrOI0HvJqg+k+LnDuIVRBKzq7CGvTOiVlc0mftjzpOTItAoenheh0w/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dama.to; spf=none smtp.mailfrom=dama.to; dkim=pass (2048-bit key) header.d=dama-to.20230601.gappssmtp.com header.i=@dama-to.20230601.gappssmtp.com header.b=LzMDKqa2; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dama.to
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=dama.to
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-81f39438187so3489319b3a.2
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Feb 2026 14:29:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1770660785; x=1771265585; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gj5UuRmjNHB03u99WDJiaFn+Q1sTfKxV+46xet6mPYw=;
-        b=AbH3+lvhP+aCORsv+XB1KhdCwpglgXrHZjqVkU+at4UulhW31gAR4Awws1C6o1J+mk
-         JDXBHUW/sit5R1Kj5WFCo/oUPlZPyo3Yx4SnpcKMu4ImkFpNYQXh+KcuDQOQejf4l/Qv
-         EJdxMLnr7Ec+N6WGwOXyknd4938ooiOd+8c7r6QvG9695qbM4ooG7Tl+frmQUSEImYEY
-         sRgHqqrgEfwKF1EETl1aReDnQFvMk0vo9/d3MvtU5sMbbiKVIfNGooHYmOdDKnqmXNYU
-         Sgg5JCFvw5n5hpXjHlP9F/udM7pk2R5sQGFLZg/t9I/c8cYX+7xFnJteVmVEd+sC4vDt
-         ckFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770660785; x=1771265585;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+        d=dama-to.20230601.gappssmtp.com; s=20230601; t=1770676159; x=1771280959; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gj5UuRmjNHB03u99WDJiaFn+Q1sTfKxV+46xet6mPYw=;
-        b=FaYT2gaSucmGECxKlztBcL7QuF4haXaJEwfM0nP34IJf73MxmbaeodoE70DlTvN9hb
-         VRR0EsAmAv2Ew02mIJquU7fzrAwgpK2F2HofbGHZQPt9z782jLhn+a+6hh7ksLqyh1IK
-         2ANVpaKhezIVtsv2DiEV35ibB13a6L1RgX45JItpMdAkqAKvx1qIVIU8Z8PAb9CQE3+M
-         pOyBVqSkkgkkLCvlwo+hIx9ghbGZrOhAp0+EsBu8QiWi1Y/Ju/NG/q/OZudjNE0uwZMS
-         lRvKluZZ4EOWjox1fs5OdxyCJw6a9ye9KWMT/8Pd5yPiTQsuce/RHJAOeWVHqKxgNmXg
-         LHww==
-X-Forwarded-Encrypted: i=1; AJvYcCWsgvGn9OQGKky6rS8oF5yGe6tB5TsQwnKMFztmnsxzOGSJHH7S16Mt/rww/dBIZr3BVC3bl8dAZvPq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4vJqWVqZhqtfi+dxCs1ui22jBcLc7BAIqfzqN8KuM++Q6Pvuh
-	2zV39RCcf7iMCZg+cqSb6Qa3aQvkl6eaG2FvlUhOHN2M1pxlwbHaloIfmu5AIrrA4Dc=
-X-Gm-Gg: AZuq6aLwcKvStAuMEgS3UXfw1JJy3uZR82kjWCVy/mDiNiRV2cDOkvRnNC8eNKtNaFc
-	l7ccfcdF/KTQvd64AkEai3VtUilCbGXh2+qtN7a/3Qcq8G8LjldXWvmMdtChP8vUTeG1BOkrLVH
-	UB+uYo/gIH4ofDXrjjQyAebQCLpKuSANScgSX/7iNO0s6/aoe1JgsK1zfgRQHUt8jQt39gT8+P7
-	7o8O2Up7C7U7Mg0sy0uQh7gUxtzGVBwNkx3prC9iaoDocdUgRu/zZ+js/cN4Cz9mI8f0yAivtWC
-	SWVYg6/zJC5XVqljU6Q2HppgSi5vm7rzbwroopvEcBeXI1lK39/sODXrunPHvZqgQ6btnniy+Cl
-	Uw7+kwgX+LReLP7asVAQ8ve//Dbp7+thYi/Ex95FNUgeJXY+rti9CT9d9dZfTE3zhQCaQGuDq0g
-	f5m1J6Wsvp6ouJzTg+TiR861G4QXQhmIQMtFc5WuBYLnt7MxVO2f0ngHOVY1OwPeqJA12ZWKE26
-	z1URQ==
-X-Received: by 2002:a05:620a:3909:b0:8ca:358a:d636 with SMTP id af79cd13be357-8caf1acd680mr1662509285a.87.1770660784822;
-        Mon, 09 Feb 2026 10:13:04 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-896f79d34bcsm39740876d6.0.2026.02.09.10.13.04
+        bh=pNxkziu4XGMl5hWhbE+nivct6z2dxKwIWkkdafKfMBI=;
+        b=LzMDKqa2eq80BWDRmLxoQ+kYERd3N3rYbuRi9ihD9v/g9Eg694qJFtHHd7nBreD4h+
+         cya0lveDSou1Oc4wxK2bPC3KSN1S/qeld+5hxyWF0RsQKRwEklnl9fnaNwLhytduojrd
+         cJ8SqEtKjkR4PixgXYDu5pv1F5oGYx2wVdnbHXYkeMP4q5J8Hd6UazawzbQjwUtrV8xk
+         0EP1TviWgdmGdQmnbbBBrrHwaeCpwmy6oGOihNSdqD/yp3ZoyTpGvzWoKTOvbKu1K5nM
+         keivAU7BNEcqEVUwIU1SN2ivB9WgmkoVcrY6J+6K8BCcfcNnRvrdAIcbNNqeW1A9teKj
+         qFdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770676159; x=1771280959;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pNxkziu4XGMl5hWhbE+nivct6z2dxKwIWkkdafKfMBI=;
+        b=npWzyP7UvsJ3qEeZsXnTBL/Je7F0peisBpiGWuJO4G/4Dc9Ico4n+h0KD9aEm2OD+F
+         SDAD6q34rhng26JJ6xv9JQ7yqPQBHFNJAQ1cjxy15Uj/nRrT3hbmcL3rivplGPDzDfF7
+         M+vFXndvhYprXq8GeK8XpW9UP67ICYRf4mvG7ZmWghR0HRSV/eTt1m1OvUb6P3OzUO+u
+         dXHwXdxxzOBO/tUQMHJRMaWZsacvzrIopCWCNiD5unESfIoqn0WQ2GqbFyojC22ICo/E
+         XqXq5mA0uyEJFnMdL/D1oOHCEGxH3KpPJIs3UW1vLoFWXU+D1uUzNiEGB+w0i2+LUmKi
+         BHgg==
+X-Forwarded-Encrypted: i=1; AJvYcCWR1Q/lkRLLKGiLF/fBuH2P1eyUqB0N4Q4pLko2yu+DcNikSEOlFcbQazF9LsBTW1I7geq5LSA3anS8@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmugDxSZa3516c7g+bdNwz5R2v9jeBPrBhG2DsN8Rk0iIu/CEu
+	TKVXTU8ffRvZzeV13H1X96bGqPT0//RFqO3rA4LuPqTVzRl5OCcONcB6RBMsE6mvyhA=
+X-Gm-Gg: AZuq6aIBLcjYn19nYsLuIuniL8Sb+d3ZWplnyyfD3+RuVFvEd+W2rpPeJztY5+Vz3Up
+	c7jMU690nCcjB0Fpo0XVwqVMhUIqs3Y8097JFTY3wZ7RkbhjPdLSrBTSDWselW6pepr8yvYqPyR
+	xCq4kItlAOOfe8sHiTHErfKewPFgT1xNOBotFU/P1SZKyiWd09ciI5KDRGqv4jVzoO7gwhOXFlD
+	51k4OPrkc1swKunEm4gGp6BYRtZf9W75v8W0GO8G6B4CuxCerT5bTRiWzzebUHh4gRf5AhDqxzZ
+	VLjyroCGXBa98KbXMWpW+acQGbK67uXhUuUG1ZNedZr6P0YFe11dJyAWqkOUNVvvDh6T/y7ZBAy
+	Ujcnjq7n42o+lZc+2ls8oARaoV7TpeWTtd9zKLs2FrZIScbdIKDnUBX1IWv/0wodhr9Y=
+X-Received: by 2002:a05:6a00:23c4:b0:821:8084:f8c8 with SMTP id d2e1a72fcca58-82487a96405mr192390b3a.37.1770676158936;
+        Mon, 09 Feb 2026 14:29:18 -0800 (PST)
+Received: from localhost ([2a03:2880:2ff:7::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82441690235sm11786287b3a.18.2026.02.09.14.29.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Feb 2026 10:13:04 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vpVkt-0000000EmNV-2zIP;
-	Mon, 09 Feb 2026 14:13:03 -0400
-Date: Mon, 9 Feb 2026 14:13:03 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Zhiping Zhang <zhipingz@meta.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-	Yochai Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
-	Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [RFC 0/2] Retrieve tph from dmabuf for PCIe P2P memory access
-Message-ID: <20260209181303.GB943673@ziepe.ca>
-References: <20260209175317.1713406-1-zhipingz@meta.com>
+        Mon, 09 Feb 2026 14:29:18 -0800 (PST)
+Date: Mon, 9 Feb 2026 14:29:17 -0800
+From: Joe Damato <joe@dama.to>
+To: Simon Horman <horms@kernel.org>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5e: remove declarations of
+ mlx5e_shampo_{fill_umr,dealloc_hd}
+Message-ID: <aYpfvUPnuItSadw+@devvm20253.cco0.facebook.com>
+Mail-Followup-To: Joe Damato <joe@dama.to>, Simon Horman <horms@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20260206-shampo-v1-1-75b20c6657e5@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,54 +105,53 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260209175317.1713406-1-zhipingz@meta.com>
+In-Reply-To: <20260206-shampo-v1-1-75b20c6657e5@kernel.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	R_DKIM_ALLOW(-0.20)[dama-to.20230601.gappssmtp.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-16691-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DMARC_NA(0.00)[dama.to];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16692-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FROM_NEQ_ENVFROM(0.00)[joe@dama.to,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[dama-to.20230601.gappssmtp.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CBD661136C7
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dama.to:email,devvm20253.cco0.facebook.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,dama-to.20230601.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: 12B651150FD
 X-Rspamd-Action: no action
 
-On Mon, Feb 09, 2026 at 09:53:10AM -0800, Zhiping Zhang wrote:
-> Currently, the steering tag can be used for a CPU on the motherboard; the
-> ACPI check is in place to query and obtain the supported tph settings. Here
-> we intend to use the tph info to improve RDMA NIC memory access on a vfio-based
-> accelerator device via PCIe peer-to-peer. When an applicantion register a
-> RDMA memory region with DMABUF for the RDMA NIC to access the device memory,
-> the tph associated with the memory region can be retrieved and used to set the
-> steering tag / process hint (ph). The tph contains additional instructions
-> or hints to the GPU or accelerator device for advanced memory operations,
-> such as, read cache selection.
+On Fri, Feb 06, 2026 at 11:18:51AM +0000, Simon Horman wrote:
+> These functions were recently removed by commit 24cf78c73831
+> ("net/mlx5e: SHAMPO, Switch to header memcpy"), however,
+> their declarations were left behind.
 > 
-> Note this RFC is for the discussion on the direction and is not intended to be
-> a complete implementation. Once the direction is agreed on, we will work on the
-> implementation or a real patch set.
+> This patch removes those declarations.
+> 
+> Flagged by review-prompts while I was exercising Orc mode locally.
+> Compile tested only.
+> 
+> Signed-off-by: Simon Horman <horms@kernel.org>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
 
-you didn't cc the DRM people who really need to look at any changes to
-the dmabuf contract.
-
-Jason
+Reviewed-by: Joe Damato <joe@dama.to>
 
