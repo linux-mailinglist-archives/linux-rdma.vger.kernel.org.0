@@ -1,189 +1,174 @@
-Return-Path: <linux-rdma+bounces-16679-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16680-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IJ4DIB3kiGmtyAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-16679-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Feb 2026 20:29:33 +0100
+	id WO0pHXh7iWl39wQAu9opvQ
+	(envelope-from <linux-rdma+bounces-16680-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 07:15:20 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D166D10A005
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Feb 2026 20:29:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9924F10BFEB
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 07:15:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C4AC300B05E
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Feb 2026 19:29:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5616D3016EC9
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 06:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02CF303C88;
-	Sun,  8 Feb 2026 19:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kqVizE69"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4582DEA90;
+	Mon,  9 Feb 2026 06:11:43 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF672F6937
-	for <linux-rdma@vger.kernel.org>; Sun,  8 Feb 2026 19:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CA92DCBFA
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 06:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770578968; cv=none; b=R3sKFL8VhidSjf0/flZiRUiZD1PdxLb0EYIFlFOY7yI0Z0B1+mmhZzhufK5aLV7p4IaQUKoalr3h9R1D5N+Br+EacOu4rr0po7e1Y7PFbfoP94RvyaXbKkaPfMosWgVA29FNKWXb+YCA2qBHGT6PrC8AQyi5sNlzn8wPGJieXVw=
+	t=1770617502; cv=none; b=YRgZLjroSWm4AozkZJLf7jn+uslnCOu0t5JhlxVB4sTv8ytO+q+D4ArLxEn5aeOIo32Id2FV7EjQ6zqTOXjnAuNQRpW02MT0q3xJH8/AGjn/1EQzevYF5ZEwQeBZtPSMSnZZLYR5J5FYHC8l5op5CF412vjdaQha2CrtJEKdp6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770578968; c=relaxed/simple;
-	bh=uJk/HTTQjHpgXXPF2B5GOFPeJOXoDW3E8CeIFbCNL1M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fZj6DzSoGOGSqkEe9xxBRVHam3IH1Six4oAiu5bSLz87rmB/cMW/kxBhbqZjAuLIv4qwfzdt2vhWoroI/5hCYyL6+4xUwYmrgfd8l9kURZ8v9cHjzsIf+RZ8yJSBiJ2EAAnjU5HXBxwdkzMPT+IPIfTRKF9t7e6I6hNKZBo0cjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kqVizE69; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2768471c-4b50-4b34-a87a-35fbc49019b7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770578956;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gnfwf6iR8d8srvLc5E+dFDSiCa06IAOvwSZx90D2AH8=;
-	b=kqVizE69r608iPYE1KmoDKJ7c7ucoy6BWv3swvgR7YhIB9Uvd29QfV+DPK9JribauojKRu
-	O9/RdmGNraSHQsop42/ehz+tYZDNj0APU6oILJ3ylm6R16nT0qyjBm5/dWLxBdiA7ykrLX
-	8KKKKpaMOvXyt0U9ROoA//uW+50DF98=
-Date: Sun, 8 Feb 2026 11:29:12 -0800
+	s=arc-20240116; t=1770617502; c=relaxed/simple;
+	bh=8xkvVvjUdJgJGWW1V5mM2yysdqyi5HUqK8zg9CKEIyQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z1uv/jeVuPTs/AKhr7LuMVSzyKyVATQTlV1300+hnXdxBav5X+RaGPeJLp7+BYTKTd7sQtKbrHitQVHIA6nRp5NLNQO3SgMJsOivQwMpYYli6EkT9EybFBm4UtohOgWqicwhO3/NBqTKNFiqlGSrlbILAXzDyscuEG7ISLEREQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.104])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4f8Z352C3jzRhQS;
+	Mon,  9 Feb 2026 14:06:57 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id CD2804056E;
+	Mon,  9 Feb 2026 14:11:33 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Mon, 9 Feb 2026 14:11:33 +0800
+Message-ID: <5d569a30-832d-fe8d-1227-e409176b75ef@hisilicon.com>
+Date: Mon, 9 Feb 2026 14:11:32 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 06/10] RDMA/bnxt_re: Add compatibility checks to the uapi
- path
-To: Jason Gunthorpe <jgg@nvidia.com>,
- Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
- Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
- Selvin Xavier <selvin.xavier@broadcom.com>,
- Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: patches@lists.linux.dev
-References: <6-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <6-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 01/10] RDMA: Add ib_copy_validate_udata_in()
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@nvidia.com>, Kalesh AP
+	<kalesh-anakkur.purayil@broadcom.com>, Leon Romanovsky <leon@kernel.org>,
+	<linux-rdma@vger.kernel.org>, Selvin Xavier <selvin.xavier@broadcom.com>,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+CC: <patches@lists.linux.dev>
+References: <1-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <1-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[hisilicon.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16679-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D166D10A005
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,hisilicon.com:mid];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.958];
+	FROM_NEQ_ENVFROM(0.00)[huangjunxian6@hisilicon.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16680-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: 9924F10BFEB
 X-Rspamd-Action: no action
 
-在 2026/2/5 17:45, Jason Gunthorpe 写道:
-> Check that the driver data is properly sized and properly zeroed by
-> calling ib_copy_validate_udata_in().
+
+
+On 2026/2/6 9:45, Jason Gunthorpe wrote:
+> Add a new function to consolidate the required compatibility pattern for
+> driver data of checking against a minimum size, and checking for unknown
+> trailing bytes to be zero into a function.
 > 
-> Use git history to find the commit introducing each req struct and use
-> that to select the end member.
+> This new function uses the faster copy_struct_from_user() instead of
+> trying to directly check for zero.
 > 
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
 > ---
->   drivers/infiniband/hw/bnxt_re/ib_verbs.c | 29 +++++++++++++-----------
->   1 file changed, 16 insertions(+), 13 deletions(-)
+>  include/rdma/ib_verbs.h | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
 > 
-> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> index f19b55c13d5809..2942ff44f6a547 100644
-> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> @@ -1655,9 +1655,11 @@ int bnxt_re_create_qp(struct ib_qp *ib_qp, struct ib_qp_init_attr *qp_init_attr,
->   	qp = container_of(ib_qp, struct bnxt_re_qp, ib_qp);
->   
->   	uctx = rdma_udata_to_drv_context(udata, struct bnxt_re_ucontext, ib_uctx);
-> -	if (udata)
-> -		if (ib_copy_from_udata(&ureq, udata,  min(udata->inlen, sizeof(ureq))))
-> -			return -EFAULT;
-> +	if (udata) {
-> +		rc = ib_copy_validate_udata_in(udata, ureq, qp_handle);
-> +		if (rc)
-> +			return rc;
-> +	}
->   
->   	rc = bnxt_re_test_qp_limits(rdev, qp_init_attr, dev_attr);
->   	if (!rc) {
-> @@ -1847,9 +1849,11 @@ static int bnxt_re_init_user_srq(struct bnxt_re_dev *rdev,
->   	int bytes = 0;
->   	struct bnxt_re_ucontext *cntx = rdma_udata_to_drv_context(
->   		udata, struct bnxt_re_ucontext, ib_uctx);
-> +	int rc;
->   
-> -	if (ib_copy_from_udata(&ureq, udata, sizeof(ureq)))
-> -		return -EFAULT;
-> +	rc = ib_copy_validate_udata_in(udata, ureq, srq_handle);
-> +	if (rc)
-> +		return rc;
->   
->   	bytes = (qplib_srq->max_wqe * qplib_srq->wqe_size);
->   	bytes = PAGE_ALIGN(bytes);
-> @@ -3156,10 +3160,10 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->   	cq->qplib_cq.sg_info.pgshft = PAGE_SHIFT;
->   	if (udata) {
->   		struct bnxt_re_cq_req req;
-> -		if (ib_copy_from_udata(&req, udata, sizeof(req))) {
-> -			rc = -EFAULT;
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index 8bd020da774531..32dc674ef78cf1 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -3119,6 +3119,43 @@ static inline bool ib_is_udata_cleared(struct ib_udata *udata,
+>  	return ib_is_buffer_cleared(udata->inbuf + offset, len);
+>  }
+>  
+> +static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
+> +					     size_t kernel_size,
+> +					     size_t minimum_size)
+> +{
+> +	int err;
 > +
-> +		rc = ib_copy_validate_udata_in(udata, req, cq_handle);
-> +		if (rc)
->   			goto fail;
-> -		}
->   
->   		cq->umem = ib_umem_get(&rdev->ibdev, req.cq_va,
->   				       entries * sizeof(struct cq_base),
-> @@ -3289,10 +3293,9 @@ int bnxt_re_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
->   		entries = dev_attr->max_cq_wqes + 1;
->   
->   	/* uverbs consumer */
-> -	if (ib_copy_from_udata(&req, udata, sizeof(req))) {
-> -		rc = -EFAULT;
-> +	rc = ib_copy_validate_udata_in(udata, req, cq_va);
-> +	if (rc)
->   		goto fail;
-> -	}
->   
->   	cq->resize_umem = ib_umem_get(&rdev->ibdev, req.cq_va,
->   				      entries * sizeof(struct cq_base),
-> @@ -4391,8 +4394,8 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
->   	if (_is_host_msn_table(rdev->qplib_res.dattr->dev_cap_flags2))
->   		resp.comp_mask |= BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED;
->   
-> -	if (udata->inlen >= sizeof(ureq)) {
-> -		rc = ib_copy_from_udata(&ureq, udata, min(udata->inlen, sizeof(ureq)));
-> +	if (udata->inlen) {
-> +		rc = ib_copy_validate_udata_in(udata, ureq, comp_mask);
->   		if (rc)
->   			goto cfail;
->   		if (ureq.comp_mask & BNXT_RE_COMP_MASK_REQ_UCNTX_POW2_SUPPORT) {
+> +	if (udata->inlen < minimum_size)
+> +		return -EINVAL;
+> +	err = copy_struct_from_user(req, kernel_size, udata->inbuf,
+> +				    udata->inlen);
+> +	if (err) {
+> +		if (err == E2BIG)
 
+The E2BIG should be negative.
+
+> +			return -EOPNOTSUPP;
+> +		return err;
+> +	}
+> +	return 0;
+
+The logic here can be simplified like this:
+
+err = copy_struct_from_user(req, kernel_size, udata->inbuf,
+			    udata->inlen);
+if (err == -E2BIG)
+	return -EOPNOTSUPP;
+return err;
+
+Junxian
+
+> +}
+> +
+> +/**
+> + * ib_copy_validate_udata_in - Copy and validate that the request structure is
+> + *                             compatible with this kernel
+> + * @_udata: The system calls ib_udata struct
+> + * @_req: The name of an on-stack structure that holds the driver data
+> + * @_end_member: The member in the struct that is the original end of struct
+> + *               from the first kernel to introduce it.
+> + *
+> + * Check that the udata input request struct is properly formed for this kernel.
+> + * Then copy it into req
+> + */
+> +#define ib_copy_validate_udata_in(_udata, _req, _end_member)              \
+> +	({                                                                \
+> +		static_assert(__same_type(*(typeof(&(_req)))0, (_req)));  \
+> +		_ib_copy_validate_udata_in(_udata, &(_req), sizeof(_req), \
+> +					   offsetofend(typeof(_req),      \
+> +						       _end_member));     \
+> +	})
+> +
+>  /**
+>   * ib_modify_qp_is_ok - Check that the supplied attribute mask
+>   * contains all required attributes and no attributes not allowed for
 
