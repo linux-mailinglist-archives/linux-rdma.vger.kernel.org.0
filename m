@@ -1,207 +1,287 @@
-Return-Path: <linux-rdma+bounces-16685-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16686-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ANQLGzkAimluFQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16685-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 16:41:45 +0100
+	id MJNkLZQTimlrGAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16686-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 18:04:20 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3C07112059
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 16:41:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C79E112D79
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Feb 2026 18:04:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DF01B301584C
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 15:41:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0CB753021E43
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 16:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A2037FF50;
-	Mon,  9 Feb 2026 15:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8274A3816EC;
+	Mon,  9 Feb 2026 16:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hBJq982R"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D122F5A1F
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 15:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C95243387
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 16:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770651684; cv=none; b=YOviOeLc5cfQQwb5FTQGsqlE+3uDvrwtACS2nWK9zOLjPGyQhgpBfjxgvHQ6V2PhpGNj+pF4bYWxtfA4QI40QeVWzG6ivq1gBwbvm8eWb+EeRftAxKrvRkFStJ1FimOc+EH70ekBbY+NxPRvYom6SkQT/EvBc/PxN3GiErs7cYI=
+	t=1770656330; cv=none; b=LIQ8Il32wNN8Fm3Y63gmeJ7k8TtwQlOQURtGqGwTZum8E0TUiWIKL4bcoGYJEI89FrDjhKzkuTRzcNc8b3kJ/HXGeBxRlaKEVGp1PuJ1tA45NpV/BO87vzQYtKtfyvOX43ADWsNoAciF2Jc9xCEXuLFhiFdeMQxWuqzB//bXq7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770651684; c=relaxed/simple;
-	bh=ZafYOtc7L+oFFBIzl+MG4fPmt2i/qy2G91TqRC4LoLo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hAvtIbc1+yDUXsMcfXctcr1BVrYoTWTaBr+4PuGuxP8eSFUexSgjEKNula6a+k6S+IADu4cZZau85IesgWDwsGNvzz8b/s1ThN2PCSN4VdbsH4ZguV22qqv03/UtF+KdCgEI3OahfqKlAs8vGcOAo0LcZukorAikDWoMY7GYW08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-409648bc2a2so17975130fac.3
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Feb 2026 07:41:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770651683; x=1771256483;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hNK9kU9v8v12Dojw7r/qw4vHBzF8h3GteZ5Hpo/f/ZE=;
-        b=wJftwNe1QuQC5VrwKChXj5T/eYqBHvVVrbdCs55krmDoMupZvHLfyvdUEPEXmpy6Ec
-         IkKEFyFBzR1y2erQuBrZLdzuxxzQCUG96dn5oTjOFjUtPwCNeo+4WYupDQpRhCHR5xEh
-         H4wR2k6fgk5szofjRhYFdxLl+daHKdsvclNUbrZwMuGVFahbp/3L/U+lQHkr4bIOzEyd
-         fmdoBMSOruphUH9z8NbD/ii+AjDOEXl6p3s1uSlgt6KQhO83cJzIVk7MzrQh2smF59dp
-         EeDWsOi1ncKD9lOfmLn+QlJn/HLhmGPAOW73ESIoW+EURgECdLLDb6dJ/M1IuXsVcuyl
-         +cHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNV77V0YDd+2N0m3KMwOXUSVQbObhsN2e9sVC2qnx8kO+4bh94SIdfaVmg+XWvcLfdmiAls6QlIuu4@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRcGna2sIjhdrTEhku9a7LQaioaopVwh5xvNlLtZJInEsFAhaZ
-	sh2URZaoI/sP5pq0wBefedpgFvbNLOja/uoYzAUcyG1E2Yexx2629aUsLeeANlui0LhO3/Qai35
-	wSYYmm/UW6QrV20vigRCnZK9XBW3hmol648NhelXhiBkd06N2bdhjEhnb5yY=
+	s=arc-20240116; t=1770656330; c=relaxed/simple;
+	bh=85oaoBxlwrdtTXUTkxjFmeBmx1MVGM73U+yJ3bLlM7o=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=pRiXYBypRquDjQTB7PEwUoAP+x87p7pwiBUkxdXBue85y9Gf/0mF6/RKWGhP1jz2v1u0FlOtlVd75fDwAt2dwnJVb+XTJrvWBcPeLOX91uteJEixUk2Fv2QSqRTFOah6AX3sXCowpKA7y6VxCUq8Vr7FjC3f0TF6TObY+8GhgI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hBJq982R; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770656330; x=1802192330;
+  h=date:from:to:cc:subject:message-id;
+  bh=85oaoBxlwrdtTXUTkxjFmeBmx1MVGM73U+yJ3bLlM7o=;
+  b=hBJq982R9DVNiwk9Y31+19Y+MnQXqXLxhkzWLchNHdFD4jWCf6876zfk
+   le3yPU/gsM58ItmEJAj+WXdhC3Jr28dQ0A/FXVzT39fcBOnQtC/L/VIir
+   1lJ+ZIRsjU4SZVxapIAJxc7Eq55G1KX0bpoQIKq8K43bBbpvHX/gIzYep
+   olhko2S4ayjP7sFsvI8lmga8DBbUdeEuz/FJd7LU8EIbwxL2lNr05/JFl
+   YfbOn4laCpvyuNcjYo/z2HoGLfoGSl9wEvlLPLf36qAx4dzYP+Yuv8O9d
+   sPn72HrE54OOA44/g/+Zo8YFbwxNaJ7ZbswrdhAoW+1UVuJYilgv04TAu
+   g==;
+X-CSE-ConnectionGUID: e5RXq3eXQlyCfMAuUcjgVw==
+X-CSE-MsgGUID: kh4Z0yfTSamFJspMdpbnkg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11696"; a="59336521"
+X-IronPort-AV: E=Sophos;i="6.21,282,1763452800"; 
+   d="scan'208";a="59336521"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2026 08:58:49 -0800
+X-CSE-ConnectionGUID: 4gYQy9nGT1OLtf87wPg85g==
+X-CSE-MsgGUID: fOKGGmF0TeahbKOaLIor9g==
+X-ExtLoop1: 1
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 09 Feb 2026 08:58:47 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vpUaz-00000000o8i-1CmI;
+	Mon, 09 Feb 2026 16:58:45 +0000
+Date: Tue, 10 Feb 2026 00:58:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ d6c58f4eb3d00a695f5a610ea780cad322ec714e
+Message-ID: <202602100020.GnlreN6K-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6820:210b:b0:663:12f:215f with SMTP id
- 006d021491bc7-66d09cb2a1cmr5054428eaf.15.1770651683338; Mon, 09 Feb 2026
- 07:41:23 -0800 (PST)
-Date: Mon, 09 Feb 2026 07:41:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <698a0023.050a0220.3b3015.0078.GAE@google.com>
-Subject: [syzbot] [rds?] general protection fault in rds_tcp_accept_one
-From: syzbot <syzbot+96046021045ffe6d7709@syzkaller.appspotmail.com>
-To: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com, 
-	horms@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	rds-devel@oss.oracle.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ac78ce3b6729749e];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16686-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-16685-lists,linux-rdma=lfdr.de,96046021045ffe6d7709];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,googlegroups.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,appspotmail.com:email,storage.googleapis.com:url]
-X-Rspamd-Queue-Id: D3C07112059
+	DKIM_TRACE(0.00)[intel.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,lists];
+	RCVD_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:mid,intel.com:dkim]
+X-Rspamd-Queue-Id: 1C79E112D79
 X-Rspamd-Action: no action
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: d6c58f4eb3d00a695f5a610ea780cad322ec714e  RDMA/mlx5: Implement DMABUF export ops
 
-syzbot found the following issue on:
+elapsed time: 726m
 
-HEAD commit:    9845cf73f7db Add linux-next specific files for 20260205
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ec4a5a580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac78ce3b6729749e
-dashboard link: https://syzkaller.appspot.com/bug?extid=96046021045ffe6d7709
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122acb22580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149fc7fa580000
+configs tested: 163
+configs skipped: 4
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9f30334a2431/disk-9845cf73.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0d58741a15a6/vmlinux-9845cf73.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/62204da1452c/bzImage-9845cf73.xz
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+96046021045ffe6d7709@syzkaller.appspotmail.com
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    gcc-15.2.0
+arc                                 defconfig    gcc-15.2.0
+arc                   randconfig-001-20260209    gcc-10.5.0
+arc                   randconfig-002-20260209    gcc-10.5.0
+arm                               allnoconfig    clang-22
+arm                              allyesconfig    gcc-15.2.0
+arm                   randconfig-001-20260209    gcc-15.2.0
+arm                   randconfig-002-20260209    gcc-12.5.0
+arm                   randconfig-003-20260209    gcc-8.5.0
+arm                   randconfig-004-20260209    gcc-14.3.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.2.0
+arm64                 randconfig-001-20260209    clang-22
+arm64                 randconfig-002-20260209    gcc-15.2.0
+arm64                 randconfig-003-20260209    clang-19
+arm64                 randconfig-004-20260209    gcc-15.2.0
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                  randconfig-001-20260209    gcc-10.5.0
+csky                  randconfig-002-20260209    gcc-15.2.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-22
+hexagon               randconfig-001-20260209    clang-16
+hexagon               randconfig-002-20260209    clang-22
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20260209    gcc-14
+i386        buildonly-randconfig-002-20260209    clang-20
+i386        buildonly-randconfig-003-20260209    gcc-14
+i386        buildonly-randconfig-004-20260209    clang-20
+i386        buildonly-randconfig-005-20260209    clang-20
+i386        buildonly-randconfig-006-20260209    gcc-13
+i386                                defconfig    clang-20
+i386                  randconfig-001-20260209    clang-20
+i386                  randconfig-002-20260209    gcc-14
+i386                  randconfig-003-20260209    clang-20
+i386                  randconfig-004-20260209    clang-20
+i386                  randconfig-005-20260209    clang-20
+i386                  randconfig-006-20260209    clang-20
+i386                  randconfig-007-20260209    clang-20
+i386                  randconfig-011-20260209    clang-20
+i386                  randconfig-012-20260209    gcc-14
+i386                  randconfig-013-20260209    clang-20
+i386                  randconfig-014-20260209    gcc-14
+i386                  randconfig-015-20260209    gcc-14
+i386                  randconfig-016-20260209    gcc-14
+i386                  randconfig-017-20260209    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260209    clang-18
+loongarch             randconfig-002-20260209    clang-22
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    gcc-15.2.0
+m68k                                defconfig    gcc-15.2.0
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    gcc-15.2.0
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+mips                         cobalt_defconfig    gcc-15.2.0
+mips                     cu1830-neo_defconfig    gcc-15.2.0
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20260209    gcc-8.5.0
+nios2                 randconfig-002-20260209    gcc-8.5.0
+openrisc                         allmodconfig    gcc-15.2.0
+openrisc                          allnoconfig    gcc-15.2.0
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    gcc-15.2.0
+parisc                              defconfig    gcc-15.2.0
+parisc                randconfig-001-20260209    gcc-12.5.0
+parisc                randconfig-002-20260209    gcc-8.5.0
+parisc64                            defconfig    gcc-15.2.0
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc                       ebony_defconfig    clang-22
+powerpc                      ppc6xx_defconfig    gcc-15.2.0
+powerpc               randconfig-001-20260209    gcc-10.5.0
+powerpc               randconfig-002-20260209    clang-22
+powerpc                     tqm8560_defconfig    gcc-15.2.0
+powerpc64             randconfig-001-20260209    clang-22
+powerpc64             randconfig-002-20260209    clang-22
+riscv                            allmodconfig    clang-22
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    clang-22
+riscv                 randconfig-001-20260209    gcc-9.5.0
+riscv                 randconfig-002-20260209    clang-22
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    clang-22
+s390                  randconfig-001-20260209    gcc-12.5.0
+s390                  randconfig-002-20260209    gcc-8.5.0
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    gcc-15.2.0
+sh                         apsh4a3a_defconfig    gcc-15.2.0
+sh                                  defconfig    gcc-15.2.0
+sh                    randconfig-001-20260209    gcc-10.5.0
+sh                    randconfig-002-20260209    gcc-9.5.0
+sparc                             allnoconfig    gcc-15.2.0
+sparc                               defconfig    gcc-15.2.0
+sparc                 randconfig-001-20260209    gcc-8.5.0
+sparc                 randconfig-002-20260209    gcc-11.5.0
+sparc64                          allmodconfig    clang-22
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20260209    clang-22
+sparc64               randconfig-002-20260209    clang-22
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    gcc-14
+um                                  defconfig    clang-22
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260209    gcc-14
+um                    randconfig-002-20260209    clang-18
+um                           x86_64_defconfig    clang-22
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260209    gcc-14
+x86_64      buildonly-randconfig-002-20260209    gcc-14
+x86_64      buildonly-randconfig-003-20260209    clang-20
+x86_64      buildonly-randconfig-004-20260209    clang-20
+x86_64      buildonly-randconfig-005-20260209    gcc-14
+x86_64      buildonly-randconfig-006-20260209    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                randconfig-001-20260209    gcc-12
+x86_64                randconfig-002-20260209    gcc-14
+x86_64                randconfig-003-20260209    gcc-14
+x86_64                randconfig-004-20260209    gcc-12
+x86_64                randconfig-005-20260209    clang-20
+x86_64                randconfig-006-20260209    gcc-14
+x86_64                randconfig-011-20260209    clang-20
+x86_64                randconfig-012-20260209    clang-20
+x86_64                randconfig-013-20260209    gcc-13
+x86_64                randconfig-014-20260209    clang-20
+x86_64                randconfig-015-20260209    gcc-14
+x86_64                randconfig-016-20260209    gcc-14
+x86_64                randconfig-071-20260209    clang-20
+x86_64                randconfig-072-20260209    gcc-14
+x86_64                randconfig-073-20260209    clang-20
+x86_64                randconfig-074-20260209    clang-20
+x86_64                randconfig-075-20260209    clang-20
+x86_64                randconfig-076-20260209    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                           allyesconfig    gcc-15.2.0
+xtensa                randconfig-001-20260209    gcc-8.5.0
+xtensa                randconfig-002-20260209    gcc-8.5.0
 
-netdevsim netdevsim1 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 1 UID: 0 PID: 3485 Comm: kworker/u8:8 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
-Workqueue: krdsd rds_tcp_accept_worker
-RIP: 0010:rds_tcp_accept_one+0xa5b/0xd70 net/rds/tcp_listen.c:319
-Code: 00 00 48 83 c3 18 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 63 a9 2f f7 48 8b 1b 48 83 c3 12 49 89 de 49 c1 ee 03 <43> 0f b6 04 2e 84 c0 0f 85 53 02 00 00 44 0f b6 2b bf 08 00 00 00
-RSP: 0018:ffffc9000b64f9a0 EFLAGS: 00010202
-RAX: 1ffff1100dacb173 RBX: 0000000000000012 RCX: 0000000000000000
-RDX: 0000000000000006 RSI: ffffffff8e006fa9 RDI: 00000000ffffffff
-RBP: ffffc9000b64fb18 R08: ffffffff903342b7 R09: 1ffffffff2066856
-R10: dffffc0000000000 R11: fffffbfff2066857 R12: ffff88803286c000
-R13: dffffc0000000000 R14: 0000000000000002 R15: 1ffff920016c9f3c
-FS:  0000000000000000(0000) GS:ffff888125115000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f30359456b8 CR3: 00000000320ee000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- rds_tcp_accept_worker+0x1d/0x70 net/rds/tcp.c:524
- process_one_work+0x949/0x1650 kernel/workqueue.c:3279
- process_scheduled_works kernel/workqueue.c:3362 [inline]
- worker_thread+0xb46/0x1140 kernel/workqueue.c:3443
- kthread+0x388/0x470 kernel/kthread.c:467
- ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:rds_tcp_accept_one+0xa5b/0xd70 net/rds/tcp_listen.c:319
-Code: 00 00 48 83 c3 18 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 63 a9 2f f7 48 8b 1b 48 83 c3 12 49 89 de 49 c1 ee 03 <43> 0f b6 04 2e 84 c0 0f 85 53 02 00 00 44 0f b6 2b bf 08 00 00 00
-RSP: 0018:ffffc9000b64f9a0 EFLAGS: 00010202
-RAX: 1ffff1100dacb173 RBX: 0000000000000012 RCX: 0000000000000000
-RDX: 0000000000000006 RSI: ffffffff8e006fa9 RDI: 00000000ffffffff
-RBP: ffffc9000b64fb18 R08: ffffffff903342b7 R09: 1ffffffff2066856
-R10: dffffc0000000000 R11: fffffbfff2066857 R12: ffff88803286c000
-R13: dffffc0000000000 R14: 0000000000000002 R15: 1ffff920016c9f3c
-FS:  0000000000000000(0000) GS:ffff888125115000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f303594da08 CR3: 000000000e74c000 CR4: 00000000003526f0
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	48 83 c3 18          	add    $0x18,%rbx
-   6:	48 89 d8             	mov    %rbx,%rax
-   9:	48 c1 e8 03          	shr    $0x3,%rax
-   d:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1)
-  12:	74 08                	je     0x1c
-  14:	48 89 df             	mov    %rbx,%rdi
-  17:	e8 63 a9 2f f7       	call   0xf72fa97f
-  1c:	48 8b 1b             	mov    (%rbx),%rbx
-  1f:	48 83 c3 12          	add    $0x12,%rbx
-  23:	49 89 de             	mov    %rbx,%r14
-  26:	49 c1 ee 03          	shr    $0x3,%r14
-* 2a:	43 0f b6 04 2e       	movzbl (%r14,%r13,1),%eax <-- trapping instruction
-  2f:	84 c0                	test   %al,%al
-  31:	0f 85 53 02 00 00    	jne    0x28a
-  37:	44 0f b6 2b          	movzbl (%rbx),%r13d
-  3b:	bf 08 00 00 00       	mov    $0x8,%edi
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
