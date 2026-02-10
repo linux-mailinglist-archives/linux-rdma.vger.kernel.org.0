@@ -1,185 +1,152 @@
-Return-Path: <linux-rdma+bounces-16738-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16740-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gNSrCb2Di2l4VAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16738-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 20:15:09 +0100
+	id CPrABWGLi2mkVwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16740-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 20:47:45 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E18F11E8F7
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 20:15:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC38011EC9E
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 20:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0B8D23012CBF
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 19:14:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D5D55301871F
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 19:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467BB38B7B5;
-	Tue, 10 Feb 2026 19:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E9F26E710;
+	Tue, 10 Feb 2026 19:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="eID+FymD"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="DO9mt+Uy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87693859C4
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Feb 2026 19:14:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5674B3254AC
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Feb 2026 19:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770750893; cv=none; b=d96InDquWha1o4kkcyaX4ME2gNhb82Agg9dfgzJ4aox/KiAAWj5O2eT9VGjQFoL1b0BAHFuMew/yD7vModJ9JHAg4NfTqosuYa6LJGp/L474T0uEkwW0yIJHEEEMeDbx5pkdVNhk0VHBhVtXA26v+W4Tmr0u3xZyepF5ljSruIk=
+	t=1770752859; cv=none; b=DklcsNLnT3KAosmh0ING9vTgMM3Xl377OFy9bjL5OTZiaEZDtALATU0l4nnqf4XpL2YPevVFA8nzIcHu/u5P6poUPNPDXPld80B8EKo4Qh4T/l955Lssif+vQQdKCTIShEbt7g1HsxSi0ah/djaG4ER/K0AyZVB1Kgw50Sip6DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770750893; c=relaxed/simple;
-	bh=9xqNAYpqagS+Yo/2Arld+UxBGO/HfrO3BQ9uwD1a4Zk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MVpfOOBGwRdaQHnA8Ehvhzse7VuZYL56YnZsN7tBsPLdmtVWS40RDPqWl6wv+oaeC7HyPBndUjHPVMTXtmhRg5iXKt72L//PsC/Os3lPa0A0eaQMTqSbOZy5NB0bHEZy+0nGWI9x9CbYip2TBe19Xp6Cl8lexSl2qvp8JSy2XOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=eID+FymD; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-502b0aa36feso1437081cf.1
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Feb 2026 11:14:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1770750891; x=1771355691; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=femI4WrttQvTTkHcuguP8B65f0lyKniJDpfqrFYB7wI=;
-        b=eID+FymD8KXsFwWGtnrtdJIivFaki1gcELhq2IL1WF2302YXaU+V85VOr7/aHZJ5Za
-         IwdqKhLtOh4KH+fBNlOmJMzvSh1CCUTD2nVHpPldH+neQQeCN3FLY263mXjdtSsAd/oE
-         nMM9pqmYt04lcqeH3aJbING4NL8kKUdAaEU5eUuc+LEDFcmV//z43I1xW0h6JGR/XGgp
-         izHuX7vLglWYjHXgfeesxxzZBtfuHMSirwD3SMo6BNwmz2pmMulsC03POCMNxBR0O6pv
-         TDqZr3qyYiGtONrsC9ufM1lumuU8qZpHkzSMcevnaeYSwCdfpob/B47Ym3QVXukV2zju
-         //BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770750891; x=1771355691;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=femI4WrttQvTTkHcuguP8B65f0lyKniJDpfqrFYB7wI=;
-        b=LiYrtKCXdqcYKv5djjG5C+VK7vWMnSYtvlyTgyL8FHEfnn2e42AwTx++/gsgiAtu7Z
-         7hq0XBVMeot3ZBgAf3KWQxGmHh+Hoi3ObVbLwFnikUrrFsIkpMKAVuRNNEcCto2JxRp3
-         nFq8+ruDRrZ62ERm4pknFEdUGt4+2WS02KxuAXc3gauKhBzBcxyPGPQJ4ceXob90JYi1
-         dVh1SfusFUEcQ7xye/a9BmuoPPm/P/X2g0Eso46HJa3GJyqbv0n07vynDWnn5BJJvS9Z
-         iibabqz8ncsjy7wQMcrbjDKxctMpJ4mRan1jshXy9V6gDdctrHpnlX+66mQ57luMcvLP
-         Jsdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVAiHPTc9RpuN0DQxIMsSuOY/jjtNi2MJFUSUPTtol2r+vigWX3GGA3upwkVSt4P+jCBaS9pzsdTJvB@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpqWMHaafqL2xVQsIU1/Popy0cqVs+8nFJrNN06jlRh1zNsney
-	FDM4ULgjGVpKSZmImcLTwXl1StAeJnaeSaS5k/oiom7QMs1C9JPjjFynKHptL3swd7A=
-X-Gm-Gg: AZuq6aLwqPS2uFYvIwOBfOHQFmNVefi+eh+r+GHp/8ogb4z98Elm0coyP4XhXk9/dUr
-	HAn7dKPMTTfrWjdJnyFFTQZRIdlD634R6UVKIdLlrLiOF0NGK+E3DkAMfDR0AeSnXmYDALcRYpm
-	dC70Y9isdK15EdBnatxyjTBYqFw84odj+HvRs4csTN2sCAa6ZWDM4oeTgi11ZCqRJRXMswTu3jP
-	NOF8xIs+H8i1H7CrVDaI61VTCOR9qeAk2czv8r1zNzv0nliSsYTIcq22/BiyjAy1wPOZs75yj+c
-	SoCoDm4l3bHTZxZhHYVOUiousioLpvgbfChjKJqNyLv/gBWmtq3zUJyoJ+lrwquQrpjhgfQimho
-	nqw9UViZVrsVcfjkVz6UHZRpXGK2RRYaBA8GNimOo94qQAl5armSmceogW03znWNI/AvUCTpOED
-	pDmJgFG361cprscItwR5i3sgWt6RTnxs26ELpq++T5f8BgTJmEpHkzDenTz8KQYQGCdA6NDlkjk
-	ipgjig=
-X-Received: by 2002:a05:622a:254:b0:505:e529:11e9 with SMTP id d75a77b69052e-50672c73556mr54505251cf.36.1770750890616;
-        Tue, 10 Feb 2026 11:14:50 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8caf9a1654dsm1108808785a.31.2026.02.10.11.14.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Feb 2026 11:14:50 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vptCD-00000005Eol-2Dul;
-	Tue, 10 Feb 2026 15:14:49 -0400
-Date: Tue, 10 Feb 2026 15:14:49 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v11 6/6] RDMA/bnxt_re: Support application
- specific CQs
-Message-ID: <20260210191449.GE750753@ziepe.ca>
-References: <20260210165939.41625-1-sriharsha.basavapatna@broadcom.com>
- <20260210165939.41625-7-sriharsha.basavapatna@broadcom.com>
+	s=arc-20240116; t=1770752859; c=relaxed/simple;
+	bh=EfVHrbdF8/yG09IBQ20HHyfnxAzay8Gf5YSnWq6tV7k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZmX1/3kRb5pZZcfBiwq9cwf8h9Hdmc4yYD4AT5VcCr5+rYclzr1uk8hbsgvYq91iXfQshef2hRWBYPzjqJBf/MCcY53ln4x1DXtd0tXHb3rnPmoyAzVyaNPFd+G8nFJCRwGyb9Q7w/+7cAB8DhOS249mm9EnVjcV97iYXj9AzUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=DO9mt+Uy; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61AH2JQ73309727
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Feb 2026 11:47:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2025-q2; bh=EfVHrbdF8/yG09IBQ2
+	0HHyfnxAzay8Gf5YSnWq6tV7k=; b=DO9mt+Uy0AavnJKPFVpdQFeFx7wmTdy+q4
+	9Zd4SKKQmT5Vxv/2WmpU1HS840cw6ba7ngN9cPfRzgPKdITOFHsdorYD8x6x+E4m
+	1JXQPhMDSMeQz1TiJo6rLGQBRGPcwf2G6EZvZ/rF8Mb470XJw1z4qXOf3WytmD8o
+	2v6WbvmjIRztxj9f2688BRhkKu6wbvK91YJAxi/+SvtOl9qZ9RloccAoR5iNuFfz
+	OqmYtB9XrvDMETixsQRtZAvOAw0mIGENvnNHToGezVLrFU6uZx/fZg4Xiu1uXGYY
+	9vhVznJJFygEAulULtYOW5eOVYweFnOQor9hPvNVDgKyDc3wOxIQ==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4c88qnjd9q-9
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Feb 2026 11:47:37 -0800 (PST)
+Received: from twshared41309.15.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.35; Tue, 10 Feb 2026 19:47:34 +0000
+Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
+	id DCAA7102666AF; Tue, 10 Feb 2026 11:40:15 -0800 (PST)
+From: Zhiping Zhang <zhipingz@meta.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Bjorn
+ Helgaas <bhelgaas@google.com>, <linux-rdma@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, Keith Busch <kbusch@kernel.org>,
+        Yochai
+ Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
+CC: Bjorn Helgaas <helgaas@kernel.org>, Zhiping Zhang <zhipingz@meta.com>
+Subject: [RFC 0/2] Retrieve tph from dmabuf for PCIe P2P memory access
+Date: Tue, 10 Feb 2026 11:39:53 -0800
+Message-ID: <20260210194014.2147481-1-zhipingz@meta.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260210165939.41625-7-sriharsha.basavapatna@broadcom.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjEwMDE2MyBTYWx0ZWRfXw1moQZ4RU0Cb
+ ZnkTprzGaMh0z/WxJ289ZNvHZdOrMR3jU4c0R3XUbNpdwpRTp39jz908WUn7Igl1ocWJg5QyzW9
+ 9aoGErzQ1kOY+qFOiLlx5FdACuDYf8EI+ol5b5j1v/v0vRq2L+YuvvrLwkMhOzf4dzv+moAcS8Y
+ nCjyZxjAKBg9thW8EIjAOYN9f60wo2P6U3avBC/ZBFEPGvzMjBMtL2Sbn9GCYI3UK7c9yg30VnS
+ 9cmHIBiEz/xc7w4hF9PXrF9hDBWQZhNkFKgp/u8LGnME6ux/TSE/tvGb3NHSj5Xj5wSQhdAq5Tf
+ hAJ34RMOedy2MJdAwZk8TmqVmKQvoMgYyHZC8WXj8OPFycfw70IrvQkzk9NoQNp4JIri3gWVwA4
+ uMZhKQni6L+FN9UNlroIj+5IfPHFZM39ZPjDpEIiJrWNPp+huQ9vu8maJqg52snpPefEalJlf7s
+ IouOiRX9enDnlp/2MYQ==
+X-Authority-Analysis: v=2.4 cv=POkCOPqC c=1 sm=1 tr=0 ts=698b8b59 cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
+ a=GgsMoib0sEa3-_RKJdDe:22 a=VabnemYjAAAA:8 a=yWaUcmrBNUFKcz5DFYsA:9
+ a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-ORIG-GUID: GyVlbZvkTlo8NfvjfNtNUSoM3S0ZT9Cl
+X-Proofpoint-GUID: GyVlbZvkTlo8NfvjfNtNUSoM3S0ZT9Cl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-10_03,2026-02-10_02,2025-10-01_01
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16738-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16740-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[meta.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: 8E18F11E8F7
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,meta.com:mid,meta.com:dkim,meta.com:email];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: EC38011EC9E
 X-Rspamd-Action: no action
 
-On Tue, Feb 10, 2026 at 10:29:39PM +0530, Sriharsha Basavapatna wrote:
-> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> index dc73f0072528..04588b4f79c0 100644
-> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> @@ -3372,6 +3372,9 @@ static int bnxt_re_setup_sginfo(struct bnxt_re_dev *rdev,
->  	return 0;
->  }
->  
-> +static u64 bnxt_re_cq_cmask_supported = (BNXT_RE_CQ_TOGGLE_PAGE_SUPPORT |
-> +					 BNXT_RE_CQ_APP_ALLOC_ENABLE);
+Currently, the steering tag can be used for a CPU on the motherboard; the
+ACPI check is in place to query and obtain the supported tph settings. He=
+re
+we intend to use the tph info to improve RDMA NIC memory access on a vfio=
+-based
+accelerator device via PCIe peer-to-peer. When an applicantion register a
+RDMA memory region with DMABUF for the RDMA NIC to access the device memo=
+ry,
+the tph associated with the memory region can be retrieved and used to se=
+t the
+steering tag / process hint (ph). The tph contains additional instruction=
+s
+or hints to the GPU or accelerator device for advanced memory operations,
+such as, read cache selection.
 
-Don't mix req and resp flags together!!!
+Note this RFC is for the discussion on the direction and is not intended =
+to be
+a complete implementation. Once the direction is agreed on, we will work =
+on the
+implementation or a real patch set.
 
-Also don't make a global static variable, just pass the flags directly
-to the helper.
+Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
 
->  int bnxt_re_create_cq_umem(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  			   struct ib_umem *umem, struct uverbs_attr_bundle *attrs)
->  {
-> @@ -3382,6 +3385,7 @@ int bnxt_re_create_cq_umem(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
->  		rdma_udata_to_drv_context(udata, struct bnxt_re_ucontext, ib_uctx);
->  	struct bnxt_qplib_dev_attr *dev_attr = rdev->dev_attr;
->  	struct bnxt_qplib_chip_ctx *cctx;
-> +	struct bnxt_re_cq_req req = {};
-
-No need to zero memory being passed to ib_copy_validate_udata_in_cm(),
-it always writes to the whole struct.
-
-> diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-> index 1f7685665db1..26eeb78193fa 100644
-> --- a/include/uapi/rdma/bnxt_re-abi.h
-> +++ b/include/uapi/rdma/bnxt_re-abi.h
-> @@ -103,10 +103,12 @@ struct bnxt_re_pd_resp {
->  struct bnxt_re_cq_req {
->  	__aligned_u64 cq_va;
->  	__aligned_u64 cq_handle;
-> +	__aligned_u64 comp_mask;
->  };
->  
->  enum bnxt_re_cq_mask {
->  	BNXT_RE_CQ_TOGGLE_PAGE_SUPPORT = 0x1,
-> +	BNXT_RE_CQ_APP_ALLOC_ENABLE = 0x2,
->  };
-
-The req/resp comp masks should be kept separate.
-
-The name should be much more specific "BNXT_RE_CQ_EXACT_CQE" or something.
-
-This is all alot better now, thanks
-
-Jhason
+[RFC 1/2] Vfio: add callback to get tph info for dmabuf
+[RFC 2/2] RMDA MLX5: get tph for p2p access when registering dmabuf
 
