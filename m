@@ -1,169 +1,213 @@
-Return-Path: <linux-rdma+bounces-16693-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16694-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aF+6N7NtimlHKQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16693-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 00:28:51 +0100
+	id qPWfEs+VimnjMAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16694-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 03:19:59 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD1311563A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 00:28:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E161111642C
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 03:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A9D803007A6E
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Feb 2026 23:28:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A1614302DB77
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 02:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E9132AADF;
-	Mon,  9 Feb 2026 23:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF902D877E;
+	Tue, 10 Feb 2026 02:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="fYocgLEN"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="S44+kLpJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FED311972
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Feb 2026 23:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9213275112;
+	Tue, 10 Feb 2026 02:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770679726; cv=none; b=anrdp7yeGJFUajCy5OSYOeZ7N7YPBspG6tbCNSxDeDvOiQcv5jKQgyAippaKEMKIiBdLF05uCnS5Ws7QmQySo4yUzfM3UgRWvAvWEU81FtRlid3m/hGbB5bhsuqIrkL4XYHKME7om4wG9BA4IdSSMb1TZkP+yTdmLZ6B1LMG9+E=
+	t=1770689993; cv=none; b=tZ+nO7Q+bzgMOCHR3wL28GBxOqip8rEL24+2nFmNk7hHqf1gTfP6O+kaVEbY78NEC4SjuhGY30SGMJMz6tQY+K0IHYmoD/gWWe3NJUm2X+pKmL+57sRRHU+x4TYgdgC+6l5zFgQbIEcjUhs+BfELQmVTkryV6NzxNs1OC4gG6zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770679726; c=relaxed/simple;
-	bh=4NQ3u7S2HVKAQx7TWVmyCHklXZFGVPOW8H6mAomwl90=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QXExFk8z9CkX+bNzXdaBdtb/riTVw+XRWmQAG1nZzZfOdLs+nONxG8ovvTagha1ricf6xVxpSuyCCrGWh6cT3sw3wrqFvHLDW02hlDvsVv1jMd4FzwlZVqEzgfnJGp/Ia33nHUpAG1mGaBFIvpKFLt/8NW/tCRxwLQV9cLUKUlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=fYocgLEN; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 619LEMgC1057354
-	for <linux-rdma@vger.kernel.org>; Mon, 9 Feb 2026 15:28:44 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=4NQ3u7S2HVKAQx7TWVmyCHklXZFGVPOW8H6mAomwl90=; b=fYocgLENwgUg
-	uq6TnsOJzeVCiR69fRm/WdNoar89z9uTDBMT6uwqfYQ0TbU+IO4XFq/PR16A/oWU
-	wzdqXBncuPtYnh7LyXhRCLfpfvc9l9SisqJ8R9xc5MFZo18du1c2Yp95emYgODsZ
-	wq0rs6tZtvc+Gkr/wMELArLvWzmnQC/1ldIsoA81uQNVaeXimF0GQys0KybstbLB
-	NcNPTPqBByykiibLadkPPztjoiAX52Z6rZu8JR2w/mYThbGutge/k4LMdWOWrCo8
-	ZvYoes1Gehx/2YlaMtvGwq08yLSz+TfzV6WS6m65bN2U3C6LG2V+uSe4o++y0kWM
-	B7F1iTjhFw==
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by m0001303.ppops.net (PPS) with ESMTPS id 4c7qathdxt-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-rdma@vger.kernel.org>; Mon, 09 Feb 2026 15:28:44 -0800 (PST)
-Received: from twshared41309.15.frc2.facebook.com (2620:10d:c085:108::150d) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Mon, 9 Feb 2026 23:28:43 +0000
-Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
-	id 2ECB11011CDA2; Mon,  9 Feb 2026 15:28:26 -0800 (PST)
-From: Zhiping Zhang <zhipingz@meta.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Keith Busch <kbusch@kernel.org>,
-        Yochai Cohen
-	<yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
-        Zhiping Zhang
-	<zhipingz@meta.com>
-Subject: Re: [RFC 0/2] Retrieve tph from dmabuf for PCIe P2P memory access
-Date: Mon, 9 Feb 2026 15:28:24 -0800
-Message-ID: <20260209232826.3567769-1-zhipingz@meta.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260209181303.GB943673@ziepe.ca>
-References: <20260209181303.GB943673@ziepe.ca>
+	s=arc-20240116; t=1770689993; c=relaxed/simple;
+	bh=MG8jvzZf/kzglYRZMkv6gbzkxD7FW8wmHIBPZCNHuM4=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=AeVJ32hHfk+uhDMioAtwuZ82LtWXoKs16TZicsQfieNz30Rf7l9jjk5FCcppvpThDJO45q5e7f+i/KtDiYdQOJBhYdJW1S/dtbkWCxkj50ik3z4223KTpMUykthni0OKuRcJ8QsivHZY8rmbSYy8w0U5UEjH0BS6JMqaxIffnto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=S44+kLpJ; arc=none smtp.client-ip=113.46.200.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=uecur6houava9Fdo15L338waubBYoJUZ+/hRmaHFZEI=;
+	b=S44+kLpJTpkr731oWQk+wroAkLZwJDiU4j59tMy0cWytiRFKVb299lo83Zp9BrlxDhRV2fkLB
+	cst9J6FK07pNOPtazds3xmNtX9howq8DoFns31ByZk28jrLbqUPGW2GYdTze6qGQ9H+xuEAPuQq
+	LcD4CBgy0Ql5xDM/oosfc3E=
+Received: from mail.maildlp.com (unknown [172.19.162.140])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4f94sC1cKBzRhQm;
+	Tue, 10 Feb 2026 10:15:11 +0800 (CST)
+Received: from kwepemk100013.china.huawei.com (unknown [7.202.194.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3CD292012A;
+	Tue, 10 Feb 2026 10:19:48 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemk100013.china.huawei.com (7.202.194.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Tue, 10 Feb 2026 10:19:47 +0800
+Message-ID: <49fe0af5-7dcf-42e0-bd73-0bd42c067d26@huawei.com>
+Date: Tue, 10 Feb 2026 10:19:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: zCZpGgc0e7S_q-e5fej6kxqTokwMccq5
-X-Proofpoint-ORIG-GUID: zCZpGgc0e7S_q-e5fej6kxqTokwMccq5
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA5MDE5OCBTYWx0ZWRfXxO06CT4G45pm
- BvGzgIPIBF9W04mIVg6T4guniY8mE7jG1Jxi9jUo2j5CByhgap4i328H3mOM+vWxUqwSlvf/SBo
- /A6aZk9geiXe2MSBQqLRL4LHtuBPGj9KuyRbQzro8GDyWzodE71DJQyK03pgEfcMWBE+ZAp7Wa/
- bixGQK1zoVo3bKGRNW/TWXsCAhxVBeQgljdTjwo9B4JyMJVx1bnorqBT52x7KYpssjAE4EZ0zhp
- VYsNdbOH4VCqJLpMtPV5CDpUSsM4El+hmQpYvVTxkvC4mx9s1V4nASummW917q96k0WHUZuE1l6
- WvpP89OKKtCETLMlk/dyFfANJINBJJCz6oULCxFTwtCyoMD34fZmliEkeK88VTgcxiJqJLyZAPV
- 6uF5WBKZkz75EVtYYv196dSVcc9JUkqrWHJHgdhZ3piK8kqgEq3C2366AMNCksCIMn8Cbb/lMjL
- RqUb9ER1Zkt43RqPo+A==
-X-Authority-Analysis: v=2.4 cv=UOzQ3Sfy c=1 sm=1 tr=0 ts=698a6dac cx=c_pps
- a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
- a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
- a=GgsMoib0sEa3-_RKJdDe:22 a=e5mUnYsNAAAA:8 a=P0N4maTJ8gqIai-TwVIA:9
- a=Vxmtnl_E_bksehYqCbjh:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-09_01,2026-02-09_04,2025-10-01_01
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<dcostantino@meta.com>, <rneu@meta.com>, <kernel-team@meta.com>
+Subject: Re: [PATCH net] net/mlx5e: Skip NAPI polling when PCI channel is
+ offline
+To: Breno Leitao <leitao@debian.org>, Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon
+ Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Amir Vadai
+	<amirv@mellanox.com>
+References: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemk100013.china.huawei.com (7.202.194.61)
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16693-lists,linux-rdma=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:mid,meta.com:dkim];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-16694-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DKIM_TRACE(0.00)[meta.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[shaojijie@huawei.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 1AD1311563A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim]
+X-Rspamd-Queue-Id: E161111642C
 X-Rspamd-Action: no action
 
-On Mon, Feb 08, 2026 at 10:13:00AM -0800, Jason Gunthor write:
 
-> On Mon, Feb 09, 2026 at 09:53:10AM -0800, Zhiping Zhang wrote:
-> > Currently, the steering tag can be used for a CPU on the motherboard;=
- the
-> > ACPI check is in place to query and obtain the supported tph settings=
-. Here
-> > we intend to use the tph info to improve RDMA NIC memory access on a =
-vfio-based
-> > accelerator device via PCIe peer-to-peer. When an applicantion regist=
-er a
-> > RDMA memory region with DMABUF for the RDMA NIC to access the device =
-memory,
-> > the tph associated with the memory region can be retrieved and used t=
-o set the
-> > steering tag / process hint (ph). The tph contains additional instruc=
-tions
-> > or hints to the GPU or accelerator device for advanced memory operati=
-ons,
-> > such as, read cache selection.
-> >
-> > Note this RFC is for the discussion on the direction and is not inten=
-ded to be
-> > a complete implementation. Once the direction is agreed on, we will w=
-ork on the
-> > implementation or a real patch set.
+on 2026/2/10 2:01, Breno Leitao wrote:
+> When a PCI error (e.g. AER error or DPC containment) marks the PCI
+> channel as frozen or permanently failed, the IOMMU mappings for the
+> device may already be torn down. If mlx5e_napi_poll() continues
+> processing CQEs in this state, every call to dma_unmap_page() triggers
+> a WARN_ON in iommu_dma_unmap_phys().
+
+Hi:
+   My comment has nothing to do with the changes made in this patch itself.
+
+
+I am more interested in this error itself.
+1. If there is an issue with dma_unmp, does dma_map in tx have a similar problem?
+2. Can this error be detected by mlx5_pci_err_detected()? If not, does this mean that all PCIe NIC drivers might have similar issues?
+    Do other drivers need to do similar checks?
+
+Thanks,
+Jijie Shao
+
 >
-> you didn't cc the DRM people who really need to look at any changes to
-> the dmabuf contract.
+> In a real-world crash scenario on an NVIDIA Grace (ARM64) platform,
+> a DPC event froze the PCI channel and the mlx5 NAPI poll continued
+> processing error CQEs, calling dma_unmap for each pending WQE. Here is
+> an example:
 >
-> Jason
-
-Thanks, let me submit again including the DRM people via the mailing list
-dri-devel@lists.freedesktop.org.
-
-Zhiping
-
-
+> The DPC event on port 0007:00:00.0 fires and eth1 (on 0017:01:00.0) starts
+> seeing error CQEs almost immediately:
+>
+>      pcieport 0007:00:00.0: DPC: containment event, status:0x2009
+>      mlx5_core 0017:01:00.0 eth1: Error cqe on cqn 0x54e, ci 0xb06, ...
+>
+> The WARN_ON storm begins ~0.4s later and repeats for every pending WQE:
+>
+>      WARNING: CPU: 32 PID: 0 at drivers/iommu/dma-iommu.c:1237 iommu_dma_unmap_phys
+>      Call trace:
+>       iommu_dma_unmap_phys+0xd4/0xe0
+>       mlx5e_tx_wi_dma_unmap+0xb4/0xf0
+>       mlx5e_poll_tx_cq+0x14c/0x438
+>       mlx5e_napi_poll+0x6c/0x5e0
+>       net_rx_action+0x160/0x5c0
+>       handle_softirqs+0xe8/0x320
+>       run_ksoftirqd+0x30/0x58
+>
+> After 23 seconds of WARN_ON() storm, the watchdog fires:
+>
+>      watchdog: BUG: soft lockup - CPU#32 stuck for 23s! [ksoftirqd/32:179]
+>      Kernel panic - not syncing: softlockup: hung tasks
+>
+> Each unmap hit the WARN_ON in the IOMMU layer, printing a full stack
+> trace. With dozens of pending WQEs, this created a storm of WARN_ON
+> dumps in softirq context that monopolized the CPU for over 23 seconds,
+> triggering a soft lockup panic.
+>
+> Fix this by checking pci_channel_offline() at the top of
+> mlx5e_napi_poll() and bailing out immediately when the channel is
+> offline. napi_complete_done() is called before returning to clear the
+> NAPI_STATE_SCHED bit, ensuring that napi_disable() in the teardown path
+> does not spin forever waiting for it. No CQ interrupts are re-armed
+> since the explicit mlx5e_cq_arm() calls are skipped, so the NAPI
+> instance will not be re-scheduled. The pending DMA buffers are left for
+> device removal to clean up.
+>
+> Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
+> index 76108299ea57d..934ad7fafa801 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
+> @@ -138,6 +138,19 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
+>   	bool xsk_open;
+>   	int i;
+>   
+> +	/*
+> +	 * When the PCI channel is offline, IOMMU mappings may already be torn
+> +	 * down.  Processing CQEs would call dma_unmap for every pending WQE,
+> +	 * each hitting a WARN_ON in the IOMMU layer.  The resulting storm of
+> +	 * warnings in softirq context can monopolise the CPU long enough to
+> +	 * trigger a soft lockup and prevent any RCU grace period from
+> +	 * completing.
+> +	 */
+> +	if (unlikely(pci_channel_offline(c->mdev->pdev))) {
+> +		napi_complete_done(napi, 0);
+> +		return 0;
+> +	}
+> +
+>   	rcu_read_lock();
+>   
+>   	qos_sqs = rcu_dereference(c->qos_sqs);
+>
+> ---
+> base-commit: a956792a1543c2bf4a2266cb818dc7c4135006f0
+> change-id: 20260209-mlx5_iommu-c8b238b1bb14
+>
+> Best regards,
+> --
+> Breno Leitao <leitao@debian.org>
+>
+>
 
