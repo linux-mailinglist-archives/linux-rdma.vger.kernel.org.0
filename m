@@ -1,58 +1,84 @@
-Return-Path: <linux-rdma+bounces-16694-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16695-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qPWfEs+VimnjMAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16694-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 03:19:59 +0100
+	id gLzAG5bLimmbNwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16695-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 07:09:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E161111642C
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 03:19:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24874117487
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 07:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A1614302DB77
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 02:19:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id ADD803033256
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Feb 2026 06:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF902D877E;
-	Tue, 10 Feb 2026 02:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4657932ABE1;
+	Tue, 10 Feb 2026 06:09:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="S44+kLpJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nN1q30Lc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9213275112;
-	Tue, 10 Feb 2026 02:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C0126A1AC
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Feb 2026 06:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770689993; cv=none; b=tZ+nO7Q+bzgMOCHR3wL28GBxOqip8rEL24+2nFmNk7hHqf1gTfP6O+kaVEbY78NEC4SjuhGY30SGMJMz6tQY+K0IHYmoD/gWWe3NJUm2X+pKmL+57sRRHU+x4TYgdgC+6l5zFgQbIEcjUhs+BfELQmVTkryV6NzxNs1OC4gG6zs=
+	t=1770703750; cv=none; b=DiRD2sVjbwWQPm0MoFq57r/dgOTkgf1LIFIxSs2QetalAEBJL0Ij50JB/dstUleR90ACI/P4ZhZoivkSJR4KYkWagtBb1dUCbJKIJsKxaggFw+rfpZxoiZwNCGVvfyCXurHgiqPGVCKnXHu8RjZm29wO5CNsNniD9ZcKjJ6lqM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770689993; c=relaxed/simple;
-	bh=MG8jvzZf/kzglYRZMkv6gbzkxD7FW8wmHIBPZCNHuM4=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AeVJ32hHfk+uhDMioAtwuZ82LtWXoKs16TZicsQfieNz30Rf7l9jjk5FCcppvpThDJO45q5e7f+i/KtDiYdQOJBhYdJW1S/dtbkWCxkj50ik3z4223KTpMUykthni0OKuRcJ8QsivHZY8rmbSYy8w0U5UEjH0BS6JMqaxIffnto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=S44+kLpJ; arc=none smtp.client-ip=113.46.200.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=uecur6houava9Fdo15L338waubBYoJUZ+/hRmaHFZEI=;
-	b=S44+kLpJTpkr731oWQk+wroAkLZwJDiU4j59tMy0cWytiRFKVb299lo83Zp9BrlxDhRV2fkLB
-	cst9J6FK07pNOPtazds3xmNtX9howq8DoFns31ByZk28jrLbqUPGW2GYdTze6qGQ9H+xuEAPuQq
-	LcD4CBgy0Ql5xDM/oosfc3E=
-Received: from mail.maildlp.com (unknown [172.19.162.140])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4f94sC1cKBzRhQm;
-	Tue, 10 Feb 2026 10:15:11 +0800 (CST)
-Received: from kwepemk100013.china.huawei.com (unknown [7.202.194.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3CD292012A;
-	Tue, 10 Feb 2026 10:19:48 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemk100013.china.huawei.com (7.202.194.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Tue, 10 Feb 2026 10:19:47 +0800
-Message-ID: <49fe0af5-7dcf-42e0-bd73-0bd42c067d26@huawei.com>
-Date: Tue, 10 Feb 2026 10:19:46 +0800
+	s=arc-20240116; t=1770703750; c=relaxed/simple;
+	bh=eyDjIBG7hfEhRuYrIjZHAJ0n1jwhXYzNByFDefcW8b4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MFZLkGkYTCrkCOPlBjKs76k8LN4prJN7AZ1o8OmZdC4zSrKtP6cNRVn+GaazQRyUXcXIyASTOAw4LgzRHXgaKCTlyad2e8odOm1TqUlmON21WORlNW0k6RRH4KlcyEDCeHxQ0pAI+mImIALtlB25L6kOK/63c3NlLlRWMGAeBeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nN1q30Lc; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-4362507f0bcso3185362f8f.0
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Feb 2026 22:09:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770703746; x=1771308546; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wQ1jQtZTg9NmtE39KxvfhgMIzdFgti3yzkMdp/kLIq0=;
+        b=nN1q30Lcz9e3IHQmZ5iKy2lkDK5ziWUd++EguFVcR4tOsFAQLSl+mRJFaA0Gmcivkn
+         d6Etfni+07NhnYE+k7joM4pdvGUslITIuR4u6XvZO/bFT+6pRIu8VitEjIJiijxrxsxV
+         8/0eWeHFJCiHGIQBk9PVtUquLcPm0hwTBoY+pz8SfcafU5+3kGkweHbJQLOjndQKsXo6
+         2xGWUXVlSMM2f7sn23nJrwQLIb6CQNmkjNm0I5CeBluRa2mn3YOC41COLnhntoBda5yI
+         S6bt8t1JEdj0U2BUtEdl20/sny3lzesMaahOPBXzKqQ5+5HF57YncPnsV1e0XSspy1mI
+         SpcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770703746; x=1771308546;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wQ1jQtZTg9NmtE39KxvfhgMIzdFgti3yzkMdp/kLIq0=;
+        b=MlOMPgAauZtCWoXMcMmDNQZG/aC7GoT/c/9G5MG+2+pCkdnEhu6wSo3GJQB/fCGFtS
+         eQS7evRFsbbA1HFsA5MZPhNVocklhneOHvFFB+0q+JP7ri9vwNpxdjmkcga0+WmP0tyJ
+         mBkpLEMT3yhzY1krpqineN91dGIEQnbTr0pFZzuODrnaBWGT4qzAbOhrd6QA2cWBMvwB
+         xAjJw7sQE3mBMbW7Q72PSmfFTN17VC27rEb+3mu/9oTraJ1Z2wz7ZZt33FtpjWjJZCnz
+         auhBhXCRONGZXLmUMia3DBKC5BlJhoKeubRTNccUNCizBr+XJFotxdwgLN5mvBTYPaU2
+         P3pg==
+X-Forwarded-Encrypted: i=1; AJvYcCWS0xs/FarrM1YfRhVxOwUPDByi9+Q7pbNgR5d1L0W2WTgiNuRWPYEOoBMIj0i9TrLx8NQQzwpPAn1n@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVUem0PUSH/vbZqFB1yCB+q2Zoz7CtFFdMdn+qIn99/ggHRNgb
+	xtIGBeufw0IlUp/Q2BT+iDrBoRnvqopUkJueRqbrGw4yNuakU9H5GDuz
+X-Gm-Gg: AZuq6aLPr+HZEs0pXVtBPLA+3OXM9vjEOuWhwKLuJB4fJaQ7vohsz4Hv1RBpc/qVeSw
+	liSmenvNxg09YWJcbwCAZoQ+BvnZDkbdvUtJJfNlExNIEa017IVXm4D0TbfcwLaomJA12Zr8+A/
+	Xzc+/SB5wRzQlzW4R6nqHj3YeXEG0cCd2aH9WLm/VzA9x7so0j5WqUH+c/Jyc+REyaucmiNhGLD
+	Pr9cPzuYzHERhqfZG2hXur2bNnArZmIWvLiJUfNn+/QF77eG1xtv0xkT1pjWnhYAek24z2mf/xT
+	7NcmckdEj4hBIJaV5A92JkiJPJuAi57Fjg8vykfNmFu2Z4dwS/cZWgawdipKp6Euur5MoJp4aMY
+	2te4osRgtSoMLM70Aypc/R6IDdjwl/OVxRcjrQp8CTmCGUjkWLkb6N++8euZWbK48ehdWAU+/YN
+	X32DOEgl/5Vvf9NyWp7zOvnGLbyDaxx9XbSSulAZf1qg5wNA==
+X-Received: by 2002:a5d:5f92:0:b0:436:339a:9a9f with SMTP id ffacd0b85a97d-43779fe26damr1912794f8f.10.1770703746074;
+        Mon, 09 Feb 2026 22:09:06 -0800 (PST)
+Received: from [10.221.203.72] ([165.85.126.46])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43768d07fa7sm19108386f8f.35.2026.02.09.22.09.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Feb 2026 22:09:05 -0800 (PST)
+Message-ID: <a36c490a-0fcc-4fc5-b73a-6d6e0eba4e70@gmail.com>
+Date: Tue, 10 Feb 2026 08:09:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,154 +86,87 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<dcostantino@meta.com>, <rneu@meta.com>, <kernel-team@meta.com>
-Subject: Re: [PATCH net] net/mlx5e: Skip NAPI polling when PCI channel is
- offline
-To: Breno Leitao <leitao@debian.org>, Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Amir Vadai
-	<amirv@mellanox.com>
-References: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH net-next] net/mlx5e: remove declarations of
+ mlx5e_shampo_{fill_umr,dealloc_hd}
+To: Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20260206-shampo-v1-1-75b20c6657e5@kernel.org>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20260206-shampo-v1-1-75b20c6657e5@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemk100013.china.huawei.com (7.202.194.61)
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16694-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16695-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shaojijie@huawei.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[huawei.com:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[ttoukanlinux@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim]
-X-Rspamd-Queue-Id: E161111642C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: 24874117487
 X-Rspamd-Action: no action
 
 
-on 2026/2/10 2:01, Breno Leitao wrote:
-> When a PCI error (e.g. AER error or DPC containment) marks the PCI
-> channel as frozen or permanently failed, the IOMMU mappings for the
-> device may already be torn down. If mlx5e_napi_poll() continues
-> processing CQEs in this state, every call to dma_unmap_page() triggers
-> a WARN_ON in iommu_dma_unmap_phys().
 
-Hi:
-   My comment has nothing to do with the changes made in this patch itself.
-
-
-I am more interested in this error itself.
-1. If there is an issue with dma_unmp, does dma_map in tx have a similar problem?
-2. Can this error be detected by mlx5_pci_err_detected()? If not, does this mean that all PCIe NIC drivers might have similar issues?
-    Do other drivers need to do similar checks?
-
-Thanks,
-Jijie Shao
-
->
-> In a real-world crash scenario on an NVIDIA Grace (ARM64) platform,
-> a DPC event froze the PCI channel and the mlx5 NAPI poll continued
-> processing error CQEs, calling dma_unmap for each pending WQE. Here is
-> an example:
->
-> The DPC event on port 0007:00:00.0 fires and eth1 (on 0017:01:00.0) starts
-> seeing error CQEs almost immediately:
->
->      pcieport 0007:00:00.0: DPC: containment event, status:0x2009
->      mlx5_core 0017:01:00.0 eth1: Error cqe on cqn 0x54e, ci 0xb06, ...
->
-> The WARN_ON storm begins ~0.4s later and repeats for every pending WQE:
->
->      WARNING: CPU: 32 PID: 0 at drivers/iommu/dma-iommu.c:1237 iommu_dma_unmap_phys
->      Call trace:
->       iommu_dma_unmap_phys+0xd4/0xe0
->       mlx5e_tx_wi_dma_unmap+0xb4/0xf0
->       mlx5e_poll_tx_cq+0x14c/0x438
->       mlx5e_napi_poll+0x6c/0x5e0
->       net_rx_action+0x160/0x5c0
->       handle_softirqs+0xe8/0x320
->       run_ksoftirqd+0x30/0x58
->
-> After 23 seconds of WARN_ON() storm, the watchdog fires:
->
->      watchdog: BUG: soft lockup - CPU#32 stuck for 23s! [ksoftirqd/32:179]
->      Kernel panic - not syncing: softlockup: hung tasks
->
-> Each unmap hit the WARN_ON in the IOMMU layer, printing a full stack
-> trace. With dozens of pending WQEs, this created a storm of WARN_ON
-> dumps in softirq context that monopolized the CPU for over 23 seconds,
-> triggering a soft lockup panic.
->
-> Fix this by checking pci_channel_offline() at the top of
-> mlx5e_napi_poll() and bailing out immediately when the channel is
-> offline. napi_complete_done() is called before returning to clear the
-> NAPI_STATE_SCHED bit, ensuring that napi_disable() in the teardown path
-> does not spin forever waiting for it. No CQ interrupts are re-armed
-> since the explicit mlx5e_cq_arm() calls are skipped, so the NAPI
-> instance will not be re-scheduled. The pending DMA buffers are left for
-> device removal to clean up.
->
-> Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+On 06/02/2026 13:18, Simon Horman wrote:
+> These functions were recently removed by commit 24cf78c73831
+> ("net/mlx5e: SHAMPO, Switch to header memcpy"), however,
+> their declarations were left behind.
+> 
+> This patch removes those declarations.
+> 
+> Flagged by review-prompts while I was exercising Orc mode locally.
+> Compile tested only.
+> 
+> Signed-off-by: Simon Horman <horms@kernel.org>
 > ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-> index 76108299ea57d..934ad7fafa801 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-> @@ -138,6 +138,19 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
->   	bool xsk_open;
->   	int i;
+>   drivers/net/ethernet/mellanox/mlx5/core/en.h | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> index 843f732e4eedb005eba58b9a9ebe48c6703906e5..a7de3a3efc49f6c237ea42b0b932fbe1f5aca847 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> @@ -1034,8 +1034,6 @@ void mlx5e_build_ptys2ethtool_map(void);
+>   bool mlx5e_check_fragmented_striding_rq_cap(struct mlx5_core_dev *mdev, u8 page_shift,
+>   					    enum mlx5e_mpwrq_umr_mode umr_mode);
 >   
-> +	/*
-> +	 * When the PCI channel is offline, IOMMU mappings may already be torn
-> +	 * down.  Processing CQEs would call dma_unmap for every pending WQE,
-> +	 * each hitting a WARN_ON in the IOMMU layer.  The resulting storm of
-> +	 * warnings in softirq context can monopolise the CPU long enough to
-> +	 * trigger a soft lockup and prevent any RCU grace period from
-> +	 * completing.
-> +	 */
-> +	if (unlikely(pci_channel_offline(c->mdev->pdev))) {
-> +		napi_complete_done(napi, 0);
-> +		return 0;
-> +	}
-> +
->   	rcu_read_lock();
+> -void mlx5e_shampo_fill_umr(struct mlx5e_rq *rq, int len);
+> -void mlx5e_shampo_dealloc_hd(struct mlx5e_rq *rq);
+>   void mlx5e_get_stats(struct net_device *dev, struct rtnl_link_stats64 *stats);
+>   void mlx5e_fold_sw_stats64(struct mlx5e_priv *priv, struct rtnl_link_stats64 *s);
 >   
->   	qos_sqs = rcu_dereference(c->qos_sqs);
->
-> ---
-> base-commit: a956792a1543c2bf4a2266cb818dc7c4135006f0
-> change-id: 20260209-mlx5_iommu-c8b238b1bb14
->
-> Best regards,
-> --
-> Breno Leitao <leitao@debian.org>
->
->
+> 
+> 
+> 
+> 
+
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Thanks for your patch.
 
