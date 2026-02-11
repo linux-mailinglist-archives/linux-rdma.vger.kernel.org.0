@@ -1,384 +1,164 @@
-Return-Path: <linux-rdma+bounces-16769-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16770-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wHSCAvvOjGnbtQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16769-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 19:48:27 +0100
+	id CMTmFdbyjGmqvwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16770-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 22:21:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33561126EC7
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 19:48:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADEE0127B97
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 22:21:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 29FDF30125C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 18:48:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 14C9B30C09C5
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 21:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649C734F46E;
-	Wed, 11 Feb 2026 18:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78AB334DCDF;
+	Wed, 11 Feb 2026 21:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O+GF0qSX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RRybapHc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dy1-f170.google.com (mail-dy1-f170.google.com [74.125.82.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC61C34A799
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 18:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355D020010A
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 21:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770835702; cv=none; b=IPr5ZyLV+ivsriRH9MHnl8MhIuvJcBsEreQidHWAAc06VtJSKZLRoaf0Hu02VfjzRYCc0J/iBP0qdkscNXiyoVZxfRuiEqfgCugPN87FBcCBA8yN0wx4SboWhiNrR3eR091ZyDByfDYWYhrg2KPIl1ZT49njx7Eh9K7g6I7D7i8=
+	t=1770844692; cv=none; b=CGaqso1kItbrwUSmt1A26CVBwnY6MSQq4pa9/ni6OHpM2GFh5g3oW67OxZMRCJHgzgrgdbN/Q55aMaTO9phAWTr5aUe12dO4hY0XJYyH47CrBtFaw5CtnZqjGEd4ulLadSaRqmH4vmD1X+NMfjIx9mngzHdP4Kcg+1clvCQ4ayE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770835702; c=relaxed/simple;
-	bh=fG8lnxzIN6dnXxDL2zpam3eR/kkl1I0Z8drGDZxIPrg=;
+	s=arc-20240116; t=1770844692; c=relaxed/simple;
+	bh=8WVSzAFHZ0uD1jFYXicORj5daPRN4knVO81v5+nxA8Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q4TeqmJ608fMe6PoyBhdNCDbunARujAFKjDIDNB2wXfwZW6OD+JmV1kwWOCH6RNjW25MP3OpvkTatY3jq6nUtwu7+Bc30amvNnRy8q0cat/xhBEnjrhcf3xmu0+xPKeVyE9KEE1PFqMxpv2gcXTX9PG5ByE3QxEZFJtGkSUzlEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O+GF0qSX; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2ea1e1f1-a7d1-470c-8707-8f07665f2977@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770835698;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=koGR427I8Xj4xY22bMhRSkcIraDMWjYZcdc4zBBFl9Q=;
-	b=O+GF0qSX+5RuojXaJCl4DkLWplOia1r54JC66Ea1sFG6vZnjVHp9KUN/s1TnekoWwXhc1c
-	NlSNLvq1ti74q9NzTJc0NqRpysJ7n+mIqvsRIxDQgSKwhfvCGyNEQWQ0yOOYpX+prp66rF
-	GGD9iQH+RghSWL5mBgy78RzmHXZVflY=
-Date: Wed, 11 Feb 2026 10:48:14 -0800
+	 In-Reply-To:Content-Type; b=KuBn+q7Rar95NlBvNeuGq3TvLxs1VtDheNdTPUBS+UYWMWIEyJjzf04ipzEeWljdaCkeDX2aWTOXPtlFhGGYWmvFQo46HKU4Ya2OScRlFHFtw8C05D8v99MtKulDsp17Pyet5DkdHmSIojVIwPNXRmZNnZOKX3RgwfFPkYXx+4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RRybapHc; arc=none smtp.client-ip=74.125.82.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dy1-f170.google.com with SMTP id 5a478bee46e88-2b4520f6b32so2851974eec.0
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 13:18:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770844690; x=1771449490; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rm1W2/RdUc17RSuNVntKJEJGSadq+iXoYMQ0RQ2PvVA=;
+        b=RRybapHcDynrrga2ft8mDOE0VKeU1928Dz05UZEESwRU1MzJiyND2dX7WcwZeRPvnq
+         NrqB1FeJIcXBL0nHJoygcfneCLd/lg/wEGW48gWrKPDLcyqj2/3HRmaFHejmVeWosAXI
+         wgFbXPA79z4zwb/9oEC5pf1WWI5N1Z3avqD74TXkFrD2IdmZza8/InI7z3d9UA/eQJ8s
+         GcYnH2xJEZj7rc/8NaERkGHdEbeFz6WB3EX9E0aOylFCvvvldSuIxeIFx1Anw7beUPMX
+         gibxq58lR4U39uE672EZkIXdyhLxiH02Pt7tYFB2oo/Vh/CZoRHTKJA9t9P8AxOcQf47
+         Dxpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770844690; x=1771449490;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rm1W2/RdUc17RSuNVntKJEJGSadq+iXoYMQ0RQ2PvVA=;
+        b=TSzKJQjIuZq3nPFA73yoc1BTrPtOvF05N0ikRDz5t/DhxUYRHnkNze+OiTUyD4tqWx
+         iOBavwpA6+tW2eTw2/TRr/P7LeBJ2cLs/42B8sBPiham2uIkH+A0frDUU2c2J1WJwICe
+         seQpJCPW6tlZhgNK1aE/eJVK4AJxRKysIRWw/owoShZTOf84lXUUSXUPdzHO9HPbavIQ
+         H4ciS8iWzD4Mk/zzHqBCevL7wcpelOeBwxZn82gGBzAVypoWrTQWV3pYxkJwdX1gCYwn
+         L2X1ARbvT17z/7oHNSahTdp29UoGr9FNzHXfG5Z8Ym0bGivYxWMusId7nUYronR3RXQx
+         T7TA==
+X-Forwarded-Encrypted: i=1; AJvYcCViIRES01DxF0Jf22VusV5Gf3MC6ScDLgK9uaI2t+A8vMqndWuhnRKVm7Jp7GL6NuPBPKxijiOkKzat@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6JMNFhUACzp1Ox8bGC7YnLMS1MuAqty2l0M+BI8168b0rfSnQ
+	FcQpeDdGj+T0qhAnRYYW/sqZu0bUHKGM8/WmSjIErAxxFv1eM1/hsd8G
+X-Gm-Gg: AZuq6aJ5dyCwnNJGYv0elh6ZClMpo4/XkquFxoOtRIxN/i1kPS3TRqi9cerQKVHdsgg
+	OhSKyN+TxiaFzX6ieuG9ViCcvgzz9a50qJJDOaTuSulZomsWavWtx1K1Y/f5GLdCgjiWru2Xy45
+	EPI628m1An2R1RPFG92goUdCt3K3OEscaiCQfegWRpQ/VmFSn+M7OLvxut/tTa316qVJXjc0tYL
+	GHvHccm68YpOO3KIhm3XBRRkUFr7BfCUNGGqYw4vGfLYjhLgHya/ST5NNp+QAtARQgp0vdrFGDA
+	2qTxm8aWHm2P5RBwawmCyTsOeZIwHxZJwTj7UEM0kjQ0RrQbJIVdx69n2ueadOdW4jyH0FmcmGL
+	4O3cRSFiAe1X/9ih5OFNTkyDSgxAzWFvAEStKv4Hv+N22so2nZ5APz5FbvTSCEkspV+0S2vnG+Q
+	V5rwpFYFMlR6ePEntwCfGRVgLGTGMGRfWZ0iXAWJ+sX6n8BMmfbRq6Wr5ez8vaPS1Wmrw2bhvMQ
+	ocE6I8OIfCdtQ==
+X-Received: by 2002:a05:7300:2314:b0:2ba:a15b:5f2c with SMTP id 5a478bee46e88-2baac5b8f4dmr24907eec.10.1770844690248;
+        Wed, 11 Feb 2026 13:18:10 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1151:15:c56:221b:35d5:85f? ([2620:10d:c090:500::3:7099])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2ba9dcead76sm2008628eec.27.2026.02.11.13.18.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Feb 2026 13:18:09 -0800 (PST)
+Message-ID: <7722cd96-49ed-4988-abf4-8b0755453f14@gmail.com>
+Date: Wed, 11 Feb 2026 13:18:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next] RDMA/efa: Add AH usage counter with sysfs
- exposure
-To: Tom Sela <tomsela@amazon.com>, mrgolin@amazon.com, jgg@nvidia.com,
- leon@kernel.org, linux-rdma@vger.kernel.org
-Cc: sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev,
- Yonatan Nachum <ynachum@amazon.com>
-References: <20260211131048.36217-1-tomsela@amazon.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V2 5/5] eth: mlx5: Move pause storm errors to
+ pause stats
+To: Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org
+Cc: alexanderduyck@fb.com, andrew+netdev@lunn.ch, andrew@lunn.ch,
+ davem@davemloft.net, donald.hunter@gmail.com, edumazet@google.com,
+ gal@nvidia.com, horms@kernel.org, idosch@nvidia.com,
+ jacob.e.keller@intel.com, kernel-team@meta.com, kory.maincent@bootlin.com,
+ kuba@kernel.org, lee@trager.us, leon@kernel.org, linux-rdma@vger.kernel.org,
+ linux@armlinux.org.uk, mbloch@nvidia.com, o.rempel@pengutronix.de,
+ pabeni@redhat.com, saeedm@nvidia.com, tariqt@nvidia.com,
+ vadim.fedorenko@linux.dev
+References: <20260207010525.3808842-1-mohsin.bashr@gmail.com>
+ <20260207010525.3808842-6-mohsin.bashr@gmail.com>
+ <b108212c-99c8-4f02-9e61-3564e544eab3@gmail.com>
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260211131048.36217-1-tomsela@amazon.com>
+From: Mohsin Bashir <mohsin.bashr@gmail.com>
+In-Reply-To: <b108212c-99c8-4f02-9e61-3564e544eab3@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16769-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16770-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	FREEMAIL_CC(0.00)[fb.com,lunn.ch,davemloft.net,gmail.com,google.com,nvidia.com,kernel.org,intel.com,meta.com,bootlin.com,trager.us,vger.kernel.org,armlinux.org.uk,pengutronix.de,redhat.com,linux.dev];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: 33561126EC7
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mohsinbashr@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: ADEE0127B97
 X-Rspamd-Action: no action
 
-On 2/11/26 5:10 AM, Tom Sela wrote:
-> Add tracking of unique Address Handle usage to provide visibility into
-> active AH resource consumption. The implementation uses a hash table to
 
-It seems that xa is used instead of hash table in your commit?
 
-Zhu Yanjun
+On 2/11/26 1:49 AM, Tariq Toukan wrote:
 
-> deduplicate identical AH requests that receive the same handle, ensuring
-> accurate resource counting.
+>> +static int mlx5e_stats_get_per_prio(struct mlx5_core_dev *mdev,
+>> +                    u32 *ppcnt_per_prio)
+>> +{
+>> +    u32 in[MLX5_ST_SZ_DW(ppcnt_reg)] = {};
+>> +    int sz = MLX5_ST_SZ_BYTES(ppcnt_reg);
+>> +
+>> +    if (!(MLX5_CAP_PCAM_FEATURE(mdev, pfcc_mask) &&
+>> +          MLX5_CAP_DEBUG(mdev, stall_detect)))
+>> +        return -EOPNOTSUPP;
+>> +
+>> +    MLX5_SET(ppcnt_reg, in, local_port, 1);
+>> +    MLX5_SET(ppcnt_reg, in, grp, MLX5_PER_PRIORITY_COUNTERS_GROUP);
+>> +    MLX5_SET(ppcnt_reg, in, prio_tc, 0);
 > 
-> The counter will be exposed via sysfs device attribute.
+> No interest in all other non-0 prios?
 > 
-> Reviewed-by: Michael Margolin <mrgolin@amazon.com>
-> Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-> Signed-off-by: Tom Sela <tomsela@amazon.com>
-> ---
->   drivers/infiniband/hw/efa/Makefile    |  4 +-
->   drivers/infiniband/hw/efa/efa.h       |  5 ++-
->   drivers/infiniband/hw/efa/efa_main.c  | 13 ++++++-
->   drivers/infiniband/hw/efa/efa_sysfs.c | 33 ++++++++++++++++
->   drivers/infiniband/hw/efa/efa_sysfs.h | 15 +++++++
->   drivers/infiniband/hw/efa/efa_verbs.c | 56 ++++++++++++++++++++++++++-
->   6 files changed, 120 insertions(+), 6 deletions(-)
->   create mode 100644 drivers/infiniband/hw/efa/efa_sysfs.c
->   create mode 100644 drivers/infiniband/hw/efa/efa_sysfs.h
-> 
-> diff --git a/drivers/infiniband/hw/efa/Makefile b/drivers/infiniband/hw/efa/Makefile
-> index 6e83083af0bc..0ba04eab17a1 100644
-> --- a/drivers/infiniband/hw/efa/Makefile
-> +++ b/drivers/infiniband/hw/efa/Makefile
-> @@ -1,9 +1,9 @@
->   # SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> -# Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-> +# Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
->   #
->   # Makefile for Amazon Elastic Fabric Adapter (EFA) device driver.
->   #
->   
->   obj-$(CONFIG_INFINIBAND_EFA) += efa.o
->   
-> -efa-y := efa_com_cmd.o efa_com.o efa_main.o efa_verbs.o
-> +efa-y := efa_com_cmd.o efa_com.o efa_main.o efa_verbs.o efa_sysfs.o
-> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-> index 96f9c3bc98b2..d332bc4edcb7 100644
-> --- a/drivers/infiniband/hw/efa/efa.h
-> +++ b/drivers/infiniband/hw/efa/efa.h
-> @@ -1,6 +1,6 @@
->   /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->   /*
-> - * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
->    */
->   
->   #ifndef _EFA_H_
-> @@ -69,6 +69,9 @@ struct efa_dev {
->   
->   	/* Only stores CQs with interrupts enabled */
->   	struct xarray cqs_xa;
-> +	/* AH tracking xarray and counter*/
-> +	struct xarray ahs_xa;
-> +	atomic64_t ah_count;
->   };
->   
->   struct efa_ucontext {
-> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-> index 6c415b9adb5f..3c6fa5af941a 100644
-> --- a/drivers/infiniband/hw/efa/efa_main.c
-> +++ b/drivers/infiniband/hw/efa/efa_main.c
-> @@ -1,6 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->   /*
-> - * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
->    */
->   
->   #include <linux/module.h>
-> @@ -12,6 +12,7 @@
->   #include <rdma/uverbs_ioctl.h>
->   
->   #include "efa.h"
-> +#include "efa_sysfs.h"
->   
->   #define PCI_DEV_ID_EFA0_VF 0xefa0
->   #define PCI_DEV_ID_EFA1_VF 0xefa1
-> @@ -561,6 +562,8 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
->   	edev->dmadev = &pdev->dev;
->   	dev->pdev = pdev;
->   	xa_init(&dev->cqs_xa);
-> +	xa_init(&dev->ahs_xa);
-> +	atomic64_set(&dev->ah_count, 0);
->   
->   	pci_mem_bars = pci_select_bars(pdev, IORESOURCE_MEM);
->   	if (EFA_BASE_BAR_MASK & ~pci_mem_bars) {
-> @@ -619,8 +622,14 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
->   	if (err)
->   		goto err_free_mgmnt_irq;
->   
-> +	err = efa_sysfs_init(dev);
-> +	if (err)
-> +		goto err_admin_destroy;
-> +
->   	return dev;
->   
-> +err_admin_destroy:
-> +	efa_com_admin_destroy(edev);
->   err_free_mgmnt_irq:
->   	efa_free_irq(dev, &dev->admin_irq);
->   err_disable_msix:
-> @@ -645,6 +654,7 @@ static void efa_remove_device(struct pci_dev *pdev,
->   	struct efa_com_dev *edev;
->   
->   	edev = &dev->edev;
-> +	efa_sysfs_destroy(dev);
->   	efa_com_dev_reset(edev, reset_reason);
->   	efa_com_admin_destroy(edev);
->   	efa_free_irq(dev, &dev->admin_irq);
-> @@ -653,6 +663,7 @@ static void efa_remove_device(struct pci_dev *pdev,
->   	devm_iounmap(&pdev->dev, edev->reg_bar);
->   	efa_release_bars(dev, EFA_BASE_BAR_MASK);
->   	xa_destroy(&dev->cqs_xa);
-> +	xa_destroy(&dev->ahs_xa);
->   	ib_dealloc_device(&dev->ibdev);
->   	pci_disable_device(pdev);
->   }
-> diff --git a/drivers/infiniband/hw/efa/efa_sysfs.c b/drivers/infiniband/hw/efa/efa_sysfs.c
-> new file mode 100644
-> index 000000000000..79602cf77424
-> --- /dev/null
-> +++ b/drivers/infiniband/hw/efa/efa_sysfs.c
-> @@ -0,0 +1,33 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> +/*
-> + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/sysfs.h>
-> +
-> +#include "efa_sysfs.h"
-> +
-> +static ssize_t ah_count_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct efa_dev *efa_dev = pci_get_drvdata(to_pci_dev(dev));
-> +
-> +	return sysfs_emit(buf, "%lld\n", atomic64_read(&efa_dev->ah_count));
-> +}
-> +
-> +static DEVICE_ATTR_RO(ah_count);
-> +
-> +int efa_sysfs_init(struct efa_dev *dev)
-> +{
-> +	struct device *device = &dev->pdev->dev;
-> +
-> +	if (device_create_file(device, &dev_attr_ah_count))
-> +		dev_err(device, "Failed to create AH count sysfs file\n");
-> +
-> +	return 0;
-> +}
-> +
-> +void efa_sysfs_destroy(struct efa_dev *dev)
-> +{
-> +	device_remove_file(&dev->pdev->dev, &dev_attr_ah_count);
-> +}
-> diff --git a/drivers/infiniband/hw/efa/efa_sysfs.h b/drivers/infiniband/hw/efa/efa_sysfs.h
-> new file mode 100644
-> index 000000000000..fda3a885c150
-> --- /dev/null
-> +++ b/drivers/infiniband/hw/efa/efa_sysfs.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-> +/*
-> + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + */
-> +
-> +#ifndef _EFA_SYSFS_H_
-> +#define _EFA_SYSFS_H_
-> +
-> +#include "efa.h"
-> +
-> +int efa_sysfs_init(struct efa_dev *dev);
-> +
-> +void efa_sysfs_destroy(struct efa_dev *dev);
-> +
-> +#endif /* _EFA_SYSFS_H_ */
-> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-> index 22d3e25c3b9d..1d8cb4a7f946 100644
-> --- a/drivers/infiniband/hw/efa/efa_verbs.c
-> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> @@ -1,6 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
->   /*
-> - * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
->    */
->   
->   #include <linux/dma-buf.h>
-> @@ -2104,6 +2104,51 @@ int efa_mmap(struct ib_ucontext *ibucontext,
->   	return __efa_mmap(dev, ucontext, vma);
->   }
->   
-> +static int efa_add_ah(struct efa_dev *dev, u16 ah)
-> +{
-> +	unsigned long refcount;
-> +	void *entry;
-> +	int err;
-> +
-> +	xa_lock(&dev->ahs_xa);
-> +	entry = xa_load(&dev->ahs_xa, ah);
-> +	refcount = entry ? xa_to_value(entry) : 0;
-> +	if (refcount == 0)
-> +		atomic64_inc(&dev->ah_count);
-> +
-> +	err = xa_err(__xa_store(&dev->ahs_xa, ah, xa_mk_value(refcount + 1), GFP_ATOMIC));
-> +	xa_unlock(&dev->ahs_xa);
-> +
-> +	return err;
-> +}
-> +
-> +static int efa_remove_ah(struct efa_dev *dev, u16 ah)
-> +{
-> +	unsigned long refcount;
-> +	void *entry;
-> +	int err;
-> +
-> +	xa_lock(&dev->ahs_xa);
-> +	entry = xa_load(&dev->ahs_xa, ah);
-> +	refcount = entry ? xa_to_value(entry) : 0;
-> +	if (refcount == 0) {
-> +		/* AH already removed or never existed - unexpected but handle gracefully */
-> +		xa_unlock(&dev->ahs_xa);
-> +		return 0;
-> +	}
-> +
-> +	refcount--;
-> +
-> +	if (refcount == 0) {
-> +		err = xa_err(__xa_erase(&dev->ahs_xa, ah));
-> +		atomic64_dec(&dev->ah_count);
-> +	} else {
-> +		err = xa_err(__xa_store(&dev->ahs_xa, ah, xa_mk_value(refcount), GFP_ATOMIC));
-> +	}
-> +	xa_unlock(&dev->ahs_xa);
-> +	return err;
-> +}
-> +
->   static int efa_ah_destroy(struct efa_dev *dev, struct efa_ah *ah)
->   {
->   	struct efa_com_destroy_ah_params params = {
-> @@ -2150,6 +2195,10 @@ int efa_create_ah(struct ib_ah *ibah,
->   	memcpy(ah->id, ah_attr->grh.dgid.raw, sizeof(ah->id));
->   	ah->ah = result.ah;
->   
-> +	err = efa_add_ah(dev, ah->ah);
-> +	if (err)
-> +		goto err_destroy_ah;
-> +
->   	resp.efa_address_handle = result.ah;
->   
->   	if (udata->outlen) {
-> @@ -2158,13 +2207,15 @@ int efa_create_ah(struct ib_ah *ibah,
->   		if (err) {
->   			ibdev_dbg(&dev->ibdev,
->   				  "Failed to copy udata for create_ah response\n");
-> -			goto err_destroy_ah;
-> +			goto err_remove_ah;
->   		}
->   	}
->   	ibdev_dbg(&dev->ibdev, "Created ah[%d]\n", ah->ah);
->   
->   	return 0;
->   
-> +err_remove_ah:
-> +	efa_remove_ah(dev, ah->ah);
->   err_destroy_ah:
->   	efa_ah_destroy(dev, ah);
->   err_out:
-> @@ -2185,6 +2236,7 @@ int efa_destroy_ah(struct ib_ah *ibah, u32 flags)
->   		return -EOPNOTSUPP;
->   	}
->   
-> +	efa_remove_ah(dev, ah->ah);
->   	efa_ah_destroy(dev, ah);
->   	return 0;
->   }
-
+I opted for prio 0 for simplicity. I can iterate over all prios and 
+aggregate if that's needed.
 
