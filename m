@@ -1,245 +1,342 @@
-Return-Path: <linux-rdma+bounces-16750-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16751-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KAQBGYNnjGlWnAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16750-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 12:26:59 +0100
+	id oGxvH0NpjGkMnQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16751-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 12:34:27 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00108123D8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 12:26:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A181123E44
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 12:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 414FA3016918
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 11:26:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 26A99303A11D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 11:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E0B36BCE5;
-	Wed, 11 Feb 2026 11:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A207A30C619;
+	Wed, 11 Feb 2026 11:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TF7pQqsZ"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="X6aNrG0X"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.155.198.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E9936BCD7
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 11:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BD4312829
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 11:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.155.198.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770809201; cv=none; b=eHGVBGmS4cQsXwK60ZnyiiM7wdL9Aro7M+XliirTlSXZvZDWOPwsf8hrnk/aZ2dg1j8lsTNB5ocV2p8187UZDyRDqyaw3ui9rcXtl4Z6uyCh9fmngTC569kBW8/q5wdFvNlIPb4B4ByjyYeVx9zHUl0jLa9dGNEkhgQEQn3xE88=
+	t=1770809640; cv=none; b=p6See5LrqM9tkUdwaiCeejCg2n2NfRJ8CkhvQ2aT9KO8WyDjihFs+elpFfluK2DANkuExE1LxI3N+7Fd1fHzZjtle3HMLVLEgcneJ/9LPtVtl/IjW0al6E8b4mJ64MtASspzwiNhZEZ+AS55CjBnwzdPfcUJpvTHALET0SB+Vvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770809201; c=relaxed/simple;
-	bh=I2fcjeu1GcZMjOXO1FlxVpKY1hAZ3hKNIHjeyXL0pBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZgC/yzNAcLklnhokJfWhoPkNZkh661ypYeF0DhjBh0gvuVf9RUfA2RFq50wSQVxXIRGo3m1Fy9uCLgn/Ud6lfbbTghx4fhpJmFfcySRbigI1lPAOfISqQ8zEXJagnbMIu9YzkfAWF7On+k5PdjQFL1lAXpn1jHaonPwGg+oVkvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TF7pQqsZ; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-4362507f0feso3434643f8f.0
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 03:26:40 -0800 (PST)
+	s=arc-20240116; t=1770809640; c=relaxed/simple;
+	bh=doEAcPqOODQ1oWWrEUPXqr5RzPrt3qiOSsiGj3HGP2Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UxMsrFKzvJdvJHrDWh4W94uQT8ZZ0CVBvDAW9xTq1iGE+GVAgrKgskhbvGDWe3dCcWXPqmyMbSwVvDKb7RLYh8Q3tMcEr48c0nqxghTMFm1jA6RrppQsEr/f52FcKvUTeUTcgrcgkNqvOVEE3AgpexRZbYyL/HDofcnZi3Ie3WA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=X6aNrG0X; arc=none smtp.client-ip=35.155.198.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770809199; x=1771413999; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RUMa4wmSAMnFUZfW9TGwqjuVKNetJYo1m0rYO3T+Eb0=;
-        b=TF7pQqsZgNOv/OY+D+7vbyucam+ElDCUvIxPls0F3uM1ykKzBHeA5FhZdQqd8slZVH
-         jONDIO4ZHtFgrrW4TsyQ4OWmTvJOjO7VYzZvPpM7dr5NdmRvi97GT9TL/e3XBHc8Lptg
-         wTusQjucPyKTEp8HIUvKkHIMfoxrAqfTbcRfo5s682s39IzDFWpmerK/2mR6SzOMEKEF
-         PZRUPAS6R8ELH48ib0Q/+9aN6v7F1se2chTFAgDH7U1txz6R41u5eqv7gC4haDfEJXb3
-         MhlUoWbAJ+gGRXC8pkWJZy1KlawdzGjU+3Z4UrhhOCsd2FXMizPY1bAkt6U+hERZzWNk
-         Ywhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770809199; x=1771413999;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RUMa4wmSAMnFUZfW9TGwqjuVKNetJYo1m0rYO3T+Eb0=;
-        b=oJXZs4kOge/WuOhH1MQKdNlnp9Y9vhZTEKbvp7WBWXP579teelT8IDLKJ7AOCxE32b
-         4z8OWFThzmNEbttzF/sXZBsmt5NYBsFA8Y6JBVkZSmCzP4J3WlTGh2zjiMnWo2QGpRzo
-         TWfSsCfZs13i0XUYS3TFCe3nwXms7aqJexbd6XluiouPscnDt5RcfbCA1hiD/9kJyC69
-         7iSnU/nfrJ6fYv+IlOiT30Fj2pO4oR3YFRdi2OpuhWp9YbrmKyxwPX4cjhlyitl94+TF
-         xuzLXCoy91TYr1rHsvUcuJEQ7VTO3GIxQnobZOFLjTn4QcPiHe7PUKkCcS9qjW4sfTTL
-         q68w==
-X-Forwarded-Encrypted: i=1; AJvYcCWR/gtdC2N4I16no2UxnJkP9RMiBjUO6N0RDuH+CfXW9MLtPhttzojBx7tvKDDzLhB1qOHo58j9E8Ur@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+ZK6DGZlZjOSTGOxk8jCrac9I2syj4YuIZ5eYte//RjWwZXrx
-	JabduIUgLdQgj+IqxlN0EaBITf6+AFeAZ87DLmr0qzfHvZK/yOjESneH
-X-Gm-Gg: AZuq6aLXyLMR47Zvg7cPD2jUY8X8RaldV9XkZYNjQkyFGfAn3LFrWqQHP5rIBxTOkYo
-	fmbIE7MK9QNEZEP2mU7c4rc8DGPK9XEX1gAbjC0v0mj42xg6yfQvumltsIBGpZuJ87DZEB3d+/x
-	uKZ57xNcOhnzm9OmFLCc1ykQoeCDs8LSsufFEbAttE4YEIXeR8xqXXz4puGnPqg6+yqqjUuRgge
-	tSF6WQJIItXk53KDthnKNk1aI0CXyVoD502wIzxrEbcCRmHvnBjfe0HGZfvHuxxTWXvSnXYdVNb
-	7hdEgSvKwy5Fmv10TbSb7Ahmcf2RnVrBe+/2Nd2v3ow1LDqAedDKn/MD+u5lsD+EcC4gzzoYRpr
-	hD4SEvzaHSnZkesZVqepzXUAJ+SZgFW/54luJDHw94kAvKjlpggZwb0Yi3/K8GOnPTPxM92DhcX
-	E0mTaaiu6/HffWbctdqQIYEHKFPUjGIn7Z7zzd2fnBg5o=
-X-Received: by 2002:a05:6000:4014:b0:435:8f1b:bb32 with SMTP id ffacd0b85a97d-4378458f33amr2790036f8f.32.1770809198440;
-        Wed, 11 Feb 2026 03:26:38 -0800 (PST)
-Received: from [10.158.36.109] ([72.25.96.17])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43783d50f3asm4152797f8f.13.2026.02.11.03.26.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Feb 2026 03:26:37 -0800 (PST)
-Message-ID: <09a77964-37bf-4b3c-bfa9-8939eb7761ab@gmail.com>
-Date: Wed, 11 Feb 2026 13:26:35 +0200
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1770809639; x=1802345639;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Aqeu37Ds9eAuKGDBH/RIXqp2raOMG3MBg7mHF3I4tVY=;
+  b=X6aNrG0XBFI+ueaPUFEZHaPBp/GAfl7YKNjE4H8VJpJARO9R1kFpo5gv
+   3zAgJ14/cq8sLxDK5Pc8bqVktowFtBPAWQQ0SEcpiMRLMtqH023k0+IuH
+   +aSh4QR5ZoLbZSr0Zh79kD4BXpcAX+Mhwto8UqMpU3DBMd9vjYpF4Ka0J
+   Gf94t6WGvHfb7cgteMj5jRJNR49qmEweky+aZ1iQVpIF5hop2gE0u8IO9
+   j7DUATU/EVOBISSeMiZ5acJofC3Fd4cmch9l7xHW1dPbg6DUk46mWKq/s
+   +eu/TrCIYx8LygC7eGO/ecKULSbZtAo4In2Dzyo5+YwihQ5IIPQWfVFqy
+   A==;
+X-CSE-ConnectionGUID: hosiclBQRFu/uwt2Srs/RQ==
+X-CSE-MsgGUID: GBourWMbScywQYo8Q7NkUw==
+X-IronPort-AV: E=Sophos;i="6.21,283,1763424000"; 
+   d="scan'208";a="12744555"
+Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
+  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2026 11:33:56 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [205.251.233.105:20036]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.19.6:2525] with esmtp (Farcaster)
+ id 8e053d4b-257b-45a5-89e0-05d7760e3b76; Wed, 11 Feb 2026 11:33:56 +0000 (UTC)
+X-Farcaster-Flow-ID: 8e053d4b-257b-45a5-89e0-05d7760e3b76
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Wed, 11 Feb 2026 11:33:56 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Wed, 11 Feb 2026
+ 11:33:54 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>, Firas Jahjah
+	<firasj@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Expose new extended max inline buff size
+Date: Wed, 11 Feb 2026 11:33:46 +0000
+Message-ID: <20260211113346.9996-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/mlx5e: Skip NAPI polling when PCI channel is
- offline
-To: Breno Leitao <leitao@debian.org>, Saeed Mahameed <saeedm@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Amir Vadai <amirv@mellanox.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, dcostantino@meta.com, rneu@meta.com,
- kernel-team@meta.com
-References: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D032UWB002.ant.amazon.com (10.13.139.190) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16750-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-16751-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ttoukanlinux@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 00108123D8C
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 0A181123E44
 X-Rspamd-Action: no action
 
+Add new extended max inline query and report the new value to userspace.
 
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+---
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 22 ++++++--
+ drivers/infiniband/hw/efa/efa_com_cmd.c       | 55 ++++++++++++-------
+ drivers/infiniband/hw/efa/efa_com_cmd.h       |  3 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  3 +-
+ include/uapi/rdma/efa-abi.h                   |  5 +-
+ 5 files changed, 59 insertions(+), 29 deletions(-)
 
-On 09/02/2026 20:01, Breno Leitao wrote:
-> When a PCI error (e.g. AER error or DPC containment) marks the PCI
-> channel as frozen or permanently failed, the IOMMU mappings for the
-> device may already be torn down. If mlx5e_napi_poll() continues
-> processing CQEs in this state, every call to dma_unmap_page() triggers
-> a WARN_ON in iommu_dma_unmap_phys().
-> 
-> In a real-world crash scenario on an NVIDIA Grace (ARM64) platform,
-> a DPC event froze the PCI channel and the mlx5 NAPI poll continued
-> processing error CQEs, calling dma_unmap for each pending WQE. Here is
-> an example:
-> 
-> The DPC event on port 0007:00:00.0 fires and eth1 (on 0017:01:00.0) starts
-> seeing error CQEs almost immediately:
-> 
->      pcieport 0007:00:00.0: DPC: containment event, status:0x2009
->      mlx5_core 0017:01:00.0 eth1: Error cqe on cqn 0x54e, ci 0xb06, ...
-> 
-> The WARN_ON storm begins ~0.4s later and repeats for every pending WQE:
-> 
->      WARNING: CPU: 32 PID: 0 at drivers/iommu/dma-iommu.c:1237 iommu_dma_unmap_phys
->      Call trace:
->       iommu_dma_unmap_phys+0xd4/0xe0
->       mlx5e_tx_wi_dma_unmap+0xb4/0xf0
->       mlx5e_poll_tx_cq+0x14c/0x438
->       mlx5e_napi_poll+0x6c/0x5e0
->       net_rx_action+0x160/0x5c0
->       handle_softirqs+0xe8/0x320
->       run_ksoftirqd+0x30/0x58
-> 
-> After 23 seconds of WARN_ON() storm, the watchdog fires:
-> 
->      watchdog: BUG: soft lockup - CPU#32 stuck for 23s! [ksoftirqd/32:179]
->      Kernel panic - not syncing: softlockup: hung tasks
-> 
-> Each unmap hit the WARN_ON in the IOMMU layer, printing a full stack
-> trace. With dozens of pending WQEs, this created a storm of WARN_ON
-> dumps in softirq context that monopolized the CPU for over 23 seconds,
-> triggering a soft lockup panic.
-> 
-> Fix this by checking pci_channel_offline() at the top of
-> mlx5e_napi_poll() and bailing out immediately when the channel is
-> offline. napi_complete_done() is called before returning to clear the
-> NAPI_STATE_SCHED bit, ensuring that napi_disable() in the teardown path
-> does not spin forever waiting for it. No CQ interrupts are re-armed
-> since the explicit mlx5e_cq_arm() calls are skipped, so the NAPI
-> instance will not be re-scheduled. The pending DMA buffers are left for
-> device removal to clean up.
-> 
-> Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-> index 76108299ea57d..934ad7fafa801 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-> @@ -138,6 +138,19 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
->   	bool xsk_open;
->   	int i;
->   
-> +	/*
-> +	 * When the PCI channel is offline, IOMMU mappings may already be torn
-> +	 * down.  Processing CQEs would call dma_unmap for every pending WQE,
-> +	 * each hitting a WARN_ON in the IOMMU layer.  The resulting storm of
-> +	 * warnings in softirq context can monopolise the CPU long enough to
-> +	 * trigger a soft lockup and prevent any RCU grace period from
-> +	 * completing.
-> +	 */
-> +	if (unlikely(pci_channel_offline(c->mdev->pdev))) {
-> +		napi_complete_done(napi, 0);
-> +		return 0;
-> +	}
-> +
->   	rcu_read_lock();
->   
->   	qos_sqs = rcu_dereference(c->qos_sqs);
-> 
-> ---
-> base-commit: a956792a1543c2bf4a2266cb818dc7c4135006f0
-> change-id: 20260209-mlx5_iommu-c8b238b1bb14
-> 
-> Best regards,
-> --
-> Breno Leitao <leitao@debian.org>
-> 
-> 
-
-Hi,
-
-Thanks for your patch.
-
-You're introducing an interesting problem, but I am not convinced by 
-this solution approach.
-
-Why would the driver perform this check if it doesn't guarantee 
-prevention of invalid access? It only "allows one napi cycle", which 
-happen to be good enough to prevent the soft lockup in your case.
-
-What if a napi cycle is configured with larger budget?
-
-If the problem is that the WARN_ON is being called at a high rate, then 
-it should be rate-limited.
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index 57178dad5eb7..93e5ffe900e9 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_ADMIN_CMDS_H_
+@@ -38,10 +38,11 @@ enum efa_admin_aq_feature_id {
+ 	EFA_ADMIN_DEVICE_ATTR                       = 1,
+ 	EFA_ADMIN_AENQ_CONFIG                       = 2,
+ 	EFA_ADMIN_NETWORK_ATTR                      = 3,
+-	EFA_ADMIN_QUEUE_ATTR                        = 4,
++	EFA_ADMIN_QUEUE_ATTR_1                      = 4,
+ 	EFA_ADMIN_HW_HINTS                          = 5,
+ 	EFA_ADMIN_HOST_INFO                         = 6,
+ 	EFA_ADMIN_EVENT_QUEUE_ATTR                  = 7,
++	EFA_ADMIN_QUEUE_ATTR_2                      = 8,
+ };
+ 
+ /* QP transport type */
+@@ -744,14 +745,18 @@ struct efa_admin_feature_device_attr_desc {
+ 	u32 reserved1;
+ };
+ 
+-struct efa_admin_feature_queue_attr_desc {
++struct efa_admin_feature_queue_attr_desc_1 {
+ 	/* The maximum number of queue pairs supported */
+ 	u32 max_qp;
+ 
+ 	/* Maximum number of WQEs per Send Queue */
+ 	u32 max_sq_depth;
+ 
+-	/* Maximum size of data that can be sent inline in a Send WQE */
++	/*
++	 * Maximum size of data that can be sent inline in a Send WQE
++	 * (deprecated by
++	 * efa_admin_feature_queue_attr_desc_2::inline_buf_size_ex)
++	 */
+ 	u32 inline_buf_size;
+ 
+ 	/* Maximum number of buffer descriptors per Recv Queue */
+@@ -805,6 +810,11 @@ struct efa_admin_feature_queue_attr_desc {
+ 	u16 max_tx_batch;
+ };
+ 
++struct efa_admin_feature_queue_attr_desc_2 {
++	/* Maximum size of data that can be sent inline in a Send WQE */
++	u16 inline_buf_size_ex;
++};
++
+ struct efa_admin_event_queue_attr_desc {
+ 	/* The maximum number of event queues supported */
+ 	u32 max_eq;
+@@ -872,7 +882,9 @@ struct efa_admin_get_feature_resp {
+ 
+ 		struct efa_admin_feature_network_attr_desc network_attr;
+ 
+-		struct efa_admin_feature_queue_attr_desc queue_attr;
++		struct efa_admin_feature_queue_attr_desc_1 queue_attr_1;
++
++		struct efa_admin_feature_queue_attr_desc_2 queue_attr_2;
+ 
+ 		struct efa_admin_event_queue_attr_desc event_queue_attr;
+ 
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
+index 9ead02800ac7..63c7f07806a8 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.c
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include "efa_com.h"
+@@ -479,31 +479,46 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
+ 
+ 	edev->supported_features = resp.u.device_attr.supported_features;
+ 	err = efa_com_get_feature(edev, &resp,
+-				  EFA_ADMIN_QUEUE_ATTR);
++				  EFA_ADMIN_QUEUE_ATTR_1);
+ 	if (err) {
+ 		ibdev_err_ratelimited(edev->efa_dev,
+-				      "Failed to get queue attributes %d\n",
++				      "Failed to get queue attributes1 %d\n",
+ 				      err);
+ 		return err;
+ 	}
+ 
+-	result->max_qp = resp.u.queue_attr.max_qp;
+-	result->max_sq_depth = resp.u.queue_attr.max_sq_depth;
+-	result->max_rq_depth = resp.u.queue_attr.max_rq_depth;
+-	result->max_cq = resp.u.queue_attr.max_cq;
+-	result->max_cq_depth = resp.u.queue_attr.max_cq_depth;
+-	result->inline_buf_size = resp.u.queue_attr.inline_buf_size;
+-	result->max_sq_sge = resp.u.queue_attr.max_wr_send_sges;
+-	result->max_rq_sge = resp.u.queue_attr.max_wr_recv_sges;
+-	result->max_mr = resp.u.queue_attr.max_mr;
+-	result->max_mr_pages = resp.u.queue_attr.max_mr_pages;
+-	result->max_pd = resp.u.queue_attr.max_pd;
+-	result->max_ah = resp.u.queue_attr.max_ah;
+-	result->max_llq_size = resp.u.queue_attr.max_llq_size;
+-	result->sub_cqs_per_cq = resp.u.queue_attr.sub_cqs_per_cq;
+-	result->max_wr_rdma_sge = resp.u.queue_attr.max_wr_rdma_sges;
+-	result->max_tx_batch = resp.u.queue_attr.max_tx_batch;
+-	result->min_sq_depth = resp.u.queue_attr.min_sq_depth;
++	result->max_qp = resp.u.queue_attr_1.max_qp;
++	result->max_sq_depth = resp.u.queue_attr_1.max_sq_depth;
++	result->max_rq_depth = resp.u.queue_attr_1.max_rq_depth;
++	result->max_cq = resp.u.queue_attr_1.max_cq;
++	result->max_cq_depth = resp.u.queue_attr_1.max_cq_depth;
++	result->inline_buf_size = resp.u.queue_attr_1.inline_buf_size;
++	result->max_sq_sge = resp.u.queue_attr_1.max_wr_send_sges;
++	result->max_rq_sge = resp.u.queue_attr_1.max_wr_recv_sges;
++	result->max_mr = resp.u.queue_attr_1.max_mr;
++	result->max_mr_pages = resp.u.queue_attr_1.max_mr_pages;
++	result->max_pd = resp.u.queue_attr_1.max_pd;
++	result->max_ah = resp.u.queue_attr_1.max_ah;
++	result->max_llq_size = resp.u.queue_attr_1.max_llq_size;
++	result->sub_cqs_per_cq = resp.u.queue_attr_1.sub_cqs_per_cq;
++	result->max_wr_rdma_sge = resp.u.queue_attr_1.max_wr_rdma_sges;
++	result->max_tx_batch = resp.u.queue_attr_1.max_tx_batch;
++	result->min_sq_depth = resp.u.queue_attr_1.min_sq_depth;
++
++	if (efa_com_check_supported_feature_id(edev, EFA_ADMIN_QUEUE_ATTR_2)) {
++		err = efa_com_get_feature(edev, &resp,
++					  EFA_ADMIN_QUEUE_ATTR_2);
++		if (err) {
++			ibdev_err_ratelimited(
++				edev->efa_dev,
++				"Failed to get queue attributes2 %d\n", err);
++			return err;
++		}
++
++		result->inline_buf_size_ex = resp.u.queue_attr_2.inline_buf_size_ex;
++	} else {
++		result->inline_buf_size_ex = result->inline_buf_size;
++	}
+ 
+ 	err = efa_com_get_feature(edev, &resp, EFA_ADMIN_NETWORK_ATTR);
+ 	if (err) {
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+index 3ac2686abba1..ef15b3c38429 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.h
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_COM_CMD_H_
+@@ -127,6 +127,7 @@ struct efa_com_get_device_attr_result {
+ 	u32 max_cq;
+ 	u32 max_cq_depth; /* cqes */
+ 	u32 inline_buf_size;
++	u32 inline_buf_size_ex;
+ 	u32 max_mr;
+ 	u32 max_pd;
+ 	u32 max_ah;
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 22d3e25c3b9d..85c3a7dd4335 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /*
+- * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include <linux/dma-buf.h>
+@@ -1994,6 +1994,7 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
+ 	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_CREATE_AH;
+ 	resp.sub_cqs_per_cq = dev->dev_attr.sub_cqs_per_cq;
+ 	resp.inline_buf_size = dev->dev_attr.inline_buf_size;
++	resp.inline_buf_size_ex = dev->dev_attr.inline_buf_size_ex;
+ 	resp.max_llq_size = dev->dev_attr.max_llq_size;
+ 	resp.max_tx_batch = dev->dev_attr.max_tx_batch;
+ 	resp.min_sq_wr = dev->dev_attr.min_sq_depth;
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index 98b71b9979f8..13225b038124 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
+ /*
+- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef EFA_ABI_USER_H
+@@ -44,7 +44,8 @@ struct efa_ibv_alloc_ucontext_resp {
+ 	__u32 max_llq_size; /* bytes */
+ 	__u16 max_tx_batch; /* units of 64 bytes */
+ 	__u16 min_sq_wr;
+-	__u8 reserved_a0[4];
++	__u16 inline_buf_size_ex;
++	__u8 reserved_b0[2];
+ };
+ 
+ struct efa_ibv_alloc_pd_resp {
+-- 
+2.47.3
 
 
