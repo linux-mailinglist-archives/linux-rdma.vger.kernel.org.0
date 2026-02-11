@@ -1,58 +1,103 @@
-Return-Path: <linux-rdma+bounces-16743-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16744-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gGqBDKHei2nKcQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16743-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 02:42:57 +0100
+	id qIUVOjdLjGmukgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16744-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 10:26:15 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8E341207DE
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 02:42:56 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 936E8122B4E
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 10:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D30A7302A6C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 01:42:27 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D8B7330066BC
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Feb 2026 09:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6FF29ACD7;
-	Wed, 11 Feb 2026 01:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB003557E3;
+	Wed, 11 Feb 2026 09:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="cpnpJHA9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DsDfem37";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="suuQ43Fb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4542D299928;
-	Wed, 11 Feb 2026 01:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B1D2E62C6
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 09:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770774146; cv=none; b=qfJA4ECFVxL8Jugu7c940U4rYY0xCVdI3vAw6tjnaMhx6DbRNf8jxTNdX2Ap4Sd5niDVCNQJwGSxGn7T34ididj9TJZSMGe7S3Zbc6VpKZNncFxJHAplGAfrqgusyTB7vdudUg6y1eBOJ/VbBf0aY5JGszsF4wIXKG93cpPMSDU=
+	t=1770801973; cv=none; b=mPMdC3TMF92lPO3QmHomeYcXGaFp44Fdid31v9w4QBtQBfRV5X4huO0dPFTCLQ4BnF2T/88X80b9aY1riGBjt7XeIlazQ4WIq7UXmkBpmQa47nWPkfsFpEY5CJGw6tLvd8OJ+xcEgXcSnRl9I4WS5mXaV2F8xihuGHwCrlDfT0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770774146; c=relaxed/simple;
-	bh=Mb/VVCf9egOkjMeEWPeLRLzaJhnewiNqQzmQDrfKFxk=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=DyWdmsD1pwJBa/kmWkQMPTWeBjg8wkGf2q/lqXRcysMdNK/+L9kHHsJ3G3va1oewZAVPu4QwQ0nx5sqWAMm+3MGQVjpQ8GNzputMsY+CMqW4ik7TwEliz2JEQh9r7/GeDRMGotl9culCWelWPPvc8uN9yp7bu4ULRVF8DGNI5bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=cpnpJHA9; arc=none smtp.client-ip=113.46.200.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=vBIPSGp/KOTP7s/IpoishNommYTUSUwig6I78qJaThE=;
-	b=cpnpJHA9QP5X2Nhx+lFuku1kaRAW1Mexf6hmrkg67zLBp2eHaOP+reYiLg010zmV8JPxPYnFw
-	SqnBHfEVziGATGExTDBtdyU8djXPzkXM8JpcxXFMPyppIq+fTY25bbNWe9u5dJP+epkFfma3JDJ
-	1D/mu8EvuJOghowXeV3Y5yo=
-Received: from mail.maildlp.com (unknown [172.19.163.214])
-	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4f9gzQ53zCz1K96N;
-	Wed, 11 Feb 2026 09:37:38 +0800 (CST)
-Received: from kwepemk100013.china.huawei.com (unknown [7.202.194.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7F34540561;
-	Wed, 11 Feb 2026 09:42:14 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemk100013.china.huawei.com (7.202.194.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Wed, 11 Feb 2026 09:42:13 +0800
-Message-ID: <1a37e361-a791-4d28-a389-e3e04faec655@huawei.com>
-Date: Wed, 11 Feb 2026 09:42:13 +0800
+	s=arc-20240116; t=1770801973; c=relaxed/simple;
+	bh=jIImnerFM+OYXbMNw14ilawQ5Qs0Xtw1HG2jKfmQETA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gNusTlL3DE+5b1yhHcu6I7VK9AE4jkcM0qnOMxhdFy5rNOv9SPK/HpfC34ZRnBEYuFi2XBQNyAM3Vp0Xb2pZ+bVmmrAKcRF+w43f86Tgu2DcUDJzAuMdAvifdDDB2oVksoo5/VapNeyTeT7ayRednihNr8YT76ORjOoO1AD+jdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DsDfem37; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=suuQ43Fb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770801970;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rZuDjmJOY2PmvR2TdGKfik6KPMKtWY5GB6UOVKP4/vI=;
+	b=DsDfem37TIXjpWLpmN0qCDYW/PF0OZLEutnnpCAX9VRexW8JmV88pb/kz4gw+I9rQDVIhV
+	eMpQOyBqBhC6di4yiGlum6us8FaAFJMGXEI3wq4dzmmwdKMloTltMvYgvJEYNTHSzaYyJ2
+	oFYUBOZTtTfCyvQqkbIrjYJON3t2Llg=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-400-TT4RO1ZSPLi-EwKjNGdQEQ-1; Wed, 11 Feb 2026 04:26:09 -0500
+X-MC-Unique: TT4RO1ZSPLi-EwKjNGdQEQ-1
+X-Mimecast-MFC-AGG-ID: TT4RO1ZSPLi-EwKjNGdQEQ_1770801968
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-43771113b3bso1313141f8f.0
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Feb 2026 01:26:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1770801968; x=1771406768; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rZuDjmJOY2PmvR2TdGKfik6KPMKtWY5GB6UOVKP4/vI=;
+        b=suuQ43FbqvvRWbE8cpzeWAiHR2XgOy5XVzYtwpTXkH2c4O2cOvpiCZS926ne0r75Hs
+         NwcD6butJGT/V9kI6SQcqta5QqDaBDmP7og0HTPXsb2f+e/ojMCGKXYM62DZLZ55F4P0
+         9/2lznwrWZvlV2M0ua2FT0GDr92Zx1t0hBsb11DDewPDTZm3FXb3Ky/cNbzfAWAlZ2yu
+         Xt2FLqtIWYb8t/D1Kf5gw5jlHKQeF1GZw1UXVqaVFbJPbDQ8bKRhir91IEEZHeYXB4zw
+         X7CZTBUVJicHUBQDbGjg9Wj+A2FWT3s0hbdfZpq1gGy8Gia3FQTM5dVdOLDpXKx1pL/n
+         Uv6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770801968; x=1771406768;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rZuDjmJOY2PmvR2TdGKfik6KPMKtWY5GB6UOVKP4/vI=;
+        b=NUu7nJ1wygu/k+HeYbHUwGi8Se3a4rdH9JMsWh+m/yJ+D0tm6fODHtaU2szJtnOrMu
+         fsrtJbKkYguylDZwnZsmJg5O0or6S5qjFEU4ZG/yNaN7c5mP68BLUpU0FXdMopYZWSrs
+         gGHIDsUE8zb3oWzFt860VFPWRLd1f0g424HDLp2btcM1RS7L3nSRpJ4hbuSGHxf8mbKV
+         qPP9j7mLQkj00VTiQ+5wq4BY0W9USPQTF/Pcb012meILXdNN1Wm8VX/X0XeX7c0gZg0h
+         0zkLjarsJW/UOz9IeIWnIJjSP9kQ+gKWyB+K5wfdQsv6mc1QqQeb65ksx6XZiK97KlnJ
+         kTbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUMn8Fozw0UCHBvEbuDyzPF03dZIhrjBZjTwqdsop0hjN520iiGggGOiX3YB/KIxil4ybJAbj0vei1Z@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2qvczjKOrWjaRl1VAHkvss3CFubPBAfb9HmLI1tvUeMQeU0RM
+	eq6tnDT5ZpHYOk/7lWpjOOjXYW4YX+zPu+uVdueIj6E6hVuDH9pCLgfwuIGH3XR634aWD/h3jDm
+	iqEdo8cGl7ViLgZw48ptGeEhABW+YcDC+GO1LBh3plc70Vq/+IyHgRo0jB/5v8Ns=
+X-Gm-Gg: AZuq6aK/vAufi9GIoDCIlr/wtpzNeNsPa0lnBCFmH9meYJ9PkVjnS1wWgIlCEtiMEcb
+	UBk8nYoS323dP88ZUkjWcfcNtk2ckZMzopjkd4tUhfQZMmL8pY1zTfFBiwmFR+w7dgY22l3wr/S
+	CsApojc9GgLziIc8xg/VHy0mvL6bblb5rPNB6SB4JnD5iWzMpk6LAf1tKRaak7iT1cucKsqD0PG
+	qvj7MAI8jv6TYPrQ9r4zTWfDIjsvCB3nXhjHuUlJX7Sbv51arfT6SY14AA2lrFJ9V9zo9QGAhA/
+	WBTMnflXc6R5HVPiMiwQY/56mXSiuHQ6LiybKdUi+Dcjz9CuH7/nSNi2ZX1C47o0rHNnhzfTZvN
+	aszKjJ1k3vvPdAtivQHTInEBUAw==
+X-Received: by 2002:a05:6000:2382:b0:437:678a:5921 with SMTP id ffacd0b85a97d-437678a5b00mr16264904f8f.1.1770801968466;
+        Wed, 11 Feb 2026 01:26:08 -0800 (PST)
+X-Received: by 2002:a05:6000:2382:b0:437:678a:5921 with SMTP id ffacd0b85a97d-437678a5b00mr16264831f8f.1.1770801967929;
+        Wed, 11 Feb 2026 01:26:07 -0800 (PST)
+Received: from [192.168.88.32] ([212.105.155.220])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43783d4785fsm3095279f8f.11.2026.02.11.01.26.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Feb 2026 01:26:07 -0800 (PST)
+Message-ID: <2945d029-14f8-47af-a40e-11cc13da4d79@redhat.com>
+Date: Wed, 11 Feb 2026 10:26:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,101 +105,67 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>, Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan
-	<tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky
-	<leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Amir Vadai
-	<amirv@mellanox.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <dcostantino@meta.com>, <rneu@meta.com>,
-	<kernel-team@meta.com>
-Subject: Re: [PATCH net] net/mlx5e: Skip NAPI polling when PCI channel is
- offline
-To: Breno Leitao <leitao@debian.org>
-References: <20260209-mlx5_iommu-v1-1-b17ae501aeb2@debian.org>
- <49fe0af5-7dcf-42e0-bd73-0bd42c067d26@huawei.com>
- <aYtIrl01U0uHo7RP@gmail.com>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <aYtIrl01U0uHo7RP@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemk100013.china.huawei.com (7.202.194.61)
+Subject: Re: [PATCH net-next V2 5/5] eth: mlx5: Move pause storm errors to
+ pause stats
+To: Mohsin Bashir <mohsin.bashr@gmail.com>, netdev@vger.kernel.org
+Cc: alexanderduyck@fb.com, andrew+netdev@lunn.ch, andrew@lunn.ch,
+ davem@davemloft.net, donald.hunter@gmail.com, edumazet@google.com,
+ gal@nvidia.com, horms@kernel.org, idosch@nvidia.com,
+ jacob.e.keller@intel.com, kernel-team@meta.com, kory.maincent@bootlin.com,
+ kuba@kernel.org, lee@trager.us, leon@kernel.org, linux-rdma@vger.kernel.org,
+ linux@armlinux.org.uk, mbloch@nvidia.com, o.rempel@pengutronix.de,
+ saeedm@nvidia.com, tariqt@nvidia.com, vadim.fedorenko@linux.dev
+References: <20260207010525.3808842-1-mohsin.bashr@gmail.com>
+ <20260207010525.3808842-6-mohsin.bashr@gmail.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20260207010525.3808842-6-mohsin.bashr@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16743-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16744-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
+	FREEMAIL_CC(0.00)[fb.com,lunn.ch,davemloft.net,gmail.com,google.com,nvidia.com,kernel.org,intel.com,meta.com,bootlin.com,trager.us,vger.kernel.org,armlinux.org.uk,pengutronix.de,linux.dev];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shaojijie@huawei.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[huawei.com:+];
 	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:mid,huawei.com:dkim,huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C8E341207DE
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 936E8122B4E
 X-Rspamd-Action: no action
 
+On 2/7/26 2:05 AM, Mohsin Bashir wrote:
+> Report device_stall_critical_watermark_cnt as tx_pause_storm_events in
+> the ethtool_pause_stats struct. This counter tracks pause storm error
+> events which indicate the NIC has been sending pause frames for an
+> extended period due to a stall.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
 
-on 2026/2/10 23:18, Breno Leitao wrote:
-> On Tue, Feb 10, 2026 at 10:19:46AM +0800, Jijie Shao wrote:
->> on 2026/2/10 2:01, Breno Leitao wrote:
->>> When a PCI error (e.g. AER error or DPC containment) marks the PCI
->>> channel as frozen or permanently failed, the IOMMU mappings for the
->>> device may already be torn down. If mlx5e_napi_poll() continues
->>> processing CQEs in this state, every call to dma_unmap_page() triggers
->>> a WARN_ON in iommu_dma_unmap_phys().
->> Hi:
->>    My comment has nothing to do with the changes made in this patch itself.
->>
->>
->> I am more interested in this error itself.
->> 1. If there is an issue with dma_unmp, does dma_map in tx have a similar problem?
-> I suspect that dma_map will succeed in such a case (when the DMA maps are
-> gone).
->
-> dma_map_single/dma_map_page creates new page table entries — it doesn't look up
-> existing ones. Even if existing mappings are gone, new mappings succeed !?
->
-> I haven't seen this instance on the TX path as well.
->
->> 2. Can this error be detected by mlx5_pci_err_detected()? If not, does this mean that all PCIe NIC drivers might have similar issues?
-> mlx5_pci_err_detected() is called for the device under DPC — that's not the
-> issue.
->
-> >From my naive view, the issue seems to be timing: there's a potential race
-> between DPC setting the PCI channel to frozen and the error handler completing
-> (which eventually calls napi_disable_locked).
->
-> During that window, NAPI poll can still fire and process CQEs, triggering the
-> dma_unmap WARN_ON storm, and crash.
->
->>     Do other drivers need to do similar checks?
-> I really don't know, honestly. Are other drivers solving the problem
-> differently?!
->
-> Thanks for the question,
-> --breno
+I think this deserves and explicit ack from someone in Mellanox, and I'm
+wrapping-up the net-next PR right now. Unless the ack is very fast, I
+fear I'll have to defer this one.
 
-Thanks for the reply, and I will continue to follow up on this issue.
-This change may require further confirmation from the mlx driver's maintainer.
-
-The code look good to me.
-Reviewed-by: Jijie Shao <shaojijie@huawei.com>
-
+/P
 
 
