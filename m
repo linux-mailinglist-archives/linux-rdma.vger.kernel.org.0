@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-16772-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16773-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YJSoFxRmjWlI2AAAu9opvQ
-	(envelope-from <linux-rdma+bounces-16772-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 06:33:08 +0100
+	id MLc6MyxmjWlk2AAAu9opvQ
+	(envelope-from <linux-rdma+bounces-16773-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 06:33:32 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0075012A72E
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 06:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A04112A763
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 06:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 10FC9312E1B7
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 05:32:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 523A131538C9
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 05:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8931E2877F7;
-	Thu, 12 Feb 2026 05:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526AA28B4FD;
+	Thu, 12 Feb 2026 05:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcst5Qy6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YTGSUrJV"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEE028751D;
-	Thu, 12 Feb 2026 05:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126762877FA;
+	Thu, 12 Feb 2026 05:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770874353; cv=none; b=OQMs4iultR7T4APw0U//dQG+PsfrN1fRtsuiuQZ5czspVU9w34mAdx52kmkcSnWSXLHfKSf2qMRDSAl0SF1LoGCGSmlO94l/T+ZB2a3WjZpKICfuEoVUMp+K3ezXJCBp4WkGVt0uHjWn3B+y0O2XwlBlx71GZbw5zuZjZSfEfXo=
+	t=1770874354; cv=none; b=dHGK3CmVZTv688NEggNA2FRSuQBL/ZCy+PSZZejW0A95dZ5sIE+hSVp86bCQ4LeA9le1bSzVx11V+C5UBC4XODGzrhp79Y3vYp90HkMKBw8OGx0rKEhf/9blfw3g5a9hb0yityFtDnWdZzoAZgl7pzIDOXwS/uK7rweoCLn3LSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770874353; c=relaxed/simple;
-	bh=ijOCOOs+VBP5e9+pJYzOfq3GJwbZJv9UY/eDzecCYfU=;
+	s=arc-20240116; t=1770874354; c=relaxed/simple;
+	bh=n6zOhp9NhoaHXZ0TZxCKtceQ3+g5d/EDkBQzogyAbAY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Mi0Gg2cATmO3U/DNMn9XLClcbAPGFiMmA1bwY7tNYZpIn+oGOnvvfAG6t0jitOWviqOqcV+K5QcCckkLPj1i9I0PNLRbJfhWqoDi0b+kLZnoXYCo7V9AG5/exQzV7cGzIXWDzaUGwQrc4vY1tqG59Y6lgTL19Ui65JuqtwPckSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kcst5Qy6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C6E2C19421;
-	Thu, 12 Feb 2026 05:32:32 +0000 (UTC)
+	 MIME-Version; b=tptN4I6ifuINo+ozZB4wpy7vWWw84Rw/t22bpUxBtZyI+Jaa3PE4sjoE+dQKLVbVQ9bR5rzELSJrUxpk8tlPDQPjBHujYdx9VeBHMjIaUh7vVT7JG78V9QoWP5T1C4OpPeDjVW0cl94pP1WXMYBoYYOp8xCgHfZTmwcr5+/g4MA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YTGSUrJV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E11C19424;
+	Thu, 12 Feb 2026 05:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1770874353;
-	bh=ijOCOOs+VBP5e9+pJYzOfq3GJwbZJv9UY/eDzecCYfU=;
+	bh=n6zOhp9NhoaHXZ0TZxCKtceQ3+g5d/EDkBQzogyAbAY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kcst5Qy6v3jTqUFmOJ9iP0jv9PxDBoQMSjW87r6iHz2gGM5drdHICLdXYXi+gAotx
-	 gMbDf1Ydl5I1jVGkg7Rhy48hFb60QK8wuCVQNFafLg7Y6wBn9CopdLD6qEaY3PG9rr
-	 N0h/ZKUN/z6t41e8qAbmnEZhcpzwm07lo/T/li0JA6WJUrbZ9vEpjLmtM28J+l+pLE
-	 EP7robqfXYUdRTwqReZx/KKSBn9ugempTollPKw+3QkdjQDG29zbvjeCi5kWr1/liW
-	 O6G/Tr7gk8xVqV84qiZ5WxbwR5oNCeDOBkrNW3jPWdW5InU07ttHCPPOyjXLgWs+rk
-	 ivfC0HLe/yf1g==
+	b=YTGSUrJVrTKScMvET0Q+XpcklHosAosHoZu8iHLFCqmLacoBzkPdYiY5lsWigmGpS
+	 HPbesy9X1CH91ym8YRNk27qq3GFnaAyBS6KCh/2el9vEGG+08XDRd/kjWTY4BDnyNw
+	 nbFSC17L85heZEqJV532XFCaC7l20q+vuvNpy/V2M4C2yQWbi+2rwCaxvJlAxpmoRl
+	 qLIH2EsyAmlP5pUxKaBTQETXvqcq3XM6G2liQfd4AUHIPABXmIHA978jbnC+enxSg6
+	 oLlhHAiNMREIxeOZ1P6754C9tJi8s67eNXLeG6Ef6w0xUdsdYKHhZ6BADmQwWiRFTZ
+	 E+WyADRQJ6MrQ==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org
 Cc: linux-kselftest@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc: linux-kselftest@vger.kernel.org,
 	horms@kernel.org,
 	linux-rdma@vger.kernel.org,
 	allison.henderson@oracle.com
-Subject: [PATCH net-next v4 1/4] net/rds: Fix NULL pointer dereference in rds_tcp_accept_one
-Date: Wed, 11 Feb 2026 22:32:27 -0700
-Message-ID: <20260212053230.1921241-2-achender@kernel.org>
+Subject: [PATCH net-next v4 2/4] net/rds: Refactor __rds_conn_create for blocking transport cleanup
+Date: Wed, 11 Feb 2026 22:32:28 -0700
+Message-ID: <20260212053230.1921241-3-achender@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260212053230.1921241-1-achender@kernel.org>
 References: <20260212053230.1921241-1-achender@kernel.org>
@@ -79,7 +79,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16772-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16773-lists,linux-rdma=lfdr.de];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -93,75 +93,97 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url]
-X-Rspamd-Queue-Id: 0075012A72E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzbot.org:url]
+X-Rspamd-Queue-Id: 7A04112A763
 X-Rspamd-Action: no action
 
-Hold a local reference to new_sock->sk before installing callbacks
-in rds_tcp_accept_one. After rds_tcp_set_callbacks() or
-rds_tcp_reset_callbacks(), tc->t_sock is set to new_sock which
-may race with the shutdown path.  A concurrent
-rds_tcp_conn_path_shutdown() may call sock_release(), which sets
-new_sock->sk = NULL and frees sk.
+The next patch will delegate fanout operations to a background worker,
+which requires cancel_work_sync() during connection cleanup.  However,
+the error path of __rds_conn_create() currently calls
+trans->conn_free() while holding rds_conn_lock (spinlock) and
+rcu_read_lock, which creates an atomic context where cancel_work_sync()
+cannot sleep.
 
-Subsequent accesses to new_sock->sk->sk_state dereference NULL,
-causing the null dereference. So a local sock reference with
-sock_hold() before installing callbacks will prevent the race.
+To avoid this, refactor the error/race paths to defer
+trans->conn_free() calls until after locks are released. This allows
+transport cleanup functions to perform blocking operations safely.
 
-Fixes: 826c1004d4ae ("net/rds: rds_tcp_conn_path_shutdown must not discard messages")
-Reported-by: syzbot+96046021045ffe6d7709@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=96046021045ffe6d7709
+This patch moves the cp_transport_data cleanup to the 'out:' label
+where it runs outside the critical section, after the connection has
+been freed from the slab and cannot be accessed by racing threads.
+
+Link: https://ci.syzbot.org/series/1a5ef180-c02c-401d-9df7-670b18570a55
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- net/rds/tcp_listen.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ net/rds/connection.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 6fb5c928b8fd..cdc86473a1ba 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -177,6 +177,7 @@ int rds_tcp_accept_one(struct rds_tcp_net *rtn)
- 	struct rds_tcp_connection *rs_tcp = NULL;
- 	int conn_state;
- 	struct rds_conn_path *cp;
-+	struct sock *sk;
- 	struct in6_addr *my_addr, *peer_addr;
- #if !IS_ENABLED(CONFIG_IPV6)
- 	struct in6_addr saddr, daddr;
-@@ -298,6 +299,14 @@ int rds_tcp_accept_one(struct rds_tcp_net *rtn)
- 		rds_conn_path_drop(cp, 0);
- 		goto rst_nsk;
- 	}
-+	/* Hold a local reference to sk before setting callbacks. Once callbacks
-+	 * are set, it is possible for a concurrent rds_tcp_conn_path_shutdown
-+	 * call to release the new_sock->sk and set it to NULL.  So we use
-+	 * a local sk here to avoid racing with callbacks
-+	 */
-+	sk = new_sock->sk;
-+	sock_hold(sk);
-+
- 	if (rs_tcp->t_sock) {
- 		/* Duelling SYN has been handled in rds_tcp_accept_one() */
- 		rds_tcp_reset_callbacks(new_sock, cp);
-@@ -316,13 +325,15 @@ int rds_tcp_accept_one(struct rds_tcp_net *rtn)
- 	 * knowing that "rds_tcp_conn_path_shutdown" will
- 	 * dequeue pending messages.
- 	 */
--	if (new_sock->sk->sk_state == TCP_CLOSE_WAIT ||
--	    new_sock->sk->sk_state == TCP_LAST_ACK ||
--	    new_sock->sk->sk_state == TCP_CLOSE)
-+	if (READ_ONCE(sk->sk_state) == TCP_CLOSE_WAIT ||
-+	    READ_ONCE(sk->sk_state) == TCP_LAST_ACK ||
-+	    READ_ONCE(sk->sk_state) == TCP_CLOSE)
- 		rds_conn_path_drop(cp, 0);
- 	else
- 		queue_delayed_work(cp->cp_wq, &cp->cp_recv_w, 0);
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index 185f73b01694..695ab7446178 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -170,6 +170,7 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+ 	struct hlist_head *head = rds_conn_bucket(laddr, faddr);
+ 	struct rds_transport *loop_trans;
+ 	struct rds_conn_path *free_cp = NULL;
++	struct rds_transport *free_trans = NULL;
+ 	unsigned long flags;
+ 	int ret, i;
+ 	int npaths = (trans->t_mp_capable ? RDS_MPATH_WORKERS : 1);
+@@ -305,7 +306,7 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+ 	if (parent) {
+ 		/* Creating passive conn */
+ 		if (parent->c_passive) {
+-			trans->conn_free(conn->c_path[0].cp_transport_data);
++			free_trans = trans;
+ 			free_cp = conn->c_path;
+ 			kmem_cache_free(rds_conn_slab, conn);
+ 			conn = parent->c_passive;
+@@ -321,18 +322,7 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+ 		found = rds_conn_lookup(net, head, laddr, faddr, trans,
+ 					tos, dev_if);
+ 		if (found) {
+-			struct rds_conn_path *cp;
+-			int i;
+-
+-			for (i = 0; i < npaths; i++) {
+-				cp = &conn->c_path[i];
+-				/* The ->conn_alloc invocation may have
+-				 * allocated resource for all paths, so all
+-				 * of them may have to be freed here.
+-				 */
+-				if (cp->cp_transport_data)
+-					trans->conn_free(cp->cp_transport_data);
+-			}
++			free_trans = trans;
+ 			free_cp = conn->c_path;
+ 			kmem_cache_free(rds_conn_slab, conn);
+ 			conn = found;
+@@ -349,9 +339,23 @@ static struct rds_connection *__rds_conn_create(struct net *net,
  
-+	sock_put(sk);
-+
- 	new_sock = NULL;
- 	ret = 0;
- 	if (conn->c_npaths == 0)
+ out:
+ 	if (free_cp) {
+-		for (i = 0; i < npaths; i++)
++		for (i = 0; i < npaths; i++) {
++			/*
++			 * The trans->conn_alloc call may have allocated
++			 * resources for the cp paths, which will need to
++			 * be freed before freeing cp itself.  We do this here
++			 * so it runs outside the rds_conn_lock spinlock
++			 * and rcu_read_lock section, because conn_free()
++			 * may call cancel_work_sync() which
++			 * can sleep.  free_trans is only set in the
++			 * race-loss paths where conn_alloc() succeeded.
++			 */
++			if (free_trans && free_cp[i].cp_transport_data)
++				free_trans->conn_free
++					(free_cp[i].cp_transport_data);
+ 			if (free_cp[i].cp_wq != rds_wq)
+ 				destroy_workqueue(free_cp[i].cp_wq);
++		}
+ 		kfree(free_cp);
+ 	}
+ 
 -- 
 2.43.0
 
