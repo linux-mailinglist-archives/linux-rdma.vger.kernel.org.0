@@ -1,296 +1,275 @@
-Return-Path: <linux-rdma+bounces-16793-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16794-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KIG5JH4ujmmcAgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16793-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 20:48:14 +0100
+	id gGeJKmJTjmmlBgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16794-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 23:25:38 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9846130C6D
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 20:48:13 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52E7D131839
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 23:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 34EEF300B9C9
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 19:48:11 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 86FB73018733
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Feb 2026 22:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4622777E0;
-	Thu, 12 Feb 2026 19:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1487F2FE563;
+	Thu, 12 Feb 2026 22:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AKVUU79t"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kwpObaQy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277A127453
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Feb 2026 19:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770925689; cv=none; b=RUn7vtR/OxWaI6wX3ZH5i0EMhVLgRJdEuSUIfqniBPOe+8E1KXrYHEY5gwMYmyhoAltQOEhixXI52rIm8PVOaPIU4LfrlOTVsVIHuSKs2UWWyK8P8ygsjOnA88Bt84gXA44K9S+G7hxrfpMbyGUvV15Y/m/SI3q13qxNdQp0SM0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770925689; c=relaxed/simple;
-	bh=u9mdQW7Y3W/uEX3SBY8tOvxz4vAU8bknYFtjd006j94=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SAjrQJaWhf8D8V44KTGsjGAG3b35fVCMnTl8r6g45VfJ8xz72ZXYMYOfSn2fc+dzSu29OjsvMMEEzbqyasxZrPawbHtRvVI3at48npWEHzeAwyKZ9w9uKPb1a/VMnPXcELS1ZtTkyP8atnBciGTmv6oSmwPvE4IjFSY4xjSWCDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AKVUU79t; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9264c8bf-e3cd-46db-b1a9-63a556ecb1d4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770925674;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HYVaLuJy159Bv93SAdezH4SBBD4v8w4GIPszpgMuzBU=;
-	b=AKVUU79tpSg9MX8RHoezy+/PkTv5E7l4F5caPGFjpemuRQsArWhRRrtpwz1CIihpyBz8u8
-	fqV68B8HSDJX6fNCB4hTxwIbrHEDZLRWAsgVFBNsZSrmSmYbcfUURGVIIfvzh7lO+fYIvd
-	is1nN6ktQuls3k/4WvsICmiOt31Smu8=
-Date: Thu, 12 Feb 2026 11:47:50 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06802DE6FF;
+	Thu, 12 Feb 2026 22:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770935135; cv=fail; b=XRbTJFvkZ46z8I/tpLdiKMupIg6F5eISvC9id+APDON8XvCRqQSksvO66sADg0K7I45x55fM3YZy1w5HwHCzqQGiSib3NOGqoAYs2xZB1FfOdXh+yRE8t/r7MOm0bxGr/KURBsk36lCTt2qBjNWZpsF71PODLQeYh7NlJf9XL4o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770935135; c=relaxed/simple;
+	bh=2RgcrkJfyIjzx6m4a8LKujK8YwJYK3tq0qO4a3tvnd4=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=FjoffOTpq1Qt/oE8dtBMdLxlWHVBO8l6QZDLOQ/R+fRrlVg50U4qsxZOGEyOSRjjXzOWdAyoiItQxnQQ7DgGQMrqvpUp7e1noPiOk/nI9/OYWbWkt2paNN6lsfb5b5mwE7tBpcbfSapyEIc+7VMiZkhACaf3pyPKs+63iz9lb40=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kwpObaQy; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770935135; x=1802471135;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2RgcrkJfyIjzx6m4a8LKujK8YwJYK3tq0qO4a3tvnd4=;
+  b=kwpObaQys63bp0jRFrQVqTmlUuhUWDivz6kEThg0EsgEVR6rMmW10QYc
+   yH9BCr/ZXyGK/V1DNwUw2GhnqO/vs/FySCBll85OkMgMXyVgUukYkMctP
+   F8QW4fmFrT/vRoapfSubKaz5t3ekYbzFMomFMTiWWBpCPBZ8RBJtCrAev
+   EUEGJ5/R9x6NckWnRTS4CAJ2gAwqKeQa7g548v2fd4yk+rN1BVd/lHBL8
+   blD0Jae+SeCUKZpNzNZQ8WvYCY5v2wk1xFuGHHiQDm3dtWy9Sy2MbL/4m
+   fk9XyjctViUtkPlVd60yyP65pUunGXR0Y3IxvsxRd/PJFnB4hfdHy4W9w
+   w==;
+X-CSE-ConnectionGUID: 91gwNT5kTfe2LPXtzqVblg==
+X-CSE-MsgGUID: LfHydoYORa+Sg3iu8PBQgQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11699"; a="82445617"
+X-IronPort-AV: E=Sophos;i="6.21,287,1763452800"; 
+   d="scan'208";a="82445617"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2026 14:25:35 -0800
+X-CSE-ConnectionGUID: 5qYqYWdvR4++PyEk0uNLPQ==
+X-CSE-MsgGUID: MhVL1pKcShewHop98mRnsA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,287,1763452800"; 
+   d="scan'208";a="243337243"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2026 14:25:35 -0800
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Thu, 12 Feb 2026 14:25:33 -0800
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35 via Frontend Transport; Thu, 12 Feb 2026 14:25:33 -0800
+Received: from DM1PR04CU001.outbound.protection.outlook.com (52.101.61.38) by
+ edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Thu, 12 Feb 2026 14:25:33 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Ta7fXAcPO6QRZt1Mq5t6KWPOkO8/vlV8slgOAL6Yqp8fWYqIIvdaAR/hu+cGB1uQ0gPh2eWR6kBzG+tj7EfARtxPUq5JeDGjHfSykU2tjhtjsktV/sZlaAMWd42Da4kO1rMgKUwuhoUaCZNLiAmAN+JRGqfahpDjxhHHHF1IIX/12r5to6PVOmBbfwN91n6X1vRF/Sp3GzTy1G307WVWHBZEyRvePja8Nxd1L+O+4cUgQMlU3mPJ7uewdLltW0+cryGBAnrIX6NmczXXVz1jIu+4gncivRtDO+jfVWXQ2Zyfs+eoIvTGzQnhYgVhVh30SVHNVWWWCVYJ47NgBbkJFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n8sfR++29kPa0eb7bQN13caGiWpy07ta7VJvSCMUZKQ=;
+ b=LSE8fjhIGWYVFU3PhY2OdP9JNubnoRVa9NQVV/WBju2ALEtT+5I+bZ3gHkTVd5zWV/5Kj8627VcaSZLtFyKnk90LP4rtx8sfLh/+PpJSQfhk6tf8Bx7jqyWcFFr4S0k4iWzrb1/i04RMn+NMeyOpv1wbZyfKVyw1Pv5vkB76mTXlLAhxqQSJrPBqLKCVue4thOj9Stu4zgZlLUP3TVK7Knnde3W7siCRyHXDEhcWDt9u26F9jPTnAMTqmwUjIbjEyqJKLHOzWUniNYFn/bTWeygiOU918aoBx5kTyZY3kkcsg8uuZ5PLMF5FiK/0aDbg1CxSTDsUxGjyP4vGLBwgDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB7588.namprd11.prod.outlook.com (2603:10b6:510:28b::16)
+ by SA0PR11MB4590.namprd11.prod.outlook.com (2603:10b6:806:96::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9611.12; Thu, 12 Feb
+ 2026 22:25:31 +0000
+Received: from PH0PR11MB7588.namprd11.prod.outlook.com
+ ([fe80::42ad:6451:1ae2:edd3]) by PH0PR11MB7588.namprd11.prod.outlook.com
+ ([fe80::42ad:6451:1ae2:edd3%5]) with mapi id 15.20.9611.012; Thu, 12 Feb 2026
+ 22:25:31 +0000
+Message-ID: <06db9958-e5b3-46db-a8f5-1c2aa8cfac4f@intel.com>
+Date: Thu, 12 Feb 2026 14:25:28 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/6] net/mlx5: Fix multiport device check over light
+ SFs
+To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
+	<gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Shay Drory
+	<shayd@nvidia.com>
+References: <20260212103217.1752943-1-tariqt@nvidia.com>
+ <20260212103217.1752943-2-tariqt@nvidia.com>
+Content-Language: en-US
+From: Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20260212103217.1752943-2-tariqt@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0123.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::8) To PH0PR11MB7588.namprd11.prod.outlook.com
+ (2603:10b6:510:28b::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Generate async error for r_key violations
-To: Evan Green <evgreen@meta.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc: wguay@meta.com, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20260212164355.3585961-1-evgreen@meta.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260212164355.3585961-1-evgreen@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB7588:EE_|SA0PR11MB4590:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f471f16-3818-4c45-a903-08de6a85a1ee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?a3p5NjJhWVBDTWRZQk16UnkwZHg3ZG5GaGtIcXplbVdSVWtLcFBpd1VkVWhq?=
+ =?utf-8?B?TWlNZFAwK1BEemVpNTlBbC9BQmNLc0xMcDgwTHZoQ0hhMTAwaVJZbmJRME00?=
+ =?utf-8?B?SVZrTndVS2VPeFlHYW94Y1RNWHUvd2JscHpQdW14dW4zVmpySVBEWHlhV2xY?=
+ =?utf-8?B?cTNuUDNOakVvb0FQWUtiU2RiUCt6RFhFb09nb2dHcVF4U0RILzBONFNNRmhy?=
+ =?utf-8?B?eGV0TEdjQ0xaUXhLYVVBNEc3NjhhTHgyZi85anV2UG9nQU9KUGl1aFo5ZEFX?=
+ =?utf-8?B?MFpCYlFJNGR6RERyV1VGUlovNW9JUk0zMENGZzJQOXNYQkxvRGwvbFN1S3h1?=
+ =?utf-8?B?OTVrbDd1YkFYeUdZNFZXUUFxZkk1UzNSKysyK1U5MXAvWDRla29GaDJTZmRt?=
+ =?utf-8?B?NmcrUm5ZVGx5ZWtIMUFIQkN3LzN5cEJHa25Zdk1qQmZBQzYwK3RhejZFNGdH?=
+ =?utf-8?B?MDhJc0pxVDFoUkxaZ0lRaU1UL2JsS01vb3RldXdyclVJcW9VYkw0ak9GT3Ry?=
+ =?utf-8?B?RmVzdHdyb3d6TEg1MGZ0Nm8vV3llTXBxcEdQMVNGTlErQ0g2RGE5WWU4NGU0?=
+ =?utf-8?B?YkRkeFRrM1dSNjk3SllUeG1DOXBpRElpNWV0S1pHa0I3ZWFocUNwakZvdkhX?=
+ =?utf-8?B?bDdEMFFmbjFveUorcTdGNy8veFpNaCtjdFR5OHROOGxUU2l5TVBZNzRXTVBX?=
+ =?utf-8?B?NFVsWkUxcytDaFhwb3lCVEIzcUlhSEhTQmpNTEFjYzNESEc1UkJ3aVdMTXM2?=
+ =?utf-8?B?MHRiMVRFQkwxU1hKNG1qM25JQkdDWlFnYy9iNVZSK2ZhUnJjdUFIeW4vbXh4?=
+ =?utf-8?B?aDdDYndmTVNWa3VtVmJXVDBCOS9SeGtGZUplRW81QmQwOVpzT0cxRlNRajYv?=
+ =?utf-8?B?Y2R1QTN0VTR0WE9mMWtXYmRBLzhHSkw5ZzJQdWpQMUY5bFpTblJvYm5MOHhL?=
+ =?utf-8?B?eWMrRWRzSHBkeUVzeXdoSUpCM2I4T1Y2VnZ0NTc3d3diNGRtSHowRnh2NG1P?=
+ =?utf-8?B?QXkvaVcwU002TTN4enVWdlhvaUZvQVBQOThaWkRGeHZuU3RCVkNkdGdXQUI3?=
+ =?utf-8?B?RVNFaWtKYUF3ZVhKdzFHTDRwTG1aSytISFNRa0xrSFE0clBIKzJKWmVtcDFR?=
+ =?utf-8?B?OFdwdEpzcXlWNmUyNlkvSEhoeVNWbU1EQnVWOGsyZEhLVmFranJYdk15dU5t?=
+ =?utf-8?B?MmY1amtBNm4wSWx5UFF1L3BCNWxNYytuTzBtVitWNTZ1STBRSkRIMFlKcnFs?=
+ =?utf-8?B?VkNhRnY1UTUxWWVqR0Nqc3dxZGZ4amRZbmhabTJvT3c3ckJtMkE3aVR5ZzJJ?=
+ =?utf-8?B?YVE3RWZnbEhmellZR1FFcHFxM0RDR3cvSDdQQWNEUkFMbW8zVTdmOHIwK2ps?=
+ =?utf-8?B?NzI2c2RESm5aQUFoNVMwT0FreXBYQnArQVNWZTVLd0pYTVNZeE9kL0ZaaGtY?=
+ =?utf-8?B?WjdieEF1RnE3V3J0OUpQTlE2NktWK0VRMUNITzliMzVUSGQ4eVBLdmFNV1d6?=
+ =?utf-8?B?UW0zeEk5bUNwT05uTmkxL0VKbGRNZlBvZDJxdWRaWlMyM0ZET0h6Y3hYQWp4?=
+ =?utf-8?B?bTgvMFN0MmZiakZ4ZEQ4eVdNb29Qc2lJTGR5SXQ2M3kzVGx6SXFBUmdSNEtw?=
+ =?utf-8?B?UmdyTzZSdjB0RU9CZXA1dzNkMWdtZUhxNjZpL1g3RHhkU3hLTlVTZ0ZZREdD?=
+ =?utf-8?B?Wm1nL2daT2VyWTAzaVo3R3NLSzRleG5WTnFJZmFMc25veDhqSTJobzJBQWtL?=
+ =?utf-8?B?VWVDRE90VzJSeWpMNDNJejhPZ2VNcVJ5bGQ1aHUvUlBNLzE4ajZPbExhZHpK?=
+ =?utf-8?B?ZHFHREV3N3hwbmF6ZFFzYTVqU1FXSUgvT2NQMmdNaU1mWTcyblBIOUkwMnB4?=
+ =?utf-8?B?Sk0yV2ZMZ3A4VmhtMzdSb3owNGxWUzl5S09PMkhXYzU2RTV5OFFJbkJHRG5j?=
+ =?utf-8?B?L3lWYWh4SE9yNDZnOVp0VFNGOEx3QkZwYU41Wm8rQWIycXVIS2doSTNsRHZk?=
+ =?utf-8?B?dzhyeEhMck9kc2hpNW9pcUdQMXdaYmtKdkFFZ2hIRVdkZi95QUpsclNxZ3Ft?=
+ =?utf-8?B?dWZjaU40WC9OZWs0eXk4M3VJVG1oZGxsa2JXRk5tVVVmT0t5RE9IMEhjcVJk?=
+ =?utf-8?Q?Q7FE=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB7588.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTBTUzhxc24zcXdrRm43c1BkUURNVllsNGlrNW1NNWZWVUM4aDZZSWcwT29u?=
+ =?utf-8?B?RE5ZcE5OR1hlY2lEVzVuQndoQ2xpK0VSWW5yM1QzRVVxWVEzcVRheGliS1E0?=
+ =?utf-8?B?NFNPUjBzbEtBdkZrM1hJZHZudVp3NGplRDNyTXZTeklSRktzRnRXSDhOZnlW?=
+ =?utf-8?B?RHVXVVorVDBCenAyb3J5c0VoSkx4QVorMk9rejJRV0p0VDVBSUZOQnZaaDdR?=
+ =?utf-8?B?dDZPZ2xkWERCQWxwNjVQbHZaS0Z4VkloZllOUHZSV0JBNEtOc1F5T2VLWEtE?=
+ =?utf-8?B?TFM2d1FZUkltVHFoVnJQSTllTDI1Y25TTWRWdUdBU2RxZkxmaEpBVkRTQ0Jm?=
+ =?utf-8?B?VFZFNVBDeWtudjBKZndtZTcyVFJYTzNhYnI1MXBsYS9Mb2o2TFIxektJV2xX?=
+ =?utf-8?B?dmxpUGdvWnVZOGRiVnZjTHF1bktaN2VvUm02ajJ0dnQxL0hIN1RoVWZ3cDRV?=
+ =?utf-8?B?MWZ5V2pCWU8wRnFLVExCbXl6OTVMWjR5K3Q4dXRXU29PTkZsYy90aE4zbU1S?=
+ =?utf-8?B?ZTJRN0tLcjUwTTZuZXVUWUF4QkUvSUZnbHVVUHRJcFJpdU90QkZyUDVXSHpV?=
+ =?utf-8?B?dmRXWnVrYU44S3FXV2FCMWd1ZVowd2xsM1lkUi9oQ2hwUTFHT3dKbE0wekVo?=
+ =?utf-8?B?VmhEbFNERzdjdFZCN1ZvRDRwa3J0ZmtETThlTjBuVGw3ZVBuVjkwL0VWQlZT?=
+ =?utf-8?B?RWgrOEUyQ2RsdkNSaU1aaFN4T2ZTalFPbGFJeHNYaDhtYkJEZWhIZWVTaEF6?=
+ =?utf-8?B?dURxNHpUQm1xaHMwWWhjUHdXRGYvREhPVkhpaC9YZWpxUDhqWDBjeEFqd2pB?=
+ =?utf-8?B?K0ZnYW1jOTQ5ZUhOTG5QaldwOWMrMHdROWh6NHNoVWNETzRiTXBFYmNpQ3RC?=
+ =?utf-8?B?VmRyVjZkRDdvZWxiWU8wR25JOFE4ZmxzVjZhSVVtamVTSGxOZ3A3TjM4c1lX?=
+ =?utf-8?B?QWVGdGJ6RCtoamMrdVJqOWZvMW96Mk4yMEw3SmJERXVORDRrYnlobjUwbHZO?=
+ =?utf-8?B?cGlpci8vWTAyMnRZUlJJRHNJVXRjQlVmd0p6TXVuN3l1RVMrOVVJZTVNY044?=
+ =?utf-8?B?Z1A4emdXOFZURnNJY3BCa01LVDUxRXFqWXlPU1lncjJnZDd1QUZLRmZLZlJl?=
+ =?utf-8?B?V2x5SjNOYUtiSnMxTGU1SGZVdFlCSFdxQ21KYWpmWEt3MmE3ZEk1R3JFcTd4?=
+ =?utf-8?B?V3NMQzdLT3NLY0ZDZWZkMXhhZFRxRDlNVjRZdXpxdjBMZ0VXMzUwb0xmK3NE?=
+ =?utf-8?B?elRaTVdpQUdhSGJadUFqOGE0MCtMRnBxdXhNRkNvWlBHRDYySkxnMktBMllz?=
+ =?utf-8?B?cnQ4L1ROays5ZWh2dW1FUlptNGR2cEt2R0x5Zk1pTTlZV0k1QW9EOFVycmsr?=
+ =?utf-8?B?N0g5cTU0ZFpnQ3B6UElFQzVhVGMxdW1FaWN1VVlOcmgxS01aMU5yeWxESXdL?=
+ =?utf-8?B?dGFZbE5aT0k4YjJtMXgxcGpPaTdqUjdDTEpEcmVIQWtoMGRxeWF3cjUyTE15?=
+ =?utf-8?B?YkhaS2Z6K0toRWhIcXlwa01OUy9BU29aZzMxUmh2a0hrUUQzMUxyeFZUakFE?=
+ =?utf-8?B?dGZZTnF4eXJKZ0NBbTJDZ1FqNWFZa2tDUWJWOE1sOElXYjNlRStySlVHSklz?=
+ =?utf-8?B?TEdtY3cxUUgrREJsWW1YcGJPdHlkc01DYWpQZWJZVmdZWmhyTFUyMWtYSEZr?=
+ =?utf-8?B?Qzh2ZzlXbGpuMktvdkRCeXZUNm1lcnZlTnozOW5RNmtPQnBkVjBHOHpHZmVj?=
+ =?utf-8?B?clFwcXFPVUUwMUlCN1JYeG5NOVFMYktnbmk2SGlWdUYrSGcxZW5NRFoyRHBY?=
+ =?utf-8?B?L1VHbFArOVZuWEFqMGZKVXkxNTZkaU50cnhtT3RsWEFSUnB1UTZONXpmMGYv?=
+ =?utf-8?B?bUZVSm16UVQ1aC9QZjBwNHlJUnIvYWN5dFUvckRzUEpNNWxSQm81OUs0MWl4?=
+ =?utf-8?B?emFDeCtzTS9sdDZKeU0wUGROZVVqSkJqaXB4dGIwNnB3bHZpRko3ZjhBRmVa?=
+ =?utf-8?B?TGN4SytzMHBieVlCM2s2UDRQcmxwNlJjQlcyeWttNnBiWHRBY1VsZ0toVW11?=
+ =?utf-8?B?aHQ4czZoM1k2RHpUaE11aWRVV2xST3BtVm1sRGFwLzZmWlljalhUQnlkRzEw?=
+ =?utf-8?B?VGRpL2loT0xINi9OZkNxQ3YrL1NEMkM1SDR3TXgrV2Fmd0drUlJlQUIxSDVG?=
+ =?utf-8?B?Z2VETTVEUEZMOVZwTUhXT0Y0akpvVU03akRuWVJUdTF5MWh0WTZaeWhybTVj?=
+ =?utf-8?B?QXJ3NTc3S2ZHVGN4NGFIK0lRTnpTRFVzSUlycFF5VUJsRGJOdjZQdXhCSi9R?=
+ =?utf-8?B?djJXR3VkZWgxY2dubjhoRklWaXJjK3JzVEViOGl5aGh1YTlZT1VYSE5VSUVh?=
+ =?utf-8?Q?cvoVytMW2MytxJNU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f471f16-3818-4c45-a903-08de6a85a1ee
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB7588.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2026 22:25:31.4787
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LzVFMn7/lPU8WWtxkXYmyJLAnBEHiG3ILLtztiCSFj2gQVIuiz/oYZNnB0uiNV4RM5FgGG7UySrTqz+7IhAGl/7VHwkxwcb4JDIN1MgkXv4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4590
+X-OriginatorOrg: intel.com
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16793-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[meta.com,gmail.com];
+	TAGGED_FROM(0.00)[bounces-16794-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:email,nvidia.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jacob.e.keller@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,linux.dev:email,meta.com:email]
-X-Rspamd-Queue-Id: B9846130C6D
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[10]
+X-Rspamd-Queue-Id: 52E7D131839
 X-Rspamd-Action: no action
 
-On 2/12/26 8:43 AM, Evan Green wrote:
-> Table 63 of the IBTA spec lists R_Key violations as a class C
-> error. 9.9.3.1.3 Responder Class C Fault Behavior indicates an
-> affiliated asynchronous error should be generated at the responder
-> if the error can be associated to a QP but not a particular RX WQE.
 
-This paragraph should be the descriptions in the commit log.
 
-"C9-222.1.1: For an HCA responder using Reliable Connection service, for
-a Class C responder side error, the error shall be reported to the requester
-by generating the appropriate NAK code as specified in Table 63 Re-
-sponder Error Behavior Summary on page 448. If the error can be related
-to a particular QP but cannot be related to a particular WQE on that re-
-ceive queue (e.g. the error occurred while executing an RDMA Write Re-
-quest without immediate data), the error shall be reported to the
-responder’s client as an Affiliated Asynchronous error. See Section
-10.10.2.3 Asynchronous Errors on page 576 for details. If the error can be
-related to a particular WQE on a given receive queue, the QP shall be
-placed into the error state and the error shall be reported to the re-
-sponder’s client as a Completion error. See Section 10.10.2.2 Completion
-Errors on page 575."
-
-In this commit, a new asynchrounous event 
-RESPST_ERR_RKEY_VIOLATION_EVENT is introduced and implemented based on 
-9.9.3.1.3. It is not a bug fix. As such, no FIXES tag.
-
-I am fine with this. I am just wondering if this similar feature has 
-already been implemented in iWARP driver or not.
-
-Thanks,
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
+On 2/12/2026 2:32 AM, Tariq Toukan wrote:
+> From: Shay Drory <shayd@nvidia.com>
 > 
-> Generate an affiliated asynchronous error upon Rkey violations
-> if the opcode does not carry an immediate. This causes async
-> events at the responder for all ops that generate R_Key violations
-> except WRITE_WITH_IMM, where the error can ride in with the RX WQE.
+> Driver is using num_vhca_ports capability to distinguish between
+> multiport master device and multiport slave device. num_vhca_ports is a
+> capability the driver sets according to the MAX num_vhca_ports
+> capability reported by FW. On the other hand, light SFs doesn't set the
+> above capbility.
 > 
-> Signed-off-by: Evan Green <evgreen@meta.com>
+> This leads to wrong results whenever light SFs is checking whether he is
+> a multiport master or slave.
 > 
-> ---
+> Therefore, use the MAX capability to distinguish between master and
+> slave devices.
 > 
->   drivers/infiniband/sw/rxe/rxe_resp.c  | 56 ++++++++++++++++++++-------
->   drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
->   2 files changed, 44 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 711f73e0bbb1..9faf8c09aa8e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -37,6 +37,7 @@ static char *resp_state_name[] = {
->   	[RESPST_ERR_MISSING_OPCODE_LAST_D1E]	= "ERR_MISSING_OPCODE_LAST_D1E",
->   	[RESPST_ERR_TOO_MANY_RDMA_ATM_REQ]	= "ERR_TOO_MANY_RDMA_ATM_REQ",
->   	[RESPST_ERR_RNR]			= "ERR_RNR",
-> +	[RESPST_ERR_RKEY_VIOLATION_EVENT]	= "ERR_RKEY_VIOLATION_EVENT",
->   	[RESPST_ERR_RKEY_VIOLATION]		= "ERR_RKEY_VIOLATION",
->   	[RESPST_ERR_INVALIDATE_RKEY]		= "ERR_INVALIDATE_RKEY_VIOLATION",
->   	[RESPST_ERR_LENGTH]			= "ERR_LENGTH",
-> @@ -423,6 +424,19 @@ static void qp_resp_from_atmeth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
->   	qp->resp.resid = sizeof(u64);
->   }
->   
-> +/* Transition to an rkey violation state. C9-222.1 requires an async event
-> + * at the responder, but only if the error cannot be attached to an RX WQE.
-> + * WRITE_WITH_IMM is the only op that might have that more precise RX WQE
-> + * to pin the error on.
-> + */
-> +static enum resp_states get_rkey_violation_state(struct rxe_pkt_info *pkt)
-> +{
-> +	if (pkt->mask & RXE_IMMDT_MASK)
-> +		return RESPST_ERR_RKEY_VIOLATION;
-> +
-> +	return RESPST_ERR_RKEY_VIOLATION_EVENT;
-> +}
-> +
->   /* resolve the packet rkey to qp->resp.mr or set qp->resp.mr to NULL
->    * if an invalid rkey is received or the rdma length is zero. For middle
->    * or last packets use the stored value of mr.
-> @@ -486,14 +500,14 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->   		mw = rxe_lookup_mw(qp, access, rkey);
->   		if (!mw) {
->   			rxe_dbg_qp(qp, "no MW matches rkey %#x\n", rkey);
-> -			state = RESPST_ERR_RKEY_VIOLATION;
-> +			state = get_rkey_violation_state(pkt);
->   			goto err;
->   		}
->   
->   		mr = mw->mr;
->   		if (!mr) {
->   			rxe_dbg_qp(qp, "MW doesn't have an MR\n");
-> -			state = RESPST_ERR_RKEY_VIOLATION;
-> +			state = get_rkey_violation_state(pkt);
->   			goto err;
->   		}
->   
-> @@ -507,7 +521,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->   		mr = lookup_mr(qp->pd, access, rkey, RXE_LOOKUP_REMOTE);
->   		if (!mr) {
->   			rxe_dbg_qp(qp, "no MR matches rkey %#x\n", rkey);
-> -			state = RESPST_ERR_RKEY_VIOLATION;
-> +			state = get_rkey_violation_state(pkt);
->   			goto err;
->   		}
->   	}
-> @@ -521,7 +535,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->   	}
->   
->   	if (mr_check_range(mr, va + qp->resp.offset, resid)) {
-> -		state = RESPST_ERR_RKEY_VIOLATION;
-> +		state = get_rkey_violation_state(pkt);
->   		goto err;
->   	}
->   
-> @@ -586,7 +600,7 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
->   	err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
->   			  payload_addr(pkt), data_len, RXE_TO_MR_OBJ);
->   	if (err) {
-> -		rc = RESPST_ERR_RKEY_VIOLATION;
-> +		rc = get_rkey_violation_state(pkt);
->   		goto out;
->   	}
->   
-> @@ -667,7 +681,7 @@ static enum resp_states process_flush(struct rxe_qp *qp,
->   
->   	if (res->flush.type & IB_FLUSH_PERSISTENT) {
->   		if (rxe_flush_pmem_iova(mr, start, length))
-> -			return RESPST_ERR_RKEY_VIOLATION;
-> +			return get_rkey_violation_state(pkt);
->   		/* Make data persistent. */
->   		wmb();
->   	} else if (res->flush.type & IB_FLUSH_GLOBAL) {
-> @@ -1383,6 +1397,20 @@ static enum resp_states duplicate_request(struct rxe_qp *qp,
->   	return rc;
->   }
->   
-> +static void do_qp_event(struct rxe_qp *qp, enum ib_event_type etype)
-> +{
-> +	struct ib_event event;
-> +	struct ib_qp *ibqp = &qp->ibqp;
-> +
-> +	event.event = etype;
-> +	event.device = ibqp->device;
-> +	event.element.qp = ibqp;
-> +	if (ibqp->event_handler) {
-> +		rxe_dbg_qp(qp, "reporting QP event %d\n", etype);
-> +		ibqp->event_handler(&event, ibqp->qp_context);
-> +	}
-> +}
-> +
->   /* Process a class A or C. Both are treated the same in this implementation. */
->   static void do_class_ac_error(struct rxe_qp *qp, u8 syndrome,
->   			      enum ib_wc_status status)
-> @@ -1476,14 +1504,9 @@ static void flush_recv_queue(struct rxe_qp *qp, bool notify)
->   	int err;
->   
->   	if (qp->srq) {
-> -		if (notify && qp->ibqp.event_handler) {
-> -			struct ib_event ev;
-> +		if (notify && qp->ibqp.event_handler)
-> +			do_qp_event(qp, IB_EVENT_QP_LAST_WQE_REACHED);
->   
-> -			ev.device = qp->ibqp.device;
-> -			ev.element.qp = &qp->ibqp;
-> -			ev.event = IB_EVENT_QP_LAST_WQE_REACHED;
-> -			qp->ibqp.event_handler(&ev, qp->ibqp.qp_context);
-> -		}
->   		return;
->   	}
->   
-> @@ -1613,6 +1636,13 @@ int rxe_receiver(struct rxe_qp *qp)
->   			state = RESPST_CLEANUP;
->   			break;
->   
-> +		case RESPST_ERR_RKEY_VIOLATION_EVENT:
-> +			if (qp_type(qp) == IB_QPT_RC)
-> +				do_qp_event(qp, IB_EVENT_QP_ACCESS_ERR);
-> +
-> +			state = RESPST_ERR_RKEY_VIOLATION;
-> +			break;
-> +
->   		case RESPST_ERR_RKEY_VIOLATION:
->   			if (qp_type(qp) == IB_QPT_RC) {
->   				/* Class C */
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index fd48075810dd..981f521960e8 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -154,6 +154,7 @@ enum resp_states {
->   	RESPST_ERR_MISSING_OPCODE_LAST_D1E,
->   	RESPST_ERR_TOO_MANY_RDMA_ATM_REQ,
->   	RESPST_ERR_RNR,
-> +	RESPST_ERR_RKEY_VIOLATION_EVENT,
->   	RESPST_ERR_RKEY_VIOLATION,
->   	RESPST_ERR_INVALIDATE_RKEY,
->   	RESPST_ERR_LENGTH,
 
+So we were previously checking the number of VHCA ports, but since SFs 
+set this to 0, they would always be ported as mp_slave, even though they 
+should be mp_master.
+
+Makes sense.
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
