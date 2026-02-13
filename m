@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-16855-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16856-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cJ5uHm8Gj2ltHQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16855-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 12:09:35 +0100
+	id YO3AFHgGj2ltHQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16856-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 12:09:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC0181357F2
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 12:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03F3B135803
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 12:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 69EB931AAD75
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 11:04:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7DDB331AC528
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 11:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093A9362123;
-	Fri, 13 Feb 2026 11:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09BC3590A9;
+	Fri, 13 Feb 2026 11:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cl/xECrF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EDUYAqSj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8DB21FF21;
-	Fri, 13 Feb 2026 11:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1FBE35CB84;
+	Fri, 13 Feb 2026 11:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770980490; cv=none; b=OhI8LYzmZU94L+DQWIwKunlwFrTwVCkQoyxITv5tMtDc9jlxoECCehjdymlhC0rgDgc3vNso9Ghvd9ohpsaeqhjAv8kpfFesJL8hnQLiXn/q1zGNJPmOGeseqzhhBb1yMfaWyhmaRCO/SGEKx/v7Pmwt3vtE/w16BvJaSoEmkyU=
+	t=1770980494; cv=none; b=PDRdjKutbF0ldBvVF/P22G2VXg0d9/LlaTIgppq9DQg8Vp4lAf5waHJpqUQ+K+9CunBWZ+gpIIXUIyYv3Zg+UhjlxDpidaGe1GW+u+Oe7mkckT570RoPj0OPN6I6BMJTsUoOrwJNcKCNQf79CZDjjUzwVbuO2S/aVFJMbSyZaXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770980490; c=relaxed/simple;
-	bh=RKz91Km/bw5jaUIlB06o1jODkQWcQw0bXu5KVJqakUA=;
+	s=arc-20240116; t=1770980494; c=relaxed/simple;
+	bh=Vcw4qS4HcCegwVEjRz1foBtu5FJSEtW6cquOv2B9Bec=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Aps+waWs9THEU/VUn0rB7ccg4eces7h/8ACnJh8jX2v6eFQOIPmrHzcJycgbnuXOaZ2a1Vo8vDTRMsheirIf94JSRK1Zzlm0qjcyn+h4wJ0boHc+gMdFjmXaJscef+7WrtyFvIisOZOfhDboXIFt1sUYJni2w1UngI6M7a2H6OY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cl/xECrF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50AD4C116C6;
-	Fri, 13 Feb 2026 11:01:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=mc6nTux0+W2GoukMFi2BKbjf2FBZQVUrd5ThVywK7azTmDytxZftqdJexGJgGOC0VTLqoiU0ixZQMjAdTmR4Jtz7pDJfhJTc/eWt7MvtFnGZmJBWEbO1ey5z6c/Mzjytw9LGKCrevV/5FmsQnZr6ErBKs1Tb9HoAr/LAyk3rFC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EDUYAqSj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE510C116C6;
+	Fri, 13 Feb 2026 11:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770980490;
-	bh=RKz91Km/bw5jaUIlB06o1jODkQWcQw0bXu5KVJqakUA=;
+	s=k20201202; t=1770980494;
+	bh=Vcw4qS4HcCegwVEjRz1foBtu5FJSEtW6cquOv2B9Bec=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Cl/xECrF4FnYkfZmeA+TMUMF+Zatw9ml8W0xI37eRz/EgRHIr+ZRzjlHDCfLlY+9i
-	 o/rNTWNDEkzczt5ktzRcv3xlhDW7hz2D/bnvuBkgkwscyQA97cdIurkjgkLJsd1PT0
-	 6N3bkPO5Vxu/DH7ybxgeItrQbJLZMnAePoBAYxjU66Gq8Bcr5jyjUw51IOhYFNkMud
-	 QfMVTnQMcCrBnKTyWugjuBunqTVR3qk8d2aKIIY+zLGn3X7sI6iD0UmsSUALoGp5xC
-	 tzbhRNDkBEDY4CTM4Blt/mv0nEXJzfA0+WDPM538ycKgHc7KwjaWY86OEg2IG0OqkY
-	 hGGhgEg/R6lTw==
+	b=EDUYAqSjl4myEueiU9arG5uvvxJ9UJppcb1V4yeXECSPL6tuigtIew/E0xfm+qv7l
+	 aHt4WBcw4JT1LApSVyg9pO2XcCgLtEEJd7You/7hFB2be7n6bkR4IP1/fK7tFI0vaC
+	 Zg3ENT8jeckeVOQB/0cS3hUGQx8g7D16lHRKr5tX4kigWLc8MuHx8/MFDwAfGrZP1U
+	 qazLntwiz0/fttKeiXhs3UZZ4PlzSy+LfC3pNRP0Bap20VeGV6R4kWdJFBeeddVik8
+	 2G0A82glTpbHvAQIZXWkQQzVXptRsgll8Nhe2K8GmaseuS5LsEN0AvfwxLPjFIQuQR
+	 SkTNaKP3CXUTg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
@@ -76,9 +76,9 @@ To: Jason Gunthorpe <jgg@ziepe.ca>,
 Cc: linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	linux-hyperv@vger.kernel.org
-Subject: [PATCH rdma-next 42/50] RDMA/bnxt_re: Complete CQ resize in a single step
-Date: Fri, 13 Feb 2026 12:58:18 +0200
-Message-ID: <20260213-refactor-umem-v1-42-f3be85847922@nvidia.com>
+Subject: =?utf-8?q?=5BPATCH_rdma-next_43/50=5D_RDMA/bnxt=5Fre=3A_Rely_on_?= =?utf-8?q?common_resize=E2=80=91CQ_locking?=
+Date: Fri, 13 Feb 2026 12:58:19 +0200
+Message-ID: <20260213-refactor-umem-v1-43-f3be85847922@nvidia.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
 References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
@@ -107,7 +107,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com];
 	RCPT_COUNT_TWELVE(0.00)[31];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16855-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16856-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -117,79 +117,36 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:mid,nvidia.com:email]
-X-Rspamd-Queue-Id: EC0181357F2
+X-Rspamd-Queue-Id: 03F3B135803
 X-Rspamd-Action: no action
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-There is no need to defer the CQ resize operation, as it is intended to
-be completed in one pass. The current bnxt_re_resize_cq() implementation
-does not handle concurrent CQ resize requests, and this will be addressed
-in the following patches.
+After introducing a shared mutex to protect against concurrent
+resize‑CQ operations, update the bnxt_re driver to use this mechanism.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 33 +++++++++-----------------------
- 1 file changed, 9 insertions(+), 24 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index d652018c19b3..2aecfbbb7eaf 100644
+index 2aecfbbb7eaf..d544a4fb1e96 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3309,20 +3309,6 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	return rc;
- }
+@@ -3326,12 +3326,6 @@ int bnxt_re_resize_cq(struct ib_cq *ibcq, unsigned int cqe,
+ 	rdev = cq->rdev;
+ 	dev_attr = rdev->dev_attr;
  
--static void bnxt_re_resize_cq_complete(struct bnxt_re_cq *cq)
--{
--	struct bnxt_re_dev *rdev = cq->rdev;
--
--	bnxt_qplib_resize_cq_complete(&rdev->qplib_res, &cq->qplib_cq);
--
--	cq->qplib_cq.max_wqe = cq->resize_cqe;
 -	if (cq->resize_umem) {
--		ib_umem_release(cq->ib_cq.umem);
--		cq->ib_cq.umem = cq->resize_umem;
--		cq->resize_umem = NULL;
--		cq->resize_cqe = 0;
--	}
--}
- 
- int bnxt_re_resize_cq(struct ib_cq *ibcq, unsigned int cqe,
- 		      struct ib_udata *udata)
-@@ -3387,7 +3373,15 @@ int bnxt_re_resize_cq(struct ib_cq *ibcq, unsigned int cqe,
- 		goto fail;
- 	}
- 
--	cq->ib_cq.cqe = cq->resize_cqe;
-+	bnxt_qplib_resize_cq_complete(&rdev->qplib_res, &cq->qplib_cq);
-+
-+	cq->qplib_cq.max_wqe = cq->resize_cqe;
-+	ib_umem_release(cq->ib_cq.umem);
-+	cq->ib_cq.umem = cq->resize_umem;
-+	cq->resize_umem = NULL;
-+	cq->resize_cqe = 0;
-+
-+	cq->ib_cq.cqe = entries;
- 	atomic_inc(&rdev->stats.res.resize_count);
- 
- 	return 0;
-@@ -3907,15 +3901,6 @@ int bnxt_re_poll_cq(struct ib_cq *ib_cq, int num_entries, struct ib_wc *wc)
- 	struct bnxt_re_sqp_entries *sqp_entry = NULL;
- 	unsigned long flags;
- 
--	/* User CQ; the only processing we do is to
--	 * complete any pending CQ resize operation.
--	 */
--	if (cq->ib_cq.umem) {
--		if (cq->resize_umem)
--			bnxt_re_resize_cq_complete(cq);
--		return 0;
+-		ibdev_err(&rdev->ibdev, "Resize CQ %#x failed - Busy",
+-			  cq->qplib_cq.id);
+-		return -EBUSY;
 -	}
 -
- 	spin_lock_irqsave(&cq->cq_lock, flags);
- 	budget = min_t(u32, num_entries, cq->max_cql);
- 	num_entries = budget;
+ 	/* Check the requested cq depth out of supported depth */
+ 	if (cqe > dev_attr->max_cq_wqes)
+ 		return -EINVAL;
 
 -- 
 2.52.0
