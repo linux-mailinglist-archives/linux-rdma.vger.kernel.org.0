@@ -1,134 +1,328 @@
-Return-Path: <linux-rdma+bounces-16881-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16882-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0MJyDsBPj2nnPgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16881-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 17:22:24 +0100
+	id kDjwN9JXj2lqQQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16882-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 17:56:50 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4D45137E8F
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 17:22:23 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 432D71386C8
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 17:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3E8DD300789B
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 16:22:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0939030233C6
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 16:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BC322126D;
-	Fri, 13 Feb 2026 16:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F12C360757;
+	Fri, 13 Feb 2026 16:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T22cPCDs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iwjF+FKe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0872154763
-	for <linux-rdma@vger.kernel.org>; Fri, 13 Feb 2026 16:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414AB3164DF
+	for <linux-rdma@vger.kernel.org>; Fri, 13 Feb 2026 16:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770999741; cv=none; b=HFBod4lUH71p43z7f98z71EYEhyuMYz1aP81EvJrIAJR5KfIp3y1cfBkYK7PZgfbau1BDXm7EItHKlMyPzXu/szyZkKPS0qJVj0+KPqC/FA794eTQtsu3IbAWdfsREYDi4ClZZbOSajDM4hxYcLz+L+pV46OBsEv8nQJqNRYSP0=
+	t=1771001808; cv=none; b=QaqX9BwLq+W/u1UfC7rpr+RgOxIz40MoUmePQMBbts7A2SsuLI/8FnMw9t8zKCNB6IweAGiViqGqCVgvcfqZk02jkJDV6HkttAGqhDISSIT0gsz2vBrGlzL1QUg/OXluLiaMBqqL9yOfkgiUwBZ7o122qgbLFO4m0+SysGxIFgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770999741; c=relaxed/simple;
-	bh=IubqBix6/5KEZeGB5iocHiKUaR770iFmmnyMeIX0FMs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cnVUsBzd4eBaedz+PTRW/EQ3zALm52BhHLtE1tXqe205kVu4T8E/djFyURDbVa7sndhDg7A34VmVbjwzYQd9pkATwB4t/TgtWhvUBrLjaJNZ6yFkIzMCc08UXtJodt2HeB4kIvRNl2p1/sqo6hO5y1PFzVrjUOxTLhA4MkhsPJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T22cPCDs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 147CBC116C6;
-	Fri, 13 Feb 2026 16:22:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770999740;
-	bh=IubqBix6/5KEZeGB5iocHiKUaR770iFmmnyMeIX0FMs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T22cPCDsVPF7zTOorDZCvmE4/lLFAYKG5u39tH7QxUmTA3mHb3oSxnSw3QfDMEo3v
-	 YPb9b7b4jvVbTbfFZrdYiACuHOGbBLoM/93FacM7lTSHnyhGGDbIMnfbnkjPDxkx/I
-	 OtvBCCjbGDDhXcQ78POUU2lStctC/DT7nYAuy2bhb6wrVxoG6mruWbciDuaZGCZaPT
-	 NSWXePztalpVPXV4M9MZ2tK9H1HQDQsDS7v1dKSBTHCoQfjNgAxyi702gPJSxkX+Hp
-	 gczY5QWEAANCt084kSUxngSJ+NHK+slzssecaiFVnnnQbumakKEiBRgxjX3Cddha/y
-	 dniTzL0wAkEYw==
-Date: Fri, 13 Feb 2026 18:22:11 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v12 5/6] RDMA/bnxt_re: Support dmabuf for CQ
- rings
-Message-ID: <20260213162211.GX12887@unreal>
-References: <20260211124927.57617-1-sriharsha.basavapatna@broadcom.com>
- <20260211124927.57617-6-sriharsha.basavapatna@broadcom.com>
- <20260213111256.GO12887@unreal>
- <20260213145425.GN750753@ziepe.ca>
+	s=arc-20240116; t=1771001808; c=relaxed/simple;
+	bh=m947ln53rLc1KgoJScIrYHCASXl0o+bjAqXvE84dElk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LPzrNuAjhG0/XvTMbtvjXI370sJ8GzW1o0ZleGm9hmL/w0cr1CUWkw2e08UBZLwrG4kq7hDoR9O915PIyA2HmZl0S2hdoX+28cgElVxAeKQKKo6SVt1OJHKRrMSzkKQM0QwEio/7mBE8WnYdSbXxFhuvJn1Ta/80F2xgJ+Duqso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iwjF+FKe; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <054452b7-7e08-4f8c-8010-e1b69c4b3997@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771001804;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DsPIT/BXG9iCmRmU1sk4/Ec6DvS5Pp9bH0ifVOzoGWk=;
+	b=iwjF+FKeXEruV7CEL1G/jo7s+zGnQxf6ESHxDbczNIw9uFV62elb95DO9oZ9J5mUCoUrUM
+	1n/7pL6Z+TH4xAfAff32oLfsJbsmDhvbBUrev9Z6/6p4V5EGNcjPiETcxw+05cm5U/BTgd
+	vCg+KZte0YWui5nHD3ty3AAJ2VvnawQ=
+Date: Fri, 13 Feb 2026 17:56:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260213145425.GN750753@ziepe.ca>
+Subject: Re: [PATCH rdma-next 28/50] RDMA/siw: Split user and kernel CQ
+ creation paths
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Potnuri Bharat Teja <bharat@chelsio.com>,
+ Michael Margolin <mrgolin@amazon.com>, Gal Pressman
+ <gal.pressman@linux.dev>, Yossi Leybovich <sleybo@amazon.com>,
+ Cheng Xu <chengyou@linux.alibaba.com>, Kai Shen <kaishen@linux.alibaba.com>,
+ Chengchang Tang <tangchengchang@huawei.com>,
+ Junxian Huang <huangjunxian6@hisilicon.com>,
+ Abhijit Gangurde <abhijit.gangurde@amd.com>,
+ Allen Hubbe <allen.hubbe@amd.com>,
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+ Long Li <longli@microsoft.com>, Konstantin Taranov
+ <kotaranov@microsoft.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Michal Kalderon <mkalderon@marvell.com>,
+ Bryan Tan <bryan-bt.tan@broadcom.com>, Vishnu Dasa
+ <vishnu.dasa@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Christian Benvenuti <benve@cisco.com>, Nelson Escobar <neescoba@cisco.com>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-hyperv@vger.kernel.org
+References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
+ <20260213-refactor-umem-v1-28-f3be85847922@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20260213-refactor-umem-v1-28-f3be85847922@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[kernel.org,ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16881-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16882-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[30];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Rspamd-Queue-Id: D4D45137E8F
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: 432D71386C8
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 10:54:25AM -0400, Jason Gunthorpe wrote:
-> On Fri, Feb 13, 2026 at 01:12:56PM +0200, Leon Romanovsky wrote:
-> > > +int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
-> > > +		      struct uverbs_attr_bundle *attrs)
-> > > +{
-> > > +	return bnxt_re_create_cq_umem(ibcq, attr, NULL, attrs);
-> > > +}
-> > 
-> > Please don't mix create_cq and create_cq_umem.
-> > https://lore.kernel.org/linux-rdma/20260213-refactor-umem-v1-15-f3be85847922@nvidia.com/T/#u
+On 13.02.2026 11:58, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Either we drop this one patch and put those 50 ahead of it, or we just
-> take this one and rebase the above.. The above has the advantage that
-> it enables all drivers to support cq dmabuf in one giant shot.
+> Separate the CQ creation logic into distinct kernel and user flows.
 > 
-> However, frankly I'm getting tired of looking at this bnxt_re stuff so
-> I'd like to just see it done.
-
-In addition, push them to create 2 separate functions.
-One is .create_cq_umem() for uverbs flow and another .create_cq()
-variant for kernel flow.
-
-bnxt_re_create_cq()
- { 
-  if (udata)
-     return bnxt_re_create_cq_umem()
-
-  .... <kernel CQ>
-  }
-
-It will allow me to rebase my series more easily.
-
-Thanks
-
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   drivers/infiniband/sw/siw/siw_main.c  |   1 +
+>   drivers/infiniband/sw/siw/siw_verbs.c | 111 +++++++++++++++++++++++-----------
+>   drivers/infiniband/sw/siw/siw_verbs.h |   2 +
+>   3 files changed, 80 insertions(+), 34 deletions(-)
 > 
-> Jason
+> diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+> index 5168307229a9..75dcf3578eac 100644
+> --- a/drivers/infiniband/sw/siw/siw_main.c
+> +++ b/drivers/infiniband/sw/siw/siw_main.c
+> @@ -232,6 +232,7 @@ static const struct ib_device_ops siw_device_ops = {
+>   	.alloc_pd = siw_alloc_pd,
+>   	.alloc_ucontext = siw_alloc_ucontext,
+>   	.create_cq = siw_create_cq,
+> +	.create_user_cq = siw_create_user_cq,
+>   	.create_qp = siw_create_qp,
+>   	.create_srq = siw_create_srq,
+>   	.dealloc_driver = siw_device_cleanup,
+> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+> index efa2f097b582..92b25b389b69 100644
+> --- a/drivers/infiniband/sw/siw/siw_verbs.c
+> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
+> @@ -1139,15 +1139,15 @@ int siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata)
+>    * @attrs: uverbs bundle
+>    */
+>   
+> -int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+> -		  struct uverbs_attr_bundle *attrs)
+> +int siw_create_user_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+> +		       struct uverbs_attr_bundle *attrs)
+>   {
+>   	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct siw_device *sdev = to_siw_dev(base_cq->device);
+>   	struct siw_cq *cq = to_siw_cq(base_cq);
+>   	int rv, size = attr->cqe;
+>   
+> -	if (attr->flags)
+> +	if (attr->flags || base_cq->umem)
+>   		return -EOPNOTSUPP;
+>   
+>   	if (atomic_inc_return(&sdev->num_cq) > SIW_MAX_CQ) {
+> @@ -1155,7 +1155,7 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+>   		rv = -ENOMEM;
+>   		goto err_out;
+>   	}
+> -	if (size < 1 || size > sdev->attrs.max_cqe) {
+> +	if (attr->cqe > sdev->attrs.max_cqe) {
+>   		siw_dbg(base_cq->device, "CQ size error: %d\n", size);
+>   		rv = -EINVAL;
+>   		goto err_out;
+> @@ -1164,13 +1164,8 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+>   	cq->base_cq.cqe = size;
+>   	cq->num_cqe = size;
+>   
+> -	if (udata)
+> -		cq->queue = vmalloc_user(size * sizeof(struct siw_cqe) +
+> -					 sizeof(struct siw_cq_ctrl));
+> -	else
+> -		cq->queue = vzalloc(size * sizeof(struct siw_cqe) +
+> -				    sizeof(struct siw_cq_ctrl));
+> -
+> +	cq->queue = vmalloc_user(size * sizeof(struct siw_cqe) +
+> +				 sizeof(struct siw_cq_ctrl));
+>   	if (cq->queue == NULL) {
+>   		rv = -ENOMEM;
+>   		goto err_out;
+> @@ -1182,33 +1177,32 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+>   
+>   	cq->notify = (struct siw_cq_ctrl *)&cq->queue[size];
+>   
+> -	if (udata) {
+> -		struct siw_uresp_create_cq uresp = {};
+> -		struct siw_ucontext *ctx =
+> -			rdma_udata_to_drv_context(udata, struct siw_ucontext,
+> -						  base_ucontext);
+> -		size_t length = size * sizeof(struct siw_cqe) +
+> -			sizeof(struct siw_cq_ctrl);
+> +	struct siw_uresp_create_cq uresp = {};
+> +	struct siw_ucontext *ctx =
+> +		rdma_udata_to_drv_context(udata, struct siw_ucontext,
+> +					  base_ucontext);
+> +	size_t length = size * sizeof(struct siw_cqe) +
+> +		sizeof(struct siw_cq_ctrl);
+>   
+> -		cq->cq_entry =
+> -			siw_mmap_entry_insert(ctx, cq->queue,
+> -					      length, &uresp.cq_key);
+> -		if (!cq->cq_entry) {
+> -			rv = -ENOMEM;
+> -			goto err_out;
+> -		}
+> +	cq->cq_entry =
+> +		siw_mmap_entry_insert(ctx, cq->queue,
+> +				      length, &uresp.cq_key);
+> +	if (!cq->cq_entry) {
+> +		rv = -ENOMEM;
+> +		goto err_out;
+> +	}
+>   
+> -		uresp.cq_id = cq->id;
+> -		uresp.num_cqe = size;
+> +	uresp.cq_id = cq->id;
+> +	uresp.num_cqe = size;
+>   
+> -		if (udata->outlen < sizeof(uresp)) {
+> -			rv = -EINVAL;
+> -			goto err_out;
+> -		}
+> -		rv = ib_copy_to_udata(udata, &uresp, sizeof(uresp));
+> -		if (rv)
+> -			goto err_out;
+> +	if (udata->outlen < sizeof(uresp)) {
+> +		rv = -EINVAL;
+> +		goto err_out;
+>   	}
+> +	rv = ib_copy_to_udata(udata, &uresp, sizeof(uresp));
+> +	if (rv)
+> +		goto err_out;
+> +
+>   	return 0;
+>   
+>   err_out:
+> @@ -1227,6 +1221,55 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+>   	return rv;
+>   }
+>   
+> +int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+> +		  struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct siw_device *sdev = to_siw_dev(base_cq->device);
+> +	struct siw_cq *cq = to_siw_cq(base_cq);
+> +	int rv, size = attr->cqe;
+> +
+> +	if (attr->flags)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (atomic_inc_return(&sdev->num_cq) > SIW_MAX_CQ) {
+> +		siw_dbg(base_cq->device, "too many CQ's\n");
+> +		rv = -ENOMEM;
+> +		goto err_out;
+> +	}
+> +	if (size < 1 || size > sdev->attrs.max_cqe) {
+
+isn't there now also a check for zero sized CQ in
+__ib_alloc_cq(), which obsoletes that < 1 check?
+
+Everything looks right otherwise.
+
+Thanks,
+Bernard.
+
+> +		siw_dbg(base_cq->device, "CQ size error: %d\n", size);
+> +		rv = -EINVAL;
+> +		goto err_out;
+> +	}
+> +	size = roundup_pow_of_two(size);
+> +	cq->base_cq.cqe = size;
+> +	cq->num_cqe = size;
+> +
+> +	cq->queue = vzalloc(size * sizeof(struct siw_cqe) +
+> +			    sizeof(struct siw_cq_ctrl));
+> +	if (cq->queue == NULL) {
+> +		rv = -ENOMEM;
+> +		goto err_out;
+> +	}
+> +	get_random_bytes(&cq->id, 4);
+> +	siw_dbg(base_cq->device, "new CQ [%u]\n", cq->id);
+> +
+> +	spin_lock_init(&cq->lock);
+> +
+> +	cq->notify = (struct siw_cq_ctrl *)&cq->queue[size];
+> +
+> +	return 0;
+> +
+> +err_out:
+> +	siw_dbg(base_cq->device, "CQ creation failed: %d", rv);
+> +
+> +	if (cq->queue)
+> +		vfree(cq->queue);
+> +	atomic_dec(&sdev->num_cq);
+> +
+> +	return rv;
+> +}
+> +
+>   /*
+>    * siw_poll_cq()
+>    *
+> diff --git a/drivers/infiniband/sw/siw/siw_verbs.h b/drivers/infiniband/sw/siw/siw_verbs.h
+> index e9f4463aecdc..527c356b55af 100644
+> --- a/drivers/infiniband/sw/siw/siw_verbs.h
+> +++ b/drivers/infiniband/sw/siw/siw_verbs.h
+> @@ -44,6 +44,8 @@ int siw_query_device(struct ib_device *base_dev, struct ib_device_attr *attr,
+>   		     struct ib_udata *udata);
+>   int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+>   		  struct uverbs_attr_bundle *attrs);
+> +int siw_create_user_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+> +		       struct uverbs_attr_bundle *attrs);
+>   int siw_query_port(struct ib_device *base_dev, u32 port,
+>   		   struct ib_port_attr *attr);
+>   int siw_query_gid(struct ib_device *base_dev, u32 port, int idx,
+> 
+
 
