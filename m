@@ -1,102 +1,61 @@
-Return-Path: <linux-rdma+bounces-16808-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16809-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MB1DGkr1jmnDGAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16808-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 10:56:26 +0100
+	id IB0oE8v4jmnbGAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16809-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 11:11:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2920A134BF1
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 10:56:25 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C5A134E8E
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 11:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A88623040002
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 09:56:17 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5BF65300BC56
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 10:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3894434F499;
-	Fri, 13 Feb 2026 09:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA9D350288;
+	Fri, 13 Feb 2026 10:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BUrXuVrU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Ds5zlB7b";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BUrXuVrU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Ds5zlB7b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ERGyDKTU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C2B34D4FB
-	for <linux-rdma@vger.kernel.org>; Fri, 13 Feb 2026 09:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C6132548B;
+	Fri, 13 Feb 2026 10:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770976576; cv=none; b=m4svoobKxJ2mi345H2CgTBP3VyQuy42d6TuIv4LzEQgrUSWQBAkp/AfdbJLm5zt8miFODYewF8vvsZF1dtWTMyjT1ndYlT4Wruw8SN0iwGz6dDaHxMOLOrIcMhY2hb8N1GKDfLOJupF0eZ05sA9S8CCfCJa/3eou8GCR3pMRHhc=
+	t=1770977458; cv=none; b=F/0Qd5ywb5eH4H+IBP4rFDZMQKVoX5sFS7esie+PNdVjuZqJot/nysqz0SpjRF3pvgw2wAXh50CXF6n6ufu8tE2Da4M298bWT/Ky6CJPFY0FHl8HQOicYCHhaVucXwQ39Jkrd7zLgXh7zyoZaYlYS6cFeBA1nZ6XgL643pCrk5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770976576; c=relaxed/simple;
-	bh=WY/dD/Y0HWJt2n1zEa25Prpk8xJdrB4VCNNbwKnasdE=;
+	s=arc-20240116; t=1770977458; c=relaxed/simple;
+	bh=05ziA3jFCmsLsBin1JqX80Gggt8ooeVNYdy1t/iCrTE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kVxGz8eBDi4qnH31T9VgfmEzdnTH32Kf5ytNudCmLkf08AAQQ1mNQ7hDZEaASMGePOxyYmdKVELSDbWdEckE2VCbyRbCTeIQgfG3KAopk7FIXs+JDpumnvypng5IkbN5SI2MZqX40kLTKzEaqGWr4BtwraT4kPLX1AIQe03ah+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BUrXuVrU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Ds5zlB7b; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BUrXuVrU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Ds5zlB7b; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9ADC45BCC4;
-	Fri, 13 Feb 2026 09:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1770976572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBJp+W6+w4hpK1AOjuJLBK8cne5W/Y5VssQKf43ZEcM=;
-	b=BUrXuVrU4Uj6JeWVtHNxu88KEqTAApBzpLUGAKfVFe2/TCfmIgy6NE5QzmaDN7DKMBOsGG
-	ZckVaiWgkkpXmcY97TGZ4774iAyr3Var34MEz9aYElUmwWpVZkMwG/fGjrNKdd43FcMP0X
-	bKV/xb9tVwCcknG0GeL6ZpYq+lL8Y5M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1770976572;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBJp+W6+w4hpK1AOjuJLBK8cne5W/Y5VssQKf43ZEcM=;
-	b=Ds5zlB7bv4vIWUQYT40lau/zwk7JiXqptX+FGL1vAdKrX94QpSG11m2XlfY0lzWbZ059rP
-	xa9emAAylTWn18Dw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=BUrXuVrU;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Ds5zlB7b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1770976572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBJp+W6+w4hpK1AOjuJLBK8cne5W/Y5VssQKf43ZEcM=;
-	b=BUrXuVrU4Uj6JeWVtHNxu88KEqTAApBzpLUGAKfVFe2/TCfmIgy6NE5QzmaDN7DKMBOsGG
-	ZckVaiWgkkpXmcY97TGZ4774iAyr3Var34MEz9aYElUmwWpVZkMwG/fGjrNKdd43FcMP0X
-	bKV/xb9tVwCcknG0GeL6ZpYq+lL8Y5M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1770976572;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBJp+W6+w4hpK1AOjuJLBK8cne5W/Y5VssQKf43ZEcM=;
-	b=Ds5zlB7bv4vIWUQYT40lau/zwk7JiXqptX+FGL1vAdKrX94QpSG11m2XlfY0lzWbZ059rP
-	xa9emAAylTWn18Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 813873EA62;
-	Fri, 13 Feb 2026 09:56:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5S3eHjz1jmngDgAAD6G6ig
-	(envelope-from <dwagner@suse.de>); Fri, 13 Feb 2026 09:56:12 +0000
-Date: Fri, 13 Feb 2026 10:56:11 +0100
-From: Daniel Wagner <dwagner@suse.de>
-To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, 
-	"nbd@other.debian.org" <nbd@other.debian.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: blktests failures with v6.19 kernel
-Message-ID: <6ad314f7-f3d2-495a-b1ef-a81a06498952@flourine.local>
-References: <aY7ZBfMjVIhe_wh3@shinmob>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OSNAyewppNkWbdnKlYCuQwjYPQnbUmV4FOBWESISTenPym5uVEn1dJTdByp/nKJXi8yALDDK1WHx2vCvUM1AlslzlFyNjvjpdd4tcM2oDRVoBaWfm+rEROsqvnfrCIuOSW1Qng8t9OeUIf9bSKVbpBM69uKBhX+jNuytYYFBtdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ERGyDKTU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB813C116C6;
+	Fri, 13 Feb 2026 10:10:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770977458;
+	bh=05ziA3jFCmsLsBin1JqX80Gggt8ooeVNYdy1t/iCrTE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ERGyDKTUnAd4DTdeLzwXJ2M6fd09yy0xjEHlSyqjyy9AGw1o/DYXuOczBbgNJ6TC8
+	 031P39cjtP6UoMTVParjv9DcZbz/hC9UtQttEsthqs9CF5dfdM8Elg/tnJEC7+9tB1
+	 6b3ozXIRlUHHQC1bHtjnUgX6epNzJy5aCgKaIBxQ8qjJvRv61UJwFsw/d734c8bv63
+	 bAw2oTNIYuuH9LRlP4ETFkylSiAli3rMJ+Y6bkOI7iAUKatXh4STWN6AfBBthf+bqo
+	 PWHVVWNr7Uoy2oNxckRe7zmfq7VRCcZwlyXi5Rd6l3p/ptNK2yaiSoimliJpW2uWYU
+	 E7SqnTytgQqEw==
+Date: Fri, 13 Feb 2026 12:10:53 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	linux-rdma@vger.kernel.org,
+	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+	patches@lists.linux.dev
+Subject: Re: [PATCH 03/10] RDMA: Add ib_respond_udata()
+Message-ID: <20260213101053.GJ12887@unreal>
+References: <0-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
+ <3-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -105,153 +64,95 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aY7ZBfMjVIhe_wh3@shinmob>
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
+In-Reply-To: <3-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16808-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dwagner@suse.de,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16809-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[6]
-X-Rspamd-Queue-Id: 2920A134BF1
+X-Rspamd-Queue-Id: F3C5A134E8E
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 07:57:58AM +0000, Shinichiro Kawasaki wrote:
-> [3] lockdep WARN during nvme/058 with fc transport
+On Thu, Feb 05, 2026 at 09:45:37PM -0400, Jason Gunthorpe wrote:
+> Wrap the common copy_to_user() pattern used in drivers and enhance it
+> to zero pad as well.
 > 
-> [  409.028219] [     T95] ============================================
-> [  409.029133] [     T95] WARNING: possible recursive locking detected
-> [  409.030058] [     T95] 6.19.0+ #575 Not tainted
-> [  409.030892] [     T95] --------------------------------------------
-> [  409.031801] [     T95] kworker/u16:9/95 is trying to acquire lock:
-> [  409.032691] [     T95] ffff88813ba54948 ((wq_completion)nvmet-wq){+.+.}-{0:0}, at: touch_wq_lockdep_map+0x7e/0x1a0
-> [  409.033869] [     T95] 
->                           but task is already holding lock:
-> [  409.035254] [     T95] ffff88813ba54948 ((wq_completion)nvmet-wq){+.+.}-{0:0}, at: process_one_work+0xeef/0x1480
-> [  409.036383] [     T95] 
->                           other info that might help us debug this:
-> [  409.037769] [     T95]  Possible unsafe locking scenario:
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  include/rdma/ib_verbs.h | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
 > 
-> [  409.039113] [     T95]        CPU0
-> [  409.039781] [     T95]        ----
-> [  409.040406] [     T95]   lock((wq_completion)nvmet-wq);
-> [  409.041154] [     T95]   lock((wq_completion)nvmet-wq);
-> [  409.041898] [     T95] 
->                            *** DEADLOCK ***
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index bb61cab2ef9a06..c0dd82a77e7a13 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -3177,6 +3177,38 @@ static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
+>  		ret;                                                          \
+>  	})
+>  
+> +static inline int _ib_respond_udata(struct ib_udata *udata, const void *src,
+> +				   size_t len)
+> +{
+> +	size_t copy_len;
+> +
+> +	copy_len = min(len, udata->outlen);
+
+Don't you need to check that udata->outlen is larger than zero?
+
+Thanks
+
+> +	if (copy_to_user(udata->outbuf, src, copy_len))
+> +		return -EFAULT;
+> +	if (copy_len < udata->outlen) {
+> +		if (clear_user(udata->outbuf + copy_len,
+> +			       udata->outlen - copy_len))
+> +			return -EFAULT;
+> +	}
+> +	return 0;
+> +}
+> +
+> +/**
+> + * ib_respond_udata - Copy a driver data response to userspace
+> + * @_udata: The system calls ib_udata struct
+> + * @_rep: Kernel buffer containing the response driver data on the stack
+> + *
+> + * Copy driver data response structures back to userspace in a way that
+> + * is forwards and backwards compatible. Longer kernel structs are truncated,
+> + * userspace has made some kind of error if it needed the truncated information.
+> + * Shorter structs are zero padded.
+> + */
+> +#define ib_respond_udata(_udata, _rep)                                   \
+> +	({                                                               \
+> +		static_assert(__same_type(*(typeof(&(_rep)))0, (_rep))); \
+> +		_ib_respond_udata(_udata, &(_rep), sizeof(_rep));        \
+> +	})
+> +
+>  /**
+>   * ib_modify_qp_is_ok - Check that the supplied attribute mask
+>   * contains all required attributes and no attributes not allowed for
+> -- 
+> 2.43.0
 > 
-> [  409.043609] [     T95]  May be due to missing lock nesting notation
 > 
-> [  409.044960] [     T95] 3 locks held by kworker/u16:9/95:
-> [  409.045721] [     T95]  #0: ffff88813ba54948 ((wq_completion)nvmet-wq){+.+.}-{0:0}, at: process_one_work+0xeef/0x1480
-> [  409.046845] [     T95]  #1: ffff888109797ca8 ((work_completion)(&assoc->del_work)){+.+.}-{0:0}, at: process_one_work+0x7e4/0x1480
-> [  409.048063] [     T95]  #2: ffffffffac481480 (rcu_read_lock){....}-{1:3}, at: __flush_work+0xe3/0xc70
-> [  409.049128] [     T95] 
->                           stack backtrace:
-> [  409.050366] [     T95] CPU: 1 UID: 0 PID: 95 Comm: kworker/u16:9 Not tainted 6.19.0+ #575 PREEMPT(voluntary) 
-> [  409.050370] [     T95] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-4.fc42 04/01/2014
-> [  409.050373] [     T95] Workqueue: nvmet-wq nvmet_fc_delete_assoc_work [nvmet_fc]
-> [  409.050384] [     T95] Call Trace:
-> [  409.050386] [     T95]  <TASK>
-> [  409.050388] [     T95]  dump_stack_lvl+0x6a/0x90
-> [  409.050393] [     T95]  print_deadlock_bug.cold+0xc0/0xcd
-> [  409.050401] [     T95]  __lock_acquire+0x1312/0x2230
-> [  409.050408] [     T95]  ? lockdep_unlock+0x5e/0xc0
-> [  409.050410] [     T95]  ? __lock_acquire+0xd03/0x2230
-> [  409.050413] [     T95]  lock_acquire+0x170/0x300
-> [  409.050415] [     T95]  ? touch_wq_lockdep_map+0x7e/0x1a0
-> [  409.050418] [     T95]  ? __flush_work+0x4e8/0xc70
-> [  409.050420] [     T95]  ? find_held_lock+0x2b/0x80
-> [  409.050423] [     T95]  ? touch_wq_lockdep_map+0x7e/0x1a0
-> [  409.050425] [     T95]  touch_wq_lockdep_map+0x97/0x1a0
-> [  409.050428] [     T95]  ? touch_wq_lockdep_map+0x7e/0x1a0
-> [  409.050430] [     T95]  ? __flush_work+0x4e8/0xc70
-> [  409.050432] [     T95]  __flush_work+0x5c1/0xc70
-> [  409.050434] [     T95]  ? __pfx___flush_work+0x10/0x10
-> [  409.050436] [     T95]  ? __pfx___flush_work+0x10/0x10
-> [  409.050439] [     T95]  ? __pfx_wq_barrier_func+0x10/0x10
-> [  409.050444] [     T95]  ? __pfx___might_resched+0x10/0x10
-> [  409.050454] [     T95]  nvmet_ctrl_free+0x2e9/0x810 [nvmet]
-> [  409.050474] [     T95]  ? __pfx___cancel_work+0x10/0x10
-> [  409.050479] [     T95]  ? __pfx_nvmet_ctrl_free+0x10/0x10 [nvmet]
-> [  409.050498] [     T95]  nvmet_cq_put+0x136/0x180 [nvmet]
-> [  409.050515] [     T95]  nvmet_fc_target_assoc_free+0x398/0x2040 [nvmet_fc]
-> [  409.050522] [     T95]  ? __pfx_nvmet_fc_target_assoc_free+0x10/0x10 [nvmet_fc]
-> [  409.050528] [     T95]  nvmet_fc_delete_assoc_work.cold+0x82/0xff [nvmet_fc]
-> [  409.050533] [     T95]  process_one_work+0x868/0x1480
-> [  409.050538] [     T95]  ? __pfx_process_one_work+0x10/0x10
-> [  409.050541] [     T95]  ? lock_acquire+0x170/0x300
-> [  409.050545] [     T95]  ? assign_work+0x156/0x390
-> [  409.050548] [     T95]  worker_thread+0x5ee/0xfd0
-> [  409.050553] [     T95]  ? __pfx_worker_thread+0x10/0x10
-> [  409.050555] [     T95]  kthread+0x3af/0x770
-> [  409.050560] [     T95]  ? lock_acquire+0x180/0x300
-> [  409.050563] [     T95]  ? __pfx_kthread+0x10/0x10
-> [  409.050565] [     T95]  ? __pfx_kthread+0x10/0x10
-> [  409.050568] [     T95]  ? ret_from_fork+0x6e/0x810
-> [  409.050576] [     T95]  ? lock_release+0x1ab/0x2f0
-> [  409.050578] [     T95]  ? rcu_is_watching+0x11/0xb0
-> [  409.050582] [     T95]  ? __pfx_kthread+0x10/0x10
-> [  409.050585] [     T95]  ret_from_fork+0x55c/0x810
-> [  409.050588] [     T95]  ? __pfx_ret_from_fork+0x10/0x10
-> [  409.050590] [     T95]  ? __switch_to+0x10a/0xda0
-> [  409.050598] [     T95]  ? __switch_to_asm+0x33/0x70
-> [  409.050602] [     T95]  ? __pfx_kthread+0x10/0x10
-> [  409.050605] [     T95]  ret_from_fork_asm+0x1a/0x30
-> [  409.050610] [     T95]  </TASK>
-
-nvmet_fc_target_assoc_free runs in the nvmet_wq context and calls
-
-  nvmet_fc_delete_target_queue
-    nvmet_cq_put
-      nvmet_cq_destroy
-        nvmet_ctrl_put
-         nvmet_ctrl_free
-           flush_work(&ctrl->async_event_work);
-           cancel_work_sync(&ctrl->fatal_err_work);
- 
-The async_event_work could be running on nvmet_wq. So this deadlock is
-real. No idea how to fix it yet.
-
-> [4] WARN during nvme/058 fc transport
-> 
-> [ 1410.913156] [   T1369] WARNING: block/genhd.c:463 at __add_disk+0x87b/0xd50, CPU#0: kworker/u16:12/1369
-
-	/*
-	 * If the driver provides an explicit major number it also must provide
-	 * the number of minors numbers supported, and those will be used to
-	 * setup the gendisk.
-	 * Otherwise just allocate the device numbers for both the whole device
-	 * and all partitions from the extended dev_t space.
-	 */
-	ret = -EINVAL;
-	if (disk->major) {
-		if (WARN_ON(!disk->minors))
-			goto out;
-
-If I read the correct, the gendisk is allocated in nvme_mpath_alloc_disk
-and then added due the ANA change in nvme_update_ana_state. Not sure if
-this is really fc related but I haven't really figured out how this part
-of the code yet.
 
