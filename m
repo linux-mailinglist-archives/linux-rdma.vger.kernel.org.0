@@ -1,64 +1,60 @@
-Return-Path: <linux-rdma+bounces-16877-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16878-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WOrsBwFKj2moPQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16877-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 16:57:53 +0100
+	id GLenGkhMj2nnPgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16878-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 17:07:36 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72125137BE5
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 16:57:52 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0153C137D44
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 17:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E52AE304997E
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 15:57:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 917483054221
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 16:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB693570C9;
-	Fri, 13 Feb 2026 15:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2183624A8;
+	Fri, 13 Feb 2026 16:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hh1C8s5r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oK39EKRL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2DF326AC3;
-	Fri, 13 Feb 2026 15:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD7A36213B
+	for <linux-rdma@vger.kernel.org>; Fri, 13 Feb 2026 16:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770998270; cv=none; b=Lj+jxzuAO3nVZdoT26ymUfFYDdAVMVkUvTKDq5mKoJbjXEYoBusX4f1JJSXSeA2ZJioDLEYSJKBAXvRKAtBGhPirc6iW5Q6to2rn0u6GhjfTfAbloEbFDW+7t483YQkxJ2N4YG2vj5DgdOilynH2eDg3cEpEJpnUFO/bYamm6tI=
+	t=1770998844; cv=none; b=A6yebPnDi2aqtADce88qGidW3cF1kSM5UXnf8+j+BglJxi+Zr6pbaR+fdbaf6kbcCtYyqKkrcr3KVEgfzSklnML/HEIlbS21Os7+S1puCkyT1f/YFC5Y3x7z4C0eYYDUYVeU6M/pPkA9HICjsm51U8PJIeTXy07RKW479zJVii8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770998270; c=relaxed/simple;
-	bh=HvQGvbAd3NJbRP0dl8wfJtSlFFQwKsB8qcfxscFtbdg=;
+	s=arc-20240116; t=1770998844; c=relaxed/simple;
+	bh=gmzIdOADOCJ5OUzKtZhkwvXqtLxzoKA0Ujbjj/3jrx8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kdFtTAIzpvarW6hutI5BC2iAAW1P5drTrNIFY2WBaLrR3sMMIe7kllV352OKixWYmlo7XcgJGREXpyGj8oP5r8+e3wBS8eRac5IkkCL45NB+6ERU8+hC9tcSIuewAvZtkK3i1qox6guDEgUfKebrjfhRg0Lulu71D8D9EiIgnOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hh1C8s5r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF6A3C116C6;
-	Fri, 13 Feb 2026 15:57:48 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=udTlxADKj5OZeX6Hrk3dmyA08XDDhcarNBs2FRPLbtgrR/SCGzMNyxIWLqf8FfF9Y62+DZ1LyZyd6GG0BJxfDRDOzS8fbqbdbUDsq/tynLVZnlQmUMA5riEp+5ADDv9SPZLTTT6UXPz53Rrt3fLzOQefTLmaUQZCZg/riis9jIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oK39EKRL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D497C2BCB3;
+	Fri, 13 Feb 2026 16:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770998269;
-	bh=HvQGvbAd3NJbRP0dl8wfJtSlFFQwKsB8qcfxscFtbdg=;
+	s=k20201202; t=1770998843;
+	bh=gmzIdOADOCJ5OUzKtZhkwvXqtLxzoKA0Ujbjj/3jrx8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hh1C8s5rJiU38LVvZcurQ3B3+JlGd+a2YrirMLX10eOZ17SXeXHibI+wV6PlWEKIw
-	 ORtpqXgjNA4e6kimDUX0bhD62ODIRtHPCS5fuM0PiMqMa4vrRbUNcI0qBG1Da+IXBi
-	 3JKSlFu3nGbiIkk5v/L76cTjkeqcIrFzOVTiLL/1uOSukhCLlIv9b+HCD3471yrWf5
-	 rM/FNH5bproPGqR0G+jC9XYb+pOC5ON6v7ZPs6spKDikQmr1iQie7F12qH8vmZNqD8
-	 /kBcR5jqRH8KWCdm74p+uASx5Ttb+F6SFK0DDxLswrSoamw0VQs6piAmjHGsMMIvBr
-	 vPWQkSJFkxzUw==
-Date: Fri, 13 Feb 2026 17:57:31 +0200
+	b=oK39EKRLsnZ3Ijzwwc6yJ5qvTbQay6r2rVb5k0wuacrHy1b/csKqpI+2bY8Tr42sM
+	 KAKwYh3vWODE9l1jqcVRgny9RVmFo/SzE941jx3K7XFXIkeD+4uoaqf1C5JbIFWYEv
+	 JPqCous9JnN1sWgFH4edM29YvPZdajBc31soE1d54d++jb6tE9bZdbgSZEWJg/HiQH
+	 URhFZLMws6Iw8guUpe1NpiTI5fid3NNsh6+rtvUM08JxsogdotAqWoI3UXz4WEgUXm
+	 FhPPhiNW5O2tpIXmgWYntgTsSvoKcbHo5/7mQeaybmStkPU6zun6pmvKpaPjCqFN0E
+	 KmA2fuzvzGB0Q==
+Date: Fri, 13 Feb 2026 18:07:13 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	linux-rdma@vger.kernel.org,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-	patches@lists.linux.dev
-Subject: Re: [PATCH 05/10] RDMA: Provide documentation about the uABI
- compatibility rules
-Message-ID: <20260213155731.GT12887@unreal>
-References: <0-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
- <5-v1-89ea7d615ba4+636-bnxt_re_uapi_jgg@nvidia.com>
- <20260213102347.GL12887@unreal>
- <20260213125658.GF1218606@nvidia.com>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	tangchengchang@huawei.com
+Subject: Re: [PATCH for-next 2/3] RDMA/hns: Add write support to debugfs
+Message-ID: <20260213160713.GU12887@unreal>
+References: <20260206103110.3414311-1-huangjunxian6@hisilicon.com>
+ <20260206103110.3414311-3-huangjunxian6@hisilicon.com>
+ <20260212165507.GH12887@unreal>
+ <28023174-dd0a-246e-ee0d-531b0bfda873@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,58 +63,84 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260213125658.GF1218606@nvidia.com>
+In-Reply-To: <28023174-dd0a-246e-ee0d-531b0bfda873@hisilicon.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16877-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16878-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 72125137BE5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,hisilicon.com:email]
+X-Rspamd-Queue-Id: 0153C137D44
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 08:56:58AM -0400, Jason Gunthorpe wrote:
-> On Fri, Feb 13, 2026 at 12:23:47PM +0200, Leon Romanovsky wrote:
-> > On Thu, Feb 05, 2026 at 09:45:39PM -0400, Jason Gunthorpe wrote:
-> > > Write down how all of this is supposed to work using the new helpers.
-> > > 
-> > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > ---
-> > >  include/rdma/ib_verbs.h | 81 +++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 81 insertions(+)
-> > 
-> > Can we add these rules to Chris's review-prompts?
+On Fri, Feb 13, 2026 at 03:52:50PM +0800, Junxian Huang wrote:
 > 
-> Yes, I was thinking about the same thing, not sure how to do that
+> 
+> On 2026/2/13 0:55, Leon Romanovsky wrote:
+> > On Fri, Feb 06, 2026 at 06:31:09PM +0800, Junxian Huang wrote:
+> >> Add write support to debugfs.
+> >>
+> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/hns_roce_debugfs.c | 38 +++++++++++++++++---
+> >>  drivers/infiniband/hw/hns/hns_roce_debugfs.h |  1 +
+> >>  2 files changed, 35 insertions(+), 4 deletions(-)
+> > 
+> > <...>
+> > 
+> >>  static const struct file_operations hns_debugfs_seqfile_fops = {
+> >>  	.owner = THIS_MODULE,
+> >>  	.open = hns_debugfs_seqfile_open,
+> >>  	.release = single_release,
+> >>  	.read = seq_read,
+> >> +	.write = hns_debugfs_seqfile_write,
+> >>  	.llseek = seq_lseek
+> >>  };
+> >>  
+> > 
+> > <...>
+> > 
+> >> -	debugfs_create_file(name, 0400, parent, seq, &hns_debugfs_seqfile_fops);
+> >> +	debugfs_create_file(name, ops->write ? 0600 : 0400, parent,
+> >> +			    seq, &hns_debugfs_seqfile_fops);
+> > 
+> > What is this "ops->write ?" check? You added write callback in this
+> > exactly patch. It is always true.
+> > 
+> 
+> This ops is the function argument "const struct hns_debugfs_rw_ops *ops", not
+> the file_operations hns_debugfs_seqfile_fops. This ops->write can be NULL when
+> the file is read-only, such as the change in create_sw_stat_debugfs() in this
+> patch.
 
-As a start, you can put it into Documentation folder.
-Here https://lore.kernel.org/all/20260212124208.187e53ae@kernel.org,
-Jakub says that Chris is changing prompts to consult with Documentation/*.
+Excellent, inline your init_debugfs_seqfile().
 
 Thanks
 
 > 
-> Jason
+> Junxian
 > 
+> > Thanks
+> > 
 
