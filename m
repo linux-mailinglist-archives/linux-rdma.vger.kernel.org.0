@@ -1,167 +1,268 @@
-Return-Path: <linux-rdma+bounces-16884-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16885-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YEwqLhKVj2nNRgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16884-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 22:18:10 +0100
+	id qJUrKESyj2k4SwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16885-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Feb 2026 00:22:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6710B139950
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 22:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A533139F8D
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Feb 2026 00:22:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DE7F0305BFDD
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 21:17:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 339DF303F07B
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Feb 2026 23:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D99929D26E;
-	Fri, 13 Feb 2026 21:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7632A33CE86;
+	Fri, 13 Feb 2026 23:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQnuiL0a"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lv7QZffq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B740283FEF;
-	Fri, 13 Feb 2026 21:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313FF2773E5
+	for <linux-rdma@vger.kernel.org>; Fri, 13 Feb 2026 23:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771017450; cv=none; b=ndjW0EuOd1D4tssE7wYW1RZMJAYdZcm3oKxNk3eu6fYXHrzJwQtE5eRkwV3hfx8af2BX8nvSwusbw4Qd0vexLOk53tpUyn48SPtzXTI1BubudzwyYAsq54i83sW4DjtvHHcKDVTPbesHl+jRT9yMntjVi4PCALp1ZN1YiLKrEr4=
+	t=1771024956; cv=none; b=Q8y9F7fVE6Kj55XFJEOpQ3IwUwQDmxtd7fjwqzMV2dKynBEPEHriz59n8qS5LzFhBNsXe5HPHT/9Oui4VDGk3Uk8iK5YpOL+Ye+m969cJROI5XADfreyHpetWL1CRcznJCYYlN2hN6Pc9EgvrszK4T7v2UZkLmiMe6fL/WVH9ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771017450; c=relaxed/simple;
-	bh=QlcL27O3ioRBHOEWaDhkbLRq0wlbMnBXzrVrXePjFiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ObK6gQSrlmHjhlEEQJQM/VCODPmESuQLr1WNSDUQe2ZcDx1estBQNme7Tgh8q5IsoblCZG4WswlhlPu71MwG7ggsQqXn5WhjOnsi5EUcwh2t7FhodvkaOhZnKRQInjCi0X6VI77AotXrAfjo3+urDnrPP+fz8nbcNi8aqcTSHQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQnuiL0a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB89EC116C6;
-	Fri, 13 Feb 2026 21:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771017449;
-	bh=QlcL27O3ioRBHOEWaDhkbLRq0wlbMnBXzrVrXePjFiQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eQnuiL0apbzq6AO3OTVemwUrkBPCI9zxRbfHVedPQJCyRANA+597jQ8ueRkQjiuHy
-	 x3HNoi4yMrHhKTiddrjJlN+wCENPaA8Drxb6PcKhZ+1JVMsTRtSvsYbCQi6+nBB8fw
-	 0W4PY8wtj+FqA5zZNuCPxHWxHM6puvJEfy6GEd0jSC9iUXl4VS1PmUpQDGCEyyRf5Y
-	 gjmELhV5oT3dYRfsIG6+RmwoiVp+zmd5XONvxrHH3ZjRMPMxpCQGhxJuMRZgdrXR6s
-	 z8KR9lLetW+BwBJxwhL5pgW2XTKOq599sGjRR07qrtl3Ju+gIveG+nRwLQGU3LY0t6
-	 1ROp00tFhgSkg==
-Date: Fri, 13 Feb 2026 23:17:24 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Bernard Metzler <bernard.metzler@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Gal Pressman <gal.pressman@linux.dev>,
-	Yossi Leybovich <sleybo@amazon.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Kai Shen <kaishen@linux.alibaba.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH rdma-next 28/50] RDMA/siw: Split user and kernel CQ
- creation paths
-Message-ID: <20260213211724.GA691383@unreal>
-References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
- <20260213-refactor-umem-v1-28-f3be85847922@nvidia.com>
- <054452b7-7e08-4f8c-8010-e1b69c4b3997@linux.dev>
+	s=arc-20240116; t=1771024956; c=relaxed/simple;
+	bh=UQJ6pYXPnPIXRM8pirMc4ug+s9oYY+R3WK/G2UaY5uc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GHb8aYa3zHHQ2F2xZ+9th5Z5gIJfe9dvZnJ7/y/fXCHhH/xfjUZh1BOBrbp26nYCrMWqfrLNz9poUtTLl3wR80D9neO6haa/61ABNFjOEMTaaIINo3C+fL5nBAwZIdP7r+iT3X2J0PSxHGoq+yDNCpPZ/fJFjXRxeyX2qlaClBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lv7QZffq; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <459a01fe-8f23-4114-a127-98ec95c53464@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771024941;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6bje+VS+HFc4IP5MZonfLHHhjiuUCgTadQIT/tXFDSo=;
+	b=lv7QZffqRt9lWP9tzW9wJx7l6G5Of/DfSmbd732cmGm9+xdcBoXlqsBiuTxpzY/0KARVR0
+	P1yZBpssN2K8k2PgFLnv2i6d3DtkxLzCihxfyE9mYZVVLwJw1wynGqbbcyCX6qKpupPv3A
+	o9Z2EldUq//1yE9yf68/bK0LQJFOgNc=
+Date: Fri, 13 Feb 2026 15:22:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <054452b7-7e08-4f8c-8010-e1b69c4b3997@linux.dev>
+Subject: Re: [PATCH rdma-next 29/50] RDMA/rxe: Split user and kernel CQ
+ creation paths
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Potnuri Bharat Teja <bharat@chelsio.com>,
+ Michael Margolin <mrgolin@amazon.com>, Gal Pressman
+ <gal.pressman@linux.dev>, Yossi Leybovich <sleybo@amazon.com>,
+ Cheng Xu <chengyou@linux.alibaba.com>, Kai Shen <kaishen@linux.alibaba.com>,
+ Chengchang Tang <tangchengchang@huawei.com>,
+ Junxian Huang <huangjunxian6@hisilicon.com>,
+ Abhijit Gangurde <abhijit.gangurde@amd.com>,
+ Allen Hubbe <allen.hubbe@amd.com>,
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+ Long Li <longli@microsoft.com>, Konstantin Taranov
+ <kotaranov@microsoft.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Michal Kalderon <mkalderon@marvell.com>,
+ Bryan Tan <bryan-bt.tan@broadcom.com>, Vishnu Dasa
+ <vishnu.dasa@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Christian Benvenuti <benve@cisco.com>, Nelson Escobar <neescoba@cisco.com>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Bernard Metzler <bernard.metzler@linux.dev>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-hyperv@vger.kernel.org
+References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
+ <20260213-refactor-umem-v1-29-f3be85847922@nvidia.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "yanjun.zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <20260213-refactor-umem-v1-29-f3be85847922@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16884-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[kernel.org,ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[30];
+	TAGGED_FROM(0.00)[bounces-16885-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[31];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com,vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6710B139950
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0A533139F8D
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 05:56:32PM +0100, Bernard Metzler wrote:
-> On 13.02.2026 11:58, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Separate the CQ creation logic into distinct kernel and user flows.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >   drivers/infiniband/sw/siw/siw_main.c  |   1 +
-> >   drivers/infiniband/sw/siw/siw_verbs.c | 111 +++++++++++++++++++++++-----------
-> >   drivers/infiniband/sw/siw/siw_verbs.h |   2 +
-> >   3 files changed, 80 insertions(+), 34 deletions(-)
-
-<...>
-
-> > +int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
-> > +		  struct uverbs_attr_bundle *attrs)
-> > +{
-> > +	struct siw_device *sdev = to_siw_dev(base_cq->device);
-> > +	struct siw_cq *cq = to_siw_cq(base_cq);
-> > +	int rv, size = attr->cqe;
-> > +
-> > +	if (attr->flags)
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	if (atomic_inc_return(&sdev->num_cq) > SIW_MAX_CQ) {
-> > +		siw_dbg(base_cq->device, "too many CQ's\n");
-> > +		rv = -ENOMEM;
-> > +		goto err_out;
-> > +	}
-> > +	if (size < 1 || size > sdev->attrs.max_cqe) {
+On 2/13/26 2:58 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> isn't there now also a check for zero sized CQ in
-> __ib_alloc_cq(), which obsoletes that < 1 check?
-
-Thanks, this line needs to be changed to be if "(attr.cqe > sdev->attrs.max_cqe)"
-
+> Separate the CQ creation logic into distinct kernel and user flows.
 > 
-> Everything looks right otherwise.
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_verbs.c | 81 ++++++++++++++++++++---------------
+>   1 file changed, 47 insertions(+), 34 deletions(-)
 > 
-> Thanks,
-> Bernard.
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 38d8c408320f..1e651bdd8622 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -1072,58 +1072,70 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+>   }
+>   
+>   /* cq */
+> -static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -			 struct uverbs_attr_bundle *attrs)
+> +static int rxe_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> +			      struct uverbs_attr_bundle *attrs)
+>   {
+>   	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct ib_device *dev = ibcq->device;
+>   	struct rxe_dev *rxe = to_rdev(dev);
+>   	struct rxe_cq *cq = to_rcq(ibcq);
+> -	struct rxe_create_cq_resp __user *uresp = NULL;
+> -	int err, cleanup_err;
+> +	struct rxe_create_cq_resp __user *uresp;
+> +	int err;
+>   
+> -	if (udata) {
+> -		if (udata->outlen < sizeof(*uresp)) {
+> -			err = -EINVAL;
+> -			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
+> -			goto err_out;
+> -		}
+> -		uresp = udata->outbuf;
+> -	}
+> +	if (udata->outlen < sizeof(*uresp))
+> +		return -EINVAL;
+>   
+> -	if (attr->flags) {
+> -		err = -EOPNOTSUPP;
+> -		rxe_dbg_dev(rxe, "bad attr->flags, err = %d\n", err);
+> -		goto err_out;
+> -	}
+> +	uresp = udata->outbuf;
+>   
+> -	err = rxe_cq_chk_attr(rxe, NULL, attr->cqe, attr->comp_vector);
+> -	if (err) {
+> -		rxe_dbg_dev(rxe, "bad init attributes, err = %d\n", err);
+> -		goto err_out;
+> -	}
+> +	if (attr->flags || ibcq->umem)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (attr->cqe > rxe->attr.max_cqe)
+> +		return -EINVAL;
+>   
+>   	err = rxe_add_to_pool(&rxe->cq_pool, cq);
+> -	if (err) {
+> -		rxe_dbg_dev(rxe, "unable to create cq, err = %d\n", err);
+> -		goto err_out;
+> -	}
+> +	if (err)
+> +		return err;
+>   
+>   	err = rxe_cq_from_init(rxe, cq, attr->cqe, attr->comp_vector, udata,
+>   			       uresp);
 
-Thanks
+Neither rxe_create_user_cq() nor rxe_create_cq() explicitly validates 
+attr->comp_vector. Is this guaranteed to be validated by the core before 
+reaching the driver, or should rxe still enforce device-specific limits?
+
+> -	if (err) {
+> -		rxe_dbg_cq(cq, "create cq failed, err = %d\n", err);
+> +	if (err)
+>   		goto err_cleanup;
+
+The err_cleanup label is only used for this specific error path. It may 
+improve readability to inline the cleanup logic at this site and remove 
+the label altogether.
+
+> -	}
+>   
+>   	return 0;
+>   
+>   err_cleanup:
+> -	cleanup_err = rxe_cleanup(cq);
+> -	if (cleanup_err)
+> -		rxe_err_cq(cq, "cleanup failed, err = %d\n", cleanup_err);
+> -err_out:
+> -	rxe_err_dev(rxe, "returned err = %d\n", err);
+> +	rxe_cleanup(cq);
+> +	return err;
+> +}
+> +
+> +static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> +			 struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct ib_device *dev = ibcq->device;
+> +	struct rxe_dev *rxe = to_rdev(dev);
+> +	struct rxe_cq *cq = to_rcq(ibcq);
+> +	int err;
+> +
+> +	if (attr->flags)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (attr->cqe > rxe->attr.max_cqe)
+> +		return -EINVAL;
+> +
+> +	err = rxe_add_to_pool(&rxe->cq_pool, cq);
+> +	if (err)
+> +		return err;
+> +
+> +	err = rxe_cq_from_init(rxe, cq, attr->cqe, attr->comp_vector, NULL,
+> +			       NULL);
+> +	if (err)
+> +		goto err_cleanup;
+
+ditto
+
+Thanks a lot.
+
+Zhu Yanjun
+
+> +
+> +	return 0;
+> +
+> +err_cleanup:
+> +	rxe_cleanup(cq);
+>   	return err;
+>   }
+>   
+> @@ -1478,6 +1490,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+>   	.attach_mcast = rxe_attach_mcast,
+>   	.create_ah = rxe_create_ah,
+>   	.create_cq = rxe_create_cq,
+> +	.create_user_cq = rxe_create_user_cq,
+>   	.create_qp = rxe_create_qp,
+>   	.create_srq = rxe_create_srq,
+>   	.create_user_ah = rxe_create_ah,
+> 
+
 
