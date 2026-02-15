@@ -1,95 +1,78 @@
-Return-Path: <linux-rdma+bounces-16892-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16893-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id DPHAKVlxkWkTiwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16892-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 08:10:17 +0100
+	id Si39AHe2kWmTlgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16893-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 13:05:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C72E513E301
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 08:10:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3334B13E9F7
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 13:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 22804300383D
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 07:10:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A880300EABA
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 12:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB7A277C9E;
-	Sun, 15 Feb 2026 07:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8DB284682;
+	Sun, 15 Feb 2026 12:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRHWKqIA"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="NGT+qi2N"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com [50.112.246.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D7717993
-	for <linux-rdma@vger.kernel.org>; Sun, 15 Feb 2026 07:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187DC1A9FAB
+	for <linux-rdma@vger.kernel.org>; Sun, 15 Feb 2026 12:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.112.246.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771139411; cv=none; b=F85PVdgl+wr7zIVnnotL9ooDnaVdi25TFG+XHdPX7eWdYo6b6LfQNAhIkG/FgSmThwNZX1OfO3LH1dS5Hn2Pnl59R2VdH8VOKn31FsnPWVcKmDlZSqh8UQTrfbb09caAW1aAteW8FwPU3VxAXw/dpyHaJzi+U/1eJs+QwA50Yfo=
+	t=1771157106; cv=none; b=LVzADOCqpz+HVVWLoQvVmwO4BTDs97S/hPykd6V8QK5VSyrUWPJFcnc6crOUXXXIvlzpQ4kvOhwZM50JN+GQMnqs5RDrvuDofWFFISifncDabl1qls6Ns+I9afgDxMWAplktCfAwIQZsiEAALGCfuU0cfHmM63qUWNLblHNwBVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771139411; c=relaxed/simple;
-	bh=48kQZ2ApYlekyRt0BAif+sMeREloJXMXGLg7PghooTU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q1Ql20ITAH89Eh4NSeLARzlYjlNzzPkHFmSfA4U7qCn2QRaX46sQ1uaEjKmooPPmoTpW2lt04hoADOzZEtm6Lg5WR5qYM7RllO0J9pV923AdQaaRouW2ynNtwdYvSKvwlyFysi1ufiJC1zsKdPv+QA7Q1o1p2QLoGwDI7CDb91M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KRHWKqIA; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2a962230847so19352275ad.3
-        for <linux-rdma@vger.kernel.org>; Sat, 14 Feb 2026 23:10:09 -0800 (PST)
+	s=arc-20240116; t=1771157106; c=relaxed/simple;
+	bh=R5uA7nkJtIT6UdzbP19orMMtZD3Z1O60js8Fv2yjBJc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pM4dF0XzH3K0qHujrMtFsCktjcVlxizsyGIdGCKm2jsjJXUtzNwB/SoCjDSKisVvb7oUrORfW9TTxI/aJLXQ3gkdZV5MrUPok/G80gvbREXxWvO0flgLD/Ng5hGF7TXhGLcyMF+s+GygtPtPZ41lriLpU5br8oM+ehQjV58DvOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=NGT+qi2N; arc=none smtp.client-ip=50.112.246.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771139409; x=1771744209; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oiLAHDVjSxKvSNOVbOnL+dTEI9S7sddzZ4pZsSNgz2s=;
-        b=KRHWKqIA+Hwig0I2wXjTU+5im9uiaI6UvWHqlorLRby60XvL9xeecMbX0rGZVYE2hB
-         ZHEcSSiRWfVVf8TLkZP6hXvZCoJh31ufNfiWbOIvPDWUGCzOhlLO7Y/QY+TIwObn5qMX
-         3bjGH+o7SkqovpUQJq1ZPrih3DTe8Bn59uz5I+TDVaBibDUJXxOZRI9yaYk6Tnftj7MM
-         eELB4Or1lz4gn+oF5k0s6YomvsNEI9ZWo6y/YKQygCl8pRHvUJiWmOr6kJNbPqg01+rS
-         0jNbR5CvE5byP3UrsR6gST/mnlXl4+R9HDZ94NgySffWmOsXJxri8BqfyBhT0bSrR89X
-         zArw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771139409; x=1771744209;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oiLAHDVjSxKvSNOVbOnL+dTEI9S7sddzZ4pZsSNgz2s=;
-        b=HmCTSIS4tj24XucHlfH8swo5L7kX1KgjobyliazL0gToPJLNMNBUBBmlG9kIXNotc3
-         LPxjnOTESOYD5DBhqhZzBtYsK8dOpLXkfJA3kp9M1hA4BXUptR7FpNeMOu4a/A0Sbogm
-         iPHRwiGqLqzHWi8+4/JBD71cL7bZ0W1m1KYTy4oBh88yPNhr1fbSOI9xVQ2oD+nFnLha
-         nZxD0NCYRk1VqLvDXZUPus5ULMlIQRBgTZrxx8+n/jjzHUCAosrsRFiwQKA+sdKt8dDR
-         M1jH63bdgIvkGxelf+OlX5pLAEDXuULj43XM6amfJYf/Tq/gbY1Ph3H2BBU9ft8716O5
-         mn2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVgJ3tBnJsb/fwh+jyr/9wbIJmFMHPJVSEQz0JGZCZBBPTMAv77KJnlTeuvtDV28kB+bM6gNiC1P9an@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLU3erxlFLcHQLQ0ASOG7MRXr41JcR01MgtSNKhH+9jCnTXa0s
-	cRt13AlQ0AgAE6OZWRwKgrQ0wgEnWu43c+bRcW7z57TqQOVK0IRD3jFt
-X-Gm-Gg: AZuq6aJAZ3OW/fGHC8jjcuYNUFz9xRXI9deMJkMuOWw36jMxQ+oSD3Gfc5A0ssQYSWx
-	MuWMDfOsvXtQyoPRiUbaq6HEZLCAjWqys+FkJPcDVNdW3GUjohYInfoHvI/bWsVwzHZ9rLxQOPD
-	3I+L/wFAuMuW7bgQ/BhlupQytka8CCful7eObZWlcPkXKIIlURAgo3HBLa+BfZM8uxsLlWpgC6r
-	TwR0qqzWWta0+FQVJVhTdMS27DQ27a/Pvq8Oc4YokO/d8gLfjbiLikRh1c1Ghd1m74Fhdk9KT75
-	LUPdc0mhw5SZrOL+1jCZzzl87RpLA5mPnSKYlmEeuDmRdEXnVqk695RwgxZxu85fvf9R+pSq/Xj
-	BlQy8C9Ty6pSHpdOwPCedRnHwZxN94QSESKFnLFE7Fa//y79jAqBAYc0U+z3KRzTfIqOIjD0aUZ
-	tmhBk7nKWuiem9tPuhKAGKnkIh6qiL66gsfLPfgzgBrZGMrfAU+v6v/Gl2dYMf+QkFCtZCf9i2
-X-Received: by 2002:a17:903:1aa8:b0:2ab:3ac6:8cf4 with SMTP id d9443c01a7336-2ab50598c3amr85915995ad.31.1771139409427;
-        Sat, 14 Feb 2026 23:10:09 -0800 (PST)
-Received: from tabrez-VivoBook-ASUSLaptop-X513UA-KM513UA.. ([2401:4900:93c4:3183:ba57:8db4:ce19:5f69])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad1a9d5bd3sm35445595ad.44.2026.02.14.23.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Feb 2026 23:10:09 -0800 (PST)
-From: Tabrez Ahmed <tabreztalks@gmail.com>
-To: allison.henderson@oracle.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tabrez Ahmed <tabreztalks@gmail.com>,
-	syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
-Subject: [PATCH net] rds: tcp: fix uninit-value in __inet_bind
-Date: Sun, 15 Feb 2026 12:39:50 +0530
-Message-ID: <20260215070951.213341-1-tabreztalks@gmail.com>
-X-Mailer: git-send-email 2.43.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1771157105; x=1802693105;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QS7M1MnNAQ/v7pmmJ5/Xskg1sCLxSpdu4EGdfJ+MvT4=;
+  b=NGT+qi2NqkadyYLbnDHX01cJaEpWTs7dORo3T2PlHBbJFsDlpBaPy04H
+   jn3fXVxCFYt4JBjADbBaUf62HAi755YvElzcVVa26p0zTLuyEjbwEYymZ
+   4jwPv5arK/8uupoDJvev1bzqyE+MQ0+MoBiwGmslYvMAGINgjNttvvayk
+   +eheC4UmDTx3zG1J84O482yu99McACHNdzr7LEQ+nDwdnwSx1amu3yQqS
+   p1PGOdZbeen2VJinTSxdfCnihwCETRBpV6mrdpqSkidwrxSNXtMOn4qXL
+   IIrlxEMuuIcb/Q2GiGyqdSHHRtg6nvETLa4k5wEN2iWF1CoEgr8gNkoWm
+   A==;
+X-CSE-ConnectionGUID: Rh8FSiWAT9+DszGWtLidtw==
+X-CSE-MsgGUID: bDMw1h6PRs6K/deQLRvG/Q==
+X-IronPort-AV: E=Sophos;i="6.21,292,1763424000"; 
+   d="scan'208";a="12933571"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2026 12:05:02 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.182:19796]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.15.75:2525] with esmtp (Farcaster)
+ id d7c3ee89-aad2-4b79-8ac6-1a8c635cba6d; Sun, 15 Feb 2026 12:05:01 +0000 (UTC)
+X-Farcaster-Flow-ID: d7c3ee89-aad2-4b79-8ac6-1a8c635cba6d
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Sun, 15 Feb 2026 12:05:01 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Sun, 15 Feb 2026
+ 12:05:00 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH for-next 0/2] RDMA/efa: Expose extended max inline buffer size
+Date: Sun, 15 Feb 2026 12:04:49 +0000
+Message-ID: <20260215120451.18053-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,73 +80,60 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D046UWA004.ant.amazon.com (10.13.139.76) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,vger.kernel.org,gmail.com,syzkaller.appspotmail.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16892-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16893-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tabreztalks@gmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma,aae646f09192f72a68dc];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,syzkaller.appspot.com:url,appspotmail.com:email]
-X-Rspamd-Queue-Id: C72E513E301
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 3334B13E9F7
 X-Rspamd-Action: no action
 
-KMSAN reported an uninit-value access in __inet_bind() when binding an RDS TCP socket.
-The uninitialized memory originates from rds_tcp_conn_alloc(), which uses kmem_cache_alloc() to allocate the rds_tcp_connection structure.
+This series adds support for querying an extended max inline buffer size
+from the EFA device.
 
-The structure is not zero-initialized, leaving random data in its fields.
-When the networking stack later tries to bind the socket using these dirty values, KMSAN flags the uninitialized access.
+The first patch renames the existing queue attributes structure to prepare
+for adding a second queue attributes query.
 
-Fix this by using kmem_cache_zalloc() instead of kmem_cache_alloc() to ensure the structure is zeroed out upon allocation.
+The second patch introduces the new extended max inline buffer size query
+and exposes this value to userspace.
 
-Reported-by: syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=aae646f09192f72a68dc
-Tested-by: syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
-Fixes: 70041088e3b9 ("RDS: Add TCP transport to RDS")
+Yonatan Nachum (2):
+  RDMA/efa: Rename admin queue attributes struct name for extendability
+  RDMA/efa: Expose new extended max inline buff size
 
-Signed-off-by: Tabrez Ahmed <tabreztalks@gmail.com>
----
-This is my first patch. Any feedback is appreciated!
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 22 ++++++--
+ drivers/infiniband/hw/efa/efa_com_cmd.c       | 55 ++++++++++++-------
+ drivers/infiniband/hw/efa/efa_com_cmd.h       |  3 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  3 +-
+ include/uapi/rdma/efa-abi.h                   |  5 +-
+ 5 files changed, 59 insertions(+), 29 deletions(-)
 
- net/rds/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 45484a93d75f..04f310255692 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -373,7 +373,7 @@ static int rds_tcp_conn_alloc(struct rds_connection *conn, gfp_t gfp)
- 	int ret = 0;
- 
- 	for (i = 0; i < RDS_MPATH_WORKERS; i++) {
--		tc = kmem_cache_alloc(rds_tcp_conn_slab, gfp);
-+		tc = kmem_cache_zalloc(rds_tcp_conn_slab, gfp);
- 		if (!tc) {
- 			ret = -ENOMEM;
- 			goto fail;
 -- 
-2.43.0
+2.47.3
 
 
