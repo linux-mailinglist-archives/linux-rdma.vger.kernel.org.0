@@ -1,163 +1,119 @@
-Return-Path: <linux-rdma+bounces-16890-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16891-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WHKVBGxwkWnOigEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16890-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 08:06:20 +0100
+	id YDi3HqZwkWnOigEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16891-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 08:07:18 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B21213E2DA
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 08:06:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD76813E2F7
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 08:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DBE8330131CC
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 07:06:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 333D630086C5
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 07:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7CE2472A6;
-	Sun, 15 Feb 2026 07:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC05F24E016;
+	Sun, 15 Feb 2026 07:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMx7KEnM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fi3xQ4cx"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDF217993;
-	Sun, 15 Feb 2026 07:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2D323EAAB
+	for <linux-rdma@vger.kernel.org>; Sun, 15 Feb 2026 07:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771139174; cv=none; b=WMvztaYU56wzTY4+r1F4CraRpO619x7iHdlJWKKedEA6aYR8CdYAvQpgMyjLj+dHvrW7geV+BLTo8ipAHUeIiiHLqLbE97vMzAJMn8RajEYpgpuWi3YcBp8G5+/KZiG1OGPPp4cnPE+iuo5eqEWryJIJqHVSGuofRn3WkNv63Tk=
+	t=1771139234; cv=none; b=XjbLuhemYeaO6jExgxuwfn7CplA/EaRd1oiBzrzcgBwWCJ/lF9zfWsi7T/Au7XF3x9Do9f6/qpVD4Gy4WlP97WEznsrqT4XwO+LN89cY56uFylQiQTiT6+BiUbLLEv3kyPtcF+EpY5RQ3PF97KQ5acf5OQWcCbPNpWqjcapDtH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771139174; c=relaxed/simple;
-	bh=YcTAU9BUNbHhzUc4v6zujt0b+hevJHKAHNMpsWwE8gU=;
+	s=arc-20240116; t=1771139234; c=relaxed/simple;
+	bh=ovKTuxi3/2eJl2MrqeC4OgV28mX3fTa6IifHd40vnVA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uZK2bg4MW+hDuGnl8KZ5D4+nGbPKeEwZqBblNPgACX8xKYblGjATRR6WWsGke07gUvdFTup+KsgmLt+OVEvmMaFDI4slTJfyoBQYrIoQSntInrGcm2p7LS/aTlM1XvzA3I2px5t92GRokdeKfCdbTl04L7VRa36GgRHQCrO2UgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMx7KEnM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6A8C4CEF7;
-	Sun, 15 Feb 2026 07:06:13 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=dPNaKEiwsQoECqk4aFUNqKCFJLl+e6QzYDW300ZAhZ9jN4SrP5UndU1ccZQ6oHAQ6zj5gyyUiRoO1RJY7bMAkg2ujZrG45uw/prSwmIRK/0CFd8xjugisnoWYsyKlhnz53yG2RQRuN5a+e+3f2Rw3BR4uoXeFyXagN8edhn3374=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fi3xQ4cx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B770C4CEF7;
+	Sun, 15 Feb 2026 07:07:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771139174;
-	bh=YcTAU9BUNbHhzUc4v6zujt0b+hevJHKAHNMpsWwE8gU=;
+	s=k20201202; t=1771139234;
+	bh=ovKTuxi3/2eJl2MrqeC4OgV28mX3fTa6IifHd40vnVA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vMx7KEnMfzch0QVhOSk5y9VXkH7cpo+uvYjuasm5c6RC/ZBdHVH4SHkRhzi34R6fS
-	 CdhTIyf//nmbRsYDkd0NGjmj6/FcexywTjjEP7nyQg7xcMLm3nkSWzwEAhpBT7SdWf
-	 U0WQWU/FRD6lG5jQnwieOfXD2g4/yI99l/Pcl52P1PE4GywLQG+eLoNBYrunXqxjrJ
-	 DB4eSAKG8st/Z3kyFPN/zUWMeB8smqlD8BKR9MEXvB25rXYP8X80jWKpJhkVe+/efn
-	 EQqtB0YoZvatd8HjGEwb6N6eqlg9q3E2GILFHjIys9uC6gqHs3N5JdMz1frgw7SAIe
-	 c5BLzUTmjwrOA==
-Date: Sun, 15 Feb 2026 09:06:09 +0200
+	b=Fi3xQ4cxQOkMpE+KzOuZHU+aDFHxQpOs6C2cEgW/DmPBZtFmQR47h0nvyuFLvnsvp
+	 b+P5QSVnr1kWqdB4UQ2IJ8aTZIT8g4A5Gl4+gj+QTO9HC/kcpzZaJuTZpoL0E3ffj8
+	 W+9Nm2MkDVkbZFXvhFNCpauWiSqIs7NfoAewoYnc5nzxuBdgZOT7PvWv5McR6NI96a
+	 BH+EqQJ70mQACe6G22T91A+m7ArhCU4cNZ9KEUU4y3VqREoYbXpfiboV2VZ1y/Dt4n
+	 C/hazdV4jkTOnFKLqtT9n3MVi5DydWF2y2GTsRvSGux8q7Lq0hWIFFQU5usqfyp7hr
+	 GjeKrCzEA77VA==
+Date: Sun, 15 Feb 2026 09:07:10 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: "yanjun.zhu" <yanjun.zhu@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Gal Pressman <gal.pressman@linux.dev>,
-	Yossi Leybovich <sleybo@amazon.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Kai Shen <kaishen@linux.alibaba.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Bernard Metzler <bernard.metzler@linux.dev>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH rdma-next 29/50] RDMA/rxe: Split user and kernel CQ
- creation paths
-Message-ID: <20260215070609.GB691383@unreal>
-References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
- <20260213-refactor-umem-v1-29-f3be85847922@nvidia.com>
- <459a01fe-8f23-4114-a127-98ec95c53464@linux.dev>
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH rdma-next v12 5/6] RDMA/bnxt_re: Support dmabuf for CQ
+ rings
+Message-ID: <20260215070710.GC691383@unreal>
+References: <20260211124927.57617-1-sriharsha.basavapatna@broadcom.com>
+ <20260211124927.57617-6-sriharsha.basavapatna@broadcom.com>
+ <20260213111256.GO12887@unreal>
+ <20260213145425.GN750753@ziepe.ca>
+ <CAHHeUGX8Ga+xtqJ+K-yQ=bpFLznPamdHrOc8ydE6V_POh0BJvg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <459a01fe-8f23-4114-a127-98ec95c53464@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHHeUGX8Ga+xtqJ+K-yQ=bpFLznPamdHrOc8ydE6V_POh0BJvg@mail.gmail.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16890-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[31];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com,vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16891-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6B21213E2DA
+X-Rspamd-Queue-Id: BD76813E2F7
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 03:22:13PM -0800, yanjun.zhu wrote:
-> On 2/13/26 2:58 AM, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Separate the CQ creation logic into distinct kernel and user flows.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >   drivers/infiniband/sw/rxe/rxe_verbs.c | 81 ++++++++++++++++++++---------------
-> >   1 file changed, 47 insertions(+), 34 deletions(-)
+On Fri, Feb 13, 2026 at 08:33:06PM +0530, Sriharsha Basavapatna wrote:
+> On Fri, Feb 13, 2026 at 8:24 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
 <...>
 
-> > +	if (err)
-> > +		return err;
-> >   	err = rxe_cq_from_init(rxe, cq, attr->cqe, attr->comp_vector, udata,
-> >   			       uresp);
-> 
-> Neither rxe_create_user_cq() nor rxe_create_cq() explicitly validates
-> attr->comp_vector. Is this guaranteed to be validated by the core before
-> reaching the driver, or should rxe still enforce device-specific limits?
+> We have already been reviewing the changes in Leon's series and we
+> have noticed at least one issue with the bnxt_re changes. We will
+> reply on that thread.
 
-We should validate it in IB/core level.
-https://github.com/linux-rdma/rdma-core/blob/8b9cdb7c6bd2b6e4e64e08888c10124b0d1873f2/libibverbs/man/ibv_create_cq.3#L32
-.I comp_vector
-for signaling completion events; it must be at least zero and less than
-.I context\fR->num_comp_vectors.
+Did I overlook that reply?
+
+Thanks
 
 > 
-> > -	if (err) {
-> > -		rxe_dbg_cq(cq, "create cq failed, err = %d\n", err);
-> > +	if (err)
-> >   		goto err_cleanup;
-> 
-> The err_cleanup label is only used for this specific error path. It may
-> improve readability to inline the cleanup logic at this site and remove the
-> label altogether.
+> Thanks,
+> -Harsha
 
-Ill delete. Thanks
+
 
