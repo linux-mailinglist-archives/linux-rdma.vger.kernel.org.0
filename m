@@ -1,160 +1,125 @@
-Return-Path: <linux-rdma+bounces-16899-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16900-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id FEIXAUj/kWlVpAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16899-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 18:15:52 +0100
+	id qATVKDoBkmnWpAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16900-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 18:24:10 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E8A413F32B
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 18:15:51 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D0313F366
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 18:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F8FB301DAE8
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 17:15:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A7E883002904
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Feb 2026 17:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6D622A4F8;
-	Sun, 15 Feb 2026 17:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E475329994B;
+	Sun, 15 Feb 2026 17:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rGZBo3Mq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oDkwR+25"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F6E33993
-	for <linux-rdma@vger.kernel.org>; Sun, 15 Feb 2026 17:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EFBC21ADB7
+	for <linux-rdma@vger.kernel.org>; Sun, 15 Feb 2026 17:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771175747; cv=none; b=N1/q4yn9WmiE/Jw2CInTWLaHGXN5CoEHPMIixR0D2F60iVktOjlof1ffNCCAJBpOPCN3biTI/XcsrlPMy14NGRNhOGcIor7gcvnIwB8JfMxzkmYahL1xLm3J3uqtr2gscO4QvQtN8yz1VD9bYzOeLIekifPqL+rUoaIlX3iL7+c=
+	t=1771176244; cv=none; b=Y5aHt8Ia0DNK0duBeDzJQQLFBYprIh2MSABrvngO1VzRE+sWQSqWvIVia0NA39MoKRPKA0NskcuEJ2YFdf2/BGLphZb2Zd0z65wo9m+vthexZR1sV+iRYZbKWc9KczcxttQfx+kg0GNt6UW5tf94rNKzNIbRfk/bUEXcHkaoHjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771175747; c=relaxed/simple;
-	bh=Y09SpLuoYzYTdGJOzFKZHUBCPcq/DgdAmxBGD0aQbE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=agnz7OTW4Cqy1vGv+sru2dXTFP62VQFAxDhOHQS3MzsKHNs8NWFSGouqvvlUaePJXAawTSMaZd1jlp57jk0ngUz7a7xzSaAcTkl71uAHqdfJyAkgY+b4Ynxtjz3y1kMXlIwV2pB/G53LtiUcUYzke4sxCrgNFWsi2MU1g+7vSGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rGZBo3Mq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE558C4CEF7;
-	Sun, 15 Feb 2026 17:15:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771175747;
-	bh=Y09SpLuoYzYTdGJOzFKZHUBCPcq/DgdAmxBGD0aQbE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rGZBo3MqBCmaxdgu8yHng6o3NkAHMmxypyuDRq7SnvH+/0xqoggU9pXIgNseQdbFr
-	 +Ajlm68XqGcbKsjOCtsfxepRRe5Bs36JbkNFyrAVcaqK/j04jQF59JtsfMceDakqhy
-	 2iB229m9Abd2aALl5PZxlKr609ABom4AU/rrAKjGxlrOgqqB6CJ0PG13qS8033S/US
-	 30d7+jxEx4PlLaN6bjbOAxjv6wCNdtTHNCAbFbt3LGiDjZIkZstK5YiHI78lsE5sDf
-	 X2zq8DNP+tXZkSrj+SGLwfexHt6ebRAZJcpwXcK8pEpWeh/LIyMLrB0BpSXTuPgdO8
-	 sf3XoOLANsmwA==
-Date: Sun, 15 Feb 2026 19:15:43 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Michael Margolin <mrgolin@amazon.com>
-Cc: Gal Pressman <gal.pressman@linux.dev>, Jason Gunthorpe <jgg@nvidia.com>,
-	Tom Sela <tomsela@amazon.com>, linux-rdma@vger.kernel.org,
-	sleybo@amazon.com, matua@amazon.com,
-	Yonatan Nachum <ynachum@amazon.com>
-Subject: Re: [PATCH for-next] RDMA/efa: Add AH usage counter with sysfs
- exposure
-Message-ID: <20260215171543.GB12989@unreal>
-References: <20260211131048.36217-1-tomsela@amazon.com>
- <20260211131338.GA1218606@nvidia.com>
- <ef07b718-0198-4f8c-86c1-56149c7fd239@linux.dev>
- <20260212163628.GG12887@unreal>
- <20260215134122.GA18825@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+	s=arc-20240116; t=1771176244; c=relaxed/simple;
+	bh=+ug8N3fxEfTk+pQ9LJQE6hT4szdAZOuh+GFrSyVeg70=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=muDlfdToBV+jYLH3ZV1A0pyj+AVkxYILcptYdIqFD0/Yzo4lyQAg2DcnDsdXwC14i7fwqHAkeSM3fbkQSgA8nwUkkTintUKSXOdDf2OY7jScdpBNAQKfQLiAP5IXKot0bi65r1U9xQkWmmQ3F3CvsO7Lv45kPMylRDp3NdAML3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oDkwR+25; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <42c8552c-eb41-43f5-bea5-fdd46edba65a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771176240;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pdA1Jaae8a2MfjyiVKe/3SRJSLjIuuoFOptEXjGwN64=;
+	b=oDkwR+25EZ3Ryt/bVs8Na3V77FeE0fJ2N5G7OsvQV/Swz++6po39iMYdX3csMeDCBKngWe
+	Ply+5SpmkwNIJ0VpBcNo7WUXcAnx1xFHDvvjpITYyFG58cg3bGXwTOaA2bQxYcjwr0JsKT
+	6Q1fEcyu48W935LR6GwZRO7ghhME37c=
+Date: Sun, 15 Feb 2026 19:23:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260215134122.GA18825@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+Subject: Re: [PATCH for-next] RDMA/efa: Add AH usage counter with sysfs
+ exposure
+To: Leon Romanovsky <leon@kernel.org>, Michael Margolin <mrgolin@amazon.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Tom Sela <tomsela@amazon.com>,
+ linux-rdma@vger.kernel.org, sleybo@amazon.com, matua@amazon.com,
+ Yonatan Nachum <ynachum@amazon.com>
+References: <20260211131048.36217-1-tomsela@amazon.com>
+ <20260211131338.GA1218606@nvidia.com>
+ <ef07b718-0198-4f8c-86c1-56149c7fd239@linux.dev>
+ <20260212163628.GG12887@unreal>
+ <20260215134122.GA18825@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+ <20260215171543.GB12989@unreal>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Gal Pressman <gal.pressman@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20260215171543.GB12989@unreal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16899-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16900-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[gal.pressman@linux.dev,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3E8A413F32B
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B5D0313F366
 X-Rspamd-Action: no action
 
-On Sun, Feb 15, 2026 at 01:41:22PM +0000, Michael Margolin wrote:
-> On Thu, Feb 12, 2026 at 06:36:28PM +0200, Leon Romanovsky wrote:
-> > On Thu, Feb 12, 2026 at 08:52:41AM +0200, Gal Pressman wrote:
-> > > On 11/02/2026 15:13, Jason Gunthorpe wrote:
-> > > > On Wed, Feb 11, 2026 at 01:10:48PM +0000, Tom Sela wrote:
-> > > >> +static ssize_t ah_count_show(struct device *dev, struct device_attribute *attr, char *buf)
-> > > >> +{
-> > > >> +	struct efa_dev *efa_dev = pci_get_drvdata(to_pci_dev(dev));
-> > > >> +
-> > > >> +	return sysfs_emit(buf, "%lld\n", atomic64_read(&efa_dev->ah_count));
-> > > >> +}
-> > > >> +
-> > > >> +static DEVICE_ATTR_RO(ah_count);
-> > > >> +
-> > > >> +int efa_sysfs_init(struct efa_dev *dev)
-> > > >> +{
-> > > >> +	struct device *device = &dev->pdev->dev;
-> > > >> +
-> > > >> +	if (device_create_file(device, &dev_attr_ah_count))
-> > > >> +		dev_err(device, "Failed to create AH count sysfs file\n");
-> > > > 
-> > > > This is not the right way to use sysfs in rdma drivers.
-> > > > 
-> > > > Also we have netlink counters as the prefered approach why are you
-> > > > using sysfs?
-> > > 
-> > > Yes, and EFA already supports stats reporting, the sysfs choice is strange..
-> > > 
-> > > BTW, isn't this something that can be added to restrack?
-> > 
-> > Unlikely. Most drivers that implement such counters were written long before
-> > bpftrace became widely used. I don't think modern drivers should carry these
-> > counters, as they are trivial to collect without requiring any kernel changes.
-> > This is especially true for EFA, which does not support kverbs.
-> > 
-> > Thanks.
-> 
-> 
-> This approach was selected since this case doesn't naturally fit any of
-> the suggested ideas. It represents usage level of device AH objects
-> which might be different than the number of kernel objects as usually
-> covered by restrack count. Stats also doesn't seem as the right place
-> for this.
+On 15/02/2026 19:15, Leon Romanovsky wrote:
+>> Stats also doesn't seem as the right place
+>> for this.
 
-How can the kernel and this new counter report a different number of AH
-objects?
+Because?
 
 > 
-> In a followup series we will suggest netlink counters extension to
-> support driver specific resources.
-
-bpftrace is generally the right tool, unless you can detail why it does not  
-fit your specific debugging scenario.
-
-Thanks
-
+> How can the kernel and this new counter report a different number of AH
+> objects?
 > 
-> Michael
+>>
+>> In a followup series we will suggest netlink counters extension to
+>> support driver specific resources.
 > 
+> bpftrace is generally the right tool, unless you can detail why it does not  
+> fit your specific debugging scenario.
+
+I don't understand, how do you use bpftrace for this use case?
+
+Once you get to debug a system in a certain state, bpftrace won't help
+you see events that happened in the past. You won't be able to know how
+many AH were created.
 
