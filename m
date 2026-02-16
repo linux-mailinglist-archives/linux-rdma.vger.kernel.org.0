@@ -1,105 +1,65 @@
-Return-Path: <linux-rdma+bounces-16916-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16917-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2G5LJ8MIk2nO1AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16916-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 13:08:35 +0100
+	id MJvyI6gJk2ni1AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16917-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 13:12:24 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C102F14339E
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 13:08:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9CE01433F4
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 13:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 586B230015AF
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 12:08:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 948A43013262
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 12:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D771E30BF67;
-	Mon, 16 Feb 2026 12:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C246030C62A;
+	Mon, 16 Feb 2026 12:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Omjdcv3r";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T+P+p3HJ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Omjdcv3r";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T+P+p3HJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FHG0tG2K"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9005A30C600
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 12:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8574C30C37E;
+	Mon, 16 Feb 2026 12:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771243710; cv=none; b=Y1SB9OoKAZKijbEy3RjhU/GpdMRcPhiTN7LHC2dXTyyDc4oNwzUinX0aOwyav6swdGp8up+DlZ4Uo0GFLFD8+gjik3/0+ZXju5iDLtmEEEVdi8Z3fq6qf/FyfPitxWQroSmCu7xaPLlK6gRhNtuaw6jEN4I1A2vINuU2L9kf5ik=
+	t=1771243939; cv=none; b=Lu6NIA59F91E0tNqP/sOCwJebcfC1cctJ+/ROoPiQm9Wdd2XylZZOWCuNPw+N+SwwPIR1catZMoQM5g+AL5QL7C4jk1eqfp588x9C8+rQkN+B16mKgwee8iZGDvNuPvI2va6wSap4430f3YvFEatAHBF9sDxcIXYy92xC3MUMXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771243710; c=relaxed/simple;
-	bh=6GPXy7vXHQlTym7ySv+gPvl8Qg7QGZUPlVsI+isqPbk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=duZ6hR7mM/Snuuo0B5K3C4tptQAQZDxcCQc96cuY5BOivPuCYi9jpzBif9JymeUcT2H+Zs049wPjzqCHFQcMdRBCN2td2WSN9It2MAOxC4HfRlQNUJN+xfoMQZQQgXateUnT5AhPEf7OR69XKwwOxOn+8Vn3gk0afp2P0cA7+ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Omjdcv3r; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T+P+p3HJ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Omjdcv3r; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T+P+p3HJ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C32CC3E786;
-	Mon, 16 Feb 2026 12:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1771243706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
-	b=Omjdcv3rzEAILDh7zR0NLm2g/EWq01P7kZginytGzLymwWd8WrdPUPUJWk3RjevDSVCBsn
-	+AdybnAE30bAHXbvq9zsErkqBMyuqhQfR816RZGEBO/vfOc0RcmZ/zZPgXRhWdbXQapwAJ
-	6l/Tx5hZmcE/sKjCW2TEbVrGuvVXe50=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1771243706;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
-	b=T+P+p3HJ7U69VXjV4VBrqqbkcP4cqCdxnv0B8oKIRH4xKb9atlCEQ64FXkkQcZwurBs7Zs
-	UWM6W64gSIGlM8Cg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Omjdcv3r;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=T+P+p3HJ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1771243706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
-	b=Omjdcv3rzEAILDh7zR0NLm2g/EWq01P7kZginytGzLymwWd8WrdPUPUJWk3RjevDSVCBsn
-	+AdybnAE30bAHXbvq9zsErkqBMyuqhQfR816RZGEBO/vfOc0RcmZ/zZPgXRhWdbXQapwAJ
-	6l/Tx5hZmcE/sKjCW2TEbVrGuvVXe50=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1771243706;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
-	b=T+P+p3HJ7U69VXjV4VBrqqbkcP4cqCdxnv0B8oKIRH4xKb9atlCEQ64FXkkQcZwurBs7Zs
-	UWM6W64gSIGlM8Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E0A473EA62;
-	Mon, 16 Feb 2026 12:08:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uXoMLbkIk2lKHAAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Mon, 16 Feb 2026 12:08:25 +0000
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-To: netdev@vger.kernel.org
-Cc: rds-devel@oss.oracle.com,
+	s=arc-20240116; t=1771243939; c=relaxed/simple;
+	bh=I11pRf0o3sGKWiSJdyEdgNdgk/nI/P4FnQ6Zb4g6s4g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c7/j2tt4WUhTupRiyILMichPZEKbLgQHnGzpJvH52FDaXZrB4NpjpL7FvsImHkTbTrU6BZjx3xx1LxeeA0SuLq2IdfqpaMzuXkLoIbUvJOxO7HaXJbZmxGdtmGQj3mY52YBPmQw7S0bcWBouzb0PJFQAZ0jyq4KgnUCvgFAdmyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FHG0tG2K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 938E4C116C6;
+	Mon, 16 Feb 2026 12:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771243939;
+	bh=I11pRf0o3sGKWiSJdyEdgNdgk/nI/P4FnQ6Zb4g6s4g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FHG0tG2KFX73G9wLrUdh91IOTEbgdEqi6kFYLEHTbMr8FeYD74mJLiYaffKMLwlvG
+	 4ggnCdnJQ9hGXLCqAA/Ro1ulqDMGMPwju8wiczUXKczG7uu6wHeD3ICXr+oxgNGW/C
+	 K1i6+XhP/fc84g3LfoAN8EWItaxMC795nXjleStNb9d7s8fCdVUFnuW5SyE9i0F7AI
+	 3+B/6hzktgdcai2dcNX9bXrCF4pdzoGiVLE3h3DKAlsbnxeCXT5DpzorgnBqtm8vaN
+	 r33QcIsmkfaHnC0LP0Cq3pGeor9k6Z9T5i47YfG5AXOIXqo4Nz6zxhHPjG8vmGRNdr
+	 7g/MD/mNJajzw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Edward Srouji <edwards@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Allen Hubbe <allen.hubbe@amd.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Usman Ansari <usman.ansari@broadcom.com>,
+	Siva Reddy Kallam <siva.kallam@broadcom.com>,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
 	linux-rdma@vger.kernel.org,
-	gerd.rausch@oracle.com,
-	horms@kernel.org,
-	pabeni@redhat.com,
-	kuba@kernel.org,
-	edumazet@google.com,
-	davem@davemloft.net,
-	allison.henderson@oracle.com,
-	Fernando Fernandez Mancera <fmancera@suse.de>,
-	syzbot+5efae91f60932839f0a5@syzkaller.appspotmail.com
-Subject: [PATCH net] net/rds: fix recursive lock in rds_tcp_conn_slots_available
-Date: Mon, 16 Feb 2026 13:08:04 +0100
-Message-ID: <20260216120804.14840-1-fmancera@suse.de>
-X-Mailer: git-send-email 2.51.0
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/uverbs: select CONFIG_DMA_SHARED_BUFFER
+Date: Mon, 16 Feb 2026 13:12:00 +0100
+Message-Id: <20260216121213.2088910-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -107,123 +67,68 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -1.51
-X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16917-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16916-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,5efae91f60932839f0a5];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.de:mid,suse.de:dkim,suse.de:email]
-X-Rspamd-Queue-Id: C102F14339E
+	FROM_NEQ_ENVFROM(0.00)[arnd@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	PRECEDENCE_BULK(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,arndb.de:email]
+X-Rspamd-Queue-Id: E9CE01433F4
 X-Rspamd-Action: no action
 
-syzbot reported a recursive lock warning in rds_tcp_get_peer_sport() as
-it calls inet6_getname() which acquires the socket lock that was already
-held by __release_lock().
+From: Arnd Bergmann <arnd@arndb.de>
 
- kworker/u8:6/2985 is trying to acquire lock:
- ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1709 [inline]
- ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: inet6_getname+0x15d/0x650 net/ipv6/af_inet6.c:533
+The addition of dmabuf support in uverbs means that it is no
+longer possible to build infiniband support if that is disabled:
 
- but task is already holding lock:
- ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1709 [inline]
- ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: tcp_sock_set_cork+0x2c/0x2e0 net/ipv4/tcp.c:3694
-   lock_sock_nested+0x48/0x100 net/core/sock.c:3780
-   lock_sock include/net/sock.h:1709 [inline]
-   inet6_getname+0x15d/0x650 net/ipv6/af_inet6.c:533
-   rds_tcp_get_peer_sport net/rds/tcp_listen.c:70 [inline]
-   rds_tcp_conn_slots_available+0x288/0x470 net/rds/tcp_listen.c:149
-   rds_recv_hs_exthdrs+0x60f/0x7c0 net/rds/recv.c:265
-   rds_recv_incoming+0x9f6/0x12d0 net/rds/recv.c:389
-   rds_tcp_data_recv+0x7f1/0xa40 net/rds/tcp_recv.c:243
-   __tcp_read_sock+0x196/0x970 net/ipv4/tcp.c:1702
-   rds_tcp_read_sock net/rds/tcp_recv.c:277 [inline]
-   rds_tcp_data_ready+0x369/0x950 net/rds/tcp_recv.c:331
-   tcp_rcv_established+0x19e9/0x2670 net/ipv4/tcp_input.c:6675
-   tcp_v6_do_rcv+0x8eb/0x1ba0 net/ipv6/tcp_ipv6.c:1609
-   sk_backlog_rcv include/net/sock.h:1185 [inline]
-   __release_sock+0x1b8/0x3a0 net/core/sock.c:3213
+arm-linux-gnueabi-ld: drivers/infiniband/core/ib_core_uverbs.o: in function `rdma_user_mmap_entry_remove.part.0':
+ib_core_uverbs.c:(.text+0x508): undefined reference to `dma_buf_move_notify'
+(dma_buf_move_notify): Unknown destination type (ARM/Thumb) in drivers/infiniband/core/ib_core_uverbs.o
+ib_core_uverbs.c:(.text+0x518): undefined reference to `dma_resv_wait_timeout'
+(dma_resv_wait_timeout): Unknown destination type (ARM/Thumb) in drivers/infiniband/core/ib_core_uverbs.o
 
-Reading from the socket struct directly is safe from both possible
-paths, rds_tcp_accept_one() and rds_tcp_conn_slots_available() when
-performing fan-out.
+Select this from Kconfig, as we do for the other users.
 
-Fixes: 9d27a0fb122f ("net/rds: Trigger rds_send_ping() more than once")
-Reported-by: syzbot+5efae91f60932839f0a5@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=5efae91f60932839f0a5
-Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+Fixes: 0ac6f4056c4a ("RDMA/uverbs: Add DMABUF object type and operations")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-Note: syzbot failed to apply the patch for some reason. I don't
-understand why.
----
- net/rds/tcp_listen.c | 28 +++++-----------------------
- 1 file changed, 5 insertions(+), 23 deletions(-)
+ drivers/infiniband/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 6fb5c928b8fd..a36e5dfd6c66 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -59,30 +59,12 @@ void rds_tcp_keepalive(struct socket *sock)
- static int
- rds_tcp_get_peer_sport(struct socket *sock)
- {
--	union {
--		struct sockaddr_storage storage;
--		struct sockaddr addr;
--		struct sockaddr_in sin;
--		struct sockaddr_in6 sin6;
--	} saddr;
--	int sport;
--
--	if (kernel_getpeername(sock, &saddr.addr) >= 0) {
--		switch (saddr.addr.sa_family) {
--		case AF_INET:
--			sport = ntohs(saddr.sin.sin_port);
--			break;
--		case AF_INET6:
--			sport = ntohs(saddr.sin6.sin6_port);
--			break;
--		default:
--			sport = -1;
--		}
--	} else {
--		sport = -1;
--	}
-+	struct sock *sk = sock->sk;
-+
-+	if (!sk)
-+		return -1;
- 
--	return sport;
-+	return ntohs(inet_sk(sk)->inet_dport);
- }
- 
- /* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
+diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
+index 794b9778816b..78ac2ff5befd 100644
+--- a/drivers/infiniband/Kconfig
++++ b/drivers/infiniband/Kconfig
+@@ -6,6 +6,7 @@ menuconfig INFINIBAND
+ 	depends on INET
+ 	depends on m || IPV6 != m
+ 	depends on !ALPHA
++	select DMA_SHARED_BUFFER
+ 	select IRQ_POLL
+ 	select DIMLIB
+ 	help
 -- 
-2.53.0
+2.39.5
 
 
