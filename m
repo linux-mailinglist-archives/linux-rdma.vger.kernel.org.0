@@ -1,159 +1,229 @@
-Return-Path: <linux-rdma+bounces-16915-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16916-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wEswN+n9kmkn0wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16915-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 12:22:17 +0100
+	id 2G5LJ8MIk2nO1AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16916-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 13:08:35 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03AE9142D99
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 12:22:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C102F14339E
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 13:08:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3E19530013AA
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 11:22:14 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 586B230015AF
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Feb 2026 12:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BAF2C0299;
-	Mon, 16 Feb 2026 11:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D771E30BF67;
+	Mon, 16 Feb 2026 12:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HLwC/zyi"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Omjdcv3r";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T+P+p3HJ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Omjdcv3r";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T+P+p3HJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3BF15A86D
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 11:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9005A30C600
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 12:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771240932; cv=none; b=R4DNS7e8XFAMsjH2Nm9FzEgDcCMl+CUK8VbJGgfh0AtHCoDgxeSmKx9VDJGb2QfZJ4hrOv3gIfFVa8VUr1nnWySpRNrq+b+ZuzmuUP6tWBR0gzoybpdTOr8huADEw7MvmvSzTS4LDY7yKHaEOk2qGjwKE5ejyF3AFpFJjoeOlLg=
+	t=1771243710; cv=none; b=Y1SB9OoKAZKijbEy3RjhU/GpdMRcPhiTN7LHC2dXTyyDc4oNwzUinX0aOwyav6swdGp8up+DlZ4Uo0GFLFD8+gjik3/0+ZXju5iDLtmEEEVdi8Z3fq6qf/FyfPitxWQroSmCu7xaPLlK6gRhNtuaw6jEN4I1A2vINuU2L9kf5ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771240932; c=relaxed/simple;
-	bh=R9U1GS3NPSuyaNAdW+lacV0M3jRZQqrmQfS92XSKPMI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fqddRZ5sY7t5lSeFjk0TxdWzdHY0fQF5FkYs4rxl9E/I60f5nzQ2lBh8d+Hhzd/QSV6gk96u1LZOrUlK5qgK1Ha0GwY4HR0qC3ZCCxwTgjS1+Y4PxAjGJ1CTcISr53YsDrlN+A3KxgKQFayfRFjI1gRrNTbT19ppLCpvJBJCJng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HLwC/zyi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A49B9C116C6;
-	Mon, 16 Feb 2026 11:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771240932;
-	bh=R9U1GS3NPSuyaNAdW+lacV0M3jRZQqrmQfS92XSKPMI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HLwC/zyinmLBzD8Xc2XUUsqjABc/jwxbMivyhhurt5yS3dCsmiWf0osLAQ/2MiRGV
-	 /qpn6qb3p18+krbVZJCpxE8wMTCaDTfFeFFnC4MPcrayekFXLC3E9yu/LNu9VuStFn
-	 5GgYMo+S8M+Yx98hTl1HT2+eAiReS+T5bi5P6HpUuEPh6fjeEGX6k5nDfhxAQwJH7g
-	 dr6dc3NLiOyWx3JHynhx4NDtY3ucpjhN+vLnP51HFQl0KjqOLtXmNTGAFdqPBSaz1J
-	 19xdVw7KXlYxxLdZK2QX+0aP4RTDxwsUujstDUCQw4CQNUekJnZ9wNq/qLocBw6Wk/
-	 f+KVCcMLVJbwA==
-Date: Mon, 16 Feb 2026 13:22:07 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Michael Margolin <mrgolin@amazon.com>
-Cc: Gal Pressman <gal.pressman@linux.dev>, Jason Gunthorpe <jgg@nvidia.com>,
-	Tom Sela <tomsela@amazon.com>, linux-rdma@vger.kernel.org,
-	sleybo@amazon.com, matua@amazon.com,
-	Yonatan Nachum <ynachum@amazon.com>
-Subject: Re: [PATCH for-next] RDMA/efa: Add AH usage counter with sysfs
- exposure
-Message-ID: <20260216112207.GF12989@unreal>
-References: <20260211131048.36217-1-tomsela@amazon.com>
- <20260211131338.GA1218606@nvidia.com>
- <ef07b718-0198-4f8c-86c1-56149c7fd239@linux.dev>
- <20260212163628.GG12887@unreal>
- <20260215134122.GA18825@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
- <20260215171543.GB12989@unreal>
- <42c8552c-eb41-43f5-bea5-fdd46edba65a@linux.dev>
- <20260215175707.GC12989@unreal>
- <20260216110853.GA6455@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+	s=arc-20240116; t=1771243710; c=relaxed/simple;
+	bh=6GPXy7vXHQlTym7ySv+gPvl8Qg7QGZUPlVsI+isqPbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=duZ6hR7mM/Snuuo0B5K3C4tptQAQZDxcCQc96cuY5BOivPuCYi9jpzBif9JymeUcT2H+Zs049wPjzqCHFQcMdRBCN2td2WSN9It2MAOxC4HfRlQNUJN+xfoMQZQQgXateUnT5AhPEf7OR69XKwwOxOn+8Vn3gk0afp2P0cA7+ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Omjdcv3r; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T+P+p3HJ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Omjdcv3r; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T+P+p3HJ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C32CC3E786;
+	Mon, 16 Feb 2026 12:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1771243706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
+	b=Omjdcv3rzEAILDh7zR0NLm2g/EWq01P7kZginytGzLymwWd8WrdPUPUJWk3RjevDSVCBsn
+	+AdybnAE30bAHXbvq9zsErkqBMyuqhQfR816RZGEBO/vfOc0RcmZ/zZPgXRhWdbXQapwAJ
+	6l/Tx5hZmcE/sKjCW2TEbVrGuvVXe50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1771243706;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
+	b=T+P+p3HJ7U69VXjV4VBrqqbkcP4cqCdxnv0B8oKIRH4xKb9atlCEQ64FXkkQcZwurBs7Zs
+	UWM6W64gSIGlM8Cg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Omjdcv3r;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=T+P+p3HJ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1771243706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
+	b=Omjdcv3rzEAILDh7zR0NLm2g/EWq01P7kZginytGzLymwWd8WrdPUPUJWk3RjevDSVCBsn
+	+AdybnAE30bAHXbvq9zsErkqBMyuqhQfR816RZGEBO/vfOc0RcmZ/zZPgXRhWdbXQapwAJ
+	6l/Tx5hZmcE/sKjCW2TEbVrGuvVXe50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1771243706;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=F5eHPdfnUZ49Jdwt5KIEyLMIFSoJX6GP49O+mT8nS3M=;
+	b=T+P+p3HJ7U69VXjV4VBrqqbkcP4cqCdxnv0B8oKIRH4xKb9atlCEQ64FXkkQcZwurBs7Zs
+	UWM6W64gSIGlM8Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E0A473EA62;
+	Mon, 16 Feb 2026 12:08:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uXoMLbkIk2lKHAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Mon, 16 Feb 2026 12:08:25 +0000
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+To: netdev@vger.kernel.org
+Cc: rds-devel@oss.oracle.com,
+	linux-rdma@vger.kernel.org,
+	gerd.rausch@oracle.com,
+	horms@kernel.org,
+	pabeni@redhat.com,
+	kuba@kernel.org,
+	edumazet@google.com,
+	davem@davemloft.net,
+	allison.henderson@oracle.com,
+	Fernando Fernandez Mancera <fmancera@suse.de>,
+	syzbot+5efae91f60932839f0a5@syzkaller.appspotmail.com
+Subject: [PATCH net] net/rds: fix recursive lock in rds_tcp_conn_slots_available
+Date: Mon, 16 Feb 2026 13:08:04 +0100
+Message-ID: <20260216120804.14840-1-fmancera@suse.de>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260216110853.GA6455@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -1.51
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16915-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16916-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 03AE9142D99
+	TAGGED_RCPT(0.00)[linux-rdma,5efae91f60932839f0a5];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.de:mid,suse.de:dkim,suse.de:email]
+X-Rspamd-Queue-Id: C102F14339E
 X-Rspamd-Action: no action
 
-On Mon, Feb 16, 2026 at 11:08:53AM +0000, Michael Margolin wrote:
-> On Sun, Feb 15, 2026 at 07:57:07PM +0200, Leon Romanovsky wrote:
-> > On Sun, Feb 15, 2026 at 07:23:41PM +0200, Gal Pressman wrote:
-> > > On 15/02/2026 19:15, Leon Romanovsky wrote:
-> > > >> Stats also doesn't seem as the right place
-> > > >> for this.
-> > > 
-> > > Because?
-> > > 
-> > > > 
-> > > > How can the kernel and this new counter report a different number of AH
-> > > > objects?
-> > > > 
-> > > >>
-> > > >> In a followup series we will suggest netlink counters extension to
-> > > >> support driver specific resources.
-> > > > 
-> > > > bpftrace is generally the right tool, unless you can detail why it does not  
-> > > > fit your specific debugging scenario.
-> > > 
-> > > I don't understand, how do you use bpftrace for this use case?
-> > > 
-> > > Once you get to debug a system in a certain state, bpftrace won't help
-> > > you see events that happened in the past. You won't be able to know how
-> > > many AH were created.
-> > 
-> > Their proposed counter can be implemented by counting calls to
-> > efa_com_create_ah minus calls to efa_com_destroy_ah.
-> > 
-> > You have two ways to get it:
-> > 1. run bfptrace with your reproducer
-> > 2. check FW to get their internal counter
-> > 
-> 
-> Calls to efa_com_create_ah minus calls to efa_com_destroy_ah will not
-> always result in correct number of consumed device resources as multiple
-> calls to efa_com_create_ah can return the same AH number.
+syzbot reported a recursive lock warning in rds_tcp_get_peer_sport() as
+it calls inet6_getname() which acquires the socket lock that was already
+held by __release_lock().
 
-bpftrace supports map and can count unique ids.
+ kworker/u8:6/2985 is trying to acquire lock:
+ ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1709 [inline]
+ ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: inet6_getname+0x15d/0x650 net/ipv6/af_inet6.c:533
 
-> 
-> Additionally we are looking to expose this info to customers without
-> requiring a kernel rebuild or the use of debug tools, similar to how
-> device and port statistics can be read in sysfs or through the rdma
-> tool.
+ but task is already holding lock:
+ ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1709 [inline]
+ ffff88807a07aa20 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: tcp_sock_set_cork+0x2c/0x2e0 net/ipv4/tcp.c:3694
+   lock_sock_nested+0x48/0x100 net/core/sock.c:3780
+   lock_sock include/net/sock.h:1709 [inline]
+   inet6_getname+0x15d/0x650 net/ipv6/af_inet6.c:533
+   rds_tcp_get_peer_sport net/rds/tcp_listen.c:70 [inline]
+   rds_tcp_conn_slots_available+0x288/0x470 net/rds/tcp_listen.c:149
+   rds_recv_hs_exthdrs+0x60f/0x7c0 net/rds/recv.c:265
+   rds_recv_incoming+0x9f6/0x12d0 net/rds/recv.c:389
+   rds_tcp_data_recv+0x7f1/0xa40 net/rds/tcp_recv.c:243
+   __tcp_read_sock+0x196/0x970 net/ipv4/tcp.c:1702
+   rds_tcp_read_sock net/rds/tcp_recv.c:277 [inline]
+   rds_tcp_data_ready+0x369/0x950 net/rds/tcp_recv.c:331
+   tcp_rcv_established+0x19e9/0x2670 net/ipv4/tcp_input.c:6675
+   tcp_v6_do_rcv+0x8eb/0x1ba0 net/ipv6/tcp_ipv6.c:1609
+   sk_backlog_rcv include/net/sock.h:1185 [inline]
+   __release_sock+0x1b8/0x3a0 net/core/sock.c:3213
 
-BPF doesn't require any kernel rebuild. It works out-of-the-box on even
-old kernels.
+Reading from the socket struct directly is safe from both possible
+paths, rds_tcp_accept_one() and rds_tcp_conn_slots_available() when
+performing fan-out.
 
-Thanks
+Fixes: 9d27a0fb122f ("net/rds: Trigger rds_send_ping() more than once")
+Reported-by: syzbot+5efae91f60932839f0a5@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=5efae91f60932839f0a5
+Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+---
+Note: syzbot failed to apply the patch for some reason. I don't
+understand why.
+---
+ net/rds/tcp_listen.c | 28 +++++-----------------------
+ 1 file changed, 5 insertions(+), 23 deletions(-)
 
-> 
-> Michael
-> 
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 6fb5c928b8fd..a36e5dfd6c66 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -59,30 +59,12 @@ void rds_tcp_keepalive(struct socket *sock)
+ static int
+ rds_tcp_get_peer_sport(struct socket *sock)
+ {
+-	union {
+-		struct sockaddr_storage storage;
+-		struct sockaddr addr;
+-		struct sockaddr_in sin;
+-		struct sockaddr_in6 sin6;
+-	} saddr;
+-	int sport;
+-
+-	if (kernel_getpeername(sock, &saddr.addr) >= 0) {
+-		switch (saddr.addr.sa_family) {
+-		case AF_INET:
+-			sport = ntohs(saddr.sin.sin_port);
+-			break;
+-		case AF_INET6:
+-			sport = ntohs(saddr.sin6.sin6_port);
+-			break;
+-		default:
+-			sport = -1;
+-		}
+-	} else {
+-		sport = -1;
+-	}
++	struct sock *sk = sock->sk;
++
++	if (!sk)
++		return -1;
+ 
+-	return sport;
++	return ntohs(inet_sk(sk)->inet_dport);
+ }
+ 
+ /* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
+-- 
+2.53.0
+
 
