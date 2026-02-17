@@ -1,176 +1,131 @@
-Return-Path: <linux-rdma+bounces-16944-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16945-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yH8vOFUflGk1AAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16944-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 08:57:09 +0100
+	id sDSmFRUhlGmKAAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16945-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 09:04:37 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837C8149752
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 08:57:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF8D51498A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 09:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B6CC53007894
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 07:57:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 177DE30515D1
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 08:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA9D2D97A6;
-	Tue, 17 Feb 2026 07:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8DEF2DB7A1;
+	Tue, 17 Feb 2026 08:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e/tr0o2M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vn/Gs3Lq"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D42E2D7392;
-	Tue, 17 Feb 2026 07:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8694A2D59FA;
+	Tue, 17 Feb 2026 08:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771315026; cv=none; b=u1ner2a3RjV5Rm0zvAjil+Yl/6iLaFkD6eSO534ti3O8Puc8FHzhYlKmR6LPs31MGy34Ht8/8xFLO9KwzgNtNHoYHGIDidk2ZHxFCUCWnOfLQRdsix/HiESf2JTgbniOwFJD6p/jLBZLPLDifOEyG2IhnFtBszBHJTWs9LdupVE=
+	t=1771315330; cv=none; b=ormMiBQzZsz4iddfoCeExSt1f/4dVxqTbWZNRS5HXWUO31T1sKqyJDXqKhJjncFrarOZ252ZjTBLXbN/rdU9YCJU7Ut6Orz8hm3toeCDcnJwZP2AVCFo7iz6MOaMu8kFZU2i7raZZh1HnZxzM5yXVHyH6B6W/c3V7vWsz24mv9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771315026; c=relaxed/simple;
-	bh=mtUKvDTsrjkePZ2g5xwnjWytCaVUXvFbCwliXsgaJ90=;
+	s=arc-20240116; t=1771315330; c=relaxed/simple;
+	bh=tchpfVKRQCH5xkL0dy/KGt6sEHvmViaY+trctMskd54=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jZvUMbP/mWGkQr4GQeJX/dRwADCppNreCYGYYLInXjADXtmAiZjpx63xRsmCvmJPDa7lUNqWDIiPDksK/xxOYX6BuCxfRXE+5Lb6wk+uoQJZoMYsAomCby2CSSscBwZ1nEIRzVmi831uw9XXZGy8SRgudkSakJhajfP51DqkpwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e/tr0o2M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52ABEC4CEF7;
-	Tue, 17 Feb 2026 07:57:05 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XucRCNUX/HLjZ5OLFoIsCqL5cBqfZ6InBoALVV55KRHGx3zbkz3BjsvzfJSEdb+FygqJB3wZjs+zlwkicVkYMzZEaBDe/SDcp6sZ6Vg31jTDNsmYuHoJENICkTrDM5b+WQvQowagqFFsI1oM46JJ63mTrjNxrNsWJv4SAmfrPTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vn/Gs3Lq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82965C19421;
+	Tue, 17 Feb 2026 08:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771315026;
-	bh=mtUKvDTsrjkePZ2g5xwnjWytCaVUXvFbCwliXsgaJ90=;
+	s=k20201202; t=1771315330;
+	bh=tchpfVKRQCH5xkL0dy/KGt6sEHvmViaY+trctMskd54=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e/tr0o2MWdyA/3shZ4c8uhVYLqAsPPD9MxaiBP+njJ76Y3PSzo+lrS843UdRRJkQp
-	 MWVkfj2QdDcY/YH9ZVXnqeM1jC+cV/C+ptzDSezB8ufx+msxnaUSjMElMhUNQEdwTv
-	 EJEJ+vznPJHBaGCB0TXWP3ICiPdNQl3Y+L/qBDGKWPkt/I0yIfe4RmvQF7r9a31ibU
-	 1TK5o0l81CNbTTSFKqO21oTexF9A5jpCb+YX2ogbzLFA7yi6vqMWgN6SX0Yy7kwKM6
-	 +s4vimh4Tj1C44BWH6G1mTs9z+K62mXwGSKJ/GBBWmt5YU7b79vG+6yuwFeh6LAl4V
-	 ip25lHO0OkjOw==
-Date: Tue, 17 Feb 2026 09:56:54 +0200
+	b=Vn/Gs3Lq8Kxykiqnt6En0NKWT19Bpeov3D8IjYyAKGFSELaAI9mOc51uMvBJ2C9cP
+	 Ik4jnG8sfmZ++q6iDeaXg1/xcNPkSKrHnd8A4Eo0m9k+4hTJP2gdhYXOBLVFBZ63fK
+	 J4rfwbAuhT/LBy7SAmDzh1W9e9mvnR89VWffQj8jC1TWfQzHiV3BO5ahDzLW3yLo0G
+	 31BC1TPucVaDwwYpXYseFaDo+16usbfUQaJVOt98+uPbnKrxkuVYpyasrgFKNLTV6O
+	 dh9WxjVAe2qGp5CoOCizKfjp0qj9W8QUa1IphaOrCp7BhMxWGio4A1n8VUykkT9/md
+	 rjYDh5P1xu6YA==
+Date: Tue, 17 Feb 2026 10:02:06 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Gal Pressman <gal.pressman@linux.dev>,
-	Yossi Leybovich <sleybo@amazon.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Kai Shen <kaishen@linux.alibaba.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Bernard Metzler <bernard.metzler@linux.dev>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH rdma-next 42/50] RDMA/bnxt_re: Complete CQ resize in a
- single step
-Message-ID: <20260217075654.GI12989@unreal>
-References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
- <20260213-refactor-umem-v1-42-f3be85847922@nvidia.com>
- <CA+sbYW0Gh2bLoPZKzH9u-EcWDTz6mbF3RB=6Q3q=m7YpUpNU6Q@mail.gmail.com>
- <20260216080746.GD12989@unreal>
- <CA+sbYW0Ba==5Z5fyqjBS1AH8HE37ese2qMiR4+hoY-i8pajzQg@mail.gmail.com>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 0/8] dma-buf: Use revoke mechanism to invalidate
+ shared buffers
+Message-ID: <20260217080206.GJ12989@unreal>
+References: <20260131-dmabuf-revoke-v7-0-463d956bd527@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+sbYW0Ba==5Z5fyqjBS1AH8HE37ese2qMiR4+hoY-i8pajzQg@mail.gmail.com>
+In-Reply-To: <20260131-dmabuf-revoke-v7-0-463d956bd527@nvidia.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16944-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16945-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[30];
+	RCPT_COUNT_TWELVE(0.00)[34];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com,vger.kernel.org];
+	FREEMAIL_CC(0.00)[linaro.org,amd.com,gmail.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email]
-X-Rspamd-Queue-Id: 837C8149752
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: AF8D51498A0
 X-Rspamd-Action: no action
 
-On Tue, Feb 17, 2026 at 10:32:25AM +0530, Selvin Xavier wrote:
-> On Mon, Feb 16, 2026 at 1:37 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Mon, Feb 16, 2026 at 09:29:29AM +0530, Selvin Xavier wrote:
-> > > On Fri, Feb 13, 2026 at 4:31 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > >
-> > > > There is no need to defer the CQ resize operation, as it is intended to
-> > > > be completed in one pass. The current bnxt_re_resize_cq() implementation
-> > > > does not handle concurrent CQ resize requests, and this will be addressed
-> > > > in the following patches.
-> > > bnxt HW requires that the previous CQ memory be available with the HW until
-> > > HW generates a cut off cqe on the CQ that is being destroyed. This is
-> > > the reason for
-> > > polling the completions in the user library after returning the
-> > > resize_cq call. Once the polling
-> > > thread sees the expected CQE, it will invoke the driver to free CQ
-> > > memory.
-> >
-> > This flow is problematic. It requires the kernel to trust a user‑space
-> > application, which is not acceptable. There is no guarantee that the
-> > rdma-core implementation is correct or will invoke the interface properly.
-> > Users can bypass rdma-core entirely and issue ioctls directly (syzkaller,
-> > custom rdma-core variants, etc.), leading to umem leaks, races that overwrite
-> > kernel memory, and access to fields that are now being modified. All of this
-> > can occur silently and without any protections.
-> >
-> > > So ib_umem_release should wait. This patch doesn't guarantee that.
-> >
-> > The issue is that it was never guaranteed in the first place. It only appeared
-> > to work under very controlled conditions.
-> >
-> > > Do you think if there is a better way to handle this requirement?
-> >
-> > You should wait for BNXT_RE_WC_TYPE_COFF in the kernel before returning
-> > from resize_cq.
-> The difficulty is that libbnxt_re  in rdma-core has the  queue  the
-> consumer index used for completion lookup. The driver therefore has to
-> use copy_from_user to read the queue memory and then check for
-> BNXT_RE_WC_TYPE_COFF, along with the queue consumer index and the
-> relevant validity flags. I’ll explore if we have a way to handle this
-> and get back.
+On Sat, Jan 31, 2026 at 07:34:10AM +0200, Leon Romanovsky wrote:
+> Changelog:
+> v7:
+>  * Fixed messed VFIO patch due to rebase.
 
-The thing is that you need to ensure that after libbnxt_re issued resize_cq command,
-kernel won't require anything from user-space.
+<...>
 
-Can you cause to your HW to stop generate CQEs before resize_cq?
+Christian,
+
+What should be my next step? Should I resubmit it?
 
 Thanks
 
