@@ -1,183 +1,190 @@
-Return-Path: <linux-rdma+bounces-16977-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16978-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UNpkB1X1lGlzJQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16977-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 00:10:13 +0100
+	id aAvUNVb4lGktJgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16978-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 00:23:02 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5BE151B93
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 00:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB8E151DFE
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 00:23:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E84B23054659
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 23:09:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 60A7F3050196
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 23:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA29313547;
-	Tue, 17 Feb 2026 23:09:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B7029D297;
+	Tue, 17 Feb 2026 23:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B2+P/SS+"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="fNiJdoh7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3786B314D23
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 23:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771369749; cv=pass; b=gbTmsxI31WHDHn6M6p3DzmNQclsty/XNj4ev2SsvFfFJn4AkDP2fGcJXyDRPgv1B3g25SHqxgOYhDKt9S6tsIDHLJc21sfsvdbuWdIr/RpYQbx2//ykynpX6FULBC7lGiXdHI2RwnFNh4vto8HrIfFOdqNfntzUQDeRFlspTY1g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771369749; c=relaxed/simple;
-	bh=fSZ0z8ESozqbP9AsCgWTCkr8UVza8MF4kdq23RT5Zts=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SXJ4Hdzgx7Tugh0VOf28tPRhtX8bVEWmlFyGYZGTZYJ8dbgo5nARksaQgEprMdy+UhP2yogWqG8RsdISRmI0uqSkeHBt/M4OgS5h7BXWCCswpX0dd4vgD6sSigEObA9nPns7eFeRzisRQXpw+wFgk6M3RXt6t+1dLkVLzaFJgAs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B2+P/SS+; arc=pass smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-65c01595082so3476841a12.3
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 15:09:07 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771369746; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Is0tyywy9uhEBi9zrZBnhgWE5oHASMjzae2RQy6Ebkk+tjVH4vg0qVoGgodpDFViiF
-         0ydYMRqaHlRQl+8VnH/9rmDzqrixfPgkgbqu2m3DObhyTvVxpTIudNnsjvD/yBXQ3haK
-         g0I//wh8kGFeeq8DlIX0sY6/VECm9WJOYMeWC2M7NzJUvDgYumApBLSnt2ni8md8lNpP
-         Bd1aIbg9uRViRHco6/6CGvTN7gE/4BSVdEWu1O5pjcYjHN7tJB6oEKNvjOMZrnm8bS/M
-         hjU4EkK0K8vSpbtg6+1Mrm2EIPR99jqmmSQI5msHWtgMzhYm/+dBhIyQM4JOwjyKN09t
-         BtOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=fSZ0z8ESozqbP9AsCgWTCkr8UVza8MF4kdq23RT5Zts=;
-        fh=oK4FRmqemdbSj2I/zEX8X5AIXUsNTuVDHjQ4i6XZlzM=;
-        b=T9ImXo9Zp//lwjyIG53OqrEMgxkcfYft3HntN0fbMk8q9RlXnThFdOoeEGeMfTE402
-         BUNuCd75sxFPSiRptEjdJNuJVLq3K8/RiEAQGuLs0YWaZ2nBgpK4rC/PvR4GpsdUwcOH
-         x9WqveggVquJL+G6qCAXyJC+9ACPSAuIgldI0/OJST9VYQQ7/t2b4yPzsa94wBl82T3l
-         zRDohL05lQQv+rgp/ET2CvsHP78h3E8VKUfqOh/8/TysNNLX642THnEz7T0FFq8NCwEu
-         NBWE+sgqjeQsC/o86uVnXTH+y3ps4e6ooBllkZd8Jk06Wl0545P5uWwYBVMOu/Qxx4H/
-         Bsyg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A922C158D
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 23:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771370523; cv=none; b=nHr8ZU/0XcLqPmwvSBnOEV6lErn1wHCiL/1PYuYP+sfyVwMncPBUWEkC3hQd7zkb4SzeKzIOYc8+y/uLZOcMAadOfgctaAdyhUYBEsOADxNQZEo5FLfuQWS1sJDFYtqCHo0YAZDzesP2YIzWdjhXh7S4pWPbb4EbQmKE6lCXTrQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771370523; c=relaxed/simple;
+	bh=OblmYM9WWiisjE/6TqzHdLNs0Y4TXmCYasbXL2cC8D0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bl/+lS+By/iEJZU3gCBNI9oo/1MM9yXkVBeExKJi8LJFVMp34+EZKLn5QhmBZRdWcTlrDxF+M+wbp4L6Ls7AppXVWDYmJzHZiCTcvWkOa9R3gwlJKMCOwMgjFmtdV3rpjbFiPriOAohoUzA4pwsWhZBABA5svcgmEdeO1isRYGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=fNiJdoh7; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-8947ddce09fso46788606d6.3
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 15:22:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1771369746; x=1771974546; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fSZ0z8ESozqbP9AsCgWTCkr8UVza8MF4kdq23RT5Zts=;
-        b=B2+P/SS+yXvYE9DxsTLUzSl0EwNr99F2I6U/3csSZRxv9lKbCuVemH7GN7HbaGrBgI
-         JfVFBJvWdY3DbGoZA+Y+TWAtp0MBLulrtFYUyptR2V7c2KT2v6tRrvv7qgK1s1N6Qy8c
-         ZBwSrxFTpJIdQhi4amlT1WUaj2+0io/PolvfnQNC6B8OEynnvDrJfQUj5OXhIpCRGd5t
-         hvCX1fdTp9lwb11neeCcHKrTDr6nrZEYwxTOYtKJI8G4GDK4O21V2O3hRAGxNXXy1tTI
-         MjtjAICTlHDQ10RHpFFtOGNv5I+DD30+DKU+6oBY5Jm6Mp86ygjsdL+DHxjgBwqkkM7d
-         kuSA==
+        d=ziepe.ca; s=google; t=1771370521; x=1771975321; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N9itz70MBFEuMtUMcJoE97qrZaxRcndtDBe6PsMByMY=;
+        b=fNiJdoh7iIJ1Uz+Sw+b1X0DhZFgpiRGSXDVIZ4GwAWpSIqmK0myK5vvVHtGwUtVvO2
+         OGf0z/lCJpsJK8cAyuNyYFh+d/dGhwNNQHXfFMAhba7PJOOOUGZ7oCG6MQM7pWyuJHum
+         Svvi8EkVTAYGHN8/KPHFRepC31BjsN41j1Bv7A90G10ojuh3uqT1c0Td2I101XXv0hFD
+         0ac8sgUEwQkzQndAs8EGgX4ACsGjfw/HTjuOzvOs0RGcEl12Rvdy6cV/64hjHmzGxoMX
+         Y6bW8rNTWS1FxxWTTLUsk+Dc1bDXKeYUdDXqHI0NAbmeVjGgFLPmvgIJxkvnqU0WVzzr
+         +IUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771369746; x=1771974546;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fSZ0z8ESozqbP9AsCgWTCkr8UVza8MF4kdq23RT5Zts=;
-        b=Rp5U05yuNV8wPIgryHhZaUy97hcW6Y8+QlXzlYeg+JjLVtJthSmOMFIN1dpSoeq9vK
-         1UXKQlwKLq0Xh+JKdWy9VOW4HsjFxaAPAw0G4vdtDymNaPe2lwo3jOGZY2t7BScpKzTJ
-         Rr4Arc/nMQ/mLiMY/BmcbXI9naQ9NN3dTnwNF8Fm2ADdQoMeDRnWp3UwqoNdn7PypXLD
-         RjDXxnbuWS/fh8KY3MO0MYFeU/rDnWtjzlfiQjwoWUfN9xJo3KLTnoUBfxc6Z++l6TGw
-         WBhTNNSEJ5ImbxePNTtcZ4+Jgif3spRdvMnpJE9gWtnvK/ApAsVCIRUGK55Y+4zLcca1
-         hQ3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWEpJBs3+brFY9G+xPD+SmUHg1XEWI1m/KUkuWLZvmpb4wIN9/QYIqpLQvzQZzG3RUWkuG1wJ1oyXLW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyir48dvaL8SwLii4QfWABi/TuV884W6d0RS4zQVI0c1Brkkl7H
-	ZQT+QfhJ/MZ9HBbQ2FRiWmkyiB7piZpGO7921p+oL7F6+qF7WpjqADNthvO7vU8vEQCAgNxA66T
-	f9Oy/iQe9KkE/vvP8XeiuDg91JuIItLb8NDWN33nt
-X-Gm-Gg: AZuq6aJPG53mra3sQ5tOT+TjUHSjs7nK29te5JVAHZbqbulDAr5F7w4sf/FjBTo/6on
-	Mf7DsxUdt96gw5rmPPmotaeogFaIAlRO95FHwiUjDpST0vAeJZbFOj5csRBQhtSSJDdJ/bw+6TW
-	YHrfrJzIEUnS3DK83YNUVHh2LzT7VmHXRkWUT9ePr4hTzEbZrkEIlrOJx/IYxWnBiCBKGlVWXvY
-	H4a7yMgXnnTmquOYhuNLfVj6kN+JiwN3jUb3JAWyO+mSBSkKZGU5Dzjq7iij4pad6o9CFV47Yru
-	5pGumiKa
-X-Received: by 2002:a17:907:9627:b0:b73:572d:3b07 with SMTP id
- a640c23a62f3a-b8fb4390643mr846648766b.28.1771369746134; Tue, 17 Feb 2026
- 15:09:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1771370521; x=1771975321;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N9itz70MBFEuMtUMcJoE97qrZaxRcndtDBe6PsMByMY=;
+        b=gncQR6LZum6pFX8qVuEHifIPMpsig7eUERIzMFkePBZm8pAFxOQesHXAflNvkXMBoD
+         8bEWutmrG88sjpKJj1G62szjtWePnVptFRVmePKcyO0WFE8AUbCRh+ufUuRmRHCiZHSc
+         f3s/CJyJvpqvNvreAMLHGDM0hp4neREnbqwHEVvj1SBTq6JszkcKTk83qbV/RnKw6Zug
+         4aBCPKeDkDQOosSzCafdTdtbetW6tPPf4fYBkXiS8vzErdwQJBAYDNhCteCw9d46VMEb
+         FkOr4FCGqTkyIQ6kyU+cluyOSy/XeDH5tQHfdi+WeZ6TzHwhzik73+JIFUjXlbr4TS5F
+         bIhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZpgTBPPaxutAYYtqdyz2uBTrFMbUIqVinTAiFdoLz1jh/AgQwcSVeykLuUH3n6R4JOYcH6M2406mW@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz10meqv1RZfQ4ziwIeQhSMa2Pcepv6jBf1lX9bL7y/Ptx/YrMx
+	k/+K1iPOaI0Z4RI9eokDdOfZLPUKNCR4+tB7ma9puXlz7RWKGybbMNNNi/2o0dfs54k=
+X-Gm-Gg: AZuq6aJvBwy/507+8/s5CwoxZL0xySe+rtVi/TtpSWf5hBFUuiagY+/LCreUc3mClEv
+	LdQlEdp3b3FmP0XpkAou0cahgo3w+NmSdO/WqVbXfTfDelc6ef+H5vy/k1V32oNglNMqiEbZC30
+	YlLiaH4ah80vRvoksMP+d25YVnMazoBtyqlbt9XwlswaRi3Sh2cwyAQLu3fprT5QPbKqYU/8Chz
+	1WrREiCbcwwQjczPEeNEEp/ZRuVxJX4vdh8JhfE+x10qYgT/4fUYfyy8TTb+9FBOyOvJ/Vw3DSg
+	bwNU5qymDTz0H4t+Upzf2iQSrcNNtYMH2AfNbou996CXlhHWtXMFQ7O33ocSKWLsv1+3FRRpY7g
+	rHunwI3mRY6GcVuGtcDT7lmsT1gjdG+cheIrxyB8xJpnIqDkDditqhZuUrZYAXZTHUK6Ic9QUnS
+	Y7pkUubdCko7vremC7wVJ1YnksczBxmDgjsLC8Bqd8Sj5ckPrYTRSmEXJNnhfhZh7r47adcnYwg
+	7L/uAI=
+X-Received: by 2002:a05:6214:2128:b0:894:48f9:9de5 with SMTP id 6a1803df08f44-899580f1ac8mr329106d6.51.1771370520820;
+        Tue, 17 Feb 2026 15:22:00 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89949b3d543sm34183106d6.16.2026.02.17.15.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Feb 2026 15:22:00 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vsUOE-00000006WZZ-3tKY;
+	Tue, 17 Feb 2026 19:21:58 -0400
+Date: Tue, 17 Feb 2026 19:21:58 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Jacob Moroni <jmoroni@google.com>
+Cc: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com,
+	leon@kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC] RDMA/irdma: Add support for revocable dmabuf import
+Message-ID: <20260217232158.GQ750753@ziepe.ca>
+References: <20260217182116.1726438-1-jmoroni@google.com>
+ <20260217184559.GP750753@ziepe.ca>
+ <CAHYDg1QdYZjT81gB6geWKpeRR1TEPKnk9XD1eXcMriVAOHCo4w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260217182116.1726438-1-jmoroni@google.com> <20260217184559.GP750753@ziepe.ca>
-In-Reply-To: <20260217184559.GP750753@ziepe.ca>
-From: Jacob Moroni <jmoroni@google.com>
-Date: Tue, 17 Feb 2026 18:08:54 -0500
-X-Gm-Features: AaiRm510z1pqjEuAIbq1dDc_vKPvec0YlQxJzE50w6T27L8IghEtEZF8yZCqUdI
-Message-ID: <CAHYDg1QdYZjT81gB6geWKpeRR1TEPKnk9XD1eXcMriVAOHCo4w@mail.gmail.com>
-Subject: Re: [RFC] RDMA/irdma: Add support for revocable dmabuf import
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, leon@kernel.org, 
-	linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHYDg1QdYZjT81gB6geWKpeRR1TEPKnk9XD1eXcMriVAOHCo4w@mail.gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16978-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	DMARC_NA(0.00)[ziepe.ca];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16977-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+]
-X-Rspamd-Queue-Id: 7D5BE151B93
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4EB8E151DFE
 X-Rspamd-Action: no action
 
-Hi,
+On Tue, Feb 17, 2026 at 06:08:54PM -0500, Jacob Moroni wrote:
+> Hi,
+> 
+> Thanks for taking a look.
+> 
+> > Really need to explain this better, I forget how iwarp works - but you
+> > can't release the rkey/stag in a way that something else can get it
+> > reallocated.
+> 
+> I think the HW command names are a little confusing, but for irdma, the key
+> allocation is actually handled by the driver. The key can't be reused until
+> the region is fully deregistered (which calls irdma_free_stag), so a new
+> registration can't grab the same key even if the dmabuf revocation occurs.
 
-Thanks for taking a look.
+Hmm, maybe that is OK then. Please explain it though more clearly like
+this paragraph
+ 
+> > Finally, we don't actually support revocable mappings at the core code
+> > level. We either have fully pinned or fully movable, so this is not
+> > right to just change to ib_umem_dmabuf_get(), that assumes the HW is
+> > fault capable.
+> 
+> Ack. It sounds like what I really want is more like ib_umem_dmabuf_get_pinned
+> but with a functional invalidate_mappings method?
 
-> Really need to explain this better, I forget how iwarp works - but you
-> can't release the rkey/stag in a way that something else can get it
-> reallocated.
+Yes, method provided by the driver.
 
-I think the HW command names are a little confusing, but for irdma, the key
-allocation is actually handled by the driver. The key can't be reused until
-the region is fully deregistered (which calls irdma_free_stag), so a new
-registration can't grab the same key even if the dmabuf revocation occurs.
+> > Probably what you want to do is add a revoke callback to the pinned
+> > importer?
+>
+> That does seem ideal.
 
-That said, I am testing with the NIC in RoCEv2 mode, but I don't think it
-changes the driver behavior in this area.
+Probably, but  I  mean some argument to the
+ib_umem_dmabuf_get_pinned(), not a whole new op for MRs..
 
-> Finally, we don't actually support revocable mappings at the core code
-> level. We either have fully pinned or fully movable, so this is not
-> right to just change to ib_umem_dmabuf_get(), that assumes the HW is
-> fault capable.
+> Re-registering it as a 0 length region (will check
+> the spec) seems like the easiest way to achieve it. Using a special PD
+> for quarantine purposes should also work, but it would add a little more
+> state and an object to manage (could we keep it in struct ib_device?).
 
-Ack. It sounds like what I really want is more like ib_umem_dmabuf_get_pinned
-but with a functional invalidate_mappings method?
+Yes these are good options, but if they rkey is preserved it is not
+strictly necessary to do these things. Pedentically the user should be
+able to re-reg that mkey and revive it, but nobody does that and you
+don't have to try to implement it.
 
-> Probably what you want to do is add a revoke callback to the pinned
-> importer?
+> Should I create a new kernel device method for this? If so, then I wonder if
+> it makes sense to expose it as a generic "invalidate_mr" method and let
+> the drivers choose now to actually implement it (many can probably just
+> forward the call to their internal rereg_mr logic).
 
-That does seem ideal. Re-registering it as a 0 length region (will check
-the spec) seems like the easiest way to achieve it. Using a special PD
-for quarantine purposes should also work, but it would add a little more
-state and an object to manage (could we keep it in struct ib_device?).
+I have on and off thought about doing something like that with rereg
+mr as it would be more general, but I think for now just extending the
+ib_umem_dmabuf_get_pinned() is reasonable, and avoids the races.
 
-I was hoping it could be done in a way that doesn't require driver changes
-but I don't think it's possible. There's no kernel rereg_mr method,
-just rereg_user_mr.
+Keep in mind umems are used for more than just MRs, so a global op
+gets a bit tricky.
 
-Should I create a new kernel device method for this? If so, then I wonder if
-it makes sense to expose it as a generic "invalidate_mr" method and let
-the drivers choose now to actually implement it (many can probably just
-forward the call to their internal rereg_mr logic).
-
-Thanks,
-Jake
+Jason
 
