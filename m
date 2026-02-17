@@ -1,184 +1,136 @@
-Return-Path: <linux-rdma+bounces-16957-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16958-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sLqEEPxzlGlMEAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16957-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:58:20 +0100
+	id EONuILt2lGlmEAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16958-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 15:10:03 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C82D14CDCD
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:58:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2C5514D04D
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 15:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D3FC33015178
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 13:55:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1120C305BAB6
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:08:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A7436E478;
-	Tue, 17 Feb 2026 13:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A7B36C0CF;
+	Tue, 17 Feb 2026 14:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LnA7tQCh"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="SLG9dpM7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9217B36D4FD
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 13:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54D636C0BA
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 14:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771336496; cv=none; b=plmwdsDKfCOk0323Ah5HDK8KulmSymcRNxDraWv7gaXRnn4I95c1Fb8l2OFPejZPFVCkuFCiOQycEfB/iJn6w5O9q4HhmXJBJoLpnN/E+W1V0YrUfD2ZyCoQZP3kR+8Tm7YXeUuQVfcr7VNK9DhhyDPW6ZsvkZ+kZb0LTGm2hes=
+	t=1771337282; cv=none; b=JuHVSFSBcI7pLoXIsfzSxISJjFfcjAcdEOzyUKxgpu24hj33JEuTER70TQKYr5G8IqbSrKAo/6m+dyvJVCA4MeA3coLS18l5m4zzrzp2EUOtvEzgqYSTK476W9f/Ozqg9lRgtRXvqT5YobvZ10gKp2yaY+xTSTk2kA9UFm6rEXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771336496; c=relaxed/simple;
-	bh=tpVz+/9KZhMiHs88YAAeN8j1bHrbz5eQ3HN+VNf5ImU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UlRsw70Adv78mvxZFSWBlzJhGidK4fOeGpkWYePrqGmhIfRAhwNfsIguAOo9RFrQyGtx9JYrn4qw6Uls8MUisz3D+qjzKToD8XSVKhAddsTSzBCV51l0dgafRwBbIOigOAbjvEPD+Jo4BW3tWuNts+z7kZf8Ec64UVv3SHbNY0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LnA7tQCh; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4806cc07ce7so39912485e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 05:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771336493; x=1771941293; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/Db8GHeRwj5/JWbCcVvx6pqqRvI6zmNzmG5BE40n8U=;
-        b=LnA7tQChJjVFuMVz2uv9kN5bp4ZrKtmIO/ltHP6mhlpfgYZ6pB8BgiYSVD40Ym5oBZ
-         oBMLCoIbDsyc/ZOlz8KMq0lwk4+Pk+M2qdgPQ1fuxnpayM5bTz/ugEorif8cSQYFjjM3
-         i+Yjj8bxv+OYNInlZChXTPcpILkb7tie/+1+TwnCn7gCJwb1RRaiV5Is6RCyrs8qgHAK
-         +LhLDRjtsUbe0e2KNtFmA/te3GHSQBLWll3RbC2CjpLASW4owSIToSsPN5HCKLoR/3Dl
-         Aermv9Y2Ys6By+HS0inXPK5Cy1v+mTN4MyrQM9+MWQttQT7tBeyqweSiqfQ6aIiX4X44
-         UxEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771336493; x=1771941293;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9/Db8GHeRwj5/JWbCcVvx6pqqRvI6zmNzmG5BE40n8U=;
-        b=lU0wr2c8liXcJ8drdePxI2iDc6Vv/2DWwRAKWO7OW6l1Gh+9PBBHKyL85I73ENMO0p
-         Mw+8vPfMsxLu5G/ZaypXXjJJXdte0mMqHkvmbz/h4hSwXZMBaAPGX554jCszPRHbchCx
-         aQeN9moeE7PTNEHpzpVl1Hv3dl7CcuB/aVDGVLwcLAOLL6aIgthBDe8vHiaqlv4ft+0T
-         KvV1vq3uOMbXGlzSYt39g/1ndJEUkwTXBLTNOEIVkvJhPF5wG8oYpojllWVndnZsccSV
-         YpB/1+ewxj9vl2+4VKNmjR/dPSnKDRtUbOhua+DxqGw/UxK6EGp5a9s77De2Qs4gIOUS
-         y8zA==
-X-Forwarded-Encrypted: i=1; AJvYcCVsVvSYtSF4IQ0NTtXdwV9jKaJHlqOFT404fmpgejbcaiK+pWeseDSepXMX7t70aKZBU2lVVHjwWd36@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiUXHDj/lRb5JpBM5z03lmN4QbwyhVO5M8nWJZW8XKzp8P+SVw
-	e0cXEw57dc+GjvQL7dRnFTKtfTp4Sv8r6vUr1/4IcgK9DwQr25Wr/2qd
-X-Gm-Gg: AZuq6aKM1JZk5wMvCf3PJBZPXpdxWZ/23NmVm55MIs44PrDqhdVpXCP3rJDsHUOnvIy
-	28QTtNaO5TWJFEMlTXeYhtpRKRDqLgieU7P42HCywgSJPGHrtIgJJ8NwL0iCNqkTFtl84vGrNOr
-	kPX0rjKFluvW1bqww7ge+4jOGG0q4M3WFJ4tiJRhSLfpATV12qZ+HHwCWwj7/Ap9ndJ9U7IxEDb
-	jiHym9cQFkOhNxeOEI90ZZvzS/98V6B5uOyZrjjWRhVBC7yZZVVRicfkYx4aThvcjH+9xkj40aj
-	0yTLXhOVPPJlTbhMCbaD7earXU8vOJ7NEBD0vOpt/JWccaM3mTpn3QZmjsN1RslC/IS4ddHMzVr
-	nVjcywYq4plK9mHMPnfsKyAMWXWfi85qHvN9sZp9Frg7FDDWz7BF3vOleX916n9c9bydtWcPVNY
-	UntegS6swf7ex9r7qfmzy/eiMbAPj3kwG11fjvEoRkJRO57OoAsmY9nl7ziXD4ipTTMA==
-X-Received: by 2002:a05:600c:524d:b0:483:4807:210c with SMTP id 5b1f17b1804b1-48373a5d7a0mr285729075e9.24.1771336492692;
-        Tue, 17 Feb 2026 05:54:52 -0800 (PST)
-Received: from tabrez-VivoBook-ASUSLaptop-X513UA-KM513UA.. ([27.4.206.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43796a5b07fsm33993120f8f.2.2026.02.17.05.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Feb 2026 05:54:51 -0800 (PST)
-From: Tabrez Ahmed <tabreztalks@gmail.com>
-To: allison.henderson@oracle.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	gerd.rausch@oracle.com,
-	charmitro@posteo.net,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tabrez Ahmed <tabreztalks@gmail.com>,
-	syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
-Subject: [PATCH net v2] rds: tcp: fix uninit-value in __inet_bind
-Date: Tue, 17 Feb 2026 19:23:49 +0530
-Message-ID: <20260217135350.33641-1-tabreztalks@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1771337282; c=relaxed/simple;
+	bh=0NyJYsksmxUgMNXz4K6ZP9ZbJ6FoZ+im2I1GHNA4b5A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=IHgrbwOJVnvm0BRnWbasVkFap00Fd1F38lSo/tK7JkC63WgwcdML2FZkkLb1X+6aTn6vU4Yh28TUo0AndzoA0H3k6lrrQb/r7nQQnrpgUbKJT/rmC3U3EujOjJNzdIp7q2/4gVOirjaG9QWQd6CkjII+DaOfw1Bd7g7klIZ0fBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=SLG9dpM7; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id CA13B240028
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 15:07:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.net; s=2017;
+	t=1771337276; bh=sKkWkOyFI8xNo6uOC2GXNy2uDG/uIzVcULqnGEdSUrc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	 From;
+	b=SLG9dpM7R/EukPvsptQCgwA5Q7435NpmHzSTb5H+8qodPUOhuN42f9P5OmR6wSgY7
+	 kaM1clwhP121Hr8i3T9s7IzWRcdPTR+oQA0NHQKA0garTDE4sxCcigDW8byTsnSIDc
+	 7kkO4P0NW6lblKNVs/hT3hA5RFXr4Y+Eq8uwFHotFVv8FA2uRLHsnmXhMI+ZZDHzL7
+	 rh4wtIRR9Fwpe1wsm2EP8AkPSS4wQuDDv668fMrW3JH2k2WbajvXssN1NVnZHvrOKe
+	 aqeqOWlkjMTu3lbyvG5eRPblIItOCkfYS73wCpn3WgHSDkni6RDft0XMJsOlMzEm0w
+	 rWTF9H+61fMbg==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4fFhLL594fz6v15;
+	Tue, 17 Feb 2026 15:07:54 +0100 (CET)
+From: Charalampos Mitrodimas <charmitro@posteo.net>
+To: Tabrez Ahmed <tabreztalks@gmail.com>
+Cc: allison.henderson@oracle.com,  davem@davemloft.net,
+  edumazet@google.com,  kuba@kernel.org,  pabeni@redhat.com,
+  horms@kernel.org,  gerd.rausch@oracle.com,  linux-rdma@vger.kernel.org,
+  netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
+Subject: Re: [PATCH net v2] rds: tcp: fix uninit-value in __inet_bind
+In-Reply-To: <20260217135350.33641-1-tabreztalks@gmail.com>
+References: <20260217135350.33641-1-tabreztalks@gmail.com>
+Date: Tue, 17 Feb 2026 14:07:56 +0000
+Message-ID: <87y0krea4m.fsf@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[posteo.net,none];
+	R_DKIM_ALLOW(-0.20)[posteo.net:s=2017];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,oracle.com,posteo.net,vger.kernel.org,gmail.com,syzkaller.appspotmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	TAGGED_FROM(0.00)[bounces-16957-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-16958-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[posteo.net:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tabreztalks@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[charmitro@posteo.net,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,aae646f09192f72a68dc];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,syzkaller.appspot.com:url,appspotmail.com:email]
-X-Rspamd-Queue-Id: 5C82D14CDCD
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,posteo.net:mid,posteo.net:dkim,posteo.net:email,appspotmail.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E2C5514D04D
 X-Rspamd-Action: no action
 
-KMSAN reported an uninit-value access in __inet_bind() when binding
-an RDS TCP socket.
+Tabrez Ahmed <tabreztalks@gmail.com> writes:
 
-The uninitialized memory originates from rds_tcp_conn_alloc(),
-which uses kmem_cache_alloc() to allocate the rds_tcp_connection structure.
+> KMSAN reported an uninit-value access in __inet_bind() when binding
+> an RDS TCP socket.
+>
+> The uninitialized memory originates from rds_tcp_conn_alloc(),
+> which uses kmem_cache_alloc() to allocate the rds_tcp_connection structure.
+>
+> Specifically, the field 't_client_port_group' is incremented in
+> rds_tcp_conn_path_connect() without being initialized first:
+>
+>     if (++tc->t_client_port_group >= port_groups)
+>
+> Since kmem_cache_alloc() does not zero the memory, this field contains
+> garbage, leading to the KMSAN report.
+>
+> Fix this by using kmem_cache_zalloc() to ensure the structure is
+> zero-initialized upon allocation.
+>
+> Reported-by: syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=aae646f09192f72a68dc
+> Tested-by: syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
+> Fixes: a20a6992558f ("net/rds: Encode cp_index in TCP source port")
+>
+> Signed-off-by: Tabrez Ahmed <tabreztalks@gmail.com>
+> ---
 
-Specifically, the field 't_client_port_group' is incremented in
-rds_tcp_conn_path_connect() without being initialized first:
+Reviewed-by: Charalampos Mitrodimas <charmitro@posteo.net>
 
-    if (++tc->t_client_port_group >= port_groups)
-
-Since kmem_cache_alloc() does not zero the memory, this field contains
-garbage, leading to the KMSAN report.
-
-Fix this by using kmem_cache_zalloc() to ensure the structure is
-zero-initialized upon allocation.
-
-Reported-by: syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=aae646f09192f72a68dc
-Tested-by: syzbot+aae646f09192f72a68dc@syzkaller.appspotmail.com
-Fixes: a20a6992558f ("net/rds: Encode cp_index in TCP source port")
-
-Signed-off-by: Tabrez Ahmed <tabreztalks@gmail.com>
----
-v2:
- - Updated Fixes tag to point to commit a20a6992558f as requested by
-   Charalampos Mitrodimas and Allison Henderson.
- - Explicitly mentioned 't_client_port_group' in the commit message.
- - Fixed line wrapping to be under 75 characters. 
-
- net/rds/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 45484a93d75f..04f310255692 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -373,7 +373,7 @@ static int rds_tcp_conn_alloc(struct rds_connection *conn, gfp_t gfp)
- 	int ret = 0;
- 
- 	for (i = 0; i < RDS_MPATH_WORKERS; i++) {
--		tc = kmem_cache_alloc(rds_tcp_conn_slab, gfp);
-+		tc = kmem_cache_zalloc(rds_tcp_conn_slab, gfp);
- 		if (!tc) {
- 			ret = -ENOMEM;
- 			goto fail;
 -- 
-2.43.0
-
+C. Mitrodimas
 
