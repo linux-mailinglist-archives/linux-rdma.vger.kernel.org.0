@@ -1,149 +1,127 @@
-Return-Path: <linux-rdma+bounces-16952-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16953-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AO1jHbZPlGktCQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16952-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 12:23:34 +0100
+	id KH45L69qlGmqDgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16953-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:18:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 975D714B4BE
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 12:23:33 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F0714C808
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B7C823004DBE
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 11:23:30 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7B086300F11B
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 13:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523F1331A59;
-	Tue, 17 Feb 2026 11:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A7E35FF62;
+	Tue, 17 Feb 2026 13:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="PPF5lyKq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qs633JOr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.68.102])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6102331A49
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 11:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.246.68.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E80356A13;
+	Tue, 17 Feb 2026 13:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771327410; cv=none; b=hH9cvqHwHW0OgAvH17dgLKxM+47srGhVxmdkw8vn3qNBUKe9CfCUEgk7ORjIcyqedsB+xlIjY8BElBIlME1hjEMyHnws/oYz3k2mrTLPTHIHfWWgrAk27KJPrBwp20+ht9Uj7H+9Tak9rfLJV6oYKuDu6BibYudb8nQobe/8Hes=
+	t=1771334309; cv=none; b=K/ReckEgqMkfn4TGh8IbaA3sCwocT3l69t5kiJ8/1pvTCqQsDdRCBo2VeoUVom6SjcMDs0ETO+YbPI2t4vHroli6QDFYCiIdpi/o3vCy5sRHb+bMJgxfit4GF7saaE9Yzop8nH3uEdfg8VP25UBZvEhivUOtGrHBC/4F1mqkcPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771327410; c=relaxed/simple;
-	bh=6Bf1GLkH7Ne+EKe4A4PUhXIkDg/2ap10kQ0JV6+AN1M=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nOxr1rN4ZbJUsSa9qGIzauVbFhiVLjzFayfgsksYWUXmy79J8BG0bfKsXFeYnMbHE4q7saOtnx06resrHXX4lOBlNpdFIo5uI4K+HhFSNplTVk9RuxQ0wi2Gka/Y/JX0XYJJ5PAODZ7X2pzJV6r5wUdxEKuDSGM5+4gCaygXNkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=PPF5lyKq; arc=none smtp.client-ip=44.246.68.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1771327408; x=1802863408;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mlClrv1hOv/2S6xgBk+m2G0EitQoMVPzUtU+e3bQhXI=;
-  b=PPF5lyKqzJ3CWZzRvIvnBNBXz8nHk30LYd4oJDz/MJeLDremRn61zXhN
-   QuRhv7yjA62FnanYRzyrVqnrdZu7AhDCpxHYiFWsjxGLuV3eKpdK5J/ey
-   OxmsNYddZl+vRV/luH+yw8JuP5qky0+iyaPzbYiBIc8VUsxgCYuU4LVQL
-   2tvSzMvuDiaTAit8EVpr0ivHntP0VseQvvJV+sTJzVgVL8rKUbdIg1+hf
-   kPdQRpyqEGwuFHhn2D+ARS6WbCbI2Cs0kg1e0MOcu4to4w3eqaDF6p0N7
-   wgrop3kB4uryXoczEnYS1Da9He6sHHy/R+lLY9tEe/TMlfadnYittZotw
-   w==;
-X-CSE-ConnectionGUID: gTaQjpghSf27bB13vjPS4g==
-X-CSE-MsgGUID: 3vFNaj9DQc+fd0OX9iDXuw==
-X-IronPort-AV: E=Sophos;i="6.21,296,1763424000"; 
-   d="scan'208";a="13217231"
-Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
-  by internal-pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2026 11:23:24 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.182:15521]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.33.12:2525] with esmtp (Farcaster)
- id 19167fb1-3cf3-4358-8d7a-bebf73b8d14b; Tue, 17 Feb 2026 11:23:23 +0000 (UTC)
-X-Farcaster-Flow-ID: 19167fb1-3cf3-4358-8d7a-bebf73b8d14b
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
- Tue, 17 Feb 2026 11:23:23 +0000
-Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
- (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Tue, 17 Feb 2026
- 11:23:22 +0000
-From: Yonatan Nachum <ynachum@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
-	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>
-Subject: [PATCH for-next v3 3/3] RDMA/efa: Use extended inline buff size for inline validation
-Date: Tue, 17 Feb 2026 11:23:04 +0000
-Message-ID: <20260217112304.36849-4-ynachum@amazon.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260217112304.36849-1-ynachum@amazon.com>
-References: <20260217112304.36849-1-ynachum@amazon.com>
+	s=arc-20240116; t=1771334309; c=relaxed/simple;
+	bh=3DeHYvvhqg+AUSPY8xqMDBqmLhO2PgQZBfdqynuYxeE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Eo1OFyICOQCtjrM8rmKw9mLj//RGId+OqBeGAV3KkKVZ7X2nmtRyzPyf92x427mCiHmvjne9oAbcLfNbTVV7I7coALeaMkzM9hsxWf4MeMDAFQ2dC46kjvaFlZ0HTg3Sa+JMTSpmPARxgWi+FP7GO49LwLg2q3Kml+TbBWhlr84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qs633JOr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 104FCC4CEF7;
+	Tue, 17 Feb 2026 13:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771334309;
+	bh=3DeHYvvhqg+AUSPY8xqMDBqmLhO2PgQZBfdqynuYxeE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qs633JOr9lAk6uV/DSdPEwUM6tgD8lcB0kwrYdegMJh0Tmg2A1E36pvfdNov+HsZe
+	 elJqVQCA5DvR8aYztF6Bx1C2s0nzLK5dRnenH5dloGUrtBi9puJdGYwsDVUHJjppMr
+	 rbUGmjruKdKX/yRL4YsyAK9o8KpceSb5jT6abnzkaycb8D3h70qpwrcHi20pP/nBzO
+	 wTDozAJzYlJeC2by8wWC8vg+V/5jt5xPzGXx2r+ccVyFcE6UbobfkvRxVv3pZ9ijxQ
+	 jdFFem5SDyksWPVY88AGOGQXDFflG42TGd+kLjXNhqgibpQx6ZXlx5OpDbHx4JdsKK
+	 EYj8aWUBlr8rw==
+Date: Tue, 17 Feb 2026 15:18:25 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Edward Srouji <edwards@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+	Allen Hubbe <allen.hubbe@amd.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Usman Ansari <usman.ansari@broadcom.com>,
+	Siva Reddy Kallam <siva.kallam@broadcom.com>,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/uverbs: select CONFIG_DMA_SHARED_BUFFER
+Message-ID: <20260217131825.GL12989@unreal>
+References: <20260216121213.2088910-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWC004.ant.amazon.com (10.13.139.203) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+In-Reply-To: <20260216121213.2088910-1-arnd@kernel.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16952-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[amazon.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	TAGGED_FROM(0.00)[bounces-16953-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 975D714B4BE
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email,arndb.de:email]
+X-Rspamd-Queue-Id: 61F0714C808
 X-Rspamd-Action: no action
 
-On QP creation we validate the requested max inline size is supported by
-the device. Use the new extended max inline size instead of the old one
-to support actual max inline available.
+On Mon, Feb 16, 2026 at 01:12:00PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The addition of dmabuf support in uverbs means that it is no
+> longer possible to build infiniband support if that is disabled:
+> 
+> arm-linux-gnueabi-ld: drivers/infiniband/core/ib_core_uverbs.o: in function `rdma_user_mmap_entry_remove.part.0':
+> ib_core_uverbs.c:(.text+0x508): undefined reference to `dma_buf_move_notify'
+> (dma_buf_move_notify): Unknown destination type (ARM/Thumb) in drivers/infiniband/core/ib_core_uverbs.o
+> ib_core_uverbs.c:(.text+0x518): undefined reference to `dma_resv_wait_timeout'
+> (dma_resv_wait_timeout): Unknown destination type (ARM/Thumb) in drivers/infiniband/core/ib_core_uverbs.o
+> 
+> Select this from Kconfig, as we do for the other users.
+> 
+> Fixes: 0ac6f4056c4a ("RDMA/uverbs: Add DMABUF object type and operations")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/infiniband/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Reviewed-by: Michael Margolin <mrgolin@amazon.com>
-Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
----
- drivers/infiniband/hw/efa/efa_verbs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+It looks reasonable to me. dma-buf is becoming a first‑class citizen in the
+RDMA world.
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 85c3a7dd4335..e5756b479eba 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -641,11 +641,11 @@ static int efa_qp_validate_cap(struct efa_dev *dev,
- 			  init_attr->cap.max_recv_sge, dev->dev_attr.max_rq_sge);
- 		return -EINVAL;
- 	}
--	if (init_attr->cap.max_inline_data > dev->dev_attr.inline_buf_size) {
-+	if (init_attr->cap.max_inline_data > dev->dev_attr.inline_buf_size_ex) {
- 		ibdev_dbg(&dev->ibdev,
- 			  "qp: requested inline data[%u] exceeds the max[%u]\n",
- 			  init_attr->cap.max_inline_data,
--			  dev->dev_attr.inline_buf_size);
-+			  dev->dev_attr.inline_buf_size_ex);
- 		return -EINVAL;
- 	}
- 
--- 
-2.47.3
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 
