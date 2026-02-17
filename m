@@ -1,93 +1,93 @@
-Return-Path: <linux-rdma+bounces-16937-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16938-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EH1bJpbbk2k89QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-16937-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 04:08:06 +0100
+	id KJqrN5nbk2k89QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-16938-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 04:08:09 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D25148973
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 04:08:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 888A7148981
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 04:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0A267301BF40
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 03:07:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6B9653011591
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 03:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A961D255E34;
-	Tue, 17 Feb 2026 03:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082EE248F64;
+	Tue, 17 Feb 2026 03:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IAeWFowJ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="XiE5r4c9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+Received: from mail-pj1-f97.google.com (mail-pj1-f97.google.com [209.85.216.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27FC6248F72
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 03:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EBC1F12E9
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 03:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771297677; cv=none; b=ZF+aaA6a36nKLrwgUPsqV1euvo0/v16Em284ledtVx2+WW/+TT5Pmzx5QRBGYy2CHVNincsKTQUuy3HoQpLC4xFbMPIPuHyo02xZTytRvrLxOEhIhm2MIVPMRIk3f0cQN5yJBriBOFNxxcz6Hm10n10Kc90sdzKH3RxeQM5cLCw=
+	t=1771297679; cv=none; b=B4kTVl2uYY2agZTjXC/E2UN2uUcAQ5eIMXhuutt0+dnuc8xaUD1CZrsF+ee31qE8OKpPLlLJcIXfvgFILI89FcoOOWdWTlKDMnUJMDQmLSOw4DwVhKzg9DaJOjpT4Ph5HOTPyjSwMavV9eazqd2Ngt2vX+igPb2l/1SllO7jJ/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771297677; c=relaxed/simple;
-	bh=YOfQiNH8d7Vynuu+AHkdKWtGlxYxWQJAWbPAe4nP0ys=;
+	s=arc-20240116; t=1771297679; c=relaxed/simple;
+	bh=1I8BNIe19OgXhF5jA5cD7X+wVx+NvkAnYnk4fpBghT8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I7noTFhg7gOdVqjiHGIwicpmfM8c1LMRVp7ILlxwz/iUa63OHSaDs8qzMF6wSNtXahg4W7qceKalRY1+Y8lnKBpzERAgdzCHoQk6UlePM/iTJJ2bNmXkhGcevKvH2atZKEJO8zJ8l86dk3dp5wpNz4g6BrNh2lEtK2YDgT8bP3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=IAeWFowJ; arc=none smtp.client-ip=209.85.214.226
+	 MIME-Version; b=XWk8SJyaXehi0ph8lOCrv2wm67jxtXirE+Re4wqGboZJVNasD7dc096fJ9dhw83TUdSnQn+r98S42uUvtRwHyKtFqikD/k6kiDDRr26F2mFt+Z957NYlHS/MY4vVgO5nETWZ8v/pTYUsCQ9CqjOzHK1uhaAFoiFiFsjBKZxKLRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=XiE5r4c9; arc=none smtp.client-ip=209.85.216.97
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2ab077e3f32so14712765ad.3
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 19:07:56 -0800 (PST)
+Received: by mail-pj1-f97.google.com with SMTP id 98e67ed59e1d1-3562e98d533so2406258a91.0
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 19:07:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771297675; x=1771902475;
+        d=1e100.net; s=20230601; t=1771297678; x=1771902478;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ATudAJfgMKmPdSFtMNTawZldMJ08G+Ql57gr9hKflR8=;
-        b=RfQ1UlL4cJCc0D7c0E0v7NyOvA7fto5fTQgb71H0kZEjycfxmAsRuxMj39Ax/AxNuk
-         NTJXuOW+985G/LlBDpnG3h8BvkeE7UykkojVoMtsS9O2mofa5+aYV/EYVFwsri7L6COl
-         8reC+K9q5Ms1oGZNgODjjVtgPyvXUpsTarUFqK6lamTjt0mQrLaa4gor5Pub2EyZU1Ua
-         PGvOEVIw4vtFzGi72oglD3y67Eo2/2AsgNZym3E6tu/fufSmxVETGDiZRvRjChv1grMm
-         Q5ha5CxUnopLQnSzHUvIWZKcOGG8woiHWXFgy2UJ/GFzje/pFfr6/eaxWOkRP/SihZh3
-         /9Hw==
-X-Gm-Message-State: AOJu0YyjAjJnHFG3nTrtUwbRN6bc3mYStDnMdJ92iZcgabLJYJfHQ+3w
-	cnLjMUvV15e5ji/54/RgDxfk63VbEA/bYunf3me96Nij+8dwF5NlgBaYpB+ddkfc8HszZbenJDC
-	RqQwNhXM9UNOg0PLyBO2QwvvJQmG6+33nzDmr2yn15a6p5D/twmF3/0TMhiUzRF+mmPctGi/bzh
-	ZOX6qMujgRf5looUW09v8qM/DXIl+UZK1pGbhAKQBQXUMTG1nC+RupLhoBH9vGpMpFXShls3UYe
-	rY5ZmvrdCVQTqRFlo8Io6Vd7EHG
-X-Gm-Gg: AZuq6aJxuB06brCJ8lJRdgvXKBuP7MzG7YM6pKsXcNhLaefP5SFqwcY6Hc/FeqE1g9q
-	YT0XWXDXNRs4C5oBiY9XqHG3jqWpZnowOgcljo90FcjV+atg5p3OGc8u0/0wsTujNse2DVuHJik
-	g159D2juPitukNGIoUI99UsiUEj00UonvDg0Mw08sfr6KY8UCIGvtuYcJWIfYrHLtH7RZtvP1GS
-	L+70r8PYU7Q0Huguzx7sZILdU/yZvq+un4H/pGkjPgJXW8LW3VpyHCUVaMXaXFCU0QnqPPIfHPK
-	gn8UZ5DuytTJ7X8TviBdRYyBmTeLpsj4NmVJw2lZEHQ7rNIi3Zpeyua/rgFHh94mdT4KWmxbRHv
-	Cuoim4GO6Bq2/SQv6YIXlMspJsNoYf4mZZCJKZl3hPMsMWofoWkRNoGLzSiIYwyt9x5KoQT5XOK
-	nhmnih0COqmfbGi7ti4Os9sSFjJxxmQqG9IsPGlahnruoGXoYv9O5GrJtbGm47FiciGB1b
-X-Received: by 2002:a17:903:19eb:b0:2a9:5e25:46f6 with SMTP id d9443c01a7336-2ad174421d6mr102241535ad.17.1771297675314;
-        Mon, 16 Feb 2026 19:07:55 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-25.dlp.protect.broadcom.com. [144.49.247.25])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2ad1a79385asm11444065ad.30.2026.02.16.19.07.54
+        bh=GCf4FtfvGypVXjYUwiJfc/VfrttB5iL2hkBxnBP/X/A=;
+        b=T2boQnoot2H4LIhDrVfXt3Cu2BV94/kcWZQs2EFfKuWNkGuFNDpohzOWP2ZhJOmbN6
+         9y1FXeJFSwSAh6sPsiTEP6RaDnfiaBfhFRKMgcUPaJh6w1nlNJ1tpLAdfpXiPG9+Nwwi
+         lRr4u1neL2xf+j7124+S7NYk5ZX4xEm8eU6t5XDd6VwPUtqV+bw7jZfl0ohBi+k6MDZK
+         i+PqmBqVRw2KAhQKop2IVy1/mkY9aNJ8vLDjk6fW4ALpujVNw/JQYPWNV7MzLvqa6pUr
+         7t6/nHnwRnWnEbMIaVs/fzhOE0Hblwnd2250eHdMmTzia6ybxoaBfa7HZCLN06v7G1mw
+         VZ9Q==
+X-Gm-Message-State: AOJu0YxavcXhm0oFAJ6L6MptEuLkQXzW5U6UJU9vya3B3SNz6LTfZ2/A
+	sD9N2DSjj+V31hHhONvLy4aOZvtMHbmTkKeL930Oq4fZpLyxAfv9jrDe6c8sBA5TgxHEMebD+P2
+	Ly+EYPQYDT1umYEFKpHWTHSbC0yFPi8sDEyatLl5slRV5YXRbeSEf6pa5u7pJtpXMQQG1Oxs7So
+	OhCLeYbD5jQ1pou/HkM8bS/oKZjqNaD4V1Qus6lBtrWeK6Ke2hu3B6vDMUR51DCjjh+BP0V0cAK
+	QyXxl2KrDtYBZNOmafRoNGDeGcS
+X-Gm-Gg: AZuq6aIoMY4i3fq9Fk6QTr0yh6Bao7xJ9d6EWWKY5HOdCk/dJab0k8vw/3NVVir5kno
+	6rT0M07+mdVesMT5k4an83aVkfrIZ8r/aKtKFGG6g1h78NAOCR+pNo4GS2zeTFXPWV7ZZED/qw8
+	DnemPYRMXAq0R1ncxnl6+40XoKfmPMm5kMi1zIByMFQ3oI/REHtXaefWqih+oIhQ0kKp4VJH2Qc
+	nJw4rEViSYpBhPj+BxIp5Smlb5EZ9YliypOaj1JupndxktVQPZFySbyc2OGk5ORkpj4yIohdtNx
+	MtqobGlh26NeOTBK1E8paW6HEJvYAUvPZ+dbCzciAWuDjZVI/KwcYIbTR9RDMaHcBQi/Ck4htXV
+	nnBTkBI54fiCo0nVC0dLQUzgzmYGuNy/S5zs0PGPspKCa7vBiXPLf0LLTmH69etxgoZ3IzKJvAN
+	zTi9DFmfXsCmzgdn7Aa2TexbWBoNHOm4gCPYtvAuzaPCLDmpd5zreNnmRNn0NpJuEgaNfLLcE=
+X-Received: by 2002:a17:90b:5384:b0:356:268e:ffa7 with SMTP id 98e67ed59e1d1-356a7660a64mr11665146a91.7.1771297678079;
+        Mon, 16 Feb 2026 19:07:58 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-103.dlp.protect.broadcom.com. [144.49.247.103])
+        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-3567eb8c138sm2407111a91.5.2026.02.16.19.07.57
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Feb 2026 19:07:55 -0800 (PST)
+        Mon, 16 Feb 2026 19:07:58 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-354bc535546so3851959a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 19:07:54 -0800 (PST)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2aad60525deso194069675ad.1
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Feb 2026 19:07:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1771297673; x=1771902473; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1771297676; x=1771902476; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ATudAJfgMKmPdSFtMNTawZldMJ08G+Ql57gr9hKflR8=;
-        b=IAeWFowJosa6GD8cPN5Jx3fM53PveTMJWZgjcxgJ8+lUQHXHdtQQ+F/tn7hSvdYzVQ
-         y6rIonYyXKjsSw6TKxelUQTBBxw6Q1A7HShIHdv2Er3B5THieTalpGvuedsE6UXsBLH1
-         kgWe+DbE9U9HJ4XiyiBGzQoFvMXLxBZNsmldI=
-X-Received: by 2002:a17:90b:4c4a:b0:32e:1b1c:f8b8 with SMTP id 98e67ed59e1d1-35844fc80f6mr8692259a91.26.1771297673382;
-        Mon, 16 Feb 2026 19:07:53 -0800 (PST)
-X-Received: by 2002:a17:90b:4c4a:b0:32e:1b1c:f8b8 with SMTP id 98e67ed59e1d1-35844fc80f6mr8692239a91.26.1771297672864;
-        Mon, 16 Feb 2026 19:07:52 -0800 (PST)
+        bh=GCf4FtfvGypVXjYUwiJfc/VfrttB5iL2hkBxnBP/X/A=;
+        b=XiE5r4c9axi9GGDmCirMV2CfG9bcjWTImAaEud6nVUPnLm9N/3DFmxE/dgVKl1o9pP
+         43ruPoljs5+8vUhOJvF/lgWrgp+/FTsvSf3BnQoVDDJpE/N1Y5aVni7mSN7T0n5atlyP
+         z0YTbf6MG/RK0uNjTwi9ajdK7zdZaXHypIFf8=
+X-Received: by 2002:a17:903:1a07:b0:2aa:e39a:a7c4 with SMTP id d9443c01a7336-2ab4cf4f7f6mr116523115ad.1.1771297676214;
+        Mon, 16 Feb 2026 19:07:56 -0800 (PST)
+X-Received: by 2002:a17:903:1a07:b0:2aa:e39a:a7c4 with SMTP id d9443c01a7336-2ab4cf4f7f6mr116522915ad.1.1771297675750;
+        Mon, 16 Feb 2026 19:07:55 -0800 (PST)
 Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35662e537desm20688167a91.4.2026.02.16.19.07.50
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35662e537desm20688167a91.4.2026.02.16.19.07.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Feb 2026 19:07:52 -0800 (PST)
+        Mon, 16 Feb 2026 19:07:55 -0800 (PST)
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -96,9 +96,9 @@ Cc: linux-rdma@vger.kernel.org,
 	selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next v13 3/6] RDMA/bnxt_re: Support doorbell extensions
-Date: Tue, 17 Feb 2026 08:29:07 +0530
-Message-ID: <20260217025910.15865-4-sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v13 4/6] RDMA/bnxt_re: Refactor bnxt_re_create_cq()
+Date: Tue, 17 Feb 2026 08:29:08 +0530
+Message-ID: <20260217025910.15865-5-sriharsha.basavapatna@broadcom.com>
 X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 In-Reply-To: <20260217025910.15865-1-sriharsha.basavapatna@broadcom.com>
 References: <20260217025910.15865-1-sriharsha.basavapatna@broadcom.com>
@@ -117,12 +117,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16937-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16938-lists,linux-rdma=lfdr.de];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -134,319 +134,85 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	DKIM_TRACE(0.00)[broadcom.com:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: F2D25148973
+X-Rspamd-Queue-Id: 888A7148981
 X-Rspamd-Action: no action
 
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Some applications may allocate dmabuf based memory for CQs. To support
+this, update the existing code to use SZ_4K to specify supported HW
+page size for CQs, as we support only 4K pages for now.
+Call ib_umem_find_best_pgsz() to ensure umem supports this requested
+page size. A helper function includes these changes.
 
-Some applications may need multiple doorbells to support parallel
-processing of threads that each operate on a group of resources.
-
-The following uapi methods have been implemented in this patch.
-
-- BNXT_RE_METHOD_DBR_ALLOC:
-  This will allow the appliation to create extra doorbell regions
-  and use the associated doorbell page index in CREATE_QP and
-  use the associated DB address while ringing the doorbell.
-
-- BNXT_RE_METHOD_DBR_FREE:
-  Free the allocated doorbell region.
-
-- BNXT_RE_METHOD_GET_DEFAULT_DBR:
-  Return the default doorbell page index and doorbell page address
-  associated with the ucontext.
-
-Co-developed-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.h  |   7 ++
- drivers/infiniband/hw/bnxt_re/qplib_res.c |  43 +++++++
- drivers/infiniband/hw/bnxt_re/qplib_res.h |   4 +
- drivers/infiniband/hw/bnxt_re/uapi.c      | 130 ++++++++++++++++++++++
- include/uapi/rdma/bnxt_re-abi.h           |  29 +++++
- 5 files changed, 213 insertions(+)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 29 +++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index a11f56730a31..33e0f66b39eb 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -164,6 +164,13 @@ struct bnxt_re_user_mmap_entry {
- 	u8 mmap_flag;
- };
- 
-+struct bnxt_re_dbr_obj {
-+	struct bnxt_re_dev *rdev;
-+	struct bnxt_qplib_dpi dpi;
-+	struct bnxt_re_user_mmap_entry *entry;
-+	atomic_t usecnt; /* QPs using this dbr */
-+};
-+
- struct bnxt_re_flow {
- 	struct ib_flow		ib_flow;
- 	struct bnxt_re_dev	*rdev;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index 875d7b52c06a..30cc2d64a9ae 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -685,6 +685,49 @@ static int bnxt_qplib_alloc_pd_tbl(struct bnxt_qplib_res *res,
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index feb364e45e14..9fa89f330c5a 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3348,6 +3348,26 @@ int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	return 0;
  }
  
- /* DPIs */
-+int bnxt_qplib_alloc_uc_dpi(struct bnxt_qplib_res *res, struct bnxt_qplib_dpi *dpi)
++static int bnxt_re_setup_sginfo(struct bnxt_re_dev *rdev,
++				struct ib_umem *umem,
++				struct bnxt_qplib_sg_info *sginfo)
 +{
-+	struct bnxt_qplib_dpi_tbl *dpit = &res->dpi_tbl;
-+	struct bnxt_qplib_reg_desc *reg;
-+	u32 bit_num;
-+	int rc = 0;
++	unsigned long page_size;
 +
-+	reg = &dpit->wcreg;
-+	mutex_lock(&res->dpi_tbl_lock);
-+	bit_num = find_first_bit(dpit->tbl, dpit->max);
-+	if (bit_num >= dpit->max) {
-+		rc = -ENOMEM;
-+		goto unlock;
-+	}
-+	/* Found unused DPI */
-+	clear_bit(bit_num, dpit->tbl);
-+	dpi->bit = bit_num;
-+	dpi->dpi = bit_num + (reg->offset - dpit->ucreg.offset) / PAGE_SIZE;
-+	dpi->umdbr = reg->bar_base + reg->offset + bit_num * PAGE_SIZE;
-+unlock:
-+	mutex_unlock(&res->dpi_tbl_lock);
-+	return rc;
++	if (!umem)
++		return -EINVAL;
++
++	page_size = ib_umem_find_best_pgsz(umem, SZ_4K, 0);
++	if (!page_size || page_size != SZ_4K)
++		return -EINVAL;
++
++	sginfo->umem = umem;
++	sginfo->npages = ib_umem_num_dma_blocks(umem, page_size);
++	sginfo->pgsize = page_size;
++	sginfo->pgshft = __builtin_ctz(page_size);
++	return 0;
 +}
 +
-+int bnxt_qplib_free_uc_dpi(struct bnxt_qplib_res *res, struct bnxt_qplib_dpi *dpi)
-+{
-+	struct bnxt_qplib_dpi_tbl *dpit = &res->dpi_tbl;
-+	int rc = 0;
-+
-+	mutex_lock(&res->dpi_tbl_lock);
-+	if (dpi->bit >= dpit->max) {
-+		rc = -EINVAL;
-+		goto unlock;
-+	}
-+
-+	if (test_and_set_bit(dpi->bit, dpit->tbl))
-+		rc = -EINVAL;
-+	memset(dpi, 0, sizeof(*dpi));
-+unlock:
-+	mutex_unlock(&res->dpi_tbl_lock);
-+	return rc;
-+}
-+
- int bnxt_qplib_alloc_dpi(struct bnxt_qplib_res *res,
- 			 struct bnxt_qplib_dpi *dpi,
- 			 void *app, u8 type)
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index f01c1bb1fcb4..ffe31c952d50 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -436,6 +436,10 @@ int bnxt_qplib_alloc_dpi(struct bnxt_qplib_res *res,
- 			 void *app, u8 type);
- int bnxt_qplib_dealloc_dpi(struct bnxt_qplib_res *res,
- 			   struct bnxt_qplib_dpi *dpi);
-+int bnxt_qplib_alloc_uc_dpi(struct bnxt_qplib_res *res,
-+			    struct bnxt_qplib_dpi *dpi);
-+int bnxt_qplib_free_uc_dpi(struct bnxt_qplib_res *res,
-+			   struct bnxt_qplib_dpi *dpi);
- void bnxt_qplib_cleanup_res(struct bnxt_qplib_res *res);
- int bnxt_qplib_init_res(struct bnxt_qplib_res *res);
- void bnxt_qplib_free_res(struct bnxt_qplib_res *res);
-diff --git a/drivers/infiniband/hw/bnxt_re/uapi.c b/drivers/infiniband/hw/bnxt_re/uapi.c
-index 0145882e49f6..05444c3bb2f3 100644
---- a/drivers/infiniband/hw/bnxt_re/uapi.c
-+++ b/drivers/infiniband/hw/bnxt_re/uapi.c
-@@ -331,9 +331,139 @@ DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_GET_TOGGLE_MEM,
- 			    &UVERBS_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM),
- 			    &UVERBS_METHOD(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM));
+ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		      struct uverbs_attr_bundle *attrs)
+ {
+@@ -3379,8 +3399,6 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	if (entries > dev_attr->max_cq_wqes + 1)
+ 		entries = dev_attr->max_cq_wqes + 1;
  
-+static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_ALLOC)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct bnxt_re_db_region dbr = {};
-+	struct bnxt_re_ucontext *uctx;
-+	struct bnxt_re_dbr_obj *obj;
-+	struct ib_ucontext *ib_uctx;
-+	struct bnxt_qplib_dpi *dpi;
-+	struct bnxt_re_dev *rdev;
-+	struct ib_uobject *uobj;
-+	u64 mmap_offset;
-+	int ret;
-+
-+	ib_uctx = ib_uverbs_get_ucontext(attrs);
-+	if (IS_ERR(ib_uctx))
-+		return PTR_ERR(ib_uctx);
-+
-+	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
-+	rdev = uctx->rdev;
-+	uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_ALLOC_DBR_HANDLE);
-+
-+	obj = kzalloc(sizeof(*obj), GFP_KERNEL);
-+	if (!obj)
-+		return -ENOMEM;
-+
-+	dpi = &obj->dpi;
-+	ret = bnxt_qplib_alloc_uc_dpi(&rdev->qplib_res, dpi);
-+	if (ret)
-+		goto free_mem;
-+
-+	obj->entry = bnxt_re_mmap_entry_insert(uctx, dpi->umdbr,
-+					       BNXT_RE_MMAP_UC_DB,
-+					       &mmap_offset);
-+	if (!obj->entry) {
-+		ret = -ENOMEM;
-+		goto free_dpi;
-+	}
-+
-+	obj->rdev = rdev;
-+	uobj->object = obj;
-+	uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_DBR_HANDLE);
-+
-+	dbr.umdbr = dpi->umdbr;
-+	dbr.dpi = dpi->dpi;
-+	ret = uverbs_copy_to_struct_or_zero(attrs, BNXT_RE_ALLOC_DBR_ATTR,
-+					    &dbr, sizeof(dbr));
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_to(attrs, BNXT_RE_ALLOC_DBR_OFFSET,
-+			     &mmap_offset, sizeof(mmap_offset));
-+	if (ret)
-+		return ret;
-+	return 0;
-+free_dpi:
-+	bnxt_qplib_free_uc_dpi(&rdev->qplib_res, dpi);
-+free_mem:
-+	kfree(obj);
-+	return ret;
-+}
-+
-+static int bnxt_re_dbr_cleanup(struct ib_uobject *uobject,
-+			       enum rdma_remove_reason why,
-+			       struct uverbs_attr_bundle *attrs)
-+{
-+	struct bnxt_re_dbr_obj *obj = uobject->object;
-+	struct bnxt_re_dev *rdev = obj->rdev;
-+
-+	rdma_user_mmap_entry_remove(&obj->entry->rdma_entry);
-+	bnxt_qplib_free_uc_dpi(&rdev->qplib_res, &obj->dpi);
-+	return 0;
-+}
-+
-+static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_DEFAULT_DBR)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct bnxt_re_db_region dpi = {};
-+	struct bnxt_re_ucontext *uctx;
-+	struct ib_ucontext *ib_uctx;
-+	int ret;
-+
-+	ib_uctx = ib_uverbs_get_ucontext(attrs);
-+	if (IS_ERR(ib_uctx))
-+		return PTR_ERR(ib_uctx);
-+
-+	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
-+	dpi.umdbr = uctx->dpi.umdbr;
-+	dpi.dpi = uctx->dpi.dpi;
-+
-+	ret = uverbs_copy_to_struct_or_zero(attrs, BNXT_RE_DEFAULT_DBR_ATTR,
-+					    &dpi, sizeof(dpi));
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_DBR_ALLOC,
-+			    UVERBS_ATTR_IDR(BNXT_RE_ALLOC_DBR_HANDLE,
-+					    BNXT_RE_OBJECT_DBR,
-+					    UVERBS_ACCESS_NEW,
-+					    UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_DBR_ATTR,
-+						UVERBS_ATTR_STRUCT(struct bnxt_re_db_region,
-+								   umdbr),
-+								   UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_DBR_OFFSET,
-+						UVERBS_ATTR_TYPE(u64),
-+						UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_DBR_FREE,
-+				    UVERBS_ATTR_IDR(BNXT_RE_FREE_DBR_HANDLE,
-+						    BNXT_RE_OBJECT_DBR,
-+						    UVERBS_ACCESS_DESTROY,
-+						    UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_DBR,
-+			    UVERBS_TYPE_ALLOC_IDR(bnxt_re_dbr_cleanup),
-+			    &UVERBS_METHOD(BNXT_RE_METHOD_DBR_ALLOC),
-+			    &UVERBS_METHOD(BNXT_RE_METHOD_DBR_FREE));
-+
-+DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_DEFAULT_DBR,
-+			    UVERBS_ATTR_PTR_OUT(BNXT_RE_DEFAULT_DBR_ATTR,
-+						UVERBS_ATTR_STRUCT(struct bnxt_re_db_region,
-+								   umdbr),
-+						UA_MANDATORY));
-+
-+DECLARE_UVERBS_GLOBAL_METHODS(BNXT_RE_OBJECT_DEFAULT_DBR,
-+			      &UVERBS_METHOD(BNXT_RE_METHOD_GET_DEFAULT_DBR));
-+
- const struct uapi_definition bnxt_re_uapi_defs[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_ALLOC_PAGE),
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_NOTIFY_DRV),
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_GET_TOGGLE_MEM),
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_DBR),
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_DEFAULT_DBR),
- 	{}
- };
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index d15afa58963b..1f7685665db1 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -164,6 +164,8 @@ enum bnxt_re_objects {
- 	BNXT_RE_OBJECT_ALLOC_PAGE = (1U << UVERBS_ID_NS_SHIFT),
- 	BNXT_RE_OBJECT_NOTIFY_DRV,
- 	BNXT_RE_OBJECT_GET_TOGGLE_MEM,
-+	BNXT_RE_OBJECT_DBR,
-+	BNXT_RE_OBJECT_DEFAULT_DBR,
- };
+-	cq->qplib_cq.sg_info.pgsize = PAGE_SIZE;
+-	cq->qplib_cq.sg_info.pgshft = PAGE_SHIFT;
+ 	if (udata) {
+ 		struct bnxt_re_cq_req req;
  
- enum bnxt_re_alloc_page_type {
-@@ -232,4 +234,31 @@ struct bnxt_re_packet_pacing_caps {
- struct bnxt_re_query_device_ex_resp {
- 	struct bnxt_re_packet_pacing_caps packet_pacing_caps;
- };
+@@ -3395,7 +3413,10 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 			rc = PTR_ERR(cq->umem);
+ 			goto fail;
+ 		}
+-		cq->qplib_cq.sg_info.umem = cq->umem;
++		rc = bnxt_re_setup_sginfo(rdev, cq->umem, &cq->qplib_cq.sg_info);
++		if (rc)
++			goto fail;
 +
-+struct bnxt_re_db_region {
-+	__u32 dpi;
-+	__u32 reserved;
-+	__aligned_u64 umdbr;
-+};
-+
-+enum bnxt_re_obj_dbr_alloc_attrs {
-+	BNXT_RE_ALLOC_DBR_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+	BNXT_RE_ALLOC_DBR_ATTR,
-+	BNXT_RE_ALLOC_DBR_OFFSET,
-+};
-+
-+enum bnxt_re_obj_dbr_free_attrs {
-+	BNXT_RE_FREE_DBR_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
-+enum bnxt_re_obj_default_dbr_attrs {
-+	BNXT_RE_DEFAULT_DBR_ATTR = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
-+enum bnxt_re_obj_dpi_methods {
-+	BNXT_RE_METHOD_DBR_ALLOC = (1U << UVERBS_ID_NS_SHIFT),
-+	BNXT_RE_METHOD_DBR_FREE,
-+	BNXT_RE_METHOD_GET_DEFAULT_DBR,
-+};
-+
- #endif /* __BNXT_RE_UVERBS_ABI_H__*/
+ 		cq->qplib_cq.dpi = &uctx->dpi;
+ 	} else {
+ 		cq->max_cql = min_t(u32, entries, MAX_CQL_PER_POLL);
+@@ -3406,6 +3427,8 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 			goto fail;
+ 		}
+ 
++		cq->qplib_cq.sg_info.pgsize = SZ_4K;
++		cq->qplib_cq.sg_info.pgshft = __builtin_ctz(SZ_4K);
+ 		cq->qplib_cq.dpi = &rdev->dpi_privileged;
+ 	}
+ 	cq->qplib_cq.max_wqe = entries;
 -- 
 2.51.2.636.ga99f379adf
 
