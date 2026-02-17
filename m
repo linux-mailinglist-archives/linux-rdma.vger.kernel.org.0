@@ -1,139 +1,138 @@
-Return-Path: <linux-rdma+bounces-16954-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16955-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8KBHOxFslGmqDgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16954-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:24:33 +0100
+	id IAcsDMBulGk0DwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16955-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:36:00 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1A114C89E
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:24:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA8514CA66
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 956CA3043BDB
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 13:24:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C9EB53049503
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 13:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4A136AB5B;
-	Tue, 17 Feb 2026 13:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CFE36C0A8;
+	Tue, 17 Feb 2026 13:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsMMppFr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z9hIeX24"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA98361DD4;
-	Tue, 17 Feb 2026 13:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05FF636B06B;
+	Tue, 17 Feb 2026 13:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771334640; cv=none; b=SrFDDJxgFx9L5uIHKjyUXuzRaYJ5mrBMCZBanGUFwX14xVIveGC8f1SpxN/CKJZQ43xJ8YRoIlNuY+alrKv4en2a6ZzvDus59B1p3dU7DO8oICkh4sBNbgrouh74XmHazfqmkEoNQ2ObnwcfEbHVOTZj5xA8SrjeaU2fkf5j+dM=
+	t=1771335275; cv=none; b=XomvRduNJaQV/gHtlg8BnzN6cDEfXU94qARDIV+QsAki4v7+fdQ/EgiPTbiI14+weQsRNRx066FsTXGxsa+qiJ2SY59hvlV/dSv2jwywoWuioCDy7FFH4GseqqMZKdsWG/tvtrDEGUmABuKwz3DJQa4zD3pnIOPFn/IXiNCaf1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771334640; c=relaxed/simple;
-	bh=s48bivWIOxdPQEbIORTIX484w1MulDACtphogfq9hMQ=;
+	s=arc-20240116; t=1771335275; c=relaxed/simple;
+	bh=5Ve2lFhJ0cDQLZhhoB8VGy9HpsXLE/NXmcWc43kIado=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J0hU4KiAQw3ac4tq9NwOfs4rMWslAgysjj7kUx6OmJjaf40yKDTNW/awEw/QVhPGJYEJHWy2swup1hv2ez8NmJY+NELOjm6cf0LLwySWBK/7NR5jRMvqx1rixxe+FAbnE2NoYQ/B4i/PTnenF+DiAwzq0egZvQo4iD42ZPXA7LQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NsMMppFr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E56B7C19423;
-	Tue, 17 Feb 2026 13:23:58 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=OQHiBT5ehS98fCljY6XGIQ/JJLiurL2j4nbOhyZk0tsj2jt/xeBAHBPjCHhq7vdMPqu5/DHQcyC1KIcAuUTs4E5+lHt4wRckg+qjLrmjiYeAo/CZ2VIz+71Am9gUyPTHu1wQlFV9+gNioITP0Cpsy0db9A3PtbwMSTA7uE/qM9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z9hIeX24; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38DEAC19423;
+	Tue, 17 Feb 2026 13:34:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771334639;
-	bh=s48bivWIOxdPQEbIORTIX484w1MulDACtphogfq9hMQ=;
+	s=k20201202; t=1771335274;
+	bh=5Ve2lFhJ0cDQLZhhoB8VGy9HpsXLE/NXmcWc43kIado=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NsMMppFryIkcBTrYHIxIVL1P/B8Z7u0/cWYXENdezei0rmn8GZhvqmhMhVbq0aZgs
-	 lGZRdmDXEEzSbbrnuSGJBI/szLcpP6Q1G6gUk0i1RMb1vnxFmq0fvMa/i9DZOOXvBI
-	 uYhM9GfftmIvr0wkB0U9cTQXuFI6HjqXnBXO5oPotKX/UoxgnikUzuYoUXxargewN0
-	 B+sexrotqWbl3/ehBzjIluIR6JFMSiYSkBG2ecvzsLDf5npXxrn2fIHhw+71tfCYqK
-	 73p8E4g6XedoKS7zuOdbvu+WRwmbBbAZOP2s+OW8BK6UBRFSS4AGcBDtCLRISIEWfg
-	 +aud+12YQzitA==
-Date: Tue, 17 Feb 2026 15:23:56 +0200
+	b=Z9hIeX24hquUJ4wdZrCAVMv/v+w7DswfB9yd2z01qBeU9SwSfFcRLINuYxFLbTbWy
+	 nCaHOAy2bOHsxsSLnW36or7B1egpaZTiFbaplu1tu9fczmu8yYgPRzu0HEQQjipBKj
+	 wF7yVRXjtqgUQEAKhMvSCNQYs0EgfDfTt4ZgnPiQ253vkvearAzcMUCmugprktCoY4
+	 15q3WwfNIPyVkj8jz85EqiJL+k1gvJaO43mU0XhZYY+dC/maR+PBJXZAnxCGK+V3Yq
+	 go65AH1Vp25BN4+5W6xdN9xTmNgn8I6z9KxJG8Ld2oDvMIelDF5KLf34AawQ3xnki3
+	 M3MQrm9ffvLfw==
+Date: Tue, 17 Feb 2026 15:34:31 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Gal Pressman <gal.pressman@linux.dev>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	linux-rdma@vger.kernel.org, Michael Margolin <mrgolin@amazon.com>,
-	Yossi Leybovich <sleybo@amazon.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Andrew Boyer <andrew.boyer@amd.com>,
-	Gal Pressman <galpress@amazon.com>,
-	Mustafa Ismail <mustafa.ismail@intel.com>, patches@lists.linux.dev,
-	Roland Dreier <rolandd@cisco.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>, stable@vger.kernel.org,
-	Steve Wise <swise@opengridcomputing.com>
-Subject: Re: [PATCH rc 2/4] IB/mthca: Add missed mthca_unmap_user_db() for
- mthca_create_srq()
-Message-ID: <20260217132356.GM12989@unreal>
-References: <0-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
- <2-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: David Airlie <airlied@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Simona Vetter <simona@ffwll.ch>, Gerd Hoffmann <kraxel@redhat.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 0/8] dma-buf: Use revoke mechanism to invalidate
+ shared buffers
+Message-ID: <20260217133431.GN12989@unreal>
+References: <20260131-dmabuf-revoke-v7-0-463d956bd527@nvidia.com>
+ <20260217080206.GJ12989@unreal>
+ <0aa8147c-254d-4a1c-89ee-9dc4d4b6b022@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <2-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0aa8147c-254d-4a1c-89ee-9dc4d4b6b022@amd.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16954-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16955-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gmail.com,linaro.org,amd.com,ffwll.ch,redhat.com,collabora.com,chromium.org,linux.intel.com,kernel.org,suse.de,intel.com,ziepe.ca,8bytes.org,arm.com,shazbot.org,nvidia.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,lists.linux.dev];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8B1A114C89E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9FA8514CA66
 X-Rspamd-Action: no action
 
-On Mon, Feb 16, 2026 at 11:02:48AM -0400, Jason Gunthorpe wrote:
-> Fix a user triggerable leak on the system call failure path.
+On Tue, Feb 17, 2026 at 10:52:25AM +0100, Christian König wrote:
+> On 2/17/26 09:02, Leon Romanovsky wrote:
+> > On Sat, Jan 31, 2026 at 07:34:10AM +0200, Leon Romanovsky wrote:
+> >> Changelog:
+> >> v7:
+> >>  * Fixed messed VFIO patch due to rebase.
+> > 
+> > <...>
+> > 
+> > Christian,
+> > 
+> > What should be my next step? Should I resubmit it?
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: ec34a922d243 ("[PATCH] IB/mthca: Add SRQ implementation")
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/infiniband/hw/mthca/mthca_provider.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
-> index dd572d76866c2e..ae0c8024ad2310 100644
-> --- a/drivers/infiniband/hw/mthca/mthca_provider.c
-> +++ b/drivers/infiniband/hw/mthca/mthca_provider.c
-> @@ -428,6 +428,8 @@ static int mthca_create_srq(struct ib_srq *ibsrq,
->  
->  	if (context && ib_copy_to_udata(udata, &srq->srqn, sizeof(__u32))) {
->  		mthca_free_srq(to_mdev(ibsrq->device), srq);
-> +		mthca_unmap_user_db(to_mdev(ibsrq->device), &context->uar,
-> +				    context->db_tab, ucmd.db_index);
->  		return -EFAULT;
->  	}
-
-The `mthca_destroy_srq()` implementation needs to be corrected as well.
-Its resource release order is currently reversed.
+> No, the patches are fine as they are. I'm just waiting for the backmerge of upstream to apply them.
 
 Thanks
-
->  
-> -- 
-> 2.43.0
-> 
 
