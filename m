@@ -1,87 +1,93 @@
-Return-Path: <linux-rdma+bounces-16953-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16954-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KH45L69qlGmqDgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16953-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:18:39 +0100
+	id 8KBHOxFslGmqDgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16954-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:24:33 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F0714C808
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:18:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B1A114C89E
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 14:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7B086300F11B
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 13:18:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 956CA3043BDB
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 13:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A7E35FF62;
-	Tue, 17 Feb 2026 13:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4A136AB5B;
+	Tue, 17 Feb 2026 13:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qs633JOr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsMMppFr"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E80356A13;
-	Tue, 17 Feb 2026 13:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA98361DD4;
+	Tue, 17 Feb 2026 13:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771334309; cv=none; b=K/ReckEgqMkfn4TGh8IbaA3sCwocT3l69t5kiJ8/1pvTCqQsDdRCBo2VeoUVom6SjcMDs0ETO+YbPI2t4vHroli6QDFYCiIdpi/o3vCy5sRHb+bMJgxfit4GF7saaE9Yzop8nH3uEdfg8VP25UBZvEhivUOtGrHBC/4F1mqkcPU=
+	t=1771334640; cv=none; b=SrFDDJxgFx9L5uIHKjyUXuzRaYJ5mrBMCZBanGUFwX14xVIveGC8f1SpxN/CKJZQ43xJ8YRoIlNuY+alrKv4en2a6ZzvDus59B1p3dU7DO8oICkh4sBNbgrouh74XmHazfqmkEoNQ2ObnwcfEbHVOTZj5xA8SrjeaU2fkf5j+dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771334309; c=relaxed/simple;
-	bh=3DeHYvvhqg+AUSPY8xqMDBqmLhO2PgQZBfdqynuYxeE=;
+	s=arc-20240116; t=1771334640; c=relaxed/simple;
+	bh=s48bivWIOxdPQEbIORTIX484w1MulDACtphogfq9hMQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Eo1OFyICOQCtjrM8rmKw9mLj//RGId+OqBeGAV3KkKVZ7X2nmtRyzPyf92x427mCiHmvjne9oAbcLfNbTVV7I7coALeaMkzM9hsxWf4MeMDAFQ2dC46kjvaFlZ0HTg3Sa+JMTSpmPARxgWi+FP7GO49LwLg2q3Kml+TbBWhlr84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qs633JOr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 104FCC4CEF7;
-	Tue, 17 Feb 2026 13:18:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=J0hU4KiAQw3ac4tq9NwOfs4rMWslAgysjj7kUx6OmJjaf40yKDTNW/awEw/QVhPGJYEJHWy2swup1hv2ez8NmJY+NELOjm6cf0LLwySWBK/7NR5jRMvqx1rixxe+FAbnE2NoYQ/B4i/PTnenF+DiAwzq0egZvQo4iD42ZPXA7LQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NsMMppFr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E56B7C19423;
+	Tue, 17 Feb 2026 13:23:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771334309;
-	bh=3DeHYvvhqg+AUSPY8xqMDBqmLhO2PgQZBfdqynuYxeE=;
+	s=k20201202; t=1771334639;
+	bh=s48bivWIOxdPQEbIORTIX484w1MulDACtphogfq9hMQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qs633JOr9lAk6uV/DSdPEwUM6tgD8lcB0kwrYdegMJh0Tmg2A1E36pvfdNov+HsZe
-	 elJqVQCA5DvR8aYztF6Bx1C2s0nzLK5dRnenH5dloGUrtBi9puJdGYwsDVUHJjppMr
-	 rbUGmjruKdKX/yRL4YsyAK9o8KpceSb5jT6abnzkaycb8D3h70qpwrcHi20pP/nBzO
-	 wTDozAJzYlJeC2by8wWC8vg+V/5jt5xPzGXx2r+ccVyFcE6UbobfkvRxVv3pZ9ijxQ
-	 jdFFem5SDyksWPVY88AGOGQXDFflG42TGd+kLjXNhqgibpQx6ZXlx5OpDbHx4JdsKK
-	 EYj8aWUBlr8rw==
-Date: Tue, 17 Feb 2026 15:18:25 +0200
+	b=NsMMppFryIkcBTrYHIxIVL1P/B8Z7u0/cWYXENdezei0rmn8GZhvqmhMhVbq0aZgs
+	 lGZRdmDXEEzSbbrnuSGJBI/szLcpP6Q1G6gUk0i1RMb1vnxFmq0fvMa/i9DZOOXvBI
+	 uYhM9GfftmIvr0wkB0U9cTQXuFI6HjqXnBXO5oPotKX/UoxgnikUzuYoUXxargewN0
+	 B+sexrotqWbl3/ehBzjIluIR6JFMSiYSkBG2ecvzsLDf5npXxrn2fIHhw+71tfCYqK
+	 73p8E4g6XedoKS7zuOdbvu+WRwmbBbAZOP2s+OW8BK6UBRFSS4AGcBDtCLRISIEWfg
+	 +aud+12YQzitA==
+Date: Tue, 17 Feb 2026 15:23:56 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Edward Srouji <edwards@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Usman Ansari <usman.ansari@broadcom.com>,
-	Siva Reddy Kallam <siva.kallam@broadcom.com>,
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Gal Pressman <gal.pressman@linux.dev>,
+	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+	linux-rdma@vger.kernel.org, Michael Margolin <mrgolin@amazon.com>,
+	Yossi Leybovich <sleybo@amazon.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
 	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/uverbs: select CONFIG_DMA_SHARED_BUFFER
-Message-ID: <20260217131825.GL12989@unreal>
-References: <20260216121213.2088910-1-arnd@kernel.org>
+	Allen Hubbe <allen.hubbe@amd.com>,
+	Andrew Boyer <andrew.boyer@amd.com>,
+	Gal Pressman <galpress@amazon.com>,
+	Mustafa Ismail <mustafa.ismail@intel.com>, patches@lists.linux.dev,
+	Roland Dreier <rolandd@cisco.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>, stable@vger.kernel.org,
+	Steve Wise <swise@opengridcomputing.com>
+Subject: Re: [PATCH rc 2/4] IB/mthca: Add missed mthca_unmap_user_db() for
+ mthca_create_srq()
+Message-ID: <20260217132356.GM12989@unreal>
+References: <0-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+ <2-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260216121213.2088910-1-arnd@kernel.org>
+In-Reply-To: <2-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16953-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-16954-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -91,37 +97,43 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email,arndb.de:email]
-X-Rspamd-Queue-Id: 61F0714C808
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8B1A114C89E
 X-Rspamd-Action: no action
 
-On Mon, Feb 16, 2026 at 01:12:00PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Feb 16, 2026 at 11:02:48AM -0400, Jason Gunthorpe wrote:
+> Fix a user triggerable leak on the system call failure path.
 > 
-> The addition of dmabuf support in uverbs means that it is no
-> longer possible to build infiniband support if that is disabled:
-> 
-> arm-linux-gnueabi-ld: drivers/infiniband/core/ib_core_uverbs.o: in function `rdma_user_mmap_entry_remove.part.0':
-> ib_core_uverbs.c:(.text+0x508): undefined reference to `dma_buf_move_notify'
-> (dma_buf_move_notify): Unknown destination type (ARM/Thumb) in drivers/infiniband/core/ib_core_uverbs.o
-> ib_core_uverbs.c:(.text+0x518): undefined reference to `dma_resv_wait_timeout'
-> (dma_resv_wait_timeout): Unknown destination type (ARM/Thumb) in drivers/infiniband/core/ib_core_uverbs.o
-> 
-> Select this from Kconfig, as we do for the other users.
-> 
-> Fixes: 0ac6f4056c4a ("RDMA/uverbs: Add DMABUF object type and operations")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: stable@vger.kernel.org
+> Fixes: ec34a922d243 ("[PATCH] IB/mthca: Add SRQ implementation")
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 > ---
->  drivers/infiniband/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/infiniband/hw/mthca/mthca_provider.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
+> diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+> index dd572d76866c2e..ae0c8024ad2310 100644
+> --- a/drivers/infiniband/hw/mthca/mthca_provider.c
+> +++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+> @@ -428,6 +428,8 @@ static int mthca_create_srq(struct ib_srq *ibsrq,
+>  
+>  	if (context && ib_copy_to_udata(udata, &srq->srqn, sizeof(__u32))) {
+>  		mthca_free_srq(to_mdev(ibsrq->device), srq);
+> +		mthca_unmap_user_db(to_mdev(ibsrq->device), &context->uar,
+> +				    context->db_tab, ucmd.db_index);
+>  		return -EFAULT;
+>  	}
 
-It looks reasonable to me. dma-buf is becoming a first‑class citizen in the
-RDMA world.
+The `mthca_destroy_srq()` implementation needs to be corrected as well.
+Its resource release order is currently reversed.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Thanks
+
+>  
+> -- 
+> 2.43.0
+> 
 
