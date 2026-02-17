@@ -1,78 +1,79 @@
-Return-Path: <linux-rdma+bounces-16950-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-16951-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KPYhBgFQlGktCQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-16950-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 12:24:49 +0100
+	id oOGrMQVQlGktCQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-16951-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 12:24:53 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88BDC14B509
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 12:24:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265D814B520
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 12:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 135F8304B58F
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 11:23:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 40057304CE9A
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Feb 2026 11:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B518331A49;
-	Tue, 17 Feb 2026 11:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F89331A65;
+	Tue, 17 Feb 2026 11:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="iU4kXJ3W"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="mBPEWLYw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.34.181.151])
+Received: from pdx-out-001.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-001.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.245.243.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201B1330B3A
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 11:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.34.181.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEEED3314D1
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Feb 2026 11:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.245.243.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771327403; cv=none; b=ptPOJC2q5KwjtciWBnYuR4KtAywh+9P370Ks9MHyiwkAPFZFj5ho94FK+6pj3ZlanYq8nMror7+E1EzGOYqIQs//3BKAJZjJzF3GxasSxj9jSGeYL7mVYxUoyPz4ju+KSYLkWV4Jh5UQ0o7Ua7GcPQDWC05Wg2MzmXgro1V2U+w=
+	t=1771327407; cv=none; b=sPhHrZkyhAcp1cb7s7ZS4JhAJxBk60HIPvpv1myZvlDRLm0VEAyVxuaonp6j2f0kOGUmZy7vwIb0n1ptIfarT5KAFeRoI/gECIdVaW4ClEaGwWM/qYVY/RmCRJUM7AxymgbcsSZyQaVW8EswWi4rcBaIKqOEhoT/zgxULWy0yHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771327403; c=relaxed/simple;
-	bh=eoCMO3CFpgkaXHHDn3qAjJySkiVBtp6elIS3neRUkHg=;
+	s=arc-20240116; t=1771327407; c=relaxed/simple;
+	bh=XhwCLjnaVvz6vb7sWO4YJcp+m+yLg9LLFl+zJ+LtWVM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ocOiQnKZgKX4dzbh0epHml30NwK4A7dfFS28Gfu7Nh/JF8U4G+TNTCdDL5V62zSjMtMQVYntY6el0uh0FCz82tGj9qyGp/ForPj62T7p4ElJXpXPY6p3lPvuq2KClb3kFT1ZvK3DVIMORqtMrZcHGezf5WuiSdjJIKkfSPgb7qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=iU4kXJ3W; arc=none smtp.client-ip=52.34.181.151
+	 MIME-Version:Content-Type; b=b1LnqNmyMK1FJfhm7Gz/W3VVs9C8sc5KAG3Bi5T+1uaioJzy7pf4QRJAGLPziOFmP8QePjsFJGop+yiBSIeQZ3A+x9C1zpJeDwA3Uf2KEZkaVV6djvhKq+snXnYU1OAVSBYcnHxEONH41rZDqpF6kIlsMCdijmtyCb6uYubAeGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=mBPEWLYw; arc=none smtp.client-ip=44.245.243.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1771327402; x=1802863402;
+  t=1771327405; x=1802863405;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=BjiY4pa9Wc/alKfWmH+4DTWD8kEYoq2dhsDUNacBem0=;
-  b=iU4kXJ3Wuz5liDdHbyJ9BDDApFxDO4GsE6VgVXLnHaj4nsXeIpDv8pIu
-   G9YdcQ0JcDlXeluZoPBI7Eor31ODyLlyfITDWkyE+AYQU1/KEHWPIJNt/
-   FU9Gnh/MySedgtPF0OY0os50mswOCxhfO8eYozaFE1kbYVSdsgCOO+f+0
-   ZA6wBxip38M/rEpK1bQj5yrxAgoizKd8/uJrtNsGr3wK2FZJgtkoTZcow
-   2FcF5aZyaNevvO/QnfzV+v0z9E701ON9vJ5M2MntTe2ezugrDEAe9ZFAR
-   lJgHtnDyUhz9OBgUqqy3v+ezEsGS01dpjV13uxVPcSGgGzKFfF4RxXBHI
+  bh=IH+NidshtJWqu0QNVyTtCSpZPLVZq3Q2Md1adURE+do=;
+  b=mBPEWLYwjvvijrXQ4d1GzTZ2U8RzorvN2LZ5P2Jg6QwyKlAsVdk50qth
+   XZnBNNsvXRZTNS4taUs/ETAvSz86fSFd+/5a4agPStkXE6+WFs0yKmwpo
+   QRwl4JQP9TEejoCe5hp/3H7Dc/Zcnp+WrtZX96mMXBK9zfoozl1Ih7cfE
+   OzNh73Iz5TCzZM+aK+52Hk7kw3vc3y5jSNd/YHZY1kb3FmB1xXL7nnl79
+   g43pP1DgKpktYkB1FtnQWmJpbGYmo01BTwSYjaW2OQFKG7rNukVMl/UyA
+   rj8AWP80kOJwDZijs+l6LOL02GYhGWS+ASc2au5VhYfRqHl/cZhY4YRtq
    w==;
-X-CSE-ConnectionGUID: hMAytNqbRKqdTEjhBZRAvQ==
-X-CSE-MsgGUID: UIBfXni3S3SkuhM0bSJ3+w==
+X-CSE-ConnectionGUID: b34qV94BQNyQUFM3ZancKA==
+X-CSE-MsgGUID: ltXxDoniQlqI6uB9Ucy0LQ==
 X-IronPort-AV: E=Sophos;i="6.21,296,1763424000"; 
-   d="scan'208";a="13207251"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2026 11:23:18 +0000
-Received: from EX19MTAUWB001.ant.amazon.com [205.251.233.104:1450]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.61.96:2525] with esmtp (Farcaster)
- id eabce09c-3ab6-4c80-85e3-36328441eca6; Tue, 17 Feb 2026 11:23:18 +0000 (UTC)
-X-Farcaster-Flow-ID: eabce09c-3ab6-4c80-85e3-36328441eca6
+   d="scan'208";a="12742222"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-001.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2026 11:23:22 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:20590]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.54.217:2525] with esmtp (Farcaster)
+ id 01e753c3-fc6a-4ce8-8c4e-7e4a2a7e6f80; Tue, 17 Feb 2026 11:23:22 +0000 (UTC)
+X-Farcaster-Flow-ID: 01e753c3-fc6a-4ce8-8c4e-7e4a2a7e6f80
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
- Tue, 17 Feb 2026 11:23:18 +0000
+ Tue, 17 Feb 2026 11:23:21 +0000
 Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
  (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Tue, 17 Feb 2026
- 11:23:16 +0000
+ 11:23:19 +0000
 From: Yonatan Nachum <ynachum@amazon.com>
 To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
-	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>
-Subject: [PATCH for-next v3 1/3] RDMA/efa: Rename admin queue attributes struct name for extendability
-Date: Tue, 17 Feb 2026 11:23:02 +0000
-Message-ID: <20260217112304.36849-2-ynachum@amazon.com>
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>, Firas Jahjah
+	<firasj@amazon.com>
+Subject: [PATCH for-next v3 2/3] RDMA/efa: Expose new extended max inline buff size
+Date: Tue, 17 Feb 2026 11:23:03 +0000
+Message-ID: <20260217112304.36849-3-ynachum@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260217112304.36849-1-ynachum@amazon.com>
 References: <20260217112304.36849-1-ynachum@amazon.com>
@@ -93,7 +94,7 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -101,34 +102,110 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16950-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16951-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[amazon.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 88BDC14B509
+X-Rspamd-Queue-Id: 265D814B520
 X-Rspamd-Action: no action
 
-As preparation for adding a second queue attributes query, change the
-name of the existing queue attributes.
+Add new extended max inline query and report the new value to userspace.
 
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
 Reviewed-by: Michael Margolin <mrgolin@amazon.com>
 Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
 ---
- .../infiniband/hw/efa/efa_admin_cmds_defs.h   |  8 ++--
- drivers/infiniband/hw/efa/efa_com_cmd.c       | 40 +++++++++----------
- 2 files changed, 24 insertions(+), 24 deletions(-)
+ drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 15 ++++++++++++++-
+ drivers/infiniband/hw/efa/efa_com_cmd.c         | 15 +++++++++++++++
+ drivers/infiniband/hw/efa/efa_com_cmd.h         |  3 ++-
+ drivers/infiniband/hw/efa/efa_verbs.c           |  3 ++-
+ include/uapi/rdma/efa-abi.h                     |  5 +++--
+ 5 files changed, 36 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 57178dad5eb7..5bbc765b6e3f 100644
+index 5bbc765b6e3f..ad34ea5da6b0 100644
 --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
 +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -42,6 +42,7 @@ enum efa_admin_aq_feature_id {
+ 	EFA_ADMIN_HW_HINTS                          = 5,
+ 	EFA_ADMIN_HOST_INFO                         = 6,
+ 	EFA_ADMIN_EVENT_QUEUE_ATTR                  = 7,
++	EFA_ADMIN_QUEUE_ATTR_2                      = 9,
+ };
+ 
+ /* QP transport type */
+@@ -751,7 +752,12 @@ struct efa_admin_feature_queue_attr_desc_1 {
+ 	/* Maximum number of WQEs per Send Queue */
+ 	u32 max_sq_depth;
+ 
+-	/* Maximum size of data that can be sent inline in a Send WQE */
++	/*
++	 * Maximum size of data that can be sent inline in a Send WQE
++	 * (deprecated by
++	 * efa_admin_feature_queue_attr_desc_2::inline_buf_size_ex on
++	 * supporting devices)
++	 */
+ 	u32 inline_buf_size;
+ 
+ 	/* Maximum number of buffer descriptors per Recv Queue */
+@@ -805,6 +811,11 @@ struct efa_admin_feature_queue_attr_desc_1 {
+ 	u16 max_tx_batch;
+ };
+ 
++struct efa_admin_feature_queue_attr_desc_2 {
++	/* Maximum size of data that can be sent inline in a Send WQE */
++	u16 inline_buf_size_ex;
++};
++
+ struct efa_admin_event_queue_attr_desc {
+ 	/* The maximum number of event queues supported */
+ 	u32 max_eq;
+@@ -874,6 +885,8 @@ struct efa_admin_get_feature_resp {
+ 
+ 		struct efa_admin_feature_queue_attr_desc_1 queue_attr_1;
+ 
++		struct efa_admin_feature_queue_attr_desc_2 queue_attr_2;
++
+ 		struct efa_admin_event_queue_attr_desc event_queue_attr;
+ 
+ 		struct efa_admin_hw_hints hw_hints;
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
+index 592c420e4473..63c7f07806a8 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.c
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
+@@ -505,6 +505,21 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
+ 	result->max_tx_batch = resp.u.queue_attr_1.max_tx_batch;
+ 	result->min_sq_depth = resp.u.queue_attr_1.min_sq_depth;
+ 
++	if (efa_com_check_supported_feature_id(edev, EFA_ADMIN_QUEUE_ATTR_2)) {
++		err = efa_com_get_feature(edev, &resp,
++					  EFA_ADMIN_QUEUE_ATTR_2);
++		if (err) {
++			ibdev_err_ratelimited(
++				edev->efa_dev,
++				"Failed to get queue attributes2 %d\n", err);
++			return err;
++		}
++
++		result->inline_buf_size_ex = resp.u.queue_attr_2.inline_buf_size_ex;
++	} else {
++		result->inline_buf_size_ex = result->inline_buf_size;
++	}
++
+ 	err = efa_com_get_feature(edev, &resp, EFA_ADMIN_NETWORK_ATTR);
+ 	if (err) {
+ 		ibdev_err_ratelimited(edev->efa_dev,
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+index 3ac2686abba1..ef15b3c38429 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.h
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
 @@ -1,6 +1,6 @@
  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
  /*
@@ -136,97 +213,57 @@ index 57178dad5eb7..5bbc765b6e3f 100644
 + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
   */
  
- #ifndef _EFA_ADMIN_CMDS_H_
-@@ -38,7 +38,7 @@ enum efa_admin_aq_feature_id {
- 	EFA_ADMIN_DEVICE_ATTR                       = 1,
- 	EFA_ADMIN_AENQ_CONFIG                       = 2,
- 	EFA_ADMIN_NETWORK_ATTR                      = 3,
--	EFA_ADMIN_QUEUE_ATTR                        = 4,
-+	EFA_ADMIN_QUEUE_ATTR_1                      = 4,
- 	EFA_ADMIN_HW_HINTS                          = 5,
- 	EFA_ADMIN_HOST_INFO                         = 6,
- 	EFA_ADMIN_EVENT_QUEUE_ATTR                  = 7,
-@@ -744,7 +744,7 @@ struct efa_admin_feature_device_attr_desc {
- 	u32 reserved1;
- };
- 
--struct efa_admin_feature_queue_attr_desc {
-+struct efa_admin_feature_queue_attr_desc_1 {
- 	/* The maximum number of queue pairs supported */
- 	u32 max_qp;
- 
-@@ -872,7 +872,7 @@ struct efa_admin_get_feature_resp {
- 
- 		struct efa_admin_feature_network_attr_desc network_attr;
- 
--		struct efa_admin_feature_queue_attr_desc queue_attr;
-+		struct efa_admin_feature_queue_attr_desc_1 queue_attr_1;
- 
- 		struct efa_admin_event_queue_attr_desc event_queue_attr;
- 
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 9ead02800ac7..592c420e4473 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
+ #ifndef _EFA_COM_CMD_H_
+@@ -127,6 +127,7 @@ struct efa_com_get_device_attr_result {
+ 	u32 max_cq;
+ 	u32 max_cq_depth; /* cqes */
+ 	u32 inline_buf_size;
++	u32 inline_buf_size_ex;
+ 	u32 max_mr;
+ 	u32 max_pd;
+ 	u32 max_ah;
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 22d3e25c3b9d..85c3a7dd4335 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
 @@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /*
+- * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include <linux/dma-buf.h>
+@@ -1994,6 +1994,7 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
+ 	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_CREATE_AH;
+ 	resp.sub_cqs_per_cq = dev->dev_attr.sub_cqs_per_cq;
+ 	resp.inline_buf_size = dev->dev_attr.inline_buf_size;
++	resp.inline_buf_size_ex = dev->dev_attr.inline_buf_size_ex;
+ 	resp.max_llq_size = dev->dev_attr.max_llq_size;
+ 	resp.max_tx_batch = dev->dev_attr.max_tx_batch;
+ 	resp.min_sq_wr = dev->dev_attr.min_sq_depth;
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index 98b71b9979f8..13225b038124 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
  /*
 - * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
 + * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
   */
  
- #include "efa_com.h"
-@@ -479,31 +479,31 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
+ #ifndef EFA_ABI_USER_H
+@@ -44,7 +44,8 @@ struct efa_ibv_alloc_ucontext_resp {
+ 	__u32 max_llq_size; /* bytes */
+ 	__u16 max_tx_batch; /* units of 64 bytes */
+ 	__u16 min_sq_wr;
+-	__u8 reserved_a0[4];
++	__u16 inline_buf_size_ex;
++	__u8 reserved_b0[2];
+ };
  
- 	edev->supported_features = resp.u.device_attr.supported_features;
- 	err = efa_com_get_feature(edev, &resp,
--				  EFA_ADMIN_QUEUE_ATTR);
-+				  EFA_ADMIN_QUEUE_ATTR_1);
- 	if (err) {
- 		ibdev_err_ratelimited(edev->efa_dev,
--				      "Failed to get queue attributes %d\n",
-+				      "Failed to get queue attributes1 %d\n",
- 				      err);
- 		return err;
- 	}
- 
--	result->max_qp = resp.u.queue_attr.max_qp;
--	result->max_sq_depth = resp.u.queue_attr.max_sq_depth;
--	result->max_rq_depth = resp.u.queue_attr.max_rq_depth;
--	result->max_cq = resp.u.queue_attr.max_cq;
--	result->max_cq_depth = resp.u.queue_attr.max_cq_depth;
--	result->inline_buf_size = resp.u.queue_attr.inline_buf_size;
--	result->max_sq_sge = resp.u.queue_attr.max_wr_send_sges;
--	result->max_rq_sge = resp.u.queue_attr.max_wr_recv_sges;
--	result->max_mr = resp.u.queue_attr.max_mr;
--	result->max_mr_pages = resp.u.queue_attr.max_mr_pages;
--	result->max_pd = resp.u.queue_attr.max_pd;
--	result->max_ah = resp.u.queue_attr.max_ah;
--	result->max_llq_size = resp.u.queue_attr.max_llq_size;
--	result->sub_cqs_per_cq = resp.u.queue_attr.sub_cqs_per_cq;
--	result->max_wr_rdma_sge = resp.u.queue_attr.max_wr_rdma_sges;
--	result->max_tx_batch = resp.u.queue_attr.max_tx_batch;
--	result->min_sq_depth = resp.u.queue_attr.min_sq_depth;
-+	result->max_qp = resp.u.queue_attr_1.max_qp;
-+	result->max_sq_depth = resp.u.queue_attr_1.max_sq_depth;
-+	result->max_rq_depth = resp.u.queue_attr_1.max_rq_depth;
-+	result->max_cq = resp.u.queue_attr_1.max_cq;
-+	result->max_cq_depth = resp.u.queue_attr_1.max_cq_depth;
-+	result->inline_buf_size = resp.u.queue_attr_1.inline_buf_size;
-+	result->max_sq_sge = resp.u.queue_attr_1.max_wr_send_sges;
-+	result->max_rq_sge = resp.u.queue_attr_1.max_wr_recv_sges;
-+	result->max_mr = resp.u.queue_attr_1.max_mr;
-+	result->max_mr_pages = resp.u.queue_attr_1.max_mr_pages;
-+	result->max_pd = resp.u.queue_attr_1.max_pd;
-+	result->max_ah = resp.u.queue_attr_1.max_ah;
-+	result->max_llq_size = resp.u.queue_attr_1.max_llq_size;
-+	result->sub_cqs_per_cq = resp.u.queue_attr_1.sub_cqs_per_cq;
-+	result->max_wr_rdma_sge = resp.u.queue_attr_1.max_wr_rdma_sges;
-+	result->max_tx_batch = resp.u.queue_attr_1.max_tx_batch;
-+	result->min_sq_depth = resp.u.queue_attr_1.min_sq_depth;
- 
- 	err = efa_com_get_feature(edev, &resp, EFA_ADMIN_NETWORK_ATTR);
- 	if (err) {
+ struct efa_ibv_alloc_pd_resp {
 -- 
 2.47.3
 
