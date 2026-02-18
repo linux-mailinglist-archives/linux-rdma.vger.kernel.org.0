@@ -1,271 +1,160 @@
-Return-Path: <linux-rdma+bounces-17000-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17001-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SLqzMGzzlWlTWwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17000-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 18:14:20 +0100
+	id mO+/K4r2lWkmXgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17001-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 18:27:38 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AF8C158272
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 18:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CCC71584A5
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 18:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5AE75300AB3F
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 17:14:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7C143300A8FE
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Feb 2026 17:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 760B034405F;
-	Wed, 18 Feb 2026 17:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EA0344033;
+	Wed, 18 Feb 2026 17:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vH0j1bU/";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="dROlG5Y0";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KRN/vjqF";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qeOBMTSf"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="SNECamYv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.68.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE55D33F389
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Feb 2026 17:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E222BE04B
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Feb 2026 17:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.246.68.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771434855; cv=none; b=jgjg3uapdBI2zZPUpiNgLQWOMbOjsN70lulj2FUJ47O/MTaN55X7gsQsKrb8mOLH2fRbToua082xlQ/kSUrtUnigxon3n220iL5XtOLB+yTooD7WnkdCMQa3w+2W8jAW5TmCuy5inq4jrnBHMNvQTSI54B2VUnxXAjIMt3SM9W8=
+	t=1771435653; cv=none; b=mcvG6N9ckG/fpYQGgcHpqAktDoguiCcdnjXiAEkfYJdjiD7TdRrBypsBJ+YjJZUsmMRCWwrFNd8Bg6DxyAzEleXLjiTAz4c1tdVzBfDVVRhdkFD/31ASYkQpHJFRflnCIFsiy46z9YfNFMCx9Bkyb7m1NnIBN6KxJVb08p4uono=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771434855; c=relaxed/simple;
-	bh=V4ubtxTZe6qjg85/HutGSAp8jrshlZZcGnuQ7i3rRsY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FyQRbxS6BfOD3efZdqUTS59jrPrPe1cGXUTpew6ayFx7dgU6M95UK8vIQS7j0DYsb3XYRF/A/yM/JRGLLWIBg+iwZnrXCHSMzKdjmRfcnbiDmm0yW3uII2UNbuEz/jOj4myO1rFc3qfCKhLQERVyBAVLmDFLJY/3ffEo/OtP4jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vH0j1bU/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=dROlG5Y0; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KRN/vjqF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qeOBMTSf; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BAA885BCE5;
-	Wed, 18 Feb 2026 17:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1771434852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+145KWOw3QDQIRqPhnmXA3oHucxMq9auILbBaUBYpl0=;
-	b=vH0j1bU/gRr05S3sHY60kx3an2rq/YBi07seig6P/nxO9Zef49VKHwgDmwMU+YBHGdzewR
-	PR/QBO0aQUhG3DOHueFy4qrfniCqFRH3MDO6RFNPMbblj7oraIftr41s8PdbWm+0jsMwNq
-	hLjpXtTJ9EdIHzvspgbypm8wodd6kog=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1771434852;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+145KWOw3QDQIRqPhnmXA3oHucxMq9auILbBaUBYpl0=;
-	b=dROlG5Y05UXillUiWdRnvk1k1Q9a+bVchpMeJpasQGyr7WdF1uGLzgCnbt6VnpTduuJLm6
-	W4xJWQ5HhYFp6xAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="KRN/vjqF";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qeOBMTSf
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1771434850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+145KWOw3QDQIRqPhnmXA3oHucxMq9auILbBaUBYpl0=;
-	b=KRN/vjqFRKPS5cVQL8RkgNpwbVPqx4b5jyCh1aLbiPHtBw+3JY8kfH7E9M16IncdeZVRZj
-	d+kVFt9bhslH6HtnMbIB5Q9lGI1LC4LiNgotRvjVn/4Vh3JIUzsW4OXAP1tYsMh5j71tGX
-	1YkngPibDlB/wMGRRUoypxUUVkjfK1o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1771434850;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+145KWOw3QDQIRqPhnmXA3oHucxMq9auILbBaUBYpl0=;
-	b=qeOBMTSfU3QIUkXBwkk4CVHE1kCnudFcf4x0si44RwmRVy2XSdWixbJ8HFnlQ75nd+fEVy
-	oHYQ1bN90YL/XWDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 02AD63EA65;
-	Wed, 18 Feb 2026 17:14:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EPXYOGHzlWmUTwAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Wed, 18 Feb 2026 17:14:09 +0000
-Message-ID: <59c133d4-9e5c-4eee-95c2-4a8877b052be@suse.de>
-Date: Wed, 18 Feb 2026 18:13:56 +0100
+	s=arc-20240116; t=1771435653; c=relaxed/simple;
+	bh=CTWHegnRg4eXbrQzilzPDV0aXDg9EwNRZacrTI/nRRA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VVCmaT0bQIg9pevKWcY5oZXkpL6cY0/plt1Y/2U90OpIndwuLNRHec3DL/5KYy14zojHYb9+G5okvgDmwG+2vOHlhObkMzq9eK/2Pgp8QJi3DgvbB6+dMyjzZRVT11puGSUaXEYQ30gcl+BmKB1N5xnft8j9sty4ciW5iVRRe8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=SNECamYv; arc=none smtp.client-ip=44.246.68.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1771435652; x=1802971652;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mOWYGDIqBhxDzDFnYpDvJcwbNF1GkaKgRaSpLVKHi8U=;
+  b=SNECamYvnVAwBkiWb5WFQso8gVu9bt5ighSCzTwffYF5izxuq8phSbom
+   NTyxOsMJMU/wuMNkH3c6YCnko7fZOdcK+fbqk5PfnSF6pZ0xHtvdJXQ8s
+   xjqolwZm+4Fcn3AXRq36Ha60hb8+ZLIjU5YccX5JMIq8PZ4qjGmR0S1mg
+   1naJxfYD9Bmu/AbkMSg/XGzwTcwzSpoInrEcQOy1rkAhezeGITyluyrVd
+   9qt4Zd9lPSA8ez3j1V1eky/GCde+SnbaRtXN1sEgGYtFMCUOXfXP0fXwM
+   hp/1u1taovQMCQ15gDyOzHSbnJQ3ctwtMUKgPxYEptG72VSLboNCF5CZ1
+   g==;
+X-CSE-ConnectionGUID: XrGpzENNRSql7O+2h76BLg==
+X-CSE-MsgGUID: /fqf/5ksR+qJvUlkR+Am+A==
+X-IronPort-AV: E=Sophos;i="6.21,298,1763424000"; 
+   d="scan'208";a="13310430"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2026 17:27:30 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:32217]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.28:2525] with esmtp (Farcaster)
+ id c9c293d9-b648-4827-bc73-069bd179c03d; Wed, 18 Feb 2026 17:27:29 +0000 (UTC)
+X-Farcaster-Flow-ID: c9c293d9-b648-4827-bc73-069bd179c03d
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Wed, 18 Feb 2026 17:27:29 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Wed, 18 Feb 2026
+ 17:27:27 +0000
+Date: Wed, 18 Feb 2026 17:27:20 +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: Jason Gunthorpe <jgg@nvidia.com>, Gal Pressman <gal.pressman@linux.dev>,
+	Tom Sela <tomsela@amazon.com>, <linux-rdma@vger.kernel.org>,
+	<sleybo@amazon.com>, <matua@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+Subject: Re: [PATCH for-next] RDMA/efa: Add AH usage counter with sysfs
+ exposure
+Message-ID: <20260218172720.GA20529@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+References: <20260212163628.GG12887@unreal>
+ <20260215134122.GA18825@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+ <20260215171543.GB12989@unreal>
+ <42c8552c-eb41-43f5-bea5-fdd46edba65a@linux.dev>
+ <20260215175707.GC12989@unreal>
+ <20260216110853.GA6455@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+ <20260216112207.GF12989@unreal>
+ <20260217145426.GA9217@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+ <20260218001408.GB723117@nvidia.com>
+ <20260218091559.GF10368@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net,v2] net/rds: fix recursive lock in
- rds_tcp_conn_slots_available
-To: Simon Horman <horms@kernel.org>
-Cc: pabeni@redhat.com, davem@davemloft.net, allison.henderson@oracle.com,
- syzbot+5efae91f60932839f0a5@syzkaller.appspotmail.com, kuba@kernel.org,
- rds-devel@oss.oracle.com, gerd.rausch@oracle.com, netdev@vger.kernel.org,
- edumazet@google.com, linux-rdma@vger.kernel.org
-References: <20260217223802.21659-1-fmancera@suse.de>
- <20260218100206.88254-1-horms@kernel.org>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <20260218100206.88254-1-horms@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20260218091559.GF10368@unreal>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: EX19D042UWB002.ant.amazon.com (10.13.139.175) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17000-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17001-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,5efae91f60932839f0a5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url]
-X-Rspamd-Queue-Id: 2AF8C158272
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	NEURAL_HAM(-0.00)[-0.996];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 1CCC71584A5
 X-Rspamd-Action: no action
 
-On 2/18/26 11:02 AM, Simon Horman wrote:
-> This is an AI-generated review of your patch. The human sending this
-> email says "I'm passing this on, not becuase of the first coment
-> regarding fan-out, which I think seems reasonable in it's current
-> form. But because of the second comment, at the end, regarding the
-> receive path. I'm not sure about that one either way, but it seems
-> worth passing on to you."
-> 
-> For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
-> ---
-> net/rds: fix recursive lock in rds_tcp_conn_slots_available
-> 
-> This commit addresses a recursive lock warning reported by syzbot in
-> rds_tcp_get_peer_sport() by replacing kernel_getpeername() calls with
-> direct socket struct access to read the peer port number.
-> 
-> Closes: https://syzkaller.appspot.com/bug?extid=5efae91f60932839f0a5
-> 
->> diff --git a/net/rds/connection.c b/net/rds/connection.c
->> index 185f73b01694..a542f94c0214 100644
->> --- a/net/rds/connection.c
->> +++ b/net/rds/connection.c
->> @@ -455,6 +455,9 @@ void rds_conn_shutdown(struct rds_conn_path *cp)
->>   		rcu_read_unlock();
->>   	}
->>
->> +	/* we do not hold the socket lock here but it is safe because
->> +	 * fan-out is disabled when calling conn_slots_available()
->> +	 */
-> 
-> Is this comment potentially misleading about the safety reasoning?
-> 
-> The comment says "we do not hold the socket lock here but it is safe
-> because fan-out is disabled." This is factually accurate - with fan_out
-> set to false, the code path that reads from the socket (via
-> rds_tcp_get_peer_sport) is never reached.
-> 
-> However, the phrasing could confuse readers about what happens if fan_out
-> were true but the lock weren't held. In that scenario, the new code
-> (reading inet_dport directly) would still be safe because inet_dport is an
-> atomic-width read of a stable field.
-> 
-> The comment conflates two independent safety properties: (1) the socket
-> isn't accessed at all when fan_out is false, and (2) if it were accessed,
-> the new implementation would still be safe without the lock.
-> 
-> Could the comment more precisely explain the safety reasoning?
-> 
->>   	if (conn->c_trans->conn_slots_available)
->>   		conn->c_trans->conn_slots_available(conn, false);
->>   }
-> 
-> [ ... ]
-> 
->> @@ -59,30 +59,12 @@ void rds_tcp_keepalive(struct socket *sock)
->>   static int
->>   rds_tcp_get_peer_sport(struct socket *sock)
->>   {
->> -	union {
->> -		struct sockaddr_storage storage;
->> -		struct sockaddr addr;
->> -		struct sockaddr_in sin;
->> -		struct sockaddr_in6 sin6;
->> -	} saddr;
->> -	int sport;
->> -
->> -	if (kernel_getpeername(sock, &saddr.addr) >= 0) {
->> -		switch (saddr.addr.sa_family) {
->> -		case AF_INET:
->> -			sport = ntohs(saddr.sin.sin_port);
->> -			break;
->> -		case AF_INET6:
->> -			sport = ntohs(saddr.sin6.sin6_port);
->> -			break;
->> -		default:
->> -			sport = -1;
->> -		}
->> -	} else {
->> -		sport = -1;
->> -	}
->> +	struct sock *sk = sock->sk;
->> +
->> +	if (!sk)
->> +		return -1;
->>
->> -	return sport;
->> +	return ntohs(inet_sk(sk)->inet_dport);
->>   }
-> 
-> The commit message states "For rds_tcp_conn_slots_available() the lock is
-> already held because we are in the receiving path." Is this claim accurate
-> across all receive paths?
-> 
-> Looking at the two receive sub-paths:
-> 
-> 1. In the backlog processing path (shown in the syzbot stack trace), the
-> socket IS owned because __release_sock() runs while the lock_sock
-> ownership bit is still set:
-> 
-> tcp_sock_set_cork() -> lock_sock() -> release_sock() -> __release_sock()
->    -> sk_backlog_rcv() -> tcp_v6_do_rcv() -> tcp_rcv_established()
->    -> tcp_data_ready() -> sk->sk_data_ready() -> rds_tcp_data_ready()
->    -> rds_tcp_read_sock()
-> 
-> 2. However, rds_tcp_data_ready() can also be called directly from the
-> normal softirq receive path via tcp_data_ready() -> sk->sk_data_ready(),
-> where the socket lock is NOT held. In this path, rds_tcp_read_sock()
-> calls tcp_read_sock() without lock_sock.
-> 
-> The fix is still correct in both cases because inet_dport is a stable
-> atomic-width field, but the claim "the lock is already held" is not
-> universally true for all receiving paths.
-> 
-> Should the commit message be more precise about when the lock is held?
-> 
+On Wed, Feb 18, 2026 at 11:15:59AM +0200, Leon Romanovsky wrote:
+> On Tue, Feb 17, 2026 at 08:14:08PM -0400, Jason Gunthorpe wrote:
+> > On Tue, Feb 17, 2026 at 02:54:26PM +0000, Michael Margolin wrote:
+> > > to monitor AH usage in production. Resource usage and traffic counters
+> > > are usually collected periodically (every 1-5 seconds) by dedicated
+> > > collectors (e.g., Prometheus node exporter). 
+> > 
+> > Can you just have two simple stats
+> >   '# HW AHs created' 
+> >   '# HW AHs destroyed'
+> > 
+> > and the value you want is the simple difference?
 
-While I think that is right, the relevant part is the atomicity. The 
-operation is safe but it requires a READ_ONCE() annotation probably.
+I think that adding two separate counters as you suggest under
+/sys/class/infiniband/*/hw_counters/ can work for us.
+Will submit a new patch for this option.
 
+> 
+> Which can be collected from FW through FWCTL?
+> 
+> I don't super excited to see slow, unique sysfs UAPI field in RDMA
+> subsystem. They are interested to get FW information, let's use
+> interfaces which are intended for it.
+> 
+> Thanks
+
+Leon, the device currently doesn't expose this info and it's generated
+in the driver.
+
+Michael
 
