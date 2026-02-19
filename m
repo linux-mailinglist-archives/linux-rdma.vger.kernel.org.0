@@ -1,132 +1,177 @@
-Return-Path: <linux-rdma+bounces-17005-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17006-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qAbIOBVjlmmSegIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17005-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 02:10:45 +0100
+	id sHsfLSKVlmkZhwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17006-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 05:44:18 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92ADA15B53E
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 02:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19F5015C0D6
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 05:44:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 16AE13044A54
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 01:10:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4D5EC303CE90
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 04:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D2B29CE1;
-	Thu, 19 Feb 2026 01:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789992882C9;
+	Thu, 19 Feb 2026 04:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gdy5uAH9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kcP4+gNS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33798243968;
-	Thu, 19 Feb 2026 01:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009FF29A312
+	for <linux-rdma@vger.kernel.org>; Thu, 19 Feb 2026 04:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771463423; cv=none; b=qMfrrXNTh6E8I16BIxQAdzJjLTd32LdcEZ6joDWV0HoVSl+/ca79QhXY3Zyt+LsbcOapl2Q+GJ3BOMVxUOUEXvaAPDe6TROvYucl4yNiH8hFRW7to6YlAOYiFng1FtJ3LIzdN7fy5eaznwh4CI6uXINZScZ9WHrYG/sXse3NQgQ=
+	t=1771476227; cv=none; b=YM/v5dP7PBuk/AeFMDo3Tv+pScX36w9elGt7fKCWyEZxkfPZnc4bjFhJiGHWG4Y4GdET0B+e1CeI9GhCq1VsgkpJaCwPaz+SAM4+V2uPWwkWYKqaQtBp+LylmnUg/LqB1E+epjqiD3gvIoFIT8u2jJLuOZZ/g50vzVtVdV2QIlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771463423; c=relaxed/simple;
-	bh=ICf/6ddY3DQ1xjNTEqjK16rDz4G0aX10NNthOscZx6c=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=pmkyiDfltaSVoQAPgkpThWYdqn9yi6em30C0pxmKJI3GRRBQC2bXdabccDL4kp6xMfSEU9ZVIk+dexZjtIbJEBAB37zd+4x3jENq8AjcclfFn2gpCH82D+bw4WldRqmex7X35fL2X5pz5xHAeWes+3Hx5TUEdIQceqVi4tEpHCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gdy5uAH9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12970C116D0;
-	Thu, 19 Feb 2026 01:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771463423;
-	bh=ICf/6ddY3DQ1xjNTEqjK16rDz4G0aX10NNthOscZx6c=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=gdy5uAH9RUQcHYiJMmDlPRf8fhW9MZWdo+7WTENgJmR6xoMZj70Cv7Hhs0yDOytol
-	 60cNViBHj059KF0lK7wPCnCgiMnoabweVjbg05JHIRtpgfWNa8di2dHz7f2VRgVz/U
-	 JWNL3OquTh7C3Mj/6mcw7e90tYewrgb2ffkm+yp3qn8KmXsyEPauDxFK3rtxtaVLY2
-	 /WHySz4RVSxVtgT1VpA9jr0ZcPnBWPbj7ln+xMAr5LiEeWpmXZxZkjw7l21/a7KUan
-	 NdiaatmsnSIcjrSFNocGb5buVan9pnCmlxi85rnFXDpMaWPgZH/GZCdBkTsmLWc3sI
-	 MNxnDedkPFbQw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 85189380CEE0;
-	Thu, 19 Feb 2026 01:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1771476227; c=relaxed/simple;
+	bh=pratuVAOGf7bq6R4P7Fll7ZSA31+JBME/ICQsdRNRTo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MsT3Spb3BAVuXIfDZXkAJsysBJFslNcQR4UKrT2LkO3F9nh3Ak3DYDviU1BH6fx37srrrm5MBBlij0cwJ03KNG6zq8hsranuhlqt1jUlWo+b/0RT06UdXRmS2UZjS+fsN4cWCRs1crvjUf+jkSC0VgNf2Er3JGzZZPgTEL9HGbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kcP4+gNS; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7b4d9e08-122b-4c4b-868e-d48ec0f59dce@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771476212;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MzIYd8Bu6oYmjdq1gkTQwThMj3+Mr0OUwvt9JYbMgDg=;
+	b=kcP4+gNSFzT9Ojfg+u/nAE86J7X1YCQaUm0MRgc4M1bbjaYv/sUhB2LoobSiDSzjlxTWYK
+	cq1k7BbKRZCoRq80TBaGDCvJFTcp1jqbhrIUqKDk6pGLptfmyFaHzocLljJ1A5I4KeSLFf
+	KYzXLrMumHfN0sB8IyBtf5Df95DLUeI=
+Date: Wed, 18 Feb 2026 20:43:26 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [RFC PATCH v4 0/2] RDMA/rxe: Add dma-buf support
+To: Shunsuke Mie <mie@igel.co.jp>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Jianxin Xiong <jianxin.xiong@intel.com>,
+ Leon Romanovsky <leon@kernel.org>, Maor Gottlieb <maorg@nvidia.com>,
+ Sean Hefty <sean.hefty@intel.com>, Sumit Semwal <sumit.semwal@linaro.org>,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
+ etom@igel.co.jp
+References: <20211122110817.33319-1-mie@igel.co.jp>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20211122110817.33319-1-mie@igel.co.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net/mlx5e: XSK, Fix unintended ICOSQ change
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177146341407.1623576.6989061795597832585.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Feb 2026 01:10:14 +0000
-References: <20260217074525.1761454-1-tariqt@nvidia.com>
-In-Reply-To: <20260217074525.1761454-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, gal@nvidia.com, moshe@nvidia.com,
- alice.kernel@fastmail.im, witu@nvidia.com, dw@davidwei.uk,
- dtatulea@nvidia.com
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17005-lists,linux-rdma=lfdr.de,netdevbpf];
-	FREEMAIL_CC(0.00)[google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,nvidia.com,iogearbox.net,gmail.com,vger.kernel.org,fastmail.im,davidwei.uk];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[igel.co.jp,gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17006-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_NO_DN(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 92ADA15B53E
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,spinics.net:url]
+X-Rspamd-Queue-Id: 19F5015C0D6
 X-Rspamd-Action: no action
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 17 Feb 2026 09:45:25 +0200 you wrote:
-> XSK wakeup must use the async ICOSQ (with proper locking), as it is not
-> guaranteed to run on the same CPU as the channel.
+在 2021/11/22 3:08, Shunsuke Mie 写道:
+> This patch series add a dma-buf support for rxe driver.
 > 
-> The commit that converted the NAPI trigger path to use the sync ICOSQ
-> incorrectly applied the same change to XSK, causing XSK wakeups to use
-> the sync ICOSQ as well. Revert XSK flows to use the async ICOSQ.
+> A dma-buf based memory registering has beed introduced to use the memory
+> region that lack of associated page structures (e.g. device memory and CMA
+> managed memory) [1]. However, to use the dma-buf based memory, each rdma
+> device drivers require add some implementation. The rxe driver has not
+> support yet.
 > 
-> [...]
+> [1] https://www.spinics.net/lists/linux-rdma/msg98592.html
+> 
+> To enable to use the dma-buf memory in rxe rdma device, add some changes
+> and implementation in this patch series.
+> 
+> This series consists of two patches. The first patch changes the IB core
+> to support for rdma drivers that has not dma device. The secound patch adds
+> the dma-buf support to rxe driver.
+> 
+Hi, Shunsuke Mie
 
-Here is the summary with links:
-  - [net] net/mlx5e: XSK, Fix unintended ICOSQ change
-    https://git.kernel.org/netdev/net/c/0da1dba72616
+I was revisiting your 2021 proposal around dma-buf integration with RDMA 
+and the related discussions at the time.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+As you know, dma-buf usage in RDMA-related workflows has gained more 
+traction recently, and we are seeing increasing interest in 
+heterogeneous memory and cross-device buffer sharing. Given the changes 
+in the ecosystem since then, I’m wondering whether you think the 
+original direction might be worth reconsidering.
 
+Do you have any interest in continuing that line of work, or updating 
+the design based on today’s context? If not, I’d still appreciate your 
+perspective on what you see as the main blockers from the previous 
+discussions, and whether you think the landscape has changed enough to 
+justify another attempt.
+
+Depending on the direction, we may consider exploring dma-buf support in 
+rxe or at the core level, but I’d prefer to first understand your view 
+before moving forward.
+
+Zhu Yanjun
+
+> Related user space RDMA library changes are provided as a separate patch.
+> 
+> v4:
+> * Fix warnings, unused variable and casting
+> v3: https://www.spinics.net/lists/linux-rdma/msg106776.html
+> * Rebase to the latest linux-rdma 'for-next' branch (5.15.0-rc6+)
+> * Fix to use dma-buf-map helpers
+> v2: https://www.spinics.net/lists/linux-rdma/msg105928.html
+> * Rebase to the latest linux-rdma 'for-next' branch (5.15.0-rc1+)
+> * Instead of using a dummy dma_device to attach dma-buf, just store
+>    dma-buf to use software RDMA driver
+> * Use dma-buf vmap() interface
+> * Check to pass tests of rdma-core
+> v1: https://www.spinics.net/lists/linux-rdma/msg105376.html
+> * The initial patch set
+> * Use ib_device as dma_device.
+> * Use dma-buf dynamic attach interface
+> * Add dma-buf support to rxe device
+> 
+> Shunsuke Mie (2):
+>    RDMA/umem: Change for rdma devices has not dma device
+>    RDMA/rxe: Add dma-buf support
+> 
+>   drivers/infiniband/core/umem_dmabuf.c |  20 ++++-
+>   drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
+>   drivers/infiniband/sw/rxe/rxe_mr.c    | 113 ++++++++++++++++++++++++++
+>   drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
+>   include/rdma/ib_umem.h                |   1 +
+>   5 files changed, 166 insertions(+), 4 deletions(-)
+> 
 
 
