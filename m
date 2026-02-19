@@ -1,434 +1,287 @@
-Return-Path: <linux-rdma+bounces-17025-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17026-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kBBkChV7l2m6zAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17025-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 22:05:25 +0100
+	id SH/TFAqNl2lv0QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17026-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 23:22:02 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947E4162921
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 22:05:24 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1ADC1631DC
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 23:22:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 96A833014696
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 21:05:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1818D300D4C0
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Feb 2026 22:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AAA326D63;
-	Thu, 19 Feb 2026 21:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CA332B99D;
+	Thu, 19 Feb 2026 22:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="X+mVJ30X"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lLjgFDbu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013053.outbound.protection.outlook.com [40.93.196.53])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3B530DD3B;
-	Thu, 19 Feb 2026 21:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CD332ABD0;
+	Thu, 19 Feb 2026 22:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771535122; cv=fail; b=i4xTx99kGH39eoY9lob3N+F3XoC+KhA5npHT2SRkQNbXKd/SZOeNbtSHGi4RBHvl/J+DRlSunMtXSqiVPhZ0+S/ypaKVkLLlS3+u5RlS1KhpnzeRAumwrRuTx22tEsPHukqYWFur8eiB3JC0S1ujVnkOyw9YVqzqH5KKNxCIooM=
+	t=1771539719; cv=fail; b=BboLqyP0WbIh4zT1iLdsW0F/xJ4fN8ZgAwskJoMP/C7MLLHExWLxtw5xnD+kyh4q/m01gx0gzfoGYDMLvHKe06GqYUiWG80ySLgMo0Slo+T4qzKU2O9Dz7oQAsgmzWbE0WCSYSrbBCfey78Cmcm6aV2ja0BjNP/pE5GcqBw8Wng=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771535122; c=relaxed/simple;
-	bh=Py35zsJjuzYhux0cS35SIdX2QXUs2NG/VEtrVXz2wqQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NV9DR8FUFn4wt3tu/YbPMg8oSPNL3auZHFAn9nwuoryvDhxC7ReAuuAboU5E98v0nIdcq1wgNGfrAHm1gPpRqS++MXRO4borqr/128ObrujlxlTp6NuDWP7Tpjhl+eckIIJbtmg9Z5yyqwMrc2haXygHUAD+n/3cza31bh4yj/8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=X+mVJ30X; arc=fail smtp.client-ip=40.93.196.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1771539719; c=relaxed/simple;
+	bh=pKmEVqhfdz1vY0ARXyHtULnSZQiCrBE400xz+vodUc4=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Y2QOVSxNa8ox3N8oD3iIAuNBlr+aYt/hiGXWpLUQ7ovYe5NY6HDOvLBKE41BAH91iT3xbL9CoC04qAtt7wtSCcLuSMu7yKmstUib8IGmz8UTPG1CfP5DhMfQIswLfMBGua8bsmARTi9UbbEv2c5yhpN2NrzsMrVcgA/NO8MSGa4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lLjgFDbu; arc=fail smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1771539718; x=1803075718;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pKmEVqhfdz1vY0ARXyHtULnSZQiCrBE400xz+vodUc4=;
+  b=lLjgFDbuKmAdp5mMqRmmFL1Rd8W7bJjvQCIgSqDT/CxHHiR8bqTCCArL
+   25iZoNii/Vsa8wuvKRO/i0WkNRxKotc7a7OimFQgkx1tJTQCDLxlO5QG7
+   5etTYGwAZPiAjWvk52tPei/HgVe0GphIzs9TfEZ3TmlYiJ0DVOsvicyiJ
+   0d0+4B0MbpX3BBm21P9PDnvvRf2j6c9dh5jjDW6faSqK1aTanOTbC4zSh
+   Ig2XoxD7UWLmLX6Bkx2Mpfj9FCxY0qMQAIz96uO8Nl1sF+ZdqpZkjGsWf
+   Ju+lHq7sN5716BDpAl/jLMwwKKxRafAVsnBq8gkr05+CapfaB0mCslQXO
+   Q==;
+X-CSE-ConnectionGUID: 0KTt3s7eROysOrWz5Y/I0g==
+X-CSE-MsgGUID: 52weru1wRWWpTjTB/7d8Ew==
+X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="90223667"
+X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
+   d="scan'208";a="90223667"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 14:21:57 -0800
+X-CSE-ConnectionGUID: XrR11qvcT9qzlE0qwFSgOA==
+X-CSE-MsgGUID: AG/I1RXGQ2uhuzMWtdGD+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
+   d="scan'208";a="243232602"
+Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 14:21:57 -0800
+Received: from FMSMSX901.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Thu, 19 Feb 2026 14:21:57 -0800
+Received: from fmsedg901.ED.cps.intel.com (10.1.192.143) by
+ FMSMSX901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35 via Frontend Transport; Thu, 19 Feb 2026 14:21:57 -0800
+Received: from CY3PR05CU001.outbound.protection.outlook.com (40.93.201.47) by
+ edgegateway.intel.com (192.55.55.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Thu, 19 Feb 2026 14:21:56 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SbWXCcE+icgy4KzpF2hE7U1oVZH/98f/vJ1mzgOOrBvtAF/qWYdc9W6p1L5NGP6MrMQGbbwZ3LEBs7Wvt4MulvZG66ygFEZimEBObDloMypDxIAUHU9DSFKc5J2uLzrRpu2fi89Uujw2WcBLAVCJJSZdu+RuecalahtEKvwMgVduHMGvesm83XxrrqAaKLy235eoEUX6hYl5nNtqsvxhKoYS/vC/JDhTEnOj/maoo4b4rVC9EPEgQafl7ajLd4rrwCOOxdfs2iksPTBw12fwEIzPWr861jsA73eqM5i2iHmEsIYllmxiJDmW45MU/dyaSx77/cyIgduK4exRDZAupQ==
+ b=R3uJbs/ZlpX7PGwRrlsgGP7hJZkSP78BMvKifi5tbfCzRMndG4G65fVxWxGCwlLOVVzL6CpfV6gjJv/9idy2btLDKfBSo4ePfYfp37+llm9EuSH9LDSj2pQKgX1KZdti4NDerijelhy+uxPuypVZ7uVhOcqF2rNneqtcZyX8TV2HAH++6C6TPI1/+tRyPE7D6yqAnFs2WcDjItD/yydKwGEN19z3NbWWps532gOXLsUXNRbTbqd5QisD+wHGeR8b2SLr60JqqdoNzju+91tvfNqLdg9QVjmEJLg5BkCJVI3WC3uPNfaIuGr8uPF855zSs7cVSObk8Jy2LifH69EoBg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k0mkt8hWmrDuOjlmtYGwW5M1/NeWDPFOdd8e49cvzpA=;
- b=v2TQ2jwtopnomG9LFCTjAucW97y2r8DCrBmJMBGPkIh/I2WWV8MSNqSZol3OIZvqX56p0tEY4CNzqlEhlL7RFsZQcikjjRiBdoH6QFCp/9lLFe/jqoLRMKwXQa48VP611JssAvFrR3rWEDOY6pK1H94Hl1EUP3ei+lK9R1Q3dSujiQcV9WACy+80wtIKGw/dibqME/ibfHsDecrJEvRpsEiAjH230ttgJNJh8c8Zo2MtL1T0X/GViIUmP8zUjYxIP8uAkEIGxFIcHtVCAznvB5EZW1ttqDoLPVC1PpHjSE50WFCDP2Zy0OZOZq0BRkX396gfUDpJQwYnzXBahlL7vA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k0mkt8hWmrDuOjlmtYGwW5M1/NeWDPFOdd8e49cvzpA=;
- b=X+mVJ30XOreNJmeqFk1iCoF8NtyR431/NrLoPW6Etls8Lbt+gVxE3V7uucGE2QwuMRGW+ItOhtZVYFQ6gh5WB1JHkQ2tv3k6LvQ3Q16lBwjsQiTXAx204gc6GtGgYozJZphvyqg4o7B1qgLWL34fP7ekZPEp05BB4Nb5YCuqdAsGSDowCWSPmuXIb3aXI3S6dSpY7yejj3h1nQjwkltfheNwI9WZpMt5z62oCzfxUg5Kd4uWKxHTLlbkOr8Wh5Nh6NecvktvsumbRr2F7Dvx+KxLjCZxOfxbMc3U7F1tMBv9w37+DmY3D3ollUlVoiVPEYNfo0HzyxMsb9pHk0CfJA==
-Received: from BN9PR03CA0857.namprd03.prod.outlook.com (2603:10b6:408:13d::22)
- by IA0PR12MB8896.namprd12.prod.outlook.com (2603:10b6:208:493::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.15; Thu, 19 Feb
- 2026 21:05:16 +0000
-Received: from BN2PEPF000044A2.namprd02.prod.outlook.com
- (2603:10b6:408:13d:cafe::86) by BN9PR03CA0857.outlook.office365.com
- (2603:10b6:408:13d::22) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9632.15 via Frontend Transport; Thu,
- 19 Feb 2026 21:05:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN2PEPF000044A2.mail.protection.outlook.com (10.167.243.153) with Microsoft
+ bh=W/Jd087MjXNKXKIzGre5+QThXaEanHiR8tU+3ae+9v8=;
+ b=e7V85q3XCwDMrdFkoGJyt3CpJcQUnhTrc8ykeHlx+AzxJ3axkNmpxEYGBmSpfhLyxq0aw+4BNuOg2u3Y41+gFzQI5M8ClMBYYo6rzmNpQbQYUAWcJnzdy2I3ymsKofW/lcZOTnCU99C/rkEKXGcLGuU9/XxpC2PmbHfYqyZvqKCLbrfoCfdKpDm3fBDlUKf6kI/fptjx0K9oQ50QbBFyJW1y9ERQc6fqK/Z/b7C1JVOBrKsasdcIaWSOnPVpZuTWZ/qlY+pYFMbmLpslaOq3lvxdQQruWQpWSBsAx3Vijwx3RpPWkWJbjnt66CT3Kkg6UsESJ5X3+yeCJblMtvdWMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7579.namprd11.prod.outlook.com (2603:10b6:8:14d::5) by
+ IA1PR11MB6123.namprd11.prod.outlook.com (2603:10b6:208:3ed::7) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9632.12 via Frontend Transport; Thu, 19 Feb 2026 21:05:15 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 19 Feb
- 2026 13:04:54 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 19 Feb
- 2026 13:04:54 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 19
- Feb 2026 13:04:49 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Danilo Krummrich <dakr@kernel.org>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, "Eric
+ 15.20.9632.15; Thu, 19 Feb 2026 22:21:53 +0000
+Received: from DS0PR11MB7579.namprd11.prod.outlook.com
+ ([fe80::4199:4cb5:cf88:e79e]) by DS0PR11MB7579.namprd11.prod.outlook.com
+ ([fe80::4199:4cb5:cf88:e79e%5]) with mapi id 15.20.9632.010; Thu, 19 Feb 2026
+ 22:21:53 +0000
+Message-ID: <34a19eb9-57c3-4191-a0a0-215a249b2a40@intel.com>
+Date: Thu, 19 Feb 2026 14:21:52 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] driver core: auxiliary bus: Fix sysfs creation on bind
+To: Tariq Toukan <tariqt@nvidia.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	"Danilo Krummrich" <dakr@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+	"Leon Romanovsky" <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, "Eric
  Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
 	<pabeni@redhat.com>, <driver-core@lists.linux.dev>,
 	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>
 CC: Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Amir Tzin
 	<amirtz@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH V2] driver core: auxiliary bus: Fix sysfs creation on bind
-Date: Thu, 19 Feb 2026 23:04:35 +0200
-Message-ID: <20260219210435.1769394-1-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.44.0
+References: <20260219210435.1769394-1-tariqt@nvidia.com>
+Content-Language: en-US
+From: Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20260219210435.1769394-1-tariqt@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0091.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::6) To DS0PR11MB7579.namprd11.prod.outlook.com
+ (2603:10b6:8:14d::5)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044A2:EE_|IA0PR12MB8896:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07ceea03-f150-42ef-ec26-08de6ffa949c
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7579:EE_|IA1PR11MB6123:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2fbf80fe-8246-446c-b018-08de700548df
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|36860700013|82310400026|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Lpuot9bcYpry/QSxh9sC3zjpKfE4Lc7AM/8P8S7Hz1035+T5Q0r3L1Skd/zd?=
- =?us-ascii?Q?IudGNMnkQmpvI+YJBgSZ9w+oqJ5C5n0u/TedY9Gxhy2/MVR9rEzm0JB+jOWC?=
- =?us-ascii?Q?jGPpmL/PZ+e5+H0rzd3L+jLa262/YC6raVtqKm7LiGIgAu2NxmpMQNZv29F4?=
- =?us-ascii?Q?VRss7yKbmQoZh60i2CDNQx8O9ETwA0QTUf01+sS+MUC82lHgoPywJgjc/PCh?=
- =?us-ascii?Q?mv6c9ZBNrTw7k7RZA8rrlvFRMP2qOxGJJNil/voWXT59l/7abv9u/5qDKSZv?=
- =?us-ascii?Q?8vc02XKHOW5xyHK+9ejov05wh+i14KsVgePjnqY0dSXvZkMBiwd34oC+tVYo?=
- =?us-ascii?Q?2cY2BsEhqtFw+nkdPUqP3RhaD3xwgirljW0/HUX5MoPkyzMZ5SZT9qmb7qdc?=
- =?us-ascii?Q?jDVR3NjrgELt+YIhRVXJI5pp7Y/19pbTwxT4cX4ExI2JMi3kDPo7bFDrZ9uT?=
- =?us-ascii?Q?gr4z/YSorj1mkSMc1V9p4gl7AUYyf7SVkCwTrvzAxI2keeFcDqbHMocMT+uM?=
- =?us-ascii?Q?YUZKzcbUpXPvhG/fVM43TiaB9jd9dJbTubypQOckagK5c+shqMKLx0kbxCAE?=
- =?us-ascii?Q?ZiJIL3mZN64gwedPHmcK7e95bupfTLUuJWsYp7JX8U+7ZbntMXRqdzZb1w0/?=
- =?us-ascii?Q?aIpQd3jYs1jXzIefoH7Fdvs1mEQ4v5X/C3UXgnqNMhGO+JRsVIhPGtR8jqMa?=
- =?us-ascii?Q?cB5Yht4Zh7rtclkZr3/jCU/MrQiffv+4sA205Wnf9Om4oSZPuKX5EiNlWWGK?=
- =?us-ascii?Q?IAakE1QR6kpT7L/YdAJllR23EaII42lVbCpFeatoD74UOKjQloNjtImaCVE+?=
- =?us-ascii?Q?GwKo+luzmc3m25pgDT9Kqpzx/HL0Sw5PN6fxrcrDuMO88RgwwZ+vuH0yLP0d?=
- =?us-ascii?Q?YEugSxekFxddjDnTARjztIJWgEvcVP+NIHkLOktNg+WMg5MtYhZClMcd6ccR?=
- =?us-ascii?Q?nRW25XJCF7QAmEY+ZDK2IFQ9ZHR5c8B2hVb3QIqn9VPAxtxMhpJKAX6x0Kjq?=
- =?us-ascii?Q?4Qefg2N1cakvIdgajas/p3Z+324SPXeQTiex2vFnr/nHcPOECFFAQ0TxcgvO?=
- =?us-ascii?Q?fk7dX5yvvwS++tSJSI7ijv6LrBXHyiKTtgberXfIRakwbgfFt+ea+y0vXMli?=
- =?us-ascii?Q?DoNZNtzY4TiSzE/MtuiFzd0YCFLIbmKLr+KhmDPGvEiKwprSFguEOzUqCJjR?=
- =?us-ascii?Q?2TqJr0nw3m88AS7fDF0PSvs4pA1DWcaOe+pTl/rxs7AV0pox4iqq2XZnRaPZ?=
- =?us-ascii?Q?G4gYAiKR8puy5MNRVBlkZo8V9wg7TEZ1ilaJlwjWDpnzdUUaFvwuNF6zNvwg?=
- =?us-ascii?Q?iX2S3fhX8H1QGJKhSr6cDTblQptasl/+/brvr8AV8xd/vIUL+KkQm7NnVPKZ?=
- =?us-ascii?Q?Z1OajM1WXLcBXlq3X1DCEPJzOOygo2mYPEFVPIOfKYbIwfxDY75kWy8gLhAX?=
- =?us-ascii?Q?QkqlNxgjuieb8dT5un2hT88DtQArvg8Mn+HSGJqmQCsRBNWR0/axVdiQ3bff?=
- =?us-ascii?Q?CfqSb+mu1paSOQBhoHWHO2dSEpnCSnNEhuMeaFdn0cgBHRhK19OLburkhDxx?=
- =?us-ascii?Q?8QfYsIwRHrc0bNDS1XGue+NajsaSbZeaGdBw3mDyUEB7PEJom9MrcEDwpnkL?=
- =?us-ascii?Q?tu61063QEwxbW2iWbw7KmhVu8FDMqJsGzUvRz17gbI6FvKkoA1fJhdGZS64y?=
- =?us-ascii?Q?m/LY+GqUmfb0yE13ol2DklomDac=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|921020;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?b2d0RnF5T0FIZkRFTHh6MkxhZEdKVkRYTVZ0UVRPT2ZlOHFydnlXN25qMHBI?=
+ =?utf-8?B?aWpwQ0RKOEdRVzBxaTd2alRMQTNjQkFrYjhZclhmd1FvMFVnb0lxKzQ4UFFh?=
+ =?utf-8?B?MjExMWZNdnZ6b2NNaEhEZWhpOVlTcHd6NGEzZ3JuYzREeE5lYjByeHRHQklN?=
+ =?utf-8?B?KzZVQ2ZSSWt4emZDck91VkZ6cEZDdjFRS0NCQktvd3ZHTGpoYmgxc3NaSHVR?=
+ =?utf-8?B?c01vbk8xT09TZUh0aHFpdEpub3lJeXpKblNZOFV6SFFaV2NOZ2VwL1UxcjVL?=
+ =?utf-8?B?b1dyQ3BrNFRjMDdzZGp1ZTJyUWZHRXBzZXlFUVBNOTFnbGN1UG5ld0p5ZUVx?=
+ =?utf-8?B?bDk5T2RwYTJ2VFRjQ3hGQ0I3V1V2TnFYNTUyeDRXOVZzdWh0TTV6eVhndVNG?=
+ =?utf-8?B?S2xxVUEzWVQ5VS9UemVOV1prNEVrYmZVVGhnK1RMOTlRSGpRNUhhZVNrcm9I?=
+ =?utf-8?B?c3YvRnlqRVU3ZUFwbnRmWjdYOGtVUEZQT3VnUGZSOEQ5UjF3WEZOZUloNzcw?=
+ =?utf-8?B?eHY0WEVabVNNV2pINFhBLzJMaGRGUXJobjFGQjZUZi91bkhRQStab2QrZDVQ?=
+ =?utf-8?B?RGkvNGpSRHo1WjB6RUxYa3llRUZYSEZYVTFIb0NJOXkvUiswZEM4alhCUUsw?=
+ =?utf-8?B?ME5yYVZCVlBiNldwWmZCcEFKeFZMbVhwYUlSTDVKUW02cU5NVjlSeGZmUUhu?=
+ =?utf-8?B?MHY5bnROZjcveHpJQncreEIzc2lFWjdkNFVjSlhaK25jV0M4WVlkQ3dQeFk2?=
+ =?utf-8?B?UUUwUjJMQm1IdUVwWENMdW5Za3ByY1IwZWR2Q1djbzJRWFRDYlZsYnYwdE8w?=
+ =?utf-8?B?YXhNN2ZKa3lqTnlSVWpsd0paYlVLMU9Bd0E5Y3RuSXgvRTR2UUh1dUk0VEhu?=
+ =?utf-8?B?Vm94NWs0TTRWMDRSYnplR25NcFRuZmdGVVZvTlpwUk04U3lCRjlDSmRXUzhS?=
+ =?utf-8?B?L2c2ZVlRSGZlVm5Ycjl6RTZHY1I2MGU4QkpZd0d5MmZzMTBEMS9aOUVqa0Uw?=
+ =?utf-8?B?YXI2VHpWc3lGSDlHZkEvYVdaa1ZDQ2IyZ0ZtNThTWUx0NTlKTFpqYlczZDIz?=
+ =?utf-8?B?VmdpS3R6MGcwdExLR2dFRGQvbGpvcWlMc243Nkx1VlloYWxxeEg3dU9DaGxq?=
+ =?utf-8?B?UlBhS1VJWHlvbnRLNFZWenNCUVdHOEJXZldDcGQ2SC9TaFZsckRCT09BK213?=
+ =?utf-8?B?NEdYdzdLNklZTHVLQ1RNMEF0OGE4czRZZVVyR1FlSVlKU2RCN2VFNVlPTUFa?=
+ =?utf-8?B?VWlOb1dtMTVncXA0VkJJSG51dDkyWFVKZ3RJRHhYMWVpdzNhS3NUdVkvMG43?=
+ =?utf-8?B?Tzl0QThCQjFjM0JwOUJaUnVoZE05VU5EaC9ReXFoczVlWXlrSDJWTm9XY1B6?=
+ =?utf-8?B?MncwQ0h6MkhRNnc3MDhQMFBRaGNMVEo1U01GVWwwQ2taZ0NFalp4U2pPWGZC?=
+ =?utf-8?B?QWQ3Vm9DSjhLK1FLODd1Y2hKSjNsbzBzWnl4bTgzRDhsR2kzZ0U5OEc1NTdu?=
+ =?utf-8?B?UEdqWFNLYlpKOFlVL20zcHZXWWp3YUw1b2VjbUlldXlXT2E4L01RdUhnVG03?=
+ =?utf-8?B?U3Z6VFFSNkNXNEV0V0JDL1kxRUZCdm43RmxsSUtFL3dBYVduNjNsd2pzS3FZ?=
+ =?utf-8?B?SGtCSVY2N0ZyQ1hLUnBZYlhDZ2ZTRVlnV0ZCM2NkekZhdW42a2JZbnRSU1lp?=
+ =?utf-8?B?MjYrVHBsc0dOSzJ1QzBTMFVSOHlxTmxKbS9OYmRRbzNyQXNkNzgxZ0F0Sndr?=
+ =?utf-8?B?aElOMFhYWHVXMTVnTURiUmRYeGpPNGU2WmZCWldwWndWZUNheGFZUnR2VEdE?=
+ =?utf-8?B?NUJDbUZNVGhHd1hQdnNXVk5aUklkdno4bkM0aDVSVytYRkM2bnZ1RXRWNkx2?=
+ =?utf-8?B?MlNoU2t4NVE2Qzdxc2tBNDhjZktZNk1MMCtxbFl3cmZxaGpVZGlzMnovb0Rn?=
+ =?utf-8?B?cGU3eTFzaXAzUFVFeXQzMGVaRDc2M0ExR0UwSU56ZGJoQjIzQS9VK3dkWlNk?=
+ =?utf-8?B?ZHhaTFl4NkdtdlVlejRKTStQcWJnbFdTZEpsYmFNTDJ0QUNOamNYVDhCUjRN?=
+ =?utf-8?B?bVluWEd0VHBoek9ZL21uTlcydkdmZm1iSmtFY3lORDJWTU9jYUU5WFh4dVpN?=
+ =?utf-8?B?a3VoSUJubFZ5TUhuVytoSStUT3hmRE96YUMveWRucUs1Um1vclloWWJuWC9T?=
+ =?utf-8?B?TlE9PQ==?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7579.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	twphuWWIlbDpDbdezz9wjRkfvRfUaYLtetoMP1YsfZVuEmDYk+bOQgjnfV59FEIvNW38Xz0and8WoqoykTfz0OGLT6Ft6cmfGHMjHFEwKKCAswFjZcbI85buCAQD2Ip+WP9wHwW3UyETW3bXAomHf+M62gV+N4ggukf28qQEBfUfi3+iAzYHBL64K2l2AlB8HCJh4P8nn1y/SCoUGHpsBugn4iGv6qzqDrQtP6+BL/4JXk4FQAruY4ia9CgnIXd5kjp9hqSpSJrpCHFid/yTF2aDrsoDoPDIoLTQdtcQHhIlZi4yDCIE7zWZ6edU3gOZbNVgVA8/NVroQOhXTlVabb5M1fsMZohy63ylqDweED7/tb+hoZjO1UTBItosc5E94szZQqJT9uala4CVLzycgX+nJZ9QNDx3IsuvljyoeSi9saDbh7GBfdlktrDbsd0R
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2026 21:05:15.6897
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ajJGSXR0L1ZuVHZaajhLb21NSWYwc3B2ZFdMYS8vaDk5RXJ4d0dhaFNienFp?=
+ =?utf-8?B?eEp4TVJvOVkxVWFCNEs1WGZTMG00ZHIxNzcwS1dSQWQ1R3Z6MUhicjBkZ3dB?=
+ =?utf-8?B?SjJJMSt1WEMrWWhxZHN1NkRhY3h2dmhIcTVGUEYxK0FqTy9GRDZKM09aR29S?=
+ =?utf-8?B?L0FhZUgxeXFRZFVWWU1rMVNWcUFnVXJCNW52L29aREVwaVhoYURZZ2dPSUdk?=
+ =?utf-8?B?blFLQ1g4ZkFMTUdLLzQwZnBGTG1BZlk0S1dvT2hEU0M5REtyRUREVGowclI5?=
+ =?utf-8?B?Mi9ZUDUwenZCOTcreUVhL2hlWmduN0wveFRjbE9kSytDS2dEK0pQR1ppeC9E?=
+ =?utf-8?B?WVlyK3dDWWJBRGhidnBPTFBCOVJoaS9JV2p1UGVFNzJQSm5BaUFNcW5RZTlC?=
+ =?utf-8?B?NUx3U21Iem95QlF6QUpHV3Z5TzZpWFBoeFZlZGRnSmlYVlhUUkhNQ1Bjdm9t?=
+ =?utf-8?B?aWVGanIvaVBGNUZYNjJRQnVNNmJsZEZYYlRFMjhEa3FHS0p4Vm5CSmk4aHds?=
+ =?utf-8?B?SUNVT0Q1ZEZrUXZMRUNlbWR0SXJCSWdjNWxsMVBINlZQSktwa3pvNGwxUWRu?=
+ =?utf-8?B?bVc2K2czS2d2R1loVlErL28ydnhLYzlkOTRvazQ2Rk5UN0lvK1hnanlCRk03?=
+ =?utf-8?B?YWFNaUJIbXRBaXNCNDV1emQzMVJuTTBWRm1Gb014Wk94QkgwdjFIbERka00w?=
+ =?utf-8?B?a2c0M0haNFJmd3pFcjJoQkhtQWtkWEpLemFVWDVLQ09HUFR5VTBHZ2dSbDRE?=
+ =?utf-8?B?WW8wNC9TUm0zWnpDcG81OFZ5cnRuWkZJWFZYcXEvd3Z2dWRadTFlOWJCcFpH?=
+ =?utf-8?B?b1RURTNLejAyZHdZMkcrK2ZXV1AvNWNwajVkWnNJUkpXS0Vkc2RxWWFUd0cr?=
+ =?utf-8?B?L1R6enQwckk0V3htS3BNMVFTMGpXUm9UUzVhSnZKdGZCS3NtR1dFUkVLSjJz?=
+ =?utf-8?B?YzZsais3b3BRalFhdmNvbU9LWGcrd043eEVmTDQ4aTc5SnZFaDNhajlhd01Y?=
+ =?utf-8?B?Yzd3QzkyOHRwbTNvc0Z0c1psUWlHbWo0VmtDaW9scHhBaUtaeCtJRVVNY0Jp?=
+ =?utf-8?B?cW5IQ3VwUDVZZHZLMnhUd0JXOStaWjE3U2NnR1g4THdSdUJ5MHg2VUViUnpO?=
+ =?utf-8?B?VFFiYVpJYll5NVJOdUJ0SjdmdnRRZ3ZzOCswTC83QnpuRlZkemhSTHJvZi93?=
+ =?utf-8?B?Nm5rb0t6SXE4SVN6T2NJZWFIMTNQa3pMSTNZNnlHbDBnb2VMekxXSkRWQ0M1?=
+ =?utf-8?B?MEhpNFovS3RQSXZycWVsQnNSMDVtK0JBbVIvTmJGMlE4QW9oOFlXSXd1N05L?=
+ =?utf-8?B?d0JGOUtQTDZnOThkbUxSRTViZDN4QVhtRG40am00NVhIV09WR1l6SjM2aC9O?=
+ =?utf-8?B?SG9ZR25vaFN5MnYxcklYNlpDRWFpZTd0aHc2VE8wanRab0pCR2xCa1ArQmRw?=
+ =?utf-8?B?bU9CVkJBSmlla0M0aFd6RkhBajFlSGxaQjBSaUFWM0I5U09ueVZmZWQ5ZDBj?=
+ =?utf-8?B?aDhzTXE1L21EV0Ztb3c5M2kvNGx6KzFoYVZIdVp1K3k2dkRUNnRqaE0zdUZh?=
+ =?utf-8?B?ZllhTTV2S0F4d1NtcFJIU3BWd0NDQTJ4T1A3Z1NzTmhoVStiOFJySldSMmFD?=
+ =?utf-8?B?ZTk5U3N3SGNyWk9tYSt4Umh3dzdQV1B4enhzK2hJYkRyMzI5TEI0NjZmQzM4?=
+ =?utf-8?B?VTdUQ3hac01tM1pEcWhHYTA2VUFPckpmVDhoSmhLNFgxS1JhNXhsWXIrM3Zv?=
+ =?utf-8?B?dHpOblNuZEltaEVMTUFjdXR6YlozWi9RRjNVTGkxaUNtOEVaVnhXQ2RudTdj?=
+ =?utf-8?B?MG55RlZmcS9veUhheDA4dWRzcHBvbWRIekNWeWUyM04ya0VJMFVhUHVDZkxW?=
+ =?utf-8?B?YTM0K0oxWnVtVVRNbU11cjF6OU5nam5UZDNPc1ZxRHlNTWFnK1dmR1paalRs?=
+ =?utf-8?B?TFp4LzBieFg3aEE1WXd5R0hBamVVNGJjZTFOR205cW1KQlNtdVB2UG00dVdu?=
+ =?utf-8?B?ZXNyMHkzSlVQaXVlWDAxcGJaMFhUOFBFQ2R3UDdpRTk4U0xqUVpzM2E5dk4w?=
+ =?utf-8?B?L2JCOEhSbHJoRlkwcjJDNEJJc04yS3luZ2tsaXVYamN6UWJaQW52eUgrMUFC?=
+ =?utf-8?B?d1I3aitBQnhYUGp3VjQ3U3ViL0FLbTRCSEN2d0ozcDQ5cERUdi9BcTVCeHU3?=
+ =?utf-8?B?bXJVSFBWUWJ6V2xrNWpIS3dHNFdVSDlPZGQ4cmw0VHZwSzg1VElhdS9zM0FI?=
+ =?utf-8?B?UkJJenA5ck9OQkpJM09TbVJGU2pYREphYVhxcFNGQlp3SzVjMVIxZG1RS1Zm?=
+ =?utf-8?B?eHJURk5OeXJZSGFtSFU3cFZER3NOTVFQNWd0WHRLdnFveS9jRTBkc0Qvc09u?=
+ =?utf-8?Q?fKQF1wfc8SDikBvY=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fbf80fe-8246-446c-b018-08de700548df
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7579.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2026 22:21:53.4735
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07ceea03-f150-42ef-ec26-08de6ffa949c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044A2.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8896
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FTcVqi14rQgis1K+igvSKuoK+B7u6I2UvCPJId+zJrxKXCX6Fo0LOEvhh+8p4Fnzb2wQtYR1ExWIAZZEu/wtSVAtKAJN27jdixPPspnPp1g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6123
+X-OriginatorOrg: intel.com
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.84 / 15.00];
+X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	TAGGED_FROM(0.00)[bounces-17026-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17025-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,intel.com:mid,intel.com:dkim,intel.com:email];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[jacob.e.keller@intel.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	DKIM_TRACE(0.00)[intel.com:+];
+	NEURAL_HAM(-0.00)[-0.998];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 947E4162921
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[10]
+X-Rspamd-Queue-Id: C1ADC1631DC
 X-Rspamd-Action: no action
 
-From: Amir Tzin <amirtz@nvidia.com>
 
-In case an auxiliary device with IRQs directory is unbinded, the
-directory is released, but auxdev->sysfs.irq_dir_exists remains true.
-This leads to a failure recreating the directory on bind [1].
 
-Expose functions auxiliary_device_sysfs_irq_dir_init() and
-auxiliary_device_sysfs_irq_dir_destroy(). Move the responsibility for
-the IRQs directory creation and destruction to the drivers. This change
-corresponds to the general concept according to which the core driver
-manages the auxiliary device locking and lifetime. Now the auxiliary
-device sysfs related fields, irq_dir_exists and lock, are redundant and
-can be removed.
+On 2/19/2026 1:04 PM, Tariq Toukan wrote:
+> From: Amir Tzin <amirtz@nvidia.com>
+> 
+> In case an auxiliary device with IRQs directory is unbinded, the
+> directory is released, but auxdev->sysfs.irq_dir_exists remains true.
+> This leads to a failure recreating the directory on bind [1].
+> 
+> Expose functions auxiliary_device_sysfs_irq_dir_init() and
+> auxiliary_device_sysfs_irq_dir_destroy(). Move the responsibility for
+> the IRQs directory creation and destruction to the drivers. This change
+> corresponds to the general concept according to which the core driver
+> manages the auxiliary device locking and lifetime. Now the auxiliary
+> device sysfs related fields, irq_dir_exists and lock, are redundant and
+> can be removed.
+> 
+> mlx5 SFs, the only users of IRQs sysfs API, must align. Create the
+> directory before a SF control irq is requested and destroy it upon
+> its release.
+> 
+> [1]
+> [] mlx5_core.sf mlx5_core.sf.2: mlx5_irq_affinity_request:167:(pid 1939):
+>     Failed to create sysfs entry for irq 56, ret = -2
+> [] mlx5_core.sf mlx5_core.sf.2: mlx5_eq_table_create:1195:(pid 1939):
+>     Failed to create async EQs
+> [] mlx5_core.sf mlx5_core.sf.2: mlx5_load:1362:(pid 1939):
+>     Failed to create EQs
+> 
 
-mlx5 SFs, the only users of IRQs sysfs API, must align. Create the
-directory before a SF control irq is requested and destroy it upon
-its release.
+This approach looks sensible, and managing the lifetime in the parent 
+driver is easier than exposing the extra locks and adding more potential 
+issues for mismanaging those locks.
 
-[1]
-[] mlx5_core.sf mlx5_core.sf.2: mlx5_irq_affinity_request:167:(pid 1939):
-   Failed to create sysfs entry for irq 56, ret = -2
-[] mlx5_core.sf mlx5_core.sf.2: mlx5_eq_table_create:1195:(pid 1939):
-   Failed to create async EQs
-[] mlx5_core.sf mlx5_core.sf.2: mlx5_load:1362:(pid 1939):
-   Failed to create EQs
-
-Fixes: a808878308a8 ("driver core: auxiliary bus: show auxiliary device IRQs")
-Signed-off-by: Amir Tzin <amirtz@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/base/auxiliary.c                      |  1 -
- drivers/base/auxiliary_sysfs.c                | 48 ++++++++++++++-----
- .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 20 ++++++++
- include/linux/auxiliary_bus.h                 | 16 +++++--
- 4 files changed, 66 insertions(+), 19 deletions(-)
-
-V2:
-- Move the irq directory management from core to drivers: 
-  expose auxiliary_device_sysfs_irq_dir_init()
-  auxiliary_device_sysfs_irq_dir_destroy().  Drop the attribute group
-  visibility approach.
-  Remove the mutex from the auxiliary sysfs structure (drivers are
-  responsible for concurrency). 
-- Revert auxiliary_device_sysfs_irq_remove() to return void.
-- Call auxiliary_device_sysfs_irq_dir_(init|destroy) in mlx5 SF device
-  create/remove flows.
-- Link to V1: https://lore.kernel.org/all/1761200367-922346-1-git-send-email-tariqt@nvidia.com/
-
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index 04bdbff4dbe5..e1b8c4bc306e 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -294,7 +294,6 @@ int auxiliary_device_init(struct auxiliary_device *auxdev)
- 
- 	dev->bus = &auxiliary_bus_type;
- 	device_initialize(&auxdev->dev);
--	mutex_init(&auxdev->sysfs.lock);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(auxiliary_device_init);
-diff --git a/drivers/base/auxiliary_sysfs.c b/drivers/base/auxiliary_sysfs.c
-index 754f21730afd..598a012ce481 100644
---- a/drivers/base/auxiliary_sysfs.c
-+++ b/drivers/base/auxiliary_sysfs.c
-@@ -22,22 +22,47 @@ static const struct attribute_group auxiliary_irqs_group = {
- 	.attrs = auxiliary_irq_attrs,
- };
- 
--static int auxiliary_irq_dir_prepare(struct auxiliary_device *auxdev)
-+/**
-+ * auxiliary_device_sysfs_irq_dir_init - initialize the IRQ sysfs directory
-+ * @auxdev: auxiliary bus device to initialize the sysfs directory.
-+ *
-+ * This function should be called by drivers to initialize the IRQ directory
-+ * before adding any IRQ sysfs entries. The driver is responsible for ensuring
-+ * this function is called only once and for handling any concurrency control
-+ * if needed.
-+ *
-+ * Drivers must call auxiliary_device_sysfs_irq_dir_destroy() to clean up when
-+ * done.
-+ *
-+ * Return: zero on success or an error code on failure.
-+ */
-+int auxiliary_device_sysfs_irq_dir_init(struct auxiliary_device *auxdev)
- {
--	int ret = 0;
--
--	guard(mutex)(&auxdev->sysfs.lock);
--	if (auxdev->sysfs.irq_dir_exists)
--		return 0;
-+	int ret;
- 
--	ret = devm_device_add_group(&auxdev->dev, &auxiliary_irqs_group);
-+	ret = sysfs_create_group(&auxdev->dev.kobj, &auxiliary_irqs_group);
- 	if (ret)
- 		return ret;
- 
--	auxdev->sysfs.irq_dir_exists = true;
- 	xa_init(&auxdev->sysfs.irqs);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(auxiliary_device_sysfs_irq_dir_init);
-+
-+/**
-+ * auxiliary_device_sysfs_irq_dir_destroy - destroy the IRQ sysfs directory
-+ * @auxdev: auxiliary bus device to destroy the sysfs directory.
-+ *
-+ * This function should be called by drivers to clean up the IRQ directory
-+ * after all IRQ sysfs entries have been removed. The driver is responsible
-+ * for ensuring all IRQs are removed before calling this function.
-+ */
-+void auxiliary_device_sysfs_irq_dir_destroy(struct auxiliary_device *auxdev)
-+{
-+	xa_destroy(&auxdev->sysfs.irqs);
-+	sysfs_remove_group(&auxdev->dev.kobj, &auxiliary_irqs_group);
-+}
-+EXPORT_SYMBOL_GPL(auxiliary_device_sysfs_irq_dir_destroy);
- 
- /**
-  * auxiliary_device_sysfs_irq_add - add a sysfs entry for the given IRQ
-@@ -45,7 +70,8 @@ static int auxiliary_irq_dir_prepare(struct auxiliary_device *auxdev)
-  * @irq: The associated interrupt number.
-  *
-  * This function should be called after auxiliary device have successfully
-- * received the irq.
-+ * received the irq. The driver must call auxiliary_device_sysfs_irq_dir_init()
-+ * before calling this function for the first time.
-  * The driver is responsible to add a unique irq for the auxiliary device. The
-  * driver can invoke this function from multiple thread context safely for
-  * unique irqs of the auxiliary devices. The driver must not invoke this API
-@@ -59,10 +85,6 @@ int auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq)
- 	struct device *dev = &auxdev->dev;
- 	int ret;
- 
--	ret = auxiliary_irq_dir_prepare(auxdev);
--	if (ret)
--		return ret;
--
- 	info = kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index aa3b5878e3da..b6e872d7a925 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -456,7 +456,15 @@ static void _mlx5_irq_release(struct mlx5_irq *irq)
-  */
- void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
- {
-+	struct mlx5_irq_pool *pool = ctrl_irq_pool_get(dev);
-+
- 	mlx5_irq_affinity_irq_release(dev, ctrl_irq);
-+
-+	if (mlx5_irq_pool_is_sf_pool(pool)) {
-+		struct auxiliary_device *sadev = mlx5_sf_coredev_to_adev(dev);
-+
-+		auxiliary_device_sysfs_irq_dir_destroy(sadev);
-+	}
- }
- 
- /**
-@@ -489,9 +497,21 @@ struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
- 		/* Allocate the IRQ in index 0. The vector was already allocated */
- 		irq = irq_pool_request_vector(pool, 0, af_desc, NULL);
- 	} else {
-+		struct auxiliary_device *sadev = mlx5_sf_coredev_to_adev(dev);
-+		int err;
-+
-+		err = auxiliary_device_sysfs_irq_dir_init(sadev);
-+		if (err) {
-+			irq = ERR_PTR(err);
-+			goto exit;
-+		}
-+
- 		irq = mlx5_irq_affinity_request(dev, pool, af_desc);
-+		if (IS_ERR(irq))
-+			auxiliary_device_sysfs_irq_dir_destroy(sadev);
- 	}
- 
-+exit:
- 	kvfree(af_desc);
- 
- 	return irq;
-diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
-index 4086afd0cc6b..d052cb687e6f 100644
---- a/include/linux/auxiliary_bus.h
-+++ b/include/linux/auxiliary_bus.h
-@@ -60,8 +60,6 @@
-  * @id: unique identitier if multiple devices of the same name are exported,
-  * @sysfs: embedded struct which hold all sysfs related fields,
-  * @sysfs.irqs: irqs xarray contains irq indices which are used by the device,
-- * @sysfs.lock: Synchronize irq sysfs creation,
-- * @sysfs.irq_dir_exists: whether "irqs" directory exists,
-  *
-  * An auxiliary_device represents a part of its parent device's functionality.
-  * It is given a name that, combined with the registering drivers
-@@ -145,8 +143,6 @@ struct auxiliary_device {
- 	u32 id;
- 	struct {
- 		struct xarray irqs;
--		struct mutex lock; /* Synchronize irq sysfs creation */
--		bool irq_dir_exists;
- 	} sysfs;
- };
- 
-@@ -222,10 +218,21 @@ int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
- #define auxiliary_device_add(auxdev) __auxiliary_device_add(auxdev, KBUILD_MODNAME)
- 
- #ifdef CONFIG_SYSFS
-+int auxiliary_device_sysfs_irq_dir_init(struct auxiliary_device *auxdev);
-+void auxiliary_device_sysfs_irq_dir_destroy(struct auxiliary_device *auxdev);
- int auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq);
- void auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev,
- 				       int irq);
- #else /* CONFIG_SYSFS */
-+static inline int
-+auxiliary_device_sysfs_irq_dir_init(struct auxiliary_device *auxdev)
-+{
-+	return 0;
-+}
-+
-+static inline void
-+auxiliary_device_sysfs_irq_dir_destroy(struct auxiliary_device *auxdev) {}
-+
- static inline int
- auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq)
- {
-@@ -238,7 +245,6 @@ auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev, int irq) {}
- 
- static inline void auxiliary_device_uninit(struct auxiliary_device *auxdev)
- {
--	mutex_destroy(&auxdev->sysfs.lock);
- 	put_device(&auxdev->dev);
- }
- 
-
-base-commit: 8dfce8991b95d8625d0a1d2896e42f93b9d7f68d
--- 
-2.44.0
-
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
