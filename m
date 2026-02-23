@@ -1,288 +1,260 @@
-Return-Path: <linux-rdma+bounces-17053-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17054-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eGh4LhcUnGkq/gMAu9opvQ
-	(envelope-from <linux-rdma+bounces-17053-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 09:47:19 +0100
+	id iDjMGPNDnGk7CgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17054-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 13:11:31 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D98D173464
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 09:47:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A84175EED
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 13:11:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3A52E3024457
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 08:47:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4CE25305BAAC
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 12:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8769523EAAD;
-	Mon, 23 Feb 2026 08:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85BC364EB7;
+	Mon, 23 Feb 2026 12:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lkbTWSB0"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WBFztR0x"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34E134CFCC;
-	Mon, 23 Feb 2026 08:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771836432; cv=none; b=pd05RkOeWQ3XcrcHLyqRu6W086o4YjXVIu7Y7Btk1LUPTnurs8F5HKtRZjzPocFP/bkfCOdGIU/zaQkureMjPIHX8z1uKZTv825wHzkTulcRt5hjyEt9gY2CILidgYBPvivNA0MIVeluvi+PrBiUwOGmWGrUSpMh9+vbBA/8C64=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771836432; c=relaxed/simple;
-	bh=+dHU1bptRcVz99RN7Jt1KnpbOiRfG8JJsVx1iaC+d18=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ClaTKvFGDbypL4Z4d1jPSwzaw1Qrictkm+zHwZskWlb7NFOaikHLxG4c04fakiebzoK6gWLEIMNyazwgXvAhsbez4/WOszBO1nQ5z9MvpOE4koirVG3VByJS0VbfY8rbmUpQC5KlXyC0rfkTPIzeuAHqG5dXxMIGzZ/GPrKRAQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lkbTWSB0; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id AA74D20B6F00; Mon, 23 Feb 2026 00:47:10 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AA74D20B6F00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1771836430;
-	bh=+sMFljrbCbR3Gmuqz/2XuavaMj59idE6ZsCDEzg5qg4=;
-	h=Date:From:To:Subject:From;
-	b=lkbTWSB0Cxb1mjyEJoV6QWJGe8HeIzgv+uAMW1zP+Qd++KEEmCadG6PzQsIHGSkqE
-	 Kl/vnJc1DSzB5ABO+EbdKG8l6stKCua3Tw34PW4z8xlGreD16exO9hEmFPOYSW9hB4
-	 TnTgmkyWIe75NP0Z1revBXSzNXEMwbjI/P8wopZM=
-Date: Mon, 23 Feb 2026 00:47:10 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH, net-next] net: mana: Trigger VF reset/recovery on health
- check failure due to HWC timeout
-Message-ID: <aZwUDlTkb5xunIkH@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011055.outbound.protection.outlook.com [40.93.194.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246A935CB8C;
+	Mon, 23 Feb 2026 12:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771848478; cv=fail; b=djtO29unuffQA2P/lOLQmXhKydXyE33pyyBOWv+gz3/w4bhvCgZ1s9HTRzNHUt58lPJigPjgdnkdIp+d9b9ySeP2mAfY5Aq0WAXRn89a8sRLhxYfk0+sJKPA+kPKDMM6QRKzPI4EL0SDwMmvDcVl7l01Ip6Q+jusB39nru/IFhI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771848478; c=relaxed/simple;
+	bh=//higwwKl1edAfwVU3hNQ3ydXfyHBmUDIsQq1mMlSsQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=qUJQ35ZFLs2zV5oWOjQh9SM1XkgGrJlmejVI7hIGX4ILlguqqDZ99X6XpUZVdNtTOBuRIWm30gAirbvOk4QktjL9wqO5XdY29OOaYM6Ufmr04lhMrZTPuUA42xy03oInQKvQ8TQCnJ89gUtSZ3C/wGoLfFvkBUSWC6YXuWF2U1E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WBFztR0x; arc=fail smtp.client-ip=40.93.194.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fyDIGrjx4YilFq/ibBR6/pytWduLh7Jm4nSZQiapu1ubWXtfDD9ZbdkunrpQw95WjHHFjlXRiiK6nQljcyC9EmDTTVt8b+CNZJom5NtDjjpw8VqPP4Z50bVOCFJO/p/CiK0FSx+hNzwVLGfVWFtzx/kBz2ZxypKa399Ta+UY+/srnU0cFfdwgwurpbn9APhSQ7Gu4P2Mxht/dID5gYD1L8F47TMCAC/2DIiuckiH1dmzXr6XQGdE0BBcNisAsA6kAAHVWOs5VtFkpTzX0ETxD3WnKe+vY9XnnHNVx7rsx3pCSIT99uFtju7QqPwuRhEWQa7e5ETQ25zfG+xIDJrTxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IW1phrt9LazKc/W+sX7Yu5k9I9VcsBzq9oUaUgMTJdI=;
+ b=ta+72x6kQaYJDLRe7cPDGC8z6xdkDP8HOneiKBZAmZFQNBL9GLGBo34VO8XotaBuEGHHPOD4mUApG8g9B3zyWpTPF7p5NKpsCPQVOQfTE27HrsdHrEdcPnb1hgkiR8Ug21FB3dEiLMV4oWGz8GKVXX8KKXE2z8o+GaCxBEklac2fLS7DlFEh2OSJBQb+XiOT8zg0DDHYG/uuiSmJ8KRCWz2oCKy/znHnD8r6fShOhdlQnAWvSALPG+aJYj8TQtC7DwgorF3jAUAszBoa50/jFRZMuaSrwpWFRIwvw7UtagG3rvmLc+7s5WSPDXC5OIa0ElDFErbdMv62o1qNRIt2VQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IW1phrt9LazKc/W+sX7Yu5k9I9VcsBzq9oUaUgMTJdI=;
+ b=WBFztR0xl65kEsJbVvSkZ2viDwV84xwyhHfbLZsk6s9o7MKQeTqQxCbeamTnCSZvLAp4u2AwMi+Efe6eYFUFUY/LBorvmvnQwtUDJ3UDnTpeRaXwGWK+3R2GdGNE1yOmXELwwYCFZTMTBmds9f3vQAAeErcpWpiMT34O9bqKZQo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB2860.namprd12.prod.outlook.com (2603:10b6:5:186::11)
+ by MN2PR12MB4469.namprd12.prod.outlook.com (2603:10b6:208:268::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.14; Mon, 23 Feb
+ 2026 12:07:54 +0000
+Received: from DM6PR12MB2860.namprd12.prod.outlook.com
+ ([fe80::b2e7:252a:a896:8a19]) by DM6PR12MB2860.namprd12.prod.outlook.com
+ ([fe80::b2e7:252a:a896:8a19%6]) with mapi id 15.20.9632.017; Mon, 23 Feb 2026
+ 12:07:54 +0000
+Message-ID: <abdf4f89-90a7-84c7-af7c-f070073b399d@amd.com>
+Date: Mon, 23 Feb 2026 17:37:43 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH rc 4/4] RDMA/ionic: Fix kernel stack leak in
+ ionic_create_cq()
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Allen Hubbe <allen.hubbe@amd.com>, Andrew Boyer <andrew.boyer@amd.com>,
+ Gal Pressman <galpress@amazon.com>, Mustafa Ismail
+ <mustafa.ismail@intel.com>, patches@lists.linux.dev,
+ Roland Dreier <rolandd@cisco.com>, Shiraz Saleem <shiraz.saleem@intel.com>,
+ stable@vger.kernel.org, Steve Wise <swise@opengridcomputing.com>,
+ Gal Pressman <gal.pressman@linux.dev>,
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+ Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ Michael Margolin <mrgolin@amazon.com>, Yossi Leybovich <sleybo@amazon.com>,
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+References: <4-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+From: Abhijit Gangurde <abhijit.gangurde@amd.com>
+In-Reply-To: <4-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA5P287CA0073.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:1b3::6) To DM6PR12MB2860.namprd12.prod.outlook.com
+ (2603:10b6:5:186::11)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2860:EE_|MN2PR12MB4469:EE_
+X-MS-Office365-Filtering-Correlation-Id: 46c11a17-823b-4a5d-c50e-08de72d42c5b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|7416014|376014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?RlNVb2FWd0xlMHZXMmVleHF3K0ZuMnovaGQ5WnEzSEVUSm1GTlc5WElTNVB1?=
+ =?utf-8?B?VTIxVnh2OU9McXN2ZWhPSjltcDhHeUgvdXF3S1Z0VFpibWxTT1crOWhSZy9X?=
+ =?utf-8?B?TlY5ZGQvZ3l2ZitKcmZENCs3QUxHazVIOEFFVXg1eXRFRVhpMFpIUnlxNWwr?=
+ =?utf-8?B?aUlmckZ3VlMwN3BUTG0vMWZjQWhXbnNlL2Zmd05xKzF3OGI4bTBvYXNpL05a?=
+ =?utf-8?B?YklDNjNKT2RYNG5jVGFUUVRaU1NLNUl1QU5xaWswb3g1ZWhLM2Zua0dKbmlE?=
+ =?utf-8?B?NkNhMnpYQmxqNHllRUYvWi9nMmgxb2lXQjZ6Tit1N2s1WHB0UVhadURpV2Jy?=
+ =?utf-8?B?WmRxQTJZL2JpU3g1NmJJbTFqL1NSdXdITnZ5WmxUNUtZUm9lNG9FK2w4aGM1?=
+ =?utf-8?B?eWVtZE9mdUJYWlYwREhUMnVaQ1pPZGpDc29laVA0SGV4VTlBZTVaSkxTR2xG?=
+ =?utf-8?B?eEFicHJjZ1dCSk02MmplK3R5V0Q5RDRMSmt5U3hMdEVqbUtvdFJ4YlBYZXpu?=
+ =?utf-8?B?cmNsazk0YUFKZUdOMnNTSzVjMGZVTnZUVHA3YjNmb2hPZGJ3V01ZaHFvbGhL?=
+ =?utf-8?B?YWdMRzJJOVJ6UW4yYUpNb2Y4eUJMdmpQYXhpbnIwZWFWQmdPemRISXpaR1BP?=
+ =?utf-8?B?ZkR0Y293cEk0cEJmaFJRRUpqdE05ZWhSVkl2UlRNampmcGQ5NE9lNjhqZVgw?=
+ =?utf-8?B?amhEKythYUFacWpFSmJPK1k0WksxbFNZcUhOOUJnUzJRbEVGUnhsYkVHaUY5?=
+ =?utf-8?B?VVFKVnAvUlFWUU00bG1ETWg2cWFFWUxZSmsrdkpUZjNxRm5RZ3N1K09xVmxl?=
+ =?utf-8?B?amhidXRIQU85cDluenZ0TzNYeVVkUDZqQzFiaEdhNC9yaTBWeEQ2bXQyYWsy?=
+ =?utf-8?B?OFhjL0pyekNkY1VGem5Ud28wemxmTTJjcUo1ZkpMa0lwV0gzREo4cEFaT0Yw?=
+ =?utf-8?B?cHlKdVRGUFBDKzFKY25FUHMvaVVMRFZXVXVRa3RuK1BkWFU1Y0ZiVEV6Yk9t?=
+ =?utf-8?B?cHhyMFgzWFF1d1dsWVUxUGt2SVlYT3NzOHVkTTlGMmx3ZUFVb2VBTit3WU4y?=
+ =?utf-8?B?cEZ6ZW9rc3Nhemc2eXFvZkw2VW9STjVTa2kwbmZDeWVqVkUvTWVHODNOOG5s?=
+ =?utf-8?B?MDZtLy9OQXBycldvS0VWNURxcG85WVp1Z3FZaTRHNXpidkJRMFdMZE5PRHpP?=
+ =?utf-8?B?RmNBRUlTa0wyU0JYbkduaGE4cFM0NjV4NmNPVlpKeWlnc1BPakNuWjBqNjVH?=
+ =?utf-8?B?M205TkxvbkZycERuQSt4WTRvM2lNV1pIQU1iSnl1NUlJbnBuaGdDYUs1cHdN?=
+ =?utf-8?B?VWtmSTFBdlZNRkg5N3pITXJBMk1MbjBOU3NxVHdaSnZNYVBFS2dhOXVrVHhP?=
+ =?utf-8?B?TXVXZHl1VGZsVXo0ZkN1WGNpRXlCVnJOREZETnM1c2JwT2sxdUZ2SW5QUzUw?=
+ =?utf-8?B?NkRKb0tBeXA1anpyblJOM3lDaThQYUFEdlRiM0dUZlhQWGptUkQwU2NaSU1t?=
+ =?utf-8?B?R0E5VlJmZ3MvTmxFR1c0aURDTFFqUk5RQU1ycEcvcFE3V3puSUdadU5xbXNw?=
+ =?utf-8?B?a2U2QWhKYXQwQURSTDNPcUdrWnRwd1ptYXVqOUFVMDloWlYweThJTmNOVGZk?=
+ =?utf-8?B?allaallnaXpZZDB3R2RNZmpNajBQMjc4dGFYMG9OM1Nqc3FmQk5xUDRUYmtG?=
+ =?utf-8?B?QXZsaHlUTTAraW5ZTEdNVVZwY212dzBNeE81R0dyZURGa3dUeG1jckFNZXZj?=
+ =?utf-8?B?L0tVQjNObVRQbEs5RzRRa0FTRGRLZlhlVFNGM28xWVNqS3ZPYk1qVlJTcjds?=
+ =?utf-8?B?djl1aUhjQ3BaTUN5Y2Z0WDg1d2FPU3o3OWhmSHlqN3RZM2FBZ1JYQ0hSeGxh?=
+ =?utf-8?B?TzM2SGVQS1dYZzloR3Q3dkU2UzFORWlYSjN4UkpnVUxhQ1hmbWJsdFMxTzds?=
+ =?utf-8?B?TkEya0N4S0tnckZVOWdOendqNVlTNDNrTUlMVkNkYmkrRmt0Qm5hcDhqdGdz?=
+ =?utf-8?B?VU5obXdlUTdqMG04eFJPbTNzZXluT2F0ZEdzN2ZHWldvckZkaFBMYk8vUW5Y?=
+ =?utf-8?B?TlpRY1JUcmNKMWttTGpmRVFMR3dSd1doVVBEZURwNFpGTWszckk2MTg3cVNz?=
+ =?utf-8?Q?WyuY=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2860.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SHBPVlo2azArYWQ3MUQ4WUFRZGxLekptY0hpRzUzejdrUzU0TmFFVEJyZ05v?=
+ =?utf-8?B?ZU1OdmZsc212QzVWbHdsV21PTWFJc1J0cFhIRjI5Q0RzSk4xdHE0eXViSHhi?=
+ =?utf-8?B?aFFZdEg5YUc2WDZnc2RobDYrdi9oMC9MTWlxMnB3b3JDTm5qTndiOFpHZjRw?=
+ =?utf-8?B?S1Y5L0RWNGhYYmh2aHNXRFlxaklWN296YW1YYm53NHArODJIdnhRY21yY2g4?=
+ =?utf-8?B?YXdzNHNqTUhWY0FDSkRNUFg1UVlmTnZUU3ZRZWFSK0dGWFFvV2N1NDNPbTZw?=
+ =?utf-8?B?cHpGOFFhdzFQUFBpQUJZT0tSWGhUQmoxemhiL0FiSG1aQWZwbTNkMUROWGR1?=
+ =?utf-8?B?bGt3RktZd0NnYmFiZW5odXBwYlhqeTVZdExNYlltQzNOMEtZeEYrMzZ1M3Ry?=
+ =?utf-8?B?a0QvdnRJQ1BVVXZZZHUwbUlRd21nc0hxa2x3akZyMCt5T0R0ZCtYeEZ0MUtw?=
+ =?utf-8?B?UVlZbVc5LzJzSFpnbThtQWNJSnMwV2hoL1Q1cW1tL3AwNHIrVWUyTGt5TjBp?=
+ =?utf-8?B?S25yODEza0Jhd2RobDluNXpoYWJkZXltZjNjUDRueFVMeUN5bnN6MHRzbEd5?=
+ =?utf-8?B?dUV3R3J0NjhIWFBER2x6bmo3dmtxak10WmNjUzZtaUd4UENvOGRpdVY4TU9H?=
+ =?utf-8?B?cW92VzZCTHUzWUU1NE5oRW13OHRGTnFVOU9neGZSZkdLZTJydVZEOHlWK2dE?=
+ =?utf-8?B?bUIvWERub0M3YlJ2Ym9rMFJaOTlkV0Z1OWQ4ZndXdERFaVBuNktRRDNoNC9Q?=
+ =?utf-8?B?Z08wNnpReFdOYTNCcDZYZEJjb0NMMWRlVEVOdXJ6WkM3Vm9JTXNjaG9iQTJl?=
+ =?utf-8?B?azV0VFJiaThsNnBGZnhWaitjaEpGeGJ3QkZNSC9meFowWGxrQnI4TVN5SXV3?=
+ =?utf-8?B?N2FUUFdQc2ZWRXJTWnc2OVVWZzd1elBMTzQzUnJacmY4bWZWTnphTTRtSXdR?=
+ =?utf-8?B?dzFxOXlRTjRwVlZBUElxOWlSZUl3cGZUZU81dXhUTzg4VFBrTTQ1UW1aUTBD?=
+ =?utf-8?B?Z3Z1L3ZIMlZFU0FSN1JEQmhncmVDZW5TQ0Ftc2Ruekl3M2NlYVBNbjI3LzlK?=
+ =?utf-8?B?amlhQkFOK1Fla3RUS1BORUtzM1JBaUVJZU5BQkpWdFpUVUZjMjNqcU9Bc01t?=
+ =?utf-8?B?aTMvdkQ4MWh4V2VybjZQUHRwa1VtUWs5Q2xNWXc1NnExVkwwczl1SXdVbGMx?=
+ =?utf-8?B?cW1tYlBxWVhDd1BjM3dSVVovOUhmYXZRVmZVQnUwM2VMb003eWFocVdUU1lM?=
+ =?utf-8?B?QkRTNnc0bTdXd3NocUZIc1YzUlZ4aDNrTWgzMGJ6Mlp6UVk1NTZqcG1KOWtl?=
+ =?utf-8?B?Y2dCQWRFZGdHclQ0Y040S01ZVmpoa0ZFR2VhaG9yWVRYRUs5VE5tYThHMWE4?=
+ =?utf-8?B?RjkwajdCK0tRK0g2MlVlSEpHSVZYcG5TWUE5TmpjWktURnptL3lqZkxyZnNr?=
+ =?utf-8?B?TDNyNjFUdHRCWFE2V3NyMktqUTVQajc0aHZYaXhodm5DZnZpRDZHVUc4ZDNr?=
+ =?utf-8?B?dGk0a3lPZlVyc0tuWDV2YTYxbU5WelRmVk9ka0xWZlluekYwQ24yaGNmNEI2?=
+ =?utf-8?B?V1JXbXFNeXJKT1FSTmdWeTNKandWNEhqU2pWT3o1bVpZM0s0WDQ1cnFFMkMz?=
+ =?utf-8?B?K21CcjVYSnJPcTJQWXJCVEpCT2U3OHFRNkdKOEpJcm0xUmRVNGdscUxsUUx5?=
+ =?utf-8?B?dFVoVGovaG5FVXhRNzBjNGlZdFBVR3BkTThVSkF2Y0lOZzJmMGRKSXpub1FQ?=
+ =?utf-8?B?cnBsMGdDTDZhaUgwcTIwWUxIdEN3TCsxVU1yYzNOaXA2bGJZeURVRGZCaWFN?=
+ =?utf-8?B?Z0FlS2U5NXhXd1RMaEV2Smc5bXBJdjM0blhaZzFxUTVxME9FMDRhM2Vrekgw?=
+ =?utf-8?B?THN2VnR1bHIyUGd0bTV4Y3hOMk12Rmozb1FWZk91ZUtDTkRGZ1dmaVMyR0d2?=
+ =?utf-8?B?VEc1VUlSUFFtcFdpNXVsbEFNbTJMK0NyZjVDV3NwY29MVDRtY2hMT2E2QXp2?=
+ =?utf-8?B?bGJQeDQ4Y1hHS0pCZDZSQXhXRzkvWXVNZmwrS0hpSXMxaytUREtxcHBMOU1s?=
+ =?utf-8?B?UE1aY2FZamw1RzFLNExpcC9YMGF1TG9RT2ZucjZZUy9teEhSUkRqT0xra051?=
+ =?utf-8?B?MEU5b3ZRK1JQdGdTV2xUSWsxbXpML2RHL1VWM2hFU0RPbE45enUwbFZ6MUVY?=
+ =?utf-8?B?Wk8vTFE0elJ4R0hOcjIyYWQySTB4Sk9zQnFCaVNaMWRBM0FXWUxJSFNYQWdv?=
+ =?utf-8?B?cjJ1OGJtYWNZeWFmYStzN3ByQXF5Z0Q0aHJGNkdPOXVnYWVEblNUbVlac0Zr?=
+ =?utf-8?B?SS96N2lkdDN5U1hYTjg0cEc4ZFRSUFl6L0t3OGNIR1JoOXZCeUxhdz09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46c11a17-823b-4a5d-c50e-08de72d42c5b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2860.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2026 12:07:54.0227
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 28od2/5o1zWRlBMZ6y3u6nGyXdUKfajJ17m9aoNsJ+o5K2Dus9hFPUosJ/ZI4nLyAiN/fOoTXwxofX/+YN5ItA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4469
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17053-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17054-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	DKIM_TRACE(0.00)[amd.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.microsoft.com:dkim,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
-X-Rspamd-Queue-Id: 7D98D173464
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amd.com:mid,amd.com:dkim,amd.com:email,nvidia.com:email]
+X-Rspamd-Queue-Id: B6A84175EED
 X-Rspamd-Action: no action
 
-The GF stats periodic query is used as mechanism to monitor HWC health
-check. If this HWC command times out, it is a strong indication that
-the device/SoC is in a faulty state and requires recovery.
+Thanks!
 
-Today, when a timeout is detected, the driver marks
-hwc_timeout_occurred, clears cached stats, and stops rescheduling the
-periodic work. However, the device itself is left in the same failing
-state.
+Acked-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
 
-Extend the timeout handling path to trigger the existing MANA VF
-recovery service by queueing a GDMA_EQE_HWC_RESET_REQUEST work item.
-This is expected to initiate the appropriate recovery flow by suspende
-resume first and if it fails then trigger a bus rescan.
-
-This change is intentionally limited to HWC command timeouts and does
-not trigger recovery for errors reported by the SoC as a normal command
-response.
-
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 14 +++-------
- drivers/net/ethernet/microsoft/mana/mana_en.c | 28 ++++++++++++++++++-
- include/net/mana/gdma.h                       | 16 +++++++++--
- 3 files changed, 45 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 0055c231acf6..16c438d2aaa3 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -490,15 +490,9 @@ static void mana_serv_reset(struct pci_dev *pdev)
- 		dev_info(&pdev->dev, "MANA reset cycle completed\n");
- 
- out:
--	gc->in_service = false;
-+	clear_bit(GC_IN_SERVICE, &gc->flags);
- }
- 
--struct mana_serv_work {
--	struct work_struct serv_work;
--	struct pci_dev *pdev;
--	enum gdma_eqe_type type;
--};
--
- static void mana_do_service(enum gdma_eqe_type type, struct pci_dev *pdev)
- {
- 	switch (type) {
-@@ -542,7 +536,7 @@ static void mana_recovery_delayed_func(struct work_struct *w)
- 	spin_unlock_irqrestore(&work->lock, flags);
- }
- 
--static void mana_serv_func(struct work_struct *w)
-+void mana_serv_func(struct work_struct *w)
- {
- 	struct mana_serv_work *mns_wk;
- 	struct pci_dev *pdev;
-@@ -624,7 +618,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
- 			break;
- 		}
- 
--		if (gc->in_service) {
-+		if (test_bit(GC_IN_SERVICE, &gc->flags)) {
- 			dev_info(gc->dev, "Already in service\n");
- 			break;
- 		}
-@@ -641,7 +635,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
- 		}
- 
- 		dev_info(gc->dev, "Start MANA service type:%d\n", type);
--		gc->in_service = true;
-+		set_bit(GC_IN_SERVICE, &gc->flags);
- 		mns_wk->pdev = to_pci_dev(gc->dev);
- 		mns_wk->type = type;
- 		pci_dev_get(mns_wk->pdev);
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 91c418097284..8da574cf06f2 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -879,7 +879,7 @@ static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
- 	struct gdma_context *gc = ac->gdma_dev->gdma_context;
- 
- 	/* Already in service, hence tx queue reset is not required.*/
--	if (gc->in_service)
-+	if (test_bit(GC_IN_SERVICE, &gc->flags))
- 		return;
- 
- 	/* Note: If there are pending queue reset work for this port(apc),
-@@ -3533,6 +3533,8 @@ static void mana_gf_stats_work_handler(struct work_struct *work)
- {
- 	struct mana_context *ac =
- 		container_of(to_delayed_work(work), struct mana_context, gf_stats_work);
-+	struct gdma_context *gc = ac->gdma_dev->gdma_context;
-+	struct mana_serv_work *mns_wk;
- 	int err;
- 
- 	err = mana_query_gf_stats(ac);
-@@ -3540,6 +3542,30 @@ static void mana_gf_stats_work_handler(struct work_struct *work)
- 		/* HWC timeout detected - reset stats and stop rescheduling */
- 		ac->hwc_timeout_occurred = true;
- 		memset(&ac->hc_stats, 0, sizeof(ac->hc_stats));
-+		dev_warn(gc->dev,
-+			 "Gf stats wk handler: gf stats query timed out.\n");
-+
-+		/* As HWC timed out, indicating a faulty HW state and needs a
-+		 * reset.
-+		 */
-+		if (!test_and_set_bit(GC_IN_SERVICE, &gc->flags)) {
-+			if (!try_module_get(THIS_MODULE)) {
-+				dev_info(gc->dev, "Module is unloading\n");
-+				return;
-+			}
-+
-+			mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
-+			if (!mns_wk) {
-+				module_put(THIS_MODULE);
-+				return;
-+			}
-+
-+			mns_wk->pdev = to_pci_dev(gc->dev);
-+			mns_wk->type = GDMA_EQE_HWC_RESET_REQUEST;
-+			pci_dev_get(mns_wk->pdev);
-+			INIT_WORK(&mns_wk->serv_work, mana_serv_func);
-+			schedule_work(&mns_wk->serv_work);
-+		}
- 		return;
- 	}
- 	schedule_delayed_work(&ac->gf_stats_work, MANA_GF_STATS_PERIOD);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index a59bd4035a99..fb946389d593 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -213,6 +213,12 @@ enum gdma_page_type {
- 
- #define GDMA_INVALID_DMA_REGION 0
- 
-+struct mana_serv_work {
-+	struct work_struct serv_work;
-+	struct pci_dev *pdev;
-+	enum gdma_eqe_type type;
-+};
-+
- struct gdma_mem_info {
- 	struct device *dev;
- 
-@@ -384,6 +390,7 @@ struct gdma_irq_context {
- 
- enum gdma_context_flags {
- 	GC_PROBE_SUCCEEDED	= 0,
-+	GC_IN_SERVICE		= 1,
- };
- 
- struct gdma_context {
-@@ -409,7 +416,6 @@ struct gdma_context {
- 	u32			test_event_eq_id;
- 
- 	bool			is_pf;
--	bool			in_service;
- 
- 	phys_addr_t		bar0_pa;
- 	void __iomem		*bar0_va;
-@@ -471,6 +477,8 @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int num_cqe);
- 
- void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit);
- 
-+void mana_serv_func(struct work_struct *w);
-+
- struct gdma_wqe {
- 	u32 reserved	:24;
- 	u32 last_vbytes	:8;
-@@ -613,6 +621,9 @@ enum {
- /* Driver can handle hardware recovery events during probe */
- #define GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY BIT(22)
- 
-+/* Driver supports self recovery on Hardware Channel timeouts */
-+#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY BIT(25)
-+
- #define GDMA_DRV_CAP_FLAGS1 \
- 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-@@ -626,7 +637,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY | \
- 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
- 	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
--	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY)
-+	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY | \
-+	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
--- 
-2.43.0
-
+On 2/16/26 20:32, Jason Gunthorpe wrote:
+> struct ionic_cq_resp resp {
+>      __u32 cqid[2];         // offset 0 - PARTIALLY SET (see below)
+>      __u8  udma_mask;       // offset 8 - SET (resp.udma_mask = vcq->udma_mask)
+>      __u8  rsvd[7];         // offset 9 - NEVER SET <- LEAK
+> };
+>
+> rsvd[7]: 7 bytes of stack memory leaked unconditionally.
+>
+> cqid[2]: The loop at line 1256 iterates over udma_idx but skips indices
+> where !(vcq->udma_mask & BIT(udma_idx)). The array has 2 entries but
+> udma_count could be 1, meaning cqid[1] might never be written via
+> ionic_create_cq_common(). If udma_mask only has bit 0 set, cqid[1] (4
+> bytes) is also leaked. So potentially 11 bytes leaked.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: e8521822c733 ("RDMA/ionic: Register device ops for control path")
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   drivers/infiniband/hw/ionic/ionic_controlpath.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/hw/ionic/ionic_controlpath.c b/drivers/infiniband/hw/ionic/ionic_controlpath.c
+> index ea12d9b8e125fe..83573721af2c08 100644
+> --- a/drivers/infiniband/hw/ionic/ionic_controlpath.c
+> +++ b/drivers/infiniband/hw/ionic/ionic_controlpath.c
+> @@ -1218,7 +1218,7 @@ int ionic_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>   		rdma_udata_to_drv_context(udata, struct ionic_ctx, ibctx);
+>   	struct ionic_vcq *vcq = to_ionic_vcq(ibcq);
+>   	struct ionic_tbl_buf buf = {};
+> -	struct ionic_cq_resp resp;
+> +	struct ionic_cq_resp resp = {};
+>   	struct ionic_cq_req req;
+>   	int udma_idx = 0, rc;
+>   
 
