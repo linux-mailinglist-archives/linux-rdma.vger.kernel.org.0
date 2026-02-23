@@ -1,275 +1,131 @@
-Return-Path: <linux-rdma+bounces-17083-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17084-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SKkkMI3SnGlLKwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17083-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 23:19:57 +0100
+	id gF16EVzdnGl/LwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17084-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 00:06:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4129217E30E
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 23:19:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 991F317ECA2
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 00:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9752E305FDA3
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 22:19:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AC907315D108
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 23:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FD937AA9D;
-	Mon, 23 Feb 2026 22:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0823137D125;
+	Mon, 23 Feb 2026 23:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cm0Ycu3r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="meaQnNPL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB05E33D4F3;
-	Mon, 23 Feb 2026 22:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8F9322B9F;
+	Mon, 23 Feb 2026 23:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771885161; cv=none; b=uIoiRXyZzjkuN6jcmKEo6VYKf9k1vi0OplAUHkRcelst7TwGDRpjNq93q/V9SQMAp4/DxrdMux2p06LJeRui5idJ7VxKRsEf/98S/XrilKIH2Uw48e0F2SIOTbSUPWcqQ6GO5a2olzjVqSxIpwyEO55vib5HYVywE1cULm5K7vY=
+	t=1771887843; cv=none; b=EbQsjLz4oemKTftaoZyNyWxkcj22kpqN6LiTYiyixJ5B7xb13IyuZP1dyT1UEHbHWyIUxaRaJ+GPkCEw36jNal1uOcDJBZhwk7ZX1kVmgGyShhfNhEsSOzGl+MNbYOOjipIO/wvdHS7XjfgDlV3xBQd282/TWt+eTvD5+BFx4xA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771885161; c=relaxed/simple;
-	bh=2al+8jfWXYHaAOSVIy66zZPIKMTM5oGZFCcokI+Ocuw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BvC7eVyY9nuxEsqBgGu+koIJg12ADutqVPBs954VBH+1kmHBcrYU/EQbDo7b/KL1zVyRggFLqonvR9qWD2AB+SBG2O8I4zl7goG7wrf22GOKETVq5sOTIY6+iqZQ9xMvkqMbWXEHeNv4D9yyuHfiaw1tuxLY9feC0LheIFnlYM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cm0Ycu3r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEBAAC2BC86;
-	Mon, 23 Feb 2026 22:19:20 +0000 (UTC)
+	s=arc-20240116; t=1771887843; c=relaxed/simple;
+	bh=TkyQ0ve43Eajtu+f8t4voCveupiNrZZM+dzN9AHGyGc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BN1QmWvFAJBjw9BSXp1xaJ0q14FAb3r9bsXub1Utq8vD1eliSNeD5B0qyq2F4Dd8a48RXRd2gLpA06GyAeTiZrTbPf81lJqd23mv3wOjcSQVuUSKXcn7dNjfVpTkxZxCEa6YBZHlPRaqZ8+xHtb6+4TLwMGuGC0DEEclgZsYPoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=meaQnNPL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91CADC116C6;
+	Mon, 23 Feb 2026 23:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771885161;
-	bh=2al+8jfWXYHaAOSVIy66zZPIKMTM5oGZFCcokI+Ocuw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Cm0Ycu3rQzLmhm+J7Tg/Al2CkS4+IZHh0s6lctXxsdpGQoog+ByAfnN1PwYpR+8zO
-	 /DqobrNTkUH6yCwT7z1mvyG+e6m/rJMXdxbZ3AL0I1WwDj+drD8dNnnOfTFeW0LLMg
-	 eMb8mTMXjDgDzQ6xo/ImZ+CEsYfPRvlj6a0j15yUjSmMWUUgHIaw9MgIE46/2iOhXJ
-	 ISwaXnKIFuFID5HvYIjfRcGP8sNyeXpEJ3+UEC1DstLMaW9bCXfpTPJ24RjDY3YgSj
-	 oRpjX1FsPA7B/Vzy4FdEJecLEAIK+5xdeIN4LdkRHgpWhMeMmypGbkir+TEAqkHzlt
-	 dwrzuREPPJrZA==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	rds-devel@oss.oracle.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	allison.henderson@oracle.com
-Subject: [PATCH net-next v5 2/2] net/rds: Delegate fan-out to a background worker
-Date: Mon, 23 Feb 2026 15:19:18 -0700
-Message-ID: <20260223221918.2750209-3-achender@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260223221918.2750209-1-achender@kernel.org>
-References: <20260223221918.2750209-1-achender@kernel.org>
+	s=k20201202; t=1771887843;
+	bh=TkyQ0ve43Eajtu+f8t4voCveupiNrZZM+dzN9AHGyGc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=meaQnNPLeO+BPz/znhZDNE2E3JpKAEv+ZoJkxV3penwNDIZd/a9SP4wXiUoBy061Z
+	 Vye9Wf+OcJc4tLQkvIkRM4V+tXVAOHxQOEobTvL8OCM5XnkOqxWS1zgwW/6wol842P
+	 7gcNNJm+FzzvsVMFFG/BAYcwnMhee3vOP5n03XHLwRhs8BzZ6N4eIb+3Rp4RcpwSfF
+	 RNCmIoEjc/+HM2n7JKoNopTHoTTBs7Chj048Zd1haz69t0BAPTQUp4iqiZfK8aRxzW
+	 9qfxbXddoretLbXQxpoBQ/zkjddx9vADYU3cli67tb8EbpzCaEqV4kAkpN7A2JlH4U
+	 S2z5Yl3CMA1Lw==
+Date: Mon, 23 Feb 2026 15:04:01 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org, Donald Hunter
+ <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
+ Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan
+ <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ Michael Chan <michael.chan@broadcom.com>, Hariprasad Kelam
+ <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>, Danielle Ratson
+ <danieller@nvidia.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org
+Subject: Re: [RFC net-next 0/4] ethtool: CMIS module diagnostic loopback
+ support
+Message-ID: <20260223150401.7993b11a@kernel.org>
+In-Reply-To: <CAJ+HfNgXqpqDYsmAa-mpHnO82aDgC7XbyVw3TmXk-ySFmGA-JQ@mail.gmail.com>
+References: <20260219130050.2390226-1-bjorn@kernel.org>
+	<415c4922-cc8d-4e35-bbac-3a532f44d238@lunn.ch>
+	<20260219160519.323041bf@kernel.org>
+	<3b0949fa-0b05-4bce-86c0-2a7a058865a5@lunn.ch>
+	<20260220131254.03874c4c@kernel.org>
+	<CAJ+HfNgXqpqDYsmAa-mpHnO82aDgC7XbyVw3TmXk-ySFmGA-JQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17083-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17084-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[lunn.ch,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,kernel.org,nvidia.com,bootlin.com,broadcom.com,marvell.com];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4129217E30E
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 991F317ECA2
 X-Rspamd-Action: no action
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+On Sun, 22 Feb 2026 20:58:30 +0100 Bj=C3=B6rn T=C3=B6pel wrote:
+> /* Loopback layers/scope
+> enum ethtool_loopback_layer {
+>     ETHTOOL_LB_LAYER_SW =3D 0,    /* Software/Kernel stack loopback */
 
-Delegate fan-out to a background worker in order to allow
-kernel_getpeername() to acquire a lock on the socket.
+What would that be? :)
 
-This has become necessary since the introduction of
-commit "9dfc685e0262d ("inet: remove races in inet{6}_getname()")
+>     ETHTOOL_LB_LAYER_MAC,        /* MAC/Controller internal */
+>     ETHTOOL_LB_LAYER_PCS,        /* Physical Coding Sublayer (Digital) */
+>     ETHTOOL_LB_LAYER_PMA,        /* SerDes / Analog-Digital boundary */
+>     ETHTOOL_LB_LAYER_PMD,        /* Transceiver / Module internal */
 
-The socket is already locked in the context that
-"kernel_getpeername" used to get called by either
-rds_tcp_recv_path" or "tcp_v{4,6}_rcv",
-and therefore causing a deadlock.
+In my mind the "layer" was supposed to tell core which driver to send
+the request to. Same concept is used in the timestamp source selection.
+PCS/PMA/PMD is both too fine grained when you have multiple PHYs in the
+path, and does not cover all the possible loopback points.
 
-Luckily, the fan-out need not happen in-context nor fast,
-so we can easily just do the same in a background worker.
+>     ETHTOOL_LB_LAYER_EXT,        /* External physical plug/cable */
 
-Also, while we're doing this, we get rid of the unused
-struct members "t_conn_w", "t_send_w", "t_down_w" & "t_recv_w".
-
-The fan-out work and the shutdown worker (cp_down_w) are both
-queued on the same ordered workqueue (cp0->cp_wq), so they
-cannot execute concurrently.  We only need cancel_work_sync()
-in rds_tcp_conn_free() and rds_tcp_conn_path_connect() because
-those run from outside the ordered workqueue.
-
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Signed-off-by: Allison Henderson <achender@kernel.org>
----
- net/rds/tcp.c         |  3 +++
- net/rds/tcp.h         |  7 ++----
- net/rds/tcp_connect.c |  2 ++
- net/rds/tcp_listen.c  | 54 +++++++++++++++++++++++++++++++------------
- 4 files changed, 46 insertions(+), 20 deletions(-)
-
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 45484a93d75f..02f8f928c20b 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -358,6 +358,8 @@ static void rds_tcp_conn_free(void *arg)
- 
- 	rdsdebug("freeing tc %p\n", tc);
- 
-+	cancel_work_sync(&tc->t_fan_out_w);
-+
- 	spin_lock_irqsave(&rds_tcp_conn_lock, flags);
- 	if (!tc->t_tcp_node_detached)
- 		list_del(&tc->t_tcp_node);
-@@ -384,6 +386,7 @@ static int rds_tcp_conn_alloc(struct rds_connection *conn, gfp_t gfp)
- 		tc->t_tinc = NULL;
- 		tc->t_tinc_hdr_rem = sizeof(struct rds_header);
- 		tc->t_tinc_data_rem = 0;
-+		INIT_WORK(&tc->t_fan_out_w, rds_tcp_fan_out_w);
- 		init_waitqueue_head(&tc->t_recv_done_waitq);
- 
- 		conn->c_path[i].cp_transport_data = tc;
-diff --git a/net/rds/tcp.h b/net/rds/tcp.h
-index 39c86347188c..9ecb0b6b658a 100644
---- a/net/rds/tcp.h
-+++ b/net/rds/tcp.h
-@@ -44,11 +44,7 @@ struct rds_tcp_connection {
- 	size_t			t_tinc_hdr_rem;
- 	size_t			t_tinc_data_rem;
- 
--	/* XXX error report? */
--	struct work_struct	t_conn_w;
--	struct work_struct	t_send_w;
--	struct work_struct	t_down_w;
--	struct work_struct	t_recv_w;
-+	struct work_struct	t_fan_out_w;
- 
- 	/* for info exporting only */
- 	struct list_head	t_list_item;
-@@ -90,6 +86,7 @@ void rds_tcp_state_change(struct sock *sk);
- struct socket *rds_tcp_listen_init(struct net *net, bool isv6);
- void rds_tcp_listen_stop(struct socket *sock, struct work_struct *acceptor);
- void rds_tcp_listen_data_ready(struct sock *sk);
-+void rds_tcp_fan_out_w(struct work_struct *work);
- void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out);
- int rds_tcp_accept_one(struct rds_tcp_net *rtn);
- void rds_tcp_keepalive(struct socket *sock);
-diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
-index b77c88ffb199..6954b8c479f1 100644
---- a/net/rds/tcp_connect.c
-+++ b/net/rds/tcp_connect.c
-@@ -115,6 +115,8 @@ int rds_tcp_conn_path_connect(struct rds_conn_path *cp)
- 	if (cp->cp_index > 0 && cp->cp_conn->c_npaths < 2)
- 		return -EAGAIN;
- 
-+	cancel_work_sync(&tc->t_fan_out_w);
-+
- 	mutex_lock(&tc->t_conn_path_lock);
- 
- 	if (rds_conn_path_up(cp)) {
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 6fb5c928b8fd..8fb8f7d26683 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -123,27 +123,20 @@ rds_tcp_accept_one_path(struct rds_connection *conn, struct socket *sock)
- 	return NULL;
- }
- 
--void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
-+void rds_tcp_fan_out_w(struct work_struct *work)
- {
--	struct rds_tcp_connection *tc;
--	struct rds_tcp_net *rtn;
--	struct socket *sock;
-+	struct rds_tcp_connection *tc = container_of(work,
-+						     struct rds_tcp_connection,
-+						     t_fan_out_w);
-+	struct rds_connection *conn = tc->t_cpath->cp_conn;
-+	struct rds_tcp_net *rtn = tc->t_rtn;
-+	struct socket *sock = tc->t_sock;
- 	int sport, npaths;
- 
--	if (rds_destroy_pending(conn))
--		return;
--
--	tc = conn->c_path->cp_transport_data;
--	rtn = tc->t_rtn;
--	if (!rtn)
--		return;
--
--	sock = tc->t_sock;
--
- 	/* During fan-out, check that the connection we already
- 	 * accepted in slot#0 carried the proper source port modulo.
- 	 */
--	if (fan_out && conn->c_with_sport_idx && sock &&
-+	if (conn->c_with_sport_idx && sock &&
- 	    rds_addr_cmp(&conn->c_laddr, &conn->c_faddr) > 0) {
- 		/* cp->cp_index is encoded in lowest bits of source-port */
- 		sport = rds_tcp_get_peer_sport(sock);
-@@ -167,6 +160,37 @@ void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
- 	rds_tcp_accept_work(rtn);
- }
- 
-+void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
-+{
-+	struct rds_conn_path *cp0;
-+	struct rds_tcp_connection *tc;
-+	struct rds_tcp_net *rtn;
-+
-+	if (rds_destroy_pending(conn))
-+		return;
-+
-+	cp0 = conn->c_path;
-+	tc = cp0->cp_transport_data;
-+	rtn = tc->t_rtn;
-+	if (!rtn)
-+		return;
-+
-+	if (fan_out)
-+		/* Delegate fan-out to a background worker in order
-+		 * to allow "kernel_getpeername" to acquire a lock
-+		 * on the socket.
-+		 * The socket is already locked in this context
-+		 * by either "rds_tcp_recv_path" or "tcp_v{4,6}_rcv",
-+		 * depending on the origin of the dequeue-request.
-+		 */
-+		queue_work(cp0->cp_wq, &tc->t_fan_out_w);
-+	else
-+		/* Fan-out either already happened or is unnecessary.
-+		 * Just go ahead and attempt to accept more connections
-+		 */
-+		rds_tcp_accept_work(rtn);
-+}
-+
- int rds_tcp_accept_one(struct rds_tcp_net *rtn)
- {
- 	struct socket *listen_sock = rtn->rds_tcp_listen_sock;
--- 
-2.43.0
-
+is EXT used somewhere to mean SFP already?
 
