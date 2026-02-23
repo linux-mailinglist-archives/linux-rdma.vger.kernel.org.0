@@ -1,183 +1,288 @@
-Return-Path: <linux-rdma+bounces-17051-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17053-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QAvwHrnem2mu8gMAu9opvQ
-	(envelope-from <linux-rdma+bounces-17051-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 05:59:37 +0100
+	id eGh4LhcUnGkq/gMAu9opvQ
+	(envelope-from <linux-rdma+bounces-17053-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 09:47:19 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CFE171D6E
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 05:59:36 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D98D173464
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 09:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4229B3024A4D
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 04:59:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3A52E3024457
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Feb 2026 08:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AD83446C3;
-	Mon, 23 Feb 2026 04:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8769523EAAD;
+	Mon, 23 Feb 2026 08:47:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CsRko61U"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lkbTWSB0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD98F23EA85
-	for <linux-rdma@vger.kernel.org>; Mon, 23 Feb 2026 04:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.181
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34E134CFCC;
+	Mon, 23 Feb 2026 08:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771822772; cv=none; b=qgmNHIY00DQcFNLMFVre6UwCmxdE5P8sgGo2TBuF7hK85YWB43tCeVsTePEPtDmc/TYMXgH9zhhLRZu7Ytj7u9UZ0X6Tn9VhAweApdDUoFVKgsRQx1HNbowvQlXEWcQ0N7MkwHgHUVN27MnF8yKEMcZ6bEykAs6Dzq5ESwbuww0=
+	t=1771836432; cv=none; b=pd05RkOeWQ3XcrcHLyqRu6W086o4YjXVIu7Y7Btk1LUPTnurs8F5HKtRZjzPocFP/bkfCOdGIU/zaQkureMjPIHX8z1uKZTv825wHzkTulcRt5hjyEt9gY2CILidgYBPvivNA0MIVeluvi+PrBiUwOGmWGrUSpMh9+vbBA/8C64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771822772; c=relaxed/simple;
-	bh=LEFPyOaZEpHZmLXlHJrYQGoiUUQMfjxNFS9DsEDVwfQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DFfPwTNXlOXEgxQO3s52i55TrtjadWl6HlIkqHQt24kg+ItmgJRZTOFiQ7qO20WN5/ZcKPWJQAUPJnAY9rXtJJBa9U05P+dpiuFDfHdaa7mwvFCG55aujBZ2dfCbngsN6lowWM6VWo78/8Uu1MluxowAJ+2O63DvM15S+m609xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CsRko61U; arc=none smtp.client-ip=74.125.82.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-2ba6aa57d5fso3796584eec.1
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Feb 2026 20:59:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771822770; x=1772427570; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ar5KC76tgxYX5PKL9eOkCAkUY5PVkOEvBMJNrWwerKw=;
-        b=CsRko61UrOS/LBnAhxuT+TWf8AuTTluYnyJBxljgNtgtNuGG9boFKJoaOwN4c3nkpx
-         O1FhxiGi7tpK9YS062HKjOmg71nrE4ULTFC0rWU8gkgL5ovwFceONVcnsbbVyCZEbtMO
-         /ACAjgFK/pzoRzC9YU5WQCND9Jr1qDUCfSQUHBnVKOPtyvfWmbDMSVcH1eSf0LH/GBTw
-         d8NHME19BnqWxpQKf3Fj+ue6cKIw/IDhGdqlE75mHMBNJZm4KOkHl1Yptx6Dw1sa59H0
-         R+uNyoHztlcytswgQPvkUhBR+lpL7T11kJ921W5ptoS+Ww6vmbNH+bNNkprR49e78kny
-         f9GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771822770; x=1772427570;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ar5KC76tgxYX5PKL9eOkCAkUY5PVkOEvBMJNrWwerKw=;
-        b=g92gnFjC3tZTTi8h65uP2h+YaE5wc/BrPD4xkbNaGfdgzjSxQqxgkRYJ2N0u3WrlgD
-         vn2t+S0KuARdulV239N2ZvudCl3ESAkBHAgBroqG2/ISdKOpYnMatqtDXBasPg0SvYCw
-         AOGd/AdfOdwJSoYDvUryFhUFR9QE0G5umfSgHg+Nrcvoqw/VlxBcjbX3cj+EsNfqVLgm
-         kP/yTWMYKfosiqo7U3lepBFS6uTtjUTJzZ5R0k2ZcM4iGflklUJPzfGGh774Cj8GHZVR
-         1OR/R8/scy2Enktb8w3hldOTGr+EziFrAnVA3XN69/IVDZxUtYV730TV8z6+EmGlken4
-         7DbA==
-X-Forwarded-Encrypted: i=1; AJvYcCVja9YliRYBQN+2KG8X+MMocfMBOcBwUz/EdokqGZUqmGr+rZEMsp/sTGv8/t5dshOWmAfhccfh1PYL@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRgJKE/XfafxlFrFMEA5t9TdGzLmI39HvE2tSGUdhCoCSzhfC2
-	CUq10usVKV4cYRnHFXleIxVyFJNQq6KpQ30ZFVtNTZyk1raNoD9RLioG
-X-Gm-Gg: ATEYQzxd6xL7ycOB1QYUJZ+ZnPYgfZEVxXc7FSMywaNliky7CH7v9V/nKFnu0P94V8X
-	dditCQB7Vzfi9HvuSS4BEyVDvUF8V3pz3O2jYR0h4JRupcW9ZSk8yCI+Dck36OE4hr4fHmxkz6W
-	6UII5BYNmMax1FQG+RHVIjTlcjopEuplGM0/qz+lhKEi93RrGpdWYW42LDometWEiTpSnqTEcJl
-	dRVdxnAI/R0y5LMMKmnXzSLurgU97l1kZheuq29OfKKZHyf4iFabrVWvAXuS0X5xNdAfIRh2rpx
-	5xuXNdq0be11e0llSFUvQLVi0KmdxaWMEFFcunClZpyTzyVk4aXARJ6kJ7FKdQZmVrQw3N1NCRM
-	xUHKFiNUjD2Mg/NqARiEv5JVyAtLcVneJwPNYJAuqlFUb1VL+epe+Rmxs8bBzUSu6RarCx9NPmA
-	ejF+N28aiAA9nvO8z6OJAfdCImOngl8uhvEwbx
-X-Received: by 2002:a05:7301:6783:b0:2ba:6b03:90af with SMTP id 5a478bee46e88-2bd7bb4b383mr3387725eec.6.1771822769743;
-        Sun, 22 Feb 2026 20:59:29 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2bd7da4775dsm4300363eec.2.2026.02.22.20.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 20:59:29 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 22 Feb 2026 20:59:28 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Edward Srouji <edwards@nvidia.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	s=arc-20240116; t=1771836432; c=relaxed/simple;
+	bh=+dHU1bptRcVz99RN7Jt1KnpbOiRfG8JJsVx1iaC+d18=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ClaTKvFGDbypL4Z4d1jPSwzaw1Qrictkm+zHwZskWlb7NFOaikHLxG4c04fakiebzoK6gWLEIMNyazwgXvAhsbez4/WOszBO1nQ5z9MvpOE4koirVG3VByJS0VbfY8rbmUpQC5KlXyC0rfkTPIzeuAHqG5dXxMIGzZ/GPrKRAQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lkbTWSB0; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id AA74D20B6F00; Mon, 23 Feb 2026 00:47:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AA74D20B6F00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1771836430;
+	bh=+sMFljrbCbR3Gmuqz/2XuavaMj59idE6ZsCDEzg5qg4=;
+	h=Date:From:To:Subject:From;
+	b=lkbTWSB0Cxb1mjyEJoV6QWJGe8HeIzgv+uAMW1zP+Qd++KEEmCadG6PzQsIHGSkqE
+	 Kl/vnJc1DSzB5ABO+EbdKG8l6stKCua3Tw34PW4z8xlGreD16exO9hEmFPOYSW9hB4
+	 TnTgmkyWIe75NP0Z1revBXSzNXEMwbjI/P8wopZM=
+Date: Mon, 23 Feb 2026 00:47:10 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org, Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-next v3 2/3] RDMA/uverbs: Add DMABUF object type and
- operations
-Message-ID: <716e8a8e-e4e0-468d-9314-10082c2bbb8d@roeck-us.net>
-References: <20260201-dmabuf-export-v3-0-da238b614fe3@nvidia.com>
- <20260201-dmabuf-export-v3-2-da238b614fe3@nvidia.com>
+	dipayanroy@microsoft.com
+Subject: [PATCH, net-next] net: mana: Trigger VF reset/recovery on health
+ check failure due to HWC timeout
+Message-ID: <aZwUDlTkb5xunIkH@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260201-dmabuf-export-v3-2-da238b614fe3@nvidia.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_FROM(0.00)[bounces-17051-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17053-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[roeck-us.net];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_TWELVE(0.00)[21];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[linux@roeck-us.net,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[roeck-us.net:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D4CFE171D6E
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.microsoft.com:dkim,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
+X-Rspamd-Queue-Id: 7D98D173464
 X-Rspamd-Action: no action
 
-On Sun, Feb 01, 2026 at 04:34:05PM +0200, Edward Srouji wrote:
-> From: Yishai Hadas <yishaih@nvidia.com>
-> 
-> Expose DMABUF functionality to userspace through the uverbs interface,
-> enabling InfiniBand/RDMA devices to export PCI based memory regions
-> (e.g. device memory) as DMABUF file descriptors. This allows
-> zero-copy sharing of RDMA memory with other subsystems that support the
-> dma-buf framework.
-> 
-> A new UVERBS_OBJECT_DMABUF object type and allocation method were
-> introduced.
-> 
-> During allocation, uverbs invokes the driver to supply the
-> rdma_user_mmap_entry associated with the given page offset (pgoff).
-> 
-> Based on the returned rdma_user_mmap_entry, uverbs requests the driver
-> to provide the corresponding physical-memory details as well as the
-> driver’s PCI provider information.
-> 
-> Using this information, dma_buf_export() is called; if it succeeds,
-> uobj->object is set to the underlying file pointer returned by the
-> dma-buf framework.
-> 
-> The file descriptor number follows the standard uverbs allocation flow,
-> but the file pointer comes from the dma-buf subsystem, including its own
-> fops and private data.
-> 
-> When an mmap entry is removed, uverbs iterates over its associated
-> DMABUFs, marks them as revoked, and calls dma_buf_move_notify() so that
-> their importers are notified.
-> 
-> The same procedure applies during the disassociate flow; final cleanup
-> occurs when the application closes the file.
-> 
-> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Edward Srouji <edwards@nvidia.com>
+The GF stats periodic query is used as mechanism to monitor HWC health
+check. If this HWC command times out, it is a strong indication that
+the device/SoC is in a faulty state and requires recovery.
 
-When trying to build powerpc:ppc64e_defconfig:
+Today, when a timeout is detected, the driver marks
+hwc_timeout_occurred, clears cached stats, and stops rescheduling the
+periodic work. However, the device itself is left in the same failing
+state.
 
-ERROR: modpost: "dma_resv_wait_timeout" [drivers/infiniband/core/ib_core.ko] undefined!
-ERROR: modpost: "dma_buf_move_notify" [drivers/infiniband/core/ib_core.ko] undefined!
-ERROR: modpost: "dma_resv_reset_max_fences" [drivers/infiniband/core/ib_core.ko] undefined!
+Extend the timeout handling path to trigger the existing MANA VF
+recovery service by queueing a GDMA_EQE_HWC_RESET_REQUEST work item.
+This is expected to initiate the appropriate recovery flow by suspende
+resume first and if it fails then trigger a bus rescan.
 
-The code now requires CONFIG_DMA_SHARED_BUFFER which is not enabled for
-this platform.
+This change is intentionally limited to HWC command timeouts and does
+not trigger recovery for errors reported by the SoC as a normal command
+response.
 
-Guenter
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 14 +++-------
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 28 ++++++++++++++++++-
+ include/net/mana/gdma.h                       | 16 +++++++++--
+ 3 files changed, 45 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 0055c231acf6..16c438d2aaa3 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -490,15 +490,9 @@ static void mana_serv_reset(struct pci_dev *pdev)
+ 		dev_info(&pdev->dev, "MANA reset cycle completed\n");
+ 
+ out:
+-	gc->in_service = false;
++	clear_bit(GC_IN_SERVICE, &gc->flags);
+ }
+ 
+-struct mana_serv_work {
+-	struct work_struct serv_work;
+-	struct pci_dev *pdev;
+-	enum gdma_eqe_type type;
+-};
+-
+ static void mana_do_service(enum gdma_eqe_type type, struct pci_dev *pdev)
+ {
+ 	switch (type) {
+@@ -542,7 +536,7 @@ static void mana_recovery_delayed_func(struct work_struct *w)
+ 	spin_unlock_irqrestore(&work->lock, flags);
+ }
+ 
+-static void mana_serv_func(struct work_struct *w)
++void mana_serv_func(struct work_struct *w)
+ {
+ 	struct mana_serv_work *mns_wk;
+ 	struct pci_dev *pdev;
+@@ -624,7 +618,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ 			break;
+ 		}
+ 
+-		if (gc->in_service) {
++		if (test_bit(GC_IN_SERVICE, &gc->flags)) {
+ 			dev_info(gc->dev, "Already in service\n");
+ 			break;
+ 		}
+@@ -641,7 +635,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ 		}
+ 
+ 		dev_info(gc->dev, "Start MANA service type:%d\n", type);
+-		gc->in_service = true;
++		set_bit(GC_IN_SERVICE, &gc->flags);
+ 		mns_wk->pdev = to_pci_dev(gc->dev);
+ 		mns_wk->type = type;
+ 		pci_dev_get(mns_wk->pdev);
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 91c418097284..8da574cf06f2 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -879,7 +879,7 @@ static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
+ 	struct gdma_context *gc = ac->gdma_dev->gdma_context;
+ 
+ 	/* Already in service, hence tx queue reset is not required.*/
+-	if (gc->in_service)
++	if (test_bit(GC_IN_SERVICE, &gc->flags))
+ 		return;
+ 
+ 	/* Note: If there are pending queue reset work for this port(apc),
+@@ -3533,6 +3533,8 @@ static void mana_gf_stats_work_handler(struct work_struct *work)
+ {
+ 	struct mana_context *ac =
+ 		container_of(to_delayed_work(work), struct mana_context, gf_stats_work);
++	struct gdma_context *gc = ac->gdma_dev->gdma_context;
++	struct mana_serv_work *mns_wk;
+ 	int err;
+ 
+ 	err = mana_query_gf_stats(ac);
+@@ -3540,6 +3542,30 @@ static void mana_gf_stats_work_handler(struct work_struct *work)
+ 		/* HWC timeout detected - reset stats and stop rescheduling */
+ 		ac->hwc_timeout_occurred = true;
+ 		memset(&ac->hc_stats, 0, sizeof(ac->hc_stats));
++		dev_warn(gc->dev,
++			 "Gf stats wk handler: gf stats query timed out.\n");
++
++		/* As HWC timed out, indicating a faulty HW state and needs a
++		 * reset.
++		 */
++		if (!test_and_set_bit(GC_IN_SERVICE, &gc->flags)) {
++			if (!try_module_get(THIS_MODULE)) {
++				dev_info(gc->dev, "Module is unloading\n");
++				return;
++			}
++
++			mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
++			if (!mns_wk) {
++				module_put(THIS_MODULE);
++				return;
++			}
++
++			mns_wk->pdev = to_pci_dev(gc->dev);
++			mns_wk->type = GDMA_EQE_HWC_RESET_REQUEST;
++			pci_dev_get(mns_wk->pdev);
++			INIT_WORK(&mns_wk->serv_work, mana_serv_func);
++			schedule_work(&mns_wk->serv_work);
++		}
+ 		return;
+ 	}
+ 	schedule_delayed_work(&ac->gf_stats_work, MANA_GF_STATS_PERIOD);
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index a59bd4035a99..fb946389d593 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -213,6 +213,12 @@ enum gdma_page_type {
+ 
+ #define GDMA_INVALID_DMA_REGION 0
+ 
++struct mana_serv_work {
++	struct work_struct serv_work;
++	struct pci_dev *pdev;
++	enum gdma_eqe_type type;
++};
++
+ struct gdma_mem_info {
+ 	struct device *dev;
+ 
+@@ -384,6 +390,7 @@ struct gdma_irq_context {
+ 
+ enum gdma_context_flags {
+ 	GC_PROBE_SUCCEEDED	= 0,
++	GC_IN_SERVICE		= 1,
+ };
+ 
+ struct gdma_context {
+@@ -409,7 +416,6 @@ struct gdma_context {
+ 	u32			test_event_eq_id;
+ 
+ 	bool			is_pf;
+-	bool			in_service;
+ 
+ 	phys_addr_t		bar0_pa;
+ 	void __iomem		*bar0_va;
+@@ -471,6 +477,8 @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int num_cqe);
+ 
+ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit);
+ 
++void mana_serv_func(struct work_struct *w);
++
+ struct gdma_wqe {
+ 	u32 reserved	:24;
+ 	u32 last_vbytes	:8;
+@@ -613,6 +621,9 @@ enum {
+ /* Driver can handle hardware recovery events during probe */
+ #define GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY BIT(22)
+ 
++/* Driver supports self recovery on Hardware Channel timeouts */
++#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY BIT(25)
++
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+@@ -626,7 +637,8 @@ enum {
+ 	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY | \
+ 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
+ 	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
+-	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY)
++	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY | \
++	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+-- 
+2.43.0
+
 
