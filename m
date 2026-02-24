@@ -1,61 +1,74 @@
-Return-Path: <linux-rdma+bounces-17088-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17089-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MJRbK3/xnGkaMQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17088-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 01:31:59 +0100
+	id aAAQFCUInWk7MgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17089-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 03:08:37 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45F301803DE
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 01:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A979D180D5E
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 03:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 77E2230B849D
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 00:31:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2BDD330E1010
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 02:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6578225397;
-	Tue, 24 Feb 2026 00:31:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540E423C8A0;
+	Tue, 24 Feb 2026 02:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Alnv3OTM"
+	dkim=pass (1024-bit key) header.d=smail.nju.edu.cn header.i=@smail.nju.edu.cn header.b="MK44GgvB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB301E3DF2
-	for <linux-rdma@vger.kernel.org>; Tue, 24 Feb 2026 00:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8819F207A20;
+	Tue, 24 Feb 2026 02:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771893113; cv=none; b=U7pL/fjx5AEYU5aM/LSddudu1brHv5p/QeDf7qbgfKlEzQN07jaj8nB7eDZuoUR4B13PMG9j3MyC4GDof64aw5JrsEbE0k279wBEvl5c3hSklNHq1DtqmVCAzydIz8HUMAUKdFeamqQubl8seiScnvDWcaIh7bhIaDbHvt1wjEY=
+	t=1771898870; cv=none; b=nb3beG434/LPAVtMTbTES3INqs1zlnuFCW76HTae/SRyMXSIWzuuAGNosZVWBFvGy14hHtJ4MGq4aAcal0IGEUSiWF+4bZ2S3zXfdD0erWyfJQsT0O/1iniXssiyYeGG5t7bFxTKkudD4tkUpKx/v4Pc43jXqlJJxiZ+KU/N3uM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771893113; c=relaxed/simple;
-	bh=PKL0b3OzlwCJ1VnWm0jpFuNsJryCjxkZgNqKq+FgWZg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VzcP91aJkLGe72+H8GfKoUvzVFuLxKQH0QCAvzXWMEL3b3oY/GsIwurK5l4jZX1x/7KuZQrICekIcynxJcoa31+q+lx2JSRCBREXlF7aewFfOamuzZPN5GiF2uPNAQdlCHrRsz0v0WdKD7/JqxbxG+hT1Q0vFA8oXGbSn64FHSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Alnv3OTM; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=NQ9JdS+RMd6T8h0W5IwvmQftHgBQQJ95LItXdPi0/os=; b=Alnv3OTMwM5olJ92brcDLNecop
-	JGSTxfzxS1jdzcKtUjZCx+qPMQxR61i0CsnFRGsnVgzvF9edhVSwhNjeYuhBfbiaTtPtNstOyGT2D
-	D5MTV1k4bV+6K2mnM6ZyaCjoaukjEB9g683NbDyWc0x/wY765tQKlfY+nBCIePcLV73F3rgGeGIEQ
-	16TTGoHnljuQTyTZex9Te8+Mv5dpbd7Llk578cx9LBQMkDf3GQVyocsLgxG3TUWqIBaG4tU3PRtLl
-	uxB5VT3DBpCcKvGJ37a099CPICI3UwPbwj1z94Y4fTj1U22nnwuiKd5XYZevMXUqjDpUSHvI+PLSq
-	HOazgnnw==;
-Received: from [50.53.43.113] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vugL8-00000001F8n-3Kl5;
-	Tue, 24 Feb 2026 00:31:50 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-rdma@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH] RDMA/restrack: fix kernel-doc indicator
-Date: Mon, 23 Feb 2026 16:31:49 -0800
-Message-ID: <20260224003149.3175815-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1771898870; c=relaxed/simple;
+	bh=FtO3wZJ5gAFHP8d/P/PrXYh9573Wu71WSSIUXMIaLLU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VPdH75kLfrAH7B80tU1Udeuy1Kq8OmJuw7sEW8DOOKof8MpTPyHUjB0vp01/TipCShYZjTp+Tmvk0BiucCtTRDhp8Sa0q3Y9kA2gmdKOA+W5qDAtKnq77+sU1TXsMbZqlDN2/vyYmjfQ0izJGJB+05WLCoPEZyJJDiclTjv5lMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=smail.nju.edu.cn; spf=pass smtp.mailfrom=smail.nju.edu.cn; dkim=pass (1024-bit key) header.d=smail.nju.edu.cn header.i=@smail.nju.edu.cn header.b=MK44GgvB; arc=none smtp.client-ip=15.184.224.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=smail.nju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smail.nju.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smail.nju.edu.cn;
+	s=iohv2404; t=1771898847;
+	bh=Afjeq0ABeVA/DVRS8ujIoUHECLl6nZzPpxDRLT+NXAA=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version;
+	b=MK44GgvB5salxVt6QnPqNWCnaqpvPG7j/WCWYpx+sq5Fl2dDmo3qEIvr6kfk2ItES
+	 dq9YtU4iy3SzzZW9o+V5vBSLNWHPoOsAJWVR4ewaOvUHBYibFQOsoADzlgvkGvDiJz
+	 XQT4ZJAmDB2ysPDj+LS3BjiOIC/M5oMMQvFgwdR8=
+X-QQ-mid: esmtpgz12t1771898846t75042e3c
+X-QQ-Originating-IP: AbaLvVooqE/aIP9HU58kycqEnEw8vz43/Z8waCUGLQM=
+Received: from localhost.localdomain ( [116.172.93.199])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 24 Feb 2026 10:07:23 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5859754316398555003
+EX-QQ-RecipientCnt: 15
+From: kexinsun <kexinsun@smail.nju.edu.cn>
+To: allison.henderson@oracle.com
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kernel@vger.kernel.org,
+	julia.lawall@inria.fr,
+	xutong.ma@inria.fr,
+	yunbolyu@smu.edu.sg,
+	ratnadiraw@smu.edu.sg,
+	kexinsun@smail.nju.edu.cn
+Subject: [PATCH] rds: update outdated comment
+Date: Tue, 24 Feb 2026 10:07:20 +0800
+Message-Id: <20260224020720.1174-1-kexinsun@smail.nju.edu.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,69 +76,80 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: esmtpgz:smail.nju.edu.cn:qybglogicsvrgz:qybglogicsvrgz5b-0
+X-QQ-XMAILINFO: NDx3ZVsnQVLdeRcqJlgsdUu35W6y2ycEkAr6WvjXd4nMrqOqUfn4q3t2
+	qWliTXnccFWMNkZAuiAq+Fh79+kfZFTtk6Rl+7yb5CEs4dIyBTD2UFocbTX45NQIhkXkwJ6
+	zxYBK10llxFw7bw/nqB8vwWb+u9ovrQRgo/u/AWgLfV1Bv0rxraZOPZs0QcNjbJllymvX1y
+	RuOU/ZpkPxbxuYPMZf0tCgNHuRx2IRTnzVKA+cxdAeWLXlTigzbfnA/Py0elWGdVHgQ7vP0
+	6cRpFb+enoWjTrvu3E2KjQwABQiTOyIxA8GpQdsWrxyvQZMUHisb7V/m9WBbpXRtey6Fr8Y
+	XRAUkPbkQFGFVkdulwL9P9uFkHnRlLQXJRkvH7l1n9O/68He3zjhqwUdOyfMBukN0KpnRiC
+	5JH66gcZVFbmVSamHiRd/2bvK9zqNdIXIAK+bPs0WCXacKgtypMkoaYs0vTe8Rb1Ts4ldnP
+	xPll+rDVsYAMjvCAjTwbQ0a/HWJTpyWp2WOeqtvyVIApD9ZksjqI4c52K/hGH7AiZLVO8ik
+	LTo98mbHtypD2PZ0AoO6onf4TAf3G780lHlSXxktYI/4VG+ZdffB91ocidJlZSHTB6FDek3
+	Uw49t7bd5mVU495/8yYkzureOusiZyIPW709LAZlCs5CiJRiYgpWCTTm+zHvBzUZe+T449D
+	WftKswWbHzqVEfYReO/Ck3sXecd+YRNY/Rm4//wLWeMEvA2jVQCSq95Rwm8pBDRqyatjJ+X
+	kgP82ODxIS/XOvXn4KQPH2uUFxGZNfcnslnbeZ4p8wA99GX5Ly/wnrmO0IobmxHqG5q9TKl
+	/I/629b9jN8r/OLTRW4pGi0o00xdOj/uMh7kKnN49/QQMYXnTs3w5gH+/C5SO9oQ9Hda+f3
+	wP5A4C99CN3g2fFfr+4LM10glB/0Q1ch82Vc/HxZgkCx5j/EMUH9vlJcRUicPdJ1UaIdQ2d
+	PlUJHC0Hq6irfAg6jQqEH/tSo6vJPcO1npXr51ZuizyeLzHA0t+iatGuCetQWSCIT73O1m4
+	G+XisIrucB6QAO8AHzcIpk+aKCajmE90TbL1cYCyqWbz3ckTthXw29K6O+yCqNoEWuAGQzZ
+	egvCy3AKkKvNFLPCyC9z4MPr/uuwwd8Tgko5bq2SyAKwk++lrX6PO1xfzDeYxbj6A==
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+X-QQ-RECHKSPAM: 0
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	DMARC_POLICY_ALLOW(-0.50)[smail.nju.edu.cn,reject];
+	R_DKIM_ALLOW(-0.20)[smail.nju.edu.cn:s=iohv2404];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17088-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17089-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[smail.nju.edu.cn:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[rdunlap@infradead.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FROM_NEQ_ENVFROM(0.00)[kexinsun@smail.nju.edu.cn,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:mid,infradead.org:dkim,infradead.org:email]
-X-Rspamd-Queue-Id: 45F301803DE
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nju.edu.cn:email]
+X-Rspamd-Queue-Id: A979D180D5E
 X-Rspamd-Action: no action
 
-Use "/**" to begin kernel-doc comments. This eliminates these
-kernel-doc warnings:
+The function rds_send_reset() was subsumed by rds_send_path_reset()
+by commit d769ef81d5b5 ("RDS: Update rds_conn_shutdown to work with
+rds_conn_path").  Update the comment accordingly.
 
-Warning: include/rdma/restrack.h:123 struct member 'kref' not described in
- 'rdma_restrack_entry'
-Warning: include/rdma/restrack.h:123 struct member 'comp' not described in
- 'rdma_restrack_entry'
-
-(not adding missing return value kernel-doc descriptions)
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: kexinsun <kexinsun@smail.nju.edu.cn>
 ---
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
+ net/rds/send.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- include/rdma/restrack.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+diff --git a/net/rds/send.c b/net/rds/send.c
+index a1039e422a38..d8b14ff9d366 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -284,7 +284,7 @@ int rds_send_xmit(struct rds_conn_path *cp)
+ 		 *
+ 		 * cp_xmit_rm holds a ref while we're sending this message down
+ 		 * the connection.  We can use this ref while holding the
+-		 * send_sem.. rds_send_reset() is serialized with it.
++		 * send_sem.. rds_send_path_reset() is serialized with it.
+ 		 */
+ 		if (!rm) {
+ 			unsigned int len;
+-- 
+2.25.1
 
---- linux-next-20260205.orig/include/rdma/restrack.h
-+++ linux-next-20260205/include/rdma/restrack.h
-@@ -87,11 +87,11 @@ struct rdma_restrack_entry {
- 	 * query stage.
- 	 */
- 	u8			no_track : 1;
--	/*
-+	/**
- 	 * @kref: Protect destroy of the resource
- 	 */
- 	struct kref		kref;
--	/*
-+	/**
- 	 * @comp: Signal that all consumers of resource are completed their work
- 	 */
- 	struct completion	comp;
 
