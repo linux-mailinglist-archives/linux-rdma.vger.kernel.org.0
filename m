@@ -1,59 +1,67 @@
-Return-Path: <linux-rdma+bounces-17108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QPbGGxV2nWmAQAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17108-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:57:41 +0100
+	id wNhSI4Z3nWmAQAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17109-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 11:03:50 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 982B518505A
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39346185155
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 11:03:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5ED5D305B971
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 09:57:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2F6D63053E2B
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C635A372B58;
-	Tue, 24 Feb 2026 09:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53705372B5B;
+	Tue, 24 Feb 2026 10:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lb79iowD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N170TuqO"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DF3366DD6;
-	Tue, 24 Feb 2026 09:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1202C1607A4;
+	Tue, 24 Feb 2026 10:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771927026; cv=none; b=TOQyFH18R09yIiwfBghbEcje9O7Pe834mdys3h9nOR95Om8yolR6L4AmbjggFwXbdMKYirYDoN0zgcKDsmf5ad3VP+K/R+k/OzNFnFnC42ZjxASRqHR9nfPs2NMDZqDkZ2gKJSRjznrsSgtreB7QaX3R30w8uopuUKC25ps8clo=
+	t=1771927405; cv=none; b=Tf/QUdWj/UXbs2JEZTOTWbZjoKHaXWz4W5f8iB3hE8QrP4F/5YV9IHJIahceOZFgAMOBoUbdscigvAMyTHyyeVMO32aBL+taCHUI4Ut4u+PyX4qea7EH+fgVFEn/EOgE/8A6snyhu+UhpJzvq1wOJOk0vTsr1opPGPpCod9QqHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771927026; c=relaxed/simple;
-	bh=gJ0a/DuWWvFxCE7wNrFcN4fCzQPYX3s8CZ/Ba2W0GVc=;
+	s=arc-20240116; t=1771927405; c=relaxed/simple;
+	bh=nNjO5vXZErJBczcUVKw0ieFD48h+UCmSq9OpZxEVWCU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=a4zUx6WQKN5VqdmA9+wfnU12inr6L02Iv3NqdWDdA5S9rsPO+FXQ9JZKFLQhwWfSOyMabAT8r090P4w/KLrQ3pdV5IrBBqk/eFgKFAFMEgmiBB4U7dAWVdUykUbCXgoZsKMKwgnQSzlpgI81FURnOCKLreQITq8E8wmI2gFc88I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lb79iowD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6EB4C116D0;
-	Tue, 24 Feb 2026 09:57:05 +0000 (UTC)
+	 MIME-Version:Content-Type; b=BKj88/Y4LNF1GWAeLBCnGelN3hBv6jpjFxR1uP814NCceDbrGZm4Ose4AHFgoPRKr2vI5Ni8J6G0t0lraTe4BjMdn4Bfqu24DmRwWAFnC/EtlvJaKPafHPnwsuTtIu1Ok27QoTR1EcUngAk2nfSCjo02S+gUfhtGJgHIJvvvkFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N170TuqO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A606C116D0;
+	Tue, 24 Feb 2026 10:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771927026;
-	bh=gJ0a/DuWWvFxCE7wNrFcN4fCzQPYX3s8CZ/Ba2W0GVc=;
+	s=k20201202; t=1771927404;
+	bh=nNjO5vXZErJBczcUVKw0ieFD48h+UCmSq9OpZxEVWCU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=lb79iowDnkkX+nAPiNeFWQuPWlyVcaIqw0/vHRdG+BfHBB/z6jUxoy+AH12fNfg+Q
-	 1l0jlOL86dSchPzOO4xMW/DvfJIVbmPraYLQrZNV+Sck/74vASHveypVFpx+5K/Plj
-	 vKYyDsxdlpKNkxcrCNNJnydXFf19iJBm5e75c2qH53So5XranlkugNo53psXMLrkuO
-	 7KiK4nkDYLVvyB+edt4ynSElXRbQNU563IT29LL62BwjMXy3aXvBlLpTSRlJ/3pQNA
-	 utqeGnEDSpwOIr3jjuValriD4vBoa0PpL+Rk01kvfUymD2NmYvbEEODcQTPnyFjA4e
-	 +QyDgTNfXN+LQ==
+	b=N170TuqO/mHnvdHeQgXsQ8ycRUVPXrRVjIVfNStqxYgQDPXBv2581iKpHqFLK3D9P
+	 Wpy6+rAh6qEUYj6tr7PG0MguOPDAIf4JWAUXkHiHhTIJBewHqKRqa+i+BdY0TdIGDn
+	 nGzjr20Q8tJyCcRPlXkn1QUbCld/vyOTXxal0/TUDoPl/ZdYeFWV89tbXMJXGr+uHC
+	 Ecg32Pv/lrUDal9tcTf30J168Tb4w/RauBXyWxVWGPcAAbAJa54m47S476r3PEhOVz
+	 aX0atJdc0/gXR8pQb0lvIUaRyajK6IrQXvpuSiy/0PLKRY7gzdm2isu9FJDQ0F5bL8
+	 hKsEklxWetXVw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Zhu Yanjun <zyjzyj2000@gmail.com>, Evan Green <evgreen@meta.com>
-Cc: wguay@meta.com, Zhu Yanjun <yanjun.zhu@linux.dev>, 
- Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org, 
- linux-rdma@vger.kernel.org
-In-Reply-To: <20260220185533.252759-1-evgreen@meta.com>
-References: <20260220185533.252759-1-evgreen@meta.com>
-Subject: Re: [PATCH v2] RDMA/rxe: Generate async error for r_key violations
-Message-Id: <177192702321.747658.12819650313052064975.b4-ty@kernel.org>
-Date: Tue, 24 Feb 2026 04:57:03 -0500
+To: Gal Pressman <gal.pressman@linux.dev>, 
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>, linux-rdma@vger.kernel.org, 
+ Michael Margolin <mrgolin@amazon.com>, Yossi Leybovich <sleybo@amazon.com>, 
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
+ Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Abhijit Gangurde <abhijit.gangurde@amd.com>, 
+ Allen Hubbe <allen.hubbe@amd.com>, Andrew Boyer <andrew.boyer@amd.com>, 
+ Gal Pressman <galpress@amazon.com>, 
+ Mustafa Ismail <mustafa.ismail@intel.com>, patches@lists.linux.dev, 
+ Roland Dreier <rolandd@cisco.com>, Shiraz Saleem <shiraz.saleem@intel.com>, 
+ stable@vger.kernel.org, Steve Wise <larrystevenwise@gmail.com>
+In-Reply-To: <0-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+References: <0-v1-83e918d69e73+a9-rdma_udata_rc_jgg@nvidia.com>
+Subject: Re: [PATCH rc 0/4] Fix several serious mistakes on the udata path
+ in drivers
+Message-Id: <177192740020.748380.4781563195218426218.b4-ty@kernel.org>
+Date: Tue, 24 Feb 2026 05:03:20 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,7 +69,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-47773
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
@@ -72,55 +80,52 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17108-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17109-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com,meta.com];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[amd.com,amazon.com,intel.com,lists.linux.dev,cisco.com,vger.kernel.org,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 982B518505A
+X-Rspamd-Queue-Id: 39346185155
 X-Rspamd-Action: no action
 
 
-On Fri, 20 Feb 2026 10:55:04 -0800, Evan Green wrote:
-> Table 63 of the IBTA spec lists R_Key violations as a class C
-> error. 9.9.3.1.3 Responder Class C Fault Behavior indicates an
-> affiliated asynchronous error should be generated at the responder
-> if the error can be associated to a QP but not a particular RX WQE.
+On Mon, 16 Feb 2026 11:02:46 -0400, Jason Gunthorpe wrote:
+> While converting drivers to use
+> ib_copy_validate_udata_in()/ib_respond_udata()/etc these issues were
+> found, mostly by AI scanners.
 > 
-> Relevant portion of the spec:
-> C9-222.1.1: For an HCA responder using Reliable Connection service, for
-> a Class C responder side error, the error shall be reported to the
-> requester by generating the appropriate NAK code as specified in Table 63
-> Responder Error Behavior Summary on page 448. If the error can be related
-> to a particular QP but cannot be related to a particular WQE on that
-> receive queue (e.g. the error occurred while executing an RDMA Write
-> Request without immediate data), the error shall be reported to the
-> responder’s client as an Affiliated Asynchronous error. See Section
-> 10.10.2.3 Asynchronous Errors on page 576 for details. If the error can be
-> related to a particular WQE on a given receive queue, the QP shall be
-> placed into the error state and the error shall be reported to the
-> responder’s client as a Completion error.
+> Jason Gunthorpe (4):
+>   RDMA/efa: Fix typo in efa_alloc_mr()
+>   IB/mthca: Add missed mthca_unmap_user_db() for mthca_create_srq()
+>   RDMA/irdma: Fix kernel stack leak in irdma_create_user_ah()
+>   RDMA/ionic: Fix kernel stack leak in ionic_create_cq()
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA/rxe: Generate async error for r_key violations
-      https://git.kernel.org/rdma/rdma/c/f3f9825837dfdc
+[1/4] RDMA/efa: Fix typo in efa_alloc_mr()
+      https://git.kernel.org/rdma/rdma/c/f22c77ce49db05
+[2/4] IB/mthca: Add missed mthca_unmap_user_db() for mthca_create_srq()
+      https://git.kernel.org/rdma/rdma/c/117942ca43e2e3
+[3/4] RDMA/irdma: Fix kernel stack leak in irdma_create_user_ah()
+      https://git.kernel.org/rdma/rdma/c/74586c6da9ea22
+[4/4] RDMA/ionic: Fix kernel stack leak in ionic_create_cq()
+      https://git.kernel.org/rdma/rdma/c/faa72102b178c7
 
 Best regards,
 -- 
