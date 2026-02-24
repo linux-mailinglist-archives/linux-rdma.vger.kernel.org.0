@@ -1,174 +1,255 @@
-Return-Path: <linux-rdma+bounces-17126-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17127-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4AEWCOKbnWnwQgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17126-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 13:38:58 +0100
+	id YMBCC/rOnWn4SAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17127-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 17:16:58 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3013187109
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 13:38:57 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 847CD189AB2
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 17:16:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3C7233044667
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 12:38:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8AE6F3054103
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 16:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48C739A7E9;
-	Tue, 24 Feb 2026 12:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAE33A785A;
+	Tue, 24 Feb 2026 16:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="e1xgz6l8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mc1wlA8h"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFC239A7EE;
-	Tue, 24 Feb 2026 12:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0AD24DCF9;
+	Tue, 24 Feb 2026 16:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771936723; cv=none; b=qPgbnSFLcf60zJ2r2lTFcBc1/jJTS4KTmgtsiNTBIcr5tQgPEpXY91wbiQZVqu/yVrgJcKeJFScWgd1xOpdwTc1qZ7OST9DEg0GtM48C92je+WbMOdiboF4MhQIuySO9pR3XOfbXqKs5nt83vEZFALPU9hyPx59ZOh+l34Upltw=
+	t=1771949782; cv=none; b=u+v+QAJwZAihoAdiiY9oEpHsKELzcwmPNfJVh5iq7jL5GeT3oWeJ+xlGNsmwi7lII2aVSu99gHMw2LcXSAgbW0z0DE9yPdoe1p/r6MUw1vksQBs5KRpTu7SHI6vw8pUucfsXDzAd0jalrE6fvl+btEwjrTs01udBr3LnqHaRHbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771936723; c=relaxed/simple;
-	bh=+8dfnuPCvheAZoj489Lw7VaqrKEQ66nLtTo4AaRsAxw=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=PJYuKqBuVwXWcAKVxO3OKFSLNEBKwkCXFp7aTydv136zndE+H90i0tbd0VVAAdvAp/dBvAPbiYDns97cR8Dx5oH/J9+V50wPV5DDnLVpgIJ205LEsjVfQUEFnL4mYIJtyZe5uTu4oC8XJ5cHmdAyzMs+TJZPtqpwaLpw2HogT4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=e1xgz6l8; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 63B3E20B6F02; Tue, 24 Feb 2026 04:38:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 63B3E20B6F02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1771936716;
-	bh=fWYrBpZ0QKK9eLfeDvRYeB6kFeBxTaLv8KWU5s0DQvc=;
-	h=Date:From:To:Subject:From;
-	b=e1xgz6l8MW+phkYu38JX0G3e4yO51wiYtpZAZUt9bv0qraZ8WRh0iPY5WOsU/b5Cg
-	 0uklXhOxgBKiCgFT+7ZT5gHJsZ4Vn9jo1l4bvAKogf72UWfhmGteZ8+eJRavQFVKMN
-	 5kbWXRfbKncroWU+DLxLkKDzt5WcZoU4qPOkAxzM=
-Date: Tue, 24 Feb 2026 04:38:36 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net] net: mana: Fix double destroy_workqueue on service
- rescan PCI path
-Message-ID: <aZ2bzL64NagfyHpg@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1771949782; c=relaxed/simple;
+	bh=Jpzg3XcQH9T6/RZ4fN6CUybReuS0zIKiZ1EQ8AI4wBo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fXQguiYv2+utYM4WYrBn/fIG4EsQZWDo7bnGY9pf1uJ0k/89/x50hkTv0CMe0ASnkVP47QSgM2bRuy6dS64d8ot6dJQjureWjYyfPodnpXPvVIbJdeFtAbI2QrVdT6CZt/5njxakEcqPIm3Bm8MsWAVlOH6do7z+xdMNT2ZeuL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mc1wlA8h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46236C116D0;
+	Tue, 24 Feb 2026 16:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771949782;
+	bh=Jpzg3XcQH9T6/RZ4fN6CUybReuS0zIKiZ1EQ8AI4wBo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Mc1wlA8hy64hMUNU9Jqm8OcTRs+u83cX+Lkgu74ig9i1lNFMtTdiZmZxGPNo0MVvt
+	 vJ9foNO3ZA45GT9+8jOQECWUBo3+p1sxztzVYDTi+PBss6QWIrE0Pb7Ftpy/0kxX3A
+	 qJmxHR0mNb7M66B+oJ3bxKr+RcyVHIR6us0RQqV8CwA0nX/o86OKyrmUPhLufXkMYO
+	 MKUHoE6MyH2FVJRJNxdXjQFs84SwFgJlxVgvjQxuQdjFbyfQMmciOosAsX1w3Hn6Cw
+	 AsjdkHO73p1QlHq3UXTvq31/vOV6+HE4NUpHrC5JL/reDp+fJ8Qc/2Yoa2jpKXKcx0
+	 v8r5t44DBHiuA==
+From: Simon Horman <horms@kernel.org>
+To: achender@kernel.org
+Cc: Simon Horman <horms@kernel.org>,
+	linux-kselftest@vger.kernel.org,
+	kuba@kernel.org,
+	linux-rdma@vger.kernel.org,
+	allison.henderson@oracle.com,
+	edumazet@google.com,
+	netdev@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	pabeni@redhat.com
+Subject: Re: [net-next,v5,1/2] net/rds: Refactor __rds_conn_create for blocking transport cleanup
+Date: Tue, 24 Feb 2026 16:16:07 +0000
+Message-ID: <20260224161607.143920-1-horms@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260223221918.2750209-2-achender@kernel.org>
+References: <20260223221918.2750209-2-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17126-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17127-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.microsoft.com:dkim,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
-X-Rspamd-Queue-Id: B3013187109
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 847CD189AB2
 X-Rspamd-Action: no action
 
-While testing corner cases in the driver, a use-after-free crash
-was found on the service rescan PCI path.
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 
-When mana_serv_reset() calls mana_gd_suspend(), mana_gd_cleanup()
-destroys gc->service_wq. If the subsequent mana_gd_resume() fails
-with -ETIMEDOUT or -EPROTO, the code falls through to
-mana_serv_rescan() which triggers pci_stop_and_remove_bus_device().
-This invokes the PCI .remove callback (mana_gd_remove), which calls
-mana_gd_cleanup() a second time, attempting to destroy the already-
-freed workqueue. Fix this by NULL-checking gc->service_wq in
-mana_gd_cleanup() and setting it to NULL after destruction.
-
-Call stack of issue for reference:
-[Sat Feb 21 18:53:48 2026] Call Trace:
-[Sat Feb 21 18:53:48 2026]  <TASK>
-[Sat Feb 21 18:53:48 2026]  mana_gd_cleanup+0x33/0x70 [mana]
-[Sat Feb 21 18:53:48 2026]  mana_gd_remove+0x3a/0xc0 [mana]
-[Sat Feb 21 18:53:48 2026]  pci_device_remove+0x41/0xb0
-[Sat Feb 21 18:53:48 2026]  device_remove+0x46/0x70
-[Sat Feb 21 18:53:48 2026]  device_release_driver_internal+0x1e3/0x250
-[Sat Feb 21 18:53:48 2026]  device_release_driver+0x12/0x20
-[Sat Feb 21 18:53:48 2026]  pci_stop_bus_device+0x6a/0x90
-[Sat Feb 21 18:53:48 2026]  pci_stop_and_remove_bus_device+0x13/0x30
-[Sat Feb 21 18:53:48 2026]  mana_do_service+0x180/0x290 [mana]
-[Sat Feb 21 18:53:48 2026]  mana_serv_func+0x24/0x50 [mana]
-[Sat Feb 21 18:53:48 2026]  process_one_work+0x190/0x3d0
-[Sat Feb 21 18:53:48 2026]  worker_thread+0x16e/0x2e0
-[Sat Feb 21 18:53:48 2026]  kthread+0xf7/0x130
-[Sat Feb 21 18:53:48 2026]  ? __pfx_worker_thread+0x10/0x10
-[Sat Feb 21 18:53:48 2026]  ? __pfx_kthread+0x10/0x10
-[Sat Feb 21 18:53:48 2026]  ret_from_fork+0x269/0x350
-[Sat Feb 21 18:53:48 2026]  ? __pfx_kthread+0x10/0x10
-[Sat Feb 21 18:53:48 2026]  ret_from_fork_asm+0x1a/0x30
-[Sat Feb 21 18:53:48 2026]  </TASK>
-
-Fixes: 505cc26bcae0 ("net: mana: Add support for auxiliary device servicing events")
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
 ---
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 5 ++++-
- drivers/net/ethernet/microsoft/mana/mana_en.c   | 4 +++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+net/rds: Refactor __rds_conn_create for blocking transport cleanup
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 0055c231acf6..3926d18f1840 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1946,7 +1946,10 @@ static void mana_gd_cleanup(struct pci_dev *pdev)
- 
- 	mana_gd_remove_irqs(pdev);
- 
--	destroy_workqueue(gc->service_wq);
-+	if (gc->service_wq) {
-+		destroy_workqueue(gc->service_wq);
-+		gc->service_wq = NULL;
-+	}
- 	dev_dbg(&pdev->dev, "mana gdma cleanup successful\n");
- }
- 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 9b5a72ada5c4..f69e42651359 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -3762,7 +3762,9 @@ void mana_rdma_remove(struct gdma_dev *gd)
- 	}
- 
- 	WRITE_ONCE(gd->rdma_teardown, true);
--	flush_workqueue(gc->service_wq);
-+
-+	if (gc->service_wq)
-+		flush_workqueue(gc->service_wq);
- 
- 	if (gd->adev)
- 		remove_adev(gd);
--- 
-2.43.0
+The next patch will delegate fanout operations to a background worker,
+which adds cancel_work_sync() to rds_tcp_conn_free(). This is called
+during a connection cleanup and requires an operations to be blocking.
+However, the error path of __rds_conn_create() currently calls
+trans->conn_free() while holding rds_conn_lock (spinlock) and
+rcu_read_lock, which creates an atomic context where cancel_work_sync()
+cannot sleep.
 
+Link: https://ci.syzbot.org/series/1a5ef180-c02c-401d-9df7-670b18570a55
+
+> diff --git a/net/rds/connection.c b/net/rds/connection.c
+> --- a/net/rds/connection.c
+> +++ b/net/rds/connection.c
+> @@ -170,6 +170,7 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+>  	struct hlist_head *head = rds_conn_bucket(laddr, faddr);
+>  	struct rds_transport *loop_trans;
+>  	struct rds_conn_path *free_cp = NULL;
+> +	struct rds_transport *free_trans = NULL;
+>  	unsigned long flags;
+>  	int ret, i;
+>  	int npaths = (trans->t_mp_capable ? RDS_MPATH_WORKERS : 1);
+> @@ -305,7 +306,7 @@
+>  	if (parent) {
+>  		/* Creating passive conn */
+>  		if (parent->c_passive) {
+> -			trans->conn_free(conn->c_path[0].cp_transport_data);
+> +			free_trans = trans;
+>  			free_cp = conn->c_path;
+>  			kmem_cache_free(rds_conn_slab, conn);
+>  			conn = parent->c_passive;
+
+[ ... ]
+
+> @@ -321,18 +322,7 @@
+>  		found = rds_conn_lookup(net, head, laddr, faddr, trans,
+>  					tos, dev_if);
+>  		if (found) {
+> -			struct rds_conn_path *cp;
+> -			int i;
+> -
+> -			for (i = 0; i < npaths; i++) {
+> -				cp = &conn->c_path[i];
+> -				/* The ->conn_alloc invocation may have
+> -				 * allocated resource for all paths, so all
+> -				 * of them may have to be freed here.
+> -				 */
+> -				if (cp->cp_transport_data)
+> -					trans->conn_free(cp->cp_transport_data);
+> -			}
+> +			free_trans = trans;
+>  			free_cp = conn->c_path;
+>  			kmem_cache_free(rds_conn_slab, conn);
+>  			conn = found;
+
+Does this create a use-after-free in other threads that iterate the
+transport list?
+
+Looking at the race-loss path when rds_conn_lookup() finds an existing
+connection, the old code called trans->conn_free() before
+kmem_cache_free(conn). Now the patch defers conn_free() to after
+locks are released at the out: label, but kmem_cache_free(conn) still
+executes inside the critical section (line 327 after this change).
+
+This creates a window where rds_tcp_connection objects remain on
+rds_tcp_conn_list with tc->t_cpath->cp_conn pointing to the
+already-freed conn object.
+
+The timeline would be:
+
+CPU 0 (__rds_conn_create race-loss)
+  spin_lock_irqsave(&rds_conn_lock)
+  found = rds_conn_lookup()  // finds existing conn
+  free_trans = trans
+  free_cp = conn->c_path
+  kmem_cache_free(rds_conn_slab, conn)  // conn freed
+  conn = found
+  spin_unlock_irqrestore(&rds_conn_lock)
+  rcu_read_unlock()
+  // ... later at out: label
+  free_trans->conn_free(...)  // removes tc from list, but too late
+
+CPU 1 (rds_tcp_kill_sock)
+  spin_lock_irq(&rds_tcp_conn_lock)
+  list_for_each_entry_safe(tc, _tc, &rds_tcp_conn_list, t_tcp_node)
+    c_net = read_pnet(&tc->t_cpath->cp_conn->c_net)  // UAF here!
+
+The commit message states "connections that 'lose' the race are safe to
+clean up outside the critical section since they were never added to
+the hashtable, and therefore are inaccessible to other threads."
+
+However, while the rds_connection was never added to the RDS hashtable,
+the transport data (tc) WAS added to rds_tcp_conn_list during
+rds_tcp_conn_alloc(). Looking at that function in net/rds/tcp.c:
+
+rds_tcp_conn_alloc() {
+    // ... allocate tc structures ...
+    spin_lock_irq(&rds_tcp_conn_lock);
+    for (i = 0; i < RDS_MPATH_WORKERS; i++) {
+        tc = conn->c_path[i].cp_transport_data;
+        tc->t_tcp_node_detached = false;
+        list_add_tail(&tc->t_tcp_node, &rds_tcp_conn_list);
+    }
+    spin_unlock_irq(&rds_tcp_conn_lock);
+}
+
+So the tc objects are accessible to other threads via the transport
+list, even though the conn itself never made it into the RDS hashtable.
+
+Functions that iterate rds_tcp_conn_list include:
+- rds_tcp_kill_sock() at net/rds/tcp.c:610
+- rds_tcp_destroy_conns()
+- rds_tcp_sysctl_reset()
+
+All of these dereference tc->t_cpath->cp_conn during iteration.
+
+In the old code, conn_free() ran BEFORE kmem_cache_free(conn), so the tc
+was removed from the list before conn was freed. No UAF window existed.
+
+Could the kmem_cache_free(rds_conn_slab, conn) be moved to after
+conn_free() at the out: label, or should conn_free() be called before
+kmem_cache_free() inside the critical section for the race-loss paths?
+
+> @@ -349,9 +339,23 @@
+>
+>  out:
+>  	if (free_cp) {
+> -		for (i = 0; i < npaths; i++)
+> +		for (i = 0; i < npaths; i++) {
+> +			/*
+> +			 * The trans->conn_alloc call may have allocated
+> +			 * resources for the cp paths, which will need to
+> +			 * be freed before freeing cp itself.  We do this here
+> +			 * after the out: label so it runs outside the
+> +			 * rds_conn_lock spinlock and rcu_read_lock section,
+> +			 * since both destroy_workqueue() and conn_free can
+> +			 * block. The local free_trans pointer is only set in
+> +			 * the race-loss paths where conn_alloc() succeeded.
+> +			 */
+> +			if (free_trans && free_cp[i].cp_transport_data)
+> +				free_trans->conn_free
+> +					(free_cp[i].cp_transport_data);
+>  			if (free_cp[i].cp_wq != rds_wq)
+>  				destroy_workqueue(free_cp[i].cp_wq);
+> +		}
+>  		kfree(free_cp);
+>  	}
 
