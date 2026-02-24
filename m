@@ -1,124 +1,114 @@
-Return-Path: <linux-rdma+bounces-17106-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17107-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sFy9FyBxnWk9QAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17106-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:36:32 +0100
+	id +KcuInp1nWmAQAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17107-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:55:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DD8B184B44
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:36:31 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C8A184FC9
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 10:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BCCD5319EAC1
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 09:31:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 74F27303B17C
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Feb 2026 09:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E5636A025;
-	Tue, 24 Feb 2026 09:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B4DA36F412;
+	Tue, 24 Feb 2026 09:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eIsDrCHw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c4KuItd9"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9408836654E
-	for <linux-rdma@vger.kernel.org>; Tue, 24 Feb 2026 09:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFAD366814
+	for <linux-rdma@vger.kernel.org>; Tue, 24 Feb 2026 09:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771925487; cv=none; b=d039zDmenWGK6JaWD/H1snkgoh8NwC8vX3ybbybjG7dfZ4buaQlLeJdq2O8j3lBSO1LQjxmvqylVNN/G7D9DvfjxIr1N7HEXilFl/+hz7pDYoymdnY4Xnfr4GsSfPnVhA81+wedd7G2hpXJ4VsViU5hdP7Gph3Tzuz0YqNNrbjo=
+	t=1771926871; cv=none; b=qYT63NH2etyw0twiJxD7EC4OaXv/IRFn+PKaPeu5SqOoiBgUglxSmRkHewKCS4k8lKyYmzJwyqX5sPtishpIRmiLbBzAzD7T56s/pVXudAPlgGP9w4ky+4wbp4yAGo+qfNfVdwBjktvpzJxJ/621NplyXFHU/z+OigfNs6eU7w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771925487; c=relaxed/simple;
-	bh=S7IWpITAoUEwYn3LTUe1fGiUYICDw1ARHGAWT4odt3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r5dKTH3ggR1/Q52Fyp+WUOdz1aE4Q5rV+YN9hR2mpZXLh5kqILv1iEfkBZVo5BGhss6ZAWHkRtGAFq9FgaltsSAHfTiJsNLEynK2kMQjn8n+YGfvmlSETA7C1TF0HkMtB84TvLZnkLIAXNS75Vp2XTKOftldcSPdpOhwfpjlBLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eIsDrCHw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C87C116D0;
-	Tue, 24 Feb 2026 09:31:26 +0000 (UTC)
+	s=arc-20240116; t=1771926871; c=relaxed/simple;
+	bh=C4okLm4O6qltws2qquhsqbgl7uBtAzaP9ETCCrSB9Kc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=ctpe5+AaresyjNvNE1tN7XTqQBtgM5i3oH4TXCQ/IzM+3+0ZqRaF0AQQBI6qdIaNtfLskel799z6eF2Th5ghourQ2E1uMfS08QaFxCR1srkedsY/4odHCV9gOkjXtZbujbHH5jywjiyCqr9Wszzvwur/fGt+wEyiJ9bUAylQ0W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c4KuItd9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B670C116D0;
+	Tue, 24 Feb 2026 09:54:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771925487;
-	bh=S7IWpITAoUEwYn3LTUe1fGiUYICDw1ARHGAWT4odt3Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eIsDrCHwEu+VmxcJVyYUoV8bXQ4Uk3Z80RuN/txNpA3gAEXiexjOC1cC5eUbFwwGK
-	 feFBG8uSmhAYyDnzaP8Sm0dDzvDfOjB2gysLBKCUWWPeJrPkMjnqfJHpbHWpoys1GG
-	 QQMmfEA1hTz0IZWNrF2lm1nCdi/TaBm0RR9o/KeHa8f60sWhGAKCamIYA7UqOshwUo
-	 tCNLg0tSVeHKuJXEnLQ356yYPCj6CYJHwcFgCocwzYUh0fUNMXujXVnZvMa60ZFj8T
-	 R/+p9TA30CIcy15DUOKKyNplWw+knnZllyQsM0fiF7qwoFAEwNSvw9gxRPZJNXAmAB
-	 btDrI+4axwz1w==
-Date: Tue, 24 Feb 2026 11:31:19 +0200
+	s=k20201202; t=1771926871;
+	bh=C4okLm4O6qltws2qquhsqbgl7uBtAzaP9ETCCrSB9Kc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=c4KuItd9z9IX3i0X4HHQk4VkuAO+wWlkfmt1hxJr1ewI0VfEHrn1vsielFoc3j5Zy
+	 6YSqlKiP7LqFg7uOIaKvJnkSIMui2lnFrRNK4hG/QeuLR+haB/b8ww8jSwjXyfoq19
+	 De2L5AT4+N2wBbzSGEBc+mO57PXY3bikLdUltoIUL6daQEiDgpeEw0eTZrTxjjFbIl
+	 vA1Y2jTjluuM2vqUlMeK9VMv9iX5vTaWpufJHrmmLZ8dZsXKNlxyErwZZM69wAZPmO
+	 sSsoiCXQqNMOMRbhEvjfbRu9ipqwzReD1vVylKsb/iyKErQres+WkENGPjQFocaUpg
+	 mrXfjGeK35mUA==
 From: Leon Romanovsky <leon@kernel.org>
-To: "Hebenstreit, Michael" <michael.hebenstreit@cornelisnetworks.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: problem with duplicate resends
-Message-ID: <20260224093119.GG10607@unreal>
-References: <LV2PR01MB9940993E9E56B23CEF734AC4909B68A@LV2PR01MB994099.prod.exchangelabs.com>
+To: linux-rdma@vger.kernel.org, Kamal Heib <kheib@redhat.com>
+Cc: Abhijit Gangurde <abhijit.gangurde@amd.com>, 
+ Jason Gunthorpe <jgg@ziepe.ca>
+In-Reply-To: <20260220222125.16973-2-kheib@redhat.com>
+References: <20260220222125.16973-2-kheib@redhat.com>
+Subject: Re: [PATCH] RDMA/ionic: Fix potential NULL pointer dereference in
+ ionic_query_port
+Message-Id: <177192686686.747035.3973512104219547018.b4-ty@kernel.org>
+Date: Tue, 24 Feb 2026 04:54:26 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <LV2PR01MB9940993E9E56B23CEF734AC4909B68A@LV2PR01MB994099.prod.exchangelabs.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-47773
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17106-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17107-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cornelisnetworks.com:email]
-X-Rspamd-Queue-Id: 9DD8B184B44
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 26C8A184FC9
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 06:48:21PM +0000, Hebenstreit, Michael wrote:
-> Hello
-> 
-> We have a problem in a Linux cluster using Omnipath 100 and GPFS. Typically, after a complete reboot the cluster works correctly for 10-14 days. Then problems start, happening about once ever 2-3 days. This makes the problem very hard to debug.
-> 
-> The problem starts with one or more storage nodes (A, B, C...) being unable to write to a "bad" storage node X. A/B/C/... would then throw an IBV_WC_RETRY_EXC_ERR error and close the QP pair. In response NodeX would also close the connection. Afterwards GPFS cannot re-establish a new connection fast enough and everything goes south until the NodeX is rebooted. GPFS is NOT my question here though.
-> 
-> During the last crash thanks to a new monitoring system, we discovered that NodeA/B/C/.. would execute 6 RDMA retries and accordingly the RcResend counters on the hfi1 driver would go up. But on NodeX the RcDupRew counter would go up in step with all the RcResends. That indicates the resends are incorrect and had already been previously acknowledged.
-> 
-> The operating system is RedHat EL 8.10 with a very old rdma-core version 48.
-> 
-> My question - is there any known bug in libibverbs/libhfi1verbs-rdmav34 that could explain this behavior?
 
-From the upstream perspective, the answer is no. We are not aware of any  
-related issues or discussions.
+On Fri, 20 Feb 2026 17:21:26 -0500, Kamal Heib wrote:
+> The function ionic_query_port() calls ib_device_get_netdev() without
+> checking the return value which could lead to NULL pointer dereference,
+> Fix it by checking the return value and return -ENODEV if the 'ndev' is
+> NULL.
+> 
+> 
 
-Thanks
+Applied, thanks!
 
-> 
-> Thanks
-> Michael
-> 
-> ------------------------------------------------------------------------------
-> Michael Hebenstreit         Principal Performance Engineer
-> Cornelis Networks           Performance Team
-> Tel.:+1-385-393-5444        E-mail: michael.hebenstreit@cornelisnetworks.com
-> 
-> External recipient
-> 
+[1/1] RDMA/ionic: Fix potential NULL pointer dereference in ionic_query_port
+      https://git.kernel.org/rdma/rdma/c/fd80bd7105f881
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
