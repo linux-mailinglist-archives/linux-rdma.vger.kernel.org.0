@@ -1,122 +1,152 @@
-Return-Path: <linux-rdma+bounces-17149-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17150-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SGS1OVLcnmkTXgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17149-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 12:26:10 +0100
+	id YFPaDQvfnmkTXgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17150-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 12:37:47 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6F81966FF
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 12:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3991969BF
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 12:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 214C130086E4
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 11:22:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A67183015CB6
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 11:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8575613A244;
-	Wed, 25 Feb 2026 11:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF735394476;
+	Wed, 25 Feb 2026 11:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VebRy3Ki"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="d5Xnpy0e"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47AE424DCF9
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 11:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074C1394485;
+	Wed, 25 Feb 2026 11:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772018560; cv=none; b=FyzGEF2Gkm4o4JdkuMQj+754fl51BtPwK3xAlHo2VJl40LeYS4KN0PoQmUz7mVDOL3Vh1Ekhw5MPAv0AP0NlW61PCbWcQYDQN2M+DzwPQp0XRHXtpCj4nwARy9XJaf9IxYOTSVPdlOcDm7pVXFVlpfZSLtVKKeTamo+RfOv/7+M=
+	t=1772019240; cv=none; b=eJjjMcw0RDDcvlHPgEThVovBCZSp3eW6XrIfgkjkHaXa49nHi8lkbCcVdlIaXBn4xFpNUKh5bRcLfSK8WTPfBlYeQaespRPCZ0+8LBOTcMmMsedKNT6U//gKoFKLAvKkhqO5YowWwKiT93gIaKlkFtqfqr0dsk3KM0Wu3GGQT+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772018560; c=relaxed/simple;
-	bh=axRPWJkvFCtVyB01RB3oKGz5+rlBMJ0yTnEU/6KOcJs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=to6UGxt3Mkced0odSolZCn8Av/mS416DpYQqzzf7ZIIPtZ+tW/uPz4JFiTUOiJo823uJAYNK/bur4NcUOEEJU1+4xjlkCoDxFjHU8e/vcAepJK/EVxBAkxApyUtnZ3DU/Bcn0HFWhVQXqFpX4aDslw+YN3W+psXVPQh7tUchd1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VebRy3Ki; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88D4DC116D0;
-	Wed, 25 Feb 2026 11:22:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772018560;
-	bh=axRPWJkvFCtVyB01RB3oKGz5+rlBMJ0yTnEU/6KOcJs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=VebRy3Kilx0JZrToXG9Mpf3OpfCOHambM9bsSutEvDRq12rciabkz3GGtvrtSJWCU
-	 rIT+CFUct+ATnxUP2e94sOuAEcSahQgxM3HsZtRD7dUrzmO0Me68PJQPQLh/+lhmcs
-	 MXLr+rnDU+pC4IlJw+WwEbU8GRsHdJZiNLZ68nzZRmkpX6S/1NPSxiFZKwACsFGMZT
-	 ebrJsd2Vq5F7lZaRDoRSZjGxb8QWH53W5UOE+32zuaAqpafDQC+D7WEKq1/UTiKkpO
-	 vTDjC2B4ZN+GYwijhr3TZb629awi7LrQc/U6KdLqCTB1JKqX0DRI0vPyPVXh5euG2p
-	 LNDiMooRs/cFg==
-From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
- Yonatan Nachum <ynachum@amazon.com>
-Cc: mrgolin@amazon.com, sleybo@amazon.com, matua@amazon.com, 
- gal.pressman@linux.dev
-In-Reply-To: <20260217112304.36849-1-ynachum@amazon.com>
-References: <20260217112304.36849-1-ynachum@amazon.com>
-Subject: Re: [PATCH for-next v3 0/3] RDMA/efa: Expose extended max inline
- buffer size
-Message-Id: <177201855699.15725.2276774488803304663.b4-ty@kernel.org>
-Date: Wed, 25 Feb 2026 06:22:36 -0500
+	s=arc-20240116; t=1772019240; c=relaxed/simple;
+	bh=4WXj/H8diYk72UqPYfujuh4wbhoPzyMPYzScMipEO7g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HQstBYz0h+V1a6UMAdKBdhTPwZAA8eiCBAEnipGI3AuxjZH3P9emqL6IBBCXcBzYRzRU0KTCX1TKUO5SeWTXug5+roQYp48xYNKiLNCvVozFYIGE1Nz0viePU8IlFGytuLZr99VzDRT6NkMsSyAdtaNZWsmkkb2qx9o3Lwjmk+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=d5Xnpy0e; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772019230; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=uJmBxdOoqgQ8mbe+SMlYCNL/yPqxR9ND6i9YPMlifnc=;
+	b=d5Xnpy0e7EQRZPrfg0IxP/OVKZMHw0R3wqmpgXGib+/lJ8+utz7qLyR3axCGefiF9b6c11eVZb6QC/TY9tAuCAdL83eTSKLGNF6/AKPCD1yCXTgYLE489Bj1cTEY/K8YpkmrD/Obg+V/nRjgZYyzrSEs/PMYezenMcVJ6Gl7U+k=
+Received: from 30.221.115.37(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0WzmIOvs_1772019229 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 25 Feb 2026 19:33:50 +0800
+Message-ID: <7cfd31d3-fe40-8b2d-cea8-14748db5f35b@linux.alibaba.com>
+Date: Wed, 25 Feb 2026 19:33:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-47773
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH][rdma-next] RDMA/erdma: Use NUMA-aware allocation for MTT
+ tables
+Content-Language: en-US
+To: lirongqing <lirongqing@baidu.com>, Kai Shen <kaishen@linux.alibaba.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260225085143.1721-1-lirongqing@baidu.com>
+From: Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <20260225085143.1721-1-lirongqing@baidu.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17149-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17150-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chengyou@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4E6F81966FF
+X-Rspamd-Queue-Id: 8D3991969BF
 X-Rspamd-Action: no action
 
 
-On Tue, 17 Feb 2026 11:23:01 +0000, Yonatan Nachum wrote:
-> Changelog:
-> v3:
->  * Use right enum value for new device query.
-> v2: https://lore.kernel.org/all/20260216133351.14896-1-ynachum@amazon.com/
->  * Added patch 3 to use the extended inline buffer size for validation
->    in QP creation.
-> v1: https://lore.kernel.org/all/20260215120451.18053-1-ynachum@amazon.com/
+
+On 2/25/26 4:51 PM, lirongqing wrote:
+> From: Li RongQing <lirongqing@baidu.com>
 > 
-> [...]
+> Currently, MTT (Memory Translation Table) buffers are allocated without
+> NUMA awareness using kzalloc() and vzalloc(), which allocate memory on
+> the NUMA node of the calling CPU. This can lead to cross-node memory
+> access latencies if the erdma device is attached to a different NUMA
+> socket.
+> 
+> Switch to kzalloc_node() and vzalloc_node() to ensure MTT buffers are
+> allocated on the local NUMA node of the PCIe device (dev->attrs.numa_node).
+> This reduces latency for hardware access and improves performance.
+> 
+> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> ---
+>  drivers/infiniband/hw/erdma/erdma_verbs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-Applied, thanks!
+Hi, Li RongQing,
 
-[1/3] RDMA/efa: Rename admin queue attributes struct name for extendability
-      https://git.kernel.org/rdma/rdma/c/6b8d5a0cdb1961
-[2/3] RDMA/efa: Expose new extended max inline buff size
-      https://git.kernel.org/rdma/rdma/c/e736a223ab1506
-[3/3] RDMA/efa: Use extended inline buff size for inline validation
-      https://git.kernel.org/rdma/rdma/c/d1fc91be263d0a
+Thanks for the patch. However, I think it is better to keep the current
+behavior, for the following reasons:
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+1. This path is in the control plane, so allocating memory from a remote
+   NUMA node should not have a noticeable performance impact.
+2. With this change, the driver may fail the allocation when the local NUMA
+   node is out of memory, even if other nodes still have available memory.
 
+Thanks,
+Cheng Xu
+
+> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
+> index 9f74aad..58da6ef 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_verbs.c
+> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+> @@ -604,7 +604,7 @@ static struct erdma_mtt *erdma_create_cont_mtt(struct erdma_dev *dev,
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	mtt->size = size;
+> -	mtt->buf = kzalloc(mtt->size, GFP_KERNEL);
+> +	mtt->buf = kzalloc_node(mtt->size, GFP_KERNEL, dev->attrs.numa_node);
+>  	if (!mtt->buf)
+>  		goto err_free_mtt;
+>  
+> @@ -729,7 +729,7 @@ static struct erdma_mtt *erdma_create_scatter_mtt(struct erdma_dev *dev,
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	mtt->size = ALIGN(size, PAGE_SIZE);
+> -	mtt->buf = vzalloc(mtt->size);
+> +	mtt->buf = vzalloc_node(mtt->size, dev->attrs.numa_node);
+>  	mtt->continuous = false;
+>  	if (!mtt->buf)
+>  		goto err_free_mtt;
 
