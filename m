@@ -1,59 +1,81 @@
-Return-Path: <linux-rdma+bounces-17170-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17171-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WG5CC/L+nmlAYgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17170-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:53:54 +0100
+	id kMFbEWb+nmlAYgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17171-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:51:34 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96946198660
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:53:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D96F819861C
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:51:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E616D304A573
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 13:49:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 853653019F2B
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 13:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F09E3D1CDB;
-	Wed, 25 Feb 2026 13:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E063D2FFB;
+	Wed, 25 Feb 2026 13:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TsESe6Pz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e12mu0XF"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACD23D1CAA;
-	Wed, 25 Feb 2026 13:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D2D3C1967;
+	Wed, 25 Feb 2026 13:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772027347; cv=none; b=P9Cjr4tsNsuGGlLlHFD4PXhqYRfBuxxHPZeJVxC8LtfJ+jeDvPIkxEJTwGcjTQNMR0g14eXIhBz2C4Q85kFw3Sw7KggaEDZrUkmdL5pcu7mNT27lBYbPTQAyJ5xpjuHBIjtbyeNd5gS1BS7B9929FsOZ4uRA5aqabOSmxasYDp8=
+	t=1772027469; cv=none; b=jgRbxa9b82bbs4KlNCIpQnQyZvBCwjRHrlcpgdDrlvrqecNhKjyp+1sCNZ+eKBVHlLoEu4gTZPl6yG0ZNICR4xQSCaxJlEt4KQF71YVwmpNBhBT+0tWQquAilcgzIVtzzv6csB/BE1qvEhGic7Kg3u0AtPN7V6Hua7bFUz8+G9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772027347; c=relaxed/simple;
-	bh=L+FXSfFVZTWw/7cJ1b6EmaymixfTwFa7Sq/2AoPzxuU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ieVlqO29yyXjQ7TbcceqGfHAhIyPNPVXOc72iyLuRBogH3FR8WeDUuy4S8YOlF5DFof2tOoWSZK5ob12UWdGIzYZoIsG+34vw9SjTQYqI7Q8/06fzUAM05oBYhNSx3tgXEfvUqu+0lTwr+jh1rZud1VEuDJQXakg9QaoXZL2ir8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TsESe6Pz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4518CC116D0;
-	Wed, 25 Feb 2026 13:49:06 +0000 (UTC)
+	s=arc-20240116; t=1772027469; c=relaxed/simple;
+	bh=rUcDlpPp0dwHUSq9SxjZJT+EoNQjDdnlAqgzHB6ioY8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=P9YBld/SLfv8KaOj1hG15Q1W6nlwlEx3XdqP+7BolwpXNHAqKpVD4mAbeLnlbkhmY0Wy9WmLy/JWOoJQHFnrO2BZ7zMSbFS7HKcd5JDwMUxCdNwa6/7xGV5M7Zb2TmkQJFZTmkwWP0LS43Pbsz+jc58JrIGZGf5kNb+g1fA6XQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e12mu0XF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFF14C116D0;
+	Wed, 25 Feb 2026 13:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772027346;
-	bh=L+FXSfFVZTWw/7cJ1b6EmaymixfTwFa7Sq/2AoPzxuU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TsESe6PzhNEfVeu3a7vQ0RepTaIFoo4H5lQS2CVqzHApBGO+59XbSAs2uxnf2fHME
-	 PUhARIusFn4T9f92JcehJoTCJyGAwJRt3+qf9PipXaWif4M3Rn3WwU156rY7xaaDtm
-	 32ufrKw42UV8Mi62HJC1z7WtmAv62qLoWOVXhjttyGEH7Oa0r+AravnfsUnTEGtzmt
-	 s0EL12VKeW3wHXAHV+/Q/KWGbvnsSd4NLPfeaWuVuk2zRxmSgVpFrhYukUBB8cTFoN
-	 aR2LIQNZcZVfNjPXaW/MpTykXs+Gz6sysmJod8N0ul+blIO4ZZA80484emZqHFdana
-	 yUQPOhPnIEoPg==
+	s=k20201202; t=1772027469;
+	bh=rUcDlpPp0dwHUSq9SxjZJT+EoNQjDdnlAqgzHB6ioY8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=e12mu0XFAH00DJ4YADdzj4LfN6C0iRZoR97Fz+QB2bHM72edKDGfB7v8XWmxSylci
+	 3eBDv7Uth+R6r/dT/WNChAB4kdgOMx+sU0Uy0gPalG43mFqM1V1yo0DM14yzXc1NnJ
+	 bdjzRAp5ZaX4lCjd8VmgdLnDYsGIEpCR9Cr+6F9UVrb6FclWlzv4D2Iyg38yN0IEC4
+	 lp80oJMPH36GMKtdaM61A7QMizA6yCNxdmEgGcHmpZJxQIA4pLf704JxRebbC4Oyde
+	 foTYFf9RB0ApUiG96yTFYgFY/sfszj2VDdSqgxOolL3eK4OB1Ps9iLdCcLweSLZccv
+	 I+j9PxlKk9ibw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Edward Srouji <edwards@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-rc] RDMA/uverbs: Import DMA-BUF module in uverbs_std_types_dmabuf file
-Date: Wed, 25 Feb 2026 15:48:59 +0200
-Message-ID: <20260225-fix-uverbs-compilation-v1-1-acf7b3d0f9fa@nvidia.com>
-X-Mailer: git-send-email 2.53.0
+To: Jason Gunthorpe <jgg@ziepe.ca>, 
+ Selvin Xavier <selvin.xavier@broadcom.com>, 
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, 
+ Potnuri Bharat Teja <bharat@chelsio.com>, 
+ Michael Margolin <mrgolin@amazon.com>, 
+ Gal Pressman <gal.pressman@linux.dev>, Yossi Leybovich <sleybo@amazon.com>, 
+ Cheng Xu <chengyou@linux.alibaba.com>, Kai Shen <kaishen@linux.alibaba.com>, 
+ Chengchang Tang <tangchengchang@huawei.com>, 
+ Junxian Huang <huangjunxian6@hisilicon.com>, 
+ Abhijit Gangurde <abhijit.gangurde@amd.com>, 
+ Allen Hubbe <allen.hubbe@amd.com>, 
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
+ Long Li <longli@microsoft.com>, 
+ Konstantin Taranov <kotaranov@microsoft.com>, 
+ Yishai Hadas <yishaih@nvidia.com>, Michal Kalderon <mkalderon@marvell.com>, 
+ Bryan Tan <bryan-bt.tan@broadcom.com>, 
+ Vishnu Dasa <vishnu.dasa@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Christian Benvenuti <benve@cisco.com>, Nelson Escobar <neescoba@cisco.com>, 
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+ Bernard Metzler <bernard.metzler@linux.dev>, 
+ Zhu Yanjun <zyjzyj2000@gmail.com>, Leon Romanovsky <leon@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ linux-hyperv@vger.kernel.org
+In-Reply-To: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
+References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
+Subject: Re: (subset) [PATCH rdma-next 00/50] RDMA: Ensure CQ UMEMs are
+ managed by ib_core
+Message-Id: <177202746657.91741.1588277965738900724.b4-ty@kernel.org>
+Date: Wed, 25 Feb 2026 08:51:06 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,73 +83,87 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Change-ID: 20260225-fix-uverbs-compilation-d6668390275b
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.15-dev-47773
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17170-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com,kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17171-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[31];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:mid,nvidia.com:email]
-X-Rspamd-Queue-Id: 96946198660
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D96F819861C
 X-Rspamd-Action: no action
 
-From: Leon Romanovsky <leonro@nvidia.com>=0D
-=0D
-Fix the following compilation error:=0D
-=0D
-ERROR: modpost: module ib_uverbs uses symbol dma_buf_move_notify=0D
-	from namespace DMA_BUF, but does not import it.=0D
-=0D
-Fixes: 0ac6f4056c4a ("RDMA/uverbs: Add DMABUF object type and operations")=
-=0D
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>=0D
----=0D
- drivers/infiniband/core/uverbs_std_types_dmabuf.c | 2 ++=0D
- 1 file changed, 2 insertions(+)=0D
-=0D
-diff --git a/drivers/infiniband/core/uverbs_std_types_dmabuf.c b/drivers/in=
-finiband/core/uverbs_std_types_dmabuf.c=0D
-index dfdfcd1d1a44..4a7f8b6f9dc8 100644=0D
---- a/drivers/infiniband/core/uverbs_std_types_dmabuf.c=0D
-+++ b/drivers/infiniband/core/uverbs_std_types_dmabuf.c=0D
-@@ -10,6 +10,8 @@=0D
- #include "rdma_core.h"=0D
- #include "uverbs.h"=0D
- =0D
-+MODULE_IMPORT_NS("DMA_BUF");=0D
-+=0D
- static int uverbs_dmabuf_attach(struct dma_buf *dmabuf,=0D
- 				struct dma_buf_attachment *attachment)=0D
- {=0D
-=0D
----=0D
-base-commit: 104016eb671e19709721c1b0048dd912dc2e96be=0D
-change-id: 20260225-fix-uverbs-compilation-d6668390275b=0D
-=0D
-Best regards,=0D
---  =0D
-Leon Romanovsky <leonro@nvidia.com>=0D
-=0D
+
+On Fri, 13 Feb 2026 12:57:36 +0200, Leon Romanovsky wrote:
+> Unify CQ UMEM creation, resize and release in ib_core to avoid the need
+> for complex driver-side handling. This lets us rely on the internal
+> reference counters of the relevant ib_XXX objects to manage UMEM
+> lifetime safely and consistently.
+> 
+> The resize cleanup made it clear that most drivers never handled this
+> path correctly, and there's a good chance the functionality was never
+> actually used. The most common issue was relying on the cq->resize_umem
+> pointer to detect races with other CQ commands, without clearing it on
+> errors and while ignoring proper locking for other CQ operations.
+> 
+> [...]
+
+Applied, thanks!
+
+[01/50] RDMA: Move DMA block iterator logic into dedicated files
+        (no commit info)
+[02/50] RDMA/umem: Allow including ib_umem header from any location
+        (no commit info)
+[03/50] RDMA/umem: Remove unnecessary includes and defines from ib_umem header
+        (no commit info)
+[04/50] RDMA/core: Promote UMEM to a core component
+        (no commit info)
+[05/50] RDMA/core: Manage CQ umem in core code
+        (no commit info)
+[06/50] RDMA/efa: Rely on CPU address in create‑QP
+        (no commit info)
+[07/50] RDMA/core: Prepare create CQ path for API unification
+        (no commit info)
+[08/50] RDMA/core: Reject zero CQE count
+        (no commit info)
+[09/50] RDMA/efa: Remove check for zero CQE count
+        (no commit info)
+[10/50] RDMA/mlx5: Save 4 bytes in CQ structure
+        (no commit info)
+[11/50] RDMA/mlx5: Provide a modern CQ creation interface
+        (no commit info)
+[12/50] RDMA/mlx4: Inline mlx4_ib_get_cq_umem into callers
+        (no commit info)
+[13/50] RDMA/mlx4: Introduce a modern CQ creation interface
+        (no commit info)
+[14/50] RDMA/mlx4: Remove unused create_flags field from CQ structure
+        (no commit info)
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
