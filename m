@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-17177-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17178-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qOOsOokFn2mZYgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17177-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:22:01 +0100
+	id GIQTAKkFn2mZYgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17178-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:22:33 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C882198A2B
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:22:01 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1371C198A49
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 19D473052AD8
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:20:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 38C66305858D
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A2B3D3D12;
-	Wed, 25 Feb 2026 14:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500CC3D410C;
+	Wed, 25 Feb 2026 14:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="scaT0NcX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aMQF+tXJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0B83D3D0B;
-	Wed, 25 Feb 2026 14:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122F53D34AD;
+	Wed, 25 Feb 2026 14:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772029196; cv=none; b=NSF/I1VUWKeO4UrhsaJeeBxpEj0oCbXL/I18NaI3OwtxYcs2y6jpmsjUIWZZ8vgN/GYAJ5KF8hHeiRTQ4uBx4tiKN8EQqvYCeLc7bQnQDICpGfQtLm+dEEfUnQDuPZXkyK1Qr+jxkR9RptXTMzLuP9hMu30i60Ly33ca1fGqBlE=
+	t=1772029199; cv=none; b=JDEjt2nE+G1bIv1g9nQG2IkZxfv5JozQsvfpcO6oRndIRDdwDf9uDyS8DmtnVLVDAupY1B5mqxsMRoq3M9N477Dhjqorr3RQnsC3qTKllwah8zCD7qNBVGihhH9wQ+MGyk3KjB2AhNuwBqYZGd4gYFoYL/kqtVAdI8DdPA8e2j8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772029196; c=relaxed/simple;
-	bh=w3TVcaeOV/ur73vBlLQPPQzK3QrbtKyo5WZcT/7pBK0=;
+	s=arc-20240116; t=1772029199; c=relaxed/simple;
+	bh=IWfIW+hzTkf5nStjv+pYV1pJ3Vmlm4ZHSTNuOGvG28E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j0gz858impADsOZr3LEsXFdexj2TxpZd4zIlyoSI+HKKlpTJdpo0h25dCb49LcnlIPV9HfNNovqujRIG+OpE+XfGlqo+SzrDHLFNuRwgitW1UxgpgTUIhcEUD+NzemCB3hwjrvulvoysduMcDbUB5bTtwWD/4r8LRZ93nf1iiNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=scaT0NcX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BB42C2BC86;
-	Wed, 25 Feb 2026 14:19:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=mRD9eFRJ9dp2lSb9LtRmepPvR7KrU7sXPdgKhQJEfrh54F5j52kyGOb2kFfOwQ7B0QLg9Xr8/fukI6K2dGBPpcU4QuoLaRSFIYCQIxlCS8YWIZcoVdMYVRPO4/eS5JCcXCuKeDtX8apwCt+ky6DDfwCmxPPaJf/fGP2z6PU4SFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aMQF+tXJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48714C116D0;
+	Wed, 25 Feb 2026 14:19:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772029195;
-	bh=w3TVcaeOV/ur73vBlLQPPQzK3QrbtKyo5WZcT/7pBK0=;
+	s=k20201202; t=1772029198;
+	bh=IWfIW+hzTkf5nStjv+pYV1pJ3Vmlm4ZHSTNuOGvG28E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=scaT0NcXf0zU+C6dGUJOkJHE0QSd2C6ZMVxUG+X7zGAUrKKTOAM4zVG4feH4rCiaN
-	 LRqXJDXevdkKfDKCVcYjYfJJvty3CTT4PQFNjgpq+C09CiW01g9HIBWupldyoMev7h
-	 QyN5w8EDIc2MtcMAsGdHhK14yCbAaEiHWVaS3Y+6TqGJmCq5zUJLRu2a2yHkywR4dC
-	 PxRESsYQnC1ZST3v8mnWMKQcMXON5aleEH/008bxSUKrILL42izhRDXFVG9PXv8Cm5
-	 QXUVGc9O2SLzSb8UpMHihbyJtQtzoWdWloT5lwh8M5M9ns8uPDArZQHfjmIunBf0ii
-	 mS9bEkYpJfXkw==
+	b=aMQF+tXJfP7CBNQnr+pR/bKhDKwwVWOMiGQqTKj63Ty1JgOGxyrGyH+lGjtG6aj28
+	 N+tolxetZSs4XEjYAxrJXbH5QvzMGq8+AuAfkw5TbV0+jIWmGb1QvALgc05f+noXJ4
+	 dGoZHWPjKTvYv8IwqNk1gNzF99XmsMdhVXg14jEzBCZwOTwQK9TR1nnB/IsHrB8TIp
+	 WQTn86d4i4bkuXh5TLKC6ltql3e5md4zkB87Gu+swkLUgSMoGIutrRvn3G5cslKAJj
+	 tx7OicPUFRzHsNNfQlQmHBxWnH+8ZnWlcFIIIyiiGaKnVn6k9LxYVNs0keMISewCEr
+	 fSjlrAvNMuiDw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Saeed Mahameed <saeedm@nvidia.com>,
 	Leon Romanovsky <leon@kernel.org>,
@@ -59,9 +59,9 @@ Cc: linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Maher Sanalla <msanalla@nvidia.com>
-Subject: [PATCH rdma-next 5/6] RDMA/mlx5: Add support for TLP VAR allocation
-Date: Wed, 25 Feb 2026 16:19:35 +0200
-Message-ID: <20260225-var-tlp-v1-5-fe14a7ac7731@nvidia.com>
+Subject: [PATCH rdma-next 6/6] RDMA/mlx5: Add VAR object query method for cross-process sharing
+Date: Wed, 25 Feb 2026 16:19:36 +0200
+Message-ID: <20260225-var-tlp-v1-6-fe14a7ac7731@nvidia.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225-var-tlp-v1-0-fe14a7ac7731@nvidia.com>
 References: <20260225-var-tlp-v1-0-fe14a7ac7731@nvidia.com>
@@ -81,11 +81,11 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	MID_RHS_MATCH_TO(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17177-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17178-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
@@ -98,153 +98,120 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0C882198A2B
+X-Rspamd-Queue-Id: 1371C198A49
 X-Rspamd-Action: no action
 
 From: Maher Sanalla <msanalla@nvidia.com>
 
-Extend the VAR allocation UAPI to accept an optional flags attribute,
-allowing userspace to request TLP VAR allocation via the
-MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP flag.
+Introduce MLX5_IB_METHOD_VAR_OBJ_QUERY to enable cross-process sharing
+of VAR objects. This method allows a process that has imported the uverbs
+fd via ibv_import_device() to query an existing VAR handle and obtain
+the mmap parameters needed to map the VAR region into its address space.
 
-When the TLP flag "MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP" is specified,
-the driver selects the TLP VAR region for allocation instead of the
-regular VirtIO VAR region.
+This follows the same pattern as UVERBS_METHOD_QUERY_MR, allowing
+userspace to implement mlx5dv_import_var() analogous to ibv_import_mr().
 
 Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/main.c         | 40 ++++++++++++++++++++++++++-----
- include/uapi/rdma/mlx5_user_ioctl_cmds.h  |  1 +
- include/uapi/rdma/mlx5_user_ioctl_verbs.h |  4 ++++
- 3 files changed, 39 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c        | 47 +++++++++++++++++++++++++++++++-
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h |  8 ++++++
+ 2 files changed, 54 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 424426a2cd76..77cd11c6cca9 100644
+index 77cd11c6cca9..a75769f55d31 100644
 --- a/drivers/infiniband/hw/mlx5/main.c
 +++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -4153,7 +4153,7 @@ static int mlx5_rdma_user_mmap_entry_insert(struct mlx5_ib_ucontext *c,
+@@ -4263,6 +4263,34 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_VAR_OBJ_ALLOC)(
+ 	return err;
  }
  
- static struct mlx5_user_mmap_entry *
--alloc_var_entry(struct mlx5_ib_ucontext *c)
-+alloc_var_entry(struct mlx5_ib_ucontext *c, u32 flags)
- {
- 	struct mlx5_user_mmap_entry *entry;
- 	struct mlx5_var_region *var_region;
-@@ -4162,7 +4162,11 @@ alloc_var_entry(struct mlx5_ib_ucontext *c)
- 	int err;
- 
- 	var_table = &to_mdev(c->ibucontext.device)->var_table;
--	var_region = &var_table->var_region;
-+	if (flags & MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP)
-+		var_region = &var_table->tlp_var_region;
-+	else
-+		var_region = &var_table->var_region;
++static int UVERBS_HANDLER(MLX5_IB_METHOD_VAR_OBJ_QUERY)(
++	struct uverbs_attr_bundle *attrs)
++{
++	struct mlx5_user_mmap_entry *entry =
++		uverbs_attr_get_obj(attrs, MLX5_IB_ATTR_VAR_OBJ_QUERY_HANDLE);
++	u64 mmap_offset;
++	u32 length;
++	int err;
 +
- 	entry = kzalloc_obj(*entry);
- 	if (!entry)
- 		return ERR_PTR(-ENOMEM);
-@@ -4182,7 +4186,9 @@ alloc_var_entry(struct mlx5_ib_ucontext *c)
- 	entry->address = var_region->hw_start_addr +
- 				(page_idx * var_region->stride_size);
- 	entry->page_idx = page_idx;
--	entry->mmap_flag = MLX5_IB_MMAP_TYPE_VAR;
-+	entry->mmap_flag = flags & MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP ?
-+				   MLX5_IB_MMAP_TYPE_TLP_VAR :
-+				   MLX5_IB_MMAP_TYPE_VAR;
- 
- 	err = mlx5_rdma_user_mmap_entry_insert(c, entry,
- 					       var_region->stride_size);
-@@ -4205,9 +4211,10 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_VAR_OBJ_ALLOC)(
- {
- 	struct ib_uobject *uobj = uverbs_attr_get_uobject(
- 		attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_HANDLE);
--	struct mlx5_ib_ucontext *c;
- 	struct mlx5_user_mmap_entry *entry;
-+	struct mlx5_ib_ucontext *c;
- 	u64 mmap_offset;
-+	u32 flags = 0;
- 	u32 length;
- 	int err;
- 
-@@ -4215,7 +4222,24 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_VAR_OBJ_ALLOC)(
- 	if (IS_ERR(c))
- 		return PTR_ERR(c);
- 
--	entry = alloc_var_entry(c);
-+	err = uverbs_get_flags32(&flags, attrs,
-+				 MLX5_IB_ATTR_VAR_OBJ_ALLOC_FLAGS,
-+				 MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP);
++	mmap_offset = mlx5_entry_to_mmap_offset(entry);
++	if (check_mul_overflow(entry->rdma_entry.npages, (u32)PAGE_SIZE, &length))
++		return -EOVERFLOW;
++
++	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_QUERY_MMAP_OFFSET,
++			     &mmap_offset, sizeof(mmap_offset));
 +	if (err)
 +		return err;
 +
-+	if (flags & MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP) {
-+		if (!MLX5_CAP_GEN(to_mdev(c->ibucontext.device)->mdev,
-+				  tlp_device_emulation_manager))
-+			return -EOPNOTSUPP;
-+	} else {
-+		if (!(MLX5_CAP_GEN_64(to_mdev(c->ibucontext.device)->mdev,
-+				      general_obj_types) &
-+		      MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q))
-+			return -EOPNOTSUPP;
-+	}
++	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_QUERY_PAGE_ID,
++			     &entry->page_idx, sizeof(entry->page_idx));
++	if (err)
++		return err;
 +
-+	entry = alloc_var_entry(c, flags);
- 	if (IS_ERR(entry))
- 		return PTR_ERR(entry);
++	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_QUERY_MMAP_LENGTH,
++			     &length, sizeof(length));
++	return err;
++}
++
+ DECLARE_UVERBS_NAMED_METHOD(
+ 	MLX5_IB_METHOD_VAR_OBJ_ALLOC,
+ 	UVERBS_ATTR_IDR(MLX5_IB_ATTR_VAR_OBJ_ALLOC_HANDLE,
+@@ -4289,10 +4317,27 @@ DECLARE_UVERBS_NAMED_METHOD_DESTROY(
+ 			UVERBS_ACCESS_DESTROY,
+ 			UA_MANDATORY));
  
-@@ -4245,6 +4269,9 @@ DECLARE_UVERBS_NAMED_METHOD(
- 			MLX5_IB_OBJECT_VAR,
- 			UVERBS_ACCESS_NEW,
- 			UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(MLX5_IB_ATTR_VAR_OBJ_ALLOC_FLAGS,
-+			     enum mlx5_ib_uapi_var_alloc_flags,
-+			     UA_OPTIONAL),
- 	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_ALLOC_PAGE_ID,
- 			   UVERBS_ATTR_TYPE(u32),
- 			   UA_MANDATORY),
-@@ -4272,7 +4299,8 @@ static bool var_is_supported(struct ib_device *device)
- 	struct mlx5_ib_dev *dev = to_mdev(device);
++DECLARE_UVERBS_NAMED_METHOD(
++	MLX5_IB_METHOD_VAR_OBJ_QUERY,
++	UVERBS_ATTR_IDR(MLX5_IB_ATTR_VAR_OBJ_QUERY_HANDLE,
++			MLX5_IB_OBJECT_VAR,
++			UVERBS_ACCESS_READ,
++			UA_MANDATORY),
++	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_QUERY_PAGE_ID,
++			    UVERBS_ATTR_TYPE(u32),
++			    UA_MANDATORY),
++	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_QUERY_MMAP_LENGTH,
++			    UVERBS_ATTR_TYPE(u32),
++			    UA_MANDATORY),
++	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_QUERY_MMAP_OFFSET,
++			    UVERBS_ATTR_TYPE(u64),
++			    UA_MANDATORY));
++
+ DECLARE_UVERBS_NAMED_OBJECT(MLX5_IB_OBJECT_VAR,
+ 			    UVERBS_TYPE_ALLOC_IDR(mmap_obj_cleanup),
+ 			    &UVERBS_METHOD(MLX5_IB_METHOD_VAR_OBJ_ALLOC),
+-			    &UVERBS_METHOD(MLX5_IB_METHOD_VAR_OBJ_DESTROY));
++			    &UVERBS_METHOD(MLX5_IB_METHOD_VAR_OBJ_DESTROY),
++			    &UVERBS_METHOD(MLX5_IB_METHOD_VAR_OBJ_QUERY));
  
- 	return (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
--			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q);
-+			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q) ||
-+		MLX5_CAP_GEN(dev->mdev, tlp_device_emulation_manager);
- }
- 
- static struct mlx5_user_mmap_entry *
+ static bool var_is_supported(struct ib_device *device)
+ {
 diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index 18f9fe070213..01a2a050e468 100644
+index 01a2a050e468..7db03b3fdae6 100644
 --- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
 +++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -139,6 +139,7 @@ enum mlx5_ib_var_alloc_attrs {
- 	MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_OFFSET,
- 	MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_LENGTH,
- 	MLX5_IB_ATTR_VAR_OBJ_ALLOC_PAGE_ID,
-+	MLX5_IB_ATTR_VAR_OBJ_ALLOC_FLAGS,
+@@ -146,9 +146,17 @@ enum mlx5_ib_var_obj_destroy_attrs {
+ 	MLX5_IB_ATTR_VAR_OBJ_DESTROY_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
  };
  
- enum mlx5_ib_var_obj_destroy_attrs {
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-index 8f86e79d78a5..ef295b38a1cf 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-@@ -100,6 +100,10 @@ enum mlx5_ib_uapi_query_port_flags {
- 	MLX5_IB_UAPI_QUERY_PORT_ESW_OWNER_VHCA_ID	= 1 << 5,
- };
- 
-+enum mlx5_ib_uapi_var_alloc_flags {
-+	MLX5_IB_UAPI_VAR_ALLOC_FLAG_TLP = 1 << 0,
++enum mlx5_ib_var_obj_query_attrs {
++	MLX5_IB_ATTR_VAR_OBJ_QUERY_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	MLX5_IB_ATTR_VAR_OBJ_QUERY_PAGE_ID,
++	MLX5_IB_ATTR_VAR_OBJ_QUERY_MMAP_OFFSET,
++	MLX5_IB_ATTR_VAR_OBJ_QUERY_MMAP_LENGTH,
 +};
 +
- struct mlx5_ib_uapi_reg {
- 	__u32 value;
- 	__u32 mask;
+ enum mlx5_ib_var_obj_methods {
+ 	MLX5_IB_METHOD_VAR_OBJ_ALLOC = (1U << UVERBS_ID_NS_SHIFT),
+ 	MLX5_IB_METHOD_VAR_OBJ_DESTROY,
++	MLX5_IB_METHOD_VAR_OBJ_QUERY,
+ };
+ 
+ enum mlx5_ib_uar_alloc_attrs {
 
 -- 
 2.53.0
