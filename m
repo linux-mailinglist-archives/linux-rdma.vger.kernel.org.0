@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-17176-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17179-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kCJUIboFn2mZYgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17176-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:22:50 +0100
+	id cIIeOlgGn2neYgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17179-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:25:28 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45262198A59
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:22:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9958198AE6
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5AF9D30A00AE
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:20:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5E4F830FD340
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25DA3D3491;
-	Wed, 25 Feb 2026 14:19:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6774F3D412A;
+	Wed, 25 Feb 2026 14:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YROCJD7a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDg3ADMo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46E3194C96;
-	Wed, 25 Feb 2026 14:19:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284373B961D;
+	Wed, 25 Feb 2026 14:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772029192; cv=none; b=d3/m/ykXf0Eqy+agPfYLkWVLnHpmA7j49jCHwjYECWoCK0y+PEslKb3WKKJhYcxc07syxPgGuzg4OilNBDpoRrJg6IdDVykxLw0lOgtJ7AC32wvzP6stqZ9nbpu0F7qdkINuxf3W7Ov+140whKcLuKRu3gR2bi29SxWZaJ60MrY=
+	t=1772029202; cv=none; b=Y5J1UOMT92kZ5hFjr1HJmfndyGM/xy7nzxICeGNmrLhUzFq5usBaeHUigES16bmPuCC2YpDqFuUY9IgbWQ7OJkaFK6hIGFmgEbjM4uR/GPUeH9zf+3IzC5SqVSU5KjHE842Qac4ah4R5zvjkyoKHVLM6C0w2/ayonouJmaUOxjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772029192; c=relaxed/simple;
-	bh=oCHXWqbGbkbUkAeuFWoJ2UsgSUH4bWiDsWHTPRNOBYE=;
+	s=arc-20240116; t=1772029202; c=relaxed/simple;
+	bh=oz+j+A+rE2XswhiJBlj63eWf/P56b9Co0UAl2knfd6A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tv0jFK6YFdC0BpmePNOaiXRkBYeaw293cxc/DYsKU3pBm55Jql9/ahkn/h8vm0Iab+oluJm6asf19wGANW/V90QIF6EVx08+KOQevJ0Qo3tFf8RDO9G8g5+L0qpZW0jt3CYcCaDDn9W0RMw5/VlS7o00tmCbq3KxAaiq3Iua55E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YROCJD7a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00942C19421;
-	Wed, 25 Feb 2026 14:19:51 +0000 (UTC)
+	 MIME-Version:Content-Type; b=LHm+l5Ey/4/vg/zg38phW6DAJt394fNEyoJr7fVjpzJJXqGK3asBULK5JykkH+jsfiTELR+eIq0gqiOW9y/uE13YReEk1dGjqV7So/9kiqrF6COJMqYrGqa+hX3R6Wg/i2OFa7km6pPiXSaGExqE6himSsbdBTVBxrW/5wtFYr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UDg3ADMo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D40C116D0;
+	Wed, 25 Feb 2026 14:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772029192;
-	bh=oCHXWqbGbkbUkAeuFWoJ2UsgSUH4bWiDsWHTPRNOBYE=;
+	s=k20201202; t=1772029201;
+	bh=oz+j+A+rE2XswhiJBlj63eWf/P56b9Co0UAl2knfd6A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YROCJD7anBwanDxoHs3wcZNaK5Gbv81M3l1OBpBSjkm36GeI1q5i4gOkpVDMR6K/L
-	 WZEUMKvRVHcA/VU7gL3KwBgjYT+7+j25TylZSXNhehFPY4LjAVe2c619dA9CBFpgg0
-	 Ga7/sz22fjB48Gf0STnRwfhzb2o2t3G304kZll/vYNyNocYtoat2UvptpN8HdD9YXd
-	 ilL0gz/cci/OxciHthoGhWikmh0S4zyL0pSdnmwfbkytIv2IdTYKLDZ1jh54QljDt8
-	 PUcaqaL/PT2ctri1Nhp24qwfbiRvBNybNl0Xr/pt8mnMK0el/9SBegCOUnfe/SSkS6
-	 wUceiouDHAQEw==
+	b=UDg3ADMo0Rfs+pyTBPF5xEda7wOWBknOgKyz5CqT2Wd2oGdwAXryOgrH0dkR8pXXJ
+	 l6u+GsZxBnmmRU3UY4s6tUFTeq4pN7scLWWA75Y0pwqPvdhDUFxXJGho2FGl5vpJ8t
+	 3dkWTbS8XMJgEmGfu9qeR2Rxf0oBh0avQkAwtml3IjZbmwPpEeNEvV/VXkeLSo1Dq+
+	 PtQ3nptlSsiwjMj57I9Zt5JKN/5cceN316ZHAvddluGj2tC8PZV2AE5Xwxh6HEOsOx
+	 y4Hl2nFQw0l6EYWxsc/xuw0JiwKPvP03xk9XNI2R1+e8NNcEsvg9TWNBQg/eDYaXDr
+	 EABu+QlMydPoA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Saeed Mahameed <saeedm@nvidia.com>,
 	Leon Romanovsky <leon@kernel.org>,
@@ -59,9 +59,9 @@ Cc: linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Maher Sanalla <msanalla@nvidia.com>
-Subject: [PATCH rdma-next 3/6] RDMA/mlx5: Refactor VAR table to use region abstraction
-Date: Wed, 25 Feb 2026 16:19:33 +0200
-Message-ID: <20260225-var-tlp-v1-3-fe14a7ac7731@nvidia.com>
+Subject: [PATCH rdma-next 4/6] RDMA/mlx5: Add TLP VAR region support and infrastructure
+Date: Wed, 25 Feb 2026 16:19:34 +0200
+Message-ID: <20260225-var-tlp-v1-4-fe14a7ac7731@nvidia.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225-var-tlp-v1-0-fe14a7ac7731@nvidia.com>
 References: <20260225-var-tlp-v1-0-fe14a7ac7731@nvidia.com>
@@ -81,11 +81,11 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	MID_RHS_MATCH_TO(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17176-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17179-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
@@ -93,206 +93,165 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 45262198A59
+X-Rspamd-Queue-Id: A9958198AE6
 X-Rspamd-Action: no action
 
 From: Maher Sanalla <msanalla@nvidia.com>
 
-Extract mlx5_var_region struct from mlx5_var_table to enable
-supporting multiple VAR regions in VAR table, which will be used in
-the upcoming patches (Virtio emulation VAR and TLP emulation VAR).
+Add support for TLP (Transaction Layer Packet) VAR regions used by
+software-defined device emulation. TLP VAR provides dedicated response
+gateways for sending TLP responses back to the host in TLP emulation
+scenarios.
 
 Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/main.c    | 62 +++++++++++++++++++-----------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  6 +++-
- 2 files changed, 38 insertions(+), 30 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c    | 57 ++++++++++++++++++++++++++++++++----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 ++
+ 2 files changed, 54 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 26ee8e763d5e..835fe2a95ad6 100644
+index 835fe2a95ad6..424426a2cd76 100644
 --- a/drivers/infiniband/hw/mlx5/main.c
 +++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2524,6 +2524,7 @@ static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
- 	struct mlx5_ib_dev *dev = to_mdev(entry->ucontext->device);
- 	struct mlx5_var_table *var_table = &dev->var_table;
- 	struct mlx5_ib_ucontext *context = to_mucontext(entry->ucontext);
-+	struct mlx5_var_region *var_region;
+@@ -2518,6 +2518,15 @@ mlx5_ib_pgoff_to_mmap_entry(struct ib_ucontext *ucontext, off_t pg_off)
+ 	return rdma_user_mmap_entry_get_pgoff(ucontext, entry_pgoff);
+ }
  
- 	switch (mentry->mmap_flag) {
- 	case MLX5_IB_MMAP_TYPE_MEMIC:
-@@ -2531,9 +2532,10 @@ static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
- 		mlx5_ib_dm_mmap_free(dev, mentry);
++static void mlx5_ib_free_var_mmap_entry(struct mlx5_user_mmap_entry *mentry,
++					struct mlx5_var_region *var_region)
++{
++	mutex_lock(&var_region->bitmap_lock);
++	clear_bit(mentry->page_idx, var_region->bitmap);
++	mutex_unlock(&var_region->bitmap_lock);
++	kfree(mentry);
++}
++
+ static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
+ {
+ 	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
+@@ -2533,10 +2542,11 @@ static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
  		break;
  	case MLX5_IB_MMAP_TYPE_VAR:
--		mutex_lock(&var_table->bitmap_lock);
--		clear_bit(mentry->page_idx, var_table->bitmap);
--		mutex_unlock(&var_table->bitmap_lock);
-+		var_region = &var_table->var_region;
-+		mutex_lock(&var_region->bitmap_lock);
-+		clear_bit(mentry->page_idx, var_region->bitmap);
-+		mutex_unlock(&var_region->bitmap_lock);
- 		kfree(mentry);
+ 		var_region = &var_table->var_region;
+-		mutex_lock(&var_region->bitmap_lock);
+-		clear_bit(mentry->page_idx, var_region->bitmap);
+-		mutex_unlock(&var_region->bitmap_lock);
+-		kfree(mentry);
++		mlx5_ib_free_var_mmap_entry(mentry, var_region);
++		break;
++	case MLX5_IB_MMAP_TYPE_TLP_VAR:
++		var_region = &var_table->tlp_var_region;
++		mlx5_ib_free_var_mmap_entry(mentry, var_region);
  		break;
  	case MLX5_IB_MMAP_TYPE_UAR_WC:
-@@ -4143,43 +4145,45 @@ static struct mlx5_user_mmap_entry *
- alloc_var_entry(struct mlx5_ib_ucontext *c)
- {
- 	struct mlx5_user_mmap_entry *entry;
-+	struct mlx5_var_region *var_region;
- 	struct mlx5_var_table *var_table;
- 	u32 page_idx;
- 	int err;
+ 	case MLX5_IB_MMAP_TYPE_UAR_NC:
+@@ -2687,6 +2697,7 @@ static int mlx5_ib_mmap_offset(struct mlx5_ib_dev *dev,
+ 	mentry = to_mmmap(entry);
+ 	pfn = (mentry->address >> PAGE_SHIFT);
+ 	if (mentry->mmap_flag == MLX5_IB_MMAP_TYPE_VAR ||
++	    mentry->mmap_flag == MLX5_IB_MMAP_TYPE_TLP_VAR ||
+ 	    mentry->mmap_flag == MLX5_IB_MMAP_TYPE_UAR_NC)
+ 		prot = pgprot_noncached(vma->vm_page_prot);
+ 	else
+@@ -4636,6 +4647,28 @@ static int mlx5_ib_init_var_region(struct mlx5_ib_dev *dev)
+ 	return (var_region->bitmap) ? 0 : -ENOMEM;
+ }
  
- 	var_table = &to_mdev(c->ibucontext.device)->var_table;
-+	var_region = &var_table->var_region;
- 	entry = kzalloc_obj(*entry);
- 	if (!entry)
- 		return ERR_PTR(-ENOMEM);
- 
--	mutex_lock(&var_table->bitmap_lock);
--	page_idx = find_first_zero_bit(var_table->bitmap,
--				       var_table->num_var_hw_entries);
--	if (page_idx >= var_table->num_var_hw_entries) {
-+	mutex_lock(&var_region->bitmap_lock);
-+	page_idx = find_first_zero_bit(var_region->bitmap,
-+				       var_region->num_var_hw_entries);
-+	if (page_idx >= var_region->num_var_hw_entries) {
- 		err = -ENOSPC;
--		mutex_unlock(&var_table->bitmap_lock);
-+		mutex_unlock(&var_region->bitmap_lock);
- 		goto end;
- 	}
- 
--	set_bit(page_idx, var_table->bitmap);
--	mutex_unlock(&var_table->bitmap_lock);
-+	set_bit(page_idx, var_region->bitmap);
-+	mutex_unlock(&var_region->bitmap_lock);
- 
--	entry->address = var_table->hw_start_addr +
--				(page_idx * var_table->stride_size);
-+	entry->address = var_region->hw_start_addr +
-+				(page_idx * var_region->stride_size);
- 	entry->page_idx = page_idx;
- 	entry->mmap_flag = MLX5_IB_MMAP_TYPE_VAR;
- 
- 	err = mlx5_rdma_user_mmap_entry_insert(c, entry,
--					       var_table->stride_size);
-+					       var_region->stride_size);
- 	if (err)
- 		goto err_insert;
- 
- 	return entry;
- 
- err_insert:
--	mutex_lock(&var_table->bitmap_lock);
--	clear_bit(page_idx, var_table->bitmap);
--	mutex_unlock(&var_table->bitmap_lock);
-+	mutex_lock(&var_region->bitmap_lock);
-+	clear_bit(page_idx, var_region->bitmap);
-+	mutex_unlock(&var_region->bitmap_lock);
- end:
- 	kfree(entry);
- 	return ERR_PTR(err);
-@@ -4607,10 +4611,10 @@ static const struct ib_device_ops mlx5_ib_dev_xrc_ops = {
- 	INIT_RDMA_OBJ_SIZE(ib_xrcd, mlx5_ib_xrcd, ibxrcd),
- };
- 
--static int mlx5_ib_init_var_table(struct mlx5_ib_dev *dev)
-+static int mlx5_ib_init_var_region(struct mlx5_ib_dev *dev)
- {
-+	struct mlx5_var_region *var_region = &dev->var_table.var_region;
- 	struct mlx5_core_dev *mdev = dev->mdev;
--	struct mlx5_var_table *var_table = &dev->var_table;
- 	u8 log_doorbell_bar_size;
- 	u8 log_doorbell_stride;
- 	u64 bar_size;
-@@ -4619,17 +4623,17 @@ static int mlx5_ib_init_var_table(struct mlx5_ib_dev *dev)
- 					log_doorbell_bar_size);
- 	log_doorbell_stride = MLX5_CAP_DEV_VDPA_EMULATION(mdev,
- 					log_doorbell_stride);
--	var_table->hw_start_addr = dev->mdev->bar_addr +
-+	var_region->hw_start_addr = dev->mdev->bar_addr +
- 				MLX5_CAP64_DEV_VDPA_EMULATION(mdev,
- 					doorbell_bar_offset);
- 	bar_size = (1ULL << log_doorbell_bar_size) * 4096;
--	var_table->stride_size = 1ULL << log_doorbell_stride;
--	var_table->num_var_hw_entries = div_u64(bar_size,
--						var_table->stride_size);
--	mutex_init(&var_table->bitmap_lock);
--	var_table->bitmap = bitmap_zalloc(var_table->num_var_hw_entries,
--					  GFP_KERNEL);
--	return (var_table->bitmap) ? 0 : -ENOMEM;
-+	var_region->stride_size = 1ULL << log_doorbell_stride;
-+	var_region->num_var_hw_entries = div_u64(bar_size,
-+						 var_region->stride_size);
++static int mlx5_ib_init_tlp_var_region(struct mlx5_ib_dev *dev)
++{
++	struct mlx5_var_region *var_region = &dev->var_table.tlp_var_region;
++	struct mlx5_core_dev *mdev = dev->mdev;
++	u8 log_tlp_var_stride;
++
++	log_tlp_var_stride =
++		MLX5_CAP_DEV_TLP_EMULATION(mdev, log_tlp_rsp_gw_page_stride);
++	var_region->hw_start_addr =
++		dev->mdev->bar_addr +
++		MLX5_CAP64_DEV_TLP_EMULATION(mdev, tlp_rsp_gw_pages_bar_offset);
++
++	var_region->stride_size = (1ULL << log_tlp_var_stride) * 4096;
++	var_region->num_var_hw_entries =
++		MLX5_CAP_DEV_TLP_EMULATION(mdev, tlp_rsp_gw_num_pages);
++
 +	mutex_init(&var_region->bitmap_lock);
 +	var_region->bitmap = bitmap_zalloc(var_region->num_var_hw_entries,
 +					   GFP_KERNEL);
 +	return (var_region->bitmap) ? 0 : -ENOMEM;
++}
++
+ static void mlx5_ib_cleanup_ucaps(struct mlx5_ib_dev *dev)
+ {
+ 	if (MLX5_CAP_GEN(dev->mdev, uctx_cap) & MLX5_UCTX_CAP_RDMA_CTRL)
+@@ -4671,13 +4704,19 @@ static int mlx5_ib_init_ucaps(struct mlx5_ib_dev *dev)
+ 	return ret;
  }
  
- static void mlx5_ib_cleanup_ucaps(struct mlx5_ib_dev *dev)
-@@ -4673,7 +4677,7 @@ static void mlx5_ib_stage_caps_cleanup(struct mlx5_ib_dev *dev)
++static void mlx5_ib_cleanup_var_table(struct mlx5_ib_dev *dev)
++{
++	bitmap_free(dev->var_table.var_region.bitmap);
++	bitmap_free(dev->var_table.tlp_var_region.bitmap);
++}
++
+ static void mlx5_ib_stage_caps_cleanup(struct mlx5_ib_dev *dev)
+ {
+ 	if (MLX5_CAP_GEN_2_64(dev->mdev, general_obj_types_127_64) &
  	    MLX5_HCA_CAP_2_GENERAL_OBJECT_TYPES_RDMA_CTRL)
  		mlx5_ib_cleanup_ucaps(dev);
  
--	bitmap_free(dev->var_table.bitmap);
-+	bitmap_free(dev->var_table.var_region.bitmap);
+-	bitmap_free(dev->var_table.var_region.bitmap);
++	mlx5_ib_cleanup_var_table(dev);
  }
  
  static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
-@@ -4721,7 +4725,7 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
- 
- 	if (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
- 			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q) {
--		err = mlx5_ib_init_var_table(dev);
-+		err = mlx5_ib_init_var_region(dev);
- 		if (err)
- 			return err;
+@@ -4737,10 +4776,18 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
+ 			goto err_ucaps;
  	}
-@@ -4738,7 +4742,7 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
+ 
++	if (MLX5_CAP_GEN(dev->mdev, tlp_device_emulation_manager)) {
++		err = mlx5_ib_init_tlp_var_region(dev);
++		if (err)
++			goto err_tlp_var;
++	}
++
+ 	dev->ib_dev.use_cq_dim = true;
+ 
  	return 0;
  
++err_tlp_var:
++	mlx5_ib_cleanup_ucaps(dev);
  err_ucaps:
--	bitmap_free(dev->var_table.bitmap);
-+	bitmap_free(dev->var_table.var_region.bitmap);
+ 	bitmap_free(dev->var_table.var_region.bitmap);
  	return err;
- }
- 
 diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 2556e326afde..3d0ae52c68a7 100644
+index 3d0ae52c68a7..5f789291be93 100644
 --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
 +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1132,7 +1132,7 @@ struct mlx5_devx_event_table {
- 	struct xarray event_xa;
+@@ -162,6 +162,7 @@ enum mlx5_ib_mmap_type {
+ 	MLX5_IB_MMAP_TYPE_UAR_WC = 3,
+ 	MLX5_IB_MMAP_TYPE_UAR_NC = 4,
+ 	MLX5_IB_MMAP_TYPE_MEMIC_OP = 5,
++	MLX5_IB_MMAP_TYPE_TLP_VAR = 6,
  };
  
--struct mlx5_var_table {
-+struct mlx5_var_region {
- 	/* serialize updating the bitmap */
- 	struct mutex bitmap_lock;
- 	unsigned long *bitmap;
-@@ -1141,6 +1141,10 @@ struct mlx5_var_table {
- 	u64 num_var_hw_entries;
+ struct mlx5_bfreg_info {
+@@ -1143,6 +1144,7 @@ struct mlx5_var_region {
+ 
+ struct mlx5_var_table {
+ 	struct mlx5_var_region var_region;
++	struct mlx5_var_region tlp_var_region;
  };
  
-+struct mlx5_var_table {
-+	struct mlx5_var_region var_region;
-+};
-+
  struct mlx5_port_caps {
- 	bool has_smi;
- 	u8 ext_port_cap;
 
 -- 
 2.53.0
