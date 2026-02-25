@@ -1,258 +1,168 @@
-Return-Path: <linux-rdma+bounces-17144-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17145-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4KW3NReynmlxWwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17144-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 09:25:59 +0100
+	id 2Pz3N4G1nmnwWwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17145-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 09:40:33 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 714CE1942A0
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 09:25:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A89A194553
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 09:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F156B3061E16
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 08:24:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 216763046AA0
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 08:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD1E3115B8;
-	Wed, 25 Feb 2026 08:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020AA322527;
+	Wed, 25 Feb 2026 08:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oJCsM6N2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ogk+o/ld"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9072B2D063E;
-	Wed, 25 Feb 2026 08:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B859931D39F
+	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 08:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772007864; cv=none; b=MOBRbNnUphsA7U2OgdohIqC41eBHFmztuBHK3gwwb9bqPlB0zkbNdLg03940+13r/4JWS8yigCbTragdy/L955hz/Tr0EEsqFVUy1gbG0csPUMVsYO9TBpv0tKIym5gG8Na9QfD5HVOmbNK9BAbf/KbotBFlRmyOco7pNfuFgsE=
+	t=1772008789; cv=none; b=U3UcbV2ryAjKymImyWtNdF1HeJQ+k5w06gpqJpB8iMXSRvOhrnZ3F8+W5J452ofIxLRqRZXy1wgHWNlk4G5p2yBrHH0y65tzbqheIlltsP5fjUtZRp8gDgqDpMA9GbfN9oGdVSaMjUcSXktYLDpEcKtz3ZO+MGbhNpaBh9kg0yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772007864; c=relaxed/simple;
-	bh=ppwLBv+bRl0MuIG9o64/1GBk8qLUMoGaYaQBPTNIgpc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TIh1sXFEh5O47jhbfkSmMCn2ETMXzvPfdMF+aGawgEoHUdUL1Cx56Hx+dBHIQ5dO1EBidivHyOWw6+hYkmcsNQMicYxlsP6hIAs36yRof5qLnwgiSaH3GycPrwzAhD75W/7W46XWMZnH2uHmtR6s88rfOgTlG9HdO2aGggf8aVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oJCsM6N2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93DDAC116D0;
-	Wed, 25 Feb 2026 08:24:23 +0000 (UTC)
+	s=arc-20240116; t=1772008789; c=relaxed/simple;
+	bh=vrrGMQbnf+2dV5ooRzVZAiTh2foYW0vfXITn+KLiFpQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YFIuOBRWl+YIfZrqeX5YQu5S9qkaUCY/FqsMr1NtsOVjKC6FMp7b+mbDH8jy26tNWBHW3hSB97Dt9HmWKLEM8QqX1dXFvgWMbd4+ksslMA1J77QsfwuN7IsYB+O1wowq236Hj3KmDH0BGWC08a2po/d8s0P0+yvXjo0STqFLgQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ogk+o/ld; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C63BC2BCB4
+	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 08:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772007864;
-	bh=ppwLBv+bRl0MuIG9o64/1GBk8qLUMoGaYaQBPTNIgpc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oJCsM6N2igmDWi88bXhKigzKvixKJkf5S43Dzt1Jer2wbhMGf13Qdpr5n04g4N6uB
-	 FiBCIRp6zt8zlfKoMyVKoj9/NCsrcGWHN4KfdzteUkaxidhwhVjbFvGH2HiCWtThYq
-	 Ga6zG0hKJZ2KMuFYMuWrwFKVuL38yFsF4s8jFrFaWtg/F2mlOQZlzkZ26xfVJW8Dru
-	 E8pmf1L7LnzqpZlWYwk9Mt1DXALl7J+wmEAuZDr7ns+YxxCqirU9Ds1Il4aHXHAfUe
-	 mB+MBDxG+cwkLIItubB08DVNZljtGfyJ+VJI0/w4ZEnRhyRNJjSr4uujLik4r0rEKR
-	 B7bB8v4pjyYfQ==
-Date: Wed, 25 Feb 2026 10:24:21 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Long Li <longli@microsoft.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Gal Pressman <gal.pressman@linux.dev>,
-	Yossi Leybovich <sleybo@amazon.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Kai Shen <kaishen@linux.alibaba.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Bernard Metzler <bernard.metzler@linux.dev>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Shiraz Saleem <shirazsaleem@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [EXTERNAL] [PATCH rdma-next 25/50] RDMA/mana: Provide a modern
- CQ creation interface
-Message-ID: <20260225082421.GC9541@unreal>
-References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
- <20260213-refactor-umem-v1-25-f3be85847922@nvidia.com>
- <DS3PR21MB5735C22704C2AA25C5037EA5CE74A@DS3PR21MB5735.namprd21.prod.outlook.com>
+	s=k20201202; t=1772008789;
+	bh=vrrGMQbnf+2dV5ooRzVZAiTh2foYW0vfXITn+KLiFpQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ogk+o/ldfBSD07CxYi/F/NdUj2Fmrzyeo3Uws5jBoIxtNQNHh/BN8HVkuXJuaHuTk
+	 U2WcGnGje+YDzU4aTNRdP6bVkvp5lM8D8+4Mn660PqtwTKIzXLfcXNe8q0Xp1dnGWV
+	 a35oQSJL2xVQT2ozAJSNPupeaQfkmW0vF48eWx61uIESyv6Od9jV3I/0jMBjuv3kYO
+	 85khEEumpT3lxXanHxgycJ9gQg0mC/zehqbAsMjyynefKtQkPOREOAEdzAPdR/OgTf
+	 oA826fdJdn8a2tGBjZbiHey7jSpghsdDtsHlA+fPuJxiZ85OE0ZL2Q3n+iI15MZph3
+	 K2VkOA9edlpHg==
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-896f9397ecdso69558266d6.3
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 00:39:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVXAjyTPza+b7b1WqfrYoro0iJuCdTl/GVLNaR/Pe1pIVd1EOY7POnby5t/Ya/b0bSM6lqmLc2eVNxU@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsFcWnkNrbI16heuFPoIo/C978nDJiPQ6q38SoYaphBQGfISVh
+	Y8VYhu60rKMYfmG/qRDa57FOdxaU+HBALQoCaD74cCk2JT8UrX4swqLXmT79Gp+LnssX7rzMvVA
+	ZKoK4yaJjZ/bNfw51a6+bTQdNkgIoOjg=
+X-Received: by 2002:a05:6214:1c07:b0:892:e3c3:94df with SMTP id
+ 6a1803df08f44-89979c90897mr223035516d6.28.1772008788473; Wed, 25 Feb 2026
+ 00:39:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DS3PR21MB5735C22704C2AA25C5037EA5CE74A@DS3PR21MB5735.namprd21.prod.outlook.com>
+References: <20260219130050.2390226-1-bjorn@kernel.org> <415c4922-cc8d-4e35-bbac-3a532f44d238@lunn.ch>
+ <20260219160519.323041bf@kernel.org> <3b0949fa-0b05-4bce-86c0-2a7a058865a5@lunn.ch>
+ <20260220131254.03874c4c@kernel.org> <CAJ+HfNgXqpqDYsmAa-mpHnO82aDgC7XbyVw3TmXk-ySFmGA-JQ@mail.gmail.com>
+ <20260223150401.7993b11a@kernel.org> <CAJ+HfNjmRjr6VtRijmN9=4zPwxstw9B8D-_XVn3hwJzNHka1Jw@mail.gmail.com>
+ <363527d6-1f29-4399-83a7-978785d1e11f@lunn.ch>
+In-Reply-To: <363527d6-1f29-4399-83a7-978785d1e11f@lunn.ch>
+From: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Date: Wed, 25 Feb 2026 09:39:37 +0100
+X-Gmail-Original-Message-ID: <CAJ+HfNhwM82H-sgbz0+WJGRjXJc8Ww0aCnp_YTNi-CB4aBMi=w@mail.gmail.com>
+X-Gm-Features: AaiRm51b-iSHJIXJpU9YtqTJihADuqI8G1EWn5PObRj6T7uFZlGZRIWVqhfgDe0
+Message-ID: <CAJ+HfNhwM82H-sgbz0+WJGRjXJc8Ww0aCnp_YTNi-CB4aBMi=w@mail.gmail.com>
+Subject: Re: [RFC net-next 0/4] ethtool: CMIS module diagnostic loopback support
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Jakub Kicinski <kuba@kernel.org>, Maxime Chevallier <maxime.chevallier@bootlin.com>, 
+	netdev@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Michael Chan <michael.chan@broadcom.com>, Hariprasad Kelam <hkelam@marvell.com>, 
+	Ido Schimmel <idosch@nvidia.com>, Danielle Ratson <danieller@nvidia.com>, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.01 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
+	R_MIXED_CHARSET(0.67)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17144-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,hisilicon.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[31];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,bootlin.com,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch,broadcom.com,marvell.com];
+	TAGGED_FROM(0.00)[bounces-17145-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.997];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 714CE1942A0
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lunn.ch:email]
+X-Rspamd-Queue-Id: 4A89A194553
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026 at 10:30:37PM +0000, Long Li wrote:
-> > diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-> > index 2dce1b677115..605122ecf9f9 100644
-> > --- a/drivers/infiniband/hw/mana/cq.c
-> > +++ b/drivers/infiniband/hw/mana/cq.c
-> > @@ -5,8 +5,8 @@
-> > 
-> >  #include "mana_ib.h"
-> > 
-> > -int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
-> > -		      struct uverbs_attr_bundle *attrs)
-> > +int mana_ib_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr
-> > *attr,
-> > +			   struct uverbs_attr_bundle *attrs)
-> >  {
-> >  	struct ib_udata *udata = &attrs->driver_udata;
-> >  	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-> > @@ -17,7 +17,6 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > ib_cq_init_attr *attr,
-> >  	struct mana_ib_dev *mdev;
-> >  	bool is_rnic_cq;
-> >  	u32 doorbell;
-> > -	u32 buf_size;
-> >  	int err;
-> > 
-> >  	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev); @@ -26,44
-> > +25,100 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > ib_cq_init_attr *attr,
-> >  	cq->cq_handle = INVALID_MANA_HANDLE;
-> >  	is_rnic_cq = mana_ib_is_rnic(mdev);
-> > 
-> > -	if (udata) {
-> > -		if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
-> > -			return -EINVAL;
-> > +	if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
-> > +		return -EINVAL;
-> > 
-> > -		err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd),
-> > udata->inlen));
-> > -		if (err) {
-> > -			ibdev_dbg(ibdev, "Failed to copy from udata for create
-> > cq, %d\n", err);
-> > -			return err;
-> > -		}
-> > +	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata-
-> > >inlen));
-> > +	if (err) {
-> > +		ibdev_dbg(ibdev, "Failed to copy from udata for create
-> > cq, %d\n", err);
-> > +		return err;
-> > +	}
-> > 
-> > -		if ((!is_rnic_cq && attr->cqe > mdev-
-> > >adapter_caps.max_qp_wr) ||
-> > -		    attr->cqe > U32_MAX / COMP_ENTRY_SIZE) {
-> > -			ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr-
-> > >cqe);
-> > -			return -EINVAL;
-> > -		}
-> > +	if ((!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) ||
-> > +	    attr->cqe > U32_MAX / COMP_ENTRY_SIZE) {
-> > +		ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	cq->cqe = attr->cqe;
-> > +	if (!ibcq->umem)
-> > +		ibcq->umem = ib_umem_get(ibdev, ucmd.buf_addr,
-> > +				     cq->cqe * COMP_ENTRY_SIZE,
-> > +				     IB_ACCESS_LOCAL_WRITE);
-> > +	if (IS_ERR(ibcq->umem))
-> > +		return PTR_ERR(ibcq->umem);
-> > +	cq->queue.umem = ibcq->umem;
-> > +
-> > +	err = mana_ib_create_queue(mdev, &cq->queue);
-> > +	if (err)
-> > +		return err;
-> 
-> Should we call ib_umem_release() on this err?
+On Wed, 25 Feb 2026 at 05:05, Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > # ethtool --show-loopback eth0
+> > Loopback endpoints for eth0:
+> >   id  owner  depth  direction          name       enabled
+> >    0  mac       1   host->loop->host   mac        off
+> >    1  phy       2   host->loop->host   phy-pcs    on
+> >    2  module    3   line->loop->line   cmis-far   off
+> >
+> > # Enable endpoint 2
+> > ethtool --set-loopback eth0 id 2 on
+>
+> We have to be careful about what is ABI here. Initially you plan to
+> implement module, so you will have:
+>
+> # ethtool --show-loopback eth0
+> Loopback endpoints for eth0:
+>   id  owner  depth  direction          name       enabled
+>    0  module    1   line->loop->line   cmis-far   off
+>
+> ethtool --set-loopback eth0 id 0 on
+>
+> And then somebody implements loopback at the mac:
+>
+> # ethtool --show-loopback eth0
+> Loopback endpoints for eth0:
+>   id  owner  depth  direction          name       enabled
+>    0  mac       1   host->loop->host   mac        off
+>    1  module    2   line->loop->line   cmis-far   off
+>
+> You script doing
+>
+> ethtool --set-loopback eth0 id 0 on
+>
+> Suddenly does something else.
 
-<...>
+Indeed!
 
-> >  err_destroy_queue:
-> >  	mana_ib_destroy_queue(mdev, &qp->raw_sq);
-> > +	return err;
-> 
-> Should remove this "return err", the error handling code should fall through.
+> Is this an ABI break? How do we make this reliable so implementing
+> more loopbacks at different levels does not change how you use
+> --set-loopback?
 
-The main idea of this series is to allocate/release umem in the core logic.
-See patch #5 https://lore.kernel.org/linux-rdma/20260213-refactor-umem-v1-5-f3be85847922@nvidia.com/
+Isn't this somewhat similar to what we have with ifindex/phy_index,
+but potentially unstable when modules are swapped/changed?
 
-> 
-> > +
-> > +err_release_umem:
-> > +	ib_umem_release(qp->raw_sq.umem);
-> > 
-> >  err_free_vport:
-> >  	mana_ib_uncfg_vport(mdev, pd, port);
-> > @@ -553,13 +566,25 @@ static int mana_ib_create_rc_qp(struct ib_qp *ibqp,
-> > struct ib_pd *ibpd,
-> >  		if (i == MANA_RC_SEND_QUEUE_FMR) {
-> >  			qp->rc_qp.queues[i].id = INVALID_QUEUE_ID;
-> >  			qp->rc_qp.queues[i].gdma_region =
-> > GDMA_INVALID_DMA_REGION;
-> > +			qp->rc_qp.queues[i].umem = NULL;
-> >  			continue;
-> >  		}
-> > -		err = mana_ib_create_queue(mdev, ucmd.queue_buf[j],
-> > ucmd.queue_size[j],
-> > -					   &qp->rc_qp.queues[i]);
-> > +		qp->rc_qp.queues[i].umem = ib_umem_get(&mdev->ib_dev,
-> > +						       ucmd.queue_buf[j],
-> > +						       ucmd.queue_size[j],
-> > +
-> > IB_ACCESS_LOCAL_WRITE);
-> > +		if (IS_ERR(qp->rc_qp.queues[i].umem)) {
-> > +			err = PTR_ERR(qp->rc_qp.queues[i].umem);
-> > +			ibdev_err(&mdev->ib_dev, "Failed to get umem for
-> > queue %d, err %d\n",
-> > +				  i, err);
-> > +			goto release_umems;
-> 
-> mana_ib_create_queue() may already have created some queues, need to clean them up or we have a leak. 
-> 
-> Maybe use destroy_queues: to call ib_umem_release()?
+Instead of ids, use string name and/or topology indices (e.g.
+phy_index)? All three -- owner, phy_index, name tuple?
 
-We should remove mana_ib_create_rc_qp() hunk, it came from my future
-work where I removed umem from QPs as well.
 
-Thanks
+Bj=C3=B6rn
 
