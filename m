@@ -1,1112 +1,321 @@
-Return-Path: <linux-rdma+bounces-17137-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17138-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kM6pFVVinmkKVAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17137-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 03:45:41 +0100
+	id qMGiDI9mnmmLVAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17138-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 04:03:43 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9259191020
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 03:45:40 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B551F19117D
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 04:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5AE02304C06C
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 02:45:35 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CF5B63071BD5
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 03:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A42D280CFB;
-	Wed, 25 Feb 2026 02:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CA0265298;
+	Wed, 25 Feb 2026 03:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dkcSYxqi"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HTE7ePHY";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="CtXQgtix"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B9279CD;
-	Wed, 25 Feb 2026 02:45:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771987534; cv=none; b=Za9o4lPisSk98rzmak7eMeYFgDh0Okykcjm0j+F51Dwg95YmpbyX/DnmSIHVfXjTOjzq3+AACtgEAJeODcIfyBfyhqeHSr0mXnqMiiSKzT5uD6A/78dVBdp7k2U9EGm9j/Fm2lnTJLFQrKmwogfrajNSV7DUiNewO+q+WAAuBGY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771987534; c=relaxed/simple;
-	bh=u4Ye9UZ85HGexncRbfoiUF2AUeWggCHAZmWit0bJmkQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qBwjuGLcReYdXVwScPy2dizRt0dcag5CXYAKnvDmYppkOP48Q0J9D2nr522JjYkb4cxF+qlR8bth6B743h0WcTlMMIjY4tFeN2FxgLzBMNeYGERwgOOrYQp9KyhR3l6WNSnlA2N0xlVj/yQ0PJ7hRbBlD9wNNT2K87FEK1I7OOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dkcSYxqi; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1771987526; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=TlTBJPDaVrUOcYy48NDdKo8aATfAJjTBRaKVYBTDKVo=;
-	b=dkcSYxqiJx+1CJRTPMvI0gI2OLpQYBw6vO4tADaDVSqHdTpy0znNex6riCCPqkkiraaYCI3WSsHmSvrygj0Dx2j5YShhul99ghTySzJstV6CRDFTtE+GgisNA1yUZMRGHgvhxBckoq/KAYKI+EGmzkjacvxSwajIhANuGweC4Ic=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wzkr3-E_1771987513 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 25 Feb 2026 10:45:25 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com,
-	pasic@linux.ibm.com
-Subject: [PATCH net-next] net/smc: transition to RDMA core CQ pooling
-Date: Wed, 25 Feb 2026 10:45:13 +0800
-Message-ID: <20260225024513.7861-1-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D4D199FD3;
+	Wed, 25 Feb 2026 03:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771988616; cv=fail; b=tSaSagCsSgznZN2WyhP5ENLtFGuOOHYDmA0vBzeP+TIGlF7UNKLVmFu2/Yc4pe9Fet7gpzOMz9f83knlkfCgNp6kgm8JgX2Ibe07M8TqP85EGmFKIe8oYg6pBPFACUp9dz43mEekylYnga/QqLg1Ky2/LDz7DmHNCxo86n0KciU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771988616; c=relaxed/simple;
+	bh=QIr5pq7smm/2F+z71VAisc2EefDIO5FPj8JGmCgA57M=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=bstVt12CaEjduSVCqG3KaANee89rwK7LdC7pAvbVWIiOBTFKBFDh/VV9GmrjeqVzjTPusmNQJMcIJd67PE7ijOzRTKldoxeymhha83NZlfHSgapYSFK/u9MyrU+qPYc1f6Bg8N6AM5b3xilHQWBYNn/52AYhom+cGVqiVgDsoVY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=HTE7ePHY; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=CtXQgtix; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61OIvdQM372361;
+	Wed, 25 Feb 2026 03:03:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=QIr5pq7smm/2F+z71VAisc2EefDIO5FPj8JGmCgA57M=; b=
+	HTE7ePHY0/Idcv9azQLyqvnkG5HGoFYIEzUXWRaNLyCBbHDNowxme+Ad+UfqXmWS
+	eTwqDXMcDJ6lK3uxbOYhxEeT+VrzJrcEboWAA1tWWV/VQxcVT6syAUMis7GHxOU2
+	BcoSS7p7x//wG+hHKDGkYsVahy4Y0B1HOsfoSPr3iAaETogPRHvDtmsREsW3YODK
+	pNBOmBq6qE3mjacGtV9aDXRMQ30W4b7MDLiugucIr+PAIn39+VS1Cjy1WeAoIdNW
+	3xq5/wtv1bx0Sf14aUIzfplkBgV50+VS0XDBrVUOUCqjlrNhg7lFfn+9IUfHJ3DU
+	mxIN0zLTcAjf8N2Gn0aV/Q==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4cf4k5wbxj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 25 Feb 2026 03:03:17 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 61P2q57R038495;
+	Wed, 25 Feb 2026 03:03:16 GMT
+Received: from mw6pr02cu001.outbound.protection.outlook.com (mail-westus2azon11012058.outbound.protection.outlook.com [52.101.48.58])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4cf35ms80q-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 25 Feb 2026 03:03:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fjRDdEQ6n/tlEoSn564caoTL+8UuYamYsEmSQTtJ5c4v3P36sT7llCJzbesbRIj9n5et2WaDZearrGV6DVKY6mzfbJ6np5QOGDSn4bMrqQmdPW4DAL4ocREyPFJJa7G5Pyyjo4t0WQlVJnssRZVrOkAwAo9c3QS58tgSyTDHR+e8TsuM1i/oiaxZIjMzpKetwiaMQfLz5crDXAjQIGOl4aKHJdjP0LctDgCloLoVM1z+8aJ2koHLkuxDV/HVQA9M72uJk81lEeehID9DRkUQYalqjKIPSiKGDXjZdtrcBde4gNhJthbhuXlftnDAFHRHJuqLBIW7rpxvUtqugVmWww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QIr5pq7smm/2F+z71VAisc2EefDIO5FPj8JGmCgA57M=;
+ b=MiQRHq0oBTTIufWmUueGvV/zEOW4n3uOrklvKk107iMG+0pacULWSIJ/q6K9I9mjkBC6scCgYmAkHqyVrV5a7fS/Va4fk0ZLD+alPPZIWDEZvZAlK/7chcSdxcgyBabVQVY7+7o9ekG3SqFPeQgmWuUSwiLn9uMQAkxhw5vjW/ArVHlhgeYGaJa5C/2fFHIqUHYMO3MSNxx2/wyZX0LyoD1F7N7Qxy7FxVT9hkyERFTSrg6KPd2c/En+BWYCAavVSPzzumLgUJeKHTi0+85m2wik8o9bqBj+TlUvbw8Dq70ZO5tEdc3f33IllSEQ7TLByifb+ZI3SMKKNlytY+ivJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QIr5pq7smm/2F+z71VAisc2EefDIO5FPj8JGmCgA57M=;
+ b=CtXQgtixJ2cdp+rCDMp5Nq6hFcI+Qm+NH8uTLW/CV09lZIO+jcd/Fw5QqH2lRQUY8rwvwOUTkRXfCdGxTg5JibaRhnPEVlbiTY842PFsm/EdBBubYkcXb+KLml4R9lB8JPtNnhDN72ATHsmnffCvQ+zRK0g7t9FoWordHCgfLOs=
+Received: from IA1PR10MB7417.namprd10.prod.outlook.com (2603:10b6:208:448::15)
+ by CH3PR10MB7188.namprd10.prod.outlook.com (2603:10b6:610:121::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.22; Wed, 25 Feb
+ 2026 03:03:10 +0000
+Received: from IA1PR10MB7417.namprd10.prod.outlook.com
+ ([fe80::bd36:8593:7913:ee59]) by IA1PR10MB7417.namprd10.prod.outlook.com
+ ([fe80::bd36:8593:7913:ee59%3]) with mapi id 15.20.9632.017; Wed, 25 Feb 2026
+ 03:03:10 +0000
+From: Allison Henderson <allison.henderson@oracle.com>
+To: "kexinsun@smail.nju.edu.cn" <kexinsun@smail.nju.edu.cn>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "yunbolyu@smu.edu.sg" <yunbolyu@smu.edu.sg>,
+        "davem@davemloft.net"
+	<davem@davemloft.net>,
+        "ratnadiraw@smu.edu.sg" <ratnadiraw@smu.edu.sg>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "julia.lawall@inria.fr" <julia.lawall@inria.fr>,
+        "pabeni@redhat.com"
+	<pabeni@redhat.com>,
+        "horms@kernel.org" <horms@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org"
+	<kuba@kernel.org>,
+        "xutong.ma@inria.fr" <xutong.ma@inria.fr>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] rds: update outdated comment
+Thread-Topic: [PATCH] rds: update outdated comment
+Thread-Index: AQHcpTJ9hyX4t2f7JUm4TPWvzrgo/7WSvCWA
+Date: Wed, 25 Feb 2026 03:03:10 +0000
+Message-ID: <2e555525ab0bcec255c9c73a8457ba4a9466ee6e.camel@oracle.com>
+References: <20260224020720.1174-1-kexinsun@smail.nju.edu.cn>
+In-Reply-To: <20260224020720.1174-1-kexinsun@smail.nju.edu.cn>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.52.3-0ubuntu1.1 
+autocrypt: addr=allison.henderson@oracle.com; prefer-encrypt=mutual;
+ keydata=mQGNBGMrSUYBDADDX1fFY5pimVrKxscCUjLNV6CzjMQ/LS7sN2gzkSBgYKblSsCpzcbO/
+ qa0m77Dkf7CRSYJcJHm+euPWh7a9M/XLHe8JDksGkfOfvGAc5kkQJP+JHUlblt4hYSnNmiBgBOO3l
+ O6vwjWfv99bw8t9BkK1H7WwedHr0zI0B1kFoKZCqZ/xs+ZLPFTss9xSCUGPJ6Io6Yrv1b7xxwZAw0
+ bw9AA1JMt6NS2mudWRAE4ycGHEsQ3orKie+CGUWNv5b9cJVYAsuo5rlgoOU1eHYzU+h1k7GsX3Xv8
+ HgLNKfDj7FCIwymKeir6vBQ9/Mkm2PNmaLX/JKe5vwqoMRCh+rbbIqAs8QHzQPsuAvBVvVUaUn2XD
+ /d42XjNEDRFPCqgVE9VTh2p1Ge9ovQFc/zpytAoif9Y3QGtErhdjzwGhmZqbAXu1EHc9hzrHhUF8D
+ I5Y4v3i5pKjV0hvpUe0OzIvHcLzLOROjCHMA89z95q1hcxJ7LnBd8wbhwN39r114P4PQiixAUAEQE
+ AAbQwQWxsaXNvbiBIZW5kZXJzb24gPGFsbGlzb24uaGVuZGVyc29uQG9yYWNsZS5jb20+iQHUBBMB
+ CgA+AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEElfnzzkkP0cwschd6yD6kYDBH6bMFAmiSe
+ HYFCQkpljAACgkQyD6kYDBH6bOHnAv8C3/OEAAJtZcvJ7OVhwzq0Qq60hWPXFBf5dCEtPxiXTJQHk
+ SDl0ShPJ6LW1WzRSnaPl/qVSAqM1/xDxRe6xk0gpSsSPc27pcMryJ5NHPZF8lfDY80bYcGvi1rIdy
+ KD0/HUmh6+ccB6FVBtWTYuA5PAlVOvwvo3uJ6aQiGPwcGO48jZnIBth96uqLIyOF+UFBvpDj6qbfF
+ WlJ8ejX8lmC7XiY8ZKYZOFfI7BRTQxrmsJS2M+3kRTmGgsb6bbPhaIVNn68Su6/JSE85BvuJshZT0
+ BmNdWOwui6NbXrHgyee0brVKbngCfE4+RZIzleoydbHP2GnBtaF2okhnUWS/pNKsOYBa3k8IXdygc
+ CbiXmjs3fIf+8HIm0Vzmgjbi5auS4d+tB+8M22/HWdxmdAB0sHUFMtC8weYpVxvnpGAsPvy166nR5
+ YpVdigugCZkaObALjkJzNXGcC4fuHcqZ2LVHh9FsjyQaemcj8Y6jlm4xUXgyiz7hkTNsWJZDUz5kV
+ axLm
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR10MB7417:EE_|CH3PR10MB7188:EE_
+x-ms-office365-filtering-correlation-id: a90776f5-cbb2-4bc7-2f71-08de741a687e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|7416014|376014|366016|1800799024|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?NlUyZm9tVUFSdFM4SlI0eW1Vdlk0bVZCREVYOElLbFdxWWk1dlozSUxzTEhN?=
+ =?utf-8?B?VVg5STkxWS9jL0hJT2VwRVBPeEJrcTQ2Y0RKS3lMREJSWkVtQkhHTGh6bVJZ?=
+ =?utf-8?B?eWcwUW1QeUUwTXFYZ2pLU1I3M2kxcGxxZkxmUHhvZktaczVmZWRwYlN6cHFN?=
+ =?utf-8?B?RWxCdk5BQzZkS0FpTlFsSjdmb2ZraVVlVHZpNEtWbVZoaFNlWHNoYk9IRGxn?=
+ =?utf-8?B?RFBQNkp1WTBlTFRlUXRKTllxZ0x4aE9xL1NhOEF2TWkvQ09PcFlZOThnN1Q1?=
+ =?utf-8?B?OXh5R1lPcGZud2xsbDBtajlSbGZhYWRJR1ZNejNQY3hUdzhKUHlVZU9LNk5u?=
+ =?utf-8?B?L1dXTDgrRVhLNTZxNUw0ZVljMFZBNEt5NGhSWUU5SFYyMUl3aElBeWdobk04?=
+ =?utf-8?B?ZEVxQVdXVTNTS0tOMWNIOFgwekhvWFZNSDZCODlFT3htVWs2TXV2dko5anQy?=
+ =?utf-8?B?WUNwQlIxNFJENDVQdTdVaExCNlZiWGNUem1nazhqT1ZHNExwUkVSWS8vVWNC?=
+ =?utf-8?B?RU1uaXRiRkFBR2Zwdkx0aVprdzlQZXpyelNYZkhzYnlxY3lmZUVYN2hEWXd3?=
+ =?utf-8?B?TXlCVmwrbXdrWTVDNmlxVk5IUyttOStYM1RoZDNUcU9RVWdvNG9ETnh1L1RB?=
+ =?utf-8?B?QStmNVhsb3d6ZllKWjBRNEx1Lzh2ZE16bjhCWXFxYi9qMm1oQWlhL3ltTDVT?=
+ =?utf-8?B?YU96VjV6dUt5WHM4Zjh2OEZ4OFhUclFqdnpnUE5ic1p4TG9pQUhzYzl0dDZ4?=
+ =?utf-8?B?UmlKWmRYVnRCSE1NZXdOazNuOXZaZVBRUXNUUnJtbDJoOEhzdlZjMUhPeFF0?=
+ =?utf-8?B?Q2NCcUhiZ1ZQOE5PaTB6RzJYR3EyNDBucnlZVjhoWDRDdXNpM2lvOGd0NEJ3?=
+ =?utf-8?B?aW0wYzhvaGNTZndCS0ZSUG9GZXVtVXJxMHB4SlhaTm14VUR1dUZ2WE5XMnFT?=
+ =?utf-8?B?NU5naDV0WTRZQWVJdWdGTlBYZndzTGhxRk5vRDBoTTM2TmRldU1GMWJvL0Jw?=
+ =?utf-8?B?bE5aTDZBbTJZVXNzaXlMQk5JS2g2aHVLTStlQUdCbk5ERDJXSUtRd2s1WGlo?=
+ =?utf-8?B?Qnh3Z2NUcWd5TVJxcHV2Y1pTRCtldWNNQktiRjdmajVSL01nalZFNGU0V3Jz?=
+ =?utf-8?B?VVp6RkgyMUZ5c0JhRXo2aFBvM3RqUFhrd1pEZGJ3cjVDcGc0MGNCcmFaWUFm?=
+ =?utf-8?B?dWtUeDJqNGNRUTFFWDhFdHhkeEtCVll5by9yL2srQ0ZvbElkaUNKc0FrMlFN?=
+ =?utf-8?B?bENFQUFPU1ZOWDZSdmdKMndpOGxjVUNBUHNyWUhBOXBEU0ljc2ZzbTJvalU3?=
+ =?utf-8?B?UUJxc3ArV05RT0FnZHUxRmJZVW9xTEhQc1hiRFFUZ1RnWUlMcHNlSkx4VXV6?=
+ =?utf-8?B?cWl0RDEwM0NTdWFQSTZIV1liWUpUdG5xdDM5VXdCZ2lJTytkdjVYWC9pTnRn?=
+ =?utf-8?B?R25odTBXRzMzK1RHWExadjVyVTNlRW5DSXJSRGpRY05ZNGdYZlBmTElOUU1U?=
+ =?utf-8?B?UkdVdVkrUW9zWGJLcWV0UStxL3h4YTZkOUlaMFV2bXBkVkJiZ3czNG5wNC9L?=
+ =?utf-8?B?eVJoVnUxZUcyZ0FWWWg0eUZLNHVNOWNoenR6MlUyTjZlL3p5dFhvY1pkQ21j?=
+ =?utf-8?B?c1JrTmFtekd3TmdLWjUwZEFhZ2dpaU1hNmhhRmhVSGt0NE9zRmx1MW8yeDJj?=
+ =?utf-8?B?Vy9MZFltU0N5YTQ0MUxBYmNjR3NqSkQyQUg4dUtraGxRWFRmQWlmZHBvbDZF?=
+ =?utf-8?B?ZzhjaWRaTEg2ZldFd2ZaVnYwUmZxbmE3M1lQcFBjMWd3eVhza3hzeEhTU1ky?=
+ =?utf-8?B?UDF6ZHVBNkcxTDNBcU94WEp0TjdBSXU4QUhqb1JMQkY3dSt2VTI4NFZaemxn?=
+ =?utf-8?B?ejc0cmYyK2N3MzBrbTd1VmU0dUN2ZjRWT0VkN2VmOGsvdW8yL003bEFMZHhS?=
+ =?utf-8?B?N25qTExUdG5NMWpjU0sweWYycUEwdFRGUGNFZGhqVndqQzg0ek5BNUxhS2ZX?=
+ =?utf-8?B?UVRIcFZpTUtUekZCdThVNXJ0QXM1WVRDRnRmNUw2MVBIQnM2OHVhSUd5L1VO?=
+ =?utf-8?B?N2psVHFPV3ZjZWQ3enRNeUFYM2wxcTlFeDdKdWFhYjh1OXlrcVBVSnE4UGl3?=
+ =?utf-8?B?RGgvR0RoRVFFNnl3bk9zSlo1RDN6VTdKOCtzUExTSjR6T3JFb3BnSldLTkFj?=
+ =?utf-8?Q?FmAC6n9avNYFQFo7KL5dhPE=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR10MB7417.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?aGpjSm1Odmp2OGdraWZBL2QycVpnQlJzMUt5ZjJoNDZKZ0QrdFpVL3FZRHJ5?=
+ =?utf-8?B?YS9aVWhJczhNeXNvcFZZVVp0SmNVT2k5bGs1ZFU2VXNXa0hmVExyYVJEMVUx?=
+ =?utf-8?B?V1I2ZGl1cCtDdUx4c1d6THh5eGFYV29nK3hFU3paaDNKZEg3WVpvOGJvMm1V?=
+ =?utf-8?B?WG8xLzczeHBORUdTbzhXUGFvZStQSm9rNk94blNLTk9Id252WTNvYlloaUlk?=
+ =?utf-8?B?eWFnZEVWSzBrUWNUOHgraUJlaktJQUJNRHlRc3lXdzAxbkZWVWlEU05uVVcw?=
+ =?utf-8?B?VkhXNFcxQUhCTkxwcmJjUW1ObVJsNW1xZFE3R2tSa013Um9QT2tGbU42ODNn?=
+ =?utf-8?B?SXozTmlLVHBHN3YzUVJJZXpjWUFGb2J2NlNLU0dhWWIyUENzb29WRFBQZVZs?=
+ =?utf-8?B?U0h5eHFQVVBDL3VhcEF5eThacS9jRGltUEo4ang4MzFkT0dmdDEwRnQ0Nkty?=
+ =?utf-8?B?cGo0dGNmaEtMUnRDRTVQTSt6L1hZeEQ3WDdOYTVVM0g5ZHYyd0ZBL1ZZQ1cw?=
+ =?utf-8?B?Qk1FS2xCTDlDWllSTWluVkJLdnkxeUpDS1ZQZ2ZxbEhFRC95L05XVThNU3ls?=
+ =?utf-8?B?Um9wVitmZWt5ckJNUE1iYXgzK0F4bTV4Y25vcEpobUNpSUN2Zk4xWE9IMkNO?=
+ =?utf-8?B?SGkwbGlKdi9XcEZhN2xGdDRud01YcFdWajhJbTYwUXNBKzhRaDlJY2ZwREJX?=
+ =?utf-8?B?YW05czFRMXF3QWFHclNwMVpzMHcrZ0JQb3dETEZqcHhxQ3NqcE52Y1JleDV3?=
+ =?utf-8?B?S1Izd1g3VGY4WUxVWlZLU1gzM1MwT1hZYzR4Y2ZFN0FrbUJTQkt5d2ZrUERZ?=
+ =?utf-8?B?eit5T1o5V3VFZmVJaWRNRnVwQjJFdXNDdk1neEtmcjdIQzJ0RE9qZzlTQ2F5?=
+ =?utf-8?B?aFo5WlpPc0ZtY3R6TllRcVZ2eFV0Q2twTGovODgyQjFKbGNJTW0rOGpXTW1w?=
+ =?utf-8?B?bno4WUhtN1l6aExHc294WE1sTnNZN3ZEbUVBQVZYSEpROWtrOGJxdmJldWZ3?=
+ =?utf-8?B?SVEyR1hsTnl5RVV1QnR4aFFLbm1DUmR1Z05rd1RKMWlORlNGQ2hMaWliYWxU?=
+ =?utf-8?B?RjM5N1IzS0pXTjcrVXVMWlVmZXB5UHNlbEZYSlArejhGelJRNXlLYVUxTUlX?=
+ =?utf-8?B?UkhKYlpNdnMrK285amVSVktFVVVNalcxNi9GMjVpZUh3S0xFandqUWVsZFVU?=
+ =?utf-8?B?SkpsaTcyRnR6Zi84WWNRQXNxTjJEWEFYWUlsZFBXU0k0TW5Kb0FMcTRXeXB0?=
+ =?utf-8?B?cW82emZLWFdUdng3VnU1VzRSeS9ZVWpzNXVFYXk3OFoya3RZL0k0bEttMkFF?=
+ =?utf-8?B?bXp3alJXUUdVUWp0WWYvS1JNRExwRllPMDJqbnBLeUFDa1J5SG5TZ3F6NWlQ?=
+ =?utf-8?B?dERGZUQvYXYzbXdpem42RXZJTlpiblkrcit2QktpdE1DNHBVSDJQRVcxTmhH?=
+ =?utf-8?B?WXE1NjdUZkdjeWNyY245QWVJcldtR2dseGdjdkJJTnJ5Z0FrVHp3K282YkYy?=
+ =?utf-8?B?dEJ1akxuVDVzMk1OSUhUZjZhQktiS0gzajJYL2pNcHBBbytDellrZXNBRTRo?=
+ =?utf-8?B?Q2pwMFZJYTVTMkV4UGxOTCtPenp6ckFiRUNyb3pOMlYvM0w0Wm1rMEl1YlZl?=
+ =?utf-8?B?K3IyRXdYbnArRDQ5WlhVRnVUR1ZpVnlvUUNuVkh5MllOckJabkUxa3M3L0tj?=
+ =?utf-8?B?RnIvZyt5K05oV1NwOXdjR2xKKzFhVDFKMXBVckpKdTl0MVh3dE5yVXB1eHJ3?=
+ =?utf-8?B?aHZNWTNaMnpWWnhpcC9CaFFOQ1laeXNUbmNpSStraWwvaVlIZzZqUzVoTDYw?=
+ =?utf-8?B?SGZyQ0MvRWtjanJrUlhrT1B5VUtSd3lBRFRLd0k2K2tRcFUwTjR5Zk1JZTQ0?=
+ =?utf-8?B?d1ZBUndzK29NR0FmTGZlQ0JwZk5jak9KakNVRk14a0R2cExvZ3NkeTlydzYv?=
+ =?utf-8?B?Z2cwV2wraUZOckplZ2xrQWV0TktDSU1yWElJWlhwNmFQcXJ2OEYxWTBITjZm?=
+ =?utf-8?B?NEJRMXRFS1JCUkFPalpBV0NrdHV2R0lqenB6STEzY3gra2hNSkFNdHhzRHNT?=
+ =?utf-8?B?SStBODEvNDBFV0FTYjNSaE1HNTVycUZ1aVorMUloUWtnSWhnN3NFYXl5czdu?=
+ =?utf-8?B?WG5LZnc4NG95U3MvVEpqMTZkcXJlTFUxSkZvYjMzSG1OODNWYm1ZWld4dkw0?=
+ =?utf-8?B?WTFhSGtFL3RoVEFRdFJVYkNCdG5MTUE0anR0b1hrMktxZnRPT1ppV2V0bW9M?=
+ =?utf-8?B?UFNLZGhvQzJBN1BnOUYyRWdka01WdktWSVRUaUwyU2wvcklUYzVIYnpVYWpO?=
+ =?utf-8?B?aW13aTJaV1Z1djdZZmhwZDAvRE5DdmozZjFkVlhSM0d3ZmJVbHZYN21oMjhP?=
+ =?utf-8?Q?ly/virCHd6zcs8Vc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DEA762ED8E6C5642A91F95FD7EB2FF39@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	YswRez8qhC3d5QNqNabL07PTTDF7kf9yKLxBs+502hREvEduvGohnmtI+u4GolphfiAlqeDd5/5SL/ow/CH84LeDB64qxPrVxnp6ZQX5OaDUqtHckXVA8yp/B0P1czizBQBsSJwR1rogPd7nJE67Y2gB3mL7p9AKc14TZLPdhkX8Khmhu6ZMlUy8uJAlIGnsqnyIBb1jEXUQmQXWM/RNflh0k7BcuVAGqVsYR6urBonIEDb+ujmw47q9gB3S+qyRsngXpA0GUVoTTY3p8/lVlBzaCUI/RT67zCCzXtzsTXdo41MnvbAZJ6DncuJjUW33XZT7Zo6w+QuAovE+oLXOYPrX4Wx57M1jU1vR9gK5Ql7HaPekdDoeEJHt6QVIQOpbr4+kl8P2s6efHThBor5/bdKcdI+D1pXTq89ywm9VdsgtKQe8O2yPLlTyrnTe4Ui4mqRNxVYVaN7wwFtLA/g4FZmvrh+hNBUjuj8/7C2ido4g1n+41mZy7+jZQNoHyESzESxnw6BIYaXbb7/jzwVglROAYG0Mao2Udz7l8I3VClhb/Y18UacBMrWcM9SdKMRu5r+7ODUMHn4DRx4BWLUpShpTHvIN16zr25BOzgFhW+w=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR10MB7417.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a90776f5-cbb2-4bc7-2f71-08de741a687e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Feb 2026 03:03:10.3548
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q4Odnw4WIqM2AHpTIF3VI+OrqsiXBlnI8TgUA79NrMNp4LZFTbgsl2o0PUdnWYoEq2MM4hngzdc094grVTIt3i6YvGyXZwb7EafQe9dNkTw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7188
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-24_03,2026-02-23_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2602130000
+ definitions=main-2602250025
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDAyNSBTYWx0ZWRfXxvIDpEFxh4SA
+ xbtdDyhDiE+6i1mYdsCPV/JCnC9ls19cUAA0wA09qBcbdwbhJH6pKpCHP8gCYa5ERi9oj3v763K
+ XQtO23x4Uey6RXr1NMwGDaEOG0/4BAfeOqj5Io9HOCwpm46ZkjorfNAsmOYLG+CZGFKW4xUBIAw
+ 4iqOW19OOa+rXtn6tNklXICzsfH+1i3619S7Q1pc6jTkkDIKjCl3G/+Uc/BkBqLJYuoZXhuqiIh
+ jQYN1+mI60v3g7/RMce97ihyHU+Xa0rMqcceoAKi/iTPUCgqWEDkfbwqu9VO0Iri5yzBKhqzkPs
+ FaNZCbiuLdAYBSZQktWYehg7SgtkzFh3byjAqBCRJVHfeinpypOycR2tsV5bBzvT7FIhJ8D8xF2
+ HyVYUeiPi4+DOX8r6VKD4PMQC9zRJeikhtc8YI6675mYp5QCv7htI983Q/oSWFni50iacL95Kqe
+ PZAhM8P71ly7B66FXBfAKydUN7hJhyZs31ykyOFU=
+X-Proofpoint-GUID: 4KIjoNB3CsuA5rA5I7pYuewLKmL3T7MO
+X-Authority-Analysis: v=2.4 cv=b9C/I9Gx c=1 sm=1 tr=0 ts=699e6675 b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19
+ a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=GoEa3M9JfhUA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22
+ a=gRKHd0CzUnqA5vk5bOYA:9 a=QEXdDO2ut3YA:10 cc=ntf awl=host:12261
+X-Proofpoint-ORIG-GUID: 4KIjoNB3CsuA5rA5I7pYuewLKmL3T7MO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+X-Spamd-Result: default: False [-0.06 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25,oracle.onmicrosoft.com:s=selector2-oracle-onmicrosoft-com];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17137-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17138-lists,linux-rdma=lfdr.de];
+	TO_DN_EQ_ADDR_ALL(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.onmicrosoft.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,oracle.com:mid,oracle.com:dkim];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[allison.henderson@oracle.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[oracle.com:+,oracle.onmicrosoft.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim]
-X-Rspamd-Queue-Id: A9259191020
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
+X-Rspamd-Queue-Id: B551F19117D
 X-Rspamd-Action: no action
 
-The current SMC-R implementation relies on global per-device CQs
-and manual polling within tasklets, which introduces severe
-scalability bottlenecks due to global lock contention and tasklet
-scheduling overhead, resulting in poor performance as concurrency
-increases.
-
-Refactor the completion handling to utilize the ib_cqe API and
-standard RDMA core CQ pooling. This transition provides several key
-advantages:
-
-1. Multi-CQ: Shift from a single shared per-device CQ to multiple
-link-specific CQs via the CQ pool. This allows completion processing
-to be parallelized across multiple CPU cores, effectively eliminating
-the global CQ bottleneck.
-
-2. Leverage DIM: Utilizing the standard CQ pool with IB_POLL_SOFTIRQ
-enables Dynamic Interrupt Moderation from the RDMA core, optimizing
-interrupt frequency and reducing CPU load under high pressure.
-
-3. O(1) Context Retrieval: Replaces the expensive wr_id based lookup
-logic (e.g., smc_wr_tx_find_pending_index) with direct context retrieval
-using container_of() on the embedded ib_cqe.
-
-4. Code Simplification: This refactoring results in a reduction of
-~150 lines of code. It removes redundant sequence tracking, complex lookup
-helpers, and manual CQ management, significantly improving maintainability.
-
-Performance Test: redis-benchmark with max 32 connections per QP
-Data format: Requests Per Second (RPS), Percentage in brackets
-represents the gain/loss compared to TCP.
-
-| Clients | TCP      | SMC (original)      | SMC (cq_pool)       |
-|---------|----------|---------------------|---------------------|
-| c = 1   | 24449    | 31172  (+27%)       | 34039  (+39%)       |
-| c = 2   | 46420    | 53216  (+14%)       | 64391  (+38%)       |
-| c = 16  | 159673   | 83668  (-48%)  <--  | 216947 (+36%)       |
-| c = 32  | 164956   | 97631  (-41%)  <--  | 249376 (+51%)       |
-| c = 64  | 166322   | 118192 (-29%)  <--  | 249488 (+50%)       |
-| c = 128 | 167700   | 121497 (-27%)  <--  | 249480 (+48%)       |
-| c = 256 | 175021   | 146109 (-16%)  <--  | 240384 (+37%)       |
-| c = 512 | 168987   | 101479 (-40%)  <--  | 226634 (+34%)       |
-
-The results demonstrate that this optimization effectively resolves the
-scalability bottleneck, with RPS increasing by over 110% at c=64
-compared to the original implementation.
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- net/smc/smc_core.c |   9 +-
- net/smc/smc_core.h |  28 ++--
- net/smc/smc_ib.c   | 113 +++++-----------
- net/smc/smc_ib.h   |   7 -
- net/smc/smc_tx.c   |   1 -
- net/smc/smc_wr.c   | 313 +++++++++++++++++++--------------------------
- net/smc/smc_wr.h   |  40 ++----
- 7 files changed, 194 insertions(+), 317 deletions(-)
-
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 8aca5dc54be7..436930eb2328 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -815,17 +815,11 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
- 	lnk->lgr = lgr;
- 	smc_lgr_hold(lgr); /* lgr_put in smcr_link_clear() */
- 	lnk->link_idx = link_idx;
--	lnk->wr_rx_id_compl = 0;
- 	smc_ibdev_cnt_inc(lnk);
- 	smcr_copy_dev_info_to_link(lnk);
- 	atomic_set(&lnk->conn_cnt, 0);
- 	smc_llc_link_set_uid(lnk);
- 	INIT_WORK(&lnk->link_down_wrk, smc_link_down_work);
--	if (!lnk->smcibdev->initialized) {
--		rc = (int)smc_ib_setup_per_ibdev(lnk->smcibdev);
--		if (rc)
--			goto out;
--	}
- 	get_random_bytes(rndvec, sizeof(rndvec));
- 	lnk->psn_initial = rndvec[0] + (rndvec[1] << 8) +
- 		(rndvec[2] << 16);
-@@ -863,6 +857,7 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
- 	if (rc)
- 		goto free_link_mem;
- 	lnk->state = SMC_LNK_ACTIVATING;
-+	smc_wr_init_cqes(lnk);
- 	return 0;
- 
- free_link_mem:
-@@ -1373,7 +1368,7 @@ void smcr_link_clear(struct smc_link *lnk, bool log)
- 	smc_llc_link_clear(lnk, log);
- 	smcr_buf_unmap_lgr(lnk);
- 	smcr_rtoken_clear_link(lnk);
--	smc_ib_modify_qp_error(lnk);
-+	smc_wr_drain_rq(lnk);
- 	smc_wr_free_link(lnk);
- 	smc_ib_destroy_queue_pair(lnk);
- 	smc_ib_dealloc_protection_domain(lnk);
-diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-index 5c18f08a4c8a..2c4eb5c22287 100644
---- a/net/smc/smc_core.h
-+++ b/net/smc/smc_core.h
-@@ -89,8 +89,21 @@ struct smc_rdma_sges {				/* sges per message send */
- struct smc_rdma_wr {				/* work requests per message
- 						 * send
- 						 */
-+	struct ib_cqe		cqe;
- 	struct ib_rdma_wr	wr_tx_rdma[SMC_MAX_RDMA_WRITES];
--};
-+} ____cacheline_aligned_in_smp;
-+
-+struct smc_ib_recv_wr {
-+	struct ib_cqe		cqe;
-+	struct ib_recv_wr	wr;
-+	int idx;
-+} ____cacheline_aligned_in_smp;
-+
-+struct smc_ib_send_wr {
-+	struct ib_cqe		cqe;
-+	struct ib_send_wr	wr;
-+	int idx;
-+} ____cacheline_aligned_in_smp;
- 
- #define SMC_LGR_ID_SIZE		4
- 
-@@ -100,23 +113,24 @@ struct smc_link {
- 	struct ib_pd		*roce_pd;	/* IB protection domain,
- 						 * unique for every RoCE QP
- 						 */
-+	unsigned int		nr_cqe;		/* number of CQ entries */
-+	struct ib_cq		*ib_cq;		/* IB completion queue */
- 	struct ib_qp		*roce_qp;	/* IB queue pair */
- 	struct ib_qp_attr	qp_attr;	/* IB queue pair attributes */
- 
- 	struct smc_wr_buf	*wr_tx_bufs;	/* WR send payload buffers */
--	struct ib_send_wr	*wr_tx_ibs;	/* WR send meta data */
-+	struct smc_ib_send_wr	*wr_tx_ibs;	/* WR send meta data */
- 	struct ib_sge		*wr_tx_sges;	/* WR send gather meta data */
- 	struct smc_rdma_sges	*wr_tx_rdma_sges;/*RDMA WRITE gather meta data*/
- 	struct smc_rdma_wr	*wr_tx_rdmas;	/* WR RDMA WRITE */
- 	struct smc_wr_tx_pend	*wr_tx_pends;	/* WR send waiting for CQE */
- 	struct completion	*wr_tx_compl;	/* WR send CQE completion */
- 	/* above four vectors have wr_tx_cnt elements and use the same index */
--	struct ib_send_wr	*wr_tx_v2_ib;	/* WR send v2 meta data */
-+	struct smc_ib_send_wr	*wr_tx_v2_ib;	/* WR send v2 meta data */
- 	struct ib_sge		*wr_tx_v2_sge;	/* WR send v2 gather meta data*/
- 	struct smc_wr_tx_pend	*wr_tx_v2_pend;	/* WR send v2 waiting for CQE */
- 	dma_addr_t		wr_tx_dma_addr;	/* DMA address of wr_tx_bufs */
- 	dma_addr_t		wr_tx_v2_dma_addr; /* DMA address of v2 tx buf*/
--	atomic_long_t		wr_tx_id;	/* seq # of last sent WR */
- 	unsigned long		*wr_tx_mask;	/* bit mask of used indexes */
- 	u32			wr_tx_cnt;	/* number of WR send buffers */
- 	wait_queue_head_t	wr_tx_wait;	/* wait for free WR send buf */
-@@ -126,7 +140,7 @@ struct smc_link {
- 	struct completion	tx_ref_comp;
- 
- 	u8			*wr_rx_bufs;	/* WR recv payload buffers */
--	struct ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
-+	struct smc_ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
- 	struct ib_sge		*wr_rx_sges;	/* WR recv scatter meta data */
- 	/* above three vectors have wr_rx_cnt elements and use the same index */
- 	int			wr_rx_sge_cnt; /* rx sge, V1 is 1, V2 is either 2 or 1 */
-@@ -135,13 +149,11 @@ struct smc_link {
- 						 */
- 	dma_addr_t		wr_rx_dma_addr;	/* DMA address of wr_rx_bufs */
- 	dma_addr_t		wr_rx_v2_dma_addr; /* DMA address of v2 rx buf*/
--	u64			wr_rx_id;	/* seq # of last recv WR */
--	u64			wr_rx_id_compl; /* seq # of last completed WR */
- 	u32			wr_rx_cnt;	/* number of WR recv buffers */
- 	unsigned long		wr_rx_tstamp;	/* jiffies when last buf rx */
--	wait_queue_head_t       wr_rx_empty_wait; /* wait for RQ empty */
- 
- 	struct ib_reg_wr	wr_reg;		/* WR register memory region */
-+	struct ib_cqe		wr_reg_cqe;		/* ib_cqe for wr_reg */
- 	wait_queue_head_t	wr_reg_wait;	/* wait for wr_reg result */
- 	struct {
- 		struct percpu_ref	wr_reg_refs;
-diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-index 67211d44a1db..26bcb68bbf18 100644
---- a/net/smc/smc_ib.c
-+++ b/net/smc/smc_ib.c
-@@ -112,15 +112,6 @@ int smc_ib_modify_qp_rts(struct smc_link *lnk)
- 			    IB_QP_MAX_QP_RD_ATOMIC);
- }
- 
--int smc_ib_modify_qp_error(struct smc_link *lnk)
--{
--	struct ib_qp_attr qp_attr;
--
--	memset(&qp_attr, 0, sizeof(qp_attr));
--	qp_attr.qp_state = IB_QPS_ERR;
--	return ib_modify_qp(lnk->roce_qp, &qp_attr, IB_QP_STATE);
--}
--
- int smc_ib_ready_link(struct smc_link *lnk)
- {
- 	struct smc_link_group *lgr = smc_get_lgr(lnk);
-@@ -134,10 +125,7 @@ int smc_ib_ready_link(struct smc_link *lnk)
- 	if (rc)
- 		goto out;
- 	smc_wr_remember_qp_attr(lnk);
--	rc = ib_req_notify_cq(lnk->smcibdev->roce_cq_recv,
--			      IB_CQ_SOLICITED_MASK);
--	if (rc)
--		goto out;
-+
- 	rc = smc_wr_rx_post_init(lnk);
- 	if (rc)
- 		goto out;
-@@ -658,38 +646,59 @@ void smc_ib_destroy_queue_pair(struct smc_link *lnk)
- 	if (lnk->roce_qp)
- 		ib_destroy_qp(lnk->roce_qp);
- 	lnk->roce_qp = NULL;
-+	if (lnk->ib_cq) {
-+		ib_cq_pool_put(lnk->ib_cq, lnk->nr_cqe);
-+		lnk->ib_cq = NULL;
-+	}
- }
- 
- /* create a queue pair within the protection domain for a link */
- int smc_ib_create_queue_pair(struct smc_link *lnk)
- {
-+	int max_send_wr, max_recv_wr, rc;
-+	struct ib_cq *cq;
-+
-+	/* include unsolicited rdma_writes as well,
-+	 * there are max. 2 RDMA_WRITE per 1 WR_SEND.
-+	 */
-+	max_send_wr = 3 * lnk->lgr->max_send_wr;
-+	max_recv_wr = lnk->lgr->max_recv_wr + 1;	/* +1 for ib_drain_rq() */
-+
-+	cq = ib_cq_pool_get(lnk->smcibdev->ibdev, max_send_wr + max_recv_wr, -1,
-+			    IB_POLL_SOFTIRQ);
-+
-+	if (IS_ERR(cq)) {
-+		rc = PTR_ERR(cq);
-+		return rc;
-+	}
-+
- 	struct ib_qp_init_attr qp_attr = {
- 		.event_handler = smc_ib_qp_event_handler,
- 		.qp_context = lnk,
--		.send_cq = lnk->smcibdev->roce_cq_send,
--		.recv_cq = lnk->smcibdev->roce_cq_recv,
-+		.send_cq = cq,
-+		.recv_cq = cq,
- 		.srq = NULL,
- 		.cap = {
- 			.max_send_sge = SMC_IB_MAX_SEND_SGE,
- 			.max_recv_sge = lnk->wr_rx_sge_cnt,
-+			.max_send_wr = max_send_wr,
-+			.max_recv_wr = max_recv_wr,
- 			.max_inline_data = 0,
- 		},
- 		.sq_sig_type = IB_SIGNAL_REQ_WR,
- 		.qp_type = IB_QPT_RC,
- 	};
--	int rc;
- 
--	/* include unsolicited rdma_writes as well,
--	 * there are max. 2 RDMA_WRITE per 1 WR_SEND
--	 */
--	qp_attr.cap.max_send_wr = 3 * lnk->lgr->max_send_wr;
--	qp_attr.cap.max_recv_wr = lnk->lgr->max_recv_wr;
- 	lnk->roce_qp = ib_create_qp(lnk->roce_pd, &qp_attr);
- 	rc = PTR_ERR_OR_ZERO(lnk->roce_qp);
--	if (IS_ERR(lnk->roce_qp))
-+	if (IS_ERR(lnk->roce_qp)) {
- 		lnk->roce_qp = NULL;
--	else
-+		ib_cq_pool_put(cq, max_send_wr + max_recv_wr);
-+	} else {
- 		smc_wr_remember_qp_attr(lnk);
-+		lnk->nr_cqe = max_send_wr + max_recv_wr;
-+		lnk->ib_cq = cq;
-+	}
- 	return rc;
- }
- 
-@@ -855,62 +864,6 @@ void smc_ib_buf_unmap_sg(struct smc_link *lnk,
- 	buf_slot->sgt[lnk->link_idx].sgl->dma_address = 0;
- }
- 
--long smc_ib_setup_per_ibdev(struct smc_ib_device *smcibdev)
--{
--	struct ib_cq_init_attr cqattr =	{
--		.cqe = SMC_MAX_CQE, .comp_vector = 0 };
--	int cqe_size_order, smc_order;
--	long rc;
--
--	mutex_lock(&smcibdev->mutex);
--	rc = 0;
--	if (smcibdev->initialized)
--		goto out;
--	/* the calculated number of cq entries fits to mlx5 cq allocation */
--	cqe_size_order = cache_line_size() == 128 ? 7 : 6;
--	smc_order = MAX_PAGE_ORDER - cqe_size_order;
--	if (SMC_MAX_CQE + 2 > (0x00000001 << smc_order) * PAGE_SIZE)
--		cqattr.cqe = (0x00000001 << smc_order) * PAGE_SIZE - 2;
--	smcibdev->roce_cq_send = ib_create_cq(smcibdev->ibdev,
--					      smc_wr_tx_cq_handler, NULL,
--					      smcibdev, &cqattr);
--	rc = PTR_ERR_OR_ZERO(smcibdev->roce_cq_send);
--	if (IS_ERR(smcibdev->roce_cq_send)) {
--		smcibdev->roce_cq_send = NULL;
--		goto out;
--	}
--	smcibdev->roce_cq_recv = ib_create_cq(smcibdev->ibdev,
--					      smc_wr_rx_cq_handler, NULL,
--					      smcibdev, &cqattr);
--	rc = PTR_ERR_OR_ZERO(smcibdev->roce_cq_recv);
--	if (IS_ERR(smcibdev->roce_cq_recv)) {
--		smcibdev->roce_cq_recv = NULL;
--		goto err;
--	}
--	smc_wr_add_dev(smcibdev);
--	smcibdev->initialized = 1;
--	goto out;
--
--err:
--	ib_destroy_cq(smcibdev->roce_cq_send);
--out:
--	mutex_unlock(&smcibdev->mutex);
--	return rc;
--}
--
--static void smc_ib_cleanup_per_ibdev(struct smc_ib_device *smcibdev)
--{
--	mutex_lock(&smcibdev->mutex);
--	if (!smcibdev->initialized)
--		goto out;
--	smcibdev->initialized = 0;
--	ib_destroy_cq(smcibdev->roce_cq_recv);
--	ib_destroy_cq(smcibdev->roce_cq_send);
--	smc_wr_remove_dev(smcibdev);
--out:
--	mutex_unlock(&smcibdev->mutex);
--}
--
- static struct ib_client smc_ib_client;
- 
- static void smc_copy_netdev_ifindex(struct smc_ib_device *smcibdev, int port)
-@@ -969,7 +922,6 @@ static int smc_ib_add_dev(struct ib_device *ibdev)
- 	INIT_WORK(&smcibdev->port_event_work, smc_ib_port_event_work);
- 	atomic_set(&smcibdev->lnk_cnt, 0);
- 	init_waitqueue_head(&smcibdev->lnks_deleted);
--	mutex_init(&smcibdev->mutex);
- 	mutex_lock(&smc_ib_devices.mutex);
- 	list_add_tail(&smcibdev->list, &smc_ib_devices.list);
- 	mutex_unlock(&smc_ib_devices.mutex);
-@@ -1018,7 +970,6 @@ static void smc_ib_remove_dev(struct ib_device *ibdev, void *client_data)
- 	pr_warn_ratelimited("smc: removing ib device %s\n",
- 			    smcibdev->ibdev->name);
- 	smc_smcr_terminate_all(smcibdev);
--	smc_ib_cleanup_per_ibdev(smcibdev);
- 	ib_unregister_event_handler(&smcibdev->event_handler);
- 	cancel_work_sync(&smcibdev->port_event_work);
- 	kfree(smcibdev);
-diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
-index ef8ac2b7546d..a75fe8bcef3a 100644
---- a/net/smc/smc_ib.h
-+++ b/net/smc/smc_ib.h
-@@ -37,17 +37,12 @@ struct smc_ib_device {				/* ib-device infos for smc */
- 	struct ib_device	*ibdev;
- 	struct ib_port_attr	pattr[SMC_MAX_PORTS];	/* ib dev. port attrs */
- 	struct ib_event_handler	event_handler;	/* global ib_event handler */
--	struct ib_cq		*roce_cq_send;	/* send completion queue */
--	struct ib_cq		*roce_cq_recv;	/* recv completion queue */
--	struct tasklet_struct	send_tasklet;	/* called by send cq handler */
--	struct tasklet_struct	recv_tasklet;	/* called by recv cq handler */
- 	char			mac[SMC_MAX_PORTS][ETH_ALEN];
- 						/* mac address per port*/
- 	u8			pnetid[SMC_MAX_PORTS][SMC_MAX_PNETID_LEN];
- 						/* pnetid per port */
- 	bool			pnetid_by_user[SMC_MAX_PORTS];
- 						/* pnetid defined by user? */
--	u8			initialized : 1; /* ib dev CQ, evthdl done */
- 	struct work_struct	port_event_work;
- 	unsigned long		port_event_mask;
- 	DECLARE_BITMAP(ports_going_away, SMC_MAX_PORTS);
-@@ -96,8 +91,6 @@ void smc_ib_destroy_queue_pair(struct smc_link *lnk);
- int smc_ib_create_queue_pair(struct smc_link *lnk);
- int smc_ib_ready_link(struct smc_link *lnk);
- int smc_ib_modify_qp_rts(struct smc_link *lnk);
--int smc_ib_modify_qp_error(struct smc_link *lnk);
--long smc_ib_setup_per_ibdev(struct smc_ib_device *smcibdev);
- int smc_ib_get_memory_region(struct ib_pd *pd, int access_flags,
- 			     struct smc_buf_desc *buf_slot, u8 link_idx);
- void smc_ib_put_memory_region(struct ib_mr *mr);
-diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
-index 3144b4b1fe29..d301df9ed58b 100644
---- a/net/smc/smc_tx.c
-+++ b/net/smc/smc_tx.c
-@@ -321,7 +321,6 @@ static int smc_tx_rdma_write(struct smc_connection *conn, int peer_rmbe_offset,
- 	struct smc_link *link = conn->lnk;
- 	int rc;
- 
--	rdma_wr->wr.wr_id = smc_wr_tx_get_next_wr_id(link);
- 	rdma_wr->wr.num_sge = num_sges;
- 	rdma_wr->remote_addr =
- 		lgr->rtokens[conn->rtoken_idx][link->link_idx].dma_addr +
-diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-index 5feafa98ab1a..4a4924c5cade 100644
---- a/net/smc/smc_wr.c
-+++ b/net/smc/smc_wr.c
-@@ -31,14 +31,11 @@
- #include "smc.h"
- #include "smc_wr.h"
- 
--#define SMC_WR_MAX_POLL_CQE 10	/* max. # of compl. queue elements in 1 poll */
--
- #define SMC_WR_RX_HASH_BITS 4
- static DEFINE_HASHTABLE(smc_wr_rx_hash, SMC_WR_RX_HASH_BITS);
- static DEFINE_SPINLOCK(smc_wr_rx_hash_lock);
- 
- struct smc_wr_tx_pend {	/* control data for a pending send request */
--	u64			wr_id;		/* work request id sent */
- 	smc_wr_tx_handler	handler;
- 	enum ib_wc_status	wc_status;	/* CQE status */
- 	struct smc_link		*link;
-@@ -63,55 +60,52 @@ void smc_wr_tx_wait_no_pending_sends(struct smc_link *link)
- 	wait_event(link->wr_tx_wait, !smc_wr_is_tx_pend(link));
- }
- 
--static inline int smc_wr_tx_find_pending_index(struct smc_link *link, u64 wr_id)
-+static void smc_wr_tx_rdma_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
- {
--	u32 i;
-+	struct smc_link *link = wc->qp->qp_context;
- 
--	for (i = 0; i < link->wr_tx_cnt; i++) {
--		if (link->wr_tx_pends[i].wr_id == wr_id)
--			return i;
--	}
--	return link->wr_tx_cnt;
-+	/* terminate link */
-+	if (wc->status)
-+		smcr_link_down_cond_sched(link);
-+}
-+
-+static void smc_wr_reg_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
-+{
-+	struct smc_link *link = wc->qp->qp_context;
-+
-+	if (wc->status)
-+		link->wr_reg_state = FAILED;
-+	else
-+		link->wr_reg_state = CONFIRMED;
-+	smc_wr_wakeup_reg_wait(link);
- }
- 
--static inline void smc_wr_tx_process_cqe(struct ib_wc *wc)
-+static void smc_wr_tx_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct smc_wr_tx_pend pnd_snd;
-+	struct smc_wr_tx_pend *tx_pend, pnd_snd;
-+	struct smc_ib_send_wr *send_wr;
- 	struct smc_link *link;
- 	u32 pnd_snd_idx;
- 
- 	link = wc->qp->qp_context;
- 
--	if (wc->opcode == IB_WC_REG_MR) {
--		if (wc->status)
--			link->wr_reg_state = FAILED;
--		else
--			link->wr_reg_state = CONFIRMED;
--		smc_wr_wakeup_reg_wait(link);
--		return;
--	}
-+	send_wr = container_of(wc->wr_cqe, struct smc_ib_send_wr, cqe);
-+	pnd_snd_idx = send_wr->idx;
-+
-+	tx_pend = (pnd_snd_idx == link->wr_tx_cnt) ? link->wr_tx_v2_pend :
-+		&link->wr_tx_pends[pnd_snd_idx];
-+
-+	tx_pend->wc_status = wc->status;
-+	memcpy(&pnd_snd, tx_pend, sizeof(pnd_snd));
-+	/* clear the full struct smc_wr_tx_pend including .priv */
-+	memset(tx_pend, 0, sizeof(*tx_pend));
- 
--	pnd_snd_idx = smc_wr_tx_find_pending_index(link, wc->wr_id);
- 	if (pnd_snd_idx == link->wr_tx_cnt) {
--		if (link->lgr->smc_version != SMC_V2 ||
--		    link->wr_tx_v2_pend->wr_id != wc->wr_id)
--			return;
--		link->wr_tx_v2_pend->wc_status = wc->status;
--		memcpy(&pnd_snd, link->wr_tx_v2_pend, sizeof(pnd_snd));
--		/* clear the full struct smc_wr_tx_pend including .priv */
--		memset(link->wr_tx_v2_pend, 0,
--		       sizeof(*link->wr_tx_v2_pend));
- 		memset(link->lgr->wr_tx_buf_v2, 0,
- 		       sizeof(*link->lgr->wr_tx_buf_v2));
- 	} else {
--		link->wr_tx_pends[pnd_snd_idx].wc_status = wc->status;
--		if (link->wr_tx_pends[pnd_snd_idx].compl_requested)
-+		if (tx_pend->compl_requested)
- 			complete(&link->wr_tx_compl[pnd_snd_idx]);
--		memcpy(&pnd_snd, &link->wr_tx_pends[pnd_snd_idx],
--		       sizeof(pnd_snd));
--		/* clear the full struct smc_wr_tx_pend including .priv */
--		memset(&link->wr_tx_pends[pnd_snd_idx], 0,
--		       sizeof(link->wr_tx_pends[pnd_snd_idx]));
- 		memset(&link->wr_tx_bufs[pnd_snd_idx], 0,
- 		       sizeof(link->wr_tx_bufs[pnd_snd_idx]));
- 		if (!test_and_clear_bit(pnd_snd_idx, link->wr_tx_mask))
-@@ -133,39 +127,6 @@ static inline void smc_wr_tx_process_cqe(struct ib_wc *wc)
- 	wake_up(&link->wr_tx_wait);
- }
- 
--static void smc_wr_tx_tasklet_fn(struct tasklet_struct *t)
--{
--	struct smc_ib_device *dev = from_tasklet(dev, t, send_tasklet);
--	struct ib_wc wc[SMC_WR_MAX_POLL_CQE];
--	int i = 0, rc;
--	int polled = 0;
--
--again:
--	polled++;
--	do {
--		memset(&wc, 0, sizeof(wc));
--		rc = ib_poll_cq(dev->roce_cq_send, SMC_WR_MAX_POLL_CQE, wc);
--		if (polled == 1) {
--			ib_req_notify_cq(dev->roce_cq_send,
--					 IB_CQ_NEXT_COMP |
--					 IB_CQ_REPORT_MISSED_EVENTS);
--		}
--		if (!rc)
--			break;
--		for (i = 0; i < rc; i++)
--			smc_wr_tx_process_cqe(&wc[i]);
--	} while (rc > 0);
--	if (polled == 1)
--		goto again;
--}
--
--void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
--{
--	struct smc_ib_device *dev = (struct smc_ib_device *)cq_context;
--
--	tasklet_schedule(&dev->send_tasklet);
--}
--
- /*---------------------------- request submission ---------------------------*/
- 
- static inline int smc_wr_tx_get_free_slot_index(struct smc_link *link, u32 *idx)
-@@ -201,8 +162,6 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
- 	struct smc_link_group *lgr = smc_get_lgr(link);
- 	struct smc_wr_tx_pend *wr_pend;
- 	u32 idx = link->wr_tx_cnt;
--	struct ib_send_wr *wr_ib;
--	u64 wr_id;
- 	int rc;
- 
- 	*wr_buf = NULL;
-@@ -226,14 +185,10 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
- 		if (idx == link->wr_tx_cnt)
- 			return -EPIPE;
- 	}
--	wr_id = smc_wr_tx_get_next_wr_id(link);
- 	wr_pend = &link->wr_tx_pends[idx];
--	wr_pend->wr_id = wr_id;
- 	wr_pend->handler = handler;
- 	wr_pend->link = link;
- 	wr_pend->idx = idx;
--	wr_ib = &link->wr_tx_ibs[idx];
--	wr_ib->wr_id = wr_id;
- 	*wr_buf = &link->wr_tx_bufs[idx];
- 	if (wr_rdma_buf)
- 		*wr_rdma_buf = &link->wr_tx_rdmas[idx];
-@@ -247,22 +202,16 @@ int smc_wr_tx_get_v2_slot(struct smc_link *link,
- 			  struct smc_wr_tx_pend_priv **wr_pend_priv)
- {
- 	struct smc_wr_tx_pend *wr_pend;
--	struct ib_send_wr *wr_ib;
--	u64 wr_id;
- 
- 	if (link->wr_tx_v2_pend->idx == link->wr_tx_cnt)
- 		return -EBUSY;
- 
- 	*wr_buf = NULL;
- 	*wr_pend_priv = NULL;
--	wr_id = smc_wr_tx_get_next_wr_id(link);
- 	wr_pend = link->wr_tx_v2_pend;
--	wr_pend->wr_id = wr_id;
- 	wr_pend->handler = handler;
- 	wr_pend->link = link;
- 	wr_pend->idx = link->wr_tx_cnt;
--	wr_ib = link->wr_tx_v2_ib;
--	wr_ib->wr_id = wr_id;
- 	*wr_buf = link->lgr->wr_tx_buf_v2;
- 	*wr_pend_priv = &wr_pend->priv;
- 	return 0;
-@@ -306,10 +255,8 @@ int smc_wr_tx_send(struct smc_link *link, struct smc_wr_tx_pend_priv *priv)
- 	struct smc_wr_tx_pend *pend;
- 	int rc;
- 
--	ib_req_notify_cq(link->smcibdev->roce_cq_send,
--			 IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS);
- 	pend = container_of(priv, struct smc_wr_tx_pend, priv);
--	rc = ib_post_send(link->roce_qp, &link->wr_tx_ibs[pend->idx], NULL);
-+	rc = ib_post_send(link->roce_qp, &link->wr_tx_ibs[pend->idx].wr, NULL);
- 	if (rc) {
- 		smc_wr_tx_put_slot(link, priv);
- 		smcr_link_down_cond_sched(link);
-@@ -322,10 +269,8 @@ int smc_wr_tx_v2_send(struct smc_link *link, struct smc_wr_tx_pend_priv *priv,
- {
- 	int rc;
- 
--	link->wr_tx_v2_ib->sg_list[0].length = len;
--	ib_req_notify_cq(link->smcibdev->roce_cq_send,
--			 IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS);
--	rc = ib_post_send(link->roce_qp, link->wr_tx_v2_ib, NULL);
-+	link->wr_tx_v2_ib->wr.sg_list[0].length = len;
-+	rc = ib_post_send(link->roce_qp, &link->wr_tx_v2_ib->wr, NULL);
- 	if (rc) {
- 		smc_wr_tx_put_slot(link, priv);
- 		smcr_link_down_cond_sched(link);
-@@ -367,10 +312,7 @@ int smc_wr_reg_send(struct smc_link *link, struct ib_mr *mr)
- {
- 	int rc;
- 
--	ib_req_notify_cq(link->smcibdev->roce_cq_send,
--			 IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS);
- 	link->wr_reg_state = POSTED;
--	link->wr_reg.wr.wr_id = (u64)(uintptr_t)mr;
- 	link->wr_reg.mr = mr;
- 	link->wr_reg.key = mr->rkey;
- 	rc = ib_post_send(link->roce_qp, &link->wr_reg.wr, NULL);
-@@ -431,94 +373,74 @@ static inline void smc_wr_rx_demultiplex(struct ib_wc *wc)
- {
- 	struct smc_link *link = (struct smc_link *)wc->qp->qp_context;
- 	struct smc_wr_rx_handler *handler;
-+	struct smc_ib_recv_wr *recv_wr;
- 	struct smc_wr_rx_hdr *wr_rx;
--	u64 temp_wr_id;
--	u32 index;
- 
- 	if (wc->byte_len < sizeof(*wr_rx))
- 		return; /* short message */
--	temp_wr_id = wc->wr_id;
--	index = do_div(temp_wr_id, link->wr_rx_cnt);
--	wr_rx = (struct smc_wr_rx_hdr *)(link->wr_rx_bufs + index * link->wr_rx_buflen);
-+
-+	recv_wr = container_of(wc->wr_cqe, struct smc_ib_recv_wr, cqe);
-+
-+	wr_rx = (struct smc_wr_rx_hdr *)(link->wr_rx_bufs + recv_wr->idx * link->wr_rx_buflen);
- 	hash_for_each_possible(smc_wr_rx_hash, handler, list, wr_rx->type) {
- 		if (handler->type == wr_rx->type)
- 			handler->handler(wc, wr_rx);
- 	}
- }
- 
--static inline void smc_wr_rx_process_cqes(struct ib_wc wc[], int num)
-+static void smc_wr_rx_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct smc_link *link;
--	int i;
-+	struct smc_link *link = wc->qp->qp_context;
- 
--	for (i = 0; i < num; i++) {
--		link = wc[i].qp->qp_context;
--		link->wr_rx_id_compl = wc[i].wr_id;
--		if (wc[i].status == IB_WC_SUCCESS) {
--			link->wr_rx_tstamp = jiffies;
--			smc_wr_rx_demultiplex(&wc[i]);
--			smc_wr_rx_post(link); /* refill WR RX */
--		} else {
--			/* handle status errors */
--			switch (wc[i].status) {
--			case IB_WC_RETRY_EXC_ERR:
--			case IB_WC_RNR_RETRY_EXC_ERR:
--			case IB_WC_WR_FLUSH_ERR:
--				smcr_link_down_cond_sched(link);
--				if (link->wr_rx_id_compl == link->wr_rx_id)
--					wake_up(&link->wr_rx_empty_wait);
--				break;
--			default:
--				smc_wr_rx_post(link); /* refill WR RX */
--				break;
--			}
-+	if (wc->status == IB_WC_SUCCESS) {
-+		link->wr_rx_tstamp = jiffies;
-+		smc_wr_rx_demultiplex(wc);
-+		smc_wr_rx_post(link, wc->wr_cqe); /* refill WR RX */
-+	} else {
-+		/* handle status errors */
-+		switch (wc->status) {
-+		case IB_WC_RETRY_EXC_ERR:
-+		case IB_WC_RNR_RETRY_EXC_ERR:
-+		case IB_WC_WR_FLUSH_ERR:
-+			smcr_link_down_cond_sched(link);
-+			break;
-+		default:
-+			smc_wr_rx_post(link, wc->wr_cqe); /* refill WR RX */
-+			break;
- 		}
- 	}
- }
- 
--static void smc_wr_rx_tasklet_fn(struct tasklet_struct *t)
-+int smc_wr_rx_post_init(struct smc_link *link)
- {
--	struct smc_ib_device *dev = from_tasklet(dev, t, recv_tasklet);
--	struct ib_wc wc[SMC_WR_MAX_POLL_CQE];
--	int polled = 0;
--	int rc;
-+	int i, rc = 0;
- 
--again:
--	polled++;
--	do {
--		memset(&wc, 0, sizeof(wc));
--		rc = ib_poll_cq(dev->roce_cq_recv, SMC_WR_MAX_POLL_CQE, wc);
--		if (polled == 1) {
--			ib_req_notify_cq(dev->roce_cq_recv,
--					 IB_CQ_SOLICITED_MASK
--					 | IB_CQ_REPORT_MISSED_EVENTS);
--		}
--		if (!rc)
--			break;
--		smc_wr_rx_process_cqes(&wc[0], rc);
--	} while (rc > 0);
--	if (polled == 1)
--		goto again;
-+	for (i = 0; i < link->wr_rx_cnt; i++)
-+		rc = smc_wr_rx_post(link, &link->wr_rx_ibs[i].cqe);
-+	return rc;
- }
- 
--void smc_wr_rx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
--{
--	struct smc_ib_device *dev = (struct smc_ib_device *)cq_context;
-+/***************************** init, exit, misc ******************************/
- 
--	tasklet_schedule(&dev->recv_tasklet);
-+static inline void smc_wr_reg_init_cqe(struct ib_cqe *cqe)
-+{
-+	cqe->done = smc_wr_reg_process_cqe;
- }
- 
--int smc_wr_rx_post_init(struct smc_link *link)
-+static inline void smc_wr_tx_init_cqe(struct ib_cqe *cqe)
- {
--	u32 i;
--	int rc = 0;
-+	cqe->done = smc_wr_tx_process_cqe;
-+}
- 
--	for (i = 0; i < link->wr_rx_cnt; i++)
--		rc = smc_wr_rx_post(link);
--	return rc;
-+static inline void smc_wr_rx_init_cqe(struct ib_cqe *cqe)
-+{
-+	cqe->done = smc_wr_rx_process_cqe;
- }
- 
--/***************************** init, exit, misc ******************************/
-+static inline void smc_wr_tx_rdma_init_cqe(struct ib_cqe *cqe)
-+{
-+	cqe->done = smc_wr_tx_rdma_process_cqe;
-+}
- 
- void smc_wr_remember_qp_attr(struct smc_link *lnk)
- {
-@@ -550,7 +472,7 @@ void smc_wr_remember_qp_attr(struct smc_link *lnk)
- 	lnk->wr_tx_cnt = min_t(size_t, lnk->max_send_wr,
- 			       lnk->qp_attr.cap.max_send_wr);
- 	lnk->wr_rx_cnt = min_t(size_t, lnk->max_recv_wr,
--			       lnk->qp_attr.cap.max_recv_wr);
-+			       lnk->qp_attr.cap.max_recv_wr - 1);	/* -1 for ib_draib_rq() */
- }
- 
- static void smc_wr_init_sge(struct smc_link *lnk)
-@@ -571,14 +493,14 @@ static void smc_wr_init_sge(struct smc_link *lnk)
- 			lnk->roce_pd->local_dma_lkey;
- 		lnk->wr_tx_rdma_sges[i].tx_rdma_sge[1].wr_tx_rdma_sge[1].lkey =
- 			lnk->roce_pd->local_dma_lkey;
--		lnk->wr_tx_ibs[i].next = NULL;
--		lnk->wr_tx_ibs[i].sg_list = &lnk->wr_tx_sges[i];
--		lnk->wr_tx_ibs[i].num_sge = 1;
--		lnk->wr_tx_ibs[i].opcode = IB_WR_SEND;
--		lnk->wr_tx_ibs[i].send_flags =
-+		lnk->wr_tx_ibs[i].wr.next = NULL;
-+		lnk->wr_tx_ibs[i].wr.sg_list = &lnk->wr_tx_sges[i];
-+		lnk->wr_tx_ibs[i].wr.num_sge = 1;
-+		lnk->wr_tx_ibs[i].wr.opcode = IB_WR_SEND;
-+		lnk->wr_tx_ibs[i].wr.send_flags =
- 			IB_SEND_SIGNALED | IB_SEND_SOLICITED;
- 		if (send_inline)
--			lnk->wr_tx_ibs[i].send_flags |= IB_SEND_INLINE;
-+			lnk->wr_tx_ibs[i].wr.send_flags |= IB_SEND_INLINE;
- 		lnk->wr_tx_rdmas[i].wr_tx_rdma[0].wr.opcode = IB_WR_RDMA_WRITE;
- 		lnk->wr_tx_rdmas[i].wr_tx_rdma[1].wr.opcode = IB_WR_RDMA_WRITE;
- 		lnk->wr_tx_rdmas[i].wr_tx_rdma[0].wr.sg_list =
-@@ -592,11 +514,11 @@ static void smc_wr_init_sge(struct smc_link *lnk)
- 		lnk->wr_tx_v2_sge->length = SMC_WR_BUF_V2_SIZE;
- 		lnk->wr_tx_v2_sge->lkey = lnk->roce_pd->local_dma_lkey;
- 
--		lnk->wr_tx_v2_ib->next = NULL;
--		lnk->wr_tx_v2_ib->sg_list = lnk->wr_tx_v2_sge;
--		lnk->wr_tx_v2_ib->num_sge = 1;
--		lnk->wr_tx_v2_ib->opcode = IB_WR_SEND;
--		lnk->wr_tx_v2_ib->send_flags =
-+		lnk->wr_tx_v2_ib->wr.next = NULL;
-+		lnk->wr_tx_v2_ib->wr.sg_list = lnk->wr_tx_v2_sge;
-+		lnk->wr_tx_v2_ib->wr.num_sge = 1;
-+		lnk->wr_tx_v2_ib->wr.opcode = IB_WR_SEND;
-+		lnk->wr_tx_v2_ib->wr.send_flags =
- 			IB_SEND_SIGNALED | IB_SEND_SOLICITED;
- 	}
- 
-@@ -622,10 +544,11 @@ static void smc_wr_init_sge(struct smc_link *lnk)
- 			lnk->wr_rx_sges[x + 1].lkey =
- 					lnk->roce_pd->local_dma_lkey;
- 		}
--		lnk->wr_rx_ibs[i].next = NULL;
--		lnk->wr_rx_ibs[i].sg_list = &lnk->wr_rx_sges[x];
--		lnk->wr_rx_ibs[i].num_sge = lnk->wr_rx_sge_cnt;
-+		lnk->wr_rx_ibs[i].wr.next = NULL;
-+		lnk->wr_rx_ibs[i].wr.sg_list = &lnk->wr_rx_sges[x];
-+		lnk->wr_rx_ibs[i].wr.num_sge = lnk->wr_rx_sge_cnt;
- 	}
-+
- 	lnk->wr_reg.wr.next = NULL;
- 	lnk->wr_reg.wr.num_sge = 0;
- 	lnk->wr_reg.wr.send_flags = IB_SEND_SIGNALED;
-@@ -641,7 +564,6 @@ void smc_wr_free_link(struct smc_link *lnk)
- 		return;
- 	ibdev = lnk->smcibdev->ibdev;
- 
--	smc_wr_drain_cq(lnk);
- 	smc_wr_wakeup_reg_wait(lnk);
- 	smc_wr_wakeup_tx_wait(lnk);
- 
-@@ -763,6 +685,7 @@ int smc_wr_alloc_link_mem(struct smc_link *link)
- 				    GFP_KERNEL);
- 	if (!link->wr_tx_rdmas)
- 		goto no_mem_wr_rx_ibs;
-+
- 	link->wr_tx_rdma_sges = kcalloc(link->max_send_wr,
- 					sizeof(link->wr_tx_rdma_sges[0]),
- 					GFP_KERNEL);
-@@ -837,18 +760,6 @@ int smc_wr_alloc_link_mem(struct smc_link *link)
- 	return -ENOMEM;
- }
- 
--void smc_wr_remove_dev(struct smc_ib_device *smcibdev)
--{
--	tasklet_kill(&smcibdev->recv_tasklet);
--	tasklet_kill(&smcibdev->send_tasklet);
--}
--
--void smc_wr_add_dev(struct smc_ib_device *smcibdev)
--{
--	tasklet_setup(&smcibdev->recv_tasklet, smc_wr_rx_tasklet_fn);
--	tasklet_setup(&smcibdev->send_tasklet, smc_wr_tx_tasklet_fn);
--}
--
- static void smcr_wr_tx_refs_free(struct percpu_ref *ref)
- {
- 	struct smc_link *lnk = container_of(ref, struct smc_link, wr_tx_refs);
-@@ -868,8 +779,6 @@ int smc_wr_create_link(struct smc_link *lnk)
- 	struct ib_device *ibdev = lnk->smcibdev->ibdev;
- 	int rc = 0;
- 
--	smc_wr_tx_set_wr_id(&lnk->wr_tx_id, 0);
--	lnk->wr_rx_id = 0;
- 	lnk->wr_rx_dma_addr = ib_dma_map_single(
- 		ibdev, lnk->wr_rx_bufs,	lnk->wr_rx_buflen * lnk->wr_rx_cnt,
- 		DMA_FROM_DEVICE);
-@@ -917,7 +826,6 @@ int smc_wr_create_link(struct smc_link *lnk)
- 	if (rc)
- 		goto cancel_ref;
- 	init_completion(&lnk->reg_ref_comp);
--	init_waitqueue_head(&lnk->wr_rx_empty_wait);
- 	return rc;
- 
- cancel_ref:
-@@ -942,3 +850,42 @@ int smc_wr_create_link(struct smc_link *lnk)
- out:
- 	return rc;
- }
-+
-+void smc_wr_init_cqes(struct smc_link *lnk)
-+{
-+	int i;
-+
-+	/* init CQE for WR fast reg */
-+	smc_wr_reg_init_cqe(&lnk->wr_reg_cqe);
-+	lnk->wr_reg.wr.wr_cqe = &lnk->wr_reg_cqe;
-+
-+	/* init CQE for WR WRITE */
-+	for (i = 0; i < lnk->wr_tx_cnt; i++) {
-+		int n;
-+
-+		smc_wr_tx_rdma_init_cqe(&lnk->wr_tx_rdmas[i].cqe);
-+		for (n = 0; n < SMC_MAX_RDMA_WRITES; n++)
-+			lnk->wr_tx_rdmas[i].wr_tx_rdma[n].wr.wr_cqe = &lnk->wr_tx_rdmas[i].cqe;
-+	}
-+
-+	/* init CQEs for WR RECV */
-+	for (i = 0; i < lnk->wr_rx_cnt; i++) {
-+		smc_wr_rx_init_cqe(&lnk->wr_rx_ibs[i].cqe);
-+		lnk->wr_rx_ibs[i].wr.wr_cqe = &lnk->wr_rx_ibs[i].cqe;
-+		lnk->wr_rx_ibs[i].idx = i;
-+	}
-+
-+	/* init CQEs for WR SEND */
-+	for (i = 0; i < lnk->wr_tx_cnt; i++) {
-+		smc_wr_tx_init_cqe(&lnk->wr_tx_ibs[i].cqe);
-+		lnk->wr_tx_ibs[i].wr.wr_cqe = &lnk->wr_tx_ibs[i].cqe;
-+		lnk->wr_tx_ibs[i].idx = i;
-+	}
-+
-+	/* init CQE for SMC-Rv2 WR SEND */
-+	if (lnk->lgr->smc_version == SMC_V2) {
-+		smc_wr_tx_init_cqe(&lnk->wr_tx_v2_ib->cqe);
-+		lnk->wr_tx_v2_ib->wr.wr_cqe = &lnk->wr_tx_v2_ib->cqe;
-+		lnk->wr_tx_v2_ib->idx = lnk->wr_tx_cnt;
-+	}
-+}
-diff --git a/net/smc/smc_wr.h b/net/smc/smc_wr.h
-index aa4533af9122..295575fb060a 100644
---- a/net/smc/smc_wr.h
-+++ b/net/smc/smc_wr.h
-@@ -44,19 +44,6 @@ struct smc_wr_rx_handler {
- 	u8			type;
- };
- 
--/* Only used by RDMA write WRs.
-- * All other WRs (CDC/LLC) use smc_wr_tx_send handling WR_ID implicitly
-- */
--static inline long smc_wr_tx_get_next_wr_id(struct smc_link *link)
--{
--	return atomic_long_inc_return(&link->wr_tx_id);
--}
--
--static inline void smc_wr_tx_set_wr_id(atomic_long_t *wr_tx_id, long val)
--{
--	atomic_long_set(wr_tx_id, val);
--}
--
- static inline bool smc_wr_tx_link_hold(struct smc_link *link)
- {
- 	if (!smc_link_sendable(link))
-@@ -70,9 +57,10 @@ static inline void smc_wr_tx_link_put(struct smc_link *link)
- 	percpu_ref_put(&link->wr_tx_refs);
- }
- 
--static inline void smc_wr_drain_cq(struct smc_link *lnk)
-+static inline void smc_wr_drain_rq(struct smc_link *lnk)
- {
--	wait_event(lnk->wr_rx_empty_wait, lnk->wr_rx_id_compl == lnk->wr_rx_id);
-+	if (lnk->qp_attr.cur_qp_state != IB_QPS_RESET)
-+		ib_drain_rq(lnk->roce_qp);
- }
- 
- static inline void smc_wr_wakeup_tx_wait(struct smc_link *lnk)
-@@ -86,18 +74,12 @@ static inline void smc_wr_wakeup_reg_wait(struct smc_link *lnk)
- }
- 
- /* post a new receive work request to fill a completed old work request entry */
--static inline int smc_wr_rx_post(struct smc_link *link)
-+static inline int smc_wr_rx_post(struct smc_link *link, struct ib_cqe *cqe)
- {
--	int rc;
--	u64 wr_id, temp_wr_id;
--	u32 index;
--
--	wr_id = ++link->wr_rx_id; /* tasklet context, thus not atomic */
--	temp_wr_id = wr_id;
--	index = do_div(temp_wr_id, link->wr_rx_cnt);
--	link->wr_rx_ibs[index].wr_id = wr_id;
--	rc = ib_post_recv(link->roce_qp, &link->wr_rx_ibs[index], NULL);
--	return rc;
-+	struct smc_ib_recv_wr *recv_wr;
-+
-+	recv_wr = container_of(cqe, struct smc_ib_recv_wr, cqe);
-+	return ib_post_recv(link->roce_qp, &recv_wr->wr, NULL);
- }
- 
- int smc_wr_create_link(struct smc_link *lnk);
-@@ -107,8 +89,6 @@ void smc_wr_free_link(struct smc_link *lnk);
- void smc_wr_free_link_mem(struct smc_link *lnk);
- void smc_wr_free_lgr_mem(struct smc_link_group *lgr);
- void smc_wr_remember_qp_attr(struct smc_link *lnk);
--void smc_wr_remove_dev(struct smc_ib_device *smcibdev);
--void smc_wr_add_dev(struct smc_ib_device *smcibdev);
- 
- int smc_wr_tx_get_free_slot(struct smc_link *link, smc_wr_tx_handler handler,
- 			    struct smc_wr_buf **wr_buf,
-@@ -126,12 +106,12 @@ int smc_wr_tx_v2_send(struct smc_link *link,
- 		      struct smc_wr_tx_pend_priv *priv, int len);
- int smc_wr_tx_send_wait(struct smc_link *link, struct smc_wr_tx_pend_priv *priv,
- 			unsigned long timeout);
--void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context);
- void smc_wr_tx_wait_no_pending_sends(struct smc_link *link);
- 
- int smc_wr_rx_register_handler(struct smc_wr_rx_handler *handler);
- int smc_wr_rx_post_init(struct smc_link *link);
--void smc_wr_rx_cq_handler(struct ib_cq *ib_cq, void *cq_context);
- int smc_wr_reg_send(struct smc_link *link, struct ib_mr *mr);
- 
-+void smc_wr_init_cqes(struct smc_link *lnk);
-+
- #endif /* SMC_WR_H */
--- 
-2.45.0
-
+T24gVHVlLCAyMDI2LTAyLTI0IGF0IDEwOjA3ICswODAwLCBrZXhpbnN1biB3cm90ZToNCj4gVGhl
+IGZ1bmN0aW9uIHJkc19zZW5kX3Jlc2V0KCkgd2FzIHN1YnN1bWVkIGJ5IHJkc19zZW5kX3BhdGhf
+cmVzZXQoKQ0KPiBieSBjb21taXQgZDc2OWVmODFkNWI1ICgiUkRTOiBVcGRhdGUgcmRzX2Nvbm5f
+c2h1dGRvd24gdG8gd29yayB3aXRoDQo+IHJkc19jb25uX3BhdGgiKS4gIFVwZGF0ZSB0aGUgY29t
+bWVudCBhY2NvcmRpbmdseS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IGtleGluc3VuIDxrZXhpbnN1
+bkBzbWFpbC5uanUuZWR1LmNuPg0KPiAtLS0NCj4gIG5ldC9yZHMvc2VuZC5jIHwgMiArLQ0KPiAg
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvbmV0L3Jkcy9zZW5kLmMgYi9uZXQvcmRzL3NlbmQuYw0KPiBpbmRleCBhMTAzOWU0
+MjJhMzguLmQ4YjE0ZmY5ZDM2NiAxMDA2NDQNCj4gLS0tIGEvbmV0L3Jkcy9zZW5kLmMNCj4gKysr
+IGIvbmV0L3Jkcy9zZW5kLmMNCj4gQEAgLTI4NCw3ICsyODQsNyBAQCBpbnQgcmRzX3NlbmRfeG1p
+dChzdHJ1Y3QgcmRzX2Nvbm5fcGF0aCAqY3ApDQo+ICAJCSAqDQo+ICAJCSAqIGNwX3htaXRfcm0g
+aG9sZHMgYSByZWYgd2hpbGUgd2UncmUgc2VuZGluZyB0aGlzIG1lc3NhZ2UgZG93bg0KPiAgCQkg
+KiB0aGUgY29ubmVjdGlvbi4gIFdlIGNhbiB1c2UgdGhpcyByZWYgd2hpbGUgaG9sZGluZyB0aGUN
+Cj4gLQkJICogc2VuZF9zZW0uLiByZHNfc2VuZF9yZXNldCgpIGlzIHNlcmlhbGl6ZWQgd2l0aCBp
+dC4NCj4gKwkJICogc2VuZF9zZW0uLiByZHNfc2VuZF9wYXRoX3Jlc2V0KCkgaXMgc2VyaWFsaXpl
+ZCB3aXRoIGl0Lg0KPiAgCQkgKi8NCj4gIAkJaWYgKCFybSkgew0KPiAgCQkJdW5zaWduZWQgaW50
+IGxlbjsNCg0KSGkga2V4aW5zdW4sDQoNClRoYW5rcyBmb3IgdGhlIGNhdGNoLiAgSnVzdCBvbmUg
+c21hbGwgbml0OiAgWW91ciBwYXRjaCBzaG91bGQgc3BlY2lmeSB0aGXCoHRhcmdldA0KYnJhbmNo
+LCB2ZXJzaW9uIGFuZCBjb21wb25lbnQgbGlrZSB0aGlzOg0KDQpbUEFUQ0ggbmV0LW5leHQgdjJd
+IG5ldC9yZHM6IHVwZGF0ZSBvdXRkYXRlZCBjb21tZW50IGluIHJkc19zZW5kX3htaXQNCg0KT3Ro
+ZXIgdGhhbiB0aGF0LCB0aGlzIHBhdGNoIGxvb2tzIHByZXR0eSBzdHJhaWdodCBmb3J3YXJkLiAg
+VGhhbmsgeW91IQ0KDQpBbGxpc29uDQo=
 
