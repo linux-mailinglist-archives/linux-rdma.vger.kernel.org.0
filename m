@@ -1,193 +1,315 @@
-Return-Path: <linux-rdma+bounces-17181-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17182-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MEJiOnYkn2mPZAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17181-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 17:33:58 +0100
+	id uDwSDeEwn2lXZQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17182-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 18:26:57 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FBB719AB75
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 17:33:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0D2919B866
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 18:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C3F4D300DCEE
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 16:33:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 66DAF3022915
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 17:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BB33B8BC9;
-	Wed, 25 Feb 2026 16:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508EB3D905A;
+	Wed, 25 Feb 2026 17:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GB3MmvVo";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="CSSh2uNR";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vyz4qXr3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zqzFWHgG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STUiFrt/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47A73D6496
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 16:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B363C1998
+	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 17:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772037234; cv=none; b=q9dCMmLBTuH7NOzwjtfZeuzifvPrnibrOzKn5TKnWgh+afpc3bGytum5gKVB7UfjHTk76AurSZ5qBWZXOGfyIOX6NBl5tR6tpg5cgXFwpz0KycM4c6tApUVCRMTeJB18oqFBNsgcQ8hEv0z/P9/LVgU0rMaiBTJMfmyUU1M0gt0=
+	t=1772040385; cv=none; b=KLvkhaW3VnHzvYFT5J0nDCAINdZFvapedDhwAMUbiLpibDhcIzNC3qN+gP2oZUpg1vcA9eDeUw7K7s+xtBhWIrH/vhCSOh+df9HdBVhkrDR+npOmRl9vx6nTzSLEQ2T03WU2Qat98rAZCQZf/nCeOSPfPQppvjyrpmGDo//N8Fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772037234; c=relaxed/simple;
-	bh=K/NDXBr0zyL7RRiunPhYVhKshSa7Kn0DNOK99ojQV/Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p+6QhgD17mTzG8CHPKbMy9hi2SEjGpPuqpa+2Wfbg5Dj3qCso+PZZ9Lr+w9Jy2r2Sxp3Buq3Cri5X3sTNSJnT3aM4obISYkkju70bVAe6XCNLF7ok3sfRq6QjWiaOk6UMEFzPdSdfNCnZYtl0PD7h0u7DcNkgMHih91B0PXh4+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GB3MmvVo; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=CSSh2uNR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vyz4qXr3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zqzFWHgG; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D90895CDF3;
-	Wed, 25 Feb 2026 16:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1772037230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NTH9hBUsopkauaPajBrrc51TTiXKw9PQsBJjj5DxNcI=;
-	b=GB3MmvVo3BfdFkj6pD8Jmk9Irryhla28tfGuDLTm7eVLb0vkOR0JOLpeuonjqBo5hOcByC
-	ThwwBpmZRBA+Pmi2iJqsjUcKbf4pB5WSWKA/Gz8wHhkHorsR6kJDIfNmdjv0HY64bIWhbj
-	srUC6FtO/s/XFTlsFWafmwx8C5LJwxk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1772037230;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NTH9hBUsopkauaPajBrrc51TTiXKw9PQsBJjj5DxNcI=;
-	b=CSSh2uNRFlSF9DHxbpPB0APSAo1WfAEmwvqDueN8dlGo8A/gQLtplfawdxHC40Wdb6O75u
-	KbNQyM5EifYZlAAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=vyz4qXr3;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=zqzFWHgG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1772037229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NTH9hBUsopkauaPajBrrc51TTiXKw9PQsBJjj5DxNcI=;
-	b=vyz4qXr3c1714pOOtpJOUiXG+wdSly3SOo/gYD57WsQj1HdTgFUJuym6ywnlkzkEW46SI9
-	xsfPWa1SelzVUmQZ4YC7SrRDbfrHwSTI90watYSxV6VPu+qfzW2UdcnBu/UA3KjYys9dXW
-	rgi7L1PnVMh9OZD0YvKFVuY0bBTyGY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1772037229;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NTH9hBUsopkauaPajBrrc51TTiXKw9PQsBJjj5DxNcI=;
-	b=zqzFWHgGPEQr92F4WJMG32qYDgv465LiSmj20pawT6hLQ1QmWguJeT5agzgG9C6stXB3Uy
-	03Tekkr7WNV9CSAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3987A3EA65;
-	Wed, 25 Feb 2026 16:33:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6IvhCm0kn2l3XQAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Wed, 25 Feb 2026 16:33:49 +0000
-Message-ID: <7604bbac-f0d4-4143-bb08-261042ad89a7@suse.de>
-Date: Wed, 25 Feb 2026 17:33:37 +0100
+	s=arc-20240116; t=1772040385; c=relaxed/simple;
+	bh=irPtqkEmIrEl9xzY3PuxpCgOf6EWjE32iZp2k+kYSEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YQMiohMFvo/Sf2DRA9P0eAFmRX7K7BykuUSv7F+oRczhmD6mFWAeNQjakPtHgbxWeYQDH3I0zRbCMKbOn04VFP0NYdQV+35wtqqJDu9q5XDee+CbEh0cJ1gRJ/Yxdl4OrzkO/PJe45Z75ZDWAwqcUdQnicZ9InkwRxddRI+zdG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STUiFrt/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D31CC116D0;
+	Wed, 25 Feb 2026 17:26:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772040384;
+	bh=irPtqkEmIrEl9xzY3PuxpCgOf6EWjE32iZp2k+kYSEQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=STUiFrt/YVVfmu5fO+VjG1aXLS4xalrfSdorAu4st8CGEOEX1pXi6/mld0+GK8ECJ
+	 NHT5QmaiAjQOe+stExIbZueDVvqz6l5PkI1DNERetbGTWsJnk5FqZxfO4QPuNeVkw4
+	 Jo3fYDPefBc9mzpp4lfrGHv1kAU5M1mJ+e42yd77azlBXYkkHyaLopb4iaACEyRVDy
+	 SuSaNrR84OArjgHbXIvzIsGCgX1S825swE4l6WyO8nzME/RzsMMHOm0WvVbw9QhgB8
+	 yXv3tJQ/Aa/V/XiP3SvIMrXRnYuKVpGlm+fSapETX5+oX/jY+aR4ZAuYUVHDAv6Sr6
+	 El/GElwN564vA==
+From: David Ahern <dsahern@kernel.org>
+To: zyjzyj2000@gmail.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	David Ahern <dsahern@kernel.org>
+Subject: [PATCH] RDMA/rxe: Add network namespace support
+Date: Wed, 25 Feb 2026 10:26:21 -0700
+Message-ID: <20260225172622.7589-1-dsahern@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 2/2] net/rds: Delegate fan-out to a background
- worker
-To: Allison Henderson <achender@kernel.org>, netdev@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
- rds-devel@oss.oracle.com, kuba@kernel.org, horms@kernel.org,
- linux-rdma@vger.kernel.org, allison.henderson@oracle.com
-References: <20260223221918.2750209-1-achender@kernel.org>
- <20260223221918.2750209-3-achender@kernel.org>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <20260223221918.2750209-3-achender@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17181-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17182-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dsahern@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,suse.de:mid,suse.de:dkim]
-X-Rspamd-Queue-Id: 5FBB719AB75
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D0D2919B866
 X-Rspamd-Action: no action
 
-On 2/23/26 11:19 PM, Allison Henderson wrote:
-> From: Gerd Rausch <gerd.rausch@oracle.com>
-> 
-> Delegate fan-out to a background worker in order to allow
-> kernel_getpeername() to acquire a lock on the socket.
-> 
-> This has become necessary since the introduction of
-> commit "9dfc685e0262d ("inet: remove races in inet{6}_getname()")
-> 
-> The socket is already locked in the context that
-> "kernel_getpeername" used to get called by either
-> rds_tcp_recv_path" or "tcp_v{4,6}_rcv",
-> and therefore causing a deadlock.
-> 
-> Luckily, the fan-out need not happen in-context nor fast,
-> so we can easily just do the same in a background worker.
-> 
-> Also, while we're doing this, we get rid of the unused
-> struct members "t_conn_w", "t_send_w", "t_down_w" & "t_recv_w".
-> 
-> The fan-out work and the shutdown worker (cp_down_w) are both
-> queued on the same ordered workqueue (cp0->cp_wq), so they
-> cannot execute concurrently.  We only need cancel_work_sync()
-> in rds_tcp_conn_free() and rds_tcp_conn_path_connect() because
-> those run from outside the ordered workqueue.
-> 
-> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-> Signed-off-by: Allison Henderson <achender@kernel.org>
-> ---
->   net/rds/tcp.c         |  3 +++
->   net/rds/tcp.h         |  7 ++----
->   net/rds/tcp_connect.c |  2 ++
->   net/rds/tcp_listen.c  | 54 +++++++++++++++++++++++++++++++------------
->   4 files changed, 46 insertions(+), 20 deletions(-)
-> 
+Allow rxe to work across network namespaces by making the sockets
+per namespace using net_generic. Defer socket initialization until
+a device is created in the namespace.
 
-Isn't this change kind of dangerous since 021fd0f87004 ("net/rds: fix 
-recursive lock in rds_tcp_conn_slots_available") [1]?. Why is 
-kernel_getpeername() needed as only the peer source port is required for 
-the operation?
+Signed-off-by: David Ahern <dsahern@kernel.org>
+---
+ drivers/infiniband/sw/rxe/rxe_net.c | 123 ++++++++++++++++++++--------
+ 1 file changed, 88 insertions(+), 35 deletions(-)
 
-Thanks,
-Fernando.
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 0bd0902b11f7..f51afc38c9df 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -18,7 +18,10 @@
+ #include "rxe_net.h"
+ #include "rxe_loc.h"
+ 
+-static struct rxe_recv_sockets recv_sockets;
++static int __rxe_netns_init(struct net *net,
++			    struct rxe_recv_sockets *sockets);
++
++static unsigned int rxe_net_id;
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ /*
+@@ -105,6 +108,7 @@ static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
+ 					 struct in_addr *saddr,
+ 					 struct in_addr *daddr)
+ {
++	struct net *net = dev_net(ndev);
+ 	struct rtable *rt;
+ 	struct flowi4 fl = { { 0 } };
+ 
+@@ -114,7 +118,7 @@ static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
+ 	memcpy(&fl.daddr, daddr, sizeof(*daddr));
+ 	fl.flowi4_proto = IPPROTO_UDP;
+ 
+-	rt = ip_route_output_key(&init_net, &fl);
++	rt = ip_route_output_key(net, &fl);
+ 	if (IS_ERR(rt)) {
+ 		rxe_dbg_qp(qp, "no route to %pI4\n", &daddr->s_addr);
+ 		return NULL;
+@@ -129,6 +133,8 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
+ 					 struct in6_addr *saddr,
+ 					 struct in6_addr *daddr)
+ {
++	struct net *net = dev_net(ndev);
++	struct rxe_recv_sockets *recv_socket = net_generic(net, rxe_net_id);
+ 	struct dst_entry *ndst;
+ 	struct flowi6 fl6 = { { 0 } };
+ 
+@@ -138,9 +144,8 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
+ 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
+ 	fl6.flowi6_proto = IPPROTO_UDP;
+ 
+-	ndst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(recv_sockets.sk6->sk),
+-					       recv_sockets.sk6->sk, &fl6,
+-					       NULL);
++	ndst = ipv6_stub->ipv6_dst_lookup_flow(net, recv_socket->sk6->sk,
++					       &fl6, NULL);
+ 	if (IS_ERR(ndst)) {
+ 		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
+ 		return NULL;
+@@ -606,8 +611,16 @@ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num)
+ 
+ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+ {
+-	int err;
++	struct net *net = dev_net(ndev);
++	struct rxe_recv_sockets *sockets = net_generic(net, rxe_net_id);
+ 	struct rxe_dev *rxe = NULL;
++	int err;
++
++	if (!sockets->sk4) {
++		err = __rxe_netns_init(net, sockets);
++		if (err)
++			return err;
++	}
+ 
+ 	rxe = ib_alloc_device(rxe_dev, ib_dev);
+ 	if (!rxe)
+@@ -709,12 +722,13 @@ static struct notifier_block rxe_net_notifier = {
+ 	.notifier_call = rxe_notify,
+ };
+ 
+-static int rxe_net_ipv4_init(void)
++static int rxe_net_ipv4_init(struct net *net,
++			     struct rxe_recv_sockets *sockets)
+ {
+-	recv_sockets.sk4 = rxe_setup_udp_tunnel(&init_net,
+-				htons(ROCE_V2_UDP_DPORT), false);
+-	if (IS_ERR(recv_sockets.sk4)) {
+-		recv_sockets.sk4 = NULL;
++	sockets->sk4 = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT),
++					    false);
++	if (IS_ERR(sockets->sk4)) {
++		sockets->sk4 = NULL;
+ 		pr_err("Failed to create IPv4 UDP tunnel\n");
+ 		return -1;
+ 	}
+@@ -722,31 +736,74 @@ static int rxe_net_ipv4_init(void)
+ 	return 0;
+ }
+ 
+-static int rxe_net_ipv6_init(void)
+-{
+ #if IS_ENABLED(CONFIG_IPV6)
+-
+-	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+-						htons(ROCE_V2_UDP_DPORT), true);
+-	if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
+-		recv_sockets.sk6 = NULL;
+-		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
+-		return 0;
+-	}
+-
+-	if (IS_ERR(recv_sockets.sk6)) {
+-		recv_sockets.sk6 = NULL;
++static int rxe_net_ipv6_init(struct net *net,
++			     struct rxe_recv_sockets *sockets)
++{
++	sockets->sk6 = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT),
++					    true);
++	if (IS_ERR(sockets->sk6)) {
++		sockets->sk6 = NULL;
+ 		pr_err("Failed to create IPv6 UDP tunnel\n");
+ 		return -1;
+ 	}
++	return 0;
++}
++#endif
++
++/* Initialize per network namespace state */
++static int __rxe_netns_init(struct net *net,
++			    struct rxe_recv_sockets *sockets)
++{
++	int err;
++
++	err = rxe_net_ipv4_init(net, sockets);
++	if (err)
++		return err;
++
++#if IS_ENABLED(CONFIG_IPV6)
++	err = rxe_net_ipv6_init(net, sockets);
++	if (err) {
++		rxe_release_udp_tunnel(sockets->sk4);
++		return err;
++	}
+ #endif
++
++	return 0;
++}
++
++static int __net_init rxe_netns_init(struct net *net)
++{
++	/* defer socket create in the namespace to the first
++	 * device create.
++	 */
+ 	return 0;
+ }
+ 
++static void __net_exit rxe_netns_exit(struct net *net)
++{
++	struct rxe_recv_sockets *sockets;
++
++	sockets = net_generic(net, rxe_net_id);
++
++#if IS_ENABLED(CONFIG_IPV6)
++	if (sockets->sk6)
++		rxe_release_udp_tunnel(sockets->sk6);
++#endif
++	if (sockets->sk4)
++		rxe_release_udp_tunnel(sockets->sk4);
++}
++
++static struct pernet_operations rxe_net_ops __net_initdata = {
++	.init = rxe_netns_init,
++	.exit = rxe_netns_exit,
++	.id   = &rxe_net_id,
++	.size = sizeof(struct rxe_recv_sockets),
++};
++
+ void rxe_net_exit(void)
+ {
+-	rxe_release_udp_tunnel(recv_sockets.sk6);
+-	rxe_release_udp_tunnel(recv_sockets.sk4);
++	unregister_pernet_device(&rxe_net_ops);
+ 	unregister_netdevice_notifier(&rxe_net_notifier);
+ }
+ 
+@@ -754,21 +811,17 @@ int rxe_net_init(void)
+ {
+ 	int err;
+ 
+-	recv_sockets.sk6 = NULL;
+-
+-	err = rxe_net_ipv4_init();
+-	if (err)
+-		return err;
+-	err = rxe_net_ipv6_init();
+-	if (err)
+-		goto err_out;
+ 	err = register_netdevice_notifier(&rxe_net_notifier);
+ 	if (err) {
+ 		pr_err("Failed to register netdev notifier\n");
+ 		goto err_out;
+ 	}
++	err = register_pernet_device(&rxe_net_ops);
++	if (err)
++		goto err_out;
++
+ 	return 0;
+ err_out:
+-	rxe_net_exit();
++	unregister_netdevice_notifier(&rxe_net_notifier);
+ 	return err;
+ }
+-- 
+2.43.0
+
 
