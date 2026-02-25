@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-17174-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17175-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ON2zJyYFn2mZYgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17174-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:20:22 +0100
+	id 4Az5DywFn2mZYgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17175-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:20:28 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A5731989E2
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:20:21 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032DE1989F0
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 15:20:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8A73A3034E3F
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:19:55 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E439E3038016
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 14:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F8C3D34A2;
-	Wed, 25 Feb 2026 14:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F883D333D;
+	Wed, 25 Feb 2026 14:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CsFqQMuu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z28al3w+"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291973D3339;
-	Wed, 25 Feb 2026 14:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DCA194C96;
+	Wed, 25 Feb 2026 14:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772029186; cv=none; b=G2q2029Y5duGr1thJjOhFN9qh98QKV7YIMtCTJf62NhSoq5EJVEYpGZmyHr1GDq9c1t9I+xWehkjFRH2JzBYO9eD0L2bZC9uXUsZxq2XRUsyBsj0fjEW2iKG8jOpbCDQ2MSG86Sje1vZJFIrT/ItW5SrE/yVLrF4u0HwAZA/14M=
+	t=1772029189; cv=none; b=mrcp0wshDfvI04/Jbf2qSohgSYxsQ0XQvOT6X2ICi4/SrsQ/0MbFt+becAmuv6YBzr2LUBxDM9p5KiU4jTz3F/uQZ3sc9H+e1l5+yLkusYo+cCdQFYdebLxapm8IbqHF97xw3YRemC5PhoHHeaFxGklKF8anxwrN2SGuk72uAYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772029186; c=relaxed/simple;
-	bh=etaHYxLt/5JIsH1N3C/KI0HYP9ONG1wpa9k52evPWv4=;
+	s=arc-20240116; t=1772029189; c=relaxed/simple;
+	bh=LjkNyi4+8af+Iol0lcnNqKS0v5jJtDVE376oijPOWrs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jXQzjQsDjzNaPynJvTZR+N4BKNGpQeV+ItsB8NGZdOp9xYTADIa7Xbz6YSI51TsMOIae3vapwI/OGNb2wiVcURZiHaNAGfD5Ihsru38Xt+SUy0jSBiPGKKEud/c1Gwm5wrKhGntvkiGepyEh2kyxPUZSg08S01mmlYsSx14lWlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CsFqQMuu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A46C19421;
-	Wed, 25 Feb 2026 14:19:45 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Xv0xtYVrc4VSM8FXY5jI9JpGJwwQQnqYfPiH+ve2/cTK9MeRoDovaR62ZFx+RM70M5iqi06VsjpwQm786R3Ytwh/Uvj8KcyBiEBiBNuob93Y/cPEQmVpurtNfk7hm542HqzglJc4YDDR5I5vni+orpp41Vde9pQk8EEQxh3+bHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z28al3w+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BF7FC116D0;
+	Wed, 25 Feb 2026 14:19:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772029185;
-	bh=etaHYxLt/5JIsH1N3C/KI0HYP9ONG1wpa9k52evPWv4=;
+	s=k20201202; t=1772029189;
+	bh=LjkNyi4+8af+Iol0lcnNqKS0v5jJtDVE376oijPOWrs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CsFqQMuu1njdIqaJKlOrH3vBfejTcM1HREafUmiaMjAttytgfvysxY6qYMOFimRrU
-	 A7Ks+hX5uOqR+gnfRt6RMPCFDrDDATHKbW6A2fkVByQ3xWAs2zSnVEwLQGEg+Qmr1a
-	 1yjWe4dsdsats1K7Zhgq2j+Qi720pqAGqwrB4PBzSNs+hrf3FHwzWR+FxZsfXkDK2y
-	 /FEvQULAM44xApVtAYtp0uloBVCQX+WHLOCjY4IAERyXzmwCRkjKPresZVGXzQCKEp
-	 cuI21LZw8TmZjoakt9U/VyM04vw01MjRro2jpS25Oo9fnE2G01pJew6igsc5lqDb5J
-	 SKffmJkg9fh9g==
+	b=Z28al3w+yk1NqXv1mwU0z1g2He27OuimviiVNuR6oGDZIGnHRYJ1VG3JI7arcondh
+	 qxcEANDgPMWfy7QqGvqeKeqo45FEW/Wdo/RdUXqZOlM80OyhhTNAtNlYhlsyxP/X3e
+	 /gBgN7YGQ6OfcS0+74cAXxB9bbgzYooUT8LD+gDn9yb01GYsjBfyQJ+lQv1CZ86J6e
+	 ex1iqlnbkfO1n3ZEyq+Bz5CIJthTCzyuUOatAWZNHhoGE6itstqD/KL27q2TaisSEA
+	 enDQ7cdeZuNTpMKmdQDCB+omC41frde6TccD2VBXS/H92Gnove0clKmUOZCaDCfyCg
+	 czZzqp+jHkGcQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Saeed Mahameed <saeedm@nvidia.com>,
 	Leon Romanovsky <leon@kernel.org>,
@@ -59,9 +59,9 @@ Cc: linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Maher Sanalla <msanalla@nvidia.com>
-Subject: [PATCH mlx5-next 1/6] net/mlx5: Add TLP emulation device capabilities
-Date: Wed, 25 Feb 2026 16:19:31 +0200
-Message-ID: <20260225-var-tlp-v1-1-fe14a7ac7731@nvidia.com>
+Subject: [PATCH mlx5-next 2/6] net/mlx5: Expose TLP emulation capabilities
+Date: Wed, 25 Feb 2026 16:19:32 +0200
+Message-ID: <20260225-var-tlp-v1-2-fe14a7ac7731@nvidia.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225-var-tlp-v1-0-fe14a7ac7731@nvidia.com>
 References: <20260225-var-tlp-v1-0-fe14a7ac7731@nvidia.com>
@@ -77,93 +77,106 @@ Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_RHS_MATCH_TO(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_MATCH_TO(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17174-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17175-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 1A5731989E2
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 032DE1989F0
 X-Rspamd-Action: no action
 
 From: Maher Sanalla <msanalla@nvidia.com>=0D
 =0D
-Introduce the hardware structures and definitions needed for the driver=0D
-support of TLP emulation in mlx5_ifc.=0D
+Expose and query TLP device emulation caps on driver load.=0D
 =0D
 Signed-off-by: Maher Sanalla <msanalla@nvidia.com>=0D
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>=0D
 ---=0D
- include/linux/mlx5/mlx5_ifc.h | 23 ++++++++++++++++++++++-=0D
- 1 file changed, 22 insertions(+), 1 deletion(-)=0D
+ drivers/net/ethernet/mellanox/mlx5/core/fw.c   | 6 ++++++=0D
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 1 +=0D
+ include/linux/mlx5/device.h                    | 9 +++++++++=0D
+ 3 files changed, 16 insertions(+)=0D
 =0D
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h=
-=0D
-index 775cb0c56865..a3948b36820d 100644=0D
---- a/include/linux/mlx5/mlx5_ifc.h=0D
-+++ b/include/linux/mlx5/mlx5_ifc.h=0D
-@@ -1389,6 +1389,26 @@ struct mlx5_ifc_virtio_emulation_cap_bits {=0D
- 	u8         reserved_at_1c0[0x640];=0D
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw.c b/drivers/net/eth=
+ernet/mellanox/mlx5/core/fw.c=0D
+index eeb4437975f2..55249f405841 100644=0D
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw.c=0D
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw.c=0D
+@@ -255,6 +255,12 @@ int mlx5_query_hca_caps(struct mlx5_core_dev *dev)=0D
+ 			return err;=0D
+ 	}=0D
+ =0D
++	if (MLX5_CAP_GEN(dev, tlp_device_emulation_manager)) {=0D
++		err =3D mlx5_core_get_caps_mode(dev, MLX5_CAP_TLP_EMULATION, HCA_CAP_OPM=
+OD_GET_CUR);=0D
++		if (err)=0D
++			return err;=0D
++	}=0D
++=0D
+ 	if (MLX5_CAP_GEN(dev, ipsec_offload)) {=0D
+ 		err =3D mlx5_core_get_caps_mode(dev, MLX5_CAP_IPSEC, HCA_CAP_OPMOD_GET_C=
+UR);=0D
+ 		if (err)=0D
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/e=
+thernet/mellanox/mlx5/core/main.c=0D
+index fdc3ba20912e..b0bc4a7d4a93 100644=0D
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c=0D
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c=0D
+@@ -1772,6 +1772,7 @@ static const int types[] =3D {=0D
+ 	MLX5_CAP_CRYPTO,=0D
+ 	MLX5_CAP_SHAMPO,=0D
+ 	MLX5_CAP_ADV_RDMA,=0D
++	MLX5_CAP_TLP_EMULATION,=0D
  };=0D
  =0D
-+struct mlx5_ifc_tlp_dev_emu_capabilities_bits {=0D
-+	u8         reserved_at_0[0x20];=0D
+ static void mlx5_hca_caps_free(struct mlx5_core_dev *dev)=0D
+diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h=0D
+index b37fe39cef27..25c6b42140b2 100644=0D
+--- a/include/linux/mlx5/device.h=0D
++++ b/include/linux/mlx5/device.h=0D
+@@ -1259,6 +1259,7 @@ enum mlx5_cap_type {=0D
+ 	MLX5_CAP_PORT_SELECTION =3D 0x25,=0D
+ 	MLX5_CAP_ADV_VIRTUALIZATION =3D 0x26,=0D
+ 	MLX5_CAP_ADV_RDMA =3D 0x28,=0D
++	MLX5_CAP_TLP_EMULATION =3D 0x2a,=0D
+ 	/* NUM OF CAP Types */=0D
+ 	MLX5_CAP_NUM=0D
+ };=0D
+@@ -1481,6 +1482,14 @@ enum mlx5_qcam_feature_groups {=0D
+ 	MLX5_GET64(virtio_emulation_cap, \=0D
+ 		(mdev)->caps.hca[MLX5_CAP_VDPA_EMULATION]->cur, cap)=0D
+ =0D
++#define MLX5_CAP_DEV_TLP_EMULATION(mdev, cap)\=0D
++	MLX5_GET(tlp_dev_emu_capabilities, \=0D
++		(mdev)->caps.hca[MLX5_CAP_TLP_EMULATION]->cur, cap)=0D
 +=0D
-+	u8         reserved_at_20[0x13];=0D
-+	u8         log_tlp_rsp_gw_page_stride[0x5];=0D
-+	u8         reserved_at_38[0x8];=0D
++#define MLX5_CAP64_DEV_TLP_EMULATION(mdev, cap)\=0D
++	MLX5_GET64(tlp_dev_emu_capabilities, \=0D
++		(mdev)->caps.hca[MLX5_CAP_TLP_EMULATION]->cur, cap)=0D
 +=0D
-+	u8         reserved_at_40[0xc0];=0D
-+=0D
-+	u8         reserved_at_100[0xc];=0D
-+	u8         tlp_rsp_gw_num_pages[0x4];=0D
-+	u8         reserved_at_110[0x10];=0D
-+=0D
-+	u8         reserved_at_120[0xa0];=0D
-+=0D
-+	u8         tlp_rsp_gw_pages_bar_offset[0x40];=0D
-+=0D
-+	u8         reserved_at_200[0x600];=0D
-+};=0D
-+=0D
- enum {=0D
- 	MLX5_ATOMIC_CAPS_ATOMIC_SIZE_QP_1_BYTE     =3D 0x0,=0D
- 	MLX5_ATOMIC_CAPS_ATOMIC_SIZE_QP_2_BYTES    =3D 0x2,=0D
-@@ -1961,7 +1981,7 @@ struct mlx5_ifc_cmd_hca_cap_bits {=0D
- 	u8         log_max_rqt[0x5];=0D
- 	u8         reserved_at_390[0x3];=0D
- 	u8         log_max_rqt_size[0x5];=0D
--	u8         reserved_at_398[0x1];=0D
-+	u8         tlp_device_emulation_manager[0x1];=0D
- 	u8	   vnic_env_cnt_bar_uar_access[0x1];=0D
- 	u8	   vnic_env_cnt_odp_page_fault[0x1];=0D
- 	u8         log_max_tis_per_sq[0x5];=0D
-@@ -3830,6 +3850,7 @@ union mlx5_ifc_hca_cap_union_bits {=0D
- 	struct mlx5_ifc_tls_cap_bits tls_cap;=0D
- 	struct mlx5_ifc_device_mem_cap_bits device_mem_cap;=0D
- 	struct mlx5_ifc_virtio_emulation_cap_bits virtio_emulation_cap;=0D
-+	struct mlx5_ifc_tlp_dev_emu_capabilities_bits tlp_dev_emu_capabilities;=0D
- 	struct mlx5_ifc_macsec_cap_bits macsec_cap;=0D
- 	struct mlx5_ifc_crypto_cap_bits crypto_cap;=0D
- 	struct mlx5_ifc_ipsec_cap_bits ipsec_cap;=0D
+ #define MLX5_CAP_IPSEC(mdev, cap)\=0D
+ 	MLX5_GET(ipsec_cap, (mdev)->caps.hca[MLX5_CAP_IPSEC]->cur, cap)=0D
+ =0D
 =0D
 -- =0D
 2.53.0=0D
