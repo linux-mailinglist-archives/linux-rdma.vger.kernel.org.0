@@ -1,79 +1,83 @@
-Return-Path: <linux-rdma+bounces-17186-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17187-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yIPdDYlkn2lRagQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17186-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 22:07:21 +0100
+	id WD11MY5kn2lRagQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17187-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 22:07:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E82919D9D5
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 22:07:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5014819D9E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 22:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A9130302513B
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 21:07:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 564D330501A6
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Feb 2026 21:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A7130DD1E;
-	Wed, 25 Feb 2026 21:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A74B30EF62;
+	Wed, 25 Feb 2026 21:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NOEqRwbi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0jIBv9Ux"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f73.google.com (mail-qv1-f73.google.com [209.85.219.73])
+Received: from mail-qt1-f202.google.com (mail-qt1-f202.google.com [209.85.160.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07D3187346
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 21:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954F030E84E
+	for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 21:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772053635; cv=none; b=jIWlbJFpjN7gUjiiDQXlH/0WiFT+aWJSqoC7NwfIllUgemXvS2/N7PT8H1B5QOpAoAd/8D+0katPT4O/LY6YjVtbPVIYcZfhNpkc6CQjeSK60bo1OKib4cYm1If6zScKiQsjAPq/RO1oEJPdtAPqiVFESNvrgBZOJCOee7goOmU=
+	t=1772053637; cv=none; b=I43DtpJ90W7xuC58BgGm/eby9EOnuhisXg4yRNAK/cOvvznx1fUsRs/Lw2bfaRWojoLu7deLtIOdm47U4+crgiqGhM5RKcfRnc33aTn/80TxLp2UC5i93KnRWAqTlalu4A58lmMYOKZcY6bAF5n0sCHSGOD2cyzGtzGL6H09Ccc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772053635; c=relaxed/simple;
-	bh=XEG7aELRTLTme6Xkt8jLwGlw9UXLP4KKyvtmQ4zmhdI=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Ic3yhsXA2cdISt0lFQUNiEQgI6vlAcS9SfDgir79e6K5zpi4EdeLuF3+pzcRZcpnbHrF5DxWN/nbYy6/S1ixRuBuH1U98S8kbLSWloDKv+ZsENlRRlaeIlBl7gvYAauGr726R7SgQ7obGJvrFbHhZ8cbYNt8X2Cm0QoPvvcJUxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NOEqRwbi; arc=none smtp.client-ip=209.85.219.73
+	s=arc-20240116; t=1772053637; c=relaxed/simple;
+	bh=eP/gYjpurCrUMUcl9M0II6t5GT2ionY2jH944MqB7Ss=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=eKlu13aQxARfpTc2FB2EkColEaNy5n/C+zoiVJzxt2SGEsLlZUufEBQbd887Gq62PxNPwNrBqRVj5isJlFrrFDXgzc7KuCtSGJJEjFHKW4QbuXkg/X+/8A3DPrpskKX1xjVBeBi74MTy5qFc3c9J/HlCUuQpDzqlcfv6x1daBgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0jIBv9Ux; arc=none smtp.client-ip=209.85.160.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
-Received: by mail-qv1-f73.google.com with SMTP id 6a1803df08f44-899b4ce513cso12316396d6.3
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 13:07:13 -0800 (PST)
+Received: by mail-qt1-f202.google.com with SMTP id d75a77b69052e-506bfa0441aso732460281cf.3
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Feb 2026 13:07:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772053633; x=1772658433; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DuQSjLBQbe416OPRcK8wPIYORuzWUBbxoKLX/CoPoy4=;
-        b=NOEqRwbiIh6jgdG8OU0T49/9ykniArkfBcYR49CGDUZ6U+P/0+rpzS9HR1m2iHaPW+
-         H4ks+fk2ZHkY+1+QE7XvvA02DpGv0Tt9bRlLhelN7VMuQbIQzR4jI831h+aGDy++p1xw
-         e7BYx8Ju9MeHFkhqWLqiPvGNPkwItLrqYyqHEJxkIFOzUyOO5M9XkwQxAiX5p+0bfTmE
-         k9Ydl0aEdfqU5q7MW3f+YUzMYihrSJu4cHL1m+I1vzq4eMaOMwcK++V/xgDCmMfYv2Au
-         +67C0VElnpQF01ABJihkfjvgO1H+OyN7FvOJt1ozBdhN3/yh+lPlOh0OpztETNlHO29C
-         hJiA==
+        d=google.com; s=20230601; t=1772053634; x=1772658434; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JrUh0TVwJOErbcSZ14vulChIaHZ5G4zO+/GZ+vRQMIk=;
+        b=0jIBv9UxvngP69LwCfR4U2UlzPQBXVmUG8RfdraYJfVhaT17xb5qCS8l0GE4KDqx42
+         RK7AX7B4xsFAIFYgFfJZkHeu5pffkN7XKr6IdbOmNUibhRUbvTMIzjXFHGDyUue63Rtp
+         SyoiLrx2PCr+N8LdJaWAIpGwtuTqy4eg8hsmHIrKJvUpCFhXBxbxIeNrKftqodArz0qK
+         IyHP/8rIQXEMuJFd5pEkIwmj3voBJiMsoV0pjoOP2YsS72Yt6Utw4dG9XmII11lTA0Y7
+         NpZUPc4HrUTKbRmSJTwzBmZL4EL5qcpB14HMW7BaIntafhfJYoC3B3cOFTMM148lrlEy
+         q2bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772053633; x=1772658433;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DuQSjLBQbe416OPRcK8wPIYORuzWUBbxoKLX/CoPoy4=;
-        b=moUBCgxKoWwCNMODX/Q1c4PekIAswK2IcpecCTRrtBvP876GcSNC7NQOVZsqp6ytiw
-         Tkt5ZaKbVI5E21ttihfTawpg4QXGzVscC75Av9P4PsOddzQcaGwpF8wL9NoCqFyxz5Ft
-         o4Iywz9PBZm+XhLeQZtPOr02tvEy1HD8Pne3Gpjy5YUtBKm/XW32Vl0tH44AvB8Me/LP
-         /Rz+x22yg6LJFnBZpvp34P2iupgN1Jwqyky6EUoJAeU4cADu6djluY9hZbfMlPDMpnck
-         mxzUrHhv4WupwK5LbKYEJnpP0x8js1bSfS2sJnuXA/j0qSTepwx9nDpIDsXw6GJdWmo5
-         NWsA==
-X-Gm-Message-State: AOJu0YzMTwf1PSIz6KIobxB41O3AZfUHNvFKEmJhz550Fu2dASFoUlJW
-	tHhcULjTuP/hxpuXkE2MMRCMR8fOnxBLqF5lC4lYpgBJxyEK0LWmCOjEiXPUW06jIlVCF4ElPUa
-	L0FJmg8+5ow==
-X-Received: from qvbly2.prod.google.com ([2002:a05:6214:5c02:b0:894:5e39:4bf2])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6214:d42:b0:807:8020:1055
- with SMTP id 6a1803df08f44-89979ee8fdbmr264319756d6.37.1772053632712; Wed, 25
- Feb 2026 13:07:12 -0800 (PST)
-Date: Wed, 25 Feb 2026 21:07:01 +0000
+        d=1e100.net; s=20230601; t=1772053634; x=1772658434;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JrUh0TVwJOErbcSZ14vulChIaHZ5G4zO+/GZ+vRQMIk=;
+        b=Jy+Dh27LWdsV7ee0Z/QODu0g9wle3gl/BH7dZ0Gr6AEFUoJhJzr69dSrOhfue6cv64
+         WqWyz6tSnG6FzRk++HrECndZ3e/gTGfxzk29gmA/9eFjDHjJM/EpalCOe9A2U6o6eXMN
+         gdn7nviCqAHZHvcKJPCZDksq7Rc+BpKowKMjxTXGDhi+cVlsGN30cjUTJUF8GasJ1EOa
+         QTPnJa0qGolF0xikUZSJTkw83LPTl+7kVQmsb7iTVAs30zIJpXzB4f+O1rT1XorFMhPt
+         IiuVVnr7n+wzXjuNBnPQuvmje3IFoAEoAFz845TMYFekIv1jOKTvlX5AbrRkbl5gWe7h
+         yIvQ==
+X-Gm-Message-State: AOJu0Yz96wVNT8e0NoN+NbtBhTjYWBXgfUD27X+GmVmlBhitD+z3AJzD
+	SiigvXVRb8+HtoKwjVzTUCvSzysalkCUxV9FAQJwZGQALQ3EZ2t/xXFRklSoz9oCr3HT2hKxlL0
+	m/Uk8QM57fw==
+X-Received: from qtec11.prod.google.com ([2002:ac8:7dcb:0:b0:4ee:2425:54ae])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:ac8:5701:0:b0:4ee:1727:10bb
+ with SMTP id d75a77b69052e-50741fd9c43mr25409281cf.73.1772053634341; Wed, 25
+ Feb 2026 13:07:14 -0800 (PST)
+Date: Wed, 25 Feb 2026 21:07:02 +0000
+In-Reply-To: <20260225210705.373126-1-jmoroni@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20260225210705.373126-1-jmoroni@google.com>
 X-Mailer: git-send-email 2.53.0.414.gf7e9f6c205-goog
-Message-ID: <20260225210705.373126-1-jmoroni@google.com>
-Subject: [PATCH rdma-next 0/4] Add pinned revocable dmabuf import interface
+Message-ID: <20260225210705.373126-2-jmoroni@google.com>
+Subject: [PATCH rdma-next 1/4] RDMA/umem: Add ib_umem_dmabuf_get_pinned_and_lock
+ helper
 From: Jacob Moroni <jmoroni@google.com>
 To: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, jgg@ziepe.ca, 
 	leon@kernel.org
@@ -86,75 +90,105 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MV_CASE(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17186-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17187-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[google.com:+];
 	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	BLOCKLISTDE_FAIL(0.00)[100.90.174.1:server fail,2600:3c09:e001:a7::12fc:5321:server fail,209.85.219.73:server fail];
+	BLOCKLISTDE_FAIL(0.00)[100.90.174.1:server fail,2600:3c04:e001:36c::12fc:5321:server fail,209.85.160.202:server fail];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5E82919D9D5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5014819D9E4
 X-Rspamd-Action: no action
 
-Some dmabuf exporters (VFIO) will require that pinned importers support
-revocation. In order to support this for non-ODP drivers/devices, a new
-interface is required. This new interface implements a two step process
-where the driver will perform a sequence like:
+Move the inner logic of ib_umem_dmabuf_get_pinned_with_dma_device()
+to a new static function that returns with the lock held upon success.
 
-    ib_umem_dmabuf_get_pinned_revocable_and_lock()
-    
-        ... Driver MR allocation/initialization/registration/etc
-        
-    ib_umem_dmabuf_set_revoke_locked()
-    dma_resv_unlock();
-    
-This allows the driver to provide a callback that can be used to
-perform the actual invalidation in a way that is safe against races
-from concurrent revocations during initialization.
+The intent is to allow reuse for the future get_pinned_revocable_and_lock
+function.
 
-The driver must ensure that the HW will no longer access the region
-before the revoke callback returns. For MRs, this can be achieved
-by using the rereg capability to set the region length to 0, or
-perhaps by moving the region to a new quarantine PD. For HW that
-allows the driver to manage the keys (like irdma), this can be
-achieved by deregistering the region in HW but not freeing the key
-until the region is truly deregistered via ibv_dereg_mr.
+Signed-off-by: Jacob Moroni <jmoroni@google.com>
+---
+ drivers/infiniband/core/umem_dmabuf.c | 35 ++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
-Changes since RFC(s):
-* Break the interface into a two step process to avoid needing
-  extra state in the driver.
-* Move the majority of the functionality into the core.
-
-RFC threads:
-https://lore.kernel.org/linux-rdma/20260223195333.438492-1-jmoroni@google.com/T/#t
-https://lore.kernel.org/linux-rdma/CAHYDg1TB1Xa+D700WrvrcQVdgZFE5f8iWp48EmQM9XjK9xJdew@mail.gmail.com/T/#t
-
-Jacob Moroni (4):
-  RDMA/umem: Add ib_umem_dmabuf_get_pinned_and_lock helper
-  RDMA/umem: Move umem dmabuf revoke logic into helper function
-  RDMA/umem: Add pinned revocable dmabuf import interface
-  RDMA/irdma: Add support for revocable pinned dmabuf import
-
- drivers/infiniband/core/umem_dmabuf.c | 122 ++++++++++++++++++++++----
- drivers/infiniband/hw/irdma/main.h    |   1 +
- drivers/infiniband/hw/irdma/verbs.c   |  71 ++++++++++++++-
- include/rdma/ib_umem.h                |  20 +++++
- 4 files changed, 195 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+index d30f24b90..0c0098285 100644
+--- a/drivers/infiniband/core/umem_dmabuf.c
++++ b/drivers/infiniband/core/umem_dmabuf.c
+@@ -195,18 +195,19 @@ static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
+ 	.move_notify = ib_umem_dmabuf_unsupported_move_notify,
+ };
+ 
+-struct ib_umem_dmabuf *
+-ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
+-					  struct device *dma_device,
+-					  unsigned long offset, size_t size,
+-					  int fd, int access)
++static struct ib_umem_dmabuf *
++ib_umem_dmabuf_get_pinned_and_lock(struct ib_device *device,
++				   struct device *dma_device,
++				   unsigned long offset,
++				   size_t size, int fd, int access,
++				   const struct dma_buf_attach_ops *ops)
+ {
+ 	struct ib_umem_dmabuf *umem_dmabuf;
+ 	int err;
+ 
+-	umem_dmabuf = ib_umem_dmabuf_get_with_dma_device(device, dma_device, offset,
+-							 size, fd, access,
+-							 &ib_umem_dmabuf_attach_pinned_ops);
++	umem_dmabuf =
++		ib_umem_dmabuf_get_with_dma_device(device, dma_device, offset,
++						   size, fd, access, ops);
+ 	if (IS_ERR(umem_dmabuf))
+ 		return umem_dmabuf;
+ 
+@@ -219,7 +220,6 @@ ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
+ 	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
+ 	if (err)
+ 		goto err_release;
+-	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
+ 
+ 	return umem_dmabuf;
+ 
+@@ -228,6 +228,23 @@ ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
+ 	ib_umem_release(&umem_dmabuf->umem);
+ 	return ERR_PTR(err);
+ }
++
++struct ib_umem_dmabuf *
++ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
++					  struct device *dma_device,
++					  unsigned long offset, size_t size,
++					  int fd, int access)
++{
++	struct ib_umem_dmabuf *umem_dmabuf =
++		ib_umem_dmabuf_get_pinned_and_lock(device, dma_device, offset,
++						   size, fd, access,
++						   &ib_umem_dmabuf_attach_pinned_ops);
++	if (IS_ERR(umem_dmabuf))
++		return umem_dmabuf;
++
++	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
++	return umem_dmabuf;
++}
+ EXPORT_SYMBOL(ib_umem_dmabuf_get_pinned_with_dma_device);
+ 
+ struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
 -- 
 2.53.0.414.gf7e9f6c205-goog
 
