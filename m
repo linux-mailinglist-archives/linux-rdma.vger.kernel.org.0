@@ -1,235 +1,233 @@
-Return-Path: <linux-rdma+bounces-17258-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17259-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wCHmBabHoGnImQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17258-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 23:22:30 +0100
+	id aPUxIHzWoGl0nQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17259-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 00:25:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD9271B0522
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 23:22:29 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F6F1B0E18
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 00:25:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9368C3034C6C
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 22:21:28 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8637F3016B98
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 23:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AE147CC63;
-	Thu, 26 Feb 2026 22:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B38431B122;
+	Thu, 26 Feb 2026 23:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BtHYc0+W"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eGEm9YrP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010032.outbound.protection.outlook.com [52.101.56.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC83399013;
-	Thu, 26 Feb 2026 22:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A9D8287E
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Feb 2026 23:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.172
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772144455; cv=fail; b=NXUWDHC4qKWFtlIAZzLMkEkg08wWvu3y9X1ndKy6t6oxvfNojDfGGT4CpqxD6nYcFbVJvQ3V9DHiqYoPdlvxZasDfsLdoFj7j7V5f7FP6lLC7+vAthqEereee4MSGVBMpwawEjQfTmxSjufpjcoCqq8l6/yVCCrI18hXq/oQu7g=
+	t=1772148344; cv=pass; b=coPudrDjTX9mHH5d+IdekhZEUEBheWvZblyLEdIg1H1o/y77KZd6A9ITS0eGMeXvocGwyPbQm+h/BmSTMJpkNkvqk3bGTAtvou4oUWpLGapGxYB751D2RANG3r5dtdDVmTS9XFpNO5z9HjAckVKhOaqNV3+PCfJ0NS13UkA8Dr4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772144455; c=relaxed/simple;
-	bh=mygv8j3FyEUxu5ONg51cx6hvtcsG6ocEXb566FSuX9c=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qLjQ4jRtWsrOPzYdQXu8oGMRIbeUP8snDscy73KHLbzQSGs3mw4EjqrceDAvizFglXv7TDm5kJ5PqlEF9VDCeG1TDsJzVsaUb9/4EUwvICy3C/FTYaMomMzCPZMZUEv/JDsD8UhquiC4KLH624sbMZpV02aH+yU1LSEvFxaqqIs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BtHYc0+W; arc=fail smtp.client-ip=52.101.56.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=es+2IbVQ/6wMiLDmV1YWNDakLCnjgcNXV3F3boFxYRlyPRBXD8gqob/7GdnGViDYMjjvOeGwdIlkTWrL2FJ9I4apBPr87suftI+UEnkOst2CNP6Ogmp5YwO/yUXJybGyaUd50bg4ZbHO7vcJ53PRkvTTYkn9dr6MztXt4aeyOR76zIZJR90Sw0sKHd3sJIU9r+vBz22NleDJPzo464v2A2ojLjLrRd150ySBnoj3lHJhT7PmHtwU8Wlu34Z6CQKDrr3g473zu3oP+5Gk3LMpk79sfWaqoNGoH7W4k0xUj/uwR4a/5ztRc3CCid0as0nyOrlOjvoKvT0+bS3Ld+CzWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=miuiwjPloG6AlWo59fMk+iCoMhIlgpe3pCLEFhFosXI=;
- b=ev26lxq2VRZ4tsxkd1b4BYEbVuXnD2asgHYwkPlcaytLeEjx6ycm36ZIDFRMeZG1xZfsRaF4mNUF+3c2nc+tiMp4Jg77PIPII7VuM80EtVEgAM7BCzBQDaqPHhUa/mlL/z9jXENYGQtxOthHLrryMrO3Cqy/nKEDtVTuz+5LuWkUALy9LY4PHCIRsEs2Ea9AXoRme37BZatwI8DvGfsfoveoSfFXf1BG7Y+yLY58CwLquWSR+ziiBeMgHgbuF1sHNpwW9cswNVyldnusQnz8VUMtHTktTf/amBh0pIhFR4HP5Vn/HgLeicWg6pai5Ify/YlKmVyziWL8ZNFmwWJEig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miuiwjPloG6AlWo59fMk+iCoMhIlgpe3pCLEFhFosXI=;
- b=BtHYc0+WMLadHqoULXPy3Qo57eIrCjkrTXwZ6Hm7b/kTXklGYidNp9SdcR+Dxlohr7QN3GjcQSUqJ3/sJvj7Rq0FQaGCTH8RNgNjoeJ+qtUtjVpXvT7ZLOrm8JJP3Kc76V92+ytmMG5qjKx5QIglrprFUGyevFAzVlnOJpmEXn2UhgRXgXGoeSrfGwmWE1LBE0FvVPqp9WeSWB8epgsNDd3iqRY9n78a90etZJStgGH2UqrQyCNL5DD7nQtve9rJl4pTxg9YXl1YFC3lPfw80KpzE0PEYBKfqu9SGzzMhzn4fv8luAZKALt3UjjwluIpPRRe0Gx+dHKWl8+HXZhYGg==
-Received: from BY5PR17CA0049.namprd17.prod.outlook.com (2603:10b6:a03:167::26)
- by SJ0PR12MB8116.namprd12.prod.outlook.com (2603:10b6:a03:4ec::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.13; Thu, 26 Feb
- 2026 22:20:48 +0000
-Received: from SJ1PEPF0000231C.namprd03.prod.outlook.com
- (2603:10b6:a03:167:cafe::1c) by BY5PR17CA0049.outlook.office365.com
- (2603:10b6:a03:167::26) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9632.25 via Frontend Transport; Thu,
- 26 Feb 2026 22:20:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SJ1PEPF0000231C.mail.protection.outlook.com (10.167.242.233) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9632.12 via Frontend Transport; Thu, 26 Feb 2026 22:20:48 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 26 Feb
- 2026 14:20:24 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 26 Feb
- 2026 14:20:24 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 26
- Feb 2026 14:20:18 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
-	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, "Leon
- Romanovsky" <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, Gal Pressman
-	<gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Shay Drory
-	<shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Moshe Shemesh
-	<moshe@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>
-Subject: [PATCH net-next V3 10/10] devlink: Document port-level resources
-Date: Fri, 27 Feb 2026 00:19:16 +0200
-Message-ID: <20260226221916.1800227-11-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20260226221916.1800227-1-tariqt@nvidia.com>
-References: <20260226221916.1800227-1-tariqt@nvidia.com>
+	s=arc-20240116; t=1772148344; c=relaxed/simple;
+	bh=fKEN7m274g2FOvgWDmD5sdNxcW6bHpUV80grnqbWDQU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kLXqW6muTcsTQRxPqZbSgs+dPG7Ah+exAsx4pZ1qrGpOlIVF7D6O6QaGcofeZ1NiPRth683FnCgOI++VykzC4H9+8LVIOYG8FthAQRJ5rstVwPjSovtK4X267R2nwWHwPe0FYkBZctZApa09Gz09sdnZhFsuOlGZr2em1S7smjQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eGEm9YrP; arc=pass smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-7947cf097c1so14810017b3.2
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Feb 2026 15:25:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772148342; cv=none;
+        d=google.com; s=arc-20240605;
+        b=cFmPTlC/USFfCg1rDhfWeDDShOpZgTHrspD8WeeZwamMG5/ZEgXXILmmvEqQRUWpRA
+         XSQW4XE9oinKcKL7jv91GRBdxrsIyL5ikEdsIC33EB1KNHmw691GdcX3Rrub7ieKIxXk
+         iv91MeqowcLPeJbWZPcaJQbs0V1W4KFuDiT+eC/I+6Jep84mleseRGP5bYuhnQQxuVEV
+         5RwsxbW6TrwpxDEo/4AqOll97qAKq5/zfDDhfLQfoFM7VxWIxX/3DLWstdFdNLqnSZrL
+         sIpZgmfAXJtahd2Bj/xJ6lEvRFC3fW0+sJfwSf9h72ccqFgnOIeRmKISXE6wJF3PNqbj
+         rb/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=RA9ZhPtteEti8GBIEl7r2i+X0yhHEMSgTXlmvWuYNUM=;
+        fh=hJ6arDlaYC+Osj6zLvFTJ5zVlS4RYvD7TxtESMIPAAI=;
+        b=bE5hg7j2JLVCyANjOL7vfC7LOA/HHNx3Z8+JnXQPYdM2WnyXQpEvFrUeJKptcpVUg2
+         KVpkX8A7lLW8YCLWbFJybOUjPqpuzW3kFO+4moZbuCdvlcih7qw+rvdYNWHoGLKyl7dF
+         +D4IbFItcWayCPul0V8u2Sj0x0wAWb1gfpggCEFDFrPeU260HSYzZb3loBRduAjy5I97
+         yjIGg11ERaq1TRIBKln6w6H5Ftap4ru/3mv9Y6zUF28xEx88gW5Ls6758/iRRxnN5DfW
+         Plh3a7XCcwHRmcJ47CwXtIrE/PTILO8Ww3mMMQQOYzgww3Hcw8YU0w77PkCmbtysSfmi
+         SYzg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1772148342; x=1772753142; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RA9ZhPtteEti8GBIEl7r2i+X0yhHEMSgTXlmvWuYNUM=;
+        b=eGEm9YrPBH9UT4gKVrl8GfB7soAVA24EhWRqFQg1ow68GFbn2OlEBY5+KOHucUWCFj
+         cQU4teBNyVmFMOT+8H7ks0D7d633c340hjFp4+VllwfWBNlAKvru1vW7iOFa9F5M6L4W
+         /AG4jtWaWnCeT0cU/qiFfuRezO8z3MOaL/MnBKi8u4bsmDKqTqTZgrlfIdNWU2OBN0dF
+         iuEB+1efiA8MHJDKxhxRJfpBFYxrjNVBP2oKjsxljnvETCehl4RbD381mVBZVnrdUpXw
+         lM5+FQAkcSO1qylSco/t4OAEHGFxKNzd+OxNYkIeJ389Sg6Wo3sN6R3SPltJc9cRxazu
+         CflA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772148342; x=1772753142;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=RA9ZhPtteEti8GBIEl7r2i+X0yhHEMSgTXlmvWuYNUM=;
+        b=BEYEW2OElc3EJLgKNWw2eA7VpsgrNuNQLHtdUikI3snzdW6hROiaAj8yVH3AbhWpx5
+         5PXLdyeAjimCWHYOQOQNG2ACemHQ7jpJGc8B40GyiFM2g+Ddbt4+3hMCk/zuZSfzCORm
+         TQx8uRD8UM/RBR81WjbVCCWlmFkIwUoxQxtWcUDUiTEORE2dCoUSGDTiPsVMn9hTLhW2
+         CbUkbPqzAdbpfZW74CHfgIviJnMZkNQmacmfet1YyxDFKcpGvHeUBrymYG1sE9IiYs+u
+         wmwekObDDu5Uy5mvhDYs3jSc7Sib7G9t53p5bUqPoSApMw9ZXk4g6iYy0SMUnDLU9mZC
+         QlrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWxf/HDG9Ipn4ocNGIgB08IGi1gJiKQt7RoqnzqXoNT4YvYv0vPCJc3MpO9wpc2jtVKVJoXmUcNQBp0@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzkjxpphj50f6mTvGc3kLRiC+7rBcXbPciWHTusEvfEr24v0ymh
+	XWVa2Y27ROvVwyRBhvEOs/ij++HlV+kD/OYPN8RM3cAQ0q/ib4Wjv2J4nRKMmZObGlSqHd0Ut7s
+	8ohdohcOFZW9dEuKPc1OZak51iYdrgPSLrwPTWWpS
+X-Gm-Gg: ATEYQzzDi3bL0qO9M+K44JnYeGn6AyoFQtKwN/4jP2lagt1RMoSDD9qTDDIFtYZXFwv
+	oJt3IJITY2NYoaXn2fQfhN4HibMZYz08DA+aLn2ZQI8inCmsvwpqr0PYEbTWWd6CWza7ZNP8hVv
+	Z7q6Jj5lc7IHHKKG3qrEjLUvet1isiPOgnpdYkOsv93QC0kjiOR2a+Hkfi28BwdgBlcnINswn8F
+	XSpBULsfMjiuYOpkYUyhA2p+89U2l3XVoTPJolLsSMCO1uf/Pus+7WKEJ8NuwNSt4eGBS1m7fzw
+	h0Q9bl5DLeI2cZ59Fhj0SGY6DdYSI0h5Lb5/C8MF
+X-Received: by 2002:a05:690c:d83:b0:796:3977:9f28 with SMTP id
+ 00721157ae682-798855da97bmr10368887b3.51.1772148341487; Thu, 26 Feb 2026
+ 15:25:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF0000231C:EE_|SJ0PR12MB8116:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d551605-f478-4654-f47b-08de75854af9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|7416014|376014|82310400026|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	DNO/unMolGOhcyMnZprbaxtWxeraPCzlG70tbN1rje3nKtkiVUT8kVB4Ae3HBtx0sftWTKHpQZCS/fHxO33H8fdMb509oPjscyVCkPhQINosHNLNMhup/xBrwJhpsbHN7sqUQPUYCVLBAe0IM0NCJr7V0VeE//msNBCmquE5YomJghMNRU7XeGzOJ3X9h4c+kHRduPlLebH+WL7GuwH2uwKJsg73qtOXZ1sl4ir+weZRpVVoti1LrgK+O8FWUYiBLMzAMlA7rwrfMygudDQK/hz9haCxMOjq8M+OoJ/IRsgdBNDg4opq48PTELbfu5ExGhPRvdedCIsHr6arAVlBjTJeaV9Ay8wxnCeREnxevSRQUet+NnI1paZ1qSORundIR5DMNNpVI0vhlNXHHOPHa4yavExkur9oDcYMZckLMd1kbMEgVMMHFq17xDBwrAqxEzqzkqbtCKpqOx8k0H4QYlbhZeqVguF+EVMkyYHz9cB1slIC5Y0U1M2oLkmdA4Aj5xNNou+ZhxWBOzKayDaTeL5vlOzAGLGwgXtOZQ7fR9SWzohwpRXzBK590C4wPRSsDSAIaPsszeLx6IVuAfmeubWQisyTq2DzDG1bcyZXGYkkEmCY+BnbjG7IMyWQBGQ2hFE7JKaTeyTRE7aaT0rIMhzS7qHrLGNu8sJ7H4JHfM0XqTKJihrEjGAljsl9/t/kAmGW3LoohwP7CudP1/ivWvRsZbDQMUP9x8xLVxe4Bf0/u6lSmWPL8fyvpkyYEHV9Brr1EoFgAS0thUULFtAIyxidVx1PofO7AUow24aDtN1bsOBAYlCrP4QebyrBE1eUasi5pCURz42OtwVj0W4vDQ==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	BljOblQcOrKg69VrZKcxGkdXR1EimKXoAF9b71HM1Ge7iC4HKBTmcGHWnro1hrtbud+q6kBppRBl8EzYXNqbvBLUCN3sy7uGFOwrBpPfTYgDYL/S8xEmb3uqCiXfvSfxU5517nlt1r45ag/+4A+444ayYnYlEM/PbU8Oi6u3brwUkG0k9BVw3eESBLy4XMZGJhZPvl70d9/yAvmt9K8c3ueR0Cbk0fBBiZOXPbrDauTz8ZmItA9zjPOn1JfCjt1RjEZZNN6aOe5ec8WhPzxoMFylyFsHRBUKkxuXVd33E58uBqkRXybjb2Z3bt19EOJ5WPeWFxIU61ZdKLOsJ/hJtF0in78FZ5rMPiafwpO2y4v7PD+GxymjZgxZ37U3haZnSqaQO47x0tNrOALd1WmgnHVJzq9oxW/ZwEDAub6ONyJdsXPg+xkK3krW22s5j6pX
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2026 22:20:48.0774
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d551605-f478-4654-f47b-08de75854af9
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF0000231C.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8116
+References: <20260226213454.85586-1-achender@kernel.org>
+In-Reply-To: <20260226213454.85586-1-achender@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 27 Feb 2026 00:25:29 +0100
+X-Gm-Features: AaiRm503t44yYtqzVG2hHOZcr0Eczfg-LoG2ToaT51Z1g1hmiCtsxqgH8nuFLs4
+Message-ID: <CANn89iLGtL+Mka4dww-y+vZpqggMhsNzp5XJbo3RB6RG7=Tgbw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/rds: Fix circular locking dependency in rds_tcp_tune
+To: Allison Henderson <achender@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, pabeni@redhat.com, 
+	rds-devel@oss.oracle.com, kuba@kernel.org, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, allison.henderson@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmail.com,resnulli.us,lwn.net,nvidia.com,kernel.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17258-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17259-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[google.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[edumazet@google.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:mid,nvidia.com:email];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.979];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: AD9271B0522
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,syzkaller.appspot.com:url]
+X-Rspamd-Queue-Id: 21F6F1B0E18
 X-Rspamd-Action: no action
 
-From: Or Har-Toov <ohartoov@nvidia.com>
+On Thu, Feb 26, 2026 at 10:34=E2=80=AFPM Allison Henderson <achender@kernel=
+.org> wrote:
+>
+> syzbot reported a circular locking dependency in rds_tcp_tune() where
+> sk_net_refcnt_upgrade() is called while holding the socket lock:
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> WARNING: possible circular locking dependency detected
+> ------------------------------------------------------
+> kworker/u10:8/15040 is trying to acquire lock:
+> ffffffff8e9aaf80 (fs_reclaim){+.+.}-{0:0}, at: __kmalloc_cache_noprof+0x4=
+b/0x6f0
+>
+> but task is already holding lock:
+> ffff88805a3c1ce0 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: rds_tcp_tune+0xd7/=
+0x930
+>
+> The issue occurs because sk_net_refcnt_upgrade() performs memory allocati=
+on
+> (via get_net_track() -> ref_tracker_alloc()) while the socket lock is hel=
+d,
+> creating a circular dependency with fs_reclaim.
+>
+> Fix this by moving sk_net_refcnt_upgrade() outside the socket lock critic=
+al
+> section. Since the fresh socket is not yet exposed to other threads, no
+> locks are needed at this time.
+>
+> Reported-by: syzbot+2e2cf5331207053b8106@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D2e2cf5331207053b8106
+> Fixes: 5c70eb5c593d ("net: better track kernel sockets lifetime")
 
-Add documentation for the port-level resource feature to
-devlink-resource.rst. Port-level resources allow viewing resources
-associated with specific devlink ports.
+Are you sure this is the right Fixes: tag ?
 
-Currently, port-level resources only support the get command for
-viewing resource information.
+Before this patch we had a GFP_KERNEL allocation already ?
 
-Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
-Reviewed-by: Shay Drori <shayd@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- .../networking/devlink/devlink-resource.rst   | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+This might instead come from
 
-diff --git a/Documentation/networking/devlink/devlink-resource.rst b/Documentation/networking/devlink/devlink-resource.rst
-index b4203c498bf2..1d6d8bfa1692 100644
---- a/Documentation/networking/devlink/devlink-resource.rst
-+++ b/Documentation/networking/devlink/devlink-resource.rst
-@@ -94,3 +94,39 @@ attribute, which represents the pending change in size. For example:
- 
- Note that changes in resource size may require a device reload to properly
- take effect.
-+
-+Port-level Resources
-+====================
-+
-+In addition to device-level resources, ``devlink`` also supports port-level
-+resources. These resources are associated with a specific devlink port rather
-+than the device as a whole.
-+
-+Currently, port-level resources only support the ``GET`` command for viewing
-+resource information.
-+
-+Port-level resources can be viewed for a specific port:
-+
-+.. code:: shell
-+
-+    $devlink port resource show pci/0000:03:00.0/196608
-+    pci/0000:03:00.0/196608:
-+      name max_SFs size 20 unit entry
-+
-+Or for ports of a specific device:
-+
-+.. code:: shell
-+
-+    $devlink port resource show pci/0000:03:00.0
-+    pci/0000:03:00.0/196608:
-+      name max_SFs size 20 unit entry
-+
-+Or for all ports across all devices:
-+
-+.. code:: shell
-+
-+    $devlink port resource show
-+    pci/0000:03:00.0/196608:
-+      name max_SFs size 20 unit entry
-+    pci/0000:03:00.1/262144:
-+      name max_SFs size 20 unit entry
--- 
-2.44.0
+commit 3a58f13a881ed351198ffab4cf9953cf19d2ab3a
+    net: rds: acquire refcount on TCP sockets
 
+> Signed-off-by: Allison Henderson <achender@kernel.org>
+> ---
+>  net/rds/tcp.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+> index 04f310255692..da22b3dfdbf0 100644
+> --- a/net/rds/tcp.c
+> +++ b/net/rds/tcp.c
+> @@ -490,18 +490,24 @@ bool rds_tcp_tune(struct socket *sock)
+>         struct rds_tcp_net *rtn;
+>
+>         tcp_sock_set_nodelay(sock->sk);
+> -       lock_sock(sk);
+>         /* TCP timer functions might access net namespace even after
+>          * a process which created this net namespace terminated.
+>          */
+>         if (!sk->sk_net_refcnt) {
+> -               if (!maybe_get_net(net)) {
+> -                       release_sock(sk);
+> +               if (!maybe_get_net(net))
+>                         return false;
+> -               }
+> +               /*
+> +                * We call sk_net_refcnt_upgrade before the lock_sock sin=
+ce it is
+> +                * not yet shared, no lock is needed at this time.  Furth=
+er,
+> +                * because sk_net_refcnt_upgrade does a GFP_KERNEL alloca=
+tion,
+> +                * this can trigger an fs_reclaim in other systems which =
+creates
+> +                * a circular lock dependancy.  Avoid this by upgrading t=
+he
+> +                * refcnt before the locking the socket.
+> +                */
+>                 sk_net_refcnt_upgrade(sk);
+>                 put_net(net);
+>         }
+> +       lock_sock(sk);
+>         rtn =3D net_generic(net, rds_tcp_netid);
+>         if (rtn->sndbuf_size > 0) {
+>                 sk->sk_sndbuf =3D rtn->sndbuf_size;
+> --
+> 2.43.0
+>
 
