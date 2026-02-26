@@ -1,162 +1,154 @@
-Return-Path: <linux-rdma+bounces-17245-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17246-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QCxmAI68oGkDmQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17245-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 22:35:10 +0100
+	id MB7aJ2S9oGkDmQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17246-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 22:38:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70C0A1AFE18
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 22:35:09 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42A5E1AFEB7
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 22:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 93ED0301AA87
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 21:35:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 698A6300D356
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 21:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B880426EBF;
-	Thu, 26 Feb 2026 21:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2074E3D1CAD;
+	Thu, 26 Feb 2026 21:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BzXk8lea"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IfBUYGRA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D772389E14;
-	Thu, 26 Feb 2026 21:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772141696; cv=none; b=POvIRo63851neaeSmQatzVBW6vvvQyd9SidQ4xjzG/XTqG68gV1bFzKxGaGKmGvxJmZXAagRk6K5Q1sFuwotRRfr/SMvM4D3dlrjbiXapPIBhykOGhF/ZwJRwezobqMuhyu7xxdwtBbY9tQ34RJUezWmEVez8xvKvJbUGFEGqtM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772141696; c=relaxed/simple;
-	bh=9nUUaoM3WbzkeWzo1yrHWw8wUwpA8/X0UVvQxvXVE60=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gjV47vpzwdEa7WVzeyfJd75eemHcUvWifAEuwWHp0nt9pak4CwG27Kjy7rVLrFkEKjVLOfLxzhXJ/eEQQ5JXwSk+JsM8E5eB+AKSEoOpq4u/16ot1Qly1dlFOHVf/cRpci+AtPPr/4rwG6zb2k3TkcG+GqFmI7ZW/HGvewlpDNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BzXk8lea; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230CBC19423;
-	Thu, 26 Feb 2026 21:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772141695;
-	bh=9nUUaoM3WbzkeWzo1yrHWw8wUwpA8/X0UVvQxvXVE60=;
-	h=From:To:Cc:Subject:Date:From;
-	b=BzXk8lea11EjSe2Ca8CztMeOaCs8VlYfJo+r0Ex6gJ9j/m5/3mF12YwzcQ95CCsFz
-	 bD1wLeYHdc04+SyJmhInvl9cgduChYxvdADojI9g8V+ENwrebOeEhnYnJddv6y4hNy
-	 OAoSDe37XKXXAGjd8Wv0VGxuyHMbL6Ebtr9OuhLOeRk9iGlTnXG/Df1pDk7hzaIywR
-	 93s9x/QcjtWE/dMUklO0PbTfdm2k4/EybdbATy5Dy0dU55BvCkw5vk7SQpHbeE9rEz
-	 DoTFd6D+exQevPdVgeHIGeB2nyuAdd3Dk3i9AWxRSFf2BBWSyeHOqRqxSBZx9li15M
-	 m3bsMYjP37vEQ==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	rds-devel@oss.oracle.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	allison.henderson@oracle.com
-Subject: [PATCH net-next] net/rds: Fix circular locking dependency in rds_tcp_tune
-Date: Thu, 26 Feb 2026 14:34:54 -0700
-Message-ID: <20260226213454.85586-1-achender@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF20E368955
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Feb 2026 21:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772141919; cv=pass; b=GASZvnvjMxbM6V1NWJiOHezzzIx8fqPvhLEE0Q0DT7yD33wj+/sbLxQu5P0nGl/Zo3FGSpSqyDR2wN6wJGV4gvTlaqLo+g121hKTxdSuX9t6jK+uzJkNxlScT72g1O4TK6QPXRg2NgRGE0vhvdAGNrfE+ck3yLvblVDL5W6SpWg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772141919; c=relaxed/simple;
+	bh=zqAM+ZHh4IHGk13CuTajpxb3XrzZfSROa9EbTFJFJS0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QhsuUhh+SVz1NNnzCCYoSqXzakIatYHhaXNqAT5atukvLCI+BKm5r9UkGFmsQXSv/hFnBCcI+I9DowIXwgLtETqrlXV5TBay6oxUVuzmX2L5vanAB9q6Bq3XcZAsOLLnEKGnu932rNGWLedVRGnRH5jvNcXo7Q5ukPaztUVuxWk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IfBUYGRA; arc=pass smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b79f8f7ea43so215118166b.2
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Feb 2026 13:38:38 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772141917; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Awj1/tp7BD7WQ08TJ3mlbnK58WCOjb0SuQa6QdLaU353wQBaeqIdZxd75JrXCplKi0
+         qSWpLbyjdefNnSFivcbymEc/dLygkaegp9E/GOjagZNzCuvJAjhf9NZIK96si70oBOwZ
+         /F63RuBt+UFmLrsmvP6ywanIwVcjS/r+bl9e6s5B6FwB/oCzXo6g3VdRp8b0eKTTyLsm
+         i85Gzud0esF6+sl//ltwk2fUOOVcle/W5UvSVLWxyudTfWiynrUyl4kTIblixjDvcQ+T
+         /L8uH6cT4CfEouDet/1wz8qH33SFEoJZXi1N8DNGnxj8NI7GUq64hWjnyr1DW/b4GpBd
+         7mBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=zqAM+ZHh4IHGk13CuTajpxb3XrzZfSROa9EbTFJFJS0=;
+        fh=eSfziUVxnLATrG22uv0ytdLIPXsojS+zz9JJaBRxgis=;
+        b=TzsUe+whi7fAtBBw3dbKwPI/Lcgov4BMwa9QX0taMFmhiOPs99cBfOUBTV45ntIHdU
+         O2WO/whb2Wc3a54+/zdy4lFDC/AAV4kE5wCboDcVNZT8zJAKEn3FV3fP59uekHdrzK49
+         hKhEWAKW1rxA+zVC+EFb3diKthKQpdTn7oMtRLboWd9xnHLjJs4Od/aCscY2T+affiA8
+         zlwCUB4duKpUg4S3g20RRyGib5ydOyZ3Y4sQ5Kmgcc6dFSkoOk4KxtQV6y/nKGtYme13
+         J/PIFdbJNXh5T9s+++mdVtZNzQAyLS4QWq9mn4eBL/NOxKDtEKuKYPU1BlG+CsN3ZZCh
+         CWXg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1772141917; x=1772746717; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zqAM+ZHh4IHGk13CuTajpxb3XrzZfSROa9EbTFJFJS0=;
+        b=IfBUYGRAyYMZOQ0FgM4qGOSPhbwwhOCunDr+aHdbwl4443d+BEtzjDeUQnft4DFh1b
+         2xQ+eyaA3vFJV8GJFtVgEXn/lGGNbzKSjbHd/hDxaIOd8hl5QIHNG+OsqUlB7p0XSciK
+         HMjFIGouZnAO9vxnn5F4dnQtkHiIuIcYX2MO1KXskOusRZch4vjUdJi0BYIs724T77xC
+         KQXtoMO87bWKFoPmEDJI26H27ldSDoIBnKQid+73cQzpEsKiJxIUmcZ1VoByk4Ge+jpj
+         z0m8v0keC04dDb8819DaxzDFLNB5/UVI3rbO4U+V5Zcy0lX9JjW5P1bEoWyC3Uhck/l1
+         TS+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772141917; x=1772746717;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zqAM+ZHh4IHGk13CuTajpxb3XrzZfSROa9EbTFJFJS0=;
+        b=lNFFmYn4ckMkodviSRJaWoBInHhxKG3apxkuIxgtB6LRPr3lZ15TxrJye1er11X0UF
+         1Tf9RlIV/ukv5koYT8kIofp5UljyDkumEoGf7M0bipl02pnFZiHvdCHP27UIWnYMAhDA
+         V43RWV2QSjgW5yTG/tlrZzCluG04zFuB8lIjeziuHkSyCDhPTrJAZ2E/PLXlWJr9Htln
+         yFV+fwD4YaoIi8d4pcXUGGHtzXnDLOZpFc92pEXVE06hZ1sqoyG3E+IjIhsky8EcVG4a
+         EvqarhkWIFAVh5b/sqpEbjDmU0TXFi/pON70mOkTlPYV360E+0aH/5w/jo1z7dQ59OhG
+         I92Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV1BVxV+aFt9J6f9M3mLbiGgcK6kM5ZC3Gq4+tOfoWngOtd2Rk3RyY7ntkJm4/jgTh517otgsPY8xRO@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuWtoxw065hkjvgC5V8YX6W1ZSy/hgYA7Uq4ljRcXiaFIlhcjs
+	5fY8nj08w6pOZoM4f/aEII2mB5UWR8mM9jRqTaAseSHjDoXfu6fIQq76iPVzJ+wGJ+MFXIlc+mo
+	1F5ZFPkCG6NYdBxHe0kDBnHN4uD6jG4mwdBF8G6xN
+X-Gm-Gg: ATEYQzzTT1zmM5vAzzmtedWpZuKLba1sQEkVrppyCLBwbA6WrkHFzjcmaxtz2miTA8P
+	XH7dVSjdGz1Rj8RQtO4r0Dt+ki5wVR64epS5DqlVPpV4QmYBNIart26w+aQCQwR0kboA3CC8olw
+	lIk8wntea87fBqMacJnDdzArFuKv5cwXWIOk1axIlXliW2AQ4s8LtgTdB71pG0o5k+HLJWg0m54
+	pY3WS4WJPvbLK2Knnmu6FNEnlKK1sbExqNRsC0KoRpKt/a22O7hMLTpjb86rP4e1ZVhq1tuzzq+
+	EhjShnc6OpzZNjs+Rvg=
+X-Received: by 2002:a17:907:d1d:b0:b8e:d4ed:5ee8 with SMTP id
+ a640c23a62f3a-b9376365dedmr26860766b.12.1772141916734; Thu, 26 Feb 2026
+ 13:38:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260225210705.373126-1-jmoroni@google.com> <20260225210705.373126-5-jmoroni@google.com>
+ <20260226085517.GG12611@unreal> <CAHYDg1QLzeQTXpCTeP5ZYcYyYLHG3yhUQtrGec+-5MzaGL-jKA@mail.gmail.com>
+ <20260226194149.GM12611@unreal>
+In-Reply-To: <20260226194149.GM12611@unreal>
+From: Jacob Moroni <jmoroni@google.com>
+Date: Thu, 26 Feb 2026 16:38:25 -0500
+X-Gm-Features: AaiRm52uWpxcIkcRDdJ8XMjXUVcvbnuXIoaYAseCz5cNmy9SQacwAH_hYVCUK_M
+Message-ID: <CAHYDg1QB9sPWLx34heDnnV-K=pMXniqT7qxL_CY95fi7esPTBA@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 4/4] RDMA/irdma: Add support for revocable
+ pinned dmabuf import
+To: Leon Romanovsky <leon@kernel.org>
+Cc: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, jgg@ziepe.ca, 
+	linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17245-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17246-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-0.999];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,syzkaller.appspot.com:url]
-X-Rspamd-Queue-Id: 70C0A1AFE18
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 42A5E1AFEB7
 X-Rspamd-Action: no action
 
-syzbot reported a circular locking dependency in rds_tcp_tune() where
-sk_net_refcnt_upgrade() is called while holding the socket lock:
+I see. Thanks for the context.
 
-======================================================
-WARNING: possible circular locking dependency detected
-------------------------------------------------------
-kworker/u10:8/15040 is trying to acquire lock:
-ffffffff8e9aaf80 (fs_reclaim){+.+.}-{0:0}, at: __kmalloc_cache_noprof+0x4b/0x6f0
+It may be hard to totally hide the fact that the umem is now revocable from the
+drivers, but we may still be able to still mostly hide the umem type if we make
+"revocable" a property of the general umem. Then, there can something like a
+"ib_umem_revoke_lock/unlock" helper which would be a no-op for most umems, but
+would allow drivers to have the same dereg path at least?
 
-but task is already holding lock:
-ffff88805a3c1ce0 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: rds_tcp_tune+0xd7/0x930
-
-The issue occurs because sk_net_refcnt_upgrade() performs memory allocation
-(via get_net_track() -> ref_tracker_alloc()) while the socket lock is held,
-creating a circular dependency with fs_reclaim.
-
-Fix this by moving sk_net_refcnt_upgrade() outside the socket lock critical
-section. Since the fresh socket is not yet exposed to other threads, no
-locks are needed at this time.
-
-Reported-by: syzbot+2e2cf5331207053b8106@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=2e2cf5331207053b8106
-Fixes: 5c70eb5c593d ("net: better track kernel sockets lifetime")
-Signed-off-by: Allison Henderson <achender@kernel.org>
----
- net/rds/tcp.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 04f310255692..da22b3dfdbf0 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -490,18 +490,24 @@ bool rds_tcp_tune(struct socket *sock)
- 	struct rds_tcp_net *rtn;
- 
- 	tcp_sock_set_nodelay(sock->sk);
--	lock_sock(sk);
- 	/* TCP timer functions might access net namespace even after
- 	 * a process which created this net namespace terminated.
- 	 */
- 	if (!sk->sk_net_refcnt) {
--		if (!maybe_get_net(net)) {
--			release_sock(sk);
-+		if (!maybe_get_net(net))
- 			return false;
--		}
-+		/*
-+		 * We call sk_net_refcnt_upgrade before the lock_sock since it is
-+		 * not yet shared, no lock is needed at this time.  Further,
-+		 * because sk_net_refcnt_upgrade does a GFP_KERNEL allocation,
-+		 * this can trigger an fs_reclaim in other systems which creates
-+		 * a circular lock dependancy.  Avoid this by upgrading the
-+		 * refcnt before the locking the socket.
-+		 */
- 		sk_net_refcnt_upgrade(sk);
- 		put_net(net);
- 	}
-+	lock_sock(sk);
- 	rtn = net_generic(net, rds_tcp_netid);
- 	if (rtn->sndbuf_size > 0) {
- 		sk->sk_sndbuf = rtn->sndbuf_size;
--- 
-2.43.0
-
+Thanks,
+Jake
 
