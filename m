@@ -1,164 +1,156 @@
-Return-Path: <linux-rdma+bounces-17203-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17204-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aJNHJijun2nYewQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17203-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:54:32 +0100
+	id WP3THNbyn2kyfAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17204-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 08:14:30 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 435C21A1776
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:54:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCB071A1B4A
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 08:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A6FFC303853F
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 06:54:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 600D3300D16A
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5AF38BF85;
-	Thu, 26 Feb 2026 06:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7B638E121;
+	Thu, 26 Feb 2026 07:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKW7n9zF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ak7l2LWJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5E838B7B7;
-	Thu, 26 Feb 2026 06:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5063437418C;
+	Thu, 26 Feb 2026 07:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772088848; cv=none; b=VM4e4JTI9nu3h1N9sgoaTppnftVAL3Qj58iaoyicK+xvVbqkgEffIAXRMHuJl1DVGrp0YrWuzzQOOYW1/WsQvchk4oHO44dLsfS+r/L1fp4Ob6+JtY31t+yeHLMhelEmuyW1a6iw00shEMMvSPx1+NLb/PRORBURFvU+ReQ0P1c=
+	t=1772089798; cv=none; b=HMakRAP0fXCMCAy3JwnuCRwxM7Kt3E+tiomDv2FMMcNj56WBwsfopM9+IfISujmC9hWdmSObVLciLHBGLh4zNrwerv9/Ioas2KshM97aOw68VfN2kmnaiVzd5r6a17tvzvadnWTPzokRy3TGsZTeH1M/BV97ToNLthZ+A8ePu6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772088848; c=relaxed/simple;
-	bh=6wP04o8J/I3iQSrV6t04KpfXZMm7q3Dov8vdpAFTXSc=;
+	s=arc-20240116; t=1772089798; c=relaxed/simple;
+	bh=EXG2vTsBZOVVqAomHjOacJ+jd7HRSgEW6H+9P27AWiM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kdbEf8VYW98+T+5OyieS4hgheQcb5lnlIPh6xxTU4dLCLWd8H9q31nAwz5weQ2A2eDG4XdupXUlAwmRx0fnHDgE3Xy6SBVLEN/QpH4nKvM7Yd2eO2KsAc6yhXHjm3GuYx4+Vd5+0zEJIscOJcsCIIMHEiqL/N+uckJbyXuRmT+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oKW7n9zF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD0AC19422;
-	Thu, 26 Feb 2026 06:54:07 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=qRZiaKANgY80HM+3BblJLuQGMERY9yz6cWkc1smx+AZhGyiQmnwkJkFTknXAVJDsw9KIp+sZeA9W9ApHVmgndyRxfG71gPOzKgvzE3hzvRdcOb9KkoDQtG69bZKnYK3K+i3lkxbOkni7Of3kA7G0c96Y8UXMeNLPkIkKp5dNNWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ak7l2LWJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8358AC19424;
+	Thu, 26 Feb 2026 07:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772088848;
-	bh=6wP04o8J/I3iQSrV6t04KpfXZMm7q3Dov8vdpAFTXSc=;
+	s=k20201202; t=1772089798;
+	bh=EXG2vTsBZOVVqAomHjOacJ+jd7HRSgEW6H+9P27AWiM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oKW7n9zFwdS8zU411mBQS86BhhwIc9msdiNSFTEJu53jvPmZfWzljbggV7CId+s2N
-	 LMpqlT3+pWskQ0IjAMizG4f4eJ0rRrXIg45hVdEw7p7RQyCrZd2OJrBIORkgIiVK+6
-	 +mhR+U38x9ByuGSOIYdrWPcxK2Yrg3mmfEvqHpBloFYFvbFGA5IdBUhEDR9Y8rYiSu
-	 iShDfdkyP30ZJ71ymG+uYY5Jxtbt9gAeOqbVjAYZEVaq6/VAF2UeEwGEtFgtPPcBXF
-	 zf6SGqDBRVduEwws8KG9LKyqROK+SQB/nD0IaR/tgc3NqWg/a56aIB2GamKio35H+0
-	 mg9//hERz7DyA==
-Date: Thu, 26 Feb 2026 08:54:04 +0200
+	b=Ak7l2LWJHFY7OI9NF3tpbWZ8ydzse/gEKyBDF3CYciBH6bPN9U/QvIHQzCaqNoPov
+	 qoEf1SEmpftQAMoc51hQQVV3QsTMSsmZP9ulIQQUkovNOlXjkIi97n7dwKFt5bUop7
+	 qRxy0BmESbgsQ13b8e6omZBAhy9kuYw8H+x6DpcC1KLgk7qlXhZx4cT5+sZeSLQtdA
+	 eQBMYQA5QOwamSFvXz8uGc8vrn9x3GUCTgpg2cynBIb9+1yT+SHqfXqS7buuet6VX4
+	 K7cZCoUQL42R38FiEib8vY7P09GD1xSB5N6tAv2y/Xgd4DI7LTe17qFFifenia3Sk2
+	 RP8QK7lNXqRJg==
+Date: Thu, 26 Feb 2026 09:09:54 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Gal Pressman <gal.pressman@linux.dev>,
-	Yossi Leybovich <sleybo@amazon.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
+To: Cheng Xu <chengyou@linux.alibaba.com>
+Cc: "Li,Rongqing(ACG CCN)" <lirongqing@baidu.com>,
 	Kai Shen <kaishen@linux.alibaba.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>,
-	Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Bernard Metzler <bernard.metzler@linux.dev>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH rdma-next 26/50] RDMA/erdma: Separate user and kernel CQ
- creation paths
-Message-ID: <20260226065404.GB12611@unreal>
-References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
- <20260213-refactor-umem-v1-26-f3be85847922@nvidia.com>
- <ce205a5a-0b10-449e-0a84-39d3f43aeb53@hisilicon.com>
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSNOiBb5aSW6YOo6YKu5Lu2?=
+ =?utf-8?B?XSBSZTogW1BBVENIXVtyZG1hLW5leHQ=?= =?utf-8?Q?=5D?= RDMA/erdma: Use
+ NUMA-aware allocation for MTT tables
+Message-ID: <20260226070954.GC12611@unreal>
+References: <20260225085143.1721-1-lirongqing@baidu.com>
+ <7cfd31d3-fe40-8b2d-cea8-14748db5f35b@linux.alibaba.com>
+ <81eac7dd27d344b59da16bd4cef7bc77@baidu.com>
+ <b00bcf9a1aee447eb64d955c52851c05@baidu.com>
+ <39e148d1-6a56-863f-8126-e92d452b3106@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ce205a5a-0b10-449e-0a84-39d3f43aeb53@hisilicon.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <39e148d1-6a56-863f-8126-e92d452b3106@linux.alibaba.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17203-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[30];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17204-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 435C21A1776
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DCB071A1B4A
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 02:17:38PM +0800, Junxian Huang wrote:
+On Thu, Feb 26, 2026 at 09:50:00AM +0800, Cheng Xu wrote:
 > 
 > 
-> On 2026/2/13 18:58, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
+> On 2/25/26 8:07 PM, Li,Rongqing(ACG CCN) wrote:
 > > 
-> > Split CQ creation into distinct kernel and user flows. The hns driver,
-> > inherited from mlx4, uses a problematic pattern that shares and caches
-> > umem in hns_roce_db_map_user(). This design blocks the driver from
-> > supporting generic umem sources (VMA, dmabuf, memfd, and others).
-> > 
-> > In addition, let's delete counter that counts CQ creation errors. There
-> > are multiple ways to debug kernel in modern kernel without need to rely
-> > on that debugfs counter.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/hw/hns/hns_roce_cq.c      | 103 ++++++++++++++++++++-------
-> >  drivers/infiniband/hw/hns/hns_roce_debugfs.c |   1 -
-> >  drivers/infiniband/hw/hns/hns_roce_device.h  |   3 +-
-> >  drivers/infiniband/hw/hns/hns_roce_main.c    |   1 +
-> >  4 files changed, 82 insertions(+), 26 deletions(-)
-
-<...>
-
-> > +int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
-> > +		       struct uverbs_attr_bundle *attrs)
-> > +{
-> > +	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
-> > +	struct hns_roce_ib_create_cq_resp resp = {};
-> > +	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
-> > +	struct ib_device *ibdev = &hr_dev->ib_dev;
-> > +	struct hns_roce_ib_create_cq ucmd = {};
+> >>> On 2/25/26 4:51 PM, lirongqing wrote:
+> >>>> From: Li RongQing <lirongqing@baidu.com>
+> >>>>
+> >>>> Currently, MTT (Memory Translation Table) buffers are allocated
+> >>>> without NUMA awareness using kzalloc() and vzalloc(), which allocate
+> >>>> memory on the NUMA node of the calling CPU. This can lead to
+> >>>> cross-node memory access latencies if the erdma device is attached
+> >>>> to a different NUMA socket.
+> >>>>
+> >>>> Switch to kzalloc_node() and vzalloc_node() to ensure MTT buffers
+> >>>> are allocated on the local NUMA node of the PCIe device
+> >> (dev->attrs.numa_node).
+> >>>> This reduces latency for hardware access and improves performance.
+> >>>>
+> >>>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> >>>> ---
+> >>>>  drivers/infiniband/hw/erdma/erdma_verbs.c | 4 ++--
+> >>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>>
+> >>>
+> >>> Hi, Li RongQing,
+> >>>
+> >>> Thanks for the patch. However, I think it is better to keep the
+> >>> current behavior, for the following reasons:
+> >>>
+> >>> 1. This path is in the control plane, so allocating memory from a remote
+> >>>    NUMA node should not have a noticeable performance impact.
+> >>
+> >> If TLB Miss , or the internal cache misses , does the HCA need to query the MTT?
+> >>
 > 
-> ucmd and resp are not needed since we don't have udata here.
+> This is rarely happen in our chip.
 
-Thanks, will fix.
+So why do we need this patch? The xxx_node() functions are useful when you
+need to force allocation on a specific NUMA node. In most cases, a plain
+kmalloc() will allocate memory on the same node as 'struct erdma_dev *dev',
+which typically matches the PCI device's NUMA node.
 
-> 
-> Junxian
+Please avoid vague phrasing like 'potentially improves performance' in the
+commit message and responses. It adds no meaningful information.
+
+Also, please remove the dev->attrs.numa_node caching from erdma and rely on
+dev_to_node() instead.
+
+Thanks
 
