@@ -1,115 +1,170 @@
-Return-Path: <linux-rdma+bounces-17205-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17206-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kOPGGv/zn2kyfAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17205-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 08:19:27 +0100
+	id gEjaDNb9n2n3fAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17206-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 09:01:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200F01A1C19
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 08:19:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99FC31A233D
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 09:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4C1CD30364E4
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:19:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E185F309B404
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 08:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80F7387599;
-	Thu, 26 Feb 2026 07:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9E0277C86;
+	Thu, 26 Feb 2026 08:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNb1bNdy"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Zjix01H8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6092F1FDB
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Feb 2026 07:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE93F38F22F;
+	Thu, 26 Feb 2026 07:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772090357; cv=none; b=ZVY2HP5Yov0V+nrhCVNOKblg0o6Ek55lpOqq5RLWooBxCUxpXxc7FdRVu7FgqEHv/QR7KdxUj4o3QdrH/1gN4aJa0TkXiyFwcz8jRTumkLjwB4rn2DAKnT62Rc6Po45Vfv0RIKmagjFK4gazajUSxaYpZmxVMEnPq6y+OM2U4x8=
+	t=1772092805; cv=none; b=L1Q7aqJK1t2MGoyiH9+zneE1w+ZboVo6GbYaPxd0ffvexDKkh8VBO8HiT9GQZ9QVJYmnCiyENm6m2AZu0poRkJ1ine5LyS66gzfOU9TkLTGqXYd9J6SC8c53MwGCBrTGZgs4CJXfb5qjwzIFUo+QvnONd5BGgleAwbC3eZVx6pY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772090357; c=relaxed/simple;
-	bh=HMg+i1WylRKqTTveRXRGiiACBPovax14TDQ9mtRJ8vA=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NOkg438y48xGD/jy0/wWrj+1f9cvo0TZkwXjtUIx6aold/bGzG7/Cat/ziMPQykaY5wt/hjwBbJpJjFP+zkY4r4hiZIpmZ9Hj5sMs6SoysoHFHTuU5WJyHMiy0jvFFhp1DEvAWxDj+wagtiHKJeRAV0f6JfFC894LkE6AO0PU/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNb1bNdy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3EBDC2BC87;
-	Thu, 26 Feb 2026 07:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772090357;
-	bh=HMg+i1WylRKqTTveRXRGiiACBPovax14TDQ9mtRJ8vA=;
-	h=Date:From:To:Subject:From;
-	b=ZNb1bNdytJmLKx1e1mXb4qxPWy8uB4+rocXA0MXGbxCVgcPYab9r7jXHJvF2vLjju
-	 ZvTE7QH1HDnpvd5OAxm0zXb9fGys0k7TY+BRZdncXJhJHnpZSc+eTKKGPGZkmpnMT0
-	 fwpiGXJY3/6jX8s0mDb2VfUofcCoIaLTVGkQTO2ijtX1XHK8mSIxwLgDewtf3vBqPn
-	 i7a0TESHptw6ssEQQbyzkPQlWGuAUy/ZWuOw5j0QMUd+Q9b2CN15i1f9i9ovxxt+8C
-	 P9wMv8zszogWn2oeWmohEEvpcU6ghrjLaVp+AeuXz1bMEsm8c1MAV+2ZM/UVtA20ue
-	 AYz8Es8/opz0w==
-Date: Thu, 26 Feb 2026 09:19:13 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: RDMA mailing list <linux-rdma@vger.kernel.org>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: New memory allocation API
-Message-ID: <20260226071913.GD12611@unreal>
+	s=arc-20240116; t=1772092805; c=relaxed/simple;
+	bh=cJAqpzk+6Fnjp1Adul3e92S4CU5ul9AqjRQ/CGkqGfs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y/pMGkotr9yYWz3LdYFanA7p3mbaEwt5CrGbVPc10OiMGPFjzuJnXasGwRFslbS72MbCW7KKw7ILw6Gjn3mkIcxenEpxdfFjFDlV0gIz+AFtSiP0ZPzmE00PyB3liXrxYL0tIWntgVaqVJQi7LP/74hzXKXdC47ORMnhw8478IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Zjix01H8; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772092795; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=+YTqvsV2SttcidyUCaVUACWY2WHw1J1DoKRuAsoPitc=;
+	b=Zjix01H8exnTL8MaMJQRtNUAkNVAFX/IKKNWKvn0JYptMDb/v6VCI8os38/ZSdYfY8IMo165QS2MFVXQ29gKZMFZF8pBFc03fPu3/pyNA/2hgBHIrhxbm0MBo2NbHdYis2IaA0n3S/qBV2TKs21ROcjhPvolnjUg8i2mzBwHwPo=
+Received: from 30.221.97.172(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0WzqVP0i_1772092794 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 26 Feb 2026 15:59:55 +0800
+Message-ID: <2d5e7f0a-2ea9-026e-2e79-da716a8b0a32@linux.alibaba.com>
+Date: Thu, 26 Feb 2026 15:59:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW+WklumDqOmCruS7tl0gUmU6IFtQQVRDSF1bcmRt?=
+ =?UTF-8?Q?a-next=5d_RDMA/erdma=3a_Use_NUMA-aware_allocation_for_MTT_tables?=
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+Cc: "Li,Rongqing(ACG CCN)" <lirongqing@baidu.com>,
+ Kai Shen <kaishen@linux.alibaba.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20260225085143.1721-1-lirongqing@baidu.com>
+ <7cfd31d3-fe40-8b2d-cea8-14748db5f35b@linux.alibaba.com>
+ <81eac7dd27d344b59da16bd4cef7bc77@baidu.com>
+ <b00bcf9a1aee447eb64d955c52851c05@baidu.com>
+ <39e148d1-6a56-863f-8126-e92d452b3106@linux.alibaba.com>
+ <20260226070954.GC12611@unreal>
+From: Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <20260226070954.GC12611@unreal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_ALL(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWO(0.00)[2];
-	TAGGED_FROM(0.00)[bounces-17205-lists,linux-rdma=lfdr.de];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17206-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 200F01A1C19
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chengyou@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 99FC31A233D
 X-Rspamd-Action: no action
 
-Hi,
 
-Please be aware that v7.0-rc1 has two commits:
-bf4afc53b77a ("Convert 'alloc_obj' family to use the new default GFP_KERNEL argument")
-69050f8d6d07 ("treewide: Replace kmalloc with kmalloc_obj for non-scalar types")
 
-Which changes old and well known kmalloc*() calls to kmalloc_obj():
+On 2/26/26 3:09 PM, Leon Romanovsky wrote:
+> On Thu, Feb 26, 2026 at 09:50:00AM +0800, Cheng Xu wrote:
+>>
+>>
+>> On 2/25/26 8:07 PM, Li,Rongqing(ACG CCN) wrote:
+>>>
+>>>>> On 2/25/26 4:51 PM, lirongqing wrote:
+>>>>>> From: Li RongQing <lirongqing@baidu.com>
+>>>>>>
+>>>>>> Currently, MTT (Memory Translation Table) buffers are allocated
+>>>>>> without NUMA awareness using kzalloc() and vzalloc(), which allocate
+>>>>>> memory on the NUMA node of the calling CPU. This can lead to
+>>>>>> cross-node memory access latencies if the erdma device is attached
+>>>>>> to a different NUMA socket.
+>>>>>>
+>>>>>> Switch to kzalloc_node() and vzalloc_node() to ensure MTT buffers
+>>>>>> are allocated on the local NUMA node of the PCIe device
+>>>> (dev->attrs.numa_node).
+>>>>>> This reduces latency for hardware access and improves performance.
+>>>>>>
+>>>>>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+>>>>>> ---
+>>>>>>  drivers/infiniband/hw/erdma/erdma_verbs.c | 4 ++--
+>>>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>
+>>>>> Hi, Li RongQing,
+>>>>>
+>>>>> Thanks for the patch. However, I think it is better to keep the
+>>>>> current behavior, for the following reasons:
+>>>>>
+>>>>> 1. This path is in the control plane, so allocating memory from a remote
+>>>>>    NUMA node should not have a noticeable performance impact.
+>>>>
+>>>> If TLB Miss , or the internal cache misses , does the HCA need to query the MTT?
+>>>>
+>>
+>> This is rarely happen in our chip.
+> 
+> So why do we need this patch? The xxx_node() functions are useful when you
+> need to force allocation on a specific NUMA node. In most cases, a plain
+> kmalloc() will allocate memory on the same node as 'struct erdma_dev *dev',
+> which typically matches the PCI device's NUMA node.
+> 
 
-    Single allocations:     kmalloc(sizeof(TYPE), ...)
-    are replaced with:      kmalloc_obj(TYPE, ...)
+Thanks for the detailed explanation.
 
-    Array allocations:      kmalloc_array(COUNT, sizeof(TYPE), ...)
-    are replaced with:      kmalloc_objs(TYPE, COUNT, ...)
+> Please avoid vague phrasing like 'potentially improves performance' in the
+> commit message and responses. It adds no meaningful information.
+> 
 
-    Flex array allocations: kmalloc(struct_size(PTR, FAM, COUNT), ...)
-    are replaced with:      kmalloc_flex(*PTR, FAM, COUNT, ...)
+Got it. 
 
-    (where TYPE may also be *VAR)
 
-    The resulting allocations no longer return "void *", instead returning
-    "TYPE *".
+> Also, please remove the dev->attrs.numa_node caching from erdma and rely on
+> dev_to_node() instead.
 
-Thanks
+OK, I will fix this.
+
+Thanks,
+Cheng Xu
+
+> 
+> Thanks
 
