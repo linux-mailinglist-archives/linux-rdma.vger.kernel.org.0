@@ -1,341 +1,146 @@
-Return-Path: <linux-rdma+bounces-17201-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17202-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CJ2uFZ7ln2ntegQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17201-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:18:06 +0100
+	id aMkOLqTsn2nYewQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17202-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:48:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABD4D1A1465
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:18:05 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE82C1A16C5
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 07:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AAF10302A53E
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 06:18:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A484C301779C
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Feb 2026 06:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B2F38B7A1;
-	Thu, 26 Feb 2026 06:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8537D2F12A5;
+	Thu, 26 Feb 2026 06:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfG+LL7m"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E0137419C;
-	Thu, 26 Feb 2026 06:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490882DEA74
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Feb 2026 06:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772086678; cv=none; b=PAP9+bJm2jzirNI4fwbZHr7d9W1WqJeG4kplPQ3pSGOE7uQmqfBR9KAf6HQTDIiUamKzAKZCVtTVQRf559rPBW2IvsoL1nmOrt9O00l81MPdGsWN7RujpclVuK0Y1SUAg0fVeETrLg8qUDvR+938SiMG1A1SRrf2qKEq+i+L3zc=
+	t=1772088480; cv=none; b=Go3L+g8WzfVT5S0NN6Nu7z8uToGJYijtYimPKyQj26gc1oWsv5+mBpyUGenNyT33QsntUfPEzm6tb1fLy6Lpn+ebqpjoYfEBVphcHwSiUgjiJYqAAYxbHlL5XxAqK+5Kvk4GL4fz7xoXDVGG4ks2XYEnU3KdauJb3+ipzC5vZbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772086678; c=relaxed/simple;
-	bh=2Lku0XcFGftGKQlsGruPP/lVDbDFp7UOg2Y68ho0X4E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Mf3zOvRrbaaM5CLBKjvy9uhqWmZDKGMm1T1yrgjbjPfQFkry80zvCp49r4jy7wL2Ie6T3OmeKPJqKNqHeUntaKRbkqI6vsHxYOhnoVyFIVimronhEO0DCW32vMNDFRXNiA2kx1gILLwYNNibS3ql3oxa934hmLNOzFiNYoVZdi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.197])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4fM1N842vPzRhWB;
-	Thu, 26 Feb 2026 14:12:56 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3CB4440363;
-	Thu, 26 Feb 2026 14:17:43 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Thu, 26 Feb 2026 14:17:39 +0800
-Message-ID: <ce205a5a-0b10-449e-0a84-39d3f43aeb53@hisilicon.com>
-Date: Thu, 26 Feb 2026 14:17:38 +0800
+	s=arc-20240116; t=1772088480; c=relaxed/simple;
+	bh=t4wESATMOo20qCJVgdgP6ow7wDQIV3HPJGyoZtHI9Fc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TnjBjwxutZB9nwolrk7dBuOc4BBzOrSK0shnAsOukgwsiny0UlWIrn0WIJ8wEXZgwoeSlQKQJ3KzdAx568HG161GNRSX3JJ4kz5bQUEILJWLpagNnoaXxE5bc+Jqp0gR/eyFpAVdj+IynDATXrQ1mLNGwuIDyLwcG0pphebqonM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NfG+LL7m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F11CC19422;
+	Thu, 26 Feb 2026 06:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772088479;
+	bh=t4wESATMOo20qCJVgdgP6ow7wDQIV3HPJGyoZtHI9Fc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NfG+LL7maETOZ/eso8enPNMH9ldclghGUfJuL0GO68XduJtEnbRZRKPenoW6KPGXj
+	 CrR1clHUwMNLue58EaD2Ugw80TkpLW6M0d0XyR5P+FHG9l95VLhwijIsYDtKeKuOW/
+	 OYkmdkAvCEEsk8154exgA2Wd1q85idQEMcEu5UnlooqD7nizsG9RMTRAistKbCHl80
+	 xp6smuoKSv/thoeUkeY0WRkiucwlx5I8EjoHAfKqpXuvCXXU2qrDrjXr1IMhUh8coZ
+	 AEeLR0o8/HYbSz1BSqxcMHyyAT3irx5lUAhOQvpVJN7QzdJ7ZqFm0c+31KGdyI/Qwi
+	 z44o3/ctXF88Q==
+Date: Thu, 26 Feb 2026 08:47:55 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "yanjun.zhu" <yanjun.zhu@linux.dev>
+Cc: David Ahern <dsahern@kernel.org>, zyjzyj2000@gmail.com, jgg@ziepe.ca,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/rxe: Add network namespace support
+Message-ID: <20260226064755.GA12611@unreal>
+References: <20260225172622.7589-1-dsahern@kernel.org>
+ <e87e7871-d35e-4b91-a00f-1491ac5b6dab@linux.dev>
+ <18ecbd06-baac-43ee-a455-6b34c716fdfe@kernel.org>
+ <88b82e8b-40da-46cf-bb41-2c346bd28c70@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH rdma-next 26/50] RDMA/erdma: Separate user and kernel CQ
- creation paths
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, Selvin
- Xavier <selvin.xavier@broadcom.com>, Kalesh AP
-	<kalesh-anakkur.purayil@broadcom.com>, Potnuri Bharat Teja
-	<bharat@chelsio.com>, Michael Margolin <mrgolin@amazon.com>, Gal Pressman
-	<gal.pressman@linux.dev>, Yossi Leybovich <sleybo@amazon.com>, Cheng Xu
-	<chengyou@linux.alibaba.com>, Kai Shen <kaishen@linux.alibaba.com>,
-	Chengchang Tang <tangchengchang@huawei.com>, Abhijit Gangurde
-	<abhijit.gangurde@amd.com>, Allen Hubbe <allen.hubbe@amd.com>, Krzysztof
- Czurylo <krzysztof.czurylo@intel.com>, Tatyana Nikolova
-	<tatyana.e.nikolova@intel.com>, Long Li <longli@microsoft.com>, Konstantin
- Taranov <kotaranov@microsoft.com>, Yishai Hadas <yishaih@nvidia.com>, Michal
- Kalderon <mkalderon@marvell.com>, Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>, Broadcom internal kernel review list
-	<bcm-kernel-feedback-list@broadcom.com>, Christian Benvenuti
-	<benve@cisco.com>, Nelson Escobar <neescoba@cisco.com>, Dennis Dalessandro
-	<dennis.dalessandro@cornelisnetworks.com>, Bernard Metzler
-	<bernard.metzler@linux.dev>, Zhu Yanjun <zyjzyj2000@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-hyperv@vger.kernel.org>
-References: <20260213-refactor-umem-v1-0-f3be85847922@nvidia.com>
- <20260213-refactor-umem-v1-26-f3be85847922@nvidia.com>
-Content-Language: en-US
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20260213-refactor-umem-v1-26-f3be85847922@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <88b82e8b-40da-46cf-bb41-2c346bd28c70@linux.dev>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	DMARC_POLICY_QUARANTINE(1.50)[hisilicon.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FREEMAIL_TO(0.00)[kernel.org,ziepe.ca,broadcom.com,chelsio.com,amazon.com,linux.dev,linux.alibaba.com,huawei.com,amd.com,intel.com,microsoft.com,nvidia.com,marvell.com,cisco.com,cornelisnetworks.com,gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	FROM_NEQ_ENVFROM(0.00)[huangjunxian6@hisilicon.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17201-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: ABD4D1A1465
+	TAGGED_FROM(0.00)[bounces-17202-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,ziepe.ca,vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EE82C1A16C5
 X-Rspamd-Action: no action
 
-
-
-On 2026/2/13 18:58, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Feb 25, 2026 at 01:07:12PM -0800, yanjun.zhu wrote:
+> On 2/25/26 10:50 AM, David Ahern wrote:
+> > On 2/25/26 11:14 AM, yanjun.zhu wrote:
+> > > On 2/25/26 9:26 AM, David Ahern wrote:
+> > > > Allow rxe to work across network namespaces by making the sockets
+> > > > per namespace using net_generic. Defer socket initialization until
+> > > > a device is created in the namespace.
+> > > 
+> > > https://github.com/zhuyj/linux/tree/upstream/6.14-net-namespace
+> > > 
+> > > Do you make tests with the above link?
+> > 
+> > no. I had no knowledge of that branch until this moment. It is almost 12
+> > months old, so not sure the relevance if it is not being actively fixed
+> > on top of tree.
+> > 
+> > > 
+> > > Compared with the net namespace in the above link, what is the
+> > > difference between this commit and the above link?
+> > > 
+> > 
+> > no idea. This patch was in our tree at enfabrica dating back to 2021.
+> > Someone started looking into automated tests with rxe, so I pulled it
+> > from the tree, rebased to 7.0 and sent it out.
+> > 
 > 
-> Split CQ creation into distinct kernel and user flows. The hns driver,
-> inherited from mlx4, uses a problematic pattern that shares and caches
-> umem in hns_roce_db_map_user(). This design blocks the driver from
-> supporting generic umem sources (VMA, dmabuf, memfd, and others).
+> https://patchwork.kernel.org/project/linux-rdma/cover/20230624073927.707915-1-yanjun.zhu@intel.com/
 > 
-> In addition, let's delete counter that counts CQ creation errors. There
-> are multiple ways to debug kernel in modern kernel without need to rely
-> on that debugfs counter.
+> In the above link, there is some testcases for the link
+> https://github.com/zhuyj/linux/tree/upstream/6.14-net-namespace.
 > 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_cq.c      | 103 ++++++++++++++++++++-------
->  drivers/infiniband/hw/hns/hns_roce_debugfs.c |   1 -
->  drivers/infiniband/hw/hns/hns_roce_device.h  |   3 +-
->  drivers/infiniband/hw/hns/hns_roce_main.c    |   1 +
->  4 files changed, 82 insertions(+), 26 deletions(-)
+> I am wondering if this commit can pass all the testcases or not.
+
+Zhu,
+
+It is a bit unreasonable to expect a random RXE contributor to compare
+against something that lives out‑of‑tree. Please feel free to pick up that
+patch and run it through your tests.
+
+Thanks
+
 > 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-> index 857a913326cd..0f24a916466b 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-> @@ -335,7 +335,10 @@ static int verify_cq_create_attr(struct hns_roce_dev *hr_dev,
->  {
->  	struct ib_device *ibdev = &hr_dev->ib_dev;
->  
-> -	if (!attr->cqe || attr->cqe > hr_dev->caps.max_cqes) {
-> +	if (attr->flags)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (attr->cqe > hr_dev->caps.max_cqes) {
->  		ibdev_err(ibdev, "failed to check CQ count %u, max = %u.\n",
->  			  attr->cqe, hr_dev->caps.max_cqes);
->  		return -EINVAL;
-> @@ -407,8 +410,8 @@ static int set_cqe_size(struct hns_roce_cq *hr_cq, struct ib_udata *udata,
->  	return 0;
->  }
->  
-> -int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
-> -		       struct uverbs_attr_bundle *attrs)
-> +int hns_roce_create_user_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
-> +			    struct uverbs_attr_bundle *attrs)
->  {
->  	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
->  	struct ib_udata *udata = &attrs->driver_udata;
-> @@ -418,31 +421,27 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
->  	struct hns_roce_ib_create_cq ucmd = {};
->  	int ret;
->  
-> -	if (attr->flags) {
-> -		ret = -EOPNOTSUPP;
-> -		goto err_out;
-> -	}
-> +	if (ib_cq->umem)
-> +		return -EOPNOTSUPP;
->  
->  	ret = verify_cq_create_attr(hr_dev, attr);
->  	if (ret)
-> -		goto err_out;
-> +		return ret;
->  
-> -	if (udata) {
-> -		ret = get_cq_ucmd(hr_cq, udata, &ucmd);
-> -		if (ret)
-> -			goto err_out;
-> -	}
-> +	ret = get_cq_ucmd(hr_cq, udata, &ucmd);
-> +	if (ret)
-> +		return ret;
->  
->  	set_cq_param(hr_cq, attr->cqe, attr->comp_vector, &ucmd);
->  
->  	ret = set_cqe_size(hr_cq, udata, &ucmd);
->  	if (ret)
-> -		goto err_out;
-> +		return ret;
->  
->  	ret = alloc_cq_buf(hr_dev, hr_cq, udata, ucmd.buf_addr);
->  	if (ret) {
->  		ibdev_err(ibdev, "failed to alloc CQ buf, ret = %d.\n", ret);
-> -		goto err_out;
-> +		return ret;
->  	}
->  
->  	ret = alloc_cq_db(hr_dev, hr_cq, udata, ucmd.db_addr, &resp);
-> @@ -464,13 +463,11 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
->  		goto err_cqn;
->  	}
->  
-> -	if (udata) {
-> -		resp.cqn = hr_cq->cqn;
-> -		ret = ib_copy_to_udata(udata, &resp,
-> -				       min(udata->outlen, sizeof(resp)));
-> -		if (ret)
-> -			goto err_cqc;
-> -	}
-> +	resp.cqn = hr_cq->cqn;
-> +	ret = ib_copy_to_udata(udata, &resp,
-> +			       min(udata->outlen, sizeof(resp)));
-> +	if (ret)
-> +		goto err_cqc;
->  
->  	hr_cq->cons_index = 0;
->  	hr_cq->arm_sn = 1;
-> @@ -487,9 +484,67 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
->  	free_cq_db(hr_dev, hr_cq, udata);
->  err_cq_buf:
->  	free_cq_buf(hr_dev, hr_cq);
-> -err_out:
-> -	atomic64_inc(&hr_dev->dfx_cnt[HNS_ROCE_DFX_CQ_CREATE_ERR_CNT]);
-> +	return ret;
-> +}
-> +
-> +int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
-> +		       struct uverbs_attr_bundle *attrs)
-> +{
-> +	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
-> +	struct hns_roce_ib_create_cq_resp resp = {};
-> +	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
-> +	struct ib_device *ibdev = &hr_dev->ib_dev;
-> +	struct hns_roce_ib_create_cq ucmd = {};
-
-ucmd and resp are not needed since we don't have udata here.
-
-Junxian
-
-> +	int ret;
-> +
-> +	ret = verify_cq_create_attr(hr_dev, attr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	set_cq_param(hr_cq, attr->cqe, attr->comp_vector, &ucmd)> +
-> +	ret = set_cqe_size(hr_cq, NULL, &ucmd);
-> +	if (ret)
-> +		return ret;
->  
-> +	ret = alloc_cq_buf(hr_dev, hr_cq, NULL, 0);
-> +	if (ret) {
-> +		ibdev_err(ibdev, "failed to alloc CQ buf, ret = %d.\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = alloc_cq_db(hr_dev, hr_cq, NULL, 0, &resp);
-> +	if (ret) {
-> +		ibdev_err(ibdev, "failed to alloc CQ db, ret = %d.\n", ret);
-> +		goto err_cq_buf;
-> +	}
-> +
-> +	ret = alloc_cqn(hr_dev, hr_cq, NULL);
-> +	if (ret) {
-> +		ibdev_err(ibdev, "failed to alloc CQN, ret = %d.\n", ret);
-> +		goto err_cq_db;
-> +	}
-> +
-> +	ret = alloc_cqc(hr_dev, hr_cq);
-> +	if (ret) {
-> +		ibdev_err(ibdev,
-> +			  "failed to alloc CQ context, ret = %d.\n", ret);
-> +		goto err_cqn;
-> +	}
-> +
-> +	hr_cq->cons_index = 0;
-> +	hr_cq->arm_sn = 1;
-> +	refcount_set(&hr_cq->refcount, 1);
-> +	init_completion(&hr_cq->free);
-> +
-> +	return 0;
-> +
-> +err_cqn:
-> +	free_cqn(hr_dev, hr_cq->cqn);
-> +err_cq_db:
-> +	free_cq_db(hr_dev, hr_cq, NULL);
-> +err_cq_buf:
-> +	free_cq_buf(hr_dev, hr_cq);
->  	return ret;
->  }
->  
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_debugfs.c b/drivers/infiniband/hw/hns/hns_roce_debugfs.c
-> index b869cdc54118..481b30f2f5b5 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_debugfs.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_debugfs.c
-> @@ -47,7 +47,6 @@ static const char * const sw_stat_info[] = {
->  	[HNS_ROCE_DFX_MBX_EVENT_CNT] = "mbx_event",
->  	[HNS_ROCE_DFX_QP_CREATE_ERR_CNT] = "qp_create_err",
->  	[HNS_ROCE_DFX_QP_MODIFY_ERR_CNT] = "qp_modify_err",
-> -	[HNS_ROCE_DFX_CQ_CREATE_ERR_CNT] = "cq_create_err",
->  	[HNS_ROCE_DFX_CQ_MODIFY_ERR_CNT] = "cq_modify_err",
->  	[HNS_ROCE_DFX_SRQ_CREATE_ERR_CNT] = "srq_create_err",
->  	[HNS_ROCE_DFX_SRQ_MODIFY_ERR_CNT] = "srq_modify_err",
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-> index 3f032b8038af..fdc5f487d7a3 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-> @@ -902,7 +902,6 @@ enum hns_roce_sw_dfx_stat_index {
->  	HNS_ROCE_DFX_MBX_EVENT_CNT,
->  	HNS_ROCE_DFX_QP_CREATE_ERR_CNT,
->  	HNS_ROCE_DFX_QP_MODIFY_ERR_CNT,
-> -	HNS_ROCE_DFX_CQ_CREATE_ERR_CNT,
->  	HNS_ROCE_DFX_CQ_MODIFY_ERR_CNT,
->  	HNS_ROCE_DFX_SRQ_CREATE_ERR_CNT,
->  	HNS_ROCE_DFX_SRQ_MODIFY_ERR_CNT,
-> @@ -1295,6 +1294,8 @@ int to_hr_qp_type(int qp_type);
->  
->  int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
->  		       struct uverbs_attr_bundle *attrs);
-> +int hns_roce_create_user_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
-> +			    struct uverbs_attr_bundle *attrs);
->  
->  int hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
->  int hns_roce_db_map_user(struct hns_roce_ucontext *context, unsigned long virt,
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-> index a3490bab297a..64de49bf8df7 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_main.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-> @@ -727,6 +727,7 @@ static const struct ib_device_ops hns_roce_dev_ops = {
->  	.create_ah = hns_roce_create_ah,
->  	.create_user_ah = hns_roce_create_ah,
->  	.create_cq = hns_roce_create_cq,
-> +	.create_user_cq = hns_roce_create_user_cq,
->  	.create_qp = hns_roce_create_qp,
->  	.dealloc_pd = hns_roce_dealloc_pd,
->  	.dealloc_ucontext = hns_roce_dealloc_ucontext,
+> Thanks a lot.
+> Zhu Yanjun
+> 
 > 
 
