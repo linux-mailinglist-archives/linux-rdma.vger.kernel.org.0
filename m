@@ -1,300 +1,202 @@
-Return-Path: <linux-rdma+bounces-17281-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17282-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0ODFKaIgoWn9qQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17281-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 05:42:10 +0100
+	id UIdvBJE4oWkbrQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17282-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:24:17 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 064321B2BAC
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 05:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61DBD1B3397
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B34FD305749B
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 04:41:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A353314FCB3
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 06:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D1A361678;
-	Fri, 27 Feb 2026 04:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D7B3B9613;
+	Fri, 27 Feb 2026 06:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ccpSCF6F"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JrY2RUc4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012071.outbound.protection.outlook.com [40.107.200.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77ABB361673;
-	Fri, 27 Feb 2026 04:41:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772167314; cv=none; b=QjjmSCal3uG4a+ooSEuTYlWrhiApnsaB1oekeDJ3DXromtXdXP3acALDsHmgVDu67DCzmXM+HfpunTvnHoBdnZIC9plpQr5NLhBK0iz+H13RjY9Z5UwmLxzyiiNzeOYU28Dd+jb94q38An23uX2pKA3CD8hcth6VemOVP3S255M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772167314; c=relaxed/simple;
-	bh=crZTA+Ej7c7BrEK0261uy783ifbl5T43ZJgQmMPx5bo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=abaFLccw6my2OucR9ZIoAFod/ZhTbf702KFRvKStzlokIhC7ktaEbrauFNf3GXy9XwpUv6flvyZ6xfOF4tGovckAxP7CPjXZi5TYZ9SB/wvbz1T3v7bHH/VVU8wZv3mD3tCLgGJ7bcuZ0buvQmD8myZrigdpholMgJjrbYWKRxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ccpSCF6F; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61QN63qo2870425;
-	Fri, 27 Feb 2026 04:41:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=1PGIUK
-	AXxs2bpiKfvzUW0d8IkxsRc2M+oZGlK9/N6f4=; b=ccpSCF6F/zCwr+BcwvPJmJ
-	A3DvuUOSQZXKtR6XyFYGvj1M/ngGgdQtYl7H3nMFa3utA888zvAX+VZjOuq86Lul
-	FX6xHudgde83SexT+vA4IozxK0zqBIbc+zoplyQa9PCxYWUmPHtYLD1bNmFR9SNy
-	zSQF6B2ALMBY+j9lwXn+nxUZxGue+C8XHfwR4v1QfoC3iuUkxaydpcAPvcLaxRLm
-	bIsqRag6lF5OljGrTfJKOCyOz1DNo7lCFHqOwpVqDepmjDcjcs/GGoeA0fKPrbUB
-	zc2qKQD1O42tVCnuNj6vY6mJTQl7ZMUYiXyBpskiC89moX7IRjr8Y2fkzGPG5xWA
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cf4bs9t90-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 27 Feb 2026 04:41:47 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61R4C2w8030267;
-	Fri, 27 Feb 2026 04:41:46 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cfrhkr1b9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 27 Feb 2026 04:41:46 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61R4fjhc32244350
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 27 Feb 2026 04:41:45 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 65A355805F;
-	Fri, 27 Feb 2026 04:41:45 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 39BC858059;
-	Fri, 27 Feb 2026 04:41:40 +0000 (GMT)
-Received: from [9.124.208.121] (unknown [9.124.208.121])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 27 Feb 2026 04:41:39 +0000 (GMT)
-Message-ID: <93779e14-95cc-4149-b4a6-865f8e3d4a96@linux.ibm.com>
-Date: Fri, 27 Feb 2026 10:11:38 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925A433344C;
+	Fri, 27 Feb 2026 06:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772173109; cv=fail; b=hgTfE/FI7MZ56t+sasyy8+QQcROkyEzsrtacdWZa1VvwR3CIdrvd2cNz1gOq4CMw+pAqf2NEyc4VY9G7zxK1E78SABfL6TSEUPjM6PtXTxbbSQ29TBLcHS/pRufstRhoCYBOjxIW8fkASIR6NQdZyT1AXBiRBzcrMJBSCA58Nrs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772173109; c=relaxed/simple;
+	bh=8s2j3syt0pSYOWn47TXxwrOqU3y9gtCHMkuFaR2N8CM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HUWUDf5I4RBQXnr0KxslwKgm6UToCTxfXexqgdVDt/T+FU0u00hbdK+poJPnigqP6faw60WHKNIORioYcORNra0aOdVcsjU4kkUUmVjL38pZ9fTRzwyDRT8gHf134JXnK0YR9OtnczeHFbxH+/Hz2VByGaezzpc8ZdeO9fTbHNo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JrY2RUc4; arc=fail smtp.client-ip=40.107.200.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=FWFKMaZTfRAQZXK4GHbrlbBp/DSFhrWHFCDKTYeVGjqR8RziNsUYFelEtr6lsqpA27dKctsB7Ya9QmERSfVLLCXdlHyaPcFy2zcLD9aoFAsg8nqPekDvihvSi8atouZRpMIgW2TYOM3VXTm2NuTiYIHpNg1a1eoF6t3Ugsi9w2k7YmpV8x6okowdTJSxHc09TYoDHr3kR5K7HTVU3Dbxz+v+J4fk71kSm/hfEenO7D7fFpFQ7sN2fbu7hoZ/YRgvbEiQ1fxHTbFaKmsY57Y8oZ/swvVqVsBt0//Ua365sQ+aJGn9WlcFPOrwx3AfneqepAQlLD2xwjZBeAc1pQgBtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=slH5LLKaMKXyIbs0Lj92CORAfRl+Mbj1m59qD3l8h50=;
+ b=KHumzGtPcKkz/JWZnOTc9sDMxvl38Gp2UxzTHqvkVXCeuDbNupvI/Qn1qCWTJodJ//p07HpyaxLrY0vj6ra7J//8GjkYlbDF4PWfK5vkloevszTmhywJzno1ZxpEyTAhIHSZrIXMhCEVVJaUEXociA2DHEL5j+G097TWzHExCCxfxTczRtXZr+T7sXhtDRq83ydaPmi5a+qoo65JPPn8S7+YxubJfplxFjS9mncQ4Rr0O31Wb4hJRAb6NGgxKlRq1wAxz7oN4WSbXauoZgegaNca1Pu9F6/XWdIFuYXrZoyngePSSkZhwVMyW26/bfUp4ekOdoPXhYPzv6NMNwZx5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=slH5LLKaMKXyIbs0Lj92CORAfRl+Mbj1m59qD3l8h50=;
+ b=JrY2RUc4S56E5YXQNrHRYyanbGyptrbzKAFLkm0jTANliHG7FLRSG8afeZ6UNB0juK/hTtRG1yvygUKFhlhgII/8efEQL9fY9xvH3CyHeYHR3doZ1oS5M/Hx4qTa7QcLakvqadX4fJnLWf5uZJe9UXoG38OsNx5Nsdaxh/rdX2o=
+Received: from BN0PR07CA0003.namprd07.prod.outlook.com (2603:10b6:408:141::15)
+ by DS5PPFEC0C6BDA1.namprd12.prod.outlook.com (2603:10b6:f:fc00::668) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9611.10; Fri, 27 Feb
+ 2026 06:18:21 +0000
+Received: from BN1PEPF0000468C.namprd05.prod.outlook.com
+ (2603:10b6:408:141:cafe::36) by BN0PR07CA0003.outlook.office365.com
+ (2603:10b6:408:141::15) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9632.26 via Frontend Transport; Fri,
+ 27 Feb 2026 06:18:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ BN1PEPF0000468C.mail.protection.outlook.com (10.167.243.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9654.16 via Frontend Transport; Fri, 27 Feb 2026 06:18:20 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.17; Fri, 27 Feb
+ 2026 00:18:20 -0600
+Received: from satlexmb07.amd.com (10.181.42.216) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 27 Feb
+ 2026 00:18:20 -0600
+Received: from xhdipdslab46.xilinx.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
+ Transport; Fri, 27 Feb 2026 00:18:18 -0600
+From: Abhijit Gangurde <abhijit.gangurde@amd.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<stable@vger.kernel.org>, Abhijit Gangurde <abhijit.gangurde@amd.com>
+Subject: [PATCH 1/1] RDMA/ionic: Preserve and set Ethernet source MAC after ib_ud_header_init()
+Date: Fri, 27 Feb 2026 11:48:09 +0530
+Message-ID: <20260227061809.2979990-1-abhijit.gangurde@amd.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next] net/smc: transition to RDMA core CQ pooling
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sidraya Jayagond <sidraya@linux.ibm.com>,
-        Wenjia Zhang
- <wenjia@linux.ibm.com>, Simon Horman <horms@kernel.org>,
-        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        oliver.yang@linux.alibaba.com, pasic@linux.ibm.com
-References: <20260202094800.30373-1-alibuda@linux.alibaba.com>
- <daefb72f-398e-489f-bdbc-db997ef9c5ae@linux.ibm.com>
- <20260209075338.GA61095@j66a10360.sqa.eu95>
- <2d71bab3-161d-414e-90e3-0e408ca931c2@linux.ibm.com>
- <20260224021924.GA53803@j66a10360.sqa.eu95>
-Content-Language: en-US
-From: Mahanta Jambigi <mjambigi@linux.ibm.com>
-In-Reply-To: <20260224021924.GA53803@j66a10360.sqa.eu95>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: pNvPn2sHG14hiX46wf5UKqYPx8oF_jQL
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI3MDAzNCBTYWx0ZWRfXx6WWfamxPlLg
- bNtFwvg5JIjHcD1Wu38YgDdHWeyGS48Vupc2wLhgofh7omoZ6CeQKqoiGrSymGpY1xwvTR92SMC
- sFQ4T5GpyiU7docCKuWafJ3rwFVRhRIBdh4TrSVCaHjJiglii+XPbJRnDSdVm5aqZuPNFkH0u5K
- orCBfEgLJdf4qF7gtemFRBPyRvKZ95FWQ0UPYY9ehzFUyjpiuvOFz1ekA4pktLu55ueSWUPfA09
- UbUv/TKdPEkMyBT92Cu8prjB8GBXMTGnb5EhAPHBRdCC1STNbdjX2srOkRzoTwtRze9p6jls3QT
- TpWKXN3v95FtPK3VboFhKzKK0fHzqa5Lcz30U1SsS3P+bflx34UlWplFkzQuA+dxqr7q5gtYIQK
- gmbrWDOVrCof75RRfF7rlAjRs5Sf3y/a706FFB448Uk9F8AdIP9V8MqlpUGHUh1Pd9xh/9j0+tq
- Mw12Nh8V38q729Ielng==
-X-Authority-Analysis: v=2.4 cv=eNceTXp1 c=1 sm=1 tr=0 ts=69a1208b cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=KFbtujwD9d188Aqvv-QA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: ob1o3a-7dAjm5dkH_lGYA3DimTJbH9ZQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-27_01,2026-02-26_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0
- bulkscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2602270034
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF0000468C:EE_|DS5PPFEC0C6BDA1:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e2800bf-303e-421b-66e5-08de75c8015d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	9mgEG5cl4WXPiKCOzMGmzVweMRzVTfnDiDAoO1E9RjKCIQtMtRTX/Sd1x8NFPznB1f9+PVboLSayMLPvDCGzYZB1FN/i+t2NQtw/ujX5qi8XgL+NUbH0A+hAQy4lxAkoAa8m+nGginvzhQehe+EEqm5N57PI8InMRUe1y7Wghdl2t4pOdIybD6myoms7nHlc9EcYrP+cjln1+zshgcfj9ptokiSVcGlu0inkhwn1HlM7GbGXsSkh3lzQvihsNHdKunbqH7YorGerOwzbOCkQDZjTPe7vSNUTsfkKagu0I33Y03RRZOE/bnqEOL04C2dStkQmh0sHnG75nFClsLKxkl7FjX54X/ZXY+JvYYvoNR5rL12nlWijuhPbYLwPexuV6otreIJrNTVQPKRMx4u6dqZToTCoKWpbTY2llRlIdEqdu5bfUXgAWitA95DidrF4kj6uSAvVfd11lX3f55c3mLWCBCokCTwC71d6Ma98i7g1IekXer9YzBF9B6WM4bZL+/QCBOJi0cOvj6l4dNjszc2ZcnYFgJxxWZ4fUw6AD7FSjNj40Yk2WN2npKPvQO8Qny4ScRJaRSDzSajtVruIwpEv4NHkKXyVSlQIlnFQaU2BcYroLjQP9kpGifWclMKpPgQFrM7OjeuMCYcyt4gV2uVPcK3rfUoeodDOtpLjF8/M5S1YMbH6tSi/4rAgBTHswMs11XFWAhWaMoHlgz2nGVeETLUarZQRtAlSQi0sHGEJUwRg93tQn47ADJIvzJI55IdkDvKRQG2ZbCXDoYh92Z640oliQytv/Cq9Lz/gJvF+xU6t0qLByuUeODdD97jNEqQKcPLkY8DIiHpZ/Ioeew==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	xQaizTBwhqlBWixzIhNcJOYjAj1w+aNabzFpNHVXCsvhnIvYrIUCpfkpdh8E4NoaGchPstAjh97d5naL0BcUXWRh5RIF+woPh1c+PcZ4X2PCBKCmCCCO2ONW03B+KU59n+HB5z1dL1eiV+w91/3Ik32eo0MedwWe+kZ+p4VcPW4CsU4Vlx50e5g8Qqsg16qYAe5+/6r4KL7z9qBkk/8WHQ5CLVcTy+0gFzVZGQJLVrdARH7xZkKM5qQptjncVHbCOCY62QKQdpnf5FspMSFafZOihVuxedA32mHy3XzNQy2C8mW1MfW+8RtyVlF8wrjDp5FIrylAI27c9i+7K2uY/vhVOn6IpX7tv2foe/cgVVBQSSqqKRfletC+cJZUGiGQ/Mpvr66Vo7cDtFsozu1fcQ0s+A5Nw+siawfyU4sMeULo4GRgYZXiNuC+ZhOexjem
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2026 06:18:20.9551
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e2800bf-303e-421b-66e5-08de75c8015d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN1PEPF0000468C.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS5PPFEC0C6BDA1
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-17281-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17282-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amd.com:mid,amd.com:dkim,amd.com:email];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[ibm.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mjambigi@linux.ibm.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[amd.com:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[11]
-X-Rspamd-Queue-Id: 064321B2BAC
+	RCVD_COUNT_SEVEN(0.00)[9]
+X-Rspamd-Queue-Id: 61DBD1B3397
 X-Rspamd-Action: no action
 
+ionic_build_hdr() populated the Ethernet source MAC (hdr->eth.smac_h) by
+passing the header’s storage directly to rdma_read_gid_l2_fields().
+However, ib_ud_header_init() is called after that and re-initializes the
+UD header, which wipes the previously written smac_h. As a result, packets
+are emitted with an zero source MAC address on the wire.
 
+Correct the source MAC by reading the GID-derived smac into a temporary
+buffer and copy it after ib_ud_header_init() completes.
 
-On 24/02/26 7:49 am, D. Wythe wrote:
-> On Fri, Feb 13, 2026 at 04:53:28PM +0530, Mahanta Jambigi wrote:
->>
->>
->> On 09/02/26 1:23 pm, D. Wythe wrote:
->>> On Fri, Feb 06, 2026 at 04:58:23PM +0530, Mahanta Jambigi wrote:
->>>>
->>>>
->>>> On 02/02/26 3:18 pm, D. Wythe wrote:
->>>>> The current SMC-R implementation relies on global per-device CQs
->>>>> and manual polling within tasklets, which introduces severe
->>>>> scalability bottlenecks due to global lock contention and tasklet
->>>>> scheduling overhead, resulting in poor performance as concurrency
->>>>> increases.
->>>>>
->>>>> Refactor the completion handling to utilize the ib_cqe API and
->>>>> standard RDMA core CQ pooling. This transition provides several key
->>>>> advantages:
->>>>>
->>>>> 1. Multi-CQ: Shift from a single shared per-device CQ to multiple
->>>>> link-specific CQs via the CQ pool. This allows completion processing
->>>>> to be parallelized across multiple CPU cores, effectively eliminating
->>>>> the global CQ bottleneck.
->>>>>
->>>>> 2. Leverage DIM: Utilizing the standard CQ pool with IB_POLL_SOFTIRQ
->>>>> enables Dynamic Interrupt Moderation from the RDMA core, optimizing
->>>>> interrupt frequency and reducing CPU load under high pressure.
->>>>>
->>>>> 3. O(1) Context Retrieval: Replaces the expensive wr_id based lookup
->>>>> logic (e.g., smc_wr_tx_find_pending_index) with direct context retrieval
->>>>> using container_of() on the embedded ib_cqe.
->>>>>
->>>>> 4. Code Simplification: This refactoring results in a reduction of
->>>>> ~150 lines of code. It removes redundant sequence tracking, complex lookup
->>>>> helpers, and manual CQ management, significantly improving maintainability.
->>>>>
->>>>> Performance Test: redis-benchmark with max 32 connections per QP
->>>>> Data format: Requests Per Second (RPS), Percentage in brackets
->>>>> represents the gain/loss compared to TCP.
->>>>>
->>>>> | Clients | TCP      | SMC (original)      | SMC (cq_pool)       |
->>>>> |---------|----------|---------------------|---------------------|
->>>>> | c = 1   | 24449    | 31172  (+27%)       | 34039  (+39%)       |
->>>>> | c = 2   | 46420    | 53216  (+14%)       | 64391  (+38%)       |
->>>>> | c = 16  | 159673   | 83668  (-48%)  <--  | 216947 (+36%)       |
->>>>> | c = 32  | 164956   | 97631  (-41%)  <--  | 249376 (+51%)       |
->>>>> | c = 64  | 166322   | 118192 (-29%)  <--  | 249488 (+50%)       |
->>>>> | c = 128 | 167700   | 121497 (-27%)  <--  | 249480 (+48%)       |
->>>>> | c = 256 | 175021   | 146109 (-16%)  <--  | 240384 (+37%)       |
->>>>> | c = 512 | 168987   | 101479 (-40%)  <--  | 226634 (+34%)       |
->>>>>
->>>>> The results demonstrate that this optimization effectively resolves the
->>>>> scalability bottleneck, with RPS increasing by over 110% at c=64
->>>>> compared to the original implementation.
->>>>
->>>> I applied your patch to the latest kernel(6.19-rc8) & saw below
->>>> Performance results:
->>>>
->>>> 1) In my evaluation, I ran several *uperf* based workloads using a
->>>> request/response (RR) pattern, and I observed performance *degradation*
->>>> ranging from *4%* to *59%*, depending on the specific read/write sizes
->>>> used. For example, with a TCP RR workload using 50 parallel clients
->>>> (nprocs=50) sending a 200‑byte request and reading a 1000‑byte response
->>>> over a 60‑second run, I measured approximately 59% degradation compared
->>>> to SMC‑R original performance.
->>>>
->>>
->>> The only setting I changed was net.smc.smcr_max_conns_per_lgr = 32, all
->>> other parameters were left at their default values. redis-benchmark is a
->>> classic Request/Response (RR) workload, which contradicts your test
->>> results. Since I'm unable to reproduce your results, it would be
->>> very helpful if you could share the specific test configuration for my
->>> analysis.
->>
->> I used a simple client–server setup connected via 25 Gb/s RoCE_Express2
->> adapters on the same LAN(connection established via SMC-R v1). After
->> running the commands shown below, I observed a performance degradation
->> of up to 59%.
->>
->> Server: smc_run uperf -s
->> Client: smc_run uperf -m rr1c-200x1000-50.xml
->>
->> cat rr1c-200x1000-50.xml
->>
->> <?xml version="1.0"?>
->> <profile name="TCP_RR">
->> 	<group nprocs="50">
->> 		<transaction iterations="1">
->> 			<flowop type="connect" options="remotehost=server_ip protocol=tcp
->> tcp_nodelay" />
->> 		</transaction>
->> 		<transaction duration="60">
->> 			<flowop type="write" options="size=200"/>
->> 			<flowop type="read" options="size=1000"/>
->> 		</transaction>
->> 		<transaction iterations="1">
->> 			<flowop type="disconnect" />
->> 		</transaction>
->> 	</group>
->> </profile>
-> 
-> Using the exact same XML profile you provided, I tested this on a 25Gb
-> NIC. I observed no degradation. Instead, performance improved
-> significantly:
-> 
-> Original: ~1.08 Gb/s
-> Patched: ~5.1 Gb/s
-> 
-> I suspect the 59% drop might be due to connections falling back to TCP.
-> Could you check smcss -a during your test to see if the traffic is
-> actually running over SMC-R?
+Fixes: e8521822c733 ("RDMA/ionic: Register device ops for control path")
+Cc: stable@vger.kernel.org # 6.18
+Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+---
+ drivers/infiniband/hw/ionic/ionic_controlpath.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I have checked this. The connection was successful using *SMCR* Mode
-itself. Also I have confirmed this via 'smcr -d stats' command which
-shows 0 count for TCP fallback.
-
-> 
->>
->> I installed redis-server on the server machine & redis-benchmark on the
->> client machine & I was able to establish the SMC-R using below commands.
->> If you could help me with the exact commands you used to measure the
->> redis-benchmark performance, I can try the same on my setup.
->>
->> Server: smc_run redis-server --port <port_num> --save "" --appendonly no
->>   --protected-mode no --bind 0.0.0.0
->> Client: smc_run redis-benchmark -h <server_ip> -p <port_num> -n 10000 -c
->> 50 -t ping_inline,ping_bulk -q
-> 
-> Here are the exact commands and scripts I used for the
-> redis-benchmark:
-> 
-> Server: smc_run redis-server --protected-mode no --save
-> 
-> Client: smc_run redis-benchmark -h <server_ip> -n 5000000 -t set --threads 3
-> -c <conn_num>
-> 
-> D. Wythe
+diff --git a/drivers/infiniband/hw/ionic/ionic_controlpath.c b/drivers/infiniband/hw/ionic/ionic_controlpath.c
+index ea12d9b8e125..84bc5f17a700 100644
+--- a/drivers/infiniband/hw/ionic/ionic_controlpath.c
++++ b/drivers/infiniband/hw/ionic/ionic_controlpath.c
+@@ -508,6 +508,7 @@ static int ionic_build_hdr(struct ionic_ibdev *dev,
+ {
+ 	const struct ib_global_route *grh;
+ 	enum rdma_network_type net;
++	u8 smac[ETH_ALEN];
+ 	u16 vlan;
+ 	int rc;
+ 
+@@ -518,7 +519,7 @@ static int ionic_build_hdr(struct ionic_ibdev *dev,
+ 
+ 	grh = rdma_ah_read_grh(attr);
+ 
+-	rc = rdma_read_gid_l2_fields(grh->sgid_attr, &vlan, &hdr->eth.smac_h[0]);
++	rc = rdma_read_gid_l2_fields(grh->sgid_attr, &vlan, smac);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -536,6 +537,7 @@ static int ionic_build_hdr(struct ionic_ibdev *dev,
+ 	if (rc)
+ 		return rc;
+ 
++	ether_addr_copy(hdr->eth.smac_h, smac);
+ 	ether_addr_copy(hdr->eth.dmac_h, attr->roce.dmac);
+ 
+ 	if (net == RDMA_NETWORK_IPV4) {
+-- 
+2.43.0
 
 
