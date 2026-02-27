@@ -1,202 +1,139 @@
-Return-Path: <linux-rdma+bounces-17282-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17283-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UIdvBJE4oWkbrQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17282-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:24:17 +0100
+	id MHhfOZA5oWlrrQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17283-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:28:32 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DBD1B3397
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:24:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D64E1B33D0
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:28:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6A353314FCB3
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 06:18:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 02E3D3037478
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 06:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D7B3B9613;
-	Fri, 27 Feb 2026 06:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65D67361DDD;
+	Fri, 27 Feb 2026 06:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JrY2RUc4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZfeXs0w0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012071.outbound.protection.outlook.com [40.107.200.71])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925A433344C;
-	Fri, 27 Feb 2026 06:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772173109; cv=fail; b=hgTfE/FI7MZ56t+sasyy8+QQcROkyEzsrtacdWZa1VvwR3CIdrvd2cNz1gOq4CMw+pAqf2NEyc4VY9G7zxK1E78SABfL6TSEUPjM6PtXTxbbSQ29TBLcHS/pRufstRhoCYBOjxIW8fkASIR6NQdZyT1AXBiRBzcrMJBSCA58Nrs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772173109; c=relaxed/simple;
-	bh=8s2j3syt0pSYOWn47TXxwrOqU3y9gtCHMkuFaR2N8CM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HUWUDf5I4RBQXnr0KxslwKgm6UToCTxfXexqgdVDt/T+FU0u00hbdK+poJPnigqP6faw60WHKNIORioYcORNra0aOdVcsjU4kkUUmVjL38pZ9fTRzwyDRT8gHf134JXnK0YR9OtnczeHFbxH+/Hz2VByGaezzpc8ZdeO9fTbHNo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JrY2RUc4; arc=fail smtp.client-ip=40.107.200.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FWFKMaZTfRAQZXK4GHbrlbBp/DSFhrWHFCDKTYeVGjqR8RziNsUYFelEtr6lsqpA27dKctsB7Ya9QmERSfVLLCXdlHyaPcFy2zcLD9aoFAsg8nqPekDvihvSi8atouZRpMIgW2TYOM3VXTm2NuTiYIHpNg1a1eoF6t3Ugsi9w2k7YmpV8x6okowdTJSxHc09TYoDHr3kR5K7HTVU3Dbxz+v+J4fk71kSm/hfEenO7D7fFpFQ7sN2fbu7hoZ/YRgvbEiQ1fxHTbFaKmsY57Y8oZ/swvVqVsBt0//Ua365sQ+aJGn9WlcFPOrwx3AfneqepAQlLD2xwjZBeAc1pQgBtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=slH5LLKaMKXyIbs0Lj92CORAfRl+Mbj1m59qD3l8h50=;
- b=KHumzGtPcKkz/JWZnOTc9sDMxvl38Gp2UxzTHqvkVXCeuDbNupvI/Qn1qCWTJodJ//p07HpyaxLrY0vj6ra7J//8GjkYlbDF4PWfK5vkloevszTmhywJzno1ZxpEyTAhIHSZrIXMhCEVVJaUEXociA2DHEL5j+G097TWzHExCCxfxTczRtXZr+T7sXhtDRq83ydaPmi5a+qoo65JPPn8S7+YxubJfplxFjS9mncQ4Rr0O31Wb4hJRAb6NGgxKlRq1wAxz7oN4WSbXauoZgegaNca1Pu9F6/XWdIFuYXrZoyngePSSkZhwVMyW26/bfUp4ekOdoPXhYPzv6NMNwZx5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=slH5LLKaMKXyIbs0Lj92CORAfRl+Mbj1m59qD3l8h50=;
- b=JrY2RUc4S56E5YXQNrHRYyanbGyptrbzKAFLkm0jTANliHG7FLRSG8afeZ6UNB0juK/hTtRG1yvygUKFhlhgII/8efEQL9fY9xvH3CyHeYHR3doZ1oS5M/Hx4qTa7QcLakvqadX4fJnLWf5uZJe9UXoG38OsNx5Nsdaxh/rdX2o=
-Received: from BN0PR07CA0003.namprd07.prod.outlook.com (2603:10b6:408:141::15)
- by DS5PPFEC0C6BDA1.namprd12.prod.outlook.com (2603:10b6:f:fc00::668) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9611.10; Fri, 27 Feb
- 2026 06:18:21 +0000
-Received: from BN1PEPF0000468C.namprd05.prod.outlook.com
- (2603:10b6:408:141:cafe::36) by BN0PR07CA0003.outlook.office365.com
- (2603:10b6:408:141::15) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9632.26 via Frontend Transport; Fri,
- 27 Feb 2026 06:18:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- BN1PEPF0000468C.mail.protection.outlook.com (10.167.243.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9654.16 via Frontend Transport; Fri, 27 Feb 2026 06:18:20 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.17; Fri, 27 Feb
- 2026 00:18:20 -0600
-Received: from satlexmb07.amd.com (10.181.42.216) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 27 Feb
- 2026 00:18:20 -0600
-Received: from xhdipdslab46.xilinx.com (10.180.168.240) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Fri, 27 Feb 2026 00:18:18 -0600
-From: Abhijit Gangurde <abhijit.gangurde@amd.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<stable@vger.kernel.org>, Abhijit Gangurde <abhijit.gangurde@amd.com>
-Subject: [PATCH 1/1] RDMA/ionic: Preserve and set Ethernet source MAC after ib_ud_header_init()
-Date: Fri, 27 Feb 2026 11:48:09 +0530
-Message-ID: <20260227061809.2979990-1-abhijit.gangurde@amd.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038B82FFDDE
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Feb 2026 06:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772173693; cv=none; b=ZINSWC/r0ZiIjeaYszLHyLwMcs5+YqACF1IOmeEPTIb7UVUC2aN3h81M11qGMVHztkh13ftGcsiO6D0dBW0QqOZ5kaelcoismgTT0QJO+rTRyffgmNXQTxqLEtEUWpczpbdyEl2r1abzPhRW8nMc0OIhFWetyobUs9y0oUBGOfU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772173693; c=relaxed/simple;
+	bh=JTZYr1uPWbNWeBD0GmnHfMUUlrtJyqU12HInMm0lKrk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IHkylnbGj4wYM1DYOcyTKdqQoPNAchHyGczA0nkZRvFR9N+VXaM2IHBg47vL8+y2eS3wSo0bVEKb7noB/TtVD1xdbpPpc8rEhqOqdaMX1NrmMKFMNN975CAdiX3GBXKJ6hpfAlKKUjdPerRalt4bHvBwxUG5N1Qm/fgAXajxFms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZfeXs0w0; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <13d804be-0bef-41bb-b252-c31f62a0b4a0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772173689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Eai6pgEn3MYtM0l+Ra/+NvcBqJj0hb6ZXfnitJS/Ofo=;
+	b=ZfeXs0w02GTTNaeleXMRqdDCVgGfjE41R/6eqYerXtuZ8u7W30IIXaVlOpF5B5CFvAsK0B
+	5rFq2/zqtb5GAMl92UnKXgAhhzev9EXIRYII/lqthjZ71ggihXk+g6NWOyn/qTyDHPP4e8
+	RNENlYvJSv22IBqzyPBQHUBVHhzZxfQ=
+Date: Thu, 26 Feb 2026 22:28:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] RDMA/rxe: Add network namespace support
+To: David Ahern <dsahern@kernel.org>, Leon Romanovsky <leon@kernel.org>
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
+References: <20260225172622.7589-1-dsahern@kernel.org>
+ <e87e7871-d35e-4b91-a00f-1491ac5b6dab@linux.dev>
+ <18ecbd06-baac-43ee-a455-6b34c716fdfe@kernel.org>
+ <88b82e8b-40da-46cf-bb41-2c346bd28c70@linux.dev>
+ <20260226064755.GA12611@unreal>
+ <cfad2c5c-23a9-4034-ad71-2c1ea21ff597@linux.dev>
+ <8ed32ed9-3931-4b2b-8f44-0023aa998b5c@kernel.org>
+ <8098445a-c778-4b11-be88-6243aba98268@linux.dev>
+ <c0887a43-f5ea-4e7b-8fb5-7322b76396a3@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <c0887a43-f5ea-4e7b-8fb5-7322b76396a3@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468C:EE_|DS5PPFEC0C6BDA1:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e2800bf-303e-421b-66e5-08de75c8015d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	9mgEG5cl4WXPiKCOzMGmzVweMRzVTfnDiDAoO1E9RjKCIQtMtRTX/Sd1x8NFPznB1f9+PVboLSayMLPvDCGzYZB1FN/i+t2NQtw/ujX5qi8XgL+NUbH0A+hAQy4lxAkoAa8m+nGginvzhQehe+EEqm5N57PI8InMRUe1y7Wghdl2t4pOdIybD6myoms7nHlc9EcYrP+cjln1+zshgcfj9ptokiSVcGlu0inkhwn1HlM7GbGXsSkh3lzQvihsNHdKunbqH7YorGerOwzbOCkQDZjTPe7vSNUTsfkKagu0I33Y03RRZOE/bnqEOL04C2dStkQmh0sHnG75nFClsLKxkl7FjX54X/ZXY+JvYYvoNR5rL12nlWijuhPbYLwPexuV6otreIJrNTVQPKRMx4u6dqZToTCoKWpbTY2llRlIdEqdu5bfUXgAWitA95DidrF4kj6uSAvVfd11lX3f55c3mLWCBCokCTwC71d6Ma98i7g1IekXer9YzBF9B6WM4bZL+/QCBOJi0cOvj6l4dNjszc2ZcnYFgJxxWZ4fUw6AD7FSjNj40Yk2WN2npKPvQO8Qny4ScRJaRSDzSajtVruIwpEv4NHkKXyVSlQIlnFQaU2BcYroLjQP9kpGifWclMKpPgQFrM7OjeuMCYcyt4gV2uVPcK3rfUoeodDOtpLjF8/M5S1YMbH6tSi/4rAgBTHswMs11XFWAhWaMoHlgz2nGVeETLUarZQRtAlSQi0sHGEJUwRg93tQn47ADJIvzJI55IdkDvKRQG2ZbCXDoYh92Z640oliQytv/Cq9Lz/gJvF+xU6t0qLByuUeODdD97jNEqQKcPLkY8DIiHpZ/Ioeew==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	xQaizTBwhqlBWixzIhNcJOYjAj1w+aNabzFpNHVXCsvhnIvYrIUCpfkpdh8E4NoaGchPstAjh97d5naL0BcUXWRh5RIF+woPh1c+PcZ4X2PCBKCmCCCO2ONW03B+KU59n+HB5z1dL1eiV+w91/3Ik32eo0MedwWe+kZ+p4VcPW4CsU4Vlx50e5g8Qqsg16qYAe5+/6r4KL7z9qBkk/8WHQ5CLVcTy+0gFzVZGQJLVrdARH7xZkKM5qQptjncVHbCOCY62QKQdpnf5FspMSFafZOihVuxedA32mHy3XzNQy2C8mW1MfW+8RtyVlF8wrjDp5FIrylAI27c9i+7K2uY/vhVOn6IpX7tv2foe/cgVVBQSSqqKRfletC+cJZUGiGQ/Mpvr66Vo7cDtFsozu1fcQ0s+A5Nw+siawfyU4sMeULo4GRgYZXiNuC+ZhOexjem
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2026 06:18:20.9551
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e2800bf-303e-421b-66e5-08de75c8015d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468C.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS5PPFEC0C6BDA1
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17282-lists,linux-rdma=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amd.com:mid,amd.com:dkim,amd.com:email];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17283-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[amd.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 61DBD1B3397
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: 4D64E1B33D0
 X-Rspamd-Action: no action
 
-ionic_build_hdr() populated the Ethernet source MAC (hdr->eth.smac_h) by
-passing the header’s storage directly to rdma_read_gid_l2_fields().
-However, ib_ud_header_init() is called after that and re-initializes the
-UD header, which wipes the previously written smac_h. As a result, packets
-are emitted with an zero source MAC address on the wire.
 
-Correct the source MAC by reading the GID-derived smac into a temporary
-buffer and copy it after ib_ud_header_init() completes.
+在 2026/2/26 18:05, David Ahern 写道:
+> On 2/26/26 5:06 PM, yanjun.zhu wrote:
+>> The patch link is: https://github.com/zhuyj/linux/tree/6.19-net-namespace
+> please send the patches; I cannot give comments to a github tree.
+>
+> Scanning the patches, I think you have over complicated what needs to be
+> done.
+>
+> 1. socket lookups are not free. If the rxe module is going to own the
+> socket, let it own the socket. See my patch with the net_generic way of
+> retrieving the socket per namespace. <several patches later> Oh, you
+> also bring in net_generic, so why make this so complicated?
 
-Fixes: e8521822c733 ("RDMA/ionic: Register device ops for control path")
-Cc: stable@vger.kernel.org # 6.18
-Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
----
- drivers/infiniband/hw/ionic/ionic_controlpath.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks, I will use net_generic later.
 
-diff --git a/drivers/infiniband/hw/ionic/ionic_controlpath.c b/drivers/infiniband/hw/ionic/ionic_controlpath.c
-index ea12d9b8e125..84bc5f17a700 100644
---- a/drivers/infiniband/hw/ionic/ionic_controlpath.c
-+++ b/drivers/infiniband/hw/ionic/ionic_controlpath.c
-@@ -508,6 +508,7 @@ static int ionic_build_hdr(struct ionic_ibdev *dev,
- {
- 	const struct ib_global_route *grh;
- 	enum rdma_network_type net;
-+	u8 smac[ETH_ALEN];
- 	u16 vlan;
- 	int rc;
- 
-@@ -518,7 +519,7 @@ static int ionic_build_hdr(struct ionic_ibdev *dev,
- 
- 	grh = rdma_ah_read_grh(attr);
- 
--	rc = rdma_read_gid_l2_fields(grh->sgid_attr, &vlan, &hdr->eth.smac_h[0]);
-+	rc = rdma_read_gid_l2_fields(grh->sgid_attr, &vlan, smac);
- 	if (rc)
- 		return rc;
- 
-@@ -536,6 +537,7 @@ static int ionic_build_hdr(struct ionic_ibdev *dev,
- 	if (rc)
- 		return rc;
- 
-+	ether_addr_copy(hdr->eth.smac_h, smac);
- 	ether_addr_copy(hdr->eth.dmac_h, attr->roce.dmac);
- 
- 	if (net == RDMA_NETWORK_IPV4) {
+> 2. current code creates the socket for init_net at module load time. My
+> patch changes it to first rxe link create and then leaves it enabled
+> until the namespace is deleted. Why? Well, any solution trying to track
+> how many devices are in the namespace is overly complicated.  If an rxe
+> is created once what are the odds it will be created again? This is a
+> very specific type of workload. Besides, it makes the code very simple.
+> I bet this is why my patch fails any test cases you have.
+
+Yes. I will send out my commit very soon.
+
+Thanks a lot.
+
+Zhu Yanjun
+
+>
 -- 
-2.43.0
+Best Regards,
+Yanjun.Zhu
 
 
