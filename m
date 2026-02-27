@@ -1,82 +1,65 @@
-Return-Path: <linux-rdma+bounces-17285-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17286-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6IvjB2JNoWkfsAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17285-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 08:53:06 +0100
+	id kA7mJa5QoWkfsAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17286-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 09:07:10 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 774341B41FC
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 08:53:05 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21EB11B43FA
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 09:07:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 798E33031CC7
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 07:52:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1B63B30120C3
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Feb 2026 08:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE28355F51;
-	Fri, 27 Feb 2026 07:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2D23603DD;
+	Fri, 27 Feb 2026 08:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qzth/Xxw"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="f8CefGH6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6B432AAD1
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Feb 2026 07:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C208A33A709;
+	Fri, 27 Feb 2026 08:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772178736; cv=none; b=N6+giuFqBMWfPOWS7TZJYjkqKQpt2ZFXD/4qr4IYdeSA5OsUBqCIGGzac97RdmgHNZlTMq2EYrTDymXEHClYAopVVBVCz24fxzYUIMWpHNn/4mELiu9TMVDegTRwD39jgSNWD67IN0p+pmiBRTJPHMbqdCAdVunEruLeoN14MCo=
+	t=1772179622; cv=none; b=Rmq4y6NbfCRhTvhB/IqKAvAe3CmoY8Ym2Stb88O4XARivTwt3jKb5jkbzqv8fwDseJGXJttQmuEMXPYYvwFDyK8tCq3YBw2Xd1Dp+kz+43MxqTKDbrh3UMXrGpQnart84Q4GV1wIOAlbdGdSqWEBD7NFUq1hUt6AWKZxUxr1rZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772178736; c=relaxed/simple;
-	bh=jl4HwSQMMfkphJJTB0pYW8VoNTdR65XwjV+D9dbqKfo=;
+	s=arc-20240116; t=1772179622; c=relaxed/simple;
+	bh=MYeiqeUz0+cYZL1vIL2doQLbHsHiezb/fmgpGe1KrMY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XCvWvlPLmuvqOL1gMGsix3foJTqbknGjtXVGa1GVgXwem+1vhPvlNoijpirDqjzS798Uv0iA8ZJzPyzvUYv31mErSeqD9eqrEMGE3LwQRJifyBQmZHfoAewJ/4NOQX3Ygwc92KRysbRnquENyIDLnioqiVESY/lG+7UmbGsiKAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qzth/Xxw; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772178734; x=1803714734;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jl4HwSQMMfkphJJTB0pYW8VoNTdR65XwjV+D9dbqKfo=;
-  b=Qzth/Xxw+jREpr/GdOJSiwuXzDhumQ5dnmJyHhWoVrbj13weREduG2Sa
-   K1vApNZ7DGpPbP0Fjxoeq6gj6vyAoWG7zXkygrShC4KJRGhqp1frOt0Td
-   pWO0uDv+WCzigGfehOG/HOU0+5+xr+M1N4FQmdxOmEcNyredDE/qKWsPw
-   /KvQg8O8MZuke5doyOiNJ3QkI7Zw1xPJVALCg5wbI/ZUq3fj0UmHySlNc
-   ViwXJixKAqNfsTZvdNxsmiTt3bqJzw0KqqaYLXQwrX53dLzwFG5nVMhfi
-   +V+LzoMdHuZdDQUoSgJXV9oeiqpOtnm07CYNzAW0RxyHHCYVT/ISgw24p
-   w==;
-X-CSE-ConnectionGUID: ZwiXh3anS5C3Ci5nN2mzgQ==
-X-CSE-MsgGUID: pPRTr9EORkuSxgPmBF6Qfg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11713"; a="73301970"
-X-IronPort-AV: E=Sophos;i="6.21,313,1763452800"; 
-   d="scan'208";a="73301970"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2026 23:52:06 -0800
-X-CSE-ConnectionGUID: UwQjJSS1SjCucjyUoHa4hw==
-X-CSE-MsgGUID: 2tSJNPdTSOWT+hvepgKmdA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,313,1763452800"; 
-   d="scan'208";a="221451825"
-Received: from lkp-server02.sh.intel.com (HELO a3936d6a266d) ([10.239.97.151])
-  by fmviesa005.fm.intel.com with ESMTP; 26 Feb 2026 23:52:02 -0800
-Received: from kbuild by a3936d6a266d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vvsd1-00000000ALB-31GO;
-	Fri, 27 Feb 2026 07:51:25 +0000
-Date: Fri, 27 Feb 2026 15:50:02 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	patches@lists.linux.dev
-Subject: Re: [PATCH v2 03/13] RDMA: Add ib_copy_validate_udata_in()
-Message-ID: <202602271548.rksoOQrN-lkp@intel.com>
-References: <3-v2-13af4a900857+4f13-bnxt_re_uapi_jgg@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OR5ypKxTO2GIjn5y8s9yFNjq3mFdClUeCd0Dhzxw7O51mKLyOBoJxN9uc2M4OtMFQ4OQexZ9zoENUesHYO96Nxlx+i2XVJd1DFaM5AbdEZMcx/lqjf12Xj1BUoYfHOjD/cUDn1APP4b6xJyRiVzOtj4C0WL804NgIex58R2rtpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=f8CefGH6; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 6D5EB20B6F02; Fri, 27 Feb 2026 00:07:00 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6D5EB20B6F02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1772179620;
+	bh=cmvpUzkiSyC2ORyghMCYrVOpIg4j/U0+skDpYexndIk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f8CefGH6pUzoj6NkCRIDfvYGJCac/23ZuIIBWoq7LGug9Q7tVCehLQLMgz9hZ8OMZ
+	 TEI9MZrK2GABBRYQpi7N9SF4vV+vVRztIF8HdS84Memxp0caDH0aeDmGQRb6RS/4ve
+	 VL4VrJD20bg0OeO7hXemXV9Ui2aNHOvEKV6rVicQ=
+Date: Fri, 27 Feb 2026 00:07:00 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Simon Horman <horms@kernel.org>
+Cc: kuba@kernel.org, decui@microsoft.com, pabeni@redhat.com,
+	dipayanroy@microsoft.com, kotaranov@microsoft.com,
+	linux-kernel@vger.kernel.org, edumazet@google.com,
+	davem@davemloft.net, linux-rdma@vger.kernel.org,
+	shradhagupta@linux.microsoft.com, kys@microsoft.com,
+	ssengar@linux.microsoft.com, haiyangz@microsoft.com,
+	linux-hyperv@vger.kernel.org, wei.liu@kernel.org,
+	netdev@vger.kernel.org, longli@microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	andrew+netdev@lunn.ch
+Subject: Re: [net-next] net: mana: Trigger VF reset/recovery on health check
+ failure due to HWC timeout
+Message-ID: <aaFQpJG0GP6898e/@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <aZwUDlTkb5xunIkH@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20260224082641.130868-1-horms@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -85,79 +68,198 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3-v2-13af4a900857+4f13-bnxt_re_uapi_jgg@nvidia.com>
+In-Reply-To: <20260224082641.130868-1-horms@kernel.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	TAGGED_FROM(0.00)[bounces-17285-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17286-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-0.997];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,01.org:url,intel.com:mid,intel.com:dkim,intel.com:email]
-X-Rspamd-Queue-Id: 774341B41FC
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
+X-Rspamd-Queue-Id: 21EB11B43FA
 X-Rspamd-Action: no action
 
-Hi Jason,
+On Tue, Feb 24, 2026 at 08:26:41AM +0000, Simon Horman wrote:
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> 
+> For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+> ---
+> net: mana: Trigger VF reset/recovery on health check failure due to HWC timeout
+> 
+> The GF stats periodic query is used as mechanism to monitor HWC health
+> check. If this HWC command times out, it is a strong indication that
+> the device/SoC is in a faulty state and requires recovery.
+> 
+> Today, when a timeout is detected, the driver marks
+> hwc_timeout_occurred, clears cached stats, and stops rescheduling the
+> periodic work. However, the device itself is left in the same failing
+> state.
+> 
+> Extend the timeout handling path to trigger the existing MANA VF
+> recovery service by queueing a GDMA_EQE_HWC_RESET_REQUEST work item.
+> This is expected to initiate the appropriate recovery flow by suspende
+> resume first and if it fails then trigger a bus rescan.
+> 
+> This change is intentionally limited to HWC command timeouts and does
+> not trigger recovery for errors reported by the SoC as a normal command
+> response.
+> 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > index 0055c231acf6..16c438d2aaa3 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> 
+> [ ... ]
+> 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > index 9b5a72ada5c4..e6a4034b40f9 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> 
+> [ ... ]
+> 
+> > @@ -3530,6 +3530,8 @@ static void mana_gf_stats_work_handler(struct work_struct *work)
+> >  {
+> >  	struct mana_context *ac =
+> >  		container_of(to_delayed_work(work), struct mana_context, gf_stats_work);
+> > +	struct gdma_context *gc = ac->gdma_dev->gdma_context;
+> > +	struct mana_serv_work *mns_wk;
+> >  	int err;
+> >
+> >  	err = mana_query_gf_stats(ac);
+> > @@ -3537,6 +3539,30 @@ static void mana_gf_stats_work_handler(struct work_struct *work)
+> >  		/* HWC timeout detected - reset stats and stop rescheduling */
+> >  		ac->hwc_timeout_occurred = true;
+> >  		memset(&ac->hc_stats, 0, sizeof(ac->hc_stats));
+> > +		dev_warn(gc->dev,
+> > +			 "Gf stats wk handler: gf stats query timed out.\n");
+> > +
+> > +		/* As HWC timed out, indicating a faulty HW state and needs a
+> > +		 * reset.
+> > +		 */
+> > +		if (!test_and_set_bit(GC_IN_SERVICE, &gc->flags)) {
+> > +			if (!try_module_get(THIS_MODULE)) {
+> > +				dev_info(gc->dev, "Module is unloading\n");
+> > +				return;
+> > +			}
+> > +
+> > +			mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
+> > +			if (!mns_wk) {
+> > +				module_put(THIS_MODULE);
+> > +				return;
+> > +			}
+> 
+> Does this leave the GC_IN_SERVICE flag permanently set? When
+> test_and_set_bit() atomically sets the bit and then try_module_get()
+> fails or kzalloc() fails, the function returns without clearing
+> GC_IN_SERVICE.
+> 
+> This would permanently block all future recovery attempts. Looking at
+> mana_gd_process_eqe() in gdma_main.c:
+>
+ACK. 
+> 	if (test_bit(GC_IN_SERVICE, &gc->flags)) {
+> 		dev_info(gc->dev, "Already in service\n");
+> 		break;
+> 	}
+> 
+> It would detect the set bit and skip the reset. Similarly, mana_tx_timeout()
+> in mana_en.c would also short-circuit:
+> 
+> 	if (test_bit(GC_IN_SERVICE, &gc->flags))
+> 		return;
+> 
+> The device cannot recover without manual intervention since the flag is only
+> cleared by mana_serv_reset() at the end of the service work:
+> 
+> drivers/net/ethernet/microsoft/mana/gdma_main.c:mana_serv_reset()
+> {
+> 	...
+> out:
+> 	clear_bit(GC_IN_SERVICE, &gc->flags);
+> }
+> 
+> But since the work is never scheduled in these error paths, clear_bit() is
+> never called.
+> 
+> Note that the existing mana_gd_process_eqe() path avoids this problem by
+> calling set_bit(GC_IN_SERVICE) only AFTER all allocations succeed:
+> 
+> drivers/net/ethernet/microsoft/mana/gdma_main.c:mana_gd_process_eqe()
+> {
+> 	...
+> 	if (test_bit(GC_IN_SERVICE, &gc->flags)) {
+> 		dev_info(gc->dev, "Already in service\n");
+> 		break;
+> 	}
+> 
+> 	if (!try_module_get(THIS_MODULE)) {
+> 		...
+> 		break;
+> 	}
+> 
+> 	mns_wk = kzalloc(sizeof(*mns_wk), GFP_KERNEL);
+> 	if (!mns_wk) {
+> 		module_put(THIS_MODULE);
+> 		break;
+> 	}
+> 
+> 	dev_info(gc->dev, "Start MANA service type:%d\n", type);
+> 	set_bit(GC_IN_SERVICE, &gc->flags);  // Set only after success
+> 	...
+> }
+> 
+> Should clear_bit(GC_IN_SERVICE, &gc->flags) be added before each error
+> return?
+> 
+ACK.
+> > +
+> > +			mns_wk->pdev = to_pci_dev(gc->dev);
+> > +			mns_wk->type = GDMA_EQE_HWC_RESET_REQUEST;
+> > +			pci_dev_get(mns_wk->pdev);
+> > +			INIT_WORK(&mns_wk->serv_work, mana_serv_func);
+> > +			schedule_work(&mns_wk->serv_work);
+> > +		}
+> 
+> This isn't a bug, but the recovery initiation sequence here is a
+> near-duplicate of the pattern in mana_gd_process_eqe() (gdma_main.c).
+> Both perform the identical 7-step sequence: try_module_get, kzalloc
+> mana_serv_work, set pdev, set type, pci_dev_get, INIT_WORK, schedule_work.
+> 
+> The duplication already contributed to the GC_IN_SERVICE error path issue
+> above, where this new copy diverged from the original in its error handling.
+> 
+> Consider extracting a common helper to avoid divergence.
+> 
+ACK.
+> >  		return;
+> >  	}
+> >  	schedule_delayed_work(&ac->gf_stats_work, MANA_GF_STATS_PERIOD);
+> 
+> [ ... ]
 
-kernel test robot noticed the following build errors:
+Thanks Simon, I am addressing these in v2.
 
-[auto build test ERROR on 3f4a08e64442340f4807de63e30aef22cc308830]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Gunthorpe/RDMA-Use-copy_struct_from_user-instead-of-open-coding/20260227-093947
-base:   3f4a08e64442340f4807de63e30aef22cc308830
-patch link:    https://lore.kernel.org/r/3-v2-13af4a900857%2B4f13-bnxt_re_uapi_jgg%40nvidia.com
-patch subject: [PATCH v2 03/13] RDMA: Add ib_copy_validate_udata_in()
-config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20260227/202602271548.rksoOQrN-lkp@intel.com/config)
-compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260227/202602271548.rksoOQrN-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202602271548.rksoOQrN-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/infiniband/core/nldev.c:44:
-   In file included from drivers/infiniband/core/uverbs.h:49:
-   In file included from include/rdma/uverbs_std_types.h:10:
->> include/rdma/uverbs_ioctl.h:964:10: error: use of undeclared identifier 'EVINAL'
-     964 |         return -EVINAL;
-         |                 ^
-   1 error generated.
-
-
-vim +/EVINAL +964 include/rdma/uverbs_ioctl.h
-
-   959	
-   960	static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
-   961						     size_t kernel_size,
-   962						     size_t minimum_size)
-   963	{
- > 964		return -EVINAL;
-   965	}
-   966	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards
 
