@@ -1,213 +1,164 @@
-Return-Path: <linux-rdma+bounces-17333-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17334-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uHXINo6aomlI4QQAu9opvQ
-	(envelope-from <linux-rdma+bounces-17333-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 08:34:38 +0100
+	id 0LytLoLComls5QQAu9opvQ
+	(envelope-from <linux-rdma+bounces-17334-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 11:25:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A51D1C1121
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 08:34:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0C8E1C208A
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 11:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D5C4B30501A9
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 07:34:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 80177303277B
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 10:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2687336EABE;
-	Sat, 28 Feb 2026 07:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7CD41C2F7;
+	Sat, 28 Feb 2026 10:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L1vpT7wm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932691A9FAF
-	for <linux-rdma@vger.kernel.org>; Sat, 28 Feb 2026 07:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352CD41C2E6
+	for <linux-rdma@vger.kernel.org>; Sat, 28 Feb 2026 10:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772264074; cv=none; b=dtsNyTyaItnJaq8TzVjRUCn+N06SvDQ8ZVwnIWEayVPE0KAy0CW8dGVAPjQGiUrBPDz3qnVmj8lNM2XVU+3wFPVceZ8NQgTxDXiiPRrzuFFNbEkRCssT6sAgDMHJulP6y6hmdfUfUUZj9qjwYlHs1GH/Q6TfjKe9qdEeuArEglo=
+	t=1772274303; cv=none; b=m1bAWCrtE98x6kDY0Kba/qyba+2719GUrPIiH3CE2n7Jg5IHa0JcnscT45pPnNJYy1wPD1wWtuXfudtuTtru7QOoFDdT30YBgJa8JtYgGu6y2sZtywreCq7pmZKZxdz29nojvJeAo9zhsBiqPUkJMzsj/HxR2eoD1hI7hS2cbHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772264074; c=relaxed/simple;
-	bh=Mrp4TgoPfSaUTanVGAs0KEesojJezHE2qCPFPcCJPXQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mavgM8PEAD2SIUV5818O/iU4wd9+9vUvx0D76myoLO+crq8ScaPYe46DYkYYnmJSMSSc6h7YBH8juDxYeu+q3FVVniwlZ3ua+fKmg//x6/yMkVIQJLg/SX6NCvupKZ+6MYEGXE3U+8Gncm5UcNlH2So9T6EqbI5OtzJHDGetk+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-679c29b437cso25021262eaf.2
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Feb 2026 23:34:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772264071; x=1772868871;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R27OMY8NQ/84Gwe4R5rhN9Q+86t/niigV0jo5326yEk=;
-        b=vGrhgO86DwTsn02w+6DAdGQkmyw7yV9Lw7bbEmzHKbjE6dVYuNfZc9SDmII4K7uZNR
-         2+FI0v3tGOI6JL0DSheOm5MPLIaYSo3/CxQM/JkWHlr/2jx3xOsg7F08rbtjGnymRrKp
-         heyU1XGZjqnmSglXWTWqqa77FsUZECyDI8lavPUIcpSKv1uFRQBcsHu+q2C5BIZnqBhw
-         9We5W7k6Uw5d9lKwKMzo62WPHMSEJNgm4cSiRk39JXa8Afma9G76mgXKyFuFCi2sAAoz
-         5rMiiR+m+esMmaAlVxG9cW8GFftzBipnEEWnrMB3MTsED1wu2xd8t15wuMhL8FWSISmt
-         g5TA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+kw0z012J1ApjD3DP86mnbq7jgk6XqaM/fzsmuVHGktTajAaHsBdcQD5c11j4gWSJjuj7QKfMzRCS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6rtgRhh4Y1V8Q+l6Iysxez0lsxps9UxQe6pU0YZU7NQDIoetu
-	5c9hgPLGH5T7rIKd6d0+9/hv6dedj7+BxFzR11o+CyGIZSXgDS0nxThxhZyh9JwKf9mFSgarmPr
-	ZFOGyGlVPm8RI1iHXXuIUk6z/Zdes1ahIfuNKPVX0pn5HF/oD/Mc+sbaoFS0=
+	s=arc-20240116; t=1772274303; c=relaxed/simple;
+	bh=qgxr04DzpqZuuvLJo39Vf9euXNTZ/DZ7hjmExj4iNdE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SrpIqqH8m9542VSUbJC78PGMLFcnJtG+oOURlTn3NU5IXE8OW/iE1HbAO7k0bmiECeEK5QA//rfIhR+1m2p5WEMaHqSYt6TB+KbGhqhLVuOcwxKWcr0KLpjS4DaYraXDa6EFFF9YAV20r4cC1h3Z59VoMNB4Vv2iiu74F5FVcz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L1vpT7wm; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1772274301; x=1803810301;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qgxr04DzpqZuuvLJo39Vf9euXNTZ/DZ7hjmExj4iNdE=;
+  b=L1vpT7wmFG8KGLOns6WAVMjiwLXH3sz3FfDI3s3XupDlZ3sb0uOmU5qi
+   8KHr4mCcy5p7sbKXU2HClbzut5QGYBWsGS/DlQh1hUHibvDmKx+1VL/qA
+   sLTCMIsY+4DKS9SFeedhnyOEgbeA0vqE/kmdZHKXsalnw/8IuRB+XrQkN
+   hl8VXDNNBRRU9AR4CQ4bUMOTT6O2RIG4VJTzdiiFtmST5WKbMFx+FJez9
+   D8bLRDwU2P+uPjtb9L+hJsTjoitJ0cOSNpAiwnEBlriEyrlOaAX5403vR
+   lO0YE9D7FgXf3PbJM6NCwuuf5rLZ6yoDENaKiimps2b+R98KKG3ifmCtg
+   w==;
+X-CSE-ConnectionGUID: 59kAyCuPR/Ga78yE5z6m2g==
+X-CSE-MsgGUID: wt6tFUbuQsuiuLNoyplzrQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11714"; a="77216647"
+X-IronPort-AV: E=Sophos;i="6.21,315,1763452800"; 
+   d="scan'208";a="77216647"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2026 02:25:01 -0800
+X-CSE-ConnectionGUID: +rmd393YT4S5jGy/dmhnNg==
+X-CSE-MsgGUID: tryl4o5iRDSH9797dWTdIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,315,1763452800"; 
+   d="scan'208";a="214914795"
+Received: from lkp-server02.sh.intel.com (HELO a3936d6a266d) ([10.239.97.151])
+  by fmviesa010.fm.intel.com with ESMTP; 28 Feb 2026 02:24:58 -0800
+Received: from kbuild by a3936d6a266d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vwHVI-00000000BSh-00XA;
+	Sat, 28 Feb 2026 10:24:56 +0000
+Date: Sat, 28 Feb 2026 18:24:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Cc: oe-kbuild-all@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH v2 03/13] RDMA: Add ib_copy_validate_udata_in()
+Message-ID: <202602281856.cOumhTuc-lkp@intel.com>
+References: <3-v2-13af4a900857+4f13-bnxt_re_uapi_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:4dce:b0:676:96fa:299e with SMTP id
- 006d021491bc7-679fadf3c00mr3521374eaf.27.1772264071693; Fri, 27 Feb 2026
- 23:34:31 -0800 (PST)
-Date: Fri, 27 Feb 2026 23:34:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69a29a87.050a0220.3a55be.0033.GAE@google.com>
-Subject: [syzbot] [rdma?] kernel BUG in ib_device_get_by_netdev
-From: syzbot <syzbot+d4b5f56fae098a9ff611@syzkaller.appspotmail.com>
-To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3-v2-13af4a900857+4f13-bnxt_re_uapi_jgg@nvidia.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=a3fcc8cba4273681];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17333-lists,linux-rdma=lfdr.de,d4b5f56fae098a9ff611];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[intel.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17334-lists,linux-rdma=lfdr.de];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_DN_NONE(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	R_DKIM_NA(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Queue-Id: 3A51D1C1121
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: F0C8E1C208A
 X-Rspamd-Action: no action
 
-Hello,
+Hi Jason,
 
-syzbot found the following issue on:
+kernel test robot noticed the following build errors:
 
-HEAD commit:    779cae956c83 Add linux-next specific files for 20260223
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13be455a580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a3fcc8cba4273681
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4b5f56fae098a9ff611
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+[auto build test ERROR on 3f4a08e64442340f4807de63e30aef22cc308830]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Gunthorpe/RDMA-Use-copy_struct_from_user-instead-of-open-coding/20260227-093947
+base:   3f4a08e64442340f4807de63e30aef22cc308830
+patch link:    https://lore.kernel.org/r/3-v2-13af4a900857%2B4f13-bnxt_re_uapi_jgg%40nvidia.com
+patch subject: [PATCH v2 03/13] RDMA: Add ib_copy_validate_udata_in()
+config: i386-randconfig-141-20260227 (https://download.01.org/0day-ci/archive/20260228/202602281856.cOumhTuc-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.4.0-5) 12.4.0
+smatch version: v0.5.0-8994-gd50c5a4c
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260228/202602281856.cOumhTuc-lkp@intel.com/reproduce)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8e60025d7912/disk-779cae95.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a9dd1cf82d19/vmlinux-779cae95.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3c0e344b536d/bzImage-779cae95.xz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602281856.cOumhTuc-lkp@intel.com/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d4b5f56fae098a9ff611@syzkaller.appspotmail.com
+All errors (new ones prefixed by >>):
 
-------------[ cut here ]------------
-kernel BUG at ./include/rdma/ib_verbs.h:4611!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 1 UID: 0 PID: 7532 Comm: syz.1.433 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
-RIP: 0010:ib_device_try_get include/rdma/ib_verbs.h:4611 [inline]
-RIP: 0010:ib_device_get_by_netdev+0x529/0x530 drivers/infiniband/core/device.c:2356
-Code: 28 f9 48 8b 44 24 38 42 80 3c 30 00 74 08 4c 89 e7 e8 1b ad 92 f9 4d 8b 3c 24 e9 fd fe ff ff e8 2d e4 10 03 e8 28 85 28 f9 90 <0f> 0b 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000493e640 EFLAGS: 00010283
-RAX: ffffffff889d0d38 RBX: ffff88806d3e5104 RCX: 0000000000080000
-RDX: ffffc9000d311000 RSI: 0000000000031136 RDI: 0000000000031137
-RBP: ffffc9000493e720 R08: ffffffff889d0891 R09: ffffffff8e7602e0
-R10: dffffc0000000000 R11: ffffffff88c6ab20 R12: ffff88807d7251b8
-R13: ffff88806d3e4000 R14: dffffc0000000000 R15: 1ffff92000927cd0
-FS:  00007fdd927f66c0(0000) GS:ffff88812555e000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055558fbca4e8 CR3: 00000000796b6000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- siw_netdev_event+0x4c/0x170 drivers/infiniband/sw/siw/siw_main.c:374
- notifier_call_chain+0x1be/0x400 kernel/notifier.c:85
- call_netdevice_notifiers_extack net/core/dev.c:2288 [inline]
- call_netdevice_notifiers net/core/dev.c:2302 [inline]
- netdev_features_change net/core/dev.c:1590 [inline]
- netdev_change_features net/core/dev.c:11097 [inline]
- netdev_compute_master_upper_features+0x91e/0xac0 net/core/dev.c:12869
- bond_enslave+0x21cc/0x3c40 drivers/net/bonding/bond_main.c:2226
- do_set_master+0x533/0x6d0 net/core/rtnetlink.c:2963
- do_setlink+0x1018/0x4590 net/core/rtnetlink.c:3165
- rtnl_changelink net/core/rtnetlink.c:3776 [inline]
- __rtnl_newlink net/core/rtnetlink.c:3935 [inline]
- rtnl_newlink+0x15a9/0x1be0 net/core/rtnetlink.c:4072
- rtnetlink_rcv_msg+0x7d5/0xbe0 net/core/rtnetlink.c:6958
- netlink_rcv_skb+0x232/0x4b0 net/netlink/af_netlink.c:2550
- netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
- netlink_unicast+0x80f/0x9b0 net/netlink/af_netlink.c:1344
- netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1894
- sock_sendmsg_nosec+0x18f/0x1d0 net/socket.c:737
- __sock_sendmsg net/socket.c:752 [inline]
- ____sys_sendmsg+0x589/0x8c0 net/socket.c:2610
- ___sys_sendmsg+0x2a5/0x360 net/socket.c:2664
- __sys_sendmsg net/socket.c:2696 [inline]
- __do_sys_sendmsg net/socket.c:2701 [inline]
- __se_sys_sendmsg net/socket.c:2699 [inline]
- __x64_sys_sendmsg+0x1bd/0x2a0 net/socket.c:2699
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fdd9459c629
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fdd927f6028 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fdd94815fa0 RCX: 00007fdd9459c629
-RDX: 0000000000000010 RSI: 0000200000000600 RDI: 0000000000000004
-RBP: 00007fdd94632b39 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fdd94816038 R14: 00007fdd94815fa0 R15: 00007ffc8f7a8198
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ib_device_try_get include/rdma/ib_verbs.h:4611 [inline]
-RIP: 0010:ib_device_get_by_netdev+0x529/0x530 drivers/infiniband/core/device.c:2356
-Code: 28 f9 48 8b 44 24 38 42 80 3c 30 00 74 08 4c 89 e7 e8 1b ad 92 f9 4d 8b 3c 24 e9 fd fe ff ff e8 2d e4 10 03 e8 28 85 28 f9 90 <0f> 0b 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000493e640 EFLAGS: 00010283
-RAX: ffffffff889d0d38 RBX: ffff88806d3e5104 RCX: 0000000000080000
-RDX: ffffc9000d311000 RSI: 0000000000031136 RDI: 0000000000031137
-RBP: ffffc9000493e720 R08: ffffffff889d0891 R09: ffffffff8e7602e0
-R10: dffffc0000000000 R11: ffffffff88c6ab20 R12: ffff88807d7251b8
-R13: ffff88806d3e4000 R14: dffffc0000000000 R15: 1ffff92000927cd0
-FS:  00007fdd927f66c0(0000) GS:ffff88812545e000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8d20bc3484 CR3: 00000000796b6000 CR4: 00000000003526f0
+   In file included from include/rdma/uverbs_std_types.h:10,
+                    from drivers/infiniband/core/uverbs.h:49,
+                    from drivers/infiniband/core/nldev.c:44:
+   include/rdma/uverbs_ioctl.h: In function '_ib_copy_validate_udata_in':
+>> include/rdma/uverbs_ioctl.h:964:17: error: 'EVINAL' undeclared (first use in this function); did you mean 'EINVAL'?
+     964 |         return -EVINAL;
+         |                 ^~~~~~
+         |                 EINVAL
+   include/rdma/uverbs_ioctl.h:964:17: note: each undeclared identifier is reported only once for each function it appears in
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +964 include/rdma/uverbs_ioctl.h
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+   959	
+   960	static inline int _ib_copy_validate_udata_in(struct ib_udata *udata, void *req,
+   961						     size_t kernel_size,
+   962						     size_t minimum_size)
+   963	{
+ > 964		return -EVINAL;
+   965	}
+   966	
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
