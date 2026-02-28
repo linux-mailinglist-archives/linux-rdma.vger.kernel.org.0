@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-17342-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17343-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EEDlKdlzo2n9DQUAu9opvQ
-	(envelope-from <linux-rdma+bounces-17342-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Mar 2026 00:01:45 +0100
+	id QAfqLTd0o2n+DQUAu9opvQ
+	(envelope-from <linux-rdma+bounces-17343-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 01 Mar 2026 00:03:19 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084281C997D
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Mar 2026 00:01:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 120631C99AF
+	for <lists+linux-rdma@lfdr.de>; Sun, 01 Mar 2026 00:03:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1B5D7301C100
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 23:01:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C5E8C301DCCA
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 23:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DAF3624D1;
-	Sat, 28 Feb 2026 23:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396F33859D9;
+	Sat, 28 Feb 2026 23:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZGvDXCIJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dQzVym2d"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6F633B6E0;
-	Sat, 28 Feb 2026 23:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA963176EF;
+	Sat, 28 Feb 2026 23:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772319701; cv=none; b=nkeHZYQRLVqBkWhCXUY0C/SK0p3J1/AZnudund0hoq4v9JUH3yOvxn/nnO54F4Bt604soJKc59A20gTEPorbnIxMQ/gjoKHOf7nwc+TtULyjOyfm1Z4E4Fs+HzLLltYGyqV9jOmmrY4Wb2quyT76wxGyjlR6LnYPJOoLTz0tndg=
+	t=1772319793; cv=none; b=mfy19BHGICOQnTTfEhXX7m5zNA68D3pFM38w42yFSXWwi1wv+8B9T0Ykh0dIUrBB6qMnM5tYQ77TEmWJSW1S2OpBd24pEciDC+pKcBv5sAnR72qOOeiBH3SBZ0IBJHmDtdbg/Q66tYrhKBhMN5BSOIHYnvP4/8WqGfGGfxbu5fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772319701; c=relaxed/simple;
-	bh=MqqasWg3JHrbA1uVAhFFc1wBQLaZ8HY7uBk+lc+Nkrs=;
+	s=arc-20240116; t=1772319793; c=relaxed/simple;
+	bh=XAmYS0SfODrg1XPDl6AADcpqQeng3ZTSgu8ko+uE+AQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HmjTLsqfrguTH6ypBk5OIznJ/tI/byaRulEW5stFqQvoQcbdH52Cd8OL4wl0OKj4MifqCNc38ir4lw0S1ZniiAhkNkh/pO9koHO5xaca4+xt9Ig9v81A4nmATDT2pfyd7Y/Q0nFZPB5m1rw6guaivvbY00oxSdd7aO2qR44/VOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZGvDXCIJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4E7C19421;
-	Sat, 28 Feb 2026 23:01:39 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jI+/Uzj+kUWOXY6ljouBKQZn+Xt1CwE0U3nrdiKi7l7NKbg9HJY2PU6/LYq9+HjgOM0JhlE9bX6pXcwHCZiHVTnKBOg9T2MGiwri/QckWML4wgx0BJqQcdpefnzGlJdkRwv8XKjci7nWi8pXGq0RYjezUuLMmN/faUiCjTPukos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dQzVym2d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D86FBC116D0;
+	Sat, 28 Feb 2026 23:03:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772319700;
-	bh=MqqasWg3JHrbA1uVAhFFc1wBQLaZ8HY7uBk+lc+Nkrs=;
+	s=k20201202; t=1772319792;
+	bh=XAmYS0SfODrg1XPDl6AADcpqQeng3ZTSgu8ko+uE+AQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZGvDXCIJDduIIZnyU29uspufH2o45ggbkmBZrT2xvyIGChc7cwK0kntXm7WY90l3u
-	 0smcx42hCwLlDC2PmbrP2V7q8t+APVW8051NBzB0Q8UBQ6HSy10ZVBNHG1aKZlcw59
-	 18Ye3WWx8esC7//Ws76NTetm6kKUm1iQKAmwmdm410nrhNThMhFqNzh5rL5CtlCv+9
-	 5mDMlrtfKoOULnc/VUGj+JfZVBmSqx6UspFS2/9Kq/m2j/oHS/QVWpSOpY0m0rMod6
-	 i0oOnQ6Y1ha2aHuGc1YcEdYHvBRsuLNLsZMolQay4x+jd/jnAMQk/7zqX3AjPVRgWJ
-	 wRsWO0cMnjDFA==
-Date: Sat, 28 Feb 2026 15:01:38 -0800
+	b=dQzVym2dAvOtJ70Kq9OfEgb4o2GP7rZ54HZzxh5ZuiF5Vu9Wo8zsCd3bPZBouiYLp
+	 cLK7YsUyxsy9MeoCOXrS6M9WTGSAZK2habv81eW5/6NlKgtdQOWXXv/ExYmAStNufp
+	 C+qqXMYvIk9DnQsoGiQF6zUwq0pU+8ZG484Wxs93kEqUmsqlLUijJ6Bs8IMdMhr5Gd
+	 7Es862K1SGvbwzuhmoZPTxXcrUwYsylAdjqehT5081G4beyvKBVNc1B591o1zJqrKV
+	 udGv3ha3wVSAadEg/aaZT1IPGmJ/8adOlneN7zWJaHszI+JUVkVKmnimwtj+CPegj8
+	 Yqe8N7T1L9GJg==
+Date: Sat, 28 Feb 2026 15:03:11 -0800
 From: Jakub Kicinski <kuba@kernel.org>
 To: Jiri Pirko <jiri@resnulli.us>
 Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
@@ -56,12 +56,12 @@ Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
  chuck.lever@oracle.com, matttbe@kernel.org, cjubran@nvidia.com,
  daniel.zahka@gmail.com, linux-doc@vger.kernel.org,
  linux-rdma@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 07/10] devlink: allow devlink instance
- allocation without a backing device
-Message-ID: <20260228150138.14e35ee7@kernel.org>
-In-Reply-To: <20260225133422.290965-8-jiri@resnulli.us>
+Subject: Re: [PATCH net-next v2 08/10] devlink: introduce shared devlink
+ instance for PFs on same chip
+Message-ID: <20260228150311.1a1ded74@kernel.org>
+In-Reply-To: <20260225133422.290965-9-jiri@resnulli.us>
 References: <20260225133422.290965-1-jiri@resnulli.us>
-	<20260225133422.290965-8-jiri@resnulli.us>
+	<20260225133422.290965-9-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -76,11 +76,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17342-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17343-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -98,17 +98,21 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 084281C997D
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 120631C99AF
 X-Rspamd-Action: no action
 
-On Wed, 25 Feb 2026 14:34:19 +0100 Jiri Pirko wrote:
-> -	dev_warn(port->devlink->dev, "Type was not set for devlink port.");
-> +	if (port->devlink->dev)
-> +		dev_warn(port->devlink->dev,
-> +			 "Type was not set for devlink port.");
+On Wed, 25 Feb 2026 14:34:20 +0100 Jiri Pirko wrote:
+> +struct devlink_shd {
+> +	struct list_head list; /* Node in shd list */
+> +	const char *id; /* Identifier string (e.g., serial number) */
+> +	refcount_t refcount; /* Reference count */
+> +	char priv[] __aligned(NETDEV_ALIGN); /* Driver private data */
+> +};
 
-since I'm already nit-picking - maybe we should have a helper for this
-case an pr_warn() the message if dev is NULL?
+As pointed out by AI you promised a size member and a __counted_by()
+annotation :)
+-- 
+pw-bot: cr
 
