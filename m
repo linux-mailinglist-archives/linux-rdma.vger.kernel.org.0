@@ -1,120 +1,120 @@
-Return-Path: <linux-rdma+bounces-17339-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17340-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ggVBDaJto2kwDAUAu9opvQ
-	(envelope-from <linux-rdma+bounces-17339-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 23:35:14 +0100
+	id gMj0Etlwo2nMDAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-17340-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 23:48:57 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F8061C984D
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 23:35:12 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D4741C98E5
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 23:48:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A8B5630166DA
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 22:35:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 208B9300B50B
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Feb 2026 22:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39EB93D646E;
-	Sat, 28 Feb 2026 22:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB2B3D6CC2;
+	Sat, 28 Feb 2026 22:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OPcdAixk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27B8175A76
-	for <linux-rdma@vger.kernel.org>; Sat, 28 Feb 2026 22:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D08A430B9A;
+	Sat, 28 Feb 2026 22:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772318108; cv=none; b=XLwJ48/d2VQRrStjUtcDhmE6DgBy6h/l0Bxx6m9Dd2uK6sGIu4ISn+SA1J7B8nwHVpY1Bo9rEiwFD6U7yHRz05g0xHBWfbpQcHX6O0ivTsOyqTbZvvX+eZWC57/3STDeJDlC2n/1D4WlL1wcdUw7H/3VIu+ABIA2+yPtZ45h/lw=
+	t=1772318928; cv=none; b=jF7nKBCEYpTORBgeYycgITdzrsbwj0mcXH9NTd4UuxS0hHIpHKtn8jpeBAfWOvu3rzcNH6BP1IiaMaHCK1vsyC4ZXgICckuX0qQWUAfMQRS33kok45W5blm9yNBLteWh/FOiv7eW/mlUIyMT3i/pQgzf+ymT4KKR1uEAExdKKeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772318108; c=relaxed/simple;
-	bh=Zu93DIcdmr6N7igC6YsHB8Nw0DBNUFS54rOZ82/1O/A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LVrXDUzDLF2FiBPPrcoq0q9fTXG4zAH+paqDZ9nkIb7Kb2nSBba+yj0KOAB0P5LD/ksR8sGlYwCnF67WvIA7Bn1upNQ12m7lgKO10I9k56awgk7qjzTQ03A//kFAYHdlqPgdSaDVknILti53eWYsjh32XX6IOxPVb88f+A3L35I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 61SMZ0wg048650;
-	Sun, 1 Mar 2026 07:35:00 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.2] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 61SMZ0oW048643
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 1 Mar 2026 07:35:00 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <68867ec9-28f4-4ec1-8639-0b970da148a4@I-love.SAKURA.ne.jp>
-Date: Sun, 1 Mar 2026 07:35:00 +0900
+	s=arc-20240116; t=1772318928; c=relaxed/simple;
+	bh=eQj2q0RyyHpB5QTjS7DyKuJ0V0YvmR5N137wYMSSs4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d0sZSBfa94nlUMH7ZevOhz4ooRC9FpDb6uD1MvIlr6UuFgTMMw0aWJv3nbDhkFnK4a19RYUNLuI/DvBmF6olF8O2Ay3UuP8bQ7OhJklfSJkXL6IJEYOzACyS0TXX6EwtIAWuqDZGI+vGnvFHvr2U44GE3YxdeAyAdp9oyf+vpag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OPcdAixk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B249C116D0;
+	Sat, 28 Feb 2026 22:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772318928;
+	bh=eQj2q0RyyHpB5QTjS7DyKuJ0V0YvmR5N137wYMSSs4w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OPcdAixkUHjvsb8X4t9Fk2iCrKouSqVbLLxL4WYUbce8lX86tX4TOMoEdGKU2cGtf
+	 6Gg9808DbD6r2DGgKgcAB7TS4xtahzsyvvHW1rLad9YIJ22JxPllMdzxr/FPcjORKX
+	 pLBarHIutqBBywwv2CvXMHYemZ/L+XAqvEt5RpOVllZz1qerOkvrmU6x0fTIT8/W3Y
+	 AWBqaNDCeGU08OQqMlWF25ZFdNV+y5SmviCZvgEy8dZEzJvBild26fGMqHEqWZK/xZ
+	 DNpQFyXUwl0Ai1ODlQWP15Sgzg1a94ppsWHXZjCk8ka5IEveixOtSRZisJbhP0YPGf
+	 R52MxuDVp7G+Q==
+Date: Sat, 28 Feb 2026 14:48:46 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, horms@kernel.org, donald.hunter@gmail.com,
+ corbet@lwn.net, skhan@linuxfoundation.org, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ przemyslaw.kitszel@intel.com, mschmidt@redhat.com, andrew+netdev@lunn.ch,
+ rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ chuck.lever@oracle.com, matttbe@kernel.org, cjubran@nvidia.com,
+ daniel.zahka@gmail.com, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 04/10] devlink: allow to use devlink index
+ as a command handle
+Message-ID: <20260228144846.40f5dfeb@kernel.org>
+In-Reply-To: <20260225133422.290965-5-jiri@resnulli.us>
+References: <20260225133422.290965-1-jiri@resnulli.us>
+	<20260225133422.290965-5-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [rdma] "rdma link del" operation hangs at wait_for_completion()
- when a file descriptor is in use.
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: OFED mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>
-References: <cc96166a-a469-4bc9-bfbe-de6f40dffe97@I-love.SAKURA.ne.jp>
- <d800131b-d257-4dc7-adcf-7c35e7a223d2@I-love.SAKURA.ne.jp>
- <20260228164336.GQ44359@ziepe.ca>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20260228164336.GQ44359@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav405.rs.sakura.ne.jp
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-17339-lists,linux-rdma=lfdr.de];
-	TO_DN_ALL(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17340-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[i-love.sakura.ne.jp];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,google.com,redhat.com,kernel.org,gmail.com,lwn.net,linuxfoundation.org,nvidia.com,intel.com,lunn.ch,goodmis.org,efficios.com,oracle.com];
+	RCPT_COUNT_TWELVE(0.00)[26];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[penguin-kernel@I-love.SAKURA.ne.jp,linux-rdma@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,I-love.SAKURA.ne.jp:mid]
-X-Rspamd-Queue-Id: 0F8061C984D
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4D4741C98E5
 X-Rspamd-Action: no action
 
-On 2026/03/01 1:43, Jason Gunthorpe wrote:
-> On Sat, Feb 28, 2026 at 03:07:29PM +0900, Tetsuo Handa wrote:
->> On 2025/12/04 17:26, Tetsuo Handa wrote:
->>> I found that running the attached example program causes khungtaskd message. What is wrong?
->>
->> I found that this is a deadlock caused by "struct ib_device_ops"->disassociate_ucontext == NULL.
->> If the thread which called ib_uverbs_remove_one() is unable to call ib_uverbs_release_file()
->>  from ib_uverbs_close() because it is blocked at
->> wait_for_completion(), it forms a deadlock.
-> 
-> That doesn't sound right at all, the wait_for_completion is waiting
-> for other threads to let go of the context before closing it. rxe/etc
-> that syzkaller is testing don't support disassociate so they need to
-> wait.
+On Wed, 25 Feb 2026 14:34:16 +0100 Jiri Pirko wrote:
+> +	if (attrs[DEVLINK_ATTR_INDEX]) {
+> +		index = nla_get_uint(attrs[DEVLINK_ATTR_INDEX]);
+> +		devlink = devlinks_xa_lookup_get(net, index);
+> +		if (!devlink)
+> +			return ERR_PTR(-ENODEV);
+> +		goto found;
+> +	}
+> +
+>  	if (!attrs[DEVLINK_ATTR_BUS_NAME] || !attrs[DEVLINK_ATTR_DEV_NAME])
+>  		return ERR_PTR(-EINVAL);
 
-This issue was not found by syzkaller. Please see the reproducer.
-
-> 
-> If the wait gets stuck that is a different issue.
-
-My question is how we can support disassociate...
-
+If both INDEX and BUS_NAME + DEV_NAME are provided we should check
+that they point to the same device? Or reject user space passing both?
 
