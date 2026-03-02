@@ -1,175 +1,150 @@
-Return-Path: <linux-rdma+bounces-17361-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17362-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GE94ApZSpWmU8wUAu9opvQ
-	(envelope-from <linux-rdma+bounces-17361-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 10:04:22 +0100
+	id MGl/AK1UpWnR9AUAu9opvQ
+	(envelope-from <linux-rdma+bounces-17362-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 10:13:17 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75D861D5341
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 10:04:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F721D55AD
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 10:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id ED10E3024451
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 09:01:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2848E302E922
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 09:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3C93876D6;
-	Mon,  2 Mar 2026 09:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5359A34CFD4;
+	Mon,  2 Mar 2026 09:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RrA52l3b"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="AMVKFmcg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2EA33ADBA
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 09:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F06385503
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 09:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772442078; cv=none; b=aAFv3lHO8DkATU2dWplrsq3/zefniDzZSEXugROl/2qZYrOix7uYAJOC6eCCPULh4hXV0Q/NC7pU/5/Pexd2BxTFybe8p5iBTYeFNL7Ix+NxEv3TuNYphi3b9muQ6/cAnsM6XRJkrhzXDgEqCEJhKQkAgGrPPAuSZjLdgL7tH+c=
+	t=1772442563; cv=none; b=BXgryYYCfMCNFAI1xvvLV9nE4U1onU+1iCaHMRLbMr6vG7nnpk9JzsyLY+UOHQJLBfyiIVSyNvZtUPakdvixOkgMT7uOTMp6fFMXSsLbntceWN4WzhX70rTiNlQzok/AltL9a72TdI3yr4AbdyGn40rWNSvOMkns4jSodP0kE24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772442078; c=relaxed/simple;
-	bh=O7thirgE/HmH5gPIPWkZO3RkV6af64nRGWm0dBCW59Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JKdYRbSmZxtyL3fkHDu3g1QAJVGdG+7ne2fCWJ9T/SzPcVRFvsDTV+dnRGBgxgfcnHYphyruqMaVWOsi/axsmb2BA18y1h+S3QA79Tw78oMzPZkmD6robqgc/E4de6SmCpM7Kl8C0FNbZksDd0Fz22W1SsZ6IJjSEviYzj2UByg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RrA52l3b; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 0D3471A2117;
-	Mon,  2 Mar 2026 09:01:15 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D46905FE89;
-	Mon,  2 Mar 2026 09:01:14 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 80AAA10369517;
-	Mon,  2 Mar 2026 10:00:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1772442073; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=NatQwThJvajcx8kzrOyk8duEdQeD0wDtLj00K/M0jVo=;
-	b=RrA52l3bxUkrs68CzjlH+eUAASGK1rdtkxtcwY/JLXcYLWEvnkrgQR2m8p5YUlq2sp3OD3
-	4x8czOfzEOF4arj0ayiQxXXHL8XR9a8eoVGT4oQSKQxgd4/bnratP9wIlsUiLRqdcWaHu7
-	Nvl1NgmVBGdqJaLnDx0IadewB2wS/Qccv0wgbGkBGtr3eMmsF5ZIeeQ6G01eriOI4jmTc2
-	2EW/rXaraBQH1xhbBcFAXfLwkSP4Gx/O/1v+KMChnLo9gtJOG1NAEtph7/l+gq4qUt1064
-	3lXMKgVbmEndCBIf1piM7EJg7Cgx8u8DhA9DBd6VEmRQSFdl5BZBfWJKHXlatw==
-Message-ID: <f2ce4c3b-407e-4c01-b117-c646feed877f@bootlin.com>
-Date: Mon, 2 Mar 2026 10:00:36 +0100
+	s=arc-20240116; t=1772442563; c=relaxed/simple;
+	bh=ilMQGVCasLEyuVKt3xmPGLbzaexBUt4hoMGNq/qop6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GrX/NUVqTkxvVxa03Fl/idv1WwMb6rVQd02KLWbF97RIDhrZjdwmAZzcBpX/TAMh/175lDLK6BSlXqUsxkwwSGckwAQ2aBgUJRbGfWUW/QnY8NgwJIfpdYw0dGskIZYrI/heB9QAmYS7v9U1YbstR+KtY7BkSXSpA9SUY8ry1jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=AMVKFmcg; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4837f27cf2dso36896405e9.2
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2026 01:09:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1772442558; x=1773047358; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ilMQGVCasLEyuVKt3xmPGLbzaexBUt4hoMGNq/qop6c=;
+        b=AMVKFmcg4l39oJMarm/bn5uahr/tJ9jjFRlKIlqA9xsQAKkyq4jjrLZRY6EEKLVk8f
+         xm7DzBNyWrw6PnPJnMUyxa8fDXWDkd8ikJiYnewReUGwhNSdcPaqzdkTh6nUAvU+XU2T
+         xEsQjdgHgZQCq3TBUyCudQXI88B6yGIyRoc08x7bPK6sTBOhcrwOyMpJHJtf9zMxdAEE
+         QMiaeRLSCNLbfbu1ATqdUGq80PwNz7MUeHUKzeoLegcsotBwwzziUtrw+eDaOcHeuN51
+         U0K225TJgdXRYsu3xyaxvFsHcSPZuouu8gMh5cDO+e0FIFlHLaU7hO2qumGnjIGFVGs0
+         1LDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772442558; x=1773047358;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ilMQGVCasLEyuVKt3xmPGLbzaexBUt4hoMGNq/qop6c=;
+        b=DGtz3x/UTI5sNkecUYLO1ZFh3+Rg850oSl+oVaJfZs4gr/Prt2qdAbm+8xJHvdXM9z
+         qe4TEjAXua6iNXjhUfYkffTWjx9T9pRQeMq+tYGtQi9F/qNfs229LckYBfGWJDu4ncsH
+         7u+/tRaA7mCv8iYBu+o/qw48O8JYmweXyOyX/o+6P0mvwHcpvXxiIqcAtza3mxdJFhIr
+         xoXe24e/bjnc/HkM4dRAZlcELQHg8MixbSVgCVAQ5rfqu7DnW1m+ENnBfR5yjz4xXX15
+         fYuNz+rmm0iwNTXbkoBLh7wpvGxFNcS5JRplfibJQ7SSjqtRQxB9QQiO5/tPQqxnHuu8
+         ViWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVnZKrZRMGtiM7MpPnSVJSfzbkDjDXJ0fjS90ra4sr3ETYvYaTOPLioIhAchtJAZQtlCzRU18XaxY+b@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPqZf24ra//1DHRalSkUUFzZxSYTpEVdlhctcLalx6TdH+7kie
+	H7B+jF+ebBMXKS5Hv5YVVpV2m9+uxWZ0kydKPerusV0vb8WmVmWbYu0Y14OfbyAGImI=
+X-Gm-Gg: ATEYQzyZZciZ/lsRsy9LMS+Niv9hAJ/9TrLNqJtceMwG8hQyLgZPn3CAF7Sed5wfFdD
+	2bje/eS6yeTmHiWXLQ4A/aPwp5qAgHzyEUYonNAqcE05aDsLuZn4QuOTdWAOwH7f77RaSY5ywE3
+	lr+7LJ80rRc1FCqbKP+V6wY1IaSWpJBqHVAWQi92fBhhYcmyvrqp9QpLJcGwnuxD4NVhR3OLN66
+	i941k4udV9lMXhdBufom50fvFV+x7Mv7pdl7yAHHQ3rCq+wZbuuuS3Y9j9/fa8lpesx4vywdSfc
+	1+FAVL86OlMqJ5cyaDU61Q0w++zcPT+utBAOoXxox0sLxKQvrzHD88ZkGYoKtFXHL/nR/fIDGfL
+	BW5YHaRSV5sGQuMRo+gj2REUETa14XzgUnoOyI7rvLO6wUIDCfiEMdPDj9DbKTQF5zDRMiL3YVb
+	mIEVwfroauib2is0mT0e0Ujoe4518DOr/+qu8k1n7nJQIh
+X-Received: by 2002:a05:600c:3b18:b0:483:7631:befa with SMTP id 5b1f17b1804b1-483c9bc55d6mr190142375e9.5.1772442558003;
+        Mon, 02 Mar 2026 01:09:18 -0800 (PST)
+Received: from FV6GYCPJ69 ([140.209.217.211])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd68826asm633954365e9.0.2026.03.02.01.09.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2026 01:09:17 -0800 (PST)
+Date: Mon, 2 Mar 2026 10:09:15 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+	pabeni@redhat.com, horms@kernel.org, donald.hunter@gmail.com, corbet@lwn.net, 
+	skhan@linuxfoundation.org, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, 
+	mbloch@nvidia.com, przemyslaw.kitszel@intel.com, mschmidt@redhat.com, 
+	andrew+netdev@lunn.ch, rostedt@goodmis.org, mhiramat@kernel.org, 
+	mathieu.desnoyers@efficios.com, chuck.lever@oracle.com, matttbe@kernel.org, cjubran@nvidia.com, 
+	daniel.zahka@gmail.com, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 09/10] documentation: networking: add shared
+ devlink documentation
+Message-ID: <wukj2sqty6p54lsedkquvija4fm3xjgit53ukomnx4pgymxpsb@pwbyampuhj6k>
+References: <20260225133422.290965-1-jiri@resnulli.us>
+ <20260225133422.290965-10-jiri@resnulli.us>
+ <20260228150558.46f3be36@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next 0/4] ethtool: CMIS module diagnostic loopback
- support
-To: Andrew Lunn <andrew@lunn.ch>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
- Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Michael Chan <michael.chan@broadcom.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
- Danielle Ratson <danieller@nvidia.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20260219130050.2390226-1-bjorn@kernel.org>
- <415c4922-cc8d-4e35-bbac-3a532f44d238@lunn.ch>
- <20260219160519.323041bf@kernel.org>
- <3b0949fa-0b05-4bce-86c0-2a7a058865a5@lunn.ch>
- <20260220131254.03874c4c@kernel.org>
- <CAJ+HfNgXqpqDYsmAa-mpHnO82aDgC7XbyVw3TmXk-ySFmGA-JQ@mail.gmail.com>
- <20260223150401.7993b11a@kernel.org>
- <CAJ+HfNjmRjr6VtRijmN9=4zPwxstw9B8D-_XVn3hwJzNHka1Jw@mail.gmail.com>
- <363527d6-1f29-4399-83a7-978785d1e11f@lunn.ch>
- <CAJ+HfNhwM82H-sgbz0+WJGRjXJc8Ww0aCnp_YTNi-CB4aBMi=w@mail.gmail.com>
- <4c51f18c-5eb1-4a9e-93b9-70cf7a4fd387@lunn.ch>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <4c51f18c-5eb1-4a9e-93b9-70cf7a4fd387@lunn.ch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260228150558.46f3be36@kernel.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17361-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch,broadcom.com,marvell.com];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17362-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DMARC_NA(0.00)[resnulli.us];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,google.com,redhat.com,kernel.org,gmail.com,lwn.net,linuxfoundation.org,nvidia.com,intel.com,lunn.ch,goodmis.org,efficios.com,oracle.com];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
+	NEURAL_HAM(-0.00)[-0.998];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bootlin.com:mid,bootlin.com:dkim]
-X-Rspamd-Queue-Id: 75D861D5341
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 96F721D55AD
 X-Rspamd-Action: no action
 
-Hello Andrew, BJörn,
+Sun, Mar 01, 2026 at 12:05:58AM +0100, kuba@kernel.org wrote:
+>On Wed, 25 Feb 2026 14:34:21 +0100 Jiri Pirko wrote:
+>> +Shared devlink instances allow multiple physical functions (PFs) on the same
+>> +chip to share an additional devlink instance for chip-wide operations. This
+>> +is implemented within individual drivers alongside the individual PF devlink
+>> +instances, not replacing them.
+>
+>Sounds like you want to preclude what was the goal in the discussion
+>with Przemek you quoted - a shared instance _only_ case. We don't have
+>to implement it today, but I think it's an entirely sane direction.
+>So the docs should not state otherwise.
 
-On 25/02/2026 14:14, Andrew Lunn wrote:
->>> Suddenly does something else.
->>
->> Indeed!
->>
->>> Is this an ABI break? How do we make this reliable so implementing
->>> more loopbacks at different levels does not change how you use
->>> --set-loopback?
->>
->> Isn't this somewhat similar to what we have with ifindex/phy_index,
->> but potentially unstable when modules are swapped/changed?
-> 
-> If you hot plug hardware, a new PHY pops into existence, i don't think
-> it is too unreasonable for the hot plugable parts to change ids. I
-> would however expect the fixed parts to keep there IDs.
-
-That's indeed the phy index behaviour.
-
-> 
-> But here we are talking about software, a kernel upgrade/downgrade
-> causing the IDs to change.
->  
->> Instead of ids, use string name and/or topology indices (e.g.
->> phy_index)? All three -- owner, phy_index, name tuple?
-
-The overall approach after all these discussions sounds fine to me, I do
-think that the index of the component that does the loopback needs to be
-there somewhere, when relevant.
-
-Either through a name string, or a combo of an enum indicating the
-component type (MAC/PHY/Module/etc.) + its index. I think it's safe to
-assume that indices will fit in u32 ?
-
-something like :
-
-# MAC PCS loopback
-ethtool --set-loopback eth0 loc mac name pcs
-
-# PHY id 2 PMA loopback (I'm making things up here)
-ethtool --set-loopback eth0 loc phy id 2 name pma
-
-That way we can extend that fairly easily for, say, combo-port devices
-where we could select which of the port we want to loopback :)
-
-Maxime
-
+Fair enough, I can do it.
 
