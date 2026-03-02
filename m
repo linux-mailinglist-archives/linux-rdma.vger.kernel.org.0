@@ -1,195 +1,126 @@
-Return-Path: <linux-rdma+bounces-17370-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17371-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kGaLD9xppWkaAQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-17370-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:43:40 +0100
+	id mMOeD8VqpWkaAQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-17371-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:47:33 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D091D6BE7
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:43:39 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E3351D6CA3
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:47:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 07449306E851
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 10:33:57 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 495D130363F6
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 10:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D930331205;
-	Mon,  2 Mar 2026 10:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7B9335067;
+	Mon,  2 Mar 2026 10:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rq4xdrlu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fb08ir6G"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B16C3328FC
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 10:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30000332ED0;
+	Mon,  2 Mar 2026 10:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772447631; cv=none; b=TFa92BExabPBtPyTiiQIEBI2o8q3hc1eSvF6ks8VtSnilOOHDisOomL74Vf9wE/zG3BKSvttIKK9iM++zSMOxrAJLNz8l2xT6y93zcWSE/wYM+8uGj062F0d7o+hMtrNf1rAdG4bbx8wUiGHhReNsLdJUzHEOsTeCRelfFA5++k=
+	t=1772448126; cv=none; b=VxYiM4JppZFk6iTQ+qdmSLFNPZnaEnPg3mQnGLu86GOEpL+JMGKrUOxpJzwfBi0zgZt8GA+Tu95Yk2E3McygvOdRSuzN+2qNiuB+qzZ0b407C4PGdiKJAB3T38Hh+egzOy+aaPhQJqjCDR10euFEFD1G6M6P2YRcA/XKoli3TSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772447631; c=relaxed/simple;
-	bh=QEn+El7Z+bL/DWqeCCzlYqCfrkxihEN+xIGAxOA2r98=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=tjKDFGip67IkJYM0LPTLEKGtXbf8d/+r9pf+PP6QiBtiATrHLF3EwmuZkBRrqRtjOabCcxm80F3MgXOXMTi/aELXQ747TfnsaMT//lVVGC+XwZdiaQACz3PB7nzIX/SJS3Vsbj6FxHjpCmflEaz4W4DxAgQmIpxHf9mNrasKwEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rq4xdrlu; arc=none smtp.client-ip=209.85.128.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4837bfcfe0dso55050975e9.1
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2026 02:33:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772447626; x=1773052426; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EnMgJMcaQgCDj7i00Uawlj/G1rJtXPwe1sCLwvhoFHI=;
-        b=rq4xdrlutDZNzchgca2LpBR52y6AVtdV4PS2i7Okgss3v9KH1sO1XKDitIIPzPn/hI
-         IIqBvmSXgRGHTGiuZ2XWX5Pua3XkiI1cc6lsjEoJf15THOIKyZkqFuCYgr+6DkhGcWbq
-         zmNhmcRRpDjeE4c/lOsqWaUl7ccq5LIpH087AwRE7M6mp8jAvMMQTC0dLUrRHa5N6j+y
-         qnQVaZXoQ+z5FqKmO3oODPKlACGy9IKYFof51fLeqJh/4dwg7jhlPr9QlqoUYGSz8FbL
-         yQAzPFa8B5RV1degHbdqhI7/iD092kEARW9Nm78z08vqGCxZw109+IAio3IZyqGc1FDw
-         0tZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772447626; x=1773052426;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EnMgJMcaQgCDj7i00Uawlj/G1rJtXPwe1sCLwvhoFHI=;
-        b=j3CzlDQP9VWRzZzep+j8iTj2ruK1kFQR26q3xkECkeKg94P9mOcc3vxcmWco9Chs8X
-         V6UsJ04W51D+rWtRUm3StX+iFU/o8MIpYNmPXJMgCNWw8J62SS4Fb1FfEWHW/BbKCqXZ
-         hAO2I+eiCjITetUH8m6i34fqHmdpfoO7wfNwEiokIJRced+9xkEMgfdcxIOoHewNC3oy
-         OUO0FK8i5D77o2nKnEANzWagxlCmHl3Wqym/BA5Dw67zZnGYPLYCvCYWCNBn2FImR9iv
-         S4OyMBnPR/R9t80gCDB3ICCk5O3qMfrBg+v4wZqdZ9X/RB4+3X7So1/cO4gaN4mtRx1U
-         g8Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+KrLs0rmEpXukKcGmUv7mnkA9hLvx5fAwmR5ZhZ26I+NN4WTayfhUKYvAE6Yy2LyEZHoSOzPx6hae@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/KZa1weI6CfbtW7jwcZp/oPWKTSELyXD9fhw0enWGUDgKp5bI
-	kUcxg3lyGS/sJf6TdNE2wd2JRhnf9PqZJRF5BaxI1lYof9KUzbtAijLuFz0yhOx9Jyf5UcH9DA9
-	Q4Vfayl6IzcAFPuQPHw==
-X-Received: from wmdd1.prod.google.com ([2002:a05:600c:a201:b0:480:3227:a124])
- (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:6383:b0:47d:3ead:7440 with SMTP id 5b1f17b1804b1-483c9bdb683mr186031315e9.32.1772447625915;
- Mon, 02 Mar 2026 02:33:45 -0800 (PST)
-Date: Mon, 2 Mar 2026 10:33:45 +0000
-In-Reply-To: <f2f3a8a1-3dbf-4ef9-a89a-a6ec20791d1c@kernel.org>
+	s=arc-20240116; t=1772448126; c=relaxed/simple;
+	bh=30tfRf8+mm9aayN6sA/hqq8NEAanSViu/Bkw2w4+CTc=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=jcM8IYFzux3tpqQxejpJYyHnMRBeUryPK2h2M0mNgooWcOEFwi96T1O0pHJPQtP7qCFsJhzkkvFWluKPd39n4P65O9V1wnGFsdpqTZ55H0o2svF5vdLQfw6v5bXO+qgp1ybSBqsjmpFBL7cv0SZPY69ncad0liUrhwpYg6aJuSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fb08ir6G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383F7C19423;
+	Mon,  2 Mar 2026 10:42:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772448125;
+	bh=30tfRf8+mm9aayN6sA/hqq8NEAanSViu/Bkw2w4+CTc=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=fb08ir6Gtwro8mST3oiJl6O9D/ojgNsB8iPFP41N97+m1+oe797trB7lnDUyuQta5
+	 J3jh5vkZJZ2KdgJbj1VWeKt7MieUWPG3i4pgkxMW3c662PJLoho8KPkqLu165CGVWD
+	 dgdRkH3NEtRjgjKwinZgJ96Dc+H+SOZ1Zl+FYeIEcQkrsTZHNPYqVAImKPwjRkweIB
+	 jx14QxWTwXzk8QEo7HR0AmCCYjiYYIIzMFPxMUsUawDpUxTnTmf5oFLVxd24Rp/+u4
+	 jB3LsCaG/87SCH5Uu+MFp9PPzTLlbD4m6xUgQxBvTdPcSmx/7y6nWxr+80ma1Iikdd
+	 +8m3ZdTHjQqzw==
+From: Leon Romanovsky <leon@kernel.org>
+To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Selvin Xavier <selvin.xavier@broadcom.com>, 
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, 
+ Jason Gunthorpe <jgg@ziepe.ca>, 
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+ Chengchang Tang <tangchengchang@huawei.com>, 
+ Junxian Huang <huangjunxian6@hisilicon.com>, 
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
+ Yishai Hadas <yishaih@nvidia.com>, Bryan Tan <bryan-bt.tan@broadcom.com>, 
+ Vishnu Dasa <vishnu.dasa@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <20260226-complete-alloc-conversion-v1-1-ebf1df1c2518@nvidia.com>
+References: <20260226-complete-alloc-conversion-v1-1-ebf1df1c2518@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA: Complete
+ k[z|m|c]alloc-to-k[z|m]alloc_obj conversion
+Message-Id: <177244812274.900878.10282293475365020833.b4-ty@kernel.org>
+Date: Mon, 02 Mar 2026 05:42:02 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260227200848.114019-1-david@kernel.org> <20260227200848.114019-3-david@kernel.org>
- <aaLh2BxSgC9Jl5iS@google.com> <8a27e9ac-2025-4724-a46d-0a7c90894ba7@kernel.org>
- <aaVf5gv4XjV6Ddt-@google.com> <f2f3a8a1-3dbf-4ef9-a89a-a6ec20791d1c@kernel.org>
-Message-ID: <aaVnifbdxKhBddQp@google.com>
-Subject: Re: [PATCH v1 02/16] mm/memory: remove "zap_details" parameter from zap_page_range_single()
-From: Alice Ryhl <aliceryhl@google.com>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
-	"linux-mm @ kvack . org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, David Rientjes <rientjes@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
-	Claudio Imbrenda <imbrenda@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Arve =?utf-8?B?SGrDuG5uZXbDpWc=?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, 
-	Christian Brauner <brauner@kernel.org>, Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Eric Dumazet <edumazet@google.com>, 
-	Neal Cardwell <ncardwell@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-47773
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
-	TAGGED_FROM(0.00)[bounces-17370-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17371-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[73];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[aliceryhl@google.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-0.998];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 98D091D6BE7
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3E3351D6CA3
 X-Rspamd-Action: no action
 
-On Mon, Mar 02, 2026 at 11:27:40AM +0100, David Hildenbrand (Arm) wrote:
-> On 3/2/26 11:01, Alice Ryhl wrote:
-> > On Mon, Mar 02, 2026 at 09:18:45AM +0100, David Hildenbrand (Arm) wrote:
-> >> On 2/28/26 13:38, Alice Ryhl wrote:
-> >>>
-> >>>
-> >>> Please run rustfmt on Rust changes. Here, rustfmt leads to this being
-> >>> formatted on a single line:
-> >>
-> >> Having to run tooling I don't even have installed when removing a single
-> >> function parameter; did not expect that :)
-> > 
-> > Well, rustfmt comes with the compiler, and it would be ideal to build
-> > test changes before sending them :)
-> 
-> At least on Ubuntu on my notebook where I do most of the coding+patch
-> submissions it's a separate package?
-> 
-> I do all my builds on a different (more powerful) machine where the
-> whole rust machinery's in place. Further, build bots that run on my
-> private branches did not report any issues.
 
-There are some build bots that check for rustfmt, though not all of
-them.
+On Thu, 26 Feb 2026 15:07:50 +0200, Leon Romanovsky wrote:
+> Commits bf4afc53b77a ("Convert 'alloc_obj' family to use the new default
+> GFP_KERNEL argument") and 69050f8d6d07 ("treewide: Replace kmalloc with
+> kmalloc_obj for non-scalar types") updated various k[z|m|c]alloc calls to their
+> k[z|m]alloc_obj counterparts.
+> 
+> This commit finalizes that transition within the RDMA subsystem.
+> 
+> [...]
 
-> > But no worries, I took care of testing it. Thanks for taking the time to
-> > update the Rust code as well.
-> 
-> I just did an allyesconfig and it does not report any warnings.
-> 
-> So apparently, rustfmt problems not result in the compiler complaining?
-> 
-> Or something else is off here that rust/kernel/mm/virt.rs won't get
-> compiled on my machine, even with allyesconfig. I can definitely see
-> some RUSTC stuff happening in the logs, like
-> 
-> 	RUSTC L rust/kernel.o
-> 
-> Thanks for the review and for pointing out rustfmt!
+Applied, thanks!
 
-Similar to kerneldoc and other similar targets, formatting isn't checked
-in the normal build, but make can be invoked on the rustfmtcheck target
-to check it.
+[1/1] RDMA: Complete k[z|m|c]alloc-to-k[z|m]alloc_obj conversion
+      https://git.kernel.org/rdma/rdma/c/94ff7c59cdfde3
 
-Alice
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
