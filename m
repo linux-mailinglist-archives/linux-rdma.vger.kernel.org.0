@@ -1,71 +1,71 @@
-Return-Path: <linux-rdma+bounces-17352-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17353-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yC3HGr7WpGnYtgUAu9opvQ
-	(envelope-from <linux-rdma+bounces-17352-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 01:15:58 +0100
+	id KH7QAczWpGnYtgUAu9opvQ
+	(envelope-from <linux-rdma+bounces-17353-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 01:16:12 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACEF41D20B0
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 01:15:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C3F1D20D0
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 01:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8238030069BC
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 00:15:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 742A5301AF71
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 00:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229D91684A4;
-	Mon,  2 Mar 2026 00:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E23199EAD;
+	Mon,  2 Mar 2026 00:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uljas3LQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E32iGYCa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f74.google.com (mail-yx1-f74.google.com [74.125.224.74])
+Received: from mail-qv1-f73.google.com (mail-qv1-f73.google.com [209.85.219.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6BC175A8F
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 00:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEBE175A8F
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 00:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772410553; cv=none; b=lDviq9V0Ofq/Gb/hCBRR4kBL0xIKDT6/MLyclaG5gGP5kB1MH64LvkUp1v72vYirDlah41v1v4a/tv6psn7Duh34PEAtz++k//lcGGoPhGz88v49TUc+/wihTuqovSapnKtAQ8+4wcIrQmuBTnXPYepD96peQ0JAwec6hhU3SZU=
+	t=1772410556; cv=none; b=dzDrPkiZDh7cVqMnr0As8M1CAE4Agfn3M58BRidHDhmY22qPvkGL601XCH+WYhQ7Xo2ywtUqEn+Fj89q7NJ4MfLqUF+5dxsuFTCy+8uAhOutui1undpE2ZToiC/LIDJpWlPFhr5qMkk4Tx7UYkE/4o9IIfoieGaf4G0RoiBbA/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772410553; c=relaxed/simple;
-	bh=jC4oGrrlJSAlJOV2255SqDK+gYmXBtyjI6+zixJN700=;
+	s=arc-20240116; t=1772410556; c=relaxed/simple;
+	bh=gP+oP3IxVstoJZ40XpHqNF0ITVWPAjIECsDaTOe/tSw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=MZ4S2SdjEkWDG6sOWJDjGOi1UGERjbkc7OoLwi0gSwnPSVLJ+yilp2IOhA+9pS6uxSUUSbgI4ter04t6Q7p+HWTIlqatZeBH976pSIb69j9nH9rLcMtltDnNNIfiH72qBboetKW+wcjUoNh6wW2+SZIVoekQPDPXliDTIpigmbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Uljas3LQ; arc=none smtp.client-ip=74.125.224.74
+	 To:Cc:Content-Type; b=P4qQsWMsgHohnsqJSzUYSjuwGwa3RKQBNxKK5rksVnqAQa+LQNIaUaQrwXcs/GlVaHYeCkNmGGHkIuyD2zz1BAXv4YRpe8O9IzpfOVn6nSIhoPEHDYNueIk13CG8dFoapxXJVYQWKKz6Gbaz3SGxVujc+JIxRbTt3tQWtSghhu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E32iGYCa; arc=none smtp.client-ip=209.85.219.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
-Received: by mail-yx1-f74.google.com with SMTP id 956f58d0204a3-64ca6895833so5573748d50.2
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2026 16:15:52 -0800 (PST)
+Received: by mail-qv1-f73.google.com with SMTP id 6a1803df08f44-899e76aa555so166669146d6.2
+        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2026 16:15:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772410552; x=1773015352; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1772410554; x=1773015354; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EtSF34BrdcNBnnjyLsvCjtmRiBxrqSGHgwNPpC60LzU=;
-        b=Uljas3LQ+oEYV2dJdqgjKTDtgxW7+HNzC35UOUux8JKOmZhsJUc4il8WIqTNI5VCEI
-         Y50mGb6goU7ejvPE8WKanHzq6S+CgG4VRF85EzQg8Vbj3GNo4FIEgciDk59vaUTtBdOX
-         tYUfvDdJPCGExXivqRPL+IqLxpaUwPgjPzW9AdgshpxY1uW7r1lME4dWSGjXSvoB1vwV
-         l/+h7vdTdvNMcoomEqQVZBJ3POzgKsJoMhWumSgms9+LKc0wAxKeJgCQJ/pjl4mDLC/v
-         fkZJ0NJIdXeGiYEytkklCbEn1duCPPNabQCIZRl7PDh6LjvWBMPM83TuxVXoVxnVVO2J
-         kgaw==
+        bh=460O629QjDGQi/wu9Blzygm/qAeDEXekmH8q8iybpaI=;
+        b=E32iGYCayd4Z0PLCLCXiS/KR6n2WYh2h3yy042ZIu+eBo8wQ7Y/z/aBdXjmKZZPs8n
+         nmmq5Q92rop0Oeqa9Qi3GRGEnv0dAnbXSjULU3j0UJWfzOdGZnCvzWTRHZ+G1CCwDTTJ
+         TQ7puX8tdGbb1XVPm6ZreWyWI6lwRoAqJjYONzjrFL40bRb7debDyQ9noMp4TWp2+vCj
+         6FhYoCD5tenb0AWiNKAhHp6CTvIHV4D1twUXSVaKvwjXBHT70+Gc7rGMa9VcEBPbYpKX
+         EF7jyVs7QMwz+PWQ3MbJCWXPw2/114Ipe6ijoqNDmkmz5Pputv3/cFgqbyTAq0Ag7PZP
+         f8BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772410552; x=1773015352;
+        d=1e100.net; s=20230601; t=1772410554; x=1773015354;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EtSF34BrdcNBnnjyLsvCjtmRiBxrqSGHgwNPpC60LzU=;
-        b=DQk4L4NVuKRP52ml7fneAQanlCl5b0M5Gr5FIqQnPGjye2b3DDpxs16ClYLCnwUhTV
-         xIFvqIxWSJNHC/N+AR07ol3Vj8DqMjHzGV9EBujCRgO1JzQzsdk0BD2X5t3zEeeel8PT
-         IBKPgtAT8FKLecPLlkdsNDngEF6Uo4DPCBpV0uyoSTIPjfG/3Wdx9d4Hez/ojX/k0ekn
-         Ye80l15WmOStB7nmWmFKMmZlDPS3DWKOqS4XkF3jfvVD7fGlA+NuvKr9/6RylKb/xLpw
-         L7ti9vp5At+uxqy0e4T4xCfBWwtYDatgSHppGXqkH+1f+ZnZC9VTS7WWqxb6P43VzcmP
-         HL2g==
-X-Gm-Message-State: AOJu0Yw+qvLSvSxI1rbE50BBV+mFLnk73mkvRpjC6avAe6fd4lvD7cG7
-	LkQ2pP2yQonWKDPmrrDRBpCcSQj1LStztvUb1mEdzQwSZpdJ1yIuWcU6T2Jm7ZmgrQbSe0tPInP
-	TqcmAn8Sbjw==
-X-Received: from yxi7.prod.google.com ([2002:a05:690e:687:b0:64a:e658:d3b])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a53:c38c:0:b0:64c:a909:70cf
- with SMTP id 956f58d0204a3-64cc22c5c20mr6789218d50.70.1772410551804; Sun, 01
- Mar 2026 16:15:51 -0800 (PST)
-Date: Mon,  2 Mar 2026 00:15:38 +0000
+        bh=460O629QjDGQi/wu9Blzygm/qAeDEXekmH8q8iybpaI=;
+        b=SOEErufw7eKfXuE7QNc5Dp8QFagxedOYA5TxuCO2vyR6UC36iLLILKUJ6kBzMZfcIY
+         6+jXuE/R0mvyN24YGt5Swc6O4yRWvl+7LVQAdIH5YjSGqyHB3CPI4vN9Y/TVdEo0LdQY
+         7U9qwzpGQsve9OuhCyAkW1bLFG7llCOXQ/bxbprDv6PB+iSukZuXou2aJmueUSg+6lsd
+         DLPLHCD8UhKrktvjszFVtWcjdZUiX9pvYPpXXaG5XpzgbfpdVpI8Uzl722kDaTq/6i+2
+         4ZBEPG5IUQsfxP/XShe6lk3yxh1GfNaFGLu6d2pHyu4+6IQ7lQiE8Nt1YX2H78iaXPqW
+         sLmg==
+X-Gm-Message-State: AOJu0YxIJzIvKEGVzZzvqXl4iqLLdOlHkDtKv5y6tRZ6auujh5SaUMvo
+	N6pA6/+lxhATi4jNazPnMm5BIaX5JoI9inBIxLV75YLKt9OS1IluoHS0nbP8Nd3Dvc10LGaztD6
+	ow5bMdhc/lQ==
+X-Received: from qvbor28.prod.google.com ([2002:a05:6214:469c:b0:899:f609:4371])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:620a:1914:b0:8c0:88f3:fac4
+ with SMTP id af79cd13be357-8cbc8e1dddamr1158416785a.56.1772410553487; Sun, 01
+ Mar 2026 16:15:53 -0800 (PST)
+Date: Mon,  2 Mar 2026 00:15:39 +0000
 In-Reply-To: <20260302001539.2275303-1-jmoroni@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -75,9 +75,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260302001539.2275303-1-jmoroni@google.com>
 X-Mailer: git-send-email 2.53.0.473.g4a7958ca14-goog
-Message-ID: <20260302001539.2275303-5-jmoroni@google.com>
-Subject: [PATCH rdma-next v2 4/5] RDMA/umem: Add helpers for umem dmabuf
- revoke lock
+Message-ID: <20260302001539.2275303-6-jmoroni@google.com>
+Subject: [PATCH rdma-next v2 5/5] RDMA/irdma: Add support for revocable pinned
+ dmabuf import
 From: Jacob Moroni <jmoroni@google.com>
 To: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, jgg@ziepe.ca, 
 	leon@kernel.org
@@ -90,11 +90,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MV_CASE(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17352-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17353-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -107,73 +107,217 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[google.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: ACEF41D20B0
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 71C3F1D20D0
 X-Rspamd-Action: no action
 
-Added helpers to acquire and release the umem dmabuf revoke
-lock. The intent is to avoid the need for drivers to peek
-into the ib_umem_dmabuf internals to get the dma_resv_lock
-and bring us one step closer to abstracting ib_umem_dmabuf
-away from drivers in general.
+Use the new API to support importing pinned dmabufs from exporters
+that require revocation, such as VFIO. The revoke semantic is
+achieved by issuing a HW invalidation command but not freeing
+the key. This prevents further accesses to the region (they will
+result in an invalid key AE), but also keeps the key reserved
+until the region is actually deregistered (i.e., ibv_dereg_mr)
+so that a new MR registration cannot acquire the same key.
+
+Tested with lockdep+kasan and a memfd backed dmabuf.
+
+The rereg_mr path is explicitly blocked in libibverbs for dmabuf MRs
+(more specifically, any MR not of type IBV_MR_TYPE_MR), so the rereg_mr
+path for dmabufs was tested with a modified libibverbs.
 
 Signed-off-by: Jacob Moroni <jmoroni@google.com>
 ---
- drivers/infiniband/core/umem_dmabuf.c | 16 ++++++++++++++++
- include/rdma/ib_umem.h                |  4 ++++
- 2 files changed, 20 insertions(+)
+ drivers/infiniband/hw/irdma/verbs.c | 105 ++++++++++++++++++++++++----
+ 1 file changed, 93 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index 7892e33be..4c21191dd 100644
---- a/drivers/infiniband/core/umem_dmabuf.c
-+++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -334,6 +334,22 @@ struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 15af53237..a0e0b3e39 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -3590,6 +3590,36 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 	return ERR_PTR(err);
  }
- EXPORT_SYMBOL(ib_umem_dmabuf_get_pinned);
  
-+void ib_umem_dmabuf_revoke_lock(struct ib_umem_dmabuf *umem_dmabuf)
++static int irdma_hwdereg_mr(struct ib_mr *ib_mr);
++
++static void irdma_umem_dmabuf_revoke(void *priv)
 +{
-+	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
++	/* priv is guaranteed to be valid any time this callback is invoked
++	 * because we do not set the callback until after successful iwmr
++	 * allocation and initialization.
++	 */
++	struct irdma_mr *iwmr = priv;
++	int err;
 +
-+	dma_resv_lock(dmabuf->resv, NULL);
++	/* Invalidate the key in hardware. This does not actually release the
++	 * key for potential reuse - that only occurs when the region is fully
++	 * deregistered.
++	 *
++	 * The irdma_hwdereg_mr call is a no-op if the region is not currently
++	 * registered with hardware.
++	 */
++	err = irdma_hwdereg_mr(&iwmr->ibmr);
++	if (err) {
++		struct irdma_device *iwdev = to_iwdev(iwmr->ibmr.device);
++
++		ibdev_err(&iwdev->ibdev, "dmabuf mr revoke failed %d", err);
++		if (!iwdev->rf->reset) {
++			iwdev->rf->reset = true;
++			iwdev->rf->gen_ops.request_reset(iwdev->rf);
++		}
++	}
 +}
-+EXPORT_SYMBOL(ib_umem_dmabuf_revoke_lock);
 +
-+void ib_umem_dmabuf_revoke_unlock(struct ib_umem_dmabuf *umem_dmabuf)
-+{
-+	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
-+
-+	dma_resv_unlock(dmabuf->resv);
-+}
-+EXPORT_SYMBOL(ib_umem_dmabuf_revoke_unlock);
-+
- void ib_umem_dmabuf_revoke(struct ib_umem_dmabuf *umem_dmabuf)
- {
- 	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 0fed9435d..8cc48ec4c 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -152,6 +152,8 @@ ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
- int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf);
- void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf);
- void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf);
-+void ib_umem_dmabuf_revoke_lock(struct ib_umem_dmabuf *umem_dmabuf);
-+void ib_umem_dmabuf_revoke_unlock(struct ib_umem_dmabuf *umem_dmabuf);
- void ib_umem_dmabuf_revoke(struct ib_umem_dmabuf *umem_dmabuf);
+ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 					      u64 len, u64 virt,
+ 					      int fd, int access,
+@@ -3607,7 +3637,9 @@ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
+ 		return ERR_PTR(-EINVAL);
  
- #else /* CONFIG_INFINIBAND_USER_MEM */
-@@ -224,6 +226,8 @@ static inline int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+-	umem_dmabuf = ib_umem_dmabuf_get_pinned(pd->device, start, len, fd, access);
++	umem_dmabuf =
++		ib_umem_dmabuf_get_pinned_revocable_and_lock(pd->device, start,
++							     len, fd, access);
+ 	if (IS_ERR(umem_dmabuf)) {
+ 		ibdev_dbg(&iwdev->ibdev, "Failed to get dmabuf umem[%pe]\n",
+ 			  umem_dmabuf);
+@@ -3624,12 +3656,20 @@ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 	if (err)
+ 		goto err_iwmr;
+ 
++	ib_umem_dmabuf_set_revoke_locked(umem_dmabuf, irdma_umem_dmabuf_revoke,
++					 iwmr);
++	ib_umem_dmabuf_revoke_unlock(umem_dmabuf);
+ 	return &iwmr->ibmr;
+ 
+ err_iwmr:
+ 	irdma_free_iwmr(iwmr);
+ 
+ err_release:
++	ib_umem_dmabuf_revoke_unlock(umem_dmabuf);
++
++	/* Will result in a call to revoke, but driver callback is not set and
++	 * is therefore skipped.
++	 */
+ 	ib_umem_release(&umem_dmabuf->umem);
+ 
+ 	return ERR_PTR(err);
+@@ -3749,6 +3789,8 @@ static struct ib_mr *irdma_rereg_user_mr(struct ib_mr *ib_mr, int flags,
+ 	struct irdma_device *iwdev = to_iwdev(ib_mr->device);
+ 	struct irdma_mr *iwmr = to_iwmr(ib_mr);
+ 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
++	bool dmabuf_revocable = iwmr->region && iwmr->region->is_dmabuf;
++	struct ib_umem_dmabuf *umem_dmabuf;
+ 	int ret;
+ 
+ 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
+@@ -3757,9 +3799,26 @@ static struct ib_mr *irdma_rereg_user_mr(struct ib_mr *ib_mr, int flags,
+ 	if (flags & ~(IB_MR_REREG_TRANS | IB_MR_REREG_PD | IB_MR_REREG_ACCESS))
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
++	if (dmabuf_revocable) {
++		umem_dmabuf = to_ib_umem_dmabuf(iwmr->region);
++
++		ib_umem_dmabuf_revoke_lock(umem_dmabuf);
++
++		/* If the dmabuf has been revoked, it means that the region has
++		 * been invalidated in HW. We must not allow it to become valid
++		 * again unless the user is requesting a change in translation
++		 * which will end up dropping the umem dmabuf and allocating an
++		 * entirely new umem anyway.
++		 */
++		if (umem_dmabuf->revoked && !(flags & IB_MR_REREG_TRANS)) {
++			ret = -EINVAL;
++			goto err_unlock;
++		}
++	}
++
+ 	ret = irdma_hwdereg_mr(ib_mr);
+ 	if (ret)
+-		return ERR_PTR(ret);
++		goto err_unlock;
+ 
+ 	if (flags & IB_MR_REREG_ACCESS)
+ 		iwmr->access = new_access;
+@@ -3775,18 +3834,28 @@ static struct ib_mr *irdma_rereg_user_mr(struct ib_mr *ib_mr, int flags,
+ 					&iwpbl->pble_alloc);
+ 			iwpbl->pbl_allocated = false;
+ 		}
++
++		if (dmabuf_revocable) {
++			/* Must unlock before release to prevent deadlock */
++			ib_umem_dmabuf_revoke_unlock(umem_dmabuf);
++			dmabuf_revocable = false;
++		}
++
+ 		if (iwmr->region) {
+ 			ib_umem_release(iwmr->region);
+ 			iwmr->region = NULL;
+ 		}
+ 
+ 		ret = irdma_rereg_mr_trans(iwmr, start, len, virt);
+-	} else
++	} else {
+ 		ret = irdma_hwreg_mr(iwdev, iwmr, iwmr->access);
+-	if (ret)
+-		return ERR_PTR(ret);
++	}
+ 
+-	return NULL;
++err_unlock:
++	if (dmabuf_revocable)
++		ib_umem_dmabuf_revoke_unlock(umem_dmabuf);
++
++	return ret ? ERR_PTR(ret) : NULL;
  }
- static inline void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf) { }
- static inline void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf) { }
-+static inline void ib_umem_dmabuf_revoke_lock(struct ib_umem_dmabuf *umem_dmabuf) {}
-+static inline void ib_umem_dmabuf_revoke_unlock(struct ib_umem_dmabuf *umem_dmabuf) {}
- static inline void ib_umem_dmabuf_revoke(struct ib_umem_dmabuf *umem_dmabuf) {}
  
- #endif /* CONFIG_INFINIBAND_USER_MEM */
+ /**
+@@ -3909,6 +3978,7 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
+ 	struct irdma_mr *iwmr = to_iwmr(ib_mr);
+ 	struct irdma_device *iwdev = to_iwdev(ib_mr->device);
+ 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
++	bool dmabuf_revocable = iwmr->region && iwmr->region->is_dmabuf;
+ 	int ret;
+ 
+ 	if (iwmr->type != IRDMA_MEMREG_TYPE_MEM) {
+@@ -3923,17 +3993,28 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
+ 		goto done;
+ 	}
+ 
+-	ret = irdma_hwdereg_mr(ib_mr);
+-	if (ret)
+-		return ret;
++	if (!dmabuf_revocable) {
++		ret = irdma_hwdereg_mr(ib_mr);
++		if (ret)
++			return ret;
+ 
+-	irdma_free_stag(iwdev, iwmr->stag);
++		irdma_free_stag(iwdev, iwmr->stag);
++	}
+ done:
++	if (iwmr->region)
++		/* For dmabuf MRs, ib_umem_release will trigger a synchronous
++		 * call to the revoke callback which will perform the actual HW
++		 * invalidation via irdma_hwdereg_mr. We rely on this for its
++		 * implicit serialization w.r.t. concurrent revocations. This
++		 * must be done before freeing the PBLEs.
++		 */
++		ib_umem_release(iwmr->region);
++
+ 	if (iwpbl->pbl_allocated)
+ 		irdma_free_pble(iwdev->rf->pble_rsrc, &iwpbl->pble_alloc);
+ 
+-	if (iwmr->region)
+-		ib_umem_release(iwmr->region);
++	if (dmabuf_revocable)
++		irdma_free_stag(iwdev, iwmr->stag);
+ 
+ 	kfree(iwmr);
+ 
 -- 
 2.53.0.473.g4a7958ca14-goog
 
