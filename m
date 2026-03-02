@@ -1,154 +1,195 @@
-Return-Path: <linux-rdma+bounces-17369-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17370-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8K1bH5BtpWlXAgYAu9opvQ
-	(envelope-from <linux-rdma+bounces-17369-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:59:28 +0100
+	id kGaLD9xppWkaAQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-17370-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:43:40 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2731D7132
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:59:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D091D6BE7
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:43:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9B8323004428
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 10:33:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 07449306E851
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 10:33:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92BB4330D36;
-	Mon,  2 Mar 2026 10:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D930331205;
+	Mon,  2 Mar 2026 10:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iK7Lcmfu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rq4xdrlu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5354E32ED2F;
-	Mon,  2 Mar 2026 10:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B16C3328FC
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 10:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772447604; cv=none; b=gIMjdSGeXuSk6gFpMO1rBMmhogTGHgJQEUdaA5iV7lfVHKX2bHjfIP4umGLWfO16tfQ3/RWavxBuIDa0XSazOsOpVnI1yGfYWHpqGLM0aD/1I8vAaZZAB/5w5f7xIAdQvzi5bGr8oy3DE43GJyJ0jXKzviFPR5EuoXcGJmNCYLo=
+	t=1772447631; cv=none; b=TFa92BExabPBtPyTiiQIEBI2o8q3hc1eSvF6ks8VtSnilOOHDisOomL74Vf9wE/zG3BKSvttIKK9iM++zSMOxrAJLNz8l2xT6y93zcWSE/wYM+8uGj062F0d7o+hMtrNf1rAdG4bbx8wUiGHhReNsLdJUzHEOsTeCRelfFA5++k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772447604; c=relaxed/simple;
-	bh=aiFg5+nYCjYR5ACQVI9+TDCz642XlmWqicdCWc1zZ1I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZHZnvMZxzmG1ztBzPMd5LPvPq6bDO2JF/ancE+e42DxvhyyWbxsgnk6BPb72STVz5TlFrhjpthPD+xA5oG8hCvb3aDer2u7yK+Z7Ji+V7G/g4hD6VQ7K4wEA/rr21edM+XR3BJF604R5MG8V8zP4aU916biw0E+NEwOlBcV8UsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iK7Lcmfu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C264C19423;
-	Mon,  2 Mar 2026 10:33:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772447603;
-	bh=aiFg5+nYCjYR5ACQVI9+TDCz642XlmWqicdCWc1zZ1I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iK7Lcmfu3aPcnqFJ3YxZg/v1exax41cjUA7kKWENbyw9TiMuxj9H/9izI0L3tvLcC
-	 bwQt7Qy0inBkUVxA3TjuVcGff3H8f+hgUpnK3+s4CZhOZmH66lGMSymn3eJclGNJQH
-	 EII7FEhogZEaWuaBF9nRFuFHaXIsmEDqLzhUN0qb1d/doK3vc8cmCLuTkWytZ4eOyr
-	 H8pGIQRi/me6a3KzyYUhuxUC7lxP0PPk9XXA+lwFdUzAe83McnzlncGMq6nEDpSVqd
-	 I/ETUOhQublyN6gg01tKC/3rBs+IZEoDQSTCyHs5E3xqv2NdTBSfUHUM9AuJS/7579
-	 U3xnJO0N1KZzA==
-Date: Mon, 2 Mar 2026 12:33:19 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Stefan Metzmacher <metze@samba.org>
-Cc: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-	Steve French <smfrench@gmail.com>,
-	Namjae Jeon <linkinjeon@kernel.org>, Tom Talpey <tom@talpey.com>,
-	Long Li <longli@microsoft.com>, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: Re: [PATCH] RDMA/core: check id_priv->restricted_node_type in
- cma_listen_on_dev()
-Message-ID: <20260302103319.GO12611@unreal>
-References: <20260224165951.3582093-2-metze@samba.org>
- <20260225125211.GE9541@unreal>
- <a8d20762-e4f7-41fd-b67e-803858655aad@samba.org>
- <20260226100929.GI12611@unreal>
+	s=arc-20240116; t=1772447631; c=relaxed/simple;
+	bh=QEn+El7Z+bL/DWqeCCzlYqCfrkxihEN+xIGAxOA2r98=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tjKDFGip67IkJYM0LPTLEKGtXbf8d/+r9pf+PP6QiBtiATrHLF3EwmuZkBRrqRtjOabCcxm80F3MgXOXMTi/aELXQ747TfnsaMT//lVVGC+XwZdiaQACz3PB7nzIX/SJS3Vsbj6FxHjpCmflEaz4W4DxAgQmIpxHf9mNrasKwEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rq4xdrlu; arc=none smtp.client-ip=209.85.128.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4837bfcfe0dso55050975e9.1
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2026 02:33:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1772447626; x=1773052426; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EnMgJMcaQgCDj7i00Uawlj/G1rJtXPwe1sCLwvhoFHI=;
+        b=rq4xdrlutDZNzchgca2LpBR52y6AVtdV4PS2i7Okgss3v9KH1sO1XKDitIIPzPn/hI
+         IIqBvmSXgRGHTGiuZ2XWX5Pua3XkiI1cc6lsjEoJf15THOIKyZkqFuCYgr+6DkhGcWbq
+         zmNhmcRRpDjeE4c/lOsqWaUl7ccq5LIpH087AwRE7M6mp8jAvMMQTC0dLUrRHa5N6j+y
+         qnQVaZXoQ+z5FqKmO3oODPKlACGy9IKYFof51fLeqJh/4dwg7jhlPr9QlqoUYGSz8FbL
+         yQAzPFa8B5RV1degHbdqhI7/iD092kEARW9Nm78z08vqGCxZw109+IAio3IZyqGc1FDw
+         0tZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772447626; x=1773052426;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EnMgJMcaQgCDj7i00Uawlj/G1rJtXPwe1sCLwvhoFHI=;
+        b=j3CzlDQP9VWRzZzep+j8iTj2ruK1kFQR26q3xkECkeKg94P9mOcc3vxcmWco9Chs8X
+         V6UsJ04W51D+rWtRUm3StX+iFU/o8MIpYNmPXJMgCNWw8J62SS4Fb1FfEWHW/BbKCqXZ
+         hAO2I+eiCjITetUH8m6i34fqHmdpfoO7wfNwEiokIJRced+9xkEMgfdcxIOoHewNC3oy
+         OUO0FK8i5D77o2nKnEANzWagxlCmHl3Wqym/BA5Dw67zZnGYPLYCvCYWCNBn2FImR9iv
+         S4OyMBnPR/R9t80gCDB3ICCk5O3qMfrBg+v4wZqdZ9X/RB4+3X7So1/cO4gaN4mtRx1U
+         g8Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCW+KrLs0rmEpXukKcGmUv7mnkA9hLvx5fAwmR5ZhZ26I+NN4WTayfhUKYvAE6Yy2LyEZHoSOzPx6hae@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/KZa1weI6CfbtW7jwcZp/oPWKTSELyXD9fhw0enWGUDgKp5bI
+	kUcxg3lyGS/sJf6TdNE2wd2JRhnf9PqZJRF5BaxI1lYof9KUzbtAijLuFz0yhOx9Jyf5UcH9DA9
+	Q4Vfayl6IzcAFPuQPHw==
+X-Received: from wmdd1.prod.google.com ([2002:a05:600c:a201:b0:480:3227:a124])
+ (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:600c:6383:b0:47d:3ead:7440 with SMTP id 5b1f17b1804b1-483c9bdb683mr186031315e9.32.1772447625915;
+ Mon, 02 Mar 2026 02:33:45 -0800 (PST)
+Date: Mon, 2 Mar 2026 10:33:45 +0000
+In-Reply-To: <f2f3a8a1-3dbf-4ef9-a89a-a6ec20791d1c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260226100929.GI12611@unreal>
+Mime-Version: 1.0
+References: <20260227200848.114019-1-david@kernel.org> <20260227200848.114019-3-david@kernel.org>
+ <aaLh2BxSgC9Jl5iS@google.com> <8a27e9ac-2025-4724-a46d-0a7c90894ba7@kernel.org>
+ <aaVf5gv4XjV6Ddt-@google.com> <f2f3a8a1-3dbf-4ef9-a89a-a6ec20791d1c@kernel.org>
+Message-ID: <aaVnifbdxKhBddQp@google.com>
+Subject: Re: [PATCH v1 02/16] mm/memory: remove "zap_details" parameter from zap_page_range_single()
+From: Alice Ryhl <aliceryhl@google.com>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+	"linux-mm @ kvack . org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, 
+	Pedro Falcato <pfalcato@suse.de>, David Rientjes <rientjes@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Arve =?utf-8?B?SGrDuG5uZXbDpWc=?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, 
+	Christian Brauner <brauner@kernel.org>, Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>, 
+	H Hartley Sweeten <hsweeten@visionengravers.com>, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Eric Dumazet <edumazet@google.com>, 
+	Neal Cardwell <ncardwell@google.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="utf-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [7.84 / 15.00];
-	URIBL_BLACK(7.50)[talpey.com:email];
-	MID_RHS_NOT_FQDN(0.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MV_CASE(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17369-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	R_DKIM_ALLOW(0.00)[kernel.org:s=k20201202];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-17370-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,ziepe.ca,gmail.com,kernel.org,talpey.com,microsoft.com,lists.samba.org];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	GREYLIST(0.00)[pass,body];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c15:e001:75::/64:c];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	NEURAL_SPAM(0.00)[0.996];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,samba.org:email]
-X-Rspamd-Queue-Id: 7F2731D7132
-X-Rspamd-Action: add header
-X-Spam: Yes
+	RCPT_COUNT_GT_50(0.00)[73];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[aliceryhl@google.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-0.998];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 98D091D6BE7
+X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 12:09:29PM +0200, Leon Romanovsky wrote:
-> On Thu, Feb 26, 2026 at 10:32:27AM +0100, Stefan Metzmacher wrote:
-> > Am 25.02.26 um 13:52 schrieb Leon Romanovsky:
-> > > On Tue, Feb 24, 2026 at 05:59:52PM +0100, Stefan Metzmacher wrote:
-> > > > When listening on wildcard addresses we have a global list for
-> > > > the application layer rdma_cm_id and for any existing
-> > > > device or any device added in future we try to listen
-> > > > on any wildcard listener.
-> > > > 
-> > > > When the listener has a restricted_node_type we
-> > > > should prevent listening on devices with a different
-> > > > node type.
-> > > > 
-> > > > While there fix the documentation comment of
-> > > > rdma_restrict_node_type() to include rdma_resolve_addr()
-> > > > instead of having rdma_bind_addr() twice.
-> > > > 
-> > > > Fixes: a760e80e90f5 ("RDMA/core: introduce rdma_restrict_node_type()")
-> > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > > Cc: Leon Romanovsky <leon@kernel.org>
-> > > > Cc: Steve French <smfrench@gmail.com>
-> > > > Cc: Namjae Jeon <linkinjeon@kernel.org>
-> > > > Cc: Tom Talpey <tom@talpey.com>
-> > > > Cc: Long Li <longli@microsoft.com>
-> > > > Cc: linux-rdma@vger.kernel.org
-> > > > Cc: linux-cifs@vger.kernel.org
-> > > > Cc: samba-technical@lists.samba.org
-> > > > Signed-off-by: Stefan Metzmacher <metze@samba.org>
-> > > > ---
-> > > >   drivers/infiniband/core/cma.c | 6 +++++-
-> > > >   include/rdma/rdma_cm.h        | 2 +-
-> > > >   2 files changed, 6 insertions(+), 2 deletions(-)
-> > > 
-> > > Applied, thanks.
+On Mon, Mar 02, 2026 at 11:27:40AM +0100, David Hildenbrand (Arm) wrote:
+> On 3/2/26 11:01, Alice Ryhl wrote:
+> > On Mon, Mar 02, 2026 at 09:18:45AM +0100, David Hildenbrand (Arm) wrote:
+> >> On 2/28/26 13:38, Alice Ryhl wrote:
+> >>>
+> >>>
+> >>> Please run rustfmt on Rust changes. Here, rustfmt leads to this being
+> >>> formatted on a single line:
+> >>
+> >> Having to run tooling I don't even have installed when removing a single
+> >> function parameter; did not expect that :)
 > > 
-> > Great!
-> > 
-> > Will this be scheduled for rc2?
+> > Well, rustfmt comes with the compiler, and it would be ideal to build
+> > test changes before sending them :)
 > 
-> I hope so, rdma-rc has a compilation fix which I would like to see in
-> Linus's master as soon as possible.
+> At least on Ubuntu on my notebook where I do most of the coding+patch
+> submissions it's a separate package?
+> 
+> I do all my builds on a different (more powerful) machine where the
+> whole rust machinery's in place. Further, build bots that run on my
+> private branches did not report any issues.
 
-It was merged before -rc2:
-e3c81bae4f28 ("Merge tag 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma")
-93a4a9b732fb ("RDMA/core: Check id_priv->restricted_node_type in cma_listen_on_dev()")
+There are some build bots that check for rustfmt, though not all of
+them.
 
-Thanks
+> > But no worries, I took care of testing it. Thanks for taking the time to
+> > update the Rust code as well.
+> 
+> I just did an allyesconfig and it does not report any warnings.
+> 
+> So apparently, rustfmt problems not result in the compiler complaining?
+> 
+> Or something else is off here that rust/kernel/mm/virt.rs won't get
+> compiled on my machine, even with allyesconfig. I can definitely see
+> some RUSTC stuff happening in the logs, like
+> 
+> 	RUSTC L rust/kernel.o
+> 
+> Thanks for the review and for pointing out rustfmt!
+
+Similar to kerneldoc and other similar targets, formatting isn't checked
+in the normal build, but make can be invoked on the rustfmtcheck target
+to check it.
+
+Alice
 
