@@ -1,118 +1,164 @@
-Return-Path: <linux-rdma+bounces-17401-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17402-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iOUYCyzopWlLHwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17401-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 20:42:36 +0100
+	id 0OigKP0VpmnZKAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17402-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 23:58:05 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C65671DEE83
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 20:42:35 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76DE91E6052
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 23:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BF8E13015D80
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 19:42:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 57B823024B42
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 22:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6CE447DD69;
-	Mon,  2 Mar 2026 19:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A987E31E824;
+	Mon,  2 Mar 2026 22:25:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZuZjr/60"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrizRNFx"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C5147D950;
-	Mon,  2 Mar 2026 19:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE52031E843;
+	Mon,  2 Mar 2026 22:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772480549; cv=none; b=Nlb1Txu+12sLYYWLo+4lOYBRHlUEGO5jtWFNz23LpO/Bu4V+xsBHr1iLrUQNMEXvCoLvLiit1Y+m1gGCLkmktXAr2fnr170t00aCIJG6kD8m0EhvXsxoaaEl9Psg1Ik5BcrnTFJuZQTPP7MwuaX6krqyomMP7vuOatoDWMAmvpk=
+	t=1772490310; cv=none; b=iDfZdFDheSBJIvJmoL5sDqvNzFchDVUjIV7xGMspU1cOdVkEVuJv95rBR5jJ0yi0B6r5MfNIU/5iSRtIZ1V8fs6P/AcSlofcY/DvzgT2Eo0KVvGNdJzthFSqup1VvkMVN3wYZo0gAilVlFHK8/rKmptBmhIx8p/+fon5LmfCevo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772480549; c=relaxed/simple;
-	bh=JPYvrKxoYGEZTL5J1MUdq9CGTebDSQtlDwt5Cv600V4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=CG1EQvmySxZQnpBkJPTypiT8LUJ4+xw5PDy/+uv/5PyN65lhKHgGAt04JYXOSh1Sp3l97XeefTgmZO1s3JviZkNNiFJTamlckjLHA6LDh+Jp9iYS2sxc1R1GtDKh7WXC6IQGWZyd0Xcb+aOOmMTDNM4NO/YJmcMRoUea/6zoUrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZuZjr/60; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFAE8C19423;
-	Mon,  2 Mar 2026 19:42:27 +0000 (UTC)
+	s=arc-20240116; t=1772490310; c=relaxed/simple;
+	bh=z1MJC3FRweYmPEPq5YHZ5jyoBMGe/oJK14mlqTwgr2g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZUGwrGbOdZVnl/Xfu81s6Aqpjtnnht/sikHrbNPJzEMugwB2fX9yYDT4siz7L6wV/uY6PhEo6DlOJnhC7zSqDvlu8EQOzVHShAzmn/YpRHZYxsKRXe59NlHklZTfnFCUuNkKFdNpMyTUYC7VDOHiPLwRgNsOfv9dST4HXNXJRG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OrizRNFx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D8DC19425;
+	Mon,  2 Mar 2026 22:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772480548;
-	bh=JPYvrKxoYGEZTL5J1MUdq9CGTebDSQtlDwt5Cv600V4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZuZjr/60wdzKtA0aVnr3EDkDaIvHTlAKRvUTIAvi4DyWUHVkH61GxdxijLiO8HyJJ
-	 BqNGx0nmawGVWpxRJjmai7eiR1AOlUlclQTfgobE/sw6Uh76aDm5Tc0HyE5Nhva8PY
-	 rwsc/t5BjqrtKFOtkyvGVLwudLwcEiwJP5tyc8IaB3S7SjIfHt1CHM8xwZkN7CZ0cq
-	 e87z98fI5J7m4w4WuuakgbEIn9uf7+XtRFiPh6qU5zEsWcah1zw5iTkNhdzfpoCurC
-	 Ln+cC/cXjFnp3ramIveloSC1gvvdovOkcaYjNyG93HbMJUKAJjwFD0KH2B1FDj3s4r
-	 ok7+/MKet9E6Q==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Abhijit Gangurde <abhijit.gangurde@amd.com>
-Cc: allen.hubbe@amd.com, nikhil.agarwal@amd.com, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-In-Reply-To: <20260227061809.2979990-1-abhijit.gangurde@amd.com>
-References: <20260227061809.2979990-1-abhijit.gangurde@amd.com>
-Subject: Re: [PATCH 1/1] RDMA/ionic: Preserve and set Ethernet source MAC
- after ib_ud_header_init()
-Message-Id: <177248054555.993928.15778358538433900026.b4-ty@kernel.org>
-Date: Mon, 02 Mar 2026 14:42:25 -0500
+	s=k20201202; t=1772490310;
+	bh=z1MJC3FRweYmPEPq5YHZ5jyoBMGe/oJK14mlqTwgr2g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OrizRNFxFCUYh9V6TNt+BvDhyObGNEUKV3fn/Rr/BWn6s0kWOwrpCE5bMKwA6pesf
+	 O1gryPbYigQ8oLt7XQwowrqGbujrKJFMwcJIVn2GQSE8sNd8Av7VBzTiehXwMF2Ahq
+	 roY4ukT9SWDPvCVm4bKrO6u1tGD7Z43jRO8DaPkHFmnJzJFRrwMtGrgkquo3Cm8nZ6
+	 I121G0Znf3eZGNPeITB+OFKlxaY/lziu25T1pCj7qP6JHKTdpbEdMFCLrwX3JVtmW6
+	 W8FTyak6mq7ydLm9W4jBQ5ylFmFXks/9QgAeiHM0iRuWSmXU77o24JRmf+SE0231B+
+	 3Ts3XPcHOmAPA==
+From: Chuck Lever <cel@kernel.org>
+To: <linux-nfs@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>
+Cc: Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH] xprtrdma: Close sendctx get/put race that can block a transport
+Date: Mon,  2 Mar 2026 17:24:46 -0500
+Message-ID: <20260302222445.2230-2-cel@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2576; i=chuck.lever@oracle.com; h=from:subject; bh=Vj3diU24cdWhFoe5Txt6pOMwv2moztIOqmveQ9QcMSA=; b=owEBbQKS/ZANAwAKATNqszNvZn+XAcsmYgBppg4tOKb0U0pFAM9Sh6N1f9tHKLUfISLAkXkA2 QBwL5FiF3yJAjMEAAEKAB0WIQQosuWwEobfJDzyPv4zarMzb2Z/lwUCaaYOLQAKCRAzarMzb2Z/ l60HD/wJXPCoPFqjVPIINXFdTIqQ2qTrlfC0UggaJ1kToE6h2TMf9xzD5dZ/SwJjiCXu4oDw95Y +eOZvjnDp+v4nPsEqtCW3zJHm9NjkVMMslEpwXZNWUVlkN0PQ4zVqeUz1rG9hRkNnvrCqGLkN3O z0lhsyNDUZ2STKXtxO3wY8ukmWFT29EoheUZ+uRAkVz0X4vqtFXwhximSTnsWbY4qoIwenoYOEa 8BNlA2OHvHzfAfEi9XO5XAsgGJ0zNxHdrOWxK+Un7UJhBynbFTtArkwO5xibI5XEzkcutg29LrB mH+wzv0KSkW73iL5IrTddtwkTlR0tWK+ShDXITjJKuQcQHhClWLllBLbME38h6/BW7VsQZf3+yS WJny3o5+7vqoUz5FQFFGlpHUaZQDOhYRJtBcmOJghc+OR9uh2StFhZpCq9kLgiRHSyamljansjj NW6mciCRkwYgDlmKaEuojgoiNzvapreECR4ll5eYiKuwAt4UvGcD3cZ8Jd5uj/l6UsD5wRv/Xx9 IZl1jhnqbBR0QffnXwDV2w0kpyhFQu3CZI9+nK0W/eUr+QFIr1B0eHmsImy81kLSTxoM7nrDZhy 5ewMRyoxTvJhi2prEfrkVdc1/aEtGkFLBnbsirOhPtFXCHVP1WHmxkuDf1eyZhR6YxQMOBwQC48 beiEsTQHwQqCCoQ==
+X-Developer-Key: i=chuck.lever@oracle.com; a=openpgp; fpr=28B2E5B01286DF243CF23EFE336AB3336F667F97
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.15-dev-47773
-X-Rspamd-Queue-Id: C65671DEE83
+X-Rspamd-Queue-Id: 76DE91E6052
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17401-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17402-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_THREE(0.00)[3];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+From: Chuck Lever <chuck.lever@oracle.com>
 
-On Fri, 27 Feb 2026 11:48:09 +0530, Abhijit Gangurde wrote:
-> ionic_build_hdr() populated the Ethernet source MAC (hdr->eth.smac_h) by
-> passing the header’s storage directly to rdma_read_gid_l2_fields().
-> However, ib_ud_header_init() is called after that and re-initializes the
-> UD header, which wipes the previously written smac_h. As a result, packets
-> are emitted with an zero source MAC address on the wire.
-> 
-> Correct the source MAC by reading the GID-derived smac into a temporary
-> buffer and copy it after ib_ud_header_init() completes.
-> 
-> [...]
+rpcrdma_sendctx_get_locked() and rpcrdma_sendctx_put_locked() can
+race in a way that leaves XPRT_WRITE_SPACE set permanently, blocking
+all further sends on the transport:
 
-Applied, thanks!
+  get_locked              put_locked (Send completion)
+  ----------              --------------------------
+  read rb_sc_tail
+    -> ring full
+                          advance rb_sc_tail
+                          xprt_write_space():
+                            test_bit(WRITE_SPACE)
+                            -> not set, return
+  set_bit(WRITE_SPACE)
+  return NULL (-EAGAIN)
 
-[1/1] RDMA/ionic: Preserve and set Ethernet source MAC after ib_ud_header_init()
-      https://git.kernel.org/rdma/rdma/c/cbbdb148c62814
+After the sender releases XPRT_LOCKED, the release path refuses to
+wake the next task because XPRT_WRITE_SPACE is set. The sender
+retries, finds XPRT_WRITE_SPACE still set, and sleeps on
+xprt_sending. No further Send completions arrive to clear the flag
+because no new Sends can be posted.
 
-Best regards,
+With nconnect, the stalled transport's share of congestion credits
+are never returned, starving the remaining transports as well.
+
+Fixes: 05eb06d86685 ("xprtrdma: Fix occasional transport deadlock")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ net/sunrpc/xprtrdma/verbs.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+index b51a162885bb..90fd83f2d846 100644
+--- a/net/sunrpc/xprtrdma/verbs.c
++++ b/net/sunrpc/xprtrdma/verbs.c
+@@ -708,6 +708,18 @@ struct rpcrdma_sendctx *rpcrdma_sendctx_get_locked(struct rpcrdma_xprt *r_xprt)
+ 	 */
+ 	xprt_wait_for_buffer_space(&r_xprt->rx_xprt);
+ 	r_xprt->rx_stats.empty_sendctx_q++;
++
++	/* Recheck: a Send completion between the ring-empty test
++	 * and the set_bit could cause its xprt_write_space() to
++	 * miss, leaving XPRT_WRITE_SPACE set with a non-full ring.
++	 * The smp_mb__after_atomic() pairs with smp_store_release()
++	 * in rpcrdma_sendctx_put_locked().
++	 */
++	smp_mb__after_atomic();
++	next_head = rpcrdma_sendctx_next(buf, buf->rb_sc_head);
++	if (next_head != READ_ONCE(buf->rb_sc_tail))
++		xprt_write_space(&r_xprt->rx_xprt);
++
+ 	return NULL;
+ }
+ 
+@@ -739,7 +751,10 @@ static void rpcrdma_sendctx_put_locked(struct rpcrdma_xprt *r_xprt,
+ 
+ 	} while (buf->rb_sc_ctxs[next_tail] != sc);
+ 
+-	/* Paired with READ_ONCE */
++	/* Paired with READ_ONCE in rpcrdma_sendctx_get_locked():
++	 * both the fast-path ring-full test and the post-set_bit
++	 * recheck in the slow path depend on this store-release.
++	 */
+ 	smp_store_release(&buf->rb_sc_tail, next_tail);
+ 
+ 	xprt_write_space(&r_xprt->rx_xprt);
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.53.0
 
 
