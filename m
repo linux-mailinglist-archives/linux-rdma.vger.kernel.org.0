@@ -1,174 +1,172 @@
-Return-Path: <linux-rdma+bounces-17347-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17348-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oPFtLQx+pGl5iQUAu9opvQ
-	(envelope-from <linux-rdma+bounces-17347-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Mar 2026 18:57:32 +0100
+	id 9GyDF7TWpGnYtgUAu9opvQ
+	(envelope-from <linux-rdma+bounces-17348-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 01:15:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA091D1010
-	for <lists+linux-rdma@lfdr.de>; Sun, 01 Mar 2026 18:57:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9CF51D2091
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 01:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5756B3018BE4
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2026 17:55:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3A03E3010DB5
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 00:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C22337BB5;
-	Sun,  1 Mar 2026 17:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9526DCE1;
+	Mon,  2 Mar 2026 00:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="dIrerKPj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qyioTYoO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-yx1-f73.google.com (mail-yx1-f73.google.com [74.125.224.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFA51C7012
-	for <linux-rdma@vger.kernel.org>; Sun,  1 Mar 2026 17:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CEBA430B85
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 00:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772387755; cv=none; b=I4TwKmGr/Y6ABTp34TN6TRNLP5nL5XCvA6JV8y2EouWvVSL41ALx+IvxpSuke6BaRgBrGB9koXBdQjIrPxURT2ScD2Jp0sGrwZr1ayTCj6QVc/8RRdffGkNoWj9LCQKvIDORsn4opx9p4scjKxJVRbTabK1az/Ff1K54JIu+hjY=
+	t=1772410543; cv=none; b=qGl/h9zfsFMc+ij9qnO4p+JDOE/UXSUwaqcnM9+s+x0dFui3c1zN1bCtaVAP4cVF0/ekgnU+MIlKAR0c8BGCIhNnTpI4NdRISSWrBtfP9AitzalXJAed3MusEaetZNp6qIMznzlz53uzfscjY4Fgebb89uSG43xl192m/DZmFQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772387755; c=relaxed/simple;
-	bh=yhgi5eMSXsQDCYKm+CXjR4bsxzX9U+ECNX3EnREIBps=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fh8s2AbQM+yZLZKEVNgwAqWyJtgWQzusydPkrfMPDgeCXGxD4G5ikxvUn+iM0yIWN6vMpo+/0ARFXJovCD7HEyRuJ2Ko/0M0Qa2uvnV6sf2tTlJ4s6llOnqMyLW2HN+zpUX9f6jahOAccxXiwsFIfl+FJfla5h0rnbwFzodOXiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=dIrerKPj; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8cb4136d865so494788785a.1
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2026 09:55:53 -0800 (PST)
+	s=arc-20240116; t=1772410543; c=relaxed/simple;
+	bh=xwDYuvoTVdhht5uJfZTvVgxfjxMhMJbPRNslXdpDLlM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ksyMB/DQMz0XV2Ki6TG0ee2LYnrrsqAYKcVtzlksNuXXBXP7qGcQ6Zo2IJPMlKQZWaoYLiEEo+ejTrmpE8FrQZH0Kc+u84tr82NW1oNqk5PdXkOntHoTeR7ATwNivJhHyrhPKaVbPgU/J3DDXhYOHVcqVNxEpGiHZ+PtQfvZbe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qyioTYoO; arc=none smtp.client-ip=74.125.224.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
+Received: by mail-yx1-f73.google.com with SMTP id 956f58d0204a3-64ad18e7ffaso4546430d50.2
+        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2026 16:15:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1772387753; x=1772992553; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YCd8bTN0yDfsSyi6ZA8FG9Faz13YGXHzhnf02MTH1b8=;
-        b=dIrerKPjtw6iWP+dBwRH0Ci9RBi4QAE8rVnJeoI2Fg76E9IxhSGUNGqi7RaYvdv+BF
-         cZ702ssNmV2/pOwLexFowpgH6EL4LUzOHaC2R6E8TzPUi9QeXSoD6n6qBMcuL9b5BtY/
-         EqtmxRRyZgK7KcguiqjyPckkhPiR7qmPGHkDJY/PfLmhsdxIgoRE+5ESWp6Ub4opPveW
-         CzSnh2rO8m8xGo4U1XzDl+YjYutgBUPTCKBDw61xlT2gVgnUYu9iSJXQj+7BpRya9cHB
-         1nzkKljJH+32/UTRhGKxtMmAVXIhiIM5KGt7w5niHzF1uhkiZkN3rkRqdZDkkgbLQH4m
-         ykgg==
+        d=google.com; s=20230601; t=1772410541; x=1773015341; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=93bbN74IeJcR6WWa4qknfphEuCg4/7KSTAQgFBLCbyM=;
+        b=qyioTYoOORbzmPhFrKnvUt9j5VWGMbzCe1UJ3tiFQueBSeTHDJVjHNSzPAy00Kxw9F
+         YqsejVDy6rYsHj6EnyJw+hJU+dYrgqbol859vcmh6eZagPVXuKQmCeuGk5CdcZR8cPJu
+         CVSA4Ineqoe5MWJMv4XdAuUpx0f/tatMAXM3rz6mKZf9lgDGwbAVGsno9bVy+pEZ1a8S
+         xL/BcE4x29wRy0HSF8bJyqCkZnsHHMkU8kSnv00vTP1MldNf7PH2lggH334VGvallpqC
+         0RZUAovE+SqYdqSL6jmV3TFwk14bFkkg5H8cCvXSANrCstSxyEi16SpJuyhQE5zazCLU
+         IT0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772387753; x=1772992553;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YCd8bTN0yDfsSyi6ZA8FG9Faz13YGXHzhnf02MTH1b8=;
-        b=LgY50KgvE/VLGDg6cHkd6d99hdrg55hIOUCHjIl/Rz5ozG3mwtZudHUopJhRc26Lor
-         cXZNJKgEnbkE4BHmZRNxNj5zVLail6H30vHw9crGnTMaOMNbnP1iwaDtp48Pf7ohH8Hh
-         dTgcS89AYZmrk9VxaEo+LhofqsOqpZ+30K9+e12YdUoa4j8pHZLba+Qhyazo8mGBNWGR
-         6YiZQMvTrc7L8Z7wPrxSS1w6wLaBHwW6VQ6IPavnKqp/ByIhZHMwpy/UbSh05J/abE6o
-         ZxNOkDeVs63L0LHGnf/ThH7ueiYtgNX3XRnIf0Hi2Ra5QlyVKR3okWA8NhOO53KgyY3+
-         zobw==
-X-Forwarded-Encrypted: i=1; AJvYcCV/Bm/SCG7EWYPXSkWx1raHo28V7IX4+hU9l47P/RyY0YkYV29Fyto+TySYYCVWZlmYp84OwnqmNHAM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2VFhxFd2p8LloQ96IbhgBOi3RwppUEEBbl7QXI6BLHDRvlirF
-	OWbwt3gAscJzATHaOxZBcvlWySh+80+RPu9C+sX9KXcldUjJZrk0idn5OKyttBSrJLI=
-X-Gm-Gg: ATEYQzwdHLlfm+gM+4bqyUbFg2iaXlWP4dhQkFVIJ9YMYtu7RNF4TgL2de2woB1RyZl
-	PdSDyjUI+L1c4fNjtuuWj2pFfCHy6n8K70GJoGzCVOh7LyGgovTqA8ZLyLuo7scxTI/aAfSNT5H
-	AJyyd5blxlcc+TReun/2rquOh8yfYvzqaPDsZ+HIiU0doXcBwuPUDuhVimgmaWN3QN7e4WhXprt
-	vA14n/wAJy3wzC699AWn1kRaRV5uxOykSuSJ1ZN8ZeaXbMfa6S+BDUIu1h6DsUCRaee4nucLht3
-	BQgSa4VPK9aDMa3xMcqAEGgz6ODQAHZlrG4qEi7VVbBoiu38jRFcCsDcjne0YBmkT8XRMvewL4K
-	aeqTEc8Ms16BX7Sh6J9x8Vp/Lp6JyZwvhWvO39q/BomJ7hHw/jU0682jZl6VOpG6Rt6CNKmdA6d
-	aNZwSVnyxWNH4vSyABARwqFh67/4EBI14+Ee5ll0mBynusdZ54hGevecZYDIqsTVZCaLR/aSKp3
-	6aS1nHYbwaJxrjpuWg=
-X-Received: by 2002:a05:620a:2802:b0:8c7:155a:6d04 with SMTP id af79cd13be357-8cbc8e6817cmr1277844485a.54.1772387752963;
-        Sun, 01 Mar 2026 09:55:52 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cbbf6f873dsm1033539385a.25.2026.03.01.09.55.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 09:55:52 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vwl1D-00000002dJu-0Hxd;
-	Sun, 01 Mar 2026 13:55:51 -0400
-Date: Sun, 1 Mar 2026 13:55:51 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Keith Busch <kbusch@kernel.org>
-Cc: Zhiping Zhang <zhipingz@meta.com>, Leon Romanovsky <leon@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-rdma@vger.kernel.org,
-	linux-pci@vger.kernel.org, netdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, Yochai Cohen <yochai@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [RFC 2/2] RMDA MLX5: get tph for p2p access when registering
- dmabuf mr
-Message-ID: <20260301175551.GT44359@ziepe.ca>
-References: <20260210194014.2147481-1-zhipingz@meta.com>
- <20260210194014.2147481-3-zhipingz@meta.com>
- <aaDxmGoqpjnvmVs9@kbusch-mbp>
+        d=1e100.net; s=20230601; t=1772410541; x=1773015341;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=93bbN74IeJcR6WWa4qknfphEuCg4/7KSTAQgFBLCbyM=;
+        b=Wvi2hw3VVD0e9hnnAGff1y0AlNAIe/DxfxWquygCTS/53ECrPXGHljpOtmO0+aIbBx
+         5PCx3URF4C5c1Ylls66zPpLF64pIv3+d6slgzvqEoVRRjyNdG5tGyQJPUgce53n32U3b
+         4uuc7O3n4t+FgvhpcmsBWala9xBoBwupY8Vn2s3p81tx1+xo/QczVYqoQGOxXH7+q4J4
+         E6e5WmQS6gLw2Q7qygVEkN9sIhYkV02qPFWOL+sKVuaneQiBusSH68qSve94whzdcYv4
+         wf9whULkmUF1+RqITD5CZFC103UZ+Lya8TLHiZMqgl2vWfZvKLvJXQN4vU+OYYPGZtey
+         RnUA==
+X-Gm-Message-State: AOJu0YwDic1nGb0ASLFgDMvn0/UAJfaNTnxdiZ0OS4RaQsZ7bPCsc6Ij
+	56/p20xRwOHdhIeN0MMfLg1Q8j5RvFQoDZyd58l1lI/E1p1bzMJwBXlbYjNBdxEUJGVrgiwsksQ
+	c+6UxVckTXQ==
+X-Received: from yxw2.prod.google.com ([2002:a53:ac82:0:b0:64c:cfd8:45d6])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:690e:2058:b0:649:d40c:7ee5
+ with SMTP id 956f58d0204a3-64cc23228c8mr6300326d50.79.1772410541290; Sun, 01
+ Mar 2026 16:15:41 -0800 (PST)
+Date: Mon,  2 Mar 2026 00:15:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aaDxmGoqpjnvmVs9@kbusch-mbp>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.53.0.473.g4a7958ca14-goog
+Message-ID: <20260302001539.2275303-1-jmoroni@google.com>
+Subject: [PATCH rdma-next v2 0/5] Add pinned revocable dmabuf import interface
+From: Jacob Moroni <jmoroni@google.com>
+To: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, jgg@ziepe.ca, 
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MV_CASE(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-17347-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-17348-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: 5DA091D1010
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A9CF51D2091
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 06:21:28PM -0700, Keith Busch wrote:
-> On Tue, Feb 10, 2026 at 11:39:55AM -0800, Zhiping Zhang wrote:
-> > +static void get_tph_mr_dmabuf(struct mlx5_ib_dev *dev, int fd, u16 *st_index,
-> > +							  u8 *ph)
-> > +{
-> > +	int ret;
-> > +	struct dma_buf *dmabuf;
-> > +
-> > +	dmabuf = dma_buf_get(fd);
-> > +	if (IS_ERR(dmabuf))
-> > +		return;
-> > +
-> > +	if (!dif there's any implication mabuf->ops->get_tph)
-> > +		goto end_dbuf_put;
-> > +
-> > +	ret = dmabuf->ops->get_tph(dmabuf, st_index, ph);
-> 
-> You defined the "get_tph" function to take a pointer to a raw steering
-> tag value, but you're passing in the steering index to it's table.
+Some dmabuf exporters (VFIO) will require that pinned importers support
+revocation. In order to support this for non-ODP drivers/devices, a new
+interface is required. This new interface implements a two step process
+where the driver will perform a sequence like:
 
-Yeah that's weird, there should be one TPH for a DMABUF, not many.
+    ib_umem_dmabuf_get_pinned_revocable_and_lock()
+    
+        ... Driver MR allocation/initialization/registration/etc
+        
+    ib_umem_dmabuf_set_revoke_locked()
+    ib_umem_dmabuf_revoke_unlock()
+    
+This allows the driver to provide a callback that can be used to
+perform the actual invalidation in a way that is safe against races
+from concurrent revocations during initialization.
 
-> But in general, since you're letting the user put whatever they want in
-> the vfio private area, should there be some validation that it's in the
-> valid range? I'm also not quite sure how user space comes to know what
-> steering tag to use, or what harm might happen if the wrong one is used.
+The driver must ensure that the HW will no longer access the region
+before the revoke callback returns. For MRs, this can be achieved
+by using the rereg capability to set the region length to 0, or
+perhaps by moving the region to a new quarantine PD. For HW that
+allows the driver to manage the keys (like irdma), this can be
+achieved by deregistering the region in HW but not freeing the key
+until the region is truly deregistered via ibv_dereg_mr.
 
-If the device is VFIO compatible then it needs to ensure that whatever
-it does with its steering tags fit the security model of VFIO. You
-can't harm the device - you can't reach outside the VFIO sandbox (eg
-into another VF or something) and so on.
+Dependencies:
+Please note that this series targets the `for-next` branch, but it depends
+on the following commit currently in the `leon-for-rc` branch:
 
-Under these conditions the kernel doesn't care what TPH is used, just
-let userspace specify the raw bits on the wire.
+  Commit [104016eb671e] ("RDMA/umem: Fix double dma_buf_unpin in failure path")
 
-Jason
+Changes in v2:
+* Created helpers for acquiring/releasing the umem_dmabuf revoke lock.
+* Fixed rereg_user_mr handling in irdma to account for async revoke
+  and used new revoke lock/unlock helper to simplify the dereg_mr path.
+* Dropped unnecessary <linux/dma-resv.h> inclusion in irdma/main.h.
+
+Changes in v1 (since RFCs):
+* Break the interface into a two step process to avoid needing
+  extra state in the driver.
+* Move the majority of the functionality into the core.
+
+v1: https://lore.kernel.org/linux-rdma/20260225210705.373126-1-jmoroni@google.com/T/#t
+RFC v2: https://lore.kernel.org/linux-rdma/20260223195333.438492-1-jmoroni@google.com/T/#t
+RFC v1: https://lore.kernel.org/linux-rdma/CAHYDg1TB1Xa+D700WrvrcQVdgZFE5f8iWp48EmQM9XjK9xJdew@mail.gmail.com/T/#t
+
+Jacob Moroni (5):
+  RDMA/umem: Add ib_umem_dmabuf_get_pinned_and_lock helper
+  RDMA/umem: Move umem dmabuf revoke logic into helper function
+  RDMA/umem: Add pinned revocable dmabuf import interface
+  RDMA/umem: Add helpers for umem dmabuf revoke lock
+  RDMA/irdma: Add support for revocable pinned dmabuf import
+
+ drivers/infiniband/core/umem_dmabuf.c | 138 ++++++++++++++++++++++----
+ drivers/infiniband/hw/irdma/verbs.c   | 105 +++++++++++++++++---
+ include/rdma/ib_umem.h                |  24 +++++
+ 3 files changed, 237 insertions(+), 30 deletions(-)
+
+-- 
+2.53.0.473.g4a7958ca14-goog
+
 
