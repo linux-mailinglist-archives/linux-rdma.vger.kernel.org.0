@@ -1,286 +1,296 @@
-Return-Path: <linux-rdma+bounces-17372-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17373-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6lFbMbFrpWk4AgYAu9opvQ
-	(envelope-from <linux-rdma+bounces-17372-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:51:29 +0100
+	id wCG1IvNvpWlXAgYAu9opvQ
+	(envelope-from <linux-rdma+bounces-17373-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 12:09:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3901D6D99
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 11:51:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E731D738E
+	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 12:09:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DA390301DBAF
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 10:51:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2D4C7300E5F8
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 11:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5FE35A948;
-	Mon,  2 Mar 2026 10:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F090835AC38;
+	Mon,  2 Mar 2026 11:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fHKvAGlV"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QUIXrD8q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E02359A91;
-	Mon,  2 Mar 2026 10:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F6F3314A1
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 11:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772448655; cv=none; b=Bo8IFQdevt9Pzz2n5jeEHvigYNHvDZwjNL6B31HiPudYuWBXbVvj2FCBcWh/j6SeeTk7NyedhoCqMxeoeki7JhuMdevtVlGIrbAclriMKF0oVdfwWqK6Aw0ibqAPbiYuuWmE/EmQ3k01MA9+DSSKQDbgOfbeYd927oQlibf0wjg=
+	t=1772449764; cv=none; b=Yu3H6L5KabFDNt3PhLGiZDTxl50ubNg6bkGNY38WPZvhgeaF4LMHRaN7tLTT34ranHTXMUldnI4KDqW+sbKbnRd38PCJZUb93UshSPP6ZPFPeWfES1dNjos4f2QsSjACl4XR0bhJEiJvbB8hDUH1SGLz3PfrNupMrocp9LUaWOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772448655; c=relaxed/simple;
-	bh=ooCwVMtMeof9eUg55NNUtPSMrUI5IYvsBBfPpUNmiu8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B5g6ZjRLTkK1JpZiMOxJnYoWE3+rnnRCZP48h5d3MsubkLNr1ndsAED8vnphWkqwDgUnEFbDvCGbkymRrXmBvo7OA+Zl/vcjqv3m4Fiwb8bBoOWh+PJfHTWMAkXcRXO1XDS3PTKKRZPRwpJjZgUlM4fQQaGjyW6TlwaAwHfcgT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fHKvAGlV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63631C19423;
-	Mon,  2 Mar 2026 10:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772448655;
-	bh=ooCwVMtMeof9eUg55NNUtPSMrUI5IYvsBBfPpUNmiu8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fHKvAGlV1PYQM4oFzHWWPRF/Yv3lsn7pHbcI4wEPesGHyt//zusRP7n9wglL7LoOI
-	 ZhCK58mOpx9cjjpITbEgzKyqV8Ml0pgYDx3WyVQrsAPALthSB4y74AGT934IURginD
-	 S7LDUJ/n1/2o2lmF2Tg4568RN/JKwd+ULiEM0XODU4Xm0DNwN1w3/iQQlPMhM/XO8q
-	 9KzuIHHM1A9UUjdjpOWQ/NtY8TfKfyVjVycIgth2dFNViaI0QB3GPKr1jibnDZHDbJ
-	 uJuryc73Di6wnU+FHiy9nsYte5yb3BVgKohfue+dztdcVYxfNPAZlOKIrXGrEIlveJ
-	 xGjmTzNbjr2FA==
-Date: Mon, 2 Mar 2026 12:50:51 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"nbd@other.debian.org" <nbd@other.debian.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: blktests failures with v7.0-rc1 kernel
-Message-ID: <20260302105051.GP12611@unreal>
-References: <aZ_-cH8euZLySxdD@shinmob>
- <4c7aea9f-ae97-43c8-8b08-905696303978@nvidia.com>
+	s=arc-20240116; t=1772449764; c=relaxed/simple;
+	bh=wzoTzDZfR74LHJe4IlH48WnnSgNz6KxCjg3/UXWp6cE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pi3DErsd50mlap/Dthe0feGs3LMnpm7OYz9B5XOJdyvVzVGMffldNx7ykwPziuwdwK9/7VbTcVsyGAbKb34l9L1q4S4At4hvoQ2j9FhcL1xY6IxJanmdQGWguyG+SItOM5LCgSd3T30wKedZzfx5BCZcKyzm6lor+Av3iZbgmf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QUIXrD8q; arc=none smtp.client-ip=209.85.214.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2aaf5d53eaaso29536115ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2026 03:09:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772449763; x=1773054563;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I3mtYoZnNth2yhl0G7Nmm4KUyLYSKPenHEGd7Pp2dSs=;
+        b=fBtowE2ZY9q4c/kCpFkW20nrvFvs3VFMszf0fKbaHwTU/1SAU9KQs4H1mhSD7CYHGW
+         WMIdytPSxRHTy5TGP51dq2gh0+2x2M3gxSPKRhjj/bibGvTazRCdM8rm6FuGa8XZVCqT
+         MMpCl5Sj7QVd35lQ2sQJwod6jssjInNSB6UJMBwJDVfJIz39kSpAV5agrqPRRpAHxq16
+         8ZZRjEHF3w8SFIrzlhJaUSm24aUlRaZAR0CgL+IRvna7olWk+6TAQsmltz4MJ8Cmnkqv
+         Q38yc/yxA0z27UEZdi6g/OkkjvW4LeRVtjev/ai7/6QQPsCZZB4D9zLvHU3mCqeyz66N
+         rqDQ==
+X-Gm-Message-State: AOJu0YzqLMK4mdy7MHCvMSkGXwCHG6RTcd2Y86KCTM78VsJThjaRgJpV
+	FTfz/mAb0oOFSMT49COwVOfNbcoH+LWhXGPXbMlXwk51yNjBshnrIkcSJ74vhI+wSMqpy3NVRpg
+	b/AG6cHHaApXAEaBdxW2cMKAvUt7Om60E9pQrsXjTBTQU2B1ere0EjKnIF4M6hAIs1J1TpBvNxD
+	ciablG5sJ4cz1LsmlyWC4JUHoUO13qvT9lUYeISVLhau3SLffXwXaaFua5WjsYU1W3NUYSQp73B
+	LsI474jWF5KsTyHAQLeOYlulTQp
+X-Gm-Gg: ATEYQzyUT2zA+FO8MDa80cv2MOl42M8sYNWVjNA4WS5Ty1ut3P5faVOBQbZY52Ggmhp
+	9z4OXmLRkeltf7jc3Tt4s1CliKWrlvYc1Y05jc2inTnnvr10XTsAtpguHvBDLNBQ9OtvQgApC9U
+	dG4kWng+LSXc1yGLosSSpLi0NNpRxRWrxqHdNw9W7whgMVsIIprYy+QAp6Iyw7vwVQmS1byU2rH
+	/j2IlvG3QZHGhWA3HcCZU5GYHzlG1QNkpYZEZBBeeDg8khvXy9DYbAmU+K5j/ZIvczxT5UTAmmL
+	YAJ9+iMS/bHgImwH1f5R2mZeuJnhTWYGSQMcbrAGKrXKaumt+aI1b7T3SwCOtcrerG+oJM+f0jx
+	6TWz2NtuZCbuBND6lDiiUbjKoU7Ugv1e1XImL3n1Pzcl6Hlls5Az3bD5ozdEai63dqBhmVInMwZ
+	K8vvKAn2CUBcwrgX4Co9YVvQwIOjbnwPqE4TI6fEa7EWK7kML5AeM6DUZJx0YYqbWQvg4OnOk=
+X-Received: by 2002:a17:902:f60e:b0:2ae:3a74:64e3 with SMTP id d9443c01a7336-2ae3a746645mr70433835ad.10.1772449762484;
+        Mon, 02 Mar 2026 03:09:22 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-118.dlp.protect.broadcom.com. [144.49.247.118])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2ae491cd7f1sm5815865ad.41.2026.03.02.03.09.22
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Mar 2026 03:09:22 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2adef9d486bso40131485ad.2
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2026 03:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1772449760; x=1773054560; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I3mtYoZnNth2yhl0G7Nmm4KUyLYSKPenHEGd7Pp2dSs=;
+        b=QUIXrD8qfPYiqAuSIo5BPd2WcLEqQa+51LwFcBGVc4xIR8XQRdXx4+8xokMCeKJVpP
+         J68gsKU/KTrP18Ch9e70FFTimJikB9gtMfPAYk7yvTfZUIa3xncoGGJSJHANlaHGonS6
+         0tsq0p43SNidTuFOmGnYyrfv95QaH4MAaTdKA=
+X-Received: by 2002:a17:903:2304:b0:2ae:4c76:14ea with SMTP id d9443c01a7336-2ae4c761807mr38538955ad.57.1772449760382;
+        Mon, 02 Mar 2026 03:09:20 -0800 (PST)
+X-Received: by 2002:a17:903:2304:b0:2ae:4c76:14ea with SMTP id d9443c01a7336-2ae4c761807mr38538695ad.57.1772449759797;
+        Mon, 02 Mar 2026 03:09:19 -0800 (PST)
+Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ae4651e409sm58391755ad.44.2026.03.02.03.09.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2026 03:09:18 -0800 (PST)
+From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v14 0/6] RDMA/bnxt_re: Support uapi extensions
+Date: Mon,  2 Mar 2026 16:30:30 +0530
+Message-ID: <20260302110036.36387-1-sriharsha.basavapatna@broadcom.com>
+X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4c7aea9f-ae97-43c8-8b08-905696303978@nvidia.com>
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17372-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17373-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,qemu.org:url,nvidia.com:email]
-X-Rspamd-Queue-Id: AA3901D6D99
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: F2E731D738E
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 03:00:40PM +0000, Chaitanya Kulkarni wrote:
-> On 2/26/26 12:09 AM, Shinichiro Kawasaki wrote:
-> > Failure description
-> > ===================
-> >
-> > #1: blktrace/002
-> >
-> >      The test case blktrace/002 failed due to "BUG: using __this_cpu_read() in
-> >      preemptible" and a following WARN [2].
-> 
-> I saw this last night it was pretty late, just glad to see simple 
-> testcase catching bugs.
-> 
-> I've a patch for this I'll send out shortly :-
-> 
-> 
-> From 6a285db1bbdbb613a85ac55a395ed2043d4eb11d Mon Sep 17 00:00:00 2001
-> From: Chaitanya Kulkarni <kch@nvidia.com>
-> Date: Wed, 25 Feb 2026 23:01:12 -0800
-> Subject: [PATCH] blktrace: fix __this_cpu_read/write in preemptible context
-> 
-> 
-> 
-> blktrace/002 (blktrace ftrace corruption with sysfs trace)  [failed]
->      runtime  0.367s  ...  0.437s
->      something found in dmesg:
->      [   81.211018] run blktests blktrace/002 at 2026-02-25 22:24:33
->      [   81.239580] null_blk: disk nullb1 created
->      [   81.357294] BUG: using __this_cpu_read() in preemptible 
-> [00000000] code: dd/2516
->      [   81.362842] caller is tracing_record_cmdline+0x10/0x40
->      [   81.362872] CPU: 16 UID: 0 PID: 2516 Comm: dd Tainted: G         
->         N  7.0.0-rc1lblk+ #84 PREEMPT(full)
->      [   81.362877] Tainted: [N]=TEST
->      [   81.362878] Hardware name: QEMU Standard PC (i440FX + PIIX, 
-> 1996), BIOS rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org 04/01/2014
->      [   81.362881] Call Trace:
->      [   81.362884]  <TASK>
->      [   81.362886]  dump_stack_lvl+0x8d/0xb0
->      ...
->      (See '/mnt/sda/blktests/results/nodev/blktrace/002.dmesg' for the 
-> entire message)
-> 
-> [   81.211018] run blktests blktrace/002 at 2026-02-25 22:24:33
-> [   81.239580] null_blk: disk nullb1 created
-> [   81.357294] BUG: using __this_cpu_read() in preemptible [00000000] 
-> code: dd/2516
-> [   81.362842] caller is tracing_record_cmdline+0x10/0x40
-> [   81.362872] CPU: 16 UID: 0 PID: 2516 Comm: dd Tainted: G           
->   N  7.0.0-rc1lblk+ #84 PREEMPT(full)
-> [   81.362877] Tainted: [N]=TEST
-> [   81.362878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-> BIOS rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org 04/01/2014
-> [   81.362881] Call Trace:
-> [   81.362884]  <TASK>
-> [   81.362886]  dump_stack_lvl+0x8d/0xb0
-> [   81.362895]  check_preemption_disabled+0xce/0xe0
-> [   81.362902]  tracing_record_cmdline+0x10/0x40
-> [   81.362923]  __blk_add_trace+0x307/0x5d0
-> [   81.362934]  ? lock_acquire+0xe0/0x300
-> [   81.362940]  ? iov_iter_extract_pages+0x101/0xa30
-> [   81.362959]  blk_add_trace_bio+0x106/0x1e0
-> [   81.362968]  submit_bio_noacct_nocheck+0x24b/0x3a0
-> [   81.362979]  ? lockdep_init_map_type+0x58/0x260
-> [   81.362988]  submit_bio_wait+0x56/0x90
-> [   81.363009]  __blkdev_direct_IO_simple+0x16c/0x250
-> [   81.363026]  ? __pfx_submit_bio_wait_endio+0x10/0x10
-> [   81.363038]  ? rcu_read_lock_any_held+0x73/0xa0
-> [   81.363051]  blkdev_read_iter+0xc1/0x140
-> [   81.363059]  vfs_read+0x20b/0x330
-> [   81.363083]  ksys_read+0x67/0xe0
-> [   81.363090]  do_syscall_64+0xbf/0xf00
-> [   81.363102]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [   81.363106] RIP: 0033:0x7f281906029d
-> [   81.363111] Code: 31 c0 e9 c6 fe ff ff 50 48 8d 3d 66 63 0a 00 e8 59 
-> ff 01 00 66 0f 1f 84 00 00 00 00 00 80 3d 41 33 0e 00 00 74 17 31 c0 0f 
-> 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec
-> [   81.363113] RSP: 002b:00007ffca127dd48 EFLAGS: 00000246 ORIG_RAX: 
-> 0000000000000000
-> [   81.363120] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 
-> 00007f281906029d
-> [   81.363122] RDX: 0000000000001000 RSI: 0000559f8bfae000 RDI: 
-> 0000000000000000
-> [   81.363123] RBP: 0000000000001000 R08: 0000002863a10a81 R09: 
-> 00007f281915f000
-> [   81.363124] R10: 00007f2818f77b60 R11: 0000000000000246 R12: 
-> 0000559f8bfae000
-> [   81.363126] R13: 0000000000000000 R14: 0000000000000000 R15: 
-> 000000000000000a
-> [   81.363142]  </TASK>
-> [   81.363157] BUG: using __this_cpu_read() in preemptible [00000000] 
-> code: dd/2516
-> [   81.368486] caller is tracing_record_cmdline+0x10/0x40
-> [   81.368496] CPU: 16 UID: 0 PID: 2516 Comm: dd Tainted: G           
->   N  7.0.0-rc1lblk+ #84 PREEMPT(full)
-> [   81.368501] Tainted: [N]=TEST
-> [   81.368502] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-> BIOS rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org 04/01/2014
-> [   81.368503] Call Trace:
-> [   81.368505]  <TASK>
-> [   81.368507]  dump_stack_lvl+0x8d/0xb0
-> [   81.368513]  check_preemption_disabled+0xce/0xe0
-> [   81.368518]  tracing_record_cmdline+0x10/0x40
-> [   81.368523]  __blk_add_trace+0x307/0x5d0
-> [   81.368528]  ? lock_acquire+0xe0/0x300
-> [   81.368547]  blk_add_trace_bio+0x106/0x1e0
-> [   81.368556]  blk_mq_submit_bio+0x63c/0xbb0
-> [   81.368580]  __submit_bio+0xad/0x5c0
-> [   81.368595]  ? submit_bio_noacct_nocheck+0x2b0/0x3a0
-> [   81.368600]  submit_bio_noacct_nocheck+0x2b0/0x3a0
-> [   81.368611]  submit_bio_wait+0x56/0x90
-> [   81.368622]  __blkdev_direct_IO_simple+0x16c/0x250
-> [   81.368635]  ? __pfx_submit_bio_wait_endio+0x10/0x10
-> [   81.368656]  ? rcu_read_lock_any_held+0x73/0xa0
-> [   81.368664]  blkdev_read_iter+0xc1/0x140
-> [   81.368672]  vfs_read+0x20b/0x330
-> [   81.368687]  ksys_read+0x67/0xe0
-> [   81.368694]  do_syscall_64+0xbf/0xf00
-> [   81.368702]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [   81.368705] RIP: 0033:0x7f281906029d
-> [   81.368708] Code: 31 c0 e9 c6 fe ff ff 50 48 8d 3d 66 63 0a 00 e8 59 
-> ff 01 00 66 0f 1f 84 00 00 00 00 00 80 3d 41 33 0e 00 00 74 17 31 c0 0f 
-> 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec
-> [   81.368710] RSP: 002b:00007ffca127dd48 EFLAGS: 00000246 ORIG_RAX: 
-> 0000000000000000
-> [   81.368712] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 
-> 00007f281906029d
-> [   81.368713] RDX: 0000000000001000 RSI: 0000559f8bfae000 RDI: 
-> 0000000000000000
-> [   81.368714] RBP: 0000000000001000 R08: 0000002863a10a81 R09: 
-> 00007f281915f000
-> [   81.368716] R10: 00007f2818f77b60 R11: 0000000000000246 R12: 
-> 0000559f8bfae000
-> [   81.368717] R13: 0000000000000000 R14: 0000000000000000 R15: 
-> 000000000000000a
-> [   81.368734]  </TASK>
-> 
-> The same BUG fires from blk_add_trace_plug(), blk_add_trace_unplug(),
-> and blk_add_trace_rq() paths as well.
-> 
-> Fix by wrapping the tracing_record_cmdline() call with
-> preempt_disable()/preempt_enable().  This is a best-effort "record
-> the comm string for this PID" operation and briefly disabling
-> preemption around it is both safe and correct.
-> 
-> With this patch now blktests for blktrace pass :-
-> 
-> blktests (master) # ./check blktrace
-> blktrace/001 (blktrace zone management command tracing) [passed]
->      runtime  3.652s  ...  3.649s
-> blktrace/002 (blktrace ftrace corruption with sysfs trace)  [passed]
->      runtime  0.437s  ...  0.389s
-> blktests (master) #
-> 
-> 
-> Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
-> ---
->   kernel/trace/blktrace.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index 3b7c102a6eb3..488552036583 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -383,7 +383,9 @@ static void __blk_add_trace(struct blk_trace *bt, 
-> sector_t sector, int bytes,
->       cpu = raw_smp_processor_id();
-> 
->       if (blk_tracer) {
-> +        preempt_disable_notrace();
->           tracing_record_cmdline(current);
-> +        preempt_enable_notrace();
+Hi,
 
-These lines likely belong in tracing_record_cmdline().
+This patchset provides uapi extensions in the bnxt_re driver.
 
-Thanks
+This is required by applications that need to manage some of the
+RDMA HW resources directly and to implement the datapath in the
+application.
 
-> 
->           buffer = blk_tr->array_buffer.buffer;
->           trace_ctx = tracing_gen_ctx_flags(0);
-> -- 
-> 2.39.5
-> 
-> 
+To support this, the library and the driver are being enhanced to
+provide uverb extensions using which the application can allocate and
+manage the HW resources (Doorbell, Queues etc).
+
+Patch#1 Move uapi methods to a separate file
+Patch#2 Refactor existing bnxt_qplib_create_qp() function
+Patch#3 Support doorbell extensions
+Patch#4 Refactor bnxt_re_create_cq()
+Patch#5 Separate user/kernel CQ creation paths
+Patch#6 Support application specific CQs
+
+Thanks,
+-Harsha
+
+******
+
+Changes:
+
+v14:
+- Rebased to the latest rdma-next branch + v2 of udata helper series.
+  https://lore.kernel.org/linux-rdma/0-v2-13af4a900857+4f13-bnxt_re_uapi_jgg@nvidia.com/
+- Resolved conflicts.
+- Split user/kernel CQ changes into a separate patch (#5).
+- Updated Patch#6 to the new create_user_cq() devop.
+v13:
+- Patch#5:
+  - Split user and kernel CQ creation paths.
+  - Required by the new CQ interface series:
+    https://lore.kernel.org/linux-rdma/20260213-refactor-umem-v1-0-f3be85847922@nvidia.com/
+v12:
+- Patch#6
+  - Added a separate comp_mask enum for req_cq.
+  - Renamed cqe comp_flag (BNXT_RE_CQ_FIXED_NUM_CQE_ENABLE).
+  - Pass comp_mask flags directly to the validation function.
+  - Deleted a couple of debug prints.
+v11:
+- Patch#1
+  - Rename dv.c->uapi.c. 
+- Patch#3 (DBR)
+  - Renamed abi enums/vars.
+  - Updated commit message.
+- CQ patch
+  - Split into 3 separate patches (#4,5,6).
+  - Refactored functionality into standard CQ functions.
+  - Renamed abi enums/vars; deleted dv functions.
+  - Updated commit messages.
+- Dropped QP patch from the series.
+v10:
+- Fixed comp_mask issues:
+  - Driver returns cmask capability in ucntx for CQ/QP.
+  - Driver checks req comp_mask for supported bitmasks.
+  - Driver returns -EOPNOTSUPP if invalid comp_mask.
+- Fixed zero initialization of req/resp structures.
+- Use PD object from QP; deleted pd_id in ureq.
+- Deleted debug counters.
+- Split CQ/QP changes into two separate patches (#5,#6).
+v9:
+- Added a new uverbs patch (#1) in RDMA core.
+  - Supports user/app allocated memory for QP.
+- Updated Patch#5 (cq/qp) to utilize umem dev op.
+- Updated driver ABI file (deleted dmabuf_fd/len fields).
+v8:
+- Patch#3:
+  - Removed dpi_hash table (and lock/rcu).
+  - Renamed bnxt_re_alloc_dbr_obj->bnxt_re_dbr_obj.
+  - Added an atomic usecnt in dbr_obj.
+- Patch#4:
+  - Registered a driver specific attribute for dbr_handle.
+  - Process dbr_handle during QP creation.
+  - Added refcnt logic to avoid dbr deletion with active QPs.
+  - Reverted dpi hash table lookup and related code.
+  - Removed dpi from req_qp ABI.
+  - Added ib_umem_find_best_pgsz() in umem processing.
+  - Added a wrapper function for dv_cq deletion.
+v7:
+- Patch#3:
+  - DBR_OFFSET attribute changed to PTR_OUT.
+  - Added a reserved field in struct bnxt_re_dv_db_region.
+  - Reordered sequence in DBR_ALLOC (hash_add -> uverbs_finalize).
+  - Synchronized access to dpi hash table.
+- Patch#4:
+  - Changed dmabuf_fd type (u32->s32) in ABI.
+  - Changed num_dma_blocks() arg from PAGE_SIZE to SZ_4K. 
+  - Fixed atomic read/inc race window in bnxt_re_dv_create_qplib_cq().
+  - Deleted bnxt_re_dv_init_ib_cq(). 
+v6:
+- Minor updates in Patch#3:
+  - Removed unused variables.
+  - Renamed & updated a uverbs method to a global.
+- Minor updates in Patch#4:
+  - Removed unused variables, stray hunks.
+v5:
+- Design changes to address previous round of comments:
+  - Reverted changes in rdma-core (removed V4-Patch#1).
+  - Removed driver support for umem-reg/dereg DVs (Patch#3).
+  - Enhanced driver specific udata to avoid new CQ/QP ioctls (Patch#4).
+  - Removed additional driver functions in modify/query QP (Patch#4).
+  - Utilized queue-va in udata for deferred pinning (Patch#4).
+v4:
+- Added a new (rdma core) patch.
+- Addressed code review comments in patch 5.
+v3:
+- Addressed code review comments in patches 1, 2 and 4.
+v2:
+- Fixed build warnings reported by test robot in patches 3 and 4.
+
+v13: https://lore.kernel.org/linux-rdma/20260217025910.15865-1-sriharsha.basavapatna@broadcom.com/
+v12: https://lore.kernel.org/linux-rdma/20260211124927.57617-1-sriharsha.basavapatna@broadcom.com/
+v11: https://lore.kernel.org/linux-rdma/20260210165939.41625-1-sriharsha.basavapatna@broadcom.com/
+v10: https://lore.kernel.org/linux-rdma/20260203050049.171026-1-sriharsha.basavapatna@broadcom.com/
+v9: https://lore.kernel.org/linux-rdma/20260127103109.32163-1-sriharsha.basavapatna@broadcom.com/
+v8: https://lore.kernel.org/linux-rdma/20260117080052.43279-1-sriharsha.basavapatna@broadcom.com/
+v7: https://lore.kernel.org/linux-rdma/20260113170956.103779-1-sriharsha.basavapatna@broadcom.com/
+v6: https://lore.kernel.org/linux-rdma/20251224042602.56255-1-sriharsha.basavapatna@broadcom.com/
+v5: https://lore.kernel.org/linux-rdma/20251129165441.75274-1-sriharsha.basavapatna@broadcom.com/
+v4: https://lore.kernel.org/linux-rdma/20251117061741.15752-1-sriharsha.basavapatna@broadcom.com/
+v3: https://lore.kernel.org/linux-rdma/20251110145628.290296-1-sriharsha.basavapatna@broadcom.com/
+v2: https://lore.kernel.org/linux-rdma/20251104072320.210596-1-sriharsha.basavapatna@broadcom.com/
+v1: https://lore.kernel.org/linux-rdma/20251103105033.205586-1-sriharsha.basavapatna@broadcom.com/
+
+******
+
+Kalesh AP (3):
+  RDMA/bnxt_re: Move the UAPI methods to a dedicated file
+  RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
+  RDMA/bnxt_re: Support doorbell extensions
+
+Sriharsha Basavapatna (3):
+  RDMA/bnxt_re: Refactor bnxt_re_create_cq()
+  RDMA/bnxt_re: Separate kernel and user CQ creation paths
+  RDMA/bnxt_re: Support application specific CQs
+
+ drivers/infiniband/hw/bnxt_re/Makefile    |   2 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 688 ++++++++++------------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h  |  13 +-
+ drivers/infiniband/hw/bnxt_re/main.c      |   1 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 305 +++-------
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  |   8 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.c |  43 ++
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  10 +
+ drivers/infiniband/hw/bnxt_re/uapi.c      | 469 +++++++++++++++
+ include/uapi/rdma/bnxt_re-abi.h           |  36 +-
+ 10 files changed, 990 insertions(+), 585 deletions(-)
+ create mode 100644 drivers/infiniband/hw/bnxt_re/uapi.c
+
+-- 
+2.51.2.636.ga99f379adf
+
 
