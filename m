@@ -1,164 +1,200 @@
-Return-Path: <linux-rdma+bounces-17402-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17403-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0OigKP0VpmnZKAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17402-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 23:58:05 +0100
+	id 6FdjAjYYpmmeKQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17403-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 00:07:34 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76DE91E6052
-	for <lists+linux-rdma@lfdr.de>; Mon, 02 Mar 2026 23:58:04 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721261E64F5
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 00:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 57B823024B42
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 22:25:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3DFF03035031
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2026 23:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A987E31E824;
-	Mon,  2 Mar 2026 22:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7841310655;
+	Mon,  2 Mar 2026 23:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrizRNFx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g8XewL92"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE52031E843;
-	Mon,  2 Mar 2026 22:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4792DB790
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Mar 2026 23:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772490310; cv=none; b=iDfZdFDheSBJIvJmoL5sDqvNzFchDVUjIV7xGMspU1cOdVkEVuJv95rBR5jJ0yi0B6r5MfNIU/5iSRtIZ1V8fs6P/AcSlofcY/DvzgT2Eo0KVvGNdJzthFSqup1VvkMVN3wYZo0gAilVlFHK8/rKmptBmhIx8p/+fon5LmfCevo=
+	t=1772492516; cv=none; b=okbLf2MgXBCaZJweaREWIdbi8UsQgn+Im3XPHu2PTPTuhQs8kG/cUt86YRxXwBHFKU5U1aMMh4mmVpv0IEMbiRuf4fhxcU5qECEZBfSPUpthIooHdf/ycvhz2J9HL65iMxdoq5ZjNISOtXWU6mgbavP3PIm16mxdsUxr6VKaCxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772490310; c=relaxed/simple;
-	bh=z1MJC3FRweYmPEPq5YHZ5jyoBMGe/oJK14mlqTwgr2g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZUGwrGbOdZVnl/Xfu81s6Aqpjtnnht/sikHrbNPJzEMugwB2fX9yYDT4siz7L6wV/uY6PhEo6DlOJnhC7zSqDvlu8EQOzVHShAzmn/YpRHZYxsKRXe59NlHklZTfnFCUuNkKFdNpMyTUYC7VDOHiPLwRgNsOfv9dST4HXNXJRG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OrizRNFx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D8DC19425;
-	Mon,  2 Mar 2026 22:25:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772490310;
-	bh=z1MJC3FRweYmPEPq5YHZ5jyoBMGe/oJK14mlqTwgr2g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=OrizRNFxFCUYh9V6TNt+BvDhyObGNEUKV3fn/Rr/BWn6s0kWOwrpCE5bMKwA6pesf
-	 O1gryPbYigQ8oLt7XQwowrqGbujrKJFMwcJIVn2GQSE8sNd8Av7VBzTiehXwMF2Ahq
-	 roY4ukT9SWDPvCVm4bKrO6u1tGD7Z43jRO8DaPkHFmnJzJFRrwMtGrgkquo3Cm8nZ6
-	 I121G0Znf3eZGNPeITB+OFKlxaY/lziu25T1pCj7qP6JHKTdpbEdMFCLrwX3JVtmW6
-	 W8FTyak6mq7ydLm9W4jBQ5ylFmFXks/9QgAeiHM0iRuWSmXU77o24JRmf+SE0231B+
-	 3Ts3XPcHOmAPA==
-From: Chuck Lever <cel@kernel.org>
-To: <linux-nfs@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>
-Cc: Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH] xprtrdma: Close sendctx get/put race that can block a transport
-Date: Mon,  2 Mar 2026 17:24:46 -0500
-Message-ID: <20260302222445.2230-2-cel@kernel.org>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1772492516; c=relaxed/simple;
+	bh=Z/aZeYO2oArPKJ0qd5XfE+4I22GqCcXgGJizvM7r3Vo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E1BdwNAOoD0w9iVeBEH+8JOwpMxTBSJZYdSFx5gxkyF2SFOGisfzEvI3V7TZh005CDj8oS90H+cEi8Pjq1yxnW2NQ67sdlc+WjuqNgOzxyLsnUokDSDJRGGWKohjQcDYry9q4OeicmMVgIQl0JXj2Z7QXJEzBxQ2mZ1sroCIB00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g8XewL92; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4837907f535so43534865e9.3
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2026 15:01:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772492514; x=1773097314; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WvEd2KF0bVK+blm9zxi0baLV35fCzKlSXCd8TlmuSeE=;
+        b=g8XewL921avGRVl3OPuuy7qwdcO2RMGHvDmHiHdky1FzXROizhME+/r74ciM4zBrds
+         zIO08QWGNKubUSDDbm5Q34eXwri3uitR/owgrUC+u+eo5e+VcPcSPoTGagScRZRGgGtn
+         syVeaGbQ2sTDyM2du9c8C9O9zy2qOKYMJyi8NW69NCcC1goCeZqTSoLPC0uDkNIEvJC8
+         Mj/DecwpKKh4keno6SudS9OOvH0GH3jqd2Z6GRN9TKET6IjlHqPU7ETc9TcPHuWKGb+r
+         gHQLhs9iRgyGsAPnErdO7wUuilPMYhXhptq23oDSipsAPXXgOaQ+YbiOTYXjV2vxpx3R
+         LUjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772492514; x=1773097314;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WvEd2KF0bVK+blm9zxi0baLV35fCzKlSXCd8TlmuSeE=;
+        b=MXeRSsIfursR4cRAIEFg+NY+FzR0UhOMjjtext2qX4RdtxVpD93LzlZ1xDj1Fk0c/x
+         cj3wK6THtQ80Q7meCJNL/mLkImc0oYTh51BJUZraRb7D2Du+nEb4SpI4ly114MbuP11Z
+         55VMvXBbOPBYa8FgqrcpdbJNGCx5sf5BT7t8tzqR41vvwpHRolfxxDNTMeuL3m4T9qAZ
+         SdFkt4JIbcYYLHdQZXNU5oopwRmhftZXfE/brTUvmMc9vNiX3TfpF9zjVbOa2yCldOC6
+         iChO7cmTaFh0C9jA0vK7LmhoGfJkHpCtwxAtwn3Z6Les/RqgN/mgcJlTZCNdB2Pe5GPm
+         72vg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2ksom295wK+SWFBVM7tXUB6rTpvuq87cGClnG2OiUz4iIzdsiI+KOF3l/NeQ283q5HRBSTdOQc99j@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4w123UdP8OUPPIlZwsYCqNRUHSm407+Pn579a3ceh60RtARFG
+	+S4fjVeHY0hRX0J88i3r8lIknsSFTsNHVCr7xwAI3qHCecbFKW3ujNSe
+X-Gm-Gg: ATEYQzxcFknHhTG6TcnLkZ8/6Jc4awuQdyVCfgvmJfn7jgpz/2bDTn35s6sk1ocYxAc
+	Pg8qrY7VIYwRKMi0Bt/IWsJV+R7tE2wKTzzcpsKdRJcGTOK0+XU/tIeRU+TYg+QKQdJ8lR+LPvd
+	ybUMkFD5J8lHdoONweg8yHAfT83efnIZ3eszjyLcW2icVck9GjC1bcmk0cKxCLnh2ejrrsM7DAO
+	aKEjfom3Uk9rdgk7GRChmTRlJ5vAiqZ6N7dUS9UD10hhB1QjbQGDqRQLEIKiMVwFxCHj/aq5RRa
+	YDkK1mcOIxixUNtn+05O4vLHbRsAQen7w3gB32WR3D8AqCK6FRZGT6fuuWq5wo10QaLdFQq8cyu
+	MmwDLg/XvS1fisROHO+3VH81rd+N/H8L+V//Lck2X/FoOuM9hXveoJYecwSlB4OW7U1okuh8wnY
+	KRz+hPQciLApSpLicK0XWHRyYy2p5NeVs=
+X-Received: by 2002:a05:600c:a0a:b0:483:7813:90d8 with SMTP id 5b1f17b1804b1-483c9b94296mr221431575e9.1.1772492513269;
+        Mon, 02 Mar 2026 15:01:53 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:4f::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd70e6c9sm382969055e9.8.2026.03.02.15.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2026 15:01:52 -0800 (PST)
+From: Mohsin Bashir <mohsin.bashr@gmail.com>
+To: netdev@vger.kernel.org
+Cc: alexanderduyck@fb.com,
+	alok.a.tiwari@oracle.com,
+	andrew+netdev@lunn.ch,
+	andrew@lunn.ch,
+	davem@davemloft.net,
+	dg573847474@gmail.com,
+	donald.hunter@gmail.com,
+	edumazet@google.com,
+	gal@nvidia.com,
+	horms@kernel.org,
+	idosch@nvidia.com,
+	jacob.e.keller@intel.com,
+	kernel-team@meta.com,
+	kory.maincent@bootlin.com,
+	kuba@kernel.org,
+	lee@trager.us,
+	leon@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux@armlinux.org.uk,
+	mbloch@nvidia.com,
+	mike.marciniszyn@gmail.com,
+	mohsin.bashr@gmail.com,
+	o.rempel@pengutronix.de,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	vadim.fedorenko@linux.dev
+Subject: [net-next V4 0/5] net: ethtool: Track TX pause storm
+Date: Mon,  2 Mar 2026 15:01:44 -0800
+Message-ID: <20260302230149.1580195-1-mohsin.bashr@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2576; i=chuck.lever@oracle.com; h=from:subject; bh=Vj3diU24cdWhFoe5Txt6pOMwv2moztIOqmveQ9QcMSA=; b=owEBbQKS/ZANAwAKATNqszNvZn+XAcsmYgBppg4tOKb0U0pFAM9Sh6N1f9tHKLUfISLAkXkA2 QBwL5FiF3yJAjMEAAEKAB0WIQQosuWwEobfJDzyPv4zarMzb2Z/lwUCaaYOLQAKCRAzarMzb2Z/ l60HD/wJXPCoPFqjVPIINXFdTIqQ2qTrlfC0UggaJ1kToE6h2TMf9xzD5dZ/SwJjiCXu4oDw95Y +eOZvjnDp+v4nPsEqtCW3zJHm9NjkVMMslEpwXZNWUVlkN0PQ4zVqeUz1rG9hRkNnvrCqGLkN3O z0lhsyNDUZ2STKXtxO3wY8ukmWFT29EoheUZ+uRAkVz0X4vqtFXwhximSTnsWbY4qoIwenoYOEa 8BNlA2OHvHzfAfEi9XO5XAsgGJ0zNxHdrOWxK+Un7UJhBynbFTtArkwO5xibI5XEzkcutg29LrB mH+wzv0KSkW73iL5IrTddtwkTlR0tWK+ShDXITjJKuQcQHhClWLllBLbME38h6/BW7VsQZf3+yS WJny3o5+7vqoUz5FQFFGlpHUaZQDOhYRJtBcmOJghc+OR9uh2StFhZpCq9kLgiRHSyamljansjj NW6mciCRkwYgDlmKaEuojgoiNzvapreECR4ll5eYiKuwAt4UvGcD3cZ8Jd5uj/l6UsD5wRv/Xx9 IZl1jhnqbBR0QffnXwDV2w0kpyhFQu3CZI9+nK0W/eUr+QFIr1B0eHmsImy81kLSTxoM7nrDZhy 5ewMRyoxTvJhi2prEfrkVdc1/aEtGkFLBnbsirOhPtFXCHVP1WHmxkuDf1eyZhR6YxQMOBwQC48 beiEsTQHwQqCCoQ==
-X-Developer-Key: i=chuck.lever@oracle.com; a=openpgp; fpr=28B2E5B01286DF243CF23EFE336AB3336F667F97
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 76DE91E6052
+X-Rspamd-Queue-Id: 721261E64F5
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17402-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCPT_COUNT_THREE(0.00)[3];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17403-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,oracle.com,lunn.ch,davemloft.net,gmail.com,google.com,nvidia.com,kernel.org,intel.com,meta.com,bootlin.com,trager.us,vger.kernel.org,armlinux.org.uk,pengutronix.de,redhat.com,linux.dev];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[mohsinbashr@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-From: Chuck Lever <chuck.lever@oracle.com>
+With TX pause enabled, if a device cannot deliver received frames to
+the stack (e.g., during a system hang), it may generate excessive pause
+frames causing a pause storm. This series updates the uAPI to track TX
+pause storm events as part of the pause stats (p1), proposes using the
+existing pfc-prevention-tout knob to configure the storm watchdog (p2),
+adds pause storm protection support for fbnic (p3), and leverages p1
+to provide observability into these events for the fbnic (p4) and mlx5
+(p5) drivers.
 
-rpcrdma_sendctx_get_locked() and rpcrdma_sendctx_put_locked() can
-race in a way that leaves XPRT_WRITE_SPACE set permanently, blocking
-all further sends on the transport:
+Changelog:
+- V4: Drop RFC. No feedback received on V3.
 
-  get_locked              put_locked (Send completion)
-  ----------              --------------------------
-  read rb_sc_tail
-    -> ring full
-                          advance rb_sc_tail
-                          xprt_write_space():
-                            test_bit(WRITE_SPACE)
-                            -> not set, return
-  set_bit(WRITE_SPACE)
-  return NULL (-EAGAIN)
+- V3(RFC):
+https://lore.kernel.org/netdev/20260223174914.74461-1-mohsin.bashr@gmail.com/
 
-After the sender releases XPRT_LOCKED, the release path refuses to
-wake the next task because XPRT_WRITE_SPACE is set. The sender
-retries, finds XPRT_WRITE_SPACE still set, and sleeps on
-xprt_sending. No further Send completions arrive to clear the flag
-because no new Sends can be posted.
+- V2:
+https://lore.kernel.org/20260207010525.3808842-1-mohsin.bashr@gmail.com/
 
-With nconnect, the stalled transport's share of congestion credits
-are never returned, starving the remaining transports as well.
+- V1:
+https://lore.kernel.org/20260122192158.428882-1-mohsin.bashr@gmail.com/
 
-Fixes: 05eb06d86685 ("xprtrdma: Fix occasional transport deadlock")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/verbs.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Mohsin Bashir (5):
+  net: ethtool: Track pause storm events
+  net: ethtool: Update doc for tunable
+  eth: fbnic: Add protection against pause storm
+  eth: fbnic: Fetch TX pause storm stats
+  eth: mlx5: Move pause storm errors to pause stats
 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index b51a162885bb..90fd83f2d846 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -708,6 +708,18 @@ struct rpcrdma_sendctx *rpcrdma_sendctx_get_locked(struct rpcrdma_xprt *r_xprt)
- 	 */
- 	xprt_wait_for_buffer_space(&r_xprt->rx_xprt);
- 	r_xprt->rx_stats.empty_sendctx_q++;
-+
-+	/* Recheck: a Send completion between the ring-empty test
-+	 * and the set_bit could cause its xprt_write_space() to
-+	 * miss, leaving XPRT_WRITE_SPACE set with a non-full ring.
-+	 * The smp_mb__after_atomic() pairs with smp_store_release()
-+	 * in rpcrdma_sendctx_put_locked().
-+	 */
-+	smp_mb__after_atomic();
-+	next_head = rpcrdma_sendctx_next(buf, buf->rb_sc_head);
-+	if (next_head != READ_ONCE(buf->rb_sc_tail))
-+		xprt_write_space(&r_xprt->rx_xprt);
-+
- 	return NULL;
- }
- 
-@@ -739,7 +751,10 @@ static void rpcrdma_sendctx_put_locked(struct rpcrdma_xprt *r_xprt,
- 
- 	} while (buf->rb_sc_ctxs[next_tail] != sc);
- 
--	/* Paired with READ_ONCE */
-+	/* Paired with READ_ONCE in rpcrdma_sendctx_get_locked():
-+	 * both the fast-path ring-full test and the post-set_bit
-+	 * recheck in the slow path depend on this store-release.
-+	 */
- 	smp_store_release(&buf->rb_sc_tail, next_tail);
- 
- 	xprt_write_space(&r_xprt->rx_xprt);
+ Documentation/netlink/specs/ethtool.yaml      |  13 ++
+ .../ethernet/mellanox/mlx5/core/en_stats.c    |  30 +++++
+ drivers/net/ethernet/meta/fbnic/fbnic.h       |   3 +
+ drivers/net/ethernet/meta/fbnic/fbnic_csr.h   |  11 ++
+ .../net/ethernet/meta/fbnic/fbnic_ethtool.c   |  46 ++++++++
+ .../net/ethernet/meta/fbnic/fbnic_hw_stats.h  |   1 +
+ drivers/net/ethernet/meta/fbnic/fbnic_irq.c   |   2 +
+ drivers/net/ethernet/meta/fbnic/fbnic_mac.c   | 111 ++++++++++++++++++
+ drivers/net/ethernet/meta/fbnic/fbnic_mac.h   |  27 +++++
+ drivers/net/ethernet/meta/fbnic/fbnic_pci.c   |   5 +
+ include/linux/ethtool.h                       |   2 +
+ include/uapi/linux/ethtool.h                  |   2 +-
+ .../uapi/linux/ethtool_netlink_generated.h    |   1 +
+ net/ethtool/pause.c                           |   4 +-
+ 14 files changed, 256 insertions(+), 2 deletions(-)
+
 -- 
-2.53.0
+2.47.3
 
 
