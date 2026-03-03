@@ -1,60 +1,65 @@
-Return-Path: <linux-rdma+bounces-17410-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17411-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QKm4HFY6pmnQMgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17410-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 02:33:10 +0100
+	id iBkUO4FOpmlCNwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17411-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 03:59:13 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B141E7B5A
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 02:33:09 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E76ED1E8450
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 03:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BA39A302F7C1
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 01:33:07 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4AA55300C6EE
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 02:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7698B373C0B;
-	Tue,  3 Mar 2026 01:33:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB5037B007;
+	Tue,  3 Mar 2026 02:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bj1dklSB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/84zTxz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A15830148B;
-	Tue,  3 Mar 2026 01:33:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4392F851;
+	Tue,  3 Mar 2026 02:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772501584; cv=none; b=IC1u+8cBCK7alKO4itomJZzWpkl8RpsJC/yQBr34lvYXwdcV5q7PMoBm/FE0Pc/BdLhBL0kh/0gahgP0mt4XTOnLuyU/BoAdmOLFJN4PysT/MXNtfSUtgLEJ3T+tWW6lj/A9DbEFwkVr2UT/cginq/2rzt5kqEqDevF6H8s5Uvs=
+	t=1772506744; cv=none; b=aA4Pkqa+ZBrBSE/ZQ/U1YkKVS8Lij91X0Skn0WmcMXYll3seL0DAYPP9m1Aeo1ktHmG9hEncOl1zTIwN3SEuJZvrzh+6DaBD4wsos80oQImyA6AA7R80B+HBj+tu9B/pKMARquwSR+NvkPvXgrUsTJ1iDCxUBC5NfQxZn27rh7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772501584; c=relaxed/simple;
-	bh=IUUZMklsuDqt9XDyM9yk4sjEMlG0JCQemvWf3MVHwlE=;
+	s=arc-20240116; t=1772506744; c=relaxed/simple;
+	bh=fgR3EcmKuj1SzLVfh3XjFCkJQtQeTsanWkUytmCjjE4=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W5HJdpj9BRDpMqJhCD1ZQR/vRK0cRVlBhK8lbM+WU8g4r9e0IhWFBk5/fFmJlKCqZqkvpQxSY5BCSixaZtpQpxjW+AWQG5bnkl51sMZnLI70s3rUfTW7cezop2PSnuN6rrMwrmISf2jnIcFr9YB2P8JoA3MaDmcxwSu+anffkPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bj1dklSB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9B6C19423;
-	Tue,  3 Mar 2026 01:33:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=NnWvnybAgtV+fbNgMnCxhCuOvoD4F2LEko6TVy8s4rNSxbieXEXS+usHhKxsTlrRRHAdWueAIRftIwsL69m2EiPzu7jJRKMRaz3kW8vLc9C4hX0zjbRp+M0TDgTM8WoVEyNHoYKEyv43Ro2eAaXd33N8CPmFDa/EeYDRP/IaBjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/84zTxz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C82EC19423;
+	Tue,  3 Mar 2026 02:59:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772501583;
-	bh=IUUZMklsuDqt9XDyM9yk4sjEMlG0JCQemvWf3MVHwlE=;
+	s=k20201202; t=1772506744;
+	bh=fgR3EcmKuj1SzLVfh3XjFCkJQtQeTsanWkUytmCjjE4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Bj1dklSB20+0Kay/8hcYBsj29heJW2oqguhj7spRmyhM8d0TF6NbRWyKNGDjZ0Dvc
-	 3Rsq1JnW2WuGk36M6P9w8+MsFx3wVl0cKkz1lJ3lKIcsUBw3b0qMznwdouEHq/5j+D
-	 y2NfYxMS7DzP0mRyTdHMgbTDhEWqm3fwYSqBaiEA1LlKLXR/BBSSvRM6QWRavvlv8Y
-	 8XdtHbycUO3SV91pgi4YKG/ExD+oYobj3cmt580hxvcoAs4thhzmQKrSz9yDnJDeOO
-	 zmIS4Js6XenCLxEAoTRCF4Ax4M3T9MWRg4om8OmUzj0Y9It+csZRPF2eS20yPnZV0e
-	 JlGtq4Bm1NpEg==
-Date: Mon, 2 Mar 2026 17:33:02 -0800
+	b=V/84zTxzhinzf72eQwnDGMk3zSnySat6C1/pGI/Cux6BplPu4oe+TlTspV/u06utp
+	 38WDqMJkqph8tT6iwSh+QjmzqzgdqlQfb+hNV0QMNkuDkpn0GBwOFANoWySPTNimgL
+	 nD24aPtJsYg6i9NzjK4X20wRSmMMWs8y7Ev9XDul7e0ggbbqpULOhXjA3iPB5s6f87
+	 HOjxRYVHdBt7/NPpC1C6cvyjO9A+3640mqRkzelUZinPuchN5KwY1ghKjQ/Dq94nh0
+	 Rq5l01L7wHow7JfVFq/PWFCCUgjMO3u/KmSR92Q449Uc5MSSkQB6InIuQP96B75lRw
+	 nFzm7EhJ9G8uQ==
+Date: Mon, 2 Mar 2026 18:59:02 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Allison Henderson <achender@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- pabeni@redhat.com, edumazet@google.com, rds-devel@oss.oracle.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, allison.henderson@oracle.com
-Subject: Re: [PATCH net-next v1 0/2] selftests: rds: refactor and expand rds
- selftests test
-Message-ID: <20260302173302.4d1634be@kernel.org>
-In-Reply-To: <20260302055518.301620-1-achender@kernel.org>
-References: <20260302055518.301620-1-achender@kernel.org>
+To: Long Li <longli@microsoft.com>
+Cc: Konstantin Taranov <kotaranov@microsoft.com>, "David S . Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
+ <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Haiyang Zhang
+ <haiyangz@microsoft.com>, "K . Y . Srinivasan" <kys@microsoft.com>, Wei Liu
+ <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Simon Horman
+ <horms@kernel.org>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/6] net: mana: Per-vPort EQ and MSI-X
+ interrupt management
+Message-ID: <20260302185902.5a778bb4@kernel.org>
+In-Reply-To: <20260228021144.85054-1-longli@microsoft.com>
+References: <20260228021144.85054-1-longli@microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,56 +68,43 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: E4B141E7B5A
+X-Rspamd-Queue-Id: E76ED1E8450
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-17410-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17411-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Sun,  1 Mar 2026 22:55:16 -0700 Allison Henderson wrote:
-> This series aims to improve the current rds selftests.  The first patch
-> refactors the existing test.py such that the networking set up can be
-> reused as general purpose infrastructure for other tests.  The existing
-> send and receive code is hoisted into a separate rds_basic.py.  The next
-> patch adds a new rds_stress.py that exercises RDS via the external
-> rds-stress tool from the rds-tools package if it is available on the host.
-> We add two new flags to test.py, -b and -s to select rds_basic or
-> rds_stress respectively.  The intent is to make the RDS selftests more
-> modular and extensible.  Let me know what you all think.
-> 
-> Questions, comments, suggestions appreciated!
+On Fri, 27 Feb 2026 18:11:38 -0800 Long Li wrote:
+> This series adds per-vPort Event Queue (EQ) allocation and MSI-X interrupt
+> management for the MANA driver. Previously, all vPorts shared a single set
+> of EQs. This change enables dedicated EQs per vPort with support for both
+> dedicated and shared MSI-X vector allocation modes.
 
-IDK Allison. I tried to integrate the remaining tests with Netdev CI
-this weekend. The two groups of networking tests which can't be run
-like all the other selftests are vsock and RDS. I get vsock being
-different. vsock is used to communicate between VMs and host, setting
-up the vms with the locally built kernel makes it different.
-
-But I'm not exactly sure what makes RDS different. Would you mind
-explaining the challenges with fitting RDS into the ksft framework?
+Does not apply to net-next, please rebase.
 
