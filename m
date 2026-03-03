@@ -1,187 +1,130 @@
-Return-Path: <linux-rdma+bounces-17419-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17420-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GKKyOJ7OpmntWQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17419-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 13:05:50 +0100
+	id uHoGMNfQpmmgWwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17420-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 13:15:19 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81CE51EEF74
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 13:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8243A1EF2AE
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 13:15:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 21EC730AD927
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 11:56:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 56F7D306C137
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 12:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C78433E374;
-	Tue,  3 Mar 2026 11:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA4433F5BC;
+	Tue,  3 Mar 2026 12:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cBBlG38o";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="NX+11DLJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9hbdB7s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC7133DEE1
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Mar 2026 11:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3DF33F5A0;
+	Tue,  3 Mar 2026 12:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772539003; cv=none; b=rVfWQtO6KLvyldPbI4l1/fu/4gbrKpqdMZsW1Jg02WFBde4q/w0kyX90dlkVJilTZR6+sXKylryFP6rzOdpKkz8ZX7hDll4VRH5CVSaWqOfjsgpZxYoFqbmzocguF0qJJmTGu2vxeRwFEWbdNJYc6M6G8jCVnnlywTp4EPGJ0OI=
+	t=1772539805; cv=none; b=FUieCwgKdAmIFfOBfmrClYfUPOock6Zg9160z0QQab5H1ptJiCnbZ6aKNquo65XWYQw1dcEs5DFNAdLI+MczGQhnMIapw+C/9N3y1OSBZbjxX8l3Uol/i+0xtl6cyqUgTQhCKbXqQyxJM07UZwYRro+FlDzExnxgSjgqEFM+LkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772539003; c=relaxed/simple;
-	bh=A/NEFi/PBYeAOmB2KG5gxaOCCxGsrdsftJAmATm2mHg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=DqZDUtDseeUrE6ymxS1XykITbhe7XeD9bftTm28ff4zgbr5ftaafn8lcgqnLOr0g5U/+7q3c2wf2Nxuk87tPhJYzU0JZGLBDhs/erRheHkT5jW3vbjXMc/Z7Wdi64aKd1Fu6grlxx5fEpzPizFYl1poM8Gj+3Bg/TH5Gdu0z+/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cBBlG38o; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=NX+11DLJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772539000;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LLxBnAuISZ3YGJZFcr1hGO+eIaLFeSdfs24D7Pk3tSk=;
-	b=cBBlG38o24gwvlx6FBrfP/2pPslXkBaLoKYCfYnkG6QnIQ+9Gly8aXLDH/+I6Dz4VzVjjC
-	3Y3QQBH73uGWHtbttkRVFvkapHCbagjpw3MKHoefSj9igl+sT1FLnW8L+UdadlXF1KXP2Z
-	bCulrS+pQ7xHGUPtgQO3154YMLk7lNU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-117-dFCwm6W2M1SecLPulZpa_g-1; Tue, 03 Mar 2026 06:56:39 -0500
-X-MC-Unique: dFCwm6W2M1SecLPulZpa_g-1
-X-Mimecast-MFC-AGG-ID: dFCwm6W2M1SecLPulZpa_g_1772538999
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-439b8858b0cso1345866f8f.0
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2026 03:56:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1772538998; x=1773143798; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LLxBnAuISZ3YGJZFcr1hGO+eIaLFeSdfs24D7Pk3tSk=;
-        b=NX+11DLJrrxZJlcGoCC31j0K7UYI6qxhyb0/8P/ZPKYy9mwE8FDh5Xsfg9+MhfWwnl
-         m9XLi/QIoQxuhoxKJ8k0x1HVhVEkGH0/kvRu0kc7fPEAiH1kdyyKCmbwasLD72BjuuZj
-         nwj5jyeEtuG5ckCJGi3DtF1ozhgsKPVBsMi2Dlrfxogj5g++MY2NqI4KDlQMIMVn5bKE
-         1wGF8treA0g0m8Pf9KugVOmo0uJlyoa4OFQ+chxoY5JDiGjG7jUz7imEFrY+raTCXlxR
-         vwdi+nPqX3o4PnLS0PVHADK5LzmTOUCCBD8RApDOb5KvqVaRn5bBlgmicpsZjuMsaiV6
-         u+Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772538998; x=1773143798;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LLxBnAuISZ3YGJZFcr1hGO+eIaLFeSdfs24D7Pk3tSk=;
-        b=WZgUaA1kolvXMTcyWFDpFfqSE/3R9CNqqILp4adKdBazEg3Sd3BuKs4wFFfjPFC7+x
-         1I6SKVqbO6edpAQmXypLmTFh0ZGot2JAPyKbEZrVl5FV9LChF0M1dvZ174Hftpvpjv2g
-         l3rGDkhkXSwFE359K6uRnCE4nOPpwEBvBi3W5WA2Es3qDvOOiU0Gsa+L/1Zo4Snz4h0l
-         PnbYGxtSHydENAErg/FwwVxp8cBT4vobIwTcG4NPmdEIHUInbimc3/1gz2pbUk3YYfvg
-         O/v+cY3p7UkxxHKIjUio7FaFd3UYcY/956dtQ+zIYLCf0Kr+7bws/wMAuCVnbmp38KPd
-         AcpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXuzsFE5E7S+pXnrUfGyszmKwWToX2FLfYdaULARFMn/gnzRRiKqIZxKAO0MN5AicFEayMu/r2qnugk@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzGKlA6D6oQV/aXA0bgHisz3DvMnZh4s/GXO+hob15R8uYryIT
-	7iNsV/PWxJU7dqsEwjBNBI7raARNJH9y2Mw3tSiQWZcrC5pxAyUZTsTfv66hSOWU9MVuU4nzk+R
-	kvy6XzB/BmdtWHvQGP3Y5T3lE4O9nu4iFWrPvZDplJjHyROTQtlirncAQR4pp5yM=
-X-Gm-Gg: ATEYQzzBtt0xbSnR42pGD3Z5SxDF1hNFNU1T5MygpxifDJ9N4kNzQCzmG+gKfoDdFWl
-	zfxdoi2DZo9//teGEe2ahPrY05fAuf0Y7s7mlNnhr30tpFie5RGQXDF2Eq26pVVzWbprSnKLe54
-	1lDcTA6BbIWl6KDD5V4xJHRn1CW3pk63gWvCm2vocf9ohCglnAG4DN9nkU9T+a85/T4la+m7Enf
-	wZ/Fg6410fRmogptvQ7jofxZxxw4pPeuUyn/DkLf1hz24Pi29caldNatwif7CT3bI3ubZZflPdz
-	DSMnPzzo76xm2TM40d1UEg/2n2//jAIbTxf/28QzN4MD0RfxNSibI0rn/G+bKkGMhudpGFAghgs
-	JMysRdQRZZ4XLXFceAwLUSjTI
-X-Received: by 2002:a05:6000:24ca:b0:439:b564:7a6c with SMTP id ffacd0b85a97d-439b5647fa6mr13229280f8f.4.1772538998387;
-        Tue, 03 Mar 2026 03:56:38 -0800 (PST)
-X-Received: by 2002:a05:6000:24ca:b0:439:b564:7a6c with SMTP id ffacd0b85a97d-439b5647fa6mr13229226f8f.4.1772538997874;
-        Tue, 03 Mar 2026 03:56:37 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.73])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439ae3f31dbsm21348530f8f.1.2026.03.03.03.56.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Mar 2026 03:56:37 -0800 (PST)
-Message-ID: <03ac38dc-69c5-4641-98ea-5679465c0b7f@redhat.com>
-Date: Tue, 3 Mar 2026 12:56:35 +0100
+	s=arc-20240116; t=1772539805; c=relaxed/simple;
+	bh=ctKYpajZwHCISKbEUvBdK9vmWotNgZJKU2Jv87Azau4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=TNq7TEJUbcu9JwESib6zpPKikQbkgvxrPlzsoX2YPLOs06cLkbN/0X++l6cFUgc8585mi98dyLV4Ao5X+JVzZP5HpHpxdlSIGZV7h94hI/yvgHH54gzOj72pQAoS6CJkX803+7Pd4SAQWht1GX0b4BBDljLqxIPMSVxTxRbnJH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9hbdB7s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CB5C19422;
+	Tue,  3 Mar 2026 12:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772539804;
+	bh=ctKYpajZwHCISKbEUvBdK9vmWotNgZJKU2Jv87Azau4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=E9hbdB7s+RDcDpWw6lZUNbg5lsKdjt2gFVy7mAIrM/aDrqjYRem/YlIXyPBr1jVxr
+	 SzfoIQXkFpDttf9mqWALPxDCkTtsduTbHCxHJ2/gnEFPK4tOr7YPgTk2KBZE1WJC4f
+	 3bY/fB8K9Pnjt/3EFJfUKIKMZZmVLvPVOJo5ESCHiOOkWwwKnBLlKiOL3TpMDRD3g/
+	 9WJrVi4rKdYnQ9KueSdn1OeKhYhMr8GByAIk7fS/uDmO2A27R2aBJjZ//2Ys0l2MU9
+	 REUmavQDLlmaYYTmlIpMBxir1wSvCYV+dM2EFxIs3a38a1OjaaaCvcmmTZj7TD9yhT
+	 j1NbDqYXo/XfA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02DB5380A965;
+	Tue,  3 Mar 2026 12:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: mana: Force full-page RX buffers for 4K
- page size on specific systems.
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>, kys@microsoft.com,
- haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, leon@kernel.org, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
- ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
- shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, dipayanroy@microsoft.com
-References: <aaFusIxdbVkUqIpd@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <aaFusIxdbVkUqIpd@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 81CE51EEF74
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net/rds: Fix circular locking dependency in
+ rds_tcp_tune
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177253980580.841923.11409589067259781986.git-patchwork-notify@kernel.org>
+Date: Tue, 03 Mar 2026 12:10:05 +0000
+References: <20260227202336.167757-1-achender@kernel.org>
+In-Reply-To: <20260227202336.167757-1-achender@kernel.org>
+To: Allison Henderson <achender@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ pabeni@redhat.com, edumazet@google.com, rds-devel@oss.oracle.com,
+ kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
+ allison.henderson@oracle.com
+X-Rspamd-Queue-Id: 8243A1EF2AE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17419-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17420-lists,linux-rdma=lfdr.de,netdevbpf];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On 2/27/26 11:15 AM, Dipayaan Roy wrote:
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 91c418097284..a53a8921050b 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -748,6 +748,26 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
->  	return va;
->  }
->  
-> +static inline bool
-> +mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
-> +{
+Hello:
 
-I almost forgot: please avoid the 'inline' keyword in .c files. This is
-function used only once, should be inlined by the compiler anyway.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-> +	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
-> +
-> +	/* On some systems with 4K PAGE_SIZE, page_pool RX fragments can
-> +	 * trigger a throughput regression. Hence forces one RX buffer per page
-> +	 * to avoid the fragment allocation/refcounting overhead in the RX
-> +	 * refill path for those processors only.
-> +	 */
-> +	if (gc->force_full_page_rx_buffer)
-> +		return true;
+On Fri, 27 Feb 2026 13:23:36 -0700 you wrote:
+> syzbot reported a circular locking dependency in rds_tcp_tune() where
+> sk_net_refcnt_upgrade() is called while holding the socket lock:
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> ======================================================
+> kworker/u10:8/15040 is trying to acquire lock:
+> ffffffff8e9aaf80 (fs_reclaim){+.+.}-{0:0},
+> at: __kmalloc_cache_noprof+0x4b/0x6f0
+> 
+> [...]
 
-Side note: since you could keep the above flag up2date according to the
-current mtu and xdp configuration and just test it in the data path.
+Here is the summary with links:
+  - [net,v2] net/rds: Fix circular locking dependency in rds_tcp_tune
+    https://git.kernel.org/netdev/net/c/6a877ececd6d
 
-/P
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
