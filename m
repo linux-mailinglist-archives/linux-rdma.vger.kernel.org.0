@@ -1,127 +1,130 @@
-Return-Path: <linux-rdma+bounces-17412-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17413-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gLyLDzNSpmkbOAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17412-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 04:14:59 +0100
+	id SKovAZZTpmkbOAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17413-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 04:20:54 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFA071E8618
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 04:14:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FAB1E873A
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 04:20:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B2380305B95C
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 03:14:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9D0C8306AEEA
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 03:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD3637CD3B;
-	Tue,  3 Mar 2026 03:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C6137DE86;
+	Tue,  3 Mar 2026 03:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQWu+XoT"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Id2bqdfC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8907E19ADB0;
-	Tue,  3 Mar 2026 03:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1B137DE94
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Mar 2026 03:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772507690; cv=none; b=CvEEFXqQxKvskZrjAv9mLWE80LJmEPQIdGhPfSLBnt4BEr10yR23uvrvE4nvSOuGylRIbcNpcxXQEw5emspwk75bSS3gH4cjlG7mIBMBfBx9mgMGSDtiCMOgNvuRx+leJyxpP9xps9xV+iWkg4PHMLzIvDbvvlTphWihZEyYupo=
+	t=1772507966; cv=none; b=cRbLcfVEIPr+j/pYme87yJB/GyWbJGSEStHxr3uQY+AE66HsPZEWB3y3dcpvoW39imnz7MhA/MT5dzRxS5kzC+5vna/w8rRZiqhZrlggm9hYB/5QiDkVYSAP1q2f/Cr3asOKmSwxVW2eY8PjwnU+Yapqw/viXhnxBIs15JwNHY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772507690; c=relaxed/simple;
-	bh=fkufFEILEgr60R+q2FwGShsko0FhfpQaQOtbm/Dl9K4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q8CuQjMveLmsawwaZOIGZj5jQ0XCxmPOjIXqCCw0mc2UEnLqnl4F9mXaiqWUEB78A2tos7dYZ/AUxUDfRCWSDC9bwVgDyWBsHSMgsBEvWLGS5KbmP1X9OE61zQjUpUUjtkQy6d/LX3CJ3jgXle66tg0zZhLL4WZkmavwcjVse7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQWu+XoT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D74BC19423;
-	Tue,  3 Mar 2026 03:14:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772507690;
-	bh=fkufFEILEgr60R+q2FwGShsko0FhfpQaQOtbm/Dl9K4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LQWu+XoTYOcyh6LMYgIvXa4ZEZxcfojfe2Q2usEm7VJYdH8P+ffjashH8Ygx8Ffae
-	 hL2gZcpVXUw9Dz5Wt/QGR6NCli7MmCl1DbCEkUxww/Kf+HY7ESarYtoW65iXumnhYM
-	 svKRVTBBGb03Huh87q+TbbsTTi75DZOK1l7ic+jg83K+SHRzSJ0bFvE0tMJH3d4CzG
-	 QMlh/9/VdVpIveRArncztY1q+VVvKugReQP+6t/a7LEsDrbdShUGHPbroKnyAU8+R4
-	 jF/xXs7MKNuzPiysgBSYvrjkXeFUrubm6YneeGizHm1VtobgW395tSZFXd7/fJ7T41
-	 m/fSJEjatpoqQ==
-Date: Mon, 2 Mar 2026 19:14:48 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kselftest@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos
- Tatulea <dtatulea@nvidia.com>, Shay Drory <shayd@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Or Har-Toov
- <ohartoov@nvidia.com>
-Subject: Re: [PATCH net-next V3 10/10] devlink: Document port-level
- resources
-Message-ID: <20260302191448.4750a2b8@kernel.org>
-In-Reply-To: <20260226221916.1800227-11-tariqt@nvidia.com>
-References: <20260226221916.1800227-1-tariqt@nvidia.com>
-	<20260226221916.1800227-11-tariqt@nvidia.com>
+	s=arc-20240116; t=1772507966; c=relaxed/simple;
+	bh=gqibbrpPL6fmmG4Ltt0DBTqLb3el3iNptOMQaa0qJY8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X8twijpqWt4lG62/WFBCoYxK6ryZQtJjjs18ETM+1Co6YaSBrYqDEPRp5lcO86sQaaczF651RKEItB5YxLOzSkAm9JyDPn2sb8BvUVFOoX1iSX4t2NAdfLsDb2xfDID6xuaJqWBC7WNEfsqaOAOg1/beKNShiez6bd1kLJ/7tWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Id2bqdfC; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772507955; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=+4QnPS1ZxPSdJ0LZC23RaGC8jNW0B9tHmbv9NgjnMo4=;
+	b=Id2bqdfCfY27CbO+XQAbX3zJCxbBTIDx1G8ZZF8u+Avvi6xwcYiJZrW/U0HMxwr1BOrMLAac+ZgXkKxHTdigm7nRzsqkIrdgJkJyXzRLXkm4zqS3/P3PQZR2ueX8wAzTCS6vSZtsR2HjYcd181ZDguThA3dBhaLJ7VqIxphio4Q=
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0X-8FYI9_1772507954 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 03 Mar 2026 11:19:14 +0800
+From: Cheng Xu <chengyou@linux.alibaba.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	KaiShen@linux.alibaba.com
+Subject: [PATCH for-next] RDMA/core: Fix missing MODULE_IMPORT_NS in ib_uverbs module
+Date: Tue,  3 Mar 2026 11:19:10 +0800
+Message-ID: <20260303031913.74708-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: DFA071E8618
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 67FAB1E873A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17412-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,resnulli.us,lwn.net,nvidia.com,kernel.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17413-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chengyou@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	NEURAL_HAM(-0.00)[-0.998];
+	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,alibaba.com:email,linux.alibaba.com:dkim,linux.alibaba.com:mid]
 X-Rspamd-Action: no action
 
-On Fri, 27 Feb 2026 00:19:16 +0200 Tariq Toukan wrote:
-> +Currently, port-level resources only support the ``GET`` command for viewing
-> +resource information.
+Compiling failed with the following messages:
 
-In case there is v4, AI says:
+<...>
+  CC [M]  drivers/infiniband/core/uverbs_std_types_dmabuf.o
+  LD [M]  drivers/infiniband/core/ib_uverbs.o
+  MODPOST Module.symvers
+ERROR: modpost: module ib_uverbs uses symbol dma_buf_move_notify from namespace DMA_BUF, but does not import it.
+ERROR: modpost: module ib_uverbs uses symbol dma_buf_phys_vec_to_sgt from namespace DMA_BUF, but does not import it.
+ERROR: modpost: module ib_uverbs uses symbol dma_buf_export from namespace DMA_BUF, but does not import it.
+ERROR: modpost: module ib_uverbs uses symbol dma_buf_free_sgt from namespace DMA_BUF, but does not import it.
+ERROR: modpost: module ib_uverbs uses symbol dma_buf_put from namespace DMA_BUF, but does not import it.
+make[2]: *** [scripts/Makefile.modpost:147: Module.symvers] Error 1
+make[1]: *** [/opt/linux/Makefile:2051: modpost] Error 2
+make: *** [Makefile:248: __sub-make] Error 2
 
-> +Currently, port-level resources only support the ``GET`` command for viewing
-                                                         ^^^^^
+Add the missing MODULE_IMPORT_NS to fix it.
 
-This isn't a bug, but the terminology here appears inconsistent with the
-rest of the documentation. The document uses user-facing command names
-elsewhere (like "devlink port resource show"), but this line uses "GET
-command" which seems to reference the internal DEVLINK_CMD_PORT_RESOURCE_GET
-netlink command.
+Fixes: 0ac6f4056c4a ("RDMA/uverbs: Add DMABUF object type and operations")
+Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
+---
+ drivers/infiniband/core/uverbs_std_types_dmabuf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Should this be reworded to match the user-facing terminology used throughout
-the rest of the document, perhaps "only support the show command" or
-"only support viewing"?
+diff --git a/drivers/infiniband/core/uverbs_std_types_dmabuf.c b/drivers/infiniband/core/uverbs_std_types_dmabuf.c
+index dfdfcd1d1a44..4a7f8b6f9dc8 100644
+--- a/drivers/infiniband/core/uverbs_std_types_dmabuf.c
++++ b/drivers/infiniband/core/uverbs_std_types_dmabuf.c
+@@ -10,6 +10,8 @@
+ #include "rdma_core.h"
+ #include "uverbs.h"
+ 
++MODULE_IMPORT_NS("DMA_BUF");
++
+ static int uverbs_dmabuf_attach(struct dma_buf *dmabuf,
+ 				struct dma_buf_attachment *attachment)
+ {
+-- 
+2.31.1
+
 
