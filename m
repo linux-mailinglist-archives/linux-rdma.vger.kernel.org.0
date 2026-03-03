@@ -1,136 +1,175 @@
-Return-Path: <linux-rdma+bounces-17414-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17415-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0JjjJvhUpmkbOAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17414-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 04:26:48 +0100
+	id NhtvO29lpmlHPQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17415-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 05:37:03 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C3F1E87B3
-	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 04:26:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCA71E8E03
+	for <lists+linux-rdma@lfdr.de>; Tue, 03 Mar 2026 05:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8C0463015D8D
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 03:26:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6451230406A8
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2026 04:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C80E37DE86;
-	Tue,  3 Mar 2026 03:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD3D377030;
+	Tue,  3 Mar 2026 04:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZzYK34q"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iKgYGwnP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDA61A6810;
-	Tue,  3 Mar 2026 03:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96315374E77
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Mar 2026 04:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772508403; cv=none; b=l2bHR3AmJowFyFrb9ZWiqlntTP7jVHv5VPK50C2zXiurKZd+2JGbneYVL91SOcVplecHT0qryt0dNmOJdQtmR5wWjVxjk8bCqyIw7krVTPyk5DNukamyR93FxBoCtnifZa6/1WrAmYujO2G8CEb0mkdzp/celxU3X/O7qEzXdFw=
+	t=1772512617; cv=none; b=sYBayPMEHB6hXiL/HiD35N+8ZtFujIIQoN2dLXB6CSs3fI5I5pg/NR3xHbs5ltVRaKmxzGpFqWEN6KbCRPwzCP8+MjY+ceMd7tHb54uQSlyqSNRE2V/k/zYbhvQ6A0WMBGbIoysbPrwdBNFZK0BGlj/cEBNOIT6M++SNRsZLjW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772508403; c=relaxed/simple;
-	bh=4zf61ALQTMK14img1HViSIDfxFknaHCr69Rl17qSQGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UBm03PgMY975O5aWP/6kSLknKhXHdqO3N9tqzdL7Ul5SBUIVUHgL9eWmN6UcpTnaYxeevr7qyIDxVSwJeIW3Dnf5Tamtuxose+e/zZp+BGuJymxhGpi+vt36UZNc/ZQzPjtPGr0khCNWzXEwLm40jvGsG3cBz1purs2uqLIFaAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZzYK34q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4766C19423;
-	Tue,  3 Mar 2026 03:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772508402;
-	bh=4zf61ALQTMK14img1HViSIDfxFknaHCr69Rl17qSQGw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sZzYK34q0BRTj07TilzGsQwaXUIwwANpvSCCq/V9QelZ5EHSUiF8FPL24xGhjPWTw
-	 /k/VfPBRODiDwVF8MTGdyebPO/HSzlCyaBCfVc8MSodNuEWJaXblnXJ0bJULhRY5lG
-	 glziYAWp9B5Ti71/OQRLLuaNin8ZjvbZVD1N1SqvXX4+Y2Xj1S74JfBzPbz9//ggVo
-	 WCtESLc46MPYF1kEzz8O1hSY/HrPw+PAKHL8h1k93eGDWmcr5eorH6d+jv37SXPTLg
-	 ttKItjGaEyPwHMrqgahjd80aG/McSVbE//TsRlaJIRO3DFGkUFiUJ9+PQqPfw4sp7H
-	 yR+RnyItx4wfA==
-Date: Mon, 2 Mar 2026 19:26:40 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kselftest@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos
- Tatulea <dtatulea@nvidia.com>, Shay Drory <shayd@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource
- support
-Message-ID: <20260302192640.49af074f@kernel.org>
-In-Reply-To: <20260226221916.1800227-1-tariqt@nvidia.com>
-References: <20260226221916.1800227-1-tariqt@nvidia.com>
+	s=arc-20240116; t=1772512617; c=relaxed/simple;
+	bh=QOnPmJV0B6gEdKmi+0wi4J/iR7lZu4jgitEjkf4T4gk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CWQNLO4fILOavCAjkdvL1SwE+FkcoMDqsmmX2yzo2Xm294IZP3vi0PU1vUYGmQBEyJR9s7vrveLro74ZIoWeMBFsi5Dab8n4MA2tW6pI956iAd+g051ltuHIjj4YFGGYwtdlKi6QjYoJA912LDPEssOmCXwUtCAstkEYr/Lq/pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iKgYGwnP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1772512615;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XprJkV6Y/U/fqBshzlbNfzvJ/G4cJlCbmzjT2x51YhU=;
+	b=iKgYGwnPvAffLnq1p4AjUZcGOyan32Y/+SNL072EQQPBbPRPU7XCJKp7xvULn6Vyl2C01I
+	9uwA9b2WIrYCSdBWx8NyoWz1rXFQPjAabHn2oDDKYXv/thRAD6cJPWPlWpIRKy2cExI/II
+	AXdyViFNYP3gpPn67p5ffoVDFuTe0ds=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-597-kcZzjKciPteSyBu-wtcMWQ-1; Mon,
+ 02 Mar 2026 23:36:52 -0500
+X-MC-Unique: kcZzjKciPteSyBu-wtcMWQ-1
+X-Mimecast-MFC-AGG-ID: kcZzjKciPteSyBu-wtcMWQ_1772512611
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 297F218003FC;
+	Tue,  3 Mar 2026 04:36:51 +0000 (UTC)
+Received: from lima-fedora.redhat.com (unknown [10.22.80.119])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 39AD81800349;
+	Tue,  3 Mar 2026 04:36:50 +0000 (UTC)
+From: Kamal Heib <kheib@redhat.com>
+To: linux-rdma@vger.kernel.org
+Cc: Siva Reddy Kallam <siva.kallam@broadcom.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Kamal Heib <kheib@redhat.com>
+Subject: [PATCH for-rc] RDMA/bng_re: Fix silent failure in HWRM version query
+Date: Mon,  2 Mar 2026 23:36:45 -0500
+Message-ID: <20260303043645.425724-1-kheib@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 45C3F1E87B3
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Rspamd-Queue-Id: 5CCA71E8E03
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17414-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,resnulli.us,lwn.net,nvidia.com,kernel.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17415-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kheib@redhat.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, 27 Feb 2026 00:19:06 +0200 Tariq Toukan wrote:
-> With this series, users can query per-port resources:
-> 
-> $ devlink port resource show pci/0000:03:00.0/196608
-> pci/0000:03:00.0/196608:
->   name max_SFs size 20 unit entry
-> 
-> $ devlink port resource show
-> pci/0000:03:00.0/196608:
->   name max_SFs size 20 unit entry
-> pci/0000:03:00.1/262144:
->   name max_SFs size 20 unit entry
+If the firmware version query fails, the driver currently ignores the
+error and continues initializing. This leaves the device in a bad state.
 
-Code LGTM, I have a question about having a new cmd, tho.
+Fix this by making bng_re_query_hwrm_version() return the error code and
+update the driver to check for this error and stop the setup process
+safely if it happens.
 
-Does it matter to the user how the resource is scoped? 
-Whether the resource is at the instance level or at the port level?
+Fixes: 745065770c2d ("RDMA/bng_re: Register and get the resources from bnge driver")
+Signed-off-by: Kamal Heib <kheib@redhat.com>
+---
+ drivers/infiniband/hw/bng_re/bng_dev.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-I worry we are mechanically following the design of other commands.
-Since the dump handler is new we could just dump resources with port-id
-there. No existing user space may be using it. Alternatively we could
-add a new attribute to select a bitmask of which scope user wants to
-dump.
+diff --git a/drivers/infiniband/hw/bng_re/bng_dev.c b/drivers/infiniband/hw/bng_re/bng_dev.c
+index d34b5f88cd40..17147175a9b0 100644
+--- a/drivers/infiniband/hw/bng_re/bng_dev.c
++++ b/drivers/infiniband/hw/bng_re/bng_dev.c
+@@ -210,7 +210,7 @@ static int bng_re_stats_ctx_alloc(struct bng_re_dev *rdev)
+ 	return rc;
+ }
+ 
+-static void bng_re_query_hwrm_version(struct bng_re_dev *rdev)
++static int bng_re_query_hwrm_version(struct bng_re_dev *rdev)
+ {
+ 	struct bnge_auxr_dev *aux_dev = rdev->aux_dev;
+ 	struct hwrm_ver_get_output ver_get_resp = {};
+@@ -230,7 +230,7 @@ static void bng_re_query_hwrm_version(struct bng_re_dev *rdev)
+ 	if (rc) {
+ 		ibdev_err(&rdev->ibdev, "Failed to query HW version, rc = 0x%x",
+ 			  rc);
+-		return;
++		return rc;
+ 	}
+ 
+ 	cctx = rdev->chip_ctx;
+@@ -244,6 +244,8 @@ static void bng_re_query_hwrm_version(struct bng_re_dev *rdev)
+ 
+ 	if (!cctx->hwrm_cmd_max_timeout)
+ 		cctx->hwrm_cmd_max_timeout = BNG_ROCE_FW_MAX_TIMEOUT;
++
++	return 0;
+ }
+ 
+ static void bng_re_dev_uninit(struct bng_re_dev *rdev)
+@@ -306,7 +308,9 @@ static int bng_re_dev_init(struct bng_re_dev *rdev)
+ 		goto msix_ctx_fail;
+ 	}
+ 
+-	bng_re_query_hwrm_version(rdev);
++	rc = bng_re_query_hwrm_version(rdev);
++	if (rc)
++		goto query_hwrm_ver_fail;
+ 
+ 	rc = bng_re_alloc_fw_channel(&rdev->bng_res, &rdev->rcfw);
+ 	if (rc) {
+@@ -392,6 +396,7 @@ static int bng_re_dev_init(struct bng_re_dev *rdev)
+ nq_alloc_fail:
+ 	bng_re_free_rcfw_channel(&rdev->rcfw);
+ alloc_fw_chl_fail:
++query_hwrm_ver_fail:
+ 	bng_re_destroy_chip_ctx(rdev);
+ msix_ctx_fail:
+ 	bnge_unregister_dev(rdev->aux_dev);
+-- 
+2.52.0
 
-I have a strong suspicion that the user will want to access all
-resources of a device. `devlink resource show [$dev]` should dump 
-all resources devlink knows about, including port ones.
-
-What's the reason for the new command?
 
