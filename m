@@ -1,212 +1,243 @@
-Return-Path: <linux-rdma+bounces-17494-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17495-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eMiMKMBdqGmZtgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17494-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:28:48 +0100
+	id gIKCINxdqGmZtgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17495-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:29:16 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BCAC204438
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:28:48 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86C3F204448
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:29:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A02F231B06AF
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2026 16:09:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0AA933010765
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2026 16:17:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B5E34DCD1;
-	Wed,  4 Mar 2026 16:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA7F35E93A;
+	Wed,  4 Mar 2026 16:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="V96PDJpt"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ThfwijaM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEEC0349AE0;
-	Wed,  4 Mar 2026 16:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE7235E939;
+	Wed,  4 Mar 2026 16:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772640556; cv=none; b=QXw0Rxb/lz64/eTy1fGJq8IhtlsmCiYyJS7iSUop21J5g2Rld0iJNhHNDSTaJN7A572xvcgsO9nFuTfH2zCO8BBUOX1VrmEYXFi5w6fDXZZDqSEvl22tbSUcV7XCauoQYbUtpgwHbReytcnCkN9lBIJlnrm9HgSlC8ZrEQi5zto=
+	t=1772641044; cv=none; b=FFunSPzt6iCSMzvPo2PWHrQ26YMhKNmXAs4O2sGVfnJQKzmstGTg7rY7osZb5DuY/OeOJjCv6MXlrvYS+fq4+IMfBOJ/5FY6KlAJtUbD17ioeRM6COc9pyx4Nb7ZMYVo7guGvywuVg64cSRCvXchk+n8x4q/q7mSVGTmw0VQtpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772640556; c=relaxed/simple;
-	bh=cyPiqNTMV9/2OwOGOP5t4mZiXAj1R4qSbE3YHJvUUMI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P+HEqCdWfxOW7TodqCY7uVoQc18z//0wkiLkZTuogvmIukVnlg2fs7AoLvu6CLTPG9FfBUzJc6ySCzuOdtT2jmZFBJwvN3QRln/QP4VBYLpbyP/0wDFupwwa1zs3IJOku2NiC6wkqEwWLqGChhoUd+Vf1986xl4ubOXZP5xj7r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=V96PDJpt; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 0DA854E42544;
-	Wed,  4 Mar 2026 16:09:13 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B9F765FF5C;
-	Wed,  4 Mar 2026 16:09:12 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EEBEA10369526;
-	Wed,  4 Mar 2026 17:09:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1772640551; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=o2/XV9ZfCgAgiuSeujNtGFRamCoYCgmA2/cu0ytNEpE=;
-	b=V96PDJpt9PWanbUhWbce/TGSLT34xeihw/YwV29JTSuYkf6IvIK28jJYeUe60g9+I4+pVt
-	rw+YTiErvwBQkgQ3D6FymrwPywgT5FUfOcMi8VA5gJQh4CEA1xqU5GaAWzPlF0LRqeABUN
-	gWtfZoEdmgtH0d9/E5kaMtRey8OJkEfqZ2w9RDbP5x6d6Yuo1npJFCjC9EDls3mopeFGDJ
-	0lPYNPgsinQ00Iq0XO0Zq4pThB6E8HalYcZkOxayyyRDAkAtGJyDLEds/PdgSg32Pu9cJZ
-	B6m6TX/pvqUpnheeh4Xr0wt5IG57pKoEJ1znXrD9ZGZLYRcekMoYQDqMwOvTqg==
-Message-ID: <9c674e92-efc4-4f4d-9bd6-2b210ffd7c9e@bootlin.com>
-Date: Wed, 4 Mar 2026 17:09:05 +0100
+	s=arc-20240116; t=1772641044; c=relaxed/simple;
+	bh=ywYiMsYTtAz4vCZZhs0h0CIWMYzBUX8EGn5ktDgQ6cs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JNMvZ2TSEBEEV1qWXXH128DbnQexrmE0EnsK356xK61oY+RtqIxdplV89HMHrCXyXjfBobfNSykVQb76lQchSulptCabDa6VEze92T8W8uuPBW+AClykFQwDwuqeH1m1AevVVT01oCKU1YO5tXR6WTswt34+WQ6MckWmnqUJYQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ThfwijaM; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 624FrXkL3032201;
+	Wed, 4 Mar 2026 16:17:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=IFixIG4h0jJ5QA8kMpukNjAsR7RsB
+	CMOlOf0xpOGZns=; b=ThfwijaMmOnsIkLusTuEfQQi2/cfb+J4P7wVkcy0rZUvk
+	tjnnzblkOHPRM2ZZkyHWtmbneQWAC7xLqJBhfCXz79/JzfLle0rKDPrG8h1tv9IY
+	zRXUt0CtfX+ZKKPK6rZ+TLhBHxci/AK7oQRvytoMND6K3mpJRUzhSbTqfxtN+xK7
+	e4DdBuxSdcWCBkXqu3P+0oEoVAlNH4RX1DONSnIwgtLq94GUJZ6JaSpsDne9WQ8N
+	5dL2LobXMl5YUq+TkkZ06v39PyFMCs8dj/v1K+CtwvlqsA4GP18d7LVmAJAxmRMZ
+	eflDEqKLuhaL8dEyOPNFyHYmLChiFxZImCBXcWpfA==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4cpqsbr2ft-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 04 Mar 2026 16:17:12 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 624FAD0w034716;
+	Wed, 4 Mar 2026 16:17:11 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4ckptg1ba6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 04 Mar 2026 16:17:11 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 624GHB2e005768;
+	Wed, 4 Mar 2026 16:17:11 GMT
+Received: from pkannoju-dev-build.osdevelopmeniad.oraclevcn.com (pkannoju-dev-build.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.59])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4ckptg1b9g-1;
+	Wed, 04 Mar 2026 16:17:10 +0000
+From: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+To: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+        andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: rama.nichanamatlu@oracle.com, manjunath.b.patil@oracle.com,
+        anand.a.khoje@oracle.com,
+        Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Subject: [PATCH] net/mlx5: poll mlx5 eq during irq migration
+Date: Wed,  4 Mar 2026 16:17:04 +0000
+Message-ID: <20260304161704.910564-1-praveen.kannoju@oracle.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next 0/4] ethtool: CMIS module diagnostic loopback
- support
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
- netdev@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Michael Chan <michael.chan@broadcom.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
- Danielle Ratson <danieller@nvidia.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20260219130050.2390226-1-bjorn@kernel.org>
- <415c4922-cc8d-4e35-bbac-3a532f44d238@lunn.ch>
- <20260219160519.323041bf@kernel.org>
- <3b0949fa-0b05-4bce-86c0-2a7a058865a5@lunn.ch>
- <20260220131254.03874c4c@kernel.org>
- <CAJ+HfNgXqpqDYsmAa-mpHnO82aDgC7XbyVw3TmXk-ySFmGA-JQ@mail.gmail.com>
- <20260223150401.7993b11a@kernel.org>
- <CAJ+HfNjmRjr6VtRijmN9=4zPwxstw9B8D-_XVn3hwJzNHka1Jw@mail.gmail.com>
- <363527d6-1f29-4399-83a7-978785d1e11f@lunn.ch>
- <CAJ+HfNhwM82H-sgbz0+WJGRjXJc8Ww0aCnp_YTNi-CB4aBMi=w@mail.gmail.com>
- <4c51f18c-5eb1-4a9e-93b9-70cf7a4fd387@lunn.ch>
- <f2ce4c3b-407e-4c01-b117-c646feed877f@bootlin.com>
- <CAJ+HfNga2510HrgpDH==H7CpmKBAEsoQkEmhFBMPxqM296p2eA@mail.gmail.com>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <CAJ+HfNga2510HrgpDH==H7CpmKBAEsoQkEmhFBMPxqM296p2eA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Rspamd-Queue-Id: 4BCAC204438
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-04_07,2026-03-03_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2602130000 definitions=main-2603040131
+X-Proofpoint-GUID: uC45aMbQRRe8T4wocvcXgYbjO1QV8Bjp
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA0MDEzMiBTYWx0ZWRfX3Tfd/wNhDnOa
+ i1F1HjJP2hYOohLYbINbVkzsbF0OJpYaCqC/sdVp1YTadhrZL2Z3atwkSeXyRpfJPLnkWfu65r7
+ mfZm8X0jGvFYPKxMusj8FVdMSo8EtO//3Wb06CFbzhubSGNqC7/5O+afEvppSpLrEkZNsUSkiOw
+ hgz1jG/aM5josd3/Wf6MoiLDlmT5rJHSmxPujhlSqv8QjbpV5LGBM7r1ant+mMrpv4RXuYibaOB
+ 4vy8w6ljmQx1zb1ngp7iZ9knxrrt9j/GuX5TN/ud8lF5fJdP3UwIzQKnD++NwLSDmosgLid1To2
+ 6sOSjp8En6OcQ1oO2v85GqGfLn9pSAG1GX0/TN1b4fBhHuDbR7NG5JxJFzpuKXKIuAzNAZeB1Zq
+ KQux7I53vfQwyEPY/SBDxN0PeDMOFFSV8I5GIU8JYnSqsAfSBPCQ1Mw8Lu0J6rp/PE+O+hdGEs3
+ YMVjLqb6nGr13gGfjHUHqU6dHIvaHB2EP93oHkmc=
+X-Proofpoint-ORIG-GUID: uC45aMbQRRe8T4wocvcXgYbjO1QV8Bjp
+X-Authority-Analysis: v=2.4 cv=EOELElZC c=1 sm=1 tr=0 ts=69a85b08 b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
+ a=x4eqshVgHu-cdnggieHk:22 a=yPCof4ZbAAAA:8 a=tFMKXHgGLOdB1ZkV82YA:9 cc=ntf
+ awl=host:12266
+X-Rspamd-Queue-Id: 86C3F204448
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
+	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17494-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[lunn.ch,kernel.org,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,nvidia.com,broadcom.com,marvell.com];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-17495-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[praveen.kannoju@oracle.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[oracle.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,oracle.com:dkim,oracle.com:email,oracle.com:mid];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
-Hi Björn,
+Interrupt lost scenario has been observed in multiple issues during IRQ
+migration due to cpu scaling activity. This further led to the presence of
+unhandled EQE's causing corresponding Mellanox transmission queues to
+become full and get timedout. This patch overcomes this situation by
+polling the EQ associated with the IRQ which undergoes migration, to
+recover any unhandled EQE's and keep the transmission uninterrupted from
+the corresponding queue.
 
-On 04/03/2026 16:52, Björn Töpel wrote:
-> Hey!
-> 
-> On Mon, 2 Mar 2026 at 10:01, Maxime Chevallier
-> <maxime.chevallier@bootlin.com> wrote:
-> 
->> The overall approach after all these discussions sounds fine to me, I do
->> think that the index of the component that does the loopback needs to be
->> there somewhere, when relevant.
->>
->> Either through a name string, or a combo of an enum indicating the
->> component type (MAC/PHY/Module/etc.) + its index. I think it's safe to
->> assume that indices will fit in u32 ?
->>
->> something like :
->>
->> # MAC PCS loopback
->> ethtool --set-loopback eth0 loc mac name pcs
->>
->> # PHY id 2 PMA loopback (I'm making things up here)
->> ethtool --set-loopback eth0 loc phy id 2 name pma
->>
->> That way we can extend that fairly easily for, say, combo-port devices
->> where we could select which of the port we want to loopback :)
-> 
-> Ok! I'll spin a new version with this in mind. To improve my mental
-> model, could you give an example how you would use a combo-port from a
-> userland perspective?
+Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  | 41 +++++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/lib/eq.h  |  1 +
+ 2 files changed, 42 insertions(+)
 
-Of course :)
-
-Considering this setup :
-
- +-----+     +-----+
- | MAC |     | PHY |----- SFP
- |     |-----|     |----- RJ45
- +-----+     +-----+
-
-It's still WIP but the current state of what I have in the pipe looks like :
-
-# List the ports
-ethtool --show-ports eth0
-
-Port for eth10:       # <- This port represents the RJ45 port of the PHY
-	Port id: 1
-	Supported link modes:  10baseT/Half 10baseT/Full
-	                       100baseT/Half 100baseT/Full
-	                       1000baseT/Full
-	                       10000baseT/Full
-	                       2500baseT/Full
-	                       5000baseT/Full
-	Port type: mdi
-	Active: yes
-	Link: up
-
-Port for eth1:          # <- This port represents the SFP cage
-	Port id: 2
-	Vacant: no
-	Supported MII interfaces : 10gbase-r
-	Port type: sfp
-	Active: no
-
-Port for eth1:          # <- This port represents the SFP module inside the cage
-	Port id: 4
-	Supported link modes:  10000baseCR/Full
-	Port type: mdi
-	Active: no
-	Link: up
-
-
-# Select the SFP port as the active one (note that we could either use
-port 2 or 4 here for the same result) :
-
-ethtool --set-port eth0 id 4 active on 
-
-I may add something like :
-
-ethtool --set-port eth0 type sfp active on
-ethtool --set-port eth0 type tp active on
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 25499da177bc..4f0653305f46 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -22,6 +22,10 @@
+ #include "devlink.h"
+ #include "en_accel/ipsec.h"
  
-Maxime
++unsigned int mlx5_reap_eq_irq_aff_change;
++module_param(mlx5_reap_eq_irq_aff_change, int, 0644);
++MODULE_PARM_DESC(mlx5_reap_eq_irq_aff_change, "mlx5_reap_eq_irq_aff_change: 0 = Disable MLX5 EQ Reap upon IRQ affinity change, \
++		 1 = Enable MLX5 EQ Reap upon IRQ affinity change. Default=0");
+ enum {
+ 	MLX5_EQE_OWNER_INIT_VAL	= 0x1,
+ };
+@@ -951,10 +955,36 @@ static int alloc_rmap(struct mlx5_core_dev *mdev) { return 0; }
+ static void free_rmap(struct mlx5_core_dev *mdev) {}
+ #endif
+ 
++void mlx5_eq_reap_irq_notify(struct irq_affinity_notify *notify, const cpumask_t *mask)
++{
++	u32 eqe_count;
++	struct mlx5_eq_comp *eq = container_of(notify, struct mlx5_eq_comp, notify);
++
++	if (mlx5_reap_eq_irq_aff_change) {
++		mlx5_core_warn(eq->core.dev, "irqn = 0x%x migration notified, EQ 0x%x: Cons = 0x%x\n",
++			       eq->core.irqn, eq->core.eqn, eq->core.cons_index);
++
++		while (!rtnl_trylock())
++			msleep(20);
++
++		eqe_count = mlx5_eq_poll_irq_disabled(eq);
++		if (eqe_count)
++			mlx5_core_warn(eq->core.dev, "Recovered %d eqes on EQ 0x%x\n",
++				       eqe_count, eq->core.eqn);
++		rtnl_unlock();
++	}
++}
++
++void mlx5_eq_reap_irq_release(struct kref *ref) {}
++
+ static void destroy_comp_eq(struct mlx5_core_dev *dev, struct mlx5_eq_comp *eq, u16 vecidx)
+ {
+ 	struct mlx5_eq_table *table = dev->priv.eq_table;
+ 
++	if (irq_set_affinity_notifier(eq->core.irqn, NULL))
++		mlx5_core_warn(dev, "failed to unset EQ 0x%x to irq 0x%x affinty\n",
++			       eq->core.eqn, eq->core.irqn);
++
+ 	xa_erase(&table->comp_eqs, vecidx);
+ 	mlx5_eq_disable(dev, &eq->core, &eq->irq_nb);
+ 	if (destroy_unmap_eq(dev, &eq->core))
+@@ -990,6 +1020,7 @@ static int create_comp_eq(struct mlx5_core_dev *dev, u16 vecidx)
+ 	struct mlx5_irq *irq;
+ 	int nent;
+ 	int err;
++	int ret;
+ 
+ 	lockdep_assert_held(&table->comp_lock);
+ 	if (table->curr_comp_eqs == table->max_comp_eqs) {
+@@ -1036,6 +1067,16 @@ static int create_comp_eq(struct mlx5_core_dev *dev, u16 vecidx)
+ 	if (err)
+ 		goto disable_eq;
+ 
++	eq->notify.notify = mlx5_eq_reap_irq_notify;
++	eq->notify.release = mlx5_eq_reap_irq_release;
++	ret = irq_set_affinity_notifier(eq->core.irqn, &eq->notify);
++	if (ret) {
++		mlx5_core_warn(dev, "mlx5_eq_reap_irq_nofifier: EQ 0x%x irqn = 0x%x irq_set_affinity_notifier failed: %d\n",
++			       eq->core.eqn, eq->core.irqn, ret);
++	}
++	mlx5_core_dbg(dev, "mlx5_eq_reap_irq_nofifier: EQ 0x%x irqn = 0x%x irq_set_affinity_notifier set.\n",
++		      eq->core.eqn, eq->core.irqn);
++
+ 	table->curr_comp_eqs++;
+ 	return eq->core.eqn;
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
+index b1edc71ffc6d..669bacb9e390 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
+@@ -46,6 +46,7 @@ struct mlx5_eq_comp {
+ 	struct notifier_block   irq_nb;
+ 	struct mlx5_eq_tasklet  tasklet_ctx;
+ 	struct list_head        list;
++	struct irq_affinity_notify notify;
+ };
+ 
+ static inline u32 eq_get_size(struct mlx5_eq *eq)
+-- 
+2.43.7
 
 
