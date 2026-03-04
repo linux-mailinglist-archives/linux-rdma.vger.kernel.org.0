@@ -1,327 +1,246 @@
-Return-Path: <linux-rdma+bounces-17479-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17481-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ALvKKcBZqGlxtgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17479-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:11:44 +0100
+	id QJSiAXxbqGmZtgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17481-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:19:08 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB6EA203E48
-	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:11:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5796B20411B
+	for <lists+linux-rdma@lfdr.de>; Wed, 04 Mar 2026 17:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id AF8B130A664F
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2026 15:59:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6ABDC3300371
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2026 16:01:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0A435CB73;
-	Wed,  4 Mar 2026 15:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4346434DCCA;
+	Wed,  4 Mar 2026 16:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYnTYH81"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="IGxS4qVu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8104335CB68;
-	Wed,  4 Mar 2026 15:59:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835FD34A3B1
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Mar 2026 16:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772639957; cv=none; b=HcPywiKuDMCgxs/245un8Dfu7tvQH+HNv3GNiJSvKymtTCrOPrCXX3xk6ezILkqY9yj4ZKbjJIXGKjLHJhFbad6Fgs3VL76Ze0rvfIbknz6ZefPp+5+blfGjgQ6REiMO4vIVk7Y7cMriUEO0/eDojAYgvi4q/t+T6gFPtgLfnZY=
+	t=1772640031; cv=none; b=fpurIGZGrN9RPJZVmt2CFPFV3kiYYgzcbbQke67QbUU9Zle3/nppZ6PQouJOkBcwSLafVVlSYt00mWiusGR6Qx29wJd2PeOzKmPN2UDI4diXrRtD2sixyMgUklGQxn/61j28etyAdoWWQxKxRF+oQeF7uVo2vODOd9ErkmcCbj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772639957; c=relaxed/simple;
-	bh=7SWqAphbgNzD+cNuMVS49QbrxWWKOv9pCl1uYmkREBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HaMXu5lbpHM+b7pLMMN2yrdjLQ/6NAbd37uqMTSWEAoRX7t6vGleGOmOkpyLSBUqqqp3tXixR3/CIidrzvCbKjZDIWl3xCGyCF7xm+Mj9PiEJ2FCNtFlxfkXvfJu/nLKJ9p1IiNfLzanQyFBIEwOQFLcuhf4qSgdSUvbGrpQ+aQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYnTYH81; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB0EC19423;
-	Wed,  4 Mar 2026 15:59:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772639957;
-	bh=7SWqAphbgNzD+cNuMVS49QbrxWWKOv9pCl1uYmkREBM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iYnTYH81mJvu+Jb5LHTWOei1gY/rug/5kGYpxaMblpPc3yD/f8wl/rd6ka8QvqHAN
-	 7Tx800wW3DS4rNhSedv2ciHeHJZrue6fcUTCeHO7IxiJ49EQo3qgX5fiLsdQwiqS8z
-	 yQlwASkoeaIsACALJGZo6lZM+M/B8rDH+1Xe2BvHxPRqkcBERhCFL7Ak98RGWP+BGu
-	 3HgeREbLmc/Yd74Libo8gjTsm9AkK2skoHM+lqaKx1GBZwYsILD0TGuS5ZeAGyXNn/
-	 gxTPpl6WlVnZhPnhreahT1tB8E+QyRyOg7YSJs7FczLK9x2PFkNtVZ8yFLpBpH4gRr
-	 uJipQQNVxof6A==
-Date: Wed, 4 Mar 2026 17:59:13 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	Shiraz Saleem <shirazsaleem@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 1/1] RDMA/mana: Provide a modern CQ creation
- interface
-Message-ID: <20260304155913.GH12611@unreal>
-References: <20260303124825.301452-1-kotaranov@linux.microsoft.com>
- <20260304110500.GZ12611@unreal>
- <DU8PR83MB09757DD51165365AC8BBB884B47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <DU8PR83MB09750B39D50595F015641D7DB47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <DU8PR83MB0975A4114E1CFE0B6BFA2DBBB47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
+	s=arc-20240116; t=1772640031; c=relaxed/simple;
+	bh=KEeOkJm0EmRV6jqNyOAEXWp0ZZ6RYVxsvyRyrfSxNkY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=azmcSl7oMVlHRyiOrcCEuaH4oeVE5V3AvKxN9WsY8oipjk75ewJQtocc6JzE2EsRKVj4dNfzQV/8pLX9KE0vF2Z6R9pXgKNWZVJUZ+fUpyKapWw6EVakvclLnRMbvUYeOFVAeCjBCyvFsOWLzJsQY1BWzy1qHg8m8b38vDpxO10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=IGxS4qVu; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-439c4a93841so1066611f8f.1
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Mar 2026 08:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1772640025; x=1773244825; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OU95bHZuJNtP/VAPwIGit/Pa+QghFNKlhnRH3cB9CJ4=;
+        b=IGxS4qVuGVB6ooSFrgfLPbkfALb0ex4ep8cdG7ROwi1Hg+ZbwYXU6KMOfoW6Xd+Ehk
+         QTv5gwAKX4qmvsXMcu1w84NJvl/2i/46rktxrKqu5BY7LvGd/MhO8cnWicAa7wLsoEVl
+         6qCG/RgEMQPYUdyWvSN3wxY1l37FC+grgQKIlDI/MwiRh5Uxu6aqG9mnAKw4gCmTQHwf
+         x0KlDbch2jXuHkGQyd5VQGMQsgdugtR718PY2w/NODfxNvtRp7uF2ZZgSXuWrGRq/o33
+         4wBLaBCQKJ4J4BzSXhWLpLNd1tRUC4FGhyli0YXa7QAhn3+Ym7bvxh+2sFiGZfMFvns4
+         w5rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772640025; x=1773244825;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OU95bHZuJNtP/VAPwIGit/Pa+QghFNKlhnRH3cB9CJ4=;
+        b=MJVHnK+PBJ7OkWAygQW66xcGi1TutiaWb6qKCwT0N6Bn4T8WSaMaqxxdoq02C5b9y8
+         B3EkZxoY/TaO667B3T3AO7UqIrugd79SmsvUlvTrJlyH1gofFVh6oFEZo0/Pxb94QF1t
+         iaky/Tszglq3MniMrmo3OItk1ZsQ8/RLFE7Ab9njjFdkLSKCT594foLBO3OiWxeuIxzL
+         P2ysnHVAMnNisScRTqWsHuIjx9twrsTuHoblfyghLhkXMxr+feDZfOfUxguoXFahCwQ5
+         v2dBIkhWDXkXMXfOuOh8fnmaoOZfCmUL2AoLoXhr6uL1t1voSVYZUTz98YCb9u9rAkq5
+         6McA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOmZoVjpTLBtj6ava4loOzWhboRi8SxtNWFHre1uvfcM9rQImk7dps4lBIu7FGch5QtvXZOcwqCJUv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yycm4SdlHOBLBSx7oOv4z+Thb4ZtPeb2l8u2oHVn13KEOG9Hbmw
+	OhObvVloAXUEs4LYDqyIblsjUSsDzCKOSnRlzIe1Qn9oLsa6rVIBPBs/nggyt9Bou+c=
+X-Gm-Gg: ATEYQzwSZpr5G5rQRmsDpbr6xMr4k/TCHUECla0V/D88GqpkvWSo9JnjgS/7cqYXsjQ
+	7qOVd4D9M17vnWO0jzdE6V42mYuD0bvtKawKRGxc3l7Y3AIKpP/bUaKyPJB/7tgiXCzVJgp5+yS
+	jDfkvTlhOMg0HBY/CoUt0uqrNKbKj5xkQIJ0pPzTJWI2o9slNz+pPrvp0QKzCHFZTqCK+qKlCcc
+	b0PHtWvQ2wK3UHUIp3gdBaSXkS2xjtw1FQk/djJiYx1VukZKxxPAu4N/4xn305zgwOs/BICv+AS
+	CvOOKRGIg2PdacHpVF0V7nGjutwSC/SFxFiJA9k4GE+QRf3+a9q6YskTowduwdWFR0+gwPJetS9
+	nw/kbGVHWZQjWqxml3jgs5gAB+sDSWauVuU4A7lq/HT/eW9TcgawWriWIC6DCJs/O33Dx2z/cV3
+	C1aNSOSLgFqEUkUF8ewN9gaLOs2PHrEwJvdoWX1p6IA5EVRg==
+X-Received: by 2002:a05:6000:1acf:b0:439:b3ff:9ab9 with SMTP id ffacd0b85a97d-439c7ffcb29mr5150381f8f.48.1772640024040;
+        Wed, 04 Mar 2026 08:00:24 -0800 (PST)
+Received: from localhost (46-13-72-179.customers.tmcz.cz. [46.13.72.179])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439b59723fesm25578351f8f.38.2026.03.04.08.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2026 08:00:23 -0800 (PST)
+From: Jiri Pirko <jiri@resnulli.us>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	donald.hunter@gmail.com,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	przemyslaw.kitszel@intel.com,
+	mschmidt@redhat.com,
+	andrew+netdev@lunn.ch,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	chuck.lever@oracle.com,
+	matttbe@kernel.org,
+	cjubran@nvidia.com,
+	daniel.zahka@gmail.com,
+	linux-doc@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 00/13] devlink: introduce shared devlink instance for PFs on same chip
+Date: Wed,  4 Mar 2026 17:00:09 +0100
+Message-ID: <20260304160022.6114-1-jiri@resnulli.us>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU8PR83MB0975A4114E1CFE0B6BFA2DBBB47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
-X-Rspamd-Queue-Id: AB6EA203E48
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5796B20411B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17479-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,gmail.com,lwn.net,linuxfoundation.org,nvidia.com,intel.com,lunn.ch,goodmis.org,efficios.com,oracle.com,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[resnulli.us];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17481-lists,linux-rdma=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[26];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,resnulli-us.20230601.gappssmtp.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,resnulli.us:mid]
 X-Rspamd-Action: no action
 
-On Wed, Mar 04, 2026 at 02:06:21PM +0000, Konstantin Taranov wrote:
-> > > > > The uverbs CQ creation UAPI allows users to supply their own umem
-> > > > > for a
-> > > > CQ.
-> > > > > Update mana to support this workflow while preserving support for
-> > > > > creating umem through the legacy interface.
-> > > > >
-> > > > > To support RDMA objects that own umem, extend
-> > > > mana_ib_create_queue()
-> > > > > to return the umem to the caller and do not allocate umem if it
-> > > > > was allocted by the caller.
-> > > > >
-> > > > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> > > > > ---
-> > > > > v2: It is a rework of the patch proposed by Leon
-> > > >
-> > > > I am curious to know what changes were introduced?
-> > >
-> > > It is like your patch, but I kept get_umem in mana_ib_create_queue and
-> > > introduced ownership.
-> > > It made the code simpler and extendable. In your proposal, it was hard
-> > > to track the changes and it led to double free of the umem. With new
-> > > mana_ib_create_queue() it is clear from the caller what happens and no
-> > > special changes in the caller required.
-> > >
-> > > >
-> > > > >  drivers/infiniband/hw/mana/cq.c      | 125 +++++++++++++++++----------
-> > > > >  drivers/infiniband/hw/mana/device.c  |   1 +
-> > > > >  drivers/infiniband/hw/mana/main.c    |  30 +++++--
-> > > > >  drivers/infiniband/hw/mana/mana_ib.h |   5 +-
-> > > > >  drivers/infiniband/hw/mana/qp.c      |   5 +-
-> > > > >  drivers/infiniband/hw/mana/wq.c      |   3 +-
-> > > > >  6 files changed, 111 insertions(+), 58 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/infiniband/hw/mana/cq.c
-> > > > > b/drivers/infiniband/hw/mana/cq.c index b2749f971..fa951732a
-> > > > > 100644
-> > > > > --- a/drivers/infiniband/hw/mana/cq.c
-> > > > > +++ b/drivers/infiniband/hw/mana/cq.c
-> > > > > @@ -8,12 +8,8 @@
-> > > > >  int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > > > > ib_cq_init_attr
-> > > > *attr,
-> > > > >  		      struct uverbs_attr_bundle *attrs)  {
-> > > > > -	struct ib_udata *udata = &attrs->driver_udata;
-> > > > >  	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-> > > > > -	struct mana_ib_create_cq_resp resp = {};
-> > > > > -	struct mana_ib_ucontext *mana_ucontext;
-> > > > >  	struct ib_device *ibdev = ibcq->device;
-> > > > > -	struct mana_ib_create_cq ucmd = {};
-> > > > >  	struct mana_ib_dev *mdev;
-> > > > >  	bool is_rnic_cq;
-> > > > >  	u32 doorbell;
-> > > > > @@ -26,48 +22,91 @@ int mana_ib_create_cq(struct ib_cq *ibcq,
-> > > > > const
-> > > > struct ib_cq_init_attr *attr,
-> > > > >  	cq->cq_handle = INVALID_MANA_HANDLE;
-> > > > >  	is_rnic_cq = mana_ib_is_rnic(mdev);
-> > > > >
-> > > > > -	if (udata) {
-> > > > > -		if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
-> > > > > -			return -EINVAL;
-> > > > > -
-> > > > > -		err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd),
-> > > > udata->inlen));
-> > > > > -		if (err) {
-> > > > > -			ibdev_dbg(ibdev, "Failed to copy from udata for
-> > > > create cq, %d\n", err);
-> > > > > -			return err;
-> > > > > -		}
-> > > > > +	if (attr->cqe > U32_MAX / COMP_ENTRY_SIZE / 2 + 1)
-> > > > > +		return -EINVAL;
-> > > >
-> > > > We are talking about kernel verbs. ULPs are not designed to provide
-> > > > attributes and recover from random driver limitations.
-> > >
-> > > I understand, but there was an ask before to add that check as some
-> > > automated code verifier detected overflow. So if we remote it, I guess
-> > > we get again an ask to fix the potential overflow.
-> > >
-> > > >
-> > > > >
-> > > > > -		if ((!is_rnic_cq && attr->cqe > mdev-
-> > > > >adapter_caps.max_qp_wr) ||
-> > > > > -		    attr->cqe > U32_MAX / COMP_ENTRY_SIZE) {
-> > > > > -			ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr-
-> > > > >cqe);
-> > > > > -			return -EINVAL;
-> > > > > -		}
-> > > > > +	buf_size = MANA_PAGE_ALIGN(roundup_pow_of_two(attr->cqe *
-> > > > COMP_ENTRY_SIZE));
-> > > > > +	cq->cqe = buf_size / COMP_ENTRY_SIZE;
-> > > > > +	err = mana_ib_create_kernel_queue(mdev, buf_size, GDMA_CQ,
-> > > > &cq->queue);
-> > > > > +	if (err) {
-> > > > > +		ibdev_dbg(ibdev, "Failed to create kernel queue for create cq,
-> > > > %d\n", err);
-> > > > > +		return err;
-> > > > > +	}
-> > > > > +	doorbell = mdev->gdma_dev->doorbell;
-> > > > >
-> > > > > -		cq->cqe = attr->cqe;
-> > > > > -		err = mana_ib_create_queue(mdev, ucmd.buf_addr, cq->cqe
-> > > > * COMP_ENTRY_SIZE,
-> > > > > -					   &cq->queue);
-> > > > > +	if (is_rnic_cq) {
-> > > > > +		err = mana_ib_gd_create_cq(mdev, cq, doorbell);
-> > > > >  		if (err) {
-> > > > > -			ibdev_dbg(ibdev, "Failed to create queue for create
-> > > > cq, %d\n", err);
-> > > > > -			return err;
-> > > > > +			ibdev_dbg(ibdev, "Failed to create RNIC cq, %d\n",
-> > > > err);
-> > > > > +			goto err_destroy_queue;
-> > > > >  		}
-> > > > >
-> > > > > -		mana_ucontext = rdma_udata_to_drv_context(udata, struct
-> > > > mana_ib_ucontext,
-> > > > > -							  ibucontext);
-> > > > > -		doorbell = mana_ucontext->doorbell;
-> > > > > -	} else {
-> > > > > -		if (attr->cqe > U32_MAX / COMP_ENTRY_SIZE / 2 + 1) {
-> > > > > -			ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr-
-> > > > >cqe);
-> > > > > -			return -EINVAL;
-> > > > > -		}
-> > > > > -		buf_size = MANA_PAGE_ALIGN(roundup_pow_of_two(attr-
-> > > > >cqe * COMP_ENTRY_SIZE));
-> > > > > -		cq->cqe = buf_size / COMP_ENTRY_SIZE;
-> > > > > -		err = mana_ib_create_kernel_queue(mdev, buf_size,
-> > > > GDMA_CQ, &cq->queue);
-> > > > > +		err = mana_ib_install_cq_cb(mdev, cq);
-> > > > >  		if (err) {
-> > > > > -			ibdev_dbg(ibdev, "Failed to create kernel queue for
-> > > > create cq, %d\n", err);
-> > > > > -			return err;
-> > > > > +			ibdev_dbg(ibdev, "Failed to install cq callback, %d\n",
-> > > > err);
-> > > > > +			goto err_destroy_rnic_cq;
-> > > > >  		}
-> > > > > -		doorbell = mdev->gdma_dev->doorbell;
-> > > > >  	}
-> > > > >
-> > > > > +	spin_lock_init(&cq->cq_lock);
-> > > > > +	INIT_LIST_HEAD(&cq->list_send_qp);
-> > > > > +	INIT_LIST_HEAD(&cq->list_recv_qp);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +
-> > > > > +err_destroy_rnic_cq:
-> > > > > +	mana_ib_gd_destroy_cq(mdev, cq);
-> > > > > +err_destroy_queue:
-> > > > > +	mana_ib_destroy_queue(mdev, &cq->queue);
-> > > > > +
-> > > > > +	return err;
-> > > > > +}
-> > > > > +
-> > > > > +int mana_ib_create_user_cq(struct ib_cq *ibcq, const struct
-> > > > ib_cq_init_attr *attr,
-> > > > > +			   struct uverbs_attr_bundle *attrs) {
-> > > > > +	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-> > > > > +	struct ib_udata *udata = &attrs->driver_udata;
-> > > > > +	struct mana_ib_create_cq_resp resp = {};
-> > > > > +	struct mana_ib_ucontext *mana_ucontext;
-> > > > > +	struct ib_device *ibdev = ibcq->device;
-> > > > > +	struct mana_ib_create_cq ucmd = {};
-> > > > > +	struct mana_ib_dev *mdev;
-> > > > > +	bool is_rnic_cq;
-> > > > > +	u32 doorbell;
-> > > > > +	int err;
-> > > > > +
-> > > > > +	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-> > > > > +
-> > > > > +	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-> > > > > +	cq->cq_handle = INVALID_MANA_HANDLE;
-> > > > > +	is_rnic_cq = mana_ib_is_rnic(mdev);
-> > > > > +
-> > > > > +	if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata-
-> > > > >inlen));
-> > > > > +	if (err) {
-> > > > > +		ibdev_dbg(ibdev, "Failed to copy from udata for create cq,
-> > > > %d\n", err);
-> > > > > +		return err;
-> > > > > +	}
-> > > > > +
-> > > > > +	if ((!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) ||
-> > > > > +	    attr->cqe > U32_MAX / COMP_ENTRY_SIZE)
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	cq->cqe = attr->cqe;
-> > > > > +	err = mana_ib_create_queue(mdev, ucmd.buf_addr, cq->cqe *
-> > > > COMP_ENTRY_SIZE,
-> > > > > +				   &cq->queue, &ibcq->umem);
-> > 
-> > I just realized that I forgot to handle the case when ibcq->umem == NULL and
-> > mana fails later after this call. I need to clean ibcq->umem in this case.
-> > I will address that in v3. I am sorry.
-> > 
-> 
-> Hi Leon,
-> After re-reading the code, I see that there is no bug in v2 as the umem gets deallocated
-> on failure inside the handler of UVERBS_METHOD_CQ_CREATE. I also see that you also had
-> the same logic in v1. So, what is your recommendation? Leave v2 logic as is, so mana would
-> immediately give ownership of umem to cq->umem, and if mana_ib_create_user_cq() fails at later stage
-> it should not clean cq->umem and leave it to the caller handle (i.e., UVERBS_METHOD_CQ_CREATE)
-> to clean cq->umem regardless of who created it.
-> 
-> Or should I make v3, where I will assign umem to cq->umem right before return 0, so that if
-> mana_ib_create_user_cq() fails it does not change cq->umem at all.
+From: Jiri Pirko <jiri@nvidia.com>
 
-My suggestion is to stick with my original patch and remove
-ib_umem_release(queue->umem) from mana_ib_destroy_queue().
+Multiple PFs on a network adapter often reside on the same physical
+chip, running a single firmware. Some resources and configurations
+are inherently shared among these PFs - PTP clocks, VF group rates,
+firmware parameters, and others. Today there is no good object in
+the devlink model to attach these chip-wide configuration knobs to.
+Drivers resort to workarounds like pinning shared state to PF0 or
+maintaining ad-hoc internal structures (e.g., ice_adapter) that are
+invisible to userspace.
 
-Thanks
+This problem was discussed extensively starting with Przemek Kitszel's
+"whole device devlink instance" RFC for the ice driver [1]. Several
+approaches for representing the parent instance were considered:
+using a partial PCI BDF as the dev_name (breaks when PFs have different
+BDFs in VMs), creating a per-driver bus, using auxiliary devices, or
+using faux devices. All of these required a backing struct device for
+the parent devlink instance, which does not naturally exist - there is
+no PCI device that represents the chip as a whole.
 
-> 
-> > - Konstantin
-> > 
-> 
-> 
+This patchset takes a different approach: allow devlink instances to
+exist without any backing struct device. The instance is identified
+purely by its internal index, exposed over devlin netlink. This avoids
+fabricating fake devices and keeps the devlink handle semantics clean.
+
+The first ten patches prepare the devlink core for device-less
+instances by decoupling the handle from the parent device. The last
+three introduce the shared devlink infrastructure and its first user
+in the mlx5 driver.
+
+Example output showing the shared instance and nesting:
+
+  pci/0000:08:00.0: index 0
+    nested_devlink:
+      auxiliary/mlx5_core.eth.0
+  devlink_index/1: index 1
+    nested_devlink:
+      pci/0000:08:00.0
+      pci/0000:08:00.1
+  auxiliary/mlx5_core.eth.0: index 2
+  pci/0000:08:00.1: index 3
+    nested_devlink:
+      auxiliary/mlx5_core.eth.1
+  auxiliary/mlx5_core.eth.1: index 4
+
+[1] https://lore.kernel.org/netdev/20250219164410.35665-1-przemyslaw.kitszel@intel.com/
+
+---
+Decoupled from "devlink and mlx5: Support cross-function rate scheduling"
+patchset to maintain 15-patches limit.
+
+See individual patches for changelog.
+
+Jiri Pirko (13):
+  devlink: expose devlink instance index over netlink
+  devlink: add helpers to get bus_name/dev_name
+  devlink: avoid extra iterations when found devlink is not registered
+  devlink: allow to use devlink index as a command handle
+  devlink: support index-based lookup via bus_name/dev_name handle
+  devlink: support index-based notification filtering
+  devlink: introduce __devlink_alloc() with dev driver pointer
+  devlink: add devlink_dev_driver_name() helper and use it in trace
+    events
+  devlink: add devl_warn() helper and use it in port warnings
+  devlink: allow devlink instance allocation without a backing device
+  devlink: introduce shared devlink instance for PFs on same chip
+  documentation: networking: add shared devlink documentation
+  net/mlx5: Add a shared devlink instance for PFs on same chip
+
+ Documentation/netlink/specs/devlink.yaml      |  56 +++
+ .../networking/devlink/devlink-shared.rst     |  97 +++++
+ Documentation/networking/devlink/index.rst    |   1 +
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   5 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  17 +
+ .../ethernet/mellanox/mlx5/core/sh_devlink.c  |  61 +++
+ .../ethernet/mellanox/mlx5/core/sh_devlink.h  |  12 +
+ include/linux/mlx5/driver.h                   |   1 +
+ include/net/devlink.h                         |  10 +
+ include/trace/events/devlink.h                |  36 +-
+ include/uapi/linux/devlink.h                  |   4 +
+ net/devlink/Makefile                          |   2 +-
+ net/devlink/core.c                            |  91 ++++-
+ net/devlink/dev.c                             |   8 +-
+ net/devlink/devl_internal.h                   |  34 +-
+ net/devlink/netlink.c                         |  57 ++-
+ net/devlink/netlink_gen.c                     | 350 +++++++++++-------
+ net/devlink/port.c                            |  19 +-
+ net/devlink/sh_dev.c                          | 161 ++++++++
+ 19 files changed, 813 insertions(+), 209 deletions(-)
+ create mode 100644 Documentation/networking/devlink/devlink-shared.rst
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sh_devlink.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sh_devlink.h
+ create mode 100644 net/devlink/sh_dev.c
+
+-- 
+2.51.1
+
 
