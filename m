@@ -1,238 +1,352 @@
-Return-Path: <linux-rdma+bounces-17522-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17523-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gI1TK2RoqWlN6wAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17522-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 12:26:28 +0100
+	id MGb4IBVzqWnH7AAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17523-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 13:12:05 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2742D2108E2
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 12:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E853B2115DC
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 13:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 17BCA3014C45
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 11:26:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6376C31235BB
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 11:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C768637B022;
-	Thu,  5 Mar 2026 11:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KMCtI1lG";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="R0nBvH0v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6904C39A7F3;
+	Thu,  5 Mar 2026 11:58:34 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9626237475C
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 11:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E753976B3
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 11:58:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772709983; cv=none; b=Xy977hw7m5eRzJ2qp7vJ1Ckk0S9tN80ZfYeFlldI8+JGHD9plp9oqGI/x9smYZVQJpoVwhDM/NHeYzUZq7FRIefiF85FMjrKzqPMAmwGBK2ZAGtOBvN62ix0bgyS1K/z6A8grOcRh1kwgaWDYimgMxXPJqnUa42cwP4NyIu/qsw=
+	t=1772711914; cv=none; b=E+QSXnN9I+jo1tQXQiVKlKfZc6dTsjbzqDTOlKikLB04wsYlSTz0lp7vppMnwvQou+wfNh57UeSFS7SnpF1bwFQE62ourNXypyxoVLEHreOECxtLQeA33wj3pVb91tWPGouMlUoFcLjPaWYsHmT236tArVB5UprZJ1mrAGpRX6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772709983; c=relaxed/simple;
-	bh=YZF2+qbA9NLMDI3/4YuPpkKbozBNwPhHAlMxMzTX1vQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jo2rPk8An4/u9rW6wwGzmd2pg8dh3ulfzJsen0grbWykGjRnlnyueV6hRpU1xOEFwprhJ0cLKVLNKdWyQdNwfWq/abKrbOOhbKOQK6SgUlpGwNspR4vKzJKCsiJRrlH5iD84Z+9/3J4uweVusIk5TcRaRAbcApPdsX9meXkitJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KMCtI1lG; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=R0nBvH0v; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772709980;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/PDdJdydDAqY2r+QCid29LNFFApkwhWkx5ohf3cC8Sw=;
-	b=KMCtI1lGVK4Ldhmwk4ehe0VV5LFghX0cNVuIFyI4PllD/ptxPZ4x0B/ou/ksp+2W73thHC
-	K9uVUvRbS9uve7ZJO+Bs7n3rPVmri0sGSgTxABCJuajLOuBca87ktjtNLtV4pSDxyypvTh
-	hcBkq+ZkI5EANPultwZ31KEkvK7X9CM=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-650-dN3sRzqpO-qUHan14gkCrQ-1; Thu, 05 Mar 2026 06:26:17 -0500
-X-MC-Unique: dN3sRzqpO-qUHan14gkCrQ-1
-X-Mimecast-MFC-AGG-ID: dN3sRzqpO-qUHan14gkCrQ_1772709976
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4836cc0b38eso80337655e9.2
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 03:26:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1772709976; x=1773314776; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/PDdJdydDAqY2r+QCid29LNFFApkwhWkx5ohf3cC8Sw=;
-        b=R0nBvH0vfPoKjFStHsWmrF7ByCS8PIlSpNc/EBNc+slFn6qstCth5x4TKFQ/LrCPD8
-         +nrcBe2j6facHyAMqm8o+RVkuEuqKtT1QdGqCI/l0aLROfv82OU7ZjfviQn2+T7Ooirh
-         2kSgh3pz92aVr5GWR2lgjCsH+SN1u4pj+eMV04uzLtKfMx51i5JiIRfIl7wVt8hz8JBQ
-         A+DQM+htL8dVz0ZGj5eOf3InlTmRlPSJB6AVVRlruptvixsXGv5Acy5arB26nqIaOnWJ
-         bZl7C6mZ379mlKAS/aLKQ8mXaEfZeqlzotf5HDwPhvHF2x2r40v082NrScZCLHNiL/mA
-         KT2Q==
+	s=arc-20240116; t=1772711914; c=relaxed/simple;
+	bh=BpDLlxlHv/1YJcm5R8Ip30r0fUzyaCFEItVhshuFSYs=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=MIVVjyk8NEDOmFSxDfs0ZGz7hTeK7P7CQe2dkC9Tyl4ri3ACxRcK+k1om/5Pi7Rbg+VvLg3RKJkiC74T1RtQScqNNIlTLtXxRvvxi/Q/bf9Er650u6NxM1UB7d+C1ttgkxx0JbbmwlC3hTPAUUOeum2XxGSqRXVvtMAYFxXV5ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-40f09403c56so20129109fac.1
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 03:58:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772709976; x=1773314776;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/PDdJdydDAqY2r+QCid29LNFFApkwhWkx5ohf3cC8Sw=;
-        b=Ua38dclH65NBWJt89F0VduaJkdjbs+23bP3SBk0yyaglcGNwk2nbpvcergQLc7Qfg+
-         UTUsnqhKxxa+vrGD0KdAUSFDoqaeKujELpM3EOpWVvflgYCFTDir9Du1xSCnkrBbBlkJ
-         bCde+mppJG6S1MyErnFVswSkAo2KaBQayHeaT6A1JK+mOrjX+mRNPwCzaq2+0T7qFozS
-         8HQJtBJ3tP2OamNF49z2GHe5J/ED9BRhHKnV8OvlLpu0fJkyQw68ZQS57eNzy+Idrphh
-         YZZT9xNbVLRLzaI1SHcRIsTo8YbTbLMgcAmOjrbQMEegOXtzqAnd9nRh6UMX6NZDczbN
-         As2w==
-X-Forwarded-Encrypted: i=1; AJvYcCX5fxxobiXvMB2W2C3REVso1YnnABtbU58dipChlqraTJu0O/mh6w/EuLTRVg3t5NjTObfxUyIl4l66@vger.kernel.org
-X-Gm-Message-State: AOJu0YwuocKffVWjJ75hgGu+mqZ6guypzNpiYXoOPjkCRXUuK06EIE5k
-	i+HhAebSQOgSGPCqMSb9Qd9VYkVG3pU29mFDT91PAs95SuQ3zmT/x+W0NrQYvRUKepFMGU3PZD7
-	ioSRnGnI3XhRok8992QkrBy466W4htSR1hbNP4T5luhxOFRPRDYrW9YlDUt2luUY=
-X-Gm-Gg: ATEYQzwXf8Ickye336OL4aY7mXMUlaoqtZWDvkmfkczV5yiv00j6J62h36wRbHzQNWb
-	ZeMzlAktpbJlWhMw/ggJEw0CpBlZvyeet9SK3YoXa6g0D6GYBdJrYcVDRpBIT3TmPUHTX8XoxtN
-	60N2oEJt4TAFdHEiy7mhygu3rL3G6LhNCLp3QQUTtiLbg40mn3Q1nxqH0YK6lH/+Ty+h5Al116/
-	jcg2KLPkbH0XJj1dXBdDaa1DqXVuNB2cO1X8n4nNyObQJtmVZCM7rhce0UTS067frVhOIklzzfu
-	CLAYQTofdXC002YPLenyX12sFoKpmNubqHS79Ae9zBjKURmIFC2bmLhZKjoyCHl4ubIVA6WpqYp
-	jCcb9ORCOr4b0esUXJzHEsdRaUg==
-X-Received: by 2002:a05:600c:6305:b0:483:b505:9db7 with SMTP id 5b1f17b1804b1-485198c1d1fmr86121235e9.32.1772709976222;
-        Thu, 05 Mar 2026 03:26:16 -0800 (PST)
-X-Received: by 2002:a05:600c:6305:b0:483:b505:9db7 with SMTP id 5b1f17b1804b1-485198c1d1fmr86120825e9.32.1772709975788;
-        Thu, 05 Mar 2026 03:26:15 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.149.216])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4851d8ecb09sm38337535e9.2.2026.03.05.03.26.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Mar 2026 03:26:15 -0800 (PST)
-Message-ID: <f9fef510-09bb-44b5-8340-c472f3b95deb@redhat.com>
-Date: Thu, 5 Mar 2026 12:26:13 +0100
+        d=1e100.net; s=20230601; t=1772711911; x=1773316711;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RdxsOqxk+NfY8zfwQAwo+ZzFguPNl7tVhrDifbEGfvk=;
+        b=PbCjxD1Qv4gzDTVLVH65j6KuIsft5+vJX7oyrZdkZWiFsopN1qWJE6obN70GZ3ivp5
+         j/MHhvFZCNNEcNFpXQophsaLdwIDK1AfXJXuThTZBl8rUnPBOwpwzHmb7KDUck5nvhji
+         m2l/Twk0ZZPfmiihrcz5VVm/WcJDJwqfyao0NAaIXaJiO11Zjn4DzoyNUyLbRUIPL0k+
+         sHOsmT9keDnVooye0QsDsodb02vyOhxT5FQ4qul2Ljr5YlfqPbqOOyTrWWeuqoAmU3Il
+         A6hjZcdh0DvOCA3zwJxLMqiuPUvBrtHwzutX7Ihm+fXgh+QLoTr1X0fJwJH4/ImKJ0Qz
+         n3gg==
+X-Forwarded-Encrypted: i=1; AJvYcCUu+2wbQTml41ngRVVLVwQ96BCIwzGamLOq8Q+9lrDpalnRNm8q/eZgGmJUO5IBnjPk81bMrxbfAWpL@vger.kernel.org
+X-Gm-Message-State: AOJu0YzgvBZP9L4nDcI8kK2CzJcJ7jY27I+N9TpgQeY0prXzZKvIqOFi
+	daA7oeQHpN+pH5MV9YkLM0XhspTthaCpcmeGS8/Z+J13qEQm/GFIY/tk+150/hyfLaQ7xi20l0B
+	l+DTuFCz5se41rKRRZzxpgJJm3/w4cFiPF7S8gPtRBN6rlAxHfDdew8XukGE=
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next V4 5/5] eth: mlx5: Move pause storm errors to pause
- stats
-To: netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com,
- mbloch@nvidia.com, gal@nvidia.com, leon@kernel.org, idosch@nvidia.com
-Cc: alexanderduyck@fb.com, alok.a.tiwari@oracle.com, andrew+netdev@lunn.ch,
- andrew@lunn.ch, davem@davemloft.net, dg573847474@gmail.com,
- donald.hunter@gmail.com, edumazet@google.com, horms@kernel.org,
- jacob.e.keller@intel.com, kernel-team@meta.com, kory.maincent@bootlin.com,
- kuba@kernel.org, lee@trager.us, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux@armlinux.org.uk,
- mike.marciniszyn@gmail.com, o.rempel@pengutronix.de,
- vadim.fedorenko@linux.dev, Mohsin Bashir <mohsin.bashr@gmail.com>
-References: <20260302230149.1580195-1-mohsin.bashr@gmail.com>
- <20260302230149.1580195-6-mohsin.bashr@gmail.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20260302230149.1580195-6-mohsin.bashr@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 2742D2108E2
+X-Received: by 2002:a05:6820:4410:b0:679:c346:d8cd with SMTP id
+ 006d021491bc7-67b9456357bmr1058550eaf.28.1772711911652; Thu, 05 Mar 2026
+ 03:58:31 -0800 (PST)
+Date: Thu, 05 Mar 2026 03:58:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69a96fe7.a70a0220.1ca35.0006.GAE@google.com>
+Subject: [syzbot] [rds?] KASAN: slab-use-after-free Read in rds_conn_path_drop
+From: syzbot <syzbot+da8e060735ae02c8f3d1@syzkaller.appspotmail.com>
+To: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com, 
+	horms@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	rds-devel@oss.oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: E853B2115DC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=163cf0fb07ea84d3];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[fb.com,oracle.com,lunn.ch,davemloft.net,gmail.com,google.com,kernel.org,intel.com,meta.com,bootlin.com,trager.us,vger.kernel.org,armlinux.org.uk,pengutronix.de,linux.dev];
-	TAGGED_FROM(0.00)[bounces-17522-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17523-lists,linux-rdma=lfdr.de,da8e060735ae02c8f3d1];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,googlegroups.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,storage.googleapis.com:url,syzkaller.appspot.com:url,appspotmail.com:email]
 X-Rspamd-Action: no action
 
-On 3/3/26 12:01 AM, Mohsin Bashir wrote:
-> Report device_stall_critical_watermark_cnt as tx_pause_storm_events in
-> the ethtool_pause_stats struct. This counter tracks pause storm error
-> events which indicate the NIC has been sending pause frames for an
-> extended period due to a stall.
-> 
-> The ethtool_pause_stats struct reports these stalls as a single value,
-> whereas the device supports tracking them per priority. Aggregate the
-> counter across all priority classes to capture stalls on all priorities.
-> Note that the stats are fetched from the device for each priority via
-> mlx5_core_access_reg().
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
-> ---
->  .../ethernet/mellanox/mlx5/core/en_stats.c    | 30 +++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-> index a8af84fc9763..1a3ecf073913 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-> @@ -916,11 +916,30 @@ static int mlx5e_stats_get_ieee(struct mlx5_core_dev *mdev,
->  				    sz, MLX5_REG_PPCNT, 0, 0);
->  }
->  
-> +static int mlx5e_stats_get_per_prio(struct mlx5_core_dev *mdev,
-> +				    u32 *ppcnt_per_prio, int prio)
-> +{
-> +	u32 in[MLX5_ST_SZ_DW(ppcnt_reg)] = {};
-> +	int sz = MLX5_ST_SZ_BYTES(ppcnt_reg);
-> +
-> +	if (!(MLX5_CAP_PCAM_FEATURE(mdev, pfcc_mask) &&
-> +	      MLX5_CAP_DEBUG(mdev, stall_detect)))
-> +		return -EOPNOTSUPP;
-> +
-> +	MLX5_SET(ppcnt_reg, in, local_port, 1);
-> +	MLX5_SET(ppcnt_reg, in, grp, MLX5_PER_PRIORITY_COUNTERS_GROUP);
-> +	MLX5_SET(ppcnt_reg, in, prio_tc, prio);
-> +	return mlx5_core_access_reg(mdev, in, sz, ppcnt_per_prio, sz,
-> +				    MLX5_REG_PPCNT, 0, 0);
-> +}
-> +
->  void mlx5e_stats_pause_get(struct mlx5e_priv *priv,
->  			   struct ethtool_pause_stats *pause_stats)
->  {
->  	u32 ppcnt_ieee_802_3[MLX5_ST_SZ_DW(ppcnt_reg)];
->  	struct mlx5_core_dev *mdev = priv->mdev;
-> +	u64 ps_stats = 0;
-> +	int prio;
->  
->  	if (mlx5e_stats_get_ieee(mdev, ppcnt_ieee_802_3))
->  		return;
-> @@ -933,6 +952,17 @@ void mlx5e_stats_pause_get(struct mlx5e_priv *priv,
->  		MLX5E_READ_CTR64_BE_F(ppcnt_ieee_802_3,
->  				      eth_802_3_cntrs_grp_data_layout,
->  				      a_pause_mac_ctrl_frames_received);
-> +
-> +	for (prio = 0; prio < NUM_PPORT_PRIO; prio++) {
-> +		if (mlx5e_stats_get_per_prio(mdev, ppcnt_ieee_802_3, prio))
-> +			return;
-> +
-> +		ps_stats += MLX5E_READ_CTR64_BE_F(ppcnt_ieee_802_3,
-> +						  eth_per_prio_grp_data_layout,
-> +						  device_stall_critical_watermark_cnt);
-> +	}
-> +
-> +	pause_stats->tx_pause_storm_events = ps_stats;
->  }
->  
->  void mlx5e_stats_eth_phy_get(struct mlx5e_priv *priv,
+Hello,
 
-It would be nice if someone at nVidia could have a look at the mlx bits
-here. Waiting a little longer for that.
+syzbot found the following issue on:
 
-Thanks,
+HEAD commit:    ecc64d2dc9ff Merge tag 'sysctl-7.00-fixes-rc3' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14eb98d6580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=163cf0fb07ea84d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=da8e060735ae02c8f3d1
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+userspace arch: i386
 
-Paolo
+Unfortunately, I don't have any reproducer for this issue yet.
 
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-ecc64d2d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f7dbb1345713/vmlinux-ecc64d2d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ff1cd3190933/bzImage-ecc64d2d.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+da8e060735ae02c8f3d1@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in instrument_atomic_read include/linux/instrumented.h:82 [inline]
+BUG: KASAN: slab-use-after-free in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+BUG: KASAN: slab-use-after-free in refcount_read include/linux/refcount.h:170 [inline]
+BUG: KASAN: slab-use-after-free in __ns_ref_read include/linux/ns_common.h:65 [inline]
+BUG: KASAN: slab-use-after-free in check_net include/net/net_namespace.h:309 [inline]
+BUG: KASAN: slab-use-after-free in rds_destroy_pending net/rds/rds.h:984 [inline]
+BUG: KASAN: slab-use-after-free in rds_conn_path_drop+0x11d/0x3c0 net/rds/connection.c:914
+Read of size 4 at addr ffff88804ae88180 by task kworker/u32:0/23206
+
+CPU: 2 UID: 0 PID: 23206 Comm: kworker/u32:0 Tainted: G             L      syzkaller #0 PREEMPT(full) 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: ib_mad1 timeout_sends
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0x156/0x4c9 mm/kasan/report.c:482
+ kasan_report+0xdf/0x1e0 mm/kasan/report.c:595
+ check_region_inline mm/kasan/generic.c:186 [inline]
+ kasan_check_range+0x10f/0x1e0 mm/kasan/generic.c:200
+ instrument_atomic_read include/linux/instrumented.h:82 [inline]
+ atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+ refcount_read include/linux/refcount.h:170 [inline]
+ __ns_ref_read include/linux/ns_common.h:65 [inline]
+ check_net include/net/net_namespace.h:309 [inline]
+ rds_destroy_pending net/rds/rds.h:984 [inline]
+ rds_conn_path_drop+0x11d/0x3c0 net/rds/connection.c:914
+ rds_rdma_cm_event_handler_cmn+0x47d/0x7c0 net/rds/rdma_transport.c:146
+ cma_cm_event_handler+0x99/0x330 drivers/infiniband/core/cma.c:2181
+ cma_ib_handler+0x29d/0x700 drivers/infiniband/core/cma.c:2259
+ cm_process_send_error drivers/infiniband/core/cm.c:3801 [inline]
+ cm_send_handler+0x533/0x9d0 drivers/infiniband/core/cm.c:3834
+ clear_mad_error_list+0x18f/0x260 drivers/infiniband/core/mad.c:2646
+ timeout_sends+0x720/0xb20 drivers/infiniband/core/mad.c:2918
+ process_one_work+0x9d7/0x1920 kernel/workqueue.c:3275
+ process_scheduled_works kernel/workqueue.c:3358 [inline]
+ worker_thread+0x5da/0xe40 kernel/workqueue.c:3439
+ kthread+0x370/0x450 kernel/kthread.c:467
+ ret_from_fork+0x754/0xd80 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+Allocated by task 26019:
+ kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:78
+ unpoison_slab_object mm/kasan/common.c:340 [inline]
+ __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:366
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slub.c:4515 [inline]
+ slab_alloc_node mm/slub.c:4844 [inline]
+ kmem_cache_alloc_noprof+0x241/0x6e0 mm/slub.c:4851
+ net_alloc net/core/net_namespace.c:490 [inline]
+ copy_net_ns+0xe8/0x7c0 net/core/net_namespace.c:565
+ create_new_namespaces+0x3ea/0xac0 kernel/nsproxy.c:130
+ unshare_nsproxy_namespaces+0xc3/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x473/0xad0 kernel/fork.c:3174
+ __do_sys_unshare kernel/fork.c:3245 [inline]
+ __se_sys_unshare kernel/fork.c:3243 [inline]
+ __ia32_sys_unshare+0x30/0x40 kernel/fork.c:3243
+ do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:83 [inline]
+ __do_fast_syscall_32+0xe3/0x8c0 arch/x86/entry/syscall_32.c:307
+ do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:332
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+Freed by task 14441:
+ kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:78
+ kasan_save_free_info+0x3b/0x70 mm/kasan/generic.c:584
+ poison_slab_object mm/kasan/common.c:253 [inline]
+ __kasan_slab_free+0x5f/0x80 mm/kasan/common.c:285
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:2692 [inline]
+ slab_free mm/slub.c:6143 [inline]
+ kmem_cache_free+0x124/0x6a0 mm/slub.c:6273
+ net_complete_free net/core/net_namespace.c:526 [inline]
+ cleanup_net+0x51a/0x920 net/core/net_namespace.c:713
+ process_one_work+0x9d7/0x1920 kernel/workqueue.c:3275
+ process_scheduled_works kernel/workqueue.c:3358 [inline]
+ worker_thread+0x5da/0xe40 kernel/workqueue.c:3439
+ kthread+0x370/0x450 kernel/kthread.c:467
+ ret_from_fork+0x754/0xd80 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Last potentially related work creation:
+ kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
+ kasan_record_aux_stack+0xa7/0xc0 mm/kasan/generic.c:556
+ insert_work+0x36/0x230 kernel/workqueue.c:2199
+ __queue_work+0x3fd/0x1150 kernel/workqueue.c:2358
+ call_timer_fn+0x19a/0x670 kernel/time/timer.c:1748
+ expire_timers kernel/time/timer.c:1794 [inline]
+ __run_timers+0x570/0xb30 kernel/time/timer.c:2373
+ __run_timer_base kernel/time/timer.c:2385 [inline]
+ __run_timer_base kernel/time/timer.c:2377 [inline]
+ run_timer_base+0x114/0x190 kernel/time/timer.c:2394
+ run_timer_softirq+0x24/0x50 kernel/time/timer.c:2405
+ handle_softirqs+0x1eb/0x9e0 kernel/softirq.c:622
+ __do_softirq kernel/softirq.c:656 [inline]
+ invoke_softirq kernel/softirq.c:496 [inline]
+ __irq_exit_rcu+0xef/0x150 kernel/softirq.c:723
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:739
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1056 [inline]
+ sysvec_apic_timer_interrupt+0xa3/0xc0 arch/x86/kernel/apic/apic.c:1056
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:697
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
+ kasan_record_aux_stack+0xa7/0xc0 mm/kasan/generic.c:556
+ insert_work+0x36/0x230 kernel/workqueue.c:2199
+ __queue_work+0x9bc/0x1150 kernel/workqueue.c:2354
+ call_timer_fn+0x19a/0x670 kernel/time/timer.c:1748
+ expire_timers kernel/time/timer.c:1794 [inline]
+ __run_timers+0x570/0xb30 kernel/time/timer.c:2373
+ __run_timer_base kernel/time/timer.c:2385 [inline]
+ __run_timer_base kernel/time/timer.c:2377 [inline]
+ run_timer_base+0x114/0x190 kernel/time/timer.c:2394
+ run_timer_softirq+0x24/0x50 kernel/time/timer.c:2405
+ handle_softirqs+0x1eb/0x9e0 kernel/softirq.c:622
+ __do_softirq kernel/softirq.c:656 [inline]
+ invoke_softirq kernel/softirq.c:496 [inline]
+ __irq_exit_rcu+0xef/0x150 kernel/softirq.c:723
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:739
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1056 [inline]
+ sysvec_apic_timer_interrupt+0xa3/0xc0 arch/x86/kernel/apic/apic.c:1056
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:697
+
+The buggy address belongs to the object at ffff88804ae88000
+ which belongs to the cache net_namespace of size 9536
+The buggy address is located 384 bytes inside of
+ freed 9536-byte region [ffff88804ae88000, ffff88804ae8a540)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff88804ae88000 pfn:0x4ae88
+head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+memcg:ffff88804dfbda81
+flags: 0x4fff00000000240(workingset|head|node=1|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 04fff00000000240 ffff88801d2f2780 ffffea0001663410 ffffea0001c9fe10
+raw: ffff88804ae88000 0000000800030001 00000000f5000000 ffff88804dfbda81
+head: 04fff00000000240 ffff88801d2f2780 ffffea0001663410 ffffea0001c9fe10
+head: ffff88804ae88000 0000000800030001 00000000f5000000 ffff88804dfbda81
+head: 04fff00000000003 ffffea00012ba201 00000000ffffffff 00000000ffffffff
+head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000008
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5930, tgid 5930 (syz-executor), ts 52026837212, free_ts 30286540261
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x153/0x170 mm/page_alloc.c:1889
+ prep_new_page mm/page_alloc.c:1897 [inline]
+ get_page_from_freelist+0x111d/0x3140 mm/page_alloc.c:3962
+ __alloc_frozen_pages_noprof+0x27c/0x2ba0 mm/page_alloc.c:5250
+ alloc_slab_page mm/slub.c:3269 [inline]
+ allocate_slab mm/slub.c:3458 [inline]
+ new_slab+0xa6/0x6d0 mm/slub.c:3516
+ refill_objects+0x26b/0x400 mm/slub.c:7153
+ refill_sheaf mm/slub.c:2818 [inline]
+ alloc_full_sheaf mm/slub.c:2839 [inline]
+ __pcs_replace_empty_main+0x19f/0x600 mm/slub.c:4602
+ alloc_from_pcs mm/slub.c:4695 [inline]
+ slab_alloc_node mm/slub.c:4829 [inline]
+ kmem_cache_alloc_noprof+0x480/0x6e0 mm/slub.c:4851
+ net_alloc net/core/net_namespace.c:490 [inline]
+ copy_net_ns+0xe8/0x7c0 net/core/net_namespace.c:565
+ create_new_namespaces+0x3ea/0xac0 kernel/nsproxy.c:130
+ unshare_nsproxy_namespaces+0xc3/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x473/0xad0 kernel/fork.c:3174
+ __do_sys_unshare kernel/fork.c:3245 [inline]
+ __se_sys_unshare kernel/fork.c:3243 [inline]
+ __ia32_sys_unshare+0x30/0x40 kernel/fork.c:3243
+ do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:83 [inline]
+ __do_fast_syscall_32+0xe3/0x8c0 arch/x86/entry/syscall_32.c:307
+ do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:332
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+page last free pid 5644 tgid 5644 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ __free_pages_prepare mm/page_alloc.c:1433 [inline]
+ __free_frozen_pages+0x7e1/0x10d0 mm/page_alloc.c:2978
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x47/0xe0 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x1a0/0x1f0 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x69/0x90 mm/kasan/common.c:350
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slub.c:4515 [inline]
+ slab_alloc_node mm/slub.c:4844 [inline]
+ kmem_cache_alloc_noprof+0x241/0x6e0 mm/slub.c:4851
+ alloc_filename fs/namei.c:142 [inline]
+ do_getname+0x35/0x390 fs/namei.c:182
+ getname include/linux/fs.h:2512 [inline]
+ getname_maybe_null include/linux/fs.h:2519 [inline]
+ class_filename_maybe_null_constructor include/linux/fs.h:2543 [inline]
+ vfs_fstatat+0xd0/0xe0 fs/stat.c:368
+ __do_sys_newfstatat+0x9d/0x120 fs/stat.c:538
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Memory state around the buggy address:
+ ffff88804ae88080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804ae88100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88804ae88180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88804ae88200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804ae88280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
