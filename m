@@ -1,71 +1,71 @@
-Return-Path: <linux-rdma+bounces-17551-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17552-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mIikIXu5qWlEDAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17551-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 18:12:27 +0100
+	id MPKyDIG5qWlEDAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17552-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 18:12:33 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27D54215ED6
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 18:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C950E215EE5
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 18:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 25E3931AE9B2
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 17:08:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8922431B1FEA
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 17:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE893DEADC;
-	Thu,  5 Mar 2026 17:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E351332ED0;
+	Thu,  5 Mar 2026 17:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AkYK9yEd"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZNhNle+c"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f201.google.com (mail-qt1-f201.google.com [209.85.160.201])
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F611D45E8
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 17:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AAC3DEAFD
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 17:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772730514; cv=none; b=jQt2SzNvBRhLX8i17LbNadjfjLtHUZ1StZBRzGpQThHhmEeYnCLSkHj/PgT5XWjWUgq1e106pUp1CkrJfmjewI81JGAAc1nwD8bREukGSI3FBEwPgMom/W2sCy44E+T3hCkxbe65sHyox/kmGhck0vAg8N+xvpqHErZ4l6cyLBQ=
+	t=1772730516; cv=none; b=TqgWxOvpcVZulnqMEq0dEwdI6Zi+cf6Nbzvtq0+sLrGqLe3hqrY4sm18ZoXKi2rqxVW7XnKxhxEjl3oBX71H8zDixfkiifsGxUFtZtAO2DVhqhXDp0gUoVv1MGyDsJBiqZJZPJkxVFVAHlTAhffDG7FyNVQmHnUFAPewbDNf7xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772730514; c=relaxed/simple;
-	bh=JzvSCC4wHETW5PpPn0xmJGH/cqWlzhdpqLostLoRqnc=;
+	s=arc-20240116; t=1772730516; c=relaxed/simple;
+	bh=iiHSYh74EhDhZtjWUHPF1amqPrsXipbb+u7csy4AaXs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=EhvOTq9LBcUvbeFwnmrBkAW68pkbyx06DCudydTR6pL8BHLCsg4l58QdjNr5NOEQRsP+4nvCo8zqBPcV4EqiSkUHOWtIUcB45ozr7vHYDvE19jJqPfoU516UB4km/lfaOTz4egcGB922zlmmCOI5qEm/Le2TxprB0jeX1wyVR/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AkYK9yEd; arc=none smtp.client-ip=209.85.160.201
+	 To:Cc:Content-Type; b=QmW7/txDbtLrDXbaBXnupxBN1cIYUJUx7EWNS8cPVrBk3yy/h2rX6ivLVcTvMDXvhqi5B3vw61ZwoPAZh0mVlr/fONZJKAE7pe+edPVgYbis+N2wTymHFd8PLwSZjAtdAdnUSnP6dIrMl+p+7xQeBtsWzJJvZYqXh/oku7b5gWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZNhNle+c; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
-Received: by mail-qt1-f201.google.com with SMTP id d75a77b69052e-506a936d7afso758417971cf.3
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 09:08:33 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-794b240c0d3so203622627b3.0
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 09:08:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772730512; x=1773335312; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1772730514; x=1773335314; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0AZQbGnYT34PMI8rOMdkyBAOI3gwiqzYNlfh+WtTo8=;
-        b=AkYK9yEdUcGTao6hjMd6eAcUANZJ2jT8WMdxVbTAX6laCoSZVBAtaULWf1eWJ3Sj8m
-         oQYwMAZl2cAa5xbz2WArq6q3pf1oGE32sRnj38+AXqBrVGQN+ztf4S064YaDEDzr3zHq
-         YFfBliztpxFCW4hVb5qXiShiNvmZbCftjHlXH7YM9EQmbn3DTerhxNun/dg9+vqGMZeS
-         T+g0keWvzbiileBOd8rHresZgCank6Y+WTkA+ouK9n+w9J6IaAS9c5XhtfGmLR54Li+u
-         FqwGfIT9+qsOfHqpiJnyZr5AgakCvdYe3ItbUOE+GmCRHkAaL1P8qxHWgWu1bmlMZWps
-         Elqg==
+        bh=7D1XL1wNoim2MYMia7qkJqx1Lr9AWD+j9dgt2TgvPjc=;
+        b=ZNhNle+cnFdIB4v48g7dbuP+LNSqny320E5EkDgd00iP7RhQk7R7X399stmGzH0gGV
+         hFZ68OzBjYNYF9OO7YE9EWssuhGJhYdSgjvsjZBgyzJZVStk6tdw26tKxwK6b+RTqtEO
+         0PP6mvkxvnEnN6SpicJ6fxs8FwhELWNRcHz+TUyAdWJ9zkNyBUOtjBn4/I7+UIXJ8IfR
+         ue+wF8+NfUwGje4kJV1QhM5o+Mr3LBYJis2bPur2bRvt2DaFNl+i6bxhzb2+Q67ZrjAK
+         DpV2Rk7LGLAjdmt3Mil0K3ngzOqYRcr5fg4UfOph3F9jyM69WrNn6U1+wdOb1TR4KQAV
+         ZtBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772730512; x=1773335312;
+        d=1e100.net; s=20230601; t=1772730514; x=1773335314;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0AZQbGnYT34PMI8rOMdkyBAOI3gwiqzYNlfh+WtTo8=;
-        b=QsA1VQCacZJqUDqi7y7T6/7bEMRo1VUoNnatml1AARVKzf1qLfSLDPVfFkA4A1GqEw
-         LMsaoDMnTNaogghMswrzNLhFsOQgQK7WfFPJMtSIVYLSZcJ83wXD+wOq+l3DB1lfiMJH
-         MyhAG3OCxr1rszVZs3INNYeubQRntVfEE91DHwXDAaCVghYQBNpTSnKW/5VLzQ0BBFoL
-         B/K1Ie1KqdO58+5A4RBtMK1k3bQ2isdp9M9ffIaHhLGDoq5oUTlIH2BOY7G8wF2SpCUq
-         YtI9nnq+5Se+Petq3CcXMQrtNtZTMKjyc7wB4JdZX9R6M0UvJkvVqCZHWUbyuMzIGcsu
-         4Wlw==
-X-Gm-Message-State: AOJu0YwzWNB8BgECtgHWu9h5jVy5+H3EnNRyFWuD+8g4rimn8as0b/8D
-	Ts5wnsuCWz4RfVRw5PUbzB7NCB7gWVPQxPQ/Kxf8zE7W9OalycCrOanJsJioCMDow3/6WtXAqi+
-	TLv05K2CHoA==
-X-Received: from qvkj27.prod.google.com ([2002:a0c:e01b:0:b0:89a:14d5:7127])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:ac8:57ca:0:b0:4f3:4eed:aa8a
- with SMTP id d75a77b69052e-508f1dd4364mr3817091cf.40.1772730511935; Thu, 05
- Mar 2026 09:08:31 -0800 (PST)
-Date: Thu,  5 Mar 2026 17:08:22 +0000
+        bh=7D1XL1wNoim2MYMia7qkJqx1Lr9AWD+j9dgt2TgvPjc=;
+        b=w6E70QeEAPrmRP90nr5f/tPyZQmpWBiQ+o8hkp6TUEyONRiIr8zRQ8BaNgUzQVuFII
+         AHBxCgXKItH3IDxYWcdQ6dGKi9ZiA/TMaWlIt8d6k6RsENrFp5Ls78+DoMaOw8NX4ipA
+         uk4O4IGRvc4wcl2WbK0krA6gNewaBWkLJ2V3d0JRGUGdKTrnsh0Gnp2HcRrSWNsWJU02
+         zEt91fLUyuaNGXmYuDF8sKF5c/mBmqkZ0RBWdgBDOKdBwssZ85ZwZnw1hLNl2KBYBB3M
+         lHN+DWtex0v7y3cZsSaJdQFfZsEAKwOIYJ0G3nnEFjeE2fOmQ171xaYfKpFEUcaShHdE
+         CQ6A==
+X-Gm-Message-State: AOJu0YzeazRBPnLY7KQilg/MwbSvOXKlbSMA+x6l284/zQrH8cfxhXCK
+	rZSE5E13s+FvaZdi2njIbcg7VZNqKCukh2ggrzKSVWj1yEnEbFG9lKByo3X2arkze2A3XW52hWl
+	N6ohK0WCa1w==
+X-Received: from ywcb16.prod.google.com ([2002:a05:690c:c3f0:b0:794:fc69:5cab])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:690c:2030:b0:798:534e:4a0b
+ with SMTP id 00721157ae682-798d1dee20emr20255357b3.15.1772730513822; Thu, 05
+ Mar 2026 09:08:33 -0800 (PST)
+Date: Thu,  5 Mar 2026 17:08:23 +0000
 In-Reply-To: <20260305170826.3803155-1-jmoroni@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -75,15 +75,15 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260305170826.3803155-1-jmoroni@google.com>
 X-Mailer: git-send-email 2.53.0.473.g4a7958ca14-goog
-Message-ID: <20260305170826.3803155-2-jmoroni@google.com>
-Subject: [PATCH rdma-next v3 1/5] RDMA/umem: Add ib_umem_dmabuf_get_pinned_and_lock
- helper
+Message-ID: <20260305170826.3803155-3-jmoroni@google.com>
+Subject: [PATCH rdma-next v3 2/5] RDMA/umem: Move umem dmabuf revoke logic
+ into helper function
 From: Jacob Moroni <jmoroni@google.com>
 To: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, jgg@ziepe.ca, 
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 27D54215ED6
+X-Rspamd-Queue-Id: C950E215EE5
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
@@ -95,7 +95,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17551-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17552-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -113,81 +113,59 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Move the inner logic of ib_umem_dmabuf_get_pinned_with_dma_device()
-to a new static function that returns with the lock held upon success.
-
-The intent is to allow reuse for the future get_pinned_revocable_and_lock
-function.
+This same logic will eventually be reused from within the
+invalidate_mappings callback which already has the dma_resv_lock
+held, so break it out into a separate function so it can be reused.
 
 Signed-off-by: Jacob Moroni <jmoroni@google.com>
 ---
- drivers/infiniband/core/umem_dmabuf.c | 35 ++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 9 deletions(-)
+ drivers/infiniband/core/umem_dmabuf.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index d30f24b90bca..0c0098285c38 100644
+index 0c0098285c38..9cf9cfc93006 100644
 --- a/drivers/infiniband/core/umem_dmabuf.c
 +++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -195,18 +195,19 @@ static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
+@@ -195,6 +195,22 @@ static struct dma_buf_attach_ops ib_umem_dmabuf_attach_pinned_ops = {
  	.move_notify = ib_umem_dmabuf_unsupported_move_notify,
  };
  
--struct ib_umem_dmabuf *
--ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
--					  struct device *dma_device,
--					  unsigned long offset, size_t size,
--					  int fd, int access)
-+static struct ib_umem_dmabuf *
-+ib_umem_dmabuf_get_pinned_and_lock(struct ib_device *device,
-+				   struct device *dma_device,
-+				   unsigned long offset,
-+				   size_t size, int fd, int access,
-+				   const struct dma_buf_attach_ops *ops)
- {
- 	struct ib_umem_dmabuf *umem_dmabuf;
- 	int err;
- 
--	umem_dmabuf = ib_umem_dmabuf_get_with_dma_device(device, dma_device, offset,
--							 size, fd, access,
--							 &ib_umem_dmabuf_attach_pinned_ops);
-+	umem_dmabuf =
-+		ib_umem_dmabuf_get_with_dma_device(device, dma_device, offset,
-+						   size, fd, access, ops);
- 	if (IS_ERR(umem_dmabuf))
- 		return umem_dmabuf;
- 
-@@ -219,7 +220,6 @@ ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
- 	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
- 	if (err)
- 		goto err_release;
--	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
- 
- 	return umem_dmabuf;
- 
-@@ -228,6 +228,23 @@ ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
- 	ib_umem_release(&umem_dmabuf->umem);
- 	return ERR_PTR(err);
- }
-+
-+struct ib_umem_dmabuf *
-+ib_umem_dmabuf_get_pinned_with_dma_device(struct ib_device *device,
-+					  struct device *dma_device,
-+					  unsigned long offset, size_t size,
-+					  int fd, int access)
++static void ib_umem_dmabuf_revoke_locked(struct dma_buf_attachment *attach)
 +{
-+	struct ib_umem_dmabuf *umem_dmabuf =
-+		ib_umem_dmabuf_get_pinned_and_lock(device, dma_device, offset,
-+						   size, fd, access,
-+						   &ib_umem_dmabuf_attach_pinned_ops);
-+	if (IS_ERR(umem_dmabuf))
-+		return umem_dmabuf;
++	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
 +
-+	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-+	return umem_dmabuf;
++	dma_resv_assert_held(attach->dmabuf->resv);
++
++	if (umem_dmabuf->revoked)
++		return;
++	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
++	if (umem_dmabuf->pinned) {
++		dma_buf_unpin(umem_dmabuf->attach);
++		umem_dmabuf->pinned = 0;
++	}
++	umem_dmabuf->revoked = 1;
 +}
- EXPORT_SYMBOL(ib_umem_dmabuf_get_pinned_with_dma_device);
++
+ static struct ib_umem_dmabuf *
+ ib_umem_dmabuf_get_pinned_and_lock(struct ib_device *device,
+ 				   struct device *dma_device,
+@@ -262,15 +278,7 @@ void ib_umem_dmabuf_revoke(struct ib_umem_dmabuf *umem_dmabuf)
+ 	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
  
- struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
+ 	dma_resv_lock(dmabuf->resv, NULL);
+-	if (umem_dmabuf->revoked)
+-		goto end;
+-	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
+-	if (umem_dmabuf->pinned) {
+-		dma_buf_unpin(umem_dmabuf->attach);
+-		umem_dmabuf->pinned = 0;
+-	}
+-	umem_dmabuf->revoked = 1;
+-end:
++	ib_umem_dmabuf_revoke_locked(umem_dmabuf->attach);
+ 	dma_resv_unlock(dmabuf->resv);
+ }
+ EXPORT_SYMBOL(ib_umem_dmabuf_revoke);
 -- 
 2.53.0.473.g4a7958ca14-goog
 
