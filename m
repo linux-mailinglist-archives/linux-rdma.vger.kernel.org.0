@@ -1,161 +1,260 @@
-Return-Path: <linux-rdma+bounces-17560-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17561-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GI7xNVLVqWnbFwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17560-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 20:11:14 +0100
+	id GHJ0GlXtqWmFIAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17561-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 21:53:41 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3750A217491
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 20:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B0C21851E
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 21:53:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 668D03161614
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 19:07:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 42BFC307C49C
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 20:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFED303A32;
-	Thu,  5 Mar 2026 19:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C25D348440;
+	Thu,  5 Mar 2026 20:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kILwkk68"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ntONq8im"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9EA3043DD
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 19:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C612BD587;
+	Thu,  5 Mar 2026 20:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772737674; cv=none; b=OHkKqTxmlcKIecS5rVWwQ22URkDfXFqQ99f3/AS2lJ7GG96cVzehdMCg1OmpvOXu9MKsGSw1X8NUeUPH6z6J/MPqEqAQR1FcADEK9xRKoL1NGJXiP0MFWQUSGczh6UF/pXnStKXflRPnI7sKL9NQ1xdt6HwP2IWr73d97JqQ9iw=
+	t=1772744013; cv=none; b=l9EZLGLOSmSU05qA7agwvrlj+B1kZacymmKv1xZR/4k4W0V0nNIySe3btGQTz+z+vxssYYxiP17lYRot0ZVnBl/lvueboj0Z6g9WS59juHRoXYz0b95nxdkqDphlqS45b9EkbwUn/x/9Y3WBIPVOBOrEQar5UladCu+7iVFj7Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772737674; c=relaxed/simple;
-	bh=p27mVjaEjAdBEF5GkfeH8SlV1G/ydclOHv0CwSzCIGU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZmIAKXlQmsn/JKw0PF6z2LSaZKyLao5Osfgo3bZGIIqoNvaFEWGtCrGahDYf/vdhom5UDP0nB5vNk7PL100fQ0Y/NhtinC2rgePNT5utDthCcednYxicVRfwH3LHH1Q9KnQfS0UuLclqL/4hHKnja95Pk0IVqIkj01dz847GYPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kILwkk68; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-506bad34f51so72349901cf.2
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 11:07:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1772737672; x=1773342472; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p27mVjaEjAdBEF5GkfeH8SlV1G/ydclOHv0CwSzCIGU=;
-        b=kILwkk68ldLF7bKvEN6W7RCUoXozx1NQ16pVB9a7Q2rEUQqfMEiBZD8EEtgeFM5IAb
-         Pcyx3KuiEyFzRVWGQ7wglAS0i8XjevB8egWuX+n/LkdN7tmaGEaw2+ffL4paEty75ipW
-         GlMosGd9uyYvRX04fHmkwksWo/fF3rjuhojf/nCiBm8CfLAi/91Z2LV+rKC2CEwFawNW
-         3gm6gx7KkOQQE7h2ZvZOwQCe6/bXVl6ppjMOOBt9RIGeLd5T7FaQeACRoig9Sf20sZKl
-         G2oyUkYIE40MPzNisHuzjnnYFdFM+fCNwuxwTDsjXASpz3vc26rOAYt/Agwysy3/0ra0
-         u+FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772737672; x=1773342472;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p27mVjaEjAdBEF5GkfeH8SlV1G/ydclOHv0CwSzCIGU=;
-        b=S4Wtj6qTwFaLYJGvYEzcEf9tE5zcN102s5Piyym/yiSwP4+VkGjpiJrPRe+r4cBIAh
-         hZQgsXHmarBXONI1ml06Qb8xGDkV6A2SQGc142kWdoWS7yCUDINgPFxbRcvQ7iOTOSvT
-         kkFTjlVPji05hI0qmSZo+hpnH9JoHbcJqQEFQUdpwg0DyEWds1fq5iI5MV43+uZjeud8
-         M/f37cU6GEhl0k9PcKk6xeUb2AHKn/1OUnTyIfC2JPZoDn1rbnXyKUkLVrDpioscB6gZ
-         +/2XagelLBGOGra8WDdxi5azSDsthNwT0d3qMgLdBUNBekHIxuPgYbsH4sEhDs2O8vHz
-         s6Hg==
-X-Forwarded-Encrypted: i=1; AJvYcCXkE0WSnh0gWGV2mKbSq5SfxrLimrFKVZ8I4fHwSW3+lC58+16i6xu+mLLoWranNP1b4GxkouWtPlKK@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYe+BSSJd2jN8qbIGWTXklOMCTqQqVNZFoecL+mYpGYjoCTLbM
-	r3THXJUdXj4I+nYLaLSFXTI00utmOW8ByYGEe+2y1aG/TzlM6uO47MKuVXUX+O/n98E=
-X-Gm-Gg: ATEYQzzqMFy9Kt8wHhP1ttv3Kt6uK0kMMvv5JDuO7sGscKI90HhYZJbPCLl/Z5A9huj
-	3LSdy09XHRYjAM352L+h3NGL31sLIdrx1MtqSDb14hiT7dCQkToeM6i7mls3myqBbjhwVNxtYgK
-	U0SsyAsjiCZ1z9ItsnI44Q+swgQGSAYgLLjYlK6ojSXoUaS/yL1Yg00ib/rBLoIR6B+UAT7nQnQ
-	P28p4m84yCeOB6ps4VJsMDpYX+hZ3cecwmq1kdgkMXQ+W0Ef27IZw97es35P5Bo0ffkhYOsVhjJ
-	5XxhrD9W+svBf6Ecdh6B8ozQuCwhPHNKPFcY02INBizsx19gtgo30z/cI7wsFoq9LPf34QqSXeg
-	JL9qNjKQOUy8cOG+VjVMiXxMuM427I9BPZVH2vEqKDDR9PeUNUe9d2WA8ZonMVpP3FDlORFcC5r
-	v6Qxgbmo9VvbBEztkWxV8nNyHqYpxNJzBIWCubbNvV0lGunvPnlj+8Xbt3/OOZOU5ABpexgf1us
-	vDiRmPI
-X-Received: by 2002:ac8:7f96:0:b0:502:a100:4054 with SMTP id d75a77b69052e-508db2aaedcmr88448991cf.23.1772737672031;
-        Thu, 05 Mar 2026 11:07:52 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-507512559b2sm160559461cf.17.2026.03.05.11.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2026 11:07:51 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vyE34-000000077HO-2cQQ;
-	Thu, 05 Mar 2026 15:07:50 -0400
-Date: Thu, 5 Mar 2026 15:07:50 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	David Hildenbrand <david@kernel.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Huiwen He <hehuiwen@kylinos.cn>,
-	Jerome Marchand <jmarchan@redhat.com>,
-	Qing Wang <wangqing7171@gmail.com>,
-	Shengming Hu <hu.shengming@zte.com.cn>,
-	Linux-MM <linux-mm@kvack.org>,
-	linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: [GIT PULL] tracing: Fixes for 7.0
-Message-ID: <20260305190750.GA1687929@ziepe.ca>
-References: <20260305103941.11f1b27d@gandalf.local.home>
- <CAHk-=wggaToeRYv6B5L9ob=wBdVW9_gFudYxH_WJDTuhyX_Ueg@mail.gmail.com>
+	s=arc-20240116; t=1772744013; c=relaxed/simple;
+	bh=oNZlJ3Mw1Msk7wT/dnaky+PJUNff5MaDBxB7UaS8nTw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=qeX+JsjI8pXPn6rBXMsnjwJlBgcclgpkaqJ3uZOAL4BTROkdMCzOxXKYSGtXnXkZOTj0x916qWhW5MxF+i0VxYIsPVgGl4n2FdDGTAd3QYitpyTuAroeQ4/wieXEiDYzJ2nyP5JNtdtYU+/TVq+Nsuo9HUtOffc/h+5vP8WUoC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ntONq8im; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 7A7D420B6F02; Thu,  5 Mar 2026 12:53:26 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7A7D420B6F02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1772744006;
+	bh=2MY91EkhhZj+9+e/zU397N5SGWS5fOlEBgxPK104L4w=;
+	h=From:To:Subject:Date:From;
+	b=ntONq8imgaGjpWipnVi8duM3X1uOPXU0LHbTrjdScYgkxSTjM8plGngN664DHrd3m
+	 QcdldcLcaLTlzM8dlG75NZkhJ3C9JSFLD8adsob1pDqW6syIZ/U0Oji+zRX53mAG9n
+	 v31qaBt67kAjHQ10M9iLB/IjJHaFu22BCdOlZ7LA=
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	longli@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	shradhagupta@linux.microsoft.com,
+	dipayanroy@linux.microsoft.com,
+	yury.norov@gmail.com,
+	kees@kernel.org,
+	ernis@linux.microsoft.com,
+	ssengar@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next] net: mana: Expose hardware diagnostic info via debugfs
+Date: Thu,  5 Mar 2026 12:52:40 -0800
+Message-ID: <20260305205252.470089-1-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wggaToeRYv6B5L9ob=wBdVW9_gFudYxH_WJDTuhyX_Ueg@mail.gmail.com>
-X-Rspamd-Queue-Id: 3750A217491
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C2B0C21851E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[goodmis.org,kernel.org,efficios.com,kylinos.cn,redhat.com,gmail.com,zte.com.cn,kvack.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17560-lists,linux-rdma=lfdr.de];
-	TO_DN_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17561-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Thu, Mar 05, 2026 at 08:44:27AM -0800, Linus Torvalds wrote:
-> Now, Debian code search does show some users (libfabric, libibverbs),
-> and maybe they actually want the forking behavior for other reasons
-> too.
+Add debugfs entries to expose hardware configuration and diagnostic
+information that aids in debugging driver initialization and runtime
+operations without adding noise to dmesg.
 
-DOFORK in libibverbs is a consequence of its automatic DONTFORK, is is
-explcitily there to undo a prior DONTFORK only.
+Device-level entries (under /sys/kernel/debug/mana/<slot>/):
+  - num_msix_usable, max_num_queues: Max resources from hardware
+  - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
+  - num_vports, bm_hostmode: Device configuration
 
-This is because the library wrappers would automatically DONTFORK
-regions of memory based on library usage, and then DOFORK them back to
-normal after the library is done with them.
+  - port_handle: Hardware vPort handle
+  - max_sq, max_rq: Max queues from vPort config
+  - indir_table_sz: Indirection table size
+  - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
+    Last applied steering configuration parameters
 
-This whole path is disabled on modern kernels in favour of the fixed
-fork support.
+Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 12 +++++++
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 31 +++++++++++++++++++
+ include/net/mana/gdma.h                       |  1 +
+ include/net/mana/mana.h                       |  8 +++++
+ 4 files changed, 52 insertions(+)
 
-I think your point that DOFORK should only take action on previous
-DONTFORK is correct.
-
-Jason
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 0055c231acf6..2ba8d224fd26 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -152,6 +152,11 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+ 	if (gc->max_num_queues > gc->num_msix_usable - 1)
+ 		gc->max_num_queues = gc->num_msix_usable - 1;
+ 
++	debugfs_create_u32("num_msix_usable", 0400, gc->mana_pci_debugfs,
++			   &gc->num_msix_usable);
++	debugfs_create_u32("max_num_queues", 0400, gc->mana_pci_debugfs,
++			   &gc->max_num_queues);
++
+ 	return 0;
+ }
+ 
+@@ -1221,6 +1226,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 		return err ? err : -EPROTO;
+ 	}
+ 	gc->pf_cap_flags1 = resp.pf_cap_flags1;
++	gc->gdma_protocol_ver = resp.gdma_protocol_ver;
++
++	debugfs_create_x64("gdma_protocol_ver", 0400, gc->mana_pci_debugfs,
++			   &gc->gdma_protocol_ver);
++	debugfs_create_x64("pf_cap_flags1", 0400, gc->mana_pci_debugfs,
++			   &gc->pf_cap_flags1);
++
+ 	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
+ 		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
+ 		if (err) {
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 53f24244de75..25ce81283e92 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1265,6 +1265,9 @@ static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
+ 	apc->port_handle = resp.vport;
+ 	ether_addr_copy(apc->mac_addr, resp.mac_addr);
+ 
++	apc->vport_max_sq = *max_sq;
++	apc->vport_max_rq = *max_rq;
++
+ 	return 0;
+ }
+ 
+@@ -1411,6 +1414,11 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 
+ 	netdev_info(ndev, "Configured steering vPort %llu entries %u\n",
+ 		    apc->port_handle, apc->indir_table_sz);
++
++	apc->steer_rx = rx;
++	apc->steer_rss = apc->rss_state;
++	apc->steer_update_tab = update_tab;
++	apc->steer_cqe_coalescing = req->cqe_coalescing_enable;
+ out:
+ 	kfree(req);
+ 	return err;
+@@ -3102,6 +3110,24 @@ static int mana_init_port(struct net_device *ndev)
+ 	eth_hw_addr_set(ndev, apc->mac_addr);
+ 	sprintf(vport, "vport%d", port_idx);
+ 	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
++
++	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
++			   &apc->port_handle);
++	debugfs_create_u32("max_sq", 0400, apc->mana_port_debugfs,
++			   &apc->vport_max_sq);
++	debugfs_create_u32("max_rq", 0400, apc->mana_port_debugfs,
++			   &apc->vport_max_rq);
++	debugfs_create_u32("indir_table_sz", 0400, apc->mana_port_debugfs,
++			   &apc->indir_table_sz);
++	debugfs_create_u32("steer_rx", 0400, apc->mana_port_debugfs,
++			   &apc->steer_rx);
++	debugfs_create_u32("steer_rss", 0400, apc->mana_port_debugfs,
++			   &apc->steer_rss);
++	debugfs_create_u32("steer_update_tab", 0400, apc->mana_port_debugfs,
++			   &apc->steer_update_tab);
++	debugfs_create_u32("steer_cqe_coalescing", 0400, apc->mana_port_debugfs,
++			   &apc->steer_cqe_coalescing);
++
+ 	return 0;
+ 
+ reset_apc:
+@@ -3587,6 +3613,11 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+ 		ac->num_ports = num_ports;
+ 
+ 		INIT_WORK(&ac->link_change_work, mana_link_state_handle);
++
++		debugfs_create_u16("num_vports", 0400, gc->mana_pci_debugfs,
++				   &ac->num_ports);
++		debugfs_create_u8("bm_hostmode", 0400, gc->mana_pci_debugfs,
++				  &ac->bm_hostmode);
+ 	} else {
+ 		if (ac->num_ports != num_ports) {
+ 			dev_err(dev, "The number of vPorts changed: %d->%d\n",
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 766f4fb25e26..9bbb7fb0c964 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -434,6 +434,7 @@ struct gdma_context {
+ 	struct gdma_dev		mana_ib;
+ 
+ 	u64 pf_cap_flags1;
++	u64 gdma_protocol_ver;
+ 
+ 	struct workqueue_struct *service_wq;
+ 
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index a078af283bdd..83f6de67c0cc 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -563,6 +563,14 @@ struct mana_port_context {
+ 
+ 	/* Debugfs */
+ 	struct dentry *mana_port_debugfs;
++
++	/* Cached vport/steering config for debugfs */
++	u32 vport_max_sq;
++	u32 vport_max_rq;
++	u32 steer_rx;
++	u32 steer_rss;
++	u32 steer_update_tab;
++	u32 steer_cqe_coalescing;
+ };
+ 
+ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
+-- 
+2.34.1
 
