@@ -1,183 +1,142 @@
-Return-Path: <linux-rdma+bounces-17506-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17507-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wBqdADoEqWlW0QAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17506-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 05:19:06 +0100
+	id mGWQDdgiqWkL2gAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17507-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 07:29:44 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58D8120ABB7
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 05:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5429D20B98C
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 07:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 65990305DD77
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 04:17:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BFCE1302BE0C
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 06:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5223F23D7E6;
-	Thu,  5 Mar 2026 04:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340382E7BD3;
+	Thu,  5 Mar 2026 06:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iy1qf1p8"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="tLp0yzNS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0082F1A6828;
-	Thu,  5 Mar 2026 04:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E266293C42
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 06:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772684268; cv=none; b=o4O8eZpGglYgcqePoKt3MLIna+uwBlAoA3XrC4tXdxRYdUch8xal30j0lfiVODhhf9+cJ4bl1/kplypI+FYSLzDs+0pHCznTmyI4nZ3tj5TWUiKY0xE6Yy0Vz3fBN+zSA3Om2lZLmNZotqX9jWeQfjm10pGkNeABUbiNb6tNTZg=
+	t=1772692181; cv=none; b=YajSxMsqoYXws4tc6kuqPwIXo17cHkjox8wG+KUt749VK7w+864Rwkol13Gm+vXT4NR7kUSPHRtW2fS/QKnsH/xKyEJArQ3fA9mPIymcCpIAT5vE0H1UojDtQOnnnvQK7orDF1A0XZEqOZG1HJy6Jn6Dqt6oO7Eks2Hv7SNvvik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772684268; c=relaxed/simple;
-	bh=ju0G5UZ2rCJU+V3SLjPep3HnbLt/EM2wPBSuA/6zSAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L+uzJXOjA+sgv1VUBGl0/f7vqncxnAvtUYzYz3jbWNPNn1KkSYpGleUHWFKEwlWFtCxWQH/Omfm8vNf68D9o2BBiQxBeyEI9D4ArSXaM5eRXaWe3fHiB36tUoT8hR2ot4LjMrU+GzbKj9riLNnQjR5KU0eL4XhUbXG6mRzuzuY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iy1qf1p8; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772684265; x=1804220265;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ju0G5UZ2rCJU+V3SLjPep3HnbLt/EM2wPBSuA/6zSAY=;
-  b=Iy1qf1p8aSKL8u7NrTInlMeyrr6g2HqHsDdjTRkuW+Gshi3tRodlLgcC
-   Vw9vXKuGUmLLLJXTT/eO92Q0gVv2vNq1Qj5Z1rzNLki+ysqSMK1uY4tRJ
-   9a61016JzDP895N+5yG2tpkER+VhBM4wzlsUmSPy046QqOwRr0j1Gi10m
-   bt9TMg6bgvDkr2ehaiDqnpQvLLMi1/UHHwrm+TX0DHcsKfYugJrQMfG37
-   sNu4GEar1nX3uEFbZ9K+ozdKHQGMw8T7KWoWviQhbljdjZ7bKgBhKUaHS
-   Y0Q5pqQ0aBi/reIHblbiL0n7e83Lhy8c3tdZwMZe6Ks2rqQPjlr1T2mmZ
-   g==;
-X-CSE-ConnectionGUID: 0+Aq+1nqS/2v1sVQc7qUmg==
-X-CSE-MsgGUID: mHQGN7gLQf6og7hlPi12TA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11719"; a="84095132"
-X-IronPort-AV: E=Sophos;i="6.21,325,1763452800"; 
-   d="scan'208";a="84095132"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2026 20:17:45 -0800
-X-CSE-ConnectionGUID: Z0Ncu36vSUSh/gW40dxtLQ==
-X-CSE-MsgGUID: ZfeOJtbTQ7u/NXImdFn6Zg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,325,1763452800"; 
-   d="scan'208";a="218675068"
-Received: from igk-lkp-server01.igk.intel.com (HELO 9958d990ccf2) ([10.211.93.152])
-  by orviesa007.jf.intel.com with ESMTP; 04 Mar 2026 20:17:42 -0800
-Received: from kbuild by 9958d990ccf2 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vy09a-000000001wb-1w88;
-	Thu, 05 Mar 2026 04:17:38 +0000
-Date: Thu, 5 Mar 2026 05:17:13 +0100
-From: kernel test robot <lkp@intel.com>
-To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>, saeedm@nvidia.com,
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, rama.nichanamatlu@oracle.com,
-	manjunath.b.patil@oracle.com, anand.a.khoje@oracle.com,
-	Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Subject: Re: [PATCH] net/mlx5: poll mlx5 eq during irq migration
-Message-ID: <202603050528.5JWnahEr-lkp@intel.com>
-References: <20260304161704.910564-1-praveen.kannoju@oracle.com>
+	s=arc-20240116; t=1772692181; c=relaxed/simple;
+	bh=1Qe7Mhvhnymaw2RwFGjljBQznJvKrw2G0AlfeYPeHLQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kJALbsTQ88Yqb98yWElARCjmFI1MlZhqZBdDgI1QuYPPhxuyYEandfDYTIi5WsWe6VLFUTZ4sgbqmh5ANiiywYjXup+xwqcfPNBACiettDKFvo8r5FAZhZCXO7NnZBwcScqSfsTdR1kSlepN2c7i811EKswsd8B2Wg6l4HZ5EhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=tLp0yzNS; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772692170; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=oH31XNTn3Ncq8/5McG2vayJZHAOU3+LKmM5a97wczzw=;
+	b=tLp0yzNSR3tqRyO7SCNupVuVGhuvcylRzTvyv6RKGm6VjeN0WYo/btKIxb47qKI0P/NeyTu56bSis0Ad3QnxgkhZgxm8eZnm+J+xyVMUj/ymre/ic0XtUhoeqX50WsscVqlvK9yjf/oRlHgG/phjqmhSEf6IC21SDBo6XrE2yDM=
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0X-HUeR0_1772692169 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 05 Mar 2026 14:29:29 +0800
+From: Cheng Xu <chengyou@linux.alibaba.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	KaiShen@linux.alibaba.com
+Subject: [PATCH for-next] RDMA/erdma: Remove numa_node from struct erdma_devattr
+Date: Thu,  5 Mar 2026 14:29:26 +0800
+Message-ID: <20260305062929.58881-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260304161704.910564-1-praveen.kannoju@oracle.com>
-X-Rspamd-Queue-Id: 58D8120ABB7
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5429D20B98C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17506-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17507-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chengyou@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,git-scm.com:url,intel.com:dkim,intel.com:email,intel.com:mid,01.org:url]
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,alibaba.com:email,linux.alibaba.com:dkim,linux.alibaba.com:mid]
 X-Rspamd-Action: no action
 
-Hi Praveen,
+Using dev_to_node() to get the pci device's numa information
+instead of caching it in struct erdma_devattr.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
+---
+ drivers/infiniband/hw/erdma/erdma.h      | 1 -
+ drivers/infiniband/hw/erdma/erdma_eq.c   | 3 ++-
+ drivers/infiniband/hw/erdma/erdma_main.c | 1 -
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
-[auto build test WARNING on net-next/main]
-[also build test WARNING on net/main linus/master v6.16-rc1 next-20260304]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Praveen-Kumar-Kannoju/net-mlx5-poll-mlx5-eq-during-irq-migration/20260305-003505
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20260304161704.910564-1-praveen.kannoju%40oracle.com
-patch subject: [PATCH] net/mlx5: poll mlx5 eq during irq migration
-config: x86_64-rhel-9.4-ltp (https://download.01.org/0day-ci/archive/20260305/202603050528.5JWnahEr-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260305/202603050528.5JWnahEr-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202603050528.5JWnahEr-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/net/ethernet/mellanox/mlx5/core/eq.c:958:6: warning: no previous prototype for 'mlx5_eq_reap_irq_notify' [-Wmissing-prototypes]
-     958 | void mlx5_eq_reap_irq_notify(struct irq_affinity_notify *notify, const cpumask_t *mask)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/ethernet/mellanox/mlx5/core/eq.c:978:6: warning: no previous prototype for 'mlx5_eq_reap_irq_release' [-Wmissing-prototypes]
-     978 | void mlx5_eq_reap_irq_release(struct kref *ref) {}
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/mlx5_eq_reap_irq_notify +958 drivers/net/ethernet/mellanox/mlx5/core/eq.c
-
-   957	
- > 958	void mlx5_eq_reap_irq_notify(struct irq_affinity_notify *notify, const cpumask_t *mask)
-   959	{
-   960		u32 eqe_count;
-   961		struct mlx5_eq_comp *eq = container_of(notify, struct mlx5_eq_comp, notify);
-   962	
-   963		if (mlx5_reap_eq_irq_aff_change) {
-   964			mlx5_core_warn(eq->core.dev, "irqn = 0x%x migration notified, EQ 0x%x: Cons = 0x%x\n",
-   965				       eq->core.irqn, eq->core.eqn, eq->core.cons_index);
-   966	
-   967			while (!rtnl_trylock())
-   968				msleep(20);
-   969	
-   970			eqe_count = mlx5_eq_poll_irq_disabled(eq);
-   971			if (eqe_count)
-   972				mlx5_core_warn(eq->core.dev, "Recovered %d eqes on EQ 0x%x\n",
-   973					       eqe_count, eq->core.eqn);
-   974			rtnl_unlock();
-   975		}
-   976	}
-   977	
- > 978	void mlx5_eq_reap_irq_release(struct kref *ref) {}
-   979	
-
+diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/infiniband/hw/erdma/erdma.h
+index 2a023b99f992..ceabbdf2556f 100644
+--- a/drivers/infiniband/hw/erdma/erdma.h
++++ b/drivers/infiniband/hw/erdma/erdma.h
+@@ -127,7 +127,6 @@ struct erdma_devattr {
+ 	unsigned char peer_addr[ETH_ALEN];
+ 	unsigned long cap_flags;
+ 
+-	int numa_node;
+ 	enum erdma_cc_alg cc;
+ 	u32 irq_num;
+ 
+diff --git a/drivers/infiniband/hw/erdma/erdma_eq.c b/drivers/infiniband/hw/erdma/erdma_eq.c
+index 6486234a2360..d5b9d19882b2 100644
+--- a/drivers/infiniband/hw/erdma/erdma_eq.c
++++ b/drivers/infiniband/hw/erdma/erdma_eq.c
+@@ -197,7 +197,8 @@ static int erdma_set_ceq_irq(struct erdma_dev *dev, u16 ceqn)
+ 	tasklet_init(&dev->ceqs[ceqn].tasklet, erdma_intr_ceq_task,
+ 		     (unsigned long)&dev->ceqs[ceqn]);
+ 
+-	cpumask_set_cpu(cpumask_local_spread(ceqn + 1, dev->attrs.numa_node),
++	cpumask_set_cpu(cpumask_local_spread(ceqn + 1,
++					     dev_to_node(&dev->pdev->dev)),
+ 			&eqc->irq.affinity_hint_mask);
+ 
+ 	err = request_irq(eqc->irq.msix_vector, erdma_intr_ceq_handler, 0,
+diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
+index 1b6426e89d80..25fa2604cf77 100644
+--- a/drivers/infiniband/hw/erdma/erdma_main.c
++++ b/drivers/infiniband/hw/erdma/erdma_main.c
+@@ -261,7 +261,6 @@ static int erdma_probe_dev(struct pci_dev *pdev)
+ 
+ 	pci_set_drvdata(pdev, dev);
+ 	dev->pdev = pdev;
+-	dev->attrs.numa_node = dev_to_node(&pdev->dev);
+ 
+ 	bars = pci_select_bars(pdev, IORESOURCE_MEM);
+ 	err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.31.1
+
 
