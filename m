@@ -1,1114 +1,523 @@
-Return-Path: <linux-rdma+bounces-17502-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17503-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ILq4CEPpqGm9ygAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17502-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 03:24:03 +0100
+	id EJ6zDJfrqGnnygAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17503-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 03:33:59 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B8D20A2C3
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 03:24:02 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A22D20A378
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 03:33:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 028C9300BE1F
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 02:23:59 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5E2743014F69
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 02:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A702586C2;
-	Thu,  5 Mar 2026 02:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B79261388;
+	Thu,  5 Mar 2026 02:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HLf6pGt0"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="RO96ySkQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4A223C39A;
-	Thu,  5 Mar 2026 02:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CA3260566;
+	Thu,  5 Mar 2026 02:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772677436; cv=none; b=M1XOHSypZX4r+5Fg9Ds820wKwdkG1MX1LxXvrJXFWll5rxUskDw/h3/01Z+Bq+fidYO9fFMmAd+s7ourxuofp9EpVQjRWu/7Q2RCv0ktweZF543drpln51PBj0dZag6w3xK6ZNH2xIcKDZ2qpy1W3Bbi0yziGHrIG4gcpZX91H8=
+	t=1772678032; cv=none; b=owU0HylcZtCoaNipHFnXH6G0xyMBtIIqzqyGoIreAOzgpLyhVodypp1s+9FjUu5IMmYwKvg0fpJuEQoYNk+DEO7YMFbIQdiYt4l5oAbTzC2ahzZzEN2NF7lmBJE1D2caZ7PW2F1bSG1IL9uX4eRGQ1sUy+IGQeYxh3Ht/UOC/dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772677436; c=relaxed/simple;
-	bh=owWl+8xauwD7rO5ZBQswQNFftn5z0bp2HTiMRvF3uII=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j5hSf85B0iSWGQviEtDsuZfoHkIjxl+JXJuznTP2h7cDC3IwbGLFO76iv7RTvYy9DEpGpkC40qf8Npg09j/XL/NqQ90Lqn5MxBgBTc0QfPtZzkvcrZsWK+Mjw6OuoYS7O1rSBpFIIC1W6gaAxVuik11gKVyIyO9IYBu5XKqkk20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HLf6pGt0; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1772677424; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=cdO8t7P/ZJvYeGSVfG2tHcpd4fe7MiF9q+7Ji/iTnfc=;
-	b=HLf6pGt0bJ83FtnmHHExRqxSpAxROo5qRnbo6V6BRhwVrgRnCPJZnTaPm5ZQTMqZ3ZHeRqEXVgITpu21wp7Afqk/f6LyP4yuksxTjrnzaQjKwB8xLVEXY3OwynTBUJfAhWJ2Rphttu0H/rPbUBuKkeGEWwpvafAJG+Mkb/2lLYM=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X-GjwBy_1772677403 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 05 Mar 2026 10:23:43 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com,
-	pasic@linux.ibm.com
-Subject: [PATCH net-next v3] net/smc: transition to RDMA core CQ pooling
-Date: Thu,  5 Mar 2026 10:23:23 +0800
-Message-ID: <20260305022323.96125-1-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1772678032; c=relaxed/simple;
+	bh=Qdlq5KGmnjJxn2Wl3W6FzAOFl9UbpgQNhmvpFQUzLI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bOKWkp/rH29SZV42eWrqFn/VtywQHm9Keh/eBZE3jgKrCIgO0bU6wBuntUy/z7SfmV/GDWqCxqoWgrER9V3wMlaTgTps7UlY9aueQZhluzsBzXttqOFj+qMksvZDqlQRLSpZBBATB0dGIeXCSah4eYKtGmbKcqDH2iW3y+YPaFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=RO96ySkQ; arc=none smtp.client-ip=113.46.200.227
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=23ZnG4Mnc932KfWkIsCruwfLV+eS6MINzcq9AdU1pWI=;
+	b=RO96ySkQ1rqpBUWJ5BogKUV7vzcCLp/9r651B2fX3zOvEHlnQ4IE46hlYj5ZuEz1THDalQFJR
+	oQfTtk+f14pcuZf9fs/wzxcf04k/l1R3AoT1ht5OaIyyvTwW3LQejyvzuOH5ZUvkBUfBByYNSIS
+	dQ9/HjQLJlv+YnfTl6AiBIo=
+Received: from mail.maildlp.com (unknown [172.19.163.127])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fRD4k0pvnznTbP;
+	Thu,  5 Mar 2026 10:29:10 +0800 (CST)
+Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5C8E6402AB;
+	Thu,  5 Mar 2026 10:33:46 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ dggpemf500011.china.huawei.com (7.185.36.131) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 5 Mar 2026 10:33:44 +0800
+Message-ID: <e8e2fed1-f7a2-e107-f571-52f3e87d642e@huawei.com>
+Date: Thu, 5 Mar 2026 10:33:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH net V2 5/6] net/mlx5e: Fix deadlocks between devlink and
+ netdev instance locks
+To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
+	<gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Jacob Keller
+	<jacob.e.keller@intel.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>
+References: <20260218072904.1764634-1-tariqt@nvidia.com>
+ <20260218072904.1764634-6-tariqt@nvidia.com>
+Content-Language: en-US
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+In-Reply-To: <20260218072904.1764634-6-tariqt@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 17B8D20A2C3
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ dggpemf500011.china.huawei.com (7.185.36.131)
+X-Rspamd-Queue-Id: 3A22D20A378
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17502-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17503-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[17];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,alibaba.com:email,linux.alibaba.com:dkim,linux.alibaba.com:mid]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ruanjinjie@huawei.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,huawei.com:dkim,huawei.com:mid,nvidia.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-The current SMC-R implementation relies on global per-device CQs
-and manual polling within tasklets, which introduces severe
-scalability bottlenecks due to global lock contention and tasklet
-scheduling overhead, resulting in poor performance as concurrency
-increases.
 
-Refactor the completion handling to utilize the ib_cqe API and
-standard RDMA core CQ pooling. This transition provides several key
-advantages:
 
-1. Multi-CQ: Shift from a single shared per-device CQ to multiple
-link-specific CQs via the CQ pool. This allows completion processing
-to be parallelized across multiple CPU cores, effectively eliminating
-the global CQ bottleneck.
+On 2026/2/18 15:29, Tariq Toukan wrote:
+> From: Cosmin Ratiu <cratiu@nvidia.com>
+> 
+> In the mentioned "Fixes" commit, various work tasks triggering devlink
+> health reporter recovery were switched to use netdev_trylock to protect
+> against concurrent tear down of the channels being recovered. But this
+> had the side effect of introducing potential deadlocks because of
+> incorrect lock ordering.
+> 
+> The correct lock order is described by the init flow:
+> probe_one -> mlx5_init_one (acquires devlink lock)
+> -> mlx5_init_one_devl_locked -> mlx5_register_device
+> -> mlx5_rescan_drivers_locked -...-> mlx5e_probe -> _mlx5e_probe
+> -> register_netdev (acquires rtnl lock)
+> -> register_netdevice (acquires netdev lock)
+> => devlink lock -> rtnl lock -> netdev lock.
+> 
+> But in the current recovery flow, the order is wrong:
+> mlx5e_tx_err_cqe_work (acquires netdev lock)
+> -> mlx5e_reporter_tx_err_cqe -> mlx5e_health_report
+> -> devlink_health_report (acquires devlink lock => boom!)
+> -> devlink_health_reporter_recover
+> -> mlx5e_tx_reporter_recover -> mlx5e_tx_reporter_recover_from_ctx
+> -> mlx5e_tx_reporter_err_cqe_recover
+> 
+> The same pattern exists in:
+> mlx5e_reporter_rx_timeout
+> mlx5e_reporter_tx_ptpsq_unhealthy
+> mlx5e_reporter_tx_timeout
+> 
 
-2. Leverage DIM: Utilizing the standard CQ pool with IB_POLL_SOFTIRQ
-enables Dynamic Interrupt Moderation from the RDMA core, optimizing
-interrupt frequency and reducing CPU load under high pressure.
+On 7.0 rc2，It seems that similar problems still exist, causing the ARM64
+kernel to fail to start on the Kunpeng 920 as below:
 
-3. O(1) Context Retrieval: Replaces the expensive wr_id based lookup
-logic (e.g., smc_wr_tx_find_pending_index) with direct context retrieval
-using container_of() on the embedded ib_cqe.
+[  242.676635][ T1644] INFO: task kworker/u1280:1:1671 blocked for more
+than 120 seconds.
+[  242.682141][ T1644]       Not tainted 7.0.0-rc2+ #3
+[  242.684942][ T1644] "echo 0 >
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  242.690552][ T1644] task:kworker/u1280:1 state:D stack:0     pid:1671
+ tgid:1671  ppid:2      task_flags:0x4208060 flags:0x00000010
+[  242.696332][ T1644] Workqueue: mlx5_health0000:97:00.0
+mlx5_fw_reporter_err_work [mlx5_core]
+[  242.702324][ T1644] Call trace:
+[  242.705187][ T1644]  __switch_to+0xdc/0x108 (T)
+[  242.707936][ T1644]  __schedule+0x2a0/0x8a8
+[  242.710647][ T1644]  schedule+0x3c/0xc0
+[  242.713321][ T1644]  schedule_preempt_disabled+0x2c/0x50
+[  242.715875][ T1644]  __mutex_lock.constprop.0+0x344/0x918
+[  242.718421][ T1644]  __mutex_lock_slowpath+0x1c/0x30
+[  242.720885][ T1644]  mutex_lock+0x50/0x68
+[  242.723278][ T1644]  devl_lock+0x1c/0x30
+[  242.725607][ T1644]  devlink_health_report+0x240/0x328
+[  242.727902][ T1644]  mlx5_fw_reporter_err_work+0xa0/0xb0 [mlx5_core]
+[  242.730333][ T1644]  process_one_work+0x180/0x4f8
+[  242.732687][ T1644]  worker_thread+0x208/0x280
+[  242.734976][ T1644]  kthread+0x128/0x138
+[  242.737217][ T1644]  ret_from_fork+0x10/0x20
+[  242.739599][ T1644] INFO: task kworker/u1280:1:1671 is blocked on a
+mutex likely owned by task kworker/240:2:2582.
+[  242.744002][ T1644] task:kworker/240:2   state:D stack:0     pid:2582
+ tgid:2582  ppid:2      task_flags:0x4208060 flags:0x00000010
+[  242.748447][ T1644] Workqueue: sync_wq local_pci_probe_callback
+[  242.750654][ T1644] Call trace:
+[  242.752793][ T1644]  __switch_to+0xdc/0x108 (T)
+[  242.754882][ T1644]  __schedule+0x2a0/0x8a8
+[  242.756946][ T1644]  schedule+0x3c/0xc0
+[  242.758951][ T1644]  schedule_timeout+0x80/0x120
+[  242.760903][ T1644]  __wait_for_common+0xc4/0x1d0
+[  242.762796][ T1644]  wait_for_completion_timeout+0x28/0x40
+[  242.764670][ T1644]  wait_func+0x180/0x240 [mlx5_core]
+[  242.766533][ T1644]  mlx5_cmd_invoke+0x244/0x3e0 [mlx5_core]
+[  242.768338][ T1644]  cmd_exec+0x208/0x448 [mlx5_core]
+[  242.770153][ T1644]  mlx5_cmd_do+0x38/0x80 [mlx5_core]
+[  242.771974][ T1644]  mlx5_cmd_exec+0x2c/0x60 [mlx5_core]
+[  242.773848][ T1644]  mlx5_core_create_mkey+0x70/0x120 [mlx5_core]
+[  242.775712][ T1644]  mlx5_fw_tracer_create_mkey+0x114/0x180 [mlx5_core]
+[  242.777609][ T1644]  mlx5_fw_tracer_init.part.0+0xb0/0x1f0 [mlx5_core]
+[  242.779495][ T1644]  mlx5_fw_tracer_init+0x24/0x40 [mlx5_core]
+[  242.781380][ T1644]  mlx5_load+0x78/0x360 [mlx5_core]
+[  242.783256][ T1644]  mlx5_init_one_devl_locked+0xd0/0x278 [mlx5_core]
+[  242.785231][ T1644]  probe_one+0xe0/0x208 [mlx5_core]
+[  242.787159][ T1644]  local_pci_probe+0x48/0xb8
+[  242.789038][ T1644]  local_pci_probe_callback+0x24/0x40
+[  242.790876][ T1644]  process_one_work+0x180/0x4f8
+[  242.792731][ T1644]  worker_thread+0x208/0x280
+[  242.794578][ T1644]  kthread+0x128/0x138
+[  242.796427][ T1644]  ret_from_fork+0x10/0x20
+[  242.798277][ T1644] INFO: task systemd-udevd:2281 blocked for more
+than 120 seconds.
+[  242.801795][ T1644]       Not tainted 7.0.0-rc2+ #3
+[  242.803542][ T1644] "echo 0 >
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  242.807056][ T1644] task:systemd-udevd   state:D stack:0     pid:2281
+ tgid:2281  ppid:2256   task_flags:0x400140 flags:0x00000811
+[  242.810829][ T1644] Call trace:
+[  242.812779][ T1644]  __switch_to+0xdc/0x108 (T)
+[  242.814681][ T1644]  __schedule+0x2a0/0x8a8
+[  242.816609][ T1644]  schedule+0x3c/0xc0
+[  242.818499][ T1644]  schedule_timeout+0x10c/0x120
+[  242.820388][ T1644]  __wait_for_common+0xc4/0x1d0
+[  242.822267][ T1644]  wait_for_completion+0x28/0x40
+[  242.824168][ T1644]  __flush_work+0x7c/0xf8
+[  242.825983][ T1644]  flush_work+0x1c/0x30
+[  242.827816][ T1644]  pci_call_probe+0x174/0x1e0
+[  242.829652][ T1644]  pci_device_probe+0x98/0x108
+[  242.831455][ T1644]  call_driver_probe+0x34/0x158
+[  242.833261][ T1644]  really_probe+0xc0/0x320
+[  242.835082][ T1644]  __driver_probe_device+0x88/0x190
+[  242.836843][ T1644]  driver_probe_device+0x48/0x120
+[  242.838607][ T1644]  __driver_attach+0x138/0x280
+[  242.840355][ T1644]  bus_for_each_dev+0x80/0xe8
+[  242.842095][ T1644]  driver_attach+0x2c/0x40
+[  242.843830][ T1644]  bus_add_driver+0x128/0x258
+[  242.845564][ T1644]  driver_register+0x68/0x138
+[  242.847285][ T1644]  __pci_register_driver+0x4c/0x60
+[  242.849038][ T1644]  mlx5_init+0x7c/0xff8 [mlx5_core]
+[  242.850871][ T1644]  do_one_initcall+0x50/0x498
+[  242.852561][ T1644]  do_init_module+0x60/0x280
+[  242.854220][ T1644]  load_module+0x3d8/0x6a8
+[  242.855856][ T1644]  init_module_from_file+0xe4/0x108
+[  242.857470][ T1644]  idempotent_init_module+0x190/0x290
+[  242.859022][ T1644]  __arm64_sys_finit_module+0x74/0xf8
+[  242.860544][ T1644]  invoke_syscall+0x50/0x120
+[  242.861996][ T1644]  el0_svc_common.constprop.0+0xc8/0xf0
+[  242.863457][ T1644]  do_el0_svc+0x24/0x38
+[  242.864914][ T1644]  el0_svc+0x34/0x170
+[  242.866361][ T1644]  el0t_64_sync_handler+0xa0/0xe8
+[  242.867839][ T1644]  el0t_64_sync+0x190/0x198
 
-4. Code Simplification: This refactoring results in a reduction of
-~150 lines of code. It removes redundant sequence tracking, complex lookup
-helpers, and manual CQ management, significantly improving maintainability.
 
-Performance Test: redis-benchmark with max 32 connections per QP
-Data format: Requests Per Second (RPS), Percentage in brackets
-represents the gain/loss compared to TCP.
-
-| Clients | TCP      | SMC (original)      | SMC (cq_pool)       |
-|---------|----------|---------------------|---------------------|
-| c = 1   | 24449    | 31172  (+27%)       | 34039  (+39%)       |
-| c = 2   | 46420    | 53216  (+14%)       | 64391  (+38%)       |
-| c = 16  | 159673   | 83668  (-48%)  <--  | 216947 (+36%)       |
-| c = 32  | 164956   | 97631  (-41%)  <--  | 249376 (+51%)       |
-| c = 64  | 166322   | 118192 (-29%)  <--  | 249488 (+50%)       |
-| c = 128 | 167700   | 121497 (-27%)  <--  | 249480 (+48%)       |
-| c = 256 | 175021   | 146109 (-16%)  <--  | 240384 (+37%)       |
-| c = 512 | 168987   | 101479 (-40%)  <--  | 226634 (+34%)       |
-
-The results demonstrate that this optimization effectively resolves the
-scalability bottleneck, with RPS increasing by over 110% at c=64
-compared to the original implementation.
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
-v3:
-- Rebase to latest net-next tree.
-- Remove a redundant blank line in smc_wr_alloc_link_mem().
-
-v2:
-- Fix a logic bug in smc_wr_tx_process_cqe() where a zeroed field
-  was checked instead of the saved pnd_snd copy. (Jakub)
-- Fix typo in comment: s/ib_draib_rq/ib_drain_rq/.
-- Minor comment alignment fix in struct smc_link.
----
- net/smc/smc_core.c |   9 +-
- net/smc/smc_core.h |  28 ++--
- net/smc/smc_ib.c   | 113 +++++-----------
- net/smc/smc_ib.h   |   7 -
- net/smc/smc_tx.c   |   1 -
- net/smc/smc_wr.c   | 312 +++++++++++++++++++--------------------------
- net/smc/smc_wr.h   |  40 ++----
- 7 files changed, 193 insertions(+), 317 deletions(-)
-
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index e2d083daeb7e..7795f8143d35 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -815,17 +815,11 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
- 	lnk->lgr = lgr;
- 	smc_lgr_hold(lgr); /* lgr_put in smcr_link_clear() */
- 	lnk->link_idx = link_idx;
--	lnk->wr_rx_id_compl = 0;
- 	smc_ibdev_cnt_inc(lnk);
- 	smcr_copy_dev_info_to_link(lnk);
- 	atomic_set(&lnk->conn_cnt, 0);
- 	smc_llc_link_set_uid(lnk);
- 	INIT_WORK(&lnk->link_down_wrk, smc_link_down_work);
--	if (!lnk->smcibdev->initialized) {
--		rc = (int)smc_ib_setup_per_ibdev(lnk->smcibdev);
--		if (rc)
--			goto out;
--	}
- 	get_random_bytes(rndvec, sizeof(rndvec));
- 	lnk->psn_initial = rndvec[0] + (rndvec[1] << 8) +
- 		(rndvec[2] << 16);
-@@ -863,6 +857,7 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
- 	if (rc)
- 		goto free_link_mem;
- 	lnk->state = SMC_LNK_ACTIVATING;
-+	smc_wr_init_cqes(lnk);
- 	return 0;
- 
- free_link_mem:
-@@ -1373,7 +1368,7 @@ void smcr_link_clear(struct smc_link *lnk, bool log)
- 	smc_llc_link_clear(lnk, log);
- 	smcr_buf_unmap_lgr(lnk);
- 	smcr_rtoken_clear_link(lnk);
--	smc_ib_modify_qp_error(lnk);
-+	smc_wr_drain_rq(lnk);
- 	smc_wr_free_link(lnk);
- 	smc_ib_destroy_queue_pair(lnk);
- 	smc_ib_dealloc_protection_domain(lnk);
-diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-index 5c18f08a4c8a..f98c0f0cb14b 100644
---- a/net/smc/smc_core.h
-+++ b/net/smc/smc_core.h
-@@ -89,8 +89,21 @@ struct smc_rdma_sges {				/* sges per message send */
- struct smc_rdma_wr {				/* work requests per message
- 						 * send
- 						 */
-+	struct ib_cqe		cqe;
- 	struct ib_rdma_wr	wr_tx_rdma[SMC_MAX_RDMA_WRITES];
--};
-+} ____cacheline_aligned_in_smp;
-+
-+struct smc_ib_recv_wr {
-+	struct ib_cqe		cqe;
-+	struct ib_recv_wr	wr;
-+	int idx;
-+} ____cacheline_aligned_in_smp;
-+
-+struct smc_ib_send_wr {
-+	struct ib_cqe		cqe;
-+	struct ib_send_wr	wr;
-+	int idx;
-+} ____cacheline_aligned_in_smp;
- 
- #define SMC_LGR_ID_SIZE		4
- 
-@@ -100,23 +113,24 @@ struct smc_link {
- 	struct ib_pd		*roce_pd;	/* IB protection domain,
- 						 * unique for every RoCE QP
- 						 */
-+	unsigned int		nr_cqe;		/* number of CQ entries */
-+	struct ib_cq		*ib_cq;		/* IB completion queue */
- 	struct ib_qp		*roce_qp;	/* IB queue pair */
- 	struct ib_qp_attr	qp_attr;	/* IB queue pair attributes */
- 
- 	struct smc_wr_buf	*wr_tx_bufs;	/* WR send payload buffers */
--	struct ib_send_wr	*wr_tx_ibs;	/* WR send meta data */
-+	struct smc_ib_send_wr	*wr_tx_ibs;	/* WR send meta data */
- 	struct ib_sge		*wr_tx_sges;	/* WR send gather meta data */
- 	struct smc_rdma_sges	*wr_tx_rdma_sges;/*RDMA WRITE gather meta data*/
- 	struct smc_rdma_wr	*wr_tx_rdmas;	/* WR RDMA WRITE */
- 	struct smc_wr_tx_pend	*wr_tx_pends;	/* WR send waiting for CQE */
- 	struct completion	*wr_tx_compl;	/* WR send CQE completion */
- 	/* above four vectors have wr_tx_cnt elements and use the same index */
--	struct ib_send_wr	*wr_tx_v2_ib;	/* WR send v2 meta data */
-+	struct smc_ib_send_wr	*wr_tx_v2_ib;	/* WR send v2 meta data */
- 	struct ib_sge		*wr_tx_v2_sge;	/* WR send v2 gather meta data*/
- 	struct smc_wr_tx_pend	*wr_tx_v2_pend;	/* WR send v2 waiting for CQE */
- 	dma_addr_t		wr_tx_dma_addr;	/* DMA address of wr_tx_bufs */
- 	dma_addr_t		wr_tx_v2_dma_addr; /* DMA address of v2 tx buf*/
--	atomic_long_t		wr_tx_id;	/* seq # of last sent WR */
- 	unsigned long		*wr_tx_mask;	/* bit mask of used indexes */
- 	u32			wr_tx_cnt;	/* number of WR send buffers */
- 	wait_queue_head_t	wr_tx_wait;	/* wait for free WR send buf */
-@@ -126,7 +140,7 @@ struct smc_link {
- 	struct completion	tx_ref_comp;
- 
- 	u8			*wr_rx_bufs;	/* WR recv payload buffers */
--	struct ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
-+	struct smc_ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
- 	struct ib_sge		*wr_rx_sges;	/* WR recv scatter meta data */
- 	/* above three vectors have wr_rx_cnt elements and use the same index */
- 	int			wr_rx_sge_cnt; /* rx sge, V1 is 1, V2 is either 2 or 1 */
-@@ -135,13 +149,11 @@ struct smc_link {
- 						 */
- 	dma_addr_t		wr_rx_dma_addr;	/* DMA address of wr_rx_bufs */
- 	dma_addr_t		wr_rx_v2_dma_addr; /* DMA address of v2 rx buf*/
--	u64			wr_rx_id;	/* seq # of last recv WR */
--	u64			wr_rx_id_compl; /* seq # of last completed WR */
- 	u32			wr_rx_cnt;	/* number of WR recv buffers */
- 	unsigned long		wr_rx_tstamp;	/* jiffies when last buf rx */
--	wait_queue_head_t       wr_rx_empty_wait; /* wait for RQ empty */
- 
- 	struct ib_reg_wr	wr_reg;		/* WR register memory region */
-+	struct ib_cqe		wr_reg_cqe;	/* ib_cqe for wr_reg */
- 	wait_queue_head_t	wr_reg_wait;	/* wait for wr_reg result */
- 	struct {
- 		struct percpu_ref	wr_reg_refs;
-diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-index 9bb495707445..eaeb3bacc613 100644
---- a/net/smc/smc_ib.c
-+++ b/net/smc/smc_ib.c
-@@ -111,15 +111,6 @@ int smc_ib_modify_qp_rts(struct smc_link *lnk)
- 			    IB_QP_MAX_QP_RD_ATOMIC);
- }
- 
--int smc_ib_modify_qp_error(struct smc_link *lnk)
--{
--	struct ib_qp_attr qp_attr;
--
--	memset(&qp_attr, 0, sizeof(qp_attr));
--	qp_attr.qp_state = IB_QPS_ERR;
--	return ib_modify_qp(lnk->roce_qp, &qp_attr, IB_QP_STATE);
--}
--
- int smc_ib_ready_link(struct smc_link *lnk)
- {
- 	struct smc_link_group *lgr = smc_get_lgr(lnk);
-@@ -133,10 +124,7 @@ int smc_ib_ready_link(struct smc_link *lnk)
- 	if (rc)
- 		goto out;
- 	smc_wr_remember_qp_attr(lnk);
--	rc = ib_req_notify_cq(lnk->smcibdev->roce_cq_recv,
--			      IB_CQ_SOLICITED_MASK);
--	if (rc)
--		goto out;
-+
- 	rc = smc_wr_rx_post_init(lnk);
- 	if (rc)
- 		goto out;
-@@ -657,38 +645,59 @@ void smc_ib_destroy_queue_pair(struct smc_link *lnk)
- 	if (lnk->roce_qp)
- 		ib_destroy_qp(lnk->roce_qp);
- 	lnk->roce_qp = NULL;
-+	if (lnk->ib_cq) {
-+		ib_cq_pool_put(lnk->ib_cq, lnk->nr_cqe);
-+		lnk->ib_cq = NULL;
-+	}
- }
- 
- /* create a queue pair within the protection domain for a link */
- int smc_ib_create_queue_pair(struct smc_link *lnk)
- {
-+	int max_send_wr, max_recv_wr, rc;
-+	struct ib_cq *cq;
-+
-+	/* include unsolicited rdma_writes as well,
-+	 * there are max. 2 RDMA_WRITE per 1 WR_SEND.
-+	 */
-+	max_send_wr = 3 * lnk->lgr->max_send_wr;
-+	max_recv_wr = lnk->lgr->max_recv_wr + 1;	/* +1 for ib_drain_rq() */
-+
-+	cq = ib_cq_pool_get(lnk->smcibdev->ibdev, max_send_wr + max_recv_wr, -1,
-+			    IB_POLL_SOFTIRQ);
-+
-+	if (IS_ERR(cq)) {
-+		rc = PTR_ERR(cq);
-+		return rc;
-+	}
-+
- 	struct ib_qp_init_attr qp_attr = {
- 		.event_handler = smc_ib_qp_event_handler,
- 		.qp_context = lnk,
--		.send_cq = lnk->smcibdev->roce_cq_send,
--		.recv_cq = lnk->smcibdev->roce_cq_recv,
-+		.send_cq = cq,
-+		.recv_cq = cq,
- 		.srq = NULL,
- 		.cap = {
- 			.max_send_sge = SMC_IB_MAX_SEND_SGE,
- 			.max_recv_sge = lnk->wr_rx_sge_cnt,
-+			.max_send_wr = max_send_wr,
-+			.max_recv_wr = max_recv_wr,
- 			.max_inline_data = 0,
- 		},
- 		.sq_sig_type = IB_SIGNAL_REQ_WR,
- 		.qp_type = IB_QPT_RC,
- 	};
--	int rc;
- 
--	/* include unsolicited rdma_writes as well,
--	 * there are max. 2 RDMA_WRITE per 1 WR_SEND
--	 */
--	qp_attr.cap.max_send_wr = 3 * lnk->lgr->max_send_wr;
--	qp_attr.cap.max_recv_wr = lnk->lgr->max_recv_wr;
- 	lnk->roce_qp = ib_create_qp(lnk->roce_pd, &qp_attr);
- 	rc = PTR_ERR_OR_ZERO(lnk->roce_qp);
--	if (IS_ERR(lnk->roce_qp))
-+	if (IS_ERR(lnk->roce_qp)) {
- 		lnk->roce_qp = NULL;
--	else
-+		ib_cq_pool_put(cq, max_send_wr + max_recv_wr);
-+	} else {
- 		smc_wr_remember_qp_attr(lnk);
-+		lnk->nr_cqe = max_send_wr + max_recv_wr;
-+		lnk->ib_cq = cq;
-+	}
- 	return rc;
- }
- 
-@@ -838,62 +847,6 @@ void smc_ib_buf_unmap_sg(struct smc_link *lnk,
- 	buf_slot->sgt[lnk->link_idx].sgl->dma_address = 0;
- }
- 
--long smc_ib_setup_per_ibdev(struct smc_ib_device *smcibdev)
--{
--	struct ib_cq_init_attr cqattr =	{
--		.cqe = SMC_MAX_CQE, .comp_vector = 0 };
--	int cqe_size_order, smc_order;
--	long rc;
--
--	mutex_lock(&smcibdev->mutex);
--	rc = 0;
--	if (smcibdev->initialized)
--		goto out;
--	/* the calculated number of cq entries fits to mlx5 cq allocation */
--	cqe_size_order = cache_line_size() == 128 ? 7 : 6;
--	smc_order = MAX_PAGE_ORDER - cqe_size_order;
--	if (SMC_MAX_CQE + 2 > (0x00000001 << smc_order) * PAGE_SIZE)
--		cqattr.cqe = (0x00000001 << smc_order) * PAGE_SIZE - 2;
--	smcibdev->roce_cq_send = ib_create_cq(smcibdev->ibdev,
--					      smc_wr_tx_cq_handler, NULL,
--					      smcibdev, &cqattr);
--	rc = PTR_ERR_OR_ZERO(smcibdev->roce_cq_send);
--	if (IS_ERR(smcibdev->roce_cq_send)) {
--		smcibdev->roce_cq_send = NULL;
--		goto out;
--	}
--	smcibdev->roce_cq_recv = ib_create_cq(smcibdev->ibdev,
--					      smc_wr_rx_cq_handler, NULL,
--					      smcibdev, &cqattr);
--	rc = PTR_ERR_OR_ZERO(smcibdev->roce_cq_recv);
--	if (IS_ERR(smcibdev->roce_cq_recv)) {
--		smcibdev->roce_cq_recv = NULL;
--		goto err;
--	}
--	smc_wr_add_dev(smcibdev);
--	smcibdev->initialized = 1;
--	goto out;
--
--err:
--	ib_destroy_cq(smcibdev->roce_cq_send);
--out:
--	mutex_unlock(&smcibdev->mutex);
--	return rc;
--}
--
--static void smc_ib_cleanup_per_ibdev(struct smc_ib_device *smcibdev)
--{
--	mutex_lock(&smcibdev->mutex);
--	if (!smcibdev->initialized)
--		goto out;
--	smcibdev->initialized = 0;
--	ib_destroy_cq(smcibdev->roce_cq_recv);
--	ib_destroy_cq(smcibdev->roce_cq_send);
--	smc_wr_remove_dev(smcibdev);
--out:
--	mutex_unlock(&smcibdev->mutex);
--}
--
- static struct ib_client smc_ib_client;
- 
- static void smc_copy_netdev_ifindex(struct smc_ib_device *smcibdev, int port)
-@@ -952,7 +905,6 @@ static int smc_ib_add_dev(struct ib_device *ibdev)
- 	INIT_WORK(&smcibdev->port_event_work, smc_ib_port_event_work);
- 	atomic_set(&smcibdev->lnk_cnt, 0);
- 	init_waitqueue_head(&smcibdev->lnks_deleted);
--	mutex_init(&smcibdev->mutex);
- 	mutex_lock(&smc_ib_devices.mutex);
- 	list_add_tail(&smcibdev->list, &smc_ib_devices.list);
- 	mutex_unlock(&smc_ib_devices.mutex);
-@@ -1001,7 +953,6 @@ static void smc_ib_remove_dev(struct ib_device *ibdev, void *client_data)
- 	pr_warn_ratelimited("smc: removing ib device %s\n",
- 			    smcibdev->ibdev->name);
- 	smc_smcr_terminate_all(smcibdev);
--	smc_ib_cleanup_per_ibdev(smcibdev);
- 	ib_unregister_event_handler(&smcibdev->event_handler);
- 	cancel_work_sync(&smcibdev->port_event_work);
- 	kfree(smcibdev);
-diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
-index ef8ac2b7546d..a75fe8bcef3a 100644
---- a/net/smc/smc_ib.h
-+++ b/net/smc/smc_ib.h
-@@ -37,17 +37,12 @@ struct smc_ib_device {				/* ib-device infos for smc */
- 	struct ib_device	*ibdev;
- 	struct ib_port_attr	pattr[SMC_MAX_PORTS];	/* ib dev. port attrs */
- 	struct ib_event_handler	event_handler;	/* global ib_event handler */
--	struct ib_cq		*roce_cq_send;	/* send completion queue */
--	struct ib_cq		*roce_cq_recv;	/* recv completion queue */
--	struct tasklet_struct	send_tasklet;	/* called by send cq handler */
--	struct tasklet_struct	recv_tasklet;	/* called by recv cq handler */
- 	char			mac[SMC_MAX_PORTS][ETH_ALEN];
- 						/* mac address per port*/
- 	u8			pnetid[SMC_MAX_PORTS][SMC_MAX_PNETID_LEN];
- 						/* pnetid per port */
- 	bool			pnetid_by_user[SMC_MAX_PORTS];
- 						/* pnetid defined by user? */
--	u8			initialized : 1; /* ib dev CQ, evthdl done */
- 	struct work_struct	port_event_work;
- 	unsigned long		port_event_mask;
- 	DECLARE_BITMAP(ports_going_away, SMC_MAX_PORTS);
-@@ -96,8 +91,6 @@ void smc_ib_destroy_queue_pair(struct smc_link *lnk);
- int smc_ib_create_queue_pair(struct smc_link *lnk);
- int smc_ib_ready_link(struct smc_link *lnk);
- int smc_ib_modify_qp_rts(struct smc_link *lnk);
--int smc_ib_modify_qp_error(struct smc_link *lnk);
--long smc_ib_setup_per_ibdev(struct smc_ib_device *smcibdev);
- int smc_ib_get_memory_region(struct ib_pd *pd, int access_flags,
- 			     struct smc_buf_desc *buf_slot, u8 link_idx);
- void smc_ib_put_memory_region(struct ib_mr *mr);
-diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
-index 3144b4b1fe29..d301df9ed58b 100644
---- a/net/smc/smc_tx.c
-+++ b/net/smc/smc_tx.c
-@@ -321,7 +321,6 @@ static int smc_tx_rdma_write(struct smc_connection *conn, int peer_rmbe_offset,
- 	struct smc_link *link = conn->lnk;
- 	int rc;
- 
--	rdma_wr->wr.wr_id = smc_wr_tx_get_next_wr_id(link);
- 	rdma_wr->wr.num_sge = num_sges;
- 	rdma_wr->remote_addr =
- 		lgr->rtokens[conn->rtoken_idx][link->link_idx].dma_addr +
-diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-index 59c92b46945c..48037a3d97a3 100644
---- a/net/smc/smc_wr.c
-+++ b/net/smc/smc_wr.c
-@@ -31,14 +31,11 @@
- #include "smc.h"
- #include "smc_wr.h"
- 
--#define SMC_WR_MAX_POLL_CQE 10	/* max. # of compl. queue elements in 1 poll */
--
- #define SMC_WR_RX_HASH_BITS 4
- static DEFINE_HASHTABLE(smc_wr_rx_hash, SMC_WR_RX_HASH_BITS);
- static DEFINE_SPINLOCK(smc_wr_rx_hash_lock);
- 
- struct smc_wr_tx_pend {	/* control data for a pending send request */
--	u64			wr_id;		/* work request id sent */
- 	smc_wr_tx_handler	handler;
- 	enum ib_wc_status	wc_status;	/* CQE status */
- 	struct smc_link		*link;
-@@ -63,55 +60,52 @@ void smc_wr_tx_wait_no_pending_sends(struct smc_link *link)
- 	wait_event(link->wr_tx_wait, !smc_wr_is_tx_pend(link));
- }
- 
--static inline int smc_wr_tx_find_pending_index(struct smc_link *link, u64 wr_id)
-+static void smc_wr_tx_rdma_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
- {
--	u32 i;
-+	struct smc_link *link = wc->qp->qp_context;
- 
--	for (i = 0; i < link->wr_tx_cnt; i++) {
--		if (link->wr_tx_pends[i].wr_id == wr_id)
--			return i;
--	}
--	return link->wr_tx_cnt;
-+	/* terminate link */
-+	if (wc->status)
-+		smcr_link_down_cond_sched(link);
-+}
-+
-+static void smc_wr_reg_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
-+{
-+	struct smc_link *link = wc->qp->qp_context;
-+
-+	if (wc->status)
-+		link->wr_reg_state = FAILED;
-+	else
-+		link->wr_reg_state = CONFIRMED;
-+	smc_wr_wakeup_reg_wait(link);
- }
- 
--static inline void smc_wr_tx_process_cqe(struct ib_wc *wc)
-+static void smc_wr_tx_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct smc_wr_tx_pend pnd_snd;
-+	struct smc_wr_tx_pend *tx_pend, pnd_snd;
-+	struct smc_ib_send_wr *send_wr;
- 	struct smc_link *link;
- 	u32 pnd_snd_idx;
- 
- 	link = wc->qp->qp_context;
- 
--	if (wc->opcode == IB_WC_REG_MR) {
--		if (wc->status)
--			link->wr_reg_state = FAILED;
--		else
--			link->wr_reg_state = CONFIRMED;
--		smc_wr_wakeup_reg_wait(link);
--		return;
--	}
-+	send_wr = container_of(wc->wr_cqe, struct smc_ib_send_wr, cqe);
-+	pnd_snd_idx = send_wr->idx;
-+
-+	tx_pend = (pnd_snd_idx == link->wr_tx_cnt) ? link->wr_tx_v2_pend :
-+		&link->wr_tx_pends[pnd_snd_idx];
-+
-+	tx_pend->wc_status = wc->status;
-+	memcpy(&pnd_snd, tx_pend, sizeof(pnd_snd));
-+	/* clear the full struct smc_wr_tx_pend including .priv */
-+	memset(tx_pend, 0, sizeof(*tx_pend));
- 
--	pnd_snd_idx = smc_wr_tx_find_pending_index(link, wc->wr_id);
- 	if (pnd_snd_idx == link->wr_tx_cnt) {
--		if (link->lgr->smc_version != SMC_V2 ||
--		    link->wr_tx_v2_pend->wr_id != wc->wr_id)
--			return;
--		link->wr_tx_v2_pend->wc_status = wc->status;
--		memcpy(&pnd_snd, link->wr_tx_v2_pend, sizeof(pnd_snd));
--		/* clear the full struct smc_wr_tx_pend including .priv */
--		memset(link->wr_tx_v2_pend, 0,
--		       sizeof(*link->wr_tx_v2_pend));
- 		memset(link->lgr->wr_tx_buf_v2, 0,
- 		       sizeof(*link->lgr->wr_tx_buf_v2));
- 	} else {
--		link->wr_tx_pends[pnd_snd_idx].wc_status = wc->status;
--		if (link->wr_tx_pends[pnd_snd_idx].compl_requested)
-+		if (pnd_snd.compl_requested)
- 			complete(&link->wr_tx_compl[pnd_snd_idx]);
--		memcpy(&pnd_snd, &link->wr_tx_pends[pnd_snd_idx],
--		       sizeof(pnd_snd));
--		/* clear the full struct smc_wr_tx_pend including .priv */
--		memset(&link->wr_tx_pends[pnd_snd_idx], 0,
--		       sizeof(link->wr_tx_pends[pnd_snd_idx]));
- 		memset(&link->wr_tx_bufs[pnd_snd_idx], 0,
- 		       sizeof(link->wr_tx_bufs[pnd_snd_idx]));
- 		if (!test_and_clear_bit(pnd_snd_idx, link->wr_tx_mask))
-@@ -133,39 +127,6 @@ static inline void smc_wr_tx_process_cqe(struct ib_wc *wc)
- 	wake_up(&link->wr_tx_wait);
- }
- 
--static void smc_wr_tx_tasklet_fn(struct tasklet_struct *t)
--{
--	struct smc_ib_device *dev = from_tasklet(dev, t, send_tasklet);
--	struct ib_wc wc[SMC_WR_MAX_POLL_CQE];
--	int i = 0, rc;
--	int polled = 0;
--
--again:
--	polled++;
--	do {
--		memset(&wc, 0, sizeof(wc));
--		rc = ib_poll_cq(dev->roce_cq_send, SMC_WR_MAX_POLL_CQE, wc);
--		if (polled == 1) {
--			ib_req_notify_cq(dev->roce_cq_send,
--					 IB_CQ_NEXT_COMP |
--					 IB_CQ_REPORT_MISSED_EVENTS);
--		}
--		if (!rc)
--			break;
--		for (i = 0; i < rc; i++)
--			smc_wr_tx_process_cqe(&wc[i]);
--	} while (rc > 0);
--	if (polled == 1)
--		goto again;
--}
--
--void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
--{
--	struct smc_ib_device *dev = (struct smc_ib_device *)cq_context;
--
--	tasklet_schedule(&dev->send_tasklet);
--}
--
- /*---------------------------- request submission ---------------------------*/
- 
- static inline int smc_wr_tx_get_free_slot_index(struct smc_link *link, u32 *idx)
-@@ -201,8 +162,6 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
- 	struct smc_link_group *lgr = smc_get_lgr(link);
- 	struct smc_wr_tx_pend *wr_pend;
- 	u32 idx = link->wr_tx_cnt;
--	struct ib_send_wr *wr_ib;
--	u64 wr_id;
- 	int rc;
- 
- 	*wr_buf = NULL;
-@@ -226,14 +185,10 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
- 		if (idx == link->wr_tx_cnt)
- 			return -EPIPE;
- 	}
--	wr_id = smc_wr_tx_get_next_wr_id(link);
- 	wr_pend = &link->wr_tx_pends[idx];
--	wr_pend->wr_id = wr_id;
- 	wr_pend->handler = handler;
- 	wr_pend->link = link;
- 	wr_pend->idx = idx;
--	wr_ib = &link->wr_tx_ibs[idx];
--	wr_ib->wr_id = wr_id;
- 	*wr_buf = &link->wr_tx_bufs[idx];
- 	if (wr_rdma_buf)
- 		*wr_rdma_buf = &link->wr_tx_rdmas[idx];
-@@ -247,22 +202,16 @@ int smc_wr_tx_get_v2_slot(struct smc_link *link,
- 			  struct smc_wr_tx_pend_priv **wr_pend_priv)
- {
- 	struct smc_wr_tx_pend *wr_pend;
--	struct ib_send_wr *wr_ib;
--	u64 wr_id;
- 
- 	if (link->wr_tx_v2_pend->idx == link->wr_tx_cnt)
- 		return -EBUSY;
- 
- 	*wr_buf = NULL;
- 	*wr_pend_priv = NULL;
--	wr_id = smc_wr_tx_get_next_wr_id(link);
- 	wr_pend = link->wr_tx_v2_pend;
--	wr_pend->wr_id = wr_id;
- 	wr_pend->handler = handler;
- 	wr_pend->link = link;
- 	wr_pend->idx = link->wr_tx_cnt;
--	wr_ib = link->wr_tx_v2_ib;
--	wr_ib->wr_id = wr_id;
- 	*wr_buf = link->lgr->wr_tx_buf_v2;
- 	*wr_pend_priv = &wr_pend->priv;
- 	return 0;
-@@ -306,10 +255,8 @@ int smc_wr_tx_send(struct smc_link *link, struct smc_wr_tx_pend_priv *priv)
- 	struct smc_wr_tx_pend *pend;
- 	int rc;
- 
--	ib_req_notify_cq(link->smcibdev->roce_cq_send,
--			 IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS);
- 	pend = container_of(priv, struct smc_wr_tx_pend, priv);
--	rc = ib_post_send(link->roce_qp, &link->wr_tx_ibs[pend->idx], NULL);
-+	rc = ib_post_send(link->roce_qp, &link->wr_tx_ibs[pend->idx].wr, NULL);
- 	if (rc) {
- 		smc_wr_tx_put_slot(link, priv);
- 		smcr_link_down_cond_sched(link);
-@@ -322,10 +269,8 @@ int smc_wr_tx_v2_send(struct smc_link *link, struct smc_wr_tx_pend_priv *priv,
- {
- 	int rc;
- 
--	link->wr_tx_v2_ib->sg_list[0].length = len;
--	ib_req_notify_cq(link->smcibdev->roce_cq_send,
--			 IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS);
--	rc = ib_post_send(link->roce_qp, link->wr_tx_v2_ib, NULL);
-+	link->wr_tx_v2_ib->wr.sg_list[0].length = len;
-+	rc = ib_post_send(link->roce_qp, &link->wr_tx_v2_ib->wr, NULL);
- 	if (rc) {
- 		smc_wr_tx_put_slot(link, priv);
- 		smcr_link_down_cond_sched(link);
-@@ -367,10 +312,7 @@ int smc_wr_reg_send(struct smc_link *link, struct ib_mr *mr)
- {
- 	int rc;
- 
--	ib_req_notify_cq(link->smcibdev->roce_cq_send,
--			 IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS);
- 	link->wr_reg_state = POSTED;
--	link->wr_reg.wr.wr_id = (u64)(uintptr_t)mr;
- 	link->wr_reg.mr = mr;
- 	link->wr_reg.key = mr->rkey;
- 	rc = ib_post_send(link->roce_qp, &link->wr_reg.wr, NULL);
-@@ -431,94 +373,74 @@ static inline void smc_wr_rx_demultiplex(struct ib_wc *wc)
- {
- 	struct smc_link *link = (struct smc_link *)wc->qp->qp_context;
- 	struct smc_wr_rx_handler *handler;
-+	struct smc_ib_recv_wr *recv_wr;
- 	struct smc_wr_rx_hdr *wr_rx;
--	u64 temp_wr_id;
--	u32 index;
- 
- 	if (wc->byte_len < sizeof(*wr_rx))
- 		return; /* short message */
--	temp_wr_id = wc->wr_id;
--	index = do_div(temp_wr_id, link->wr_rx_cnt);
--	wr_rx = (struct smc_wr_rx_hdr *)(link->wr_rx_bufs + index * link->wr_rx_buflen);
-+
-+	recv_wr = container_of(wc->wr_cqe, struct smc_ib_recv_wr, cqe);
-+
-+	wr_rx = (struct smc_wr_rx_hdr *)(link->wr_rx_bufs + recv_wr->idx * link->wr_rx_buflen);
- 	hash_for_each_possible(smc_wr_rx_hash, handler, list, wr_rx->type) {
- 		if (handler->type == wr_rx->type)
- 			handler->handler(wc, wr_rx);
- 	}
- }
- 
--static inline void smc_wr_rx_process_cqes(struct ib_wc wc[], int num)
-+static void smc_wr_rx_process_cqe(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct smc_link *link;
--	int i;
-+	struct smc_link *link = wc->qp->qp_context;
- 
--	for (i = 0; i < num; i++) {
--		link = wc[i].qp->qp_context;
--		link->wr_rx_id_compl = wc[i].wr_id;
--		if (wc[i].status == IB_WC_SUCCESS) {
--			link->wr_rx_tstamp = jiffies;
--			smc_wr_rx_demultiplex(&wc[i]);
--			smc_wr_rx_post(link); /* refill WR RX */
--		} else {
--			/* handle status errors */
--			switch (wc[i].status) {
--			case IB_WC_RETRY_EXC_ERR:
--			case IB_WC_RNR_RETRY_EXC_ERR:
--			case IB_WC_WR_FLUSH_ERR:
--				smcr_link_down_cond_sched(link);
--				if (link->wr_rx_id_compl == link->wr_rx_id)
--					wake_up(&link->wr_rx_empty_wait);
--				break;
--			default:
--				smc_wr_rx_post(link); /* refill WR RX */
--				break;
--			}
-+	if (wc->status == IB_WC_SUCCESS) {
-+		link->wr_rx_tstamp = jiffies;
-+		smc_wr_rx_demultiplex(wc);
-+		smc_wr_rx_post(link, wc->wr_cqe); /* refill WR RX */
-+	} else {
-+		/* handle status errors */
-+		switch (wc->status) {
-+		case IB_WC_RETRY_EXC_ERR:
-+		case IB_WC_RNR_RETRY_EXC_ERR:
-+		case IB_WC_WR_FLUSH_ERR:
-+			smcr_link_down_cond_sched(link);
-+			break;
-+		default:
-+			smc_wr_rx_post(link, wc->wr_cqe); /* refill WR RX */
-+			break;
- 		}
- 	}
- }
- 
--static void smc_wr_rx_tasklet_fn(struct tasklet_struct *t)
-+int smc_wr_rx_post_init(struct smc_link *link)
- {
--	struct smc_ib_device *dev = from_tasklet(dev, t, recv_tasklet);
--	struct ib_wc wc[SMC_WR_MAX_POLL_CQE];
--	int polled = 0;
--	int rc;
-+	int i, rc = 0;
- 
--again:
--	polled++;
--	do {
--		memset(&wc, 0, sizeof(wc));
--		rc = ib_poll_cq(dev->roce_cq_recv, SMC_WR_MAX_POLL_CQE, wc);
--		if (polled == 1) {
--			ib_req_notify_cq(dev->roce_cq_recv,
--					 IB_CQ_SOLICITED_MASK
--					 | IB_CQ_REPORT_MISSED_EVENTS);
--		}
--		if (!rc)
--			break;
--		smc_wr_rx_process_cqes(&wc[0], rc);
--	} while (rc > 0);
--	if (polled == 1)
--		goto again;
-+	for (i = 0; i < link->wr_rx_cnt; i++)
-+		rc = smc_wr_rx_post(link, &link->wr_rx_ibs[i].cqe);
-+	return rc;
- }
- 
--void smc_wr_rx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
--{
--	struct smc_ib_device *dev = (struct smc_ib_device *)cq_context;
-+/***************************** init, exit, misc ******************************/
- 
--	tasklet_schedule(&dev->recv_tasklet);
-+static inline void smc_wr_reg_init_cqe(struct ib_cqe *cqe)
-+{
-+	cqe->done = smc_wr_reg_process_cqe;
- }
- 
--int smc_wr_rx_post_init(struct smc_link *link)
-+static inline void smc_wr_tx_init_cqe(struct ib_cqe *cqe)
- {
--	u32 i;
--	int rc = 0;
-+	cqe->done = smc_wr_tx_process_cqe;
-+}
- 
--	for (i = 0; i < link->wr_rx_cnt; i++)
--		rc = smc_wr_rx_post(link);
--	return rc;
-+static inline void smc_wr_rx_init_cqe(struct ib_cqe *cqe)
-+{
-+	cqe->done = smc_wr_rx_process_cqe;
- }
- 
--/***************************** init, exit, misc ******************************/
-+static inline void smc_wr_tx_rdma_init_cqe(struct ib_cqe *cqe)
-+{
-+	cqe->done = smc_wr_tx_rdma_process_cqe;
-+}
- 
- void smc_wr_remember_qp_attr(struct smc_link *lnk)
- {
-@@ -550,7 +472,7 @@ void smc_wr_remember_qp_attr(struct smc_link *lnk)
- 	lnk->wr_tx_cnt = min_t(size_t, lnk->max_send_wr,
- 			       lnk->qp_attr.cap.max_send_wr);
- 	lnk->wr_rx_cnt = min_t(size_t, lnk->max_recv_wr,
--			       lnk->qp_attr.cap.max_recv_wr);
-+			       lnk->qp_attr.cap.max_recv_wr - 1);	/* -1 for ib_drain_rq() */
- }
- 
- static void smc_wr_init_sge(struct smc_link *lnk)
-@@ -571,14 +493,14 @@ static void smc_wr_init_sge(struct smc_link *lnk)
- 			lnk->roce_pd->local_dma_lkey;
- 		lnk->wr_tx_rdma_sges[i].tx_rdma_sge[1].wr_tx_rdma_sge[1].lkey =
- 			lnk->roce_pd->local_dma_lkey;
--		lnk->wr_tx_ibs[i].next = NULL;
--		lnk->wr_tx_ibs[i].sg_list = &lnk->wr_tx_sges[i];
--		lnk->wr_tx_ibs[i].num_sge = 1;
--		lnk->wr_tx_ibs[i].opcode = IB_WR_SEND;
--		lnk->wr_tx_ibs[i].send_flags =
-+		lnk->wr_tx_ibs[i].wr.next = NULL;
-+		lnk->wr_tx_ibs[i].wr.sg_list = &lnk->wr_tx_sges[i];
-+		lnk->wr_tx_ibs[i].wr.num_sge = 1;
-+		lnk->wr_tx_ibs[i].wr.opcode = IB_WR_SEND;
-+		lnk->wr_tx_ibs[i].wr.send_flags =
- 			IB_SEND_SIGNALED | IB_SEND_SOLICITED;
- 		if (send_inline)
--			lnk->wr_tx_ibs[i].send_flags |= IB_SEND_INLINE;
-+			lnk->wr_tx_ibs[i].wr.send_flags |= IB_SEND_INLINE;
- 		lnk->wr_tx_rdmas[i].wr_tx_rdma[0].wr.opcode = IB_WR_RDMA_WRITE;
- 		lnk->wr_tx_rdmas[i].wr_tx_rdma[1].wr.opcode = IB_WR_RDMA_WRITE;
- 		lnk->wr_tx_rdmas[i].wr_tx_rdma[0].wr.sg_list =
-@@ -592,11 +514,11 @@ static void smc_wr_init_sge(struct smc_link *lnk)
- 		lnk->wr_tx_v2_sge->length = SMC_WR_BUF_V2_SIZE;
- 		lnk->wr_tx_v2_sge->lkey = lnk->roce_pd->local_dma_lkey;
- 
--		lnk->wr_tx_v2_ib->next = NULL;
--		lnk->wr_tx_v2_ib->sg_list = lnk->wr_tx_v2_sge;
--		lnk->wr_tx_v2_ib->num_sge = 1;
--		lnk->wr_tx_v2_ib->opcode = IB_WR_SEND;
--		lnk->wr_tx_v2_ib->send_flags =
-+		lnk->wr_tx_v2_ib->wr.next = NULL;
-+		lnk->wr_tx_v2_ib->wr.sg_list = lnk->wr_tx_v2_sge;
-+		lnk->wr_tx_v2_ib->wr.num_sge = 1;
-+		lnk->wr_tx_v2_ib->wr.opcode = IB_WR_SEND;
-+		lnk->wr_tx_v2_ib->wr.send_flags =
- 			IB_SEND_SIGNALED | IB_SEND_SOLICITED;
- 	}
- 
-@@ -622,10 +544,11 @@ static void smc_wr_init_sge(struct smc_link *lnk)
- 			lnk->wr_rx_sges[x + 1].lkey =
- 					lnk->roce_pd->local_dma_lkey;
- 		}
--		lnk->wr_rx_ibs[i].next = NULL;
--		lnk->wr_rx_ibs[i].sg_list = &lnk->wr_rx_sges[x];
--		lnk->wr_rx_ibs[i].num_sge = lnk->wr_rx_sge_cnt;
-+		lnk->wr_rx_ibs[i].wr.next = NULL;
-+		lnk->wr_rx_ibs[i].wr.sg_list = &lnk->wr_rx_sges[x];
-+		lnk->wr_rx_ibs[i].wr.num_sge = lnk->wr_rx_sge_cnt;
- 	}
-+
- 	lnk->wr_reg.wr.next = NULL;
- 	lnk->wr_reg.wr.num_sge = 0;
- 	lnk->wr_reg.wr.send_flags = IB_SEND_SIGNALED;
-@@ -641,7 +564,6 @@ void smc_wr_free_link(struct smc_link *lnk)
- 		return;
- 	ibdev = lnk->smcibdev->ibdev;
- 
--	smc_wr_drain_cq(lnk);
- 	smc_wr_wakeup_reg_wait(lnk);
- 	smc_wr_wakeup_tx_wait(lnk);
- 
-@@ -826,18 +748,6 @@ int smc_wr_alloc_link_mem(struct smc_link *link)
- 	return -ENOMEM;
- }
- 
--void smc_wr_remove_dev(struct smc_ib_device *smcibdev)
--{
--	tasklet_kill(&smcibdev->recv_tasklet);
--	tasklet_kill(&smcibdev->send_tasklet);
--}
--
--void smc_wr_add_dev(struct smc_ib_device *smcibdev)
--{
--	tasklet_setup(&smcibdev->recv_tasklet, smc_wr_rx_tasklet_fn);
--	tasklet_setup(&smcibdev->send_tasklet, smc_wr_tx_tasklet_fn);
--}
--
- static void smcr_wr_tx_refs_free(struct percpu_ref *ref)
- {
- 	struct smc_link *lnk = container_of(ref, struct smc_link, wr_tx_refs);
-@@ -857,8 +767,6 @@ int smc_wr_create_link(struct smc_link *lnk)
- 	struct ib_device *ibdev = lnk->smcibdev->ibdev;
- 	int rc = 0;
- 
--	smc_wr_tx_set_wr_id(&lnk->wr_tx_id, 0);
--	lnk->wr_rx_id = 0;
- 	lnk->wr_rx_dma_addr = ib_dma_map_single(
- 		ibdev, lnk->wr_rx_bufs,	lnk->wr_rx_buflen * lnk->wr_rx_cnt,
- 		DMA_FROM_DEVICE);
-@@ -906,7 +814,6 @@ int smc_wr_create_link(struct smc_link *lnk)
- 	if (rc)
- 		goto cancel_ref;
- 	init_completion(&lnk->reg_ref_comp);
--	init_waitqueue_head(&lnk->wr_rx_empty_wait);
- 	return rc;
- 
- cancel_ref:
-@@ -931,3 +838,42 @@ int smc_wr_create_link(struct smc_link *lnk)
- out:
- 	return rc;
- }
-+
-+void smc_wr_init_cqes(struct smc_link *lnk)
-+{
-+	int i;
-+
-+	/* init CQE for WR fast reg */
-+	smc_wr_reg_init_cqe(&lnk->wr_reg_cqe);
-+	lnk->wr_reg.wr.wr_cqe = &lnk->wr_reg_cqe;
-+
-+	/* init CQE for WR WRITE */
-+	for (i = 0; i < lnk->wr_tx_cnt; i++) {
-+		int n;
-+
-+		smc_wr_tx_rdma_init_cqe(&lnk->wr_tx_rdmas[i].cqe);
-+		for (n = 0; n < SMC_MAX_RDMA_WRITES; n++)
-+			lnk->wr_tx_rdmas[i].wr_tx_rdma[n].wr.wr_cqe = &lnk->wr_tx_rdmas[i].cqe;
-+	}
-+
-+	/* init CQEs for WR RECV */
-+	for (i = 0; i < lnk->wr_rx_cnt; i++) {
-+		smc_wr_rx_init_cqe(&lnk->wr_rx_ibs[i].cqe);
-+		lnk->wr_rx_ibs[i].wr.wr_cqe = &lnk->wr_rx_ibs[i].cqe;
-+		lnk->wr_rx_ibs[i].idx = i;
-+	}
-+
-+	/* init CQEs for WR SEND */
-+	for (i = 0; i < lnk->wr_tx_cnt; i++) {
-+		smc_wr_tx_init_cqe(&lnk->wr_tx_ibs[i].cqe);
-+		lnk->wr_tx_ibs[i].wr.wr_cqe = &lnk->wr_tx_ibs[i].cqe;
-+		lnk->wr_tx_ibs[i].idx = i;
-+	}
-+
-+	/* init CQE for SMC-Rv2 WR SEND */
-+	if (lnk->lgr->smc_version == SMC_V2) {
-+		smc_wr_tx_init_cqe(&lnk->wr_tx_v2_ib->cqe);
-+		lnk->wr_tx_v2_ib->wr.wr_cqe = &lnk->wr_tx_v2_ib->cqe;
-+		lnk->wr_tx_v2_ib->idx = lnk->wr_tx_cnt;
-+	}
-+}
-diff --git a/net/smc/smc_wr.h b/net/smc/smc_wr.h
-index aa4533af9122..295575fb060a 100644
---- a/net/smc/smc_wr.h
-+++ b/net/smc/smc_wr.h
-@@ -44,19 +44,6 @@ struct smc_wr_rx_handler {
- 	u8			type;
- };
- 
--/* Only used by RDMA write WRs.
-- * All other WRs (CDC/LLC) use smc_wr_tx_send handling WR_ID implicitly
-- */
--static inline long smc_wr_tx_get_next_wr_id(struct smc_link *link)
--{
--	return atomic_long_inc_return(&link->wr_tx_id);
--}
--
--static inline void smc_wr_tx_set_wr_id(atomic_long_t *wr_tx_id, long val)
--{
--	atomic_long_set(wr_tx_id, val);
--}
--
- static inline bool smc_wr_tx_link_hold(struct smc_link *link)
- {
- 	if (!smc_link_sendable(link))
-@@ -70,9 +57,10 @@ static inline void smc_wr_tx_link_put(struct smc_link *link)
- 	percpu_ref_put(&link->wr_tx_refs);
- }
- 
--static inline void smc_wr_drain_cq(struct smc_link *lnk)
-+static inline void smc_wr_drain_rq(struct smc_link *lnk)
- {
--	wait_event(lnk->wr_rx_empty_wait, lnk->wr_rx_id_compl == lnk->wr_rx_id);
-+	if (lnk->qp_attr.cur_qp_state != IB_QPS_RESET)
-+		ib_drain_rq(lnk->roce_qp);
- }
- 
- static inline void smc_wr_wakeup_tx_wait(struct smc_link *lnk)
-@@ -86,18 +74,12 @@ static inline void smc_wr_wakeup_reg_wait(struct smc_link *lnk)
- }
- 
- /* post a new receive work request to fill a completed old work request entry */
--static inline int smc_wr_rx_post(struct smc_link *link)
-+static inline int smc_wr_rx_post(struct smc_link *link, struct ib_cqe *cqe)
- {
--	int rc;
--	u64 wr_id, temp_wr_id;
--	u32 index;
--
--	wr_id = ++link->wr_rx_id; /* tasklet context, thus not atomic */
--	temp_wr_id = wr_id;
--	index = do_div(temp_wr_id, link->wr_rx_cnt);
--	link->wr_rx_ibs[index].wr_id = wr_id;
--	rc = ib_post_recv(link->roce_qp, &link->wr_rx_ibs[index], NULL);
--	return rc;
-+	struct smc_ib_recv_wr *recv_wr;
-+
-+	recv_wr = container_of(cqe, struct smc_ib_recv_wr, cqe);
-+	return ib_post_recv(link->roce_qp, &recv_wr->wr, NULL);
- }
- 
- int smc_wr_create_link(struct smc_link *lnk);
-@@ -107,8 +89,6 @@ void smc_wr_free_link(struct smc_link *lnk);
- void smc_wr_free_link_mem(struct smc_link *lnk);
- void smc_wr_free_lgr_mem(struct smc_link_group *lgr);
- void smc_wr_remember_qp_attr(struct smc_link *lnk);
--void smc_wr_remove_dev(struct smc_ib_device *smcibdev);
--void smc_wr_add_dev(struct smc_ib_device *smcibdev);
- 
- int smc_wr_tx_get_free_slot(struct smc_link *link, smc_wr_tx_handler handler,
- 			    struct smc_wr_buf **wr_buf,
-@@ -126,12 +106,12 @@ int smc_wr_tx_v2_send(struct smc_link *link,
- 		      struct smc_wr_tx_pend_priv *priv, int len);
- int smc_wr_tx_send_wait(struct smc_link *link, struct smc_wr_tx_pend_priv *priv,
- 			unsigned long timeout);
--void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context);
- void smc_wr_tx_wait_no_pending_sends(struct smc_link *link);
- 
- int smc_wr_rx_register_handler(struct smc_wr_rx_handler *handler);
- int smc_wr_rx_post_init(struct smc_link *link);
--void smc_wr_rx_cq_handler(struct ib_cq *ib_cq, void *cq_context);
- int smc_wr_reg_send(struct smc_link *link, struct ib_mr *mr);
- 
-+void smc_wr_init_cqes(struct smc_link *lnk);
-+
- #endif /* SMC_WR_H */
--- 
-2.45.0
-
+> Fix these by moving the netdev_trylock calls from the work handlers
+> lower in the call stack, in the respective recovery functions, where
+> they are actually necessary.
+> 
+> Fixes: 8f7b00307bf1 ("net/mlx5e: Convert mlx5 netdevs to instance locking")
+> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en/ptp.c  | 14 -----
+>  .../mellanox/mlx5/core/en/reporter_rx.c       | 13 +++++
+>  .../mellanox/mlx5/core/en/reporter_tx.c       | 52 +++++++++++++++++--
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c | 40 --------------
+>  4 files changed, 61 insertions(+), 58 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> index 424f8a2728a3..74660e7fe674 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> @@ -457,22 +457,8 @@ static void mlx5e_ptpsq_unhealthy_work(struct work_struct *work)
+>  {
+>  	struct mlx5e_ptpsq *ptpsq =
+>  		container_of(work, struct mlx5e_ptpsq, report_unhealthy_work);
+> -	struct mlx5e_txqsq *sq = &ptpsq->txqsq;
+> -
+> -	/* Recovering the PTP SQ means re-enabling NAPI, which requires the
+> -	 * netdev instance lock. However, SQ closing has to wait for this work
+> -	 * task to finish while also holding the same lock. So either get the
+> -	 * lock or find that the SQ is no longer enabled and thus this work is
+> -	 * not relevant anymore.
+> -	 */
+> -	while (!netdev_trylock(sq->netdev)) {
+> -		if (!test_bit(MLX5E_SQ_STATE_ENABLED, &sq->state))
+> -			return;
+> -		msleep(20);
+> -	}
+>  
+>  	mlx5e_reporter_tx_ptpsq_unhealthy(ptpsq);
+> -	netdev_unlock(sq->netdev);
+>  }
+>  
+>  static int mlx5e_ptp_open_txqsq(struct mlx5e_ptp *c, u32 tisn,
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
+> index 0686fbdd5a05..6efb626b5506 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
+> @@ -1,6 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (c) 2019 Mellanox Technologies.
+>  
+> +#include <net/netdev_lock.h>
+> +
+>  #include "health.h"
+>  #include "params.h"
+>  #include "txrx.h"
+> @@ -177,6 +179,16 @@ static int mlx5e_rx_reporter_timeout_recover(void *ctx)
+>  	rq = ctx;
+>  	priv = rq->priv;
+>  
+> +	/* Acquire netdev instance lock to synchronize with channel close and
+> +	 * reopen flows. Either successfully obtain the lock, or detect that
+> +	 * channels are closing for another reason, making this work no longer
+> +	 * necessary.
+> +	 */
+> +	while (!netdev_trylock(rq->netdev)) {
+> +		if (!test_bit(MLX5E_STATE_CHANNELS_ACTIVE, &rq->priv->state))
+> +			return 0;
+> +		msleep(20);
+> +	}
+>  	mutex_lock(&priv->state_lock);
+>  
+>  	eq = rq->cq.mcq.eq;
+> @@ -186,6 +198,7 @@ static int mlx5e_rx_reporter_timeout_recover(void *ctx)
+>  		clear_bit(MLX5E_SQ_STATE_ENABLED, &rq->icosq->state);
+>  
+>  	mutex_unlock(&priv->state_lock);
+> +	netdev_unlock(rq->netdev);
+>  
+>  	return err;
+>  }
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
+> index 4adc1adf9897..60ba840e00fa 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
+> @@ -1,6 +1,8 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /* Copyright (c) 2019 Mellanox Technologies. */
+>  
+> +#include <net/netdev_lock.h>
+> +
+>  #include "health.h"
+>  #include "en/ptp.h"
+>  #include "en/devlink.h"
+> @@ -79,6 +81,18 @@ static int mlx5e_tx_reporter_err_cqe_recover(void *ctx)
+>  	if (!test_bit(MLX5E_SQ_STATE_RECOVERING, &sq->state))
+>  		return 0;
+>  
+> +	/* Recovering queues means re-enabling NAPI, which requires the netdev
+> +	 * instance lock. However, SQ closing flows have to wait for work tasks
+> +	 * to finish while also holding the netdev instance lock. So either get
+> +	 * the lock or find that the SQ is no longer enabled and thus this work
+> +	 * is not relevant anymore.
+> +	 */
+> +	while (!netdev_trylock(dev)) {
+> +		if (!test_bit(MLX5E_SQ_STATE_ENABLED, &sq->state))
+> +			return 0;
+> +		msleep(20);
+> +	}
+> +
+>  	err = mlx5_core_query_sq_state(mdev, sq->sqn, &state);
+>  	if (err) {
+>  		netdev_err(dev, "Failed to query SQ 0x%x state. err = %d\n",
+> @@ -114,9 +128,11 @@ static int mlx5e_tx_reporter_err_cqe_recover(void *ctx)
+>  	else
+>  		mlx5e_trigger_napi_sched(sq->cq.napi);
+>  
+> +	netdev_unlock(dev);
+>  	return 0;
+>  out:
+>  	clear_bit(MLX5E_SQ_STATE_RECOVERING, &sq->state);
+> +	netdev_unlock(dev);
+>  	return err;
+>  }
+>  
+> @@ -137,10 +153,24 @@ static int mlx5e_tx_reporter_timeout_recover(void *ctx)
+>  	sq = to_ctx->sq;
+>  	eq = sq->cq.mcq.eq;
+>  	priv = sq->priv;
+> +
+> +	/* Recovering the TX queues implies re-enabling NAPI, which requires
+> +	 * the netdev instance lock.
+> +	 * However, channel closing flows have to wait for this work to finish
+> +	 * while holding the same lock. So either get the lock or find that
+> +	 * channels are being closed for other reason and this work is not
+> +	 * relevant anymore.
+> +	 */
+> +	while (!netdev_trylock(sq->netdev)) {
+> +		if (!test_bit(MLX5E_STATE_CHANNELS_ACTIVE, &priv->state))
+> +			return 0;
+> +		msleep(20);
+> +	}
+> +
+>  	err = mlx5e_health_channel_eq_recover(sq->netdev, eq, sq->cq.ch_stats);
+>  	if (!err) {
+>  		to_ctx->status = 0; /* this sq recovered */
+> -		return err;
+> +		goto out;
+>  	}
+>  
+>  	mutex_lock(&priv->state_lock);
+> @@ -148,7 +178,7 @@ static int mlx5e_tx_reporter_timeout_recover(void *ctx)
+>  	mutex_unlock(&priv->state_lock);
+>  	if (!err) {
+>  		to_ctx->status = 1; /* all channels recovered */
+> -		return err;
+> +		goto out;
+>  	}
+>  
+>  	to_ctx->status = err;
+> @@ -156,7 +186,8 @@ static int mlx5e_tx_reporter_timeout_recover(void *ctx)
+>  	netdev_err(priv->netdev,
+>  		   "mlx5e_safe_reopen_channels failed recovering from a tx_timeout, err(%d).\n",
+>  		   err);
+> -
+> +out:
+> +	netdev_unlock(sq->netdev);
+>  	return err;
+>  }
+>  
+> @@ -173,10 +204,22 @@ static int mlx5e_tx_reporter_ptpsq_unhealthy_recover(void *ctx)
+>  		return 0;
+>  
+>  	priv = ptpsq->txqsq.priv;
+> +	netdev = priv->netdev;
+> +
+> +	/* Recovering the PTP SQ means re-enabling NAPI, which requires the
+> +	 * netdev instance lock. However, SQ closing has to wait for this work
+> +	 * task to finish while also holding the same lock. So either get the
+> +	 * lock or find that the SQ is no longer enabled and thus this work is
+> +	 * not relevant anymore.
+> +	 */
+> +	while (!netdev_trylock(netdev)) {
+> +		if (!test_bit(MLX5E_SQ_STATE_ENABLED, &ptpsq->txqsq.state))
+> +			return 0;
+> +		msleep(20);
+> +	}
+>  
+>  	mutex_lock(&priv->state_lock);
+>  	chs = &priv->channels;
+> -	netdev = priv->netdev;
+>  
+>  	carrier_ok = netif_carrier_ok(netdev);
+>  	netif_carrier_off(netdev);
+> @@ -193,6 +236,7 @@ static int mlx5e_tx_reporter_ptpsq_unhealthy_recover(void *ctx)
+>  		netif_carrier_on(netdev);
+>  
+>  	mutex_unlock(&priv->state_lock);
+> +	netdev_unlock(netdev);
+>  
+>  	return err;
+>  }
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 4b8084420816..73f4805feac7 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -631,19 +631,7 @@ static void mlx5e_rq_timeout_work(struct work_struct *timeout_work)
+>  					   struct mlx5e_rq,
+>  					   rx_timeout_work);
+>  
+> -	/* Acquire netdev instance lock to synchronize with channel close and
+> -	 * reopen flows. Either successfully obtain the lock, or detect that
+> -	 * channels are closing for another reason, making this work no longer
+> -	 * necessary.
+> -	 */
+> -	while (!netdev_trylock(rq->netdev)) {
+> -		if (!test_bit(MLX5E_STATE_CHANNELS_ACTIVE, &rq->priv->state))
+> -			return;
+> -		msleep(20);
+> -	}
+> -
+>  	mlx5e_reporter_rx_timeout(rq);
+> -	netdev_unlock(rq->netdev);
+>  }
+>  
+>  static int mlx5e_alloc_mpwqe_rq_drop_page(struct mlx5e_rq *rq)
+> @@ -1952,20 +1940,7 @@ void mlx5e_tx_err_cqe_work(struct work_struct *recover_work)
+>  	struct mlx5e_txqsq *sq = container_of(recover_work, struct mlx5e_txqsq,
+>  					      recover_work);
+>  
+> -	/* Recovering queues means re-enabling NAPI, which requires the netdev
+> -	 * instance lock. However, SQ closing flows have to wait for work tasks
+> -	 * to finish while also holding the netdev instance lock. So either get
+> -	 * the lock or find that the SQ is no longer enabled and thus this work
+> -	 * is not relevant anymore.
+> -	 */
+> -	while (!netdev_trylock(sq->netdev)) {
+> -		if (!test_bit(MLX5E_SQ_STATE_ENABLED, &sq->state))
+> -			return;
+> -		msleep(20);
+> -	}
+> -
+>  	mlx5e_reporter_tx_err_cqe(sq);
+> -	netdev_unlock(sq->netdev);
+>  }
+>  
+>  static struct dim_cq_moder mlx5e_get_def_tx_moderation(u8 cq_period_mode)
+> @@ -5105,19 +5080,6 @@ static void mlx5e_tx_timeout_work(struct work_struct *work)
+>  	struct net_device *netdev = priv->netdev;
+>  	int i;
+>  
+> -	/* Recovering the TX queues implies re-enabling NAPI, which requires
+> -	 * the netdev instance lock.
+> -	 * However, channel closing flows have to wait for this work to finish
+> -	 * while holding the same lock. So either get the lock or find that
+> -	 * channels are being closed for other reason and this work is not
+> -	 * relevant anymore.
+> -	 */
+> -	while (!netdev_trylock(netdev)) {
+> -		if (!test_bit(MLX5E_STATE_CHANNELS_ACTIVE, &priv->state))
+> -			return;
+> -		msleep(20);
+> -	}
+> -
+>  	for (i = 0; i < netdev->real_num_tx_queues; i++) {
+>  		struct netdev_queue *dev_queue =
+>  			netdev_get_tx_queue(netdev, i);
+> @@ -5130,8 +5092,6 @@ static void mlx5e_tx_timeout_work(struct work_struct *work)
+>  		/* break if tried to reopened channels */
+>  			break;
+>  	}
+> -
+> -	netdev_unlock(netdev);
+>  }
+>  
+>  static void mlx5e_tx_timeout(struct net_device *dev, unsigned int txqueue)
 
