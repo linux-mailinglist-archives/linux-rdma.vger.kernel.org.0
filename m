@@ -1,186 +1,152 @@
-Return-Path: <linux-rdma+bounces-17545-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17546-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OBNqHaSmqWnwBgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17545-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 16:52:04 +0100
+	id QDLEBcamqWnwBgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17546-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 16:52:38 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE55214E04
-	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 16:52:03 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41464214E15
+	for <lists+linux-rdma@lfdr.de>; Thu, 05 Mar 2026 16:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A884A321F983
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 15:42:37 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A9CB530D642A
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2026 15:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2634C3CB2FD;
-	Thu,  5 Mar 2026 15:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352F336DA09;
+	Thu,  5 Mar 2026 15:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eTTByaA5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hAB3pCoz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAD41F7916
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 15:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792C73CB2E5
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Mar 2026 15:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772725296; cv=none; b=e+Z9610LKUuLd2GTvq7Jy6IWP3DLKjGalqZnHdP6qoaM6QSMrTd7lQInY1MirApNj2/mbv0EZpFgtq7aUpVasVjAV7J2ppl/xybyVbC+91bE66GL5hP15ZBqD5yHd082lulRgFhzuFIGp9HlDFGlk8jvZ6XzkVGZgGXYVXmNlUs=
+	t=1772725394; cv=none; b=F/YPpTfq0sW7hTsdkxY2xLm5ZFiiC6dP8XKkVMM29mQ4pzCjZsTX2aKHXBV9YyFaS4rGtSVGeFTRt2C6RTFGIZvGCpWCLzE7qlndDIGmNrLjdYVEGjG384segzVuNyvStnmpB5MjFQMD7UidgFaTK+GfEZeUTTGGOzPWdLpzMOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772725296; c=relaxed/simple;
-	bh=vpLfmCPr4vV5hJ9vXXb17AbwJxLpTamw7A8wLj5+FOk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gvBl19qO3BRL3fN6zwXjrqGVyZJb28UnFai8LFO7vp2lxKDpTgkxR2wDAJEdESRfOY3AgwpV6NuWpjtoR+fE/FF3UtAtM1ni7Wn8Ep3sNv2OIV1fRWRbwua2qiDOh0QpZoQXVgfFyUii785vNUVrcBdatv3cg2R+j3kWdAJSiCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eTTByaA5; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-439b611274bso3105566f8f.3
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 07:41:34 -0800 (PST)
+	s=arc-20240116; t=1772725394; c=relaxed/simple;
+	bh=wZwLapQXxG7D+Qlav1XZFe2kQjdkfUMBUlFhr2GSoR8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=haeODo3KMmv8gk3woa4w76PthbistlPeLQkBwwypcXGIc8ob0b+QlxZNczmunmxWSGdphXY7UUUvyA7F5zaOyr9K1clk1n1kA438IkqXHKMiItoEREcaitZcErWSY44AN0qlkZthZts+mjb0cUJRonz5eJspdnyBh+SHFWNSqA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hAB3pCoz; arc=none smtp.client-ip=74.125.82.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-2be1c918173so6771941eec.1
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Mar 2026 07:43:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1772725293; x=1773330093; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=65+53gDS8WKuE3o7Ewu7Tx/zFBhi8RAv5CZRnhyRFgA=;
-        b=eTTByaA5VgoLWw4E3zpmPJmblrtcmQI5dZAa717nBlOMix2iBZcFOF6yDlnLEV70KY
-         jD1PteHhAMM1k5ZmMMw82YQTdTGRTgkcrsrlvhShwcfncJlDjkVP9unbj7YEw8RFBIwe
-         f5abZCPW1EEZJIUdK+A4pASyW+gA3+YvhHy9YNFgttVykHwqKdjlWnoy9E2Fdrxn0fJb
-         Z6iH0XvfafXsvIul9wSsS5h4Rl/lYCWddoQqzEI1awSVr8nwmgNRlKhpF0WtKrjOClzk
-         WUhZSyP/tuikyh8RGgeq1EEcdqpRJmUl3dAOOcPK8rU7fJXi2/PPvNsqQyH1bAKYz4vb
-         eqzA==
+        d=gmail.com; s=20230601; t=1772725391; x=1773330191; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9VHdXwqWfI2lXOxROY4OA5+qg4q5UeIXxvdk5YcxjXU=;
+        b=hAB3pCozekmvwYsigwsTkjeZQNv56bN7N0oC9Jo1oFHK+SIbx8uN8aRAimE6TWR0p9
+         QVP3yze9c/zWkcqPcgBo5fc6BGLkKrFcyqRgMZAMx2YXbWRetPeNXnyRHq9fv+VgeKp7
+         /P8VH02hP0Xu2dkOZehW9365tal2eyV2GIQU26EzqAaFI7YfDkKJdqJTTt/3lR3p1CaK
+         bLcrIlvTvaf+13RHASB2C0HabkFvvXhAKD9iioAmpI5gZru7U840QcGy5fcGTDjJLuhg
+         mHsyXK4e2ZBeX/GGHPY2z62wgsAp0+nLr8qdXT9xBW61h9zPuDW6bSifb4QgpleY5R0Y
+         brog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772725293; x=1773330093;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=65+53gDS8WKuE3o7Ewu7Tx/zFBhi8RAv5CZRnhyRFgA=;
-        b=r/YNNE8fhVW+eN2fahAJhKecki/Xc/wkeBFvG3UwcoMjCW/qHyGYiQeDcCyThwUKXe
-         xxiZVNi47CAE0+M5TLgaSg+FcDoJPuvmbfHmXHqtkdGgPyfLJBojQWgqGjWt5wUP9Dno
-         8RrZNNnJuL7Twt1Jz3GNm4ni+EeAienr+vDRjcjWjPyS0icBEz/wpRjggfvgNkE3xLjW
-         73t17aNalAhkkbIPTTMIF2pS+o6qH4xXaIRN94x+oKXHdll0NVj+5IfhtD81A/g3wHDM
-         ukE3c1mJ0hWOt4gI17Pze+v8AHuR4QvjONjJ/77NUZPfN9BERQnbF6WREfQlSJcXKCfC
-         rnbw==
-X-Forwarded-Encrypted: i=1; AJvYcCW5jSe0LJrdHrV/1Zoq+IikjYc5571F+6EtHsQGMGZh5gokJpKktYqcUaP4h6SHJ6G68jhtqUHNSiX3@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJMyuv5KlPz3tykDJE6TyuTr1itmFp21aW92hcISjlvMTmQgyX
-	u0njjP5WnnHSu96c1nAubTVEYkl9aIzG+/q/Ma7r3S3b1KrwnqVfY1VzScQrEFGYau4=
-X-Gm-Gg: ATEYQzyEcBOX3cFMONz9Q0zRP/hk+l/cEZbsdEeTZSifDEd8jI6DELyKNg9GdMqZK4n
-	xw2r9QdXLdVodHiT/PnWOONLeRMIX6AffgrTbWNPycbnZqRkVeQHw4vUhfLKNUpMh+WI5J0BO64
-	sFL3ZbiG6MviZdlgkpfHbE33x8j/tuRBoyJV7Nh3AUtucp8w6gZz+2TttKmGCrlyimfZP5hmn6N
-	MQpNVJh4CyPhj8fvH3oCYgXVWcBm4vUeiMdPzcuPzzhPQjBo6WqsQIaeMLPPrJDjAfDGPQgnhUu
-	4pD3HW3cFC9CjuVY2fJHD4oRrkJZeTL2ZvW/N/YCHRVzSkxejLEp6xKmk82laz4ictuRj0B8zf1
-	qgyDSixiC9mOwnl+Rgumb2qT9t0VroDE0jDHtSCL75w2ZFgYobXuVfLk02I5+e06cfVfQLvCnQO
-	WyRKKyz8p1H67euAx3oXPbKGAG4NoW5wcSj1jBlvYwqIDC9Ek=
-X-Received: by 2002:a05:6000:4383:b0:439:c279:32df with SMTP id ffacd0b85a97d-439c7fd32d1mr12326328f8f.35.1772725292628;
-        Thu, 05 Mar 2026 07:41:32 -0800 (PST)
-Received: from localhost.localdomain ([2a00:6d43:105:c401:e307:1a37:2e76:ce91])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439b8807a4esm31253393f8f.4.2026.03.05.07.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2026 07:41:32 -0800 (PST)
-From: Marco Crivellari <marco.crivellari@suse.com>
-To: linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Michal Hocko <mhocko@suse.com>,
-	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH] RDMA/rtrs: add WQ_PERCPU to alloc_workqueue users
-Date: Thu,  5 Mar 2026 16:41:17 +0100
-Message-ID: <20260305154117.326472-1-marco.crivellari@suse.com>
-X-Mailer: git-send-email 2.52.0
+        d=1e100.net; s=20230601; t=1772725391; x=1773330191;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9VHdXwqWfI2lXOxROY4OA5+qg4q5UeIXxvdk5YcxjXU=;
+        b=VJADWrw9er+mRLuyYzPhmsJltlb344l0sey2Z5VNSM4b1Tr1hGm2rg79Xcvm9gvJ2h
+         Y+PxgSJIogQiAsGDxsW/kshUqfO31zyxINoMSj3reOnZl7bE5DDUm4xTHq2NOTEzTJzm
+         I4TI9HMEzOAqcg7KiCn+6EPz/xavyCWwxH8XtINvv+TEw5yV6Z/8TAFlfbPdOCgOb0m2
+         1igjxIfzuc+M5HrS34hf01iEoFDgrzYJM5zsHAHWJWzvw5WmH2k6aNB3bMJfO/l/UaoN
+         9jywqF/+gW4JnWxwKLBMcThodkOo3F9hBz8i8h1xJTSdkRcfbLxiSc4Zvlo53bm2gude
+         ydiA==
+X-Forwarded-Encrypted: i=1; AJvYcCVAiNN7vWfuxG0JAo6Gg2VBTlUqgvgYUQb8MMqlbPKpLrQ9BKaSzFaJ4iEPaTepxrfHvDvWxw4fdySt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6FR9BYWoX/0qmwvaH/faFqnU4d9b/ZdszRxPN0j55NEtYhKsu
+	oK0p0f9DbYM1QqOj9kR9gWt5B/lAh4uXUtq8Xs+CxTUPro2DtnGy8Fjn
+X-Gm-Gg: ATEYQzwN/ub4Sqfg+g4nB/LvWlCa5xQAxlJXqGrrBaTMG1vBvRgbka4BwtSvt2P+/be
+	durXnBCJhQ48IOz/jBOCyZqlSpTcxDsdcigsJc5kjy0xq1fV8/5GwNwlvkNg7LP90ubJDZdQpE6
+	PKu+Bh/92ibVAaboTmazNtKRW8gNR/WUMeZX9X8/arYj8bq1NrzedjDswmHN9EoN2lazP5MjcL4
+	NwQoCEfcaF8kt8V+WfZFEjGcTJyqt6uIeq2V+X+3AuJzNT4vGdzexxOFDIdZSvJWF/XeMivUl5f
+	fnkDkP8MMVEwSf+nQbFnJkPRfgTqlJcp8hoIkyUTs5shAYLZVy1HbDjCgitWrqqp9SdN7mOXWrL
+	PpoTa9O/Kz2pzdyeb1MpPKKai3VqUA5yP4cfNUsswzw1ZNmTk7tEfUhQnlJmQUsHd//BeWZTVjb
+	6AMT1Q0/6lgPipMQQOHnLhFU9AUDGODGNWSRSCzzEPUFkrUT6eSbh9ZPwS2Q6YNI6X7uv//4k=
+X-Received: by 2002:a05:7300:f18e:b0:2be:1dc7:99ae with SMTP id 5a478bee46e88-2be30fbcdbdmr2671438eec.6.1772725391326;
+        Thu, 05 Mar 2026 07:43:11 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21d6::12ef? ([2620:10d:c090:400::5:3cc2])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2be2f5f1f4dsm3556315eec.25.2026.03.05.07.43.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Mar 2026 07:43:10 -0800 (PST)
+Message-ID: <43433a0f-f063-4b12-ad3a-16bd6aa9cc31@gmail.com>
+Date: Thu, 5 Mar 2026 07:43:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0DE55214E04
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next V4 5/5] eth: mlx5: Move pause storm errors to pause
+ stats
+To: Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org
+Cc: alexanderduyck@fb.com, alok.a.tiwari@oracle.com, andrew+netdev@lunn.ch,
+ andrew@lunn.ch, davem@davemloft.net, dg573847474@gmail.com,
+ donald.hunter@gmail.com, edumazet@google.com, gal@nvidia.com,
+ horms@kernel.org, idosch@nvidia.com, jacob.e.keller@intel.com,
+ kernel-team@meta.com, kory.maincent@bootlin.com, kuba@kernel.org,
+ lee@trager.us, leon@kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux@armlinux.org.uk, mbloch@nvidia.com,
+ mike.marciniszyn@gmail.com, o.rempel@pengutronix.de, pabeni@redhat.com,
+ saeedm@nvidia.com, tariqt@nvidia.com, vadim.fedorenko@linux.dev
+References: <20260302230149.1580195-1-mohsin.bashr@gmail.com>
+ <20260302230149.1580195-6-mohsin.bashr@gmail.com>
+ <d02ac6b1-7322-49d9-881d-126b3a8d1d17@gmail.com>
+Content-Language: en-US
+From: Mohsin Bashir <mohsin.bashr@gmail.com>
+In-Reply-To: <d02ac6b1-7322-49d9-881d-126b3a8d1d17@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 41464214E15
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linutronix.de,suse.com,ionos.com,ziepe.ca];
-	TAGGED_FROM(0.00)[bounces-17545-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17546-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[fb.com,oracle.com,lunn.ch,davemloft.net,gmail.com,google.com,nvidia.com,kernel.org,intel.com,meta.com,bootlin.com,trager.us,vger.kernel.org,armlinux.org.uk,pengutronix.de,redhat.com,linux.dev];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[marco.crivellari@suse.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[mohsinbashr@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-0.998];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email,suse.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-This continues the effort to refactor workqueue APIs, which began with
-the introduction of new workqueues and a new alloc_workqueue flag in:
 
-   commit 128ea9f6ccfb ("workqueue: Add system_percpu_wq and system_dfl_wq")
-   commit 930c2ea566af ("workqueue: Add new WQ_PERCPU flag")
 
-The refactoring is going to alter the default behavior of
-alloc_workqueue() to be unbound by default.
+On 3/5/26 6:12 AM, Tariq Toukan wrote:
+> If we return here, tx_pause_storm_events remains unset, while rx/ 
+> tx_pause_frames are already assigned.
+> Is that acceptable? I'm probably fine with it.
 
-With the introduction of the WQ_PERCPU flag (equivalent to !WQ_UNBOUND),
-any alloc_workqueue() caller that doesn’t explicitly specify WQ_UNBOUND
-must now use WQ_PERCPU. For more details see the Link tag below.
-
-In order to keep alloc_workqueue() behavior identical, explicitly request
-WQ_PERCPU.
-
-Link: https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 3362362f9e2e..e351552733df 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -3219,7 +3219,7 @@ static int __init rtrs_client_init(void)
- 		pr_err("Failed to create rtrs-client dev class\n");
- 		return ret;
- 	}
--	rtrs_wq = alloc_workqueue("rtrs_client_wq", 0, 0);
-+	rtrs_wq = alloc_workqueue("rtrs_client_wq", WQ_PERCPU, 0);
- 	if (!rtrs_wq) {
- 		class_unregister(&rtrs_clt_dev_class);
- 		return -ENOMEM;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 0140bfaed721..6482ad859bd1 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -2385,7 +2385,7 @@ static int __init rtrs_server_init(void)
- 	if (err)
- 		goto out_err;
- 
--	rtrs_wq = alloc_workqueue("rtrs_server_wq", 0, 0);
-+	rtrs_wq = alloc_workqueue("rtrs_server_wq", WQ_PERCPU, 0);
- 	if (!rtrs_wq) {
- 		err = -ENOMEM;
- 		goto out_dev_class;
--- 
-2.52.0
-
+Right. Since we are aggregating across all prio and if we fail 
+mid-flight, IMO, we should not report partial sum which maybe inaccurate.
 
