@@ -1,162 +1,137 @@
-Return-Path: <linux-rdma+bounces-17618-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17619-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cI4cOlcsq2n6aQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17618-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 20:34:47 +0100
+	id +EgiOPwyq2n2agEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17619-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 21:03:08 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFE7227152
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 20:34:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30722275C2
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 21:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2C60430804E6
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 19:34:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2D28530417BF
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 20:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE85536D4F9;
-	Fri,  6 Mar 2026 19:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A69730CD95;
+	Fri,  6 Mar 2026 20:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="lAQtG2f1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AeWz6ga2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3033936D4FA
-	for <linux-rdma@vger.kernel.org>; Fri,  6 Mar 2026 19:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F6C23EA94;
+	Fri,  6 Mar 2026 20:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772825641; cv=none; b=XJRMi8O2DRFwJ5gSY1esZZa+fFyi0qxAItWbLr10FPJLXrlPj+Fti4zqSnllkPSPzOij1gnY8Bc7g3/YZhqs9tg7S4sllQJV6r1HJx1EHln2Zh7oEnPOKHYhMlE2OawTbRmXnR5ucfhgCwP0d4625QUxwgm9wIKMuUUmek0sk6k=
+	t=1772827384; cv=none; b=nt47D50skpBFmWcKrnjfPxi5tpY+bEouN6FYQO4xeHo74RuGEqn86OlHoiOGyYCpq0HCur1+LW+UPzYgb0Ej9evDt8bp1Z9m/p8Gn9OclbJgH2wmH+0OXxS+T/2BzqPf94wQqUhauGcYKlzfEqs7+xj051clrTL5bNAOboDP8qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772825641; c=relaxed/simple;
-	bh=2Ri7B64hX2crhvJ+3cRKRgEfLRGSSXKNETH8TmvfS+Q=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B1pgZ7PGFFAWRyDzgHblms0cUgJcbd1oxZfh7vbQD3AyJqlljIlnfw3I6JxJVB3u1x13YKSspIlaBFyBHsK4covSbKW7Qd3NTVeSJspsWE/Lf3EPGgqIuK7iSjvQ2TD5N8KIdczvzSDUmHXkJ2MELW57xep+gsGlCDvnQsxkfcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=lAQtG2f1; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 626IwWUu1880896
-	for <linux-rdma@vger.kernel.org>; Fri, 6 Mar 2026 11:33:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=Fsto2bYwR+ti6PcdpnLAZ8WgpkSbDqRu1vLh7+qCvp0=; b=lAQtG2f1cYKB
-	CMenZmgF1mN6BzQuvQNceqCAksQNcRbOIMYgHvJBnXCyNz/9BFVibDWgt9YqTeI4
-	Rzvf15wDDn4BYjb+DwZR3LRZ3WSSgGAmsU92JQ93NEPDKcombFHYkrlPbkghDKLY
-	s/MAxLfwuew2hMjapyMhU/j7my/sxMoVXIvnIw+AuGI6UqV+LPyjH1q49fNvhatr
-	museB50kmxTJg8NoSg8y/xl5ZncT4grWff7iyznukaV+WzD9n7ohx00Xror+Ddva
-	G6NakstPGPlhQhdqEGvPK0vUWPYPFAHWjzDT6l+XkLDHbZG6RblSS9kCNqfeYZnM
-	9MkqIvK6uA==
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4cqrh7fyuk-6
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-rdma@vger.kernel.org>; Fri, 06 Mar 2026 11:33:59 -0800 (PST)
-Received: from twshared10186.03.snb1.facebook.com (2620:10d:c0a8:1b::2d) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Fri, 6 Mar 2026 19:33:55 +0000
-Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
-	id AEFC812CCCB13; Fri,  6 Mar 2026 11:27:53 -0800 (PST)
-From: Zhiping Zhang <zhipingz@meta.com>
-To: Keith Busch <kbusch@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon
- Romanovsky <leon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, <linux-rdma@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, Yochai Cohen
-	<yochai@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>, Zhiping Zhang
-	<zhipingz@meta.com>
-CC: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [RFC 1/2] Vfio: add callback to get tph info for dmabuf
-Date: Fri, 6 Mar 2026 11:27:49 -0800
-Message-ID: <20260306192753.3245649-1-zhipingz@meta.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <aaDrp7teQoutU79s@kbusch-mbp>
-References: <aaDrp7teQoutU79s@kbusch-mbp>
+	s=arc-20240116; t=1772827384; c=relaxed/simple;
+	bh=qahHLobAMT9yxV+pCSgqBlfqphTkEHwnL3IOJgHvXQ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CcKBCBN4tiBr5dRO7ppYsYz/AEjtzK4Lvw5WWWnQ/80CKcB4poMLYL3dBYmtX0qY1rNeEaCCcO/Ns02yszbIcr4VWUivfKS7GJyzTB8vQf3ys3Dp5NytGukUwfkWvXKsCms5OcAYBmLEVUalGMhN8Hwz74hs2Uh9wo3oKdwqyJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AeWz6ga2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB3EDC4CEF7;
+	Fri,  6 Mar 2026 20:03:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772827383;
+	bh=qahHLobAMT9yxV+pCSgqBlfqphTkEHwnL3IOJgHvXQ4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AeWz6ga2R98oPoiuLJ29E083Irjhy3TASp+fJgLx/43WSTUT+owB5XPYeuMZWBROa
+	 iYeyeeel/OlvUpKCVaMufR61f2Kdpz0MG9MO1dUQyrT8cbrSV4sqc23YxmfhljsGby
+	 apFdPVzfELh7631LATPMkz9rgtYNYlNbtboZnDl/sSvHSA8EtpZxzeLXQSNKtXhPdt
+	 XkZWLbs5FtFo7ZG1xL980/AafTsPnxLotsU1EGhAbwKBcc8Z10bESPIcr4olVZ2AH0
+	 JROXIqG0lZr0ukXQVk50ZN3EIfCfoFRRd7EIsFC2ncyc0vDKP0bUn9t3vX+kFLEurK
+	 Ysq9MxwM9FFBA==
+Date: Fri, 6 Mar 2026 12:03:01 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Donald Hunter
+ <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
+ <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, Gal Pressman
+ <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Shay Drory
+ <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Moshe Shemesh
+ <moshe@nvidia.com>
+Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource
+ support
+Message-ID: <20260306120301.0ebe1ab2@kernel.org>
+In-Reply-To: <ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
+References: <20260226221916.1800227-1-tariqt@nvidia.com>
+	<20260302192640.49af074f@kernel.org>
+	<pmxkihhtsskkwsvdia4z2ss4wxpfc4a4kqxkjv5wk3mwdmpzii@6go7pizk2nst>
+	<jssifysprwuafkinc3dguspngxmplrngqxvotp76vhvu4e5lp6@e7mdrjqc5rme>
+	<20260304101522.09da1f58@kernel.org>
+	<np44uzfn6jea56uht4yq4te5clapgj7pk6ygyvkl22wxumwnvt@nrpvzjqzxenq>
+	<20260305063729.7e40775d@kernel.org>
+	<ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8kF4Kn6FqTx2eTQFpsWRMrkmxvygIsEt
-X-Authority-Analysis: v=2.4 cv=LOlrgZW9 c=1 sm=1 tr=0 ts=69ab2c27 cx=c_pps
- a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
- a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22 a=7x6HtfJdh03M6CCDgxCd:22
- a=8elwO82fXORLTBIkMd32:22 a=l2nmrgH_Uvo59uWC4d4A:9
-X-Proofpoint-GUID: 8kF4Kn6FqTx2eTQFpsWRMrkmxvygIsEt
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA2MDE4NSBTYWx0ZWRfXxUY8P8nD6GEZ
- /Vf5tdyEP6h9yVYytp998E7JEiC5dumUBWjZXulADN9xgycsya1NZLt0SzvSUM7asKzBoUkdj4+
- LOCQTv8/OwEfYuHDSbJi5n0if9r8g55qLaBsLzs+43Y40B61fCt2EUJpLuvkxj19OhPRlrdp2Yv
- kIi8F3KyB5wS4tiqR/0fobWcVeEY8Xy9kI+T37w9TTLW0xWlj7FOMvIYB9kmV1UAMDRRsaGq2/O
- 5xB6o0H+QxoVlzGd8z2uRRZboHWwJ0oKxUQcBi4rYZ5oifPIEWbSEA6GyJf1e8gm2kmSFSEkKTk
- WXKBeHhn/h0yzWRq74iiSRGtI2Tg752F4jsNRbMtnL+hzA1JfWZRhhy87oZcDRdh+BtwvbogIJN
- JAYW+p142BXvnxaRA8EwUhZfSEaIWHznIqdIj2z4TSWeSKG/fzOTgBaIBXZPZtBVWVXwI3dmdnT
- huGYIKpJ0YWvuP0udIA==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-06_05,2026-03-06_02,2025-10-01_01
-X-Rspamd-Queue-Id: 6EFE7227152
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: A30722275C2
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17619-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17618-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[meta.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhipingz@meta.com,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.989];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.987];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,meta.com:dkim,meta.com:mid];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Thu, 26 Feb 2026 17:56:07 -0700, Keith Busch wrote:
+On Fri, 6 Mar 2026 13:13:26 +0100 Jiri Pirko wrote:
+> Thu, Mar 05, 2026 at 03:37:29PM +0100, kuba@kernel.org wrote:
+> >On Thu, 5 Mar 2026 08:56:42 +0100 Jiri Pirko wrote:  
+> >> Or, alternatively, we can have per-object dumps as we have for all
+> >> objects and command right now and leave things simple and
+> >> straightforward? I mean, I don't really see a benefit of a single dump
+> >> for more objects :/  
+> >
+> >What do you mean by straightforward, exactly?
+> >
+> >User will most likely want to see all resources of a device in a single
+> >dump / command.  
+> 
+> Hmm. We actually already have this for region and health reporter dumps.
+> Only for params we have that separate.
+> So let's do it for resource too.
 
-> > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> > index ac2329f24141..bff2f5f7e38d 100644
-> > --- a/include/uapi/linux/vfio.h
-> > +++ b/include/uapi/linux/vfio.h
-> > @@ -1501,6 +1501,8 @@ struct vfio_region_dma_range {
-> > struct vfio_device_feature_dma_buf {
-> >		__u32	region_index;
-> >		__u32	open_flags;
-> > +		__u16   steering_tag;
-> > +		__u8    ph;
-> >		__u32   flags;
-> >		__u32   nr_ranges;
-> >		struct vfio_region_dma_range dma_ranges[] __counted_by(nr_ranges);
->
-> I don't think you can add fields to a uapi struct like this since it
-> breaks comptibility. Instead, I think you may be able to carve it out o=
-f
-> the "flags" field since it's currently reserved to be 0, so I guess it'=
-s
-> potentially available to define a new feature.
+That's not a good argument, as I said in my first response to the
+thread:
 
-Sure, thanks for the suggestion, yes I can also use the 'flags' field
-for this.
+  I worry we are mechanically following the design of other commands.
 
-Zhiping
-
-
+https://lore.kernel.org/all/20260302192640.49af074f@kernel.org/
 
