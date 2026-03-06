@@ -1,208 +1,201 @@
-Return-Path: <linux-rdma+bounces-17582-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17583-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YOudDBajqml6UwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17582-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 10:49:10 +0100
+	id Pl+fGmOuqmmLVQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17583-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 11:37:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4F8921E360
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 10:49:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD66221EE0D
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 11:37:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6510D30143D5
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 09:48:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EC405301A90A
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 10:33:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09223161A1;
-	Fri,  6 Mar 2026 09:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6D82874FB;
+	Fri,  6 Mar 2026 10:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c6Ts951f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nUnODltq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B88F2405E7
-	for <linux-rdma@vger.kernel.org>; Fri,  6 Mar 2026 09:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14082494FF
+	for <linux-rdma@vger.kernel.org>; Fri,  6 Mar 2026 10:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772790508; cv=none; b=Wb9x9DLTzVl9HcDIBp2yCQ5tXy62HzJoZ5JuCYcUxqx9w7Bb+dMfXL1N+x02TX7ihSP/ni6+3j8hhF3MZ6xbHzQSDm36dxGGJB3swIQw0hOFFguc8CYyAXn689Gv1nWxj76Ai60SgZRBv+QustqdjTdIXONolAQQPgKgZB+IA9M=
+	t=1772793196; cv=none; b=Z0rP2zyWHX4ucIcdONHZnbox0HiuP41cm3G3oIseH16y38N5RWXUT7oxyFOHE1IgIaPbPnIwXiVbehmzFja2m1Vf35YY6Nnn0dFVlBbzpHTF55Hpx1bLaGKhTbEIo6IMa/d/qXXdKH/LmyeBdH7JQf5YgPQ8sd7ZZL9xBtXeCNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772790508; c=relaxed/simple;
-	bh=X8QWYQ/DuwUBOjGJrUj3uL+TILqLlyY4xhadOSv6aX8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=SYxWsDov0ZANMRWvbRIorAYgoK4GnEP9KBzoSaNqtpVLjfdTIaDVy+36L44ie4OfiDdXLTH6BGxsm+/gPb0eSI8xaHO1wtThDnx68vpagNQb+S2DTDCr6Fvq1e8ljETRi5KpqtCHeKhskmu9rz+vNzQkLJ4z2rzhR0RmHUxFNes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c6Ts951f; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772790507; x=1804326507;
-  h=date:from:to:cc:subject:message-id;
-  bh=X8QWYQ/DuwUBOjGJrUj3uL+TILqLlyY4xhadOSv6aX8=;
-  b=c6Ts951fWW0ELEnSl4v1cQ/LLe1yg/a+DC8SUuy0zziita4rk8lvzZ7V
-   p8LD5XFgT6iwA/ewThjIRR6QooogEuJqTCHoHBeosyBOXSiscJjclpHD0
-   piIMfQhhQnxWqdDOu/5VzKlP0j9WVr2iYjV/JwSMvi7sY4/6BDPsLE2SF
-   bfNFKW0mXIOjvlWwBkSabXWVPUHv2F6VO165VfVLvMtFMIsfEh7QoYJ7g
-   tB7mDAMm0n5v77l1Q5GSyZaeQUAlVkyAm3v8oOtLU1PS67NrBb2/mlkoP
-   NXzsCJjtROMHU1SA8LbwS7SVpkCAo+PNXF4KuGbtfmhEI6n25frSZFovB
-   A==;
-X-CSE-ConnectionGUID: ughKKem8QkGJ3KHcx0oViQ==
-X-CSE-MsgGUID: X3IMHAuBS9qxx61wOcL3EA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11720"; a="73798264"
-X-IronPort-AV: E=Sophos;i="6.23,104,1770624000"; 
-   d="scan'208";a="73798264"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2026 01:48:26 -0800
-X-CSE-ConnectionGUID: KT43cwHiT2SGxzWM7RZ1Gw==
-X-CSE-MsgGUID: x0ZG5TfkQeKp842fmrGFaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,104,1770624000"; 
-   d="scan'208";a="223449214"
-Received: from lkp-server01.sh.intel.com (HELO 058beb05654c) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 06 Mar 2026 01:48:24 -0800
-Received: from kbuild by 058beb05654c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vyRnA-000000000fd-30Bf;
-	Fri, 06 Mar 2026 09:48:20 +0000
-Date: Fri, 06 Mar 2026 17:47:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: oe-kbuild-all@lists.linux.dev, Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org,
- Jason Gunthorpe <jgg@ziepe.ca>,
- Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [rdma:wip/jgg-for-next 18/19]
- drivers/infiniband/hw/bnxt_re/ib_verbs.c:3478:37: warning: variable 'cctx'
- set but not used
-Message-ID: <202603061700.LqCpNTpI-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1772793196; c=relaxed/simple;
+	bh=SHIko/MmFubMGiBXHMMBbPxNbS9V12LxaQpzaOqctRY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lkREbBgVu9wlfalWnwj1SJn/NN3atk6+FoBBYryndelN9CxscSHVAf825fmBOCmo+VoivBvFpFpQdIeNRXlrSrzSgV927i69zbxgAYVOs5d/cyL8KtCs6vAqTxc2N/6vNfH9We0SfzfaoTZvVC9r12yqajnS/SfCYD8W6u5xA74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nUnODltq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A79A2C4CEF7;
+	Fri,  6 Mar 2026 10:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772793196;
+	bh=SHIko/MmFubMGiBXHMMBbPxNbS9V12LxaQpzaOqctRY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nUnODltqfoLqHqMxgnCTP5Zlv86+in4QAeMF60Xg6MWJ3M1qEzUHqE82gOGpRiJOX
+	 xwV7AVfcai17eWdMo2zUMFmyCFheOTCrkqCauQWW+8znWaJNdMt5VMkf3hCSkfv1+I
+	 yj1zRWdwSDH/FPO5NayBXERQrPz2suZfkYUZu3HtwLWHnj3lY7icOPB067AzjGRrd+
+	 lTEWVTnP9BA4tQ49BvPVwOXGAH8opdwqsTUduiFASs+Q443bxNTHc+Va9X0DTZHYfR
+	 W58IDEtPvgkGuj5EB72FVXwaFKd2nykHwwCi8+tuIHMIlW5cxfQl0r9RZSjs0W0E5z
+	 +ocDjp0HBi9RQ==
+Date: Fri, 6 Mar 2026 10:33:12 +0000
+From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Huiwen He <hehuiwen@kylinos.cn>, 
+	Jerome Marchand <jmarchan@redhat.com>, Qing Wang <wangqing7171@gmail.com>, 
+	Shengming Hu <hu.shengming@zte.com.cn>, Linux-MM <linux-mm@kvack.org>, 
+	linux-rdma <linux-rdma@vger.kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Subject: Re: [GIT PULL] tracing: Fixes for 7.0
+Message-ID: <8f60e23e-dd52-45df-89e6-bcc256ad704d@lucifer.local>
+References: <20260305103941.11f1b27d@gandalf.local.home>
+ <CAHk-=wggaToeRYv6B5L9ob=wBdVW9_gFudYxH_WJDTuhyX_Ueg@mail.gmail.com>
+ <a8907468-d7e9-4727-af28-66d905093230@kernel.org>
+ <CAHk-=whW890h4m8r0iYwXEJK=MUJx9nLxuOduttRJNCLrMdz7A@mail.gmail.com>
+ <a21ea7c3-fbdb-4ac7-8be5-0173f54890c7@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: A4F8921E360
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a21ea7c3-fbdb-4ac7-8be5-0173f54890c7@kernel.org>
+X-Rspamd-Queue-Id: DD66221EE0D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17583-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[linux-foundation.org,goodmis.org,ziepe.ca,kernel.org,efficios.com,kylinos.cn,redhat.com,gmail.com,zte.com.cn,kvack.org,vger.kernel.org,oracle.com];
+	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_ALL(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17582-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,lists];
-	FROM_HAS_DN(0.00)[]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[14]
 X-Rspamd-Action: no action
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-head:   7f022cadde7e1fa6e5f7abac05e01bdcff5e19a3
-commit: 387f31e96d46cd6ba0cf6b2439c367440f60255f [18/19] RDMA/bnxt_re: Separate kernel and user CQ creation paths
-config: x86_64-rhel-9.4-ltp (https://download.01.org/0day-ci/archive/20260306/202603061700.LqCpNTpI-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260306/202603061700.LqCpNTpI-lkp@intel.com/reproduce)
+On Thu, Mar 05, 2026 at 07:59:14PM +0100, David Hildenbrand (Arm) wrote:
+> On 3/5/26 18:17, Linus Torvalds wrote:
+> > On Thu, 5 Mar 2026 at 09:00, David Hildenbrand (Arm) <david@kernel.org> wrote:
+> >>
+> >> QEMU traditionally sets MADV_DONTFORK on guest RAM. One reason is to
+> >> speed up fork(), because it doesn't need all the guest RAM in fork'ed
+> >> child processes.
+> >
+> > Yes, I think the MADV_DONTFORK thing makes sense on its own - more so
+> > than MADV_DOFORK does.
+> >
+> > Because it's a very valid thing for user space to do exactly for that
+> > "speed up fork()" case.
+> >
+> > It's similar to how we also export a MADV_WIPEONFORK - for a different
+> > use-case, where we don't want the copying behavior (typically because
+> > we want the child to re-create its own set of data: I thin the main
+> > reason tends to be for things like reseeding random number generation
+> > after fork etc).
+> >
+> > So it's just MADV_DOFORK I don't particularly like, because it had
+> > pre-existing kernel semantics (the VM_DONTCOPY bit predates the MADV_*
+> > bits by many many years).
+> >
+> > Not copying on fork is always safe. But copying something that the
+> > kernel has said "don't copy" just sounds *wrong*.
+> >
+> >>> But I get the feeling that maybe we should at least limit MADV_DOFORK
+> >>> only to the case where the *source* of the DONTFORK was the user, not
+> >>> some kernel mapping.
+> >>
+> >> ... that makes sense. Forbid toggling it on something that has
+> >> VM_SPECIAL set, maybe.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202603061700.LqCpNTpI-lkp@intel.com/
+Yes, I agree. It's odd that we explicitly gate on VM_IO there, it's unusual.
 
-All warnings (new ones prefixed by >>):
+>
+> CCing Lorenzo.
+>
+> >
+> > Yeah, I think VM_SPECIAL would be a better match than just checking
+> > VM_IO.  At least it would also catch things like that VM_DONTEXPAND,
+> > and PFN mappings.
 
-   drivers/infiniband/hw/bnxt_re/ib_verbs.c: In function 'bnxt_re_create_cq':
->> drivers/infiniband/hw/bnxt_re/ib_verbs.c:3478:37: warning: variable 'cctx' set but not used [-Wunused-but-set-variable]
-    3478 |         struct bnxt_qplib_chip_ctx *cctx;
-         |                                     ^~~~
+Some of the madvise() operations explicitly work with PFN mappings, but it
+really makes no sense to fiddle with them in this case.
+
+> >
+> > So just changing the existing VM_IO test to cover all the VM_SPECIAL
+> > bits would be a simple improvement.
+>
+> Ack.
 
 
-vim +/cctx +3478 drivers/infiniband/hw/bnxt_re/ib_verbs.c
+Feel free to add:
 
-  3468	
-  3469	int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
-  3470			      struct uverbs_attr_bundle *attrs)
-  3471	{
-  3472		struct bnxt_re_cq *cq = container_of(ibcq, struct bnxt_re_cq, ib_cq);
-  3473		struct bnxt_re_dev *rdev = to_bnxt_re_dev(ibcq->device, ibdev);
-  3474		struct ib_udata *udata = &attrs->driver_udata;
-  3475		struct bnxt_re_ucontext *uctx =
-  3476			rdma_udata_to_drv_context(udata, struct bnxt_re_ucontext, ib_uctx);
-  3477		struct bnxt_qplib_dev_attr *dev_attr = rdev->dev_attr;
-> 3478		struct bnxt_qplib_chip_ctx *cctx;
-  3479		int cqe = attr->cqe;
-  3480		int rc, entries;
-  3481		u32 active_cqs;
-  3482	
-  3483		if (udata)
-  3484			return bnxt_re_create_user_cq(ibcq, attr, attrs);
-  3485	
-  3486		if (attr->flags)
-  3487			return -EOPNOTSUPP;
-  3488	
-  3489		/* Validate CQ fields */
-  3490		if (cqe < 1 || cqe > dev_attr->max_cq_wqes) {
-  3491			ibdev_err(&rdev->ibdev, "Failed to create CQ -max exceeded");
-  3492			return -EINVAL;
-  3493		}
-  3494	
-  3495		cq->rdev = rdev;
-  3496		cctx = rdev->chip_ctx;
-  3497		cq->qplib_cq.cq_handle = (u64)(unsigned long)(&cq->qplib_cq);
-  3498	
-  3499		entries = bnxt_re_init_depth(cqe + 1, uctx);
-  3500		if (entries > dev_attr->max_cq_wqes + 1)
-  3501			entries = dev_attr->max_cq_wqes + 1;
-  3502	
-  3503		cq->max_cql = min_t(u32, entries, MAX_CQL_PER_POLL);
-  3504		cq->cql = kcalloc(cq->max_cql, sizeof(struct bnxt_qplib_cqe),
-  3505				  GFP_KERNEL);
-  3506		if (!cq->cql)
-  3507			return -ENOMEM;
-  3508	
-  3509		cq->qplib_cq.sg_info.pgsize = SZ_4K;
-  3510		cq->qplib_cq.sg_info.pgshft = __builtin_ctz(SZ_4K);
-  3511		cq->qplib_cq.dpi = &rdev->dpi_privileged;
-  3512		cq->qplib_cq.max_wqe = entries;
-  3513		cq->qplib_cq.coalescing = &rdev->cq_coalescing;
-  3514		cq->qplib_cq.nq = bnxt_re_get_nq(rdev);
-  3515		cq->qplib_cq.cnq_hw_ring_id = cq->qplib_cq.nq->ring_id;
-  3516	
-  3517		rc = bnxt_qplib_create_cq(&rdev->qplib_res, &cq->qplib_cq);
-  3518		if (rc) {
-  3519			ibdev_err(&rdev->ibdev, "Failed to create HW CQ");
-  3520			goto fail;
-  3521		}
-  3522	
-  3523		cq->ib_cq.cqe = entries;
-  3524		cq->cq_period = cq->qplib_cq.period;
-  3525		active_cqs = atomic_inc_return(&rdev->stats.res.cq_count);
-  3526		if (active_cqs > rdev->stats.res.cq_watermark)
-  3527			rdev->stats.res.cq_watermark = active_cqs;
-  3528		spin_lock_init(&cq->cq_lock);
-  3529	
-  3530		return 0;
-  3531	
-  3532	fail:
-  3533		kfree(cq->cql);
-  3534		return rc;
-  3535	}
-  3536	
+Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+To a patch that simply does something like:
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index c0370d9b4e23..dbb69400786d 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1389,7 +1389,7 @@ static int madvise_vma_behavior(struct madvise_behavior *madv_behavior)
+ 		new_flags |= VM_DONTCOPY;
+ 		break;
+ 	case MADV_DOFORK:
+-		if (new_flags & VM_IO)
++		if (new_flags & VM_SPECIAL)
+ 			return -EINVAL;
+ 		new_flags &= ~VM_DONTCOPY;
+ 		break;
+--
+2.53.0
+
+That makes me wonder about whether we want to permit VM_DONTFORK for
+MADV_DONTFORK, it's kinda a weird usecase but anyway this is the safer
+change for now as I think it's pretty obviously sane.
+
+>
+> >
+> > Maybe I should just do that and see if anybody even notices (and
+> > revert and re-think if somebody does)
+>
+> Agreed. We could think about letting it sit a bit in -next before moving
+> it to mainline.
+
+I would eat my hat, board a flying pig and note the sound of several trees
+falling when there's nobody around if anybody complained :)
+
+>
+> --
+> Cheers,
+>
+> David
+
+Cheers, Lorenzo
 
