@@ -1,279 +1,134 @@
-Return-Path: <linux-rdma+bounces-17623-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17624-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uCw+FKZEq2nJbgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17623-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 22:18:30 +0100
+	id EM5cLiRHq2lcbwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17624-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 22:29:08 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CCA227DCB
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 22:18:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14BBC227F05
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 22:29:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AD06F302FFCB
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 21:18:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6F929305C6DC
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 21:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE97632D7DE;
-	Fri,  6 Mar 2026 21:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA01333A708;
+	Fri,  6 Mar 2026 21:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Rlk1VTPV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xSXPhP4r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6AF1F4615;
-	Fri,  6 Mar 2026 21:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9232B2BEC3F
+	for <linux-rdma@vger.kernel.org>; Fri,  6 Mar 2026 21:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772831906; cv=none; b=KEUe/sAlZkxMKBofeVW+7wMlFzQiZfJk2+LeH+XsN6tiPJVKchzTBHn7392/CwGED5sJnIQ7kV7eG33xZvGDTDFcxzJPGY3pgVqa/tiv8XYDppUmSL2tSYBYf+ulLmg755ti5Etyy/vTP69o1zQXBfCY4YXJ90xSUiAQ3fby4Ns=
+	t=1772832545; cv=none; b=MUVGP7VMNNpkNbdYt/ULh413L9CsmXDOOcBLXhWahNrdf6HeSbAafqU76Iyt75Skbz3+EV0J2axCTeITCLQzy6Yb8RzAeFl7RAlGm7FoDm7/rTZzc5Sw4pX2kgJGIShPVs3OSM7oD45sp4yz5+IjutsgiSxYp+NvCVTNSyL0HxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772831906; c=relaxed/simple;
-	bh=3owFiLN0CaXTZhTIGLSz57j3KKPz1bvn2pjRi3dJtR4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jqTk6K+aFu+Vrp3O2GOKT7nzP/byc1VtDgxOQSYq78CwawTxjmuSL3Hh8Hg6UlUmhZtcQt81IDxsqUgxiYirHBRyKSpDhxrcjv9B9H/vhwTPxVNWysl8bBjKOxmDg79a0RateS21PIvSR8jd5gS54cZwKA+Im7qSumiyrnU3njE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Rlk1VTPV; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 7CBBC20B6F02; Fri,  6 Mar 2026 13:12:46 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CBBC20B6F02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1772831566;
-	bh=bF+bCk7Lg3fgVXMvUmbdXZivXajPDseHDj+9XlUsCQE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Rlk1VTPVzPYDFhJUTS1HuDc3geVcWFFoIb1LTmC/LCi4DaYFh7lM9efk0RL1TmCoK
-	 SRKy0Ps8Y/KCQbLhI6LjXVbBNMUnZTlLl1a5529MSAXRiwV2EMXwPegXm+j00XuZf+
-	 GM31cMenNQV2BFZVetK5NzysMFM0TvZMMbbKmWFk=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	yury.norov@gmail.com,
-	kees@kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Subject: [PATCH net-next] net: mana: hardening: Validate doorbell ID from GDMA_REGISTER_DEVICE response
-Date: Fri,  6 Mar 2026 13:12:06 -0800
-Message-ID: <20260306211212.543376-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1772832545; c=relaxed/simple;
+	bh=+NF3mFz52hezxKpAyhXhRTGDdqKBhLHa2w2NvjiuPw4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f73DTUy/5Rhm2FOhxB41hmBYXM5kWfKrzxreWz+NwEiZtcRCXdUC5X+D1/FvKUeIHixMofQOPNhi33dfPfV0IJGCoMt+UP/UEKTOdLe7txS5BKdhjeHyXf+PnX6sgRr4ctdgZygumnKE3IKWQaKGYJgu/3aGWtVZBMKr6FAgC9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xSXPhP4r; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6cdc68c2-8fde-4882-9369-cb7c64a523e1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772832541;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4YJPbmxJzJ+emDMSdaGGgr3h8r0R6f4f/zaEYN+u/kg=;
+	b=xSXPhP4rgLV6FqEFPh33x048yA9gKwJuR8BiGaGYctqG7FBgvi2RU5QofuYNZ8Iu+vBDiR
+	fV1yt6QWwqD/ijPnSkBlsFm/SKLYjzVZ//e6LjzvDVcdNvhv8h1BBmtX+ENRbCKvB+sLkM
+	ZhGHpr2bdonoSWCJPJFRIJ+twzGP5Yk=
+Date: Fri, 6 Mar 2026 13:28:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E1CCA227DCB
+Subject: Re: [PATCHv2 1/1] RDMA/rxe: Add the support that rxe can work in net
+ namespace
+To: kernel test robot <lkp@intel.com>, jgg@ziepe.ca, leon@kernel.org,
+ zyjzyj2000@gmail.com, dsahern@kernel.org, linux-rdma@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+References: <20260304041607.11685-1-yanjun.zhu@linux.dev>
+ <202603061015.zwXUa3OS-lkp@intel.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "yanjun.zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <202603061015.zwXUa3OS-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 14BBC227F05
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17623-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17624-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[intel.com,ziepe.ca,kernel.org,gmail.com,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.913];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.994];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,01.org:url,git-scm.com:url,linux.dev:dkim,linux.dev:mid]
 X-Rspamd-Action: no action
 
-As a part of MANA hardening for CVM, add validation for the doorbell
-ID (db_id) received from hardware in the GDMA_REGISTER_DEVICE response
-to prevent out-of-bounds memory access when calculating the doorbell
-page address.
+On 3/5/26 6:58 PM, kernel test robot wrote:
+> Hi Zhu,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on rdma/for-next]
+> [also build test WARNING on linus/master v7.0-rc2]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Zhu-Yanjun/RDMA-rxe-Add-the-support-that-rxe-can-work-in-net-namespace/20260304-121951
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+> patch link:    https://lore.kernel.org/r/20260304041607.11685-1-yanjun.zhu%40linux.dev
+> patch subject: [PATCHv2 1/1] RDMA/rxe: Add the support that rxe can work in net namespace
+> config: x86_64-randconfig-014-20260305 (https://download.01.org/0day-ci/archive/20260306/202603061015.zwXUa3OS-lkp@intel.com/config)
+> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260306/202603061015.zwXUa3OS-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202603061015.zwXUa3OS-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-In mana_gd_ring_doorbell(), the doorbell page address is calculated as:
-  addr = db_page_base + db_page_size * db_index
-       = (bar0_va + db_page_off) + db_page_size * db_index
+With W=1, I run the latest commits, this problem does not occur.
 
-A hardware could return values that cause this address to fall outside
-the BAR0 MMIO region. In Confidential VM environments, hardware responses
-cannot be fully trusted.
+Zhu Yanjun
 
-Add the following validations:
-- Store the BAR0 size (bar0_size) in gdma_context during probe.
-- Validate the doorbell page offset (db_page_off) read from device
-  registers does not exceed bar0_size during initialization, converting
-  mana_gd_init_registers() to return an error code.
-- Validate db_id from GDMA_REGISTER_DEVICE response against the
-  maximum number of doorbell pages that fit within BAR0.
-
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 60 ++++++++++++++-----
- include/net/mana/gdma.h                       |  4 +-
- 2 files changed, 49 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index aef8612b73cb..ef0dbfaac8f4 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -39,49 +39,66 @@ static u64 mana_gd_r64(struct gdma_context *g, u64 offset)
- 	return readq(g->bar0_va + offset);
- }
- 
--static void mana_gd_init_pf_regs(struct pci_dev *pdev)
-+static int mana_gd_init_pf_regs(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	void __iomem *sriov_base_va;
- 	u64 sriov_base_off;
- 
- 	gc->db_page_size = mana_gd_r32(gc, GDMA_PF_REG_DB_PAGE_SIZE) & 0xFFFF;
--	gc->db_page_base = gc->bar0_va +
--				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
-+	gc->db_page_off = mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
- 
--	gc->phys_db_page_base = gc->bar0_pa +
--				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
-+	/* Validate doorbell offset is within BAR0 */
-+	if (gc->db_page_off >= gc->bar0_size) {
-+		dev_err(gc->dev,
-+			"Doorbell offset 0x%llx exceeds BAR0 size 0x%llx\n",
-+			gc->db_page_off, (u64)gc->bar0_size);
-+		return -EPROTO;
-+	}
-+
-+	gc->db_page_base = gc->bar0_va + gc->db_page_off;
-+	gc->phys_db_page_base = gc->bar0_pa + gc->db_page_off;
- 
- 	sriov_base_off = mana_gd_r64(gc, GDMA_SRIOV_REG_CFG_BASE_OFF);
- 
- 	sriov_base_va = gc->bar0_va + sriov_base_off;
- 	gc->shm_base = sriov_base_va +
- 			mana_gd_r64(gc, sriov_base_off + GDMA_PF_REG_SHM_OFF);
-+
-+	return 0;
- }
- 
--static void mana_gd_init_vf_regs(struct pci_dev *pdev)
-+static int mana_gd_init_vf_regs(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 
- 	gc->db_page_size = mana_gd_r32(gc, GDMA_REG_DB_PAGE_SIZE) & 0xFFFF;
-+	gc->db_page_off = mana_gd_r64(gc, GDMA_REG_DB_PAGE_OFFSET);
- 
--	gc->db_page_base = gc->bar0_va +
--				mana_gd_r64(gc, GDMA_REG_DB_PAGE_OFFSET);
-+	/* Validate doorbell offset is within BAR0 */
-+	if (gc->db_page_off >= gc->bar0_size) {
-+		dev_err(gc->dev,
-+			"Doorbell offset 0x%llx exceeds BAR0 size 0x%llx\n",
-+			gc->db_page_off, (u64)gc->bar0_size);
-+		return -EPROTO;
-+	}
- 
--	gc->phys_db_page_base = gc->bar0_pa +
--				mana_gd_r64(gc, GDMA_REG_DB_PAGE_OFFSET);
-+	gc->db_page_base = gc->bar0_va + gc->db_page_off;
-+	gc->phys_db_page_base = gc->bar0_pa + gc->db_page_off;
- 
- 	gc->shm_base = gc->bar0_va + mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
-+
-+	return 0;
- }
- 
--static void mana_gd_init_registers(struct pci_dev *pdev)
-+static int mana_gd_init_registers(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 
- 	if (gc->is_pf)
--		mana_gd_init_pf_regs(pdev);
-+		return mana_gd_init_pf_regs(pdev);
- 	else
--		mana_gd_init_vf_regs(pdev);
-+		return mana_gd_init_vf_regs(pdev);
- }
- 
- /* Suppress logging when we set timeout to zero */
-@@ -1256,6 +1273,17 @@ int mana_gd_register_device(struct gdma_dev *gd)
- 		return err ? err : -EPROTO;
- 	}
- 
-+	/* Validate that doorbell page for db_id is within the BAR0 region.
-+	 * In mana_gd_ring_doorbell(), the address is calculated as:
-+	 *   addr = db_page_base + db_page_size * db_id
-+	 *        = (bar0_va + db_page_off) + (db_page_size * db_id)
-+	 * So we need: db_page_off + db_page_size * (db_id + 1) <= bar0_size
-+	 */
-+	if (gc->db_page_off + gc->db_page_size * ((u64)resp.db_id + 1) > gc->bar0_size) {
-+		dev_err(gc->dev, "Doorbell ID %u out of range\n", resp.db_id);
-+		return -EPROTO;
-+	}
-+
- 	gd->pdid = resp.pdid;
- 	gd->gpa_mkey = resp.gpa_mkey;
- 	gd->doorbell = resp.db_id;
-@@ -1890,7 +1918,10 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	int err;
- 
--	mana_gd_init_registers(pdev);
-+	err = mana_gd_init_registers(pdev);
-+	if (err)
-+		return err;
-+
- 	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
- 
- 	gc->service_wq = alloc_ordered_workqueue("gdma_service_wq", 0);
-@@ -1996,6 +2027,7 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	mutex_init(&gc->eq_test_event_mutex);
- 	pci_set_drvdata(pdev, gc);
- 	gc->bar0_pa = pci_resource_start(pdev, 0);
-+	gc->bar0_size = pci_resource_len(pdev, 0);
- 
- 	bar0_va = pci_iomap(pdev, bar, 0);
- 	if (!bar0_va)
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index ec17004b10c0..7fe3a1b61b2d 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -421,10 +421,12 @@ struct gdma_context {
- 
- 	phys_addr_t		bar0_pa;
- 	void __iomem		*bar0_va;
-+	resource_size_t		bar0_size;
- 	void __iomem		*shm_base;
- 	void __iomem		*db_page_base;
- 	phys_addr_t		phys_db_page_base;
--	u32 db_page_size;
-+	u64 db_page_off;
-+	u64 db_page_size;
- 	int                     numa_node;
- 
- 	/* Shared memory chanenl (used to bootstrap HWC) */
--- 
-2.34.1
+> 
+>>> WARNING: modpost: drivers/infiniband/sw/rxe/rdma_rxe: section mismatch in reference: rxe_namespace_exit+0x7 (section: .exit.text) -> rxe_net_ops (section: .init.data)
+> 
 
 
