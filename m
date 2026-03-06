@@ -1,91 +1,64 @@
-Return-Path: <linux-rdma+bounces-17602-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17603-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id of5NGvPNqmlRXQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17602-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:52:03 +0100
+	id iBbLJ6zSqmn3XQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17603-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 14:12:12 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863D022105C
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:52:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26BC42216E2
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 14:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 33FC03038EFE
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 12:43:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0C9A230173A4
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 13:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EA7286412;
-	Fri,  6 Mar 2026 12:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93043939DD;
+	Fri,  6 Mar 2026 13:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9mC0Dtb"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="LmGmLHhN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FC72701B6;
-	Fri,  6 Mar 2026 12:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A2D3939D0;
+	Fri,  6 Mar 2026 13:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772801005; cv=none; b=WU31MgBlu8AGjfB9jHpHzOx7GVzBYsDnhDT+Ll+wMxd++QQNNB087SwWfDks9z21mLNQXlxUw+n0Bdxbattg1poRTH29UrG1fxc4x1Zs0RXzN2POHWchjXAV2mYsjrHg9aN0aHKvfz4EQ4kGmqnpiYjH+9M99eMDvQ1z7V+g/s4=
+	t=1772802723; cv=none; b=MMXatmqhDucpL71Z6o/XukdAnqX9f9AQ8TAIveaHyaYUObOhiVnDKWDA09XmX8J+W8rTyiyntzx0ShZkniPA5dDKRlfKukdT3XkKIacpLCPSsap5ocXuhrjR3B8VUkb+6Qsd+9kdp/U5eu5iNJXP2xXg0vUVYwk1t7iuTkCOyto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772801005; c=relaxed/simple;
-	bh=laI5Gks8UKTtQyxqn7mx9nW4b8iCTs15iKu2otVUFHw=;
+	s=arc-20240116; t=1772802723; c=relaxed/simple;
+	bh=P3lE/2OlecH3irHBREw1hWYOkczvI22MXDpkplGGvcg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M7qq3JTt31p5g0XaukvqdQ4cMt2aprEER950/tWV7vWw7DUsIr/ABNUj0oYPdzUTeZm2lM4k+5hi2lkhtdhtA8Z5V4rcPT6Ox7OzDogZYMx9zyZ89yqkuLp+uZT9Ha5aNIHOG6WikO89HFD48fLsdcvyQji2rR2NK8L3ENXn7MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9mC0Dtb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149B7C4CEF7;
-	Fri,  6 Mar 2026 12:43:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772801004;
-	bh=laI5Gks8UKTtQyxqn7mx9nW4b8iCTs15iKu2otVUFHw=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=pjgDswXP2EqoS6s46YFlidly2g7pbc8P6PVf8gi8/otMo1+d6Eo1F1EEOoRrXPXqkL9FNvxpDe7zLAx3eukg7tEZTfEiYgOecrpX/HNIdRp5MHiFesZGH4AzuBSkJjK1N9BMXBgqj3RFT3LVU2Ujkgn0hQOr6hmVw9vYDlewgS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=LmGmLHhN; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 476E920B6F02; Fri,  6 Mar 2026 05:12:02 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 476E920B6F02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1772802722;
+	bh=GbYh9l8+kvPKPBBoRi48pyqIu+o225YJk6COfpopOwE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p9mC0Dtb5HP8pcPpgD7riizGZNEqblFXhyCBB7gyX3iYqVlML2IEu/E46TQAfJ6kB
-	 5ES8F1tVf64ZhuAJ2vES+zOK4kRMzYtKhCjqesskIYnO8sAKVgRvaUWEnRMwLwSDQe
-	 6ozGy1rqY43AQN4mamdsvpi0UFTEWG/1ua9kPc8CcoyCTro7l1nx6xbY3HJtSjDB33
-	 HoXIf0/JjwlmXYcHIiJHIJDR1zTA/RgIid+TR7+6DmUz/5MSsmXaWj5qjtxVswmSpB
-	 y7qIWK2NRTkB+QK0r3eC/5U81n1lw5TgFlHl0zqxfvXpiP2u3XAAAbXR9+cd9x48Kv
-	 4L7tL1NMHpRqQ==
-Date: Fri, 6 Mar 2026 12:43:21 +0000
-From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
-	"linux-mm @ kvack . org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, David Rientjes <rientjes@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>, 
-	Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, Dimitri Sivanich <dimitri.sivanich@hpe.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Eric Dumazet <edumazet@google.com>, 
-	Neal Cardwell <ncardwell@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org, 
-	kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v1 16/16] mm/memory: support VM_MIXEDMAP in
- zap_special_vma_range()
-Message-ID: <f2a7bdf4-8db7-4101-b7c6-3f5d9c20e078@lucifer.local>
-References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-17-david@kernel.org>
+	b=LmGmLHhNfWBEF6fhIWObXTKemxNhjRO1OqLaYPJdzIo9YF0VXeiMF7x+z2gEbUN1g
+	 Apij/fxkqBhROMwKLuIr09YRAuFigX/0ms0lzEFDQoW/ZOe3iAd/yfa8W7Lg38CGmV
+	 LLOCqeuhWlS6K4arMzGDOZwgR1xkeivAa7PomYqE=
+Date: Fri, 6 Mar 2026 05:12:02 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, leon@kernel.org,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next] net: mana: Force full-page RX buffers for 4K
+ page size on specific systems.
+Message-ID: <aarSotB+gh+fnzZ6@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <aaFusIxdbVkUqIpd@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <81b7e296-0cfe-4c24-ac97-7f6c712aa0e9@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,88 +67,132 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260227200848.114019-17-david@kernel.org>
-X-Rspamd-Queue-Id: 863D022105C
+In-Reply-To: <81b7e296-0cfe-4c24-ac97-7f6c712aa0e9@redhat.com>
+X-Rspamd-Queue-Id: 26BC42216E2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
-	TAGGED_FROM(0.00)[bounces-17602-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17603-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[74];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,lucifer.local:mid]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, Feb 27, 2026 at 09:08:47PM +0100, David Hildenbrand (Arm) wrote:
-> There is demand for also zapping page table entries by drivers in
-> VM_MIXEDMAP VMAs[1].
+On Tue, Mar 03, 2026 at 11:56:29AM +0100, Paolo Abeni wrote:
+> On 2/27/26 11:15 AM, Dipayaan Roy wrote:
+> > On certain systems configured with 4K PAGE_SIZE, utilizing page_pool
+> > fragments for RX buffers results in a significant throughput regression.
+> > Profiling reveals that this regression correlates with high overhead in the
+> > fragment allocation and reference counting paths on these specific
+> > platforms, rendering the multi-buffer-per-page strategy counterproductive.
+> > 
+> > To mitigate this, bypass the page_pool fragment path and force a single RX
+> > packet per page allocation when all the following conditions are met:
+> >   1. The system is configured with a 4K PAGE_SIZE.
+> >   2. A processor-specific quirk is detected via SMBIOS Type 4 data.
+> > 
+> > This approach restores expected line-rate performance by ensuring
+> > predictable RX refill behavior on affected hardware.
+> > 
+> > There is no behavioral change for systems using larger page sizes
+> > (16K/64K), or platforms where this processor-specific quirk do not
+> > apply.
+> > 
+> > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> > ---
+> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 120 ++++++++++++++++++
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c |  23 +++-
+> >  include/net/mana/gdma.h                       |  10 ++
+> >  3 files changed, 151 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > index 0055c231acf6..26bbe736a770 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/msi.h>
+> >  #include <linux/irqdomain.h>
+> >  #include <linux/export.h>
+> > +#include <linux/dmi.h>
+> >  
+> >  #include <net/mana/mana.h>
+> >  #include <net/mana/hw_channel.h>
+> > @@ -1955,6 +1956,115 @@ static bool mana_is_pf(unsigned short dev_id)
+> >  	return dev_id == MANA_PF_DEVICE_ID;
+> >  }
+> >  
+> > +/*
+> > + * Table for Processor Version strings found from SMBIOS Type 4 information,
+> > + * for processors that needs to force single RX buffer per page quirk for
+> > + * meeting line rate performance with ARM64 + 4K pages.
+> > + * Note: These strings are exactly matched with version fetched from SMBIOS.
+> > + */
+> > +static const char * const mana_single_rxbuf_per_page_quirk_tbl[] = {
+> > +	"Cobalt 200",
+> > +};
+> > +
+> > +static const char *smbios_get_string(const struct dmi_header *hdr, u8 idx)
+> > +{
+> > +	const u8 *start, *end;
+> > +	u8 i;
+> > +
+> > +	/* Indexing starts from 1. */
+> > +	if (!idx)
+> > +		return NULL;
+> > +
+> > +	start   = (const u8 *)hdr + hdr->length;
+> > +	end = start + SMBIOS_STR_AREA_MAX;
+> > +
+> > +	for (i = 1; i < idx; i++) {
+> > +		while (start < end && *start)
+> > +			start++;
+> > +		if (start < end)
+> > +			start++;
+> > +		if (start + 1 < end && start[0] == 0 && start[1] == 0)
+> > +			return NULL;
+> > +	}
+> > +
+> > +	if (start >= end || *start == 0)
+> > +		return NULL;
+> > +
+> > +	return (const char *)start;
+> 
+> If I read correctly, the above sort of duplicate dmi_decode_table().
 >
-> Nothing really speaks against supporting VM_MIXEDMAP for driver use. We
-> just don't want arbitrary drivers to zap in ordinary (non-special) VMAs.
->
-> [1] https://lore.kernel.org/r/aYSKyr7StGpGKNqW@google.com
+Yes, its not exported.
+ 
+> I think you are better of:
+> - use the mana_get_proc_ver_from_smbios() decoder to store the
+> SMBIOS_TYPE4_PROC_VERSION_OFFSET index into gd
+> - do a 2nd walk with a different decoder to fetch the string at the
+> specified index.
+Sure, will implement the 2nd walk for fetching string in v2.
 
-Dude, you have to start your indices with 0 what kind of programmer are
-you? ;)
+> 
+> /P
 
->
-> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
+Thank you Paolo, for the comments, and apologies in my delay in response as this week I am on-call.
+I will send out v2 with the changes suggested.
 
-Agreed that there's no reason not to allow this, so LGTM and:
-
-Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
-
-Thanks for this series overall, very nice cleanup and I was frustra^Whappy
-to see that there was nothing major or really of note to comment on here, a
-rare occurrence in review :)
-
-> ---
->  mm/memory.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index f3b7b7e16138..3fe30dc2f179 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -2239,13 +2239,13 @@ void zap_vma_range(struct vm_area_struct *vma, unsigned long address,
->   * @size: number of bytes to zap
->   *
->   * This function does nothing when the provided address range is not fully
-> - * contained in @vma, or when the @vma is not VM_PFNMAP.
-> + * contained in @vma, or when the @vma is not VM_PFNMAP or VM_MIXEDMAP.
->   */
->  void zap_special_vma_range(struct vm_area_struct *vma, unsigned long address,
->  		unsigned long size)
->  {
->  	if (!range_in_vma(vma, address, address + size) ||
-> -	    		!(vma->vm_flags & VM_PFNMAP))
-> +	   !(vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP)))
->  		return;
->
->  	zap_vma_range(vma, address, size);
-> --
-> 2.43.0
->
-
-Cheers, Lorenzo
+Regards
 
