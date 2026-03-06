@@ -1,175 +1,151 @@
-Return-Path: <linux-rdma+bounces-17611-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17612-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 9pVPMuYCq2nbZQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17611-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 17:37:58 +0100
+	id 0AC0OakHq2kMZgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17612-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 17:58:17 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317B2225392
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 17:37:58 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB7E225913
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 17:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 16CED303BB07
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 16:32:26 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E7B0330748D5
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 16:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CCB41B361;
-	Fri,  6 Mar 2026 16:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D3136C59B;
+	Fri,  6 Mar 2026 16:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gcsV9Wek"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Y9U5GPvN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F08C3E95B7;
-	Fri,  6 Mar 2026 16:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401AB3783D3
+	for <linux-rdma@vger.kernel.org>; Fri,  6 Mar 2026 16:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772814632; cv=none; b=UbAO4rD7gC2Ht9bnDdMFTShbSWSrJwNSCLWVBNxwlpugHOjSxJPxznNzsDw3sLqp/7OtjH2QuEt8kFgMpiHXHmAHvSY8w0u7SaM+jNXt+cdBnD+Z9zVTvaHsvzQzX8N8vWYCe+yARIAtJcnLmjDldTN60ivaTDQPy+y2K18sbJU=
+	t=1772815823; cv=none; b=F63mQUjQJZWGZP65U3qxvzOfX34U83x0uHcPNK9fO/b8iauhsV1Yw8jSYiMEYQSvIXMOJ5LOCzOGE7MfQ1cqkwgm8MZi6wvJtqBFSsUBZVdn3WWaTVrtO9tIqCkD2ZOUhyDppA+JHozpLHoKirHNzvPiXcFB/GwQCJllIOZq/ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772814632; c=relaxed/simple;
-	bh=OmXIeO1BMQOa9SXSEVLKkjgLXEmOLbLWpqPeWHAthv8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DyZqOjIMHNKQyyCyuNIys33mN678dKMU4cw0k91pHhWo2nv4lBHtLsxJbOeiduRVPRA/IwvjBtFf9r/qBiirNhewN9G0bslQiB/rDf/Wd2S5LEFlidMfAaFFlfkqOPGFgTSi8hCV2UQf7NbaE5a+XWaEeze8TZ+8s7Bjb4Q1WTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gcsV9Wek; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A31C4CEF7;
-	Fri,  6 Mar 2026 16:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772814632;
-	bh=OmXIeO1BMQOa9SXSEVLKkjgLXEmOLbLWpqPeWHAthv8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gcsV9WekyZBgjyexDZ+X2TyMrCebZNXQMNCg8FRN4wvrFNas0Gs4LzQ9vBewer/fA
-	 zD1wfrivy7ROeK4mHbAF54qyoMelGy4Mpy63Bwqx7UOPV3yJleGQSt6L6iEBOQFMIt
-	 +Oz5BPIxbsadHgi6cazxoCr5KrdYsNG0rrBa+GMsoD2kT3VgOmNGPdGBlsXgRwthPZ
-	 7275phkiogax++DoGt4vvKAwbzuo5xs7DjGWjksg0OPMlWqsgO1YSM4VY7xHBw1yWC
-	 EaTf8L8/uIiTyh9lfAL2YdJWjK0jUIxKhXhMRv2a/46EexLJTxv5Ffcnbw6MSD/9IO
-	 WAP3pzQZvzf8Q==
-Message-ID: <61b6ee13-71ac-4205-94a3-6c8daa94fd0b@kernel.org>
-Date: Fri, 6 Mar 2026 11:30:30 -0500
+	s=arc-20240116; t=1772815823; c=relaxed/simple;
+	bh=69n0WQNrKRRX3k9PPitHPmEVhNQIkSihAWqSYE06hIc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PMsQXjid3DColrMETjQGJ3lw1HtbD8AHRXnZRjeDYUomBQYAGTDZkDsnetnnk38em7vcEpewJ7D3g/WWtvm7OeQa6tzMJqkqv7nQmzPRQGRKRhaYd4PxQ5pjpOFs6qdF0/wiBT9NS6FACRmJ2x2dxZI4LHBV0HuChbS8znM3wJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Y9U5GPvN; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b9360037cdfso1445473366b.1
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Mar 2026 08:50:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1772815820; x=1773420620; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/JdWkEYAoxELgAwR8n3saGF3HFaHOnFaPXfAPoD+V5c=;
+        b=Y9U5GPvNKN/3Hr/QeWIiz0imzA+M4rAsQDreANFoZZu0ZHgihMgf2dG6QWFbQYaSXJ
+         slEye0rEILh4tY8HV9DF0wh7ovOBMF9L9dwkUoQXdLXSjl7FnNeIZdwcymXdoh/4+j7B
+         fXBdwzo6f4YiqSXtAHNyguij6TCApznHzKP1E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772815820; x=1773420620;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/JdWkEYAoxELgAwR8n3saGF3HFaHOnFaPXfAPoD+V5c=;
+        b=oqrAh+EsDlP8Txam3L0AmYoJgQiEYa2PoGVO+CevPvkT3h+2XJtjG2ckBDuW+Xge3q
+         cHlB/IMUMPlYDS8W5G37PrZv7Ey9O2rgYL+Q7OPzI83NWCc6JWPCGDAKl2F2oP2kNejA
+         MSTzHFiWDjmTRrJKr69mKzY/3SMeY3xV0cCaGzh3fIqjpujYsamW/wJT1uSDzRQYCRbr
+         zMXHj9+uwAXaVeltTlCadre11NqQlfw8IWb33OBrQWEwjlRgnR++eu1DhPEawJAVGT0+
+         yOyYeXuOHxQP1R76jZhx4xQ/d802Uqw1pUVE5DhAUNMO6xCdbsqpd0XDSiWzRqfcHJrj
+         2AXg==
+X-Forwarded-Encrypted: i=1; AJvYcCXVNVQrXTUbTKD/okkE2PHDseFGpFEC4vwerXifaVK4FD4ScRBGmCMKkpE4qQm9J8mcyYDUR40dr1zs@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXt3mZvi8VZQnk1xmuWWNKTDq3OzScWPooQsWSCpldCLBuqYRf
+	WmWHdP+DwE1SJ/x29YrdjJ5mhAPgzYmkSmND0LTi0dv9HWzUHGi3lfWlJEpa0UTjn157PgRhceU
+	u6H7Pywg=
+X-Gm-Gg: ATEYQzwrxY0rggMYLdhPnpZst/CML4c7PxnlvEvOEaH9ZTGoMR+Qaq86dxmo0bYgFH5
+	X6urP9pLYJydif+dC8Eirsq7B847C8Z079c9My6wkT6w+PbNxiM9gG0KPixubWMkIOdOIhnPLWr
+	qIw468YO2gt4or9q7osMPjqViJqaPVfJu0INloY/v63fVeUmDUxIBK9WKUcZzdw5hhMlX5zKd4E
+	c8XMFU9kbOx4RCXLA4/aJAt3IQ6jKVdaYu2KZaC7pggawUyKFiioEndKcAJa5aoHQ8Z20TIaBLo
+	qcL5Gykigkx0qZMxuV4TYmodh0vl39z9/fj9c72y68E5k4d7C9BNkI8bUWNSdnI3nS1D+NEF0d+
+	nRISUaTiqH5qaPYxz/R7sSTZH/w5WvSNOfevySK1KHmy7Hks+Erhn/zK71HRh0oKUnxGPcfdBs5
+	L4cGOrh4hArqUchBh86zG2kPAuBnoHxXcvimdg+6B2mKXSarCUGJeDMaG+SL05+5nQdNrn+oT7
+X-Received: by 2002:a17:907:9612:b0:b88:7568:26d5 with SMTP id a640c23a62f3a-b942dbdc764mr183839266b.27.1772815820376;
+        Fri, 06 Mar 2026 08:50:20 -0800 (PST)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b942f161979sm74866166b.58.2026.03.06.08.50.19
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Mar 2026 08:50:19 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b8d7f22d405so1392129766b.0
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Mar 2026 08:50:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUdCApKkbMxGf/WlhfXnF/CHn/cSP9MQuH3kopHkdppXO2RD+zTPKzldFlgBirQ6No8+9QYlPXgGTWT@vger.kernel.org
+X-Received: by 2002:a17:907:960a:b0:b8e:a1ad:36d3 with SMTP id
+ a640c23a62f3a-b942df83300mr169072566b.46.1772815818781; Fri, 06 Mar 2026
+ 08:50:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/8] xprtrdma: Replace rpcrdma_mr_seg with xdr_buf
- cursor
-To: Anna Schumaker <anna@kernel.org>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>,
- linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
- Chuck Lever <chuck.lever@oracle.com>
-References: <20260305145054.7096-10-cel@kernel.org>
- <20260305145054.7096-16-cel@kernel.org>
- <0f75a763-5ec9-4829-85b8-9a6ccb059704@app.fastmail.com>
-From: Chuck Lever <cel@kernel.org>
-Content-Language: en-US
-Organization: kernel.org
-In-Reply-To: <0f75a763-5ec9-4829-85b8-9a6ccb059704@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 317B2225392
+References: <20260305103941.11f1b27d@gandalf.local.home> <CAHk-=wggaToeRYv6B5L9ob=wBdVW9_gFudYxH_WJDTuhyX_Ueg@mail.gmail.com>
+ <a8907468-d7e9-4727-af28-66d905093230@kernel.org> <CAHk-=whW890h4m8r0iYwXEJK=MUJx9nLxuOduttRJNCLrMdz7A@mail.gmail.com>
+ <a21ea7c3-fbdb-4ac7-8be5-0173f54890c7@kernel.org>
+In-Reply-To: <a21ea7c3-fbdb-4ac7-8be5-0173f54890c7@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 6 Mar 2026 08:50:01 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi4CA=yPP-rQON_2_swS5Jd0SS4UwWbct4LdfGFyzHFRg@mail.gmail.com>
+X-Gm-Features: AaiRm53iDzSi0JGYZcfli_2X5ejbywSxs09OuffDjXkat3fpYe7Z3-u4fRncIZ0
+Message-ID: <CAHk-=wi4CA=yPP-rQON_2_swS5Jd0SS4UwWbct4LdfGFyzHFRg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes for 7.0
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Huiwen He <hehuiwen@kylinos.cn>, Jerome Marchand <jmarchan@redhat.com>, 
+	Qing Wang <wangqing7171@gmail.com>, Shengming Hu <hu.shengming@zte.com.cn>, 
+	Linux-MM <linux-mm@kvack.org>, linux-rdma <linux-rdma@vger.kernel.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: EAB7E225913
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17612-lists,linux-rdma=lfdr.de];
+	TO_DN_ALL(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	HAS_ORG_HEADER(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17611-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.991];
+	DMARC_NA(0.00)[linux-foundation.org];
+	FREEMAIL_CC(0.00)[goodmis.org,ziepe.ca,kernel.org,efficios.com,kylinos.cn,redhat.com,gmail.com,zte.com.cn,kvack.org,vger.kernel.org,oracle.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux-foundation.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[torvalds@linux-foundation.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.979];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	RCPT_COUNT_TWELVE(0.00)[13];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,mail.gmail.com:mid,linux-foundation.org:dkim]
 X-Rspamd-Action: no action
 
-On 3/6/26 11:28 AM, Anna Schumaker wrote:
-> Hi Chuck,
-> 
-> On Thu, Mar 5, 2026, at 9:51 AM, Chuck Lever wrote:
->> From: Chuck Lever <chuck.lever@oracle.com>
->>
->> The FRWR registration path converts data through three
->> representations: xdr_buf -> rpcrdma_mr_seg[] ->
->> scatterlist[] -> ib_map_mr_sg(). The rpcrdma_mr_seg
->> intermediate is a relic of when multiple registration
->> strategies existed (FMR, physical, FRWR). Only FRWR
->> remains, so the indirection serves no purpose.
->>
->> Introduce struct rpcrdma_xdr_cursor to track position
->> within an xdr_buf during iterative MR registration.
->> The cursor is 16 bytes on the stack (a pointer and two
->> unsigned ints), replacing the 6240-byte rl_segments[260]
->> array that was embedded in each rpcrdma_req.
->>
->> Rewrite frwr_map to populate scatterlist entries directly
->> from the xdr_buf regions (head kvec, page list, tail
->> kvec) via the cursor. The boundary logic for non-SG_GAPS
->> devices is simpler than before because the xdr_buf
->> structure guarantees that page-region entries after the
->> first start at offset 0, and that head/tail kvecs are
->> separate regions that naturally break at MR boundaries.
->>
->> Rewrite the three chunk-encoding functions
->> (rpcrdma_encode_read_list, rpcrdma_encode_write_list,
->> rpcrdma_encode_reply_chunk) to use cursor-based iteration
->> instead of the two-pass convert-then-register approach.
->>
->> Fix a pre-existing bug in rpcrdma_encode_write_list where
->> the write-pad statistics accumulator added mr->mr_length
->> from the last data MR rather than the write-pad MR. The
->> refactored code uses ep->re_write_pad_mr->mr_length.
->>
->> Delete rpcrdma_convert_kvec, rpcrdma_convert_iovs, struct
->> rpcrdma_mr_seg, rl_segments, and RPCRDMA_MAX_IOV_SEGS.
->> Adapt the chunk tracepoints to take a bool is_last
->> parameter instead of the now-eliminated nsegs count.
-> 
-> After this patch I start to see a bunch of errors running cthon
-> tests with both soft iwarp and soft roce.  With NFSv3 I see IO errors:
-> 
-> ./server -b -o v3,proto=rdma,sec=sys -m /mnt/test/server/nfs3 -p /srv/test/xfs/anna/nfs3 server
-> The '-b' test using 'v3,proto=rdma,sec=sys' options to server: Failed!!
-> /tmp/nfsv3rdma-11:10:46.error:
->         sh ./runtests  -b -t /mnt/test/server/nfs3/client.test
-> 
->         Starting BASIC tests: test directory /mnt/test/server/nfs3/client.test (arg: -t)
->         mkdir: cannot create directory '/mnt/test/server/nfs3/client.test': Input/output error
->         Can't make directory /mnt/test/server/nfs3/client.test
->         basic tests failed
->         Tests failed, leaving /mnt/test/server/nfs3 mounted
-> 
-> I can't even get that far with NFSv4.2, the mounts just fail:
-> 
-> ./server -b -o v4.2,proto=rdma,sec=sys -m /mnt/test/server/nfs4.2 -p /srv/test/xfs/anna/nfs4.2 server
-> Waiting for '-b' to finish ... 
-> The '-b' test using 'v4.2,proto=rdma,sec=sys' options to server: Failed!!
-> /tmp/nfsv4.2rdma-11:15:07.error:
->         mount.nfs: mount system call failed for /mnt/test/server/nfs4.2
->         Can't mount server:/srv/test/xfs/anna/nfs4.2 on /mnt/test/server/nfs4.2
-> Done: 11:15:07
-> 
-> 
-> Is there anything specific I should look at to try to figure out what's going on?
-D'oh! I'll try to track it down.
+On Thu, 5 Mar 2026 at 10:59, David Hildenbrand (Arm) <david@kernel.org> wrote:
+>
+> Agreed. We could think about letting it sit a bit in -next before moving
+> it to mainline.
 
+Honestly, I doubt it would get any testing in -next. Yes, -next gets
+some boot testing and maybe on a good day somebody runs LTP or some
+other test suite on it, but almost nobody actually *uses* it.
 
--- 
-Chuck Lever
+I think I'll just apply this now while it's early, and see if anybody
+notices. Lorenzo will apparently be shitting in the woods if they do.
+
+             Linus
 
