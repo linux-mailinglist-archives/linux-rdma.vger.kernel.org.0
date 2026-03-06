@@ -1,269 +1,198 @@
-Return-Path: <linux-rdma+bounces-17584-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17585-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QPIsGT2zqmkhVgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17584-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 11:58:05 +0100
+	id YGXbNtLDqmlXWQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17585-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:08:50 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C3D21F5D6
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 11:58:04 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A5BC2202F5
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 85AF13008445
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 10:58:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 82A6E315B609
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 12:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C24D381AF8;
-	Fri,  6 Mar 2026 10:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AB538E123;
+	Fri,  6 Mar 2026 12:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="TbYdA2Gv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h1hNNt/g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A161B4257;
-	Fri,  6 Mar 2026 10:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FD52874FF;
+	Fri,  6 Mar 2026 12:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772794680; cv=none; b=Rq/R6ICrNPkTc64NRo/Ic3YIHgZKbrmWc2QzD8A8Mu3K6BmQNR1iyqY/kuy1DO0MT8XOI2W9Ye1N1JoVhi3UT42zvzEVNEvrMZDtClyMHtVASxMpWovFjE/n526B2BOCtbRWnv5b0N+66kmEmSHrfXF1kABLZTR6Fpw1KHBHFU4=
+	t=1772798607; cv=none; b=BBWuHlULqxdMkxUF1YalK4PfrYrEkYkiWP+C1fBkUuLBnkX46CbCBOABZy5Pqld06m3IDbfzWgl5tpzEKfX9caTmFvd6z9AazQOjHxlwmL5cC1mTxnIcoUKKuUybkxNkM2plI6CGcV38Xj2mQzD5OYKyxeZTEOQ53DR1sNiyukc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772794680; c=relaxed/simple;
-	bh=WsiQ4GSIo4gZYEIT5xq0ocHaAV43NTzvIProZLWQWXM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pVIIslprBqwQukSk7nhRaPNx/X8u0kTNCA1RlQ7IRH0+4pcfxhZRu8kOMB/nnQ/DIe/kqnKVSJccK1IDzB5NjVkKIxysF0td13ECjC2EW1PZqTLTIOMbdlY8JMg/WiQFIcXYYfnJdW90c5py8sls43XNc6r7ROrXrvuFLwIQSQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=TbYdA2Gv; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id 89AF320B6F02; Fri,  6 Mar 2026 02:57:58 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 89AF320B6F02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1772794678;
-	bh=OOHEjXOrODbQ8VV7BIPINCUVzpfDiKQjeOBgGdlyvlU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TbYdA2Gvw05Y5z6poMcRBHAZsLQf0JohAAsSMtq7oAMMtaHT152STJA/FIzs3mhXT
-	 MNsjRNSLHlacTToiXpT4WuPA+fBsx80twR0oNKwrP+tAVcisiMvDJjUUQgJf1juUdO
-	 tGrbXSnlKgNRbiC7FlEzBbvq/XLr0TyhwUkGouTA=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	shirazsaleem@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 1/1] RDMA/mana_ib: memory windows
-Date: Fri,  6 Mar 2026 02:57:58 -0800
-Message-ID: <20260306105758.508579-1-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1772798607; c=relaxed/simple;
+	bh=8tIEjkmwTnv14wqiBx5utAVT1y4BywX848doWLEUMyQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l/pvDdoh12cyyBQhF3uShKmq3RUUWBseTFvnjqbEWbxVg3TpWX6tPCm2nrll0IDjvmrm2zt0nulCI8hCNWiNNWsJFFvHspMGWh7rA1h4AGkdW0hX7YwRbWWRwSSAmxeyphAIRY5KrJe4Lsu8l5O5L4sJjlrf/G7AypTlNSoKYvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h1hNNt/g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6488CC4CEF7;
+	Fri,  6 Mar 2026 12:03:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772798607;
+	bh=8tIEjkmwTnv14wqiBx5utAVT1y4BywX848doWLEUMyQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h1hNNt/ggkmOIg6nOIs6YVKXxpvjxXfuNC1/E243FERUMlrdAP/1JGuS8WftUsd7f
+	 sEmFfcrfCzizYh1WflGJxM+Mh8s8/NGzCybtmxDbPIa+RYlLhAC8M2mVomjBVzk4GJ
+	 ovvi/YoGsX9AnKFqWBjW+IpIUt/t0ThtH++DKgi9JosbOXhePSuaAgqwo9ysipyiZZ
+	 tJR6V8PVm0Q3rJsUQBZpi2/tPfiYYA+aTsakBMmVszHI4rXW/zZE1/jrzMC/3s/CgY
+	 3bcJ8hm+9ce3MEINimXRaNGIqZXC4Xd93/yIA5/AX590NC8dE2fbRiLTj205GiFNUz
+	 8UXcS4I1Opdeg==
+Date: Fri, 6 Mar 2026 12:03:24 +0000
+From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+	"linux-mm @ kvack . org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, 
+	Pedro Falcato <pfalcato@suse.de>, David Rientjes <rientjes@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>, 
+	Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>, 
+	H Hartley Sweeten <hsweeten@visionengravers.com>, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Dimitri Sivanich <dimitri.sivanich@hpe.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Eric Dumazet <edumazet@google.com>, 
+	Neal Cardwell <ncardwell@google.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org, 
+	kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v1 01/16] mm/madvise: drop range checks in
+ madvise_free_single_vma()
+Message-ID: <c5a89c14-0c6b-4c1e-a68c-0680c7d64f4c@lucifer.local>
+References: <20260227200848.114019-1-david@kernel.org>
+ <20260227200848.114019-2-david@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 64C3D21F5D6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260227200848.114019-2-david@kernel.org>
+X-Rspamd-Queue-Id: 8A5BC2202F5
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17584-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-17585-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[]
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[74];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,lucifer.local:mid]
 X-Rspamd-Action: no action
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Fri, Feb 27, 2026 at 09:08:32PM +0100, David Hildenbrand (Arm) wrote:
+> madvise_vma_behavior()-> madvise_dontneed_free()->madvise_free_single_vma()
+> is only called from madvise_walk_vmas()
+>
+> (a) After try_vma_read_lock() confirmed that the whole range falls into
+>     a single VMA (see is_vma_lock_sufficient()).
+>
+> (b) After adjusting the range to the VMA in the loop afterwards.
+>
+> madvise_dontneed_free() might drop the MM lock when handling
+> userfaultfd, but it properly looks up the VMA again to adjust the range.
+>
+> So in madvise_free_single_vma(), the given range should always fall into
+> a single VMA and should also span at least one page.
+>
+> Let's drop the error checks.
+>
+> The code now matches what we do in madvise_dontneed_single_vma(), where
+> we call zap_vma_range_batched() that documents: "The range must fit into
+> one VMA.". Although that function still adjusts that range, we'll change
+> that soon.
+>
+> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
 
-Implement .alloc_mw() and .dealloc_mw() for mana device.
+Yeah I did wonder about some of these checks, thanks for going through and
+confirming these are useless.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
-As I see that Jason's rdma_uapi is not in the next yet. I will make a patch
-adding his helpers (e.g., ib_is_udata_in_empty() for mw) with all other
-api calls.
- drivers/infiniband/hw/mana/device.c  |  3 ++
- drivers/infiniband/hw/mana/mana_ib.h |  8 ++++
- drivers/infiniband/hw/mana/mr.c      | 57 +++++++++++++++++++++++++++-
- include/net/mana/gdma.h              |  5 +++
- 4 files changed, 72 insertions(+), 1 deletion(-)
+Checked the madvise_dontneed_free() case to be sure and LGTM so overall:
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index ccc2279ca..9811570ab 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -17,6 +17,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
- 	.uverbs_abi_ver = MANA_IB_UVERBS_ABI_VERSION,
- 
- 	.add_gid = mana_ib_gd_add_gid,
-+	.alloc_mw = mana_ib_alloc_mw,
- 	.alloc_pd = mana_ib_alloc_pd,
- 	.alloc_ucontext = mana_ib_alloc_ucontext,
- 	.create_ah = mana_ib_create_ah,
-@@ -24,6 +25,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
- 	.create_qp = mana_ib_create_qp,
- 	.create_rwq_ind_table = mana_ib_create_rwq_ind_table,
- 	.create_wq = mana_ib_create_wq,
-+	.dealloc_mw = mana_ib_dealloc_mw,
- 	.dealloc_pd = mana_ib_dealloc_pd,
- 	.dealloc_ucontext = mana_ib_dealloc_ucontext,
- 	.del_gid = mana_ib_gd_del_gid,
-@@ -53,6 +55,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
- 
- 	INIT_RDMA_OBJ_SIZE(ib_ah, mana_ib_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, mana_ib_cq, ibcq),
-+	INIT_RDMA_OBJ_SIZE(ib_mw, mana_ib_mw, ibmw),
- 	INIT_RDMA_OBJ_SIZE(ib_pd, mana_ib_pd, ibpd),
- 	INIT_RDMA_OBJ_SIZE(ib_qp, mana_ib_qp, ibqp),
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, mana_ib_ucontext, ibucontext),
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index a7c8c0fd7..c9c94e86a 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -125,6 +125,11 @@ struct mana_ib_ah {
- 	dma_addr_t dma_handle;
- };
- 
-+struct mana_ib_mw {
-+	struct ib_mw ibmw;
-+	mana_handle_t mw_handle;
-+};
-+
- struct mana_ib_mr {
- 	struct ib_mr ibmr;
- 	struct ib_umem *umem;
-@@ -736,6 +741,9 @@ void mana_drain_gsi_sqs(struct mana_ib_dev *mdev);
- int mana_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
- int mana_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
- 
-+int mana_ib_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
-+int mana_ib_dealloc_mw(struct ib_mw *mw);
-+
- struct ib_mr *mana_ib_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 length,
- 					 u64 iova, int fd, int mr_access_flags,
- 					 struct ib_dmah *dmah,
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index 9613b225d..2a8b35751 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -6,7 +6,7 @@
- #include "mana_ib.h"
- 
- #define VALID_MR_FLAGS (IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ |\
--			IB_ACCESS_REMOTE_ATOMIC | IB_ZERO_BASED)
-+			IB_ACCESS_REMOTE_ATOMIC | IB_ACCESS_MW_BIND | IB_ZERO_BASED)
- 
- #define VALID_DMA_MR_FLAGS (IB_ACCESS_LOCAL_WRITE)
- 
-@@ -27,6 +27,9 @@ mana_ib_verbs_to_gdma_access_flags(int access_flags)
- 	if (access_flags & IB_ACCESS_REMOTE_ATOMIC)
- 		flags |= GDMA_ACCESS_FLAG_REMOTE_ATOMIC;
- 
-+	if (access_flags & IB_ACCESS_MW_BIND)
-+		flags |= GDMA_ACCESS_FLAG_BIND_MW;
-+
- 	return flags;
- }
- 
-@@ -304,6 +307,58 @@ struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags)
- 	return ERR_PTR(err);
- }
- 
-+static int mana_ib_gd_create_mw(struct mana_ib_dev *dev, struct mana_ib_pd *pd, struct ib_mw *ibmw)
-+{
-+	struct mana_ib_mw *mw = container_of(ibmw, struct mana_ib_mw, ibmw);
-+	struct gdma_context *gc = mdev_to_gc(dev);
-+	struct gdma_create_mr_response resp = {};
-+	struct gdma_create_mr_request req = {};
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, sizeof(req), sizeof(resp));
-+	req.pd_handle = pd->pd_handle;
-+
-+	switch (mw->ibmw.type) {
-+	case IB_MW_TYPE_1:
-+		req.mr_type = GDMA_MR_TYPE_MW1;
-+		break;
-+	case IB_MW_TYPE_2:
-+		req.mr_type = GDMA_MR_TYPE_MW2;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err || resp.hdr.status) {
-+		if (!err)
-+			err = -EPROTO;
-+
-+		return err;
-+	}
-+
-+	mw->ibmw.rkey = resp.rkey;
-+	mw->mw_handle = resp.mr_handle;
-+
-+	return 0;
-+}
-+
-+int mana_ib_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev = container_of(ibmw->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_pd *pd = container_of(ibmw->pd, struct mana_ib_pd, ibpd);
-+
-+	return mana_ib_gd_create_mw(mdev, pd, ibmw);
-+}
-+
-+int mana_ib_dealloc_mw(struct ib_mw *ibmw)
-+{
-+	struct mana_ib_dev *dev = container_of(ibmw->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_mw *mw = container_of(ibmw, struct mana_ib_mw, ibmw);
-+
-+	return mana_ib_gd_destroy_mr(dev, mw->mw_handle);
-+}
-+
- int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- {
- 	struct mana_ib_mr *mr = container_of(ibmr, struct mana_ib_mr, ibmr);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 766f4fb25..948f62bb8 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -778,6 +778,7 @@ enum gdma_mr_access_flags {
- 	GDMA_ACCESS_FLAG_REMOTE_READ = BIT_ULL(2),
- 	GDMA_ACCESS_FLAG_REMOTE_WRITE = BIT_ULL(3),
- 	GDMA_ACCESS_FLAG_REMOTE_ATOMIC = BIT_ULL(4),
-+	GDMA_ACCESS_FLAG_BIND_MW = BIT_ULL(5),
- };
- 
- /* GDMA_CREATE_DMA_REGION */
-@@ -870,6 +871,10 @@ enum gdma_mr_type {
- 	GDMA_MR_TYPE_ZBVA = 4,
- 	/* Device address MRs */
- 	GDMA_MR_TYPE_DM = 5,
-+	/* Device address MRs */
-+	GDMA_MR_TYPE_MW1 = 6,
-+	/* Device address MRs */
-+	GDMA_MR_TYPE_MW2 = 7,
- };
- 
- struct gdma_create_mr_params {
--- 
-2.43.0
+Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
+> ---
+>  mm/madvise.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+>
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index c0370d9b4e23..efc04334a000 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -799,9 +799,10 @@ static int madvise_free_single_vma(struct madvise_behavior *madv_behavior)
+>  {
+>  	struct mm_struct *mm = madv_behavior->mm;
+>  	struct vm_area_struct *vma = madv_behavior->vma;
+> -	unsigned long start_addr = madv_behavior->range.start;
+> -	unsigned long end_addr = madv_behavior->range.end;
+> -	struct mmu_notifier_range range;
+> +	struct mmu_notifier_range range = {
+> +		.start = madv_behavior->range.start,
+> +		.end = madv_behavior->range.end,
+> +	};
+>  	struct mmu_gather *tlb = madv_behavior->tlb;
+>  	struct mm_walk_ops walk_ops = {
+>  		.pmd_entry		= madvise_free_pte_range,
+> @@ -811,12 +812,6 @@ static int madvise_free_single_vma(struct madvise_behavior *madv_behavior)
+>  	if (!vma_is_anonymous(vma))
+>  		return -EINVAL;
+>
+> -	range.start = max(vma->vm_start, start_addr);
+> -	if (range.start >= vma->vm_end)
+> -		return -EINVAL;
+> -	range.end = min(vma->vm_end, end_addr);
+> -	if (range.end <= vma->vm_start)
+> -		return -EINVAL;
+>  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm,
+>  				range.start, range.end);
+>
+> --
+> 2.43.0
+>
 
