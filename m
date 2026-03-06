@@ -1,154 +1,275 @@
-Return-Path: <linux-rdma+bounces-17620-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17621-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qEdWIwk0q2n2agEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17620-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 21:07:37 +0100
+	id ILlJHgo9q2n7bQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17621-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 21:46:02 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E6622769F
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 21:07:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 247742279C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 21:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DF5A63040000
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 20:07:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 89BD43073FA3
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 20:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8FD37647F;
-	Fri,  6 Mar 2026 20:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC56948164F;
+	Fri,  6 Mar 2026 20:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/Y/k7cv"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="BFvmurmk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11022079.outbound.protection.outlook.com [52.101.43.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD362E92BA;
-	Fri,  6 Mar 2026 20:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772827649; cv=none; b=BB8OCyOiGM09kpv1M/IJGj9thjWY3AqFS3t5/HnqPwZIdJU/Ox7pdeZEb+aviux5BNZL/FOhT+3KmoMOk/wUiL24CQr/XDmdzJlt1dUKRYTsCtqG9GQBVOvlarRRi45k1eQeYpTCXKQmgDftjJ07lfsfu85JJqqw5eIwVqIcUjE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772827649; c=relaxed/simple;
-	bh=Dv+gHW+MLlcufFDt1KPtByGMul5N1wtpZhjbi+dJd8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cOQkmzD/DerYzX6ECukLkvoaItRGQoz1DvLcbmf4Olpr0EEaChvXxHmgbndolIQIHTGec+FWcFTLoo6rCaqQpPYqSybDfvyoUZsEp6qlTHxEmcRRbtoqgVzad/kc5cs3iEjIXNR8XWYZu5axlKtdZW2G3T3MuNpF0EM7W4PWJGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/Y/k7cv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDDD2C4CEF7;
-	Fri,  6 Mar 2026 20:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772827649;
-	bh=Dv+gHW+MLlcufFDt1KPtByGMul5N1wtpZhjbi+dJd8o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=V/Y/k7cvUM2saGS32xL2+jml1E17lBOV5tjhJSpnT3noMYZ+g7pEs6u68dRn+uttf
-	 VU+cVxod++yrdkl4w3rvmB4FRu8eFthpNP+tPsKrfPfcLVPz0z618hf7+pU4QKyWAV
-	 VjHnzu/UVVunasY7MMj7uiNuaU9qJQ08AjLRQDYt4BXmDs/ZT82X0l52JQ78TwbXRV
-	 Ei3I2IPigdTUkZkxQB0hzX5b5pgYrj8HEuU+GwUHTN3oxjVTd3PAUzvmExNsh9qpHA
-	 tIOOffEd8TBckCshOxOe6wscNfkKZr98ii6yxzxaVdb0Xhb1OapjidEMQot3bR0SbO
-	 6C2YnYbxZ3P5A==
-Date: Fri, 6 Mar 2026 12:07:28 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Allison Henderson <allison.henderson@oracle.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>, "pabeni@redhat.com"
- <pabeni@redhat.com>, "horms@kernel.org" <horms@kernel.org>,
- "edumazet@google.com" <edumazet@google.com>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "achender@kernel.org" <achender@kernel.org>
-Subject: Re: [PATCH net-next v1 0/2] selftests: rds: refactor and expand rds
- selftests test
-Message-ID: <20260306120728.00fce23f@kernel.org>
-In-Reply-To: <a2184a82a5fccc0b7bee91858ff4b3d0d37054ab.camel@oracle.com>
-References: <20260302055518.301620-1-achender@kernel.org>
-	<20260302173302.4d1634be@kernel.org>
-	<18aa553886ee12855c28d9498b12d2fdaeee9b3c.camel@oracle.com>
-	<20260304103212.2e7a58ba@kernel.org>
-	<a2184a82a5fccc0b7bee91858ff4b3d0d37054ab.camel@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576D5481641;
+	Fri,  6 Mar 2026 20:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772829932; cv=fail; b=EJuhAbHWWEk+Bkq1xwwsXe7BeqHoIPM+shqV/E6QFKfTgtaT0QSHJ1OyOS+pkIEAOZHrwr6SkKcwctCygCx2bSPXaRctYvq9Zo4jtF7Z/Julj1KC1UngwaSufqSnnr429henCd+U39DAos5ij8D953zP8n8dfeIHZrdxVwXQOic=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772829932; c=relaxed/simple;
+	bh=ow16MWFSXLU7gGnaVB5pcHxS+eEIq41+5kisFOd2SS4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=HVTAW5UwLR624GV9p9a7tyRNHHGAz5P7Y7lVARGPCcBQnpp7s8ZF1+QEFYGV+anbuPy8kRYCw25UQvg+AwaUf6loyZmcW2hTTrjjs5DEtPrr3Wij3xY4Iu7J05IoYsmOkJrlLVe/DCNezrM5wboWXr6OSb9YgI+QlM5fDbKGjdM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=BFvmurmk; arc=fail smtp.client-ip=52.101.43.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MbZcsIDpe2tBeG4+qegzZZO+GWd4h2bFWWC83QzewA4wdIj9bAIbHKmRFeoff57eacpvwHW+Rkp9xuDKSjTcf2Lh8tbAAI/dbc+VvSBzrNewesFrlv2rluJ+TEKOYoXqu47ptOH7iTxfmo/aXX8NxsjvCdNuhHwS058yrTVa/SFhXRNROuiGx7vciPtSa1vEVnePUirHibGekR1COo9ghkaXyBDx0Nn3QBVovpEDdbh8LTJ/OwfgET3KWlcsdWOJJRi5qPLV+phdM2tmYotC8N0fJfHem1DFQ2A9N4+wj1gpmA7Rx7jjn06QWdYTZUTpzL/cwkMzrHl0SOZVQ39l6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2l0OiZmT9Qns6yzQuMhCI11OM3e9gHK3oKI0kdLC1r4=;
+ b=P4TOYI0aA3IHjY+SeStlhySa8evONk/nuwlWQDWJufzWplfov9BkA8Rwn+BjqCzuup/wrKLBZiwPcUgoR6F7qVZsH5MsinILZu0ovT+L6++kTReLF6M+GBw1cc2t55A/eA8UDesN/98Yu6A50KaHyhjFsU2VgLleisXt+4rNnxZbrQhk6jMoMRWbbJ7pRKKv73ZD0d6DRefuv1iVsF3dYNCSZ+5bkjJALjHAlRg3gvUx+Faff/xX4gui8vwSKk5NYcDqxWm7mFxeUSG9DoslWkBT1sm+auiUgrWT7wR8gNYfVynUT32XY061SSa7NJcoKrIF+126Hcf1/TB3qgOV3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2l0OiZmT9Qns6yzQuMhCI11OM3e9gHK3oKI0kdLC1r4=;
+ b=BFvmurmkfFkaYWZakG6xjypohAsFxuAeuglboLr0hEbYZSjGGO/x2qfnb69uHFXG9+UVZ6sfX2aYLqh3/nVgeQcV/z/E7jivtw2a+xdkSJBpswqyGuSlRdlcnyYrBnSawUllxsFYBxEhzZdfOvss0BcMhQTdwfqcfKQytFJxhT4=
+Received: from SA1PR21MB6683.namprd21.prod.outlook.com (2603:10b6:806:4a4::6)
+ by SA1PR21MB6609.namprd21.prod.outlook.com (2603:10b6:806:4ab::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9700.4; Fri, 6 Mar
+ 2026 20:45:28 +0000
+Received: from SA1PR21MB6683.namprd21.prod.outlook.com
+ ([fe80::879f:eec1:ca0e:d219]) by SA1PR21MB6683.namprd21.prod.outlook.com
+ ([fe80::879f:eec1:ca0e:d219%3]) with mapi id 15.20.9700.003; Fri, 6 Mar 2026
+ 20:45:31 +0000
+From: Long Li <longli@microsoft.com>
+To: Simon Horman <horms@kernel.org>
+CC: "davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
+	<edumazet@google.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"kuba@kernel.org" <kuba@kernel.org>, "wei.liu@kernel.org"
+	<wei.liu@kernel.org>, "shradhagupta@linux.microsoft.com"
+	<shradhagupta@linux.microsoft.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	"schakrabarti@linux.microsoft.com" <schakrabarti@linux.microsoft.com>,
+	"erick.archer@outlook.com" <erick.archer@outlook.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, KY Srinivasan
+	<kys@microsoft.com>, Dexuan Cui <DECUI@microsoft.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [v2,net-next,1/6] net: mana: Create separate EQs
+ for each vPort
+Thread-Topic: [EXTERNAL] Re: [v2,net-next,1/6] net: mana: Create separate EQs
+ for each vPort
+Thread-Index: AQHcrYN/u6GUinjubEOWc/e/2ACdAbWh9ndA
+Date: Fri, 6 Mar 2026 20:45:31 +0000
+Message-ID:
+ <SA1PR21MB66835ECED7F9A8F195BD18F2CE7AA@SA1PR21MB6683.namprd21.prod.outlook.com>
+References: <20260304000017.333312-2-longli@microsoft.com>
+ <20260306160820.525640-1-horms@kernel.org>
+In-Reply-To: <20260306160820.525640-1-horms@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3041ac6f-ab36-4265-8468-1fe110caa59d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-03-06T20:35:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB6683:EE_|SA1PR21MB6609:EE_
+x-ms-office365-filtering-correlation-id: 517cc537-1730-4cd7-30b3-08de7bc14f01
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|7416014|366016|376014|38070700021;
+x-microsoft-antispam-message-info:
+ VwL4xTuLIFH3R19pZypA1U3OgI6KghAVt9mmw3Zz1OCm+Fq8pBTQhi8fyJYs8v+KKFmTG6aT8hgNMEMlrlDmwALKI7parlqlYW6oIyvITyEKBwgrAQA5FrviNYY7Yr0VTpa2aiziJbMgZcWPsqBZWc8twrAKAlgWEEquSGzuSEK/4fWAHuYC04OjhlFXn+qdNh4oyPQBBHbyfA6jVIyOH5HR/FRo9RopU0vrCwiKmR/H7ShKFrxMloO4CDFmyiIUovPXMjml1aqMXPycbGvAjJCOnyk5+Elb1rnm6VP1W4VUeR1NNmf1RJE0LvchGv3KHLjRnvjN1gcnnpHCFMEW2gle3UBh5sfQRXXGZNdMr2kgi5odulnJx3E2LfE1jlj+mLbCVs4ESotBW7PcDDZiH5ZB2XZWWrh7ci0BMC+OMvtZYMXMh0SNj4MoM3SGypbg4ldt40ANwS0gJ4Wzlw9m50P5RpE0iLyvSdZDg3TD7TTyjfRpnY+cf0GGubZZ8QnDZta3bN6IaBopoiDZcYzxuEasqoeJMJgg9gAclSyojrHY2dK4oLZ/DRb1IBam+52DJKZN/4LuqkR75q9lBGtDn/7fALPeFKtdUJV1T4+EoXsWFgt36cnQE/aiAZgZoOjtk3dPesMayzWAfnn/GFujK/bJ7xoqWsGQFeZTacoALlQYvjsIk85QThkYy4dfEmyvsRCSJRYXI2ZIwVzh+CCJXTqsIUS4l4uVEywO/sRfuixlp7TaDTQ/Gu4A21SZqwUVI4wsNq6VE7nfdEzaB1AWEuFpaI3FeItW8h0Snn53yrk=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB6683.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014)(38070700021);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?1mifVLuuGfmRUc8F7wGlUW6Ni8aK9rsy9HAKg+2SO7vDMHt2pRfd2b4dNVss?=
+ =?us-ascii?Q?yWF0roFULmTHBBQ9u3biZL/4DYjbxacKFUJdEZsK3j/FRILT+fyCTTPEFpM0?=
+ =?us-ascii?Q?hQSYKrm/Dh82TxF62xRHX7DHesM6eLRitQAu62E8smkjaXWXqqY8NAvvifDZ?=
+ =?us-ascii?Q?Po11FAkxe550Ikwwm1/56SnpPW1K6a7/WDF9p9y9iT2ATC9c6hKZZsuG4rjT?=
+ =?us-ascii?Q?KPNPNZsAnveQXElxlfNIXlJFwhCXKY6tfPXpgorFPdR2Svorv4SJvl3riPOw?=
+ =?us-ascii?Q?E5FHO+1u1dCrTGVjrEehoAaA7QmWgeLnROAM1qFfTWtkXtucOGP8WnxJMRhf?=
+ =?us-ascii?Q?gLbDDx6CU0IXKA4seQ9LiPhuseJzraAR1LipI2Hj7VaJWxmO0HgNeeRn5kR3?=
+ =?us-ascii?Q?6ZCq36J8NHTFQ1FqU/ebB90+XVAGuP6Z+9octCdYIgE4S/NsIV3eER2M7yf1?=
+ =?us-ascii?Q?VTk86POY0IR60j7rLCZlQxZRvXTUlkL6OGPaaUg8igdTvo+iouo8LP7wy5lg?=
+ =?us-ascii?Q?XDUzbELO53cqicCOWvKLPvwe1gQ6/64lpvadsMAPmHBSY6pqP/eQUbebwLFx?=
+ =?us-ascii?Q?TpdYpMPrOX62+OEBXlpZ4+3uge0iafvfImbe9NwgZaIa8i3+IYUM0nHYigUs?=
+ =?us-ascii?Q?KyJUrsyf0JLxp+4Q012g+BzJLFCIL3ypyaU9gNHWAyf6miSl69EAFQJgDIAj?=
+ =?us-ascii?Q?mh1OMPqgesJFsUkTzdD8cLP2j6QBhLPqUH8oVr4NSLmI1OHNlJI2seUDcAL6?=
+ =?us-ascii?Q?dqALTLd6WKwPgJAniy63o79uouPzM9rs5ZE2N7L7K2D50CLIuv4jnvG8lMRL?=
+ =?us-ascii?Q?clEYdRz//0gzXN8iu7lmXomXejKBKQQQEEXmnmbg7wx+RV/brK9e9C992XGn?=
+ =?us-ascii?Q?mL4+ikS9a3pXKvhHSrJZwVzkhEMkbFGDI/y40uMceu/iC4wkdwrYxpxgMmEm?=
+ =?us-ascii?Q?cCzgt+wYE8eyC7TJVu7EVw4oos98WYBdLq1KOsoq1smQVSkoOknPSvsuwivd?=
+ =?us-ascii?Q?4tBmjnoVi0KfHgsaaINwUrA9RxXDwsiB0e536q/HJr8FxSxG4Ae3jXxKS+cD?=
+ =?us-ascii?Q?ZB2C0EAYXMF+GOwVBsuoswjQCwFl/ZqQrWKyHTaeWe5H+D6yDyCJmVniGyT0?=
+ =?us-ascii?Q?Q4D4GjRezE0xlHkBHj3+1WiAFwirv/7gDHqHq/Rn8OxhWukUoCZYpYijv8tK?=
+ =?us-ascii?Q?NwUzYqzuGeM+upqeoAThuSGzX92T29AqCl+/f3i7KsiC6ypVWXcuTzcGuRy0?=
+ =?us-ascii?Q?GzSKRQLeOe8sQ46wsvSb1GzXEvcI4g99cZJ7QzNIKTmqXEfGpS+kwDAYgTqf?=
+ =?us-ascii?Q?QMeNpb7quDYW6xEg4FOqzlbGNJaJIS1lcKwKOYFb2qiHxmOtZJXhB6Zb64Ba?=
+ =?us-ascii?Q?fB+dEWoGdLKbZPfCyAe8PegzgUJYuP+rM/x+7cxlGPsK6F+yS6nXOj8cwHAv?=
+ =?us-ascii?Q?IsL+R7QX0jreKIhHpEHiq3kY4KiSHUf7UP5HerFdFSH38QIxji4XtzyLEvQk?=
+ =?us-ascii?Q?j1nnln7NYko3AyLI1Ia1xgn9hhtkjX575K7PzLstw7cJvp6uGzgenLR6zck0?=
+ =?us-ascii?Q?Sna0vN5HzQ/SJTYFzt9yswgEFcdb6KQkJvDuPwldaWEHVMr+t4di25HPgMBx?=
+ =?us-ascii?Q?06lprUhJeXxpnBmmv4nH5HSdk836saxtfSeCwpCToQmZ0bi3lXLpPbALunmq?=
+ =?us-ascii?Q?8tx9U6LEmrhqfTSDUmEeKeuJ5ngP8gOev0hHV5hqQ2GX1d5C?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 06E6622769F
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB6683.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 517cc537-1730-4cd7-30b3-08de7bc14f01
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2026 20:45:31.7388
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iK4zbNRN3s6url50bNVB+NnwanbzPSl85Qiw3+WFuLU/50gTf1CHousyxomUPOyYDsFe9TfKCpS4mnyfMASkkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB6609
+X-Rspamd-Queue-Id: 247742279C7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
+	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17620-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FREEMAIL_CC(0.00)[davemloft.net,google.com,microsoft.com,vger.kernel.org,kernel.org,linux.microsoft.com,redhat.com,outlook.com];
+	TAGGED_FROM(0.00)[bounces-17621-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.935];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[microsoft.com:+];
 	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lib.sh:url,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	NEURAL_HAM(-0.00)[-0.980];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[outlook.com:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, 6 Mar 2026 07:43:56 +0000 Allison Henderson wrote:
-> On Wed, 2026-03-04 at 10:32 -0800, Jakub Kicinski wrote:
-> > On Wed, 4 Mar 2026 02:50:34 +0000 Allison Henderson wrote:  
-> > > I didnt know it was causing you grief, but I am happy to work with
-> > > you to adapt it.  RDS is a little unique in that the network topology
-> > > defines the underlying transport it uses.  If you were to run it with
-> > > just a pair of veth interfaces on a single host or vm, then you will
-> > > only be using the loop back transport in rds.ko.  In order to get it
-> > > to load and test rds_tcp.ko, we need the endpoints to be in separate
-> > > network namespaces so that the destination IP isn't seen as local. So
-> > > the test case does this by forking server/client processes across
-> > > name spaces.  There really isnt a rush on this series, so if you
-> > > think we should do some refactoring/cleanup for ksft first that is
-> > > fine.  Let me know your thoughts.  
-> > 
-> > IIUC the need to set up a veth + 2 name spaces topology is very common.
-> > We have bash "libraries" / helpers in various lib.sh files to do it.
-> > Python libs also have some support (tho the default linking there is
-> > by pairing two netdevsim devices).
-> > 
-> > Well, maybe to be clear I should say that we _even_ have support in
-> > libraries for this. Not really strongly opposed to you rolling your own
-> > way of setting up the namespaces at this point. I primarily care about
-> > us being able to execute all your tests in our CI, with standard ksft
-> > commands. Maybe I did something wrong but
-> > 
-> >  make -C tools/testing/selftests TARGETS=net/rds run_tests
-> > 
-> > did not work for me.  
-> 
-> Sure, lets get this fixed first then.  Usually when I run the test, I just run the one rds test directly like this:
-> 
-> vng --build  --config .config; vng -v --rwdir ./ --run . --user root --cpus 16 -- "export
-> PYTHONPATH=tools/testing/selftests/net/; tools/testing/selftests/net/rds/run.sh" 2>&1 | tee outfile.txt;
-> 
-> I believe the way you run it would have it run directly on the host though.  Which can work but it would have to be
-> built and configured correctly for rds. Also I think when run it through make run_tests, ksft may have other lib
-> includes that get inherited by the child processes which can affect how they run.  But I'd like to see your output to
-> confirm. Could you include the output you are seeing?  Then I'll see if I can recreate and address what you're seeing on
-> my end. 
+> Subject: [EXTERNAL] Re: [v2,net-next,1/6] net: mana: Create separate EQs =
+for
+> each vPort
+>=20
+> This is an AI-generated review of your patch. The human sending this emai=
+l has
+> considered the AI review valid, or at least plausible.
+>=20
+> For local reproduction steps see
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fnetde=
+v-
+> ai.bots.linux.dev%2Fai-
+> local.html&data=3D05%7C02%7Clongli%40microsoft.com%7C070979f149574e63
+> e15a08de7b9aa19e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6
+> 39084101208945710%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnR
+> ydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3
+> D%3D%7C0%7C%7C%7C&sdata=3DCs%2BZwNguYa8FGbpb4H0naVDhDzhjzBvDU7
+> 5aZekerzc%3D&reserved=3D0
+> ---
+> net: mana: Create separate EQs for each vPort
+>=20
+> To prepare for assigning vPorts to dedicated MSI-X vectors, this commit
+> removes EQ sharing among vPorts and creates dedicated EQs for each vPort.
+> The EQ definition is moved from struct mana_context to struct
+> mana_port_context and related support functions are updated.
+>=20
+> > diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> > --- a/include/net/mana/mana.h
+> > +++ b/include/net/mana/mana.h
+>=20
+> [ ... ]
+>=20
+> > @@ -499,6 +497,9 @@ struct mana_port_context {
+> >
+> >  	u8 mac_addr[ETH_ALEN];
+> >
+> > +	struct mana_eq *eqs;
+> > +	struct dentry *mana_eqs_debugfs;
+> > +
+> >  	enum TRI_STATE rss_state;
+> >
+> >  	mana_handle_t default_rxobj;
+>=20
+> [ ... ]
+>=20
+> > diff --git a/drivers/infiniband/hw/mana/qp.c
+> > b/drivers/infiniband/hw/mana/qp.c
+> > --- a/drivers/infiniband/hw/mana/qp.c
+> > +++ b/drivers/infiniband/hw/mana/qp.c
+> > @@ -188,7 +188,7 @@ struct mana_obj_spec cq_spec =3D {};
+> >  		cq_spec.gdma_region =3D cq->queue.gdma_region;
+> >  		cq_spec.queue_size =3D cq->cqe * COMP_ENTRY_SIZE;
+> >  		cq_spec.modr_ctx_id =3D 0;
+> > -		eq =3D &mpc->ac->eqs[cq->comp_vector];
+> > +		eq =3D &mpc->eqs[cq->comp_vector % mpc->num_queues];
+>                            ^^^^^^^
+> >  		cq_spec.attached_eq =3D eq->eq->id;
+>=20
+> Can mpc->eqs be NULL here? Looking at the initialization paths:
+>=20
+> Before this patch, mpc->ac->eqs was allocated during mana_probe() and was
+> always non-NULL after driver initialization.
+>=20
+> After this patch, mpc->eqs is only allocated in two places:
+> 1. mana_alloc_queues() - called when the Ethernet interface is brought up=
+ 2.
+> mana_ib_cfg_vport() - called when RDMA RAW QPs configure the vport
+>=20
+> However, mana_ib_create_qp_rss() doesn't call mana_ib_cfg_vport(). If an =
+RSS
+> QP is created via RDMA verbs before the Ethernet port is brought up and
+> before any RAW QP has configured the vport, mpc->eqs would still be NULL.
+>=20
+> Computing &mpc->eqs[cq->comp_vector % mpc->num_queues] from a NULL
+> pointer produces an invalid address, and the subsequent dereference eq->e=
+q-
+> >id would crash the kernel.
+>=20
+> Should there be a NULL check here, or should mana_ib_create_qp_rss() ensu=
+re
+> EQs are created before reaching this point?
 
-This is how we run:
+I'm fixing it in v3.
 
-https://github.com/linux-netdev/nipa/wiki/How-to-run-netdev-selftests-CI-style
+Thank you,
+Long
 
-Base system is Fedora 43 (since we use vng that's what the "VM" is
-effectively also using). Please re-ask the questions that are still
-relevant after you go thru the link above? I'm not sure what "run
-directly on the host" means exactly ;) 
 
