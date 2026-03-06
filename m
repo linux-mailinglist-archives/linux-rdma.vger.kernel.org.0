@@ -1,91 +1,101 @@
-Return-Path: <linux-rdma+bounces-17589-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17590-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8PdgKnrFqmnVWwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17589-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:15:54 +0100
+	id 2LydLMDFqmnVWwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17590-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:17:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFCBE2205AF
-	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7041220614
+	for <lists+linux-rdma@lfdr.de>; Fri, 06 Mar 2026 13:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6FCDC302485C
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 12:12:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1C030303086C
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2026 12:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F3A38E5EE;
-	Fri,  6 Mar 2026 12:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227B038E5E1;
+	Fri,  6 Mar 2026 12:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="edn61naH"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ebePal5t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F7935F160;
-	Fri,  6 Mar 2026 12:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE85F38E5C9
+	for <linux-rdma@vger.kernel.org>; Fri,  6 Mar 2026 12:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772799165; cv=none; b=XF6Tgok6Lt+JKKGC204l6fvJCy+pqNzVL13DbEOpfPQi/iE8zritAPWROhtTMmz5eKxvdTzGATI2vHikNuhIksM3lE3PuCrpzJqVNZ4Uz3D9LhmZ3o+aq7CIr1W2RGgUCauBQV3BjjKtF6qv1DHuBZyT6YaeMu7/0oKJLfRFKjc=
+	t=1772799212; cv=none; b=Vgott3kZJEwW+1AGwa7QGHKI8yUtIkC5WLE08UIjt+3sf9yc8p5CkCZOYHmMU6MieCQiJxhFy7HnIzA6IIb3Wl3oKpdp3fxFQgSrzQv50u2bkCTRiAT0BBT2pMuxWmKRnvhjLjShxgvL4pefiNtgCQQ9ztvK2pOGZpXw2Ahq6lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772799165; c=relaxed/simple;
-	bh=0pXAFOIFGu2oV25L8o52sQR97OfC/9uMSwkci4VWiEI=;
+	s=arc-20240116; t=1772799212; c=relaxed/simple;
+	bh=iL3nHsj2qbN/ptZ32yL5eiwUDcUBsCkMTT+rcB3PMxA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hh1u47Povq6Mb4+FIKXYvDNcftGM3z+0sa8C+AlWOm95DlCnTN4Yykx/lJMzVeHJhMAw6WJmFQLlq8A+AvCB2IjWYBxKZwcGi8+M5x8hXpnYg8RbDMIAWbas81KhKT/ediUTYqOU5v2cf9bln99hjjkKipEaERIRMozVQLCja60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=edn61naH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C62C0C2BCAF;
-	Fri,  6 Mar 2026 12:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772799165;
-	bh=0pXAFOIFGu2oV25L8o52sQR97OfC/9uMSwkci4VWiEI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=edn61naHlNfCj6ZsP5AwEUGw9CwfdJ2+qp4E3P9NrRqaex7Mzs8I9+4N3Nb8iPzP+
-	 MDPjuNK9A6Qetf2KX0tPdvyQxuXEHgWgnJamhiPEMXHArV5hNb6HubqUE67/ScusgV
-	 91Op1mHTejDA5unrODiPadH1XnhaGXoJamDx/1ZP/XFup2VlHpsi86fd3iVR7t4ble
-	 +R8KS6ktipoGCS0QCYK2SAjgpa//+C9kqsjUElB2UcpnwNnT+t6UY96TQdEfREXxm8
-	 O4hbjLTlhFJ/5gK3fCzWdjUFddgW6o4Vk83yvQglRcCnELrZY+0WRVW3GmusGUbG5S
-	 PqwmeKjYrR3zQ==
-Date: Fri, 6 Mar 2026 12:12:42 +0000
-From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
-	"linux-mm @ kvack . org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, David Rientjes <rientjes@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>, 
-	Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, Dimitri Sivanich <dimitri.sivanich@hpe.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Eric Dumazet <edumazet@google.com>, 
-	Neal Cardwell <ncardwell@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org, 
-	kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v1 04/16] mm/memory: simplify calculation in
- unmap_mapping_range_tree()
-Message-ID: <6c6bf2d6-bc0f-4721-a57d-6b9c5f2a5c66@lucifer.local>
-References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-5-david@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NGnZLtGWeyG3kXgPSnZjASKWsxrHbS4DC7dwfIseVuJCVQ9vmtyu04dr9WAMvHpjKyDMJNhg2VWZiS8zYfdHvn7zlDwSm6xujIRSM6ZNCDXVvDQ8Ujgxw9K2Vh5ixq2W5nEDtcsc6QRhbeTknMUYv+RaKGIuSp3V7iLLa9+s12Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ebePal5t; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-483770e0b25so78410245e9.0
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Mar 2026 04:13:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1772799210; x=1773404010; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PTpTiYCmYefmS8voVHhTmV6UthynmjNZaFJx1xqdpVE=;
+        b=ebePal5t6HxHoJBNoARUWaa23plUvf87O/bmUdgs1xJyNY8MgzRCJ4pZYxQwDqbNqI
+         CzdVMwW/wuYjxdrwhOEHph9kMh8D4v0osXRgDx11NoFqv6QSQpzM4fhWtLja24HmA7xX
+         0DfZdgtURfiBXxa8luOdr4FZpOxGgaVTLFrD5VS3R9IL8rp/dRpPJSHe5730iobk+v3e
+         XdzW/mYri2yNMKXJtn/A3EmBtBIt8vS/hWWYK/eqXmjtfgqJjy7bqiOeI0FQS/obIDs0
+         ArZaLYnwwKZWVKTUdwudnZDxTxRmgZKJ6gWudyK+aq7SJq3u/2DyZkjttkw/n5bZLXKX
+         03EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772799210; x=1773404010;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PTpTiYCmYefmS8voVHhTmV6UthynmjNZaFJx1xqdpVE=;
+        b=VhgdgXxH/XcgIvlqa2xZSOxARBUaSnQG61Gc9OpWj30JaMCKPsSi3HhDzcncfF3cM/
+         WCidiI6QFjJAmWusA9LDzyvfTxLjpFZCoO4AobjvpO18MC/fZIYJBW6g63RRR6N/Nadr
+         lERrDctX7pSRi+7Wdy+EZ8YIRnVvV2cVW1oqCb2T+YKqV7Q9fcTCyzQf7hAVW9aNL4yY
+         IynhG3JqLcEu2H9eCLjIoAlaXgsJUhPDHBesaOc0H9BCgNMM4ldFMJQs39FnXVq9bIlC
+         e8BQbD5rYZZqLxQcCVX9g547dHPVUH9l1j0MezAuNi6aYyYbSe0cZik91A0w12VvkakY
+         83hg==
+X-Forwarded-Encrypted: i=1; AJvYcCXYVhEnkEUKqG+9CqZ6acC5AXiWJpW68x/LClwpPdWbq54ojhuMoqzd5wdddaJ3Kyy1HtthAvmCvonY@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPdj+pmtEcMuOLX1hjXg8F/GegzUCbGdhx0ANw/ZHWcL/GYjIv
+	4PwkcsqAMKn5gw1FWfbTm7tHHh0cU4n86lFBf+/Ot6eXxTkLq3XzVyzSYNV87ZwRSm8=
+X-Gm-Gg: ATEYQzxMhRz3s2nV0eggO5lJJyRAswT3WMfXEbmrnfXevAl9LC6MvHUp12D3dCglLKV
+	I5p4y9mHq5/ZFZQjkLety8RwR2S7u9wdmMXp4gnrWAl2OQKwVbS5zbA0ChhJlRM5jkSD8+EjPuh
+	Hq8J8ls3TiD0jrk4qz6N7EK2r9uYcs9fvK0YRpzBdSaQo/RtIQul2MzutrJ954qdrgjAff5JhGx
+	SrexYcjGlO5iwmtQXPDIgHja3xv1CbASkPgudywTxR0G6auYtByCwuuZ8J9w01jxRF+gP+3irNc
+	O9ONzHoDmyzow3QLj1PrOW6y9D+tp4Rb63jKyW8DzT+sWsfEpQyWlbmRl8enXcbCk7NFQygULnz
+	fBKb7Kez3SG1Dtf32Wjs2bVhXNttJY36acGbv9n86Wnf5g3pPx4QUrkCjM1T1Kgt4NTAS+IfliH
+	mfJP4Z/m0NnZo4KMOJQ4hhVE9xb/JIj/jgF/GyhiV6Rw==
+X-Received: by 2002:a05:600c:4fc2:b0:477:a1a2:d829 with SMTP id 5b1f17b1804b1-4852692bfa5mr30418785e9.13.1772799209987;
+        Fri, 06 Mar 2026 04:13:29 -0800 (PST)
+Received: from FV6GYCPJ69 ([208.127.45.21])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-485256b1eacsm30285005e9.0.2026.03.06.04.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Mar 2026 04:13:29 -0800 (PST)
+Date: Fri, 6 Mar 2026 13:13:26 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
+	Dragos Tatulea <dtatulea@nvidia.com>, Shay Drory <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
+	Moshe Shemesh <moshe@nvidia.com>
+Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource support
+Message-ID: <ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
+References: <20260226221916.1800227-1-tariqt@nvidia.com>
+ <20260302192640.49af074f@kernel.org>
+ <pmxkihhtsskkwsvdia4z2ss4wxpfc4a4kqxkjv5wk3mwdmpzii@6go7pizk2nst>
+ <jssifysprwuafkinc3dguspngxmplrngqxvotp76vhvu4e5lp6@e7mdrjqc5rme>
+ <20260304101522.09da1f58@kernel.org>
+ <np44uzfn6jea56uht4yq4te5clapgj7pk6ygyvkl22wxumwnvt@nrpvzjqzxenq>
+ <20260305063729.7e40775d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,120 +104,76 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260227200848.114019-5-david@kernel.org>
-X-Rspamd-Queue-Id: AFCBE2205AF
+In-Reply-To: <20260305063729.7e40775d@kernel.org>
+X-Rspamd-Queue-Id: C7041220614
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
 	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
-	TAGGED_FROM(0.00)[bounces-17589-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17590-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[74];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,lucifer.local:mid]
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,resnulli-us.20230601.gappssmtp.com:dkim]
 X-Rspamd-Action: no action
 
-On Fri, Feb 27, 2026 at 09:08:35PM +0100, David Hildenbrand (Arm) wrote:
-> Let's simplify the calculation a bit further to make it easier to get,
-> reusing vma_last_pgoff() which we move from interval_tree.c to mm.h.
+Thu, Mar 05, 2026 at 03:37:29PM +0100, kuba@kernel.org wrote:
+>On Thu, 5 Mar 2026 08:56:42 +0100 Jiri Pirko wrote:
+>> Wed, Mar 04, 2026 at 07:15:22PM +0100, kuba@kernel.org wrote:
+>> >On Wed, 4 Mar 2026 11:34:13 +0100 Jiri Pirko wrote:  
+>> >> On a second thought, if we merge multiple objects into one dump, how
+>> >> does this extend? I mean, the userspace has to check there are no extra
+>> >> attributes, as they may be used as a handle to another new object
+>> >> introduced in the future... Idk, it's a bit odd.  
+>> >
+>> >That's true, the user space must be able to interpret the object
+>> >identifier. So if we extend the command to add more identifiers
+>> >we will have to add the bitmask to the dump request, and have
+>> >the user space tell the kernel which objects it can recognize.
+>> >I was just saying that we don't have to add such attribute now,
+>> >maybe leave a comment in a strategic place for our future selves?  
+>> 
+>> Or, alternatively, we can have per-object dumps as we have for all
+>> objects and command right now and leave things simple and
+>> straightforward? I mean, I don't really see a benefit of a single dump
+>> for more objects :/
 >
-> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
-
-Thanks, some crusty old code here much improved. LGTM, so:
-
-Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
-
-> ---
->  include/linux/mm.h |  5 +++++
->  mm/interval_tree.c |  5 -----
->  mm/memory.c        | 12 +++++-------
->  3 files changed, 10 insertions(+), 12 deletions(-)
+>What do you mean by straightforward, exactly?
 >
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a8138ff7d1fa..d3ef586ee1c0 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -4000,6 +4000,11 @@ static inline unsigned long vma_pages(const struct vm_area_struct *vma)
->  	return (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
->  }
->
-> +static inline unsigned long vma_last_pgoff(struct vm_area_struct *vma)
-> +{
-> +	return vma->vm_pgoff + vma_pages(vma) - 1;
-> +}
-> +
->  static inline unsigned long vma_desc_size(const struct vm_area_desc *desc)
->  {
->  	return desc->end - desc->start;
-> diff --git a/mm/interval_tree.c b/mm/interval_tree.c
-> index 32e390c42c53..32bcfbfcf15f 100644
-> --- a/mm/interval_tree.c
-> +++ b/mm/interval_tree.c
-> @@ -15,11 +15,6 @@ static inline unsigned long vma_start_pgoff(struct vm_area_struct *v)
->  	return v->vm_pgoff;
->  }
->
-> -static inline unsigned long vma_last_pgoff(struct vm_area_struct *v)
-> -{
-> -	return v->vm_pgoff + vma_pages(v) - 1;
-> -}
-> -
->  INTERVAL_TREE_DEFINE(struct vm_area_struct, shared.rb,
->  		     unsigned long, shared.rb_subtree_last,
->  		     vma_start_pgoff, vma_last_pgoff, /* empty */, vma_interval_tree)
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 5c47309331f5..e4154f03feac 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4227,17 +4227,15 @@ static inline void unmap_mapping_range_tree(struct rb_root_cached *root,
->  					    struct zap_details *details)
->  {
->  	struct vm_area_struct *vma;
-> -	pgoff_t vba, vea, zba, zea;
->  	unsigned long start, size;
->  	struct mmu_gather tlb;
->
->  	vma_interval_tree_foreach(vma, root, first_index, last_index) {
-> -		vba = vma->vm_pgoff;
-> -		vea = vba + vma_pages(vma) - 1;
-> -		zba = max(first_index, vba);
-> -		zea = min(last_index, vea);
+>User will most likely want to see all resources of a device in a single
+>dump / command.
 
-These variable names... Lord.
+Hmm. We actually already have this for region and health reporter dumps.
+Only for params we have that separate.
+So let's do it for resource too.
 
-> -		start = ((zba - vba) << PAGE_SHIFT) + vma->vm_start;
-> -		size = (zea - zba + 1) << PAGE_SHIFT;
-> +		const pgoff_t start_idx = max(first_index, vma->vm_pgoff);
-> +		const pgoff_t end_idx = min(last_index, vma_last_pgoff(vma)) + 1;
+Thanks!
 
-I guess since 'end' is by-convention the +1 of last this is fine
-
-> +
-> +		start = vma->vm_start + ((start_idx - vma->vm_pgoff) << PAGE_SHIFT);
-> +		size = (end_idx - start_idx) << PAGE_SHIFT;
 >
->  		tlb_gather_mmu(&tlb, vma->vm_mm);
->  		zap_page_range_single_batched(&tlb, vma, start, size, details);
-> --
-> 2.43.0
+>The objects themselves are identical, they only differ by the handle,
+>and yet we'd have two separate commands to access them.
 >
+>It's as if we had separate GETLINK commands in rtnetlink for devices on
+>the PCIe bus vs connected via USB.
 
