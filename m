@@ -1,222 +1,179 @@
-Return-Path: <linux-rdma+bounces-17678-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17679-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4FJ8FD7bq2luhQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17678-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 09:01:02 +0100
+	id CM5aMxT5q2nDigEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17679-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 11:08:20 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B611622AB28
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 09:01:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC4122AF08
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 11:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5A4B302D129
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 08:00:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB9D1301F333
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 10:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C688636BCE6;
-	Sat,  7 Mar 2026 08:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F53309F02;
+	Sat,  7 Mar 2026 10:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V8VpVYha"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ljfv9Qev"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6CC33A9FF
-	for <linux-rdma@vger.kernel.org>; Sat,  7 Mar 2026 08:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252E130CD80;
+	Sat,  7 Mar 2026 10:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772870458; cv=none; b=eVNc9jGxoPId4QBt+cMrJ9biQ1IxBoytiok6UbZzCKs6sFLkoLpWwiuV3ldeSRlb2cw9Q6RGuMjv6FUhNANNjfXIGcBWkmyXBC6yfo8sEYnI1xywNW0XijcsLoeB3o43UE160CjrqJUxqbE0YyTelg7dgg5H3V4MsnP0e+Cd0vg=
+	t=1772878094; cv=none; b=OidDXgd5mRK4cpqvQNa+4qzMIJv/28yyL5WfCC7Urc85UnYO8Xw0ZvN4/OgIsV8j4nq4rSXGYH7hTG9l0qEYA0qXLmymdZTXthArkjdBzd9m6/4zWNppuI13nTHAm4rgxzL8pt0Y02UU+Bx9nuG1wbadtvpMEH0Qy5YdQ7aA7uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772870458; c=relaxed/simple;
-	bh=amTi6mhncQFgZhdX+ghT4i9cJ+tUuHa1bTB59MtKUmc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ThzKR55iNj2A4Pch2ow7DLmCME5xHJWPPxk5Hj/cV4pi6Cna629yU9dryyi0xG+jMJTGC/HhbGHC7WjPd4p837/d8Fr36oxPH4MNHEGdFzFIyA/SvVR6XxESfnP8c4x11fP9eqqIECg/xh8Zqmkg7pbxCSq/pK2CBIsjfdFB6Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V8VpVYha; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b90e3a90-7a88-449b-915a-83a662656c90@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772870453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XinBd3kl2KEQLcCa959/LqwGyRy8pHn8Guj+4yi4ETE=;
-	b=V8VpVYhaFO1c9IVYU3Q6WN0RNnXVGyanTE2F2bhkjgYlQxzILKuHdOBO9/g4xX6Ourzo4J
-	DuwTEdQxkN2edT9N+FJm9WjyXFZ0/uPlHm8PNWVncwyrYYzhxpTVgjA/0r9xaIlh9PXkKO
-	TgSzNgmhc85grXBh1CnH65OhghKEkv4=
-Date: Sat, 7 Mar 2026 00:00:49 -0800
+	s=arc-20240116; t=1772878094; c=relaxed/simple;
+	bh=egZ1+M1uc0jkAv5m17k+C3GcHFY6xwEHcD81x2VjVTk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LGQBoJMAE6y827c6/eXNCzwPLqEnuos83JMP9w2oZVLmEeh4cKiWXbN+1UrHb4DaBSYdsWPfby7P5sj8WMgOkMan+pcgjp4cfhDRowEbVDTuxUF18Bvnli9ccXsmHh7hV3Rvv2LZ1MU4NJLqScSQ32r4/ltRSlwOUlqaUNkigms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ljfv9Qev; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772878080; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=Ee8lmlga3uDFZLOnTMgosbonAxDSBeCsgWYca7ZXZNI=;
+	b=ljfv9Qevd3P7u3pCsTQAPgHDIiMcJ7a4u1XzMjuwd8hED3O1/HHh3RkSE6yCYXvvMpXgzlf/lal/sjdALS74ifVnGybZOUes8q1DdbyeiuKY2Wg2eEOTVl0nZh7PBF1l/899zeWjeW1dYS6USFseYMAMHd39DlaS5+2NWQObBrk=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X-PTgJf_1772878079 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Sat, 07 Mar 2026 18:08:00 +0800
+Date: Sat, 7 Mar 2026 18:07:59 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Mahanta Jambigi <mjambigi@linux.ibm.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org, oliver.yang@linux.alibaba.com,
+	pasic@linux.ibm.com
+Subject: Re: [PATCH net-next v3] net/smc: transition to RDMA core CQ pooling
+Message-ID: <20260307100759.GA71792@j66a10360.sqa.eu95>
+References: <20260305022323.96125-1-alibuda@linux.alibaba.com>
+ <bdcd2405-93d1-4b4c-91ae-174b577e5734@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/4] RDMA/rxe: Add net namespace support for IPv4/IPv6
- sockets
-To: David Ahern <dsahern@kernel.org>, jgg@ziepe.ca, leon@kernel.org,
- zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, "yanjun.zhu@linux.dev"
- <yanjun.zhu@linux.dev>
-References: <20260306082452.1822-1-yanjun.zhu@linux.dev>
- <20260306082452.1822-4-yanjun.zhu@linux.dev>
- <03ece7a0-7fe7-45bd-9baf-d88d689bc578@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <03ece7a0-7fe7-45bd-9baf-d88d689bc578@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: B611622AB28
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bdcd2405-93d1-4b4c-91ae-174b577e5734@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Rspamd-Queue-Id: 7BC4122AF08
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17678-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.org,ziepe.ca,gmail.com,vger.kernel.org,linux.dev];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.918];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17679-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-0.974];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+On Fri, Mar 06, 2026 at 05:37:49PM +0530, Mahanta Jambigi wrote:
+> 
+> 
+> On 05/03/26 7:53 am, D. Wythe wrote:
+> > The current SMC-R implementation relies on global per-device CQs
+> > and manual polling within tasklets, which introduces severe
+> > scalability bottlenecks due to global lock contention and tasklet
+> > scheduling overhead, resulting in poor performance as concurrency
+> > increases.
+> > 
+> > Refactor the completion handling to utilize the ib_cqe API and
+> > standard RDMA core CQ pooling. This transition provides several key
+> > advantages:
+> > 
+> > 1. Multi-CQ: Shift from a single shared per-device CQ to multiple
+> > link-specific CQs via the CQ pool. This allows completion processing
+> > to be parallelized across multiple CPU cores, effectively eliminating
+> > the global CQ bottleneck.
+> > 
+> > 2. Leverage DIM: Utilizing the standard CQ pool with IB_POLL_SOFTIRQ
+> > enables Dynamic Interrupt Moderation from the RDMA core, optimizing
+> > interrupt frequency and reducing CPU load under high pressure.
+> > 
+> > 3. O(1) Context Retrieval: Replaces the expensive wr_id based lookup
+> > logic (e.g., smc_wr_tx_find_pending_index) with direct context retrieval
+> > using container_of() on the embedded ib_cqe.
+> > 
+> > 4. Code Simplification: This refactoring results in a reduction of
+> > ~150 lines of code. It removes redundant sequence tracking, complex lookup
+> > helpers, and manual CQ management, significantly improving maintainability.
+> > 
+> > Performance Test: redis-benchmark with max 32 connections per QP
+> > Data format: Requests Per Second (RPS), Percentage in brackets
+> > represents the gain/loss compared to TCP.
+> > 
+> > | Clients | TCP      | SMC (original)      | SMC (cq_pool)       |
+> > |---------|----------|---------------------|---------------------|
+> > | c = 1   | 24449    | 31172  (+27%)       | 34039  (+39%)       |
+> > | c = 2   | 46420    | 53216  (+14%)       | 64391  (+38%)       |
+> > | c = 16  | 159673   | 83668  (-48%)  <--  | 216947 (+36%)       |
+> > | c = 32  | 164956   | 97631  (-41%)  <--  | 249376 (+51%)       |
+> > | c = 64  | 166322   | 118192 (-29%)  <--  | 249488 (+50%)       |
+> > | c = 128 | 167700   | 121497 (-27%)  <--  | 249480 (+48%)       |
+> > | c = 256 | 175021   | 146109 (-16%)  <--  | 240384 (+37%)       |
+> > | c = 512 | 168987   | 101479 (-40%)  <--  | 226634 (+34%)       |
+> > 
+> > The results demonstrate that this optimization effectively resolves the
+> > scalability bottleneck, with RPS increasing by over 110% at c=64
+> > compared to the original implementation.
+> 
+> Since your performance results look really-really nice on x86 but ours
+> show severe degradations on s390x, one way forward could be adding the
+> cq_poll mechanism but also keeping the existing mechanism for now
+> (because the things are right now it works better on s390x) and making
+> it either runtime or compile time configurable which of the both is
+> going to be used.
+> 
+> Alternatively, we could work together making the cq_poll mechanism does
+> not introduce a regression to s390x (ideally improve performance for
+> s390x as well). But it that case we would like to have this change
+> deferred until we find a way to make the regression disappear.
+> 
+> I am aware that the first option, co-existence, would kill the
+> simplification aspect of this and instead introduce added complexity.
+> But we are talking about a major regression here on one end, and major
+> improvements on the other end, so it might be still worth it. In any
+> case, we are very motivated to eventually get rid of the old mechanism,
+> provided significant performance regressions can be avoided.
 
-在 2026/3/6 17:10, David Ahern 写道:
-> On 3/6/26 1:24 AM, Zhu Yanjun wrote:
->> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
->> new file mode 100644
->> index 000000000000..29d08899dcda
->> --- /dev/null
->> +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
->> @@ -0,0 +1,134 @@
->> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
->> +/*
->> + * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
->> + * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
->> + */
->> +
->> +#include <net/sock.h>
->> +#include <net/netns/generic.h>
->> +#include <net/net_namespace.h>
->> +#include <linux/module.h>
->> +#include <linux/skbuff.h>
->> +#include <linux/pid_namespace.h>
->> +#include <net/udp_tunnel.h>
->> +
->> +#include "rxe_ns.h"
->> +
->> +/*
->> + * Per network namespace data
->> + */
->> +struct rxe_ns_sock {
->> +	struct sock __rcu *rxe_sk4;
->> +	struct sock __rcu *rxe_sk6;
->> +};
->> +
->> +/*
->> + * Index to store custom data for each network namespace.
->> + */
->> +static unsigned int rxe_pernet_id;
->> +
->> +/*
->> + * Called for every existing and added network namespaces
->> + */
->> +static int __net_init rxe_ns_init(struct net *net)
->> +{
->> +	/*
->> +	 * create (if not present) and access data item in network namespace
->> +	 * (net) using the id (net_id)
->> +	 */
-> this comment is not needed; does not really convey anything useful. I
-> would like this function to have the comment from my patch:
->
-> 	/* defer socket create in the namespace to the first
-> 	 * device create.
-> 	 */
->
-> this makes it clear why init and exit are not symmetrical.
->
->> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->> +
->> +	rcu_assign_pointer(ns_sk->rxe_sk4, NULL); /* initialize sock 4 socket */
->> +	rcu_assign_pointer(ns_sk->rxe_sk6, NULL); /* initialize sock 6 socket */
->> +	synchronize_rcu();
-> I believe the core network namespace code ensures the memory is
-> initialized, so this is not needed.
->
->> +
->> +	return 0;
->> +}
->> +
->> +static void __net_exit rxe_ns_exit(struct net *net)
->> +{
->> +	/*
->> +	 * called when the network namespace is removed
->> +	 */
->> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
->> +	struct sock *rxe_sk4 = NULL;
->> +	struct sock *rxe_sk6 = NULL;
-> initialization is not needed since both are set before use.
->
->> +
->> +	rcu_read_lock();
->> +	rxe_sk4 = rcu_dereference(ns_sk->rxe_sk4);
->> +	rxe_sk6 = rcu_dereference(ns_sk->rxe_sk6);
->> +	rcu_read_unlock();
->> +
->> +	/* close socket */
->> +	if (rxe_sk4 && rxe_sk4->sk_socket) {
-> how can rxe_sk4 be non-NULL and yet sk_socket become NULL?
->
->> +		udp_tunnel_sock_release(rxe_sk4->sk_socket);
->> +		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-> if you flip the order
->
-> 		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-> 		/* udp_tunnel_sock_release calls synchronize_rcu */
-> 		udp_tunnel_sock_release(rxe_sk4->sk_socket);
->
->
-> you should be able to drop the synchronize_rcu here:
->
->> +		synchronize_rcu();
->> +	}
->> +
->> +	if (rxe_sk6 && rxe_sk6->sk_socket) {
-> same here.
+I'm in no rush to push this, since a significant performance degradation
+was observed on s390x, I'll withdraw this patch until the issue is
+resolved, and it would be great if you could investigate what specifically
+happened on s390x.
 
-All the mentioned problems are fix in the latest commit.
-
-Zhu Yanjun
-
->
->> +		udp_tunnel_sock_release(rxe_sk6->sk_socket);
->> +		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
->> +		synchronize_rcu();> +	}
->> +}
->> +
-
--- 
-Best Regards,
-Yanjun.Zhu
+D. Wythe
 
 
