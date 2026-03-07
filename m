@@ -1,48 +1,49 @@
-Return-Path: <linux-rdma+bounces-17681-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17682-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sPnnHUhXrGnNowEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17681-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 17:50:16 +0100
+	id SLSAD2hXrGnNowEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17682-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 17:50:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB81622CB9C
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 17:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C600822CBCA
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 17:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 492933025702
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 16:50:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 514C9303D2C9
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 16:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214A932C94B;
-	Sat,  7 Mar 2026 16:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5182E32F75B;
+	Sat,  7 Mar 2026 16:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjH4Se18"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rLeiBAEc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BB7329E57;
-	Sat,  7 Mar 2026 16:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7DA3290BB;
+	Sat,  7 Mar 2026 16:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772902205; cv=none; b=FuC2+x6PYtm1YKnRTWEXIwEjimt+5WQTJOwCuBvnPJ2VR0QFbu2gNQndtEUoHmLxOZ+ioobK+HzqMACxGucvilK+Wp0bG4PpBCrSD/3KxdeB6vJkUWB03FTgfIMCiQWlgN1LtxjuqfAhHFvrsFBS6k0C7Sqp3FKBpMiNsrcA+YQ=
+	t=1772902210; cv=none; b=HGSxrZgwb+NZu1pQg43fnCQjWTknJXc6PiAAOWodIYGtqgx3/kIO8mzvZV2/+OlWSPXBFmsQ5mH7QzT8g4o7g+vocQk+GVsR6gV86YQIeCAI9t+vSvdWhddMPky54FIlJ2qZgwhk+3/9uE0Thgirt8qbSrdQfoNQZQl0ZVk04/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772902205; c=relaxed/simple;
-	bh=NhYjs89oiB+jBKV/WkSpGD3/bAZw/xiURHFubpOufaA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=h8OMVD34OP1wN7rWZ335qQ5I+usCBCtMd0UziGZiVbsRQNWgmEUhJ5eyI2lYPKPTb2nmFyyhBoCtbvtHJDLx7Tgkai+NYnzngxNanoCBHZBQx8Sd49dmLA1YyZMO2xnTA+eyFwc7LUs4XZeG+LeV8/6TbMgBjSq7uw54rRdkXTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjH4Se18; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA98C19422;
-	Sat,  7 Mar 2026 16:50:04 +0000 (UTC)
+	s=arc-20240116; t=1772902210; c=relaxed/simple;
+	bh=Rb7pGPHPDn2aZQQvadJE9PAK4yDKeRrpgUBQyVOU34k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EyCJNE4MwWkyimIFT0GQcFyIp+p+VMM77sn8JuyY+rauJ0wRVXOEsjT3BPLJfslYlC6XcJrIJr6s1ChzQO/0dlip76MH248bigZfMEDsd5FKpi5UsSr94NnnWJwmHBeJH68rF9UsT4uDPqIonZ3XgPAUHrwsgvdsGB74TYsgNa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rLeiBAEc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CD0FC19422;
+	Sat,  7 Mar 2026 16:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772902205;
-	bh=NhYjs89oiB+jBKV/WkSpGD3/bAZw/xiURHFubpOufaA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AjH4Se18sfvo0497Yw1VCVR+g0VtaRyMZAGqOl8RnF7y+kEKGz6UKUTYHQbFmYbZ2
-	 r8JNQs6ed5mI5R3qGB+y4qk1hRv/+9IqDvqv0fDh4+NmcJoYHH+Oe+RX0eqqG2mK0q
-	 oWWMEBu4PLBn1ya2mFqqWVeDGPj8A5Ac2YtK1N7hNVirZg4Xiwy6zHC38Ch6fQHNWy
-	 mn7k2tXNYedKGiuPG+p7ivW5tp1Aav16fDufcjkNQVYohvKyLepgMkcGD1Rx6yBKQs
-	 PUMAVozN7LFr7YFaaqkIUoywyLZDbjJUZoVJDqz0yx8D3AV64tvz9YRV+bS5e7PVd2
-	 vrq60OPaMT4Pw==
+	s=k20201202; t=1772902209;
+	bh=Rb7pGPHPDn2aZQQvadJE9PAK4yDKeRrpgUBQyVOU34k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=rLeiBAEckuUcYuKrCPAL+4ZPzvpyDeeYYFacMAT/MPozrdgUgAABSacrh+WcuO7ea
+	 MsdYa8sytC84GBXvu3B63teNEdwPp87OozFpC751Ev6QmWRaMYiNC7D0JieMzHIWXs
+	 YdC/WquaTy4ZLl9cV30g7Mw9AYnl0tZugTfY+smnYCCBjwNQcILlt1Oz0k4a2OSHeK
+	 Ctj2FyxZFZOpZ/MpjegNYOAQ32FWhIqZujpPNQm3ATdLro0SqyLoaMZ84/duiinLYG
+	 6OUSljus2zjhMFM0XuHJtYzlqe3+WoaemijsYic9JFkFHg0DSsBVGYgEqSCWlBNk68
+	 4idPw40FJITTg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Robin Murphy <robin.murphy@arm.com>,
@@ -60,10 +61,12 @@ Cc: iommu@lists.linux.dev,
 	linux-doc@vger.kernel.org,
 	virtualization@lists.linux.dev,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH 0/3] RDMA: Enable runs with DMA debug enabled
-Date: Sat,  7 Mar 2026 18:49:54 +0200
-Message-ID: <20260307-dma-debug-overlap-v1-0-c034c38872af@nvidia.com>
+Subject: [PATCH 1/3] dma-debug: Allow multiple invocations of overlapping entries
+Date: Sat,  7 Mar 2026 18:49:55 +0200
+Message-ID: <20260307-dma-debug-overlap-v1-1-c034c38872af@nvidia.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260307-dma-debug-overlap-v1-0-c034c38872af@nvidia.com>
+References: <20260307-dma-debug-overlap-v1-0-c034c38872af@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,10 +74,9 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Change-ID: 20260305-dma-debug-overlap-21487c3fa02c
 X-Mailer: b4 0.15-dev-18f8f
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: BB81622CB9C
+X-Rspamd-Queue-Id: C600822CBCA
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -86,7 +88,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17681-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17682-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
@@ -100,30 +102,100 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,qemu.org:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Fix dma-debug to allow RDMA to run in that mode too.
+From: Leon Romanovsky <leonro@nvidia.com>
 
+Repeated DMA mappings with DMA_ATTR_CPU_CACHE_CLEAN trigger the
+following splat. This prevents using the attribute in cases where a DMA
+region is shared and reused more than seven times.
+
+ ------------[ cut here ]------------
+ DMA-API: exceeded 7 overlapping mappings of cacheline 0x000000000438c440
+ WARNING: kernel/dma/debug.c:467 at add_dma_entry+0x219/0x280, CPU#4: ibv_rc_pingpong/1644
+ Modules linked in: xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat nf_nat xt_addrtype br_netfilter rpcsec_gss_krb5 auth_rpcgss oid_registry overlay mlx5_fwctl zram zsmalloc mlx5_ib fuse rpcrdma rdma_ucm ib_uverbs ib_iser libiscsi scsi_transport_iscsi ib_umad rdma_cm ib_ipoib iw_cm ib_cm mlx5_core ib_core
+ CPU: 4 UID: 2733 PID: 1644 Comm: ibv_rc_pingpong Not tainted 6.19.0+ #129 PREEMPT
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:add_dma_entry+0x221/0x280
+ Code: c0 0f 84 f2 fe ff ff 83 e8 01 89 05 6d 99 11 01 e9 e4 fe ff ff 0f 8e 1f ff ff ff 48 8d 3d 07 ef 2d 01 be 07 00 00 00 48 89 e2 <67> 48 0f b9 3a e9 06 ff ff ff 48 c7 c7 98 05 2b 82 c6 05 72 92 28
+ RSP: 0018:ff1100010e657970 EFLAGS: 00010002
+ RAX: 0000000000000007 RBX: ff1100010234eb00 RCX: 0000000000000000
+ RDX: ff1100010e657970 RSI: 0000000000000007 RDI: ffffffff82678660
+ RBP: 000000000438c440 R08: 0000000000000228 R09: 0000000000000000
+ R10: 00000000000001be R11: 000000000000089d R12: 0000000000000800
+ R13: 00000000ffffffef R14: 0000000000000202 R15: ff1100010234eb00
+ FS:  00007fb15f3f6740(0000) GS:ff110008dcc19000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007fb15f32d3a0 CR3: 0000000116f59001 CR4: 0000000000373eb0
+ Call Trace:
+  <TASK>
+  debug_dma_map_sg+0x1b4/0x390
+  __dma_map_sg_attrs+0x6d/0x1a0
+  dma_map_sgtable+0x19/0x30
+  ib_umem_get+0x284/0x3b0 [ib_uverbs]
+  mlx5_ib_reg_user_mr+0x68/0x2a0 [mlx5_ib]
+  ib_uverbs_reg_mr+0x17f/0x2a0 [ib_uverbs]
+  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0x130 [ib_uverbs]
+  ib_uverbs_cmd_verbs+0xa0b/0xae0 [ib_uverbs]
+  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_PORT_SPEED+0xe0/0xe0 [ib_uverbs]
+  ? mmap_region+0x7a/0xb0
+  ? do_mmap+0x3b8/0x5c0
+  ib_uverbs_ioctl+0xa7/0x110 [ib_uverbs]
+  __x64_sys_ioctl+0x14f/0x8b0
+  ? ksys_mmap_pgoff+0xc5/0x190
+  do_syscall_64+0x8c/0xbf0
+  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+ RIP: 0033:0x7fb15f5e4eed
+ Code: 04 25 28 00 00 00 48 89 45 c8 31 c0 48 8d 45 10 c7 45 b0 10 00 00 00 48 89 45 b8 48 8d 45 d0 48 89 45 c0 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1a 48 8b 45 c8 64 48 2b 04 25 28 00 00 00
+ RSP: 002b:00007ffe09a5c540 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+ RAX: ffffffffffffffda RBX: 00007ffe09a5c5d0 RCX: 00007fb15f5e4eed
+ RDX: 00007ffe09a5c5f0 RSI: 00000000c0181b01 RDI: 0000000000000003
+ RBP: 00007ffe09a5c590 R08: 0000000000000028 R09: 00007ffe09a5c794
+ R10: 0000000000000001 R11: 0000000000000246 R12: 00007ffe09a5c794
+ R13: 000000000000000c R14: 0000000025a49170 R15: 000000000000000c
+  </TASK>
+ ---[ end trace 0000000000000000 ]---
+
+Fixes: 61868dc55a11 ("dma-mapping: add DMA_ATTR_CPU_CACHE_CLEAN")
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-Leon Romanovsky (3):
-      dma-debug: Allow multiple invocations of overlapping entries
-      dma-mapping: Clarify valid conditions for CPU cache line overlap
-      RDMA/umem: Tell DMA debug that cacheline overlap is expected
+ kernel/dma/debug.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- Documentation/core-api/dma-attributes.rst | 26 ++++++++++++++++++--------
- drivers/infiniband/core/umem.c            |  2 +-
- drivers/virtio/virtio_ring.c              |  4 ++--
- include/linux/dma-mapping.h               |  8 ++++----
- kernel/dma/debug.c                        |  8 ++++----
- 5 files changed, 29 insertions(+), 19 deletions(-)
----
-base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
-change-id: 20260305-dma-debug-overlap-21487c3fa02c
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 86f87e43438c3..be207be749968 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -453,7 +453,7 @@ static int active_cacheline_set_overlap(phys_addr_t cln, int overlap)
+ 	return overlap;
+ }
+ 
+-static void active_cacheline_inc_overlap(phys_addr_t cln)
++static void active_cacheline_inc_overlap(phys_addr_t cln, bool is_cache_clean)
+ {
+ 	int overlap = active_cacheline_read_overlap(cln);
+ 
+@@ -462,7 +462,7 @@ static void active_cacheline_inc_overlap(phys_addr_t cln)
+ 	/* If we overflowed the overlap counter then we're potentially
+ 	 * leaking dma-mappings.
+ 	 */
+-	WARN_ONCE(overlap > ACTIVE_CACHELINE_MAX_OVERLAP,
++	WARN_ONCE(!is_cache_clean && overlap > ACTIVE_CACHELINE_MAX_OVERLAP,
+ 		  pr_fmt("exceeded %d overlapping mappings of cacheline %pa\n"),
+ 		  ACTIVE_CACHELINE_MAX_OVERLAP, &cln);
+ }
+@@ -495,7 +495,7 @@ static int active_cacheline_insert(struct dma_debug_entry *entry,
+ 	if (rc == -EEXIST) {
+ 		struct dma_debug_entry *existing;
+ 
+-		active_cacheline_inc_overlap(cln);
++		active_cacheline_inc_overlap(cln, entry->is_cache_clean);
+ 		existing = radix_tree_lookup(&dma_active_cacheline, cln);
+ 		/* A lookup failure here after we got -EEXIST is unexpected. */
+ 		WARN_ON(!existing);
 
-Best regards,
---  
-Leon Romanovsky <leonro@nvidia.com>
+-- 
+2.53.0
 
 
