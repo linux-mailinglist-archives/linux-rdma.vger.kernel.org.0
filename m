@@ -1,63 +1,70 @@
-Return-Path: <linux-rdma+bounces-17662-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17663-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mCjTB4eEq2n/dgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17662-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 02:51:03 +0100
+	id eD6AGfeZq2nYegEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17663-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 04:22:31 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06BD2297F4
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 02:51:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC9F229D58
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 04:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 65925306DFC7
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 01:49:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 44CDD301E7D6
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 03:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C009F33A9E0;
-	Sat,  7 Mar 2026 01:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002AE1E7C23;
+	Sat,  7 Mar 2026 03:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HcKoFVbR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE0A332612;
-	Sat,  7 Mar 2026 01:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3954E2EF67A
+	for <linux-rdma@vger.kernel.org>; Sat,  7 Mar 2026 03:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772848059; cv=none; b=RWgLn1RKtmkCIk/9ehKq6BGp4g0UH+vEiCAXxFtQRSzKlUI+ZdLgDyO6rSkHqhpk3Q1dLh1p7v+HEKTDFXsUFzVt9xjhrtSrg/PIHhJ13JVp3sJL2o2TDci+PWAjYU7ZV1myKN0wxolJ8atq5x6tS0a4rbpxldCagZBXAPnsUxw=
+	t=1772853743; cv=none; b=JK9oPKspBPRj8b1SFQKlOsjwtXD/vWBG5CINxlRdHR3oKWUNN/LwlAykeZ3Bpye878j/3B19ZDQn9UjaY0wS1eARr86wTqxntphmkB0Zq9Afds+ly3YSfgX9a5x2BSPzYMQVOt2bY9S1sKEJoHDVWGNyjDklrqrP+KMT+l/9eEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772848059; c=relaxed/simple;
-	bh=xcDte7rRDknX365WIhKJshHQ92tBG5T6BHy4SirFks8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h5LjRD7HdT0C3az84AGlS4Y5uT2gqpoBpYPT/DF10uqwjs/DEWGJpmRPfOh+KRoN/yJC2v0Xh9pYWgfVEmHETijmG8sGD+fFfdawgDfZcmExwHhQRQCRfoiu4voC3l4cL+nqLiGuQSlVs0VFd2lpU3+pfbWsPG51t2Xi9hKtIK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1202)
-	id 7DFE020B6F03; Fri,  6 Mar 2026 17:47:37 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7DFE020B6F03
-From: Long Li <longli@microsoft.com>
-To: Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>,
+	s=arc-20240116; t=1772853743; c=relaxed/simple;
+	bh=VQwpztTD6X2+N2GcGFC+cfF0qdSug6p/2KKpCFyCe7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t+di/09aWp01xRP484l+gyOv/fFT2UJQ5ad6AP6gmUDpGP6uUk5vwuO6Syxi+6r91WWHiaX4tnFWZkYADVxtZX5LdZ1t99Nypk5Cv5Fif+URZ/m/lrZ3EBCPpDBnSCUuHK1GWHWCsD+k7WxyTQGIU3N1Q8OocPq6jQH9y+Ey51o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HcKoFVbR; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772853730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QJBoqx1LHyd0/cvODH/iQXRMAkmqnF6l6wgjSb0JHZ0=;
+	b=HcKoFVbRz57KHwAFkUutc+hPS9luMCnbkUmROaaPHfjaWWJT8en1f2qNtW+m4hW3QcRzWM
+	rVQ0BYBLCZMYOXnAPaGh0JxjUiEyxo7rR3d6B4Lf6av/sd/rgct5SFnTL/qs2VKdzgS0Tk
+	SQrOt6mUH9I0UsUi2khhjwpHggm06n8=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: netdev@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K . Y . Srinivasan" <kys@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>
-Cc: Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
 	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
+	linux-s390@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 8/8] RDMA/mana_ib: Skip firmware commands for invalidated handles
-Date: Fri,  6 Mar 2026 17:47:22 -0800
-Message-ID: <20260307014723.556523-9-longli@microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260307014723.556523-1-longli@microsoft.com>
-References: <20260307014723.556523-1-longli@microsoft.com>
+Subject: [PATCH net v1] net/smc: fix NULL dereference and UAF in smc_tcp_syn_recv_sock()
+Date: Sat,  7 Mar 2026 11:21:57 +0800
+Message-ID: <20260307032158.372165-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,157 +72,137 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A06BD2297F4
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: CEC9F229D58
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [3.54 / 15.00];
-	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17662-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17663-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.692];
-	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-0.993];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,827ae2bfb3a3529333e9];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,linux.dev:dkim,linux.dev:email,linux.dev:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,appspotmail.com:email]
 X-Rspamd-Action: no action
 
-After a service reset, firmware handles for PD, CQ, WQ, QP, and MR
-are set to INVALID_MANA_HANDLE by the reset notification path.
+Syzkaller reported a panic in smc_tcp_syn_recv_sock() [1].
 
-Check for INVALID_MANA_HANDLE in each destroy callback before issuing
-firmware destroy commands. When a handle is invalid, skip the firmware
-call and proceed directly to kernel resource cleanup (umem, queues,
-memory). This avoids sending stale handles to firmware after reset.
+smc_tcp_syn_recv_sock() is called in the TCP receive path
+(softirq) via icsk_af_ops->syn_recv_sock on the clcsock (TCP
+listening socket). It reads sk_user_data to get the smc_sock
+pointer. However, when the SMC listen socket is being closed
+concurrently, smc_close_active() sets clcsock->sk_user_data
+to NULL under sk_callback_lock, and then the smc_sock itself
+can be freed via sock_put() in smc_release().
 
-Affected callbacks:
-  - mana_ib_dealloc_pd: skip mana_ib_gd_destroy_pd
-  - mana_ib_destroy_cq: skip mana_ib_gd_destroy_cq and queue destroy
-  - mana_ib_destroy_wq: skip mana_ib_destroy_queue
-  - mana_ib_destroy_qp_rss: skip mana_destroy_wq_obj per WQ
-  - mana_ib_destroy_qp_raw: skip mana_destroy_wq_obj
-  - mana_ib_dereg_mr: skip mana_ib_gd_destroy_mr
+This leads to two issues:
 
-Signed-off-by: Long Li <longli@microsoft.com>
+1) NULL pointer dereference: sk_user_data is NULL when
+   accessed.
+2) Use-after-free: sk_user_data is read as non-NULL, but the
+   smc_sock is freed before its fields (e.g., queued_smc_hs,
+   ori_af_ops) are accessed.
+
+The race window looks like this:
+
+  CPU A (softirq)              CPU B (process ctx)
+
+  tcp_v4_rcv()
+    TCP_NEW_SYN_RECV:
+    sk = req->rsk_listener
+    sock_hold(sk)
+    /* No lock on listener */
+                               smc_close_active():
+                                 write_lock_bh(cb_lock)
+                                 sk_user_data = NULL
+                                 write_unlock_bh(cb_lock)
+                                 ...
+                                 smc_clcsock_release()
+                                 sock_put(smc->sk) x2
+                                   -> smc_sock freed!
+    tcp_check_req()
+      smc_tcp_syn_recv_sock():
+        smc = user_data(sk)
+          -> NULL or dangling
+        smc->queued_smc_hs
+          -> crash!
+
+Note that the clcsock and smc_sock are two independent objects
+with separate refcounts. TCP stack holds a reference on the
+clcsock, which keeps it alive, but this does NOT prevent the
+smc_sock from being freed.
+
+Fix this by taking sk_callback_lock to read sk_user_data and
+then sock_hold(&smc->sk) under the lock to pin the smc_sock.
+The lock is released immediately after sock_hold(), rather
+than being held for the entire function, to avoid holding it
+across ori_af_ops->syn_recv_sock() which creates child
+sockets and could risk deadlocks with nested lock ordering.
+sock_put(&smc->sk) is called on all exit paths after the
+hold.
+
+[1] https://syzkaller.appspot.com/bug?extid=827ae2bfb3a3529333e9
+
+Fixes: 8270d9c21041 ("net/smc: Limit backlog connections")
+Reported-by: syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/67eaf9b8.050a0220.3c3d88.004a.GAE@google.com/T/
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 ---
- drivers/infiniband/hw/mana/cq.c   | 10 ++++++----
- drivers/infiniband/hw/mana/main.c | 12 +++++++++---
- drivers/infiniband/hw/mana/mr.c   |  8 +++++---
- drivers/infiniband/hw/mana/qp.c   |  9 ++++++---
- 4 files changed, 26 insertions(+), 13 deletions(-)
+ net/smc/af_smc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index b054684b8de7..315301bccb97 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -143,10 +143,12 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index d0119afcc6a1..21218b9b0f9a 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -131,7 +131,14 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 	struct smc_sock *smc;
+ 	struct sock *child;
  
- 	mana_ib_remove_cq_cb(mdev, cq);
- 
--	/* Ignore return code as there is not much we can do about it.
--	 * The error message is printed inside.
--	 */
--	mana_ib_gd_destroy_cq(mdev, cq);
-+	if (cq->cq_handle != INVALID_MANA_HANDLE) {
-+		/* Ignore return code as there is not much we can do about it.
-+		 * The error message is printed inside.
-+		 */
-+		mana_ib_gd_destroy_cq(mdev, cq);
++	read_lock_bh(&((struct sock *)sk)->sk_callback_lock);
+ 	smc = smc_clcsock_user_data(sk);
++	if (!smc) {
++		read_unlock_bh(&((struct sock *)sk)->sk_callback_lock);
++		return NULL;
 +	}
++	sock_hold(&smc->sk);
++	read_unlock_bh(&((struct sock *)sk)->sk_callback_lock);
  
- 	mana_ib_destroy_queue(mdev, &cq->queue);
- 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 61ce30aa9cb2..d60205184dba 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -147,6 +147,9 @@ int mana_ib_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 		mutex_unlock(&mana_ucontext->lock);
+ 	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs) >
+ 				sk->sk_max_ack_backlog)
+@@ -153,11 +160,13 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 		if (inet_csk(child)->icsk_af_ops == inet_csk(sk)->icsk_af_ops)
+ 			inet_csk(child)->icsk_af_ops = smc->ori_af_ops;
  	}
++	sock_put(&smc->sk);
+ 	return child;
  
-+	if (pd->pd_handle == INVALID_MANA_HANDLE)
-+		return 0;
-+
- 	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_PD, sizeof(req),
- 			     sizeof(resp));
- 
-@@ -280,9 +283,12 @@ void mana_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
- 	list_del_init(&mana_ucontext->dev_list);
- 	mutex_unlock(&mdev->ucontext_lock);
- 
--	ret = mana_gd_destroy_doorbell_page(gc, mana_ucontext->doorbell);
--	if (ret)
--		ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n", ret);
-+	if (mana_ucontext->doorbell != INVALID_DOORBELL) {
-+		ret = mana_gd_destroy_doorbell_page(gc, mana_ucontext->doorbell);
-+		if (ret)
-+			ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n",
-+				  ret);
-+	}
+ drop:
+ 	dst_release(dst);
+ 	tcp_listendrop(sk);
++	sock_put(&smc->sk);
+ 	return NULL;
  }
- 
- int mana_ib_create_kernel_queue(struct mana_ib_dev *mdev, u32 size, enum gdma_queue_type type,
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index 7189ccd41576..75bc2a9c366a 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -336,9 +336,11 @@ int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- 		mutex_unlock(&mana_ucontext->lock);
- 	}
- 
--	err = mana_ib_gd_destroy_mr(dev, mr->mr_handle);
--	if (err)
--		return err;
-+	if (mr->mr_handle != INVALID_MANA_HANDLE) {
-+		err = mana_ib_gd_destroy_mr(dev, mr->mr_handle);
-+		if (err)
-+			return err;
-+	}
- 
- 	if (mr->umem)
- 		ib_umem_release(mr->umem);
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index d590aca9b93a..76d59addb645 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -846,9 +846,11 @@ static int mana_ib_destroy_qp_rss(struct mana_ib_qp *qp,
- 	for (i = 0; i < (1 << ind_tbl->log_ind_tbl_size); i++) {
- 		ibwq = ind_tbl->ind_tbl[i];
- 		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
--		ibdev_dbg(&mdev->ib_dev, "destroying wq->rx_object %llu\n",
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "destroying wq->rx_object %llu\n",
- 			  wq->rx_object);
--		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
-+		if (wq->rx_object != INVALID_MANA_HANDLE)
-+			mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
- 	}
- 
- 	return 0;
-@@ -867,7 +869,8 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
- 	mpc = netdev_priv(ndev);
- 	pd = container_of(ibpd, struct mana_ib_pd, ibpd);
- 
--	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->qp_handle);
-+	if (qp->qp_handle != INVALID_MANA_HANDLE)
-+		mana_destroy_wq_obj(mpc, GDMA_SQ, qp->qp_handle);
- 
- 	mana_ib_destroy_queue(mdev, &qp->raw_sq);
  
 -- 
 2.43.0
