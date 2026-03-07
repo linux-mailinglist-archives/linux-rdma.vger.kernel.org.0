@@ -1,132 +1,151 @@
-Return-Path: <linux-rdma+bounces-17650-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17651-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2LZGEdZ/q2mwdgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17650-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 02:31:02 +0100
+	id oEi2KQKDq2n/dgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17651-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 02:44:34 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DACF32295D1
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 02:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 517B02296E2
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 02:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AD8863056D9E
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 01:30:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2E7793028EC7
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 01:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5349301010;
-	Sat,  7 Mar 2026 01:30:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rfJjYyzQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009DB2ED872;
+	Sat,  7 Mar 2026 01:44:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74002FBDFD;
-	Sat,  7 Mar 2026 01:30:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF59270EC1;
+	Sat,  7 Mar 2026 01:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772847016; cv=none; b=t+TnUjNUW8CMdE9iVkPvGWdLEui/NbtoouWZgKKO29PzlJEzncxUJwU5jG1RTEE8Imy0PZZkdM2CkonKKIRpGDP7bAV+JbCQydchUvT3ENdPmsn1rYio/Xb+OVYMznrydZSI9Xei4mBzq7MVt05ah/BGBHnUPtJUro/rvXwL6k4=
+	t=1772847868; cv=none; b=WFhc4MabDOmEVybRkR66qqAXQ/WxL4rzBz65+jZGTLLJ758bl5rk7caPGhPlzglc9eyS2H5wolKGsgHwso/wqswOlDU1AfZ6g/irntDvRzs36KpyZVgdNFHYcqGyOp7VgrgI87AvHpGPkTZpFWolPd6Mrzx/N8Cg8t7tdsg/gs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772847016; c=relaxed/simple;
-	bh=vCxoHh9kefBfUAQ06r10MYU3iAEPlMRyRXRHn54H8Rs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ln/fySilv581qBBcAyvRnP/WPsUZUgt/r/dNUTKgYucwzAsR74XeczaijtZpVP8w7c/kKHEe1IDHx0494vJdgQZKnQ9U0mVJR9LnK2aroqH5HqKn/uc3Ov2K5IXn3sxpdhGnFFUzfADE3hnaPhKqaWhqqi42lMzzpNQ1ghKzW20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rfJjYyzQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65120C2BC86;
-	Sat,  7 Mar 2026 01:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772847016;
-	bh=vCxoHh9kefBfUAQ06r10MYU3iAEPlMRyRXRHn54H8Rs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=rfJjYyzQMsZP1HSyk1HBwmxySaeSf23vy3iCfrzrBjUb5Q8WjGFv4B3qxt+x9ZEGH
-	 QXV8EW8tIX+btBxR+JYl5EI3Lvmk8TVdFBdHq/Zs6xtniCrGh6aWYmZlv7fnoRhK8e
-	 GGPGGvLhn++qRoOK0hy16YkHABW8XqAp9Mf3yO+DkZ1l3x+Z4m7AWP7yu7EEw9s8EA
-	 EvyJOiHRVq5SxUBL2eh7c+H/IFmlmPiOZCCFzJn7808LbCErcqyWVMNPdgNj5AQdcR
-	 pKsN+HfttiOFE32SIeqkkpBHLv+OH7wto16fdXCafkAfXDFqOS1CTMrbhuru9Ww28i
-	 +kpfTzAR9X1uQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA0953808200;
-	Sat,  7 Mar 2026 01:30:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1772847868; c=relaxed/simple;
+	bh=QF81WmpxRrWYRBaun7KIn1uyg/V2x5q4tPvGnG722MQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EL9z3vo8F89b/1lgaUrH5Dkhlkvowv/390GujfcmQo1T4LmOgazB6NQZuJj9L966wA+5I4h4HcblgpYnYppK37LO5KAaMN11z3oipNl0VY5Y1DQLkckmqMY/R7hGbf+bLMSDHXqOi6K3lBuqT1C8EDV4R0wWiSnbST8BXepqplk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id 8061A20B6F02; Fri,  6 Mar 2026 17:44:27 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8061A20B6F02
+From: Long Li <longli@microsoft.com>
+To: "K . Y . Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Long Li <longli@microsoft.com>
+Subject: [PATCH 0/8] RDMA/mana_ib: Handle service reset for RDMA resources
+Date: Fri,  6 Mar 2026 17:44:04 -0800
+Message-ID: <20260307014414.556256-1-longli@microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net V3] net/mlx5: Fix deadlock between devlink lock and
- esw->wq
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177284701530.117391.10276803824511895548.git-patchwork-notify@kernel.org>
-Date: Sat, 07 Mar 2026 01:30:15 +0000
-References: <20260305081019.1811100-1-tariqt@nvidia.com>
-In-Reply-To: <20260305081019.1811100-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
- dtatulea@nvidia.com, moshe@nvidia.com, cratiu@nvidia.com, horms@kernel.org
-X-Rspamd-Queue-Id: DACF32295D1
+X-Rspamd-Queue-Id: 517B02296E2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17650-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
 	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,davemloft.net,google.com,redhat.com,linux.microsoft.com,outlook.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17651-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.971];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email]
+	NEURAL_SPAM(0.00)[0.132];
+	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	R_DKIM_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hello:
+When the MANA hardware undergoes a service reset, the ETH auxiliary device
+(mana.eth) used by DPDK persists across the reset cycle — it is not removed
+and re-added like RC/UD/GSI QPs. This means userspace RDMA consumers such
+as DPDK have no way of knowing that firmware handles for their PD, CQ, WQ,
+QP and MR resources have become stale.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+This series adds per-ucontext resource tracking and a reset notification
+mechanism so that:
 
-On Thu, 5 Mar 2026 10:10:19 +0200 you wrote:
-> From: Cosmin Ratiu <cratiu@nvidia.com>
-> 
-> esw->work_queue executes esw_functions_changed_event_handler ->
-> esw_vfs_changed_event_handler and acquires the devlink lock.
-> 
-> .eswitch_mode_set (acquires devlink lock in devlink_nl_pre_doit) ->
-> mlx5_devlink_eswitch_mode_set -> mlx5_eswitch_disable_locked ->
-> mlx5_eswitch_event_handler_unregister -> flush_workqueue deadlocks
-> when esw_vfs_changed_event_handler executes.
-> 
-> [...]
+1. The RDMA driver is informed of service reset events via direct callbacks
+   from the ETH driver (reset_notify / resume_notify).
 
-Here is the summary with links:
-  - [net,V3] net/mlx5: Fix deadlock between devlink lock and esw->wq
-    https://git.kernel.org/netdev/net/c/aed763abf0e9
+2. On reset, all tracked firmware handles are invalidated (set to
+   INVALID_MANA_HANDLE), user doorbell mappings are revoked via
+   rdma_user_mmap_disassociate(), and IB_EVENT_PORT_ERR is dispatched to
+   each affected ucontext so userspace can detect the reset.
 
-You are awesome, thank you!
+3. Destroy callbacks check for INVALID_MANA_HANDLE and skip firmware
+   commands for resources already invalidated by the reset path,
+   preventing stale handles from being sent to firmware.
+
+4. A reset_rwsem serializes handle invalidation against resource creation
+   to avoid races between the reset path and new resource allocation.
+
+Patches 1-6 introduce per-ucontext tracking lists for each resource type.
+Patch 7 implements the reset/resume notification mechanism with rwsem
+serialization, mmap revocation, and IB event dispatch.
+Patch 8 adds INVALID_MANA_HANDLE checks in destroy callbacks.
+
+Tested with DPDK testpmd on Azure VM (linux-next-20260306) — confirmed
+IB_EVENT_PORT_ERR (type=10) and IB_EVENT_PORT_ACTIVE (type=9) are delivered
+to userspace during service reset, and testpmd tears down cleanly afterwards.
+
+Long Li (8):
+  RDMA/mana_ib: Track ucontext per device
+  RDMA/mana_ib: Track PD per ucontext
+  RDMA/mana_ib: Track CQ per ucontext
+  RDMA/mana_ib: Track WQ per ucontext
+  RDMA/mana_ib: Track QP per ucontext
+  RDMA/mana_ib: Track MR per ucontext
+  RDMA/mana_ib: Notify service reset events to RDMA devices
+  RDMA/mana_ib: Skip firmware commands for invalidated handles
+
+ drivers/infiniband/hw/mana/cq.c               |  44 +++++--
+ drivers/infiniband/hw/mana/device.c           | 105 ++++++++++++++++++
+ drivers/infiniband/hw/mana/main.c             |  56 +++++++++-
+ drivers/infiniband/hw/mana/mana_ib.h          |  19 ++++
+ drivers/infiniband/hw/mana/mr.c               |  33 +++++-
+ drivers/infiniband/hw/mana/qp.c               |  61 +++++++---
+ drivers/infiniband/hw/mana/wq.c               |  24 ++++
+ drivers/net/ethernet/microsoft/mana/mana_en.c |  14 ++-
+ include/net/mana/gdma.h                       |   6 +
+ 9 files changed, 331 insertions(+), 31 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+2.43.0
 
