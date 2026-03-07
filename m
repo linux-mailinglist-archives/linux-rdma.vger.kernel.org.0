@@ -1,70 +1,79 @@
-Return-Path: <linux-rdma+bounces-17663-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17664-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eD6AGfeZq2nYegEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17663-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 04:22:31 +0100
+	id WP8hCRKaq2nYegEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17664-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 04:22:58 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC9F229D58
-	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 04:22:30 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C9E229D6F
+	for <lists+linux-rdma@lfdr.de>; Sat, 07 Mar 2026 04:22:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 44CDD301E7D6
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 03:22:27 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 40FC730237B0
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2026 03:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002AE1E7C23;
-	Sat,  7 Mar 2026 03:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756FD306486;
+	Sat,  7 Mar 2026 03:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HcKoFVbR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XQI/Ew1Q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3954E2EF67A
-	for <linux-rdma@vger.kernel.org>; Sat,  7 Mar 2026 03:22:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357E22EF67A;
+	Sat,  7 Mar 2026 03:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772853743; cv=none; b=JK9oPKspBPRj8b1SFQKlOsjwtXD/vWBG5CINxlRdHR3oKWUNN/LwlAykeZ3Bpye878j/3B19ZDQn9UjaY0wS1eARr86wTqxntphmkB0Zq9Afds+ly3YSfgX9a5x2BSPzYMQVOt2bY9S1sKEJoHDVWGNyjDklrqrP+KMT+l/9eEQ=
+	t=1772853751; cv=none; b=sj/DAUSqO2vUYLipDHH//XQAs6tI6V1KbPndIjS30+hLQDdVLfp/vxk7JYq/K3QkO0KrE/WcUZYzFfLdQCYphykofj1wn/ZoakCnPymHZy5eiq7rd+rM2z7Y5P/o6ok1GLePet9k0Hs/uALdJsGJIjnwCvdVJ5vYyw1OF5UVRLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772853743; c=relaxed/simple;
-	bh=VQwpztTD6X2+N2GcGFC+cfF0qdSug6p/2KKpCFyCe7Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t+di/09aWp01xRP484l+gyOv/fFT2UJQ5ad6AP6gmUDpGP6uUk5vwuO6Syxi+6r91WWHiaX4tnFWZkYADVxtZX5LdZ1t99Nypk5Cv5Fif+URZ/m/lrZ3EBCPpDBnSCUuHK1GWHWCsD+k7WxyTQGIU3N1Q8OocPq6jQH9y+Ey51o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HcKoFVbR; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772853730;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=QJBoqx1LHyd0/cvODH/iQXRMAkmqnF6l6wgjSb0JHZ0=;
-	b=HcKoFVbRz57KHwAFkUutc+hPS9luMCnbkUmROaaPHfjaWWJT8en1f2qNtW+m4hW3QcRzWM
-	rVQ0BYBLCZMYOXnAPaGh0JxjUiEyxo7rR3d6B4Lf6av/sd/rgct5SFnTL/qs2VKdzgS0Tk
-	SQrOt6mUH9I0UsUi2khhjwpHggm06n8=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: netdev@vger.kernel.org
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
-	syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
+	s=arc-20240116; t=1772853751; c=relaxed/simple;
+	bh=f7vsilBDwEzuk1bMRooPqG0F25UkXjIOv3nKksiKV4Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HMqYIit037LTDavM844tD7kVIrhYAbz8bV7GhRmRSvwJq3EAKNAouPzY2sMC+xCBJMnhT4X9yUZ3mpRFSoIf6iQH878m2+bCDzHQ2PKbhW9gOsKr1muE4kRFZab87YyLthnCCFC79wACpqZB0JgkqHpFcChPXSUjlvuHknoXhRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XQI/Ew1Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFAA4C19422;
+	Sat,  7 Mar 2026 03:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772853750;
+	bh=f7vsilBDwEzuk1bMRooPqG0F25UkXjIOv3nKksiKV4Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XQI/Ew1QbJ3TWlRy3ljDCaea11ic1tkjQETXwWqVHHsO4ANtHEi5T2qNJckE2AvwW
+	 DrmtokVMviwjXCyIP1ycb4mn8PQt6VyNmzuJYv0L5UpND3376yaTH9ZFT7EBfeB76c
+	 1ml4CXHPIL67lpuy+0vAA+2SLnckYwyvOsNcQBV7l8vRq1BsX3puluEXoZRELhd15E
+	 14lK3FXq8qVse/Hy4s6O878I8zFWenzPQJpKa9yzp9oX+HPCn6uqaeIfQJN2Zkf/Af
+	 7T/d9jBOVs5hCOIJ5gxJqSMr3zxa5eZyAkw1r7aU+ytZKrRa0djXcGI5DOW8N5sR7J
+	 /FXMhPghoScvQ==
+From: Jakub Kicinski <kuba@kernel.org>
+To: ernis@linux.microsoft.com
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	yury.norov@gmail.com,
+	kys@microsoft.com,
+	decui@microsoft.com,
+	kees@kernel.org,
+	longli@microsoft.com,
+	dipayanroy@linux.microsoft.com,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net v1] net/smc: fix NULL dereference and UAF in smc_tcp_syn_recv_sock()
-Date: Sat,  7 Mar 2026 11:21:57 +0800
-Message-ID: <20260307032158.372165-1-jiayuan.chen@linux.dev>
+	kotaranov@microsoft.com,
+	andrew+netdev@lunn.ch,
+	linux-hyperv@vger.kernel.org,
+	edumazet@google.com,
+	haiyangz@microsoft.com,
+	ssengar@linux.microsoft.com,
+	shradhagupta@linux.microsoft.com,
+	horms@kernel.org,
+	shirazsaleem@microsoft.com,
+	wei.liu@kernel.org
+Subject: Re: [net-next] net: mana: Expose hardware diagnostic info via debugfs
+Date: Fri,  6 Mar 2026 19:22:28 -0800
+Message-ID: <20260307032228.1379456-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260305205252.470089-1-ernis@linux.microsoft.com>
+References: <20260305205252.470089-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,139 +81,104 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: CEC9F229D58
+X-Rspamd-Queue-Id: 73C9E229D6F
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-17663-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,redhat.com,vger.kernel.org,gmail.com,microsoft.com,linux.microsoft.com,davemloft.net,lunn.ch,google.com];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	TAGGED_FROM(0.00)[bounces-17664-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-0.993];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,827ae2bfb3a3529333e9];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,linux.dev:dkim,linux.dev:email,linux.dev:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,appspotmail.com:email]
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-0.996];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:url,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Syzkaller reported a panic in smc_tcp_syn_recv_sock() [1].
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 
-smc_tcp_syn_recv_sock() is called in the TCP receive path
-(softirq) via icsk_af_ops->syn_recv_sock on the clcsock (TCP
-listening socket). It reads sk_user_data to get the smc_sock
-pointer. However, when the SMC listen socket is being closed
-concurrently, smc_close_active() sets clcsock->sk_user_data
-to NULL under sk_callback_lock, and then the smc_sock itself
-can be freed via sock_put() in smc_release().
-
-This leads to two issues:
-
-1) NULL pointer dereference: sk_user_data is NULL when
-   accessed.
-2) Use-after-free: sk_user_data is read as non-NULL, but the
-   smc_sock is freed before its fields (e.g., queued_smc_hs,
-   ori_af_ops) are accessed.
-
-The race window looks like this:
-
-  CPU A (softirq)              CPU B (process ctx)
-
-  tcp_v4_rcv()
-    TCP_NEW_SYN_RECV:
-    sk = req->rsk_listener
-    sock_hold(sk)
-    /* No lock on listener */
-                               smc_close_active():
-                                 write_lock_bh(cb_lock)
-                                 sk_user_data = NULL
-                                 write_unlock_bh(cb_lock)
-                                 ...
-                                 smc_clcsock_release()
-                                 sock_put(smc->sk) x2
-                                   -> smc_sock freed!
-    tcp_check_req()
-      smc_tcp_syn_recv_sock():
-        smc = user_data(sk)
-          -> NULL or dangling
-        smc->queued_smc_hs
-          -> crash!
-
-Note that the clcsock and smc_sock are two independent objects
-with separate refcounts. TCP stack holds a reference on the
-clcsock, which keeps it alive, but this does NOT prevent the
-smc_sock from being freed.
-
-Fix this by taking sk_callback_lock to read sk_user_data and
-then sock_hold(&smc->sk) under the lock to pin the smc_sock.
-The lock is released immediately after sock_hold(), rather
-than being held for the entire function, to avoid holding it
-across ori_af_ops->syn_recv_sock() which creates child
-sockets and could risk deadlocks with nested lock ordering.
-sock_put(&smc->sk) is called on all exit paths after the
-hold.
-
-[1] https://syzkaller.appspot.com/bug?extid=827ae2bfb3a3529333e9
-
-Fixes: 8270d9c21041 ("net/smc: Limit backlog connections")
-Reported-by: syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/67eaf9b8.050a0220.3c3d88.004a.GAE@google.com/T/
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
 ---
- net/smc/af_smc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+net: mana: Expose hardware diagnostic info via debugfs
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index d0119afcc6a1..21218b9b0f9a 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -131,7 +131,14 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
- 	struct smc_sock *smc;
- 	struct sock *child;
- 
-+	read_lock_bh(&((struct sock *)sk)->sk_callback_lock);
- 	smc = smc_clcsock_user_data(sk);
-+	if (!smc) {
-+		read_unlock_bh(&((struct sock *)sk)->sk_callback_lock);
-+		return NULL;
-+	}
-+	sock_hold(&smc->sk);
-+	read_unlock_bh(&((struct sock *)sk)->sk_callback_lock);
- 
- 	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs) >
- 				sk->sk_max_ack_backlog)
-@@ -153,11 +160,13 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
- 		if (inet_csk(child)->icsk_af_ops == inet_csk(sk)->icsk_af_ops)
- 			inet_csk(child)->icsk_af_ops = smc->ori_af_ops;
- 	}
-+	sock_put(&smc->sk);
- 	return child;
- 
- drop:
- 	dst_release(dst);
- 	tcp_listendrop(sk);
-+	sock_put(&smc->sk);
- 	return NULL;
- }
- 
+This commit adds debugfs entries to expose hardware configuration and
+diagnostic information for the MANA driver. It creates device-level and
+port-level debugfs entries to aid in debugging initialization and runtime
+operations.
+
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index aef8612b73cb..fb513d7802cb 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -152,6 +152,11 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+>  	if (gc->max_num_queues > gc->num_msix_usable - 1)
+>  		gc->max_num_queues = gc->num_msix_usable - 1;
+>
+> +	debugfs_create_u32("num_msix_usable", 0400, gc->mana_pci_debugfs,
+> +			   &gc->num_msix_usable);
+> +	debugfs_create_u32("max_num_queues", 0400, gc->mana_pci_debugfs,
+> +			   &gc->max_num_queues);
+> +
+>  	return 0;
+>  }
+>
+> @@ -1222,6 +1227,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+>  		return err ? err : -EPROTO;
+>  	}
+>  	gc->pf_cap_flags1 = resp.pf_cap_flags1;
+> +	gc->gdma_protocol_ver = resp.gdma_protocol_ver;
+> +
+> +	debugfs_create_x64("gdma_protocol_ver", 0400, gc->mana_pci_debugfs,
+> +			   &gc->gdma_protocol_ver);
+> +	debugfs_create_x64("pf_cap_flags1", 0400, gc->mana_pci_debugfs,
+> +			   &gc->pf_cap_flags1);
+> +
+
+Do these debugfs entries get recreated on every suspend/resume cycle?
+
+Both mana_gd_query_max_resources() and mana_gd_verify_vf_version() are
+called from mana_gd_setup() during device initialization. On suspend,
+mana_gd_suspend() calls mana_gd_cleanup() which doesn't remove these
+debugfs entries. When mana_gd_resume() calls mana_gd_setup() again, it
+attempts to create the same debugfs entries a second time.
+
+This means debugfs_start_creating() in fs/debugfs/inode.c will print an
+error for each duplicate file:
+
+    "'num_msix_usable' already exists in 'mana/<slot>/'"
+    "'max_num_queues' already exists in 'mana/<slot>/'"
+    "'gdma_protocol_ver' already exists in 'mana/<slot>/'"
+    "'pf_cap_flags1' already exists in 'mana/<slot>/'"
+
+This produces 4 error messages in dmesg on every suspend/resume cycle,
+contradicting the commit message's goal of operating "without adding
+noise to dmesg."
+
+Should these device-level entries be removed during suspend (in
+mana_gd_cleanup or mana_gd_suspend), or should their creation be moved
+to mana_gd_probe where they're only created once?
+
+[ ... ]
 -- 
-2.43.0
-
+pw-bot: cr
 
