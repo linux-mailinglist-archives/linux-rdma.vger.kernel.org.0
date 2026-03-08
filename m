@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-17713-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17714-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0C6pAm5urWnN2wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17713-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:41:18 +0100
+	id 2GH4DtpurWme2wEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17714-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:43:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9212303F6
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:41:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDB7323042C
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2DB013023061
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 12:40:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4A318304E82D
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 12:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F00C371042;
-	Sun,  8 Mar 2026 12:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4A136F439;
+	Sun,  8 Mar 2026 12:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qkF6dkq1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yr9WkOYr"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E334C33D50A;
-	Sun,  8 Mar 2026 12:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0ED2314B76;
+	Sun,  8 Mar 2026 12:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772973634; cv=none; b=Ygk11H0gDNDtFuDU28eNOV5ALSsCxoyh3Y/Gx53zT2JaXqBW8akEEYQ3CRuh3QmyuE1RzVkUgqlJXjXrgJ2w5aAKL10JP1wS/3RPZDpsY9B40ZVLu0jy36GFmH4Xeflh70t1PSRb5dqYBIBYpKJ5peCi8FJil5LUDUb5VHhpwXI=
+	t=1772973638; cv=none; b=QxZR+KGuuyHKBh7uLnBBB3xA657ihWzidMf91Dz/mbp50tXgBoX8YMufzUGEiJsdhcpiqh3io/+F18Hezvh7Yd6CBDLobuRQ26J8hmvnJRQtx16QaKJA0b4yWkUhaA2PPKCjx/VbgrnRaTLr1KK6SqScajuRi2Us74W9Al43ulU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772973634; c=relaxed/simple;
-	bh=QZ6V/K2U5F+/TrGWi0L8Ef0LSlOYY9J/mYNVvgnlP60=;
+	s=arc-20240116; t=1772973638; c=relaxed/simple;
+	bh=n0zmjGWD/AHlp3pJeJha/3C6wqT5Iw+GfJKYJAZPf/s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L38Ckzgpw0MggKZ5XLhotseZjc+rWb4Z1wMIgrjnXHNpbWU9w+yC0fp2F7YZSeJH1IgTNJHZOlXZNv5bShV/8NrG6CHG9fnsJCKxQS9ns1rNFwU9euBJgTgTbveXrUTIOaTRS7eEb7dVWKMOacsGuQo7ycpQ6ASS2fPdOt+noUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qkF6dkq1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF82C19423;
-	Sun,  8 Mar 2026 12:40:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UJCSx43JeQXViEDMMIz6iK+7fHHhWDb7ipwaqrrt5CDanIBTkbTq1cWsZvyD7IPLoBR5ZDvHB3aSg3G+wqppILfmEu0X/2ZDvq+Pag6Xxt6crc2BC1dpKSFSgxcdknd5efA0YJz0600gBEY3n84/SuKwJBh6FZbPILMklQvqyts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yr9WkOYr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F48C116C6;
+	Sun,  8 Mar 2026 12:40:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772973633;
-	bh=QZ6V/K2U5F+/TrGWi0L8Ef0LSlOYY9J/mYNVvgnlP60=;
+	s=k20201202; t=1772973638;
+	bh=n0zmjGWD/AHlp3pJeJha/3C6wqT5Iw+GfJKYJAZPf/s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qkF6dkq1fRPeKYrmo0N4OEYuZNpSyz35fUKMx2vVrZu184/T3qzNiBCANNtpSccbB
-	 9kjK4UYO5vNYtkUgluusiMZsdTZmrpp+ADkAYC0SjU2J85I1zqIAlulYGrsxGIfkwG
-	 1e/FJ8NbGgzLYBc+aQZAb4Nt3+2ySezS7GL2H85BqywdoKa7QoEUetDk6SD/O2AobO
-	 JlmJDz2vXunzPu2yDvcPgqrAKEmvgdJtJ7aOW0mw2nIXOUBoOHhS5IhvkBwuxjly4X
-	 WIlROSxriuOAlI9CInawgvLAOWI4FtXf3auXUm66VKDfBPK8JQcqTWZapuE0V8lsp1
-	 Y/gfieldkBfDQ==
+	b=Yr9WkOYrzEoWNCFvChWYOtbE8WjQg5ttn+4w5/SsU7EvtteVSSi9gBxUTWlE0XRHt
+	 uIwbvqnJxS7UAupXiUl66igQ2GLxj9vjZnkwxEQQBk04ye6SOg59zlcNQtl4M3Trkf
+	 UL3orFkNx3kwo2+pa4loPbDEt4oG5/LhBCt4b2wgXA5dj0LKLcoscBXUXI25J+rT08
+	 khf/NECx/XPzEMpD89OvLUPz/tHxblhRBFCUZObL3kfDPC7ni/qXgC0YXrrVHhNusS
+	 kZ1o5DmLRCGEmzzNiPCPK/QehgUfpdXagthf83bydAHOrdjSFhMLvqQR1vwRcwmPo/
+	 4JAdoS66QpV+A==
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To: netdev@vger.kernel.org,
 	Donald Hunter <donald.hunter@gmail.com>,
@@ -66,9 +66,9 @@ Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	Russell King <linux@armlinux.org.uk>
-Subject: [RFC net-next v2 2/6] ethtool: Add loopback GET/SET netlink implementation
-Date: Sun,  8 Mar 2026 13:40:08 +0100
-Message-ID: <20260308124016.3134012-3-bjorn@kernel.org>
+Subject: [RFC net-next v2 3/6] ethtool: add CMIS loopback helpers for module loopback control
+Date: Sun,  8 Mar 2026 13:40:09 +0100
+Message-ID: <20260308124016.3134012-4-bjorn@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260308124016.3134012-1-bjorn@kernel.org>
 References: <20260308124016.3134012-1-bjorn@kernel.org>
@@ -80,21 +80,21 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 7D9212303F6
+X-Rspamd-Queue-Id: CDB7323042C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.96 / 15.00];
+X-Spamd-Result: default: False [0.90 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.63)[subject];
+	R_MIXED_CHARSET(0.56)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17713-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17714-lists,linux-rdma=lfdr.de];
 	FREEMAIL_TO(0.00)[vger.kernel.org,gmail.com,kernel.org,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -106,408 +106,441 @@ X-Spamd-Result: default: False [0.96 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.959];
+	NEURAL_HAM(-0.00)[-0.967];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[page.data:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Add the kernel-side ETHTOOL_MSG_LOOPBACK_GET,
-ETHTOOL_MSG_LOOPBACK_SET, and ETHTOOL_MSG_LOOPBACK_NTF handlers using
-the standard ethnl_request_ops infrastructure.
+Add CMIS loopback functions and wire them into loopback.c for the
+MODULE component:
 
-GET collects loopback entries from per-component helpers via
-loopback_get_entries(). SET parses the nested entry attributes,
-dispatches each to loopback_set_one(), and only sends a notification
-when the state is changed.
+ - ethtool_cmis_get_loopback(): reads Page 13h capabilities and
+   current state, appends one entry per supported loopback point
+   ("cmis-host" and/or "cmis-media").
 
-No components are wired yet.
+ - ethtool_cmis_set_loopback_one(): resolves name to a pair of control
+   byte indices, validates direction, and writes the Page 13h control
+   bytes (0xFF = all lanes on, 0x00 = off).
+
+Directions are mutually exclusive: switching from near-end to far-end
+first disables the active direction in a separate EEPROM write, then
+enables the new one. Requesting multiple direction flags is rejected.
+
+CMIS register mapping (Page 13h, Bytes 180-183):
+
+ - MODULE, "cmis-host",  near-end  ->  Host Side Input    (Byte 183)
+ - MODULE, "cmis-host",  far-end   ->  Host Side Output   (Byte 182)
+ - MODULE, "cmis-media", near-end  ->  Media Side Input   (Byte 181)
+ - MODULE, "cmis-media", far-end   ->  Media Side Output  (Byte 180)
+
+The helpers work entirely over get/set_module_eeprom_by_page, so any
+driver with EEPROM page access gets module loopback without new
+ethtool_ops or driver changes. SET is rejected when firmware flashing
+is in progress or the interface is UP.
 
 Signed-off-by: Björn Töpel <bjorn@kernel.org>
 ---
- include/linux/ethtool.h |  28 +++++
- net/ethtool/Makefile    |   2 +-
- net/ethtool/loopback.c  | 246 ++++++++++++++++++++++++++++++++++++++++
- net/ethtool/netlink.c   |  20 ++++
- net/ethtool/netlink.h   |   3 +
- 5 files changed, 298 insertions(+), 1 deletion(-)
- create mode 100644 net/ethtool/loopback.c
+ net/ethtool/Makefile        |   2 +-
+ net/ethtool/cmis_loopback.c | 338 ++++++++++++++++++++++++++++++++++++
+ net/ethtool/loopback.c      |   4 +-
+ net/ethtool/netlink.h       |   5 +
+ 4 files changed, 347 insertions(+), 2 deletions(-)
+ create mode 100644 net/ethtool/cmis_loopback.c
 
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 83c375840835..b1ebfe22c355 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -846,6 +846,34 @@ void ethtool_mmsv_set_mm(struct ethtool_mmsv *mmsv, struct ethtool_mm_cfg *cfg);
- void ethtool_mmsv_init(struct ethtool_mmsv *mmsv, struct net_device *dev,
- 		       const struct ethtool_mmsv_ops *ops);
- 
-+/**
-+ * struct ethtool_loopback_entry - Per-component loopback configuration
-+ * @id: Optional component instance identifier, 0 means not specified
-+ * @supported: Bitmask of supported directions
-+ * @component: Loopback component
-+ * @direction: Current loopback direction, 0 means disabled
-+ * @name: Subsystem-specific name for the loopback point
-+ */
-+struct ethtool_loopback_entry {
-+	enum ethtool_loopback_component component;
-+	u32 id;
-+	u32 supported;
-+	u32 direction;
-+	char name[ETH_GSTRING_LEN];
-+};
-+
-+#define ETHTOOL_LOOPBACK_MAX_ENTRIES	16
-+
-+/**
-+ * struct ethtool_loopback_cfg - Loopback configuration
-+ * @entries: Array of per-component loopback configurations
-+ * @n_entries: Number of valid entries in the array
-+ */
-+struct ethtool_loopback_cfg {
-+	struct ethtool_loopback_entry entries[ETHTOOL_LOOPBACK_MAX_ENTRIES];
-+	u32 n_entries;
-+};
-+
- /**
-  * struct ethtool_rxfh_param - RXFH (RSS) parameters
-  * @hfunc: Defines the current RSS hash function used by HW (or to be set to).
 diff --git a/net/ethtool/Makefile b/net/ethtool/Makefile
-index 629c10916670..ef534b55d724 100644
+index ef534b55d724..2f821c7875e1 100644
 --- a/net/ethtool/Makefile
 +++ b/net/ethtool/Makefile
 @@ -9,4 +9,4 @@ ethtool_nl-y	:= netlink.o bitset.o strset.o linkinfo.o linkmodes.o rss.o \
  		   channels.o coalesce.o pause.o eee.o tsinfo.o cabletest.o \
  		   tunnels.o fec.o eeprom.o stats.o phc_vclocks.o mm.o \
  		   module.o cmis_fw_update.o cmis_cdb.o pse-pd.o plca.o \
--		   phy.o tsconfig.o mse.o
-+		   phy.o tsconfig.o mse.o loopback.o
-diff --git a/net/ethtool/loopback.c b/net/ethtool/loopback.c
+-		   phy.o tsconfig.o mse.o loopback.o
++		   phy.o tsconfig.o mse.o loopback.o cmis_loopback.o
+diff --git a/net/ethtool/cmis_loopback.c b/net/ethtool/cmis_loopback.c
 new file mode 100644
-index 000000000000..1c6d27857f8a
+index 000000000000..2114c85f507f
 --- /dev/null
-+++ b/net/ethtool/loopback.c
-@@ -0,0 +1,246 @@
++++ b/net/ethtool/cmis_loopback.c
+@@ -0,0 +1,338 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +
-+#include "netlink.h"
++/* CMIS loopback helpers for drivers implementing ethtool
++ * get/set_loopback.
++ *
++ * Maps the generic ethtool loopback model to CMIS Page 13h registers
++ * (CMIS 5.3, Table 8-128).
++ *
++ * Capabilities are read from Page 13h Byte 128, with Page 13h
++ * availability checked via Page 01h Byte 142 bit 5.
++ */
++
++#include <linux/ethtool.h>
++#include <linux/sfp.h>
++
 +#include "common.h"
++#include "module_fw.h"
++#include "cmis.h"
 +
-+struct loopback_req_info {
-+	struct ethnl_req_info base;
-+};
++/* CMIS Page 00h, Byte 0: Physical module identifier */
++#define CMIS_PHYS_ID_PAGE		0x00
++#define CMIS_PHYS_ID_OFFSET		0x00
 +
-+struct loopback_reply_data {
-+	struct ethnl_reply_data base;
-+	struct ethtool_loopback_cfg cfg;
-+};
++/* CMIS Page 01h, Byte 142: Diagnostic Pages Support */
++#define CMIS_DIAG_SUPPORT_PAGE		0x01
++#define CMIS_DIAG_SUPPORT_OFFSET	0x8E
++#define CMIS_DIAG_PAGE13_BIT		BIT(5)
 +
-+#define LOOPBACK_REPDATA(__reply_base) \
-+	container_of(__reply_base, struct loopback_reply_data, base)
++/* CMIS Page 13h, Byte 128: Loopback Capability Advertisement */
++#define CMIS_LB_CAPS_PAGE		0x13
++#define CMIS_LB_CAPS_OFFSET		0x80
++#define CMIS_LB_CAP_MEDIA_OUTPUT	BIT(0)
++#define CMIS_LB_CAP_MEDIA_INPUT		BIT(1)
++#define CMIS_LB_CAP_HOST_OUTPUT		BIT(2)
++#define CMIS_LB_CAP_HOST_INPUT		BIT(3)
 +
-+/* GET */
++/* CMIS Page 13h, Bytes 180-183: Per-Lane Loopback Control
++ *   Byte 180 (0xB4): Media Side Output  -> MODULE, "cmis-media", far-end
++ *   Byte 181 (0xB5): Media Side Input   -> MODULE, "cmis-media", near-end
++ *   Byte 182 (0xB6): Host Side Output   -> MODULE, "cmis-host",  far-end
++ *   Byte 183 (0xB7): Host Side Input    -> MODULE, "cmis-host",  near-end
++ */
++#define CMIS_LB_CTRL_PAGE		0x13
++#define CMIS_LB_CTRL_OFFSET		0xB4
++#define CMIS_LB_CTRL_LEN		4
++#define CMIS_LB_CTRL_IDX_MEDIA_OUTPUT	0
++#define CMIS_LB_CTRL_IDX_MEDIA_INPUT	1
++#define CMIS_LB_CTRL_IDX_HOST_OUTPUT	2
++#define CMIS_LB_CTRL_IDX_HOST_INPUT	3
 +
-+static const struct nla_policy
-+ethnl_loopback_entry_policy[ETHTOOL_A_LOOPBACK_ENTRY_MAX + 1] = {
-+	[ETHTOOL_A_LOOPBACK_ENTRY_COMPONENT] =
-+		NLA_POLICY_MAX(NLA_U32, ETHTOOL_LOOPBACK_COMPONENT_MODULE),
-+	[ETHTOOL_A_LOOPBACK_ENTRY_ID] =
-+		NLA_POLICY_MIN(NLA_U32, 1),
-+	[ETHTOOL_A_LOOPBACK_ENTRY_NAME] =
-+		{ .type = NLA_NUL_STRING, .len = ETH_GSTRING_LEN - 1 },
-+	[ETHTOOL_A_LOOPBACK_ENTRY_DIRECTION] =
-+		NLA_POLICY_MASK(NLA_U32, ETHTOOL_LOOPBACK_DIRECTION_NEAR_END |
-+				ETHTOOL_LOOPBACK_DIRECTION_FAR_END),
-+};
++#define CMIS_LB_NAME_HOST		"cmis-host"
++#define CMIS_LB_NAME_MEDIA		"cmis-media"
 +
-+const struct nla_policy ethnl_loopback_get_policy[] = {
-+	[ETHTOOL_A_LOOPBACK_HEADER] = NLA_POLICY_NESTED(ethnl_header_policy),
-+};
-+
-+static int loopback_get_entries(struct net_device *dev,
-+				struct ethtool_loopback_cfg *cfg)
++static bool cmis_is_module(u8 phys_id)
 +{
-+	return 0;
-+}
-+
-+static int loopback_prepare_data(const struct ethnl_req_info *req_base,
-+				 struct ethnl_reply_data *reply_base,
-+				 const struct genl_info *info)
-+{
-+	struct loopback_reply_data *data = LOOPBACK_REPDATA(reply_base);
-+	struct net_device *dev = reply_base->dev;
-+	int ret;
-+
-+	ret = ethnl_ops_begin(dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = loopback_get_entries(dev, &data->cfg);
-+
-+	ethnl_ops_complete(dev);
-+
-+	return ret;
-+}
-+
-+static int loopback_reply_size(const struct ethnl_req_info *req_base,
-+			       const struct ethnl_reply_data *reply_base)
-+{
-+	const struct loopback_reply_data *data = LOOPBACK_REPDATA(reply_base);
-+	int entry_size;
-+
-+	/* Per-entry: nest + component + id + name + supported + direction */
-+	entry_size = nla_total_size(0) +		/* nest */
-+		nla_total_size(sizeof(u32)) +		/* component */
-+		nla_total_size(sizeof(u32)) +		/* id */
-+		nla_total_size(sizeof(u32)) +		/* supported */
-+		nla_total_size(sizeof(u32)) +		/* direction */
-+		nla_total_size(ETH_GSTRING_LEN);	/* name */
-+
-+	return data->cfg.n_entries * entry_size;
-+}
-+
-+static int loopback_fill_entry(struct sk_buff *skb,
-+			       const struct ethtool_loopback_entry *entry)
-+{
-+	struct nlattr *nest;
-+
-+	nest = nla_nest_start(skb, ETHTOOL_A_LOOPBACK_ENTRY);
-+	if (!nest)
-+		return -EMSGSIZE;
-+
-+	if (nla_put_u32(skb, ETHTOOL_A_LOOPBACK_ENTRY_COMPONENT,
-+			entry->component))
-+		goto err_cancel;
-+
-+	if (entry->id &&
-+	    nla_put_u32(skb, ETHTOOL_A_LOOPBACK_ENTRY_ID, entry->id))
-+		goto err_cancel;
-+
-+	if (nla_put_u32(skb, ETHTOOL_A_LOOPBACK_ENTRY_SUPPORTED,
-+			entry->supported) ||
-+	    nla_put_u32(skb, ETHTOOL_A_LOOPBACK_ENTRY_DIRECTION,
-+			entry->direction) ||
-+	    nla_put_string(skb, ETHTOOL_A_LOOPBACK_ENTRY_NAME,
-+			   entry->name))
-+		goto err_cancel;
-+
-+	nla_nest_end(skb, nest);
-+	return 0;
-+
-+err_cancel:
-+	nla_nest_cancel(skb, nest);
-+	return -EMSGSIZE;
-+}
-+
-+static int loopback_fill_reply(struct sk_buff *skb,
-+			       const struct ethnl_req_info *req_base,
-+			       const struct ethnl_reply_data *reply_base)
-+{
-+	const struct loopback_reply_data *data = LOOPBACK_REPDATA(reply_base);
-+	const struct ethtool_loopback_cfg *cfg = &data->cfg;
-+	u32 i;
-+
-+	for (i = 0; i < cfg->n_entries; i++) {
-+		int ret = loopback_fill_entry(skb, &cfg->entries[i]);
-+
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+/* SET */
-+
-+const struct nla_policy ethnl_loopback_set_policy[ETHTOOL_A_LOOPBACK_ENTRY + 1] = {
-+	[ETHTOOL_A_LOOPBACK_HEADER] = NLA_POLICY_NESTED(ethnl_header_policy),
-+	[ETHTOOL_A_LOOPBACK_ENTRY]  = NLA_POLICY_NESTED(ethnl_loopback_entry_policy),
-+};
-+
-+static int loopback_parse_entry(struct nlattr *attr,
-+				struct ethtool_loopback_entry *entry,
-+				struct netlink_ext_ack *extack)
-+{
-+	struct nlattr *tb[ETHTOOL_A_LOOPBACK_ENTRY_MAX + 1];
-+	int ret;
-+
-+	ret = nla_parse_nested(tb, ETHTOOL_A_LOOPBACK_ENTRY_MAX, attr,
-+			       ethnl_loopback_entry_policy, extack);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!tb[ETHTOOL_A_LOOPBACK_ENTRY_COMPONENT]) {
-+		NL_SET_ERR_MSG_ATTR(extack, attr,
-+				    "loopback component is required");
-+		return -EINVAL;
-+	}
-+
-+	entry->component = nla_get_u32(tb[ETHTOOL_A_LOOPBACK_ENTRY_COMPONENT]);
-+
-+	if (tb[ETHTOOL_A_LOOPBACK_ENTRY_ID])
-+		entry->id = nla_get_u32(tb[ETHTOOL_A_LOOPBACK_ENTRY_ID]);
-+
-+	if (!tb[ETHTOOL_A_LOOPBACK_ENTRY_NAME]) {
-+		NL_SET_ERR_MSG_ATTR(extack, attr,
-+				    "loopback name is required");
-+		return -EINVAL;
-+	}
-+	nla_strscpy(entry->name, tb[ETHTOOL_A_LOOPBACK_ENTRY_NAME],
-+		    sizeof(entry->name));
-+
-+	if (!tb[ETHTOOL_A_LOOPBACK_ENTRY_DIRECTION]) {
-+		NL_SET_ERR_MSG_ATTR(extack, attr,
-+				    "loopback direction is required");
-+		return -EINVAL;
-+	}
-+
-+	entry->direction = nla_get_u32(tb[ETHTOOL_A_LOOPBACK_ENTRY_DIRECTION]);
-+
-+	return 0;
-+}
-+
-+static int loopback_set_one(struct net_device *dev,
-+			    const struct ethtool_loopback_entry *entry,
-+			    struct netlink_ext_ack *extack)
-+{
-+	switch (entry->component) {
++	switch (phys_id) {
++	case SFF8024_ID_QSFP_DD:
++	case SFF8024_ID_OSFP:
++	case SFF8024_ID_DSFP:
++	case SFF8024_ID_QSFP_PLUS_CMIS:
++	case SFF8024_ID_SFP_DD_CMIS:
++	case SFF8024_ID_SFP_PLUS_CMIS:
++		return true;
 +	default:
++		return false;
++	}
++}
++
++/**
++ * cmis_loopback_caps - Read CMIS loopback capability mask
++ * @dev: Network device
++ *
++ * Return: >0 capability bitmask, 0 if not a CMIS module or no Page
++ *         13h, negative errno on failure.
++ */
++static int cmis_loopback_caps(struct net_device *dev)
++{
++	const struct ethtool_ops *ops = dev->ethtool_ops;
++	struct ethtool_module_eeprom page = {};
++	int ret;
++	u8 val;
++
++	if (!ops->get_module_eeprom_by_page)
++		return 0;
++
++	/* Read physical identifier */
++	ethtool_cmis_page_init(&page, CMIS_PHYS_ID_PAGE,
++			       CMIS_PHYS_ID_OFFSET, sizeof(val));
++	page.data = &val;
++	ret = ops->get_module_eeprom_by_page(dev, &page, NULL);
++	if (ret < 0)
++		return ret;
++	if (!cmis_is_module(val))
++		return 0;
++
++	/* Check Page 13h availability */
++	ethtool_cmis_page_init(&page, CMIS_DIAG_SUPPORT_PAGE,
++			       CMIS_DIAG_SUPPORT_OFFSET, sizeof(val));
++	page.data = &val;
++	ret = ops->get_module_eeprom_by_page(dev, &page, NULL);
++	if (ret < 0)
++		return ret;
++	if (!(val & CMIS_DIAG_PAGE13_BIT))
++		return 0;
++
++	/* Read capability byte */
++	ethtool_cmis_page_init(&page, CMIS_LB_CAPS_PAGE,
++			       CMIS_LB_CAPS_OFFSET, sizeof(val));
++	page.data = &val;
++	ret = ops->get_module_eeprom_by_page(dev, &page, NULL);
++	if (ret < 0)
++		return ret;
++
++	return val & (CMIS_LB_CAP_MEDIA_OUTPUT | CMIS_LB_CAP_MEDIA_INPUT |
++		      CMIS_LB_CAP_HOST_OUTPUT | CMIS_LB_CAP_HOST_INPUT);
++}
++
++/**
++ * ethtool_cmis_get_loopback - Append CMIS module loopback entries to cfg
++ * @dev: Network device with get_module_eeprom_by_page support
++ * @cfg: Loopback configuration; MODULE entries are appended
++ *
++ * Reads CMIS module capabilities and current loopback state from Page
++ * 13h, then appends one entry for each supported loopback point.
++ * Returns 0 without adding entries if the module is not CMIS or does
++ * not advertise loopback support.
++ *
++ * Return: 0 on success, negative errno on failure.
++ */
++int ethtool_cmis_get_loopback(struct net_device *dev,
++			      struct ethtool_loopback_cfg *cfg)
++{
++	const struct ethtool_ops *ops = dev->ethtool_ops;
++	struct ethtool_module_eeprom page = {};
++	struct ethtool_loopback_entry host = {
++		.component = ETHTOOL_LOOPBACK_COMPONENT_MODULE,
++		.name = CMIS_LB_NAME_HOST,
++	};
++	struct ethtool_loopback_entry media = {
++		.component = ETHTOOL_LOOPBACK_COMPONENT_MODULE,
++		.name = CMIS_LB_NAME_MEDIA,
++	};
++	int caps, ret, h = 0, m = 0;
++	u8 ctrl[CMIS_LB_CTRL_LEN];
++
++	if (dev->ethtool->module_fw_flash_in_progress)
++		return -EBUSY;
++
++	caps = cmis_loopback_caps(dev);
++	if (caps <= 0)
++		return caps;
++
++	/* Read all four control bytes in one access */
++	ethtool_cmis_page_init(&page, CMIS_LB_CTRL_PAGE,
++			       CMIS_LB_CTRL_OFFSET, sizeof(ctrl));
++	page.data = ctrl;
++	ret = ops->get_module_eeprom_by_page(dev, &page, NULL);
++	if (ret < 0)
++		return ret;
++
++	if (caps & CMIS_LB_CAP_HOST_INPUT) {
++		h = 1;
++		host.supported |= ETHTOOL_LOOPBACK_DIRECTION_NEAR_END;
++		if (ctrl[CMIS_LB_CTRL_IDX_HOST_INPUT])
++			host.direction |= ETHTOOL_LOOPBACK_DIRECTION_NEAR_END;
++	}
++	if (caps & CMIS_LB_CAP_HOST_OUTPUT) {
++		h = 1;
++		host.supported |= ETHTOOL_LOOPBACK_DIRECTION_FAR_END;
++		if (ctrl[CMIS_LB_CTRL_IDX_HOST_OUTPUT])
++			host.direction |= ETHTOOL_LOOPBACK_DIRECTION_FAR_END;
++	}
++	if (caps & CMIS_LB_CAP_MEDIA_INPUT) {
++		m = 1;
++		media.supported |= ETHTOOL_LOOPBACK_DIRECTION_NEAR_END;
++		if (ctrl[CMIS_LB_CTRL_IDX_MEDIA_INPUT])
++			media.direction |= ETHTOOL_LOOPBACK_DIRECTION_NEAR_END;
++	}
++	if (caps & CMIS_LB_CAP_MEDIA_OUTPUT) {
++		m = 1;
++		media.supported |= ETHTOOL_LOOPBACK_DIRECTION_FAR_END;
++		if (ctrl[CMIS_LB_CTRL_IDX_MEDIA_OUTPUT])
++			media.direction |= ETHTOOL_LOOPBACK_DIRECTION_FAR_END;
++	}
++
++	if (cfg->n_entries + h + m > ETHTOOL_LOOPBACK_MAX_ENTRIES)
++		return -ENOMEM;
++
++	if (h) {
++		memcpy(&cfg->entries[cfg->n_entries], &host, sizeof(host));
++		cfg->n_entries++;
++	}
++
++	if (m) {
++		memcpy(&cfg->entries[cfg->n_entries], &media, sizeof(media));
++		cfg->n_entries++;
++	}
++
++	return 0;
++}
++
++/**
++ * ethtool_cmis_set_loopback_one - Apply one MODULE loopback entry to CMIS
++ * @dev: Network device with get/set_module_eeprom_by_page support
++ * @entry: Loopback entry to apply (must be MODULE component)
++ * @extack: Netlink extended ack for error reporting
++ *
++ * Matches the entry against CMIS loopback points by name and
++ * direction, then reads, modifies, and writes the corresponding Page
++ * 13h control byte (0xFF for all-lanes enable, 0x00 for disable).
++ *
++ * When disabling (direction == 0), all loopback points matching the
++ * name are disabled regardless of their direction. When enabling,
++ * only the specific direction is activated.
++ *
++ * Return: 1 if hardware state changed, 0 if already in requested state,
++ *         negative errno on failure.
++ */
++int ethtool_cmis_set_loopback_one(struct net_device *dev,
++				  const struct ethtool_loopback_entry *entry,
++				  struct netlink_ext_ack *extack)
++{
++	struct ethtool_module_eeprom page = {};
++	u8 ctrl[CMIS_LB_CTRL_LEN];
++	int near_idx, far_idx;
++	u8 near_cap, far_cap;
++	bool mod = false;
++	int caps, ret;
++
++	if (!dev->ethtool_ops->set_module_eeprom_by_page) {
++		NL_SET_ERR_MSG(extack,
++			       "Module EEPROM write access not supported");
 +		return -EOPNOTSUPP;
 +	}
-+}
 +
-+static int ethnl_set_loopback(struct ethnl_req_info *req_info,
-+			      struct genl_info *info)
-+{
-+	struct net_device *dev = req_info->dev;
-+	struct ethtool_loopback_cfg cfg = {};
-+	int rem, ret, mod = 0;
-+	struct nlattr *attr;
-+	u32 i;
-+
-+	nla_for_each_attr(attr, genlmsg_data(info->genlhdr),
-+			  genlmsg_len(info->genlhdr), rem) {
-+		if (nla_type(attr) != ETHTOOL_A_LOOPBACK_ENTRY)
-+			continue;
-+
-+		if (cfg.n_entries >= ETHTOOL_LOOPBACK_MAX_ENTRIES) {
-+			NL_SET_ERR_MSG(info->extack,
-+				       "too many loopback entries");
-+			return -EINVAL;
-+		}
-+
-+		ret = loopback_parse_entry(attr, &cfg.entries[cfg.n_entries],
-+					   info->extack);
-+		if (ret < 0)
-+			return ret;
-+
-+		cfg.n_entries++;
++	if (dev->ethtool->module_fw_flash_in_progress) {
++		NL_SET_ERR_MSG(extack,
++			       "Module firmware flashing is in progress");
++		return -EBUSY;
 +	}
 +
-+	if (!cfg.n_entries) {
-+		NL_SET_ERR_MSG(info->extack, "no loopback entries specified");
++	if (dev->flags & IFF_UP) {
++		NL_SET_ERR_MSG(extack,
++			       "Netdevice is up, module loopback change not permitted");
++		return -EBUSY;
++	}
++
++	if (entry->direction && !is_power_of_2(entry->direction)) {
++		NL_SET_ERR_MSG(extack,
++			       "Only one loopback direction may be enabled at a time");
 +		return -EINVAL;
 +	}
 +
-+	for (i = 0; i < cfg.n_entries; i++) {
-+		ret = loopback_set_one(dev, &cfg.entries[i], info->extack);
-+		if (ret < 0)
-+			return ret;
-+		if (ret > 0)
-+			mod = 1;
++	if (strcmp(entry->name, CMIS_LB_NAME_HOST) == 0) {
++		near_idx = CMIS_LB_CTRL_IDX_HOST_INPUT;
++		far_idx = CMIS_LB_CTRL_IDX_HOST_OUTPUT;
++		near_cap = CMIS_LB_CAP_HOST_INPUT;
++		far_cap = CMIS_LB_CAP_HOST_OUTPUT;
++	} else if (strcmp(entry->name, CMIS_LB_NAME_MEDIA) == 0) {
++		near_idx = CMIS_LB_CTRL_IDX_MEDIA_INPUT;
++		far_idx = CMIS_LB_CTRL_IDX_MEDIA_OUTPUT;
++		near_cap = CMIS_LB_CAP_MEDIA_INPUT;
++		far_cap = CMIS_LB_CAP_MEDIA_OUTPUT;
++	} else {
++		NL_SET_ERR_MSG(extack, "Unknown CMIS loopback name");
++		return -EINVAL;
 +	}
 +
-+	return mod;
++	caps = cmis_loopback_caps(dev);
++	if (caps < 0)
++		return caps;
++	if (!caps) {
++		NL_SET_ERR_MSG(extack, "Module does not support CMIS loopback");
++		return -EOPNOTSUPP;
++	}
++
++	/* Read current control bytes */
++	ethtool_cmis_page_init(&page, CMIS_LB_CTRL_PAGE,
++			       CMIS_LB_CTRL_OFFSET, sizeof(ctrl));
++	page.data = ctrl;
++	ret = dev->ethtool_ops->get_module_eeprom_by_page(dev, &page, NULL);
++	if (ret < 0)
++		return ret;
++
++	if (!entry->direction) {
++		/* Disable both directions */
++		if (ctrl[near_idx]) {
++			ctrl[near_idx] = 0x00;
++			mod = true;
++		}
++		if (ctrl[far_idx]) {
++			ctrl[far_idx] = 0x00;
++			mod = true;
++		}
++	} else {
++		int enable_idx, disable_idx;
++		u8 enable_cap;
++
++		if (entry->direction & ETHTOOL_LOOPBACK_DIRECTION_NEAR_END) {
++			enable_idx = near_idx;
++			enable_cap = near_cap;
++			disable_idx = far_idx;
++		} else {
++			enable_idx = far_idx;
++			enable_cap = far_cap;
++			disable_idx = near_idx;
++		}
++
++		if (!(caps & enable_cap)) {
++			NL_SET_ERR_MSG(extack,
++				       "Loopback mode not supported by module");
++			return -EOPNOTSUPP;
++		}
++
++		/* Disable opposite direction first (mutual exclusivity) */
++		if (ctrl[disable_idx]) {
++			ctrl[disable_idx] = 0x00;
++			ret = dev->ethtool_ops->set_module_eeprom_by_page(dev,
++									  &page,
++									  extack);
++			if (ret < 0)
++				return ret;
++			mod = true;
++		}
++
++		if (ctrl[enable_idx] != 0xFF) {
++			ctrl[enable_idx] = 0xFF;
++			mod = true;
++		}
++	}
++
++	if (!mod)
++		return 0;
++
++	ret = dev->ethtool_ops->set_module_eeprom_by_page(dev, &page, extack);
++
++	return ret < 0 ? ret : 1;
 +}
-+
-+const struct ethnl_request_ops ethnl_loopback_request_ops = {
-+	.request_cmd		= ETHTOOL_MSG_LOOPBACK_GET,
-+	.reply_cmd		= ETHTOOL_MSG_LOOPBACK_GET_REPLY,
-+	.hdr_attr		= ETHTOOL_A_LOOPBACK_HEADER,
-+	.req_info_size		= sizeof(struct loopback_req_info),
-+	.reply_data_size	= sizeof(struct loopback_reply_data),
-+
-+	.prepare_data		= loopback_prepare_data,
-+	.reply_size		= loopback_reply_size,
-+	.fill_reply		= loopback_fill_reply,
-+
-+	.set			= ethnl_set_loopback,
-+	.set_ntf_cmd		= ETHTOOL_MSG_LOOPBACK_NTF,
-+};
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 6e5f0f4f815a..c438828ea072 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -421,6 +421,8 @@ ethnl_default_requests[__ETHTOOL_MSG_USER_CNT] = {
- 	[ETHTOOL_MSG_TSCONFIG_SET]	= &ethnl_tsconfig_request_ops,
- 	[ETHTOOL_MSG_PHY_GET]		= &ethnl_phy_request_ops,
- 	[ETHTOOL_MSG_MSE_GET]		= &ethnl_mse_request_ops,
-+	[ETHTOOL_MSG_LOOPBACK_GET]	= &ethnl_loopback_request_ops,
-+	[ETHTOOL_MSG_LOOPBACK_SET]	= &ethnl_loopback_request_ops,
- };
+diff --git a/net/ethtool/loopback.c b/net/ethtool/loopback.c
+index 1c6d27857f8a..8a6f14f4b8cb 100644
+--- a/net/ethtool/loopback.c
++++ b/net/ethtool/loopback.c
+@@ -37,7 +37,7 @@ const struct nla_policy ethnl_loopback_get_policy[] = {
+ static int loopback_get_entries(struct net_device *dev,
+ 				struct ethtool_loopback_cfg *cfg)
+ {
+-	return 0;
++	return ethtool_cmis_get_loopback(dev, cfg);
+ }
  
- static struct ethnl_dump_ctx *ethnl_dump_context(struct netlink_callback *cb)
-@@ -962,6 +964,7 @@ ethnl_default_notify_ops[ETHTOOL_MSG_KERNEL_MAX + 1] = {
- 	[ETHTOOL_MSG_MM_NTF]		= &ethnl_mm_request_ops,
- 	[ETHTOOL_MSG_RSS_NTF]		= &ethnl_rss_request_ops,
- 	[ETHTOOL_MSG_RSS_CREATE_NTF]	= &ethnl_rss_request_ops,
-+	[ETHTOOL_MSG_LOOPBACK_NTF]	= &ethnl_loopback_request_ops,
- };
- 
- /* default notification handler */
-@@ -1070,6 +1073,7 @@ static const ethnl_notify_handler_t ethnl_notify_handlers[] = {
- 	[ETHTOOL_MSG_MM_NTF]		= ethnl_default_notify,
- 	[ETHTOOL_MSG_RSS_NTF]		= ethnl_default_notify,
- 	[ETHTOOL_MSG_RSS_CREATE_NTF]	= ethnl_default_notify,
-+	[ETHTOOL_MSG_LOOPBACK_NTF]	= ethnl_default_notify,
- };
- 
- void ethnl_notify(struct net_device *dev, unsigned int cmd,
-@@ -1544,6 +1548,22 @@ static const struct genl_ops ethtool_genl_ops[] = {
- 		.policy = ethnl_mse_get_policy,
- 		.maxattr = ARRAY_SIZE(ethnl_mse_get_policy) - 1,
- 	},
-+	{
-+		.cmd	= ETHTOOL_MSG_LOOPBACK_GET,
-+		.doit	= ethnl_default_doit,
-+		.start	= ethnl_default_start,
-+		.dumpit	= ethnl_default_dumpit,
-+		.done	= ethnl_default_done,
-+		.policy = ethnl_loopback_get_policy,
-+		.maxattr = ARRAY_SIZE(ethnl_loopback_get_policy) - 1,
-+	},
-+	{
-+		.cmd	= ETHTOOL_MSG_LOOPBACK_SET,
-+		.flags	= GENL_UNS_ADMIN_PERM,
-+		.doit	= ethnl_default_set_doit,
-+		.policy = ethnl_loopback_set_policy,
-+		.maxattr = ARRAY_SIZE(ethnl_loopback_set_policy) - 1,
-+	},
- };
- 
- static const struct genl_multicast_group ethtool_nl_mcgrps[] = {
+ static int loopback_prepare_data(const struct ethnl_req_info *req_base,
+@@ -181,6 +181,8 @@ static int loopback_set_one(struct net_device *dev,
+ 			    struct netlink_ext_ack *extack)
+ {
+ 	switch (entry->component) {
++	case ETHTOOL_LOOPBACK_COMPONENT_MODULE:
++		return ethtool_cmis_set_loopback_one(dev, entry, extack);
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
 diff --git a/net/ethtool/netlink.h b/net/ethtool/netlink.h
-index 89010eaa67df..5660ce494916 100644
+index 5660ce494916..707363462c12 100644
 --- a/net/ethtool/netlink.h
 +++ b/net/ethtool/netlink.h
-@@ -443,6 +443,7 @@ extern const struct ethnl_request_ops ethnl_mm_request_ops;
- extern const struct ethnl_request_ops ethnl_phy_request_ops;
- extern const struct ethnl_request_ops ethnl_tsconfig_request_ops;
- extern const struct ethnl_request_ops ethnl_mse_request_ops;
-+extern const struct ethnl_request_ops ethnl_loopback_request_ops;
+@@ -517,6 +517,11 @@ int ethnl_tsinfo_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
+ int ethnl_tsinfo_done(struct netlink_callback *cb);
+ int ethnl_rss_create_doit(struct sk_buff *skb, struct genl_info *info);
+ int ethnl_rss_delete_doit(struct sk_buff *skb, struct genl_info *info);
++int ethtool_cmis_get_loopback(struct net_device *dev,
++			      struct ethtool_loopback_cfg *cfg);
++int ethtool_cmis_set_loopback_one(struct net_device *dev,
++				  const struct ethtool_loopback_entry *entry,
++				  struct netlink_ext_ack *extack);
  
- extern const struct nla_policy ethnl_header_policy[ETHTOOL_A_HEADER_FLAGS + 1];
- extern const struct nla_policy ethnl_header_policy_stats[ETHTOOL_A_HEADER_FLAGS + 1];
-@@ -499,6 +500,8 @@ extern const struct nla_policy ethnl_phy_get_policy[ETHTOOL_A_PHY_HEADER + 1];
- extern const struct nla_policy ethnl_tsconfig_get_policy[ETHTOOL_A_TSCONFIG_HEADER + 1];
- extern const struct nla_policy ethnl_tsconfig_set_policy[ETHTOOL_A_TSCONFIG_MAX + 1];
- extern const struct nla_policy ethnl_mse_get_policy[ETHTOOL_A_MSE_HEADER + 1];
-+extern const struct nla_policy ethnl_loopback_get_policy[ETHTOOL_A_LOOPBACK_HEADER + 1];
-+extern const struct nla_policy ethnl_loopback_set_policy[ETHTOOL_A_LOOPBACK_ENTRY + 1];
- 
- int ethnl_set_features(struct sk_buff *skb, struct genl_info *info);
- int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info);
+ extern const char stats_std_names[__ETHTOOL_STATS_CNT][ETH_GSTRING_LEN];
+ extern const char stats_eth_phy_names[__ETHTOOL_A_STATS_ETH_PHY_CNT][ETH_GSTRING_LEN];
 -- 
 2.53.0
 
