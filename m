@@ -1,294 +1,291 @@
-Return-Path: <linux-rdma+bounces-17723-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17724-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MtbTLUGkrWmo5QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17723-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 17:30:57 +0100
+	id GNcHGGurrWmE5gEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17724-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 18:01:31 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58BE8231143
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 17:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD8FA231520
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 18:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 368103013A45
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 16:30:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 19CAC30D7306
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 16:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB55319859;
-	Sun,  8 Mar 2026 16:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873333563EE;
+	Sun,  8 Mar 2026 16:54:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="P/TSiubZ"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="EqaAjy3C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11023138.outbound.protection.outlook.com [40.93.201.138])
+Received: from pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.26.1.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D84A2110E;
-	Sun,  8 Mar 2026 16:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.138
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772987450; cv=fail; b=N1Vpfq+Ao71ytla+C9Z5RoYbDNYUFDPIXRUoDUtdSJGGGh2mpGrN6+qJMt72UoBWlflNj1WoD8fbNrdzKQRGtxwVtHI0PWYGSb7hB8pMizMQekp0nmMNOW68gutlzftzGtN3xnupom88pmmxcocgGt2hos3MM/sq94WtbDZhLx4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772987450; c=relaxed/simple;
-	bh=wiVXezKt8bD2KVZD3/phRheQlC7edrRcaWAlC19+VM8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=p1P4Ug8Vymkw9mdamZ72YnGvsRifcwFN/tmW4c+VkF4/rdmTEDtPG2L0DgKONIF6JTyQrGm6qT/cLx/8vohLJYc2UBvP88QFRiXeIRTyRUA0ncZVhYI+Hg3565vj9LRM2gu8J75klmkdaIkvKTR1QWlnmrTkc6UCLg6koOODnso=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=P/TSiubZ; arc=fail smtp.client-ip=40.93.201.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=arSOUDA7qWJZaCmR/E04cLXppm77UOXWi+JZbn4ex50unYzS5MSHvGjr8q29Mf8ev2clRBJRX5zuC6q0oKmqIaDG8m80awjU1f8wCSAQopMv0+fHlNJ1fvzNrq2msZsMqA7G2KVjtntQdYj1VK/pfTcPRqCmLDbTPkUvD8a7rOTseVyFwh6SGGfGHUDvG44ZgrVWGzFxCwN1Sb5+IlW/8fgSTmHZTXlxFiIAex/XyJU4BZRHR+J9F1va5CBYUr8CwEpZ/05NrHyWgwNfnKO3XHXMlZyJU6zN23eENR3FqDM0vUYcto8LRPMCCouk5xzUnFZDtmAizLNtryT4FPG0Hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LKO1t+V7XaPGX6XWEpmhF70j6OV9VquJQPHs0IU5M/w=;
- b=lqWXCWTchQJuweaK8oLUXGy1Qa9NnNxvOdpIoOyv/MgjZHJE/XmXubLPaE2hA1bBBwgy8clF0bz0M0higaH2TkEv6aBXgW1WSDwKT43GQX1CJMCCnaltck2NeUkQBayXFWakXRm/FLCQlOpOEXQYfYx+T4m8MiPokiuFetlGQWfQ/PyHNJ0RsQUYVZQn0E22idwWz6+cI/jrATC01DlV82ukCmpDY8+vypaJR9jsPtlDMrMlqHUEKMTB8Armd11CtQfXRb1bUvHJCqjdWyAKv7BzhCeUYO5++9Jqf+W4q/qBIhT3ofmw/UD1/BUZbSkHnKJ7IJAYqlDu9Tonuc4ysw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LKO1t+V7XaPGX6XWEpmhF70j6OV9VquJQPHs0IU5M/w=;
- b=P/TSiubZb6RsUEn+7x3AtxKnAJxhZV39QveFFy43ZmN1OefkBo6V4+u6Ec/ViHg2ks5OUSYujSIMcmyyLA2vTPOVRr1aigIHc8y+2hfzwrwcG3ZeklVhkZhYp3WcBAq+ma+5MwoHBidtaQCbGyqQRWHbzINhaA2HX63R+atD9Vg=
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
- by SA1PR21MB5985.namprd21.prod.outlook.com (2603:10b6:806:4a3::13) with
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A2637FF48
+	for <linux-rdma@vger.kernel.org>; Sun,  8 Mar 2026 16:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.26.1.71
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772988856; cv=none; b=aFoQdumaoyB4v5SZ3juLY7tbBX+uDUsphkeoFOBsI09+4stXg7iOOOdfTD5evVRYPz9B5VL1V7HgHmDs5WSQ2sk6mR368x9FMbCiRTv340VC7oxrndnuNtY9eM3/WgwpqQAHBmd7Ex2Yk4/ucIuUfVa1jJXJzzU8Gl2+h/yrJBw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772988856; c=relaxed/simple;
+	bh=R+b8Z053Stk06/xZXTHuTFR729bEICDx+iFLKdx1gQQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MKVrt+Vy95dApz/q/sJXNCqa7I2P5YZqC1qOR76Qzhz4sujFHvH9fImrhV91kT8jo2/UQjmkUBvp0BUh4FRi2OMdhAqRflTzgolnu7oqlXeLeXlhaNqMANjph98LaGmF4/guoCr/9yIqigoWGlmCV0RtsispXxfOboAJFN9NZww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=EqaAjy3C; arc=none smtp.client-ip=52.26.1.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1772988847; x=1804524847;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4Uwq2LWekftE7r7FJrzFq6xz9nv1fyiyEcTCY5ecgbk=;
+  b=EqaAjy3Ctw4xOyXr0E8tXIq0krXm6ZnRP8YK8UpWIsZxhrKJbOkk8iFc
+   UWF/pxwfKfapQJsYloALJULf48GAObNjlR6vH6mHS5050Hkv2n17uTWkg
+   bHR2DBeQUdeOLqFZRERkc/JNAfIg8dpvfgiYg/a6DkzQRPaU5hzYvecfN
+   ERgSSqkG9SCiR4HkJmyI+CiXV7/ZqrqCJr2nCs2rC8K3HZZf4EilyvPUy
+   F5E/zEs+Rl6KkdIFJY17dv99Bu2MbzhhWRXyJ0+3ACIyabnFHpGrlkeyy
+   wxLKO0S5W/Ie/534hY7QGUesw75KE84yePPVPHUXai7bZo8giTZvc0B4+
+   A==;
+X-CSE-ConnectionGUID: ToyzpH1jQqqh/MxuSNYKJg==
+X-CSE-MsgGUID: iFGs7KwXTf6fAV1ZCsHksA==
+X-IronPort-AV: E=Sophos;i="6.23,109,1770595200"; 
+   d="scan'208";a="14576351"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2026 16:54:04 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:18353]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.0.220:2525] with esmtp (Farcaster)
+ id 3f00c2d5-a6fa-4942-92a4-0d2ed2f4927b; Sun, 8 Mar 2026 16:54:04 +0000 (UTC)
+X-Farcaster-Flow-ID: 3f00c2d5-a6fa-4942-92a4-0d2ed2f4927b
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Sun, 8 Mar 2026 16:54:00 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.1; Sun, 8 Mar
- 2026 16:30:46 +0000
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::70ff:4d3:2cb6:92a3]) by SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::70ff:4d3:2cb6:92a3%6]) with mapi id 15.20.9700.006; Sun, 8 Mar 2026
- 16:30:20 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@linux.microsoft.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, KY Srinivasan
-	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
-	<DECUI@microsoft.com>, Long Li <longli@microsoft.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Konstantin Taranov <kotaranov@microsoft.com>, Simon
- Horman <horms@kernel.org>, Erni Sri Satya Vennela
-	<ernis@linux.microsoft.com>, Shradha Gupta
-	<shradhagupta@linux.microsoft.com>, Dipayaan Roy
-	<dipayanroy@linux.microsoft.com>, Shiraz Saleem <shirazsaleem@microsoft.com>,
-	Kees Cook <kees@kernel.org>, Subbaraya Sundeep <sbhatta@marvell.com>, Breno
- Leitao <leitao@debian.org>, Aditya Garg <gargaditya@linux.microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC: Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [PATCH net-next,V3, 2/3] net: mana: Add support for RX CQE
- Coalescing
-Thread-Topic: [PATCH net-next,V3, 2/3] net: mana: Add support for RX CQE
- Coalescing
-Thread-Index: AQHcrb/rNqUY2+Q6QUGP6LNjJqxpubWk1Ykw
-Date: Sun, 8 Mar 2026 16:30:20 +0000
-Message-ID:
- <SA3PR21MB386734CCBFD52E5FF2C4D8D7CA78A@SA3PR21MB3867.namprd21.prod.outlook.com>
-References: <20260306231936.549499-1-haiyangz@linux.microsoft.com>
- <20260306231936.549499-3-haiyangz@linux.microsoft.com>
-In-Reply-To: <20260306231936.549499-3-haiyangz@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d3f25f8a-4caf-47df-9cbe-a049b12bcbaf;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-03-08T16:27:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|SA1PR21MB5985:EE_
-x-ms-office365-filtering-correlation-id: fdbef781-f861-448d-20a7-08de7d2ffdab
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007|38070700021|921020;
-x-microsoft-antispam-message-info:
- DTnIqNagYjWwF24JzVFZgALEFBMao+0iGX24zIQPbp8L5qSLyb/ejd7Wh0D9Iz68wxYPfETT5cQauaaNs9RcOduLnG1cSYs4TIoFnV8y8aI6ZNv9o/9gr7K4T9E9U+y8g1lETMjJ4XaiXI4OiOIlroYRMRXOnLEqN8paKP/v3dWs6avYUTyq8j+eEToOS0I4L5CCr3rHaWbh1UtoQ+eV/kCDe9jp8sYrpcXgePoTDlQ14F9fxT5Z3apYjn4NuaXKqXN1th/sA1uSeU7+CU405K7wRY3aHVqtS15ttBo7fPwP3csq20xCTT/t/l5kKZ0yjAZzI7rkXDDlfj20IsOTfJCT1JwQSudmaagu/wHC2C5sG72ZR/3TuoFEW7kf914eRaYR6+Io2kgdbic0DY3slYjkMyfs3UjWnHT13Sd71iVsC+SrJuqRdlI5ToPcxeqnvoKSlXNdwyV7UezzHST2lYU5nX59NpPRJ8wdYugCQv3hZd3Nm6T1ZpyngWCBwzEo6g94mLjVW2/0mawud4PHNTzMUMAwykYwSSeHtTGSdupf2oC0JngqUZS+EWnQGbkHRQFHLV8xttnH5j8ywhVS188gZk6WZtTozyhv7P83KR8opV4Sf4EgDEqfiZk1zLTlrZ/WPih9p1yIquYdyVY919M4ryM4zob2Ao8/a7oocqoc9kyQECZHqJruXx5bITXphX5O2hJTaffZQy5i0+mCDFfPURy33cJXrbByB1nyIp1Gp1f/mLRRXFXhgTbAq5mMAu+uO/gIavLytPF1kcZPdeg1RKvPUTiQiaWSip5UWEQeIc8tJRC74qOJn1rohxxt
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007)(38070700021)(921020);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?2EuamcZUZd0/w6KxelqLSE/lPzNibeJWVZFadIRLO5oPb9GNryLFhh6ksJLq?=
- =?us-ascii?Q?IqIjFhkIm1x/DvqMczBnVSNZ+cvEf+utjSiEM9gb9UAvf+hCWiZ77/zO43NU?=
- =?us-ascii?Q?8BodprodjugVIM7clVNCK7osxjPuflMjpERpMAgpA0Bf+EYZ1kq5+z0TnpDt?=
- =?us-ascii?Q?eJRMqwFNjAX+min/VrbT2rKvHPvEVUawPWKmV3zN9qlqfheb7hAmnHbltQTY?=
- =?us-ascii?Q?kPefy3WVfVoOdVVf5lzoLRSgTgR1Uao8BDwyFR6YZEhBJFgeh7+Z+hHVdPml?=
- =?us-ascii?Q?wujxiHOKCrprFgwoCwBLgUyoVF3PZndLBKX4yvj7GmCnMzePhcAAEPv7p2qE?=
- =?us-ascii?Q?XIFcnB/7NQmsGoxCwz1+SX9VtSN2a4dO6b9xz0ZzELFqrehB2G5dAEQZBPgj?=
- =?us-ascii?Q?cIX2D72sm6FK7qZedu/KF1m+mnEbG2oxKU4yHQ8tWdmeMqpseRU37F27ZYoE?=
- =?us-ascii?Q?eob2ifv23JlMtZQNtdTqfdO2yODjlopdU8vVB95fRu2daPfsgt6xUM3Nomfg?=
- =?us-ascii?Q?UatVjUF+gSWsYlHT58IoFW/khw23FV5DAZS79udxOa02BXjNtc8D7XWt6Bai?=
- =?us-ascii?Q?dSkVZreormvftqs0SOPg8Uq7m8ZOXyY43C523P9ccMnDTA0N7zDlEWlcQIsx?=
- =?us-ascii?Q?3CWZgG6ZEKPRJ0Jk3Se7QVYLQxIO/zHVrlc0MlP6p/ZbPXjcsGwu7RDbU9vX?=
- =?us-ascii?Q?ruoYt8AME99RjfbJfu6rOCkZfGR0brFZ5y1B4TRE0Q/sBetYFw/gQ+s1doe4?=
- =?us-ascii?Q?rqzK6KluxNwqueOeyMKD+NC7h9EKwhZWig7FWGUxXnWPtbMJYPXp9m0mHhhw?=
- =?us-ascii?Q?yOzdPL/1BB5FLy46GFrUqow2CI0Okegh7222RnIzlu8i5hqiqo/H1HwFDMgR?=
- =?us-ascii?Q?Q28BLggpxTa0YL3HjV9bdkLrnQEoxIOStflZP37rDFnHO6rZkXsXOE9Dlsc9?=
- =?us-ascii?Q?vgNnanxLH2YCzYJ+EN5nD0O59emQqVpY9mOwC9sMTx8S9sHSGT8MDUJmh1So?=
- =?us-ascii?Q?eUgv/yvG74ZnXhTissxZfk3U9XrZxEw8pjdNV7buWQPQQIHfPtRedO3cploa?=
- =?us-ascii?Q?BzmQH0NulHAw4t5JW5WUJxJHGslfAEmi3nU/PXbFmjCs9PN3mFYGS6UDXNXk?=
- =?us-ascii?Q?dPMNtDT4/k28/zm5/V3HRWv453vvcSv9mwES2ZI8BNB/A73fyF3dAfA3OUAO?=
- =?us-ascii?Q?xEprfbumUrwXN5Wrg8YygKAfE6osjkAeyRf1nOGnJs2zk8riK5H2+kKc+/iN?=
- =?us-ascii?Q?WYEjLjQoNEh0Rpj7gnHY6qsMFNYWG6AYlXwPWyRFyCEG0hzvkqjWBtOZrBN0?=
- =?us-ascii?Q?m+sTrihKsfxxFGOY/dGFWEU57Rs9MNgkwDspVEIxSac6Fo75qgyNIMjgHJge?=
- =?us-ascii?Q?+SHj0GKq8vtJsp/FklpCMI5U53McnITDPmi2RaG5Z4hArYGRIF0N2+2wujD8?=
- =?us-ascii?Q?y2l3GN3C7I9Zcb06fbCTDvtfY7u9ygesYZTBOzQN3ZHk+gT5ivkTkmKP/xHR?=
- =?us-ascii?Q?GEzPnGrWM7hXqMIlHlpBOG8nkochvTmThmna0aOi0duPbQYfoXkGgtKqG8n5?=
- =?us-ascii?Q?p8hACkhdMZwpNiFyeExSRN6WW+gaXjJKVV+0maGF9oMfB+WtBnZpaRnv5o2r?=
- =?us-ascii?Q?0ic6iVKKCKXmpl07mCl67TTOv/EFuRqZiXovXrM0gAEplUxyUXYDbq4ZzwP2?=
- =?us-ascii?Q?kWvULM1WFJED20WZTzN9fyy/tCXj4sqKzmaGRuhJ5vfhXOAWu7CC5iKrr6II?=
- =?us-ascii?Q?UEvRr8RLlQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Sun, 8 Mar 2026
+ 16:53:59 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>, "Daniel
+ Kranzdorf" <dkkranzd@amazon.com>
+Subject: [PATCH for-rc] RDMA/efa: Fix use of completion ctx after free
+Date: Sun, 8 Mar 2026 16:53:50 +0000
+Message-ID: <20260308165350.18219-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdbef781-f861-448d-20a7-08de7d2ffdab
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2026 16:30:20.5553
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t6IBQJGurK46Ak3AOgCCX73hETAY8Gk6spNCw4i3h+uCnHJ8MS4f4sWmOq1zOMyxQPJIBI9l7MM3sZAT0sge0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB5985
-X-Rspamd-Queue-Id: 58BE8231143
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D042UWB002.ant.amazon.com (10.13.139.175) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Rspamd-Queue-Id: BD8FA231520
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
-	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17723-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17724-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[25];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[haiyangz@microsoft.com,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.973];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[]
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-0.994];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
+On admin queue completion handling, if the admin command completed with
+error we print data from the completion context. The issue is that we
+already freed the completion context in polling/interrupts handler which
+means we print data from context in an unknown state (it might be
+already used again).
+Change the admin submission flow so alloc/dealloc of the context will be
+symmetric and dealloc will be called after any potential use of the
+context.
 
+Fixes: 68fb9f3e312a ("RDMA/efa: Remove redundant NULL pointer check of CQE")
+Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_com.c | 69 ++++++++++++++---------------
+ 1 file changed, 33 insertions(+), 36 deletions(-)
 
-> -----Original Message-----
-> From: Haiyang Zhang <haiyangz@linux.microsoft.com>
-> Sent: Friday, March 6, 2026 6:19 PM
-> To: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
-> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Wei Liu
-> <wei.liu@kernel.org>; Dexuan Cui <DECUI@microsoft.com>; Long Li
-> <longli@microsoft.com>; Andrew Lunn <andrew+netdev@lunn.ch>; David S.
-> Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub
-> Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Konstantin
-> Taranov <kotaranov@microsoft.com>; Simon Horman <horms@kernel.org>; Erni
-> Sri Satya Vennela <ernis@linux.microsoft.com>; Shradha Gupta
-> <shradhagupta@linux.microsoft.com>; Dipayaan Roy
-> <dipayanroy@linux.microsoft.com>; Shiraz Saleem
-> <shirazsaleem@microsoft.com>; Kees Cook <kees@kernel.org>; Subbaraya
-> Sundeep <sbhatta@marvell.com>; Breno Leitao <leitao@debian.org>; Aditya
-> Garg <gargaditya@linux.microsoft.com>; linux-kernel@vger.kernel.org;
-> linux-rdma@vger.kernel.org
-> Cc: Paul Rosswurm <paulros@microsoft.com>
-> Subject: [PATCH net-next,V3, 2/3] net: mana: Add support for RX CQE
-> Coalescing
->=20
-> From: Haiyang Zhang <haiyangz@microsoft.com>
-
-> @@ -2112,13 +2122,16 @@ static void mana_process_rx_cqe(struct mana_rxq
-> *rxq, struct mana_cq *cq,
->  		++ndev->stats.rx_dropped;
->  		rxbuf_oob =3D &rxq->rx_oobs[rxq->buf_index];
->  		netdev_warn_once(ndev, "Dropped a truncated packet\n");
-> -		goto drop;
->=20
-> -	case CQE_RX_COALESCED_4:
-> -		netdev_err(ndev, "RX coalescing is unsupported\n");
-> -		apc->eth_stats.rx_coalesced_err++;
-> +		mana_move_wq_tail(rxq->gdma_rq,
-> +				  rxbuf_oob->wqe_inf.wqe_size_in_bu);
-> +		mana_post_pkt_rxq(rxq);
->  		return;
->=20
-> +	case CQE_RX_COALESCED_4:
-> +		coalesced =3D true;
-> +		break;
-> +
->  	case CQE_RX_OBJECT_FENCE:
->  		complete(&rxq->fence_event);
->  		return;
-> @@ -2130,30 +2143,36 @@ static void mana_process_rx_cqe(struct mana_rxq
-> *rxq, struct mana_cq *cq,
->  		return;
->  	}
->=20
-> -	pktlen =3D oob->ppi[0].pkt_len;
-> +	for (i =3D 0; i < MANA_RXCOMP_OOB_NUM_PPI; i++) {
-> +		pktlen =3D oob->ppi[i].pkt_len;
-> +		if (pktlen =3D=3D 0) {
-> +			if (i =3D=3D 0)
-> +				netdev_err_once(
-> +					ndev,
-> +					"RX pkt len=3D0, rq=3D%u, cq=3D%u,
-> rxobj=3D0x%llx\n",
-> +					rxq->gdma_id, cq->gdma_id, rxq->rxobj);
-> +			break;
-> +		}
->=20
-> -	if (pktlen =3D=3D 0) {
-> -		/* data packets should never have packetlength of zero */
-> -		netdev_err(ndev, "RX pkt len=3D0, rq=3D%u, cq=3D%u, rxobj=3D0x%llx\n",
-> -			   rxq->gdma_id, cq->gdma_id, rxq->rxobj);
-> -		return;
-> -	}
-> +		curr =3D rxq->buf_index;
-> +		rxbuf_oob =3D &rxq->rx_oobs[curr];
-> +		WARN_ON_ONCE(rxbuf_oob->wqe_inf.wqe_size_in_bu !=3D 1);
->=20
-> -	curr =3D rxq->buf_index;
-> -	rxbuf_oob =3D &rxq->rx_oobs[curr];
-> -	WARN_ON_ONCE(rxbuf_oob->wqe_inf.wqe_size_in_bu !=3D 1);
-> +		mana_refill_rx_oob(dev, rxq, rxbuf_oob, &old_buf, &old_fp);
->=20
-> -	mana_refill_rx_oob(dev, rxq, rxbuf_oob, &old_buf, &old_fp);
-> +		/* Unsuccessful refill will have old_buf =3D=3D NULL.
-> +		 * In this case, mana_rx_skb() will drop the packet.
-> +		 */
-> +		mana_rx_skb(old_buf, old_fp, oob, rxq, i);
->=20
-> -	/* Unsuccessful refill will have old_buf =3D=3D NULL.
-> -	 * In this case, mana_rx_skb() will drop the packet.
-> -	 */
-> -	mana_rx_skb(old_buf, old_fp, oob, rxq);
-> +		mana_move_wq_tail(rxq->gdma_rq,
-> +				  rxbuf_oob->wqe_inf.wqe_size_in_bu);
-
-I will fix this pointed out by AI review:
-
-> The comment says "Unsuccessful refill will have old_buf =3D=3D NULL" but =
-this is
-> only true for the first iteration.
-> Should old_buf be set to NULL at the top of the loop, before calling
-> mana_refill_rx_oob()?
-
-
+diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
+index 229b0ad3b0cb..037ca2ab6d24 100644
+--- a/drivers/infiniband/hw/efa/efa_com.c
++++ b/drivers/infiniband/hw/efa/efa_com.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include <linux/log2.h>
+@@ -310,23 +310,19 @@ static inline struct efa_comp_ctx *efa_com_get_comp_ctx_by_cmd_id(struct efa_com
+ 	return &aq->comp_ctx[ctx_id];
+ }
+ 
+-static struct efa_comp_ctx *__efa_com_submit_admin_cmd(struct efa_com_admin_queue *aq,
+-						       struct efa_admin_aq_entry *cmd,
+-						       size_t cmd_size_in_bytes,
+-						       struct efa_admin_acq_entry *comp,
+-						       size_t comp_size_in_bytes)
++static void __efa_com_submit_admin_cmd(struct efa_com_admin_queue *aq,
++				       struct efa_comp_ctx *comp_ctx,
++				       struct efa_admin_aq_entry *cmd,
++				       size_t cmd_size_in_bytes,
++				       struct efa_admin_acq_entry *comp,
++				       size_t comp_size_in_bytes)
+ {
+ 	struct efa_admin_aq_entry *aqe;
+-	struct efa_comp_ctx *comp_ctx;
+ 	u16 queue_size_mask;
+ 	u16 cmd_id;
+ 	u16 ctx_id;
+ 	u16 pi;
+ 
+-	comp_ctx = efa_com_alloc_comp_ctx(aq);
+-	if (!comp_ctx)
+-		return ERR_PTR(-EINVAL);
+-
+ 	queue_size_mask = aq->depth - 1;
+ 	pi = aq->sq.pc & queue_size_mask;
+ 	ctx_id = efa_com_get_comp_ctx_id(aq, comp_ctx);
+@@ -360,8 +356,6 @@ static struct efa_comp_ctx *__efa_com_submit_admin_cmd(struct efa_com_admin_queu
+ 
+ 	/* barrier not needed in case of writel */
+ 	writel(aq->sq.pc, aq->sq.db_addr);
+-
+-	return comp_ctx;
+ }
+ 
+ static inline int efa_com_init_comp_ctxt(struct efa_com_admin_queue *aq)
+@@ -394,28 +388,25 @@ static inline int efa_com_init_comp_ctxt(struct efa_com_admin_queue *aq)
+ 	return 0;
+ }
+ 
+-static struct efa_comp_ctx *efa_com_submit_admin_cmd(struct efa_com_admin_queue *aq,
+-						     struct efa_admin_aq_entry *cmd,
+-						     size_t cmd_size_in_bytes,
+-						     struct efa_admin_acq_entry *comp,
+-						     size_t comp_size_in_bytes)
++static int efa_com_submit_admin_cmd(struct efa_com_admin_queue *aq,
++				    struct efa_comp_ctx *comp_ctx,
++				    struct efa_admin_aq_entry *cmd,
++				    size_t cmd_size_in_bytes,
++				    struct efa_admin_acq_entry *comp,
++				    size_t comp_size_in_bytes)
+ {
+-	struct efa_comp_ctx *comp_ctx;
+-
+ 	spin_lock(&aq->sq.lock);
+ 	if (!test_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state)) {
+ 		ibdev_err_ratelimited(aq->efa_dev, "Admin queue is closed\n");
+ 		spin_unlock(&aq->sq.lock);
+-		return ERR_PTR(-ENODEV);
++		return -ENODEV;
+ 	}
+ 
+-	comp_ctx = __efa_com_submit_admin_cmd(aq, cmd, cmd_size_in_bytes, comp,
+-					      comp_size_in_bytes);
++	__efa_com_submit_admin_cmd(aq, comp_ctx, cmd, cmd_size_in_bytes, comp,
++				   comp_size_in_bytes);
+ 	spin_unlock(&aq->sq.lock);
+-	if (IS_ERR(comp_ctx))
+-		clear_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state);
+ 
+-	return comp_ctx;
++	return 0;
+ }
+ 
+ static int efa_com_handle_single_admin_completion(struct efa_com_admin_queue *aq,
+@@ -541,7 +532,6 @@ static int efa_com_wait_and_process_admin_cq_polling(struct efa_comp_ctx *comp_c
+ 
+ 	err = efa_com_comp_status_to_errno(comp_ctx->user_cqe->acq_common_descriptor.status);
+ out:
+-	efa_com_dealloc_comp_ctx(aq, comp_ctx);
+ 	return err;
+ }
+ 
+@@ -591,7 +581,6 @@ static int efa_com_wait_and_process_admin_cq_interrupts(struct efa_comp_ctx *com
+ 
+ 	err = efa_com_comp_status_to_errno(comp_ctx->user_cqe->acq_common_descriptor.status);
+ out:
+-	efa_com_dealloc_comp_ctx(aq, comp_ctx);
+ 	return err;
+ }
+ 
+@@ -642,30 +631,38 @@ int efa_com_cmd_exec(struct efa_com_admin_queue *aq,
+ 	ibdev_dbg(aq->efa_dev, "%s (opcode %d)\n",
+ 		  efa_com_cmd_str(cmd->aq_common_descriptor.opcode),
+ 		  cmd->aq_common_descriptor.opcode);
+-	comp_ctx = efa_com_submit_admin_cmd(aq, cmd, cmd_size, comp, comp_size);
+-	if (IS_ERR(comp_ctx)) {
++
++	comp_ctx = efa_com_alloc_comp_ctx(aq);
++	if (!comp_ctx) {
++		clear_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state);
++		return -EINVAL;
++	}
++
++	err = efa_com_submit_admin_cmd(aq, comp_ctx, cmd, cmd_size, comp, comp_size);
++	if (err) {
+ 		ibdev_err_ratelimited(
+ 			aq->efa_dev,
+-			"Failed to submit command %s (opcode %u) err %pe\n",
++			"Failed to submit command %s (opcode %u) err %d\n",
+ 			efa_com_cmd_str(cmd->aq_common_descriptor.opcode),
+-			cmd->aq_common_descriptor.opcode, comp_ctx);
++			cmd->aq_common_descriptor.opcode, err);
+ 
++		efa_com_dealloc_comp_ctx(aq, comp_ctx);
+ 		up(&aq->avail_cmds);
+ 		atomic64_inc(&aq->stats.cmd_err);
+-		return PTR_ERR(comp_ctx);
++		return err;
+ 	}
+ 
+ 	err = efa_com_wait_and_process_admin_cq(comp_ctx, aq);
+ 	if (err) {
+ 		ibdev_err_ratelimited(
+ 			aq->efa_dev,
+-			"Failed to process command %s (opcode %u) comp_status %d err %d\n",
++			"Failed to process command %s (opcode %u) err %d\n",
+ 			efa_com_cmd_str(cmd->aq_common_descriptor.opcode),
+-			cmd->aq_common_descriptor.opcode,
+-			comp_ctx->user_cqe->acq_common_descriptor.status, err);
++			cmd->aq_common_descriptor.opcode, err);
+ 		atomic64_inc(&aq->stats.cmd_err);
+ 	}
+ 
++	efa_com_dealloc_comp_ctx(aq, comp_ctx);
+ 	up(&aq->avail_cmds);
+ 
+ 	return err;
+-- 
+2.47.3
 
 
