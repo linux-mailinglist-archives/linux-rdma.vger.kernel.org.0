@@ -1,139 +1,167 @@
-Return-Path: <linux-rdma+bounces-17702-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17705-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uJLsCaYnrWnlywEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17702-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 08:39:18 +0100
+	id eAV/OqoprWlAzAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17705-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 08:47:54 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 814AB22EF39
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 08:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B92222EF7D
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 08:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8BA9230180BE
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 07:39:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 006F43018BF4
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 07:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48F8336EEE;
-	Sun,  8 Mar 2026 07:39:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38F3344DB4;
+	Sun,  8 Mar 2026 07:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ONgoRx9t"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I8i4B0J9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C8C336ECE
-	for <linux-rdma@vger.kernel.org>; Sun,  8 Mar 2026 07:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792CD343D8F
+	for <linux-rdma@vger.kernel.org>; Sun,  8 Mar 2026 07:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772955554; cv=none; b=Hqp8tdLift7Su7z34U5CAd8ywAa/bRk2/qItnJYDHEMVpXbOfsyrCA6xFJzJ/6ugvy+Un1SUmOgfxdK8PuHjOwlqStr0UbvJNiJ9motRVCn+YLqV4eP1EywZbEQ+Cek4OXlr6wxskzQq+6xym4mtCw+zWfro0117RTAzsjSdQ64=
+	t=1772956065; cv=none; b=tLMAVVOqxooVdEXcm1R6RHTiZAz1nnkua+Fqn7QJOZO+n5HaGrnSaTs7jty7QwZa5yBOYnrptTyISnCxS+BKLZWjuo0s78ZP+koHqxAVc/mG/mXMcn4BgGyNLX11kCiw4oGm5rWxTZwlVSj7llbNX7Dz5Xbo2r81e0ZuhLPkikg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772955554; c=relaxed/simple;
-	bh=brzk/7kHtLEwzasG2nuLUjY737UAzMYaN01SbYXMOnw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=XKszndwshGaMikljsRW9X+cexh7ndU6zoiUI3pgXneEXVeaBrcOH0xZ9zHm7gMRje2LWb6u/I11+SDOXDursO0ZaL8gm3BBbttWU2qxNEn2gPMIQ4ptb5VSh4aDGkMoDDs96X2ZUS6V2Zr9RNhv0f2AYsS3quziH53VSNdo519o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ONgoRx9t; arc=none smtp.client-ip=95.215.58.187
+	s=arc-20240116; t=1772956065; c=relaxed/simple;
+	bh=uQETDazO6ki2bmNrkY7kd9PU4gW9YYYo4568sKxw0Q8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GLh5OMOixqcQ5HSRO2Ua5O/LkjekrUK4TcAD6OuxRzkM9PnVWd09kyZ4tgkVano4hnkRHLdsREwyJBrLaseNyCUVS4czG/Bhazo8O2d+kF305FBBQwbnyfa/Y8ftvQQqW1wsN8ko7yphLFPY6PDiLGiQEjpl8NUfzYcHWQ5hCJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I8i4B0J9; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0b29736c-f1ee-4d03-946e-378b8fd31435@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772955540;
+	t=1772956052;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MFsNHEzjn6jDUjiqgIyzr/XizL8xAfoPUxGroDwFjz0=;
-	b=ONgoRx9tipBkJO4i+KkW2SJ1xNejhcRkq1IREECaKJl0NRdA+u8QipRbDhsJh328ClVy8u
-	H/rklPFtdOgDQBUtCDv38Tpz73sTAED/5YwDC1cjvOAbgkG3topF2dDp5ehVEkqyf50I7j
-	RbhiDVCALQCptcWbfnR61djmfhq/yso=
-Date: Sat, 7 Mar 2026 23:38:49 -0800
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UDDX7fmsvXKm+vhA0h2KorNPqmLh1w7vdmAH+JIHd+E=;
+	b=I8i4B0J9gufI3+89eS1vqbZRJWVFYadE2WJFpt/ljRAdYlNun2oOmPws86T0GuDz3mlOyG
+	lz0pH2amGCHUWHxw60N38EuKR5RU/3AnzILPTFL1w4FtK09ojDASEKZf327e5Df7mWqZS5
+	VZ4ygdsscitewZUS6IUijaF22tSpSPU=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: jgg@ziepe.ca,
+	leon@kernel.org,
+	zyjzyj2000@gmail.com,
+	yanjun.zhu@linux.dev,
+	dsahern@kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/4]RDMA/rxe: Add the support that rxe can work in net namespace
+Date: Sat,  7 Mar 2026 23:47:07 -0800
+Message-ID: <20260308074711.24114-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/4] RDMA/rxe: Support RDMA link creation and destruction
- per net namespace
-To: kernel test robot <lkp@intel.com>, jgg@ziepe.ca, leon@kernel.org,
- zyjzyj2000@gmail.com, dsahern@kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260307075611.3410-4-yanjun.zhu@linux.dev>
- <202603081310.Lo0y72dG-lkp@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <202603081310.Lo0y72dG-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 814AB22EF39
+X-Rspamd-Queue-Id: 5B92222EF7D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17702-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,gmail.com,linux.dev,vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[intel.com,ziepe.ca,kernel.org,gmail.com,vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[linux.dev:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17705-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.914];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:mid]
+	NEURAL_HAM(-0.00)[-0.983];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+Currently rxe does not work correctly in network namespaces.
 
-在 2026/3/7 22:09, kernel test robot 写道:
-> Hi Zhu,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on shuah-kselftest/next]
-> [also build test WARNING on shuah-kselftest/fixes linus/master v7.0-rc2 next-20260306]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Zhu-Yanjun/RDMA-nldev-Add-dellink-function-pointer/20260307-155949
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-> patch link:    https://lore.kernel.org/r/20260307075611.3410-4-yanjun.zhu%40linux.dev
-> patch subject: [PATCH 3/4] RDMA/rxe: Support RDMA link creation and destruction per net namespace
-> config: loongarch-randconfig-001-20260308 (https://download.01.org/0day-ci/archive/20260308/202603081310.Lo0y72dG-lkp@intel.com/config)
-> compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260308/202603081310.Lo0y72dG-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202603081310.Lo0y72dG-lkp@intel.com/
->
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
->
->>> WARNING: modpost: drivers/infiniband/sw/rxe/rdma_rxe: section mismatch in reference: rxe_namespace_exit+0x0 (section: .text) -> rxe_net_ops (section: .init.data)
+When the rdma_rxe module is loaded, a UDP socket listening on port
+4791 is created in init_net. When users run:
 
-Thanks. This warning is fixed. I will send the latest commit out very soon.
+    ip link add ... type rxe
 
-Zhu Yanjun
+inside another network namespace, the RXE RDMA link is created but it
+cannot function properly because the underlying UDP socket belongs to
+init_net. Other network namespaces cannot use that socket.
 
-> WARNING: modpost: drivers/infiniband/sw/rxe/rdma_rxe: section mismatch in reference: rxe_namespace_exit+0x4 (section: .text) -> rxe_net_ops (section: .init.data)
-> ERROR: modpost: "sysfb_primary_display" [drivers/video/fbdev/core/fb.ko] undefined!
->
+To address this issue, this series introduces net namespace support
+for rxe and moves socket management to be per network namespace.
+
+The series first introduces per-net namespace management for the IPv4
+and IPv6 sockets used by rxe. The sockets are created when the network
+namespace becomes active and are released when the namespace is
+destroyed.
+
+Based on this infrastructure, rxe RDMA links are then created and
+destroyed within each network namespace. This ensures that both the
+UDP sockets and RDMA links are correctly scoped to the namespace in
+which they are used.
+
+With these changes, rxe RDMA links can be created and used both in
+init_net and in other network namespaces, and resources are properly
+cleaned up during namespace teardown.
+
+The series also includes a selftest to verify RXE functionality in
+network namespaces.
+
+V2 -> V3: Fix build warnings
+V1 -> V2: Fix the problems based on David Ahern.
+
+
+Zhu Yanjun (4):
+  RDMA/nldev: Add dellink function pointer
+  RDMA/rxe: Add net namespace support for IPv4/IPv6 sockets
+  RDMA/rxe: Support RDMA link creation and destruction per net namespace
+  RDMA/rxe: Add testcase for net namespace rxe
+
+ MAINTAINERS                                   |   1 +
+ drivers/infiniband/core/nldev.c               |   6 +
+ drivers/infiniband/sw/rxe/Makefile            |   3 +-
+ drivers/infiniband/sw/rxe/rxe.c               |  38 ++++-
+ drivers/infiniband/sw/rxe/rxe_net.c           | 145 +++++++++++++-----
+ drivers/infiniband/sw/rxe/rxe_net.h           |   9 +-
+ drivers/infiniband/sw/rxe/rxe_ns.c            | 136 ++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_ns.h            |  17 ++
+ include/rdma/rdma_netlink.h                   |   2 +
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rdma/Makefile         |   7 +
+ tools/testing/selftests/rdma/config           |   3 +
+ tools/testing/selftests/rdma/rxe_ipv6.sh      |  47 ++++++
+ .../selftests/rdma/rxe_rping_between_netns.sh |  57 +++++++
+ .../selftests/rdma/rxe_socket_with_netns.sh   |  64 ++++++++
+ .../rdma/rxe_test_NETDEV_UNREGISTER.sh        |  38 +++++
+ 16 files changed, 527 insertions(+), 47 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+ create mode 100644 tools/testing/selftests/rdma/Makefile
+ create mode 100644 tools/testing/selftests/rdma/config
+ create mode 100755 tools/testing/selftests/rdma/rxe_ipv6.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+
 -- 
-Best Regards,
-Yanjun.Zhu
+2.52.0
 
 
