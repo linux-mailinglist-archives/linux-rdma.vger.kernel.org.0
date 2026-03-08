@@ -1,189 +1,168 @@
-Return-Path: <linux-rdma+bounces-17734-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17738-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SM4hLKoBrmki+wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17734-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 00:09:30 +0100
+	id YEdwHwUIrmkN/AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17738-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 00:36:37 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 571442329E7
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 00:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D0957232B35
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 00:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 32927301017A
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 23:09:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB94F30107EE
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 23:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F373D35A39D;
-	Sun,  8 Mar 2026 23:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA1E35A3A3;
+	Sun,  8 Mar 2026 23:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="VG5XLHyw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kayrjOnZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8742475D0
-	for <linux-rdma@vger.kernel.org>; Sun,  8 Mar 2026 23:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0ED63537CA
+	for <linux-rdma@vger.kernel.org>; Sun,  8 Mar 2026 23:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773011361; cv=none; b=DY8fYSzn0FzWmGsMgtPr3S90OHcTSilgnBglehP08aJ3IY3QwRkL1RBgScb4ETEBu14cp0012BI8JouK8U3/StZgom4UH0wZH5O3J7fQGrSvBlWlvOLclE23z1KKCrWoZK8EHn2fBc/kRu1frUk4aHfXuF/681C8e+R4LHqRXU8=
+	t=1773012988; cv=none; b=j1qNPu4dNuqfre+HP8JSp97o7RMUBqLs1e5Iprvb8pf4fwJiyl6t4pS0QsGdISJYeX4lfyAb3u2j4JL3mK/WfefFa+YEOrqYkoP7YECWFFMROODR2wlli7/0uhrgR1Jvq3eBLN9TeUEysmJlA1xPDuS7kNZVtjl350WREFCV2jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773011361; c=relaxed/simple;
-	bh=rBbx3d93p2y2jIh4G2U5Gu80cWTEuOIfSXCGSgCzVU0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sbQayRvYvRQILp1NPoO2rwlTV4xaHgPe+IC+b+Pl7cUigYrpExYT258Hpy7mFIEyMh6Q1qByzdomJVhdkHGNCn19iDrI364sfFhfHoopuxlZMRh3WAQL4zQR8tfuyvC+zpwiAniqSqALb8kxe/JWxNIhziUxss8LH/Aosrrm7uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=VG5XLHyw; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-508fe217a44so19037731cf.2
-        for <linux-rdma@vger.kernel.org>; Sun, 08 Mar 2026 16:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1773011359; x=1773616159; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aJUOBkP/5JQJnNKHejLcwjpKdPk3k1pSv7xveepfvi0=;
-        b=VG5XLHywQc9Gws5ePKS1MUsQEqYQuMj40HD3KNtw+Pth6/fCC45oSpQhz2/Al4NsM/
-         BC2cmgo33MuGVIOhlNpUvYKkhufDc1x6J2MfwSMP6Iw2PYQGKrYliMe3UvxmVJSsCWup
-         6BJruFUt6EXdmUuSi5i3V7Krsf0BQGBCdgW1+yZnCzEOQIOQvQQlyvW1r8G3LblZfqe1
-         S6m+D2RlyRl4u50hn2fqpu7yPIX4aaT1K+xgigByFL87JmyWNE5aoZvKuxJiFgVG61tV
-         b3hDJkZ54oKcRa30Eeo53XGXCHVAFSvw0xhZXI3mT5/zqECF8LIAtjpwOxOhOIxIUoWb
-         8kIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773011359; x=1773616159;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aJUOBkP/5JQJnNKHejLcwjpKdPk3k1pSv7xveepfvi0=;
-        b=Fp8r7/lVObohwKPnhouB6OMJ0oCgLWhjVeO4FCdv5XYuSexVH1+Si0xxZcebnyJUzR
-         OkdWinopa7NyMWtnuHySarjZvK0aZqLmr/UCZCLEC3da1xq25I305s89thSLqXHsD4nn
-         SGoTqxuxbjCKTnaIqMbLZaGwdgtNMEm9hFwOgIp6xjb1tiEwg8hm/hS2oNP7T9By5B40
-         AYXL/PSJkfZhCmeNPwGidvEOpawgNBD7uaJ9Py5kvV+dR6PJZVE1cakgXGC/eyrosf3G
-         I6QitwE19DNiCMaRNxaiv4J0NkSyBzIy25gFdR1Epw3JgfVOaQyRMFI3aT00QDgqCIj2
-         VXtg==
-X-Forwarded-Encrypted: i=1; AJvYcCXuQRTuq3AloflNkZgJuLmqCTV2gRnWR4yE0jy77HX4lEiYrIBY3+m8h3WThhIcBzhQhKTb75ZpX6EW@vger.kernel.org
-X-Gm-Message-State: AOJu0YzajmlgWculaek/5PhPRf4VweW7VPK5corj54O7a/R4HRBz7hhH
-	sIClmFoW+EIiu2WtxbzmGxaS8jYMHAoQLn3+cTvjLE2CdLAJc1nMPnY/V7GGi0K124c=
-X-Gm-Gg: ATEYQzxOoZiOduPiRi1kUKZSY1z/oU5vga/ewJxdp5noChTwHwFDqME5bMlc4SKwiwz
-	SYT0LUSl4XCrqVdmJBhkSpMU5mAsKnxeaEysGCc0pAhSWYtkYk12wZP+xLm++h6U/f0fq0XEFxE
-	kDXih6cV97zRWO+5R4RRvqoreucs1v0p13cPL2PWyTzGIjn/XeTI8CyTeufMyc5Lq9fz9QEfPce
-	phYpYGeHScCZblNCb3bYStIHADYUez09EckCAaRa8JJzxSwlgHBJcNE3ykrTMO9Pgo4UirUGT2M
-	5jnZDKCEaNz3la+NE2RTL7C2GY2oQAyE0GpogAxyUXjS3N9MCW1lJjthec6+u/zg2m3xVOVko66
-	mwgb4t+DBlMKATstgYfbr8wiwV2sqbYlR9U0QdpZkw3QYgop/y42DIbFWEt4ROETW/pHrbFD6IV
-	EYFsXt5//AqztxfkAPVPN5PCdZygTCXeOda77RtCmRLYkx+JXA1DDhLRujF5+Wa5sosA0YVduTT
-	sW1/7r3
-X-Received: by 2002:a05:622a:1995:b0:509:127d:ee06 with SMTP id d75a77b69052e-509127df85cmr39687201cf.58.1773011359286;
-        Sun, 08 Mar 2026 16:09:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-508f66da77csm51473791cf.30.2026.03.08.16.09.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Mar 2026 16:09:18 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vzNFM-0000000Bzue-3rG7;
-	Sun, 08 Mar 2026 20:09:16 -0300
-Date: Sun, 8 Mar 2026 20:09:16 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Petr Tesarik <ptesarik@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, virtualization@lists.linux.dev,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 2/3] dma-mapping: Clarify valid conditions for CPU cache
- line overlap
-Message-ID: <20260308230916.GI1687929@ziepe.ca>
-References: <20260307-dma-debug-overlap-v1-0-c034c38872af@nvidia.com>
- <20260307-dma-debug-overlap-v1-2-c034c38872af@nvidia.com>
- <20260308181920.GH1687929@ziepe.ca>
- <20260308184902.GR12611@unreal>
+	s=arc-20240116; t=1773012988; c=relaxed/simple;
+	bh=x9npoaLfCeHar/3I6WsNJMaQHqEWIQTQe42/jBEGN4A=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=TgCMBNdF6A7f0nDQ/JyKZYY3oAFGmIhrlKDsrhtO7ZngVar8kjYQIea38Uf8jZNNE1GBNfynA+5Wu59AMTQuAzjIQaRbOjnrirsAVoptT0FfB8RZlVROcsqZttWr4dB4PDYqajadCu/7ptInzfstTKha/OVgGheEPIw17VbUrgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kayrjOnZ; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773012975;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6fPiM/cdQVfoTSx89LgNlFNrwK4GbMUAluOiWsTZlck=;
+	b=kayrjOnZho1im7CcPZ26qO1ctnB0v2HSmGb2q+tCseplarUzOS/gWQV/7doN+4ITQ4/M8M
+	qIK6Hxn+CT21oA3RyvL7KGi1IkQNQFyQLZa7nMq6Bh49bc7CHxKpzFK65JxZ8TJTgfGC5/
+	4h1Srww8Sp2kSbpYxPhcFRAZrZcyOsQ=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: jgg@ziepe.ca,
+	leon@kernel.org,
+	zyjzyj2000@gmail.com,
+	yanjun.zhu@linux.dev,
+	dsahern@kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 0/4] RDMA/rxe: Add the support that rxe can work in net namespace
+Date: Sun,  8 Mar 2026 16:35:36 -0700
+Message-ID: <20260308233540.13382-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260308184902.GR12611@unreal>
-X-Rspamd-Queue-Id: 571442329E7
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: D0957232B35
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17734-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
+	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,gmail.com,linux.dev,vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17738-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.948];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-0.983];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ziepe.ca:dkim,ziepe.ca:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:mid]
 X-Rspamd-Action: no action
 
-On Sun, Mar 08, 2026 at 08:49:02PM +0200, Leon Romanovsky wrote:
-> On Sun, Mar 08, 2026 at 03:19:20PM -0300, Jason Gunthorpe wrote:
-> > On Sat, Mar 07, 2026 at 06:49:56PM +0200, Leon Romanovsky wrote:
-> > 
-> > > -This attribute indicates the CPU will not dirty any cacheline overlapping this
-> > > -DMA_FROM_DEVICE/DMA_BIDIRECTIONAL buffer while it is mapped. This allows
-> > > -multiple small buffers to safely share a cacheline without risk of data
-> > > -corruption, suppressing DMA debug warnings about overlapping mappings.
-> > > -All mappings sharing a cacheline should have this attribute.
-> > > +DMA_ATTR_CPU_CACHE_OVERLAP
-> > 
-> > This is a very specific and well defined use case that allows some cache
-> > flushing behaviors to work only under the promise that the CPU doesn't
-> > touch the memory to cause cache inconsistencies.
-> > 
-> > > +Another valid use case is on systems that are CPU-coherent and do not use
-> > > +SWIOTLB, where the caller can guarantee that no cache maintenance operations
-> > > +(such as flushes) will be performed that could overwrite shared cache lines.
-> > 
-> > This is something completely unrelated. 
-> 
-> I disagree. The situation is equivalent in that callers guarantee the
-> CPU cache will not be overwritten.
+Currently rxe does not work correctly in network namespaces.
 
-The RDMA callers do no such thing, they just don't work at all if
-there is non-coherence in the mapping which is why it is not a bug.
+When the rdma_rxe module is loaded, a UDP socket listening on port
+4791 is created in init_net. When users run:
 
-virtio looks like it does actually keep the caches clean for different
-mappings (and probably also in practice forced coherent as well given
-qemu is coherent with the VM and VFIO doesn't allow non-coherent DMA
-devices)
+    ip link add ... type rxe
 
-> > What I would really like is a new DMA_ATTR_REQUIRE_COHERENT which
-> > fails any mappings requests that would use any SWIOTLB or cache
-> > flushing.
-> 
-> You are proposing something orthogonal that operates at a different layer
-> (DMA mapping). However, for DMA debugging, your new attribute will be
-> equivalent to DMA_ATTR_CPU_CACHE_OVERLAP.
+inside another network namespace, the RXE RDMA link is created but it
+cannot function properly because the underlying UDP socket belongs to
+init_net. Other network namespaces cannot use that socket.
 
-DMA_ATTR is a dma mapping flag, if you want some weird dma debugging
-flag it should be called DMA_ATTR_DEBUGGING_IGNORE_CACHELINES with
-some kind of statement at the user why it is OK.
+To address this issue, this series introduces net namespace support
+for rxe and moves socket management to be per network namespace.
 
-Jason
+The series first introduces per-net namespace management for the IPv4
+and IPv6 sockets used by rxe. The sockets are created when the network
+namespace becomes active and are released when the namespace is
+destroyed.
+
+Based on this infrastructure, rxe RDMA links are then created and
+destroyed within each network namespace. This ensures that both the
+UDP sockets and RDMA links are correctly scoped to the namespace in
+which they are used.
+
+With these changes, rxe RDMA links can be created and used both in
+init_net and in other network namespaces, and resources are properly
+cleaned up during namespace teardown.
+
+The series also includes a selftest to verify RXE functionality in
+network namespaces.
+
+V3 -> V4: Squash all the changes about rxe_ns.c/h into one commit.
+V2 -> V3: Fix build warnings
+V1 -> V2: Fix the problems based on David Ahern.
+
+
+Zhu Yanjun (4):
+  RDMA/nldev: Add dellink function pointer
+  RDMA/rxe: Add net namespace support for IPv4/IPv6 sockets
+  RDMA/rxe: Support RDMA link creation and destruction per net namespace
+  RDMA/rxe: Add testcase for net namespace rxe
+
+ MAINTAINERS                                   |   1 +
+ drivers/infiniband/core/nldev.c               |   6 +
+ drivers/infiniband/sw/rxe/Makefile            |   3 +-
+ drivers/infiniband/sw/rxe/rxe.c               |  38 ++++-
+ drivers/infiniband/sw/rxe/rxe_net.c           | 145 +++++++++++++-----
+ drivers/infiniband/sw/rxe/rxe_net.h           |   9 +-
+ drivers/infiniband/sw/rxe/rxe_ns.c            | 136 ++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_ns.h            |  17 ++
+ include/rdma/rdma_netlink.h                   |   2 +
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rdma/Makefile         |   7 +
+ tools/testing/selftests/rdma/config           |   3 +
+ tools/testing/selftests/rdma/rxe_ipv6.sh      |  47 ++++++
+ .../selftests/rdma/rxe_rping_between_netns.sh |  57 +++++++
+ .../selftests/rdma/rxe_socket_with_netns.sh   |  64 ++++++++
+ .../rdma/rxe_test_NETDEV_UNREGISTER.sh        |  38 +++++
+ 16 files changed, 527 insertions(+), 47 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+ create mode 100644 tools/testing/selftests/rdma/Makefile
+ create mode 100644 tools/testing/selftests/rdma/config
+ create mode 100755 tools/testing/selftests/rdma/rxe_ipv6.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+
+-- 
+2.52.0
+
 
