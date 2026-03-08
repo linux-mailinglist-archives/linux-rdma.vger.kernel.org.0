@@ -1,186 +1,150 @@
-Return-Path: <linux-rdma+bounces-17690-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17691-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OEiBMEEQrWmBxwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17690-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 06:59:29 +0100
+	id 8F6PHL4SrWn5xwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17691-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 07:10:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4036F22EA12
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 06:59:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6CAF22EA85
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 07:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DA74C301372B
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 05:58:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E05203028EDC
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 06:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E74336EDB;
-	Sun,  8 Mar 2026 05:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117DE30E838;
+	Sun,  8 Mar 2026 06:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ne+YBOzG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rt+Sd45G"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870B633469C;
-	Sun,  8 Mar 2026 05:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D5633993;
+	Sun,  8 Mar 2026 06:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772949519; cv=none; b=IImhgUNZFxk0ickXEasmQZYZZptlhiUDWeew3t1edG8oyOxglS4kwWEMpI7PjMtQj5qJBssyXMjO6UfszTWdFRjc2D3TEOuwXG90ceQMDYL9dkza+QFOei8AdOVxZyOUJpmd2rYYDnSacD4a+6u/IgNaZEFm6vn+Skjqc4h8J9c=
+	t=1772950200; cv=none; b=R+1Nlx7HxCeCzTVM5vdAIVDos/Tg3G8TBA75yMgBYGV6/yx4oGjn4hgqJEJ1G7lYRb6vkMp3N+HLz7ZyIMw07O/jTUafAay5Idpk6tISo/dmetOAd3fFMpyQJEwbLyeKUowf7yoTZXIwzBH6zpM/ZrqPAQsgQ2JAdMyqT/d8CHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772949519; c=relaxed/simple;
-	bh=G90OIRDw/VUMkYj3G1MxeuZl1L9q28TxclvVpaSB0I8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JpJFJqwJaKvEwmfKsRI5MNxqgwiOQJ8jQZvq52H6RLAgdmy06Uj5L6Oz7Doh1Xvil39n0DSLhQ5dhjA3ij1d91OM67Eb0pPL+5K4UymTyX+Iiusruqi/RBsM75aC+14nrOI0wHqhKZlj4VWJIDWhixj+vuYd324T74wcxu6S0y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ne+YBOzG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B2AC2BCB0;
-	Sun,  8 Mar 2026 05:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772949519;
-	bh=G90OIRDw/VUMkYj3G1MxeuZl1L9q28TxclvVpaSB0I8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ne+YBOzGbDLzByLACMmBwXSggJdZRSIvSLKfThvdXSNoGpQfZwne6kSQoFUwo5EMA
-	 APvYL0mOpyT71592GQ8E4HSaujiQTE3AAAzdaeM9FJ/YeRz6KSCvkzOXAmUUcC4znY
-	 dF3NxaOLu4SlRp74KUN0IALBT7NVe3k1FfgzcqTmTA5cDxYDaw8Pcc53DzLPj/xOX4
-	 BW4JUfNRs+s6zl1M3nJylhNdsPVG25VeSbYNBSyggl1iZpLAWWVFhBJQHHP2tMQoTg
-	 79nyFj2Q+V3OamgvfYhQi/goFo3S3Lv8mIYwo/zKITIlTQOVs73Xa1submPydpkpe6
-	 dbTKImhR8M9HA==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	rds-devel@oss.oracle.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	allison.henderson@oracle.com
-Subject: [PATCH net-next v1 3/3] selftests: rds: Fix tcpdump segfault in rds selftests
-Date: Sat,  7 Mar 2026 22:58:35 -0700
-Message-ID: <20260308055835.1338257-4-achender@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260308055835.1338257-1-achender@kernel.org>
-References: <20260308055835.1338257-1-achender@kernel.org>
+	s=arc-20240116; t=1772950200; c=relaxed/simple;
+	bh=wwX+tdXmbBhV+MANPmVIQGzD60GjFbE/UZjK3DaljdI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P8scnLn+z/aT6ZaM6sQFj/PXFXoK/m4+cWgMueL652Dk4lVVDtWzMY8oSuWBk46Kz2Go0PqXKGZyHFq3bFSZtyzsAypums+bOgcI8QAPMRhC7xjy6Sw2jIEP5lW4jlBE2HwmMX/1xdGNQB1alCe157/IEtl+d20BFa8/z9K+XSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rt+Sd45G; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1772950197; x=1804486197;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wwX+tdXmbBhV+MANPmVIQGzD60GjFbE/UZjK3DaljdI=;
+  b=Rt+Sd45GnsCAKX9fGVS1xa7++j61qx6CVCgzomXmgn7fg+rFXKL3PYgC
+   iZ5Pq2Mn7Wq3cQDZCACFiQ7JuuylRh/TVnJofv5fglxtt0ZoEc1nQOnWm
+   2HjRWaM+Va95d2hDbwbJ7OzM3QGj1VYR19dzVnweGgnoBCBUUb/07BnwY
+   +OhFiOOGJiRmHzd3icpX0Qn4X/NMMkKR7PcZHf76xwBJyvPbAgffYqS2a
+   ZEktDjkhiN6tEzI2adod/yGiw5NRxQuIKejvC1qrqnjhhjmWTmCjSd6Ba
+   WzHKlq/2BOUE53zE5BMNKD9BgANV4WUEG6yC91z3CYEX6FW+GFsqDeKG5
+   g==;
+X-CSE-ConnectionGUID: B6MHC2tBRhiKiClTWC/bFQ==
+X-CSE-MsgGUID: D9nUsRE6Q4yR/kFoSP7/SQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11722"; a="74117495"
+X-IronPort-AV: E=Sophos;i="6.23,108,1770624000"; 
+   d="scan'208";a="74117495"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2026 22:09:56 -0800
+X-CSE-ConnectionGUID: 4OSQFm1QSeSmYnmHQWMRIw==
+X-CSE-MsgGUID: EJ0xPvzdS7eq1gYGeoTV5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,108,1770624000"; 
+   d="scan'208";a="217540014"
+Received: from lkp-server01.sh.intel.com (HELO 058beb05654c) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 07 Mar 2026 22:09:54 -0800
+Received: from kbuild by 058beb05654c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vz7Kp-000000002wr-2AOu;
+	Sun, 08 Mar 2026 06:09:51 +0000
+Date: Sun, 8 Mar 2026 14:09:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, jgg@ziepe.ca, leon@kernel.org,
+	zyjzyj2000@gmail.com, dsahern@kernel.org,
+	linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 3/4] RDMA/rxe: Support RDMA link creation and destruction
+ per net namespace
+Message-ID: <202603081310.Lo0y72dG-lkp@intel.com>
+References: <20260307075611.3410-4-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4036F22EA12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260307075611.3410-4-yanjun.zhu@linux.dev>
+X-Rspamd-Queue-Id: C6CAF22EA85
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17690-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17691-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-0.983];
+	FREEMAIL_TO(0.00)[linux.dev,ziepe.ca,kernel.org,gmail.com,vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.939];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[git-scm.com:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-net/rds/test.py sees a segfault in tcpdump when executed through the
-ksft runner.
+Hi Zhu,
 
-[   21.903713] tcpdump[1469]: segfault at 0 ip 000072100e99126d
-sp 00007ffccf740fd0 error 4
-[   21.903721]  in libc.so.6[16a26d,7798b149a000+188000]
-[   21.905074]  in libc.so.6[16a26d,72100e84f000+188000] likely on
-CPU 5 (core 5, socket 0)
-[   21.905084] Code: 00 0f 85 a0 00 00 00 48 83 c4 38 89 d8 5b 41 5c
-41 5d 41 5e 41 5f 5d c3 0f 1f 44 00 00 48 8b 05 91 8b 09 00 8b 4d ac
-64 89 08 <41> 0f b6 07 83 e8 2b a8 fd 0f 84 54 ff ff ff 49 8b 36 4c 89
-ff e8
-[   21.906760]  likely on CPU 9 (core 9, socket 0)
-[   21.913469] Code: 00 0f 85 a0 00 00 00 48 83 c4 38 89 d8 5b 41 5c 41
-5d 41 5e 41 5f 5d c3 0f 1f 44 00 00 48 8b 05 91 8b 09 00 8b 4d ac 64 89
-08 <41> 0f b6 07 83 e8 2b a8 fd 0f 84 54 ff ff ff 49 8b 36 4c 89 ff e8
+kernel test robot noticed the following build warnings:
 
-The os.fork() call creates extra complexity because it forks the entire
-process including the python interpreter.  ip() then calls cmd() which
-creates a subprocess.Popen.  We can avoid the extra layering by simply
-calling subprocess.Popen directly. Track the process handles directly
-and terminate them at cleanup rather than relying on killall. Further
-tcpdump's -Z flag attempts to change savefile ownership, which is not
-supported by the 9p protocol.  Fix this by writing pcap captures to
-"/tmp" during the test and move them to the log directory after tcpdump
-exits.
+[auto build test WARNING on shuah-kselftest/next]
+[also build test WARNING on shuah-kselftest/fixes linus/master v7.0-rc2 next-20260306]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Allison Henderson <achender@kernel.org>
----
- tools/testing/selftests/net/rds/test.py | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Zhu-Yanjun/RDMA-nldev-Add-dellink-function-pointer/20260307-155949
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
+patch link:    https://lore.kernel.org/r/20260307075611.3410-4-yanjun.zhu%40linux.dev
+patch subject: [PATCH 3/4] RDMA/rxe: Support RDMA link creation and destruction per net namespace
+config: loongarch-randconfig-001-20260308 (https://download.01.org/0day-ci/archive/20260308/202603081310.Lo0y72dG-lkp@intel.com/config)
+compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260308/202603081310.Lo0y72dG-lkp@intel.com/reproduce)
 
-diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
-index 8256afe6ad6f..93e23e8b256c 100755
---- a/tools/testing/selftests/net/rds/test.py
-+++ b/tools/testing/selftests/net/rds/test.py
-@@ -11,8 +11,8 @@ import signal
- import socket
- import subprocess
- import sys
--from pwd import getpwuid
--from os import stat
-+import tempfile
-+import shutil
- 
- # Allow utils module to be imported from different directory
- this_dir = os.path.dirname(os.path.realpath(__file__))
-@@ -125,14 +125,14 @@ ip(f"-n {NET1} route add {addrs[0][0]}/32 dev {VETH1}")
- ip(f"netns exec {NET0} ping -c 1 {addrs[1][0]}")
- 
- # Start a packet capture on each network
-+tcpdump_procs = []
- for net in [NET0, NET1]:
--    tcpdump_pid = os.fork()
--    if tcpdump_pid == 0:
--        pcap = logdir+'/'+net+'.pcap'
--        subprocess.check_call(['touch', pcap])
--        user = getpwuid(stat(pcap).st_uid).pw_name
--        ip(f"netns exec {net} /usr/sbin/tcpdump -Z {user} -i any -w {pcap}")
--        sys.exit(0)
-+    pcap = logdir+'/'+net+'.pcap'
-+    fd, pcap_tmp = tempfile.mkstemp(suffix=".pcap", prefix=f"{net}-", dir="/tmp")
-+    p = subprocess.Popen(
-+        ['ip', 'netns', 'exec', net,
-+         '/usr/sbin/tcpdump', '-i', 'any', '-w', pcap_tmp])
-+    tcpdump_procs.append((p, pcap_tmp, pcap, fd))
- 
- # simulate packet loss, duplication and corruption
- for net, iface in [(NET0, VETH0), (NET1, VETH1)]:
-@@ -248,7 +248,11 @@ for s in sockets:
- print(f"getsockopt(): {nr_success}/{nr_error}")
- 
- print("Stopping network packet captures")
--subprocess.check_call(['killall', '-q', 'tcpdump'])
-+for p, pcap_tmp, pcap, fd in tcpdump_procs:
-+    p.terminate()
-+    p.wait()
-+    os.close(fd)
-+    shutil.move(pcap_tmp, pcap)
- 
- # We're done sending and receiving stuff, now let's check if what
- # we received is what we sent.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202603081310.Lo0y72dG-lkp@intel.com/
+
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
+
+>> WARNING: modpost: drivers/infiniband/sw/rxe/rdma_rxe: section mismatch in reference: rxe_namespace_exit+0x0 (section: .text) -> rxe_net_ops (section: .init.data)
+WARNING: modpost: drivers/infiniband/sw/rxe/rdma_rxe: section mismatch in reference: rxe_namespace_exit+0x4 (section: .text) -> rxe_net_ops (section: .init.data)
+ERROR: modpost: "sysfb_primary_display" [drivers/video/fbdev/core/fb.ko] undefined!
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
