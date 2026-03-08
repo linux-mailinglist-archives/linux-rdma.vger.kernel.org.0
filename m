@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-17715-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17716-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cKBXBvxurWme2wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-17715-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:43:40 +0100
+	id MMnSLiBvrWme2wEAu9opvQ
+	(envelope-from <linux-rdma+bounces-17716-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:44:16 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F09230452
-	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:43:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2135E230467
+	for <lists+linux-rdma@lfdr.de>; Sun, 08 Mar 2026 13:44:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 29EB1301F9F5
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 12:40:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 43CB9305F4C3
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2026 12:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43A5355F29;
-	Sun,  8 Mar 2026 12:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFAB36F417;
+	Sun,  8 Mar 2026 12:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gBAT6vxV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rC+WqX9X"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8594A27F749;
-	Sun,  8 Mar 2026 12:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8317C299A8A;
+	Sun,  8 Mar 2026 12:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772973643; cv=none; b=X/QTkY1fl/rQWTKaZyF6pRYL6mTUvXodDjXWdY+e2IeKOp/+TJAoIJOLZU206Mhi/rV5/5Luz6xj9Yc5BKQTOvwNfTP2T0oSk5JT9ubVIVA9gH+hp93otSlJ5xXHbeR/7Dwa2Cuu/sk6JSsRHCVAvj0btryT6KEr+fW9hF95Vs8=
+	t=1772973648; cv=none; b=c/gqtTAOHgdB7JcPpMhhoH8hd8m2f5asR5UGfc/4S9jnLIFhKR1hbzJjBC079+61WZN/yrFC0d0PpIykbJqly/cwKt1kpQCi0wn4YPzGXqhU99G9ev1QkVg1FxFkfHroWnNciJI+eqh/qjEMB2K7Nl9yXWwyM+Ovd4ws0tEA3b4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772973643; c=relaxed/simple;
-	bh=kvew3wDTsNSCELg3wrpyIX+U/cTVAQVLMk15hqq6t5I=;
+	s=arc-20240116; t=1772973648; c=relaxed/simple;
+	bh=U7ugx5XdRBV8q3eTJ32W5d+auEFcbPDhwzRLSP2M2Xg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sUPYETEJtcBBunY7d7aYCUIrQUMOvrdWvjWrTGOI+zfd9pPC1xMhS0mMXxVqszgFMaD/7edbT6O32hoBKTp/v9DvrKFyMR/8oX1eOwOycxFUSJPHw5wniCd8UFrvyOBg+WfcudtAfPTy9bp+Wc0/ReXgff627R84AE56pESKNLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gBAT6vxV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D79F3C19423;
-	Sun,  8 Mar 2026 12:40:38 +0000 (UTC)
+	 MIME-Version:Content-Type; b=K/MaMVggqworlje9Wmu5Ot6bHDaBNVIUKnibB7cq09WN00Z922Bxs3f/SH2wnStoyLuEcJsCP/zeme6RJeyKiizCovb1TRJIZGRKr2wXhgQmvX12P1JRpimQQt8tLHpn+LAuXbTVaZOoSlGA7I3a0M8ImWL+c8uy4T4exondS+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rC+WqX9X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A961DC2BC9E;
+	Sun,  8 Mar 2026 12:40:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772973643;
-	bh=kvew3wDTsNSCELg3wrpyIX+U/cTVAQVLMk15hqq6t5I=;
+	s=k20201202; t=1772973648;
+	bh=U7ugx5XdRBV8q3eTJ32W5d+auEFcbPDhwzRLSP2M2Xg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gBAT6vxVeulyApxqYSRbLOm9NeIOua42QEwq+cs6Az17tmyyI7QGCD6rA2br91e6P
-	 4VJ2NJAiaw66kcaaxjSrOZg+EQoqGYMJklKmvKoa+l9egGUyiRVaxe83eejoBtj6HT
-	 SO/dJIyVYrqSFzouuNynfykPAERR9rsT61x1Z9lIU2ikA+wuswyg0LMx6mVfBBToOU
-	 HloX3DNR/U5Jvvda9f5BaMLOUlFws2EC239fcdBz/xX9aVox8ZJqiqHxr/0Mot26b0
-	 wxwkRdlVWtPqxpJLY3YUfbEcjVc2O29g85Y1wj3jpogpzeqMrSBAKcaWZYazM4eLu5
-	 eZy0zHeN3yabA==
+	b=rC+WqX9X5FXna4ZOpVYqzrc36VoodxM0gYRnimdrq1AMhzPt/F4bGQw9Fpmbo3EFt
+	 Jfab7OBwv2VLlUaSzyt2SqOZp0RCZFvPbSBsnLJmMTArymBetS410OdXlVWE5kr7wZ
+	 nGD3Scf35hVFfb43Rou4/8crbwiQOTD9kk4XY2sLgtehj+z6XEyUKQ7sQVS9z6uO0K
+	 b/SWb+IivrpJrdmS/R6lwGtU119rH7sXbfixGvqQF6BsFAVAV2czzy5HFGo6VCP86a
+	 RelN5h6hoBesl2lwEIPwVClbIxc+bkgdPAwOVJ2TdYjUl6XjrDUy07golMZqTJh45i
+	 eEw6xTydYOX9w==
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To: netdev@vger.kernel.org,
 	Donald Hunter <donald.hunter@gmail.com>,
@@ -66,9 +66,9 @@ Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	Russell King <linux@armlinux.org.uk>
-Subject: [RFC net-next v2 4/6] selftests: drv-net: Add loopback driver test
-Date: Sun,  8 Mar 2026 13:40:10 +0100
-Message-ID: <20260308124016.3134012-5-bjorn@kernel.org>
+Subject: [RFC net-next v2 5/6] netdevsim: Add module EEPROM simulation via debugfs
+Date: Sun,  8 Mar 2026 13:40:11 +0100
+Message-ID: <20260308124016.3134012-6-bjorn@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260308124016.3134012-1-bjorn@kernel.org>
 References: <20260308124016.3134012-1-bjorn@kernel.org>
@@ -80,7 +80,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B3F09230452
+X-Rspamd-Queue-Id: 2135E230467
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.96 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -89,12 +89,12 @@ X-Spamd-Result: default: False [0.96 / 15.00];
 	R_MIXED_CHARSET(0.63)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17715-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17716-lists,linux-rdma=lfdr.de];
 	FREEMAIL_TO(0.00)[vger.kernel.org,gmail.com,kernel.org,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -106,260 +106,167 @@ X-Spamd-Result: default: False [0.96 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.972];
+	NEURAL_HAM(-0.00)[-0.956];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lib.py:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Add a selftest for the ethtool loopback UAPI exercising module
-loopback via the loopback GET/SET netlink commands.
+Add get/set_module_eeprom_by_page ethtool ops to netdevsim, enabling
+testing of kernel features that depend on module EEPROM access (e.g.
+CMIS loopback) without real hardware.
 
-Works on any device that reports module loopback entries. Tests cover
-enable near-end and far-end, disable, direction switching (mutual
-exclusivity), idempotent enable, and rejection while interface is up.
-Devices without module loopback support are skipped.
+The EEPROM is backed by a 256-page x 128-byte array exposed as binary
+debugfs files under ports/<N>/ethtool/module/pages/{0..255}. Offsets
+0-127 map to page 0 (lower memory), 128-255 to the requested page's
+upper memory, following the CMIS layout. Error injection via get_err
+and set_err follows the existing netdevsim pattern.
 
 Signed-off-by: Björn Töpel <bjorn@kernel.org>
 ---
- .../selftests/drivers/net/hw/loopback_drv.py  | 227 ++++++++++++++++++
- 1 file changed, 227 insertions(+)
- create mode 100755 tools/testing/selftests/drivers/net/hw/loopback_drv.py
+ drivers/net/netdevsim/ethtool.c   | 79 +++++++++++++++++++++++++++++++
+ drivers/net/netdevsim/netdevsim.h | 11 +++++
+ 2 files changed, 90 insertions(+)
 
-diff --git a/tools/testing/selftests/drivers/net/hw/loopback_drv.py b/tools/testing/selftests/drivers/net/hw/loopback_drv.py
-new file mode 100755
-index 000000000000..ab105664e07e
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/hw/loopback_drv.py
-@@ -0,0 +1,227 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
+diff --git a/drivers/net/netdevsim/ethtool.c b/drivers/net/netdevsim/ethtool.c
+index 36a201533aae..2145ccc8a9bd 100644
+--- a/drivers/net/netdevsim/ethtool.c
++++ b/drivers/net/netdevsim/ethtool.c
+@@ -195,6 +195,67 @@ nsim_get_fec_stats(struct net_device *dev, struct ethtool_fec_stats *fec_stats,
+ 	values[2].per_lane[3] = 0;
+ }
+ 
++static u8 *nsim_module_eeprom_ptr(struct netdevsim *ns,
++				  const struct ethtool_module_eeprom *page_data, u32 *len)
++{
++	u32 offset;
++	u8 page;
 +
-+"""Tests for ethtool loopback GET/SET with CMIS modules.
++	if (page_data->offset < NSIM_MODULE_EEPROM_PAGE_LEN) {
++		page = 0;
++		offset = page_data->offset;
++	} else {
++		page = page_data->page;
++		offset = page_data->offset - NSIM_MODULE_EEPROM_PAGE_LEN;
++	}
 +
-+Works on any device that reports module loopback entries. On devices
-+without CMIS loopback support, tests are skipped.
-+"""
++	if (page >= NSIM_MODULE_EEPROM_PAGES)
++		return NULL;
 +
-+import errno
++	*len = min_t(u32, page_data->length, NSIM_MODULE_EEPROM_PAGE_LEN - offset);
++	return ns->ethtool.module.pages[page] + offset;
++}
 +
-+from lib.py import ksft_run, ksft_exit, ksft_eq
-+from lib.py import KsftSkipEx, KsftFailEx, ksft_disruptive
-+from lib.py import EthtoolFamily, NlError
-+from lib.py import NetDrvEnv, ip, defer
++static int nsim_get_module_eeprom_by_page(struct net_device *dev,
++					  const struct ethtool_module_eeprom *page_data,
++					  struct netlink_ext_ack *extack)
++{
++	struct netdevsim *ns = netdev_priv(dev);
++	u32 len;
++	u8 *ptr;
 +
-+# Direction flags as YNL returns them (sets of flag name strings)
-+DIR_NONE = set()
-+DIR_NEAR_END = {'near-end'}
-+DIR_FAR_END = {'far-end'}
++	if (ns->ethtool.module.get_err)
++		return -ns->ethtool.module.get_err;
 +
++	ptr = nsim_module_eeprom_ptr(ns, page_data, &len);
++	if (!ptr)
++		return -EINVAL;
 +
-+def _get_loopback(cfg):
-+    """GET loopback and return the list of entries."""
-+    result = cfg.ethnl.loopback_get({
-+        'header': {'dev-index': cfg.ifindex}
-+    })
-+    return result.get('entry', [])
++	memcpy(page_data->data, ptr, len);
 +
++	return len;
++}
 +
-+def _set_loopback(cfg, component, name, direction):
-+    """SET loopback for a single entry."""
-+    cfg.ethnl.loopback_set({
-+        'header': {'dev-index': cfg.ifindex},
-+        'entry': [{
-+            'component': component,
-+            'name': name,
-+            'direction': direction,
-+        }]
-+    })
++static int nsim_set_module_eeprom_by_page(struct net_device *dev,
++					  const struct ethtool_module_eeprom *page_data,
++					  struct netlink_ext_ack *extack)
++{
++	struct netdevsim *ns = netdev_priv(dev);
++	u32 len;
++	u8 *ptr;
 +
++	if (ns->ethtool.module.set_err)
++		return -ns->ethtool.module.set_err;
 +
-+def _require_module_entries(cfg):
-+    """Return module loopback entries, skip if none available."""
-+    try:
-+        entries = _get_loopback(cfg)
-+    except NlError as e:
-+        if e.error == errno.EOPNOTSUPP:
-+            raise KsftSkipEx("Device does not support loopback")
-+        raise
-+    mod_entries = [e for e in entries if e['component'] == 'module']
-+    if not mod_entries:
-+        raise KsftSkipEx("No module loopback entries")
-+    return mod_entries
++	ptr = nsim_module_eeprom_ptr(ns, page_data, &len);
++	if (!ptr)
++		return -EINVAL;
 +
++	memcpy(ptr, page_data->data, len);
 +
-+@ksft_disruptive
-+def test_set_near_end(cfg):
-+    """SET a module entry to near-end and verify via GET."""
-+    mod_entries = _require_module_entries(cfg)
++	return 0;
++}
 +
-+    near = [e for e in mod_entries
-+            if 'near-end' in e['supported']]
-+    if not near:
-+        raise KsftSkipEx("No near-end capable module entry")
+ static int nsim_get_ts_info(struct net_device *dev,
+ 			    struct kernel_ethtool_ts_info *info)
+ {
+@@ -222,6 +283,8 @@ static const struct ethtool_ops nsim_ethtool_ops = {
+ 	.set_fecparam			= nsim_set_fecparam,
+ 	.get_fec_stats			= nsim_get_fec_stats,
+ 	.get_ts_info			= nsim_get_ts_info,
++	.get_module_eeprom_by_page	= nsim_get_module_eeprom_by_page,
++	.set_module_eeprom_by_page	= nsim_set_module_eeprom_by_page,
+ };
+ 
+ static void nsim_ethtool_ring_init(struct netdevsim *ns)
+@@ -237,6 +300,7 @@ static void nsim_ethtool_ring_init(struct netdevsim *ns)
+ void nsim_ethtool_init(struct netdevsim *ns)
+ {
+ 	struct dentry *ethtool, *dir;
++	int i;
+ 
+ 	ns->netdev->ethtool_ops = &nsim_ethtool_ops;
+ 
+@@ -270,4 +334,19 @@ void nsim_ethtool_init(struct netdevsim *ns)
+ 			   &ns->ethtool.ring.rx_mini_max_pending);
+ 	debugfs_create_u32("tx_max_pending", 0600, dir,
+ 			   &ns->ethtool.ring.tx_max_pending);
 +
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
++	dir = debugfs_create_dir("module", ethtool);
++	debugfs_create_u32("get_err", 0600, dir, &ns->ethtool.module.get_err);
++	debugfs_create_u32("set_err", 0600, dir, &ns->ethtool.module.set_err);
 +
-+    target = near[0]
-+    _set_loopback(cfg, 'module', target['name'], 'near-end')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
++	dir = debugfs_create_dir("pages", dir);
++	for (i = 0; i < NSIM_MODULE_EEPROM_PAGES; i++) {
++		char name[8];
 +
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries
-+               if e['name'] == target['name']
-+               and 'near-end' in e['supported']]
-+    ksft_eq(len(updated), 1)
-+    ksft_eq(updated[0]['direction'], DIR_NEAR_END)
++		ns->ethtool.module.page_blobs[i].data = ns->ethtool.module.pages[i];
++		ns->ethtool.module.page_blobs[i].size = NSIM_MODULE_EEPROM_PAGE_LEN;
 +
++		snprintf(name, sizeof(name), "%u", i);
++		debugfs_create_blob(name, 0600, dir, &ns->ethtool.module.page_blobs[i]);
++	}
+ }
+diff --git a/drivers/net/netdevsim/netdevsim.h b/drivers/net/netdevsim/netdevsim.h
+index f767fc8a7505..965d0aa0940b 100644
+--- a/drivers/net/netdevsim/netdevsim.h
++++ b/drivers/net/netdevsim/netdevsim.h
+@@ -82,6 +82,16 @@ struct nsim_ethtool_pauseparam {
+ 	bool report_stats_tx;
+ };
+ 
++#define NSIM_MODULE_EEPROM_PAGES	256
++#define NSIM_MODULE_EEPROM_PAGE_LEN	128
 +
-+@ksft_disruptive
-+def test_set_far_end(cfg):
-+    """SET a module entry to far-end and verify via GET."""
-+    mod_entries = _require_module_entries(cfg)
++struct nsim_ethtool_module {
++	u32 get_err;
++	u32 set_err;
++	u8 pages[NSIM_MODULE_EEPROM_PAGES][NSIM_MODULE_EEPROM_PAGE_LEN];
++	struct debugfs_blob_wrapper page_blobs[NSIM_MODULE_EEPROM_PAGES];
++};
 +
-+    far = [e for e in mod_entries
-+           if 'far-end' in e['supported']]
-+    if not far:
-+        raise KsftSkipEx("No far-end capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = far[0]
-+    _set_loopback(cfg, 'module', target['name'], 'far-end')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries
-+               if e['name'] == target['name']
-+               and 'far-end' in e['supported']]
-+    ksft_eq(len(updated), 1)
-+    ksft_eq(updated[0]['direction'], DIR_FAR_END)
-+
-+
-+@ksft_disruptive
-+def test_set_disable(cfg):
-+    """Enable then disable loopback and verify."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    near = [e for e in mod_entries
-+            if 'near-end' in e['supported']]
-+    if not near:
-+        raise KsftSkipEx("No near-end capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = near[0]
-+    _set_loopback(cfg, 'module', target['name'], 'near-end')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    # Disable
-+    _set_loopback(cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries if e['name'] == target['name']]
-+    ksft_eq(updated[0]['direction'], DIR_NONE,
-+            "Direction should be off after disable")
-+
-+
-+@ksft_disruptive
-+def test_set_direction_switch(cfg):
-+    """Enable near-end, then switch to far-end. The kernel must disable
-+    near-end before enabling far-end (mutual exclusivity).
-+    """
-+    mod_entries = _require_module_entries(cfg)
-+
-+    both = [e for e in mod_entries
-+            if 'near-end' in e['supported'] and 'far-end' in e['supported']]
-+    if not both:
-+        raise KsftSkipEx("No entry with both near-end and far-end support")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = both[0]
-+    _set_loopback(cfg, 'module', target['name'], 'near-end')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries if e['name'] == target['name']]
-+    ksft_eq(updated[0]['direction'], DIR_NEAR_END)
-+
-+    # Switch to far-end
-+    _set_loopback(cfg, 'module', target['name'], 'far-end')
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries if e['name'] == target['name']]
-+    ksft_eq(updated[0]['direction'], DIR_FAR_END,
-+            "Should have switched to far-end")
-+
-+
-+@ksft_disruptive
-+def test_set_idempotent(cfg):
-+    """Enable the same direction twice. Second call should not fail."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    near = [e for e in mod_entries
-+            if 'near-end' in e['supported']]
-+    if not near:
-+        raise KsftSkipEx("No near-end capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = near[0]
-+    _set_loopback(cfg, 'module', target['name'], 'near-end')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    # Second enable of the same direction should succeed
-+    _set_loopback(cfg, 'module', target['name'], 'near-end')
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries
-+               if e['name'] == target['name']
-+               and 'near-end' in e['supported']]
-+    ksft_eq(updated[0]['direction'], DIR_NEAR_END,
-+            "Direction should still be near-end")
-+
-+
-+@ksft_disruptive
-+def test_set_while_up(cfg):
-+    """SET while interface is UP should fail."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    target = mod_entries[0]
-+    direction = 'near-end'
-+    if direction not in target['supported']:
-+        direction = 'far-end'
-+
-+    try:
-+        _set_loopback(cfg, 'module', target['name'], direction)
-+        raise KsftFailEx("Should have rejected SET while interface is up")
-+    except NlError as e:
-+        ksft_eq(e.error, errno.EBUSY,
-+                "Expected EBUSY when interface is up")
-+
-+
-+def main() -> None:
-+    with NetDrvEnv(__file__, nsim_test=False) as cfg:
-+        cfg.ethnl = EthtoolFamily()
-+
-+        ksft_run([
-+            test_set_near_end,
-+            test_set_far_end,
-+            test_set_disable,
-+            test_set_direction_switch,
-+            test_set_idempotent,
-+            test_set_while_up,
-+        ], args=(cfg, ))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
+ struct nsim_ethtool {
+ 	u32 get_err;
+ 	u32 set_err;
+@@ -90,6 +100,7 @@ struct nsim_ethtool {
+ 	struct ethtool_coalesce coalesce;
+ 	struct ethtool_ringparam ring;
+ 	struct ethtool_fecparam fec;
++	struct nsim_ethtool_module module;
+ };
+ 
+ struct nsim_rq {
 -- 
 2.53.0
 
