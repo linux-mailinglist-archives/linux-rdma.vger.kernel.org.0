@@ -1,130 +1,149 @@
-Return-Path: <linux-rdma+bounces-17804-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17805-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oItyL5sCr2lmLgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17804-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 18:25:47 +0100
+	id OLHkJ/YPr2kYNQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17805-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 19:22:46 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EED123D9E8
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 18:25:47 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB5123E8F6
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 19:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BFEB3302E7DC
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 17:24:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 178BE3006381
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 18:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8F93E7144;
-	Mon,  9 Mar 2026 17:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1D4346A0C;
+	Mon,  9 Mar 2026 18:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lyy8CGmt"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="hsoJCVNk"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0CE41DE2AD;
-	Mon,  9 Mar 2026 17:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497712DB78E;
+	Mon,  9 Mar 2026 18:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773077084; cv=none; b=SLKuyFluG2Wm1i9h/d6gM2FJLK9O9FGHHVvq9ULviPuCF2ccwRnt82DestlRcOXEi7WfA+lesNP0WBfix42zXGZAXOeItmFJU/Nxx8c+VoUotCrfDmHcJs+2azBJVOMFRnYSZPKP2wXQOpstfCH/qfZstUdoK09GghTthKjlOn4=
+	t=1773080499; cv=none; b=Kqn4soql9be2DFfEmoVIBArTKQZmSQFko6pAX9N4n4uupGEwTLehR57dbTrgR2WKg2pxKLHhYreYin3OpTlO593NlkTHvXvtTDAXIoPtDHA3zgvIRbOxpUy4gwkeOnavglwuJZcwgafLnib/Oy3qswgHY88mjko2y9jBMoK5xSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773077084; c=relaxed/simple;
-	bh=wv4vh+1l8yNkJSBy4DVeFyLqWOhQtBa56ZVYIJnvzPA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=geS2lExB3ABY9iXRBLH3XUiJ5HBI/yJJ2zsDygcRk6YKUzV2/mZ4dRu4mH9BJIIuFlACtL2dXHKzCaXKVyTcrdNv7iPN62gDYe3DVLvdHB3T6BFEzyuGZ1esAcWYLsAqDFnnxLZCn+OhgPLlhK1IKSGTpM4tZ3WT47vZ9m8zp1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lyy8CGmt; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1773080499; c=relaxed/simple;
+	bh=CGwODdLjcrGCYkRvulT3LzYy3rQk0FcW7yLuBEZT5Xw=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=uWbkNUTJrq8rUvbP0/dHWuA4QpWuXc+h8wOn42cx1j3FNcMVkl6phebwpRix1P3MqMFuzONIIjLnIkok+QsyZv4QInbx8aiAg9rZkLWO0dzVAZ+6JyfTLnE1U9rbcvtP/wN2BOuv5lXEDHbTEmcsf7GfBW0UMuRFn59pl23pgO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=hsoJCVNk; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id A4D3020B6F02; Mon,  9 Mar 2026 10:24:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A4D3020B6F02
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 2ACAA20B710C; Mon,  9 Mar 2026 11:21:38 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2ACAA20B710C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1773077083;
-	bh=CVUw3DVnM/0STCEBHsDAe345inWLl6va8IY3OGPZZLg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lyy8CGmtqKGdooC7PdYQ0aC1bpIXeveXhHgatOXkTvtcllOjT0gqzjTWRriAWvbtv
-	 ps3Yy8EMiQtMSypI2B7KSjCF/GsyutowQiLYzL1HVzYYAoaJEd3S2Othj3K18s2kxD
-	 a+18AUW5nYfYud6s4weHOwuMwacqtWKhOd3Hsw0U=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: shirazsaleem@microsoft.com,
-	kotaranov@microsoft.com,
-	pabeni@redhat.com,
-	haiyangz@microsoft.com,
-	kys@microsoft.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	decui@microsoft.com,
-	wei.liu@kernel.org,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH net] net/mana: Null service_wq on setup error to prevent double destroy
-Date: Mon,  9 Mar 2026 10:24:43 -0700
-Message-ID: <20260309172443.688392-1-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=default; t=1773080498;
+	bh=uhqGyVVMocgtmkrBPFhspgz4i3mEwX4e/mn8SitwRpU=;
+	h=Date:From:To:Subject:From;
+	b=hsoJCVNkm9uV0pkmTTfp3ibx52wF9DHZdO5kBbf3mbTJ6wAUAWIZBwAJWaN2dFyG7
+	 zAM+waebSLyUTuDpz1mU6x+04pc4mkqSZxV07zdMymPDRE6DfddpUseJLfliHqHrGX
+	 P5I1kALuEizExsJh3kvd2YLKex2DF0drB4rBhQzk=
+Date: Mon, 9 Mar 2026 11:21:38 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
+	horms@kernel.org, shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, dipayanroy@microsoft.com
+Subject: [PATCH net] net: mana: Fix use-after-free in
+ mana_hwc_destroy_channel() by re-ordering teardown
+Message-ID: <aa8PshvNRfuRYO/p@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 7EED123D9E8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Rspamd-Queue-Id: 4AB5123E8F6
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
 	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17805-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17804-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-From: Shiraz Saleem <shirazsaleem@microsoft.com>
+A potential race condition exists in mana_hwc_destroy_channel() where
+hwc->caller_ctx is freed before the HWC's Completion Queue (CQ) and
+Event Queue (EQ) are destroyed. This allows an in-flight CQ interrupt
+handler to dereference freed memory, leading to a use-after-free or
+NULL pointer dereference in mana_hwc_handle_resp().
 
-In mana_gd_setup() error path, set gc->service_wq to NULL after
-destroy_workqueue() to match the cleanup in mana_gd_cleanup().
-This prevents a use-after-free if the workqueue pointer is checked
-after a failed setup.
+mana_smc_teardown_hwc() signals the hardware to stop but does not
+synchronize against IRQ handlers already executing on other CPUs. The
+IRQ synchronization only happens in mana_hwc_destroy_cq() via
+mana_gd_destroy_eq() -> mana_gd_deregister_irq(). Since this runs
+after kfree(hwc->caller_ctx), a concurrent mana_hwc_rx_event_handler()
+can dereference freed caller_ctx (and rxq->msg_buf) in
+mana_hwc_handle_resp().
 
-Fixes: f975a0955276 ("net: mana: Fix double destroy_workqueue on service rescan PCI path")
-Signed-off-by: Shiraz Saleem <shirazsaleem@microsoft.com>
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+Fix this by reordering teardown to reverse-of-creation order: destroy
+the TX/RX work queues and CQ/EQ before freeing hwc->caller_ctx. This
+ensures all in-flight interrupt handlers complete before the memory they
+access is freed.
+
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
 ---
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/microsoft/mana/hw_channel.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 0055c23..e879344 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1934,6 +1934,7 @@ remove_irq:
- 	mana_gd_remove_irqs(pdev);
- free_workqueue:
- 	destroy_workqueue(gc->service_wq);
-+	gc->service_wq = NULL;
- 	dev_err(&pdev->dev, "%s failed (error %d)\n", __func__, err);
- 	return err;
- }
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 91975bdb5686..dbbde0fa57e7 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -814,9 +814,6 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
+ 		gc->max_num_cqs = 0;
+ 	}
+ 
+-	kfree(hwc->caller_ctx);
+-	hwc->caller_ctx = NULL;
+-
+ 	if (hwc->txq)
+ 		mana_hwc_destroy_wq(hwc, hwc->txq);
+ 
+@@ -826,6 +823,9 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
+ 	if (hwc->cq)
+ 		mana_hwc_destroy_cq(hwc->gdma_dev->gdma_context, hwc->cq);
+ 
++	kfree(hwc->caller_ctx);
++	hwc->caller_ctx = NULL;
++
+ 	mana_gd_free_res_map(&hwc->inflight_msg_res);
+ 
+ 	hwc->num_inflight_msg = 0;
 -- 
 2.43.0
 
