@@ -1,264 +1,174 @@
-Return-Path: <linux-rdma+bounces-17802-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17803-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +K7ELwz+rmkxLQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17802-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 18:06:20 +0100
+	id oOOlK3ACr2lmLgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17803-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 18:25:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B102923D558
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 18:06:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68AED23D9D1
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 18:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 0085F304B076
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 17:00:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D3EB930062FA
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 17:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DE53CD8B5;
-	Mon,  9 Mar 2026 17:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20323E5ED7;
+	Mon,  9 Mar 2026 17:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="meQEx7oW"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="gEyoWxGv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11693CD8AF;
-	Mon,  9 Mar 2026 17:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0D53A9D96;
+	Mon,  9 Mar 2026 17:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773075610; cv=none; b=tJcbmervEHw6dIrJBvJedye3GUI7F8UfNUMHWbJznYha+6uMdY43ideNnNxL0jlm4ySFhnRYMTT3VOT5Vzv7xzrO02QVHGGuCEjOt3zU5Wa2VZlPvoGb5EyUzoCQZoBj8kjDUyOmHujY+fcax8yj8bUDmPULhN01Ile6GyrYK1g=
+	t=1773077056; cv=none; b=AiwU5Ncl2GD45g083GOCnt1zIYWLZa60HCbSA81pn1RRqs0M6qoysywunk2MW7vSPOL8GG1z0JWo+ErjbHPRuAQbbZbsB386Lwo5dLCIMmHU+Z8QiTQK5pZWYqD7UflvFXVIjCIpiY4Vw7KJwN3oYwuFepz9azagWaUZr1beU6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773075610; c=relaxed/simple;
-	bh=j0mnp/PMNkOZ2R+g+hxot9obaXusml6Kmx0B/uVeea0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k1D3uDIpvKCuRHuMtx+oj7r1LCSIrbmztZsib9FM46lBNBULoER43GupSKoxW9URxMIIxyzGYCrmx1mASBFUzyp5xW8lfqdGga8mdaumgduq/3mMAAtKiwXTyqlsL+QrJlrY2gDpy3OPUpmZcYAf6rDkjr4GNPRHXk9lRVAQHsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=meQEx7oW; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773075608; x=1804611608;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=j0mnp/PMNkOZ2R+g+hxot9obaXusml6Kmx0B/uVeea0=;
-  b=meQEx7oWoMo0AcnyHb2XVD4FQYadLXPLJVDp/n8QVbzpBCCf2R4RdR8h
-   05BR2kbcK0qWBjnTvy0w0sVH5toIud7CqVPKF4cCDHn5YEpaw1wyG7S8p
-   oLkLRCA980nS31GW2RM1OLXPbYx7k5FSP5fXOl+9sYJEvj2S/oibn55wL
-   vMxKObyiMum6z3CfobX34bojxcSoFzB2uGJ7W49LuCCpQyn/NeQO0Dj9F
-   RrL9reTGXfPNu6mxLywGztyhUCg/yiga2GVjat7ogWD3kN4n4vnG8vJ7F
-   ZtFnJbLscwOHC1dnyUvHAbgniUF6iPfSWxJevz4d4JwIAVMFZYpNSQYp1
-   g==;
-X-CSE-ConnectionGUID: DnhhoqjrRSKE4NcP7/MJMQ==
-X-CSE-MsgGUID: Brted+83QbK10gw/GtbDfw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11724"; a="77986255"
-X-IronPort-AV: E=Sophos;i="6.23,109,1770624000"; 
-   d="scan'208";a="77986255"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2026 10:00:08 -0700
-X-CSE-ConnectionGUID: XZayLEE+Q8eKxVv457kkcQ==
-X-CSE-MsgGUID: lKa7YV9SSKSGVTiMd8kCJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,109,1770624000"; 
-   d="scan'208";a="224750150"
-Received: from dwoodwor-mobl2.amr.corp.intel.com (HELO [10.125.109.205]) ([10.125.109.205])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2026 10:00:07 -0700
-Message-ID: <d2788a2a-dd1c-479e-980d-42e6c2e9facb@intel.com>
-Date: Mon, 9 Mar 2026 10:00:05 -0700
+	s=arc-20240116; t=1773077056; c=relaxed/simple;
+	bh=TEA8Z1RMhIwJ8rfPk95lzlqXvQpSV+OtRGw70HkcJsc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fhfl2qxY1zMp5Kc40Cp2c9aIvjaITxzAR7f7AoblugOR1lE9JT2dcHhALGcd2439HELyBNdgLa1jxJS80tv2XxOSVAUNJ/1BYUehRrtm3GK5O6NryvMXTgDW4j1SW29vLVPqLDMHJK04sGAysAWO+ZdpsIWWtrefSCjS8n3tuTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=gEyoWxGv; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1186)
+	id 4ABFB20B6F00; Mon,  9 Mar 2026 10:24:15 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4ABFB20B6F00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1773077055;
+	bh=5s6WGcMrd8sS9dHOP8IAPUR7V2j7zATVSCb/pL5az3o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gEyoWxGv8x939KBkROM0w022bYdrOeJV4D/ibJXhQIPLMENSApEHILtAAB3YfLgC9
+	 vTPPkCPI/rapoLCPsmYZVDqOeMjRuFLUfCpSeHCrveDf1iT3gyWIfq99fYgWTgTgaJ
+	 d0PuuJJxVxZh5bUTA4UHCWKSiySYOknmXjmqtMhQ=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: shirazsaleem@microsoft.com,
+	kotaranov@microsoft.com,
+	pabeni@redhat.com,
+	haiyangz@microsoft.com,
+	kys@microsoft.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	decui@microsoft.com,
+	wei.liu@kernel.org,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH net] net/mana: Fix auxiliary device double-delete race
+Date: Mon,  9 Mar 2026 10:24:15 -0700
+Message-ID: <20260309172415.688342-1-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] lsm: add hook for firmware command validation
-To: Leon Romanovsky <leon@kernel.org>, Paul Moore <paul@paul-moore.com>,
- James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
- Itay Avraham <itayavr@nvidia.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
- Maher Sanalla <msanalla@nvidia.com>, Edward Srouji <edwards@nvidia.com>
-References: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
- <20260309-fw-lsm-hook-v1-1-4a6422e63725@nvidia.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20260309-fw-lsm-hook-v1-1-4a6422e63725@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: B102923D558
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 68AED23D9D1
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-17802-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17803-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dave.jiang@intel.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.950];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,intel.com:dkim,intel.com:email,intel.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+From: Shiraz Saleem <shirazsaleem@microsoft.com>
 
+Make remove_adev() safe to call concurrently from the service reset
+and PCI eject paths by using xchg() to atomically claim the adev
+pointer. This prevents double auxiliary_device_delete/uninit when
+hv_eject_device_work races with the service reset workqueue.
 
-On 3/9/26 4:15 AM, Leon Romanovsky wrote:
-> From: Chiara Meiohas <cmeiohas@nvidia.com>
-> 
-> Drivers typically communicate with device firmware either via
-> register-based commands (writing parameters into device registers)
-> or by passing a command buffer using shared-memory mechanisms.
-> 
-> This hook targets the command buffer mechanism, which is commonly
-> used on modern, complex devices.
-> 
-> Add the LSM hook fw_validate_cmd. This hook allows inspecting
-> firmware command buffers before they are sent to the device.
-> The hook receives the command buffer, device, command class, and a
-> class-specific id:
->   - class_id (enum fw_cmd_class) allows security modules to
->     differentiate between classes of firmware commands.
->     In this series, class_id distinguishes between commands from the
->     RDMA uverbs interface and from fwctl.
->   - id is a class-specific device identifier. For uverbs, id is the
->     RDMA driver identifier (enum rdma_driver_id). For fwctl, id is the
->     device type (enum fwctl_device_type).
-> 
-> Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-> Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
-> Signed-off-by: Edward Srouji <edwards@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Fixes: 505cc26bcae0 ("net: mana: Add support for auxiliary device servicing events")
+Signed-off-by: Shiraz Saleem <shirazsaleem@microsoft.com>
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-
-> ---
->  include/linux/lsm_hook_defs.h |  2 ++
->  include/linux/security.h      | 25 +++++++++++++++++++++++++
->  security/security.c           | 26 ++++++++++++++++++++++++++
->  3 files changed, 53 insertions(+)
-> 
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index 8c42b4bde09c0..93da090384ea1 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -445,6 +445,8 @@ LSM_HOOK(int, 0, bpf_token_capable, const struct bpf_token *token, int cap)
->  #endif /* CONFIG_BPF_SYSCALL */
->  
->  LSM_HOOK(int, 0, locked_down, enum lockdown_reason what)
-> +LSM_HOOK(int, 0, fw_validate_cmd, const void *in, size_t in_len,
-> +	 const struct device *dev, enum fw_cmd_class class_id, u32 id)
->  
->  #ifdef CONFIG_PERF_EVENTS
->  LSM_HOOK(int, 0, perf_event_open, int type)
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 83a646d72f6f8..64786d013207a 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -67,6 +67,7 @@ enum fs_value_type;
->  struct watch;
->  struct watch_notification;
->  struct lsm_ctx;
-> +struct device;
->  
->  /* Default (no) options for the capable function */
->  #define CAP_OPT_NONE 0x0
-> @@ -157,6 +158,21 @@ enum lockdown_reason {
->  	LOCKDOWN_CONFIDENTIALITY_MAX,
->  };
->  
-> +/*
-> + * enum fw_cmd_class - Class of the firmware command passed to
-> + * security_fw_validate_cmd.
-> + * This allows security modules to distinguish between different command
-> + * classes.
-> + *
-> + * @FW_CMD_CLASS_UVERBS: Command originated from the RDMA uverbs interface
-> + * @FW_CMD_CLASS_FWCTL: Command originated from the fwctl interface
-> + */
-> +enum fw_cmd_class {
-> +	FW_CMD_CLASS_UVERBS,
-> +	FW_CMD_CLASS_FWCTL,
-> +	FW_CMD_CLASS_MAX,
-> +};
-> +
->  /*
->   * Data exported by the security modules
->   */
-> @@ -575,6 +591,9 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
->  int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
->  int security_inode_getsecctx(struct inode *inode, struct lsm_context *cp);
->  int security_locked_down(enum lockdown_reason what);
-> +int security_fw_validate_cmd(const void *in, size_t in_len,
-> +			     const struct device *dev,
-> +			     enum fw_cmd_class class_id, u32 id);
->  int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
->  		      void *val, size_t val_len, u64 id, u64 flags);
->  int security_bdev_alloc(struct block_device *bdev);
-> @@ -1589,6 +1608,12 @@ static inline int security_locked_down(enum lockdown_reason what)
->  {
->  	return 0;
->  }
-> +static inline int security_fw_validate_cmd(const void *in, size_t in_len,
-> +					   const struct device *dev,
-> +					   enum fw_cmd_class class_id, u32 id)
-> +{
-> +	return 0;
-> +}
->  static inline int lsm_fill_user_ctx(struct lsm_ctx __user *uctx,
->  				    u32 *uctx_len, void *val, size_t val_len,
->  				    u64 id, u64 flags)
-> diff --git a/security/security.c b/security/security.c
-> index 67af9228c4e94..d05941fe89a48 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -5373,6 +5373,32 @@ int security_locked_down(enum lockdown_reason what)
->  }
->  EXPORT_SYMBOL(security_locked_down);
->  
-> +/**
-> + * security_fw_validate_cmd() - Validate a firmware command
-> + * @in: pointer to the firmware command input buffer
-> + * @in_len: length of the firmware command input buffer
-> + * @dev: device associated with the command
-> + * @class_id: class of the firmware command
-> + * @id: device identifier, specific to the command @class_id
-> + *
-> + * Check permissions before sending a firmware command generated by
-> + * userspace to the device.
-> + *
-> + * Return: Returns 0 if permission is granted.
-> + */
-> +int security_fw_validate_cmd(const void *in, size_t in_len,
-> +			     const struct device *dev,
-> +			     enum fw_cmd_class class_id,
-> +			     u32 id)
-> +{
-> +	if (class_id >= FW_CMD_CLASS_MAX)
-> +		return -EINVAL;
-> +
-> +	return call_int_hook(fw_validate_cmd, in, in_len,
-> +			     dev, class_id, id);
-> +}
-> +EXPORT_SYMBOL_GPL(security_fw_validate_cmd);
-> +
->  /**
->   * security_bdev_alloc() - Allocate a block device LSM blob
->   * @bdev: block device
-> 
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 9b5a72a..c45a66e 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -3402,14 +3402,18 @@ static void adev_release(struct device *dev)
+ 
+ static void remove_adev(struct gdma_dev *gd)
+ {
+-	struct auxiliary_device *adev = gd->adev;
+-	int id = adev->id;
++	struct auxiliary_device *adev = xchg(&gd->adev, NULL);
++	int id;
++
++	if (!adev)
++		return;
++
++	id = adev->id;
+ 
+ 	auxiliary_device_delete(adev);
+ 	auxiliary_device_uninit(adev);
+ 
+ 	mana_adev_idx_free(id);
+-	gd->adev = NULL;
+ }
+ 
+ static int add_adev(struct gdma_dev *gd, const char *name)
+@@ -3473,7 +3477,7 @@ static void mana_rdma_service_handle(struct work_struct *work)
+ 
+ 	switch (serv_work->event) {
+ 	case GDMA_SERVICE_TYPE_RDMA_SUSPEND:
+-		if (!gd->adev || gd->is_suspended)
++		if (gd->is_suspended)
+ 			break;
+ 
+ 		remove_adev(gd);
+@@ -3676,8 +3680,7 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+ 	cancel_delayed_work_sync(&ac->gf_stats_work);
+ 
+ 	/* adev currently doesn't support suspending, always remove it */
+-	if (gd->adev)
+-		remove_adev(gd);
++	remove_adev(gd);
+ 
+ 	for (i = 0; i < ac->num_ports; i++) {
+ 		ndev = ac->ports[i];
+@@ -3764,8 +3767,7 @@ void mana_rdma_remove(struct gdma_dev *gd)
+ 	WRITE_ONCE(gd->rdma_teardown, true);
+ 	flush_workqueue(gc->service_wq);
+ 
+-	if (gd->adev)
+-		remove_adev(gd);
++	remove_adev(gd);
+ 
+ 	mana_gd_deregister_device(gd);
+ }
+-- 
+2.43.0
 
 
