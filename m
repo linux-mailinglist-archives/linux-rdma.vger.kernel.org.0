@@ -1,293 +1,158 @@
-Return-Path: <linux-rdma+bounces-17785-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17786-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EP5KBuvbrmm/JQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17785-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:40:43 +0100
+	id oBIqLW3frmm/JQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17786-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:55:41 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B822023AB27
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:40:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F43A23B04E
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7C333302D960
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 14:39:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 514463030993
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 14:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706123D3CE7;
-	Mon,  9 Mar 2026 14:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01EE13D5241;
+	Mon,  9 Mar 2026 14:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ZVFWCKMb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jwcInBJr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CD53D333F;
-	Mon,  9 Mar 2026 14:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60C3258EDA;
+	Mon,  9 Mar 2026 14:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773067169; cv=none; b=S44O9F+DWzTq2ZRWI4mvkbgvEoXMOLFfPFi4dWJhzto1GyCRO/LtF3FWhyJNerJ+JQUA1I2Y8JrXnm9WcODEyxFsfXW0bMDwLYGdZLgRGVcvEfN3riWvz2o+pcEB5GDEHPhr37iVd7YJthpf+VM8u2M69eW6ssgTIrDjNY3jcS4=
+	t=1773067901; cv=none; b=FaBpLpBsqWQ6hXLLW539ve4U6KGS7UpaUT32QLhVNaXrPuTXZbeK6xWT9URe6UMeVTEtpHmlLu94GMMUOurMnqV3GANlZFIQGrxQJVudOPPxWmnwbgod361cVeKrwF1S28nhGayXw/TRUC+WCfyH/LeZIgN3Bk3MU9k6MWFCGXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773067169; c=relaxed/simple;
-	bh=vEGqJZE1lPr9QHjRXPzO2buTz3L2sa5tLp4g2Uq552w=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=hQzcqvYJehVz8vRAREmvg5ZwfOrN+YjpI4dh5/OuZJy5SjWGO1ug02dQ5hwcH99GuAxdr+aV3xisb/GnTXOurfZtiqIgQukLeGcBASxYn/5ovhlnt2OrliXzjSlRgBoDrho/LMa5ycEBd2Co7Lir1Bsj2cxMpuT2vx61sXJlRxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ZVFWCKMb; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 227FD20B6F00; Mon,  9 Mar 2026 07:39:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 227FD20B6F00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1773067167;
-	bh=HoAderCUdnqh6fe8vbOhFK5KQ8A5DAYUy9/rXRzl4aY=;
-	h=From:To:Subject:Date:From;
-	b=ZVFWCKMbv1IZd5r8IbZcJdo4fu0/nNsQ0H+i53DIh6TzfQLpVY8qBGkRGrNeFA2cp
-	 HxmYraxZcr40qaSF9TIbgZbySPHKI1HC9i3Xp4iDMZBmnh2zoqqyK9uZnEbN7V8M2U
-	 MDUwYtcvOiCB0dVaitGOWyvjfLWSOlrX6O7LOB00=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	yury.norov@gmail.com,
-	kees@kernel.org,
-	ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v2] net: mana: Expose hardware diagnostic info via debugfs
-Date: Mon,  9 Mar 2026 07:38:28 -0700
-Message-ID: <20260309143840.675606-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1773067901; c=relaxed/simple;
+	bh=KGSyrULtCYQb9lllEUEC0LtqXkY/kFQ/AGD3XoX6jdI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Dz9j+pt2GXUWjPX81ZDXtgjk9iXsZPWgyaLIK2/6bzYxk11jn3zO9qBsZgOjZTARSYv8pFjVJii83SxJsnS+4IrpICXL/WgoOHlNeToAJQDrkvrxfjfOEQP7H1XJlv5tNH9MEAOMhk1n3ZDMcwYJ53l/AeMspylNhz0w9PZXHDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jwcInBJr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF7B8C4CEF7;
+	Mon,  9 Mar 2026 14:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773067901;
+	bh=KGSyrULtCYQb9lllEUEC0LtqXkY/kFQ/AGD3XoX6jdI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=jwcInBJr8GKugmDGut9GTXwgTEv/H43MX9aWKIOAE20IkqXsKykJIbxlf4kZBJ/tC
+	 BtkyaJ8naw2vssi7XYblEpF226PKS1Avdu+0SKxv5JMIspxEnvoBxJouAAsJI2+f+7
+	 SXMy3OaH1/6O7AcVHDTpN7PGSD9VuX6ocdsntYXYQHU4Xintb8MHQh/18iUbAwlAOB
+	 acCvX0764jC8+rmcaMWhR/TCNuUOrrdiYj/Ag2EAavbNdY+zUTA2UUXESdHhTkoTH6
+	 RwwtHof8C82HjyGqHP8VVAP6WiyUn8pnmokwQzarPgMcsYbepEFNY+fSMhbXKbWvgr
+	 Wg+3ad0w5LtJg==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ netdev@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>, Jakub
+ Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
+ Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Tariq
+ Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Andrew Lunn
+ <andrew+netdev@lunn.ch>
+Cc: Andrew Lunn <andrew@lunn.ch>, Michael Chan <michael.chan@broadcom.com>,
+ Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
+ Danielle Ratson <danieller@nvidia.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+Subject: Re: [RFC net-next v2 2/6] ethtool: Add loopback GET/SET netlink
+ implementation
+In-Reply-To: <87eclth0qw.fsf@all.your.base.are.belong.to.us>
+References: <20260308124016.3134012-1-bjorn@kernel.org>
+ <20260308124016.3134012-3-bjorn@kernel.org>
+ <19aa42c1-4e3c-4722-84bd-a21b53ad3993@bootlin.com>
+ <87eclth0qw.fsf@all.your.base.are.belong.to.us>
+Date: Mon, 09 Mar 2026 15:51:38 +0100
+Message-ID: <87y0k1njid.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B822023AB27
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 3F43A23B04E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.07 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_MIXED_CHARSET(0.59)[subject];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17785-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17786-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[bootlin.com,vger.kernel.org,gmail.com,kernel.org,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.961];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.993];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:email,all.your.base.are.belong.to.us:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Add debugfs entries to expose hardware configuration and diagnostic
-information that aids in debugging driver initialization and runtime
-operations without adding noise to dmesg.
+Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
 
-Device-level entries (under /sys/kernel/debug/mana/<slot>/):
-  - num_msix_usable, max_num_queues: Max resources from hardware
-  - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
-  - num_vports, bm_hostmode: Device configuration
+> Maxime Chevallier <maxime.chevallier@bootlin.com> writes:
+>
+>> Hi Bj=C3=B6rn,
+>>
+>> On 08/03/2026 13:40, Bj=C3=B6rn T=C3=B6pel wrote:
+>>> Add the kernel-side ETHTOOL_MSG_LOOPBACK_GET,
+>>> ETHTOOL_MSG_LOOPBACK_SET, and ETHTOOL_MSG_LOOPBACK_NTF handlers using
+>>> the standard ethnl_request_ops infrastructure.
+>>>=20
+>>> GET collects loopback entries from per-component helpers via
+>>> loopback_get_entries(). SET parses the nested entry attributes,
+>>> dispatches each to loopback_set_one(), and only sends a notification
+>>> when the state is changed.
+>>>=20
+>>> No components are wired yet.
+>>>=20
+>>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+>>
+>> At a first glance, what I see is that you're using the GET ->doit method
+>> to retrieve an array of loopback entries. The pefered approach in that
+>> case is to use the GET ->dumpit command instead, issueing a netlink DUMP
+>> request to list all available loopback entities on a given netdev.
+>>
+>> If you want some reference on that, take a look at the phy.c + the
+>> 'perphy' helpers in net/ethtool/netlink.c
+>>
+>> The idea is that you can pass a netdev ifindex in the header of the DUMP
+>> request, which you can use to dump all loopbacks the passed netdev.
+>>
+>> You can also check the ethtool code itself, you'll see that when you use
+>> the "ethtool --show-phys eth0" command for example, it issues a DUMP
+>> request to the kernel.
+>
+> Ah, got it! Thanks!
 
-Per-vPort entries (under /sys/kernel/debug/mana/<slot>/vportN/):
-  - port_handle: Hardware vPort handle
-  - max_sq, max_rq: Max queues from vPort config
-  - indir_table_sz: Indirection table size
-  - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
-    Last applied steering configuration parameters
+Thanks for pointing this out! I like how using this can get rid of the
+fixed size array in struct ethtool_loopback_cfg, which had a bad smell
+to me.
 
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
----
-Changes in v2:
-* Add debugfs_remove_recursice for gc>mana_pci_debugfs in
-  mana_gd_suspend to handle multiple duplicates creation in
-  mana_gd_setup and mana_gd_resume path.
-* Move debugfs creation for num_vports and bm_hostmode out of
-  if(!resuming) condition since we have to create it again even for
-  resume.
-* Recreate mana_pci_debugfs in mana_gd_resume.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 21 +++++++++++++
- drivers/net/ethernet/microsoft/mana/mana_en.c | 31 +++++++++++++++++++
- include/net/mana/gdma.h                       |  1 +
- include/net/mana/mana.h                       |  8 +++++
- 4 files changed, 61 insertions(+)
+Thinking out loud -- Now, using a similar scheme for loopback requires
+some thought around the sub-iterator: Loopback has "multiple"
+sub-iterator: (component, [id], name)... or needs scheme to deal with
+one sub-iter, and loopback can share a lot of code with the
+perphy-functions.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index aef8612b73cb..43fb366dc183 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -152,6 +152,11 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
- 	if (gc->max_num_queues > gc->num_msix_usable - 1)
- 		gc->max_num_queues = gc->num_msix_usable - 1;
- 
-+	debugfs_create_u32("num_msix_usable", 0400, gc->mana_pci_debugfs,
-+			   &gc->num_msix_usable);
-+	debugfs_create_u32("max_num_queues", 0400, gc->mana_pci_debugfs,
-+			   &gc->max_num_queues);
-+
- 	return 0;
- }
- 
-@@ -1222,6 +1227,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
- 		return err ? err : -EPROTO;
- 	}
- 	gc->pf_cap_flags1 = resp.pf_cap_flags1;
-+	gc->gdma_protocol_ver = resp.gdma_protocol_ver;
-+
-+	debugfs_create_x64("gdma_protocol_ver", 0400, gc->mana_pci_debugfs,
-+			   &gc->gdma_protocol_ver);
-+	debugfs_create_x64("pf_cap_flags1", 0400, gc->mana_pci_debugfs,
-+			   &gc->pf_cap_flags1);
-+
- 	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
- 		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
- 		if (err) {
-@@ -2128,6 +2140,9 @@ int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
- 
- 	mana_gd_cleanup(pdev);
- 
-+	debugfs_remove_recursive(gc->mana_pci_debugfs);
-+	gc->mana_pci_debugfs = NULL;
-+
- 	return 0;
- }
- 
-@@ -2140,6 +2155,12 @@ int mana_gd_resume(struct pci_dev *pdev)
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	int err;
- 
-+	if (gc->is_pf)
-+		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
-+	else
-+		gc->mana_pci_debugfs = debugfs_create_dir(pci_slot_name(pdev->slot),
-+							  mana_debugfs_root);
-+
- 	err = mana_gd_setup(pdev);
- 	if (err)
- 		return err;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index ea71de39f996..1117ae16b065 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1263,6 +1263,9 @@ static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
- 	apc->port_handle = resp.vport;
- 	ether_addr_copy(apc->mac_addr, resp.mac_addr);
- 
-+	apc->vport_max_sq = *max_sq;
-+	apc->vport_max_rq = *max_rq;
-+
- 	return 0;
- }
- 
-@@ -1409,6 +1412,11 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 
- 	netdev_info(ndev, "Configured steering vPort %llu entries %u\n",
- 		    apc->port_handle, apc->indir_table_sz);
-+
-+	apc->steer_rx = rx;
-+	apc->steer_rss = apc->rss_state;
-+	apc->steer_update_tab = update_tab;
-+	apc->steer_cqe_coalescing = req->cqe_coalescing_enable;
- out:
- 	kfree(req);
- 	return err;
-@@ -3110,6 +3118,24 @@ static int mana_init_port(struct net_device *ndev)
- 	eth_hw_addr_set(ndev, apc->mac_addr);
- 	sprintf(vport, "vport%d", port_idx);
- 	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
-+
-+	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
-+			   &apc->port_handle);
-+	debugfs_create_u32("max_sq", 0400, apc->mana_port_debugfs,
-+			   &apc->vport_max_sq);
-+	debugfs_create_u32("max_rq", 0400, apc->mana_port_debugfs,
-+			   &apc->vport_max_rq);
-+	debugfs_create_u32("indir_table_sz", 0400, apc->mana_port_debugfs,
-+			   &apc->indir_table_sz);
-+	debugfs_create_u32("steer_rx", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_rx);
-+	debugfs_create_u32("steer_rss", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_rss);
-+	debugfs_create_u32("steer_update_tab", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_update_tab);
-+	debugfs_create_u32("steer_cqe_coalescing", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_cqe_coalescing);
-+
- 	return 0;
- 
- reset_apc:
-@@ -3598,6 +3624,11 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 
- 	ac->bm_hostmode = bm_hostmode;
- 
-+	debugfs_create_u16("num_vports", 0400, gc->mana_pci_debugfs,
-+			   &ac->num_ports);
-+	debugfs_create_u8("bm_hostmode", 0400, gc->mana_pci_debugfs,
-+			  &ac->bm_hostmode);
-+
- 	if (!resuming) {
- 		ac->num_ports = num_ports;
- 
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index ec17004b10c0..917945f0e3dc 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -440,6 +440,7 @@ struct gdma_context {
- 	struct gdma_dev		mana_ib;
- 
- 	u64 pf_cap_flags1;
-+	u64 gdma_protocol_ver;
- 
- 	struct workqueue_struct *service_wq;
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index a078af283bdd..83f6de67c0cc 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -563,6 +563,14 @@ struct mana_port_context {
- 
- 	/* Debugfs */
- 	struct dentry *mana_port_debugfs;
-+
-+	/* Cached vport/steering config for debugfs */
-+	u32 vport_max_sq;
-+	u32 vport_max_rq;
-+	u32 steer_rx;
-+	u32 steer_rss;
-+	u32 steer_update_tab;
-+	u32 steer_cqe_coalescing;
- };
- 
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
--- 
-2.34.1
 
+Bj=C3=B6rn
 
