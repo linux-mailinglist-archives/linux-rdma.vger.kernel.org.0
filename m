@@ -1,1444 +1,428 @@
-Return-Path: <linux-rdma+bounces-17830-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17831-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8GHTGw8zr2kPQQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17830-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 21:52:31 +0100
+	id UCoDIw87r2kPQQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17831-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 22:26:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D5A241223
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 21:52:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A876241A6A
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 22:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7DDB6300B2A3
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 20:52:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E3493302D0B2
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 21:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2064C36CDF3;
-	Mon,  9 Mar 2026 20:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343DB344DAB;
+	Mon,  9 Mar 2026 21:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="U8clN0qX"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="mXvEUhDD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11020079.outbound.protection.outlook.com [52.101.61.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32D736C5AD
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Mar 2026 20:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773089545; cv=fail; b=EKwI1IqjuTcTxy/1eSRrTCvJmysdLUdGhuZsAaev4SlDwuHxo/hpT/LPk6/Q6uHMRboOduugo8jrzEIrDoV6WrnzpK+FbWPV4ImR3PwvtMSAlAsmJ7XD+ZzHt+jMLZHJWCUS3jhFsqHnsTNUXNHeC7MofJzgI3tICx43eGLLwUQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773089545; c=relaxed/simple;
-	bh=1gd55yLwN4lqgp1tteInPpMJfnnS/I64bfCDkB0TIDI=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D7ZZ8G3KPJzx7gQ+jkxAjYrTa8KOL++el8V4O0MRFNzffiZV7H+SRnHawdEnXuqm/jf09518zdzvusf7LFvgAXe2fP+1eDPx0iYgNpaQenOqrSQNVEFuxDRpq8uzk4BKOWAZHwiQcD62mjIKDzPFOTQ31pw/dTGDq+iW36k/1YY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=U8clN0qX; arc=fail smtp.client-ip=52.101.61.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Iu1alqOTSvESYtjn51+LjyOsNFejZZIdJO6ISorrrap+T6VZvJzdrbZW47Cu/QWbvonhwdDuSHZPCDI8Gp1JIkj7Lyl0/4nM3kT8xTGl8G/NtldLCfIkSVLIo5eJ7cdisdO+1VrQTLvL+LS5nu4mS85oP06du9orRE44o5JcZcI+/jCNPT57b+IRW0QkPyzj9+k0wEo88H7qhSckcaEhOsSzb7MWVqDcMC4qf7kODR90crxHxLqj85YcZbd7phw4+7dekVpxnUwVYmzSQvy1QYcSX8r5suOQbvYaC5U3IEtBGSoNtRRnVDciKIBfovfC4Wjs6lJ9R+SqJTL+e1sX9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q4Z/WEY4LAu16rMwgZvpaXKKknj6xFhIEj9C9kWw8tM=;
- b=ozWezNAO7VmrFO3wcvcPcLud9LHCOBa/l+PZtZDx74Q2uzwRt6wuUlmW2r6f66+bg4ywVSaUScqdU9iCNqP1Dmj+LcVwIH8wO1jhezLRtY6ud1VALIIjLQeiJBEME3YgW2kjrtFG99RIJ2og3v3/hiylQd6Gx5t87mIO0+2Exl/SVXtPQSaWahSlwAM+XF/T5OcmIYPuAso2otLirX1vzy47GNhNNqRZFgMJZjugADFzN+6VG+0qbl0S5H1UqHq4rcmiKbaR5bD5lvrlGNvoOTgYPraYHrUVmJ3XOuwEMrtkOzmnx7M+Ho2UG4Dz8uyibBHtXLAV7cr1S9hVTCl8QQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass (p=none sp=none pct=100)
- action=none header.from=cornelisnetworks.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q4Z/WEY4LAu16rMwgZvpaXKKknj6xFhIEj9C9kWw8tM=;
- b=U8clN0qXaIUAO6z9D7mPnud5elfj+cyBb6hMMqYkSARg3ANNMAtCIl2kDpE5G46ocvu4fIFlQ7U2OWYnWVMYfAYtJEFEppsjzYhUzvtlHE7bRppAUKFbdMnGvJt2LkXCnDwnmLxfa+sjuU5BfPp0szVuK2SFcZTu4Z3oPjDi4P1ZeMAkVyP5QDtg+KbkU/COA8TE3GibJbroYbVyTWIOL9a2oy+7t5xqjGemubuGKsVXGod7FAiXUGkI0f2yNBC+D6HYGp+cy23mIjcbwcF/cMqUZto81ahn1g9YWIEnbQX0AGKB++6CpDpTYP3DtCsCxUAP07/ssnhnRVngt1Zl5g==
-Received: from BLAPR03CA0030.namprd03.prod.outlook.com (2603:10b6:208:32b::35)
- by MW4PR01MB6497.prod.exchangelabs.com (2603:10b6:303:64::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9654.22; Mon, 9 Mar 2026 20:52:14 +0000
-Received: from BL6PEPF00020E62.namprd04.prod.outlook.com
- (2603:10b6:208:32b:cafe::6d) by BLAPR03CA0030.outlook.office365.com
- (2603:10b6:208:32b::35) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.23 via Frontend Transport; Mon,
- 9 Mar 2026 20:52:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
- smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=cornelisnetworks.com;
-Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
- designates 208.255.156.42 as permitted sender)
- receiver=protection.outlook.com; client-ip=208.255.156.42;
- helo=cn-mailer-00.localdomain; pr=C
-Received: from cn-mailer-00.localdomain (208.255.156.42) by
- BL6PEPF00020E62.mail.protection.outlook.com (10.167.249.23) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.18
- via Frontend Transport; Mon, 9 Mar 2026 20:52:13 +0000
-Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id D48B714D715;
-	Mon,  9 Mar 2026 16:52:12 -0400 (EDT)
-Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id D02531810D6D7;
-	Mon,  9 Mar 2026 16:52:12 -0400 (EDT)
-Subject: [PATCH for-next 21/24] RDMA/hfi2: Add misc header files
-From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To: jgg@ziepe.ca, leon@kernel.org
-Cc: Dean Luick <dean.luick@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Mon, 09 Mar 2026 16:52:12 -0400
-Message-ID:
- <177308953280.1280641.17011290019053182852.stgit@awdrv-04.cornelisnetworks.com>
-In-Reply-To:
- <177308916470.1280641.1779641444229092453.stgit@awdrv-04.cornelisnetworks.com>
-References:
- <177308916470.1280641.1779641444229092453.stgit@awdrv-04.cornelisnetworks.com>
-User-Agent: StGit/1.5
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59DF33C18B;
+	Mon,  9 Mar 2026 21:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773091308; cv=none; b=f8qDOT7dKtDwr9jziH/9aAwzpDKAOSUUwmms8i6l9ZBlb8P7c1upjkAaxaTG8eXGN2K3Gy2z6zdhDI7wXlBo8z22UGSwwbS5PoIxdXoOmP5OLie6XV2JjBvJqJekIcId/bLTMA/Qxc17S9FTpbxET1JftIMQNW1IYgkQie6XjUY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773091308; c=relaxed/simple;
+	bh=EvjWsgJvYJR4Yz3xG6ztAjH7/7pq5XcLqQvC6UFEoUM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=r1LKdV4JhqyOb/JEVur+PEQY7WEdLz66mxSoDPqpZFaobFc5iV4qUv0aX72tbOBV/jV7T45JaeUyTj3R1zgGHzfThhdDDtAsn1GALLYHa8bcoyCfKlk6e0XYELYfocyHVHyd/bkKKPbal5Gw9db+tDH9mL/oEexTjuP/DDghSZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=mXvEUhDD; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1006)
+	id 91B7420B7129; Mon,  9 Mar 2026 14:21:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 91B7420B7129
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1773091306;
+	bh=PTdeUu95rwEL0GS6KYC2FbLnowAy6Z+wQ0DQDk3NdmI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mXvEUhDDDFL/nMFja6Htom5J5+P61YxJ1eIEpRdopLPFOg8I58NPffa8SDAp2q/ap
+	 1MxT8XeYFHtiHrxo5cwwuSw0O7AJm8fPG/yPwR7pIPJndkD6TyK23sGgDlzTRNtYrc
+	 ywdF5GA9UnCIIjD4nX6D3oaHaug5ZdktzVYQ4dfo=
+From: Haiyang Zhang <haiyangz@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Dipayaan Roy <dipayanroy@linux.microsoft.com>,
+	Shiraz Saleem <shirazsaleem@microsoft.com>,
+	Kees Cook <kees@kernel.org>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Breno Leitao <leitao@debian.org>,
+	Aditya Garg <gargaditya@linux.microsoft.com>,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: paulros@microsoft.com
+Subject: [PATCH net-next,V4, 2/3] net: mana: Add support for RX CQE Coalescing
+Date: Mon,  9 Mar 2026 14:20:44 -0700
+Message-ID: <20260309212106.764156-3-haiyangz@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
+In-Reply-To: <20260309212106.764156-1-haiyangz@linux.microsoft.com>
+References: <20260309212106.764156-1-haiyangz@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF00020E62:EE_|MW4PR01MB6497:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5d16068-eece-42b3-c535-08de7e1dbd80
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|1800799024|376014|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	GIwsvuE2YTRxrh63OnlGX4ST6qQ/OASMaalmeRPXnfNuEH5gurcyG8CrKJjmm26slhBMai9LP5/BTy/P5luh+fdQegoypF4weXQTHUQiyzFEfeGw0oVCTBBUYZu9bD4G7PDmlU4IxhxjrxzljC5rds8YmA5ToSZOsEaA5SfQVbirmhCNEWBtsuZsX8yv+nUgf0QaCvJ5Db/M6DgTtRHWw7hL/scPP05f7BQFnXwe5Px7uZz8xhDE+4U3turXlOrtznw1roKhGZnfqiJa5MFWgBAy64OVCOsIADLQw1OwGUYKhlBp3Jo6kzKzkZYWD03JNwaa4AxQEc/JDnV7F4Tb8ovUJbTDqwgRX7tAVX/1u3Y1/3MHZx2w1+Z5VhxHqavcGiJhEDt48DVp8sGdcKh4NE6hMQOs472f48lXEyva5Bk8T/ak6SkpZfTu9oWYqrYfD7YYJ77nD1U+wPdyHX+IAyE5P9lXIGCDONhK0cfEFcf9l6EYIz2inkwtr7TP1HBU9arvcodcRk15+r0sHzBpcOVkO33/Ge19zjeY5n+8O0Onc2RKJ1b7qnnOHKYxlv8VBA5nXdA5Pj4d81TeBSRGEmcGtn8GkwF9bXAW8AmEnLPqxmT/y0BW53+tGn9UN0RMs4y9Vtclxx8hl/6SXzAWiOQP9vuT0SO+Y3Qw7ti8YrSbg06RqMWIi5cSvQu5uCnrWzUZj8xbvbDQZ955RXNr6WYBSqL61br0voqqENzHC0UOtuorBS5a6ADG/DyWkpmeOWYcKkw2SyNwz1FBW3x0Eg==
-X-Forefront-Antispam-Report:
-	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(1800799024)(376014)(82310400026);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	ojiJleSmiLgJmVJjKaOhzl3ugqckWhjIbBUH5cNajgPn2AwzPau6FQzWwvra2hk8SS0eMA13HJ+iYrqWcDrBzpQqcAi5y4ufWcZByKmEsQUNFMXofjhhla8+M6xJ/6G2tmPcx3KCxK+eD36MmQZcVLx7WaQraErF82+oFJmiCPIMmZyQdWMJMkWp/lpfFO4G0n1usln0YRH017bJjd672xJyLz4svmVCUMGBq+gAsB34N/Ml9A0O6YdA77m+f4cb9/H/O0LDG+OS/KlrtLHhRhD3KSiWmD3LdbFDtajmEGpWMztx5CCXoPCh4GU2caIyd5sAxutf3K8G2vQa5zQ5Nbe2FkH3ENc8w+g1pmh7ARcunvQBzmW05vWeIvQGdkv0/rUqa1XJoOkgO5ZJzeKtxGT9eEL0dC6VtCKiBbZwRK/N39605/63ktx9YsJssy4A
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2026 20:52:13.0486
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5d16068-eece-42b3-c535-08de7e1dbd80
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[cn-mailer-00.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF00020E62.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6497
-X-Rspamd-Queue-Id: 36D5A241223
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 2A876241A6A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[cornelisnetworks.com:s=selector1];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17830-lists,linux-rdma=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[awdrv-04.cornelisnetworks.com:mid,cornelisnetworks.com:dkim,cornelisnetworks.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo];
-	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
-	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	TAGGED_FROM(0.00)[bounces-17831-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[haiyangz@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.microsoft.com:dkim,linux.microsoft.com:mid]
 X-Rspamd-Action: no action
 
-There are a few headers files that didn't really fit with the rest of the
-bunch so adding them all separately.
+From: Haiyang Zhang <haiyangz@microsoft.com>
 
-Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Our NIC can have up to 4 RX packets on 1 CQE. To support this feature,
+check and process the type CQE_RX_COALESCED_4. The default setting is
+disabled, to avoid possible regression on latency.
+
+And, add ethtool handler to switch this feature. To turn it on, run:
+  ethtool -C <nic> rx-cqe-frames 4
+To turn it off:
+  ethtool -C <nic> rx-cqe-frames 1
+
+The rx-cqe-nsec is the time out value in nanoseconds after the first
+packet arrival in a coalesced CQE to be sent. It's read-only for this
+NIC.
+
+Reviewed-by: Long Li <longli@microsoft.com>
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 ---
- drivers/infiniband/hw/hfi2/common.h     |  336 ++++++++++++++++++++++++++++
- drivers/infiniband/hw/hfi2/debugfs.h    |   66 ++++++
- drivers/infiniband/hw/hfi2/fault.h      |   70 ++++++
- drivers/infiniband/hw/hfi2/opa_compat.h |   87 +++++++
- drivers/infiniband/hw/hfi2/opfn.h       |   88 +++++++
- drivers/infiniband/hw/hfi2/platform.h   |  372 +++++++++++++++++++++++++++++++
- drivers/infiniband/hw/hfi2/qsfp.h       |  202 +++++++++++++++++
- 7 files changed, 1221 insertions(+)
- create mode 100644 drivers/infiniband/hw/hfi2/common.h
- create mode 100644 drivers/infiniband/hw/hfi2/debugfs.h
- create mode 100644 drivers/infiniband/hw/hfi2/fault.h
- create mode 100644 drivers/infiniband/hw/hfi2/opa_compat.h
- create mode 100644 drivers/infiniband/hw/hfi2/opfn.h
- create mode 100644 drivers/infiniband/hw/hfi2/platform.h
- create mode 100644 drivers/infiniband/hw/hfi2/qsfp.h
+v4:
+  Fixed the old_buf issue found by AI.
 
-diff --git a/drivers/infiniband/hw/hfi2/common.h b/drivers/infiniband/hw/hfi2/common.h
-new file mode 100644
-index 000000000000..c70e91ba9103
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/common.h
-@@ -0,0 +1,336 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015 - 2020 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 74 ++++++++++++-------
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 60 ++++++++++++++-
+ include/net/mana/mana.h                       |  8 +-
+ 3 files changed, 113 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index ea71de39f996..fa30046dcd3d 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1365,6 +1365,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 			     sizeof(resp));
+ 
+ 	req->hdr.req.msg_version = GDMA_MESSAGE_V2;
++	req->hdr.resp.msg_version = GDMA_MESSAGE_V2;
+ 
+ 	req->vport = apc->port_handle;
+ 	req->num_indir_entries = apc->indir_table_sz;
+@@ -1376,7 +1377,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	req->update_hashkey = update_key;
+ 	req->update_indir_tab = update_tab;
+ 	req->default_rxobj = apc->default_rxobj;
+-	req->cqe_coalescing_enable = 0;
 +
-+#ifndef _COMMON_H
-+#define _COMMON_H
++	if (rx != TRI_STATE_FALSE)
++		req->cqe_coalescing_enable = apc->cqe_coalescing_enable;
+ 
+ 	if (update_key)
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+@@ -1405,8 +1408,13 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 		netdev_err(ndev, "vPort RX configuration failed: 0x%x\n",
+ 			   resp.hdr.status);
+ 		err = -EPROTO;
++		goto out;
+ 	}
+ 
++	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V2)
++		apc->cqe_coalescing_timeout_ns =
++			resp.cqe_coalescing_timeout_ns;
 +
-+#include <rdma/hfi2-abi.h>
+ 	netdev_info(ndev, "Configured steering vPort %llu entries %u\n",
+ 		    apc->port_handle, apc->indir_table_sz);
+ out:
+@@ -1915,11 +1923,12 @@ static struct sk_buff *mana_build_skb(struct mana_rxq *rxq, void *buf_va,
+ }
+ 
+ static void mana_rx_skb(void *buf_va, bool from_pool,
+-			struct mana_rxcomp_oob *cqe, struct mana_rxq *rxq)
++			struct mana_rxcomp_oob *cqe, struct mana_rxq *rxq,
++			int i)
+ {
+ 	struct mana_stats_rx *rx_stats = &rxq->stats;
+ 	struct net_device *ndev = rxq->ndev;
+-	uint pkt_len = cqe->ppi[0].pkt_len;
++	uint pkt_len = cqe->ppi[i].pkt_len;
+ 	u16 rxq_idx = rxq->rxq_idx;
+ 	struct napi_struct *napi;
+ 	struct xdp_buff xdp = {};
+@@ -1963,7 +1972,7 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
+ 	}
+ 
+ 	if (cqe->rx_hashtype != 0 && (ndev->features & NETIF_F_RXHASH)) {
+-		hash_value = cqe->ppi[0].pkt_hash;
++		hash_value = cqe->ppi[i].pkt_hash;
+ 
+ 		if (cqe->rx_hashtype & MANA_HASH_L4)
+ 			skb_set_hash(skb, hash_value, PKT_HASH_TYPE_L4);
+@@ -2098,9 +2107,11 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	struct mana_recv_buf_oob *rxbuf_oob;
+ 	struct mana_port_context *apc;
+ 	struct device *dev = gc->dev;
++	bool coalesced = false;
+ 	void *old_buf = NULL;
+ 	u32 curr, pktlen;
+ 	bool old_fp;
++	int i;
+ 
+ 	apc = netdev_priv(ndev);
+ 
+@@ -2112,13 +2123,16 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 		++ndev->stats.rx_dropped;
+ 		rxbuf_oob = &rxq->rx_oobs[rxq->buf_index];
+ 		netdev_warn_once(ndev, "Dropped a truncated packet\n");
+-		goto drop;
+ 
+-	case CQE_RX_COALESCED_4:
+-		netdev_err(ndev, "RX coalescing is unsupported\n");
+-		apc->eth_stats.rx_coalesced_err++;
++		mana_move_wq_tail(rxq->gdma_rq,
++				  rxbuf_oob->wqe_inf.wqe_size_in_bu);
++		mana_post_pkt_rxq(rxq);
+ 		return;
+ 
++	case CQE_RX_COALESCED_4:
++		coalesced = true;
++		break;
 +
-+/*
-+ * This file contains defines, structures, etc. that are used
-+ * to communicate between kernel and user code.
-+ */
-+
-+/* version of protocol header (known to chip also). In the long run,
-+ * we should be able to generate and accept a range of version numbers;
-+ * for now we only accept one, and it's compiled in.
-+ */
-+#define IPS_PROTO_VERSION 2
-+
-+/*
-+ * These are compile time constants that you may want to enable or disable
-+ * if you are trying to debug problems with code or performance.
-+ * HFI2_VERBOSE_TRACING define as 1 if you want additional tracing in
-+ * fast path code
-+ * HFI2_TRACE_REGWRITES define as 1 if you want register writes to be
-+ * traced in fast path code
-+ * _HFI2_TRACING define as 0 if you want to remove all tracing in a
-+ * compilation unit
-+ */
-+
-+/* driver/hw feature set bitmask */
-+#define HFI2_CAP_USER_SHIFT      24
-+#define HFI2_CAP_MASK            ((1UL << HFI2_CAP_USER_SHIFT) - 1)
-+/* locked flag - if set, only HFI2_CAP_WRITABLE_MASK bits can be set */
-+#define HFI2_CAP_LOCKED_SHIFT    63
-+#define HFI2_CAP_LOCKED_MASK     0x1ULL
-+#define HFI2_CAP_LOCKED_SMASK    (HFI2_CAP_LOCKED_MASK << HFI2_CAP_LOCKED_SHIFT)
-+/* extra bits used between kernel and user processes */
-+#define HFI2_CAP_MISC_SHIFT      (HFI2_CAP_USER_SHIFT * 2)
-+#define HFI2_CAP_MISC_MASK       ((1ULL << (HFI2_CAP_LOCKED_SHIFT - \
-+					   HFI2_CAP_MISC_SHIFT)) - 1)
-+
-+#define HFI2_CAP_KSET(cap) ({ hfi2_cap_mask |= HFI2_CAP_##cap; hfi2_cap_mask; })
-+#define HFI2_CAP_KCLEAR(cap)						\
-+	({								\
-+		hfi2_cap_mask &= ~HFI2_CAP_##cap;			\
-+		hfi2_cap_mask;						\
-+	})
-+#define HFI2_CAP_USET(cap)						\
-+	({								\
-+		hfi2_cap_mask |= (HFI2_CAP_##cap << HFI2_CAP_USER_SHIFT); \
-+		hfi2_cap_mask;						\
-+		})
-+#define HFI2_CAP_UCLEAR(cap)						\
-+	({								\
-+		hfi2_cap_mask &= ~(HFI2_CAP_##cap << HFI2_CAP_USER_SHIFT); \
-+		hfi2_cap_mask;						\
-+	})
-+#define HFI2_CAP_SET(cap)						\
-+	({								\
-+		hfi2_cap_mask |= (HFI2_CAP_##cap | (HFI2_CAP_##cap <<	\
-+						  HFI2_CAP_USER_SHIFT)); \
-+		hfi2_cap_mask;						\
-+	})
-+#define HFI2_CAP_CLEAR(cap)						\
-+	({								\
-+		hfi2_cap_mask &= ~(HFI2_CAP_##cap |			\
-+				  (HFI2_CAP_##cap << HFI2_CAP_USER_SHIFT)); \
-+		hfi2_cap_mask;						\
-+	})
-+#define HFI2_CAP_LOCK()							\
-+	({ hfi2_cap_mask |= HFI2_CAP_LOCKED_SMASK; hfi2_cap_mask; })
-+#define HFI2_CAP_LOCKED() (!!(hfi2_cap_mask & HFI2_CAP_LOCKED_SMASK))
-+/*
-+ * The set of capability bits that can be changed after initial load
-+ * This set is the same for kernel and user contexts. However, for
-+ * user contexts, the set can be further filtered by using the
-+ * HFI2_CAP_RESERVED_MASK bits.
-+ */
-+#define HFI2_CAP_WRITABLE_MASK   (HFI2_CAP_SDMA_AHG |			\
-+				  HFI2_CAP_HDRSUPP |			\
-+				  HFI2_CAP_MULTI_PKT_EGR |		\
-+				  HFI2_CAP_NODROP_RHQ_FULL |		\
-+				  HFI2_CAP_NODROP_EGR_FULL |		\
-+				  HFI2_CAP_ALLOW_PERM_JKEY |		\
-+				  HFI2_CAP_STATIC_RATE_CTRL |		\
-+				  HFI2_CAP_PRINT_UNIMPL |		\
-+				  HFI2_CAP_TID_UNMAP |			\
-+				  HFI2_CAP_OPFN)
-+/*
-+ * A set of capability bits that are "global" and are not allowed to be
-+ * set in the user bitmask.
-+ */
-+#define HFI2_CAP_RESERVED_MASK   ((HFI2_CAP_SDMA |			\
-+				   HFI2_CAP_USE_SDMA_HEAD |		\
-+				   HFI2_CAP_EXTENDED_PSN |		\
-+				   HFI2_CAP_PRINT_UNIMPL |		\
-+				   HFI2_CAP_NO_INTEGRITY |		\
-+				   HFI2_CAP_PKEY_CHECK |		\
-+				   HFI2_CAP_TID_RDMA |			\
-+				   HFI2_CAP_OPFN |			\
-+				   HFI2_CAP_AIP) <<			\
-+				  HFI2_CAP_USER_SHIFT)
-+/*
-+ * Set of capabilities that need to be enabled for kernel context in
-+ * order to be allowed for user contexts, as well.
-+ */
-+#define HFI2_CAP_MUST_HAVE_KERN (HFI2_CAP_STATIC_RATE_CTRL)
-+/* Default enabled capabilities (both kernel and user) */
-+#define HFI2_CAP_MASK_DEFAULT    (HFI2_CAP_HDRSUPP |			\
-+				 HFI2_CAP_NODROP_RHQ_FULL |		\
-+				 HFI2_CAP_NODROP_EGR_FULL |		\
-+				 HFI2_CAP_SDMA |			\
-+				 HFI2_CAP_PRINT_UNIMPL |		\
-+				 HFI2_CAP_STATIC_RATE_CTRL |		\
-+				 HFI2_CAP_PKEY_CHECK |			\
-+				 HFI2_CAP_MULTI_PKT_EGR |		\
-+				 HFI2_CAP_EXTENDED_PSN |		\
-+				 HFI2_CAP_AIP |				\
-+				 ((HFI2_CAP_HDRSUPP |			\
-+				   HFI2_CAP_MULTI_PKT_EGR |		\
-+				   HFI2_CAP_STATIC_RATE_CTRL |		\
-+				   HFI2_CAP_PKEY_CHECK |		\
-+				   HFI2_CAP_EARLY_CREDIT_RETURN) <<	\
-+				  HFI2_CAP_USER_SHIFT))
-+/*
-+ * A bitmask of kernel/global capabilities that should be communicated
-+ * to user level processes.
-+ */
-+#define HFI2_CAP_K2U (HFI2_CAP_SDMA |			\
-+		     HFI2_CAP_EXTENDED_PSN |		\
-+		     HFI2_CAP_PKEY_CHECK |		\
-+		     HFI2_CAP_NO_INTEGRITY)
-+
-+#define HFI2_USER_SWVERSION ((HFI2_USER_SWMAJOR << HFI2_SWMAJOR_SHIFT) | \
-+			     HFI2_USER_SWMINOR)
-+#define HFI2_RDMA_USER_SWVERSION \
-+	((HFI2_RDMA_USER_SWMAJOR << HFI2_SWMAJOR_SHIFT) | \
-+	 HFI2_RDMA_USER_SWMINOR)
-+
-+/*
-+ * Diagnostics can send a packet by writing the following
-+ * struct to the diag packet special file.
-+ *
-+ * This allows a custom PBC qword, so that special modes and deliberate
-+ * changes to CRCs can be used.
-+ */
-+#define _DIAG_PKT_VERS 1
-+struct diag_pkt {
-+	__u16 version;		/* structure version */
-+	__u16 unit;		/* which device */
-+	__u16 sw_index;		/* send sw index to use */
-+	__u16 len;		/* data length, in bytes */
-+	__u16 port;		/* port number */
-+	__u16 unused;
-+	__u32 flags;		/* call flags */
-+	__u64 data;		/* user data pointer */
-+	__u64 pbc;		/* PBC for the packet */
-+};
-+
-+/* diag_pkt flags */
-+#define F_DIAGPKT_WAIT 0x1	/* wait until packet is sent */
-+
-+/*
-+ * The next set of defines are for packet headers, and chip register
-+ * and memory bits that are visible to and/or used by user-mode software.
-+ */
-+
-+/*
-+ * Receive Header Flags
-+ */
-+#define RHF_PKT_LEN_SHIFT	0
-+#define RHF_PKT_LEN_MASK	0xfffull
-+#define RHF_PKT_LEN_SMASK (RHF_PKT_LEN_MASK << RHF_PKT_LEN_SHIFT)
-+
-+#define RHF_RCV_TYPE_SHIFT	12
-+#define RHF_RCV_TYPE_MASK	0x7ull
-+#define RHF_RCV_TYPE_SMASK (RHF_RCV_TYPE_MASK << RHF_RCV_TYPE_SHIFT)
-+
-+#define RHF_USE_EGR_BFR_SHIFT	15
-+#define RHF_USE_EGR_BFR_MASK	0x1ull
-+#define RHF_USE_EGR_BFR_SMASK (RHF_USE_EGR_BFR_MASK << RHF_USE_EGR_BFR_SHIFT)
-+
-+#define RHF_EGR_INDEX_SHIFT	16
-+#define RHF_EGR_INDEX_MASK	0x7ffull
-+#define RHF_EGR_INDEX_SMASK (RHF_EGR_INDEX_MASK << RHF_EGR_INDEX_SHIFT)
-+
-+#define RHF_DC_INFO_SHIFT	27
-+#define RHF_DC_INFO_MASK	0x1ull
-+#define RHF_DC_INFO_SMASK (RHF_DC_INFO_MASK << RHF_DC_INFO_SHIFT)
-+
-+#define RHF_RCV_SEQ_SHIFT	28
-+#define RHF_RCV_SEQ_MASK	0xfull
-+#define RHF_RCV_SEQ_SMASK (RHF_RCV_SEQ_MASK << RHF_RCV_SEQ_SHIFT)
-+
-+#define RHF_EGR_OFFSET_SHIFT	32
-+#define RHF_EGR_OFFSET_MASK	0xfffull
-+#define RHF_EGR_OFFSET_SMASK (RHF_EGR_OFFSET_MASK << RHF_EGR_OFFSET_SHIFT)
-+#define RHF_HDRQ_OFFSET_SHIFT	44
-+#define RHF_HDRQ_OFFSET_MASK	0x1ffull
-+#define RHF_HDRQ_OFFSET_SMASK (RHF_HDRQ_OFFSET_MASK << RHF_HDRQ_OFFSET_SHIFT)
-+#define RHF_K_HDR_LEN_ERR	(0x1ull << 53)
-+#define RHF_DC_UNC_ERR		(0x1ull << 54)
-+#define RHF_DC_ERR		(0x1ull << 55)
-+#define RHF_RCV_TYPE_ERR_SHIFT	56
-+#define RHF_RCV_TYPE_ERR_MASK	0x7ul
-+#define RHF_RCV_TYPE_ERR_SMASK (RHF_RCV_TYPE_ERR_MASK << RHF_RCV_TYPE_ERR_SHIFT)
-+#define RHF_TID_ERR		(0x1ull << 59)
-+#define RHF_LEN_ERR		(0x1ull << 60)
-+#define RHF_ECC_ERR		(0x1ull << 61)
-+#define RHF_RESERVED		(0x1ull << 62)
-+#define RHF_ICRC_ERR		(0x1ull << 63)
-+
-+#define RHF_ERROR_SMASK 0xffe0000000000000ull		/* bits 63:53 */
-+
-+/* RHF receive types */
-+#define RHF_RCV_TYPE_EXPECTED 0
-+#define RHF_RCV_TYPE_EAGER    1
-+#define RHF_RCV_TYPE_IB       2 /* normal IB, IB Raw, or IPv6 */
-+#define RHF_RCV_TYPE_ERROR    3
-+#define RHF_RCV_TYPE_BYPASS   4
-+#define RHF_RCV_TYPE_INVALID5 5
-+#define RHF_RCV_TYPE_INVALID6 6
-+#define RHF_RCV_TYPE_INVALID7 7
-+
-+/* RHF receive type error - expected packet errors */
-+#define RHF_RTE_EXPECTED_FLOW_SEQ_ERR	0x2
-+#define RHF_RTE_EXPECTED_FLOW_GEN_ERR	0x4
-+
-+/* RHF receive type error - eager packet errors */
-+#define RHF_RTE_EAGER_NO_ERR		0x0
-+
-+/* RHF receive type error - IB packet errors */
-+#define RHF_RTE_IB_NO_ERR		0x0
-+
-+/* RHF receive type error - error packet errors */
-+#define RHF_RTE_ERROR_NO_ERR		0x0
-+#define RHF_RTE_ERROR_OP_CODE_ERR	0x1
-+#define RHF_RTE_ERROR_KHDR_MIN_LEN_ERR	0x2
-+#define RHF_RTE_ERROR_KHDR_HCRC_ERR	0x3
-+#define RHF_RTE_ERROR_KHDR_KVER_ERR	0x4
-+#define RHF_RTE_ERROR_CONTEXT_ERR	0x5
-+#define RHF_RTE_ERROR_KHDR_TID_ERR	0x6
-+
-+/* RHF receive type error - bypass packet errors */
-+#define RHF_RTE_BYPASS_NO_ERR		0x0
-+
-+/* MAX RcvSEQ */
-+#define RHF_MAX_SEQ 13
-+
-+/* IB - LRH header constants */
-+#define HFI2_LRH_GRH 0x0003      /* 1. word of IB LRH - next header: GRH */
-+#define HFI2_LRH_BTH 0x0002      /* 1. word of IB LRH - next header: BTH */
-+
-+/* misc. */
-+#define SC15_PACKET 0xF
-+#define SIZE_OF_CRC 1
-+#define SIZE_OF_LT 1
-+#define MAX_16B_PADDING 16 /* CRC = 4 or 8, LT = 1, Pad = 0 to 7 bytes */
-+
-+#define LIM_MGMT_P_KEY       0x7FFF
-+#define FULL_MGMT_P_KEY      0xFFFF
-+
-+#define DEFAULT_P_KEY LIM_MGMT_P_KEY
-+
-+#define HFI2_PSM_IOC_BASE_SEQ 0x0
-+
-+/* Number of BTH.PSN bits used for sequence number in expected rcvs */
-+#define HFI2_KDETH_BTH_SEQ_SHIFT 11
-+#define HFI2_KDETH_BTH_SEQ_MASK (BIT(HFI2_KDETH_BTH_SEQ_SHIFT) - 1)
-+
-+static inline __u64 rhf_to_cpu(const __le32 *rbuf)
+ 	case CQE_RX_OBJECT_FENCE:
+ 		complete(&rxq->fence_event);
+ 		return;
+@@ -2130,30 +2144,37 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 		return;
+ 	}
+ 
+-	pktlen = oob->ppi[0].pkt_len;
++	for (i = 0; i < MANA_RXCOMP_OOB_NUM_PPI; i++) {
++		old_buf = NULL;
++		pktlen = oob->ppi[i].pkt_len;
++		if (pktlen == 0) {
++			if (i == 0)
++				netdev_err_once(
++					ndev,
++					"RX pkt len=0, rq=%u, cq=%u, rxobj=0x%llx\n",
++					rxq->gdma_id, cq->gdma_id, rxq->rxobj);
++			break;
++		}
+ 
+-	if (pktlen == 0) {
+-		/* data packets should never have packetlength of zero */
+-		netdev_err(ndev, "RX pkt len=0, rq=%u, cq=%u, rxobj=0x%llx\n",
+-			   rxq->gdma_id, cq->gdma_id, rxq->rxobj);
+-		return;
+-	}
++		curr = rxq->buf_index;
++		rxbuf_oob = &rxq->rx_oobs[curr];
++		WARN_ON_ONCE(rxbuf_oob->wqe_inf.wqe_size_in_bu != 1);
+ 
+-	curr = rxq->buf_index;
+-	rxbuf_oob = &rxq->rx_oobs[curr];
+-	WARN_ON_ONCE(rxbuf_oob->wqe_inf.wqe_size_in_bu != 1);
++		mana_refill_rx_oob(dev, rxq, rxbuf_oob, &old_buf, &old_fp);
+ 
+-	mana_refill_rx_oob(dev, rxq, rxbuf_oob, &old_buf, &old_fp);
++		/* Unsuccessful refill will have old_buf == NULL.
++		 * In this case, mana_rx_skb() will drop the packet.
++		 */
++		mana_rx_skb(old_buf, old_fp, oob, rxq, i);
+ 
+-	/* Unsuccessful refill will have old_buf == NULL.
+-	 * In this case, mana_rx_skb() will drop the packet.
+-	 */
+-	mana_rx_skb(old_buf, old_fp, oob, rxq);
++		mana_move_wq_tail(rxq->gdma_rq,
++				  rxbuf_oob->wqe_inf.wqe_size_in_bu);
+ 
+-drop:
+-	mana_move_wq_tail(rxq->gdma_rq, rxbuf_oob->wqe_inf.wqe_size_in_bu);
++		mana_post_pkt_rxq(rxq);
+ 
+-	mana_post_pkt_rxq(rxq);
++		if (!coalesced)
++			break;
++	}
+ }
+ 
+ static void mana_poll_rx_cq(struct mana_cq *cq)
+@@ -3332,6 +3353,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 	apc->port_handle = INVALID_MANA_HANDLE;
+ 	apc->pf_filter_handle = INVALID_MANA_HANDLE;
+ 	apc->port_idx = port_idx;
++	apc->cqe_coalescing_enable = 0;
+ 
+ 	mutex_init(&apc->vport_mutex);
+ 	apc->vport_use_count = 0;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index f2d220b371b5..4b234b16e57a 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -20,8 +20,6 @@ static const struct mana_stats_desc mana_eth_stats[] = {
+ 					tx_cqe_unknown_type)},
+ 	{"tx_linear_pkt_cnt", offsetof(struct mana_ethtool_stats,
+ 				       tx_linear_pkt_cnt)},
+-	{"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
+-					rx_coalesced_err)},
+ 	{"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+ 					rx_cqe_unknown_type)},
+ };
+@@ -390,6 +388,61 @@ static void mana_get_channels(struct net_device *ndev,
+ 	channel->combined_count = apc->num_queues;
+ }
+ 
++#define MANA_RX_CQE_NSEC_DEF 2048
++static int mana_get_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *ec,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
 +{
-+	return __le64_to_cpu(*((__le64 *)rbuf));
-+}
++	struct mana_port_context *apc = netdev_priv(ndev);
 +
-+static inline u64 wfr_rhf_err_flags(u64 rhf)
-+{
-+	return rhf & RHF_ERROR_SMASK;
-+}
++	kernel_coal->rx_cqe_frames =
++		apc->cqe_coalescing_enable ? MANA_RXCOMP_OOB_NUM_PPI : 1;
 +
-+static inline u32 rhf_rcv_type(u64 rhf)
-+{
-+	return (rhf >> RHF_RCV_TYPE_SHIFT) & RHF_RCV_TYPE_MASK;
-+}
++	kernel_coal->rx_cqe_nsecs = apc->cqe_coalescing_timeout_ns;
 +
-+static inline u32 wfr_rhf_rcv_type_err(u64 rhf)
-+{
-+	return (rhf >> RHF_RCV_TYPE_ERR_SHIFT) & RHF_RCV_TYPE_ERR_MASK;
-+}
++	/* Return the default timeout value for old FW not providing
++	 * this value.
++	 */
++	if (apc->port_is_up && apc->cqe_coalescing_enable &&
++	    !kernel_coal->rx_cqe_nsecs)
++		kernel_coal->rx_cqe_nsecs = MANA_RX_CQE_NSEC_DEF;
 +
-+/* return size is in bytes, not DWORDs */
-+static inline u32 rhf_pkt_len(u64 rhf)
-+{
-+	return ((rhf & RHF_PKT_LEN_SMASK) >> RHF_PKT_LEN_SHIFT) << 2;
-+}
-+
-+static inline u32 wfr_rhf_egr_index(u64 rhf)
-+{
-+	return (rhf >> RHF_EGR_INDEX_SHIFT) & RHF_EGR_INDEX_MASK;
-+}
-+
-+static inline u32 wfr_rhf_rcv_seq(u64 rhf)
-+{
-+	return (rhf >> RHF_RCV_SEQ_SHIFT) & RHF_RCV_SEQ_MASK;
-+}
-+
-+static inline u32 jkr_rhf_rcv_seq(u64 rhf)
-+{
-+	return (rhf >> 56) & 0xf; /* RHF.RcvSeq */
-+}
-+
-+/* returned offset is in DWORDS */
-+static inline u32 rhf_hdrq_offset(u64 rhf)
-+{
-+	return (rhf >> RHF_HDRQ_OFFSET_SHIFT) & RHF_HDRQ_OFFSET_MASK;
-+}
-+
-+static inline u64 rhf_use_egr_bfr(u64 rhf)
-+{
-+	return rhf & RHF_USE_EGR_BFR_SMASK;
-+}
-+
-+static inline u64 wfr_rhf_dc_info(u64 rhf)
-+{
-+	return rhf & RHF_DC_INFO_SMASK;
-+}
-+
-+static inline u32 rhf_egr_buf_offset(u64 rhf)
-+{
-+	return (rhf >> RHF_EGR_OFFSET_SHIFT) & RHF_EGR_OFFSET_MASK;
-+}
-+#endif /* _COMMON_H */
-diff --git a/drivers/infiniband/hw/hfi2/debugfs.h b/drivers/infiniband/hw/hfi2/debugfs.h
-new file mode 100644
-index 000000000000..c41b3a468dc9
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/debugfs.h
-@@ -0,0 +1,66 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015, 2016, 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _HFI2_DEBUGFS_H
-+#define _HFI2_DEBUGFS_H
-+
-+struct hfi2_ibdev;
-+
-+#define DEBUGFS_SEQ_FILE_OPS(name) \
-+static const struct seq_operations _##name##_seq_ops = { \
-+	.start = _##name##_seq_start, \
-+	.next  = _##name##_seq_next, \
-+	.stop  = _##name##_seq_stop, \
-+	.show  = _##name##_seq_show \
-+}
-+
-+#define DEBUGFS_SEQ_FILE_OPEN(name) \
-+static int _##name##_open(struct inode *inode, struct file *s) \
-+{ \
-+	struct seq_file *seq; \
-+	int ret; \
-+	ret =  seq_open(s, &_##name##_seq_ops); \
-+	if (ret) \
-+		return ret; \
-+	seq = s->private_data; \
-+	seq->private = inode->i_private; \
-+	return 0; \
-+}
-+
-+#define DEBUGFS_FILE_OPS(name) \
-+static const struct file_operations _##name##_file_ops = { \
-+	.owner   = THIS_MODULE, \
-+	.open    = _##name##_open, \
-+	.read    = seq_read, \
-+	.llseek  = seq_lseek, \
-+	.release = seq_release \
-+}
-+
-+#ifdef CONFIG_DEBUG_FS
-+void hfi2_dbg_ibdev_init(struct hfi2_ibdev *ibd);
-+void hfi2_dbg_ibdev_exit(struct hfi2_ibdev *ibd);
-+void hfi2_dbg_init(void);
-+void hfi2_dbg_exit(void);
-+
-+#else
-+static inline void hfi2_dbg_ibdev_init(struct hfi2_ibdev *ibd)
-+{
-+}
-+
-+static inline void hfi2_dbg_ibdev_exit(struct hfi2_ibdev *ibd)
-+{
-+}
-+
-+static inline void hfi2_dbg_init(void)
-+{
-+}
-+
-+static inline void hfi2_dbg_exit(void)
-+{
-+}
-+#endif
-+
-+#endif                          /* _HFI2_DEBUGFS_H */
-diff --git a/drivers/infiniband/hw/hfi2/fault.h b/drivers/infiniband/hw/hfi2/fault.h
-new file mode 100644
-index 000000000000..58736ce447c0
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/fault.h
-@@ -0,0 +1,70 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _HFI2_FAULT_H
-+#define _HFI2_FAULT_H
-+
-+#include <linux/fault-inject.h>
-+#include <linux/dcache.h>
-+#include <linux/bitops.h>
-+#include <linux/kernel.h>
-+#include <rdma/rdma_vt.h>
-+
-+#include "hfi2.h"
-+
-+struct hfi2_ibdev;
-+
-+#if defined(CONFIG_FAULT_INJECTION) && defined(CONFIG_FAULT_INJECTION_DEBUG_FS)
-+struct fault {
-+	struct fault_attr attr;
-+	struct dentry *dir;
-+	u64 n_rxfaults[(1U << BITS_PER_BYTE)];
-+	u64 n_txfaults[(1U << BITS_PER_BYTE)];
-+	u64 fault_skip;
-+	u64 skip;
-+	u64 fault_skip_usec;
-+	unsigned long skip_usec;
-+	unsigned long opcodes[(1U << BITS_PER_BYTE) / BITS_PER_LONG];
-+	bool enable;
-+	bool suppress_err;
-+	bool opcode;
-+	u8 direction;
-+};
-+
-+int hfi2_fault_init_debugfs(struct hfi2_ibdev *ibd);
-+bool hfi2_dbg_should_fault_tx(struct rvt_qp *qp, u32 opcode);
-+bool hfi2_dbg_should_fault_rx(struct hfi2_packet *packet);
-+bool hfi2_dbg_fault_suppress_err(struct hfi2_ibdev *ibd);
-+void hfi2_fault_exit_debugfs(struct hfi2_ibdev *ibd);
-+
-+#else
-+
-+static inline int hfi2_fault_init_debugfs(struct hfi2_ibdev *ibd)
-+{
 +	return 0;
 +}
 +
-+static inline bool hfi2_dbg_should_fault_rx(struct hfi2_packet *packet)
++static int mana_set_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *ec,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
 +{
-+	return false;
++	struct mana_port_context *apc = netdev_priv(ndev);
++	u8 saved_cqe_coalescing_enable;
++	int err;
++
++	if (kernel_coal->rx_cqe_frames != 1 &&
++	    kernel_coal->rx_cqe_frames != MANA_RXCOMP_OOB_NUM_PPI) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "rx-frames must be 1 or %u, got %u",
++				   MANA_RXCOMP_OOB_NUM_PPI,
++				   kernel_coal->rx_cqe_frames);
++		return -EINVAL;
++	}
++
++	saved_cqe_coalescing_enable = apc->cqe_coalescing_enable;
++	apc->cqe_coalescing_enable =
++		kernel_coal->rx_cqe_frames == MANA_RXCOMP_OOB_NUM_PPI;
++
++	if (!apc->port_is_up)
++		return 0;
++
++	err = mana_config_rss(apc, TRI_STATE_TRUE, false, false);
++	if (err)
++		apc->cqe_coalescing_enable = saved_cqe_coalescing_enable;
++
++	return err;
 +}
 +
-+static inline bool hfi2_dbg_should_fault_tx(struct rvt_qp *qp,
-+					    u32 opcode)
-+{
-+	return false;
-+}
-+
-+static inline bool hfi2_dbg_fault_suppress_err(struct hfi2_ibdev *ibd)
-+{
-+	return false;
-+}
-+
-+static inline void hfi2_fault_exit_debugfs(struct hfi2_ibdev *ibd)
-+{
-+}
-+#endif
-+#endif /* _HFI2_FAULT_H */
-diff --git a/drivers/infiniband/hw/hfi2/opa_compat.h b/drivers/infiniband/hw/hfi2/opa_compat.h
-new file mode 100644
-index 000000000000..8e8b7f62082a
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/opa_compat.h
-@@ -0,0 +1,87 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015, 2016 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _LINUX_H
-+#define _LINUX_H
-+/*
-+ * This header file is for OPA-specific definitions which are
-+ * required by the HFI driver, and which aren't yet in the Linux
-+ * IB core. We'll collect these all here, then merge them into
-+ * the kernel when that's convenient.
-+ */
-+
-+/* OPA SMA attribute IDs */
-+#define OPA_ATTRIB_ID_CONGESTION_INFO		cpu_to_be16(0x008b)
-+#define OPA_ATTRIB_ID_HFI_CONGESTION_LOG	cpu_to_be16(0x008f)
-+#define OPA_ATTRIB_ID_HFI_CONGESTION_SETTING	cpu_to_be16(0x0090)
-+#define OPA_ATTRIB_ID_CONGESTION_CONTROL_TABLE	cpu_to_be16(0x0091)
-+
-+/* OPA PMA attribute IDs */
-+#define OPA_PM_ATTRIB_ID_PORT_STATUS		cpu_to_be16(0x0040)
-+#define OPA_PM_ATTRIB_ID_CLEAR_PORT_STATUS	cpu_to_be16(0x0041)
-+#define OPA_PM_ATTRIB_ID_DATA_PORT_COUNTERS	cpu_to_be16(0x0042)
-+#define OPA_PM_ATTRIB_ID_ERROR_PORT_COUNTERS	cpu_to_be16(0x0043)
-+#define OPA_PM_ATTRIB_ID_ERROR_INFO		cpu_to_be16(0x0044)
-+
-+/* OPA status codes */
-+#define OPA_PM_STATUS_REQUEST_TOO_LARGE		cpu_to_be16(0x100)
-+
-+static inline u8 port_states_to_logical_state(struct opa_port_states *ps)
-+{
-+	return ps->portphysstate_portstate & OPA_PI_MASK_PORT_STATE;
-+}
-+
-+static inline u8 port_states_to_phys_state(struct opa_port_states *ps)
-+{
-+	return ((ps->portphysstate_portstate &
-+		  OPA_PI_MASK_PORT_PHYSICAL_STATE) >> 4) & 0xf;
-+}
-+
-+/*
-+ * OPA port physical states
-+ * IB Volume 1, Table 146 PortInfo/IB Volume 2 Section 5.4.2(1) PortPhysState
-+ * values are the same in OmniPath Architecture. OPA leverages some of the same
-+ * concepts as InfiniBand, but has a few other states as well.
-+ *
-+ * When writing, only values 0-3 are valid, other values are ignored.
-+ * When reading, 0 is reserved.
-+ *
-+ * Returned by the ibphys_portstate() routine.
-+ */
-+enum opa_port_phys_state {
-+	/* Values 0-7 have the same meaning in OPA as in InfiniBand. */
-+
-+	IB_PORTPHYSSTATE_NOP = 0,
-+	/* 1 is reserved */
-+	IB_PORTPHYSSTATE_POLLING = 2,
-+	IB_PORTPHYSSTATE_DISABLED = 3,
-+	IB_PORTPHYSSTATE_TRAINING = 4,
-+	IB_PORTPHYSSTATE_LINKUP = 5,
-+	IB_PORTPHYSSTATE_LINK_ERROR_RECOVERY = 6,
-+	IB_PORTPHYSSTATE_PHY_TEST = 7,
-+	/* 8 is reserved */
-+
-+	/*
-+	 * Offline: Port is quiet (transmitters disabled) due to lack of
-+	 * physical media, unsupported media, or transition between link up
-+	 * and next link up attempt
-+	 */
-+	OPA_PORTPHYSSTATE_OFFLINE = 9,
-+
-+	/* 10 is reserved */
-+
-+	/*
-+	 * Phy_Test: Specific test patterns are transmitted, and receiver BER
-+	 * can be monitored. This facilitates signal integrity testing for the
-+	 * physical layer of the port.
-+	 */
-+	OPA_PORTPHYSSTATE_TEST = 11,
-+
-+	OPA_PORTPHYSSTATE_MAX = 11,
-+	/* values 12-15 are reserved/ignored */
-+};
-+
-+#endif /* _LINUX_H */
-diff --git a/drivers/infiniband/hw/hfi2/opfn.h b/drivers/infiniband/hw/hfi2/opfn.h
-new file mode 100644
-index 000000000000..c706cc28a1d3
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/opfn.h
-@@ -0,0 +1,88 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * Copyright(c) 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
-+ */
-+#ifndef _HFI2_OPFN_H
-+#define _HFI2_OPFN_H
-+
-+/**
-+ * DOC: Omni Path Feature Negotion (OPFN)
-+ *
-+ * OPFN is a discovery protocol for Intel Omni-Path fabric that
-+ * allows two RC QPs to negotiate a common feature that both QPs
-+ * can support. Currently, the only OPA feature that OPFN
-+ * supports is TID RDMA.
-+ *
-+ * Architecture
-+ *
-+ * OPFN involves the communication between two QPs on the HFI
-+ * level on an Omni-Path fabric, and ULPs have no knowledge of
-+ * OPFN at all.
-+ *
-+ * Implementation
-+ *
-+ * OPFN extends the existing IB RC protocol with the following
-+ * changes:
-+ * -- Uses Bit 24 (reserved) of DWORD 1 of Base Transport
-+ *    Header (BTH1) to indicate that the RC QP supports OPFN;
-+ * -- Uses a combination of RC COMPARE_SWAP opcode (0x13) and
-+ *    the address U64_MAX (0xFFFFFFFFFFFFFFFF) as an OPFN
-+ *    request; The 64-bit data carried with the request/response
-+ *    contains the parameters for negotiation and will be
-+ *    defined in tid_rdma.c file;
-+ * -- Defines IB_WR_RESERVED3 as IB_WR_OPFN.
-+ *
-+ * The OPFN communication will be triggered when an RC QP
-+ * receives a request with Bit 24 of BTH1 set. The responder QP
-+ * will then post send an OPFN request with its local
-+ * parameters, which will be sent to the requester QP once all
-+ * existing requests on the responder QP side have been sent.
-+ * Once the requester QP receives the OPFN request, it will
-+ * keep a copy of the responder QP's parameters, and return a
-+ * response packet with its own local parameters. The responder
-+ * QP receives the response packet and keeps a copy of the requester
-+ * QP's parameters. After this exchange, each side has the parameters
-+ * for both sides and therefore can select the right parameters
-+ * for future transactions
-+ */
-+
-+#include <linux/workqueue.h>
-+#include <rdma/ib_verbs.h>
-+#include <rdma/rdmavt_qp.h>
-+
-+/* STL Verbs Extended */
-+#define IB_BTHE_E_SHIFT           24
-+#define HFI2_VERBS_E_ATOMIC_VADDR U64_MAX
-+
-+enum hfi2_opfn_codes {
-+	STL_VERBS_EXTD_NONE = 0,
-+	STL_VERBS_EXTD_TID_RDMA,
-+	STL_VERBS_EXTD_MAX
-+};
-+
-+struct hfi2_opfn_data {
-+	u8 extended;
-+	u16 requested;
-+	u16 completed;
-+	enum hfi2_opfn_codes curr;
-+	/* serialize opfn function calls */
-+	spinlock_t lock;
-+	struct work_struct opfn_work;
-+};
-+
-+/* WR opcode for OPFN */
-+#define IB_WR_OPFN IB_WR_RESERVED3
-+
-+void opfn_send_conn_request(struct work_struct *work);
-+void opfn_conn_response(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+			struct ib_atomic_eth *ateth);
-+void opfn_conn_reply(struct rvt_qp *qp, u64 data);
-+void opfn_conn_error(struct rvt_qp *qp);
-+void opfn_qp_init(struct rvt_qp *qp, struct ib_qp_attr *attr, int attr_mask);
-+void opfn_trigger_conn_request(struct rvt_qp *qp, u32 bth1);
-+int opfn_init(void);
-+void opfn_exit(void);
-+
-+#endif /* _HFI2_OPFN_H */
-diff --git a/drivers/infiniband/hw/hfi2/platform.h b/drivers/infiniband/hw/hfi2/platform.h
-new file mode 100644
-index 000000000000..f886c2c3dd1c
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/platform.h
-@@ -0,0 +1,372 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015, 2016 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef __PLATFORM_H
-+#define __PLATFORM_H
-+
-+#define METADATA_TABLE_FIELD_START_SHIFT		0
-+#define METADATA_TABLE_FIELD_START_LEN_BITS		15
-+#define METADATA_TABLE_FIELD_LEN_SHIFT			16
-+#define METADATA_TABLE_FIELD_LEN_LEN_BITS		16
-+
-+/* Header structure */
-+#define PLATFORM_CONFIG_HEADER_RECORD_IDX_SHIFT			0
-+#define PLATFORM_CONFIG_HEADER_RECORD_IDX_LEN_BITS		6
-+#define PLATFORM_CONFIG_HEADER_TABLE_LENGTH_SHIFT		16
-+#define PLATFORM_CONFIG_HEADER_TABLE_LENGTH_LEN_BITS		12
-+#define PLATFORM_CONFIG_HEADER_TABLE_TYPE_SHIFT			28
-+#define PLATFORM_CONFIG_HEADER_TABLE_TYPE_LEN_BITS		4
-+
-+enum platform_config_table_type_encoding {
-+	PLATFORM_CONFIG_TABLE_RESERVED,
-+	PLATFORM_CONFIG_SYSTEM_TABLE,
-+	PLATFORM_CONFIG_PORT_TABLE,
-+	PLATFORM_CONFIG_RX_PRESET_TABLE,
-+	PLATFORM_CONFIG_TX_PRESET_TABLE,
-+	PLATFORM_CONFIG_QSFP_ATTEN_TABLE,
-+	PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE,
-+	PLATFORM_CONFIG_TABLE_MAX
-+};
-+
-+enum platform_config_system_table_fields {
-+	SYSTEM_TABLE_RESERVED,
-+	SYSTEM_TABLE_NODE_STRING,
-+	SYSTEM_TABLE_SYSTEM_IMAGE_GUID,
-+	SYSTEM_TABLE_NODE_GUID,
-+	SYSTEM_TABLE_REVISION,
-+	SYSTEM_TABLE_VENDOR_OUI,
-+	SYSTEM_TABLE_META_VERSION,
-+	SYSTEM_TABLE_DEVICE_ID,
-+	SYSTEM_TABLE_PARTITION_ENFORCEMENT_CAP,
-+	SYSTEM_TABLE_QSFP_POWER_CLASS_MAX,
-+	SYSTEM_TABLE_QSFP_ATTENUATION_DEFAULT_12G,
-+	SYSTEM_TABLE_QSFP_ATTENUATION_DEFAULT_25G,
-+	SYSTEM_TABLE_VARIABLE_TABLE_ENTRIES_PER_PORT,
-+	SYSTEM_TABLE_MAX
-+};
-+
-+enum platform_config_port_table_fields {
-+	PORT_TABLE_RESERVED,
-+	PORT_TABLE_PORT_TYPE,
-+	PORT_TABLE_LOCAL_ATTEN_12G,
-+	PORT_TABLE_LOCAL_ATTEN_25G,
-+	PORT_TABLE_LINK_SPEED_SUPPORTED,
-+	PORT_TABLE_LINK_WIDTH_SUPPORTED,
-+	PORT_TABLE_AUTO_LANE_SHEDDING_ENABLED,
-+	PORT_TABLE_EXTERNAL_LOOPBACK_ALLOWED,
-+	PORT_TABLE_VL_CAP,
-+	PORT_TABLE_MTU_CAP,
-+	PORT_TABLE_TX_LANE_ENABLE_MASK,
-+	PORT_TABLE_LOCAL_MAX_TIMEOUT,
-+	PORT_TABLE_REMOTE_ATTEN_12G,
-+	PORT_TABLE_REMOTE_ATTEN_25G,
-+	PORT_TABLE_TX_PRESET_IDX_ACTIVE_NO_EQ,
-+	PORT_TABLE_TX_PRESET_IDX_ACTIVE_EQ,
-+	PORT_TABLE_RX_PRESET_IDX,
-+	PORT_TABLE_CABLE_REACH_CLASS,
-+	PORT_TABLE_MAX
-+};
-+
-+enum platform_config_rx_preset_table_fields {
-+	RX_PRESET_TABLE_RESERVED,
-+	RX_PRESET_TABLE_QSFP_RX_CDR_APPLY,
-+	RX_PRESET_TABLE_QSFP_RX_EMP_APPLY,
-+	RX_PRESET_TABLE_QSFP_RX_AMP_APPLY,
-+	RX_PRESET_TABLE_QSFP_RX_CDR,
-+	RX_PRESET_TABLE_QSFP_RX_EMP,
-+	RX_PRESET_TABLE_QSFP_RX_AMP,
-+	RX_PRESET_TABLE_MAX
-+};
-+
-+enum platform_config_tx_preset_table_fields {
-+	TX_PRESET_TABLE_RESERVED,
-+	TX_PRESET_TABLE_PRECUR,
-+	TX_PRESET_TABLE_ATTN,
-+	TX_PRESET_TABLE_POSTCUR,
-+	TX_PRESET_TABLE_QSFP_TX_CDR_APPLY,
-+	TX_PRESET_TABLE_QSFP_TX_EQ_APPLY,
-+	TX_PRESET_TABLE_QSFP_TX_CDR,
-+	TX_PRESET_TABLE_QSFP_TX_EQ,
-+	TX_PRESET_TABLE_MAX
-+};
-+
-+enum platform_config_qsfp_attn_table_fields {
-+	QSFP_ATTEN_TABLE_RESERVED,
-+	QSFP_ATTEN_TABLE_TX_PRESET_IDX,
-+	QSFP_ATTEN_TABLE_RX_PRESET_IDX,
-+	QSFP_ATTEN_TABLE_MAX
-+};
-+
-+enum platform_config_variable_settings_table_fields {
-+	VARIABLE_SETTINGS_TABLE_RESERVED,
-+	VARIABLE_SETTINGS_TABLE_TX_PRESET_IDX,
-+	VARIABLE_SETTINGS_TABLE_RX_PRESET_IDX,
-+	VARIABLE_SETTINGS_TABLE_MAX
-+};
-+
-+struct platform_config {
-+	size_t size;
-+	const u8 *data;
-+};
-+
-+struct platform_config_data {
-+	u32 *table;
-+	u32 *table_metadata;
-+	u32 num_table;
-+};
-+
-+/*
-+ * This struct acts as a quick reference into the platform_data binary image
-+ * and is populated by parse_platform_config(...) depending on the specific
-+ * META_VERSION
-+ */
-+struct platform_config_cache {
-+	u8  cache_valid;
-+	struct platform_config_data config_tables[PLATFORM_CONFIG_TABLE_MAX];
-+};
-+
-+/* This section defines default values and encodings for the
-+ * fields defined for each table above
-+ */
-+
-+/*
-+ * =====================================================
-+ *  System table encodings
-+ * =====================================================
-+ */
-+#define PLATFORM_CONFIG_MAGIC_NUM		0x3d4f5041
-+#define PLATFORM_CONFIG_MAGIC_NUMBER_LEN	4
-+
-+/*
-+ * These power classes are the same as defined in SFF 8636 spec rev 2.4
-+ * describing byte 129 in table 6-16, except enumerated in a different order
-+ */
-+enum platform_config_qsfp_power_class_encoding {
-+	QSFP_POWER_CLASS_1 = 1,
-+	QSFP_POWER_CLASS_2,
-+	QSFP_POWER_CLASS_3,
-+	QSFP_POWER_CLASS_4,
-+	QSFP_POWER_CLASS_5,
-+	QSFP_POWER_CLASS_6,
-+	QSFP_POWER_CLASS_7
-+};
-+
-+/*
-+ * ====================================================
-+ *  Port table encodings
-+ * ====================================================
-+ */
-+enum platform_config_port_type_encoding {
-+	PORT_TYPE_UNKNOWN,
-+	PORT_TYPE_DISCONNECTED,
-+	PORT_TYPE_FIXED,
-+	PORT_TYPE_VARIABLE,
-+	PORT_TYPE_QSFP,
-+	PORT_TYPE_MAX
-+};
-+
-+enum platform_config_link_speed_supported_encoding {
-+	LINK_SPEED_SUPP_12G = 1,
-+	LINK_SPEED_SUPP_25G,
-+	LINK_SPEED_SUPP_12G_25G,
-+	LINK_SPEED_SUPP_MAX
-+};
-+
-+/*
-+ * This is a subset (not strict) of the link downgrades
-+ * supported. The link downgrades supported are expected
-+ * to be supplied to the driver by another entity such as
-+ * the fabric manager
-+ */
-+enum platform_config_link_width_supported_encoding {
-+	LINK_WIDTH_SUPP_1X = 1,
-+	LINK_WIDTH_SUPP_2X,
-+	LINK_WIDTH_SUPP_2X_1X,
-+	LINK_WIDTH_SUPP_3X,
-+	LINK_WIDTH_SUPP_3X_1X,
-+	LINK_WIDTH_SUPP_3X_2X,
-+	LINK_WIDTH_SUPP_3X_2X_1X,
-+	LINK_WIDTH_SUPP_4X,
-+	LINK_WIDTH_SUPP_4X_1X,
-+	LINK_WIDTH_SUPP_4X_2X,
-+	LINK_WIDTH_SUPP_4X_2X_1X,
-+	LINK_WIDTH_SUPP_4X_3X,
-+	LINK_WIDTH_SUPP_4X_3X_1X,
-+	LINK_WIDTH_SUPP_4X_3X_2X,
-+	LINK_WIDTH_SUPP_4X_3X_2X_1X,
-+	LINK_WIDTH_SUPP_MAX
-+};
-+
-+enum platform_config_virtual_lane_capability_encoding {
-+	VL_CAP_VL0 = 1,
-+	VL_CAP_VL0_1,
-+	VL_CAP_VL0_2,
-+	VL_CAP_VL0_3,
-+	VL_CAP_VL0_4,
-+	VL_CAP_VL0_5,
-+	VL_CAP_VL0_6,
-+	VL_CAP_VL0_7,
-+	VL_CAP_VL0_8,
-+	VL_CAP_VL0_9,
-+	VL_CAP_VL0_10,
-+	VL_CAP_VL0_11,
-+	VL_CAP_VL0_12,
-+	VL_CAP_VL0_13,
-+	VL_CAP_VL0_14,
-+	VL_CAP_MAX
-+};
-+
-+/* Max MTU */
-+enum platform_config_mtu_capability_encoding {
-+	MTU_CAP_256   = 1,
-+	MTU_CAP_512   = 2,
-+	MTU_CAP_1024  = 3,
-+	MTU_CAP_2048  = 4,
-+	MTU_CAP_4096  = 5,
-+	MTU_CAP_8192  = 6,
-+	MTU_CAP_10240 = 7
-+};
-+
-+enum platform_config_local_max_timeout_encoding {
-+	LOCAL_MAX_TIMEOUT_10_MS = 1,
-+	LOCAL_MAX_TIMEOUT_100_MS,
-+	LOCAL_MAX_TIMEOUT_1_S,
-+	LOCAL_MAX_TIMEOUT_10_S,
-+	LOCAL_MAX_TIMEOUT_100_S,
-+	LOCAL_MAX_TIMEOUT_1000_S
-+};
-+
-+enum link_tuning_encoding {
-+	OPA_PASSIVE_TUNING,
-+	OPA_ACTIVE_TUNING,
-+	OPA_UNKNOWN_TUNING
-+};
-+
-+/*
-+ * Shifts and masks for the link SI tuning values stuffed into the ASIC scratch
-+ * registers for integrated platforms
-+ */
-+#define PORT0_PORT_TYPE_SHIFT		0
-+#define PORT0_LOCAL_ATTEN_SHIFT		4
-+#define PORT0_REMOTE_ATTEN_SHIFT	10
-+#define PORT0_DEFAULT_ATTEN_SHIFT	32
-+
-+#define PORT1_PORT_TYPE_SHIFT		16
-+#define PORT1_LOCAL_ATTEN_SHIFT		20
-+#define PORT1_REMOTE_ATTEN_SHIFT	26
-+#define PORT1_DEFAULT_ATTEN_SHIFT	40
-+
-+#define PORT0_PORT_TYPE_MASK		0xFUL
-+#define PORT0_LOCAL_ATTEN_MASK		0x3FUL
-+#define PORT0_REMOTE_ATTEN_MASK		0x3FUL
-+#define PORT0_DEFAULT_ATTEN_MASK	0xFFUL
-+
-+#define PORT1_PORT_TYPE_MASK		0xFUL
-+#define PORT1_LOCAL_ATTEN_MASK		0x3FUL
-+#define PORT1_REMOTE_ATTEN_MASK		0x3FUL
-+#define PORT1_DEFAULT_ATTEN_MASK	0xFFUL
-+
-+#define PORT0_PORT_TYPE_SMASK		(PORT0_PORT_TYPE_MASK << \
-+					 PORT0_PORT_TYPE_SHIFT)
-+#define PORT0_LOCAL_ATTEN_SMASK		(PORT0_LOCAL_ATTEN_MASK << \
-+					 PORT0_LOCAL_ATTEN_SHIFT)
-+#define PORT0_REMOTE_ATTEN_SMASK	(PORT0_REMOTE_ATTEN_MASK << \
-+					 PORT0_REMOTE_ATTEN_SHIFT)
-+#define PORT0_DEFAULT_ATTEN_SMASK	(PORT0_DEFAULT_ATTEN_MASK << \
-+					 PORT0_DEFAULT_ATTEN_SHIFT)
-+
-+#define PORT1_PORT_TYPE_SMASK		(PORT1_PORT_TYPE_MASK << \
-+					 PORT1_PORT_TYPE_SHIFT)
-+#define PORT1_LOCAL_ATTEN_SMASK		(PORT1_LOCAL_ATTEN_MASK << \
-+					 PORT1_LOCAL_ATTEN_SHIFT)
-+#define PORT1_REMOTE_ATTEN_SMASK	(PORT1_REMOTE_ATTEN_MASK << \
-+					 PORT1_REMOTE_ATTEN_SHIFT)
-+#define PORT1_DEFAULT_ATTEN_SMASK	(PORT1_DEFAULT_ATTEN_MASK << \
-+					 PORT1_DEFAULT_ATTEN_SHIFT)
-+
-+#define QSFP_MAX_POWER_SHIFT		0
-+#define TX_NO_EQ_SHIFT			4
-+#define TX_EQ_SHIFT			25
-+#define RX_SHIFT			46
-+
-+#define QSFP_MAX_POWER_MASK		0xFUL
-+#define TX_NO_EQ_MASK			0x1FFFFFUL
-+#define TX_EQ_MASK			0x1FFFFFUL
-+#define RX_MASK				0xFFFFUL
-+
-+#define QSFP_MAX_POWER_SMASK		(QSFP_MAX_POWER_MASK << \
-+					 QSFP_MAX_POWER_SHIFT)
-+#define TX_NO_EQ_SMASK			(TX_NO_EQ_MASK << TX_NO_EQ_SHIFT)
-+#define TX_EQ_SMASK			(TX_EQ_MASK << TX_EQ_SHIFT)
-+#define RX_SMASK			(RX_MASK << RX_SHIFT)
-+
-+#define TX_PRECUR_SHIFT			0
-+#define TX_ATTN_SHIFT			4
-+#define QSFP_TX_CDR_APPLY_SHIFT		9
-+#define QSFP_TX_EQ_APPLY_SHIFT		10
-+#define QSFP_TX_CDR_SHIFT		11
-+#define QSFP_TX_EQ_SHIFT		12
-+#define TX_POSTCUR_SHIFT		16
-+
-+#define TX_PRECUR_MASK			0xFUL
-+#define TX_ATTN_MASK			0x1FUL
-+#define QSFP_TX_CDR_APPLY_MASK		0x1UL
-+#define QSFP_TX_EQ_APPLY_MASK		0x1UL
-+#define QSFP_TX_CDR_MASK		0x1UL
-+#define QSFP_TX_EQ_MASK			0xFUL
-+#define TX_POSTCUR_MASK			0x1FUL
-+
-+#define TX_PRECUR_SMASK			(TX_PRECUR_MASK << TX_PRECUR_SHIFT)
-+#define TX_ATTN_SMASK			(TX_ATTN_MASK << TX_ATTN_SHIFT)
-+#define QSFP_TX_CDR_APPLY_SMASK		(QSFP_TX_CDR_APPLY_MASK << \
-+					 QSFP_TX_CDR_APPLY_SHIFT)
-+#define QSFP_TX_EQ_APPLY_SMASK		(QSFP_TX_EQ_APPLY_MASK << \
-+					 QSFP_TX_EQ_APPLY_SHIFT)
-+#define QSFP_TX_CDR_SMASK		(QSFP_TX_CDR_MASK << QSFP_TX_CDR_SHIFT)
-+#define QSFP_TX_EQ_SMASK		(QSFP_TX_EQ_MASK << QSFP_TX_EQ_SHIFT)
-+#define TX_POSTCUR_SMASK		(TX_POSTCUR_MASK << TX_POSTCUR_SHIFT)
-+
-+#define QSFP_RX_CDR_APPLY_SHIFT		0
-+#define QSFP_RX_EMP_APPLY_SHIFT		1
-+#define QSFP_RX_AMP_APPLY_SHIFT		2
-+#define QSFP_RX_CDR_SHIFT		3
-+#define QSFP_RX_EMP_SHIFT		4
-+#define QSFP_RX_AMP_SHIFT		8
-+
-+#define QSFP_RX_CDR_APPLY_MASK		0x1UL
-+#define QSFP_RX_EMP_APPLY_MASK		0x1UL
-+#define QSFP_RX_AMP_APPLY_MASK		0x1UL
-+#define QSFP_RX_CDR_MASK		0x1UL
-+#define QSFP_RX_EMP_MASK		0xFUL
-+#define QSFP_RX_AMP_MASK		0x3UL
-+
-+#define QSFP_RX_CDR_APPLY_SMASK		(QSFP_RX_CDR_APPLY_MASK << \
-+					 QSFP_RX_CDR_APPLY_SHIFT)
-+#define QSFP_RX_EMP_APPLY_SMASK		(QSFP_RX_EMP_APPLY_MASK << \
-+					 QSFP_RX_EMP_APPLY_SHIFT)
-+#define QSFP_RX_AMP_APPLY_SMASK		(QSFP_RX_AMP_APPLY_MASK << \
-+					 QSFP_RX_AMP_APPLY_SHIFT)
-+#define QSFP_RX_CDR_SMASK		(QSFP_RX_CDR_MASK << QSFP_RX_CDR_SHIFT)
-+#define QSFP_RX_EMP_SMASK		(QSFP_RX_EMP_MASK << QSFP_RX_EMP_SHIFT)
-+#define QSFP_RX_AMP_SMASK		(QSFP_RX_AMP_MASK << QSFP_RX_AMP_SHIFT)
-+
-+#define BITMAP_VERSION			1
-+#define BITMAP_VERSION_SHIFT		44
-+#define BITMAP_VERSION_MASK		0xFUL
-+#define BITMAP_VERSION_SMASK		(BITMAP_VERSION_MASK << \
-+					 BITMAP_VERSION_SHIFT)
-+#define CHECKSUM_SHIFT			48
-+#define CHECKSUM_MASK			0xFFFFUL
-+#define CHECKSUM_SMASK			(CHECKSUM_MASK << CHECKSUM_SHIFT)
-+
-+/* platform.c */
-+void hfi2_get_platform_config(struct hfi2_pportdata *ppd);
-+void free_platform_config(struct hfi2_devdata *dd);
-+void get_port_type(struct hfi2_pportdata *ppd);
-+int set_qsfp_tx(struct hfi2_pportdata *ppd, int on);
-+void tune_serdes(struct hfi2_pportdata *ppd);
-+
-+#endif			/*__PLATFORM_H*/
-diff --git a/drivers/infiniband/hw/hfi2/qsfp.h b/drivers/infiniband/hw/hfi2/qsfp.h
-new file mode 100644
-index 000000000000..85ce966870a6
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/qsfp.h
-@@ -0,0 +1,202 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015, 2016 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+/* QSFP support common definitions, for hfi driver */
-+
-+#define QSFP_DEV 0xA0
-+#define QSFP_PWR_LAG_MSEC 2000
-+#define QSFP_MODPRS_LAG_MSEC 20
-+/* 128 byte pages, per SFF 8636 rev 2.4 */
-+#define QSFP_MAX_NUM_PAGES	5
-+
-+/*
-+ * Below are masks for QSFP pins.  Pins are the same for HFI0 and HFI2.
-+ * _N means asserted low
-+ */
-+#define QSFP_HFI0_I2CCLK    BIT(0)
-+#define QSFP_HFI0_I2CDAT    BIT(1)
-+#define QSFP_HFI0_RESET_N   BIT(2)
-+#define QSFP_HFI0_INT_N	    BIT(3)
-+#define QSFP_HFI0_MODPRST_N BIT(4)
-+
-+/* QSFP is paged at 256 bytes */
-+#define QSFP_PAGESIZE 256
-+/* Reads/writes cannot cross 128 byte boundaries */
-+#define QSFP_RW_BOUNDARY 128
-+
-+/* number of bytes in i2c offset for QSFP devices */
-+#define __QSFP_OFFSET_SIZE 1                           /* num address bytes */
-+#define QSFP_OFFSET_SIZE (__QSFP_OFFSET_SIZE << 8)     /* shifted value */
-+
-+/* Defined fields that Intel requires of qualified cables */
-+/* Byte 0 is Identifier, not checked */
-+/* Byte 1 is reserved "status MSB" */
-+#define QSFP_MONITOR_VAL_START 22
-+#define QSFP_MONITOR_VAL_END 81
-+#define QSFP_MONITOR_RANGE (QSFP_MONITOR_VAL_END - QSFP_MONITOR_VAL_START + 1)
-+#define QSFP_TX_CTRL_BYTE_OFFS 86
-+#define QSFP_PWR_CTRL_BYTE_OFFS 93
-+#define QSFP_CDR_CTRL_BYTE_OFFS 98
-+
-+#define QSFP_PAGE_SELECT_BYTE_OFFS 127
-+/* Byte 128 is Identifier: must be 0x0c for QSFP, or 0x0d for QSFP+ */
-+#define QSFP_MOD_ID_OFFS 128
-+/*
-+ * Byte 129 is "Extended Identifier".
-+ * For bits [7:6]: 0:1.5W, 1:2.0W, 2:2.5W, 3:3.5W
-+ * For bits [1:0]: 0:Unused, 1:4W, 2:4.5W, 3:5W
-+ */
-+#define QSFP_MOD_PWR_OFFS 129
-+/* Byte 130 is Connector type. Not Intel req'd */
-+/* Bytes 131..138 are Transceiver types, bit maps for various tech, none IB */
-+/* Byte 139 is encoding. code 0x01 is 8b10b. Not Intel req'd */
-+/* byte 140 is nominal bit-rate, in units of 100Mbits/sec */
-+#define QSFP_NOM_BIT_RATE_100_OFFS 140
-+/* Byte 141 is Extended Rate Select. Not Intel req'd */
-+/* Bytes 142..145 are lengths for various fiber types. Not Intel req'd */
-+/* Byte 146 is length for Copper. Units of 1 meter */
-+#define QSFP_MOD_LEN_OFFS 146
-+/*
-+ * Byte 147 is Device technology. D0..3 not Intel req'd
-+ * D4..7 select from 15 choices, translated by table:
-+ */
-+#define QSFP_MOD_TECH_OFFS 147
-+extern const char *const hfi2_qsfp_devtech[16];
-+/* Active Equalization includes fiber, copper full EQ, and copper near Eq */
-+#define QSFP_IS_ACTIVE(tech) ((0xA2FF >> ((tech) >> 4)) & 1)
-+/* Active Equalization includes fiber, copper full EQ, and copper far Eq */
-+#define QSFP_IS_ACTIVE_FAR(tech) ((0x32FF >> ((tech) >> 4)) & 1)
-+/* Attenuation should be valid for copper other than full/near Eq */
-+#define QSFP_HAS_ATTEN(tech) ((0x4D00 >> ((tech) >> 4)) & 1)
-+/* Length is only valid if technology is "copper" */
-+#define QSFP_IS_CU(tech) ((0xED00 >> ((tech) >> 4)) & 1)
-+#define QSFP_TECH_1490 9
-+
-+#define QSFP_OUI(oui) (((unsigned int)oui[0] << 16) | ((unsigned int)oui[1] << 8) | \
-+			oui[2])
-+#define QSFP_OUI_AMPHENOL 0x415048
-+#define QSFP_OUI_FINISAR  0x009065
-+#define QSFP_OUI_GORE     0x002177
-+
-+/* Bytes 148..163 are Vendor Name, Left-justified Blank-filled */
-+#define QSFP_VEND_OFFS 148
-+#define QSFP_VEND_LEN 16
-+/* Byte 164 is IB Extended transceiver codes Bits D0..3 are SDR,DDR,QDR,EDR */
-+#define QSFP_IBXCV_OFFS 164
-+/* Bytes 165..167 are Vendor OUI number */
-+#define QSFP_VOUI_OFFS 165
-+#define QSFP_VOUI_LEN 3
-+/* Bytes 168..183 are Vendor Part Number, string */
-+#define QSFP_PN_OFFS 168
-+#define QSFP_PN_LEN 16
-+/* Bytes 184,185 are Vendor Rev. Left Justified, Blank-filled */
-+#define QSFP_REV_OFFS 184
-+#define QSFP_REV_LEN 2
-+/*
-+ * Bytes 186,187 are Wavelength, if Optical. Not Intel req'd
-+ *  If copper, they are attenuation in dB:
-+ * Byte 186 is at 2.5Gb/sec (SDR), Byte 187 at 5.0Gb/sec (DDR)
-+ */
-+#define QSFP_ATTEN_OFFS 186
-+#define QSFP_ATTEN_LEN 2
-+/*
-+ * Bytes 188,189 are Wavelength tolerance, if optical
-+ * If copper, they are attenuation in dB:
-+ * Byte 188 is at 12.5 Gb/s, Byte 189 at 25 Gb/s
-+ */
-+#define QSFP_CU_ATTEN_7G_OFFS 188
-+#define QSFP_CU_ATTEN_12G_OFFS 189
-+/* Byte 190 is Max Case Temp. Not Intel req'd */
-+/* Byte 191 is LSB of sum of bytes 128..190. Not Intel req'd */
-+#define QSFP_CC_OFFS 191
-+#define QSFP_EQ_INFO_OFFS 193
-+#define QSFP_CDR_INFO_OFFS 194
-+/* Bytes 196..211 are Serial Number, String */
-+#define QSFP_SN_OFFS 196
-+#define QSFP_SN_LEN 16
-+/* Bytes 212..219 are date-code YYMMDD (MM==1 for Jan) */
-+#define QSFP_DATE_OFFS 212
-+#define QSFP_DATE_LEN 6
-+/* Bytes 218,219 are optional lot-code, string */
-+#define QSFP_LOT_OFFS 218
-+#define QSFP_LOT_LEN 2
-+/* Bytes 220, 221 indicate monitoring options, Not Intel req'd */
-+/* Byte 222 indicates nominal bitrate in units of 250Mbits/sec */
-+#define QSFP_NOM_BIT_RATE_250_OFFS 222
-+/* Byte 223 is LSB of sum of bytes 192..222 */
-+#define QSFP_CC_EXT_OFFS 223
-+
-+/*
-+ * Interrupt flag masks
-+ */
-+#define QSFP_DATA_NOT_READY		0x01
-+
-+#define QSFP_HIGH_TEMP_ALARM		0x80
-+#define QSFP_LOW_TEMP_ALARM		0x40
-+#define QSFP_HIGH_TEMP_WARNING		0x20
-+#define QSFP_LOW_TEMP_WARNING		0x10
-+
-+#define QSFP_HIGH_VCC_ALARM		0x80
-+#define QSFP_LOW_VCC_ALARM		0x40
-+#define QSFP_HIGH_VCC_WARNING		0x20
-+#define QSFP_LOW_VCC_WARNING		0x10
-+
-+#define QSFP_HIGH_POWER_ALARM		0x88
-+#define QSFP_LOW_POWER_ALARM		0x44
-+#define QSFP_HIGH_POWER_WARNING		0x22
-+#define QSFP_LOW_POWER_WARNING		0x11
-+
-+#define QSFP_HIGH_BIAS_ALARM		0x88
-+#define QSFP_LOW_BIAS_ALARM		0x44
-+#define QSFP_HIGH_BIAS_WARNING		0x22
-+#define QSFP_LOW_BIAS_WARNING		0x11
-+
-+#define QSFP_ATTEN_SDR(attenarray) (attenarray[0])
-+#define QSFP_ATTEN_DDR(attenarray) (attenarray[1])
-+
-+/*
-+ * struct qsfp_data encapsulates state of QSFP device for one port.
-+ * it will be part of port-specific data if a board supports QSFP.
-+ *
-+ * Since multiple board-types use QSFP, and their pport_data structs
-+ * differ (in the chip-specific section), we need a pointer to its head.
-+ *
-+ * Avoiding premature optimization, we will have one work_struct per port,
-+ * and let the qsfp_lock arbitrate access to common resources.
-+ *
-+ */
-+struct qsfp_data {
-+	/* Helps to find our way */
-+	struct hfi2_pportdata *ppd;
-+	struct work_struct qsfp_work;
-+	u8 cache[QSFP_MAX_NUM_PAGES * 128];
-+	/* protect qsfp data */
-+	spinlock_t qsfp_lock;
-+	u8 check_interrupt_flags;
-+	u8 reset_needed;
-+	u8 limiting_active;
-+	u8 cache_valid;
-+	u8 cache_refresh_required;
-+};
-+
-+int refresh_qsfp_cache(struct hfi2_pportdata *ppd,
-+		       struct qsfp_data *cp);
-+int get_qsfp_power_class(u8 power_byte);
-+int qsfp_mod_present(struct hfi2_pportdata *ppd);
-+int get_cable_info(struct hfi2_pportdata *ppd, u32 addr, u32 len, u8 *data);
-+
-+int i2c_write(struct hfi2_pportdata *ppd, u32 target, int i2c_addr,
-+	      int offset, void *bp, int len);
-+int i2c_read(struct hfi2_pportdata *ppd, u32 target, int i2c_addr,
-+	     int offset, void *bp, int len);
-+int qsfp_write(struct hfi2_pportdata *ppd, u32 target, int addr, void *bp,
-+	       int len);
-+int qsfp_read(struct hfi2_pportdata *ppd, u32 target, int addr, void *bp,
-+	      int len);
-+int one_qsfp_read(struct hfi2_pportdata *ppd, u32 target, int addr, void *bp,
-+		  int len);
-+struct hfi2_asic_data;
-+int set_up_i2c(struct hfi2_devdata *dd, struct hfi2_asic_data *ad);
-+void clean_up_i2c(struct hfi2_devdata *dd, struct hfi2_asic_data *ad);
-
+ static int mana_set_channels(struct net_device *ndev,
+ 			     struct ethtool_channels *channels)
+ {
+@@ -510,6 +563,7 @@ static int mana_get_link_ksettings(struct net_device *ndev,
+ }
+ 
+ const struct ethtool_ops mana_ethtool_ops = {
++	.supported_coalesce_params = ETHTOOL_COALESCE_RX_CQE_FRAMES,
+ 	.get_ethtool_stats	= mana_get_ethtool_stats,
+ 	.get_sset_count		= mana_get_sset_count,
+ 	.get_strings		= mana_get_strings,
+@@ -520,6 +574,8 @@ const struct ethtool_ops mana_ethtool_ops = {
+ 	.set_rxfh		= mana_set_rxfh,
+ 	.get_channels		= mana_get_channels,
+ 	.set_channels		= mana_set_channels,
++	.get_coalesce		= mana_get_coalesce,
++	.set_coalesce		= mana_set_coalesce,
+ 	.get_ringparam          = mana_get_ringparam,
+ 	.set_ringparam          = mana_set_ringparam,
+ 	.get_link_ksettings	= mana_get_link_ksettings,
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index a078af283bdd..a7f89e7ddc56 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -378,7 +378,6 @@ struct mana_ethtool_stats {
+ 	u64 tx_cqe_err;
+ 	u64 tx_cqe_unknown_type;
+ 	u64 tx_linear_pkt_cnt;
+-	u64 rx_coalesced_err;
+ 	u64 rx_cqe_unknown_type;
+ };
+ 
+@@ -557,6 +556,9 @@ struct mana_port_context {
+ 	bool port_is_up;
+ 	bool port_st_save; /* Saved port state */
+ 
++	u8 cqe_coalescing_enable;
++	u32 cqe_coalescing_timeout_ns;
++
+ 	struct mana_ethtool_stats eth_stats;
+ 
+ 	struct mana_ethtool_phy_stats phy_stats;
+@@ -902,6 +904,10 @@ struct mana_cfg_rx_steer_req_v2 {
+ 
+ struct mana_cfg_rx_steer_resp {
+ 	struct gdma_resp_hdr hdr;
++
++	/* V2 */
++	u32 cqe_coalescing_timeout_ns;
++	u32 reserved1;
+ }; /* HW DATA */
+ 
+ /* Register HW vPort */
+-- 
+2.34.1
 
 
