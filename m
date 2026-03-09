@@ -1,214 +1,149 @@
-Return-Path: <linux-rdma+bounces-17797-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17798-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WNT0Kbn5rmliLAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17797-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 17:47:53 +0100
+	id 8OMQKlP5rmliLAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17798-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 17:46:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03A7423D048
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 17:47:52 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F0CE23CF79
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 17:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B1163301FE6E
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 16:44:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D07DF30101E7
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 16:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CF73D4126;
-	Mon,  9 Mar 2026 16:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9702E238D52;
+	Mon,  9 Mar 2026 16:46:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N83WeFjH"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Gq0winLa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1347C3BE14A;
-	Mon,  9 Mar 2026 16:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A663513C9C4;
+	Mon,  9 Mar 2026 16:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773074655; cv=none; b=jiIJmXdkHaPa/GL1PHUFkuBqFbwgQRi/1izVxMiemo6u0n68m6HP9l9579zHEXAXvleDUssZNZNHn/aq/Fb00M0IbRuhIc+PmydC3XlarWa/WIjYS+81439Mwa3bCt8CJP27RkL0sfLGUH7pUE/vTeOuz/j/ntpjfEcGUKk9zcY=
+	t=1773074766; cv=none; b=WH27AY94/uUzomF1uy3/d41q14bY8JEDKPHZfloBA+BuyOU+gfFsmwjqfp1poulKCIivui7a3UbzPQsREW/g0kMkPWi1HD3+py/IWr1yzGbpfbCZ41Y/uylsC7+QJLf04iR/t8c6KEcLZzFy6gBacn2paeejrLs7A5lTEY3u8ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773074655; c=relaxed/simple;
-	bh=Uk7QgN6xzOCWYu8MBXFyjWy0R+x2ZeLTbcNOpvXhzcE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RNgSKDtNyomlCLk2B1/HCCni4CujI6n/mP1XFJicpkgAJ0qyRroUoOlfR8+xCaoub/bWP7GEgdzp0Nn4nzstp+sH30zI21eEzsE+ljIqthw8kyP7zOjYHp8tF+YjHsvNn+kcCmDaBJOnb2O6RUaQ3u/rHJmrGFFwfY0Lu82qmsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N83WeFjH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F45C2BC86;
-	Mon,  9 Mar 2026 16:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773074654;
-	bh=Uk7QgN6xzOCWYu8MBXFyjWy0R+x2ZeLTbcNOpvXhzcE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=N83WeFjHOOqWdbT02p7u6F13MMV7RRau8GbcaBSyL47Q6vraRT6zI0/uD7vTeMN+7
-	 jEganNn2JAI3p1bhGbQgVTlIj/PYZ25c4VNozic7qKb9tSU1YYc6xWeetAnJuwud7a
-	 pSpMO/wkDQeTMONUSdQx3eHU/4lrDnGQQ3MZbE10I4mXfspZDeSov/kUkNe0L78NCB
-	 rLiNZBXTOVj0tOlyFahCjpdld9enU7FrrwsPTSrEy+IBzIG7ccingg6ZVLS4fysV0R
-	 cvMYjW5kHwTVCmuY0LVXEcsy6DmN2iZknFT4/P+pQzGtvpHCm6qJ5er7m3qAR6IPTW
-	 T4Mx+idBPe/FQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>, linux-kernel@vger.kernel.org
-Cc: "linux-mm @ kvack . org" <linux-mm@kvack.org>, "David Hildenbrand (Arm)"
- <david@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Lorenzo
- Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett"
- <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@kernel.org>, Mike
- Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal
- Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, Pedro Falcato
- <pfalcato@suse.de>, David Rientjes <rientjes@google.com>, Shakeel Butt
- <shakeel.butt@linux.dev>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan
- <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Christian
- Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank
- <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>, Gerald Schaefer
- <gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Jarkko Sakkinen <jarkko@kernel.org>,
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Arve =?utf-8?B?SGrDuG5uZXbDpWc=?=
- <arve@android.com>, Todd Kjos
- <tkjos@android.com>, Christian Brauner <brauner@kernel.org>, Carlos Llamas
- <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>, H Hartley Sweeten
- <hsweeten@visionengravers.com>, Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi
- <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, David
- Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jason
- Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Dimitri
- Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>, Eric Dumazet
- <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>, "David S.
- Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miguel Ojeda
- <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v1 02/16] mm/memory: remove "zap_details" parameter from
- zap_page_range_single()
-In-Reply-To: <20260227200848.114019-3-david@kernel.org>
-References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-3-david@kernel.org>
-Date: Mon, 09 Mar 2026 16:44:10 +0000
-Message-ID: <m21phtx89x.fsf@kernel.org>
+	s=arc-20240116; t=1773074766; c=relaxed/simple;
+	bh=uz0zha8XCTRTVYQm7FQvWiVYpi6cE/sWUu1sJ0R6CMA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q5mnnaFSb1hIGYy2zC59uJW/YdrFR9ZCOkERuX5gWjD4LcUN2r2BEpHd4vwOn7hn8RbPiEZ0n7gyFT15XlUkT68ebk2N0SFaIjrIapFdsLEmOGTqefBr8CX3O1rYuncW7ZQjaLlKvZ8jq0ZxYj5QUa9AsfIRrSrTwoARxuITNyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Gq0winLa; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=cF6dQ6of8KNTxg6GJU1dTVuc0YFVokfSBivoZuIjv18=; b=Gq0winLaxtVoVDO0ReTdFhguaa
+	Faz+Zb+l9KLR5Y7NQ+5CvAjmKyq8C/gy5sXqRSI5wjJY93/vhokm5h8dXJHu7TO4sxkNbJZfJx+MK
+	6zB6cNO+Hc+BcDNzXENf1yaFnsYJmNhEIUf6ipM09r4zQFR0H8176WDv97PIbYBCUWM8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1vzdjm-00AtRL-BM; Mon, 09 Mar 2026 17:45:46 +0100
+Date: Mon, 9 Mar 2026 17:45:46 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	netdev@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Hariprasad Kelam <hkelam@marvell.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Danielle Ratson <danieller@nvidia.com>,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>
+Subject: Re: [RFC net-next v2 1/6] ethtool: Add loopback netlink UAPI
+ definitions
+Message-ID: <e138acb9-f2ab-4d76-a9b1-fa7299b1260f@lunn.ch>
+References: <20260308124016.3134012-1-bjorn@kernel.org>
+ <20260308124016.3134012-2-bjorn@kernel.org>
+ <456697d6-c0d8-4edf-abd2-85062f4b25ab@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Rspamd-Queue-Id: 03A7423D048
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <456697d6-c0d8-4edf-abd2-85062f4b25ab@bootlin.com>
+X-Rspamd-Queue-Id: 4F0CE23CF79
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[lunn.ch,none];
+	R_DKIM_ALLOW(-0.20)[lunn.ch:s=20171124];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17797-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[kvack.org,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,vger.kernel.org,lists.freedesktop.org];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17798-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch,broadcom.com,marvell.com,armlinux.org.uk];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[puranjay@kernel.org,linux-rdma@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.990];
-	RCPT_COUNT_GT_50(0.00)[75];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	NEURAL_HAM(-0.00)[-0.992];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[andrew@lunn.ch,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[lunn.ch:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-"David Hildenbrand (Arm)" <david@kernel.org> writes:
+> > +    doc: |
+> > +      Loopback component. Identifies where in the network path the
+> > +      loopback is applied.
+> > +    entries:
+> > +      -
+> > +        name: mac
+> > +        doc: MAC loopback
+> > +      -
+> > +        name: pcs
+> > +        doc: PCS loopback
+> > +      -
+> > +        name: phy
+> > +        doc: PHY loopback
+> > +      -
+> > +        name: module
+> > +        doc: Pluggable module (e.g. CMIS (Q)SFP) loopback
+> 
+> Should we also add "serdes" ?
 
-> Nobody except memory.c should really set that parameter to non-NULL. So
-> let's just drop it and make unmap_mapping_range_vma() use
-> zap_page_range_single_batched() instead.
->
-> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
-> ---
->  arch/s390/mm/gmap_helpers.c    |  2 +-
->  drivers/android/binder_alloc.c |  2 +-
->  include/linux/mm.h             |  5 ++---
->  kernel/bpf/arena.c             |  3 +--
->  kernel/events/core.c           |  2 +-
->  mm/madvise.c                   |  3 +--
->  mm/memory.c                    | 16 ++++++++++------
->  net/ipv4/tcp.c                 |  5 ++---
->  rust/kernel/mm/virt.rs         |  2 +-
->  9 files changed, 20 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/s390/mm/gmap_helpers.c b/arch/s390/mm/gmap_helpers.c
-> index dea83e3103e5..ae2d59a19313 100644
-> --- a/arch/s390/mm/gmap_helpers.c
-> +++ b/arch/s390/mm/gmap_helpers.c
-> @@ -89,7 +89,7 @@ void gmap_helper_discard(struct mm_struct *mm, unsigned long vmaddr, unsigned lo
->  		if (!vma)
->  			return;
->  		if (!is_vm_hugetlb_page(vma))
-> -			zap_page_range_single(vma, vmaddr, min(end, vma->vm_end) - vmaddr, NULL);
-> +			zap_page_range_single(vma, vmaddr, min(end, vma->vm_end) - vmaddr);
->  		vmaddr = vma->vm_end;
->  	}
->  }
-> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-> index 241f16a9b63d..dd2046bd5cde 100644
-> --- a/drivers/android/binder_alloc.c
-> +++ b/drivers/android/binder_alloc.c
-> @@ -1185,7 +1185,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
->  	if (vma) {
->  		trace_binder_unmap_user_start(alloc, index);
->  
-> -		zap_page_range_single(vma, page_addr, PAGE_SIZE, NULL);
-> +		zap_page_range_single(vma, page_addr, PAGE_SIZE);
->  
->  		trace_binder_unmap_user_end(alloc, index);
->  	}
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ecff8268089b..a8138ff7d1fa 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2835,11 +2835,10 @@ struct page *vm_normal_page_pud(struct vm_area_struct *vma, unsigned long addr,
->  void zap_vma_ptes(struct vm_area_struct *vma, unsigned long address,
->  		  unsigned long size);
->  void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
-> -			   unsigned long size, struct zap_details *details);
-> +			   unsigned long size);
->  static inline void zap_vma_pages(struct vm_area_struct *vma)
->  {
-> -	zap_page_range_single(vma, vma->vm_start,
-> -			      vma->vm_end - vma->vm_start, NULL);
-> +	zap_page_range_single(vma, vma->vm_start, vma->vm_end - vma->vm_start);
->  }
->  struct mmu_notifier_range;
->  
-> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> index 144f30e740e8..c34510d83b1f 100644
-> --- a/kernel/bpf/arena.c
-> +++ b/kernel/bpf/arena.c
-> @@ -656,8 +656,7 @@ static void zap_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
->  	guard(mutex)(&arena->lock);
->  	/* iterate link list under lock */
->  	list_for_each_entry(vml, &arena->vma_list, head)
-> -		zap_page_range_single(vml->vma, uaddr,
-> -				      PAGE_SIZE * page_cnt, NULL);
-> +		zap_page_range_single(vml->vma, uaddr, PAGE_SIZE * page_cnt);
->  }
+What is the difference between SERDES and PCS?
 
-Acked-by: Puranjay Mohan <puranjay@kernel.org>
+Maybe we should also make it clear PHY means Ethernet PHY. The Marvell
+Generic PHYs have
+
+phy-mvebu-a3700-comphy.c:#define COMPHY_DIG_LOOPBACK_EN		0x23
+phy-mvebu-cp110-comphy.c:#define MVEBU_COMPHY_LOOPBACK(n)		(0x88c + (n) * 0x1000)
+
+which suggests it can also do loopback. We don't want PHY meaning two
+different things.
+
+And maybe we should comment that a Base-T SFP module which contains an
+Ethernet PHY should appear under PHY, not module? When Linux is
+driving the PHY, that should just happen. But if it is firmware
+driving the PHY in the module, we should make our expectations of the
+firmware clear.
+
+	 Andrew
 
