@@ -1,170 +1,145 @@
-Return-Path: <linux-rdma+bounces-17774-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17776-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +DGmNAutrmntHQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17774-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 12:20:43 +0100
+	id qO+PANyzrmkSHwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17776-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 12:49:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73493237CDA
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 12:20:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 537482382E7
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 12:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F40EC324D74E
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 11:15:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BA37E304F217
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 11:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F150B39A7FF;
-	Mon,  9 Mar 2026 11:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97113A63F6;
+	Mon,  9 Mar 2026 11:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCkqRQ/k"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="CC/c5xLJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B285639A05B;
-	Mon,  9 Mar 2026 11:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7A9363C67;
+	Mon,  9 Mar 2026 11:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773054935; cv=none; b=AWbSlEec0OiLHoPjrc0AdUbDCouOMu03f8q2svVpQpVNl6hlqVzOa4GqX45FGKdj8or/gO62Z645wvn27tepBj7x0RM9uBF5rUne98xPRV2p2jaPKK9L4C4RgtkJsme4u6j3Q5xjNuaAbyJsmXNKJ+Fn74cRNgMG49j6W4BXoRg=
+	t=1773056951; cv=none; b=KSKUd6WrrVgCQRQi3wUX1tHRtHloh2RzV3O1tiBIQd185AyCWlh8KsT7sCOl0w05ljRyb8/AhhCD+tcjsOpqd7r5A86SrlQpsPzfhrScAprdH5sNMAjBfpIu+0brBLZX62qPk+03/iZGdOXbMLs3B1wVdfR6tupEeQ93saaCyyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773054935; c=relaxed/simple;
-	bh=YZqrFAi+xx1WasdQBcrBtpQgQLl0zbLLz0lMnsGCHt8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dWX2SAwnERPgqFYkauvcS0WX49dlSOyMUVDgwJXtv2JTs1cGfUjaFxlRt8iWxAP+C8PuAR4jOmeIVeA+yeHQX6GGoJvA6sSB7W80BoLdP0i06lyVShVmGygbJ2+jvN9wNcjIgM6qLteKzWVlTRBNDywZl+262kFEt5J9aDrOqWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCkqRQ/k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8F5EC4CEF7;
-	Mon,  9 Mar 2026 11:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773054935;
-	bh=YZqrFAi+xx1WasdQBcrBtpQgQLl0zbLLz0lMnsGCHt8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nCkqRQ/kDYnasY1FUbbys375EBYRCVztdy70T7qjDndxTBBSy3Z26gZOFIVm+0MrS
-	 OphQZjvAtzLYKW+PmwWHOuD0sQjwTZwkdqyLPkZJF88KSZ/4EeOeC/gBGFOdLRtdRP
-	 nao9/KeoIZnSDNOPssFj6WwGOA+0VbyHsDLCeXrCbDyXJA6Fn0n1QDNo7Q6A38XyoA
-	 HqsV94Pyk15yuYIDwnh6mvA1ejGppYXCZGPrUV3ImVYfFy623kgIW3qowWBW58/Y5a
-	 wUpSjDEMnPKCDT6H5BgI7o5nhBUw33K2xT1rGfmeHeXprgQjUjth9w8Yrkav/XFU4S
-	 4a/hsEr9qo2Zw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Itay Avraham <itayavr@nvidia.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Chiara Meiohas <cmeiohas@nvidia.com>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>
-Subject: [PATCH 3/3] fwctl/mlx5: Invoke fw_validate_cmd LSM hook for fwctl commands
-Date: Mon,  9 Mar 2026 13:15:20 +0200
-Message-ID: <20260309-fw-lsm-hook-v1-3-4a6422e63725@nvidia.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
-References: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
+	s=arc-20240116; t=1773056951; c=relaxed/simple;
+	bh=obQesHjTuGhDPBJexa2y8wWPRcB8s0PhWfaj0ISSGlg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EalmE+jbmSWFIfBKB7c2VpA2I59uA7oQZLLNQDGqNCVM4qyxvfE5byNmLecN3PSSy+WMK9qEhgui3ArgrfRsJ2Ki50kYGzF4xv/PAmd2sX4kxdERaWdGy066nY5KVoON6MkBMoCEl8JUjHY77vJgANjpGtqo5Kp4tqKXg+Wmyso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=CC/c5xLJ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id C970120B6F00; Mon,  9 Mar 2026 04:49:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C970120B6F00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1773056944;
+	bh=cxVRrtJ71QEmYzTtxLKbAa1noqi4UA66TYgCcNfu/wA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CC/c5xLJ6lvrk8s1aRfhuZpo+kr1NGLmtQscc+e1g+CR+63OhbqJDJurfTSVAUTdL
+	 bhHh4taR1Y5p4mDeAe/hpqzUtQoRiThE1CF4X2oXYb2QxJWQLvTQXlXw0aJpZc3SA6
+	 trDyaKoyYUup559O/FS1lyT/sivsxNIyo5nJQnbo=
+Date: Mon, 9 Mar 2026 04:49:04 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: pabeni@redhat.com, linux-kernel@vger.kernel.org, yury.norov@gmail.com,
+	kys@microsoft.com, decui@microsoft.com, kees@kernel.org,
+	longli@microsoft.com, dipayanroy@linux.microsoft.com,
+	davem@davemloft.net, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, kotaranov@microsoft.com,
+	andrew+netdev@lunn.ch, linux-hyperv@vger.kernel.org,
+	edumazet@google.com, haiyangz@microsoft.com,
+	ssengar@linux.microsoft.com, shradhagupta@linux.microsoft.com,
+	horms@kernel.org, shirazsaleem@microsoft.com, wei.liu@kernel.org
+Subject: Re: [net-next] net: mana: Expose hardware diagnostic info via debugfs
+Message-ID: <aa6zsEiJahwMKjKt@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260305205252.470089-1-ernis@linux.microsoft.com>
+ <20260307032228.1379456-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.15-dev-18f8f
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 73493237CDA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260307032228.1379456-1-kuba@kernel.org>
+X-Rspamd-Queue-Id: 537482382E7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17774-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17776-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,gmail.com,microsoft.com,kernel.org,linux.microsoft.com,davemloft.net,lunn.ch,google.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.916];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-0.992];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:url]
 X-Rspamd-Action: no action
 
-From: Chiara Meiohas <cmeiohas@nvidia.com>
-
-fwctl is subsystem which exposes a firmware interface directly to
-userspace: it allows userspace to send device specific command
-buffers to firmware.
-
-Call security_fw_validate_cmd() before dispatching the user-provided
-firmware command.
-
-This allows security modules to implement custom policies and
-enforce per-command security policy on user-triggered firmware
-commands. For example, a BPF LSM program could filter firmware
-commands based on their opcode.
-
-Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
-Signed-off-by: Edward Srouji <edwards@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/fwctl/mlx5/main.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/fwctl/mlx5/main.c b/drivers/fwctl/mlx5/main.c
-index e86ab703c767a..8ed17aaf48f1f 100644
---- a/drivers/fwctl/mlx5/main.c
-+++ b/drivers/fwctl/mlx5/main.c
-@@ -7,6 +7,7 @@
- #include <linux/mlx5/device.h>
- #include <linux/mlx5/driver.h>
- #include <uapi/fwctl/mlx5.h>
-+#include <linux/security.h>
+On Fri, Mar 06, 2026 at 07:22:28PM -0800, Jakub Kicinski wrote:
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> 
+> For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+> ---
+> net: mana: Expose hardware diagnostic info via debugfs
+> 
+> This commit adds debugfs entries to expose hardware configuration and
+> diagnostic information for the MANA driver. It creates device-level and
+> port-level debugfs entries to aid in debugging initialization and runtime
+> operations.
  
- #define mlx5ctl_err(mcdev, format, ...) \
- 	dev_err(&mcdev->fwctl.dev, format, ##__VA_ARGS__)
-@@ -324,6 +325,15 @@ static void *mlx5ctl_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
- 	if (!mlx5ctl_validate_rpc(rpc_in, scope))
- 		return ERR_PTR(-EBADMSG);
- 
-+	/* Enforce the user context for the command */
-+	MLX5_SET(mbox_in_hdr, rpc_in, uid, mfd->uctx_uid);
-+
-+	ret = security_fw_validate_cmd(rpc_in, in_len, &mcdev->fwctl.dev,
-+				       FW_CMD_CLASS_FWCTL,
-+				       FWCTL_DEVICE_TYPE_MLX5);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
- 	/*
- 	 * mlx5_cmd_do() copies the input message to its own buffer before
- 	 * executing it, so we can reuse the allocation for the output.
-@@ -336,8 +346,6 @@ static void *mlx5ctl_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
- 			return ERR_PTR(-ENOMEM);
- 	}
- 
--	/* Enforce the user context for the command */
--	MLX5_SET(mbox_in_hdr, rpc_in, uid, mfd->uctx_uid);
- 	ret = mlx5_cmd_do(mcdev->mdev, rpc_in, in_len, rpc_out, *out_len);
- 
- 	mlx5ctl_dbg(mcdev,
-
--- 
-2.53.0
-
+> Do these debugfs entries get recreated on every suspend/resume cycle?
+No. Thankyou for pointing out Jakub.
+I'll  make this change in next version.
+> 
+> Both mana_gd_query_max_resources() and mana_gd_verify_vf_version() are
+> called from mana_gd_setup() during device initialization. On suspend,
+> mana_gd_suspend() calls mana_gd_cleanup() which doesn't remove these
+> debugfs entries. When mana_gd_resume() calls mana_gd_setup() again, it
+> attempts to create the same debugfs entries a second time.
+> 
+> This means debugfs_start_creating() in fs/debugfs/inode.c will print an
+> error for each duplicate file:
+> 
+>     "'num_msix_usable' already exists in 'mana/<slot>/'"
+>     "'max_num_queues' already exists in 'mana/<slot>/'"
+>     "'gdma_protocol_ver' already exists in 'mana/<slot>/'"
+>     "'pf_cap_flags1' already exists in 'mana/<slot>/'"
+> 
+> This produces 4 error messages in dmesg on every suspend/resume cycle,
+> contradicting the commit message's goal of operating "without adding
+> noise to dmesg."
+> 
+> Should these device-level entries be removed during suspend (in
+> mana_gd_cleanup or mana_gd_suspend), or should their creation be moved
+> to mana_gd_probe where they're only created once?
+Right. I will remove the entries during suspend and re-create them in
+resume. 
+> 
+> [ ... ]
+> -- 
+> pw-bot: cr
 
