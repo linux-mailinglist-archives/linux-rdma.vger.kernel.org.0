@@ -1,212 +1,293 @@
-Return-Path: <linux-rdma+bounces-17784-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17785-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wH5DKHLarmm/JQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17784-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:34:26 +0100
+	id EP5KBuvbrmm/JQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17785-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:40:43 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2675823A92D
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:34:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B822023AB27
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:40:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6AF2830CD029
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 14:30:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C333302D960
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 14:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75183D332B;
-	Mon,  9 Mar 2026 14:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706123D3CE7;
+	Mon,  9 Mar 2026 14:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ihyQWMnv"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ZVFWCKMb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238323D3012
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Mar 2026 14:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CD53D333F;
+	Mon,  9 Mar 2026 14:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773066598; cv=none; b=hKo4Rg77MWfFbHeNt/ETP+BtjktOM+u4kwsbMXIrepRTt47W2rOVssJ/OjgQuh1WyDk32IvS1TsUTnChBDa9wqDC3tud6zI7YP837qh6OYQ4uxiaZpUmYJBPPzAej5HG8rQ5SPIS5WtgI7Ak23l4VCtSBzQmpAYUrwSOVxC9Wcw=
+	t=1773067169; cv=none; b=S44O9F+DWzTq2ZRWI4mvkbgvEoXMOLFfPFi4dWJhzto1GyCRO/LtF3FWhyJNerJ+JQUA1I2Y8JrXnm9WcODEyxFsfXW0bMDwLYGdZLgRGVcvEfN3riWvz2o+pcEB5GDEHPhr37iVd7YJthpf+VM8u2M69eW6ssgTIrDjNY3jcS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773066598; c=relaxed/simple;
-	bh=qGkfUw0cAuRi50whdAw9tYXjFfsurpxdwyuHiMRzvHk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GnZeIH5jInyMWqoyZGhlhc2qOWTQPnBSgkYhaBp4RqOqhvKR2e5F9y/5YjJ+2DPbSfFHwD5Ppk/Tw9urUtyL1cDJ0rssDmUVnfmf+EJ1dj6eQSz2VOYs5rAUhIF95ORTbi6amHxMZSEgKCiBOV6ilZgS6EnxTxmYcmEK/paa01Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ihyQWMnv; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-8ca01dc7d40so1188909385a.1
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Mar 2026 07:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1773066596; x=1773671396; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0bCgFz4UpYVbBeKSYmRS1UHS00xtZH8a/t+DzU0dS+U=;
-        b=ihyQWMnvVuXvR909Z1cWQbCW/x6Uje2bNeYH28gk0StuBuzAOqigvjL7w1dE9RCBvz
-         ZoZwM7cx4GGinybPk7GhMgYWs8ydFH/+Jkrso2JRthaffI2Zbp5XMm+3eSXkDs8OrWPp
-         1PdirPb87UjX0oH7606aIZq+oaAGP7vKybDN2bYMkprfF7k83xhQjnzcnPUik0YOPAdr
-         2/KizCv3zVMKKDWmAMInYE8tZ68AN+LVOAzGdtD0I5zgKs6YmQZljOhOH1YH4QRwNHq0
-         ro70VHn1/JFY0xIEfw2/X2a1ANbJoQ6e9TuLfleRF6ybM460qzLn7jf0fGZVrlG5Po2P
-         lTEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773066596; x=1773671396;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0bCgFz4UpYVbBeKSYmRS1UHS00xtZH8a/t+DzU0dS+U=;
-        b=qgCeeBxQqQdMHvHHlSXq+vXjlLWIAVnOMOqYPp/u7ZKtwXbVvZ1EAxSlRcOOamhu/i
-         vl7EcSF39L/Tz3opJIZtafKPaWASaKr21mhp1JZcIMsnvQW0XOX+waiVlBL8L9oLvi0U
-         Gb8mnlV6lD1ruD6juH3FrDFI+WOGl4fO/bi678LH1yzAFZZHtU0etxW7kyCNBZJFDW9l
-         bWmqkEGoDNDOOwnsotFCkDBM1+jMBgmUONunCAAnoOfdDm0Nx03e1a2m+eN1dj1y8LjZ
-         yKZOXeWuWGRpA0KKUyqpW6Jxov1Suc32EhYpGssN7EBqBaKe5w9VgODS/kK5PAHt7Vfc
-         Na6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVNbV3MA3IfwqVcs5HkOIyJx41kko8elB7wYoK6BmAT2p2ki1QMc8ITLE/NgZqv+kahS1U2+LXCsTwr@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywvbf44prtqrDI6EjUdDncB0bwNY+xN5kb6oOhFVJZ7saXnEng/
-	qDxAuHMb5BeGK+harOXVAZ0CQg2ycAV8AWoc90bp5bsqq87dnhq+NRahHO8H81lLDf4=
-X-Gm-Gg: ATEYQzzEz0uBwWXh1C5lQ8N3yH++RVoxyfSmxTPpp6BkEMI7hvPyDo9BaKraYaVDeGo
-	Uu6W4bIN8m0oD0NkY4PgZuQ0a+jPkBvLRRkT/3doKWx9hHr5UhTW5pP5geqOabcbKft2jYG1pzB
-	kA+Q5H7fEJ0V//FOryX1y8FLNMKcJFpTF6e+m+9tNIRgqpyL9YF+MOTS4gzYg86YddsvzgSgdj9
-	BJCLMBwuzyH37/AkFJ3jUS6f94luK4z3ciRI+yaA0bbOEs0lTiru8UlfTXIvRkNAZ7FiJ6/OB5P
-	JPgF7AKyxEUIspS6ohOoQZThXj/AYnSOsyZ/b9yk/lMm2FOJleowystya3SQJic54M/B7RjlrzR
-	yKSlG5hpWZArJv1yONTnIkmYJc2NDYZGJwRhDln78O/2z8zSa0cp0vQMLcP3M8ko5yijkDHpsvD
-	BRoiLFZvuIxWvZx8byTs2wB3RwttNmYy9/0ddfttxjZ5/qXQ5Co+e78zywKdwC+dWx0QxZWvQ+j
-	RjUja7Q
-X-Received: by 2002:a05:620a:4809:b0:8ca:305b:749b with SMTP id af79cd13be357-8cd6d4d5456mr1426307785a.60.1773066595964;
-        Mon, 09 Mar 2026 07:29:55 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cd8d4cad48sm148711185a.33.2026.03.09.07.29.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2026 07:29:55 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vzbcI-0000000GTxY-2R0b;
-	Mon, 09 Mar 2026 11:29:54 -0300
-Date: Mon, 9 Mar 2026 11:29:54 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	"linux-mm @ kvack . org" <linux-mm@kvack.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	David Rientjes <rientjes@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Leon Romanovsky <leon@kernel.org>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Neal Cardwell <ncardwell@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	x86@kernel.org
-Subject: Re: [PATCH v1 16/16] mm/memory: support VM_MIXEDMAP in
- zap_special_vma_range()
-Message-ID: <20260309142954.GM1687929@ziepe.ca>
-References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-17-david@kernel.org>
+	s=arc-20240116; t=1773067169; c=relaxed/simple;
+	bh=vEGqJZE1lPr9QHjRXPzO2buTz3L2sa5tLp4g2Uq552w=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=hQzcqvYJehVz8vRAREmvg5ZwfOrN+YjpI4dh5/OuZJy5SjWGO1ug02dQ5hwcH99GuAxdr+aV3xisb/GnTXOurfZtiqIgQukLeGcBASxYn/5ovhlnt2OrliXzjSlRgBoDrho/LMa5ycEBd2Co7Lir1Bsj2cxMpuT2vx61sXJlRxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ZVFWCKMb; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 227FD20B6F00; Mon,  9 Mar 2026 07:39:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 227FD20B6F00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1773067167;
+	bh=HoAderCUdnqh6fe8vbOhFK5KQ8A5DAYUy9/rXRzl4aY=;
+	h=From:To:Subject:Date:From;
+	b=ZVFWCKMbv1IZd5r8IbZcJdo4fu0/nNsQ0H+i53DIh6TzfQLpVY8qBGkRGrNeFA2cp
+	 HxmYraxZcr40qaSF9TIbgZbySPHKI1HC9i3Xp4iDMZBmnh2zoqqyK9uZnEbN7V8M2U
+	 MDUwYtcvOiCB0dVaitGOWyvjfLWSOlrX6O7LOB00=
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	longli@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	shradhagupta@linux.microsoft.com,
+	dipayanroy@linux.microsoft.com,
+	yury.norov@gmail.com,
+	kees@kernel.org,
+	ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2] net: mana: Expose hardware diagnostic info via debugfs
+Date: Mon,  9 Mar 2026 07:38:28 -0700
+Message-ID: <20260309143840.675606-1-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260227200848.114019-17-david@kernel.org>
-X-Rspamd-Queue-Id: 2675823A92D
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: B822023AB27
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[ziepe.ca];
-	TAGGED_FROM(0.00)[bounces-17784-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17785-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_GT_50(0.00)[73];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.979];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ziepe.ca:dkim,ziepe.ca:mid]
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.993];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, Feb 27, 2026 at 09:08:47PM +0100, David Hildenbrand (Arm) wrote:
-> There is demand for also zapping page table entries by drivers in
-> VM_MIXEDMAP VMAs[1].
-> 
-> Nothing really speaks against supporting VM_MIXEDMAP for driver use. We
-> just don't want arbitrary drivers to zap in ordinary (non-special) VMAs.
-> 
-> [1] https://lore.kernel.org/r/aYSKyr7StGpGKNqW@google.com
+Add debugfs entries to expose hardware configuration and diagnostic
+information that aids in debugging driver initialization and runtime
+operations without adding noise to dmesg.
 
-Are we sure about this?
+Device-level entries (under /sys/kernel/debug/mana/<slot>/):
+  - num_msix_usable, max_num_queues: Max resources from hardware
+  - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
+  - num_vports, bm_hostmode: Device configuration
 
-This whole function seems like a hack to support drivers that are not
-using an address_space.
+Per-vPort entries (under /sys/kernel/debug/mana/<slot>/vportN/):
+  - port_handle: Hardware vPort handle
+  - max_sq, max_rq: Max queues from vPort config
+  - indir_table_sz: Indirection table size
+  - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
+    Last applied steering configuration parameters
 
-I say that as one of the five driver authors who have made this
-mistake.
+Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+---
+Changes in v2:
+* Add debugfs_remove_recursice for gc>mana_pci_debugfs in
+  mana_gd_suspend to handle multiple duplicates creation in
+  mana_gd_setup and mana_gd_resume path.
+* Move debugfs creation for num_vports and bm_hostmode out of
+  if(!resuming) condition since we have to create it again even for
+  resume.
+* Recreate mana_pci_debugfs in mana_gd_resume.
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 21 +++++++++++++
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 31 +++++++++++++++++++
+ include/net/mana/gdma.h                       |  1 +
+ include/net/mana/mana.h                       |  8 +++++
+ 4 files changed, 61 insertions(+)
 
-The locking to safely use this function is really hard to do properly,
-IDK if binder can shift to use address_space ??
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index aef8612b73cb..43fb366dc183 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -152,6 +152,11 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+ 	if (gc->max_num_queues > gc->num_msix_usable - 1)
+ 		gc->max_num_queues = gc->num_msix_usable - 1;
+ 
++	debugfs_create_u32("num_msix_usable", 0400, gc->mana_pci_debugfs,
++			   &gc->num_msix_usable);
++	debugfs_create_u32("max_num_queues", 0400, gc->mana_pci_debugfs,
++			   &gc->max_num_queues);
++
+ 	return 0;
+ }
+ 
+@@ -1222,6 +1227,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 		return err ? err : -EPROTO;
+ 	}
+ 	gc->pf_cap_flags1 = resp.pf_cap_flags1;
++	gc->gdma_protocol_ver = resp.gdma_protocol_ver;
++
++	debugfs_create_x64("gdma_protocol_ver", 0400, gc->mana_pci_debugfs,
++			   &gc->gdma_protocol_ver);
++	debugfs_create_x64("pf_cap_flags1", 0400, gc->mana_pci_debugfs,
++			   &gc->pf_cap_flags1);
++
+ 	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
+ 		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
+ 		if (err) {
+@@ -2128,6 +2140,9 @@ int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
+ 
+ 	mana_gd_cleanup(pdev);
+ 
++	debugfs_remove_recursive(gc->mana_pci_debugfs);
++	gc->mana_pci_debugfs = NULL;
++
+ 	return 0;
+ }
+ 
+@@ -2140,6 +2155,12 @@ int mana_gd_resume(struct pci_dev *pdev)
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	int err;
+ 
++	if (gc->is_pf)
++		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
++	else
++		gc->mana_pci_debugfs = debugfs_create_dir(pci_slot_name(pdev->slot),
++							  mana_debugfs_root);
++
+ 	err = mana_gd_setup(pdev);
+ 	if (err)
+ 		return err;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index ea71de39f996..1117ae16b065 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1263,6 +1263,9 @@ static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
+ 	apc->port_handle = resp.vport;
+ 	ether_addr_copy(apc->mac_addr, resp.mac_addr);
+ 
++	apc->vport_max_sq = *max_sq;
++	apc->vport_max_rq = *max_rq;
++
+ 	return 0;
+ }
+ 
+@@ -1409,6 +1412,11 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 
+ 	netdev_info(ndev, "Configured steering vPort %llu entries %u\n",
+ 		    apc->port_handle, apc->indir_table_sz);
++
++	apc->steer_rx = rx;
++	apc->steer_rss = apc->rss_state;
++	apc->steer_update_tab = update_tab;
++	apc->steer_cqe_coalescing = req->cqe_coalescing_enable;
+ out:
+ 	kfree(req);
+ 	return err;
+@@ -3110,6 +3118,24 @@ static int mana_init_port(struct net_device *ndev)
+ 	eth_hw_addr_set(ndev, apc->mac_addr);
+ 	sprintf(vport, "vport%d", port_idx);
+ 	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
++
++	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
++			   &apc->port_handle);
++	debugfs_create_u32("max_sq", 0400, apc->mana_port_debugfs,
++			   &apc->vport_max_sq);
++	debugfs_create_u32("max_rq", 0400, apc->mana_port_debugfs,
++			   &apc->vport_max_rq);
++	debugfs_create_u32("indir_table_sz", 0400, apc->mana_port_debugfs,
++			   &apc->indir_table_sz);
++	debugfs_create_u32("steer_rx", 0400, apc->mana_port_debugfs,
++			   &apc->steer_rx);
++	debugfs_create_u32("steer_rss", 0400, apc->mana_port_debugfs,
++			   &apc->steer_rss);
++	debugfs_create_u32("steer_update_tab", 0400, apc->mana_port_debugfs,
++			   &apc->steer_update_tab);
++	debugfs_create_u32("steer_cqe_coalescing", 0400, apc->mana_port_debugfs,
++			   &apc->steer_cqe_coalescing);
++
+ 	return 0;
+ 
+ reset_apc:
+@@ -3598,6 +3624,11 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+ 
+ 	ac->bm_hostmode = bm_hostmode;
+ 
++	debugfs_create_u16("num_vports", 0400, gc->mana_pci_debugfs,
++			   &ac->num_ports);
++	debugfs_create_u8("bm_hostmode", 0400, gc->mana_pci_debugfs,
++			  &ac->bm_hostmode);
++
+ 	if (!resuming) {
+ 		ac->num_ports = num_ports;
+ 
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index ec17004b10c0..917945f0e3dc 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -440,6 +440,7 @@ struct gdma_context {
+ 	struct gdma_dev		mana_ib;
+ 
+ 	u64 pf_cap_flags1;
++	u64 gdma_protocol_ver;
+ 
+ 	struct workqueue_struct *service_wq;
+ 
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index a078af283bdd..83f6de67c0cc 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -563,6 +563,14 @@ struct mana_port_context {
+ 
+ 	/* Debugfs */
+ 	struct dentry *mana_port_debugfs;
++
++	/* Cached vport/steering config for debugfs */
++	u32 vport_max_sq;
++	u32 vport_max_rq;
++	u32 steer_rx;
++	u32 steer_rss;
++	u32 steer_update_tab;
++	u32 steer_cqe_coalescing;
+ };
+ 
+ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
+-- 
+2.34.1
 
-Jason
 
