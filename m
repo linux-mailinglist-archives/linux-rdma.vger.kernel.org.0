@@ -1,245 +1,212 @@
-Return-Path: <linux-rdma+bounces-17783-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17784-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0JYaEJXWrmlhJAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17783-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:17:57 +0100
+	id wH5DKHLarmm/JQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17784-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:34:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44A023A613
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2675823A92D
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 15:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D31CD30488D5
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 14:17:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6AF2830CD029
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 14:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9FF17A305;
-	Mon,  9 Mar 2026 14:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75183D332B;
+	Mon,  9 Mar 2026 14:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="X5Pq2wBX"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ihyQWMnv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C0234D395
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Mar 2026 14:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238323D3012
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Mar 2026 14:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773065819; cv=none; b=sMMaCxDw1Wl5lvYSZzp+ZcIwJRVS4GLVM4KDRYtqTPQz6KQXJaMfi7mNjEgzs90BTe8AvWGItwpWf/5kiifhRa19lcPPQnchMixb/d3jEcQENqv1uUBVcTEGHPTochOHJ+FbXp1sJVrHnDS06r5lCvyGyCF9HURlzI6p46IMKaY=
+	t=1773066598; cv=none; b=hKo4Rg77MWfFbHeNt/ETP+BtjktOM+u4kwsbMXIrepRTt47W2rOVssJ/OjgQuh1WyDk32IvS1TsUTnChBDa9wqDC3tud6zI7YP837qh6OYQ4uxiaZpUmYJBPPzAej5HG8rQ5SPIS5WtgI7Ak23l4VCtSBzQmpAYUrwSOVxC9Wcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773065819; c=relaxed/simple;
-	bh=8liySUEDGYrpUI1rMgWcIxLKUNWyHE5MJ7BpW1iSeNo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L93pY3ip0ObwPXhAJzqFCx4EmAJukyd1xxa+bZVkB2ZZqGPONm5Jjdd1XtskgK+1Y7f1Op4jxp3Qfe+NmnxJoNk4mzwpbHUEpz95g3Suxq9xmbvhzE0ZBiky7Sp01zen8+nm/n+xwMt3f3ZzIoIoQXW32nQXYktvM3geug0aUNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=X5Pq2wBX; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id D79AFC42878;
-	Mon,  9 Mar 2026 14:17:14 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6CE825FFB8;
-	Mon,  9 Mar 2026 14:16:54 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B71C910369A24;
-	Mon,  9 Mar 2026 15:16:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773065813; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=B6Sfd+3RAw+T1+wBoUFyStbgtRDwov9ZbOCNeaAw/iE=;
-	b=X5Pq2wBXmLmNdseOmRz8sJ1oQbGCKF/UO0qIGck3B8QYoU4lPzZnRkCriDP+scGSrLw0p8
-	1hh3Q4mDb3f5VbnqPjfcqncqGVvwY36KjcSr/N30fE7lQDnXVTK+YF8qci7NGGN8OBEAL8
-	IgO+lbuiq5tfdzHj3RZjKzNHNYGtugJWUyY3nEOk1TpeVzwgdbZwP4sEIBD9zqTXOXuZTP
-	prlcO0ODgdF0rLSeU4eeWUzlaC0cmUOsoFQzutXbtad10TnqyGPAsxV0tsg3kNMCPbBf1W
-	ZIHKEKCP90/uerxYc/VjRKkLl9xAcVAUz06AEQ0Z1LuMkhmy9sXl7kDqIaGqDQ==
-Message-ID: <456697d6-c0d8-4edf-abd2-85062f4b25ab@bootlin.com>
-Date: Mon, 9 Mar 2026 15:16:45 +0100
+	s=arc-20240116; t=1773066598; c=relaxed/simple;
+	bh=qGkfUw0cAuRi50whdAw9tYXjFfsurpxdwyuHiMRzvHk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GnZeIH5jInyMWqoyZGhlhc2qOWTQPnBSgkYhaBp4RqOqhvKR2e5F9y/5YjJ+2DPbSfFHwD5Ppk/Tw9urUtyL1cDJ0rssDmUVnfmf+EJ1dj6eQSz2VOYs5rAUhIF95ORTbi6amHxMZSEgKCiBOV6ilZgS6EnxTxmYcmEK/paa01Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ihyQWMnv; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-8ca01dc7d40so1188909385a.1
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Mar 2026 07:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1773066596; x=1773671396; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0bCgFz4UpYVbBeKSYmRS1UHS00xtZH8a/t+DzU0dS+U=;
+        b=ihyQWMnvVuXvR909Z1cWQbCW/x6Uje2bNeYH28gk0StuBuzAOqigvjL7w1dE9RCBvz
+         ZoZwM7cx4GGinybPk7GhMgYWs8ydFH/+Jkrso2JRthaffI2Zbp5XMm+3eSXkDs8OrWPp
+         1PdirPb87UjX0oH7606aIZq+oaAGP7vKybDN2bYMkprfF7k83xhQjnzcnPUik0YOPAdr
+         2/KizCv3zVMKKDWmAMInYE8tZ68AN+LVOAzGdtD0I5zgKs6YmQZljOhOH1YH4QRwNHq0
+         ro70VHn1/JFY0xIEfw2/X2a1ANbJoQ6e9TuLfleRF6ybM460qzLn7jf0fGZVrlG5Po2P
+         lTEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773066596; x=1773671396;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0bCgFz4UpYVbBeKSYmRS1UHS00xtZH8a/t+DzU0dS+U=;
+        b=qgCeeBxQqQdMHvHHlSXq+vXjlLWIAVnOMOqYPp/u7ZKtwXbVvZ1EAxSlRcOOamhu/i
+         vl7EcSF39L/Tz3opJIZtafKPaWASaKr21mhp1JZcIMsnvQW0XOX+waiVlBL8L9oLvi0U
+         Gb8mnlV6lD1ruD6juH3FrDFI+WOGl4fO/bi678LH1yzAFZZHtU0etxW7kyCNBZJFDW9l
+         bWmqkEGoDNDOOwnsotFCkDBM1+jMBgmUONunCAAnoOfdDm0Nx03e1a2m+eN1dj1y8LjZ
+         yKZOXeWuWGRpA0KKUyqpW6Jxov1Suc32EhYpGssN7EBqBaKe5w9VgODS/kK5PAHt7Vfc
+         Na6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVNbV3MA3IfwqVcs5HkOIyJx41kko8elB7wYoK6BmAT2p2ki1QMc8ITLE/NgZqv+kahS1U2+LXCsTwr@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywvbf44prtqrDI6EjUdDncB0bwNY+xN5kb6oOhFVJZ7saXnEng/
+	qDxAuHMb5BeGK+harOXVAZ0CQg2ycAV8AWoc90bp5bsqq87dnhq+NRahHO8H81lLDf4=
+X-Gm-Gg: ATEYQzzEz0uBwWXh1C5lQ8N3yH++RVoxyfSmxTPpp6BkEMI7hvPyDo9BaKraYaVDeGo
+	Uu6W4bIN8m0oD0NkY4PgZuQ0a+jPkBvLRRkT/3doKWx9hHr5UhTW5pP5geqOabcbKft2jYG1pzB
+	kA+Q5H7fEJ0V//FOryX1y8FLNMKcJFpTF6e+m+9tNIRgqpyL9YF+MOTS4gzYg86YddsvzgSgdj9
+	BJCLMBwuzyH37/AkFJ3jUS6f94luK4z3ciRI+yaA0bbOEs0lTiru8UlfTXIvRkNAZ7FiJ6/OB5P
+	JPgF7AKyxEUIspS6ohOoQZThXj/AYnSOsyZ/b9yk/lMm2FOJleowystya3SQJic54M/B7RjlrzR
+	yKSlG5hpWZArJv1yONTnIkmYJc2NDYZGJwRhDln78O/2z8zSa0cp0vQMLcP3M8ko5yijkDHpsvD
+	BRoiLFZvuIxWvZx8byTs2wB3RwttNmYy9/0ddfttxjZ5/qXQ5Co+e78zywKdwC+dWx0QxZWvQ+j
+	RjUja7Q
+X-Received: by 2002:a05:620a:4809:b0:8ca:305b:749b with SMTP id af79cd13be357-8cd6d4d5456mr1426307785a.60.1773066595964;
+        Mon, 09 Mar 2026 07:29:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cd8d4cad48sm148711185a.33.2026.03.09.07.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Mar 2026 07:29:55 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vzbcI-0000000GTxY-2R0b;
+	Mon, 09 Mar 2026 11:29:54 -0300
+Date: Mon, 9 Mar 2026 11:29:54 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	"linux-mm @ kvack . org" <linux-mm@kvack.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>,
+	David Rientjes <rientjes@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Janosch Frank <frankja@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Leon Romanovsky <leon@kernel.org>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	netdev@vger.kernel.org, rust-for-linux@vger.kernel.org,
+	x86@kernel.org
+Subject: Re: [PATCH v1 16/16] mm/memory: support VM_MIXEDMAP in
+ zap_special_vma_range()
+Message-ID: <20260309142954.GM1687929@ziepe.ca>
+References: <20260227200848.114019-1-david@kernel.org>
+ <20260227200848.114019-17-david@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next v2 1/6] ethtool: Add loopback netlink UAPI
- definitions
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- netdev@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>,
- Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Andrew Lunn <andrew+netdev@lunn.ch>
-Cc: Andrew Lunn <andrew@lunn.ch>, Michael Chan <michael.chan@broadcom.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
- Danielle Ratson <danieller@nvidia.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, Russell King <linux@armlinux.org.uk>
-References: <20260308124016.3134012-1-bjorn@kernel.org>
- <20260308124016.3134012-2-bjorn@kernel.org>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <20260308124016.3134012-2-bjorn@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Rspamd-Queue-Id: A44A023A613
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260227200848.114019-17-david@kernel.org>
+X-Rspamd-Queue-Id: 2675823A92D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17783-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[kernel.org,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DMARC_NA(0.00)[ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-17784-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	NEURAL_HAM(-0.00)[-0.996];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_GT_50(0.00)[73];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.979];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,bootlin.com:dkim,bootlin.com:mid]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ziepe.ca:dkim,ziepe.ca:mid]
 X-Rspamd-Action: no action
 
-Hi,
-
-On 08/03/2026 13:40, Björn Töpel wrote:
-> Add the netlink YAML spec and auto-generated UAPI header for a unified
-> loopback interface covering MAC, PCS, PHY, and pluggable module
-> components.
+On Fri, Feb 27, 2026 at 09:08:47PM +0100, David Hildenbrand (Arm) wrote:
+> There is demand for also zapping page table entries by drivers in
+> VM_MIXEDMAP VMAs[1].
 > 
-> Each loopback point is described by a nested entry attribute
-> containing:
+> Nothing really speaks against supporting VM_MIXEDMAP for driver use. We
+> just don't want arbitrary drivers to zap in ordinary (non-special) VMAs.
 > 
->  - component  where in the path (MAC, PCS, PHY, MODULE)
->  - name       subsystem label, e.g. "cmis-host" or "cmis-media"
->  - id         optional instance selector (e.g. PHY id, port id)
->  - supported  bitmask of supported directions
->  - direction  NEAR_END, FAR_END, or 0 (disabled)
-> 
-> Signed-off-by: Björn Töpel <bjorn@kernel.org>
-> ---
->  Documentation/netlink/specs/ethtool.yaml      | 115 ++++++++++++++++++
->  .../uapi/linux/ethtool_netlink_generated.h    |  52 ++++++++
->  2 files changed, 167 insertions(+)
-> 
-> diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-> index 4707063af3b4..05ebad6ae4e0 100644
-> --- a/Documentation/netlink/specs/ethtool.yaml
-> +++ b/Documentation/netlink/specs/ethtool.yaml
-> @@ -211,6 +211,39 @@ definitions:
->          name: discard
->          value: 31
->  
-> +  -
-> +    name: loopback-component
-> +    type: enum
-> +    doc: |
-> +      Loopback component. Identifies where in the network path the
-> +      loopback is applied.
-> +    entries:
-> +      -
-> +        name: mac
-> +        doc: MAC loopback
-> +      -
-> +        name: pcs
-> +        doc: PCS loopback
-> +      -
-> +        name: phy
-> +        doc: PHY loopback
-> +      -
-> +        name: module
-> +        doc: Pluggable module (e.g. CMIS (Q)SFP) loopback
+> [1] https://lore.kernel.org/r/aYSKyr7StGpGKNqW@google.com
 
-Should we also add "serdes" ?
+Are we sure about this?
 
-> +  -
-> +    name: loopback-direction
-> +    type: flags
-> +    doc: |
-> +      Loopback direction flags. Used as a bitmask in supported, and as
-> +      a single value in direction.
-> +    entries:
-> +      -
-> +        name: near-end
-> +        doc: Near-end loopback; host-loop-host
-> +      -
-> +        name: far-end
-> +        doc: Far-end loopback; line-loop-line
-> +
->  attribute-sets:
->    -
->      name: header
-> @@ -1903,6 +1936,60 @@ attribute-sets:
->          name: link
->          type: nest
->          nested-attributes: mse-snapshot
-> +  -
-> +    name: loopback-entry
-> +    doc: Per-component loopback configuration entry.
-> +    attr-cnt-name: __ethtool-a-loopback-entry-cnt
-> +    attributes:
-> +      -
-> +        name: unspec
-> +        type: unused
-> +        value: 0
-> +      -
-> +        name: component
-> +        type: u32
-> +        enum: loopback-component
-> +        doc: Loopback component
-> +      -
-> +        name: id
-> +        type: u32
-> +        doc: |
-> +          Optional component instance identifier. Required for PHY,
-> +          optional for MODULE, omitted for MAC and PCS.
+This whole function seems like a hack to support drivers that are not
+using an address_space.
 
-it doesn't have to be required for PHY. The current idea is that if you
-don't pass any PHY index when issueing a PHY-targetting command, then it
-means you're targetting net_device->phydev, that is the PHY device
-attached to the netdev (if any).
+I say that as one of the five driver authors who have made this
+mistake.
 
-I think we can keep that behaviour, as systems with multiple PHYs are
-not very common.
+The locking to safely use this function is really hard to do properly,
+IDK if binder can shift to use address_space ??
 
-> +      -
-> +        name: name
-> +        type: string
-> +        doc: |
-> +          Subsystem-specific name for the loopback point within the
-> +          component.
-
-We'll need to be careful about keeping this subsystem-specific and not
-driver-specific :)
-
-> +      -
-> +        name: supported
-> +        type: u32
-> +        enum: loopback-direction
-> +        enum-as-flags: true
-> +        doc: Bitmask of supported loopback directions
-> +      -
-> +        name: direction
-> +        type: u32
-> +        enum: loopback-direction
-> +        doc: Current loopback direction, 0 means disabled
-
-no need for an u32 for 3 different values I think :)
-
-Maxime
-
+Jason
 
