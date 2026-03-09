@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-17823-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17824-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0P2CItcyr2kXQQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17823-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 21:51:35 +0100
+	id KPZuDl8zr2kPQQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17824-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 21:53:51 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A69FB2411F0
-	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 21:51:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 135A224129C
+	for <lists+linux-rdma@lfdr.de>; Mon, 09 Mar 2026 21:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9958930095FB
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 20:51:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 67F223002F85
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2026 20:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F8B369965;
-	Mon,  9 Mar 2026 20:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DB5369965;
+	Mon,  9 Mar 2026 20:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="d5DFWcJM"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="YVAXuEyH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11020110.outbound.protection.outlook.com [52.101.61.110])
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11023102.outbound.protection.outlook.com [40.107.201.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC0A284663
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Mar 2026 20:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F8F284663
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Mar 2026 20:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.102
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773089490; cv=fail; b=L785N0vfplHGr+twVtv94gBgqrPTNHi4XuwjXPETvN9fwXuzs0bdwwBN523NsT/ka4zJ4v/zWB45V+8Jnzd7if5jV1Pu5wmKcKEOCo7Av/CMXnicbKCgNvLSsBi+6V3pMKkc11uA7/zDUTqRDuRxJXgpc2Ool15FK1sywMeax7g=
+	t=1773089505; cv=fail; b=GgZNjgVTg161e1/kH2Cq8GgJIR915oDS7yqKSL7oDZqOjhOwRh3QotUrapP9gG43hJKN/85n/W8GRIWVAOZo1rBOuaGGB9A8fhRgnp4Co+JDSzVu6TNYT298R5WBI+9ug5ve65XF4JOpN/gGmJCOO30ibz/EMCS5o5ocCrrJ/qs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773089490; c=relaxed/simple;
-	bh=5sK9cgxLtRv5AahubCpAlvcEJ2urjVOzPURpFc20w3M=;
+	s=arc-20240116; t=1773089505; c=relaxed/simple;
+	bh=OehkGIFG/qCb1t/68W8AaxMhI+ZIs1+9EQF/lMSC8TU=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=riz6gMZQdkRxnoBNjRO9WCoKHoEhwoRAO9qiAqEeIL02wyWGk+zeAwknJRxd8Nzlz+NW79BgIT32W9msNAoZjTHMhv34btPb1bLiVXI/Xc1exc0eMM+x1U7fNlhDJKAPVhc2xISF/CcfKeLjALC4Mi1H5HrRDbSEmsIBK431Wgo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=d5DFWcJM; arc=fail smtp.client-ip=52.101.61.110
+	 MIME-Version:Content-Type; b=O+SO7DmyjxJ/jBhdXmnIIL857kB6m8RdO1+35p5OlapW49SIC2TyETJVTVKZVC+KQuS2pdYufw6BxM8ecylenmb9SbK/Tyt8vfYm1LU+McQ68D3YEGy/kWlJZkOHB18XGBfcL3haO7jRfbgPktHto6AtMdnN2oGavyyhpNdUBxk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=YVAXuEyH; arc=fail smtp.client-ip=40.107.201.102
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AMlvMnW2G6J6QxG2ARltQMOiMOSmNfY43wW4kC1xPLsXE28ljmoGiiWn4grXDgN9b1e7ynuYjZtQI/qzF3cPuqRA6FZSmHy1mlr8RX5Cd012+kWzZkA9Qfup5/San2u1eKLiMOxwcDugAYkbkkO1izupw+3yMBo9mI/Sz4F9IJRsQOYFvW4iUNGD09+KQdvoYksFFTnz5moBIepS36cvvs7mpR5iV5x9+YDvwxkpbElg/r4sXqQ8Gm8DgxV5m1jMfDebAAhqr9nN8Lrq+9MndQe8J9Y3lht7GLktuNSeZNMW7U32gbUguWC6y29vJoqtQJOSRpolTLjUCGoufMrORg==
+ b=ng69E1cT1eOEMHIvfekYqmAjoVLwQrWeK3WEZi3iKxVWTNhxOvsR1nsJnCi4epHYNOQbN1irJF9RvmWp7d7BuUPtm2B/vwSHlscRRYR3uEflPo1by02DTs4MACBXEPMxeE8aHkD3BMTKlZefoPXwfL3OSYxuowYsDTChWgdHmmZGnm1zdwc4f7ioNgaYRtl+I2ZJIRdOyRhWgaZvkck09hP8a3fKAEQZ0mL+QsU+QBQby0giGzS7AW8fyq0YNNOrCmkj8ocMaay7liXemucTRNJv0rNijhBGzl4XkafWZQ6ZyuNNDC6QhULr+b2b6xEs5assOLEbYOS7X14lkvS/Eg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wUXn2P6qwDfTbWzFP5TbtYWVpBbnnrh/mukDTsLVlng=;
- b=HnnTaxU8RLGhDZAic+bY0amAuGlJ7BydZAg6Vx1UP3V3WrIPIdKHdQPVkjkpYJGi3R1VKjqiy+QFntd/IPqe5cPB011JdW0JetiHtJs1/nGIONbJ+N5DzxCl4PQ9NT/L3u0HQS4zZNRYjIgz0bJnxIBzUT0kcV4Yf1zw3Pd0aTttSrDFeoCDSn+YAYjvhAHXLjwdA74lSZ4tKvUx8GRl4YZ3zjNelQSyf4BgdfVkA3D7moNeg8EmsqULNhAsvD2saTqSwGzqgJfMKV2xV8WS63DZCfxOFXpRYBr2OX6o6LZf4fuHYgLhtv4n/VMcYiW1FglY/sW12HI1zo5+yptcDQ==
+ bh=pEHbKa5FmGqQDr+MFoD8VsB1o0Hh6p0Uw4T2XVMzCLU=;
+ b=Ths4iZ+2K67I5N5UJjiEEagebMiYf+3uAm7Vvt9Llfh2rCJapjh5M2baj+HDxWJFRdnBwgQs7aAJwv8ctuBGSx8F/Yur7SlR2dvqK9i1XNOW7TUqsEJzrr73bf5jW2QhFrcxwJTkc0XPo+Na6CFMz6t3WMfHyF0bvglZk2MDRpcesQvtWcXA2TDBWpWlFSAKEUoDM1sdVE+Jxiug61SVuFT49wJcMDWrSu6KJo3JUTbnqt1I2gI+7MM875k9z852GWqVPZviIYqn98mXDU+rZ9iYx6rjBwX1tTg3NzWfxtDPD2wJwUC8yA+/FzMBBtWSb9qG3YT+BBVPQLM+KBdD4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=pass (p=none sp=none pct=100)
@@ -49,18 +49,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wUXn2P6qwDfTbWzFP5TbtYWVpBbnnrh/mukDTsLVlng=;
- b=d5DFWcJMq7YbhK+pu+ijH/4FltAOAKcH13mBkDi1CKVbkK77dCacYFPgHeZpBS3SsGv5nPSIuclUMwIidTYb5K13AQztifDyyxtPUIWH+PQJexChRcAJXJ2nliF3Wt5X3OQkxJmyQGRk1A16X29g5hd6gcSSyioC5X3RUm3VRd/v7rSF8lxvD9d2wm26gkxMbC7IQAMsoIj58jSpvfuOqieBNsJOzkYF6J35ixo0xqBe1EsOyd1WsmXaw2AQN4vDx31jvrAhIwzdf9mC7zcQoF8EJZeM3auV4ICK6u8WllNMIlcAZtfBpflsfuvJJULi4oN9am4GPbUOYQsW7g8//Q==
-Received: from PH7P220CA0043.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:32b::12)
- by SA5PR01MB994186.prod.exchangelabs.com (2603:10b6:806:474::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.20; Mon, 9 Mar
- 2026 20:51:23 +0000
-Received: from SN1PEPF00036F3E.namprd05.prod.outlook.com
- (2603:10b6:510:32b:cafe::be) by PH7P220CA0043.outlook.office365.com
- (2603:10b6:510:32b::12) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.25 via Frontend Transport; Mon,
- 9 Mar 2026 20:51:21 +0000
+ bh=pEHbKa5FmGqQDr+MFoD8VsB1o0Hh6p0Uw4T2XVMzCLU=;
+ b=YVAXuEyHWrWO6kZ4LUxqKqgOJN/dXg8UXLSVrT0ShlXK4pvYj6vDPZckkoWZR2AebTCt87ZhmNDJz+189CXKxOGO+t672bHsDwT53zuI4OH9odxMVk8uLI/iJdeU+IfuTqq5DzcCFHXJtp9Pqr5x9xP2gXnFgCWzw9MiDwWmAAa3cFop3lMsSm4n/cE+IlHxeC/DsOcmvNtpHDShhHTtvMN6ODr+kIMbjygfOof9ftKkhpnUwqlUtqB9erh8Ezz0ZCGgFNLwZzD7eQMI3tniBqaMvfKNdsjjB0e+3qKd4zKfbEObTVuLH9XU5mmy/c4Tig31wu4WMXTe32V5QJmBrw==
+Received: from BYAPR05CA0033.namprd05.prod.outlook.com (2603:10b6:a03:c0::46)
+ by CYYPR01MB8602.prod.exchangelabs.com (2603:10b6:930:c9::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9678.24; Mon, 9 Mar 2026 20:51:34 +0000
+Received: from MWH0EPF000C618E.namprd02.prod.outlook.com
+ (2603:10b6:a03:c0:cafe::84) by BYAPR05CA0033.outlook.office365.com
+ (2603:10b6:a03:c0::46) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.23 via Frontend Transport; Mon,
+ 9 Mar 2026 20:51:35 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=cornelisnetworks.com;
@@ -69,23 +68,24 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=cn-mailer-00.localdomain; pr=C
 Received: from cn-mailer-00.localdomain (208.255.156.42) by
- SN1PEPF00036F3E.mail.protection.outlook.com (10.167.248.22) with Microsoft
+ MWH0EPF000C618E.mail.protection.outlook.com (10.167.249.100) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.18
- via Frontend Transport; Mon, 9 Mar 2026 20:51:22 +0000
+ via Frontend Transport; Mon, 9 Mar 2026 20:51:33 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 3BF6F14D715;
-	Mon,  9 Mar 2026 16:51:22 -0400 (EDT)
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 5E8F014D715;
+	Mon,  9 Mar 2026 16:51:32 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 367D21810D6D7;
-	Mon,  9 Mar 2026 16:51:22 -0400 (EDT)
-Subject: [PATCH for-next 11/24] RDMA/hfi2: Add cport management
+	by awdrv-04.localdomain (Postfix) with ESMTP id 590461810D6D7;
+	Mon,  9 Mar 2026 16:51:32 -0400 (EDT)
+Subject: [PATCH for-next 13/24] RDMA/hfi2: Add IO related headers
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
+ Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
  Douglas Miller <doug.miller@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Mon, 09 Mar 2026 16:51:22 -0400
+Date: Mon, 09 Mar 2026 16:51:32 -0400
 Message-ID:
- <177308948218.1280641.5567946338131363598.stgit@awdrv-04.cornelisnetworks.com>
+ <177308949229.1280641.4900043809614297020.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <177308916470.1280641.1779641444229092453.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -101,50 +101,50 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00036F3E:EE_|SA5PR01MB994186:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0716dad-4d1d-41ee-593a-08de7e1d9f84
+X-MS-TrafficTypeDiagnostic: MWH0EPF000C618E:EE_|CYYPR01MB8602:EE_
+X-MS-Office365-Filtering-Correlation-Id: c20e6dd9-7f6e-44e2-380f-08de7e1da5ce
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|82310400026|36860700016|1800799024;
+	BCL:0;ARA:13230040|82310400026|376014|1800799024|36860700016|7142099003;
 X-Microsoft-Antispam-Message-Info:
-	K4/FvNvTJqQIgXC4ju/FKGeO+ggweK+x5nv2cemnmzwn53ey3F4THpNBm6L9Pah3CDMIu+58nnkMpDdNXadSd5f6qh8opFtJxUFkmD0H5H7s1vv93sS/FAH1ict0Ltx7CD9506ZjdPRZo8yKBnotcaanVMRW/eTuzPXzjKjcN44lIVZJ7uAjmwxeIl7ppy3CemtjaupKykHLBG1rYuu7lqIWHP5kNSMNaBn28MLIjtPlwpkHhfsZIQSs9MSY2cT+9qxQELyjBjIegLJ6ed1OQ7wKTZR9a2JGfIzq/q4kadzjC3zRfivOXdraKEcS1ZP+xBAUCYzuUNMKoAPy9sKloGs49ufYMMv+ukH84vh3eeu32QoIUQ/faSBmmQInSJlsudFlev9yTZdsezYVjSBlTKsUWDtlY5D0b28n7Q74810v2XSzJswtAwNIv/f36BEuLGwCkeoYoQQ+X+eKcXv1KIDYy42ox64vSGOexUZvAQdmic+P6/PgdSvQcknDxVUErJ5JmwPVvTSYu4nVGQ+AqEXom5WWdwmxuTUKrdAdA/dMC0D8sfE6PnQkxhstkRIVuDBqlt5a9nLFuQPWu+Tniqz6UP4ScprCx/M7/NITj3YzGEY0zG2DEDig3kk8rP6bcaxN50UCn65gvWipxdsqFd6L1MlB6rBUwowiSqzyIksbRu56raE0Kar7DOrJVaBdTCkPUhVRWk9rpoIMwjIy1ajmV5QLwU17voeZg+8uXIdtlATimTAngKEarwMdBUSLraNlC5NBkswktgjRKoeldQ==
+	e0SuJ4HBID20WFQHRKxvVRi8NOrAh87vQm0Ov38FqbJbXY5p41ykoA5MkXAzZQPdx0L84X/KrllOEgMM3k2kAeXndfMsoRJ37WuEhOeDr9eLKBbeZADD53iJFMn5I0LMFFrx3rrTYB6Pn8hN6qCXjK7YsZ2SBnLhaqGVmAIV1AAWEDeBmdGTHjL91OsoJ5oabDCL0JltgeoJpH4u47QcRUHc3W1sMZtfw8FGlK8Lhzr7r5LQ1PSRqg9GYy6PJPlHA+cQav7CxUwqZWcTNo3Iv9McT3VODXiAYrXvw08INlEYgLuXvkqe9NQjfvf5oRJ7Jne/OzLhkKd+hKNkI3xK6gPNLMsqPQKPsVbW1XK7keZlmwHoWqjeIaXaDraiyQ2O6ZQOS9EB6iyLvqN41vzD9peVtf3ubFFStqMoWRHFBInuMslU+sAbsJybJVWemvZmoEKUVnIl6TxtADtwCRjoSAB9utyFjvzga2qB+MyRB3a7De/gkGk2peBuGjX0DNYFQCmIoEr8qvyyvvPjAflk5RwVhcYYAEc1a6gOIRebYRPbojjxqh4akyRtr/3ZTrl+LXzO497pyFO795VmD2fAjQFNItCNwdRpvD4hFdtNUyiINpCRsjTNo+TLs9KpwE/FqISC0C/ozgHmOU+AFmSoYYN/n24of8TbWBJSUYZU4bjsqZ6gbvB5Wb2s7NmdAwrT38Guk9C2qVjSAw22AyCkeIOnB/HlFXQu7AfVnwlxDNwdtZvM0KFRFe2dFFqv47pdYPdwlerO0jcOgWxWyX2RUw==
 X-Forefront-Antispam-Report:
-	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700016)(1800799024);DIR:OUT;SFP:1102;
+	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(376014)(1800799024)(36860700016)(7142099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	CkqLSLMKPe/ildlTNXiU+kn/fqX7S/w6jRNMTt/AV/SGkR74WMZn9oAWrr3x1CQp4MaPpcz3b0M4OgCaiKMrRtDc4VvH6WDciv2KTlAEUru6N/qzpiEDKC/frbNwT9c89yss7T6E+LcOj5tAlKoACot/qNNMSmTXzy6vtFbDd3jtiCB7H1Eok9+XtcWxrrqHjSJ9Jrsji3Pel1EYS0jxpHxNhC1Nuey3aUpFxfdsbIf//WBOV73ClE0TXBjLBUISM6wnwkWeEHhxV6jSR46R2CsJOf/oueRsBJ+LpHv2bdbqaLRtaxID8scx49jF6/S49f5UO/XGV+7tGG5eFMECm61E0qrVb1twtgbVvoJv5lHEp3ogYmLQzVqtM62M/DkOrWQjT/InmIbdBwSZb8Nb3OMR+aYMphHkXqFJVZHOCWjDcSmCnGjGc58BpM5YjdhR
+	6eQy61Kl6JFt3+XSNeHNsQ5+JJIYsk6qx/S+DzHzNySBqZ6xSCHsFv49C3mTn1MFZKddNSrDXcnSQvO/F4sKzKBksUow6PvhDxmMi/ncDq7zCHBMO94qfu4uZT98p48LLN7LK3MyBX5jhrTttoC1RC6aF04AoazPfwj4WN5cnqtvdqr8TgMEh0DNQjT43g+Cwg6NjPE/pbJ7FV5DOus6OqFQXFUbCmxGAxWckGu4oQE3q3LvVd6VD5zqsSH2tw3vx0G4h99xm5V93FSMIwzCes3kT0uXzq6nokMjmPJxSPrO+BuaVUvPk2txloNKlzFiaWOoEOubfyWXgOl0Y/HSgnHdII7Lf3kfS1D8QDKm/lk8AzgBjoAdA9F7bUS8qT+t2mtPWax0qIU2dCr5FWCjAkHxDniPqQnt65L1Sui5PkQPDvMykwxeqaVYnjXhS9Oz
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2026 20:51:22.6872
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2026 20:51:33.1410
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0716dad-4d1d-41ee-593a-08de7e1d9f84
+X-MS-Exchange-CrossTenant-Network-Message-Id: c20e6dd9-7f6e-44e2-380f-08de7e1da5ce
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF00036F3E.namprd05.prod.outlook.com
+	MWH0EPF000C618E.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA5PR01MB994186
-X-Rspamd-Queue-Id: A69FB2411F0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR01MB8602
+X-Rspamd-Queue-Id: 135A224129C
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
 	R_DKIM_ALLOW(-0.20)[cornelisnetworks.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17823-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17824-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cornelisnetworks.com:dkim,cornelisnetworks.com:email,awdrv-04.cornelisnetworks.com:mid,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[cornelisnetworks.com:dkim,cornelisnetworks.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,awdrv-04.cornelisnetworks.com:mid];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -155,1062 +155,4673 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Action: no action
 
-Add the cport.c file which implements communication with the embedded
-micro controller on the chip for port management operations.
+The hfi2 driver will continue to support verbs, and libfabric. However
+unlike hfi1 there is no private cdev and user operations are managed
+through the ib core cdev and passed to the driver.
 
 Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
+Co-developed-by: Bendan Cunningham <brendan.cunningham@cornelisnetworks.com>
+Signed-off-by: Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>
 Co-developed-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi2/cport.c | 1037 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 1037 insertions(+)
- create mode 100644 drivers/infiniband/hw/hfi2/cport.c
+ drivers/infiniband/hw/hfi2/exp_rcv.h      |  157 ++++
+ drivers/infiniband/hw/hfi2/file_ops.h     |   46 +
+ drivers/infiniband/hw/hfi2/iowait.h       |  458 +++++++++++
+ drivers/infiniband/hw/hfi2/ipoib.h        |  173 ++++
+ drivers/infiniband/hw/hfi2/netdev.h       |   96 ++
+ drivers/infiniband/hw/hfi2/pinning.h      |   74 ++
+ drivers/infiniband/hw/hfi2/pio.h          |  307 +++++++
+ drivers/infiniband/hw/hfi2/qp.h           |  112 +++
+ drivers/infiniband/hw/hfi2/rc.h           |   60 +
+ drivers/infiniband/hw/hfi2/sdma.h         | 1209 +++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/sdma_defs.h    |  113 +++
+ drivers/infiniband/hw/hfi2/sdma_txreq.h   |  105 +++
+ drivers/infiniband/hw/hfi2/tid_rdma.h     |  321 ++++++++
+ drivers/infiniband/hw/hfi2/user_exp_rcv.h |  404 ++++++++++
+ drivers/infiniband/hw/hfi2/user_sdma.h    |  261 ++++++
+ drivers/infiniband/hw/hfi2/uverbs.h       |   19 
+ drivers/infiniband/hw/hfi2/verbs.h        |  496 ++++++++++++
+ drivers/infiniband/hw/hfi2/verbs_txreq.h  |   98 ++
+ 18 files changed, 4509 insertions(+)
+ create mode 100644 drivers/infiniband/hw/hfi2/exp_rcv.h
+ create mode 100644 drivers/infiniband/hw/hfi2/file_ops.h
+ create mode 100644 drivers/infiniband/hw/hfi2/iowait.h
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib.h
+ create mode 100644 drivers/infiniband/hw/hfi2/netdev.h
+ create mode 100644 drivers/infiniband/hw/hfi2/pinning.h
+ create mode 100644 drivers/infiniband/hw/hfi2/pio.h
+ create mode 100644 drivers/infiniband/hw/hfi2/qp.h
+ create mode 100644 drivers/infiniband/hw/hfi2/rc.h
+ create mode 100644 drivers/infiniband/hw/hfi2/sdma.h
+ create mode 100644 drivers/infiniband/hw/hfi2/sdma_defs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/sdma_txreq.h
+ create mode 100644 drivers/infiniband/hw/hfi2/tid_rdma.h
+ create mode 100644 drivers/infiniband/hw/hfi2/user_exp_rcv.h
+ create mode 100644 drivers/infiniband/hw/hfi2/user_sdma.h
+ create mode 100644 drivers/infiniband/hw/hfi2/uverbs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/verbs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/verbs_txreq.h
 
-diff --git a/drivers/infiniband/hw/hfi2/cport.c b/drivers/infiniband/hw/hfi2/cport.c
+diff --git a/drivers/infiniband/hw/hfi2/exp_rcv.h b/drivers/infiniband/hw/hfi2/exp_rcv.h
 new file mode 100644
-index 000000000000..026374a6e9fa
+index 000000000000..41b13410d696
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/cport.c
-@@ -0,0 +1,1037 @@
-+// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++++ b/drivers/infiniband/hw/hfi2/exp_rcv.h
+@@ -0,0 +1,157 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2017 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef _HFI2_EXP_RCV_H
++#define _HFI2_EXP_RCV_H
++#include "hfi2.h"
++
++#define EXP_TID_SET_EMPTY(set) (set.count == 0 && list_empty(&set.list))
++
++#define EXP_TID_TIDLEN_MASK   0x7FFULL
++#define EXP_TID_TIDLEN_SHIFT  0
++#define EXP_TID_TIDCTRL_MASK  0x3ULL
++#define EXP_TID_TIDCTRL_SHIFT 20
++#define EXP_TID_TIDIDX_MASK   0x3FFULL
++#define EXP_TID_TIDIDX_SHIFT  22
++
++/* Expected buffer entry (TID) addressing supported by the hardware */
++#define EXP_TID_ADDR_SHIFT    12
++#define EXP_TID_ADDR_SIZE     BIT(EXP_TID_ADDR_SHIFT)
++
++#define EXP_TID_GET(tid, field)	\
++	(((tid) >> EXP_TID_TID##field##_SHIFT) & EXP_TID_TID##field##_MASK)
++
++#define EXP_TID_SET(field, value)			\
++	(((value) & EXP_TID_TID##field##_MASK) <<	\
++	 EXP_TID_TID##field##_SHIFT)
++#define EXP_TID_CLEAR(tid, field) ({					\
++		(tid) &= ~(EXP_TID_TID##field##_MASK <<			\
++			   EXP_TID_TID##field##_SHIFT);			\
++		})
++#define EXP_TID_RESET(tid, field, value) do {				\
++		EXP_TID_CLEAR(tid, field);				\
++		(tid) |= EXP_TID_SET(field, (value));			\
++	} while (0)
++
++/*
++ * Define fields in the KDETH header so we can update the header
++ * template.
++ */
++#define KDETH_OFFSET_SHIFT        0
++#define KDETH_OFFSET_MASK         0x7fff
++#define KDETH_OM_SHIFT            15
++#define KDETH_OM_MASK             0x1
++#define KDETH_TID_SHIFT           16
++#define KDETH_TID_MASK            0x3ff
++#define KDETH_TIDCTRL_SHIFT       26
++#define KDETH_TIDCTRL_MASK        0x3
++#define KDETH_INTR_SHIFT          28
++#define KDETH_INTR_MASK           0x1
++#define KDETH_SH_SHIFT            29
++#define KDETH_SH_MASK             0x1
++#define KDETH_KVER_SHIFT          30
++#define KDETH_KVER_MASK           0x3
++#define KDETH_JKEY_SHIFT          0x0
++#define KDETH_JKEY_MASK           0xff
++#define KDETH_HCRC_UPPER_SHIFT    16
++#define KDETH_HCRC_UPPER_MASK     0xff
++#define KDETH_HCRC_LOWER_SHIFT    24
++#define KDETH_HCRC_LOWER_MASK     0xff
++
++#define KDETH_GET(val, field)						\
++	(((le32_to_cpu((val))) >> KDETH_##field##_SHIFT) & KDETH_##field##_MASK)
++#define KDETH_SET(dw, field, val) do {					\
++		u32 dwval = le32_to_cpu(dw);				\
++		dwval &= ~(KDETH_##field##_MASK << KDETH_##field##_SHIFT); \
++		dwval |= (((val) & KDETH_##field##_MASK) << \
++			  KDETH_##field##_SHIFT);			\
++		dw = cpu_to_le32(dwval);				\
++	} while (0)
++
++#define KDETH_RESET(dw, field, val) ({ dw = 0; KDETH_SET(dw, field, val); })
++
++/* KDETH OM multipliers and switch over point */
++#define KDETH_OM_SMALL     4
++#define KDETH_OM_SMALL_SHIFT     2
++#define KDETH_OM_LARGE     64
++#define KDETH_OM_LARGE_SHIFT     6
++#define KDETH_OM_MAX_SIZE  (1 << ((KDETH_OM_LARGE / KDETH_OM_SMALL) + 1))
++
++struct tid_group {
++	struct list_head list;
++	u32 base;
++	u8 size;
++	u8 used;
++	u8 map;
++};
++
++static inline void tid_group_add_tail(struct tid_group *grp,
++				      struct exp_tid_set *set)
++{
++	list_add_tail(&grp->list, &set->list);
++	set->count++;
++}
++
++static inline void tid_group_remove(struct tid_group *grp,
++				    struct exp_tid_set *set)
++{
++	list_del_init(&grp->list);
++	set->count--;
++}
++
++static inline void tid_group_move(struct tid_group *group,
++				  struct exp_tid_set *s1,
++				  struct exp_tid_set *s2)
++{
++	tid_group_remove(group, s1);
++	tid_group_add_tail(group, s2);
++}
++
++static inline struct tid_group *tid_group_pop(struct exp_tid_set *set)
++{
++	struct tid_group *grp =
++		list_first_entry(&set->list, struct tid_group, list);
++	list_del_init(&grp->list);
++	set->count--;
++	return grp;
++}
++
++static inline u32 create_tid(u32 rcventry, u32 npages)
++{
++	u32 pair = rcventry & ~0x1;
++
++	return EXP_TID_SET(IDX, pair >> 1) |
++		EXP_TID_SET(CTRL, 1 << (rcventry - pair)) |
++		EXP_TID_SET(LEN, npages);
++}
++
++/**
++ * hfi2_tid_group_to_idx - convert an index to a group
++ * @rcd - the receive context
++ * @grp - the group pointer
++ */
++static inline u16
++hfi2_tid_group_to_idx(struct hfi2_ctxtdata *rcd, struct tid_group *grp)
++{
++	return grp - &rcd->groups[0];
++}
++
++/**
++ * hfi2_idx_to_tid_group - convert a group to an index
++ * @rcd - the receive context
++ * @idx - the index
++ */
++static inline struct tid_group *
++hfi2_idx_to_tid_group(struct hfi2_ctxtdata *rcd, u16 idx)
++{
++	return &rcd->groups[idx];
++}
++
++int hfi2_alloc_ctxt_rcv_groups(struct hfi2_ctxtdata *rcd);
++void hfi2_free_ctxt_rcv_groups(struct hfi2_ctxtdata *rcd);
++void hfi2_exp_tid_group_init(struct hfi2_ctxtdata *rcd);
++
++#endif /* _HFI2_EXP_RCV_H */
+diff --git a/drivers/infiniband/hw/hfi2/file_ops.h b/drivers/infiniband/hw/hfi2/file_ops.h
+new file mode 100644
+index 000000000000..1efc69c7b322
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/file_ops.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
 +/*
 + * Copyright(c) 2025-2026 Cornelis Networks, Inc.
 + */
 +
-+/*
-+ * Implementation details of CPORT communications.
-+ */
-+
-+#include <linux/semaphore.h>
-+#include <linux/io.h>
++#ifndef _HFI2_FILE_OPS_H
++#define _HFI2_FILE_OPS_H
 +
 +#include "hfi2.h"
-+#include "chip_jkr.h"
-+#include "cport.h"
 +
-+static uint cport_ping_to;
-+module_param_named(cport_ping_to, cport_ping_to, uint, 0644);
-+MODULE_PARM_DESC(cport_ping_to, "ping timeout, seconds (0 = infinite)");
-+
-+uint cport_adm_to = 1;
-+module_param_named(cport_adm_to, cport_adm_to, uint, 0644);
-+MODULE_PARM_DESC(cport_adm_to, "cport admin msg timeout, seconds (0 = infinite)");
-+
-+static bool cport_mctxt_recovery = true;
-+module_param_named(cport_mctxt_recovery, cport_mctxt_recovery, bool, 0644);
-+MODULE_PARM_DESC(cport_mctxt_recovery, "Attempt recovery of MCTXT state");
-+
-+static void cport_send_req_fn(struct work_struct *work);
-+static void cport_send_rsp_fn(struct work_struct *work);
-+
-+#undef CPORT_XA_DEBUG	/* every tid assigned from xarray */
-+#undef CPORT_RCV_DEBUG	/* every message (header) received, and outbox empty */
-+#undef CPORT_SND_DEBUG	/* every message (header) sent */
-+#undef CPORT_INT_DEBUG	/* every interrupt processed, and status in timeouts */
-+#define LOST_INT_DEBUG	/* print if lost intr detected */
-+
-+static int lost_int_set(const char *val, const struct kernel_param *kp)
-+{
-+	int ret;
-+	unsigned int *arg = kp->arg;
-+	unsigned int old = *arg;
-+	unsigned long index;
-+	struct hfi2_devdata *dd;
-+
-+	ret = param_set_uint(val, kp);
-+	if (ret)
-+		return ret;
-+
-+	if (!old && *arg) {
-+		xa_for_each(&hfi2_dev_table, index, dd) {
-+			if (!dd->cport)
-+				continue;
-+			mod_timer(&dd->cport->lost_int_timer, jiffies + *arg);
-+		}
-+	}
-+	return 0;
-+}
-+
-+static const struct kernel_param_ops lost_int_ops = {
-+	.set = lost_int_set,
-+	.get = param_get_uint,
-+};
-+
-+static unsigned int cport_lost_int = 1 * HZ;
-+module_param_cb(cport_lost_int, &lost_int_ops, &cport_lost_int, 0644);
-+MODULE_PARM_DESC(cport_lost_int, "Time period for MCTXT lost int check, jiffies");
++int hfi2_set_uevent_bits(struct hfi2_pportdata *ppd, const int evtbit);
++struct hfi2_filedata *hfi2_alloc_filedata(struct hfi2_devdata *dd);
++void hfi2_dealloc_filedata(struct hfi2_filedata *fdata);
++int hfi2_do_assign_ctxt(struct hfi2_filedata *fd,
++			const struct hfi2_assign_ctxt_cmd *uinfo);
++int manage_rcvq(struct hfi2_ctxtdata *uctxt, u16 subctxt, int start_stop);
++int user_event_ack(struct hfi2_ctxtdata *uctxt, u16 subctxt,
++		   unsigned long events);
++int set_ctxt_pkey(struct hfi2_ctxtdata *uctxt, u16 pkey);
++int ctxt_reset(struct hfi2_ctxtdata *uctxt);
++int hfi2_get_pinning_stats(struct hfi2_filedata *fd,
++			   struct hfi2_pin_stats *stats);
++int hfi2_do_mmap(struct hfi2_filedata *fd, u8 type, struct vm_area_struct *vma);
++ssize_t hfi2_do_write_iter(struct hfi2_filedata *fd, struct iov_iter *from);
 +
 +/*
-+ * This limit needs to balance memory consuption against
-+ * the need to ensure tids don't repeat during periods of
-+ * CPORT stall and message timeout.
++ * Types of memories mapped into user processes' space
++ */
++enum mmap_types {
++	PIO_BUFS = 1,
++	PIO_BUFS_SOP,
++	PIO_CRED,
++	RCV_HDRQ,
++	RCV_EGRBUF,
++	UREGS,
++	EVENTS,
++	STATUS,
++	RTAIL,
++	SUBCTXT_UREGS,
++	SUBCTXT_RCV_HDRQ,
++	SUBCTXT_EGRBUF,
++	SDMA_COMP,
++	RCV_RHEQ,
++};
++
++#endif /* _HFI2_FILE_OPS_H */
+diff --git a/drivers/infiniband/hw/hfi2/iowait.h b/drivers/infiniband/hw/hfi2/iowait.h
+new file mode 100644
+index 000000000000..b18afed22a93
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/iowait.h
+@@ -0,0 +1,458 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef _HFI2_IOWAIT_H
++#define _HFI2_IOWAIT_H
++
++#include <linux/list.h>
++#include <linux/workqueue.h>
++#include <linux/wait.h>
++#include <linux/sched.h>
++
++#include "sdma_txreq.h"
++
++/*
++ * typedef (*restart_t)() - restart callback
++ * @work: pointer to work structure
++ */
++typedef void (*restart_t)(struct work_struct *work);
++
++#define IOWAIT_PENDING_IB  0x0
++#define IOWAIT_PENDING_TID 0x1
++
++/*
++ * A QP can have multiple Send Engines (SEs).
 + *
-+ * Also note that the limit parameter passed to xa_alloc*()
-+ * gets modified, so we cannot use a static structure here.
++ * The current use case is for supporting a TID RDMA
++ * packet build/xmit mechanism independent from verbs.
 + */
-+#define cport_tid_limit	XA_LIMIT(0, 255)
++#define IOWAIT_SES 2
++#define IOWAIT_IB_SE 0
++#define IOWAIT_TID_SE 1
 +
-+/*
-+ * The "header" (first qword) of a message to/from CPORT.
++struct sdma_txreq;
++struct sdma_engine;
++/**
++ * @iowork: the work struct
++ * @tx_head: list of prebuilt packets
++ * @iow: the parent iowait structure
++ *
++ * This structure is the work item (process) specific
++ * details associated with the each of the two SEs of the
++ * QP.
++ *
++ * The workstruct and the queued TXs are unique to each
++ * SE.
 + */
-+union cport_header {
-+	struct {
-+		u64 len:15;
-+		u64 _resv1:1;
-+		u64 is_req:1;
-+		u64 no_rsp:1;
-+		u64 seq_no:6;
-+		u64 sts:8;
-+		u64 tid:16;
-+		u64 sideband:8;
-+		u64 op_code:8;
-+	};
-+	u64 qw;
++struct iowait;
++struct iowait_work {
++	struct work_struct iowork;
++	struct list_head tx_head;
++	struct iowait *iow;
 +};
 +
-+#define CPORT_SEQNO_MASK 0x3f
-+
-+#define CPORT_HDR_DEF	0x0000007ec0000000ul
-+#define CPORT_HDR_LEN	48	/* bit position of length in CPORT_HDR_DEF */
-+#define CPORT_HDR_SEQ	28	/* bit position of SEQ_NO */
-+#define CPORT_HDR_EOM	30	/* bit position of EOM */
-+#define CPORT_HDR_SOM	31	/* bit position of SOM */
-+
-+#define CPORT_IN_SCRATCH	(JKR_ASIC_CFG_SCRATCH + 0)
-+#define CPORT_OUT_SCRATCH	(JKR_ASIC_CFG_SCRATCH + sizeof(u64))
-+
-+/*
-+ * Assignment of bits in JKR_MCTXT_CPORT_INT_STATUS and
-+ * JKR_MCTXT_PF0_INT_STATUS.
++/**
++ * @list: used to add/insert into QP/PQ wait lists
++ * @tx_head: overflow list of sdma_txreq's
++ * @sleep: no space callback
++ * @wakeup: space callback wakeup
++ * @sdma_drained: sdma count drained
++ * @init_priority: callback to manipulate priority
++ * @lock: lock protected head of wait queue
++ * @iowork: workqueue overhead
++ * @wait_dma: wait for sdma_busy == 0
++ * @wait_pio: wait for pio_busy == 0
++ * @sdma_busy: # of packets in flight
++ * @count: total number of descriptors in tx_head'ed list
++ * @tx_limit: limit for overflow queuing
++ * @tx_count: number of tx entry's in tx_head'ed list
++ * @flags: wait flags (one per QP)
++ * @wait: SE array for multiple legs
++ *
++ * This is to be embedded in user's state structure
++ * (QP or PQ).
++ *
++ * The sleep and wakeup members are a
++ * bit misnamed.   They do not strictly
++ * speaking sleep or wake up, but they
++ * are callbacks for the ULP to implement
++ * what ever queuing/dequeuing of
++ * the embedded iowait and its containing struct
++ * when a resource shortage like SDMA ring space
++ * or PIO credit space is seen.
++ *
++ * Both potentially have locks help
++ * so sleeping is not allowed and it is not
++ * supported to submit txreqs from the wakeup
++ * call directly because of lock conflicts.
++ *
++ * The wait_dma member along with the iow
++ *
++ * The lock field is used by waiters to record
++ * the seqlock_t that guards the list head.
++ * Waiters explicitly know that, but the destroy
++ * code that unwaits QPs does not.
 + */
-+#define JKR_MCTXT_INT_OUTBOX_EMPTY	0b00000001
-+#define JKR_MCTXT_INT_INBOX_FULL	0b00000010
-+
-+/*
-+ * The remainder is private to the host driver.
-+ * CPORT firmware has no need of this interface.
-+ */
-+
-+/*
-+ * How the MCTXT CSRs are interpreted.
-+ */
-+union mctxt_mem {
-+	union cport_header hdr;
-+	u64 qw[JKR_C_MCTXT_MEM_SIZE_IN_QWORDS];
++struct iowait {
++	struct list_head list;
++	int (*sleep)(
++		struct sdma_engine *sde,
++		struct iowait_work *wait,
++		struct sdma_txreq *tx,
++		uint seq,
++		bool pkts_sent
++		);
++	void (*wakeup)(struct iowait *wait, int reason);
++	void (*sdma_drained)(struct iowait *wait);
++	void (*init_priority)(struct iowait *wait);
++	seqlock_t *lock;
++	wait_queue_head_t wait_dma;
++	wait_queue_head_t wait_pio;
++	atomic_t sdma_busy;
++	atomic_t pio_busy;
++	u32 count;
++	u32 tx_limit;
++	u32 tx_count;
++	u8 starved_cnt;
++	u8 priority;
++	unsigned long flags;
++	struct iowait_work wait[IOWAIT_SES];
 +};
 +
-+/*
-+ * The common structure used to implement CPORT messages in hfi2.
++#define SDMA_AVAIL_REASON 0
++
++void iowait_set_flag(struct iowait *wait, u32 flag);
++bool iowait_flag_set(struct iowait *wait, u32 flag);
++void iowait_clear_flag(struct iowait *wait, u32 flag);
++
++void iowait_init(struct iowait *wait, u32 tx_limit,
++		 void (*func)(struct work_struct *work),
++		 void (*tidfunc)(struct work_struct *work),
++		 int (*sleep)(struct sdma_engine *sde,
++			      struct iowait_work *wait,
++			      struct sdma_txreq *tx,
++			      uint seq,
++			      bool pkts_sent),
++		 void (*wakeup)(struct iowait *wait, int reason),
++		 void (*sdma_drained)(struct iowait *wait),
++		 void (*init_priority)(struct iowait *wait));
++
++/**
++ * iowait_schedule() - schedule the default send engine work
++ * @wait: wait struct to schedule
++ * @wq: workqueue for schedule
++ * @cpu: cpu
 + */
-+struct cport_work {
-+	struct work_struct work;
-+	struct kref kref;
-+	int flags;
-+	u8 n_mctxts; /* len of mctxt_mem req/rsp arrays */
-+	u8 mctxts_done; /* number of mctxs sent/received */
-+	long timeout;
-+	struct semaphore *sem; /* only valid in send, if request w/response */
-+	struct hfi2_devdata *dd; /* only valid in recv context */
-+	union mctxt_mem *req;
-+	union mctxt_mem *rsp;	/* only used for request w/response */
-+};
++static inline bool iowait_schedule(struct iowait *wait,
++				   struct workqueue_struct *wq, int cpu)
++{
++	return !!queue_work_on(cpu, wq, &wait->wait[IOWAIT_IB_SE].iowork);
++}
 +
-+#define CW_FLAG_SEND		0x01	/* struct originated in send */
-+#define CW_FLAG_RECV		0x02	/* struct originated in receive */
-+
-+/*
-+ * Suspected lost interrupt, try to recover if possible.
++/**
++ * iowait_tid_schedule - schedule the tid SE
++ * @wait: the iowait structure
++ * @wq: the work queue
++ * @cpu: the cpu
 + */
-+static void lost_mctxt_intr(struct hfi2_devdata *dd)
++static inline bool iowait_tid_schedule(struct iowait *wait,
++				       struct workqueue_struct *wq, int cpu)
 +{
-+	u64 ints;
-+
-+	spin_lock(&dd->irq_src_lock); /* a compatible use of the lock */
-+	ints = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS_ENABLED);
-+	/* if bits set, assume lost interrupt and attempt recovery. */
-+	if (ints) {
-+#ifdef LOST_INT_DEBUG
-+		dd_dev_info(dd, "%s forcing int for %llx\n", __func__, ints);
-+#endif
-+		force_intr(dd, JKR_MCTXT_CPORT_TO_PCIE_INT);
-+	}
-+	spin_unlock(&dd->irq_src_lock);
++	return !!queue_work_on(cpu, wq, &wait->wait[IOWAIT_TID_SE].iowork);
 +}
 +
-+static void cport_lost_int_chk(struct timer_list *t)
-+{
-+	struct hfi2_cport *cport = timer_container_of(cport, t, lost_int_timer);
-+
-+	if (cport_lost_int) {
-+		lost_mctxt_intr(cport->dd);
-+		mod_timer(&cport->lost_int_timer, jiffies + cport_lost_int);
-+	}
-+}
-+
-+/*
-+ * Acquire a reference to the message structure
++/**
++ * iowait_sdma_drain() - wait for DMAs to drain
++ *
++ * @wait: iowait structure
++ *
++ * This will delay until the iowait sdmas have
++ * completed.
 + */
-+static inline void cwget(struct cport_work *cw)
++static inline void iowait_sdma_drain(struct iowait *wait)
 +{
-+	kref_get(&cw->kref);
++	wait_event(wait->wait_dma, !atomic_read(&wait->sdma_busy));
 +}
 +
-+/*
-+ * Locate and remove the 'id' message in the xarray and atomically
-+ * acquire a reference to the message structure.
++/**
++ * iowait_sdma_pending() - return sdma pending count
++ *
++ * @wait: iowait structure
++ *
 + */
-+static inline struct cport_work *cwget_xa(struct hfi2_devdata *dd, u32 id)
++static inline int iowait_sdma_pending(struct iowait *wait)
 +{
-+	struct cport_work *cw;
-+
-+	xa_lock(&dd->cport->tid_xa);
-+	cw = __xa_erase(&dd->cport->tid_xa, id);
-+	if (cw)
-+		cwget(cw);
-+	xa_unlock(&dd->cport->tid_xa);
-+	return cw;
++	return atomic_read(&wait->sdma_busy);
 +}
 +
-+static void cwrelease(struct kref *kref)
++/**
++ * iowait_sdma_inc - note sdma io pending
++ * @wait: iowait structure
++ */
++static inline void iowait_sdma_inc(struct iowait *wait)
 +{
-+	struct cport_work *cw = container_of(kref, struct cport_work, kref);
-+
-+	kfree(cw->req);
-+	kfree(cw->rsp);
-+
-+	kfree(cw);
++	atomic_inc(&wait->sdma_busy);
 +}
 +
-+static void cwput(struct cport_work *cw)
++/**
++ * iowait_sdma_add - add count to pending
++ * @wait: iowait structure
++ */
++static inline void iowait_sdma_add(struct iowait *wait, int count)
 +{
-+	kref_put(&cw->kref, cwrelease);
++	atomic_add(count, &wait->sdma_busy);
 +}
 +
-+static struct cport_work *cwalloc(int flag)
++/**
++ * iowait_sdma_dec - note sdma complete
++ * @wait: iowait structure
++ */
++static inline int iowait_sdma_dec(struct iowait *wait)
 +{
-+	struct cport_work *cw = kzalloc(sizeof(*cw), GFP_KERNEL);
-+
-+	if (!cw)
-+		return NULL;
-+
-+	cw->flags = flag;
-+	cw->n_mctxts = 1;
-+	cw->req = kzalloc_obj(cw->req, GFP_KERNEL);
-+	if (!cw->req) {
-+		kfree(cw);
-+		return NULL;
-+	}
-+
-+	cw->rsp = kzalloc(sizeof(*cw->rsp), GFP_KERNEL);
-+	if (!cw->rsp) {
-+		kfree(cw->req);
-+		kfree(cw);
-+		return NULL;
-+	}
-+
-+	kref_init(&cw->kref);
-+	return cw;
-+}
-+
-+/* set "external" (non-alloc) response payload */
-+static void pld_rsp_set(struct cport_work *cw, void *pld, int len)
-+{
-+	memcpy(&cw->rsp->qw[1], pld, len);
-+	cw->rsp->hdr.len = len + sizeof(cw->rsp->hdr);
-+}
-+
-+static int cw_pad_size(struct cport_work *msg, u32 size)
-+{
-+	union mctxt_mem *new_reqs, *new_rsps;
-+	u8 new_ctxts;
-+
-+	/* already large enough */
-+	if (size <= msg->n_mctxts * (sizeof(*new_reqs)))
++	if (!wait)
 +		return 0;
-+
-+	/* round up to next mctxt buffer len */
-+	new_ctxts = (size + (sizeof(*new_reqs) - 1)) / sizeof(*new_reqs);
-+	new_reqs = krealloc(msg->req, new_ctxts * sizeof(*new_reqs),
-+			    GFP_KERNEL);
-+	if (!new_reqs)
-+		return -ENOMEM;
-+	msg->req = new_reqs;
-+
-+	new_rsps = krealloc(msg->rsp, new_ctxts * sizeof(*new_reqs),
-+			    GFP_KERNEL);
-+	if (!new_rsps)
-+		return -ENOMEM;
-+
-+	msg->rsp = new_rsps;
-+	msg->n_mctxts = new_ctxts;
-+
-+	return 0;
++	return atomic_dec_and_test(&wait->sdma_busy);
 +}
 +
-+static int cwcopy(struct cport_work *msg, void *from, u32 offset,
-+		  u32 len, bool req)
-+{
-+	union mctxt_mem *mc;
-+	int ret;
-+
-+	ret = cw_pad_size(msg, offset + len);
-+	if (ret)
-+		return ret;
-+
-+	mc = req ? msg->req : msg->rsp;
-+	memcpy(((u8 *)mc) + offset, from, len);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Send request, non-blocking, with timeout for OUTBOX_EMPTY wait.
-+ * Caller must watch 'wait' semaphore for completion, and
-+ * then call cport_send_comp() or cport_send_cancel() to finalize everything.
-+ * Returns handle for cport_send_comp()/_cancel(), or ERR_PTR().
++/**
++ * iowait_pio_drain() - wait for pios to drain
 + *
-+ * See cport_send_req() for example usage.
++ * @wait: iowait structure
++ *
++ * This will delay until the iowait pios have
++ * completed.
 + */
-+void *cport_send_req_nb(struct hfi2_devdata *dd, u8 op, u8 sideband, void *payload,
-+			int len, struct semaphore *wait, long timeout)
++static inline void iowait_pio_drain(struct iowait *wait)
 +{
-+	int ret;
-+	struct cport_work *msg;
-+	u32 idx;
++	wait_event_timeout(wait->wait_pio,
++			   !atomic_read(&wait->pio_busy),
++			   HZ);
++}
 +
-+	if (!dd->cport)
-+		return ERR_PTR(-EINVAL);
++/**
++ * iowait_pio_pending() - return pio pending count
++ *
++ * @wait: iowait structure
++ *
++ */
++static inline int iowait_pio_pending(struct iowait *wait)
++{
++	return atomic_read(&wait->pio_busy);
++}
 +
-+	msg = cwalloc(CW_FLAG_SEND);
-+	if (!msg)
-+		return ERR_PTR(-ENOMEM);
-+	msg->dd = dd;
-+	msg->timeout = timeout;
-+	ret = cwcopy(msg, payload, sizeof(union cport_header), len, true);
-+	if (ret) {
-+		cwput(msg);
-+		return ERR_PTR(ret);
++/**
++ * iowait_pio_inc - note pio pending
++ * @wait: iowait structure
++ */
++static inline void iowait_pio_inc(struct iowait *wait)
++{
++	atomic_inc(&wait->pio_busy);
++}
++
++/**
++ * iowait_pio_dec - note pio complete
++ * @wait: iowait structure
++ */
++static inline int iowait_pio_dec(struct iowait *wait)
++{
++	if (!wait)
++		return 0;
++	return atomic_dec_and_test(&wait->pio_busy);
++}
++
++/**
++ * iowait_drain_wakeup() - trigger iowait_drain() waiter
++ *
++ * @wait: iowait structure
++ *
++ * This will trigger any waiters.
++ */
++static inline void iowait_drain_wakeup(struct iowait *wait)
++{
++	wake_up(&wait->wait_dma);
++	wake_up(&wait->wait_pio);
++	if (wait->sdma_drained)
++		wait->sdma_drained(wait);
++}
++
++/**
++ * iowait_get_txhead() - get packet off of iowait list
++ *
++ * @wait: iowait_work structure
++ */
++static inline struct sdma_txreq *iowait_get_txhead(struct iowait_work *wait)
++{
++	struct sdma_txreq *tx = NULL;
++
++	if (!list_empty(&wait->tx_head)) {
++		tx = list_first_entry(
++			&wait->tx_head,
++			struct sdma_txreq,
++			list);
++		list_del_init(&tx->list);
 +	}
-+	ret = xa_alloc_cyclic(&dd->cport->tid_xa, &idx, msg, cport_tid_limit,
-+			      &dd->cport->tid_next, GFP_KERNEL);
-+	if (ret < 0) {
-+		cwput(msg);
-+		return ERR_PTR(ret);
++	return tx;
++}
++
++static inline u16 iowait_get_desc(struct iowait_work *w)
++{
++	u16 num_desc = 0;
++	struct sdma_txreq *tx = NULL;
++
++	if (!list_empty(&w->tx_head)) {
++		tx = list_first_entry(&w->tx_head, struct sdma_txreq,
++				      list);
++		num_desc = tx->num_desc;
++		if (tx->flags & SDMA_TXREQ_F_VIP)
++			w->iow->priority++;
 +	}
-+#ifdef CPORT_XA_DEBUG
-+	dd_dev_info(dd, "CPORT tid is %04x\n", idx);
++	return num_desc;
++}
++
++static inline u32 iowait_get_all_desc(struct iowait *w)
++{
++	u32 num_desc = 0;
++
++	num_desc = iowait_get_desc(&w->wait[IOWAIT_IB_SE]);
++	num_desc += iowait_get_desc(&w->wait[IOWAIT_TID_SE]);
++	return num_desc;
++}
++
++static inline void iowait_update_priority(struct iowait_work *w)
++{
++	struct sdma_txreq *tx = NULL;
++
++	if (!list_empty(&w->tx_head)) {
++		tx = list_first_entry(&w->tx_head, struct sdma_txreq,
++				      list);
++		if (tx->flags & SDMA_TXREQ_F_VIP)
++			w->iow->priority++;
++	}
++}
++
++static inline void iowait_update_all_priority(struct iowait *w)
++{
++	iowait_update_priority(&w->wait[IOWAIT_IB_SE]);
++	iowait_update_priority(&w->wait[IOWAIT_TID_SE]);
++}
++
++static inline void iowait_init_priority(struct iowait *w)
++{
++	w->priority = 0;
++	if (w->init_priority)
++		w->init_priority(w);
++}
++
++static inline void iowait_get_priority(struct iowait *w)
++{
++	iowait_init_priority(w);
++	iowait_update_all_priority(w);
++}
++
++/**
++ * iowait_queue - Put the iowait on a wait queue
++ * @pkts_sent: have some packets been sent before queuing?
++ * @w: the iowait struct
++ * @wait_head: the wait queue
++ *
++ * This function is called to insert an iowait struct into a
++ * wait queue after a resource (eg, sdma descriptor or pio
++ * buffer) is run out.
++ */
++static inline void iowait_queue(bool pkts_sent, struct iowait *w,
++				struct list_head *wait_head)
++{
++	/*
++	 * To play fair, insert the iowait at the tail of the wait queue if it
++	 * has already sent some packets; Otherwise, put it at the head.
++	 * However, if it has priority packets to send, also put it at the
++	 * head.
++	 */
++	if (pkts_sent)
++		w->starved_cnt = 0;
++	else
++		w->starved_cnt++;
++
++	if (w->priority > 0 || !pkts_sent)
++		list_add(&w->list, wait_head);
++	else
++		list_add_tail(&w->list, wait_head);
++}
++
++/**
++ * iowait_starve_clear - clear the wait queue's starve count
++ * @pkts_sent: have some packets been sent?
++ * @w: the iowait struct
++ *
++ * This function is called to clear the starve count. If no
++ * packets have been sent, the starve count will not be cleared.
++ */
++static inline void iowait_starve_clear(bool pkts_sent, struct iowait *w)
++{
++	if (pkts_sent)
++		w->starved_cnt = 0;
++}
++
++/* Update the top priority index */
++uint iowait_priority_update_top(struct iowait *w,
++				struct iowait *top,
++				uint idx, uint top_idx);
++
++/**
++ * iowait_packet_queued() - determine if a packet is queued
++ * @wait: the iowait_work structure
++ */
++static inline bool iowait_packet_queued(struct iowait_work *wait)
++{
++	return !list_empty(&wait->tx_head);
++}
++
++/**
++ * inc_wait_count - increment wait counts
++ * @w: the log work struct
++ * @n: the count
++ */
++static inline void iowait_inc_wait_count(struct iowait_work *w, u16 n)
++{
++	if (!w)
++		return;
++	w->iow->tx_count++;
++	w->iow->count += n;
++}
++
++/**
++ * iowait_get_tid_work - return iowait_work for tid SE
++ * @w: the iowait struct
++ */
++static inline struct iowait_work *iowait_get_tid_work(struct iowait *w)
++{
++	return &w->wait[IOWAIT_TID_SE];
++}
++
++/**
++ * iowait_get_ib_work - return iowait_work for ib SE
++ * @w: the iowait struct
++ */
++static inline struct iowait_work *iowait_get_ib_work(struct iowait *w)
++{
++	return &w->wait[IOWAIT_IB_SE];
++}
++
++/**
++ * iowait_ioww_to_iow - return iowait given iowait_work
++ * @w: the iowait_work struct
++ */
++static inline struct iowait *iowait_ioww_to_iow(struct iowait_work *w)
++{
++	if (likely(w))
++		return w->iow;
++	return NULL;
++}
++
++void iowait_cancel_work(struct iowait *w);
++int iowait_set_work_flag(struct iowait_work *w);
++
 +#endif
-+	msg->req->hdr.op_code = op;
-+	msg->req->hdr.sideband = sideband;
-+	msg->req->hdr.is_req = 1;
-+	msg->req->hdr.no_rsp = 0;
-+	msg->req->hdr.tid = idx;
-+	msg->req->hdr.len = len + sizeof(msg->req->hdr);
-+	msg->sem = wait;
-+	cwget(msg);	/* extra ref so not freed after send */
-+	INIT_WORK(&msg->work, cport_send_req_fn);
-+	queue_work(dd->hfi2_wq, &msg->work);
-+	return msg;
+diff --git a/drivers/infiniband/hw/hfi2/ipoib.h b/drivers/infiniband/hw/hfi2/ipoib.h
+new file mode 100644
+index 000000000000..a1be5f0caa0e
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib.h
+@@ -0,0 +1,173 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++/*
++ * This file contains HFI2 support for IPOIB functionality
++ */
++
++#ifndef HFI2_IPOIB_H
++#define HFI2_IPOIB_H
++
++#include <linux/types.h>
++#include <linux/stddef.h>
++#include <linux/atomic.h>
++#include <linux/netdevice.h>
++#include <linux/slab.h>
++#include <linux/skbuff.h>
++#include <linux/list.h>
++#include <linux/if_infiniband.h>
++
++#include "hfi2.h"
++#include "iowait.h"
++#include "netdev.h"
++
++#include <rdma/ib_verbs.h>
++
++#define HFI2_IPOIB_ENTROPY_SHIFT   24
++
++#define HFI2_IPOIB_TXREQ_NAME_LEN   32
++
++#define HFI2_IPOIB_PSEUDO_LEN 20
++#define HFI2_IPOIB_ENCAP_LEN 4
++
++struct hfi2_ipoib_dev_priv;
++
++union hfi2_ipoib_flow {
++	u16 as_int;
++	struct {
++		u8 tx_queue;
++		u8 sc5;
++	} __packed;
++};
++
++/**
++ * struct ipoib_txreq - IPOIB transmit descriptor
++ * @txreq: sdma transmit request
++ * @sdma_hdr: 9b ib headers
++ * @sdma_status: status returned by sdma engine
++ * @complete: non-zero implies complete
++ * @priv: ipoib netdev private data
++ * @txq: txq on which skb was output
++ * @skb: skb to send
++ */
++struct ipoib_txreq {
++	struct sdma_txreq           txreq;
++	struct hfi2_sdma_header     *sdma_hdr;
++	int                         sdma_status;
++	int                         complete;
++	struct hfi2_ipoib_dev_priv *priv;
++	struct hfi2_ipoib_txq      *txq;
++	struct sk_buff             *skb;
++};
++
++/**
++ * struct hfi2_ipoib_circ_buf - List of items to be processed
++ * @items: ring of items each a power of two size
++ * @max_items: max items + 1 that the ring can contain
++ * @shift: log2 of size for getting txreq
++ * @sent_txreqs: count of txreqs posted to sdma
++ * @tail: ring tail
++ * @stops: count of stops of queue
++ * @ring_full: ring has been filled
++ * @no_desc: descriptor shortage seen
++ * @complete_txreqs: count of txreqs completed by sdma
++ * @head: ring head
++ */
++struct hfi2_ipoib_circ_buf {
++	void *items;
++	u32 max_items;
++	u32 shift;
++	/* consumer cache line */
++	u64 ____cacheline_aligned_in_smp sent_txreqs;
++	u32 avail;
++	u32 tail;
++	atomic_t stops;
++	atomic_t ring_full;
++	atomic_t no_desc;
++	/* producer cache line */
++	u64 ____cacheline_aligned_in_smp complete_txreqs;
++	u32 head;
++};
++
++/**
++ * struct hfi2_ipoib_txq - IPOIB per Tx queue information
++ * @priv: private pointer
++ * @sde: sdma engine
++ * @tx_list: tx request list
++ * @sent_txreqs: count of txreqs posted to sdma
++ * @flow: tracks when list needs to be flushed for a flow change
++ * @q_idx: ipoib Tx queue index
++ * @pkts_sent: indicator packets have been sent from this queue
++ * @wait: iowait structure
++ * @napi: pointer to tx napi interface
++ * @tx_ring: ring of ipoib txreqs to be reaped by napi callback
++ */
++struct hfi2_ipoib_txq {
++	struct napi_struct napi;
++	struct hfi2_ipoib_dev_priv *priv;
++	struct sdma_engine *sde;
++	struct list_head tx_list;
++	union hfi2_ipoib_flow flow;
++	u8 q_idx;
++	bool pkts_sent;
++	struct iowait wait;
++
++	struct hfi2_ipoib_circ_buf ____cacheline_aligned_in_smp tx_ring;
++};
++
++struct hfi2_ipoib_dev_priv {
++	struct hfi2_devdata *dd;
++	struct hfi2_pportdata *ppd;
++	struct net_device   *netdev;
++	struct ib_device    *device;
++	struct hfi2_ipoib_txq *txqs;
++	const struct net_device_ops *netdev_ops;
++	struct rvt_qp *qp;
++	u32 qkey;
++	u16 pkey;
++	u16 pkey_index;
++	u8 port_num;
++};
++
++/* hfi2 ipoib rdma netdev's private data structure */
++struct hfi2_ipoib_rdma_netdev {
++	struct rdma_netdev rn;  /* keep this first */
++	/* followed by device private data */
++	struct hfi2_ipoib_dev_priv dev_priv;
++};
++
++static inline struct hfi2_ipoib_dev_priv *
++hfi2_ipoib_priv(const struct net_device *dev)
++{
++	return &((struct hfi2_ipoib_rdma_netdev *)netdev_priv(dev))->dev_priv;
++}
++
++int hfi2_ipoib_send(struct net_device *dev,
++		    struct sk_buff *skb,
++		    struct ib_ah *address,
++		    u32 dqpn);
++
++int hfi2_ipoib_txreq_init(struct hfi2_ipoib_dev_priv *priv);
++void hfi2_ipoib_txreq_deinit(struct hfi2_ipoib_dev_priv *priv);
++
++int hfi2_ipoib_rxq_init(struct net_device *dev);
++void hfi2_ipoib_rxq_deinit(struct net_device *dev);
++
++void hfi2_ipoib_napi_tx_enable(struct net_device *dev);
++void hfi2_ipoib_napi_tx_disable(struct net_device *dev);
++
++struct sk_buff *hfi2_ipoib_prepare_skb(struct hfi2_netdev_rxq *rxq,
++				       int size, void *data);
++
++int hfi2_ipoib_rn_get_params(struct ib_device *device,
++			     u32 port_num,
++			     enum rdma_netdev_t type,
++			     struct rdma_netdev_alloc_params *params);
++
++void hfi2_ipoib_tx_timeout(struct net_device *dev, unsigned int q);
++
++#endif /* _IPOIB_H */
+diff --git a/drivers/infiniband/hw/hfi2/netdev.h b/drivers/infiniband/hw/hfi2/netdev.h
+new file mode 100644
+index 000000000000..3b2f18c620bb
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/netdev.h
+@@ -0,0 +1,96 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++#ifndef HFI2_NETDEV_H
++#define HFI2_NETDEV_H
++
++#include "hfi2.h"
++
++#include <linux/netdevice.h>
++#include <linux/xarray.h>
++
++/**
++ * struct hfi2_netdev_rxq - Receive Queue for HFI
++ * IPoIB netdevices will be working on the rx abstraction.
++ * @napi: napi object
++ * @rx: ptr to netdev_rx
++ * @rcd:  ptr to receive context data
++ */
++struct hfi2_netdev_rxq {
++	struct napi_struct napi;
++	struct hfi2_netdev_rx *rx;
++	struct hfi2_ctxtdata *rcd;
++};
++
++#define HFI2_MAX_NETDEV_CTXTS   8
++
++/* Number of NETDEV RSM entries */
++#define NUM_NETDEV_MAP_ENTRIES HFI2_MAX_NETDEV_CTXTS
++
++/**
++ * struct hfi2_netdev_rx: data required to setup and run HFI netdev.
++ * @rx_napi:	the dummy netdevice to support "polling" the receive contexts
++ * @dd:		hfi2_devdata
++ * @ppd:	hfi2_pportdata
++ * @rxq:	pointer to dummy netdev receive queues.
++ * @num_rx_q:	number of receive queues
++ * @rmt_start:	first allocated index in the RMT
++ * @dev_tbl:	netdev table for unique identifier VNIC and IPoIb VLANs.
++ * @enabled:	atomic counter of netdevs enabling receive queues.
++ *		When 0 NAPI will be disabled.
++ * @netdevs:	count of netdev_rx users, protected by hfi2_mutex.
++ *		When 0 receive queues will be freed.
++ */
++struct hfi2_netdev_rx {
++	struct net_device *rx_napi;
++	struct hfi2_devdata *dd;
++	struct hfi2_pportdata *ppd;
++	struct hfi2_netdev_rxq *rxq;
++	int num_rx_q;
++	int rmt_start;
++	struct xarray dev_tbl;
++	/* count of enabled napi polls */
++	atomic_t enabled;
++	int netdevs;
++};
++
++static inline
++int hfi2_netdev_ctxt_count(struct hfi2_pportdata *ppd)
++{
++	return ppd->netdev_rx->num_rx_q;
++}
++
++static inline
++struct hfi2_ctxtdata *hfi2_netdev_get_ctxt(struct hfi2_pportdata *ppd, int ctxt)
++{
++	return ppd->netdev_rx->rxq[ctxt].rcd;
++}
++
++static inline
++int hfi2_netdev_get_free_rmt_idx(struct hfi2_pportdata *ppd)
++{
++	return ppd->netdev_rx->rmt_start;
++}
++
++u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
++			     struct cpumask *cpu_mask);
++
++void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd);
++void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd);
++int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd);
++int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd);
++int hfi2_alloc_rx(struct hfi2_devdata *dd);
++void hfi2_free_rx(struct hfi2_devdata *dd);
++int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data);
++void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id);
++void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id);
++void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id);
++
++/* chip.c  */
++int hfi2_netdev_rx_napi(struct napi_struct *napi, int budget);
++
++#endif /* HFI2_NETDEV_H */
+diff --git a/drivers/infiniband/hw/hfi2/pinning.h b/drivers/infiniband/hw/hfi2/pinning.h
+new file mode 100644
+index 000000000000..fad477c5a96a
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/pinning.h
+@@ -0,0 +1,74 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++#ifndef _HFI2_PINNING_H
++#define _HFI2_PINNING_H
++
++#include <rdma/hfi2-abi.h>
++
++struct hfi2_user_sdma_pkt_q;
++struct user_sdma_request;
++struct user_sdma_txreq;
++struct user_sdma_iovec;
++
++struct pinning_interface {
++	int (*init)(struct hfi2_user_sdma_pkt_q *pq);
++	void (*free)(struct hfi2_user_sdma_pkt_q *pq);
++
++	/*
++	 * Add up to pkt_data_remaining bytes to the txreq, starting at the
++	 * current offset in the given iovec entry and continuing until all
++	 * data has been added to the iovec or the iovec entry type changes.
++	 * On success, prior to returning, the implementation must adjust
++	 * pkt_data_remaining, req->iov_idx, and the offset value in
++	 * req->iov[req->iov_idx] to reflect the data that has been
++	 * consumed.
++	 */
++	int (*add_to_sdma_packet)(struct user_sdma_request *req,
++				  struct user_sdma_txreq *tx,
++				  struct user_sdma_iovec *iovec,
++				  u32 *pkt_data_remaining);
++
++	int (*get_stats)(struct hfi2_user_sdma_pkt_q *pq, int index,
++			 struct hfi2_pin_stats *stats);
++	void (*put)(void *ptr);
++};
++
++#define PINNING_MAX_INTERFACES BIT(HFI2_MEMINFO_TYPE_ENTRY_BITS)
++
++struct pinning_state {
++	void *interface[PINNING_MAX_INTERFACES];
++};
++
++#define PINNING_STATE(pq, i) ((pq)->pinning_state.interface[(i)])
++
++extern struct pinning_interface pinning_interfaces[PINNING_MAX_INTERFACES];
++
++void register_pinning_interface(unsigned int type,
++				struct pinning_interface *interface);
++void deregister_pinning_interface(unsigned int type);
++
++void register_system_pinning_interface(void);
++void deregister_system_pinning_interface(void);
++
++int init_pinning_interfaces(struct hfi2_user_sdma_pkt_q *pq);
++void free_pinning_interfaces(struct hfi2_user_sdma_pkt_q *pq);
++
++static inline bool pinning_type_supported(unsigned int type)
++{
++	return (type < PINNING_MAX_INTERFACES &&
++		pinning_interfaces[type].add_to_sdma_packet);
++}
++
++static inline int add_to_sdma_packet(unsigned int type,
++				     struct user_sdma_request *req,
++				     struct user_sdma_txreq *tx,
++				     struct user_sdma_iovec *iovec,
++				     u32 *rem)
++{
++	return pinning_interfaces[type].add_to_sdma_packet(req, tx, iovec,
++							   rem);
++}
++
++#endif /* _HFI2_PINNING_H */
+diff --git a/drivers/infiniband/hw/hfi2/pio.h b/drivers/infiniband/hw/hfi2/pio.h
+new file mode 100644
+index 000000000000..92a529b25584
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/pio.h
+@@ -0,0 +1,307 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015-2017 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef _PIO_H
++#define _PIO_H
++/* send context types */
++#define SC_KERNEL 0
++#define SC_VL15   1
++#define SC_ACK    2
++#define SC_USER   3	/* must be the last one: it may take all left */
++#define SC_MAX    4	/* count of send context types */
++
++/* invalid send context index */
++#define INVALID_SCI 0xffff
++
++/* PIO buffer release callback function */
++typedef void (*pio_release_cb)(void *arg, int code);
++
++/* PIO release codes - in bits, as there could more than one that apply */
++#define PRC_OK		0	/* no known error */
++#define PRC_STATUS_ERR	0x01	/* credit return due to status error */
++#define PRC_PBC		0x02	/* credit return due to PBC */
++#define PRC_THRESHOLD	0x04	/* credit return due to threshold */
++#define PRC_FILL_ERR	0x08	/* credit return due fill error */
++#define PRC_FORCE	0x10	/* credit return due credit force */
++#define PRC_SC_DISABLE	0x20	/* clean-up after a context disable */
++
++/* byte helper */
++union mix {
++	u64 val64;
++	u32 val32[2];
++	u8  val8[8];
++};
++
++/* an allocated PIO buffer */
++struct pio_buf {
++	struct send_context *sc;/* back pointer to owning send context */
++	pio_release_cb cb;	/* called when the buffer is released */
++	void *arg;		/* argument for cb */
++	void __iomem *start;	/* buffer start address */
++	void __iomem *end;	/* context end address */
++	unsigned long sent_at;	/* buffer is sent when <= free */
++	union mix carry;	/* pending unwritten bytes */
++	u16 qw_written;		/* QW written so far */
++	u8 carry_bytes;	/* number of valid bytes in carry */
++};
++
++/* cache line aligned pio buffer array */
++union pio_shadow_ring {
++	struct pio_buf pbuf;
++} ____cacheline_aligned;
++
++/* per-NUMA send context */
++struct send_context {
++	/* read-only after init */
++	struct hfi2_devdata *dd;	/* device */
++	struct hfi2_pportdata *ppd;	/* port */
++	union pio_shadow_ring *sr;	/* shadow ring */
++	void __iomem *base_addr;	/* start of PIO memory */
++	u32 __percpu *buffers_allocated;/* count of buffers allocated */
++	u32 size;			/* context size, in bytes */
++
++	int node;			/* context home node */
++	u32 sr_size;			/* size of the shadow ring */
++	u16 flags;			/* flags */
++	u16 sw_index;			/* software index number */
++	u16 hw_context;			/* hardware context number */
++	u8  type;			/* context type */
++	u8  group;			/* credit return group */
++
++	/* allocator fields */
++	spinlock_t alloc_lock ____cacheline_aligned_in_smp;
++	u32 sr_head;			/* shadow ring head */
++	unsigned long fill;		/* official alloc count */
++	unsigned long alloc_free;	/* copy of free (less cache thrash) */
++	u32 fill_wrap;			/* tracks fill within ring */
++	u32 credits;			/* number of blocks in context */
++	/* adding a new field here would make it part of this cacheline */
++
++	/* releaser fields */
++	spinlock_t release_lock ____cacheline_aligned_in_smp;
++	u32 sr_tail;			/* shadow ring tail */
++	unsigned long free;		/* official free count */
++	volatile __le64 *hw_free;	/* HW free counter */
++	/* list for PIO waiters */
++	struct list_head piowait  ____cacheline_aligned_in_smp;
++	seqlock_t waitlock;
++
++	spinlock_t credit_ctrl_lock ____cacheline_aligned_in_smp;
++	u32 credit_intr_count;		/* count of credit intr users */
++	u64 credit_ctrl;		/* cache for credit control */
++	wait_queue_head_t halt_wait;    /* wait until kernel sees interrupt */
++	struct work_struct halt_work;	/* halted context work queue entry */
++};
++
++/* send context flags */
++#define SCF_ENABLED 0x01
++#define SCF_IN_FREE 0x02
++#define SCF_HALTED  0x04
++#define SCF_FROZEN  0x08
++#define SCF_LINK_DOWN 0x10
++
++struct send_context_info {
++	struct send_context *sc;	/* allocated working context */
++	u16 allocated;			/* has this been allocated? */
++	u16 type;			/* context type */
++	u16 base;			/* base in PIO array */
++	u16 credits;			/* size in PIO array */
++};
++
++/* DMA credit return, index is always (context & 0x7) */
++struct credit_return {
++	volatile __le64 cr[8];
++};
++
++/* NUMA indexed credit return array */
++struct credit_return_base {
++	struct credit_return *va;
++	dma_addr_t dma;
++};
++
++/* send context configuration sizes (one per type) */
++struct sc_config_sizes {
++	short int size;
++	short int count;
++};
++
++/*
++ * The diagram below details layout of pio_map, which is used to quickly select
++ * a kernel send context given a vl and a selector (fuzz).
++ *
++ * sc = pio_map->map[vl & map_mask]->ksc[selector & elem_mask]
++ *
++ * The map allows for non-uniform send contexts per vl.
++ *
++ * Where:
++ * nactual = num_kernel_send_contexts / num_vls
++ * vl_scontexts[vl] = nactual + extra
++ *
++ *	Extra is an evenly distributed modulo of remaining send contexts.
++ *
++ * svl[vl] = 1 + sum vl_scontexts[0..vl-1]
++ *
++ * n = roundup to next highest power of 2 of vl_scontexts[vl]
++ *
++ * When n > vl_scontexts[vl], the send contexts are assigned in a round robin
++ * fashion wrapping back to the first send context for a particular vl.
++ *
++ *              ppd->pio_map
++ *                    |                                  pio_map_elem[0]
++ *                    |                               +------------------------+
++ *                    v                               |       mask             |
++ *               pio_vl_map                           |------------------------|
++ *      +--------------------------+                  | ksc[0] -> svl[0]       |
++ *      |    list (RCU)            |                  |------------------------|
++ *      |--------------------------|                ->| ksc[1] -> svl[0]+1     |
++ *      |    mask                  |              -/  |------------------------|
++ *      |--------------------------|            -/    |        *               |
++ *      |    actual_vls (max 8)    |          -/      |------------------------|
++ *      |--------------------------|       --/        | ksc[n-1] -> svl[0]+n-1 |
++ *      |    vls (max 8)           |     -/           +------------------------+
++ *      |--------------------------|  --/
++ *      |    map[0]                |-/
++ *      |--------------------------|                  +------------------------+
++ *      |    map[1]                |---               |       mask             |
++ *      |--------------------------|   \----          |------------------------|
++ *      |           *              |        \--       | ksc[0] -> svl[1]       |
++ *      |           *              |           \---   |------------------------|
++ *      |           *              |               \->| ksc[1] -> svl[1]+1     |
++ *      |--------------------------|                  |------------------------|
++ *      |   map[vls - 1]           |-                 |         *              |
++ *      +--------------------------+ \-               |------------------------|
++ *                                     \-             | ksc[n-1] -> svl[1]+n-1 |
++ *                                       \            +------------------------+
++ *                                        \-
++ *                                          \
++ *                                           \-       +------------------------+
++ *                                             \-     |       mask             |
++ *                                               \    |------------------------|
++ *                                                \-  | ksc[x] -> svl[x]       |
++ *                                                  \ |------------------------|
++ *                                                   >| ksc[x] -> svl[x]+1     |
++ *                                                    |------------------------|
++ *                                                    |         *              |
++ *                                                    |------------------------|
++ *                                                    | ksc[n-1] -> svl[x]+n-1 |
++ *                                                    +------------------------+
++ *
++ */
++
++/* Initial number of send contexts per VL */
++#define INIT_SC_PER_VL 2
++
++/*
++ * struct pio_map_elem - mapping for a vl
++ * @mask - selector mask
++ * @ksc - array of kernel send contexts for this vl
++ *
++ * The mask is used to "mod" the selector to
++ * produce index into the trailing array of
++ * kscs
++ */
++struct pio_map_elem {
++	u32 mask;
++	struct send_context *ksc[];
++};
++
++/*
++ * struct pio_vl_map - mapping for a vl
++ * @list - rcu head for free callback
++ * @mask - vl mask to "mod" the vl to produce an index to map array
++ * @actual_vls - number of vls
++ * @vls - numbers of vls rounded to next power of 2
++ * @map - array of pio_map_elem entries
++ *
++ * This is the parent mapping structure. The trailing members of the
++ * struct point to pio_map_elem entries, which in turn point to an
++ * array of kscs for that vl.
++ */
++struct pio_vl_map {
++	struct rcu_head list;
++	u32 mask;
++	u8 actual_vls;
++	u8 vls;
++	struct pio_map_elem *map[];
++};
++
++int pio_map_init(struct hfi2_pportdata *ppd, u8 num_vls);
++void free_pio_map(struct hfi2_devdata *dd);
++struct send_context *pio_select_send_context_vl(struct hfi2_pportdata *ppd,
++						u32 selector, u8 vl);
++struct send_context *pio_select_send_context_sc(struct hfi2_pportdata *ppd,
++						u32 selector, u8 sc5);
++
++/* send context functions */
++int init_credit_return(struct hfi2_devdata *dd);
++void free_credit_return(struct hfi2_devdata *dd);
++int init_sc_pools_and_sizes(struct hfi2_devdata *dd);
++int init_send_contexts(struct hfi2_devdata *dd);
++int init_pervl_scs(struct hfi2_pportdata *ppd);
++struct send_context *sc_alloc(struct hfi2_pportdata *ppd, int type,
++			      uint hdrqentsize, int numa);
++void sc_free(struct send_context *sc);
++int sc_enable(struct send_context *sc);
++void sc_disable(struct send_context *sc);
++int sc_restart(struct send_context *sc);
++void sc_return_credits(struct send_context *sc);
++void sc_flush(struct send_context *sc);
++void sc_stop(struct send_context *sc, int bit);
++struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
++				pio_release_cb cb, void *arg);
++void sc_release_update(struct send_context *sc);
++void sc_group_release_update(struct hfi2_devdata *dd, u32 hw_context);
++void sc_add_credit_return_intr(struct send_context *sc);
++void sc_del_credit_return_intr(struct send_context *sc);
++void sc_set_cr_threshold(struct send_context *sc, u32 new_threshold);
++u32 sc_percent_to_threshold(struct send_context *sc, u32 percent);
++u32 sc_mtu_to_threshold(struct send_context *sc, u32 mtu, u32 hdrqentsize);
++void hfi2_sc_wantpiobuf_intr(struct send_context *sc, u32 needint);
++void sc_wait(struct hfi2_devdata *dd);
++
++/* commands for set_pio_integrity() */
++enum spi_cmds {
++	SPI_DEFAULT,
++	SPI_INIT,
++	SPI_SET_JKEY,
++	SPI_CLEAR_JKEY,
++	SPI_SET_PKEY,
++	SPI_CLEAR_PKEY,
++};
++void wfr_set_pio_integrity(struct hfi2_devdata *dd, u32 pidx, u32 ctxt, int type,
++			   enum spi_cmds cmd);
++
++/* support functions */
++void pio_reset_all(struct hfi2_devdata *dd);
++int pio_reset_one(struct hfi2_devdata *dd, u16 ctxt);
++void pio_freeze(struct hfi2_devdata *dd);
++void pio_kernel_unfreeze(struct hfi2_devdata *dd);
++void pio_kernel_linkup(struct hfi2_pportdata *ppd);
++
++/* global PIO send control operations */
++#define PSC_GLOBAL_ENABLE 0
++#define PSC_GLOBAL_DISABLE 1
++#define PSC_GLOBAL_VLARB_ENABLE 2
++#define PSC_GLOBAL_VLARB_DISABLE 3
++#define PSC_CM_RESET 4
++#define PSC_DATA_VL_ENABLE 5
++#define PSC_DATA_VL_DISABLE 6
++
++void __cm_reset(struct hfi2_pportdata *ppd, u64 sendctrl);
++void pio_send_control(struct hfi2_pportdata *ppd, int op);
++
++/* PIO copy routines */
++void pio_copy(struct hfi2_devdata *dd, struct pio_buf *pbuf, u64 pbc,
++	      const void *from, size_t count);
++void seg_pio_copy_start(struct pio_buf *pbuf, u64 pbc,
++			const void *from, size_t nbytes);
++void seg_pio_copy_mid(struct pio_buf *pbuf, const void *from, size_t nbytes);
++void seg_pio_copy_end(struct pio_buf *pbuf);
++
++void seqfile_dump_sci(struct seq_file *s, u32 i,
++		      struct send_context_info *sci);
++
++#endif /* _PIO_H */
+diff --git a/drivers/infiniband/hw/hfi2/qp.h b/drivers/infiniband/hw/hfi2/qp.h
+new file mode 100644
+index 000000000000..498c2c913ff2
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/qp.h
+@@ -0,0 +1,112 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef _QP_H
++#define _QP_H
++#include <linux/hash.h>
++#include <rdma/rdmavt_qp.h>
++#include "verbs.h"
++#include "sdma.h"
++#include "verbs_txreq.h"
++
++extern unsigned int hfi2_qp_table_size;
++
++extern const struct rvt_operation_params hfi2_post_parms[];
++
++/*
++ * Driver specific s_flags starting at bit 31 down to HFI2_S_MIN_BIT_MASK
++ *
++ * HFI2_S_AHG_VALID - ahg header valid on chip
++ * HFI2_S_AHG_CLEAR - have send engine clear ahg state
++ * HFI2_S_WAIT_PIO_DRAIN - qp waiting for PIOs to drain
++ * HFI2_S_WAIT_TID_SPACE - a QP is waiting for TID resource
++ * HFI2_S_WAIT_TID_RESP - waiting for a TID RDMA WRITE response
++ * HFI2_S_WAIT_HALT - halt the first leg send engine
++ * HFI2_S_MIN_BIT_MASK - the lowest bit that can be used by hfi2
++ */
++#define HFI2_S_AHG_VALID         0x80000000
++#define HFI2_S_AHG_CLEAR         0x40000000
++#define HFI2_S_WAIT_PIO_DRAIN    0x20000000
++#define HFI2_S_WAIT_TID_SPACE    0x10000000
++#define HFI2_S_WAIT_TID_RESP     0x08000000
++#define HFI2_S_WAIT_HALT         0x04000000
++#define HFI2_S_MIN_BIT_MASK      0x01000000
++
++/*
++ * overload wait defines
++ */
++
++#define HFI2_S_ANY_WAIT_IO (RVT_S_ANY_WAIT_IO | HFI2_S_WAIT_PIO_DRAIN)
++#define HFI2_S_ANY_WAIT (HFI2_S_ANY_WAIT_IO | RVT_S_ANY_WAIT_SEND)
++#define HFI2_S_ANY_TID_WAIT_SEND (RVT_S_WAIT_SSN_CREDIT | RVT_S_WAIT_DMA)
++
++/*
++ * Send if not busy or waiting for I/O and either
++ * a RC response is pending or we can process send work requests.
++ */
++static inline int hfi2_send_ok(struct rvt_qp *qp)
++{
++	struct hfi2_qp_priv *priv = qp->priv;
++
++	return !(qp->s_flags & (RVT_S_BUSY | HFI2_S_ANY_WAIT_IO)) &&
++		(verbs_txreq_queued(iowait_get_ib_work(&priv->s_iowait)) ||
++		(qp->s_flags & RVT_S_RESP_PENDING) ||
++		 !(qp->s_flags & RVT_S_ANY_WAIT_SEND));
 +}
 +
 +/*
-+ * Extract results from response and drop (last) reference to structure.
-+ * Returns status from response header.
-+ * Must never be called twice for the same message (message has been freed).
-+ * Must never be called on a message that has not received response (up'ed wait).
++ * free_ahg - clear ahg from QP
 + */
-+int cport_send_comp(struct hfi2_devdata *dd, void *handle,
-+		    void **rsp_pld, int *rsp_len)
++static inline void clear_ahg(struct rvt_qp *qp)
 +{
-+	struct cport_work *msg = handle;
-+	void *ptr;
-+	int ret;
-+	int len;
++	struct hfi2_qp_priv *priv = qp->priv;
 +
-+	*rsp_len = len = msg->rsp->hdr.len - sizeof(msg->rsp->hdr);
-+	if (rsp_pld) {
-+		ptr = kzalloc(len, GFP_KERNEL);
-+		if (!ptr)
-+			return -ENOMEM;
-+		memcpy(ptr, &msg->rsp[0].qw[1], len);
-+		*rsp_pld = ptr;
++	priv->s_ahg->ahgcount = 0;
++	qp->s_flags &= ~(HFI2_S_AHG_VALID | HFI2_S_AHG_CLEAR);
++	if (priv->s_sde && qp->s_ahgidx >= 0)
++		sdma_ahg_free(priv->s_sde, qp->s_ahgidx);
++	qp->s_ahgidx = -1;
++}
++
++/**
++ * hfi2_qp_wakeup - wake up on the indicated event
++ * @qp: the QP
++ * @flag: flag the qp on which the qp is stalled
++ */
++void hfi2_qp_wakeup(struct rvt_qp *qp, u32 flag);
++
++struct sdma_engine *hfi2_qp_to_sdma_engine(struct rvt_qp *qp, u8 sc5);
++struct send_context *hfi2_qp_to_send_context(struct rvt_qp *qp, u8 sc5);
++
++void hfi2_qp_iter_print(struct seq_file *s, struct rvt_qp_iter *iter);
++
++bool _hfi2_schedule_send(struct rvt_qp *qp);
++bool hfi2_schedule_send(struct rvt_qp *qp);
++
++void hfi2_migrate_qp(struct rvt_qp *qp);
++int hfi2_valid_qp(struct hfi2_pportdata *ppd, u32 qpn);
++
++/*
++ * Functions provided by hfi2 driver for rdmavt to use
++ */
++void *hfi2_qp_priv_alloc(struct rvt_dev_info *rdi, struct rvt_qp *qp);
++void hfi2_qp_priv_free(struct rvt_dev_info *rdi, struct rvt_qp *qp);
++unsigned int free_all_qps(struct rvt_dev_info *rdi);
++void notify_qp_reset(struct rvt_qp *qp);
++int get_pmtu_from_attr(struct rvt_dev_info *rdi, struct rvt_qp *qp,
++		       struct ib_qp_attr *attr);
++void flush_qp_waiters(struct rvt_qp *qp);
++void notify_error_qp(struct rvt_qp *qp);
++void stop_send_queue(struct rvt_qp *qp);
++void quiesce_qp(struct rvt_qp *qp);
++u32 mtu_from_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp, u32 pmtu);
++int mtu_to_path_mtu(u32 mtu);
++void hfi2_error_port_qps(struct hfi2_ibport *ibp, u8 sl);
++void hfi2_qp_unbusy(struct rvt_qp *qp, struct iowait_work *wait);
++int sriov_alloc_qpn(struct rvt_dev_info *rdi, struct rvt_qpn_table *qpt,
++		    enum ib_qp_type type, u32 port_num);
++
++#endif /* _QP_H */
+diff --git a/drivers/infiniband/hw/hfi2/rc.h b/drivers/infiniband/hw/hfi2/rc.h
+new file mode 100644
+index 000000000000..d8e35cfb67d1
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/rc.h
+@@ -0,0 +1,60 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++#ifndef HFI2_RC_H
++#define HFI2_RC_H
++
++/* cut down ridiculously long IB macro names */
++#define OP(x) IB_OPCODE_RC_##x
++
++static inline void update_ack_queue(struct rvt_qp *qp, unsigned int n)
++{
++	unsigned int next;
++
++	next = n + 1;
++	if (next > rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
++		next = 0;
++	qp->s_tail_ack_queue = next;
++	qp->s_acked_ack_queue = next;
++	qp->s_ack_state = OP(ACKNOWLEDGE);
++}
++
++static inline void rc_defered_ack(struct hfi2_ctxtdata *rcd,
++				  struct rvt_qp *qp)
++{
++	if (list_empty(&qp->rspwait)) {
++		qp->r_flags |= RVT_R_RSP_NAK;
++		rvt_get_qp(qp);
++		list_add_tail(&qp->rspwait, &rcd->qp_wait_list);
 +	}
-+	ret = msg->rsp->hdr.sts;
-+	cwput(msg);
++}
++
++static inline u32 restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe,
++			      u32 psn, u32 pmtu)
++{
++	u32 len;
++
++	len = delta_psn(psn, wqe->psn) * pmtu;
++	return rvt_restart_sge(ss, wqe, len);
++}
++
++static inline void release_rdma_sge_mr(struct rvt_ack_entry *e)
++{
++	if (e->rdma_sge.mr) {
++		rvt_put_mr(e->rdma_sge.mr);
++		e->rdma_sge.mr = NULL;
++	}
++}
++
++struct rvt_ack_entry *find_prev_entry(struct rvt_qp *qp, u32 psn, u8 *prev,
++				      u8 *prev_ack, bool *scheduled);
++int do_rc_ack(struct rvt_qp *qp, u32 aeth, u32 psn, int opcode, u64 val,
++	      struct hfi2_ctxtdata *rcd);
++struct rvt_swqe *do_rc_completion(struct rvt_qp *qp, struct rvt_swqe *wqe,
++				  struct hfi2_ibport *ibp);
++
++#endif /* HFI2_RC_H */
+diff --git a/drivers/infiniband/hw/hfi2/sdma.h b/drivers/infiniband/hw/hfi2/sdma.h
+new file mode 100644
+index 000000000000..66d64905f22c
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/sdma.h
+@@ -0,0 +1,1209 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef _HFI2_SDMA_H
++#define _HFI2_SDMA_H
++
++#include <linux/types.h>
++#include <linux/list.h>
++#include <asm/byteorder.h>
++#include <linux/workqueue.h>
++#include <linux/rculist.h>
++
++#include "sdma_defs.h"
++#include "hfi2.h"
++#include "verbs.h"
++#include "sdma_txreq.h"
++
++static inline bool wfr_sdma_qw_get_first_desc(u64 *qw)
++{
++	return !!(qw[0] & WFR_SDMA_DESC0_FIRST_DESC_FLAG);
++}
++
++static inline void wfr_sdma_qw_set_first_desc(u64 *qw)
++{
++	qw[0] |= WFR_SDMA_DESC0_FIRST_DESC_FLAG;
++}
++
++static inline bool wfr_sdma_qw_get_last_desc(u64 *qw)
++{
++	return !!(qw[0] & WFR_SDMA_DESC0_LAST_DESC_FLAG);
++}
++
++static inline void wfr_sdma_qw_set_last_desc(u64 *qw)
++{
++	qw[0] |= WFR_SDMA_DESC0_LAST_DESC_FLAG;
++}
++
++static inline u32 wfr_sdma_qw_get_byte_count(u64 *qw)
++{
++	return (qw[0] >> WFR_SDMA_DESC0_BYTE_COUNT_SHIFT) &
++		WFR_SDMA_DESC0_BYTE_COUNT_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void wfr_sdma_qw_set_byte_count(u64 *qw, u32 bytes)
++{
++	qw[0] |= ((u64)bytes & WFR_SDMA_DESC0_BYTE_COUNT_MASK) <<
++			WFR_SDMA_DESC0_BYTE_COUNT_SHIFT;
++}
++
++static inline u64 wfr_sdma_qw_get_phy_addr(u64 *qw)
++{
++	return (qw[0] >> WFR_SDMA_DESC0_PHY_ADDR_SHIFT) &
++		WFR_SDMA_DESC0_PHY_ADDR_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void wfr_sdma_qw_set_phy_addr(u64 *qw, u64 phy_addr)
++{
++	qw[0] |= (phy_addr & WFR_SDMA_DESC0_PHY_ADDR_MASK) <<
++			WFR_SDMA_DESC0_PHY_ADDR_SHIFT;
++}
++
++static inline bool jkr_sdma_qw_get_first_desc(u64 *qw)
++{
++	return !!(qw[1] & JKR_SDMA_DESC1_FIRST_DESC_FLAG);
++}
++
++static inline void jkr_sdma_qw_set_first_desc(u64 *qw)
++{
++	qw[1] |= JKR_SDMA_DESC1_FIRST_DESC_FLAG;
++}
++
++static inline bool jkr_sdma_qw_get_last_desc(u64 *qw)
++{
++	return !!(qw[1] & JKR_SDMA_DESC1_LAST_DESC_FLAG);
++}
++
++static inline void jkr_sdma_qw_set_last_desc(u64 *qw)
++{
++	qw[1] |= JKR_SDMA_DESC1_LAST_DESC_FLAG;
++}
++
++static inline u32 jkr_sdma_qw_get_byte_count(u64 *qw)
++{
++	return (qw[1] >> JKR_SDMA_DESC1_BYTE_COUNT_SHIFT) &
++		JKR_SDMA_DESC1_BYTE_COUNT_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void jkr_sdma_qw_set_byte_count(u64 *qw, u32 bytes)
++{
++	qw[1] |= ((u64)bytes & JKR_SDMA_DESC1_BYTE_COUNT_MASK) <<
++			JKR_SDMA_DESC1_BYTE_COUNT_SHIFT;
++}
++
++static inline u64 jkr_sdma_qw_get_phy_addr(u64 *qw)
++{
++	return (qw[0] >> JKR_SDMA_DESC0_PHY_ADDR_SHIFT) &
++		JKR_SDMA_DESC0_PHY_ADDR_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void jkr_sdma_qw_set_phy_addr(u64 *qw, u64 phy_addr)
++{
++	qw[0] |= (phy_addr & JKR_SDMA_DESC0_PHY_ADDR_MASK) <<
++			JKR_SDMA_DESC0_PHY_ADDR_SHIFT;
++}
++
++/* Per-chip setter inlining wrapper */
++#define sdma_qw_set(dd, field, ...) do { \
++	if ((dd)->params->chip_type == CHIP_WFR) \
++		wfr_sdma_qw_set_##field(__VA_ARGS__); \
++	else if ((dd)->params->chip_type == CHIP_JKR) \
++		jkr_sdma_qw_set_##field(__VA_ARGS__); \
++	else \
++		WARN_ONCE(1, "Unsupported chip type %u", \
++			  (dd)->params->chip_type); \
++} while (0)
++
++/* Per-chip getter inlining wrapper */
++#define sdma_qw_get(dd, fn, p) \
++	((dd)->params->chip_type == CHIP_WFR ?  wfr_sdma_qw_get_##fn((p)) : \
++	 ((dd)->params->chip_type == CHIP_JKR ? jkr_sdma_qw_get_##fn((p)) : 0))
++
++enum sdma_states {
++	sdma_state_s00_hw_down,
++	sdma_state_s10_hw_start_up_halt_wait,
++	sdma_state_s15_hw_start_up_clean_wait,
++	sdma_state_s20_idle,
++	sdma_state_s30_sw_clean_up_wait,
++	sdma_state_s40_hw_clean_up_wait,
++	sdma_state_s50_hw_halt_wait,
++	sdma_state_s60_idle_halt_wait,
++	sdma_state_s80_hw_freeze,
++	sdma_state_s82_freeze_sw_clean,
++	sdma_state_s99_running,
++};
++
++enum sdma_events {
++	sdma_event_e00_go_hw_down,
++	sdma_event_e10_go_hw_start,
++	sdma_event_e15_hw_halt_done,
++	sdma_event_e25_hw_clean_up_done,
++	sdma_event_e30_go_running,
++	sdma_event_e40_sw_cleaned,
++	sdma_event_e50_hw_cleaned,
++	sdma_event_e60_hw_halted,
++	sdma_event_e70_go_idle,
++	sdma_event_e80_hw_freeze,
++	sdma_event_e81_hw_frozen,
++	sdma_event_e82_hw_unfreeze,
++	sdma_event_e85_link_down,
++	sdma_event_e90_sw_halted,
++};
++
++struct sdma_set_state_action {
++	unsigned op_enable:1;
++	unsigned op_intenable:1;
++	unsigned op_halt:1;
++	unsigned op_cleanup:1;
++	unsigned go_s99_running_tofalse:1;
++	unsigned go_s99_running_totrue:1;
++};
++
++struct sdma_state {
++	struct kref          kref;
++	struct completion    comp;
++	enum sdma_states current_state;
++	unsigned int         current_op;
++	unsigned int         go_s99_running;
++	/* debugging/development */
++	enum sdma_states previous_state;
++	unsigned int         previous_op;
++	enum sdma_events last_event;
++};
++
++/**
++ * DOC: sdma exported routines
++ *
++ * These sdma routines fit into three categories:
++ * - The SDMA API for building and submitting packets
++ *   to the ring
++ *
++ * - Initialization and tear down routines to buildup
++ *   and tear down SDMA
++ *
++ * - ISR entrances to handle interrupts, state changes
++ *   and errors
++ */
++
++/**
++ * DOC: sdma PSM/verbs API
++ *
++ * The sdma API is designed to be used by both PSM
++ * and verbs to supply packets to the SDMA ring.
++ *
++ * The usage of the API is as follows:
++ *
++ * Embed a struct iowait in the QP or
++ * PQ.  The iowait should be initialized with a
++ * call to iowait_init().
++ *
++ * The user of the API should create an allocation method
++ * for their version of the txreq. slabs, pre-allocated lists,
++ * and dma pools can be used.  Once the user's overload of
++ * the sdma_txreq has been allocated, the sdma_txreq member
++ * must be initialized with sdma_txinit() or sdma_txinit_ahg().
++ *
++ * The txreq must be declared with the sdma_txreq first.
++ *
++ * The tx request, once initialized,  is manipulated with calls to
++ * sdma_txadd_daddr(), sdma_txadd_page(), or sdma_txadd_kvaddr()
++ * for each disjoint memory location.  It is the user's responsibility
++ * to understand the packet boundaries and page boundaries to do the
++ * appropriate number of sdma_txadd_* calls..  The user
++ * must be prepared to deal with failures from these routines due to
++ * either memory allocation or dma_mapping failures.
++ *
++ * The mapping specifics for each memory location are recorded
++ * in the tx. Memory locations added with sdma_txadd_page()
++ * and sdma_txadd_kvaddr() are automatically mapped when added
++ * to the tx and nmapped as part of the progress processing in the
++ * SDMA interrupt handling.
++ *
++ * sdma_txadd_daddr() is used to add an dma_addr_t memory to the
++ * tx.   An example of a use case would be a pre-allocated
++ * set of headers allocated via dma_pool_alloc() or
++ * dma_alloc_coherent().  For these memory locations, it
++ * is the responsibility of the user to handle that unmapping.
++ * (This would usually be at an unload or job termination.)
++ *
++ * The routine sdma_send_txreq() is used to submit
++ * a tx to the ring after the appropriate number of
++ * sdma_txadd_* have been done.
++ *
++ * If it is desired to send a burst of sdma_txreqs, sdma_send_txlist()
++ * can be used to submit a list of packets.
++ *
++ * The user is free to use the link overhead in the struct sdma_txreq as
++ * long as the tx isn't in flight.
++ *
++ * The extreme degenerate case of the number of descriptors
++ * exceeding the ring size is automatically handled as
++ * memory locations are added.  An overflow of the descriptor
++ * array that is part of the sdma_txreq is also automatically
++ * handled.
++ *
++ */
++
++/**
++ * DOC: Infrastructure calls
++ *
++ * sdma_init() is used to initialize data structures and
++ * CSRs for the desired number of SDMA engines.
++ *
++ * sdma_start() is used to kick the SDMA engines initialized
++ * with sdma_init().   Interrupts must be enabled at this
++ * point since aspects of the state machine are interrupt
++ * driven.
++ *
++ * sdma_engine_error() and sdma_engine_interrupt() are
++ * entrances for interrupts.
++ *
++ * sdma_map_init() is for the management of the mapping
++ * table when the number of vls is changed.
++ *
++ */
++
++/*
++ * struct hw_sdma_desc - raw 128 bit SDMA descriptor
++ *
++ * This is the raw descriptor in the SDMA ring
++ */
++struct hw_sdma_desc {
++	/* private:  don't use directly */
++	__le64 qw[2];
++};
++
++/**
++ * struct sdma_engine - Data pertaining to each SDMA engine.
++ * @dd: a back-pointer to the device data
++ * @ppd: per port back-pointer
++ * @imask: mask for irq manipulation
++ * @idle_mask: mask for determining if an interrupt is due to sdma_idle
++ *
++ * This structure has the state for each sdma_engine.
++ *
++ * Accessing to non public fields are not supported
++ * since the private members are subject to change.
++ */
++struct sdma_engine {
++	/* read mostly */
++	struct hfi2_devdata *dd;
++	/* private: */
++	void __iomem *tail_csr;
++	u64 imask;			/* clear interrupt mask */
++	u64 idle_mask;
++	u64 progress_mask;
++	u64 int_mask;
++	/* private: */
++	volatile __le64      *head_dma; /* DMA'ed by chip */
++	/* private: */
++	dma_addr_t            head_phys;
++	/* private: */
++	struct hw_sdma_desc *descq;
++	/* private: */
++	unsigned int descq_full_count;
++	struct sdma_txreq **tx_ring;
++	/* private: */
++	dma_addr_t            descq_phys;
++	/* private */
++	u32 sdma_mask;
++	/* private */
++	struct sdma_state state;
++	/* private */
++	int cpu;
++	/* private: */
++	u8 sdma_shift;
++	/* private: */
++	u8 this_idx; /* zero relative engine */
++	/* protect changes to senddmactrl shadow */
++	spinlock_t senddmactrl_lock;
++	/* private: */
++	u64 p_senddmactrl;		/* shadow per-engine SendDmaCtrl */
++
++	/* read/write using tail_lock */
++	spinlock_t            tail_lock ____cacheline_aligned_in_smp;
++#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
++	/* private: */
++	u64                   tail_sn;
++#endif
++	/* private: */
++	u32                   descq_tail;
++	/* private: */
++	unsigned long         ahg_bits;
++	/* private: */
++	u16                   desc_avail;
++	/* private: */
++	u16                   tx_tail;
++	/* private: */
++	u16 descq_cnt;
++
++	/* read/write using head_lock */
++	/* private: */
++	seqlock_t            head_lock ____cacheline_aligned_in_smp;
++#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
++	/* private: */
++	u64                   head_sn;
++#endif
++	/* private: */
++	u32                   descq_head;
++	/* private: */
++	u16                   tx_head;
++	/* private: */
++	u64                   last_status;
++	/* private */
++	u64                     err_cnt;
++	/* private */
++	u64                     sdma_int_cnt;
++	u64                     idle_int_cnt;
++	u64                     progress_int_cnt;
++
++	/* private: */
++	seqlock_t            waitlock;
++	struct list_head      dmawait;
++
++	/* CONFIG SDMA for now, just blindly duplicate */
++	/* private: */
++	struct work_struct sdma_hw_clean_up_work;
++	struct work_struct sdma_sw_clean_up_work;
++
++	/* private: */
++	struct work_struct err_halt_worker;
++	/* private */
++	struct timer_list     err_progress_check_timer;
++	u32                   progress_check_head;
++	/* private: */
++	struct work_struct flush_worker;
++	/* protect flush list */
++	spinlock_t flushlist_lock;
++	/* private: */
++	struct list_head flushlist;
++	struct cpumask cpu_mask;
++	struct kobject kobj;
++	u32 msix_intr;
++};
++
++int sdma_init(struct hfi2_devdata *dd);
++void sdma_start(struct hfi2_devdata *dd);
++void sdma_exit(struct hfi2_devdata *dd);
++void sdma_clean(struct hfi2_devdata *dd);
++void sdma_all_running(struct hfi2_devdata *dd);
++void sdma_freeze_notify(struct hfi2_devdata *dd, int go_idle);
++void sdma_freeze(struct hfi2_devdata *dd);
++void sdma_unfreeze(struct hfi2_devdata *dd);
++void sdma_wait(struct hfi2_devdata *dd);
++
++/**
++ * sdma_empty() - idle engine test
++ * @engine: sdma engine
++ *
++ * Currently used by verbs as a latency optimization.
++ *
++ * Return:
++ * 1 - empty, 0 - non-empty
++ */
++static inline int sdma_empty(struct sdma_engine *sde)
++{
++	return sde->descq_tail == sde->descq_head;
++}
++
++/*
++ * Return the number of descriptors in use.  Expects descq_cnt is a
++ * power-of-two.  See sdma_get_descq_cnt().
++ */
++static inline u16 sdma_descq_inprocess(struct sdma_engine *sde)
++{
++	return (sde->descq_cnt + sde->descq_tail - READ_ONCE(sde->descq_head))
++		& (sde->descq_cnt - 1);
++}
++
++/* return the number of descriptors available */
++static inline u16 sdma_descq_freecnt(struct sdma_engine *sde)
++{
++	return sde->descq_cnt - 1 - sdma_descq_inprocess(sde);
++}
++
++/*
++ * Either head_lock or tail lock required to see
++ * a steady state.
++ */
++static inline int __sdma_running(struct sdma_engine *engine)
++{
++	return engine->state.current_state == sdma_state_s99_running;
++}
++
++/**
++ * sdma_running() - state suitability test
++ * @engine: sdma engine
++ *
++ * sdma_running probes the internal state to determine if it is suitable
++ * for submitting packets.
++ *
++ * Return:
++ * 1 - ok to submit, 0 - not ok to submit
++ *
++ */
++static inline int sdma_running(struct sdma_engine *engine)
++{
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&engine->tail_lock, flags);
++	ret = __sdma_running(engine);
++	spin_unlock_irqrestore(&engine->tail_lock, flags);
 +	return ret;
 +}
 +
-+/*
-+ * Cleanup aborted wait for response.
-+ * Only called for requests w/responses.
-+ * Must never be called twice for the same message (message has been freed).
-+ */
-+void cport_send_cancel(struct hfi2_devdata *dd, void *handle)
-+{
-+	struct cport_work *msg = handle;
-+
-+	cancel_work(&msg->work);	/* cport_send() drops ref on all paths */
-+	xa_erase(&dd->cport->tid_xa, msg->req->hdr.tid);
-+	cwput(msg);
-+}
++void _sdma_txreq_ahgadd(
++	struct sdma_txreq *tx,
++	u8 num_ahg,
++	u8 ahg_entry,
++	u32 *ahg,
++	u8 ahg_hlen);
 +
 +/*
-+ * Send request and wait for response, with timeout.
-+ * Caller must be able to sleep.
-+ * Returns status from response header, and response payload data, on success.
-+ * Response payload was from k[z]alloc() and caller must kfree().
-+ * On error, returns -errno (response status is always 0-15).
++ * Padding is needed if the data is not a multiple of 4 bytes.  This will
++ * only possibly be true for 9B packets. Non QWORD aligned 16B packets
++ * will have already been dropped.
 + */
-+int cport_send_req(struct hfi2_devdata *dd, u8 op, u8 sideband, void *payload, int len,
-+		   void **rsp_pld, int *rsp_len, long timeout)
++static inline int needs_pad(u16 packet_len)
 +{
-+	int ret;
-+	struct cport_work *msg;
-+	struct semaphore comp;
-+
-+	sema_init(&comp, 0);
-+
-+	might_sleep();
-+
-+	msg = cport_send_req_nb(dd, op, sideband, payload, len, &comp, timeout);
-+	if (IS_ERR(msg))
-+		return PTR_ERR(msg);
-+	if (timeout > 0 && timeout != MAX_SCHEDULE_TIMEOUT)
-+		ret = down_timeout(&comp, timeout);
-+	else
-+		ret = down_killable(&comp);
-+	if (ret) {
-+#ifdef CPORT_INT_DEBUG
-+		u64 ints;
-+
-+		ints = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS);
-+		dd_dev_err(dd, "CPORT request wait interrupted %016llx (%d) [%02llx]\n",
-+			   msg->req->hdr.qw, ret, ints);
-+#else
-+		dd_dev_err(dd, "CPORT request wait interrupted %016llx (%d)\n",
-+			   msg->req->hdr.qw, ret);
-+#endif
-+		cport_send_cancel(dd, msg);
-+		lost_mctxt_intr(dd); /* attempt recovery */
-+		return ret;
-+	}
-+	return cport_send_comp(dd, msg, rsp_pld, rsp_len);
++	return (packet_len & 0x3) != 0;
 +}
 +
-+int cport_send_notif(struct hfi2_devdata *dd, u8 op, u8 sideband, void *payload, int len,
-+		     long timeout)
++/* return the number of bytes needed to pad to a multiple of 4 */
++static inline int pad_length(struct sdma_txreq *tx)
 +{
-+	struct cport_work *msg;
-+	int ret;
++	return (4 - (tx->packet_len & 0x3)) & 0x3;
++}
 +
-+	if (!dd->cport)
-+		return -EINVAL;
++#define ALIGN_NONE          0
++#define ALIGN_256_ALL       1
++#define ALIGN_256_HEAD_TAIL 2
++#define ALIGN_256_TAIL      3
 +
-+	msg = cwalloc(CW_FLAG_SEND);
-+	if (!msg)
-+		return -ENOMEM;
-+	msg->dd = dd;
-+	msg->timeout = timeout;
-+	ret = cwcopy(msg, payload, sizeof(union cport_header), len, true);
-+	if (ret) {
-+		cwput(msg);
-+		return ret;
-+	}
-+	msg->req->hdr.len = len + sizeof(msg->req->hdr);
-+	msg->req->hdr.op_code = op;
-+	msg->req->hdr.sideband = sideband;
-+	msg->req->hdr.is_req = 1;
-+	msg->req->hdr.no_rsp = 1;
-+	INIT_WORK(&msg->work, cport_send_req_fn);
-+	queue_work(dd->hfi2_wq, &msg->work);
++/* return the max number of descriptors a segment might need */
++static inline int calc_num_desc(struct hfi2_devdata *dd, u16 packet_len)
++{
++	if (dd->sdma_align == ALIGN_256_HEAD_TAIL)
++		return 3; /* head, mid, tail */
++	if (dd->sdma_align == ALIGN_NONE)
++		return 1; /* all */
++	if (dd->sdma_align == ALIGN_256_TAIL)
++		return 2; /* head+mid, tail */
++	/*
++	 * Conservative ALIGN_ALL case - split on every 256 byte fetch
++	 * boundary.  The returned number must be the same for the whole
++	 * packet - not just the current segment.
++	 *
++	 * A 10240 sized packet could have at most 41 descriptors.
++	 */
++	return (round_up(packet_len, 256) >> 8) + 1;
++}
++
++/**
++ * sdma_txinit_ahg() - initialize an sdma_txreq struct with AHG
++ * @dd: device data
++ * @tx: tx request to initialize
++ * @flags: flags to key last descriptor additions
++ * @tlen: total packet length (pbc + headers + data)
++ * @ahg_entry: ahg entry to use  (0 - 31)
++ * @num_ahg: ahg descriptor for first descriptor (0 - 9)
++ * @ahg: array of AHG descriptors (up to 9 entries)
++ * @ahg_hlen: number of bytes from ASIC entry to use
++ * @cb: callback
++ *
++ * The allocation of the sdma_txreq and it enclosing structure is user
++ * dependent.  This routine must be called to initialize the user independent
++ * fields.
++ *
++ * The currently supported flags are SDMA_TXREQ_F_URGENT,
++ * SDMA_TXREQ_F_AHG_COPY, and SDMA_TXREQ_F_USE_AHG.
++ *
++ * SDMA_TXREQ_F_URGENT is used for latency sensitive situations where the
++ * completion is desired as soon as possible.
++ *
++ * SDMA_TXREQ_F_AHG_COPY causes the header in the first descriptor to be
++ * copied to chip entry. SDMA_TXREQ_F_USE_AHG causes the code to add in
++ * the AHG descriptors into the first 1 to 3 descriptors.
++ *
++ * Completions of submitted requests can be gotten on selected
++ * txreqs by giving a completion routine callback to sdma_txinit() or
++ * sdma_txinit_ahg().  The environment in which the callback runs
++ * can be from an ISR, a tasklet, or a thread, so no sleeping
++ * kernel routines can be used.   Aspects of the sdma ring may
++ * be locked so care should be taken with locking.
++ *
++ * The callback pointer can be NULL to avoid any callback for the packet
++ * being submitted. The callback will be provided this tx, a status, and a flag.
++ *
++ * The status will be one of SDMA_TXREQ_S_OK, SDMA_TXREQ_S_SENDERROR,
++ * SDMA_TXREQ_S_ABORTED, or SDMA_TXREQ_S_SHUTDOWN.
++ *
++ * The flag, if the is the iowait had been used, indicates the iowait
++ * sdma_busy count has reached zero.
++ *
++ * user data portion of tlen should be precise.   The sdma_txadd_* entrances
++ * will pad with a descriptor references 1 - 3 bytes when the number of bytes
++ * specified in tlen have been supplied to the sdma_txreq.
++ *
++ * ahg_hlen is used to determine the number of on-chip entry bytes to
++ * use as the header.   This is for cases where the stored header is
++ * larger than the header to be used in a packet.  This is typical
++ * for verbs where an RDMA_WRITE_FIRST is larger than the packet in
++ * and RDMA_WRITE_MIDDLE.
++ *
++ */
++static inline int sdma_txinit_ahg(struct hfi2_devdata *dd,
++				  struct sdma_txreq *tx,
++				  u16 flags,
++				  u16 tlen,
++				  u8 ahg_entry,
++				  u8 num_ahg,
++				  u32 *ahg,
++				  u8 ahg_hlen,
++				  void (*cb)(struct sdma_txreq *, int))
++{
++	if (tlen == 0)
++		return -ENODATA;
++	if (tlen > MAX_SDMA_PKT_SIZE)
++		return -EMSGSIZE;
++	tx->desc_limit = ARRAY_SIZE(tx->descs);
++	tx->descp = &tx->descs[0];
++	INIT_LIST_HEAD(&tx->list);
++	tx->num_desc = 0;
++	tx->flags = flags;
++	tx->complete = cb;
++	tx->coalesce_buf = NULL;
++	tx->wait = NULL;
++	tx->packet_len = tlen;
++	tx->tlen = tx->packet_len;
++	tx->desc_margin = calc_num_desc(dd, tx->packet_len) + needs_pad(tx->packet_len);
++	tx->descs[0].qw[0] = 0;
++	tx->descs[0].qw[1] = 0;
++	/*
++	 * Do not bother with initializing .map_type; sdma_set_map_type()
++	 * should overwrite per-desc bits. sdma_get_map_type() should not be
++	 * called for per-desc bits that haven't been set with
++	 * sdma_set_map_type().
++	 */
++	sdma_qw_set(dd, first_desc, tx->descs[0].qw);
++	if (flags & SDMA_TXREQ_F_AHG_COPY)
++		tx->descs[0].qw[1] |=
++			(((u64)ahg_entry & SDMA_DESC1_HEADER_INDEX_MASK)
++				<< SDMA_DESC1_HEADER_INDEX_SHIFT) |
++			(((u64)SDMA_AHG_COPY & SDMA_DESC1_HEADER_MODE_MASK)
++				<< SDMA_DESC1_HEADER_MODE_SHIFT);
++	else if (flags & SDMA_TXREQ_F_USE_AHG && num_ahg)
++		_sdma_txreq_ahgadd(tx, num_ahg, ahg_entry, ahg, ahg_hlen);
 +	return 0;
 +}
 +
-+/*
-+ ********************************************************************
-+ * Internal routines.
-+ */
-+
-+/*
-+ * Send a response to CPORT's request.
++/**
++ * sdma_txinit() - initialize an sdma_txreq struct (no AHG)
++ * @dd: device data
++ * @tx: tx request to initialize
++ * @flags: flags to key last descriptor additions
++ * @tlen: total packet length (pbc + headers + data)
++ * @cb: callback pointer
 + *
-+ * Re-uses message structure from request. Queues to send workqueue.
++ * The allocation of the sdma_txreq and it enclosing structure is user
++ * dependent.  This routine must be called to initialize the user
++ * independent fields.
++ *
++ * The currently supported flags is SDMA_TXREQ_F_URGENT.
++ *
++ * SDMA_TXREQ_F_URGENT is used for latency sensitive situations where the
++ * completion is desired as soon as possible.
++ *
++ * Completions of submitted requests can be gotten on selected
++ * txreqs by giving a completion routine callback to sdma_txinit() or
++ * sdma_txinit_ahg().  The environment in which the callback runs
++ * can be from an ISR, a tasklet, or a thread, so no sleeping
++ * kernel routines can be used.   The head size of the sdma ring may
++ * be locked so care should be taken with locking.
++ *
++ * The callback pointer can be NULL to avoid any callback for the packet
++ * being submitted.
++ *
++ * The callback, if non-NULL,  will be provided this tx and a status.  The
++ * status will be one of SDMA_TXREQ_S_OK, SDMA_TXREQ_S_SENDERROR,
++ * SDMA_TXREQ_S_ABORTED, or SDMA_TXREQ_S_SHUTDOWN.
++ *
 + */
-+static int cport_send_rsp(struct cport_work *msg, int sts)
++static inline int sdma_txinit(struct hfi2_devdata *dd,
++			      struct sdma_txreq *tx,
++			      u16 flags,
++			      u16 tlen,
++			      void (*cb)(struct sdma_txreq *, int))
 +{
-+	struct hfi2_devdata *dd = msg->dd;
++	return sdma_txinit_ahg(dd, tx, flags, tlen, 0, 0, NULL, 0, cb);
++}
 +
-+	/* rsp.hdr.len and rsp.qw[1..] already setup, also rsp.op_code/rsp.tid */
-+	msg->rsp->hdr.is_req = 0;
-+	msg->rsp->hdr.sts = sts;
-+	INIT_WORK(&msg->work, cport_send_rsp_fn);
-+	queue_work(dd->hfi2_wq, &msg->work);
++static inline size_t sdma_mapping_len(struct hfi2_devdata *dd,
++				      struct sdma_desc *d)
++{
++	return sdma_qw_get(dd, byte_count, d->qw);
++}
++
++static inline dma_addr_t sdma_mapping_addr(struct hfi2_devdata *dd,
++					   struct sdma_desc *d)
++{
++	return sdma_qw_get(dd, phy_addr, d->qw);
++}
++
++static inline void sdma_set_map_type(struct sdma_txreq *tx,
++				     u8 i, u8 type)
++{
++	int w = BIT_WORD(i * SDMA_MAP_BITS);
++	int offset = (i * SDMA_MAP_BITS) % BITS_PER_LONG;
++	unsigned long shftmask = SDMA_MAP_MASK << offset;
++	unsigned long *mw = &tx->map_type[w];
++	unsigned long new = (long)type << offset;
++
++	/* Per-desc SDMA_MAP_BITS-sized field must never cross word boundary */
++	static_assert(BITS_PER_LONG % SDMA_MAP_BITS == 0);
++	bitmap_replace(mw, mw, &new, &shftmask, SDMA_MAP_BITS);
++}
++
++static inline u8 sdma_get_map_type(struct sdma_txreq *tx, u8 i)
++{
++	int idx = i * SDMA_MAP_BITS;
++
++	/* Per-desc field must always fit in u8 */
++	static_assert(SDMA_MAP_BITS <= 8);
++	return bitmap_get_value8(tx->map_type, idx) & SDMA_MAP_MASK;
++}
++
++/* do the work, caller is responsible for all checking */
++static inline void _make_tx_sdma_desc(struct hfi2_devdata *dd,
++				      struct sdma_txreq *tx,
++				      int type,
++				      dma_addr_t addr,
++				      size_t len)
++{
++	struct sdma_desc *desc = &tx->descp[tx->num_desc];
++
++	sdma_set_map_type(tx, tx->num_desc, type);
++	if (!tx->num_desc) {
++		/* qw[0] zero; qw[1] first, ahg mode already in from init */
++	} else {
++		desc->qw[0] = 0;
++		desc->qw[1] = 0;
++	}
++
++	sdma_qw_set(dd, phy_addr, desc->qw, addr);
++	sdma_qw_set(dd, byte_count, desc->qw, len);
++	tx->num_desc++;
++}
++
++
++/*
++ * Create one or more descriptors to fetch len bytes.  Enough descriptor room
++ * is guaranteed by the time this function is called.
++ */
++static inline void make_tx_sdma_desc(struct hfi2_devdata *dd,
++				     struct sdma_txreq *tx,
++				     int type,
++				     dma_addr_t addr,
++				     size_t len)
++{
++#define ALIGN_SIZE 256
++#define ALIGN_MASK (ALIGN_SIZE - 1)
++	switch (dd->sdma_align) {
++	case ALIGN_256_ALL:
++		/* align head */
++		if (addr & ALIGN_MASK) {
++			size_t clen = ALIGN_SIZE - (addr & ALIGN_MASK);
++
++			if (clen > len)
++				clen = len;
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* now aligned, split into full sized chunks */
++		while (len >= ALIGN_SIZE) {
++			_make_tx_sdma_desc(dd, tx, type, addr, ALIGN_SIZE);
++			len -= ALIGN_SIZE;
++			addr += ALIGN_SIZE;
++		}
++		/* tail overhang */
++		if (len)
++			_make_tx_sdma_desc(dd, tx, type, addr, len);
++		break;
++
++	case ALIGN_256_HEAD_TAIL: {
++		size_t clen;
++
++		/* align head */
++		if (addr & ALIGN_MASK) {
++			clen = ALIGN_SIZE - (addr & ALIGN_MASK);
++			if (clen > len)
++				clen = len;
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* aligned start to aligned tail */
++		clen = len & ~ALIGN_MASK;
++		if (clen) {
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* tail overhang */
++		if (len)
++			_make_tx_sdma_desc(dd, tx, type, addr, len);
++		break;
++	}
++
++	case ALIGN_256_TAIL: {
++		dma_addr_t end = addr + len;
++		bool same = (addr & ~ALIGN_MASK) == (end & ~ALIGN_MASK);
++		size_t tail_len = end & ALIGN_MASK;
++		size_t clen = len - tail_len;
++
++		/* start to aligned tail */
++		if (clen && !same) {
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* tail overhang */
++		if (len)
++			_make_tx_sdma_desc(dd, tx, type, addr, len);
++		break;
++	}
++
++	default:
++		_make_tx_sdma_desc(dd, tx, type, addr, len);
++		break;
++	}
++#undef ALIGN_SIZE
++#undef ALIGN_MASK
++}
++
++void __sdma_txclean(struct hfi2_devdata *, struct sdma_txreq *);
++
++static inline void sdma_txclean(struct hfi2_devdata *dd, struct sdma_txreq *tx)
++{
++	if (tx->num_desc)
++		__sdma_txclean(dd, tx);
++}
++
++/* calculate the number of no-op descriptors to add */
++static inline int sdma_desc_pad_count(struct hfi2_devdata *dd,
++				      struct sdma_txreq *tx)
++{
++	if (dd->pad_sdma_desc)
++		return round_up(tx->num_desc, dd->pad_sdma_desc) - tx->num_desc;
 +	return 0;
 +}
 +
-+static void cport_send(struct cport_work *msg, bool req)
++/* helpers used by public routines */
++static inline void _sdma_close_tx(struct hfi2_devdata *dd,
++				  struct sdma_txreq *tx)
 +{
-+	union mctxt_mem *mc = req ? msg->req : msg->rsp;
-+	struct hfi2_devdata *dd = msg->dd;
-+	u32 csr_i, tot_len, len_sent;
-+	u64 cport_hdr;
-+	u8 seq_no;
-+	u64 *ptr;
-+	int ret, mcxt_len;
++	u16 last_desc = tx->num_desc - 1;
 +
++	sdma_qw_set(dd, last_desc, tx->descp[last_desc].qw);
++	tx->descp[last_desc].qw[1] |= dd->default_desc1;
++	if (tx->flags & SDMA_TXREQ_F_URGENT)
++		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
++					       SDMA_DESC1_INT_REQ_FLAG);
++	tx->num_pad = sdma_desc_pad_count(dd, tx);
++}
 +
-+	/* sleep until OutboxEmpty... */
-+	if (msg->timeout > 0 && msg->timeout != MAX_SCHEDULE_TIMEOUT)
-+		ret = down_timeout(&dd->cport->outbox, msg->timeout);
-+	else
-+		ret = down_killable(&dd->cport->outbox);
-+	if (ret) {
-+		dd_dev_err(dd, "CPORT Send OUTBOX_EMPTY killed %016llx (%d)\n",
-+			   msg->req->hdr.qw, ret);
-+		cwput(msg);
-+		lost_mctxt_intr(dd); /* attempt recovery */
-+		return;	/* no way to report error to caller */
++/* return true if the current buffer must coalesce */
++static inline bool must_coalesce(struct sdma_txreq *tx)
++{
++	return tx->num_desc + tx->desc_margin >= MAX_DESC;
++}
++
++/* return true if the current buffer forces an extension */
++static inline bool need_desc_extension(struct sdma_txreq *tx)
++{
++	return (tx->desc_limit == ARRAY_SIZE(tx->descs)) &&
++	       (tx->num_desc + tx->desc_margin >= ARRAY_SIZE(tx->descs));
++}
++int _extend_sdma_tx_descs(struct hfi2_devdata *dd, struct sdma_txreq *tx);
++
++static inline int _sdma_txadd_daddr(struct hfi2_devdata *dd,
++				    int type,
++				    struct sdma_txreq *tx,
++				    dma_addr_t addr,
++				    u16 len)
++{
++	int rval;
++
++	WARN_ON(len > tx->tlen);
++	if (need_desc_extension(tx)) {
++		rval = _extend_sdma_tx_descs(dd, tx);
++		if (rval)
++			return rval;
 +	}
 +
-+	/* sequential under lock, check if there are unfinished messages */
-+	if (dd->cport->incomplete_mctxt_msg_tx &&
-+	    dd->cport->incomplete_mctxt_msg_tx != msg) {
-+		/* give up empty outbox, the incomplete msg must finish next */
-+		up(&dd->cport->outbox);
-+		/* reschedule this work until next time */
-+		queue_work(dd->hfi2_wq, &msg->work);
-+		return;
-+	}
++	make_tx_sdma_desc(dd, tx, type, addr, len);
++	tx->tlen -= len;
 +
-+#ifdef CPORT_SND_DEBUG
-+	dd_dev_info(dd, "MCTXT sent %016llx\n", mc->hdr.qw);
-+#endif
-+	tot_len = mc->hdr.len;
-+	len_sent = msg->mctxts_done * sizeof(union mctxt_mem);
-+	ptr = &mc[msg->mctxts_done].qw[0];
-+	seq_no = msg->mctxts_done;
-+	mcxt_len = min_t(int, (int)(tot_len - len_sent), sizeof(union mctxt_mem));
-+	/* NOTE: "CPORT IN" is our output */
-+	csr_i = JKR_MCTXT_CPORT_IN;
-+	cport_hdr = CPORT_HDR_DEF;
-+	cport_hdr |= ((u64)mcxt_len << CPORT_HDR_LEN);
++	/* special case for last */
++	if (!tx->tlen) {
++		int pad_len = pad_length(tx);
 +
-+	cport_hdr |= (((u64)seq_no & 0x3) << CPORT_HDR_SEQ);
-+
-+	/* CPORT_HDR_DEF sets SOM/EOM, clear if not */
-+	if (msg->mctxts_done)
-+		cport_hdr &= ~((u64)1 << CPORT_HDR_SOM);
-+	else
-+		mc->hdr.seq_no = atomic_fetch_inc(&dd->cport->seqno);
-+
-+	if (msg->mctxts_done + 1 < msg->n_mctxts)
-+		cport_hdr &= ~((u64)1 << CPORT_HDR_EOM);
-+
-+	write_csr(dd, CPORT_IN_SCRATCH, cport_hdr);
-+	while (mcxt_len > 0) {
-+		write_csr(dd, csr_i, *ptr++);
-+		csr_i += sizeof(u64);
-+		mcxt_len -= sizeof(u64);
-+	}
-+	write_csr(dd, JKR_MCTXT_CPORT_INT_STATUS, JKR_MCTXT_INT_INBOX_FULL);
-+
-+	/* did we complete the message? */
-+	if (++msg->mctxts_done < msg->n_mctxts) {
-+		dd->cport->incomplete_mctxt_msg_tx = msg;
-+		queue_work(dd->hfi2_wq, &msg->work); /* reschedule the remaining sends */
-+
-+		return;
-+	}
-+
-+	dd->cport->incomplete_mctxt_msg_tx = NULL;
-+	/* reset mctxts_done for response parsing */
-+	if (req)
-+		msg->mctxts_done = 0;
-+	cwput(msg); /* may or may not free memory */
-+}
-+
-+/*
-+ * Low-level send to CPORT via MCTXT.
-+ *
-+ * Interfaces with MCTXT.
-+ */
-+static void cport_send_req_fn(struct work_struct *work)
-+{
-+	struct cport_work *msg = container_of(work, struct cport_work, work);
-+
-+	cport_send(msg, true);
-+}
-+
-+static void cport_send_rsp_fn(struct work_struct *work)
-+{
-+	struct cport_work *msg = container_of(work, struct cport_work, work);
-+
-+	cport_send(msg, false);
-+}
-+
-+static int echo_req(struct hfi2_devdata *dd, u8 op, u8 sideband,
-+		    void *pld, int pll, void *handle)
-+{
-+	struct cport_work *msg = handle;
-+
-+	dd_dev_info(msg->dd, "cport ping %02x (%d)\n", sideband, pll);
-+	/* Leave payload in-tact (echo). */
-+	pld_rsp_set(msg, pld, pll);
-+	return MSG_RSP_STATUS_OK;
-+}
-+
-+static int inval_req(struct hfi2_devdata *dd, u8 op, u8 sideband,
-+		     void *pld, int pll, void *handle)
-+{
-+	return MSG_RSP_STATUS_OPCODE_UNSUPPORTED;
-+}
-+
-+/*
-+ * Process a request from CPORT.
-+ *
-+ * May be dispatched to external function from handlers[].
-+ */
-+static void cport_req_fn(struct work_struct *work)
-+{
-+	struct cport_work *msg = container_of(work, struct cport_work, work);
-+	cport_handler func;
-+	int ret = MSG_RSP_STATUS_OK;
-+	void *pld;
-+	int pll;
-+
-+	pll = msg->req->hdr.len - sizeof(msg->req->hdr);
-+	pld = &msg->req->qw[1];
-+	msg->rsp->hdr.qw = msg->req->hdr.qw;
-+	/* default to no payload in response (if any) */
-+	msg->rsp->hdr.len = sizeof(msg->req->hdr);
-+	func = msg->dd->cport->handlers[msg->req->hdr.op_code];
-+	if (func)
-+		ret = func(msg->dd, msg->req->hdr.op_code, msg->req->hdr.sideband,
-+			   pld, pll, msg);
-+	else
-+		ret = inval_req(msg->dd, msg->req->hdr.op_code, msg->req->hdr.sideband,
-+				pld, pll, msg);
-+	if (msg->req->hdr.no_rsp) {
-+		cwput(msg);
-+		if (ret)
-+			dd_dev_err(msg->dd, "Op %d %02x failed (%d)\n",
-+				   msg->req->hdr.op_code, msg->req->hdr.sideband, ret);
-+	} else {
-+		/* msg->rsp->qw[*] and msg->rsp->hdr.len have been updated */
-+		ret = cport_send_rsp(msg, ret);
-+		if (ret)
-+			dd_dev_err(msg->dd, "Response send failed (%d)\n", ret);
-+	}
-+}
-+
-+/*
-+ * Handler for MCTXT Inbox Full interrupt.
-+ *
-+ * Only one can be queued/run until JKR_MCTXT_INT_OUTBOX_EMPTY is cleared.
-+ * Run in a workqueue (not interrupt context).
-+ */
-+static void cport_mctxt_fn(struct work_struct *work)
-+{
-+	struct hfi2_cport *cport = container_of(work, struct hfi2_cport, mctxt_work);
-+	struct hfi2_devdata *dd = cport->dd;
-+	int ret = 0;
-+	u8 is_start, is_end;
-+	int len;
-+	u64 *ptr;
-+	u64 mhdr;
-+	u32 i;
-+	struct cport_work *msg;
-+	union cport_header hdr;
-+
-+	/*
-+	 * CPORT output MCTXT is our input.
-+	 */
-+	i = JKR_MCTXT_CPORT_OUT;
-+
-+	mhdr = read_csr(dd, CPORT_OUT_SCRATCH);
-+	len = (mhdr >> CPORT_HDR_LEN) & 0xfff;
-+	len = min_t(int, len, sizeof(union mctxt_mem));
-+	is_start = (mhdr >> CPORT_HDR_SOM) & 1;
-+	is_end = (mhdr >> CPORT_HDR_EOM) & 1;
-+	if (is_start) {
-+		hdr.qw = read_csr(dd, i);
-+	} else if (cport->incomplete_mctxt_msg_rx) {
-+		msg = cport->incomplete_mctxt_msg_rx;
-+		if (msg->flags & CW_FLAG_RECV) {
-+			ptr = &msg->req[msg->mctxts_done++].qw[0];
-+			hdr.qw = msg->req->hdr.qw;
-+		} else {
-+			ptr = &msg->rsp[msg->mctxts_done++].qw[0];
-+			hdr.qw = msg->rsp->hdr.qw;
++		if (pad_len) {
++			make_tx_sdma_desc(dd, tx, SDMA_MAP_NONE,
++					  dd->sdma_pad_phys, pad_len);
 +		}
-+		dd_dev_info(dd, "%s: got continuation of %u\n",
-+			    __func__, hdr.seq_no);
-+		/* skip all the start-message parsing/allocation */
-+		goto copy;
-+	} else {
-+		/* this is bad, just skip the message */
-+		dd_dev_warn(dd, "cport sent unexpected non-start packet\n");
-+		goto fail;
++		_sdma_close_tx(dd, tx);
 +	}
-+#ifdef CPORT_RCV_DEBUG
-+	dd_dev_info(dd, "%s() %016llx\n", __func__, hdr.qw);
-+#endif
-+	if (hdr.len < sizeof(hdr)) {
-+		/* assume message is invalid  - cannot be processed */
-+		ret = -EDOM;
-+		goto fail;
-+	}
-+	i += sizeof(u64);
-+	/* No need for atomics here, we are single threaded */
-+	if (hdr.seq_no != cport->rseqno) {
-+		dd_dev_info(dd, "Recv out of sequence: %d -> %d\n", cport->rseqno, hdr.seq_no);
-+		cport->rseqno = hdr.seq_no;
-+	}
-+	cport->rseqno = (cport->rseqno + 1) & CPORT_SEQNO_MASK;
-+	if (hdr.is_req) {
-+		/* Request from CPORT, has no existing message context */
-+		msg = cwalloc(CW_FLAG_RECV);
-+		if (!msg) {
-+			ret = -ENOMEM;
-+			goto fail; /* drop message, with error */
-+		}
-+		ret = cw_pad_size(msg, hdr.len);
-+		if (ret)
-+			goto fail;
-+		ptr = &msg->req->qw[msg->mctxts_done++];
-+	} else {
-+		/*
-+		 * Responses already have a 'msg', extra ref was already taken.
-+		 * Take an additional ref against possible race with timeout
-+		 * (cport_send_cancel()) between here and the up().
-+		 */
-+		msg = cwget_xa(dd, hdr.tid);
-+		if (!msg) {
-+			ret = -ESRCH;
-+			goto fail; /* drop message, with error */
-+		}
-+		ret = cw_pad_size(msg, hdr.len);
-+		if (ret)
-+			goto fail;
-+		ptr = &msg->rsp->qw[msg->mctxts_done++];
-+		/* assert msg->req->hdr ~= hdr */
-+	}
-+	*ptr++ = hdr.qw;
-+	len -= sizeof(hdr);
-+copy:
-+	/* now copy payload into chosen buffer */
-+	while (len > 0) {
-+		*ptr++ = read_csr(dd, i);
-+		i += sizeof(u64);
-+		len -= sizeof(u64);
-+	}
-+	/*
-+	 * We are finished with the dd->cport->mctxt_work struct,
-+	 * and the MCTXT, so it can all be re-used now.
-+	 */
-+	write_csr(dd, JKR_MCTXT_CPORT_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+#ifdef CPORT_RCV_DEBUG
-+	dd_dev_info(dd, "%s() set CPORT OUTBOX_EMPTY\n", __func__);
-+#endif
-+	/*
-+	 * if we do not contain the end of the message then we need to wait
-+	 * until next mailbox
-+	 */
-+	if (!is_end) {
-+		cport->incomplete_mctxt_msg_rx = msg;
-+		dd_dev_info(dd, "%s: expecting continuation of %u\n",
-+			    __func__, hdr.seq_no);
-+		return;
-+	}
-+	cport->incomplete_mctxt_msg_rx = NULL;
-+
-+	/* responses don't require any more work here - just wakeup requester */
-+	if (!hdr.is_req) {
-+		up(msg->sem);
-+		cwput(msg);
-+		return;
-+	}
-+	msg->dd = dd;
-+
-+	/* reset mctxts for response parsing */
-+	msg->mctxts_done = 0;
-+
-+	/* dispatch 'msg' request */
-+	INIT_WORK(&msg->work, cport_req_fn);
-+	/* don't care about locality */
-+	queue_work(dd->hfi2_wq, &msg->work);
-+	return;
-+fail:
-+	write_csr(dd, JKR_MCTXT_CPORT_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+	dd_dev_err(dd, "Dropping incoming CPORT message %016llx (%d)\n", hdr.qw, ret);
-+}
-+
-+/*
-+ * Handler for PF0 MCTXT interrupts.
-+ *
-+ * Called when one of the enabled MCTXT_PF0 conditions occurs.
-+ * 'source' is always 0. Called in interrupt context.
-+ *
-+ * Since this interrupt is exclusive to MCTXT, there is no doubt
-+ * about which transport to use (always is MCTXT).
-+ */
-+void is_cport_int(struct hfi2_devdata *dd, unsigned int source)
-+{
-+	u64 ints;
-+	const int limit = 100; /* arbitrary */
-+	int count;
-+
-+	if (!dd->cport)
-+		return;
-+
-+	/*
-+	 * MctxtCportToPcieInt is a "one shot" merged interrupt.  To ensure
-+	 * nothing is missed, ensure that its source, MctxtPf0IntStatusEnabled,
-+	 * is cleared and reads as zero.
-+	 */
-+	ints = 0;
-+	for (count = 0; count < limit; count++) {
-+		u64 temp;
-+
-+		temp = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS_ENABLED);
-+		if (temp == 0)
-+			break;
-+		ints |= temp;
-+		write_csr(dd, JKR_MCTXT_PF0_INT_ACK, temp);
-+	}
-+	if (count == limit)
-+		dd_dev_warn(dd, "MCTXT interrupt too many loops\n");
-+	if (!ints) {
-+		dd_dev_warn(dd, "MCTXT interrupt, but no status bits set\n");
-+		return;
-+	}
-+
-+#ifdef CPORT_INT_DEBUG
-+	dd_dev_info(dd, "%s() %02llx\n", __func__, ints);
-+#endif
-+	if (ints & JKR_MCTXT_INT_INBOX_FULL)
-+		queue_work(dd->hfi2_wq, &dd->cport->mctxt_work);
-+	if (ints & JKR_MCTXT_INT_OUTBOX_EMPTY)
-+		up(&dd->cport->outbox);
-+}
-+
-+/***************************************************
-+ * API for handling notifications from CPORT
-+ */
-+
-+int cport_resp_set(void *handle, void *payload, int len)
-+{
-+	struct cport_work *msg = handle;
-+
-+	if (!msg || !payload || len <= 0)
-+		return -EINVAL;
-+	msg->rsp->hdr.len = len + sizeof(msg->rsp->hdr);
-+	memcpy(&msg->rsp->qw[1], payload, len);
 +	return 0;
 +}
 +
-+int cport_register_cb(struct hfi2_devdata *dd, u8 op_start, u8 op_end, cport_handler func)
-+{
-+	int x;
++int do_coalesce(struct hfi2_devdata *dd, struct sdma_txreq *tx,
++		int type, void *kvaddr, struct page *page,
++		unsigned long offset, u16 len);
 +
-+	if (op_start > op_end || op_start < 0 || op_end >= 256)
++/**
++ * sdma_txadd_page() - add a page to the sdma_txreq
++ * @dd: the device to use for mapping
++ * @tx: tx request to which the page is added
++ * @page: page to map
++ * @offset: offset within the page
++ * @len: length in bytes
++ *
++ * This is used to add a page/offset/length descriptor.
++ *
++ * The mapping/unmapping of the page/offset/len is automatically handled.
++ *
++ * Return:
++ * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't
++ * extend/coalesce descriptor array
++ */
++static inline int sdma_txadd_page(
++	struct hfi2_devdata *dd,
++	struct sdma_txreq *tx,
++	struct page *page,
++	unsigned long offset,
++	u16 len)
++{
++	dma_addr_t addr;
++
++	if (unlikely(must_coalesce(tx)))
++		return do_coalesce(dd, tx, SDMA_MAP_PAGE,
++				   NULL, page, offset, len);
++
++	addr = dma_map_page(
++		       &dd->pcidev->dev,
++		       page,
++		       offset,
++		       len,
++		       DMA_TO_DEVICE);
++
++	if (unlikely(dma_mapping_error(&dd->pcidev->dev, addr))) {
++		__sdma_txclean(dd, tx);
++		return -ENOSPC;
++	}
++
++	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, tx, addr, len);
++}
++
++/**
++ * sdma_txadd_daddr() - add a dma address to the sdma_txreq
++ * @dd: the device to use for mapping
++ * @tx: sdma_txreq to which the page is added
++ * @addr: dma address mapped by caller
++ * @len: length in bytes
++ *
++ * This is used to add a descriptor for memory that is already dma mapped.
++ *
++ * In this case, there is no unmapping as part of the progress processing for
++ * this memory location.
++ *
++ * Return:
++ * 0 - success, -ENOMEM - couldn't extend descriptor array
++ */
++
++static inline int sdma_txadd_daddr(
++	struct hfi2_devdata *dd,
++	struct sdma_txreq *tx,
++	dma_addr_t addr,
++	u16 len)
++{
++	if (unlikely(must_coalesce(tx)))
++		return do_coalesce(dd, tx, SDMA_MAP_NONE,
++				   NULL, NULL, 0, 0);
++
++	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, tx, addr, len);
++}
++
++/**
++ * sdma_txadd_kvaddr() - add a kernel virtual address to sdma_txreq
++ * @dd: the device to use for mapping
++ * @tx: sdma_txreq to which the page is added
++ * @kvaddr: the kernel virtual address
++ * @len: length in bytes
++ *
++ * This is used to add a descriptor referenced by the indicated kvaddr and
++ * len.
++ *
++ * The mapping/unmapping of the kvaddr and len is automatically handled.
++ *
++ * Return:
++ * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't extend/coalesce
++ * descriptor array
++ */
++static inline int sdma_txadd_kvaddr(
++	struct hfi2_devdata *dd,
++	struct sdma_txreq *tx,
++	void *kvaddr,
++	u16 len)
++{
++	dma_addr_t addr;
++
++	if (unlikely(must_coalesce(tx)))
++		return do_coalesce(dd, tx, SDMA_MAP_SINGLE,
++				   kvaddr, NULL, 0, len);
++
++	addr = dma_map_single(
++		       &dd->pcidev->dev,
++		       kvaddr,
++		       len,
++		       DMA_TO_DEVICE);
++
++	if (unlikely(dma_mapping_error(&dd->pcidev->dev, addr))) {
++		__sdma_txclean(dd, tx);
++		return -ENOSPC;
++	}
++
++	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx, addr, len);
++}
++
++struct iowait_work;
++
++int sdma_send_txreq(struct sdma_engine *sde,
++		    struct iowait_work *wait,
++		    struct sdma_txreq *tx,
++		    bool pkts_sent);
++int sdma_send_txlist(struct sdma_engine *sde,
++		     struct iowait_work *wait,
++		     struct list_head *tx_list,
++		     u16 *count_out);
++
++int sdma_ahg_alloc(struct sdma_engine *sde);
++void sdma_ahg_free(struct sdma_engine *sde, int ahg_index);
++
++/**
++ * sdma_build_ahg - build ahg descriptor
++ * @data
++ * @dwindex
++ * @startbit
++ * @bits
++ *
++ * Build and return a 32 bit descriptor.
++ */
++static inline u32 sdma_build_ahg_descriptor(
++	u16 data,
++	u8 dwindex,
++	u8 startbit,
++	u8 bits)
++{
++	return (u32)(1UL << SDMA_AHG_UPDATE_ENABLE_SHIFT |
++		((startbit & SDMA_AHG_FIELD_START_MASK) <<
++		SDMA_AHG_FIELD_START_SHIFT) |
++		((bits & SDMA_AHG_FIELD_LEN_MASK) <<
++		SDMA_AHG_FIELD_LEN_SHIFT) |
++		((dwindex & SDMA_AHG_INDEX_MASK) <<
++		SDMA_AHG_INDEX_SHIFT) |
++		((data & SDMA_AHG_VALUE_MASK) <<
++		SDMA_AHG_VALUE_SHIFT));
++}
++
++/**
++ * sdma_progress - use seq number of detect head progress
++ * @sde: sdma_engine to check
++ * @seq: base seq count
++ * @tx: txreq for which we need to check descriptor availability
++ *
++ * This is used in the appropriate spot in the sleep routine
++ * to check for potential ring progress.  This routine gets the
++ * seqcount before queuing the iowait structure for progress.
++ *
++ * If the seqcount indicates that progress needs to be checked,
++ * re-submission is detected by checking whether the descriptor
++ * queue has enough descriptor for the txreq.
++ */
++static inline unsigned int sdma_progress(struct sdma_engine *sde, unsigned int seq,
++				     struct sdma_txreq *tx)
++{
++	if (read_seqretry(&sde->head_lock, seq)) {
++		sde->desc_avail = sdma_descq_freecnt(sde);
++		if (tx->num_desc + tx->num_pad > sde->desc_avail)
++			return 0;
++		return 1;
++	}
++	return 0;
++}
++
++/* for use by interrupt handling */
++void sdma_engine_error(struct sdma_engine *sde, u64 status);
++void sdma_engine_interrupt(struct sdma_engine *sde, u64 status);
++bool sdma_work_pending(struct sdma_engine *sde);
++
++/*
++ *
++ * The diagram below details the relationship of the mapping structures
++ *
++ * Since the mapping now allows for non-uniform engines per vl, the
++ * number of engines for a vl is either the vl_engines[vl] or
++ * a computation based on num_sdma/num_vls:
++ *
++ * For example:
++ * nactual = vl_engines ? vl_engines[vl] : num_sdma/num_vls
++ *
++ * n = roundup to next highest power of 2 using nactual
++ *
++ * In the case where there are num_sdma/num_vls doesn't divide
++ * evenly, the extras are added from the last vl downward.
++ *
++ * For the case where n > nactual, the engines are assigned
++ * in a round robin fashion wrapping back to the first engine
++ * for a particular vl.
++ *
++ *               dd->sdma_map
++ *                    |                                   sdma_map_elem[0]
++ *                    |                                +--------------------+
++ *                    v                                |       mask         |
++ *               sdma_vl_map                           |--------------------|
++ *      +--------------------------+                   | sde[0] -> eng 1    |
++ *      |    list (RCU)            |                   |--------------------|
++ *      |--------------------------|                 ->| sde[1] -> eng 2    |
++ *      |    mask                  |              --/  |--------------------|
++ *      |--------------------------|            -/     |        *           |
++ *      |    actual_vls (max 8)    |          -/       |--------------------|
++ *      |--------------------------|       --/         | sde[n-1] -> eng n  |
++ *      |    vls (max 8)           |     -/            +--------------------+
++ *      |--------------------------|  --/
++ *      |    map[0]                |-/
++ *      |--------------------------|                   +---------------------+
++ *      |    map[1]                |---                |       mask          |
++ *      |--------------------------|   \----           |---------------------|
++ *      |           *              |        \--        | sde[0] -> eng 1+n   |
++ *      |           *              |           \----   |---------------------|
++ *      |           *              |                \->| sde[1] -> eng 2+n   |
++ *      |--------------------------|                   |---------------------|
++ *      |   map[vls - 1]           |-                  |         *           |
++ *      +--------------------------+ \-                |---------------------|
++ *                                     \-              | sde[m-1] -> eng m+n |
++ *                                       \             +---------------------+
++ *                                        \-
++ *                                          \
++ *                                           \-        +----------------------+
++ *                                             \-      |       mask           |
++ *                                               \     |----------------------|
++ *                                                \-   | sde[0] -> eng 1+m+n  |
++ *                                                  \- |----------------------|
++ *                                                    >| sde[1] -> eng 2+m+n  |
++ *                                                     |----------------------|
++ *                                                     |         *            |
++ *                                                     |----------------------|
++ *                                                     | sde[o-1] -> eng o+m+n|
++ *                                                     +----------------------+
++ *
++ */
++
++/**
++ * struct sdma_map_elem - mapping for a vl
++ * @mask - selector mask
++ * @sde - array of engines for this vl
++ *
++ * The mask is used to "mod" the selector
++ * to produce index into the trailing
++ * array of sdes.
++ */
++struct sdma_map_elem {
++	u32 mask;
++	struct sdma_engine *sde[];
++};
++
++/**
++ * struct sdma_map_el - mapping for a vl
++ * @engine_to_vl - map of an engine to a vl
++ * @list - rcu head for free callback
++ * @mask - vl mask to "mod" the vl to produce an index to map array
++ * @actual_vls - number of vls
++ * @vls - number of vls rounded to next power of 2
++ * @map - array of sdma_map_elem entries
++ *
++ * This is the parent mapping structure.  The trailing
++ * members of the struct point to sdma_map_elem entries, which
++ * in turn point to an array of sde's for that vl.
++ */
++struct sdma_vl_map {
++	s8 engine_to_vl[TXE_NUM_SDMA_ENGINES];
++	struct rcu_head list;
++	u32 mask;
++	u8 actual_vls;
++	u8 vls;
++	struct sdma_map_elem *map[];
++};
++
++int sdma_map_init(struct hfi2_pportdata *ppd, u8 num_vls, u8 *vl_engines);
++
++/* slow path */
++void _sdma_engine_progress_schedule(struct sdma_engine *sde);
++
++/**
++ * sdma_engine_progress_schedule() - schedule progress on engine
++ * @sde: sdma_engine to schedule progress
++ *
++ * This is the fast path.
++ *
++ */
++static inline void sdma_engine_progress_schedule(
++	struct sdma_engine *sde)
++{
++	if (!sde || sdma_descq_inprocess(sde) < (sde->descq_cnt / 8))
++		return;
++	_sdma_engine_progress_schedule(sde);
++}
++
++struct sdma_engine *sdma_select_engine_sc(struct hfi2_pportdata *ppd,
++					  u32 selector, u8 sc5);
++struct sdma_engine *sdma_select_engine_vl(struct hfi2_pportdata *ppd,
++					  u32 selector, u8 vl);
++struct sdma_engine *sdma_select_user_engine(struct hfi2_pportdata *ppd,
++					    u32 selector, u8 vl);
++ssize_t sdma_get_cpu_to_sde_map(struct sdma_engine *sde, char *buf);
++ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
++				size_t count);
++int sdma_engine_get_vl(struct hfi2_pportdata *ppd, struct sdma_engine *sde);
++void sdma_seqfile_dump_sde(struct seq_file *s, struct sdma_engine *sde);
++void sdma_seqfile_dump_cpu_list(struct seq_file *s, struct hfi2_devdata *dd,
++				unsigned long cpuid);
++
++#ifdef CONFIG_HFI2_SDMA_VERBOSITY
++void sdma_dumpstate(struct sdma_engine *);
++#endif
++static inline char *slashstrip(char *s)
++{
++	char *r = s;
++
++	while (*s)
++		if (*s++ == '/')
++			r = s;
++	return r;
++}
++
++u16 sdma_get_descq_cnt(void);
++
++extern uint mod_num_sdma;
++
++void sdma_update_lmc(struct hfi2_devdata *dd, u64 mask, u32 lid);
++#endif
+diff --git a/drivers/infiniband/hw/hfi2/sdma_defs.h b/drivers/infiniband/hw/hfi2/sdma_defs.h
+new file mode 100644
+index 000000000000..681c27021a42
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/sdma_defs.h
+@@ -0,0 +1,113 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2025 Cornelis Networks, Inc.
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++
++#ifndef _HFI2_SDMA_DEFS_H
++#define _HFI2_SDMA_DEFS_H
++
++/* Hardware limit */
++#define MAX_DESC 64
++/* Hardware limit for SDMA packet size */
++#define MAX_SDMA_PKT_SIZE ((16 * 1024) - 1)
++
++#define SDMA_MAP_NONE 0
++#define SDMA_MAP_SINGLE 1
++#define SDMA_MAP_PAGE 2
++
++#define SDMA_MAP_BITS 2
++#define SDMA_MAP_MASK ((1ull << SDMA_MAP_BITS) - 1)
++
++#define SDMA_AHG_VALUE_MASK 0xffff
++#define SDMA_AHG_VALUE_SHIFT 0
++#define SDMA_AHG_INDEX_MASK 0xf
++#define SDMA_AHG_INDEX_SHIFT 16
++#define SDMA_AHG_FIELD_LEN_MASK 0xf
++#define SDMA_AHG_FIELD_LEN_SHIFT 20
++#define SDMA_AHG_FIELD_START_MASK 0x1f
++#define SDMA_AHG_FIELD_START_SHIFT 24
++#define SDMA_AHG_UPDATE_ENABLE_MASK 0x1
++#define SDMA_AHG_UPDATE_ENABLE_SHIFT 31
++
++/* AHG modes */
++
++/*
++ * Be aware the ordering and values
++ * for SDMA_AHG_APPLY_UPDATE[123]
++ * are assumed in generating a skip
++ * count in submit_tx() in sdma.c
++ */
++#define SDMA_AHG_NO_AHG 0
++#define SDMA_AHG_COPY 1
++#define SDMA_AHG_APPLY_UPDATE1 2
++#define SDMA_AHG_APPLY_UPDATE2 3
++#define SDMA_AHG_APPLY_UPDATE3 4
++
++/*
++ * Bits defined in the send DMA descriptor.
++ */
++/* WFR SDMA header fields */
++#define WFR_SDMA_DESC0_FIRST_DESC_FLAG BIT_ULL(63)
++#define WFR_SDMA_DESC0_LAST_DESC_FLAG BIT_ULL(62)
++#define WFR_SDMA_DESC0_BYTE_COUNT_SHIFT 48
++#define WFR_SDMA_DESC0_BYTE_COUNT_WIDTH 14
++#define WFR_SDMA_DESC0_BYTE_COUNT_MASK \
++	((1ULL << WFR_SDMA_DESC0_BYTE_COUNT_WIDTH) - 1)
++#define WFR_SDMA_DESC0_BYTE_COUNT_SMASK \
++	(WFR_SDMA_DESC0_BYTE_COUNT_MASK << WFR_SDMA_DESC0_BYTE_COUNT_SHIFT)
++#define WFR_SDMA_DESC0_PHY_ADDR_SHIFT 0
++#define WFR_SDMA_DESC0_PHY_ADDR_WIDTH 48
++#define WFR_SDMA_DESC0_PHY_ADDR_MASK \
++	((1ULL << WFR_SDMA_DESC0_PHY_ADDR_WIDTH) - 1)
++#define WFR_SDMA_DESC0_PHY_ADDR_SMASK \
++	(WFR_SDMA_DESC0_PHY_ADDR_MASK << WFR_SDMA_DESC0_PHY_ADDR_SHIFT)
++
++/* JKR SDMA header fields */
++#define JKR_SDMA_DESC0_PHY_ADDR_SHIFT 0
++#define JKR_SDMA_DESC0_PHY_ADDR_WIDTH 58
++#define JKR_SDMA_DESC0_PHY_ADDR_MASK \
++	((1ULL << JKR_SDMA_DESC0_PHY_ADDR_WIDTH) - 1)
++#define JKR_SDMA_DESC0_PHY_ADDR_SMASK \
++	(JKR_SDMA_DESC0_PHY_ADDR_MASK << JKR_SDMA_DESC0_PHY_ADDR_SHIFT)
++
++#define JKR_SDMA_DESC1_FIRST_DESC_FLAG BIT_ULL(31)
++#define JKR_SDMA_DESC1_LAST_DESC_FLAG BIT_ULL(30)
++#define JKR_SDMA_DESC1_BYTE_COUNT_SHIFT 16
++#define JKR_SDMA_DESC1_BYTE_COUNT_WIDTH 14
++#define JKR_SDMA_DESC1_BYTE_COUNT_MASK \
++	((1ULL << JKR_SDMA_DESC1_BYTE_COUNT_WIDTH) - 1)
++#define JKR_SDMA_DESC1_BYTE_COUNT_SMASK \
++	(JKR_SDMA_DESC1_BYTE_COUNT_MASK << JKR_SDMA_DESC1_BYTE_COUNT_SHIFT)
++
++/* common SDMA header fields */
++#define SDMA_DESC1_HEADER_UPDATE1_SHIFT 32
++#define SDMA_DESC1_HEADER_UPDATE1_WIDTH 32
++#define SDMA_DESC1_HEADER_UPDATE1_MASK \
++	((1ULL << SDMA_DESC1_HEADER_UPDATE1_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_UPDATE1_SMASK \
++	(SDMA_DESC1_HEADER_UPDATE1_MASK << SDMA_DESC1_HEADER_UPDATE1_SHIFT)
++#define SDMA_DESC1_HEADER_MODE_SHIFT 13
++#define SDMA_DESC1_HEADER_MODE_WIDTH 3
++#define SDMA_DESC1_HEADER_MODE_MASK ((1ULL << SDMA_DESC1_HEADER_MODE_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_MODE_SMASK \
++	(SDMA_DESC1_HEADER_MODE_MASK << SDMA_DESC1_HEADER_MODE_SHIFT)
++#define SDMA_DESC1_HEADER_INDEX_SHIFT 8
++#define SDMA_DESC1_HEADER_INDEX_WIDTH 5
++#define SDMA_DESC1_HEADER_INDEX_MASK \
++	((1ULL << SDMA_DESC1_HEADER_INDEX_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_INDEX_SMASK \
++	(SDMA_DESC1_HEADER_INDEX_MASK << SDMA_DESC1_HEADER_INDEX_SHIFT)
++#define SDMA_DESC1_HEADER_DWS_SHIFT 4
++#define SDMA_DESC1_HEADER_DWS_WIDTH 4
++#define SDMA_DESC1_HEADER_DWS_MASK ((1ULL << SDMA_DESC1_HEADER_DWS_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_DWS_SMASK \
++	(SDMA_DESC1_HEADER_DWS_MASK << SDMA_DESC1_HEADER_DWS_SHIFT)
++#define SDMA_DESC1_GENERATION_SHIFT 2
++#define SDMA_DESC1_GENERATION_WIDTH 2
++#define SDMA_DESC1_GENERATION_MASK ((1ULL << SDMA_DESC1_GENERATION_WIDTH) - 1)
++#define SDMA_DESC1_GENERATION_SMASK \
++	(SDMA_DESC1_GENERATION_MASK << SDMA_DESC1_GENERATION_SHIFT)
++#define SDMA_DESC1_INT_REQ_FLAG BIT_ULL(1)
++#define SDMA_DESC1_HEAD_TO_HOST_FLAG BIT_ULL(0)
++#endif /* _HFI2_SDMA_H */
+diff --git a/drivers/infiniband/hw/hfi2/sdma_txreq.h b/drivers/infiniband/hw/hfi2/sdma_txreq.h
+new file mode 100644
+index 000000000000..3f7ba121d5e6
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/sdma_txreq.h
+@@ -0,0 +1,105 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2016 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef HFI2_SDMA_TXREQ_H
++#define HFI2_SDMA_TXREQ_H
++
++#include "sdma_defs.h"
++
++/* nominal descriptor count with expected padding */
++#define NUM_DESC 6
++
++/*
++ * struct sdma_desc - canonical fragment descriptor
++ *
++ * This is the descriptor carried in the tx request
++ * corresponding to each fragment.
++ *
++ */
++struct sdma_desc {
++	/* private:  don't use directly */
++	u64 qw[2];
++};
++
++/**
++ * struct sdma_txreq - the sdma_txreq structure (one per packet)
++ * @list: for use by user and by queuing for wait
++ *
++ * This is the representation of a packet which consists of some
++ * number of fragments.   Storage is provided to within the structure.
++ * for all fragments.
++ *
++ * The storage for the descriptors are automatically extended as needed
++ * when the currently allocation is exceeded.
++ *
++ * The user (Verbs or PSM) may overload this structure with fields
++ * specific to their use by putting this struct first in their struct.
++ * The method of allocation of the overloaded structure is user dependent
++ *
++ * The list is the only public field in the structure.
++ *
++ */
++
++#define SDMA_TXREQ_S_OK        0
++#define SDMA_TXREQ_S_SENDERROR 1
++#define SDMA_TXREQ_S_ABORTED   2
++#define SDMA_TXREQ_S_SHUTDOWN  3
++
++/* flags bits */
++#define SDMA_TXREQ_F_URGENT       0x0001
++#define SDMA_TXREQ_F_AHG_COPY     0x0002
++#define SDMA_TXREQ_F_USE_AHG      0x0004
++#define SDMA_TXREQ_F_VIP          0x0010
++
++struct sdma_txreq;
++typedef void (*callback_t)(struct sdma_txreq *, int);
++
++struct iowait;
++struct sdma_txreq {
++	struct list_head list;
++	/* private: */
++	struct sdma_desc *descp;
++	/* private: */
++	void *coalesce_buf;
++	/* private: */
++	struct iowait *wait;
++	/* private: */
++	callback_t                  complete;
++#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
++	u64 sn;
++#endif
++	/* private: - used in coalesce/pad processing */
++	u16                         packet_len;
++	/* private: - down-counted to trigger last */
++	u16                         tlen;
++	/* private: */
++	u16                         num_desc;
++	/* private: */
++	u16                         desc_limit;
++	/* private: */
++	u16                         next_descq_idx;
++	/* private: */
++	u16 coalesce_idx;
++	/* private: flags */
++	u16                         flags;
++	/* number of no-op descriptors to add */
++	u8 num_pad;
++	/* number avail descriptors needed before coalesce or expansion */
++	u8 desc_margin;
++	/* packed bitfield with enough space for SDMA_MAP_* values
++	 * for up to 64 descriptors at 2 bits per descriptor
++	 */
++	DECLARE_BITMAP(map_type, SDMA_MAP_BITS * MAX_DESC);
++	/* private: */
++	struct sdma_desc descs[NUM_DESC];
++};
++
++static inline int sdma_txreq_built(struct sdma_txreq *tx)
++{
++	return tx->num_desc;
++}
++
++#endif                          /* HFI2_SDMA_TXREQ_H */
+diff --git a/drivers/infiniband/hw/hfi2/tid_rdma.h b/drivers/infiniband/hw/hfi2/tid_rdma.h
+new file mode 100644
+index 000000000000..26c6a1ff610b
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/tid_rdma.h
+@@ -0,0 +1,321 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++#ifndef HFI2_TID_RDMA_H
++#define HFI2_TID_RDMA_H
++
++#include <linux/circ_buf.h>
++#include "common.h"
++
++/* Add a convenience helper */
++#define CIRC_ADD(val, add, size) (((val) + (add)) & ((size) - 1))
++#define CIRC_NEXT(val, size) CIRC_ADD(val, 1, size)
++#define CIRC_PREV(val, size) CIRC_ADD(val, -1, size)
++
++#define TID_RDMA_MIN_SEGMENT_SIZE       BIT(18)   /* 256 KiB (for now) */
++#define TID_RDMA_MAX_SEGMENT_SIZE       BIT(18)   /* 256 KiB (for now) */
++#define TID_RDMA_MAX_PAGES              (BIT(18) >> PAGE_SHIFT)
++#define TID_RDMA_SEGMENT_SHIFT		18
++
++/*
++ * Bit definitions for priv->s_flags.
++ * These bit flags overload the bit flags defined for the QP's s_flags.
++ * Due to the fact that these bit fields are used only for the QP priv
++ * s_flags, there are no collisions.
++ *
++ * HFI2_S_TID_WAIT_INTERLCK - QP is waiting for requester interlock
++ * HFI2_R_TID_WAIT_INTERLCK - QP is waiting for responder interlock
++ */
++#define HFI2_S_TID_BUSY_SET       BIT(0)
++/* BIT(1) reserved for RVT_S_BUSY. */
++#define HFI2_R_TID_RSC_TIMER      BIT(2)
++/* BIT(3) reserved for RVT_S_RESP_PENDING. */
++/* BIT(4) reserved for RVT_S_ACK_PENDING. */
++#define HFI2_S_TID_WAIT_INTERLCK  BIT(5)
++#define HFI2_R_TID_WAIT_INTERLCK  BIT(6)
++/* BIT(7) - BIT(15) reserved for RVT_S_WAIT_*. */
++/* BIT(16) reserved for RVT_S_SEND_ONE */
++#define HFI2_S_TID_RETRY_TIMER    BIT(17)
++/* BIT(18) reserved for RVT_S_ECN. */
++#define HFI2_R_TID_SW_PSN         BIT(19)
++/* BIT(26) reserved for HFI2_S_WAIT_HALT */
++/* BIT(27) reserved for HFI2_S_WAIT_TID_RESP */
++/* BIT(28) reserved for HFI2_S_WAIT_TID_SPACE */
++
++/*
++ * Unlike regular IB RDMA VERBS, which do not require an entry
++ * in the s_ack_queue, TID RDMA WRITE requests do because they
++ * generate responses.
++ * Therefore, the s_ack_queue needs to be extended by a certain
++ * amount. The key point is that the queue needs to be extended
++ * without letting the "user" know so they user doesn't end up
++ * using these extra entries.
++ */
++#define HFI2_TID_RDMA_WRITE_CNT 8
++
++struct tid_rdma_params {
++	struct rcu_head rcu_head;
++	u32 qp;
++	u32 max_len;
++	u16 jkey;
++	u8 max_read;
++	u8 max_write;
++	u8 timeout;
++	u8 urg;
++	u8 version;
++};
++
++struct tid_rdma_qp_params {
++	struct work_struct trigger_work;
++	struct tid_rdma_params local;
++	struct tid_rdma_params __rcu *remote;
++};
++
++/* Track state for each hardware flow */
++struct tid_flow_state {
++	u32 generation;
++	u32 psn;
++	u8 index;
++	u8 last_index;
++};
++
++enum tid_rdma_req_state {
++	TID_REQUEST_INACTIVE = 0,
++	TID_REQUEST_INIT,
++	TID_REQUEST_INIT_RESEND,
++	TID_REQUEST_ACTIVE,
++	TID_REQUEST_RESEND,
++	TID_REQUEST_RESEND_ACTIVE,
++	TID_REQUEST_QUEUED,
++	TID_REQUEST_SYNC,
++	TID_REQUEST_RNR_NAK,
++	TID_REQUEST_COMPLETE,
++};
++
++struct tid_rdma_request {
++	struct rvt_qp *qp;
++	struct hfi2_ctxtdata *rcd;
++	union {
++		struct rvt_swqe *swqe;
++		struct rvt_ack_entry *ack;
++	} e;
++
++	struct tid_rdma_flow *flows;	/* array of tid flows */
++	struct rvt_sge_state ss; /* SGE state for TID RDMA requests */
++	u16 n_flows;		/* size of the flow buffer window */
++	u16 setup_head;		/* flow index we are setting up */
++	u16 clear_tail;		/* flow index we are clearing */
++	u16 flow_idx;		/* flow index most recently set up */
++	u16 acked_tail;
++
++	u32 seg_len;
++	u32 total_len;
++	u32 r_ack_psn;          /* next expected ack PSN */
++	u32 r_flow_psn;         /* IB PSN of next segment start */
++	u32 r_last_acked;       /* IB PSN of last ACK'ed packet */
++	u32 s_next_psn;		/* IB PSN of next segment start for read */
++
++	u32 total_segs;		/* segments required to complete a request */
++	u32 cur_seg;		/* index of current segment */
++	u32 comp_seg;           /* index of last completed segment */
++	u32 ack_seg;            /* index of last ack'ed segment */
++	u32 alloc_seg;          /* index of next segment to be allocated */
++	u32 isge;		/* index of "current" sge */
++	u32 ack_pending;        /* num acks pending for this request */
++
++	enum tid_rdma_req_state state;
++};
++
++/*
++ * When header suppression is used, PSNs associated with a "flow" are
++ * relevant (and not the PSNs maintained by verbs). Track per-flow
++ * PSNs here for a TID RDMA segment.
++ *
++ */
++struct flow_state {
++	u32 flags;
++	u32 resp_ib_psn;     /* The IB PSN of the response for this flow */
++	u32 generation;      /* generation of flow */
++	u32 spsn;            /* starting PSN in TID space */
++	u32 lpsn;            /* last PSN in TID space */
++	u32 r_next_psn;      /* next PSN to be received (in TID space) */
++
++	/* For tid rdma read */
++	u32 ib_spsn;         /* starting PSN in Verbs space */
++	u32 ib_lpsn;         /* last PSn in Verbs space */
++};
++
++struct tid_rdma_pageset {
++	dma_addr_t addr : 48; /* Only needed for the first page */
++	u8 idx: 8;
++	u8 count : 7;
++	u8 mapped: 1;
++};
++
++/**
++ * kern_tid_node - used for managing TID's in TID groups
++ *
++ * @grp_idx: rcd relative index to tid_group
++ * @map: grp->map captured prior to programming this TID group in HW
++ * @cnt: Only @cnt of available group entries are actually programmed
++ */
++struct kern_tid_node {
++	struct tid_group *grp;
++	u8 map;
++	u8 cnt;
++};
++
++/* Overall info for a TID RDMA segment */
++struct tid_rdma_flow {
++	/*
++	 * While a TID RDMA segment is being transferred, it uses a QP number
++	 * from the "KDETH section of QP numbers" (which is different from the
++	 * QP number that originated the request). Bits 11-15 of these QP
++	 * numbers identify the "TID flow" for the segment.
++	 */
++	struct flow_state flow_state;
++	struct tid_rdma_request *req;
++	u32 tid_qpn;
++	u32 tid_offset;
++	u32 length;
++	u32 sent;
++	u8 tnode_cnt;
++	u8 tidcnt;
++	u8 tid_idx;
++	u8 idx;
++	u8 npagesets;
++	u8 npkts;
++	u8 pkt;
++	u8 resync_npkts;
++	struct kern_tid_node tnode[TID_RDMA_MAX_PAGES];
++	struct tid_rdma_pageset pagesets[TID_RDMA_MAX_PAGES];
++	u32 tid_entry[TID_RDMA_MAX_PAGES];
++};
++
++enum tid_rnr_nak_state {
++	TID_RNR_NAK_INIT = 0,
++	TID_RNR_NAK_SEND,
++	TID_RNR_NAK_SENT,
++};
++
++bool tid_rdma_conn_req(struct rvt_qp *qp, u64 *data);
++bool tid_rdma_conn_reply(struct rvt_qp *qp, u64 data);
++bool tid_rdma_conn_resp(struct rvt_qp *qp, u64 *data);
++void tid_rdma_conn_error(struct rvt_qp *qp);
++void tid_rdma_opfn_init(struct rvt_qp *qp, struct tid_rdma_params *p);
++
++int hfi2_kern_exp_rcv_init(struct hfi2_ctxtdata *rcd, int reinit);
++int hfi2_kern_exp_rcv_setup(struct tid_rdma_request *req,
++			    struct rvt_sge_state *ss, bool *last);
++int hfi2_kern_exp_rcv_clear(struct tid_rdma_request *req);
++void hfi2_kern_exp_rcv_clear_all(struct tid_rdma_request *req);
++void __trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe);
++
++/**
++ * trdma_clean_swqe - clean flows for swqe if large send queue
++ * @qp: the qp
++ * @wqe: the send wqe
++ */
++static inline void trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe)
++{
++	if (!wqe->priv)
++		return;
++	__trdma_clean_swqe(qp, wqe);
++}
++
++void hfi2_kern_read_tid_flow_free(struct rvt_qp *qp);
++
++struct hfi2_ctxtdata *qp_to_rcd(struct rvt_qp *qp);
++int hfi2_qp_priv_init(struct rvt_dev_info *rdi, struct rvt_qp *qp,
++		      struct ib_qp_init_attr *init_attr);
++void hfi2_qp_priv_tid_free(struct rvt_dev_info *rdi, struct rvt_qp *qp);
++
++void hfi2_tid_rdma_flush_wait(struct rvt_qp *qp);
++
++int hfi2_kern_setup_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp);
++void hfi2_kern_clear_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp);
++void hfi2_kern_init_ctxt_generations(struct hfi2_ctxtdata *rcd);
++
++struct cntr_entry;
++u64 hfi2_access_sw_tid_wait(const struct cntr_entry *entry,
++			    void *context, int vl, int mode, u64 data);
++
++u32 hfi2_build_tid_rdma_read_packet(struct rvt_swqe *wqe,
++				    struct ib_other_headers *ohdr,
++				    u32 *bth1, u32 *bth2, u32 *len);
++u32 hfi2_build_tid_rdma_read_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
++				 struct ib_other_headers *ohdr, u32 *bth1,
++				 u32 *bth2, u32 *len);
++void hfi2_rc_rcv_tid_rdma_read_req(struct hfi2_packet *packet);
++u32 hfi2_build_tid_rdma_read_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
++				  struct ib_other_headers *ohdr, u32 *bth0,
++				  u32 *bth1, u32 *bth2, u32 *len, bool *last);
++void hfi2_rc_rcv_tid_rdma_read_resp(struct hfi2_packet *packet);
++bool hfi2_handle_kdeth_eflags(struct hfi2_ctxtdata *rcd,
++			      struct hfi2_pportdata *ppd,
++			      struct hfi2_packet *packet);
++void hfi2_tid_rdma_restart_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
++			       u32 *bth2);
++void hfi2_qp_kern_exp_rcv_clear_all(struct rvt_qp *qp);
++bool hfi2_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe);
++
++void setup_tid_rdma_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe);
++static inline void hfi2_setup_tid_rdma_wqe(struct rvt_qp *qp,
++					   struct rvt_swqe *wqe)
++{
++	if (wqe->priv &&
++	    (wqe->wr.opcode == IB_WR_RDMA_READ ||
++	     wqe->wr.opcode == IB_WR_RDMA_WRITE) &&
++	    wqe->length >= TID_RDMA_MIN_SEGMENT_SIZE)
++		setup_tid_rdma_wqe(qp, wqe);
++}
++
++u32 hfi2_build_tid_rdma_write_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
++				  struct ib_other_headers *ohdr,
++				  u32 *bth1, u32 *bth2, u32 *len);
++
++void hfi2_rc_rcv_tid_rdma_write_req(struct hfi2_packet *packet);
++
++u32 hfi2_build_tid_rdma_write_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
++				   struct ib_other_headers *ohdr, u32 *bth1,
++				   u32 bth2, u32 *len,
++				   struct rvt_sge_state **ss);
++
++void hfi2_del_tid_reap_timer(struct rvt_qp *qp);
++
++void hfi2_rc_rcv_tid_rdma_write_resp(struct hfi2_packet *packet);
++
++bool hfi2_build_tid_rdma_packet(struct rvt_swqe *wqe,
++				struct ib_other_headers *ohdr,
++				u32 *bth1, u32 *bth2, u32 *len);
++
++void hfi2_rc_rcv_tid_rdma_write_data(struct hfi2_packet *packet);
++
++u32 hfi2_build_tid_rdma_write_ack(struct rvt_qp *qp, struct rvt_ack_entry *e,
++				  struct ib_other_headers *ohdr, u16 iflow,
++				  u32 *bth1, u32 *bth2);
++
++void hfi2_rc_rcv_tid_rdma_ack(struct hfi2_packet *packet);
++
++void hfi2_add_tid_retry_timer(struct rvt_qp *qp);
++void hfi2_del_tid_retry_timer(struct rvt_qp *qp);
++
++u32 hfi2_build_tid_rdma_resync(struct rvt_qp *qp, struct rvt_swqe *wqe,
++			       struct ib_other_headers *ohdr, u32 *bth1,
++			       u32 *bth2, u16 fidx);
++
++void hfi2_rc_rcv_tid_rdma_resync(struct hfi2_packet *packet);
++
++struct hfi2_pkt_state;
++int hfi2_make_tid_rdma_pkt(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++void _hfi2_do_tid_send(struct work_struct *work);
++
++bool hfi2_schedule_tid_send(struct rvt_qp *qp);
++
++bool hfi2_tid_rdma_ack_interlock(struct rvt_qp *qp, struct rvt_ack_entry *e);
++
++#endif /* HFI2_TID_RDMA_H */
+diff --git a/drivers/infiniband/hw/hfi2/user_exp_rcv.h b/drivers/infiniband/hw/hfi2/user_exp_rcv.h
+new file mode 100644
+index 000000000000..77b824de3055
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/user_exp_rcv.h
+@@ -0,0 +1,404 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ * Copyright(c) 2015 - 2017 Intel Corporation.
++ */
++
++#ifndef _HFI2_USER_EXP_RCV_H
++#define _HFI2_USER_EXP_RCV_H
++
++#include "hfi2.h"
++#include "exp_rcv.h"
++
++struct hfi2_page_iter_ops;
++
++/**
++ * Base type for iterating over sets of pinned-page ranges (pagesets).
++ *
++ * Depending on implementation, pages may also already be DMA-mapped.
++ */
++struct hfi2_page_iter {
++	struct hfi2_page_iter_ops *ops;
++};
++
++struct hfi2_page_iter_ops {
++	/**
++	 * Advance iterator to next pageset.
++	 *
++	 * Implementation must construct TID-compatible pagesets. TID-compatible means:
++	 * - starting address is 4KiB-aligned.
++	 * - size in range of [4KiB,2MiB].
++	 * - size is a power-of-two.
++	 *
++	 * @return > 0 on successful advancement, 0 when iterator is at last
++	 * element, < 0 on error. It is an error to call .next() after it
++	 * returns 0.
++	 */
++	int (*next)(struct hfi2_page_iter *iter);
++
++	void (*free)(struct hfi2_page_iter *iter);
++};
++
++struct tid_user_buf;
++
++/*
++ * hfi2_page_iter implementation for tid_system.
++ *
++ * Built around struct tid_user_buf->{psets,n_psets}.
++ */
++struct page_array_iter {
++	struct hfi2_page_iter common;
++	struct tid_user_buf *tbuf;
++	unsigned int setidx;
++};
++
++/*
++ * structs tid_pageset, tid_user_buf, tid_rb_node, tid_user_buf_ops,
++ * tid_node_ops - Generic memory-pinning and DMA-mapping datastructures and
++ * interfaces for user expected receive.
++ *
++ * Here's a high-level flow of how generic device user expected receive works:
++ * 1. Available memory implementations are registered at driver load.
++ * 2. When TID_UPDATE with memory type information is received,
++ *    struct tid_user_buf_ops* for memory type is looked up.
++ * 3. struct tid_user_buf 'tbuf' is created using tid_user_buf_ops.init(),
++ *    passing in the virtual address range from userspace.
++ * 4. Pages are pinned using tid_user_buf_ops.pin_pages(tbuf).
++ * 5. tid_user_buf_ops.find_phys_blocks() produces an array of sets
++ *    (struct tid_pageset[]) of physically contiguous pages.
++ * 6. struct tid_node_ops* for memory type is looked up.
++ * 7. For each set of physically contiguous pinned pages:
++ *    7.1 A struct tid_rb_node is created using tid_node_ops.init(). It stores
++ *        its memory type for later lookup.
++ *    7.2 tid_node_ops.init() DMA-maps the physically-contiguous page range.
++ *    7.3 An expected RcvArray entry (TID) is programmed with the DMA address.
++ *    7.4 The tid_rb_node* is stored in struct hfi2_filedata.entry_to_rb[].
++ * 8. The tid_user_buf is no longer needed and is destroyed.
++ * 9. When a TID is to be unmapped or the receive memory the TID is programmed
++ *    for is invalidated, the struct tid_rb_node* for the TID or receive memory
++ *    is found, the struct tid_node_ops looked up, and
++ *    tid_node_ops.dma_unmap(node) and tid_node_ops.free(node) called.
++ *
++ * This is an overview. See struct tid_user_buf_ops and struct tid_node_ops for
++ * the methods and their semantics that an implementation must provide.
++ */
++
++struct tid_pageset {
++	u16 idx;
++	u16 count;
++};
++
++struct tid_node_ops;
++struct tid_user_buf_ops;
++
++struct tid_user_buf {
++	unsigned long vaddr;
++	unsigned long length;
++	struct tid_pageset *psets;
++	struct tid_user_buf_ops *ops;
++	unsigned int n_psets;
++	bool use_mn;
++	u16 type; /* Implementation must set to HFI2_MEMINFO_TYPE* in tid_user_buf_ops.init() */
++};
++
++int tid_user_buf_init(u16 pset_size, unsigned long vaddr, unsigned long length, bool notify,
++		      struct tid_user_buf_ops *ops, u16 type, struct tid_user_buf *tbuf);
++void tid_user_buf_free(struct tid_user_buf *tbuf);
++
++struct tid_rb_node {
++	struct hfi2_filedata *fdata;
++	struct mutex invalidate_mutex; /* covers hw removal */
++	/* Only used for debug and tracing */
++	unsigned long phys;
++	struct tid_group *grp;
++	struct tid_node_ops *ops;
++	dma_addr_t dma_addr;
++	/* Starting virtual address for this node's page range */
++	unsigned long vaddr;
++	/* Number of pages, implementation-sized */
++	unsigned int npages;
++	/* Implementation page-size shift */
++	unsigned int page_shift;
++	u32 rcventry;
++	bool use_mn;
++	bool freed;
++	/* Implementation must set to HFI2_MEMINFO_TYPE* in tid_node_ops.init() */
++	u16 type;
++};
++
++/**
++ * User expected receive requires @vaddr from userspace be aligned on a page
++ * boundary.
++ *
++ * User expected receive requires this because it cannot communicate the offset
++ * between @vaddr and the page start.
++ *
++ * TID memory implementation must check that @vaddr is aligned on a page
++ * boundary but may delay this check until as late as .pin_pages().
++ *
++ * This allows for implementations where the page size is not known until the
++ * pages are pinned.
++ */
++struct tid_user_buf_ops {
++	/**
++	 * Allocate and initialize @*tbuf.
++	 *
++	 * Implementation must initialize:
++	 *   - vaddr
++	 *   - length
++	 *   - psets
++	 *   - ops
++	 *   - type
++	 *
++	 * @expected_count
++	 * @notify when false, implementation may use invalidation callback
++	 *   underneath.
++	 *
++	 *   When true, implementation must use invalidation callback
++	 *   underneath.
++	 *
++	 *   If true and implementation does not have an invalidation callback,
++	 *   must return an error.
++	 * @vaddr
++	 * @length
++	 * @allow_unaligned when true, implementation may, but is not required
++	 *   to, handle unaligned @vaddr. When false, implementation must return
++	 *   -EINVAL for unaligned @vaddr.
++	 * @tbuf [out] allocated tid_user_buf
++	 *
++	 * @return 0 on success, non-zero on error.
++	 *
++	 * Errors including but not limited to:
++	 * - Number of pages based on @length too long for @expected_count
++	 * - @vaddr is not suitably aligned
++	 * - @length invalid for implementation
++	 * - @notify is true but implementation does not support
++	 *   memory-invalidation notification
++	 */
++	int (*init)(u16 expected_count,
++		    bool notify,
++		    unsigned long vaddr,
++		    unsigned long length,
++		    bool allow_unaligned,
++		    struct tid_user_buf **tbuf);
++
++	/**
++	 * Free @tbuf.
++	 */
++	void (*free)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Pin pages for @tbuf based on (@vaddr,@length) passed into
++	 * @tid_user_buf_ops.init().
++	 *
++	 * Implementation may also DMA-map pages at this time.
++	 *
++	 * Implementation may store @fd at this time.
++	 *
++	 * @fd
++	 * @tbuf
++	 *
++	 * @return > 0 number of pages pinned on success, < 0 error value on
++	 *   failure. 0 is treated as a failure but not an error value.
++	 */
++	int (*pin_pages)(struct hfi2_filedata *fd, struct tid_user_buf *tbuf);
++
++	/**
++	 * Get page size of @tbuf's pinned pages.
++	 *
++	 * Caller should not assume that page size is known until after
++	 * pin_pages(fd, @tbuf).
++	 *
++	 * @tbuf
++	 *
++	 * @return page size. No way to tell if error.
++	 */
++	unsigned int (*page_size)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Unpin only @npages starting at @idx.
++	 *
++	 * Implementation may implement partial unpinning.
++	 *
++	 * If not, implementation must ensure that pages are unmapped and
++	 * unpinned when last reference to them is released.
++	 *
++	 * @fd Same fd as given in tid_user_buf_ops.pin_pages() call
++	 * @tbuf
++	 * @idx
++	 * @npages
++	 */
++	void (*unpin_pages)(struct hfi2_filedata *fd,
++			    struct tid_user_buf *tbuf,
++			    unsigned int idx,
++			    unsigned int npages);
++
++	/**
++	 * Optional; implementation must either implement find_phys_blocks() or
++	 * ensure that iter_begin() will return a valid iterator after
++	 * .pin_pages().
++	 *
++	 * Implementation must program @tbuf->psets elements such that:
++	 * 1. All pages in a pageset are physically contiguous
++	 * 2. All pages in all pagesets have the same page size
++	 * 3. The total size of a pageset is a power-of-two in the range
++	 *    [4KiB, 2MiB]
++	 *
++	 * Implementation must set @tbuf->n_psets to number of page sets
++	 * programmed.
++	 *
++	 * @tbuf TID user buf to set (@tbuf->psets,@tbuf->n_psets) on.
++	 * @npages limit on number of pages to process into page sets before
++	 *         stopping.
++	 *
++	 * @return 0 on success, non-zero on error
++	 */
++	int (*find_phys_blocks)(struct tid_user_buf *tbuf,
++				unsigned int npages);
++
++	/**
++	 * @return true when:
++	 * - @tbuf's virtual->physical mapping has been invalidated
++	 * - @tbuf's physical pages have been released
++	 */
++	bool (*invalidated)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Unregister memory-invalidation callback registered in struct
++	 * tid_user_buf_ops.init() implementation.
++	 */
++	void (*unnotify)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Optional. Get pageset iterator. Pages in pageset must be pinned and
++	 * physically-contiguous. Whether pages are also DMA-mapped at the time
++	 * this method is called is implementation-dependent.
++	 *
++	 * Implementation must return iterator only if there is at least one
++	 * pageset to iterate over. I.e. it is an error if implementation
++	 * cannot return an iterator over at least one pageset.
++	 *
++	 * Returned iterator must be freed with @hfi2_page_iter->ops->free().
++	 *
++	 * @return pointer on success, ERR_PTR() on error.
++	 */
++	struct hfi2_page_iter *(*iter_begin)(struct tid_user_buf *tbuf);
++};
++
++struct tid_node_ops {
++	/**
++	 * Create tid_rb_node for pageset given by @iter.
++	 *
++	 * .init() implementation must initialize the following
++	 *   - fdata
++	 *   - invalidate_mutex
++	 *   - phys
++	 *   - grp
++	 *   - ops
++	 *   - dma_addr
++	 *   - vaddr
++	 *   - npages
++	 *   - page_shift: may not be less than EXP_TID_ADDR_SHIFT
++	 *   - rcventry
++	 *   - use_mn
++	 *   - freed
++	 *   - type: one of the HFI2_MEMINFO_TYPE* defines
++	 *
++	 * Pages in pageset given by @iter must be TID-ready: pinned, physically contiguous,
++	 * 4KiB <= size <= 2MiB, starting address is power-of-two.
++	 *
++	 * Implementation must DMA-map the pages given by @iter if they are not DMA-mapped
++	 * already.
++	 *
++	 * If @fd->use_mn is true and memory implementation does not support
++	 * invalidation callbacks, .init() must return an error.
++	 *
++	 * @fd
++	 * @tbuf Contains larger memory pinning to create TID entry from
++	 * @rcventry
++	 * @grp
++	 * @iter
++	 *
++	 * @return allocated node on success, ERR_PTR() on error.
++	 */
++	struct tid_rb_node *(*init)(struct hfi2_filedata *fd,
++				    struct tid_user_buf *tbuf,
++				    u32 rcventry,
++				    struct tid_group *grp,
++				    struct hfi2_page_iter *iter);
++
++	/**
++	 * Free @node.
++	 */
++	void (*free)(struct tid_rb_node *node);
++
++	/**
++	 * Register for memory invalidation callback. Implementation should
++	 * only register for notification on @node's page-range.
++	 *
++	 * When @node->fdata->use_mn is true, invalidation callback must call
++	 * hfi2_user_exp_rcv_invalidate(@node).
++	 *
++	 * When @node->fdata->use_mn is false, invalidation callback may call
++	 * hfi2_user_exp_rcv_invalidate(@node).
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unpinning.
++	 *
++	 * @return 0 on success, non-zero on failure.
++	 */
++	int (*register_notify)(struct tid_rb_node *node);
++
++	/**
++	 * Unregister from memory-invalidation callback in anticipation of
++	 * unprogramming TID.
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unpinning.
++	 *
++	 * Not safe to call more than once per register_notify() call.
++	 */
++	void (*unregister_notify)(struct tid_rb_node *node);
++
++	/**
++	 * DMA-unmap mapped memory for @node.
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unmapping.
++	 */
++	void (*dma_unmap)(struct tid_rb_node *node);
++
++	/**
++	 * Unpin pages covered by @node.
++	 *
++	 * user_exp_rcv will call this function under node->invalidate_mutex.
++	 * user_exp_rcv will only call this function once per node.
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unpinning.
++	 */
++	void (*unpin_pages)(struct hfi2_filedata *fd, struct tid_rb_node *node);
++};
++
++int register_tid_ops(u16 type, struct tid_user_buf_ops *op, struct tid_node_ops *nops);
++void deregister_tid_ops(u16 type);
++
++int register_system_tid_ops(void);
++void deregister_system_tid_ops(void);
++
++void hfi2_user_exp_rcv_invalidate(struct tid_rb_node *node);
++
++int hfi2_user_exp_rcv_init(struct hfi2_filedata *fd,
++			   struct hfi2_ctxtdata *uctxt);
++void hfi2_user_exp_rcv_free(struct hfi2_filedata *fd);
++int hfi2_user_exp_rcv_setup(struct hfi2_filedata *fd,
++			    struct hfi2_tid_info *tinfo,
++			    bool allow_unaligned,
++			    bool do_tidcnt_check);
++int hfi2_user_exp_rcv_clear(struct hfi2_filedata *fd,
++			    struct hfi2_tid_info *tinfo);
++int hfi2_user_exp_rcv_invalid(struct hfi2_filedata *fd,
++			      struct hfi2_tid_info *tinfo,
++			      bool do_tidcnt_check);
++
++#endif /* _HFI2_USER_EXP_RCV_H */
+diff --git a/drivers/infiniband/hw/hfi2/user_sdma.h b/drivers/infiniband/hw/hfi2/user_sdma.h
+new file mode 100644
+index 000000000000..1bea013475cc
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/user_sdma.h
+@@ -0,0 +1,261 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++#ifndef _HFI2_USER_SDMA_H
++#define _HFI2_USER_SDMA_H
++
++#include <linux/device.h>
++#include <linux/wait.h>
++
++#include "common.h"
++#include "iowait.h"
++#include "user_exp_rcv.h"
++#include "mmu_rb.h"
++#include "pinning.h"
++#include "sdma.h"
++
++/* The maximum number of Data io vectors per message/request */
++#define MAX_VECTORS_PER_REQ 8
++static_assert(MAX_VECTORS_PER_REQ <= HFI2_MAX_MEMINFO_ENTRIES);
++
++/*
++ * Maximum number of packet to send from each message/request
++ * before moving to the next one.
++ */
++#define MAX_PKTS_PER_QUEUE 16
++
++#define num_pages(x) (1 + ((((x) - 1) & PAGE_MASK) >> PAGE_SHIFT))
++
++#define req_opcode(x) \
++	(((x) >> HFI2_SDMA_REQ_OPCODE_SHIFT) & HFI2_SDMA_REQ_OPCODE_MASK)
++#define req_version(x) \
++	(((x) >> HFI2_SDMA_REQ_VERSION_SHIFT) & HFI2_SDMA_REQ_OPCODE_MASK)
++#define req_iovcnt(x) \
++	(((x) >> HFI2_SDMA_REQ_IOVCNT_SHIFT) & HFI2_SDMA_REQ_IOVCNT_MASK)
++#define req_has_meminfo(x) \
++	(((x) >> HFI2_SDMA_REQ_MEMINFO_SHIFT) & HFI2_SDMA_REQ_MEMINFO_MASK)
++
++/* Number of BTH.PSN bits used for sequence number in expected rcvs */
++#define BTH_SEQ_MASK 0x7ffull
++
++#define AHG_KDETH_INTR_SHIFT 12
++#define AHG_KDETH_SH_SHIFT   13
++#define AHG_KDETH_ARRAY_SIZE  9
++
++/**
++ * Build an SDMA AHG header update descriptor and save it to an array.
++ * @arr        - Array to save the descriptor to.
++ * @idx        - Index of the array at which the descriptor will be saved.
++ * @array_size - Size of the array arr.
++ * @dw         - Update index into the header in DWs.
++ * @bit        - Start bit.
++ * @width      - Field width.
++ * @value      - 16 bits of immediate data to write into the field.
++ * Returns -ERANGE if idx is invalid. If successful, returns the next index
++ * (idx + 1) of the array to be used for the next descriptor.
++ */
++static inline int ahg_header_set(u32 *arr, int idx, size_t array_size,
++				 u8 dw, u8 bit, u8 width, u16 value)
++{
++	if ((size_t)idx >= array_size)
 +		return -ERANGE;
-+	if (!dd->cport)
-+		return -EINVAL;
-+
-+	/* 'func' may be NULL, to unregister */
-+	for (x = op_start; x <= op_end; ++x) {
-+		dd->cport->handlers[x] = func;
-+	}
-+	return 0;
++	arr[idx++] = sdma_build_ahg_descriptor(value, dw, bit, width);
++	return idx;
 +}
 +
-+static int cport_ping(void *data)
-+{
-+	struct hfi2_devdata *dd = data;
-+	char buf[16];
-+	int len;
-+	unsigned int num;
-+	void *rspbuf;
-+	int rsplen;
-+	int rc;
++/* Tx request flag bits */
++#define TXREQ_FLAGS_REQ_ACK   BIT(0)      /* Set the ACK bit in the header */
++#define TXREQ_FLAGS_REQ_DISABLE_SH BIT(1) /* Disable header suppression */
 +
-+	while (!kthread_should_stop() && (num = atomic_read(&dd->cport->nping)) > 0) {
-+		len = snprintf(buf, sizeof(buf), "ping %u", num);
-+		rspbuf = NULL;
-+		rc = cport_send_req(dd, CH_OP_PING, 0, buf, len,
-+				    &rspbuf, &rsplen,
-+				    cport_ping_to ? cport_ping_to * HZ :
-+						    MAX_SCHEDULE_TIMEOUT);
-+		if (rc < 0) {
-+			dd_dev_info(dd, "CPORT \"%s\" error %d\n", buf, rc);
-+			if (!cport_ping_to)
-+				break;
-+		} else {
-+			dd_dev_info(dd, "CPORT \"%s\" -> %d \"%.*s\"\n",
-+				    buf, rc, rsplen, (char *)rspbuf);
-+		}
-+		kfree(rspbuf);
-+		atomic_dec(&dd->cport->nping);
-+	}
-+	dd->cport->ping_th = NULL;
-+	atomic_set(&dd->cport->nping, 0);
-+	return 0;
-+}
++enum pkt_q_sdma_state {
++	SDMA_PKT_Q_ACTIVE,
++	SDMA_PKT_Q_DEFERRED,
++};
 +
-+int cport_ping_start(struct hfi2_devdata *dd, unsigned int count)
-+{
-+	int rc;
++#define SDMA_IOWAIT_TIMEOUT 1000 /* in milliseconds */
 +
-+	if (!count) {
-+		if (dd->cport->ping_th)
-+			kthread_stop(dd->cport->ping_th);
-+			/* kthread will zero count when exiting */
-+		else
-+			atomic_set(&dd->cport->nping, 0);
-+		return 0;
-+	}
-+	atomic_set(&dd->cport->nping, count);
-+	if (dd->cport->ping_th)
-+		return 0;
++#define SDMA_DBG(req, fmt, ...)				     \
++	hfi2_cdbg(SDMA, "[%u:%u:%u:%u] " fmt, (req)->pq->dd->unit, \
++		 (req)->pq->ctxt, (req)->pq->subctxt, (req)->info.comp_idx, \
++		 ##__VA_ARGS__)
 +
-+	dd->cport->ping_th = kthread_create_on_node(cport_ping, dd, dd->node, "cport_ping");
-+	if (IS_ERR(dd->cport->ping_th)) {
-+		rc = PTR_ERR(dd->cport->ping_th);
-+		dd->cport->ping_th = NULL;
-+		dd_dev_err(dd, "Failed to create CPORT ping thread %d\n", rc);
-+		return rc;
-+	}
-+	wake_up_process(dd->cport->ping_th);
-+	return 0;
-+}
++struct hfi2_user_sdma_pkt_q {
++	u16 ctxt;
++	u16 subctxt;
++	u16 n_max_reqs;
++	atomic_t n_reqs;
++	struct hfi2_devdata *dd;
++	struct kmem_cache *txreq_cache;
++	struct user_sdma_request *reqs;
++	unsigned long *req_in_use;
++	struct iowait busy;
++	enum pkt_q_sdma_state state;
++	wait_queue_head_t wait;
++	struct pinning_state pinning_state;
++	atomic_t n_locked;
++};
 +
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+static int cport_poll(void *data)
-+{
-+	struct hfi2_devdata *dd = data;
-+	u64 v;
++struct hfi2_user_sdma_comp_q {
++	u16 nentries;
++	struct hfi2_sdma_comp_entry *comps;
++};
 +
-+	while (!kthread_should_stop()) {
-+		v = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS);
-+		if (v & 0xff)
-+			is_cport_int(dd, 0);
-+		fsleep(30);
-+	}
-+	return 0;
-+}
-+#endif
++struct user_sdma_iovec {
++	struct iovec iov;
++	/* memory type for this vector */
++	unsigned int type;
++	/* memory type context for this vector */
++	u64 context;
++	/*
++	 * offset into the virtual address space of the vector at
++	 * which we last left off.
++	 */
++	u64 offset;
++};
++
++/* evict operation argument */
++struct evict_data {
++	u32 cleared;	/* count evicted so far */
++	u32 target;	/* target count to evict */
++};
 +
 +/*
-+ * Initialization/setup of MCTXT CPORT communications channel.
++ * User 16B header.  Differences between this and struct hfi2_pkt_hdr:
++ * o LRH size: 16 bytes vs 8 bytes
++ * o LRH byte ordering: LE vs BE
++ * o LRH units: 32 bits vs 16 bits
 + */
-+int cport_init(struct hfi2_devdata *dd)
++struct hfi2_pkt_header16b {
++	__le16 pbc[4];
++	__le32 lrh[4];
++	__be32 bth[3];
++	struct hfi2_kdeth_header kdeth;
++} __packed;
++
++union user_pkt_header {
++	__le16 pbc[4];
++	struct hfi2_pkt_header hdr9b;
++	struct hfi2_pkt_header16b hdr16b;
++};
++
++/* Pinning-cache entry reference type */
++struct user_sdma_pinref {
++	void *ptr;
++	u16 memtype;
++	/** Used for determining eviction eligibility; set from &user_sdma_request.seqnum */
++	u16 req_seqnum;
++	/** Used for determining most-recently used; set from &user_sdma_request.pinrefs_seqnum */
++	u16 pinref_seqnum;
++};
++
++#define PINREF_ENTRIES 7
++
++struct user_sdma_request {
++	/* This is the original header from user space */
++	union user_pkt_header h;
++	unsigned long hsize;
++	u32 lrh_len_bytes;
++	u32 pad_mask;
++
++	/* Memory type information for each data iovec entry. */
++	struct sdma_req_meminfo meminfo;
++
++	/* Read mostly fields */
++	struct hfi2_user_sdma_pkt_q *pq ____cacheline_aligned_in_smp;
++	struct hfi2_user_sdma_comp_q *cq;
++	/*
++	 * Pointer to the SDMA engine for this request.
++	 * Since different request could be on different VLs,
++	 * each request will need it's own engine pointer.
++	 */
++	struct sdma_engine *sde;
++	struct sdma_req_info info;
++	/* TID array values copied from the tid_iov vector */
++	u32 *tids;
++	/* total length of the data in the request */
++	u32 data_len;
++	/* number of elements copied to the tids array */
++	u16 n_tids;
++	/*
++	 * We copy the iovs for this request (based on
++	 * info.iovcnt). These are only the data vectors
++	 */
++	u8 data_iovs;
++	s8 ahg_idx;
++
++	/* Writeable fields shared with interrupt */
++	u16 seqcomp ____cacheline_aligned_in_smp;
++	u16 seqsubmitted;
++
++	/* Send side fields */
++	struct list_head txps ____cacheline_aligned_in_smp;
++	u16 seqnum;
++	/*
++	 * KDETH.OFFSET (TID) field
++	 * The offset can cover multiple packets, depending on the
++	 * size of the TID entry.
++	 */
++	u32 tidoffset;
++	/*
++	 * KDETH.Offset (Eager) field
++	 * We need to remember the initial value so the headers
++	 * can be updated properly.
++	 */
++	u32 koffset;
++	u32 sent;
++	/* TID index copied from the tid_iov vector */
++	u16 tididx;
++	/* progress index moving along the iovs array */
++	u8 iov_idx;
++	u8 has_error;
++	/* possible appended bytes (16B ICRC QW) */
++	u8 tailsize;
++	/* true if this is a 16B request */
++	bool is16b;
++
++	u16 n_pinrefs;
++	/*
++	 * Since regular .seqnum is only incremented per-txreq, need separate
++	 * .pinref_seqnum to distinguish age of pinrefs within a txreq.
++	 */
++	u32 pinref_seqnum;
++	/* Shared space for storing pin_* cacherefs */
++	struct user_sdma_pinref pinrefs[PINREF_ENTRIES];
++
++	struct user_sdma_iovec iovs[MAX_VECTORS_PER_REQ];
++} ____cacheline_aligned_in_smp;
++
++/*
++ * A single txreq could span up to 3 physical pages when the MTU
++ * is sufficiently large (> 4K). Each of the IOV pointers also
++ * needs it's own set of flags so the vector has been handled
++ * independently of each other.
++ */
++struct user_sdma_txreq {
++	/* Packet header for the txreq */
++	union user_pkt_header h;
++	struct sdma_txreq txreq;
++	struct user_sdma_request *req;
++	struct user_sdma_pinref *pinrefs;
++	u16 n_pinrefs;
++	u16 flags;
++	u16 seqnum;
++};
++
++int hfi2_user_sdma_add_ref(struct user_sdma_txreq *tx, void *ptr,
++			   u16 memtype);
++struct user_sdma_pinref *hfi2_user_sdma_mru_ref(struct user_sdma_txreq *tx,
++						u16 memtype);
++void hfi2_user_sdma_touch_ref(struct user_sdma_txreq *tx,
++			      struct user_sdma_pinref *d);
++
++int hfi2_user_sdma_alloc_queues(struct hfi2_ctxtdata *uctxt,
++				struct hfi2_filedata *fd);
++int hfi2_user_sdma_free_queues(struct hfi2_filedata *fd,
++			       struct hfi2_ctxtdata *uctxt);
++int hfi2_user_sdma_process_request(struct hfi2_filedata *fd,
++				   struct iovec *iovec, unsigned long dim,
++				   unsigned long *count);
++#endif /* _HFI2_USER_SDMA_H */
+diff --git a/drivers/infiniband/hw/hfi2/uverbs.h b/drivers/infiniband/hw/hfi2/uverbs.h
+new file mode 100644
+index 000000000000..2250a712875c
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/uverbs.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef HFI2_UVERBS_H
++#define HFI2_UVERBS_H
++
++#include <rdma/uverbs_ioctl.h>
++
++int hfi2_alloc_ucontext(struct ib_ucontext *ucontext, struct ib_udata *udata);
++void hfi2_dealloc_ucontext(struct ib_ucontext *ucontext);
++int hfi2_rdma_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma);
++ssize_t hfi2_uverbs_write_iter(struct ib_ucontext *ucontext,
++			       struct iov_iter *from);
++
++extern const struct uapi_definition hfi2_ib_defs[];
++
++#endif /* HFI2_UVERBS_H */
+diff --git a/drivers/infiniband/hw/hfi2/verbs.h b/drivers/infiniband/hw/hfi2/verbs.h
+new file mode 100644
+index 000000000000..f7a52a03f26c
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/verbs.h
+@@ -0,0 +1,496 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef HFI2_VERBS_H
++#define HFI2_VERBS_H
++
++#include <linux/types.h>
++#include <linux/seqlock.h>
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/kref.h>
++#include <linux/workqueue.h>
++#include <linux/kthread.h>
++#include <linux/completion.h>
++#include <linux/slab.h>
++#include <rdma/ib_pack.h>
++#include <rdma/ib_user_verbs.h>
++#include <rdma/ib_mad.h>
++#include <rdma/ib_hdrs.h>
++#include <rdma/rdma_vt.h>
++#include <rdma/rdmavt_qp.h>
++#include <rdma/rdmavt_cq.h>
++
++struct hfi2_ctxtdata;
++struct hfi2_pportdata;
++struct hfi2_devdata;
++struct hfi2_packet;
++
++#include "iowait.h"
++#include "tid_rdma.h"
++#include "opfn.h"
++
++#define HFI2_MAX_RDMA_ATOMIC     16
++
++/*
++ * Increment this value if any changes that break userspace ABI
++ * compatibility are made.
++ */
++#define HFI2_UVERBS_ABI_VERSION       2
++
++/* IB Performance Manager status values */
++#define IB_PMA_SAMPLE_STATUS_DONE       0x00
++#define IB_PMA_SAMPLE_STATUS_STARTED    0x01
++#define IB_PMA_SAMPLE_STATUS_RUNNING    0x02
++
++/* Mandatory IB performance counter select values. */
++#define IB_PMA_PORT_XMIT_DATA   cpu_to_be16(0x0001)
++#define IB_PMA_PORT_RCV_DATA    cpu_to_be16(0x0002)
++#define IB_PMA_PORT_XMIT_PKTS   cpu_to_be16(0x0003)
++#define IB_PMA_PORT_RCV_PKTS    cpu_to_be16(0x0004)
++#define IB_PMA_PORT_XMIT_WAIT   cpu_to_be16(0x0005)
++
++#define HFI2_VENDOR_IPG		cpu_to_be16(0xFFA0)
++
++#define IB_DEFAULT_GID_PREFIX	cpu_to_be64(0xfe80000000000000ULL)
++#define OPA_BTH_MIG_REQ		BIT(31)
++
++#define RC_OP(x) IB_OPCODE_RC_##x
++#define UC_OP(x) IB_OPCODE_UC_##x
++
++/* flags passed by hfi2_ib_rcv() */
++enum {
++	HFI2_HAS_GRH = (1 << 0),
++};
++
++#define LRH_16B_BYTES (sizeof_field(struct hfi2_16b_header, lrh))
++#define LRH_16B_DWORDS (LRH_16B_BYTES / sizeof(u32))
++#define LRH_9B_BYTES (sizeof_field(struct ib_header, lrh))
++#define LRH_9B_DWORDS (LRH_9B_BYTES / sizeof(u32))
++
++/* 24Bits for qpn, upper 8Bits reserved */
++struct opa_16b_mgmt {
++	__be32 dest_qpn;
++	__be32 src_qpn;
++};
++
++struct hfi2_16b_header {
++	u32 lrh[4];
++	union {
++		struct {
++			struct ib_grh grh;
++			struct ib_other_headers oth;
++		} l;
++		struct ib_other_headers oth;
++		struct opa_16b_mgmt mgmt;
++	} u;
++} __packed;
++
++struct hfi2_opa_header {
++	union {
++		struct ib_header ibh; /* 9B header */
++		struct hfi2_16b_header opah; /* 16B header */
++	};
++	u8 hdr_type; /* 9B or 16B */
++} __packed;
++
++struct hfi2_ahg_info {
++	u32 ahgdesc[2];
++	u16 tx_flags;
++	u8 ahgcount;
++	u8 ahgidx;
++};
++
++struct hfi2_sdma_header {
++	__le64 pbc;
++	struct hfi2_opa_header hdr;
++} __packed;
++
++/*
++ * hfi2 specific data structures that will be hidden from rvt after the queue
++ * pair is made common
++ */
++struct hfi2_qp_priv {
++	struct hfi2_ahg_info *s_ahg;              /* ahg info for next header */
++	struct sdma_engine *s_sde;                /* current sde */
++	struct send_context *s_sendcontext;       /* current sendcontext */
++	struct hfi2_ctxtdata *rcd;                /* QP's receive context */
++	struct page **pages;                      /* for TID page scan */
++	u32 tid_enqueue;                          /* saved when tid waited */
++	u8 s_sc;		                  /* SC[0..4] for next packet */
++	struct iowait s_iowait;
++	struct timer_list s_tid_timer;            /* for timing tid wait */
++	struct timer_list s_tid_retry_timer;      /* for timing tid ack */
++	struct list_head tid_wait;                /* for queueing tid space */
++	struct hfi2_opfn_data opfn;
++	struct tid_flow_state flow_state;
++	struct tid_rdma_qp_params tid_rdma;
++	struct rvt_qp *owner;
++	u16 s_running_pkt_size;
++	u8 hdr_type; /* 9B or 16B */
++	struct rvt_sge_state tid_ss;       /* SGE state pointer for 2nd leg */
++	atomic_t n_requests;               /* # of TID RDMA requests in the */
++					   /* queue */
++	atomic_t n_tid_requests;            /* # of sent TID RDMA requests */
++	unsigned long tid_timer_timeout_jiffies;
++	unsigned long tid_retry_timeout_jiffies;
++
++	/* variables for the TID RDMA SE state machine */
++	u8 s_state;
++	u8 s_retry;
++	u8 rnr_nak_state;       /* RNR NAK state */
++	u8 s_nak_state;
++	u32 s_nak_psn;
++	u32 s_flags;
++	u32 s_tid_cur;
++	u32 s_tid_head;
++	u32 s_tid_tail;
++	u32 r_tid_head;     /* Most recently added TID RDMA request */
++	u32 r_tid_tail;     /* the last completed TID RDMA request */
++	u32 r_tid_ack;      /* the TID RDMA request to be ACK'ed */
++	u32 r_tid_alloc;    /* Request for which we are allocating resources */
++	u32 pending_tid_w_segs; /* Num of pending tid write segments */
++	u32 pending_tid_w_resp; /* Num of pending tid write responses */
++	u32 alloc_w_segs;       /* Number of segments for which write */
++			       /* resources have been allocated for this QP */
++
++	/* For TID RDMA READ */
++	u32 tid_r_reqs;         /* Num of tid reads requested */
++	u32 tid_r_comp;         /* Num of tid reads completed */
++	u32 pending_tid_r_segs; /* Num of pending tid read segments */
++	u16 pkts_ps;            /* packets per segment */
++	u8 timeout_shift;       /* account for number of packets per segment */
++
++	u32 r_next_psn_kdeth;
++	u32 r_next_psn_kdeth_save;
++	u32 s_resync_psn;
++	u8 sync_pt;           /* Set when QP reaches sync point */
++	u8 resync;
++};
++
++#define HFI2_QP_WQE_INVALID   ((u32)-1)
++
++struct hfi2_swqe_priv {
++	struct tid_rdma_request tid_req;
++	struct rvt_sge_state ss;  /* Used for TID RDMA READ Request */
++};
++
++struct hfi2_ack_priv {
++	struct rvt_sge_state ss;               /* used for TID WRITE RESP */
++	struct tid_rdma_request tid_req;
++};
++
++/*
++ * This structure is used to hold commonly lookedup and computed values during
++ * the send engine progress.
++ */
++struct iowait_work;
++struct hfi2_pkt_state {
++	struct hfi2_ibdev *dev;
++	struct hfi2_ibport *ibp;
++	struct hfi2_pportdata *ppd;
++	struct verbs_txreq *s_txreq;
++	struct iowait_work *wait;
++	unsigned long flags;
++	unsigned long timeout;
++	unsigned long timeout_int;
++	int cpu;
++	u8 opcode;
++	bool in_thread;
++	bool pkts_sent;
++	bool loopback;	/* use loopback port for ppd */
++};
++
++#define HFI2_PSN_CREDIT  16
++
++struct hfi2_opcode_stats {
++	u64 n_packets;          /* number of packets */
++	u64 n_bytes;            /* total number of bytes */
++};
++
++struct hfi2_opcode_stats_perctx {
++	struct hfi2_opcode_stats stats[256];
++};
++
++static inline void inc_opstats(
++	u32 tlen,
++	struct hfi2_opcode_stats *stats)
 +{
-+	struct hfi2_cport *cport;
-+
-+	if (dd->params->chip_type == CHIP_WFR || dd->is_vf)
-+		return 0;
-+
-+	cport = kzalloc_obj(cport, GFP_KERNEL);
-+	if (!cport)
-+		goto err1;
-+
-+	INIT_WORK(&cport->mctxt_work, cport_mctxt_fn);
-+	xa_init_flags(&cport->tid_xa, XA_FLAGS_ALLOC);
-+	xa_init_flags(&cport->trap_xa, XA_FLAGS_ALLOC);
-+
-+	/*
-+	 * Setting initial state can be problematic.
-+	 * We require that CPORT set JKR_MCTXT_INT_OUTBOX_EMPTY in
-+	 * JKR_MCTXT_PF0_INT_STATUS or we will never start sending.
-+	 * We also require that CPORT never set JKR_MCTXT_INT_OUTBOX_EMPTY
-+	 * gratuitously, or we get a semaphore count > 1 and will
-+	 * start overrunning MCTXT. Essentially, CPORT must set this
-+	 * exactly once when entering the "ready to receive" state
-+	 * (initially and after processing each message).
-+	 */
-+	sema_init(&cport->outbox, 0);
-+
-+	cport->dd = dd;
-+	dd->cport = cport;
-+
-+	cport_register_cb(dd, CH_OP_PING, CH_OP_PING, echo_req);
-+
-+	if (cport_mctxt_recovery) {
-+		u64 is, ie;
-+
-+		is = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS);
-+		ie = read_csr(dd, JKR_MCTXT_PF0_INT_ENABLE);
-+		if (!(is & JKR_MCTXT_INT_OUTBOX_EMPTY) && ie) {
-+			dd_dev_warn(dd, "recovering CPORT MCTXT state\n");
-+			write_csr(dd, JKR_MCTXT_PF0_INT_ENABLE, 0);
-+			write_csr(dd, JKR_MCTXT_PF0_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+		}
-+	}
-+
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+	cport->poll_th = kthread_create_on_node(cport_poll, dd, dd->node, "cport_poll");
-+	if (!cport->poll_th)
-+		dd_dev_err(dd, "Failed to create CPORT polling thread\n");
-+	else
-+		wake_up_process(dd->cport->poll_th);
-+#else
-+	/* Enable intr source for MCTXT from CPORT (to PF0) */
-+	write_csr(dd, JKR_MCTXT_PF0_INT_ENABLE,
-+		  JKR_MCTXT_INT_INBOX_FULL | JKR_MCTXT_INT_OUTBOX_EMPTY);
-+	set_intr_bits(dd, JKR_MCTXT_CPORT_TO_PCIE_INT, JKR_MCTXT_CPORT_TO_PCIE_INT, true);
-+	timer_setup(&cport->lost_int_timer, cport_lost_int_chk, 0);
-+	if (cport_lost_int)
-+		mod_timer(&cport->lost_int_timer, jiffies + cport_lost_int);
++#ifdef CONFIG_DEBUG_FS
++	stats->n_bytes += tlen;
++	stats->n_packets++;
 +#endif
++}
 +
-+	/*
-+	 * Must reset/resync sequence numbers as CPORT is strictly enforcing
-+	 * sequence number order. Use a timeout to allow easier cleanup should
-+	 * init fail.
-+	 */
-+	cport_send_notif(dd, CH_OP_PING, 0, NULL, 0, cport_adm_to * HZ);
-+	return 0;
++struct hfi2_ibport {
++	struct rvt_qp __rcu *qp[2];
++	struct rvt_ibport rvp;
 +
-+err1:
-+	return -ENOMEM;
++	/* the first 16 entries are sl_to_vl for !OPA */
++	u8 sl_to_sc[32];
++	u8 sc_to_sl[32];
++};
++
++struct hfi2_ibdev {
++	struct rvt_dev_info rdi; /* Must be first */
++
++	/* QP numbers are shared by all IB ports */
++	/* protect txwait list */
++	seqlock_t txwait_lock ____cacheline_aligned_in_smp;
++	struct list_head txwait;        /* list for wait verbs_txreq */
++	struct list_head memwait;       /* list for wait kernel memory */
++	struct kmem_cache *verbs_txreq_cache;
++	u64 n_txwait;
++	u64 n_kmem_wait;
++	u64 n_tidwait;
++
++	/* protect iowait lists */
++	seqlock_t iowait_lock ____cacheline_aligned_in_smp;
++	u64 n_piowait;
++	u64 n_piodrain;
++	struct timer_list mem_timer;
++
++#ifdef CONFIG_DEBUG_FS
++	/* per HFI debugfs */
++	struct dentry *hfi2_ibdev_dbg;
++	/* per HFI symlinks to above */
++	struct dentry *hfi2_ibdev_link;
++#ifdef CONFIG_FAULT_INJECTION
++	struct fault *fault;
++#endif
++#endif
++};
++
++static inline struct hfi2_ibdev *to_idev(struct ib_device *ibdev)
++{
++	struct rvt_dev_info *rdi;
++
++	rdi = container_of(ibdev, struct rvt_dev_info, ibdev);
++	return container_of(rdi, struct hfi2_ibdev, rdi);
++}
++
++static inline struct rvt_qp *iowait_to_qp(struct iowait *s_iowait)
++{
++	struct hfi2_qp_priv *priv;
++
++	priv = container_of(s_iowait, struct hfi2_qp_priv, s_iowait);
++	return priv->owner;
 +}
 +
 +/*
-+ * Deinitialization of MCTXT CPORT communications channel.
++ * This must be called with s_lock held.
 + */
-+int cport_exit(struct hfi2_devdata *dd)
++void hfi2_bad_pkey(struct hfi2_ibport *ibp, u32 key, u32 sl,
++		   u32 qp1, u32 qp2, u32 lid1, u32 lid2);
++void hfi2_cap_mask_chg(struct rvt_dev_info *rdi, u32 port_num);
++void hfi2_sys_guid_chg(struct hfi2_ibport *ibp);
++void hfi2_node_desc_chg(struct hfi2_ibport *ibp);
++int hfi2_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
++		     const struct ib_wc *in_wc, const struct ib_grh *in_grh,
++		     const struct ib_mad *in_mad, struct ib_mad *out_mad,
++		     size_t *out_mad_size, u16 *out_mad_pkey_index);
++int cport_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
++		      const struct ib_wc *in_wc, const struct ib_grh *in_grh,
++		      const struct ib_mad *in_mad, struct ib_mad *out_mad,
++		      size_t *out_mad_size, u16 *out_mad_pkey_index);
++int vf_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
++		   const struct ib_wc *in_wc, const struct ib_grh *in_grh,
++		   const struct ib_mad *in_mad, struct ib_mad *out_mad,
++		   size_t *out_mad_size, u16 *out_mad_pkey_index);
++
++/*
++ * The PSN_MASK and PSN_SHIFT allow for
++ * 1) comparing two PSNs
++ * 2) returning the PSN with any upper bits masked
++ * 3) returning the difference between to PSNs
++ *
++ * The number of significant bits in the PSN must
++ * necessarily be at least one bit less than
++ * the container holding the PSN.
++ */
++#define PSN_MASK 0x7FFFFFFF
++#define PSN_SHIFT 1
++#define PSN_MODIFY_MASK 0xFFFFFF
++
++/*
++ * Compare two PSNs
++ * Returns an integer <, ==, or > than zero.
++ */
++static inline int cmp_psn(u32 a, u32 b)
 +{
-+	if (!dd->cport)
-+		return 0;
-+
-+	timer_delete_sync(&dd->cport->lost_int_timer);
-+	/* flush all cport queued tasks (plus anything else on this queue) */
-+	flush_workqueue(dd->hfi2_wq);
-+
-+	/* Disable intr source for MCTXT from CPORT (to PF0) */
-+	set_intr_bits(dd, JKR_MCTXT_CPORT_TO_PCIE_INT, JKR_MCTXT_CPORT_TO_PCIE_INT, false);
-+	write_csr(dd, JKR_MCTXT_PF0_INT_ENABLE, 0);
-+	/* leave JKR_MCTXT_INT_OUTBOX_EMPTY set so that future users are ready-to-go */
-+	write_csr(dd, JKR_MCTXT_PF0_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+	if (dd->cport->poll_th)
-+		kthread_stop(dd->cport->poll_th);
-+#endif
-+	if (dd->cport->ping_th)
-+		kthread_stop(dd->cport->ping_th);
-+
-+	cancel_work(&dd->cport->mctxt_work);
-+
-+	xa_destroy(&dd->cport->tid_xa);
-+	xa_destroy(&dd->cport->trap_xa);
-+	kfree(dd->cport);
-+	dd->cport = NULL;
-+
-+	return 0;
++	return (((int)a) - ((int)b)) << PSN_SHIFT;
 +}
++
++/*
++ * Return masked PSN
++ */
++static inline u32 mask_psn(u32 a)
++{
++	return a & PSN_MASK;
++}
++
++/*
++ * Return delta between two PSNs
++ */
++static inline u32 delta_psn(u32 a, u32 b)
++{
++	return (((int)a - (int)b) << PSN_SHIFT) >> PSN_SHIFT;
++}
++
++static inline struct tid_rdma_request *wqe_to_tid_req(struct rvt_swqe *wqe)
++{
++	return &((struct hfi2_swqe_priv *)wqe->priv)->tid_req;
++}
++
++static inline struct tid_rdma_request *ack_to_tid_req(struct rvt_ack_entry *e)
++{
++	return &((struct hfi2_ack_priv *)e->priv)->tid_req;
++}
++
++/*
++ * Look through all the active flows for a TID RDMA request and find
++ * the one (if it exists) that contains the specified PSN.
++ */
++static inline u32 __full_flow_psn(struct flow_state *state, u32 psn)
++{
++	return mask_psn((state->generation << HFI2_KDETH_BTH_SEQ_SHIFT) |
++			(psn & HFI2_KDETH_BTH_SEQ_MASK));
++}
++
++static inline u32 full_flow_psn(struct tid_rdma_flow *flow, u32 psn)
++{
++	return __full_flow_psn(&flow->flow_state, psn);
++}
++
++int hfi2_verbs_send(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++void hfi2_cnp_rcv(struct hfi2_packet *packet);
++
++void hfi2_uc_rcv(struct hfi2_packet *packet);
++
++void hfi2_rc_rcv(struct hfi2_packet *packet);
++
++void hfi2_rc_hdrerr(
++	struct hfi2_ctxtdata *rcd,
++	struct hfi2_packet *packet,
++	struct rvt_qp *qp);
++
++u8 ah_to_sc(struct ib_device *ibdev, struct rdma_ah_attr *ah_attr);
++
++void hfi2_rc_verbs_aborted(struct rvt_qp *qp, struct hfi2_opa_header *opah);
++void hfi2_rc_send_complete(struct rvt_qp *qp, struct hfi2_opa_header *opah);
++
++void hfi2_ud_rcv(struct hfi2_packet *packet);
++
++int hfi2_lookup_pkey_idx(struct hfi2_ibport *ibp, u16 pkey);
++
++void hfi2_migrate_qp(struct rvt_qp *qp);
++
++int hfi2_check_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
++			 int attr_mask, struct ib_udata *udata);
++
++void hfi2_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
++		    int attr_mask, struct ib_udata *udata);
++void hfi2_restart_rc(struct rvt_qp *qp, u32 psn, int wait);
++int hfi2_setup_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe,
++		   bool *call_send);
++
++int hfi2_ruc_check_hdr(struct hfi2_ibport *ibp, struct hfi2_packet *packet);
++
++u32 hfi2_make_grh(struct hfi2_ibport *ibp, struct ib_grh *hdr,
++		  const struct ib_global_route *grh, u32 hwords, u32 nwords);
++
++void hfi2_make_ruc_header(struct rvt_qp *qp, struct ib_other_headers *ohdr,
++			  u32 bth0, u32 bth1, u32 bth2, int middle,
++			  struct hfi2_pkt_state *ps);
++
++bool hfi2_schedule_send_yield(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
++			      bool tid);
++
++void _hfi2_do_send(struct work_struct *work);
++
++void hfi2_do_send_from_rvt(struct rvt_qp *qp);
++
++void hfi2_do_send(struct rvt_qp *qp, bool in_thread);
++
++void hfi2_send_rc_ack(struct hfi2_packet *packet, bool is_fecn);
++
++int hfi2_make_rc_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++int hfi2_make_uc_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++int hfi2_make_ud_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++int hfi2_register_ib_device(struct hfi2_devdata *dd);
++
++void hfi2_unregister_ib_device(struct hfi2_devdata *dd);
++
++void hfi2_kdeth_eager_rcv(struct hfi2_packet *packet);
++
++void hfi2_kdeth_expected_rcv(struct hfi2_packet *packet);
++
++void hfi2_ib_rcv(struct hfi2_packet *packet);
++
++void hfi2_16B_rcv(struct hfi2_packet *packet);
++
++unsigned int hfi2_get_npkeys(struct hfi2_devdata *dd);
++
++int hfi2_verbs_send_dma(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
++			u64 pbc);
++
++int hfi2_verbs_send_pio(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
++			u64 pbc);
++
++static inline bool opa_bth_is_migration(struct ib_other_headers *ohdr)
++{
++	return ohdr->bth[1] & cpu_to_be32(OPA_BTH_MIG_REQ);
++}
++
++void hfi2_wait_kmem(struct rvt_qp *qp);
++
++static inline void hfi2_trdma_send_complete(struct rvt_qp *qp,
++					    struct rvt_swqe *wqe,
++					    enum ib_wc_status status)
++{
++	trdma_clean_swqe(qp, wqe);
++	rvt_send_complete(qp, wqe, status);
++}
++
++void cport_get_dev_fw_str(struct ib_device *ibdev, char *str);
++
++extern const enum ib_wc_opcode ib_hfi2_wc_opcode[];
++
++extern const u8 hdr_len_by_opcode[];
++
++extern const int ib_rvt_state_ops[];
++
++extern __be64 ib_hfi2_sys_image_guid;    /* in network order */
++
++extern unsigned int hfi2_max_cqes;
++
++extern unsigned int hfi2_max_cqs;
++
++extern unsigned int hfi2_max_qp_wrs;
++
++extern unsigned int hfi2_max_qps;
++
++extern unsigned int hfi2_max_sges;
++
++extern unsigned int hfi2_max_mcast_grps;
++
++extern unsigned int hfi2_max_mcast_qp_attached;
++
++extern unsigned int hfi2_max_srqs;
++
++extern unsigned int hfi2_max_srq_sges;
++
++extern unsigned int hfi2_max_srq_wrs;
++
++extern unsigned short piothreshold;
++
++extern const u32 ib_hfi2_rnr_table[];
++
++#endif                          /* HFI2_VERBS_H */
+diff --git a/drivers/infiniband/hw/hfi2/verbs_txreq.h b/drivers/infiniband/hw/hfi2/verbs_txreq.h
+new file mode 100644
+index 000000000000..e67442ce8fb0
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/verbs_txreq.h
+@@ -0,0 +1,98 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2016 - 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef HFI2_VERBS_TXREQ_H
++#define HFI2_VERBS_TXREQ_H
++
++#include <linux/types.h>
++#include <linux/slab.h>
++
++#include "verbs.h"
++#include "sdma_txreq.h"
++#include "iowait.h"
++
++struct verbs_txreq {
++	struct hfi2_sdma_header	phdr;
++	struct sdma_txreq       txreq;
++	struct rvt_qp           *qp;
++	struct rvt_swqe         *wqe;
++	struct rvt_mregion	*mr;
++	struct rvt_sge_state    *ss;
++	struct sdma_engine     *sde;
++	struct send_context     *psc;
++	struct kref		ref;
++	u16                     hdr_dwords;
++	u16			s_cur_size;
++};
++
++struct hfi2_ibdev;
++struct verbs_txreq *__get_txreq(struct hfi2_ibdev *dev,
++				struct rvt_qp *qp);
++
++#define VERBS_TXREQ_GFP (GFP_ATOMIC | __GFP_NOWARN)
++static inline struct verbs_txreq *alloc_txreq(struct hfi2_ibdev *dev,
++					      struct rvt_qp *qp)
++	__must_hold(&qp->slock)
++{
++	struct verbs_txreq *tx;
++	struct hfi2_qp_priv *priv = qp->priv;
++
++	tx = kmem_cache_alloc(dev->verbs_txreq_cache, VERBS_TXREQ_GFP);
++	if (unlikely(!tx)) {
++		/* call slow path to get the lock */
++		tx = __get_txreq(dev, qp);
++		if (!tx)
++			return tx;
++	}
++	tx->qp = qp;
++	tx->mr = NULL;
++	tx->sde = priv->s_sde;
++	tx->psc = priv->s_sendcontext;
++	/* so that we can test if the sdma descriptors are there */
++	tx->txreq.num_desc = 0;
++	/* Set the header type */
++	tx->phdr.hdr.hdr_type = priv->hdr_type;
++	tx->txreq.flags = 0;
++	kref_init(&tx->ref);
++	return tx;
++}
++
++static inline struct verbs_txreq *get_waiting_verbs_txreq(struct iowait_work *w)
++{
++	struct sdma_txreq *stx;
++
++	stx = iowait_get_txhead(w);
++	if (stx)
++		return container_of(stx, struct verbs_txreq, txreq);
++	return NULL;
++}
++
++static inline bool verbs_txreq_queued(struct iowait_work *w)
++{
++	return iowait_packet_queued(w);
++}
++
++void dealloc_txreq(struct kref *ref);
++
++/*
++ * There are no locks to enforce ordering between hfi2_get_txreq() and
++ * hfi2_put_txreq().  The caller of hfi2_get_txreq() must be currently
++ * holding a reference to avoid any race with hfi2_put_txreq().
++ */
++static inline void hfi2_get_txreq(struct verbs_txreq *tx)
++{
++	kref_get(&tx->ref);
++}
++
++static inline void hfi2_put_txreq(struct verbs_txreq *tx)
++{
++	kref_put(&tx->ref, dealloc_txreq);
++}
++
++int verbs_txreq_init(struct hfi2_ibdev *dev);
++void verbs_txreq_exit(struct hfi2_ibdev *dev);
++
++#endif                         /* HFI2_VERBS_TXREQ_H */
 
 
 
