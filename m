@@ -1,154 +1,161 @@
-Return-Path: <linux-rdma+bounces-17849-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17850-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8JTeNwrpr2nkdAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17849-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:48:58 +0100
+	id GB+iJnTxr2nkdAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17850-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 11:24:52 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96547248CC9
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:48:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA93249526
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 11:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7FD743091B3D
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 09:45:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A62D313AF99
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7FB43D51D;
-	Tue, 10 Mar 2026 09:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3063E95B5;
+	Tue, 10 Mar 2026 10:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="DUa33BIc"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="zK7PTUb1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879B0199D8
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 09:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61985346AE5;
+	Tue, 10 Mar 2026 10:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773135943; cv=none; b=CXFCo2WiNrsWzIscXYHB49sZnP837viZDIsQv3zehfpOW4Ku7yF/wwigCzM23pLidKkH9jmalHPzo/6j4ghWatpTDSvWw840D5EaX0XADHTkpUGEnzqAv3f0ldTX2oDBVB063FXhlcRd5OBeTdSbIOPCtD9H2l8B8/hUTsxPAio=
+	t=1773138241; cv=none; b=SijJEHaMjhqQG9MTiMBJOqbg94Ezlde3lYltHS38nctO7+VBo1wWy/hLxaJ+oB+xSrRQqsciFZdqz3r+oVG0/RS5Fe45uTIazeTumohAQt8rqytg9r6oQ1z56csCChLIhUcJQILus+Aa8wP5IfH3Oi9yS4o75V+YCtHoqh+bquo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773135943; c=relaxed/simple;
-	bh=ZLvezuR8s0+OWVqfo92KUk4UlTJ6DqfgkS4fGtPZbTw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=prFcjs1kDZxsM/IAwnjUA3JUu+Ti5cXLg/pPedD4C6KQWaLQRjPrTVkzfVbGssQhwxVhsACFjorNr/8KdU30OqOW652IHkCH2dnzksU45lU1BfUZTAtT4uiiZdYt+QTmUtt/iehK3RGk3Su619weB76foKVa8qopqXtrZ8hiT8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=DUa33BIc; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20260310094539euoutp0265647b65cd64f7b25b935114541b74e8~bcb4uYGPv0692606926euoutp02R
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 09:45:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20260310094539euoutp0265647b65cd64f7b25b935114541b74e8~bcb4uYGPv0692606926euoutp02R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1773135939;
-	bh=g4Z4ok96NWqzBgjOcLsFlXJfC/4zjtxkfiYjt2twx7A=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=DUa33BIcjnjYaDcrUwR4b3y4tN6gJrXkmaBcwcJ4p2c4tZGQM9R38aSaC2a0O/Bbo
-	 0xa64kwxr8dc0Yov8gz0+bhz5Z3p5QxpyUFH3txM4dysJYcWw+sParNspVxK2j8cYf
-	 dHSDbRa7PdBI1Opg2OUQSyeLHuC0MQYAqRPXhB3s=
-Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20260310094539eucas1p15d2320cc87bfb317f5be51b359fb08c6~bcb4brfjb0410104101eucas1p1p;
-	Tue, 10 Mar 2026 09:45:39 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20260310094538eusmtip17998daf8f2a16ee4d9b5c8cb775d1e36~bcb3virLM2940529405eusmtip1i;
-	Tue, 10 Mar 2026 09:45:38 +0000 (GMT)
-Message-ID: <aaebc5b6-2805-46d3-a68e-549c26a3ef03@samsung.com>
-Date: Tue, 10 Mar 2026 10:45:38 +0100
+	s=arc-20240116; t=1773138241; c=relaxed/simple;
+	bh=V4nAKKOrlsJnLVSfpQtB7ZrgidRhEAiRET1TW0NC+Uo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IEuL5Ay2lTeZcXqS75dtYV2akHg+ETLLMy3++c1eVMAT47aK+QddOiZQxCsO8O9t+hUTToajUpALXOeyqnf3nuFPGnmgIe5+3Eu+w0DkZWHsxTaeDFdeYWC5RX3sv5rzi3hm6pnZB5fDMXZuCn2cgeqA9ezazI/H93nLGhfFZvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=zK7PTUb1; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 7450EC40683;
+	Tue, 10 Mar 2026 10:24:18 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id AB05060002;
+	Tue, 10 Mar 2026 10:23:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C548310369AAA;
+	Tue, 10 Mar 2026 11:23:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1773138236; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=dG33aSjLs5/R1+ox7HGy2GkcqJJZcFyv8oCLXkVVO4w=;
+	b=zK7PTUb1s9XSnqHU6HDC+Ezw/Qs9eHAkITmOHNSaQqdFvp9Pnc0Zm857kdzbWUFhLV2ocZ
+	bvPdL5bqeKEaE2zlcdG9j55prr4u6R0aeRrBRqG+aQ8CT9T3O6uF7B5BwnpZtfozxm1a0X
+	7/HzbcfSdPQiaZOJTLGmqSK6jhjrILMV718y+Y13nn1Frsgwf5n+lhXeJm6jwQ6Z7DIaBP
+	BZdBLGmvX3kZBxAomTS73hB9dUqX+ptoIJlfVhcYz9C18cw80HF0f/r1uuveJ2/OqkMlCr
+	7yt/Sy01ddWzu7riuNBYUDRLkSVl/Aor4lUEEbF+CJZ2e9SdSfBYlGV1ILWAEQ==
+Message-ID: <2ed52f3c-ce2b-4ac9-baf5-224fd3e946f1@bootlin.com>
+Date: Tue, 10 Mar 2026 11:23:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Windows)
-Subject: Re: [PATCH 2/3] dma-mapping: Clarify valid conditions for CPU cache
- line overlap
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>, "Michael S. Tsirkin"
-	<mst@redhat.com>, Petr Tesarik <ptesarik@suse.com>, Jonathan Corbet
-	<corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Jason Wang
-	<jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	virtualization@lists.linux.dev, linux-rdma@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC net-next v2 1/6] ethtool: Add loopback netlink UAPI
+ definitions
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ netdev@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>,
+ Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Michael Chan
+ <michael.chan@broadcom.com>, Hariprasad Kelam <hkelam@marvell.com>,
+ Ido Schimmel <idosch@nvidia.com>, Danielle Ratson <danieller@nvidia.com>,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>
+References: <20260308124016.3134012-1-bjorn@kernel.org>
+ <20260308124016.3134012-2-bjorn@kernel.org>
+ <456697d6-c0d8-4edf-abd2-85062f4b25ab@bootlin.com>
+ <e138acb9-f2ab-4d76-a9b1-fa7299b1260f@lunn.ch>
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
 Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20260309151356.GN1687929@ziepe.ca>
+In-Reply-To: <e138acb9-f2ab-4d76-a9b1-fa7299b1260f@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CMS-MailID: 20260310094539eucas1p15d2320cc87bfb317f5be51b359fb08c6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07
-X-EPHeader: CA
-X-CMS-RootMailID: 20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07
-References: <20260307-dma-debug-overlap-v1-0-c034c38872af@nvidia.com>
-	<20260307-dma-debug-overlap-v1-2-c034c38872af@nvidia.com>
-	<20260308181920.GH1687929@ziepe.ca> <20260308184902.GR12611@unreal>
-	<20260308230916.GI1687929@ziepe.ca>
-	<CGME20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07@eucas1p2.samsung.com>
-	<20260309090342.GS12611@unreal>
-	<c1d058f3-f864-4ed7-9f7a-683d6f4bf1ce@samsung.com>
-	<20260309150502.GX12611@unreal> <20260309151356.GN1687929@ziepe.ca>
-X-Rspamd-Queue-Id: 96547248CC9
+X-Last-TLS-Session-Version: TLSv1.3
+X-Rspamd-Queue-Id: 3FA93249526
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.15 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[samsung.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[samsung.com:s=mail20170921];
+	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
+	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-17849-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17850-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[samsung.com:+];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch,broadcom.com,marvell.com,armlinux.org.uk];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[m.szyprowski@samsung.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	NEURAL_HAM(-0.00)[-0.895];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[bootlin.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,bootlin.com:dkim,bootlin.com:mid]
 X-Rspamd-Action: no action
 
-On 09.03.2026 16:13, Jason Gunthorpe wrote:
-> On Mon, Mar 09, 2026 at 05:05:02PM +0200, Leon Romanovsky wrote:
->> Regarding failure on unsupported systems, I have tried more than once to
->> make the RDMA fail when the device is known to take the SWIOTLB path
->> in RDMA and cannot operate correctly, but each attempt was met with a
->> cold reception:
->> https://lore.kernel.org/all/d18c454636bf3cfdba9b66b7cc794d713eadc4a5.1719909395.git.leon@kernel.org/
-> I think alot of that is the APIs used there. It is hard to determine
-> if SWIOTLB is possible or coherent is possible, I've also hit these
-> things in VFIO and gave up.
->
-> However, DMA_ATTR_REQUIRE_COHERENCE can be done properly and not leak
-> alot of dangerous APIs to drivers (beyond itself).
->
-> It is also more important now with CC systems, I think.
 
-Jason is right. Indeed the rdma/uverbs case needs some extension to 
-ensure that the coherent mapping is used, what is not possible now. This 
-however doesn't mean that the DMA_ATTR_CPU_CACHE_OVERLAP is not needed 
-for that use case too. I'm open to accept both. The only question I have 
-is which name should we use? We already have DMA_ATTR_CPU_CACHE_CLEAN, 
-while DMA_ATTR_CPU_CACHE_OVERLAP and 
-DMA_ATTR_DEBUGGING_IGNORE_CACHELINES were proposed here. The last seems 
-to be most descriptive.
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+On 09/03/2026 17:45, Andrew Lunn wrote:
+>>> +    doc: |
+>>> +      Loopback component. Identifies where in the network path the
+>>> +      loopback is applied.
+>>> +    entries:
+>>> +      -
+>>> +        name: mac
+>>> +        doc: MAC loopback
+>>> +      -
+>>> +        name: pcs
+>>> +        doc: PCS loopback
+>>> +      -
+>>> +        name: phy
+>>> +        doc: PHY loopback
+>>> +      -
+>>> +        name: module
+>>> +        doc: Pluggable module (e.g. CMIS (Q)SFP) loopback
+>>
+>> Should we also add "serdes" ?
+> 
+> What is the difference between SERDES and PCS?
 
+By Serdes I mean "generic PHY", but as you state below I don't really
+want to use the word "PHY" as it's very prone to confusion with Ethernet
+PHYs.
+
+> 
+> Maybe we should also make it clear PHY means Ethernet PHY. The Marvell
+> Generic PHYs have
+> 
+> phy-mvebu-a3700-comphy.c:#define COMPHY_DIG_LOOPBACK_EN		0x23
+> phy-mvebu-cp110-comphy.c:#define MVEBU_COMPHY_LOOPBACK(n)		(0x88c + (n) * 0x1000)
+> 
+> which suggests it can also do loopback. We don't want PHY meaning two
+> different things.
+
+Agreed,
+
+Maxime
 
