@@ -1,143 +1,128 @@
-Return-Path: <linux-rdma+bounces-17889-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17890-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gOoLKndcsGloigIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17889-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:01:27 +0100
+	id GAawE0JcsGn2iQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17890-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:00:34 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D0B25615B
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:01:27 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5C5256101
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D5E0430825D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 17:58:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 4E1843002308
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 18:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1AE3D47DC;
-	Tue, 10 Mar 2026 17:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163823D16FB;
+	Tue, 10 Mar 2026 18:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R6z1Z5Sy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpHEqLQm"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21253292B2E;
-	Tue, 10 Mar 2026 17:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDF03CFF42
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 18:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773165484; cv=none; b=dGSrvREQABoMQy61aHbsUxd2sOvXb49NMjJCSHi481761h2Q3qvoOHK7r5RKgZxmtsJpztuK7Sng9q8HkIzTwy7Yosasq+Ouo9H0tNK50ZsHG8O5VHBhBB9dPngWofSZhdeEDh4phpI3R5hX214vwsvyG13/uBnB7oSM0Yj+kwE=
+	t=1773165630; cv=none; b=LQqZEZVXvkrkBsfjLILronYUZFRi9K2fxhkQuayXkuOyX2TN26UISAl24OE6CEqCBJHLR06waGNz8ZhYIaxfGvhBRPei2Hv5BL8vXfUM1ljAbKu6JQk3QvyMYgeKxkGxFzPDkbLscWdm4hXK7Y1zg/WEs0AF7fuJ6NbZ6gRsWZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773165484; c=relaxed/simple;
-	bh=9H+COjDFYd25DqcGlBZTvFi1KfvZMB8xWPxprb0yqkE=;
+	s=arc-20240116; t=1773165630; c=relaxed/simple;
+	bh=lA/uUOLuriZ9nvTPsXGdpzr8A6kAY8/36ijkhKGjH+4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UtDTZFldyXzg1y6KIX5boYEGkLsMsYcP0I1xhLTqixZwOm7fD8Za0c1dS1rV5PgwoqN0Lg3vpDrHJBL92CeM/8NjN/KRrXhYg/BWV0LBRJfCur6KwtC40BVqz58oWb0m73YzPz3wwm/LLYAfZfV49dT/EIKpKebLze3QjcVlYhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R6z1Z5Sy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4070AC19423;
-	Tue, 10 Mar 2026 17:58:03 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VqRaLiwvNCUEz91KWUTNjzrxx9evJ/BFwypyMVjLDob7bTO1qbulMzpQSSaRBA6GJtVQ19AC/SpKcbOfjeBlLLU/NIQU5NemhV0f59qeq67cSzgX36wxAR2quxzPf4rm5ip+PEYJHutkH06ddlMSntPvVDpelniJXcpz8vCR3zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpHEqLQm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB5DC19423;
+	Tue, 10 Mar 2026 18:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773165483;
-	bh=9H+COjDFYd25DqcGlBZTvFi1KfvZMB8xWPxprb0yqkE=;
+	s=k20201202; t=1773165629;
+	bh=lA/uUOLuriZ9nvTPsXGdpzr8A6kAY8/36ijkhKGjH+4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R6z1Z5Sy2ONUcvt/esaL4cfMvnCnz+4WQK9rersFXhEMOXIbcz2hY89OitB+uxloh
-	 XfbM5sNkh990asp+zh4GFiaz3D1Npib5FIHQLRT7vRKJssXCHm103H9GH0l895nKRU
-	 sG5Yr1DrnH08JQ1T0zNjFnU4oEYfDlbMv7YYOiaJpxXkP6YLaaCUlDPEaksjFz9ren
-	 BpVy3QyVJ+R9a0NJdGjTXLW9uuGWkg7qKZMYs0zNeOiGO9BJzrdJVK6mBfnIqEIlcY
-	 Zlowom/kUzVzoyqTgQHo7VLQGGkdE4synuGRF+QFfIQy+4JGSBHY1ePzd7/tLhSngP
-	 LdosCRUWeRD+Q==
-Date: Tue, 10 Mar 2026 19:57:59 +0200
+	b=JpHEqLQmm3L2YYFS1DXZmNr/r20Kb+d662kwy2ujydVwqwtyU1X1M/8TiRo3z0/dE
+	 V/S44FJ3ND6kfNrPSjicrQyxgqaOdUyVvfT5ca7Qhww69euE1EzBf50/quUZ6ddyX3
+	 l9Y2XKalKsCe2smziwcjdQ4IM8N8qd4YSpc7S+zB28W9hqqjEy/s+tfC98pWFYpWMW
+	 KD7mGRWvhW01q10i/eIRz/aC7/XlsCumrrbzgoRdk0YVATOyxfEKBH8x448Nu9tDqL
+	 mS2UCVWN1tkkWaLUfHmfoMR/pgSp6JwNzKHDfGwbTRr95f1PIb/aD/lTUSuuhlbIn3
+	 cRjxjuzDlQzAw==
+Date: Tue, 10 Mar 2026 20:00:26 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc: Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
-	Itay Avraham <itayavr@nvidia.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>
-Subject: Re: [PATCH 0/3] Firmware LSM hook
-Message-ID: <20260310175759.GD12611@unreal>
-References: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
- <CAHC9VhTR9CsBgxRCAHXm5T2NZ5tr+XfmA--zkt=udmk9hPRuZQ@mail.gmail.com>
- <20260309193743.GZ12611@unreal>
- <CAHC9VhSRt_QEJKJFBDBySNQCiPpcawd5A76xmoRNtppRKGaCog@mail.gmail.com>
- <20260310090733.GA12611@unreal>
- <CAEjxPJ4nTmovpgkzC+3=Oh7EAhpi1vHLwJfjezu-vzX_Q2OCug@mail.gmail.com>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: jgg@ziepe.ca, Dean Luick <dean.luick@cornelisnetworks.com>,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 0/4] Prepare for hfi2 submission
+Message-ID: <20260310180026.GE12611@unreal>
+References: <177308892140.1279894.3475429390519673020.stgit@awdrv-04.cornelisnetworks.com>
+ <20260310110806.GC12611@unreal>
+ <9c9ffd7b-0124-4d72-a894-4498b7c44f96@cornelisnetworks.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEjxPJ4nTmovpgkzC+3=Oh7EAhpi1vHLwJfjezu-vzX_Q2OCug@mail.gmail.com>
-X-Rspamd-Queue-Id: 20D0B25615B
+In-Reply-To: <9c9ffd7b-0124-4d72-a894-4498b7c44f96@cornelisnetworks.com>
+X-Rspamd-Queue-Id: DB5C5256101
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17889-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17890-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	URIBL_MULTI_FAIL(0.00)[tor.lore.kernel.org:server fail,siphos.be:server fail,kernsec.org:server fail];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,siphos.be:url,kernsec.org:url]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Tue, Mar 10, 2026 at 12:29:40PM -0400, Stephen Smalley wrote:
-> On Tue, Mar 10, 2026 at 5:14 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > 1140         MLX5_SET(general_obj_in_cmd_hdr, cmd_in, uid, uid);
-> > 1141         err = security_fw_validate_cmd(cmd_in, cmd_in_len, &dev->ib_dev.dev,
-> > 1142                                        FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
-> > 1143         if (err)
-> > 1144                 return err;
-> > 1145
-> > 1146         err = mlx5_cmd_do(dev->mdev, cmd_in, cmd_in_len, cmd_out, cmd_out_len);
-> >
-> > Could you point me to the LSM that would be best suited for performing
-> > checks of this kind?
+On Tue, Mar 10, 2026 at 10:14:55AM -0400, Dennis Dalessandro wrote:
+> On 3/10/26 7:08 AM, Leon Romanovsky wrote:
+> > On Mon, Mar 09, 2026 at 04:44:39PM -0400, Dennis Dalessandro wrote:
+> > > These 4 patches get rdmavt ready for hfi2 support. This is being split out
+> > > from the previous patch submission [1].
+> > > 
+> > > [1] https://lore.kernel.org/linux-rdma/175129726945.1859400.4492277779101226937.stgit@awdrv-04.cornelisnetworks.com/
+> > > 
+> > > ---
+> > > 
+> > > Dean Luick (4):
+> > >        RDMA/OPA: Update OPA link speed list
+> > >        RDMA/rdmavt: Add ucontext alloc/dealloc passthrough
+> > >        RDMA/rdmavt: Correct multi-port QP iteration
+> > >        RDMA/rdmavt: Add driver mmap callback
+> > 
+> > Something went wrong, second patch didn't arrive.
+> > https://lore.kernel.org/all/177308892140.1279894.3475429390519673020.stgit@awdrv-04.cornelisnetworks.com/
 > 
-> If you just want to filter on opcodes, then the SELinux extended
-> permissions (xperms) support may suffice, see:
-> https://blog.siphos.be/2017/11/selinux-and-extended-permissions/
-> https://kernsec.org/files/lss2015/vanderstoep.pdf
-> https://github.com/SELinuxProject/selinux-notebook/blob/main/src/xperm_rules.md
-> 
-> This was originally added to SELinux to support filtering ioctl
-> commands and later extended to netlink as well.
-> 
-> If you truly need/want filtering of arbitrary variable-length command
-> buffers.
+> Sorry about that, I'm working the problem with our IT dept right now. The
+> mailserver decided to eat half of my patches.
 
-Yes. The opcode alone is not sufficient for any real‑world use.  
-It is not reliable because different firmware versions place different  
-parameters into the same mailbox entry under the same opcode.  
-Without inspecting the mailbox contents, you cannot properly filter them.
+In the meantime, I can take these three patches if you prefer.
+
+By the way, these patches currently have no in-kernel consumers, but
+let's assume you plan to use them in your hfi2 driver."
 
 Thanks
+
+> 
+> -Denny
 
