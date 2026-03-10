@@ -1,48 +1,49 @@
-Return-Path: <linux-rdma+bounces-17852-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17853-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4PX3Nkj3r2mmdwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17852-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 11:49:44 +0100
+	id gKPrGOT2r2nkdAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17853-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 11:48:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 478B6249AD4
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 11:49:44 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08B28249A47
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 11:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 609B03142045
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:47:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9E6E23034C45
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243BA374747;
-	Tue, 10 Mar 2026 10:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161F037BE9B;
+	Tue, 10 Mar 2026 10:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JDV4lwiW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EutdbW2K"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8058313298;
-	Tue, 10 Mar 2026 10:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B71372677;
+	Tue, 10 Mar 2026 10:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773139672; cv=none; b=Xds1YnDt3kh5QP33z+LwkPVgaFt+DIJKnCVhi7fcFslYmQpbF7oLPMHzKvAcpncKwKzHqIYOPKYJbz5ziHmkILXOrcRSsDsCNOL+xbhSr3JA4NrR/riPShRiSwrb2TFVpaW5D2bFPi3JFKFytS3wQ9CUwuk7GbItJxpDzAhzWcc=
+	t=1773139679; cv=none; b=Cy7iQBLHA3JPfoUwnjkkM8A9ZV0wknRd8xNEqpmia0pfSJQfc8gMv63lYT0nSZyQ2DOpighEEDaTDdYLImvP9XtkV2/Ojgu/9/aotbHRJYyPwGyBbITe/KXsL5ty0dS7HN1dNweAQFXN3hwZyqENChi6N5/FWOlb84sqSp8U+kU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773139672; c=relaxed/simple;
-	bh=7B21ULlz+HkbtuwJWheYOsnVMGIsw3sf0QCldUc8W3A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hYEtXT0iT6Ha86BtsBwfI7qO8HY2ASARZJwwmFli2dZL4+c9TqKVV5k0PHRQmltXZGErSJbkmhwkrU7PLOaxBbO3gIvBSEw7turbTIWTu0eR1OfN8zX+Nh1R2wk3wkLWKAAK2ewI1i9DlsIhGKoW52+dzmeshBRto/DDU8O73HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JDV4lwiW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFF1DC2BC86;
-	Tue, 10 Mar 2026 10:47:46 +0000 (UTC)
+	s=arc-20240116; t=1773139679; c=relaxed/simple;
+	bh=JFpaISuWEqbj8p69pQPuKhfzK52I4efiD/t20Kcul/4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aPEx4ERJaT/66nMP+GtzDOIQQtvhqkKLkXye6KOVaa570s1r+4hadwFyxOyZHbaNdgRlib5VuDfcaTrSZPe7b1GK/DNgQGEzSDl9XAwrBAE5yBZ1NdSpbvmDXSqEBWfTIUp7pUp4efXTa73ZT45YmcZH5K13AfLtOZv5yLpWi4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EutdbW2K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED8BEC19423;
+	Tue, 10 Mar 2026 10:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773139672;
-	bh=7B21ULlz+HkbtuwJWheYOsnVMGIsw3sf0QCldUc8W3A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=JDV4lwiWSTlfUae2g4iK3fiCEv1vf3DOOwwCyYpmbtjG3lsIH3wWuszeMDtpONUnl
-	 +5fMuXF5nza7hx5D9ZZfuNU14ELv5Ef/xanqDIux9N6kN23HME2OY2Jkwg7qo7HA1N
-	 cWprgRuO0hSgHXII8kJMzzWjRlM/+ci5s3HU3PUEKRjP0/RZIFM5N3acOCZVQE5Wzn
-	 KSBi2WA3jh7sgHeSQZu2x6Nm3IPfFhRUIuA6yd1PmxKoJun7UjmKQoiWOK+XLGZqrb
-	 iPxyyXW5wLCaOmI8q6JVeTlnFC6dM/XUn+/3GGWcI8tbLqSNDh/LntkNGtXdmN4zz4
-	 UrVWfnrsmcxqA==
+	s=k20201202; t=1773139679;
+	bh=JFpaISuWEqbj8p69pQPuKhfzK52I4efiD/t20Kcul/4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=EutdbW2KA38DzfhdRau7XFMC/YW8ntYYueO1787CPAOqJXyb9ghWB7JBsQQiqbx1x
+	 qW+bHiLD6+uBxHMyfGbi88BMK8FKWpSBNs9Iu+kpLj4FOTLA6GGT8TLQco302Nbrek
+	 W+qEB+raghUeV4MaNT7vdFso824JWzAutfM1u+5zHgi/2EZwmVB1Y+2zqsSWHFJBTH
+	 MZHaEjcy2Ja7f4+ckwvdKEZoXHwKph/kaHtIWR7aw/hq+LPcf3uLJcLjUV+5QczPkP
+	 B2baEC7AAfgM/47mGCScsZUU5IqlG93h7sLF3gHajltQ2PSNzRjHmgmS2H2FTbIlGl
+	 bcXuXtmzNo+jg==
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To: netdev@vger.kernel.org,
 	"David S. Miller" <davem@davemloft.net>,
@@ -72,10 +73,12 @@ Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 00/11] ethtool: Generic loopback support
-Date: Tue, 10 Mar 2026 11:47:30 +0100
-Message-ID: <20260310104743.907818-1-bjorn@kernel.org>
+Subject: [PATCH net-next 01/11] ethtool: Add dump_one_dev callback for per-device sub-iteration
+Date: Tue, 10 Mar 2026 11:47:31 +0100
+Message-ID: <20260310104743.907818-2-bjorn@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260310104743.907818-1-bjorn@kernel.org>
+References: <20260310104743.907818-1-bjorn@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,21 +87,21 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 478B6249AD4
+X-Rspamd-Queue-Id: 08B28249A47
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.17 / 15.00];
+X-Spamd-Result: default: False [0.93 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.83)[subject];
+	R_MIXED_CHARSET(0.59)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17852-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17853-lists,linux-rdma=lfdr.de];
 	FREEMAIL_TO(0.00)[vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,kernel.org,bootlin.com,marvell.com,redhat.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -112,263 +115,509 @@ X-Spamd-Result: default: False [1.17 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
 	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,marvell.com,bootlin.com,broadcom.com,pengutronix.de,gmail.com,armlinux.org.uk,google.com,vger.kernel.org];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,loopback_nsim.py:url,loopback_drv.py:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hi!
+The per-PHY specific dump functions share a lot functionality of with
+the default dumpit infrastructure, but does not share the actual code.
+By introducing a new sub-iterator function, the two dumpit variants
+can be folded into one set of functions.
 
-Background
-==========
+Add a new dump_one_dev callback in ethnl_request_ops. When
+ops->dump_one_dev is set, ethnl_default_start() saves the target
+device's ifindex for filtered dumps, and ethnl_default_dumpit()
+delegates per-device iteration to the callback instead of calling
+ethnl_default_dump_one() directly. No separate start/dumpit/done
+functions are needed.
 
-This series adds a generic ethtool loopback framework with GET/SET
-netlink commands, using a component/id/name/direction model that can
-(Hopefully! Please refer to "Open questions" below.) represent
-loopback points across the network path (MAC, MODULE, PHY, PCS).
+For the existing per-PHY commands (PSE, PLCA, PHY, MSE), the shared
+ethnl_perphy_dump_one_dev helper provides the xa_for_each_start loop
+over the device's PHY topology.
 
-This is the v1 proper of the loopback series, reworked based on
-feedback from previous RFC v2 [1].
+This prepares the ethtool infrastructure for other commands that need
+similar per-device sub-iteration.
 
-The main change since the RFC v2 is that LOOPBACK_GET no longer
-returns an array of entries in a single doit reply. Instead, it uses
-the dumpit infrastructure -- each loopback entry is a separate netlink
-message in a DUMP response. This follows the same pattern as PHY_GET
-and the perphy helpers in net/ethtool/netlink.c, as suggested by
-Maxime.
+Suggested-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Signed-off-by: Björn Töpel <bjorn@kernel.org>
+---
+ net/ethtool/mse.c     |   1 +
+ net/ethtool/netlink.c | 261 ++++++++++--------------------------------
+ net/ethtool/netlink.h |  31 +++++
+ net/ethtool/phy.c     |   1 +
+ net/ethtool/plca.c    |   2 +
+ net/ethtool/pse-pd.c  |   1 +
+ 6 files changed, 94 insertions(+), 203 deletions(-)
 
-A filtered DUMP (with a dev-index in the header) lists all loopback
-entries for that netdev; an unfiltered DUMP iterates over all netdevs.
-The doit handler is also available: when the request includes an
-ETHTOOL_A_LOOPBACK_ENTRY nest with component + name, it returns that
-specific entry.
-
-The loopback model remains the same: LOOPBACK_GET/SET with a generic
-component/name/direction model that can represent loopback points
-across the data path -- MODULE, PHY, MAC, and PCS. This series wires
-up MODULE/CMIS and MAC as the first users; PHY and PCS return
--EOPNOTSUPP for now.
-
-Loopback lookup and enumeration
-===============================
-
-Each loopback entry is uniquely identified by the tuple (component,
-id, name). The kernel provides two GET paths:
-
- - Exact lookup (doit): the user specifies component + name (and
-   optionally id) in the request. The kernel dispatches to the right
-   component handler: for MAC, it calls the driver's
-   get_loopback(dev, name, id, entry) ethtool_op; for MODULE, it
-   calls ethtool_cmis_get_loopback(dev, name, entry). Returns a
-   single entry or -EOPNOTSUPP.
-
- - Index enumeration (dump): the kernel iterates a flat index space
-   across all components on a device. Each component's
-   get_loopback_by_index(dev, index, entry) is tried in order (MAC
-   first via ethtool_ops, then MODULE/CMIS). The dump stops when all
-   components return -EOPNOTSUPP. This integrates with the generic
-   dump_one_dev sub-iterator infrastructure added in patch 1.
-
-SET takes one or more entries, each with component + name + direction,
-and dispatches to the driver's set_loopback() ethtool_op (MAC) or
-ethtool_cmis_set_loopback() (MODULE).
-
-The Common Management Interface Specification (CMIS) defines four
-diagnostic loopback types, characterized by location (Host or Media
-Side) and signal direction:
-
- - Host Side Input (Rx->Tx) -- near-end
- - Host Side Output (Tx->Rx) -- far-end
- - Media Side Input (Rx->Tx) -- near-end
- - Media Side Output (Tx->Rx) -- far-end
-
-Support is detected via Page 13h Byte 128, and loopback is controlled
-via Page 13h Bytes 180-183 (one byte per type, one bit per lane).
-
-The CMIS helpers work entirely over get/set_module_eeprom_by_page, so
-any driver that already has EEPROM page access gets module loopback
-without new ethtool_ops or driver changes.
-
-Currently, only mellanox/mlxsw, and broadcom/bnxt support CMIS
-operations. I'll follow-up with mlx5 support.
-
-Implementation
-==============
-
-Patch 1/11 ethtool: Add dump_one_dev callback for per-device sub-iteration
-  Replaces the per-PHY specific dump functions with a generic
-  sub-iterator infrastructure driven by a dump_one_dev callback in
-  ethnl_request_ops. When ops->dump_one_dev is set,
-  ethnl_default_start() saves the target device's ifindex for
-  filtered dumps, and ethnl_default_dumpit() delegates per-device
-  iteration to the callback. No separate start/dumpit/done functions
-  are needed.
-
-Patch 2/11 ethtool: Add loopback netlink UAPI definitions
-  Adds the YAML spec and generated UAPI header for the new
-  LOOPBACK_GET/SET commands. Each loopback entry carries a component
-  type, optional id, name string, supported directions bitmask, and
-  current direction.
-
-Patch 3/11 ethtool: Add loopback GET/SET netlink implementation
-  Implements GET/SET dispatch in a new loopback.c. GET uses the
-  dump_one_dev infrastructure for dump enumeration (by flat index)
-  and supports doit exact lookup by (component, id, name) via
-  parse_request. SET switches on the component and calls the right
-  handler per entry. No components are wired yet.
-
-Patch 4/11 ethtool: Add CMIS loopback helpers for module loopback control
-  Adds cmis_loopback.c with the MODULE component handlers and wires
-  them into loopback.c's dispatch. GET enumerates entries by index
-  (ethtool_cmis_get_loopback_by_index) or looks up by name
-  (ethtool_cmis_get_loopback). SET (ethtool_cmis_set_loopback)
-  resolves name to control byte indices and enforces mutual
-  exclusivity.
-
-Patch 5/11 selftests: drv-net: Add loopback driver test
-  Adds loopback_drv.py with generic tests that work on any device
-  with module loopback support: enable/disable, direction switching,
-  idempotent enable, and rejection while interface is up.
-
-Patch 6/11 ethtool: Add MAC loopback support via ethtool_ops
-  Extends struct ethtool_ops with three loopback callbacks for
-  driver-level MAC loopback: get_loopback (exact lookup by name/id),
-  get_loopback_by_index (dump enumeration), and set_loopback. Wires
-  the MAC component into loopback.c's dispatch. For dump enumeration,
-  MAC entries are tried first, then MODULE/CMIS entries follow at the
-  next index offset.
-
-Patch 7/11 netdevsim: Add MAC loopback simulation
-  Implements the three ethtool loopback ops in netdevsim. Exposes a
-  single MAC loopback entry ("mac") with both near-end and far-end
-  support. State is stored in memory and exposed via debugfs under
-  ethtool/mac_lb/{supported,direction}.
-
-Patch 8/11 selftests: drv-net: Add MAC loopback netdevsim test
-  Adds loopback_nsim.py with netdevsim-specific tests for MAC
-  loopback: entry presence, SET/GET round-trip with debugfs
-  verification, and error paths.
-
-Patch 9/11 MAINTAINERS: Add entry for ethtool loopback
-  Adds a MAINTAINERS entry for the ethtool loopback subsystem covering
-  the core loopback and CMIS loopback netlink implementation, and the
-  associated selftests.
-
-Patch 10/11 netdevsim: Add module EEPROM simulation via debugfs
-  Adds get/set_module_eeprom_by_page to netdevsim, backed by a
-  256-page x 128-byte array exposed via debugfs.
-
-Patch 11/11 selftests: drv-net: Add CMIS loopback netdevsim test
-  Extends loopback_nsim.py with netdevsim-specific tests that seed the
-  EEPROM via debugfs: capability reporting, EEPROM byte verification,
-  combined MAC + MODULE dump, and error paths.
-
-Changes since RFC v2
-====================
-
- - Switched LOOPBACK_GET from doit-with-array to dumpit, where each
-   loopback entry is a separate netlink message. Uses the new generic
-   dump_one_dev sub-iterator infrastructure instead of duplicating the
-   perphy dump pattern. (Maxime)
-
- - u32 to u8 to represent the enums in the YAML. (Maxime)
-   
- - Tried to document the YAML better. (Andrew)
-
- - Added doit exact lookup by (component, id, name) via
-   parse_request, so single-entry GET doesn't need a flat index.
-
- - Added MAC loopback support via three new ethtool_ops callbacks
-   (get_loopback(), get_loopback_by_index(), set_loopback()) with
-   netdevsim implementation and tests.
-
- - Added MAINTAINERS entry.
-
-Limitations
-===========
-
-PHY and PCS loopback are defined in the UAPI but not yet implemented.
-
-No per-lane support -- loopback is all-or-nothing (0xff/0x00) across
-lanes.
-
-Open questions
-==============
-
- - Is this the right extensibility model? I'd appreciate input from
-   other NIC vendors on whether component/name/direction is flexible
-   enough for their loopback implementations. Also, from the PHY/port
-   folks (Maxime, Russell)! Naveen, please LMK if the MAC side of
-   thing, is good enough for Marvell.
-
- - Are patches 10-11 (netdevsim EEPROM simulation + netdevsim-specific
-   tests) worth carrying? They drive the CMIS Page 13h registers from
-   debugfs, which gives good coverage without hardware, but it's
-   another netdevsim surface to maintain. If the consensus is that the
-   generic driver tests (patch 5) are sufficient, I'm happy to drop
-   them.
-
- - Extend mellanox/mlx5 with .set_module_eeprom_by_page() callback. I
-   got it to work in [6], but would like feedback from the Mellanox
-   folks.
-
-Related work
-============
-
-[1] Generic loopback support, RFC v2
-  https://lore.kernel.org/netdev/20260219130050.2390226-1-bjorn@kernel.org/
-[2] CMIS loopback, RFC v1
-  https://lore.kernel.org/netdev/20260219130050.2390226-1-bjorn@kernel.org/
-[3] New loopback modes
-  https://lore.kernel.org/netdev/20251024044849.1098222-1-hkelam@marvell.com/
-[4] PHY loopback
-  https://lore.kernel.org/netdev/20240911212713.2178943-1-maxime.chevallier@bootlin.com/
-[5] bnxt_en: add .set_module_eeprom_by_page() support
-  https://lore.kernel.org/netdev/20250310183129.3154117-8-michael.chan@broadcom.com/
-[6] net/mlx5e: Implement set_module_eeprom_by_page ethtool callback
-  https://lore.kernel.org/netdev/20260219130050.2390226-5-bjorn@kernel.org/
-
-
-Björn Töpel (11):
-  ethtool: Add dump_one_dev callback for per-device sub-iteration
-  ethtool: Add loopback netlink UAPI definitions
-  ethtool: Add loopback GET/SET netlink implementation
-  ethtool: Add CMIS loopback helpers for module loopback control
-  selftests: drv-net: Add loopback driver test
-  ethtool: Add MAC loopback support via ethtool_ops
-  netdevsim: Add MAC loopback simulation
-  selftests: drv-net: Add MAC loopback netdevsim test
-  MAINTAINERS: Add entry for ethtool loopback
-  netdevsim: Add module EEPROM simulation via debugfs
-  selftests: drv-net: Add CMIS loopback netdevsim test
-
- Documentation/netlink/specs/ethtool.yaml      | 123 ++++++
- MAINTAINERS                                   |   6 +
- drivers/net/netdevsim/ethtool.c               | 147 +++++++
- drivers/net/netdevsim/netdevsim.h             |  15 +
- include/linux/ethtool.h                       |  23 +
- .../uapi/linux/ethtool_netlink_generated.h    |  59 +++
- net/ethtool/Makefile                          |   2 +-
- net/ethtool/cmis_loopback.c                   | 407 ++++++++++++++++++
- net/ethtool/loopback.c                        | 341 +++++++++++++++
- net/ethtool/mse.c                             |   1 +
- net/ethtool/netlink.c                         | 285 ++++--------
- net/ethtool/netlink.h                         |  45 ++
- net/ethtool/phy.c                             |   1 +
- net/ethtool/plca.c                            |   2 +
- net/ethtool/pse-pd.c                          |   1 +
- .../testing/selftests/drivers/net/hw/Makefile |   2 +
- .../selftests/drivers/net/hw/loopback_drv.py  | 226 ++++++++++
- .../selftests/drivers/net/hw/loopback_nsim.py | 340 +++++++++++++++
- 18 files changed, 1820 insertions(+), 206 deletions(-)
- create mode 100644 net/ethtool/cmis_loopback.c
- create mode 100644 net/ethtool/loopback.c
- create mode 100755 tools/testing/selftests/drivers/net/hw/loopback_drv.py
- create mode 100755 tools/testing/selftests/drivers/net/hw/loopback_nsim.py
-
-
-base-commit: 52ede1bce557c66309f41ac29dd190be23ca9129
+diff --git a/net/ethtool/mse.c b/net/ethtool/mse.c
+index 8cb3fc5e7be4..0f2709b4f7de 100644
+--- a/net/ethtool/mse.c
++++ b/net/ethtool/mse.c
+@@ -325,4 +325,5 @@ const struct ethnl_request_ops ethnl_mse_request_ops = {
+ 	.cleanup_data = mse_cleanup_data,
+ 	.reply_size = mse_reply_size,
+ 	.fill_reply = mse_fill_reply,
++	.dump_one_dev = ethnl_perphy_dump_one_dev,
+ };
+diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
+index 6e5f0f4f815a..e740b11a0609 100644
+--- a/net/ethtool/netlink.c
++++ b/net/ethtool/netlink.c
+@@ -345,36 +345,6 @@ int ethnl_multicast(struct sk_buff *skb, struct net_device *dev)
+ 
+ /* GET request helpers */
+ 
+-/**
+- * struct ethnl_dump_ctx - context structure for generic dumpit() callback
+- * @ops:        request ops of currently processed message type
+- * @req_info:   parsed request header of processed request
+- * @reply_data: data needed to compose the reply
+- * @pos_ifindex: saved iteration position - ifindex
+- *
+- * These parameters are kept in struct netlink_callback as context preserved
+- * between iterations. They are initialized by ethnl_default_start() and used
+- * in ethnl_default_dumpit() and ethnl_default_done().
+- */
+-struct ethnl_dump_ctx {
+-	const struct ethnl_request_ops	*ops;
+-	struct ethnl_req_info		*req_info;
+-	struct ethnl_reply_data		*reply_data;
+-	unsigned long			pos_ifindex;
+-};
+-
+-/**
+- * struct ethnl_perphy_dump_ctx - context for dumpit() PHY-aware callbacks
+- * @ethnl_ctx: generic ethnl context
+- * @ifindex: For Filtered DUMP requests, the ifindex of the targeted netdev
+- * @pos_phyindex: iterator position for multi-msg DUMP
+- */
+-struct ethnl_perphy_dump_ctx {
+-	struct ethnl_dump_ctx	ethnl_ctx;
+-	unsigned int		ifindex;
+-	unsigned long		pos_phyindex;
+-};
+-
+ static const struct ethnl_request_ops *
+ ethnl_default_requests[__ETHTOOL_MSG_USER_CNT] = {
+ 	[ETHTOOL_MSG_STRSET_GET]	= &ethnl_strset_request_ops,
+@@ -428,12 +398,6 @@ static struct ethnl_dump_ctx *ethnl_dump_context(struct netlink_callback *cb)
+ 	return (struct ethnl_dump_ctx *)cb->ctx;
+ }
+ 
+-static struct ethnl_perphy_dump_ctx *
+-ethnl_perphy_dump_context(struct netlink_callback *cb)
+-{
+-	return (struct ethnl_perphy_dump_ctx *)cb->ctx;
+-}
+-
+ /**
+  * ethnl_default_parse() - Parse request message
+  * @req_info:    pointer to structure to put data into
+@@ -616,17 +580,41 @@ static int ethnl_default_dumpit(struct sk_buff *skb,
+ 				struct netlink_callback *cb)
+ {
+ 	struct ethnl_dump_ctx *ctx = ethnl_dump_context(cb);
++	const struct genl_info *info = genl_info_dump(cb);
+ 	struct net *net = sock_net(skb->sk);
+ 	netdevice_tracker dev_tracker;
+ 	struct net_device *dev;
+ 	int ret = 0;
+ 
++	if (ctx->ops->dump_one_dev && ctx->ifindex) {
++		dev = netdev_get_by_index(net, ctx->ifindex, &dev_tracker,
++					  GFP_KERNEL);
++		if (!dev)
++			return -ENODEV;
++
++		ctx->req_info->dev = dev;
++		ret = ctx->ops->dump_one_dev(skb, ctx, &ctx->pos_sub, info);
++
++		if (ret < 0 && ret != -EOPNOTSUPP && likely(skb->len))
++			ret = skb->len;
++
++		netdev_put(dev, &dev_tracker);
++		return ret;
++	}
++
+ 	rcu_read_lock();
+ 	for_each_netdev_dump(net, dev, ctx->pos_ifindex) {
+ 		netdev_hold(dev, &dev_tracker, GFP_ATOMIC);
+ 		rcu_read_unlock();
+ 
+-		ret = ethnl_default_dump_one(skb, dev, ctx, genl_info_dump(cb));
++		if (ctx->ops->dump_one_dev) {
++			ctx->req_info->dev = dev;
++			ret = ctx->ops->dump_one_dev(skb, ctx, &ctx->pos_sub,
++						     info);
++			ctx->req_info->dev = NULL;
++		} else {
++			ret = ethnl_default_dump_one(skb, dev, ctx, info);
++		}
+ 
+ 		rcu_read_lock();
+ 		netdev_put(dev, &dev_tracker);
+@@ -673,10 +661,13 @@ static int ethnl_default_start(struct netlink_callback *cb)
+ 	if (ret < 0)
+ 		goto free_reply_data;
+ 	if (req_info->dev) {
+-		/* We ignore device specification in dump requests but as the
+-		 * same parser as for non-dump (doit) requests is used, it
+-		 * would take reference to the device if it finds one
+-		 */
++		if (ops->dump_one_dev) {
++			/* Sub-iterator dumps keep track of the dev's ifindex
++			 * so the dumpit handler can grab/release the netdev
++			 * per iteration.
++			 */
++			ctx->ifindex = req_info->dev->ifindex;
++		}
+ 		netdev_put(req_info->dev, &req_info->dev_tracker);
+ 		req_info->dev = NULL;
+ 	}
+@@ -696,169 +687,33 @@ static int ethnl_default_start(struct netlink_callback *cb)
+ 	return ret;
+ }
+ 
+-/* per-PHY ->start() handler for GET requests */
+-static int ethnl_perphy_start(struct netlink_callback *cb)
++/* Shared dump_one_dev for per-PHY commands (PSE, PLCA, PHY, MSE) */
++int ethnl_perphy_dump_one_dev(struct sk_buff *skb,
++			      struct ethnl_dump_ctx *ctx,
++			      unsigned long *pos_sub,
++			      const struct genl_info *info)
+ {
+-	struct ethnl_perphy_dump_ctx *phy_ctx = ethnl_perphy_dump_context(cb);
+-	const struct genl_dumpit_info *info = genl_dumpit_info(cb);
+-	struct ethnl_dump_ctx *ctx = &phy_ctx->ethnl_ctx;
+-	struct ethnl_reply_data *reply_data;
+-	const struct ethnl_request_ops *ops;
+-	struct ethnl_req_info *req_info;
+-	struct genlmsghdr *ghdr;
+-	int ret;
+-
+-	BUILD_BUG_ON(sizeof(*ctx) > sizeof(cb->ctx));
+-
+-	ghdr = nlmsg_data(cb->nlh);
+-	ops = ethnl_default_requests[ghdr->cmd];
+-	if (WARN_ONCE(!ops, "cmd %u has no ethnl_request_ops\n", ghdr->cmd))
+-		return -EOPNOTSUPP;
+-	req_info = kzalloc(ops->req_info_size, GFP_KERNEL);
+-	if (!req_info)
+-		return -ENOMEM;
+-	reply_data = kmalloc(ops->reply_data_size, GFP_KERNEL);
+-	if (!reply_data) {
+-		ret = -ENOMEM;
+-		goto free_req_info;
+-	}
+-
+-	/* Unlike per-dev dump, don't ignore dev. The dump handler
+-	 * will notice it and dump PHYs from given dev. We only keep track of
+-	 * the dev's ifindex, .dumpit() will grab and release the netdev itself.
+-	 */
+-	ret = ethnl_default_parse(req_info, &info->info, ops, false);
+-	if (ret < 0)
+-		goto free_reply_data;
+-	if (req_info->dev) {
+-		phy_ctx->ifindex = req_info->dev->ifindex;
+-		netdev_put(req_info->dev, &req_info->dev_tracker);
+-		req_info->dev = NULL;
+-	}
+-
+-	ctx->ops = ops;
+-	ctx->req_info = req_info;
+-	ctx->reply_data = reply_data;
+-	ctx->pos_ifindex = 0;
+-
+-	return 0;
+-
+-free_reply_data:
+-	kfree(reply_data);
+-free_req_info:
+-	kfree(req_info);
+-
+-	return ret;
+-}
+-
+-static int ethnl_perphy_dump_one_dev(struct sk_buff *skb,
+-				     struct ethnl_perphy_dump_ctx *ctx,
+-				     const struct genl_info *info)
+-{
+-	struct ethnl_dump_ctx *ethnl_ctx = &ctx->ethnl_ctx;
+-	struct net_device *dev = ethnl_ctx->req_info->dev;
++	struct net_device *dev = ctx->req_info->dev;
+ 	struct phy_device_node *pdn;
+ 	int ret;
+ 
+ 	if (!dev->link_topo)
+ 		return 0;
+ 
+-	xa_for_each_start(&dev->link_topo->phys, ctx->pos_phyindex, pdn,
+-			  ctx->pos_phyindex) {
+-		ethnl_ctx->req_info->phy_index = ctx->pos_phyindex;
++	xa_for_each_start(&dev->link_topo->phys, *pos_sub, pdn,
++			  *pos_sub) {
++		ctx->req_info->phy_index = *pos_sub;
+ 
+ 		/* We can re-use the original dump_one as ->prepare_data in
+ 		 * commands use ethnl_req_get_phydev(), which gets the PHY from
+ 		 * the req_info->phy_index
+ 		 */
+-		ret = ethnl_default_dump_one(skb, dev, ethnl_ctx, info);
++		ret = ethnl_default_dump_one(skb, dev, ctx, info);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ctx->pos_phyindex = 0;
+-
+-	return 0;
+-}
+-
+-static int ethnl_perphy_dump_all_dev(struct sk_buff *skb,
+-				     struct ethnl_perphy_dump_ctx *ctx,
+-				     const struct genl_info *info)
+-{
+-	struct ethnl_dump_ctx *ethnl_ctx = &ctx->ethnl_ctx;
+-	struct net *net = sock_net(skb->sk);
+-	netdevice_tracker dev_tracker;
+-	struct net_device *dev;
+-	int ret = 0;
+-
+-	rcu_read_lock();
+-	for_each_netdev_dump(net, dev, ethnl_ctx->pos_ifindex) {
+-		netdev_hold(dev, &dev_tracker, GFP_ATOMIC);
+-		rcu_read_unlock();
+-
+-		/* per-PHY commands use ethnl_req_get_phydev(), which needs the
+-		 * net_device in the req_info
+-		 */
+-		ethnl_ctx->req_info->dev = dev;
+-		ret = ethnl_perphy_dump_one_dev(skb, ctx, info);
+-
+-		rcu_read_lock();
+-		netdev_put(dev, &dev_tracker);
+-		ethnl_ctx->req_info->dev = NULL;
+-
+-		if (ret < 0 && ret != -EOPNOTSUPP) {
+-			if (likely(skb->len))
+-				ret = skb->len;
+-			break;
+-		}
+-		ret = 0;
+-	}
+-	rcu_read_unlock();
+-
+-	return ret;
+-}
+-
+-/* per-PHY ->dumpit() handler for GET requests. */
+-static int ethnl_perphy_dumpit(struct sk_buff *skb,
+-			       struct netlink_callback *cb)
+-{
+-	struct ethnl_perphy_dump_ctx *ctx = ethnl_perphy_dump_context(cb);
+-	const struct genl_dumpit_info *info = genl_dumpit_info(cb);
+-	struct ethnl_dump_ctx *ethnl_ctx = &ctx->ethnl_ctx;
+-	int ret = 0;
+-
+-	if (ctx->ifindex) {
+-		netdevice_tracker dev_tracker;
+-		struct net_device *dev;
+-
+-		dev = netdev_get_by_index(genl_info_net(&info->info),
+-					  ctx->ifindex, &dev_tracker,
+-					  GFP_KERNEL);
+-		if (!dev)
+-			return -ENODEV;
+-
+-		ethnl_ctx->req_info->dev = dev;
+-		ret = ethnl_perphy_dump_one_dev(skb, ctx, genl_info_dump(cb));
+-
+-		if (ret < 0 && ret != -EOPNOTSUPP && likely(skb->len))
+-			ret = skb->len;
+-
+-		netdev_put(dev, &dev_tracker);
+-	} else {
+-		ret = ethnl_perphy_dump_all_dev(skb, ctx, genl_info_dump(cb));
+-	}
+-
+-	return ret;
+-}
+-
+-/* per-PHY ->done() handler for GET requests */
+-static int ethnl_perphy_done(struct netlink_callback *cb)
+-{
+-	struct ethnl_perphy_dump_ctx *ctx = ethnl_perphy_dump_context(cb);
+-	struct ethnl_dump_ctx *ethnl_ctx = &ctx->ethnl_ctx;
+-
+-	kfree(ethnl_ctx->reply_data);
+-	kfree(ethnl_ctx->req_info);
++	*pos_sub = 0;
+ 
+ 	return 0;
+ }
+@@ -1420,9 +1275,9 @@ static const struct genl_ops ethtool_genl_ops[] = {
+ 	{
+ 		.cmd	= ETHTOOL_MSG_PSE_GET,
+ 		.doit	= ethnl_default_doit,
+-		.start	= ethnl_perphy_start,
+-		.dumpit	= ethnl_perphy_dumpit,
+-		.done	= ethnl_perphy_done,
++		.start	= ethnl_default_start,
++		.dumpit	= ethnl_default_dumpit,
++		.done	= ethnl_default_done,
+ 		.policy = ethnl_pse_get_policy,
+ 		.maxattr = ARRAY_SIZE(ethnl_pse_get_policy) - 1,
+ 	},
+@@ -1444,9 +1299,9 @@ static const struct genl_ops ethtool_genl_ops[] = {
+ 	{
+ 		.cmd	= ETHTOOL_MSG_PLCA_GET_CFG,
+ 		.doit	= ethnl_default_doit,
+-		.start	= ethnl_perphy_start,
+-		.dumpit	= ethnl_perphy_dumpit,
+-		.done	= ethnl_perphy_done,
++		.start	= ethnl_default_start,
++		.dumpit	= ethnl_default_dumpit,
++		.done	= ethnl_default_done,
+ 		.policy = ethnl_plca_get_cfg_policy,
+ 		.maxattr = ARRAY_SIZE(ethnl_plca_get_cfg_policy) - 1,
+ 	},
+@@ -1460,9 +1315,9 @@ static const struct genl_ops ethtool_genl_ops[] = {
+ 	{
+ 		.cmd	= ETHTOOL_MSG_PLCA_GET_STATUS,
+ 		.doit	= ethnl_default_doit,
+-		.start	= ethnl_perphy_start,
+-		.dumpit	= ethnl_perphy_dumpit,
+-		.done	= ethnl_perphy_done,
++		.start	= ethnl_default_start,
++		.dumpit	= ethnl_default_dumpit,
++		.done	= ethnl_default_done,
+ 		.policy = ethnl_plca_get_status_policy,
+ 		.maxattr = ARRAY_SIZE(ethnl_plca_get_status_policy) - 1,
+ 	},
+@@ -1492,9 +1347,9 @@ static const struct genl_ops ethtool_genl_ops[] = {
+ 	{
+ 		.cmd	= ETHTOOL_MSG_PHY_GET,
+ 		.doit	= ethnl_default_doit,
+-		.start	= ethnl_perphy_start,
+-		.dumpit	= ethnl_perphy_dumpit,
+-		.done	= ethnl_perphy_done,
++		.start	= ethnl_default_start,
++		.dumpit	= ethnl_default_dumpit,
++		.done	= ethnl_default_done,
+ 		.policy = ethnl_phy_get_policy,
+ 		.maxattr = ARRAY_SIZE(ethnl_phy_get_policy) - 1,
+ 	},
+@@ -1538,9 +1393,9 @@ static const struct genl_ops ethtool_genl_ops[] = {
+ 	{
+ 		.cmd	= ETHTOOL_MSG_MSE_GET,
+ 		.doit	= ethnl_default_doit,
+-		.start	= ethnl_perphy_start,
+-		.dumpit	= ethnl_perphy_dumpit,
+-		.done	= ethnl_perphy_done,
++		.start	= ethnl_default_start,
++		.dumpit	= ethnl_default_dumpit,
++		.done	= ethnl_default_done,
+ 		.policy = ethnl_mse_get_policy,
+ 		.maxattr = ARRAY_SIZE(ethnl_mse_get_policy) - 1,
+ 	},
+diff --git a/net/ethtool/netlink.h b/net/ethtool/netlink.h
+index 89010eaa67df..aa8d51903ecc 100644
+--- a/net/ethtool/netlink.h
++++ b/net/ethtool/netlink.h
+@@ -10,6 +10,28 @@
+ 
+ struct ethnl_req_info;
+ 
++/**
++ * struct ethnl_dump_ctx - context structure for generic dumpit() callback
++ * @ops:        request ops of currently processed message type
++ * @req_info:   parsed request header of processed request
++ * @reply_data: data needed to compose the reply
++ * @pos_ifindex: saved iteration position - ifindex
++ * @ifindex:    for filtered dump requests, the ifindex of the targeted netdev
++ * @pos_sub:    iterator position for per-device iteration
++ *
++ * These parameters are kept in struct netlink_callback as context preserved
++ * between iterations. They are initialized by ethnl_default_start() and used
++ * in ethnl_default_dumpit() and ethnl_default_done().
++ */
++struct ethnl_dump_ctx {
++	const struct ethnl_request_ops	*ops;
++	struct ethnl_req_info		*req_info;
++	struct ethnl_reply_data		*reply_data;
++	unsigned long			pos_ifindex;
++	unsigned int			ifindex;
++	unsigned long			pos_sub;
++};
++
+ u32 ethnl_bcast_seq_next(void);
+ int ethnl_parse_header_dev_get(struct ethnl_req_info *req_info,
+ 			       const struct nlattr *nest, struct net *net,
+@@ -408,6 +430,11 @@ struct ethnl_request_ops {
+ 			  const struct ethnl_reply_data *reply_data);
+ 	void (*cleanup_data)(struct ethnl_reply_data *reply_data);
+ 
++	int (*dump_one_dev)(struct sk_buff *skb,
++			    struct ethnl_dump_ctx *ctx,
++			    unsigned long *pos_sub,
++			    const struct genl_info *info);
++
+ 	int (*set_validate)(struct ethnl_req_info *req_info,
+ 			    struct genl_info *info);
+ 	int (*set)(struct ethnl_req_info *req_info,
+@@ -514,6 +541,10 @@ int ethnl_tsinfo_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
+ int ethnl_tsinfo_done(struct netlink_callback *cb);
+ int ethnl_rss_create_doit(struct sk_buff *skb, struct genl_info *info);
+ int ethnl_rss_delete_doit(struct sk_buff *skb, struct genl_info *info);
++int ethnl_perphy_dump_one_dev(struct sk_buff *skb,
++			      struct ethnl_dump_ctx *ctx,
++			      unsigned long *pos_sub,
++			      const struct genl_info *info);
+ 
+ extern const char stats_std_names[__ETHTOOL_STATS_CNT][ETH_GSTRING_LEN];
+ extern const char stats_eth_phy_names[__ETHTOOL_A_STATS_ETH_PHY_CNT][ETH_GSTRING_LEN];
+diff --git a/net/ethtool/phy.c b/net/ethtool/phy.c
+index 68372bef4b2f..4158c2abb235 100644
+--- a/net/ethtool/phy.c
++++ b/net/ethtool/phy.c
+@@ -162,4 +162,5 @@ const struct ethnl_request_ops ethnl_phy_request_ops = {
+ 	.reply_size		= phy_reply_size,
+ 	.fill_reply		= phy_fill_reply,
+ 	.cleanup_data		= phy_cleanup_data,
++	.dump_one_dev		= ethnl_perphy_dump_one_dev,
+ };
+diff --git a/net/ethtool/plca.c b/net/ethtool/plca.c
+index e1f7820a6158..cad0ba476c29 100644
+--- a/net/ethtool/plca.c
++++ b/net/ethtool/plca.c
+@@ -188,6 +188,7 @@ const struct ethnl_request_ops ethnl_plca_cfg_request_ops = {
+ 	.prepare_data		= plca_get_cfg_prepare_data,
+ 	.reply_size		= plca_get_cfg_reply_size,
+ 	.fill_reply		= plca_get_cfg_fill_reply,
++	.dump_one_dev		= ethnl_perphy_dump_one_dev,
+ 
+ 	.set			= ethnl_set_plca,
+ 	.set_ntf_cmd		= ETHTOOL_MSG_PLCA_NTF,
+@@ -268,4 +269,5 @@ const struct ethnl_request_ops ethnl_plca_status_request_ops = {
+ 	.prepare_data		= plca_get_status_prepare_data,
+ 	.reply_size		= plca_get_status_reply_size,
+ 	.fill_reply		= plca_get_status_fill_reply,
++	.dump_one_dev		= ethnl_perphy_dump_one_dev,
+ };
+diff --git a/net/ethtool/pse-pd.c b/net/ethtool/pse-pd.c
+index 24def9c9dd54..1442a59e033f 100644
+--- a/net/ethtool/pse-pd.c
++++ b/net/ethtool/pse-pd.c
+@@ -337,6 +337,7 @@ const struct ethnl_request_ops ethnl_pse_request_ops = {
+ 	.reply_size		= pse_reply_size,
+ 	.fill_reply		= pse_fill_reply,
+ 	.cleanup_data		= pse_cleanup_data,
++	.dump_one_dev		= ethnl_perphy_dump_one_dev,
+ 
+ 	.set			= ethnl_set_pse,
+ 	/* PSE has no notification */
 -- 
 2.53.0
 
