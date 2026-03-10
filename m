@@ -1,244 +1,135 @@
-Return-Path: <linux-rdma+bounces-17893-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17894-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2CNUMvlhsGloigIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17893-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:24:57 +0100
+	id MGoWDp5isGloigIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17894-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:27:42 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7AF2565EE
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC00D25664B
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CBA493069D4A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 18:24:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3A99630CFEA6
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 18:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFBA72DC76D;
-	Tue, 10 Mar 2026 18:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC52C2E2EEE;
+	Tue, 10 Mar 2026 18:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="dW2GKaP6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjP9L89o"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673B82D8760
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 18:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.170
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773167094; cv=pass; b=BuMYSElN1Wfy5121GgKbwLSPkH7JTdBRqoKP585g6CJnInOK1yd0ULlZR9KVBjaWl3rat7yx9XZEDWPVfPg6WIp2rkQIe7A6ci/QZRLecTucLCQcu2Hyymjugq92eERD9Z/noj5YTSi82bALQpF5Ys9gKtVsRU47nqQfFKbFkmQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773167094; c=relaxed/simple;
-	bh=DNljjTsXDTz9AmTMKJoCY/iqU+57dyRUyrXu/iyiD/U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=op5ZAq5/NTohskLwl8WW8aUUo3OkJaZGMLVyu9mPJY6NGm72JPNLA8caF8cMJ8D/vDiaCbs0bMMry2iaw0TSwEDzoDtJZ49weVHEPRLlbpYvKhJvbQtQq9wtFDQ6lw0+cYUVb9MfXLUXO/WYIf0AbLLaRUFOQp+twOZ2RH81DiY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=dW2GKaP6; arc=pass smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-829928e512aso3114332b3a.2
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 11:24:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773167093; cv=none;
-        d=google.com; s=arc-20240605;
-        b=cBbK6Q/WziXmm0nJtsC8xtJESFDKsdqnehsOeOlas2PepkcovobjAHko/UOHSVnJjk
-         CQ9BTjNavJvR33Ej4OjDxAQDeeggO8oTdM0difO/6ZEihjd5MPlqaG0N61FhlCSShkXy
-         jkqFepFAf0YV3AHq34IlEhwjyXEAqc6Tb2jkvtxvpMAlPNbHPGmVJJkCKTc41FspcmF9
-         P39sS8EQMXHaZQ5/dx3dFXX1Py8lYZ1IJt/jPJo6o9EnJlsg7lRr4J7FgP+LPxNeRdJL
-         gz3cFtO7w4FY/fH47CzkEz6HaQWfI1kEZULS0moRSNX5iUjeTeA9addWOW3iafAeaPjp
-         yiAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Ow19yV1kpEamONOgB4zylv1tLaNIWkTk676jBhWRO+c=;
-        fh=ft7HkOxUvCftD7Hby1sWbPp5UQA7wpNOUHIcFVP3hfA=;
-        b=bjKxUR9n1Q6SMvoCQ/WVRHVsFkPLwpqis9UbVH09qErsIK4OALKA/eaaASpkRlMp69
-         47JQsu1xnO0HV7nIrYtfWcj45PbEpXP+/pRPVPnIck76WnDEFo0yg5fh59hLlPdAH6pk
-         9DK98PA7Z2em/qoFfV0MayFU2VGTQMfbG9LzBp8imfv8CO/8RZsogh5x7ZYg/wS72ily
-         ft/zFeBzJP2HibjjM3G0/ywlbJvF02IiuDpRJ2jr8e/OHGXQwGlbKnswTK57698kGfPZ
-         Fjic7tFFx6jUNeVYBonvz+BwfC9wqaUwsCwKeQ5Vu7nKhGol93uaJWvUcq0DiXXJOGq8
-         5PBg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1773167093; x=1773771893; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ow19yV1kpEamONOgB4zylv1tLaNIWkTk676jBhWRO+c=;
-        b=dW2GKaP6C4Xh5jwCOkvlNf2RsFsyFhn7kIDaDNyhhxTv4wW2dX9G3sB3B7qUj2R1se
-         qYM7SbxmAEpke0lcXjsv5eE+hYERZPCPY+UftYlcX3hJtex9kfplGJny/rzovWrZBPdb
-         DOgN4UGI7FnkCp89mG0Eq1U0EHMcRDJxc8SRPJaIP7QHJJCy/laRfc2JV7P+fkMpskUP
-         Pdr+cz/Nz+bgpewAskYBrE22SN5V4lrZ5bOFkcUReWlU3G5QrPeYlkf+UbdZnn3NkP4O
-         DdNCrkbvPstMRE/svBOL4clE+zOWWhRDwhChyGZgNZVbv1m9uXd2YIaXotxBYYhY4MBQ
-         zUzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773167093; x=1773771893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Ow19yV1kpEamONOgB4zylv1tLaNIWkTk676jBhWRO+c=;
-        b=cWOeYFdrCOMBg+EN+ZLhur3E9DGZi8Aq3x2MXBWBzt7WF/53sREJ4wirGcURCWMhu/
-         p7yCAwbKGSQgkg23oVy/klX1dHinMVhAw8n+TNjmHv3i2q0rIHAWntwgu4uJ7+Wpkg2P
-         /VuUaVcgQGRBeckUNUguRbtp7T+aRjQPucn8hxLGnckdxen3Hu8yhmLLe7I30wEpNA+E
-         QTyxVaOtwF2EBFiNPKVM6lHx06PgPn9KUKTO2qygaEpi0wDbbfoSLhGOWbTU9UD7PwbG
-         P/uyiNDcnZF9G2JwLtvkzKzLHH7gcLVffRJWEPC7NOu+HnSRhmZS4sbwupLxQ6++T3Dz
-         c09w==
-X-Forwarded-Encrypted: i=1; AJvYcCV/BAFo3vpfgF+0CaGx+rWeZo6NacHIeJI10GlkIT93nV/gUUjdGackWvTJiNE2Xd4S6o9pphKEK1Xr@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzb4C4KOEZ/NTRHL4PWkYgI0dMM+bBLTOR8Ed6zMYH4LqzycWjL
-	JSJ4897xLZ1FH9TCfbBZRoHgLn1YsRps1MX7bQwzqa+zjowtHYvLrAYuhc4aHtz7wJxK5m31dky
-	N4uSQTtL7KGQSitV4TV4S9BWTj6WoOYQezJIgA4SO
-X-Gm-Gg: ATEYQzxhLqyEgFDkLXPGq+P4/OZq1fQBi1iKtbbddxaSDsMveQy/vLMhkoxYM8CJxy/
-	IE1cBNlUL41S1HRwhbh/b9/llfiXWOVaUZpBXTdVzbNmYNNfXbkfqTDW7vaWHxc8h19Y+ZP6RxT
-	C1UjskucDyQPxbsSa+Pu2elmhjoTf7NPukI7S7A3tFCQyIyREP86akfePgQ43Ogh2aBennTsAJz
-	RwX7pXhUFhdpIbVSjYr5RKF3A7+UF5dUBMPg6NrJ7kVHBQWUzHcP/yrE2W8uVmvTgp+nMP5rehw
-	KkLZe90=
-X-Received: by 2002:a05:6a21:3296:b0:398:4c9f:d970 with SMTP id
- adf61e73a8af0-39858fb5c06mr15668111637.14.1773167092721; Tue, 10 Mar 2026
- 11:24:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C54C2DF6E9;
+	Tue, 10 Mar 2026 18:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773167253; cv=none; b=D43G3AEtlabI3ZhO2mr0FqdoBmGWtWXvE29rUn8KbuuwznZ2zm4FxK1O3/+2P9Qklx73zgNWOB9gkbFdsc7fvzGEtzPkS7roGDPr95wxwO5linz6cDpI0c24XbRqLskbx8/6zItHHu6ViukRsdeEKy260JVGZ0i0kNSMx1kPa0k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773167253; c=relaxed/simple;
+	bh=b24i4Z7BOygflKMZx7uFLoKgYs5ql97e8Cw/DSK5PpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VuooqpI7lyfYXbmsYhBLqdxe9ueF6rPcUtT+4Oh3iyEVCpWdOWbFcug+q9pyskwN4namUBEwS2SkjG4uf3RyICZE40bn63QOkKWTdRjAqjadNjytZ4+0r6ovc5SeM5Tecknf0q6QDjFnMFt2XZ0hYgCGFlenHi5GciMh69HY0ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjP9L89o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAE21C19423;
+	Tue, 10 Mar 2026 18:27:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773167253;
+	bh=b24i4Z7BOygflKMZx7uFLoKgYs5ql97e8Cw/DSK5PpU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cjP9L89oo/rf1PhzqMFJD5061e4hV9ZaUTXw3ELzcaUq0DMluStl5wilTATAQ95Eg
+	 ufLRCmEi0plTC30bei3B4LSeDZP5R0q2t2CGcOoAJNOpYCfVMFlU5guy4td5xVVgsT
+	 5H4B3zZCjnTluzNPJs85YDXUsyLPM6876e381FFIxUOMvTpfyP897krPDo2KlCA2Z9
+	 Vb4MHNCtsSiNdqrpXaPRUkFt7BLixAmFnD4D3P3hgXUe7rjHlk7vRAzOd+2c55Y/b4
+	 soJZKZLhYz4g/Qm/kLxJOgpU4Q2Aux2zKSuYW2z7b5a9vCeol3wY5NiiT/Rt7+7qwy
+	 n7CAxR2i1Oi/Q==
+Date: Tue, 10 Mar 2026 20:27:29 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Petr Tesarik <ptesarik@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 2/3] dma-mapping: Clarify valid conditions for CPU cache
+ line overlap
+Message-ID: <20260310182729.GG12611@unreal>
+References: <20260308181920.GH1687929@ziepe.ca>
+ <20260308184902.GR12611@unreal>
+ <20260308230916.GI1687929@ziepe.ca>
+ <CGME20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07@eucas1p2.samsung.com>
+ <20260309090342.GS12611@unreal>
+ <c1d058f3-f864-4ed7-9f7a-683d6f4bf1ce@samsung.com>
+ <20260309150502.GX12611@unreal>
+ <20260309151356.GN1687929@ziepe.ca>
+ <aaebc5b6-2805-46d3-a68e-549c26a3ef03@samsung.com>
+ <20260310123405.GR1687929@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
- <CAHC9VhTR9CsBgxRCAHXm5T2NZ5tr+XfmA--zkt=udmk9hPRuZQ@mail.gmail.com>
- <20260309193743.GZ12611@unreal> <CAHC9VhSRt_QEJKJFBDBySNQCiPpcawd5A76xmoRNtppRKGaCog@mail.gmail.com>
- <20260310090733.GA12611@unreal>
-In-Reply-To: <20260310090733.GA12611@unreal>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 10 Mar 2026 14:24:40 -0400
-X-Gm-Features: AaiRm50dpMW8dCOCca72DjrFfp-PxzBkUaezLGHSrRR_qVFuX74TYWMkIgzHv8A
-Message-ID: <CAHC9VhTKsOYrs8Wh-O548=2gE7N_gkBy+q05+atcR=D+30uQ=w@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Firmware LSM hook
-To: Leon Romanovsky <leon@kernel.org>
-Cc: James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>, 
-	Maher Sanalla <msanalla@nvidia.com>, Edward Srouji <edwards@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 2C7AF2565EE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260310123405.GR1687929@ziepe.ca>
+X-Rspamd-Queue-Id: CC00D25664B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
-	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17893-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[14];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17894-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[paul-moore.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,paul-moore.com:dkim,paul-moore.com:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Tue, Mar 10, 2026 at 5:07=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
-rote:
-> On Mon, Mar 09, 2026 at 07:10:25PM -0400, Paul Moore wrote:
-> > On Mon, Mar 9, 2026 at 3:37=E2=80=AFPM Leon Romanovsky <leon@kernel.org=
-> wrote:
-> > > On Mon, Mar 09, 2026 at 02:32:39PM -0400, Paul Moore wrote:
-> > > > On Mon, Mar 9, 2026 at 7:15=E2=80=AFAM Leon Romanovsky <leon@kernel=
-.org> wrote:
+On Tue, Mar 10, 2026 at 09:34:05AM -0300, Jason Gunthorpe wrote:
+> On Tue, Mar 10, 2026 at 10:45:38AM +0100, Marek Szyprowski wrote:
+> > Jason is right. Indeed the rdma/uverbs case needs some extension to 
+> > ensure that the coherent mapping is used, what is not possible now. This 
+> > however doesn't mean that the DMA_ATTR_CPU_CACHE_OVERLAP is not needed 
+> > for that use case too. I'm open to accept both. The only question I have 
+> > is which name should we use? We already have DMA_ATTR_CPU_CACHE_CLEAN, 
+> > while DMA_ATTR_CPU_CACHE_OVERLAP and 
+> > DMA_ATTR_DEBUGGING_IGNORE_CACHELINES were proposed here. The last seems 
+> > to be most descriptive.
+> 
+> If we do DMA_ATTR_REQUIRE_COHERENCE then I imagine it would internally
+> also set DMA_ATTR_DEBUGGING_IGNORE_CACHELINES, but I'd prefer that
+> detail not leak into the callers.
 
-...
+Yes, this is how I implemented in my v2, which I didn't send yet :).
 
-> > > > Hi Leon,
-> > > >
-> > > > At the link below, you'll find guidance on submitting new LSM hooks=
-.
-> > > > Please take a look and let me know if you have any questions.
-> > > >
-> > > > https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#n=
-ew-lsm-hooks
-> > >
-> > > I assume that you are referring to this part:
-> >
-> > I'm referring to all of the guidance, but yes, at the very least that
-> > is something that I think we need to see in a future revision of this
-> > patchset.
-> >
-> > >  * New LSM hooks must demonstrate their usefulness by providing a mea=
-ningful
-> > >    implementation for at least one in-kernel LSM. The goal is to demo=
-nstrate
-> > >    the purpose and expected semantics of the hooks. Out of tree kerne=
-l code,
-> > >    and pass through implementations, such as the BPF LSM, are not eli=
-gible
-> > >    for LSM hook reference implementations.
-> > >
-> > > The point is that we are not inspecting a kernel call, but the FW mai=
-lbox,
-> > > which has very little meaning to the kernel. From the kernel's perspe=
-ctive,
-> > > all relevant checks have already been performed, but the existing cap=
-ability
-> > > granularity does not allow us to distinguish between FW_CMD1 and FW_C=
-MD2.
-> >
-> > It might help if you could phrase this differently, as I'm not
-> > entirely clear on your argument.  LSMs are not limited to enforcing
-> > access controls on requests the kernel understands (see the SELinux
-> > userspace object manager concept), and the idea of access controls
-> > with greater granularity than capabilities is one of the main reasons
-> > people look to LSMs for access control (SELinux, AppArmor, Smack,
-> > etc.).
->
-> I should note that my understanding of LSM is limited, so some parts of m=
-y
-> answers may be inaccurate.
->
-> What I am referring to is a different level of granularity =E2=80=94 spec=
-ifically,
-> the internals of the firmware commands. In the proposed approach, BPF
-> programs would make decisions based on data passed through the mailbox.
-> That mailbox format varies across vendors, and may even differ between
-> firmware versions from the same vendor.
+Thanks
 
-That helps, thank you.
-
-> > > Here we propose a generic interface that can be applied to all FWCTL
-> > > devices without out-of-tree kernel code at all.
-> >
-> > I expected to see a patch implementing some meaningful support for
-> > access controls using these hooks in one of the existing LSMs, I did
-> > not see that in this patchset.
->
-> In some cases, the mailbox is forwarded from user space unchanged, but
-> in others the kernel modifies it before submitting it to the FW.
-
-Without a standard format, opcode definitions, etc. I suspect
-integrating this into an LSM will present a number of challenges.
-Instead of performing an LSM access control check before submitting
-the firmware command, it might be easier from an LSM perspective to
-have the firmware call into the kernel/LSM for an access control
-decision before performing a security-relevant action.  This removes
-the challenge of parsing/interpreting the arbitrary firmware commands,
-but it does add some additional complexity of having to generically
-represent the security relevant actions the firmware might request
-(this is somewhat similar to how the LSM framework doesn't necessarily
-hook the syscalls, but the actions the syscalls perform).  Yes, one
-does have to trust the firmware in this approach, but given the
-relationship between the firmware and associated hardware, I think
-users are implicitly required to trust their firmware in the vast
-majority of cases.
-
---=20
-paul-moore.com
+> 
+> Jason
 
