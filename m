@@ -1,225 +1,236 @@
-Return-Path: <linux-rdma+bounces-17918-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17919-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aPAqCZSTsGkukgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17918-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:56:36 +0100
+	id AEjPGumYsGkukgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17919-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 23:19:21 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A062588C6
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:56:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23438258D9C
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 23:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DD56A310C95C
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 21:52:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CDFE33088700
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6973F1675;
-	Tue, 10 Mar 2026 21:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E9A392C4A;
+	Tue, 10 Mar 2026 22:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9XDLVkP"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="RBIWZwwe";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q+noIFjW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE543EE1EA;
-	Tue, 10 Mar 2026 21:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D968A346E50;
+	Tue, 10 Mar 2026 22:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773179560; cv=none; b=ojgy+P5zbGeMsRW7dHaaG63VdWt49ih6xJTcZeLgC7R/U3q4cVF1eqSWXa9h5Q8dbJIgbUGgKvt1xIu4CPot6LKLXBW5IkEnWrKJZceUuLzf5GoGUsIk3qopPQcmqhikFNgO/AKDSBmjRqf2u3g8tuIiBqHXJSLmcHZCjF9ZMdg=
+	t=1773181146; cv=none; b=q1aJXFscpzmHzy/e3N7fpCN4Lyt9mQ1KgtkN4eFW80cPwD11Do+I53+i/ZpicHM6Gqy0Y/Qu//UK/YqJ5WAOwArOhDCRwvxJPm5QULNzFJCTNmaL2vl6DvPtHldogrevwY5KfjdigvGSFU42dY9egd7grTKaXOqY2+x1Ilj4sMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773179560; c=relaxed/simple;
-	bh=9DspE8ZzxPIkgad3kbhVNSegbVmg7d6ttJzOySzgDE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=B458eZM6DLYMIhVcYvJ3iTpJHSdkP2a1aW19MwptkymzZ55B/luE9wSCoo0YsKer2Rn7aub+2M+ukTSU8dfHwUFwQOn/X4o5wkp+YSiAgDhCep5RjcNY3r9bR/aRpqfWqd4eDzI7CDe24V0kBZ+PHoebQw0+tYUhoblZ2JH95nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9XDLVkP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C5BC2BCAF;
-	Tue, 10 Mar 2026 21:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773179560;
-	bh=9DspE8ZzxPIkgad3kbhVNSegbVmg7d6ttJzOySzgDE4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=V9XDLVkPIUguhDuLOIiUIpyMSxaGPliXRd7O6lqvaXBBvEXDJAKzrSK6ZeN/F1Xfh
-	 jUA8CdDYMJjHcHrse0iQOy7CsVP5oqh1gKttZym7Wk6Onv3Ncjth8aMn072v+4820p
-	 JKejxWFMoZQqjf88JQ0li2hVFTd+DM1a3rq34A1UjO2tDsqlw9JTVfizZAx8/rtcvY
-	 /abfz1lpZSCUDNmBxqi74Xk88jjcSfHCeT71YpX9s6YQW1oPiEFKLHojqNVzUfWTPP
-	 PFrtaONJFG1J9ZAyPMHvLg3W/QCkoN4xHt+XbVT6HcRyS6HZSJUvfdC6TETrMiH74y
-	 aFgnA4khDntVQ==
-Date: Tue, 10 Mar 2026 16:52:39 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Gerd Bayer <gbayer@linux.ibm.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Jay Cornwall <Jay.Cornwall@amd.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] PCI: AtomicOps: Fix logic in enable function
-Message-ID: <20260310215239.GA299126@bhelgaas>
+	s=arc-20240116; t=1773181146; c=relaxed/simple;
+	bh=iJDAvNQWfTXa/d54rND70rOy1C42f+AfmZ9GTZCuIqQ=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=JO6QY0WQWPDsMel5lrPEO34YhYUm2SD1yuhdpghYpl+brK2i4kH9Xh/ThMY61bCftzs+oUuxGy+hqEKhBczv8x64vWm0xnhYa765kn1diDEo+c3ItSlZNBI5Za/dN+oEVijkkl9zE8yeFzBPTkF3Km5hfWyJtrCkbRlGVXjgQXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=RBIWZwwe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q+noIFjW; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 13189140021A;
+	Tue, 10 Mar 2026 18:19:04 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-04.internal (MEProxy); Tue, 10 Mar 2026 18:19:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1773181144;
+	 x=1773267544; bh=FRlgnoZcWgoJlJFqsFQjQT0OGLiik2V/K6MtiEBUEM4=; b=
+	RBIWZwwelBtW10J+dVYS5KxWLYY+Z5KYr67R+cWTV7oxZTv749/mXXRIVeTn+H7r
+	GxOX8R1vpM/4BWx9WXCn52aKQQf7Q+QqOKu/4RF/ZuN5lLTD5Dxx8jXeTxTNcULJ
+	3BEdBvl3GXqURyW3odtt3p8xWgE3oC/oREzqZEoAiVNOWgwpCJ7crrRUyBEhAVZI
+	vlHGARaFW1BJ7ddZSAm2xvDLFDvqHpuAAdz162Az2xtFyMkbXhTnQetXvA0XsbIl
+	Qg9mbenNjEbbMeKEwbX/P9bC5uV6xjLOmWYDgCQ+AQXOmkUkf20R8cdFbeQY7UHi
+	Bb4JfK+EU6ISGvpHgENqdA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1773181144; x=
+	1773267544; bh=FRlgnoZcWgoJlJFqsFQjQT0OGLiik2V/K6MtiEBUEM4=; b=Q
+	+noIFjWXCUrp3h0mxD7ppfVOe1UO+Vk7K4a1Yt/GNMGtSs8DP//5YAWcrCudmb41
+	P7NoEAuiAb8DUoQ4IRkMSwdpQ7ToF/oD9QaaiqGkpPIEv5xx5ZdfuJw/NMB+XUCs
+	pm7bgWLAVR7hF4/p/3rFkwhdq9YUcI6nFjnbynII3Yhc7YsBmluxVnPYCalEYQ9X
+	fuIkt382YG4TL7A8i8IOOVGPgmyXabQG0wsJSxVXwid7nU+m4Rk4051k7VIRiexz
+	S/CXCKMv9bfSsmjr6OANzMJulZ5Fr4ZYuFKf/5EYs1OIgQJRRnQ7rxaT+eyOjvqR
+	QU/tn0ahtRPn9ImmbhiwQ==
+X-ME-Sender: <xms:15iwafNpRAgTuD_NUtH5iWgTrmT8y0tX5mBrGDiYjk59bTEv8kacXQ>
+    <xme:15iwaUxC5D12tx0Ymltu00MT7vho8q9aEZWYTPxyHeiLt4fWBscd_upno1egcnsud
+    tmQbBgIEJQpP5DfnjuSVUYnxaHfET5TBqOjZjB8fKVR18oRO_RWZo4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkedvvddtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhepteefudehvedutdeugfeuveffleduheehfeehffeujeduledvheeivdffleffjedt
+    necuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggvpdhnsggprhgt
+    phhtthhopedvtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhgrrhhtihhnrd
+    hpvghtvghrshgvnhesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepsghjohhrnhdrrghn
+    uggvrhhsshhonhesohhsshdrqhhurghltghomhhmrdgtohhmpdhrtghpthhtohepughmih
+    htrhihrdgsrghrhihshhhkohhvsehoshhsrdhquhgrlhgtohhmmhdrtghomhdprhgtphht
+    thhopehkrhiihihsiihtohhfrdhkohiilhhofihskhhisehoshhsrdhquhgrlhgtohhmmh
+    drtghomhdprhgtphhtthhopegrrghhrhhinhhgohesrhgvughhrghtrdgtohhmpdhrtghp
+    thhtoheprghgrhhuvghnsggrsehrvgguhhgrthdrtghomhdprhgtphhtthhopeguhhhofi
+    gvlhhlshesrhgvughhrghtrdgtohhmpdhrtghpthhtohepjhhmrghlohihsehrvgguhhgr
+    thdrtghomhdprhgtphhtthhopehprggsvghnihesrhgvughhrghtrdgtohhm
+X-ME-Proxy: <xmx:15iwaf-Kf6MeOapsmweEsqPwg3eFKiZQxijFSW0urK8Q7sozvfC3Sg>
+    <xmx:15iwacIPsJSGfO64l6EvH6QccwUWirQM-76oJVl80W02oxD_gTV-gA>
+    <xmx:15iwaSdFtRRhbAQ1DIeWCBhheGcHHYjmZ3FtJNyxsTaFVZZnTDqTQA>
+    <xmx:15iwaZbSe1UzVDHdUMe9n0Fnk2qwzCF_kNeCwUkf06zCOVeodNyh_w>
+    <xmx:2JiwaTKBIBeG4hh0HFeirOoWkHEfY8wvJ9daeDikHitZKM9-1D4LqoaB>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 173C2700065; Tue, 10 Mar 2026 18:19:03 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260306-fix_pciatops-v3-2-99d12bcafb19@linux.ibm.com>
-X-Rspamd-Queue-Id: 78A062588C6
+X-ThreadId: Aes-ty0OVaaR
+Date: Tue, 10 Mar 2026 23:18:29 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+Cc: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>,
+ "Krzysztof Kozlowski" <krzk@kernel.org>,
+ "Fernando Fernandez Mancera" <fmancera@suse.de>,
+ Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Jason Gunthorpe" <jgg@ziepe.ca>, "Leon Romanovsky" <leon@kernel.org>,
+ "Selvin Xavier" <selvin.xavier@broadcom.com>,
+ "Andrew Lunn" <andrew+netdev@lunn.ch>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, "Ido Schimmel" <idosch@nvidia.com>,
+ "Petr Machata" <petrm@nvidia.com>, "Simon Horman" <horms@kernel.org>,
+ "Saurav Kashyap" <skashyap@marvell.com>,
+ "Javed Hasan" <jhasan@marvell.com>,
+ "maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
+ <GR-QLogic-Storage-Upstream@marvell.com>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "Nilesh Javali" <njavali@marvell.com>,
+ "Manish Rangankar" <mrangankar@marvell.com>,
+ "Varun Prakash" <varun@chelsio.com>,
+ "Alexander Aring" <aahringo@redhat.com>,
+ "David Teigland" <teigland@redhat.com>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "Nikolay Aleksandrov" <razor@blackwall.org>,
+ "David Ahern" <dsahern@kernel.org>,
+ "Pablo Neira Ayuso" <pablo@netfilter.org>,
+ "Florian Westphal" <fw@strlen.de>, "Phil Sutter" <phil@nwl.cc>,
+ "David Howells" <dhowells@redhat.com>,
+ "Marc Dionne" <marc.dionne@auristor.com>,
+ "Marcelo Ricardo Leitner" <marcelo.leitner@gmail.com>,
+ "Xin Long" <lucien.xin@gmail.com>, "Jon Maloy" <jmaloy@redhat.com>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski@oss.qualcomm.com>,
+ "Bjorn Andersson" <bjorn.andersson@oss.qualcomm.com>,
+ "Dmitry Baryshkov" <dmitry.baryshkov@oss.qualcomm.com>,
+ "Eric Biggers" <ebiggers@kernel.org>,
+ "Michal Simek" <michal.simek@amd.com>,
+ "Luca Weiss" <luca.weiss@fairphone.com>, "Sven Peter" <sven@kernel.org>,
+ "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ "Kuninori Morimoto" <kuninori.morimoto.gx@renesas.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "David Gow" <david@davidgow.net>,
+ "Herbert Xu" <herbert@gondor.apana.org.au>,
+ "Ryota Sakamoto" <sakamo.ryota@gmail.com>,
+ "Kuniyuki Iwashima" <kuniyu@google.com>,
+ "Kir Chou" <note351@hotmail.com>, "Kuan-Wei Chiu" <visitorckw@gmail.com>,
+ "Vikas Gupta" <vikas.gupta@broadcom.com>,
+ "Bhargava Marreddy" <bhargava.marreddy@broadcom.com>,
+ "Rajashekar Hudumula" <rajashekar.hudumula@broadcom.com>,
+ =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>,
+ "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+ "open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>,
+ "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>,
+ "open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
+ <linux-scsi@vger.kernel.org>,
+ "open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>,
+ "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>,
+ "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+ "open list:NETFILTER" <coreteam@netfilter.org>,
+ "open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>,
+ "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>,
+ "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+Message-Id: <ebebb003-f7d7-4659-8248-9d36e9c2c26b@app.fastmail.com>
+In-Reply-To: <87bjgvpenh.fsf@miraculix.mork.no>
+References: <20260309022013.5199-1-fmancera@suse.de>
+ <20260309022013.5199-2-fmancera@suse.de>
+ <01a4936f-77cd-4c60-a1be-cabec872a2bb@kernel.org>
+ <e54d887c-5a70-b8c9-aeef-433c5134dd14@kolla.no>
+ <5c4b6043-a484-479d-83bc-a86ecdb8f810@app.fastmail.com>
+ <87bjgvpenh.fsf@miraculix.mork.no>
+Subject: Re: [PATCH 01/10 net-next] ipv6: convert CONFIG_IPV6 to built-in only and
+ clean up Kconfigs
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 23438258D9C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.65 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[arndb.de,none];
+	R_DKIM_ALLOW(-0.20)[arndb.de:s=fm3,messagingengine.com:s=fm1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17918-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-17919-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kolla.no,kernel.org,suse.de,vger.kernel.org,linux-m68k.org,ziepe.ca,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,hansenpartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,gondor.apana.org.au,hotmail.com,blochl.de,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[helgaas@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[arnd@arndb.de,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[arndb.de:+,messagingengine.com:+];
+	RCPT_COUNT_GT_50(0.00)[70];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.824];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, Mar 06, 2026 at 06:13:59PM +0100, Gerd Bayer wrote:
-> Move the check for root port requirements past the loop within
-> pci_enable_atomic_ops_to_root() that checks on potential switch
-> (up- and downstream) ports.
-> 
-> Inside the loop traversing the PCI tree upwards, prepend the switch case
-> to validate the routing capability on any port with a fallthrough-case
-> that does the additional check for Atomic Ops not being blocked on
-> upstream ports.
+On Tue, Mar 10, 2026, at 22:18, Bj=C3=B8rn Mork wrote:
+> "Arnd Bergmann" <arnd@arndb.de> writes:
+>
+>> The list does not include openwrt though, and I know that in
+>> previous releases, there was an optional kmod-ipv6 package
+>> that could be left out of an install without rebuilding
+>> the kernel.
+>
+> The kmod-ipv6 package was dropped in 2016:
+> https://github.com/openwrt/openwrt/commit/33beafa8d88e51907acba6fdece5=
+a35f509934df
+>
+> And IPv6 was unconditionally enabled in OpenWrt in 2022:
+> https://github.com/openwrt/openwrt/commit/832e7b817221d288df76b763ca12=
+c585365db5d8
 
-Thanks for looking at this.  I think this makes good sense, and I'd
-like to:
+Thanks for checking!
 
-  - Hoist the problem description up here.  IIUC we enable AtomicOps on
-    s390 when we shouldn't, which presumably leads to some problem.  I
-    think the same could happen anywhere we don't have a Root Port,
-    e.g., jailhouse, loongarch, maybe some VMM guests?
+Not sure what the commit log for the second one is trying to say, as
+there generally was no build failure in mainline for a long time
 
-  - Reduce or remove the text above, which is basically C code
-    translated to English, and move it down after the problem
-    description, so we can state the problem and symptom, followed by
-    the solution.
+But if nobody has bothered to revert the patch, it doesn't seem
+to have caused any problems.
 
-I think the core is (as you say below) that if there's no Root Port,
-we previously allowed endpoints to use AtomicOps even in cases where
-we don't know if the recipient supports them.
-
-That *sounds* bad, and if you actually saw some kind of corruption as
-a result, that would make this very compelling.
-
-> Do not enable Atomic Op Requests if nothing can be learned about how the
-> device is attached - e.g. if it is on an "isolated" bus, as in s390.
-> 
-> Reported-by: Alexander Schmidt <alexs@linux.ibm.com>
-
-If there's any public report of the problem, include the URL here.
-
-> Cc: stable@vger.kernel.org
-> Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> ---
->  drivers/pci/pci.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index cc8abe6b1d07661488895876dbbcf8aaeadf4a17..23db6ad5f310ed009a9b2ca4933c7498e0d22b85 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3677,7 +3677,7 @@ void pci_acs_init(struct pci_dev *dev)
->  int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
->  {
->  	struct pci_bus *bus = dev->bus;
-> -	struct pci_dev *bridge;
-> +	struct pci_dev *bridge = NULL;
->  	u32 cap, ctl2;
->  
->  	/*
-> @@ -3715,29 +3715,27 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
-
-Since we're looking at this, I think we should update the spec
-references in this function (in a separate patch).  
-
-  * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
-  * in Device Control 2 is reserved in VFs and the PF value applies
-  * to all associated VFs.
-
-It looks like the AtomicOp Requester Enable part of PCIe r5.0, sec
-9.3.5.10, was incorporated into the Device Control 2 Register
-description in PCIe r7.0, sec 7.5.3.16.
-
-  * Per PCIe r4.0, sec 6.15, endpoints and root ports may be
-  * AtomicOp requesters.  For now, we only support endpoints as
-  * requesters and root ports as completers.  No endpoints as
-  * completers, and no peer-to-peer.
-
-This looks like PCIe r7.0, sec 6.15.  Same section as r4.0, but we
-should at least make both of these refer to the same spec revision.
-
->  		switch (pci_pcie_type(bridge)) {
->  		/* Ensure switch ports support AtomicOp routing */
->  		case PCI_EXP_TYPE_UPSTREAM:
-> -		case PCI_EXP_TYPE_DOWNSTREAM:
-> -			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
-> -				return -EINVAL;
-> -			break;
-> -
-> -		/* Ensure root port supports all the sizes we care about */
-> -		case PCI_EXP_TYPE_ROOT_PORT:
-> -			if ((cap & cap_mask) != cap_mask)
-> -				return -EINVAL;
-> -			break;
-> -		}
-> -
-> -		/* Ensure upstream ports don't block AtomicOps on egress */
-> -		if (pci_pcie_type(bridge) == PCI_EXP_TYPE_UPSTREAM) {
-> +			/* Upstream ports must not block AtomicOps on egress */
->  			pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2,
->  						   &ctl2);
->  			if (ctl2 & PCI_EXP_DEVCTL2_ATOMIC_EGRESS_BLOCK)
->  				return -EINVAL;
-> +			fallthrough;
-> +		/* All switch ports need to route AtomicOps */
-> +		case PCI_EXP_TYPE_DOWNSTREAM:
-> +			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
-> +				return -EINVAL;
-> +			break;
->  		}
-> -
->  		bus = bus->parent;
->  	}
->  
-> +	/* Finally, last bridge must be root port and support requested sizes */
-> +	if ((!bridge) ||
-> +	    (pci_pcie_type(bridge) != PCI_EXP_TYPE_ROOT_PORT) ||
-> +	    ((cap & cap_mask) != cap_mask))
-> +		return -EINVAL;
-> +
->  	pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
->  				 PCI_EXP_DEVCTL2_ATOMIC_REQ);
->  	return 0;
-> 
-> -- 
-> 2.51.0
-> 
+    Arnd
 
