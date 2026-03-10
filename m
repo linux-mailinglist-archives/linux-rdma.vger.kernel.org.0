@@ -1,76 +1,60 @@
-Return-Path: <linux-rdma+bounces-17894-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17895-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MGoWDp5isGloigIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17894-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:27:42 +0100
+	id wK8JGA5lsGloigIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17895-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:38:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC00D25664B
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:27:41 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDD00256787
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3A99630CFEA6
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 18:27:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9AA9D305BF45
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 18:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC52C2E2EEE;
-	Tue, 10 Mar 2026 18:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2EC3195E4;
+	Tue, 10 Mar 2026 18:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjP9L89o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P2LGuELt"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C54C2DF6E9;
-	Tue, 10 Mar 2026 18:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B67318ED7
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 18:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773167253; cv=none; b=D43G3AEtlabI3ZhO2mr0FqdoBmGWtWXvE29rUn8KbuuwznZ2zm4FxK1O3/+2P9Qklx73zgNWOB9gkbFdsc7fvzGEtzPkS7roGDPr95wxwO5linz6cDpI0c24XbRqLskbx8/6zItHHu6ViukRsdeEKy260JVGZ0i0kNSMx1kPa0k=
+	t=1773167881; cv=none; b=rFotPBQTZtjU4iyWTJwDonVJWmhXRTpL8/WjtoW3GJn9wZphjIJSfg/krk78KZwzETRg+hMWqlBdlZZBAagdLjC9vrfX9yH9x2sLBnTFSA2HnNdX8Mzn9l8YNKBzLgeQGjmhgq99sR5QkUN9IaAXvVIeRwTTRjW75D2O0lSt1a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773167253; c=relaxed/simple;
-	bh=b24i4Z7BOygflKMZx7uFLoKgYs5ql97e8Cw/DSK5PpU=;
+	s=arc-20240116; t=1773167881; c=relaxed/simple;
+	bh=16btx5e1aaY4Ghrj6UyNp2Vi4b9na63bFfeNTvfEqeI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VuooqpI7lyfYXbmsYhBLqdxe9ueF6rPcUtT+4Oh3iyEVCpWdOWbFcug+q9pyskwN4namUBEwS2SkjG4uf3RyICZE40bn63QOkKWTdRjAqjadNjytZ4+0r6ovc5SeM5Tecknf0q6QDjFnMFt2XZ0hYgCGFlenHi5GciMh69HY0ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjP9L89o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAE21C19423;
-	Tue, 10 Mar 2026 18:27:32 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EOLLX5r6uRCDlLsvnRMLAsx5VgnK7niDRh5Uxk5EEIpffj0eWluarCKn4XEUztgqLx3ZUklZ6C64DBGmAx0hHb+0UBCO07kCHAcKLvWf8CNqiuDr0KeOuyFLIeiN6iQaKJRVkMTMsOPQA8zyFmu+l+6/lgF3/Hz5OaDTe36uLqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P2LGuELt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 314F1C19423;
+	Tue, 10 Mar 2026 18:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773167253;
-	bh=b24i4Z7BOygflKMZx7uFLoKgYs5ql97e8Cw/DSK5PpU=;
+	s=k20201202; t=1773167881;
+	bh=16btx5e1aaY4Ghrj6UyNp2Vi4b9na63bFfeNTvfEqeI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cjP9L89oo/rf1PhzqMFJD5061e4hV9ZaUTXw3ELzcaUq0DMluStl5wilTATAQ95Eg
-	 ufLRCmEi0plTC30bei3B4LSeDZP5R0q2t2CGcOoAJNOpYCfVMFlU5guy4td5xVVgsT
-	 5H4B3zZCjnTluzNPJs85YDXUsyLPM6876e381FFIxUOMvTpfyP897krPDo2KlCA2Z9
-	 Vb4MHNCtsSiNdqrpXaPRUkFt7BLixAmFnD4D3P3hgXUe7rjHlk7vRAzOd+2c55Y/b4
-	 soJZKZLhYz4g/Qm/kLxJOgpU4Q2Aux2zKSuYW2z7b5a9vCeol3wY5NiiT/Rt7+7qwy
-	 n7CAxR2i1Oi/Q==
-Date: Tue, 10 Mar 2026 20:27:29 +0200
+	b=P2LGuELtF3QNko5WrRwWq7g9Jiv6f4/W/Gmx0jZk5HsTgf90GbAxG3Ys4yupkGfSI
+	 yBxHosCmMdF0IAxfseM+XKMucVxWBXvDRTk5EjF9lV6IThC29FGnzKMXK6BEAra/mf
+	 xApBAJ67SBL8K6TnwKzz/tvSPlI0aHL0a51raFf1Gyyzlds7Z1WthJOuSpEDh7IxmS
+	 qGJDR44c5r+F1Vpl8OuEoG8QofWt7kB7Jrez0RUy5qgn7gq08lDksgqm5sha5EK8G3
+	 I107fZhzo+7lF03CQ9TDaXWSqUDZKbtSBfwbMMg1TZ7Kn7nkLUS9dq7OcbGgwyY5Y6
+	 197WOVkEtz7UQ==
+Date: Tue, 10 Mar 2026 20:37:56 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Petr Tesarik <ptesarik@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, virtualization@lists.linux.dev,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 2/3] dma-mapping: Clarify valid conditions for CPU cache
- line overlap
-Message-ID: <20260310182729.GG12611@unreal>
-References: <20260308181920.GH1687929@ziepe.ca>
- <20260308184902.GR12611@unreal>
- <20260308230916.GI1687929@ziepe.ca>
- <CGME20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07@eucas1p2.samsung.com>
- <20260309090342.GS12611@unreal>
- <c1d058f3-f864-4ed7-9f7a-683d6f4bf1ce@samsung.com>
- <20260309150502.GX12611@unreal>
- <20260309151356.GN1687929@ziepe.ca>
- <aaebc5b6-2805-46d3-a68e-549c26a3ef03@samsung.com>
- <20260310123405.GR1687929@ziepe.ca>
+To: Chuck Lever <cel@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	Christoph Hellwig <hch@lst.de>, linux-rdma@vger.kernel.org,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH] RDMA/rw: Fix MR pool exhaustion in bvec RDMA READ path
+Message-ID: <20260310183756.GH12611@unreal>
+References: <20260310034621.5799-1-cel@kernel.org>
+ <abAftjplHdwdwrkd@infradead.org>
+ <d0fefc47-b60f-47ba-8f2f-7eb05b1bb86d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -79,23 +63,23 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260310123405.GR1687929@ziepe.ca>
-X-Rspamd-Queue-Id: CC00D25664B
+In-Reply-To: <d0fefc47-b60f-47ba-8f2f-7eb05b1bb86d@kernel.org>
+X-Rspamd-Queue-Id: CDD00256787
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17894-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-17895-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -105,31 +89,81 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Tue, Mar 10, 2026 at 09:34:05AM -0300, Jason Gunthorpe wrote:
-> On Tue, Mar 10, 2026 at 10:45:38AM +0100, Marek Szyprowski wrote:
-> > Jason is right. Indeed the rdma/uverbs case needs some extension to 
-> > ensure that the coherent mapping is used, what is not possible now. This 
-> > however doesn't mean that the DMA_ATTR_CPU_CACHE_OVERLAP is not needed 
-> > for that use case too. I'm open to accept both. The only question I have 
-> > is which name should we use? We already have DMA_ATTR_CPU_CACHE_CLEAN, 
-> > while DMA_ATTR_CPU_CACHE_OVERLAP and 
-> > DMA_ATTR_DEBUGGING_IGNORE_CACHELINES were proposed here. The last seems 
-> > to be most descriptive.
+On Tue, Mar 10, 2026 at 10:36:43AM -0400, Chuck Lever wrote:
+> On 3/10/26 9:42 AM, Christoph Hellwig wrote:
+> > On Mon, Mar 09, 2026 at 11:46:21PM -0400, Chuck Lever wrote:
+> >> Under NFS WRITE workloads the server performs RDMA READs to
+> >> pull data from the client. With the inflated MR demand, the
+> >> pool is rapidly exhausted, ib_mr_pool_get() returns NULL, and
+> >> rdma_rw_init_one_mr() returns -EAGAIN. svcrdma treats this as
+> >> a DMA mapping failure, closes the connection, and the client
+> >> reconnects -- producing a cycle of 71% RPC retransmissions and
+> >> ~100 reconnections per test run. RDMA WRITEs (NFS READ
+> >> direction) are unaffected because DMA_TO_DEVICE never triggers
+> >> the max_sgl_rd check.
+> > 
+> > So this changelog extensively describes the problem, but it doesn't
+> > actually say how you fix it.
 > 
-> If we do DMA_ATTR_REQUIRE_COHERENCE then I imagine it would internally
-> also set DMA_ATTR_DEBUGGING_IGNORE_CACHELINES, but I'd prefer that
-> detail not leak into the callers.
+> I didn't want to waste everyone's time, but I can add that.
+> 
+> 
+> >> +	 *
+> >> +	 * TODO: A bulk DMA mapping API for bvecs analogous to
+> >> +	 * dma_map_sgtable() would provide a proper post-DMA-
+> >> +	 * coalescing segment count here, enabling the map_wrs
+> >> +	 * path in more cases.
+> > 
+> > This isn't really something the DMA layer can easily do without getting
+> > as inefficient as the sgtable based path.  What the block layer does
+> > here is to simply keep a higher level count of merged segments.  The
+> > other option would be to not create multiple bvecs for continguous
+> > regions, which is what modern file system do in general, and why the
+> > above block layer nr_phys_segments based optimization isn't actually
+> > used all that much these days.
+> 
+> Technically, NFSD isn't a file system, it's a protocol adapter.
+> 
+> 
+> > Why can't NFS send a single bvec for contiguous ranges?
+> 
+> Have a look at svc_rdma_build_read_segment(). The RDMA READ path builds
+> bvecs from rqstp->rq_pages[], which is an array of individual struct
+> page pointers. Each bvec entry covers at most one page.
+> 
+> This is because I/O payloads arrive in an xdr_buf, which represents its
+> page data as a struct page ** array (xdr->pages), and svc_rqst::rq_pages
+> is likewise a flat array of single-page pointers. These pages are
+> allocated individually (typically from the page allocator via
+> alloc_pages()), so there's no guarantee of physical contiguity. Even if
+> adjacent pages happen to be contiguous, the code has no way to know that
+> without inspecting PFNs (which is exactly what the DMA mapping layer
+> does).
+> 
+> So currently svcrdma can't send a single bvec for contiguous ranges
+> because the contiguity information doesn't exist at the NFSD or RPC
+> layer. Contiguity is (re)discovered only at DMA map time.
+> 
+> The alternative is to build an SGL for mapping the bvec so that rw.c can
+> get the real contiguity of the pages before proceeding. But that seems
+> icky.
+> 
+> Long term, I expect that NFSD will need to preserve the folios it gets
+> from file systems and pass those to the RPC transports without
+> translating them to an array of page pointers.
 
-Yes, this is how I implemented in my v2, which I didn't send yet :).
+Folio sounds like a correct approach to me, why do you mark it as "long term"? 
 
 Thanks
 
 > 
-> Jason
+> 
+> -- 
+> Chuck Lever
 
