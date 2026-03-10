@@ -1,160 +1,147 @@
-Return-Path: <linux-rdma+bounces-17912-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17913-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EKaSNM6GsGlbkQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17912-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:02:06 +0100
+	id aMKvAmuIsGl2kQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17913-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:08:59 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F6F258133
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D4D2581C3
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B06203080FA8
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 21:02:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D9DB130DEC1A
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 21:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44067192D8A;
-	Tue, 10 Mar 2026 21:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079C03AD502;
+	Tue, 10 Mar 2026 21:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LlDSNmWe"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="eZ8XyXaP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5AE15CD7E
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 21:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839AD39DBFB
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 21:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773176523; cv=none; b=ZsH624Ukn6vGErFHbGx3Y3FvwPfJdq3S8toS4484XCkvU135+phqfGIcKUbrmRZC3en2DETjPMMg6/i6GXIDYuCbirFA4THiR6gAZaL9sTISYwHbKguVx39uhXME6YYG5qMzXwlXK8PLW1L3XtGRdNtuELCsvNyL1oVXJIo7/Z4=
+	t=1773176930; cv=none; b=HV0L7rgepnSRpncafk8U+06svAIRPBD86UL3Er5Jo9V0VX+z+xESyRjFs23l0TbwKUkRorwm4vgRRFr1sXHpXcDkyXG3LGuLq0MgrTgb0qK0YboQZFl+2X6kXNP7uYkLerS2KSbr//uD17K0z/VZD9GE47Sx2BrJ1EBzKo9rGRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773176523; c=relaxed/simple;
-	bh=7M6RqCa3r+Fvo1bJI1eG737qtJhnxGLFs/k1/7zJ9bo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LXUNncvs8lugjgJBVBEpK7P6NuiLRqqn3ecvGL4YVgjw9Ix/QHIy7XdCc8lmfEN4JYQbVvciKPv45+zSrt7umWd8C0TjtAdhYy9BLjIqC+xZ+yOqWiVdKMDwh1VLcYRt37tgh2iqJoe5WFNuNZk3KU7/iE4sL5iw9IWwlfyFVsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LlDSNmWe; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <93c8c159-90f0-41f7-81d7-0f10fa7cf373@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773176519;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+aIqV5l3xpZUY9twg+Qr5r/jHLWap/WJiFLLxTmnRvQ=;
-	b=LlDSNmWeurxYAd7Pp3bl/qtf2xPqaGOTcj6d4gpLkvD85kxFZFc4JRhecqkuphuk8BO8Fg
-	YFzoOUVqqHYq3P8QP+ycMtMde937qw0c/L1zQNsAtcZD/5noPWtHFtSA6d8DNCht7kxLVH
-	O1eCQhX+Qv/NHwhd63IKS+B57nKAUtw=
-Date: Tue, 10 Mar 2026 14:01:03 -0700
+	s=arc-20240116; t=1773176930; c=relaxed/simple;
+	bh=SxvFwt6RNoWEPsMfWZcfBn5YT6mZDJktqM19xKBdhV8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=tC8ezyuWPXywcGZGqXpeoAandp7KPNjlT1JcYZWu1IsF2UvkTdD96FThI9jyTTdj3LvB3nG0PqfbPi5ZYtyNl6aakDi3G/EO1UbcMCwEXJm6219KgTZMgK58MMm1dlXAClNiZwyJs57En5r6Z3+7TKktRxSM4xyaMF/D7Jb2ii0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=eZ8XyXaP; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20260310210841euoutp02b83b914c97d5fce71955e07094dfc5bd~blwPh6Mez3003230032euoutp02D
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 21:08:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20260310210841euoutp02b83b914c97d5fce71955e07094dfc5bd~blwPh6Mez3003230032euoutp02D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1773176921;
+	bh=tGKcv9KXSZ8NeZkMwYhCoqHzYQKa6iNvw2bZS+J/rzE=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=eZ8XyXaPRQAjrmD4tNZ3xUXMKKEX3h1oOCD4TsFqZXdYBieeyb/LtVoxH2f21WRDs
+	 FseqmW6UqV5Wnori+EXSWkMHCW3pnM/7xRBu1chhgHxCLymTyDSRwFQpU7xFOprv5y
+	 rxzqJwl64rsea6rmb5pyIdwHoZqCHAqngy2W2YQE=
+Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20260310210840eucas1p2dc0fce312c0fe458cd71faffb303d0a6~blwPOKs7r3236232362eucas1p2y;
+	Tue, 10 Mar 2026 21:08:40 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20260310210839eusmtip17c631ae9b4a7af8f06cd5dfe1f3e6b7d~blwNydyN01109311093eusmtip1E;
+	Tue, 10 Mar 2026 21:08:39 +0000 (GMT)
+Message-ID: <a61f8814-b896-4ec0-bb83-a8cbd8aca4e8@samsung.com>
+Date: Tue, 10 Mar 2026 22:08:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 4/4] RDMA/rxe: Add testcase for net namespace rxe
-To: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: jgg@ziepe.ca, zyjzyj2000@gmail.com, shuah@kernel.org,
- linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
- dsahern@kernel.org
-References: <20260310020519.101415-1-yanjun.zhu@linux.dev>
- <20260310020519.101415-5-yanjun.zhu@linux.dev>
- <20260310185308.GJ12611@unreal>
+User-Agent: Betterbird (Windows)
+Subject: Re: [PATCH 2/3] dma-mapping: Clarify valid conditions for CPU cache
+ line overlap
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>, Petr Tesarik <ptesarik@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	virtualization@lists.linux.dev, linux-rdma@vger.kernel.org
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260310185308.GJ12611@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 07F6F258133
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20260310123405.GR1687929@ziepe.ca>
+Content-Transfer-Encoding: 7bit
+X-CMS-MailID: 20260310210840eucas1p2dc0fce312c0fe458cd71faffb303d0a6
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07
+X-EPHeader: CA
+X-CMS-RootMailID: 20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07
+References: <20260307-dma-debug-overlap-v1-2-c034c38872af@nvidia.com>
+	<20260308181920.GH1687929@ziepe.ca> <20260308184902.GR12611@unreal>
+	<20260308230916.GI1687929@ziepe.ca>
+	<CGME20260309090352eucas1p283a75c78cac495b5ad87df74c79aab07@eucas1p2.samsung.com>
+	<20260309090342.GS12611@unreal>
+	<c1d058f3-f864-4ed7-9f7a-683d6f4bf1ce@samsung.com>
+	<20260309150502.GX12611@unreal> <20260309151356.GN1687929@ziepe.ca>
+	<aaebc5b6-2805-46d3-a68e-549c26a3ef03@samsung.com>
+	<20260310123405.GR1687929@ziepe.ca>
+X-Rspamd-Queue-Id: A5D4D2581C3
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[samsung.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[samsung.com:s=mail20170921];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[ziepe.ca,gmail.com,kernel.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17912-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
+	XM_UA_NO_VERSION(0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-17913-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[samsung.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[m.szyprowski@samsung.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-0.870];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[samsung.com:dkim,samsung.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+On 10.03.2026 13:34, Jason Gunthorpe wrote:
+> On Tue, Mar 10, 2026 at 10:45:38AM +0100, Marek Szyprowski wrote:
+>> Jason is right. Indeed the rdma/uverbs case needs some extension to
+>> ensure that the coherent mapping is used, what is not possible now. This
+>> however doesn't mean that the DMA_ATTR_CPU_CACHE_OVERLAP is not needed
+>> for that use case too. I'm open to accept both. The only question I have
+>> is which name should we use? We already have DMA_ATTR_CPU_CACHE_CLEAN,
+>> while DMA_ATTR_CPU_CACHE_OVERLAP and
+>> DMA_ATTR_DEBUGGING_IGNORE_CACHELINES were proposed here. The last seems
+>> to be most descriptive.
+> If we do DMA_ATTR_REQUIRE_COHERENCE then I imagine it would internally
+> also set DMA_ATTR_DEBUGGING_IGNORE_CACHELINES, but I'd prefer that
+> detail not leak into the callers.
 
-On 3/10/26 11:53 AM, Leon Romanovsky wrote:
-> On Tue, Mar 10, 2026 at 03:05:18AM +0100, Zhu Yanjun wrote:
->> Add 4 testcases for rxe with net namespace.
->>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->>   MAINTAINERS                                   |  1 +
->>   tools/testing/selftests/Makefile              |  1 +
->>   tools/testing/selftests/rdma/Makefile         |  7 ++
->>   tools/testing/selftests/rdma/config           |  3 +
->>   tools/testing/selftests/rdma/rxe_ipv6.sh      | 63 ++++++++++++++
->>   .../selftests/rdma/rxe_rping_between_netns.sh | 85 +++++++++++++++++++
->>   .../selftests/rdma/rxe_socket_with_netns.sh   | 76 +++++++++++++++++
->>   .../rdma/rxe_test_NETDEV_UNREGISTER.sh        | 63 ++++++++++++++
->>   8 files changed, 299 insertions(+)
->>   create mode 100644 tools/testing/selftests/rdma/Makefile
->>   create mode 100644 tools/testing/selftests/rdma/config
->>   create mode 100755 tools/testing/selftests/rdma/rxe_ipv6.sh
->>   create mode 100755 tools/testing/selftests/rdma/rxe_rping_between_netns.sh
->>   create mode 100755 tools/testing/selftests/rdma/rxe_socket_with_netns.sh
->>   create mode 100755 tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 77fdfcb55f06..bd33edf79150 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -24492,6 +24492,7 @@ L:	linux-rdma@vger.kernel.org
->>   S:	Supported
->>   F:	drivers/infiniband/sw/rxe/
->>   F:	include/uapi/rdma/rdma_user_rxe.h
->> +F:	tools/testing/selftests/rdma/
-> This is wrong place in MAINTAINERS file.
-> You need to add that line to "INFINIBAND SUBSYSTEM" and under RXE to add
-> tools/testing/selftests/rdma/rxe* entry.
+Why DMA_ATTR_REQUIRE_COHERENCE should imply 
+DMA_ATTR_DEBUGGING_IGNORE_CACHELINES?
 
-Hi, Leon
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-"
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-
-index 77fdfcb55f06..3c6bc0e05fc0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -24492,6 +24492,7 @@ L:      linux-rdma@vger.kernel.org
-  S:     Supported
-  F:     drivers/infiniband/sw/rxe/
-  F:     include/uapi/rdma/rdma_user_rxe.h
-+F:     tools/testing/selftests/rdma/rxe*
-
-"
-
-Is it OK?
-
-Zhu Yanjun
-
->
-> Thanks
 
