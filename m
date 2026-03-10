@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-17841-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17843-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 3XyHL9B9r2nYZwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17841-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 03:11:28 +0100
+	id iOVALv98r2kXZwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17843-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 03:07:59 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6351B244138
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 03:11:24 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E7C2440A8
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 03:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B9159317C2F4
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 02:05:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8BBBE305E823
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 02:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43F6D30BF6C;
-	Tue, 10 Mar 2026 02:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDAA31076D;
+	Tue, 10 Mar 2026 02:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tJPxnxvz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="or5b0GZm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B21130BF77
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 02:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4ADD30B539
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 02:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773108350; cv=none; b=mwHvnHJA8vuzKo0hnfBr+0jGToGNi8EMYFs/ecLTJdQgiWDoQGWlADQFBj0QqNrroT06DK1D1xK2aki2f07/DKwVS9MnG2r3vm/kvrya00sN3wBIfh3zMg6lHUrIZ2y3dVXSIHskBrbreYf3jYCs9HuOkAMfTm9DtXcjpEFmVno=
+	t=1773108354; cv=none; b=RT5sC/CywF8niPtLJ0NYGeGOW34REZsdRFr5X/EmdF6RN34ccZzmuLSEFVGUEWhZQDcbZlpBIf2A49wWkaADQhG9jHxwNRhaRZPEiGShNzhOyWYm5LqXzc5c/c6iO8Qcqx9eGJ9GT1j6CB2n5LEyuEZ3jWBFqMrByqb91huoNTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773108350; c=relaxed/simple;
-	bh=ojHFus5SjHqV5lmu+P7dtBZ/qNLpW+EOOcJ4IdkgLHU=;
+	s=arc-20240116; t=1773108354; c=relaxed/simple;
+	bh=EED4Q8tCN7PApjw6X3fPKIc87x3bgwOb7YDvXBtwBGo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mDl7EgFmGDTlyORS0wou14WTQTCsAcbt6hKtJ8DuqawdMqnsf0bp/zrE8HpFoOHiP9yVW+OQUSs7En2JEo2w78opjFaL18ZpOMTg9+155pvyvvj9fb7bPMUlX3Gda0kMhS7N7af6pVfrbaMHa+mhBuCTPDTwDJsNdfoo12LOIR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tJPxnxvz; arc=none smtp.client-ip=91.218.175.189
+	 MIME-Version; b=M4jGhu2gSISg2jEFkArO7t8W5syR5QKXNFYOzv18x8lceM2gC8a49wSHaPdoWUYuy+LXg4kMRcGR/4K3MFDVT3F7llfg2pZg1wbCT2jAm4L10TnPJ9rq7/T1IMN51qAsbKzFittSe8aO6tawlHFhHqnpaUythL9PYnAd4a2qCaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=or5b0GZm; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773108346;
+	t=1773108350;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5UdrS6Reu97bGbouwJAPrbyQ0s+0tXhdLjIfLI8CfXA=;
-	b=tJPxnxvze5DMpb56NxtkV9iKZehca/TTEhVpJRHaofjlNqj2mv+bX0MstlV3JUGF5GZHHz
-	88g7HBWgq2XHheafwYvMb/+WzJ55WBZvyArqCxAA8oMUxz0e/lVBTSjoABVGPxn5Sk6LGT
-	Nz9fnWK6PRAKe0wSTvkXDfcHz3lZ3Ns=
+	bh=UrO0rB38uavobxHPvMCDR6wPhN0MOy3N1AsYwui+/QA=;
+	b=or5b0GZm8tuyG9RkNzwobDiyqn2CasLEeyBTP1prLeATTzzXqQQ9gB2DtIWb77DatZ5h2b
+	6q2kiThZ6/vD7+IargHIGha2cRfCcpp9HKbHVm9nuSHX8uYC7o4Gj5EVbgOvlAww7fgzT9
+	g06Mekwn8Sy982mamQRll0rLxYDxBAk=
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
 To: jgg@ziepe.ca,
 	leon@kernel.org,
@@ -54,9 +54,9 @@ To: jgg@ziepe.ca,
 	linux-kselftest@vger.kernel.org,
 	dsahern@kernel.org
 Cc: Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCH v5 3/4] RDMA/rxe: Support RDMA link creation and destruction per net namespace
-Date: Tue, 10 Mar 2026 03:05:17 +0100
-Message-ID: <20260310020519.101415-4-yanjun.zhu@linux.dev>
+Subject: [PATCH v5 4/4] RDMA/rxe: Add testcase for net namespace rxe
+Date: Tue, 10 Mar 2026 03:05:18 +0100
+Message-ID: <20260310020519.101415-5-yanjun.zhu@linux.dev>
 In-Reply-To: <20260310020519.101415-1-yanjun.zhu@linux.dev>
 References: <20260310020519.101415-1-yanjun.zhu@linux.dev>
 Precedence: bulk
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 6351B244138
+X-Rspamd-Queue-Id: 24E7C2440A8
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -75,11 +75,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17841-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17843-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,gmail.com,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
@@ -95,432 +95,387 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[rxe_socket_with_netns.sh:url,linux.dev:dkim,linux.dev:email,linux.dev:mid,rxe_ipv6.sh:url,rxe_rping_between_netns.sh:url,rxe_test_netdev_unregister.sh:url]
 X-Rspamd-Action: no action
 
-After introducing dellink handling and per-net namespace management
-for IPv4 and IPv6 sockets, extend rxe to create and destroy RDMA links
-within each network namespace.
-
-With this change, RDMA links can be instantiated both in init_net and
-in other network namespaces. The lifecycle of the RDMA link is now tied
-to the corresponding namespace and is properly cleaned up when the
-namespace or link is removed.
-
-This ensures rxe behaves correctly in multi-namespace environments and
-keeps socket and RDMA link resources consistent across namespace
-creation and teardown.
+Add 4 testcases for rxe with net namespace.
 
 Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
- drivers/infiniband/sw/rxe/rxe.c     |  38 +++++++-
- drivers/infiniband/sw/rxe/rxe_net.c | 145 +++++++++++++++++++++-------
- drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
- 3 files changed, 146 insertions(+), 46 deletions(-)
+ MAINTAINERS                                   |  1 +
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/rdma/Makefile         |  7 ++
+ tools/testing/selftests/rdma/config           |  3 +
+ tools/testing/selftests/rdma/rxe_ipv6.sh      | 63 ++++++++++++++
+ .../selftests/rdma/rxe_rping_between_netns.sh | 85 +++++++++++++++++++
+ .../selftests/rdma/rxe_socket_with_netns.sh   | 76 +++++++++++++++++
+ .../rdma/rxe_test_NETDEV_UNREGISTER.sh        | 63 ++++++++++++++
+ 8 files changed, 299 insertions(+)
+ create mode 100644 tools/testing/selftests/rdma/Makefile
+ create mode 100644 tools/testing/selftests/rdma/config
+ create mode 100755 tools/testing/selftests/rdma/rxe_ipv6.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+ create mode 100755 tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index e891199cbdef..b0714f9abe3d 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -8,6 +8,8 @@
- #include <net/addrconf.h>
- #include "rxe.h"
- #include "rxe_loc.h"
-+#include "rxe_net.h"
-+#include "rxe_ns.h"
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 77fdfcb55f06..bd33edf79150 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -24492,6 +24492,7 @@ L:	linux-rdma@vger.kernel.org
+ S:	Supported
+ F:	drivers/infiniband/sw/rxe/
+ F:	include/uapi/rdma/rdma_user_rxe.h
++F:	tools/testing/selftests/rdma/
  
- MODULE_AUTHOR("Bob Pearson, Frank Zago, John Groves, Kamal Heib");
- MODULE_DESCRIPTION("Soft RDMA transport");
-@@ -200,6 +202,8 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
- 	port->mtu_cap = ib_mtu_enum_to_int(mtu);
- }
- 
-+static struct rdma_link_ops rxe_link_ops;
+ SOFTLOGIC 6x10 MPEG CODEC
+ M:	Bluecherry Maintainers <maintainers@bluecherrydvr.com>
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 450f13ba4cca..110e07c0d99d 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -94,6 +94,7 @@ TARGETS += proc
+ TARGETS += pstore
+ TARGETS += ptrace
+ TARGETS += openat2
++TARGETS += rdma
+ TARGETS += resctrl
+ TARGETS += riscv
+ TARGETS += rlimits
+diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
+new file mode 100644
+index 000000000000..7dd7cba7a73c
+--- /dev/null
++++ b/tools/testing/selftests/rdma/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0
++TEST_PROGS := rxe_rping_between_netns.sh \
++		rxe_ipv6.sh \
++		rxe_socket_with_netns.sh \
++		rxe_test_NETDEV_UNREGISTER.sh
 +
- /* called by ifc layer to create new rxe device.
-  * The caller should allocate memory for rxe by calling ib_alloc_device.
-  */
-@@ -208,6 +212,7 @@ int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name,
- {
- 	rxe_init(rxe, ndev);
- 	rxe_set_mtu(rxe, mtu);
-+	rxe->ib_dev.link_ops = &rxe_link_ops;
- 
- 	return rxe_register_device(rxe, ibdev_name, ndev);
- }
-@@ -231,6 +236,10 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
- 		goto err;
- 	}
- 
-+	err = rxe_net_init(ndev);
-+	if (err)
-+		return err;
++include ../lib.mk
+diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
+new file mode 100644
+index 000000000000..4ffb814e253b
+--- /dev/null
++++ b/tools/testing/selftests/rdma/config
+@@ -0,0 +1,3 @@
++CONFIG_TUN
++CONFIG_VETH
++CONFIG_RDMA_RXE
+diff --git a/tools/testing/selftests/rdma/rxe_ipv6.sh b/tools/testing/selftests/rdma/rxe_ipv6.sh
+new file mode 100755
+index 000000000000..b7059bfd6d7c
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rxe_ipv6.sh
+@@ -0,0 +1,63 @@
++#!/bin/bash
 +
- 	err = rxe_net_add(ibdev_name, ndev);
- 	if (err) {
- 		rxe_err("failed to add %s\n", ndev->name);
-@@ -240,9 +249,17 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
- 	return err;
- }
- 
-+static int rxe_dellink(struct ib_device *dev)
-+{
-+	rxe_net_del(dev);
++# Configuration
++NS_NAME="net6"
++VETH_HOST="veth0"
++VETH_NS="veth1"
++RXE_NAME="rxe6"
++PORT=4791
++IP6_ADDR="2001:db8::1/64"
 +
-+	return 0;
++exec > /dev/null
++
++# Cleanup function to run on exit (even on failure)
++cleanup() {
++    ip netns del "$NS_NAME" 2>/dev/null
++    modprobe -r rdma_rxe 2>/dev/null
++    echo "Done."
++}
++trap cleanup EXIT
++
++# 1. Prerequisites check
++for mod in tun veth rdma_rxe; do
++    if ! modinfo "$mod" >/dev/null 2>&1; then
++        echo "Error: Kernel module '$mod' not found."
++        exit 1
++    fi
++done
++
++modprobe rdma_rxe
++
++# 2. Setup Namespace and Networking
++echo "Setting up IPv6 network namespace..."
++ip netns add "$NS_NAME"
++ip link add "$VETH_HOST" type veth peer name "$VETH_NS"
++ip link set "$VETH_NS" netns "$NS_NAME"
++ip netns exec "$NS_NAME" ip addr add "$IP6_ADDR" dev "$VETH_NS"
++ip netns exec "$NS_NAME" ip link set "$VETH_NS" up
++ip link set "$VETH_HOST" up
++
++# 3. Add RDMA Link
++echo "Adding RDMA RXE link..."
++if ! ip netns exec "$NS_NAME" rdma link add "$RXE_NAME" type rxe netdev "$VETH_NS"; then
++    echo "Error: Failed to create RXE link."
++    exit 1
++fi
++
++# 4. Verification: Port should be listening
++# Using -H to skip headers and -q for quiet exit codes
++if ! ip netns exec "$NS_NAME" ss -Hul6n sport = :$PORT | grep -q ":$PORT"; then
++    echo "Error: UDP port $PORT is NOT listening after link creation."
++    exit 1
++fi
++echo "Verified: Port $PORT is active."
++
++# 5. Removal and Verification
++echo "Deleting RDMA link..."
++ip netns exec "$NS_NAME" rdma link del "$RXE_NAME"
++
++if ip netns exec "$NS_NAME" ss -Hul6n sport = :$PORT | grep -q ":$PORT"; then
++    echo "Error: UDP port $PORT still active after link deletion."
++    exit 1
++fi
++echo "Verified: Port $PORT closed successfully."
+diff --git a/tools/testing/selftests/rdma/rxe_rping_between_netns.sh b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+new file mode 100755
+index 000000000000..e5b876f58c6e
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+@@ -0,0 +1,85 @@
++#!/bin/bash
++
++# Configuration
++NS="test1"
++VETH_A="veth-a"
++VETH_B="veth-b"
++IP_A="1.1.1.1"
++IP_B="1.1.1.2"
++PORT=4791
++
++exec > /dev/null
++
++# --- Cleanup Routine ---
++cleanup() {
++    echo "Cleaning up resources..."
++    rdma link del rxe1 2>/dev/null
++    ip netns exec "$NS" rdma link del rxe0 2>/dev/null
++    ip link delete "$VETH_B" 2>/dev/null
++    ip netns del "$NS" 2>/dev/null
++    modprobe -r rdma_rxe 2>/dev/null
++}
++trap cleanup EXIT
++
++# --- Prerequisite Checks ---
++if [[ $EUID -ne 0 ]]; then
++   echo "This script must be run as root"
++   exit 1
++fi
++
++modprobe rdma_rxe || { echo "Failed to load rdma_rxe"; exit 1; }
++
++# --- Setup Network Topology ---
++echo "Setting up network namespace and veth pair..."
++ip netns add "$NS"
++ip link add "$VETH_A" type veth peer name "$VETH_B"
++ip link set "$VETH_A" netns "$NS"
++
++# Configure Namespace side (test1)
++ip netns exec "$NS" ip addr add "$IP_A/24" dev "$VETH_A"
++ip netns exec "$NS" ip link set "$VETH_A" up
++ip netns exec "$NS" ip link set lo up
++
++# Configure Host side
++ip addr add "$IP_B/24" dev "$VETH_B"
++ip link set "$VETH_B" up
++
++# --- RXE Link Creation ---
++echo "Creating RDMA links..."
++ip netns exec "$NS" rdma link add rxe0 type rxe netdev "$VETH_A"
++rdma link add rxe1 type rxe netdev "$VETH_B"
++
++# Verify UDP 4791 is listening
++check_port() {
++    local target=$1 # "host" or "ns"
++    if [ "$target" == "ns" ]; then
++        ip netns exec "$NS" ss -Huln sport == :$PORT | grep -q ":$PORT"
++    else
++        ss -Huln sport == :$PORT | grep -q ":$PORT"
++    fi
 +}
 +
- static struct rdma_link_ops rxe_link_ops = {
- 	.type = "rxe",
- 	.newlink = rxe_newlink,
-+	.dellink = rxe_dellink,
- };
- 
- static int __init rxe_module_init(void)
-@@ -253,15 +270,24 @@ static int __init rxe_module_init(void)
- 	if (err)
- 		return err;
- 
--	err = rxe_net_init();
--	if (err) {
--		rxe_destroy_wq();
--		return err;
--	}
-+	err = rxe_namespace_init();
-+	if (err)
-+		goto err_destroy_wq;
++check_port "ns" || { echo "Error: RXE port not listening in namespace"; exit 1; }
++check_port "host" || { echo "Error: RXE port not listening on host"; exit 1; }
 +
-+	err = rxe_register_notifier();
-+	if (err)
-+		goto err_namespace_exit;
- 
- 	rdma_link_register(&rxe_link_ops);
++# --- Connectivity Test ---
++echo "Testing connectivity with rping..."
++ping -c 2 -W 1 "$IP_A" > /dev/null || { echo "Ping failed"; exit 1; }
 +
- 	pr_info("loaded\n");
- 	return 0;
++# Start rping server in background
++ip netns exec "$NS" rping -s -a "$IP_A" -v > /dev/null 2>&1 &
++RPING_PID=$!
++sleep 1 # Allow server to bind
 +
-+err_namespace_exit:
-+	rxe_namespace_exit();
-+err_destroy_wq:
-+	rxe_destroy_wq();
-+	return err;
- }
- 
- static void __exit rxe_module_exit(void)
-@@ -271,6 +297,8 @@ static void __exit rxe_module_exit(void)
- 	rxe_net_exit();
- 	rxe_destroy_wq();
- 
-+	rxe_namespace_exit();
++# Run rping client
++rping -c -a "$IP_A" -d -v -C 3
++RESULT=$?
 +
- 	pr_info("unloaded\n");
- }
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 0bd0902b11f7..59e42814d07f 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -17,8 +17,7 @@
- #include "rxe.h"
- #include "rxe_net.h"
- #include "rxe_loc.h"
--
--static struct rxe_recv_sockets recv_sockets;
-+#include "rxe_ns.h"
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- /*
-@@ -101,20 +100,20 @@ static inline void rxe_reclassify_recv_socket(struct socket *sock)
- }
- 
- static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
-+					 struct net *net,
- 					 struct net_device *ndev,
- 					 struct in_addr *saddr,
- 					 struct in_addr *daddr)
- {
- 	struct rtable *rt;
--	struct flowi4 fl = { { 0 } };
-+	struct flowi4 fl = {};
- 
--	memset(&fl, 0, sizeof(fl));
- 	fl.flowi4_oif = ndev->ifindex;
- 	memcpy(&fl.saddr, saddr, sizeof(*saddr));
- 	memcpy(&fl.daddr, daddr, sizeof(*daddr));
- 	fl.flowi4_proto = IPPROTO_UDP;
- 
--	rt = ip_route_output_key(&init_net, &fl);
-+	rt = ip_route_output_key(net, &fl);
- 	if (IS_ERR(rt)) {
- 		rxe_dbg_qp(qp, "no route to %pI4\n", &daddr->s_addr);
- 		return NULL;
-@@ -125,21 +124,21 @@ static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
- 
- #if IS_ENABLED(CONFIG_IPV6)
- static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
-+					 struct net *net,
- 					 struct net_device *ndev,
- 					 struct in6_addr *saddr,
- 					 struct in6_addr *daddr)
- {
- 	struct dst_entry *ndst;
--	struct flowi6 fl6 = { { 0 } };
-+	struct flowi6 fl6 = {};
- 
--	memset(&fl6, 0, sizeof(fl6));
- 	fl6.flowi6_oif = ndev->ifindex;
- 	memcpy(&fl6.saddr, saddr, sizeof(*saddr));
- 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
- 	fl6.flowi6_proto = IPPROTO_UDP;
- 
--	ndst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(recv_sockets.sk6->sk),
--					       recv_sockets.sk6->sk, &fl6,
-+	ndst = ipv6_stub->ipv6_dst_lookup_flow(net,
-+					       rxe_ns_pernet_sk6(net), &fl6,
- 					       NULL);
- 	if (IS_ERR(ndst)) {
- 		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
-@@ -160,6 +159,7 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
- #else
- 
- static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
-+					 struct net *net,
- 					 struct net_device *ndev,
- 					 struct in6_addr *saddr,
- 					 struct in6_addr *daddr)
-@@ -174,6 +174,7 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
- 					struct rxe_av *av)
- {
- 	struct dst_entry *dst = NULL;
-+	struct net *net;
- 
- 	if (qp_type(qp) == IB_QPT_RC)
- 		dst = sk_dst_get(qp->sk->sk);
-@@ -182,20 +183,22 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
- 		if (dst)
- 			dst_release(dst);
- 
-+		net = dev_net(ndev);
++kill $RPING_PID 2>/dev/null
 +
- 		if (av->network_type == RXE_NETWORK_TYPE_IPV4) {
- 			struct in_addr *saddr;
- 			struct in_addr *daddr;
- 
- 			saddr = &av->sgid_addr._sockaddr_in.sin_addr;
- 			daddr = &av->dgid_addr._sockaddr_in.sin_addr;
--			dst = rxe_find_route4(qp, ndev, saddr, daddr);
-+			dst = rxe_find_route4(qp, net, ndev, saddr, daddr);
- 		} else if (av->network_type == RXE_NETWORK_TYPE_IPV6) {
- 			struct in6_addr *saddr6;
- 			struct in6_addr *daddr6;
- 
- 			saddr6 = &av->sgid_addr._sockaddr_in6.sin6_addr;
- 			daddr6 = &av->dgid_addr._sockaddr_in6.sin6_addr;
--			dst = rxe_find_route6(qp, ndev, saddr6, daddr6);
-+			dst = rxe_find_route6(qp, net, ndev, saddr6, daddr6);
- #if IS_ENABLED(CONFIG_IPV6)
- 			if (dst)
- 				qp->dst_cookie =
-@@ -624,6 +627,46 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
- 	return 0;
- }
- 
-+#define SK_REF_FOR_TUNNEL	2
++if [ $RESULT -eq 0 ]; then
++    echo "SUCCESS: RDMA traffic verified."
++else
++    echo "FAILURE: rping failed."
++    exit 1
++fi
+diff --git a/tools/testing/selftests/rdma/rxe_socket_with_netns.sh b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+new file mode 100755
+index 000000000000..002e5098f751
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+@@ -0,0 +1,76 @@
++#!/bin/bash
 +
-+static void rxe_sock_put(struct sock *sk,
-+					void (*set_sk)(struct net *, struct sock *),
-+					struct net *net)
-+{
-+	if (refcount_read(&sk->sk_refcnt) > SK_REF_FOR_TUNNEL) {
-+		__sock_put(sk);
-+	} else {
-+		rxe_release_udp_tunnel(sk->sk_socket);
-+		sk = NULL;
-+		set_sk(net, sk);
-+	}
++# Configuration
++PORT=4791
++MODS=("tun" "rdma_rxe")
++
++exec > /dev/null
++
++# --- Helper: Cleanup Routine ---
++cleanup() {
++    echo "Cleaning up resources..."
++    rdma link del rxe1 2>/dev/null
++    rdma link del rxe0 2>/dev/null
++    ip link del tun0 2>/dev/null
++    ip link del tun1 2>/dev/null
++    for m in "${MODS[@]}"; do modprobe -r "$m" 2>/dev/null; done
 +}
 +
-+void rxe_net_del(struct ib_device *dev)
-+{
-+	struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
-+	struct net_device *ndev;
-+	struct sock *sk;
-+	struct net *net;
++# Ensure cleanup runs on script exit or interrupt
++trap cleanup EXIT
 +
-+	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+	if (!ndev)
-+		return;
++# --- Phase 1: Environment Check ---
++if [[ $EUID -ne 0 ]]; then
++   echo "Error: This script must be run as root."
++   exit 1
++fi
 +
-+	net = dev_net(ndev);
++for m in "${MODS[@]}"; do
++    modprobe "$m" || { echo "Error: Failed to load $m"; exit 1; }
++done
 +
-+	sk = rxe_ns_pernet_sk4(net);
-+	if (sk)
-+		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
++# --- Phase 2: Create Interfaces & RXE Links ---
++echo "Creating tun0 (1.1.1.1) and rxe0..."
++ip tuntap add mode tun tun0
++ip addr add 1.1.1.1/24 dev tun0
++ip link set tun0 up
++rdma link add rxe0 type rxe netdev tun0
 +
-+	sk = rxe_ns_pernet_sk6(net);
-+	if (sk)
-+		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
++# Verify port 4791 is listening
++if ! ss -Huln sport = :$PORT | grep -q ":$PORT"; then
++    echo "Error: UDP port $PORT not found after rxe0 creation"
++    exit 1
++fi
 +
-+	dev_put(ndev);
++echo "Creating tun1 (2.2.2.2) and rxe1..."
++ip tuntap add mode tun tun1
++ip addr add 2.2.2.2/24 dev tun1
++ip link set tun1 up
++rdma link add rxe1 type rxe netdev tun1
++
++# Verify port 4791 is still listening
++if ! ss -Huln sport = :$PORT | grep -q ":$PORT"; then
++    echo "Error: UDP port $PORT missing after rxe1 creation"
++    exit 1
++fi
++
++# --- Phase 3: Targeted Deletion ---
++echo "Deleting rxe1..."
++rdma link del rxe1
++
++# Port should still be active because rxe0 is still alive
++if ! ss -Huln sport = :$PORT | grep -q ":$PORT"; then
++    echo "Error: UDP port $PORT closed prematurely"
++    exit 1
++fi
++
++echo "Deleting rxe0..."
++rdma link del rxe0
++
++# Port should now be gone
++if ss -Huln sport = :$PORT | grep -q ":$PORT"; then
++    echo "Error: UDP port $PORT still exists after all links deleted"
++    exit 1
++fi
++
++echo "Test passed successfully."
+diff --git a/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+new file mode 100755
+index 000000000000..021ca451499d
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+@@ -0,0 +1,63 @@
++#!/bin/bash
++
++# Configuration
++DEV_NAME="tun0"
++RXE_NAME="rxe0"
++RDMA_PORT=4791
++
++exec > /dev/null
++
++# --- Cleanup Routine ---
++# Ensures environment is clean even if the script hits an error
++cleanup() {
++    echo "Performing cleanup..."
++    rdma link del $RXE_NAME 2>/dev/null
++    ip link del $DEV_NAME 2>/dev/null
++    modprobe -r rdma_rxe 2>/dev/null
 +}
-+#undef SK_REF_FOR_TUNNEL
++trap cleanup EXIT
 +
- static void rxe_port_event(struct rxe_dev *rxe,
- 			   enum ib_event_type event)
- {
-@@ -680,6 +723,7 @@ static int rxe_notify(struct notifier_block *not_blk,
- 	switch (event) {
- 	case NETDEV_UNREGISTER:
- 		ib_unregister_device_queued(&rxe->ib_dev);
-+		rxe_net_del(&rxe->ib_dev);
- 		break;
- 	case NETDEV_CHANGEMTU:
- 		rxe_dbg_dev(rxe, "%s changed mtu to %d\n", ndev->name, ndev->mtu);
-@@ -709,66 +753,97 @@ static struct notifier_block rxe_net_notifier = {
- 	.notifier_call = rxe_notify,
- };
- 
--static int rxe_net_ipv4_init(void)
-+static int rxe_net_ipv4_init(struct net *net)
- {
--	recv_sockets.sk4 = rxe_setup_udp_tunnel(&init_net,
--				htons(ROCE_V2_UDP_DPORT), false);
--	if (IS_ERR(recv_sockets.sk4)) {
--		recv_sockets.sk4 = NULL;
-+	struct sock *sk;
-+	struct socket *sock;
++# 1. Dependency Check
++if ! modinfo rdma_rxe >/dev/null 2>&1; then
++    echo "Error: rdma_rxe module not found."
++    exit 1
++fi
 +
-+	sk = rxe_ns_pernet_sk4(net);
-+	if (sk) {
-+		sock_hold(sk);
-+		return 0;
-+	}
++modprobe rdma_rxe
 +
-+	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), false);
-+	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv4 UDP tunnel\n");
- 		return -1;
- 	}
-+	rxe_ns_pernet_set_sk4(net, sock->sk);
- 
- 	return 0;
- }
- 
--static int rxe_net_ipv6_init(void)
-+static int rxe_net_ipv6_init(struct net *net)
- {
- #if IS_ENABLED(CONFIG_IPV6)
-+	struct sock *sk;
-+	struct socket *sock;
- 
--	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
--						htons(ROCE_V2_UDP_DPORT), true);
--	if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
--		recv_sockets.sk6 = NULL;
-+	sk = rxe_ns_pernet_sk6(net);
-+	if (sk) {
-+		sock_hold(sk);
-+		return 0;
-+	}
++# 2. Setup TUN Device
++echo "Creating $DEV_NAME..."
++ip tuntap add mode tun "$DEV_NAME"
++ip addr add 1.1.1.1/24 dev "$DEV_NAME"
++ip link set "$DEV_NAME" up
 +
-+	sock = rxe_setup_udp_tunnel(net, htons(ROCE_V2_UDP_DPORT), true);
-+	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
- 		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
- 		return 0;
- 	}
- 
--	if (IS_ERR(recv_sockets.sk6)) {
--		recv_sockets.sk6 = NULL;
-+	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
- 		return -1;
- 	}
++# 3. Attach RXE Link
++echo "Attaching RXE link $RXE_NAME to $DEV_NAME..."
++rdma link add "$RXE_NAME" type rxe netdev "$DEV_NAME"
 +
-+	rxe_ns_pernet_set_sk6(net, sock->sk);
++# 4. Verification: Port Check
++# Use -H (no header) and -q (quiet) for cleaner scripting logic
++if ! ss -Huln sport == :$RDMA_PORT | grep -q ":$RDMA_PORT"; then
++    echo "Error: UDP port $RDMA_PORT is not listening."
++    exit 1
++fi
++echo "Verified: RXE is listening on UDP $RDMA_PORT."
 +
- #endif
- 	return 0;
- }
- 
-+int rxe_register_notifier(void)
-+{
-+	int err;
++# 5. Trigger NETDEV_UNREGISTER
++# We delete the underlying device without deleting the RDMA link first.
++echo "Triggering NETDEV_UNREGISTER by deleting $DEV_NAME..."
++ip link del "$DEV_NAME"
 +
-+	err = register_netdevice_notifier(&rxe_net_notifier);
-+	if (err) {
-+		pr_err("Failed to register netdev notifier\n");
-+		return -1;
-+	}
++# 6. Final Verification
++# The RXE link and the UDP port should be automatically cleaned up by the kernel.
++if rdma link show "$RXE_NAME" 2>/dev/null; then
++    echo "Error: $RXE_NAME still exists after netdev removal."
++    exit 1
++fi
 +
-+	return 0;
-+}
++if ss -Huln sport == :$RDMA_PORT | grep -q ":$RDMA_PORT"; then
++    echo "Error: UDP port $RDMA_PORT still listening after netdev removal."
++    exit 1
++fi
 +
- void rxe_net_exit(void)
- {
--	rxe_release_udp_tunnel(recv_sockets.sk6);
--	rxe_release_udp_tunnel(recv_sockets.sk4);
- 	unregister_netdevice_notifier(&rxe_net_notifier);
- }
- 
--int rxe_net_init(void)
-+int rxe_net_init(struct net_device *ndev)
- {
-+	struct net *net;
- 	int err;
- 
--	recv_sockets.sk6 = NULL;
-+	net = dev_net(ndev);
- 
--	err = rxe_net_ipv4_init();
-+	err = rxe_net_ipv4_init(net);
- 	if (err)
- 		return err;
--	err = rxe_net_ipv6_init();
-+
-+	err = rxe_net_ipv6_init(net);
- 	if (err)
- 		goto err_out;
--	err = register_netdevice_notifier(&rxe_net_notifier);
--	if (err) {
--		pr_err("Failed to register netdev notifier\n");
--		goto err_out;
--	}
-+
- 	return 0;
-+
- err_out:
--	rxe_net_exit();
-+	/* If ipv6 error, release ipv4 resource */
-+	struct sock *sk = rxe_ns_pernet_sk4(net);
-+
-+	if (sk)
-+		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-+
- 	return err;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
-index 45d80d00f86b..56249677d692 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.h
-+++ b/drivers/infiniband/sw/rxe/rxe_net.h
-@@ -11,14 +11,11 @@
- #include <net/if_inet6.h>
- #include <linux/module.h>
- 
--struct rxe_recv_sockets {
--	struct socket *sk4;
--	struct socket *sk6;
--};
--
- int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
-+void rxe_net_del(struct ib_device *dev);
- 
--int rxe_net_init(void);
-+int rxe_register_notifier(void);
-+int rxe_net_init(struct net_device *ndev);
- void rxe_net_exit(void);
- 
- #endif /* RXE_NET_H */
++echo "Success: NETDEV_UNREGISTER handled correctly."
 -- 
 2.53.0
 
