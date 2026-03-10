@@ -1,128 +1,148 @@
-Return-Path: <linux-rdma+bounces-17879-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17880-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gBFoJPc6sGmDhQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17879-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 16:38:31 +0100
+	id KPErAUs7sGmDhQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17880-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 16:39:55 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C738253BC1
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 16:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7D1253C0D
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 16:39:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6AE733008243
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 15:37:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3349C3050CAB
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 15:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF3830FC1A;
-	Tue, 10 Mar 2026 15:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4205339DBD8;
+	Tue, 10 Mar 2026 15:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OK+rZL4d";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZChLOkZu";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OK+rZL4d";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZChLOkZu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7736830F534
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 15:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E437D3A382A
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 15:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773157032; cv=none; b=neNE+lAKVRbx1Yh2ftcMxAnGlMkVnyKu+L0ihoNn55AfEtZumHxslZR89MZvdwZKkOO7HwTvgf5SQER/3c6RXA0FONcWbjGxvVLA9EfuZXZVpc57uiwy36a4r9342PndmfJwGuNnZQ98/H629tPluuTDrUuGc3Ibii1TzqEkrQI=
+	t=1773157050; cv=none; b=BX1+f6bUP3W83rQCM13EVS4zrk929WuHKYJoHEcciVJmKvllYE4I8Wo3Z2biuI2wbq7bfq/giXaagcyuEoei6XPlohH5WBpB7b48dFCPq6BlmGMXuhfJOGPpChwA7GmmYCPOAl7pX52J5zVLw9K4HLhFHWDM5/uoIk6tgYoLkSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773157032; c=relaxed/simple;
-	bh=ZMBoD+g62AMFh+G5+ZkHxRhYnY4J3U4EQfU4+fN0uAE=;
+	s=arc-20240116; t=1773157050; c=relaxed/simple;
+	bh=nO8/yHyaWhR7JdqziL6VRDgABIAhYAr8IqmNbwcCdsg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U6Zc0dyY4ZFFkMeFXfKDwcQv55ywZYZvhtdVX9HC6riRY95t/UkE+VOA9b7Zw9ioKHXlOBMO0rSINklS+IRWE6jgFlrThcXpRarka4bzAZDcwfchpyPa+Ib7bYvG/IL1KBgTaTKYC8jtNZo5hMwi4h/sMbwInFRMcYUvVbGkv3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=qkOt81YPKtxX2b7TZke0l9CLHQdH4kd3igbo05fNuFWVdOxIgKzzEwzLqjlDi2b9Fmgob8kPcmrPhEY8ZFHfkDvJXhF+zKbejTYa0GADJXbPLqlq/NCpt2NWqKdidPILg07cSEb4w5e42YZtSRwUbtFkSsBCP3pzU0Qw9H175xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OK+rZL4d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZChLOkZu; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OK+rZL4d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZChLOkZu; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 055A64D1FA;
-	Tue, 10 Mar 2026 15:37:06 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 365393E783;
+	Tue, 10 Mar 2026 15:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773157046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WH5etI920qUPxE1d1L7Q+bHd5Betyr8Gc/npmYrBJQ=;
+	b=OK+rZL4dcnTcomSXHKXQUsQmVO14bCk9w+uqYgbG1zFM4QbTLFipLhu9zlhv3yr4AbSkMF
+	fMEnQXR04LBFbwvueQXfArorh0VVpQE5Zp3enbl1mFDFxsc1raHOP13fQ5LBYErJTZxo2X
+	q+Gpbq/XCprk4rvqzon75wOrUvyRyHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773157046;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WH5etI920qUPxE1d1L7Q+bHd5Betyr8Gc/npmYrBJQ=;
+	b=ZChLOkZuVRQnCQ0XJrrYpvJIii6xs7EA77hP5OkIQAdRjp5+8MGsgjbpB8k74YLrxAKhwb
+	76pmeiCjNtyD94Dg==
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773157046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WH5etI920qUPxE1d1L7Q+bHd5Betyr8Gc/npmYrBJQ=;
+	b=OK+rZL4dcnTcomSXHKXQUsQmVO14bCk9w+uqYgbG1zFM4QbTLFipLhu9zlhv3yr4AbSkMF
+	fMEnQXR04LBFbwvueQXfArorh0VVpQE5Zp3enbl1mFDFxsc1raHOP13fQ5LBYErJTZxo2X
+	q+Gpbq/XCprk4rvqzon75wOrUvyRyHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773157046;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5WH5etI920qUPxE1d1L7Q+bHd5Betyr8Gc/npmYrBJQ=;
+	b=ZChLOkZuVRQnCQ0XJrrYpvJIii6xs7EA77hP5OkIQAdRjp5+8MGsgjbpB8k74YLrxAKhwb
+	76pmeiCjNtyD94Dg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EBEC23F519;
-	Tue, 10 Mar 2026 15:37:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 663433F519;
+	Tue, 10 Mar 2026 15:37:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yN1VNp06sGlKXwAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Tue, 10 Mar 2026 15:37:01 +0000
+	id GGWpFbM6sGlKXwAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 10 Mar 2026 15:37:23 +0000
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 To: netdev@vger.kernel.org
 Cc: rbm@suse.com,
 	Fernando Fernandez Mancera <fmancera@suse.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
 	Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
 	Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
+	Boris Pismenny <borisp@nvidia.com>,
 	Ido Schimmel <idosch@nvidia.com>,
 	Petr Machata <petrm@nvidia.com>,
 	Simon Horman <horms@kernel.org>,
-	Saurav Kashyap <skashyap@marvell.com>,
-	Javed Hasan <jhasan@marvell.com>,
-	GR-QLogic-Storage-Upstream@marvell.com (maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER),
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Nilesh Javali <njavali@marvell.com>,
-	Manish Rangankar <mrangankar@marvell.com>,
-	Varun Prakash <varun@chelsio.com>,
-	Alexander Aring <aahringo@redhat.com>,
-	David Teigland <teigland@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	David Ahern <dsahern@kernel.org>,
+	Edward Cree <ecree.xilinx@gmail.com>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Jon Maloy <jmaloy@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
-	Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Luca Weiss <luca.weiss@fairphone.com>,
-	Sven Peter <sven@kernel.org>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Gow <david@davidgow.net>,
-	Kuan-Wei Chiu <visitorckw@gmail.com>,
-	Ryota Sakamoto <sakamo.ryota@gmail.com>,
-	Kir Chou <note351@hotmail.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Vikas Gupta <vikas.gupta@broadcom.com>,
-	Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
-	Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
-	=?UTF-8?q?Markus=20Bl=C3=B6chl?= <markus@blochl.de>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	linux-kernel@vger.kernel.org (open list),
-	linux-m68k@lists.linux-m68k.org (open list:M68K ARCHITECTURE),
+	Harald Welte <laforge@gnumonks.org>,
+	Antonio Quartulli <antonio@openvpn.net>,
+	Sabrina Dubroca <sd@queasysnail.net>,
+	Oliver Neukum <oliver@neukum.org>,
+	David Ahern <dsahern@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Parav Pandit <parav@nvidia.com>,
+	Edward Srouji <edwards@nvidia.com>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+	Kees Cook <kees@kernel.org>,
+	Jianbo Liu <jianbol@nvidia.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Guillaume Nault <gnault@redhat.com>,
+	Cosmin Ratiu <cratiu@nvidia.com>,
+	Carolina Jubran <cjubran@nvidia.com>,
+	Alexandre Cassen <acassen@corp.free.fr>,
+	Stanislav Fomichev <sdf@fomichev.me>,
 	linux-rdma@vger.kernel.org (open list:INFINIBAND SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list),
 	oss-drivers@corigine.com (open list:NETRONOME ETHERNET DRIVERS),
-	linux-scsi@vger.kernel.org (open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER),
-	gfs2@lists.linux.dev (open list:DISTRIBUTED LOCK MANAGER (DLM)),
-	bridge@lists.linux.dev (open list:ETHERNET BRIDGE),
-	netfilter-devel@vger.kernel.org (open list:NETFILTER),
-	coreteam@netfilter.org (open list:NETFILTER),
-	linux-afs@lists.infradead.org (open list:RXRPC SOCKETS (AF_RXRPC)),
-	linux-sctp@vger.kernel.org (open list:SCTP PROTOCOL),
-	tipc-discussion@lists.sourceforge.net (open list:TIPC NETWORK LAYER)
-Subject: [PATCH 01/10 net-next v2] ipv6: convert CONFIG_IPV6 to built-in only and clean up Kconfigs
-Date: Tue, 10 Mar 2026 16:34:24 +0100
-Message-ID: <20260310153506.5181-2-fmancera@suse.de>
+	linux-net-drivers@amd.com (open list:SFC NETWORK DRIVER),
+	osmocom-net-gprs@lists.osmocom.org (open list:GTP (GPRS Tunneling Protocol)),
+	linux-usb@vger.kernel.org (open list:USB CDC ETHERNET DRIVER),
+	wireguard@lists.zx2c4.com (open list:WIREGUARD SECURE NETWORK TUNNEL),
+	linux-wireless@vger.kernel.org (open list:INTEL PRO/WIRELESS 2100, 2200BG, 2915ABG NETWOR...),
+	bridge@lists.linux.dev (open list:ETHERNET BRIDGE)
+Subject: [PATCH 05/10 net-next v2] drivers: net: drop ipv6_stub usage and use direct function calls
+Date: Tue, 10 Mar 2026 16:34:28 +0100
+Message-ID: <20260310153506.5181-6-fmancera@suse.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260310153506.5181-1-fmancera@suse.de>
 References: <20260310153506.5181-1-fmancera@suse.de>
@@ -133,1975 +153,615 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spam-Score: -4.00
-X-Spam-Level: 
 X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 2C738253BC1
+X-Spam-Score: -5.30
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 9D7D1253C0D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.64 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[suse.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[suse.com,suse.de,ziepe.ca,kernel.org,gmail.com,nvidia.com,lunn.ch,davemloft.net,google.com,redhat.com,netfilter.org,gnumonks.org,openvpn.net,queasysnail.net,neukum.org,zx2c4.com,blackwall.org,corp.free.fr,fomichev.me,vger.kernel.org,corigine.com,amd.com,lists.osmocom.org];
+	RCPT_COUNT_TWELVE(0.00)[44];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17879-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17880-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[suse.com,suse.de,linux-m68k.org,ziepe.ca,kernel.org,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,hotmail.com,gondor.apana.org.au,blochl.de,vger.kernel.org,lists.linux-m68k.org,corigine.com,lists.linux.dev];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
 	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.948];
-	RCPT_COUNT_GT_50(0.00)[63];
-	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:email,linux-m68k.org:url,tldp.org:url,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,suse.de:dkim,suse.de:email,suse.de:mid]
 X-Rspamd-Action: no action
 
-Maintaining a modular IPv6 stack offers image size and memory savings
-for specific setups, this benefit is outweighed by the architectural
-burden it imposes on the subsystems on implementation and maintenance.
-Therefore, drop it.
+As IPv6 is built-in only, the ipv6_stub infrastructure is no longer
+necessary.
 
-Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
-dependencies across the tree that explicitly checked for IPV6=m. In
-addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
-and MODULE_LICENSE().
-
-This is also replacing module_init() by device_initcall(). It is not
-possible to use fs_initcall() as IPv4 does because that creates a race
-condition on IPv6 addrconf.
-
-Finally, modify the default configs from CONFIG_IPV6=m to CONFIG_IPV6=y
-except for m68k as according to the bloat-o-meter the image is
-increasing by 330KB~ and that isn't acceptable. Instead, disable IPv6 on
-this architecture by default. This is aligned with m68k RAM requirements
-and recommendations [1].
-
-[1] http://www.linux-m68k.org/faq/ram.html
+Convert all drivers currently utilizing ipv6_stub to make direct
+function calls. The fallback functions introduced previously will
+prevent linkage errors when CONFIG_IPV6 is disabled.
 
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 ---
-v2: updated m68k default configuration to CONFIG_IPV6=n and used
-device_initcall() instead fs_initcall() to avoid a race condition.
+v2: no changes
 ---
- arch/arm64/configs/defconfig                |  2 +-
- arch/m68k/configs/amiga_defconfig           | 45 +-------------------
- arch/m68k/configs/apollo_defconfig          | 46 +-------------------
- arch/m68k/configs/atari_defconfig           | 45 +-------------------
- arch/m68k/configs/bvme6000_defconfig        | 45 +-------------------
- arch/m68k/configs/hp300_defconfig           | 47 +--------------------
- arch/m68k/configs/mac_defconfig             | 45 +-------------------
- arch/m68k/configs/multi_defconfig           | 45 +-------------------
- arch/m68k/configs/mvme147_defconfig         | 45 +-------------------
- arch/m68k/configs/mvme16x_defconfig         | 45 +-------------------
- arch/m68k/configs/q40_defconfig             | 45 +-------------------
- arch/m68k/configs/sun3_defconfig            | 45 +-------------------
- arch/m68k/configs/sun3x_defconfig           | 45 +-------------------
- drivers/infiniband/Kconfig                  |  1 -
- drivers/infiniband/hw/ocrdma/Kconfig        |  2 +-
- drivers/infiniband/ulp/ipoib/Kconfig        |  2 +-
- drivers/net/Kconfig                         |  9 ----
- drivers/net/ethernet/broadcom/Kconfig       |  2 +-
- drivers/net/ethernet/chelsio/Kconfig        |  2 +-
- drivers/net/ethernet/mellanox/mlxsw/Kconfig |  1 -
- drivers/net/ethernet/netronome/Kconfig      |  1 -
- drivers/scsi/bnx2fc/Kconfig                 |  1 -
- drivers/scsi/bnx2i/Kconfig                  |  1 -
- drivers/scsi/cxgbi/cxgb3i/Kconfig           |  2 +-
- drivers/scsi/cxgbi/cxgb4i/Kconfig           |  2 +-
- fs/dlm/Kconfig                              |  2 +-
- fs/gfs2/Kconfig                             |  2 +-
- net/bridge/Kconfig                          |  1 -
- net/ipv4/Kconfig                            |  9 ++--
- net/ipv6/Kconfig                            |  6 +--
- net/ipv6/af_inet6.c                         |  8 +---
- net/l2tp/Kconfig                            |  1 -
- net/netfilter/Kconfig                       |  8 ----
- net/rxrpc/Kconfig                           |  2 +-
- net/sctp/Kconfig                            |  1 -
- net/tipc/Kconfig                            |  1 -
- 36 files changed, 40 insertions(+), 572 deletions(-)
+ drivers/infiniband/core/addr.c                  |  3 +--
+ drivers/infiniband/sw/rxe/rxe_net.c             |  6 +++---
+ .../ethernet/mellanox/mlx5/core/en/rep/neigh.c  | 12 ++++++++----
+ .../net/ethernet/mellanox/mlx5/core/en/tc_tun.c |  3 +--
+ .../mellanox/mlx5/core/en/tc_tun_encap.c        |  2 +-
+ .../mellanox/mlx5/core/en_accel/ipsec.c         |  1 -
+ .../net/ethernet/mellanox/mlx5/core/en_rep.c    |  1 -
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c |  1 -
+ .../ethernet/mellanox/mlxsw/spectrum_router.c   |  9 +++++----
+ .../net/ethernet/mellanox/mlxsw/spectrum_span.c |  3 ++-
+ .../net/ethernet/netronome/nfp/flower/action.c  |  2 +-
+ .../ethernet/netronome/nfp/flower/tunnel_conf.c |  9 ++++-----
+ drivers/net/ethernet/sfc/tc_counters.c          |  2 +-
+ drivers/net/ethernet/sfc/tc_encap_actions.c     |  5 ++---
+ drivers/net/geneve.c                            |  1 -
+ drivers/net/gtp.c                               |  2 +-
+ drivers/net/ovpn/peer.c                         |  3 +--
+ drivers/net/ovpn/udp.c                          |  3 +--
+ drivers/net/usb/cdc_mbim.c                      | 17 +++++++++--------
+ drivers/net/vrf.c                               |  3 ++-
+ drivers/net/vxlan/vxlan_core.c                  | 11 +++++------
+ drivers/net/vxlan/vxlan_multicast.c             |  6 ++----
+ drivers/net/wireguard/socket.c                  |  3 +--
+ drivers/net/wireless/intel/ipw2x00/ipw2100.c    |  2 +-
+ net/bridge/br_arp_nd_proxy.c                    |  3 +--
+ 25 files changed, 53 insertions(+), 60 deletions(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b67d5b1fc45b..0651a771f5c1 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -140,7 +140,7 @@ CONFIG_IP_MULTICAST=y
- CONFIG_IP_PNP=y
- CONFIG_IP_PNP_DHCP=y
- CONFIG_IP_PNP_BOOTP=y
--CONFIG_IPV6=m
-+CONFIG_IPV6=y
- CONFIG_NETFILTER=y
- CONFIG_BRIDGE_NETFILTER=m
- CONFIG_NF_CONNTRACK=m
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 31d16cba9879..de088071dde4 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -64,7 +64,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -72,15 +71,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -96,7 +87,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -113,7 +103,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -121,8 +110,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -197,6 +184,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -218,29 +206,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -251,7 +218,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -270,13 +236,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index c0c419ec9a9e..f410b2b54af9 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -60,7 +60,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -68,15 +67,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -92,7 +83,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -109,7 +99,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -117,8 +106,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -193,6 +180,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -214,29 +202,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -247,7 +214,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -266,13 +232,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-@@ -384,7 +343,6 @@ CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
- CONFIG_LOGO=y
--# CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 2b7547ecc4c4..781f5a5352a3 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -67,7 +67,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -75,15 +74,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -99,7 +90,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -116,7 +106,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -124,8 +113,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -200,6 +187,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -221,29 +209,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -254,7 +221,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -273,13 +239,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 0b63787cff0d..d584f47b51b8 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -57,7 +57,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -65,15 +64,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -89,7 +80,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -106,7 +96,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -114,8 +103,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -190,6 +177,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -211,29 +199,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -244,7 +211,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -263,13 +229,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 308836b60bba..61397b35f97f 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -59,7 +59,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -67,15 +66,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -91,7 +82,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -108,7 +98,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -116,8 +105,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -192,6 +179,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -213,29 +201,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -246,7 +213,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -265,13 +231,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-@@ -386,8 +345,6 @@ CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
- CONFIG_LOGO=y
--# CONFIG_LOGO_LINUX_MONO is not set
--# CONFIG_LOGO_LINUX_VGA16 is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 97e108c0d24f..2e9f3d2972ce 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -58,7 +58,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -66,15 +65,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -90,7 +81,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -107,7 +97,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -115,8 +104,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -191,6 +178,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -212,29 +200,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -245,7 +212,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -264,13 +230,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 7e9f83af9af4..fe89d843b85e 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -78,7 +78,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -86,15 +85,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -110,7 +101,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -127,7 +117,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -135,8 +124,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -211,6 +198,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -232,29 +220,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -265,7 +232,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -284,13 +250,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 2fe33271d249..61d68426c9a1 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -56,7 +56,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -64,15 +63,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -88,7 +79,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -105,7 +95,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -113,8 +102,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -189,6 +176,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -210,29 +198,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -243,7 +210,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -262,13 +228,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 4308daaa7f74..50c0fefaf3ef 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -57,7 +57,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -65,15 +64,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -89,7 +80,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -106,7 +96,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -114,8 +103,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -190,6 +177,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -211,29 +199,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -244,7 +211,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -263,13 +229,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 36eb29ec54ee..1e1c9854f3ec 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -58,7 +58,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -66,15 +65,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -90,7 +81,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -107,7 +97,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -115,8 +104,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -191,6 +178,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -212,29 +200,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -245,7 +212,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -264,13 +230,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 524a89fa6953..5847fab93d4f 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -53,7 +53,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -61,15 +60,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -85,7 +76,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -102,7 +92,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -110,8 +99,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -186,6 +173,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -207,29 +195,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -240,7 +207,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -259,13 +225,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index f4fbc65c52d9..72f83d9ad661 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -54,7 +54,6 @@ CONFIG_NET_IPIP=m
- CONFIG_NET_IPGRE_DEMUX=m
- CONFIG_NET_IPGRE=m
- CONFIG_NET_IPVTI=m
--CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_INET_AH=m
- CONFIG_INET_ESP=m
- CONFIG_INET_ESP_OFFLOAD=m
-@@ -62,15 +61,7 @@ CONFIG_INET_IPCOMP=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_UDP_DIAG=m
- CONFIG_INET_RAW_DIAG=m
--CONFIG_IPV6=m
--CONFIG_IPV6_ROUTER_PREF=y
--CONFIG_INET6_AH=m
--CONFIG_INET6_ESP=m
--CONFIG_INET6_ESP_OFFLOAD=m
--CONFIG_INET6_IPCOMP=m
--CONFIG_IPV6_ILA=m
--CONFIG_IPV6_VTI=m
--CONFIG_IPV6_GRE=m
-+# CONFIG_IPV6 is not set
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-@@ -86,7 +77,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_CT=m
-@@ -103,7 +93,6 @@ CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
- CONFIG_NFT_COMPAT=m
- CONFIG_NFT_HASH=m
--CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_XFRM=m
- CONFIG_NFT_SOCKET=m
- CONFIG_NFT_OSF=m
-@@ -111,8 +100,6 @@ CONFIG_NFT_TPROXY=m
- CONFIG_NFT_SYNPROXY=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
--CONFIG_NFT_FIB_NETDEV=m
--CONFIG_NFT_REJECT_NETDEV=m
- CONFIG_NF_FLOW_TABLE_INET=m
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NETFILTER_XTABLES_LEGACY=y
-@@ -187,6 +174,7 @@ CONFIG_IP_SET_HASH_NETNET=m
- CONFIG_IP_SET_HASH_NETPORT=m
- CONFIG_IP_SET_HASH_NETIFACE=m
- CONFIG_IP_SET_LIST_SET=m
-+CONFIG_NF_TABLES_IPV4=y
- CONFIG_NFT_DUP_IPV4=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
-@@ -208,29 +196,8 @@ CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_NFT_DUP_IPV6=m
--CONFIG_NFT_FIB_IPV6=m
--CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_MATCH_SRH=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_TARGET_SYNPROXY=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
--CONFIG_IP6_NF_TARGET_NPT=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_NFT_BRIDGE_META=m
--CONFIG_NFT_BRIDGE_REJECT=m
- CONFIG_NF_CONNTRACK_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_NF_EBTABLES=m
-@@ -241,7 +208,6 @@ CONFIG_BRIDGE_EBT_802_3=m
- CONFIG_BRIDGE_EBT_AMONG=m
- CONFIG_BRIDGE_EBT_ARP=m
- CONFIG_BRIDGE_EBT_IP=m
--CONFIG_BRIDGE_EBT_IP6=m
- CONFIG_BRIDGE_EBT_LIMIT=m
- CONFIG_BRIDGE_EBT_MARK=m
- CONFIG_BRIDGE_EBT_PKTTYPE=m
-@@ -260,13 +226,6 @@ CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
- CONFIG_ATALK=m
--CONFIG_6LOWPAN=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
--CONFIG_6LOWPAN_GHC_UDP=m
--CONFIG_6LOWPAN_GHC_ICMPV6=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
--CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 78ac2ff5befd..23f4245f7d7d 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -4,7 +4,6 @@ menuconfig INFINIBAND
- 	depends on HAS_IOMEM && HAS_DMA
- 	depends on NET
- 	depends on INET
--	depends on m || IPV6 != m
- 	depends on !ALPHA
- 	select DMA_SHARED_BUFFER
- 	select IRQ_POLL
-diff --git a/drivers/infiniband/hw/ocrdma/Kconfig b/drivers/infiniband/hw/ocrdma/Kconfig
-index 54bd70bc4d1a..b50c5f507e7c 100644
---- a/drivers/infiniband/hw/ocrdma/Kconfig
-+++ b/drivers/infiniband/hw/ocrdma/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config INFINIBAND_OCRDMA
- 	tristate "Emulex One Connect HCA support"
--	depends on ETHERNET && NETDEVICES && PCI && INET && (IPV6 || IPV6=n)
-+	depends on ETHERNET && NETDEVICES && PCI && INET
- 	select NET_VENDOR_EMULEX
- 	select BE2NET
- 	help
-diff --git a/drivers/infiniband/ulp/ipoib/Kconfig b/drivers/infiniband/ulp/ipoib/Kconfig
-index 254e31a90a66..b5253a231bdd 100644
---- a/drivers/infiniband/ulp/ipoib/Kconfig
-+++ b/drivers/infiniband/ulp/ipoib/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config INFINIBAND_IPOIB
- 	tristate "IP-over-InfiniBand"
--	depends on NETDEVICES && INET && (IPV6 || IPV6=n)
-+	depends on NETDEVICES && INET
- 	help
- 	  Support for the IP-over-InfiniBand protocol (IPoIB). This
- 	  transports IP packets over InfiniBand so you can use your IB
-diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-index 17108c359216..46f37ec713b8 100644
---- a/drivers/net/Kconfig
-+++ b/drivers/net/Kconfig
-@@ -41,7 +41,6 @@ if NET_CORE
- config BONDING
- 	tristate "Bonding driver support"
- 	depends on INET
--	depends on IPV6 || IPV6=n
- 	depends on TLS || TLS_DEVICE=n
- 	help
- 	  Say 'Y' or 'M' if you wish to be able to 'bond' multiple Ethernet
-@@ -75,7 +74,6 @@ config DUMMY
- config WIREGUARD
- 	tristate "WireGuard secure network tunnel"
- 	depends on NET && INET
--	depends on IPV6 || !IPV6
- 	select NET_UDP_TUNNEL
- 	select DST_CACHE
- 	select CRYPTO_LIB_CURVE25519
-@@ -105,7 +103,6 @@ config WIREGUARD_DEBUG
- config OVPN
- 	tristate "OpenVPN data channel offload"
- 	depends on NET && INET
--	depends on IPV6 || !IPV6
- 	select DST_CACHE
- 	select NET_UDP_TUNNEL
- 	select CRYPTO
-@@ -202,7 +199,6 @@ config IPVLAN_L3S
- config IPVLAN
- 	tristate "IP-VLAN support"
- 	depends on INET
--	depends on IPV6 || !IPV6
- 	help
- 	  This allows one to create virtual devices off of a main interface
- 	  and packets will be delivered based on the dest L3 (IPv6/IPv4 addr)
-@@ -249,7 +245,6 @@ config VXLAN
- config GENEVE
- 	tristate "Generic Network Virtualization Encapsulation"
- 	depends on INET
--	depends on IPV6 || !IPV6
- 	select NET_UDP_TUNNEL
- 	select GRO_CELLS
- 	help
-@@ -265,7 +260,6 @@ config GENEVE
- config BAREUDP
- 	tristate "Bare UDP Encapsulation"
- 	depends on INET
--	depends on IPV6 || !IPV6
- 	select NET_UDP_TUNNEL
- 	select GRO_CELLS
- 	help
-@@ -308,7 +302,6 @@ config PFCP
- config AMT
- 	tristate "Automatic Multicast Tunneling (AMT)"
- 	depends on INET && IP_MULTICAST
--	depends on IPV6 || !IPV6
- 	select NET_UDP_TUNNEL
- 	help
- 	  This allows one to create AMT(Automatic Multicast Tunneling)
-@@ -479,7 +472,6 @@ config NET_VRF
- 	tristate "Virtual Routing and Forwarding (Lite)"
- 	depends on IP_MULTIPLE_TABLES
- 	depends on NET_L3_MASTER_DEV
--	depends on IPV6 || IPV6=n
- 	depends on IPV6_MULTIPLE_TABLES || IPV6=n
- 	help
- 	  This option enables the support for mapping interfaces into VRF's. The
-@@ -614,7 +606,6 @@ config NETDEVSIM
- 	tristate "Simulated networking device"
- 	depends on DEBUG_FS
- 	depends on INET
--	depends on IPV6 || IPV6=n
- 	depends on PSAMPLE || PSAMPLE=n
- 	depends on PTP_1588_CLOCK_MOCK || PTP_1588_CLOCK_MOCK=n
- 	select NET_DEVLINK
-diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
-index cd7dddeb91dd..3190231c91da 100644
---- a/drivers/net/ethernet/broadcom/Kconfig
-+++ b/drivers/net/ethernet/broadcom/Kconfig
-@@ -96,7 +96,7 @@ config BNX2
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 866746695712..48d4b06384ec 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -41,7 +41,6 @@
+ #include <net/neighbour.h>
+ #include <net/route.h>
+ #include <net/netevent.h>
+-#include <net/ipv6_stubs.h>
+ #include <net/ip6_route.h>
+ #include <rdma/ib_addr.h>
+ #include <rdma/ib_cache.h>
+@@ -411,7 +410,7 @@ static int addr6_resolve(struct sockaddr *src_sock,
+ 	fl6.saddr = src_in->sin6_addr;
+ 	fl6.flowi6_oif = addr->bound_dev_if;
  
- config CNIC
- 	tristate "QLogic CNIC support"
--	depends on PCI && (IPV6 || IPV6=n)
-+	depends on PCI
- 	select BNX2
- 	select UIO
- 	help
-diff --git a/drivers/net/ethernet/chelsio/Kconfig b/drivers/net/ethernet/chelsio/Kconfig
-index c931ec8cac40..96d7779cd2f0 100644
---- a/drivers/net/ethernet/chelsio/Kconfig
-+++ b/drivers/net/ethernet/chelsio/Kconfig
-@@ -68,7 +68,7 @@ config CHELSIO_T3
+-	dst = ipv6_stub->ipv6_dst_lookup_flow(addr->net, NULL, &fl6, NULL);
++	dst = ip6_dst_lookup_flow(addr->net, NULL, &fl6, NULL);
+ 	if (IS_ERR(dst))
+ 		return PTR_ERR(dst);
  
- config CHELSIO_T4
- 	tristate "Chelsio Communications T4/T5/T6 Ethernet support"
--	depends on PCI && (IPV6 || IPV6=n) && (TLS || TLS=n)
-+	depends on PCI && (TLS || TLS=n)
- 	depends on PTP_1588_CLOCK_OPTIONAL
- 	select FW_LOADER
- 	select MDIO
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/Kconfig b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
-index 74f7e27b490f..2229a2694aa5 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
-@@ -56,7 +56,6 @@ config MLXSW_SPECTRUM
- 	depends on MLXSW_CORE && MLXSW_PCI && NET_SWITCHDEV && VLAN_8021Q
- 	depends on PSAMPLE || PSAMPLE=n
- 	depends on BRIDGE || BRIDGE=n
--	depends on IPV6 || IPV6=n
- 	depends on NET_IPGRE || NET_IPGRE=n
- 	depends on IPV6_GRE || IPV6_GRE=n
- 	depends on VXLAN || VXLAN=n
-diff --git a/drivers/net/ethernet/netronome/Kconfig b/drivers/net/ethernet/netronome/Kconfig
-index d03d6e96f730..d115d16d4649 100644
---- a/drivers/net/ethernet/netronome/Kconfig
-+++ b/drivers/net/ethernet/netronome/Kconfig
-@@ -33,7 +33,6 @@ config NFP_APP_FLOWER
- 	bool "NFP4000/NFP6000 TC Flower offload support"
- 	depends on NFP
- 	depends on NET_SWITCHDEV
--	depends on IPV6!=m || NFP=m
- 	default y
- 	help
- 	  Enable driver support for TC Flower offload on NFP4000 and NFP6000.
-diff --git a/drivers/scsi/bnx2fc/Kconfig b/drivers/scsi/bnx2fc/Kconfig
-index 3cf7e08df809..d12eeb13384a 100644
---- a/drivers/scsi/bnx2fc/Kconfig
-+++ b/drivers/scsi/bnx2fc/Kconfig
-@@ -2,7 +2,6 @@
- config SCSI_BNX2X_FCOE
- 	tristate "QLogic FCoE offload support"
- 	depends on PCI
--	depends on (IPV6 || IPV6=n)
- 	depends on LIBFC
- 	depends on LIBFCOE
- 	select NETDEVICES
-diff --git a/drivers/scsi/bnx2i/Kconfig b/drivers/scsi/bnx2i/Kconfig
-index 75ace2302fed..e649a04fab1d 100644
---- a/drivers/scsi/bnx2i/Kconfig
-+++ b/drivers/scsi/bnx2i/Kconfig
-@@ -3,7 +3,6 @@ config SCSI_BNX2_ISCSI
- 	tristate "QLogic NetXtreme II iSCSI support"
- 	depends on NET
- 	depends on PCI
--	depends on (IPV6 || IPV6=n)
- 	select SCSI_ISCSI_ATTRS
- 	select NETDEVICES
- 	select ETHERNET
-diff --git a/drivers/scsi/cxgbi/cxgb3i/Kconfig b/drivers/scsi/cxgbi/cxgb3i/Kconfig
-index e20e6f3bfe64..143e881ec77e 100644
---- a/drivers/scsi/cxgbi/cxgb3i/Kconfig
-+++ b/drivers/scsi/cxgbi/cxgb3i/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SCSI_CXGB3_ISCSI
- 	tristate "Chelsio T3 iSCSI support"
--	depends on PCI && INET && (IPV6 || IPV6=n)
-+	depends on PCI && INET
- 	select NETDEVICES
- 	select ETHERNET
- 	select NET_VENDOR_CHELSIO
-diff --git a/drivers/scsi/cxgbi/cxgb4i/Kconfig b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-index 63c8a0f3cd0c..dd1c8ff36b00 100644
---- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
-+++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SCSI_CXGB4_ISCSI
- 	tristate "Chelsio T4 iSCSI support"
--	depends on PCI && INET && (IPV6 || IPV6=n)
-+	depends on PCI && INET
- 	depends on PTP_1588_CLOCK_OPTIONAL
- 	depends on THERMAL || !THERMAL
- 	depends on ETHERNET
-diff --git a/fs/dlm/Kconfig b/fs/dlm/Kconfig
-index b46165df5a91..fb6ba9f5a634 100644
---- a/fs/dlm/Kconfig
-+++ b/fs/dlm/Kconfig
-@@ -2,7 +2,7 @@
- menuconfig DLM
- 	tristate "Distributed Lock Manager (DLM)"
- 	depends on INET
--	depends on SYSFS && CONFIGFS_FS && (IPV6 || IPV6=n)
-+	depends on SYSFS && CONFIGFS_FS
- 	help
- 	A general purpose distributed lock manager for kernel or userspace
- 	applications.
-diff --git a/fs/gfs2/Kconfig b/fs/gfs2/Kconfig
-index 7bd231d16d4a..8beee571b6af 100644
---- a/fs/gfs2/Kconfig
-+++ b/fs/gfs2/Kconfig
-@@ -26,7 +26,7 @@ config GFS2_FS
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 0bd0902b11f7..cbc646a30003 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -138,9 +138,9 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
+ 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
+ 	fl6.flowi6_proto = IPPROTO_UDP;
  
- config GFS2_FS_LOCKING_DLM
- 	bool "GFS2 DLM locking"
--	depends on (GFS2_FS!=n) && NET && INET && (IPV6 || IPV6=n) && \
-+	depends on (GFS2_FS!=n) && NET && INET && \
- 		CONFIGFS_FS && SYSFS && (DLM=y || DLM=GFS2_FS)
- 	help
- 	  Multiple node locking module for GFS2
-diff --git a/net/bridge/Kconfig b/net/bridge/Kconfig
-index 3c8ded7d3e84..318715c8fc9b 100644
---- a/net/bridge/Kconfig
-+++ b/net/bridge/Kconfig
-@@ -7,7 +7,6 @@ config BRIDGE
- 	tristate "802.1d Ethernet Bridging"
- 	select LLC
- 	select STP
--	depends on IPV6 || IPV6=n
- 	help
- 	  If you say Y here, then your Linux box will be able to act as an
- 	  Ethernet bridge, which means that the different Ethernet segments it
-diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
-index df922f9f5289..21e5164e30db 100644
---- a/net/ipv4/Kconfig
-+++ b/net/ipv4/Kconfig
-@@ -191,7 +191,7 @@ config NET_IP_TUNNEL
+-	ndst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(recv_sockets.sk6->sk),
+-					       recv_sockets.sk6->sk, &fl6,
+-					       NULL);
++	ndst = ip6_dst_lookup_flow(sock_net(recv_sockets.sk6->sk),
++				   recv_sockets.sk6->sk, &fl6,
++				   NULL);
+ 	if (IS_ERR(ndst)) {
+ 		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
+ 		return NULL;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/neigh.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/neigh.c
+index d220b045b331..56930bad94eb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/neigh.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/neigh.c
+@@ -10,6 +10,7 @@
+ #include <linux/notifier.h>
+ #include <net/netevent.h>
+ #include <net/arp.h>
++#include <net/ndisc.h>
+ #include "neigh.h"
+ #include "tc.h"
+ #include "en_rep.h"
+@@ -18,8 +19,10 @@
  
- config NET_IPGRE
- 	tristate "IP: GRE tunnels over IP"
--	depends on (IPV6 || IPV6=n) && NET_IPGRE_DEMUX
-+	depends on NET_IPGRE_DEMUX
- 	select NET_IP_TUNNEL
- 	help
- 	  Tunneling means encapsulating data of one protocol type within
-@@ -303,7 +303,6 @@ config SYN_COOKIES
+ static unsigned long mlx5e_rep_ipv6_interval(void)
+ {
+-	if (IS_ENABLED(CONFIG_IPV6) && ipv6_stub->nd_tbl)
+-		return NEIGH_VAR(&ipv6_stub->nd_tbl->parms, DELAY_PROBE_TIME);
++	struct neigh_table *tbl = ipv6_get_nd_tbl();
++
++	if (IS_ENABLED(CONFIG_IPV6) && ipv6_mod_enabled())
++		return NEIGH_VAR(&tbl->parms, DELAY_PROBE_TIME);
  
- config NET_IPVTI
- 	tristate "Virtual (secure) IP: tunneling"
--	depends on IPV6 || IPV6=n
- 	select INET_TUNNEL
- 	select NET_IP_TUNNEL
- 	select XFRM
-@@ -439,7 +438,7 @@ config INET_TCP_DIAG
- 
- config INET_UDP_DIAG
- 	tristate "UDP: socket monitoring interface"
--	depends on INET_DIAG && (IPV6 || IPV6=n)
-+	depends on INET_DIAG
- 	default n
- 	help
- 	  Support for UDP socket monitoring interface used by the ss tool.
-@@ -447,7 +446,7 @@ config INET_UDP_DIAG
- 
- config INET_RAW_DIAG
- 	tristate "RAW: socket monitoring interface"
--	depends on INET_DIAG && (IPV6 || IPV6=n)
-+	depends on INET_DIAG
- 	default n
- 	help
- 	  Support for RAW socket monitoring interface used by the ss tool.
-@@ -750,7 +749,7 @@ config TCP_AO
- 	select CRYPTO
- 	select CRYPTO_LIB_UTILS
- 	select TCP_SIGPOOL
--	depends on 64BIT && IPV6 != m # seq-number extension needs WRITE_ONCE(u64)
-+	depends on 64BIT # seq-number extension needs WRITE_ONCE(u64)
- 	help
- 	  TCP-AO specifies the use of stronger Message Authentication Codes (MACs),
- 	  protects against replays for long-lived TCP connections, and
-diff --git a/net/ipv6/Kconfig b/net/ipv6/Kconfig
-index b8f9a8c0302e..c024aa77f25b 100644
---- a/net/ipv6/Kconfig
-+++ b/net/ipv6/Kconfig
-@@ -3,9 +3,8 @@
- # IPv6 configuration
- #
- 
--#   IPv6 as module will cause a CRASH if you try to unload it
- menuconfig IPV6
--	tristate "The IPv6 protocol"
-+	bool "The IPv6 protocol"
- 	default y
- 	select CRYPTO_LIB_SHA1
- 	help
-@@ -17,9 +16,6 @@ menuconfig IPV6
- 	  Documentation/networking/ipv6.rst and read the HOWTO at
- 	  <https://www.tldp.org/HOWTO/Linux+IPv6-HOWTO/>
- 
--	  To compile this protocol support as a module, choose M here: the
--	  module will be called ipv6.
--
- if IPV6
- 
- config IPV6_ROUTER_PREF
-diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-index 0b995a961359..448be9704313 100644
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -71,10 +71,6 @@
- 
- #include "ip6_offload.h"
- 
--MODULE_AUTHOR("Cast of dozens");
--MODULE_DESCRIPTION("IPv6 protocol stack for Linux");
--MODULE_LICENSE("GPL");
--
- /* The inetsw6 table contains everything that inet6_create needs to
-  * build a new socket.
-  */
-@@ -1312,6 +1308,4 @@ static int __init inet6_init(void)
- 	proto_unregister(&tcpv6_prot);
- 	goto out;
+ 	return ~0UL;
  }
--module_init(inet6_init);
+@@ -217,7 +220,7 @@ static int mlx5e_rep_netevent_event(struct notifier_block *nb,
+ 	case NETEVENT_NEIGH_UPDATE:
+ 		n = ptr;
+ #if IS_ENABLED(CONFIG_IPV6)
+-		if (n->tbl != ipv6_stub->nd_tbl && n->tbl != &arp_tbl)
++		if (n->tbl != ipv6_get_nd_tbl() && n->tbl != &arp_tbl)
+ #else
+ 		if (n->tbl != &arp_tbl)
+ #endif
+@@ -238,7 +241,8 @@ static int mlx5e_rep_netevent_event(struct notifier_block *nb,
+ 		 * done per device delay prob time parameter.
+ 		 */
+ #if IS_ENABLED(CONFIG_IPV6)
+-		if (!p->dev || (p->tbl != ipv6_stub->nd_tbl && p->tbl != &arp_tbl))
++		if (!p->dev ||
++		    (p->tbl != ipv6_get_nd_tbl() && p->tbl != &arp_tbl))
+ #else
+ 		if (!p->dev || p->tbl != &arp_tbl)
+ #endif
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+index a14f216048cd..de74dbfe7b20 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+@@ -453,8 +453,7 @@ static int mlx5e_route_lookup_ipv6_get(struct mlx5e_priv *priv,
+ 
+ 	if (tunnel && tunnel->get_remote_ifindex)
+ 		attr->fl.fl6.flowi6_oif = tunnel->get_remote_ifindex(dev);
+-	dst = ipv6_stub->ipv6_dst_lookup_flow(dev_net(dev), NULL, &attr->fl.fl6,
+-					      NULL);
++	dst = ip6_dst_lookup_flow(dev_net(dev), NULL, &attr->fl.fl6, NULL);
+ 	if (IS_ERR(dst))
+ 		return PTR_ERR(dst);
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+index bfd401bee9e8..ce2a27124642 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+@@ -402,7 +402,7 @@ void mlx5e_tc_update_neigh_used_value(struct mlx5e_neigh_hash_entry *nhe)
+ 		tbl = &arp_tbl;
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	else if (m_neigh->family == AF_INET6)
+-		tbl = ipv6_stub->nd_tbl;
++		tbl = ipv6_get_nd_tbl();
+ #endif
+ 	else
+ 		return;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+index 64e13747084e..a52e12c3c95a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+@@ -36,7 +36,6 @@
+ #include <linux/inetdevice.h>
+ #include <linux/netdevice.h>
+ #include <net/netevent.h>
+-#include <net/ipv6_stubs.h>
+ 
+ #include "en.h"
+ #include "eswitch.h"
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+index 1db4ecb2356f..5ec5cae8d229 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+@@ -38,7 +38,6 @@
+ #include <net/pkt_cls.h>
+ #include <net/act_api.h>
+ #include <net/devlink.h>
+-#include <net/ipv6_stubs.h>
+ 
+ #include "eswitch.h"
+ #include "en.h"
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index 1434b65d4746..4e4ee1d520ce 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -40,7 +40,6 @@
+ #include <linux/refcount.h>
+ #include <linux/completion.h>
+ #include <net/arp.h>
+-#include <net/ipv6_stubs.h>
+ #include <net/bareudp.h>
+ #include <net/bonding.h>
+ #include <net/dst_metadata.h>
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+index 7bd87d0547d8..8531216f6389 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+@@ -2458,7 +2458,7 @@ static void mlxsw_sp_router_neigh_ent_ipv6_process(struct mlxsw_sp *mlxsw_sp,
+ 	}
+ 
+ 	dev = mlxsw_sp_rif_dev(mlxsw_sp->router->rifs[rif]);
+-	n = neigh_lookup(&nd_tbl, &dip, dev);
++	n = neigh_lookup(ipv6_get_nd_tbl(), &dip, dev);
+ 	if (!n)
+ 		return;
+ 
+@@ -3022,7 +3022,8 @@ static int mlxsw_sp_neigh_rif_made_sync(struct mlxsw_sp *mlxsw_sp,
+ 		goto err_arp;
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+-	neigh_for_each(&nd_tbl, mlxsw_sp_neigh_rif_made_sync_each, &rms);
++	neigh_for_each(ipv6_get_nd_tbl(),
++		       mlxsw_sp_neigh_rif_made_sync_each, &rms);
+ #endif
+ 	if (rms.err)
+ 		goto err_nd;
+@@ -5124,7 +5125,7 @@ mlxsw_sp_nexthop_obj_init(struct mlxsw_sp *mlxsw_sp,
+ 	case AF_INET6:
+ 		memcpy(&nh->gw_addr, &nh_obj->ipv6, sizeof(nh_obj->ipv6));
+ #if IS_ENABLED(CONFIG_IPV6)
+-		nh->neigh_tbl = &nd_tbl;
++		nh->neigh_tbl = ipv6_get_nd_tbl();
+ #endif
+ 		break;
+ 	}
+@@ -6980,7 +6981,7 @@ static int mlxsw_sp_nexthop6_init(struct mlxsw_sp *mlxsw_sp,
+ 	nh->nh_weight = rt->fib6_nh->fib_nh_weight;
+ 	memcpy(&nh->gw_addr, &rt->fib6_nh->fib_nh_gw6, sizeof(nh->gw_addr));
+ #if IS_ENABLED(CONFIG_IPV6)
+-	nh->neigh_tbl = &nd_tbl;
++	nh->neigh_tbl = ipv6_get_nd_tbl();
+ #endif
+ 
+ 	err = mlxsw_sp_nexthop_counter_enable(mlxsw_sp, nh);
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
+index ae63d549b542..f05ccf3db876 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
+@@ -576,7 +576,8 @@ mlxsw_sp_span_entry_gretap6_parms(struct mlxsw_sp *mlxsw_sp,
+ 	l3edev = mlxsw_sp_span_gretap6_route(to_dev, &saddr.addr6, &gw.addr6);
+ 	return mlxsw_sp_span_entry_tunnel_parms_common(l3edev, saddr, daddr, gw,
+ 						       tparm.hop_limit,
+-						       &nd_tbl, sparmsp);
++						       ipv6_get_nd_tbl(),
++						       sparmsp);
+ }
+ 
+ static int
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/action.c b/drivers/net/ethernet/netronome/nfp/flower/action.c
+index aca2a7417af3..ae2f8b31adfb 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/action.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/action.c
+@@ -470,7 +470,7 @@ nfp_fl_set_tun(struct nfp_app *app, struct nfp_fl_set_tun *set_tun,
+ 
+ 		flow.daddr = ip_tun->key.u.ipv6.dst;
+ 		flow.flowi4_proto = IPPROTO_UDP;
+-		dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &flow, NULL);
++		dst = ip6_dst_lookup_flow(net, NULL, &flow, NULL);
+ 		if (!IS_ERR(dst)) {
+ 			set_tun->ttl = ip6_dst_hoplimit(dst);
+ 			dst_release(dst);
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c b/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c
+index 0cef0e2b85d0..053265e135f6 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c
+@@ -277,7 +277,7 @@ void nfp_tunnel_keep_alive_v6(struct nfp_app *app, struct sk_buff *skb)
+ 		if (!netdev)
+ 			continue;
+ 
+-		n = neigh_lookup(&nd_tbl, ipv6_add, netdev);
++		n = neigh_lookup(ipv6_get_nd_tbl(), ipv6_add, netdev);
+ 		if (!n)
+ 			continue;
+ 
+@@ -650,7 +650,7 @@ static void nfp_tun_neigh_update(struct work_struct *work)
+ 		flow6.daddr = *(struct in6_addr *)n->primary_key;
+ 		if (!neigh_invalid) {
+ 			struct dst_entry *dst;
+-			/* Use ipv6_dst_lookup_flow to populate flow6->saddr
++			/* Use ip6_dst_lookup_flow to populate flow6->saddr
+ 			 * and other fields. This information is only needed
+ 			 * for new entries, lookup can be skipped when an entry
+ 			 * gets invalidated - as only the daddr is needed for
+@@ -730,7 +730,7 @@ nfp_tun_neigh_event_handler(struct notifier_block *nb, unsigned long event,
+ 		return NOTIFY_DONE;
+ 	}
+ #if IS_ENABLED(CONFIG_IPV6)
+-	if (n->tbl != ipv6_stub->nd_tbl && n->tbl != &arp_tbl)
++	if (n->tbl != ipv6_get_nd_tbl() && n->tbl != &arp_tbl)
+ #else
+ 	if (n->tbl != &arp_tbl)
+ #endif
+@@ -815,8 +815,7 @@ void nfp_tunnel_request_route_v6(struct nfp_app *app, struct sk_buff *skb)
+ 	flow.flowi6_proto = IPPROTO_UDP;
+ 
+ #if IS_ENABLED(CONFIG_INET) && IS_ENABLED(CONFIG_IPV6)
+-	dst = ipv6_stub->ipv6_dst_lookup_flow(dev_net(netdev), NULL, &flow,
+-					      NULL);
++	dst = ip6_dst_lookup_flow(dev_net(netdev), NULL, &flow, NULL);
+ 	if (IS_ERR(dst))
+ 		goto fail_rcu_unlock;
+ #else
+diff --git a/drivers/net/ethernet/sfc/tc_counters.c b/drivers/net/ethernet/sfc/tc_counters.c
+index d168282f30bf..d8a5f9fd1007 100644
+--- a/drivers/net/ethernet/sfc/tc_counters.c
++++ b/drivers/net/ethernet/sfc/tc_counters.c
+@@ -112,7 +112,7 @@ static void efx_tc_counter_work(struct work_struct *work)
+ 					 encap->neigh->egdev);
+ 		else
+ #if IS_ENABLED(CONFIG_IPV6)
+-			n = neigh_lookup(ipv6_stub->nd_tbl,
++			n = neigh_lookup(ipv6_get_nd_tbl(),
+ 					 &encap->neigh->dst_ip6,
+ 					 encap->neigh->egdev);
+ #else
+diff --git a/drivers/net/ethernet/sfc/tc_encap_actions.c b/drivers/net/ethernet/sfc/tc_encap_actions.c
+index da35705cc5e1..63d8f794b869 100644
+--- a/drivers/net/ethernet/sfc/tc_encap_actions.c
++++ b/drivers/net/ethernet/sfc/tc_encap_actions.c
+@@ -149,8 +149,7 @@ static int efx_bind_neigh(struct efx_nic *efx,
+ #if IS_ENABLED(CONFIG_IPV6)
+ 			struct dst_entry *dst;
+ 
+-			dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &flow6,
+-							      NULL);
++			dst = ip6_dst_lookup_flow(net, NULL, &flow6, NULL);
+ 			rc = PTR_ERR_OR_ZERO(dst);
+ 			if (rc) {
+ 				NL_SET_ERR_MSG_MOD(extack, "Failed to lookup route for IPv6 encap");
+@@ -531,7 +530,7 @@ static int efx_neigh_event(struct efx_nic *efx, struct neighbour *n)
+ 	if (n->tbl == &arp_tbl) {
+ 		keysize = sizeof(keys.dst_ip);
+ #if IS_ENABLED(CONFIG_IPV6)
+-	} else if (n->tbl == ipv6_stub->nd_tbl) {
++	} else if (n->tbl == ipv6_get_nd_tbl()) {
+ 		ipv6 = true;
+ 		keysize = sizeof(keys.dst_ip6);
+ #endif
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index 01cdd06102e0..c6563367d382 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/etherdevice.h>
+ #include <linux/hash.h>
+-#include <net/ipv6_stubs.h>
+ #include <net/dst_metadata.h>
+ #include <net/gro_cells.h>
+ #include <net/rtnetlink.h>
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index e8949f556209..70b9e58b9b78 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -374,7 +374,7 @@ static struct rt6_info *ip6_route_output_gtp(struct net *net,
+ 	fl6->saddr		= *saddr;
+ 	fl6->flowi6_proto	= sk->sk_protocol;
+ 
+-	dst = ipv6_stub->ipv6_dst_lookup_flow(net, sk, fl6, NULL);
++	dst = ip6_dst_lookup_flow(net, sk, fl6, NULL);
+ 	if (IS_ERR(dst))
+ 		return ERR_PTR(-ENETUNREACH);
+ 
+diff --git a/drivers/net/ovpn/peer.c b/drivers/net/ovpn/peer.c
+index 3716a1d82801..6dd11c71204b 100644
+--- a/drivers/net/ovpn/peer.c
++++ b/drivers/net/ovpn/peer.c
+@@ -821,8 +821,7 @@ static struct in6_addr ovpn_nexthop_from_rt6(struct ovpn_priv *ovpn,
+ 		.daddr = dest,
+ 	};
+ 
+-	entry = ipv6_stub->ipv6_dst_lookup_flow(dev_net(ovpn->dev), NULL, &fl,
+-						NULL);
++	entry = ip6_dst_lookup_flow(dev_net(ovpn->dev), NULL, &fl, NULL);
+ 	if (IS_ERR(entry)) {
+ 		net_dbg_ratelimited("%s: no route to host %pI6c\n",
+ 				    netdev_name(ovpn->dev), &dest);
+diff --git a/drivers/net/ovpn/udp.c b/drivers/net/ovpn/udp.c
+index 272b535ecaad..059e896b4a2f 100644
+--- a/drivers/net/ovpn/udp.c
++++ b/drivers/net/ovpn/udp.c
+@@ -14,7 +14,6 @@
+ #include <net/addrconf.h>
+ #include <net/dst_cache.h>
+ #include <net/route.h>
+-#include <net/ipv6_stubs.h>
+ #include <net/transp_v6.h>
+ #include <net/udp.h>
+ #include <net/udp_tunnel.h>
+@@ -251,7 +250,7 @@ static int ovpn_udp6_output(struct ovpn_peer *peer, struct ovpn_bind *bind,
+ 		dst_cache_reset(cache);
+ 	}
+ 
+-	dst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(sk), sk, &fl, NULL);
++	dst = ip6_dst_lookup_flow(sock_net(sk), sk, &fl, NULL);
+ 	if (IS_ERR(dst)) {
+ 		ret = PTR_ERR(dst);
+ 		net_dbg_ratelimited("%s: no route to host %pISpc: %d\n",
+diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
+index dbf01210b0e7..877fb0ed7d3d 100644
+--- a/drivers/net/usb/cdc_mbim.c
++++ b/drivers/net/usb/cdc_mbim.c
+@@ -20,7 +20,6 @@
+ #include <linux/usb/cdc_ncm.h>
+ #include <net/ipv6.h>
+ #include <net/addrconf.h>
+-#include <net/ipv6_stubs.h>
+ #include <net/ndisc.h>
+ 
+ /* alternative VLAN for IP session 0 if not untagged */
+@@ -302,6 +301,7 @@ static struct sk_buff *cdc_mbim_tx_fixup(struct usbnet *dev, struct sk_buff *skb
+ 	return NULL;
+ }
+ 
++#if IS_ENABLED(CONFIG_IPV6)
+ /* Some devices are known to send Neighbor Solicitation messages and
+  * require Neighbor Advertisement replies.  The IPv6 core will not
+  * respond since IFF_NOARP is set, so we must handle them ourselves.
+@@ -342,12 +342,11 @@ static void do_neigh_solicit(struct usbnet *dev, u8 *buf, u16 tci)
+ 	is_router = !!READ_ONCE(in6_dev->cnf.forwarding);
+ 	in6_dev_put(in6_dev);
+ 
+-	/* ipv6_stub != NULL if in6_dev_get returned an inet6_dev */
+-	ipv6_stub->ndisc_send_na(netdev, &iph->saddr, &msg->target,
+-				 is_router /* router */,
+-				 true /* solicited */,
+-				 false /* override */,
+-				 true /* inc_opt */);
++	ndisc_send_na(netdev, &iph->saddr, &msg->target,
++		      is_router /* router */,
++		      true /* solicited */,
++		      false /* override */,
++		      true /* inc_opt */);
+ out:
+ 	dev_put(netdev);
+ }
+@@ -362,7 +361,7 @@ static bool is_neigh_solicit(u8 *buf, size_t len)
+ 		msg->icmph.icmp6_code == 0 &&
+ 		msg->icmph.icmp6_type == NDISC_NEIGHBOUR_SOLICITATION);
+ }
 -
--MODULE_ALIAS_NETPROTO(PF_INET6);
-+device_initcall(inet6_init);
-diff --git a/net/l2tp/Kconfig b/net/l2tp/Kconfig
-index b7856748e960..0de178d5baba 100644
---- a/net/l2tp/Kconfig
-+++ b/net/l2tp/Kconfig
-@@ -5,7 +5,6 @@
++#endif /* IPV6 */
  
- menuconfig L2TP
- 	tristate "Layer Two Tunneling Protocol (L2TP)"
--	depends on (IPV6 || IPV6=n)
- 	depends on INET
- 	select NET_UDP_TUNNEL
- 	help
-diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-index 6cdc994fdc8a..f3ea0cb26f36 100644
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -249,7 +249,6 @@ config NF_CONNTRACK_FTP
+ static struct sk_buff *cdc_mbim_process_dgram(struct usbnet *dev, u8 *buf, size_t len, u16 tci)
+ {
+@@ -378,8 +377,10 @@ static struct sk_buff *cdc_mbim_process_dgram(struct usbnet *dev, u8 *buf, size_
+ 			proto = htons(ETH_P_IP);
+ 			break;
+ 		case 0x60:
++#if IS_ENABLED(CONFIG_IPV6)
+ 			if (is_neigh_solicit(buf, len))
+ 				do_neigh_solicit(dev, buf, tci);
++#endif
+ 			proto = htons(ETH_P_IPV6);
+ 			break;
+ 		default:
+diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
+index 8c009bcaa8e7..68edb47cc4eb 100644
+--- a/drivers/net/vrf.c
++++ b/drivers/net/vrf.c
+@@ -616,7 +616,8 @@ static int vrf_finish_output6(struct net *net, struct sock *sk,
+ 	nexthop = rt6_nexthop(dst_rt6_info(dst), &ipv6_hdr(skb)->daddr);
+ 	neigh = __ipv6_neigh_lookup_noref(dst->dev, nexthop);
+ 	if (unlikely(!neigh))
+-		neigh = __neigh_create(&nd_tbl, nexthop, dst->dev, false);
++		neigh = __neigh_create(ipv6_get_nd_tbl(), nexthop,
++				       dst->dev, false);
+ 	if (!IS_ERR(neigh)) {
+ 		sock_confirm_neigh(skb, neigh);
+ 		ret = neigh_output(neigh, skb, false);
+diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_core.c
+index 17c941aac32d..4ab94dfe0d12 100644
+--- a/drivers/net/vxlan/vxlan_core.c
++++ b/drivers/net/vxlan/vxlan_core.c
+@@ -19,7 +19,6 @@
+ #include <net/arp.h>
+ #include <net/ndisc.h>
+ #include <net/gro.h>
+-#include <net/ipv6_stubs.h>
+ #include <net/ip.h>
+ #include <net/icmp.h>
+ #include <net/rtnetlink.h>
+@@ -2045,7 +2044,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
+ 	    ipv6_addr_is_multicast(&msg->target))
+ 		goto out;
  
- config NF_CONNTRACK_H323
- 	tristate "H.323 protocol support"
--	depends on IPV6 || IPV6=n
- 	depends on NETFILTER_ADVANCED
- 	help
- 	  H.323 is a VoIP signalling protocol from ITU-T. As one of the most
-@@ -589,7 +588,6 @@ config NFT_QUOTA
- config NFT_REJECT
- 	default m if NETFILTER_ADVANCED=n
- 	tristate "Netfilter nf_tables reject support"
--	depends on !NF_TABLES_INET || (IPV6!=m || m)
- 	help
- 	  This option adds the "reject" expression that you can use to
- 	  explicitly deny and notify via TCP reset/ICMP informational errors
-@@ -636,7 +634,6 @@ config NFT_XFRM
+-	n = neigh_lookup(ipv6_stub->nd_tbl, &msg->target, dev);
++	n = neigh_lookup(ipv6_get_nd_tbl(), &msg->target, dev);
  
- config NFT_SOCKET
- 	tristate "Netfilter nf_tables socket match support"
--	depends on IPV6 || IPV6=n
- 	select NF_SOCKET_IPV4
- 	select NF_SOCKET_IPV6 if NF_TABLES_IPV6
- 	help
-@@ -652,7 +649,6 @@ config NFT_OSF
+ 	if (n) {
+ 		struct vxlan_rdst *rdst = NULL;
+@@ -2130,15 +2129,15 @@ static bool route_shortcircuit(struct net_device *dev, struct sk_buff *skb)
+ 	{
+ 		struct ipv6hdr *pip6;
  
- config NFT_TPROXY
- 	tristate "Netfilter nf_tables tproxy support"
--	depends on IPV6 || IPV6=n
- 	select NF_DEFRAG_IPV4
- 	select NF_DEFRAG_IPV6 if NF_TABLES_IPV6
- 	select NF_TPROXY_IPV4
-@@ -1071,7 +1067,6 @@ config NETFILTER_XT_TARGET_MASQUERADE
- config NETFILTER_XT_TARGET_TEE
- 	tristate '"TEE" - packet cloning to alternate destination'
- 	depends on NETFILTER_ADVANCED
--	depends on IPV6 || IPV6=n
- 	depends on !NF_CONNTRACK || NF_CONNTRACK
- 	depends on IP6_NF_IPTABLES || !IP6_NF_IPTABLES
- 	select NF_DUP_IPV4
-@@ -1084,7 +1079,6 @@ config NETFILTER_XT_TARGET_TPROXY
- 	tristate '"TPROXY" target transparent proxying support'
- 	depends on NETFILTER_XTABLES
- 	depends on NETFILTER_ADVANCED
--	depends on IPV6 || IPV6=n
- 	depends on IP6_NF_IPTABLES || IP6_NF_IPTABLES=n
- 	depends on IP_NF_MANGLE || NFT_COMPAT
- 	select NF_DEFRAG_IPV4
-@@ -1126,7 +1120,6 @@ config NETFILTER_XT_TARGET_SECMARK
+-		/* check if nd_tbl is not initiliazed due to
+-		 * ipv6.disable=1 set during boot
++		/* check if ipv6.disable=1 set during boot was set
++		 * during booting so nd_tbl is not initialized
+ 		 */
+-		if (!ipv6_stub->nd_tbl)
++		if (!ipv6_mod_enabled())
+ 			return false;
+ 		if (!pskb_may_pull(skb, sizeof(struct ipv6hdr)))
+ 			return false;
+ 		pip6 = ipv6_hdr(skb);
+-		n = neigh_lookup(ipv6_stub->nd_tbl, &pip6->daddr, dev);
++		n = neigh_lookup(ipv6_get_nd_tbl(), &pip6->daddr, dev);
+ 		if (!n && (vxlan->cfg.flags & VXLAN_F_L3MISS)) {
+ 			union vxlan_addr ipa = {
+ 				.sin6.sin6_addr = pip6->daddr,
+diff --git a/drivers/net/vxlan/vxlan_multicast.c b/drivers/net/vxlan/vxlan_multicast.c
+index a7f2d67dc61b..b0e80bca855c 100644
+--- a/drivers/net/vxlan/vxlan_multicast.c
++++ b/drivers/net/vxlan/vxlan_multicast.c
+@@ -39,8 +39,7 @@ int vxlan_igmp_join(struct vxlan_dev *vxlan, union vxlan_addr *rip,
  
- config NETFILTER_XT_TARGET_TCPMSS
- 	tristate '"TCPMSS" target support'
--	depends on IPV6 || IPV6=n
- 	default m if NETFILTER_ADVANCED=n
- 	help
- 	  This option adds a `TCPMSS' target, which allows you to alter the
-@@ -1581,7 +1574,6 @@ config NETFILTER_XT_MATCH_SOCKET
- 	tristate '"socket" match support'
- 	depends on NETFILTER_XTABLES
- 	depends on NETFILTER_ADVANCED
--	depends on IPV6 || IPV6=n
- 	depends on IP6_NF_IPTABLES || IP6_NF_IPTABLES=n
- 	select NF_SOCKET_IPV4
- 	select NF_SOCKET_IPV6 if IP6_NF_IPTABLES
-diff --git a/net/rxrpc/Kconfig b/net/rxrpc/Kconfig
-index f60b81c66078..43416b3026fb 100644
---- a/net/rxrpc/Kconfig
-+++ b/net/rxrpc/Kconfig
-@@ -25,7 +25,7 @@ if AF_RXRPC
+ 		sk = sock6->sock->sk;
+ 		lock_sock(sk);
+-		ret = ipv6_stub->ipv6_sock_mc_join(sk, ifindex,
+-						   &ip->sin6.sin6_addr);
++		ret = ipv6_sock_mc_join(sk, ifindex, &ip->sin6.sin6_addr);
+ 		release_sock(sk);
+ #endif
+ 	}
+@@ -73,8 +72,7 @@ int vxlan_igmp_leave(struct vxlan_dev *vxlan, union vxlan_addr *rip,
  
- config AF_RXRPC_IPV6
- 	bool "IPv6 support for RxRPC"
--	depends on (IPV6 = m && AF_RXRPC = m) || (IPV6 = y && AF_RXRPC)
-+	depends on IPV6
- 	help
- 	  Say Y here to allow AF_RXRPC to use IPV6 UDP as well as IPV4 UDP as
- 	  its network transport.
-diff --git a/net/sctp/Kconfig b/net/sctp/Kconfig
-index e947646a380c..fc989a3791b3 100644
---- a/net/sctp/Kconfig
-+++ b/net/sctp/Kconfig
-@@ -6,7 +6,6 @@
- menuconfig IP_SCTP
- 	tristate "The SCTP Protocol"
- 	depends on INET
--	depends on IPV6 || IPV6=n
- 	select CRYPTO_LIB_SHA1
- 	select CRYPTO_LIB_SHA256
- 	select CRYPTO_LIB_UTILS
-diff --git a/net/tipc/Kconfig b/net/tipc/Kconfig
-index bb0d71eb02a6..18f62135e47b 100644
---- a/net/tipc/Kconfig
-+++ b/net/tipc/Kconfig
-@@ -6,7 +6,6 @@
- menuconfig TIPC
- 	tristate "The TIPC Protocol"
- 	depends on INET
--	depends on IPV6 || IPV6=n
- 	help
- 	  The Transparent Inter Process Communication (TIPC) protocol is
- 	  specially designed for intra cluster communication. This protocol
+ 		sk = sock6->sock->sk;
+ 		lock_sock(sk);
+-		ret = ipv6_stub->ipv6_sock_mc_drop(sk, ifindex,
+-						   &ip->sin6.sin6_addr);
++		ret = ipv6_sock_mc_drop(sk, ifindex, &ip->sin6.sin6_addr);
+ 		release_sock(sk);
+ #endif
+ 	}
+diff --git a/drivers/net/wireguard/socket.c b/drivers/net/wireguard/socket.c
+index 253488f8c00f..c362c78d908e 100644
+--- a/drivers/net/wireguard/socket.c
++++ b/drivers/net/wireguard/socket.c
+@@ -136,8 +136,7 @@ static int send6(struct wg_device *wg, struct sk_buff *skb,
+ 			if (cache)
+ 				dst_cache_reset(cache);
+ 		}
+-		dst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(sock), sock, &fl,
+-						      NULL);
++		dst = ip6_dst_lookup_flow(sock_net(sock), sock, &fl, NULL);
+ 		if (IS_ERR(dst)) {
+ 			ret = PTR_ERR(dst);
+ 			net_dbg_ratelimited("%s: No route to %pISpfsc, error %d\n",
+diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2100.c b/drivers/net/wireless/intel/ipw2x00/ipw2100.c
+index 248a051da52d..c11428485dcc 100644
+--- a/drivers/net/wireless/intel/ipw2x00/ipw2100.c
++++ b/drivers/net/wireless/intel/ipw2x00/ipw2100.c
+@@ -4838,7 +4838,7 @@ static int ipw2100_system_config(struct ipw2100_priv *priv, int batch_mode)
+ 
+ /* If IPv6 is configured in the kernel then we don't want to filter out all
+  * of the multicast packets as IPv6 needs some. */
+-#if !defined(CONFIG_IPV6) && !defined(CONFIG_IPV6_MODULE)
++#if !defined(CONFIG_IPV6)
+ 	cmd.host_command = ADD_MULTICAST;
+ 	cmd.host_command_sequence = 0;
+ 	cmd.host_command_length = 0;
+diff --git a/net/bridge/br_arp_nd_proxy.c b/net/bridge/br_arp_nd_proxy.c
+index 1e2b51769eec..494bf69a3017 100644
+--- a/net/bridge/br_arp_nd_proxy.c
++++ b/net/bridge/br_arp_nd_proxy.c
+@@ -17,7 +17,6 @@
+ #include <linux/if_vlan.h>
+ #include <linux/inetdevice.h>
+ #include <net/addrconf.h>
+-#include <net/ipv6_stubs.h>
+ #if IS_ENABLED(CONFIG_IPV6)
+ #include <net/ip6_checksum.h>
+ #endif
+@@ -455,7 +454,7 @@ void br_do_suppress_nd(struct sk_buff *skb, struct net_bridge *br,
+ 		return;
+ 	}
+ 
+-	n = neigh_lookup(ipv6_stub->nd_tbl, &msg->target, vlandev);
++	n = neigh_lookup(ipv6_get_nd_tbl(), &msg->target, vlandev);
+ 	if (n) {
+ 		struct net_bridge_fdb_entry *f;
+ 
 -- 
 2.53.0
 
