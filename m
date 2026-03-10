@@ -1,226 +1,416 @@
-Return-Path: <linux-rdma+bounces-17867-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17868-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qJzlL9wdsGlBgAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17867-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 14:34:20 +0100
+	id kLfBIzEasGlAfwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17868-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 14:18:41 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1232506DC
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 14:34:20 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30BCC24FE63
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 14:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9E95F35C2CBA
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 12:56:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BCAAF317DE2F
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 12:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47923B47DA;
-	Tue, 10 Mar 2026 12:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3ED33C0634;
+	Tue, 10 Mar 2026 12:21:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qf6uGOi7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Oy51/10i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB143B47CD
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 12:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.219.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773144832; cv=pass; b=VVcX/N6Jf+REV7o6zcw4+uTWn+GZQ76PU/m1H4BpKhg7Ln3CoEm9SvoQmhcKPF9JhweM/KrUSAfcYtsUxfiCAUAzlDhfsZTH2o6s/E7gvBk4aec1nNq0qW234dAsXcHDNJs++opk+NrkwiGQ+tFrjB2eNzJggSJGgdaerniLSIs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773144832; c=relaxed/simple;
-	bh=oBWHWl4oFG4ctqngCJNsL2W/w/X/y+8sHCgAIJblmFk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XdLK/acH2pGFi+sMzYUWAdOWEykCCpCD4PtWOT4z3DPQLPIE3Jl1VrfVwsQ2uC0U2ETs8vOqQ7TCTvSy11X+TRKZgFOev5uMIjrFZFzaBC0o7IXZ+1nBGU5Q1FBGFrcupuYjR+Higx76qUSjxdE8DpW62oTH08bBaD1Zk2rYVpI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qf6uGOi7; arc=pass smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-899a9f445cbso156009736d6.0
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 05:13:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773144828; cv=none;
-        d=google.com; s=arc-20240605;
-        b=ed8vjZQyZStkb2Dzact4oqM16cSmRR/Oxd5rlV+c9P275unPk0No1SGGP6Xy41daXW
-         os0pJzJrTe4MewohSQsdZQZMPbEfJ/el6+/KLZKiIWBktJpa+y9KULv8OIitZGRWntIL
-         McIINJ91bYEMYFZ2WZOEQ+6KAEf4dBKltIhv0lR+XUpm8OnJhMuQ8k+jKDQqXMATxLod
-         g89QViIkAGNeZO+qC9OsC7trxYvGL51Bo8QYzqdzMbJtMp7DPTYcqlxdrtl6x0S71gnp
-         LCyc8qulp8nUgTB8kUbxwhKjA3Z7GcV/iPwehqGIUAfQVQld17zgPn0TsMzWGSTUzQKt
-         oXVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=aNlD1VnwwuWUuVdK0r+JEQho3gk9Img94yEEgNc2T2Y=;
-        fh=QuwrdiyMntE9z4YfFzQfHPtVJtXKeV6qGhTTF7O8PTM=;
-        b=DrvcY3zGMYbrypii1Uexb8ltvGwOqIx5Q0LaYjcVotNN+jyC4Muy5eZJNnbkX7r5TM
-         dwJHiCfmjmQapydhJLv6G+7FaCNYu+uqih2PmJ4pAb3setLloZLcv9hxAcwadk/58zTO
-         6K0nqZLhJ9Vbc6A5TetV0HObjenfF9FIkVCFFiJ4xyzpXQjXECVoSi0lb8w1255MaIEj
-         Lw8XBKD+yTH5BH4Z+wEA6S/Z9wAxz5CtDyEAvE7cdztlBHp3UyIDEZKx+hor3kNM5Oy+
-         oOv5wMRlFr3mIku2EVl2y/zeHbZKGoh/ecsJufVjBMZ4jCu/AJsl6o7v8yaGMKDiYz9o
-         c0wA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1773144828; x=1773749628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aNlD1VnwwuWUuVdK0r+JEQho3gk9Img94yEEgNc2T2Y=;
-        b=Qf6uGOi7YDhTAg2wqxZ2yfGHJ4hzAHx8ToJNEw3pxlLhDTBJbvjvysxSb7Z7xPwoko
-         V12L0oqtIM23astGiRTGta2bljIhDOuSI15VR3mN0qN14HcAWhni34g6E09MApOPR5q7
-         oAaaAMBDGNoYYMxAlZqPl1gRS6xl4isMN44PcNxmagXTeMC8jpNjYaXK3n/hnLthiTwE
-         U+XACYDeQyVL/NypQuRjBhLmAUaWxeCmZmpoRAUT0gQYsIFsayo0jHH8OLt2Nzhg9/g9
-         v4jIZwG1WKVlAStQWkO1QmpeCo3arE63uTEUoCV2eeag8nqtLbvyeiD6RQhOmL5XxUJQ
-         HY1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773144828; x=1773749628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=aNlD1VnwwuWUuVdK0r+JEQho3gk9Img94yEEgNc2T2Y=;
-        b=vYKTfPuIOA3j5Yt7Z5ICHTO88Hz4LrkgZBxrdd0Gj6mcbtVCm1+ZfpzE5MfH4r8tv4
-         e4vMZw4zOHK6HOEw5vVOI1rtugwZjjCClEtqd1SAjJnu8ru4mITrfIYQRhQh7Y2EGniX
-         CS0Lp2byQEMAx8cWA7Hz3KX06njlBWVEagtlV/ddmQAUvud2GaS/BmE1krPML4RmgSC5
-         g9BHNg1J9Mg4teEUIhxtIrxRrKy+UKvQMLFGg3JIRfROx9EU6qNUTz4s6ynHMxIGJ2n9
-         A4+94m54pMXPXOe6g1EbTbQ4TK56JrDx/TtBpg+7Dq62QD/sZwYMXGEzMrX1gQI5Bw/x
-         S6lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWsmS1KrgJ1pA/WCSrxFl2/hfBbbMhDAHhvRABHV18NbjlgYo+nTGiR05baPnSFtA2U8plGzoiQhkRl@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKEZLgUBGx4nxeCLlNwyv99alH35zScQl0VxaupnBmyVIsdZGY
-	kurSMfLyxmGlq+4pn47BpbSq8vieq720FpBmo+DJ+Ftd/ZkeH/jvDjlgtfSNbwrlBV9zVUrFenE
-	EK04HIWrT7ygfBjeVDZTS9AGVY/nTHyGqiLJoA9dO
-X-Gm-Gg: ATEYQzwTiO3RMNl8FG8C+xVCUl9wySCSAPj5Ay0zfg2pwyJi52v9102bxVhENK0EJPA
-	VB1H3AcYRMAc0f5dXYaYl3muF8L7+7HjLu0a2k/CnTBVuCMFlFyaEF4EZZ/OSjQiWwCbeF7uyCG
-	0cJsYdttWeMJPv+CsPKNRBFbK7XHQiwW8fYHqq98j7pDDZEFaI+qO7yYWeAtfMttzaZLmwyJhOj
-	mklb0eVy7NBmYfEEARYopdHJE+F87n/w6JqY2uCX/jp8MTT02RXll7V1Qx5tGz0DZgHLr12fTXT
-	LvQ7w04=
-X-Received: by 2002:a05:6214:d08:b0:899:c803:ca2f with SMTP id
- 6a1803df08f44-89a30ace932mr206169286d6.42.1773144827562; Tue, 10 Mar 2026
- 05:13:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768083C062C
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 12:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773145307; cv=none; b=CPa2lBd7gKlePF2PKU8Xy9hgIdMLeTH8PSb/7BLqYc3KeRH3GcWfl3RJ7K1yKRxZ6ZTwnoyOXo8uxnxG1iw6LhMtF0upXiy/UReqTXxa5Egz9PgCQasQc6lZR9Uvqrr1lVtZU8r0wv4QxY5nx2oj19cIArYnBDBUnVqt4Vn5iyY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773145307; c=relaxed/simple;
+	bh=an9adZHQvM7cqpkUyWxiNhIKJh3mohUEa/nINU0P6c4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fB7lb/3TgVrqznGJdKj9zWVEz8W+pHumKGSkNfyiZ0i5fkIbpGW8YlXI9tgxe/XTBYhVYnNFQf1ocwjodrmIAXhPGOVWHIN0Ofw7r0WrpY1t9lvFKUHx1U0P9iusU6TJvmtkrdl+52j7E43TT/u+LHaq8bfck+Gw3UKURRtOmOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Oy51/10i; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1773145303;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JDfq77R22sq1ejgAyTb445PzrQTFDDUJmCUs/6D4c1E=;
+	b=Oy51/10ipXKNmJTBmO6jS9MuLUIgpJ6RUxJ0z/SjSngAtuVHNSNV/oFQWha5kPukRiHyiX
+	8fwtEdYmPghx21nF+wqBm0gd+yy/aOsC3lnSAINlUWigO0HTbSPxdI2c8jP1BetlLmfkmF
+	lc7bjdUz4II7vBB9w5HG5rhDVMlypbc=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-508-ebwdEchyMvCNphjQnpk2TQ-1; Tue,
+ 10 Mar 2026 08:21:40 -0400
+X-MC-Unique: ebwdEchyMvCNphjQnpk2TQ-1
+X-Mimecast-MFC-AGG-ID: ebwdEchyMvCNphjQnpk2TQ_1773145297
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0A89218002E3;
+	Tue, 10 Mar 2026 12:21:37 +0000 (UTC)
+Received: from gerbillo.redhat.com (unknown [10.45.225.133])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 90784180035F;
+	Tue, 10 Mar 2026 12:21:30 +0000 (UTC)
+From: Paolo Abeni <pabeni@redhat.com>
+To: dipayanroy@linux.microsoft.com
+Cc: ernis@linux.microsoft.com,
+	decui@microsoft.com,
+	shradhagupta@linux.microsoft.com,
+	andrew+netdev@lunn.ch,
+	kys@microsoft.com,
+	kuba@kernel.org,
+	longli@microsoft.com,
+	kotaranov@microsoft.com,
+	shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org,
+	edumazet@google.com,
+	wei.liu@kernel.org,
+	horms@kernel.org,
+	davem@davemloft.net,
+	linux-rdma@vger.kernel.org,
+	ssengar@linux.microsoft.com,
+	pabeni@redhat.com,
+	leon@kernel.org,
+	haiyangz@microsoft.com,
+	linux-kernel@vger.kernel.org,
+	dipayanroy@microsoft.com,
+	netdev@vger.kernel.org
+Subject: Re: [net-next,v2] net: mana: Force full-page RX buffers for 4K page size on specific systems.
+Date: Tue, 10 Mar 2026 13:21:27 +0100
+Message-ID: <20260310122127.200675-1-pabeni@redhat.com>
+In-Reply-To: <aarXjJ+n2EoX2JvB@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <aarXjJ+n2EoX2JvB@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260310120053.136594-1-jiayuan.chen@linux.dev>
-In-Reply-To: <20260310120053.136594-1-jiayuan.chen@linux.dev>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 10 Mar 2026 13:13:36 +0100
-X-Gm-Features: AaiRm50qCXqay-aJR-sI5Vzv5JmvJjTgCTUtA-sXdrVxWvAsiISg39w7gsRzpcw
-Message-ID: <CANn89iK-Kj7Gthff+Q8vSUDTYs9t6YZepm5uAv_2ZZJ4AkyxOw@mail.gmail.com>
-Subject: Re: [PATCH net v3] net/smc: fix NULL dereference and UAF in smc_tcp_syn_recv_sock()
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: netdev@vger.kernel.org, Jiayuan Chen <jiayuan.chen@shopee.com>, 
-	syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com, 
-	"D. Wythe" <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>, 
-	Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	Mahanta Jambigi <mjambigi@linux.ibm.com>, Tony Lu <tonylu@linux.alibaba.com>, 
-	Wen Gu <guwen@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 3D1232506DC
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-Rspamd-Queue-Id: 30BCC24FE63
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17867-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17868-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[edumazet@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,827ae2bfb3a3529333e9];
+	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,shopee.com:email]
+	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.dev:url]
 X-Rspamd-Action: no action
 
-On Tue, Mar 10, 2026 at 1:01=E2=80=AFPM Jiayuan Chen <jiayuan.chen@linux.de=
-v> wrote:
->
-> From: Jiayuan Chen <jiayuan.chen@shopee.com>
->
-> Syzkaller reported a panic in smc_tcp_syn_recv_sock() [1].
->
-> smc_tcp_syn_recv_sock() is called in the TCP receive path
-> (softirq) via icsk_af_ops->syn_recv_sock on the clcsock (TCP
-> listening socket). It reads sk_user_data to get the smc_sock
-> pointer. However, when the SMC listen socket is being closed
-> concurrently, smc_close_active() sets clcsock->sk_user_data
-> to NULL under sk_callback_lock, and then the smc_sock itself
-> can be freed via sock_put() in smc_release().
->
-> This leads to two issues:
->
-> 1) NULL pointer dereference: sk_user_data is NULL when
->    accessed.
-> 2) Use-after-free: sk_user_data is read as non-NULL, but the
->    smc_sock is freed before its fields (e.g., queued_smc_hs,
->    ori_af_ops) are accessed.
->
-> The race window looks like this:
->
->   CPU A (softirq)              CPU B (process ctx)
->
->   tcp_v4_rcv()
->     TCP_NEW_SYN_RECV:
->     sk =3D req->rsk_listener
->     sock_hold(sk)
->     /* No lock on listener */
->                                smc_close_active():
->                                  write_lock_bh(cb_lock)
->                                  sk_user_data =3D NULL
->                                  write_unlock_bh(cb_lock)
->                                  ...
->                                  smc_clcsock_release()
->                                  sock_put(smc->sk) x2
->                                    -> smc_sock freed!
->     tcp_check_req()
->       smc_tcp_syn_recv_sock():
->         smc =3D user_data(sk)
->           -> NULL or dangling
->         smc->queued_smc_hs
->           -> crash!
->
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+---
+net: mana: Force full-page RX buffers for 4K page size on specific systems.
 
+This commit adds processor-specific optimization for ARM64 systems with
+4K pages where page_pool fragments cause throughput regression. It
+detects affected processors via SMBIOS and forces one RX buffer per page.
 
-> diff --git a/net/smc/smc.h b/net/smc/smc.h
-> index 9e6af72784ba..8b3eabcdb542 100644
-> --- a/net/smc/smc.h
-> +++ b/net/smc/smc.h
-> @@ -342,8 +342,7 @@ static inline void smc_init_saved_callbacks(struct sm=
-c_sock *smc)
->
->  static inline struct smc_sock *smc_clcsock_user_data(const struct sock *=
-clcsk)
->  {
-> -       return (struct smc_sock *)
-> -              ((uintptr_t)clcsk->sk_user_data & ~SK_USER_DATA_NOCOPY);
-> +       return (struct smc_sock *)rcu_dereference_sk_user_data(clcsk);
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index aef8612b73cb..05fecc00a90c 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+
+[ ... ]
+
+> @@ -1959,6 +1960,128 @@ static bool mana_is_pf(unsigned short dev_id)
+>  	return dev_id == MANA_PF_DEVICE_ID;
 >  }
+>
+> +/*
+> + * Table for Processor Version strings found from SMBIOS Type 4 information,
+> + * for processors that needs to force single RX buffer per page quirk for
+> + * meeting line rate performance with ARM64 + 4K pages.
+> + * Note: These strings are exactly matched with version fetched from SMBIOS.
+> + */
+> +static const char * const mana_single_rxbuf_per_page_quirk_tbl[] = {
+> +	"Cobalt 200",
+> +};
+> +
+> +/* On some systems with 4K PAGE_SIZE, page_pool RX fragments can
+> + * trigger a throughput regression. Hence identify those processors
+> + * from the extracted SMBIOS table and apply the quirk to forces one
+> + * RX buffer per page to avoid the fragment allocation/refcounting
+> + * overhead in the RX refill path for those processors only.
+> + */
+> +static bool mana_needs_single_rxbuf_per_page(struct gdma_context *gc)
+> +{
+> +	int i = 0;
+> +	const char *ver = gc->processor_version;
+> +
+> +	if (!ver)
+> +		return false;
+> +
+> +	if (PAGE_SIZE != SZ_4K)
+> +		return false;
+> +
+> +	while (i < ARRAY_SIZE(mana_single_rxbuf_per_page_quirk_tbl)) {
+> +		if (!strcmp(ver, mana_single_rxbuf_per_page_quirk_tbl[i]))
+> +			return true;
+> +		i++;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static void mana_get_proc_ver_strno(const struct dmi_header *hdr, void *data)
+> +{
+> +	struct gdma_context *gc = data;
+> +	const u8 *d = (const u8 *)hdr;
+> +
+> +	/* We are only looking for Type 4: Processor Information */
+> +	if (hdr->type != SMBIOS_TYPE_4_PROCESSOR_INFO)
+> +		return;
+> +
+> +	/* Ensure the record is long enough to contain the Processor Version
+> +	 * field
+> +	 */
+> +	if (hdr->length <= SMBIOS_TYPE4_PROC_VERSION_OFFSET)
+> +		return;
+> +
+> +	/* The 'Processor Version' string is located at index pointed by
+> +	 * SMBIOS_TYPE4_PROC_VERSION_OFFSET.  Make a copy of the index.
+> +	 * There could be multiple Type 4 tables so read and store the
+> +	 * processor version index found the first time.
+> +	 */
+> +	if (gc->proc_ver_strno)
+> +		return;
+> +
+> +	gc->proc_ver_strno = d[SMBIOS_TYPE4_PROC_VERSION_OFFSET];
+> +}
+> +
+> +static const char *mana_dmi_string_nosave(const struct dmi_header *hdr, u8 s)
+> +{
+> +	const char *bp = (const char *)hdr + hdr->length;
+> +
+> +	if (!s)
+> +		return NULL;
+> +
+> +	/* String numbers start at 1 */
+> +	while (--s > 0 && *bp)
+> +		bp += strlen(bp) + 1;
+> +
+> +	if (!*bp)
+> +		return NULL;
+> +
+> +	return bp;
+> +}
+> +
+> +static void mana_fetch_proc_ver_string(const struct dmi_header *hdr,
+> +				       void *data)
+> +{
+> +	struct gdma_context *gc = data;
+> +	const char *ver;
+> +
+> +	/* We are only looking for Type 4: Processor Information */
+> +	if (hdr->type != SMBIOS_TYPE_4_PROCESSOR_INFO)
+> +		return;
+> +
+> +	/* Extract proc version found the first time only */
+> +	if (!gc->proc_ver_strno || gc->processor_version)
+> +		return;
+> +
+> +	ver = mana_dmi_string_nosave(hdr, gc->proc_ver_strno);
+> +	if (ver)
+> +		gc->processor_version = kstrdup(ver, GFP_KERNEL);
+> +}
+> +
+> +/* Check and initialize all processor optimizations/quirks here */
+> +static bool mana_init_processor_optimization(struct gdma_context *gc)
+> +{
+> +	bool opt_initialized = false;
+> +
+> +	gc->proc_ver_strno = 0;
+> +	gc->processor_version = NULL;
+> +
+> +	dmi_walk(mana_get_proc_ver_strno, gc);
+> +	if (!gc->proc_ver_strno)
+> +		return false;
+> +
+> +	dmi_walk(mana_fetch_proc_ver_string, gc);
+> +	if (!gc->processor_version)
+> +		return false;
+> +
+> +	if (mana_needs_single_rxbuf_per_page(gc)) {
+> +		gc->force_full_page_rx_buffer = true;
+> +		opt_initialized = true;
+> +	}
+> +
+> +	return opt_initialized;
+> +}
+> +
+>  static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  {
+>  	struct gdma_context *gc;
 
-Are you sure all smc_clcsock_user_data() callers  hold rcu_read_lock() ?
-In order to avoid surprises, I would have added a new helper.
+[ ... ]
 
- static inline struct smc_sock *smc_clcsock_user_data_rcu(const struct
-sock *clcsk)
-...
+> @@ -2013,6 +2136,11 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  		gc->mana_pci_debugfs = debugfs_create_dir(pci_slot_name(pdev->slot),
+>  							  mana_debugfs_root);
+>
+> +	if (mana_init_processor_optimization(gc))
+> +		dev_info(&pdev->dev,
+> +			 "Processor specific optimization initialized on: %s\n",
+> +			gc->processor_version);
+> +
+>  	err = mana_gd_setup(pdev);
+>  	if (err)
+>  		goto unmap_bar;
 
-to allow gradual conversion ?
+[ ... ]
 
-Thanks !
+> @@ -2055,6 +2183,8 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	pci_iounmap(pdev, bar0_va);
+>  free_gc:
+>  	pci_set_drvdata(pdev, NULL);
+> +	kfree(gc->processor_version);
+> +	gc->processor_version = NULL;
+>  	vfree(gc);
+>  release_region:
+>  	pci_release_regions(pdev);
+
+[ ... ]
+
+> @@ -2110,6 +2240,9 @@ static void mana_gd_remove(struct pci_dev *pdev)
+>
+>  	pci_iounmap(pdev, gc->bar0_va);
+>
+> +	kfree(gc->processor_version);
+> +	gc->processor_version = NULL;
+> +
+>  	vfree(gc);
+>
+>  	pci_release_regions(pdev);
+
+[ ... ]
+
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index ea71de39f996..f17cc2cc7dd9 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+
+[ ... ]
+
+> @@ -744,6 +744,26 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
+>  	return va;
+>  }
+>
+> +static bool
+> +mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
+> +{
+> +	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
+> +
+> +	/* On some systems with 4K PAGE_SIZE, page_pool RX fragments can
+> +	 * trigger a throughput regression. Hence forces one RX buffer per page
+> +	 * to avoid the fragment allocation/refcounting overhead in the RX
+> +	 * refill path for those processors only.
+> +	 */
+> +	if (gc->force_full_page_rx_buffer)
+> +		return true;
+> +
+> +	/* For xdp and jumbo frames make sure only one packet fits per page. */
+> +	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
+>  static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
+>  			       int mtu, u32 *datasize, u32 *alloc_size,
+
+[ ... ]
+
+> @@ -754,8 +774,7 @@ static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
+>  	/* Calculate datasize first (consistent across all cases) */
+>  	*datasize = mtu + ETH_HLEN;
+>
+> -	/* For xdp and jumbo frames make sure only one packet fits per page */
+> -	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
+> +	if (mana_use_single_rxbuf_per_page(apc, mtu)) {
+>  		if (mana_xdp_get(apc)) {
+>  			*headroom = XDP_PACKET_HEADROOM;
+>  			*alloc_size = PAGE_SIZE;
+
+[ ... ]
+
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+> index ec17004b10c0..be56b347f3f6 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+
+[ ... ]
+
+> @@ -9,6 +9,12 @@
+>
+>  #include "shm_channel.h"
+>
+> +/* SMBIOS Type 4: Processor Information table */
+> +#define SMBIOS_TYPE_4_PROCESSOR_INFO 4
+> +
+> +/* Byte offset containing the Processor Version string number.*/
+> +#define SMBIOS_TYPE4_PROC_VERSION_OFFSET 0x10
+> +
+>  #define GDMA_STATUS_MORE_ENTRIES	0x00000105
+>  #define GDMA_STATUS_CMD_UNSUPPORTED	0xffffffff
+>
+
+[ ... ]
+
+> @@ -444,6 +450,9 @@ struct gdma_context {
+>  	struct workqueue_struct *service_wq;
+>
+>  	unsigned long		flags;
+> +	u8			*processor_version;
+> +	u8			proc_ver_strno;
+> +	bool			force_full_page_rx_buffer;
+>  };
+>
+>  static inline bool mana_gd_is_mana(struct gdma_dev *gd)
+
+Should processor_version be declared as char * instead of u8 *?
+
+The field is used as a string throughout the code: it's assigned from
+kstrdup() in mana_fetch_proc_ver_string(), read as const char *ver
+in mana_needs_single_rxbuf_per_page(), passed to strcmp(), and printed
+with %s format in dev_info().
+
+Using u8 * for string data can trigger compiler warnings with
+-Wpointer-sign, since string functions expect char * types.
+
 
