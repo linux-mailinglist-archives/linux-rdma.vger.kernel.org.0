@@ -1,218 +1,231 @@
-Return-Path: <linux-rdma+bounces-17847-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17848-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sDKnB3jKr2nWcAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17847-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 08:38:32 +0100
+	id iDOJC03hr2nkdAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17848-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:15:57 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A850E24679F
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 08:38:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 819972481DB
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 10:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3C1343018C1C
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 07:36:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CFD1230927C9
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 09:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9CF333424;
-	Tue, 10 Mar 2026 07:36:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E0343CEEF;
+	Tue, 10 Mar 2026 09:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Nw7qZEeQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s6+Cn7gA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B188D1DE2AD;
-	Tue, 10 Mar 2026 07:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A513C3BF9;
+	Tue, 10 Mar 2026 09:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773128165; cv=none; b=XT7CzeTxPPFHlMjtshuFFL84r/oireSCv/Fr766MQHllDOiAV4d2Oibr26bpp87SayPTfZqYQznk4oGM8pnc4E0uP0l/X1lXqPySCbx+ibPyrjuiBwryEGJMGPR96kDj0paJ99+LI9GfCyOZk6s2Fu0b4kZH2n00ftji05oaU5w=
+	t=1773133658; cv=none; b=WCaQR4fK3w4x/sCfUqgzgr7XowXe47F4iVTXx3q/Pvid2gJ5iI+Z3AZ0JkPK6ic84eQYygHvhYeREaUZ/QeHuaEeDW+W8pgriXnDxjsiMO54wdOIgvDdnc/EiTmC5wDhvjcqxmcZtC6c9I149mRddl7LjJSBoaDvFpj5je8cjIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773128165; c=relaxed/simple;
-	bh=PH3u2rmfzhLTFh22kBB3Mlpw1x36bETSokYAf6ZhKLo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FW7xDmBMq0PW1YKdoT2QYs0/01nc0E4nSiSi40/WaZX+8uN8HXe3kE8KUd4CQxcGeBMXEO/tfoxh26HOsj0CbB5TzmVYmlFQFAP8A+sEo73TcKlPvwhSRJH7tJCBU0SrmcyhJGotpTIJNsvHTooMV8/Jkyi+dlECW0nWTWoUvfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Nw7qZEeQ; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0431383.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62A6XLUZ919223;
-	Tue, 10 Mar 2026 00:35:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pfpt0220; bh=9
-	9crNDXfz7p3hgckLSlhc90lGkgNrzZBqFlMHkE2mEk=; b=Nw7qZEeQyPSFRD8eU
-	0dVEUMINY1HlEm0ormOpppBLakqQ96A2edlQwl6Lzpu9SgypBA2tMGUUBuax4HYn
-	VX4vogW3XQI2pNQDpwWTB3wU2Meu2YBW8MKedOmweRrpLhJquhT6qQNgbII3b/g7
-	l82FgYiLGfjHhi9KKT2z2WdwVPMxsptRUphqHhsETShyvuKHcBy3NkTw0H2VZUI/
-	KqWA8XV5oV4jxUQHTHAh50avn+mJpuCh/DNqxvBTtmyOJybkS4l4kVUyEk/D9flu
-	Hsp9rNWXrVSy+b6fpNQ7V6d0oFjCkPBXfXcIo7xaMpzqA7c0389q20kTNDJyLJVr
-	cPABw==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 4cte4t84vx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Mar 2026 00:35:27 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Tue, 10 Mar 2026 00:35:26 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.25 via Frontend
- Transport; Tue, 10 Mar 2026 00:35:26 -0700
-Received: from naveenm-PowerEdge-T630 (unknown [10.29.37.44])
-	by maili.marvell.com (Postfix) with ESMTP id 5212B3F7052;
-	Tue, 10 Mar 2026 00:35:20 -0700 (PDT)
-Date: Tue, 10 Mar 2026 13:05:19 +0530
-From: Naveen Mamindlapalli <naveenm@marvell.com>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-CC: <netdev@vger.kernel.org>, Donald Hunter <donald.hunter@gmail.com>,
-        "Jakub
- Kicinski" <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric
- Dumazet" <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-        Simon Horman
-	<horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan
-	<tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-        Andrew Lunn
-	<andrew+netdev@lunn.ch>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Michael Chan <michael.chan@broadcom.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Danielle Ratson <danieller@nvidia.com>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, Russell King <linux@armlinux.org.uk>
-Subject: Re: [RFC net-next v2 0/6] ethtool: Generic loopback support
-Message-ID: <aa/Jt36h3EuhpPKf@naveenm-PowerEdge-T630>
-References: <20260308124016.3134012-1-bjorn@kernel.org>
- <aa7P7UUUG1p5RVwO@naveenm-PowerEdge-T630>
- <87tsupnjbc.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1773133658; c=relaxed/simple;
+	bh=tKgVoXuW1Tq5xZXw+M+691E3NQ1lD8UVb3M83asaN/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XJI50fPev3WNd/NL28a6/Zm0uEVYWfyOkjeixkG0ZN+S61gQYwGtjgCaVapnYfvtefUDL72MvlK/kSrd7rieejddzm4HGAFteUSn5vBKRoGL3VTDVDyl+GC2KBLVL/jJGpWCx1CtQgF8V2/qgqQqDn8rPh022rUvEyEpxPDhh5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s6+Cn7gA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 527AEC2BC86;
+	Tue, 10 Mar 2026 09:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773133658;
+	bh=tKgVoXuW1Tq5xZXw+M+691E3NQ1lD8UVb3M83asaN/M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s6+Cn7gAC1nLXcR+T8W1h7NIEsW0+HUnlmMtZQD7jVQpXq2ww89DPdrqDGWbXBk7Z
+	 e7IDxqpjjN+OCgYe4yf+P6cMjIxjzwuMgpIKKdMmDqmv2DuVpFBkPwz+fZu/5D/JBX
+	 Rs4aGP9H9Ck2XcSJ9qG987/DuCdlUV4kfA80BRzAvb7+W1pGPaXdLKpWJc7s31qB/e
+	 kWj8sKLcmIGBjVnCYRiz7ybsJyI4YlZukfWZ17C/xRwPP07MWEIeOlng50y95cKa/O
+	 wrEqHiKBbDgUO4tRAV0DwsBB4hh3Vwv1lGpfaY2d7v8AN23GC7fdQ+mjv9CXa1ZCep
+	 Dr37CrJ+T8yog==
+Date: Tue, 10 Mar 2026 11:07:33 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	Edward Srouji <edwards@nvidia.com>
+Subject: Re: [PATCH 0/3] Firmware LSM hook
+Message-ID: <20260310090733.GA12611@unreal>
+References: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
+ <CAHC9VhTR9CsBgxRCAHXm5T2NZ5tr+XfmA--zkt=udmk9hPRuZQ@mail.gmail.com>
+ <20260309193743.GZ12611@unreal>
+ <CAHC9VhSRt_QEJKJFBDBySNQCiPpcawd5A76xmoRNtppRKGaCog@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87tsupnjbc.fsf@all.your.base.are.belong.to.us>
-X-Authority-Analysis: v=2.4 cv=YpMChoYX c=1 sm=1 tr=0 ts=69afc9bf cx=c_pps
- a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17
- a=8nJEP1OIZ-IA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=l0iWHRpgs5sLHlkKQ1IR:22 a=qit2iCtTFQkLgVSMPQTB:22 a=VwQbUJbxAAAA:8
- a=M5GUcnROAAAA:8 a=heUGGuA_X2RTU5F4dl4A:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
- a=OBjm3rFKGHvpk9ecZwUJ:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzEwMDA2MiBTYWx0ZWRfX08fhuGpsejoF
- 7cCReHajQeoOykPeAveUcCRUhtoTVavSgB5KVXB8NauM6cpR7axKPBjPlNKqMMSFkLQ3cGL/P14
- BiiP+9wxD9Lw2VGVJpintHTliQjkKawItWoYvUmDbaacw7OmW8TMXKrtBoV5TKYTHcwpu94OxkE
- gMvHDSZK4M7S032zUM5G6xVEEBIluipUFKshrwhFW/M46rhpJvmUdvDIV8eyzg8DHB/zvji6hZ8
- sEpPhqWfLumhSGs1Yi6M0LMAtbDaRun2xtUrztNluw8jIZ3DqVqZ28VxI63SHwaLhLMNCd3tnDm
- lO3wF2ZSOzn7UDocF5Cf6Yo06mYnLl2RgiNNkLrszJTKae3l113vQApmbrqLsxFRZIPiuMTO2Mc
- GJIe0yHGYkcn3kZ14YseIWAgd5LyYMypmMhBFKYldRSTu02xw6xgR713JLEaUem+N7VVSLC3BmS
- 4XdThN5qMqJp85wKeSg==
-X-Proofpoint-ORIG-GUID: Mok49Wu56o817oFaKiIx02vG7wwEg_jH
-X-Proofpoint-GUID: Mok49Wu56o817oFaKiIx02vG7wwEg_jH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-10_01,2026-03-09_02,2025-10-01_01
-X-Rspamd-Queue-Id: A850E24679F
+In-Reply-To: <CAHC9VhSRt_QEJKJFBDBySNQCiPpcawd5A76xmoRNtppRKGaCog@mail.gmail.com>
+X-Rspamd-Queue-Id: 819972481DB
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[marvell.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[marvell.com:s=pfpt0220];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17847-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,kernel.org,davemloft.net,google.com,redhat.com,nvidia.com,lunn.ch,bootlin.com,broadcom.com,marvell.com,armlinux.org.uk];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[naveenm@marvell.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[marvell.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TAGGED_FROM(0.00)[bounces-17848-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On 2026-03-09 at 20:25:51, Björn Töpel (bjorn@kernel.org) wrote:
-> Naveen!
+On Mon, Mar 09, 2026 at 07:10:25PM -0400, Paul Moore wrote:
+> On Mon, Mar 9, 2026 at 3:37â€¯PM Leon Romanovsky <leon@kernel.org> wrote:
+> > On Mon, Mar 09, 2026 at 02:32:39PM -0400, Paul Moore wrote:
+> > > On Mon, Mar 9, 2026 at 7:15â€¯AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > From Chiara:
+> > > >
+> > > > This patch set introduces a new LSM hook to validate firmware commands
+> > > > triggered by userspace before they are submitted to the device. The hook
+> > > > runs after the command buffer is constructed, right before it is sent
+> > > > to firmware.
+> > > >
+> > > > The goal is to allow a security module to allow or deny a given command
+> > > > before it is submitted to firmware. BPF LSM can attach to this hook
+> > > > to implement such policies. This allows fine-grained policies for different
+> > > > firmware commands.
+> > > >
+> > > > In this series, the new hook is called from RDMA uverbs and from the fwctl
+> > > > subsystem. Both the uverbs and fwctl interfaces use ioctl, so an obvious
+> > > > candidate would seem to be the file_ioctl hook. However, the userspace
+> > > > attributes used to build the firmware command buffer are copied from
+> > > > userspace (copy_from_user()) deep in the driver, depending on various
+> > > > conditions. As a result, file_ioctl does not have the information required
+> > > > to make a policy decision.
+> > > >
+> > > > This newly introduced hook provides the command buffer together with relevant
+> > > > metadata (device, command class, and a class-specific device identifier), so
+> > > > security modules can distinguish between different command classes and devices.
+> > > >
+> > > > The hook can be used by other drivers that submit firmware commands via a command
+> > > > buffer.
+> > >
+> > > Hi Leon,
+> > >
+> > > At the link below, you'll find guidance on submitting new LSM hooks.
+> > > Please take a look and let me know if you have any questions.
+> > >
+> > > https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm-hooks
+> >
+> > I assume that you are referring to this part:
 > 
-> Naveen Mamindlapalli <naveenm@marvell.com> writes:
+> I'm referring to all of the guidance, but yes, at the very least that
+> is something that I think we need to see in a future revision of this
+> patchset.
 > 
-> >> Open questions
-> >> ==============
-> >> 
-> >>  - Is this the right extensibility model? I'd appreciate input from
-> >>    other NIC vendors on whether component/name/direction is flexible
-> >>    enough for their loopback implementations. Also, from the PHY/port
-> >>    folks (Maxime, Russell)!
+> >  * New LSM hooks must demonstrate their usefulness by providing a meaningful
+> >    implementation for at least one in-kernel LSM. The goal is to demonstrate
+> >    the purpose and expected semantics of the hooks. Out of tree kernel code,
+> >    and pass through implementations, such as the BPF LSM, are not eligible
+> >    for LSM hook reference implementations.
 > >
-> > Hi Bjorn,
-> >
-> > The component/name/direction model in v2 fits our hardware well.
-> >
-> > I am working on loopback support for Marvell OcteonTX2.
-> > The MAC (RPM block) supports a PCS-level loopback. In addition,
-> > the on-chip SerDes (GSERM) is managed by embedded firmware and
-> > supports three more loopback modes:
-> >   NED (Near-End Digital) -- digital domain, before the analog front-end
-> >   NEA (Near-End Analog) -- through the full analog front-end
-> >   FED (Far-End Digital) -- line-side traffic looped back
-> >
-> > Since the GSERM is not a phylib phy_device, both the MAC PCS
-> > loopback and the SerDes loopbacks fall under the MAC component
-> > in your model.
-> >
-> > Mapped to the v2 model:
-> >   component  name         supported    description
-> >   MAC        mac          near-end     PCS-level loopback
-> >   MAC        serdes-ned   near-end     digital only
-> >   MAC        serdes-nea   near-end     analog
-> >   MAC        serdes-fed   far-end      line-side
-> >
-> > The SerDes NED and NEA both have the same (component, direction).
-> > Both are (MAC, near-end) -- but exercise fundamentally different
-> > hardware paths. The name field distinguishes them as per your model,
+> > The point is that we are not inspecting a kernel call, but the FW mailbox,
+> > which has very little meaning to the kernel. From the kernel's perspective,
+> > all relevant checks have already been performed, but the existing capability
+> > granularity does not allow us to distinguish between FW_CMD1 and FW_CMD2.
 > 
-> Ok! ...and MAC+serdes makes sense from your PoV? Or do we need a new
-> component "SERDES" (as Maxime points out in another reply)?
-> 
+> It might help if you could phrase this differently, as I'm not
+> entirely clear on your argument.  LSMs are not limited to enforcing
+> access controls on requests the kernel understands (see the SELinux
+> userspace object manager concept), and the idea of access controls
+> with greater granularity than capabilities is one of the main reasons
+> people look to LSMs for access control (SELinux, AppArmor, Smack,
+> etc.).
 
-In my earlier comment I mapped the SerDes loopbacks under the MAC
-component to fit the current model, but a separate SERDES component
-as Maxime suggests would be a better fit for our hardware.
+I should note that my understanding of LSM is limited, so some parts of my
+answers may be inaccurate.
 
-On OcteonTX2 SoC, MAC (PCS) and SerDes are separate hardware blocks.
-Each block has its own loopback controls.
+What I am referring to is a different level of granularity â€” specifically,
+the internals of the firmware commands. In the proposed approach, BPF
+programs would make decisions based on data passed through the mailbox.
+That mailbox format varies across vendors, and may even differ between
+firmware versions from the same vendor.
 
-With a SERDES component, the mapping becomes cleaner:
-  component  name         supported
-  MAC        mac          near-end
-  SERDES     serdes-ned   near-end
-  SERDES     serdes-nea   near-end
-  SERDES     serdes-fed   far-end
-
-Thanks,
-Naveen
-
-> > I can work on MAC + SerDes loopback driver support for CN10K and
-> > post patches on top of your series once MAC component dispatch is
-> > in place.
 > 
-> Got it! Thanks!
+> > Here we propose a generic interface that can be applied to all FWCTL
+> > devices without out-of-tree kernel code at all.
 > 
+> I expected to see a patch implementing some meaningful support for
+> access controls using these hooks in one of the existing LSMs, I did
+> not see that in this patchset.
+
+In some cases, the mailbox is forwarded from user space unchanged, but
+in others the kernel modifies it before submitting it to the FW.
+
+For example, at line 1140 we update the UID field, which indicates the
+process to which the request belongs. This field is managed by the
+kernel to ensure that user processes cannot access FW internals of other
+processes.
+
+1108 static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OTHER)( 
+1109         struct uverbs_attr_bundle *attrs)            
+1110 {                                                   
+1111         struct mlx5_ib_ucontext *c;                
+1112         struct mlx5_ib_dev *dev;                  
+1113         void *cmd_in = uverbs_attr_get_alloced_ptr( 
+1114                 attrs, MLX5_IB_ATTR_DEVX_OTHER_CMD_IN);
+
+<...>
+
+1121         int uid; 
+
+<...>
+
+1128         uid = devx_get_uid(c, cmd_in); 
+1129         if (uid < 0)
+1130                 return uid;                                                                                                                                                                              
+
+<...>
+
+1140         MLX5_SET(general_obj_in_cmd_hdr, cmd_in, uid, uid); 
+1141         err = security_fw_validate_cmd(cmd_in, cmd_in_len, &dev->ib_dev.dev, 
+1142                                        FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
+1143         if (err)
+1144                 return err; 
+1145                            
+1146         err = mlx5_cmd_do(dev->mdev, cmd_in, cmd_in_len, cmd_out, cmd_out_len);      
+
+Could you point me to the LSM that would be best suited for performing  
+checks of this kind?
+
+Thanks
+
 > 
+> --
+> paul-moore.com
 
