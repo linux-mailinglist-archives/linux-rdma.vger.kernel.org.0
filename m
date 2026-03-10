@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-17917-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17918-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MGoVI5eSsGkukgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17917-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:52:23 +0100
+	id aPAqCZSTsGkukgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17918-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:56:36 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E16BB258854
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:52:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78A062588C6
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 22:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4D3043140A1A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 21:49:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DD56A310C95C
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 21:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FFE3F1667;
-	Tue, 10 Mar 2026 21:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6973F1675;
+	Tue, 10 Mar 2026 21:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxjUxOUx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9XDLVkP"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981D736B05F;
-	Tue, 10 Mar 2026 21:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE543EE1EA;
+	Tue, 10 Mar 2026 21:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773179364; cv=none; b=lv7tDyUcye5ibIcngfEUFDs1Vth+1oW0NvIWTKQs88yzQ+mtQMYzTA344NbG+tFJWHK/aMWAp1HB/ZE3H1kbcyupH/8seSm0dfXp8VX+CajZDZ/eGp5WZmex5fd1BLmbK5c8Mu5a8m8gYG0EEMpACTQCB9p+CEPskSUROxgob4I=
+	t=1773179560; cv=none; b=ojgy+P5zbGeMsRW7dHaaG63VdWt49ih6xJTcZeLgC7R/U3q4cVF1eqSWXa9h5Q8dbJIgbUGgKvt1xIu4CPot6LKLXBW5IkEnWrKJZceUuLzf5GoGUsIk3qopPQcmqhikFNgO/AKDSBmjRqf2u3g8tuIiBqHXJSLmcHZCjF9ZMdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773179364; c=relaxed/simple;
-	bh=tK246CyPuH0GYnc+TNDlT4bGAapUUzHs7LgTfOYeSt8=;
+	s=arc-20240116; t=1773179560; c=relaxed/simple;
+	bh=9DspE8ZzxPIkgad3kbhVNSegbVmg7d6ttJzOySzgDE4=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=MdN7dnJ4hkBnoLLdx6o8HPyVbycWonOEiyfh29Kg196xn3UB7majDiPVAGs+saG9AQsZTStslxUftOLJzId6j4hQxdxU9VirGt8ySyUpOP/8ZHRQvfC5wqZhZIpnVbkVG9YQu2TPEYFn/AHFhTqrKYeAaIorVSf8j4yrb2rbiNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxjUxOUx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AFFC19423;
-	Tue, 10 Mar 2026 21:49:24 +0000 (UTC)
+	 Content-Disposition:In-Reply-To; b=B458eZM6DLYMIhVcYvJ3iTpJHSdkP2a1aW19MwptkymzZ55B/luE9wSCoo0YsKer2Rn7aub+2M+ukTSU8dfHwUFwQOn/X4o5wkp+YSiAgDhCep5RjcNY3r9bR/aRpqfWqd4eDzI7CDe24V0kBZ+PHoebQw0+tYUhoblZ2JH95nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9XDLVkP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C5BC2BCAF;
+	Tue, 10 Mar 2026 21:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773179364;
-	bh=tK246CyPuH0GYnc+TNDlT4bGAapUUzHs7LgTfOYeSt8=;
+	s=k20201202; t=1773179560;
+	bh=9DspE8ZzxPIkgad3kbhVNSegbVmg7d6ttJzOySzgDE4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=kxjUxOUxKrRqdiDSk20kQWKBnZYRy16tDIaHdw8eqUAl2lOrdsCXk1/P62HJIKF5B
-	 0iFk4U2+mO0J58DylcVlZf7h2odysxJwQmmwgM35t75Ctvsg2fGlq/USQjx7lwAekr
-	 w/VIwwiwBdHHhboWZJ5LaYBbGDyDoTaOcn2NxQrmsnx2ArUQ0+Dd8PDJg+5Rw1OHJT
-	 L+g5I8ebcwEhE54OilH7o9RALvvWqwlcA4XB8sEAAl6Oac03CoNuK/de4baDdJ9wvN
-	 lSa4kYM/g56dQS/ntGO7Ud87d2hNlLtBCql1IEcuhoVHSm6mh4popzvpg6U6EWiCzZ
-	 uX0E6EvOF9Tyw==
-Date: Tue, 10 Mar 2026 16:49:23 -0500
+	b=V9XDLVkPIUguhDuLOIiUIpyMSxaGPliXRd7O6lqvaXBBvEXDJAKzrSK6ZeN/F1Xfh
+	 jUA8CdDYMJjHcHrse0iQOy7CsVP5oqh1gKttZym7Wk6Onv3Ncjth8aMn072v+4820p
+	 JKejxWFMoZQqjf88JQ0li2hVFTd+DM1a3rq34A1UjO2tDsqlw9JTVfizZAx8/rtcvY
+	 /abfz1lpZSCUDNmBxqi74Xk88jjcSfHCeT71YpX9s6YQW1oPiEFKLHojqNVzUfWTPP
+	 PFrtaONJFG1J9ZAyPMHvLg3W/QCkoN4xHt+XbVT6HcRyS6HZSJUvfdC6TETrMiH74y
+	 aFgnA4khDntVQ==
+Date: Tue, 10 Mar 2026 16:52:39 -0500
 From: Bjorn Helgaas <helgaas@kernel.org>
 To: Gerd Bayer <gbayer@linux.ibm.com>
 Cc: Bjorn Helgaas <bhelgaas@google.com>,
@@ -54,10 +54,10 @@ Cc: Bjorn Helgaas <bhelgaas@google.com>,
 	Niklas Schnelle <schnelle@linux.ibm.com>,
 	Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
 	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] PCI: AtomicOps: Define valid root port
- capabilities
-Message-ID: <20260310214923.GA823330@bhelgaas>
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] PCI: AtomicOps: Fix logic in enable function
+Message-ID: <20260310215239.GA299126@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -66,23 +66,23 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260306-fix_pciatops-v3-1-99d12bcafb19@linux.ibm.com>
-X-Rspamd-Queue-Id: E16BB258854
+In-Reply-To: <20260306-fix_pciatops-v3-2-99d12bcafb19@linux.ibm.com>
+X-Rspamd-Queue-Id: 78A062588C6
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17917-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-17918-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -92,87 +92,132 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[helgaas@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, Mar 06, 2026 at 06:13:58PM +0100, Gerd Bayer wrote:
-> Provide the two combinations of Atomic Op Completion size attributes
-> that a root port may support per PCIe Spec 7.0 section 6.15.3.1. -
-> besides the trivial "No support" - as two new defines.
+On Fri, Mar 06, 2026 at 06:13:59PM +0100, Gerd Bayer wrote:
+> Move the check for root port requirements past the loop within
+> pci_enable_atomic_ops_to_root() that checks on potential switch
+> (up- and downstream) ports.
 > 
-> Change documentation of pci_enable_atomic_ops_to_root() that these are
-> the only ones that should be used. Also, spell out that all requested
-> capabilities need to be supported at the root port for enable to
-> succeed. Also emphasize that on success, this sets AtomicOpsCtl:ReqEn to
-> 1, and leaves it untouched in case of failure.
+> Inside the loop traversing the PCI tree upwards, prepend the switch case
+> to validate the routing capability on any port with a fallthrough-case
+> that does the additional check for Atomic Ops not being blocked on
+> upstream ports.
+
+Thanks for looking at this.  I think this makes good sense, and I'd
+like to:
+
+  - Hoist the problem description up here.  IIUC we enable AtomicOps on
+    s390 when we shouldn't, which presumably leads to some problem.  I
+    think the same could happen anywhere we don't have a Root Port,
+    e.g., jailhouse, loongarch, maybe some VMM guests?
+
+  - Reduce or remove the text above, which is basically C code
+    translated to English, and move it down after the problem
+    description, so we can state the problem and symptom, followed by
+    the solution.
+
+I think the core is (as you say below) that if there's no Root Port,
+we previously allowed endpoints to use AtomicOps even in cases where
+we don't know if the recipient supports them.
+
+That *sounds* bad, and if you actually saw some kind of corruption as
+a result, that would make this very compelling.
+
+> Do not enable Atomic Op Requests if nothing can be learned about how the
+> device is attached - e.g. if it is on an "isolated" bus, as in s390.
 > 
-> Suggested-by: Leon Romanovsky <leon@kernel.org>
+> Reported-by: Alexander Schmidt <alexs@linux.ibm.com>
+
+If there's any public report of the problem, include the URL here.
+
+> Cc: stable@vger.kernel.org
+> Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
 > Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
 > ---
->  drivers/pci/pci.c             | 13 +++++++------
->  include/uapi/linux/pci_regs.h |  8 ++++++++
->  2 files changed, 15 insertions(+), 6 deletions(-)
+>  drivers/pci/pci.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
 > 
 > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 8479c2e1f74f1044416281aba11bf071ea89488a..cc8abe6b1d07661488895876dbbcf8aaeadf4a17 100644
+> index cc8abe6b1d07661488895876dbbcf8aaeadf4a17..23db6ad5f310ed009a9b2ca4933c7498e0d22b85 100644
 > --- a/drivers/pci/pci.c
 > +++ b/drivers/pci/pci.c
-> @@ -3663,15 +3663,16 @@ void pci_acs_init(struct pci_dev *dev)
->  /**
->   * pci_enable_atomic_ops_to_root - enable AtomicOp requests to root port
->   * @dev: the PCI device
-> - * @cap_mask: mask of desired AtomicOp sizes, including one or more of:
-> - *	PCI_EXP_DEVCAP2_ATOMIC_COMP32
-> - *	PCI_EXP_DEVCAP2_ATOMIC_COMP64
-> - *	PCI_EXP_DEVCAP2_ATOMIC_COMP128
-> + * @cap_mask: root port must support combinations of AtomicOp sizes
-> + *	PCI_EXP_ROOT_PORT_ATOMIC_BASE
-> + *	PCI_EXP_ROOT_PORT_ATOMIC_FULL
->   *
->   * Return 0 if all upstream bridges support AtomicOp routing, egress
->   * blocking is disabled on all upstream ports, and the root port supports
-> - * the requested completion capabilities (32-bit, 64-bit and/or 128-bit
-> - * AtomicOp completion), or negative otherwise.
-> + * all the requested completion capabilities (BASE: 32-bit, 64-bit or
-> + * FULL: 32/64- and 128-bit AtomicOp completion). In that case enable the
-> + * device to send AtomicOp requests. Otherwise, return negative and leave
-> + * the enablement in the PCI config space untouched.
->   */
+> @@ -3677,7 +3677,7 @@ void pci_acs_init(struct pci_dev *dev)
 >  int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
 >  {
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index 14f634ab9350d5442192162225b5e5202dbe2308..63ac62b882a94c6873a0db433ba808332ddbea04 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -669,6 +669,14 @@
->  #define  PCI_EXP_DEVCAP2_ATOMIC_COMP32	0x00000080 /* 32b AtomicOp completion */
->  #define  PCI_EXP_DEVCAP2_ATOMIC_COMP64	0x00000100 /* 64b AtomicOp completion */
->  #define  PCI_EXP_DEVCAP2_ATOMIC_COMP128	0x00000200 /* 128b AtomicOp completion */
-> +/* PCIe spec 7.0 6.15.3.1: Root ports may support one of 2 sets of Atomic Ops */
-> +#define  PCI_EXP_ROOT_PORT_ATOMIC_BASE		\
-> +	(PCI_EXP_DEVCAP2_ATOMIC_COMP32 |	\
-> +	 PCI_EXP_DEVCAP2_ATOMIC_COMP64)
-> +#define  PCI_EXP_ROOT_PORT_ATOMIC_FULL		\
-> +	(PCI_EXP_DEVCAP2_ATOMIC_COMP32 |	\
-> +	 PCI_EXP_DEVCAP2_ATOMIC_COMP64 |	\
-> +	 PCI_EXP_DEVCAP2_ATOMIC_COMP128)
+>  	struct pci_bus *bus = dev->bus;
+> -	struct pci_dev *bridge;
+> +	struct pci_dev *bridge = NULL;
+>  	u32 cap, ctl2;
+>  
+>  	/*
+> @@ -3715,29 +3715,27 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
 
-I'm sort of ambivalent about this patch, partly because it adds
-these #defines that aren't used anywhere.  Also, the "BASE" and "FULL"
-names don't contain as much information as mentioning COMP32, COMP64,
-and COMP128 does.
+Since we're looking at this, I think we should update the spec
+references in this function (in a separate patch).  
 
-If we *do* want this, I think these combo definitions are beyond the
-scope of uapi/linux/pci_regs.h, which generally is just
-transliteration of register bits from the spec.  They could possibly
-go in linux/pci.h where pci_enable_atomic_ops_to_root() is declared.
+  * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
+  * in Device Control 2 is reserved in VFs and the PF value applies
+  * to all associated VFs.
 
->  #define  PCI_EXP_DEVCAP2_LTR		0x00000800 /* Latency tolerance reporting */
->  #define  PCI_EXP_DEVCAP2_TPH_COMP_MASK	0x00003000 /* TPH completer support */
->  #define  PCI_EXP_DEVCAP2_OBFF_MASK	0x000c0000 /* OBFF support mechanism */
+It looks like the AtomicOp Requester Enable part of PCIe r5.0, sec
+9.3.5.10, was incorporated into the Device Control 2 Register
+description in PCIe r7.0, sec 7.5.3.16.
+
+  * Per PCIe r4.0, sec 6.15, endpoints and root ports may be
+  * AtomicOp requesters.  For now, we only support endpoints as
+  * requesters and root ports as completers.  No endpoints as
+  * completers, and no peer-to-peer.
+
+This looks like PCIe r7.0, sec 6.15.  Same section as r4.0, but we
+should at least make both of these refer to the same spec revision.
+
+>  		switch (pci_pcie_type(bridge)) {
+>  		/* Ensure switch ports support AtomicOp routing */
+>  		case PCI_EXP_TYPE_UPSTREAM:
+> -		case PCI_EXP_TYPE_DOWNSTREAM:
+> -			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
+> -				return -EINVAL;
+> -			break;
+> -
+> -		/* Ensure root port supports all the sizes we care about */
+> -		case PCI_EXP_TYPE_ROOT_PORT:
+> -			if ((cap & cap_mask) != cap_mask)
+> -				return -EINVAL;
+> -			break;
+> -		}
+> -
+> -		/* Ensure upstream ports don't block AtomicOps on egress */
+> -		if (pci_pcie_type(bridge) == PCI_EXP_TYPE_UPSTREAM) {
+> +			/* Upstream ports must not block AtomicOps on egress */
+>  			pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2,
+>  						   &ctl2);
+>  			if (ctl2 & PCI_EXP_DEVCTL2_ATOMIC_EGRESS_BLOCK)
+>  				return -EINVAL;
+> +			fallthrough;
+> +		/* All switch ports need to route AtomicOps */
+> +		case PCI_EXP_TYPE_DOWNSTREAM:
+> +			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
+> +				return -EINVAL;
+> +			break;
+>  		}
+> -
+>  		bus = bus->parent;
+>  	}
+>  
+> +	/* Finally, last bridge must be root port and support requested sizes */
+> +	if ((!bridge) ||
+> +	    (pci_pcie_type(bridge) != PCI_EXP_TYPE_ROOT_PORT) ||
+> +	    ((cap & cap_mask) != cap_mask))
+> +		return -EINVAL;
+> +
+>  	pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+>  				 PCI_EXP_DEVCTL2_ATOMIC_REQ);
+>  	return 0;
 > 
 > -- 
 > 2.51.0
