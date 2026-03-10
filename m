@@ -1,183 +1,134 @@
-Return-Path: <linux-rdma+bounces-17870-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17871-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mEcWN+UjsGnYgQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17870-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 15:00:05 +0100
+	id kA+zKnofsGmCgAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17871-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 14:41:14 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 523E2251293
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 15:00:05 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21DAF2509D5
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 14:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D82D32F61A5
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 13:06:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2A72B3336B62
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 13:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9DE3DC4AF;
-	Tue, 10 Mar 2026 12:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611693E3C4B;
+	Tue, 10 Mar 2026 12:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mE96N4l2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q+z2LrtC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F58F3DC4A1
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 12:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2022D33B6C4;
+	Tue, 10 Mar 2026 12:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773146322; cv=none; b=uRGG11emUTmi0iKN3Eib4pYAf5lRcfijkHFHPnJQk/yhFcl2K/UtoYy/8Kzz3yckd2GuihkS4cjmwPonP6vqKJS+czpDGadGkLqhDenktrlodMOkVWJwnhsn5BNWojoJcgzmZQnx8TN5SKA4GUXkePoGojbuTNWtApVGUTyCI0g=
+	t=1773147010; cv=none; b=NKcaOwyxPxmTmXoZV2iDrK0F3Hh3Nd3GqA6f0WNaM2HIRMFIjDwQaxFiB+1122UsZyn337qdItFv0iF/2n9MWOngxUgbyg3lu77F5X1afr+DG8Gb4wULGvnNGU+iYmv/AVvkj/jzQR8vNnZT62XK8szJOqVwJVDZ0L2pKxFWIWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773146322; c=relaxed/simple;
-	bh=CTpIvISwHm/A71DqOvdlv0hatiRYcvynfbWDp7A7wDw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CwnOSS3UKb32BsNFhUwhTJm6sV8eBPdgA5Pclg3daTM39LvBdZHzx2mvebdM+zoaKUnKiUBQ4tPtFgdB6+2/+OBkaiVL3thq1anaFiDbYNLguN0bt5HNbo+17ZiY3eRdinfHqKnClLEWBQHP3ZTYWtV0j1ZZa/25zFw57Q9KfUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mE96N4l2; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <270e708d-cb52-413c-860e-16945ae98012@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773146309;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jDizjKfKLjRprs2izCP8nlt9BhCmmNO1wOtyhYNrASw=;
-	b=mE96N4l2+SLN8WLkJ+TFSdj/gGYT0r4bavqiVkrIaKOFpw6fh3BqVgYNCOGLaHLdA46nhW
-	zO9fO0g0ZztDJp9QtBKNmLzJhvSKECRVukAcO5jqRWZHGsaPkeVUMqo1wpMn5sQamnSdW9
-	JX/MXfIuVvfYRSyvTOkguCBW+rgyetE=
-Date: Tue, 10 Mar 2026 20:38:10 +0800
+	s=arc-20240116; t=1773147010; c=relaxed/simple;
+	bh=6nzgzuyEmJtzi+mALa1difNFw8fG3ZBIhax6V+8GNA0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=UFNBl+SveD/WJkj/jP2+AcdxvOWb9AqWTX1Fw1EC725Y6ghzLBkiZ/4P0LUg18w2UfFYK55pbJcvdzd003uyUxPShW8TX+rWft0ibsNVbJs67lInzyQTXAeT7ZS72jm0IiDvxOc2sEbmWM96PRYaK4DCP5B9x6A8DhKXDzd3ncQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q+z2LrtC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C0B7C2BC86;
+	Tue, 10 Mar 2026 12:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773147009;
+	bh=6nzgzuyEmJtzi+mALa1difNFw8fG3ZBIhax6V+8GNA0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=q+z2LrtCIKX6h+2UUUrqLGw/6kFwrSiSw1GjdaYnmlSYBB1FzpCaVmmyF5c4zkkIO
+	 dNbrXmLxNDq4mnBhgLTw/h74C2AhJAkoZIkhzvXGXLTOFUv2LdVZ2IkePdEsXp1iJj
+	 2zN0Qc6hYTXPL7xpQCQa+HUYRJlX4NM6rMXpe6bYudfa8Y2R+HskpfIVb+guMpz3bz
+	 MrYYathTaU8s7Z8SinzTzGGyUbVvOGFGmJgAbbJWbPJrHLelwvBbDJ1BSJWgBYhnY0
+	 q2MShAXBMT6RalJJzg1honmpj22CSJ2/4eanBH1TOPp/isZnSBKdxxSE7+g29qzqc2
+	 vcN5Wfu6a+87Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7D0683808200;
+	Tue, 10 Mar 2026 12:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net v3] net/smc: fix NULL dereference and UAF in
- smc_tcp_syn_recv_sock()
-To: Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, Jiayuan Chen <jiayuan.chen@shopee.com>,
- syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com,
- "D. Wythe" <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>,
- Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260310120053.136594-1-jiayuan.chen@linux.dev>
- <CANn89iK-Kj7Gthff+Q8vSUDTYs9t6YZepm5uAv_2ZZJ4AkyxOw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-In-Reply-To: <CANn89iK-Kj7Gthff+Q8vSUDTYs9t6YZepm5uAv_2ZZJ4AkyxOw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 523E2251293
+Subject: Re: [PATCH net-next] net: mana: hardening: Validate doorbell ID from
+ GDMA_REGISTER_DEVICE response
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177314700605.2274408.12987784829211108904.git-patchwork-notify@kernel.org>
+Date: Tue, 10 Mar 2026 12:50:06 +0000
+References: <20260306211212.543376-1-ernis@linux.microsoft.com>
+In-Reply-To: <20260306211212.543376-1-ernis@linux.microsoft.com>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
+ dipayanroy@linux.microsoft.com, yury.norov@gmail.com, kees@kernel.org,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+X-Rspamd-Queue-Id: 21DAF2509D5
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17870-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17871-lists,linux-rdma=lfdr.de,netdevbpf];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NO_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,827ae2bfb3a3529333e9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[shopee.com:email,linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+Hello:
 
-On 3/10/26 8:13 PM, Eric Dumazet wrote:
-> On Tue, Mar 10, 2026 at 1:01 PM Jiayuan Chen <jiayuan.chen@linux.dev> wrote:
->> From: Jiayuan Chen <jiayuan.chen@shopee.com>
->>
->> Syzkaller reported a panic in smc_tcp_syn_recv_sock() [1].
->>
->> smc_tcp_syn_recv_sock() is called in the TCP receive path
->> (softirq) via icsk_af_ops->syn_recv_sock on the clcsock (TCP
->> listening socket). It reads sk_user_data to get the smc_sock
->> pointer. However, when the SMC listen socket is being closed
->> concurrently, smc_close_active() sets clcsock->sk_user_data
->> to NULL under sk_callback_lock, and then the smc_sock itself
->> can be freed via sock_put() in smc_release().
->>
->> This leads to two issues:
->>
->> 1) NULL pointer dereference: sk_user_data is NULL when
->>     accessed.
->> 2) Use-after-free: sk_user_data is read as non-NULL, but the
->>     smc_sock is freed before its fields (e.g., queued_smc_hs,
->>     ori_af_ops) are accessed.
->>
->> The race window looks like this:
->>
->>    CPU A (softirq)              CPU B (process ctx)
->>
->>    tcp_v4_rcv()
->>      TCP_NEW_SYN_RECV:
->>      sk = req->rsk_listener
->>      sock_hold(sk)
->>      /* No lock on listener */
->>                                 smc_close_active():
->>                                   write_lock_bh(cb_lock)
->>                                   sk_user_data = NULL
->>                                   write_unlock_bh(cb_lock)
->>                                   ...
->>                                   smc_clcsock_release()
->>                                   sock_put(smc->sk) x2
->>                                     -> smc_sock freed!
->>      tcp_check_req()
->>        smc_tcp_syn_recv_sock():
->>          smc = user_data(sk)
->>            -> NULL or dangling
->>          smc->queued_smc_hs
->>            -> crash!
->>
->
->
->> diff --git a/net/smc/smc.h b/net/smc/smc.h
->> index 9e6af72784ba..8b3eabcdb542 100644
->> --- a/net/smc/smc.h
->> +++ b/net/smc/smc.h
->> @@ -342,8 +342,7 @@ static inline void smc_init_saved_callbacks(struct smc_sock *smc)
->>
->>   static inline struct smc_sock *smc_clcsock_user_data(const struct sock *clcsk)
->>   {
->> -       return (struct smc_sock *)
->> -              ((uintptr_t)clcsk->sk_user_data & ~SK_USER_DATA_NOCOPY);
->> +       return (struct smc_sock *)rcu_dereference_sk_user_data(clcsk);
->>   }
-> Are you sure all smc_clcsock_user_data() callers  hold rcu_read_lock() ?
-> In order to avoid surprises, I would have added a new helper.
->
->   static inline struct smc_sock *smc_clcsock_user_data_rcu(const struct
-> sock *clcsk)
-> ...
->
-> to allow gradual conversion ?
->
-> Thanks !
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Sorry I missed that.
+On Fri,  6 Mar 2026 13:12:06 -0800 you wrote:
+> As a part of MANA hardening for CVM, add validation for the doorbell
+> ID (db_id) received from hardware in the GDMA_REGISTER_DEVICE response
+> to prevent out-of-bounds memory access when calculating the doorbell
+> page address.
+> 
+> In mana_gd_ring_doorbell(), the doorbell page address is calculated as:
+>   addr = db_page_base + db_page_size * db_index
+>        = (bar0_va + db_page_off) + db_page_size * db_index
+> 
+> [...]
 
-pw-bot: cr
+Here is the summary with links:
+  - [net-next] net: mana: hardening: Validate doorbell ID from GDMA_REGISTER_DEVICE response
+    https://git.kernel.org/netdev/net-next/c/89fe91c65992
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
