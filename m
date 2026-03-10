@@ -1,193 +1,167 @@
-Return-Path: <linux-rdma+bounces-17905-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17906-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ICiPBd1xsGlujQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17905-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 20:32:45 +0100
+	id wHZQLYh2sGnJjQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17906-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 20:52:40 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D06E2570B1
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 20:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B8325733C
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 20:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5339530179F7
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:31:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 32F88305C6F8
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2026 19:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64C72877FC;
-	Tue, 10 Mar 2026 19:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ku2Bis8J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2893935A392;
+	Tue, 10 Mar 2026 19:52:17 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from melduny.fyrkat.no (melduny.fyrkat.no [217.144.76.212])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7997E2798EA
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2026 19:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157633542CF;
+	Tue, 10 Mar 2026 19:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.144.76.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773171115; cv=none; b=Kik7sqt+f6rOk5zz9+rkwPZEXV1VaOwh2rwth4Ue481rwZGYEszZRPG4Rg4EcpJLbPSxfUU+K1cPvNuqQX/we0EJINiYoEmCBuLW+KQyARbkCVvklVg47LNydNDC2FWA7bh28sXtGaIggz25MzHDdkC4LAdPNxjNyWhWQShbgUo=
+	t=1773172337; cv=none; b=Ws8oXW8+FNpP06ngNgolfrMgeCrltogN5WBgdEfTxgRZjUcKhhxPgvIzJ+OFf3GYlG5LLVELld8ZD876phJSN9T92/8Mvb27nneON+owb4ylb7TVF/JuD+Ch1krkZCSmMs351VA28QmC5JEfadJo40z3zjxXWwkiWTY/MaVtJkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773171115; c=relaxed/simple;
-	bh=CAaa4GBkX4b/9ONs6PfBUyLiy4Ag8RID7X+VSnVykMg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=He66qMR5BQIuqjAzcSZDc2P77ViohdSSMAXfO00TVWnfu+QazNL3Kbr/kd3LpVHR8uuq7qqcPz9UoeaSkYHnXWonhwqE4+yPwTmB5t8KGo+VV1Z4pY4L0LW9mweH8BHtQnbBElM9DFKF0r8PaUTcpvSuiYG6tLSTvu297A7rd5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ku2Bis8J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A94D0C19423;
-	Tue, 10 Mar 2026 19:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773171115;
-	bh=CAaa4GBkX4b/9ONs6PfBUyLiy4Ag8RID7X+VSnVykMg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ku2Bis8JCRVUN2lTlqtYupGEx1FSh46vCbNjJ97PH6A8faM4JNDW7P2YrPODWDkh7
-	 YgJGo/npU12LIWJDt5skuBM56vWo7nUcXfn4ohSJIZH/bFnEO/XQLHgOP7OBcBXeOH
-	 QqfCjWKYHraMBgTv78WvwsQpH6LQpaaNvpZVhc5vBAsxlH5G6IckgZIicpCWA+Disz
-	 pIAxSPBRaBLPxSbeY2NtkdpKEjCHokr7ut5tE2uF47OIVj3CezsJ92+U8icVuLMtYJ
-	 DdrVT520l6YEIP8qLz5M2p6YE8cttkJgDRd629wrZhFjwo9S/mWr0wew8+q6ANIMxx
-	 vxkj8mmeAD2VQ==
-Date: Tue, 10 Mar 2026 21:31:51 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Chuck Lever <cel@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@nvidia.com>,
-	Christoph Hellwig <hch@lst.de>, linux-rdma@vger.kernel.org,
-	Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH] RDMA/rw: Fix MR pool exhaustion in bvec RDMA READ path
-Message-ID: <20260310193151.GN12611@unreal>
-References: <20260310034621.5799-1-cel@kernel.org>
- <abAftjplHdwdwrkd@infradead.org>
- <d0fefc47-b60f-47ba-8f2f-7eb05b1bb86d@kernel.org>
- <20260310183756.GH12611@unreal>
- <2ae88f79-36a1-4b43-bf40-da86425046a5@kernel.org>
+	s=arc-20240116; t=1773172337; c=relaxed/simple;
+	bh=ZC/kikINZ4TAvirVIFkqBizjiOt39ErEkuGXZ1Z0W+Y=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=spsv9j9FnU7JyeT9JkMuLJ5vAVexowszWi1mv5wnm4d1Wf9jIYq0HStyT8DGEoIvlPu4X8jJVdBqNDn8ka0pQoctIlLl68/VYiVM8B0meHe600Js4BcrLOas6s3x+PS7Hjez6hblBX1zrFMIV1FoyyPsYqA7ZrPZqU57Jyx4c8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kolla.no; spf=pass smtp.mailfrom=kolla.no; arc=none smtp.client-ip=217.144.76.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kolla.no
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kolla.no
+Received: by melduny.fyrkat.no (Postfix) with ESMTPSA id 51FE78D0F;
+	Tue, 10 Mar 2026 19:40:41 +0000 (UTC)
+Date: Tue, 10 Mar 2026 20:40:36 +0100 (CET)
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+cc: Fernando Fernandez Mancera <fmancera@suse.de>, netdev@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
+    Selvin Xavier <selvin.xavier@broadcom.com>, 
+    Andrew Lunn <andrew+netdev@lunn.ch>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Ido Schimmel <idosch@nvidia.com>, 
+    Petr Machata <petrm@nvidia.com>, Simon Horman <horms@kernel.org>, 
+    Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>, 
+    "maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <GR-QLogic-Storage-Upstream@marvell.com>, 
+    "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+    "Martin K. Petersen" <martin.petersen@oracle.com>, 
+    Nilesh Javali <njavali@marvell.com>, 
+    Manish Rangankar <mrangankar@marvell.com>, 
+    Varun Prakash <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>, 
+    David Teigland <teigland@redhat.com>, 
+    Andreas Gruenbacher <agruenba@redhat.com>, 
+    Nikolay Aleksandrov <razor@blackwall.org>, 
+    David Ahern <dsahern@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, 
+    Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, 
+    David Howells <dhowells@redhat.com>, 
+    Marc Dionne <marc.dionne@auristor.com>, 
+    Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
+    Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>, 
+    Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+    Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>, 
+    Arnd Bergmann <arnd@arndb.de>, 
+    Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
+    Eric Biggers <ebiggers@kernel.org>, Michal Simek <michal.simek@amd.com>, 
+    Luca Weiss <luca.weiss@fairphone.com>, Sven Peter <sven@kernel.org>, 
+    Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+    Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>, 
+    Herbert Xu <herbert@gondor.apana.org.au>, 
+    Ryota Sakamoto <sakamo.ryota@gmail.com>, 
+    Kuniyuki Iwashima <kuniyu@google.com>, Kir Chou <note351@hotmail.com>, 
+    Kuan-Wei Chiu <visitorckw@gmail.com>, 
+    Vikas Gupta <vikas.gupta@broadcom.com>, 
+    Bhargava Marreddy <bhargava.marreddy@broadcom.com>, 
+    Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>, 
+    =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>, 
+    "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, 
+    "open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>, 
+    "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>, 
+    "open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <linux-scsi@vger.kernel.org>, 
+    "open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>, 
+    "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>, 
+    "open list:NETFILTER" <netfilter-devel@vger.kernel.org>, 
+    "open list:NETFILTER" <coreteam@netfilter.org>, 
+    "open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>, 
+    "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>, 
+    "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+Subject: Re: [PATCH 01/10 net-next] ipv6: convert CONFIG_IPV6 to built-in
+ only and clean up Kconfigs
+In-Reply-To: <01a4936f-77cd-4c60-a1be-cabec872a2bb@kernel.org>
+Message-ID: <e54d887c-5a70-b8c9-aeef-433c5134dd14@kolla.no>
+References: <20260309022013.5199-1-fmancera@suse.de> <20260309022013.5199-2-fmancera@suse.de> <01a4936f-77cd-4c60-a1be-cabec872a2bb@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ae88f79-36a1-4b43-bf40-da86425046a5@kernel.org>
-X-Rspamd-Queue-Id: 6D06E2570B1
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 21B8325733C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [2.04 / 15.00];
+	DMARC_POLICY_REJECT(2.00)[kolla.no : SPF not aligned (relaxed), No valid DKIM,reject];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17905-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.de,vger.kernel.org,linux-m68k.org,ziepe.ca,kernel.org,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,gondor.apana.org.au,hotmail.com,blochl.de,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
+	TAGGED_FROM(0.00)[bounces-17906-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[linux-m68k@kolla.no,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[69];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.803];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.de:email,kolla.no:mid]
 X-Rspamd-Action: no action
 
-On Tue, Mar 10, 2026 at 02:49:46PM -0400, Chuck Lever wrote:
-> On 3/10/26 2:37 PM, Leon Romanovsky wrote:
-> > On Tue, Mar 10, 2026 at 10:36:43AM -0400, Chuck Lever wrote:
-> >> On 3/10/26 9:42 AM, Christoph Hellwig wrote:
-> >>> On Mon, Mar 09, 2026 at 11:46:21PM -0400, Chuck Lever wrote:
-> >>>> Under NFS WRITE workloads the server performs RDMA READs to
-> >>>> pull data from the client. With the inflated MR demand, the
-> >>>> pool is rapidly exhausted, ib_mr_pool_get() returns NULL, and
-> >>>> rdma_rw_init_one_mr() returns -EAGAIN. svcrdma treats this as
-> >>>> a DMA mapping failure, closes the connection, and the client
-> >>>> reconnects -- producing a cycle of 71% RPC retransmissions and
-> >>>> ~100 reconnections per test run. RDMA WRITEs (NFS READ
-> >>>> direction) are unaffected because DMA_TO_DEVICE never triggers
-> >>>> the max_sgl_rd check.
-> >>>
-> >>> So this changelog extensively describes the problem, but it doesn't
-> >>> actually say how you fix it.
-> >>
-> >> I didn't want to waste everyone's time, but I can add that.
-> >>
-> >>
-> >>>> +	 *
-> >>>> +	 * TODO: A bulk DMA mapping API for bvecs analogous to
-> >>>> +	 * dma_map_sgtable() would provide a proper post-DMA-
-> >>>> +	 * coalescing segment count here, enabling the map_wrs
-> >>>> +	 * path in more cases.
-> >>>
-> >>> This isn't really something the DMA layer can easily do without getting
-> >>> as inefficient as the sgtable based path.  What the block layer does
-> >>> here is to simply keep a higher level count of merged segments.  The
-> >>> other option would be to not create multiple bvecs for continguous
-> >>> regions, which is what modern file system do in general, and why the
-> >>> above block layer nr_phys_segments based optimization isn't actually
-> >>> used all that much these days.
-> >>
-> >> Technically, NFSD isn't a file system, it's a protocol adapter.
-> >>
-> >>
-> >>> Why can't NFS send a single bvec for contiguous ranges?
-> >>
-> >> Have a look at svc_rdma_build_read_segment(). The RDMA READ path builds
-> >> bvecs from rqstp->rq_pages[], which is an array of individual struct
-> >> page pointers. Each bvec entry covers at most one page.
-> >>
-> >> This is because I/O payloads arrive in an xdr_buf, which represents its
-> >> page data as a struct page ** array (xdr->pages), and svc_rqst::rq_pages
-> >> is likewise a flat array of single-page pointers. These pages are
-> >> allocated individually (typically from the page allocator via
-> >> alloc_pages()), so there's no guarantee of physical contiguity. Even if
-> >> adjacent pages happen to be contiguous, the code has no way to know that
-> >> without inspecting PFNs (which is exactly what the DMA mapping layer
-> >> does).
-> >>
-> >> So currently svcrdma can't send a single bvec for contiguous ranges
-> >> because the contiguity information doesn't exist at the NFSD or RPC
-> >> layer. Contiguity is (re)discovered only at DMA map time.
-> >>
-> >> The alternative is to build an SGL for mapping the bvec so that rw.c can
-> >> get the real contiguity of the pages before proceeding. But that seems
-> >> icky.
-> >>
-> >> Long term, I expect that NFSD will need to preserve the folios it gets
-> >> from file systems and pass those to the RPC transports without
-> >> translating them to an array of page pointers.
+On Mon, 9 Mar 2026, Krzysztof Kozlowski wrote:
+
+> On 09/03/2026 03:19, Fernando Fernandez Mancera wrote:
+> > Configuring IPV6 as a module provides little or no benefit and requires
+> > time and resources to maintain. Therefore, drop the support for it.
 > > 
-> > Folio sounds like a correct approach to me, why do you mark it as "long term"?
+> > Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
+> > dependencies across the tree that explicitly checked for IPV6=m. Adjust
+> > all the default configurations from CONFIG_IPV6=m to CONFIG_IPV6=y. In
+> > addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
+> > and MODULE_LICENSE().
+> > 
+> > This is also replacing module_init() by fs_initcall().
+> > 
+> > Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+> > ---
+-->8--
+> No, I don't want IPV6. It is allowed as module if some users need, but
+> it's heavy bloat added to each person's build testing setup. Kernel
+> image is already huge and barely fits boot partitions when built with
+> KASAN and I do want a generic image with KASAN.
 > 
-> All four NFS maintainers are aware of this need, and I /think/ we are
-> all on board with the "folio/bvec" approach. But there are a number of
-> reasons this is not just a "go write the code" kind of problem:
-> 
-> - xdr_buf is used by both the NFS client and NFS server stacks, and they
-> are separately maintained.
-> 
-> - xdr_buf is used from nearly the top to the bottom of these stacks, so
-> making this kind of change will be painstaking.
-> 
-> - The XDR layer is full of helper APIs that deal with xdr_buf page
-> arrays that would need attention.
-> 
-> - I need to understand whether addressing the DMA map problem has
-> benefits for more broadly-deployed RPC transports such as TCP.
-> 
-> 
-> I'll have to think if we can just add something clever to the xdr_buf
-> that only NFSD can use and then have that act as the conduit from file
-> system to RPC transport. That could act as a prototype.
+> It must stay module for me. Alternatively, drop it, but then some users
+> will be really affected.
 
-Thanks for the summary. It explains.
+I agree. If anything I would prefer to see IPv4 be made optional (and
+modular) as well, and not as something IPv6 depends on, it's (AFAIK)
+impossible today to build an IPv6-only Linux kernel. 
 
-> 
-> 
-> -- 
-> Chuck Lever
+-- kolla
 
