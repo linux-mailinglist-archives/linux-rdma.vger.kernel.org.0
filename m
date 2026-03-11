@@ -1,211 +1,227 @@
-Return-Path: <linux-rdma+bounces-17948-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17950-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cJsBERsnsWkBrgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17948-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:26:03 +0100
+	id 8JXdChQpsWkBrgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17950-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:34:28 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864B425F2EB
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:26:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8233F25F67C
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F0E443047611
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:23:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B555B328AACA
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4DD372EF5;
-	Wed, 11 Mar 2026 08:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cTf0RnmN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92ED03B6350;
+	Wed, 11 Mar 2026 08:29:39 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800523563FB;
-	Wed, 11 Mar 2026 08:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923AD3B6341
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 08:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773217268; cv=none; b=QlzqWGzyNiN5sysB+E24MPa5Gl3Wl2pcD9Mfsnma/TRbgwxe5H0e/eg5MW8nrBhzlu5nSo9FfP61wXodD5h+1pRC5j4QCCpvvREEk00eAsTG3YGAAXojLI9Ha3UWb8SjCoaiDpWhefxNb8+l0XQoMGhDC9vb6R7ZnTbi3PNYULE=
+	t=1773217778; cv=none; b=JWBC6VkJeFaVcMXWX/NlynilLYfFFWUOb/ArJfHdSXxfGDMaqUxCVGEU+RbVKkGkk339tSWwxw/lZ0HWSq0Ezo/ZL0Q3yNKwHMeJYU6V5+1xsKrFXR7NWTYbcdS5UcXwJQybUWEZ6qaJcVyar8pgP0e0VGA0yRdHRuQBkOWud3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773217268; c=relaxed/simple;
-	bh=yoy2hHq0mlIZwc0kYZnvrnYvl8EpuwxGFzXVdSAUfiw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KKs+GW6YYIlcnCHOkN9ph5Hx5+pODwYbeeVIHbNVh0468N1vWInXZaEDSTpZNMK3IbymxQqJeN3yzDBUINjCnNmVV6FcmvqEpSLP69a/IlzFlPq75mGKVMqxzTgj1aOg+I9dPDqxne9HY9I50GD17WFD3Acr0djsnkGUyOSf7Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cTf0RnmN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA254C4CEF7;
-	Wed, 11 Mar 2026 08:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773217268;
-	bh=yoy2hHq0mlIZwc0kYZnvrnYvl8EpuwxGFzXVdSAUfiw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cTf0RnmNDiJr/UaiIX68oNKNUMmk3eM19LeszXExEX5Januo2/40zQJ3oD4JOmvzx
-	 Q2n49GaHe97cnoonNB/JqiqpsNtHzHtLAbRLdZ6sYh863gpXifwvSx7D1dp/3sEvyZ
-	 Cz19hxeRzhZi2oJc0Wnk73bnhQ7wwkYnI2D4U6uKEPrCI8z4dlK812Jb3PAW7M303a
-	 WltTUBSwdhPNJlyqR7bREVbYU/2K/pT8iN+GLG9OQeR/gH5ZpF6uteOR+s/mrsI5qK
-	 e+MW9EWzf5J2dJKuPFzc/B0cyPzhCcoIHrW0iFi+aZAA5GHI2ocqzHfiCCK5nJI5En
-	 3rzrG7ue05B/Q==
-Message-ID: <9cd2794a-63c6-4645-b42b-10412899865f@kernel.org>
-Date: Wed, 11 Mar 2026 09:20:53 +0100
+	s=arc-20240116; t=1773217778; c=relaxed/simple;
+	bh=62QCpDXQ19DuCkEVmsTIfiPIA4bbzZLKZDd0zU0n8k8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LtmCGTcUjg9HpSSbjaauRwqXb2r2MfTNTkHFb3Z7vPk1lEoKoeVw8oVpjQ4gRI2YYwNHjChlrvQY9+hj8Tjpc232uYcRW2fwAFwVolVn73PyCS3PiY7FZShD3QPMV4JtDuJ/7C8prqzgOBw+5wWWMM+A/tiG9MvelZnOOHm1GNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8cd78a4ce8dso529277485a.3
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 01:29:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773217773; x=1773822573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OPUxC4UVYYzFR5WbkDP1rfKgT9C5RxhWe2cP85gtoTg=;
+        b=ITltKSDkiqvGqkDE7sN49+ExEsvJhAB6rD0WMLA4fy6hj6O6AVkAgAJ9eQUyBw0Ej3
+         ToNoEBJuInYB/Zd+latNUyXTy+z/Vn+oHfo2ADpwXv9dll6hktNvA3pvbxjCJPTX4az3
+         n9WmrSuQWCHwvcuinTn3PdC/1vQt/b5T9/W+p+38i0Xk+8EkHsWYQZSxtMxLXMGTUH6w
+         UTR7Wol+IO7qUhYr5B7ug2gNq5BSSPWiN/1Giw+mpOiBoDYdXCoizCcEioElKcXIy74p
+         2E+NUXGsYTFu+BAWaYK2+yjNzpkXr/68RTUUH+aiE2GkswRZyauCnfxbfw40o+cxlNO4
+         jTiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWoh7kIxPf5OgOGyK5qnDBsF/cZ8hbbpLNRT2ODiu5nhaCpOkr+EqTOipamX+FrS0+u2yq2iFK64wVc@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoPWVGzeq0QWvpgqypL8Uw+vDCQGBrndIi5QpIb4ccBXfi0CZa
+	r9JSLmqRa38ray69+9JJ6rUaiUrFcY1qRFetHY8J/ISqQA4NDO6ijT37/ulK8C7H
+X-Gm-Gg: ATEYQzyYSl0swxU2NarSipM2ncI2xCfascEbnPTq/1D0E22+r0M7sFmgsIHCIEP6Ec3
+	GDl2HmhdIKGptg0hpgQC+dTA9X0LuOrM3n516n6QXuy5RBMKi2V1yzAHQhngQ4WltUnwLDbRc56
+	MxrWFH/p3V8/WOHtTGhzT+ZnwWxr+lZuKX4dCLTYGt2tBPhyv4qmXisAYX0Q73Fx3XK6reSqlhq
+	sjbQqCwpgjQ/kYY3l3HoUEGYMHqYKObkyMUD8bu945MpEWiFGlQrsYNbq0U3FTo956Ds4W354TG
+	XHFLMuFw+JpMlbQO7UzNFEAnHHNiN/70reJlUdtFPiVjYAJNeOJQTyqbwZOwVzEV9gKLwVlUeOZ
+	aW0WTDzjCl5qYHsSdCe08YzM73jGNh4iRHxbZiTXCj9Z75DFghRKVaiUAneXSHOPSFjfluKoL20
+	SmfCif2EKFbQZIwBEoWya0DMjXcf22viXuO8SMmWxJUEhu090a8e2HKHevVO5Y
+X-Received: by 2002:a05:620a:3187:b0:8c5:3869:3f2e with SMTP id af79cd13be357-8cda1a31ademr209264485a.42.1773217773427;
+        Wed, 11 Mar 2026 01:29:33 -0700 (PDT)
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com. [209.85.219.52])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cda21100b8sm94601685a.29.2026.03.11.01.29.33
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Mar 2026 01:29:33 -0700 (PDT)
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-899ed41208fso192581176d6.1
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 01:29:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXAZzYPQEPY54Ahsn+O1GkP/yELJNHfUm+NmPJqOZVcUwen1Wus+byS5x27tAqgBXdeoL3dZPxkq+eg@vger.kernel.org
+X-Received: by 2002:a05:6102:290c:b0:5ff:d192:ff22 with SMTP id
+ ada2fe7eead31-601deec1db1mr739173137.19.1773217280031; Wed, 11 Mar 2026
+ 01:21:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 15/16] mm: rename zap_vma_ptes() to
- zap_special_vma_range()
-To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "linux-mm @ kvack . org"
- <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>,
- David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan
- <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>,
- Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>,
- H Hartley Sweeten <hsweeten@visionengravers.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
- <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>,
- Dimitri Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Eric Dumazet <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org,
- kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
-References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-16-david@kernel.org>
- <c77c1bed-f04e-4f21-87d9-6c5da3f0ad69@lucifer.local>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <c77c1bed-f04e-4f21-87d9-6c5da3f0ad69@lucifer.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 864B425F2EB
+References: <20260309022013.5199-1-fmancera@suse.de> <20260309022013.5199-2-fmancera@suse.de>
+ <01a4936f-77cd-4c60-a1be-cabec872a2bb@kernel.org> <e54d887c-5a70-b8c9-aeef-433c5134dd14@kolla.no>
+ <5c4b6043-a484-479d-83bc-a86ecdb8f810@app.fastmail.com>
+In-Reply-To: <5c4b6043-a484-479d-83bc-a86ecdb8f810@app.fastmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 11 Mar 2026 09:21:08 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWec3Xwi1ma22D_eqs3OqRJXEt4=YmWvO2MgtBdSpNuqg@mail.gmail.com>
+X-Gm-Features: AaiRm52Q0QeELW2kE8F3ZB9XQa9qhSRDKWOoNuroUdAnxhN87qOfxCDKsawyRAY
+Message-ID: <CAMuHMdWec3Xwi1ma22D_eqs3OqRJXEt4=YmWvO2MgtBdSpNuqg@mail.gmail.com>
+Subject: Re: [PATCH 01/10 net-next] ipv6: convert CONFIG_IPV6 to built-in only
+ and clean up Kconfigs
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>, 
+	Krzysztof Kozlowski <krzk@kernel.org>, Fernando Fernandez Mancera <fmancera@suse.de>, Netdev <netdev@vger.kernel.org>, 
+	linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Selvin Xavier <selvin.xavier@broadcom.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, Simon Horman <horms@kernel.org>, 
+	Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>, 
+	"maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <GR-QLogic-Storage-Upstream@marvell.com>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Nilesh Javali <njavali@marvell.com>, 
+	Manish Rangankar <mrangankar@marvell.com>, Varun Prakash <varun@chelsio.com>, 
+	Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
+	Andreas Gruenbacher <agruenba@redhat.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
+	David Ahern <dsahern@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, 
+	Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, 
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, 
+	Jon Maloy <jmaloy@redhat.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+	Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Eric Biggers <ebiggers@kernel.org>, 
+	Michal Simek <michal.simek@amd.com>, Luca Weiss <luca.weiss@fairphone.com>, 
+	Sven Peter <sven@kernel.org>, 
+	"Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Ryota Sakamoto <sakamo.ryota@gmail.com>, 
+	Kuniyuki Iwashima <kuniyu@google.com>, Kir Chou <note351@hotmail.com>, 
+	Kuan-Wei Chiu <visitorckw@gmail.com>, Vikas Gupta <vikas.gupta@broadcom.com>, 
+	Bhargava Marreddy <bhargava.marreddy@broadcom.com>, 
+	Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>, =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>, 
+	"open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, 
+	"open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>, 
+	"open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>, 
+	"open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <linux-scsi@vger.kernel.org>, 
+	"open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>, "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>, 
+	"open list:NETFILTER" <netfilter-devel@vger.kernel.org>, 
+	"open list:NETFILTER" <coreteam@netfilter.org>, 
+	"open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>, 
+	"open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>, 
+	"open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 8233F25F67C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kolla.no,kernel.org,suse.de,vger.kernel.org,ziepe.ca,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,hansenpartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,gondor.apana.org.au,hotmail.com,blochl.de,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
+	TAGGED_FROM(0.00)[bounces-17950-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[linux-m68k.org];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17948-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[74];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.997];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_GT_50(0.00)[69];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.847];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,arndb.de:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux-m68k.org:email]
 X-Rspamd-Action: no action
 
-On 3/6/26 13:41, Lorenzo Stoakes (Oracle) wrote:
-> On Fri, Feb 27, 2026 at 09:08:46PM +0100, David Hildenbrand (Arm) wrote:
->> zap_vma_ptes() is the only zapping function we export to modules.
->>
->> It's essentially a wrapper around zap_vma_range(), however, with some
->> safety checks:
->> * That the passed range fits fully into the VMA
->> * That it's only used for VM_PFNMAP
->>
->> We might want to support VM_MIXEDMAP soon as well, so use the
-> 
-> I think you should say we _are_ going to since patch 16/16 does that :)
+On Tue, 10 Mar 2026 at 20:58, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Tue, Mar 10, 2026, at 20:40, Kolbj=C3=B8rn Barmen wrote:
+> > On Mon, 9 Mar 2026, Krzysztof Kozlowski wrote:
+> >> On 09/03/2026 03:19, Fernando Fernandez Mancera wrote:
+> >>
+> >> It must stay module for me. Alternatively, drop it, but then some user=
+s
+> >> will be really affected.
+> >
+> > I agree. If anything I would prefer to see IPv4 be made optional (and
+> > modular) as well, and not as something IPv6 depends on, it's (AFAIK)
+> > impossible today to build an IPv6-only Linux kernel.
+>
+> My first feeling was that this is a bad idea as well. On the other hand
 
-Heh, had that patch separate first before I decided to support
-VM_MIXEDMAP in the same series.
+Exactly my feeling. That's why I stayed quiet for a while, and gave
+it some thought...
 
-@Andrew, can you fix that up? Thanks!
+> I found that the default changed from =3Dm to -y over 10 years ago, all
+> recent distros listed in https://github.com/nyrahul/linux-kernel-configs
+> use that default (the only two exceptions are board specific builds
+> of Debian and Ubuntu for linux-5.x).
 
-"We will add support for VM_MIXEDMAP next, so ..."
+Thanks, that is something I was wondering too.
 
--- 
-Cheers,
+Obviously the world is moving the IPv6 (but having IPv6=3Dm doesn't
+preclude that!).  From the other side, there is a trend to have as much
+as possible in modules instead of built-in.  A larger base kernel not
+only has impact on memory usage (and loading modules has, too), but
+also on e.g. boot partitions.  Various platform-specific limitations
+may be at play (boot loader size limits, boot partition size limits,
+base kernel must fit in the first memory block on systems with many
+small discontiguous memory blocks, ...).
 
-David
+But apparently even the Android gki_defconfig (which is not on the
+page mentioned above?) has IPv6 built-in.
+
+Back to the numbers:
+  - base kernel: atari_defconfig (CONFIG_IPv6=3Dm)
+  - with this series, CONFIG_IPv6=3Dn: -22 KiB
+  - with this series, CONFIG_IPv6=3Dy: +246 KiB
+Note that I ignored any defconfig changes in these series.
+The size impact is almost the same for v1 and v2, but only v2 boots.
+
+Each new kernel release increases kernel size by ca. 30-40 KiB on
+average.  So a one-time increase of 246 KiB is not unsurmountable,
+and slightly less than the increase between v6.14 and v6.19...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
