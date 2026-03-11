@@ -1,124 +1,171 @@
-Return-Path: <linux-rdma+bounces-18028-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18029-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UGgdFuLGsWnvFAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18028-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:47:46 +0100
+	id 0H4AFf/jsWlbGwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18029-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 22:51:59 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8C2D2699C1
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:47:45 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F265226A996
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 22:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B25A23027340
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 19:47:41 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C6DF9301C6AA
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 21:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C263A31AF07;
-	Wed, 11 Mar 2026 19:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6DC34D3BF;
+	Wed, 11 Mar 2026 21:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="q+e9l8gM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dx7jFacZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9484E20C029;
-	Wed, 11 Mar 2026 19:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D01C1B4138;
+	Wed, 11 Mar 2026 21:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773258457; cv=none; b=q4LQ8DJAPcyug6O1dc9QLnZFLFx5a0QzwoSluf5P+z0mZpvoGaUt8g5LTIsp/kT8aDGbT4rkRaDeRdFvIbqdoeeHG7ieuCSOD6cc2tDRijLOzp6akMmPv3WesZoDsDROQYx6fIZLnZnYxHaR9THshLxLfhzDrlXn+KFyGnFSal4=
+	t=1773265903; cv=none; b=NCnTAVFQWTodrbljYCGXULPFo1pcbV/ezP1ahiNPsznt9pAKR7JS4+YGJFr22l0VOwLnjw98hodoWw+MYtvGkzL9C1jfcq564QcNjP7pswAxJfsj1VWdLyZbjfxao3KNFGuQ2iYGJX5SDabUHCLpiRxvEwfRwqaMaFe/gvrDr8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773258457; c=relaxed/simple;
-	bh=d0orctoNdQlyUbTNAhdFmQruWQlMOYeaidWzfI2MSt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uc+3El8XQMIlV5EXqvGv4xh3TNivtmByZFPsbzZG7B5vKGKZMtI1TkaedfGrWlpJuF5URqeRSJeSw5glniNw1J3C805y/VCmu0/rApTcJmKlyJNs/WvK9V1h5k17NRWTwjaBsBiu19NSDQb9hsG7/HMBE4TqIx5RH3/9Jz59JqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=q+e9l8gM; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 7A12A20B710C; Wed, 11 Mar 2026 12:47:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7A12A20B710C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1773258456;
-	bh=mEJGxu7RvDWY3J5WSSTMNmpjoOu+wgT9zajIpsYmza0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q+e9l8gMuh8mdjN6pDirPG/CcUHNkY7HAzwR62DHewMlm6faNDYIuZDYXA95xja6i
-	 RewoBbEB9SftKU+TrEv6nEay1ykQhNMIOrD2Nb9JGDt7IQ+ZJoCGmAsuIAWh1WMltx
-	 bOq4Gm7VS+/+yPbAAHyVVRSCF9/9tUUfnk/9PvGk=
-Date: Wed, 11 Mar 2026 12:47:36 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next] net: mana: Expose page_pool stats via ethtool
-Message-ID: <abHG2NdwVvTntLeJ@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <aaFmRqjjOuPIEo5x@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20260227092722.50a7e45f@kernel.org>
+	s=arc-20240116; t=1773265903; c=relaxed/simple;
+	bh=Ky9x4Qc7sXMth54WdQkScEx8aBLAUtoTYC5EOd6QHxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kirH1Dxr8ZcCkLz9BShAPPapML9f+calzP99PhVohWbeDFMznko5a6j37001W7iDhPfOx6GyskJHpwNkpZGBB1Xqxb+zD9eZEkFLRRH8c6pzE5+n5zdwIRHEu0Z4SazKmWmxnDpnfPfaerR59ELZh41JngmsffpC+MofqYlb1TA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dx7jFacZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27E2CC4CEF7;
+	Wed, 11 Mar 2026 21:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773265903;
+	bh=Ky9x4Qc7sXMth54WdQkScEx8aBLAUtoTYC5EOd6QHxo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Dx7jFacZSSM5wqhX2HqVl7lUpW0BEE9MOC0zg7RjB5ksIwDxAWiFZ8g3y/bFQrOJU
+	 KgyyZReYbkucYayZ/KcL7xAyjIJahjFxos8+5wjc172EkvLwKREPg6fUMCTTHH9e5e
+	 0SRr79WK766w8sZqtz4gS07VU1undwunt1g8fnAM8l9uaJP+41+dKTEgKAzgAC6bf/
+	 ZZLf4g5j9YtyfB0DJtKhpkgq99a3yhBGia1Y7+OvqI0ggZIZSbgKqyCcmC73P8o5ei
+	 3riUM+OF6hL5IX1V96Jb/coHSW0x2b0lzPO3IE2wBzbwAzqmJfj2pYMsEB2v8Ifrtc
+	 tyBfX4sVpALLQ==
+Date: Wed, 11 Mar 2026 14:51:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Or Har-Toov <ohartoov@nvidia.com>
+Cc: Jiri Pirko <jiri@resnulli.us>, Tariq Toukan <tariqt@nvidia.com>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Donald
+ Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
+ <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, Gal Pressman
+ <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Shay Drory
+ <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Moshe Shemesh
+ <moshe@nvidia.com>
+Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource
+ support
+Message-ID: <20260311145126.7dcca532@kernel.org>
+In-Reply-To: <5de5103e-e2e4-4b72-9c3c-22847728fbb8@nvidia.com>
+References: <20260226221916.1800227-1-tariqt@nvidia.com>
+	<20260302192640.49af074f@kernel.org>
+	<pmxkihhtsskkwsvdia4z2ss4wxpfc4a4kqxkjv5wk3mwdmpzii@6go7pizk2nst>
+	<jssifysprwuafkinc3dguspngxmplrngqxvotp76vhvu4e5lp6@e7mdrjqc5rme>
+	<20260304101522.09da1f58@kernel.org>
+	<np44uzfn6jea56uht4yq4te5clapgj7pk6ygyvkl22wxumwnvt@nrpvzjqzxenq>
+	<20260305063729.7e40775d@kernel.org>
+	<ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
+	<20260306120301.0ebe1ab2@kernel.org>
+	<74dcd7c5-8a2b-49a7-a23c-174d17a61955@nvidia.com>
+	<20260309133341.7e08b35d@kernel.org>
+	<5de5103e-e2e4-4b72-9c3c-22847728fbb8@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260227092722.50a7e45f@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-18029-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18028-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[resnulli.us,nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
-X-Rspamd-Queue-Id: D8C2D2699C1
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: F265226A996
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Feb 27, 2026 at 09:27:22AM -0800, Jakub Kicinski wrote:
-> On Fri, 27 Feb 2026 01:39:18 -0800 Dipayaan Roy wrote:
-> > MANA relies on page_pool for RX buffers, and the buffer refill paths
-> > can behave quite differently across architectures and configurations (e.g.
-> > base page size, fragment vs full-page usage). This makes it harder to
-> > understand and compare RX buffer behavior when investigating performance
-> > and memory differences across platforms.
+On Wed, 11 Mar 2026 20:24:08 +0200 Or Har-Toov wrote:
+> For the dump-it command:
+> devlink resource show
+> pci/0000:03:00.0:
+> <resource>
+> pci/0000:03:00.0/196608:
+> <port-resource>
+> pci/0000:03:00.0/196609:
+> <port-resource>
+> pci/0000:03:00.1:
+> <resource>
+> pci/0000:03:00.1/262144:
+> <port-resource>
 > 
-> Standard stats must not be duplicated in ethtool -S.
-> ynl and ynltool provide easy access to these stats
+> devlink resource show scope port
+> pci/0000:03:00.0/196608:
+> <port-resource>
+> pci/0000:03:00.0/196609:
+> <port-resource>
+> pci/0000:03:00.1/262144:
+> <port-resource>
 > 
-> # ynltool page-pool stats 
->     eth0[2]	page pools: 44 (zombies: 0)
-> 		refs: 495680 bytes: 2030305280 (refs: 0 bytes: 0)
-> 		recycling: 100.0% (alloc: 7745:2097593009 recycle: 379301630:1717888312)
+> devlink resource show scope dev
+> pci/0000:03:00.0:
+> <resource>
+> pci/0000:03:00.1:
+> <resource>
 
-Thanks Jakub for the feedback, and understood the generic page pool
-stats should be combined with ethtool -S. I will drop this patch
-and use ynltool page-pool stats.
+LGTM
 
+> For the do-it command:
+> devlink resource show pci/0000:03:00.0
+> pci/0000:03:00.0:
+> <resource>
+> pci/0000:03:00.0/196608:
+> <port-resource>
+> pci/0000:03:00.0/196609:
+> <port-resource>
+> 
+> devlink resource show pci/0000:03:00.0 scope port
+> pci/0000:03:00.0/196608:
+> <port-resource>
+> pci/0000:03:00.0/196609:
+> <port-resource>
+> 
+> devlink resource show pci/0000:03:00.0  scope dev
+> pci/0000:03:00.0:
+> <resource>
 
-Regards
-
-
+Do we have to touch doit? Maybe we should let doit be what it is now
+and consider it legacy going forward? doit which is in fact a filtered
+dump is a bit of a mistake in the first place, from Netlink's
+perspective.
 
