@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-18004-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18005-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oJy1EsOssWmzEQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18004-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:19 +0100
+	id YOHIE8essWmzEQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18005-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5F93268548
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B870F26854F
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A32BC30CCD59
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:55:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1151C30D7076
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B64E3E63B0;
-	Wed, 11 Mar 2026 17:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E3C3E63A7;
+	Wed, 11 Mar 2026 17:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="C5mf5iZU"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="FaTPt/kM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11022096.outbound.protection.outlook.com [40.107.209.96])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11020098.outbound.protection.outlook.com [52.101.193.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7275B3DD51F
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.96
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90853E63AB
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.98
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773251740; cv=fail; b=IMfK8JMluTjsoj8QxjiXpP9t5hKeETvbYuEx12UVqXPnowqzH+TkZOSJHW2shFTOwDwUvUBE8BReDmGDd2uZkINX5ruF66Jx1PZkEqedatFdmB10ruZmWJ8CovrwXu4qp5tjjZ9DqpIBYdYX7QVJkZ+U372vjf+YY3yNZpYZvJc=
+	t=1773251742; cv=fail; b=dhLcKjPwc3xGUGMquz9PMfviVTQc1h1VAWVa2KHk3bviSHQ+oa+RnBFN4YpiI4/onXnZmioyta7Ldlw6TaSxtJ7gYVV4FlsT76co4JZdb8cX0d2mPwEmbCGvovIm0Ny+srHoKqRdXf11zNgXmFjlKvwTlK+NMvNL4TihU1VP5JM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773251740; c=relaxed/simple;
-	bh=sp5g6GBlxku5Jmntif9VqtLcqbPX0ioNcpcoiKvm6wA=;
+	s=arc-20240116; t=1773251742; c=relaxed/simple;
+	bh=1gd55yLwN4lqgp1tteInPpMJfnnS/I64bfCDkB0TIDI=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fDB7inXEip6ohR4BNWARxFz5vEOIxTUBy4JxVY2zQX/IseD6m8PmEhkvisx8mVh/8zON+1RRhy8Ew5bmb+/F5rrpaidTRxEfiOsmE8SuGQK1SI3WteGf43aKTwTYOfFnqhojeHoo02APkg8MThCyEumkwvF/ub9ANTp9y9wQbFs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=C5mf5iZU; arc=fail smtp.client-ip=40.107.209.96
+	 MIME-Version:Content-Type; b=ZTt2sUjswfjAuXfLLojaJBW27mSjnCAO32mYL0Eg8T34iMWmlfQoXETyK8ZPsMF4YFRWdU17Ld/PofZSoUcEe28YugDj6NUk+8Smz8CpImIKn/7oSe6t360M1LSf+160m03rFdfUGyBzjIifTiwo10DC66HDcTPi7xL98Ppas5U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=FaTPt/kM; arc=fail smtp.client-ip=52.101.193.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=boFZIhNr0MJigK1UvQV4vl7EdCt3RE1xXGRzQ6TWw3LFPbr3KPN9PRlGK+2/xhE5Mt6ClU/jcWduNuiXlIMXjBUrp+3pMU1t3XkljSTn/cGd5sQsZF9FP7sBaAsntaG7WTpD3e30l5cCkPAKvD1l1zSbO/2i59B/9qOxuZC3ZQB5OpeBtgJv4Z4b5lszeI0k4ftG78ZIN+DV7BAk48ipq8qz96xldCDccYMfhyNBoLT5i0lgg5tCWJSWjXoHjWSlP2jYXZu6zpHB98cn95sh1eqEwNG9nWBNvwg1ROXmSoTyJ8od4d+ertoYC3XkfUUdv0GJOh34KOy5bHKANX39ug==
+ b=gyEH5fd+hVCTr8DGMgdBcdYNImM5Un1l+Jv14akx/Itc6DPMPCyRo4mWp/vIQJZ6Y3egGh2dHNGbC0p3juADvZjamZq1XaUA25kSk2hE36YCe8Ixh9s8t2WGbyq7/DqlcaLfAogoC30l6Xwz2rlrcQMiaHvm7lw/i5kgNMOMGp6tbVX5piGgR34IBeK56KdSbVDjA2MhH2Xz/XhKwjp7+G/p0xUJE4lJu/wa5I9XF0fGuLpgma3D/jWrmQdK/fJRi6Dq2/GzTnLPclb1oIuX+lZe319THurFkrqDIpsXrnZMamjHt7H0w6nLDs7I53yJxAUcPm3P+HmrictLzAYmjA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=57xUYPaM1xv2sa0CtSz1kMV6JOzjyHmxV3aFYBOIAxA=;
- b=YCSySwiLYP8qrTNN8QFLqGRwq6NrskVUAhxHOzW6ZVdcEHkiT8Orla+sMlceyOjGTy9e0J926m/QDP48Sm1+MN6YmxaiX9NMeyVd6oYM+J41KqAn/rF8jlmFxtHYx3GjlWptorQOTgF//WXlXzcriTwDdUoe9HnxsE8YevtczRuJZnPHka+EGVAkQtVTCH8HA1AZwzWyljZ8RvMlW327efBFPOd8T9Eh8kxL129z8AP1FhbWuYgekj9mudoG0N1tZt1ikD66J7wbC3Mm5YjupWkZmKg0zbBJzrPfOqKZZHvTEgrc/TwxemmLg2mw5oOxroNqFj+nQ4NIb/BBUng35Q==
+ bh=Q4Z/WEY4LAu16rMwgZvpaXKKknj6xFhIEj9C9kWw8tM=;
+ b=j/mrhDIzxGcMA/Dg1ZeHvRvuxoucGiBdVGqHi+SXWwJ36iucDeYuplISILSXsGCYCnrwJR/Mv7xtzXx3R1zMWMj7I37HLC5Mzw66HC1HSugDy587tElNhU7qPql61eglwvM+4aPJ8RL1mAGmzQ+amI36L2oTD7qEBcqlmytNA9XRLe5/R3EyLusrluxlS5MHSUxEcprl1yQkn4Fvy4LJOwmQNZ+Tg9ZIXZ+htY6dXJbHL4QHzhgRao8NKUXy3FzXRNhixKLilfc+zibtBrbk+NNZrj2A1J9fWiR8ynhJwTLkv7aNIHLkaTbQKal6VZ5etnnPOW8tiJIyFK9xysM/vw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
  50.148.235.34) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=fail (p=none sp=none pct=100)
@@ -49,17 +49,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=57xUYPaM1xv2sa0CtSz1kMV6JOzjyHmxV3aFYBOIAxA=;
- b=C5mf5iZUUd3b250LjTSrQcGUlHorsLEWheQPjesk7VtCA5JOvRT46qgF0S6Sc5gSfAzkSsjlquQS/5b+Z67R+e1kh9dH8ZVvFSKYATYt51z54zFgrd/fXq/lLb6EO4Y5rYwuuufQJpReXxphAUTEnmZeFhq2MhZnCrI0AXghYRdASmNhMiBFKpJU5MFloqmgfKzWcuuTINw+R1xy5WZGm47agh/8/tbqyi1EFyTrcwZvhUZg417oagiMjC6dJJhaB30NgqKKH4rEck53InrGyj9pmwlQoAR3kBTMS/7+hTU64Ur4gEC2lYpvt2y7f2v4W3W85rpkxwCml4w3o73RPw==
-Received: from BYAPR21CA0006.namprd21.prod.outlook.com (2603:10b6:a03:114::16)
- by CY1PR01MB9243.prod.exchangelabs.com (2603:10b6:930:106::17) with Microsoft
+ bh=Q4Z/WEY4LAu16rMwgZvpaXKKknj6xFhIEj9C9kWw8tM=;
+ b=FaTPt/kMnoV9VUNERxZ6NNZ8rmeWIkU9ueWxwL2BTHbXt0a2Mzaip7PqQsN9a/8rmOEl1PWx2JX3/bP4ba87UPvQx7ugUNzpMuzxwFod+i/umXyqI94YENGvtHb//O47JiSp6Bs2SgYy38VlNtdObebyYf9U5gjss4H48Iil0tN13rLc5vvU2HOv7M5NZgw04DD1eyIx1oYPGnOcdHAsLTyIKDRpOwjY5x3RBNchWn4tTRcu+JIKm5qtsDuGlBbZUmlIQeQ5mtIfRp4dlkGBUPk4XeWKU33Z6Tg4cwLZLkh3E5FhGtN0nQeG94/15Er+gwvFQ6+JUUomd+gtPMeIVA==
+Received: from PH7P220CA0178.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:33b::17)
+ by CO1PR01MB7354.prod.exchangelabs.com (2603:10b6:303:159::18) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9700.11; Wed, 11 Mar 2026 17:55:27 +0000
-Received: from MWH0EPF000C618A.namprd02.prod.outlook.com
- (2603:10b6:a03:114:cafe::4b) by BYAPR21CA0006.outlook.office365.com
- (2603:10b6:a03:114::16) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9723.2 via Frontend Transport; Wed,
- 11 Mar 2026 17:55:23 +0000
+ 15.20.9700.12; Wed, 11 Mar 2026 17:55:33 +0000
+Received: from MW1PEPF0001615B.namprd21.prod.outlook.com
+ (2603:10b6:510:33b:cafe::d5) by PH7P220CA0178.outlook.office365.com
+ (2603:10b6:510:33b::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.26 via Frontend Transport; Wed,
+ 11 Mar 2026 17:55:30 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 50.148.235.34)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=fail action=none header.from=cornelisnetworks.com;
@@ -68,24 +68,22 @@ Received-SPF: Fail (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=50.148.235.34;
  helo=cn-mailer-00.localdomain;
 Received: from cn-mailer-00.localdomain (50.148.235.34) by
- MWH0EPF000C618A.mail.protection.outlook.com (10.167.249.122) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.18
- via Frontend Transport; Wed, 11 Mar 2026 17:55:27 +0000
+ MW1PEPF0001615B.mail.protection.outlook.com (10.167.249.86) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9723.1
+ via Frontend Transport; Wed, 11 Mar 2026 17:55:32 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 60E6D14D819;
-	Wed, 11 Mar 2026 13:55:26 -0400 (EDT)
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 6841114D819;
+	Wed, 11 Mar 2026 13:55:31 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 5CC0D1810D6C5;
-	Wed, 11 Mar 2026 13:55:26 -0400 (EDT)
-Subject: [PATCH for-next resend 20/24] RDMA/hfi2: Support ipoib
+	by awdrv-04.localdomain (Postfix) with ESMTP id 64DA81810D6C5;
+	Wed, 11 Mar 2026 13:55:31 -0400 (EDT)
+Subject: [PATCH for-next resend 21/24] RDMA/hfi2: Add misc header files
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
-Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
- Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
- linux-rdma@vger.kernel.org
-Date: Wed, 11 Mar 2026 13:55:26 -0400
+Cc: Dean Luick <dean.luick@cornelisnetworks.com>, linux-rdma@vger.kernel.org
+Date: Wed, 11 Mar 2026 13:55:31 -0400
 Message-ID:
- <177325172635.57064.244652532682759103.stgit@awdrv-04.cornelisnetworks.com>
+ <177325173138.57064.15637996353487915839.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <177325138778.57064.8330693913074464417.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -101,48 +99,48 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000C618A:EE_|CY1PR01MB9243:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d5e4e63-34be-4d69-5740-08de7f9760b0
+X-MS-TrafficTypeDiagnostic: MW1PEPF0001615B:EE_|CO1PR01MB7354:EE_
+X-MS-Office365-Filtering-Correlation-Id: 918b5491-3c8d-44a7-d9f2-08de7f9763e2
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|376014|1800799024|34020700016|82310400026|55112099003|22082099003|18002099003|56012099003;
+	BCL:0;ARA:13230040|1800799024|34020700016|82310400026|36860700016|376014|55112099003|56012099003|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	Ul1giTPYFs9c0oHApBqA7LKH9cJLSDm+GL3ABtCvfr68xA02DAFvdt+LRNXhkagrYoRNffoiCT57ppDrvciYB64CsQ7AbPuHUqubykJlTN7w+jf8pOyOxTLor8RdGgoERg9LGJ5jlKpI6OLoBXFol98fKK0ak0S5A5cEwR9hncXdHNLVKeBssbjPbJyI1PWXN4iT7Mxn7tR94vmNvk3MSN8t/0h4tm0RV6S9HD0QdGWin9pl3I6Ay+vGekj3XJMKwM+U+UIb5DszjYpWzM+0t6fOXBcwL8maILL9CkKl+bjcxNEtlh5+0g6jVYKVqqxj7/KSAEJVLx63an4f6sB8MK6yYeZCVb5Ejc203spJlR1wAphsdV/nSiMrH+FLgpIDLam5jy+ETlPoaSb7s0tVAQk1evmBx4ZK91t0WnZWG6E8oMx975Ks/aQ8ZDIoQEp4wQqvbGq7f+prGyZnfuCvFA6W9v+zuobV6mPptpevS8Touj9f50OrHROQxBLsnTrbnDQtQawDVAYD38gzWx7w/bCyVKtFVcefQxdO9AhlGF99ZlfGzdNFCXQ63nRZNwE02q3Y/wx5YMRuquvxBQMin9ss8XRI52OW23gRNEdyOSfuTft0SHnvBXkSBxk6E0EkQr/ar6qk5+1CHdQp0IWbjiLG0vdkseH7EHNDWAV+bCCSjNPV6pPIh/iWbrIz2NXjzDofP5K2SpY4cw6GO2QOsgcm8//q0nrAVDHGqUW5lmfggknI9znN5fP92SA7KskcVZsqlWMA5K8MR95TjX8CJA==
+	1pQQCNKQJmwYBVSG0tzVWfn1pi0AFzZ7v+qDpFrvULFfXuEIF5nY3w1z6wUs1fCdCXKie/+NvVFJgdRLDK8JGJw5ttmfbu/ouX3O/9kVE8K4AGiiM7iWPFc5rogADmjinmsilGkhL4T2wPZNMxvydgDZAnF561bqRf2DGbmjOj8lqqMCQmJ2VnZyLGZpZ/MvNOccnjJvtGS797//+Pt9yLSm19Hz6VKLrE1eYb5qbWTZe4LzyxLrveKp/TdYLLslLNCGxUelmMkkxM94IfaqTZQWQAA/9VHFZWlF7jm8RDuu+rBVtJmJzugdh7eAagNVZs+yFbrPXUwzmtUWxRLcS1UYYI5oij4CmHArrf6vOJPizb+CTSJF2tkvxq0crm2MmCEsqmaysEvzox/JQdtGSBShoZZXlYXr3qZNXcsx827u3QejziMvFeLtBJZRsRnlZPlzSH8LvRt+uyWj/aXFYBh2nC4BsTTOHx+rFkRCM3o0in9cknKPaltfBCW5VJdJDH7vaKxrLNw4eLGiRw5YpEkjf076Qz/S8qL3G1wxD8HGpC1UeJ0eb1Idq/MQpLcgtrwQRLADu3gJn4xUTgyOlpGKFCF0CbB6zmNbXP0k6VYYlzEd5c9P4WMTLPGiB3Zz5vFrm4ei7Db44fWPVx2ItRAZ+HROA44HgsFT7DlEhvOwy4cKO9SrCHVHd0x1rO2F9LIuRqR1fDgeb4pRezVbLWhNDH+QMbSRXney61sgc20ixkgGQBZlwxjfu96jtunRvQEwIMu9XGMa1PLhoQ2vBg==
 X-Forefront-Antispam-Report:
-	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(36860700016)(376014)(1800799024)(34020700016)(82310400026)(55112099003)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1102;
+	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(1800799024)(34020700016)(82310400026)(36860700016)(376014)(55112099003)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	PqU72YX0Y8b1dSqPZGPH78vem53oZtgAOdXLIl+8r0Rr9h5t3DaY1dAyzWH0BGc2jPtGt+oX+eZZHRVaDGm15h3FjtwqOvpCyXhpU13+XtdlIZh4OEhZdg5JDVnxtlQl+zfcGYPjZsqpMaseBLhV7VxolEhbK1vOHu3w00llv7+OPZquv/1qic2TtPV0h+g/WhenuF294F+JMwBrGe4q3wyACz1m9PQjaNZhMxi4nTeOxdqb2q1Krpb/0uInZUL8mlbYq88jbRLxamArWneuXyDWOeFhnB101cuznHIfvXndgIafEpmQxDe+uSB/AEVr5sNdRSNZyxhvDIO8nlwFhpPucHluf02cMKGrXDWADF9pM/zduaHIH93JboAAoZ8RI+Zyf+P+wtwxtvzOGnzy7XfVAGf1hQQdJipoc2qGJm4BcweyRgE80rVMuxw1m7M9
+	XqQpY3Nl3uveSh2w5xiqrIlVT5hGpM/h9HsjV1dw1xTb7QmAF8vztNVwcl0poQLEwkL5xDAfBaZJ++1mU9SuiCDmRoVklTFVVfZhvfPlUGI4ZBuq9XhcSixnhr5DQne7WlLx477v94f1ClDbG55V/PfFVxY3DHUSaiHcGkQvSaoSTL7WyqbsngMR2hSm+GjmaVSFXIW2uK+aOO1le/024O5VgCBpB/DvW1A0+B/N7gtYrEO1Sq1gooKa4ag03hEvXUJ7xn2ifRr7/4/86xWwpomUAsMvRR5bN85AShu7T4PTGDa+GWQxLEsRnJ15YMK2zI6HeRw5vTWF1cASI9R+SX//nHw3je5W0XLP9M+KXAG6T+8lmoP4PAZuhc7wQIM0DruHNPm+II65sffjPWBa9POUwYyrmll52AA7LMANc/43y5zHAV4yjyEKiwzFwqnc
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:55:27.0316
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:55:32.3050
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d5e4e63-34be-4d69-5740-08de7f9760b0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 918b5491-3c8d-44a7-d9f2-08de7f9763e2
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[50.148.235.34];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000C618A.namprd02.prod.outlook.com
+	MW1PEPF0001615B.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR01MB9243
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB7354
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[cornelisnetworks.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18004-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18005-lists,linux-rdma=lfdr.de];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cornelisnetworks.com:dkim,cornelisnetworks.com:email,awdrv-04.cornelisnetworks.com:mid];
+	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
 	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -151,1769 +149,1296 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: A5F93268548
+X-Rspamd-Queue-Id: B870F26854F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Bring in ipoib support.
+There are a few headers files that didn't really fit with the rest of the
+bunch so adding them all separately.
 
 Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Co-developed-by: Bendan Cunningham <brendan.cunningham@cornelisnetworks.com>
-Signed-off-by: Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi2/ipoib_main.c |  258 +++++++++
- drivers/infiniband/hw/hfi2/ipoib_rx.c   |   93 +++
- drivers/infiniband/hw/hfi2/ipoib_tx.c   |  872 +++++++++++++++++++++++++++++++
- drivers/infiniband/hw/hfi2/netdev_rx.c  |  494 ++++++++++++++++++
- 4 files changed, 1717 insertions(+)
- create mode 100644 drivers/infiniband/hw/hfi2/ipoib_main.c
- create mode 100644 drivers/infiniband/hw/hfi2/ipoib_rx.c
- create mode 100644 drivers/infiniband/hw/hfi2/ipoib_tx.c
- create mode 100644 drivers/infiniband/hw/hfi2/netdev_rx.c
+ drivers/infiniband/hw/hfi2/common.h     |  336 ++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/debugfs.h    |   66 ++++++
+ drivers/infiniband/hw/hfi2/fault.h      |   70 ++++++
+ drivers/infiniband/hw/hfi2/opa_compat.h |   87 +++++++
+ drivers/infiniband/hw/hfi2/opfn.h       |   88 +++++++
+ drivers/infiniband/hw/hfi2/platform.h   |  372 +++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/qsfp.h       |  202 +++++++++++++++++
+ 7 files changed, 1221 insertions(+)
+ create mode 100644 drivers/infiniband/hw/hfi2/common.h
+ create mode 100644 drivers/infiniband/hw/hfi2/debugfs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/fault.h
+ create mode 100644 drivers/infiniband/hw/hfi2/opa_compat.h
+ create mode 100644 drivers/infiniband/hw/hfi2/opfn.h
+ create mode 100644 drivers/infiniband/hw/hfi2/platform.h
+ create mode 100644 drivers/infiniband/hw/hfi2/qsfp.h
 
-diff --git a/drivers/infiniband/hw/hfi2/ipoib_main.c b/drivers/infiniband/hw/hfi2/ipoib_main.c
+diff --git a/drivers/infiniband/hw/hfi2/common.h b/drivers/infiniband/hw/hfi2/common.h
 new file mode 100644
-index 000000000000..3e6d142d16cc
+index 000000000000..c70e91ba9103
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/ipoib_main.c
-@@ -0,0 +1,258 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++++ b/drivers/infiniband/hw/hfi2/common.h
+@@ -0,0 +1,336 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/*
-+ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2015 - 2020 Intel Corporation.
 + * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
 + */
++
++#ifndef _COMMON_H
++#define _COMMON_H
++
++#include <rdma/hfi2-abi.h>
 +
 +/*
-+ * This file contains HFI2 support for ipoib functionality
++ * This file contains defines, structures, etc. that are used
++ * to communicate between kernel and user code.
 + */
 +
-+#include "ipoib.h"
-+#include "hfi2.h"
++/* version of protocol header (known to chip also). In the long run,
++ * we should be able to generate and accept a range of version numbers;
++ * for now we only accept one, and it's compiled in.
++ */
++#define IPS_PROTO_VERSION 2
 +
-+static u32 qpn_from_mac(const u8 *mac_arr)
-+{
-+	return (u32)mac_arr[1] << 16 | mac_arr[2] << 8 | mac_arr[3];
-+}
++/*
++ * These are compile time constants that you may want to enable or disable
++ * if you are trying to debug problems with code or performance.
++ * HFI2_VERBOSE_TRACING define as 1 if you want additional tracing in
++ * fast path code
++ * HFI2_TRACE_REGWRITES define as 1 if you want register writes to be
++ * traced in fast path code
++ * _HFI2_TRACING define as 0 if you want to remove all tracing in a
++ * compilation unit
++ */
 +
-+static int hfi2_ipoib_dev_init(struct net_device *dev)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	int ret;
++/* driver/hw feature set bitmask */
++#define HFI2_CAP_USER_SHIFT      24
++#define HFI2_CAP_MASK            ((1UL << HFI2_CAP_USER_SHIFT) - 1)
++/* locked flag - if set, only HFI2_CAP_WRITABLE_MASK bits can be set */
++#define HFI2_CAP_LOCKED_SHIFT    63
++#define HFI2_CAP_LOCKED_MASK     0x1ULL
++#define HFI2_CAP_LOCKED_SMASK    (HFI2_CAP_LOCKED_MASK << HFI2_CAP_LOCKED_SHIFT)
++/* extra bits used between kernel and user processes */
++#define HFI2_CAP_MISC_SHIFT      (HFI2_CAP_USER_SHIFT * 2)
++#define HFI2_CAP_MISC_MASK       ((1ULL << (HFI2_CAP_LOCKED_SHIFT - \
++					   HFI2_CAP_MISC_SHIFT)) - 1)
 +
-+	ret = priv->netdev_ops->ndo_init(dev);
-+	if (ret)
-+		return ret;
++#define HFI2_CAP_KSET(cap) ({ hfi2_cap_mask |= HFI2_CAP_##cap; hfi2_cap_mask; })
++#define HFI2_CAP_KCLEAR(cap)						\
++	({								\
++		hfi2_cap_mask &= ~HFI2_CAP_##cap;			\
++		hfi2_cap_mask;						\
++	})
++#define HFI2_CAP_USET(cap)						\
++	({								\
++		hfi2_cap_mask |= (HFI2_CAP_##cap << HFI2_CAP_USER_SHIFT); \
++		hfi2_cap_mask;						\
++		})
++#define HFI2_CAP_UCLEAR(cap)						\
++	({								\
++		hfi2_cap_mask &= ~(HFI2_CAP_##cap << HFI2_CAP_USER_SHIFT); \
++		hfi2_cap_mask;						\
++	})
++#define HFI2_CAP_SET(cap)						\
++	({								\
++		hfi2_cap_mask |= (HFI2_CAP_##cap | (HFI2_CAP_##cap <<	\
++						  HFI2_CAP_USER_SHIFT)); \
++		hfi2_cap_mask;						\
++	})
++#define HFI2_CAP_CLEAR(cap)						\
++	({								\
++		hfi2_cap_mask &= ~(HFI2_CAP_##cap |			\
++				  (HFI2_CAP_##cap << HFI2_CAP_USER_SHIFT)); \
++		hfi2_cap_mask;						\
++	})
++#define HFI2_CAP_LOCK()							\
++	({ hfi2_cap_mask |= HFI2_CAP_LOCKED_SMASK; hfi2_cap_mask; })
++#define HFI2_CAP_LOCKED() (!!(hfi2_cap_mask & HFI2_CAP_LOCKED_SMASK))
++/*
++ * The set of capability bits that can be changed after initial load
++ * This set is the same for kernel and user contexts. However, for
++ * user contexts, the set can be further filtered by using the
++ * HFI2_CAP_RESERVED_MASK bits.
++ */
++#define HFI2_CAP_WRITABLE_MASK   (HFI2_CAP_SDMA_AHG |			\
++				  HFI2_CAP_HDRSUPP |			\
++				  HFI2_CAP_MULTI_PKT_EGR |		\
++				  HFI2_CAP_NODROP_RHQ_FULL |		\
++				  HFI2_CAP_NODROP_EGR_FULL |		\
++				  HFI2_CAP_ALLOW_PERM_JKEY |		\
++				  HFI2_CAP_STATIC_RATE_CTRL |		\
++				  HFI2_CAP_PRINT_UNIMPL |		\
++				  HFI2_CAP_TID_UNMAP |			\
++				  HFI2_CAP_OPFN)
++/*
++ * A set of capability bits that are "global" and are not allowed to be
++ * set in the user bitmask.
++ */
++#define HFI2_CAP_RESERVED_MASK   ((HFI2_CAP_SDMA |			\
++				   HFI2_CAP_USE_SDMA_HEAD |		\
++				   HFI2_CAP_EXTENDED_PSN |		\
++				   HFI2_CAP_PRINT_UNIMPL |		\
++				   HFI2_CAP_NO_INTEGRITY |		\
++				   HFI2_CAP_PKEY_CHECK |		\
++				   HFI2_CAP_TID_RDMA |			\
++				   HFI2_CAP_OPFN |			\
++				   HFI2_CAP_AIP) <<			\
++				  HFI2_CAP_USER_SHIFT)
++/*
++ * Set of capabilities that need to be enabled for kernel context in
++ * order to be allowed for user contexts, as well.
++ */
++#define HFI2_CAP_MUST_HAVE_KERN (HFI2_CAP_STATIC_RATE_CTRL)
++/* Default enabled capabilities (both kernel and user) */
++#define HFI2_CAP_MASK_DEFAULT    (HFI2_CAP_HDRSUPP |			\
++				 HFI2_CAP_NODROP_RHQ_FULL |		\
++				 HFI2_CAP_NODROP_EGR_FULL |		\
++				 HFI2_CAP_SDMA |			\
++				 HFI2_CAP_PRINT_UNIMPL |		\
++				 HFI2_CAP_STATIC_RATE_CTRL |		\
++				 HFI2_CAP_PKEY_CHECK |			\
++				 HFI2_CAP_MULTI_PKT_EGR |		\
++				 HFI2_CAP_EXTENDED_PSN |		\
++				 HFI2_CAP_AIP |				\
++				 ((HFI2_CAP_HDRSUPP |			\
++				   HFI2_CAP_MULTI_PKT_EGR |		\
++				   HFI2_CAP_STATIC_RATE_CTRL |		\
++				   HFI2_CAP_PKEY_CHECK |		\
++				   HFI2_CAP_EARLY_CREDIT_RETURN) <<	\
++				  HFI2_CAP_USER_SHIFT))
++/*
++ * A bitmask of kernel/global capabilities that should be communicated
++ * to user level processes.
++ */
++#define HFI2_CAP_K2U (HFI2_CAP_SDMA |			\
++		     HFI2_CAP_EXTENDED_PSN |		\
++		     HFI2_CAP_PKEY_CHECK |		\
++		     HFI2_CAP_NO_INTEGRITY)
 +
-+	ret = hfi2_netdev_add_data(priv->ppd,
-+				   qpn_from_mac(priv->netdev->dev_addr),
-+				   dev);
-+	if (ret < 0) {
-+		priv->netdev_ops->ndo_uninit(dev);
-+		return ret;
-+	}
++#define HFI2_USER_SWVERSION ((HFI2_USER_SWMAJOR << HFI2_SWMAJOR_SHIFT) | \
++			     HFI2_USER_SWMINOR)
++#define HFI2_RDMA_USER_SWVERSION \
++	((HFI2_RDMA_USER_SWMAJOR << HFI2_SWMAJOR_SHIFT) | \
++	 HFI2_RDMA_USER_SWMINOR)
 +
-+	return 0;
-+}
-+
-+static void hfi2_ipoib_dev_uninit(struct net_device *dev)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+
-+	free_percpu(dev->tstats);
-+	dev->tstats = NULL;
-+
-+	hfi2_netdev_remove_data(priv->ppd, qpn_from_mac(priv->netdev->dev_addr));
-+
-+	priv->netdev_ops->ndo_uninit(dev);
-+}
-+
-+static int hfi2_ipoib_dev_open(struct net_device *dev)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	int ret;
-+
-+	ret = priv->netdev_ops->ndo_open(dev);
-+	if (!ret) {
-+		struct hfi2_ibport *ibp = to_iport(priv->device,
-+						   priv->port_num);
-+		struct rvt_qp *qp;
-+		u32 qpn = qpn_from_mac(priv->netdev->dev_addr);
-+
-+		rcu_read_lock();
-+		qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp, qpn);
-+		if (!qp) {
-+			rcu_read_unlock();
-+			priv->netdev_ops->ndo_stop(dev);
-+			return -EINVAL;
-+		}
-+		rvt_get_qp(qp);
-+		priv->qp = qp;
-+		rcu_read_unlock();
-+
-+		hfi2_netdev_enable_queues(priv->ppd);
-+		hfi2_ipoib_napi_tx_enable(dev);
-+	}
-+
-+	return ret;
-+}
-+
-+static int hfi2_ipoib_dev_stop(struct net_device *dev)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+
-+	if (!priv->qp)
-+		return 0;
-+
-+	hfi2_ipoib_napi_tx_disable(dev);
-+	hfi2_netdev_disable_queues(priv->ppd);
-+
-+	rvt_put_qp(priv->qp);
-+	priv->qp = NULL;
-+
-+	return priv->netdev_ops->ndo_stop(dev);
-+}
-+
-+static const struct net_device_ops hfi2_ipoib_netdev_ops = {
-+	.ndo_init         = hfi2_ipoib_dev_init,
-+	.ndo_uninit       = hfi2_ipoib_dev_uninit,
-+	.ndo_open         = hfi2_ipoib_dev_open,
-+	.ndo_stop         = hfi2_ipoib_dev_stop,
++/*
++ * Diagnostics can send a packet by writing the following
++ * struct to the diag packet special file.
++ *
++ * This allows a custom PBC qword, so that special modes and deliberate
++ * changes to CRCs can be used.
++ */
++#define _DIAG_PKT_VERS 1
++struct diag_pkt {
++	__u16 version;		/* structure version */
++	__u16 unit;		/* which device */
++	__u16 sw_index;		/* send sw index to use */
++	__u16 len;		/* data length, in bytes */
++	__u16 port;		/* port number */
++	__u16 unused;
++	__u32 flags;		/* call flags */
++	__u64 data;		/* user data pointer */
++	__u64 pbc;		/* PBC for the packet */
 +};
 +
-+static int hfi2_ipoib_mcast_attach(struct net_device *dev,
-+				   struct ib_device *device,
-+				   union ib_gid *mgid,
-+				   u16 mlid,
-+				   int set_qkey,
-+				   u32 qkey)
++/* diag_pkt flags */
++#define F_DIAGPKT_WAIT 0x1	/* wait until packet is sent */
++
++/*
++ * The next set of defines are for packet headers, and chip register
++ * and memory bits that are visible to and/or used by user-mode software.
++ */
++
++/*
++ * Receive Header Flags
++ */
++#define RHF_PKT_LEN_SHIFT	0
++#define RHF_PKT_LEN_MASK	0xfffull
++#define RHF_PKT_LEN_SMASK (RHF_PKT_LEN_MASK << RHF_PKT_LEN_SHIFT)
++
++#define RHF_RCV_TYPE_SHIFT	12
++#define RHF_RCV_TYPE_MASK	0x7ull
++#define RHF_RCV_TYPE_SMASK (RHF_RCV_TYPE_MASK << RHF_RCV_TYPE_SHIFT)
++
++#define RHF_USE_EGR_BFR_SHIFT	15
++#define RHF_USE_EGR_BFR_MASK	0x1ull
++#define RHF_USE_EGR_BFR_SMASK (RHF_USE_EGR_BFR_MASK << RHF_USE_EGR_BFR_SHIFT)
++
++#define RHF_EGR_INDEX_SHIFT	16
++#define RHF_EGR_INDEX_MASK	0x7ffull
++#define RHF_EGR_INDEX_SMASK (RHF_EGR_INDEX_MASK << RHF_EGR_INDEX_SHIFT)
++
++#define RHF_DC_INFO_SHIFT	27
++#define RHF_DC_INFO_MASK	0x1ull
++#define RHF_DC_INFO_SMASK (RHF_DC_INFO_MASK << RHF_DC_INFO_SHIFT)
++
++#define RHF_RCV_SEQ_SHIFT	28
++#define RHF_RCV_SEQ_MASK	0xfull
++#define RHF_RCV_SEQ_SMASK (RHF_RCV_SEQ_MASK << RHF_RCV_SEQ_SHIFT)
++
++#define RHF_EGR_OFFSET_SHIFT	32
++#define RHF_EGR_OFFSET_MASK	0xfffull
++#define RHF_EGR_OFFSET_SMASK (RHF_EGR_OFFSET_MASK << RHF_EGR_OFFSET_SHIFT)
++#define RHF_HDRQ_OFFSET_SHIFT	44
++#define RHF_HDRQ_OFFSET_MASK	0x1ffull
++#define RHF_HDRQ_OFFSET_SMASK (RHF_HDRQ_OFFSET_MASK << RHF_HDRQ_OFFSET_SHIFT)
++#define RHF_K_HDR_LEN_ERR	(0x1ull << 53)
++#define RHF_DC_UNC_ERR		(0x1ull << 54)
++#define RHF_DC_ERR		(0x1ull << 55)
++#define RHF_RCV_TYPE_ERR_SHIFT	56
++#define RHF_RCV_TYPE_ERR_MASK	0x7ul
++#define RHF_RCV_TYPE_ERR_SMASK (RHF_RCV_TYPE_ERR_MASK << RHF_RCV_TYPE_ERR_SHIFT)
++#define RHF_TID_ERR		(0x1ull << 59)
++#define RHF_LEN_ERR		(0x1ull << 60)
++#define RHF_ECC_ERR		(0x1ull << 61)
++#define RHF_RESERVED		(0x1ull << 62)
++#define RHF_ICRC_ERR		(0x1ull << 63)
++
++#define RHF_ERROR_SMASK 0xffe0000000000000ull		/* bits 63:53 */
++
++/* RHF receive types */
++#define RHF_RCV_TYPE_EXPECTED 0
++#define RHF_RCV_TYPE_EAGER    1
++#define RHF_RCV_TYPE_IB       2 /* normal IB, IB Raw, or IPv6 */
++#define RHF_RCV_TYPE_ERROR    3
++#define RHF_RCV_TYPE_BYPASS   4
++#define RHF_RCV_TYPE_INVALID5 5
++#define RHF_RCV_TYPE_INVALID6 6
++#define RHF_RCV_TYPE_INVALID7 7
++
++/* RHF receive type error - expected packet errors */
++#define RHF_RTE_EXPECTED_FLOW_SEQ_ERR	0x2
++#define RHF_RTE_EXPECTED_FLOW_GEN_ERR	0x4
++
++/* RHF receive type error - eager packet errors */
++#define RHF_RTE_EAGER_NO_ERR		0x0
++
++/* RHF receive type error - IB packet errors */
++#define RHF_RTE_IB_NO_ERR		0x0
++
++/* RHF receive type error - error packet errors */
++#define RHF_RTE_ERROR_NO_ERR		0x0
++#define RHF_RTE_ERROR_OP_CODE_ERR	0x1
++#define RHF_RTE_ERROR_KHDR_MIN_LEN_ERR	0x2
++#define RHF_RTE_ERROR_KHDR_HCRC_ERR	0x3
++#define RHF_RTE_ERROR_KHDR_KVER_ERR	0x4
++#define RHF_RTE_ERROR_CONTEXT_ERR	0x5
++#define RHF_RTE_ERROR_KHDR_TID_ERR	0x6
++
++/* RHF receive type error - bypass packet errors */
++#define RHF_RTE_BYPASS_NO_ERR		0x0
++
++/* MAX RcvSEQ */
++#define RHF_MAX_SEQ 13
++
++/* IB - LRH header constants */
++#define HFI2_LRH_GRH 0x0003      /* 1. word of IB LRH - next header: GRH */
++#define HFI2_LRH_BTH 0x0002      /* 1. word of IB LRH - next header: BTH */
++
++/* misc. */
++#define SC15_PACKET 0xF
++#define SIZE_OF_CRC 1
++#define SIZE_OF_LT 1
++#define MAX_16B_PADDING 16 /* CRC = 4 or 8, LT = 1, Pad = 0 to 7 bytes */
++
++#define LIM_MGMT_P_KEY       0x7FFF
++#define FULL_MGMT_P_KEY      0xFFFF
++
++#define DEFAULT_P_KEY LIM_MGMT_P_KEY
++
++#define HFI2_PSM_IOC_BASE_SEQ 0x0
++
++/* Number of BTH.PSN bits used for sequence number in expected rcvs */
++#define HFI2_KDETH_BTH_SEQ_SHIFT 11
++#define HFI2_KDETH_BTH_SEQ_MASK (BIT(HFI2_KDETH_BTH_SEQ_SHIFT) - 1)
++
++static inline __u64 rhf_to_cpu(const __le32 *rbuf)
 +{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	u32 qpn = (u32)qpn_from_mac(priv->netdev->dev_addr);
-+	struct hfi2_ibport *ibp = to_iport(priv->device, priv->port_num);
-+	struct rvt_qp *qp;
-+	int ret = -EINVAL;
-+
-+	rcu_read_lock();
-+
-+	qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp, qpn);
-+	if (qp) {
-+		rvt_get_qp(qp);
-+		rcu_read_unlock();
-+		if (set_qkey)
-+			priv->qkey = qkey;
-+
-+		/* attach QP to multicast group */
-+		ret = ib_attach_mcast(&qp->ibqp, mgid, mlid);
-+		rvt_put_qp(qp);
-+	} else {
-+		rcu_read_unlock();
-+	}
-+
-+	return ret;
++	return __le64_to_cpu(*((__le64 *)rbuf));
 +}
 +
-+static int hfi2_ipoib_mcast_detach(struct net_device *dev,
-+				   struct ib_device *device,
-+				   union ib_gid *mgid,
-+				   u16 mlid)
++static inline u64 wfr_rhf_err_flags(u64 rhf)
 +{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	u32 qpn = (u32)qpn_from_mac(priv->netdev->dev_addr);
-+	struct hfi2_ibport *ibp = to_iport(priv->device, priv->port_num);
-+	struct rvt_qp *qp;
-+	int ret = -EINVAL;
-+
-+	rcu_read_lock();
-+
-+	qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp, qpn);
-+	if (qp) {
-+		rvt_get_qp(qp);
-+		rcu_read_unlock();
-+		ret = ib_detach_mcast(&qp->ibqp, mgid, mlid);
-+		rvt_put_qp(qp);
-+	} else {
-+		rcu_read_unlock();
-+	}
-+	return ret;
++	return rhf & RHF_ERROR_SMASK;
 +}
 +
-+static void hfi2_ipoib_netdev_dtor(struct net_device *dev)
++static inline u32 rhf_rcv_type(u64 rhf)
 +{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+
-+	hfi2_ipoib_txreq_deinit(priv);
-+	hfi2_ipoib_rxq_deinit(priv->netdev);
++	return (rhf >> RHF_RCV_TYPE_SHIFT) & RHF_RCV_TYPE_MASK;
 +}
 +
-+static void hfi2_ipoib_set_id(struct net_device *dev, int id)
++static inline u32 wfr_rhf_rcv_type_err(u64 rhf)
 +{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+
-+	priv->pkey_index = (u16)id;
-+	ib_query_pkey(priv->device,
-+		      priv->port_num,
-+		      priv->pkey_index,
-+		      &priv->pkey);
++	return (rhf >> RHF_RCV_TYPE_ERR_SHIFT) & RHF_RCV_TYPE_ERR_MASK;
 +}
 +
-+static int hfi2_ipoib_setup_rn(struct ib_device *device,
-+			       u32 port_num,
-+			       struct net_device *netdev,
-+			       void *param)
++/* return size is in bytes, not DWORDs */
++static inline u32 rhf_pkt_len(u64 rhf)
 +{
-+	struct hfi2_devdata *dd = dd_from_ibdev(device);
-+	struct rdma_netdev *rn = netdev_priv(netdev);
-+	struct hfi2_ipoib_dev_priv *priv;
-+	int rc;
-+
-+	rn->send = hfi2_ipoib_send;
-+	rn->tx_timeout = hfi2_ipoib_tx_timeout;
-+	rn->attach_mcast = hfi2_ipoib_mcast_attach;
-+	rn->detach_mcast = hfi2_ipoib_mcast_detach;
-+	rn->set_id = hfi2_ipoib_set_id;
-+	rn->hca = device;
-+	rn->port_num = port_num;
-+	rn->mtu = netdev->mtu;
-+
-+	priv = hfi2_ipoib_priv(netdev);
-+	priv->dd = dd;
-+	priv->ppd = &dd->pport[port_num - 1];
-+	priv->netdev = netdev;
-+	priv->device = device;
-+	priv->port_num = port_num;
-+	priv->netdev_ops = netdev->netdev_ops;
-+
-+	ib_query_pkey(device, port_num, priv->pkey_index, &priv->pkey);
-+
-+	rc = hfi2_ipoib_txreq_init(priv);
-+	if (rc) {
-+		dd_dev_err(dd, "IPoIB netdev TX init - failed(%d)\n", rc);
-+		return rc;
-+	}
-+
-+	rc = hfi2_ipoib_rxq_init(netdev);
-+	if (rc) {
-+		dd_dev_err(dd, "IPoIB netdev RX init - failed(%d)\n", rc);
-+		hfi2_ipoib_txreq_deinit(priv);
-+		return rc;
-+	}
-+
-+	netdev->netdev_ops = &hfi2_ipoib_netdev_ops;
-+
-+	netdev->priv_destructor = hfi2_ipoib_netdev_dtor;
-+	netdev->needs_free_netdev = true;
-+	netdev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
-+
-+	return 0;
++	return ((rhf & RHF_PKT_LEN_SMASK) >> RHF_PKT_LEN_SHIFT) << 2;
 +}
 +
-+int hfi2_ipoib_rn_get_params(struct ib_device *device,
-+			     u32 port_num,
-+			     enum rdma_netdev_t type,
-+			     struct rdma_netdev_alloc_params *params)
++static inline u32 wfr_rhf_egr_index(u64 rhf)
 +{
-+	struct hfi2_devdata *dd = dd_from_ibdev(device);
-+	struct hfi2_devrsrcs *dr = &dd->rsrcs;
-+	struct hfi2_portrsrcs *pr;
-+
-+	if (type != RDMA_NETDEV_IPOIB)
-+		return -EOPNOTSUPP;
-+
-+	if (!port_num || port_num > dd->num_pports)
-+		return -EINVAL;
-+	pr = &dr->ppr[port_num - 1];
-+
-+	if (!HFI2_CAP_IS_KSET(AIP) || !pr->num_netdev_contexts)
-+		return -EOPNOTSUPP;
-+
-+	params->sizeof_priv = sizeof(struct hfi2_ipoib_rdma_netdev);
-+	params->txqs = dr->last_sdma_engine - dr->first_sdma_engine;
-+	params->rxqs = pr->num_netdev_contexts;
-+	params->param = NULL;
-+	params->initialize_rdma_netdev = hfi2_ipoib_setup_rn;
-+
-+	return 0;
++	return (rhf >> RHF_EGR_INDEX_SHIFT) & RHF_EGR_INDEX_MASK;
 +}
-diff --git a/drivers/infiniband/hw/hfi2/ipoib_rx.c b/drivers/infiniband/hw/hfi2/ipoib_rx.c
++
++static inline u32 wfr_rhf_rcv_seq(u64 rhf)
++{
++	return (rhf >> RHF_RCV_SEQ_SHIFT) & RHF_RCV_SEQ_MASK;
++}
++
++static inline u32 jkr_rhf_rcv_seq(u64 rhf)
++{
++	return (rhf >> 56) & 0xf; /* RHF.RcvSeq */
++}
++
++/* returned offset is in DWORDS */
++static inline u32 rhf_hdrq_offset(u64 rhf)
++{
++	return (rhf >> RHF_HDRQ_OFFSET_SHIFT) & RHF_HDRQ_OFFSET_MASK;
++}
++
++static inline u64 rhf_use_egr_bfr(u64 rhf)
++{
++	return rhf & RHF_USE_EGR_BFR_SMASK;
++}
++
++static inline u64 wfr_rhf_dc_info(u64 rhf)
++{
++	return rhf & RHF_DC_INFO_SMASK;
++}
++
++static inline u32 rhf_egr_buf_offset(u64 rhf)
++{
++	return (rhf >> RHF_EGR_OFFSET_SHIFT) & RHF_EGR_OFFSET_MASK;
++}
++#endif /* _COMMON_H */
+diff --git a/drivers/infiniband/hw/hfi2/debugfs.h b/drivers/infiniband/hw/hfi2/debugfs.h
 new file mode 100644
-index 000000000000..be001c3d9b29
+index 000000000000..c41b3a468dc9
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/ipoib_rx.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++++ b/drivers/infiniband/hw/hfi2/debugfs.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/*
-+ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2015, 2016, 2018 Intel Corporation.
 + * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
 + */
 +
-+#include "netdev.h"
-+#include "ipoib.h"
++#ifndef _HFI2_DEBUGFS_H
++#define _HFI2_DEBUGFS_H
 +
-+#define HFI2_IPOIB_SKB_PAD ((NET_SKB_PAD) + (NET_IP_ALIGN))
++struct hfi2_ibdev;
 +
-+static void copy_ipoib_buf(struct sk_buff *skb, void *data, int size)
-+{
-+	skb_checksum_none_assert(skb);
-+	skb->protocol = *((__be16 *)data);
-+
-+	skb_put_data(skb, data, size);
-+	skb->mac_header = HFI2_IPOIB_PSEUDO_LEN;
-+	skb_pull(skb, HFI2_IPOIB_ENCAP_LEN);
++#define DEBUGFS_SEQ_FILE_OPS(name) \
++static const struct seq_operations _##name##_seq_ops = { \
++	.start = _##name##_seq_start, \
++	.next  = _##name##_seq_next, \
++	.stop  = _##name##_seq_stop, \
++	.show  = _##name##_seq_show \
 +}
 +
-+static struct sk_buff *prepare_frag_skb(struct napi_struct *napi, int size)
-+{
-+	struct sk_buff *skb;
-+	int skb_size = SKB_DATA_ALIGN(size + HFI2_IPOIB_SKB_PAD);
-+	void *frag;
-+
-+	skb_size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+	skb_size = SKB_DATA_ALIGN(skb_size);
-+	frag = napi_alloc_frag(skb_size);
-+
-+	if (unlikely(!frag))
-+		return napi_alloc_skb(napi, size);
-+
-+	skb = build_skb(frag, skb_size);
-+
-+	if (unlikely(!skb)) {
-+		skb_free_frag(frag);
-+		return NULL;
-+	}
-+
-+	skb_reserve(skb, HFI2_IPOIB_SKB_PAD);
-+	return skb;
++#define DEBUGFS_SEQ_FILE_OPEN(name) \
++static int _##name##_open(struct inode *inode, struct file *s) \
++{ \
++	struct seq_file *seq; \
++	int ret; \
++	ret =  seq_open(s, &_##name##_seq_ops); \
++	if (ret) \
++		return ret; \
++	seq = s->private_data; \
++	seq->private = inode->i_private; \
++	return 0; \
 +}
 +
-+struct sk_buff *hfi2_ipoib_prepare_skb(struct hfi2_netdev_rxq *rxq,
-+				       int size, void *data)
-+{
-+	struct napi_struct *napi = &rxq->napi;
-+	int skb_size = size + HFI2_IPOIB_ENCAP_LEN;
-+	struct sk_buff *skb;
-+
-+	/*
-+	 * For smaller(4k + skb overhead) allocations we will go using
-+	 * napi cache. Otherwise we will try to use napi frag cache.
-+	 */
-+	if (size <= SKB_WITH_OVERHEAD(PAGE_SIZE))
-+		skb = napi_alloc_skb(napi, skb_size);
-+	else
-+		skb = prepare_frag_skb(napi, skb_size);
-+
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	copy_ipoib_buf(skb, data, size);
-+
-+	return skb;
++#define DEBUGFS_FILE_OPS(name) \
++static const struct file_operations _##name##_file_ops = { \
++	.owner   = THIS_MODULE, \
++	.open    = _##name##_open, \
++	.read    = seq_read, \
++	.llseek  = seq_lseek, \
++	.release = seq_release \
 +}
 +
-+int hfi2_ipoib_rxq_init(struct net_device *netdev)
++#ifdef CONFIG_DEBUG_FS
++void hfi2_dbg_ibdev_init(struct hfi2_ibdev *ibd);
++void hfi2_dbg_ibdev_exit(struct hfi2_ibdev *ibd);
++void hfi2_dbg_init(void);
++void hfi2_dbg_exit(void);
++
++#else
++static inline void hfi2_dbg_ibdev_init(struct hfi2_ibdev *ibd)
 +{
-+	struct hfi2_ipoib_dev_priv *ipoib_priv = hfi2_ipoib_priv(netdev);
-+	struct hfi2_pportdata *ppd = ipoib_priv->ppd;
-+	int ret;
-+
-+	ret = hfi2_netdev_rx_init(ppd);
-+	if (ret)
-+		return ret;
-+
-+	hfi2_init_aip_rsm(ppd);
-+
-+	return ret;
 +}
 +
-+void hfi2_ipoib_rxq_deinit(struct net_device *netdev)
++static inline void hfi2_dbg_ibdev_exit(struct hfi2_ibdev *ibd)
 +{
-+	struct hfi2_ipoib_dev_priv *ipoib_priv = hfi2_ipoib_priv(netdev);
-+	struct hfi2_pportdata *ppd = ipoib_priv->ppd;
-+
-+	hfi2_deinit_aip_rsm(ppd);
-+	hfi2_netdev_rx_destroy(ppd);
 +}
-diff --git a/drivers/infiniband/hw/hfi2/ipoib_tx.c b/drivers/infiniband/hw/hfi2/ipoib_tx.c
++
++static inline void hfi2_dbg_init(void)
++{
++}
++
++static inline void hfi2_dbg_exit(void)
++{
++}
++#endif
++
++#endif                          /* _HFI2_DEBUGFS_H */
+diff --git a/drivers/infiniband/hw/hfi2/fault.h b/drivers/infiniband/hw/hfi2/fault.h
 new file mode 100644
-index 000000000000..1c2de57cfae2
+index 000000000000..58736ce447c0
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/ipoib_tx.c
-@@ -0,0 +1,872 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++++ b/drivers/infiniband/hw/hfi2/fault.h
+@@ -0,0 +1,70 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/*
-+ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2018 Intel Corporation.
 + * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
 + */
 +
-+/*
-+ * This file contains HFI2 support for IPOIB SDMA functionality
-+ */
++#ifndef _HFI2_FAULT_H
++#define _HFI2_FAULT_H
++
++#include <linux/fault-inject.h>
++#include <linux/dcache.h>
++#include <linux/bitops.h>
++#include <linux/kernel.h>
++#include <rdma/rdma_vt.h>
 +
-+#include <linux/log2.h>
-+#include <linux/circ_buf.h>
-+
-+#include "sdma.h"
-+#include "verbs.h"
-+#include "trace_ibhdrs.h"
-+#include "ipoib.h"
-+#include "trace_tx.h"
-+#include "qp.h"
-+
-+/* Add a convenience helper */
-+#define CIRC_ADD(val, add, size) (((val) + (add)) & ((size) - 1))
-+#define CIRC_NEXT(val, size) CIRC_ADD(val, 1, size)
-+#define CIRC_PREV(val, size) CIRC_ADD(val, -1, size)
-+
-+struct ipoib_txparms {
-+	struct hfi2_devdata        *dd;
-+	struct rdma_ah_attr        *ah_attr;
-+	struct hfi2_ibport         *ibp;
-+	struct hfi2_ipoib_txq      *txq;
-+	union hfi2_ipoib_flow       flow;
-+	u32                         dqpn;
-+	u8                          hdr_dwords;
-+	u8                          entropy;
-+};
-+
-+static struct ipoib_txreq *
-+hfi2_txreq_from_idx(struct hfi2_ipoib_circ_buf *r, u32 idx)
-+{
-+	return (struct ipoib_txreq *)(r->items + (idx << r->shift));
-+}
-+
-+static u32 hfi2_ipoib_txreqs(const u64 sent, const u64 completed)
-+{
-+	return sent - completed;
-+}
-+
-+static u64 hfi2_ipoib_used(struct hfi2_ipoib_txq *txq)
-+{
-+	return hfi2_ipoib_txreqs(txq->tx_ring.sent_txreqs,
-+				 txq->tx_ring.complete_txreqs);
-+}
-+
-+static void hfi2_ipoib_stop_txq(struct hfi2_ipoib_txq *txq)
-+{
-+	trace_hfi2_txq_stop(txq);
-+	if (atomic_inc_return(&txq->tx_ring.stops) == 1)
-+		netif_stop_subqueue(txq->priv->netdev, txq->q_idx);
-+}
-+
-+static void hfi2_ipoib_wake_txq(struct hfi2_ipoib_txq *txq)
-+{
-+	trace_hfi2_txq_wake(txq);
-+	if (atomic_dec_and_test(&txq->tx_ring.stops))
-+		netif_wake_subqueue(txq->priv->netdev, txq->q_idx);
-+}
-+
-+static uint hfi2_ipoib_ring_hwat(struct hfi2_ipoib_txq *txq)
-+{
-+	return min_t(uint, txq->priv->netdev->tx_queue_len,
-+		     txq->tx_ring.max_items - 1);
-+}
-+
-+static uint hfi2_ipoib_ring_lwat(struct hfi2_ipoib_txq *txq)
-+{
-+	return min_t(uint, txq->priv->netdev->tx_queue_len,
-+		     txq->tx_ring.max_items) >> 1;
-+}
-+
-+static void hfi2_ipoib_check_queue_depth(struct hfi2_ipoib_txq *txq)
-+{
-+	++txq->tx_ring.sent_txreqs;
-+	if (hfi2_ipoib_used(txq) >= hfi2_ipoib_ring_hwat(txq) &&
-+	    !atomic_xchg(&txq->tx_ring.ring_full, 1)) {
-+		trace_hfi2_txq_full(txq);
-+		hfi2_ipoib_stop_txq(txq);
-+	}
-+}
-+
-+static void hfi2_ipoib_check_queue_stopped(struct hfi2_ipoib_txq *txq)
-+{
-+	struct net_device *dev = txq->priv->netdev;
-+
-+	/* If shutting down just return as queue state is irrelevant */
-+	if (unlikely(dev->reg_state != NETREG_REGISTERED))
-+		return;
-+
-+	/*
-+	 * When the queue has been drained to less than half full it will be
-+	 * restarted.
-+	 * The size of the txreq ring is fixed at initialization.
-+	 * The tx queue len can be adjusted upward while the interface is
-+	 * running.
-+	 * The tx queue len can be large enough to overflow the txreq_ring.
-+	 * Use the minimum of the current tx_queue_len or the rings max txreqs
-+	 * to protect against ring overflow.
-+	 */
-+	if (hfi2_ipoib_used(txq) < hfi2_ipoib_ring_lwat(txq) &&
-+	    atomic_xchg(&txq->tx_ring.ring_full, 0)) {
-+		trace_hfi2_txq_xmit_unstopped(txq);
-+		hfi2_ipoib_wake_txq(txq);
-+	}
-+}
-+
-+static void hfi2_ipoib_free_tx(struct ipoib_txreq *tx, int budget)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = tx->txq->priv;
-+
-+	if (likely(!tx->sdma_status)) {
-+		dev_sw_netstats_tx_add(priv->netdev, 1, tx->skb->len);
-+	} else {
-+		++priv->netdev->stats.tx_errors;
-+		dd_dev_warn(priv->dd,
-+			    "%s: Status = 0x%x pbc 0x%llx txq = %d sde = %d\n",
-+			    __func__, tx->sdma_status,
-+			    le64_to_cpu(tx->sdma_hdr->pbc), tx->txq->q_idx,
-+			    tx->txq->sde->this_idx);
-+	}
-+
-+	napi_consume_skb(tx->skb, budget);
-+	tx->skb = NULL;
-+	sdma_txclean(priv->dd, &tx->txreq);
-+}
-+
-+static void hfi2_ipoib_drain_tx_ring(struct hfi2_ipoib_txq *txq)
-+{
-+	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
-+	int i;
-+	struct ipoib_txreq *tx;
-+
-+	for (i = 0; i < tx_ring->max_items; i++) {
-+		tx = hfi2_txreq_from_idx(tx_ring, i);
-+		tx->complete = 0;
-+		dev_kfree_skb_any(tx->skb);
-+		tx->skb = NULL;
-+		sdma_txclean(txq->priv->dd, &tx->txreq);
-+	}
-+	tx_ring->head = 0;
-+	tx_ring->tail = 0;
-+	tx_ring->complete_txreqs = 0;
-+	tx_ring->sent_txreqs = 0;
-+	tx_ring->avail = hfi2_ipoib_ring_hwat(txq);
-+}
-+
-+static int hfi2_ipoib_poll_tx_ring(struct napi_struct *napi, int budget)
-+{
-+	struct hfi2_ipoib_txq *txq =
-+		container_of(napi, struct hfi2_ipoib_txq, napi);
-+	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
-+	u32 head = tx_ring->head;
-+	u32 max_tx = tx_ring->max_items;
-+	int work_done;
-+	struct ipoib_txreq *tx =  hfi2_txreq_from_idx(tx_ring, head);
-+
-+	trace_hfi2_txq_poll(txq);
-+	for (work_done = 0; work_done < budget; work_done++) {
-+		/* See hfi2_ipoib_sdma_complete() */
-+		if (!smp_load_acquire(&tx->complete))
-+			break;
-+		tx->complete = 0;
-+		trace_hfi2_tx_produce(tx, head);
-+		hfi2_ipoib_free_tx(tx, budget);
-+		head = CIRC_NEXT(head, max_tx);
-+		tx =  hfi2_txreq_from_idx(tx_ring, head);
-+	}
-+	tx_ring->complete_txreqs += work_done;
-+
-+	/* Finished freeing tx items so store the head value. */
-+	smp_store_release(&tx_ring->head, head);
-+
-+	hfi2_ipoib_check_queue_stopped(txq);
-+
-+	if (work_done < budget)
-+		napi_complete_done(napi, work_done);
-+
-+	return work_done;
-+}
-+
-+static void hfi2_ipoib_sdma_complete(struct sdma_txreq *txreq, int status)
-+{
-+	struct ipoib_txreq *tx = container_of(txreq, struct ipoib_txreq, txreq);
-+
-+	trace_hfi2_txq_complete(tx->txq);
-+	tx->sdma_status = status;
-+	/* see hfi2_ipoib_poll_tx_ring */
-+	smp_store_release(&tx->complete, 1);
-+	napi_schedule_irqoff(&tx->txq->napi);
-+}
-+
-+static int hfi2_ipoib_build_ulp_payload(struct ipoib_txreq *tx,
-+					struct ipoib_txparms *txp)
-+{
-+	struct hfi2_devdata *dd = txp->dd;
-+	struct sdma_txreq *txreq = &tx->txreq;
-+	struct sk_buff *skb = tx->skb;
-+	int ret = 0;
-+	int i;
-+
-+	if (skb_headlen(skb)) {
-+		ret = sdma_txadd_kvaddr(dd, txreq, skb->data, skb_headlen(skb));
-+		if (unlikely(ret))
-+			return ret;
-+	}
-+
-+	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
-+		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
-+
-+		ret = sdma_txadd_page(dd,
-+				      txreq,
-+				      skb_frag_page(frag),
-+				      skb_frag_off(frag),
-+				      skb_frag_size(frag));
-+		if (unlikely(ret))
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int hfi2_ipoib_build_tx_desc(struct ipoib_txreq *tx,
-+				    struct ipoib_txparms *txp)
-+{
-+	struct hfi2_devdata *dd = txp->dd;
-+	struct sdma_txreq *txreq = &tx->txreq;
-+	struct hfi2_sdma_header *sdma_hdr = tx->sdma_hdr;
-+	u16 pkt_bytes =
-+		sizeof(sdma_hdr->pbc) + (txp->hdr_dwords << 2) + tx->skb->len;
-+	int ret;
-+
-+	ret = sdma_txinit(dd, txreq, 0, pkt_bytes, hfi2_ipoib_sdma_complete);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	/* add pbc + headers */
-+	ret = sdma_txadd_kvaddr(dd,
-+				txreq,
-+				sdma_hdr,
-+				sizeof(sdma_hdr->pbc) + (txp->hdr_dwords << 2));
-+	if (unlikely(ret))
-+		return ret;
-+
-+	/* add the ulp payload */
-+	return hfi2_ipoib_build_ulp_payload(tx, txp);
-+}
-+
-+static void hfi2_ipoib_build_ib_tx_headers(struct ipoib_txreq *tx,
-+					   struct ipoib_txparms *txp)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = tx->txq->priv;
-+	struct send_context *sc = hfi2_qp_to_send_context(priv->qp, txp->flow.sc5);
-+	struct hfi2_sdma_header *sdma_hdr = tx->sdma_hdr;
-+	struct sk_buff *skb = tx->skb;
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(txp->ibp);
-+	struct hfi2_devdata *dd = ppd->dd;
-+	struct rdma_ah_attr *ah_attr = txp->ah_attr;
-+	struct ib_other_headers *ohdr;
-+	struct ib_grh *grh;
-+	u64 pbc;
-+	u16 dwords;
-+	u16 slid;
-+	u16 dlid;
-+	u16 lrh0;
-+	u32 bth0;
-+	u32 sqpn = (u32)(priv->netdev->dev_addr[1] << 16 |
-+			 priv->netdev->dev_addr[2] << 8 |
-+			 priv->netdev->dev_addr[3]);
-+	u16 payload_dwords;
-+	u8 pad_cnt;
-+
-+	pad_cnt = -skb->len & 3;
-+
-+	/* Includes ICRC */
-+	payload_dwords = ((skb->len + pad_cnt) >> 2) + SIZE_OF_CRC;
-+
-+	/* header size in dwords LRH+BTH+DETH = (8+12+8)/4. */
-+	txp->hdr_dwords = 7;
-+
-+	if (rdma_ah_get_ah_flags(ah_attr) & IB_AH_GRH) {
-+		grh = &sdma_hdr->hdr.ibh.u.l.grh;
-+		txp->hdr_dwords +=
-+			hfi2_make_grh(txp->ibp,
-+				      grh,
-+				      rdma_ah_read_grh(ah_attr),
-+				      txp->hdr_dwords - LRH_9B_DWORDS,
-+				      payload_dwords);
-+		lrh0 = HFI2_LRH_GRH;
-+		ohdr = &sdma_hdr->hdr.ibh.u.l.oth;
-+	} else {
-+		lrh0 = HFI2_LRH_BTH;
-+		ohdr = &sdma_hdr->hdr.ibh.u.oth;
-+	}
-+
-+	lrh0 |= (rdma_ah_get_sl(ah_attr) & 0xf) << 4;
-+	lrh0 |= (txp->flow.sc5 & 0xf) << 12;
-+
-+	dlid = opa_get_lid(rdma_ah_get_dlid(ah_attr), 9B);
-+	if (dlid == be16_to_cpu(IB_LID_PERMISSIVE)) {
-+		slid = be16_to_cpu(IB_LID_PERMISSIVE);
-+	} else {
-+		u16 lid = (u16)ppd->lid;
-+
-+		if (lid) {
-+			lid |= rdma_ah_get_path_bits(ah_attr) &
-+				((1 << ppd->lmc) - 1);
-+			slid = lid;
-+		} else {
-+			slid = be16_to_cpu(IB_LID_PERMISSIVE);
-+		}
-+	}
-+
-+	/* Includes ICRC */
-+	dwords = txp->hdr_dwords + payload_dwords;
-+
-+	/* Build the lrh */
-+	sdma_hdr->hdr.hdr_type = HFI2_PKT_TYPE_9B;
-+	hfi2_make_ib_hdr(&sdma_hdr->hdr.ibh, lrh0, dwords, dlid, slid);
-+
-+	/* Build the bth */
-+	bth0 = (IB_OPCODE_UD_SEND_ONLY << 24) | (pad_cnt << 20) | priv->pkey;
-+
-+	ohdr->bth[0] = cpu_to_be32(bth0);
-+	ohdr->bth[1] = cpu_to_be32(txp->dqpn);
-+	ohdr->bth[2] = cpu_to_be32(mask_psn((u32)txp->txq->tx_ring.sent_txreqs));
-+
-+	/* Build the deth */
-+	ohdr->u.ud.deth[0] = cpu_to_be32(priv->qkey);
-+	ohdr->u.ud.deth[1] = cpu_to_be32((txp->entropy <<
-+					  HFI2_IPOIB_ENTROPY_SHIFT) | sqpn);
-+
-+	/* Construct the pbc. */
-+	pbc = dd->params->create_pbc(ppd, false, pbc_sc4_flag(txp->flow.sc5), 0,
-+				     sc_to_vlt(ppd, txp->flow.sc5),
-+				     dwords - SIZE_OF_CRC +
-+					(sizeof(sdma_hdr->pbc) >> 2),
-+				     PBC_L2_9B, dlid,
-+				     sc->hw_context);
-+	sdma_hdr->pbc = cpu_to_le64(pbc);
-+}
-+
-+static struct ipoib_txreq *hfi2_ipoib_send_dma_common(struct net_device *dev,
-+						      struct sk_buff *skb,
-+						      struct ipoib_txparms *txp)
-+{
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(txp->ibp);
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	struct hfi2_ipoib_txq *txq = txp->txq;
-+	struct ipoib_txreq *tx;
-+	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
-+	u32 tail = tx_ring->tail;
-+	int ret;
-+
-+	if (unlikely(!tx_ring->avail)) {
-+		u32 head;
-+
-+		if (hfi2_ipoib_used(txq) >= hfi2_ipoib_ring_hwat(txq))
-+			/* This shouldn't happen with a stopped queue */
-+			return ERR_PTR(-ENOMEM);
-+		/* See hfi2_ipoib_poll_tx_ring() */
-+		head = smp_load_acquire(&tx_ring->head);
-+		tx_ring->avail =
-+			min_t(u32, hfi2_ipoib_ring_hwat(txq),
-+			      CIRC_CNT(head, tail, tx_ring->max_items));
-+	} else {
-+		tx_ring->avail--;
-+	}
-+	tx = hfi2_txreq_from_idx(tx_ring, tail);
-+	trace_hfi2_txq_alloc_tx(txq);
-+
-+	/* so that we can test if the sdma descriptors are there */
-+	tx->txreq.num_desc = 0;
-+	tx->txq = txq;
-+	tx->skb = skb;
-+	INIT_LIST_HEAD(&tx->txreq.list);
-+
-+	hfi2_ipoib_build_ib_tx_headers(tx, txp);
-+
-+	ret = hfi2_ipoib_build_tx_desc(tx, txp);
-+	if (likely(!ret)) {
-+		if (txq->flow.as_int != txp->flow.as_int) {
-+			txq->flow.tx_queue = txp->flow.tx_queue;
-+			txq->flow.sc5 = txp->flow.sc5;
-+			txq->sde = sdma_select_engine_sc(ppd,
-+							 txp->flow.tx_queue,
-+							 txp->flow.sc5);
-+			trace_hfi2_flow_switch(txq);
-+		}
-+
-+		return tx;
-+	}
-+
-+	sdma_txclean(priv->dd, &tx->txreq);
-+
-+	return ERR_PTR(ret);
-+}
-+
-+static int hfi2_ipoib_submit_tx_list(struct net_device *dev,
-+				     struct hfi2_ipoib_txq *txq)
-+{
-+	int ret;
-+	u16 count_out;
-+
-+	ret = sdma_send_txlist(txq->sde,
-+			       iowait_get_ib_work(&txq->wait),
-+			       &txq->tx_list,
-+			       &count_out);
-+	if (likely(!ret) || ret == -EBUSY || ret == -ECOMM)
-+		return ret;
-+
-+	dd_dev_warn(txq->priv->dd, "cannot send skb tx list, err %d.\n", ret);
-+
-+	return ret;
-+}
-+
-+static int hfi2_ipoib_flush_tx_list(struct net_device *dev,
-+				    struct hfi2_ipoib_txq *txq)
-+{
-+	int ret = 0;
-+
-+	if (!list_empty(&txq->tx_list)) {
-+		/* Flush the current list */
-+		ret = hfi2_ipoib_submit_tx_list(dev, txq);
-+
-+		if (unlikely(ret))
-+			if (ret != -EBUSY)
-+				++dev->stats.tx_carrier_errors;
-+	}
-+
-+	return ret;
-+}
-+
-+static int hfi2_ipoib_submit_tx(struct hfi2_ipoib_txq *txq,
-+				struct ipoib_txreq *tx)
-+{
-+	int ret;
-+
-+	ret = sdma_send_txreq(txq->sde,
-+			      iowait_get_ib_work(&txq->wait),
-+			      &tx->txreq,
-+			      txq->pkts_sent);
-+	if (likely(!ret)) {
-+		txq->pkts_sent = true;
-+		iowait_starve_clear(txq->pkts_sent, &txq->wait);
-+	}
-+
-+	return ret;
-+}
-+
-+static int hfi2_ipoib_send_dma_single(struct net_device *dev,
-+				      struct sk_buff *skb,
-+				      struct ipoib_txparms *txp)
-+{
-+	struct hfi2_ipoib_txq *txq = txp->txq;
-+	struct hfi2_ipoib_circ_buf *tx_ring;
-+	struct ipoib_txreq *tx;
-+	int ret;
-+
-+	tx = hfi2_ipoib_send_dma_common(dev, skb, txp);
-+	if (IS_ERR(tx)) {
-+		int ret = PTR_ERR(tx);
-+
-+		dev_kfree_skb_any(skb);
-+
-+		if (ret == -ENOMEM)
-+			++dev->stats.tx_errors;
-+		else
-+			++dev->stats.tx_carrier_errors;
-+
-+		return NETDEV_TX_OK;
-+	}
-+
-+	tx_ring = &txq->tx_ring;
-+	trace_hfi2_tx_consume(tx, tx_ring->tail);
-+	/* consume tx */
-+	smp_store_release(&tx_ring->tail, CIRC_NEXT(tx_ring->tail, tx_ring->max_items));
-+	ret = hfi2_ipoib_submit_tx(txq, tx);
-+	trace_sdma_output_ibhdr(txq->priv->dd,
-+				&tx->sdma_hdr->hdr,
-+				ib_is_sc5(txp->flow.sc5), ret);
-+	if (likely(!ret)) {
-+tx_ok:
-+		hfi2_ipoib_check_queue_depth(txq);
-+		return NETDEV_TX_OK;
-+	}
-+
-+	txq->pkts_sent = false;
-+
-+	if (ret == -EBUSY || ret == -ECOMM)
-+		goto tx_ok;
-+
-+	/* mark complete and kick napi tx */
-+	smp_store_release(&tx->complete, 1);
-+	napi_schedule(&tx->txq->napi);
-+
-+	++dev->stats.tx_carrier_errors;
-+
-+	return NETDEV_TX_OK;
-+}
-+
-+static int hfi2_ipoib_send_dma_list(struct net_device *dev,
-+				    struct sk_buff *skb,
-+				    struct ipoib_txparms *txp)
-+{
-+	struct hfi2_ipoib_txq *txq = txp->txq;
-+	struct hfi2_ipoib_circ_buf *tx_ring;
-+	struct ipoib_txreq *tx;
-+
-+	/* Has the flow change ? */
-+	if (txq->flow.as_int != txp->flow.as_int) {
-+		int ret;
-+
-+		trace_hfi2_flow_flush(txq);
-+		ret = hfi2_ipoib_flush_tx_list(dev, txq);
-+		if (unlikely(ret)) {
-+			if (ret == -EBUSY)
-+				++dev->stats.tx_dropped;
-+			dev_kfree_skb_any(skb);
-+			return NETDEV_TX_OK;
-+		}
-+	}
-+	tx = hfi2_ipoib_send_dma_common(dev, skb, txp);
-+	if (IS_ERR(tx)) {
-+		int ret = PTR_ERR(tx);
-+
-+		dev_kfree_skb_any(skb);
-+
-+		if (ret == -ENOMEM)
-+			++dev->stats.tx_errors;
-+		else
-+			++dev->stats.tx_carrier_errors;
-+
-+		return NETDEV_TX_OK;
-+	}
-+
-+	tx_ring = &txq->tx_ring;
-+	trace_hfi2_tx_consume(tx, tx_ring->tail);
-+	/* consume tx */
-+	smp_store_release(&tx_ring->tail, CIRC_NEXT(tx_ring->tail, tx_ring->max_items));
-+	list_add_tail(&tx->txreq.list, &txq->tx_list);
-+
-+	hfi2_ipoib_check_queue_depth(txq);
-+
-+	trace_sdma_output_ibhdr(txq->priv->dd,
-+				&tx->sdma_hdr->hdr,
-+				ib_is_sc5(txp->flow.sc5), 0);
-+
-+	if (!netdev_xmit_more())
-+		(void)hfi2_ipoib_flush_tx_list(dev, txq);
-+
-+	return NETDEV_TX_OK;
-+}
-+
-+static u8 hfi2_ipoib_calc_entropy(struct sk_buff *skb)
-+{
-+	if (skb_transport_header_was_set(skb)) {
-+		u8 *hdr = (u8 *)skb_transport_header(skb);
-+
-+		return (hdr[0] ^ hdr[1] ^ hdr[2] ^ hdr[3]);
-+	}
-+
-+	return (u8)skb_get_queue_mapping(skb);
-+}
-+
-+int hfi2_ipoib_send(struct net_device *dev,
-+		    struct sk_buff *skb,
-+		    struct ib_ah *address,
-+		    u32 dqpn)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	struct ipoib_txparms txp;
-+	struct rdma_netdev *rn = netdev_priv(dev);
-+
-+	if (unlikely(skb->len > rn->mtu + HFI2_IPOIB_ENCAP_LEN)) {
-+		dd_dev_warn(priv->dd, "packet len %d (> %d) too long to send, dropping\n",
-+			    skb->len,
-+			    rn->mtu + HFI2_IPOIB_ENCAP_LEN);
-+		++dev->stats.tx_dropped;
-+		++dev->stats.tx_errors;
-+		dev_kfree_skb_any(skb);
-+		return NETDEV_TX_OK;
-+	}
-+
-+	txp.dd = priv->dd;
-+	txp.ah_attr = &ibah_to_rvtah(address)->attr;
-+	txp.ibp = to_iport(priv->device, priv->port_num);
-+	txp.txq = &priv->txqs[skb_get_queue_mapping(skb)];
-+	txp.dqpn = dqpn;
-+	txp.flow.sc5 = txp.ibp->sl_to_sc[rdma_ah_get_sl(txp.ah_attr)];
-+	txp.flow.tx_queue = (u8)skb_get_queue_mapping(skb);
-+	txp.entropy = hfi2_ipoib_calc_entropy(skb);
-+
-+	if (netdev_xmit_more() || !list_empty(&txp.txq->tx_list))
-+		return hfi2_ipoib_send_dma_list(dev, skb, &txp);
-+
-+	return hfi2_ipoib_send_dma_single(dev, skb,  &txp);
-+}
-+
-+/*
-+ * hfi2_ipoib_sdma_sleep - ipoib sdma sleep function
-+ *
-+ * This function gets called from sdma_send_txreq() when there are not enough
-+ * sdma descriptors available to send the packet. It adds Tx queue's wait
-+ * structure to sdma engine's dmawait list to be woken up when descriptors
-+ * become available.
-+ */
-+static int hfi2_ipoib_sdma_sleep(struct sdma_engine *sde,
-+				 struct iowait_work *wait,
-+				 struct sdma_txreq *txreq,
-+				 uint seq,
-+				 bool pkts_sent)
-+{
-+	struct hfi2_ipoib_txq *txq =
-+		container_of(wait->iow, struct hfi2_ipoib_txq, wait);
-+
-+	write_seqlock(&sde->waitlock);
-+
-+	if (likely(txq->priv->netdev->reg_state == NETREG_REGISTERED)) {
-+		if (sdma_progress(sde, seq, txreq)) {
-+			write_sequnlock(&sde->waitlock);
-+			return -EAGAIN;
-+		}
-+
-+		if (list_empty(&txreq->list))
-+			/* came from non-list submit */
-+			list_add_tail(&txreq->list, &txq->tx_list);
-+		if (list_empty(&txq->wait.list)) {
-+			struct hfi2_ibport *ibp = to_iport(txq->priv->device,
-+							   txq->priv->port_num);
-+
-+			if (!atomic_xchg(&txq->tx_ring.no_desc, 1)) {
-+				trace_hfi2_txq_queued(txq);
-+				hfi2_ipoib_stop_txq(txq);
-+			}
-+			ibp->rvp.n_dmawait++;
-+			iowait_queue(pkts_sent, wait->iow, &sde->dmawait);
-+		}
-+
-+		write_sequnlock(&sde->waitlock);
-+		return -EBUSY;
-+	}
-+
-+	write_sequnlock(&sde->waitlock);
-+	return -EINVAL;
-+}
-+
-+/*
-+ * hfi2_ipoib_sdma_wakeup - ipoib sdma wakeup function
-+ *
-+ * This function gets called when SDMA descriptors becomes available and Tx
-+ * queue's wait structure was previously added to sdma engine's dmawait list.
-+ */
-+static void hfi2_ipoib_sdma_wakeup(struct iowait *wait, int reason)
-+{
-+	struct hfi2_ipoib_txq *txq =
-+		container_of(wait, struct hfi2_ipoib_txq, wait);
-+
-+	trace_hfi2_txq_wakeup(txq);
-+	if (likely(txq->priv->netdev->reg_state == NETREG_REGISTERED))
-+		iowait_schedule(wait, system_highpri_wq, WORK_CPU_UNBOUND);
-+}
-+
-+static void hfi2_ipoib_flush_txq(struct work_struct *work)
-+{
-+	struct iowait_work *ioww =
-+		container_of(work, struct iowait_work, iowork);
-+	struct iowait *wait = iowait_ioww_to_iow(ioww);
-+	struct hfi2_ipoib_txq *txq =
-+		container_of(wait, struct hfi2_ipoib_txq, wait);
-+	struct net_device *dev = txq->priv->netdev;
-+
-+	if (likely(dev->reg_state == NETREG_REGISTERED) &&
-+	    likely(!hfi2_ipoib_flush_tx_list(dev, txq)))
-+		if (atomic_xchg(&txq->tx_ring.no_desc, 0))
-+			hfi2_ipoib_wake_txq(txq);
-+}
-+
-+int hfi2_ipoib_txreq_init(struct hfi2_ipoib_dev_priv *priv)
-+{
-+	struct net_device *dev = priv->netdev;
-+	u32 tx_ring_size, tx_item_size;
-+	struct hfi2_ipoib_circ_buf *tx_ring;
-+	int i, j;
-+
-+	/*
-+	 * Ring holds 1 less than tx_ring_size
-+	 * Round up to next power of 2 in order to hold at least tx_queue_len
-+	 */
-+	tx_ring_size = roundup_pow_of_two(dev->tx_queue_len + 1);
-+	tx_item_size = roundup_pow_of_two(sizeof(struct ipoib_txreq));
-+
-+	priv->txqs = kcalloc_node(dev->num_tx_queues,
-+				  sizeof(struct hfi2_ipoib_txq),
-+				  GFP_KERNEL,
-+				  priv->dd->node);
-+	if (!priv->txqs)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < dev->num_tx_queues; i++) {
-+		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
-+		struct ipoib_txreq *tx;
-+
-+		tx_ring = &txq->tx_ring;
-+		iowait_init(&txq->wait,
-+			    0,
-+			    hfi2_ipoib_flush_txq,
-+			    NULL,
-+			    hfi2_ipoib_sdma_sleep,
-+			    hfi2_ipoib_sdma_wakeup,
-+			    NULL,
-+			    NULL);
-+		txq->priv = priv;
-+		txq->sde = NULL;
-+		INIT_LIST_HEAD(&txq->tx_list);
-+		atomic_set(&txq->tx_ring.stops, 0);
-+		atomic_set(&txq->tx_ring.ring_full, 0);
-+		atomic_set(&txq->tx_ring.no_desc, 0);
-+		txq->q_idx = i;
-+		txq->flow.tx_queue = 0xff;
-+		txq->flow.sc5 = 0xff;
-+		txq->pkts_sent = false;
-+
-+		netdev_queue_numa_node_write(netdev_get_tx_queue(dev, i),
-+					     priv->dd->node);
-+
-+		txq->tx_ring.items =
-+			kvzalloc_node(array_size(tx_ring_size, tx_item_size),
-+				      GFP_KERNEL, priv->dd->node);
-+		if (!txq->tx_ring.items)
-+			goto free_txqs;
-+
-+		txq->tx_ring.max_items = tx_ring_size;
-+		txq->tx_ring.shift = ilog2(tx_item_size);
-+		txq->tx_ring.avail = hfi2_ipoib_ring_hwat(txq);
-+		tx_ring = &txq->tx_ring;
-+		for (j = 0; j < tx_ring_size; j++) {
-+			hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr =
-+				kzalloc_node(sizeof(*tx->sdma_hdr),
-+					     GFP_KERNEL, priv->dd->node);
-+			if (!hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr)
-+				goto free_txqs;
-+		}
-+
-+		netif_napi_add_tx(dev, &txq->napi, hfi2_ipoib_poll_tx_ring);
-+	}
-+
-+	return 0;
-+
-+free_txqs:
-+	for (i--; i >= 0; i--) {
-+		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
-+
-+		netif_napi_del(&txq->napi);
-+		tx_ring = &txq->tx_ring;
-+		for (j = 0; j < tx_ring_size; j++)
-+			kfree(hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr);
-+		kvfree(tx_ring->items);
-+	}
-+
-+	kfree(priv->txqs);
-+	priv->txqs = NULL;
-+	return -ENOMEM;
-+}
-+
-+static void hfi2_ipoib_drain_tx_list(struct hfi2_ipoib_txq *txq)
-+{
-+	struct sdma_txreq *txreq;
-+	struct sdma_txreq *txreq_tmp;
-+
-+	list_for_each_entry_safe(txreq, txreq_tmp, &txq->tx_list, list) {
-+		struct ipoib_txreq *tx =
-+			container_of(txreq, struct ipoib_txreq, txreq);
-+
-+		list_del(&txreq->list);
-+		sdma_txclean(txq->priv->dd, &tx->txreq);
-+		dev_kfree_skb_any(tx->skb);
-+		tx->skb = NULL;
-+		txq->tx_ring.complete_txreqs++;
-+	}
-+
-+	if (hfi2_ipoib_used(txq))
-+		dd_dev_warn(txq->priv->dd,
-+			    "txq %d not empty found %u requests\n",
-+			    txq->q_idx,
-+			    hfi2_ipoib_txreqs(txq->tx_ring.sent_txreqs,
-+					      txq->tx_ring.complete_txreqs));
-+}
-+
-+void hfi2_ipoib_txreq_deinit(struct hfi2_ipoib_dev_priv *priv)
-+{
-+	int i, j;
-+
-+	for (i = 0; i < priv->netdev->num_tx_queues; i++) {
-+		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
-+		struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
-+
-+		iowait_cancel_work(&txq->wait);
-+		iowait_sdma_drain(&txq->wait);
-+		hfi2_ipoib_drain_tx_list(txq);
-+		netif_napi_del(&txq->napi);
-+		hfi2_ipoib_drain_tx_ring(txq);
-+		for (j = 0; j < tx_ring->max_items; j++)
-+			kfree(hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr);
-+		kvfree(tx_ring->items);
-+	}
-+
-+	kfree(priv->txqs);
-+	priv->txqs = NULL;
-+}
-+
-+void hfi2_ipoib_napi_tx_enable(struct net_device *dev)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	int i;
-+
-+	for (i = 0; i < dev->num_tx_queues; i++) {
-+		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
-+
-+		napi_enable(&txq->napi);
-+	}
-+}
-+
-+void hfi2_ipoib_napi_tx_disable(struct net_device *dev)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	int i;
-+
-+	for (i = 0; i < dev->num_tx_queues; i++) {
-+		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
-+
-+		napi_disable(&txq->napi);
-+		hfi2_ipoib_drain_tx_ring(txq);
-+	}
-+}
-+
-+void hfi2_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
-+{
-+	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
-+	struct hfi2_ipoib_txq *txq = &priv->txqs[q];
-+
-+	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
-+		    txq, q,
-+		    __netif_subqueue_stopped(dev, txq->q_idx),
-+		    atomic_read(&txq->tx_ring.stops),
-+		    atomic_read(&txq->tx_ring.no_desc),
-+		    atomic_read(&txq->tx_ring.ring_full));
-+	dd_dev_info(priv->dd, "sde %p engine %u\n",
-+		    txq->sde,
-+		    txq->sde ? txq->sde->this_idx : 0);
-+	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
-+	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
-+		    txq->tx_ring.sent_txreqs, txq->tx_ring.complete_txreqs,
-+		    hfi2_ipoib_used(txq));
-+	dd_dev_info(priv->dd, "tx_queue_len %u max_items %u\n",
-+		    dev->tx_queue_len, txq->tx_ring.max_items);
-+	dd_dev_info(priv->dd, "head %u tail %u\n",
-+		    txq->tx_ring.head, txq->tx_ring.tail);
-+	dd_dev_info(priv->dd, "wait queued %u\n",
-+		    !list_empty(&txq->wait.list));
-+	dd_dev_info(priv->dd, "tx_list empty %u\n",
-+		    list_empty(&txq->tx_list));
-+}
-+
-diff --git a/drivers/infiniband/hw/hfi2/netdev_rx.c b/drivers/infiniband/hw/hfi2/netdev_rx.c
-new file mode 100644
-index 000000000000..954aa0a25322
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/netdev_rx.c
-@@ -0,0 +1,494 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+/*
-+ * Copyright(c) 2020 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
-+ */
-+
-+/*
-+ * This file contains HFI2 support for netdev RX functionality
-+ */
-+
-+#include "sdma.h"
-+#include "verbs.h"
-+#include "netdev.h"
 +#include "hfi2.h"
 +
-+#include <linux/netdevice.h>
-+#include <linux/etherdevice.h>
++struct hfi2_ibdev;
++
++#if defined(CONFIG_FAULT_INJECTION) && defined(CONFIG_FAULT_INJECTION_DEBUG_FS)
++struct fault {
++	struct fault_attr attr;
++	struct dentry *dir;
++	u64 n_rxfaults[(1U << BITS_PER_BYTE)];
++	u64 n_txfaults[(1U << BITS_PER_BYTE)];
++	u64 fault_skip;
++	u64 skip;
++	u64 fault_skip_usec;
++	unsigned long skip_usec;
++	unsigned long opcodes[(1U << BITS_PER_BYTE) / BITS_PER_LONG];
++	bool enable;
++	bool suppress_err;
++	bool opcode;
++	u8 direction;
++};
++
++int hfi2_fault_init_debugfs(struct hfi2_ibdev *ibd);
++bool hfi2_dbg_should_fault_tx(struct rvt_qp *qp, u32 opcode);
++bool hfi2_dbg_should_fault_rx(struct hfi2_packet *packet);
++bool hfi2_dbg_fault_suppress_err(struct hfi2_ibdev *ibd);
++void hfi2_fault_exit_debugfs(struct hfi2_ibdev *ibd);
++
++#else
++
++static inline int hfi2_fault_init_debugfs(struct hfi2_ibdev *ibd)
++{
++	return 0;
++}
++
++static inline bool hfi2_dbg_should_fault_rx(struct hfi2_packet *packet)
++{
++	return false;
++}
++
++static inline bool hfi2_dbg_should_fault_tx(struct rvt_qp *qp,
++					    u32 opcode)
++{
++	return false;
++}
++
++static inline bool hfi2_dbg_fault_suppress_err(struct hfi2_ibdev *ibd)
++{
++	return false;
++}
++
++static inline void hfi2_fault_exit_debugfs(struct hfi2_ibdev *ibd)
++{
++}
++#endif
++#endif /* _HFI2_FAULT_H */
+diff --git a/drivers/infiniband/hw/hfi2/opa_compat.h b/drivers/infiniband/hw/hfi2/opa_compat.h
+new file mode 100644
+index 000000000000..8e8b7f62082a
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/opa_compat.h
+@@ -0,0 +1,87 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015, 2016 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++
++#ifndef _LINUX_H
++#define _LINUX_H
++/*
++ * This header file is for OPA-specific definitions which are
++ * required by the HFI driver, and which aren't yet in the Linux
++ * IB core. We'll collect these all here, then merge them into
++ * the kernel when that's convenient.
++ */
++
++/* OPA SMA attribute IDs */
++#define OPA_ATTRIB_ID_CONGESTION_INFO		cpu_to_be16(0x008b)
++#define OPA_ATTRIB_ID_HFI_CONGESTION_LOG	cpu_to_be16(0x008f)
++#define OPA_ATTRIB_ID_HFI_CONGESTION_SETTING	cpu_to_be16(0x0090)
++#define OPA_ATTRIB_ID_CONGESTION_CONTROL_TABLE	cpu_to_be16(0x0091)
++
++/* OPA PMA attribute IDs */
++#define OPA_PM_ATTRIB_ID_PORT_STATUS		cpu_to_be16(0x0040)
++#define OPA_PM_ATTRIB_ID_CLEAR_PORT_STATUS	cpu_to_be16(0x0041)
++#define OPA_PM_ATTRIB_ID_DATA_PORT_COUNTERS	cpu_to_be16(0x0042)
++#define OPA_PM_ATTRIB_ID_ERROR_PORT_COUNTERS	cpu_to_be16(0x0043)
++#define OPA_PM_ATTRIB_ID_ERROR_INFO		cpu_to_be16(0x0044)
++
++/* OPA status codes */
++#define OPA_PM_STATUS_REQUEST_TOO_LARGE		cpu_to_be16(0x100)
++
++static inline u8 port_states_to_logical_state(struct opa_port_states *ps)
++{
++	return ps->portphysstate_portstate & OPA_PI_MASK_PORT_STATE;
++}
++
++static inline u8 port_states_to_phys_state(struct opa_port_states *ps)
++{
++	return ((ps->portphysstate_portstate &
++		  OPA_PI_MASK_PORT_PHYSICAL_STATE) >> 4) & 0xf;
++}
++
++/*
++ * OPA port physical states
++ * IB Volume 1, Table 146 PortInfo/IB Volume 2 Section 5.4.2(1) PortPhysState
++ * values are the same in OmniPath Architecture. OPA leverages some of the same
++ * concepts as InfiniBand, but has a few other states as well.
++ *
++ * When writing, only values 0-3 are valid, other values are ignored.
++ * When reading, 0 is reserved.
++ *
++ * Returned by the ibphys_portstate() routine.
++ */
++enum opa_port_phys_state {
++	/* Values 0-7 have the same meaning in OPA as in InfiniBand. */
++
++	IB_PORTPHYSSTATE_NOP = 0,
++	/* 1 is reserved */
++	IB_PORTPHYSSTATE_POLLING = 2,
++	IB_PORTPHYSSTATE_DISABLED = 3,
++	IB_PORTPHYSSTATE_TRAINING = 4,
++	IB_PORTPHYSSTATE_LINKUP = 5,
++	IB_PORTPHYSSTATE_LINK_ERROR_RECOVERY = 6,
++	IB_PORTPHYSSTATE_PHY_TEST = 7,
++	/* 8 is reserved */
++
++	/*
++	 * Offline: Port is quiet (transmitters disabled) due to lack of
++	 * physical media, unsupported media, or transition between link up
++	 * and next link up attempt
++	 */
++	OPA_PORTPHYSSTATE_OFFLINE = 9,
++
++	/* 10 is reserved */
++
++	/*
++	 * Phy_Test: Specific test patterns are transmitted, and receiver BER
++	 * can be monitored. This facilitates signal integrity testing for the
++	 * physical layer of the port.
++	 */
++	OPA_PORTPHYSSTATE_TEST = 11,
++
++	OPA_PORTPHYSSTATE_MAX = 11,
++	/* values 12-15 are reserved/ignored */
++};
++
++#endif /* _LINUX_H */
+diff --git a/drivers/infiniband/hw/hfi2/opfn.h b/drivers/infiniband/hw/hfi2/opfn.h
+new file mode 100644
+index 000000000000..c706cc28a1d3
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/opfn.h
+@@ -0,0 +1,88 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2018 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++#ifndef _HFI2_OPFN_H
++#define _HFI2_OPFN_H
++
++/**
++ * DOC: Omni Path Feature Negotion (OPFN)
++ *
++ * OPFN is a discovery protocol for Intel Omni-Path fabric that
++ * allows two RC QPs to negotiate a common feature that both QPs
++ * can support. Currently, the only OPA feature that OPFN
++ * supports is TID RDMA.
++ *
++ * Architecture
++ *
++ * OPFN involves the communication between two QPs on the HFI
++ * level on an Omni-Path fabric, and ULPs have no knowledge of
++ * OPFN at all.
++ *
++ * Implementation
++ *
++ * OPFN extends the existing IB RC protocol with the following
++ * changes:
++ * -- Uses Bit 24 (reserved) of DWORD 1 of Base Transport
++ *    Header (BTH1) to indicate that the RC QP supports OPFN;
++ * -- Uses a combination of RC COMPARE_SWAP opcode (0x13) and
++ *    the address U64_MAX (0xFFFFFFFFFFFFFFFF) as an OPFN
++ *    request; The 64-bit data carried with the request/response
++ *    contains the parameters for negotiation and will be
++ *    defined in tid_rdma.c file;
++ * -- Defines IB_WR_RESERVED3 as IB_WR_OPFN.
++ *
++ * The OPFN communication will be triggered when an RC QP
++ * receives a request with Bit 24 of BTH1 set. The responder QP
++ * will then post send an OPFN request with its local
++ * parameters, which will be sent to the requester QP once all
++ * existing requests on the responder QP side have been sent.
++ * Once the requester QP receives the OPFN request, it will
++ * keep a copy of the responder QP's parameters, and return a
++ * response packet with its own local parameters. The responder
++ * QP receives the response packet and keeps a copy of the requester
++ * QP's parameters. After this exchange, each side has the parameters
++ * for both sides and therefore can select the right parameters
++ * for future transactions
++ */
++
++#include <linux/workqueue.h>
 +#include <rdma/ib_verbs.h>
++#include <rdma/rdmavt_qp.h>
 +
-+static void hfi2_netdev_rxq_deinit(struct hfi2_netdev_rx *rx);
++/* STL Verbs Extended */
++#define IB_BTHE_E_SHIFT           24
++#define HFI2_VERBS_E_ATOMIC_VADDR U64_MAX
 +
-+static int hfi2_netdev_setup_ctxt(struct hfi2_netdev_rx *rx,
-+				  struct hfi2_ctxtdata *uctxt)
-+{
-+	unsigned int rcvctrl_ops;
-+	struct hfi2_devdata *dd = rx->dd;
-+	int ret;
++enum hfi2_opfn_codes {
++	STL_VERBS_EXTD_NONE = 0,
++	STL_VERBS_EXTD_TID_RDMA,
++	STL_VERBS_EXTD_MAX
++};
 +
-+	uctxt->rhf_rcv_function_map = netdev_rhf_rcv_functions;
-+	uctxt->do_interrupt = &handle_receive_interrupt_napi_sp;
++struct hfi2_opfn_data {
++	u8 extended;
++	u16 requested;
++	u16 completed;
++	enum hfi2_opfn_codes curr;
++	/* serialize opfn function calls */
++	spinlock_t lock;
++	struct work_struct opfn_work;
++};
 +
-+	/* Now allocate the RcvHdr queue and eager buffers. */
-+	ret = hfi2_create_rcvhdrq(dd, uctxt);
-+	if (ret)
-+		goto done;
++/* WR opcode for OPFN */
++#define IB_WR_OPFN IB_WR_RESERVED3
 +
-+	ret = hfi2_setup_eagerbufs(uctxt);
-+	if (ret)
-+		goto done;
++void opfn_send_conn_request(struct work_struct *work);
++void opfn_conn_response(struct rvt_qp *qp, struct rvt_ack_entry *e,
++			struct ib_atomic_eth *ateth);
++void opfn_conn_reply(struct rvt_qp *qp, u64 data);
++void opfn_conn_error(struct rvt_qp *qp);
++void opfn_qp_init(struct rvt_qp *qp, struct ib_qp_attr *attr, int attr_mask);
++void opfn_trigger_conn_request(struct rvt_qp *qp, u32 bth1);
++int opfn_init(void);
++void opfn_exit(void);
 +
-+	clear_rcvhdrtail(uctxt);
++#endif /* _HFI2_OPFN_H */
+diff --git a/drivers/infiniband/hw/hfi2/platform.h b/drivers/infiniband/hw/hfi2/platform.h
+new file mode 100644
+index 000000000000..f886c2c3dd1c
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/platform.h
+@@ -0,0 +1,372 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015, 2016 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
 +
-+	rcvctrl_ops = HFI2_RCVCTRL_CTXT_DIS;
-+	rcvctrl_ops |= HFI2_RCVCTRL_INTRAVAIL_DIS;
++#ifndef __PLATFORM_H
++#define __PLATFORM_H
 +
-+	if (!HFI2_CAP_KGET_MASK(uctxt->flags, MULTI_PKT_EGR))
-+		rcvctrl_ops |= HFI2_RCVCTRL_ONE_PKT_EGR_ENB;
-+	if (HFI2_CAP_KGET_MASK(uctxt->flags, NODROP_EGR_FULL))
-+		rcvctrl_ops |= HFI2_RCVCTRL_NO_EGR_DROP_ENB;
-+	if (HFI2_CAP_KGET_MASK(uctxt->flags, NODROP_RHQ_FULL))
-+		rcvctrl_ops |= HFI2_RCVCTRL_NO_RHQ_DROP_ENB;
-+	if (HFI2_CAP_KGET_MASK(uctxt->flags, DMA_RTAIL))
-+		rcvctrl_ops |= HFI2_RCVCTRL_TAILUPD_ENB;
++#define METADATA_TABLE_FIELD_START_SHIFT		0
++#define METADATA_TABLE_FIELD_START_LEN_BITS		15
++#define METADATA_TABLE_FIELD_LEN_SHIFT			16
++#define METADATA_TABLE_FIELD_LEN_LEN_BITS		16
 +
-+	hfi2_rcvctrl(uctxt->dd, rcvctrl_ops, uctxt);
-+done:
-+	return ret;
-+}
++/* Header structure */
++#define PLATFORM_CONFIG_HEADER_RECORD_IDX_SHIFT			0
++#define PLATFORM_CONFIG_HEADER_RECORD_IDX_LEN_BITS		6
++#define PLATFORM_CONFIG_HEADER_TABLE_LENGTH_SHIFT		16
++#define PLATFORM_CONFIG_HEADER_TABLE_LENGTH_LEN_BITS		12
++#define PLATFORM_CONFIG_HEADER_TABLE_TYPE_SHIFT			28
++#define PLATFORM_CONFIG_HEADER_TABLE_TYPE_LEN_BITS		4
 +
-+static int hfi2_netdev_allocate_ctxt(struct hfi2_pportdata *ppd,
-+				     struct hfi2_ctxtdata **ctxt)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	struct hfi2_ctxtdata *uctxt;
-+	int ret;
++enum platform_config_table_type_encoding {
++	PLATFORM_CONFIG_TABLE_RESERVED,
++	PLATFORM_CONFIG_SYSTEM_TABLE,
++	PLATFORM_CONFIG_PORT_TABLE,
++	PLATFORM_CONFIG_RX_PRESET_TABLE,
++	PLATFORM_CONFIG_TX_PRESET_TABLE,
++	PLATFORM_CONFIG_QSFP_ATTEN_TABLE,
++	PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE,
++	PLATFORM_CONFIG_TABLE_MAX
++};
 +
-+	if (dd->flags & HFI2_FROZEN)
-+		return -EIO;
++enum platform_config_system_table_fields {
++	SYSTEM_TABLE_RESERVED,
++	SYSTEM_TABLE_NODE_STRING,
++	SYSTEM_TABLE_SYSTEM_IMAGE_GUID,
++	SYSTEM_TABLE_NODE_GUID,
++	SYSTEM_TABLE_REVISION,
++	SYSTEM_TABLE_VENDOR_OUI,
++	SYSTEM_TABLE_META_VERSION,
++	SYSTEM_TABLE_DEVICE_ID,
++	SYSTEM_TABLE_PARTITION_ENFORCEMENT_CAP,
++	SYSTEM_TABLE_QSFP_POWER_CLASS_MAX,
++	SYSTEM_TABLE_QSFP_ATTENUATION_DEFAULT_12G,
++	SYSTEM_TABLE_QSFP_ATTENUATION_DEFAULT_25G,
++	SYSTEM_TABLE_VARIABLE_TABLE_ENTRIES_PER_PORT,
++	SYSTEM_TABLE_MAX
++};
 +
-+	ret = hfi2_create_ctxtdata(ppd, dd->node, DYNAMIC_CONTEXT, &uctxt);
-+	if (ret < 0) {
-+		dd_dev_err(dd, "Unable to create ctxtdata, failing open\n");
-+		return -ENOMEM;
-+	}
++enum platform_config_port_table_fields {
++	PORT_TABLE_RESERVED,
++	PORT_TABLE_PORT_TYPE,
++	PORT_TABLE_LOCAL_ATTEN_12G,
++	PORT_TABLE_LOCAL_ATTEN_25G,
++	PORT_TABLE_LINK_SPEED_SUPPORTED,
++	PORT_TABLE_LINK_WIDTH_SUPPORTED,
++	PORT_TABLE_AUTO_LANE_SHEDDING_ENABLED,
++	PORT_TABLE_EXTERNAL_LOOPBACK_ALLOWED,
++	PORT_TABLE_VL_CAP,
++	PORT_TABLE_MTU_CAP,
++	PORT_TABLE_TX_LANE_ENABLE_MASK,
++	PORT_TABLE_LOCAL_MAX_TIMEOUT,
++	PORT_TABLE_REMOTE_ATTEN_12G,
++	PORT_TABLE_REMOTE_ATTEN_25G,
++	PORT_TABLE_TX_PRESET_IDX_ACTIVE_NO_EQ,
++	PORT_TABLE_TX_PRESET_IDX_ACTIVE_EQ,
++	PORT_TABLE_RX_PRESET_IDX,
++	PORT_TABLE_CABLE_REACH_CLASS,
++	PORT_TABLE_MAX
++};
 +
-+	uctxt->flags = HFI2_CAP_KGET(MULTI_PKT_EGR) |
-+		HFI2_CAP_KGET(NODROP_RHQ_FULL) |
-+		HFI2_CAP_KGET(NODROP_EGR_FULL) |
-+		HFI2_CAP_KGET(DMA_RTAIL);
-+	/* Netdev contexts are always NO_RDMA_RTAIL */
-+	uctxt->fast_handler = handle_receive_interrupt_napi_fp;
-+	uctxt->slow_handler = handle_receive_interrupt_napi_sp;
-+	hfi2_set_seq_cnt(uctxt, 1);
++enum platform_config_rx_preset_table_fields {
++	RX_PRESET_TABLE_RESERVED,
++	RX_PRESET_TABLE_QSFP_RX_CDR_APPLY,
++	RX_PRESET_TABLE_QSFP_RX_EMP_APPLY,
++	RX_PRESET_TABLE_QSFP_RX_AMP_APPLY,
++	RX_PRESET_TABLE_QSFP_RX_CDR,
++	RX_PRESET_TABLE_QSFP_RX_EMP,
++	RX_PRESET_TABLE_QSFP_RX_AMP,
++	RX_PRESET_TABLE_MAX
++};
 +
-+	hfi2_stats.sps_ctxts++;
++enum platform_config_tx_preset_table_fields {
++	TX_PRESET_TABLE_RESERVED,
++	TX_PRESET_TABLE_PRECUR,
++	TX_PRESET_TABLE_ATTN,
++	TX_PRESET_TABLE_POSTCUR,
++	TX_PRESET_TABLE_QSFP_TX_CDR_APPLY,
++	TX_PRESET_TABLE_QSFP_TX_EQ_APPLY,
++	TX_PRESET_TABLE_QSFP_TX_CDR,
++	TX_PRESET_TABLE_QSFP_TX_EQ,
++	TX_PRESET_TABLE_MAX
++};
 +
-+	dd_dev_info(dd, "created netdev context %d\n", uctxt->ctxt);
-+	*ctxt = uctxt;
++enum platform_config_qsfp_attn_table_fields {
++	QSFP_ATTEN_TABLE_RESERVED,
++	QSFP_ATTEN_TABLE_TX_PRESET_IDX,
++	QSFP_ATTEN_TABLE_RX_PRESET_IDX,
++	QSFP_ATTEN_TABLE_MAX
++};
 +
-+	return 0;
-+}
++enum platform_config_variable_settings_table_fields {
++	VARIABLE_SETTINGS_TABLE_RESERVED,
++	VARIABLE_SETTINGS_TABLE_TX_PRESET_IDX,
++	VARIABLE_SETTINGS_TABLE_RX_PRESET_IDX,
++	VARIABLE_SETTINGS_TABLE_MAX
++};
 +
-+static void hfi2_netdev_deallocate_ctxt(struct hfi2_pportdata *ppd,
-+					struct hfi2_ctxtdata *uctxt)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
++struct platform_config {
++	size_t size;
++	const u8 *data;
++};
 +
-+	flush_wc();
++struct platform_config_data {
++	u32 *table;
++	u32 *table_metadata;
++	u32 num_table;
++};
 +
-+	/*
-+	 * Disable receive context and interrupt available, reset all
-+	 * RcvCtxtCtrl bits to default values.
-+	 */
-+	hfi2_rcvctrl(dd, HFI2_RCVCTRL_CTXT_DIS |
-+		     HFI2_RCVCTRL_TIDFLOW_DIS |
-+		     HFI2_RCVCTRL_INTRAVAIL_DIS |
-+		     HFI2_RCVCTRL_ONE_PKT_EGR_DIS |
-+		     HFI2_RCVCTRL_NO_RHQ_DROP_DIS |
-+		     HFI2_RCVCTRL_NO_EGR_DROP_DIS, uctxt);
++/*
++ * This struct acts as a quick reference into the platform_data binary image
++ * and is populated by parse_platform_config(...) depending on the specific
++ * META_VERSION
++ */
++struct platform_config_cache {
++	u8  cache_valid;
++	struct platform_config_data config_tables[PLATFORM_CONFIG_TABLE_MAX];
++};
 +
-+	if (uctxt->msix_intr != CCE_NUM_MSIX_VECTORS)
-+		msix_free_irq(dd, uctxt->msix_intr);
++/* This section defines default values and encodings for the
++ * fields defined for each table above
++ */
 +
-+	uctxt->msix_intr = CCE_NUM_MSIX_VECTORS;
-+	uctxt->event_flags = 0;
++/*
++ * =====================================================
++ *  System table encodings
++ * =====================================================
++ */
++#define PLATFORM_CONFIG_MAGIC_NUM		0x3d4f5041
++#define PLATFORM_CONFIG_MAGIC_NUMBER_LEN	4
 +
-+	hfi2_clear_tids(uctxt);
-+	hfi2_clear_ctxt_pkey(dd, uctxt);
++/*
++ * These power classes are the same as defined in SFF 8636 spec rev 2.4
++ * describing byte 129 in table 6-16, except enumerated in a different order
++ */
++enum platform_config_qsfp_power_class_encoding {
++	QSFP_POWER_CLASS_1 = 1,
++	QSFP_POWER_CLASS_2,
++	QSFP_POWER_CLASS_3,
++	QSFP_POWER_CLASS_4,
++	QSFP_POWER_CLASS_5,
++	QSFP_POWER_CLASS_6,
++	QSFP_POWER_CLASS_7
++};
 +
-+	hfi2_stats.sps_ctxts--;
++/*
++ * ====================================================
++ *  Port table encodings
++ * ====================================================
++ */
++enum platform_config_port_type_encoding {
++	PORT_TYPE_UNKNOWN,
++	PORT_TYPE_DISCONNECTED,
++	PORT_TYPE_FIXED,
++	PORT_TYPE_VARIABLE,
++	PORT_TYPE_QSFP,
++	PORT_TYPE_MAX
++};
 +
-+	hfi2_free_ctxt(uctxt);
-+}
++enum platform_config_link_speed_supported_encoding {
++	LINK_SPEED_SUPP_12G = 1,
++	LINK_SPEED_SUPP_25G,
++	LINK_SPEED_SUPP_12G_25G,
++	LINK_SPEED_SUPP_MAX
++};
 +
-+static int hfi2_netdev_allot_ctxt(struct hfi2_netdev_rx *rx,
-+				  struct hfi2_ctxtdata **ctxt)
-+{
-+	int rc;
-+	struct hfi2_devdata *dd = rx->dd;
-+	struct hfi2_pportdata *ppd = rx->ppd;
++/*
++ * This is a subset (not strict) of the link downgrades
++ * supported. The link downgrades supported are expected
++ * to be supplied to the driver by another entity such as
++ * the fabric manager
++ */
++enum platform_config_link_width_supported_encoding {
++	LINK_WIDTH_SUPP_1X = 1,
++	LINK_WIDTH_SUPP_2X,
++	LINK_WIDTH_SUPP_2X_1X,
++	LINK_WIDTH_SUPP_3X,
++	LINK_WIDTH_SUPP_3X_1X,
++	LINK_WIDTH_SUPP_3X_2X,
++	LINK_WIDTH_SUPP_3X_2X_1X,
++	LINK_WIDTH_SUPP_4X,
++	LINK_WIDTH_SUPP_4X_1X,
++	LINK_WIDTH_SUPP_4X_2X,
++	LINK_WIDTH_SUPP_4X_2X_1X,
++	LINK_WIDTH_SUPP_4X_3X,
++	LINK_WIDTH_SUPP_4X_3X_1X,
++	LINK_WIDTH_SUPP_4X_3X_2X,
++	LINK_WIDTH_SUPP_4X_3X_2X_1X,
++	LINK_WIDTH_SUPP_MAX
++};
 +
-+	rc = hfi2_netdev_allocate_ctxt(ppd, ctxt);
-+	if (rc) {
-+		dd_dev_err(dd, "netdev ctxt alloc failed %d\n", rc);
-+		return rc;
-+	}
++enum platform_config_virtual_lane_capability_encoding {
++	VL_CAP_VL0 = 1,
++	VL_CAP_VL0_1,
++	VL_CAP_VL0_2,
++	VL_CAP_VL0_3,
++	VL_CAP_VL0_4,
++	VL_CAP_VL0_5,
++	VL_CAP_VL0_6,
++	VL_CAP_VL0_7,
++	VL_CAP_VL0_8,
++	VL_CAP_VL0_9,
++	VL_CAP_VL0_10,
++	VL_CAP_VL0_11,
++	VL_CAP_VL0_12,
++	VL_CAP_VL0_13,
++	VL_CAP_VL0_14,
++	VL_CAP_MAX
++};
 +
-+	rc = hfi2_netdev_setup_ctxt(rx, *ctxt);
-+	if (rc) {
-+		dd_dev_err(dd, "netdev ctxt setup failed %d\n", rc);
-+		hfi2_netdev_deallocate_ctxt(ppd, *ctxt);
-+		*ctxt = NULL;
-+	}
++/* Max MTU */
++enum platform_config_mtu_capability_encoding {
++	MTU_CAP_256   = 1,
++	MTU_CAP_512   = 2,
++	MTU_CAP_1024  = 3,
++	MTU_CAP_2048  = 4,
++	MTU_CAP_4096  = 5,
++	MTU_CAP_8192  = 6,
++	MTU_CAP_10240 = 7
++};
 +
-+	return rc;
-+}
++enum platform_config_local_max_timeout_encoding {
++	LOCAL_MAX_TIMEOUT_10_MS = 1,
++	LOCAL_MAX_TIMEOUT_100_MS,
++	LOCAL_MAX_TIMEOUT_1_S,
++	LOCAL_MAX_TIMEOUT_10_S,
++	LOCAL_MAX_TIMEOUT_100_S,
++	LOCAL_MAX_TIMEOUT_1000_S
++};
 +
-+/**
-+ * hfi2_num_netdev_contexts - Count of netdev recv contexts to use.
-+ * @dd: device on which to allocate netdev contexts
-+ * @available_contexts: count of available receive contexts
-+ * @cpu_mask: mask of possible cpus to include for contexts
++enum link_tuning_encoding {
++	OPA_PASSIVE_TUNING,
++	OPA_ACTIVE_TUNING,
++	OPA_UNKNOWN_TUNING
++};
++
++/*
++ * Shifts and masks for the link SI tuning values stuffed into the ASIC scratch
++ * registers for integrated platforms
++ */
++#define PORT0_PORT_TYPE_SHIFT		0
++#define PORT0_LOCAL_ATTEN_SHIFT		4
++#define PORT0_REMOTE_ATTEN_SHIFT	10
++#define PORT0_DEFAULT_ATTEN_SHIFT	32
++
++#define PORT1_PORT_TYPE_SHIFT		16
++#define PORT1_LOCAL_ATTEN_SHIFT		20
++#define PORT1_REMOTE_ATTEN_SHIFT	26
++#define PORT1_DEFAULT_ATTEN_SHIFT	40
++
++#define PORT0_PORT_TYPE_MASK		0xFUL
++#define PORT0_LOCAL_ATTEN_MASK		0x3FUL
++#define PORT0_REMOTE_ATTEN_MASK		0x3FUL
++#define PORT0_DEFAULT_ATTEN_MASK	0xFFUL
++
++#define PORT1_PORT_TYPE_MASK		0xFUL
++#define PORT1_LOCAL_ATTEN_MASK		0x3FUL
++#define PORT1_REMOTE_ATTEN_MASK		0x3FUL
++#define PORT1_DEFAULT_ATTEN_MASK	0xFFUL
++
++#define PORT0_PORT_TYPE_SMASK		(PORT0_PORT_TYPE_MASK << \
++					 PORT0_PORT_TYPE_SHIFT)
++#define PORT0_LOCAL_ATTEN_SMASK		(PORT0_LOCAL_ATTEN_MASK << \
++					 PORT0_LOCAL_ATTEN_SHIFT)
++#define PORT0_REMOTE_ATTEN_SMASK	(PORT0_REMOTE_ATTEN_MASK << \
++					 PORT0_REMOTE_ATTEN_SHIFT)
++#define PORT0_DEFAULT_ATTEN_SMASK	(PORT0_DEFAULT_ATTEN_MASK << \
++					 PORT0_DEFAULT_ATTEN_SHIFT)
++
++#define PORT1_PORT_TYPE_SMASK		(PORT1_PORT_TYPE_MASK << \
++					 PORT1_PORT_TYPE_SHIFT)
++#define PORT1_LOCAL_ATTEN_SMASK		(PORT1_LOCAL_ATTEN_MASK << \
++					 PORT1_LOCAL_ATTEN_SHIFT)
++#define PORT1_REMOTE_ATTEN_SMASK	(PORT1_REMOTE_ATTEN_MASK << \
++					 PORT1_REMOTE_ATTEN_SHIFT)
++#define PORT1_DEFAULT_ATTEN_SMASK	(PORT1_DEFAULT_ATTEN_MASK << \
++					 PORT1_DEFAULT_ATTEN_SHIFT)
++
++#define QSFP_MAX_POWER_SHIFT		0
++#define TX_NO_EQ_SHIFT			4
++#define TX_EQ_SHIFT			25
++#define RX_SHIFT			46
++
++#define QSFP_MAX_POWER_MASK		0xFUL
++#define TX_NO_EQ_MASK			0x1FFFFFUL
++#define TX_EQ_MASK			0x1FFFFFUL
++#define RX_MASK				0xFFFFUL
++
++#define QSFP_MAX_POWER_SMASK		(QSFP_MAX_POWER_MASK << \
++					 QSFP_MAX_POWER_SHIFT)
++#define TX_NO_EQ_SMASK			(TX_NO_EQ_MASK << TX_NO_EQ_SHIFT)
++#define TX_EQ_SMASK			(TX_EQ_MASK << TX_EQ_SHIFT)
++#define RX_SMASK			(RX_MASK << RX_SHIFT)
++
++#define TX_PRECUR_SHIFT			0
++#define TX_ATTN_SHIFT			4
++#define QSFP_TX_CDR_APPLY_SHIFT		9
++#define QSFP_TX_EQ_APPLY_SHIFT		10
++#define QSFP_TX_CDR_SHIFT		11
++#define QSFP_TX_EQ_SHIFT		12
++#define TX_POSTCUR_SHIFT		16
++
++#define TX_PRECUR_MASK			0xFUL
++#define TX_ATTN_MASK			0x1FUL
++#define QSFP_TX_CDR_APPLY_MASK		0x1UL
++#define QSFP_TX_EQ_APPLY_MASK		0x1UL
++#define QSFP_TX_CDR_MASK		0x1UL
++#define QSFP_TX_EQ_MASK			0xFUL
++#define TX_POSTCUR_MASK			0x1FUL
++
++#define TX_PRECUR_SMASK			(TX_PRECUR_MASK << TX_PRECUR_SHIFT)
++#define TX_ATTN_SMASK			(TX_ATTN_MASK << TX_ATTN_SHIFT)
++#define QSFP_TX_CDR_APPLY_SMASK		(QSFP_TX_CDR_APPLY_MASK << \
++					 QSFP_TX_CDR_APPLY_SHIFT)
++#define QSFP_TX_EQ_APPLY_SMASK		(QSFP_TX_EQ_APPLY_MASK << \
++					 QSFP_TX_EQ_APPLY_SHIFT)
++#define QSFP_TX_CDR_SMASK		(QSFP_TX_CDR_MASK << QSFP_TX_CDR_SHIFT)
++#define QSFP_TX_EQ_SMASK		(QSFP_TX_EQ_MASK << QSFP_TX_EQ_SHIFT)
++#define TX_POSTCUR_SMASK		(TX_POSTCUR_MASK << TX_POSTCUR_SHIFT)
++
++#define QSFP_RX_CDR_APPLY_SHIFT		0
++#define QSFP_RX_EMP_APPLY_SHIFT		1
++#define QSFP_RX_AMP_APPLY_SHIFT		2
++#define QSFP_RX_CDR_SHIFT		3
++#define QSFP_RX_EMP_SHIFT		4
++#define QSFP_RX_AMP_SHIFT		8
++
++#define QSFP_RX_CDR_APPLY_MASK		0x1UL
++#define QSFP_RX_EMP_APPLY_MASK		0x1UL
++#define QSFP_RX_AMP_APPLY_MASK		0x1UL
++#define QSFP_RX_CDR_MASK		0x1UL
++#define QSFP_RX_EMP_MASK		0xFUL
++#define QSFP_RX_AMP_MASK		0x3UL
++
++#define QSFP_RX_CDR_APPLY_SMASK		(QSFP_RX_CDR_APPLY_MASK << \
++					 QSFP_RX_CDR_APPLY_SHIFT)
++#define QSFP_RX_EMP_APPLY_SMASK		(QSFP_RX_EMP_APPLY_MASK << \
++					 QSFP_RX_EMP_APPLY_SHIFT)
++#define QSFP_RX_AMP_APPLY_SMASK		(QSFP_RX_AMP_APPLY_MASK << \
++					 QSFP_RX_AMP_APPLY_SHIFT)
++#define QSFP_RX_CDR_SMASK		(QSFP_RX_CDR_MASK << QSFP_RX_CDR_SHIFT)
++#define QSFP_RX_EMP_SMASK		(QSFP_RX_EMP_MASK << QSFP_RX_EMP_SHIFT)
++#define QSFP_RX_AMP_SMASK		(QSFP_RX_AMP_MASK << QSFP_RX_AMP_SHIFT)
++
++#define BITMAP_VERSION			1
++#define BITMAP_VERSION_SHIFT		44
++#define BITMAP_VERSION_MASK		0xFUL
++#define BITMAP_VERSION_SMASK		(BITMAP_VERSION_MASK << \
++					 BITMAP_VERSION_SHIFT)
++#define CHECKSUM_SHIFT			48
++#define CHECKSUM_MASK			0xFFFFUL
++#define CHECKSUM_SMASK			(CHECKSUM_MASK << CHECKSUM_SHIFT)
++
++/* platform.c */
++void hfi2_get_platform_config(struct hfi2_pportdata *ppd);
++void free_platform_config(struct hfi2_devdata *dd);
++void get_port_type(struct hfi2_pportdata *ppd);
++int set_qsfp_tx(struct hfi2_pportdata *ppd, int on);
++void tune_serdes(struct hfi2_pportdata *ppd);
++
++#endif			/*__PLATFORM_H*/
+diff --git a/drivers/infiniband/hw/hfi2/qsfp.h b/drivers/infiniband/hw/hfi2/qsfp.h
+new file mode 100644
+index 000000000000..85ce966870a6
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/qsfp.h
+@@ -0,0 +1,202 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015, 2016 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
++/* QSFP support common definitions, for hfi driver */
++
++#define QSFP_DEV 0xA0
++#define QSFP_PWR_LAG_MSEC 2000
++#define QSFP_MODPRS_LAG_MSEC 20
++/* 128 byte pages, per SFF 8636 rev 2.4 */
++#define QSFP_MAX_NUM_PAGES	5
++
++/*
++ * Below are masks for QSFP pins.  Pins are the same for HFI0 and HFI2.
++ * _N means asserted low
++ */
++#define QSFP_HFI0_I2CCLK    BIT(0)
++#define QSFP_HFI0_I2CDAT    BIT(1)
++#define QSFP_HFI0_RESET_N   BIT(2)
++#define QSFP_HFI0_INT_N	    BIT(3)
++#define QSFP_HFI0_MODPRST_N BIT(4)
++
++/* QSFP is paged at 256 bytes */
++#define QSFP_PAGESIZE 256
++/* Reads/writes cannot cross 128 byte boundaries */
++#define QSFP_RW_BOUNDARY 128
++
++/* number of bytes in i2c offset for QSFP devices */
++#define __QSFP_OFFSET_SIZE 1                           /* num address bytes */
++#define QSFP_OFFSET_SIZE (__QSFP_OFFSET_SIZE << 8)     /* shifted value */
++
++/* Defined fields that Intel requires of qualified cables */
++/* Byte 0 is Identifier, not checked */
++/* Byte 1 is reserved "status MSB" */
++#define QSFP_MONITOR_VAL_START 22
++#define QSFP_MONITOR_VAL_END 81
++#define QSFP_MONITOR_RANGE (QSFP_MONITOR_VAL_END - QSFP_MONITOR_VAL_START + 1)
++#define QSFP_TX_CTRL_BYTE_OFFS 86
++#define QSFP_PWR_CTRL_BYTE_OFFS 93
++#define QSFP_CDR_CTRL_BYTE_OFFS 98
++
++#define QSFP_PAGE_SELECT_BYTE_OFFS 127
++/* Byte 128 is Identifier: must be 0x0c for QSFP, or 0x0d for QSFP+ */
++#define QSFP_MOD_ID_OFFS 128
++/*
++ * Byte 129 is "Extended Identifier".
++ * For bits [7:6]: 0:1.5W, 1:2.0W, 2:2.5W, 3:3.5W
++ * For bits [1:0]: 0:Unused, 1:4W, 2:4.5W, 3:5W
++ */
++#define QSFP_MOD_PWR_OFFS 129
++/* Byte 130 is Connector type. Not Intel req'd */
++/* Bytes 131..138 are Transceiver types, bit maps for various tech, none IB */
++/* Byte 139 is encoding. code 0x01 is 8b10b. Not Intel req'd */
++/* byte 140 is nominal bit-rate, in units of 100Mbits/sec */
++#define QSFP_NOM_BIT_RATE_100_OFFS 140
++/* Byte 141 is Extended Rate Select. Not Intel req'd */
++/* Bytes 142..145 are lengths for various fiber types. Not Intel req'd */
++/* Byte 146 is length for Copper. Units of 1 meter */
++#define QSFP_MOD_LEN_OFFS 146
++/*
++ * Byte 147 is Device technology. D0..3 not Intel req'd
++ * D4..7 select from 15 choices, translated by table:
++ */
++#define QSFP_MOD_TECH_OFFS 147
++extern const char *const hfi2_qsfp_devtech[16];
++/* Active Equalization includes fiber, copper full EQ, and copper near Eq */
++#define QSFP_IS_ACTIVE(tech) ((0xA2FF >> ((tech) >> 4)) & 1)
++/* Active Equalization includes fiber, copper full EQ, and copper far Eq */
++#define QSFP_IS_ACTIVE_FAR(tech) ((0x32FF >> ((tech) >> 4)) & 1)
++/* Attenuation should be valid for copper other than full/near Eq */
++#define QSFP_HAS_ATTEN(tech) ((0x4D00 >> ((tech) >> 4)) & 1)
++/* Length is only valid if technology is "copper" */
++#define QSFP_IS_CU(tech) ((0xED00 >> ((tech) >> 4)) & 1)
++#define QSFP_TECH_1490 9
++
++#define QSFP_OUI(oui) (((unsigned int)oui[0] << 16) | ((unsigned int)oui[1] << 8) | \
++			oui[2])
++#define QSFP_OUI_AMPHENOL 0x415048
++#define QSFP_OUI_FINISAR  0x009065
++#define QSFP_OUI_GORE     0x002177
++
++/* Bytes 148..163 are Vendor Name, Left-justified Blank-filled */
++#define QSFP_VEND_OFFS 148
++#define QSFP_VEND_LEN 16
++/* Byte 164 is IB Extended transceiver codes Bits D0..3 are SDR,DDR,QDR,EDR */
++#define QSFP_IBXCV_OFFS 164
++/* Bytes 165..167 are Vendor OUI number */
++#define QSFP_VOUI_OFFS 165
++#define QSFP_VOUI_LEN 3
++/* Bytes 168..183 are Vendor Part Number, string */
++#define QSFP_PN_OFFS 168
++#define QSFP_PN_LEN 16
++/* Bytes 184,185 are Vendor Rev. Left Justified, Blank-filled */
++#define QSFP_REV_OFFS 184
++#define QSFP_REV_LEN 2
++/*
++ * Bytes 186,187 are Wavelength, if Optical. Not Intel req'd
++ *  If copper, they are attenuation in dB:
++ * Byte 186 is at 2.5Gb/sec (SDR), Byte 187 at 5.0Gb/sec (DDR)
++ */
++#define QSFP_ATTEN_OFFS 186
++#define QSFP_ATTEN_LEN 2
++/*
++ * Bytes 188,189 are Wavelength tolerance, if optical
++ * If copper, they are attenuation in dB:
++ * Byte 188 is at 12.5 Gb/s, Byte 189 at 25 Gb/s
++ */
++#define QSFP_CU_ATTEN_7G_OFFS 188
++#define QSFP_CU_ATTEN_12G_OFFS 189
++/* Byte 190 is Max Case Temp. Not Intel req'd */
++/* Byte 191 is LSB of sum of bytes 128..190. Not Intel req'd */
++#define QSFP_CC_OFFS 191
++#define QSFP_EQ_INFO_OFFS 193
++#define QSFP_CDR_INFO_OFFS 194
++/* Bytes 196..211 are Serial Number, String */
++#define QSFP_SN_OFFS 196
++#define QSFP_SN_LEN 16
++/* Bytes 212..219 are date-code YYMMDD (MM==1 for Jan) */
++#define QSFP_DATE_OFFS 212
++#define QSFP_DATE_LEN 6
++/* Bytes 218,219 are optional lot-code, string */
++#define QSFP_LOT_OFFS 218
++#define QSFP_LOT_LEN 2
++/* Bytes 220, 221 indicate monitoring options, Not Intel req'd */
++/* Byte 222 indicates nominal bitrate in units of 250Mbits/sec */
++#define QSFP_NOM_BIT_RATE_250_OFFS 222
++/* Byte 223 is LSB of sum of bytes 192..222 */
++#define QSFP_CC_EXT_OFFS 223
++
++/*
++ * Interrupt flag masks
++ */
++#define QSFP_DATA_NOT_READY		0x01
++
++#define QSFP_HIGH_TEMP_ALARM		0x80
++#define QSFP_LOW_TEMP_ALARM		0x40
++#define QSFP_HIGH_TEMP_WARNING		0x20
++#define QSFP_LOW_TEMP_WARNING		0x10
++
++#define QSFP_HIGH_VCC_ALARM		0x80
++#define QSFP_LOW_VCC_ALARM		0x40
++#define QSFP_HIGH_VCC_WARNING		0x20
++#define QSFP_LOW_VCC_WARNING		0x10
++
++#define QSFP_HIGH_POWER_ALARM		0x88
++#define QSFP_LOW_POWER_ALARM		0x44
++#define QSFP_HIGH_POWER_WARNING		0x22
++#define QSFP_LOW_POWER_WARNING		0x11
++
++#define QSFP_HIGH_BIAS_ALARM		0x88
++#define QSFP_LOW_BIAS_ALARM		0x44
++#define QSFP_HIGH_BIAS_WARNING		0x22
++#define QSFP_LOW_BIAS_WARNING		0x11
++
++#define QSFP_ATTEN_SDR(attenarray) (attenarray[0])
++#define QSFP_ATTEN_DDR(attenarray) (attenarray[1])
++
++/*
++ * struct qsfp_data encapsulates state of QSFP device for one port.
++ * it will be part of port-specific data if a board supports QSFP.
 + *
-+ * Return: count of physical cores on a node or the remaining available recv
-+ * contexts for netdev recv context usage up to the maximum of
-+ * HFI2_MAX_NETDEV_CTXTS.
-+ * A value of 0 can be returned when acceleration is explicitly turned off,
-+ * a memory allocation error occurs or when there are no available contexts.
++ * Since multiple board-types use QSFP, and their pport_data structs
++ * differ (in the chip-specific section), we need a pointer to its head.
++ *
++ * Avoiding premature optimization, we will have one work_struct per port,
++ * and let the qsfp_lock arbitrate access to common resources.
 + *
 + */
-+u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
-+			     struct cpumask *cpu_mask)
-+{
-+	cpumask_var_t node_cpu_mask;
-+	unsigned int available_cpus;
-+
-+	if (!HFI2_CAP_IS_KSET(AIP))
-+		return 0;
-+
-+	/* Always give user contexts priority over netdev contexts */
-+	if (available_contexts == 0) {
-+		dd_dev_info(dd, "No receive contexts available for netdevs.\n");
-+		return 0;
-+	}
-+
-+	if (!zalloc_cpumask_var(&node_cpu_mask, GFP_KERNEL)) {
-+		dd_dev_err(dd, "Unable to allocate cpu_mask for netdevs.\n");
-+		return 0;
-+	}
-+
-+	cpumask_and(node_cpu_mask, cpu_mask, cpumask_of_node(dd->node));
-+
-+	available_cpus = cpumask_weight(node_cpu_mask);
-+
-+	free_cpumask_var(node_cpu_mask);
-+
-+	return min3(available_cpus, available_contexts,
-+		    (u32)HFI2_MAX_NETDEV_CTXTS);
-+}
-+
-+static int hfi2_netdev_rxq_init(struct hfi2_netdev_rx *rx)
-+{
-+	int i;
-+	int rc;
-+	struct hfi2_devdata *dd = rx->dd;
-+	struct hfi2_pportdata *ppd = rx->ppd;
-+	struct net_device *dev = rx->rx_napi;
-+
-+	rx->num_rx_q = dd->rsrcs.ppr[rx->ppd->hw_pidx].num_netdev_contexts;
-+	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
-+			       GFP_KERNEL, dd->node);
-+
-+	if (!rx->rxq) {
-+		ppd_dev_err(ppd, "Unable to allocate netdev queue data\n");
-+		return (-ENOMEM);
-+	}
-+
-+	for (i = 0; i < rx->num_rx_q; i++) {
-+		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
-+
-+		rc = hfi2_netdev_allot_ctxt(rx, &rxq->rcd);
-+		if (rc)
-+			goto bail_context_irq_failure;
-+
-+		hfi2_rcd_get(rxq->rcd);
-+		rxq->rx = rx;
-+		rxq->rcd->napi = &rxq->napi;
-+		ppd_dev_info(ppd, "Setting rcv queue %d napi to context %d\n",
-+			    i, rxq->rcd->ctxt);
-+		/*
-+		 * Disable BUSY_POLL on this NAPI as this is not supported
-+		 * right now.
-+		 */
-+		set_bit(NAPI_STATE_NO_BUSY_POLL, &rxq->napi.state);
-+		netif_napi_add(dev, &rxq->napi, hfi2_netdev_rx_napi);
-+		rc = msix_netdev_request_rcd_irq(rxq->rcd);
-+		if (rc)
-+			goto bail_context_irq_failure;
-+	}
-+
-+	return 0;
-+
-+bail_context_irq_failure:
-+	ppd_dev_err(ppd, "Unable to allot receive context\n");
-+	hfi2_netdev_rxq_deinit(rx);
-+	return rc;
-+}
-+
-+static void hfi2_netdev_rxq_deinit(struct hfi2_netdev_rx *rx)
-+{
-+	int i;
-+
-+	for (i = 0; i < rx->num_rx_q; i++) {
-+		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
-+
-+		if (!rxq->rcd)
-+			continue;
-+		netif_napi_del(&rxq->napi);
-+		hfi2_netdev_deallocate_ctxt(rx->ppd, rxq->rcd);
-+		hfi2_rcd_put(rxq->rcd);
-+		rxq->rcd = NULL;
-+	}
-+
-+	kfree(rx->rxq);
-+	rx->rxq = NULL;
-+	rx->num_rx_q = 0;
-+}
-+
-+static void enable_queues(struct hfi2_netdev_rx *rx)
-+{
-+	int i;
-+
-+	for (i = 0; i < rx->num_rx_q; i++) {
-+		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
-+
-+		dd_dev_info(rx->dd, "enabling queue %d on context %d\n", i,
-+			    rxq->rcd->ctxt);
-+		napi_enable(&rxq->napi);
-+		hfi2_rcvctrl(rx->dd,
-+			     HFI2_RCVCTRL_CTXT_ENB | HFI2_RCVCTRL_INTRAVAIL_ENB,
-+			     rxq->rcd);
-+	}
-+}
-+
-+static void disable_queues(struct hfi2_netdev_rx *rx)
-+{
-+	int i;
-+
-+	msix_netdev_synchronize_irq(rx->ppd);
-+
-+	for (i = 0; i < rx->num_rx_q; i++) {
-+		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
-+
-+		dd_dev_info(rx->dd, "disabling queue %d on context %d\n", i,
-+			    rxq->rcd->ctxt);
-+
-+		/* wait for napi if it was scheduled */
-+		hfi2_rcvctrl(rx->dd,
-+			     HFI2_RCVCTRL_CTXT_DIS | HFI2_RCVCTRL_INTRAVAIL_DIS,
-+			     rxq->rcd);
-+		napi_synchronize(&rxq->napi);
-+		napi_disable(&rxq->napi);
-+	}
-+}
-+
-+/**
-+ * hfi2_netdev_rx_init - Incrememnts netdevs counter. When called first time,
-+ * it allocates receive queue data and calls netif_napi_add for each queue.
-+ *
-+ * @dd: hfi2 dev data
-+ */
-+int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+	int res = 0;
-+
-+	mutex_lock(&hfi2_mutex);
-+	if (rx->netdevs++ == 0) {
-+		res = hfi2_netdev_rxq_init(rx);
-+		if (res)
-+			rx->netdevs--;
-+	}
-+	mutex_unlock(&hfi2_mutex);
-+	return res;
-+}
-+
-+/**
-+ * hfi2_netdev_rx_destroy - Decrements netdevs counter, when it reaches 0
-+ * napi is deleted and receive queses memory is freed.
-+ *
-+ * @dd: hfi2 dev data
-+ */
-+int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+
-+	/* destroy the RX queues only if it is the last netdev going away */
-+	mutex_lock(&hfi2_mutex);
-+	if (--rx->netdevs == 0)
-+		hfi2_netdev_rxq_deinit(rx);
-+	mutex_unlock(&hfi2_mutex);
-+
-+	return 0;
-+}
-+
-+/**
-+ * hfi2_alloc_rx - Allocates the rx support structure
-+ * @dd: hfi2 dev data
-+ *
-+ * Allocate the rx structure to support gathering the receive
-+ * resources and the dummy netdev.
-+ *
-+ * Updates ppd struct pointers upon success.
-+ *
-+ * Return: 0 (success) -error on failure
-+ *
-+ */
-+int hfi2_alloc_rx(struct hfi2_devdata *dd)
-+{
++struct qsfp_data {
++	/* Helps to find our way */
 +	struct hfi2_pportdata *ppd;
-+	struct hfi2_netdev_rx *rx;
-+	int i;
++	struct work_struct qsfp_work;
++	u8 cache[QSFP_MAX_NUM_PAGES * 128];
++	/* protect qsfp data */
++	spinlock_t qsfp_lock;
++	u8 check_interrupt_flags;
++	u8 reset_needed;
++	u8 limiting_active;
++	u8 cache_valid;
++	u8 cache_refresh_required;
++};
 +
-+	dd_dev_info(dd, "hfi2 rx allocating, size %ld\n", sizeof(*rx));
++int refresh_qsfp_cache(struct hfi2_pportdata *ppd,
++		       struct qsfp_data *cp);
++int get_qsfp_power_class(u8 power_byte);
++int qsfp_mod_present(struct hfi2_pportdata *ppd);
++int get_cable_info(struct hfi2_pportdata *ppd, u32 addr, u32 len, u8 *data);
 +
-+	for (i = 0; i < dd->num_pports; i++) {
-+		ppd = &dd->pport[i];
-+
-+		rx = kzalloc_node(sizeof(*rx), GFP_KERNEL, dd->node);
-+
-+		if (!rx) {
-+			hfi2_free_rx(dd);
-+			return -ENOMEM;
-+		}
-+		rx->dd = dd;
-+		rx->ppd = ppd;
-+		rx->rx_napi = alloc_netdev_dummy(0);
-+		if (!rx->rx_napi) {
-+			kfree(rx);
-+			return -ENOMEM;
-+		}
-+
-+		xa_init(&rx->dev_tbl);
-+		atomic_set(&rx->enabled, 0);
-+		/* rx->netdevs is already zero from kzalloc */
-+		ppd->netdev_rx = rx;
-+	}
-+
-+	return 0;
-+}
-+
-+void hfi2_free_rx(struct hfi2_devdata *dd)
-+{
-+	struct hfi2_pportdata *ppd;
-+	int i;
-+
-+	dd_dev_info(dd, "hfi2 rx freed\n");
-+	for (i = 0; i < dd->num_pports; i++) {
-+		ppd = &dd->pport[i];
-+		kfree(ppd->netdev_rx);
-+		ppd->netdev_rx = NULL;
-+	}
-+}
-+
-+/**
-+ * hfi2_netdev_enable_queues - This is napi enable function.
-+ * It enables napi objects associated with queues.
-+ * When at least one device has called it, it increments atomic counter.
-+ * Disable function decrements counter and when it is 0,
-+ * calls napi_disable for every queue.
-+ *
-+ * @dd: hfi2 dev data
-+ */
-+void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+
-+	if (!rx)
-+		return;
-+
-+	if (atomic_fetch_inc(&rx->enabled))
-+		return;
-+
-+	mutex_lock(&hfi2_mutex);
-+	enable_queues(rx);
-+	mutex_unlock(&hfi2_mutex);
-+}
-+
-+void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+
-+	if (!rx)
-+		return;
-+
-+	if (atomic_dec_if_positive(&rx->enabled))
-+		return;
-+
-+	mutex_lock(&hfi2_mutex);
-+	disable_queues(rx);
-+	mutex_unlock(&hfi2_mutex);
-+}
-+
-+/**
-+ * hfi2_netdev_add_data - Registers data with unique identifier
-+ * to be requested later this is needed for IPoIB VLANs
-+ * implementations.
-+ * This call is protected by mutex idr_lock.
-+ *
-+ * @dd: hfi2 dev data
-+ * @id: requested integer id up to INT_MAX
-+ * @data: data to be associated with index
-+ */
-+int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+
-+	return xa_insert(&rx->dev_tbl, id, data, GFP_NOWAIT);
-+}
-+
-+/**
-+ * hfi2_netdev_remove_data - Removes data with previously given id.
-+ * Returns the reference to removed entry.
-+ *
-+ * @dd: hfi2 dev data
-+ * @id: requested integer id up to INT_MAX
-+ */
-+void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+
-+	return xa_erase(&rx->dev_tbl, id);
-+}
-+
-+/**
-+ * hfi2_netdev_get_data - Gets data with given id
-+ *
-+ * @dd: hfi2 dev data
-+ * @id: requested integer id up to INT_MAX
-+ */
-+void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+
-+	return xa_load(&rx->dev_tbl, id);
-+}
-+
-+/**
-+ * hfi2_netdev_get_first_data - Gets first entry with greater or equal id.
-+ *
-+ * @dd: hfi2 dev data
-+ * @start_id: requested integer id up to INT_MAX
-+ */
-+void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id)
-+{
-+	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
-+	unsigned long index = *start_id;
-+	void *ret;
-+
-+	ret = xa_find(&rx->dev_tbl, &index, UINT_MAX, XA_PRESENT);
-+	*start_id = (int)index;
-+	return ret;
-+}
++int i2c_write(struct hfi2_pportdata *ppd, u32 target, int i2c_addr,
++	      int offset, void *bp, int len);
++int i2c_read(struct hfi2_pportdata *ppd, u32 target, int i2c_addr,
++	     int offset, void *bp, int len);
++int qsfp_write(struct hfi2_pportdata *ppd, u32 target, int addr, void *bp,
++	       int len);
++int qsfp_read(struct hfi2_pportdata *ppd, u32 target, int addr, void *bp,
++	      int len);
++int one_qsfp_read(struct hfi2_pportdata *ppd, u32 target, int addr, void *bp,
++		  int len);
++struct hfi2_asic_data;
++int set_up_i2c(struct hfi2_devdata *dd, struct hfi2_asic_data *ad);
++void clean_up_i2c(struct hfi2_devdata *dd, struct hfi2_asic_data *ad);
 
 
 
