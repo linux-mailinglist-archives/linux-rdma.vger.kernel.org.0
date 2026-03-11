@@ -1,135 +1,234 @@
-Return-Path: <linux-rdma+bounces-17971-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17972-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0EjkL6eKsWnkDAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17971-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 16:30:47 +0100
+	id yCgxBoiMsWnkDAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17972-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 16:38:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FFA8266932
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 16:30:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86FAB266AEB
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 16:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 28819305F7F7
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 15:30:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 578FC301AA8B
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 15:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1500720E702;
-	Wed, 11 Mar 2026 15:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B2E3E022F;
+	Wed, 11 Mar 2026 15:36:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="rkJDdomG"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="na0bOpVr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB3B3CAE8D;
-	Wed, 11 Mar 2026 15:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5038F3DD505;
+	Wed, 11 Mar 2026 15:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773243021; cv=none; b=VTC+QncYEZixifEwpt9SDJ90Pwne3Z7KiXCNA/XTC90ExAd2iG3s3Plx20kJ2Tts56CHjSDrR7e6s/TzZ+QzwQTzIdTJABBP08f0IV+fxah9/OqvGCpD1yetQcUj/E82nwlEy4uU3r2BqCVsb5faFVPYYOoUIScqKY+eMN5mwWg=
+	t=1773243364; cv=none; b=sk0tJSu+Wb7sVBR/MZA4LYbrg3QRBuaTvCncxc11oPg8CHH3glom0bj40JXxGYfxQbbF+DXMmxZsAtUk2QwFmJ00kgnN73Fhbw4EXBafOZ56XA/uefcLpSA7nkErLMvbmaeXVaW2r/MdDwo8zHthTtDe06VxizCeF8jUS3pWaz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773243021; c=relaxed/simple;
-	bh=TGzVKC/y4HbwQt3ot6KWiX6hBWXKggDVTfbSejbO4O4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MRaYRIAfaxJ8f5MCapsuZUvaafr1S4VHVtinvDbBFdM/m8mgZpcZWz4VVqPI+E/swrTT8GPxdDgn3e+j2MZlCR+gCEvWbRdkiOVCNMqZkcG+PUR4MNdzCbb6S7iAIyv+CEe3UDJrvFcFHnvtmDwOKtwFNA/NNqnNUxK+3bcqrkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=rkJDdomG; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=5SPjkchjWGfDhOjWefqZ+E57qDv7NOxfgwchX7V5rL8=; b=rkJDdomGARNG3elDYYdXaqDh9I
-	eSRL/ySGLXyrlqoNhXI09tXH7FtINOvpvY9E48AbOWzjbv+rrW9I+/gArEhl9XMjvyE+sPnzAcQ9k
-	hUnmZ/JHH+i0hvPPgwNlZu4F8KgAtGorndt/NnW+BJr+c8IICLHw4DHCbXJUHqBMUcw8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1w0LVb-00BCZv-LP; Wed, 11 Mar 2026 16:30:03 +0100
-Date: Wed, 11 Mar 2026 16:30:03 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Naveen Mamindlapalli <naveenm@marvell.com>,
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
-	Danielle Ratson <danieller@nvidia.com>,
-	Hariprasad Kelam <hkelam@marvell.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Saeed Mahameed <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-Message-ID: <ed30934a-4931-40e5-a659-6fc8d12741b5@lunn.ch>
-References: <20260310104743.907818-1-bjorn@kernel.org>
- <20260310104743.907818-3-bjorn@kernel.org>
- <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
- <87tsum3b1o.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1773243364; c=relaxed/simple;
+	bh=aIFDm+wj1MnwWVi8m/zngqc8LcZmSluMDGXGFs5i+Pc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E8sA5g8Mfd+p5Nz4n1wneiM3yd95P3nMT+5UuIBTYLZe3MBwvaw3WgjoegPXo2EZvOrRLmF6ooSCMHeAxuLStUfiHW07hoQU0P8cmE6X/XUcZgjhbnkeuQr6rj3ut6FaHQyteV3nYqKnPre0jkfw/aUCepb4njMbHq4ymAAMzY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=na0bOpVr; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id DD29AC41584;
+	Wed, 11 Mar 2026 15:36:22 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 61BF660004;
+	Wed, 11 Mar 2026 15:36:01 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 644B710368F58;
+	Wed, 11 Mar 2026 16:35:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1773243359; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=MCaWQJMEcm+4uX5U+lNfbT4AOEoWdHPd6YnrMl3k3Ws=;
+	b=na0bOpVrbOe9TNUDMGm6PM7G9p+7LJbK3L7uPQQV1yS5ksJ7K65B/YzjLOjXy54mpB43go
+	F6M76IVfu5xF0wANGSqZFHxsyvdndZqsNq+VoIOv0ZybhIUS0DC62IOyBZSgpPeiJ+l3eZ
+	NeA2dUPNprOc6YckYPy2AxsDEErBa96jrW8lA6nVbq1+u26ycyrbt/cVzo91EimUYFR+Ja
+	7gWoR/o/XbgslPPSAB3T6j9s9f/p5lPDa1W3Bxg/h0ByeHeOqQDRdWnoXqnd3U3ZyAj56R
+	L7+lZCfIVh3moBPtNtXA7SvW66zOjlsTfE7XB5Sm/WKG+zO2JRUEJXRYWhXJTw==
+Message-ID: <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
+Date: Wed, 11 Mar 2026 16:35:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tsum3b1o.fsf@all.your.base.are.belong.to.us>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
+ definitions
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Donald Hunter
+ <donald.hunter@gmail.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Naveen Mamindlapalli
+ <naveenm@marvell.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Danielle Ratson <danieller@nvidia.com>,
+ Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
+ Kory Maincent <kory.maincent@bootlin.com>, Leon Romanovsky
+ <leon@kernel.org>, Michael Chan <michael.chan@broadcom.com>,
+ Oleksij Rempel <o.rempel@pengutronix.de>,
+ Pavan Chebbi <pavan.chebbi@broadcom.com>,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Saeed Mahameed <saeedm@nvidia.com>,
+ Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+ Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20260310104743.907818-1-bjorn@kernel.org>
+ <20260310104743.907818-3-bjorn@kernel.org>
+ <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
+ <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Content-Language: en-US
+In-Reply-To: <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[lunn.ch,none];
-	R_DKIM_ALLOW(-0.20)[lunn.ch:s=20171124];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
+	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17972-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17971-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[bootlin.com,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,kernel.org,marvell.com,redhat.com,nvidia.com,broadcom.com,pengutronix.de,armlinux.org.uk];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,pengutronix.de,armlinux.org.uk];
 	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andrew@lunn.ch,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[lunn.ch:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[bootlin.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lunn.ch:dkim,lunn.ch:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4FFA8266932
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 86FAB266AEB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-> I like this. The nice thing is that since "name" is a string, we're not
-> locked into an enum -- drivers report what they have using 802.3
-> vocabulary, and we document the recommended names (pcs, pma, pmd, mii)
-> with references? That way it's unambiguous, but not too constrained.
 
-It is both good and bad. I expect some vendors will just ignore the
-text and use what their data sheet says, because they don't know
-better. An enum forces more consistency.
 
-https://gist.github.com/mjball/9cd028ac793ae8b351df1379f1e721f9
+On 11/03/2026 16:22, Andrew Lunn wrote:
+>> If we take an example with a 10G PHY, we may have :
+>>
+>> +----SoC-----+
+>> |            |
+>> |  MAC       |- drivers/net/ethernet
+>> |   |        |
+>> | Base-R PCS |- could be in drivers/net/pcs, or directly
+>> |   |        | in the MAC driver
+>> |   |        |
+>> |  SerDes    |- May be in drivers/phy, maybe handled by firmware,
+>> |   |        |  maybe by the MAC driver, maybe by the PCS driver ?
+>> +---|--------+
+>>     |
+>>     | 10GBase-R
+>>     |
+>> +---|-PHY+
+>> |   |    |
+>> | SerDes | \
+>> |   |    | |
+>> |  PCS   | |
+>> |   |    |  > All of that handled by the drivers/net/phy PHY driver
+>> |  PMA   | |
+>> |   |    | |
+>> |  PMD   | /
+>> +---|----+
+>>     |
+>>     v 10GBaseT
+> 
+> We should also keep in mind this is a "simple" PHY. If you have a PHY
+> which does rate adaptation it looks more like:
+> 
+> +---|-PHY+
+> |   |    |
+> | SerDes |
+> |   |    |
+> |  PCS   |
+> |   |    |
+> |  MAC   |
+> |   |    |
+> | packet |
+> | buffer |
+> |   |    |
+> |  MAC   |
+> |   |    |
+> |  PCS   |
+> |   |    |
+> |  PMA   |
+> |   |    |
+> |  PMD   |
+> +---|----+
+>     |
+>     v 10GBaseT
+> 
+> So there is potentially 5 more loopback points?
 
-enum gets you around level 9. string around level 3.
+Good point indeed
 
-	Andrew
+> 
+> Jakub proposal had the concept of 'depth'. Maybe we need that to
+> handle having the same block repeated a few times as you go towards
+> the media?
+
+So, the same name + depth ?
+
+ +---|-PHY+
+ |   |    |
+ | SerDes |
+ |   |    |
+ |  PCS   | component = PHY, name = "pcs", depth = 0
+ |   |    |
+ |  MAC   |
+ |   |    |
+ | packet |
+ | buffer |
+ |   |    |
+ |  MAC   |
+ |   |    |
+ |  PCS   | component = PHY, name = "pcs", depth = 1
+ |   |    |
+ |  PMA   |
+ |   |    |
+ |  PMD   |
+ +---|----+
+     |
+     v 10GBaseT
+
+I think I like this idea of depth + name, as we can consider omitting
+the depth information when it's not needed (e.g. simple PHY with 1 PCS),
+to keep the API simple.
+
+To continue with your example, with combo-port PHYs we may get multiple
+PMA/PMD instances, one per port, that's even more loopback points.
+
+We could potentially associate these with phy_port though ?
+
+> We should also think about when we have a PHY acting as a MII
+> converter. You see the Marvell PHY placed between the MAC and the SFP
+> cage. That has a collection of blocks which can do loopback. And then
+> we could have either a Base-T module/PHY in the cage, with more of the
+> same blocks, or a fibre modules with loopback.
+
+For that we have what we need with phy_link_topology, as each PHY has
+its index, we should be good to go in that regard hopefully :)
+
+Maxime
 
