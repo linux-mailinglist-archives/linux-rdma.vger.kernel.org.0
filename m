@@ -1,62 +1,83 @@
-Return-Path: <linux-rdma+bounces-18025-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18026-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OMMqB2vBsWkwFAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18025-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:24:27 +0100
+	id sKnjEkfDsWmdFAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18026-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:32:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75F3826940B
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E76892695CC
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:32:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AAD0D3184A8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 19:22:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EDD29313889A
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 19:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D68032573F;
-	Wed, 11 Mar 2026 19:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1228135839F;
+	Wed, 11 Mar 2026 19:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Mi0zexhH"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1juymEJU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76393254A0;
-	Wed, 11 Mar 2026 19:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F0D2D5925;
+	Wed, 11 Mar 2026 19:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773256933; cv=none; b=k/RlzKntsHzd56F0tXth0NdH9/7fK91Fs3ZTVVReq7dPP/Il5Z1AruSidTENS9/hXlZFfeXP2tjyzBvXfHdM6vnsswPwXtVjxR6n2utBTRvZb3IsJ/yKQoXqeVQV/tf0nDZ7WmF4fqvokIRqCbwj89vsHnmcV+72hzFEV5HPSx4=
+	t=1773257217; cv=none; b=c61q+XTTw5Hth0KN6KnxgSf+7qS+sQ3zDcDy610rtOrzT1f79hZuiAdz1VlUvm/YSr0UBeeXlbK/+aog2H7xIu/Sd9yWGXHlSx40i62dAc0JfWOT3Qs0NaEWj/SuP5feYFFrBm+1v3OLywcXj7QmgOKffSinqy6d3G/y/cH3RuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773256933; c=relaxed/simple;
-	bh=3a1y95VnLiNRF22yB9xTwkHPK83osW3Y6kfjW4B/qzg=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=XL/utCEjBewzDGHk+0QVSITfnwiVVH98pS0xUvpakWOoQOH488FJafIZOAVSnjuoyz5Bl56Zh9hsGWqpLrp5vtaUpFZppNxtU1pyKmteTg3cTWMMAtPd6KPa1zvxHNoytIRzue6O+/7HPaGxx/QPNNkmw0DvSupkUq9ITWWlMJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Mi0zexhH; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 91EC620B710C; Wed, 11 Mar 2026 12:22:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 91EC620B710C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1773256924;
-	bh=T3bcUeSPf/iaPcHw/5z6J3eIMmoMmEOuBFZt6y0QIgE=;
-	h=Date:From:To:Subject:From;
-	b=Mi0zexhHPHFpNU+afLZjHBPFBGk7CsOXV1IUzevRs/QG69M0Y2/iJlpjQ0Hj33PoZ
-	 RndwISQ12B+rV8NDbKu0v8gomxytw/32KuKc4Jc+lKYe1cCjGxcYYGLrKKxADq7jxu
-	 13TRd6UelrFN6EyCYv+VTLXBFsDC+VujZxgNFPqc=
-Date: Wed, 11 Mar 2026 12:22:04 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
-	horms@kernel.org, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net,v2] net: mana: fix use-after-free in
- mana_hwc_destroy_channel() by reordering teardown
-Message-ID: <abHA3AjNtqa1nx9k@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1773257217; c=relaxed/simple;
+	bh=d0kLhs/uHqLSBTB+e/h64NsHmTY5C5Mu3yHAXejdHb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZBHdvLqSI+O1YsD98TSI/YbHHh9d3Yh30fBqp7wrRNjAh6kkg6ebUo4JiLQfwMuKDrhumMFoDkE0tZ/w6qhO8HauXHVpdxclRW51QSyBOphMDoRP4pyelzhyQ1UZP5uilP8o+HUHx/AjLuyQ8hNyxaoB1oHzDAvJEC7beHcRTHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=1juymEJU; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=6XbbzJZw13LWqtzWQJD16rA4mQ8OaOgweEd1OKEwy60=; b=1juymEJUSooHN3CqAX4+BAVIu9
+	n1hCYyJN6bM/TjvqhTLtqa3rsPAzrkgpgWJocxzQPCs+J93tUYMg3fZCizXGdd1MsTn1WqbhHh6D4
+	lzUe59zcRIi96R+l+ZS2MGsMPsTK4UeLtcYsqJiuQegtITXek5bNmjs/n/Bkxqhi1iAE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1w0PCZ-00BEAU-LL; Wed, 11 Mar 2026 20:26:39 +0100
+Date: Wed, 11 Mar 2026 20:26:39 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Naveen Mamindlapalli <naveenm@marvell.com>,
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	Danielle Ratson <danieller@nvidia.com>,
+	Hariprasad Kelam <hkelam@marvell.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saeed Mahameed <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
+ definitions
+Message-ID: <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
+References: <20260310104743.907818-1-bjorn@kernel.org>
+ <20260310104743.907818-3-bjorn@kernel.org>
+ <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
+ <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
+ <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,91 +86,71 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[lunn.ch,none];
+	R_DKIM_ALLOW(-0.20)[lunn.ch:s=20171124];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18025-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-18026-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,pengutronix.de,armlinux.org.uk];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[andrew@lunn.ch,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[lunn.ch:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,linux.microsoft.com:dkim]
-X-Rspamd-Queue-Id: 75F3826940B
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lunn.ch:dkim,lunn.ch:mid]
+X-Rspamd-Queue-Id: E76892695CC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-A potential race condition exists in mana_hwc_destroy_channel() where
-hwc->caller_ctx is freed before the HWC's Completion Queue (CQ) and
-Event Queue (EQ) are destroyed. This allows an in-flight CQ interrupt
-handler to dereference freed memory, leading to a use-after-free or
-NULL pointer dereference in mana_hwc_handle_resp().
+> So, the same name + depth ?
+> 
+>  +---|-PHY+
+>  |   |    |
+>  | SerDes |
+>  |   |    |
+>  |  PCS   | component = PHY, name = "pcs", depth = 0
+>  |   |    |
+>  |  MAC   |
+>  |   |    |
+>  | packet |
+>  | buffer |
+>  |   |    |
+>  |  MAC   |
+>  |   |    |
+>  |  PCS   | component = PHY, name = "pcs", depth = 1
+>  |   |    |
+>  |  PMA   |
+>  |   |    |
+>  |  PMD   |
+>  +---|----+
+>      |
+>      v 10GBaseT
+> 
+> For that we have what we need with phy_link_topology, as each PHY has
+> its index, we should be good to go in that regard hopefully :)
 
-mana_smc_teardown_hwc() signals the hardware to stop but does not
-synchronize against IRQ handlers already executing on other CPUs. The
-IRQ synchronization only happens in mana_hwc_destroy_cq() via
-mana_gd_destroy_eq() -> mana_gd_deregister_irq(). Since this runs
-after kfree(hwc->caller_ctx), a concurrent mana_hwc_rx_event_handler()
-can dereference freed caller_ctx (and rxq->msg_buf) in
-mana_hwc_handle_resp().
+So depth would be local to a component? We could have two PHY
+components, each with a different index, and depth = 0?
 
-Fix this by reordering teardown to reverse-of-creation order: destroy
-the TX/RX work queues and CQ/EQ before freeing hwc->caller_ctx. This
-ensures all in-flight interrupt handlers complete before the memory they
-access is freed.
+I _think_ Jakub's depth was more at a global level? But then it would
+need to be passed down as we do the enumeration.
 
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
-Changes in v2:
-  - Added maintainers missed in v1.
----
----
- drivers/net/ethernet/microsoft/mana/hw_channel.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index 91975bdb5686..dbbde0fa57e7 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -814,9 +814,6 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
- 		gc->max_num_cqs = 0;
- 	}
- 
--	kfree(hwc->caller_ctx);
--	hwc->caller_ctx = NULL;
--
- 	if (hwc->txq)
- 		mana_hwc_destroy_wq(hwc, hwc->txq);
- 
-@@ -826,6 +823,9 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
- 	if (hwc->cq)
- 		mana_hwc_destroy_cq(hwc->gdma_dev->gdma_context, hwc->cq);
- 
-+	kfree(hwc->caller_ctx);
-+	hwc->caller_ctx = NULL;
-+
- 	mana_gd_free_res_map(&hwc->inflight_msg_res);
- 
- 	hwc->num_inflight_msg = 0;
--- 
-2.43.0
-
+     Andrew
 
