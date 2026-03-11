@@ -1,233 +1,234 @@
-Return-Path: <linux-rdma+bounces-17946-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17947-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kDLlOfkmsWkBrgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17946-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:25:29 +0100
+	id yGVSJVgosWkBrgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17947-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:31:20 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0E725F285
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:25:29 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D58225F5B2
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:31:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1E9D630A8C3C
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:20:19 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8D7CB3086A3F
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9662736C9F6;
-	Wed, 11 Mar 2026 08:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739013B6343;
+	Wed, 11 Mar 2026 08:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IQx2TkN6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZUXCHBaj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDCF35A391;
-	Wed, 11 Mar 2026 08:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33320358360;
+	Wed, 11 Mar 2026 08:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773217136; cv=none; b=X3js/sNzJinhfM9qah/5xVBNxIUhDZDU6mvryfchB0SuZP4mRYXg8qegAOiCoEYvnpM05vbV+gR9S5u2M3hNUEXqgBP9N6Seoptv/u/KR+n7dmYdYqK+Ok86acHJK7nj8nZ0NvB4oC1iHY+Y0/9seo/m1sVeAdmtBVchq9AlcuY=
+	t=1773217200; cv=none; b=TrhsUW04nhAUnfsQ/O23oQicNd8C0lXqJtTxejwc7jF2i7ycXfdSYgt7ISopt9kCCDGhm7jZ30fsVkHNoVXNlY5XvJnNANR80o/fLCBf1uHM2H/VwhXHwQcG305LncgYkUYoThc1u67Xp0as4Dycpjzde/JUusoNZaXUfqtSb58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773217136; c=relaxed/simple;
-	bh=6ImKPFcivnEAhhMGOB4v8zVHkoArioNqdVSwhniKfY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bbtkui3QZObBzZmTenuAdatQTolXDJrqDfvQx7FEgXlb9PVZMeoL/gu7ulogjQMY1Lj1ZJ3m62H+tpLoSmgiLevZZyOWQB333fNy1KKyxE8OfXSgwlv0Gdk5QSLkeFmq97NxSKFUDqJj3o38B4CJ7nm+LkQT59WVmELrtOn4np0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IQx2TkN6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 021A4C2BC9E;
-	Wed, 11 Mar 2026 08:18:42 +0000 (UTC)
+	s=arc-20240116; t=1773217200; c=relaxed/simple;
+	bh=wIlfCxEWTnTMirM0Hzxi5elWcq+7xLnpDh8qwCD9JLI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hwKvpby4CgTSv/ZUhloO+PDZtJCnPN3qX/xM6XJlx3yf5y/JF+2dedD5GTyoVhY1AWtA+qP5MwwqHvcOJiVOGVvb9/sk6k+yXLoFW+aRmgrc4u3c5owQsoa7burBsYd05ljGrzVLhna2tZnB7oRUMLD6qhu7b8/v2557wlIBeZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZUXCHBaj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6852BC4CEF7;
+	Wed, 11 Mar 2026 08:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773217136;
-	bh=6ImKPFcivnEAhhMGOB4v8zVHkoArioNqdVSwhniKfY0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IQx2TkN6ijhwUgYfcXSxBlRFTvqzQnZqutdbsFVRfHZbbWuzccTqcseRhNL0b0foU
-	 Ng3g2HiyK98YrTxKAnEhVA4j4nfwEDDPK36OCkI4JU4UKUI4B7NXTPkSBP1oQe98Q5
-	 nyE6Lmc4iPLMHq9THZP5u7ukJaP1F4rSYY8MQnD7Xb2jP1T9c1swNonrT7xVgzdJtb
-	 /hQNO3nIdqBLmqznQevDPfg0KMMh8xhvaarxTmwbEmXmOmt3BrUaykrMQXXqbwpwuz
-	 4mqhZZebsiw61CDatCJAAvMa/ObPo82EA1jzuNk51n4TnWChokW82M4xFiT6Wq9VYu
-	 5dx9/JXZAyOKA==
-Message-ID: <55b27bbf-6572-4f5f-a843-39ef8e01fd17@kernel.org>
-Date: Wed, 11 Mar 2026 09:18:41 +0100
+	s=k20201202; t=1773217199;
+	bh=wIlfCxEWTnTMirM0Hzxi5elWcq+7xLnpDh8qwCD9JLI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZUXCHBajKBoLR7t7ubx+Hfm/n0FO2ifumFy6UnHn/zBbFx6c8NVFnxZBx+lSmHgZi
+	 zugXPfz3/IuJFDpUcniwCQPv2T4ao8/nRB9xfW0d73QPLBs/bHAwGQgNwJ2xOyVzit
+	 ToFO7M/fP81vXMEbLM13G0AC+ozjMpTBsOAnfywK8n3Sf4F9GAEkyYM/Ejcnr6ZM5w
+	 050j24PsscMkgWbDlgHPg0LLeazxyMCXD0ftt7Dy0+Jw3m8svMlffluXMm3OUx4Reb
+	 2PnrP6k6e6VaymhQVUQ0qBt7FJUXLzFuE9i+oM67j78oNxgCslZk/iJv19MBZxyJom
+	 HOxTlRDHB6b+Q==
+Date: Wed, 11 Mar 2026 10:19:55 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	Edward Srouji <edwards@nvidia.com>
+Subject: Re: [PATCH 0/3] Firmware LSM hook
+Message-ID: <20260311081955.GS12611@unreal>
+References: <20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com>
+ <CAHC9VhTR9CsBgxRCAHXm5T2NZ5tr+XfmA--zkt=udmk9hPRuZQ@mail.gmail.com>
+ <20260309193743.GZ12611@unreal>
+ <CAHC9VhSRt_QEJKJFBDBySNQCiPpcawd5A76xmoRNtppRKGaCog@mail.gmail.com>
+ <20260310090733.GA12611@unreal>
+ <CAHC9VhTKsOYrs8Wh-O548=2gE7N_gkBy+q05+atcR=D+30uQ=w@mail.gmail.com>
+ <20260310193000.GM12611@unreal>
+ <CAHC9VhSh8A+yGHT_+BqFGaLNqsZDcaz_cuqf9A+neRQQ3PMY4A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 10/16] mm/memory: use __zap_vma_range() in
- zap_vma_for_reaping()
-To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "linux-mm @ kvack . org"
- <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>,
- David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan
- <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>,
- Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>,
- H Hartley Sweeten <hsweeten@visionengravers.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
- <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>,
- Dimitri Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Eric Dumazet <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org,
- kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
-References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-11-david@kernel.org>
- <c03e1ced-6fa5-4d66-9c91-66693193383f@lucifer.local>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <c03e1ced-6fa5-4d66-9c91-66693193383f@lucifer.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: CB0E725F285
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhSh8A+yGHT_+BqFGaLNqsZDcaz_cuqf9A+neRQQ3PMY4A@mail.gmail.com>
+X-Rspamd-Queue-Id: 3D58225F5B2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17946-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17947-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[74];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.997];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On 3/6/26 13:26, Lorenzo Stoakes (Oracle) wrote:
-> On Fri, Feb 27, 2026 at 09:08:41PM +0100, David Hildenbrand (Arm) wrote:
->> Let's call __zap_vma_range() instead of unmap_page_range() to prepare
->> for further cleanups.
->>
->> To keep the existing behavior, whereby we do not call uprobe_munmap()
->> which could block, add a new "reaping" member to zap_details and use it.
+On Tue, Mar 10, 2026 at 05:40:02PM -0400, Paul Moore wrote:
+> On Tue, Mar 10, 2026 at 3:30 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > On Tue, Mar 10, 2026 at 02:24:40PM -0400, Paul Moore wrote:
+> > > On Tue, Mar 10, 2026 at 5:07 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > On Mon, Mar 09, 2026 at 07:10:25PM -0400, Paul Moore wrote:
+> > > > > On Mon, Mar 9, 2026 at 3:37 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > > On Mon, Mar 09, 2026 at 02:32:39PM -0400, Paul Moore wrote:
+> > > > > > > On Mon, Mar 9, 2026 at 7:15 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > ...
+> > >
+> > > > > > > Hi Leon,
+> > > > > > >
+> > > > > > > At the link below, you'll find guidance on submitting new LSM hooks.
+> > > > > > > Please take a look and let me know if you have any questions.
+> > > > > > >
+> > > > > > > https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm-hooks
+> > > > > >
+> > > > > > I assume that you are referring to this part:
+> > > > >
+> > > > > I'm referring to all of the guidance, but yes, at the very least that
+> > > > > is something that I think we need to see in a future revision of this
+> > > > > patchset.
+> > > > >
+> > > > > >  * New LSM hooks must demonstrate their usefulness by providing a meaningful
+> > > > > >    implementation for at least one in-kernel LSM. The goal is to demonstrate
+> > > > > >    the purpose and expected semantics of the hooks. Out of tree kernel code,
+> > > > > >    and pass through implementations, such as the BPF LSM, are not eligible
+> > > > > >    for LSM hook reference implementations.
+> > > > > >
+> > > > > > The point is that we are not inspecting a kernel call, but the FW mailbox,
+> > > > > > which has very little meaning to the kernel. From the kernel's perspective,
+> > > > > > all relevant checks have already been performed, but the existing capability
+> > > > > > granularity does not allow us to distinguish between FW_CMD1 and FW_CMD2.
+> > > > >
+> > > > > It might help if you could phrase this differently, as I'm not
+> > > > > entirely clear on your argument.  LSMs are not limited to enforcing
+> > > > > access controls on requests the kernel understands (see the SELinux
+> > > > > userspace object manager concept), and the idea of access controls
+> > > > > with greater granularity than capabilities is one of the main reasons
+> > > > > people look to LSMs for access control (SELinux, AppArmor, Smack,
+> > > > > etc.).
+> > > >
+> > > > I should note that my understanding of LSM is limited, so some parts of my
+> > > > answers may be inaccurate.
+> > > >
+> > > > What I am referring to is a different level of granularity — specifically,
+> > > > the internals of the firmware commands. In the proposed approach, BPF
+> > > > programs would make decisions based on data passed through the mailbox.
+> > > > That mailbox format varies across vendors, and may even differ between
+> > > > firmware versions from the same vendor.
+> > >
+> > > That helps, thank you.
+> > >
+> > > > > > Here we propose a generic interface that can be applied to all FWCTL
+> > > > > > devices without out-of-tree kernel code at all.
+> > > > >
+> > > > > I expected to see a patch implementing some meaningful support for
+> > > > > access controls using these hooks in one of the existing LSMs, I did
+> > > > > not see that in this patchset.
+> > > >
+> > > > In some cases, the mailbox is forwarded from user space unchanged, but
+> > > > in others the kernel modifies it before submitting it to the FW.
+> > >
+> > > Without a standard format, opcode definitions, etc. I suspect
+> > > integrating this into an LSM will present a number of challenges.
+> >
+> > The opcode is relatively easy to extract from the mailbox and pass to the LSM.
+> > All drivers implement some variant of mlx5ctl_validate_rpc()/devx_is_general_cmd()
+> > to validate the opcode. The problem is that this check alone is not sufficient.
+> >
+> > > Instead of performing an LSM access control check before submitting
+> > > the firmware command, it might be easier from an LSM perspective to
+> > > have the firmware call into the kernel/LSM for an access control
+> > > decision before performing a security-relevant action.
+> >
+> > Ultimately, the LSM must make a decision for each executed firmware
+> > command. This will need to be handled one way or another, and will
+> > likely require parsing the mailbox again.
 > 
-> I am always in favour of making further use of helper structs :)
+> As it's unlikely that parsing the mailbox is something that a LSM will
+> want to handle,
+
+I believe this approach offers the cleanest and most natural way to support
+all mailbox‑based devices.
+
+> my suggestion was to leverage the existing mailbox parsing in the firmware
+> and require the firmware to call into the LSM when authorization is needed.
 > 
->>
->> Likely we should handle the possible blocking in uprobe_munmap()
->> differently, but for now keep it unchanged.
->>
->> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
+> > > This removes the challenge of parsing/interpreting the arbitrary firmware commands,
+> > > but it does add some additional complexity of having to generically
+> > > represent the security relevant actions the firmware might request
+> >
+> > The difference here is that the proposed LSM hook is intended to disable
+> > certain functionality provided by the firmware, effectively depending on
+> > the operator’s preferences.
 > 
-> OK this looks like it's doing the equivalent of what was there before, so:
+> My suggestion would also allow a LSM hook to disable certain firmware
+> functionality; however, the firmware itself would need to call the LSM
+> to check if the functionality is authorized.
+
+This suggestion adds an extra call from the FW to the LSM for every command, even
+for systems which don't have LSM at all. The FW must pass the already parsed data
+back to the LSM; otherwise, the LSM   has no basis to decide whether to accept or
+reject the request.
+
+For example, consider the MLX5_CMD_OP_QUERY_DCT command handled in  
+mlx5ctl_validate_rpc(). DCT in RDMA refers to Dynamically Connected  
+Transport, a Mellanox-specific extension that effectively introduces a new  
+QP‑type family on top of the standard RC/UC/UD transports. This type does not  
+exist for other vendors, each of whom provides its own vendor‑specific  
+extensions. All parameters here are tightly coupled to those specific  
+commands.
+
+It is unrealistic to expect different firmware implementations to supply  
+their data in a common format that would allow the LSM to make a generic  
+decision.
+
+Thanks
+
 > 
-> Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
-
-[...]
-
->> @@ -2111,11 +2115,12 @@ static void __zap_vma_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
->>   */
->>  int zap_vma_for_reaping(struct vm_area_struct *vma)
->>  {
->> +	struct zap_details details = {
->> +		.reaping = true,
->> +	};
->>  	struct mmu_notifier_range range;
->>  	struct mmu_gather tlb;
->>
->> -	VM_WARN_ON_ONCE(is_vm_hugetlb_page(vma));
->> -
+> -- 
+> paul-moore.com
 > 
-> I guess because you've moved this safety check into __zap_vma_range()?
-
-Yes exactly, considered the change too trivial to mention it in the
-patch description.
-
-Thanks!
-
--- 
-Cheers,
-
-David
 
