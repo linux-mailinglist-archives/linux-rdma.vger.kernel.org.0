@@ -1,171 +1,246 @@
-Return-Path: <linux-rdma+bounces-18029-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18030-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0H4AFf/jsWlbGwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18029-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 22:51:59 +0100
+	id MBvwGXPnsWmcGwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18030-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 23:06:43 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id F265226A996
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 22:51:53 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D61D526AC17
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 23:06:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C6DF9301C6AA
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 21:51:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 132A630D3774
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 22:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6DC34D3BF;
-	Wed, 11 Mar 2026 21:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FFF358391;
+	Wed, 11 Mar 2026 22:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dx7jFacZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b5uQGk0l"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D01C1B4138;
-	Wed, 11 Mar 2026 21:51:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C26E352926
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 22:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773265903; cv=none; b=NCnTAVFQWTodrbljYCGXULPFo1pcbV/ezP1ahiNPsznt9pAKR7JS4+YGJFr22l0VOwLnjw98hodoWw+MYtvGkzL9C1jfcq564QcNjP7pswAxJfsj1VWdLyZbjfxao3KNFGuQ2iYGJX5SDabUHCLpiRxvEwfRwqaMaFe/gvrDr8o=
+	t=1773266526; cv=none; b=tozmTfEez82XjCO5cD3cphVaTiYTMcobx4O8LjfmfhvX7bWXxKXQINSZp5a8cMFwEsSfGqguRaDDP1c3kpPpSm34SjTA8atW8Wgo3uuLTgELInXI5rdJiKs08y9Xb11oEY/z5pP4OmgaeehSvWsnEueqtQ9rk7gVSLRdjIGm5fA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773265903; c=relaxed/simple;
-	bh=Ky9x4Qc7sXMth54WdQkScEx8aBLAUtoTYC5EOd6QHxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kirH1Dxr8ZcCkLz9BShAPPapML9f+calzP99PhVohWbeDFMznko5a6j37001W7iDhPfOx6GyskJHpwNkpZGBB1Xqxb+zD9eZEkFLRRH8c6pzE5+n5zdwIRHEu0Z4SazKmWmxnDpnfPfaerR59ELZh41JngmsffpC+MofqYlb1TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dx7jFacZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27E2CC4CEF7;
-	Wed, 11 Mar 2026 21:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773265903;
-	bh=Ky9x4Qc7sXMth54WdQkScEx8aBLAUtoTYC5EOd6QHxo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Dx7jFacZSSM5wqhX2HqVl7lUpW0BEE9MOC0zg7RjB5ksIwDxAWiFZ8g3y/bFQrOJU
-	 KgyyZReYbkucYayZ/KcL7xAyjIJahjFxos8+5wjc172EkvLwKREPg6fUMCTTHH9e5e
-	 0SRr79WK766w8sZqtz4gS07VU1undwunt1g8fnAM8l9uaJP+41+dKTEgKAzgAC6bf/
-	 ZZLf4g5j9YtyfB0DJtKhpkgq99a3yhBGia1Y7+OvqI0ggZIZSbgKqyCcmC73P8o5ei
-	 3riUM+OF6hL5IX1V96Jb/coHSW0x2b0lzPO3IE2wBzbwAzqmJfj2pYMsEB2v8Ifrtc
-	 tyBfX4sVpALLQ==
-Date: Wed, 11 Mar 2026 14:51:26 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Or Har-Toov <ohartoov@nvidia.com>
-Cc: Jiri Pirko <jiri@resnulli.us>, Tariq Toukan <tariqt@nvidia.com>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Donald
- Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, Gal Pressman
- <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Shay Drory
- <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Moshe Shemesh
- <moshe@nvidia.com>
-Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource
- support
-Message-ID: <20260311145126.7dcca532@kernel.org>
-In-Reply-To: <5de5103e-e2e4-4b72-9c3c-22847728fbb8@nvidia.com>
-References: <20260226221916.1800227-1-tariqt@nvidia.com>
-	<20260302192640.49af074f@kernel.org>
-	<pmxkihhtsskkwsvdia4z2ss4wxpfc4a4kqxkjv5wk3mwdmpzii@6go7pizk2nst>
-	<jssifysprwuafkinc3dguspngxmplrngqxvotp76vhvu4e5lp6@e7mdrjqc5rme>
-	<20260304101522.09da1f58@kernel.org>
-	<np44uzfn6jea56uht4yq4te5clapgj7pk6ygyvkl22wxumwnvt@nrpvzjqzxenq>
-	<20260305063729.7e40775d@kernel.org>
-	<ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
-	<20260306120301.0ebe1ab2@kernel.org>
-	<74dcd7c5-8a2b-49a7-a23c-174d17a61955@nvidia.com>
-	<20260309133341.7e08b35d@kernel.org>
-	<5de5103e-e2e4-4b72-9c3c-22847728fbb8@nvidia.com>
+	s=arc-20240116; t=1773266526; c=relaxed/simple;
+	bh=UgLryemejYDkrKLQCHN3ggWk/1jIuVfpQTdJfgI4uBg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y4xNOOSAYEUxHj6upA0uNdiHJYo/A6cBZ3UuYpfXJzWsAZF2+krWl+/7lxc1qocduT2/Nz5CVcRE1kpRoVAekbAoh0i5ibOQvy5JORtKK35gGTCP/NIjhypNKxAba/R6bU3bhKUMgvZTpMcSWAVrvjRP0gDWMmmlcrO+251wKu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b5uQGk0l; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6a8b0983-a198-470a-8125-b0133ccb7032@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773266522;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fDrvhZooVIidtSklPGb5zNTEhhukwtMPI7dovIzwlNw=;
+	b=b5uQGk0l1X3OV/lTxvXyprilkWy7U8Brk1R90gGRI8/KRkeUHaUEpbicrDsgvaM0xZpr5H
+	u8PQUi3+LziKEcY0+L8VaohJ3CJrdAXYTlqlBdeoO6IFzTwP7ILXaa+y555hPXey5KN1b6
+	Qpt1MMcvNtjoRnIT5joPxYp2w9XXTIA=
+Date: Wed, 11 Mar 2026 15:01:53 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Subject: Re: [PATCH v5 1/4] RDMA/nldev: Add dellink function pointer
+To: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: jgg@ziepe.ca, zyjzyj2000@gmail.com, shuah@kernel.org,
+ linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ dsahern@kernel.org
+References: <20260310020519.101415-1-yanjun.zhu@linux.dev>
+ <20260310020519.101415-2-yanjun.zhu@linux.dev>
+ <20260310190140.GL12611@unreal>
+ <5700c718-d10e-4b23-adfc-c14ee1930b18@linux.dev>
+ <20260311085434.GW12611@unreal>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <20260311085434.GW12611@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18029-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[resnulli.us,nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[ziepe.ca,gmail.com,kernel.org,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-18030-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F265226A996
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D61D526AC17
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 11 Mar 2026 20:24:08 +0200 Or Har-Toov wrote:
-> For the dump-it command:
-> devlink resource show
-> pci/0000:03:00.0:
-> <resource>
-> pci/0000:03:00.0/196608:
-> <port-resource>
-> pci/0000:03:00.0/196609:
-> <port-resource>
-> pci/0000:03:00.1:
-> <resource>
-> pci/0000:03:00.1/262144:
-> <port-resource>
-> 
-> devlink resource show scope port
-> pci/0000:03:00.0/196608:
-> <port-resource>
-> pci/0000:03:00.0/196609:
-> <port-resource>
-> pci/0000:03:00.1/262144:
-> <port-resource>
-> 
-> devlink resource show scope dev
-> pci/0000:03:00.0:
-> <resource>
-> pci/0000:03:00.1:
-> <resource>
 
-LGTM
+On 3/11/26 1:54 AM, Leon Romanovsky wrote:
+> On Tue, Mar 10, 2026 at 06:58:00PM -0700, Yanjun.Zhu wrote:
+>> On 3/10/26 12:01 PM, Leon Romanovsky wrote:
+>>> It is an RXE‑specific description, but you are adding code to the general
+>>> nldev path. Please clarify that this behavior applies only to RXE, and
+>>> include examples showing when and how it is invoked. In particular, explain
+>>> how the socket is cleaned up if delink is not called.
+>> Hi, Leon
+>>
+>> You are correct that this logic should be driver-specific. I will add an
+>> explicit check for RDMA_DRIVER_RXE in the nldev path to ensure this behavior
+>> is strictly scoped to RXE and does not impact other drivers (like iWARP).
+> No, you don't need this driver_id check, because iWARP doesn't have link_ops->dellink,
+> but you should document the rationale and how it is triggered for RXE.
+>
+> Thanks
 
-> For the do-it command:
-> devlink resource show pci/0000:03:00.0
-> pci/0000:03:00.0:
-> <resource>
-> pci/0000:03:00.0/196608:
-> <port-resource>
-> pci/0000:03:00.0/196609:
-> <port-resource>
-> 
-> devlink resource show pci/0000:03:00.0 scope port
-> pci/0000:03:00.0/196608:
-> <port-resource>
-> pci/0000:03:00.0/196609:
-> <port-resource>
-> 
-> devlink resource show pci/0000:03:00.0  scope dev
-> pci/0000:03:00.0:
-> <resource>
+Hi, Leaon
 
-Do we have to touch doit? Maybe we should let doit be what it is now
-and consider it legacy going forward? doit which is in fact a filtered
-dump is a bit of a mistake in the first place, from Netlink's
-perspective.
+Got it. The commit log explains how the netdev_notifier mechanism is 
+used to clean up the related resources.
+
+In the source code, additional comments have been added to explain how 
+the dellink operation for rxe is triggered. For iWARP, this change 
+should not make any difference because iWARP does not implement the 
+dellink function.
+
+The commit is shown below. Please take a look and share your comments. 
+If you agree, I will send out the latest commits out very soon.
+
+ From c05038dcdf69c5985837736a8926ba76d9f3e8e4 Mon Sep 17 00:00:00 2001
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Date: Fri, 23 Sep 2022 16:52:45 +0000
+Subject: [PATCH 1/1] RDMA/nldev: Add dellink function pointer
+
+The newlink function pointer was previously added to support
+dynamic RDMA link creation. In the RXE driver, this path creates
+a transport socket listening on port 4791. Consequently, a dellink
+function pointer is required to ensure these sockets are properly
+closed when a user administratively removes a link via rdma link
+delete <dev>.
+
+Furthermore, RXE does not rely solely on this nldev path for resource
+management. It also monitors the underlying net_device state via a
+registered netdev_notifier. The rxe_net_event callback serves as a
+fallback mechanism to ensure that transport sockets are forcibly closed
+and all resources are released even if dellink is not explicitly called
+(e.g., if the parent NIC interface is removed or the driver is forcefully
+unloaded).
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+  drivers/infiniband/core/nldev.c | 12 ++++++++++++
+  include/rdma/rdma_netlink.h     |  2 ++
+  2 files changed, 14 insertions(+)
+
+diff --git a/drivers/infiniband/core/nldev.c 
+b/drivers/infiniband/core/nldev.c
+index 2220a2dfab24..34f5faf80d9c 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1824,6 +1824,18 @@ static int nldev_dellink(struct sk_buff *skb, 
+struct nlmsghdr *nlh,
+          return -EINVAL;
+      }
+
++    /*
++     * This path is triggered by the 'rdma link delete' administrative 
+command.
++     * For Soft-RoCE (RXE), we ensure that transport sockets are closed 
+here.
++     * Note: iWARP driver does not implement .dellink, so this logic is
++     * implicitly scoped to driver supporting dynamic link deletion 
+like RXE.
++     */
++    if (device->link_ops && device->link_ops->dellink) {
++        err = device->link_ops->dellink(device);
++        if (err)
++            return err;
++    }
++
+      ib_unregister_device_and_put(device);
+      return 0;
+  }
+diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
+index 326deaf56d5d..2fd1358ea57d 100644
+--- a/include/rdma/rdma_netlink.h
++++ b/include/rdma/rdma_netlink.h
+@@ -5,6 +5,7 @@
+
+  #include <linux/netlink.h>
+  #include <uapi/rdma/rdma_netlink.h>
++#include <rdma/ib_verbs.h>
+
+  struct ib_device;
+
+@@ -126,6 +127,7 @@ struct rdma_link_ops {
+      struct list_head list;
+      const char *type;
+      int (*newlink)(const char *ibdev_name, struct net_device *ndev);
++    int (*dellink)(struct ib_device *dev);
+  };
+
+  void rdma_link_register(struct rdma_link_ops *ops);
+-- 
+2.53.0
+
+>
+>> This function path is primarily invoked when a user executes the
+>> administrative command: rdma link delete <dev>.
+>>
+>> Regarding socket cleanup: RXE does not rely solely on this path for resource
+>> management. It monitors the underlying net_device state via a registered
+>> netdev_notifier. Even if delink is not explicitly called (e.g., if the
+>> parent interface is removed or the driver is forcefully unloaded), the
+>> rxe_net_event callback ensures that the transport sockets are forcibly
+>> closed and all allocated resources are released when the parent net_device
+>> is destroyed.
+>>
+>> The code diff is as below:
+>>
+>> --- a/drivers/infiniband/core/nldev.c
+>> +++ b/drivers/infiniband/core/nldev.c
+>> @@ -1824,6 +1824,12 @@ static int nldev_dellink(struct sk_buff *skb, struct
+>> nlmsghdr *nlh,
+>>                  return -EINVAL;
+>>          }
+>>
+>> +       if (device->link_ops && device->ops.driver_id == RDMA_DRIVER_RXE) {
+>> +               err = device->link_ops->dellink(device);
+>> +               if (err)
+>> +                       return err;
+>> +       }
+>> +
+>>          ib_unregister_device_and_put(device);
+>>          return 0;
+>>   }
+>>
+>> Zhu Yanjun
+>>
+>>
 
