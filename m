@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-17997-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17998-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UJUeH6mssWmzEQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17997-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:55:53 +0100
+	id 8DiCO4qssWmzEQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17998-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:55:22 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5483926851E
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:55:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 619E42684F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 27B2A308010E
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:55:08 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 69B4B301AAB7
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765DF3DD51F;
-	Wed, 11 Mar 2026 17:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE8F3E63A4;
+	Wed, 11 Mar 2026 17:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="mwJeV+58"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="QLMlFLqC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11023074.outbound.protection.outlook.com [40.93.201.74])
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11023117.outbound.protection.outlook.com [40.107.201.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46DF73E63A0
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1ABF3E6395
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:55:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.117
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773251707; cv=fail; b=chM79+QTmj0VVhSz6xFpMtWhMoTpzbZUnMM5wR/414nxP4Iv6ibsD8Mmyi/pW8ohM/gKGNPz5+/zFmY1Q0+IbRgzZcy7zuYEApmnin0h0rqpcW0uCKAwg0OYCjJydo1sPeDA2pSR4kworo9q3uu7DvNRj1w1eh51ioYzmArrHno=
+	t=1773251711; cv=fail; b=W2NhaaWhFSX6qBeCA5mQ+K9wzGQxRU2ZD4U5UJ3G23Acea+ZLVzkSG0RGdskYFlVY0IrQEcS9p9BDyAN7cyK4X6imgdMuGoBNdrNRQ+RlwLoS6xQ81j6/If5yykKHcNbrQIstIyQp/FzgXI1Dc2ID73YAd5q6OUBh+hPl0jSCb4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773251707; c=relaxed/simple;
-	bh=OehkGIFG/qCb1t/68W8AaxMhI+ZIs1+9EQF/lMSC8TU=;
+	s=arc-20240116; t=1773251711; c=relaxed/simple;
+	bh=n9CTQ88PEZjvC6BViF7qqYBELPgBLdoALAs07LeGlGA=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JXrW3JPtXt2+F0xjBa2HSkzozzxXt1yhsXG8KJuLIe16gbW26dOfHGzcmCsEPJE1mthjBcBzYO3nmaXgKV/akvSFQnYLpOiWFYf/gzPcRWPW5QRzFnQeFKiWMRpDzIinI+ZJdh7TfSrFfsq6T5ElvpkP+k+x516XVSIay8dKxJE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=mwJeV+58; arc=fail smtp.client-ip=40.93.201.74
+	 MIME-Version:Content-Type; b=Nf1ANPtvp1zwT4W+sY7CsBd0tZj2G4scgL5+XRA1bitpxjtNGDshCeYW6pngw4oZsarvZXWoQDOrRE3Ftd8uZ9UUQtJOaYGhb9JvaiuFEYBPjHGH46tOgXIVvGDm/1cRiPzW5E2fYCNyN9V0dHuSR9PXVXiSw/h44wokxpIyHpk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=QLMlFLqC; arc=fail smtp.client-ip=40.107.201.117
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sNoJBZYlCfm6AI7Hs4lQa3Tyavuh1l8P6jzev0+AI8DmFHEfpjTUTVpGv0kTjCpfFd3yDT4sZJEDhzkq924jpqteJVzw6U26UVkb1t/oIjboToSObM1XmndTAteIdmEJB149RkOqiREAK0+mhVVdKqjjGjsBwu2NizM4M+I9cIPiWYZ1GZvUF1yHX+eJjdpl8D8LGK82n5zKEs4h4SAU0LHrOyNauYzqlLsKAIt6i7R1mO6J7tHhsmbqtVlTXZM4WXRxUenNRb8rlip6Ul51WucNtSqnVu915E3H/dKMF4xxChjRsvSZV58KeK0ae3V6Of2Wjzuyob/mVlSShHEnjA==
+ b=hIzg5QhJrEOE0j2WeQu1+KFCGirCigR8bCdl/LvYF+Js20LU0gSvgHCw5sG3HB3qp9fzTRdvri9KI9dVLRdimHB8JaAx9EucncW8tPBMxlRo/FH/YWy/6bXZD3IxK4kgFtFwcwUHQUR1sIJi19C2dCnwT8lTBZ/r9g5/U6YASnBJKddgV3FChpezQ+1/5Mgiu5+927qqtLWsPPgO98hM2vhcFeE5d845PB45BaHEDlZhFu4UZ1uU0Otw89b+/CEyE5/xRrkMKlrTdSdqPdwn3bn8yOQdDdndRIBgH0pOIRmQpH/YLyMb8rErj+UEnAWlnrZv8X6bkMq7m1aKUJJG/w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pEHbKa5FmGqQDr+MFoD8VsB1o0Hh6p0Uw4T2XVMzCLU=;
- b=tuL3HCqq+guUzSgncgU29/83fijpxgrjUJNIlbsf7aePBiVsxUrF5OeNNh9z/Tkmyqz5CQjnFnTUy8d5uq6ocZooMoxhkldNaG2B16J2MovPY9fACNwtDSmVQpKtTUtxtJe3N8hDVjeFvHV72633Mm/lVAPwKnTVc7O2mt+NF0mxMUz2MPvpJNCdjPVQbS4IjsfW7nGNpLEmrEpVTeuuhb1rWJHECrv8X7qB991Au6DwKrcjPWlAP2chqe0KE/25YmQaIihri7QKGQ9DxdS4K54/1AebkoNG9g9nXKao/uBpM/mKCFNDxi/xdLPKeYvF5ZyWe/vKpAKlQkM2WhwV9A==
+ bh=Ftr2+2skOHptdkzpei1EPONuy8ynwtlyvJBjNq0Mp0A=;
+ b=aZQTL3mPxp6+22PHDqh9rs06fwGrt+K3dmI1kdJ73IxK/3eLs6tkWKJmj7fSuXzc7gr4oJUC48L8j80ez5YtlZZ2BuHJcNweqqgZMW3Gn2z+bw/nzlOzsodt1Zn4uLmXo2d7HTMbWq9g/btI0Kq11/l83IyeirnNRzrEChP7MDNfPhidD+13KPJSEfpX/q1ws0qQGlbTCS8r79umcMdomNs5cb7q5R/9vBtYyiJw6X6deDSts3ZiXJulJ+h2AqmaWwqjCdeAM3Ld/3/hgdms0mFhG55xZEUPyVHNs8Y911JB2axvnANf5bIijdmMh6xKbyvkZywybRRlMzTG+XD2vg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
  50.148.235.34) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=fail (p=none sp=none pct=100)
@@ -49,17 +49,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pEHbKa5FmGqQDr+MFoD8VsB1o0Hh6p0Uw4T2XVMzCLU=;
- b=mwJeV+58mJXCV1y54uhe0YM4R5nePz5uKIKxupN65pC01/Ba0ja66c5CqbO2SmjHHBOMu/Mw3k80AhDSWfAzISRbGNy3ulb0seplElpHhup2VI7CnpWpxMX8zdK9Qs6CxsqkUSDSrQ2GJKVzBhLjLrNrDGCg6kWCSqTHQ036YqZ6laV3WJ3SoW/wj225cZGhUMtndaD3A2gvC32GY1waLgAnkKWdrmNIRLxQRU0YoM5rojGtURP9vQOREHNOUs5fldHWXu8BNUExkt+3Sg5C2Ps0xTimJjmQczoz994iqg4DtvhKn1NevvXxja5squMQ0M0La0lvmqITW53l5LL5Ig==
-Received: from SJ0PR05CA0010.namprd05.prod.outlook.com (2603:10b6:a03:33b::15)
- by SA3PR01MB7918.prod.exchangelabs.com (2603:10b6:806:317::16) with Microsoft
+ bh=Ftr2+2skOHptdkzpei1EPONuy8ynwtlyvJBjNq0Mp0A=;
+ b=QLMlFLqCcleOnXGvBEXwzLjF0Jx3bQR5ALmVOmOCj7n3Ivw6Ckplf95hlqLZUqWPnqvWNoTYaXOZZXJbymYWfGvCTKV0EASB+PA49wAvcjjULwb9AUYn8DIjBZjS79h8ifgQpujlxn2sX/0jQQ1igyNKu3+uXJ80TpkzH94KeFqxOzFpXIlEIMJ1H39wWiCTZ4KNnH1yAAoLQtOVaQNiVdA9UWKyuyugHJg9grBf3SN9478s5TgF7scPUhhrEqjpQ32762RR6d0t9/qU6AxI5QXh7gk8u/IrHwxvh5qAi5W2wwWWIxn6ItngG6yhV4zdBmklM6En9ETAgDHWIsxQog==
+Received: from DM6PR01CA0016.prod.exchangelabs.com (2603:10b6:5:296::21) by
+ LV3PR01MB8440.prod.exchangelabs.com (2603:10b6:408:1a3::20) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9700.14; Wed, 11 Mar 2026 17:54:52 +0000
-Received: from SJ1PEPF00002322.namprd03.prod.outlook.com
- (2603:10b6:a03:33b:cafe::27) by SJ0PR05CA0010.outlook.office365.com
- (2603:10b6:a03:33b::15) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.25 via Frontend Transport; Wed,
- 11 Mar 2026 17:54:53 +0000
+ 15.20.9700.11; Wed, 11 Mar 2026 17:54:56 +0000
+Received: from DS1PEPF00017098.namprd05.prod.outlook.com
+ (2603:10b6:5:296:cafe::fe) by DM6PR01CA0016.outlook.office365.com
+ (2603:10b6:5:296::21) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.27 via Frontend Transport; Wed,
+ 11 Mar 2026 17:54:56 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 50.148.235.34)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=fail action=none header.from=cornelisnetworks.com;
@@ -68,24 +68,24 @@ Received-SPF: Fail (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=50.148.235.34;
  helo=cn-mailer-00.localdomain;
 Received: from cn-mailer-00.localdomain (50.148.235.34) by
- SJ1PEPF00002322.mail.protection.outlook.com (10.167.242.84) with Microsoft
+ DS1PEPF00017098.mail.protection.outlook.com (10.167.18.102) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.18
- via Frontend Transport; Wed, 11 Mar 2026 17:54:51 +0000
+ via Frontend Transport; Wed, 11 Mar 2026 17:54:56 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 1554914D817;
-	Wed, 11 Mar 2026 13:54:51 -0400 (EDT)
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 1F7E914D817;
+	Wed, 11 Mar 2026 13:54:56 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 11F6D1810D6C5;
-	Wed, 11 Mar 2026 13:54:51 -0400 (EDT)
-Subject: [PATCH for-next resend 13/24] RDMA/hfi2: Add IO related headers
+	by awdrv-04.localdomain (Postfix) with ESMTP id 1BA6B1810D6C5;
+	Wed, 11 Mar 2026 13:54:56 -0400 (EDT)
+Subject: [PATCH for-next resend 14/24] RDMA/hfi2: Add PIO send infrastructure
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
  Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
  Douglas Miller <doug.miller@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Wed, 11 Mar 2026 13:54:51 -0400
+Date: Wed, 11 Mar 2026 13:54:56 -0400
 Message-ID:
- <177325169103.57064.12066462300104419067.stgit@awdrv-04.cornelisnetworks.com>
+ <177325169608.57064.13970988578331673996.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <177325138778.57064.8330693913074464417.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -101,47 +101,47 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002322:EE_|SA3PR01MB7918:EE_
-X-MS-Office365-Filtering-Correlation-Id: 253bc410-73f5-4ff9-d6db-08de7f974bc1
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017098:EE_|LV3PR01MB8440:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4793ed6-f125-4a93-b2b7-08de7f974e85
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700016|34020700016|55112099003|7142099003|22082099003|18002099003|56012099003;
+	BCL:0;ARA:13230040|376014|34020700016|1800799024|82310400026|36860700016|55112099003|20052099010|22082099003|56012099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	CfynMAWNm+AAGFIbb68NJMqsf24WnVmyffgxQeSa1/1nfRWgV5+nBMJS+ogkQTcLOIDx7y8dfSdqXflKJ0rwG4DGktwbVHd9sEdlsVQNOCoiI+5jxRviy8/JB9CDAK25R5aPgPKLQDQdNGPMeby8i38CyodRr5LKscd9SkIqdtesPMH5lKL2/CUTPM5iJ1LqE3gb6aM8LhKfpr/D3B86SWJe6yycAd+lqSk9GRTKZ/cNsg06RLgvSQjifskvsFwfzEMBthI6unEJDVRkmSW7aH1t2HRBKtEcaUlgSGG3OIP2PEeMu5ELym/7RJgScakYzZ6PBupwMrMNiB5JhDyOnEx3HNKg5cdvhDD87x2bTZZ31ryNvXhWN+DrMV18gNGIZ/+axKMlxLveHb2bSaow2kQwm/QyRhqR7QgbTFVsfhtHdXHDxleX0oRE/H/AQg9WwBHt1m/RxvX1nu45K/64fWOVJMAH6JusSCaOPkL1yh/gpNwVXqgfzhsUGFE/T1/s+cEWWGriNNyvfEJVmLv5BNYQPaj3vGKNIpVq4elRjeqyNvuoJLy3eXOXr2E4vcDTQrwHMX/X9zhEN4o+72NmDtmcE4+P2tQP9ufMISAv7wqyhPiDt6QyE7yIAolOBGkDTAQwvklKcb/8zcxw4hHSV3pHo7kd2SJgxq0KZwoqYZF0nqWc2EtUi2ezSbfU8e1IwKWSig9YBTpFcyYKW/EZWG2EHM5UBnl28Cu0ryEJuE6Vu2Xi8Ce8JGNlZG78RHrI9JEYXEMtmCfpRz4/E/LxQg==
+	deXhxn676IYyuspeiWR1EIsirgvt7w/SAi3p+xImy2rszdOQ9miUm2o6bWj65Wkpts2+zw6IWlZCGqlyHGyWR+xORcSpE6BVdgXFSUzbclE23GoTspzLsG+IP808HU9zSLyN1bFOjml0Ce2nuFxW4tcpNuR2kmbuI+00upjYZX/Od34SHtpisBrjXCYxmA5zWBKWGlXTIUu5Gvu95ilwR+trN28WwfopdQZX9PL01BqRDg0rbdwhrg62tErBE5O1Q8yoVzm8FheIucYpzsniNSs/nK/zFEOWvX3A4SR1Z47efrYHGXlCk5PXW3A0kVWD3G2nFiiJgIhWHQh4VzrWMQHeTybLsW9OkMxHm0FI+EsGryXFWHnUry2P7qOlqAySMsIIR/WjqGu9G7uxvCJuaLP2KoRP4rSNyGW8BE0Uy2TGc0HSFpZv0cpF381vN4U6jkWSiCTt3U94SCYytvu3Vs7UUZ7q/sIJoELIubn5Pz73VFd6pg4yr8JjXp2W5IBsaZAVioGQKs/JBmbvs0ohRAPnjF4MHmg7c9TPrvff6Ru2iySa1M7q2H0kuEHLK/x7jOlNyO1xaWwYD5uC+/Y6eKGA6kpZfrkJF0M/j0m7bmDb7k2zTMoSzO97HYB/bgwDh/LxtCNkcypRmnmvJ+Vt2jB0zSU7AjCKXsmPG2sT7b9iAap5Yx3exr3WEI/IG96QXNMoWyfO8w8+tDhX8Q2CJzzjL/GGgYd9LsxB2VzWorw5nxd2EojfebAyH3EkH74EeRjwO0/NWp6ERmzAmeR2GQ==
 X-Forefront-Antispam-Report:
-	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700016)(34020700016)(55112099003)(7142099003)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1102;
+	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(376014)(34020700016)(1800799024)(82310400026)(36860700016)(55112099003)(20052099010)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	1gnUACGQfZPQ4yRsZ3CK76eggSIjWgKAzpmYTlQm8nBM8qCuzGwcnZi5lVxIfNJVi6eV6tkUvWXgU2gW+ropC6THLSyE90V5Iz0uWa725bNeAy3q8uw6aBsxIPaBibdbegBkR9nB8wC6cKfrODL1Bddfuyy/fqcVqpP2iEtO88vYgM5gzVqo+cM5e/8RKC+3Wi9OzbbEe7G0+CSCLbr+05zifX/oHoezDqJAZ2klHOqo361U2ox7qZvKCrl6fOz70vmTRdeEClHN/dEmnEMf24YB+evhyb460uxwu6xcGJwI7TYAG+mifPKvh6LGFAxmiucUcu9106YYipIaLF13kITMFTaLeDEyivxCkWIWZS+clWcYHA5CAgOPUnyhUr+QOBCSHh/ipl10hH5CTMH7p1OPNt3gfFVhLvwjJHLt+BJ9t2G08eTYOVqpwNN+Qhtm
+	VeOLFf2TXn3EfwjGNqWxZK42e0npG5AwN4PmCJGp+QQtxm+AsDNiTHvitzjjAYz2TY4ufMXhSy7FmXXsZM4qg/BVsAz4YfV5HlvEfDsUA8Xu4SatKe3SlCi8PNOMi7vWoFISYj2Yzdl8pH4tmxrZDe3ZvH8XoyIt7mzmDhahmgj3/0k3mM90GUZy3MjJwcb7+IT1Keu8gHv6iNHTgbcamIz4bjLyt4eeHc+mY7LI7hbvSieqr0qW4KhJcB+wrNRLn5AZRMnVHAKhE/nm5mm26LJHo2nBkRnEauESvtJKe8KLtGDAPD/zQua05dlEofPiJQl6Y5a5xm7+/8kh+u9T7cvS+OAGMqlaUSoz5YbH8iY/jq5LgW7lt3PP114+wfor2oJaEgIVDM6XZDupnzl6bXcktxY1/JJF3rNmIWQiIxpPraxHmjzSlY2L3IPSoa6u
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:54:51.8340
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:54:56.5754
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 253bc410-73f5-4ff9-d6db-08de7f974bc1
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4793ed6-f125-4a93-b2b7-08de7f974e85
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[50.148.235.34];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002322.namprd03.prod.outlook.com
+	DS1PEPF00017098.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR01MB7918
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR01MB8440
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
 	R_DKIM_ALLOW(-0.20)[cornelisnetworks.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17997-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17998-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cornelisnetworks.com:dkim,cornelisnetworks.com:email,awdrv-04.cornelisnetworks.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[awdrv-04.cornelisnetworks.com:mid,cornelisnetworks.com:dkim,cornelisnetworks.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -151,13 +151,11 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: 5483926851E
+X-Rspamd-Queue-Id: 619E42684F1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The hfi2 driver will continue to support verbs, and libfabric. However
-unlike hfi1 there is no private cdev and user operations are managed
-through the ib core cdev and passed to the driver.
+Add the PIO send buffer management and copy routines.
 
 Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
@@ -167,4661 +165,2970 @@ Co-developed-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi2/exp_rcv.h      |  157 ++++
- drivers/infiniband/hw/hfi2/file_ops.h     |   46 +
- drivers/infiniband/hw/hfi2/iowait.h       |  458 +++++++++++
- drivers/infiniband/hw/hfi2/ipoib.h        |  173 ++++
- drivers/infiniband/hw/hfi2/netdev.h       |   96 ++
- drivers/infiniband/hw/hfi2/pinning.h      |   74 ++
- drivers/infiniband/hw/hfi2/pio.h          |  307 +++++++
- drivers/infiniband/hw/hfi2/qp.h           |  112 +++
- drivers/infiniband/hw/hfi2/rc.h           |   60 +
- drivers/infiniband/hw/hfi2/sdma.h         | 1209 +++++++++++++++++++++++++++++
- drivers/infiniband/hw/hfi2/sdma_defs.h    |  113 +++
- drivers/infiniband/hw/hfi2/sdma_txreq.h   |  105 +++
- drivers/infiniband/hw/hfi2/tid_rdma.h     |  321 ++++++++
- drivers/infiniband/hw/hfi2/user_exp_rcv.h |  404 ++++++++++
- drivers/infiniband/hw/hfi2/user_sdma.h    |  261 ++++++
- drivers/infiniband/hw/hfi2/uverbs.h       |   19 
- drivers/infiniband/hw/hfi2/verbs.h        |  496 ++++++++++++
- drivers/infiniband/hw/hfi2/verbs_txreq.h  |   98 ++
- 18 files changed, 4509 insertions(+)
- create mode 100644 drivers/infiniband/hw/hfi2/exp_rcv.h
- create mode 100644 drivers/infiniband/hw/hfi2/file_ops.h
- create mode 100644 drivers/infiniband/hw/hfi2/iowait.h
- create mode 100644 drivers/infiniband/hw/hfi2/ipoib.h
- create mode 100644 drivers/infiniband/hw/hfi2/netdev.h
- create mode 100644 drivers/infiniband/hw/hfi2/pinning.h
- create mode 100644 drivers/infiniband/hw/hfi2/pio.h
- create mode 100644 drivers/infiniband/hw/hfi2/qp.h
- create mode 100644 drivers/infiniband/hw/hfi2/rc.h
- create mode 100644 drivers/infiniband/hw/hfi2/sdma.h
- create mode 100644 drivers/infiniband/hw/hfi2/sdma_defs.h
- create mode 100644 drivers/infiniband/hw/hfi2/sdma_txreq.h
- create mode 100644 drivers/infiniband/hw/hfi2/tid_rdma.h
- create mode 100644 drivers/infiniband/hw/hfi2/user_exp_rcv.h
- create mode 100644 drivers/infiniband/hw/hfi2/user_sdma.h
- create mode 100644 drivers/infiniband/hw/hfi2/uverbs.h
- create mode 100644 drivers/infiniband/hw/hfi2/verbs.h
- create mode 100644 drivers/infiniband/hw/hfi2/verbs_txreq.h
+ drivers/infiniband/hw/hfi2/pio.c      | 2236 +++++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/pio_copy.c |  710 ++++++++++
+ 2 files changed, 2946 insertions(+)
+ create mode 100644 drivers/infiniband/hw/hfi2/pio.c
+ create mode 100644 drivers/infiniband/hw/hfi2/pio_copy.c
 
-diff --git a/drivers/infiniband/hw/hfi2/exp_rcv.h b/drivers/infiniband/hw/hfi2/exp_rcv.h
+diff --git a/drivers/infiniband/hw/hfi2/pio.c b/drivers/infiniband/hw/hfi2/pio.c
 new file mode 100644
-index 000000000000..41b13410d696
+index 000000000000..762c10dfccd9
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/exp_rcv.h
-@@ -0,0 +1,157 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++++ b/drivers/infiniband/hw/hfi2/pio.c
+@@ -0,0 +1,2236 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 +/*
-+ * Copyright(c) 2017 Intel Corporation.
++ * Copyright(c) 2015-2018 Intel Corporation.
 + * Copyright(c) 2025-2026 Cornelis Networks, Inc.
 + */
 +
-+#ifndef _HFI2_EXP_RCV_H
-+#define _HFI2_EXP_RCV_H
++#include <linux/delay.h>
 +#include "hfi2.h"
++#include "qp.h"
++#include "trace.h"
++#include "vf2pf.h"
 +
-+#define EXP_TID_SET_EMPTY(set) (set.count == 0 && list_empty(&set.list))
-+
-+#define EXP_TID_TIDLEN_MASK   0x7FFULL
-+#define EXP_TID_TIDLEN_SHIFT  0
-+#define EXP_TID_TIDCTRL_MASK  0x3ULL
-+#define EXP_TID_TIDCTRL_SHIFT 20
-+#define EXP_TID_TIDIDX_MASK   0x3FFULL
-+#define EXP_TID_TIDIDX_SHIFT  22
-+
-+/* Expected buffer entry (TID) addressing supported by the hardware */
-+#define EXP_TID_ADDR_SHIFT    12
-+#define EXP_TID_ADDR_SIZE     BIT(EXP_TID_ADDR_SHIFT)
-+
-+#define EXP_TID_GET(tid, field)	\
-+	(((tid) >> EXP_TID_TID##field##_SHIFT) & EXP_TID_TID##field##_MASK)
-+
-+#define EXP_TID_SET(field, value)			\
-+	(((value) & EXP_TID_TID##field##_MASK) <<	\
-+	 EXP_TID_TID##field##_SHIFT)
-+#define EXP_TID_CLEAR(tid, field) ({					\
-+		(tid) &= ~(EXP_TID_TID##field##_MASK <<			\
-+			   EXP_TID_TID##field##_SHIFT);			\
-+		})
-+#define EXP_TID_RESET(tid, field, value) do {				\
-+		EXP_TID_CLEAR(tid, field);				\
-+		(tid) |= EXP_TID_SET(field, (value));			\
-+	} while (0)
++#define SC(name) SEND_CTXT_##name
++/*
++ * Send Context functions
++ */
++static void sc_wait_for_packet_egress(struct send_context *sc, int pause);
++static int pio_init_wait_progress(struct hfi2_devdata *dd);
 +
 +/*
-+ * Define fields in the KDETH header so we can update the header
-+ * template.
++ * Set the CM reset bit and wait for it to clear.  Use the provided
++ * sendctrl register.  This routine has no locking.
 + */
-+#define KDETH_OFFSET_SHIFT        0
-+#define KDETH_OFFSET_MASK         0x7fff
-+#define KDETH_OM_SHIFT            15
-+#define KDETH_OM_MASK             0x1
-+#define KDETH_TID_SHIFT           16
-+#define KDETH_TID_MASK            0x3ff
-+#define KDETH_TIDCTRL_SHIFT       26
-+#define KDETH_TIDCTRL_MASK        0x3
-+#define KDETH_INTR_SHIFT          28
-+#define KDETH_INTR_MASK           0x1
-+#define KDETH_SH_SHIFT            29
-+#define KDETH_SH_MASK             0x1
-+#define KDETH_KVER_SHIFT          30
-+#define KDETH_KVER_MASK           0x3
-+#define KDETH_JKEY_SHIFT          0x0
-+#define KDETH_JKEY_MASK           0xff
-+#define KDETH_HCRC_UPPER_SHIFT    16
-+#define KDETH_HCRC_UPPER_MASK     0xff
-+#define KDETH_HCRC_LOWER_SHIFT    24
-+#define KDETH_HCRC_LOWER_MASK     0xff
-+
-+#define KDETH_GET(val, field)						\
-+	(((le32_to_cpu((val))) >> KDETH_##field##_SHIFT) & KDETH_##field##_MASK)
-+#define KDETH_SET(dw, field, val) do {					\
-+		u32 dwval = le32_to_cpu(dw);				\
-+		dwval &= ~(KDETH_##field##_MASK << KDETH_##field##_SHIFT); \
-+		dwval |= (((val) & KDETH_##field##_MASK) << \
-+			  KDETH_##field##_SHIFT);			\
-+		dw = cpu_to_le32(dwval);				\
-+	} while (0)
-+
-+#define KDETH_RESET(dw, field, val) ({ dw = 0; KDETH_SET(dw, field, val); })
-+
-+/* KDETH OM multipliers and switch over point */
-+#define KDETH_OM_SMALL     4
-+#define KDETH_OM_SMALL_SHIFT     2
-+#define KDETH_OM_LARGE     64
-+#define KDETH_OM_LARGE_SHIFT     6
-+#define KDETH_OM_MAX_SIZE  (1 << ((KDETH_OM_LARGE / KDETH_OM_SMALL) + 1))
-+
-+struct tid_group {
-+	struct list_head list;
-+	u32 base;
-+	u8 size;
-+	u8 used;
-+	u8 map;
-+};
-+
-+static inline void tid_group_add_tail(struct tid_group *grp,
-+				      struct exp_tid_set *set)
++void __cm_reset(struct hfi2_pportdata *ppd, u64 sendctrl)
 +{
-+	list_add_tail(&grp->list, &set->list);
-+	set->count++;
++	struct hfi2_devdata *dd = ppd->dd;
++	int pidx = ppd->hw_pidx;
++
++	write_eport_csr(dd, pidx, dd->params->send_ctrl_reg, sendctrl | SEND_CTRL_CM_RESET_SMASK);
++	while (1) {
++		udelay(1);
++		sendctrl = read_eport_csr(dd, pidx, dd->params->send_ctrl_reg);
++		if ((sendctrl & SEND_CTRL_CM_RESET_SMASK) == 0)
++			break;
++	}
 +}
 +
-+static inline void tid_group_remove(struct tid_group *grp,
-+				    struct exp_tid_set *set)
++/* global control of PIO send */
++void pio_send_control(struct hfi2_pportdata *ppd, int op)
 +{
-+	list_del_init(&grp->list);
-+	set->count--;
-+}
-+
-+static inline void tid_group_move(struct tid_group *group,
-+				  struct exp_tid_set *s1,
-+				  struct exp_tid_set *s2)
-+{
-+	tid_group_remove(group, s1);
-+	tid_group_add_tail(group, s2);
-+}
-+
-+static inline struct tid_group *tid_group_pop(struct exp_tid_set *set)
-+{
-+	struct tid_group *grp =
-+		list_first_entry(&set->list, struct tid_group, list);
-+	list_del_init(&grp->list);
-+	set->count--;
-+	return grp;
-+}
-+
-+static inline u32 create_tid(u32 rcventry, u32 npages)
-+{
-+	u32 pair = rcventry & ~0x1;
-+
-+	return EXP_TID_SET(IDX, pair >> 1) |
-+		EXP_TID_SET(CTRL, 1 << (rcventry - pair)) |
-+		EXP_TID_SET(LEN, npages);
-+}
-+
-+/**
-+ * hfi2_tid_group_to_idx - convert an index to a group
-+ * @rcd - the receive context
-+ * @grp - the group pointer
-+ */
-+static inline u16
-+hfi2_tid_group_to_idx(struct hfi2_ctxtdata *rcd, struct tid_group *grp)
-+{
-+	return grp - &rcd->groups[0];
-+}
-+
-+/**
-+ * hfi2_idx_to_tid_group - convert a group to an index
-+ * @rcd - the receive context
-+ * @idx - the index
-+ */
-+static inline struct tid_group *
-+hfi2_idx_to_tid_group(struct hfi2_ctxtdata *rcd, u16 idx)
-+{
-+	return &rcd->groups[idx];
-+}
-+
-+int hfi2_alloc_ctxt_rcv_groups(struct hfi2_ctxtdata *rcd);
-+void hfi2_free_ctxt_rcv_groups(struct hfi2_ctxtdata *rcd);
-+void hfi2_exp_tid_group_init(struct hfi2_ctxtdata *rcd);
-+
-+#endif /* _HFI2_EXP_RCV_H */
-diff --git a/drivers/infiniband/hw/hfi2/file_ops.h b/drivers/infiniband/hw/hfi2/file_ops.h
-new file mode 100644
-index 000000000000..1efc69c7b322
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/file_ops.h
-@@ -0,0 +1,46 @@
-+/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
-+/*
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _HFI2_FILE_OPS_H
-+#define _HFI2_FILE_OPS_H
-+
-+#include "hfi2.h"
-+
-+int hfi2_set_uevent_bits(struct hfi2_pportdata *ppd, const int evtbit);
-+struct hfi2_filedata *hfi2_alloc_filedata(struct hfi2_devdata *dd);
-+void hfi2_dealloc_filedata(struct hfi2_filedata *fdata);
-+int hfi2_do_assign_ctxt(struct hfi2_filedata *fd,
-+			const struct hfi2_assign_ctxt_cmd *uinfo);
-+int manage_rcvq(struct hfi2_ctxtdata *uctxt, u16 subctxt, int start_stop);
-+int user_event_ack(struct hfi2_ctxtdata *uctxt, u16 subctxt,
-+		   unsigned long events);
-+int set_ctxt_pkey(struct hfi2_ctxtdata *uctxt, u16 pkey);
-+int ctxt_reset(struct hfi2_ctxtdata *uctxt);
-+int hfi2_get_pinning_stats(struct hfi2_filedata *fd,
-+			   struct hfi2_pin_stats *stats);
-+int hfi2_do_mmap(struct hfi2_filedata *fd, u8 type, struct vm_area_struct *vma);
-+ssize_t hfi2_do_write_iter(struct hfi2_filedata *fd, struct iov_iter *from);
-+
-+/*
-+ * Types of memories mapped into user processes' space
-+ */
-+enum mmap_types {
-+	PIO_BUFS = 1,
-+	PIO_BUFS_SOP,
-+	PIO_CRED,
-+	RCV_HDRQ,
-+	RCV_EGRBUF,
-+	UREGS,
-+	EVENTS,
-+	STATUS,
-+	RTAIL,
-+	SUBCTXT_UREGS,
-+	SUBCTXT_RCV_HDRQ,
-+	SUBCTXT_EGRBUF,
-+	SDMA_COMP,
-+	RCV_RHEQ,
-+};
-+
-+#endif /* _HFI2_FILE_OPS_H */
-diff --git a/drivers/infiniband/hw/hfi2/iowait.h b/drivers/infiniband/hw/hfi2/iowait.h
-new file mode 100644
-index 000000000000..b18afed22a93
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/iowait.h
-@@ -0,0 +1,458 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015 - 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _HFI2_IOWAIT_H
-+#define _HFI2_IOWAIT_H
-+
-+#include <linux/list.h>
-+#include <linux/workqueue.h>
-+#include <linux/wait.h>
-+#include <linux/sched.h>
-+
-+#include "sdma_txreq.h"
-+
-+/*
-+ * typedef (*restart_t)() - restart callback
-+ * @work: pointer to work structure
-+ */
-+typedef void (*restart_t)(struct work_struct *work);
-+
-+#define IOWAIT_PENDING_IB  0x0
-+#define IOWAIT_PENDING_TID 0x1
-+
-+/*
-+ * A QP can have multiple Send Engines (SEs).
-+ *
-+ * The current use case is for supporting a TID RDMA
-+ * packet build/xmit mechanism independent from verbs.
-+ */
-+#define IOWAIT_SES 2
-+#define IOWAIT_IB_SE 0
-+#define IOWAIT_TID_SE 1
-+
-+struct sdma_txreq;
-+struct sdma_engine;
-+/**
-+ * @iowork: the work struct
-+ * @tx_head: list of prebuilt packets
-+ * @iow: the parent iowait structure
-+ *
-+ * This structure is the work item (process) specific
-+ * details associated with the each of the two SEs of the
-+ * QP.
-+ *
-+ * The workstruct and the queued TXs are unique to each
-+ * SE.
-+ */
-+struct iowait;
-+struct iowait_work {
-+	struct work_struct iowork;
-+	struct list_head tx_head;
-+	struct iowait *iow;
-+};
-+
-+/**
-+ * @list: used to add/insert into QP/PQ wait lists
-+ * @tx_head: overflow list of sdma_txreq's
-+ * @sleep: no space callback
-+ * @wakeup: space callback wakeup
-+ * @sdma_drained: sdma count drained
-+ * @init_priority: callback to manipulate priority
-+ * @lock: lock protected head of wait queue
-+ * @iowork: workqueue overhead
-+ * @wait_dma: wait for sdma_busy == 0
-+ * @wait_pio: wait for pio_busy == 0
-+ * @sdma_busy: # of packets in flight
-+ * @count: total number of descriptors in tx_head'ed list
-+ * @tx_limit: limit for overflow queuing
-+ * @tx_count: number of tx entry's in tx_head'ed list
-+ * @flags: wait flags (one per QP)
-+ * @wait: SE array for multiple legs
-+ *
-+ * This is to be embedded in user's state structure
-+ * (QP or PQ).
-+ *
-+ * The sleep and wakeup members are a
-+ * bit misnamed.   They do not strictly
-+ * speaking sleep or wake up, but they
-+ * are callbacks for the ULP to implement
-+ * what ever queuing/dequeuing of
-+ * the embedded iowait and its containing struct
-+ * when a resource shortage like SDMA ring space
-+ * or PIO credit space is seen.
-+ *
-+ * Both potentially have locks help
-+ * so sleeping is not allowed and it is not
-+ * supported to submit txreqs from the wakeup
-+ * call directly because of lock conflicts.
-+ *
-+ * The wait_dma member along with the iow
-+ *
-+ * The lock field is used by waiters to record
-+ * the seqlock_t that guards the list head.
-+ * Waiters explicitly know that, but the destroy
-+ * code that unwaits QPs does not.
-+ */
-+struct iowait {
-+	struct list_head list;
-+	int (*sleep)(
-+		struct sdma_engine *sde,
-+		struct iowait_work *wait,
-+		struct sdma_txreq *tx,
-+		uint seq,
-+		bool pkts_sent
-+		);
-+	void (*wakeup)(struct iowait *wait, int reason);
-+	void (*sdma_drained)(struct iowait *wait);
-+	void (*init_priority)(struct iowait *wait);
-+	seqlock_t *lock;
-+	wait_queue_head_t wait_dma;
-+	wait_queue_head_t wait_pio;
-+	atomic_t sdma_busy;
-+	atomic_t pio_busy;
-+	u32 count;
-+	u32 tx_limit;
-+	u32 tx_count;
-+	u8 starved_cnt;
-+	u8 priority;
++	struct hfi2_devdata *dd = ppd->dd;
++	u64 reg, mask;
 +	unsigned long flags;
-+	struct iowait_work wait[IOWAIT_SES];
-+};
++	int write = 1;	/* write sendctrl back */
++	int flush = 0;	/* re-read sendctrl to make sure it is flushed */
++	int i;
 +
-+#define SDMA_AVAIL_REASON 0
-+
-+void iowait_set_flag(struct iowait *wait, u32 flag);
-+bool iowait_flag_set(struct iowait *wait, u32 flag);
-+void iowait_clear_flag(struct iowait *wait, u32 flag);
-+
-+void iowait_init(struct iowait *wait, u32 tx_limit,
-+		 void (*func)(struct work_struct *work),
-+		 void (*tidfunc)(struct work_struct *work),
-+		 int (*sleep)(struct sdma_engine *sde,
-+			      struct iowait_work *wait,
-+			      struct sdma_txreq *tx,
-+			      uint seq,
-+			      bool pkts_sent),
-+		 void (*wakeup)(struct iowait *wait, int reason),
-+		 void (*sdma_drained)(struct iowait *wait),
-+		 void (*init_priority)(struct iowait *wait));
-+
-+/**
-+ * iowait_schedule() - schedule the default send engine work
-+ * @wait: wait struct to schedule
-+ * @wq: workqueue for schedule
-+ * @cpu: cpu
-+ */
-+static inline bool iowait_schedule(struct iowait *wait,
-+				   struct workqueue_struct *wq, int cpu)
-+{
-+	return !!queue_work_on(cpu, wq, &wait->wait[IOWAIT_IB_SE].iowork);
-+}
-+
-+/**
-+ * iowait_tid_schedule - schedule the tid SE
-+ * @wait: the iowait structure
-+ * @wq: the work queue
-+ * @cpu: the cpu
-+ */
-+static inline bool iowait_tid_schedule(struct iowait *wait,
-+				       struct workqueue_struct *wq, int cpu)
-+{
-+	return !!queue_work_on(cpu, wq, &wait->wait[IOWAIT_TID_SE].iowork);
-+}
-+
-+/**
-+ * iowait_sdma_drain() - wait for DMAs to drain
-+ *
-+ * @wait: iowait structure
-+ *
-+ * This will delay until the iowait sdmas have
-+ * completed.
-+ */
-+static inline void iowait_sdma_drain(struct iowait *wait)
-+{
-+	wait_event(wait->wait_dma, !atomic_read(&wait->sdma_busy));
-+}
-+
-+/**
-+ * iowait_sdma_pending() - return sdma pending count
-+ *
-+ * @wait: iowait structure
-+ *
-+ */
-+static inline int iowait_sdma_pending(struct iowait *wait)
-+{
-+	return atomic_read(&wait->sdma_busy);
-+}
-+
-+/**
-+ * iowait_sdma_inc - note sdma io pending
-+ * @wait: iowait structure
-+ */
-+static inline void iowait_sdma_inc(struct iowait *wait)
-+{
-+	atomic_inc(&wait->sdma_busy);
-+}
-+
-+/**
-+ * iowait_sdma_add - add count to pending
-+ * @wait: iowait structure
-+ */
-+static inline void iowait_sdma_add(struct iowait *wait, int count)
-+{
-+	atomic_add(count, &wait->sdma_busy);
-+}
-+
-+/**
-+ * iowait_sdma_dec - note sdma complete
-+ * @wait: iowait structure
-+ */
-+static inline int iowait_sdma_dec(struct iowait *wait)
-+{
-+	if (!wait)
-+		return 0;
-+	return atomic_dec_and_test(&wait->sdma_busy);
-+}
-+
-+/**
-+ * iowait_pio_drain() - wait for pios to drain
-+ *
-+ * @wait: iowait structure
-+ *
-+ * This will delay until the iowait pios have
-+ * completed.
-+ */
-+static inline void iowait_pio_drain(struct iowait *wait)
-+{
-+	wait_event_timeout(wait->wait_pio,
-+			   !atomic_read(&wait->pio_busy),
-+			   HZ);
-+}
-+
-+/**
-+ * iowait_pio_pending() - return pio pending count
-+ *
-+ * @wait: iowait structure
-+ *
-+ */
-+static inline int iowait_pio_pending(struct iowait *wait)
-+{
-+	return atomic_read(&wait->pio_busy);
-+}
-+
-+/**
-+ * iowait_pio_inc - note pio pending
-+ * @wait: iowait structure
-+ */
-+static inline void iowait_pio_inc(struct iowait *wait)
-+{
-+	atomic_inc(&wait->pio_busy);
-+}
-+
-+/**
-+ * iowait_pio_dec - note pio complete
-+ * @wait: iowait structure
-+ */
-+static inline int iowait_pio_dec(struct iowait *wait)
-+{
-+	if (!wait)
-+		return 0;
-+	return atomic_dec_and_test(&wait->pio_busy);
-+}
-+
-+/**
-+ * iowait_drain_wakeup() - trigger iowait_drain() waiter
-+ *
-+ * @wait: iowait structure
-+ *
-+ * This will trigger any waiters.
-+ */
-+static inline void iowait_drain_wakeup(struct iowait *wait)
-+{
-+	wake_up(&wait->wait_dma);
-+	wake_up(&wait->wait_pio);
-+	if (wait->sdma_drained)
-+		wait->sdma_drained(wait);
-+}
-+
-+/**
-+ * iowait_get_txhead() - get packet off of iowait list
-+ *
-+ * @wait: iowait_work structure
-+ */
-+static inline struct sdma_txreq *iowait_get_txhead(struct iowait_work *wait)
-+{
-+	struct sdma_txreq *tx = NULL;
-+
-+	if (!list_empty(&wait->tx_head)) {
-+		tx = list_first_entry(
-+			&wait->tx_head,
-+			struct sdma_txreq,
-+			list);
-+		list_del_init(&tx->list);
-+	}
-+	return tx;
-+}
-+
-+static inline u16 iowait_get_desc(struct iowait_work *w)
-+{
-+	u16 num_desc = 0;
-+	struct sdma_txreq *tx = NULL;
-+
-+	if (!list_empty(&w->tx_head)) {
-+		tx = list_first_entry(&w->tx_head, struct sdma_txreq,
-+				      list);
-+		num_desc = tx->num_desc;
-+		if (tx->flags & SDMA_TXREQ_F_VIP)
-+			w->iow->priority++;
-+	}
-+	return num_desc;
-+}
-+
-+static inline u32 iowait_get_all_desc(struct iowait *w)
-+{
-+	u32 num_desc = 0;
-+
-+	num_desc = iowait_get_desc(&w->wait[IOWAIT_IB_SE]);
-+	num_desc += iowait_get_desc(&w->wait[IOWAIT_TID_SE]);
-+	return num_desc;
-+}
-+
-+static inline void iowait_update_priority(struct iowait_work *w)
-+{
-+	struct sdma_txreq *tx = NULL;
-+
-+	if (!list_empty(&w->tx_head)) {
-+		tx = list_first_entry(&w->tx_head, struct sdma_txreq,
-+				      list);
-+		if (tx->flags & SDMA_TXREQ_F_VIP)
-+			w->iow->priority++;
-+	}
-+}
-+
-+static inline void iowait_update_all_priority(struct iowait *w)
-+{
-+	iowait_update_priority(&w->wait[IOWAIT_IB_SE]);
-+	iowait_update_priority(&w->wait[IOWAIT_TID_SE]);
-+}
-+
-+static inline void iowait_init_priority(struct iowait *w)
-+{
-+	w->priority = 0;
-+	if (w->init_priority)
-+		w->init_priority(w);
-+}
-+
-+static inline void iowait_get_priority(struct iowait *w)
-+{
-+	iowait_init_priority(w);
-+	iowait_update_all_priority(w);
-+}
-+
-+/**
-+ * iowait_queue - Put the iowait on a wait queue
-+ * @pkts_sent: have some packets been sent before queuing?
-+ * @w: the iowait struct
-+ * @wait_head: the wait queue
-+ *
-+ * This function is called to insert an iowait struct into a
-+ * wait queue after a resource (eg, sdma descriptor or pio
-+ * buffer) is run out.
-+ */
-+static inline void iowait_queue(bool pkts_sent, struct iowait *w,
-+				struct list_head *wait_head)
-+{
-+	/*
-+	 * To play fair, insert the iowait at the tail of the wait queue if it
-+	 * has already sent some packets; Otherwise, put it at the head.
-+	 * However, if it has priority packets to send, also put it at the
-+	 * head.
-+	 */
-+	if (pkts_sent)
-+		w->starved_cnt = 0;
-+	else
-+		w->starved_cnt++;
-+
-+	if (w->priority > 0 || !pkts_sent)
-+		list_add(&w->list, wait_head);
-+	else
-+		list_add_tail(&w->list, wait_head);
-+}
-+
-+/**
-+ * iowait_starve_clear - clear the wait queue's starve count
-+ * @pkts_sent: have some packets been sent?
-+ * @w: the iowait struct
-+ *
-+ * This function is called to clear the starve count. If no
-+ * packets have been sent, the starve count will not be cleared.
-+ */
-+static inline void iowait_starve_clear(bool pkts_sent, struct iowait *w)
-+{
-+	if (pkts_sent)
-+		w->starved_cnt = 0;
-+}
-+
-+/* Update the top priority index */
-+uint iowait_priority_update_top(struct iowait *w,
-+				struct iowait *top,
-+				uint idx, uint top_idx);
-+
-+/**
-+ * iowait_packet_queued() - determine if a packet is queued
-+ * @wait: the iowait_work structure
-+ */
-+static inline bool iowait_packet_queued(struct iowait_work *wait)
-+{
-+	return !list_empty(&wait->tx_head);
-+}
-+
-+/**
-+ * inc_wait_count - increment wait counts
-+ * @w: the log work struct
-+ * @n: the count
-+ */
-+static inline void iowait_inc_wait_count(struct iowait_work *w, u16 n)
-+{
-+	if (!w)
++	/* only WFR needs to write SendCtrl */
++	if (dd->params->chip_type != CHIP_WFR)
 +		return;
-+	w->iow->tx_count++;
-+	w->iow->count += n;
++
++	spin_lock_irqsave(&dd->sendctrl_lock, flags);
++
++	reg = read_eport_csr(dd, ppd->hw_pidx, dd->params->send_ctrl_reg);
++	switch (op) {
++	case PSC_GLOBAL_ENABLE:
++		reg |= SEND_CTRL_SEND_ENABLE_SMASK |
++		       dd->params->send_ctrl_flush;
++		fallthrough;
++	case PSC_DATA_VL_ENABLE:
++		mask = 0;
++		for (i = 0; i < ARRAY_SIZE(ppd->vld); i++)
++			if (!ppd->vld[i].mtu)
++				mask |= BIT_ULL(i);
++		/* Disallow sending on VLs not enabled */
++		mask = (mask & SEND_CTRL_UNSUPPORTED_VL_MASK) <<
++			SEND_CTRL_UNSUPPORTED_VL_SHIFT;
++		reg = (reg & ~SEND_CTRL_UNSUPPORTED_VL_SMASK) | mask;
++		break;
++	case PSC_GLOBAL_DISABLE:
++		reg &= ~SEND_CTRL_SEND_ENABLE_SMASK;
++		break;
++	case PSC_GLOBAL_VLARB_ENABLE:
++		reg |= SEND_CTRL_VL_ARBITER_ENABLE_SMASK;
++		break;
++	case PSC_GLOBAL_VLARB_DISABLE:
++		reg &= ~SEND_CTRL_VL_ARBITER_ENABLE_SMASK;
++		break;
++	case PSC_CM_RESET:
++		__cm_reset(ppd, reg);
++		write = 0; /* CSR already written (and flushed) */
++		break;
++	case PSC_DATA_VL_DISABLE:
++		reg |= SEND_CTRL_UNSUPPORTED_VL_SMASK;
++		flush = 1;
++		break;
++	default:
++		dd_dev_err(dd, "%s: invalid control %d\n", __func__, op);
++		break;
++	}
++
++	if (write) {
++		write_eport_csr(dd, ppd->hw_pidx, dd->params->send_ctrl_reg, reg);
++		if (flush) {
++			/* flush write */
++			(void)read_eport_csr(dd, ppd->hw_pidx,
++					     dd->params->send_ctrl_reg);
++		}
++	}
++
++	spin_unlock_irqrestore(&dd->sendctrl_lock, flags);
 +}
 +
-+/**
-+ * iowait_get_tid_work - return iowait_work for tid SE
-+ * @w: the iowait struct
-+ */
-+static inline struct iowait_work *iowait_get_tid_work(struct iowait *w)
-+{
-+	return &w->wait[IOWAIT_TID_SE];
-+}
++/* number of send context memory pools */
++#define NUM_SC_POOLS 2
 +
-+/**
-+ * iowait_get_ib_work - return iowait_work for ib SE
-+ * @w: the iowait struct
-+ */
-+static inline struct iowait_work *iowait_get_ib_work(struct iowait *w)
-+{
-+	return &w->wait[IOWAIT_IB_SE];
-+}
++/* Send Context Size (SCS) wildcards */
++#define SCS_POOL_0 -1
++#define SCS_POOL_1 -2
 +
-+/**
-+ * iowait_ioww_to_iow - return iowait given iowait_work
-+ * @w: the iowait_work struct
-+ */
-+static inline struct iowait *iowait_ioww_to_iow(struct iowait_work *w)
-+{
-+	if (likely(w))
-+		return w->iow;
-+	return NULL;
-+}
++/* Send Context Count (SCC) wildcards */
++#define SCC_PER_VL -1
++#define SCC_PER_CPU  -2
++#define SCC_PER_KRCVQ  -3
++#define SCC_MIN_WC SCC_PER_KRCVQ
 +
-+void iowait_cancel_work(struct iowait *w);
-+int iowait_set_work_flag(struct iowait_work *w);
++/* Send Context Size (SCS) constants */
++#define SCS_ACK_CREDITS  32
++#define SCS_VL15_CREDITS 102	/* 3 pkts of 2048B data + 128B header */
 +
-+#endif
-diff --git a/drivers/infiniband/hw/hfi2/ipoib.h b/drivers/infiniband/hw/hfi2/ipoib.h
-new file mode 100644
-index 000000000000..a1be5f0caa0e
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/ipoib.h
-@@ -0,0 +1,173 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++#define PIO_THRESHOLD_CEILING 4096
++
++#define PIO_WAIT_BATCH_SIZE 5
++
++/* default send context sizes */
++static struct sc_config_sizes sc_config_sizes[SC_MAX] = {
++	[SC_KERNEL] = { .size  = SCS_POOL_0,	/* even divide, pool 0 */
++			.count = SCC_PER_VL },	/* one per NUMA */
++	[SC_ACK]    = { .size  = SCS_ACK_CREDITS,
++			.count = SCC_PER_KRCVQ },
++	[SC_USER]   = { .size  = SCS_POOL_0,	/* even divide, pool 0 */
++			.count = SCC_PER_CPU },	/* one per CPU */
++	[SC_VL15]   = { .size  = SCS_VL15_CREDITS,
++			.count = 1 },
++
++};
++
++/* send context memory pool configuration */
++struct mem_pool_config {
++	int centipercent;	/* % of memory, in 100ths of 1% */
++	int absolute_blocks;	/* absolute block count */
++};
++
++/* default memory pool configuration: 100% in pool 0 */
++static struct mem_pool_config sc_mem_pool_config[NUM_SC_POOLS] = {
++	/* centi%, abs blocks */
++	{  10000,     -1 },		/* pool 0 */
++	{      0,     -1 },		/* pool 1 */
++};
++
++/* memory pool information, used when calculating final sizes */
++struct mem_pool_info {
++	int centipercent;	/*
++				 * 100th of 1% of memory to use, -1 if blocks
++				 * already set
++				 */
++	int count;		/* count of contexts in the pool */
++	int blocks;		/* block size of the pool */
++	int size;		/* context size, in blocks */
++};
++
 +/*
-+ * Copyright(c) 2020 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ * Convert a pool wildcard to a valid pool index.  The wildcards
++ * start at -1 and increase negatively.  Map them as:
++ *	-1 => 0
++ *	-2 => 1
++ *	etc.
 + *
++ * Return -1 on non-wildcard input, otherwise convert to a pool number.
 + */
++static int wildcard_to_pool(int wc)
++{
++	if (wc >= 0)
++		return -1;	/* non-wildcard */
++	return -wc - 1;
++}
++
++static const char *sc_type_names[SC_MAX] = {
++	"kernel",
++	"vl15",
++	"ack",
++	"user",
++};
++
++static const char *sc_type_name(int index)
++{
++	if (index < 0 || index >= SC_MAX)
++		return "unknown";
++	return sc_type_names[index];
++}
 +
 +/*
-+ * This file contains HFI2 support for IPOIB functionality
++ * Read the send context memory pool configuration and send context
++ * size configuration.  Replace any wildcards and come up with final
++ * counts and sizes for the send context types.
 + */
-+
-+#ifndef HFI2_IPOIB_H
-+#define HFI2_IPOIB_H
-+
-+#include <linux/types.h>
-+#include <linux/stddef.h>
-+#include <linux/atomic.h>
-+#include <linux/netdevice.h>
-+#include <linux/slab.h>
-+#include <linux/skbuff.h>
-+#include <linux/list.h>
-+#include <linux/if_infiniband.h>
-+
-+#include "hfi2.h"
-+#include "iowait.h"
-+#include "netdev.h"
-+
-+#include <rdma/ib_verbs.h>
-+
-+#define HFI2_IPOIB_ENTROPY_SHIFT   24
-+
-+#define HFI2_IPOIB_TXREQ_NAME_LEN   32
-+
-+#define HFI2_IPOIB_PSEUDO_LEN 20
-+#define HFI2_IPOIB_ENCAP_LEN 4
-+
-+struct hfi2_ipoib_dev_priv;
-+
-+union hfi2_ipoib_flow {
-+	u16 as_int;
-+	struct {
-+		u8 tx_queue;
-+		u8 sc5;
-+	} __packed;
-+};
-+
-+/**
-+ * struct ipoib_txreq - IPOIB transmit descriptor
-+ * @txreq: sdma transmit request
-+ * @sdma_hdr: 9b ib headers
-+ * @sdma_status: status returned by sdma engine
-+ * @complete: non-zero implies complete
-+ * @priv: ipoib netdev private data
-+ * @txq: txq on which skb was output
-+ * @skb: skb to send
-+ */
-+struct ipoib_txreq {
-+	struct sdma_txreq           txreq;
-+	struct hfi2_sdma_header     *sdma_hdr;
-+	int                         sdma_status;
-+	int                         complete;
-+	struct hfi2_ipoib_dev_priv *priv;
-+	struct hfi2_ipoib_txq      *txq;
-+	struct sk_buff             *skb;
-+};
-+
-+/**
-+ * struct hfi2_ipoib_circ_buf - List of items to be processed
-+ * @items: ring of items each a power of two size
-+ * @max_items: max items + 1 that the ring can contain
-+ * @shift: log2 of size for getting txreq
-+ * @sent_txreqs: count of txreqs posted to sdma
-+ * @tail: ring tail
-+ * @stops: count of stops of queue
-+ * @ring_full: ring has been filled
-+ * @no_desc: descriptor shortage seen
-+ * @complete_txreqs: count of txreqs completed by sdma
-+ * @head: ring head
-+ */
-+struct hfi2_ipoib_circ_buf {
-+	void *items;
-+	u32 max_items;
-+	u32 shift;
-+	/* consumer cache line */
-+	u64 ____cacheline_aligned_in_smp sent_txreqs;
-+	u32 avail;
-+	u32 tail;
-+	atomic_t stops;
-+	atomic_t ring_full;
-+	atomic_t no_desc;
-+	/* producer cache line */
-+	u64 ____cacheline_aligned_in_smp complete_txreqs;
-+	u32 head;
-+};
-+
-+/**
-+ * struct hfi2_ipoib_txq - IPOIB per Tx queue information
-+ * @priv: private pointer
-+ * @sde: sdma engine
-+ * @tx_list: tx request list
-+ * @sent_txreqs: count of txreqs posted to sdma
-+ * @flow: tracks when list needs to be flushed for a flow change
-+ * @q_idx: ipoib Tx queue index
-+ * @pkts_sent: indicator packets have been sent from this queue
-+ * @wait: iowait structure
-+ * @napi: pointer to tx napi interface
-+ * @tx_ring: ring of ipoib txreqs to be reaped by napi callback
-+ */
-+struct hfi2_ipoib_txq {
-+	struct napi_struct napi;
-+	struct hfi2_ipoib_dev_priv *priv;
-+	struct sdma_engine *sde;
-+	struct list_head tx_list;
-+	union hfi2_ipoib_flow flow;
-+	u8 q_idx;
-+	bool pkts_sent;
-+	struct iowait wait;
-+
-+	struct hfi2_ipoib_circ_buf ____cacheline_aligned_in_smp tx_ring;
-+};
-+
-+struct hfi2_ipoib_dev_priv {
-+	struct hfi2_devdata *dd;
-+	struct hfi2_pportdata *ppd;
-+	struct net_device   *netdev;
-+	struct ib_device    *device;
-+	struct hfi2_ipoib_txq *txqs;
-+	const struct net_device_ops *netdev_ops;
-+	struct rvt_qp *qp;
-+	u32 qkey;
-+	u16 pkey;
-+	u16 pkey_index;
-+	u8 port_num;
-+};
-+
-+/* hfi2 ipoib rdma netdev's private data structure */
-+struct hfi2_ipoib_rdma_netdev {
-+	struct rdma_netdev rn;  /* keep this first */
-+	/* followed by device private data */
-+	struct hfi2_ipoib_dev_priv dev_priv;
-+};
-+
-+static inline struct hfi2_ipoib_dev_priv *
-+hfi2_ipoib_priv(const struct net_device *dev)
++int init_sc_pools_and_sizes(struct hfi2_devdata *dd)
 +{
-+	return &((struct hfi2_ipoib_rdma_netdev *)netdev_priv(dev))->dev_priv;
-+}
-+
-+int hfi2_ipoib_send(struct net_device *dev,
-+		    struct sk_buff *skb,
-+		    struct ib_ah *address,
-+		    u32 dqpn);
-+
-+int hfi2_ipoib_txreq_init(struct hfi2_ipoib_dev_priv *priv);
-+void hfi2_ipoib_txreq_deinit(struct hfi2_ipoib_dev_priv *priv);
-+
-+int hfi2_ipoib_rxq_init(struct net_device *dev);
-+void hfi2_ipoib_rxq_deinit(struct net_device *dev);
-+
-+void hfi2_ipoib_napi_tx_enable(struct net_device *dev);
-+void hfi2_ipoib_napi_tx_disable(struct net_device *dev);
-+
-+struct sk_buff *hfi2_ipoib_prepare_skb(struct hfi2_netdev_rxq *rxq,
-+				       int size, void *data);
-+
-+int hfi2_ipoib_rn_get_params(struct ib_device *device,
-+			     u32 port_num,
-+			     enum rdma_netdev_t type,
-+			     struct rdma_netdev_alloc_params *params);
-+
-+void hfi2_ipoib_tx_timeout(struct net_device *dev, unsigned int q);
-+
-+#endif /* _IPOIB_H */
-diff --git a/drivers/infiniband/hw/hfi2/netdev.h b/drivers/infiniband/hw/hfi2/netdev.h
-new file mode 100644
-index 000000000000..3b2f18c620bb
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/netdev.h
-@@ -0,0 +1,96 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * Copyright(c) 2020 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
-+ */
-+
-+#ifndef HFI2_NETDEV_H
-+#define HFI2_NETDEV_H
-+
-+#include "hfi2.h"
-+
-+#include <linux/netdevice.h>
-+#include <linux/xarray.h>
-+
-+/**
-+ * struct hfi2_netdev_rxq - Receive Queue for HFI
-+ * IPoIB netdevices will be working on the rx abstraction.
-+ * @napi: napi object
-+ * @rx: ptr to netdev_rx
-+ * @rcd:  ptr to receive context data
-+ */
-+struct hfi2_netdev_rxq {
-+	struct napi_struct napi;
-+	struct hfi2_netdev_rx *rx;
-+	struct hfi2_ctxtdata *rcd;
-+};
-+
-+#define HFI2_MAX_NETDEV_CTXTS   8
-+
-+/* Number of NETDEV RSM entries */
-+#define NUM_NETDEV_MAP_ENTRIES HFI2_MAX_NETDEV_CTXTS
-+
-+/**
-+ * struct hfi2_netdev_rx: data required to setup and run HFI netdev.
-+ * @rx_napi:	the dummy netdevice to support "polling" the receive contexts
-+ * @dd:		hfi2_devdata
-+ * @ppd:	hfi2_pportdata
-+ * @rxq:	pointer to dummy netdev receive queues.
-+ * @num_rx_q:	number of receive queues
-+ * @rmt_start:	first allocated index in the RMT
-+ * @dev_tbl:	netdev table for unique identifier VNIC and IPoIb VLANs.
-+ * @enabled:	atomic counter of netdevs enabling receive queues.
-+ *		When 0 NAPI will be disabled.
-+ * @netdevs:	count of netdev_rx users, protected by hfi2_mutex.
-+ *		When 0 receive queues will be freed.
-+ */
-+struct hfi2_netdev_rx {
-+	struct net_device *rx_napi;
-+	struct hfi2_devdata *dd;
-+	struct hfi2_pportdata *ppd;
-+	struct hfi2_netdev_rxq *rxq;
-+	int num_rx_q;
-+	int rmt_start;
-+	struct xarray dev_tbl;
-+	/* count of enabled napi polls */
-+	atomic_t enabled;
-+	int netdevs;
-+};
-+
-+static inline
-+int hfi2_netdev_ctxt_count(struct hfi2_pportdata *ppd)
-+{
-+	return ppd->netdev_rx->num_rx_q;
-+}
-+
-+static inline
-+struct hfi2_ctxtdata *hfi2_netdev_get_ctxt(struct hfi2_pportdata *ppd, int ctxt)
-+{
-+	return ppd->netdev_rx->rxq[ctxt].rcd;
-+}
-+
-+static inline
-+int hfi2_netdev_get_free_rmt_idx(struct hfi2_pportdata *ppd)
-+{
-+	return ppd->netdev_rx->rmt_start;
-+}
-+
-+u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
-+			     struct cpumask *cpu_mask);
-+
-+void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd);
-+void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd);
-+int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd);
-+int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd);
-+int hfi2_alloc_rx(struct hfi2_devdata *dd);
-+void hfi2_free_rx(struct hfi2_devdata *dd);
-+int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data);
-+void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id);
-+void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id);
-+void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id);
-+
-+/* chip.c  */
-+int hfi2_netdev_rx_napi(struct napi_struct *napi, int budget);
-+
-+#endif /* HFI2_NETDEV_H */
-diff --git a/drivers/infiniband/hw/hfi2/pinning.h b/drivers/infiniband/hw/hfi2/pinning.h
-new file mode 100644
-index 000000000000..fad477c5a96a
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/pinning.h
-@@ -0,0 +1,74 @@
-+/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
-+/*
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+#ifndef _HFI2_PINNING_H
-+#define _HFI2_PINNING_H
-+
-+#include <rdma/hfi2-abi.h>
-+
-+struct hfi2_user_sdma_pkt_q;
-+struct user_sdma_request;
-+struct user_sdma_txreq;
-+struct user_sdma_iovec;
-+
-+struct pinning_interface {
-+	int (*init)(struct hfi2_user_sdma_pkt_q *pq);
-+	void (*free)(struct hfi2_user_sdma_pkt_q *pq);
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	struct mem_pool_info mem_pool_info[NUM_SC_POOLS] = { { 0 } };
++	/* do not use first N blocks */
++	int total_blocks = dr->c.last_pio_block - dr->c.first_pio_block;
++	u32 usable_sc = dr->c.last_send_context - dr->c.first_send_context;
++	int total_contexts = 0;
++	int fixed_blocks;
++	int pool_blocks;
++	int used_blocks;
++	int cp_total;		/* centipercent total */
++	int ab_total;		/* absolute block total */
++	int extra;
++	int pidx;
++	int i;
 +
 +	/*
-+	 * Add up to pkt_data_remaining bytes to the txreq, starting at the
-+	 * current offset in the given iovec entry and continuing until all
-+	 * data has been added to the iovec or the iovec entry type changes.
-+	 * On success, prior to returning, the implementation must adjust
-+	 * pkt_data_remaining, req->iov_idx, and the offset value in
-+	 * req->iov[req->iov_idx] to reflect the data that has been
-+	 * consumed.
++	 * When SDMA is enabled, kernel context pio packet size is capped by
++	 * "piothreshold". Reduce pio buffer allocation for kernel context by
++	 * setting it to a fixed size. The allocation allows 3-deep buffering
++	 * of the largest pio packets plus up to 128 bytes header, sufficient
++	 * to maintain verbs performance.
++	 *
++	 * When SDMA is disabled, keep the default pooling allocation.
 +	 */
-+	int (*add_to_sdma_packet)(struct user_sdma_request *req,
-+				  struct user_sdma_txreq *tx,
-+				  struct user_sdma_iovec *iovec,
-+				  u32 *pkt_data_remaining);
-+
-+	int (*get_stats)(struct hfi2_user_sdma_pkt_q *pq, int index,
-+			 struct hfi2_pin_stats *stats);
-+	void (*put)(void *ptr);
-+};
-+
-+#define PINNING_MAX_INTERFACES BIT(HFI2_MEMINFO_TYPE_ENTRY_BITS)
-+
-+struct pinning_state {
-+	void *interface[PINNING_MAX_INTERFACES];
-+};
-+
-+#define PINNING_STATE(pq, i) ((pq)->pinning_state.interface[(i)])
-+
-+extern struct pinning_interface pinning_interfaces[PINNING_MAX_INTERFACES];
-+
-+void register_pinning_interface(unsigned int type,
-+				struct pinning_interface *interface);
-+void deregister_pinning_interface(unsigned int type);
-+
-+void register_system_pinning_interface(void);
-+void deregister_system_pinning_interface(void);
-+
-+int init_pinning_interfaces(struct hfi2_user_sdma_pkt_q *pq);
-+void free_pinning_interfaces(struct hfi2_user_sdma_pkt_q *pq);
-+
-+static inline bool pinning_type_supported(unsigned int type)
-+{
-+	return (type < PINNING_MAX_INTERFACES &&
-+		pinning_interfaces[type].add_to_sdma_packet);
-+}
-+
-+static inline int add_to_sdma_packet(unsigned int type,
-+				     struct user_sdma_request *req,
-+				     struct user_sdma_txreq *tx,
-+				     struct user_sdma_iovec *iovec,
-+				     u32 *rem)
-+{
-+	return pinning_interfaces[type].add_to_sdma_packet(req, tx, iovec,
-+							   rem);
-+}
-+
-+#endif /* _HFI2_PINNING_H */
-diff --git a/drivers/infiniband/hw/hfi2/pio.h b/drivers/infiniband/hw/hfi2/pio.h
-new file mode 100644
-index 000000000000..92a529b25584
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/pio.h
-@@ -0,0 +1,307 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015-2017 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _PIO_H
-+#define _PIO_H
-+/* send context types */
-+#define SC_KERNEL 0
-+#define SC_VL15   1
-+#define SC_ACK    2
-+#define SC_USER   3	/* must be the last one: it may take all left */
-+#define SC_MAX    4	/* count of send context types */
-+
-+/* invalid send context index */
-+#define INVALID_SCI 0xffff
-+
-+/* PIO buffer release callback function */
-+typedef void (*pio_release_cb)(void *arg, int code);
-+
-+/* PIO release codes - in bits, as there could more than one that apply */
-+#define PRC_OK		0	/* no known error */
-+#define PRC_STATUS_ERR	0x01	/* credit return due to status error */
-+#define PRC_PBC		0x02	/* credit return due to PBC */
-+#define PRC_THRESHOLD	0x04	/* credit return due to threshold */
-+#define PRC_FILL_ERR	0x08	/* credit return due fill error */
-+#define PRC_FORCE	0x10	/* credit return due credit force */
-+#define PRC_SC_DISABLE	0x20	/* clean-up after a context disable */
-+
-+/* byte helper */
-+union mix {
-+	u64 val64;
-+	u32 val32[2];
-+	u8  val8[8];
-+};
-+
-+/* an allocated PIO buffer */
-+struct pio_buf {
-+	struct send_context *sc;/* back pointer to owning send context */
-+	pio_release_cb cb;	/* called when the buffer is released */
-+	void *arg;		/* argument for cb */
-+	void __iomem *start;	/* buffer start address */
-+	void __iomem *end;	/* context end address */
-+	unsigned long sent_at;	/* buffer is sent when <= free */
-+	union mix carry;	/* pending unwritten bytes */
-+	u16 qw_written;		/* QW written so far */
-+	u8 carry_bytes;	/* number of valid bytes in carry */
-+};
-+
-+/* cache line aligned pio buffer array */
-+union pio_shadow_ring {
-+	struct pio_buf pbuf;
-+} ____cacheline_aligned;
-+
-+/* per-NUMA send context */
-+struct send_context {
-+	/* read-only after init */
-+	struct hfi2_devdata *dd;	/* device */
-+	struct hfi2_pportdata *ppd;	/* port */
-+	union pio_shadow_ring *sr;	/* shadow ring */
-+	void __iomem *base_addr;	/* start of PIO memory */
-+	u32 __percpu *buffers_allocated;/* count of buffers allocated */
-+	u32 size;			/* context size, in bytes */
-+
-+	int node;			/* context home node */
-+	u32 sr_size;			/* size of the shadow ring */
-+	u16 flags;			/* flags */
-+	u16 sw_index;			/* software index number */
-+	u16 hw_context;			/* hardware context number */
-+	u8  type;			/* context type */
-+	u8  group;			/* credit return group */
-+
-+	/* allocator fields */
-+	spinlock_t alloc_lock ____cacheline_aligned_in_smp;
-+	u32 sr_head;			/* shadow ring head */
-+	unsigned long fill;		/* official alloc count */
-+	unsigned long alloc_free;	/* copy of free (less cache thrash) */
-+	u32 fill_wrap;			/* tracks fill within ring */
-+	u32 credits;			/* number of blocks in context */
-+	/* adding a new field here would make it part of this cacheline */
-+
-+	/* releaser fields */
-+	spinlock_t release_lock ____cacheline_aligned_in_smp;
-+	u32 sr_tail;			/* shadow ring tail */
-+	unsigned long free;		/* official free count */
-+	volatile __le64 *hw_free;	/* HW free counter */
-+	/* list for PIO waiters */
-+	struct list_head piowait  ____cacheline_aligned_in_smp;
-+	seqlock_t waitlock;
-+
-+	spinlock_t credit_ctrl_lock ____cacheline_aligned_in_smp;
-+	u32 credit_intr_count;		/* count of credit intr users */
-+	u64 credit_ctrl;		/* cache for credit control */
-+	wait_queue_head_t halt_wait;    /* wait until kernel sees interrupt */
-+	struct work_struct halt_work;	/* halted context work queue entry */
-+};
-+
-+/* send context flags */
-+#define SCF_ENABLED 0x01
-+#define SCF_IN_FREE 0x02
-+#define SCF_HALTED  0x04
-+#define SCF_FROZEN  0x08
-+#define SCF_LINK_DOWN 0x10
-+
-+struct send_context_info {
-+	struct send_context *sc;	/* allocated working context */
-+	u16 allocated;			/* has this been allocated? */
-+	u16 type;			/* context type */
-+	u16 base;			/* base in PIO array */
-+	u16 credits;			/* size in PIO array */
-+};
-+
-+/* DMA credit return, index is always (context & 0x7) */
-+struct credit_return {
-+	volatile __le64 cr[8];
-+};
-+
-+/* NUMA indexed credit return array */
-+struct credit_return_base {
-+	struct credit_return *va;
-+	dma_addr_t dma;
-+};
-+
-+/* send context configuration sizes (one per type) */
-+struct sc_config_sizes {
-+	short int size;
-+	short int count;
-+};
-+
-+/*
-+ * The diagram below details layout of pio_map, which is used to quickly select
-+ * a kernel send context given a vl and a selector (fuzz).
-+ *
-+ * sc = pio_map->map[vl & map_mask]->ksc[selector & elem_mask]
-+ *
-+ * The map allows for non-uniform send contexts per vl.
-+ *
-+ * Where:
-+ * nactual = num_kernel_send_contexts / num_vls
-+ * vl_scontexts[vl] = nactual + extra
-+ *
-+ *	Extra is an evenly distributed modulo of remaining send contexts.
-+ *
-+ * svl[vl] = 1 + sum vl_scontexts[0..vl-1]
-+ *
-+ * n = roundup to next highest power of 2 of vl_scontexts[vl]
-+ *
-+ * When n > vl_scontexts[vl], the send contexts are assigned in a round robin
-+ * fashion wrapping back to the first send context for a particular vl.
-+ *
-+ *              ppd->pio_map
-+ *                    |                                  pio_map_elem[0]
-+ *                    |                               +------------------------+
-+ *                    v                               |       mask             |
-+ *               pio_vl_map                           |------------------------|
-+ *      +--------------------------+                  | ksc[0] -> svl[0]       |
-+ *      |    list (RCU)            |                  |------------------------|
-+ *      |--------------------------|                ->| ksc[1] -> svl[0]+1     |
-+ *      |    mask                  |              -/  |------------------------|
-+ *      |--------------------------|            -/    |        *               |
-+ *      |    actual_vls (max 8)    |          -/      |------------------------|
-+ *      |--------------------------|       --/        | ksc[n-1] -> svl[0]+n-1 |
-+ *      |    vls (max 8)           |     -/           +------------------------+
-+ *      |--------------------------|  --/
-+ *      |    map[0]                |-/
-+ *      |--------------------------|                  +------------------------+
-+ *      |    map[1]                |---               |       mask             |
-+ *      |--------------------------|   \----          |------------------------|
-+ *      |           *              |        \--       | ksc[0] -> svl[1]       |
-+ *      |           *              |           \---   |------------------------|
-+ *      |           *              |               \->| ksc[1] -> svl[1]+1     |
-+ *      |--------------------------|                  |------------------------|
-+ *      |   map[vls - 1]           |-                 |         *              |
-+ *      +--------------------------+ \-               |------------------------|
-+ *                                     \-             | ksc[n-1] -> svl[1]+n-1 |
-+ *                                       \            +------------------------+
-+ *                                        \-
-+ *                                          \
-+ *                                           \-       +------------------------+
-+ *                                             \-     |       mask             |
-+ *                                               \    |------------------------|
-+ *                                                \-  | ksc[x] -> svl[x]       |
-+ *                                                  \ |------------------------|
-+ *                                                   >| ksc[x] -> svl[x]+1     |
-+ *                                                    |------------------------|
-+ *                                                    |         *              |
-+ *                                                    |------------------------|
-+ *                                                    | ksc[n-1] -> svl[x]+n-1 |
-+ *                                                    +------------------------+
-+ *
-+ */
-+
-+/* Initial number of send contexts per VL */
-+#define INIT_SC_PER_VL 2
-+
-+/*
-+ * struct pio_map_elem - mapping for a vl
-+ * @mask - selector mask
-+ * @ksc - array of kernel send contexts for this vl
-+ *
-+ * The mask is used to "mod" the selector to
-+ * produce index into the trailing array of
-+ * kscs
-+ */
-+struct pio_map_elem {
-+	u32 mask;
-+	struct send_context *ksc[];
-+};
-+
-+/*
-+ * struct pio_vl_map - mapping for a vl
-+ * @list - rcu head for free callback
-+ * @mask - vl mask to "mod" the vl to produce an index to map array
-+ * @actual_vls - number of vls
-+ * @vls - numbers of vls rounded to next power of 2
-+ * @map - array of pio_map_elem entries
-+ *
-+ * This is the parent mapping structure. The trailing members of the
-+ * struct point to pio_map_elem entries, which in turn point to an
-+ * array of kscs for that vl.
-+ */
-+struct pio_vl_map {
-+	struct rcu_head list;
-+	u32 mask;
-+	u8 actual_vls;
-+	u8 vls;
-+	struct pio_map_elem *map[];
-+};
-+
-+int pio_map_init(struct hfi2_pportdata *ppd, u8 num_vls);
-+void free_pio_map(struct hfi2_devdata *dd);
-+struct send_context *pio_select_send_context_vl(struct hfi2_pportdata *ppd,
-+						u32 selector, u8 vl);
-+struct send_context *pio_select_send_context_sc(struct hfi2_pportdata *ppd,
-+						u32 selector, u8 sc5);
-+
-+/* send context functions */
-+int init_credit_return(struct hfi2_devdata *dd);
-+void free_credit_return(struct hfi2_devdata *dd);
-+int init_sc_pools_and_sizes(struct hfi2_devdata *dd);
-+int init_send_contexts(struct hfi2_devdata *dd);
-+int init_pervl_scs(struct hfi2_pportdata *ppd);
-+struct send_context *sc_alloc(struct hfi2_pportdata *ppd, int type,
-+			      uint hdrqentsize, int numa);
-+void sc_free(struct send_context *sc);
-+int sc_enable(struct send_context *sc);
-+void sc_disable(struct send_context *sc);
-+int sc_restart(struct send_context *sc);
-+void sc_return_credits(struct send_context *sc);
-+void sc_flush(struct send_context *sc);
-+void sc_stop(struct send_context *sc, int bit);
-+struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
-+				pio_release_cb cb, void *arg);
-+void sc_release_update(struct send_context *sc);
-+void sc_group_release_update(struct hfi2_devdata *dd, u32 hw_context);
-+void sc_add_credit_return_intr(struct send_context *sc);
-+void sc_del_credit_return_intr(struct send_context *sc);
-+void sc_set_cr_threshold(struct send_context *sc, u32 new_threshold);
-+u32 sc_percent_to_threshold(struct send_context *sc, u32 percent);
-+u32 sc_mtu_to_threshold(struct send_context *sc, u32 mtu, u32 hdrqentsize);
-+void hfi2_sc_wantpiobuf_intr(struct send_context *sc, u32 needint);
-+void sc_wait(struct hfi2_devdata *dd);
-+
-+/* commands for set_pio_integrity() */
-+enum spi_cmds {
-+	SPI_DEFAULT,
-+	SPI_INIT,
-+	SPI_SET_JKEY,
-+	SPI_CLEAR_JKEY,
-+	SPI_SET_PKEY,
-+	SPI_CLEAR_PKEY,
-+};
-+void wfr_set_pio_integrity(struct hfi2_devdata *dd, u32 pidx, u32 ctxt, int type,
-+			   enum spi_cmds cmd);
-+
-+/* support functions */
-+void pio_reset_all(struct hfi2_devdata *dd);
-+int pio_reset_one(struct hfi2_devdata *dd, u16 ctxt);
-+void pio_freeze(struct hfi2_devdata *dd);
-+void pio_kernel_unfreeze(struct hfi2_devdata *dd);
-+void pio_kernel_linkup(struct hfi2_pportdata *ppd);
-+
-+/* global PIO send control operations */
-+#define PSC_GLOBAL_ENABLE 0
-+#define PSC_GLOBAL_DISABLE 1
-+#define PSC_GLOBAL_VLARB_ENABLE 2
-+#define PSC_GLOBAL_VLARB_DISABLE 3
-+#define PSC_CM_RESET 4
-+#define PSC_DATA_VL_ENABLE 5
-+#define PSC_DATA_VL_DISABLE 6
-+
-+void __cm_reset(struct hfi2_pportdata *ppd, u64 sendctrl);
-+void pio_send_control(struct hfi2_pportdata *ppd, int op);
-+
-+/* PIO copy routines */
-+void pio_copy(struct hfi2_devdata *dd, struct pio_buf *pbuf, u64 pbc,
-+	      const void *from, size_t count);
-+void seg_pio_copy_start(struct pio_buf *pbuf, u64 pbc,
-+			const void *from, size_t nbytes);
-+void seg_pio_copy_mid(struct pio_buf *pbuf, const void *from, size_t nbytes);
-+void seg_pio_copy_end(struct pio_buf *pbuf);
-+
-+void seqfile_dump_sci(struct seq_file *s, u32 i,
-+		      struct send_context_info *sci);
-+
-+#endif /* _PIO_H */
-diff --git a/drivers/infiniband/hw/hfi2/qp.h b/drivers/infiniband/hw/hfi2/qp.h
-new file mode 100644
-index 000000000000..498c2c913ff2
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/qp.h
-@@ -0,0 +1,112 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015 - 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _QP_H
-+#define _QP_H
-+#include <linux/hash.h>
-+#include <rdma/rdmavt_qp.h>
-+#include "verbs.h"
-+#include "sdma.h"
-+#include "verbs_txreq.h"
-+
-+extern unsigned int hfi2_qp_table_size;
-+
-+extern const struct rvt_operation_params hfi2_post_parms[];
-+
-+/*
-+ * Driver specific s_flags starting at bit 31 down to HFI2_S_MIN_BIT_MASK
-+ *
-+ * HFI2_S_AHG_VALID - ahg header valid on chip
-+ * HFI2_S_AHG_CLEAR - have send engine clear ahg state
-+ * HFI2_S_WAIT_PIO_DRAIN - qp waiting for PIOs to drain
-+ * HFI2_S_WAIT_TID_SPACE - a QP is waiting for TID resource
-+ * HFI2_S_WAIT_TID_RESP - waiting for a TID RDMA WRITE response
-+ * HFI2_S_WAIT_HALT - halt the first leg send engine
-+ * HFI2_S_MIN_BIT_MASK - the lowest bit that can be used by hfi2
-+ */
-+#define HFI2_S_AHG_VALID         0x80000000
-+#define HFI2_S_AHG_CLEAR         0x40000000
-+#define HFI2_S_WAIT_PIO_DRAIN    0x20000000
-+#define HFI2_S_WAIT_TID_SPACE    0x10000000
-+#define HFI2_S_WAIT_TID_RESP     0x08000000
-+#define HFI2_S_WAIT_HALT         0x04000000
-+#define HFI2_S_MIN_BIT_MASK      0x01000000
-+
-+/*
-+ * overload wait defines
-+ */
-+
-+#define HFI2_S_ANY_WAIT_IO (RVT_S_ANY_WAIT_IO | HFI2_S_WAIT_PIO_DRAIN)
-+#define HFI2_S_ANY_WAIT (HFI2_S_ANY_WAIT_IO | RVT_S_ANY_WAIT_SEND)
-+#define HFI2_S_ANY_TID_WAIT_SEND (RVT_S_WAIT_SSN_CREDIT | RVT_S_WAIT_DMA)
-+
-+/*
-+ * Send if not busy or waiting for I/O and either
-+ * a RC response is pending or we can process send work requests.
-+ */
-+static inline int hfi2_send_ok(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	return !(qp->s_flags & (RVT_S_BUSY | HFI2_S_ANY_WAIT_IO)) &&
-+		(verbs_txreq_queued(iowait_get_ib_work(&priv->s_iowait)) ||
-+		(qp->s_flags & RVT_S_RESP_PENDING) ||
-+		 !(qp->s_flags & RVT_S_ANY_WAIT_SEND));
-+}
-+
-+/*
-+ * free_ahg - clear ahg from QP
-+ */
-+static inline void clear_ahg(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	priv->s_ahg->ahgcount = 0;
-+	qp->s_flags &= ~(HFI2_S_AHG_VALID | HFI2_S_AHG_CLEAR);
-+	if (priv->s_sde && qp->s_ahgidx >= 0)
-+		sdma_ahg_free(priv->s_sde, qp->s_ahgidx);
-+	qp->s_ahgidx = -1;
-+}
-+
-+/**
-+ * hfi2_qp_wakeup - wake up on the indicated event
-+ * @qp: the QP
-+ * @flag: flag the qp on which the qp is stalled
-+ */
-+void hfi2_qp_wakeup(struct rvt_qp *qp, u32 flag);
-+
-+struct sdma_engine *hfi2_qp_to_sdma_engine(struct rvt_qp *qp, u8 sc5);
-+struct send_context *hfi2_qp_to_send_context(struct rvt_qp *qp, u8 sc5);
-+
-+void hfi2_qp_iter_print(struct seq_file *s, struct rvt_qp_iter *iter);
-+
-+bool _hfi2_schedule_send(struct rvt_qp *qp);
-+bool hfi2_schedule_send(struct rvt_qp *qp);
-+
-+void hfi2_migrate_qp(struct rvt_qp *qp);
-+int hfi2_valid_qp(struct hfi2_pportdata *ppd, u32 qpn);
-+
-+/*
-+ * Functions provided by hfi2 driver for rdmavt to use
-+ */
-+void *hfi2_qp_priv_alloc(struct rvt_dev_info *rdi, struct rvt_qp *qp);
-+void hfi2_qp_priv_free(struct rvt_dev_info *rdi, struct rvt_qp *qp);
-+unsigned int free_all_qps(struct rvt_dev_info *rdi);
-+void notify_qp_reset(struct rvt_qp *qp);
-+int get_pmtu_from_attr(struct rvt_dev_info *rdi, struct rvt_qp *qp,
-+		       struct ib_qp_attr *attr);
-+void flush_qp_waiters(struct rvt_qp *qp);
-+void notify_error_qp(struct rvt_qp *qp);
-+void stop_send_queue(struct rvt_qp *qp);
-+void quiesce_qp(struct rvt_qp *qp);
-+u32 mtu_from_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp, u32 pmtu);
-+int mtu_to_path_mtu(u32 mtu);
-+void hfi2_error_port_qps(struct hfi2_ibport *ibp, u8 sl);
-+void hfi2_qp_unbusy(struct rvt_qp *qp, struct iowait_work *wait);
-+int sriov_alloc_qpn(struct rvt_dev_info *rdi, struct rvt_qpn_table *qpt,
-+		    enum ib_qp_type type, u32 port_num);
-+
-+#endif /* _QP_H */
-diff --git a/drivers/infiniband/hw/hfi2/rc.h b/drivers/infiniband/hw/hfi2/rc.h
-new file mode 100644
-index 000000000000..d8e35cfb67d1
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/rc.h
-@@ -0,0 +1,60 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * Copyright(c) 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ *
-+ */
-+
-+#ifndef HFI2_RC_H
-+#define HFI2_RC_H
-+
-+/* cut down ridiculously long IB macro names */
-+#define OP(x) IB_OPCODE_RC_##x
-+
-+static inline void update_ack_queue(struct rvt_qp *qp, unsigned int n)
-+{
-+	unsigned int next;
-+
-+	next = n + 1;
-+	if (next > rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
-+		next = 0;
-+	qp->s_tail_ack_queue = next;
-+	qp->s_acked_ack_queue = next;
-+	qp->s_ack_state = OP(ACKNOWLEDGE);
-+}
-+
-+static inline void rc_defered_ack(struct hfi2_ctxtdata *rcd,
-+				  struct rvt_qp *qp)
-+{
-+	if (list_empty(&qp->rspwait)) {
-+		qp->r_flags |= RVT_R_RSP_NAK;
-+		rvt_get_qp(qp);
-+		list_add_tail(&qp->rspwait, &rcd->qp_wait_list);
++	if (HFI2_CAP_IS_KSET(SDMA)) {
++		u16 max_pkt_size = (piothreshold < PIO_THRESHOLD_CEILING) ?
++					 piothreshold : PIO_THRESHOLD_CEILING;
++		sc_config_sizes[SC_KERNEL].size =
++			3 * (max_pkt_size + 128) / PIO_BLOCK_SIZE;
 +	}
-+}
 +
-+static inline u32 restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe,
-+			      u32 psn, u32 pmtu)
-+{
-+	u32 len;
++	/*
++	 * Step 0:
++	 *	- copy the centipercents/absolute sizes from the pool config
++	 *	- sanity check these values
++	 *	- add up centipercents, then later check for full value
++	 *	- add up absolute blocks, then later check for over-commit
++	 */
++	cp_total = 0;
++	ab_total = 0;
++	for (i = 0; i < NUM_SC_POOLS; i++) {
++		int cp = sc_mem_pool_config[i].centipercent;
++		int ab = sc_mem_pool_config[i].absolute_blocks;
 +
-+	len = delta_psn(psn, wqe->psn) * pmtu;
-+	return rvt_restart_sge(ss, wqe, len);
-+}
++		/*
++		 * A negative value is "unused" or "invalid".  Both *can*
++		 * be valid, but centipercent wins, so check that first
++		 */
++		if (cp >= 0) {			/* centipercent valid */
++			cp_total += cp;
++		} else if (ab >= 0) {		/* absolute blocks valid */
++			ab_total += ab;
++		} else {			/* neither valid */
++			dd_dev_err(
++				dd,
++				"Send context memory pool %d: both the block count and centipercent are invalid\n",
++				i);
++			return -EINVAL;
++		}
 +
-+static inline void release_rdma_sge_mr(struct rvt_ack_entry *e)
-+{
-+	if (e->rdma_sge.mr) {
-+		rvt_put_mr(e->rdma_sge.mr);
-+		e->rdma_sge.mr = NULL;
++		mem_pool_info[i].centipercent = cp;
++		mem_pool_info[i].blocks = ab;
 +	}
++
++	/* do not use both % and absolute blocks for different pools */
++	if (cp_total != 0 && ab_total != 0) {
++		dd_dev_err(
++			dd,
++			"All send context memory pools must be described as either centipercent or blocks, no mixing between pools\n");
++		return -EINVAL;
++	}
++
++	/* if any percentages are present, they must add up to 100% x 100 */
++	if (cp_total != 0 && cp_total != 10000) {
++		dd_dev_err(
++			dd,
++			"Send context memory pool centipercent is %d, expecting 10000\n",
++			cp_total);
++		return -EINVAL;
++	}
++
++	/* the absolute pool total cannot be more than the mem total */
++	if (ab_total > total_blocks) {
++		dd_dev_err(
++			dd,
++			"Send context memory pool absolute block count %d is larger than the memory size %d\n",
++			ab_total, total_blocks);
++		return -EINVAL;
++	}
++
++	/*
++	 * Step 2:
++	 *	- copy from the context size config
++	 *	- replace context type wildcard counts with real values
++	 *	- add up non-memory pool block sizes
++	 *	- add up memory pool user counts
++	 */
++	fixed_blocks = 0;
++	for (i = 0; i < SC_MAX; i++) {
++		int count = sc_config_sizes[i].count;
++		int size = sc_config_sizes[i].size;
++		int pool;
++		int newcnt;
++
++		/*
++		 * Sanity check count: Either a positive value or
++		 * one of the expected wildcards is valid.  The positive
++		 * value is checked later when we compare against total
++		 * memory available.
++		 */
++		if (count < SCC_MIN_WC) {
++			dd_dev_err(dd,
++				   "%s send context invalid count wildcard %d\n",
++				   sc_type_name(i), count);
++			return -EINVAL;
++		}
++		newcnt = 0;
++		for (pidx = 0; pidx < dd->num_pports; ++pidx) {
++			struct hfi2_portrsrcs *pr = &dr->ppr[pidx];
++
++			if (!port_available_pidx(dd, pidx))
++				continue;
++
++			if (count == SCC_PER_KRCVQ)
++				newcnt += pr->n_krcv_queues;
++			else if (count == SCC_PER_VL)
++				newcnt += INIT_SC_PER_VL * num_vls;
++			else if (count == SCC_PER_CPU)
++				newcnt += pr->num_rcv_contexts - pr->n_krcv_queues;
++			else
++				newcnt += count;
++		}
++		count = newcnt;
++
++		/* only expect SC_USER to possibly overflow */
++		if (total_contexts + count > usable_sc) {
++			if (i != SC_USER) {
++				dd_dev_err(dd,
++					   "%s send context overflow\n",
++					   sc_type_name(i));
++				return -EINVAL;
++			}
++			dd_dev_warn(dd,
++				   "%s send context count reduced by %d, %d -> %d\n",
++				    sc_type_name(i),
++				    count - (usable_sc - total_contexts),
++				    count,
++				    usable_sc - total_contexts);
++			count = usable_sc - total_contexts;
++		}
++
++		total_contexts += count;
++
++		/*
++		 * Sanity check pool: The conversion will return a pool
++		 * number or -1 if a fixed (non-negative) value.  The fixed
++		 * value is checked later when we compare against
++		 * total memory available.
++		 */
++		pool = wildcard_to_pool(size);
++		if (pool == -1) {			/* non-wildcard */
++			fixed_blocks += size * count;
++		} else if (pool < NUM_SC_POOLS) {	/* valid wildcard */
++			mem_pool_info[pool].count += count;
++		} else {				/* invalid wildcard */
++			dd_dev_err(
++				dd,
++				"%s send context invalid pool wildcard %d\n",
++				sc_type_name(i), size);
++			return -EINVAL;
++		}
++
++		dd->sc_sizes[i].count = count;
++		dd->sc_sizes[i].size = size;
++	}
++	if (fixed_blocks > total_blocks) {
++		dd_dev_err(
++			dd,
++			"Send context fixed block count, %u, larger than total block count %u\n",
++			fixed_blocks, total_blocks);
++		return -EINVAL;
++	}
++
++	/* step 3: calculate the blocks in the pools, and pool context sizes */
++	pool_blocks = total_blocks - fixed_blocks;
++	if (ab_total > pool_blocks) {
++		dd_dev_err(
++			dd,
++			"Send context fixed pool sizes, %u, larger than pool block count %u\n",
++			ab_total, pool_blocks);
++		return -EINVAL;
++	}
++	/* subtract off the fixed pool blocks */
++	pool_blocks -= ab_total;
++
++	for (i = 0; i < NUM_SC_POOLS; i++) {
++		struct mem_pool_info *pi = &mem_pool_info[i];
++
++		/* % beats absolute blocks */
++		if (pi->centipercent >= 0)
++			pi->blocks = (pool_blocks * pi->centipercent) / 10000;
++
++		if (pi->blocks == 0 && pi->count != 0) {
++			dd_dev_err(
++				dd,
++				"Send context memory pool %d has %u contexts, but no blocks\n",
++				i, pi->count);
++			return -EINVAL;
++		}
++		if (pi->count == 0) {
++			/* warn about wasted blocks */
++			if (pi->blocks != 0)
++				dd_dev_err(
++					dd,
++					"Send context memory pool %d has %u blocks, but zero contexts\n",
++					i, pi->blocks);
++			pi->size = 0;
++		} else {
++			pi->size = pi->blocks / pi->count;
++		}
++	}
++
++	/* step 4: fill in the context type sizes from the pool sizes */
++	used_blocks = 0;
++	for (i = 0; i < SC_MAX; i++) {
++		if (dd->sc_sizes[i].size < 0) {
++			unsigned int pool = wildcard_to_pool(dd->sc_sizes[i].size);
++
++			WARN_ON_ONCE(pool >= NUM_SC_POOLS);
++			dd->sc_sizes[i].size = mem_pool_info[pool].size;
++		}
++		/* make sure we are not larger than what is allowed by the HW */
++#define PIO_MAX_BLOCKS 1024
++		if (dd->sc_sizes[i].size > PIO_MAX_BLOCKS)
++			dd->sc_sizes[i].size = PIO_MAX_BLOCKS;
++
++		/* calculate our total usage */
++		used_blocks += dd->sc_sizes[i].size * dd->sc_sizes[i].count;
++	}
++	extra = total_blocks - used_blocks;
++	if (extra != 0)
++		dd_dev_info(dd, "unused send context blocks: %d\n", extra);
++
++	return total_contexts;
 +}
 +
-+struct rvt_ack_entry *find_prev_entry(struct rvt_qp *qp, u32 psn, u8 *prev,
-+				      u8 *prev_ack, bool *scheduled);
-+int do_rc_ack(struct rvt_qp *qp, u32 aeth, u32 psn, int opcode, u64 val,
-+	      struct hfi2_ctxtdata *rcd);
-+struct rvt_swqe *do_rc_completion(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+				  struct hfi2_ibport *ibp);
-+
-+#endif /* HFI2_RC_H */
-diff --git a/drivers/infiniband/hw/hfi2/sdma.h b/drivers/infiniband/hw/hfi2/sdma.h
-new file mode 100644
-index 000000000000..66d64905f22c
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/sdma.h
-@@ -0,0 +1,1209 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015 - 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef _HFI2_SDMA_H
-+#define _HFI2_SDMA_H
-+
-+#include <linux/types.h>
-+#include <linux/list.h>
-+#include <asm/byteorder.h>
-+#include <linux/workqueue.h>
-+#include <linux/rculist.h>
-+
-+#include "sdma_defs.h"
-+#include "hfi2.h"
-+#include "verbs.h"
-+#include "sdma_txreq.h"
-+
-+static inline bool wfr_sdma_qw_get_first_desc(u64 *qw)
++int init_send_contexts(struct hfi2_devdata *dd)
 +{
-+	return !!(qw[0] & WFR_SDMA_DESC0_FIRST_DESC_FLAG);
-+}
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	u32 num_hw_sc = chip_send_contexts(dd);
++	u16 base;
++	int ret, i, j, context;
 +
-+static inline void wfr_sdma_qw_set_first_desc(u64 *qw)
-+{
-+	qw[0] |= WFR_SDMA_DESC0_FIRST_DESC_FLAG;
-+}
++	ret = init_credit_return(dd);
++	if (ret)
++		return ret;
 +
-+static inline bool wfr_sdma_qw_get_last_desc(u64 *qw)
-+{
-+	return !!(qw[0] & WFR_SDMA_DESC0_LAST_DESC_FLAG);
-+}
++	dd->hw_to_sw = kmalloc_array(num_hw_sc, sizeof(u16), GFP_KERNEL);
++	dd->send_contexts = kcalloc(dd->num_send_contexts,
++				    sizeof(struct send_context_info),
++				    GFP_KERNEL);
++	if (!dd->send_contexts || !dd->hw_to_sw) {
++		kfree(dd->hw_to_sw);
++		kfree(dd->send_contexts);
++		free_credit_return(dd);
++		return -ENOMEM;
++	}
 +
-+static inline void wfr_sdma_qw_set_last_desc(u64 *qw)
-+{
-+	qw[0] |= WFR_SDMA_DESC0_LAST_DESC_FLAG;
-+}
++	/* hardware context map starts with invalid send context indices */
++	for (i = 0; i < num_hw_sc; i++)
++		dd->hw_to_sw[i] = INVALID_SCI;
 +
-+static inline u32 wfr_sdma_qw_get_byte_count(u64 *qw)
-+{
-+	return (qw[0] >> WFR_SDMA_DESC0_BYTE_COUNT_SHIFT) &
-+		WFR_SDMA_DESC0_BYTE_COUNT_MASK;
-+}
++	/*
++	 * All send contexts have their credit sizes.  Allocate credits
++	 * for each context one after another from the global space.
++	 */
++	context = 0;
++	base = dr->c.first_pio_block; /* do not use first N blocks */
++	for (i = 0; i < SC_MAX; i++) {
++		struct sc_config_sizes *scs = &dd->sc_sizes[i];
 +
-+/* assumes starting field is zero */
-+static inline void wfr_sdma_qw_set_byte_count(u64 *qw, u32 bytes)
-+{
-+	qw[0] |= ((u64)bytes & WFR_SDMA_DESC0_BYTE_COUNT_MASK) <<
-+			WFR_SDMA_DESC0_BYTE_COUNT_SHIFT;
-+}
++		for (j = 0; j < scs->count; j++) {
++			struct send_context_info *sci =
++						&dd->send_contexts[context];
++			sci->type = i;
++			sci->base = base;
++			sci->credits = scs->size;
 +
-+static inline u64 wfr_sdma_qw_get_phy_addr(u64 *qw)
-+{
-+	return (qw[0] >> WFR_SDMA_DESC0_PHY_ADDR_SHIFT) &
-+		WFR_SDMA_DESC0_PHY_ADDR_MASK;
-+}
++			context++;
++			base += scs->size;
++		}
++	}
 +
-+/* assumes starting field is zero */
-+static inline void wfr_sdma_qw_set_phy_addr(u64 *qw, u64 phy_addr)
-+{
-+	qw[0] |= (phy_addr & WFR_SDMA_DESC0_PHY_ADDR_MASK) <<
-+			WFR_SDMA_DESC0_PHY_ADDR_SHIFT;
-+}
-+
-+static inline bool jkr_sdma_qw_get_first_desc(u64 *qw)
-+{
-+	return !!(qw[1] & JKR_SDMA_DESC1_FIRST_DESC_FLAG);
-+}
-+
-+static inline void jkr_sdma_qw_set_first_desc(u64 *qw)
-+{
-+	qw[1] |= JKR_SDMA_DESC1_FIRST_DESC_FLAG;
-+}
-+
-+static inline bool jkr_sdma_qw_get_last_desc(u64 *qw)
-+{
-+	return !!(qw[1] & JKR_SDMA_DESC1_LAST_DESC_FLAG);
-+}
-+
-+static inline void jkr_sdma_qw_set_last_desc(u64 *qw)
-+{
-+	qw[1] |= JKR_SDMA_DESC1_LAST_DESC_FLAG;
-+}
-+
-+static inline u32 jkr_sdma_qw_get_byte_count(u64 *qw)
-+{
-+	return (qw[1] >> JKR_SDMA_DESC1_BYTE_COUNT_SHIFT) &
-+		JKR_SDMA_DESC1_BYTE_COUNT_MASK;
-+}
-+
-+/* assumes starting field is zero */
-+static inline void jkr_sdma_qw_set_byte_count(u64 *qw, u32 bytes)
-+{
-+	qw[1] |= ((u64)bytes & JKR_SDMA_DESC1_BYTE_COUNT_MASK) <<
-+			JKR_SDMA_DESC1_BYTE_COUNT_SHIFT;
-+}
-+
-+static inline u64 jkr_sdma_qw_get_phy_addr(u64 *qw)
-+{
-+	return (qw[0] >> JKR_SDMA_DESC0_PHY_ADDR_SHIFT) &
-+		JKR_SDMA_DESC0_PHY_ADDR_MASK;
-+}
-+
-+/* assumes starting field is zero */
-+static inline void jkr_sdma_qw_set_phy_addr(u64 *qw, u64 phy_addr)
-+{
-+	qw[0] |= (phy_addr & JKR_SDMA_DESC0_PHY_ADDR_MASK) <<
-+			JKR_SDMA_DESC0_PHY_ADDR_SHIFT;
-+}
-+
-+/* Per-chip setter inlining wrapper */
-+#define sdma_qw_set(dd, field, ...) do { \
-+	if ((dd)->params->chip_type == CHIP_WFR) \
-+		wfr_sdma_qw_set_##field(__VA_ARGS__); \
-+	else if ((dd)->params->chip_type == CHIP_JKR) \
-+		jkr_sdma_qw_set_##field(__VA_ARGS__); \
-+	else \
-+		WARN_ONCE(1, "Unsupported chip type %u", \
-+			  (dd)->params->chip_type); \
-+} while (0)
-+
-+/* Per-chip getter inlining wrapper */
-+#define sdma_qw_get(dd, fn, p) \
-+	((dd)->params->chip_type == CHIP_WFR ?  wfr_sdma_qw_get_##fn((p)) : \
-+	 ((dd)->params->chip_type == CHIP_JKR ? jkr_sdma_qw_get_##fn((p)) : 0))
-+
-+enum sdma_states {
-+	sdma_state_s00_hw_down,
-+	sdma_state_s10_hw_start_up_halt_wait,
-+	sdma_state_s15_hw_start_up_clean_wait,
-+	sdma_state_s20_idle,
-+	sdma_state_s30_sw_clean_up_wait,
-+	sdma_state_s40_hw_clean_up_wait,
-+	sdma_state_s50_hw_halt_wait,
-+	sdma_state_s60_idle_halt_wait,
-+	sdma_state_s80_hw_freeze,
-+	sdma_state_s82_freeze_sw_clean,
-+	sdma_state_s99_running,
-+};
-+
-+enum sdma_events {
-+	sdma_event_e00_go_hw_down,
-+	sdma_event_e10_go_hw_start,
-+	sdma_event_e15_hw_halt_done,
-+	sdma_event_e25_hw_clean_up_done,
-+	sdma_event_e30_go_running,
-+	sdma_event_e40_sw_cleaned,
-+	sdma_event_e50_hw_cleaned,
-+	sdma_event_e60_hw_halted,
-+	sdma_event_e70_go_idle,
-+	sdma_event_e80_hw_freeze,
-+	sdma_event_e81_hw_frozen,
-+	sdma_event_e82_hw_unfreeze,
-+	sdma_event_e85_link_down,
-+	sdma_event_e90_sw_halted,
-+};
-+
-+struct sdma_set_state_action {
-+	unsigned op_enable:1;
-+	unsigned op_intenable:1;
-+	unsigned op_halt:1;
-+	unsigned op_cleanup:1;
-+	unsigned go_s99_running_tofalse:1;
-+	unsigned go_s99_running_totrue:1;
-+};
-+
-+struct sdma_state {
-+	struct kref          kref;
-+	struct completion    comp;
-+	enum sdma_states current_state;
-+	unsigned int         current_op;
-+	unsigned int         go_s99_running;
-+	/* debugging/development */
-+	enum sdma_states previous_state;
-+	unsigned int         previous_op;
-+	enum sdma_events last_event;
-+};
-+
-+/**
-+ * DOC: sdma exported routines
-+ *
-+ * These sdma routines fit into three categories:
-+ * - The SDMA API for building and submitting packets
-+ *   to the ring
-+ *
-+ * - Initialization and tear down routines to buildup
-+ *   and tear down SDMA
-+ *
-+ * - ISR entrances to handle interrupts, state changes
-+ *   and errors
-+ */
-+
-+/**
-+ * DOC: sdma PSM/verbs API
-+ *
-+ * The sdma API is designed to be used by both PSM
-+ * and verbs to supply packets to the SDMA ring.
-+ *
-+ * The usage of the API is as follows:
-+ *
-+ * Embed a struct iowait in the QP or
-+ * PQ.  The iowait should be initialized with a
-+ * call to iowait_init().
-+ *
-+ * The user of the API should create an allocation method
-+ * for their version of the txreq. slabs, pre-allocated lists,
-+ * and dma pools can be used.  Once the user's overload of
-+ * the sdma_txreq has been allocated, the sdma_txreq member
-+ * must be initialized with sdma_txinit() or sdma_txinit_ahg().
-+ *
-+ * The txreq must be declared with the sdma_txreq first.
-+ *
-+ * The tx request, once initialized,  is manipulated with calls to
-+ * sdma_txadd_daddr(), sdma_txadd_page(), or sdma_txadd_kvaddr()
-+ * for each disjoint memory location.  It is the user's responsibility
-+ * to understand the packet boundaries and page boundaries to do the
-+ * appropriate number of sdma_txadd_* calls..  The user
-+ * must be prepared to deal with failures from these routines due to
-+ * either memory allocation or dma_mapping failures.
-+ *
-+ * The mapping specifics for each memory location are recorded
-+ * in the tx. Memory locations added with sdma_txadd_page()
-+ * and sdma_txadd_kvaddr() are automatically mapped when added
-+ * to the tx and nmapped as part of the progress processing in the
-+ * SDMA interrupt handling.
-+ *
-+ * sdma_txadd_daddr() is used to add an dma_addr_t memory to the
-+ * tx.   An example of a use case would be a pre-allocated
-+ * set of headers allocated via dma_pool_alloc() or
-+ * dma_alloc_coherent().  For these memory locations, it
-+ * is the responsibility of the user to handle that unmapping.
-+ * (This would usually be at an unload or job termination.)
-+ *
-+ * The routine sdma_send_txreq() is used to submit
-+ * a tx to the ring after the appropriate number of
-+ * sdma_txadd_* have been done.
-+ *
-+ * If it is desired to send a burst of sdma_txreqs, sdma_send_txlist()
-+ * can be used to submit a list of packets.
-+ *
-+ * The user is free to use the link overhead in the struct sdma_txreq as
-+ * long as the tx isn't in flight.
-+ *
-+ * The extreme degenerate case of the number of descriptors
-+ * exceeding the ring size is automatically handled as
-+ * memory locations are added.  An overflow of the descriptor
-+ * array that is part of the sdma_txreq is also automatically
-+ * handled.
-+ *
-+ */
-+
-+/**
-+ * DOC: Infrastructure calls
-+ *
-+ * sdma_init() is used to initialize data structures and
-+ * CSRs for the desired number of SDMA engines.
-+ *
-+ * sdma_start() is used to kick the SDMA engines initialized
-+ * with sdma_init().   Interrupts must be enabled at this
-+ * point since aspects of the state machine are interrupt
-+ * driven.
-+ *
-+ * sdma_engine_error() and sdma_engine_interrupt() are
-+ * entrances for interrupts.
-+ *
-+ * sdma_map_init() is for the management of the mapping
-+ * table when the number of vls is changed.
-+ *
-+ */
-+
-+/*
-+ * struct hw_sdma_desc - raw 128 bit SDMA descriptor
-+ *
-+ * This is the raw descriptor in the SDMA ring
-+ */
-+struct hw_sdma_desc {
-+	/* private:  don't use directly */
-+	__le64 qw[2];
-+};
-+
-+/**
-+ * struct sdma_engine - Data pertaining to each SDMA engine.
-+ * @dd: a back-pointer to the device data
-+ * @ppd: per port back-pointer
-+ * @imask: mask for irq manipulation
-+ * @idle_mask: mask for determining if an interrupt is due to sdma_idle
-+ *
-+ * This structure has the state for each sdma_engine.
-+ *
-+ * Accessing to non public fields are not supported
-+ * since the private members are subject to change.
-+ */
-+struct sdma_engine {
-+	/* read mostly */
-+	struct hfi2_devdata *dd;
-+	/* private: */
-+	void __iomem *tail_csr;
-+	u64 imask;			/* clear interrupt mask */
-+	u64 idle_mask;
-+	u64 progress_mask;
-+	u64 int_mask;
-+	/* private: */
-+	volatile __le64      *head_dma; /* DMA'ed by chip */
-+	/* private: */
-+	dma_addr_t            head_phys;
-+	/* private: */
-+	struct hw_sdma_desc *descq;
-+	/* private: */
-+	unsigned int descq_full_count;
-+	struct sdma_txreq **tx_ring;
-+	/* private: */
-+	dma_addr_t            descq_phys;
-+	/* private */
-+	u32 sdma_mask;
-+	/* private */
-+	struct sdma_state state;
-+	/* private */
-+	int cpu;
-+	/* private: */
-+	u8 sdma_shift;
-+	/* private: */
-+	u8 this_idx; /* zero relative engine */
-+	/* protect changes to senddmactrl shadow */
-+	spinlock_t senddmactrl_lock;
-+	/* private: */
-+	u64 p_senddmactrl;		/* shadow per-engine SendDmaCtrl */
-+
-+	/* read/write using tail_lock */
-+	spinlock_t            tail_lock ____cacheline_aligned_in_smp;
-+#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
-+	/* private: */
-+	u64                   tail_sn;
-+#endif
-+	/* private: */
-+	u32                   descq_tail;
-+	/* private: */
-+	unsigned long         ahg_bits;
-+	/* private: */
-+	u16                   desc_avail;
-+	/* private: */
-+	u16                   tx_tail;
-+	/* private: */
-+	u16 descq_cnt;
-+
-+	/* read/write using head_lock */
-+	/* private: */
-+	seqlock_t            head_lock ____cacheline_aligned_in_smp;
-+#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
-+	/* private: */
-+	u64                   head_sn;
-+#endif
-+	/* private: */
-+	u32                   descq_head;
-+	/* private: */
-+	u16                   tx_head;
-+	/* private: */
-+	u64                   last_status;
-+	/* private */
-+	u64                     err_cnt;
-+	/* private */
-+	u64                     sdma_int_cnt;
-+	u64                     idle_int_cnt;
-+	u64                     progress_int_cnt;
-+
-+	/* private: */
-+	seqlock_t            waitlock;
-+	struct list_head      dmawait;
-+
-+	/* CONFIG SDMA for now, just blindly duplicate */
-+	/* private: */
-+	struct work_struct sdma_hw_clean_up_work;
-+	struct work_struct sdma_sw_clean_up_work;
-+
-+	/* private: */
-+	struct work_struct err_halt_worker;
-+	/* private */
-+	struct timer_list     err_progress_check_timer;
-+	u32                   progress_check_head;
-+	/* private: */
-+	struct work_struct flush_worker;
-+	/* protect flush list */
-+	spinlock_t flushlist_lock;
-+	/* private: */
-+	struct list_head flushlist;
-+	struct cpumask cpu_mask;
-+	struct kobject kobj;
-+	u32 msix_intr;
-+};
-+
-+int sdma_init(struct hfi2_devdata *dd);
-+void sdma_start(struct hfi2_devdata *dd);
-+void sdma_exit(struct hfi2_devdata *dd);
-+void sdma_clean(struct hfi2_devdata *dd);
-+void sdma_all_running(struct hfi2_devdata *dd);
-+void sdma_freeze_notify(struct hfi2_devdata *dd, int go_idle);
-+void sdma_freeze(struct hfi2_devdata *dd);
-+void sdma_unfreeze(struct hfi2_devdata *dd);
-+void sdma_wait(struct hfi2_devdata *dd);
-+
-+/**
-+ * sdma_empty() - idle engine test
-+ * @engine: sdma engine
-+ *
-+ * Currently used by verbs as a latency optimization.
-+ *
-+ * Return:
-+ * 1 - empty, 0 - non-empty
-+ */
-+static inline int sdma_empty(struct sdma_engine *sde)
-+{
-+	return sde->descq_tail == sde->descq_head;
++	return 0;
 +}
 +
 +/*
-+ * Return the number of descriptors in use.  Expects descq_cnt is a
-+ * power-of-two.  See sdma_get_descq_cnt().
++ * Allocate a software index and hardware context of the given type.
++ *
++ * Must be called with dd->sc_lock held.
 + */
-+static inline u16 sdma_descq_inprocess(struct sdma_engine *sde)
++static int sc_hw_alloc(struct hfi2_devdata *dd, int type, u32 *sw_index,
++		       u32 *hw_context)
 +{
-+	return (sde->descq_cnt + sde->descq_tail - READ_ONCE(sde->descq_head))
-+		& (sde->descq_cnt - 1);
-+}
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	struct send_context_info *sci;
++	u32 index;
++	u32 context;
 +
-+/* return the number of descriptors available */
-+static inline u16 sdma_descq_freecnt(struct sdma_engine *sde)
-+{
-+	return sde->descq_cnt - 1 - sdma_descq_inprocess(sde);
++	for (index = 0, sci = &dd->send_contexts[0];
++			index < dd->num_send_contexts; index++, sci++) {
++		if (sci->type == type && sci->allocated == 0) {
++			sci->allocated = 1;
++			/*
++			 * Use a 1:1 mapping, but use back-to-front.  This
++			 * avoids the reserved range 0..dr->c.first_send_context.
++			 */
++			context = dr->c.last_send_context - index - 1;
++			dd->hw_to_sw[context] = index;
++			*sw_index = index;
++			*hw_context = context;
++			return 0; /* success */
++		}
++	}
++	dd_dev_err(dd, "Unable to locate a free type %d send context\n", type);
++	return -ENOSPC;
 +}
 +
 +/*
-+ * Either head_lock or tail lock required to see
-+ * a steady state.
++ * Free the send context given by its software index.
++ *
++ * Must be called with dd->sc_lock held.
 + */
-+static inline int __sdma_running(struct sdma_engine *engine)
++static void sc_hw_free(struct hfi2_devdata *dd, u32 sw_index, u32 hw_context)
 +{
-+	return engine->state.current_state == sdma_state_s99_running;
++	struct send_context_info *sci;
++
++	sci = &dd->send_contexts[sw_index];
++	if (!sci->allocated) {
++		dd_dev_err(dd, "%s: sw_index %u not allocated? hw_context %u\n",
++			   __func__, sw_index, hw_context);
++	}
++	sci->allocated = 0;
++	dd->hw_to_sw[hw_context] = INVALID_SCI;
 +}
 +
-+/**
-+ * sdma_running() - state suitability test
-+ * @engine: sdma engine
++/* return the base context of a context in a group */
++static inline u32 group_context(u32 context, u32 group)
++{
++	return (context >> group) << group;
++}
++
++/* return the size of a group */
++static inline u32 group_size(u32 group)
++{
++	return 1 << group;
++}
++
++/*
++ * Obtain the credit return addresses, kernel virtual and bus, for the
++ * given sc.
 + *
-+ * sdma_running probes the internal state to determine if it is suitable
-+ * for submitting packets.
-+ *
-+ * Return:
-+ * 1 - ok to submit, 0 - not ok to submit
-+ *
++ * To understand this routine:
++ * o va and dma are arrays of struct credit_return.  One for each physical
++ *   send context, per NUMA.
++ * o Each send context always looks in its relative location in a struct
++ *   credit_return for its credit return.
++ * o Each send context in a group must have its return address CSR programmed
++ *   with the same value.  Use the address of the first send context in the
++ *   group.
 + */
-+static inline int sdma_running(struct sdma_engine *engine)
++static void cr_group_addresses(struct send_context *sc, dma_addr_t *dma)
++{
++	u32 hw_gc = group_context(sc->hw_context, sc->group);
++	u32 index = sc->hw_context & 0x7;
++	u32 gc = sc->dd->hw_to_sw[hw_gc];
++
++	sc->hw_free = &sc->dd->cr_base[sc->node].va[gc].cr[index];
++	*dma = (unsigned long)
++	       &((struct credit_return *)sc->dd->cr_base[sc->node].dma)[gc];
++}
++
++/*
++ * Work queue function triggered in error interrupt routine for
++ * kernel contexts.
++ */
++static void sc_halted(struct work_struct *work)
++{
++	struct send_context *sc;
++
++	sc = container_of(work, struct send_context, halt_work);
++	sc_restart(sc);
++}
++
++/*
++ * Calculate PIO block threshold for this send context using the given MTU.
++ * Trigger a return when one MTU plus optional header of credits remain.
++ *
++ * Parameter mtu is in bytes.
++ * Parameter hdrqentsize is in DWORDs.
++ *
++ * Return value is what to write into the CSR: trigger return when
++ * unreturned credits pass this count.
++ */
++u32 sc_mtu_to_threshold(struct send_context *sc, u32 mtu, u32 hdrqentsize)
++{
++	u32 release_credits;
++	u32 threshold;
++
++	/* add in the header size, then divide by the PIO block size */
++	mtu += hdrqentsize << 2;
++	release_credits = DIV_ROUND_UP(mtu, PIO_BLOCK_SIZE);
++
++	/* check against this context's credits */
++	if (sc->credits <= release_credits)
++		threshold = 1;
++	else
++		threshold = sc->credits - release_credits;
++
++	return threshold;
++}
++
++/*
++ * Calculate credit threshold in terms of percent of the allocated credits.
++ * Trigger when unreturned credits equal or exceed the percentage of the whole.
++ *
++ * Return value is what to write into the CSR: trigger return when
++ * unreturned credits pass this count.
++ */
++u32 sc_percent_to_threshold(struct send_context *sc, u32 percent)
++{
++	return (sc->credits * percent) / 100;
++}
++
++/*
++ * Set the credit return threshold.
++ */
++void sc_set_cr_threshold(struct send_context *sc, u32 new_threshold)
 +{
 +	unsigned long flags;
-+	int ret;
++	u32 old_threshold;
++	int force_return = 0;
 +
-+	spin_lock_irqsave(&engine->tail_lock, flags);
-+	ret = __sdma_running(engine);
-+	spin_unlock_irqrestore(&engine->tail_lock, flags);
++	spin_lock_irqsave(&sc->credit_ctrl_lock, flags);
++
++	old_threshold = (sc->credit_ctrl >>
++				SC(CREDIT_CTRL_THRESHOLD_SHIFT))
++			 & SC(CREDIT_CTRL_THRESHOLD_MASK);
++
++	if (new_threshold != old_threshold) {
++		sc->credit_ctrl =
++			(sc->credit_ctrl
++				& ~SC(CREDIT_CTRL_THRESHOLD_SMASK))
++			| ((new_threshold
++				& SC(CREDIT_CTRL_THRESHOLD_MASK))
++			   << SC(CREDIT_CTRL_THRESHOLD_SHIFT));
++		write_sctxt_csr(sc->dd, sc->hw_context,
++				sc->dd->params->send_ctxt_credit_ctrl_reg,
++				sc->credit_ctrl);
++
++		/* force a credit return on change to avoid a possible stall */
++		force_return = 1;
++	}
++
++	spin_unlock_irqrestore(&sc->credit_ctrl_lock, flags);
++
++	if (force_return)
++		sc_return_credits(sc);
++}
++
++#define CLEAR_STATIC_RATE_CONTROL_SMASK(r) \
++((r) &= ~SEND_CTXT_CHECK_ENABLE_DISALLOW_PBC_STATIC_RATE_CONTROL_SMASK)
++
++#define SET_STATIC_RATE_CONTROL_SMASK(r) \
++((r) |= SEND_CTXT_CHECK_ENABLE_DISALLOW_PBC_STATIC_RATE_CONTROL_SMASK)
++
++/*
++ * set_pio_integrity
++ *
++ * Set the CHECK_ENABLE register for the send context 'sc'.
++ */
++void wfr_set_pio_integrity(struct hfi2_devdata *dd, u32 pidx, u32 hw_context, int type,
++			   enum spi_cmds cmd)
++{
++	u64 val;
++	int set;
++
++	/* DEFAULT does not do a read-modify-write */
++	if (cmd == SPI_DEFAULT) {
++		val = 0;
++	} else {
++		val = read_epsc_csr(dd, pidx, hw_context,
++				    dd->params->send_ctxt_check_enable_reg);
++	}
++
++	switch (cmd) {
++	case SPI_DEFAULT:
++		val = hfi2_pkt_default_send_ctxt_mask(&dd->pport[pidx], type);
++		break;
++	case SPI_INIT:
++		set = type == SC_USER ?
++			HFI2_CAP_IS_USET(STATIC_RATE_CTRL) :
++			HFI2_CAP_IS_KSET(STATIC_RATE_CTRL);
++		if (set)
++			CLEAR_STATIC_RATE_CONTROL_SMASK(val);
++		else
++			SET_STATIC_RATE_CONTROL_SMASK(val);
++		break;
++	case SPI_SET_JKEY:
++		val |= SEND_CTXT_CHECK_ENABLE_CHECK_JOB_KEY_SMASK;
++		break;
++	case SPI_CLEAR_JKEY:
++		val &= ~SEND_CTXT_CHECK_ENABLE_CHECK_JOB_KEY_SMASK;
++		break;
++	case SPI_SET_PKEY:
++		val |= SEND_CTXT_CHECK_ENABLE_CHECK_PARTITION_KEY_SMASK;
++		val &= ~SEND_CTXT_CHECK_ENABLE_DISALLOW_KDETH_PACKETS_SMASK;
++		break;
++	case SPI_CLEAR_PKEY:
++		val &= ~SEND_CTXT_CHECK_ENABLE_CHECK_PARTITION_KEY_SMASK;
++		break;
++	}
++	write_epsc_csr(dd, pidx, hw_context,
++		       dd->params->send_ctxt_check_enable_reg, val);
++
++}
++
++static u32 get_buffers_allocated(struct send_context *sc)
++{
++	int cpu;
++	u32 ret = 0;
++
++	for_each_possible_cpu(cpu)
++		ret += *per_cpu_ptr(sc->buffers_allocated, cpu);
 +	return ret;
 +}
 +
-+void _sdma_txreq_ahgadd(
-+	struct sdma_txreq *tx,
-+	u8 num_ahg,
-+	u8 ahg_entry,
-+	u32 *ahg,
-+	u8 ahg_hlen);
++static void reset_buffers_allocated(struct send_context *sc)
++{
++	int cpu;
++
++	for_each_possible_cpu(cpu)
++		(*per_cpu_ptr(sc->buffers_allocated, cpu)) = 0;
++}
 +
 +/*
-+ * Padding is needed if the data is not a multiple of 4 bytes.  This will
-+ * only possibly be true for 9B packets. Non QWORD aligned 16B packets
-+ * will have already been dropped.
++ * Allocate a NUMA relative send context structure of the given type along
++ * with a HW context.
 + */
-+static inline int needs_pad(u16 packet_len)
++struct send_context *sc_alloc(struct hfi2_pportdata *ppd, int type,
++			      uint hdrqentsize, int numa)
 +{
-+	return (packet_len & 0x3) != 0;
-+}
++	struct hfi2_devdata *dd = ppd->dd;
++	struct send_context_info *sci;
++	struct send_context *sc = NULL;
++	dma_addr_t dma;
++	unsigned long flags;
++	u64 reg;
++	u32 thresh;
++	u32 sw_index;
++	u32 hw_context;
++	int ret;
 +
-+/* return the number of bytes needed to pad to a multiple of 4 */
-+static inline int pad_length(struct sdma_txreq *tx)
-+{
-+	return (4 - (tx->packet_len & 0x3)) & 0x3;
-+}
++	/* do not allocate while frozen */
++	if (dd->flags & HFI2_FROZEN)
++		return NULL;
 +
-+#define ALIGN_NONE          0
-+#define ALIGN_256_ALL       1
-+#define ALIGN_256_HEAD_TAIL 2
-+#define ALIGN_256_TAIL      3
++	sc = kzalloc_node(sizeof(*sc), GFP_KERNEL, numa);
++	if (!sc)
++		return NULL;
 +
-+/* return the max number of descriptors a segment might need */
-+static inline int calc_num_desc(struct hfi2_devdata *dd, u16 packet_len)
-+{
-+	if (dd->sdma_align == ALIGN_256_HEAD_TAIL)
-+		return 3; /* head, mid, tail */
-+	if (dd->sdma_align == ALIGN_NONE)
-+		return 1; /* all */
-+	if (dd->sdma_align == ALIGN_256_TAIL)
-+		return 2; /* head+mid, tail */
++	sc->buffers_allocated = alloc_percpu(u32);
++	if (!sc->buffers_allocated) {
++		kfree(sc);
++		dd_dev_err(dd,
++			   "Cannot allocate buffers_allocated per cpu counters\n"
++			  );
++		return NULL;
++	}
++
++	spin_lock_irqsave(&dd->sc_lock, flags);
++	ret = sc_hw_alloc(dd, type, &sw_index, &hw_context);
++	if (ret) {
++		spin_unlock_irqrestore(&dd->sc_lock, flags);
++		free_percpu(sc->buffers_allocated);
++		kfree(sc);
++		return NULL;
++	}
++
++	sci = &dd->send_contexts[sw_index];
++	sci->sc = sc;
++
++	sc->dd = dd;
++	sc->ppd = ppd;
++	sc->node = numa;
++	sc->type = type;
++	spin_lock_init(&sc->alloc_lock);
++	spin_lock_init(&sc->release_lock);
++	spin_lock_init(&sc->credit_ctrl_lock);
++	seqlock_init(&sc->waitlock);
++	INIT_LIST_HEAD(&sc->piowait);
++	INIT_WORK(&sc->halt_work, sc_halted);
++	init_waitqueue_head(&sc->halt_wait);
++
++	/* grouping is always single context for now */
 +	/*
-+	 * Conservative ALIGN_ALL case - split on every 256 byte fetch
-+	 * boundary.  The returned number must be the same for the whole
-+	 * packet - not just the current segment.
++	 * changing this may require alignment of dr->c.first_send_context,
++	 * or some other compensation/adjustment.
++	 */
++	sc->group = 0;
++
++	sc->sw_index = sw_index;
++	sc->hw_context = hw_context;
++	cr_group_addresses(sc, &dma);
++	sc->credits = sci->credits;
++	sc->size = sc->credits * PIO_BLOCK_SIZE;
++
++/* PIO Send Memory Address details */
++#define PIO_ADDR_CONTEXT_MASK 0xfful
++#define PIO_ADDR_CONTEXT_SHIFT 16
++	sc->base_addr = dd->bar_maps[ctxt_bar_idx(hw_context)].piobase
++			+ ((ctxt_bar_ctxt(hw_context) & PIO_ADDR_CONTEXT_MASK)
++				<< PIO_ADDR_CONTEXT_SHIFT);
++
++	/* set base and credits */
++	reg = ((sci->credits & SC(CTRL_CTXT_DEPTH_MASK))
++					<< SC(CTRL_CTXT_DEPTH_SHIFT))
++		| ((sci->base & MASK_ULL(dd->params->pio_base_bits))
++					<< dd->params->pio_base_shift);
++
++	/* unmask all errors */
++	write_sctxt_csr(dd, hw_context, dd->params->send_ctxt_err_mask_reg, (u64)-1);
++
++	priv_reg_op(dd, ppd->hw_pidx, hw_context, type, SC_CHK_ALLOC_OP, reg);
++
++	/* set up credit return */
++	write_sctxt_csr(dd, hw_context, dd->params->send_ctxt_credit_return_addr_reg, dma);
++
++	/*
++	 * Calculate the initial credit return threshold.
 +	 *
-+	 * A 10240 sized packet could have at most 41 descriptors.
++	 * For Ack contexts, set a threshold for half the credits.
++	 * For User contexts use the given percentage.  This has been
++	 * sanitized on driver start-up.
++	 * For Kernel contexts, use the default MTU plus a header
++	 * or half the credits, whichever is smaller. This should
++	 * work for both the 3-deep buffering allocation and the
++	 * pooling allocation.
 +	 */
-+	return (round_up(packet_len, 256) >> 8) + 1;
-+}
++	if (type == SC_ACK) {
++		thresh = sc_percent_to_threshold(sc, 50);
++	} else if (type == SC_USER) {
++		thresh = sc_percent_to_threshold(sc,
++						 user_credit_return_threshold);
++	} else { /* kernel */
++		thresh = min(sc_percent_to_threshold(sc, 50),
++			     sc_mtu_to_threshold(sc, hfi2_max_mtu,
++						 hdrqentsize));
++	}
++	reg = thresh << SC(CREDIT_CTRL_THRESHOLD_SHIFT);
 +
-+/**
-+ * sdma_txinit_ahg() - initialize an sdma_txreq struct with AHG
-+ * @dd: device data
-+ * @tx: tx request to initialize
-+ * @flags: flags to key last descriptor additions
-+ * @tlen: total packet length (pbc + headers + data)
-+ * @ahg_entry: ahg entry to use  (0 - 31)
-+ * @num_ahg: ahg descriptor for first descriptor (0 - 9)
-+ * @ahg: array of AHG descriptors (up to 9 entries)
-+ * @ahg_hlen: number of bytes from ASIC entry to use
-+ * @cb: callback
-+ *
-+ * The allocation of the sdma_txreq and it enclosing structure is user
-+ * dependent.  This routine must be called to initialize the user independent
-+ * fields.
-+ *
-+ * The currently supported flags are SDMA_TXREQ_F_URGENT,
-+ * SDMA_TXREQ_F_AHG_COPY, and SDMA_TXREQ_F_USE_AHG.
-+ *
-+ * SDMA_TXREQ_F_URGENT is used for latency sensitive situations where the
-+ * completion is desired as soon as possible.
-+ *
-+ * SDMA_TXREQ_F_AHG_COPY causes the header in the first descriptor to be
-+ * copied to chip entry. SDMA_TXREQ_F_USE_AHG causes the code to add in
-+ * the AHG descriptors into the first 1 to 3 descriptors.
-+ *
-+ * Completions of submitted requests can be gotten on selected
-+ * txreqs by giving a completion routine callback to sdma_txinit() or
-+ * sdma_txinit_ahg().  The environment in which the callback runs
-+ * can be from an ISR, a tasklet, or a thread, so no sleeping
-+ * kernel routines can be used.   Aspects of the sdma ring may
-+ * be locked so care should be taken with locking.
-+ *
-+ * The callback pointer can be NULL to avoid any callback for the packet
-+ * being submitted. The callback will be provided this tx, a status, and a flag.
-+ *
-+ * The status will be one of SDMA_TXREQ_S_OK, SDMA_TXREQ_S_SENDERROR,
-+ * SDMA_TXREQ_S_ABORTED, or SDMA_TXREQ_S_SHUTDOWN.
-+ *
-+ * The flag, if the is the iowait had been used, indicates the iowait
-+ * sdma_busy count has reached zero.
-+ *
-+ * user data portion of tlen should be precise.   The sdma_txadd_* entrances
-+ * will pad with a descriptor references 1 - 3 bytes when the number of bytes
-+ * specified in tlen have been supplied to the sdma_txreq.
-+ *
-+ * ahg_hlen is used to determine the number of on-chip entry bytes to
-+ * use as the header.   This is for cases where the stored header is
-+ * larger than the header to be used in a packet.  This is typical
-+ * for verbs where an RDMA_WRITE_FIRST is larger than the packet in
-+ * and RDMA_WRITE_MIDDLE.
-+ *
-+ */
-+static inline int sdma_txinit_ahg(struct hfi2_devdata *dd,
-+				  struct sdma_txreq *tx,
-+				  u16 flags,
-+				  u16 tlen,
-+				  u8 ahg_entry,
-+				  u8 num_ahg,
-+				  u32 *ahg,
-+				  u8 ahg_hlen,
-+				  void (*cb)(struct sdma_txreq *, int))
-+{
-+	if (tlen == 0)
-+		return -ENODATA;
-+	if (tlen > MAX_SDMA_PKT_SIZE)
-+		return -EMSGSIZE;
-+	tx->desc_limit = ARRAY_SIZE(tx->descs);
-+	tx->descp = &tx->descs[0];
-+	INIT_LIST_HEAD(&tx->list);
-+	tx->num_desc = 0;
-+	tx->flags = flags;
-+	tx->complete = cb;
-+	tx->coalesce_buf = NULL;
-+	tx->wait = NULL;
-+	tx->packet_len = tlen;
-+	tx->tlen = tx->packet_len;
-+	tx->desc_margin = calc_num_desc(dd, tx->packet_len) + needs_pad(tx->packet_len);
-+	tx->descs[0].qw[0] = 0;
-+	tx->descs[0].qw[1] = 0;
 +	/*
-+	 * Do not bother with initializing .map_type; sdma_set_map_type()
-+	 * should overwrite per-desc bits. sdma_get_map_type() should not be
-+	 * called for per-desc bits that haven't been set with
-+	 * sdma_set_map_type().
++	 * JKR does not support early credit return logic, so early credit return
++	 * capability will not be enabled.
 +	 */
-+	sdma_qw_set(dd, first_desc, tx->descs[0].qw);
-+	if (flags & SDMA_TXREQ_F_AHG_COPY)
-+		tx->descs[0].qw[1] |=
-+			(((u64)ahg_entry & SDMA_DESC1_HEADER_INDEX_MASK)
-+				<< SDMA_DESC1_HEADER_INDEX_SHIFT) |
-+			(((u64)SDMA_AHG_COPY & SDMA_DESC1_HEADER_MODE_MASK)
-+				<< SDMA_DESC1_HEADER_MODE_SHIFT);
-+	else if (flags & SDMA_TXREQ_F_USE_AHG && num_ahg)
-+		_sdma_txreq_ahgadd(tx, num_ahg, ahg_entry, ahg, ahg_hlen);
-+	return 0;
-+}
-+
-+/**
-+ * sdma_txinit() - initialize an sdma_txreq struct (no AHG)
-+ * @dd: device data
-+ * @tx: tx request to initialize
-+ * @flags: flags to key last descriptor additions
-+ * @tlen: total packet length (pbc + headers + data)
-+ * @cb: callback pointer
-+ *
-+ * The allocation of the sdma_txreq and it enclosing structure is user
-+ * dependent.  This routine must be called to initialize the user
-+ * independent fields.
-+ *
-+ * The currently supported flags is SDMA_TXREQ_F_URGENT.
-+ *
-+ * SDMA_TXREQ_F_URGENT is used for latency sensitive situations where the
-+ * completion is desired as soon as possible.
-+ *
-+ * Completions of submitted requests can be gotten on selected
-+ * txreqs by giving a completion routine callback to sdma_txinit() or
-+ * sdma_txinit_ahg().  The environment in which the callback runs
-+ * can be from an ISR, a tasklet, or a thread, so no sleeping
-+ * kernel routines can be used.   The head size of the sdma ring may
-+ * be locked so care should be taken with locking.
-+ *
-+ * The callback pointer can be NULL to avoid any callback for the packet
-+ * being submitted.
-+ *
-+ * The callback, if non-NULL,  will be provided this tx and a status.  The
-+ * status will be one of SDMA_TXREQ_S_OK, SDMA_TXREQ_S_SENDERROR,
-+ * SDMA_TXREQ_S_ABORTED, or SDMA_TXREQ_S_SHUTDOWN.
-+ *
-+ */
-+static inline int sdma_txinit(struct hfi2_devdata *dd,
-+			      struct sdma_txreq *tx,
-+			      u16 flags,
-+			      u16 tlen,
-+			      void (*cb)(struct sdma_txreq *, int))
-+{
-+	return sdma_txinit_ahg(dd, tx, flags, tlen, 0, 0, NULL, 0, cb);
-+}
-+
-+static inline size_t sdma_mapping_len(struct hfi2_devdata *dd,
-+				      struct sdma_desc *d)
-+{
-+	return sdma_qw_get(dd, byte_count, d->qw);
-+}
-+
-+static inline dma_addr_t sdma_mapping_addr(struct hfi2_devdata *dd,
-+					   struct sdma_desc *d)
-+{
-+	return sdma_qw_get(dd, phy_addr, d->qw);
-+}
-+
-+static inline void sdma_set_map_type(struct sdma_txreq *tx,
-+				     u8 i, u8 type)
-+{
-+	int w = BIT_WORD(i * SDMA_MAP_BITS);
-+	int offset = (i * SDMA_MAP_BITS) % BITS_PER_LONG;
-+	unsigned long shftmask = SDMA_MAP_MASK << offset;
-+	unsigned long *mw = &tx->map_type[w];
-+	unsigned long new = (long)type << offset;
-+
-+	/* Per-desc SDMA_MAP_BITS-sized field must never cross word boundary */
-+	static_assert(BITS_PER_LONG % SDMA_MAP_BITS == 0);
-+	bitmap_replace(mw, mw, &new, &shftmask, SDMA_MAP_BITS);
-+}
-+
-+static inline u8 sdma_get_map_type(struct sdma_txreq *tx, u8 i)
-+{
-+	int idx = i * SDMA_MAP_BITS;
-+
-+	/* Per-desc field must always fit in u8 */
-+	static_assert(SDMA_MAP_BITS <= 8);
-+	return bitmap_get_value8(tx->map_type, idx) & SDMA_MAP_MASK;
-+}
-+
-+/* do the work, caller is responsible for all checking */
-+static inline void _make_tx_sdma_desc(struct hfi2_devdata *dd,
-+				      struct sdma_txreq *tx,
-+				      int type,
-+				      dma_addr_t addr,
-+				      size_t len)
-+{
-+	struct sdma_desc *desc = &tx->descp[tx->num_desc];
-+
-+	sdma_set_map_type(tx, tx->num_desc, type);
-+	if (!tx->num_desc) {
-+		/* qw[0] zero; qw[1] first, ahg mode already in from init */
-+	} else {
-+		desc->qw[0] = 0;
-+		desc->qw[1] = 0;
++	if (dd->params->chip_type != CHIP_JKR) {
++		/* add in early return */
++		if (type == SC_USER && HFI2_CAP_IS_USET(EARLY_CREDIT_RETURN))
++			reg |= SC(CREDIT_CTRL_EARLY_RETURN_SMASK);
++		else if (HFI2_CAP_IS_KSET(EARLY_CREDIT_RETURN)) /* kernel, ack */
++			reg |= SC(CREDIT_CTRL_EARLY_RETURN_SMASK);
 +	}
 +
-+	sdma_qw_set(dd, phy_addr, desc->qw, addr);
-+	sdma_qw_set(dd, byte_count, desc->qw, len);
-+	tx->num_desc++;
-+}
++	/* set up write-through credit_ctrl */
++	sc->credit_ctrl = reg;
++	write_sctxt_csr(dd, hw_context, dd->params->send_ctxt_credit_ctrl_reg,
++			reg);
 +
++	spin_unlock_irqrestore(&dd->sc_lock, flags);
 +
-+/*
-+ * Create one or more descriptors to fetch len bytes.  Enough descriptor room
-+ * is guaranteed by the time this function is called.
-+ */
-+static inline void make_tx_sdma_desc(struct hfi2_devdata *dd,
-+				     struct sdma_txreq *tx,
-+				     int type,
-+				     dma_addr_t addr,
-+				     size_t len)
-+{
-+#define ALIGN_SIZE 256
-+#define ALIGN_MASK (ALIGN_SIZE - 1)
-+	switch (dd->sdma_align) {
-+	case ALIGN_256_ALL:
-+		/* align head */
-+		if (addr & ALIGN_MASK) {
-+			size_t clen = ALIGN_SIZE - (addr & ALIGN_MASK);
-+
-+			if (clen > len)
-+				clen = len;
-+			_make_tx_sdma_desc(dd, tx, type, addr, clen);
-+			len -= clen;
-+			addr += clen;
++	/*
++	 * Allocate shadow ring to track outstanding PIO buffers _after_
++	 * unlocking.  We don't know the size until the lock is held and
++	 * we can't allocate while the lock is held.  No one is using
++	 * the context yet, so allocate it now.
++	 *
++	 * User contexts do not get a shadow ring.
++	 */
++	if (type != SC_USER) {
++		/*
++		 * Size the shadow ring 1 larger than the number of credits
++		 * so head == tail can mean empty.
++		 */
++		sc->sr_size = sci->credits + 1;
++		sc->sr = kcalloc_node(sc->sr_size,
++				      sizeof(union pio_shadow_ring),
++				      GFP_KERNEL, numa);
++		if (!sc->sr) {
++			sc_free(sc);
++			return NULL;
 +		}
-+		/* now aligned, split into full sized chunks */
-+		while (len >= ALIGN_SIZE) {
-+			_make_tx_sdma_desc(dd, tx, type, addr, ALIGN_SIZE);
-+			len -= ALIGN_SIZE;
-+			addr += ALIGN_SIZE;
-+		}
-+		/* tail overhang */
-+		if (len)
-+			_make_tx_sdma_desc(dd, tx, type, addr, len);
-+		break;
-+
-+	case ALIGN_256_HEAD_TAIL: {
-+		size_t clen;
-+
-+		/* align head */
-+		if (addr & ALIGN_MASK) {
-+			clen = ALIGN_SIZE - (addr & ALIGN_MASK);
-+			if (clen > len)
-+				clen = len;
-+			_make_tx_sdma_desc(dd, tx, type, addr, clen);
-+			len -= clen;
-+			addr += clen;
-+		}
-+		/* aligned start to aligned tail */
-+		clen = len & ~ALIGN_MASK;
-+		if (clen) {
-+			_make_tx_sdma_desc(dd, tx, type, addr, clen);
-+			len -= clen;
-+			addr += clen;
-+		}
-+		/* tail overhang */
-+		if (len)
-+			_make_tx_sdma_desc(dd, tx, type, addr, len);
-+		break;
 +	}
 +
-+	case ALIGN_256_TAIL: {
-+		dma_addr_t end = addr + len;
-+		bool same = (addr & ~ALIGN_MASK) == (end & ~ALIGN_MASK);
-+		size_t tail_len = end & ALIGN_MASK;
-+		size_t clen = len - tail_len;
++	hfi2_cdbg(PIO,
++		  "Send context %u(%u) %s group %u credits %u credit_ctrl 0x%llx threshold %u",
++		  sw_index,
++		  hw_context,
++		  sc_type_name(type),
++		  sc->group,
++		  sc->credits,
++		  sc->credit_ctrl,
++		  thresh);
 +
-+		/* start to aligned tail */
-+		if (clen && !same) {
-+			_make_tx_sdma_desc(dd, tx, type, addr, clen);
-+			len -= clen;
-+			addr += clen;
-+		}
-+		/* tail overhang */
-+		if (len)
-+			_make_tx_sdma_desc(dd, tx, type, addr, len);
-+		break;
-+	}
-+
-+	default:
-+		_make_tx_sdma_desc(dd, tx, type, addr, len);
-+		break;
-+	}
-+#undef ALIGN_SIZE
-+#undef ALIGN_MASK
++	return sc;
 +}
 +
-+void __sdma_txclean(struct hfi2_devdata *, struct sdma_txreq *);
-+
-+static inline void sdma_txclean(struct hfi2_devdata *dd, struct sdma_txreq *tx)
++/* free a per-NUMA send context structure */
++void sc_free(struct send_context *sc)
 +{
-+	if (tx->num_desc)
-+		__sdma_txclean(dd, tx);
-+}
++	struct hfi2_devdata *dd;
++	unsigned long flags;
++	u32 sw_index;
++	u32 hw_context;
++	int pidx;
 +
-+/* calculate the number of no-op descriptors to add */
-+static inline int sdma_desc_pad_count(struct hfi2_devdata *dd,
-+				      struct sdma_txreq *tx)
-+{
-+	if (dd->pad_sdma_desc)
-+		return round_up(tx->num_desc, dd->pad_sdma_desc) - tx->num_desc;
-+	return 0;
-+}
-+
-+/* helpers used by public routines */
-+static inline void _sdma_close_tx(struct hfi2_devdata *dd,
-+				  struct sdma_txreq *tx)
-+{
-+	u16 last_desc = tx->num_desc - 1;
-+
-+	sdma_qw_set(dd, last_desc, tx->descp[last_desc].qw);
-+	tx->descp[last_desc].qw[1] |= dd->default_desc1;
-+	if (tx->flags & SDMA_TXREQ_F_URGENT)
-+		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
-+					       SDMA_DESC1_INT_REQ_FLAG);
-+	tx->num_pad = sdma_desc_pad_count(dd, tx);
-+}
-+
-+/* return true if the current buffer must coalesce */
-+static inline bool must_coalesce(struct sdma_txreq *tx)
-+{
-+	return tx->num_desc + tx->desc_margin >= MAX_DESC;
-+}
-+
-+/* return true if the current buffer forces an extension */
-+static inline bool need_desc_extension(struct sdma_txreq *tx)
-+{
-+	return (tx->desc_limit == ARRAY_SIZE(tx->descs)) &&
-+	       (tx->num_desc + tx->desc_margin >= ARRAY_SIZE(tx->descs));
-+}
-+int _extend_sdma_tx_descs(struct hfi2_devdata *dd, struct sdma_txreq *tx);
-+
-+static inline int _sdma_txadd_daddr(struct hfi2_devdata *dd,
-+				    int type,
-+				    struct sdma_txreq *tx,
-+				    dma_addr_t addr,
-+				    u16 len)
-+{
-+	int rval;
-+
-+	WARN_ON(len > tx->tlen);
-+	if (need_desc_extension(tx)) {
-+		rval = _extend_sdma_tx_descs(dd, tx);
-+		if (rval)
-+			return rval;
-+	}
-+
-+	make_tx_sdma_desc(dd, tx, type, addr, len);
-+	tx->tlen -= len;
-+
-+	/* special case for last */
-+	if (!tx->tlen) {
-+		int pad_len = pad_length(tx);
-+
-+		if (pad_len) {
-+			make_tx_sdma_desc(dd, tx, SDMA_MAP_NONE,
-+					  dd->sdma_pad_phys, pad_len);
-+		}
-+		_sdma_close_tx(dd, tx);
-+	}
-+	return 0;
-+}
-+
-+int do_coalesce(struct hfi2_devdata *dd, struct sdma_txreq *tx,
-+		int type, void *kvaddr, struct page *page,
-+		unsigned long offset, u16 len);
-+
-+/**
-+ * sdma_txadd_page() - add a page to the sdma_txreq
-+ * @dd: the device to use for mapping
-+ * @tx: tx request to which the page is added
-+ * @page: page to map
-+ * @offset: offset within the page
-+ * @len: length in bytes
-+ *
-+ * This is used to add a page/offset/length descriptor.
-+ *
-+ * The mapping/unmapping of the page/offset/len is automatically handled.
-+ *
-+ * Return:
-+ * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't
-+ * extend/coalesce descriptor array
-+ */
-+static inline int sdma_txadd_page(
-+	struct hfi2_devdata *dd,
-+	struct sdma_txreq *tx,
-+	struct page *page,
-+	unsigned long offset,
-+	u16 len)
-+{
-+	dma_addr_t addr;
-+
-+	if (unlikely(must_coalesce(tx)))
-+		return do_coalesce(dd, tx, SDMA_MAP_PAGE,
-+				   NULL, page, offset, len);
-+
-+	addr = dma_map_page(
-+		       &dd->pcidev->dev,
-+		       page,
-+		       offset,
-+		       len,
-+		       DMA_TO_DEVICE);
-+
-+	if (unlikely(dma_mapping_error(&dd->pcidev->dev, addr))) {
-+		__sdma_txclean(dd, tx);
-+		return -ENOSPC;
-+	}
-+
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, tx, addr, len);
-+}
-+
-+/**
-+ * sdma_txadd_daddr() - add a dma address to the sdma_txreq
-+ * @dd: the device to use for mapping
-+ * @tx: sdma_txreq to which the page is added
-+ * @addr: dma address mapped by caller
-+ * @len: length in bytes
-+ *
-+ * This is used to add a descriptor for memory that is already dma mapped.
-+ *
-+ * In this case, there is no unmapping as part of the progress processing for
-+ * this memory location.
-+ *
-+ * Return:
-+ * 0 - success, -ENOMEM - couldn't extend descriptor array
-+ */
-+
-+static inline int sdma_txadd_daddr(
-+	struct hfi2_devdata *dd,
-+	struct sdma_txreq *tx,
-+	dma_addr_t addr,
-+	u16 len)
-+{
-+	if (unlikely(must_coalesce(tx)))
-+		return do_coalesce(dd, tx, SDMA_MAP_NONE,
-+				   NULL, NULL, 0, 0);
-+
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, tx, addr, len);
-+}
-+
-+/**
-+ * sdma_txadd_kvaddr() - add a kernel virtual address to sdma_txreq
-+ * @dd: the device to use for mapping
-+ * @tx: sdma_txreq to which the page is added
-+ * @kvaddr: the kernel virtual address
-+ * @len: length in bytes
-+ *
-+ * This is used to add a descriptor referenced by the indicated kvaddr and
-+ * len.
-+ *
-+ * The mapping/unmapping of the kvaddr and len is automatically handled.
-+ *
-+ * Return:
-+ * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't extend/coalesce
-+ * descriptor array
-+ */
-+static inline int sdma_txadd_kvaddr(
-+	struct hfi2_devdata *dd,
-+	struct sdma_txreq *tx,
-+	void *kvaddr,
-+	u16 len)
-+{
-+	dma_addr_t addr;
-+
-+	if (unlikely(must_coalesce(tx)))
-+		return do_coalesce(dd, tx, SDMA_MAP_SINGLE,
-+				   kvaddr, NULL, 0, len);
-+
-+	addr = dma_map_single(
-+		       &dd->pcidev->dev,
-+		       kvaddr,
-+		       len,
-+		       DMA_TO_DEVICE);
-+
-+	if (unlikely(dma_mapping_error(&dd->pcidev->dev, addr))) {
-+		__sdma_txclean(dd, tx);
-+		return -ENOSPC;
-+	}
-+
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx, addr, len);
-+}
-+
-+struct iowait_work;
-+
-+int sdma_send_txreq(struct sdma_engine *sde,
-+		    struct iowait_work *wait,
-+		    struct sdma_txreq *tx,
-+		    bool pkts_sent);
-+int sdma_send_txlist(struct sdma_engine *sde,
-+		     struct iowait_work *wait,
-+		     struct list_head *tx_list,
-+		     u16 *count_out);
-+
-+int sdma_ahg_alloc(struct sdma_engine *sde);
-+void sdma_ahg_free(struct sdma_engine *sde, int ahg_index);
-+
-+/**
-+ * sdma_build_ahg - build ahg descriptor
-+ * @data
-+ * @dwindex
-+ * @startbit
-+ * @bits
-+ *
-+ * Build and return a 32 bit descriptor.
-+ */
-+static inline u32 sdma_build_ahg_descriptor(
-+	u16 data,
-+	u8 dwindex,
-+	u8 startbit,
-+	u8 bits)
-+{
-+	return (u32)(1UL << SDMA_AHG_UPDATE_ENABLE_SHIFT |
-+		((startbit & SDMA_AHG_FIELD_START_MASK) <<
-+		SDMA_AHG_FIELD_START_SHIFT) |
-+		((bits & SDMA_AHG_FIELD_LEN_MASK) <<
-+		SDMA_AHG_FIELD_LEN_SHIFT) |
-+		((dwindex & SDMA_AHG_INDEX_MASK) <<
-+		SDMA_AHG_INDEX_SHIFT) |
-+		((data & SDMA_AHG_VALUE_MASK) <<
-+		SDMA_AHG_VALUE_SHIFT));
-+}
-+
-+/**
-+ * sdma_progress - use seq number of detect head progress
-+ * @sde: sdma_engine to check
-+ * @seq: base seq count
-+ * @tx: txreq for which we need to check descriptor availability
-+ *
-+ * This is used in the appropriate spot in the sleep routine
-+ * to check for potential ring progress.  This routine gets the
-+ * seqcount before queuing the iowait structure for progress.
-+ *
-+ * If the seqcount indicates that progress needs to be checked,
-+ * re-submission is detected by checking whether the descriptor
-+ * queue has enough descriptor for the txreq.
-+ */
-+static inline unsigned int sdma_progress(struct sdma_engine *sde, unsigned int seq,
-+				     struct sdma_txreq *tx)
-+{
-+	if (read_seqretry(&sde->head_lock, seq)) {
-+		sde->desc_avail = sdma_descq_freecnt(sde);
-+		if (tx->num_desc + tx->num_pad > sde->desc_avail)
-+			return 0;
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+/* for use by interrupt handling */
-+void sdma_engine_error(struct sdma_engine *sde, u64 status);
-+void sdma_engine_interrupt(struct sdma_engine *sde, u64 status);
-+bool sdma_work_pending(struct sdma_engine *sde);
-+
-+/*
-+ *
-+ * The diagram below details the relationship of the mapping structures
-+ *
-+ * Since the mapping now allows for non-uniform engines per vl, the
-+ * number of engines for a vl is either the vl_engines[vl] or
-+ * a computation based on num_sdma/num_vls:
-+ *
-+ * For example:
-+ * nactual = vl_engines ? vl_engines[vl] : num_sdma/num_vls
-+ *
-+ * n = roundup to next highest power of 2 using nactual
-+ *
-+ * In the case where there are num_sdma/num_vls doesn't divide
-+ * evenly, the extras are added from the last vl downward.
-+ *
-+ * For the case where n > nactual, the engines are assigned
-+ * in a round robin fashion wrapping back to the first engine
-+ * for a particular vl.
-+ *
-+ *               dd->sdma_map
-+ *                    |                                   sdma_map_elem[0]
-+ *                    |                                +--------------------+
-+ *                    v                                |       mask         |
-+ *               sdma_vl_map                           |--------------------|
-+ *      +--------------------------+                   | sde[0] -> eng 1    |
-+ *      |    list (RCU)            |                   |--------------------|
-+ *      |--------------------------|                 ->| sde[1] -> eng 2    |
-+ *      |    mask                  |              --/  |--------------------|
-+ *      |--------------------------|            -/     |        *           |
-+ *      |    actual_vls (max 8)    |          -/       |--------------------|
-+ *      |--------------------------|       --/         | sde[n-1] -> eng n  |
-+ *      |    vls (max 8)           |     -/            +--------------------+
-+ *      |--------------------------|  --/
-+ *      |    map[0]                |-/
-+ *      |--------------------------|                   +---------------------+
-+ *      |    map[1]                |---                |       mask          |
-+ *      |--------------------------|   \----           |---------------------|
-+ *      |           *              |        \--        | sde[0] -> eng 1+n   |
-+ *      |           *              |           \----   |---------------------|
-+ *      |           *              |                \->| sde[1] -> eng 2+n   |
-+ *      |--------------------------|                   |---------------------|
-+ *      |   map[vls - 1]           |-                  |         *           |
-+ *      +--------------------------+ \-                |---------------------|
-+ *                                     \-              | sde[m-1] -> eng m+n |
-+ *                                       \             +---------------------+
-+ *                                        \-
-+ *                                          \
-+ *                                           \-        +----------------------+
-+ *                                             \-      |       mask           |
-+ *                                               \     |----------------------|
-+ *                                                \-   | sde[0] -> eng 1+m+n  |
-+ *                                                  \- |----------------------|
-+ *                                                    >| sde[1] -> eng 2+m+n  |
-+ *                                                     |----------------------|
-+ *                                                     |         *            |
-+ *                                                     |----------------------|
-+ *                                                     | sde[o-1] -> eng o+m+n|
-+ *                                                     +----------------------+
-+ *
-+ */
-+
-+/**
-+ * struct sdma_map_elem - mapping for a vl
-+ * @mask - selector mask
-+ * @sde - array of engines for this vl
-+ *
-+ * The mask is used to "mod" the selector
-+ * to produce index into the trailing
-+ * array of sdes.
-+ */
-+struct sdma_map_elem {
-+	u32 mask;
-+	struct sdma_engine *sde[];
-+};
-+
-+/**
-+ * struct sdma_map_el - mapping for a vl
-+ * @engine_to_vl - map of an engine to a vl
-+ * @list - rcu head for free callback
-+ * @mask - vl mask to "mod" the vl to produce an index to map array
-+ * @actual_vls - number of vls
-+ * @vls - number of vls rounded to next power of 2
-+ * @map - array of sdma_map_elem entries
-+ *
-+ * This is the parent mapping structure.  The trailing
-+ * members of the struct point to sdma_map_elem entries, which
-+ * in turn point to an array of sde's for that vl.
-+ */
-+struct sdma_vl_map {
-+	s8 engine_to_vl[TXE_NUM_SDMA_ENGINES];
-+	struct rcu_head list;
-+	u32 mask;
-+	u8 actual_vls;
-+	u8 vls;
-+	struct sdma_map_elem *map[];
-+};
-+
-+int sdma_map_init(struct hfi2_pportdata *ppd, u8 num_vls, u8 *vl_engines);
-+
-+/* slow path */
-+void _sdma_engine_progress_schedule(struct sdma_engine *sde);
-+
-+/**
-+ * sdma_engine_progress_schedule() - schedule progress on engine
-+ * @sde: sdma_engine to schedule progress
-+ *
-+ * This is the fast path.
-+ *
-+ */
-+static inline void sdma_engine_progress_schedule(
-+	struct sdma_engine *sde)
-+{
-+	if (!sde || sdma_descq_inprocess(sde) < (sde->descq_cnt / 8))
++	if (!sc)
 +		return;
-+	_sdma_engine_progress_schedule(sde);
++
++	sc->flags |= SCF_IN_FREE;	/* ensure no restarts */
++	dd = sc->dd;
++	if (!list_empty(&sc->piowait))
++		dd_dev_err(dd, "piowait list not empty!\n");
++	pidx = sc->ppd->hw_pidx;
++	sw_index = sc->sw_index;
++	hw_context = sc->hw_context;
++	sc_disable(sc);	/* make sure the HW is disabled */
++	flush_work(&sc->halt_work);
++
++	spin_lock_irqsave(&dd->sc_lock, flags);
++	dd->send_contexts[sw_index].sc = NULL;
++
++	/* clear/disable all registers set in sc_alloc */
++	priv_reg_op(dd, pidx, hw_context, sc->type, SC_CHK_FREE_OP, 0);
++	write_sctxt_csr(dd, hw_context, dd->params->send_ctxt_err_mask_reg, 0);
++	write_sctxt_csr(dd, hw_context,
++			dd->params->send_ctxt_credit_return_addr_reg, 0);
++	write_sctxt_csr(dd, hw_context, dd->params->send_ctxt_credit_ctrl_reg,
++			0);
++
++	/* release the index and context for re-use */
++	sc_hw_free(dd, sw_index, hw_context);
++	spin_unlock_irqrestore(&dd->sc_lock, flags);
++
++	kfree(sc->sr);
++	free_percpu(sc->buffers_allocated);
++	kfree(sc);
 +}
 +
-+struct sdma_engine *sdma_select_engine_sc(struct hfi2_pportdata *ppd,
-+					  u32 selector, u8 sc5);
-+struct sdma_engine *sdma_select_engine_vl(struct hfi2_pportdata *ppd,
-+					  u32 selector, u8 vl);
-+struct sdma_engine *sdma_select_user_engine(struct hfi2_pportdata *ppd,
-+					    u32 selector, u8 vl);
-+ssize_t sdma_get_cpu_to_sde_map(struct sdma_engine *sde, char *buf);
-+ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
-+				size_t count);
-+int sdma_engine_get_vl(struct hfi2_pportdata *ppd, struct sdma_engine *sde);
-+void sdma_seqfile_dump_sde(struct seq_file *s, struct sdma_engine *sde);
-+void sdma_seqfile_dump_cpu_list(struct seq_file *s, struct hfi2_devdata *dd,
-+				unsigned long cpuid);
-+
-+#ifdef CONFIG_HFI2_SDMA_VERBOSITY
-+void sdma_dumpstate(struct sdma_engine *);
-+#endif
-+static inline char *slashstrip(char *s)
++/* disable the context */
++void sc_disable(struct send_context *sc)
 +{
-+	char *r = s;
++	struct pio_buf *pbuf;
++	LIST_HEAD(wake_list);
 +
-+	while (*s)
-+		if (*s++ == '/')
-+			r = s;
-+	return r;
++	if (!sc)
++		return;
++
++	/* do all steps, even if already disabled */
++	spin_lock_irq(&sc->alloc_lock);
++	sc->flags &= ~SCF_ENABLED;
++	sc_wait_for_packet_egress(sc, 1);
++	priv_reg_op(sc->dd, 0, sc->hw_context, sc->type, SC_DISABLE_OP, 0);
++
++	/*
++	 * Flush any waiters.  Once the context is disabled,
++	 * credit return interrupts are stopped (although there
++	 * could be one in-process when the context is disabled).
++	 * Wait one microsecond for any lingering interrupts, then
++	 * proceed with the flush.
++	 */
++	udelay(1);
++	spin_lock(&sc->release_lock);
++	if (sc->sr) {	/* this context has a shadow ring */
++		while (sc->sr_tail != sc->sr_head) {
++			pbuf = &sc->sr[sc->sr_tail].pbuf;
++			if (pbuf->cb)
++				(*pbuf->cb)(pbuf->arg, PRC_SC_DISABLE);
++			sc->sr_tail++;
++			if (sc->sr_tail >= sc->sr_size)
++				sc->sr_tail = 0;
++		}
++	}
++	spin_unlock(&sc->release_lock);
++
++	write_seqlock(&sc->waitlock);
++	list_splice_init(&sc->piowait, &wake_list);
++	write_sequnlock(&sc->waitlock);
++	while (!list_empty(&wake_list)) {
++		struct iowait *wait;
++		struct rvt_qp *qp;
++		struct hfi2_qp_priv *priv;
++
++		wait = list_first_entry(&wake_list, struct iowait, list);
++		qp = iowait_to_qp(wait);
++		priv = qp->priv;
++		list_del_init(&priv->s_iowait.list);
++		priv->s_iowait.lock = NULL;
++		hfi2_qp_wakeup(qp, RVT_S_WAIT_PIO | HFI2_S_WAIT_PIO_DRAIN);
++	}
++
++	spin_unlock_irq(&sc->alloc_lock);
 +}
 +
-+u16 sdma_get_descq_cnt(void);
++/* return SendEgressCtxtStatus.PacketOccupancy */
++static u64 packet_occupancy(u64 reg)
++{
++	return (reg &
++		SEND_EGRESS_CTXT_STATUS_CTXT_EGRESS_PACKET_OCCUPANCY_SMASK)
++		>> SEND_EGRESS_CTXT_STATUS_CTXT_EGRESS_PACKET_OCCUPANCY_SHIFT;
++}
 +
-+extern uint mod_num_sdma;
++/* is egress halted on the context? */
++static bool egress_halted(u64 reg)
++{
++	return !!(reg & SEND_EGRESS_CTXT_STATUS_CTXT_EGRESS_HALT_STATUS_SMASK);
++}
 +
-+void sdma_update_lmc(struct hfi2_devdata *dd, u64 mask, u32 lid);
-+#endif
-diff --git a/drivers/infiniband/hw/hfi2/sdma_defs.h b/drivers/infiniband/hw/hfi2/sdma_defs.h
-new file mode 100644
-index 000000000000..681c27021a42
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/sdma_defs.h
-@@ -0,0 +1,113 @@
-+/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
-+/*
-+ * Copyright(c) 2025 Cornelis Networks, Inc.
-+ * Copyright(c) 2015 - 2018 Intel Corporation.
-+ */
-+
-+#ifndef _HFI2_SDMA_DEFS_H
-+#define _HFI2_SDMA_DEFS_H
-+
-+/* Hardware limit */
-+#define MAX_DESC 64
-+/* Hardware limit for SDMA packet size */
-+#define MAX_SDMA_PKT_SIZE ((16 * 1024) - 1)
-+
-+#define SDMA_MAP_NONE 0
-+#define SDMA_MAP_SINGLE 1
-+#define SDMA_MAP_PAGE 2
-+
-+#define SDMA_MAP_BITS 2
-+#define SDMA_MAP_MASK ((1ull << SDMA_MAP_BITS) - 1)
-+
-+#define SDMA_AHG_VALUE_MASK 0xffff
-+#define SDMA_AHG_VALUE_SHIFT 0
-+#define SDMA_AHG_INDEX_MASK 0xf
-+#define SDMA_AHG_INDEX_SHIFT 16
-+#define SDMA_AHG_FIELD_LEN_MASK 0xf
-+#define SDMA_AHG_FIELD_LEN_SHIFT 20
-+#define SDMA_AHG_FIELD_START_MASK 0x1f
-+#define SDMA_AHG_FIELD_START_SHIFT 24
-+#define SDMA_AHG_UPDATE_ENABLE_MASK 0x1
-+#define SDMA_AHG_UPDATE_ENABLE_SHIFT 31
-+
-+/* AHG modes */
-+
-+/*
-+ * Be aware the ordering and values
-+ * for SDMA_AHG_APPLY_UPDATE[123]
-+ * are assumed in generating a skip
-+ * count in submit_tx() in sdma.c
-+ */
-+#define SDMA_AHG_NO_AHG 0
-+#define SDMA_AHG_COPY 1
-+#define SDMA_AHG_APPLY_UPDATE1 2
-+#define SDMA_AHG_APPLY_UPDATE2 3
-+#define SDMA_AHG_APPLY_UPDATE3 4
-+
-+/*
-+ * Bits defined in the send DMA descriptor.
-+ */
-+/* WFR SDMA header fields */
-+#define WFR_SDMA_DESC0_FIRST_DESC_FLAG BIT_ULL(63)
-+#define WFR_SDMA_DESC0_LAST_DESC_FLAG BIT_ULL(62)
-+#define WFR_SDMA_DESC0_BYTE_COUNT_SHIFT 48
-+#define WFR_SDMA_DESC0_BYTE_COUNT_WIDTH 14
-+#define WFR_SDMA_DESC0_BYTE_COUNT_MASK \
-+	((1ULL << WFR_SDMA_DESC0_BYTE_COUNT_WIDTH) - 1)
-+#define WFR_SDMA_DESC0_BYTE_COUNT_SMASK \
-+	(WFR_SDMA_DESC0_BYTE_COUNT_MASK << WFR_SDMA_DESC0_BYTE_COUNT_SHIFT)
-+#define WFR_SDMA_DESC0_PHY_ADDR_SHIFT 0
-+#define WFR_SDMA_DESC0_PHY_ADDR_WIDTH 48
-+#define WFR_SDMA_DESC0_PHY_ADDR_MASK \
-+	((1ULL << WFR_SDMA_DESC0_PHY_ADDR_WIDTH) - 1)
-+#define WFR_SDMA_DESC0_PHY_ADDR_SMASK \
-+	(WFR_SDMA_DESC0_PHY_ADDR_MASK << WFR_SDMA_DESC0_PHY_ADDR_SHIFT)
-+
-+/* JKR SDMA header fields */
-+#define JKR_SDMA_DESC0_PHY_ADDR_SHIFT 0
-+#define JKR_SDMA_DESC0_PHY_ADDR_WIDTH 58
-+#define JKR_SDMA_DESC0_PHY_ADDR_MASK \
-+	((1ULL << JKR_SDMA_DESC0_PHY_ADDR_WIDTH) - 1)
-+#define JKR_SDMA_DESC0_PHY_ADDR_SMASK \
-+	(JKR_SDMA_DESC0_PHY_ADDR_MASK << JKR_SDMA_DESC0_PHY_ADDR_SHIFT)
-+
-+#define JKR_SDMA_DESC1_FIRST_DESC_FLAG BIT_ULL(31)
-+#define JKR_SDMA_DESC1_LAST_DESC_FLAG BIT_ULL(30)
-+#define JKR_SDMA_DESC1_BYTE_COUNT_SHIFT 16
-+#define JKR_SDMA_DESC1_BYTE_COUNT_WIDTH 14
-+#define JKR_SDMA_DESC1_BYTE_COUNT_MASK \
-+	((1ULL << JKR_SDMA_DESC1_BYTE_COUNT_WIDTH) - 1)
-+#define JKR_SDMA_DESC1_BYTE_COUNT_SMASK \
-+	(JKR_SDMA_DESC1_BYTE_COUNT_MASK << JKR_SDMA_DESC1_BYTE_COUNT_SHIFT)
-+
-+/* common SDMA header fields */
-+#define SDMA_DESC1_HEADER_UPDATE1_SHIFT 32
-+#define SDMA_DESC1_HEADER_UPDATE1_WIDTH 32
-+#define SDMA_DESC1_HEADER_UPDATE1_MASK \
-+	((1ULL << SDMA_DESC1_HEADER_UPDATE1_WIDTH) - 1)
-+#define SDMA_DESC1_HEADER_UPDATE1_SMASK \
-+	(SDMA_DESC1_HEADER_UPDATE1_MASK << SDMA_DESC1_HEADER_UPDATE1_SHIFT)
-+#define SDMA_DESC1_HEADER_MODE_SHIFT 13
-+#define SDMA_DESC1_HEADER_MODE_WIDTH 3
-+#define SDMA_DESC1_HEADER_MODE_MASK ((1ULL << SDMA_DESC1_HEADER_MODE_WIDTH) - 1)
-+#define SDMA_DESC1_HEADER_MODE_SMASK \
-+	(SDMA_DESC1_HEADER_MODE_MASK << SDMA_DESC1_HEADER_MODE_SHIFT)
-+#define SDMA_DESC1_HEADER_INDEX_SHIFT 8
-+#define SDMA_DESC1_HEADER_INDEX_WIDTH 5
-+#define SDMA_DESC1_HEADER_INDEX_MASK \
-+	((1ULL << SDMA_DESC1_HEADER_INDEX_WIDTH) - 1)
-+#define SDMA_DESC1_HEADER_INDEX_SMASK \
-+	(SDMA_DESC1_HEADER_INDEX_MASK << SDMA_DESC1_HEADER_INDEX_SHIFT)
-+#define SDMA_DESC1_HEADER_DWS_SHIFT 4
-+#define SDMA_DESC1_HEADER_DWS_WIDTH 4
-+#define SDMA_DESC1_HEADER_DWS_MASK ((1ULL << SDMA_DESC1_HEADER_DWS_WIDTH) - 1)
-+#define SDMA_DESC1_HEADER_DWS_SMASK \
-+	(SDMA_DESC1_HEADER_DWS_MASK << SDMA_DESC1_HEADER_DWS_SHIFT)
-+#define SDMA_DESC1_GENERATION_SHIFT 2
-+#define SDMA_DESC1_GENERATION_WIDTH 2
-+#define SDMA_DESC1_GENERATION_MASK ((1ULL << SDMA_DESC1_GENERATION_WIDTH) - 1)
-+#define SDMA_DESC1_GENERATION_SMASK \
-+	(SDMA_DESC1_GENERATION_MASK << SDMA_DESC1_GENERATION_SHIFT)
-+#define SDMA_DESC1_INT_REQ_FLAG BIT_ULL(1)
-+#define SDMA_DESC1_HEAD_TO_HOST_FLAG BIT_ULL(0)
-+#endif /* _HFI2_SDMA_H */
-diff --git a/drivers/infiniband/hw/hfi2/sdma_txreq.h b/drivers/infiniband/hw/hfi2/sdma_txreq.h
-new file mode 100644
-index 000000000000..3f7ba121d5e6
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/sdma_txreq.h
-@@ -0,0 +1,105 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2016 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef HFI2_SDMA_TXREQ_H
-+#define HFI2_SDMA_TXREQ_H
-+
-+#include "sdma_defs.h"
-+
-+/* nominal descriptor count with expected padding */
-+#define NUM_DESC 6
-+
-+/*
-+ * struct sdma_desc - canonical fragment descriptor
-+ *
-+ * This is the descriptor carried in the tx request
-+ * corresponding to each fragment.
-+ *
-+ */
-+struct sdma_desc {
-+	/* private:  don't use directly */
-+	u64 qw[2];
-+};
++/* is the send context halted? */
++static bool is_sc_halted(struct hfi2_devdata *dd, u32 hw_context)
++{
++	return !!(read_sctxt_csr(dd, hw_context, dd->params->send_ctxt_status_reg) &
++		  SC(STATUS_CTXT_HALTED_SMASK));
++}
 +
 +/**
-+ * struct sdma_txreq - the sdma_txreq structure (one per packet)
-+ * @list: for use by user and by queuing for wait
++ * sc_wait_for_packet_egress - wait for packet
++ * @sc: valid send context
++ * @pause: wait for credit return
 + *
-+ * This is the representation of a packet which consists of some
-+ * number of fragments.   Storage is provided to within the structure.
-+ * for all fragments.
++ * Wait for packet egress, optionally pause for credit return
 + *
-+ * The storage for the descriptors are automatically extended as needed
-+ * when the currently allocation is exceeded.
++ * Egress halt and Context halt are not necessarily the same thing, so
++ * check for both.
 + *
-+ * The user (Verbs or PSM) may overload this structure with fields
-+ * specific to their use by putting this struct first in their struct.
-+ * The method of allocation of the overloaded structure is user dependent
-+ *
-+ * The list is the only public field in the structure.
-+ *
++ * NOTE: The context halt bit may not be set immediately.  Because of this,
++ * it is necessary to check the SW SFC_HALTED bit (set in the IRQ) and the HW
++ * context bit to determine if the context is halted.
 + */
-+
-+#define SDMA_TXREQ_S_OK        0
-+#define SDMA_TXREQ_S_SENDERROR 1
-+#define SDMA_TXREQ_S_ABORTED   2
-+#define SDMA_TXREQ_S_SHUTDOWN  3
-+
-+/* flags bits */
-+#define SDMA_TXREQ_F_URGENT       0x0001
-+#define SDMA_TXREQ_F_AHG_COPY     0x0002
-+#define SDMA_TXREQ_F_USE_AHG      0x0004
-+#define SDMA_TXREQ_F_VIP          0x0010
-+
-+struct sdma_txreq;
-+typedef void (*callback_t)(struct sdma_txreq *, int);
-+
-+struct iowait;
-+struct sdma_txreq {
-+	struct list_head list;
-+	/* private: */
-+	struct sdma_desc *descp;
-+	/* private: */
-+	void *coalesce_buf;
-+	/* private: */
-+	struct iowait *wait;
-+	/* private: */
-+	callback_t                  complete;
-+#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
-+	u64 sn;
-+#endif
-+	/* private: - used in coalesce/pad processing */
-+	u16                         packet_len;
-+	/* private: - down-counted to trigger last */
-+	u16                         tlen;
-+	/* private: */
-+	u16                         num_desc;
-+	/* private: */
-+	u16                         desc_limit;
-+	/* private: */
-+	u16                         next_descq_idx;
-+	/* private: */
-+	u16 coalesce_idx;
-+	/* private: flags */
-+	u16                         flags;
-+	/* number of no-op descriptors to add */
-+	u8 num_pad;
-+	/* number avail descriptors needed before coalesce or expansion */
-+	u8 desc_margin;
-+	/* packed bitfield with enough space for SDMA_MAP_* values
-+	 * for up to 64 descriptors at 2 bits per descriptor
-+	 */
-+	DECLARE_BITMAP(map_type, SDMA_MAP_BITS * MAX_DESC);
-+	/* private: */
-+	struct sdma_desc descs[NUM_DESC];
-+};
-+
-+static inline int sdma_txreq_built(struct sdma_txreq *tx)
++static void sc_wait_for_packet_egress(struct send_context *sc, int pause)
 +{
-+	return tx->num_desc;
++	struct hfi2_devdata *dd = sc->dd;
++	struct hfi2_pportdata *ppd = sc->ppd;
++	u64 reg = 0;
++	u64 reg_prev;
++	u32 loop = 0;
++
++	while (1) {
++		reg_prev = reg;
++		reg = pf0_read_csr(dd, CSR_TYPE_EPSCARR,
++				   dd->params->send_egress_ctxt_status_reg,
++				   sc->hw_context, ppd->hw_pidx);
++		/* done if any halt bits, SW or HW are set */
++		if (sc->flags & (SCF_HALTED | SCF_LINK_DOWN) ||
++		    is_sc_halted(dd, sc->hw_context) || egress_halted(reg))
++			break;
++		reg = packet_occupancy(reg);
++		if (reg == 0)
++			break;
++		/* counter is reset if occupancy count changes */
++		if (reg != reg_prev)
++			loop = 0;
++		if (loop > 50) {
++			/* timed out - bounce the link */
++			dd_dev_err(dd,
++				   "%s: context %u(%u) timeout waiting for packets to egress, remaining count %u, bouncing link\n",
++				   __func__, sc->sw_index,
++				   sc->hw_context, (u32)reg);
++			priv_reg_op(dd, ppd->hw_pidx, 0, 0, LINK_BOUNCE_OP, 0);
++			break;
++		}
++		loop++;
++		mdelay(1);
++	}
++
++	if (pause)
++		/* Add additional delay to ensure chip returns all credits */
++		pause_for_credit_return(dd);
 +}
 +
-+#endif                          /* HFI2_SDMA_TXREQ_H */
-diff --git a/drivers/infiniband/hw/hfi2/tid_rdma.h b/drivers/infiniband/hw/hfi2/tid_rdma.h
-new file mode 100644
-index 000000000000..26c6a1ff610b
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/tid_rdma.h
-@@ -0,0 +1,321 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++void sc_wait(struct hfi2_devdata *dd)
++{
++	int i;
++
++	for (i = 0; i < dd->num_send_contexts; i++) {
++		struct send_context *sc = dd->send_contexts[i].sc;
++
++		if (!sc)
++			continue;
++		sc_wait_for_packet_egress(sc, 0);
++	}
++}
++
 +/*
-+ * Copyright(c) 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ * Restart a context after it has been halted due to error.
 + *
-+ */
-+#ifndef HFI2_TID_RDMA_H
-+#define HFI2_TID_RDMA_H
-+
-+#include <linux/circ_buf.h>
-+#include "common.h"
-+
-+/* Add a convenience helper */
-+#define CIRC_ADD(val, add, size) (((val) + (add)) & ((size) - 1))
-+#define CIRC_NEXT(val, size) CIRC_ADD(val, 1, size)
-+#define CIRC_PREV(val, size) CIRC_ADD(val, -1, size)
-+
-+#define TID_RDMA_MIN_SEGMENT_SIZE       BIT(18)   /* 256 KiB (for now) */
-+#define TID_RDMA_MAX_SEGMENT_SIZE       BIT(18)   /* 256 KiB (for now) */
-+#define TID_RDMA_MAX_PAGES              (BIT(18) >> PAGE_SHIFT)
-+#define TID_RDMA_SEGMENT_SHIFT		18
-+
-+/*
-+ * Bit definitions for priv->s_flags.
-+ * These bit flags overload the bit flags defined for the QP's s_flags.
-+ * Due to the fact that these bit fields are used only for the QP priv
-+ * s_flags, there are no collisions.
++ * If the first step fails - wait for the halt to be asserted, return early.
++ * Otherwise complain about timeouts but keep going.
 + *
-+ * HFI2_S_TID_WAIT_INTERLCK - QP is waiting for requester interlock
-+ * HFI2_R_TID_WAIT_INTERLCK - QP is waiting for responder interlock
++ * It is expected that allocations (enabled flag bit) have been shut off
++ * already (only applies to kernel contexts).
 + */
-+#define HFI2_S_TID_BUSY_SET       BIT(0)
-+/* BIT(1) reserved for RVT_S_BUSY. */
-+#define HFI2_R_TID_RSC_TIMER      BIT(2)
-+/* BIT(3) reserved for RVT_S_RESP_PENDING. */
-+/* BIT(4) reserved for RVT_S_ACK_PENDING. */
-+#define HFI2_S_TID_WAIT_INTERLCK  BIT(5)
-+#define HFI2_R_TID_WAIT_INTERLCK  BIT(6)
-+/* BIT(7) - BIT(15) reserved for RVT_S_WAIT_*. */
-+/* BIT(16) reserved for RVT_S_SEND_ONE */
-+#define HFI2_S_TID_RETRY_TIMER    BIT(17)
-+/* BIT(18) reserved for RVT_S_ECN. */
-+#define HFI2_R_TID_SW_PSN         BIT(19)
-+/* BIT(26) reserved for HFI2_S_WAIT_HALT */
-+/* BIT(27) reserved for HFI2_S_WAIT_TID_RESP */
-+/* BIT(28) reserved for HFI2_S_WAIT_TID_SPACE */
++int sc_restart(struct send_context *sc)
++{
++	struct hfi2_devdata *dd = sc->dd;
++	u64 reg;
++	u32 loop;
++	int count;
++
++	/* bounce off if not (halted or link down) or being free'd */
++	if (!(sc->flags & (SCF_HALTED | SCF_LINK_DOWN)) || (sc->flags & SCF_IN_FREE))
++		return -EINVAL;
++
++	dd_dev_info(dd, "restarting send context %u(%u)\n", sc->sw_index,
++		    sc->hw_context);
++
++	/*
++	 * Step 1: Wait for the context to actually halt.
++	 *
++	 * The error interrupt is asynchronous to actually setting halt
++	 * on the context.
++	 */
++	if (sc->flags & SCF_HALTED) {
++		loop = 0;
++		while (1) {
++			reg = read_sctxt_csr(dd, sc->hw_context,
++					     dd->params->send_ctxt_status_reg);
++			if (reg & SC(STATUS_CTXT_HALTED_SMASK))
++				break;
++			if (loop > 100) {
++				dd_dev_err(dd, "%s: context %u(%u) not halting, skipping\n",
++					   __func__, sc->sw_index, sc->hw_context);
++				return -ETIME;
++			}
++			loop++;
++			udelay(1);
++		}
++	}
++
++	/*
++	 * Step 2: Ensure no users are still trying to write to PIO.
++	 *
++	 * For kernel contexts, we have already turned off buffer allocation.
++	 * Now wait for the buffer count to go to zero.
++	 *
++	 * For user contexts, the user handling code has cut off write access
++	 * to the context's PIO pages before calling this routine and will
++	 * restore write access after this routine returns.
++	 */
++	if (sc->type != SC_USER) {
++		/* kernel context */
++		loop = 0;
++		while (1) {
++			count = get_buffers_allocated(sc);
++			if (count == 0)
++				break;
++			if (loop > 100) {
++				dd_dev_err(dd,
++					   "%s: context %u(%u) timeout waiting for PIO buffers to zero, remaining %d\n",
++					   __func__, sc->sw_index,
++					   sc->hw_context, count);
++			}
++			loop++;
++			udelay(1);
++		}
++	}
++
++	/*
++	 * Step 3: Wait for all packets to egress.
++	 * This is done while disabling the send context
++	 *
++	 * Step 4: Disable the context
++	 *
++	 * This is a superset of the halt.  After the disable, the
++	 * errors can be cleared.
++	 */
++	sc_disable(sc);
++
++	/*
++	 * Step 5: Enable the context
++	 *
++	 * This enable will clear the halted flag and per-send context
++	 * error flags.
++	 */
++	return sc_enable(sc);
++}
 +
 +/*
-+ * Unlike regular IB RDMA VERBS, which do not require an entry
-+ * in the s_ack_queue, TID RDMA WRITE requests do because they
-+ * generate responses.
-+ * Therefore, the s_ack_queue needs to be extended by a certain
-+ * amount. The key point is that the queue needs to be extended
-+ * without letting the "user" know so they user doesn't end up
-+ * using these extra entries.
++ * PIO freeze processing.  To be called after the TXE block is fully frozen.
++ * Go through all frozen send contexts and disable them.  The contexts are
++ * already stopped by the freeze.
 + */
-+#define HFI2_TID_RDMA_WRITE_CNT 8
++void pio_freeze(struct hfi2_devdata *dd)
++{
++	struct send_context *sc;
++	int i;
 +
-+struct tid_rdma_params {
-+	struct rcu_head rcu_head;
-+	u32 qp;
-+	u32 max_len;
-+	u16 jkey;
-+	u8 max_read;
-+	u8 max_write;
-+	u8 timeout;
-+	u8 urg;
-+	u8 version;
-+};
++	for (i = 0; i < dd->num_send_contexts; i++) {
++		sc = dd->send_contexts[i].sc;
++		/*
++		 * Don't disable unallocated, unfrozen, or user send contexts.
++		 * User send contexts will be disabled when the process
++		 * calls into the driver to reset its context.
++		 */
++		if (!sc || !(sc->flags & SCF_FROZEN) || sc->type == SC_USER)
++			continue;
 +
-+struct tid_rdma_qp_params {
-+	struct work_struct trigger_work;
-+	struct tid_rdma_params local;
-+	struct tid_rdma_params __rcu *remote;
-+};
++		/* only need to disable, the context is already stopped */
++		sc_disable(sc);
++	}
++}
 +
-+/* Track state for each hardware flow */
-+struct tid_flow_state {
-+	u32 generation;
-+	u32 psn;
-+	u8 index;
-+	u8 last_index;
-+};
++/*
++ * Unfreeze PIO for kernel send contexts.  The precondition for calling this
++ * is that all PIO send contexts have been disabled and the SPC freeze has
++ * been cleared.  Now perform the last step and re-enable each kernel context.
++ * User (PSM) processing will occur when PSM calls into the kernel to
++ * acknowledge the freeze.
++ */
++void pio_kernel_unfreeze(struct hfi2_devdata *dd)
++{
++	struct send_context *sc;
++	int i;
 +
-+enum tid_rdma_req_state {
-+	TID_REQUEST_INACTIVE = 0,
-+	TID_REQUEST_INIT,
-+	TID_REQUEST_INIT_RESEND,
-+	TID_REQUEST_ACTIVE,
-+	TID_REQUEST_RESEND,
-+	TID_REQUEST_RESEND_ACTIVE,
-+	TID_REQUEST_QUEUED,
-+	TID_REQUEST_SYNC,
-+	TID_REQUEST_RNR_NAK,
-+	TID_REQUEST_COMPLETE,
-+};
++	for (i = 0; i < dd->num_send_contexts; i++) {
++		sc = dd->send_contexts[i].sc;
++		if (!sc || !(sc->flags & SCF_FROZEN) || sc->type == SC_USER)
++			continue;
++		if (sc->flags & SCF_LINK_DOWN)
++			continue;
 +
-+struct tid_rdma_request {
++		sc_enable(sc);	/* will clear the sc frozen flag */
++	}
++}
++
++/**
++ * pio_kernel_linkup() - Re-enable send contexts after linkup event
++ * @ppd: port data
++ *
++ * When the link goes down, the freeze path is taken.  However, a link down
++ * event is different from a freeze because if the send context is re-enabled
++ * whowever is sending data will start sending data again, which will hang
++ * any QP that is sending data.
++ *
++ * The freeze path now looks at the type of event that occurs and takes this
++ * path for link down event.
++ */
++void pio_kernel_linkup(struct hfi2_pportdata *ppd)
++{
++	struct hfi2_devdata *dd = ppd->dd;
++	struct send_context *sc;
++	int i;
++
++	for (i = 0; i < dd->num_send_contexts; i++) {
++		sc = dd->send_contexts[i].sc;
++		if (!sc || !(sc->flags & SCF_LINK_DOWN) || sc->type == SC_USER)
++			continue;
++		/* this port only */
++		if (sc->ppd != ppd)
++			continue;
++
++		sc_enable(sc);	/* will clear the sc link down flag */
++	}
++}
++
++/*
++ * Wait for the SendPioInitCtxt.PioInitInProgress bit to clear.
++ * Returns:
++ *	-ETIMEDOUT - if we wait too long
++ *	-EIO	   - if there was an error
++ */
++static int pio_init_wait_progress(struct hfi2_devdata *dd)
++{
++	u64 reg;
++	int max, count = 0;
++
++	/* max is the longest possible HW init time / delay */
++	max = 5;
++	while (1) {
++		reg = read_csr(dd, dd->params->send_pio_init_ctxt_reg);
++		if (!(reg & SEND_PIO_INIT_CTXT_PIO_INIT_IN_PROGRESS_SMASK))
++			break;
++		if (count >= max)
++			return -ETIMEDOUT;
++		udelay(5);
++		count++;
++	}
++
++	return reg & SEND_PIO_INIT_CTXT_PIO_INIT_ERR_SMASK ? -EIO : 0;
++}
++
++static int __pio_reset(struct hfi2_devdata *dd, u64 reg)
++{
++	write_csr(dd, dd->params->send_pio_init_ctxt_reg, reg);
++	/*
++	 * Wait until the engine is done.  Give the chip the required time
++	 * so, hopefully, we read the register just once.
++	 */
++	udelay(2);
++	return pio_init_wait_progress(dd);
++}
++
++/*
++ * Reset all of the send contexts to their power-on state.  Used
++ * only during manual init - no lock against sc_enable needed.
++ */
++void pio_reset_all(struct hfi2_devdata *dd)
++{
++	int ret;
++
++	/* make sure the init engine is not busy */
++	ret = pio_init_wait_progress(dd);
++	/* ignore any timeout */
++	if (ret == -EIO) {
++		/* clear the error */
++		write_csr(dd, dd->params->send_pio_err_clear_reg,
++			  SEND_PIO_ERR_CLEAR_PIO_INIT_SM_IN_ERR_SMASK);
++	}
++
++	/* reset init all */
++	ret = __pio_reset(dd, SEND_PIO_INIT_CTXT_PIO_ALL_CTXT_INIT_SMASK);
++	if (ret < 0) {
++		dd_dev_err(dd,
++			   "PIO send context init %s while initializing all PIO blocks\n",
++			   ret == -ETIMEDOUT ? "is stuck" : "had an error");
++	}
++}
++
++int pio_reset_one(struct hfi2_devdata *dd, u16 ctxt)
++{
++	u64 reg;
++	int ret;
++
++	/*
++	 * The HW PIO initialization engine can handle only one init
++	 * request at a time. Serialize access to each device's engine.
++	 */
++	spin_lock(&dd->sc_init_lock);
++	/*
++	 * Since access to this code block is serialized and
++	 * each access waits for the initialization to complete
++	 * before releasing the lock, the PIO initialization engine
++	 * should not be in use, so we don't have to wait for the
++	 * InProgress bit to go down.
++	 */
++	reg = ((ctxt & SEND_PIO_INIT_CTXT_PIO_CTXT_NUM_MASK) <<
++	       SEND_PIO_INIT_CTXT_PIO_CTXT_NUM_SHIFT) |
++	      SEND_PIO_INIT_CTXT_PIO_SINGLE_CTXT_INIT_SMASK;
++	ret = __pio_reset(dd, reg);
++	spin_unlock(&dd->sc_init_lock);
++	if (ret) {
++		dd_dev_err(dd, "sctxt(%u): Context not enabled due to init failure %d\n",
++			   ctxt, ret);
++	}
++	return ret;
++}
++
++/* enable the context */
++int sc_enable(struct send_context *sc)
++{
++	u64 reg;
++	struct hfi2_devdata *dd;
++	unsigned long flags;
++	int ret = 0;
++
++	if (!sc)
++		return -EINVAL;
++	dd = sc->dd;
++
++	/*
++	 * Obtain the allocator lock to guard against any allocation
++	 * attempts (which should not happen prior to context being
++	 * enabled). On the release/disable side we don't need to
++	 * worry about locking since the releaser will not do anything
++	 * if the context accounting values have not changed.
++	 */
++	spin_lock_irqsave(&sc->alloc_lock, flags);
++	if (sc->flags & SCF_ENABLED)
++		goto unlock; /* already enabled */
++
++	/* IMPORTANT: only clear free and fill if transitioning 0 -> 1 */
++
++	*sc->hw_free = 0;
++	sc->free = 0;
++	sc->alloc_free = 0;
++	sc->fill = 0;
++	sc->fill_wrap = 0;
++	sc->sr_head = 0;
++	sc->sr_tail = 0;
++	sc->flags = 0;
++	/* the alloc lock insures no fast path allocation */
++	reset_buffers_allocated(sc);
++
++	/*
++	 * Clear all per-context errors.  Some of these will be set when
++	 * we are re-enabling after a context halt.  Now that the context
++	 * is disabled, the halt will not clear until after the PIO init
++	 * engine runs below.
++	 */
++	reg = read_sctxt_csr(dd, sc->hw_context, dd->params->send_ctxt_err_status_reg);
++	if (reg)
++		write_sctxt_csr(dd, sc->hw_context, dd->params->send_ctxt_err_clear_reg, reg);
++
++	ret = priv_reg_op(dd, 0, sc->hw_context, sc->type, SC_ENABLE_OP, 0);
++	if (ret)
++		goto unlock;
++
++	sc->flags |= SCF_ENABLED;
++
++unlock:
++	spin_unlock_irqrestore(&sc->alloc_lock, flags);
++
++	return ret;
++}
++
++/* force a credit return on the context */
++void sc_return_credits(struct send_context *sc)
++{
++	if (!sc)
++		return;
++
++	/* a 0->1 transition schedules a credit return */
++	write_sctxt_csr(sc->dd, sc->hw_context,
++			sc->dd->params->send_ctxt_credit_force_reg,
++			SC(CREDIT_FORCE_FORCE_RETURN_SMASK));
++	/*
++	 * Ensure that the write is flushed and the credit return is
++	 * scheduled. We care more about the 0 -> 1 transition.
++	 */
++	read_sctxt_csr(sc->dd, sc->hw_context,
++		       sc->dd->params->send_ctxt_credit_force_reg);
++	/* set back to 0 for next time */
++	write_sctxt_csr(sc->dd, sc->hw_context,
++			sc->dd->params->send_ctxt_credit_force_reg, 0);
++}
++
++/* allow all in-flight packets to drain on the context */
++void sc_flush(struct send_context *sc)
++{
++	if (!sc)
++		return;
++
++	sc_wait_for_packet_egress(sc, 1);
++}
++
++/*
++ * Start the software reaction to a context halt or SPC freeze:
++ *	- mark the context as halted or frozen
++ *	- stop buffer allocations
++ *
++ * Called from the error interrupt.  Other work is deferred until
++ * out of the interrupt.
++ */
++void sc_stop(struct send_context *sc, int flag)
++{
++	unsigned long flags;
++
++	/* stop buffer allocations */
++	spin_lock_irqsave(&sc->alloc_lock, flags);
++	/* mark the context */
++	sc->flags |= flag;
++	sc->flags &= ~SCF_ENABLED;
++	spin_unlock_irqrestore(&sc->alloc_lock, flags);
++	wake_up(&sc->halt_wait);
++}
++
++#define BLOCK_DWORDS (PIO_BLOCK_SIZE / sizeof(u32))
++#define dwords_to_blocks(x) DIV_ROUND_UP(x, BLOCK_DWORDS)
++
++/*
++ * The send context buffer "allocator".
++ *
++ * @sc: the PIO send context we are allocating from
++ * @len: length of whole packet - including PBC - in dwords
++ * @cb: optional callback to call when the buffer is finished sending
++ * @arg: argument for cb
++ *
++ * Return a pointer to a PIO buffer, NULL if not enough room, -ECOMM
++ * when link is down.
++ */
++struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
++				pio_release_cb cb, void *arg)
++{
++	struct pio_buf *pbuf = NULL;
++	unsigned long flags;
++	unsigned long avail;
++	unsigned long blocks = dwords_to_blocks(dw_len);
++	u32 fill_wrap;
++	int trycount = 0;
++	u32 head, next;
++
++	spin_lock_irqsave(&sc->alloc_lock, flags);
++	if (!(sc->flags & SCF_ENABLED)) {
++		spin_unlock_irqrestore(&sc->alloc_lock, flags);
++		return ERR_PTR(-ECOMM);
++	}
++
++retry:
++	avail = (unsigned long)sc->credits - (sc->fill - sc->alloc_free);
++	if (blocks > avail) {
++		/* not enough room */
++		if (unlikely(trycount))	{ /* already tried to get more room */
++			spin_unlock_irqrestore(&sc->alloc_lock, flags);
++			goto done;
++		}
++		/* copy from receiver cache line and recalculate */
++		sc->alloc_free = READ_ONCE(sc->free);
++		avail =
++			(unsigned long)sc->credits -
++			(sc->fill - sc->alloc_free);
++		if (blocks > avail) {
++			/* still no room, actively update */
++			sc_release_update(sc);
++			sc->alloc_free = READ_ONCE(sc->free);
++			trycount++;
++			goto retry;
++		}
++	}
++
++	/* there is enough room */
++
++	preempt_disable();
++	this_cpu_inc(*sc->buffers_allocated);
++
++	/* read this once */
++	head = sc->sr_head;
++
++	/* "allocate" the buffer */
++	sc->fill += blocks;
++	fill_wrap = sc->fill_wrap;
++	sc->fill_wrap += blocks;
++	if (sc->fill_wrap >= sc->credits)
++		sc->fill_wrap = sc->fill_wrap - sc->credits;
++
++	/*
++	 * Fill the parts that the releaser looks at before moving the head.
++	 * The only necessary piece is the sent_at field.  The credits
++	 * we have just allocated cannot have been returned yet, so the
++	 * cb and arg will not be looked at for a "while".  Put them
++	 * on this side of the memory barrier anyway.
++	 */
++	pbuf = &sc->sr[head].pbuf;
++	pbuf->sent_at = sc->fill;
++	pbuf->cb = cb;
++	pbuf->arg = arg;
++	pbuf->sc = sc;	/* could be filled in at sc->sr init time */
++	/* make sure this is in memory before updating the head */
++
++	/* calculate next head index, do not store */
++	next = head + 1;
++	if (next >= sc->sr_size)
++		next = 0;
++	/*
++	 * update the head - must be last! - the releaser can look at fields
++	 * in pbuf once we move the head
++	 */
++	smp_wmb();
++	sc->sr_head = next;
++	spin_unlock_irqrestore(&sc->alloc_lock, flags);
++
++	/* finish filling in the buffer outside the lock */
++	pbuf->start = sc->base_addr + fill_wrap * PIO_BLOCK_SIZE;
++	pbuf->end = sc->base_addr + sc->size;
++	pbuf->qw_written = 0;
++	pbuf->carry_bytes = 0;
++	pbuf->carry.val64 = 0;
++done:
++	return pbuf;
++}
++
++/*
++ * There are at least two entities that can turn on credit return
++ * interrupts and they can overlap.  Avoid problems by implementing
++ * a count scheme that is enforced by a lock.  The lock is needed because
++ * the count and CSR write must be paired.
++ */
++
++/*
++ * Start credit return interrupts.  This is managed by a count.  If already
++ * on, just increment the count.
++ */
++void sc_add_credit_return_intr(struct send_context *sc)
++{
++	unsigned long flags;
++
++	/* lock must surround both the count change and the CSR update */
++	spin_lock_irqsave(&sc->credit_ctrl_lock, flags);
++	if (sc->credit_intr_count == 0) {
++		sc->credit_ctrl |= SC(CREDIT_CTRL_CREDIT_INTR_SMASK);
++		write_sctxt_csr(sc->dd, sc->hw_context,
++				sc->dd->params->send_ctxt_credit_ctrl_reg,
++				sc->credit_ctrl);
++	}
++	sc->credit_intr_count++;
++	spin_unlock_irqrestore(&sc->credit_ctrl_lock, flags);
++}
++
++/*
++ * Stop credit return interrupts.  This is managed by a count.  Decrement the
++ * count, if the last user, then turn the credit interrupts off.
++ */
++void sc_del_credit_return_intr(struct send_context *sc)
++{
++	unsigned long flags;
++
++	WARN_ON(sc->credit_intr_count == 0);
++
++	/* lock must surround both the count change and the CSR update */
++	spin_lock_irqsave(&sc->credit_ctrl_lock, flags);
++	sc->credit_intr_count--;
++	if (sc->credit_intr_count == 0) {
++		sc->credit_ctrl &= ~SC(CREDIT_CTRL_CREDIT_INTR_SMASK);
++		write_sctxt_csr(sc->dd, sc->hw_context,
++				sc->dd->params->send_ctxt_credit_ctrl_reg,
++				sc->credit_ctrl);
++	}
++	spin_unlock_irqrestore(&sc->credit_ctrl_lock, flags);
++}
++
++/*
++ * The caller must be careful when calling this.  All needint calls
++ * must be paired with !needint.
++ */
++void hfi2_sc_wantpiobuf_intr(struct send_context *sc, u32 needint)
++{
++	if (needint)
++		sc_add_credit_return_intr(sc);
++	else
++		sc_del_credit_return_intr(sc);
++	trace_hfi2_wantpiointr(sc, needint, sc->credit_ctrl);
++	if (needint)
++		sc_return_credits(sc);
++}
++
++/**
++ * sc_piobufavail - callback when a PIO buffer is available
++ * @sc: the send context
++ *
++ * This is called from the interrupt handler when a PIO buffer is
++ * available after hfi2_verbs_send() returned an error that no buffers were
++ * available. Disable the interrupt if there are no more QPs waiting.
++ */
++static void sc_piobufavail(struct send_context *sc)
++{
++	struct hfi2_devdata *dd = sc->dd;
++	struct list_head *list;
++	struct rvt_qp *qps[PIO_WAIT_BATCH_SIZE];
 +	struct rvt_qp *qp;
-+	struct hfi2_ctxtdata *rcd;
-+	union {
-+		struct rvt_swqe *swqe;
-+		struct rvt_ack_entry *ack;
-+	} e;
++	struct hfi2_qp_priv *priv;
++	unsigned long flags;
++	uint i, n = 0, top_idx = 0;
 +
-+	struct tid_rdma_flow *flows;	/* array of tid flows */
-+	struct rvt_sge_state ss; /* SGE state for TID RDMA requests */
-+	u16 n_flows;		/* size of the flow buffer window */
-+	u16 setup_head;		/* flow index we are setting up */
-+	u16 clear_tail;		/* flow index we are clearing */
-+	u16 flow_idx;		/* flow index most recently set up */
-+	u16 acked_tail;
-+
-+	u32 seg_len;
-+	u32 total_len;
-+	u32 r_ack_psn;          /* next expected ack PSN */
-+	u32 r_flow_psn;         /* IB PSN of next segment start */
-+	u32 r_last_acked;       /* IB PSN of last ACK'ed packet */
-+	u32 s_next_psn;		/* IB PSN of next segment start for read */
-+
-+	u32 total_segs;		/* segments required to complete a request */
-+	u32 cur_seg;		/* index of current segment */
-+	u32 comp_seg;           /* index of last completed segment */
-+	u32 ack_seg;            /* index of last ack'ed segment */
-+	u32 alloc_seg;          /* index of next segment to be allocated */
-+	u32 isge;		/* index of "current" sge */
-+	u32 ack_pending;        /* num acks pending for this request */
-+
-+	enum tid_rdma_req_state state;
-+};
-+
-+/*
-+ * When header suppression is used, PSNs associated with a "flow" are
-+ * relevant (and not the PSNs maintained by verbs). Track per-flow
-+ * PSNs here for a TID RDMA segment.
-+ *
-+ */
-+struct flow_state {
-+	u32 flags;
-+	u32 resp_ib_psn;     /* The IB PSN of the response for this flow */
-+	u32 generation;      /* generation of flow */
-+	u32 spsn;            /* starting PSN in TID space */
-+	u32 lpsn;            /* last PSN in TID space */
-+	u32 r_next_psn;      /* next PSN to be received (in TID space) */
-+
-+	/* For tid rdma read */
-+	u32 ib_spsn;         /* starting PSN in Verbs space */
-+	u32 ib_lpsn;         /* last PSn in Verbs space */
-+};
-+
-+struct tid_rdma_pageset {
-+	dma_addr_t addr : 48; /* Only needed for the first page */
-+	u8 idx: 8;
-+	u8 count : 7;
-+	u8 mapped: 1;
-+};
-+
-+/**
-+ * kern_tid_node - used for managing TID's in TID groups
-+ *
-+ * @grp_idx: rcd relative index to tid_group
-+ * @map: grp->map captured prior to programming this TID group in HW
-+ * @cnt: Only @cnt of available group entries are actually programmed
-+ */
-+struct kern_tid_node {
-+	struct tid_group *grp;
-+	u8 map;
-+	u8 cnt;
-+};
-+
-+/* Overall info for a TID RDMA segment */
-+struct tid_rdma_flow {
-+	/*
-+	 * While a TID RDMA segment is being transferred, it uses a QP number
-+	 * from the "KDETH section of QP numbers" (which is different from the
-+	 * QP number that originated the request). Bits 11-15 of these QP
-+	 * numbers identify the "TID flow" for the segment.
-+	 */
-+	struct flow_state flow_state;
-+	struct tid_rdma_request *req;
-+	u32 tid_qpn;
-+	u32 tid_offset;
-+	u32 length;
-+	u32 sent;
-+	u8 tnode_cnt;
-+	u8 tidcnt;
-+	u8 tid_idx;
-+	u8 idx;
-+	u8 npagesets;
-+	u8 npkts;
-+	u8 pkt;
-+	u8 resync_npkts;
-+	struct kern_tid_node tnode[TID_RDMA_MAX_PAGES];
-+	struct tid_rdma_pageset pagesets[TID_RDMA_MAX_PAGES];
-+	u32 tid_entry[TID_RDMA_MAX_PAGES];
-+};
-+
-+enum tid_rnr_nak_state {
-+	TID_RNR_NAK_INIT = 0,
-+	TID_RNR_NAK_SEND,
-+	TID_RNR_NAK_SENT,
-+};
-+
-+bool tid_rdma_conn_req(struct rvt_qp *qp, u64 *data);
-+bool tid_rdma_conn_reply(struct rvt_qp *qp, u64 data);
-+bool tid_rdma_conn_resp(struct rvt_qp *qp, u64 *data);
-+void tid_rdma_conn_error(struct rvt_qp *qp);
-+void tid_rdma_opfn_init(struct rvt_qp *qp, struct tid_rdma_params *p);
-+
-+int hfi2_kern_exp_rcv_init(struct hfi2_ctxtdata *rcd, int reinit);
-+int hfi2_kern_exp_rcv_setup(struct tid_rdma_request *req,
-+			    struct rvt_sge_state *ss, bool *last);
-+int hfi2_kern_exp_rcv_clear(struct tid_rdma_request *req);
-+void hfi2_kern_exp_rcv_clear_all(struct tid_rdma_request *req);
-+void __trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe);
-+
-+/**
-+ * trdma_clean_swqe - clean flows for swqe if large send queue
-+ * @qp: the qp
-+ * @wqe: the send wqe
-+ */
-+static inline void trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe)
-+{
-+	if (!wqe->priv)
++	if (dd->send_contexts[sc->sw_index].type != SC_KERNEL &&
++	    dd->send_contexts[sc->sw_index].type != SC_VL15)
 +		return;
-+	__trdma_clean_swqe(qp, wqe);
++	list = &sc->piowait;
++	/*
++	 * Note: checking that the piowait list is empty and clearing
++	 * the buffer available interrupt needs to be atomic or we
++	 * could end up with QPs on the wait list with the interrupt
++	 * disabled.
++	 */
++	write_seqlock_irqsave(&sc->waitlock, flags);
++	while (!list_empty(list)) {
++		struct iowait *wait;
++
++		if (n == ARRAY_SIZE(qps))
++			break;
++		wait = list_first_entry(list, struct iowait, list);
++		iowait_get_priority(wait);
++		qp = iowait_to_qp(wait);
++		priv = qp->priv;
++		list_del_init(&priv->s_iowait.list);
++		priv->s_iowait.lock = NULL;
++		if (n) {
++			priv = qps[top_idx]->priv;
++			top_idx = iowait_priority_update_top(wait,
++							     &priv->s_iowait,
++							     n, top_idx);
++		}
++
++		/* refcount held until actual wake up */
++		qps[n++] = qp;
++	}
++	/*
++	 * If there had been waiters and there are more
++	 * insure that we redo the force to avoid a potential hang.
++	 */
++	if (n) {
++		hfi2_sc_wantpiobuf_intr(sc, 0);
++		if (!list_empty(list))
++			hfi2_sc_wantpiobuf_intr(sc, 1);
++	}
++	write_sequnlock_irqrestore(&sc->waitlock, flags);
++
++	/* Wake up the top-priority one first */
++	if (n)
++		hfi2_qp_wakeup(qps[top_idx],
++			       RVT_S_WAIT_PIO | HFI2_S_WAIT_PIO_DRAIN);
++	for (i = 0; i < n; i++)
++		if (i != top_idx)
++			hfi2_qp_wakeup(qps[i],
++				       RVT_S_WAIT_PIO | HFI2_S_WAIT_PIO_DRAIN);
 +}
 +
-+void hfi2_kern_read_tid_flow_free(struct rvt_qp *qp);
-+
-+struct hfi2_ctxtdata *qp_to_rcd(struct rvt_qp *qp);
-+int hfi2_qp_priv_init(struct rvt_dev_info *rdi, struct rvt_qp *qp,
-+		      struct ib_qp_init_attr *init_attr);
-+void hfi2_qp_priv_tid_free(struct rvt_dev_info *rdi, struct rvt_qp *qp);
-+
-+void hfi2_tid_rdma_flush_wait(struct rvt_qp *qp);
-+
-+int hfi2_kern_setup_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp);
-+void hfi2_kern_clear_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp);
-+void hfi2_kern_init_ctxt_generations(struct hfi2_ctxtdata *rcd);
-+
-+struct cntr_entry;
-+u64 hfi2_access_sw_tid_wait(const struct cntr_entry *entry,
-+			    void *context, int vl, int mode, u64 data);
-+
-+u32 hfi2_build_tid_rdma_read_packet(struct rvt_swqe *wqe,
-+				    struct ib_other_headers *ohdr,
-+				    u32 *bth1, u32 *bth2, u32 *len);
-+u32 hfi2_build_tid_rdma_read_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+				 struct ib_other_headers *ohdr, u32 *bth1,
-+				 u32 *bth2, u32 *len);
-+void hfi2_rc_rcv_tid_rdma_read_req(struct hfi2_packet *packet);
-+u32 hfi2_build_tid_rdma_read_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				  struct ib_other_headers *ohdr, u32 *bth0,
-+				  u32 *bth1, u32 *bth2, u32 *len, bool *last);
-+void hfi2_rc_rcv_tid_rdma_read_resp(struct hfi2_packet *packet);
-+bool hfi2_handle_kdeth_eflags(struct hfi2_ctxtdata *rcd,
-+			      struct hfi2_pportdata *ppd,
-+			      struct hfi2_packet *packet);
-+void hfi2_tid_rdma_restart_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+			       u32 *bth2);
-+void hfi2_qp_kern_exp_rcv_clear_all(struct rvt_qp *qp);
-+bool hfi2_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe);
-+
-+void setup_tid_rdma_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe);
-+static inline void hfi2_setup_tid_rdma_wqe(struct rvt_qp *qp,
-+					   struct rvt_swqe *wqe)
++/* translate a send credit update to a bit code of reasons */
++static inline int fill_code(u64 hw_free)
 +{
-+	if (wqe->priv &&
-+	    (wqe->wr.opcode == IB_WR_RDMA_READ ||
-+	     wqe->wr.opcode == IB_WR_RDMA_WRITE) &&
-+	    wqe->length >= TID_RDMA_MIN_SEGMENT_SIZE)
-+		setup_tid_rdma_wqe(qp, wqe);
++	int code = 0;
++
++	if (hw_free & CR_STATUS_SMASK)
++		code |= PRC_STATUS_ERR;
++	if (hw_free & CR_CREDIT_RETURN_DUE_TO_PBC_SMASK)
++		code |= PRC_PBC;
++	if (hw_free & CR_CREDIT_RETURN_DUE_TO_THRESHOLD_SMASK)
++		code |= PRC_THRESHOLD;
++	if (hw_free & CR_CREDIT_RETURN_DUE_TO_ERR_SMASK)
++		code |= PRC_FILL_ERR;
++	if (hw_free & CR_CREDIT_RETURN_DUE_TO_FORCE_SMASK)
++		code |= PRC_SC_DISABLE;
++	return code;
 +}
 +
-+u32 hfi2_build_tid_rdma_write_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+				  struct ib_other_headers *ohdr,
-+				  u32 *bth1, u32 *bth2, u32 *len);
++/* use the jiffies compare to get the wrap right */
++#define sent_before(a, b) time_before(a, b)	/* a < b */
 +
-+void hfi2_rc_rcv_tid_rdma_write_req(struct hfi2_packet *packet);
-+
-+u32 hfi2_build_tid_rdma_write_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				   struct ib_other_headers *ohdr, u32 *bth1,
-+				   u32 bth2, u32 *len,
-+				   struct rvt_sge_state **ss);
-+
-+void hfi2_del_tid_reap_timer(struct rvt_qp *qp);
-+
-+void hfi2_rc_rcv_tid_rdma_write_resp(struct hfi2_packet *packet);
-+
-+bool hfi2_build_tid_rdma_packet(struct rvt_swqe *wqe,
-+				struct ib_other_headers *ohdr,
-+				u32 *bth1, u32 *bth2, u32 *len);
-+
-+void hfi2_rc_rcv_tid_rdma_write_data(struct hfi2_packet *packet);
-+
-+u32 hfi2_build_tid_rdma_write_ack(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				  struct ib_other_headers *ohdr, u16 iflow,
-+				  u32 *bth1, u32 *bth2);
-+
-+void hfi2_rc_rcv_tid_rdma_ack(struct hfi2_packet *packet);
-+
-+void hfi2_add_tid_retry_timer(struct rvt_qp *qp);
-+void hfi2_del_tid_retry_timer(struct rvt_qp *qp);
-+
-+u32 hfi2_build_tid_rdma_resync(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+			       struct ib_other_headers *ohdr, u32 *bth1,
-+			       u32 *bth2, u16 fidx);
-+
-+void hfi2_rc_rcv_tid_rdma_resync(struct hfi2_packet *packet);
-+
-+struct hfi2_pkt_state;
-+int hfi2_make_tid_rdma_pkt(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
-+
-+void _hfi2_do_tid_send(struct work_struct *work);
-+
-+bool hfi2_schedule_tid_send(struct rvt_qp *qp);
-+
-+bool hfi2_tid_rdma_ack_interlock(struct rvt_qp *qp, struct rvt_ack_entry *e);
-+
-+#endif /* HFI2_TID_RDMA_H */
-diff --git a/drivers/infiniband/hw/hfi2/user_exp_rcv.h b/drivers/infiniband/hw/hfi2/user_exp_rcv.h
-new file mode 100644
-index 000000000000..77b824de3055
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/user_exp_rcv.h
-@@ -0,0 +1,404 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/*
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ * Copyright(c) 2015 - 2017 Intel Corporation.
++ * The send context buffer "releaser".
 + */
++void sc_release_update(struct send_context *sc)
++{
++	struct pio_buf *pbuf;
++	u64 hw_free;
++	u32 head, tail;
++	unsigned long old_free;
++	unsigned long free;
++	unsigned long extra;
++	unsigned long flags;
++	int code;
 +
-+#ifndef _HFI2_USER_EXP_RCV_H
-+#define _HFI2_USER_EXP_RCV_H
++	if (!sc)
++		return;
++
++	spin_lock_irqsave(&sc->release_lock, flags);
++	/* update free */
++	hw_free = le64_to_cpu(*sc->hw_free);		/* volatile read */
++	old_free = sc->free;
++	extra = (((hw_free & CR_COUNTER_SMASK) >> CR_COUNTER_SHIFT)
++			- (old_free & CR_COUNTER_MASK))
++				& CR_COUNTER_MASK;
++	free = old_free + extra;
++	trace_hfi2_piofree(sc, extra);
++
++	/* call sent buffer callbacks */
++	code = -1;				/* code not yet set */
++	head = READ_ONCE(sc->sr_head);	/* snapshot the head */
++	tail = sc->sr_tail;
++	while (head != tail) {
++		pbuf = &sc->sr[tail].pbuf;
++
++		if (sent_before(free, pbuf->sent_at)) {
++			/* not sent yet */
++			break;
++		}
++		if (pbuf->cb) {
++			if (code < 0) /* fill in code on first user */
++				code = fill_code(hw_free);
++			(*pbuf->cb)(pbuf->arg, code);
++		}
++
++		tail++;
++		if (tail >= sc->sr_size)
++			tail = 0;
++	}
++	sc->sr_tail = tail;
++	/* make sure tail is updated before free */
++	smp_wmb();
++	sc->free = free;
++	spin_unlock_irqrestore(&sc->release_lock, flags);
++	sc_piobufavail(sc);
++}
++
++/*
++ * Send context group releaser.  Argument is the send context that caused
++ * the interrupt.  Called from the send context interrupt handler.
++ *
++ * Call release on all contexts in the group.
++ *
++ * This routine takes the sc_lock without an irqsave because it is only
++ * called from an interrupt handler.  Adjust if that changes.
++ */
++void sc_group_release_update(struct hfi2_devdata *dd, u32 hw_context)
++{
++	struct send_context *sc;
++	u32 sw_index;
++	u32 gc, gc_end;
++
++	spin_lock(&dd->sc_lock);
++	sw_index = dd->hw_to_sw[hw_context];
++	if (unlikely(sw_index >= dd->num_send_contexts)) {
++		dd_dev_err(dd, "%s: invalid hw (%u) to sw (%u) mapping\n",
++			   __func__, hw_context, sw_index);
++		goto done;
++	}
++	sc = dd->send_contexts[sw_index].sc;
++	if (unlikely(!sc))
++		goto done;
++
++	gc = group_context(hw_context, sc->group);
++	gc_end = gc + group_size(sc->group);
++	for (; gc < gc_end; gc++) {
++		sw_index = dd->hw_to_sw[gc];
++		if (unlikely(sw_index >= dd->num_send_contexts)) {
++			dd_dev_err(dd,
++				   "%s: invalid hw (%u) to sw (%u) mapping\n",
++				   __func__, hw_context, sw_index);
++			continue;
++		}
++		sc_release_update(dd->send_contexts[sw_index].sc);
++	}
++done:
++	spin_unlock(&dd->sc_lock);
++}
++
++/*
++ * pio_select_send_context_vl() - select send context
++ * @dd: devdata
++ * @selector: a spreading factor
++ * @vl: this vl
++ *
++ * This function returns a send context based on the selector and a vl.
++ * The mapping fields are protected by RCU
++ */
++struct send_context *pio_select_send_context_vl(struct hfi2_pportdata *ppd,
++						u32 selector, u8 vl)
++{
++	struct pio_vl_map *m;
++	struct pio_map_elem *e;
++	struct send_context *rval;
++
++	/*
++	 * NOTE This should only happen if SC->VL changed after the initial
++	 * checks on the QP/AH
++	 * Default will return VL0's send context below
++	 */
++	if (unlikely(vl >= num_vls)) {
++		rval = NULL;
++		goto done;
++	}
++
++	rcu_read_lock();
++	m = rcu_dereference(ppd->pio_map);
++	if (unlikely(!m)) {
++		rcu_read_unlock();
++		return ppd->vld[0].sc;
++	}
++	e = m->map[vl & m->mask];
++	rval = e->ksc[selector & e->mask];
++	rcu_read_unlock();
++
++done:
++	rval = !rval ? ppd->vld[0].sc : rval;
++	return rval;
++}
++
++/*
++ * pio_select_send_context_sc() - select send context
++ * @dd: devdata
++ * @selector: a spreading factor
++ * @sc5: the 5 bit sc
++ *
++ * This function returns an send context based on the selector and an sc
++ */
++struct send_context *pio_select_send_context_sc(struct hfi2_pportdata *ppd,
++						u32 selector, u8 sc5)
++{
++	u8 vl = sc_to_vlt(ppd, sc5);
++
++	return pio_select_send_context_vl(ppd, selector, vl);
++}
++
++/*
++ * Free the indicated map struct
++ */
++static void pio_map_free(struct pio_vl_map *m)
++{
++	int i;
++
++	for (i = 0; m && i < m->actual_vls; i++)
++		kfree(m->map[i]);
++	kfree(m);
++}
++
++/*
++ * Handle RCU callback
++ */
++static void pio_map_rcu_callback(struct rcu_head *list)
++{
++	struct pio_vl_map *m = container_of(list, struct pio_vl_map, list);
++
++	pio_map_free(m);
++}
++
++/*
++ * Set credit return threshold for the kernel send context
++ */
++static void set_threshold(struct hfi2_pportdata *ppd, int scontext, int i)
++{
++	struct send_context *sc = ppd->kernel_send_context[scontext];
++	u32 thres;
++
++	thres = min(sc_percent_to_threshold(sc, 50),
++		    sc_mtu_to_threshold(sc, sc->ppd->vld[i].mtu,
++					kctxt_hdrqentsize(sc->ppd)));
++	sc_set_cr_threshold(sc, thres);
++}
++
++/*
++ * pio_map_init - called when #vls change
++ * @dd: hfi2_devdata
++ * @num_vls: number of vls
++ *
++ * This routine changes the vl to send context mapping based on the number of
++ * vls and available send contexts.
++ *
++ * The auto algorithm computes the sc_per_vl and the number of extra send
++ * contexts. Any extra send contexts are added from the highest VL on down
++ *
++ * rcu locking is used to control access to the mapping fields.
++ *
++ * If either the num_vls or vl_scontexts[vl] are non-power of 2, the array
++ * sizes in the struct pio_vl_map and the struct pio_map_elem are rounded up
++ * to the next highest power of 2 and the first entry is reused in a round
++ * robin fashion.
++ *
++ * If an error occurs the mapping is not changed.
++ */
++int pio_map_init(struct hfi2_pportdata *ppd, u8 num_vls)
++{
++	struct hfi2_devdata *dd = ppd->dd;
++	int i, j;
++	int extra, sc_per_vl;
++	int scontext = 1; /* first non-vl15 kernel_send_context */
++	int num_kernel_send_contexts = 0;
++	int vl_scontexts[OPA_MAX_VLS];
++	struct pio_vl_map *oldmap, *newmap;
++
++	/* assign a count of send contexts to each VL */
++	/* count kernel send contexts for this port */
++	for (i = 0; i < dd->num_send_contexts; i++) {
++		if (dd->send_contexts[i].type != SC_KERNEL)
++			continue;
++		if (!dd->send_contexts[i].sc)
++			continue;
++		if (dd->send_contexts[i].sc->ppd != ppd)
++			continue;
++		num_kernel_send_contexts++;
++	}
++	/* truncate divide */
++	sc_per_vl = num_kernel_send_contexts / num_vls;
++	/* extras */
++	extra = num_kernel_send_contexts % num_vls;
++	/* add extras from last vl down */
++	for (i = num_vls - 1; i >= 0; i--, extra--)
++		vl_scontexts[i] = sc_per_vl + (extra > 0 ? 1 : 0);
++
++	/* build new map */
++	newmap = kzalloc(struct_size(newmap, map, roundup_pow_of_two(num_vls)),
++			 GFP_KERNEL);
++	if (!newmap)
++		goto bail;
++	newmap->actual_vls = num_vls;
++	newmap->vls = roundup_pow_of_two(num_vls);
++	newmap->mask = (1 << ilog2(newmap->vls)) - 1;
++	for (i = 0; i < newmap->vls; i++) {
++		/* save for wrap around */
++		int first_scontext = scontext;
++
++		if (i < newmap->actual_vls) {
++			int sz = roundup_pow_of_two(vl_scontexts[i]);
++
++			/* only allocate once */
++			newmap->map[i] = kzalloc(struct_size(newmap->map[i],
++							     ksc, sz),
++						 GFP_KERNEL);
++			if (!newmap->map[i])
++				goto bail;
++			newmap->map[i]->mask = (1 << ilog2(sz)) - 1;
++			/*
++			 * assign send contexts and
++			 * adjust credit return threshold
++			 */
++			for (j = 0; j < sz; j++) {
++				if (ppd->kernel_send_context[scontext]) {
++					newmap->map[i]->ksc[j] =
++					    ppd->kernel_send_context[scontext];
++					set_threshold(ppd, scontext, i);
++				}
++				if (++scontext >= first_scontext +
++						  vl_scontexts[i])
++					/* wrap back to first send context */
++					scontext = first_scontext;
++			}
++		} else {
++			/* just re-use entry without allocating */
++			newmap->map[i] = newmap->map[i % num_vls];
++		}
++		scontext = first_scontext + vl_scontexts[i];
++	}
++	/* newmap in hand, save old map */
++	spin_lock_irq(&dd->pio_map_lock);
++	oldmap = rcu_dereference_protected(ppd->pio_map,
++					   lockdep_is_held(&dd->pio_map_lock));
++
++	/* publish newmap */
++	rcu_assign_pointer(ppd->pio_map, newmap);
++
++	spin_unlock_irq(&dd->pio_map_lock);
++	/* success, free any old map after grace period */
++	if (oldmap)
++		call_rcu(&oldmap->list, pio_map_rcu_callback);
++	return 0;
++bail:
++	/* free any partial allocation */
++	pio_map_free(newmap);
++	return -ENOMEM;
++}
++
++void free_pio_map(struct hfi2_devdata *dd)
++{
++	struct hfi2_pportdata *ppd;
++	int i;
++
++	for (i = 0; i < dd->num_pports; i++) {
++		ppd = dd->pport + i;
++		/* Free PIO map if allocated */
++		if (rcu_access_pointer(ppd->pio_map)) {
++			spin_lock_irq(&dd->pio_map_lock);
++			pio_map_free(rcu_access_pointer(ppd->pio_map));
++			RCU_INIT_POINTER(ppd->pio_map, NULL);
++			spin_unlock_irq(&dd->pio_map_lock);
++			synchronize_rcu();
++		}
++		kfree(ppd->kernel_send_context);
++		ppd->kernel_send_context = NULL;
++	}
++}
++
++int init_pervl_scs(struct hfi2_pportdata *ppd)
++{
++	struct hfi2_devdata *dd = ppd->dd;
++	struct send_context *sc;
++	int i;
++	u64 mask;
++	const u64 all_vl_mask = (u64)0x80ff; /* VLs 0-7, 15 */
++	const u64 data_vls_mask = (u64)0x00ff; /* VLs 0-7 */
++	u32 ctxt;
++	u8 rcvhdrqentsize;
++
++	/* do nothing for an unavailable port */
++	if (!port_available_ppd(ppd))
++		return 0;
++
++	rcvhdrqentsize = kctxt_hdrqentsize(ppd);
++	ppd->vld[15].sc = sc_alloc(ppd, SC_VL15, rcvhdrqentsize, dd->node);
++	if (!ppd->vld[15].sc)
++		return -ENOMEM;
++
++	hfi2_init_ctxt(ppd->vld[15].sc);
++	ppd->vld[15].mtu = enum_to_mtu(OPA_MTU_2048);
++
++	ppd->kernel_send_context = kcalloc_node(dd->num_send_contexts,
++						sizeof(struct send_context *),
++						GFP_KERNEL, dd->node);
++	if (!ppd->kernel_send_context)
++		goto freesc15;
++
++	ppd->kernel_send_context[0] = ppd->vld[15].sc;
++
++	for (i = 0; i < num_vls; i++) {
++		sc = sc_alloc(ppd, SC_KERNEL, rcvhdrqentsize, dd->node);
++		if (!sc)
++			goto nomem;
++		hfi2_init_ctxt(sc);
++		ppd->kernel_send_context[i + 1] = sc;
++		ppd->vld[i].sc = sc;
++		/* non VL15 start with the max MTU */
++		ppd->vld[i].mtu = hfi2_max_mtu;
++	}
++	for (i = num_vls; i < INIT_SC_PER_VL * num_vls; i++) {
++		sc = sc_alloc(ppd, SC_KERNEL, rcvhdrqentsize, dd->node);
++		if (!sc)
++			goto nomem;
++		hfi2_init_ctxt(sc);
++		ppd->kernel_send_context[i + 1] = sc;
++	}
++
++	sc_enable(ppd->vld[15].sc);
++	ctxt = ppd->vld[15].sc->hw_context;
++	mask = all_vl_mask & ~(1LL << 15);
++	priv_reg_op(dd, ppd->hw_pidx, ctxt, ppd->vld[15].sc->type, SC_CHK_VL_MASK_OP, mask);
++	dd_dev_info(dd,
++		    "pidx %d: Using send context %u(%u) for VL15\n",
++		    ppd->hw_pidx, ppd->vld[15].sc->sw_index, ctxt);
++
++	for (i = 0; i < num_vls; i++) {
++		sc_enable(ppd->vld[i].sc);
++		ctxt = ppd->vld[i].sc->hw_context;
++		mask = all_vl_mask & ~(data_vls_mask);
++		priv_reg_op(dd, ppd->hw_pidx, ctxt, ppd->vld[i].sc->type, SC_CHK_VL_MASK_OP, mask);
++	}
++	for (i = num_vls; i < INIT_SC_PER_VL * num_vls; i++) {
++		sc_enable(ppd->kernel_send_context[i + 1]);
++		ctxt = ppd->kernel_send_context[i + 1]->hw_context;
++		mask = all_vl_mask & ~(data_vls_mask);
++		priv_reg_op(dd, ppd->hw_pidx, ctxt, ppd->kernel_send_context[i + 1]->type,
++			    SC_CHK_VL_MASK_OP, mask);
++	}
++
++	if (pio_map_init(ppd, num_vls))
++		goto nomem;
++	return 0;
++
++nomem:
++	for (i = 0; i < num_vls; i++) {
++		sc_free(ppd->vld[i].sc);
++		ppd->vld[i].sc = NULL;
++	}
++
++	for (i = num_vls; i < INIT_SC_PER_VL * num_vls; i++)
++		sc_free(ppd->kernel_send_context[i + 1]);
++
++	kfree(ppd->kernel_send_context);
++	ppd->kernel_send_context = NULL;
++
++freesc15:
++	sc_free(ppd->vld[15].sc);
++	ppd->vld[15].sc = NULL;
++	return -ENOMEM;
++}
++
++int init_credit_return(struct hfi2_devdata *dd)
++{
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	size_t bytes = (dr->c.last_send_context - dr->c.first_send_context) *
++		       sizeof(struct credit_return);
++	int ret;
++	int i;
++
++	dd->cr_base = kcalloc(
++		node_affinity.num_possible_nodes,
++		sizeof(struct credit_return_base),
++		GFP_KERNEL);
++	if (!dd->cr_base) {
++		ret = -ENOMEM;
++		goto done;
++	}
++	for_each_node_with_cpus(i) {
++		set_dev_node(&dd->pcidev->dev, i);
++		dd->cr_base[i].va = dma_alloc_coherent(&dd->pcidev->dev,
++						       bytes,
++						       &dd->cr_base[i].dma,
++						       GFP_KERNEL);
++		if (!dd->cr_base[i].va) {
++			set_dev_node(&dd->pcidev->dev, dd->node);
++			dd_dev_err(dd,
++				   "Unable to allocate credit return DMA range for NUMA %d\n",
++				   i);
++			ret = -ENOMEM;
++			goto free_cr_base;
++		}
++	}
++	set_dev_node(&dd->pcidev->dev, dd->node);
++
++	ret = 0;
++done:
++	return ret;
++
++free_cr_base:
++	free_credit_return(dd);
++	goto done;
++}
++
++void free_credit_return(struct hfi2_devdata *dd)
++{
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	size_t bytes = (dr->c.last_send_context - dr->c.first_send_context) *
++		       sizeof(struct credit_return);
++	int i;
++
++	if (!dd->cr_base)
++		return;
++	for (i = 0; i < node_affinity.num_possible_nodes; i++) {
++		if (dd->cr_base[i].va) {
++			dma_free_coherent(&dd->pcidev->dev,
++					  bytes,
++					  dd->cr_base[i].va,
++					  dd->cr_base[i].dma);
++		}
++	}
++	kfree(dd->cr_base);
++	dd->cr_base = NULL;
++}
++
++void seqfile_dump_sci(struct seq_file *s, u32 i,
++		      struct send_context_info *sci)
++{
++	struct send_context *sc = sci->sc;
++	u64 reg;
++
++	seq_printf(s, "SCI %u: type %u base %u credits %u\n",
++		   i, sci->type, sci->base, sci->credits);
++	seq_printf(s, "  flags 0x%x sw_inx %u hw_ctxt %u grp %u\n",
++		   sc->flags,  sc->sw_index, sc->hw_context, sc->group);
++	seq_printf(s, "  sr_size %u credits %u sr_head %u sr_tail %u\n",
++		   sc->sr_size, sc->credits, sc->sr_head, sc->sr_tail);
++	seq_printf(s, "  fill %lu free %lu fill_wrap %u alloc_free %lu\n",
++		   sc->fill, sc->free, sc->fill_wrap, sc->alloc_free);
++	seq_printf(s, "  credit_intr_count %u credit_ctrl 0x%llx\n",
++		   sc->credit_intr_count, sc->credit_ctrl);
++	reg = read_sctxt_csr(sc->dd, sc->hw_context,
++			     sc->dd->params->send_ctxt_credit_status_reg);
++	seq_printf(s, "  *hw_free %llu CurrentFree %llu LastReturned %llu\n",
++		   (le64_to_cpu(*sc->hw_free) & CR_COUNTER_SMASK) >>
++		    CR_COUNTER_SHIFT,
++		   (reg >> SC(CREDIT_STATUS_CURRENT_FREE_COUNTER_SHIFT)) &
++		    SC(CREDIT_STATUS_CURRENT_FREE_COUNTER_MASK),
++		   reg & SC(CREDIT_STATUS_LAST_RETURNED_COUNTER_SMASK));
++}
+diff --git a/drivers/infiniband/hw/hfi2/pio_copy.c b/drivers/infiniband/hw/hfi2/pio_copy.c
+new file mode 100644
+index 000000000000..43d7b9cc8ed6
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/pio_copy.c
+@@ -0,0 +1,710 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++/*
++ * Copyright(c) 2015, 2016 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ */
 +
 +#include "hfi2.h"
-+#include "exp_rcv.h"
-+
-+struct hfi2_page_iter_ops;
 +
 +/**
-+ * Base type for iterating over sets of pinned-page ranges (pagesets).
++ * pio_copy - copy data block to MMIO space
++ * @dd: hfi2 dev data
++ * @pbuf: a number of blocks allocated within a PIO send context
++ * @pbc: PBC to send
++ * @from: source, must be 8 byte aligned
++ * @count: number of DWORD (32-bit) quantities to copy from source
 + *
-+ * Depending on implementation, pages may also already be DMA-mapped.
-+ */
-+struct hfi2_page_iter {
-+	struct hfi2_page_iter_ops *ops;
-+};
-+
-+struct hfi2_page_iter_ops {
-+	/**
-+	 * Advance iterator to next pageset.
-+	 *
-+	 * Implementation must construct TID-compatible pagesets. TID-compatible means:
-+	 * - starting address is 4KiB-aligned.
-+	 * - size in range of [4KiB,2MiB].
-+	 * - size is a power-of-two.
-+	 *
-+	 * @return > 0 on successful advancement, 0 when iterator is at last
-+	 * element, < 0 on error. It is an error to call .next() after it
-+	 * returns 0.
-+	 */
-+	int (*next)(struct hfi2_page_iter *iter);
-+
-+	void (*free)(struct hfi2_page_iter *iter);
-+};
-+
-+struct tid_user_buf;
-+
-+/*
-+ * hfi2_page_iter implementation for tid_system.
++ * Copy data from source to PIO Send Buffer memory, 8 bytes at a time.
++ * Must always write full BLOCK_SIZE bytes blocks.  The first block must
++ * be written to the corresponding SOP=1 address.
 + *
-+ * Built around struct tid_user_buf->{psets,n_psets}.
++ * Known:
++ * o pbuf->start always starts on a block boundary
++ * o pbuf can wrap only at a block boundary
 + */
-+struct page_array_iter {
-+	struct hfi2_page_iter common;
-+	struct tid_user_buf *tbuf;
-+	unsigned int setidx;
-+};
-+
-+/*
-+ * structs tid_pageset, tid_user_buf, tid_rb_node, tid_user_buf_ops,
-+ * tid_node_ops - Generic memory-pinning and DMA-mapping datastructures and
-+ * interfaces for user expected receive.
-+ *
-+ * Here's a high-level flow of how generic device user expected receive works:
-+ * 1. Available memory implementations are registered at driver load.
-+ * 2. When TID_UPDATE with memory type information is received,
-+ *    struct tid_user_buf_ops* for memory type is looked up.
-+ * 3. struct tid_user_buf 'tbuf' is created using tid_user_buf_ops.init(),
-+ *    passing in the virtual address range from userspace.
-+ * 4. Pages are pinned using tid_user_buf_ops.pin_pages(tbuf).
-+ * 5. tid_user_buf_ops.find_phys_blocks() produces an array of sets
-+ *    (struct tid_pageset[]) of physically contiguous pages.
-+ * 6. struct tid_node_ops* for memory type is looked up.
-+ * 7. For each set of physically contiguous pinned pages:
-+ *    7.1 A struct tid_rb_node is created using tid_node_ops.init(). It stores
-+ *        its memory type for later lookup.
-+ *    7.2 tid_node_ops.init() DMA-maps the physically-contiguous page range.
-+ *    7.3 An expected RcvArray entry (TID) is programmed with the DMA address.
-+ *    7.4 The tid_rb_node* is stored in struct hfi2_filedata.entry_to_rb[].
-+ * 8. The tid_user_buf is no longer needed and is destroyed.
-+ * 9. When a TID is to be unmapped or the receive memory the TID is programmed
-+ *    for is invalidated, the struct tid_rb_node* for the TID or receive memory
-+ *    is found, the struct tid_node_ops looked up, and
-+ *    tid_node_ops.dma_unmap(node) and tid_node_ops.free(node) called.
-+ *
-+ * This is an overview. See struct tid_user_buf_ops and struct tid_node_ops for
-+ * the methods and their semantics that an implementation must provide.
-+ */
-+
-+struct tid_pageset {
-+	u16 idx;
-+	u16 count;
-+};
-+
-+struct tid_node_ops;
-+struct tid_user_buf_ops;
-+
-+struct tid_user_buf {
-+	unsigned long vaddr;
-+	unsigned long length;
-+	struct tid_pageset *psets;
-+	struct tid_user_buf_ops *ops;
-+	unsigned int n_psets;
-+	bool use_mn;
-+	u16 type; /* Implementation must set to HFI2_MEMINFO_TYPE* in tid_user_buf_ops.init() */
-+};
-+
-+int tid_user_buf_init(u16 pset_size, unsigned long vaddr, unsigned long length, bool notify,
-+		      struct tid_user_buf_ops *ops, u16 type, struct tid_user_buf *tbuf);
-+void tid_user_buf_free(struct tid_user_buf *tbuf);
-+
-+struct tid_rb_node {
-+	struct hfi2_filedata *fdata;
-+	struct mutex invalidate_mutex; /* covers hw removal */
-+	/* Only used for debug and tracing */
-+	unsigned long phys;
-+	struct tid_group *grp;
-+	struct tid_node_ops *ops;
-+	dma_addr_t dma_addr;
-+	/* Starting virtual address for this node's page range */
-+	unsigned long vaddr;
-+	/* Number of pages, implementation-sized */
-+	unsigned int npages;
-+	/* Implementation page-size shift */
-+	unsigned int page_shift;
-+	u32 rcventry;
-+	bool use_mn;
-+	bool freed;
-+	/* Implementation must set to HFI2_MEMINFO_TYPE* in tid_node_ops.init() */
-+	u16 type;
-+};
-+
-+/**
-+ * User expected receive requires @vaddr from userspace be aligned on a page
-+ * boundary.
-+ *
-+ * User expected receive requires this because it cannot communicate the offset
-+ * between @vaddr and the page start.
-+ *
-+ * TID memory implementation must check that @vaddr is aligned on a page
-+ * boundary but may delay this check until as late as .pin_pages().
-+ *
-+ * This allows for implementations where the page size is not known until the
-+ * pages are pinned.
-+ */
-+struct tid_user_buf_ops {
-+	/**
-+	 * Allocate and initialize @*tbuf.
-+	 *
-+	 * Implementation must initialize:
-+	 *   - vaddr
-+	 *   - length
-+	 *   - psets
-+	 *   - ops
-+	 *   - type
-+	 *
-+	 * @expected_count
-+	 * @notify when false, implementation may use invalidation callback
-+	 *   underneath.
-+	 *
-+	 *   When true, implementation must use invalidation callback
-+	 *   underneath.
-+	 *
-+	 *   If true and implementation does not have an invalidation callback,
-+	 *   must return an error.
-+	 * @vaddr
-+	 * @length
-+	 * @allow_unaligned when true, implementation may, but is not required
-+	 *   to, handle unaligned @vaddr. When false, implementation must return
-+	 *   -EINVAL for unaligned @vaddr.
-+	 * @tbuf [out] allocated tid_user_buf
-+	 *
-+	 * @return 0 on success, non-zero on error.
-+	 *
-+	 * Errors including but not limited to:
-+	 * - Number of pages based on @length too long for @expected_count
-+	 * - @vaddr is not suitably aligned
-+	 * - @length invalid for implementation
-+	 * - @notify is true but implementation does not support
-+	 *   memory-invalidation notification
-+	 */
-+	int (*init)(u16 expected_count,
-+		    bool notify,
-+		    unsigned long vaddr,
-+		    unsigned long length,
-+		    bool allow_unaligned,
-+		    struct tid_user_buf **tbuf);
-+
-+	/**
-+	 * Free @tbuf.
-+	 */
-+	void (*free)(struct tid_user_buf *tbuf);
-+
-+	/**
-+	 * Pin pages for @tbuf based on (@vaddr,@length) passed into
-+	 * @tid_user_buf_ops.init().
-+	 *
-+	 * Implementation may also DMA-map pages at this time.
-+	 *
-+	 * Implementation may store @fd at this time.
-+	 *
-+	 * @fd
-+	 * @tbuf
-+	 *
-+	 * @return > 0 number of pages pinned on success, < 0 error value on
-+	 *   failure. 0 is treated as a failure but not an error value.
-+	 */
-+	int (*pin_pages)(struct hfi2_filedata *fd, struct tid_user_buf *tbuf);
-+
-+	/**
-+	 * Get page size of @tbuf's pinned pages.
-+	 *
-+	 * Caller should not assume that page size is known until after
-+	 * pin_pages(fd, @tbuf).
-+	 *
-+	 * @tbuf
-+	 *
-+	 * @return page size. No way to tell if error.
-+	 */
-+	unsigned int (*page_size)(struct tid_user_buf *tbuf);
-+
-+	/**
-+	 * Unpin only @npages starting at @idx.
-+	 *
-+	 * Implementation may implement partial unpinning.
-+	 *
-+	 * If not, implementation must ensure that pages are unmapped and
-+	 * unpinned when last reference to them is released.
-+	 *
-+	 * @fd Same fd as given in tid_user_buf_ops.pin_pages() call
-+	 * @tbuf
-+	 * @idx
-+	 * @npages
-+	 */
-+	void (*unpin_pages)(struct hfi2_filedata *fd,
-+			    struct tid_user_buf *tbuf,
-+			    unsigned int idx,
-+			    unsigned int npages);
-+
-+	/**
-+	 * Optional; implementation must either implement find_phys_blocks() or
-+	 * ensure that iter_begin() will return a valid iterator after
-+	 * .pin_pages().
-+	 *
-+	 * Implementation must program @tbuf->psets elements such that:
-+	 * 1. All pages in a pageset are physically contiguous
-+	 * 2. All pages in all pagesets have the same page size
-+	 * 3. The total size of a pageset is a power-of-two in the range
-+	 *    [4KiB, 2MiB]
-+	 *
-+	 * Implementation must set @tbuf->n_psets to number of page sets
-+	 * programmed.
-+	 *
-+	 * @tbuf TID user buf to set (@tbuf->psets,@tbuf->n_psets) on.
-+	 * @npages limit on number of pages to process into page sets before
-+	 *         stopping.
-+	 *
-+	 * @return 0 on success, non-zero on error
-+	 */
-+	int (*find_phys_blocks)(struct tid_user_buf *tbuf,
-+				unsigned int npages);
-+
-+	/**
-+	 * @return true when:
-+	 * - @tbuf's virtual->physical mapping has been invalidated
-+	 * - @tbuf's physical pages have been released
-+	 */
-+	bool (*invalidated)(struct tid_user_buf *tbuf);
-+
-+	/**
-+	 * Unregister memory-invalidation callback registered in struct
-+	 * tid_user_buf_ops.init() implementation.
-+	 */
-+	void (*unnotify)(struct tid_user_buf *tbuf);
-+
-+	/**
-+	 * Optional. Get pageset iterator. Pages in pageset must be pinned and
-+	 * physically-contiguous. Whether pages are also DMA-mapped at the time
-+	 * this method is called is implementation-dependent.
-+	 *
-+	 * Implementation must return iterator only if there is at least one
-+	 * pageset to iterate over. I.e. it is an error if implementation
-+	 * cannot return an iterator over at least one pageset.
-+	 *
-+	 * Returned iterator must be freed with @hfi2_page_iter->ops->free().
-+	 *
-+	 * @return pointer on success, ERR_PTR() on error.
-+	 */
-+	struct hfi2_page_iter *(*iter_begin)(struct tid_user_buf *tbuf);
-+};
-+
-+struct tid_node_ops {
-+	/**
-+	 * Create tid_rb_node for pageset given by @iter.
-+	 *
-+	 * .init() implementation must initialize the following
-+	 *   - fdata
-+	 *   - invalidate_mutex
-+	 *   - phys
-+	 *   - grp
-+	 *   - ops
-+	 *   - dma_addr
-+	 *   - vaddr
-+	 *   - npages
-+	 *   - page_shift: may not be less than EXP_TID_ADDR_SHIFT
-+	 *   - rcventry
-+	 *   - use_mn
-+	 *   - freed
-+	 *   - type: one of the HFI2_MEMINFO_TYPE* defines
-+	 *
-+	 * Pages in pageset given by @iter must be TID-ready: pinned, physically contiguous,
-+	 * 4KiB <= size <= 2MiB, starting address is power-of-two.
-+	 *
-+	 * Implementation must DMA-map the pages given by @iter if they are not DMA-mapped
-+	 * already.
-+	 *
-+	 * If @fd->use_mn is true and memory implementation does not support
-+	 * invalidation callbacks, .init() must return an error.
-+	 *
-+	 * @fd
-+	 * @tbuf Contains larger memory pinning to create TID entry from
-+	 * @rcventry
-+	 * @grp
-+	 * @iter
-+	 *
-+	 * @return allocated node on success, ERR_PTR() on error.
-+	 */
-+	struct tid_rb_node *(*init)(struct hfi2_filedata *fd,
-+				    struct tid_user_buf *tbuf,
-+				    u32 rcventry,
-+				    struct tid_group *grp,
-+				    struct hfi2_page_iter *iter);
-+
-+	/**
-+	 * Free @node.
-+	 */
-+	void (*free)(struct tid_rb_node *node);
-+
-+	/**
-+	 * Register for memory invalidation callback. Implementation should
-+	 * only register for notification on @node's page-range.
-+	 *
-+	 * When @node->fdata->use_mn is true, invalidation callback must call
-+	 * hfi2_user_exp_rcv_invalidate(@node).
-+	 *
-+	 * When @node->fdata->use_mn is false, invalidation callback may call
-+	 * hfi2_user_exp_rcv_invalidate(@node).
-+	 *
-+	 * Should be no-op when implementation does not support partial
-+	 * unpinning.
-+	 *
-+	 * @return 0 on success, non-zero on failure.
-+	 */
-+	int (*register_notify)(struct tid_rb_node *node);
-+
-+	/**
-+	 * Unregister from memory-invalidation callback in anticipation of
-+	 * unprogramming TID.
-+	 *
-+	 * Should be no-op when implementation does not support partial
-+	 * unpinning.
-+	 *
-+	 * Not safe to call more than once per register_notify() call.
-+	 */
-+	void (*unregister_notify)(struct tid_rb_node *node);
-+
-+	/**
-+	 * DMA-unmap mapped memory for @node.
-+	 *
-+	 * Should be no-op when implementation does not support partial
-+	 * unmapping.
-+	 */
-+	void (*dma_unmap)(struct tid_rb_node *node);
-+
-+	/**
-+	 * Unpin pages covered by @node.
-+	 *
-+	 * user_exp_rcv will call this function under node->invalidate_mutex.
-+	 * user_exp_rcv will only call this function once per node.
-+	 *
-+	 * Should be no-op when implementation does not support partial
-+	 * unpinning.
-+	 */
-+	void (*unpin_pages)(struct hfi2_filedata *fd, struct tid_rb_node *node);
-+};
-+
-+int register_tid_ops(u16 type, struct tid_user_buf_ops *op, struct tid_node_ops *nops);
-+void deregister_tid_ops(u16 type);
-+
-+int register_system_tid_ops(void);
-+void deregister_system_tid_ops(void);
-+
-+void hfi2_user_exp_rcv_invalidate(struct tid_rb_node *node);
-+
-+int hfi2_user_exp_rcv_init(struct hfi2_filedata *fd,
-+			   struct hfi2_ctxtdata *uctxt);
-+void hfi2_user_exp_rcv_free(struct hfi2_filedata *fd);
-+int hfi2_user_exp_rcv_setup(struct hfi2_filedata *fd,
-+			    struct hfi2_tid_info *tinfo,
-+			    bool allow_unaligned,
-+			    bool do_tidcnt_check);
-+int hfi2_user_exp_rcv_clear(struct hfi2_filedata *fd,
-+			    struct hfi2_tid_info *tinfo);
-+int hfi2_user_exp_rcv_invalid(struct hfi2_filedata *fd,
-+			      struct hfi2_tid_info *tinfo,
-+			      bool do_tidcnt_check);
-+
-+#endif /* _HFI2_USER_EXP_RCV_H */
-diff --git a/drivers/infiniband/hw/hfi2/user_sdma.h b/drivers/infiniband/hw/hfi2/user_sdma.h
-new file mode 100644
-index 000000000000..1bea013475cc
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/user_sdma.h
-@@ -0,0 +1,261 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ * Copyright(c) 2015 - 2018 Intel Corporation.
-+ */
-+#ifndef _HFI2_USER_SDMA_H
-+#define _HFI2_USER_SDMA_H
-+
-+#include <linux/device.h>
-+#include <linux/wait.h>
-+
-+#include "common.h"
-+#include "iowait.h"
-+#include "user_exp_rcv.h"
-+#include "mmu_rb.h"
-+#include "pinning.h"
-+#include "sdma.h"
-+
-+/* The maximum number of Data io vectors per message/request */
-+#define MAX_VECTORS_PER_REQ 8
-+static_assert(MAX_VECTORS_PER_REQ <= HFI2_MAX_MEMINFO_ENTRIES);
-+
-+/*
-+ * Maximum number of packet to send from each message/request
-+ * before moving to the next one.
-+ */
-+#define MAX_PKTS_PER_QUEUE 16
-+
-+#define num_pages(x) (1 + ((((x) - 1) & PAGE_MASK) >> PAGE_SHIFT))
-+
-+#define req_opcode(x) \
-+	(((x) >> HFI2_SDMA_REQ_OPCODE_SHIFT) & HFI2_SDMA_REQ_OPCODE_MASK)
-+#define req_version(x) \
-+	(((x) >> HFI2_SDMA_REQ_VERSION_SHIFT) & HFI2_SDMA_REQ_OPCODE_MASK)
-+#define req_iovcnt(x) \
-+	(((x) >> HFI2_SDMA_REQ_IOVCNT_SHIFT) & HFI2_SDMA_REQ_IOVCNT_MASK)
-+#define req_has_meminfo(x) \
-+	(((x) >> HFI2_SDMA_REQ_MEMINFO_SHIFT) & HFI2_SDMA_REQ_MEMINFO_MASK)
-+
-+/* Number of BTH.PSN bits used for sequence number in expected rcvs */
-+#define BTH_SEQ_MASK 0x7ffull
-+
-+#define AHG_KDETH_INTR_SHIFT 12
-+#define AHG_KDETH_SH_SHIFT   13
-+#define AHG_KDETH_ARRAY_SIZE  9
-+
-+/**
-+ * Build an SDMA AHG header update descriptor and save it to an array.
-+ * @arr        - Array to save the descriptor to.
-+ * @idx        - Index of the array at which the descriptor will be saved.
-+ * @array_size - Size of the array arr.
-+ * @dw         - Update index into the header in DWs.
-+ * @bit        - Start bit.
-+ * @width      - Field width.
-+ * @value      - 16 bits of immediate data to write into the field.
-+ * Returns -ERANGE if idx is invalid. If successful, returns the next index
-+ * (idx + 1) of the array to be used for the next descriptor.
-+ */
-+static inline int ahg_header_set(u32 *arr, int idx, size_t array_size,
-+				 u8 dw, u8 bit, u8 width, u16 value)
++void pio_copy(struct hfi2_devdata *dd, struct pio_buf *pbuf, u64 pbc,
++	      const void *from, size_t count)
 +{
-+	if ((size_t)idx >= array_size)
-+		return -ERANGE;
-+	arr[idx++] = sdma_build_ahg_descriptor(value, dw, bit, width);
-+	return idx;
-+}
-+
-+/* Tx request flag bits */
-+#define TXREQ_FLAGS_REQ_ACK   BIT(0)      /* Set the ACK bit in the header */
-+#define TXREQ_FLAGS_REQ_DISABLE_SH BIT(1) /* Disable header suppression */
-+
-+enum pkt_q_sdma_state {
-+	SDMA_PKT_Q_ACTIVE,
-+	SDMA_PKT_Q_DEFERRED,
-+};
-+
-+#define SDMA_IOWAIT_TIMEOUT 1000 /* in milliseconds */
-+
-+#define SDMA_DBG(req, fmt, ...)				     \
-+	hfi2_cdbg(SDMA, "[%u:%u:%u:%u] " fmt, (req)->pq->dd->unit, \
-+		 (req)->pq->ctxt, (req)->pq->subctxt, (req)->info.comp_idx, \
-+		 ##__VA_ARGS__)
-+
-+struct hfi2_user_sdma_pkt_q {
-+	u16 ctxt;
-+	u16 subctxt;
-+	u16 n_max_reqs;
-+	atomic_t n_reqs;
-+	struct hfi2_devdata *dd;
-+	struct kmem_cache *txreq_cache;
-+	struct user_sdma_request *reqs;
-+	unsigned long *req_in_use;
-+	struct iowait busy;
-+	enum pkt_q_sdma_state state;
-+	wait_queue_head_t wait;
-+	struct pinning_state pinning_state;
-+	atomic_t n_locked;
-+};
-+
-+struct hfi2_user_sdma_comp_q {
-+	u16 nentries;
-+	struct hfi2_sdma_comp_entry *comps;
-+};
-+
-+struct user_sdma_iovec {
-+	struct iovec iov;
-+	/* memory type for this vector */
-+	unsigned int type;
-+	/* memory type context for this vector */
-+	u64 context;
-+	/*
-+	 * offset into the virtual address space of the vector at
-+	 * which we last left off.
-+	 */
-+	u64 offset;
-+};
-+
-+/* evict operation argument */
-+struct evict_data {
-+	u32 cleared;	/* count evicted so far */
-+	u32 target;	/* target count to evict */
-+};
-+
-+/*
-+ * User 16B header.  Differences between this and struct hfi2_pkt_hdr:
-+ * o LRH size: 16 bytes vs 8 bytes
-+ * o LRH byte ordering: LE vs BE
-+ * o LRH units: 32 bits vs 16 bits
-+ */
-+struct hfi2_pkt_header16b {
-+	__le16 pbc[4];
-+	__le32 lrh[4];
-+	__be32 bth[3];
-+	struct hfi2_kdeth_header kdeth;
-+} __packed;
-+
-+union user_pkt_header {
-+	__le16 pbc[4];
-+	struct hfi2_pkt_header hdr9b;
-+	struct hfi2_pkt_header16b hdr16b;
-+};
-+
-+/* Pinning-cache entry reference type */
-+struct user_sdma_pinref {
-+	void *ptr;
-+	u16 memtype;
-+	/** Used for determining eviction eligibility; set from &user_sdma_request.seqnum */
-+	u16 req_seqnum;
-+	/** Used for determining most-recently used; set from &user_sdma_request.pinrefs_seqnum */
-+	u16 pinref_seqnum;
-+};
-+
-+#define PINREF_ENTRIES 7
-+
-+struct user_sdma_request {
-+	/* This is the original header from user space */
-+	union user_pkt_header h;
-+	unsigned long hsize;
-+	u32 lrh_len_bytes;
-+	u32 pad_mask;
-+
-+	/* Memory type information for each data iovec entry. */
-+	struct sdma_req_meminfo meminfo;
-+
-+	/* Read mostly fields */
-+	struct hfi2_user_sdma_pkt_q *pq ____cacheline_aligned_in_smp;
-+	struct hfi2_user_sdma_comp_q *cq;
-+	/*
-+	 * Pointer to the SDMA engine for this request.
-+	 * Since different request could be on different VLs,
-+	 * each request will need it's own engine pointer.
-+	 */
-+	struct sdma_engine *sde;
-+	struct sdma_req_info info;
-+	/* TID array values copied from the tid_iov vector */
-+	u32 *tids;
-+	/* total length of the data in the request */
-+	u32 data_len;
-+	/* number of elements copied to the tids array */
-+	u16 n_tids;
-+	/*
-+	 * We copy the iovs for this request (based on
-+	 * info.iovcnt). These are only the data vectors
-+	 */
-+	u8 data_iovs;
-+	s8 ahg_idx;
-+
-+	/* Writeable fields shared with interrupt */
-+	u16 seqcomp ____cacheline_aligned_in_smp;
-+	u16 seqsubmitted;
-+
-+	/* Send side fields */
-+	struct list_head txps ____cacheline_aligned_in_smp;
-+	u16 seqnum;
-+	/*
-+	 * KDETH.OFFSET (TID) field
-+	 * The offset can cover multiple packets, depending on the
-+	 * size of the TID entry.
-+	 */
-+	u32 tidoffset;
-+	/*
-+	 * KDETH.Offset (Eager) field
-+	 * We need to remember the initial value so the headers
-+	 * can be updated properly.
-+	 */
-+	u32 koffset;
-+	u32 sent;
-+	/* TID index copied from the tid_iov vector */
-+	u16 tididx;
-+	/* progress index moving along the iovs array */
-+	u8 iov_idx;
-+	u8 has_error;
-+	/* possible appended bytes (16B ICRC QW) */
-+	u8 tailsize;
-+	/* true if this is a 16B request */
-+	bool is16b;
-+
-+	u16 n_pinrefs;
-+	/*
-+	 * Since regular .seqnum is only incremented per-txreq, need separate
-+	 * .pinref_seqnum to distinguish age of pinrefs within a txreq.
-+	 */
-+	u32 pinref_seqnum;
-+	/* Shared space for storing pin_* cacherefs */
-+	struct user_sdma_pinref pinrefs[PINREF_ENTRIES];
-+
-+	struct user_sdma_iovec iovs[MAX_VECTORS_PER_REQ];
-+} ____cacheline_aligned_in_smp;
-+
-+/*
-+ * A single txreq could span up to 3 physical pages when the MTU
-+ * is sufficiently large (> 4K). Each of the IOV pointers also
-+ * needs it's own set of flags so the vector has been handled
-+ * independently of each other.
-+ */
-+struct user_sdma_txreq {
-+	/* Packet header for the txreq */
-+	union user_pkt_header h;
-+	struct sdma_txreq txreq;
-+	struct user_sdma_request *req;
-+	struct user_sdma_pinref *pinrefs;
-+	u16 n_pinrefs;
-+	u16 flags;
-+	u16 seqnum;
-+};
-+
-+int hfi2_user_sdma_add_ref(struct user_sdma_txreq *tx, void *ptr,
-+			   u16 memtype);
-+struct user_sdma_pinref *hfi2_user_sdma_mru_ref(struct user_sdma_txreq *tx,
-+						u16 memtype);
-+void hfi2_user_sdma_touch_ref(struct user_sdma_txreq *tx,
-+			      struct user_sdma_pinref *d);
-+
-+int hfi2_user_sdma_alloc_queues(struct hfi2_ctxtdata *uctxt,
-+				struct hfi2_filedata *fd);
-+int hfi2_user_sdma_free_queues(struct hfi2_filedata *fd,
-+			       struct hfi2_ctxtdata *uctxt);
-+int hfi2_user_sdma_process_request(struct hfi2_filedata *fd,
-+				   struct iovec *iovec, unsigned long dim,
-+				   unsigned long *count);
-+#endif /* _HFI2_USER_SDMA_H */
-diff --git a/drivers/infiniband/hw/hfi2/uverbs.h b/drivers/infiniband/hw/hfi2/uverbs.h
-new file mode 100644
-index 000000000000..2250a712875c
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/uverbs.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
-+/*
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef HFI2_UVERBS_H
-+#define HFI2_UVERBS_H
-+
-+#include <rdma/uverbs_ioctl.h>
-+
-+int hfi2_alloc_ucontext(struct ib_ucontext *ucontext, struct ib_udata *udata);
-+void hfi2_dealloc_ucontext(struct ib_ucontext *ucontext);
-+int hfi2_rdma_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma);
-+ssize_t hfi2_uverbs_write_iter(struct ib_ucontext *ucontext,
-+			       struct iov_iter *from);
-+
-+extern const struct uapi_definition hfi2_ib_defs[];
-+
-+#endif /* HFI2_UVERBS_H */
-diff --git a/drivers/infiniband/hw/hfi2/verbs.h b/drivers/infiniband/hw/hfi2/verbs.h
-new file mode 100644
-index 000000000000..f7a52a03f26c
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/verbs.h
-@@ -0,0 +1,496 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2015 - 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef HFI2_VERBS_H
-+#define HFI2_VERBS_H
-+
-+#include <linux/types.h>
-+#include <linux/seqlock.h>
-+#include <linux/kernel.h>
-+#include <linux/interrupt.h>
-+#include <linux/kref.h>
-+#include <linux/workqueue.h>
-+#include <linux/kthread.h>
-+#include <linux/completion.h>
-+#include <linux/slab.h>
-+#include <rdma/ib_pack.h>
-+#include <rdma/ib_user_verbs.h>
-+#include <rdma/ib_mad.h>
-+#include <rdma/ib_hdrs.h>
-+#include <rdma/rdma_vt.h>
-+#include <rdma/rdmavt_qp.h>
-+#include <rdma/rdmavt_cq.h>
-+
-+struct hfi2_ctxtdata;
-+struct hfi2_pportdata;
-+struct hfi2_devdata;
-+struct hfi2_packet;
-+
-+#include "iowait.h"
-+#include "tid_rdma.h"
-+#include "opfn.h"
-+
-+#define HFI2_MAX_RDMA_ATOMIC     16
-+
-+/*
-+ * Increment this value if any changes that break userspace ABI
-+ * compatibility are made.
-+ */
-+#define HFI2_UVERBS_ABI_VERSION       2
-+
-+/* IB Performance Manager status values */
-+#define IB_PMA_SAMPLE_STATUS_DONE       0x00
-+#define IB_PMA_SAMPLE_STATUS_STARTED    0x01
-+#define IB_PMA_SAMPLE_STATUS_RUNNING    0x02
-+
-+/* Mandatory IB performance counter select values. */
-+#define IB_PMA_PORT_XMIT_DATA   cpu_to_be16(0x0001)
-+#define IB_PMA_PORT_RCV_DATA    cpu_to_be16(0x0002)
-+#define IB_PMA_PORT_XMIT_PKTS   cpu_to_be16(0x0003)
-+#define IB_PMA_PORT_RCV_PKTS    cpu_to_be16(0x0004)
-+#define IB_PMA_PORT_XMIT_WAIT   cpu_to_be16(0x0005)
-+
-+#define HFI2_VENDOR_IPG		cpu_to_be16(0xFFA0)
-+
-+#define IB_DEFAULT_GID_PREFIX	cpu_to_be64(0xfe80000000000000ULL)
-+#define OPA_BTH_MIG_REQ		BIT(31)
-+
-+#define RC_OP(x) IB_OPCODE_RC_##x
-+#define UC_OP(x) IB_OPCODE_UC_##x
-+
-+/* flags passed by hfi2_ib_rcv() */
-+enum {
-+	HFI2_HAS_GRH = (1 << 0),
-+};
-+
-+#define LRH_16B_BYTES (sizeof_field(struct hfi2_16b_header, lrh))
-+#define LRH_16B_DWORDS (LRH_16B_BYTES / sizeof(u32))
-+#define LRH_9B_BYTES (sizeof_field(struct ib_header, lrh))
-+#define LRH_9B_DWORDS (LRH_9B_BYTES / sizeof(u32))
-+
-+/* 24Bits for qpn, upper 8Bits reserved */
-+struct opa_16b_mgmt {
-+	__be32 dest_qpn;
-+	__be32 src_qpn;
-+};
-+
-+struct hfi2_16b_header {
-+	u32 lrh[4];
-+	union {
-+		struct {
-+			struct ib_grh grh;
-+			struct ib_other_headers oth;
-+		} l;
-+		struct ib_other_headers oth;
-+		struct opa_16b_mgmt mgmt;
-+	} u;
-+} __packed;
-+
-+struct hfi2_opa_header {
-+	union {
-+		struct ib_header ibh; /* 9B header */
-+		struct hfi2_16b_header opah; /* 16B header */
-+	};
-+	u8 hdr_type; /* 9B or 16B */
-+} __packed;
-+
-+struct hfi2_ahg_info {
-+	u32 ahgdesc[2];
-+	u16 tx_flags;
-+	u8 ahgcount;
-+	u8 ahgidx;
-+};
-+
-+struct hfi2_sdma_header {
-+	__le64 pbc;
-+	struct hfi2_opa_header hdr;
-+} __packed;
-+
-+/*
-+ * hfi2 specific data structures that will be hidden from rvt after the queue
-+ * pair is made common
-+ */
-+struct hfi2_qp_priv {
-+	struct hfi2_ahg_info *s_ahg;              /* ahg info for next header */
-+	struct sdma_engine *s_sde;                /* current sde */
-+	struct send_context *s_sendcontext;       /* current sendcontext */
-+	struct hfi2_ctxtdata *rcd;                /* QP's receive context */
-+	struct page **pages;                      /* for TID page scan */
-+	u32 tid_enqueue;                          /* saved when tid waited */
-+	u8 s_sc;		                  /* SC[0..4] for next packet */
-+	struct iowait s_iowait;
-+	struct timer_list s_tid_timer;            /* for timing tid wait */
-+	struct timer_list s_tid_retry_timer;      /* for timing tid ack */
-+	struct list_head tid_wait;                /* for queueing tid space */
-+	struct hfi2_opfn_data opfn;
-+	struct tid_flow_state flow_state;
-+	struct tid_rdma_qp_params tid_rdma;
-+	struct rvt_qp *owner;
-+	u16 s_running_pkt_size;
-+	u8 hdr_type; /* 9B or 16B */
-+	struct rvt_sge_state tid_ss;       /* SGE state pointer for 2nd leg */
-+	atomic_t n_requests;               /* # of TID RDMA requests in the */
-+					   /* queue */
-+	atomic_t n_tid_requests;            /* # of sent TID RDMA requests */
-+	unsigned long tid_timer_timeout_jiffies;
-+	unsigned long tid_retry_timeout_jiffies;
-+
-+	/* variables for the TID RDMA SE state machine */
-+	u8 s_state;
-+	u8 s_retry;
-+	u8 rnr_nak_state;       /* RNR NAK state */
-+	u8 s_nak_state;
-+	u32 s_nak_psn;
-+	u32 s_flags;
-+	u32 s_tid_cur;
-+	u32 s_tid_head;
-+	u32 s_tid_tail;
-+	u32 r_tid_head;     /* Most recently added TID RDMA request */
-+	u32 r_tid_tail;     /* the last completed TID RDMA request */
-+	u32 r_tid_ack;      /* the TID RDMA request to be ACK'ed */
-+	u32 r_tid_alloc;    /* Request for which we are allocating resources */
-+	u32 pending_tid_w_segs; /* Num of pending tid write segments */
-+	u32 pending_tid_w_resp; /* Num of pending tid write responses */
-+	u32 alloc_w_segs;       /* Number of segments for which write */
-+			       /* resources have been allocated for this QP */
-+
-+	/* For TID RDMA READ */
-+	u32 tid_r_reqs;         /* Num of tid reads requested */
-+	u32 tid_r_comp;         /* Num of tid reads completed */
-+	u32 pending_tid_r_segs; /* Num of pending tid read segments */
-+	u16 pkts_ps;            /* packets per segment */
-+	u8 timeout_shift;       /* account for number of packets per segment */
-+
-+	u32 r_next_psn_kdeth;
-+	u32 r_next_psn_kdeth_save;
-+	u32 s_resync_psn;
-+	u8 sync_pt;           /* Set when QP reaches sync point */
-+	u8 resync;
-+};
-+
-+#define HFI2_QP_WQE_INVALID   ((u32)-1)
-+
-+struct hfi2_swqe_priv {
-+	struct tid_rdma_request tid_req;
-+	struct rvt_sge_state ss;  /* Used for TID RDMA READ Request */
-+};
-+
-+struct hfi2_ack_priv {
-+	struct rvt_sge_state ss;               /* used for TID WRITE RESP */
-+	struct tid_rdma_request tid_req;
-+};
-+
-+/*
-+ * This structure is used to hold commonly lookedup and computed values during
-+ * the send engine progress.
-+ */
-+struct iowait_work;
-+struct hfi2_pkt_state {
-+	struct hfi2_ibdev *dev;
-+	struct hfi2_ibport *ibp;
-+	struct hfi2_pportdata *ppd;
-+	struct verbs_txreq *s_txreq;
-+	struct iowait_work *wait;
-+	unsigned long flags;
-+	unsigned long timeout;
-+	unsigned long timeout_int;
-+	int cpu;
-+	u8 opcode;
-+	bool in_thread;
-+	bool pkts_sent;
-+	bool loopback;	/* use loopback port for ppd */
-+};
-+
-+#define HFI2_PSN_CREDIT  16
-+
-+struct hfi2_opcode_stats {
-+	u64 n_packets;          /* number of packets */
-+	u64 n_bytes;            /* total number of bytes */
-+};
-+
-+struct hfi2_opcode_stats_perctx {
-+	struct hfi2_opcode_stats stats[256];
-+};
-+
-+static inline void inc_opstats(
-+	u32 tlen,
-+	struct hfi2_opcode_stats *stats)
-+{
-+#ifdef CONFIG_DEBUG_FS
-+	stats->n_bytes += tlen;
-+	stats->n_packets++;
-+#endif
-+}
-+
-+struct hfi2_ibport {
-+	struct rvt_qp __rcu *qp[2];
-+	struct rvt_ibport rvp;
-+
-+	/* the first 16 entries are sl_to_vl for !OPA */
-+	u8 sl_to_sc[32];
-+	u8 sc_to_sl[32];
-+};
-+
-+struct hfi2_ibdev {
-+	struct rvt_dev_info rdi; /* Must be first */
-+
-+	/* QP numbers are shared by all IB ports */
-+	/* protect txwait list */
-+	seqlock_t txwait_lock ____cacheline_aligned_in_smp;
-+	struct list_head txwait;        /* list for wait verbs_txreq */
-+	struct list_head memwait;       /* list for wait kernel memory */
-+	struct kmem_cache *verbs_txreq_cache;
-+	u64 n_txwait;
-+	u64 n_kmem_wait;
-+	u64 n_tidwait;
-+
-+	/* protect iowait lists */
-+	seqlock_t iowait_lock ____cacheline_aligned_in_smp;
-+	u64 n_piowait;
-+	u64 n_piodrain;
-+	struct timer_list mem_timer;
-+
-+#ifdef CONFIG_DEBUG_FS
-+	/* per HFI debugfs */
-+	struct dentry *hfi2_ibdev_dbg;
-+	/* per HFI symlinks to above */
-+	struct dentry *hfi2_ibdev_link;
-+#ifdef CONFIG_FAULT_INJECTION
-+	struct fault *fault;
-+#endif
-+#endif
-+};
-+
-+static inline struct hfi2_ibdev *to_idev(struct ib_device *ibdev)
-+{
-+	struct rvt_dev_info *rdi;
-+
-+	rdi = container_of(ibdev, struct rvt_dev_info, ibdev);
-+	return container_of(rdi, struct hfi2_ibdev, rdi);
-+}
-+
-+static inline struct rvt_qp *iowait_to_qp(struct iowait *s_iowait)
-+{
-+	struct hfi2_qp_priv *priv;
-+
-+	priv = container_of(s_iowait, struct hfi2_qp_priv, s_iowait);
-+	return priv->owner;
-+}
-+
-+/*
-+ * This must be called with s_lock held.
-+ */
-+void hfi2_bad_pkey(struct hfi2_ibport *ibp, u32 key, u32 sl,
-+		   u32 qp1, u32 qp2, u32 lid1, u32 lid2);
-+void hfi2_cap_mask_chg(struct rvt_dev_info *rdi, u32 port_num);
-+void hfi2_sys_guid_chg(struct hfi2_ibport *ibp);
-+void hfi2_node_desc_chg(struct hfi2_ibport *ibp);
-+int hfi2_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
-+		     const struct ib_wc *in_wc, const struct ib_grh *in_grh,
-+		     const struct ib_mad *in_mad, struct ib_mad *out_mad,
-+		     size_t *out_mad_size, u16 *out_mad_pkey_index);
-+int cport_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
-+		      const struct ib_wc *in_wc, const struct ib_grh *in_grh,
-+		      const struct ib_mad *in_mad, struct ib_mad *out_mad,
-+		      size_t *out_mad_size, u16 *out_mad_pkey_index);
-+int vf_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
-+		   const struct ib_wc *in_wc, const struct ib_grh *in_grh,
-+		   const struct ib_mad *in_mad, struct ib_mad *out_mad,
-+		   size_t *out_mad_size, u16 *out_mad_pkey_index);
-+
-+/*
-+ * The PSN_MASK and PSN_SHIFT allow for
-+ * 1) comparing two PSNs
-+ * 2) returning the PSN with any upper bits masked
-+ * 3) returning the difference between to PSNs
-+ *
-+ * The number of significant bits in the PSN must
-+ * necessarily be at least one bit less than
-+ * the container holding the PSN.
-+ */
-+#define PSN_MASK 0x7FFFFFFF
-+#define PSN_SHIFT 1
-+#define PSN_MODIFY_MASK 0xFFFFFF
-+
-+/*
-+ * Compare two PSNs
-+ * Returns an integer <, ==, or > than zero.
-+ */
-+static inline int cmp_psn(u32 a, u32 b)
-+{
-+	return (((int)a) - ((int)b)) << PSN_SHIFT;
-+}
-+
-+/*
-+ * Return masked PSN
-+ */
-+static inline u32 mask_psn(u32 a)
-+{
-+	return a & PSN_MASK;
-+}
-+
-+/*
-+ * Return delta between two PSNs
-+ */
-+static inline u32 delta_psn(u32 a, u32 b)
-+{
-+	return (((int)a - (int)b) << PSN_SHIFT) >> PSN_SHIFT;
-+}
-+
-+static inline struct tid_rdma_request *wqe_to_tid_req(struct rvt_swqe *wqe)
-+{
-+	return &((struct hfi2_swqe_priv *)wqe->priv)->tid_req;
-+}
-+
-+static inline struct tid_rdma_request *ack_to_tid_req(struct rvt_ack_entry *e)
-+{
-+	return &((struct hfi2_ack_priv *)e->priv)->tid_req;
-+}
-+
-+/*
-+ * Look through all the active flows for a TID RDMA request and find
-+ * the one (if it exists) that contains the specified PSN.
-+ */
-+static inline u32 __full_flow_psn(struct flow_state *state, u32 psn)
-+{
-+	return mask_psn((state->generation << HFI2_KDETH_BTH_SEQ_SHIFT) |
-+			(psn & HFI2_KDETH_BTH_SEQ_MASK));
-+}
-+
-+static inline u32 full_flow_psn(struct tid_rdma_flow *flow, u32 psn)
-+{
-+	return __full_flow_psn(&flow->flow_state, psn);
-+}
-+
-+int hfi2_verbs_send(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
-+
-+void hfi2_cnp_rcv(struct hfi2_packet *packet);
-+
-+void hfi2_uc_rcv(struct hfi2_packet *packet);
-+
-+void hfi2_rc_rcv(struct hfi2_packet *packet);
-+
-+void hfi2_rc_hdrerr(
-+	struct hfi2_ctxtdata *rcd,
-+	struct hfi2_packet *packet,
-+	struct rvt_qp *qp);
-+
-+u8 ah_to_sc(struct ib_device *ibdev, struct rdma_ah_attr *ah_attr);
-+
-+void hfi2_rc_verbs_aborted(struct rvt_qp *qp, struct hfi2_opa_header *opah);
-+void hfi2_rc_send_complete(struct rvt_qp *qp, struct hfi2_opa_header *opah);
-+
-+void hfi2_ud_rcv(struct hfi2_packet *packet);
-+
-+int hfi2_lookup_pkey_idx(struct hfi2_ibport *ibp, u16 pkey);
-+
-+void hfi2_migrate_qp(struct rvt_qp *qp);
-+
-+int hfi2_check_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
-+			 int attr_mask, struct ib_udata *udata);
-+
-+void hfi2_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
-+		    int attr_mask, struct ib_udata *udata);
-+void hfi2_restart_rc(struct rvt_qp *qp, u32 psn, int wait);
-+int hfi2_setup_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+		   bool *call_send);
-+
-+int hfi2_ruc_check_hdr(struct hfi2_ibport *ibp, struct hfi2_packet *packet);
-+
-+u32 hfi2_make_grh(struct hfi2_ibport *ibp, struct ib_grh *hdr,
-+		  const struct ib_global_route *grh, u32 hwords, u32 nwords);
-+
-+void hfi2_make_ruc_header(struct rvt_qp *qp, struct ib_other_headers *ohdr,
-+			  u32 bth0, u32 bth1, u32 bth2, int middle,
-+			  struct hfi2_pkt_state *ps);
-+
-+bool hfi2_schedule_send_yield(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
-+			      bool tid);
-+
-+void _hfi2_do_send(struct work_struct *work);
-+
-+void hfi2_do_send_from_rvt(struct rvt_qp *qp);
-+
-+void hfi2_do_send(struct rvt_qp *qp, bool in_thread);
-+
-+void hfi2_send_rc_ack(struct hfi2_packet *packet, bool is_fecn);
-+
-+int hfi2_make_rc_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
-+
-+int hfi2_make_uc_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
-+
-+int hfi2_make_ud_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
-+
-+int hfi2_register_ib_device(struct hfi2_devdata *dd);
-+
-+void hfi2_unregister_ib_device(struct hfi2_devdata *dd);
-+
-+void hfi2_kdeth_eager_rcv(struct hfi2_packet *packet);
-+
-+void hfi2_kdeth_expected_rcv(struct hfi2_packet *packet);
-+
-+void hfi2_ib_rcv(struct hfi2_packet *packet);
-+
-+void hfi2_16B_rcv(struct hfi2_packet *packet);
-+
-+unsigned int hfi2_get_npkeys(struct hfi2_devdata *dd);
-+
-+int hfi2_verbs_send_dma(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
-+			u64 pbc);
-+
-+int hfi2_verbs_send_pio(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
-+			u64 pbc);
-+
-+static inline bool opa_bth_is_migration(struct ib_other_headers *ohdr)
-+{
-+	return ohdr->bth[1] & cpu_to_be32(OPA_BTH_MIG_REQ);
-+}
-+
-+void hfi2_wait_kmem(struct rvt_qp *qp);
-+
-+static inline void hfi2_trdma_send_complete(struct rvt_qp *qp,
-+					    struct rvt_swqe *wqe,
-+					    enum ib_wc_status status)
-+{
-+	trdma_clean_swqe(qp, wqe);
-+	rvt_send_complete(qp, wqe, status);
-+}
-+
-+void cport_get_dev_fw_str(struct ib_device *ibdev, char *str);
-+
-+extern const enum ib_wc_opcode ib_hfi2_wc_opcode[];
-+
-+extern const u8 hdr_len_by_opcode[];
-+
-+extern const int ib_rvt_state_ops[];
-+
-+extern __be64 ib_hfi2_sys_image_guid;    /* in network order */
-+
-+extern unsigned int hfi2_max_cqes;
-+
-+extern unsigned int hfi2_max_cqs;
-+
-+extern unsigned int hfi2_max_qp_wrs;
-+
-+extern unsigned int hfi2_max_qps;
-+
-+extern unsigned int hfi2_max_sges;
-+
-+extern unsigned int hfi2_max_mcast_grps;
-+
-+extern unsigned int hfi2_max_mcast_qp_attached;
-+
-+extern unsigned int hfi2_max_srqs;
-+
-+extern unsigned int hfi2_max_srq_sges;
-+
-+extern unsigned int hfi2_max_srq_wrs;
-+
-+extern unsigned short piothreshold;
-+
-+extern const u32 ib_hfi2_rnr_table[];
-+
-+#endif                          /* HFI2_VERBS_H */
-diff --git a/drivers/infiniband/hw/hfi2/verbs_txreq.h b/drivers/infiniband/hw/hfi2/verbs_txreq.h
-new file mode 100644
-index 000000000000..e67442ce8fb0
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/verbs_txreq.h
-@@ -0,0 +1,98 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/*
-+ * Copyright(c) 2016 - 2018 Intel Corporation.
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
-+
-+#ifndef HFI2_VERBS_TXREQ_H
-+#define HFI2_VERBS_TXREQ_H
-+
-+#include <linux/types.h>
-+#include <linux/slab.h>
-+
-+#include "verbs.h"
-+#include "sdma_txreq.h"
-+#include "iowait.h"
-+
-+struct verbs_txreq {
-+	struct hfi2_sdma_header	phdr;
-+	struct sdma_txreq       txreq;
-+	struct rvt_qp           *qp;
-+	struct rvt_swqe         *wqe;
-+	struct rvt_mregion	*mr;
-+	struct rvt_sge_state    *ss;
-+	struct sdma_engine     *sde;
-+	struct send_context     *psc;
-+	struct kref		ref;
-+	u16                     hdr_dwords;
-+	u16			s_cur_size;
-+};
-+
-+struct hfi2_ibdev;
-+struct verbs_txreq *__get_txreq(struct hfi2_ibdev *dev,
-+				struct rvt_qp *qp);
-+
-+#define VERBS_TXREQ_GFP (GFP_ATOMIC | __GFP_NOWARN)
-+static inline struct verbs_txreq *alloc_txreq(struct hfi2_ibdev *dev,
-+					      struct rvt_qp *qp)
-+	__must_hold(&qp->slock)
-+{
-+	struct verbs_txreq *tx;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	tx = kmem_cache_alloc(dev->verbs_txreq_cache, VERBS_TXREQ_GFP);
-+	if (unlikely(!tx)) {
-+		/* call slow path to get the lock */
-+		tx = __get_txreq(dev, qp);
-+		if (!tx)
-+			return tx;
++	void __iomem *dest = pbuf->start + SOP_DISTANCE;
++	void __iomem *send = dest + PIO_BLOCK_SIZE;
++	void __iomem *dend;			/* 8-byte data end */
++
++	/* write the PBC */
++	writeq(pbc, dest);
++	dest += sizeof(u64);
++
++	/* calculate where the QWORD data ends - in SOP=1 space */
++	dend = dest + ((count >> 1) * sizeof(u64));
++
++	if (dend < send) {
++		/*
++		 * all QWORD data is within the SOP block, does *not*
++		 * reach the end of the SOP block
++		 */
++
++		while (dest < dend) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++		/*
++		 * No boundary checks are needed here:
++		 * 0. We're not on the SOP block boundary
++		 * 1. The possible DWORD dangle will still be within
++		 *    the SOP block
++		 * 2. We cannot wrap except on a block boundary.
++		 */
++	} else {
++		/* QWORD data extends _to_ or beyond the SOP block */
++
++		/* write 8-byte SOP chunk data */
++		while (dest < send) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++		/* drop out of the SOP range */
++		dest -= SOP_DISTANCE;
++		dend -= SOP_DISTANCE;
++
++		/*
++		 * If the wrap comes before or matches the data end,
++		 * copy until the wrap, then wrap.
++		 *
++		 * If the data ends at the end of the SOP above and
++		 * the buffer wraps, then pbuf->end == dend == dest
++		 * and nothing will get written, but we will wrap in
++		 * case there is a dangling DWORD.
++		 */
++		if (pbuf->end <= dend) {
++			while (dest < pbuf->end) {
++				writeq(*(u64 *)from, dest);
++				from += sizeof(u64);
++				dest += sizeof(u64);
++			}
++
++			dest -= pbuf->sc->size;
++			dend -= pbuf->sc->size;
++		}
++
++		/* write 8-byte non-SOP, non-wrap chunk data */
++		while (dest < dend) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
 +	}
-+	tx->qp = qp;
-+	tx->mr = NULL;
-+	tx->sde = priv->s_sde;
-+	tx->psc = priv->s_sendcontext;
-+	/* so that we can test if the sdma descriptors are there */
-+	tx->txreq.num_desc = 0;
-+	/* Set the header type */
-+	tx->phdr.hdr.hdr_type = priv->hdr_type;
-+	tx->txreq.flags = 0;
-+	kref_init(&tx->ref);
-+	return tx;
++	/* at this point we have wrapped if we are going to wrap */
++
++	/* write dangling u32, if any */
++	if (count & 1) {
++		union mix val;
++
++		val.val64 = 0;
++		val.val32[0] = *(u32 *)from;
++		writeq(val.val64, dest);
++		dest += sizeof(u64);
++	}
++	/*
++	 * fill in rest of block, no need to check pbuf->end
++	 * as we only wrap on a block boundary
++	 */
++	while (((unsigned long)dest & PIO_BLOCK_MASK) != 0) {
++		writeq(0, dest);
++		dest += sizeof(u64);
++	}
++
++	/* finished with this buffer */
++	this_cpu_dec(*pbuf->sc->buffers_allocated);
++	preempt_enable();
 +}
-+
-+static inline struct verbs_txreq *get_waiting_verbs_txreq(struct iowait_work *w)
-+{
-+	struct sdma_txreq *stx;
-+
-+	stx = iowait_get_txhead(w);
-+	if (stx)
-+		return container_of(stx, struct verbs_txreq, txreq);
-+	return NULL;
-+}
-+
-+static inline bool verbs_txreq_queued(struct iowait_work *w)
-+{
-+	return iowait_packet_queued(w);
-+}
-+
-+void dealloc_txreq(struct kref *ref);
 +
 +/*
-+ * There are no locks to enforce ordering between hfi2_get_txreq() and
-+ * hfi2_put_txreq().  The caller of hfi2_get_txreq() must be currently
-+ * holding a reference to avoid any race with hfi2_put_txreq().
++ * Handle carry bytes using shifts and masks.
++ *
++ * NOTE: the value the unused portion of carry is expected to always be zero.
 + */
-+static inline void hfi2_get_txreq(struct verbs_txreq *tx)
++
++/*
++ * "zero" shift - bit shift used to zero out upper bytes.  Input is
++ * the count of LSB bytes to preserve.
++ */
++#define zshift(x) (8 * (8 - (x)))
++
++/*
++ * "merge" shift - bit shift used to merge with carry bytes.  Input is
++ * the LSB byte count to move beyond.
++ */
++#define mshift(x) (8 * (x))
++
++/*
++ * Jump copy - no-loop copy for < 8 bytes.
++ */
++static inline void jcopy(u8 *dest, const u8 *src, u32 n)
 +{
-+	kref_get(&tx->ref);
++	switch (n) {
++	case 7:
++		*dest++ = *src++;
++		fallthrough;
++	case 6:
++		*dest++ = *src++;
++		fallthrough;
++	case 5:
++		*dest++ = *src++;
++		fallthrough;
++	case 4:
++		*dest++ = *src++;
++		fallthrough;
++	case 3:
++		*dest++ = *src++;
++		fallthrough;
++	case 2:
++		*dest++ = *src++;
++		fallthrough;
++	case 1:
++		*dest++ = *src++;
++	}
 +}
 +
-+static inline void hfi2_put_txreq(struct verbs_txreq *tx)
++/*
++ * Read nbytes from "from" and place them in the low bytes
++ * of pbuf->carry.  Other bytes are left as-is.  Any previous
++ * value in pbuf->carry is lost.
++ *
++ * NOTES:
++ * o do not read from if nbytes is zero
++ * o from may _not_ be u64 aligned.
++ */
++static inline void read_low_bytes(struct pio_buf *pbuf, const void *from,
++				  unsigned int nbytes)
 +{
-+	kref_put(&tx->ref, dealloc_txreq);
++	pbuf->carry.val64 = 0;
++	jcopy(&pbuf->carry.val8[0], from, nbytes);
++	pbuf->carry_bytes = nbytes;
 +}
 +
-+int verbs_txreq_init(struct hfi2_ibdev *dev);
-+void verbs_txreq_exit(struct hfi2_ibdev *dev);
++/*
++ * Read nbytes bytes from "from" and put them at the end of pbuf->carry.
++ * It is expected that the extra read does not overfill carry.
++ *
++ * NOTES:
++ * o from may _not_ be u64 aligned
++ * o nbytes may span a QW boundary
++ */
++static inline void read_extra_bytes(struct pio_buf *pbuf,
++				    const void *from, unsigned int nbytes)
++{
++	jcopy(&pbuf->carry.val8[pbuf->carry_bytes], from, nbytes);
++	pbuf->carry_bytes += nbytes;
++}
 +
-+#endif                         /* HFI2_VERBS_TXREQ_H */
++/*
++ * Write a quad word using parts of pbuf->carry and the next 8 bytes of src.
++ * Put the unused part of the next 8 bytes of src into the LSB bytes of
++ * pbuf->carry with the upper bytes zeroed..
++ *
++ * NOTES:
++ * o result must keep unused bytes zeroed
++ * o src must be u64 aligned
++ */
++static inline void merge_write8(
++	struct pio_buf *pbuf,
++	void __iomem *dest,
++	const void *src)
++{
++	u64 new, temp;
++
++	new = *(u64 *)src;
++	temp = pbuf->carry.val64 | (new << mshift(pbuf->carry_bytes));
++	writeq(temp, dest);
++	pbuf->carry.val64 = new >> zshift(pbuf->carry_bytes);
++}
++
++/*
++ * Write a quad word using all bytes of carry.
++ */
++static inline void carry8_write8(union mix carry, void __iomem *dest)
++{
++	writeq(carry.val64, dest);
++}
++
++/*
++ * Write a quad word using all the valid bytes of carry.  If carry
++ * has zero valid bytes, nothing is written.
++ * Returns 0 on nothing written, non-zero on quad word written.
++ */
++static inline int carry_write8(struct pio_buf *pbuf, void __iomem *dest)
++{
++	if (pbuf->carry_bytes) {
++		/* unused bytes are always kept zeroed, so just write */
++		writeq(pbuf->carry.val64, dest);
++		return 1;
++	}
++
++	return 0;
++}
++
++/*
++ * Segmented PIO Copy - start
++ *
++ * Start a PIO copy.
++ *
++ * @pbuf: destination buffer
++ * @pbc: the PBC for the PIO buffer
++ * @from: data source, QWORD aligned
++ * @nbytes: bytes to copy
++ */
++void seg_pio_copy_start(struct pio_buf *pbuf, u64 pbc,
++			const void *from, size_t nbytes)
++{
++	void __iomem *dest = pbuf->start + SOP_DISTANCE;
++	void __iomem *send = dest + PIO_BLOCK_SIZE;
++	void __iomem *dend;			/* 8-byte data end */
++
++	writeq(pbc, dest);
++	dest += sizeof(u64);
++
++	/* calculate where the QWORD data ends - in SOP=1 space */
++	dend = dest + ((nbytes >> 3) * sizeof(u64));
++
++	if (dend < send) {
++		/*
++		 * all QWORD data is within the SOP block, does *not*
++		 * reach the end of the SOP block
++		 */
++
++		while (dest < dend) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++		/*
++		 * No boundary checks are needed here:
++		 * 0. We're not on the SOP block boundary
++		 * 1. The possible DWORD dangle will still be within
++		 *    the SOP block
++		 * 2. We cannot wrap except on a block boundary.
++		 */
++	} else {
++		/* QWORD data extends _to_ or beyond the SOP block */
++
++		/* write 8-byte SOP chunk data */
++		while (dest < send) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++		/* drop out of the SOP range */
++		dest -= SOP_DISTANCE;
++		dend -= SOP_DISTANCE;
++
++		/*
++		 * If the wrap comes before or matches the data end,
++		 * copy until the wrap, then wrap.
++		 *
++		 * If the data ends at the end of the SOP above and
++		 * the buffer wraps, then pbuf->end == dend == dest
++		 * and nothing will get written, but we will wrap in
++		 * case there is a dangling DWORD.
++		 */
++		if (pbuf->end <= dend) {
++			while (dest < pbuf->end) {
++				writeq(*(u64 *)from, dest);
++				from += sizeof(u64);
++				dest += sizeof(u64);
++			}
++
++			dest -= pbuf->sc->size;
++			dend -= pbuf->sc->size;
++		}
++
++		/* write 8-byte non-SOP, non-wrap chunk data */
++		while (dest < dend) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++	}
++	/* at this point we have wrapped if we are going to wrap */
++
++	/* ...but it doesn't matter as we're done writing */
++
++	/* save dangling bytes, if any */
++	read_low_bytes(pbuf, from, nbytes & 0x7);
++
++	pbuf->qw_written = 1 /*PBC*/ + (nbytes >> 3);
++}
++
++/*
++ * Mid copy helper, "mixed case" - source is 64-bit aligned but carry
++ * bytes are non-zero.
++ *
++ * Whole u64s must be written to the chip, so bytes must be manually merged.
++ *
++ * @pbuf: destination buffer
++ * @from: data source, is QWORD aligned.
++ * @nbytes: bytes to copy
++ *
++ * Must handle nbytes < 8.
++ */
++static void mid_copy_mix(struct pio_buf *pbuf, const void *from, size_t nbytes)
++{
++	void __iomem *dest = pbuf->start + (pbuf->qw_written * sizeof(u64));
++	void __iomem *dend;			/* 8-byte data end */
++	unsigned long qw_to_write = nbytes >> 3;
++	unsigned long bytes_left = nbytes & 0x7;
++
++	/* calculate 8-byte data end */
++	dend = dest + (qw_to_write * sizeof(u64));
++
++	if (pbuf->qw_written < PIO_BLOCK_QWS) {
++		/*
++		 * Still within SOP block.  We don't need to check for
++		 * wrap because we are still in the first block and
++		 * can only wrap on block boundaries.
++		 */
++		void __iomem *send;		/* SOP end */
++		void __iomem *xend;
++
++		/*
++		 * calculate the end of data or end of block, whichever
++		 * comes first
++		 */
++		send = pbuf->start + PIO_BLOCK_SIZE;
++		xend = min(send, dend);
++
++		/* shift up to SOP=1 space */
++		dest += SOP_DISTANCE;
++		xend += SOP_DISTANCE;
++
++		/* write 8-byte chunk data */
++		while (dest < xend) {
++			merge_write8(pbuf, dest, from);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++
++		/* shift down to SOP=0 space */
++		dest -= SOP_DISTANCE;
++	}
++	/*
++	 * At this point dest could be (either, both, or neither):
++	 * - at dend
++	 * - at the wrap
++	 */
++
++	/*
++	 * If the wrap comes before or matches the data end,
++	 * copy until the wrap, then wrap.
++	 *
++	 * If dest is at the wrap, we will fall into the if,
++	 * not do the loop, when wrap.
++	 *
++	 * If the data ends at the end of the SOP above and
++	 * the buffer wraps, then pbuf->end == dend == dest
++	 * and nothing will get written.
++	 */
++	if (pbuf->end <= dend) {
++		while (dest < pbuf->end) {
++			merge_write8(pbuf, dest, from);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++
++		dest -= pbuf->sc->size;
++		dend -= pbuf->sc->size;
++	}
++
++	/* write 8-byte non-SOP, non-wrap chunk data */
++	while (dest < dend) {
++		merge_write8(pbuf, dest, from);
++		from += sizeof(u64);
++		dest += sizeof(u64);
++	}
++
++	pbuf->qw_written += qw_to_write;
++
++	/* handle carry and left-over bytes */
++	if (pbuf->carry_bytes + bytes_left >= 8) {
++		unsigned long nread;
++
++		/* there is enough to fill another qw - fill carry */
++		nread = 8 - pbuf->carry_bytes;
++		read_extra_bytes(pbuf, from, nread);
++
++		/*
++		 * One more write - but need to make sure dest is correct.
++		 * Check for wrap and the possibility the write
++		 * should be in SOP space.
++		 *
++		 * The two checks immediately below cannot both be true, hence
++		 * the else. If we have wrapped, we cannot still be within the
++		 * first block. Conversely, if we are still in the first block,
++		 * we cannot have wrapped. We do the wrap check first as that
++		 * is more likely.
++		 */
++		/* adjust if we have wrapped */
++		if (dest >= pbuf->end)
++			dest -= pbuf->sc->size;
++		/* jump to the SOP range if within the first block */
++		else if (pbuf->qw_written < PIO_BLOCK_QWS)
++			dest += SOP_DISTANCE;
++
++		/* flush out full carry */
++		carry8_write8(pbuf->carry, dest);
++		pbuf->qw_written++;
++
++		/* now adjust and read the rest of the bytes into carry */
++		bytes_left -= nread;
++		from += nread; /* from is now not aligned */
++		read_low_bytes(pbuf, from, bytes_left);
++	} else {
++		/* not enough to fill another qw, append the rest to carry */
++		read_extra_bytes(pbuf, from, bytes_left);
++	}
++}
++
++/*
++ * Mid copy helper, "straight case" - source pointer is 64-bit aligned
++ * with no carry bytes.
++ *
++ * @pbuf: destination buffer
++ * @from: data source, is QWORD aligned
++ * @nbytes: bytes to copy
++ *
++ * Must handle nbytes < 8.
++ */
++static void mid_copy_straight(struct pio_buf *pbuf,
++			      const void *from, size_t nbytes)
++{
++	void __iomem *dest = pbuf->start + (pbuf->qw_written * sizeof(u64));
++	void __iomem *dend;			/* 8-byte data end */
++
++	/* calculate 8-byte data end */
++	dend = dest + ((nbytes >> 3) * sizeof(u64));
++
++	if (pbuf->qw_written < PIO_BLOCK_QWS) {
++		/*
++		 * Still within SOP block.  We don't need to check for
++		 * wrap because we are still in the first block and
++		 * can only wrap on block boundaries.
++		 */
++		void __iomem *send;		/* SOP end */
++		void __iomem *xend;
++
++		/*
++		 * calculate the end of data or end of block, whichever
++		 * comes first
++		 */
++		send = pbuf->start + PIO_BLOCK_SIZE;
++		xend = min(send, dend);
++
++		/* shift up to SOP=1 space */
++		dest += SOP_DISTANCE;
++		xend += SOP_DISTANCE;
++
++		/* write 8-byte chunk data */
++		while (dest < xend) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++
++		/* shift down to SOP=0 space */
++		dest -= SOP_DISTANCE;
++	}
++	/*
++	 * At this point dest could be (either, both, or neither):
++	 * - at dend
++	 * - at the wrap
++	 */
++
++	/*
++	 * If the wrap comes before or matches the data end,
++	 * copy until the wrap, then wrap.
++	 *
++	 * If dest is at the wrap, we will fall into the if,
++	 * not do the loop, when wrap.
++	 *
++	 * If the data ends at the end of the SOP above and
++	 * the buffer wraps, then pbuf->end == dend == dest
++	 * and nothing will get written.
++	 */
++	if (pbuf->end <= dend) {
++		while (dest < pbuf->end) {
++			writeq(*(u64 *)from, dest);
++			from += sizeof(u64);
++			dest += sizeof(u64);
++		}
++
++		dest -= pbuf->sc->size;
++		dend -= pbuf->sc->size;
++	}
++
++	/* write 8-byte non-SOP, non-wrap chunk data */
++	while (dest < dend) {
++		writeq(*(u64 *)from, dest);
++		from += sizeof(u64);
++		dest += sizeof(u64);
++	}
++
++	/* we know carry_bytes was zero on entry to this routine */
++	read_low_bytes(pbuf, from, nbytes & 0x7);
++
++	pbuf->qw_written += nbytes >> 3;
++}
++
++/*
++ * Segmented PIO Copy - middle
++ *
++ * Must handle any aligned tail and any aligned source with any byte count.
++ *
++ * @pbuf: a number of blocks allocated within a PIO send context
++ * @from: data source
++ * @nbytes: number of bytes to copy
++ */
++void seg_pio_copy_mid(struct pio_buf *pbuf, const void *from, size_t nbytes)
++{
++	unsigned long from_align = (unsigned long)from & 0x7;
++
++	if (pbuf->carry_bytes + nbytes < 8) {
++		/* not enough bytes to fill a QW */
++		read_extra_bytes(pbuf, from, nbytes);
++		return;
++	}
++
++	if (from_align) {
++		/* misaligned source pointer - align it */
++		unsigned long to_align;
++
++		/* bytes to read to align "from" */
++		to_align = 8 - from_align;
++
++		/*
++		 * In the advance-to-alignment logic below, we do not need
++		 * to check if we are using more than nbytes.  This is because
++		 * if we are here, we already know that carry+nbytes will
++		 * fill at least one QW.
++		 */
++		if (pbuf->carry_bytes + to_align < 8) {
++			/* not enough align bytes to fill a QW */
++			read_extra_bytes(pbuf, from, to_align);
++			from += to_align;
++			nbytes -= to_align;
++		} else {
++			/* bytes to fill carry */
++			unsigned long to_fill = 8 - pbuf->carry_bytes;
++			/* bytes left over to be read */
++			unsigned long extra = to_align - to_fill;
++			void __iomem *dest;
++
++			/* fill carry... */
++			read_extra_bytes(pbuf, from, to_fill);
++			from += to_fill;
++			nbytes -= to_fill;
++			/* may not be enough valid bytes left to align */
++			if (extra > nbytes)
++				extra = nbytes;
++
++			/* ...now write carry */
++			dest = pbuf->start + (pbuf->qw_written * sizeof(u64));
++
++			/*
++			 * The two checks immediately below cannot both be
++			 * true, hence the else.  If we have wrapped, we
++			 * cannot still be within the first block.
++			 * Conversely, if we are still in the first block, we
++			 * cannot have wrapped.  We do the wrap check first
++			 * as that is more likely.
++			 */
++			/* adjust if we've wrapped */
++			if (dest >= pbuf->end)
++				dest -= pbuf->sc->size;
++			/* jump to SOP range if within the first block */
++			else if (pbuf->qw_written < PIO_BLOCK_QWS)
++				dest += SOP_DISTANCE;
++
++			carry8_write8(pbuf->carry, dest);
++			pbuf->qw_written++;
++
++			/* read any extra bytes to do final alignment */
++			/* this will overwrite anything in pbuf->carry */
++			read_low_bytes(pbuf, from, extra);
++			from += extra;
++			nbytes -= extra;
++			/*
++			 * If no bytes are left, return early - we are done.
++			 * NOTE: This short-circuit is *required* because
++			 * "extra" may have been reduced in size and "from"
++			 * is not aligned, as required when leaving this
++			 * if block.
++			 */
++			if (nbytes == 0)
++				return;
++		}
++
++		/* at this point, from is QW aligned */
++	}
++
++	if (pbuf->carry_bytes)
++		mid_copy_mix(pbuf, from, nbytes);
++	else
++		mid_copy_straight(pbuf, from, nbytes);
++}
++
++/*
++ * Segmented PIO Copy - end
++ *
++ * Write any remainder (in pbuf->carry) and finish writing the whole block.
++ *
++ * @pbuf: a number of blocks allocated within a PIO send context
++ */
++void seg_pio_copy_end(struct pio_buf *pbuf)
++{
++	void __iomem *dest = pbuf->start + (pbuf->qw_written * sizeof(u64));
++
++	/*
++	 * The two checks immediately below cannot both be true, hence the
++	 * else.  If we have wrapped, we cannot still be within the first
++	 * block.  Conversely, if we are still in the first block, we
++	 * cannot have wrapped.  We do the wrap check first as that is
++	 * more likely.
++	 */
++	/* adjust if we have wrapped */
++	if (dest >= pbuf->end)
++		dest -= pbuf->sc->size;
++	/* jump to the SOP range if within the first block */
++	else if (pbuf->qw_written < PIO_BLOCK_QWS)
++		dest += SOP_DISTANCE;
++
++	/* write final bytes, if any */
++	if (carry_write8(pbuf, dest)) {
++		dest += sizeof(u64);
++		/*
++		 * NOTE: We do not need to recalculate whether dest needs
++		 * SOP_DISTANCE or not.
++		 *
++		 * If we are in the first block and the dangle write
++		 * keeps us in the same block, dest will need
++		 * to retain SOP_DISTANCE in the loop below.
++		 *
++		 * If we are in the first block and the dangle write pushes
++		 * us to the next block, then loop below will not run
++		 * and dest is not used.  Hence we do not need to update
++		 * it.
++		 *
++		 * If we are past the first block, then SOP_DISTANCE
++		 * was never added, so there is nothing to do.
++		 */
++	}
++
++	/* fill in rest of block */
++	while (((unsigned long)dest & PIO_BLOCK_MASK) != 0) {
++		writeq(0, dest);
++		dest += sizeof(u64);
++	}
++
++	/* finished with this buffer */
++	this_cpu_dec(*pbuf->sc->buffers_allocated);
++	preempt_enable();
++}
 
 
 
