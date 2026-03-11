@@ -1,46 +1,45 @@
-Return-Path: <linux-rdma+bounces-17981-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17982-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WAekAeamsWn4EAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-17981-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:31:18 +0100
+	id kBBGD3ynsWn4EAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-17982-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:33:48 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 816A62680AB
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:31:17 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C43282680F0
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:33:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CA9E63059FDD
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:28:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B88F3303320D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303CB36C9FB;
-	Wed, 11 Mar 2026 17:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB642BEFED;
+	Wed, 11 Mar 2026 17:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="Ckz+jpCk"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="fmnFb+Qc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11022138.outbound.protection.outlook.com [52.101.53.138])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11022072.outbound.protection.outlook.com [52.101.43.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A89322C6D
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.53.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BD231E848
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.72
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773250089; cv=fail; b=tbTKtQlzUHJq15JGIVJieXHQ4w1KwF6lbFqp7/UmZDLgHwmASClR3Ke6j3nElP/tySAYwwCoBeoyTiTJdZRv4AZ5GdzBoKeHjRe+c0/DcNlx4w+dDUJZAkTtH3saQFBId0cCDBxZGSzdkHnV50BJ+EdRG1MyUjDnpqQmDsef9W4=
+	t=1773250424; cv=fail; b=XaTaoAWhKHfuLIhUoot4MpF4mnWi0LIvaj0Tt9PJlEnz3hjd27Txl7xGGLNE7uIPouFLWq9A72szaNTEjFqe922ncfHz5OLMMTf9FsKN7662tO2rLGhgzwXTJysMDCkMYha/ismqXwWr8jB/fblE0hQ5V1myLodM+ZciHiUoGzA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773250089; c=relaxed/simple;
-	bh=6iCCKECAd8Xh0idJtPC2zdRDbySyj7QRBBQS/vnP8iU=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mdft5RI7T3qedqc0Jh4L7QciRNHcboFL1KEOXVHJa5U6GsvPo2TdbJR9WQnrdQXXUqk8OwpWVDm0W2CMAImbI71ycBCpAdK9NlKwACHpXDvC8P85O6+TTRUROSgz85A+vxHHIaOqDLH5OIVaOepjgjvvpdwZzx3OrigwbKZroe4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=Ckz+jpCk; arc=fail smtp.client-ip=52.101.53.138
+	s=arc-20240116; t=1773250424; c=relaxed/simple;
+	bh=AhjHvfxBMc5tCALvczLe8yMay3ER/yChW02jHVGGd+4=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=KAU+p0nJ+dfMIXuMV6hu8unp7Cd1ktimqPmhPDilpzvm4cykMShucDYCMdqhdBzmnztIsOnRrEBJkLMUSSf32lzLJyxJvyWXkPLkpSOKnWqZIg3+byBfOeR/MvskSA4NvaGxQx6n1ndlkG47e1svFDkgPwlVfyOpeE7fuJb+04I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=fmnFb+Qc; arc=fail smtp.client-ip=52.101.43.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=J1/3YfOZQ62XWqIrYJ6B+Ek7HXrLQoa0KDtneGYxBSJ8OmNheUh5rgk4O8Rj99I6PyerGhK3ypcoZcPXhDNtcxPkam7V7AMZTBBbsE4EmXaNvffxmDUzMhq2fRKSJ4b7L2mLEcBIgmzG+7wJZC373uFeCX2dFtwlNn0NmktpiP+iN90c3DF0hC/Z8SaszdpocQLwREUkLydtmmWFlGTpNcKr6rpyctFqnIVE3Nal0S+P7BIhEa6XYBzYMNFNQ+YEMiRXzRCGSIDxVq0C6v6GLbsZXaJ1f+YnWJvbu8mpjb8vkog9VNoIv4RYo/bb79xJat8hLtENqFtt8GcDGMW9ug==
+ b=MtIGVRxyQ6aSDJcbHvowkl0nqLkn/qTiVhbauRXRYBhMPRzHUYw1GUYMuSjw3fVH5fPs39P4kfZ+5bUrPbaS2NbTgPSxLe9cejyl/nk0jUsA+OZcqReCy1BFV2cYbjaN+wm6oYqsPtBrdsHFQBXHWasMs3Ph2eXBd+pXECZeq3A64deUCxsW5QWHijXC85PlaYzoSgMXFqXC/iCf77GDHUVSlw2qoOSjs2G1DqR9XhpSzgqfKE0nrgkLVbeyyFrK9mMQrWRC0JUIGxFmCGCyZKoWbWrcBIWz6aQOLKzmWiIFdHTCTYOZHW/iHMiqQ20V3AxalqitJdRkcw1ARj7cTA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2rq+m7HKO/tQP5Y0xDqjb+r1InAGIASX9+Fm8U4mAhg=;
- b=XX0xoOZI1AkgmalPrVmKdKVi5Mu7ckuEoSM52sQq3AQltYdUtI2kfSbKP1DikLei80JLEnPR3iRUyf7XdTd74ee/XblNd6c3+Y6z5f5iDuIN9kzmfpSO+P2mlSzBo6FP/YT3Hy+pWqupZzPRiE8TZvtlW6YQz8MEXZZcu/64mVT6dqG0TFhIdfGwbXdDD7HD88vLNgpgndr1079trrWLKD0W9Vi9JMdx1A7f8/f3LN7Kl3WL71/apZAbSqtMwqK3KjGdsJwt+egZcoaqo/hIWJPj/XVMYNmytqDml/v54o8bZG4i6HmxEdUT4Hk6z8Rguxj7av+LHsB3yM7fg/3zcQ==
+ bh=WSnIfVsqzqpKoz6Y8a0mCKiQSvvcPoqyy63+EUsV7oA=;
+ b=HsfvLb4l8cfPBAtRrLAoVYpuOoP0eaUUsNUbcLVXFoCFqS0uSj+jLEW33IEC3vBHH623Hs+drW+igsNweKecdNs5AdeZQNZPu/iT+D8GKtIKUFhyuZaynP4jlvzJ6beB5PlFoIud82eMZiwgBXiM7h9wn2Vlakw+TjMFw4/A+TagCFnFJq5heTLiPf2gAO245kJd9g/wEgExeBlf4oa3QIIa/xDgVq5+INPSLOAukFMWPHN9ysOJe3K2Li5TtKhMDcPHVnwYf+NQgPKdMtxVpPwpdcNO5G5WB318POGaLOVZ44DdE8sHtREd+se6L3oRJSLtsKajY7/k2frAaVhJtQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
  50.148.235.34) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=fail (p=none sp=none pct=100)
@@ -49,17 +48,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2rq+m7HKO/tQP5Y0xDqjb+r1InAGIASX9+Fm8U4mAhg=;
- b=Ckz+jpCkhFQxdbrT/7esAzxaywi88ZsU7tml7/2oqfnj7SNNsT8IAO4r4E/eKM3zdwqSTrCnDukCZ2UGlBd74wgLRyyvkeFynwEVy2pUfDnYBkrRfN3TAXaSG4fm7bbH7cFGhpUlxB/bTXYImbSd3aKN6zkFJu5eVo7/UZ6CqxsjwMRIdwBmKJdMJhVXsub1d+AH46hx6PUbbGkubxjqqavhNh8y/qBlvfJR9FurgHVBcFqhWBqGDXOTlMn9shAJTTah05c6IQIN1ELkVS4u3QrU3jGnEIy6r6StKJRV9GpcThLDfMk97lgGi0prKFbDOuQej6wcQM8eljZAJ4SjWQ==
-Received: from BN9PR03CA0062.namprd03.prod.outlook.com (2603:10b6:408:fc::7)
- by DS1PR01MB9037.prod.exchangelabs.com (2603:10b6:8:21d::14) with Microsoft
+ bh=WSnIfVsqzqpKoz6Y8a0mCKiQSvvcPoqyy63+EUsV7oA=;
+ b=fmnFb+Qcrs9q68/Y5ZNr00ki3wuXQmkS6u5NNyL7A8yJf61GQ23rbXiN279OF84dsdx/T+BCQLkkUKDfZJR7uoOBUTyrlVRlGb6uqsVrAL3vEZAHA5LIbTVLRJboXuOXd+Dk5kwk/+QC/RO0ORnJP3IpB/IbPrZ+ELxciRsBSLfwMjhZYehevRQnUxfzWHIyHq+/z4kc0VRNjkZO3QISiHw9URZZ3CIxzuUjjTjQrRArbYFaTUsHVfe3FotXbzbYPtHUM4Pf/5ueYiqMp3VYxycDOdsZlU+uUHt8RLh3DJU5iBxk8iLffu62qKxgFK42T5XuEM789Sz2thgZLefW7A==
+Received: from BN0PR07CA0004.namprd07.prod.outlook.com (2603:10b6:408:141::22)
+ by DM4PR01MB7618.prod.exchangelabs.com (2603:10b6:8:61::9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9700.12; Wed, 11 Mar 2026 17:28:04 +0000
-Received: from BN2PEPF000044A3.namprd02.prod.outlook.com
- (2603:10b6:408:fc:cafe::a4) by BN9PR03CA0062.outlook.office365.com
- (2603:10b6:408:fc::7) with Microsoft SMTP Server (version=TLS1_3,
+ 15.20.9700.12; Wed, 11 Mar 2026 17:33:38 +0000
+Received: from BN2PEPF000055DF.namprd21.prod.outlook.com
+ (2603:10b6:408:141:cafe::c) by BN0PR07CA0004.outlook.office365.com
+ (2603:10b6:408:141::22) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.26 via Frontend Transport; Wed,
- 11 Mar 2026 17:28:04 +0000
+ 11 Mar 2026 17:33:12 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 50.148.235.34)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=fail action=none header.from=cornelisnetworks.com;
@@ -68,27 +67,22 @@ Received-SPF: Fail (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=50.148.235.34;
  helo=cn-mailer-00.localdomain;
 Received: from cn-mailer-00.localdomain (50.148.235.34) by
- BN2PEPF000044A3.mail.protection.outlook.com (10.167.243.154) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.18
- via Frontend Transport; Wed, 11 Mar 2026 17:28:03 +0000
+ BN2PEPF000055DF.mail.protection.outlook.com (10.167.245.9) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9723.1
+ via Frontend Transport; Wed, 11 Mar 2026 17:33:37 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 5B05814D813;
-	Wed, 11 Mar 2026 13:28:03 -0400 (EDT)
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 6C19714D813;
+	Wed, 11 Mar 2026 13:33:37 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 443991810D6C5;
-	Wed, 11 Mar 2026 13:28:03 -0400 (EDT)
-Subject: [PATCH for-next 2/4] RDMA/rdmavt: Add ucontext alloc/dealloc
- passthrough
+	by awdrv-04.localdomain (Postfix) with ESMTP id 54A9E1810D6C5;
+	Wed, 11 Mar 2026 13:33:37 -0400 (EDT)
+Subject: [PATCH for-next] RDMA/core: Add writev to uverbs file descriptor
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Wed, 11 Mar 2026 13:28:03 -0400
+Date: Wed, 11 Mar 2026 13:33:37 -0400
 Message-ID:
- <177325008318.52243.7367786996925601681.stgit@awdrv-04.cornelisnetworks.com>
-In-Reply-To:
- <177308892140.1279894.3475429390519673020.stgit@awdrv-04.cornelisnetworks.com>
-References:
- <177308892140.1279894.3475429390519673020.stgit@awdrv-04.cornelisnetworks.com>
+ <177325041723.52970.2153579331168741909.stgit@awdrv-04.cornelisnetworks.com>
 User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -100,47 +94,47 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044A3:EE_|DS1PR01MB9037:EE_
-X-MS-Office365-Filtering-Correlation-Id: 94404fd5-df38-4f7a-875e-08de7f938d19
+X-MS-TrafficTypeDiagnostic: BN2PEPF000055DF:EE_|DM4PR01MB7618:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06c72180-cc95-443f-cc87-08de7f945454
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700016|1800799024|376014|34020700016|55112099003|22082099003|18002099003|56012099003;
+	BCL:0;ARA:13230040|82310400026|376014|36860700016|34020700016|1800799024|55112099003|18002099003|56012099003;
 X-Microsoft-Antispam-Message-Info:
-	DCX5tbKBz7bplvf0HoROxyOvkp+hY6Wn0DyacPpuYobudV/9POERokeq5w0cMen4hSdg7U5HPdhHWfRUiegefxiHJHu5xg1nLa8INeYS0Vq6UBIP99N6CiHEtPKbabBwwNR+4IpFNfN/JNx8Xt4xYwX/ZDCAgC/IdlyyLxeU5fX7KubOLYjrXooQ116dSyx8RMq/ozAS1W415+/CLUJmmbZY0sJ0sZxaSNEKuxlzwEZtBWYEuGeYFUs3KvcZDvlJmh7iSOT33qcIithglKL3dFTFHr6/Gzwi8dx1MQmgrxpLoYRSEjX97Ldv50ERRJRKb+K/7SlNMsXejUAq+0yaxmdz595aHh8r/0aUJRnLRdeELOVqtNelDquB+qIttYgeVF71IabPwoNU/LsRXRbRZWaSnruo7RDxXoQxZ4jvW3TJx/7KM+JIg4zcADyxKWoDIZiJ512+LC9D0OkDuXj5RlRQJsMZQX82SIfrZkQgqT0CIr5SCVxj+84YZt5dFywUTxG9lGRwlgc27n9yG4wIfKXfv3p6VjsqU+W8+Y+uSfKEQixUmsBpx8k4OxjKH4K6uSSOefVZ5/1cKxT7new+7Au9EtoFplpG4QSbqH5msFz/NU07LrRF8SMY9KLPhu0oO3oSAudoz6ia6H1KLqBvO9NOzeUX2ixNN1Hun/p3M5Dmkdhze+TjemEQl46C95wa125X/3eo1drudzLc3PszCrZaS03jcLWFFaE7ijMRDaZmLzGksigd30sfXYBvDCpURcIM1kRu+/BTYlGRw+koAw==
+	ZQXO17m3zMGT+iKz+OOBSg8zuw483BAVoTfjJONZ8elzW5Ll1fLiwa9z/LU9SP1i94TgHXG3vLn0OFPns2MbfqreIMv6nhLyhUrESIzR+Oz5Nj6oW90mH92HZOLunQb93KLF0IamJKaqI2aNUyUtxpxndhRsHdGQJ/HludE2FdxrHZTGXyMb7pKKYqlcXmPsA+Z4n6cTCAh05Sxu35CH4QmsFpSZoP48e5JB2LM94BGpec9DgsNrfXzRhCuFDF3NjS3mRdlTbl+AqIprtI8f651+rDGAs0qZd0cCGEXR62rlJw3JMIqLtAis6W6gmpDCwR+4j21x/BGtGId6q1UWqgq+ShAu9bZi61yO5PUqSsWY/3++5bH6OkfzNKtWtwEa8iZxZ9spmvweXA1XgymD6ggm7mKiuGpbb7n9zZ4KaYl64sI9P8ufgybSSRFlEyt90tDD5mc6rep3SdgzjBeDjswTnXJyQltY06qh/vkGYE3vW24WpjDqIZP4GLpDJf+FjU7aJ9J21IZajH1IqCOuFYuiD+lzVv5WfMjMRsD2JwKkodGulqgxuaBnjQLeDHTv3fGDVbRKg2vDZwcNmBrRsqSwdJRID6RWWztUeWIqyZxC4BDVTrMjyZRri1FplIZZJoZNkUDWNTz9j6iM7ZhYJtcvlERJQXVJUt8uEaEJ6v4HJvOhTumDFQ5GxLgwYlt0DFAsi85ps7778dLHw6/X+cpg44IERlM9SKdE/piF1m9xaytaUyCBiIvN2KGNGGDQCfjToIZpR1mCCNavmiNsNg==
 X-Forefront-Antispam-Report:
-	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(1800799024)(376014)(34020700016)(55112099003)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1102;
+	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700016)(34020700016)(1800799024)(55112099003)(18002099003)(56012099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	Czp5sbz9/ScEAhrNB/9w823kLkUeQg7pckgZpAxdsnwp+3HUlLY6xI10kuJkiAlypgf+HLdTeIQSSj0gMCALQYo4I457oyYhEvsd+lVTrGryVfSjaG/duejDWjQtewuOSIWJ7VN3675jgGWnsvw9lQBvRR7qwnPylyNmP7NBiCIjjpZU5aE2W7M3B/DX7yBMJAcDYwAWpTPncCra+TfwxzcHu3XHOsRTQeEHo6LumE1rszvrdwQY430ki48Ux83cy+h8cYk/N2qf45lPUqGZ+kzvrYHyBgS78aqjuq+M+W2OG3NX0bWBZuJII5kIRPKV7XXTSvl1Xtsg0AuhuoNsQmRiGLqnjYXbgYC35YZP2kRlh9k8AvyQXuhPwJjDi5OILSHHYa7c5oqk5en0ejUkDghqez7qzAEykQPSyzzpdLjXwrHqH+EiU1RS5s+U1XIr
+	0h+a0R/83frHcEOhWhyi0SJtLKUY4j58OcCs9NiMSPABO6HGj74simxX9WecMAKFTTMtsxu8LJiuzR8XIv/i7/ZJj1ILCOr3up87mStc1bvlukhdKnMmjMxbL8i6eMDX0q1U/9DspqrQQr9UTg7DvEFLJFJF+mZ1cDchLocwzkgIlwLBzKO4ntOYJ7Gb6/KWi3o6sNYApNYTQZewqAz7wJKmL/0g6cHT7i8ymlDDjmZf0Tn9dagGCgGE7s42gaLKbuCUzGtjedGNVBTkE7pOIkbGPOal/Gw1OsZLTKbYk0HFNmXeFtOwoM0UWnYPcvNXPhoOKBiQRd05ZT/ikTs8XCLrGklKV86xsKgG7T0YRVic7yrNGFgQ+ti6bXqrndaBjYWFiDeZiTjtmIAbya2H1jG5Ri6RIo6kX37anStara9kMrSMNjfHrrmBIfTXV3eL
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:28:03.6667
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:33:37.9254
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94404fd5-df38-4f7a-875e-08de7f938d19
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06c72180-cc95-443f-cc87-08de7f945454
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[50.148.235.34];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044A3.namprd02.prod.outlook.com
+	BN2PEPF000055DF.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS1PR01MB9037
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR01MB7618
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[cornelisnetworks.com:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17981-lists,linux-rdma=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cornelisnetworks.com:dkim,cornelisnetworks.com:email,awdrv-04.cornelisnetworks.com:mid];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17982-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,awdrv-04.cornelisnetworks.com:mid,cornelisnetworks.com:dkim,cornelisnetworks.com:email];
+	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -150,73 +144,106 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: 816A62680AB
+X-Rspamd-Queue-Id: C43282680F0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Dean Luick <dean.luick@cornelisnetworks.com>
 
-Add a private data pointer to the ucontext structure and add
-per-client pass-throughs.
+Add a writev pass-through between the uverbs file descriptor and
+infiniband devices.  Interested devices may subscribe to this
+functionality.
+
+The goal is to keep all the semantics of the user interface the same so
+it's an easy migration to the uverbs cdev from the private cdev. The idea
+is that all the command and control is still ioctl, but the "data path" is
+still using the writev() to pass in the iovecs.
 
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
----
- drivers/infiniband/sw/rdmavt/vt.c |    8 ++++++++
- include/rdma/rdma_vt.h            |    7 +++++++
- 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
-index 0c28b412d81a..033d8932aff1 100644
---- a/drivers/infiniband/sw/rdmavt/vt.c
-+++ b/drivers/infiniband/sw/rdmavt/vt.c
-@@ -244,6 +244,10 @@ static int rvt_query_gid(struct ib_device *ibdev, u32 port_num,
-  */
- static int rvt_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- {
-+	struct rvt_dev_info *rdi = ib_to_rvt(uctx->device);
-+
-+	if (rdi->driver_f.alloc_ucontext)
-+		return rdi->driver_f.alloc_ucontext(uctx, udata);
- 	return 0;
+---
+Changes since v1:
+Updated commit message to indiate why we are keeping the
+writev semantic.
+---
+ drivers/infiniband/core/device.c      |    1 +
+ drivers/infiniband/core/uverbs_main.c |   22 ++++++++++++++++++++++
+ include/rdma/ib_verbs.h               |    2 ++
+ 3 files changed, 25 insertions(+)
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 1b5f1ee0a557..e94aebea16e1 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2805,6 +2805,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	SET_DEVICE_OP(dev_ops, set_vf_link_state);
+ 	SET_DEVICE_OP(dev_ops, ufile_hw_cleanup);
+ 	SET_DEVICE_OP(dev_ops, report_port_event);
++	SET_DEVICE_OP(dev_ops, write_iter);
+ 
+ 	SET_OBJ_SIZE(dev_ops, ib_ah);
+ 	SET_OBJ_SIZE(dev_ops, ib_counters);
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 7b68967a6301..b393d3a0f11c 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -713,6 +713,26 @@ static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
+ 	return ret;
  }
  
-@@ -253,6 +257,10 @@ static int rvt_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
-  */
- static void rvt_dealloc_ucontext(struct ib_ucontext *context)
- {
-+	struct rvt_dev_info *rdi = ib_to_rvt(context->device);
++static ssize_t ib_uverbs_write_iter(struct kiocb *kiocb, struct iov_iter *from)
++{
++	struct ib_uverbs_file *file = kiocb->ki_filp->private_data;
++	struct ib_ucontext *ucontext;
++	ssize_t ret = -EOPNOTSUPP;
++	int srcu_key;
 +
-+	if (rdi->driver_f.dealloc_ucontext)
-+		rdi->driver_f.dealloc_ucontext(context);
- 	return;
- }
- 
-diff --git a/include/rdma/rdma_vt.h b/include/rdma/rdma_vt.h
-index c429d6ddb129..8671c6da16bb 100644
---- a/include/rdma/rdma_vt.h
-+++ b/include/rdma/rdma_vt.h
-@@ -149,6 +149,7 @@ struct rvt_driver_params {
- /* User context */
- struct rvt_ucontext {
- 	struct ib_ucontext ibucontext;
-+	void *priv;
++	srcu_key = srcu_read_lock(&file->device->disassociate_srcu);
++	ucontext = ib_uverbs_get_ucontext_file(file);
++	if (IS_ERR(ucontext)) {
++		ret = PTR_ERR(ucontext);
++		goto out;
++	}
++	if (ucontext->device->ops.write_iter)
++		ret = ucontext->device->ops.write_iter(ucontext, from);
++out:
++	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
++	return ret;
++}
++
+ /*
+  * The VMA has been dup'd, initialize the vm_private_data with a new tracking
+  * struct
+@@ -1031,6 +1051,7 @@ static const struct file_operations uverbs_fops = {
+ 	.release = ib_uverbs_close,
+ 	.unlocked_ioctl = ib_uverbs_ioctl,
+ 	.compat_ioctl = compat_ptr_ioctl,
++	.write_iter = ib_uverbs_write_iter,
  };
  
- /* Protection domain */
-@@ -359,6 +360,12 @@ struct rvt_driver_provided {
- 
- 	/* Get and return CPU to pin CQ processing thread */
- 	int (*comp_vect_cpu_lookup)(struct rvt_dev_info *rdi, int comp_vect);
-+
-+	/* allocate a ucontext */
-+	int (*alloc_ucontext)(struct ib_ucontext *uctx, struct ib_udata *udata);
-+
-+	/* deallocate a ucontext */
-+	void (*dealloc_ucontext)(struct ib_ucontext *context);
+ static const struct file_operations uverbs_mmap_fops = {
+@@ -1041,6 +1062,7 @@ static const struct file_operations uverbs_mmap_fops = {
+ 	.release = ib_uverbs_close,
+ 	.unlocked_ioctl = ib_uverbs_ioctl,
+ 	.compat_ioctl = compat_ptr_ioctl,
++	.write_iter = ib_uverbs_write_iter,
  };
  
- struct rvt_dev_info {
+ static int ib_uverbs_get_nl_info(struct ib_device *ibdev, void *client_data,
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 3f3827e1c711..c92496783028 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2757,6 +2757,8 @@ struct ib_device_ops {
+ 	 * Everyone else relies on Linux memory management model.
+ 	 */
+ 	int (*get_numa_node)(struct ib_device *dev);
++	/* subscribe to file ops write_iter callback */
++	ssize_t (*write_iter)(struct ib_ucontext *context, struct iov_iter *from);
+ 
+ 	/*
+ 	 * add_sub_dev - Add a sub IB device
 
 
 
