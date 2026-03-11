@@ -1,51 +1,51 @@
-Return-Path: <linux-rdma+bounces-17945-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17946-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aGBsAq8jsWkOrQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17945-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:11:27 +0100
+	id kDLlOfkmsWkBrgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17946-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:25:29 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FB0F25EBB0
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:11:26 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB0E725F285
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DB2BF305172C
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:09:59 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1E9D630A8C3C
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF3A3A545E;
-	Wed, 11 Mar 2026 08:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9662736C9F6;
+	Wed, 11 Mar 2026 08:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLFscuv2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IQx2TkN6"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154561A6838;
-	Wed, 11 Mar 2026 08:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDCF35A391;
+	Wed, 11 Mar 2026 08:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773216594; cv=none; b=LP/vdf1UT6vBauU6NVKiKU0jSiRL/L8AcUx69XoOHg2QckIBHtpWagE4oYdD6diFYFlsbXxP/2BQrCh7QrOlqlqf4uFUm6h/nVTHCgwkOythv3d7xsn/aWy8rZfFNQVj1byfMX2kYJj+YiKKz4489Kfw0fTSUJARXAdoxAU/STg=
+	t=1773217136; cv=none; b=X3js/sNzJinhfM9qah/5xVBNxIUhDZDU6mvryfchB0SuZP4mRYXg8qegAOiCoEYvnpM05vbV+gR9S5u2M3hNUEXqgBP9N6Seoptv/u/KR+n7dmYdYqK+Ok86acHJK7nj8nZ0NvB4oC1iHY+Y0/9seo/m1sVeAdmtBVchq9AlcuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773216594; c=relaxed/simple;
-	bh=Ev+RupPFx3vFthuT0C4F0wFHzLiDXKrbll1RNkDERZo=;
+	s=arc-20240116; t=1773217136; c=relaxed/simple;
+	bh=6ImKPFcivnEAhhMGOB4v8zVHkoArioNqdVSwhniKfY0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mDZ1Qx7UzQ9vR+mQlt9/UE2S85Eyx9r+0+1bgIRrZJ87BMfKctWl5Z8r7Mr374qngzz1rK4FedQLQArKQrpvUrtQTloUgAgh4q9TMYrknfPNfMSAECk6xxGaPWmosGnhZQ/UG50GWOWD7XCP/eOiQhNW+my/rN2+IVrD0/ITL8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLFscuv2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF97C2BC9E;
-	Wed, 11 Mar 2026 08:09:39 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=Bbtkui3QZObBzZmTenuAdatQTolXDJrqDfvQx7FEgXlb9PVZMeoL/gu7ulogjQMY1Lj1ZJ3m62H+tpLoSmgiLevZZyOWQB333fNy1KKyxE8OfXSgwlv0Gdk5QSLkeFmq97NxSKFUDqJj3o38B4CJ7nm+LkQT59WVmELrtOn4np0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IQx2TkN6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 021A4C2BC9E;
+	Wed, 11 Mar 2026 08:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773216593;
-	bh=Ev+RupPFx3vFthuT0C4F0wFHzLiDXKrbll1RNkDERZo=;
+	s=k20201202; t=1773217136;
+	bh=6ImKPFcivnEAhhMGOB4v8zVHkoArioNqdVSwhniKfY0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YLFscuv28t6jNAc42r7OavZhQeZvSUNStqr4Q7RFSOURjF6F4a+qrM3dZ18dhGWkF
-	 X3Q4wgVwkGzwZkdxpQkPksaXlYEI8vwMn3WBd/AVKeZc7kSwFZpu8HDj2NZbjH1jbC
-	 WKOonDy7O7ApDlcBH0pscWiPe+jDN7F4/VFe/CzIqaHf99gDDkESZx8I6jSIUfK7mB
-	 vG88BGnoCznJZICI1miWkoS/rI+HFCZyFlD9hIRhLm8jzSqpvneI9JCyoGKq0Purxu
-	 R+xWoOWF3J7Vf2YLrhnt5/4zPBse4v00ORNEvkDANUHfMoFc/3iG9OcAInOkA21TE0
-	 J0V3p3DYTNXtg==
-Message-ID: <ffc64d94-d3c8-4a51-b6f5-9da9ff633856@kernel.org>
-Date: Wed, 11 Mar 2026 09:09:38 +0100
+	b=IQx2TkN6ijhwUgYfcXSxBlRFTvqzQnZqutdbsFVRfHZbbWuzccTqcseRhNL0b0foU
+	 Ng3g2HiyK98YrTxKAnEhVA4j4nfwEDDPK36OCkI4JU4UKUI4B7NXTPkSBP1oQe98Q5
+	 nyE6Lmc4iPLMHq9THZP5u7ukJaP1F4rSYY8MQnD7Xb2jP1T9c1swNonrT7xVgzdJtb
+	 /hQNO3nIdqBLmqznQevDPfg0KMMh8xhvaarxTmwbEmXmOmt3BrUaykrMQXXqbwpwuz
+	 4mqhZZebsiw61CDatCJAAvMa/ObPo82EA1jzuNk51n4TnWChokW82M4xFiT6Wq9VYu
+	 5dx9/JXZAyOKA==
+Message-ID: <55b27bbf-6572-4f5f-a843-39ef8e01fd17@kernel.org>
+Date: Wed, 11 Mar 2026 09:18:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -53,8 +53,8 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/16] mm/memory: simplify calculation in
- unmap_mapping_range_tree()
+Subject: Re: [PATCH v1 10/16] mm/memory: use __zap_vma_range() in
+ zap_vma_for_reaping()
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 Cc: linux-kernel@vger.kernel.org, "linux-mm @ kvack . org"
  <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
@@ -102,8 +102,8 @@ Cc: linux-kernel@vger.kernel.org, "linux-mm @ kvack . org"
  linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
 References: <20260227200848.114019-1-david@kernel.org>
- <20260227200848.114019-5-david@kernel.org>
- <6c6bf2d6-bc0f-4721-a57d-6b9c5f2a5c66@lucifer.local>
+ <20260227200848.114019-11-david@kernel.org>
+ <c03e1ced-6fa5-4d66-9c91-66693193383f@lucifer.local>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -150,15 +150,15 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <6c6bf2d6-bc0f-4721-a57d-6b9c5f2a5c66@lucifer.local>
+In-Reply-To: <c03e1ced-6fa5-4d66-9c91-66693193383f@lucifer.local>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 9FB0F25EBB0
+X-Rspamd-Queue-Id: CB0E725F285
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -167,7 +167,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17945-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17946-lists,linux-rdma=lfdr.de];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -176,26 +176,53 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCPT_COUNT_GT_50(0.00)[74];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.996];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-0.997];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-
+On 3/6/26 13:26, Lorenzo Stoakes (Oracle) wrote:
+> On Fri, Feb 27, 2026 at 09:08:41PM +0100, David Hildenbrand (Arm) wrote:
+>> Let's call __zap_vma_range() instead of unmap_page_range() to prepare
+>> for further cleanups.
+>>
+>> To keep the existing behavior, whereby we do not call uprobe_munmap()
+>> which could block, add a new "reaping" member to zap_details and use it.
 > 
->> -		start = ((zba - vba) << PAGE_SHIFT) + vma->vm_start;
->> -		size = (zea - zba + 1) << PAGE_SHIFT;
->> +		const pgoff_t start_idx = max(first_index, vma->vm_pgoff);
->> +		const pgoff_t end_idx = min(last_index, vma_last_pgoff(vma)) + 1;
+> I am always in favour of making further use of helper structs :)
 > 
-> I guess since 'end' is by-convention the +1 of last this is fine
+>>
+>> Likely we should handle the possible blocking in uprobe_munmap()
+>> differently, but for now keep it unchanged.
+>>
+>> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
+> 
+> OK this looks like it's doing the equivalent of what was there before, so:
+> 
+> Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
-Exactly, the calculation itself is not changed.
+[...]
 
-The +1 was previously hiding inside the "(zea - zba + 1)"
+>> @@ -2111,11 +2115,12 @@ static void __zap_vma_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>>   */
+>>  int zap_vma_for_reaping(struct vm_area_struct *vma)
+>>  {
+>> +	struct zap_details details = {
+>> +		.reaping = true,
+>> +	};
+>>  	struct mmu_notifier_range range;
+>>  	struct mmu_gather tlb;
+>>
+>> -	VM_WARN_ON_ONCE(is_vm_hugetlb_page(vma));
+>> -
+> 
+> I guess because you've moved this safety check into __zap_vma_range()?
+
+Yes exactly, considered the change too trivial to mention it in the
+patch description.
 
 Thanks!
 
