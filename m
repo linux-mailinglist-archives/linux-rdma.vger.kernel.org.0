@@ -1,237 +1,249 @@
-Return-Path: <linux-rdma+bounces-17957-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17958-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YBpRG0c0sWm0rwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17957-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 10:22:15 +0100
+	id QPfUKi43sWmesgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17958-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 10:34:38 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F8FE2603F2
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 10:22:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27F14260A2D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 10:34:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 69B8F30067BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:20:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BA8733410E6E
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54463C7DF3;
-	Wed, 11 Mar 2026 09:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC16A3D170D;
+	Wed, 11 Mar 2026 09:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0cJQp38M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNr8gI0S"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF9B34DB54
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 09:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.179
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773220660; cv=pass; b=k2q8nN81Bvl/Mh2nOCnRa9zUNTYCY8IiNzkZMaGKE2FvCCW25RmfyZeIyae9wIDlX5ZuBeSsgpJT0uc7+HEdAZcnp4NW9Lzelg6rEpzpki6CZAc6BjVl2FPmaLeDKn71Cr9/eMlO7JLlADJ56Rk1zgML7Eef3xqYw4mKSJMF+LQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773220660; c=relaxed/simple;
-	bh=OxP+oxlWMBqbtwfC/PQBmjuD1E0cI/hvZs3XVNyH0+o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l4gtzVXjvO+TJzNGZFF/k+ee1lVG97Hm5KMBC5qEz9iK3QsPR2owpMFCq9Tq+rvNETKkPM3FGeBMRW2md1xCMR+teVTBwiV6/n9UxRQnXQaXfvoVr2LF3mQTp8lOQyqhV70q5IHXVU8mTFug+1ke3oiLaxPS/87Qi1JeKUIUEEc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0cJQp38M; arc=pass smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-509149ab7d7so31243011cf.2
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 02:17:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773220652; cv=none;
-        d=google.com; s=arc-20240605;
-        b=LeQEaCgaTi2EqptEVZnug0cabVnOyztcTp9eCK3BO/krszDjw+CAydTFdMsCXYTPiq
-         ZW2eBZU4in1ekR1OADBwIA/3U5igDAEPi42UVwliWMSUv9byp9cZ9At/e5gmYh9V3Fxc
-         arWoLSCCCRQnY1xDSNyT1rGViRY+w9diPUiBZ8koArc2L5c2KWwAixYHs7Q1kyTmRn7a
-         60T/tPcx4ePBr8DdK4TjQkmfTpdoduE2tk2wgfosbIsZ07gYcbb6m5ywa752boltS5m3
-         TaNS8a7IVaaM3D1WCEvWuzk3KM2itKQEGhuAqefNAc0tnkny9Dp9i2mTKTMxzLO+1qSS
-         Hz2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=34kAm3z124TDQNJNDxrj8wJyj1zVsoVCIkxuIHo91/g=;
-        fh=Dg22nlK+2VzrOr9zj1BFJiP7KS2seVpZvOor45mlB+M=;
-        b=Sd8h8R6LAMbmMkY93daVDh6rNxcuIma6vipgH7YA4NW2GO+u5iJRCojUU7T/BG2k8t
-         IDsII/3XCGXZWRMV3pwZ2rZRY7vbOkQzKcVYj7LHOD1fnwUb4QHfdy9Il8YXL3+evGwr
-         MMjxK59j98+SUdikBwExY7NIwvjOQKC88+p7buKxxGBVe1hjDdQwLVif8oMZfVwtsfYB
-         2G1tbDa9gPucjh/IoDWdcrNUaXF/NIwNQvkFij6vHGuyjj2b7ycdSQHQaKChJgheVDmo
-         6I2yfl440RI26Fz1x5OAgrsiZ7pLiYjqRIWyhZysSwLrOmgJGELQwULdR8dq6zdG2ZsY
-         PVNQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1773220652; x=1773825452; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=34kAm3z124TDQNJNDxrj8wJyj1zVsoVCIkxuIHo91/g=;
-        b=0cJQp38MAggzovUIISEwDjOMceCuoLNdTrcgauUMi9wfvxyw4OM/5Ipd7VMVX/E6XW
-         zRxT6TVNYXk+Zkoi9fq55HDdRtoS+xXjxKaZbNV1VO/WnqVeXOAVQLK4mDEx8NJxhP9U
-         HweUodg0iKD+xPYPsTnIvHnH7St0pbWHrlgKW2qvSnAqDYbYZEC0ZiJ+CpZGnR+NTjCd
-         ++zxUjoUWHh3MiQbYJjog8VfbWKVKwLfCLxuxXpLyzu0ScNsYuQPYPZLnaLvMGKpWIH6
-         jIDgZQEYz8qWwh/PStzOfQ/lEhl6yolU37GfRaIhwLKn0SqJ8ywx+5ZqLJF8ReaCInaF
-         s6Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773220652; x=1773825452;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=34kAm3z124TDQNJNDxrj8wJyj1zVsoVCIkxuIHo91/g=;
-        b=l/i5XopXaJzDZjt7toQV7XqQNSi22MZ9nIAfswGe2E0c3LpRpNehB+ILBdIMxQyg4w
-         vCt1KqE/nKYfQl7IFR56URsh4LSgqGmcDluZ+UlsHSY2FnnmC2lvIofnZjpG8yesEHbK
-         NxhSFv40uu82tOKMXdJAaqK5+Hp7jMBKB9OL0n15VICJfAdDwV8Yufes0pJq0pe8LAY+
-         TVOM6kHwvTjTr7ubBBGiPQx15s1AO6sHcQYZAxt5RGUDZSEBp9UI3uoMy8uw0zgYjJ5p
-         KRagwBPi4nVyzm1jt3GUPiW0OItqCZ8Jo++KRk3757APJ7yRUVErCMQs6dA+T641Klqp
-         nVxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUVrGI6Nmm6xk5cU0eDZfZUCS0WCokmkSNfNkYkxQFFkTsflJwsbv2CyTuia6EfFNcchSL21QAlQwd9@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIiCokZwK108h2hDoZjuxyPEK/VgY7W9frj2Q0bHAl68EUfkGp
-	LafkGTrMtJn42Oq1rSHGu77ZjR+bwh4imS5c2EFzmx24LWHna+yZGn5w+ZZsTros5JmYm4q3+hV
-	GWenoZjo1tYCpbJVV3OSihapCIpluqG4XegsBL9Qa
-X-Gm-Gg: ATEYQzxI4mCKa67uVQT5R/0srpQFh6ZzcR7AfY3gyJbt+fahEwjNh3TjAdUc/QDeiDt
-	lKky9Wm8EPo2Qs/0N4D1LvQTqC4c2r9QsdL5MmjpN1LWwv1I5uSEJYWfFQFDKrOU9lxhgkmZKvr
-	C3XNLMIvizUhVM0D3/Uzj+PJZFE53o2LzJMlwlolQ8PKQoAi48K/EJ26NmBK55wc9+rhoaKSg4Z
-	oCsQSmvfhTVj6kF0nTYpOpi2nTSfj7Gpb8whLtDdPjNPE9WHqZEoS6gMFmQi8rWp0xw1A++ua3W
-	wZkQgoxIA3+K6YKSeuk=
-X-Received: by 2002:ac8:7f8b:0:b0:509:3025:ff4e with SMTP id
- d75a77b69052e-50939fac746mr21570951cf.27.1773220651404; Wed, 11 Mar 2026
- 02:17:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08769318B96;
+	Wed, 11 Mar 2026 09:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773220829; cv=none; b=j7qfHUW5YIRBHkZGtyze5LYteS+SpXxYR4Qs6ZRtRiVskH7Xgg0zmpW8L76B4Jz0+Z14602XkKg6XHI8JjVBpr0TGIpT68mIoDqvx2mQPqRjGQD3Jaqmp8kh65K9lH834t9z0LX6zKShEu3+KMVDloW5xOgvjYZ7mUw+6+ye7q8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773220829; c=relaxed/simple;
+	bh=JpypEF1J5OgRJiCd/MihIRnK/CNO9ssCWYiKbHTS/ro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qAAQB451ngsZvg/GfeikEuhxNN81oHFkMnE9HvMf5BfPX/LPGdwRB/2ERuzGXxa1VYlpDFqfWNJqlT1iP5kQzLxNbmq1A6paeR4cXnN1YiCpkv1H7m/RyupP3ngP6rKObQwhimLq0X8ghrL96+9cp/FGp/TcjwriHwrnjXPDUAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNr8gI0S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1923C4CEF7;
+	Wed, 11 Mar 2026 09:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773220828;
+	bh=JpypEF1J5OgRJiCd/MihIRnK/CNO9ssCWYiKbHTS/ro=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=UNr8gI0SByGHmNtlUSwlW+rMeQgLKwbKy37F7Orbw5cWliVwlEh9uriCZXl35osx4
+	 Gw/7mXt+rvp3qbR1zONjRRSPW1LQcMXs1I3jF7fvjSRRFECl6QESr5xFHbldEjXoBK
+	 xzePRByzI3h9l9oF4gdxDX88nnD21W8X4ZZ9iq5eZsEt8l+SW02ToX5cRCuG9EpAVy
+	 TDnxPmjMA3KczLO+KXtYlACtFf7fJ5Z7eOttw+nFSb/RzNIKLXmsDlW8uqwHDPrtPp
+	 LeqCp9BSEiV8ut8oRObfPr4IIizsaEgqT3OXxVjiF2mqYoDhInBziLF3PchK1zUQTI
+	 FP9g9QL+vFfMw==
+Message-ID: <f7732d1c-0e85-4a14-948a-912c417018b5@kernel.org>
+Date: Wed, 11 Mar 2026 10:20:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260311022451.395802-1-jiayuan.chen@linux.dev>
-In-Reply-To: <20260311022451.395802-1-jiayuan.chen@linux.dev>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 11 Mar 2026 10:17:20 +0100
-X-Gm-Features: AaiRm52u0CMFFt7ORPlVWQokL8IgQ6iecZLTd-DHcIzSTX7a8MIK-b_1wmE7h9M
-Message-ID: <CANn89iJpjgEnsOfVuF0k4uERc+P4mwy5Tpu-hpSfcx8RGtWEKA@mail.gmail.com>
-Subject: Re: [PATCH net v4] net/smc: fix NULL dereference and UAF in smc_tcp_syn_recv_sock()
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: netdev@vger.kernel.org, Jiayuan Chen <jiayuan.chen@shopee.com>, 
-	syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com, 
-	"D. Wythe" <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>, 
-	Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	Mahanta Jambigi <mjambigi@linux.ibm.com>, Tony Lu <tonylu@linux.alibaba.com>, 
-	Wen Gu <guwen@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 0F8FE2603F2
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 11/16] mm/memory: inline unmap_page_range() into
+ __zap_vma_range()
+To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+Cc: linux-kernel@vger.kernel.org, "linux-mm @ kvack . org"
+ <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>,
+ David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan
+ <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+ Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>,
+ Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>,
+ Dimitri Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Eric Dumazet <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
+References: <20260227200848.114019-1-david@kernel.org>
+ <20260227200848.114019-12-david@kernel.org>
+ <a5765cac-69d6-4314-82d5-80ee363906de@lucifer.local>
+ <bc5cfcc4-5e51-4da1-9ce9-ea0831bec400@kernel.org>
+ <737a88b8-8221-44e6-aa90-3be326bc8612@lucifer.local>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <737a88b8-8221-44e6-aa90-3be326bc8612@lucifer.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 27F14260A2D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17957-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17958-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[74];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[edumazet@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,827ae2bfb3a3529333e9];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mail.gmail.com:mid,linux.dev:email]
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.997];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Wed, Mar 11, 2026 at 3:25=E2=80=AFAM Jiayuan Chen <jiayuan.chen@linux.de=
-v> wrote:
->
-> From: Jiayuan Chen <jiayuan.chen@shopee.com>
->
-> Syzkaller reported a panic in smc_tcp_syn_recv_sock() [1].
->
-> smc_tcp_syn_recv_sock() is called in the TCP receive path
-> (softirq) via icsk_af_ops->syn_recv_sock on the clcsock (TCP
-> listening socket). It reads sk_user_data to get the smc_sock
-> pointer. However, when the SMC listen socket is being closed
-> concurrently, smc_close_active() sets clcsock->sk_user_data
-> to NULL under sk_callback_lock, and then the smc_sock itself
-> can be freed via sock_put() in smc_release().
->
-> This leads to two issues:
->
-> 1) NULL pointer dereference: sk_user_data is NULL when
->    accessed.
-> 2) Use-after-free: sk_user_data is read as non-NULL, but the
->    smc_sock is freed before its fields (e.g., queued_smc_hs,
->    ori_af_ops) are accessed.
->
-> The race window looks like this:
->
->   CPU A (softirq)              CPU B (process ctx)
->
->   tcp_v4_rcv()
->     TCP_NEW_SYN_RECV:
->     sk =3D req->rsk_listener
->     sock_hold(sk)
->     /* No lock on listener */
->                                smc_close_active():
->                                  write_lock_bh(cb_lock)
->                                  sk_user_data =3D NULL
->                                  write_unlock_bh(cb_lock)
->                                  ...
->                                  smc_clcsock_release()
->                                  sock_put(smc->sk) x2
->                                    -> smc_sock freed!
->     tcp_check_req()
->       smc_tcp_syn_recv_sock():
->         smc =3D user_data(sk)
->           -> NULL or dangling
->         smc->queued_smc_hs
->           -> crash!
->
-> Note that the clcsock and smc_sock are two independent objects
-> with separate refcounts. TCP stack holds a reference on the
-> clcsock, which keeps it alive, but this does NOT prevent the
-> smc_sock from being freed.
->
-> Fix this by using RCU and refcount_inc_not_zero() to safely
-> access smc_sock. Since smc_tcp_syn_recv_sock() is called in
-> the TCP three-way handshake path, taking read_lock_bh on
-> sk_callback_lock is too heavy and would not survive a SYN
-> flood attack. Using rcu_read_lock() is much more lightweight.
->
-> - Set SOCK_RCU_FREE on the SMC listen socket so that
->   smc_sock freeing is deferred until after the RCU grace
->   period. This guarantees the memory is still valid when
->   accessed inside rcu_read_lock().
-> - Use rcu_read_lock() to protect reading sk_user_data.
-> - Use refcount_inc_not_zero(&smc->sk.sk_refcnt) to pin the
->   smc_sock. If the refcount has already reached zero (close
->   path completed), it returns false and we bail out safely.
->
-> Note: smc_hs_congested() has a similar lockless read of
-> sk_user_data without rcu_read_lock(), but it only checks for
-> NULL and accesses the global smc_hs_wq, never dereferencing
-> any smc_sock field, so it is not affected.
->
-> Reproducer was verified with mdelay injection and smc_run,
-> the issue no longer occurs with this patch applied.
->
-> [1] https://syzkaller.appspot.com/bug?extid=3D827ae2bfb3a3529333e9
->
-> Fixes: 8270d9c21041 ("net/smc: Limit backlog connections")
-> Reported-by: syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/67eaf9b8.050a0220.3c3d88.004a.GAE@goo=
-gle.com/T/
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Cc: Jiayuan Chen <jiayuan.chen@linux.dev>
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+>>
+>> Tells me that "cur" is rather common.
+>>
+>>> It's not a big deal, but why not addr?
+>>
+>> Good question, I can just do that. :)
+> 
+> Thanks!
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+@Andrew, the following fixup on top
+
+From 8470e94c57b89819753c8f31e23320f33c14cd58 Mon Sep 17 00:00:00 2001
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Date: Wed, 11 Mar 2026 10:19:00 +0100
+Subject: [PATCH] fixup: mm/memory: inline unmap_page_range() into
+ __zap_vma_range()
+
+Let's call the local variable simply "addr".
+
+Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
+---
+ mm/memory.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 1c0bcdfc73b7..5f7607140de1 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2081,17 +2081,17 @@ static void __zap_vma_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 			return;
+ 		__unmap_hugepage_range(tlb, vma, start, end, NULL, zap_flags);
+ 	} else {
+-		unsigned long next, cur = start;
++		unsigned long next, addr = start;
+ 		pgd_t *pgd;
+ 
+ 		tlb_start_vma(tlb, vma);
+-		pgd = pgd_offset(vma->vm_mm, cur);
++		pgd = pgd_offset(vma->vm_mm, addr);
+ 		do {
+-			next = pgd_addr_end(cur, end);
++			next = pgd_addr_end(addr, end);
+ 			if (pgd_none_or_clear_bad(pgd))
+ 				continue;
+-			next = zap_p4d_range(tlb, vma, pgd, cur, next, details);
+-		} while (pgd++, cur = next, cur != end);
++			next = zap_p4d_range(tlb, vma, pgd, addr, next, details);
++		} while (pgd++, addr = next, addr != end);
+ 		tlb_end_vma(tlb, vma);
+ 	}
+ }
+-- 
+2.43.0
+
+
+-- 
+Cheers,
+
+David
 
