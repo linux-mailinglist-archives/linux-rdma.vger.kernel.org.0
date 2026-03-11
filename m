@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-18016-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18017-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4O7OAte+sWkwFAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18016-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:13:27 +0100
+	id IE3XM/q+sWkwFAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18017-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:14:02 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FDC6269204
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CD4D269215
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 20:14:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EC5A3325890D
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 19:09:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4E853326640D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 19:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B637F31714C;
-	Wed, 11 Mar 2026 19:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E2D36EA8A;
+	Wed, 11 Mar 2026 19:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bq6HPes1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uX7fuLiv"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C45359A8B;
-	Wed, 11 Mar 2026 19:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E105D366DCC;
+	Wed, 11 Mar 2026 19:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773256145; cv=none; b=MdJVt/goFjHOykpenmAMOnyqLmkqHtla5EdKzQE/TtETJ1Wjrpyg5oq5BU/IjSzmrFt0PcAe+it8nZN6wDrnijW9zWu8TMrA5oycSdTgG0zlLncwYBaoDPn4QM12/Hb7d9Nn08/OmK02py+6+EZNupCvlwoF1uyPew7u9ghrnaI=
+	t=1773256149; cv=none; b=MQ9GCDAi8enyT52wRJJdoUdAjtTpckkIls6QxxJVRruRWPAnktL4FKgQCAp/bxPHaeMN6KELfFkDqytRFZtTZp4DEEru37vaZftCSGjw/9C1uf+ueiycI5BvbYwsj28ZQ+1ztmQFkKYhENL44AYr+k7JHdmJ0jWyFnof2Yn7+5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773256145; c=relaxed/simple;
-	bh=M+wL0ybsphtwzmN54IoSxHDbpmj04d4gwnhHVj/1g/U=;
+	s=arc-20240116; t=1773256149; c=relaxed/simple;
+	bh=Caib8MH0BZPS5GoBVp5443hRjoVeLP/iROeH38ZKBek=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IRnpR3EHlxHK+qYaTG8n+pKpg3foQJqmvdy1+HydtsjOcRWbzdcym7y1KHyLziY2+MeYJh/W/5HIX7LrNpdysdpdMJiKzD6IN4fOtvDBJKIH2kWFMbTtd+SoiIZ9yCxjgdwmVEcTPI5qs33r7XCuhLsXt/CxDjO/b9G9mQ14wpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bq6HPes1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 748B8C4CEF7;
-	Wed, 11 Mar 2026 19:09:04 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Z8n93Kpz1PIW6+GO7inilj6LIOYWwEO/wUhv+ppnBFWNv6dk5q5IQapmqlTAHluvQs4rYUmY0Kxr0buygGQ5ridaR1pG+HWZDoZk2yZXMaeAXk2b5EOT/Vfan9e03zORhuiiT336WKjWVdO8hukIlhf/Mcn/WwJKmMhFyVw3kSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uX7fuLiv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECEB6C4CEF7;
+	Wed, 11 Mar 2026 19:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773256145;
-	bh=M+wL0ybsphtwzmN54IoSxHDbpmj04d4gwnhHVj/1g/U=;
+	s=k20201202; t=1773256148;
+	bh=Caib8MH0BZPS5GoBVp5443hRjoVeLP/iROeH38ZKBek=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bq6HPes1GCOpxb+476WWxenSgikmhptaTzm7G7VrOIhF19PrU6EP/jCrt0DRzVs25
-	 rzff1g5gPQv2CmJYWz12JIQrto6jkTuJlviAhCCwhitUjZYB4viFnTElRDZzAmOcyn
-	 0x2F9IE6jw9qWIKCAzjAwWTG/5DW+gZce23SzSWxrccQTA41bPjU8b6SGjhHEOpT+4
-	 wqk0yrxRLUEmbplSHSSBsA5u5t2M0q/t09z1NzzETRa2LzzIIA5VjkY/RStLd2q+zj
-	 MWlm4GrYD4/BATmaVtrTawWypMziYPLi3u5dQeNTQ0RYxSIoXIv+zHr2XlqFKQZRDU
-	 hw49rGkodBjdQ==
+	b=uX7fuLiv2dqrXYExHFjcHx7N9C8rKXe9c03Xu0WIBHJmwCB9rHlFRYKVS82RDSyi4
+	 SbhA5HmIgdVVR4KsVb4/1mFJ6KqvncGYuwNwZSda5Zjon4pY9/tgioJs2Xm+pql3oh
+	 LWyIiOyY0mGkP9F1jPPS2RsqY9jiS9KoqgyrB3rH9emmpAG8tV5IR6xKxuWhUftFkI
+	 fZ3veNg46sNPb7csrLsgu0bdyxFY4IjnGZY9iHwkH2f2DipheEWOq90pkMcFloOXvW
+	 Q8awvutvZGHd2RgO5mAfioeREd771cZIuR58KwK+upvv/yITUKz0VacsDBuOe3Sr4T
+	 IsZWX4Mz5m9Mw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Robin Murphy <robin.murphy@arm.com>,
@@ -69,9 +69,9 @@ Cc: iommu@lists.linux.dev,
 	linux-rdma@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	linux-mm@kvack.org
-Subject: [PATCH v2 3/8] dma-mapping: Clarify valid conditions for CPU cache line overlap
-Date: Wed, 11 Mar 2026 21:08:46 +0200
-Message-ID: <20260311-dma-debug-overlap-v2-3-e00bc2ca346d@nvidia.com>
+Subject: [PATCH v2 4/8] dma-mapping: Introduce DMA require coherency attribute
+Date: Wed, 11 Mar 2026 21:08:47 +0200
+Message-ID: <20260311-dma-debug-overlap-v2-4-e00bc2ca346d@nvidia.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260311-dma-debug-overlap-v2-0-e00bc2ca346d@nvidia.com>
 References: <20260311-dma-debug-overlap-v2-0-e00bc2ca346d@nvidia.com>
@@ -94,7 +94,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18016-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18017-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
@@ -108,130 +108,116 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9FDC6269204
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,nvidia.com:mid]
+X-Rspamd-Queue-Id: 2CD4D269215
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-Rename the DMA_ATTR_CPU_CACHE_CLEAN attribute to better reflect that it
-is debugging aid to inform DMA core code that CPU cache line overlaps are
-allowed, and refine the documentation describing its use.
+The mapping buffers which carry this attribute require DMA coherent system.
+This means that they can't take SWIOTLB path, can perform CPU cache overlap
+and doesn't perform cache flushing.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- Documentation/core-api/dma-attributes.rst | 22 ++++++++++++++--------
- drivers/virtio/virtio_ring.c              | 10 +++++-----
- include/linux/dma-mapping.h               |  8 ++++----
- include/trace/events/dma.h                |  2 +-
- kernel/dma/debug.c                        |  2 +-
- 5 files changed, 25 insertions(+), 19 deletions(-)
+ Documentation/core-api/dma-attributes.rst | 12 ++++++++++++
+ include/linux/dma-mapping.h               |  7 +++++++
+ include/trace/events/dma.h                |  3 ++-
+ kernel/dma/debug.c                        |  3 ++-
+ kernel/dma/mapping.c                      |  6 ++++++
+ 5 files changed, 29 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/core-api/dma-attributes.rst b/Documentation/core-api/dma-attributes.rst
-index 1d7bfad73b1c7..48cfe86cc06d7 100644
+index 48cfe86cc06d7..69d094f144c70 100644
 --- a/Documentation/core-api/dma-attributes.rst
 +++ b/Documentation/core-api/dma-attributes.rst
-@@ -149,11 +149,17 @@ For architectures that require cache flushing for DMA coherence
- DMA_ATTR_MMIO will not perform any cache flushing. The address
- provided must never be mapped cacheable into the CPU.
+@@ -163,3 +163,15 @@ data corruption.
  
--DMA_ATTR_CPU_CACHE_CLEAN
--------------------------
--
--This attribute indicates the CPU will not dirty any cacheline overlapping this
--DMA_FROM_DEVICE/DMA_BIDIRECTIONAL buffer while it is mapped. This allows
--multiple small buffers to safely share a cacheline without risk of data
--corruption, suppressing DMA debug warnings about overlapping mappings.
--All mappings sharing a cacheline should have this attribute.
-+DMA_ATTR_DEBUGGING_IGNORE_CACHELINES
-+------------------------------------
+ All mappings that share a cache line must set this attribute to suppress DMA
+ debug warnings about overlapping mappings.
 +
-+This attribute indicates that CPU cache lines may overlap for buffers mapped
-+with DMA_FROM_DEVICE or DMA_BIDIRECTIONAL.
++DMA_ATTR_REQUIRE_COHERENT
++-------------------------
 +
-+Such overlap may occur when callers map multiple small buffers that reside
-+within the same cache line. In this case, callers must guarantee that the CPU
-+will not dirty these cache lines after the mappings are established. When this
-+condition is met, multiple buffers can safely share a cache line without risking
-+data corruption.
++The mapping buffers which carry this attribute require DMA coherent system. This means
++that they can't take SWIOTLB path, can perform CPU cache overlap and doesn't perform
++cache flushing.
 +
-+All mappings that share a cache line must set this attribute to suppress DMA
-+debug warnings about overlapping mappings.
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 335692d41617a..fbca7ce1c6bf0 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2912,10 +2912,10 @@ EXPORT_SYMBOL_GPL(virtqueue_add_inbuf);
-  * @data: the token identifying the buffer.
-  * @gfp: how to do memory allocations (if necessary).
-  *
-- * Same as virtqueue_add_inbuf but passes DMA_ATTR_CPU_CACHE_CLEAN to indicate
-- * that the CPU will not dirty any cacheline overlapping this buffer while it
-- * is available, and to suppress overlapping cacheline warnings in DMA debug
-- * builds.
-+ * Same as virtqueue_add_inbuf but passes DMA_ATTR_DEBUGGING_IGNORE_CACHELINES
-+ * to indicate that the CPU will not dirty any cacheline overlapping this buffer
-+ * while it is available, and to suppress overlapping cacheline warnings in DMA
-+ * debug builds.
-  *
-  * Caller must ensure we don't call this with other virtqueue operations
-  * at the same time (except where noted).
-@@ -2928,7 +2928,7 @@ int virtqueue_add_inbuf_cache_clean(struct virtqueue *vq,
- 				    gfp_t gfp)
- {
- 	return virtqueue_add(vq, &sg, num, 0, 1, data, NULL, false, gfp,
--			     DMA_ATTR_CPU_CACHE_CLEAN);
-+			     DMA_ATTR_DEBUGGING_IGNORE_CACHELINES);
- }
- EXPORT_SYMBOL_GPL(virtqueue_add_inbuf_cache_clean);
- 
++If the mapping has this attribute then it is prevented from running on systems
++where these cache artifacts can cause corruption, and as such doesn't need
++cache overlapping debugging code (same behavior as for
++DMA_ATTR_DEBUGGING_IGNORE_CACHELINES).
 diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 29973baa05816..da44394b3a1a7 100644
+index da44394b3a1a7..482b919f040f7 100644
 --- a/include/linux/dma-mapping.h
 +++ b/include/linux/dma-mapping.h
-@@ -80,11 +80,11 @@
- #define DMA_ATTR_MMIO		(1UL << 10)
- 
- /*
-- * DMA_ATTR_CPU_CACHE_CLEAN: Indicates the CPU will not dirty any cacheline
-- * overlapping this buffer while it is mapped for DMA. All mappings sharing
-- * a cacheline must have this attribute for this to be considered safe.
-+ * DMA_ATTR_DEBUGGING_IGNORE_CACHELINES: Indicates the CPU cache line can be
-+ * overlapped. All mappings sharing a cacheline must have this attribute for
-+ * this to be considered safe.
+@@ -86,6 +86,13 @@
   */
--#define DMA_ATTR_CPU_CACHE_CLEAN	(1UL << 11)
-+#define DMA_ATTR_DEBUGGING_IGNORE_CACHELINES	(1UL << 11)
+ #define DMA_ATTR_DEBUGGING_IGNORE_CACHELINES	(1UL << 11)
  
++/*
++ * DMA_ATTR_REQUIRE_COHERENT: Indicates that DMA coherency is required.
++ * All mappings that carry this attribute can't work with SWIOTLB and cache
++ * flushing.
++ */
++#define DMA_ATTR_REQUIRE_COHERENT	(1UL << 12)
++
  /*
   * A dma_addr_t can hold any valid DMA or bus address for the platform.  It can
+  * be given to a device to use as a DMA source or target.  It is specific to a
 diff --git a/include/trace/events/dma.h b/include/trace/events/dma.h
-index 69cb3805ee81c..8c64bc0721fe4 100644
+index 8c64bc0721fe4..63597b0044247 100644
 --- a/include/trace/events/dma.h
 +++ b/include/trace/events/dma.h
-@@ -33,7 +33,7 @@ TRACE_DEFINE_ENUM(DMA_NONE);
+@@ -33,7 +33,8 @@ TRACE_DEFINE_ENUM(DMA_NONE);
  		{ DMA_ATTR_NO_WARN, "NO_WARN" }, \
  		{ DMA_ATTR_PRIVILEGED, "PRIVILEGED" }, \
  		{ DMA_ATTR_MMIO, "MMIO" }, \
--		{ DMA_ATTR_CPU_CACHE_CLEAN, "CACHE_CLEAN" })
-+		{ DMA_ATTR_DEBUGGING_IGNORE_CACHELINES, "CACHELINES_OVERLAP" })
+-		{ DMA_ATTR_DEBUGGING_IGNORE_CACHELINES, "CACHELINES_OVERLAP" })
++		{ DMA_ATTR_DEBUGGING_IGNORE_CACHELINES, "CACHELINES_OVERLAP" }, \
++		{ DMA_ATTR_REQUIRE_COHERENT, "REQUIRE_COHERENT" })
  
  DECLARE_EVENT_CLASS(dma_map,
  	TP_PROTO(struct device *dev, phys_addr_t phys_addr, dma_addr_t dma_addr,
 diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-index be207be749968..83e1cfe05f08d 100644
+index 83e1cfe05f08d..0677918f06a80 100644
 --- a/kernel/dma/debug.c
 +++ b/kernel/dma/debug.c
-@@ -601,7 +601,7 @@ static void add_dma_entry(struct dma_debug_entry *entry, unsigned long attrs)
+@@ -601,7 +601,8 @@ static void add_dma_entry(struct dma_debug_entry *entry, unsigned long attrs)
  	unsigned long flags;
  	int rc;
  
--	entry->is_cache_clean = !!(attrs & DMA_ATTR_CPU_CACHE_CLEAN);
-+	entry->is_cache_clean = attrs & DMA_ATTR_DEBUGGING_IGNORE_CACHELINES;
+-	entry->is_cache_clean = attrs & DMA_ATTR_DEBUGGING_IGNORE_CACHELINES;
++	entry->is_cache_clean = attrs & (DMA_ATTR_DEBUGGING_IGNORE_CACHELINES |
++					 DMA_ATTR_REQUIRE_COHERENT);
  
  	bucket = get_hash_bucket(entry, &flags);
  	hash_bucket_add(bucket, entry);
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 3928a509c44c2..6d3dd0bd3a886 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -164,6 +164,9 @@ dma_addr_t dma_map_phys(struct device *dev, phys_addr_t phys, size_t size,
+ 	if (WARN_ON_ONCE(!dev->dma_mask))
+ 		return DMA_MAPPING_ERROR;
+ 
++	if (!dev_is_dma_coherent(dev) && (attrs & DMA_ATTR_REQUIRE_COHERENT))
++		return DMA_MAPPING_ERROR;
++
+ 	if (dma_map_direct(dev, ops) ||
+ 	    (!is_mmio && arch_dma_map_phys_direct(dev, phys + size)))
+ 		addr = dma_direct_map_phys(dev, phys, size, dir, attrs);
+@@ -235,6 +238,9 @@ static int __dma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
+ 
+ 	BUG_ON(!valid_dma_direction(dir));
+ 
++	if (!dev_is_dma_coherent(dev) && (attrs & DMA_ATTR_REQUIRE_COHERENT))
++		return -EOPNOTSUPP;
++
+ 	if (WARN_ON_ONCE(!dev->dma_mask))
+ 		return 0;
+ 
 
 -- 
 2.53.0
