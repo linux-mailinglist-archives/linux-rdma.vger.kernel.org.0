@@ -1,91 +1,91 @@
-Return-Path: <linux-rdma+bounces-18003-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18004-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mISZHMCssWmzEQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18003-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:16 +0100
+	id oJy1EsOssWmzEQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18004-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:19 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A849268541
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5F93268548
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 18:56:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3623230BC334
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:55:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A32BC30CCD59
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 17:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C1D3E63A0;
-	Wed, 11 Mar 2026 17:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B64E3E63B0;
+	Wed, 11 Mar 2026 17:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="HtZAwnTA"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="C5mf5iZU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11023119.outbound.protection.outlook.com [40.93.196.119])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11022096.outbound.protection.outlook.com [40.107.209.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AEE3E63A4
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7275B3DD51F
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2026 17:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.96
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773251737; cv=fail; b=SGVyyI/yt9bkaTSLDjPPaMw7EnC5KDdWYztiV0NtHH7tENpwR0LLmushZ+O2pPrpXFE8gm/QQz5+7FBailVfVXK/V9GaOHlfOZvi3URLdd8Ned2sYdtZpzVXf9g+WIBkpeI/I9E58O3SQMyiSCC2ZmWMz9t3njoznO3K5qFsVGQ=
+	t=1773251740; cv=fail; b=IMfK8JMluTjsoj8QxjiXpP9t5hKeETvbYuEx12UVqXPnowqzH+TkZOSJHW2shFTOwDwUvUBE8BReDmGDd2uZkINX5ruF66Jx1PZkEqedatFdmB10ruZmWJ8CovrwXu4qp5tjjZ9DqpIBYdYX7QVJkZ+U372vjf+YY3yNZpYZvJc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773251737; c=relaxed/simple;
-	bh=Z5U3Q8+UG2S1m4StZ5x468Vb7hcCwHR1h1fBco71ShA=;
+	s=arc-20240116; t=1773251740; c=relaxed/simple;
+	bh=sp5g6GBlxku5Jmntif9VqtLcqbPX0ioNcpcoiKvm6wA=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D7SZOnXFoxwvWAXxrEQeaADuBVTL8YdEeVfIYpnZerx1/CdvJbJm23cwSEnxzUKuLNox41ArDPcEt+SZJtEs0OusHq7T96tjWog2tNTbPjhsfzFlNS6PenA/QzY6g4W9/6KuJzjru2dMDtDIQYaqWYvtjmwCbFuojXUBFCkIn6s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=HtZAwnTA; arc=fail smtp.client-ip=40.93.196.119
+	 MIME-Version:Content-Type; b=fDB7inXEip6ohR4BNWARxFz5vEOIxTUBy4JxVY2zQX/IseD6m8PmEhkvisx8mVh/8zON+1RRhy8Ew5bmb+/F5rrpaidTRxEfiOsmE8SuGQK1SI3WteGf43aKTwTYOfFnqhojeHoo02APkg8MThCyEumkwvF/ub9ANTp9y9wQbFs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=C5mf5iZU; arc=fail smtp.client-ip=40.107.209.96
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=J1aa+DikqUAwg/UOU6IO/DVloKRC5FFPHRhY2AIfpLzQFBmE14EF9pRLRCNM7sBdTHpMkygg7gDp44rwoLUOEIYvCRZVDNQU/6e/WbqLTQYpbEdh2eo+K8apYp5K3c1IVxNUVq8hmw9GDuKkTss2B0VF/67yBGtZySEMxL8miVCNDIcARvZ/Ir99rVhoAH0zZ8VFWRtwzzCipv5HzV60EMqX+affdnckSUfdODzh/dqeW3jABbkif6KS29ie3XKqZsCUFZoYJXNV/ug1dmt+lK53IjmGNlIA1F31fghvlUXx+wAK/8oODfIqDShRKubCKmCn0SCxeHaO5dBXhyVP6A==
+ b=boFZIhNr0MJigK1UvQV4vl7EdCt3RE1xXGRzQ6TWw3LFPbr3KPN9PRlGK+2/xhE5Mt6ClU/jcWduNuiXlIMXjBUrp+3pMU1t3XkljSTn/cGd5sQsZF9FP7sBaAsntaG7WTpD3e30l5cCkPAKvD1l1zSbO/2i59B/9qOxuZC3ZQB5OpeBtgJv4Z4b5lszeI0k4ftG78ZIN+DV7BAk48ipq8qz96xldCDccYMfhyNBoLT5i0lgg5tCWJSWjXoHjWSlP2jYXZu6zpHB98cn95sh1eqEwNG9nWBNvwg1ROXmSoTyJ8od4d+ertoYC3XkfUUdv0GJOh34KOy5bHKANX39ug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AwIRZXSmfk38+UHGOOfUCoWcHtWppIHLTu0yyfmKK9A=;
- b=sC3U3HxmOePnSi8dmdvqIetgtVNdouMwHUoxsEhz5JfM3pgOqQwM7FTr9UuAyLdaKS0BcLtCPTtQZe+lkk9P4ZPtLBm1J0fPxs//EZ9PHZZj7kDsfEfi3W6DP0OJ93crXauxJM5RziDPTe58Vse0NNbV8eWZ6+80ZCd+dL4C+7N6W8ycQ3JifMF0IIaK0ddWxjqguSlettba6wfceMamYzMd6Q0beF1vKDKxEz11pdTFrvpLLVsPt4y7GZDad9V0ugjN5LSgxgKgkAXq5NMzLM/TTQ5FhUz9njlDEYQuiPdPlMG1tbhiX3DTJbf5D8PGayvNxHBEiOonZJPqivPzpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass (p=none sp=none pct=100)
+ bh=57xUYPaM1xv2sa0CtSz1kMV6JOzjyHmxV3aFYBOIAxA=;
+ b=YCSySwiLYP8qrTNN8QFLqGRwq6NrskVUAhxHOzW6ZVdcEHkiT8Orla+sMlceyOjGTy9e0J926m/QDP48Sm1+MN6YmxaiX9NMeyVd6oYM+J41KqAn/rF8jlmFxtHYx3GjlWptorQOTgF//WXlXzcriTwDdUoe9HnxsE8YevtczRuJZnPHka+EGVAkQtVTCH8HA1AZwzWyljZ8RvMlW327efBFPOd8T9Eh8kxL129z8AP1FhbWuYgekj9mudoG0N1tZt1ikD66J7wbC3Mm5YjupWkZmKg0zbBJzrPfOqKZZHvTEgrc/TwxemmLg2mw5oOxroNqFj+nQ4NIb/BBUng35Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 50.148.235.34) smtp.rcpttodomain=cornelisnetworks.com
+ smtp.mailfrom=cornelisnetworks.com; dmarc=fail (p=none sp=none pct=100)
  action=none header.from=cornelisnetworks.com; dkim=none (message not signed);
  arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AwIRZXSmfk38+UHGOOfUCoWcHtWppIHLTu0yyfmKK9A=;
- b=HtZAwnTAXxNiDyXdxgdIJyYp9sVJ/wSZw0xtxgGzYtAZi+fLU9j7yztbLkJuHe8ZMc2Ydg7LZyjyYSet54Lx0LXCJcXaOPcewsDNloiTROxeRz/YNQrxQqgM26Dt78/V9/r9HWZuvfOoPRGcBAH3MAZElDL8Y4Yo2qlfyoQznACV4s1/7oe5xgts5QCBph4xdcOd3bq11/7L4KyNhCZoX8heJd25WuaFg8WfkQgEe14jYgmgs5H5R9ywzwRroRGWbCRb83hPpysIBoCaJqHKx0Zj+OyGp51O/UCml9/LCxKqJ7uuzpDvPbB+vkMMJfmFGK3judADfbq/CHhVUpTYwA==
-Received: from SN7P222CA0012.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::26)
- by SN4PR01MB7503.prod.exchangelabs.com (2603:10b6:806:206::13) with Microsoft
+ bh=57xUYPaM1xv2sa0CtSz1kMV6JOzjyHmxV3aFYBOIAxA=;
+ b=C5mf5iZUUd3b250LjTSrQcGUlHorsLEWheQPjesk7VtCA5JOvRT46qgF0S6Sc5gSfAzkSsjlquQS/5b+Z67R+e1kh9dH8ZVvFSKYATYt51z54zFgrd/fXq/lLb6EO4Y5rYwuuufQJpReXxphAUTEnmZeFhq2MhZnCrI0AXghYRdASmNhMiBFKpJU5MFloqmgfKzWcuuTINw+R1xy5WZGm47agh/8/tbqyi1EFyTrcwZvhUZg417oagiMjC6dJJhaB30NgqKKH4rEck53InrGyj9pmwlQoAR3kBTMS/7+hTU64Ur4gEC2lYpvt2y7f2v4W3W85rpkxwCml4w3o73RPw==
+Received: from BYAPR21CA0006.namprd21.prod.outlook.com (2603:10b6:a03:114::16)
+ by CY1PR01MB9243.prod.exchangelabs.com (2603:10b6:930:106::17) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9700.15; Wed, 11 Mar 2026 17:55:21 +0000
-Received: from SA2PEPF000015C8.namprd03.prod.outlook.com
- (2603:10b6:806:124:cafe::99) by SN7P222CA0012.outlook.office365.com
- (2603:10b6:806:124::26) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.27 via Frontend Transport; Wed,
- 11 Mar 2026 17:55:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
+ 15.20.9700.11; Wed, 11 Mar 2026 17:55:27 +0000
+Received: from MWH0EPF000C618A.namprd02.prod.outlook.com
+ (2603:10b6:a03:114:cafe::4b) by BYAPR21CA0006.outlook.office365.com
+ (2603:10b6:a03:114::16) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9723.2 via Frontend Transport; Wed,
+ 11 Mar 2026 17:55:23 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 50.148.235.34)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=cornelisnetworks.com;
-Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
- designates 208.255.156.42 as permitted sender)
- receiver=protection.outlook.com; client-ip=208.255.156.42;
- helo=cn-mailer-00.localdomain; pr=C
-Received: from cn-mailer-00.localdomain (208.255.156.42) by
- SA2PEPF000015C8.mail.protection.outlook.com (10.167.241.198) with Microsoft
+ header.d=none;dmarc=fail action=none header.from=cornelisnetworks.com;
+Received-SPF: Fail (protection.outlook.com: domain of cornelisnetworks.com
+ does not designate 50.148.235.34 as permitted sender)
+ receiver=protection.outlook.com; client-ip=50.148.235.34;
+ helo=cn-mailer-00.localdomain;
+Received: from cn-mailer-00.localdomain (50.148.235.34) by
+ MWH0EPF000C618A.mail.protection.outlook.com (10.167.249.122) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9678.18
- via Frontend Transport; Wed, 11 Mar 2026 17:55:21 +0000
+ via Frontend Transport; Wed, 11 Mar 2026 17:55:27 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 5892E14D817;
-	Wed, 11 Mar 2026 13:55:21 -0400 (EDT)
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id 60E6D14D819;
+	Wed, 11 Mar 2026 13:55:26 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 53C101810D6C5;
-	Wed, 11 Mar 2026 13:55:21 -0400 (EDT)
-Subject: [PATCH for-next resend 19/24] RDMA/hfi2: Add in support for verbs
+	by awdrv-04.localdomain (Postfix) with ESMTP id 5CC0D1810D6C5;
+	Wed, 11 Mar 2026 13:55:26 -0400 (EDT)
+Subject: [PATCH for-next resend 20/24] RDMA/hfi2: Support ipoib
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
  Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
- Douglas Miller <doug.miller@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Wed, 11 Mar 2026 13:55:21 -0400
+ linux-rdma@vger.kernel.org
+Date: Wed, 11 Mar 2026 13:55:26 -0400
 Message-ID:
- <177325172130.57064.13262663051460947129.stgit@awdrv-04.cornelisnetworks.com>
+ <177325172635.57064.244652532682759103.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <177325138778.57064.8330693913074464417.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -101,31 +101,31 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C8:EE_|SN4PR01MB7503:EE_
-X-MS-Office365-Filtering-Correlation-Id: a9753cc1-4b00-4b61-9b1e-08de7f975d9a
+X-MS-TrafficTypeDiagnostic: MWH0EPF000C618A:EE_|CY1PR01MB9243:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d5e4e63-34be-4d69-5740-08de7f9760b0
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|34020700016|82310400026|376014|36860700016|1800799024|55112099003|22082099003|56012099003|18002099003|7142099003;
+	BCL:0;ARA:13230040|36860700016|376014|1800799024|34020700016|82310400026|55112099003|22082099003|18002099003|56012099003;
 X-Microsoft-Antispam-Message-Info:
-	Wgr7vsnEL02XkTu2a5GQXUgSfgUtwsXFSvkXlDy9yyTLufddSl73aZzYnSEYhVPGCKbHoAzpx/AUC7OcKRJQLCYRu6laigzHvKmZO9Tq2YsGGr30Y272RGf6Cg3BtAL97TF5Xoqpk8yKiHg3/zpHQIBdN1W3NPFxR18hWgjU5eW+u1e9ihK/ZoYpe7UZGVb8/bGNz2if5WhzRQfznfH98IF+Ag2ELgkwfYs7eJCzPnYa1+FlFqbs7Vmu/iZr0LKDMwU7x3U/hSSVU7+mu8o74GSlL8yaMKYnPQjC4VN4rZIspyuNsFWijR48dZuUNZEr5uxI2+c5bnqKAMFZI/d66J6omDuloq+A9k5MIkoxHLOCUJf5MkojH1HK9nUu9VACnyB2ENSu70T6cnZ3FtJfIOWsNG2tG4/TVx8qmKQMXy5mdFnp2lhEKN8tzipNQiZ4HXTplX+95ksVIfzvR6ORbcHgU2HQOCzkiy7DbW0/8BjOt0o32/LiF5c70OGI+BB1/ZyTuNUoEnTvJPAn+xHzRzXFEO43+L4neN7NetczKUKOv94Ij/iu0tZCgXMdYX2W8dKkQnk91WRMpujejHS6tY+xLcpBGF/Xg+ppLGzHCyNp5E3WIEyIRhSK8RTzPPIc8v6YG/EttJMNYVBo+peBOuQFBT+1AwvewQaeBJqYFWtgDQkQ/1sK5SO3Tlr/+X4Vdk9aEJ0omlznOiynWOg8PQsliGykuZcZR+U56/0JFogmSPD5mrJMvtauCiyyccsqW1bcnhGZSXILhkog3qzssA==
+	Ul1giTPYFs9c0oHApBqA7LKH9cJLSDm+GL3ABtCvfr68xA02DAFvdt+LRNXhkagrYoRNffoiCT57ppDrvciYB64CsQ7AbPuHUqubykJlTN7w+jf8pOyOxTLor8RdGgoERg9LGJ5jlKpI6OLoBXFol98fKK0ak0S5A5cEwR9hncXdHNLVKeBssbjPbJyI1PWXN4iT7Mxn7tR94vmNvk3MSN8t/0h4tm0RV6S9HD0QdGWin9pl3I6Ay+vGekj3XJMKwM+U+UIb5DszjYpWzM+0t6fOXBcwL8maILL9CkKl+bjcxNEtlh5+0g6jVYKVqqxj7/KSAEJVLx63an4f6sB8MK6yYeZCVb5Ejc203spJlR1wAphsdV/nSiMrH+FLgpIDLam5jy+ETlPoaSb7s0tVAQk1evmBx4ZK91t0WnZWG6E8oMx975Ks/aQ8ZDIoQEp4wQqvbGq7f+prGyZnfuCvFA6W9v+zuobV6mPptpevS8Touj9f50OrHROQxBLsnTrbnDQtQawDVAYD38gzWx7w/bCyVKtFVcefQxdO9AhlGF99ZlfGzdNFCXQ63nRZNwE02q3Y/wx5YMRuquvxBQMin9ss8XRI52OW23gRNEdyOSfuTft0SHnvBXkSBxk6E0EkQr/ar6qk5+1CHdQp0IWbjiLG0vdkseH7EHNDWAV+bCCSjNPV6pPIh/iWbrIz2NXjzDofP5K2SpY4cw6GO2QOsgcm8//q0nrAVDHGqUW5lmfggknI9znN5fP92SA7KskcVZsqlWMA5K8MR95TjX8CJA==
 X-Forefront-Antispam-Report:
-	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(34020700016)(82310400026)(376014)(36860700016)(1800799024)(55112099003)(22082099003)(56012099003)(18002099003)(7142099003);DIR:OUT;SFP:1102;
+	CIP:50.148.235.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:c-50-148-235-34.hsd1.mn.comcast.net;CAT:NONE;SFS:(13230040)(36860700016)(376014)(1800799024)(34020700016)(82310400026)(55112099003)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	I80MM/cHlm3iME5P3VUCP1wBxMWw+k1hBrBzimVNVay5tnJTb4o/RGVu/8CvIRdPlwQSvSLZhixTm6w5tuDdZutKPICfNoh2H01IQ2+8n4WYqZKkgmpEJT4+GUJ20+RhvYzEM25ePPPLzItykEtFkCyU5EX/8cQ9Z4VPdv18AmZhPP4ubVjaV0/15tigLeSmwVI+PeaISBmjmmDdi//ucblfb/Yzs5SFTbnDAYITPkLDi9ZSLWWJd8ShLwEa2qt6Y5C9MHBIKref99VShYV0/XdBQswry3i24quOITjaFPnz7gtKLbQGTF80W44FvhZa2+VQGCgu8kkp2EHoKxJ4Q+HwahXaUDLXc/P7DAUVnHVRKbzE8FBorIlI+1MnXl8xjyKDfcI7lGJjteGmRLiS+1qXgJH97w7mMe7mpon4zcnVNQejoBNXz2LwwfU0bqd4
+	PqU72YX0Y8b1dSqPZGPH78vem53oZtgAOdXLIl+8r0Rr9h5t3DaY1dAyzWH0BGc2jPtGt+oX+eZZHRVaDGm15h3FjtwqOvpCyXhpU13+XtdlIZh4OEhZdg5JDVnxtlQl+zfcGYPjZsqpMaseBLhV7VxolEhbK1vOHu3w00llv7+OPZquv/1qic2TtPV0h+g/WhenuF294F+JMwBrGe4q3wyACz1m9PQjaNZhMxi4nTeOxdqb2q1Krpb/0uInZUL8mlbYq88jbRLxamArWneuXyDWOeFhnB101cuznHIfvXndgIafEpmQxDe+uSB/AEVr5sNdRSNZyxhvDIO8nlwFhpPucHluf02cMKGrXDWADF9pM/zduaHIH93JboAAoZ8RI+Zyf+P+wtwxtvzOGnzy7XfVAGf1hQQdJipoc2qGJm4BcweyRgE80rVMuxw1m7M9
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:55:21.9112
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2026 17:55:27.0316
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9753cc1-4b00-4b61-9b1e-08de7f975d9a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d5e4e63-34be-4d69-5740-08de7f9760b0
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[cn-mailer-00.localdomain]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[50.148.235.34];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF000015C8.namprd03.prod.outlook.com
+	MWH0EPF000C618A.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR01MB7503
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR01MB9243
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[cornelisnetworks.com,none];
@@ -134,15 +134,15 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18003-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18004-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ps.dev:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cornelisnetworks.com:dkim,cornelisnetworks.com:email,awdrv-04.cornelisnetworks.com:mid,rsp.id:url];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cornelisnetworks.com:dkim,cornelisnetworks.com:email,awdrv-04.cornelisnetworks.com:mid];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[cornelisnetworks.com:+];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_FIVE(0.00)[5];
 	FROM_NEQ_ENVFROM(0.00)[dennis.dalessandro@cornelisnetworks.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -151,6143 +151,1769 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: 3A849268541
+X-Rspamd-Queue-Id: A5F93268548
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The new hfi2 supports verbs in the same way as hfi1 did. We use rdmavt.
-While technically possible to fold rdmavt back into the driver now that qib
-has been (is being) removed we opt not to do this. That would introduce a
-lot of churn that's not necessary right now and we also have plans to
-leverage rdmavt for adding support for RoCE in future generations of the
-HW.
+Bring in ipoib support.
 
 Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Co-developed-by: Bendan Cunningham <brendan.cunningham@cornelisnetworks.com>
 Signed-off-by: Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>
-Co-developed-by: Douglas Miller <doug.miller@cornelisnetworks.com>
-Signed-off-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi2/tid_rdma.c | 5485 +++++++++++++++++++++++++++++++++
- drivers/infiniband/hw/hfi2/uverbs.c   |  598 ++++
- drivers/infiniband/hw/hfi2/verbs.c    |    4 
- 3 files changed, 6085 insertions(+), 2 deletions(-)
- create mode 100644 drivers/infiniband/hw/hfi2/tid_rdma.c
- create mode 100644 drivers/infiniband/hw/hfi2/uverbs.c
+ drivers/infiniband/hw/hfi2/ipoib_main.c |  258 +++++++++
+ drivers/infiniband/hw/hfi2/ipoib_rx.c   |   93 +++
+ drivers/infiniband/hw/hfi2/ipoib_tx.c   |  872 +++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/netdev_rx.c  |  494 ++++++++++++++++++
+ 4 files changed, 1717 insertions(+)
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib_main.c
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib_rx.c
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib_tx.c
+ create mode 100644 drivers/infiniband/hw/hfi2/netdev_rx.c
 
-diff --git a/drivers/infiniband/hw/hfi2/tid_rdma.c b/drivers/infiniband/hw/hfi2/tid_rdma.c
+diff --git a/drivers/infiniband/hw/hfi2/ipoib_main.c b/drivers/infiniband/hw/hfi2/ipoib_main.c
 new file mode 100644
-index 000000000000..2b2ae1f33582
+index 000000000000..3e6d142d16cc
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/tid_rdma.c
-@@ -0,0 +1,5485 @@
++++ b/drivers/infiniband/hw/hfi2/ipoib_main.c
+@@ -0,0 +1,258 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +/*
-+ * Copyright(c) 2018 - 2020 Intel Corporation.
++ * Copyright(c) 2020 Intel Corporation.
 + * Copyright(c) 2025-2026 Cornelis Networks, Inc.
 + *
 + */
 +
++/*
++ * This file contains HFI2 support for ipoib functionality
++ */
++
++#include "ipoib.h"
 +#include "hfi2.h"
-+#include "qp.h"
-+#include "rc.h"
-+#include "verbs.h"
-+#include "tid_rdma.h"
-+#include "exp_rcv.h"
-+#include "trace.h"
 +
-+/**
-+ * DOC: TID RDMA READ protocol
-+ *
-+ * This is an end-to-end protocol at the hfi2 level between two nodes that
-+ * improves performance by avoiding data copy on the requester side. It
-+ * converts a qualified RDMA READ request into a TID RDMA READ request on
-+ * the requester side and thereafter handles the request and response
-+ * differently. To be qualified, the RDMA READ request should meet the
-+ * following:
-+ * -- The total data length should be greater than 256K;
-+ * -- The total data length should be a multiple of 4K page size;
-+ * -- Each local scatter-gather entry should be 4K page aligned;
-+ * -- Each local scatter-gather entry should be a multiple of 4K page size;
-+ */
-+
-+#define RCV_TID_FLOW_TABLE_CTRL_FLOW_VALID_SMASK BIT_ULL(32)
-+#define RCV_TID_FLOW_TABLE_CTRL_HDR_SUPP_EN_SMASK BIT_ULL(33)
-+#define RCV_TID_FLOW_TABLE_CTRL_KEEP_AFTER_SEQ_ERR_SMASK BIT_ULL(34)
-+#define RCV_TID_FLOW_TABLE_CTRL_KEEP_ON_GEN_ERR_SMASK BIT_ULL(35)
-+#define RCV_TID_FLOW_TABLE_STATUS_SEQ_MISMATCH_SMASK BIT_ULL(37)
-+#define RCV_TID_FLOW_TABLE_STATUS_GEN_MISMATCH_SMASK BIT_ULL(38)
-+
-+/* Maximum number of packets within a flow generation. */
-+#define MAX_TID_FLOW_PSN BIT(HFI2_KDETH_BTH_SEQ_SHIFT)
-+
-+#define GENERATION_MASK 0xFFFFF
-+
-+static u32 mask_generation(u32 a)
++static u32 qpn_from_mac(const u8 *mac_arr)
 +{
-+	return a & GENERATION_MASK;
++	return (u32)mac_arr[1] << 16 | mac_arr[2] << 8 | mac_arr[3];
 +}
 +
-+/* Reserved generation value to set to unused flows for kernel contexts */
-+#define KERN_GENERATION_RESERVED mask_generation(U32_MAX)
-+
-+/*
-+ * J_KEY for kernel contexts when TID RDMA is used.
-+ * See generate_jkey() in hfi.h for more information.
-+ */
-+#define TID_RDMA_JKEY 32
-+#define HFI2_KERNEL_MIN_JKEY HFI2_ADMIN_JKEY_RANGE
-+#define HFI2_KERNEL_MAX_JKEY (2 * HFI2_ADMIN_JKEY_RANGE - 1)
-+
-+/* Maximum number of segments in flight per QP request. */
-+#define TID_RDMA_MAX_READ_SEGS_PER_REQ 6
-+#define TID_RDMA_MAX_WRITE_SEGS_PER_REQ 4
-+#define MAX_REQ                                    \
-+	max_t(u16, TID_RDMA_MAX_READ_SEGS_PER_REQ, \
-+	      TID_RDMA_MAX_WRITE_SEGS_PER_REQ)
-+#define MAX_FLOWS roundup_pow_of_two(MAX_REQ + 1)
-+
-+#define MAX_EXPECTED_PAGES (MAX_EXPECTED_BUFFER / PAGE_SIZE)
-+
-+#define TID_RDMA_DESTQP_FLOW_SHIFT 11
-+#define TID_RDMA_DESTQP_FLOW_MASK 0x1f
-+
-+#define TID_OPFN_QP_CTXT_MASK 0xff
-+#define TID_OPFN_QP_CTXT_SHIFT 56
-+#define TID_OPFN_QP_KDETH_MASK 0xff
-+#define TID_OPFN_QP_KDETH_SHIFT 48
-+#define TID_OPFN_MAX_LEN_MASK 0x7ff
-+#define TID_OPFN_MAX_LEN_SHIFT 37
-+#define TID_OPFN_TIMEOUT_MASK 0x1f
-+#define TID_OPFN_TIMEOUT_SHIFT 32
-+#define TID_OPFN_RESERVED_MASK 0x3f
-+#define TID_OPFN_RESERVED_SHIFT 26
-+#define TID_OPFN_URG_MASK 0x1
-+#define TID_OPFN_URG_SHIFT 25
-+#define TID_OPFN_VER_MASK 0x7
-+#define TID_OPFN_VER_SHIFT 22
-+#define TID_OPFN_JKEY_MASK 0x3f
-+#define TID_OPFN_JKEY_SHIFT 16
-+#define TID_OPFN_MAX_READ_MASK 0x3f
-+#define TID_OPFN_MAX_READ_SHIFT 10
-+#define TID_OPFN_MAX_WRITE_MASK 0x3f
-+#define TID_OPFN_MAX_WRITE_SHIFT 4
-+
-+/*
-+ * OPFN TID layout
-+ *
-+ * 63               47               31               15
-+ * NNNNNNNNKKKKKKKK MMMMMMMMMMMTTTTT DDDDDDUVVVJJJJJJ RRRRRRWWWWWWCCCC
-+ * 3210987654321098 7654321098765432 1098765432109876 5432109876543210
-+ * N - the context Number
-+ * K - the Kdeth_qp
-+ * M - Max_len
-+ * T - Timeout
-+ * D - reserveD
-+ * V - version
-+ * U - Urg capable
-+ * J - Jkey
-+ * R - max_Read
-+ * W - max_Write
-+ * C - Capcode
-+ */
-+
-+static void tid_rdma_trigger_resume(struct work_struct *work);
-+static void hfi2_kern_exp_rcv_free_flows(struct tid_rdma_request *req);
-+static int hfi2_kern_exp_rcv_alloc_flows(struct tid_rdma_request *req,
-+					 gfp_t gfp);
-+static void hfi2_init_trdma_req(struct rvt_qp *qp,
-+				struct tid_rdma_request *req);
-+static void hfi2_tid_write_alloc_resources(struct rvt_qp *qp, bool intr_ctx);
-+static void hfi2_tid_timeout(struct timer_list *t);
-+static void hfi2_add_tid_reap_timer(struct rvt_qp *qp);
-+static void hfi2_mod_tid_reap_timer(struct rvt_qp *qp);
-+static void hfi2_mod_tid_retry_timer(struct rvt_qp *qp);
-+static int hfi2_stop_tid_retry_timer(struct rvt_qp *qp);
-+static void hfi2_tid_retry_timeout(struct timer_list *t);
-+static int make_tid_rdma_ack(struct rvt_qp *qp, struct ib_other_headers *ohdr,
-+			     struct hfi2_pkt_state *ps);
-+static void hfi2_do_tid_send(struct rvt_qp *qp);
-+static u32 read_r_next_psn(struct hfi2_devdata *dd, u16 ctxt, u8 fidx);
-+static void tid_rdma_rcv_err(struct hfi2_packet *packet,
-+			     struct ib_other_headers *ohdr, struct rvt_qp *qp,
-+			     u32 psn, int diff, bool fecn);
-+static void update_r_next_psn_fecn(struct hfi2_packet *packet,
-+				   struct hfi2_qp_priv *priv,
-+				   struct hfi2_ctxtdata *rcd,
-+				   struct tid_rdma_flow *flow, bool fecn);
-+
-+static void validate_r_tid_ack(struct hfi2_qp_priv *priv)
++static int hfi2_ipoib_dev_init(struct net_device *dev)
 +{
-+	if (priv->r_tid_ack == HFI2_QP_WQE_INVALID)
-+		priv->r_tid_ack = priv->r_tid_tail;
-+}
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int ret;
 +
-+static void tid_rdma_schedule_ack(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	priv->s_flags |= RVT_S_ACK_PENDING;
-+	hfi2_schedule_tid_send(qp);
-+}
-+
-+static void tid_rdma_trigger_ack(struct rvt_qp *qp)
-+{
-+	validate_r_tid_ack(qp->priv);
-+	tid_rdma_schedule_ack(qp);
-+}
-+
-+static u64 tid_rdma_opfn_encode(struct tid_rdma_params *p)
-+{
-+	return (((u64)p->qp & TID_OPFN_QP_CTXT_MASK)
-+		<< TID_OPFN_QP_CTXT_SHIFT) |
-+	       ((((u64)p->qp >> 16) & TID_OPFN_QP_KDETH_MASK)
-+		<< TID_OPFN_QP_KDETH_SHIFT) |
-+	       (((u64)((p->max_len >> PAGE_SHIFT) - 1) & TID_OPFN_MAX_LEN_MASK)
-+		<< TID_OPFN_MAX_LEN_SHIFT) |
-+	       (((u64)p->timeout & TID_OPFN_TIMEOUT_MASK)
-+		<< TID_OPFN_TIMEOUT_SHIFT) |
-+	       (((u64)p->urg & TID_OPFN_URG_MASK) << TID_OPFN_URG_SHIFT) |
-+	       (((u64)p->jkey & TID_OPFN_JKEY_MASK) << TID_OPFN_JKEY_SHIFT) |
-+	       (((u64)p->max_read & TID_OPFN_MAX_READ_MASK)
-+		<< TID_OPFN_MAX_READ_SHIFT) |
-+	       (((u64)p->max_write & TID_OPFN_MAX_WRITE_MASK)
-+		<< TID_OPFN_MAX_WRITE_SHIFT);
-+}
-+
-+static void tid_rdma_opfn_decode(struct tid_rdma_params *p, u64 data)
-+{
-+	p->max_len =
-+		(((data >> TID_OPFN_MAX_LEN_SHIFT) & TID_OPFN_MAX_LEN_MASK) + 1)
-+		<< PAGE_SHIFT;
-+	p->jkey = (data >> TID_OPFN_JKEY_SHIFT) & TID_OPFN_JKEY_MASK;
-+	p->max_write = (data >> TID_OPFN_MAX_WRITE_SHIFT) &
-+		       TID_OPFN_MAX_WRITE_MASK;
-+	p->max_read = (data >> TID_OPFN_MAX_READ_SHIFT) &
-+		      TID_OPFN_MAX_READ_MASK;
-+	p->qp = ((((data >> TID_OPFN_QP_KDETH_SHIFT) & TID_OPFN_QP_KDETH_MASK)
-+		  << 16) |
-+		 ((data >> TID_OPFN_QP_CTXT_SHIFT) & TID_OPFN_QP_CTXT_MASK));
-+	p->urg = (data >> TID_OPFN_URG_SHIFT) & TID_OPFN_URG_MASK;
-+	p->timeout = (data >> TID_OPFN_TIMEOUT_SHIFT) & TID_OPFN_TIMEOUT_MASK;
-+}
-+
-+void tid_rdma_opfn_init(struct rvt_qp *qp, struct tid_rdma_params *p)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	p->qp = (RVT_KDETH_QP_PREFIX << 16) | priv->rcd->ctxt;
-+	p->max_len = TID_RDMA_MAX_SEGMENT_SIZE;
-+	p->jkey = priv->rcd->jkey;
-+	p->max_read = TID_RDMA_MAX_READ_SEGS_PER_REQ;
-+	p->max_write = TID_RDMA_MAX_WRITE_SEGS_PER_REQ;
-+	p->timeout = qp->timeout;
-+	p->urg = is_urg_masked(priv->rcd);
-+}
-+
-+bool tid_rdma_conn_req(struct rvt_qp *qp, u64 *data)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	*data = tid_rdma_opfn_encode(&priv->tid_rdma.local);
-+	return true;
-+}
-+
-+bool tid_rdma_conn_reply(struct rvt_qp *qp, u64 data)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct tid_rdma_params *remote, *old;
-+	bool ret = true;
-+
-+	old = rcu_dereference_protected(priv->tid_rdma.remote,
-+					lockdep_is_held(&priv->opfn.lock));
-+	data &= ~0xfULL;
-+	/*
-+	 * If data passed in is zero, return true so as not to continue the
-+	 * negotiation process
-+	 */
-+	if (!data || !HFI2_CAP_IS_KSET(TID_RDMA))
-+		goto null;
-+	/*
-+	 * If kzalloc fails, return false. This will result in:
-+	 * * at the requester a new OPFN request being generated to retry
-+	 *   the negotiation
-+	 * * at the responder, 0 being returned to the requester so as to
-+	 *   disable TID RDMA at both the requester and the responder
-+	 */
-+	remote = kzalloc_obj(remote, GFP_ATOMIC);
-+	if (!remote) {
-+		ret = false;
-+		goto null;
-+	}
-+
-+	tid_rdma_opfn_decode(remote, data);
-+	priv->tid_timer_timeout_jiffies = usecs_to_jiffies(
-+		(((4096UL * (1UL << remote->timeout)) / 1000UL) << 3) * 7);
-+	trace_hfi2_opfn_param(qp, 0, &priv->tid_rdma.local);
-+	trace_hfi2_opfn_param(qp, 1, remote);
-+	rcu_assign_pointer(priv->tid_rdma.remote, remote);
-+	/*
-+	 * A TID RDMA READ request's segment size is not equal to
-+	 * remote->max_len only when the request's data length is smaller
-+	 * than remote->max_len. In that case, there will be only one segment.
-+	 * Therefore, when priv->pkts_ps is used to calculate req->cur_seg
-+	 * during retry, it will lead to req->cur_seg = 0, which is exactly
-+	 * what is expected.
-+	 */
-+	priv->pkts_ps = (u16)rvt_div_mtu(qp, remote->max_len);
-+	priv->timeout_shift = ilog2(priv->pkts_ps - 1) + 1;
-+	goto free;
-+null:
-+	RCU_INIT_POINTER(priv->tid_rdma.remote, NULL);
-+	priv->timeout_shift = 0;
-+free:
-+	if (old)
-+		kfree_rcu(old, rcu_head);
-+	return ret;
-+}
-+
-+bool tid_rdma_conn_resp(struct rvt_qp *qp, u64 *data)
-+{
-+	bool ret;
-+
-+	ret = tid_rdma_conn_reply(qp, *data);
-+	*data = 0;
-+	/*
-+	 * If tid_rdma_conn_reply() returns error, set *data as 0 to indicate
-+	 * TID RDMA could not be enabled. This will result in TID RDMA being
-+	 * disabled at the requester too.
-+	 */
++	ret = priv->netdev_ops->ndo_init(dev);
 +	if (ret)
-+		(void)tid_rdma_conn_req(qp, data);
-+	return ret;
-+}
-+
-+void tid_rdma_conn_error(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct tid_rdma_params *old;
-+
-+	old = rcu_dereference_protected(priv->tid_rdma.remote,
-+					lockdep_is_held(&priv->opfn.lock));
-+	RCU_INIT_POINTER(priv->tid_rdma.remote, NULL);
-+	if (old)
-+		kfree_rcu(old, rcu_head);
-+}
-+
-+/* This is called at context initialization time */
-+int hfi2_kern_exp_rcv_init(struct hfi2_ctxtdata *rcd, int reinit)
-+{
-+	if (reinit)
-+		return 0;
-+
-+	BUILD_BUG_ON(TID_RDMA_JKEY < HFI2_KERNEL_MIN_JKEY);
-+	BUILD_BUG_ON(TID_RDMA_JKEY > HFI2_KERNEL_MAX_JKEY);
-+	rcd->jkey = TID_RDMA_JKEY;
-+	hfi2_set_ctxt_jkey(rcd->dd, rcd, rcd->jkey);
-+	return hfi2_alloc_ctxt_rcv_groups(rcd);
-+}
-+
-+/**
-+ * qp_to_rcd - determine the receive context used by a qp
-+ * @qp: the qp
-+ *
-+ * Return the receive context associated with the qp's qpn.  There may not yet
-+ * be an associated port.  If not, return NULL.  It is expected that the port
-+ * will be updated later.
-+ *
-+ * This is called at QP creation time or when the QP is updated with a port
-+ * number.  When called during a port update, qp->port_num has the new port,
-+ * but qp->ibqp.port is not yet updated.
-+ */
-+struct hfi2_ctxtdata *qp_to_rcd(struct rvt_qp *qp)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(qp->ibqp.device);
-+	struct hfi2_pportdata *ppd;
-+	unsigned int ctxt;
-+
-+	/* find the associated port, return NULL if not available */
-+	if (qp->port_num == 0)
-+		return NULL;
-+	ppd = &dd->pport[qp->port_num - 1];
-+
-+	if (qp->ibqp.qp_num == 0)
-+		ctxt = dd->rsrcs.ppr[ppd->hw_pidx].rcv_context_base +
-+		       HFI2_CTRL_CTXT;
-+	else
-+		ctxt = hfi2_get_qp_map(ppd, qp->ibqp.qp_num >> ppd->qos_shift);
-+	return dd->rcd[ctxt];
-+}
-+
-+int hfi2_qp_priv_init(struct rvt_dev_info *rdi, struct rvt_qp *qp,
-+		      struct ib_qp_init_attr *init_attr)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	int i, ret;
-+
-+	qpriv->rcd = qp_to_rcd(qp);
-+
-+	spin_lock_init(&qpriv->opfn.lock);
-+	INIT_WORK(&qpriv->opfn.opfn_work, opfn_send_conn_request);
-+	INIT_WORK(&qpriv->tid_rdma.trigger_work, tid_rdma_trigger_resume);
-+	qpriv->flow_state.psn = 0;
-+	qpriv->flow_state.index = RXE_NUM_TID_FLOWS;
-+	qpriv->flow_state.last_index = RXE_NUM_TID_FLOWS;
-+	qpriv->flow_state.generation = KERN_GENERATION_RESERVED;
-+	qpriv->s_state = TID_OP(WRITE_RESP);
-+	qpriv->s_tid_cur = HFI2_QP_WQE_INVALID;
-+	qpriv->s_tid_head = HFI2_QP_WQE_INVALID;
-+	qpriv->s_tid_tail = HFI2_QP_WQE_INVALID;
-+	qpriv->rnr_nak_state = TID_RNR_NAK_INIT;
-+	qpriv->r_tid_head = HFI2_QP_WQE_INVALID;
-+	qpriv->r_tid_tail = HFI2_QP_WQE_INVALID;
-+	qpriv->r_tid_ack = HFI2_QP_WQE_INVALID;
-+	qpriv->r_tid_alloc = HFI2_QP_WQE_INVALID;
-+	atomic_set(&qpriv->n_requests, 0);
-+	atomic_set(&qpriv->n_tid_requests, 0);
-+	timer_setup(&qpriv->s_tid_timer, hfi2_tid_timeout, 0);
-+	timer_setup(&qpriv->s_tid_retry_timer, hfi2_tid_retry_timeout, 0);
-+	INIT_LIST_HEAD(&qpriv->tid_wait);
-+
-+	if (init_attr->qp_type == IB_QPT_RC && HFI2_CAP_IS_KSET(TID_RDMA)) {
-+		struct hfi2_devdata *dd = qpriv->rcd->dd;
-+
-+		qpriv->pages =
-+			kzalloc_node(TID_RDMA_MAX_PAGES * sizeof(*qpriv->pages),
-+				     GFP_KERNEL, dd->node);
-+		if (!qpriv->pages)
-+			return -ENOMEM;
-+		for (i = 0; i < qp->s_size; i++) {
-+			struct hfi2_swqe_priv *priv;
-+			struct rvt_swqe *wqe = rvt_get_swqe_ptr(qp, i);
-+
-+			priv = kzalloc_node(sizeof(*priv), GFP_KERNEL,
-+					    dd->node);
-+			if (!priv)
-+				return -ENOMEM;
-+
-+			hfi2_init_trdma_req(qp, &priv->tid_req);
-+			priv->tid_req.e.swqe = wqe;
-+			wqe->priv = priv;
-+		}
-+		for (i = 0; i < rvt_max_atomic(rdi); i++) {
-+			struct hfi2_ack_priv *priv;
-+
-+			priv = kzalloc_node(sizeof(*priv), GFP_KERNEL,
-+					    dd->node);
-+			if (!priv)
-+				return -ENOMEM;
-+
-+			hfi2_init_trdma_req(qp, &priv->tid_req);
-+			priv->tid_req.e.ack = &qp->s_ack_queue[i];
-+
-+			ret = hfi2_kern_exp_rcv_alloc_flows(&priv->tid_req,
-+							    GFP_KERNEL);
-+			if (ret) {
-+				kfree(priv);
-+				return ret;
-+			}
-+			qp->s_ack_queue[i].priv = priv;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+void hfi2_qp_priv_tid_free(struct rvt_dev_info *rdi, struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct rvt_swqe *wqe;
-+	u32 i;
-+
-+	if (qp->ibqp.qp_type == IB_QPT_RC && HFI2_CAP_IS_KSET(TID_RDMA)) {
-+		for (i = 0; i < qp->s_size; i++) {
-+			wqe = rvt_get_swqe_ptr(qp, i);
-+			kfree(wqe->priv);
-+			wqe->priv = NULL;
-+		}
-+		for (i = 0; i < rvt_max_atomic(rdi); i++) {
-+			struct hfi2_ack_priv *priv = qp->s_ack_queue[i].priv;
-+
-+			if (priv)
-+				hfi2_kern_exp_rcv_free_flows(&priv->tid_req);
-+			kfree(priv);
-+			qp->s_ack_queue[i].priv = NULL;
-+		}
-+		cancel_work_sync(&qpriv->opfn.opfn_work);
-+		kfree(qpriv->pages);
-+		qpriv->pages = NULL;
-+	}
-+}
-+
-+/* Flow and tid waiter functions */
-+/**
-+ * DOC: lock ordering
-+ *
-+ * There are two locks involved with the queuing
-+ * routines: the qp s_lock and the exp_lock.
-+ *
-+ * Since the tid space allocation is called from
-+ * the send engine, the qp s_lock is already held.
-+ *
-+ * The allocation routines will get the exp_lock.
-+ *
-+ * The first_qp() call is provided to allow the head of
-+ * the rcd wait queue to be fetched under the exp_lock and
-+ * followed by a drop of the exp_lock.
-+ *
-+ * Any qp in the wait list will have the qp reference count held
-+ * to hold the qp in memory.
-+ */
-+
-+/*
-+ * return head of rcd wait list
-+ *
-+ * Must hold the exp_lock.
-+ *
-+ * Get a reference to the QP to hold the QP in memory.
-+ *
-+ * The caller must release the reference when the local
-+ * is no longer being used.
-+ */
-+static struct rvt_qp *first_qp(struct hfi2_ctxtdata *rcd,
-+			       struct tid_queue *queue)
-+	__must_hold(&rcd->exp_lock)
-+{
-+	struct hfi2_qp_priv *priv;
-+
-+	lockdep_assert_held(&rcd->exp_lock);
-+	priv = list_first_entry_or_null(&queue->queue_head, struct hfi2_qp_priv,
-+					tid_wait);
-+	if (!priv)
-+		return NULL;
-+	rvt_get_qp(priv->owner);
-+	return priv->owner;
-+}
-+
-+/**
-+ * kernel_tid_waiters - determine rcd wait
-+ * @rcd: the receive context
-+ * @queue: the queue to operate on
-+ * @qp: the head of the qp being processed
-+ *
-+ * This routine will return false IFF
-+ * the list is NULL or the head of the
-+ * list is the indicated qp.
-+ *
-+ * Must hold the qp s_lock and the exp_lock.
-+ *
-+ * Return:
-+ * false if either of the conditions below are satisfied:
-+ * 1. The list is empty or
-+ * 2. The indicated qp is at the head of the list and the
-+ *    HFI2_S_WAIT_TID_SPACE bit is set in qp->s_flags.
-+ * true is returned otherwise.
-+ */
-+static bool kernel_tid_waiters(struct hfi2_ctxtdata *rcd,
-+			       struct tid_queue *queue, struct rvt_qp *qp)
-+	__must_hold(&rcd->exp_lock) __must_hold(&qp->s_lock)
-+{
-+	struct rvt_qp *fqp;
-+	bool ret = true;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	lockdep_assert_held(&rcd->exp_lock);
-+	fqp = first_qp(rcd, queue);
-+	if (!fqp || (fqp == qp && (qp->s_flags & HFI2_S_WAIT_TID_SPACE)))
-+		ret = false;
-+	rvt_put_qp(fqp);
-+	return ret;
-+}
-+
-+/**
-+ * dequeue_tid_waiter - dequeue the qp from the list
-+ * @rcd: the receive context
-+ * @queue: the queue to operate on
-+ * @qp: the qp to remove the wait list
-+ *
-+ * This routine removes the indicated qp from the
-+ * wait list if it is there.
-+ *
-+ * This should be done after the hardware flow and
-+ * tid array resources have been allocated.
-+ *
-+ * Must hold the qp s_lock and the rcd exp_lock.
-+ *
-+ * It assumes the s_lock to protect the s_flags
-+ * field and to reliably test the HFI2_S_WAIT_TID_SPACE flag.
-+ */
-+static void dequeue_tid_waiter(struct hfi2_ctxtdata *rcd,
-+			       struct tid_queue *queue, struct rvt_qp *qp)
-+	__must_hold(&rcd->exp_lock) __must_hold(&qp->s_lock)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	lockdep_assert_held(&rcd->exp_lock);
-+	if (list_empty(&priv->tid_wait))
-+		return;
-+	list_del_init(&priv->tid_wait);
-+	qp->s_flags &= ~HFI2_S_WAIT_TID_SPACE;
-+	queue->dequeue++;
-+	rvt_put_qp(qp);
-+}
-+
-+/**
-+ * queue_qp_for_tid_wait - suspend QP on tid space
-+ * @rcd: the receive context
-+ * @queue: the queue to operate on
-+ * @qp: the qp
-+ *
-+ * The qp is inserted at the tail of the rcd
-+ * wait queue and the HFI2_S_WAIT_TID_SPACE s_flag is set.
-+ *
-+ * Must hold the qp s_lock and the exp_lock.
-+ */
-+static void queue_qp_for_tid_wait(struct hfi2_ctxtdata *rcd,
-+				  struct tid_queue *queue, struct rvt_qp *qp)
-+	__must_hold(&rcd->exp_lock) __must_hold(&qp->s_lock)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	lockdep_assert_held(&rcd->exp_lock);
-+	if (list_empty(&priv->tid_wait)) {
-+		qp->s_flags |= HFI2_S_WAIT_TID_SPACE;
-+		list_add_tail(&priv->tid_wait, &queue->queue_head);
-+		priv->tid_enqueue = ++queue->enqueue;
-+		rcd->dd->verbs_dev.n_tidwait++;
-+		trace_hfi2_qpsleep(qp, HFI2_S_WAIT_TID_SPACE);
-+		rvt_get_qp(qp);
-+	}
-+}
-+
-+/**
-+ * __trigger_tid_waiter - trigger tid waiter
-+ * @qp: the qp
-+ *
-+ * This is a private entrance to schedule the qp
-+ * assuming the caller is holding the qp->s_lock.
-+ */
-+static void __trigger_tid_waiter(struct rvt_qp *qp) __must_hold(&qp->s_lock)
-+{
-+	lockdep_assert_held(&qp->s_lock);
-+	if (!(qp->s_flags & HFI2_S_WAIT_TID_SPACE))
-+		return;
-+	trace_hfi2_qpwakeup(qp, HFI2_S_WAIT_TID_SPACE);
-+	hfi2_schedule_send(qp);
-+}
-+
-+/**
-+ * tid_rdma_schedule_tid_wakeup - schedule wakeup for a qp
-+ * @qp: the qp
-+ *
-+ * trigger a schedule or a waiting qp in a deadlock
-+ * safe manner.  The qp reference is held prior
-+ * to this call via first_qp().
-+ *
-+ * If the qp trigger was already scheduled (!rval)
-+ * the reference is dropped, otherwise the resume
-+ * or the destroy cancel will dispatch the reference.
-+ */
-+static void tid_rdma_schedule_tid_wakeup(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv;
-+	struct hfi2_devdata *dd;
-+	bool rval;
-+
-+	if (!qp)
-+		return;
-+
-+	priv = qp->priv;
-+	dd = dd_from_ibdev(qp->ibqp.device);
-+
-+	rval = queue_work_on(priv->s_sde ?
-+				     priv->s_sde->cpu :
-+				     cpumask_first(cpumask_of_node(dd->node)),
-+			     dd->hfi2_wq, &priv->tid_rdma.trigger_work);
-+	if (!rval)
-+		rvt_put_qp(qp);
-+}
-+
-+/**
-+ * tid_rdma_trigger_resume - field a trigger work request
-+ * @work: the work item
-+ *
-+ * Complete the off qp trigger processing by directly
-+ * calling the progress routine.
-+ */
-+static void tid_rdma_trigger_resume(struct work_struct *work)
-+{
-+	struct tid_rdma_qp_params *tr;
-+	struct hfi2_qp_priv *priv;
-+	struct rvt_qp *qp;
-+
-+	tr = container_of(work, struct tid_rdma_qp_params, trigger_work);
-+	priv = container_of(tr, struct hfi2_qp_priv, tid_rdma);
-+	qp = priv->owner;
-+	spin_lock_irq(&qp->s_lock);
-+	if (qp->s_flags & HFI2_S_WAIT_TID_SPACE) {
-+		spin_unlock_irq(&qp->s_lock);
-+		hfi2_do_send(priv->owner, true);
-+	} else {
-+		spin_unlock_irq(&qp->s_lock);
-+	}
-+	rvt_put_qp(qp);
-+}
-+
-+/*
-+ * tid_rdma_flush_wait - unwind any tid space wait
-+ *
-+ * This is called when resetting a qp to
-+ * allow a destroy or reset to get rid
-+ * of any tid space linkage and reference counts.
-+ */
-+static void _tid_rdma_flush_wait(struct rvt_qp *qp, struct tid_queue *queue)
-+	__must_hold(&qp->s_lock)
-+{
-+	struct hfi2_qp_priv *priv;
-+
-+	if (!qp)
-+		return;
-+	lockdep_assert_held(&qp->s_lock);
-+	priv = qp->priv;
-+	qp->s_flags &= ~HFI2_S_WAIT_TID_SPACE;
-+	spin_lock(&priv->rcd->exp_lock);
-+	if (!list_empty(&priv->tid_wait)) {
-+		list_del_init(&priv->tid_wait);
-+		qp->s_flags &= ~HFI2_S_WAIT_TID_SPACE;
-+		queue->dequeue++;
-+		rvt_put_qp(qp);
-+	}
-+	spin_unlock(&priv->rcd->exp_lock);
-+}
-+
-+void hfi2_tid_rdma_flush_wait(struct rvt_qp *qp) __must_hold(&qp->s_lock)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	if (!priv->rcd)
-+		return;
-+	_tid_rdma_flush_wait(qp, &priv->rcd->flow_queue);
-+	_tid_rdma_flush_wait(qp, &priv->rcd->rarr_queue);
-+}
-+
-+/* Flow functions */
-+/**
-+ * kern_reserve_flow - allocate a hardware flow
-+ * @rcd: the context to use for allocation
-+ * @last: the index of the preferred flow. Use RXE_NUM_TID_FLOWS to
-+ *         signify "don't care".
-+ *
-+ * Use a bit mask based allocation to reserve a hardware
-+ * flow for use in receiving KDETH data packets. If a preferred flow is
-+ * specified the function will attempt to reserve that flow again, if
-+ * available.
-+ *
-+ * The exp_lock must be held.
-+ *
-+ * Return:
-+ * On success: a value positive value between 0 and RXE_NUM_TID_FLOWS - 1
-+ * On failure: -EAGAIN
-+ */
-+static int kern_reserve_flow(struct hfi2_ctxtdata *rcd, int last)
-+	__must_hold(&rcd->exp_lock)
-+{
-+	int nr;
-+
-+	/* Attempt to reserve the preferred flow index */
-+	if (last >= 0 && last < RXE_NUM_TID_FLOWS &&
-+	    !test_and_set_bit(last, &rcd->flow_mask))
-+		return last;
-+
-+	nr = ffz(rcd->flow_mask);
-+	BUILD_BUG_ON(RXE_NUM_TID_FLOWS >=
-+		     (sizeof(rcd->flow_mask) * BITS_PER_BYTE));
-+	if (nr > (RXE_NUM_TID_FLOWS - 1))
-+		return -EAGAIN;
-+	set_bit(nr, &rcd->flow_mask);
-+	return nr;
-+}
-+
-+static void kern_set_hw_flow(struct hfi2_ctxtdata *rcd, u32 generation,
-+			     u32 flow_idx)
-+{
-+	u64 reg;
-+
-+	reg = ((u64)generation << HFI2_KDETH_BTH_SEQ_SHIFT) |
-+	      RCV_TID_FLOW_TABLE_CTRL_FLOW_VALID_SMASK |
-+	      RCV_TID_FLOW_TABLE_CTRL_KEEP_AFTER_SEQ_ERR_SMASK |
-+	      RCV_TID_FLOW_TABLE_CTRL_KEEP_ON_GEN_ERR_SMASK |
-+	      RCV_TID_FLOW_TABLE_STATUS_SEQ_MISMATCH_SMASK |
-+	      RCV_TID_FLOW_TABLE_STATUS_GEN_MISMATCH_SMASK;
-+
-+	if (generation != KERN_GENERATION_RESERVED)
-+		reg |= RCV_TID_FLOW_TABLE_CTRL_HDR_SUPP_EN_SMASK;
-+
-+	write_uctxt_csr(rcd->dd, rcd->ctxt,
-+			rcd->dd->params->rcv_tid_flow_table_reg + 8 * flow_idx,
-+			reg);
-+}
-+
-+static u32 kern_setup_hw_flow(struct hfi2_ctxtdata *rcd, u32 flow_idx)
-+	__must_hold(&rcd->exp_lock)
-+{
-+	u32 generation = rcd->flows[flow_idx].generation;
-+
-+	kern_set_hw_flow(rcd, generation, flow_idx);
-+	return generation;
-+}
-+
-+static u32 kern_flow_generation_next(u32 gen)
-+{
-+	u32 generation = mask_generation(gen + 1);
-+
-+	if (generation == KERN_GENERATION_RESERVED)
-+		generation = mask_generation(generation + 1);
-+	return generation;
-+}
-+
-+static void kern_clear_hw_flow(struct hfi2_ctxtdata *rcd, u32 flow_idx)
-+	__must_hold(&rcd->exp_lock)
-+{
-+	rcd->flows[flow_idx].generation =
-+		kern_flow_generation_next(rcd->flows[flow_idx].generation);
-+	kern_set_hw_flow(rcd, KERN_GENERATION_RESERVED, flow_idx);
-+}
-+
-+int hfi2_kern_setup_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = (struct hfi2_qp_priv *)qp->priv;
-+	struct tid_flow_state *fs = &qpriv->flow_state;
-+	struct rvt_qp *fqp;
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	/* The QP already has an allocated flow */
-+	if (fs->index != RXE_NUM_TID_FLOWS)
 +		return ret;
 +
-+	spin_lock_irqsave(&rcd->exp_lock, flags);
-+	if (kernel_tid_waiters(rcd, &rcd->flow_queue, qp))
-+		goto queue;
-+
-+	ret = kern_reserve_flow(rcd, fs->last_index);
-+	if (ret < 0)
-+		goto queue;
-+	fs->index = ret;
-+	fs->last_index = fs->index;
-+
-+	/* Generation received in a RESYNC overrides default flow generation */
-+	if (fs->generation != KERN_GENERATION_RESERVED)
-+		rcd->flows[fs->index].generation = fs->generation;
-+	fs->generation = kern_setup_hw_flow(rcd, fs->index);
-+	fs->psn = 0;
-+	dequeue_tid_waiter(rcd, &rcd->flow_queue, qp);
-+	/* get head before dropping lock */
-+	fqp = first_qp(rcd, &rcd->flow_queue);
-+	spin_unlock_irqrestore(&rcd->exp_lock, flags);
-+
-+	tid_rdma_schedule_tid_wakeup(fqp);
-+	return 0;
-+queue:
-+	queue_qp_for_tid_wait(rcd, &rcd->flow_queue, qp);
-+	spin_unlock_irqrestore(&rcd->exp_lock, flags);
-+	return -EAGAIN;
-+}
-+
-+void hfi2_kern_clear_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = (struct hfi2_qp_priv *)qp->priv;
-+	struct tid_flow_state *fs = &qpriv->flow_state;
-+	struct rvt_qp *fqp;
-+	unsigned long flags;
-+
-+	if (fs->index >= RXE_NUM_TID_FLOWS)
-+		return;
-+	spin_lock_irqsave(&rcd->exp_lock, flags);
-+	kern_clear_hw_flow(rcd, fs->index);
-+	clear_bit(fs->index, &rcd->flow_mask);
-+	fs->index = RXE_NUM_TID_FLOWS;
-+	fs->psn = 0;
-+	fs->generation = KERN_GENERATION_RESERVED;
-+
-+	/* get head before dropping lock */
-+	fqp = first_qp(rcd, &rcd->flow_queue);
-+	spin_unlock_irqrestore(&rcd->exp_lock, flags);
-+
-+	if (fqp == qp) {
-+		__trigger_tid_waiter(fqp);
-+		rvt_put_qp(fqp);
-+	} else {
-+		tid_rdma_schedule_tid_wakeup(fqp);
-+	}
-+}
-+
-+void hfi2_kern_init_ctxt_generations(struct hfi2_ctxtdata *rcd)
-+{
-+	int i;
-+
-+	for (i = 0; i < RXE_NUM_TID_FLOWS; i++) {
-+		rcd->flows[i].generation = mask_generation(get_random_u32());
-+		kern_set_hw_flow(rcd, KERN_GENERATION_RESERVED, i);
-+	}
-+}
-+
-+/* TID allocation functions */
-+static u8 trdma_pset_order(struct tid_rdma_pageset *s)
-+{
-+	u8 count = s->count;
-+
-+	return ilog2(count) + 1;
-+}
-+
-+/**
-+ * tid_rdma_find_phys_blocks_4k - get groups base on mr info
-+ * @flow: overall info for a TID RDMA segment
-+ * @pages: pointer to an array of page structs
-+ * @npages: number of pages
-+ * @list: page set array to return
-+ *
-+ * This routine returns the number of groups associated with
-+ * the current sge information.  This implementation is based
-+ * on the expected receive find_phys_blocks() adjusted to
-+ * use the MR information vs. the pfn.
-+ *
-+ * Return:
-+ * the number of RcvArray entries
-+ */
-+static u32 tid_rdma_find_phys_blocks_4k(struct tid_rdma_flow *flow,
-+					struct page **pages, u32 npages,
-+					struct tid_rdma_pageset *list)
-+{
-+	u32 pagecount, pageidx, setcount = 0, i;
-+	void *vaddr, *this_vaddr;
-+
-+	if (!npages)
-+		return 0;
-+
-+	/*
-+	 * Look for sets of physically contiguous pages in the user buffer.
-+	 * This will allow us to optimize Expected RcvArray entry usage by
-+	 * using the bigger supported sizes.
-+	 */
-+	vaddr = page_address(pages[0]);
-+	trace_hfi2_tid_flow_page(flow->req->qp, flow, 0, 0, 0, vaddr);
-+	for (pageidx = 0, pagecount = 1, i = 1; i <= npages; i++) {
-+		this_vaddr = i < npages ? page_address(pages[i]) : NULL;
-+		trace_hfi2_tid_flow_page(flow->req->qp, flow, i, 0, 0,
-+					 this_vaddr);
-+		/*
-+		 * If the vaddr's are not sequential, pages are not physically
-+		 * contiguous.
-+		 */
-+		if (this_vaddr != (vaddr + PAGE_SIZE)) {
-+			/*
-+			 * At this point we have to loop over the set of
-+			 * physically contiguous pages and break them down it
-+			 * sizes supported by the HW.
-+			 * There are two main constraints:
-+			 *     1. The max buffer size is MAX_EXPECTED_BUFFER.
-+			 *        If the total set size is bigger than that
-+			 *        program only a MAX_EXPECTED_BUFFER chunk.
-+			 *     2. The buffer size has to be a power of two. If
-+			 *        it is not, round down to the closes power of
-+			 *        2 and program that size.
-+			 */
-+			while (pagecount) {
-+				int maxpages = pagecount;
-+				u32 bufsize = pagecount * PAGE_SIZE;
-+
-+				if (bufsize > MAX_EXPECTED_BUFFER)
-+					maxpages = MAX_EXPECTED_BUFFER >>
-+						   PAGE_SHIFT;
-+				else if (!is_power_of_2(bufsize))
-+					maxpages =
-+						rounddown_pow_of_two(bufsize) >>
-+						PAGE_SHIFT;
-+
-+				list[setcount].idx = pageidx;
-+				list[setcount].count = maxpages;
-+				trace_hfi2_tid_pageset(flow->req->qp, setcount,
-+						       list[setcount].idx,
-+						       list[setcount].count);
-+				pagecount -= maxpages;
-+				pageidx += maxpages;
-+				setcount++;
-+			}
-+			pageidx = i;
-+			pagecount = 1;
-+			vaddr = this_vaddr;
-+		} else {
-+			vaddr += PAGE_SIZE;
-+			pagecount++;
-+		}
-+	}
-+	/* insure we always return an even number of sets */
-+	if (setcount & 1)
-+		list[setcount++].count = 0;
-+	return setcount;
-+}
-+
-+/**
-+ * tid_flush_pages - dump out pages into pagesets
-+ * @list: list of pagesets
-+ * @idx: pointer to current page index
-+ * @pages: number of pages to dump
-+ * @sets: current number of pagesset
-+ *
-+ * This routine flushes out accumuated pages.
-+ *
-+ * To insure an even number of sets the
-+ * code may add a filler.
-+ *
-+ * This can happen with when pages is not
-+ * a power of 2 or pages is a power of 2
-+ * less than the maximum pages.
-+ *
-+ * Return:
-+ * The new number of sets
-+ */
-+
-+static u32 tid_flush_pages(struct tid_rdma_pageset *list, u32 *idx, u32 pages,
-+			   u32 sets)
-+{
-+	while (pages) {
-+		u32 maxpages = pages;
-+
-+		if (maxpages > MAX_EXPECTED_PAGES)
-+			maxpages = MAX_EXPECTED_PAGES;
-+		else if (!is_power_of_2(maxpages))
-+			maxpages = rounddown_pow_of_two(maxpages);
-+		list[sets].idx = *idx;
-+		list[sets++].count = maxpages;
-+		*idx += maxpages;
-+		pages -= maxpages;
-+	}
-+	/* might need a filler */
-+	if (sets & 1)
-+		list[sets++].count = 0;
-+	return sets;
-+}
-+
-+/**
-+ * tid_rdma_find_phys_blocks_8k - get groups base on mr info
-+ * @flow: overall info for a TID RDMA segment
-+ * @pages: pointer to an array of page structs
-+ * @npages: number of pages
-+ * @list: page set array to return
-+ *
-+ * This routine parses an array of pages to compute pagesets
-+ * in an 8k compatible way.
-+ *
-+ * pages are tested two at a time, i, i + 1 for contiguous
-+ * pages and i - 1 and i contiguous pages.
-+ *
-+ * If any condition is false, any accumulated pages are flushed and
-+ * v0,v1 are emitted as separate PAGE_SIZE pagesets
-+ *
-+ * Otherwise, the current 8k is totaled for a future flush.
-+ *
-+ * Return:
-+ * The number of pagesets
-+ * list set with the returned number of pagesets
-+ *
-+ */
-+static u32 tid_rdma_find_phys_blocks_8k(struct tid_rdma_flow *flow,
-+					struct page **pages, u32 npages,
-+					struct tid_rdma_pageset *list)
-+{
-+	u32 idx, sets = 0, i;
-+	u32 pagecnt = 0;
-+	void *v0, *v1, *vm1;
-+
-+	if (!npages)
-+		return 0;
-+	for (idx = 0, i = 0, vm1 = NULL; i < npages; i += 2) {
-+		/* get a new v0 */
-+		v0 = page_address(pages[i]);
-+		trace_hfi2_tid_flow_page(flow->req->qp, flow, i, 1, 0, v0);
-+		v1 = i + 1 < npages ? page_address(pages[i + 1]) : NULL;
-+		trace_hfi2_tid_flow_page(flow->req->qp, flow, i, 1, 1, v1);
-+		/* compare i, i + 1 vaddr */
-+		if (v1 != (v0 + PAGE_SIZE)) {
-+			/* flush out pages */
-+			sets = tid_flush_pages(list, &idx, pagecnt, sets);
-+			/* output v0,v1 as two pagesets */
-+			list[sets].idx = idx++;
-+			list[sets++].count = 1;
-+			if (v1) {
-+				list[sets].count = 1;
-+				list[sets++].idx = idx++;
-+			} else {
-+				list[sets++].count = 0;
-+			}
-+			vm1 = NULL;
-+			pagecnt = 0;
-+			continue;
-+		}
-+		/* i,i+1 consecutive, look at i-1,i */
-+		if (vm1 && v0 != (vm1 + PAGE_SIZE)) {
-+			/* flush out pages */
-+			sets = tid_flush_pages(list, &idx, pagecnt, sets);
-+			pagecnt = 0;
-+		}
-+		/* pages will always be a multiple of 8k */
-+		pagecnt += 2;
-+		/* save i-1 */
-+		vm1 = v1;
-+		/* move to next pair */
-+	}
-+	/* dump residual pages at end */
-+	sets = tid_flush_pages(list, &idx, npages - idx, sets);
-+	/* by design cannot be odd sets */
-+	WARN_ON(sets & 1);
-+	return sets;
-+}
-+
-+/*
-+ * Find pages for one segment of a sge array represented by @ss. The function
-+ * does not check the sge, the sge must have been checked for alignment with a
-+ * prior call to hfi2_kern_trdma_ok. Other sge checking is done as part of
-+ * rvt_lkey_ok and rvt_rkey_ok. Also, the function only modifies the local sge
-+ * copy maintained in @ss->sge, the original sge is not modified.
-+ *
-+ * Unlike IB RDMA WRITE, we can't decrement ss->num_sge here because we are not
-+ * releasing the MR reference count at the same time. Otherwise, we'll "leak"
-+ * references to the MR. This difference requires that we keep track of progress
-+ * into the sg_list. This is done by the cur_seg cursor in the tid_rdma_request
-+ * structure.
-+ */
-+static u32 kern_find_pages(struct tid_rdma_flow *flow, struct page **pages,
-+			   struct rvt_sge_state *ss, bool *last)
-+{
-+	struct tid_rdma_request *req = flow->req;
-+	struct rvt_sge *sge = &ss->sge;
-+	u32 length = flow->req->seg_len;
-+	u32 len = PAGE_SIZE;
-+	u32 i = 0;
-+
-+	while (length && req->isge < ss->num_sge) {
-+		pages[i++] = virt_to_page(sge->vaddr);
-+
-+		sge->vaddr += len;
-+		sge->length -= len;
-+		sge->sge_length -= len;
-+		if (!sge->sge_length) {
-+			if (++req->isge < ss->num_sge)
-+				*sge = ss->sg_list[req->isge - 1];
-+		} else if (sge->length == 0 && sge->mr->lkey) {
-+			if (++sge->n >= RVT_SEGSZ) {
-+				++sge->m;
-+				sge->n = 0;
-+			}
-+			sge->vaddr = sge->mr->map[sge->m]->segs[sge->n].vaddr;
-+			sge->length = sge->mr->map[sge->m]->segs[sge->n].length;
-+		}
-+		length -= len;
-+	}
-+
-+	flow->length = flow->req->seg_len - length;
-+	*last = req->isge != ss->num_sge;
-+	return i;
-+}
-+
-+static void dma_unmap_flow(struct tid_rdma_flow *flow)
-+{
-+	struct hfi2_devdata *dd;
-+	int i;
-+	struct tid_rdma_pageset *pset;
-+
-+	dd = flow->req->rcd->dd;
-+	for (i = 0, pset = &flow->pagesets[0]; i < flow->npagesets;
-+	     i++, pset++) {
-+		if (pset->count && pset->addr) {
-+			dma_unmap_page(&dd->pcidev->dev, pset->addr,
-+				       PAGE_SIZE * pset->count,
-+				       DMA_FROM_DEVICE);
-+			pset->mapped = 0;
-+		}
-+	}
-+}
-+
-+static int dma_map_flow(struct tid_rdma_flow *flow, struct page **pages)
-+{
-+	int i;
-+	struct hfi2_devdata *dd = flow->req->rcd->dd;
-+	struct tid_rdma_pageset *pset;
-+
-+	for (i = 0, pset = &flow->pagesets[0]; i < flow->npagesets;
-+	     i++, pset++) {
-+		if (pset->count) {
-+			pset->addr = dma_map_page(&dd->pcidev->dev,
-+						  pages[pset->idx], 0,
-+						  PAGE_SIZE * pset->count,
-+						  DMA_FROM_DEVICE);
-+
-+			if (dma_mapping_error(&dd->pcidev->dev, pset->addr)) {
-+				dma_unmap_flow(flow);
-+				return -ENOMEM;
-+			}
-+			pset->mapped = 1;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static inline bool dma_mapped(struct tid_rdma_flow *flow)
-+{
-+	return !!flow->pagesets[0].mapped;
-+}
-+
-+/*
-+ * Get pages pointers and identify contiguous physical memory chunks for a
-+ * segment. All segments are of length flow->req->seg_len.
-+ */
-+static int kern_get_phys_blocks(struct tid_rdma_flow *flow, struct page **pages,
-+				struct rvt_sge_state *ss, bool *last)
-+{
-+	u8 npages;
-+
-+	/* Reuse previously computed pagesets, if any */
-+	if (flow->npagesets) {
-+		trace_hfi2_tid_flow_alloc(flow->req->qp, flow->req->setup_head,
-+					  flow);
-+		if (!dma_mapped(flow))
-+			return dma_map_flow(flow, pages);
-+		return 0;
-+	}
-+
-+	npages = kern_find_pages(flow, pages, ss, last);
-+
-+	if (flow->req->qp->pmtu == enum_to_mtu(OPA_MTU_4096))
-+		flow->npagesets = tid_rdma_find_phys_blocks_4k(
-+			flow, pages, npages, flow->pagesets);
-+	else
-+		flow->npagesets = tid_rdma_find_phys_blocks_8k(
-+			flow, pages, npages, flow->pagesets);
-+
-+	return dma_map_flow(flow, pages);
-+}
-+
-+static inline void kern_add_tid_node(struct tid_rdma_flow *flow,
-+				     struct hfi2_ctxtdata *rcd, char *s,
-+				     struct tid_group *grp, u8 cnt)
-+{
-+	struct kern_tid_node *node = &flow->tnode[flow->tnode_cnt++];
-+
-+	WARN_ON_ONCE(flow->tnode_cnt >=
-+		     (TID_RDMA_MAX_SEGMENT_SIZE >> PAGE_SHIFT));
-+	if (WARN_ON_ONCE(cnt & 1))
-+		dd_dev_err(rcd->dd,
-+			   "unexpected odd allocation cnt %u map 0x%x used %u",
-+			   cnt, grp->map, grp->used);
-+
-+	node->grp = grp;
-+	node->map = grp->map;
-+	node->cnt = cnt;
-+	trace_hfi2_tid_node_add(flow->req->qp, s, flow->tnode_cnt - 1,
-+				grp->base, grp->map, grp->used, cnt);
-+}
-+
-+/*
-+ * Try to allocate pageset_count TID's from TID groups for a context
-+ *
-+ * This function allocates TID's without moving groups between lists or
-+ * modifying grp->map. This is done as follows, being cogizant of the lists
-+ * between which the TID groups will move:
-+ * 1. First allocate complete groups of 8 TID's since this is more efficient,
-+ *    these groups will move from group->full without affecting used
-+ * 2. If more TID's are needed allocate from used (will move from used->full or
-+ *    stay in used)
-+ * 3. If we still don't have the required number of TID's go back and look again
-+ *    at a complete group (will move from group->used)
-+ */
-+static int kern_alloc_tids(struct tid_rdma_flow *flow)
-+{
-+	struct hfi2_ctxtdata *rcd = flow->req->rcd;
-+	struct hfi2_devdata *dd = rcd->dd;
-+	u32 ngroups, pageidx = 0;
-+	struct tid_group *group = NULL, *used;
-+	u8 use;
-+
-+	flow->tnode_cnt = 0;
-+	ngroups = flow->npagesets / dd->rcv_entries.group_size;
-+	if (!ngroups)
-+		goto used_list;
-+
-+	/* First look at complete groups */
-+	list_for_each_entry(group, &rcd->tid_group_list.list, list) {
-+		kern_add_tid_node(flow, rcd, "complete groups", group,
-+				  group->size);
-+
-+		pageidx += group->size;
-+		if (!--ngroups)
-+			break;
-+	}
-+
-+	if (pageidx >= flow->npagesets)
-+		goto ok;
-+
-+used_list:
-+	/* Now look at partially used groups */
-+	list_for_each_entry(used, &rcd->tid_used_list.list, list) {
-+		use = min_t(u32, flow->npagesets - pageidx,
-+			    used->size - used->used);
-+		kern_add_tid_node(flow, rcd, "used groups", used, use);
-+
-+		pageidx += use;
-+		if (pageidx >= flow->npagesets)
-+			goto ok;
-+	}
-+
-+	/*
-+	 * Look again at a complete group, continuing from where we left.
-+	 * However, if we are at the head, we have reached the end of the
-+	 * complete groups list from the first loop above
-+	 */
-+	if (group && &group->list == &rcd->tid_group_list.list)
-+		goto bail_eagain;
-+	group = list_prepare_entry(group, &rcd->tid_group_list.list, list);
-+	if (list_is_last(&group->list, &rcd->tid_group_list.list))
-+		goto bail_eagain;
-+	group = list_next_entry(group, list);
-+	use = min_t(u32, flow->npagesets - pageidx, group->size);
-+	kern_add_tid_node(flow, rcd, "complete continue", group, use);
-+	pageidx += use;
-+	if (pageidx >= flow->npagesets)
-+		goto ok;
-+bail_eagain:
-+	trace_hfi2_msg_alloc_tids(flow->req->qp, " insufficient tids: needed ",
-+				  (u64)flow->npagesets);
-+	return -EAGAIN;
-+ok:
-+	return 0;
-+}
-+
-+static void kern_program_rcv_group(struct tid_rdma_flow *flow, int grp_num,
-+				   u32 *pset_idx)
-+{
-+	struct hfi2_ctxtdata *rcd = flow->req->rcd;
-+	struct kern_tid_node *node = &flow->tnode[grp_num];
-+	struct tid_group *grp = node->grp;
-+	struct tid_rdma_pageset *pset;
-+	u32 pmtu_pg = flow->req->qp->pmtu >> PAGE_SHIFT;
-+	u32 rcventry, npages = 0, pair = 0, tidctrl;
-+	u8 i, cnt = 0;
-+
-+	for (i = 0; i < grp->size; i++) {
-+		rcventry = grp->base + i;
-+
-+		if (node->map & BIT(i) || cnt >= node->cnt) {
-+			rcd->dd->params->rcv_array_wc_fill(rcd, rcventry,
-+							   PT_EXPECTED);
-+			continue;
-+		}
-+		pset = &flow->pagesets[(*pset_idx)++];
-+		if (pset->count) {
-+			rcd->dd->params->put_tid(rcd, rcventry, PT_EXPECTED,
-+						 pset->addr,
-+						 trdma_pset_order(pset), false);
-+		} else {
-+			rcd->dd->params->put_tid(rcd, rcventry, PT_EXPECTED, 0,
-+						 0, false);
-+		}
-+		npages += pset->count;
-+
-+		tidctrl = pair ? 0x3 : rcventry & 0x1 ? 0x2 : 0x1;
-+		/*
-+		 * A single TID entry will be used to use a rcvarr pair (with
-+		 * tidctrl 0x3), if ALL these are true (a) the bit pos is even
-+		 * (b) the group map shows current and the next bits as free
-+		 * indicating two consecutive rcvarry entries are available (c)
-+		 * we actually need 2 more entries
-+		 */
-+		pair = !(i & 0x1) && !((node->map >> i) & 0x3) &&
-+		       node->cnt >= cnt + 2;
-+		if (!pair) {
-+			if (!pset->count)
-+				tidctrl = 0x1;
-+			flow->tid_entry[flow->tidcnt++] =
-+				EXP_TID_SET(IDX, rcventry >> 1) |
-+				EXP_TID_SET(CTRL, tidctrl) |
-+				EXP_TID_SET(LEN, npages);
-+			trace_hfi2_tid_entry_alloc(/* entry */
-+						   flow->req->qp,
-+						   flow->tidcnt - 1,
-+						   flow->tid_entry[flow->tidcnt -
-+								   1]);
-+
-+			/* Efficient DIV_ROUND_UP(npages, pmtu_pg) */
-+			flow->npkts += (npages + pmtu_pg - 1) >> ilog2(pmtu_pg);
-+			npages = 0;
-+		}
-+
-+		if (grp->used == grp->size - 1)
-+			tid_group_move(grp, &rcd->tid_used_list,
-+				       &rcd->tid_full_list);
-+		else if (!grp->used)
-+			tid_group_move(grp, &rcd->tid_group_list,
-+				       &rcd->tid_used_list);
-+
-+		grp->used++;
-+		grp->map |= BIT(i);
-+		cnt++;
-+	}
-+}
-+
-+static void kern_unprogram_rcv_group(struct tid_rdma_flow *flow, int grp_num)
-+{
-+	struct hfi2_ctxtdata *rcd = flow->req->rcd;
-+	struct kern_tid_node *node = &flow->tnode[grp_num];
-+	struct tid_group *grp = node->grp;
-+	u32 rcventry;
-+	u8 i, cnt = 0;
-+
-+	for (i = 0; i < grp->size; i++) {
-+		rcventry = grp->base + i;
-+
-+		if (node->map & BIT(i) || cnt >= node->cnt) {
-+			rcd->dd->params->rcv_array_wc_fill(rcd, rcventry,
-+							   PT_EXPECTED);
-+			continue;
-+		}
-+
-+		rcd->dd->params->put_tid(rcd, rcventry, PT_EXPECTED, 0, 0,
-+					 false);
-+
-+		grp->used--;
-+		grp->map &= ~BIT(i);
-+		cnt++;
-+
-+		if (grp->used == grp->size - 1)
-+			tid_group_move(grp, &rcd->tid_full_list,
-+				       &rcd->tid_used_list);
-+		else if (!grp->used)
-+			tid_group_move(grp, &rcd->tid_used_list,
-+				       &rcd->tid_group_list);
-+	}
-+	if (WARN_ON_ONCE(cnt & 1)) {
-+		struct hfi2_ctxtdata *rcd = flow->req->rcd;
-+		struct hfi2_devdata *dd = rcd->dd;
-+
-+		dd_dev_err(dd, "unexpected odd free cnt %u map 0x%x used %u",
-+			   cnt, grp->map, grp->used);
-+	}
-+}
-+
-+static void kern_program_rcvarray(struct tid_rdma_flow *flow)
-+{
-+	u32 pset_idx = 0;
-+	int i;
-+
-+	flow->npkts = 0;
-+	flow->tidcnt = 0;
-+	for (i = 0; i < flow->tnode_cnt; i++)
-+		kern_program_rcv_group(flow, i, &pset_idx);
-+	trace_hfi2_tid_flow_alloc(flow->req->qp, flow->req->setup_head, flow);
-+}
-+
-+/**
-+ * hfi2_kern_exp_rcv_setup() - setup TID's and flow for one segment of a
-+ * TID RDMA request
-+ *
-+ * @req: TID RDMA request for which the segment/flow is being set up
-+ * @ss: sge state, maintains state across successive segments of a sge
-+ * @last: set to true after the last sge segment has been processed
-+ *
-+ * This function
-+ * (1) finds a free flow entry in the flow circular buffer
-+ * (2) finds pages and continuous physical chunks constituing one segment
-+ *     of an sge
-+ * (3) allocates TID group entries for those chunks
-+ * (4) programs rcvarray entries in the hardware corresponding to those
-+ *     TID's
-+ * (5) computes a tidarray with formatted TID entries which can be sent
-+ *     to the sender
-+ * (6) Reserves and programs HW flows.
-+ * (7) It also manages queueing the QP when TID/flow resources are not
-+ *     available.
-+ *
-+ * @req points to struct tid_rdma_request of which the segments are a part. The
-+ * function uses qp, rcd and seg_len members of @req. In the absence of errors,
-+ * req->flow_idx is the index of the flow which has been prepared in this
-+ * invocation of function call. With flow = &req->flows[req->flow_idx],
-+ * flow->tid_entry contains the TID array which the sender can use for TID RDMA
-+ * sends and flow->npkts contains number of packets required to send the
-+ * segment.
-+ *
-+ * hfi2_check_sge_align should be called prior to calling this function and if
-+ * it signals error TID RDMA cannot be used for this sge and this function
-+ * should not be called.
-+ *
-+ * For the queuing, caller must hold the flow->req->qp s_lock from the send
-+ * engine and the function will procure the exp_lock.
-+ *
-+ * Return:
-+ * The function returns -EAGAIN if sufficient number of TID/flow resources to
-+ * map the segment could not be allocated. In this case the function should be
-+ * called again with previous arguments to retry the TID allocation. There are
-+ * no other error returns. The function returns 0 on success.
-+ */
-+int hfi2_kern_exp_rcv_setup(struct tid_rdma_request *req,
-+			    struct rvt_sge_state *ss, bool *last)
-+	__must_hold(&req->qp->s_lock)
-+{
-+	struct tid_rdma_flow *flow = &req->flows[req->setup_head];
-+	struct hfi2_ctxtdata *rcd = req->rcd;
-+	struct hfi2_qp_priv *qpriv = req->qp->priv;
-+	unsigned long flags;
-+	struct rvt_qp *fqp;
-+	u16 clear_tail = req->clear_tail;
-+
-+	lockdep_assert_held(&req->qp->s_lock);
-+	/*
-+	 * We return error if either (a) we don't have space in the flow
-+	 * circular buffer, or (b) we already have max entries in the buffer.
-+	 * Max entries depend on the type of request we are processing and the
-+	 * negotiated TID RDMA parameters.
-+	 */
-+	if (!CIRC_SPACE(req->setup_head, clear_tail, MAX_FLOWS) ||
-+	    CIRC_CNT(req->setup_head, clear_tail, MAX_FLOWS) >= req->n_flows)
-+		return -EINVAL;
-+
-+	/*
-+	 * Get pages, identify contiguous physical memory chunks for the segment
-+	 * If we can not determine a DMA address mapping we will treat it just
-+	 * like if we ran out of space above.
-+	 */
-+	if (kern_get_phys_blocks(flow, qpriv->pages, ss, last)) {
-+		hfi2_wait_kmem(flow->req->qp);
-+		return -ENOMEM;
-+	}
-+
-+	spin_lock_irqsave(&rcd->exp_lock, flags);
-+	if (kernel_tid_waiters(rcd, &rcd->rarr_queue, flow->req->qp))
-+		goto queue;
-+
-+	/*
-+	 * At this point we know the number of pagesets and hence the number of
-+	 * TID's to map the segment. Allocate the TID's from the TID groups. If
-+	 * we cannot allocate the required number we exit and try again later
-+	 */
-+	if (kern_alloc_tids(flow))
-+		goto queue;
-+	/*
-+	 * Finally program the TID entries with the pagesets, compute the
-+	 * tidarray and enable the HW flow
-+	 */
-+	kern_program_rcvarray(flow);
-+
-+	/*
-+	 * Setup the flow state with relevant information.
-+	 * This information is used for tracking the sequence of data packets
-+	 * for the segment.
-+	 * The flow is setup here as this is the most accurate time and place
-+	 * to do so. Doing at a later time runs the risk of the flow data in
-+	 * qpriv getting out of sync.
-+	 */
-+	memset(&flow->flow_state, 0x0, sizeof(flow->flow_state));
-+	flow->idx = qpriv->flow_state.index;
-+	flow->flow_state.generation = qpriv->flow_state.generation;
-+	flow->flow_state.spsn = qpriv->flow_state.psn;
-+	flow->flow_state.lpsn = flow->flow_state.spsn + flow->npkts - 1;
-+	flow->flow_state.r_next_psn =
-+		full_flow_psn(flow, flow->flow_state.spsn);
-+	qpriv->flow_state.psn += flow->npkts;
-+
-+	dequeue_tid_waiter(rcd, &rcd->rarr_queue, flow->req->qp);
-+	/* get head before dropping lock */
-+	fqp = first_qp(rcd, &rcd->rarr_queue);
-+	spin_unlock_irqrestore(&rcd->exp_lock, flags);
-+	tid_rdma_schedule_tid_wakeup(fqp);
-+
-+	req->setup_head = (req->setup_head + 1) & (MAX_FLOWS - 1);
-+	return 0;
-+queue:
-+	queue_qp_for_tid_wait(rcd, &rcd->rarr_queue, flow->req->qp);
-+	spin_unlock_irqrestore(&rcd->exp_lock, flags);
-+	return -EAGAIN;
-+}
-+
-+static void hfi2_tid_rdma_reset_flow(struct tid_rdma_flow *flow)
-+{
-+	flow->npagesets = 0;
-+}
-+
-+/*
-+ * This function is called after one segment has been successfully sent to
-+ * release the flow and TID HW/SW resources for that segment. The segments for a
-+ * TID RDMA request are setup and cleared in FIFO order which is managed using a
-+ * circular buffer.
-+ */
-+int hfi2_kern_exp_rcv_clear(struct tid_rdma_request *req)
-+	__must_hold(&req->qp->s_lock)
-+{
-+	struct tid_rdma_flow *flow = &req->flows[req->clear_tail];
-+	struct hfi2_ctxtdata *rcd = req->rcd;
-+	unsigned long flags;
-+	int i;
-+	struct rvt_qp *fqp;
-+
-+	lockdep_assert_held(&req->qp->s_lock);
-+	/* Exit if we have nothing in the flow circular buffer */
-+	if (!CIRC_CNT(req->setup_head, req->clear_tail, MAX_FLOWS))
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(&rcd->exp_lock, flags);
-+
-+	for (i = 0; i < flow->tnode_cnt; i++)
-+		kern_unprogram_rcv_group(flow, i);
-+	/* To prevent double unprogramming */
-+	flow->tnode_cnt = 0;
-+	/* get head before dropping lock */
-+	fqp = first_qp(rcd, &rcd->rarr_queue);
-+	spin_unlock_irqrestore(&rcd->exp_lock, flags);
-+
-+	dma_unmap_flow(flow);
-+
-+	hfi2_tid_rdma_reset_flow(flow);
-+	req->clear_tail = (req->clear_tail + 1) & (MAX_FLOWS - 1);
-+
-+	if (fqp == req->qp) {
-+		__trigger_tid_waiter(fqp);
-+		rvt_put_qp(fqp);
-+	} else {
-+		tid_rdma_schedule_tid_wakeup(fqp);
++	ret = hfi2_netdev_add_data(priv->ppd,
++				   qpn_from_mac(priv->netdev->dev_addr),
++				   dev);
++	if (ret < 0) {
++		priv->netdev_ops->ndo_uninit(dev);
++		return ret;
 +	}
 +
 +	return 0;
 +}
 +
-+/*
-+ * This function is called to release all the tid entries for
-+ * a request.
-+ */
-+void hfi2_kern_exp_rcv_clear_all(struct tid_rdma_request *req)
-+	__must_hold(&req->qp->s_lock)
++static void hfi2_ipoib_dev_uninit(struct net_device *dev)
 +{
-+	/* Use memory barrier for proper ordering */
-+	while (CIRC_CNT(req->setup_head, req->clear_tail, MAX_FLOWS)) {
-+		if (hfi2_kern_exp_rcv_clear(req))
-+			break;
-+	}
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	free_percpu(dev->tstats);
++	dev->tstats = NULL;
++
++	hfi2_netdev_remove_data(priv->ppd, qpn_from_mac(priv->netdev->dev_addr));
++
++	priv->netdev_ops->ndo_uninit(dev);
 +}
 +
-+/**
-+ * hfi2_kern_exp_rcv_free_flows - free previously allocated flow information
-+ * @req: the tid rdma request to be cleaned
-+ */
-+static void hfi2_kern_exp_rcv_free_flows(struct tid_rdma_request *req)
++static int hfi2_ipoib_dev_open(struct net_device *dev)
 +{
-+	kfree(req->flows);
-+	req->flows = NULL;
-+}
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int ret;
 +
-+/**
-+ * __trdma_clean_swqe - clean up for large sized QPs
-+ * @qp: the queue patch
-+ * @wqe: the send wqe
-+ */
-+void __trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe)
-+{
-+	struct hfi2_swqe_priv *p = wqe->priv;
++	ret = priv->netdev_ops->ndo_open(dev);
++	if (!ret) {
++		struct hfi2_ibport *ibp = to_iport(priv->device,
++						   priv->port_num);
++		struct rvt_qp *qp;
++		u32 qpn = qpn_from_mac(priv->netdev->dev_addr);
 +
-+	hfi2_kern_exp_rcv_free_flows(&p->tid_req);
-+}
-+
-+/*
-+ * This can be called at QP create time or in the data path.
-+ */
-+static int hfi2_kern_exp_rcv_alloc_flows(struct tid_rdma_request *req,
-+					 gfp_t gfp)
-+{
-+	struct tid_rdma_flow *flows;
-+	int i;
-+
-+	if (likely(req->flows))
-+		return 0;
-+	flows = kmalloc_node(MAX_FLOWS * sizeof(*flows), gfp,
-+			     req->rcd->numa_id);
-+	if (!flows)
-+		return -ENOMEM;
-+	/* mini init */
-+	for (i = 0; i < MAX_FLOWS; i++) {
-+		flows[i].req = req;
-+		flows[i].npagesets = 0;
-+		flows[i].pagesets[0].mapped = 0;
-+		flows[i].resync_npkts = 0;
-+	}
-+	req->flows = flows;
-+	return 0;
-+}
-+
-+static void hfi2_init_trdma_req(struct rvt_qp *qp, struct tid_rdma_request *req)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+
-+	/*
-+	 * Initialize various TID RDMA request variables.
-+	 * These variables are "static", which is why they
-+	 * can be pre-initialized here before the WRs has
-+	 * even been submitted.
-+	 * However, non-NULL values for these variables do not
-+	 * imply that this WQE has been enabled for TID RDMA.
-+	 * Drivers should check the WQE's opcode to determine
-+	 * if a request is a TID RDMA one or not.
-+	 */
-+	req->qp = qp;
-+	req->rcd = qpriv->rcd;
-+}
-+
-+u64 hfi2_access_sw_tid_wait(const struct cntr_entry *entry, void *context,
-+			    int vl, int mode, u64 data)
-+{
-+	struct hfi2_devdata *dd = context;
-+
-+	return dd->verbs_dev.n_tidwait;
-+}
-+
-+static struct tid_rdma_flow *find_flow_ib(struct tid_rdma_request *req, u32 psn,
-+					  u16 *fidx)
-+{
-+	u16 head, tail;
-+	struct tid_rdma_flow *flow;
-+
-+	head = req->setup_head;
-+	tail = req->clear_tail;
-+	for (; CIRC_CNT(head, tail, MAX_FLOWS);
-+	     tail = CIRC_NEXT(tail, MAX_FLOWS)) {
-+		flow = &req->flows[tail];
-+		if (cmp_psn(psn, flow->flow_state.ib_spsn) >= 0 &&
-+		    cmp_psn(psn, flow->flow_state.ib_lpsn) <= 0) {
-+			if (fidx)
-+				*fidx = tail;
-+			return flow;
++		rcu_read_lock();
++		qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp, qpn);
++		if (!qp) {
++			rcu_read_unlock();
++			priv->netdev_ops->ndo_stop(dev);
++			return -EINVAL;
 +		}
-+	}
-+	return NULL;
-+}
-+
-+/* TID RDMA READ functions */
-+u32 hfi2_build_tid_rdma_read_packet(struct rvt_swqe *wqe,
-+				    struct ib_other_headers *ohdr, u32 *bth1,
-+				    u32 *bth2, u32 *len)
-+{
-+	struct tid_rdma_request *req = wqe_to_tid_req(wqe);
-+	struct tid_rdma_flow *flow = &req->flows[req->flow_idx];
-+	struct rvt_qp *qp = req->qp;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct hfi2_swqe_priv *wpriv = wqe->priv;
-+	struct tid_rdma_read_req *rreq = &ohdr->u.tid_rdma.r_req;
-+	struct tid_rdma_params *remote;
-+	u32 req_len = 0;
-+	void *req_addr = NULL;
-+
-+	/* This is the IB psn used to send the request */
-+	*bth2 = mask_psn(flow->flow_state.ib_spsn + flow->pkt);
-+	trace_hfi2_tid_flow_build_read_pkt(qp, req->flow_idx, flow);
-+
-+	/* TID Entries for TID RDMA READ payload */
-+	req_addr = &flow->tid_entry[flow->tid_idx];
-+	req_len = sizeof(*flow->tid_entry) * (flow->tidcnt - flow->tid_idx);
-+
-+	memset(&ohdr->u.tid_rdma.r_req, 0, sizeof(ohdr->u.tid_rdma.r_req));
-+	wpriv->ss.sge.vaddr = req_addr;
-+	wpriv->ss.sge.sge_length = req_len;
-+	wpriv->ss.sge.length = wpriv->ss.sge.sge_length;
-+	/*
-+	 * We can safely zero these out. Since the first SGE covers the
-+	 * entire packet, nothing else should even look at the MR.
-+	 */
-+	wpriv->ss.sge.mr = NULL;
-+	wpriv->ss.sge.m = 0;
-+	wpriv->ss.sge.n = 0;
-+
-+	wpriv->ss.sg_list = NULL;
-+	wpriv->ss.total_len = wpriv->ss.sge.sge_length;
-+	wpriv->ss.num_sge = 1;
-+
-+	/* Construct the TID RDMA READ REQ packet header */
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+
-+	KDETH_RESET(rreq->kdeth0, KVER, 0x1);
-+	KDETH_RESET(rreq->kdeth1, JKEY, remote->jkey);
-+	rreq->reth.vaddr =
-+		cpu_to_be64(wqe->rdma_wr.remote_addr +
-+			    req->cur_seg * req->seg_len + flow->sent);
-+	rreq->reth.rkey = cpu_to_be32(wqe->rdma_wr.rkey);
-+	rreq->reth.length = cpu_to_be32(*len);
-+	rreq->tid_flow_psn = cpu_to_be32(
-+		(flow->flow_state.generation << HFI2_KDETH_BTH_SEQ_SHIFT) |
-+		((flow->flow_state.spsn + flow->pkt) &
-+		 HFI2_KDETH_BTH_SEQ_MASK));
-+	rreq->tid_flow_qp = cpu_to_be32(qpriv->tid_rdma.local.qp |
-+					((flow->idx & TID_RDMA_DESTQP_FLOW_MASK)
-+					 << TID_RDMA_DESTQP_FLOW_SHIFT) |
-+					qpriv->rcd->ctxt);
-+	rreq->verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	*bth1 &= ~RVT_QPN_MASK;
-+	*bth1 |= remote->qp;
-+	*bth2 |= IB_BTH_REQ_ACK;
-+	rcu_read_unlock();
-+
-+	/* We are done with this segment */
-+	flow->sent += *len;
-+	req->cur_seg++;
-+	qp->s_state = TID_OP(READ_REQ);
-+	req->ack_pending++;
-+	req->flow_idx = (req->flow_idx + 1) & (MAX_FLOWS - 1);
-+	qpriv->pending_tid_r_segs++;
-+	qp->s_num_rd_atomic++;
-+
-+	/* Set the TID RDMA READ request payload size */
-+	*len = req_len;
-+
-+	return sizeof(ohdr->u.tid_rdma.r_req) / sizeof(u32);
-+}
-+
-+/*
-+ * @len: contains the data length to read upon entry and the read request
-+ *       payload length upon exit.
-+ */
-+u32 hfi2_build_tid_rdma_read_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+				 struct ib_other_headers *ohdr, u32 *bth1,
-+				 u32 *bth2, u32 *len) __must_hold(&qp->s_lock)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_request *req = wqe_to_tid_req(wqe);
-+	struct tid_rdma_flow *flow = NULL;
-+	u32 hdwords = 0;
-+	bool last;
-+	bool retry = true;
-+	u32 npkts = rvt_div_round_up_mtu(qp, *len);
-+
-+	trace_hfi2_tid_req_build_read_req(qp, 0, wqe->wr.opcode, wqe->psn,
-+					  wqe->lpsn, req);
-+	/*
-+	 * Check sync conditions. Make sure that there are no pending
-+	 * segments before freeing the flow.
-+	 */
-+sync_check:
-+	if (req->state == TID_REQUEST_SYNC) {
-+		if (qpriv->pending_tid_r_segs)
-+			goto done;
-+
-+		hfi2_kern_clear_hw_flow(req->rcd, qp);
-+		qpriv->s_flags &= ~HFI2_R_TID_SW_PSN;
-+		req->state = TID_REQUEST_ACTIVE;
-+	}
-+
-+	/*
-+	 * If the request for this segment is resent, the tid resources should
-+	 * have been allocated before. In this case, req->flow_idx should
-+	 * fall behind req->setup_head.
-+	 */
-+	if (req->flow_idx == req->setup_head) {
-+		retry = false;
-+		if (req->state == TID_REQUEST_RESEND) {
-+			/*
-+			 * This is the first new segment for a request whose
-+			 * earlier segments have been re-sent. We need to
-+			 * set up the sge pointer correctly.
-+			 */
-+			restart_sge(&qp->s_sge, wqe, req->s_next_psn, qp->pmtu);
-+			req->isge = 0;
-+			req->state = TID_REQUEST_ACTIVE;
-+		}
-+
-+		/*
-+		 * Check sync. The last PSN of each generation is reserved for
-+		 * RESYNC.
-+		 */
-+		if ((qpriv->flow_state.psn + npkts) > MAX_TID_FLOW_PSN - 1) {
-+			req->state = TID_REQUEST_SYNC;
-+			goto sync_check;
-+		}
-+
-+		/* Allocate the flow if not yet */
-+		if (hfi2_kern_setup_hw_flow(qpriv->rcd, qp))
-+			goto done;
-+
-+		/*
-+		 * The following call will advance req->setup_head after
-+		 * allocating the tid entries.
-+		 */
-+		if (hfi2_kern_exp_rcv_setup(req, &qp->s_sge, &last)) {
-+			req->state = TID_REQUEST_QUEUED;
-+
-+			/*
-+			 * We don't have resources for this segment. The QP has
-+			 * already been queued.
-+			 */
-+			goto done;
-+		}
-+	}
-+
-+	/* req->flow_idx should only be one slot behind req->setup_head */
-+	flow = &req->flows[req->flow_idx];
-+	flow->pkt = 0;
-+	flow->tid_idx = 0;
-+	flow->sent = 0;
-+	if (!retry) {
-+		/* Set the first and last IB PSN for the flow in use.*/
-+		flow->flow_state.ib_spsn = req->s_next_psn;
-+		flow->flow_state.ib_lpsn =
-+			flow->flow_state.ib_spsn + flow->npkts - 1;
-+	}
-+
-+	/* Calculate the next segment start psn.*/
-+	req->s_next_psn += flow->npkts;
-+
-+	/* Build the packet header */
-+	hdwords = hfi2_build_tid_rdma_read_packet(wqe, ohdr, bth1, bth2, len);
-+done:
-+	return hdwords;
-+}
-+
-+/*
-+ * Validate and accept the TID RDMA READ request parameters.
-+ * Return 0 if the request is accepted successfully;
-+ * Return 1 otherwise.
-+ */
-+static int tid_rdma_rcv_read_request(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				     struct hfi2_packet *packet,
-+				     struct ib_other_headers *ohdr, u32 bth0,
-+				     u32 psn, u64 vaddr, u32 len)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	u32 flow_psn, i, tidlen = 0, pktlen, tlen;
-+
-+	req = ack_to_tid_req(e);
-+
-+	/* Validate the payload first */
-+	flow = &req->flows[req->setup_head];
-+
-+	/* payload length = packet length - (header length + ICRC length) */
-+	pktlen = packet->tlen - (packet->hlen + 4);
-+	if (pktlen > sizeof(flow->tid_entry))
-+		return 1;
-+	memcpy(flow->tid_entry, packet->ebuf, pktlen);
-+	flow->tidcnt = pktlen / sizeof(*flow->tid_entry);
-+
-+	/*
-+	 * Walk the TID_ENTRY list to make sure we have enough space for a
-+	 * complete segment. Also calculate the number of required packets.
-+	 */
-+	flow->npkts = rvt_div_round_up_mtu(qp, len);
-+	for (i = 0; i < flow->tidcnt; i++) {
-+		trace_hfi2_tid_entry_rcv_read_req(qp, i, flow->tid_entry[i]);
-+		tlen = EXP_TID_GET(flow->tid_entry[i], LEN);
-+		if (!tlen)
-+			return 1;
-+
-+		/*
-+		 * For tid pair (tidctr == 3), the buffer size of the pair
-+		 * should be the sum of the buffer size described by each
-+		 * tid entry. However, only the first entry needs to be
-+		 * specified in the request (see WFR HAS Section 8.5.7.1).
-+		 */
-+		tidlen += tlen;
-+	}
-+	if (tidlen * PAGE_SIZE < len)
-+		return 1;
-+
-+	/* Empty the flow array */
-+	req->clear_tail = req->setup_head;
-+	flow->pkt = 0;
-+	flow->tid_idx = 0;
-+	flow->tid_offset = 0;
-+	flow->sent = 0;
-+	flow->tid_qpn = be32_to_cpu(ohdr->u.tid_rdma.r_req.tid_flow_qp);
-+	flow->idx = (flow->tid_qpn >> TID_RDMA_DESTQP_FLOW_SHIFT) &
-+		    TID_RDMA_DESTQP_FLOW_MASK;
-+	flow_psn = mask_psn(be32_to_cpu(ohdr->u.tid_rdma.r_req.tid_flow_psn));
-+	flow->flow_state.generation = flow_psn >> HFI2_KDETH_BTH_SEQ_SHIFT;
-+	flow->flow_state.spsn = flow_psn & HFI2_KDETH_BTH_SEQ_MASK;
-+	flow->length = len;
-+
-+	flow->flow_state.lpsn = flow->flow_state.spsn + flow->npkts - 1;
-+	flow->flow_state.ib_spsn = psn;
-+	flow->flow_state.ib_lpsn = flow->flow_state.ib_spsn + flow->npkts - 1;
-+
-+	trace_hfi2_tid_flow_rcv_read_req(qp, req->setup_head, flow);
-+	/* Set the initial flow index to the current flow. */
-+	req->flow_idx = req->setup_head;
-+
-+	/* advance circular buffer head */
-+	req->setup_head = (req->setup_head + 1) & (MAX_FLOWS - 1);
-+
-+	/*
-+	 * Compute last PSN for request.
-+	 */
-+	e->opcode = (bth0 >> 24) & 0xff;
-+	e->psn = psn;
-+	e->lpsn = psn + flow->npkts - 1;
-+	e->sent = 0;
-+
-+	req->n_flows = qpriv->tid_rdma.local.max_read;
-+	req->state = TID_REQUEST_ACTIVE;
-+	req->cur_seg = 0;
-+	req->comp_seg = 0;
-+	req->ack_seg = 0;
-+	req->isge = 0;
-+	req->seg_len = qpriv->tid_rdma.local.max_len;
-+	req->total_len = len;
-+	req->total_segs = 1;
-+	req->r_flow_psn = e->psn;
-+
-+	trace_hfi2_tid_req_rcv_read_req(qp, 0, e->opcode, e->psn, e->lpsn, req);
-+	return 0;
-+}
-+
-+static int tid_rdma_rcv_error(struct hfi2_packet *packet,
-+			      struct ib_other_headers *ohdr, struct rvt_qp *qp,
-+			      u32 psn, int diff)
-+{
-+	struct hfi2_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
-+	struct hfi2_ctxtdata *rcd = ((struct hfi2_qp_priv *)qp->priv)->rcd;
-+	struct hfi2_ibdev *dev = to_idev(qp->ibqp.device);
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct rvt_ack_entry *e;
-+	struct tid_rdma_request *req;
-+	unsigned long flags;
-+	u8 prev;
-+	bool old_req;
-+
-+	trace_hfi2_rsp_tid_rcv_error(qp, psn);
-+	trace_hfi2_tid_rdma_rcv_err(qp, 0, psn, diff);
-+	if (diff > 0) {
-+		/* sequence error */
-+		if (!qp->r_nak_state) {
-+			ibp->rvp.n_rc_seqnak++;
-+			qp->r_nak_state = IB_NAK_PSN_ERROR;
-+			qp->r_ack_psn = qp->r_psn;
-+			rc_defered_ack(rcd, qp);
-+		}
-+		goto done;
-+	}
-+
-+	ibp->rvp.n_rc_dupreq++;
-+
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+	e = find_prev_entry(qp, psn, &prev, NULL, &old_req);
-+	if (!e ||
-+	    (e->opcode != TID_OP(READ_REQ) && e->opcode != TID_OP(WRITE_REQ)))
-+		goto unlock;
-+
-+	req = ack_to_tid_req(e);
-+	req->r_flow_psn = psn;
-+	trace_hfi2_tid_req_rcv_err(qp, 0, e->opcode, e->psn, e->lpsn, req);
-+	if (e->opcode == TID_OP(READ_REQ)) {
-+		struct ib_reth *reth;
-+		u32 len;
-+		u32 rkey;
-+		u64 vaddr;
-+		int ok;
-+		u32 bth0;
-+
-+		reth = &ohdr->u.tid_rdma.r_req.reth;
-+		/*
-+		 * The requester always restarts from the start of the original
-+		 * request.
-+		 */
-+		len = be32_to_cpu(reth->length);
-+		if (psn != e->psn || len != req->total_len)
-+			goto unlock;
-+
-+		release_rdma_sge_mr(e);
-+
-+		rkey = be32_to_cpu(reth->rkey);
-+		vaddr = get_ib_reth_vaddr(reth);
-+
-+		qp->r_len = len;
-+		ok = rvt_rkey_ok(qp, &e->rdma_sge, len, vaddr, rkey,
-+				 IB_ACCESS_REMOTE_READ);
-+		if (unlikely(!ok))
-+			goto unlock;
-+
-+		/*
-+		 * If all the response packets for the current request have
-+		 * been sent out and this request is complete (old_request
-+		 * == false) and the TID flow may be unusable (the
-+		 * req->clear_tail is advanced). However, when an earlier
-+		 * request is received, this request will not be complete any
-+		 * more (qp->s_tail_ack_queue is moved back, see below).
-+		 * Consequently, we need to update the TID flow info every time
-+		 * a duplicate request is received.
-+		 */
-+		bth0 = be32_to_cpu(ohdr->bth[0]);
-+		if (tid_rdma_rcv_read_request(qp, e, packet, ohdr, bth0, psn,
-+					      vaddr, len))
-+			goto unlock;
-+
-+		/*
-+		 * True if the request is already scheduled (between
-+		 * qp->s_tail_ack_queue and qp->r_head_ack_queue);
-+		 */
-+		if (old_req)
-+			goto unlock;
-+	} else {
-+		struct flow_state *fstate;
-+		bool schedule = false;
-+		u8 i;
-+
-+		if (req->state == TID_REQUEST_RESEND) {
-+			req->state = TID_REQUEST_RESEND_ACTIVE;
-+		} else if (req->state == TID_REQUEST_INIT_RESEND) {
-+			req->state = TID_REQUEST_INIT;
-+			schedule = true;
-+		}
-+
-+		/*
-+		 * True if the request is already scheduled (between
-+		 * qp->s_tail_ack_queue and qp->r_head_ack_queue).
-+		 * Also, don't change requests, which are at the SYNC
-+		 * point and haven't generated any responses yet.
-+		 * There is nothing to retransmit for them yet.
-+		 */
-+		if (old_req || req->state == TID_REQUEST_INIT ||
-+		    (req->state == TID_REQUEST_SYNC && !req->cur_seg)) {
-+			for (i = prev + 1;; i++) {
-+				if (i > rvt_size_atomic(&dev->rdi))
-+					i = 0;
-+				if (i == qp->r_head_ack_queue)
-+					break;
-+				e = &qp->s_ack_queue[i];
-+				req = ack_to_tid_req(e);
-+				if (e->opcode == TID_OP(WRITE_REQ) &&
-+				    req->state == TID_REQUEST_INIT)
-+					req->state = TID_REQUEST_INIT_RESEND;
-+			}
-+			/*
-+			 * If the state of the request has been changed,
-+			 * the first leg needs to get scheduled in order to
-+			 * pick up the change. Otherwise, normal response
-+			 * processing should take care of it.
-+			 */
-+			if (!schedule)
-+				goto unlock;
-+		}
-+
-+		/*
-+		 * If there is no more allocated segment, just schedule the qp
-+		 * without changing any state.
-+		 */
-+		if (req->clear_tail == req->setup_head)
-+			goto schedule;
-+		/*
-+		 * If this request has sent responses for segments, which have
-+		 * not received data yet (flow_idx != clear_tail), the flow_idx
-+		 * pointer needs to be adjusted so the same responses can be
-+		 * re-sent.
-+		 */
-+		if (CIRC_CNT(req->flow_idx, req->clear_tail, MAX_FLOWS)) {
-+			fstate = &req->flows[req->clear_tail].flow_state;
-+			qpriv->pending_tid_w_segs -= CIRC_CNT(
-+				req->flow_idx, req->clear_tail, MAX_FLOWS);
-+			req->flow_idx = CIRC_ADD(
-+				req->clear_tail,
-+				delta_psn(psn, fstate->resp_ib_psn), MAX_FLOWS);
-+			qpriv->pending_tid_w_segs +=
-+				delta_psn(psn, fstate->resp_ib_psn);
-+			/*
-+			 * When flow_idx == setup_head, we've gotten a duplicate
-+			 * request for a segment, which has not been allocated
-+			 * yet. In that case, don't adjust this request.
-+			 * However, we still want to go through the loop below
-+			 * to adjust all subsequent requests.
-+			 */
-+			if (CIRC_CNT(req->setup_head, req->flow_idx,
-+				     MAX_FLOWS)) {
-+				req->cur_seg = delta_psn(psn, e->psn);
-+				req->state = TID_REQUEST_RESEND_ACTIVE;
-+			}
-+		}
-+
-+		for (i = prev + 1;; i++) {
-+			/*
-+			 * Look at everything up to and including
-+			 * s_tail_ack_queue
-+			 */
-+			if (i > rvt_size_atomic(&dev->rdi))
-+				i = 0;
-+			if (i == qp->r_head_ack_queue)
-+				break;
-+			e = &qp->s_ack_queue[i];
-+			req = ack_to_tid_req(e);
-+			trace_hfi2_tid_req_rcv_err(qp, 0, e->opcode, e->psn,
-+						   e->lpsn, req);
-+			if (e->opcode != TID_OP(WRITE_REQ) ||
-+			    req->cur_seg == req->comp_seg ||
-+			    req->state == TID_REQUEST_INIT ||
-+			    req->state == TID_REQUEST_INIT_RESEND) {
-+				if (req->state == TID_REQUEST_INIT)
-+					req->state = TID_REQUEST_INIT_RESEND;
-+				continue;
-+			}
-+			qpriv->pending_tid_w_segs -= CIRC_CNT(
-+				req->flow_idx, req->clear_tail, MAX_FLOWS);
-+			req->flow_idx = req->clear_tail;
-+			req->state = TID_REQUEST_RESEND;
-+			req->cur_seg = req->comp_seg;
-+		}
-+		qpriv->s_flags &= ~HFI2_R_TID_WAIT_INTERLCK;
-+	}
-+	/* Re-process old requests.*/
-+	if (qp->s_acked_ack_queue == qp->s_tail_ack_queue)
-+		qp->s_acked_ack_queue = prev;
-+	qp->s_tail_ack_queue = prev;
-+	/*
-+	 * Since the qp->s_tail_ack_queue is modified, the
-+	 * qp->s_ack_state must be changed to re-initialize
-+	 * qp->s_ack_rdma_sge; Otherwise, we will end up in
-+	 * wrong memory region.
-+	 */
-+	qp->s_ack_state = OP(ACKNOWLEDGE);
-+schedule:
-+	/*
-+	 * It's possible to receive a retry psn that is earlier than an RNRNAK
-+	 * psn. In this case, the rnrnak state should be cleared.
-+	 */
-+	if (qpriv->rnr_nak_state) {
-+		qp->s_nak_state = 0;
-+		qpriv->rnr_nak_state = TID_RNR_NAK_INIT;
-+		qp->r_psn = e->lpsn + 1;
-+		hfi2_tid_write_alloc_resources(qp, true);
-+	}
-+
-+	qp->r_state = e->opcode;
-+	qp->r_nak_state = 0;
-+	qp->s_flags |= RVT_S_RESP_PENDING;
-+	hfi2_schedule_send(qp);
-+unlock:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+done:
-+	return 1;
-+}
-+
-+void hfi2_rc_rcv_tid_rdma_read_req(struct hfi2_packet *packet)
-+{
-+	/* HANDLER FOR TID RDMA READ REQUEST packet (Responder side)*/
-+
-+	/*
-+	 * 1. Verify TID RDMA READ REQ as per IB_OPCODE_RC_RDMA_READ
-+	 *    (see hfi2_rc_rcv())
-+	 * 2. Put TID RDMA READ REQ into the response queue (s_ack_queue)
-+	 *     - Setup struct tid_rdma_req with request info
-+	 *     - Initialize struct tid_rdma_flow info;
-+	 *     - Copy TID entries;
-+	 * 3. Set the qp->s_ack_state.
-+	 * 4. Set RVT_S_RESP_PENDING in s_flags.
-+	 * 5. Kick the send engine (hfi2_schedule_send())
-+	 */
-+	struct hfi2_ctxtdata *rcd = packet->rcd;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_ack_entry *e;
-+	unsigned long flags;
-+	struct ib_reth *reth;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	u32 bth0, psn, len, rkey;
-+	bool fecn;
-+	u8 next;
-+	u64 vaddr;
-+	int diff;
-+	u8 nack_state = IB_NAK_INVALID_REQUEST;
-+
-+	bth0 = be32_to_cpu(ohdr->bth[0]);
-+	if (hfi2_ruc_check_hdr(ibp, packet))
-+		return;
-+
-+	fecn = process_ecn(qp, packet);
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	trace_hfi2_rsp_rcv_tid_read_req(qp, psn);
-+
-+	if (qp->state == IB_QPS_RTR && !(qp->r_flags & RVT_R_COMM_EST))
-+		rvt_comm_est(qp);
-+
-+	if (unlikely(!(qp->qp_access_flags & IB_ACCESS_REMOTE_READ)))
-+		goto nack_inv;
-+
-+	reth = &ohdr->u.tid_rdma.r_req.reth;
-+	vaddr = be64_to_cpu(reth->vaddr);
-+	len = be32_to_cpu(reth->length);
-+	/* The length needs to be in multiples of PAGE_SIZE */
-+	if (!len || len & ~PAGE_MASK || len > qpriv->tid_rdma.local.max_len)
-+		goto nack_inv;
-+
-+	diff = delta_psn(psn, qp->r_psn);
-+	if (unlikely(diff)) {
-+		tid_rdma_rcv_err(packet, ohdr, qp, psn, diff, fecn);
-+		return;
-+	}
-+
-+	/* We've verified the request, insert it into the ack queue. */
-+	next = qp->r_head_ack_queue + 1;
-+	if (next > rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
-+		next = 0;
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+	if (unlikely(next == qp->s_tail_ack_queue)) {
-+		if (!qp->s_ack_queue[next].sent) {
-+			nack_state = IB_NAK_REMOTE_OPERATIONAL_ERROR;
-+			goto nack_inv_unlock;
-+		}
-+		update_ack_queue(qp, next);
-+	}
-+	e = &qp->s_ack_queue[qp->r_head_ack_queue];
-+	release_rdma_sge_mr(e);
-+
-+	rkey = be32_to_cpu(reth->rkey);
-+	qp->r_len = len;
-+
-+	if (unlikely(!rvt_rkey_ok(qp, &e->rdma_sge, qp->r_len, vaddr, rkey,
-+				  IB_ACCESS_REMOTE_READ)))
-+		goto nack_acc;
-+
-+	/* Accept the request parameters */
-+	if (tid_rdma_rcv_read_request(qp, e, packet, ohdr, bth0, psn, vaddr,
-+				      len))
-+		goto nack_inv_unlock;
-+
-+	qp->r_state = e->opcode;
-+	qp->r_nak_state = 0;
-+	/*
-+	 * We need to increment the MSN here instead of when we
-+	 * finish sending the result since a duplicate request would
-+	 * increment it more than once.
-+	 */
-+	qp->r_msn++;
-+	qp->r_psn += e->lpsn - e->psn + 1;
-+
-+	qp->r_head_ack_queue = next;
-+
-+	/*
-+	 * For all requests other than TID WRITE which are added to the ack
-+	 * queue, qpriv->r_tid_alloc follows qp->r_head_ack_queue. It is ok to
-+	 * do this because of interlocks between these and TID WRITE
-+	 * requests. The same change has also been made in hfi2_rc_rcv().
-+	 */
-+	qpriv->r_tid_alloc = qp->r_head_ack_queue;
-+
-+	/* Schedule the send tasklet. */
-+	qp->s_flags |= RVT_S_RESP_PENDING;
-+	if (fecn)
-+		qp->s_flags |= RVT_S_ECN;
-+	hfi2_schedule_send(qp);
-+
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+	return;
-+
-+nack_inv_unlock:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+nack_inv:
-+	rvt_rc_error(qp, IB_WC_LOC_QP_OP_ERR);
-+	qp->r_nak_state = nack_state;
-+	qp->r_ack_psn = qp->r_psn;
-+	/* Queue NAK for later */
-+	rc_defered_ack(rcd, qp);
-+	return;
-+nack_acc:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+	rvt_rc_error(qp, IB_WC_LOC_PROT_ERR);
-+	qp->r_nak_state = IB_NAK_REMOTE_ACCESS_ERROR;
-+	qp->r_ack_psn = qp->r_psn;
-+}
-+
-+u32 hfi2_build_tid_rdma_read_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				  struct ib_other_headers *ohdr, u32 *bth0,
-+				  u32 *bth1, u32 *bth2, u32 *len, bool *last)
-+{
-+	struct hfi2_ack_priv *epriv = e->priv;
-+	struct tid_rdma_request *req = &epriv->tid_req;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_flow *flow = &req->flows[req->clear_tail];
-+	u32 tidentry = flow->tid_entry[flow->tid_idx];
-+	u32 tidlen = EXP_TID_GET(tidentry, LEN) << PAGE_SHIFT;
-+	struct tid_rdma_read_resp *resp = &ohdr->u.tid_rdma.r_rsp;
-+	u32 next_offset, om = KDETH_OM_LARGE;
-+	bool last_pkt;
-+	u32 hdwords = 0;
-+	struct tid_rdma_params *remote;
-+
-+	*len = min_t(u32, qp->pmtu, tidlen - flow->tid_offset);
-+	flow->sent += *len;
-+	next_offset = flow->tid_offset + *len;
-+	last_pkt = (flow->sent >= flow->length);
-+
-+	trace_hfi2_tid_entry_build_read_resp(qp, flow->tid_idx, tidentry);
-+	trace_hfi2_tid_flow_build_read_resp(qp, req->clear_tail, flow);
-+
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+	if (!remote) {
++		rvt_get_qp(qp);
++		priv->qp = qp;
 +		rcu_read_unlock();
-+		goto done;
-+	}
-+	KDETH_RESET(resp->kdeth0, KVER, 0x1);
-+	KDETH_SET(resp->kdeth0, SH, !last_pkt);
-+	KDETH_SET(resp->kdeth0, INTR, !!(!last_pkt && remote->urg));
-+	KDETH_SET(resp->kdeth0, TIDCTRL, EXP_TID_GET(tidentry, CTRL));
-+	KDETH_SET(resp->kdeth0, TID, EXP_TID_GET(tidentry, IDX));
-+	KDETH_SET(resp->kdeth0, OM, om == KDETH_OM_LARGE);
-+	KDETH_SET(resp->kdeth0, OFFSET, flow->tid_offset / om);
-+	KDETH_RESET(resp->kdeth1, JKEY, remote->jkey);
-+	resp->verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	rcu_read_unlock();
 +
-+	resp->aeth = rvt_compute_aeth(qp);
-+	resp->verbs_psn =
-+		cpu_to_be32(mask_psn(flow->flow_state.ib_spsn + flow->pkt));
-+
-+	*bth0 = TID_OP(READ_RESP) << 24;
-+	*bth1 = flow->tid_qpn;
-+	*bth2 = mask_psn(
-+		((flow->flow_state.spsn + flow->pkt++) &
-+		 HFI2_KDETH_BTH_SEQ_MASK) |
-+		(flow->flow_state.generation << HFI2_KDETH_BTH_SEQ_SHIFT));
-+	*last = last_pkt;
-+	if (last_pkt)
-+		/* Advance to next flow */
-+		req->clear_tail = (req->clear_tail + 1) & (MAX_FLOWS - 1);
-+
-+	if (next_offset >= tidlen) {
-+		flow->tid_offset = 0;
-+		flow->tid_idx++;
-+	} else {
-+		flow->tid_offset = next_offset;
++		hfi2_netdev_enable_queues(priv->ppd);
++		hfi2_ipoib_napi_tx_enable(dev);
 +	}
 +
-+	hdwords = sizeof(ohdr->u.tid_rdma.r_rsp) / sizeof(u32);
-+
-+done:
-+	return hdwords;
-+}
-+
-+static inline struct tid_rdma_request *
-+find_tid_request(struct rvt_qp *qp, u32 psn, enum ib_wr_opcode opcode)
-+	__must_hold(&qp->s_lock)
-+{
-+	struct rvt_swqe *wqe;
-+	struct tid_rdma_request *req = NULL;
-+	u32 i, end;
-+
-+	end = qp->s_cur + 1;
-+	if (end == qp->s_size)
-+		end = 0;
-+	for (i = qp->s_acked; i != end;) {
-+		wqe = rvt_get_swqe_ptr(qp, i);
-+		if (cmp_psn(psn, wqe->psn) >= 0 &&
-+		    cmp_psn(psn, wqe->lpsn) <= 0) {
-+			if (wqe->wr.opcode == opcode)
-+				req = wqe_to_tid_req(wqe);
-+			break;
-+		}
-+		if (++i == qp->s_size)
-+			i = 0;
-+	}
-+
-+	return req;
-+}
-+
-+void hfi2_rc_rcv_tid_rdma_read_resp(struct hfi2_packet *packet)
-+{
-+	/* HANDLER FOR TID RDMA READ RESPONSE packet (Requester side) */
-+
-+	/*
-+	 * 1. Find matching SWQE
-+	 * 2. Check that the entire segment has been read.
-+	 * 3. Remove HFI2_S_WAIT_TID_RESP from s_flags.
-+	 * 4. Free the TID flow resources.
-+	 * 5. Kick the send engine (hfi2_schedule_send())
-+	 */
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct hfi2_ctxtdata *rcd = packet->rcd;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	u32 opcode, aeth;
-+	bool fecn;
-+	unsigned long flags;
-+	u32 kpsn, ipsn;
-+
-+	trace_hfi2_sender_rcv_tid_read_resp(qp);
-+	fecn = process_ecn(qp, packet);
-+	kpsn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	aeth = be32_to_cpu(ohdr->u.tid_rdma.r_rsp.aeth);
-+	opcode = (be32_to_cpu(ohdr->bth[0]) >> 24) & 0xff;
-+
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+	ipsn = mask_psn(be32_to_cpu(ohdr->u.tid_rdma.r_rsp.verbs_psn));
-+	req = find_tid_request(qp, ipsn, IB_WR_TID_RDMA_READ);
-+	if (unlikely(!req))
-+		goto ack_op_err;
-+
-+	flow = &req->flows[req->clear_tail];
-+	/* When header suppression is disabled */
-+	if (cmp_psn(ipsn, flow->flow_state.ib_lpsn)) {
-+		update_r_next_psn_fecn(packet, priv, rcd, flow, fecn);
-+
-+		if (cmp_psn(kpsn, flow->flow_state.r_next_psn))
-+			goto ack_done;
-+		flow->flow_state.r_next_psn = mask_psn(kpsn + 1);
-+		/*
-+		 * Copy the payload to destination buffer if this packet is
-+		 * delivered as an eager packet due to RSM rule and FECN.
-+		 * The RSM rule selects FECN bit in BTH and SH bit in
-+		 * KDETH header and therefore will not match the last
-+		 * packet of each segment that has SH bit cleared.
-+		 */
-+		if (fecn && packet->etype == RHF_RCV_TYPE_EAGER) {
-+			struct rvt_sge_state ss;
-+			u32 len;
-+			u32 tlen = packet->tlen;
-+			u16 hdrsize = packet->hlen;
-+			u8 pad = packet->pad;
-+			u8 extra_bytes =
-+				pad + packet->extra_byte + (SIZE_OF_CRC << 2);
-+			u32 pmtu = qp->pmtu;
-+
-+			if (unlikely(tlen != (hdrsize + pmtu + extra_bytes)))
-+				goto ack_op_err;
-+			len = restart_sge(&ss, req->e.swqe, ipsn, pmtu);
-+			if (unlikely(len < pmtu))
-+				goto ack_op_err;
-+			rvt_copy_sge(qp, &ss, packet->payload, pmtu, false,
-+				     false);
-+			/* Raise the sw sequence check flag for next packet */
-+			priv->s_flags |= HFI2_R_TID_SW_PSN;
-+		}
-+
-+		goto ack_done;
-+	}
-+	flow->flow_state.r_next_psn = mask_psn(kpsn + 1);
-+	req->ack_pending--;
-+	priv->pending_tid_r_segs--;
-+	qp->s_num_rd_atomic--;
-+	if ((qp->s_flags & RVT_S_WAIT_FENCE) && !qp->s_num_rd_atomic) {
-+		qp->s_flags &= ~(RVT_S_WAIT_FENCE | RVT_S_WAIT_ACK);
-+		hfi2_schedule_send(qp);
-+	}
-+	if (qp->s_flags & RVT_S_WAIT_RDMAR) {
-+		qp->s_flags &= ~(RVT_S_WAIT_RDMAR | RVT_S_WAIT_ACK);
-+		hfi2_schedule_send(qp);
-+	}
-+
-+	trace_hfi2_ack(qp, ipsn);
-+	trace_hfi2_tid_req_rcv_read_resp(qp, 0, req->e.swqe->wr.opcode,
-+					 req->e.swqe->psn, req->e.swqe->lpsn,
-+					 req);
-+	trace_hfi2_tid_flow_rcv_read_resp(qp, req->clear_tail, flow);
-+
-+	/* Release the tid resources */
-+	hfi2_kern_exp_rcv_clear(req);
-+
-+	if (!do_rc_ack(qp, aeth, ipsn, opcode, 0, rcd))
-+		goto ack_done;
-+
-+	/* If not done yet, build next read request */
-+	if (++req->comp_seg >= req->total_segs) {
-+		priv->tid_r_comp++;
-+		req->state = TID_REQUEST_COMPLETE;
-+	}
-+
-+	/*
-+	 * Clear the hw flow under two conditions:
-+	 * 1. This request is a sync point and it is complete;
-+	 * 2. Current request is completed and there are no more requests.
-+	 */
-+	if ((req->state == TID_REQUEST_SYNC && req->comp_seg == req->cur_seg) ||
-+	    priv->tid_r_comp == priv->tid_r_reqs) {
-+		hfi2_kern_clear_hw_flow(priv->rcd, qp);
-+		priv->s_flags &= ~HFI2_R_TID_SW_PSN;
-+		if (req->state == TID_REQUEST_SYNC)
-+			req->state = TID_REQUEST_ACTIVE;
-+	}
-+
-+	hfi2_schedule_send(qp);
-+	goto ack_done;
-+
-+ack_op_err:
-+	/*
-+	 * The test indicates that the send engine has finished its cleanup
-+	 * after sending the request and it's now safe to put the QP into error
-+	 * state. However, if the wqe queue is empty (qp->s_acked == qp->s_tail
-+	 * == qp->s_head), it would be unsafe to complete the wqe pointed by
-+	 * qp->s_acked here. Putting the qp into error state will safely flush
-+	 * all remaining requests.
-+	 */
-+	if (qp->s_last == qp->s_acked)
-+		rvt_error_qp(qp, IB_WC_WR_FLUSH_ERR);
-+
-+ack_done:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+}
-+
-+void hfi2_kern_read_tid_flow_free(struct rvt_qp *qp) __must_hold(&qp->s_lock)
-+{
-+	u32 n = qp->s_acked;
-+	struct rvt_swqe *wqe;
-+	struct tid_rdma_request *req;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	/* Free any TID entries */
-+	while (n != qp->s_tail) {
-+		wqe = rvt_get_swqe_ptr(qp, n);
-+		if (wqe->wr.opcode == IB_WR_TID_RDMA_READ) {
-+			req = wqe_to_tid_req(wqe);
-+			hfi2_kern_exp_rcv_clear_all(req);
-+		}
-+
-+		if (++n == qp->s_size)
-+			n = 0;
-+	}
-+	/* Free flow */
-+	hfi2_kern_clear_hw_flow(priv->rcd, qp);
-+}
-+
-+static bool tid_rdma_tid_err(struct hfi2_packet *packet, u8 rcv_type)
-+{
-+	struct rvt_qp *qp = packet->qp;
-+
-+	if (rcv_type >= RHF_RCV_TYPE_IB)
-+		goto done;
-+
-+	spin_lock(&qp->s_lock);
-+
-+	/*
-+	 * We've ran out of space in the eager buffer.
-+	 * Eagerly received KDETH packets which require space in the
-+	 * Eager buffer (packet that have payload) are TID RDMA WRITE
-+	 * response packets. In this case, we have to re-transmit the
-+	 * TID RDMA WRITE request.
-+	 */
-+	if (rcv_type == RHF_RCV_TYPE_EAGER) {
-+		hfi2_restart_rc(qp, qp->s_last_psn + 1, 1);
-+		hfi2_schedule_send(qp);
-+	}
-+
-+	/* Since no payload is delivered, just drop the packet */
-+	spin_unlock(&qp->s_lock);
-+done:
-+	return true;
-+}
-+
-+static void restart_tid_rdma_read_req(struct hfi2_ctxtdata *rcd,
-+				      struct rvt_qp *qp, struct rvt_swqe *wqe)
-+{
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+
-+	/* Start from the right segment */
-+	qp->r_flags |= RVT_R_RDMAR_SEQ;
-+	req = wqe_to_tid_req(wqe);
-+	flow = &req->flows[req->clear_tail];
-+	hfi2_restart_rc(qp, flow->flow_state.ib_spsn, 0);
-+	if (list_empty(&qp->rspwait)) {
-+		qp->r_flags |= RVT_R_RSP_SEND;
-+		rvt_get_qp(qp);
-+		list_add_tail(&qp->rspwait, &rcd->qp_wait_list);
-+	}
-+}
-+
-+/*
-+ * Handle the KDETH eflags for TID RDMA READ response.
-+ *
-+ * Return true if the last packet for a segment has been received and it is
-+ * time to process the response normally; otherwise, return true.
-+ *
-+ * The caller must hold the packet->qp->r_lock and the rcu_read_lock.
-+ */
-+static bool handle_read_kdeth_eflags(struct hfi2_ctxtdata *rcd,
-+				     struct hfi2_packet *packet, u8 rcv_type,
-+				     u8 rte, u32 psn, u32 ibpsn)
-+	__must_hold(&packet->qp->r_lock) __must_hold(RCU)
-+{
-+	struct hfi2_pportdata *ppd = rcd->ppd;
-+	struct hfi2_devdata *dd = ppd->dd;
-+	struct hfi2_ibport *ibp;
-+	struct rvt_swqe *wqe;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	u32 ack_psn;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	bool ret = true;
-+	int diff = 0;
-+	u32 fpsn;
-+
-+	lockdep_assert_held(&qp->r_lock);
-+	trace_hfi2_rsp_read_kdeth_eflags(qp, ibpsn);
-+	trace_hfi2_sender_read_kdeth_eflags(qp);
-+	trace_hfi2_tid_read_sender_kdeth_eflags(qp, 0);
-+	spin_lock(&qp->s_lock);
-+	/* If the psn is out of valid range, drop the packet */
-+	if (cmp_psn(ibpsn, qp->s_last_psn) < 0 || cmp_psn(ibpsn, qp->s_psn) > 0)
-+		goto s_unlock;
-+
-+	/*
-+	 * Note that NAKs implicitly ACK outstanding SEND and RDMA write
-+	 * requests and implicitly NAK RDMA read and atomic requests issued
-+	 * before the NAK'ed request.
-+	 */
-+	ack_psn = ibpsn - 1;
-+	wqe = rvt_get_swqe_ptr(qp, qp->s_acked);
-+	ibp = to_iport(qp->ibqp.device, qp->port_num);
-+
-+	/* Complete WQEs that the PSN finishes. */
-+	while ((int)delta_psn(ack_psn, wqe->lpsn) >= 0) {
-+		/*
-+		 * If this request is a RDMA read or atomic, and the NACK is
-+		 * for a later operation, this NACK NAKs the RDMA read or
-+		 * atomic.
-+		 */
-+		if (wqe->wr.opcode == IB_WR_RDMA_READ ||
-+		    wqe->wr.opcode == IB_WR_TID_RDMA_READ ||
-+		    wqe->wr.opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
-+		    wqe->wr.opcode == IB_WR_ATOMIC_FETCH_AND_ADD) {
-+			/* Retry this request. */
-+			if (!(qp->r_flags & RVT_R_RDMAR_SEQ)) {
-+				qp->r_flags |= RVT_R_RDMAR_SEQ;
-+				if (wqe->wr.opcode == IB_WR_TID_RDMA_READ) {
-+					restart_tid_rdma_read_req(rcd, qp, wqe);
-+				} else {
-+					hfi2_restart_rc(qp, qp->s_last_psn + 1,
-+							0);
-+					if (list_empty(&qp->rspwait)) {
-+						qp->r_flags |= RVT_R_RSP_SEND;
-+						rvt_get_qp(qp);
-+						list_add_tail(/* wait */
-+							      &qp->rspwait,
-+							      &rcd->qp_wait_list);
-+					}
-+				}
-+			}
-+			/*
-+			 * No need to process the NAK since we are
-+			 * restarting an earlier request.
-+			 */
-+			break;
-+		}
-+
-+		wqe = do_rc_completion(qp, wqe, ibp);
-+		if (qp->s_acked == qp->s_tail)
-+			goto s_unlock;
-+	}
-+
-+	if (qp->s_acked == qp->s_tail)
-+		goto s_unlock;
-+
-+	/* Handle the eflags for the request */
-+	if (wqe->wr.opcode != IB_WR_TID_RDMA_READ)
-+		goto s_unlock;
-+
-+	req = wqe_to_tid_req(wqe);
-+	trace_hfi2_tid_req_read_kdeth_eflags(qp, 0, wqe->wr.opcode, wqe->psn,
-+					     wqe->lpsn, req);
-+	switch (rcv_type) {
-+	case RHF_RCV_TYPE_EXPECTED:
-+		switch (rte) {
-+		case RHF_RTE_EXPECTED_FLOW_SEQ_ERR:
-+			/*
-+			 * On the first occurrence of a Flow Sequence error,
-+			 * the flag TID_FLOW_SW_PSN is set.
-+			 *
-+			 * After that, the flow is *not* reprogrammed and the
-+			 * protocol falls back to SW PSN checking. This is done
-+			 * to prevent continuous Flow Sequence errors for any
-+			 * packets that could be still in the fabric.
-+			 */
-+			flow = &req->flows[req->clear_tail];
-+			trace_hfi2_tid_flow_read_kdeth_eflags(
-+				qp, req->clear_tail, flow);
-+			if (priv->s_flags & HFI2_R_TID_SW_PSN) {
-+				diff = cmp_psn(psn,
-+					       flow->flow_state.r_next_psn);
-+				if (diff > 0) {
-+					/* Drop the packet.*/
-+					goto s_unlock;
-+				} else if (diff < 0) {
-+					/*
-+					 * If a response packet for a restarted
-+					 * request has come back, reset the
-+					 * restart flag.
-+					 */
-+					if (qp->r_flags & RVT_R_RDMAR_SEQ)
-+						qp->r_flags &= ~RVT_R_RDMAR_SEQ;
-+
-+					/* Drop the packet.*/
-+					goto s_unlock;
-+				}
-+
-+				/*
-+				 * If SW PSN verification is successful and
-+				 * this is the last packet in the segment, tell
-+				 * the caller to process it as a normal packet.
-+				 */
-+				fpsn = full_flow_psn(flow,
-+						     flow->flow_state.lpsn);
-+				if (cmp_psn(fpsn, psn) == 0) {
-+					ret = false;
-+					if (qp->r_flags & RVT_R_RDMAR_SEQ)
-+						qp->r_flags &= ~RVT_R_RDMAR_SEQ;
-+				}
-+				flow->flow_state.r_next_psn = mask_psn(psn + 1);
-+			} else {
-+				u32 last_psn;
-+
-+				last_psn = read_r_next_psn(dd, rcd->ctxt,
-+							   flow->idx);
-+				flow->flow_state.r_next_psn = last_psn;
-+				priv->s_flags |= HFI2_R_TID_SW_PSN;
-+				/*
-+				 * If no request has been restarted yet,
-+				 * restart the current one.
-+				 */
-+				if (!(qp->r_flags & RVT_R_RDMAR_SEQ))
-+					restart_tid_rdma_read_req(rcd, qp, wqe);
-+			}
-+
-+			break;
-+
-+		case RHF_RTE_EXPECTED_FLOW_GEN_ERR:
-+			/*
-+			 * Since the TID flow is able to ride through
-+			 * generation mismatch, drop this stale packet.
-+			 */
-+			break;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case RHF_RCV_TYPE_ERROR:
-+		switch (rte) {
-+		case RHF_RTE_ERROR_OP_CODE_ERR:
-+		case RHF_RTE_ERROR_KHDR_MIN_LEN_ERR:
-+		case RHF_RTE_ERROR_KHDR_HCRC_ERR:
-+		case RHF_RTE_ERROR_KHDR_KVER_ERR:
-+		case RHF_RTE_ERROR_CONTEXT_ERR:
-+		case RHF_RTE_ERROR_KHDR_TID_ERR:
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+s_unlock:
-+	spin_unlock(&qp->s_lock);
 +	return ret;
 +}
 +
-+bool hfi2_handle_kdeth_eflags(struct hfi2_ctxtdata *rcd,
-+			      struct hfi2_pportdata *ppd,
-+			      struct hfi2_packet *packet)
++static int hfi2_ipoib_dev_stop(struct net_device *dev)
 +{
-+	struct hfi2_ibport *ibp = &ppd->ibport_data;
-+	struct hfi2_devdata *dd = ppd->dd;
-+	struct rvt_dev_info *rdi = &dd->verbs_dev.rdi;
-+	u8 rcv_type = rhf_rcv_type(packet->rhf);
-+	u8 rte = rhe_rcv_type_err(packet);
-+	struct ib_header *hdr = packet->hdr;
-+	struct ib_other_headers *ohdr = NULL;
-+	int lnh = be16_to_cpu(hdr->lrh[0]) & 3;
-+	u16 lid = be16_to_cpu(hdr->lrh[1]);
-+	u8 opcode;
-+	u32 qp_num, psn, ibpsn;
-+	struct rvt_qp *qp;
-+	struct hfi2_qp_priv *qpriv;
-+	unsigned long flags;
-+	bool ret = true;
-+	struct rvt_ack_entry *e;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	int diff = 0;
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
 +
-+	trace_hfi2_msg_handle_kdeth_eflags(NULL, "Kdeth error: rhf ",
-+					   packet->rhf);
-+	if (rhe_icrc_err(packet))
++	if (!priv->qp)
++		return 0;
++
++	hfi2_ipoib_napi_tx_disable(dev);
++	hfi2_netdev_disable_queues(priv->ppd);
++
++	rvt_put_qp(priv->qp);
++	priv->qp = NULL;
++
++	return priv->netdev_ops->ndo_stop(dev);
++}
++
++static const struct net_device_ops hfi2_ipoib_netdev_ops = {
++	.ndo_init         = hfi2_ipoib_dev_init,
++	.ndo_uninit       = hfi2_ipoib_dev_uninit,
++	.ndo_open         = hfi2_ipoib_dev_open,
++	.ndo_stop         = hfi2_ipoib_dev_stop,
++};
++
++static int hfi2_ipoib_mcast_attach(struct net_device *dev,
++				   struct ib_device *device,
++				   union ib_gid *mgid,
++				   u16 mlid,
++				   int set_qkey,
++				   u32 qkey)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	u32 qpn = (u32)qpn_from_mac(priv->netdev->dev_addr);
++	struct hfi2_ibport *ibp = to_iport(priv->device, priv->port_num);
++	struct rvt_qp *qp;
++	int ret = -EINVAL;
++
++	rcu_read_lock();
++
++	qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp, qpn);
++	if (qp) {
++		rvt_get_qp(qp);
++		rcu_read_unlock();
++		if (set_qkey)
++			priv->qkey = qkey;
++
++		/* attach QP to multicast group */
++		ret = ib_attach_mcast(&qp->ibqp, mgid, mlid);
++		rvt_put_qp(qp);
++	} else {
++		rcu_read_unlock();
++	}
++
++	return ret;
++}
++
++static int hfi2_ipoib_mcast_detach(struct net_device *dev,
++				   struct ib_device *device,
++				   union ib_gid *mgid,
++				   u16 mlid)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	u32 qpn = (u32)qpn_from_mac(priv->netdev->dev_addr);
++	struct hfi2_ibport *ibp = to_iport(priv->device, priv->port_num);
++	struct rvt_qp *qp;
++	int ret = -EINVAL;
++
++	rcu_read_lock();
++
++	qp = rvt_lookup_qpn(ib_to_rvt(priv->device), &ibp->rvp, qpn);
++	if (qp) {
++		rvt_get_qp(qp);
++		rcu_read_unlock();
++		ret = ib_detach_mcast(&qp->ibqp, mgid, mlid);
++		rvt_put_qp(qp);
++	} else {
++		rcu_read_unlock();
++	}
++	return ret;
++}
++
++static void hfi2_ipoib_netdev_dtor(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	hfi2_ipoib_txreq_deinit(priv);
++	hfi2_ipoib_rxq_deinit(priv->netdev);
++}
++
++static void hfi2_ipoib_set_id(struct net_device *dev, int id)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++
++	priv->pkey_index = (u16)id;
++	ib_query_pkey(priv->device,
++		      priv->port_num,
++		      priv->pkey_index,
++		      &priv->pkey);
++}
++
++static int hfi2_ipoib_setup_rn(struct ib_device *device,
++			       u32 port_num,
++			       struct net_device *netdev,
++			       void *param)
++{
++	struct hfi2_devdata *dd = dd_from_ibdev(device);
++	struct rdma_netdev *rn = netdev_priv(netdev);
++	struct hfi2_ipoib_dev_priv *priv;
++	int rc;
++
++	rn->send = hfi2_ipoib_send;
++	rn->tx_timeout = hfi2_ipoib_tx_timeout;
++	rn->attach_mcast = hfi2_ipoib_mcast_attach;
++	rn->detach_mcast = hfi2_ipoib_mcast_detach;
++	rn->set_id = hfi2_ipoib_set_id;
++	rn->hca = device;
++	rn->port_num = port_num;
++	rn->mtu = netdev->mtu;
++
++	priv = hfi2_ipoib_priv(netdev);
++	priv->dd = dd;
++	priv->ppd = &dd->pport[port_num - 1];
++	priv->netdev = netdev;
++	priv->device = device;
++	priv->port_num = port_num;
++	priv->netdev_ops = netdev->netdev_ops;
++
++	ib_query_pkey(device, port_num, priv->pkey_index, &priv->pkey);
++
++	rc = hfi2_ipoib_txreq_init(priv);
++	if (rc) {
++		dd_dev_err(dd, "IPoIB netdev TX init - failed(%d)\n", rc);
++		return rc;
++	}
++
++	rc = hfi2_ipoib_rxq_init(netdev);
++	if (rc) {
++		dd_dev_err(dd, "IPoIB netdev RX init - failed(%d)\n", rc);
++		hfi2_ipoib_txreq_deinit(priv);
++		return rc;
++	}
++
++	netdev->netdev_ops = &hfi2_ipoib_netdev_ops;
++
++	netdev->priv_destructor = hfi2_ipoib_netdev_dtor;
++	netdev->needs_free_netdev = true;
++	netdev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
++
++	return 0;
++}
++
++int hfi2_ipoib_rn_get_params(struct ib_device *device,
++			     u32 port_num,
++			     enum rdma_netdev_t type,
++			     struct rdma_netdev_alloc_params *params)
++{
++	struct hfi2_devdata *dd = dd_from_ibdev(device);
++	struct hfi2_devrsrcs *dr = &dd->rsrcs;
++	struct hfi2_portrsrcs *pr;
++
++	if (type != RDMA_NETDEV_IPOIB)
++		return -EOPNOTSUPP;
++
++	if (!port_num || port_num > dd->num_pports)
++		return -EINVAL;
++	pr = &dr->ppr[port_num - 1];
++
++	if (!HFI2_CAP_IS_KSET(AIP) || !pr->num_netdev_contexts)
++		return -EOPNOTSUPP;
++
++	params->sizeof_priv = sizeof(struct hfi2_ipoib_rdma_netdev);
++	params->txqs = dr->last_sdma_engine - dr->first_sdma_engine;
++	params->rxqs = pr->num_netdev_contexts;
++	params->param = NULL;
++	params->initialize_rdma_netdev = hfi2_ipoib_setup_rn;
++
++	return 0;
++}
+diff --git a/drivers/infiniband/hw/hfi2/ipoib_rx.c b/drivers/infiniband/hw/hfi2/ipoib_rx.c
+new file mode 100644
+index 000000000000..be001c3d9b29
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib_rx.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++#include "netdev.h"
++#include "ipoib.h"
++
++#define HFI2_IPOIB_SKB_PAD ((NET_SKB_PAD) + (NET_IP_ALIGN))
++
++static void copy_ipoib_buf(struct sk_buff *skb, void *data, int size)
++{
++	skb_checksum_none_assert(skb);
++	skb->protocol = *((__be16 *)data);
++
++	skb_put_data(skb, data, size);
++	skb->mac_header = HFI2_IPOIB_PSEUDO_LEN;
++	skb_pull(skb, HFI2_IPOIB_ENCAP_LEN);
++}
++
++static struct sk_buff *prepare_frag_skb(struct napi_struct *napi, int size)
++{
++	struct sk_buff *skb;
++	int skb_size = SKB_DATA_ALIGN(size + HFI2_IPOIB_SKB_PAD);
++	void *frag;
++
++	skb_size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++	skb_size = SKB_DATA_ALIGN(skb_size);
++	frag = napi_alloc_frag(skb_size);
++
++	if (unlikely(!frag))
++		return napi_alloc_skb(napi, size);
++
++	skb = build_skb(frag, skb_size);
++
++	if (unlikely(!skb)) {
++		skb_free_frag(frag);
++		return NULL;
++	}
++
++	skb_reserve(skb, HFI2_IPOIB_SKB_PAD);
++	return skb;
++}
++
++struct sk_buff *hfi2_ipoib_prepare_skb(struct hfi2_netdev_rxq *rxq,
++				       int size, void *data)
++{
++	struct napi_struct *napi = &rxq->napi;
++	int skb_size = size + HFI2_IPOIB_ENCAP_LEN;
++	struct sk_buff *skb;
++
++	/*
++	 * For smaller(4k + skb overhead) allocations we will go using
++	 * napi cache. Otherwise we will try to use napi frag cache.
++	 */
++	if (size <= SKB_WITH_OVERHEAD(PAGE_SIZE))
++		skb = napi_alloc_skb(napi, skb_size);
++	else
++		skb = prepare_frag_skb(napi, skb_size);
++
++	if (unlikely(!skb))
++		return NULL;
++
++	copy_ipoib_buf(skb, data, size);
++
++	return skb;
++}
++
++int hfi2_ipoib_rxq_init(struct net_device *netdev)
++{
++	struct hfi2_ipoib_dev_priv *ipoib_priv = hfi2_ipoib_priv(netdev);
++	struct hfi2_pportdata *ppd = ipoib_priv->ppd;
++	int ret;
++
++	ret = hfi2_netdev_rx_init(ppd);
++	if (ret)
 +		return ret;
 +
-+	packet->ohdr = &hdr->u.oth;
-+	ohdr = packet->ohdr;
-+	trace_input_ibhdr(rcd->dd, packet, packet->sc4);
++	hfi2_init_aip_rsm(ppd);
 +
-+	/* Get the destination QP number. */
-+	qp_num = be32_to_cpu(ohdr->u.tid_rdma.r_rsp.verbs_qp) & RVT_QPN_MASK;
-+	if (lid >= be16_to_cpu(IB_MULTICAST_LID_BASE))
-+		goto drop;
-+
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	opcode = (be32_to_cpu(ohdr->bth[0]) >> 24) & 0xff;
-+
-+	rcu_read_lock();
-+	qp = rvt_lookup_qpn(rdi, &ibp->rvp, qp_num);
-+	if (!qp)
-+		goto rcu_unlock;
-+
-+	packet->qp = qp;
-+
-+	/* Check for valid receive state. */
-+	spin_lock_irqsave(&qp->r_lock, flags);
-+	if (!(ib_rvt_state_ops[qp->state] & RVT_PROCESS_RECV_OK)) {
-+		ibp->rvp.n_pkt_drops++;
-+		goto r_unlock;
-+	}
-+
-+	if (rhe_tid_err(packet)) {
-+		/* For TIDERR and RC QPs preemptively schedule a NAK */
-+		u32 tlen = rhf_pkt_len(packet->rhf); /* in bytes */
-+
-+		/* Sanity check packet */
-+		if (tlen < 24)
-+			goto r_unlock;
-+
-+		/*
-+		 * Check for GRH. We should never get packets with GRH in this
-+		 * path.
-+		 */
-+		if (lnh == HFI2_LRH_GRH)
-+			goto r_unlock;
-+
-+		if (tid_rdma_tid_err(packet, rcv_type))
-+			goto r_unlock;
-+	}
-+
-+	/* handle TID RDMA READ */
-+	if (opcode == TID_OP(READ_RESP)) {
-+		ibpsn = be32_to_cpu(ohdr->u.tid_rdma.r_rsp.verbs_psn);
-+		ibpsn = mask_psn(ibpsn);
-+		ret = handle_read_kdeth_eflags(rcd, packet, rcv_type, rte, psn,
-+					       ibpsn);
-+		goto r_unlock;
-+	}
-+
-+	/*
-+	 * qp->s_tail_ack_queue points to the rvt_ack_entry currently being
-+	 * processed. These a completed sequentially so we can be sure that
-+	 * the pointer will not change until the entire request has completed.
-+	 */
-+	spin_lock(&qp->s_lock);
-+	qpriv = qp->priv;
-+	if (qpriv->r_tid_tail == HFI2_QP_WQE_INVALID ||
-+	    qpriv->r_tid_tail == qpriv->r_tid_head)
-+		goto unlock;
-+	e = &qp->s_ack_queue[qpriv->r_tid_tail];
-+	if (e->opcode != TID_OP(WRITE_REQ))
-+		goto unlock;
-+	req = ack_to_tid_req(e);
-+	if (req->comp_seg == req->cur_seg)
-+		goto unlock;
-+	flow = &req->flows[req->clear_tail];
-+	trace_hfi2_eflags_err_write(qp, rcv_type, rte, psn);
-+	trace_hfi2_rsp_handle_kdeth_eflags(qp, psn);
-+	trace_hfi2_tid_write_rsp_handle_kdeth_eflags(qp);
-+	trace_hfi2_tid_req_handle_kdeth_eflags(qp, 0, e->opcode, e->psn,
-+					       e->lpsn, req);
-+	trace_hfi2_tid_flow_handle_kdeth_eflags(qp, req->clear_tail, flow);
-+
-+	switch (rcv_type) {
-+	case RHF_RCV_TYPE_EXPECTED:
-+		switch (rte) {
-+		case RHF_RTE_EXPECTED_FLOW_SEQ_ERR:
-+			if (!(qpriv->s_flags & HFI2_R_TID_SW_PSN)) {
-+				qpriv->s_flags |= HFI2_R_TID_SW_PSN;
-+				flow->flow_state.r_next_psn = read_r_next_psn(
-+					dd, rcd->ctxt, flow->idx);
-+				qpriv->r_next_psn_kdeth =
-+					flow->flow_state.r_next_psn;
-+				goto nak_psn;
-+			} else {
-+				/*
-+				 * If the received PSN does not match the next
-+				 * expected PSN, NAK the packet.
-+				 * However, only do that if we know that the a
-+				 * NAK has already been sent. Otherwise, this
-+				 * mismatch could be due to packets that were
-+				 * already in flight.
-+				 */
-+				diff = cmp_psn(psn,
-+					       flow->flow_state.r_next_psn);
-+				if (diff > 0)
-+					goto nak_psn;
-+				else if (diff < 0)
-+					break;
-+
-+				qpriv->s_nak_state = 0;
-+				/*
-+				 * If SW PSN verification is successful and this
-+				 * is the last packet in the segment, tell the
-+				 * caller to process it as a normal packet.
-+				 */
-+				if (psn ==
-+				    full_flow_psn(flow, flow->flow_state.lpsn))
-+					ret = false;
-+				flow->flow_state.r_next_psn = mask_psn(psn + 1);
-+				qpriv->r_next_psn_kdeth =
-+					flow->flow_state.r_next_psn;
-+			}
-+			break;
-+
-+		case RHF_RTE_EXPECTED_FLOW_GEN_ERR:
-+			goto nak_psn;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case RHF_RCV_TYPE_ERROR:
-+		switch (rte) {
-+		case RHF_RTE_ERROR_OP_CODE_ERR:
-+		case RHF_RTE_ERROR_KHDR_MIN_LEN_ERR:
-+		case RHF_RTE_ERROR_KHDR_HCRC_ERR:
-+		case RHF_RTE_ERROR_KHDR_KVER_ERR:
-+		case RHF_RTE_ERROR_CONTEXT_ERR:
-+		case RHF_RTE_ERROR_KHDR_TID_ERR:
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+unlock:
-+	spin_unlock(&qp->s_lock);
-+r_unlock:
-+	spin_unlock_irqrestore(&qp->r_lock, flags);
-+rcu_unlock:
-+	rcu_read_unlock();
-+drop:
 +	return ret;
-+nak_psn:
-+	ibp->rvp.n_rc_seqnak++;
-+	if (!qpriv->s_nak_state) {
-+		qpriv->s_nak_state = IB_NAK_PSN_ERROR;
-+		/* We are NAK'ing the next expected PSN */
-+		qpriv->s_nak_psn = mask_psn(flow->flow_state.r_next_psn);
-+		tid_rdma_trigger_ack(qp);
-+	}
-+	goto unlock;
 +}
++
++void hfi2_ipoib_rxq_deinit(struct net_device *netdev)
++{
++	struct hfi2_ipoib_dev_priv *ipoib_priv = hfi2_ipoib_priv(netdev);
++	struct hfi2_pportdata *ppd = ipoib_priv->ppd;
++
++	hfi2_deinit_aip_rsm(ppd);
++	hfi2_netdev_rx_destroy(ppd);
++}
+diff --git a/drivers/infiniband/hw/hfi2/ipoib_tx.c b/drivers/infiniband/hw/hfi2/ipoib_tx.c
+new file mode 100644
+index 000000000000..1c2de57cfae2
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib_tx.c
+@@ -0,0 +1,872 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
 +
 +/*
-+ * "Rewind" the TID request information.
-+ * This means that we reset the state back to ACTIVE,
-+ * find the proper flow, set the flow index to that flow,
-+ * and reset the flow information.
++ * This file contains HFI2 support for IPOIB SDMA functionality
 + */
-+void hfi2_tid_rdma_restart_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+			       u32 *bth2)
++
++#include <linux/log2.h>
++#include <linux/circ_buf.h>
++
++#include "sdma.h"
++#include "verbs.h"
++#include "trace_ibhdrs.h"
++#include "ipoib.h"
++#include "trace_tx.h"
++#include "qp.h"
++
++/* Add a convenience helper */
++#define CIRC_ADD(val, add, size) (((val) + (add)) & ((size) - 1))
++#define CIRC_NEXT(val, size) CIRC_ADD(val, 1, size)
++#define CIRC_PREV(val, size) CIRC_ADD(val, -1, size)
++
++struct ipoib_txparms {
++	struct hfi2_devdata        *dd;
++	struct rdma_ah_attr        *ah_attr;
++	struct hfi2_ibport         *ibp;
++	struct hfi2_ipoib_txq      *txq;
++	union hfi2_ipoib_flow       flow;
++	u32                         dqpn;
++	u8                          hdr_dwords;
++	u8                          entropy;
++};
++
++static struct ipoib_txreq *
++hfi2_txreq_from_idx(struct hfi2_ipoib_circ_buf *r, u32 idx)
 +{
-+	struct tid_rdma_request *req = wqe_to_tid_req(wqe);
-+	struct tid_rdma_flow *flow;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	int diff, delta_pkts;
-+	u32 tididx = 0, i;
-+	u16 fidx;
++	return (struct ipoib_txreq *)(r->items + (idx << r->shift));
++}
 +
-+	if (wqe->wr.opcode == IB_WR_TID_RDMA_READ) {
-+		*bth2 = mask_psn(qp->s_psn);
-+		flow = find_flow_ib(req, *bth2, &fidx);
-+		if (!flow) {
-+			trace_hfi2_msg_tid_restart_req(/* msg */
-+						       qp,
-+						       "!!!!!! Could not find flow to restart: bth2 ",
-+						       (u64)*bth2);
-+			trace_hfi2_tid_req_restart_req(qp, 0, wqe->wr.opcode,
-+						       wqe->psn, wqe->lpsn,
-+						       req);
-+			return;
-+		}
-+	} else {
-+		fidx = req->acked_tail;
-+		flow = &req->flows[fidx];
-+		*bth2 = mask_psn(req->r_ack_psn);
-+	}
++static u32 hfi2_ipoib_txreqs(const u64 sent, const u64 completed)
++{
++	return sent - completed;
++}
 +
-+	if (wqe->wr.opcode == IB_WR_TID_RDMA_READ)
-+		delta_pkts = delta_psn(*bth2, flow->flow_state.ib_spsn);
-+	else
-+		delta_pkts = delta_psn(
-+			*bth2, full_flow_psn(flow, flow->flow_state.spsn));
++static u64 hfi2_ipoib_used(struct hfi2_ipoib_txq *txq)
++{
++	return hfi2_ipoib_txreqs(txq->tx_ring.sent_txreqs,
++				 txq->tx_ring.complete_txreqs);
++}
 +
-+	trace_hfi2_tid_flow_restart_req(qp, fidx, flow);
-+	diff = delta_pkts + flow->resync_npkts;
++static void hfi2_ipoib_stop_txq(struct hfi2_ipoib_txq *txq)
++{
++	trace_hfi2_txq_stop(txq);
++	if (atomic_inc_return(&txq->tx_ring.stops) == 1)
++		netif_stop_subqueue(txq->priv->netdev, txq->q_idx);
++}
 +
-+	flow->sent = 0;
-+	flow->pkt = 0;
-+	flow->tid_idx = 0;
-+	flow->tid_offset = 0;
-+	if (diff) {
-+		for (tididx = 0; tididx < flow->tidcnt; tididx++) {
-+			u32 tidentry = flow->tid_entry[tididx], tidlen,
-+			    tidnpkts, npkts;
++static void hfi2_ipoib_wake_txq(struct hfi2_ipoib_txq *txq)
++{
++	trace_hfi2_txq_wake(txq);
++	if (atomic_dec_and_test(&txq->tx_ring.stops))
++		netif_wake_subqueue(txq->priv->netdev, txq->q_idx);
++}
 +
-+			flow->tid_offset = 0;
-+			tidlen = EXP_TID_GET(tidentry, LEN) * PAGE_SIZE;
-+			tidnpkts = rvt_div_round_up_mtu(qp, tidlen);
-+			npkts = min_t(u32, diff, tidnpkts);
-+			flow->pkt += npkts;
-+			flow->sent +=
-+				(npkts == tidnpkts ? tidlen : npkts * qp->pmtu);
-+			flow->tid_offset += npkts * qp->pmtu;
-+			diff -= npkts;
-+			if (!diff)
-+				break;
-+		}
-+	}
-+	if (wqe->wr.opcode == IB_WR_TID_RDMA_WRITE) {
-+		rvt_skip_sge(&qpriv->tid_ss,
-+			     (req->cur_seg * req->seg_len) + flow->sent, 0);
-+		/*
-+		 * Packet PSN is based on flow_state.spsn + flow->pkt. However,
-+		 * during a RESYNC, the generation is incremented and the
-+		 * sequence is reset to 0. Since we've adjusted the npkts in the
-+		 * flow and the SGE has been sufficiently advanced, we have to
-+		 * adjust flow->pkt in order to calculate the correct PSN.
-+		 */
-+		flow->pkt -= flow->resync_npkts;
-+	}
++static uint hfi2_ipoib_ring_hwat(struct hfi2_ipoib_txq *txq)
++{
++	return min_t(uint, txq->priv->netdev->tx_queue_len,
++		     txq->tx_ring.max_items - 1);
++}
 +
-+	if (flow->tid_offset ==
-+	    EXP_TID_GET(flow->tid_entry[tididx], LEN) * PAGE_SIZE) {
-+		tididx++;
-+		flow->tid_offset = 0;
-+	}
-+	flow->tid_idx = tididx;
-+	if (wqe->wr.opcode == IB_WR_TID_RDMA_READ)
-+		/* Move flow_idx to correct index */
-+		req->flow_idx = fidx;
-+	else
-+		req->clear_tail = fidx;
++static uint hfi2_ipoib_ring_lwat(struct hfi2_ipoib_txq *txq)
++{
++	return min_t(uint, txq->priv->netdev->tx_queue_len,
++		     txq->tx_ring.max_items) >> 1;
++}
 +
-+	trace_hfi2_tid_flow_restart_req(qp, fidx, flow);
-+	trace_hfi2_tid_req_restart_req(qp, 0, wqe->wr.opcode, wqe->psn,
-+				       wqe->lpsn, req);
-+	req->state = TID_REQUEST_ACTIVE;
-+	if (wqe->wr.opcode == IB_WR_TID_RDMA_WRITE) {
-+		/* Reset all the flows that we are going to resend */
-+		fidx = CIRC_NEXT(fidx, MAX_FLOWS);
-+		i = qpriv->s_tid_tail;
-+		do {
-+			for (; CIRC_CNT(req->setup_head, fidx, MAX_FLOWS);
-+			     fidx = CIRC_NEXT(fidx, MAX_FLOWS)) {
-+				req->flows[fidx].sent = 0;
-+				req->flows[fidx].pkt = 0;
-+				req->flows[fidx].tid_idx = 0;
-+				req->flows[fidx].tid_offset = 0;
-+				req->flows[fidx].resync_npkts = 0;
-+			}
-+			if (i == qpriv->s_tid_cur)
-+				break;
-+			do {
-+				i = (++i == qp->s_size ? 0 : i);
-+				wqe = rvt_get_swqe_ptr(qp, i);
-+			} while (wqe->wr.opcode != IB_WR_TID_RDMA_WRITE);
-+			req = wqe_to_tid_req(wqe);
-+			req->cur_seg = req->ack_seg;
-+			fidx = req->acked_tail;
-+			/* Pull req->clear_tail back */
-+			req->clear_tail = fidx;
-+		} while (1);
++static void hfi2_ipoib_check_queue_depth(struct hfi2_ipoib_txq *txq)
++{
++	++txq->tx_ring.sent_txreqs;
++	if (hfi2_ipoib_used(txq) >= hfi2_ipoib_ring_hwat(txq) &&
++	    !atomic_xchg(&txq->tx_ring.ring_full, 1)) {
++		trace_hfi2_txq_full(txq);
++		hfi2_ipoib_stop_txq(txq);
 +	}
 +}
 +
-+void hfi2_qp_kern_exp_rcv_clear_all(struct rvt_qp *qp)
++static void hfi2_ipoib_check_queue_stopped(struct hfi2_ipoib_txq *txq)
 +{
-+	int i, ret;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_flow_state *fs;
++	struct net_device *dev = txq->priv->netdev;
 +
-+	if (qp->ibqp.qp_type != IB_QPT_RC || !HFI2_CAP_IS_KSET(TID_RDMA))
++	/* If shutting down just return as queue state is irrelevant */
++	if (unlikely(dev->reg_state != NETREG_REGISTERED))
 +		return;
 +
 +	/*
-+	 * First, clear the flow to help prevent any delayed packets from
-+	 * being delivered.
++	 * When the queue has been drained to less than half full it will be
++	 * restarted.
++	 * The size of the txreq ring is fixed at initialization.
++	 * The tx queue len can be adjusted upward while the interface is
++	 * running.
++	 * The tx queue len can be large enough to overflow the txreq_ring.
++	 * Use the minimum of the current tx_queue_len or the rings max txreqs
++	 * to protect against ring overflow.
 +	 */
-+	fs = &qpriv->flow_state;
-+	if (fs->index != RXE_NUM_TID_FLOWS)
-+		hfi2_kern_clear_hw_flow(qpriv->rcd, qp);
-+
-+	for (i = qp->s_acked; i != qp->s_head;) {
-+		struct rvt_swqe *wqe = rvt_get_swqe_ptr(qp, i);
-+
-+		if (++i == qp->s_size)
-+			i = 0;
-+		/* Free only locally allocated TID entries */
-+		if (wqe->wr.opcode != IB_WR_TID_RDMA_READ)
-+			continue;
-+		do {
-+			struct hfi2_swqe_priv *priv = wqe->priv;
-+
-+			ret = hfi2_kern_exp_rcv_clear(&priv->tid_req);
-+		} while (!ret);
-+	}
-+	for (i = qp->s_acked_ack_queue; i != qp->r_head_ack_queue;) {
-+		struct rvt_ack_entry *e = &qp->s_ack_queue[i];
-+
-+		if (++i == rvt_max_atomic(ib_to_rvt(qp->ibqp.device)))
-+			i = 0;
-+		/* Free only locally allocated TID entries */
-+		if (e->opcode != TID_OP(WRITE_REQ))
-+			continue;
-+		do {
-+			struct hfi2_ack_priv *priv = e->priv;
-+
-+			ret = hfi2_kern_exp_rcv_clear(&priv->tid_req);
-+		} while (!ret);
++	if (hfi2_ipoib_used(txq) < hfi2_ipoib_ring_lwat(txq) &&
++	    atomic_xchg(&txq->tx_ring.ring_full, 0)) {
++		trace_hfi2_txq_xmit_unstopped(txq);
++		hfi2_ipoib_wake_txq(txq);
 +	}
 +}
 +
-+bool hfi2_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe)
++static void hfi2_ipoib_free_tx(struct ipoib_txreq *tx, int budget)
 +{
-+	struct rvt_swqe *prev;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	u32 s_prev;
-+	struct tid_rdma_request *req;
++	struct hfi2_ipoib_dev_priv *priv = tx->txq->priv;
 +
-+	s_prev = (qp->s_cur == 0 ? qp->s_size : qp->s_cur) - 1;
-+	prev = rvt_get_swqe_ptr(qp, s_prev);
-+
-+	switch (wqe->wr.opcode) {
-+	case IB_WR_SEND:
-+	case IB_WR_SEND_WITH_IMM:
-+	case IB_WR_SEND_WITH_INV:
-+	case IB_WR_ATOMIC_CMP_AND_SWP:
-+	case IB_WR_ATOMIC_FETCH_AND_ADD:
-+	case IB_WR_RDMA_WRITE:
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		switch (prev->wr.opcode) {
-+		case IB_WR_TID_RDMA_WRITE:
-+			req = wqe_to_tid_req(prev);
-+			if (req->ack_seg != req->total_segs)
-+				goto interlock;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	case IB_WR_RDMA_READ:
-+		if (prev->wr.opcode != IB_WR_TID_RDMA_WRITE)
-+			break;
-+		fallthrough;
-+	case IB_WR_TID_RDMA_READ:
-+		switch (prev->wr.opcode) {
-+		case IB_WR_RDMA_READ:
-+			if (qp->s_acked != qp->s_cur)
-+				goto interlock;
-+			break;
-+		case IB_WR_TID_RDMA_WRITE:
-+			req = wqe_to_tid_req(prev);
-+			if (req->ack_seg != req->total_segs)
-+				goto interlock;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
++	if (likely(!tx->sdma_status)) {
++		dev_sw_netstats_tx_add(priv->netdev, 1, tx->skb->len);
++	} else {
++		++priv->netdev->stats.tx_errors;
++		dd_dev_warn(priv->dd,
++			    "%s: Status = 0x%x pbc 0x%llx txq = %d sde = %d\n",
++			    __func__, tx->sdma_status,
++			    le64_to_cpu(tx->sdma_hdr->pbc), tx->txq->q_idx,
++			    tx->txq->sde->this_idx);
 +	}
-+	return false;
 +
-+interlock:
-+	priv->s_flags |= HFI2_S_TID_WAIT_INTERLCK;
-+	return true;
++	napi_consume_skb(tx->skb, budget);
++	tx->skb = NULL;
++	sdma_txclean(priv->dd, &tx->txreq);
 +}
 +
-+/* Does @sge meet the alignment requirements for tid rdma? */
-+static inline bool hfi2_check_sge_align(struct rvt_qp *qp, struct rvt_sge *sge,
-+					int num_sge)
++static void hfi2_ipoib_drain_tx_ring(struct hfi2_ipoib_txq *txq)
 +{
++	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++	int i;
++	struct ipoib_txreq *tx;
++
++	for (i = 0; i < tx_ring->max_items; i++) {
++		tx = hfi2_txreq_from_idx(tx_ring, i);
++		tx->complete = 0;
++		dev_kfree_skb_any(tx->skb);
++		tx->skb = NULL;
++		sdma_txclean(txq->priv->dd, &tx->txreq);
++	}
++	tx_ring->head = 0;
++	tx_ring->tail = 0;
++	tx_ring->complete_txreqs = 0;
++	tx_ring->sent_txreqs = 0;
++	tx_ring->avail = hfi2_ipoib_ring_hwat(txq);
++}
++
++static int hfi2_ipoib_poll_tx_ring(struct napi_struct *napi, int budget)
++{
++	struct hfi2_ipoib_txq *txq =
++		container_of(napi, struct hfi2_ipoib_txq, napi);
++	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++	u32 head = tx_ring->head;
++	u32 max_tx = tx_ring->max_items;
++	int work_done;
++	struct ipoib_txreq *tx =  hfi2_txreq_from_idx(tx_ring, head);
++
++	trace_hfi2_txq_poll(txq);
++	for (work_done = 0; work_done < budget; work_done++) {
++		/* See hfi2_ipoib_sdma_complete() */
++		if (!smp_load_acquire(&tx->complete))
++			break;
++		tx->complete = 0;
++		trace_hfi2_tx_produce(tx, head);
++		hfi2_ipoib_free_tx(tx, budget);
++		head = CIRC_NEXT(head, max_tx);
++		tx =  hfi2_txreq_from_idx(tx_ring, head);
++	}
++	tx_ring->complete_txreqs += work_done;
++
++	/* Finished freeing tx items so store the head value. */
++	smp_store_release(&tx_ring->head, head);
++
++	hfi2_ipoib_check_queue_stopped(txq);
++
++	if (work_done < budget)
++		napi_complete_done(napi, work_done);
++
++	return work_done;
++}
++
++static void hfi2_ipoib_sdma_complete(struct sdma_txreq *txreq, int status)
++{
++	struct ipoib_txreq *tx = container_of(txreq, struct ipoib_txreq, txreq);
++
++	trace_hfi2_txq_complete(tx->txq);
++	tx->sdma_status = status;
++	/* see hfi2_ipoib_poll_tx_ring */
++	smp_store_release(&tx->complete, 1);
++	napi_schedule_irqoff(&tx->txq->napi);
++}
++
++static int hfi2_ipoib_build_ulp_payload(struct ipoib_txreq *tx,
++					struct ipoib_txparms *txp)
++{
++	struct hfi2_devdata *dd = txp->dd;
++	struct sdma_txreq *txreq = &tx->txreq;
++	struct sk_buff *skb = tx->skb;
++	int ret = 0;
 +	int i;
 +
-+	for (i = 0; i < num_sge; i++, sge++) {
-+		trace_hfi2_sge_check_align(qp, i, sge);
-+		if ((u64)sge->vaddr & ~PAGE_MASK ||
-+		    sge->sge_length & ~PAGE_MASK)
-+			return false;
++	if (skb_headlen(skb)) {
++		ret = sdma_txadd_kvaddr(dd, txreq, skb->data, skb_headlen(skb));
++		if (unlikely(ret))
++			return ret;
 +	}
-+	return true;
++
++	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
++		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
++
++		ret = sdma_txadd_page(dd,
++				      txreq,
++				      skb_frag_page(frag),
++				      skb_frag_off(frag),
++				      skb_frag_size(frag));
++		if (unlikely(ret))
++			break;
++	}
++
++	return ret;
 +}
 +
-+void setup_tid_rdma_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe)
++static int hfi2_ipoib_build_tx_desc(struct ipoib_txreq *tx,
++				    struct ipoib_txparms *txp)
 +{
-+	struct hfi2_qp_priv *qpriv = (struct hfi2_qp_priv *)qp->priv;
-+	struct hfi2_swqe_priv *priv = wqe->priv;
-+	struct tid_rdma_params *remote;
-+	enum ib_wr_opcode new_opcode;
-+	bool do_tid_rdma = false;
-+	struct hfi2_pportdata *ppd = qpriv->rcd->ppd;
++	struct hfi2_devdata *dd = txp->dd;
++	struct sdma_txreq *txreq = &tx->txreq;
++	struct hfi2_sdma_header *sdma_hdr = tx->sdma_hdr;
++	u16 pkt_bytes =
++		sizeof(sdma_hdr->pbc) + (txp->hdr_dwords << 2) + tx->skb->len;
++	int ret;
 +
-+	if ((rdma_ah_get_dlid(&qp->remote_ah_attr) & ~((1 << ppd->lmc) - 1)) ==
-+	    ppd->lid)
-+		return;
-+	if (qpriv->hdr_type != HFI2_PKT_TYPE_9B)
-+		return;
++	ret = sdma_txinit(dd, txreq, 0, pkt_bytes, hfi2_ipoib_sdma_complete);
++	if (unlikely(ret))
++		return ret;
 +
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+	/*
-+	 * If TID RDMA is disabled by the negotiation, don't
-+	 * use it.
-+	 */
-+	if (!remote)
-+		goto exit;
++	/* add pbc + headers */
++	ret = sdma_txadd_kvaddr(dd,
++				txreq,
++				sdma_hdr,
++				sizeof(sdma_hdr->pbc) + (txp->hdr_dwords << 2));
++	if (unlikely(ret))
++		return ret;
 +
-+	if (wqe->wr.opcode == IB_WR_RDMA_READ) {
-+		if (hfi2_check_sge_align(qp, &wqe->sg_list[0],
-+					 wqe->wr.num_sge)) {
-+			new_opcode = IB_WR_TID_RDMA_READ;
-+			do_tid_rdma = true;
-+		}
-+	} else if (wqe->wr.opcode == IB_WR_RDMA_WRITE) {
-+		/*
-+		 * TID RDMA is enabled for this RDMA WRITE request iff:
-+		 *   1. The remote address is page-aligned,
-+		 *   2. The length is larger than the minimum segment size,
-+		 *   3. The length is page-multiple.
-+		 */
-+		if (!(wqe->rdma_wr.remote_addr & ~PAGE_MASK) &&
-+		    !(wqe->length & ~PAGE_MASK)) {
-+			new_opcode = IB_WR_TID_RDMA_WRITE;
-+			do_tid_rdma = true;
-+		}
++	/* add the ulp payload */
++	return hfi2_ipoib_build_ulp_payload(tx, txp);
++}
++
++static void hfi2_ipoib_build_ib_tx_headers(struct ipoib_txreq *tx,
++					   struct ipoib_txparms *txp)
++{
++	struct hfi2_ipoib_dev_priv *priv = tx->txq->priv;
++	struct send_context *sc = hfi2_qp_to_send_context(priv->qp, txp->flow.sc5);
++	struct hfi2_sdma_header *sdma_hdr = tx->sdma_hdr;
++	struct sk_buff *skb = tx->skb;
++	struct hfi2_pportdata *ppd = ppd_from_ibp(txp->ibp);
++	struct hfi2_devdata *dd = ppd->dd;
++	struct rdma_ah_attr *ah_attr = txp->ah_attr;
++	struct ib_other_headers *ohdr;
++	struct ib_grh *grh;
++	u64 pbc;
++	u16 dwords;
++	u16 slid;
++	u16 dlid;
++	u16 lrh0;
++	u32 bth0;
++	u32 sqpn = (u32)(priv->netdev->dev_addr[1] << 16 |
++			 priv->netdev->dev_addr[2] << 8 |
++			 priv->netdev->dev_addr[3]);
++	u16 payload_dwords;
++	u8 pad_cnt;
++
++	pad_cnt = -skb->len & 3;
++
++	/* Includes ICRC */
++	payload_dwords = ((skb->len + pad_cnt) >> 2) + SIZE_OF_CRC;
++
++	/* header size in dwords LRH+BTH+DETH = (8+12+8)/4. */
++	txp->hdr_dwords = 7;
++
++	if (rdma_ah_get_ah_flags(ah_attr) & IB_AH_GRH) {
++		grh = &sdma_hdr->hdr.ibh.u.l.grh;
++		txp->hdr_dwords +=
++			hfi2_make_grh(txp->ibp,
++				      grh,
++				      rdma_ah_read_grh(ah_attr),
++				      txp->hdr_dwords - LRH_9B_DWORDS,
++				      payload_dwords);
++		lrh0 = HFI2_LRH_GRH;
++		ohdr = &sdma_hdr->hdr.ibh.u.l.oth;
++	} else {
++		lrh0 = HFI2_LRH_BTH;
++		ohdr = &sdma_hdr->hdr.ibh.u.oth;
 +	}
 +
-+	if (do_tid_rdma) {
-+		if (hfi2_kern_exp_rcv_alloc_flows(&priv->tid_req, GFP_ATOMIC))
-+			goto exit;
-+		wqe->wr.opcode = new_opcode;
-+		priv->tid_req.seg_len =
-+			min_t(u32, remote->max_len, wqe->length);
-+		priv->tid_req.total_segs =
-+			DIV_ROUND_UP(wqe->length, priv->tid_req.seg_len);
-+		/* Compute the last PSN of the request */
-+		wqe->lpsn = wqe->psn;
-+		if (wqe->wr.opcode == IB_WR_TID_RDMA_READ) {
-+			priv->tid_req.n_flows = remote->max_read;
-+			qpriv->tid_r_reqs++;
-+			wqe->lpsn += rvt_div_round_up_mtu(qp, wqe->length) - 1;
++	lrh0 |= (rdma_ah_get_sl(ah_attr) & 0xf) << 4;
++	lrh0 |= (txp->flow.sc5 & 0xf) << 12;
++
++	dlid = opa_get_lid(rdma_ah_get_dlid(ah_attr), 9B);
++	if (dlid == be16_to_cpu(IB_LID_PERMISSIVE)) {
++		slid = be16_to_cpu(IB_LID_PERMISSIVE);
++	} else {
++		u16 lid = (u16)ppd->lid;
++
++		if (lid) {
++			lid |= rdma_ah_get_path_bits(ah_attr) &
++				((1 << ppd->lmc) - 1);
++			slid = lid;
 +		} else {
-+			wqe->lpsn += priv->tid_req.total_segs - 1;
-+			atomic_inc(&qpriv->n_requests);
++			slid = be16_to_cpu(IB_LID_PERMISSIVE);
++		}
++	}
++
++	/* Includes ICRC */
++	dwords = txp->hdr_dwords + payload_dwords;
++
++	/* Build the lrh */
++	sdma_hdr->hdr.hdr_type = HFI2_PKT_TYPE_9B;
++	hfi2_make_ib_hdr(&sdma_hdr->hdr.ibh, lrh0, dwords, dlid, slid);
++
++	/* Build the bth */
++	bth0 = (IB_OPCODE_UD_SEND_ONLY << 24) | (pad_cnt << 20) | priv->pkey;
++
++	ohdr->bth[0] = cpu_to_be32(bth0);
++	ohdr->bth[1] = cpu_to_be32(txp->dqpn);
++	ohdr->bth[2] = cpu_to_be32(mask_psn((u32)txp->txq->tx_ring.sent_txreqs));
++
++	/* Build the deth */
++	ohdr->u.ud.deth[0] = cpu_to_be32(priv->qkey);
++	ohdr->u.ud.deth[1] = cpu_to_be32((txp->entropy <<
++					  HFI2_IPOIB_ENTROPY_SHIFT) | sqpn);
++
++	/* Construct the pbc. */
++	pbc = dd->params->create_pbc(ppd, false, pbc_sc4_flag(txp->flow.sc5), 0,
++				     sc_to_vlt(ppd, txp->flow.sc5),
++				     dwords - SIZE_OF_CRC +
++					(sizeof(sdma_hdr->pbc) >> 2),
++				     PBC_L2_9B, dlid,
++				     sc->hw_context);
++	sdma_hdr->pbc = cpu_to_le64(pbc);
++}
++
++static struct ipoib_txreq *hfi2_ipoib_send_dma_common(struct net_device *dev,
++						      struct sk_buff *skb,
++						      struct ipoib_txparms *txp)
++{
++	struct hfi2_pportdata *ppd = ppd_from_ibp(txp->ibp);
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	struct hfi2_ipoib_txq *txq = txp->txq;
++	struct ipoib_txreq *tx;
++	struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++	u32 tail = tx_ring->tail;
++	int ret;
++
++	if (unlikely(!tx_ring->avail)) {
++		u32 head;
++
++		if (hfi2_ipoib_used(txq) >= hfi2_ipoib_ring_hwat(txq))
++			/* This shouldn't happen with a stopped queue */
++			return ERR_PTR(-ENOMEM);
++		/* See hfi2_ipoib_poll_tx_ring() */
++		head = smp_load_acquire(&tx_ring->head);
++		tx_ring->avail =
++			min_t(u32, hfi2_ipoib_ring_hwat(txq),
++			      CIRC_CNT(head, tail, tx_ring->max_items));
++	} else {
++		tx_ring->avail--;
++	}
++	tx = hfi2_txreq_from_idx(tx_ring, tail);
++	trace_hfi2_txq_alloc_tx(txq);
++
++	/* so that we can test if the sdma descriptors are there */
++	tx->txreq.num_desc = 0;
++	tx->txq = txq;
++	tx->skb = skb;
++	INIT_LIST_HEAD(&tx->txreq.list);
++
++	hfi2_ipoib_build_ib_tx_headers(tx, txp);
++
++	ret = hfi2_ipoib_build_tx_desc(tx, txp);
++	if (likely(!ret)) {
++		if (txq->flow.as_int != txp->flow.as_int) {
++			txq->flow.tx_queue = txp->flow.tx_queue;
++			txq->flow.sc5 = txp->flow.sc5;
++			txq->sde = sdma_select_engine_sc(ppd,
++							 txp->flow.tx_queue,
++							 txp->flow.sc5);
++			trace_hfi2_flow_switch(txq);
 +		}
 +
-+		priv->tid_req.cur_seg = 0;
-+		priv->tid_req.comp_seg = 0;
-+		priv->tid_req.ack_seg = 0;
-+		priv->tid_req.state = TID_REQUEST_INACTIVE;
-+		/*
-+		 * Reset acked_tail.
-+		 * TID RDMA READ does not have ACKs so it does not
-+		 * update the pointer. We have to reset it so TID RDMA
-+		 * WRITE does not get confused.
-+		 */
-+		priv->tid_req.acked_tail = priv->tid_req.setup_head;
-+		trace_hfi2_tid_req_setup_tid_wqe(qp, 1, wqe->wr.opcode,
-+						 wqe->psn, wqe->lpsn,
-+						 &priv->tid_req);
++		return tx;
 +	}
-+exit:
-+	rcu_read_unlock();
++
++	sdma_txclean(priv->dd, &tx->txreq);
++
++	return ERR_PTR(ret);
 +}
 +
-+/* TID RDMA WRITE functions */
-+
-+u32 hfi2_build_tid_rdma_write_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+				  struct ib_other_headers *ohdr, u32 *bth1,
-+				  u32 *bth2, u32 *len)
++static int hfi2_ipoib_submit_tx_list(struct net_device *dev,
++				     struct hfi2_ipoib_txq *txq)
 +{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_request *req = wqe_to_tid_req(wqe);
-+	struct tid_rdma_params *remote;
++	int ret;
++	u16 count_out;
 +
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+	/*
-+	 * Set the number of flow to be used based on negotiated
-+	 * parameters.
-+	 */
-+	req->n_flows = remote->max_write;
-+	req->state = TID_REQUEST_ACTIVE;
++	ret = sdma_send_txlist(txq->sde,
++			       iowait_get_ib_work(&txq->wait),
++			       &txq->tx_list,
++			       &count_out);
++	if (likely(!ret) || ret == -EBUSY || ret == -ECOMM)
++		return ret;
 +
-+	KDETH_RESET(ohdr->u.tid_rdma.w_req.kdeth0, KVER, 0x1);
-+	KDETH_RESET(ohdr->u.tid_rdma.w_req.kdeth1, JKEY, remote->jkey);
-+	ohdr->u.tid_rdma.w_req.reth.vaddr =
-+		cpu_to_be64(wqe->rdma_wr.remote_addr + (wqe->length - *len));
-+	ohdr->u.tid_rdma.w_req.reth.rkey = cpu_to_be32(wqe->rdma_wr.rkey);
-+	ohdr->u.tid_rdma.w_req.reth.length = cpu_to_be32(*len);
-+	ohdr->u.tid_rdma.w_req.verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	*bth1 &= ~RVT_QPN_MASK;
-+	*bth1 |= remote->qp;
-+	qp->s_state = TID_OP(WRITE_REQ);
-+	qp->s_flags |= HFI2_S_WAIT_TID_RESP;
-+	*bth2 |= IB_BTH_REQ_ACK;
-+	*len = 0;
++	dd_dev_warn(txq->priv->dd, "cannot send skb tx list, err %d.\n", ret);
 +
-+	rcu_read_unlock();
-+	return sizeof(ohdr->u.tid_rdma.w_req) / sizeof(u32);
++	return ret;
 +}
 +
-+static u32 hfi2_compute_tid_rdma_flow_wt(struct rvt_qp *qp)
++static int hfi2_ipoib_flush_tx_list(struct net_device *dev,
++				    struct hfi2_ipoib_txq *txq)
 +{
-+	/*
-+	 * Heuristic for computing the RNR timeout when waiting on the flow
-+	 * queue. Rather than a computationaly expensive exact estimate of when
-+	 * a flow will be available, we assume that if a QP is at position N in
-+	 * the flow queue it has to wait approximately (N + 1) * (number of
-+	 * segments between two sync points). The rationale for this is that
-+	 * flows are released and recycled at each sync point.
-+	 */
-+	return (MAX_TID_FLOW_PSN * qp->pmtu) >> TID_RDMA_SEGMENT_SHIFT;
-+}
-+
-+static u32 position_in_queue(struct hfi2_qp_priv *qpriv,
-+			     struct tid_queue *queue)
-+{
-+	return qpriv->tid_enqueue - queue->dequeue;
-+}
-+
-+/*
-+ * @qp: points to rvt_qp context.
-+ * @to_seg: desired RNR timeout in segments.
-+ * Return: index of the next highest timeout in the ib_hfi2_rnr_table[]
-+ */
-+static u32 hfi2_compute_tid_rnr_timeout(struct rvt_qp *qp, u32 to_seg)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	u64 timeout;
-+	u32 bytes_per_us;
-+	u8 i;
-+
-+	bytes_per_us = active_egress_rate(qpriv->rcd->ppd) / 8;
-+	timeout = (to_seg * TID_RDMA_MAX_SEGMENT_SIZE) / bytes_per_us;
-+	/*
-+	 * Find the next highest value in the RNR table to the required
-+	 * timeout. This gives the responder some padding.
-+	 */
-+	for (i = 1; i <= IB_AETH_CREDIT_MASK; i++)
-+		if (rvt_rnr_tbl_to_usec(i) >= timeout)
-+			return i;
-+	return 0;
-+}
-+
-+/*
-+ * Central place for resource allocation at TID write responder,
-+ * is called from write_req and write_data interrupt handlers as
-+ * well as the send thread when a queued QP is scheduled for
-+ * resource allocation.
-+ *
-+ * Iterates over (a) segments of a request and then (b) queued requests
-+ * themselves to allocate resources for up to local->max_write
-+ * segments across multiple requests. Stop allocating when we
-+ * hit a sync point, resume allocating after data packets at
-+ * sync point have been received.
-+ *
-+ * Resource allocation and sending of responses is decoupled. The
-+ * request/segment which are being allocated and sent are as follows.
-+ * Resources are allocated for:
-+ *     [request: qpriv->r_tid_alloc, segment: req->alloc_seg]
-+ * The send thread sends:
-+ *     [request: qp->s_tail_ack_queue, segment:req->cur_seg]
-+ */
-+static void hfi2_tid_write_alloc_resources(struct rvt_qp *qp, bool intr_ctx)
-+{
-+	struct tid_rdma_request *req;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct hfi2_ctxtdata *rcd = qpriv->rcd;
-+	struct tid_rdma_params *local = &qpriv->tid_rdma.local;
-+	struct rvt_ack_entry *e;
-+	u32 npkts, to_seg;
-+	bool last;
 +	int ret = 0;
 +
-+	lockdep_assert_held(&qp->s_lock);
++	if (!list_empty(&txq->tx_list)) {
++		/* Flush the current list */
++		ret = hfi2_ipoib_submit_tx_list(dev, txq);
 +
-+	while (1) {
-+		trace_hfi2_rsp_tid_write_alloc_res(qp, 0);
-+		trace_hfi2_tid_write_rsp_alloc_res(qp);
-+		/*
-+		 * Don't allocate more segments if a RNR NAK has already been
-+		 * scheduled to avoid messing up qp->r_psn: the RNR NAK will
-+		 * be sent only when all allocated segments have been sent.
-+		 * However, if more segments are allocated before that, TID RDMA
-+		 * WRITE RESP packets will be sent out for these new segments
-+		 * before the RNR NAK packet. When the requester receives the
-+		 * RNR NAK packet, it will restart with qp->s_last_psn + 1,
-+		 * which does not match qp->r_psn and will be dropped.
-+		 * Consequently, the requester will exhaust its retries and
-+		 * put the qp into error state.
-+		 */
-+		if (qpriv->rnr_nak_state == TID_RNR_NAK_SEND)
-+			break;
-+
-+		/* No requests left to process */
-+		if (qpriv->r_tid_alloc == qpriv->r_tid_head) {
-+			/* If all data has been received, clear the flow */
-+			if (qpriv->flow_state.index < RXE_NUM_TID_FLOWS &&
-+			    !qpriv->alloc_w_segs) {
-+				hfi2_kern_clear_hw_flow(rcd, qp);
-+				qpriv->s_flags &= ~HFI2_R_TID_SW_PSN;
-+			}
-+			break;
-+		}
-+
-+		e = &qp->s_ack_queue[qpriv->r_tid_alloc];
-+		if (e->opcode != TID_OP(WRITE_REQ))
-+			goto next_req;
-+		req = ack_to_tid_req(e);
-+		trace_hfi2_tid_req_write_alloc_res(qp, 0, e->opcode, e->psn,
-+						   e->lpsn, req);
-+		/* Finished allocating for all segments of this request */
-+		if (req->alloc_seg >= req->total_segs)
-+			goto next_req;
-+
-+		/* Can allocate only a maximum of local->max_write for a QP */
-+		if (qpriv->alloc_w_segs >= local->max_write)
-+			break;
-+
-+		/* Don't allocate at a sync point with data packets pending */
-+		if (qpriv->sync_pt && qpriv->alloc_w_segs)
-+			break;
-+
-+		/* All data received at the sync point, continue */
-+		if (qpriv->sync_pt && !qpriv->alloc_w_segs) {
-+			hfi2_kern_clear_hw_flow(rcd, qp);
-+			qpriv->sync_pt = false;
-+			qpriv->s_flags &= ~HFI2_R_TID_SW_PSN;
-+		}
-+
-+		/* Allocate flow if we don't have one */
-+		if (qpriv->flow_state.index >= RXE_NUM_TID_FLOWS) {
-+			ret = hfi2_kern_setup_hw_flow(qpriv->rcd, qp);
-+			if (ret) {
-+				to_seg = hfi2_compute_tid_rdma_flow_wt(qp) *
-+					 position_in_queue(qpriv,
-+							   &rcd->flow_queue);
-+				break;
-+			}
-+		}
-+
-+		npkts = rvt_div_round_up_mtu(qp, req->seg_len);
-+
-+		/*
-+		 * We are at a sync point if we run out of KDETH PSN space.
-+		 * Last PSN of every generation is reserved for RESYNC.
-+		 */
-+		if (qpriv->flow_state.psn + npkts > MAX_TID_FLOW_PSN - 1) {
-+			qpriv->sync_pt = true;
-+			break;
-+		}
-+
-+		/*
-+		 * If overtaking req->acked_tail, send an RNR NAK. Because the
-+		 * QP is not queued in this case, and the issue can only be
-+		 * caused by a delay in scheduling the second leg which we
-+		 * cannot estimate, we use a rather arbitrary RNR timeout of
-+		 * (MAX_FLOWS / 2) segments
-+		 */
-+		if (!CIRC_SPACE(req->setup_head, req->acked_tail, MAX_FLOWS)) {
-+			ret = -EAGAIN;
-+			to_seg = MAX_FLOWS >> 1;
-+			tid_rdma_trigger_ack(qp);
-+			break;
-+		}
-+
-+		/* Try to allocate rcv array / TID entries */
-+		ret = hfi2_kern_exp_rcv_setup(req, &req->ss, &last);
-+		if (ret == -EAGAIN)
-+			to_seg = position_in_queue(qpriv, &rcd->rarr_queue);
-+		if (ret)
-+			break;
-+
-+		qpriv->alloc_w_segs++;
-+		req->alloc_seg++;
-+		continue;
-+next_req:
-+		/* Begin processing the next request */
-+		if (++qpriv->r_tid_alloc >
-+		    rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
-+			qpriv->r_tid_alloc = 0;
++		if (unlikely(ret))
++			if (ret != -EBUSY)
++				++dev->stats.tx_carrier_errors;
 +	}
 +
-+	/*
-+	 * Schedule an RNR NAK to be sent if (a) flow or rcv array allocation
-+	 * has failed (b) we are called from the rcv handler interrupt context
-+	 * (c) an RNR NAK has not already been scheduled
-+	 */
-+	if (ret == -EAGAIN && intr_ctx && !qp->r_nak_state)
-+		goto send_rnr_nak;
-+
-+	return;
-+
-+send_rnr_nak:
-+	lockdep_assert_held(&qp->r_lock);
-+
-+	/* Set r_nak_state to prevent unrelated events from generating NAK's */
-+	qp->r_nak_state = hfi2_compute_tid_rnr_timeout(qp, to_seg) | IB_RNR_NAK;
-+
-+	/* Pull back r_psn to the segment being RNR NAK'd */
-+	qp->r_psn = e->psn + req->alloc_seg;
-+	qp->r_ack_psn = qp->r_psn;
-+	/*
-+	 * Pull back r_head_ack_queue to the ack entry following the request
-+	 * being RNR NAK'd. This allows resources to be allocated to the request
-+	 * if the queued QP is scheduled.
-+	 */
-+	qp->r_head_ack_queue = qpriv->r_tid_alloc + 1;
-+	if (qp->r_head_ack_queue > rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
-+		qp->r_head_ack_queue = 0;
-+	qpriv->r_tid_head = qp->r_head_ack_queue;
-+	/*
-+	 * These send side fields are used in make_rc_ack(). They are set in
-+	 * hfi2_send_rc_ack() but must be set here before dropping qp->s_lock
-+	 * for consistency
-+	 */
-+	qp->s_nak_state = qp->r_nak_state;
-+	qp->s_ack_psn = qp->r_ack_psn;
-+	/*
-+	 * Clear the ACK PENDING flag to prevent unwanted ACK because we
-+	 * have modified qp->s_ack_psn here.
-+	 */
-+	qp->s_flags &= ~(RVT_S_ACK_PENDING);
-+
-+	trace_hfi2_rsp_tid_write_alloc_res(qp, qp->r_psn);
-+	/*
-+	 * qpriv->rnr_nak_state is used to determine when the scheduled RNR NAK
-+	 * has actually been sent. qp->s_flags RVT_S_ACK_PENDING bit cannot be
-+	 * used for this because qp->s_lock is dropped before calling
-+	 * hfi2_send_rc_ack() leading to inconsistency between the receive
-+	 * interrupt handlers and the send thread in make_rc_ack()
-+	 */
-+	qpriv->rnr_nak_state = TID_RNR_NAK_SEND;
-+
-+	/*
-+	 * Schedule RNR NAK to be sent. RNR NAK's are scheduled from the receive
-+	 * interrupt handlers but will be sent from the send engine behind any
-+	 * previous responses that may have been scheduled
-+	 */
-+	rc_defered_ack(rcd, qp);
++	return ret;
 +}
 +
-+void hfi2_rc_rcv_tid_rdma_write_req(struct hfi2_packet *packet)
++static int hfi2_ipoib_submit_tx(struct hfi2_ipoib_txq *txq,
++				struct ipoib_txreq *tx)
 +{
-+	/* HANDLER FOR TID RDMA WRITE REQUEST packet (Responder side)*/
++	int ret;
 +
-+	/*
-+	 * 1. Verify TID RDMA WRITE REQ as per IB_OPCODE_RC_RDMA_WRITE_FIRST
-+	 *    (see hfi2_rc_rcv())
-+	 *     - Don't allow 0-length requests.
-+	 * 2. Put TID RDMA WRITE REQ into the response queue (s_ack_queue)
-+	 *     - Setup struct tid_rdma_req with request info
-+	 *     - Prepare struct tid_rdma_flow array?
-+	 * 3. Set the qp->s_ack_state as state diagram in design doc.
-+	 * 4. Set RVT_S_RESP_PENDING in s_flags.
-+	 * 5. Kick the send engine (hfi2_schedule_send())
-+	 */
-+	struct hfi2_ctxtdata *rcd = packet->rcd;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_ack_entry *e;
-+	unsigned long flags;
-+	struct ib_reth *reth;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_request *req;
-+	u32 bth0, psn, len, rkey, num_segs;
-+	bool fecn;
-+	u8 next;
-+	u64 vaddr;
-+	int diff;
-+
-+	bth0 = be32_to_cpu(ohdr->bth[0]);
-+	if (hfi2_ruc_check_hdr(ibp, packet))
-+		return;
-+
-+	fecn = process_ecn(qp, packet);
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	trace_hfi2_rsp_rcv_tid_write_req(qp, psn);
-+
-+	if (qp->state == IB_QPS_RTR && !(qp->r_flags & RVT_R_COMM_EST))
-+		rvt_comm_est(qp);
-+
-+	if (unlikely(!(qp->qp_access_flags & IB_ACCESS_REMOTE_WRITE)))
-+		goto nack_inv;
-+
-+	reth = &ohdr->u.tid_rdma.w_req.reth;
-+	vaddr = be64_to_cpu(reth->vaddr);
-+	len = be32_to_cpu(reth->length);
-+
-+	num_segs = DIV_ROUND_UP(len, qpriv->tid_rdma.local.max_len);
-+	diff = delta_psn(psn, qp->r_psn);
-+	if (unlikely(diff)) {
-+		tid_rdma_rcv_err(packet, ohdr, qp, psn, diff, fecn);
-+		return;
++	ret = sdma_send_txreq(txq->sde,
++			      iowait_get_ib_work(&txq->wait),
++			      &tx->txreq,
++			      txq->pkts_sent);
++	if (likely(!ret)) {
++		txq->pkts_sent = true;
++		iowait_starve_clear(txq->pkts_sent, &txq->wait);
 +	}
 +
-+	/*
-+	 * The resent request which was previously RNR NAK'd is inserted at the
-+	 * location of the original request, which is one entry behind
-+	 * r_head_ack_queue
-+	 */
-+	if (qpriv->rnr_nak_state)
-+		qp->r_head_ack_queue =
-+			qp->r_head_ack_queue ?
-+				qp->r_head_ack_queue - 1 :
-+				rvt_size_atomic(ib_to_rvt(qp->ibqp.device));
-+
-+	/* We've verified the request, insert it into the ack queue. */
-+	next = qp->r_head_ack_queue + 1;
-+	if (next > rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
-+		next = 0;
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+	if (unlikely(next == qp->s_acked_ack_queue)) {
-+		if (!qp->s_ack_queue[next].sent)
-+			goto nack_inv_unlock;
-+		update_ack_queue(qp, next);
-+	}
-+	e = &qp->s_ack_queue[qp->r_head_ack_queue];
-+	req = ack_to_tid_req(e);
-+
-+	/* Bring previously RNR NAK'd request back to life */
-+	if (qpriv->rnr_nak_state) {
-+		qp->r_nak_state = 0;
-+		qp->s_nak_state = 0;
-+		qpriv->rnr_nak_state = TID_RNR_NAK_INIT;
-+		qp->r_psn = e->lpsn + 1;
-+		req->state = TID_REQUEST_INIT;
-+		goto update_head;
-+	}
-+
-+	release_rdma_sge_mr(e);
-+
-+	/* The length needs to be in multiples of PAGE_SIZE */
-+	if (!len || len & ~PAGE_MASK)
-+		goto nack_inv_unlock;
-+
-+	rkey = be32_to_cpu(reth->rkey);
-+	qp->r_len = len;
-+
-+	if (e->opcode == TID_OP(WRITE_REQ) &&
-+	    (req->setup_head != req->clear_tail ||
-+	     req->clear_tail != req->acked_tail))
-+		goto nack_inv_unlock;
-+
-+	if (unlikely(!rvt_rkey_ok(qp, &e->rdma_sge, qp->r_len, vaddr, rkey,
-+				  IB_ACCESS_REMOTE_WRITE)))
-+		goto nack_acc;
-+
-+	qp->r_psn += num_segs - 1;
-+
-+	e->opcode = (bth0 >> 24) & 0xff;
-+	e->psn = psn;
-+	e->lpsn = qp->r_psn;
-+	e->sent = 0;
-+
-+	req->n_flows = min_t(u16, num_segs, qpriv->tid_rdma.local.max_write);
-+	req->state = TID_REQUEST_INIT;
-+	req->cur_seg = 0;
-+	req->comp_seg = 0;
-+	req->ack_seg = 0;
-+	req->alloc_seg = 0;
-+	req->isge = 0;
-+	req->seg_len = qpriv->tid_rdma.local.max_len;
-+	req->total_len = len;
-+	req->total_segs = num_segs;
-+	req->r_flow_psn = e->psn;
-+	req->ss.sge = e->rdma_sge;
-+	req->ss.num_sge = 1;
-+
-+	req->flow_idx = req->setup_head;
-+	req->clear_tail = req->setup_head;
-+	req->acked_tail = req->setup_head;
-+
-+	qp->r_state = e->opcode;
-+	qp->r_nak_state = 0;
-+	/*
-+	 * We need to increment the MSN here instead of when we
-+	 * finish sending the result since a duplicate request would
-+	 * increment it more than once.
-+	 */
-+	qp->r_msn++;
-+	qp->r_psn++;
-+
-+	trace_hfi2_tid_req_rcv_write_req(qp, 0, e->opcode, e->psn, e->lpsn,
-+					 req);
-+
-+	if (qpriv->r_tid_tail == HFI2_QP_WQE_INVALID) {
-+		qpriv->r_tid_tail = qp->r_head_ack_queue;
-+	} else if (qpriv->r_tid_tail == qpriv->r_tid_head) {
-+		struct tid_rdma_request *ptr;
-+
-+		e = &qp->s_ack_queue[qpriv->r_tid_tail];
-+		ptr = ack_to_tid_req(e);
-+
-+		if (e->opcode != TID_OP(WRITE_REQ) ||
-+		    ptr->comp_seg == ptr->total_segs) {
-+			if (qpriv->r_tid_tail == qpriv->r_tid_ack)
-+				qpriv->r_tid_ack = qp->r_head_ack_queue;
-+			qpriv->r_tid_tail = qp->r_head_ack_queue;
-+		}
-+	}
-+update_head:
-+	qp->r_head_ack_queue = next;
-+	qpriv->r_tid_head = qp->r_head_ack_queue;
-+
-+	hfi2_tid_write_alloc_resources(qp, true);
-+	trace_hfi2_tid_write_rsp_rcv_req(qp);
-+
-+	/* Schedule the send tasklet. */
-+	qp->s_flags |= RVT_S_RESP_PENDING;
-+	if (fecn)
-+		qp->s_flags |= RVT_S_ECN;
-+	hfi2_schedule_send(qp);
-+
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+	return;
-+
-+nack_inv_unlock:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+nack_inv:
-+	rvt_rc_error(qp, IB_WC_LOC_QP_OP_ERR);
-+	qp->r_nak_state = IB_NAK_INVALID_REQUEST;
-+	qp->r_ack_psn = qp->r_psn;
-+	/* Queue NAK for later */
-+	rc_defered_ack(rcd, qp);
-+	return;
-+nack_acc:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+	rvt_rc_error(qp, IB_WC_LOC_PROT_ERR);
-+	qp->r_nak_state = IB_NAK_REMOTE_ACCESS_ERROR;
-+	qp->r_ack_psn = qp->r_psn;
++	return ret;
 +}
 +
-+u32 hfi2_build_tid_rdma_write_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				   struct ib_other_headers *ohdr, u32 *bth1,
-+				   u32 bth2, u32 *len,
-+				   struct rvt_sge_state **ss)
++static int hfi2_ipoib_send_dma_single(struct net_device *dev,
++				      struct sk_buff *skb,
++				      struct ipoib_txparms *txp)
 +{
-+	struct hfi2_ack_priv *epriv = e->priv;
-+	struct tid_rdma_request *req = &epriv->tid_req;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_flow *flow = NULL;
-+	u32 resp_len = 0, hdwords = 0;
-+	void *resp_addr = NULL;
-+	struct tid_rdma_params *remote;
++	struct hfi2_ipoib_txq *txq = txp->txq;
++	struct hfi2_ipoib_circ_buf *tx_ring;
++	struct ipoib_txreq *tx;
++	int ret;
 +
-+	trace_hfi2_tid_req_build_write_resp(qp, 0, e->opcode, e->psn, e->lpsn,
-+					    req);
-+	trace_hfi2_tid_write_rsp_build_resp(qp);
-+	trace_hfi2_rsp_build_tid_write_resp(qp, bth2);
-+	flow = &req->flows[req->flow_idx];
-+	switch (req->state) {
-+	default:
-+		/*
-+		 * Try to allocate resources here in case QP was queued and was
-+		 * later scheduled when resources became available
-+		 */
-+		hfi2_tid_write_alloc_resources(qp, false);
++	tx = hfi2_ipoib_send_dma_common(dev, skb, txp);
++	if (IS_ERR(tx)) {
++		int ret = PTR_ERR(tx);
 +
-+		/* We've already sent everything which is ready */
-+		if (req->cur_seg >= req->alloc_seg)
-+			goto done;
++		dev_kfree_skb_any(skb);
 +
-+		/*
-+		 * Resources can be assigned but responses cannot be sent in
-+		 * rnr_nak state, till the resent request is received
-+		 */
-+		if (qpriv->rnr_nak_state == TID_RNR_NAK_SENT)
-+			goto done;
-+
-+		req->state = TID_REQUEST_ACTIVE;
-+		trace_hfi2_tid_flow_build_write_resp(qp, req->flow_idx, flow);
-+		req->flow_idx = CIRC_NEXT(req->flow_idx, MAX_FLOWS);
-+		hfi2_add_tid_reap_timer(qp);
-+		break;
-+
-+	case TID_REQUEST_RESEND_ACTIVE:
-+	case TID_REQUEST_RESEND:
-+		trace_hfi2_tid_flow_build_write_resp(qp, req->flow_idx, flow);
-+		req->flow_idx = CIRC_NEXT(req->flow_idx, MAX_FLOWS);
-+		if (!CIRC_CNT(req->setup_head, req->flow_idx, MAX_FLOWS))
-+			req->state = TID_REQUEST_ACTIVE;
-+
-+		hfi2_mod_tid_reap_timer(qp);
-+		break;
-+	}
-+	flow->flow_state.resp_ib_psn = bth2;
-+	resp_addr = (void *)flow->tid_entry;
-+	resp_len = sizeof(*flow->tid_entry) * flow->tidcnt;
-+	req->cur_seg++;
-+
-+	memset(&ohdr->u.tid_rdma.w_rsp, 0, sizeof(ohdr->u.tid_rdma.w_rsp));
-+	epriv->ss.sge.vaddr = resp_addr;
-+	epriv->ss.sge.sge_length = resp_len;
-+	epriv->ss.sge.length = epriv->ss.sge.sge_length;
-+	/*
-+	 * We can safely zero these out. Since the first SGE covers the
-+	 * entire packet, nothing else should even look at the MR.
-+	 */
-+	epriv->ss.sge.mr = NULL;
-+	epriv->ss.sge.m = 0;
-+	epriv->ss.sge.n = 0;
-+
-+	epriv->ss.sg_list = NULL;
-+	epriv->ss.total_len = epriv->ss.sge.sge_length;
-+	epriv->ss.num_sge = 1;
-+
-+	*ss = &epriv->ss;
-+	*len = epriv->ss.total_len;
-+
-+	/* Construct the TID RDMA WRITE RESP packet header */
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+
-+	KDETH_RESET(ohdr->u.tid_rdma.w_rsp.kdeth0, KVER, 0x1);
-+	KDETH_RESET(ohdr->u.tid_rdma.w_rsp.kdeth1, JKEY, remote->jkey);
-+	ohdr->u.tid_rdma.w_rsp.aeth = rvt_compute_aeth(qp);
-+	ohdr->u.tid_rdma.w_rsp.tid_flow_psn = cpu_to_be32(
-+		(flow->flow_state.generation << HFI2_KDETH_BTH_SEQ_SHIFT) |
-+		(flow->flow_state.spsn & HFI2_KDETH_BTH_SEQ_MASK));
-+	ohdr->u.tid_rdma.w_rsp.tid_flow_qp =
-+		cpu_to_be32(qpriv->tid_rdma.local.qp |
-+			    ((flow->idx & TID_RDMA_DESTQP_FLOW_MASK)
-+			     << TID_RDMA_DESTQP_FLOW_SHIFT) |
-+			    qpriv->rcd->ctxt);
-+	ohdr->u.tid_rdma.w_rsp.verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	*bth1 = remote->qp;
-+	rcu_read_unlock();
-+	hdwords = sizeof(ohdr->u.tid_rdma.w_rsp) / sizeof(u32);
-+	qpriv->pending_tid_w_segs++;
-+done:
-+	return hdwords;
-+}
-+
-+static void hfi2_add_tid_reap_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	if (!(qpriv->s_flags & HFI2_R_TID_RSC_TIMER)) {
-+		qpriv->s_flags |= HFI2_R_TID_RSC_TIMER;
-+		qpriv->s_tid_timer.expires =
-+			jiffies + qpriv->tid_timer_timeout_jiffies;
-+		add_timer(&qpriv->s_tid_timer);
-+	}
-+}
-+
-+static void hfi2_mod_tid_reap_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	qpriv->s_flags |= HFI2_R_TID_RSC_TIMER;
-+	mod_timer(&qpriv->s_tid_timer,
-+		  jiffies + qpriv->tid_timer_timeout_jiffies);
-+}
-+
-+static int hfi2_stop_tid_reap_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	int rval = 0;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	if (qpriv->s_flags & HFI2_R_TID_RSC_TIMER) {
-+		rval = timer_delete(&qpriv->s_tid_timer);
-+		qpriv->s_flags &= ~HFI2_R_TID_RSC_TIMER;
-+	}
-+	return rval;
-+}
-+
-+void hfi2_del_tid_reap_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+
-+	timer_delete_sync(&qpriv->s_tid_timer);
-+	qpriv->s_flags &= ~HFI2_R_TID_RSC_TIMER;
-+}
-+
-+static void hfi2_tid_timeout(struct timer_list *t)
-+{
-+	struct hfi2_qp_priv *qpriv = timer_container_of(qpriv, t, s_tid_timer);
-+	struct rvt_qp *qp = qpriv->owner;
-+	struct rvt_dev_info *rdi = ib_to_rvt(qp->ibqp.device);
-+	unsigned long flags;
-+	u32 i;
-+
-+	spin_lock_irqsave(&qp->r_lock, flags);
-+	spin_lock(&qp->s_lock);
-+	if (qpriv->s_flags & HFI2_R_TID_RSC_TIMER) {
-+		dd_dev_warn(dd_from_ibdev(qp->ibqp.device), "[QP%u] %s %d\n",
-+			    qp->ibqp.qp_num, __func__, __LINE__);
-+		trace_hfi2_msg_tid_timeout(/* msg */
-+					   qp, "resource timeout = ",
-+					   (u64)qpriv
-+						   ->tid_timer_timeout_jiffies);
-+		hfi2_stop_tid_reap_timer(qp);
-+		/*
-+		 * Go though the entire ack queue and clear any outstanding
-+		 * HW flow and RcvArray resources.
-+		 */
-+		hfi2_kern_clear_hw_flow(qpriv->rcd, qp);
-+		for (i = 0; i < rvt_max_atomic(rdi); i++) {
-+			struct tid_rdma_request *req =
-+				ack_to_tid_req(&qp->s_ack_queue[i]);
-+
-+			hfi2_kern_exp_rcv_clear_all(req);
-+		}
-+		spin_unlock(&qp->s_lock);
-+		if (qp->ibqp.event_handler) {
-+			struct ib_event ev;
-+
-+			ev.device = qp->ibqp.device;
-+			ev.element.qp = &qp->ibqp;
-+			ev.event = IB_EVENT_QP_FATAL;
-+			qp->ibqp.event_handler(&ev, qp->ibqp.qp_context);
-+		}
-+		rvt_rc_error(qp, IB_WC_RESP_TIMEOUT_ERR);
-+		goto unlock_r_lock;
-+	}
-+	spin_unlock(&qp->s_lock);
-+unlock_r_lock:
-+	spin_unlock_irqrestore(&qp->r_lock, flags);
-+}
-+
-+void hfi2_rc_rcv_tid_rdma_write_resp(struct hfi2_packet *packet)
-+{
-+	/* HANDLER FOR TID RDMA WRITE RESPONSE packet (Requester side) */
-+
-+	/*
-+	 * 1. Find matching SWQE
-+	 * 2. Check that TIDENTRY array has enough space for a complete
-+	 *    segment. If not, put QP in error state.
-+	 * 3. Save response data in struct tid_rdma_req and struct tid_rdma_flow
-+	 * 4. Remove HFI2_S_WAIT_TID_RESP from s_flags.
-+	 * 5. Set qp->s_state
-+	 * 6. Kick the send engine (hfi2_schedule_send())
-+	 */
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct hfi2_ctxtdata *rcd = packet->rcd;
-+	struct rvt_swqe *wqe;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	enum ib_wc_status status;
-+	u32 opcode, aeth, psn, flow_psn, i, tidlen = 0, pktlen;
-+	bool fecn;
-+	unsigned long flags;
-+
-+	fecn = process_ecn(qp, packet);
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	aeth = be32_to_cpu(ohdr->u.tid_rdma.w_rsp.aeth);
-+	opcode = (be32_to_cpu(ohdr->bth[0]) >> 24) & 0xff;
-+
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+
-+	/* Ignore invalid responses */
-+	if (cmp_psn(psn, qp->s_next_psn) >= 0)
-+		goto ack_done;
-+
-+	/* Ignore duplicate responses. */
-+	if (unlikely(cmp_psn(psn, qp->s_last_psn) <= 0))
-+		goto ack_done;
-+
-+	if (unlikely(qp->s_acked == qp->s_tail))
-+		goto ack_done;
-+
-+	/*
-+	 * If we are waiting for a particular packet sequence number
-+	 * due to a request being resent, check for it. Otherwise,
-+	 * ensure that we haven't missed anything.
-+	 */
-+	if (qp->r_flags & RVT_R_RDMAR_SEQ) {
-+		if (cmp_psn(psn, qp->s_last_psn + 1) != 0)
-+			goto ack_done;
-+		qp->r_flags &= ~RVT_R_RDMAR_SEQ;
-+	}
-+
-+	wqe = rvt_get_swqe_ptr(qp, qpriv->s_tid_cur);
-+	if (unlikely(wqe->wr.opcode != IB_WR_TID_RDMA_WRITE))
-+		goto ack_op_err;
-+
-+	req = wqe_to_tid_req(wqe);
-+	/*
-+	 * If we've lost ACKs and our acked_tail pointer is too far
-+	 * behind, don't overwrite segments. Just drop the packet and
-+	 * let the reliability protocol take care of it.
-+	 */
-+	if (!CIRC_SPACE(req->setup_head, req->acked_tail, MAX_FLOWS))
-+		goto ack_done;
-+
-+	/*
-+	 * The call to do_rc_ack() should be last in the chain of
-+	 * packet checks because it will end up updating the QP state.
-+	 * Therefore, anything that would prevent the packet from
-+	 * being accepted as a successful response should be prior
-+	 * to it.
-+	 */
-+	if (!do_rc_ack(qp, aeth, psn, opcode, 0, rcd))
-+		goto ack_done;
-+
-+	trace_hfi2_ack(qp, psn);
-+
-+	flow = &req->flows[req->setup_head];
-+	flow->pkt = 0;
-+	flow->tid_idx = 0;
-+	flow->tid_offset = 0;
-+	flow->sent = 0;
-+	flow->resync_npkts = 0;
-+	flow->tid_qpn = be32_to_cpu(ohdr->u.tid_rdma.w_rsp.tid_flow_qp);
-+	flow->idx = (flow->tid_qpn >> TID_RDMA_DESTQP_FLOW_SHIFT) &
-+		    TID_RDMA_DESTQP_FLOW_MASK;
-+	flow_psn = mask_psn(be32_to_cpu(ohdr->u.tid_rdma.w_rsp.tid_flow_psn));
-+	flow->flow_state.generation = flow_psn >> HFI2_KDETH_BTH_SEQ_SHIFT;
-+	flow->flow_state.spsn = flow_psn & HFI2_KDETH_BTH_SEQ_MASK;
-+	flow->flow_state.resp_ib_psn = psn;
-+	flow->length = min_t(u32, req->seg_len,
-+			     (wqe->length - (req->comp_seg * req->seg_len)));
-+
-+	flow->npkts = rvt_div_round_up_mtu(qp, flow->length);
-+	flow->flow_state.lpsn = flow->flow_state.spsn + flow->npkts - 1;
-+	/* payload length = packet length - (header length + ICRC length) */
-+	pktlen = packet->tlen - (packet->hlen + 4);
-+	if (pktlen > sizeof(flow->tid_entry)) {
-+		status = IB_WC_LOC_LEN_ERR;
-+		goto ack_err;
-+	}
-+	memcpy(flow->tid_entry, packet->ebuf, pktlen);
-+	flow->tidcnt = pktlen / sizeof(*flow->tid_entry);
-+	trace_hfi2_tid_flow_rcv_write_resp(qp, req->setup_head, flow);
-+
-+	req->comp_seg++;
-+	trace_hfi2_tid_write_sender_rcv_resp(qp, 0);
-+	/*
-+	 * Walk the TID_ENTRY list to make sure we have enough space for a
-+	 * complete segment.
-+	 */
-+	for (i = 0; i < flow->tidcnt; i++) {
-+		trace_hfi2_tid_entry_rcv_write_resp(/* entry */
-+						    qp, i, flow->tid_entry[i]);
-+		if (!EXP_TID_GET(flow->tid_entry[i], LEN)) {
-+			status = IB_WC_LOC_LEN_ERR;
-+			goto ack_err;
-+		}
-+		tidlen += EXP_TID_GET(flow->tid_entry[i], LEN);
-+	}
-+	if (tidlen * PAGE_SIZE < flow->length) {
-+		status = IB_WC_LOC_LEN_ERR;
-+		goto ack_err;
-+	}
-+
-+	trace_hfi2_tid_req_rcv_write_resp(qp, 0, wqe->wr.opcode, wqe->psn,
-+					  wqe->lpsn, req);
-+	/*
-+	 * If this is the first response for this request, set the initial
-+	 * flow index to the current flow.
-+	 */
-+	if (!cmp_psn(psn, wqe->psn)) {
-+		req->r_last_acked = mask_psn(wqe->psn - 1);
-+		/* Set acked flow index to head index */
-+		req->acked_tail = req->setup_head;
-+	}
-+
-+	/* advance circular buffer head */
-+	req->setup_head = CIRC_NEXT(req->setup_head, MAX_FLOWS);
-+	req->state = TID_REQUEST_ACTIVE;
-+
-+	/*
-+	 * If all responses for this TID RDMA WRITE request have been received
-+	 * advance the pointer to the next one.
-+	 * Since TID RDMA requests could be mixed in with regular IB requests,
-+	 * they might not appear sequentially in the queue. Therefore, the
-+	 * next request needs to be "found".
-+	 */
-+	if (qpriv->s_tid_cur != qpriv->s_tid_head &&
-+	    req->comp_seg == req->total_segs) {
-+		for (i = qpriv->s_tid_cur + 1;; i++) {
-+			if (i == qp->s_size)
-+				i = 0;
-+			wqe = rvt_get_swqe_ptr(qp, i);
-+			if (i == qpriv->s_tid_head)
-+				break;
-+			if (wqe->wr.opcode == IB_WR_TID_RDMA_WRITE)
-+				break;
-+		}
-+		qpriv->s_tid_cur = i;
-+	}
-+	qp->s_flags &= ~HFI2_S_WAIT_TID_RESP;
-+	hfi2_schedule_tid_send(qp);
-+	goto ack_done;
-+
-+ack_op_err:
-+	status = IB_WC_LOC_QP_OP_ERR;
-+ack_err:
-+	rvt_error_qp(qp, status);
-+ack_done:
-+	if (fecn)
-+		qp->s_flags |= RVT_S_ECN;
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+}
-+
-+bool hfi2_build_tid_rdma_packet(struct rvt_swqe *wqe,
-+				struct ib_other_headers *ohdr, u32 *bth1,
-+				u32 *bth2, u32 *len)
-+{
-+	struct tid_rdma_request *req = wqe_to_tid_req(wqe);
-+	struct tid_rdma_flow *flow = &req->flows[req->clear_tail];
-+	struct tid_rdma_params *remote;
-+	struct rvt_qp *qp = req->qp;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	u32 tidentry = flow->tid_entry[flow->tid_idx];
-+	u32 tidlen = EXP_TID_GET(tidentry, LEN) << PAGE_SHIFT;
-+	struct tid_rdma_write_data *wd = &ohdr->u.tid_rdma.w_data;
-+	u32 next_offset, om = KDETH_OM_LARGE;
-+	bool last_pkt;
-+
-+	if (!tidlen) {
-+		hfi2_trdma_send_complete(qp, wqe, IB_WC_REM_INV_RD_REQ_ERR);
-+		rvt_error_qp(qp, IB_WC_REM_INV_RD_REQ_ERR);
-+	}
-+
-+	*len = min_t(u32, qp->pmtu, tidlen - flow->tid_offset);
-+	flow->sent += *len;
-+	next_offset = flow->tid_offset + *len;
-+	last_pkt = (flow->tid_idx == (flow->tidcnt - 1) &&
-+		    next_offset >= tidlen) ||
-+		   (flow->sent >= flow->length);
-+	trace_hfi2_tid_entry_build_write_data(qp, flow->tid_idx, tidentry);
-+	trace_hfi2_tid_flow_build_write_data(qp, req->clear_tail, flow);
-+
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+	KDETH_RESET(wd->kdeth0, KVER, 0x1);
-+	KDETH_SET(wd->kdeth0, SH, !last_pkt);
-+	KDETH_SET(wd->kdeth0, INTR, !!(!last_pkt && remote->urg));
-+	KDETH_SET(wd->kdeth0, TIDCTRL, EXP_TID_GET(tidentry, CTRL));
-+	KDETH_SET(wd->kdeth0, TID, EXP_TID_GET(tidentry, IDX));
-+	KDETH_SET(wd->kdeth0, OM, om == KDETH_OM_LARGE);
-+	KDETH_SET(wd->kdeth0, OFFSET, flow->tid_offset / om);
-+	KDETH_RESET(wd->kdeth1, JKEY, remote->jkey);
-+	wd->verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	rcu_read_unlock();
-+
-+	*bth1 = flow->tid_qpn;
-+	*bth2 = mask_psn(
-+		((flow->flow_state.spsn + flow->pkt++) &
-+		 HFI2_KDETH_BTH_SEQ_MASK) |
-+		(flow->flow_state.generation << HFI2_KDETH_BTH_SEQ_SHIFT));
-+	if (last_pkt) {
-+		/* PSNs are zero-based, so +1 to count number of packets */
-+		if (flow->flow_state.lpsn + 1 +
-+			    rvt_div_round_up_mtu(qp, req->seg_len) >
-+		    MAX_TID_FLOW_PSN)
-+			req->state = TID_REQUEST_SYNC;
-+		*bth2 |= IB_BTH_REQ_ACK;
-+	}
-+
-+	if (next_offset >= tidlen) {
-+		flow->tid_offset = 0;
-+		flow->tid_idx++;
-+	} else {
-+		flow->tid_offset = next_offset;
-+	}
-+	return last_pkt;
-+}
-+
-+void hfi2_rc_rcv_tid_rdma_write_data(struct hfi2_packet *packet)
-+{
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct hfi2_ctxtdata *rcd = priv->rcd;
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_ack_entry *e;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	struct hfi2_ibdev *dev = to_idev(qp->ibqp.device);
-+	unsigned long flags;
-+	u32 psn, next;
-+	u8 opcode;
-+	bool fecn;
-+
-+	fecn = process_ecn(qp, packet);
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	opcode = (be32_to_cpu(ohdr->bth[0]) >> 24) & 0xff;
-+
-+	/*
-+	 * All error handling should be done by now. If we are here, the packet
-+	 * is either good or been accepted by the error handler.
-+	 */
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+	e = &qp->s_ack_queue[priv->r_tid_tail];
-+	req = ack_to_tid_req(e);
-+	flow = &req->flows[req->clear_tail];
-+	if (cmp_psn(psn, full_flow_psn(flow, flow->flow_state.lpsn))) {
-+		update_r_next_psn_fecn(packet, priv, rcd, flow, fecn);
-+
-+		if (cmp_psn(psn, flow->flow_state.r_next_psn))
-+			goto send_nak;
-+
-+		flow->flow_state.r_next_psn = mask_psn(psn + 1);
-+		/*
-+		 * Copy the payload to destination buffer if this packet is
-+		 * delivered as an eager packet due to RSM rule and FECN.
-+		 * The RSM rule selects FECN bit in BTH and SH bit in
-+		 * KDETH header and therefore will not match the last
-+		 * packet of each segment that has SH bit cleared.
-+		 */
-+		if (fecn && packet->etype == RHF_RCV_TYPE_EAGER) {
-+			struct rvt_sge_state ss;
-+			u32 len;
-+			u32 tlen = packet->tlen;
-+			u16 hdrsize = packet->hlen;
-+			u8 pad = packet->pad;
-+			u8 extra_bytes =
-+				pad + packet->extra_byte + (SIZE_OF_CRC << 2);
-+			u32 pmtu = qp->pmtu;
-+
-+			if (unlikely(tlen != (hdrsize + pmtu + extra_bytes)))
-+				goto send_nak;
-+			len = req->comp_seg * req->seg_len;
-+			len += delta_psn(psn,
-+					 full_flow_psn(flow,
-+						       flow->flow_state.spsn)) *
-+			       pmtu;
-+			if (unlikely(req->total_len - len < pmtu))
-+				goto send_nak;
-+
-+			/*
-+			 * The e->rdma_sge field is set when TID RDMA WRITE REQ
-+			 * is first received and is never modified thereafter.
-+			 */
-+			ss.sge = e->rdma_sge;
-+			ss.sg_list = NULL;
-+			ss.num_sge = 1;
-+			ss.total_len = req->total_len;
-+			rvt_skip_sge(&ss, len, false);
-+			rvt_copy_sge(qp, &ss, packet->payload, pmtu, false,
-+				     false);
-+			/* Raise the sw sequence check flag for next packet */
-+			priv->r_next_psn_kdeth = mask_psn(psn + 1);
-+			priv->s_flags |= HFI2_R_TID_SW_PSN;
-+		}
-+		goto exit;
-+	}
-+	flow->flow_state.r_next_psn = mask_psn(psn + 1);
-+	hfi2_kern_exp_rcv_clear(req);
-+	priv->alloc_w_segs--;
-+	rcd->flows[flow->idx].psn = psn & HFI2_KDETH_BTH_SEQ_MASK;
-+	req->comp_seg++;
-+	priv->s_nak_state = 0;
-+
-+	/*
-+	 * Release the flow if one of the following conditions has been met:
-+	 *  - The request has reached a sync point AND all outstanding
-+	 *    segments have been completed, or
-+	 *  - The entire request is complete and there are no more requests
-+	 *    (of any kind) in the queue.
-+	 */
-+	trace_hfi2_rsp_rcv_tid_write_data(qp, psn);
-+	trace_hfi2_tid_req_rcv_write_data(qp, 0, e->opcode, e->psn, e->lpsn,
-+					  req);
-+	trace_hfi2_tid_write_rsp_rcv_data(qp);
-+	validate_r_tid_ack(priv);
-+
-+	if (opcode == TID_OP(WRITE_DATA_LAST)) {
-+		release_rdma_sge_mr(e);
-+		for (next = priv->r_tid_tail + 1;; next++) {
-+			if (next > rvt_size_atomic(&dev->rdi))
-+				next = 0;
-+			if (next == priv->r_tid_head)
-+				break;
-+			e = &qp->s_ack_queue[next];
-+			if (e->opcode == TID_OP(WRITE_REQ))
-+				break;
-+		}
-+		priv->r_tid_tail = next;
-+		if (++qp->s_acked_ack_queue > rvt_size_atomic(&dev->rdi))
-+			qp->s_acked_ack_queue = 0;
-+	}
-+
-+	hfi2_tid_write_alloc_resources(qp, true);
-+
-+	/*
-+	 * If we need to generate more responses, schedule the
-+	 * send engine.
-+	 */
-+	if (req->cur_seg < req->total_segs ||
-+	    qp->s_tail_ack_queue != qp->r_head_ack_queue) {
-+		qp->s_flags |= RVT_S_RESP_PENDING;
-+		hfi2_schedule_send(qp);
-+	}
-+
-+	priv->pending_tid_w_segs--;
-+	if (priv->s_flags & HFI2_R_TID_RSC_TIMER) {
-+		if (priv->pending_tid_w_segs)
-+			hfi2_mod_tid_reap_timer(req->qp);
++		if (ret == -ENOMEM)
++			++dev->stats.tx_errors;
 +		else
-+			hfi2_stop_tid_reap_timer(req->qp);
++			++dev->stats.tx_carrier_errors;
++
++		return NETDEV_TX_OK;
 +	}
 +
-+done:
-+	tid_rdma_schedule_ack(qp);
-+exit:
-+	priv->r_next_psn_kdeth = flow->flow_state.r_next_psn;
-+	if (fecn)
-+		qp->s_flags |= RVT_S_ECN;
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+	return;
-+
-+send_nak:
-+	if (!priv->s_nak_state) {
-+		priv->s_nak_state = IB_NAK_PSN_ERROR;
-+		priv->s_nak_psn = flow->flow_state.r_next_psn;
-+		tid_rdma_trigger_ack(qp);
++	tx_ring = &txq->tx_ring;
++	trace_hfi2_tx_consume(tx, tx_ring->tail);
++	/* consume tx */
++	smp_store_release(&tx_ring->tail, CIRC_NEXT(tx_ring->tail, tx_ring->max_items));
++	ret = hfi2_ipoib_submit_tx(txq, tx);
++	trace_sdma_output_ibhdr(txq->priv->dd,
++				&tx->sdma_hdr->hdr,
++				ib_is_sc5(txp->flow.sc5), ret);
++	if (likely(!ret)) {
++tx_ok:
++		hfi2_ipoib_check_queue_depth(txq);
++		return NETDEV_TX_OK;
 +	}
-+	goto done;
++
++	txq->pkts_sent = false;
++
++	if (ret == -EBUSY || ret == -ECOMM)
++		goto tx_ok;
++
++	/* mark complete and kick napi tx */
++	smp_store_release(&tx->complete, 1);
++	napi_schedule(&tx->txq->napi);
++
++	++dev->stats.tx_carrier_errors;
++
++	return NETDEV_TX_OK;
 +}
 +
-+static bool hfi2_tid_rdma_is_resync_psn(u32 psn)
++static int hfi2_ipoib_send_dma_list(struct net_device *dev,
++				    struct sk_buff *skb,
++				    struct ipoib_txparms *txp)
 +{
-+	return (bool)((psn & HFI2_KDETH_BTH_SEQ_MASK) ==
-+		      HFI2_KDETH_BTH_SEQ_MASK);
-+}
++	struct hfi2_ipoib_txq *txq = txp->txq;
++	struct hfi2_ipoib_circ_buf *tx_ring;
++	struct ipoib_txreq *tx;
 +
-+u32 hfi2_build_tid_rdma_write_ack(struct rvt_qp *qp, struct rvt_ack_entry *e,
-+				  struct ib_other_headers *ohdr, u16 iflow,
-+				  u32 *bth1, u32 *bth2)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_flow_state *fs = &qpriv->flow_state;
-+	struct tid_rdma_request *req = ack_to_tid_req(e);
-+	struct tid_rdma_flow *flow = &req->flows[iflow];
-+	struct tid_rdma_params *remote;
++	/* Has the flow change ? */
++	if (txq->flow.as_int != txp->flow.as_int) {
++		int ret;
 +
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+	KDETH_RESET(ohdr->u.tid_rdma.ack.kdeth1, JKEY, remote->jkey);
-+	ohdr->u.tid_rdma.ack.verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	*bth1 = remote->qp;
-+	rcu_read_unlock();
-+
-+	if (qpriv->resync) {
-+		*bth2 = mask_psn((fs->generation << HFI2_KDETH_BTH_SEQ_SHIFT) -
-+				 1);
-+		ohdr->u.tid_rdma.ack.aeth = rvt_compute_aeth(qp);
-+	} else if (qpriv->s_nak_state) {
-+		*bth2 = mask_psn(qpriv->s_nak_psn);
-+		ohdr->u.tid_rdma.ack.aeth = cpu_to_be32(
-+			(qp->r_msn & IB_MSN_MASK) |
-+			(qpriv->s_nak_state << IB_AETH_CREDIT_SHIFT));
-+	} else {
-+		*bth2 = full_flow_psn(flow, flow->flow_state.lpsn);
-+		ohdr->u.tid_rdma.ack.aeth = rvt_compute_aeth(qp);
-+	}
-+	KDETH_RESET(ohdr->u.tid_rdma.ack.kdeth0, KVER, 0x1);
-+	ohdr->u.tid_rdma.ack.tid_flow_qp =
-+		cpu_to_be32(qpriv->tid_rdma.local.qp |
-+			    ((flow->idx & TID_RDMA_DESTQP_FLOW_MASK)
-+			     << TID_RDMA_DESTQP_FLOW_SHIFT) |
-+			    qpriv->rcd->ctxt);
-+
-+	ohdr->u.tid_rdma.ack.tid_flow_psn = 0;
-+	ohdr->u.tid_rdma.ack.verbs_psn =
-+		cpu_to_be32(flow->flow_state.resp_ib_psn);
-+
-+	if (qpriv->resync) {
-+		/*
-+		 * If the PSN before the current expect KDETH PSN is the
-+		 * RESYNC PSN, then we never received a good TID RDMA WRITE
-+		 * DATA packet after a previous RESYNC.
-+		 * In this case, the next expected KDETH PSN stays the same.
-+		 */
-+		if (hfi2_tid_rdma_is_resync_psn(qpriv->r_next_psn_kdeth - 1)) {
-+			ohdr->u.tid_rdma.ack.tid_flow_psn =
-+				cpu_to_be32(qpriv->r_next_psn_kdeth_save);
-+		} else {
-+			/*
-+			 * Because the KDETH PSNs jump during a RESYNC, it's
-+			 * not possible to infer (or compute) the previous value
-+			 * of r_next_psn_kdeth in the case of back-to-back
-+			 * RESYNC packets. Therefore, we save it.
-+			 */
-+			qpriv->r_next_psn_kdeth_save =
-+				qpriv->r_next_psn_kdeth - 1;
-+			ohdr->u.tid_rdma.ack.tid_flow_psn =
-+				cpu_to_be32(qpriv->r_next_psn_kdeth_save);
-+			qpriv->r_next_psn_kdeth = mask_psn(*bth2 + 1);
-+		}
-+		qpriv->resync = false;
-+	}
-+
-+	return sizeof(ohdr->u.tid_rdma.ack) / sizeof(u32);
-+}
-+
-+void hfi2_rc_rcv_tid_rdma_ack(struct hfi2_packet *packet)
-+{
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct rvt_swqe *wqe;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	u32 aeth, psn, req_psn, ack_psn, flpsn, resync_psn, ack_kpsn;
-+	unsigned long flags;
-+	u16 fidx;
-+
-+	trace_hfi2_tid_write_sender_rcv_tid_ack(qp, 0);
-+	process_ecn(qp, packet);
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+	aeth = be32_to_cpu(ohdr->u.tid_rdma.ack.aeth);
-+	req_psn = mask_psn(be32_to_cpu(ohdr->u.tid_rdma.ack.verbs_psn));
-+	resync_psn = mask_psn(be32_to_cpu(ohdr->u.tid_rdma.ack.tid_flow_psn));
-+
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+	trace_hfi2_rcv_tid_ack(qp, aeth, psn, req_psn, resync_psn);
-+
-+	/* If we are waiting for an ACK to RESYNC, drop any other packets */
-+	if ((qp->s_flags & HFI2_S_WAIT_HALT) &&
-+	    cmp_psn(psn, qpriv->s_resync_psn))
-+		goto ack_op_err;
-+
-+	ack_psn = req_psn;
-+	if (hfi2_tid_rdma_is_resync_psn(psn))
-+		ack_kpsn = resync_psn;
-+	else
-+		ack_kpsn = psn;
-+	if (aeth >> 29) {
-+		ack_psn--;
-+		ack_kpsn--;
-+	}
-+
-+	if (unlikely(qp->s_acked == qp->s_tail))
-+		goto ack_op_err;
-+
-+	wqe = rvt_get_swqe_ptr(qp, qp->s_acked);
-+
-+	if (wqe->wr.opcode != IB_WR_TID_RDMA_WRITE)
-+		goto ack_op_err;
-+
-+	req = wqe_to_tid_req(wqe);
-+	trace_hfi2_tid_req_rcv_tid_ack(qp, 0, wqe->wr.opcode, wqe->psn,
-+				       wqe->lpsn, req);
-+	flow = &req->flows[req->acked_tail];
-+	trace_hfi2_tid_flow_rcv_tid_ack(qp, req->acked_tail, flow);
-+
-+	/* Drop stale ACK/NAK */
-+	if (cmp_psn(psn, full_flow_psn(flow, flow->flow_state.spsn)) < 0 ||
-+	    cmp_psn(req_psn, flow->flow_state.resp_ib_psn) < 0)
-+		goto ack_op_err;
-+
-+	while (cmp_psn(ack_kpsn, full_flow_psn(flow, flow->flow_state.lpsn)) >=
-+		       0 &&
-+	       req->ack_seg < req->cur_seg) {
-+		req->ack_seg++;
-+		/* advance acked segment pointer */
-+		req->acked_tail = CIRC_NEXT(req->acked_tail, MAX_FLOWS);
-+		req->r_last_acked = flow->flow_state.resp_ib_psn;
-+		trace_hfi2_tid_req_rcv_tid_ack(qp, 0, wqe->wr.opcode, wqe->psn,
-+					       wqe->lpsn, req);
-+		if (req->ack_seg == req->total_segs) {
-+			req->state = TID_REQUEST_COMPLETE;
-+			wqe = do_rc_completion(qp, wqe,
-+					       to_iport(qp->ibqp.device,
-+							qp->port_num));
-+			trace_hfi2_sender_rcv_tid_ack(qp);
-+			atomic_dec(&qpriv->n_tid_requests);
-+			if (qp->s_acked == qp->s_tail)
-+				break;
-+			if (wqe->wr.opcode != IB_WR_TID_RDMA_WRITE)
-+				break;
-+			req = wqe_to_tid_req(wqe);
-+		}
-+		flow = &req->flows[req->acked_tail];
-+		trace_hfi2_tid_flow_rcv_tid_ack(qp, req->acked_tail, flow);
-+	}
-+
-+	trace_hfi2_tid_req_rcv_tid_ack(qp, 0, wqe->wr.opcode, wqe->psn,
-+				       wqe->lpsn, req);
-+	switch (aeth >> 29) {
-+	case 0: /* ACK */
-+		if (qpriv->s_flags & RVT_S_WAIT_ACK)
-+			qpriv->s_flags &= ~RVT_S_WAIT_ACK;
-+		if (!hfi2_tid_rdma_is_resync_psn(psn)) {
-+			/* Check if there is any pending TID ACK */
-+			if (wqe->wr.opcode == IB_WR_TID_RDMA_WRITE &&
-+			    req->ack_seg < req->cur_seg)
-+				hfi2_mod_tid_retry_timer(qp);
-+			else
-+				hfi2_stop_tid_retry_timer(qp);
-+			hfi2_schedule_send(qp);
-+		} else {
-+			u32 spsn, fpsn, last_acked, generation;
-+			struct tid_rdma_request *rptr;
-+
-+			/* ACK(RESYNC) */
-+			hfi2_stop_tid_retry_timer(qp);
-+			/* Allow new requests (see hfi2_make_tid_rdma_pkt) */
-+			qp->s_flags &= ~HFI2_S_WAIT_HALT;
-+			/*
-+			 * Clear RVT_S_SEND_ONE flag in case that the TID RDMA
-+			 * ACK is received after the TID retry timer is fired
-+			 * again. In this case, do not send any more TID
-+			 * RESYNC request or wait for any more TID ACK packet.
-+			 */
-+			qpriv->s_flags &= ~RVT_S_SEND_ONE;
-+			hfi2_schedule_send(qp);
-+
-+			if ((qp->s_acked == qpriv->s_tid_tail &&
-+			     req->ack_seg == req->total_segs) ||
-+			    qp->s_acked == qp->s_tail) {
-+				qpriv->s_state = TID_OP(WRITE_DATA_LAST);
-+				goto done;
-+			}
-+
-+			if (req->ack_seg == req->comp_seg) {
-+				qpriv->s_state = TID_OP(WRITE_DATA);
-+				goto done;
-+			}
-+
-+			/*
-+			 * The PSN to start with is the next PSN after the
-+			 * RESYNC PSN.
-+			 */
-+			psn = mask_psn(psn + 1);
-+			generation = psn >> HFI2_KDETH_BTH_SEQ_SHIFT;
-+			spsn = 0;
-+
-+			/*
-+			 * Update to the correct WQE when we get an ACK(RESYNC)
-+			 * in the middle of a request.
-+			 */
-+			if (delta_psn(ack_psn, wqe->lpsn))
-+				wqe = rvt_get_swqe_ptr(qp, qp->s_acked);
-+			req = wqe_to_tid_req(wqe);
-+			flow = &req->flows[req->acked_tail];
-+			/*
-+			 * RESYNC re-numbers the PSN ranges of all remaining
-+			 * segments. Also, PSN's start from 0 in the middle of a
-+			 * segment and the first segment size is less than the
-+			 * default number of packets. flow->resync_npkts is used
-+			 * to track the number of packets from the start of the
-+			 * real segment to the point of 0 PSN after the RESYNC
-+			 * in order to later correctly rewind the SGE.
-+			 */
-+			fpsn = full_flow_psn(flow, flow->flow_state.spsn);
-+			req->r_ack_psn = psn;
-+			/*
-+			 * If resync_psn points to the last flow PSN for a
-+			 * segment and the new segment (likely from a new
-+			 * request) starts with a new generation number, we
-+			 * need to adjust resync_psn accordingly.
-+			 */
-+			if (flow->flow_state.generation !=
-+			    (resync_psn >> HFI2_KDETH_BTH_SEQ_SHIFT))
-+				resync_psn = mask_psn(fpsn - 1);
-+			flow->resync_npkts +=
-+				delta_psn(mask_psn(resync_psn + 1), fpsn);
-+			/*
-+			 * Renumber all packet sequence number ranges
-+			 * based on the new generation.
-+			 */
-+			last_acked = qp->s_acked;
-+			rptr = req;
-+			while (1) {
-+				/* start from last acked segment */
-+				for (fidx = rptr->acked_tail; CIRC_CNT(
-+					     rptr->setup_head, fidx, MAX_FLOWS);
-+				     fidx = CIRC_NEXT(fidx, MAX_FLOWS)) {
-+					u32 lpsn;
-+					u32 gen;
-+
-+					flow = &rptr->flows[fidx];
-+					gen = flow->flow_state.generation;
-+					if (WARN_ON(gen == generation &&
-+						    flow->flow_state.spsn !=
-+							    spsn))
-+						continue;
-+					lpsn = flow->flow_state.lpsn;
-+					lpsn = full_flow_psn(flow, lpsn);
-+					flow->npkts = delta_psn(
-+						lpsn, mask_psn(resync_psn));
-+					flow->flow_state.generation =
-+						generation;
-+					flow->flow_state.spsn = spsn;
-+					flow->flow_state.lpsn =
-+						flow->flow_state.spsn +
-+						flow->npkts - 1;
-+					flow->pkt = 0;
-+					spsn += flow->npkts;
-+					resync_psn += flow->npkts;
-+					trace_hfi2_tid_flow_rcv_tid_ack(
-+						qp, fidx, flow);
-+				}
-+				if (++last_acked == qpriv->s_tid_cur + 1)
-+					break;
-+				if (last_acked == qp->s_size)
-+					last_acked = 0;
-+				wqe = rvt_get_swqe_ptr(qp, last_acked);
-+				rptr = wqe_to_tid_req(wqe);
-+			}
-+			req->cur_seg = req->ack_seg;
-+			qpriv->s_tid_tail = qp->s_acked;
-+			qpriv->s_state = TID_OP(WRITE_REQ);
-+			hfi2_schedule_tid_send(qp);
-+		}
-+done:
-+		qpriv->s_retry = qp->s_retry_cnt;
-+		break;
-+
-+	case 3: /* NAK */
-+		hfi2_stop_tid_retry_timer(qp);
-+		switch ((aeth >> IB_AETH_CREDIT_SHIFT) & IB_AETH_CREDIT_MASK) {
-+		case 0: /* PSN sequence error */
-+			if (!req->flows)
-+				break;
-+			flow = &req->flows[req->acked_tail];
-+			flpsn = full_flow_psn(flow, flow->flow_state.lpsn);
-+			if (cmp_psn(psn, flpsn) > 0)
-+				break;
-+			trace_hfi2_tid_flow_rcv_tid_ack(qp, req->acked_tail,
-+							flow);
-+			req->r_ack_psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+			req->cur_seg = req->ack_seg;
-+			qpriv->s_tid_tail = qp->s_acked;
-+			qpriv->s_state = TID_OP(WRITE_REQ);
-+			qpriv->s_retry = qp->s_retry_cnt;
-+			hfi2_schedule_tid_send(qp);
-+			break;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+ack_op_err:
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
-+}
-+
-+void hfi2_add_tid_retry_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct ib_qp *ibqp = &qp->ibqp;
-+	struct rvt_dev_info *rdi = ib_to_rvt(ibqp->device);
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	if (!(priv->s_flags & HFI2_S_TID_RETRY_TIMER)) {
-+		priv->s_flags |= HFI2_S_TID_RETRY_TIMER;
-+		priv->s_tid_retry_timer.expires =
-+			jiffies + priv->tid_retry_timeout_jiffies +
-+			rdi->busy_jiffies;
-+		add_timer(&priv->s_tid_retry_timer);
-+	}
-+}
-+
-+static void hfi2_mod_tid_retry_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct ib_qp *ibqp = &qp->ibqp;
-+	struct rvt_dev_info *rdi = ib_to_rvt(ibqp->device);
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	priv->s_flags |= HFI2_S_TID_RETRY_TIMER;
-+	mod_timer(&priv->s_tid_retry_timer,
-+		  jiffies + priv->tid_retry_timeout_jiffies +
-+			  rdi->busy_jiffies);
-+}
-+
-+static int hfi2_stop_tid_retry_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	int rval = 0;
-+
-+	lockdep_assert_held(&qp->s_lock);
-+	if (priv->s_flags & HFI2_S_TID_RETRY_TIMER) {
-+		rval = timer_delete(&priv->s_tid_retry_timer);
-+		priv->s_flags &= ~HFI2_S_TID_RETRY_TIMER;
-+	}
-+	return rval;
-+}
-+
-+void hfi2_del_tid_retry_timer(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	timer_delete_sync(&priv->s_tid_retry_timer);
-+	priv->s_flags &= ~HFI2_S_TID_RETRY_TIMER;
-+}
-+
-+static void hfi2_tid_retry_timeout(struct timer_list *t)
-+{
-+	struct hfi2_qp_priv *priv =
-+		timer_container_of(priv, t, s_tid_retry_timer);
-+	struct rvt_qp *qp = priv->owner;
-+	struct rvt_swqe *wqe;
-+	unsigned long flags;
-+	struct tid_rdma_request *req;
-+
-+	spin_lock_irqsave(&qp->r_lock, flags);
-+	spin_lock(&qp->s_lock);
-+	trace_hfi2_tid_write_sender_retry_timeout(qp, 0);
-+	if (priv->s_flags & HFI2_S_TID_RETRY_TIMER) {
-+		hfi2_stop_tid_retry_timer(qp);
-+		if (!priv->s_retry) {
-+			trace_hfi2_msg_tid_retry_timeout(/* msg */
-+							 qp,
-+							 "Exhausted retries. Tid retry timeout = ",
-+							 (u64)priv
-+								 ->tid_retry_timeout_jiffies);
-+
-+			wqe = rvt_get_swqe_ptr(qp, qp->s_acked);
-+			hfi2_trdma_send_complete(qp, wqe, IB_WC_RETRY_EXC_ERR);
-+			rvt_error_qp(qp, IB_WC_WR_FLUSH_ERR);
-+		} else {
-+			wqe = rvt_get_swqe_ptr(qp, qp->s_acked);
-+			req = wqe_to_tid_req(wqe);
-+			trace_hfi2_tid_req_tid_retry_timeout(/* req */
-+							     qp, 0,
-+							     wqe->wr.opcode,
-+							     wqe->psn,
-+							     wqe->lpsn, req);
-+
-+			priv->s_flags &= ~RVT_S_WAIT_ACK;
-+			/* Only send one packet (the RESYNC) */
-+			priv->s_flags |= RVT_S_SEND_ONE;
-+			/*
-+			 * No additional request shall be made by this QP until
-+			 * the RESYNC has been complete.
-+			 */
-+			qp->s_flags |= HFI2_S_WAIT_HALT;
-+			priv->s_state = TID_OP(RESYNC);
-+			priv->s_retry--;
-+			hfi2_schedule_tid_send(qp);
++		trace_hfi2_flow_flush(txq);
++		ret = hfi2_ipoib_flush_tx_list(dev, txq);
++		if (unlikely(ret)) {
++			if (ret == -EBUSY)
++				++dev->stats.tx_dropped;
++			dev_kfree_skb_any(skb);
++			return NETDEV_TX_OK;
 +		}
 +	}
-+	spin_unlock(&qp->s_lock);
-+	spin_unlock_irqrestore(&qp->r_lock, flags);
-+}
++	tx = hfi2_ipoib_send_dma_common(dev, skb, txp);
++	if (IS_ERR(tx)) {
++		int ret = PTR_ERR(tx);
 +
-+u32 hfi2_build_tid_rdma_resync(struct rvt_qp *qp, struct rvt_swqe *wqe,
-+			       struct ib_other_headers *ohdr, u32 *bth1,
-+			       u32 *bth2, u16 fidx)
-+{
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct tid_rdma_params *remote;
-+	struct tid_rdma_request *req = wqe_to_tid_req(wqe);
-+	struct tid_rdma_flow *flow = &req->flows[fidx];
-+	u32 generation;
++		dev_kfree_skb_any(skb);
 +
-+	rcu_read_lock();
-+	remote = rcu_dereference(qpriv->tid_rdma.remote);
-+	KDETH_RESET(ohdr->u.tid_rdma.ack.kdeth1, JKEY, remote->jkey);
-+	ohdr->u.tid_rdma.ack.verbs_qp = cpu_to_be32(qp->remote_qpn);
-+	*bth1 = remote->qp;
-+	rcu_read_unlock();
++		if (ret == -ENOMEM)
++			++dev->stats.tx_errors;
++		else
++			++dev->stats.tx_carrier_errors;
 +
-+	generation = kern_flow_generation_next(flow->flow_state.generation);
-+	*bth2 = mask_psn((generation << HFI2_KDETH_BTH_SEQ_SHIFT) - 1);
-+	qpriv->s_resync_psn = *bth2;
-+	*bth2 |= IB_BTH_REQ_ACK;
-+	KDETH_RESET(ohdr->u.tid_rdma.ack.kdeth0, KVER, 0x1);
-+
-+	return sizeof(ohdr->u.tid_rdma.resync) / sizeof(u32);
-+}
-+
-+void hfi2_rc_rcv_tid_rdma_resync(struct hfi2_packet *packet)
-+{
-+	struct ib_other_headers *ohdr = packet->ohdr;
-+	struct rvt_qp *qp = packet->qp;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct hfi2_ctxtdata *rcd = qpriv->rcd;
-+	struct hfi2_ibdev *dev = to_idev(qp->ibqp.device);
-+	struct rvt_ack_entry *e;
-+	struct tid_rdma_request *req;
-+	struct tid_rdma_flow *flow;
-+	struct tid_flow_state *fs = &qpriv->flow_state;
-+	u32 psn, generation, idx, gen_next;
-+	bool fecn;
-+	unsigned long flags;
-+
-+	fecn = process_ecn(qp, packet);
-+	psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
-+
-+	generation = mask_psn(psn + 1) >> HFI2_KDETH_BTH_SEQ_SHIFT;
-+	spin_lock_irqsave(&qp->s_lock, flags);
-+
-+	gen_next = (fs->generation == KERN_GENERATION_RESERVED) ?
-+			   generation :
-+			   kern_flow_generation_next(fs->generation);
-+	/*
-+	 * RESYNC packet contains the "next" generation and can only be
-+	 * from the current or previous generations
-+	 */
-+	if (generation != mask_generation(gen_next - 1) &&
-+	    generation != gen_next)
-+		goto bail;
-+	/* Already processing a resync */
-+	if (qpriv->resync)
-+		goto bail;
-+
-+	spin_lock(&rcd->exp_lock);
-+	if (fs->index >= RXE_NUM_TID_FLOWS) {
-+		/*
-+		 * If we don't have a flow, save the generation so it can be
-+		 * applied when a new flow is allocated
-+		 */
-+		fs->generation = generation;
-+	} else {
-+		/* Reprogram the QP flow with new generation */
-+		rcd->flows[fs->index].generation = generation;
-+		fs->generation = kern_setup_hw_flow(rcd, fs->index);
-+	}
-+	fs->psn = 0;
-+	/*
-+	 * Disable SW PSN checking since a RESYNC is equivalent to a
-+	 * sync point and the flow has/will be reprogrammed
-+	 */
-+	qpriv->s_flags &= ~HFI2_R_TID_SW_PSN;
-+	trace_hfi2_tid_write_rsp_rcv_resync(qp);
-+
-+	/*
-+	 * Reset all TID flow information with the new generation.
-+	 * This is done for all requests and segments after the
-+	 * last received segment
-+	 */
-+	for (idx = qpriv->r_tid_tail;; idx++) {
-+		u16 flow_idx;
-+
-+		if (idx > rvt_size_atomic(&dev->rdi))
-+			idx = 0;
-+		e = &qp->s_ack_queue[idx];
-+		if (e->opcode == TID_OP(WRITE_REQ)) {
-+			req = ack_to_tid_req(e);
-+			trace_hfi2_tid_req_rcv_resync(qp, 0, e->opcode, e->psn,
-+						      e->lpsn, req);
-+
-+			/* start from last unacked segment */
-+			for (flow_idx = req->clear_tail;
-+			     CIRC_CNT(req->setup_head, flow_idx, MAX_FLOWS);
-+			     flow_idx = CIRC_NEXT(flow_idx, MAX_FLOWS)) {
-+				u32 lpsn;
-+				u32 next;
-+
-+				flow = &req->flows[flow_idx];
-+				lpsn = full_flow_psn(flow,
-+						     flow->flow_state.lpsn);
-+				next = flow->flow_state.r_next_psn;
-+				flow->npkts = delta_psn(lpsn, next - 1);
-+				flow->flow_state.generation = fs->generation;
-+				flow->flow_state.spsn = fs->psn;
-+				flow->flow_state.lpsn =
-+					flow->flow_state.spsn + flow->npkts - 1;
-+				flow->flow_state.r_next_psn = full_flow_psn(
-+					flow, flow->flow_state.spsn);
-+				fs->psn += flow->npkts;
-+				trace_hfi2_tid_flow_rcv_resync(qp, flow_idx,
-+							       flow);
-+			}
-+		}
-+		if (idx == qp->s_tail_ack_queue)
-+			break;
++		return NETDEV_TX_OK;
 +	}
 +
-+	spin_unlock(&rcd->exp_lock);
-+	qpriv->resync = true;
-+	/* RESYNC request always gets a TID RDMA ACK. */
-+	qpriv->s_nak_state = 0;
-+	tid_rdma_trigger_ack(qp);
-+bail:
-+	if (fecn)
-+		qp->s_flags |= RVT_S_ECN;
-+	spin_unlock_irqrestore(&qp->s_lock, flags);
++	tx_ring = &txq->tx_ring;
++	trace_hfi2_tx_consume(tx, tx_ring->tail);
++	/* consume tx */
++	smp_store_release(&tx_ring->tail, CIRC_NEXT(tx_ring->tail, tx_ring->max_items));
++	list_add_tail(&tx->txreq.list, &txq->tx_list);
++
++	hfi2_ipoib_check_queue_depth(txq);
++
++	trace_sdma_output_ibhdr(txq->priv->dd,
++				&tx->sdma_hdr->hdr,
++				ib_is_sc5(txp->flow.sc5), 0);
++
++	if (!netdev_xmit_more())
++		(void)hfi2_ipoib_flush_tx_list(dev, txq);
++
++	return NETDEV_TX_OK;
++}
++
++static u8 hfi2_ipoib_calc_entropy(struct sk_buff *skb)
++{
++	if (skb_transport_header_was_set(skb)) {
++		u8 *hdr = (u8 *)skb_transport_header(skb);
++
++		return (hdr[0] ^ hdr[1] ^ hdr[2] ^ hdr[3]);
++	}
++
++	return (u8)skb_get_queue_mapping(skb);
++}
++
++int hfi2_ipoib_send(struct net_device *dev,
++		    struct sk_buff *skb,
++		    struct ib_ah *address,
++		    u32 dqpn)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	struct ipoib_txparms txp;
++	struct rdma_netdev *rn = netdev_priv(dev);
++
++	if (unlikely(skb->len > rn->mtu + HFI2_IPOIB_ENCAP_LEN)) {
++		dd_dev_warn(priv->dd, "packet len %d (> %d) too long to send, dropping\n",
++			    skb->len,
++			    rn->mtu + HFI2_IPOIB_ENCAP_LEN);
++		++dev->stats.tx_dropped;
++		++dev->stats.tx_errors;
++		dev_kfree_skb_any(skb);
++		return NETDEV_TX_OK;
++	}
++
++	txp.dd = priv->dd;
++	txp.ah_attr = &ibah_to_rvtah(address)->attr;
++	txp.ibp = to_iport(priv->device, priv->port_num);
++	txp.txq = &priv->txqs[skb_get_queue_mapping(skb)];
++	txp.dqpn = dqpn;
++	txp.flow.sc5 = txp.ibp->sl_to_sc[rdma_ah_get_sl(txp.ah_attr)];
++	txp.flow.tx_queue = (u8)skb_get_queue_mapping(skb);
++	txp.entropy = hfi2_ipoib_calc_entropy(skb);
++
++	if (netdev_xmit_more() || !list_empty(&txp.txq->tx_list))
++		return hfi2_ipoib_send_dma_list(dev, skb, &txp);
++
++	return hfi2_ipoib_send_dma_single(dev, skb,  &txp);
 +}
 +
 +/*
-+ * Call this function when the last TID RDMA WRITE DATA packet for a request
-+ * is built.
++ * hfi2_ipoib_sdma_sleep - ipoib sdma sleep function
++ *
++ * This function gets called from sdma_send_txreq() when there are not enough
++ * sdma descriptors available to send the packet. It adds Tx queue's wait
++ * structure to sdma engine's dmawait list to be woken up when descriptors
++ * become available.
 + */
-+static void update_tid_tail(struct rvt_qp *qp) __must_hold(&qp->s_lock)
++static int hfi2_ipoib_sdma_sleep(struct sdma_engine *sde,
++				 struct iowait_work *wait,
++				 struct sdma_txreq *txreq,
++				 uint seq,
++				 bool pkts_sent)
 +{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	u32 i;
-+	struct rvt_swqe *wqe;
++	struct hfi2_ipoib_txq *txq =
++		container_of(wait->iow, struct hfi2_ipoib_txq, wait);
 +
-+	lockdep_assert_held(&qp->s_lock);
-+	/* Can't move beyond s_tid_cur */
-+	if (priv->s_tid_tail == priv->s_tid_cur)
-+		return;
-+	for (i = priv->s_tid_tail + 1;; i++) {
-+		if (i == qp->s_size)
-+			i = 0;
++	write_seqlock(&sde->waitlock);
 +
-+		if (i == priv->s_tid_cur)
-+			break;
-+		wqe = rvt_get_swqe_ptr(qp, i);
-+		if (wqe->wr.opcode == IB_WR_TID_RDMA_WRITE)
-+			break;
++	if (likely(txq->priv->netdev->reg_state == NETREG_REGISTERED)) {
++		if (sdma_progress(sde, seq, txreq)) {
++			write_sequnlock(&sde->waitlock);
++			return -EAGAIN;
++		}
++
++		if (list_empty(&txreq->list))
++			/* came from non-list submit */
++			list_add_tail(&txreq->list, &txq->tx_list);
++		if (list_empty(&txq->wait.list)) {
++			struct hfi2_ibport *ibp = to_iport(txq->priv->device,
++							   txq->priv->port_num);
++
++			if (!atomic_xchg(&txq->tx_ring.no_desc, 1)) {
++				trace_hfi2_txq_queued(txq);
++				hfi2_ipoib_stop_txq(txq);
++			}
++			ibp->rvp.n_dmawait++;
++			iowait_queue(pkts_sent, wait->iow, &sde->dmawait);
++		}
++
++		write_sequnlock(&sde->waitlock);
++		return -EBUSY;
 +	}
-+	priv->s_tid_tail = i;
-+	priv->s_state = TID_OP(WRITE_RESP);
++
++	write_sequnlock(&sde->waitlock);
++	return -EINVAL;
 +}
 +
-+int hfi2_make_tid_rdma_pkt(struct rvt_qp *qp, struct hfi2_pkt_state *ps)
-+	__must_hold(&qp->s_lock)
++/*
++ * hfi2_ipoib_sdma_wakeup - ipoib sdma wakeup function
++ *
++ * This function gets called when SDMA descriptors becomes available and Tx
++ * queue's wait structure was previously added to sdma engine's dmawait list.
++ */
++static void hfi2_ipoib_sdma_wakeup(struct iowait *wait, int reason)
 +{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct rvt_swqe *wqe;
-+	u32 bth1 = 0, bth2 = 0, hwords = 5, len, middle = 0;
-+	struct ib_other_headers *ohdr;
-+	struct rvt_sge_state *ss = &qp->s_sge;
-+	struct rvt_ack_entry *e = &qp->s_ack_queue[qp->s_tail_ack_queue];
-+	struct tid_rdma_request *req = ack_to_tid_req(e);
-+	bool last = false;
-+	u8 opcode = TID_OP(WRITE_DATA);
++	struct hfi2_ipoib_txq *txq =
++		container_of(wait, struct hfi2_ipoib_txq, wait);
 +
-+	lockdep_assert_held(&qp->s_lock);
-+	trace_hfi2_tid_write_sender_make_tid_pkt(qp, 0);
-+	/*
-+	 * Prioritize the sending of the requests and responses over the
-+	 * sending of the TID RDMA data packets.
-+	 */
-+	if (((atomic_read(&priv->n_tid_requests) < HFI2_TID_RDMA_WRITE_CNT) &&
-+	     atomic_read(&priv->n_requests) &&
-+	     !(qp->s_flags &
-+	       (RVT_S_BUSY | RVT_S_WAIT_ACK | HFI2_S_ANY_WAIT_IO))) ||
-+	    (e->opcode == TID_OP(WRITE_REQ) && req->cur_seg < req->alloc_seg &&
-+	     !(qp->s_flags & (RVT_S_BUSY | HFI2_S_ANY_WAIT_IO)))) {
-+		struct iowait_work *iowork;
++	trace_hfi2_txq_wakeup(txq);
++	if (likely(txq->priv->netdev->reg_state == NETREG_REGISTERED))
++		iowait_schedule(wait, system_highpri_wq, WORK_CPU_UNBOUND);
++}
 +
-+		iowork = iowait_get_ib_work(&priv->s_iowait);
-+		ps->s_txreq = get_waiting_verbs_txreq(iowork);
-+		if (ps->s_txreq || hfi2_make_rc_req(qp, ps)) {
-+			priv->s_flags |= HFI2_S_TID_BUSY_SET;
-+			return 1;
-+		}
-+	}
++static void hfi2_ipoib_flush_txq(struct work_struct *work)
++{
++	struct iowait_work *ioww =
++		container_of(work, struct iowait_work, iowork);
++	struct iowait *wait = iowait_ioww_to_iow(ioww);
++	struct hfi2_ipoib_txq *txq =
++		container_of(wait, struct hfi2_ipoib_txq, wait);
++	struct net_device *dev = txq->priv->netdev;
 +
-+	ps->s_txreq = alloc_txreq(ps->dev, qp);
-+	if (!ps->s_txreq)
-+		goto bail_no_tx;
++	if (likely(dev->reg_state == NETREG_REGISTERED) &&
++	    likely(!hfi2_ipoib_flush_tx_list(dev, txq)))
++		if (atomic_xchg(&txq->tx_ring.no_desc, 0))
++			hfi2_ipoib_wake_txq(txq);
++}
 +
-+	ohdr = &ps->s_txreq->phdr.hdr.ibh.u.oth;
-+
-+	if ((priv->s_flags & RVT_S_ACK_PENDING) &&
-+	    make_tid_rdma_ack(qp, ohdr, ps))
-+		return 1;
++int hfi2_ipoib_txreq_init(struct hfi2_ipoib_dev_priv *priv)
++{
++	struct net_device *dev = priv->netdev;
++	u32 tx_ring_size, tx_item_size;
++	struct hfi2_ipoib_circ_buf *tx_ring;
++	int i, j;
 +
 +	/*
-+	 * Bail out if we can't send data.
-+	 * Be reminded that this check must been done after the call to
-+	 * make_tid_rdma_ack() because the responding QP could be in
-+	 * RTR state where it can send TID RDMA ACK, not TID RDMA WRITE DATA.
++	 * Ring holds 1 less than tx_ring_size
++	 * Round up to next power of 2 in order to hold at least tx_queue_len
 +	 */
-+	if (!(ib_rvt_state_ops[qp->state] & RVT_PROCESS_SEND_OK))
-+		goto bail;
++	tx_ring_size = roundup_pow_of_two(dev->tx_queue_len + 1);
++	tx_item_size = roundup_pow_of_two(sizeof(struct ipoib_txreq));
 +
-+	if (priv->s_flags & RVT_S_WAIT_ACK)
-+		goto bail;
++	priv->txqs = kcalloc_node(dev->num_tx_queues,
++				  sizeof(struct hfi2_ipoib_txq),
++				  GFP_KERNEL,
++				  priv->dd->node);
++	if (!priv->txqs)
++		return -ENOMEM;
 +
-+	/* Check whether there is anything to do. */
-+	if (priv->s_tid_tail == HFI2_QP_WQE_INVALID)
-+		goto bail;
-+	wqe = rvt_get_swqe_ptr(qp, priv->s_tid_tail);
-+	req = wqe_to_tid_req(wqe);
-+	trace_hfi2_tid_req_make_tid_pkt(qp, 0, wqe->wr.opcode, wqe->psn,
-+					wqe->lpsn, req);
-+	switch (priv->s_state) {
-+	case TID_OP(WRITE_REQ):
-+	case TID_OP(WRITE_RESP):
-+		priv->tid_ss.sge = wqe->sg_list[0];
-+		priv->tid_ss.sg_list = wqe->sg_list + 1;
-+		priv->tid_ss.num_sge = wqe->wr.num_sge;
-+		priv->tid_ss.total_len = wqe->length;
++	for (i = 0; i < dev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++		struct ipoib_txreq *tx;
 +
-+		if (priv->s_state == TID_OP(WRITE_REQ))
-+			hfi2_tid_rdma_restart_req(qp, wqe, &bth2);
-+		priv->s_state = TID_OP(WRITE_DATA);
-+		fallthrough;
++		tx_ring = &txq->tx_ring;
++		iowait_init(&txq->wait,
++			    0,
++			    hfi2_ipoib_flush_txq,
++			    NULL,
++			    hfi2_ipoib_sdma_sleep,
++			    hfi2_ipoib_sdma_wakeup,
++			    NULL,
++			    NULL);
++		txq->priv = priv;
++		txq->sde = NULL;
++		INIT_LIST_HEAD(&txq->tx_list);
++		atomic_set(&txq->tx_ring.stops, 0);
++		atomic_set(&txq->tx_ring.ring_full, 0);
++		atomic_set(&txq->tx_ring.no_desc, 0);
++		txq->q_idx = i;
++		txq->flow.tx_queue = 0xff;
++		txq->flow.sc5 = 0xff;
++		txq->pkts_sent = false;
 +
-+	case TID_OP(WRITE_DATA):
-+		/*
-+		 * 1. Check whether TID RDMA WRITE RESP available.
-+		 * 2. If no:
-+		 *    2.1 If have more segments and no TID RDMA WRITE RESP,
-+		 *        set HFI2_S_WAIT_TID_RESP
-+		 *    2.2 Return indicating no progress made.
-+		 * 3. If yes:
-+		 *    3.1 Build TID RDMA WRITE DATA packet.
-+		 *    3.2 If last packet in segment:
-+		 *        3.2.1 Change KDETH header bits
-+		 *        3.2.2 Advance RESP pointers.
-+		 *    3.3 Return indicating progress made.
-+		 */
-+		trace_hfi2_sender_make_tid_pkt(qp);
-+		trace_hfi2_tid_write_sender_make_tid_pkt(qp, 0);
-+		wqe = rvt_get_swqe_ptr(qp, priv->s_tid_tail);
-+		req = wqe_to_tid_req(wqe);
-+		len = wqe->length;
++		netdev_queue_numa_node_write(netdev_get_tx_queue(dev, i),
++					     priv->dd->node);
 +
-+		if (!req->comp_seg || req->cur_seg == req->comp_seg)
-+			goto bail;
++		txq->tx_ring.items =
++			kvzalloc_node(array_size(tx_ring_size, tx_item_size),
++				      GFP_KERNEL, priv->dd->node);
++		if (!txq->tx_ring.items)
++			goto free_txqs;
 +
-+		trace_hfi2_tid_req_make_tid_pkt(qp, 0, wqe->wr.opcode, wqe->psn,
-+						wqe->lpsn, req);
-+		last = hfi2_build_tid_rdma_packet(wqe, ohdr, &bth1, &bth2,
-+						  &len);
-+
-+		if (last) {
-+			/* move pointer to next flow */
-+			req->clear_tail = CIRC_NEXT(req->clear_tail, MAX_FLOWS);
-+			if (++req->cur_seg < req->total_segs) {
-+				if (!CIRC_CNT(req->setup_head, req->clear_tail,
-+					      MAX_FLOWS))
-+					qp->s_flags |= HFI2_S_WAIT_TID_RESP;
-+			} else {
-+				priv->s_state = TID_OP(WRITE_DATA_LAST);
-+				opcode = TID_OP(WRITE_DATA_LAST);
-+
-+				/* Advance the s_tid_tail now */
-+				update_tid_tail(qp);
-+			}
++		txq->tx_ring.max_items = tx_ring_size;
++		txq->tx_ring.shift = ilog2(tx_item_size);
++		txq->tx_ring.avail = hfi2_ipoib_ring_hwat(txq);
++		tx_ring = &txq->tx_ring;
++		for (j = 0; j < tx_ring_size; j++) {
++			hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr =
++				kzalloc_node(sizeof(*tx->sdma_hdr),
++					     GFP_KERNEL, priv->dd->node);
++			if (!hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr)
++				goto free_txqs;
 +		}
-+		hwords += sizeof(ohdr->u.tid_rdma.w_data) / sizeof(u32);
-+		ss = &priv->tid_ss;
-+		break;
 +
-+	case TID_OP(RESYNC):
-+		trace_hfi2_sender_make_tid_pkt(qp);
-+		/* Use generation from the most recently received response */
-+		wqe = rvt_get_swqe_ptr(qp, priv->s_tid_cur);
-+		req = wqe_to_tid_req(wqe);
-+		/* If no responses for this WQE look at the previous one */
-+		if (!req->comp_seg) {
-+			wqe = rvt_get_swqe_ptr(qp, (!priv->s_tid_cur ?
-+							    qp->s_size :
-+							    priv->s_tid_cur) -
-+							   1);
-+			req = wqe_to_tid_req(wqe);
-+		}
-+		hwords += hfi2_build_tid_rdma_resync(
-+			qp, wqe, ohdr, &bth1, &bth2,
-+			CIRC_PREV(req->setup_head, MAX_FLOWS));
-+		ss = NULL;
-+		len = 0;
-+		opcode = TID_OP(RESYNC);
-+		break;
++		netif_napi_add_tx(dev, &txq->napi, hfi2_ipoib_poll_tx_ring);
++	}
 +
-+	default:
-+		goto bail;
++	return 0;
++
++free_txqs:
++	for (i--; i >= 0; i--) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++
++		netif_napi_del(&txq->napi);
++		tx_ring = &txq->tx_ring;
++		for (j = 0; j < tx_ring_size; j++)
++			kfree(hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr);
++		kvfree(tx_ring->items);
 +	}
-+	if (priv->s_flags & RVT_S_SEND_ONE) {
-+		priv->s_flags &= ~RVT_S_SEND_ONE;
-+		priv->s_flags |= RVT_S_WAIT_ACK;
-+		bth2 |= IB_BTH_REQ_ACK;
++
++	kfree(priv->txqs);
++	priv->txqs = NULL;
++	return -ENOMEM;
++}
++
++static void hfi2_ipoib_drain_tx_list(struct hfi2_ipoib_txq *txq)
++{
++	struct sdma_txreq *txreq;
++	struct sdma_txreq *txreq_tmp;
++
++	list_for_each_entry_safe(txreq, txreq_tmp, &txq->tx_list, list) {
++		struct ipoib_txreq *tx =
++			container_of(txreq, struct ipoib_txreq, txreq);
++
++		list_del(&txreq->list);
++		sdma_txclean(txq->priv->dd, &tx->txreq);
++		dev_kfree_skb_any(tx->skb);
++		tx->skb = NULL;
++		txq->tx_ring.complete_txreqs++;
 +	}
-+	qp->s_len -= len;
-+	ps->s_txreq->hdr_dwords = hwords;
-+	ps->s_txreq->sde = priv->s_sde;
-+	ps->s_txreq->ss = ss;
-+	ps->s_txreq->s_cur_size = len;
-+	hfi2_make_ruc_header(qp, ohdr, (opcode << 24), bth1, bth2, middle, ps);
-+	return 1;
-+bail:
-+	hfi2_put_txreq(ps->s_txreq);
-+bail_no_tx:
-+	ps->s_txreq = NULL;
-+	priv->s_flags &= ~RVT_S_BUSY;
-+	/*
-+	 * If we didn't get a txreq, the QP will be woken up later to try
-+	 * again, set the flags to the wake up which work item to wake
-+	 * up.
-+	 * (A better algorithm should be found to do this and generalize the
-+	 * sleep/wakeup flags.)
-+	 */
-+	iowait_set_flag(&priv->s_iowait, IOWAIT_PENDING_TID);
++
++	if (hfi2_ipoib_used(txq))
++		dd_dev_warn(txq->priv->dd,
++			    "txq %d not empty found %u requests\n",
++			    txq->q_idx,
++			    hfi2_ipoib_txreqs(txq->tx_ring.sent_txreqs,
++					      txq->tx_ring.complete_txreqs));
++}
++
++void hfi2_ipoib_txreq_deinit(struct hfi2_ipoib_dev_priv *priv)
++{
++	int i, j;
++
++	for (i = 0; i < priv->netdev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++		struct hfi2_ipoib_circ_buf *tx_ring = &txq->tx_ring;
++
++		iowait_cancel_work(&txq->wait);
++		iowait_sdma_drain(&txq->wait);
++		hfi2_ipoib_drain_tx_list(txq);
++		netif_napi_del(&txq->napi);
++		hfi2_ipoib_drain_tx_ring(txq);
++		for (j = 0; j < tx_ring->max_items; j++)
++			kfree(hfi2_txreq_from_idx(tx_ring, j)->sdma_hdr);
++		kvfree(tx_ring->items);
++	}
++
++	kfree(priv->txqs);
++	priv->txqs = NULL;
++}
++
++void hfi2_ipoib_napi_tx_enable(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int i;
++
++	for (i = 0; i < dev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++
++		napi_enable(&txq->napi);
++	}
++}
++
++void hfi2_ipoib_napi_tx_disable(struct net_device *dev)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	int i;
++
++	for (i = 0; i < dev->num_tx_queues; i++) {
++		struct hfi2_ipoib_txq *txq = &priv->txqs[i];
++
++		napi_disable(&txq->napi);
++		hfi2_ipoib_drain_tx_ring(txq);
++	}
++}
++
++void hfi2_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
++{
++	struct hfi2_ipoib_dev_priv *priv = hfi2_ipoib_priv(dev);
++	struct hfi2_ipoib_txq *txq = &priv->txqs[q];
++
++	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
++		    txq, q,
++		    __netif_subqueue_stopped(dev, txq->q_idx),
++		    atomic_read(&txq->tx_ring.stops),
++		    atomic_read(&txq->tx_ring.no_desc),
++		    atomic_read(&txq->tx_ring.ring_full));
++	dd_dev_info(priv->dd, "sde %p engine %u\n",
++		    txq->sde,
++		    txq->sde ? txq->sde->this_idx : 0);
++	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
++	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
++		    txq->tx_ring.sent_txreqs, txq->tx_ring.complete_txreqs,
++		    hfi2_ipoib_used(txq));
++	dd_dev_info(priv->dd, "tx_queue_len %u max_items %u\n",
++		    dev->tx_queue_len, txq->tx_ring.max_items);
++	dd_dev_info(priv->dd, "head %u tail %u\n",
++		    txq->tx_ring.head, txq->tx_ring.tail);
++	dd_dev_info(priv->dd, "wait queued %u\n",
++		    !list_empty(&txq->wait.list));
++	dd_dev_info(priv->dd, "tx_list empty %u\n",
++		    list_empty(&txq->tx_list));
++}
++
+diff --git a/drivers/infiniband/hw/hfi2/netdev_rx.c b/drivers/infiniband/hw/hfi2/netdev_rx.c
+new file mode 100644
+index 000000000000..954aa0a25322
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/netdev_rx.c
+@@ -0,0 +1,494 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
++ *
++ */
++
++/*
++ * This file contains HFI2 support for netdev RX functionality
++ */
++
++#include "sdma.h"
++#include "verbs.h"
++#include "netdev.h"
++#include "hfi2.h"
++
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <rdma/ib_verbs.h>
++
++static void hfi2_netdev_rxq_deinit(struct hfi2_netdev_rx *rx);
++
++static int hfi2_netdev_setup_ctxt(struct hfi2_netdev_rx *rx,
++				  struct hfi2_ctxtdata *uctxt)
++{
++	unsigned int rcvctrl_ops;
++	struct hfi2_devdata *dd = rx->dd;
++	int ret;
++
++	uctxt->rhf_rcv_function_map = netdev_rhf_rcv_functions;
++	uctxt->do_interrupt = &handle_receive_interrupt_napi_sp;
++
++	/* Now allocate the RcvHdr queue and eager buffers. */
++	ret = hfi2_create_rcvhdrq(dd, uctxt);
++	if (ret)
++		goto done;
++
++	ret = hfi2_setup_eagerbufs(uctxt);
++	if (ret)
++		goto done;
++
++	clear_rcvhdrtail(uctxt);
++
++	rcvctrl_ops = HFI2_RCVCTRL_CTXT_DIS;
++	rcvctrl_ops |= HFI2_RCVCTRL_INTRAVAIL_DIS;
++
++	if (!HFI2_CAP_KGET_MASK(uctxt->flags, MULTI_PKT_EGR))
++		rcvctrl_ops |= HFI2_RCVCTRL_ONE_PKT_EGR_ENB;
++	if (HFI2_CAP_KGET_MASK(uctxt->flags, NODROP_EGR_FULL))
++		rcvctrl_ops |= HFI2_RCVCTRL_NO_EGR_DROP_ENB;
++	if (HFI2_CAP_KGET_MASK(uctxt->flags, NODROP_RHQ_FULL))
++		rcvctrl_ops |= HFI2_RCVCTRL_NO_RHQ_DROP_ENB;
++	if (HFI2_CAP_KGET_MASK(uctxt->flags, DMA_RTAIL))
++		rcvctrl_ops |= HFI2_RCVCTRL_TAILUPD_ENB;
++
++	hfi2_rcvctrl(uctxt->dd, rcvctrl_ops, uctxt);
++done:
++	return ret;
++}
++
++static int hfi2_netdev_allocate_ctxt(struct hfi2_pportdata *ppd,
++				     struct hfi2_ctxtdata **ctxt)
++{
++	struct hfi2_devdata *dd = ppd->dd;
++	struct hfi2_ctxtdata *uctxt;
++	int ret;
++
++	if (dd->flags & HFI2_FROZEN)
++		return -EIO;
++
++	ret = hfi2_create_ctxtdata(ppd, dd->node, DYNAMIC_CONTEXT, &uctxt);
++	if (ret < 0) {
++		dd_dev_err(dd, "Unable to create ctxtdata, failing open\n");
++		return -ENOMEM;
++	}
++
++	uctxt->flags = HFI2_CAP_KGET(MULTI_PKT_EGR) |
++		HFI2_CAP_KGET(NODROP_RHQ_FULL) |
++		HFI2_CAP_KGET(NODROP_EGR_FULL) |
++		HFI2_CAP_KGET(DMA_RTAIL);
++	/* Netdev contexts are always NO_RDMA_RTAIL */
++	uctxt->fast_handler = handle_receive_interrupt_napi_fp;
++	uctxt->slow_handler = handle_receive_interrupt_napi_sp;
++	hfi2_set_seq_cnt(uctxt, 1);
++
++	hfi2_stats.sps_ctxts++;
++
++	dd_dev_info(dd, "created netdev context %d\n", uctxt->ctxt);
++	*ctxt = uctxt;
++
 +	return 0;
 +}
 +
-+static int make_tid_rdma_ack(struct rvt_qp *qp, struct ib_other_headers *ohdr,
-+			     struct hfi2_pkt_state *ps)
++static void hfi2_netdev_deallocate_ctxt(struct hfi2_pportdata *ppd,
++					struct hfi2_ctxtdata *uctxt)
 +{
-+	struct rvt_ack_entry *e;
-+	struct hfi2_qp_priv *qpriv = qp->priv;
-+	struct hfi2_ibdev *dev = to_idev(qp->ibqp.device);
-+	u32 hwords, next;
-+	u32 len = 0;
-+	u32 bth1 = 0, bth2 = 0;
-+	int middle = 0;
-+	u16 flow;
-+	struct tid_rdma_request *req, *nreq;
-+
-+	trace_hfi2_tid_write_rsp_make_tid_ack(qp);
-+	/* Don't send an ACK if we aren't supposed to. */
-+	if (!(ib_rvt_state_ops[qp->state] & RVT_PROCESS_RECV_OK))
-+		goto bail;
-+
-+	/* header size in 32-bit words LRH+BTH = (8+12)/4. */
-+	hwords = 5;
-+
-+	e = &qp->s_ack_queue[qpriv->r_tid_ack];
-+	req = ack_to_tid_req(e);
-+	/*
-+	 * In the RESYNC case, we are exactly one segment past the
-+	 * previously sent ack or at the previously sent NAK. So to send
-+	 * the resync ack, we go back one segment (which might be part of
-+	 * the previous request) and let the do-while loop execute again.
-+	 * The advantage of executing the do-while loop is that any data
-+	 * received after the previous ack is automatically acked in the
-+	 * RESYNC ack. It turns out that for the do-while loop we only need
-+	 * to pull back qpriv->r_tid_ack, not the segment
-+	 * indices/counters. The scheme works even if the previous request
-+	 * was not a TID WRITE request.
-+	 */
-+	if (qpriv->resync) {
-+		if (!req->ack_seg || req->ack_seg == req->total_segs)
-+			qpriv->r_tid_ack = !qpriv->r_tid_ack ?
-+						   rvt_size_atomic(&dev->rdi) :
-+						   qpriv->r_tid_ack - 1;
-+		e = &qp->s_ack_queue[qpriv->r_tid_ack];
-+		req = ack_to_tid_req(e);
-+	}
-+
-+	trace_hfi2_rsp_make_tid_ack(qp, e->psn);
-+	trace_hfi2_tid_req_make_tid_ack(qp, 0, e->opcode, e->psn, e->lpsn, req);
-+	/*
-+	 * If we've sent all the ACKs that we can, we are done
-+	 * until we get more segments...
-+	 */
-+	if (!qpriv->s_nak_state && !qpriv->resync &&
-+	    req->ack_seg == req->comp_seg)
-+		goto bail;
-+
-+	do {
-+		/*
-+		 * To deal with coalesced ACKs, the acked_tail pointer
-+		 * into the flow array is used. The distance between it
-+		 * and the clear_tail is the number of flows that are
-+		 * being ACK'ed.
-+		 */
-+		req->ack_seg +=
-+			/* Get up-to-date value */
-+			CIRC_CNT(req->clear_tail, req->acked_tail, MAX_FLOWS);
-+		/* Advance acked index */
-+		req->acked_tail = req->clear_tail;
-+
-+		/*
-+		 * req->clear_tail points to the segment currently being
-+		 * received. So, when sending an ACK, the previous
-+		 * segment is being ACK'ed.
-+		 */
-+		flow = CIRC_PREV(req->acked_tail, MAX_FLOWS);
-+		if (req->ack_seg != req->total_segs)
-+			break;
-+		req->state = TID_REQUEST_COMPLETE;
-+
-+		next = qpriv->r_tid_ack + 1;
-+		if (next > rvt_size_atomic(&dev->rdi))
-+			next = 0;
-+		qpriv->r_tid_ack = next;
-+		if (qp->s_ack_queue[next].opcode != TID_OP(WRITE_REQ))
-+			break;
-+		nreq = ack_to_tid_req(&qp->s_ack_queue[next]);
-+		if (!nreq->comp_seg || nreq->ack_seg == nreq->comp_seg)
-+			break;
-+
-+		/* Move to the next ack entry now */
-+		e = &qp->s_ack_queue[qpriv->r_tid_ack];
-+		req = ack_to_tid_req(e);
-+	} while (1);
-+
-+	/*
-+	 * At this point qpriv->r_tid_ack == qpriv->r_tid_tail but e and
-+	 * req could be pointing at the previous ack queue entry
-+	 */
-+	if (qpriv->s_nak_state ||
-+	    (qpriv->resync &&
-+	     !hfi2_tid_rdma_is_resync_psn(qpriv->r_next_psn_kdeth - 1) &&
-+	     (cmp_psn(qpriv->r_next_psn_kdeth - 1,
-+		      full_flow_psn(&req->flows[flow],
-+				    req->flows[flow].flow_state.lpsn)) > 0))) {
-+		/*
-+		 * A NAK will implicitly acknowledge all previous TID RDMA
-+		 * requests. Therefore, we NAK with the req->acked_tail
-+		 * segment for the request at qpriv->r_tid_ack (same at
-+		 * this point as the req->clear_tail segment for the
-+		 * qpriv->r_tid_tail request)
-+		 */
-+		e = &qp->s_ack_queue[qpriv->r_tid_ack];
-+		req = ack_to_tid_req(e);
-+		flow = req->acked_tail;
-+	} else if (req->ack_seg == req->total_segs &&
-+		   qpriv->s_flags & HFI2_R_TID_WAIT_INTERLCK)
-+		qpriv->s_flags &= ~HFI2_R_TID_WAIT_INTERLCK;
-+
-+	trace_hfi2_tid_write_rsp_make_tid_ack(qp);
-+	trace_hfi2_tid_req_make_tid_ack(qp, 0, e->opcode, e->psn, e->lpsn, req);
-+	hwords +=
-+		hfi2_build_tid_rdma_write_ack(qp, e, ohdr, flow, &bth1, &bth2);
-+	len = 0;
-+	qpriv->s_flags &= ~RVT_S_ACK_PENDING;
-+	ps->s_txreq->hdr_dwords = hwords;
-+	ps->s_txreq->sde = qpriv->s_sde;
-+	ps->s_txreq->s_cur_size = len;
-+	ps->s_txreq->ss = NULL;
-+	hfi2_make_ruc_header(qp, ohdr, (TID_OP(ACK) << 24), bth1, bth2, middle,
-+			     ps);
-+	ps->s_txreq->txreq.flags |= SDMA_TXREQ_F_VIP;
-+	return 1;
-+bail:
-+	/*
-+	 * Ensure s_rdma_ack_cnt changes are committed prior to resetting
-+	 * RVT_S_RESP_PENDING
-+	 */
-+	smp_wmb();
-+	qpriv->s_flags &= ~RVT_S_ACK_PENDING;
-+	return 0;
-+}
-+
-+static int hfi2_send_tid_ok(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	return !(priv->s_flags & RVT_S_BUSY ||
-+		 qp->s_flags & HFI2_S_ANY_WAIT_IO) &&
-+	       (verbs_txreq_queued(iowait_get_tid_work(&priv->s_iowait)) ||
-+		(priv->s_flags & RVT_S_RESP_PENDING) ||
-+		!(qp->s_flags & HFI2_S_ANY_TID_WAIT_SEND));
-+}
-+
-+void _hfi2_do_tid_send(struct work_struct *work)
-+{
-+	struct iowait_work *w = container_of(work, struct iowait_work, iowork);
-+	struct rvt_qp *qp = iowait_to_qp(w->iow);
-+
-+	hfi2_do_tid_send(qp);
-+}
-+
-+static void hfi2_do_tid_send(struct rvt_qp *qp)
-+{
-+	struct hfi2_pkt_state ps;
-+	struct hfi2_qp_priv *priv = qp->priv;
-+
-+	ps.dev = to_idev(qp->ibqp.device);
-+	ps.ibp = to_iport(qp->ibqp.device, qp->port_num);
-+	ps.ppd = ppd_from_ibp(ps.ibp);
-+	ps.wait = iowait_get_tid_work(&priv->s_iowait);
-+	ps.in_thread = false;
-+	ps.timeout_int = qp->timeout_jiffies / 8;
-+	ps.loopback = false;
-+
-+	trace_hfi2_rc_do_tid_send(qp, false);
-+	spin_lock_irqsave(&qp->s_lock, ps.flags);
-+
-+	/* Return if we are already busy processing a work request. */
-+	if (!hfi2_send_tid_ok(qp)) {
-+		if (qp->s_flags & HFI2_S_ANY_WAIT_IO)
-+			iowait_set_flag(&priv->s_iowait, IOWAIT_PENDING_TID);
-+		spin_unlock_irqrestore(&qp->s_lock, ps.flags);
-+		return;
-+	}
-+
-+	priv->s_flags |= RVT_S_BUSY;
-+
-+	ps.timeout = jiffies + ps.timeout_int;
-+	ps.cpu = priv->s_sde ? priv->s_sde->cpu :
-+			       cpumask_first(cpumask_of_node(ps.ppd->dd->node));
-+	ps.pkts_sent = false;
-+
-+	/* insure a pre-built packet is handled  */
-+	ps.s_txreq = get_waiting_verbs_txreq(ps.wait);
-+	do {
-+		/* Check for a constructed packet to be sent. */
-+		if (ps.s_txreq) {
-+			if (priv->s_flags & HFI2_S_TID_BUSY_SET) {
-+				qp->s_flags |= RVT_S_BUSY;
-+				ps.wait = iowait_get_ib_work(&priv->s_iowait);
-+			}
-+			spin_unlock_irqrestore(&qp->s_lock, ps.flags);
-+
-+			/*
-+			 * If the packet cannot be sent now, return and
-+			 * the send tasklet will be woken up later.
-+			 */
-+			if (hfi2_verbs_send(qp, &ps))
-+				return;
-+
-+			/* allow other tasks to run */
-+			if (hfi2_schedule_send_yield(qp, &ps, true))
-+				return;
-+
-+			spin_lock_irqsave(&qp->s_lock, ps.flags);
-+			if (priv->s_flags & HFI2_S_TID_BUSY_SET) {
-+				qp->s_flags &= ~RVT_S_BUSY;
-+				priv->s_flags &= ~HFI2_S_TID_BUSY_SET;
-+				ps.wait = iowait_get_tid_work(&priv->s_iowait);
-+				if (iowait_flag_set(&priv->s_iowait,
-+						    IOWAIT_PENDING_IB))
-+					hfi2_schedule_send(qp);
-+			}
-+		}
-+	} while (hfi2_make_tid_rdma_pkt(qp, &ps));
-+	iowait_starve_clear(ps.pkts_sent, &priv->s_iowait);
-+	spin_unlock_irqrestore(&qp->s_lock, ps.flags);
-+}
-+
-+static bool _hfi2_schedule_tid_send(struct rvt_qp *qp)
-+{
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	struct hfi2_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
 +	struct hfi2_devdata *dd = ppd->dd;
 +
-+	if ((dd->flags & HFI2_SHUTDOWN))
-+		return true;
++	flush_wc();
 +
-+	return iowait_tid_schedule(
-+		&priv->s_iowait, dd->hfi2_wq,
-+		priv->s_sde ? priv->s_sde->cpu :
-+			      cpumask_first(cpumask_of_node(dd->node)));
++	/*
++	 * Disable receive context and interrupt available, reset all
++	 * RcvCtxtCtrl bits to default values.
++	 */
++	hfi2_rcvctrl(dd, HFI2_RCVCTRL_CTXT_DIS |
++		     HFI2_RCVCTRL_TIDFLOW_DIS |
++		     HFI2_RCVCTRL_INTRAVAIL_DIS |
++		     HFI2_RCVCTRL_ONE_PKT_EGR_DIS |
++		     HFI2_RCVCTRL_NO_RHQ_DROP_DIS |
++		     HFI2_RCVCTRL_NO_EGR_DROP_DIS, uctxt);
++
++	if (uctxt->msix_intr != CCE_NUM_MSIX_VECTORS)
++		msix_free_irq(dd, uctxt->msix_intr);
++
++	uctxt->msix_intr = CCE_NUM_MSIX_VECTORS;
++	uctxt->event_flags = 0;
++
++	hfi2_clear_tids(uctxt);
++	hfi2_clear_ctxt_pkey(dd, uctxt);
++
++	hfi2_stats.sps_ctxts--;
++
++	hfi2_free_ctxt(uctxt);
++}
++
++static int hfi2_netdev_allot_ctxt(struct hfi2_netdev_rx *rx,
++				  struct hfi2_ctxtdata **ctxt)
++{
++	int rc;
++	struct hfi2_devdata *dd = rx->dd;
++	struct hfi2_pportdata *ppd = rx->ppd;
++
++	rc = hfi2_netdev_allocate_ctxt(ppd, ctxt);
++	if (rc) {
++		dd_dev_err(dd, "netdev ctxt alloc failed %d\n", rc);
++		return rc;
++	}
++
++	rc = hfi2_netdev_setup_ctxt(rx, *ctxt);
++	if (rc) {
++		dd_dev_err(dd, "netdev ctxt setup failed %d\n", rc);
++		hfi2_netdev_deallocate_ctxt(ppd, *ctxt);
++		*ctxt = NULL;
++	}
++
++	return rc;
 +}
 +
 +/**
-+ * hfi2_schedule_tid_send - schedule progress on TID RDMA state machine
-+ * @qp: the QP
++ * hfi2_num_netdev_contexts - Count of netdev recv contexts to use.
++ * @dd: device on which to allocate netdev contexts
++ * @available_contexts: count of available receive contexts
++ * @cpu_mask: mask of possible cpus to include for contexts
 + *
-+ * This schedules qp progress on the TID RDMA state machine. Caller
-+ * should hold the s_lock.
-+ * Unlike hfi2_schedule_send(), this cannot use hfi2_send_ok() because
-+ * the two state machines can step on each other with respect to the
-+ * RVT_S_BUSY flag.
-+ * Therefore, a modified test is used.
++ * Return: count of physical cores on a node or the remaining available recv
++ * contexts for netdev recv context usage up to the maximum of
++ * HFI2_MAX_NETDEV_CTXTS.
++ * A value of 0 can be returned when acceleration is explicitly turned off,
++ * a memory allocation error occurs or when there are no available contexts.
 + *
-+ * Return: %true if the second leg is scheduled;
-+ *  %false if the second leg is not scheduled.
 + */
-+bool hfi2_schedule_tid_send(struct rvt_qp *qp)
++u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
++			     struct cpumask *cpu_mask)
 +{
-+	lockdep_assert_held(&qp->s_lock);
-+	if (hfi2_send_tid_ok(qp)) {
++	cpumask_var_t node_cpu_mask;
++	unsigned int available_cpus;
++
++	if (!HFI2_CAP_IS_KSET(AIP))
++		return 0;
++
++	/* Always give user contexts priority over netdev contexts */
++	if (available_contexts == 0) {
++		dd_dev_info(dd, "No receive contexts available for netdevs.\n");
++		return 0;
++	}
++
++	if (!zalloc_cpumask_var(&node_cpu_mask, GFP_KERNEL)) {
++		dd_dev_err(dd, "Unable to allocate cpu_mask for netdevs.\n");
++		return 0;
++	}
++
++	cpumask_and(node_cpu_mask, cpu_mask, cpumask_of_node(dd->node));
++
++	available_cpus = cpumask_weight(node_cpu_mask);
++
++	free_cpumask_var(node_cpu_mask);
++
++	return min3(available_cpus, available_contexts,
++		    (u32)HFI2_MAX_NETDEV_CTXTS);
++}
++
++static int hfi2_netdev_rxq_init(struct hfi2_netdev_rx *rx)
++{
++	int i;
++	int rc;
++	struct hfi2_devdata *dd = rx->dd;
++	struct hfi2_pportdata *ppd = rx->ppd;
++	struct net_device *dev = rx->rx_napi;
++
++	rx->num_rx_q = dd->rsrcs.ppr[rx->ppd->hw_pidx].num_netdev_contexts;
++	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
++			       GFP_KERNEL, dd->node);
++
++	if (!rx->rxq) {
++		ppd_dev_err(ppd, "Unable to allocate netdev queue data\n");
++		return (-ENOMEM);
++	}
++
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
++
++		rc = hfi2_netdev_allot_ctxt(rx, &rxq->rcd);
++		if (rc)
++			goto bail_context_irq_failure;
++
++		hfi2_rcd_get(rxq->rcd);
++		rxq->rx = rx;
++		rxq->rcd->napi = &rxq->napi;
++		ppd_dev_info(ppd, "Setting rcv queue %d napi to context %d\n",
++			    i, rxq->rcd->ctxt);
 +		/*
-+		 * The following call returns true if the qp is not on the
-+		 * queue and false if the qp is already on the queue before
-+		 * this call. Either way, the qp will be on the queue when the
-+		 * call returns.
++		 * Disable BUSY_POLL on this NAPI as this is not supported
++		 * right now.
 +		 */
-+		_hfi2_schedule_tid_send(qp);
-+		return true;
++		set_bit(NAPI_STATE_NO_BUSY_POLL, &rxq->napi.state);
++		netif_napi_add(dev, &rxq->napi, hfi2_netdev_rx_napi);
++		rc = msix_netdev_request_rcd_irq(rxq->rcd);
++		if (rc)
++			goto bail_context_irq_failure;
 +	}
-+	if (qp->s_flags & HFI2_S_ANY_WAIT_IO)
-+		iowait_set_flag(&((struct hfi2_qp_priv *)qp->priv)->s_iowait,
-+				IOWAIT_PENDING_TID);
-+	return false;
++
++	return 0;
++
++bail_context_irq_failure:
++	ppd_dev_err(ppd, "Unable to allot receive context\n");
++	hfi2_netdev_rxq_deinit(rx);
++	return rc;
 +}
 +
-+bool hfi2_tid_rdma_ack_interlock(struct rvt_qp *qp, struct rvt_ack_entry *e)
++static void hfi2_netdev_rxq_deinit(struct hfi2_netdev_rx *rx)
 +{
-+	struct rvt_ack_entry *prev;
-+	struct tid_rdma_request *req;
-+	struct hfi2_ibdev *dev = to_idev(qp->ibqp.device);
-+	struct hfi2_qp_priv *priv = qp->priv;
-+	u32 s_prev;
++	int i;
 +
-+	s_prev = qp->s_tail_ack_queue == 0 ? rvt_size_atomic(&dev->rdi) :
-+					     (qp->s_tail_ack_queue - 1);
-+	prev = &qp->s_ack_queue[s_prev];
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
 +
-+	if ((e->opcode == TID_OP(READ_REQ) ||
-+	     e->opcode == OP(RDMA_READ_REQUEST)) &&
-+	    prev->opcode == TID_OP(WRITE_REQ)) {
-+		req = ack_to_tid_req(prev);
-+		if (req->ack_seg != req->total_segs) {
-+			priv->s_flags |= HFI2_R_TID_WAIT_INTERLCK;
-+			return true;
-+		}
++		if (!rxq->rcd)
++			continue;
++		netif_napi_del(&rxq->napi);
++		hfi2_netdev_deallocate_ctxt(rx->ppd, rxq->rcd);
++		hfi2_rcd_put(rxq->rcd);
++		rxq->rcd = NULL;
 +	}
-+	return false;
++
++	kfree(rx->rxq);
++	rx->rxq = NULL;
++	rx->num_rx_q = 0;
 +}
 +
-+static u32 read_r_next_psn(struct hfi2_devdata *dd, u16 ctxt, u8 fidx)
++static void enable_queues(struct hfi2_netdev_rx *rx)
 +{
-+	u64 reg;
++	int i;
 +
-+	/*
-+	 * The only sane way to get the amount of
-+	 * progress is to read the HW flow state.
-+	 */
-+	reg = read_uctxt_csr(dd, ctxt,
-+			     dd->params->rcv_tid_flow_table_reg + (8 * fidx));
-+	return mask_psn(reg);
-+}
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
 +
-+static void tid_rdma_rcv_err(struct hfi2_packet *packet,
-+			     struct ib_other_headers *ohdr, struct rvt_qp *qp,
-+			     u32 psn, int diff, bool fecn)
-+{
-+	unsigned long flags;
-+
-+	tid_rdma_rcv_error(packet, ohdr, qp, psn, diff);
-+	if (fecn) {
-+		spin_lock_irqsave(&qp->s_lock, flags);
-+		qp->s_flags |= RVT_S_ECN;
-+		spin_unlock_irqrestore(&qp->s_lock, flags);
++		dd_dev_info(rx->dd, "enabling queue %d on context %d\n", i,
++			    rxq->rcd->ctxt);
++		napi_enable(&rxq->napi);
++		hfi2_rcvctrl(rx->dd,
++			     HFI2_RCVCTRL_CTXT_ENB | HFI2_RCVCTRL_INTRAVAIL_ENB,
++			     rxq->rcd);
 +	}
 +}
 +
-+static void update_r_next_psn_fecn(struct hfi2_packet *packet,
-+				   struct hfi2_qp_priv *priv,
-+				   struct hfi2_ctxtdata *rcd,
-+				   struct tid_rdma_flow *flow, bool fecn)
++static void disable_queues(struct hfi2_netdev_rx *rx)
 +{
-+	/*
-+	 * If a start/middle packet is delivered here due to
-+	 * RSM rule and FECN, we need to update the r_next_psn.
-+	 */
-+	if (fecn && packet->etype == RHF_RCV_TYPE_EAGER &&
-+	    !(priv->s_flags & HFI2_R_TID_SW_PSN)) {
-+		struct hfi2_devdata *dd = rcd->dd;
++	int i;
 +
-+		flow->flow_state.r_next_psn =
-+			read_r_next_psn(dd, rcd->ctxt, flow->idx);
++	msix_netdev_synchronize_irq(rx->ppd);
++
++	for (i = 0; i < rx->num_rx_q; i++) {
++		struct hfi2_netdev_rxq *rxq = &rx->rxq[i];
++
++		dd_dev_info(rx->dd, "disabling queue %d on context %d\n", i,
++			    rxq->rcd->ctxt);
++
++		/* wait for napi if it was scheduled */
++		hfi2_rcvctrl(rx->dd,
++			     HFI2_RCVCTRL_CTXT_DIS | HFI2_RCVCTRL_INTRAVAIL_DIS,
++			     rxq->rcd);
++		napi_synchronize(&rxq->napi);
++		napi_disable(&rxq->napi);
 +	}
 +}
-diff --git a/drivers/infiniband/hw/hfi2/uverbs.c b/drivers/infiniband/hw/hfi2/uverbs.c
-new file mode 100644
-index 000000000000..8d65dba04d1d
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/uverbs.c
-@@ -0,0 +1,598 @@
-+// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
-+/*
-+ * Copyright(c) 2025-2026 Cornelis Networks, Inc.
-+ */
 +
-+#include "hfi2.h"
-+#include "user_sdma.h"
-+#include "uverbs.h"
-+#include "file_ops.h"
-+
-+#define UVERBS_MODULE_NAME hfi2_uv
-+#include <rdma/uverbs_named_ioctl.h>
-+
-+static const u64 zero8; /* 8 bytes of 0 */
-+
-+/*
-+ * RDMA mmap token: <type> << <page offset>
++/**
++ * hfi2_netdev_rx_init - Incrememnts netdevs counter. When called first time,
++ * it allocates receive queue data and calls netif_napi_add for each queue.
 + *
-+ * Expect type to be less than 256 (8 bits).  rdmavt reserves the bottom 256
-+ * tokens for the driver.  A type of zero is always considered invalid.
-+ * Types >= 256 are used for rdmavt's dynamic token generation.
++ * @dd: hfi2 dev data
 + */
-+
-+/* convert RDMA mmap token to type: the first 8 bits above a page */
-+static inline u8 rdma_mmap_get_type(unsigned long token)
++int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd)
 +{
-+	return token >> PAGE_SHIFT;
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++	int res = 0;
++
++	mutex_lock(&hfi2_mutex);
++	if (rx->netdevs++ == 0) {
++		res = hfi2_netdev_rxq_init(rx);
++		if (res)
++			rx->netdevs--;
++	}
++	mutex_unlock(&hfi2_mutex);
++	return res;
 +}
 +
-+/* calculate the token from an integer offset */
-+static inline unsigned long rdma_mmap_token_i(u8 type, unsigned long offset)
++/**
++ * hfi2_netdev_rx_destroy - Decrements netdevs counter, when it reaches 0
++ * napi is deleted and receive queses memory is freed.
++ *
++ * @dd: hfi2 dev data
++ */
++int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd)
 +{
-+	return ((unsigned long)type << PAGE_SHIFT) | offset_in_page(offset);
-+}
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
 +
-+/* calculate the token from a pointer offset */
-+static inline unsigned long rdma_mmap_token_p(u8 type, void *offset)
-+{
-+	return rdma_mmap_token_i(type, (unsigned long)offset);
-+}
-+
-+int hfi2_alloc_ucontext(struct ib_ucontext *ucontext, struct ib_udata *udata)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ucontext->device);
-+	struct rvt_ucontext *rcontext = container_of(ucontext, struct rvt_ucontext, ibucontext);
-+	struct hfi2_filedata *fd;
-+
-+	fd = hfi2_alloc_filedata(dd);
-+	if (!fd)
-+		return -ENOMEM;
-+
-+	rcontext->priv = fd;
++	/* destroy the RX queues only if it is the last netdev going away */
++	mutex_lock(&hfi2_mutex);
++	if (--rx->netdevs == 0)
++		hfi2_netdev_rxq_deinit(rx);
++	mutex_unlock(&hfi2_mutex);
 +
 +	return 0;
 +}
 +
-+void hfi2_dealloc_ucontext(struct ib_ucontext *ucontext)
++/**
++ * hfi2_alloc_rx - Allocates the rx support structure
++ * @dd: hfi2 dev data
++ *
++ * Allocate the rx structure to support gathering the receive
++ * resources and the dummy netdev.
++ *
++ * Updates ppd struct pointers upon success.
++ *
++ * Return: 0 (success) -error on failure
++ *
++ */
++int hfi2_alloc_rx(struct hfi2_devdata *dd)
 +{
-+	struct rvt_ucontext *rcontext = container_of(ucontext, struct rvt_ucontext, ibucontext);
-+	struct hfi2_filedata *fd;
++	struct hfi2_pportdata *ppd;
++	struct hfi2_netdev_rx *rx;
++	int i;
 +
-+	fd = rcontext->priv;
-+	if (fd) {
-+		hfi2_dealloc_filedata(fd);
-+		rcontext->priv = NULL;
++	dd_dev_info(dd, "hfi2 rx allocating, size %ld\n", sizeof(*rx));
++
++	for (i = 0; i < dd->num_pports; i++) {
++		ppd = &dd->pport[i];
++
++		rx = kzalloc_node(sizeof(*rx), GFP_KERNEL, dd->node);
++
++		if (!rx) {
++			hfi2_free_rx(dd);
++			return -ENOMEM;
++		}
++		rx->dd = dd;
++		rx->ppd = ppd;
++		rx->rx_napi = alloc_netdev_dummy(0);
++		if (!rx->rx_napi) {
++			kfree(rx);
++			return -ENOMEM;
++		}
++
++		xa_init(&rx->dev_tbl);
++		atomic_set(&rx->enabled, 0);
++		/* rx->netdevs is already zero from kzalloc */
++		ppd->netdev_rx = rx;
++	}
++
++	return 0;
++}
++
++void hfi2_free_rx(struct hfi2_devdata *dd)
++{
++	struct hfi2_pportdata *ppd;
++	int i;
++
++	dd_dev_info(dd, "hfi2 rx freed\n");
++	for (i = 0; i < dd->num_pports; i++) {
++		ppd = &dd->pport[i];
++		kfree(ppd->netdev_rx);
++		ppd->netdev_rx = NULL;
 +	}
 +}
 +
-+static inline struct hfi2_filedata *fd_from_attrs(struct uverbs_attr_bundle *attrs)
++/**
++ * hfi2_netdev_enable_queues - This is napi enable function.
++ * It enables napi objects associated with queues.
++ * When at least one device has called it, it increments atomic counter.
++ * Disable function decrements counter and when it is 0,
++ * calls napi_disable for every queue.
++ *
++ * @dd: hfi2 dev data
++ */
++void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd)
 +{
-+	struct ib_ucontext *ucontext = ib_uverbs_get_ucontext(attrs);
-+	struct rvt_ucontext *rcontext = container_of(ucontext, struct rvt_ucontext, ibucontext);
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
 +
-+	return rcontext->priv;
++	if (!rx)
++		return;
++
++	if (atomic_fetch_inc(&rx->enabled))
++		return;
++
++	mutex_lock(&hfi2_mutex);
++	enable_queues(rx);
++	mutex_unlock(&hfi2_mutex);
 +}
 +
-+static int UVERBS_HANDLER(HFI2_METHOD_ASSIGN_CTXT)(
-+	struct uverbs_attr_bundle *attrs)
++void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd)
 +{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_assign_ctxt_cmd cmd;
-+	unsigned int swmajor;
-+	int ret;
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
 +
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_ASSIGN_CTXT_CMD);
-+	if (ret)
-+		return ret;
++	if (!rx)
++		return;
 +
-+	swmajor = cmd.userversion >> HFI2_SWMAJOR_SHIFT;
-+	if (swmajor != HFI2_RDMA_USER_SWMAJOR)
-+		return -ENODEV;
++	if (atomic_dec_if_positive(&rx->enabled))
++		return;
 +
-+	if (cmd.reserved1 != 0 || cmd.reserved2 != 0)
-+		return -EINVAL;
++	mutex_lock(&hfi2_mutex);
++	disable_queues(rx);
++	mutex_unlock(&hfi2_mutex);
++}
 +
-+	return hfi2_do_assign_ctxt(fd, &cmd);
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_CTXT_INFO)(
-+	struct uverbs_attr_bundle *attrs)
++/**
++ * hfi2_netdev_add_data - Registers data with unique identifier
++ * to be requested later this is needed for IPoIB VLANs
++ * implementations.
++ * This call is protected by mutex idr_lock.
++ *
++ * @dd: hfi2 dev data
++ * @id: requested integer id up to INT_MAX
++ * @data: data to be associated with index
++ */
++int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data)
 +{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+	struct hfi2_ctxt_info_rsp rsp = {};
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
 +
-+	if (!uctxt)
-+		return -EINVAL;
++	return xa_insert(&rx->dev_tbl, id, data, GFP_NOWAIT);
++}
 +
-+	rsp.runtime_flags = (((uctxt->flags >> HFI2_CAP_MISC_SHIFT) &
-+				HFI2_CAP_MISC_MASK) << HFI2_CAP_USER_SHIFT) |
-+			    HFI2_CAP_UGET_MASK(uctxt->flags, MASK) |
-+			    HFI2_CAP_KGET_MASK(uctxt->flags, K2U);
-+	/* adjust flag if this fd is not able to cache */
-+	if (!fd->use_mn)
-+		rsp.runtime_flags |= HFI2_CAP_TID_UNMAP; /* no caching */
-+
-+	rsp.num_active = hfi2_count_active_units();
-+	rsp.unit = uctxt->dd->unit;
-+	rsp.ctxt = uctxt->ctxt;
-+	rsp.subctxt = fd->subctxt;
-+	rsp.rcvtids = roundup(uctxt->egrbufs.alloced,
-+			      uctxt->dd->rcv_entries.group_size) +
-+		      uctxt->expected_count;
-+	rsp.credits = uctxt->sc->credits;
-+	rsp.numa_node = uctxt->numa_id;
-+	rsp.rec_cpu = fd->rec_cpu_num;
-+	rsp.send_ctxt = uctxt->sc->hw_context;
-+
-+	rsp.egrtids = uctxt->egrbufs.alloced;
-+	rsp.rcvhdrq_cnt = get_hdrq_cnt(uctxt);
-+	rsp.rcvhdrq_entsize = get_hdrqentsize(uctxt) << 2;
-+	rsp.sdma_ring_size = fd->cq->nentries;
-+	rsp.rcvegr_size = uctxt->egrbufs.rcvtid_size;
-+
-+	return uverbs_copy_to(attrs, HFI2_ATTR_CTXT_INFO_RSP, &rsp,
-+			      sizeof(rsp));
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_USER_INFO)(
-+	struct uverbs_attr_bundle *attrs)
++/**
++ * hfi2_netdev_remove_data - Removes data with previously given id.
++ * Returns the reference to removed entry.
++ *
++ * @dd: hfi2 dev data
++ * @id: requested integer id up to INT_MAX
++ */
++void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id)
 +{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+	struct hfi2_user_info_rsp rsp = {};
-+	struct hfi2_devdata *dd;
-+	unsigned long offset;
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
 +
-+	if (!uctxt)
-+		return -EINVAL;
-+	dd = uctxt->dd;
++	return xa_erase(&rx->dev_tbl, id);
++}
 +
-+	rsp.hw_version = dd->revision;
-+	rsp.sw_version = HFI2_USER_SWVERSION;
-+	rsp.bthqp = RVT_KDETH_QP_PREFIX;
-+	rsp.jkey = uctxt->jkey;
-+	/*
-+	 * If more than 64 contexts are enabled, the allocated credit return
-+	 * will span two or three contiguous pages. Only the page containing
-+	 * the context's credit return address is mapped.  Calculate the offset
-+	 * in the proper page.
-+	 */
-+	offset = ((u64)uctxt->sc->hw_free -
-+		  (u64)dd->cr_base[uctxt->numa_id].va) % PAGE_SIZE;
-+	rsp.sc_credits_addr = rdma_mmap_token_i(PIO_CRED, offset);
-+	rsp.pio_bufbase = rdma_mmap_token_p(PIO_BUFS, uctxt->sc->base_addr);
-+	rsp.pio_bufbase_sop = rdma_mmap_token_p(PIO_BUFS_SOP,
-+						uctxt->sc->base_addr);
-+	rsp.rcvhdr_bufbase = rdma_mmap_token_p(RCV_HDRQ, uctxt->rcvhdrq);
-+	rsp.rcvegr_bufbase = rdma_mmap_token_i(RCV_EGRBUF,
-+					       uctxt->egrbufs.rcvtids[0].dma);
-+	rsp.sdma_comp_bufbase = rdma_mmap_token_i(SDMA_COMP, 0);
-+	/*
-+	 * user regs are at
-+	 * (RXE_PER_CONTEXT_USER + (ctxt * RXE_PER_CONTEXT_SIZE))
-+	 */
-+	rsp.user_regbase = rdma_mmap_token_i(UREGS, 0);
-+	offset = offset_in_page((uctxt_offset(uctxt) + fd->subctxt) *
-+				sizeof(*dd->events));
-+	rsp.events_bufbase = rdma_mmap_token_i(EVENTS, offset);
-+	rsp.status_bufbase = rdma_mmap_token_p(STATUS, dd->status);
-+	if (HFI2_CAP_IS_USET(DMA_RTAIL))
-+		rsp.rcvhdrtail_base = rdma_mmap_token_i(RTAIL, 0);
-+	if (uctxt->subctxt_cnt) {
-+		rsp.subctxt_uregbase = rdma_mmap_token_i(SUBCTXT_UREGS, 0);
-+		rsp.subctxt_rcvhdrbuf = rdma_mmap_token_i(SUBCTXT_RCV_HDRQ, 0);
-+		rsp.subctxt_rcvegrbuf = rdma_mmap_token_i(SUBCTXT_EGRBUF, 0);
-+	}
-+
-+	if (dd->params->chip_type != CHIP_WFR)
-+		rsp.rheq_bufbase = rdma_mmap_token_p(RCV_RHEQ, uctxt->rcvhdrq);
-+
-+	return uverbs_copy_to(attrs, HFI2_ATTR_USER_INFO_RSP, &rsp,
-+			      sizeof(rsp));
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_TID_UPDATE)(
-+	struct uverbs_attr_bundle *attrs)
++/**
++ * hfi2_netdev_get_data - Gets data with given id
++ *
++ * @dd: hfi2 dev data
++ * @id: requested integer id up to INT_MAX
++ */
++void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id)
 +{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_tid_info tinfo = {};
-+	struct hfi2_tid_update_cmd cmd;
-+	struct hfi2_tid_update_rsp rsp = {};
-+	int ret;
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
 +
-+	if (!fd->uctxt)
-+		return -EINVAL;
++	return xa_load(&rx->dev_tbl, id);
++}
 +
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_TID_UPDATE_CMD);
-+	if (ret)
-+		return ret;
++/**
++ * hfi2_netdev_get_first_data - Gets first entry with greater or equal id.
++ *
++ * @dd: hfi2 dev data
++ * @start_id: requested integer id up to INT_MAX
++ */
++void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id)
++{
++	struct hfi2_netdev_rx *rx = ppd->netdev_rx;
++	unsigned long index = *start_id;
++	void *ret;
 +
-+	/* reserved .flags bits must be 0 */
-+	if (cmd.flags & HFI2_TID_UPDATE_FLAGS_RESERVED_MASK)
-+		return -EINVAL;
-+	/* reserved for now */
-+	if (cmd.context)
-+		return -EINVAL;
-+
-+	/* copy to internal structure */
-+	tinfo.vaddr = cmd.vaddr;
-+	tinfo.tidlist = cmd.tidlist;
-+	tinfo.length = cmd.length;
-+	tinfo.tidcnt = cmd.tidcnt;
-+	tinfo.flags = cmd.flags;
-+	tinfo.context = cmd.context;
-+
-+	ret = hfi2_user_exp_rcv_setup(fd, &tinfo, false, true);
-+	if (ret)
-+		return ret;
-+
-+	rsp.length = tinfo.length;
-+	rsp.tidcnt = tinfo.tidcnt;
-+	ret = uverbs_copy_to(attrs, HFI2_ATTR_TID_UPDATE_RSP, &rsp,
-+			     sizeof(rsp));
-+	if (!ret)
-+		hfi2_user_exp_rcv_clear(fd, (struct hfi2_tid_info *)&tinfo);
-+
++	ret = xa_find(&rx->dev_tbl, &index, UINT_MAX, XA_PRESENT);
++	*start_id = (int)index;
 +	return ret;
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_TID_FREE)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_tid_info tinfo = {};
-+	struct hfi2_tid_free_cmd cmd;
-+	struct hfi2_tid_free_rsp rsp = {};
-+	int ret;
-+
-+	if (!fd->uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_TID_FREE_CMD);
-+	if (ret)
-+		return ret;
-+
-+	if (cmd.reserved != 0)
-+		return -EINVAL;
-+
-+	tinfo.tidlist = cmd.tidlist;
-+	tinfo.tidcnt = cmd.tidcnt;
-+
-+	ret = hfi2_user_exp_rcv_clear(fd, &tinfo);
-+	if (!ret)
-+		return ret;
-+
-+	rsp.tidcnt = tinfo.tidcnt;
-+
-+	return uverbs_copy_to(attrs, HFI2_ATTR_TID_FREE_RSP, &rsp,
-+			      sizeof(rsp));
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_CREDIT_UPD)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+
-+	if (!uctxt)
-+		return -EINVAL;
-+	sc_return_credits(uctxt->sc);
-+
-+	return 0;
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_RECV_CTRL)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+	struct hfi2_recv_ctrl_cmd cmd;
-+	int ret;
-+
-+	if (!uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_RECV_CTRL_CMD);
-+	if (ret)
-+		return ret;
-+
-+	/* verify small reserved array of u8s is zero */
-+	if (memcmp(cmd.reserved, &zero8, sizeof(cmd.reserved)) != 0)
-+		return -EINVAL;
-+
-+	return manage_rcvq(uctxt, fd->subctxt, cmd.start_stop);
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_POLL_TYPE)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+	struct hfi2_poll_type_cmd cmd;
-+	int ret;
-+
-+	if (!uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_POLL_TYPE_CMD);
-+	if (ret)
-+		return ret;
-+
-+	if (cmd.reserved != 0)
-+		return -EINVAL;
-+
-+	uctxt->poll_type = (typeof(uctxt->poll_type))cmd.poll_type;
-+
-+	return 0;
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_ACK_EVENT)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+	struct hfi2_ack_event_cmd cmd;
-+	int ret;
-+
-+	if (!uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_ACK_EVENT_CMD);
-+	if (ret)
-+		return ret;
-+
-+	return user_event_ack(uctxt, fd->subctxt, cmd.event);
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_SET_PKEY)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+	struct hfi2_set_pkey_cmd cmd;
-+	int ret;
-+
-+	if (!uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_SET_PKEY_CMD);
-+	if (ret)
-+		return ret;
-+
-+	/* verify small reserved array of u8s is zero */
-+	if (memcmp(cmd.reserved, &zero8, sizeof(cmd.reserved)) != 0)
-+		return -EINVAL;
-+
-+	return set_ctxt_pkey(uctxt, cmd.pkey);
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_CTXT_RESET)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_ctxtdata *uctxt = fd->uctxt;
-+
-+	if (!uctxt)
-+		return -EINVAL;
-+
-+	return ctxt_reset(uctxt);
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_TID_INVAL_READ)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_tid_info tinfo = {};
-+	struct hfi2_tid_inval_read_cmd cmd;
-+	struct hfi2_tid_inval_read_rsp rsp = {};
-+	int ret;
-+
-+	if (!fd->uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_TID_INVAL_READ_CMD);
-+	if (ret)
-+		return ret;
-+
-+	if (cmd.reserved != 0)
-+		return -EINVAL;
-+
-+	tinfo.tidlist = cmd.tidlist;
-+	tinfo.tidcnt = cmd.tidcnt;
-+
-+	ret = hfi2_user_exp_rcv_invalid(fd, &tinfo, true);
-+	if (!ret)
-+		return ret;
-+
-+	rsp.tidcnt = tinfo.tidcnt;
-+
-+	return uverbs_copy_to(attrs, HFI2_ATTR_TID_INVAL_READ_RSP, &rsp,
-+			      sizeof(rsp));
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_GET_VERS)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_get_vers_rsp rsp = {};
-+
-+	rsp.version = HFI2_RDMA_USER_SWVERSION;
-+	return uverbs_copy_to(attrs, HFI2_ATTR_GET_VERS_RSP, &rsp, sizeof(rsp));
-+};
-+
-+static int UVERBS_HANDLER(HFI2_METHOD_PIN_STATS)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hfi2_filedata *fd = fd_from_attrs(attrs);
-+	struct hfi2_pin_stats_cmd cmd;
-+	struct hfi2_pin_stats_rsp rsp = {};
-+	struct hfi2_pin_stats stats = {};
-+	int ret;
-+
-+	if (!fd->uctxt)
-+		return -EINVAL;
-+
-+	ret = uverbs_copy_from(&cmd, attrs, HFI2_ATTR_PIN_STATS_CMD);
-+	if (ret)
-+		return ret;
-+
-+	stats.memtype = cmd.memtype;
-+	stats.index = cmd.index;
-+	ret = hfi2_get_pinning_stats(fd, &stats);
-+	if (ret)
-+		return ret;
-+
-+	rsp.id = stats.id;
-+	rsp.cache_entries = stats.cache_entries;
-+	rsp.total_refcounts = stats.total_refcounts;
-+	rsp.total_bytes = stats.total_bytes;
-+	rsp.hits = stats.hits;
-+	rsp.misses = stats.misses;
-+	rsp.internal_evictions = stats.internal_evictions;
-+	rsp.external_evictions = stats.external_evictions;
-+
-+	return uverbs_copy_to(attrs, HFI2_ATTR_PIN_STATS_RSP, &rsp,
-+			      sizeof(rsp));
-+};
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_ASSIGN_CTXT,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_ASSIGN_CTXT_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_assign_ctxt_cmd),
-+			   UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_CTXT_INFO,
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_CTXT_INFO_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_ctxt_info_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_USER_INFO,
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_USER_INFO_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_user_info_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_TID_UPDATE,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_TID_UPDATE_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_tid_update_cmd),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_TID_UPDATE_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_tid_update_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_TID_FREE,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_TID_FREE_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_tid_free_cmd),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_TID_FREE_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_tid_free_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_CREDIT_UPD,
-+	/* no arguments */
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_RECV_CTRL,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_RECV_CTRL_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_recv_ctrl_cmd),
-+			   UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_POLL_TYPE,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_POLL_TYPE_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_poll_type_cmd),
-+			   UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_ACK_EVENT,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_ACK_EVENT_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_ack_event_cmd),
-+			   UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_SET_PKEY,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_SET_PKEY_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_set_pkey_cmd),
-+			   UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_CTXT_RESET,
-+	/* no arguments */
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_TID_INVAL_READ,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_TID_INVAL_READ_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_tid_inval_read_cmd),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_TID_INVAL_READ_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_tid_inval_read_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_GET_VERS,
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_GET_VERS_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_get_vers_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_NAMED_METHOD(HFI2_METHOD_PIN_STATS,
-+	UVERBS_ATTR_PTR_IN(HFI2_ATTR_PIN_STATS_CMD,
-+			   UVERBS_ATTR_TYPE(struct hfi2_pin_stats_cmd),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HFI2_ATTR_PIN_STATS_RSP,
-+			    UVERBS_ATTR_TYPE(struct hfi2_pin_stats_rsp),
-+			    UA_MANDATORY),
-+	);
-+
-+DECLARE_UVERBS_GLOBAL_METHODS(HFI2_OBJECT_DV0,
-+	&UVERBS_METHOD(HFI2_METHOD_ASSIGN_CTXT),
-+	&UVERBS_METHOD(HFI2_METHOD_CTXT_INFO),
-+	&UVERBS_METHOD(HFI2_METHOD_USER_INFO),
-+	&UVERBS_METHOD(HFI2_METHOD_TID_UPDATE),
-+	&UVERBS_METHOD(HFI2_METHOD_TID_FREE),
-+	&UVERBS_METHOD(HFI2_METHOD_CREDIT_UPD),
-+	&UVERBS_METHOD(HFI2_METHOD_RECV_CTRL),
-+	&UVERBS_METHOD(HFI2_METHOD_POLL_TYPE));
-+
-+DECLARE_UVERBS_GLOBAL_METHODS(HFI2_OBJECT_DV1,
-+	&UVERBS_METHOD(HFI2_METHOD_ACK_EVENT),
-+	&UVERBS_METHOD(HFI2_METHOD_SET_PKEY),
-+	&UVERBS_METHOD(HFI2_METHOD_CTXT_RESET),
-+	&UVERBS_METHOD(HFI2_METHOD_TID_INVAL_READ),
-+	&UVERBS_METHOD(HFI2_METHOD_GET_VERS),
-+	&UVERBS_METHOD(HFI2_METHOD_PIN_STATS));
-+
-+const struct uapi_definition hfi2_ib_defs[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(HFI2_OBJECT_DV0),
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(HFI2_OBJECT_DV1),
-+	{}
-+};
-+
-+int hfi2_rdma_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma)
-+{
-+	struct rvt_ucontext *rcontext = container_of(ucontext, struct rvt_ucontext, ibucontext);
-+	struct hfi2_filedata *fd = rcontext->priv;
-+	unsigned long token;
-+	u8 type;
-+
-+	if (!fd)
-+		return -EINVAL;
-+
-+	token = vma->vm_pgoff << PAGE_SHIFT;
-+	type = rdma_mmap_get_type(token);
-+
-+	return hfi2_do_mmap(fd, type, vma);
 +}
-+
-+ssize_t hfi2_uverbs_write_iter(struct ib_ucontext *ucontext,
-+			       struct iov_iter *from)
-+{
-+	struct rvt_ucontext *rcontext = container_of(ucontext, struct rvt_ucontext, ibucontext);
-+	struct hfi2_filedata *fd = rcontext->priv;
-+
-+	return hfi2_do_write_iter(fd, from);
-+}
-diff --git a/drivers/infiniband/hw/hfi2/verbs.c b/drivers/infiniband/hw/hfi2/verbs.c
-index 01f6658d140f..77ace101fe88 100644
---- a/drivers/infiniband/hw/hfi2/verbs.c
-+++ b/drivers/infiniband/hw/hfi2/verbs.c
-@@ -1975,9 +1975,9 @@ int hfi2_register_ib_device(struct hfi2_devdata *dd)
- 		dd->verbs_dev.rdi.dparms.qpn_start = (dd->rsrcs.c.first_rcv_context << 1) -
- 			(1 << max_qos_shift);
- 	}
--	dd->verbs_dev.rdi.driver_f.qp_priv_alloc = qp_priv_alloc;
-+	dd->verbs_dev.rdi.driver_f.qp_priv_alloc = hfi2_qp_priv_alloc;
- 	dd->verbs_dev.rdi.driver_f.qp_priv_init = hfi2_qp_priv_init;
--	dd->verbs_dev.rdi.driver_f.qp_priv_free = qp_priv_free;
-+	dd->verbs_dev.rdi.driver_f.qp_priv_free = hfi2_qp_priv_free;
- 	dd->verbs_dev.rdi.driver_f.free_all_qps = free_all_qps;
- 	dd->verbs_dev.rdi.driver_f.notify_qp_reset = notify_qp_reset;
- 	dd->verbs_dev.rdi.driver_f.do_send = hfi2_do_send_from_rvt;
 
 
 
