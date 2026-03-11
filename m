@@ -1,58 +1,51 @@
-Return-Path: <linux-rdma+bounces-17943-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17945-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MFdYB+IasWmOqwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-17943-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:33:54 +0100
+	id aGBsAq8jsWkOrQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-17945-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:11:27 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2018A25E04D
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:33:53 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB0F25EBB0
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 09:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4DEE63027C88
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 07:33:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DB2BF305172C
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2026 08:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9895D3B2FC2;
-	Wed, 11 Mar 2026 07:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF3A3A545E;
+	Wed, 11 Mar 2026 08:09:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EWvhKPJ1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLFscuv2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2193AF66A;
-	Wed, 11 Mar 2026 07:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154561A6838;
+	Wed, 11 Mar 2026 08:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773214425; cv=none; b=ep8GGrpGArV3fxwdgFjvG2FEkEMD7TK54qEwykFaPN1lKjnUqiAgIsMGCDa7BKuPj4i0kGShnJtYjszCDaqYF4G1nSwhhf9Fiv93oyC3q9nqfXTqQOLYFbdleMhGBe/JWuDl/X/tX7kamuKpAc3BbVA2E/ZTEYn0LeZhWu8yFKc=
+	t=1773216594; cv=none; b=LP/vdf1UT6vBauU6NVKiKU0jSiRL/L8AcUx69XoOHg2QckIBHtpWagE4oYdD6diFYFlsbXxP/2BQrCh7QrOlqlqf4uFUm6h/nVTHCgwkOythv3d7xsn/aWy8rZfFNQVj1byfMX2kYJj+YiKKz4489Kfw0fTSUJARXAdoxAU/STg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773214425; c=relaxed/simple;
-	bh=TnUwwV/B77eColgu+FTC3LP0ebszg38zOzmJYiOft34=;
+	s=arc-20240116; t=1773216594; c=relaxed/simple;
+	bh=Ev+RupPFx3vFthuT0C4F0wFHzLiDXKrbll1RNkDERZo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T9+ionISt273aC8znEZn24TN1PZvIZTRZ7kH9judtGgigcBLlBeEN4x2GSNeCnWArZJyoxx2NQhojWjZVojn2mmjuaJQMOs+zmig0JVq2SOILuvh7eWoDIE2D/gM03JaSfZQza2Yvto5LZ70ZVlzfO72YV/GLPzWw6P407EEW8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EWvhKPJ1; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id A077B4E42612;
-	Wed, 11 Mar 2026 07:33:36 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 710D560004;
-	Wed, 11 Mar 2026 07:33:36 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D351D10369B30;
-	Wed, 11 Mar 2026 08:33:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773214415; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=n3wH772870P9IpL8j8omLHGVOBI6gpvI4kazRBxkKQU=;
-	b=EWvhKPJ1D02MgJTIdcjo6/tweA8f7JrxrAEY+uuuroqhEwOwZydPWLbS0Y4laB6GseyYgO
-	UdFSQrUUuAqN2ezIfgS7Z15b5D1fbQHlSzAlHIJGg9Ws4t7hG7iNxc+eyWjxO25e9p1YCX
-	JOUUpjSr3avSsNbQUtvMNrIBrZU1RihcEQEj4hjZEUVmB9gijeuoW1DDqORtn7y4fUYEYt
-	S2Te6EQEonBfw5A2O4iAuDSHrFrbXyB61DBLRL6YCj8KlSJWxpf+0lGPsJTdN1RdM2Etdb
-	LxotNJPIK+3HMww6dmYslKQAnR/S7r21luxnLVLWxksi4glXhvQD6WXz0ihxJQ==
-Message-ID: <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
-Date: Wed, 11 Mar 2026 08:33:26 +0100
+	 In-Reply-To:Content-Type; b=mDZ1Qx7UzQ9vR+mQlt9/UE2S85Eyx9r+0+1bgIRrZJ87BMfKctWl5Z8r7Mr374qngzz1rK4FedQLQArKQrpvUrtQTloUgAgh4q9TMYrknfPNfMSAECk6xxGaPWmosGnhZQ/UG50GWOWD7XCP/eOiQhNW+my/rN2+IVrD0/ITL8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLFscuv2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF97C2BC9E;
+	Wed, 11 Mar 2026 08:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773216593;
+	bh=Ev+RupPFx3vFthuT0C4F0wFHzLiDXKrbll1RNkDERZo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YLFscuv28t6jNAc42r7OavZhQeZvSUNStqr4Q7RFSOURjF6F4a+qrM3dZ18dhGWkF
+	 X3Q4wgVwkGzwZkdxpQkPksaXlYEI8vwMn3WBd/AVKeZc7kSwFZpu8HDj2NZbjH1jbC
+	 WKOonDy7O7ApDlcBH0pscWiPe+jDN7F4/VFe/CzIqaHf99gDDkESZx8I6jSIUfK7mB
+	 vG88BGnoCznJZICI1miWkoS/rI+HFCZyFlD9hIRhLm8jzSqpvneI9JCyoGKq0Purxu
+	 R+xWoOWF3J7Vf2YLrhnt5/4zPBse4v00ORNEvkDANUHfMoFc/3iG9OcAInOkA21TE0
+	 J0V3p3DYTNXtg==
+Message-ID: <ffc64d94-d3c8-4a51-b6f5-9da9ff633856@kernel.org>
+Date: Wed, 11 Mar 2026 09:09:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,241 +53,154 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Donald Hunter
- <donald.hunter@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Naveen Mamindlapalli
- <naveenm@marvell.com>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Cc: Danielle Ratson <danieller@nvidia.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
- Kory Maincent <kory.maincent@bootlin.com>, Leon Romanovsky
- <leon@kernel.org>, Michael Chan <michael.chan@broadcom.com>,
- Oleksij Rempel <o.rempel@pengutronix.de>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Saeed Mahameed <saeedm@nvidia.com>,
- Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20260310104743.907818-1-bjorn@kernel.org>
- <20260310104743.907818-3-bjorn@kernel.org>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH v1 04/16] mm/memory: simplify calculation in
+ unmap_mapping_range_tree()
+To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+Cc: linux-kernel@vger.kernel.org, "linux-mm @ kvack . org"
+ <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>,
+ David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Alice Ryhl <aliceryhl@google.com>, Madhavan Srinivasan
+ <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+ Todd Kjos <tkjos@android.com>, Christian Brauner <brauner@kernel.org>,
+ Carlos Llamas <cmllamas@google.com>, Ian Abbott <abbotti@mev.co.uk>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>,
+ Dimitri Sivanich <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Eric Dumazet <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Miguel Ojeda <ojeda@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, x86@kernel.org
+References: <20260227200848.114019-1-david@kernel.org>
+ <20260227200848.114019-5-david@kernel.org>
+ <6c6bf2d6-bc0f-4721-a57d-6b9c5f2a5c66@lucifer.local>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
-In-Reply-To: <20260310104743.907818-3-bjorn@kernel.org>
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <6c6bf2d6-bc0f-4721-a57d-6b9c5f2a5c66@lucifer.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Rspamd-Queue-Id: 2018A25E04D
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 9FB0F25EBB0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17943-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.org,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,marvell.com,redhat.com];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	FREEMAIL_CC(0.00)[nvidia.com,marvell.com,bootlin.com,kernel.org,broadcom.com,pengutronix.de,gmail.com,armlinux.org.uk,google.com,vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux-foundation.org,oracle.com,kernel.org,google.com,suse.com,suse.de,linux.dev,infradead.org,linux.ibm.com,ellerman.id.au,redhat.com,alien8.de,linuxfoundation.org,android.com,mev.co.uk,visionengravers.com,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,ziepe.ca,hpe.com,arndb.de,iogearbox.net,arm.com,davemloft.net,lists.ozlabs.org,lists.freedesktop.org];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17945-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_GT_50(0.00)[74];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.996];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:mid,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hi again Björn,
 
-First, thanks for iterating so quick !
-
-On 10/03/2026 11:47, Björn Töpel wrote:
-> Add the netlink YAML spec and auto-generated UAPI header for a unified
-> loopback interface covering MAC, PCS, PHY, and pluggable module
-> components.
 > 
-> Each loopback point is described by a nested entry attribute
-> containing:
+>> -		start = ((zba - vba) << PAGE_SHIFT) + vma->vm_start;
+>> -		size = (zea - zba + 1) << PAGE_SHIFT;
+>> +		const pgoff_t start_idx = max(first_index, vma->vm_pgoff);
+>> +		const pgoff_t end_idx = min(last_index, vma_last_pgoff(vma)) + 1;
 > 
->  - component  where in the path (MAC, PCS, PHY, MODULE)
->  - name       subsystem label, e.g. "cmis-host" or "cmis-media"
->  - id         optional instance selector (e.g. PHY id, port id)
->  - supported  bitmask of supported directions
->  - direction  NEAR_END, FAR_END, or 0 (disabled)
-> 
-> Signed-off-by: Björn Töpel <bjorn@kernel.org>
-> ---
->  Documentation/netlink/specs/ethtool.yaml      | 123 ++++++++++++++++++
->  .../uapi/linux/ethtool_netlink_generated.h    |  59 +++++++++
->  2 files changed, 182 insertions(+)
-> 
-> diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-> index 4707063af3b4..8bd14a3c946a 100644
-> --- a/Documentation/netlink/specs/ethtool.yaml
-> +++ b/Documentation/netlink/specs/ethtool.yaml
-> @@ -211,6 +211,49 @@ definitions:
->          name: discard
->          value: 31
->  
-> +  -
-> +    name: loopback-component
-> +    type: enum
-> +    doc: |
-> +      Loopback component. Identifies where in the network path the
-> +      loopback is applied.
-> +    entries:
-> +      -
-> +        name: mac
-> +        doc: MAC loopback. Loops traffic at the MAC block.
-> +      -
-> +        name: pcs
-> +        doc: |
-> +          PCS loopback. Loops traffic at the PCS sublayer between the
-> +          MAC and the PHY.
-> +      -
-> +        name: phy
-> +        doc: |
-> +          Ethernet PHY loopback. This refers to the Ethernet PHY managed
-> +          by phylib, not generic PHY drivers. A Base-T SFP module
-> +          containing an Ethernet PHY driven by Linux should report
-> +          loopback under this component, not module.
-> +      -
-> +        name: module
-> +        doc: |
-> +          Pluggable module (e.g. CMIS (Q)SFP) loopback. Covers loopback
-> +          modes controlled via module firmware or EEPROM registers. When
-> +          Linux drives an Ethernet PHY inside the module via phylib, use
-> +          the phy component instead.
+> I guess since 'end' is by-convention the +1 of last this is fine
 
-So to get back on Andrew's remarks, let's see if we can get something
-closer to 802.3.
+Exactly, the calculation itself is not changed.
 
-Here, we have loopback at various locations, which all depends on the
-Ethernet standard you use.
+The +1 was previously hiding inside the "(zea - zba + 1)"
 
-It's usually in the PCS, PMA or PMD components. Thing is, we may have
-these in multiple places in our link.
+Thanks!
 
-If we take an example with a 10G PHY, we may have :
+-- 
+Cheers,
 
-+----SoC-----+
-|            |
-|  MAC       |- drivers/net/ethernet
-|   |        |
-| Base-R PCS |- could be in drivers/net/pcs, or directly
-|   |        | in the MAC driver
-|   |        |
-|  SerDes    |- May be in drivers/phy, maybe handled by firmware,
-|   |        |  maybe by the MAC driver, maybe by the PCS driver ?
-+---|--------+
-    |
-    | 10GBase-R
-    |
-+---|-PHY+
-|   |    |
-| SerDes | \
-|   |    | |
-|  PCS   | |
-|   |    |  > All of that handled by the drivers/net/phy PHY driver
-|  PMA   | |
-|   |    | |
-|  PMD   | /
-+---|----+
-    |
-    v 10GBaseT
-
-So even the "PCS" loopback component is a bit ambiguous, are we talking
-about the PHY PCS or the MAC PCS ?
-
-Another thing to consider is that there may be multiple PCSs in the SoC
-(e.g. a BaseX and a BaseR PCS like we have in mvpp2), the one in use
-depends on the current interface between the MAC and the PHY.
-
-Another open question is, do we deal with loopbacks that may affect
-multi-netdev links ? Like the multi-lane modes we discussed with fbnic,
-or even for embedded, interfaces such as QSGMII ?
-
-As for the SerDes on the MAC side (say, the comphy on Marvell devices),
-can we say it's a PMA for 10GBase-KR ? Or is it something that's simply
-out of spec ?
-
-So I'd say, maybe we should not have a PCS loopback component at all,
-but instead loopback at the well-defined components on our link, that is:
-
- - MAC => MAC loopack, PCS on the MAC side, SerDes on the SoC, etc.
- - PHY => Loopbacks on the PCS/PHY/PMA withing the PHY device
- - Module => For non-PHY (Q)SFPs
-
-The important part would therefore to get the "name" part right, making
-sure we don't fall into driver specific names.
-
-We can name that 'pcs', 'pma', 'pmd', or maybe even 'mii' ? Let's see :
-
-+----SoC-----+
-|            |
-|  MAC       |- component = MAC, name = 'mac'
-|   |        |
-| Base-R PCS |- component = MAC, name = 'pcs'
-|   |        |
-|   |        |
-|  SerDes    |- component = MAC, name = 'mii' ?
-|   |        |
-+---|--------+
-    |
-    | 10GBase-R
-    |
-+---|-PHY+
-|   |    |
-| SerDes | - component = PHY, name = 'mii' ?
-|   |    |
-|  PCS   | - component = PHY, name = 'pcs'
-|   |    |
-|  PMA   | - component = PHY, name = 'pma'
-|   |    |
-|  PMD   |- component = PHY, name = 'pmd' or 'mdi' ?
-+---|----+
-    |
-    v 10GBaseT
-
-Sorry that's a lot of questions and I don't expect you to have the
-answer, but as what you've come-up with is taking a good shape, it's
-important to decide on the overall design and draw some lines about
-what do we support, and how :(
-
-> +  -
-> +    name: loopback-direction
-> +    type: flags
-> +    doc: |
-> +      Loopback direction flags. Used as a bitmask in supported, and as
-> +      a single value in direction.
-> +    entries:
-> +      -
-> +        name: near-end
-> +        doc: Near-end loopback; host-loop-host
-> +      -
-> +        name: far-end
-> +        doc: Far-end loopback; line-loop-line
-
-I was browsing 802.3, it uses the terminlogy of "local loopback" vs
-"remote loopback", I suggest we use those.
-
-Maxime
+David
 
