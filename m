@@ -1,153 +1,182 @@
-Return-Path: <linux-rdma+bounces-18121-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18122-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mLYNK/ztsmnAQwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18121-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:46:52 +0100
+	id +PSnJOrtsmnAQwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18122-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:46:34 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 561CA275E01
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:46:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D250D275DEB
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:46:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AFF4530094F4
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 16:40:22 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 32CB8300939B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 16:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EDD93932CB;
-	Thu, 12 Mar 2026 16:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A3439151C;
+	Thu, 12 Mar 2026 16:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YUqQ2YOG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZmu8XZn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7EC390992;
-	Thu, 12 Mar 2026 16:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFA21E7660;
+	Thu, 12 Mar 2026 16:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773333615; cv=none; b=hPMEizFBL3VIr+YgCXDREVLaHW8IdVfGOptxFflvfSqx2kd5mjoc20DOj4SawDqbYCEHbQnLiOpzyRg22k4PY6npCW3UTFOPCyS5y3aGhiBuwyFhOj+r9FZBI8aHFM7A3P0SZjkBH1xU+ug4QSOdSPC2dvWg+bvOb13gDokhuSw=
+	t=1773333986; cv=none; b=GncL6VaYdQ98lNyHMwIJetvIhZpO5qKvv35UlOeynqGda5JMYLk4DIW05Vc85GPDhYjAWRVZbzLrNo4GqgQSxiZAVOPPgTQHEFZPK4yzy+P1mna40mUVHYhiw4q1MaxsSsCFZJTyQNsIEq5UZI9oia9CAvWrCzJGLsZ6/BDj6IM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773333615; c=relaxed/simple;
-	bh=q/NXnvhOQfWi+LbQbNSccqrwx2HfOA+DxhA9wpmm7FI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aiXdkE61c6R2djK8jYM6+2dDl5MnlYGVsWe7YQyuSmEGBJf++YnF4CBZSl5GtcU6oMTnUN2KCAfZcZUGhPgUDM1L/Rs8DUXZq+tHUHy68PFu96mx7OsRE3dQUXQnPkpWtHm7bd59GQNORwufBo7t+Nqd8CJM3duSsEGIVcIfKRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YUqQ2YOG; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 3E37E4E42654;
-	Thu, 12 Mar 2026 16:40:11 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E273B6001B;
-	Thu, 12 Mar 2026 16:40:10 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EB43910369E41;
-	Thu, 12 Mar 2026 17:40:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773333608; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=kKLJaS6EbrB3sRJEyYBFRM7jRpN8Md6Kg5iHaeN/7t0=;
-	b=YUqQ2YOGos3AIyhx6et88pkmLUWI6BnfTIalcMT9G3y1US88cRcpAzAYM6nQ+V93UPc+0w
-	x2fZOK1KDHf48VUBWr+0p3F1e0hmDAzw1U1aLCzfui4RQsQxb79gWzoAt58D864dUUlHmP
-	YswFuSA1N7tiu/y9Yu2v5HxVAjyMIVVUwTUg45M+NLFX5Rjml7GBkdmklvhfEHcpdyLh6C
-	XeDce1JCvlc6oDP+89HHSe+GLax7IpJSNILM8AttHYfV2PgDkAbQAq90z3YoWwdPbdXtcz
-	D8THyOZRueXE5lQ1wgZYcWZ3AtTMHcCieO+eES76lzyTKpJ8O+7+NW04AdIDZQ==
-Message-ID: <42abf88e-4fbf-4966-9490-8315f118ddea@bootlin.com>
-Date: Thu, 12 Mar 2026 17:39:59 +0100
+	s=arc-20240116; t=1773333986; c=relaxed/simple;
+	bh=g4W57IAgppszhhmuom1c6GdIWffwgLTuE6LrTOJwXps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NoL3ElGlesLX4iw57wPIJhpWE5BJVmQbbBeVhvtZ7Fj+pGzcTZNVQCqmZsMU1joIUod6YJZ8ES3uiaVykKIqjniU7pEwmMkTpS5t6Qh8zKcvvDNC5Magkjd7hU+AUL5xawmcZcZJnBZJ9xUkiYcgNByQv99hMVJCoVKUKsAiBJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZmu8XZn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E9EC4CEF7;
+	Thu, 12 Mar 2026 16:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773333985;
+	bh=g4W57IAgppszhhmuom1c6GdIWffwgLTuE6LrTOJwXps=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AZmu8XZnuXQA+Zlr+DGheTwhpLckrEO2t6JNHpcxW0vx7U575iAJy32RP6EXBhWw6
+	 eBEt4hHQC6MmOaapPF0E0vmRmScasxsxx+W1xSJCpjsIJb5Rxt9yi+poJlX1dA9KHR
+	 doFbcFgH+JNRk8+fY7aFKcFVBKHMLTKw8lW75K7b2L8zlLxtABKvR0f2TNL7Fc7kuM
+	 n5diM3RZ+ujPHLJoj6PqBRojByoKgqXep+yXPg2a5K8Eb8QXHhr7WqRwTdcaLIbzx8
+	 7hiitACIX5AqL902Vp5+AQyG4SquimpfkKuxsVAi/vLG5ezGXH0PJvYL+F3BkyVjOk
+	 BbhQwqQ69ra8A==
+Date: Thu, 12 Mar 2026 18:46:22 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Petr Tesarik <ptesarik@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	virtualization@lists.linux.dev, linux-rdma@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 4/8] dma-mapping: Introduce DMA require coherency
+ attribute
+Message-ID: <20260312164622.GZ12611@unreal>
+References: <20260311-dma-debug-overlap-v2-0-e00bc2ca346d@nvidia.com>
+ <20260311-dma-debug-overlap-v2-4-e00bc2ca346d@nvidia.com>
+ <20260312121937.GD1469476@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-To: Andrew Lunn <andrew@lunn.ch>, Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Jakub Kicinski <kuba@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Donald Hunter <donald.hunter@gmail.com>,
- Eric Dumazet <edumazet@google.com>,
- Naveen Mamindlapalli <naveenm@marvell.com>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Danielle Ratson <danieller@nvidia.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
- Kory Maincent <kory.maincent@bootlin.com>, Leon Romanovsky
- <leon@kernel.org>, Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Saeed Mahameed <saeedm@nvidia.com>,
- Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20260310104743.907818-1-bjorn@kernel.org>
- <20260310104743.907818-3-bjorn@kernel.org>
- <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
- <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
- <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
- <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
- <20260311195052.1202174f@kernel.org> <abJJY8whzSOB8O-X@pengutronix.de>
- <7c45ebf6-0cb2-4a4c-ac12-f4f9bb59c908@lunn.ch>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <7c45ebf6-0cb2-4a4c-ac12-f4f9bb59c908@lunn.ch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260312121937.GD1469476@ziepe.ca>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,armlinux.org.uk];
-	TAGGED_FROM(0.00)[bounces-18121-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-18122-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 561CA275E01
+X-Rspamd-Queue-Id: D250D275DEB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Andrew,
-
->> One more issue is the test data generator location. The data generator
->> is not always the CPU. We have HW generators located in components like
->> PHYs or we may use external source (remote loopback).
+On Thu, Mar 12, 2026 at 09:19:37AM -0300, Jason Gunthorpe wrote:
+> On Wed, Mar 11, 2026 at 09:08:47PM +0200, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > The mapping buffers which carry this attribute require DMA coherent system.
+> > This means that they can't take SWIOTLB path, can perform CPU cache overlap
+> > and doesn't perform cache flushing.
+> > 
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  Documentation/core-api/dma-attributes.rst | 12 ++++++++++++
+> >  include/linux/dma-mapping.h               |  7 +++++++
+> >  include/trace/events/dma.h                |  3 ++-
+> >  kernel/dma/debug.c                        |  3 ++-
+> >  kernel/dma/mapping.c                      |  6 ++++++
+> >  5 files changed, 29 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/core-api/dma-attributes.rst b/Documentation/core-api/dma-attributes.rst
+> > index 48cfe86cc06d7..69d094f144c70 100644
+> > --- a/Documentation/core-api/dma-attributes.rst
+> > +++ b/Documentation/core-api/dma-attributes.rst
+> > @@ -163,3 +163,15 @@ data corruption.
+> >  
+> >  All mappings that share a cache line must set this attribute to suppress DMA
+> >  debug warnings about overlapping mappings.
+> > +
+> > +DMA_ATTR_REQUIRE_COHERENT
+> > +-------------------------
+> > +
+> > +The mapping buffers which carry this attribute require DMA coherent system. This means
+> > +that they can't take SWIOTLB path, can perform CPU cache overlap and doesn't perform
+> > +cache flushing.
 > 
-> At the moment, we don't have a Linux model for such generators. There
-> is interest in them, but nobody has actually stepped up and proposed
-> anything. I do see there is an intersect, we need to be able to
-> represent them in the topology, and know which way they are pointing,
-> but i don't think they have a direct influence on loopback.
+> DMA mapping requests with the DMA_ATTR_REQUIRE_COHERENT fail on any
+> system where SWIOTLB or cache management is required. This should only
+> be used to support uAPI designs that require continuous HW DMA
+> coherence with userspace processes, for example RDMA and DRM. At a
+> minimum the memory being mapped must be userspace memory from
+> pin_user_pages() or similar.
+> 
+> Drivers should consider using dma_mmap_pages() instead of this
+> interface when building their uAPIs, when possible.
+> 
+> It must never be used in an in-kernel driver that only works with
+> kernal memory.
+> 
+> > @@ -164,6 +164,9 @@ dma_addr_t dma_map_phys(struct device *dev, phys_addr_t phys, size_t size,
+> >  	if (WARN_ON_ONCE(!dev->dma_mask))
+> >  		return DMA_MAPPING_ERROR;
+> >  
+> > +	if (!dev_is_dma_coherent(dev) && (attrs & DMA_ATTR_REQUIRE_COHERENT))
+> > +		return DMA_MAPPING_ERROR;
+> 
+> This doesn't capture enough conditions.. is_swiotlb_force_bounce(),
+> dma_kmalloc_needs_bounce(), dma_capable(), etc all need to be blocked
+> too
 
-If I'm following Oleksij, the idea would be to have on one side the
-ability to "dump" the link topology with a finer granularity so that we
-can see all the different blocks (pcs, pma, pmd, etc.), how they are
-chained together and who's driving them (MAC, PHY (+ phy_index), module,
-etc.), and on another side commands to configure loopback on them, with
-the ability to also configure traffic generators in the future, gather
-stats, etc.
+These checks exist in dma_direct_map_phys() and here is the common check
+between direct and IOMMU modes.
 
-Another can of worms for sure, and probably too much for what Björn is
-trying to achieve. It's hard to say if this is overkill or not, there's
-interest in that for sure, but also quite a lot of work to do...
+Thanks
 
-Maxime
+> 
+> So check it inside swiotlb_map() too, and maybe shift the above
+> into the existing branches:
+> 
+>         if (!dev_is_dma_coherent(dev) &&
+>             !(attrs & (DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_MMIO)))
+>                 arch_sync_dma_for_device(phys, size, dir);
+> 
+> Jason
 
