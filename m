@@ -1,276 +1,148 @@
-Return-Path: <linux-rdma+bounces-18130-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18131-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EKFbJTwWs2mDSAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18130-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 20:38:36 +0100
+	id gKznDrpCs2l6TgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18131-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 23:48:26 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5136E2782E3
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 20:38:36 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D6027B1A2
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 23:48:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0EA163035AAB
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 19:38:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 70FDB301B86E
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 22:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8929E3B8936;
-	Thu, 12 Mar 2026 19:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0213B21D00A;
+	Thu, 12 Mar 2026 22:48:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="gXu/oV2L"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="htKkcFPc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3BB3AA51F;
-	Thu, 12 Mar 2026 19:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FFB35966
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 22:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773344300; cv=none; b=VKUyJy8y7Mb+/0JXOMlpiURXxnqmUPaYxU8v8CRcqK1duD95vqfYzG7WJx2NibbgDOmqa03foyDhprEZ+sSWtzE8vCMIYwVVtqJjXLXD/sxWNlshAkJi1imVnbsJYkMeFemiF3VbtYhObgfjwiTkFBXN1WuK1KjftaRY07jWi68=
+	t=1773355700; cv=none; b=pZoa4piCyAle2kQqPVMWvwAQdvPqmiZmWe9WUHJ00Uawg8eGaRXNYhf95yJ760Y0989UrAKrkDKsWBIal9mpUHDgUQUy5lIb06zXReQ/mIc7RkSXbtnqic7OKwWPWl+fy/uMeRYzRstWT8gfUzunqx2lInl7CEUq8ZZ1K7WOy2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773344300; c=relaxed/simple;
-	bh=0+l9O99i0d3GRyCU8WTd4BdfEun3zXuGATcIxQ4nYTg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eD9/vIXHs5x93cML2CID6w7yy66z5XDpHXT8mb2f9ESw0DVC130aD9iQ91fLyPOF2UKQ0aOlQMbs7gSJhyzm/33JlvUlzbU0c/ktV4DrbK3AU53TEyL+oXTGJJ8T6+Tli4ELMy5+R6DcdNsxZgyCs8Mi9nK8j0JrBxfSjy13Wlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=gXu/oV2L; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1006)
-	id 180B120B6F01; Thu, 12 Mar 2026 12:38:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 180B120B6F01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1773344299;
-	bh=2Cb9Dg0S1shGdYbGN4o0uYJzPDq4gEGvE8yUpEn8c8o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gXu/oV2LS8IabcAVQFsxdHvfNHJuqIF4ayT2oanruVkmf7Q+sXXjdlU2bgcifpiVq
-	 YzqMRLHxN0HHOU8Ky1WauY1u6Csawe/VlLtzhwJUVp7ix/kBm2ytMeTL4rDakF3KAz
-	 EsKzaRPprS3kOqzstLQgQuRNLOqN/MQ9fDhOsCPA=
-From: Haiyang Zhang <haiyangz@linux.microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Dipayaan Roy <dipayanroy@linux.microsoft.com>,
-	Shiraz Saleem <shirazsaleem@microsoft.com>,
-	Kees Cook <kees@kernel.org>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	Aditya Garg <gargaditya@linux.microsoft.com>,
-	Breno Leitao <leitao@debian.org>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: paulros@microsoft.com
-Subject: [PATCH net-next v5 3/3] net: mana: Add ethtool counters for RX CQEs in coalesced type
-Date: Thu, 12 Mar 2026 12:37:06 -0700
-Message-ID: <20260312193725.994833-4-haiyangz@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260312193725.994833-1-haiyangz@linux.microsoft.com>
-References: <20260312193725.994833-1-haiyangz@linux.microsoft.com>
+	s=arc-20240116; t=1773355700; c=relaxed/simple;
+	bh=z28IegkFi2/sHsgKnojVtJ4sbkMmOSoNwWw72Tc3qc8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DD/lXW2Op7CgGJXpe4rQEhb4dVBixztROl5TPQdkVoRC1nrsKLPnpELfPdEMhWUB7ZWXTRuBd4VJGmerm74AKWmjElUtCUfyA2/SNNwq9njFLohhvphT2Tu6OZORndgnYIR612u8jJHmIETxPw2Al9Tre5c0NrjtnZr1eZ0NbRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=htKkcFPc; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-506362ac5f7so15186751cf.1
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 15:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1773355698; x=1773960498; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=z28IegkFi2/sHsgKnojVtJ4sbkMmOSoNwWw72Tc3qc8=;
+        b=htKkcFPcyba9ssMuutCn68GPFyd6UPFChGttIli8uNyYV1wbsU88fWstPZH/aTBdnQ
+         6F6e3pPlW4mt4mD7JnzWugIBpgVbdMFeEJcKUBS843ZnR63x0KwEFN/kQOTQBEThczwM
+         sJmREO46/FIf+mLfxjs5mv+AnJFcbpJfJw3zsTTRdrWZ4UaA06XY5KNJI5d1QXKmf3DJ
+         yuUKUemvswQRrmLCKNZbqcwrypZxgvuXiVjFza4F8Tr5YqVbLGCceXySYpsjPVzdFmof
+         mx03XKTcHQatKbG6BZAhEN6WuSzv8I/l8EL2GRikqOZcmzO3lfJbny6i7DX6ecxz5wZx
+         c0mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773355698; x=1773960498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z28IegkFi2/sHsgKnojVtJ4sbkMmOSoNwWw72Tc3qc8=;
+        b=NKUUitNviguLren/IlCcDxok6XCawCe+ytL5hSpHCnsRfWHQ1+zA6eEwhpxTphHSlt
+         0FkrsqL+8i2/8kRjHL1uFQRNGx7254j9sI9cAacQUHAeUgKQjECpabGtRHRoCUsab1n2
+         yXUsEBmZyo3/FF3XYJ58huGs3UXBPmi/WfdGCIgQGCzcQ+9z9BRq01SgEzFx77Hxemac
+         hEA9Py00qtr9L+pKebHDD3v/NZRGGBjAEC2hFOxG5ber8ZrwUotjMoJUIIszI/5FMqRs
+         xrELQIlbcxehAYK8byIP0ChzzKKhaEV2HlQDStqPHV39/T1WD5zfAsFiz0r1oibnzCaU
+         cWYA==
+X-Forwarded-Encrypted: i=1; AJvYcCUaOrG8BHcLYMGBGjvq50VKZ8c1Sb584W0l7eJ5mEySxn0LVF6pqHi5c+lpy0pa5OZuAC38e3iwsz8F@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw9NCniYftKj88qkP7A620fKVWzPt8x9nVZgHaaB8C1BRJRpBwU
+	5KPA3cJBHAZAM2SF4a5JQxEXfEwCS6quiJPxheqXrjKQipv/155V7mb0po1LsQNyi7o=
+X-Gm-Gg: ATEYQzxGfcVvW5+T2fwxHCgRvsmQUaf/DEykjB7817qovig+rOK9K79bdx3Fy2ok+Zk
+	IzQ0Ue65Nmy+pr1WQGUKGHuY1zjuOBFWhAgS1zzB+2gnd9yIOBnI/6vGWrB4wD5hB+9saAsQuGm
+	+cwMCyeD08HafoChkAhz4slVr+GWok6NI5EEOkoOL0u5eM3jaJXNRSmQrNBJB9JN2C1TyU+KPoe
+	vrQTrlVYd4zNTBQlCgWpWsdaoKMggcWFBM9XHKcX1lLQeAWyfpaIQZkiw0EQEXLC2dZ5T3IU0JW
+	AUP7HADXjcMciJasHovHyFJMw7/TzC3MO5hiv53ysbY4V50RUUA4l56/Y3shfLMMnGskDzVQg2U
+	NsGCoyhL1pStvb6NR4ntVfsqCf0OW3jIQVwYxClk7IHuPo0zZuQqJQGqCG/L0K8wdnLqqdg+Xf0
+	P66CAvT8HFOPrpeLG+lDB/+nvHaPnzHSxQ3GJoAVQNg+rdKFwYzLrHZHYkEusbz4f/xUI9kn/FE
+	bvqYRUS
+X-Received: by 2002:ac8:590d:0:b0:506:a56d:3f2d with SMTP id d75a77b69052e-50957e41b49mr16122411cf.75.1773355698330;
+        Thu, 12 Mar 2026 15:48:18 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50939e8e14esm40241411cf.6.2026.03.12.15.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Mar 2026 15:48:17 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1w0opE-000000070dH-1Z0r;
+	Thu, 12 Mar 2026 19:48:16 -0300
+Date: Thu, 12 Mar 2026 19:48:16 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: longli@microsoft.com, kotaranov@microsoft.com,
+	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v2] RDMA/mana_ib: hardening: Clamp adapter
+ capability values from MANA_IB_GET_ADAPTER_CAP
+Message-ID: <20260312224816.GO1469476@ziepe.ca>
+References: <20260312181642.989735-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260312181642.989735-1-ernis@linux.microsoft.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[25];
-	TAGGED_FROM(0.00)[bounces-18130-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	TAGGED_FROM(0.00)[bounces-18131-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[ziepe.ca];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[haiyangz@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5136E2782E3
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,ziepe.ca:dkim,ziepe.ca:mid]
+X-Rspamd-Queue-Id: 48D6027B1A2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Haiyang Zhang <haiyangz@microsoft.com>
+On Thu, Mar 12, 2026 at 11:16:41AM -0700, Erni Sri Satya Vennela wrote:
+> The response fields (max_qp_count, max_cq_count, max_mr_count,
+> max_pd_count, max_inbound_read_limit, max_outbound_read_limit,
+> max_qp_wr, max_send_sge_count, max_recv_sge_count) are u32 but are
+> assigned to signed int members in struct ib_device_attr.
 
-For RX CQEs with type CQE_RX_COALESCED_4, to measure the coalescing
-efficiency, add counters to count how many contains 2, 3, 4 packets
-respectively.
-Also, add a counter for the error case of first packet with length == 0.
+There is no reason they should be signed, you should just fix the
+type.
 
-Reviewed-by: Long Li <longli@microsoft.com>
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
----
-v5:
-  Combine the accounting logics as suggested by Simon Horman.
+I'm also not convinced clamping to such a high value has any value
+whatsoever, as it probably still triggers maths overflows elsewhere. I
+think you should clamp to reasonable limits for your device if you
+want to do this.
 
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 24 +++++++++++++------
- .../ethernet/microsoft/mana/mana_ethtool.c    | 15 ++++++++++--
- include/net/mana/mana.h                       |  9 ++++---
- 3 files changed, 36 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index fa30046dcd3d..49c65cc1697c 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2147,14 +2147,8 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
- 	for (i = 0; i < MANA_RXCOMP_OOB_NUM_PPI; i++) {
- 		old_buf = NULL;
- 		pktlen = oob->ppi[i].pkt_len;
--		if (pktlen == 0) {
--			if (i == 0)
--				netdev_err_once(
--					ndev,
--					"RX pkt len=0, rq=%u, cq=%u, rxobj=0x%llx\n",
--					rxq->gdma_id, cq->gdma_id, rxq->rxobj);
-+		if (pktlen == 0)
- 			break;
--		}
- 
- 		curr = rxq->buf_index;
- 		rxbuf_oob = &rxq->rx_oobs[curr];
-@@ -2175,6 +2169,22 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
- 		if (!coalesced)
- 			break;
- 	}
-+
-+	/* Collect coalesced CQE count based on packets processed.
-+	 * Coalesced CQEs have at least 2 packets, so index is i - 2.
-+	 */
-+	if (i > 1) {
-+		u64_stats_update_begin(&rxq->stats.syncp);
-+		rxq->stats.coalesced_cqe[i - 2]++;
-+		u64_stats_update_end(&rxq->stats.syncp);
-+	} else if (!i && !pktlen) {
-+		u64_stats_update_begin(&rxq->stats.syncp);
-+		rxq->stats.pkt_len0_err++;
-+		u64_stats_update_end(&rxq->stats.syncp);
-+		netdev_err_once(ndev,
-+				"RX pkt len=0, rq=%u, cq=%u, rxobj=0x%llx\n",
-+				rxq->gdma_id, cq->gdma_id, rxq->rxobj);
-+	}
- }
- 
- static void mana_poll_rx_cq(struct mana_cq *cq)
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 4b234b16e57a..6a4b42fe0944 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -149,7 +149,7 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
- 	unsigned int num_queues = apc->num_queues;
--	int i;
-+	int i, j;
- 
- 	if (stringset != ETH_SS_STATS)
- 		return;
-@@ -168,6 +168,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 		ethtool_sprintf(&data, "rx_%d_xdp_drop", i);
- 		ethtool_sprintf(&data, "rx_%d_xdp_tx", i);
- 		ethtool_sprintf(&data, "rx_%d_xdp_redirect", i);
-+		ethtool_sprintf(&data, "rx_%d_pkt_len0_err", i);
-+		for (j = 0; j < MANA_RXCOMP_OOB_NUM_PPI - 1; j++)
-+			ethtool_sprintf(&data, "rx_%d_coalesced_cqe_%d", i, j + 2);
- 	}
- 
- 	for (i = 0; i < num_queues; i++) {
-@@ -201,6 +204,8 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 	u64 xdp_xmit;
- 	u64 xdp_drop;
- 	u64 xdp_tx;
-+	u64 pkt_len0_err;
-+	u64 coalesced_cqe[MANA_RXCOMP_OOB_NUM_PPI - 1];
- 	u64 tso_packets;
- 	u64 tso_bytes;
- 	u64 tso_inner_packets;
-@@ -209,7 +214,7 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 	u64 short_pkt_fmt;
- 	u64 csum_partial;
- 	u64 mana_map_err;
--	int q, i = 0;
-+	int q, i = 0, j;
- 
- 	if (!apc->port_is_up)
- 		return;
-@@ -239,6 +244,9 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 			xdp_drop = rx_stats->xdp_drop;
- 			xdp_tx = rx_stats->xdp_tx;
- 			xdp_redirect = rx_stats->xdp_redirect;
-+			pkt_len0_err = rx_stats->pkt_len0_err;
-+			for (j = 0; j < MANA_RXCOMP_OOB_NUM_PPI - 1; j++)
-+				coalesced_cqe[j] = rx_stats->coalesced_cqe[j];
- 		} while (u64_stats_fetch_retry(&rx_stats->syncp, start));
- 
- 		data[i++] = packets;
-@@ -246,6 +254,9 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 		data[i++] = xdp_drop;
- 		data[i++] = xdp_tx;
- 		data[i++] = xdp_redirect;
-+		data[i++] = pkt_len0_err;
-+		for (j = 0; j < MANA_RXCOMP_OOB_NUM_PPI - 1; j++)
-+			data[i++] = coalesced_cqe[j];
- 	}
- 
- 	for (q = 0; q < num_queues; q++) {
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index a7f89e7ddc56..3336688fed5e 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -61,8 +61,11 @@ enum TRI_STATE {
- 
- #define MAX_PORTS_IN_MANA_DEV 256
- 
-+/* Maximum number of packets per coalesced CQE */
-+#define MANA_RXCOMP_OOB_NUM_PPI 4
-+
- /* Update this count whenever the respective structures are changed */
--#define MANA_STATS_RX_COUNT 5
-+#define MANA_STATS_RX_COUNT (6 + MANA_RXCOMP_OOB_NUM_PPI - 1)
- #define MANA_STATS_TX_COUNT 11
- 
- #define MANA_RX_FRAG_ALIGNMENT 64
-@@ -73,6 +76,8 @@ struct mana_stats_rx {
- 	u64 xdp_drop;
- 	u64 xdp_tx;
- 	u64 xdp_redirect;
-+	u64 pkt_len0_err;
-+	u64 coalesced_cqe[MANA_RXCOMP_OOB_NUM_PPI - 1];
- 	struct u64_stats_sync syncp;
- };
- 
-@@ -227,8 +232,6 @@ struct mana_rxcomp_perpkt_info {
- 	u32 pkt_hash;
- }; /* HW DATA */
- 
--#define MANA_RXCOMP_OOB_NUM_PPI 4
--
- /* Receive completion OOB */
- struct mana_rxcomp_oob {
- 	struct mana_cqe_header cqe_hdr;
--- 
-2.34.1
-
+Jason
 
