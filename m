@@ -1,188 +1,311 @@
-Return-Path: <linux-rdma+bounces-18071-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18073-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cGOCBCtwsmmuMgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18071-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:50:03 +0100
+	id qP/kIkVysmmuMgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18073-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:59:01 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE3B526E72B
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:50:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 108F226E88D
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DC24A308CBE4
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 07:49:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C1A063017F8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 07:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27AE3B27D7;
-	Thu, 12 Mar 2026 07:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94243B7766;
+	Thu, 12 Mar 2026 07:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ax/gNMry"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I9K3UTCP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0063AF658;
-	Thu, 12 Mar 2026 07:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5073B2FF9
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 07:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773301796; cv=none; b=AfHz55wOLpuvcEEpUi9C0nE4wnYhgi0Av1P3bewX/xCWvJyenol4G3+EGCaeV3Gxm2aG1tkrE8CwFBkbFDMbXsCx76nESyUiQpJRrQmm07BjnrJ9ZbjR0csHL91ye9ebLlVxFrdSlQZx5nmLqyUCmtmwGutzg2g+EeNUl2LhD/Y=
+	t=1773302334; cv=none; b=NemYEklcceJzWZsDDrqbUSG0AJfh4zst8bPz3W/Tq4/+QLtKBpS+Ewe2Z8Rc+A/tCEWgbgbzrU8HLfYqnpy8zTzv6HSsGOvJiouwpVFj/rGEVucRCX/gGPZZUJWWn82gLCOvjHbftEsrtfaD3Ws5Zae0Yq5vkK/lUIKVBCZzMb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773301796; c=relaxed/simple;
-	bh=qc6nhP5c2KbUKz7TVprgeRZu7pcKDVuliPuq3MEFpFk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RlJvRa/iL4DbfjyqBkpQLgYww5EsYNRZFwGyIyaywv3kccRMglYFebHrdVVGLLbmuHAavywHGjqp1npIk4vuPYoWshXT2vUo0Yl7RYfPn6vs8flE6X0Q31dAhu5wOijaI7EUYeHdIqtrZG4F5azxFdfpmd+vi6MLwHspyvTVN7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ax/gNMry; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id A48BBC4159A;
-	Thu, 12 Mar 2026 07:50:11 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D2AC65FDEB;
-	Thu, 12 Mar 2026 07:49:49 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BE4DD103685B6;
-	Thu, 12 Mar 2026 08:49:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773301788; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=oT1XxdAl50AWEmjTvDhxYXZzFl6EH2KJUz4HxFpnESQ=;
-	b=Ax/gNMry1zn+jSGCJbygPm1MqxQ4xxoTT66fSRTc5nLHZg0smRQfQsCBxzFAgGLzAa5lfd
-	Af4Hzw3beOAKGJa2JoN1tyRRgpFbt2P1DrjSQJLrLuFisE3KcRi9NuOajpxaUhtjQbuHEK
-	kR3cJQ7kSGJyJSKLk1FFFNgbzO9Llxvoc0l+zkG8/VZWxfJJLvshOLgAEPhd0YVzYaaAc3
-	wf1CqHn90p9oxKToETmVmvknFNcnGt4nnaLz9lclipHxPR9jfhGQ3zeSz9iFLtb5+nxz2S
-	99oywt/IIeSV4UXD45vO3Bd0BvPnK1F/DNbgdI8WLyq0hFw/oXtfNgrByjMj/Q==
-Message-ID: <ebab1d3e-8967-444b-be54-437e4dfe3c7e@bootlin.com>
-Date: Thu, 12 Mar 2026 08:49:39 +0100
+	s=arc-20240116; t=1773302334; c=relaxed/simple;
+	bh=+j1ag9XXu6OcW2pbUYS/YQR8gakzW0V2KfYJUg7Tisw=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=MTgN80mhNicz7Gj0O51fHyKhQ0Dkl5WBK19jrI6JgKSjKV6B0ErMoy2aHrUqYsV24rrT7ivOhJKwLyDQnr/mz8Pq+Onrb47isy1brfx4jbpGYFzo/jY3rGD87e3Y76uuy4swzQyg4nn/VfA0Wv0VW6qzZ9zvetbfZC7M77pHj+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I9K3UTCP; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1773302333; x=1804838333;
+  h=date:from:to:cc:subject:message-id;
+  bh=+j1ag9XXu6OcW2pbUYS/YQR8gakzW0V2KfYJUg7Tisw=;
+  b=I9K3UTCPE+sI18rPpZjPr0MG6byPpCeU9v9ZzVxXtG5mFBDri6WQMce3
+   hlbELYwJbfeQlsar0ynCVFmDFRC0OstPWhs3W9ZmrLC3CuuFLgB7l1yeZ
+   wVyff+icrsSRvP6TaVSOEnvxjVK1zbJTKqYiQCmNxCPeqVjXdHLDwdVSB
+   j8yvQKXz3FIy6WqRRx+35ITx0jF/i7sIOsRI+rpW6aSJ8uBoinMC0tgLT
+   XSNlLJ7qZFLkO48GJn7dVHEEP34CifGNEd33GY+kKopAVGHsh9HarEWtK
+   7NJIxmFWLybeM9h9FPg4c06PxwwSh4Rcw3bX2SGxlFpmWrW79x27OcpAc
+   w==;
+X-CSE-ConnectionGUID: 9UkvOud0Tb+SpkiZanz81g==
+X-CSE-MsgGUID: 0+4jLiWYQamS9d9w7Mwp+g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11726"; a="74426653"
+X-IronPort-AV: E=Sophos;i="6.23,115,1770624000"; 
+   d="scan'208";a="74426653"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2026 00:58:53 -0700
+X-CSE-ConnectionGUID: I5Gu9k1fQUm3zMZLViUxkw==
+X-CSE-MsgGUID: Yv7LJ11NQFOTBHpKuC0/bw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,115,1770624000"; 
+   d="scan'208";a="220928732"
+Received: from lkp-server01.sh.intel.com (HELO 418530b1a366) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 12 Mar 2026 00:58:50 -0700
+Received: from kbuild by 418530b1a366 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1w0awR-000000002Dv-2PYF;
+	Thu, 12 Mar 2026 07:58:47 +0000
+Date: Thu, 12 Mar 2026 15:58:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 1487bad4ea518add12201ab37e6b672e308cfa81
+Message-ID: <202603121539.df6NxNVP-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-To: Oleksij Rempel <o.rempel@pengutronix.de>, Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Donald Hunter <donald.hunter@gmail.com>,
- Eric Dumazet <edumazet@google.com>,
- Naveen Mamindlapalli <naveenm@marvell.com>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Danielle Ratson <danieller@nvidia.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>,
- Kory Maincent <kory.maincent@bootlin.com>, Leon Romanovsky
- <leon@kernel.org>, Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Saeed Mahameed <saeedm@nvidia.com>,
- Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20260310104743.907818-1-bjorn@kernel.org>
- <20260310104743.907818-3-bjorn@kernel.org>
- <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
- <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
- <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
- <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
- <20260311195052.1202174f@kernel.org> <abJJY8whzSOB8O-X@pengutronix.de>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <abJJY8whzSOB8O-X@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18071-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[lunn.ch,kernel.org,vger.kernel.org,davemloft.net,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,armlinux.org.uk];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18073-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maxime.chevallier@bootlin.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[bootlin.com:+];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-rdma,lists];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AE3B526E72B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 108F226E88D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 1487bad4ea518add12201ab37e6b672e308cfa81  RDMA/rdmavt: Add driver mmap callback
 
+elapsed time: 747m
 
-On 12/03/2026 06:04, Oleksij Rempel wrote:
-> On Wed, Mar 11, 2026 at 07:50:52PM -0700, Jakub Kicinski wrote:
->> On Wed, 11 Mar 2026 20:26:39 +0100 Andrew Lunn wrote:
->>>> For that we have what we need with phy_link_topology, as each PHY has
->>>> its index, we should be good to go in that regard hopefully :)  
->>>
->>> So depth would be local to a component? We could have two PHY
->>> components, each with a different index, and depth = 0?
->>>
->>> I _think_ Jakub's depth was more at a global level? But then it would
->>> need to be passed down as we do the enumeration.
->>
->> Oh, sorry, I responded without reading the whole discussion :)
->> No, I imagined the depth would be within a single component, 
->> so under control of a single driver (instance). The ordering
->> between components should be defined by PHY topology etc so
->> it's outside of the loopback config.
-> 
-> As for me, it is problematic to help the user to understand the datapath
-> depth on a switch. For example:
-> 
-> CPU -- xMII --- MAC1 [loop] --- fabric --- MAC2 [loop] --- xMII -- PHY
->                                     \----- MACx [loop] ---
-> 
-> ... each port has two xMII loop configurations: towards the xMII or towards
-> the fabric. From a driver perspective, a loop towards the xMII is
-> "remote." However, from a system perspective, a "remote" loop on MAC1 is
-> a local loop at depth=0, whereas a "local" loop on MAC2 is a local loop
-> at depth=1.
+configs tested: 184
+configs skipped: 2
 
-What's important is to specify clearly in the documentation from which
-end do we start, where representing the topology. From your scenario
-here, each block is already well represented and exposed, and if we use
-local depth definitions we should be fine ?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> Other example would be where we have a chain of components which are
-> attached on the system in a unexpected direction, where the MDI
-> interface is pointing towards the main CPU, so the remote loopbacks
-> became to local loop.
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    clang-16
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    clang-23
+arc                                 defconfig    gcc-15.2.0
+arc                   randconfig-001-20260312    gcc-8.5.0
+arc                   randconfig-002-20260312    gcc-8.5.0
+arm                               allnoconfig    clang-23
+arm                               allnoconfig    gcc-15.2.0
+arm                              allyesconfig    clang-16
+arm                              allyesconfig    gcc-15.2.0
+arm                                 defconfig    gcc-15.2.0
+arm                   randconfig-001-20260312    gcc-8.5.0
+arm                   randconfig-002-20260312    gcc-8.5.0
+arm                   randconfig-003-20260312    gcc-8.5.0
+arm                   randconfig-004-20260312    gcc-8.5.0
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-15.2.0
+arm64                               defconfig    gcc-15.2.0
+arm64                 randconfig-001-20260312    clang-18
+arm64                 randconfig-002-20260312    clang-18
+arm64                 randconfig-003-20260312    clang-18
+arm64                 randconfig-004-20260312    clang-18
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                  randconfig-001-20260312    clang-18
+csky                  randconfig-002-20260312    clang-18
+hexagon                          allmodconfig    gcc-15.2.0
+hexagon                           allnoconfig    clang-23
+hexagon                           allnoconfig    gcc-15.2.0
+hexagon                             defconfig    gcc-15.2.0
+hexagon               randconfig-001-20260312    gcc-11.5.0
+hexagon               randconfig-002-20260312    gcc-11.5.0
+i386                             allmodconfig    clang-20
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                              allnoconfig    gcc-15.2.0
+i386                             allyesconfig    clang-20
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20260312    gcc-14
+i386        buildonly-randconfig-002-20260312    gcc-14
+i386        buildonly-randconfig-003-20260312    gcc-14
+i386        buildonly-randconfig-004-20260312    gcc-14
+i386        buildonly-randconfig-005-20260312    gcc-14
+i386        buildonly-randconfig-006-20260312    gcc-14
+i386                                defconfig    gcc-15.2.0
+i386                  randconfig-001-20260312    gcc-14
+i386                  randconfig-002-20260312    gcc-14
+i386                  randconfig-003-20260312    gcc-14
+i386                  randconfig-004-20260312    gcc-14
+i386                  randconfig-005-20260312    gcc-14
+i386                  randconfig-006-20260312    gcc-14
+i386                  randconfig-007-20260312    gcc-14
+i386                  randconfig-011-20260312    clang-20
+i386                  randconfig-012-20260312    clang-20
+i386                  randconfig-013-20260312    clang-20
+i386                  randconfig-014-20260312    clang-20
+i386                  randconfig-015-20260312    clang-20
+i386                  randconfig-016-20260312    clang-20
+i386                  randconfig-017-20260312    clang-20
+loongarch                        allmodconfig    clang-23
+loongarch                         allnoconfig    clang-23
+loongarch                         allnoconfig    gcc-15.2.0
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260312    gcc-11.5.0
+loongarch             randconfig-002-20260312    gcc-11.5.0
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    clang-16
+m68k                             allyesconfig    gcc-15.2.0
+m68k                                defconfig    clang-19
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    clang-19
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+nios2                            allmodconfig    clang-23
+nios2                             allnoconfig    clang-23
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    clang-19
+nios2                 randconfig-001-20260312    gcc-11.5.0
+nios2                 randconfig-002-20260312    gcc-11.5.0
+openrisc                         allmodconfig    clang-23
+openrisc                          allnoconfig    clang-23
+openrisc                          allnoconfig    gcc-15.2.0
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    clang-23
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    clang-19
+parisc                           allyesconfig    gcc-15.2.0
+parisc                              defconfig    gcc-15.2.0
+parisc                randconfig-001-20260312    clang-23
+parisc                randconfig-002-20260312    clang-23
+parisc64                            defconfig    clang-19
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    clang-23
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc                     kmeter1_defconfig    gcc-15.2.0
+powerpc               randconfig-001-20260312    clang-23
+powerpc               randconfig-002-20260312    clang-23
+powerpc64             randconfig-001-20260312    clang-23
+powerpc64             randconfig-002-20260312    clang-23
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    clang-23
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    gcc-15.2.0
+riscv                 randconfig-001-20260312    gcc-13.4.0
+riscv                 randconfig-002-20260312    gcc-13.4.0
+s390                             allmodconfig    clang-18
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    gcc-15.2.0
+s390                  randconfig-001-20260312    gcc-13.4.0
+s390                  randconfig-002-20260312    gcc-13.4.0
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    clang-23
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    clang-19
+sh                               allyesconfig    gcc-15.2.0
+sh                                  defconfig    gcc-14
+sh                    randconfig-001-20260312    gcc-13.4.0
+sh                    randconfig-002-20260312    gcc-13.4.0
+sh                          rsk7201_defconfig    gcc-15.2.0
+sparc                             allnoconfig    clang-23
+sparc                             allnoconfig    gcc-15.2.0
+sparc                               defconfig    gcc-15.2.0
+sparc                 randconfig-001-20260312    gcc-15.2.0
+sparc                 randconfig-002-20260312    gcc-15.2.0
+sparc64                          allmodconfig    clang-23
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20260312    gcc-15.2.0
+sparc64               randconfig-002-20260312    gcc-15.2.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-15.2.0
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260312    gcc-15.2.0
+um                    randconfig-002-20260312    gcc-15.2.0
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-20
+x86_64                            allnoconfig    clang-23
+x86_64                           allyesconfig    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20260312    clang-20
+x86_64                randconfig-002-20260312    clang-20
+x86_64                randconfig-003-20260312    clang-20
+x86_64                randconfig-004-20260312    clang-20
+x86_64                randconfig-005-20260312    clang-20
+x86_64                randconfig-006-20260312    clang-20
+x86_64                randconfig-011-20260312    clang-20
+x86_64                randconfig-012-20260312    clang-20
+x86_64                randconfig-013-20260312    clang-20
+x86_64                randconfig-014-20260312    clang-20
+x86_64                randconfig-015-20260312    clang-20
+x86_64                randconfig-016-20260312    clang-20
+x86_64                randconfig-071-20260312    gcc-14
+x86_64                randconfig-072-20260312    gcc-14
+x86_64                randconfig-073-20260312    gcc-14
+x86_64                randconfig-074-20260312    gcc-14
+x86_64                randconfig-075-20260312    gcc-14
+x86_64                randconfig-076-20260312    gcc-14
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    clang-23
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                           allyesconfig    clang-23
+xtensa                randconfig-001-20260312    gcc-15.2.0
+xtensa                randconfig-002-20260312    gcc-15.2.0
 
-I have a few of these types of setup on my desk, where 3 PHY devices are
-daisy-chained, we don't support that for now. If we one day add support
-for standalone PHYs acting as media converters, I expect we'll be able
-to tell which end is pointing where, and let it up to the user to figure
-out what "remote" and "local" means in that case.
-
-> 
-> One more issue is the test data generator location. The data generator
-> is not always the CPU. We have HW generators located in components like
-> PHYs or we may use external source (remote loopback).
-
-There were discussions about PRBS, I think the same idea of "pinpointing
-which block we want to use" can be applied for both loopback and
-generation ?
-
-Maxime
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
