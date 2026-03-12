@@ -1,219 +1,343 @@
-Return-Path: <linux-rdma+bounces-18076-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18077-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QC2wBYp9smkcNAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18076-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:47:06 +0100
+	id gIFDLpOIsml4NQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18077-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 10:34:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2067426F212
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:47:05 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32ED026FA4A
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 10:34:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id AAC893020985
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:46:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C83E73074151
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C891A38AC9C;
-	Thu, 12 Mar 2026 08:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9162F3B9D87;
+	Thu, 12 Mar 2026 09:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E59FA3GS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4418138B135
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 08:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7157D3BE638
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 09:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773305208; cv=none; b=bcsbohbumbzEwDfCVERoNWVkHBpzgS3YjF8FgRxsueZQiuLmbIn9pD7LBJtEbpLTn57s7SHCwxtriCZdb+P+LIgBAGxXCXH/P1PGDsx10yKVCOlNVlJPV+WIr/wqCCRbf784r1IjQexgSrzZvsAx4WmJeH5qahBBqdDVq6w1z+I=
+	t=1773307784; cv=none; b=mc4bZc+iGa9aUcmLBIwqqCmCg+8Tl6z3Tp+t6THbHezMMOeMMeiAwQ6BzsKlHWQh0oYOQr94EvX93A2yBP9F/kvdMKoexeXr8hZ6ztkz4aTjGtUyGH9I/OcGlpY0A0P4BZ2A4VS+7MYtg4Rj/fDXD53FamQ4TfwXZoqruFfcyJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773305208; c=relaxed/simple;
-	bh=/mZilDisdviIicDgh987PANEInYCM0ltIoHh+VCYsYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kIgGiZT87HiqcqELI0uU09Uwt2pr6vwLPrprd1JduQ3OqiiU6vbu7Uk/sDh5T8AQj7fhZTe2BZV55ybxEDagifXFUuCkJbh2SNzeRAXXOyGP4A7ojY+cY5IkGLGpAaGRMc752ODABo5AuZI5iNar/KZTR+JlfYHyjXgy5JXskMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1w0bgR-0000cN-2D; Thu, 12 Mar 2026 09:46:19 +0100
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1w0bgN-004zeL-0D;
-	Thu, 12 Mar 2026 09:46:16 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1w0bgO-0000000FFGc-19Ts;
-	Thu, 12 Mar 2026 09:46:16 +0100
-Date: Thu, 12 Mar 2026 09:46:16 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Donald Hunter <donald.hunter@gmail.com>,
+	s=arc-20240116; t=1773307784; c=relaxed/simple;
+	bh=Rj/4sFG1pif+Eq/S+Jj3++hKlOosTFCHyZI86FVlPic=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q41IyDPWkbV3/rDsN6JYTU37XOzjmXHtnbouKnGl9b70tJ2vKiagQDGR1bLCZOoRqZhtxtG6colLVkrhrZVbRdXexQSjRnT/D/SaNCKvulXoc/W1uKEQC/oJ+/yF6+736VP1xUQ9mhRktGzSEVKKqdabZ+ZvqWfLYlOu+FNxX+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E59FA3GS; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773307778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=uBRqbG57c0gxktkhNnrZHJgUKtWTivbvPUXrbPI8WKk=;
+	b=E59FA3GSVEPk2DHWwPxq7xyFM4b53nHHJtRynpKdgV0m9PdiijivEg1kjCIYF4HiqmNtBz
+	nYf4SV5YfryRZiGB3pqE2WUigjq2gev5jJ+TRgeQkQA3e0RkRSziCnA8Ek/ehKPHXAv+nc
+	znEe7Kx9Gr7Rl2y9bC7qFgndnDle8NQ=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: netdev@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@shopee.com>,
+	syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com,
 	Eric Dumazet <edumazet@google.com>,
-	Naveen Mamindlapalli <naveenm@marvell.com>,
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
-	Danielle Ratson <danieller@nvidia.com>,
-	Hariprasad Kelam <hkelam@marvell.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Saeed Mahameed <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-Message-ID: <abJ9WAOrOn5qFmwp@pengutronix.de>
-References: <20260310104743.907818-1-bjorn@kernel.org>
- <20260310104743.907818-3-bjorn@kernel.org>
- <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
- <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
- <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
- <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
- <20260311195052.1202174f@kernel.org>
- <abJJY8whzSOB8O-X@pengutronix.de>
- <ebab1d3e-8967-444b-be54-437e4dfe3c7e@bootlin.com>
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net v5] net/smc: fix NULL dereference and UAF in smc_tcp_syn_recv_sock()
+Date: Thu, 12 Mar 2026 17:29:07 +0800
+Message-ID: <20260312092909.48325-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ebab1d3e-8967-444b-be54-437e4dfe3c7e@bootlin.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-rdma@vger.kernel.org
-X-Spamd-Result: default: False [0.04 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,lunn.ch,vger.kernel.org,davemloft.net,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,armlinux.org.uk];
-	TAGGED_FROM(0.00)[bounces-18076-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[pengutronix.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_FROM(0.00)[bounces-18077-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[o.rempel@pengutronix.de,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,pengutronix.de:mid,pengutronix.de:url]
-X-Rspamd-Queue-Id: 2067426F212
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,827ae2bfb3a3529333e9];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,appspotmail.com:email,shopee.com:email,linux.dev:dkim,linux.dev:email,linux.dev:mid]
+X-Rspamd-Queue-Id: 32ED026FA4A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 12, 2026 at 08:49:39AM +0100, Maxime Chevallier wrote:
-> 
-> 
-> On 12/03/2026 06:04, Oleksij Rempel wrote:
-> > On Wed, Mar 11, 2026 at 07:50:52PM -0700, Jakub Kicinski wrote:
-> >> On Wed, 11 Mar 2026 20:26:39 +0100 Andrew Lunn wrote:
-> >>>> For that we have what we need with phy_link_topology, as each PHY has
-> >>>> its index, we should be good to go in that regard hopefully :)  
-> >>>
-> >>> So depth would be local to a component? We could have two PHY
-> >>> components, each with a different index, and depth = 0?
-> >>>
-> >>> I _think_ Jakub's depth was more at a global level? But then it would
-> >>> need to be passed down as we do the enumeration.
-> >>
-> >> Oh, sorry, I responded without reading the whole discussion :)
-> >> No, I imagined the depth would be within a single component, 
-> >> so under control of a single driver (instance). The ordering
-> >> between components should be defined by PHY topology etc so
-> >> it's outside of the loopback config.
-> > 
-> > As for me, it is problematic to help the user to understand the datapath
-> > depth on a switch. For example:
-> > 
-> > CPU -- xMII --- MAC1 [loop] --- fabric --- MAC2 [loop] --- xMII -- PHY
-> >                                     \----- MACx [loop] ---
-> > 
-> > ... each port has two xMII loop configurations: towards the xMII or towards
-> > the fabric. From a driver perspective, a loop towards the xMII is
-> > "remote." However, from a system perspective, a "remote" loop on MAC1 is
-> > a local loop at depth=0, whereas a "local" loop on MAC2 is a local loop
-> > at depth=1.
-> 
-> What's important is to specify clearly in the documentation from which
-> end do we start, where representing the topology. From your scenario
-> here, each block is already well represented and exposed, and if we use
-> local depth definitions we should be fine ?
+From: Jiayuan Chen <jiayuan.chen@shopee.com>
 
-I guess my main problem is to imagine depth representation in two
-separate directions for the user. So, the kernel documentation should
-describe what is the starting point of view depending on the device
-type. For example:
-- PHY has typically xMII and MDI end points, so the loop towards the xMII
-  is the local loop and towards the MDI is the remote loop.
-- a switch/bridge has mutiple, application specific end points. So, we
-  have a starting point of view from the fabric. Every loop pointing from
-  the fabric towards the outside world of the switch is the remote loop,
-  independent on connection type (xMII or MDI).
+Syzkaller reported a panic in smc_tcp_syn_recv_sock() [1].
 
-Correct?
+smc_tcp_syn_recv_sock() is called in the TCP receive path
+(softirq) via icsk_af_ops->syn_recv_sock on the clcsock (TCP
+listening socket). It reads sk_user_data to get the smc_sock
+pointer. However, when the SMC listen socket is being closed
+concurrently, smc_close_active() sets clcsock->sk_user_data
+to NULL under sk_callback_lock, and then the smc_sock itself
+can be freed via sock_put() in smc_release().
 
-> > Other example would be where we have a chain of components which are
-> > attached on the system in a unexpected direction, where the MDI
-> > interface is pointing towards the main CPU, so the remote loopbacks
-> > became to local loop.
-> 
-> I have a few of these types of setup on my desk, where 3 PHY devices are
-> daisy-chained, we don't support that for now. If we one day add support
-> for standalone PHYs acting as media converters, I expect we'll be able
-> to tell which end is pointing where, and let it up to the user to figure
-> out what "remote" and "local" means in that case.
-> 
-> > 
-> > One more issue is the test data generator location. The data generator
-> > is not always the CPU. We have HW generators located in components like
-> > PHYs or we may use external source (remote loopback).
-> 
-> There were discussions about PRBS, I think the same idea of "pinpointing
-> which block we want to use" can be applied for both loopback and
-> generation ?
+This leads to two issues:
 
-Yes, the same apply for the counters. If we represent the data path as
-pipe with different components like loopbacks, PRBS, etc on different
-stages of the pipe, the same we have with counters. For example
-industrial or automotive PHYs have separate counters for xMII and MDI.
-A low depth loopback would not triggers some of counters.
+1) NULL pointer dereference: sk_user_data is NULL when
+   accessed.
+2) Use-after-free: sk_user_data is read as non-NULL, but the
+   smc_sock is freed before its fields (e.g., queued_smc_hs,
+   ori_af_ops) are accessed.
 
-Since I do not wont push all of this right now, i suggest to use more
-abstract topology representation to make it easily extendable. 
+The race window looks like this (the syzkaller crash [1]
+triggers via the SYN cookie path: tcp_get_cookie_sock() ->
+smc_tcp_syn_recv_sock(), but the normal tcp_check_req() path
+has the same race):
 
+  CPU A (softirq)              CPU B (process ctx)
+
+  tcp_v4_rcv()
+    TCP_NEW_SYN_RECV:
+    sk = req->rsk_listener
+    sock_hold(sk)
+    /* No lock on listener */
+                               smc_close_active():
+                                 write_lock_bh(cb_lock)
+                                 sk_user_data = NULL
+                                 write_unlock_bh(cb_lock)
+                                 ...
+                                 smc_clcsock_release()
+                                 sock_put(smc->sk) x2
+                                   -> smc_sock freed!
+    tcp_check_req()
+      smc_tcp_syn_recv_sock():
+        smc = user_data(sk)
+          -> NULL or dangling
+        smc->queued_smc_hs
+          -> crash!
+
+Note that the clcsock and smc_sock are two independent objects
+with separate refcounts. TCP stack holds a reference on the
+clcsock, which keeps it alive, but this does NOT prevent the
+smc_sock from being freed.
+
+Fix this by using RCU and refcount_inc_not_zero() to safely
+access smc_sock. Since smc_tcp_syn_recv_sock() is called in
+the TCP three-way handshake path, taking read_lock_bh on
+sk_callback_lock is too heavy and would not survive a SYN
+flood attack. Using rcu_read_lock() is much more lightweight.
+
+- Set SOCK_RCU_FREE on the SMC listen socket so that
+  smc_sock freeing is deferred until after the RCU grace
+  period. This guarantees the memory is still valid when
+  accessed inside rcu_read_lock().
+- Use rcu_read_lock() to protect reading sk_user_data.
+- Use refcount_inc_not_zero(&smc->sk.sk_refcnt) to pin the
+  smc_sock. If the refcount has already reached zero (close
+  path completed), it returns false and we bail out safely.
+
+Note: smc_hs_congested() has a similar lockless read of
+sk_user_data without rcu_read_lock(), but it only checks for
+NULL and accesses the global smc_hs_wq, never dereferencing
+any smc_sock field, so it is not affected.
+
+Reproducer was verified with mdelay injection and smc_run,
+the issue no longer occurs with this patch applied.
+
+[1] https://syzkaller.appspot.com/bug?extid=827ae2bfb3a3529333e9
+
+Fixes: 8270d9c21041 ("net/smc: Limit backlog connections")
+Reported-by: syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/67eaf9b8.050a0220.3c3d88.004a.GAE@google.com/T/
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>
+Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+---
+v5:
+- Fix dst_entry leak and missing tcp_listendrop() on
+  early return when smc is NULL or refcount has reached
+  zero. This affects the SYN cookie path where dst is
+  non-NULL.
+
+v4: https://lore.kernel.org/netdev/20260311022451.395802-1-jiayuan.chen@linux.dev/T/#t
+
+v4:
+- Add a new smc_clcsock_user_data_rcu() helper instead of
+  modifying the existing smc_clcsock_user_data(), to allow
+  gradual conversion of callers. Only smc_tcp_syn_recv_sock()
+  uses the RCU variant; other callers under sk_callback_lock
+  remain unchanged, avoiding lockdep warnings.
+- Use rcu_dereference_sk_user_data() for reading and
+  rcu_assign_sk_user_data() for writing sk_user_data to
+  prevent load/store tearing.
+
+v3: https://lore.kernel.org/netdev/20260310120053.136594-1-jiayuan.chen@linux.dev/
+
+v3:
+- Write sk_user_data with RCU to prevent store tearing.
+
+v2: https://lore.kernel.org/netdev/20260309023846.18516-1-jiayuan.chen@linux.dev/
+
+v2:
+- Use rcu_read_lock() + refcount_inc_not_zero() instead of
+  read_lock_bh(sk_callback_lock) + sock_hold(), since this
+  is the TCP handshake hot path and read_lock_bh is too
+  expensive under SYN flood.
+- Set SOCK_RCU_FREE on SMC listen socket to ensure
+  RCU-deferred freeing.
+
+v1: https://lore.kernel.org/netdev/20260307032158.372165-1-jiayuan.chen@linux.dev/
+---
+ net/smc/af_smc.c    | 23 +++++++++++++++++------
+ net/smc/smc.h       |  5 +++++
+ net/smc/smc_close.c |  2 +-
+ 3 files changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index d0119afcc6a1..1a565095376a 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -131,7 +131,14 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 	struct smc_sock *smc;
+ 	struct sock *child;
+ 
+-	smc = smc_clcsock_user_data(sk);
++	rcu_read_lock();
++	smc = smc_clcsock_user_data_rcu(sk);
++	if (!smc || !refcount_inc_not_zero(&smc->sk.sk_refcnt)) {
++		rcu_read_unlock();
++		smc = NULL;
++		goto drop;
++	}
++	rcu_read_unlock();
+ 
+ 	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs) >
+ 				sk->sk_max_ack_backlog)
+@@ -153,11 +160,14 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 		if (inet_csk(child)->icsk_af_ops == inet_csk(sk)->icsk_af_ops)
+ 			inet_csk(child)->icsk_af_ops = smc->ori_af_ops;
+ 	}
++	sock_put(&smc->sk);
+ 	return child;
+ 
+ drop:
+ 	dst_release(dst);
+ 	tcp_listendrop(sk);
++	if (smc)
++		sock_put(&smc->sk);
+ 	return NULL;
+ }
+ 
+@@ -254,7 +264,7 @@ static void smc_fback_restore_callbacks(struct smc_sock *smc)
+ 	struct sock *clcsk = smc->clcsock->sk;
+ 
+ 	write_lock_bh(&clcsk->sk_callback_lock);
+-	clcsk->sk_user_data = NULL;
++	rcu_assign_sk_user_data(clcsk, NULL);
+ 
+ 	smc_clcsock_restore_cb(&clcsk->sk_state_change, &smc->clcsk_state_change);
+ 	smc_clcsock_restore_cb(&clcsk->sk_data_ready, &smc->clcsk_data_ready);
+@@ -902,7 +912,7 @@ static void smc_fback_replace_callbacks(struct smc_sock *smc)
+ 	struct sock *clcsk = smc->clcsock->sk;
+ 
+ 	write_lock_bh(&clcsk->sk_callback_lock);
+-	clcsk->sk_user_data = (void *)((uintptr_t)smc | SK_USER_DATA_NOCOPY);
++	__rcu_assign_sk_user_data_with_flags(clcsk, smc, SK_USER_DATA_NOCOPY);
+ 
+ 	smc_clcsock_replace_cb(&clcsk->sk_state_change, smc_fback_state_change,
+ 			       &smc->clcsk_state_change);
+@@ -2665,8 +2675,8 @@ int smc_listen(struct socket *sock, int backlog)
+ 	 * smc-specific sk_data_ready function
+ 	 */
+ 	write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
+-	smc->clcsock->sk->sk_user_data =
+-		(void *)((uintptr_t)smc | SK_USER_DATA_NOCOPY);
++	__rcu_assign_sk_user_data_with_flags(smc->clcsock->sk, smc,
++					     SK_USER_DATA_NOCOPY);
+ 	smc_clcsock_replace_cb(&smc->clcsock->sk->sk_data_ready,
+ 			       smc_clcsock_data_ready, &smc->clcsk_data_ready);
+ 	write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
+@@ -2687,10 +2697,11 @@ int smc_listen(struct socket *sock, int backlog)
+ 		write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 		smc_clcsock_restore_cb(&smc->clcsock->sk->sk_data_ready,
+ 				       &smc->clcsk_data_ready);
+-		smc->clcsock->sk->sk_user_data = NULL;
++		rcu_assign_sk_user_data(smc->clcsock->sk, NULL);
+ 		write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 		goto out;
+ 	}
++	sock_set_flag(sk, SOCK_RCU_FREE);
+ 	sk->sk_max_ack_backlog = backlog;
+ 	sk->sk_ack_backlog = 0;
+ 	sk->sk_state = SMC_LISTEN;
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index 9e6af72784ba..52145df83f6e 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -346,6 +346,11 @@ static inline struct smc_sock *smc_clcsock_user_data(const struct sock *clcsk)
+ 	       ((uintptr_t)clcsk->sk_user_data & ~SK_USER_DATA_NOCOPY);
+ }
+ 
++static inline struct smc_sock *smc_clcsock_user_data_rcu(const struct sock *clcsk)
++{
++	return (struct smc_sock *)rcu_dereference_sk_user_data(clcsk);
++}
++
+ /* save target_cb in saved_cb, and replace target_cb with new_cb */
+ static inline void smc_clcsock_replace_cb(void (**target_cb)(struct sock *),
+ 					  void (*new_cb)(struct sock *),
+diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
+index 10219f55aad1..bb0313ef5f7c 100644
+--- a/net/smc/smc_close.c
++++ b/net/smc/smc_close.c
+@@ -218,7 +218,7 @@ int smc_close_active(struct smc_sock *smc)
+ 			write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 			smc_clcsock_restore_cb(&smc->clcsock->sk->sk_data_ready,
+ 					       &smc->clcsk_data_ready);
+-			smc->clcsock->sk->sk_user_data = NULL;
++			rcu_assign_sk_user_data(smc->clcsock->sk, NULL);
+ 			write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 			rc = kernel_sock_shutdown(smc->clcsock, SHUT_RDWR);
+ 		}
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.43.0
+
 
