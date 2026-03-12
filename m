@@ -1,265 +1,121 @@
-Return-Path: <linux-rdma+bounces-18125-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18126-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CIImIj4Bs2mQRQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18125-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 19:09:02 +0100
+	id GO5+B0EBs2mQRQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18126-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 19:09:05 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B7A8277065
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 19:09:02 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC4527706C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 19:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AE3863068254
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 18:05:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 345643018060
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 18:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE1A3FD15E;
-	Thu, 12 Mar 2026 18:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B683FEB29;
+	Thu, 12 Mar 2026 18:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n2dhEe1+"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="amCrJEYr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5F83EF66B
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 18:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B0F3CCFDF;
+	Thu, 12 Mar 2026 18:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773338699; cv=none; b=eCONpbb696uyr+5/s0hJMc5eg4o2oB0TQAJl3AqY8ilNtpCFUaw7XO3UOfry0hjQbYmFLQFKdwypNu0vcdzqdVWQt9xNbl+TkzNrtKyb9peTCznwzIGjxdKTmDOtcajy//Pf6EdJ3DfU0aJxLmB3HDyLLfOkTj6YM8FgOd7UHDY=
+	t=1773338938; cv=none; b=cY2SnUskQP0ObDfR5djDqUt7xISh9+01S+XU6qOACqE55/zzc3echFdhPPuCRkkQ97Lbsa7E3a6JAzZG0F1U4O3VHgjkTfml+3KRL2TouQc9Sj5oIMmQtklmotSbXmFqhTg3NqfAXRWVSzEjcJC+VacQCcxRoHWze6Y1MuEZ4Ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773338699; c=relaxed/simple;
-	bh=fmvvD0IA4ebRw4+C2da7W4o+Zy+hXaSvEC9feQ3ucBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Br/dNNEzBNWdwIMpmRPufvNJFqPQ0oW6vBRMe3jI7JGpidKNReCLIMLLfsfeIkMTBwId0VCd1G5BOvHBe073qhUJeGvDi/zhlbmxS8mGZaykEef9ee0b8rT0iDfkdvOOqMhlxqJvN9v5oK6aH0J3V63n3z7p1ssi7sKr0EwFDIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n2dhEe1+; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7f157000-d1a9-4284-afef-12107d6ce40e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773338685;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vbiNkMOD7irzTZplqwAXcc3QjCyah3uOZx2fIketAbM=;
-	b=n2dhEe1+QfH7d38/S+iaxZPuN9a3WrgKNNabk4Yys1LKTkvp0mxEzTWf+IDgFFJKBL+I9h
-	CetwZpeLnj8ZgdNcjV3EnjTIJFXkMaSGnWyCFybsXpLYZp9ZD0YkQ7vzMjTbEy6j0G3IKo
-	6vSSPwjnCmlKClnthmJTEf/Hkatb6DE=
-Date: Thu, 12 Mar 2026 11:04:41 -0700
+	s=arc-20240116; t=1773338938; c=relaxed/simple;
+	bh=zKubwnE6WBFqFhMA7VdJVmmNgM5iok6L4iNXlYsPiJk=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G66JpYxOnNjt53smc8vuy4uUY0Su8/PcOxZAnvnEYeJ1GJ1DShaTf+LvL9gVbVaUwogaBfI8fwBk8G5gj8kSXBDtGi/Unb5WaIGjHPcscybz7Y1fDi54hjb4Lobj6ykQwINGIGDqPl2RYFYo33JBOZ69jQoWyC4P8JkI+T/KyZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=amCrJEYr; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id BBB5F20B710C; Thu, 12 Mar 2026 11:08:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BBB5F20B710C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1773338935;
+	bh=YJqUVJBTcGYoYBP952Xegm6UMbj6eDAXix4l/bYt0+s=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=amCrJEYrHoBXsY8281kNYyzTHswa4TWOaiY0DklnOCpFzyJ5PjmDxeUT0rKBRdTFR
+	 8kSIUquvlWuPNXcNilcfNWCc3wKcax50rqaLnEdvcLCmu9Dws3nx85dgDwUC4HPoO2
+	 wfVlbsh7xpEsDpxRP02TU5aC5JU6RspY4F9dFZ48=
+Date: Thu, 12 Mar 2026 11:08:55 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: longli@microsoft.com, kotaranov@microsoft.com,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: mana: hardening: Clamp adapter capability
+ values from MANA_IB_GET_ADAPTER_CAP
+Message-ID: <abMBN3I4A0OrYtoD@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260312112538.966157-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 1/4] RDMA/nldev: Add dellink function pointer
-To: David Ahern <dsahern@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: jgg@ziepe.ca, zyjzyj2000@gmail.com, shuah@kernel.org,
- linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20260310020519.101415-1-yanjun.zhu@linux.dev>
- <20260310020519.101415-2-yanjun.zhu@linux.dev>
- <20260310190140.GL12611@unreal>
- <5700c718-d10e-4b23-adfc-c14ee1930b18@linux.dev>
- <20260311085434.GW12611@unreal>
- <6a8b0983-a198-470a-8125-b0133ccb7032@linux.dev>
- <b5c2053c-f911-4e0d-8589-4d969bd580a4@kernel.org>
- <e8e1fc5b-7772-40c5-8214-b4f9d4a10d98@linux.dev>
- <434a9a8c-f369-435a-b8bf-d9ae85558c8e@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <434a9a8c-f369-435a-b8bf-d9ae85558c8e@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260312112538.966157-1-ernis@linux.microsoft.com>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[ziepe.ca,gmail.com,kernel.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-18125-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18126-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: 2B7A8277065
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,linux.microsoft.com:dkim]
+X-Rspamd-Queue-Id: 1AC4527706C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Thu, Mar 12, 2026 at 04:25:37AM -0700, Erni Sri Satya Vennela wrote:
+> As part of MANA hardening for CVM, clamp hardware-reported adapter
+> capability values from the MANA_IB_GET_ADAPTER_CAP response before
+> they are used by the IB subsystem.
+> 
+> The response fields (max_qp_count, max_cq_count, max_mr_count,
+> max_pd_count, max_inbound_read_limit, max_outbound_read_limit,
+> max_qp_wr, max_send_sge_count, max_recv_sge_count) are u32 but are
+> assigned to signed int members in struct ib_device_attr. If hardware
+> returns a value exceeding INT_MAX, the implicit u32-to-int conversion
+> produces a negative value, which can cause incorrect behavior in the
+> IB core and userspace applications.
+> 
+> Clamp these fields to INT_MAX in mana_ib_gd_query_adapter_caps() so
+> all downstream consumers receive safe values.
+> 
+> Additionally, fix an integer overflow in mana_ib_query_device() where
+> max_res_rd_atom is computed as max_qp_rd_atom * max_qp. Both operands
+> are int and the multiplication can overflow. Widen to s64 before
+> multiplying and clamp the result to INT_MAX.
+> 
+> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
 
-On 3/11/26 10:09 PM, Zhu Yanjun wrote:
->
-> 在 2026/3/11 20:59, Zhu Yanjun 写道:
->>
->> 在 2026/3/11 19:04, David Ahern 写道:
->>> On 3/11/26 4:01 PM, Yanjun.Zhu wrote:
->>>
->>>> Got it. The commit log explains how the netdev_notifier mechanism is
->>> netdev notifiers are the NETDEV_UNREGISTER and friends. This dellink
->>> handler is not related to that; this is an IB stack thing when the rxe
->>> link is removed.
->>>
->>>> used to clean up the related resources.
->>>>
->>>> In the source code, additional comments have been added to explain how
->>>> the dellink operation for rxe is triggered. For iWARP, this change
->>>> should not make any difference because iWARP does not implement the
->>>> dellink function.
->>>>
->>>> The commit is shown below. Please take a look and share your comments.
->>>> If you agree, I will send out the latest commits out very soon.
->>>>
->>>>  From c05038dcdf69c5985837736a8926ba76d9f3e8e4 Mon Sep 17 00:00:00 
->>>> 2001
->>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>> Date: Fri, 23 Sep 2022 16:52:45 +0000
->>>> Subject: [PATCH 1/1] RDMA/nldev: Add dellink function pointer
->>>>
->>>> The newlink function pointer was previously added to support
->>>> dynamic RDMA link creation. In the RXE driver, this path creates
->>>> a transport socket listening on port 4791. Consequently, a dellink
->>>> function pointer is required to ensure these sockets are properly
->>>> closed when a user administratively removes a link via rdma link
->>>> delete <dev>.
->>>>
->>>> Furthermore, RXE does not rely solely on this nldev path for resource
->>>> management. It also monitors the underlying net_device state via a
->>>> registered netdev_notifier. The rxe_net_event callback serves as a
->>>> fallback mechanism to ensure that transport sockets are forcibly 
->>>> closed
->>>> and all resources are released even if dellink is not explicitly 
->>>> called
->>>> (e.g., if the parent NIC interface is removed or the driver is 
->>>> forcefully
->>>> unloaded).
->>> IMHO, this explanation belongs in the patch that implements dellink 
->>> for rxe.
->>>
->>> This patch adds the handler to allow link implementations to cleanup 
->>> any
->>> resources created by newklink as needed.
->> Thanks for the feedback. I agree that the detailed explanation of 
->> RXE's resource management (like sockets and notifiers) is more 
->> appropriate for the subsequent patch that implements the RXE dellink 
->> handler.
->>
->> I will update the commit message for this patch to focus solely on 
->> the addition of the dellink infrastructure in the RDMA core, and move 
->> the RXE-specific details to the next patch in the series.
->
-> Hi,
->
-> I would like to use the following as the commit log. It seems simple 
-> and direct.
->
-> "
->
-> Add a dellink function pointer to rdma_link_ops to allow drivers to 
-> clean up resources created during newlink.
-> "
+I will be sending v2 for this patch since it requires change in the
+title.
 
-Hi,
-
-The final commit is as below. I will send the latest commit out very soon.
-
- From 8fda79a3b0c3f6df6ba0fc70040ce09e4028a2a3 Mon Sep 17 00:00:00 2001
-
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-Date: Fri, 23 Sep 2022 16:52:45 +0000
-Subject: [PATCH 1/1] RDMA/nldev: Add dellink function pointer
-
-Add a dellink function pointer to rdma_link_ops to
-allow drivers to clean up resources created during
-newlink.
-
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-  drivers/infiniband/core/nldev.c | 12 ++++++++++++
-  include/rdma/rdma_netlink.h     |  2 ++
-  2 files changed, 14 insertions(+)
-
-diff --git a/drivers/infiniband/core/nldev.c 
-b/drivers/infiniband/core/nldev.c
-index 2220a2dfab24..dbf2eea078e9 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -1824,6 +1824,18 @@ static int nldev_dellink(struct sk_buff *skb, 
-struct nlmsghdr *nlh,
-          return -EINVAL;
-      }
-
-+    /*
-+     * This path is triggered by the 'rdma link delete' administrative 
-command.
-+     * For Soft-RoCE (RXE), we ensure that transport sockets are closed 
-here.
-+     * Note: iWARP driver does not implement .dellink, so this logic is
-+     * implicitly scoped to the driver supporting dynamic link deletion 
-like RXE.
-+     */
-+    if (device->link_ops && device->link_ops->dellink) {
-+        err = device->link_ops->dellink(device);
-+        if (err)
-+            return err;
-+    }
-+
-      ib_unregister_device_and_put(device);
-      return 0;
-  }
-diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
-index 326deaf56d5d..2fd1358ea57d 100644
---- a/include/rdma/rdma_netlink.h
-+++ b/include/rdma/rdma_netlink.h
-@@ -5,6 +5,7 @@
-
-  #include <linux/netlink.h>
-  #include <uapi/rdma/rdma_netlink.h>
-+#include <rdma/ib_verbs.h>
-
-  struct ib_device;
-
-@@ -126,6 +127,7 @@ struct rdma_link_ops {
-      struct list_head list;
-      const char *type;
-      int (*newlink)(const char *ibdev_name, struct net_device *ndev);
-+    int (*dellink)(struct ib_device *dev);
-  };
-
-  void rdma_link_register(struct rdma_link_ops *ops);
--- 
-2.53.0
-
-
-Zhu Yanjun
-
-
->
-> Thanks,
->
-> Zhu Yanjun
->
->
->>
->> Zhu Yanjun
->>
->>>
+Thanks,
+Vennela
 
