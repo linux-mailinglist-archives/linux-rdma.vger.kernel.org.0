@@ -1,245 +1,282 @@
-Return-Path: <linux-rdma+bounces-18119-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18120-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6MYYARbmsmktQwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18119-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:13:10 +0100
+	id 6HYeHlvrsmnAQwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18120-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:35:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D7AF27550B
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:13:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D24CB275B0C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 17:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0DC91303ED98
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 16:12:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7E8BD31115A6
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 16:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CD63F54C1;
-	Thu, 12 Mar 2026 16:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21DF838D684;
+	Thu, 12 Mar 2026 16:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="LL4Vppqy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11020121.outbound.protection.outlook.com [52.101.201.121])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D013F0A9E
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 16:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773331955; cv=none; b=Xyk6T9609jioY7zLxLqPne44h6eUwOatGdEhYidkvjWbqZDazXArQZ4ulp2pHwGAJaZx843bSZk++tM58YWNhfo4TRpZWizp+/7tgEihu7obRUZz9S8a+tXZgNvz3OEZR3fr/o4HjlZ0ltW70ZGol4j/OrtXEYVwJ812sgA2tS8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773331955; c=relaxed/simple;
-	bh=J0G6eyWjCZe2EavnpoZMaa3QDnbvlnCWthcPft0y1xg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T0yNC8+IoRGYmWFP6trmRF02yIElBW99A3E6/SqQJWo74lMlZPHyQ5e13L9wLR8J8qXy1X3bkI/QXQlqnuL3dHKLfStQbLzhypobNf/FnoBy5cqbXtnnV2bCJIX23FFU51MpzQ8JefglVKy4JjTHGHKF4BA11qDde7EPtvKT+m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-7d73d6976adso1084129a34.2
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 09:12:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773331953; x=1773936753;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r8DuBIlRqwUybKw9BKko7+xZruw6jP0mIyTYZl7vHWM=;
-        b=oBo2h0gnl5QBUyF3EYnySd8m30pJOsRKl5N/6k+6Y26yVNroDdzsHhMQ5Div9qpwzW
-         XGOvEQokXCLrG1ciPhimYy/r0fTHAuT1HL+nhCxzkQlH9RsfkHSWxT0cCLZYFUFrS0gO
-         qygo7bl6asx2IKTEsLecehGm6pqMRlZjKd780B11jlXE7fmBRep648i6YzeCgR1Urai0
-         8Ana2NGk5wCWSGvIhKVZ3dWcsZT/loqx5xuG/XAcs6rydHEuGE7aFudqInLywi9f9OQj
-         5gP71w9gy1X0W7bpTO0PdVoRGPwzW/g/zlzOkaZg0H5vyQUGoX/J8IpPAKYOgFC7S4DO
-         ERng==
-X-Forwarded-Encrypted: i=1; AJvYcCW06WBcLpORHRUzbhVtr5iCXC0kFjeaXjLUXgQ/MUd5tVrYRdtvzjbOqVD1/tGrqoFJ1BDC89zwne2d@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzdkx9w62KGP7rJqpxbDy/qLZJHJXKzzBPB0zPdZa/nSTo4q8Z5
-	vXh1scQdaKN7J2A+SOEKM6Qao98Y55lGbfmYWHNans64dyNIAUaiyRLDLMSOC/Jb3XY=
-X-Gm-Gg: ATEYQzzgsTz+5GpsKYA6R/0O6/qBl+Lw+eGu5X3J4OVDDYNdBCZXrx8Rgoi1TxIJlkJ
-	0x+PJEPXCYoZMhc/UG36oVbSAk60Y5nwT4TE5ChKzd3v0R5sESebULc8d6LN7C40ha7EgGOonWO
-	r58U0/hVGLLC9Cghur2MMsXWTZwm8AiqURVXKzEeQkh5QFWhAUNkXWllVuVXj9uCwXirvIuG/Qy
-	8GrjzCSksz3FxZqyyRqoswV4KG9TSyCEkvA/K7ALkKEk2rR6YI1MgExaR6eQyt9vZtEvGddKe0k
-	ClWwkbO/DSvEKbav2XsGuydK8WcV4hmFYX7JY8UZe4RWshM3DaL/gqDBzVelMEnpRazAsN9v3Kq
-	7J+yZ5hoIWA9k105SepfXJSQVQ21uZRCo3z1K6mG+0R5wDvlM2melRUh0oA1oxL6EsBeDEIf2kM
-	er7ssVmd/EwHhsW2ryNMGoJDUbvHucv8jKTDC4kNmd9bOA52pA0Saps6siToa6VtKbadwP6CU=
-X-Received: by 2002:a05:6830:83b4:b0:7d7:4ed3:3647 with SMTP id 46e09a7af769-7d76a81bad2mr4832226a34.36.1773331953422;
-        Thu, 12 Mar 2026 09:12:33 -0700 (PDT)
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com. [209.85.160.51])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d77c961e79sm1082746a34.7.2026.03.12.09.12.32
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2026 09:12:33 -0700 (PDT)
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-4043b909ed4so794605fac.3
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 09:12:32 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWmRfClSf8C1WpH5OneEyuCwGTALUQ4YgpAAbYUF3vrLF15pBVyICDE+8ao4VfN8x81R41bnOU5/yGE@vger.kernel.org
-X-Received: by 2002:a05:6102:512b:b0:5ff:22f5:e37e with SMTP id
- ada2fe7eead31-601deb4d089mr2630417137.10.1773331557630; Thu, 12 Mar 2026
- 09:05:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8297038F655;
+	Thu, 12 Mar 2026 16:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.121
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773333286; cv=fail; b=PkV+bpRCTprn1VDpD8X7TqMTA5WuGkXnAVg5eix3BzuXB0U1N7BL8TmM7Xt+yHzNazZ4V+NZ8dc/WssJf6q5vASiMV8u65VrOl+8tNazIH4HVwReF48egodo1QLEiz60GduLhvA87C3SSZE6pjS/yBbRJ6BPoZj9L56kMLzOL8A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773333286; c=relaxed/simple;
+	bh=e/IhYCl6qi00fKO/GSXU0TSIjvt0OmiLH1qCuulmuRs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=nVdkX5HAeAdgO5RtTfOLY3gJHbuy/yBbMhPUxrU/V8v+aO92bGHBMDSJbgkqZBJTEosRi/pInNNoIBfYD60svoWwJi1Pvb9g0NGow7D+SFfymtao5x6IEr+opIMVSreK4Mjs7XWMuWRcH2Q8ua3TJwF399Mce2QTeAFRvPbnJQs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=LL4Vppqy; arc=fail smtp.client-ip=52.101.201.121
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QCw7ZhZaxACQVrwTAgihLq9r/MjhltHLTf/8p28mqYEkw+oy43s3g5ZSLldHZgC3sDaX7Kuw1M6M89rQM1cziMZsBtBaT2nAOleWteY9V+tYattwrO5+EaCHBh5J7fe/HmKVTOe6z5NVy8W491waVaVXnr8QGshF3fvyz/DduEc0sp64E8Hnc7+lBHdw7UOjzcanmEsROHMMFcZ5D0jz6UaToJffZT+BIQyaM9NOIvIQAlwjo/tLbFi+clJur+6oibvYbPlqG0fDyRuw+uQDnx/vjnZD6tttBaoR/NGwdEOrmfeYgslRdFUJK/JSYZKHKVJiUn7L02m6X5aBsFf1hQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WNepfN2kCCEdrhV2LpQSSxlhtB9P/pMEtq5YTFDenkU=;
+ b=NPScbLEkBJtk0BYSreMTbEC/1TLdB9b/9PJpryrftwAk8+mdbQfblaNS1mTRC9AZyEX3cVkH/pGSPnLiGGDBZCLfHdJ6VKD6CwvEbZ67koMQdSTlrR6Lu+rDKM8hvZ7MJVRvTbY+icLf8ds04GIcSVTbKo9q8sDUDIs02ZjkbWrWdiqooNBIgkcmukznuO+zIsCBfZ7kJuKfpMIBmGHdnVjCq1DmsEXpC7dxH4OLmC1nOzSRKvu7vJn/KhrV0S7UGUN9FXyQFRa68VYwYp0fAXTUMOGthXztLhwiM47A3uVD0n/WpQWbvwqR4c2J81Kr/Zzjt8gqakNantz3KI72vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WNepfN2kCCEdrhV2LpQSSxlhtB9P/pMEtq5YTFDenkU=;
+ b=LL4VppqyIVK6YLstVHhTKoXfzZ+a+k0OSINkYFwqNy5mCUvoW2qyz8biK3s2IF9IK5EURXCmEAOpIhJepkhTN925luv0/kqQdx+lf1dA8u8y/4wJJFV0GkTCAD8B7fXEqIOfnWzvzpZeyQ8o/ChUfAuJ9p8GE1K7lWuW55AM8dA=
+Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
+ by DM4PR21MB3057.namprd21.prod.outlook.com (2603:10b6:8:5d::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.7; Thu, 12 Mar
+ 2026 16:34:41 +0000
+Received: from SA3PR21MB3867.namprd21.prod.outlook.com
+ ([fe80::70ff:4d3:2cb6:92a3]) by SA3PR21MB3867.namprd21.prod.outlook.com
+ ([fe80::70ff:4d3:2cb6:92a3%6]) with mapi id 15.20.9700.006; Thu, 12 Mar 2026
+ 16:34:41 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Simon Horman <horms@kernel.org>, Haiyang Zhang
+	<haiyangz@linux.microsoft.com>
+CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, KY Srinivasan
+	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<DECUI@microsoft.com>, Long Li <longli@microsoft.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Konstantin Taranov <kotaranov@microsoft.com>, Erni Sri
+ Satya Vennela <ernis@linux.microsoft.com>, Dipayaan Roy
+	<dipayanroy@linux.microsoft.com>, Shradha Gupta
+	<shradhagupta@linux.microsoft.com>, Shiraz Saleem
+	<shirazsaleem@microsoft.com>, Kees Cook <kees@kernel.org>, Subbaraya Sundeep
+	<sbhatta@marvell.com>, Aditya Garg <gargaditya@linux.microsoft.com>, Breno
+ Leitao <leitao@debian.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [EXTERNAL] Re: [PATCH net-next,V4, 3/3] net: mana: Add ethtool
+ counters for RX CQEs in coalesced type
+Thread-Topic: [EXTERNAL] Re: [PATCH net-next,V4, 3/3] net: mana: Add ethtool
+ counters for RX CQEs in coalesced type
+Thread-Index: AQHcsAq02ZF6ukjrskyZCumOyafI0rWpoUaAgAF6wPA=
+Date: Thu, 12 Mar 2026 16:34:40 +0000
+Message-ID:
+ <SA3PR21MB38670E62065B5A6EC172037FCA44A@SA3PR21MB3867.namprd21.prod.outlook.com>
+References: <20260309212106.764156-1-haiyangz@linux.microsoft.com>
+ <20260309212106.764156-4-haiyangz@linux.microsoft.com>
+ <20260311175835.GV461701@kernel.org>
+In-Reply-To: <20260311175835.GV461701@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=21960a51-9238-44a9-a34a-716b4b14c26d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-03-12T16:34:10Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|DM4PR21MB3057:EE_
+x-ms-office365-filtering-correlation-id: 569d2e6c-d74d-4d6f-0948-08de80554293
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|366016|376014|7416014|38070700021|22082099003|56012099003|18002099003;
+x-microsoft-antispam-message-info:
+ 3DtN/3qh1kK93ViHhho76RY4tQuSvaWwsCExdmUzzoyyQ6yRliyaCXHoK84p1hSNV4QpPfc4NtQvDnjDrp8oRW+f0TgD79LTvEEMm4wfiuwDxBE20YaHe7Pag3npx6VSG8WAMlS40CGkB227omGcsyyPXYaOLsg/m5XPwvD2l1L4pd0uyPyCsY2VzgNSPPd1KhhY7HUtP26LURqL4JjzB21XOstAXecPQW4XMBwP06ARsM6Xyr8d+rV1p7n7q0K7E6YdEoyoVv1a24LwCAGndHHGEMcFEcNOZaBzf2a2FkbRSYv8RkABsACKk6QeN3LulKo3zlKesDNZ0KbHJjUdNVEtE+sOvF5MRkhP8Uxdk6SbBQep2rA9+lL66kOGhUVBn3JCwpN399J70N9rD4cm72rIrDJQXpGM2wcJ+lAYxP0gouXQ9WV1rsEtfLnLrcU8ZjCFOdOAgm06Zt/pzXpKhzPs9fIbc1F7Q6ehHziBo9C6dGrc0XPmVYjmdwY/0+3kyzNB/zo1OmohIhpyhMfnSy2hkM1AQ4AWlL/erM9raHT8YSQy2K81FXo0QioFL3D2QK/8bZKA34IeL6Em/E4hjkVD9R/VGU/WIWcnr0u7zo6u+HIzXL1mDHTLaqukGAaRd9zZFO1ZZtfdcw8lvvxO7y38i4vitQOQgFz15dkx2T8GUwlLQ4ywbZWRp5UnfZx7ugbC3toyWynuNmDYcwoyoUN9aD9BbDufhpaqz9b/hqx6bmickxH85iA2Za+MOdtImDqC+BLlkE/Q8yyA8rPi2bXYjxMHN+pezPSJsQ96uAI=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(38070700021)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?vnsMC1IwHoE0Ydt/I3gkMcGrrG0VsqUOeYKZVi2e70VPw+txq+FbRvmJ/hGI?=
+ =?us-ascii?Q?mxFiY4jO7R9MBsy46o+g2X4gRV71ly8ktO7Xsvwmml1kHr9QiYvM/8TApDE/?=
+ =?us-ascii?Q?8eed4bKOeGRytENO0KoQ9k5cJPVwjenpuOqIH7SM54kuX7PjsHM41ids2sw8?=
+ =?us-ascii?Q?AoqlT/uxcAhpsG0+npF4N/68JdTZXrJFmpHBiCD58ROjfWrB1lU2q455ZDTu?=
+ =?us-ascii?Q?N8IcRjKWpoHgdVGJ2C0c6m0yXDWEOI9REN0LEu1L9CNVKsXtBSBFrmGbAp63?=
+ =?us-ascii?Q?+A/ajXYM6KzNtV9RE+WuczKGhtoQ4JL1IdbJWpDQrMfoj/M3qKbKsqqWkPxF?=
+ =?us-ascii?Q?696G1FT2rVla9tfrq4Qf5+Szlxxu7+yYdGIdk5sihIjEOF4J6QaDfsTSIQvr?=
+ =?us-ascii?Q?Nu0IALeXY7VF9SZqiep3sU3dmFP2spz8w66rIfhhGspC6epKTGj2CC5+lXeP?=
+ =?us-ascii?Q?19QV7w1ZwOpXfsMh0ydNmLNpBjxi7l+ydppM1F++OiIolzr8D9ucjZNYH2vP?=
+ =?us-ascii?Q?EH8FNHo+lJY1G5GNtd7bUBSCDiewgwuZXRxr2VsvBC9O81E8Qfjuyuz0bi8K?=
+ =?us-ascii?Q?K8ARuRlHAm7q2XN9S6qd6864agzeIhtjVJmkyyntx1b+U2kCYVoCIni+npRf?=
+ =?us-ascii?Q?Ze2X+/cqt35o2D3hK5VRhKKNhpulBxLeVtn674nhkzy4MC1BEvudVoNQ/gdP?=
+ =?us-ascii?Q?OkQG//hxTWyCxU/+OCIqeAwj59GF839hZEKNfVJ0wv3LoreZ051uNrct/Ilc?=
+ =?us-ascii?Q?QVEymjl/j35mQuvqnulj5/ojHHpxx94tb4ahasC2Y41MH1O9vpYhN7sBIKYz?=
+ =?us-ascii?Q?2obA6OhSKw9dmICIutqiclUagTMghyTjKgb9pJ8oClvl37+F2fnUxiqi28Bi?=
+ =?us-ascii?Q?UXSM+ratooDQM5I4E4JkR77GXJmF3FM26TlO+sCIblu0WVwmwGRkG/ruSaw2?=
+ =?us-ascii?Q?4e7BwBa/iFbpzRC8scSZE440MmQJ6U/Svi4gmHDY7P8FHX0ddCK8arcl+EVY?=
+ =?us-ascii?Q?Pz8O4mmYytRNFGrNiBsiaV0lKLBeK4YEMApo5Il/UCGMTaOeFhXjJPl36SVD?=
+ =?us-ascii?Q?xdwr5eazTNBbhvTZkgcht1ayPoXWyQIlXR5vKL+rnJciTqVwpMrv27PAyxMy?=
+ =?us-ascii?Q?HSqUwj96fg/O/++Gtv2crc+GtWZs7tsk+viSlReGEU3EJ3yjoRzR+0SXezep?=
+ =?us-ascii?Q?NquekR18JlZD1TuyqEu/sY7nOuyWBbYLm/kmX4GM2JV1QihIq0m1MtRmWJyQ?=
+ =?us-ascii?Q?V/g/eYHWB4jgo6rfDa5AT5JfUQlPVFla3i3PDDoT7MFQ2/LY/bQWGHqzj8K7?=
+ =?us-ascii?Q?zCoguJnIl0xiNyNuR5kHH+cmHWPW2kqEWjxZqWG/4EeFc6ZYMsyi6JFI7JqH?=
+ =?us-ascii?Q?bSiY0WczMRYFAi/M2LnMSdo7mPG09tzFuSdW935fdR6nGff6pNegKjw0UWM5?=
+ =?us-ascii?Q?rq68FeBDeU9zaye6iDvZL6szhHH946Cq1ZyGPLAzdhJQnP9+y+QUzxEZZEtB?=
+ =?us-ascii?Q?RPaxONnO7loUC48HDXwon2fmVY8mqbHbuc02Kb6THa5sdSXUV6P09V2VucbY?=
+ =?us-ascii?Q?bFYqaaaQqRHI1cYHTnyuCigoC/10E14EQ8BLRHxO+ho2EkWBQdFNlnPYykcs?=
+ =?us-ascii?Q?Cxh6bFPv5Y0MKR7/pny9vubQVaZpNdPBN6DX09Dym1oUhIOQ9U+bfzkx2bm9?=
+ =?us-ascii?Q?kR9VonGR/Gwzu6j02BqHvCSh3X8GRvmSFowBGYn0q9giDm8WhLTyHAlWA+Ch?=
+ =?us-ascii?Q?kUFa2b1PdQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260310153506.5181-1-fmancera@suse.de> <20260310153506.5181-2-fmancera@suse.de>
- <20260311200219.45796ec4@kernel.org> <aebac89f-f3b9-4983-8139-353a3ff19c98@suse.de>
-In-Reply-To: <aebac89f-f3b9-4983-8139-353a3ff19c98@suse.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 12 Mar 2026 17:05:46 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWK0P+EEQXOQ8FMb7DYt-95dAmmbOjMhxCKHnvHRntojA@mail.gmail.com>
-X-Gm-Features: AaiRm51vTFby3MbWyu4EKyWe_lBoIWwNWM0L5hUj3OB8Sdn3mba4moA7Rj12Mh4
-Message-ID: <CAMuHMdWK0P+EEQXOQ8FMb7DYt-95dAmmbOjMhxCKHnvHRntojA@mail.gmail.com>
-Subject: Re: [PATCH 01/10 net-next v2] ipv6: convert CONFIG_IPV6 to built-in
- only and clean up Kconfigs
-To: Fernando Fernandez Mancera <fmancera@suse.de>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, rbm@suse.com, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-	Selvin Xavier <selvin.xavier@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
-	Simon Horman <horms@kernel.org>, Saurav Kashyap <skashyap@marvell.com>, 
-	Javed Hasan <jhasan@marvell.com>, 
-	"maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <GR-QLogic-Storage-Upstream@marvell.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Nilesh Javali <njavali@marvell.com>, 
-	Manish Rangankar <mrangankar@marvell.com>, Varun Prakash <varun@chelsio.com>, 
-	Alexander Aring <aahringo@redhat.com>, David Teigland <teigland@redhat.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
-	David Ahern <dsahern@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, 
-	Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, 
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, 
-	Jon Maloy <jmaloy@redhat.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
-	Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Eric Biggers <ebiggers@kernel.org>, Michal Simek <michal.simek@amd.com>, 
-	Luca Weiss <luca.weiss@fairphone.com>, Sven Peter <sven@kernel.org>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>, 
-	Kuan-Wei Chiu <visitorckw@gmail.com>, Ryota Sakamoto <sakamo.ryota@gmail.com>, 
-	Kir Chou <note351@hotmail.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Vikas Gupta <vikas.gupta@broadcom.com>, 
-	Bhargava Marreddy <bhargava.marreddy@broadcom.com>, 
-	Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>, =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, 
-	"open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>, 
-	"open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>, 
-	"open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <linux-scsi@vger.kernel.org>, 
-	"open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>, "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>, 
-	"open list:NETFILTER" <netfilter-devel@vger.kernel.org>, 
-	"open list:NETFILTER" <coreteam@netfilter.org>, 
-	"open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>, 
-	"open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>, 
-	"open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 569d2e6c-d74d-4d6f-0948-08de80554293
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2026 16:34:41.0181
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QjaWIX9En/OOjvNfn/4n6tfsJiS4ynWAi5aUHAk6ZYAQWZT0YOfayWahpBcq9zoT3ni1b5SVUSKBSR472A7+tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3057
+X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
+	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,suse.com,ziepe.ca,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,hansenpartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,hotmail.com,gondor.apana.org.au,blochl.de,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18119-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18120-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[linux-m68k.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,linux-rdma@vger.kernel.org];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCPT_COUNT_GT_50(0.00)[68];
-	R_DKIM_NA(0.00)[];
+	DKIM_TRACE(0.00)[microsoft.com:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[haiyangz@microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 3D7AF27550B
+X-Rspamd-Queue-Id: D24CB275B0C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Fernando,
 
-On Thu, 12 Mar 2026 at 16:12, Fernando Fernandez Mancera
-<fmancera@suse.de> wrote:
-> On 3/12/26 4:02 AM, Jakub Kicinski wrote:
-> > On Tue, 10 Mar 2026 16:34:24 +0100 Fernando Fernandez Mancera wrote:
-> >> Maintaining a modular IPv6 stack offers image size and memory savings
-> >> for specific setups, this benefit is outweighed by the architectural
-> >> burden it imposes on the subsystems on implementation and maintenance.
-> >> Therefore, drop it.
-> >>
-> >> Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
-> >> dependencies across the tree that explicitly checked for IPV6=m. In
-> >> addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
-> >> and MODULE_LICENSE().
-> >>
-> >> This is also replacing module_init() by device_initcall(). It is not
-> >> possible to use fs_initcall() as IPv4 does because that creates a race
-> >> condition on IPv6 addrconf.
-> >>
-> >> Finally, modify the default configs from CONFIG_IPV6=m to CONFIG_IPV6=y
-> >> except for m68k as according to the bloat-o-meter the image is
-> >> increasing by 330KB~ and that isn't acceptable. Instead, disable IPv6 on
-> >> this architecture by default. This is aligned with m68k RAM requirements
-> >> and recommendations [1].
+
+> -----Original Message-----
+> From: Simon Horman <horms@kernel.org>
+> Sent: Wednesday, March 11, 2026 1:59 PM
+> To: Haiyang Zhang <haiyangz@linux.microsoft.com>
+> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
+> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Wei Liu
+> <wei.liu@kernel.org>; Dexuan Cui <DECUI@microsoft.com>; Long Li
+> <longli@microsoft.com>; Andrew Lunn <andrew+netdev@lunn.ch>; David S.
+> Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub
+> Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Konstantin
+> Taranov <kotaranov@microsoft.com>; Erni Sri Satya Vennela
+> <ernis@linux.microsoft.com>; Dipayaan Roy
+> <dipayanroy@linux.microsoft.com>; Shradha Gupta
+> <shradhagupta@linux.microsoft.com>; Shiraz Saleem
+> <shirazsaleem@microsoft.com>; Kees Cook <kees@kernel.org>; Subbaraya
+> Sundeep <sbhatta@marvell.com>; Aditya Garg
+> <gargaditya@linux.microsoft.com>; Breno Leitao <leitao@debian.org>; linux=
+-
+> kernel@vger.kernel.org; linux-rdma@vger.kernel.org; Paul Rosswurm
+> <paulros@microsoft.com>
+> Subject: [EXTERNAL] Re: [PATCH net-next,V4, 3/3] net: mana: Add ethtool
+> counters for RX CQEs in coalesced type
+>=20
+> On Mon, Mar 09, 2026 at 02:20:45PM -0700, Haiyang Zhang wrote:
+> > From: Haiyang Zhang <haiyangz@microsoft.com>
 > >
-> > AI has spotted:
+> > For RX CQEs with type CQE_RX_COALESCED_4, to measure the coalescing
+> > efficiency, add counters to count how many contains 2, 3, 4 packets
+> > respectively.
+> > Also, add a counter for the error case of first packet with length =3D=
+=3D 0.
 > >
-> >> diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-> >> index 31d16cba9879..de088071dde4 100644
-> >> --- a/arch/m68k/configs/amiga_defconfig
-> >> +++ b/arch/m68k/configs/amiga_defconfig
-> >> @@ -64,7 +64,6 @@ CONFIG_NET_IPIP=m
-> >>   CONFIG_NET_IPGRE_DEMUX=m
-> >>   CONFIG_NET_IPGRE=m
-> >>   CONFIG_NET_IPVTI=m
-> >> -CONFIG_NET_FOU_IP_TUNNELS=y
-> >>   CONFIG_INET_AH=m
+> > Reviewed-by: Long Li <longli@microsoft.com>
+> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> > ---
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 21 ++++++++++++++++++-
+> >  .../ethernet/microsoft/mana/mana_ethtool.c    | 15 +++++++++++--
+> >  include/net/mana/mana.h                       |  9 +++++---
+> >  3 files changed, 39 insertions(+), 6 deletions(-)
 > >
-> > Is CONFIG_NET_FOU_IP_TUNNELS=y removed intentionally? This option
-> > provides FOU/GUE encapsulation for IP tunnels and has 'depends on
-> > NET_IPIP || NET_IPGRE || IPV6_SIT' as its Kconfig dependency. With IPv6
-> > disabled, IPV6_SIT becomes unavailable, but CONFIG_NET_IPIP=m and
-> > CONFIG_NET_IPGRE=m are both still present in the defconfig, so the
-> > dependency remains satisfiable.
-> >
-> > Since CONFIG_NET_FOU_IP_TUNNELS has no 'default y', removing it from the
-> > defconfig means FOU/GUE encapsulation for IP tunnels will be silently
-> > disabled by default on m68k. The commit message describes only disabling
-> > IPv6 on m68k, not removing IPv4 FOU tunnel support.
-> >
->
-> I noticed that when running
->
-> ./scripts/config --disable CONFIG_IPV6
->
-> for the m68k, the script was adding CONFIG_LWTUNNEL=y and CONFIG_NET_FOU=y.
->
-> CONFIG_LWTUNNEL was selected by multiple IPV6 features. I do not think
-> it makes sense to keep it for m68k given the information there is on
-> http://www.linux-m68k.org/faq/platinfo.html.
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > index fa30046dcd3d..85f7a56d0d90 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > @@ -2148,11 +2148,23 @@ static void mana_process_rx_cqe(struct mana_rxq
+> *rxq, struct mana_cq *cq,
+> >  		old_buf =3D NULL;
+> >  		pktlen =3D oob->ppi[i].pkt_len;
+> >  		if (pktlen =3D=3D 0) {
+> > -			if (i =3D=3D 0)
+> > +			/* Collect coalesced CQE count based on packets
+> processed.
+> > +			 * Coalesced CQEs have at least 2 packets, so index is i
+> - 2.
+> > +			 */
+> > +			if (i > 1) {
+> > +				u64_stats_update_begin(&rxq->stats.syncp);
+> > +				rxq->stats.coalesced_cqe[i - 2]++;
+> > +				u64_stats_update_end(&rxq->stats.syncp);
+> > +			} else if (i =3D=3D 0) {
+> > +				/* Error case stat */
+> > +				u64_stats_update_begin(&rxq->stats.syncp);
+> > +				rxq->stats.pkt_len0_err++;
+> > +				u64_stats_update_end(&rxq->stats.syncp);
+> >  				netdev_err_once(
+> >  					ndev,
+> >  					"RX pkt len=3D0, rq=3D%u, cq=3D%u,
+> rxobj=3D0x%llx\n",
+> >  					rxq->gdma_id, cq->gdma_id, rxq->rxobj);
+> > +			}
+> >  			break;
+>=20
+> Hi Haiyang Zhang,
+>=20
+> As there is a break here, can the accounting logic above be move out of
+> the
+> loop, and merged with the "Coalesced CQE with all 4 packets" accounting
+> logic that is already there?
+>=20
+> As is, accounting seems split between and slightly duplicated in two
+> locations.
 
-Dunno about lwtunnel...
+Will do.
 
-> CONFIG_NET_FOU was something IPV6_FOU required, probably it should be
-> just dropped from the config instead of explicitly turn it off as it
-> turns off FOU_IP_TUNNELS too. It will be selected by FOU_IP_TUNNELS too
-> anyway.
+Thanks,
+- Haiyang
 
-... but CONFIG_NET_FOU seems to be just a gatekeeping symbol
-for the tristate symbol IPV6_FOU, so FOU is still a module., which is good.
-
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
