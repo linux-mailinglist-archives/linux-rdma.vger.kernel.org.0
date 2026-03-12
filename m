@@ -1,212 +1,219 @@
-Return-Path: <linux-rdma+bounces-18075-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18076-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qF3hJ756sml/MwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18075-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:35:10 +0100
+	id QC2wBYp9smkcNAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18076-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:47:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E07226EFFA
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:35:10 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2067426F212
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 09:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3BDCE30675B2
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:35:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AAC893020985
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 08:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F483451BB;
-	Thu, 12 Mar 2026 08:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="UdvZpJSv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C891A38AC9C;
+	Thu, 12 Mar 2026 08:46:48 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1916934A767
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 08:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4418138B135
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 08:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773304501; cv=none; b=ulXcplcI4rwhEoHepeBDdvgk/YuELU9r2yk6f2oXcuN81OSbPgI4VNnQxQP+s/p5DzIlZwCPb8kQyouiP41b+UDoyBP+qkI9o/XgThrf8gQThpcxCwj7H14es9k7OtbCpzt2/Lv86/96MlyhlpJz/4E7OEeRwzZHOGp0YEoMUek=
+	t=1773305208; cv=none; b=bcsbohbumbzEwDfCVERoNWVkHBpzgS3YjF8FgRxsueZQiuLmbIn9pD7LBJtEbpLTn57s7SHCwxtriCZdb+P+LIgBAGxXCXH/P1PGDsx10yKVCOlNVlJPV+WIr/wqCCRbf784r1IjQexgSrzZvsAx4WmJeH5qahBBqdDVq6w1z+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773304501; c=relaxed/simple;
-	bh=HEFbmcFEHfAGcaqdN8AWPZHaVSbwHCyRRxbL06fN1Aw=;
+	s=arc-20240116; t=1773305208; c=relaxed/simple;
+	bh=/mZilDisdviIicDgh987PANEInYCM0ltIoHh+VCYsYw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qpZTBS+2zuc/+INBLI4F+FFXQ+FHHcBB0g+wsKH8SxYkCjTuiqtZcydiDQnIw939kVLdW75J7zbTM0UCkZ8tBCr9yn0aEWB8dNwsApejHRmzicBzUWMLJ2oEyQFECS/tWJm+nKjL6g7LjnGg6nTUOT8i6K/1yzmRrI8YsmDRAVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=UdvZpJSv; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-439c4a93841so521023f8f.1
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2026 01:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1773304495; x=1773909295; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G6aLENJtgw3KKH+EBlODshn2Ly+qSlwDf7sw9+i4eVY=;
-        b=UdvZpJSv/Gz1k9WN42TpPqqvHZL+RQwr245QXejc0Vs0ixuWIfzEZr/IfR7DUW8lXw
-         NsrV9oqjOasQaoz9bze1mZPvfPZSs20EFoDDUUDsew8j5K0zQm7LS1rreFG1N6G3+tLO
-         RMZQnsvuoTkIrU19l6j8v16cYS1o/2qr0kKtw3q99/bTpMzYMCfSJQS0tCIxb66YOhC8
-         T3WtwAvFjEZbr6QNs+p574v+OkM1ZQUC19HjymuyUeCOxzt2bgudC0MPygvJXWL8XQkv
-         JOSP63AIksJiYbW8TMh4yetGVre3NXn02g+lxDfD32r7KywrCPeXECI87/hWUOISc04g
-         I3jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773304495; x=1773909295;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G6aLENJtgw3KKH+EBlODshn2Ly+qSlwDf7sw9+i4eVY=;
-        b=h4QL/3SHrsli6CJfV/aaFSItubMYlrSqszyF4/0mZavGF0YvbHoqIe5chBuz+lEsI3
-         fASTTqAuBfyX5qdPQYyi60MafJCbvi/SSSCVxyiFi+bNrkQtsmtG95dNLFxdBGTzPEIw
-         i8Kel6BDtrPmXJwqEAau21TWbtEB17+7frqFF/o/VzIJw68cd2CFsr7O1HYxqURpYmpH
-         gv2h+ICZn/GM+fwb8TvT42tGFNOoWFp+/QvVYJy6l7UV+OCSfShAvXS46dWEkJxYur52
-         e+LsazrRrEKtR2JoVzwmifeMxVGGphaRB3weSk+aNduLAzBt50B4/Lo3A1/LrDCOObfh
-         S2yg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtrF45L+evMoMdZBDM8JhHYMUzdNp06eVKkkmMc0kDJNVOdwArPaSTJzyQ7jFnwmsRqgm9YV3B9NqR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxt+mbSRgPoyfgvx3CP1Cwdr1O7NmaRCY6Bm+4gEGW7AB3ShLUt
-	stF7CPobrNO7mHYbCFHHz33YDEvCdZTNESeO722iARWv3aUxWO8ppa3H/YqEXb+asCQ=
-X-Gm-Gg: ATEYQzwl48F1ek6KFUu41tMeYEEN0RR+qpJEobHjKLJQgRm7jl/sjQiT/JSyMnz0gGK
-	VOvRLOONNxdGl6VPnne05IGaMBVunWFLnhs4Dc2cqkbYQ87DSauP8YBM+Q2dYZJZoS7/FGPzFRb
-	iDUT/3+mMMw4NiyaVlxLDUD59/4t0xi8M2DPNltn/+KGy6BJ/ujSBREFwD7v/DP22s0dMQvK231
-	Oig2f48F30d6mlveU41mNRzJjrBaivG9zhFpqfA4BxrA1m9rjbys2weGtIqW9HEgU9HwV58UwWG
-	AdmhArYzWq7CjTA4TcnnKwBY2NienHBKAFh9KzuqFktEo6FxJJ+oNsfhuJ9lXPEbeAeQjscnYcb
-	NiQc0qR2MlE1hI09Qd4pxHeDZuxrWbthl9oF8frJv9uQDR8Ri8NgCIB9OcwRcKQgQHV4eJauZRp
-	ADieMsnPYKkMt9yOBh7mDRAtJiXxNnDNK22FLQY39WdA==
-X-Received: by 2002:a5d:584a:0:b0:439:ad2d:99f1 with SMTP id ffacd0b85a97d-439f843cd0dmr10192185f8f.54.1773304494998;
-        Thu, 12 Mar 2026 01:34:54 -0700 (PDT)
-Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439fe1affe9sm6406633f8f.15.2026.03.12.01.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2026 01:34:54 -0700 (PDT)
-Date: Thu, 12 Mar 2026 09:34:52 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Or Har-Toov <ohartoov@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Mark Bloch <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
-	Dragos Tatulea <dtatulea@nvidia.com>, Shay Drory <shayd@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
-	Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource support
-Message-ID: <go5wr5qa7wxe7i4kkcbmecomshpkesr26alq4qmlbpjr72hxgt@mpwq6eufylpn>
-References: <jssifysprwuafkinc3dguspngxmplrngqxvotp76vhvu4e5lp6@e7mdrjqc5rme>
- <20260304101522.09da1f58@kernel.org>
- <np44uzfn6jea56uht4yq4te5clapgj7pk6ygyvkl22wxumwnvt@nrpvzjqzxenq>
- <20260305063729.7e40775d@kernel.org>
- <ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
- <20260306120301.0ebe1ab2@kernel.org>
- <74dcd7c5-8a2b-49a7-a23c-174d17a61955@nvidia.com>
- <20260309133341.7e08b35d@kernel.org>
- <5de5103e-e2e4-4b72-9c3c-22847728fbb8@nvidia.com>
- <20260311145126.7dcca532@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kIgGiZT87HiqcqELI0uU09Uwt2pr6vwLPrprd1JduQ3OqiiU6vbu7Uk/sDh5T8AQj7fhZTe2BZV55ybxEDagifXFUuCkJbh2SNzeRAXXOyGP4A7ojY+cY5IkGLGpAaGRMc752ODABo5AuZI5iNar/KZTR+JlfYHyjXgy5JXskMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1w0bgR-0000cN-2D; Thu, 12 Mar 2026 09:46:19 +0100
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1w0bgN-004zeL-0D;
+	Thu, 12 Mar 2026 09:46:16 +0100
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1w0bgO-0000000FFGc-19Ts;
+	Thu, 12 Mar 2026 09:46:16 +0100
+Date: Thu, 12 Mar 2026 09:46:16 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Naveen Mamindlapalli <naveenm@marvell.com>,
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	Danielle Ratson <danieller@nvidia.com>,
+	Hariprasad Kelam <hkelam@marvell.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saeed Mahameed <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
+ definitions
+Message-ID: <abJ9WAOrOn5qFmwp@pengutronix.de>
+References: <20260310104743.907818-1-bjorn@kernel.org>
+ <20260310104743.907818-3-bjorn@kernel.org>
+ <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
+ <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
+ <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
+ <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
+ <20260311195052.1202174f@kernel.org>
+ <abJJY8whzSOB8O-X@pengutronix.de>
+ <ebab1d3e-8967-444b-be54-437e4dfe3c7e@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260311145126.7dcca532@kernel.org>
-X-Spamd-Result: default: False [0.34 / 15.00];
+In-Reply-To: <ebab1d3e-8967-444b-be54-437e4dfe3c7e@bootlin.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-rdma@vger.kernel.org
+X-Spamd-Result: default: False [0.04 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[kernel.org,lunn.ch,vger.kernel.org,davemloft.net,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,armlinux.org.uk];
+	TAGGED_FROM(0.00)[bounces-18076-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18075-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[pengutronix.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[resnulli-us.20230601.gappssmtp.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4E07226EFFA
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[o.rempel@pengutronix.de,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.999];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,pengutronix.de:mid,pengutronix.de:url]
+X-Rspamd-Queue-Id: 2067426F212
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Wed, Mar 11, 2026 at 10:51:26PM +0100, kuba@kernel.org wrote:
->On Wed, 11 Mar 2026 20:24:08 +0200 Or Har-Toov wrote:
->> For the dump-it command:
->> devlink resource show
->> pci/0000:03:00.0:
->> <resource>
->> pci/0000:03:00.0/196608:
->> <port-resource>
->> pci/0000:03:00.0/196609:
->> <port-resource>
->> pci/0000:03:00.1:
->> <resource>
->> pci/0000:03:00.1/262144:
->> <port-resource>
->> 
->> devlink resource show scope port
->> pci/0000:03:00.0/196608:
->> <port-resource>
->> pci/0000:03:00.0/196609:
->> <port-resource>
->> pci/0000:03:00.1/262144:
->> <port-resource>
->> 
->> devlink resource show scope dev
->> pci/0000:03:00.0:
->> <resource>
->> pci/0000:03:00.1:
->> <resource>
->
->LGTM
+On Thu, Mar 12, 2026 at 08:49:39AM +0100, Maxime Chevallier wrote:
+> 
+> 
+> On 12/03/2026 06:04, Oleksij Rempel wrote:
+> > On Wed, Mar 11, 2026 at 07:50:52PM -0700, Jakub Kicinski wrote:
+> >> On Wed, 11 Mar 2026 20:26:39 +0100 Andrew Lunn wrote:
+> >>>> For that we have what we need with phy_link_topology, as each PHY has
+> >>>> its index, we should be good to go in that regard hopefully :)  
+> >>>
+> >>> So depth would be local to a component? We could have two PHY
+> >>> components, each with a different index, and depth = 0?
+> >>>
+> >>> I _think_ Jakub's depth was more at a global level? But then it would
+> >>> need to be passed down as we do the enumeration.
+> >>
+> >> Oh, sorry, I responded without reading the whole discussion :)
+> >> No, I imagined the depth would be within a single component, 
+> >> so under control of a single driver (instance). The ordering
+> >> between components should be defined by PHY topology etc so
+> >> it's outside of the loopback config.
+> > 
+> > As for me, it is problematic to help the user to understand the datapath
+> > depth on a switch. For example:
+> > 
+> > CPU -- xMII --- MAC1 [loop] --- fabric --- MAC2 [loop] --- xMII -- PHY
+> >                                     \----- MACx [loop] ---
+> > 
+> > ... each port has two xMII loop configurations: towards the xMII or towards
+> > the fabric. From a driver perspective, a loop towards the xMII is
+> > "remote." However, from a system perspective, a "remote" loop on MAC1 is
+> > a local loop at depth=0, whereas a "local" loop on MAC2 is a local loop
+> > at depth=1.
+> 
+> What's important is to specify clearly in the documentation from which
+> end do we start, where representing the topology. From your scenario
+> here, each block is already well represented and exposed, and if we use
+> local depth definitions we should be fine ?
 
-I don't see the benefit of exposing the scope to the user to be honest.
-I mean, dump would show all, dump with "dev" handle would be used as a
-selector to dump only things related to "dev". What is the use case of
-this "scope" granularity?
+I guess my main problem is to imagine depth representation in two
+separate directions for the user. So, the kernel documentation should
+describe what is the starting point of view depending on the device
+type. For example:
+- PHY has typically xMII and MDI end points, so the loop towards the xMII
+  is the local loop and towards the MDI is the remote loop.
+- a switch/bridge has mutiple, application specific end points. So, we
+  have a starting point of view from the fabric. Every loop pointing from
+  the fabric towards the outside world of the switch is the remote loop,
+  independent on connection type (xMII or MDI).
 
+Correct?
 
->
->> For the do-it command:
->> devlink resource show pci/0000:03:00.0
->> pci/0000:03:00.0:
->> <resource>
->> pci/0000:03:00.0/196608:
->> <port-resource>
->> pci/0000:03:00.0/196609:
->> <port-resource>
->> 
->> devlink resource show pci/0000:03:00.0 scope port
->> pci/0000:03:00.0/196608:
->> <port-resource>
->> pci/0000:03:00.0/196609:
->> <port-resource>
->> 
->> devlink resource show pci/0000:03:00.0  scope dev
->> pci/0000:03:00.0:
->> <resource>
->
->Do we have to touch doit? Maybe we should let doit be what it is now
->and consider it legacy going forward? doit which is in fact a filtered
->dump is a bit of a mistake in the first place, from Netlink's
->perspective.
+> > Other example would be where we have a chain of components which are
+> > attached on the system in a unexpected direction, where the MDI
+> > interface is pointing towards the main CPU, so the remote loopbacks
+> > became to local loop.
+> 
+> I have a few of these types of setup on my desk, where 3 PHY devices are
+> daisy-chained, we don't support that for now. If we one day add support
+> for standalone PHYs acting as media converters, I expect we'll be able
+> to tell which end is pointing where, and let it up to the user to figure
+> out what "remote" and "local" means in that case.
+> 
+> > 
+> > One more issue is the test data generator location. The data generator
+> > is not always the CPU. We have HW generators located in components like
+> > PHYs or we may use external source (remote loopback).
+> 
+> There were discussions about PRBS, I think the same idea of "pinpointing
+> which block we want to use" can be applied for both loopback and
+> generation ?
 
-I don't think we should. If user wants doit, he is going to specify the
-object (dev/port). If user is interested only in things related to
-single device, he should do dump with selector (dev).
+Yes, the same apply for the counters. If we represent the data path as
+pipe with different components like loopbacks, PRBS, etc on different
+stages of the pipe, the same we have with counters. For example
+industrial or automotive PHYs have separate counters for xMII and MDI.
+A low depth loopback would not triggers some of counters.
 
-Let's make this simple.
+Since I do not wont push all of this right now, i suggest to use more
+abstract topology representation to make it easily extendable. 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
