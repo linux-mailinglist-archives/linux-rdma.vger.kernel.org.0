@@ -1,78 +1,66 @@
-Return-Path: <linux-rdma+bounces-18113-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18114-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qAH+AjrNsmlTPwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18113-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 15:27:06 +0100
+	id gH6tEnjMsmlTPwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18114-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 15:23:52 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E82927354F
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 15:27:05 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8295F27344B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 15:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E15AF3157956
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 14:20:17 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A5D2C302FBB0
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2026 14:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE1A36BCFB;
-	Thu, 12 Mar 2026 14:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3954A366DA5;
+	Thu, 12 Mar 2026 14:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l4l/C086"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k/liI36l"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2C534DCD9;
-	Thu, 12 Mar 2026 14:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA94347FD0;
+	Thu, 12 Mar 2026 14:22:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773325158; cv=none; b=QPaZTCRBNQMfUIm7WyY4GJ7/QEcIuNYlYqrIJBbi/G+VoXnLNAMUmTBndAtkKcMwggR6PvqTLeV6aoU4lbLK4B4XvY4A5xLz5jJ5i517NX4DDdTSzrcgrZvQ1DOSQTC38Tm1P0DwShHkX4EEmDn4uKdZ8Gr89aVOAFJ9b8xlRHo=
+	t=1773325349; cv=none; b=hm6IKJGyMNehLc4E0B21j1SkW9SJlRN7gs0xM6k4HPBIJlZyEOer4zXNHxq6enfy0WX2qzuUUcVxCP87Zc/XRRwIplDeNcanjxAvubEXg23sQ2L4LHnllIWVk5zHCmG/yEh9a0vKsytzbfVLj5/uMah6GEEuN3R5ulAe84v5e5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773325158; c=relaxed/simple;
-	bh=6h3zKnDlTMVm2UbvFLw0atWxFuDz3SlZDxNgMu4GaDc=;
+	s=arc-20240116; t=1773325349; c=relaxed/simple;
+	bh=0s/R2RrhccOYlnxsTjyWadJAfgJmb6s/tMtg79chIiY=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hUjlF1Owml+P1tmpNcsH1hLD5J1U7uzmYdXME9tUa+pE7T32AKx5RdQCMSNSSRBncgg6aJWZOlh/v12W/11QxD16PsnYC0tswz5eJ8olHvHId9+oezXoPmTQruNKb0jOn5avmuxVNyxpg9xt7EBX3JyaqB5ckiYxgtZNgYjMDSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l4l/C086; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25C39C19424;
-	Thu, 12 Mar 2026 14:19:17 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WbL64U8qRV773itJnk8nc7tgrRVdcZfsJnrkVYqXIhP8PcVrJ3V9frgrc33MGGPdynVELWdzhvE5Uz6rb4QFKTPvq2hjLswOSY4ydkCqd9I2XdM/8k9bIlbUQcHcG7e6yfp6KWw+YIZnXFRYSA9Wq3SR8cFTOWXSWhuW/zipH24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k/liI36l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8296C4CEF7;
+	Thu, 12 Mar 2026 14:22:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773325158;
-	bh=6h3zKnDlTMVm2UbvFLw0atWxFuDz3SlZDxNgMu4GaDc=;
+	s=k20201202; t=1773325348;
+	bh=0s/R2RrhccOYlnxsTjyWadJAfgJmb6s/tMtg79chIiY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=l4l/C086zILQkEVCakaW+fO8LQtTWR6rL2OkKJeOKSUCjiRuwJpf0oDBbBm6UJ76S
-	 lPzUs42gvssurLdoodaO3huvyoEhYk2Njb0gczJaqURIk8EUlUftEbRkE1tymHiukP
-	 O0eDMwx0JlX5OuBNDeAFw3mTRpFH56a13+DyKw+z99K6gCK9CajXPk+j/6e+tuD7iq
-	 o9aGWoTXTgrIsTmKDGCSdbx0DWBvXFHcWZmtqkkg/K0HPjig56VgWkKa6WBdsTQcbU
-	 S/3urzs9APxQUarYR9ccERWgjr+6CcxWd9EXFM7JrReJTOJCqZT+vi1QXuJpTjVC5u
-	 eEXcQjL1qmagw==
-Date: Thu, 12 Mar 2026 07:19:16 -0700
+	b=k/liI36lgaLsXZEiA6lSPz0FqJIIOVm0EjShKPuee6L1gKgZLDPSfcnngH+QdBZhT
+	 pu9LX8gcO6pNhnAIF/cdLh+7N13XLQdKOwggVpCikbxP7uRrg09oEWA8Fj41PR+2D4
+	 ZdyZRPvAXQd8mx50LPc0O1PNHfvCdQLLJLsh/zh+5M9MVDx7KJLsLNRLPZOhPDlkYD
+	 DzqFeu/XO+UFByPrgM2uNRnzkWxREafHNuSf07CXFazSmpb8CzvVC7/HZMb3QFRS2t
+	 yGwH69V+CmWEy1XM16qe8k+LsrYRBwlsF/qKBlg5BfpY2qvsI2lq5T16LthG3LNnwx
+	 PyrjBHDJGk6Rw==
+Date: Thu, 12 Mar 2026 07:22:26 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Or Har-Toov <ohartoov@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark
- Bloch <mbloch@nvidia.com>, Shuah Khan <shuah@kernel.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Gal Pressman <gal@nvidia.com>, Dragos
- Tatulea <dtatulea@nvidia.com>, Shay Drory <shayd@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net-next V3 00/10] devlink: add per-port resource
- support
-Message-ID: <20260312071916.6b759c3f@kernel.org>
-In-Reply-To: <go5wr5qa7wxe7i4kkcbmecomshpkesr26alq4qmlbpjr72hxgt@mpwq6eufylpn>
-References: <jssifysprwuafkinc3dguspngxmplrngqxvotp76vhvu4e5lp6@e7mdrjqc5rme>
-	<20260304101522.09da1f58@kernel.org>
-	<np44uzfn6jea56uht4yq4te5clapgj7pk6ygyvkl22wxumwnvt@nrpvzjqzxenq>
-	<20260305063729.7e40775d@kernel.org>
-	<ni23r4jiwgc6zjjsubtl4ujjgxzwpxrylumofdwxgozfnieynm@zirlbneaz6p2>
-	<20260306120301.0ebe1ab2@kernel.org>
-	<74dcd7c5-8a2b-49a7-a23c-174d17a61955@nvidia.com>
-	<20260309133341.7e08b35d@kernel.org>
-	<5de5103e-e2e4-4b72-9c3c-22847728fbb8@nvidia.com>
-	<20260311145126.7dcca532@kernel.org>
-	<go5wr5qa7wxe7i4kkcbmecomshpkesr26alq4qmlbpjr72hxgt@mpwq6eufylpn>
+To: Gal Pressman <gal@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Saeed Mahameed
+ <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>, Dragos
+ Tatulea <dtatulea@nvidia.com>
+Subject: Re: [PATCH net-next V2 3/5] net/mlx5e: Report TX csum netdev stats
+Message-ID: <20260312072226.7d77b38e@kernel.org>
+In-Reply-To: <ec3a32e5-f866-4cb8-bbef-1bce699c461b@nvidia.com>
+References: <20260309095519.1854805-1-tariqt@nvidia.com>
+	<20260309095519.1854805-4-tariqt@nvidia.com>
+	<20260310201852.0d5d1712@kernel.org>
+	<ec3a32e5-f866-4cb8-bbef-1bce699c461b@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -86,84 +74,44 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18113-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18114-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,lwn.net,kernel.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8E82927354F
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8295F27344B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 12 Mar 2026 09:34:52 +0100 Jiri Pirko wrote:
-> >> devlink resource show scope dev
-> >> pci/0000:03:00.0:
-> >> <resource>
-> >> pci/0000:03:00.1:
-> >> <resource>  
-> >
-> >LGTM  
+On Thu, 12 Mar 2026 11:50:10 +0200 Gal Pressman wrote:
+> > Looking at drivers currently implementing this it seems like the idea
+> > was to avoid having to increment two counters in the drivers, given
+> > that TSO always implies csum offload  
 > 
-> I don't see the benefit of exposing the scope to the user to be honest.
-> I mean, dump would show all, dump with "dev" handle would be used as a
-> selector to dump only things related to "dev". What is the use case of
-> this "scope" granularity?
+> I don't think I understand what you're trying to say here.
 
-If we follow the logic that dump should show the user relevant
-resources, no matter which sub-object they are attached to -
-having a dev specified should only filter the objects to match
-the dev, including resources which are on ports of that dev.
+The existing drivers seem to do something like:
 
-IDK if there's a strong use case for allowing the user to set
-scope on CLI but also - I don't see why not?
+	tx->needs_csum += just_csum + tso_segs;
 
-> >> For the do-it command:
-> >> devlink resource show pci/0000:03:00.0
-> >> pci/0000:03:00.0:
-> >> <resource>
-> >> pci/0000:03:00.0/196608:
-> >> <port-resource>
-> >> pci/0000:03:00.0/196609:
-> >> <port-resource>
-> >> 
-> >> devlink resource show pci/0000:03:00.0 scope port
-> >> pci/0000:03:00.0/196608:
-> >> <port-resource>
-> >> pci/0000:03:00.0/196609:
-> >> <port-resource>
-> >> 
-> >> devlink resource show pci/0000:03:00.0  scope dev
-> >> pci/0000:03:00.0:
-> >> <resource>  
-> >
-> >Do we have to touch doit? Maybe we should let doit be what it is now
-> >and consider it legacy going forward? doit which is in fact a filtered
-> >dump is a bit of a mistake in the first place, from Netlink's
-> >perspective.  
-> 
-> I don't think we should. If user wants doit, he is going to specify the
-> object (dev/port). If user is interested only in things related to
-> single device, he should do dump with selector (dev).
-
-Could you confirm that you're agreeing that we should leave doit as is?
-I'm not 100% sure after reading this twice :)
+IOW for packets that need tso/uso they don't increment any csum stat 
+on the fastpath.
 
