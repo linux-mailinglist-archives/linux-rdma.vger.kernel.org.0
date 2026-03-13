@@ -1,194 +1,134 @@
-Return-Path: <linux-rdma+bounces-18152-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18153-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OCcxH3phtGmhmwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18152-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 20:11:54 +0100
+	id KHHaGJJotGnxnQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18153-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 20:42:10 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1563289283
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 20:11:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B18CB2895FA
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 20:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D403831D4C4E
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 19:11:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 69D38319273C
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 19:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8511A3DA7F6;
-	Fri, 13 Mar 2026 19:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F7B36C5A2;
+	Fri, 13 Mar 2026 19:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kvXBlKTh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oIOqnpic"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456563AB280;
-	Fri, 13 Mar 2026 19:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED05426CE05;
+	Fri, 13 Mar 2026 19:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773429075; cv=none; b=GX5/1MthfVJ5d7DIBHNc3drAVR1MKEjRq50jmtaqxKBjEsX+OtfR8s2JYTG5fIVKyFVzc8dHzi90wJYhot/f5TW+M4wy2lc5L0AOSVx1RNG/4ZPPl8TnDWHURLKF/ZHuiMIwpV7Tk8kZuAqD4cMkcfRop87rC5vIeTbyZeeDVxs=
+	t=1773430925; cv=none; b=gn2GUyMvRsG30CmpiUfoTFA6q85QwH7i4dWQjoMOa6LTx/3bkmoPn6eSR4VInmc4XvixKs2fQguU6uVVCTHeUfXxJ9C+y/61TICT9M7XE7G068qRzlsGgjkMu1RtYczLvhVV1FslQPsWFdqmqqv9XHv9kWzJ/aHilArjEwuJM9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773429075; c=relaxed/simple;
-	bh=doYwiQkJo973h+xP370H4wFzfMyN2oKUIPL/Gy0lfC8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=sLWOk1YuYgexahQozWD7T4Rh0YL7I9ev0nzMnYJK+kliPHvuiaDcz18+cBFEzEVG4qpDkuMu83a/kAVCNatTQe8aNowH80cbgC8lQQ58W+5DOA+Ody00dBxOx1MKBxJI7A/7AONWZ6sik4+oRWBsjhCXKdxVd16z/vwZ7Xg6vMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kvXBlKTh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 369EFC19421;
-	Fri, 13 Mar 2026 19:11:14 +0000 (UTC)
+	s=arc-20240116; t=1773430925; c=relaxed/simple;
+	bh=B+tBDeIq1ucND5RdTgJ0CmmB32Gi1eYZUWFiAQWHNPg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BepTj71LdI4mOIDgxqOS1jq/1FjB7dU1M+Ou0aYaJNPcZUjSdArG+AaXRPi3qBMBSHrk7jt9mPaOW2VaWjZYCASIYkxvfXNv/cX3tGTRTNsPUtt87qiY9lTHqK5Is9z9pv5z/o28qL+erbv/UlH+O3ZTgf4gCKYaqCHwljKt0RY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oIOqnpic; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D5A6C19421;
+	Fri, 13 Mar 2026 19:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773429074;
-	bh=doYwiQkJo973h+xP370H4wFzfMyN2oKUIPL/Gy0lfC8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=kvXBlKThy2c6q4ru8fzGHaRg0j7zHgAOkMQPYjm1U4YXbfPJOqnLYDzOQnrEuSrHz
-	 SFAiLguTQLD+i+0TD7r7J0WXDJOFNP6IaKJLw0fnZUjJy1Q5hg2Qb9skgONKkcN13L
-	 nXoYvu0y6KbM/NRKymswZ6aFbrofpzzfU6kJwO5BFlw0n96fVx98cXrjumVNJ1OlwT
-	 47Ffn5vqxsQ3/yLDt3zFleJvpjUAV2jcD/RVWI9XbnqJPwotK86ayt/FRwpIX/CDRu
-	 mq2cmqCGv9Z4+gP6C00mtdCkYm1eBvQvh0skziQ0U5maXO3S4coyZH64kytubmRR3b
-	 0+ARNXoVlihcA==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>, Andrew Lunn
- <andrew@lunn.ch>, Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, "David S.
- Miller" <davem@davemloft.net>, Andrew Lunn <andrew+netdev@lunn.ch>, Donald
- Hunter <donald.hunter@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Naveen Mamindlapalli <naveenm@marvell.com>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Danielle Ratson
- <danieller@nvidia.com>, Hariprasad Kelam <hkelam@marvell.com>, Ido
- Schimmel <idosch@nvidia.com>, Kory Maincent <kory.maincent@bootlin.com>,
- Leon Romanovsky <leon@kernel.org>, Michael Chan
- <michael.chan@broadcom.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Saeed Mahameed <saeedm@nvidia.com>, Shuah Khan
- <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn
- <willemb@google.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-In-Reply-To: <42abf88e-4fbf-4966-9490-8315f118ddea@bootlin.com>
-References: <20260310104743.907818-1-bjorn@kernel.org>
- <20260310104743.907818-3-bjorn@kernel.org>
- <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
- <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
- <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
- <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
- <20260311195052.1202174f@kernel.org> <abJJY8whzSOB8O-X@pengutronix.de>
- <7c45ebf6-0cb2-4a4c-ac12-f4f9bb59c908@lunn.ch>
- <42abf88e-4fbf-4966-9490-8315f118ddea@bootlin.com>
-Date: Fri, 13 Mar 2026 20:11:11 +0100
-Message-ID: <873423y27k.fsf@all.your.base.are.belong.to.us>
+	s=k20201202; t=1773430924;
+	bh=B+tBDeIq1ucND5RdTgJ0CmmB32Gi1eYZUWFiAQWHNPg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=oIOqnpic+ILManY8GehCAZZy/zAZY/3O3NnCL9EENIdmdvr7S9+/qr+RtbD+/PbuP
+	 H4ITAje6MB9b6oEhAljjg73uZZdzLqOFAuvYWKgNZeJ5zTSEMq+T16UkA1IjinR6jB
+	 kItCjDVaFkBEKwf4bNAKYhOuiwBavy4PvxqPXYUiieftmj0BWsD6eiu4UyuHksMVzR
+	 jWfVSP9QNHWVeZYXGLX0gbaCbQRULYNzYpsjx8Nn+5AjhgSUuQ32rc1nnmwSy248Q1
+	 TALLecrqGq684QM3Lm7AvAQ6ygdRNUoAqlB9KB8Mu+dDMSlKY4/vv1veLcbkbiFO76
+	 0/r4iE9gKjabA==
+From: Chuck Lever <cel@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	NeilBrown <neilb@ownmail.net>,
+	Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <dai.ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>
+Cc: <linux-nfs@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH v3 0/4] RDMA/rw: Fix MR pool exhaustion in bvec RDMA READ path
+Date: Fri, 13 Mar 2026 15:41:57 -0400
+Message-ID: <20260313194201.5818-1-cel@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [0.01 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.67)[subject];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18152-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18153-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,bootlin.com,broadcom.com,armlinux.org.uk];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	FREEMAIL_TO(0.00)[kernel.org,lst.de,ownmail.net,redhat.com,oracle.com,talpey.com];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[all.your.base.are.belong.to.us:mid,bootlin.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E1563289283
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B18CB2895FA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Folks, thanks for the elaborate discussion (accidental complexity vs
-essential complexity comes to mind...)!
+From: Chuck Lever <chuck.lever@oracle.com>
 
-Maxime Chevallier <maxime.chevallier@bootlin.com> writes:
+This series now carries two MR exhaustion fixes and a proposal for
+using contiguous pages for RDMA Read sink buffers in svcrdma.
 
-> Hi Andrew,
->
->>> One more issue is the test data generator location. The data generator
->>> is not always the CPU. We have HW generators located in components like
->>> PHYs or we may use external source (remote loopback).
->>=20
->> At the moment, we don't have a Linux model for such generators. There
->> is interest in them, but nobody has actually stepped up and proposed
->> anything. I do see there is an intersect, we need to be able to
->> represent them in the topology, and know which way they are pointing,
->> but i don't think they have a direct influence on loopback.
->
-> If I'm following Oleksij, the idea would be to have on one side the
-> ability to "dump" the link topology with a finer granularity so that we
-> can see all the different blocks (pcs, pma, pmd, etc.), how they are
-> chained together and who's driving them (MAC, PHY (+ phy_index), module,
-> etc.), and on another side commands to configure loopback on them, with
-> the ability to also configure traffic generators in the future, gather
-> stats, etc.
->
-> Another can of worms for sure, and probably too much for what Bj=C3=B6rn =
-is
-> trying to achieve. It's hard to say if this is overkill or not, there's
-> interest in that for sure, but also quite a lot of work to do...
+Fixes for the MR exhaustion issues should go into 7.0-rc and stable,
+and the contiguous page patches can wait for the next merge window.
 
-It's great to have these discussion as input to the first (minimal!)
-series, so we can extend/build on it later.
+Base commit: v7.0-rc3
+---
+Changes since v2:
+- Fix similar exhaustion issue for SGL
+- Add patch that introduces svc_rqst_page_release
 
-If I try to make sense of the above discussions...
+Changes since v1:
+- Clarify code comments
+- Allocate contiguous pages for RDMA Read sink buffers
 
-Rough agreement on:
+Chuck Lever (4):
+  RDMA/rw: Fall back to direct SGE on MR pool exhaustion
+  RDMA/rw: Fix MR pool exhaustion in bvec RDMA READ path
+  SUNRPC: Add svc_rqst_page_release() helper
+  svcrdma: Use contiguous pages for RDMA Read sink buffers
 
- - Depth/ordering should be local to a component, not global across the
-   whole path.
- - Cross-component ordering comes from existing infrastructure (PHY link
-   topology, phy_index).
- - The current component set (MAC/PHY/MODULE) is reasonable for a first
-   pass.
- - HW traffic generators and full topology dumps are interesting but out
-   of scope for now (Please? ;-)).
+ drivers/infiniband/core/rw.c      |  43 ++++--
+ include/linux/sunrpc/svc.h        |  15 ++
+ net/sunrpc/svc.c                  |   7 +-
+ net/sunrpc/svcsock.c              |   2 +-
+ net/sunrpc/xprtrdma/svc_rdma_rw.c | 220 ++++++++++++++++++++++++++++++
+ 5 files changed, 268 insertions(+), 19 deletions(-)
 
+-- 
+2.53.0
 
-So, maybe the next steps are:
-
- 1. Keep the current component model (MAC/PHY/MODULE) and the
-    NEAR_END/FAR_END direction (naming need to change as Maxime said).
-=20
- 2. Add a depth (or order?) field to ETHTOOL_A_LOOPBACK_ENTRY as Jakub
-    suggested, local to each component instance. This addresses the
-    "multiple loopback points within one MAC" case without requiring a
-    global ordering. I hope it addresses what Oleksij's switch example
-    needs (multiple local loops at different depths within one
-    component) *insert that screaming emoji*.
-=20
- 3. Document the viewpoint convention clearly.
-=20
- 4. Punt on the grand topology dump. Too much to chew.
-=20
- 5. Don't worry about DSA CPU ports - they don't have a netif, so
-    loopback doesn't apply there today. If someone adds netifs for CPU
-    ports later, depth handles it.
-
-TL;DR: Add depth, document the viewpoint convention, and ship
-it^W^Winterate.
-
-Did I get that right?
-
-
-Enjoy the w/e!
-Bj=C3=B6rn
 
