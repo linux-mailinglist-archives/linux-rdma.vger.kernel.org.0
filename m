@@ -1,490 +1,206 @@
-Return-Path: <linux-rdma+bounces-18137-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18138-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4NvGMVt3s2mwWgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18137-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 03:32:59 +0100
+	id YN9QLljQs2ncbAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18138-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 09:52:40 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A528E27CCA1
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 03:32:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C7EA27FF85
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 09:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 0C7F7303AFEE
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 02:31:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3A5D9301F174
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 08:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514C8341062;
-	Fri, 13 Mar 2026 02:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD37387598;
+	Fri, 13 Mar 2026 08:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="okJB5fvF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dmQgJS4R"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E433385BC
-	for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2026 02:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E7C36DA10;
+	Fri, 13 Mar 2026 08:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773369090; cv=none; b=YehRBpFz1iuCt0uAmLe+oFU3jpI3i4z/SlDBwMKHxlk5c4YfRKHbeGsiyZC7y4xdcRx1EboRDIZN44/1emNfEh/8zwL0h6QkISuFd38C5eIJoDUZToYJ+LZaeM2PAf0hR2RPC7p2ajr+wXou3UavM1eCFghd8fLCo6FKUm86edU=
+	t=1773391947; cv=none; b=FS6SnOI6MRLD5SVlLJj7EcmdLeRZqExGPht4FGytwNjLKc5LNMfjhJ2ijRG++vZ2HjQhs+CcTp93deySBRWnRBvcn2oTJX2GA/txug47kE6ZbXdcoyg/AHz0ZpMMlJ5VVbcvzXrXNw4I2NGcyd2I3mhJPr8PsptDCIFSVomBP6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773369090; c=relaxed/simple;
-	bh=RdxgVfWxOb3cEIRp2as5BGXasld4xijXJAKk0IljJf8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i7fzStJkbnsRkk3ZQNLdfDArKeSlZAHn9uqtj8qZkbNPBcvwf3jOnR2X9CeQwL4hr3dtEzDBet9BxlnB3ncB2wgews3OYM6E2otn5MLs6UcrSG2czHkdQGMgeGwp7Up+D9614/i0ENX8PfdLfY7op1HhOTWT+xCvHdgN+xg+5J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=okJB5fvF; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773369086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jgjLv/aP4cmns8ANwSBzZkpjEyjj5ONPa7os313b8Vw=;
-	b=okJB5fvF0377bboxt7WVQfA7cT/e3hShOf0UF2mlISK8Y8bbCTNGeVKtDdVpqZ4z16KGAP
-	FVJc7z0XIFqAvfSzXHqzogTjDpnM/lLimoVXRUKNoCDIX1ERKu9Di2t3oQLX03Koe0VDfi
-	EASOfFrZ6KaKSSs4nWIGFixhl5PNLVk=
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: jgg@ziepe.ca,
-	leon@kernel.org,
-	zyjzyj2000@gmail.com,
-	yanjun.zhu@linux.dev,
-	dsahern@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v7 4/4] RDMA/rxe: Add testcase for net namespace rxe
-Date: Thu, 12 Mar 2026 19:30:58 -0700
-Message-ID: <20260313023058.13020-5-yanjun.zhu@linux.dev>
-In-Reply-To: <20260313023058.13020-1-yanjun.zhu@linux.dev>
-References: <20260313023058.13020-1-yanjun.zhu@linux.dev>
+	s=arc-20240116; t=1773391947; c=relaxed/simple;
+	bh=lZ3lBGbYmfesU6djG9QpJJr/DfqPJsN9/UjRCQexuZM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T2Mk24ClKpxZqjlmF2XxNPJbLTBY3D2qmA0+sELv2dx0xIe9UuxXIRDWus0Yxu6DcWkumzqSHcKCuRu2BRKlC2CZfJ8mOAEjnSl8Gwgd+M8NUzSQVCHCyH5t5XkQpc7sUkAP33x9zGLucrldO2lo6/0CvNp4V5zjMpFNuHL5cGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dmQgJS4R; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1773391941; x=1804927941;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lZ3lBGbYmfesU6djG9QpJJr/DfqPJsN9/UjRCQexuZM=;
+  b=dmQgJS4Rq2WUSBc6iXre7kT3g9JvZwkWFHLZMwKQSYQLnRRJxVuNCFWK
+   Tr9pL1CMmV4LU0s3/T1tRrZXjEL7Xj4/TL77rj0hQnHTv/0f1BZizqeno
+   T748IzxYRJNfIwwuIddcY5wQImsTJ3qt0dBOdWO4GdUzW3hgn+yDigEZO
+   QmibXImyi9eXY3541gFOc05H00Idrnr71/kVIpQI7i2Oz4Y7UJBsN+v2G
+   1JVYj7ZqRuz8TsWTYjibxxCHRNsSNKAaYD7xGHzgbamgTLdQynw9Lmac0
+   f8B9/vwYlGWLr4ysHBvG8WOT4cEztqkGrrhc8YAq9PcRmo6cW8pnYoB7K
+   w==;
+X-CSE-ConnectionGUID: DnCb5mT0R5moaLTwlGD+zg==
+X-CSE-MsgGUID: o30i6/TsQy+Yi4201He01g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11727"; a="77104866"
+X-IronPort-AV: E=Sophos;i="6.23,117,1770624000"; 
+   d="scan'208";a="77104866"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2026 01:52:19 -0700
+X-CSE-ConnectionGUID: ashUcFW0TQiqhBKTa0kdxQ==
+X-CSE-MsgGUID: cjHnzSbRQyK+lxmiMZsmiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,117,1770624000"; 
+   d="scan'208";a="220183772"
+Received: from igk-lkp-server01.igk.intel.com (HELO 9958d990ccf2) ([10.211.93.152])
+  by orviesa006.jf.intel.com with ESMTP; 13 Mar 2026 01:52:12 -0700
+Received: from kbuild by 9958d990ccf2 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1w0yFd-000000003dx-1idq;
+	Fri, 13 Mar 2026 08:52:09 +0000
+Date: Fri, 13 Mar 2026 09:51:23 +0100
+From: kernel test robot <lkp@intel.com>
+To: Chuck Lever <cel@kernel.org>, NeilBrown <neilb@ownmail.net>,
+	Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc: oe-kbuild-all@lists.linux.dev, linux-nfs@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v2 2/2] svcrdma: Use contiguous pages for RDMA Read sink
+ buffers
+Message-ID: <202603130922.uCz0Ofwx-lkp@intel.com>
+References: <20260312134008.7387-3-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260312134008.7387-3-cel@kernel.org>
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,gmail.com,linux.dev,vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18137-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-18138-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[kernel.org,ownmail.net,redhat.com,oracle.com,talpey.com,lst.de];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,bluecherrydvr.com:email,rxe_rping_between_netns.sh:url,rxe_test_netdev_unregister.sh:url,rxe_ipv6.sh:url]
-X-Rspamd-Queue-Id: A528E27CCA1
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,intel.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,01.org:url,git-scm.com:url]
+X-Rspamd-Queue-Id: 3C7EA27FF85
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Add 4 testcases for rxe with net namespace.
+Hi Chuck,
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- MAINTAINERS                                   |  2 +
- tools/testing/selftests/Makefile              |  1 +
- tools/testing/selftests/rdma/Makefile         |  7 ++
- tools/testing/selftests/rdma/config           |  3 +
- tools/testing/selftests/rdma/rxe_ipv6.sh      | 63 ++++++++++++++
- .../selftests/rdma/rxe_rping_between_netns.sh | 85 +++++++++++++++++++
- .../selftests/rdma/rxe_socket_with_netns.sh   | 76 +++++++++++++++++
- .../rdma/rxe_test_NETDEV_UNREGISTER.sh        | 63 ++++++++++++++
- 8 files changed, 300 insertions(+)
- create mode 100644 tools/testing/selftests/rdma/Makefile
- create mode 100644 tools/testing/selftests/rdma/config
- create mode 100755 tools/testing/selftests/rdma/rxe_ipv6.sh
- create mode 100755 tools/testing/selftests/rdma/rxe_rping_between_netns.sh
- create mode 100755 tools/testing/selftests/rdma/rxe_socket_with_netns.sh
- create mode 100755 tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+kernel test robot noticed the following build errors:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 837db4f7bcca..07b341831f16 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12551,6 +12551,7 @@ F:	include/uapi/linux/if_infiniband.h
- F:	include/uapi/rdma/
- F:	samples/bpf/ibumad_kern.c
- F:	samples/bpf/ibumad_user.c
-+F:	tools/testing/selftests/rdma/
- 
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
-@@ -24503,6 +24504,7 @@ L:	linux-rdma@vger.kernel.org
- S:	Supported
- F:	drivers/infiniband/sw/rxe/
- F:	include/uapi/rdma/rdma_user_rxe.h
-+F:	tools/testing/selftests/rdma/rxe*
- 
- SOFTLOGIC 6x10 MPEG CODEC
- M:	Bluecherry Maintainers <maintainers@bluecherrydvr.com>
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 450f13ba4cca..110e07c0d99d 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -94,6 +94,7 @@ TARGETS += proc
- TARGETS += pstore
- TARGETS += ptrace
- TARGETS += openat2
-+TARGETS += rdma
- TARGETS += resctrl
- TARGETS += riscv
- TARGETS += rlimits
-diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
-new file mode 100644
-index 000000000000..7dd7cba7a73c
---- /dev/null
-+++ b/tools/testing/selftests/rdma/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+TEST_PROGS := rxe_rping_between_netns.sh \
-+		rxe_ipv6.sh \
-+		rxe_socket_with_netns.sh \
-+		rxe_test_NETDEV_UNREGISTER.sh
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
-new file mode 100644
-index 000000000000..4ffb814e253b
---- /dev/null
-+++ b/tools/testing/selftests/rdma/config
-@@ -0,0 +1,3 @@
-+CONFIG_TUN
-+CONFIG_VETH
-+CONFIG_RDMA_RXE
-diff --git a/tools/testing/selftests/rdma/rxe_ipv6.sh b/tools/testing/selftests/rdma/rxe_ipv6.sh
-new file mode 100755
-index 000000000000..b7059bfd6d7c
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rxe_ipv6.sh
-@@ -0,0 +1,63 @@
-+#!/bin/bash
-+
-+# Configuration
-+NS_NAME="net6"
-+VETH_HOST="veth0"
-+VETH_NS="veth1"
-+RXE_NAME="rxe6"
-+PORT=4791
-+IP6_ADDR="2001:db8::1/64"
-+
-+exec > /dev/null
-+
-+# Cleanup function to run on exit (even on failure)
-+cleanup() {
-+    ip netns del "$NS_NAME" 2>/dev/null
-+    modprobe -r rdma_rxe 2>/dev/null
-+    echo "Done."
-+}
-+trap cleanup EXIT
-+
-+# 1. Prerequisites check
-+for mod in tun veth rdma_rxe; do
-+    if ! modinfo "$mod" >/dev/null 2>&1; then
-+        echo "Error: Kernel module '$mod' not found."
-+        exit 1
-+    fi
-+done
-+
-+modprobe rdma_rxe
-+
-+# 2. Setup Namespace and Networking
-+echo "Setting up IPv6 network namespace..."
-+ip netns add "$NS_NAME"
-+ip link add "$VETH_HOST" type veth peer name "$VETH_NS"
-+ip link set "$VETH_NS" netns "$NS_NAME"
-+ip netns exec "$NS_NAME" ip addr add "$IP6_ADDR" dev "$VETH_NS"
-+ip netns exec "$NS_NAME" ip link set "$VETH_NS" up
-+ip link set "$VETH_HOST" up
-+
-+# 3. Add RDMA Link
-+echo "Adding RDMA RXE link..."
-+if ! ip netns exec "$NS_NAME" rdma link add "$RXE_NAME" type rxe netdev "$VETH_NS"; then
-+    echo "Error: Failed to create RXE link."
-+    exit 1
-+fi
-+
-+# 4. Verification: Port should be listening
-+# Using -H to skip headers and -q for quiet exit codes
-+if ! ip netns exec "$NS_NAME" ss -Hul6n sport = :$PORT | grep -q ":$PORT"; then
-+    echo "Error: UDP port $PORT is NOT listening after link creation."
-+    exit 1
-+fi
-+echo "Verified: Port $PORT is active."
-+
-+# 5. Removal and Verification
-+echo "Deleting RDMA link..."
-+ip netns exec "$NS_NAME" rdma link del "$RXE_NAME"
-+
-+if ip netns exec "$NS_NAME" ss -Hul6n sport = :$PORT | grep -q ":$PORT"; then
-+    echo "Error: UDP port $PORT still active after link deletion."
-+    exit 1
-+fi
-+echo "Verified: Port $PORT closed successfully."
-diff --git a/tools/testing/selftests/rdma/rxe_rping_between_netns.sh b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
-new file mode 100755
-index 000000000000..e5b876f58c6e
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
-@@ -0,0 +1,85 @@
-+#!/bin/bash
-+
-+# Configuration
-+NS="test1"
-+VETH_A="veth-a"
-+VETH_B="veth-b"
-+IP_A="1.1.1.1"
-+IP_B="1.1.1.2"
-+PORT=4791
-+
-+exec > /dev/null
-+
-+# --- Cleanup Routine ---
-+cleanup() {
-+    echo "Cleaning up resources..."
-+    rdma link del rxe1 2>/dev/null
-+    ip netns exec "$NS" rdma link del rxe0 2>/dev/null
-+    ip link delete "$VETH_B" 2>/dev/null
-+    ip netns del "$NS" 2>/dev/null
-+    modprobe -r rdma_rxe 2>/dev/null
-+}
-+trap cleanup EXIT
-+
-+# --- Prerequisite Checks ---
-+if [[ $EUID -ne 0 ]]; then
-+   echo "This script must be run as root"
-+   exit 1
-+fi
-+
-+modprobe rdma_rxe || { echo "Failed to load rdma_rxe"; exit 1; }
-+
-+# --- Setup Network Topology ---
-+echo "Setting up network namespace and veth pair..."
-+ip netns add "$NS"
-+ip link add "$VETH_A" type veth peer name "$VETH_B"
-+ip link set "$VETH_A" netns "$NS"
-+
-+# Configure Namespace side (test1)
-+ip netns exec "$NS" ip addr add "$IP_A/24" dev "$VETH_A"
-+ip netns exec "$NS" ip link set "$VETH_A" up
-+ip netns exec "$NS" ip link set lo up
-+
-+# Configure Host side
-+ip addr add "$IP_B/24" dev "$VETH_B"
-+ip link set "$VETH_B" up
-+
-+# --- RXE Link Creation ---
-+echo "Creating RDMA links..."
-+ip netns exec "$NS" rdma link add rxe0 type rxe netdev "$VETH_A"
-+rdma link add rxe1 type rxe netdev "$VETH_B"
-+
-+# Verify UDP 4791 is listening
-+check_port() {
-+    local target=$1 # "host" or "ns"
-+    if [ "$target" == "ns" ]; then
-+        ip netns exec "$NS" ss -Huln sport == :$PORT | grep -q ":$PORT"
-+    else
-+        ss -Huln sport == :$PORT | grep -q ":$PORT"
-+    fi
-+}
-+
-+check_port "ns" || { echo "Error: RXE port not listening in namespace"; exit 1; }
-+check_port "host" || { echo "Error: RXE port not listening on host"; exit 1; }
-+
-+# --- Connectivity Test ---
-+echo "Testing connectivity with rping..."
-+ping -c 2 -W 1 "$IP_A" > /dev/null || { echo "Ping failed"; exit 1; }
-+
-+# Start rping server in background
-+ip netns exec "$NS" rping -s -a "$IP_A" -v > /dev/null 2>&1 &
-+RPING_PID=$!
-+sleep 1 # Allow server to bind
-+
-+# Run rping client
-+rping -c -a "$IP_A" -d -v -C 3
-+RESULT=$?
-+
-+kill $RPING_PID 2>/dev/null
-+
-+if [ $RESULT -eq 0 ]; then
-+    echo "SUCCESS: RDMA traffic verified."
-+else
-+    echo "FAILURE: rping failed."
-+    exit 1
-+fi
-diff --git a/tools/testing/selftests/rdma/rxe_socket_with_netns.sh b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
-new file mode 100755
-index 000000000000..002e5098f751
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
-@@ -0,0 +1,76 @@
-+#!/bin/bash
-+
-+# Configuration
-+PORT=4791
-+MODS=("tun" "rdma_rxe")
-+
-+exec > /dev/null
-+
-+# --- Helper: Cleanup Routine ---
-+cleanup() {
-+    echo "Cleaning up resources..."
-+    rdma link del rxe1 2>/dev/null
-+    rdma link del rxe0 2>/dev/null
-+    ip link del tun0 2>/dev/null
-+    ip link del tun1 2>/dev/null
-+    for m in "${MODS[@]}"; do modprobe -r "$m" 2>/dev/null; done
-+}
-+
-+# Ensure cleanup runs on script exit or interrupt
-+trap cleanup EXIT
-+
-+# --- Phase 1: Environment Check ---
-+if [[ $EUID -ne 0 ]]; then
-+   echo "Error: This script must be run as root."
-+   exit 1
-+fi
-+
-+for m in "${MODS[@]}"; do
-+    modprobe "$m" || { echo "Error: Failed to load $m"; exit 1; }
-+done
-+
-+# --- Phase 2: Create Interfaces & RXE Links ---
-+echo "Creating tun0 (1.1.1.1) and rxe0..."
-+ip tuntap add mode tun tun0
-+ip addr add 1.1.1.1/24 dev tun0
-+ip link set tun0 up
-+rdma link add rxe0 type rxe netdev tun0
-+
-+# Verify port 4791 is listening
-+if ! ss -Huln sport = :$PORT | grep -q ":$PORT"; then
-+    echo "Error: UDP port $PORT not found after rxe0 creation"
-+    exit 1
-+fi
-+
-+echo "Creating tun1 (2.2.2.2) and rxe1..."
-+ip tuntap add mode tun tun1
-+ip addr add 2.2.2.2/24 dev tun1
-+ip link set tun1 up
-+rdma link add rxe1 type rxe netdev tun1
-+
-+# Verify port 4791 is still listening
-+if ! ss -Huln sport = :$PORT | grep -q ":$PORT"; then
-+    echo "Error: UDP port $PORT missing after rxe1 creation"
-+    exit 1
-+fi
-+
-+# --- Phase 3: Targeted Deletion ---
-+echo "Deleting rxe1..."
-+rdma link del rxe1
-+
-+# Port should still be active because rxe0 is still alive
-+if ! ss -Huln sport = :$PORT | grep -q ":$PORT"; then
-+    echo "Error: UDP port $PORT closed prematurely"
-+    exit 1
-+fi
-+
-+echo "Deleting rxe0..."
-+rdma link del rxe0
-+
-+# Port should now be gone
-+if ss -Huln sport = :$PORT | grep -q ":$PORT"; then
-+    echo "Error: UDP port $PORT still exists after all links deleted"
-+    exit 1
-+fi
-+
-+echo "Test passed successfully."
-diff --git a/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
-new file mode 100755
-index 000000000000..021ca451499d
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
-@@ -0,0 +1,63 @@
-+#!/bin/bash
-+
-+# Configuration
-+DEV_NAME="tun0"
-+RXE_NAME="rxe0"
-+RDMA_PORT=4791
-+
-+exec > /dev/null
-+
-+# --- Cleanup Routine ---
-+# Ensures environment is clean even if the script hits an error
-+cleanup() {
-+    echo "Performing cleanup..."
-+    rdma link del $RXE_NAME 2>/dev/null
-+    ip link del $DEV_NAME 2>/dev/null
-+    modprobe -r rdma_rxe 2>/dev/null
-+}
-+trap cleanup EXIT
-+
-+# 1. Dependency Check
-+if ! modinfo rdma_rxe >/dev/null 2>&1; then
-+    echo "Error: rdma_rxe module not found."
-+    exit 1
-+fi
-+
-+modprobe rdma_rxe
-+
-+# 2. Setup TUN Device
-+echo "Creating $DEV_NAME..."
-+ip tuntap add mode tun "$DEV_NAME"
-+ip addr add 1.1.1.1/24 dev "$DEV_NAME"
-+ip link set "$DEV_NAME" up
-+
-+# 3. Attach RXE Link
-+echo "Attaching RXE link $RXE_NAME to $DEV_NAME..."
-+rdma link add "$RXE_NAME" type rxe netdev "$DEV_NAME"
-+
-+# 4. Verification: Port Check
-+# Use -H (no header) and -q (quiet) for cleaner scripting logic
-+if ! ss -Huln sport == :$RDMA_PORT | grep -q ":$RDMA_PORT"; then
-+    echo "Error: UDP port $RDMA_PORT is not listening."
-+    exit 1
-+fi
-+echo "Verified: RXE is listening on UDP $RDMA_PORT."
-+
-+# 5. Trigger NETDEV_UNREGISTER
-+# We delete the underlying device without deleting the RDMA link first.
-+echo "Triggering NETDEV_UNREGISTER by deleting $DEV_NAME..."
-+ip link del "$DEV_NAME"
-+
-+# 6. Final Verification
-+# The RXE link and the UDP port should be automatically cleaned up by the kernel.
-+if rdma link show "$RXE_NAME" 2>/dev/null; then
-+    echo "Error: $RXE_NAME still exists after netdev removal."
-+    exit 1
-+fi
-+
-+if ss -Huln sport == :$RDMA_PORT | grep -q ":$RDMA_PORT"; then
-+    echo "Error: UDP port $RDMA_PORT still listening after netdev removal."
-+    exit 1
-+fi
-+
-+echo "Success: NETDEV_UNREGISTER handled correctly."
+[auto build test ERROR on v7.0-rc1]
+[also build test ERROR on next-20260312]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chuck-Lever/RDMA-rw-Fix-MR-pool-exhaustion-in-bvec-RDMA-READ-path/20260313-085521
+base:   v7.0-rc1
+patch link:    https://lore.kernel.org/r/20260312134008.7387-3-cel%40kernel.org
+patch subject: [PATCH v2 2/2] svcrdma: Use contiguous pages for RDMA Read sink buffers
+config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20260313/202603130922.uCz0Ofwx-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260313/202603130922.uCz0Ofwx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202603130922.uCz0Ofwx-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   net/sunrpc/xprtrdma/svc_rdma_rw.c: In function 'svc_rdma_fill_contig_bvec':
+>> net/sunrpc/xprtrdma/svc_rdma_rw.c:813:17: error: implicit declaration of function 'svc_rqst_page_release'; did you mean 'svc_rdma_cc_release'? [-Wimplicit-function-declaration]
+     813 |                 svc_rqst_page_release(rqstp,
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+         |                 svc_rdma_cc_release
+
+
+vim +813 net/sunrpc/xprtrdma/svc_rdma_rw.c
+
+   779	
+   780	/*
+   781	 * svc_rdma_fill_contig_bvec - Replace rq_pages with a contiguous allocation
+   782	 * @rqstp: RPC transaction context
+   783	 * @head: context for ongoing I/O
+   784	 * @bv: bvec entry to fill
+   785	 * @pages_left: number of data pages remaining in the segment
+   786	 * @len_left: bytes remaining in the segment
+   787	 *
+   788	 * On success, fills @bv with a bvec spanning the contiguous range and
+   789	 * advances rc_curpage/rc_page_count. Returns the byte length covered,
+   790	 * or zero if the allocation failed or would overrun rq_maxpages.
+   791	 */
+   792	static unsigned int
+   793	svc_rdma_fill_contig_bvec(struct svc_rqst *rqstp,
+   794				  struct svc_rdma_recv_ctxt *head,
+   795				  struct bio_vec *bv, unsigned int pages_left,
+   796				  unsigned int len_left)
+   797	{
+   798		unsigned int order, alloc_nr, chunk_pages, chunk_len, i;
+   799		struct page *page;
+   800	
+   801		page = svc_rdma_alloc_read_pages(pages_left, &order);
+   802		if (!page)
+   803			return 0;
+   804		alloc_nr = 1 << order;
+   805	
+   806		if (head->rc_curpage + alloc_nr > rqstp->rq_maxpages) {
+   807			for (i = 0; i < alloc_nr; i++)
+   808				__free_page(page + i);
+   809			return 0;
+   810		}
+   811	
+   812		for (i = 0; i < alloc_nr; i++) {
+ > 813			svc_rqst_page_release(rqstp,
+   814					      rqstp->rq_pages[head->rc_curpage + i]);
+   815			rqstp->rq_pages[head->rc_curpage + i] = page + i;
+   816		}
+   817	
+   818		chunk_pages = min(alloc_nr, pages_left);
+   819		chunk_len = min_t(unsigned int, chunk_pages << PAGE_SHIFT, len_left);
+   820		bvec_set_page(bv, page, chunk_len, 0);
+   821		head->rc_page_count += chunk_pages;
+   822		head->rc_curpage += chunk_pages;
+   823		return chunk_len;
+   824	}
+   825	
+
 -- 
-2.52.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
