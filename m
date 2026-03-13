@@ -1,174 +1,206 @@
-Return-Path: <linux-rdma+bounces-18144-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18145-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uBzONCoxtGmuigAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18144-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 16:45:46 +0100
+	id CN3fEjg9tGmDjQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18145-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 17:37:12 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39E68286482
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 16:45:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D917828726A
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 17:37:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 338043097E9C
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 15:41:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 63141305C31B
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 16:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0273BD634;
-	Fri, 13 Mar 2026 15:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC9E3C7DED;
+	Fri, 13 Mar 2026 16:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HLt4pEw+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V7TXBfDT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B09A3C344C
-	for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2026 15:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A637313E00;
+	Fri, 13 Mar 2026 16:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773416445; cv=none; b=CCgzIeAnmSyhYOPnRpTy0SYOXbMmWEJz9la62GfRoNpxjlo5oG4cKUxapihPQiKT8+No49ss8Ij72TCWq7fUNi6eM8QFZfbE1DW4WMXplvhPWnPFu4bJk9ov6a41cmZlr06dtSMWUDwUeBb/eyvt38TbfS5rmompOR+oHvM++zM=
+	t=1773419814; cv=none; b=JxhmkMcX8N80bcHnL2XfyJ9oxGNK/+LDONu1/DuwySXn3gPqqnqz7U3fngmsKDj6jKmU5LZZ8Cikeih8hq6Rf5YgshBlV4YNmslRNV6snzM59wFroYcM72FvibA/ENeASw8Gu3RhmknvYCvWDfbO3G8Z6LRGo8dlHLNo5aocJ4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773416445; c=relaxed/simple;
-	bh=C1C12u7lhnX3+FvtpJ/7VGSV4wgQ8XNH0CC3r8rQ+Yw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ejunl/VlyTT/jJBjDUHa/Sw/HbwjRLAtGGTCvVFnJfKux4Eq8wNhx7WdMcA56ffFdsr7qMUfWKegLATGtCy6q6XauJ4WWbwqQmqtcrxL0jChxZE0a1LELk0xxPiVE5/5ojNW4moZWeHXX4jrMjmBHmoxIqgTnJOLAlSo+ukDeUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HLt4pEw+; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-439cd6b09f8so1953366f8f.3
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2026 08:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773416437; x=1774021237; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nmRPHsRLROZLe9Tr12wsWlfM1Xt+10Lq/FWrxDvUAXI=;
-        b=HLt4pEw+yXJzWt2lZhJh/5RsobHaIJN3xF9ocVtTs/21nW8Gf5AX+y5p675AF836NH
-         coOB/HO4W2OpZRM/RVhZlMqFJ+TW7pXksYTvrvhrO94zRTclMrIEA1pS3JYXY+FSJsxB
-         t4UTeBr+8W7PiEiMG+1cXShfJPzxn33oLxNhWT8//svP9B42ATkmxhFbqWclKe2P5iIm
-         AmNSSLuJdTsrNIUNXVJivfaEReLjhtXpaWHDSSlRnsmx2vGa6k97OEpuJZel7lZu/0wG
-         qZU8QCf7SzQH90l7utb0OC75ZOdEHavI7S8eCn3RVrZMPRfAgPPqef1i1cLhqymrTjld
-         jqFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773416437; x=1774021237;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nmRPHsRLROZLe9Tr12wsWlfM1Xt+10Lq/FWrxDvUAXI=;
-        b=YxJd8wlpjGhDyqa52gzVWM2i+MtsFILSVCz+Q0ozFiA8JphjBRBg5bH61FnFnDXiVs
-         Pt1kEePatBLnHA6t2MrrN2JIrz+WNFSV8OyLDWodeXO23bnPgul4bCu7rqRdFnRYVcZY
-         9eKFBH96Zw9rK2QjMpYRjjc+xl0qwUAOyH3NJNbMeqM8QLBuxPEr42N/r3pCbuo6+PwB
-         urO2fHThjU9F4cM+9SX1bfZOR/0URR3fTLXQnAlafVQmY/5wT/e9e9UsuVvALq3sLi/n
-         4DoK+gbKtsgQpdoh5yuhI1sU48ktzCMhR7SvbDuiqD3EMbbm29o1WBZYwjFm8PtaCv52
-         txVw==
-X-Forwarded-Encrypted: i=1; AJvYcCWU9c0bHP9bJMNgeqcV3Qlgcl8WZfl6mXdBZO5YQMUNQKj12yXIorTTi/r5vAEf/3RLgqhzDoLeNMss@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxj+vTXS2wcbFKGV/SmQ+9LfFPfc/KhzrxOkDj7hyHj+jazU4+s
-	++MREajwF3oAdDmevPEmMiydAKDT7rdgv+0iZmYPth8A/EHdl5HkQvHDBM0f0ZZDon0=
-X-Gm-Gg: ATEYQzzOUPex+KVTvpAXQMlt+8uupZciNEA/wnAbn6unqMSf2h7D7vDPksd1rWRty2d
-	4ICooXlB+tk+xbx+Ss91KNtpyWLhE03WL2PJgyMxI2nWWeAOlF1vlK7rLfOgEYlNGdAZiRtDeSf
-	h38YhfQmWA/T0BnsYLfRCQtGGDQIgYIClf+EpXD8oAKxPU9CPcSKwkkDTPLe832MHBSpkeiOtb8
-	L2vPf8NViHje/+JhU1EDWHKvXjE3CmMe2E5tnHoXmonI0aHXxN4+nV4lv5ypIlRS9XDTDW3uf8r
-	D1u9sNl0vk7u3vnjOo4Ut9eaoA/iAJ1f29S/Yf5lZ4dEpi6fXdziCBR+YbLNqy46M1hZgXW6wfX
-	c3fHdZbCA1ILHO/nz/MdXKhSmhrKssCdkX3baJnBrZQp29GaB5Vsas3cr8SVY3t0GrVzdXGjytP
-	pOwMBv27VCN3FgcaTPPO9zerhmBIjZU3fwGQGRxW8=
-X-Received: by 2002:a05:6000:2386:b0:439:ad3a:b737 with SMTP id ffacd0b85a97d-43a04daef80mr8040618f8f.35.1773416437360;
-        Fri, 13 Mar 2026 08:40:37 -0700 (PDT)
-Received: from linux.fritz.box ([2a00:6d43:105:c401:e307:1a37:2e76:ce91])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439fe20b544sm19465430f8f.20.2026.03.13.08.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2026 08:40:37 -0700 (PDT)
-From: Marco Crivellari <marco.crivellari@suse.com>
-To: linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH] RDMA/rxe: Replace use of system_unbound_wq with system_dfl_wq
-Date: Fri, 13 Mar 2026 16:40:23 +0100
-Message-ID: <20260313154023.298325-1-marco.crivellari@suse.com>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1773419814; c=relaxed/simple;
+	bh=yxUcqh0AcpHROQQEEoQ7r7oTAaEg7FuJwAC+SAMDP3M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gpcTNvkcNjkBY+VpT7UUKvI+rn5nYauTwn7xKk/CzjzIvuD1gIsIYPD1QZo1uBZO46+/W1F3EYHTu9VkqADX6Niv+98579sAk5dhUCuk6NqtLLWnuo8IMPXwL5fIjOCpRrDoIRbbTsmyFPKAHa6Qjc4lw8LfhroRT+DEaQrzSnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V7TXBfDT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E272C19421;
+	Fri, 13 Mar 2026 16:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773419813;
+	bh=yxUcqh0AcpHROQQEEoQ7r7oTAaEg7FuJwAC+SAMDP3M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=V7TXBfDT+CWpXuMQM09aE4/F+wrh1K/CJsOpJgtGA3GokfzWsZ6ey1lMex3vO/GhS
+	 6ol7Unp8+Nhqy5zTzKw4T3KEDN0+hOWQRgxSe0roTmXq2OJDSRRLrnxk4JTXN75a9Z
+	 8XmobYHZnGWO+Ce/hcjgfI0ZLq9ouZFbW0WVuTHspOQp9Dv3f9xHypO9pj71+J4ppH
+	 yXRpy1K5WfbHHgMxxJh8c3SYYLaFGVDfKzVornauyGzZiIAs8lJclxTOQEGp+SIhd4
+	 3kXnt3O63pv9mVulOmuNRhOHWAhFPptQlhXnXLDF2H7HRuJh54KSQzmkmt+uu8BPO8
+	 tcCtb20WFuZUw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, Donald Hunter <donald.hunter@gmail.com>, Eric
+ Dumazet <edumazet@google.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Naveen Mamindlapalli
+ <naveenm@marvell.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+ <horms@kernel.org>, Danielle Ratson <danieller@nvidia.com>, Hariprasad
+ Kelam <hkelam@marvell.com>, Ido Schimmel <idosch@nvidia.com>, Kory Maincent
+ <kory.maincent@bootlin.com>, Leon Romanovsky <leon@kernel.org>, Michael
+ Chan <michael.chan@broadcom.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ Pavan Chebbi <pavan.chebbi@broadcom.com>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Saeed
+ Mahameed <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>, Tariq Toukan
+ <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 01/11] ethtool: Add dump_one_dev callback for
+ per-device sub-iteration
+In-Reply-To: <20260311193221.3306811b@kernel.org>
+References: <20260310104743.907818-1-bjorn@kernel.org>
+ <20260310104743.907818-2-bjorn@kernel.org>
+ <20260311193221.3306811b@kernel.org>
+Date: Fri, 13 Mar 2026 17:36:50 +0100
+Message-ID: <87eclny9ct.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.10 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MIXED_CHARSET(0.56)[subject];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18144-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linutronix.de,suse.com,ziepe.ca];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_FROM(0.00)[bounces-18145-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,bootlin.com,marvell.com,redhat.com,kernel.org,nvidia.com,broadcom.com,pengutronix.de,armlinux.org.uk];
+	RCPT_COUNT_TWELVE(0.00)[27];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[marco.crivellari@suse.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim,suse.com:email,suse.com:mid]
-X-Rspamd-Queue-Id: 39E68286482
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[all.your.base.are.belong.to.us:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D917828726A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This patch continues the effort to refactor workqueue APIs, which has begun
-with the changes introducing new workqueues and a new alloc_workqueue flag:
+Jakub Kicinski <kuba@kernel.org> writes:
 
-   commit 128ea9f6ccfb ("workqueue: Add system_percpu_wq and system_dfl_wq")
-   commit 930c2ea566af ("workqueue: Add new WQ_PERCPU flag")
+> On Tue, 10 Mar 2026 11:47:31 +0100 Bj=C3=B6rn T=C3=B6pel wrote:
+>> The per-PHY specific dump functions share a lot functionality of with
+>> the default dumpit infrastructure, but does not share the actual code.
+>> By introducing a new sub-iterator function, the two dumpit variants
+>> can be folded into one set of functions.
+>>=20
+>> Add a new dump_one_dev callback in ethnl_request_ops. When
+>> ops->dump_one_dev is set, ethnl_default_start() saves the target
+>> device's ifindex for filtered dumps, and ethnl_default_dumpit()
+>> delegates per-device iteration to the callback instead of calling
+>> ethnl_default_dump_one() directly. No separate start/dumpit/done
+>> functions are needed.
+>>=20
+>> For the existing per-PHY commands (PSE, PLCA, PHY, MSE), the shared
+>> ethnl_perphy_dump_one_dev helper provides the xa_for_each_start loop
+>> over the device's PHY topology.
+>>=20
+>> This prepares the ethtool infrastructure for other commands that need
+>> similar per-device sub-iteration.
+>
+> Feels like this could be split into two patches for ease of review.
 
-The point of the refactoring is to eventually alter the default behavior of
-workqueues to become unbound by default so that their workload placement is
-optimized by the scheduler.
+Hmm, OK! My take was the it was mostly moving stuff.
 
-Before that to happen, workqueue users must be converted to the better named
-new workqueues with no intended behaviour changes:
+> Warning: net/ethtool/netlink.h:441 struct member 'dump_one_dev' not descr=
+ibed in 'ethnl_request_ops'
+> Warning: net/ethtool/netlink.h:441 struct member 'dump_one_dev' not descr=
+ibed in 'ethnl_request_ops'
 
-   system_wq -> system_percpu_wq
-   system_unbound_wq -> system_dfl_wq
+Thanks! (I've looked thru all the pw complaints, and fixed locally!)
 
-This way the old obsolete workqueues (system_wq, system_unbound_wq) can be
-removed in the future.
+>
+>> @@ -616,17 +580,41 @@ static int ethnl_default_dumpit(struct sk_buff *sk=
+b,
+>>  				struct netlink_callback *cb)
+>>  {
+>>  	struct ethnl_dump_ctx *ctx =3D ethnl_dump_context(cb);
+>> +	const struct genl_info *info =3D genl_info_dump(cb);
+>>  	struct net *net =3D sock_net(skb->sk);
+>>  	netdevice_tracker dev_tracker;
+>>  	struct net_device *dev;
+>>  	int ret =3D 0;
+>>=20=20
+>> +	if (ctx->ops->dump_one_dev && ctx->ifindex) {
+>> +		dev =3D netdev_get_by_index(net, ctx->ifindex, &dev_tracker,
+>> +					  GFP_KERNEL);
+>> +		if (!dev)
+>> +			return -ENODEV;
+>> +
+>> +		ctx->req_info->dev =3D dev;
+>> +		ret =3D ctx->ops->dump_one_dev(skb, ctx, &ctx->pos_sub, info);
+>> +
+>> +		if (ret < 0 && ret !=3D -EOPNOTSUPP && likely(skb->len))
+>> +			ret =3D skb->len;
+>> +
+>> +		netdev_put(dev, &dev_tracker);
+>> +		return ret;
+>> +	}
+>> +
+>>  	rcu_read_lock();
+>>  	for_each_netdev_dump(net, dev, ctx->pos_ifindex) {
+>>  		netdev_hold(dev, &dev_tracker, GFP_ATOMIC);
+>>  		rcu_read_unlock();
+>>=20=20
+>> -		ret =3D ethnl_default_dump_one(skb, dev, ctx, genl_info_dump(cb));
+>> +		if (ctx->ops->dump_one_dev) {
+>> +			ctx->req_info->dev =3D dev;
+>> +			ret =3D ctx->ops->dump_one_dev(skb, ctx, &ctx->pos_sub,
+>> +						     info);
+>> +			ctx->req_info->dev =3D NULL;
+>> +		} else {
+>> +			ret =3D ethnl_default_dump_one(skb, dev, ctx, info);
+>> +		}
+>>=20=20
+>>  		rcu_read_lock();
+>>  		netdev_put(dev, &dev_tracker);
+>
+> Not sure if it works here but another way to implementing single dump
+> and a loop dump concisely is to init both ifindex and pos_ifindex when
+> request is parsed and then add
+>
+> 	if (ctx->ifindex && ctx->ifindex !=3D ctx->pos_ifindex)
+> 		break;
+>
+> at the start of the loop. That way the body of the loop doesn't have to
+> be repeated in a separate if=20
 
-Link: https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
----
- drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Indeed! I think that would work, and that'd be cleaner!
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index bc11b1ec59ac..d440c8cbaea5 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
- 		work->frags[i].mr = mr;
- 	}
- 
--	queue_work(system_unbound_wq, &work->work);
-+	queue_work(system_dfl_wq, &work->work);
- 
- 	return 0;
- 
--- 
-2.53.0
-
+Cheers!
 
