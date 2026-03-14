@@ -1,67 +1,95 @@
-Return-Path: <linux-rdma+bounces-18157-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18158-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IBWaHLFotGnxnQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-18157-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 20:42:41 +0100
+	id wE2VNN7qtGkuuQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-18158-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Mar 2026 05:58:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6CA289635
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 20:42:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D4C328BA13
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Mar 2026 05:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4E720321277D
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2026 19:42:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0AC6530675BB
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Mar 2026 04:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1281836C5A2;
-	Fri, 13 Mar 2026 19:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E743491C2;
+	Sat, 14 Mar 2026 04:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bq6k65fB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h/yZ0cIO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74E126CE05;
-	Fri, 13 Mar 2026 19:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF9F321D590
+	for <linux-rdma@vger.kernel.org>; Sat, 14 Mar 2026 04:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773430928; cv=none; b=XHSplX/Wk1HNRRPeH1glnQ3Af+ro3jOsIbzrkOcAeFXVcoFTTcO5nQ4u9jb074ICvdOAQQXPvPNffh0I7D9g1NSooqWFlpzCVJZI3SGWaD5S6be+HSTDU2VyXfPbbmdd0vSRlrUv3Mq1sKN2mb1fuYzyiwxDQZk31NAd5QB/Nmw=
+	t=1773464275; cv=none; b=hCdanedDk7PYCDyeu96DkWDDhslkNizhZ+DpKnTVFX/CXd9lwoaQ4SalkB7t8nuMK/4uGueXmFs4N/koTJ3/apgpdTC2Pm2W7cItTIn3yu8T+Ufvj+SBU5UkONQvuOOgIkTwxoB1GMdsHxgYeqGSwYAIloHJSElsjQVNaN+GMLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773430928; c=relaxed/simple;
-	bh=RsHYwXsnJZM6WN3aeNwbaiHx+YI+Yj+OVfHuXbKOqxQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uE93ETgNNPl+hTc4WBlxRlycGE6zL0FL9b84t0S5kmfyTP9qB7wzkUbpIXVCg227EeBK4CRKKSVh1N/QnmSGRq09wNf5oHMFKqT2xzcMBBVWDUHU4CRJL3axh8UkjZBzk13EdAvliWrny2NgEFiQ8c3g4TZfSQwG8R1/WYzNUDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bq6k65fB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F4CC19425;
-	Fri, 13 Mar 2026 19:42:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773430928;
-	bh=RsHYwXsnJZM6WN3aeNwbaiHx+YI+Yj+OVfHuXbKOqxQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bq6k65fBstRzDX4GCd0F/QeHNtBb8dx4E8XBXfyzSBQcSD3Shpww/TrRdI7UY0IDo
-	 Oa7RnaPeOgOsxAeitEcgx3sn57k0ef6S1UZsSDXS4+5+16eNjooXysFxznjij1rtEM
-	 wccrUfdHSt5uPFdpVkevqr4YL3A9dLqBGuZRdShT52aJw7zfVcIvOzcJ+5zEG7LWe4
-	 kZDatWr7bfKwUm+uwXOHvJ11BOV+MPiC45++pC66hsiV7IbXbwrH2Q+7yCTSHJD74R
-	 fh8CN1caeClNDCGBKSzAOD/OkhSQEsKokMbCzpPXkLF0MxPMjSbOX5TijcAHEhp/Wa
-	 kaiILP81ELhiQ==
-From: Chuck Lever <cel@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>,
-	Christoph Hellwig <hch@lst.de>,
-	NeilBrown <neilb@ownmail.net>,
-	Jeff Layton <jlayton@kernel.org>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <dai.ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>
-Cc: <linux-nfs@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v3 4/4] svcrdma: Use contiguous pages for RDMA Read sink buffers
-Date: Fri, 13 Mar 2026 15:42:01 -0400
-Message-ID: <20260313194201.5818-5-cel@kernel.org>
+	s=arc-20240116; t=1773464275; c=relaxed/simple;
+	bh=Q7T7gEpRnDDwZL4aoZYYHdNq4RTmVw85HR/DS5ALarY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RECZqzr7ni2BSXBFWAWGF3fiTuynUwxAPOGm85K+Zeuoci1kvM3BUUQaUuFDraN36MGKSruLImVTPz66jGhccNcJ0/ltndMaPFLURfhFP7jJdok7wWAD4FdUU8LOWBUsGwhYJmrEqQKpZg4jHMBG61ICinekylhy0ZIm/TnDVwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h/yZ0cIO; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-793fdbb8d3aso29964017b3.3
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2026 21:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773464273; x=1774069073; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nkOHJmml1T2h8lU3WaH3WLJXiO/lx1Xa2aheZkpBFik=;
+        b=h/yZ0cIOCWkHGC5fP7+yapZMAIA5E3jyaCY2VH2/0TcWeN4gX5ekTQF4JTJo/Vkq1P
+         wnMMrHBWiGhhQ4S2rpoD1/JCyGr0BHLv2Ax3CTP4IgYabXJIl34v3MxBszF+9nLX7vHX
+         efq9Ytg4tDtKIfCSB7nwA62pSUz6lox2i1VQBYl7Xi/Lt5pinpgpJXDIeWOB+Dkg2xXe
+         02ym+gIS1hMueN7AhfI82g+Qbakk7sCgUoXTQcMaZ6DtSMNyP0f3DF/wMPASjwg9jVZz
+         yCD4Jc1suOrRPV4nOr5hXfPpFVUCREnhoEQUA03eBJoD9ROGwux63Ana78t2T3YrDvt2
+         NaOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773464273; x=1774069073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nkOHJmml1T2h8lU3WaH3WLJXiO/lx1Xa2aheZkpBFik=;
+        b=npLzPLBPn5ZvFhzKN+OsphOLSPouks27I9jnUBjont5bRL7ziQ0tv31i+GHTK0Tlrj
+         pzwvuulduNY2LUIl6fpCXQlIgB+beMjuoWXmQz8aiHsskKtcemcx9A/fqFh/kqbWSbsU
+         2qWgFYoao3ZB5jroUyHfocaWhEmtHeGxJ8BQKcciAaP47L/lPogYJGvL5zA/Jxiv99IM
+         UQ5sLXaHezDYq02n3LcW2AesxMiM+hl4HM4hQVm4iJKwaxXGIovX7EEaWzkOljYTiAwJ
+         JJD3vRa7dvu0NMio+LTPPNMZMBFKDuMSFeK0fMG1o7c+eH+ekUORhnBupdgKFN7tT/VJ
+         KgOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUM76QDOFy2Xhrq6Qc/A+GKjz107Pay4JAcTXBEPmS+/OjlTu2aWwCaOwLU0FnmRqA0HqAX22cr3xld@vger.kernel.org
+X-Gm-Message-State: AOJu0YxA27XqkycQbCaVGt1+7vxfnhG5hvVk6o6mi0w5aR5MbS/5e1Qj
+	DR2dooou5jHbdhLgUzNuSfztia8b7oAK9wZuY1YHoQEZvY1/ckUn3Th1
+X-Gm-Gg: ATEYQzzNC9dLZXVTnhzpB473GQX8/vKgSCqzvrJtcNwd4d1H4XoHVceRfupuAdPuEV8
+	2f/qAbRvtMcPXcX3osvYjHafwM5370XG0FB58XG5AK43z4Omeeaso7kdYYxXw4nylfdcLwSU3af
+	KNIlKyKe664TBw5awejRmzbO0N27AP19XSFlYcI82v9Oa4LA/VdEfJC7aCrYvrV4/MFlBnp/AX7
+	CcOXZ5YnzPGCTbZQUOFlOe66+1hK9z+/1ZnISc6qzRDyzscDxCH5EOtXWbFN8kFbMZl4AYZpdrM
+	k36ZN+RJ+dEfy1JsoZSojiJPaGZ4YNL/8HfJfQBgJmNvW6n/3DyvB83erz764h2cUlPHTvMeBD6
+	9HhmQ8Y+4XhKfu8++zm9ae+tGGooVPIIGOvQA+/pS58HjprnxKX0odMkGdM0PDNCrYCYrtrP+UT
+	A/BJ40gjsyLZs011o6A88e1MJq/BzQOqqY5LBqoILWyoEVRK6FU9P3XLeJdZDxOigEexbFgE8NZ
+	Qpnh+5JwgnRZQ+K/ea9Tw/b
+X-Received: by 2002:a05:690c:d8d:b0:798:6619:f1cb with SMTP id 00721157ae682-79a1c1bafd7mr61299877b3.43.1773464272826;
+        Fri, 13 Mar 2026 21:57:52 -0700 (PDT)
+Received: from tux ([2601:7c0:c37c:4c00::5585])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-79917de805dsm58007227b3.3.2026.03.13.21.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2026 21:57:52 -0700 (PDT)
+From: Ethan Tidmore <ethantidmore06@gmail.com>
+To: Michael Margolin <mrgolin@amazon.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-rdma@vger.kernel.org
+Cc: Leon Romanovsky <leon@kernel.org>,
+	Gal Pressman <gal.pressman@linux.dev>,
+	Yossi Leybovich <sleybo@amazon.com>,
+	Daniel Kranzdorf <dkkranzd@amazon.com>,
+	Yonatan Nachum <ynachum@amazon.com>,
+	linux-kernel@vger.kernel.org,
+	Ethan Tidmore <ethantidmore06@gmail.com>
+Subject: [PATCH] RDMA/efa: Fix possible deadlock
+Date: Fri, 13 Mar 2026 23:57:30 -0500
+Message-ID: <20260314045730.1143862-1-ethantidmore06@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260313194201.5818-1-cel@kernel.org>
-References: <20260313194201.5818-1-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,319 +100,59 @@ Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18157-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[kernel.org,lst.de,ownmail.net,redhat.com,oracle.com,talpey.com];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,linux.dev,amazon.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-18158-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ethantidmore06@gmail.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email]
-X-Rspamd-Queue-Id: 1E6CA289635
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7D4C328BA13
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Chuck Lever <chuck.lever@oracle.com>
+In the error path for efa_com_alloc_comp_ctx() the lock assigned to
+&aq->avail_cmds is not released.
 
-svc_rdma_build_read_segment() constructs RDMA Read sink
-buffers by consuming pages one-at-a-time from rq_pages[]
-and building one bvec per page. A 64KB NFS READ payload
-produces 16 separate bvecs, 16 DMA mappings, and
-potentially multiple RDMA Read WRs.
+Add release for &aq->avail_cmds in efa_com_alloc_comp_ctx() error path.
 
-A single higher-order allocation followed by split_page()
-yields physically contiguous memory while preserving
-per-page refcounts. A single bvec spanning the contiguous
-range causes rdma_rw_ctx_init_bvec() to take the
-rdma_rw_init_single_wr_bvec() fast path: one DMA mapping,
-one SGE, one WR.
-
-The split sub-pages replace the original rq_pages[] entries,
-so all downstream page tracking, completion handling, and
-xdr_buf assembly remain unchanged.
-
-Allocation uses __GFP_NORETRY | __GFP_NOWARN and falls back
-through decreasing orders. If even order-1 fails, the
-existing per-page path handles the segment.
-
-When nr_pages is not a power of two, get_order() rounds up
-and the allocation yields more pages than needed. The extra
-split pages replace existing rq_pages[] entries (freed via
-put_page() first), so there is no net increase in per-
-request page consumption. Successive segments reuse the
-same padding slots, preventing accumulation. The
-rq_maxpages guard rejects any allocation that would
-overrun the array, falling back to the per-page path.
-Under memory pressure, __GFP_NORETRY causes the higher-
-order allocation to fail without stalling.
-
-The contiguous path is attempted when the segment starts
-page-aligned (rc_pageoff == 0) and spans at least two
-pages. NFS WRITE segments carry application-modified byte
-ranges of arbitrary length, so the optimization is not
-restricted to power-of-two page counts.
-
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: ef3b06742c8a2 ("RDMA/efa: Fix use of completion ctx after free")
+Signed-off-by: Ethan Tidmore <ethantidmore06@gmail.com>
 ---
- net/sunrpc/xprtrdma/svc_rdma_rw.c | 220 ++++++++++++++++++++++++++++++
- 1 file changed, 220 insertions(+)
+ drivers/infiniband/hw/efa/efa_com.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_rw.c b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-index 4ec2f9ae06aa..63fcf677c96c 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_rw.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-@@ -732,6 +732,216 @@ int svc_rdma_prepare_reply_chunk(struct svcxprt_rdma *rdma,
- 	return xdr->len;
- }
- 
-+#if PAGE_SIZE < SZ_64K
-+
-+/*
-+ * Limit contiguous RDMA Read sink allocations to 64KB
-+ * (order-4 on 4KB-page systems). Higher orders risk
-+ * allocation failure under __GFP_NORETRY, which would
-+ * negate the benefit of the contiguous fast path.
-+ */
-+#define SVC_RDMA_CONTIG_MAX_ORDER	get_order(SZ_64K)
-+
-+/**
-+ * svc_rdma_alloc_read_pages - Allocate physically contiguous pages
-+ * @nr_pages: number of pages needed
-+ * @order: on success, set to the allocation order
-+ *
-+ * Attempts a higher-order allocation, falling back to smaller orders.
-+ * The returned pages are split immediately so each sub-page has its
-+ * own refcount and can be freed independently.
-+ *
-+ * Returns a pointer to the first page on success, or NULL if even
-+ * order-1 allocation fails.
-+ */
-+static struct page *
-+svc_rdma_alloc_read_pages(unsigned int nr_pages, unsigned int *order)
-+{
-+	unsigned int o;
-+	struct page *page;
-+
-+	o = get_order(nr_pages << PAGE_SHIFT);
-+	if (o > SVC_RDMA_CONTIG_MAX_ORDER)
-+		o = SVC_RDMA_CONTIG_MAX_ORDER;
-+
-+	while (o >= 1) {
-+		page = alloc_pages(GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN,
-+				   o);
-+		if (page) {
-+			split_page(page, o);
-+			*order = o;
-+			return page;
-+		}
-+		o--;
-+	}
-+	return NULL;
-+}
-+
-+/*
-+ * svc_rdma_fill_contig_bvec - Replace rq_pages with a contiguous allocation
-+ * @rqstp: RPC transaction context
-+ * @head: context for ongoing I/O
-+ * @bv: bvec entry to fill
-+ * @pages_left: number of data pages remaining in the segment
-+ * @len_left: bytes remaining in the segment
-+ *
-+ * On success, fills @bv with a bvec spanning the contiguous range and
-+ * advances rc_curpage/rc_page_count. Returns the byte length covered,
-+ * or zero if the allocation failed or would overrun rq_maxpages.
-+ */
-+static unsigned int
-+svc_rdma_fill_contig_bvec(struct svc_rqst *rqstp,
-+			  struct svc_rdma_recv_ctxt *head,
-+			  struct bio_vec *bv, unsigned int pages_left,
-+			  unsigned int len_left)
-+{
-+	unsigned int order, alloc_nr, chunk_pages, chunk_len, i;
-+	struct page *page;
-+
-+	page = svc_rdma_alloc_read_pages(pages_left, &order);
-+	if (!page)
-+		return 0;
-+	alloc_nr = 1 << order;
-+
-+	if (head->rc_curpage + alloc_nr > rqstp->rq_maxpages) {
-+		for (i = 0; i < alloc_nr; i++)
-+			__free_page(page + i);
-+		return 0;
-+	}
-+
-+	for (i = 0; i < alloc_nr; i++) {
-+		svc_rqst_page_release(rqstp,
-+				      rqstp->rq_pages[head->rc_curpage + i]);
-+		rqstp->rq_pages[head->rc_curpage + i] = page + i;
-+	}
-+
-+	chunk_pages = min(alloc_nr, pages_left);
-+	chunk_len = min_t(unsigned int, chunk_pages << PAGE_SHIFT, len_left);
-+	bvec_set_page(bv, page, chunk_len, 0);
-+	head->rc_page_count += chunk_pages;
-+	head->rc_curpage += chunk_pages;
-+	return chunk_len;
-+}
-+
-+/*
-+ * svc_rdma_fill_page_bvec - Add a single rq_page to the bvec array
-+ * @head: context for ongoing I/O
-+ * @ctxt: R/W context whose bvec array is being filled
-+ * @cur: page to add
-+ * @bvec_idx: pointer to current bvec index, not advanced on merge
-+ * @len_left: bytes remaining in the segment
-+ *
-+ * If @cur is physically contiguous with the preceding bvec, it is
-+ * merged by extending that bvec's length. Otherwise a new bvec
-+ * entry is created. Returns the byte length covered.
-+ */
-+static unsigned int
-+svc_rdma_fill_page_bvec(struct svc_rdma_recv_ctxt *head,
-+			struct svc_rdma_rw_ctxt *ctxt, struct page *cur,
-+			unsigned int *bvec_idx, unsigned int len_left)
-+{
-+	unsigned int chunk_len = min_t(unsigned int, PAGE_SIZE, len_left);
-+
-+	head->rc_page_count++;
-+	head->rc_curpage++;
-+
-+	if (*bvec_idx > 0) {
-+		struct bio_vec *prev = &ctxt->rw_bvec[*bvec_idx - 1];
-+
-+		if (page_to_phys(prev->bv_page) + prev->bv_offset +
-+		    prev->bv_len == page_to_phys(cur)) {
-+			prev->bv_len += chunk_len;
-+			return chunk_len;
-+		}
-+	}
-+
-+	bvec_set_page(&ctxt->rw_bvec[*bvec_idx], cur, chunk_len, 0);
-+	(*bvec_idx)++;
-+	return chunk_len;
-+}
-+
-+/**
-+ * svc_rdma_build_read_segment_contig - Build RDMA Read WR with contiguous pages
-+ * @rqstp: RPC transaction context
-+ * @head: context for ongoing I/O
-+ * @segment: co-ordinates of remote memory to be read
-+ *
-+ * Greedily allocates higher-order pages to cover the segment,
-+ * building one bvec per contiguous chunk. Each allocation is
-+ * split so sub-pages have independent refcounts. When a
-+ * higher-order allocation fails, remaining pages are covered
-+ * individually, merging adjacent pages into the preceding bvec
-+ * when they are physically contiguous. The split sub-pages
-+ * replace entries in rq_pages[] so downstream cleanup is
-+ * unchanged.
-+ *
-+ * Returns:
-+ *   %0: the Read WR was constructed successfully
-+ *   %-ENOMEM: allocation failed
-+ *   %-EIO: a DMA mapping error occurred
-+ */
-+static int svc_rdma_build_read_segment_contig(struct svc_rqst *rqstp,
-+						struct svc_rdma_recv_ctxt *head,
-+						const struct svc_rdma_segment *segment)
-+{
-+	struct svcxprt_rdma *rdma = svc_rdma_rqst_rdma(rqstp);
-+	struct svc_rdma_chunk_ctxt *cc = &head->rc_cc;
-+	unsigned int nr_data_pages, bvec_idx;
-+	struct svc_rdma_rw_ctxt *ctxt;
-+	unsigned int len_left;
-+	int ret;
-+
-+	nr_data_pages = PAGE_ALIGN(segment->rs_length) >> PAGE_SHIFT;
-+	if (head->rc_curpage + nr_data_pages > rqstp->rq_maxpages)
-+		return -ENOMEM;
-+
-+	ctxt = svc_rdma_get_rw_ctxt(rdma, nr_data_pages);
-+	if (!ctxt)
-+		return -ENOMEM;
-+
-+	bvec_idx = 0;
-+	len_left = segment->rs_length;
-+	while (len_left) {
-+		unsigned int pages_left = PAGE_ALIGN(len_left) >> PAGE_SHIFT;
-+		unsigned int chunk_len = 0;
-+
-+		if (pages_left >= 2)
-+			chunk_len = svc_rdma_fill_contig_bvec(rqstp, head,
-+					&ctxt->rw_bvec[bvec_idx],
-+					pages_left, len_left);
-+		if (chunk_len) {
-+			bvec_idx++;
-+		} else {
-+			struct page *cur =
-+				rqstp->rq_pages[head->rc_curpage];
-+			chunk_len = svc_rdma_fill_page_bvec(head, ctxt, cur,
-+							    &bvec_idx,
-+							    len_left);
-+		}
-+
-+		len_left -= chunk_len;
-+	}
-+
-+	ctxt->rw_nents = bvec_idx;
-+
-+	head->rc_pageoff = offset_in_page(segment->rs_length);
-+	if (head->rc_pageoff)
-+		head->rc_curpage--;
-+
-+	ret = svc_rdma_rw_ctx_init(rdma, ctxt, segment->rs_offset,
-+				   segment->rs_handle, segment->rs_length,
-+				   DMA_FROM_DEVICE);
-+	if (ret < 0)
-+		return -EIO;
-+	percpu_counter_inc(&svcrdma_stat_read);
-+
-+	list_add(&ctxt->rw_list, &cc->cc_rwctxts);
-+	cc->cc_sqecount += ret;
-+	return 0;
-+}
-+
-+#endif /* PAGE_SIZE < SZ_64K */
-+
- /**
-  * svc_rdma_build_read_segment - Build RDMA Read WQEs to pull one RDMA segment
-  * @rqstp: RPC transaction context
-@@ -758,6 +968,16 @@ static int svc_rdma_build_read_segment(struct svc_rqst *rqstp,
- 	if (check_add_overflow(head->rc_pageoff, len, &total))
+diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
+index 56caba612139..e97b5f0d7003 100644
+--- a/drivers/infiniband/hw/efa/efa_com.c
++++ b/drivers/infiniband/hw/efa/efa_com.c
+@@ -629,6 +629,7 @@ int efa_com_cmd_exec(struct efa_com_admin_queue *aq,
+ 	comp_ctx = efa_com_alloc_comp_ctx(aq);
+ 	if (!comp_ctx) {
+ 		clear_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state);
++		up(&aq->avail_cmds);
  		return -EINVAL;
- 	nr_bvec = PAGE_ALIGN(total) >> PAGE_SHIFT;
-+
-+#if PAGE_SIZE < SZ_64K
-+	if (head->rc_pageoff == 0 && nr_bvec >= 2) {
-+		ret = svc_rdma_build_read_segment_contig(rqstp, head,
-+							   segment);
-+		if (ret != -ENOMEM)
-+			return ret;
-+	}
-+#endif
-+
- 	ctxt = svc_rdma_get_rw_ctxt(rdma, nr_bvec);
- 	if (!ctxt)
- 		return -ENOMEM;
+ 	}
+ 
 -- 
 2.53.0
 
