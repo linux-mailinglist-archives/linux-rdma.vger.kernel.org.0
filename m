@@ -1,162 +1,134 @@
-Return-Path: <linux-rdma+bounces-18170-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18171-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WJseL1pit2m4QgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18170-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 02:52:26 +0100
+	id cLCOLYhrt2kYRAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18171-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 03:31:36 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CCC9293ACC
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 02:52:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C42294171
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 03:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1EF9D3009B24
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 01:52:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3C8A5305769C
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 02:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A3226560B;
-	Mon, 16 Mar 2026 01:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jhncS5Oy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D6B30C632;
+	Mon, 16 Mar 2026 02:22:36 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outbound.baidu.com (mx22.baidu.com [220.181.50.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D45C188735
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 01:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A979730DEB2;
+	Mon, 16 Mar 2026 02:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.181.50.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773625939; cv=none; b=neCmIaLQx2qNkjPCSzovhUGMaPoXJxvfrtcbq8LtUo5inxQbPtiA5mtb3vn/z95iu7UoxxjuBJG26h4NUtnHOtJbssA8Gl04n95c3rdSWOnXGr9bzpUwQZm4wCVsWckx4T3WwX8QYGm0C3lX/n28RrHGb+kMwsb/jk3X30I9/CI=
+	t=1773627756; cv=none; b=R4WvC/fh6wpgEEZfc8PZUdGEvKctWdqwSc7fGHqfJsyhUKgmXzkQ3MC7hdV5KpOeUIdLRq/BtGPaxEV5kwuMhsYQuvAweWx3NbxjB0X8qJy59EaNh4bG8Susg1wmg1c2Zcxo/RVJY5GuG/bF7j5n9XTlsG5Q6hHpNRxy8PYaRfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773625939; c=relaxed/simple;
-	bh=HqjORkXyUAJZ5t09djKo2B+llLHFZYN3T2zYVJKoFPg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jP8v4KXcK9Q29FeMgrQFLxmTFvZXD//Lnv1mmeC8YZoxnjSfYM/0GqeynyA8yg5xf0tPvrucVYOzNJVjFzPfnBK3DLsVPQZxNI0Jf3uZ1/T0AMOhpK0big1XY2YZUJx9DdlkaMDVxw/0ul/hfZ+OACe1wr5GHrj/6TZxO+HqFTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jhncS5Oy; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-35b905e9dc0so644233a91.3
-        for <linux-rdma@vger.kernel.org>; Sun, 15 Mar 2026 18:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773625938; x=1774230738; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xPA/F/DsU0PSQq3nz65hqH1FDo0PeiWks4BdWpvXxQc=;
-        b=jhncS5Oy3v7pjuYVGPtZEjRJz2ksp+Iaa9xcxVUtNHgdDDOg4DAWVfHn8hN2sgGfXy
-         ukJC7t1voPCTpfgLncXLxPlhssWqqRf1g+/zhOej4vZ4Z+1uqYByAvgEE1+Nkkn/CGg7
-         XoiYzRHBJPKuFukJOs5HRq8++V5yea3ad6m+7yElGRDSAuydElvenBdi15xSfbG1uinh
-         c1LcQcLzENeFcoB/Su9yhqiYgQhnv8qpSHutj2/NVk8PfHj/7LHGkLORI/l4/asGva9F
-         oiCpxGFT6F5hknX4vEm2ac2DWNyySD6P4OvLJquA1HkgZJj19UhY1ABv0EbsF9GRoXv5
-         IvLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773625938; x=1774230738;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xPA/F/DsU0PSQq3nz65hqH1FDo0PeiWks4BdWpvXxQc=;
-        b=YeS/UlH6RZoVxVR/7kudUiNy3GnWrlkmPaj2I0p4Pwv47hTe566PopnMDqOLCtUlSg
-         gs3cgRnXODz1lltbE9Xsce2cXKiJe96y0BufY70J8zZWJ+CHaEayDQ2E4my8OWvvxjJS
-         oT/idKZi+WQhH6MDH75e6XvZI6wR1BKotJYWG1ASQqJTIUrA47OzLomdpr57p89wYVZt
-         Vo15DC9Q56BgEkPAxEMuKaZTIpbwrvAiXJQJW0W0x23TYu5DwtIc47L7u73Rm8QOfRjK
-         pO0KfWBVdQH0Nb5Y9h0VVhtOTxwD5HHZ1jc20tBHsgxDNN7XIoVuk6vHV2Y+NU5L+EHf
-         LCHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGFiJDY7y3LbXU3t9gZRM3OA4s/wZNuXycBz0HLQSmaZ0Ar7oP8cBtZTz6tMif3GDU6ylvHv36B5x8@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXK6BZFQu2RYN6D4S9hnatZskvI6yaaD+/8s4jqYJnrKP0IioM
-	kNYw355tJMVutDaNU7YHeYujUVF7NmO594z3xzJy/62Hm1jFAY9wtWGz
-X-Gm-Gg: ATEYQzwj5Dz8A+USgvNw/GcIs924ILAvqY81e1eqMCUioghauObIhBfouUHZ0iwVcnQ
-	oAihsJaKx9e6dAjCFL2qN7vUDweqX8LFlYxvnTZ21BJZDyPPevaVbxTOznSAX0OpXHgefqcijFf
-	xOVlkMjA9BmgvSvRqEjEsgoRJyzU+3NfEbOm+0eH2tFkKQ3kkpJoQL+sG33f3IGl+vkWA9BXTHP
-	BMdw3sTzv+6r9lVXJiGple9txiKUk9UWdh711sMATT9x+Fq38IO9YmUlwKar/AAlU0JPCf1g7o9
-	cbRGEC80v+TfO1zzmANkbV3MBV6Txfh01MgUAhwDNtIJoIjbXnI6I7MN4PnVxHpREKZvC+Jwwoq
-	MOM++dVuRazhNCEmhoMvlBmHknzr49I1utTpUwDO9m9cYiQ2wAXiW0tdJdZPBaPe4/nt2GqPhc+
-	3+2pdrK13pRwSApg+l98euNy0qjJFxb8IJx+B3OsLA
-X-Received: by 2002:a17:90b:574f:b0:359:fe72:3559 with SMTP id 98e67ed59e1d1-35a21fdd3b7mr10281855a91.21.1773625937953;
-        Sun, 15 Mar 2026 18:52:17 -0700 (PDT)
-Received: from localhost.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35b9d6fe68asm725329a91.6.2026.03.15.18.52.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Mar 2026 18:52:17 -0700 (PDT)
-From: Ryohei Kinugawa <ryohei.kinugawa@gmail.com>
-To: rrameshbabu@nvidia.com,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org
-Cc: Ryohei Kinugawa <ryohei.kinugawa@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: [PATCH net-next] docs/mlx5: Fix typo subfuction
-Date: Mon, 16 Mar 2026 10:56:14 +0900
-Message-ID: <20260316015621.41630-1-ryohei.kinugawa@gmail.com>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1773627756; c=relaxed/simple;
+	bh=/k+caWYYff434WaY+2GBc7G73Hh9Q9GVR2f3d3Rk5Y4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=VjOG/pC2wV19zv2i4HiJV8CUX4gjjEPbYrvH+/bfXyrDC/YbvAr7Fyt1/vnOZF44Y/1IXZ7oU6AC0D9VURR/9tx+8S4wqo9LaUEmpg6BVLX+kWxHdQvFODdZh/7NB88hZn3zwHknY6S3MIxkwS5ZjkIwRY++6fhFz4q6gZi0FQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=220.181.50.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
+From: "Li,Rongqing(ACG CCN)" <lirongqing@baidu.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "Paul E .
+ McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, "Li,Yongkang(ACG CCN)" <liyongkang01@baidu.com>
+Subject: =?gb2312?B?tPC4tDogWz8/Pz9dIFJlOiBbUEFUQ0hdW25ldC1uZXh0XSBuZXQvbWx4NTog?=
+ =?gb2312?B?RXhwZWRpdGUgbm90aWZpZXIgdW5yZWdpc3RyYXRpb24gZHVyaW5nIGRldmlj?=
+ =?gb2312?Q?e_teardown?=
+Thread-Topic: [????] Re: [PATCH][net-next] net/mlx5: Expedite notifier
+ unregistration during device teardown
+Thread-Index: AQHcsgViu7FW/OLoFkmiUoQHYBUjUrWtzQoAgAKl4sA=
+Date: Mon, 16 Mar 2026 02:21:44 +0000
+Message-ID: <d10a6aaff92249dd9b8e3ec9623492b7@baidu.com>
+References: <20260312094804.2744-1-lirongqing@baidu.com>
+ <20260314105426.36ae4cba@kernel.org>
+In-Reply-To: <20260314105426.36ae4cba@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-FEAS-Client-IP: 172.31.50.12
+X-FE-Policy-ID: 52:10:53:SYSTEM
+X-Spamd-Result: default: False [2.64 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[baidu.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18170-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_FROM(0.00)[bounces-18171-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryoheikinugawa@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3CCC9293ACC
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: 38C42294171
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-'subfuction' should be 'subfunction'
-
-Signed-off-by: Ryohei Kinugawa <ryohei.kinugawa@gmail.com>
----
- .../device_drivers/ethernet/mellanox/mlx5/kconfig.rst           | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst
-index 34e911480108..d549b43e00fa 100644
---- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst
-+++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/kconfig.rst
-@@ -120,7 +120,7 @@ Enabling the driver and kconfig options
- 
- **CONFIG_MLX5_SF_MANAGER=(y/n)**
- 
--|    Build support for subfuction port in the NIC. A Mellanox subfunction
-+|    Build support for subfunction port in the NIC. A Mellanox subfunction
- |    port is managed through devlink.  A subfunction supports RDMA, netdevice
- |    and vdpa device. It is similar to a SRIOV VF but it doesn't require
- |    SRIOV support.
--- 
-2.47.3
-
+PiBPbiBUaHUsIDEyIE1hciAyMDI2IDA1OjQ4OjA0IC0wNDAwIGxpcm9uZ3Fpbmcgd3JvdGU6DQo+
+ID4gRHVyaW5nIGRldmljZSBob3QtdW5wbHVnLCB0aGUgbWx4NSBkcml2ZXIgZXhwZWN0cyBxdWlj
+a2x5IHVucmVnaXN0ZXINCj4gPiBub3RpZmljYXRpb24gY2hhaW5zLiBUaGUgc3RhbmRhcmQgYXRv
+bWljX25vdGlmaWVyX2NoYWluX3VucmVnaXN0ZXIoKQ0KPiA+IGNhbGxzIHN5bmNocm9uaXplX3Jj
+dSgpLCB3aGljaCBpbnRyb2R1Y2VzIHNpZ25pZmljYW50IGxhdGVuY3kgYW5kIGNhbg0KPiA+IGJl
+Y29tZSBhIGJvdHRsZW5lY2sgZHVyaW5nIG1hc3MgcmVzb3VyY2UgY2xlYW51cC4NCj4gPg0KPiA+
+IEludHJvZHVjZSBhdG9taWNfbm90aWZpZXJfY2hhaW5fdW5yZWdpc3Rlcl9leHBlZGl0ZWQoKSB0
+byBsZXZlcmFnZQ0KPiA+IHN5bmNocm9uaXplX3JjdV9leHBlZGl0ZWQoKSwgYW5kIHVzZSBpdCBz
+aWduaWZpY2FudGx5IHJlZHVjaW5nIHdhaXQNCj4gPiB0aW1lcyBpbiB0aGUgZm9sbG93aW5nIHBh
+dGhzOg0KPiA+ICAtIEV2ZW50IFF1ZXVlIChFUSkgbm90aWZpZXIgY2hhaW4NCj4gPiAgLSBGaXJt
+d2FyZSBldmVudCBub3RpZmllciBjaGFpbg0KPiA+ICAtIElSUSBub3RpZmllciBjaGFpbg0KPiA+
+DQo+ID4gVGhpcyBhY2NlbGVyYXRpb24gZW5zdXJlcyBmYXN0ZXIgdGVhcmRvd24gZHVyaW5nIGhv
+dC11bnBsdWcgZXZlbnRzLg0KPiANCj4gU29tZSBkZXRhaWxlZCBleGFtcGxlIGFuZCBob3cgbG9u
+ZyB0aGUgd2hvbGUgb3BlcmF0aW9uIHRha2VzIHdvdWxkIGJlIGdyZWF0DQo+IGluIHRoZSBjb21t
+aXQgbXNnLg0KPiANCk9LLCBJIHdpbGwgYWRkIGluIHYyIA0KPiA+ICAvKioNCj4gPiArICoJYXRv
+bWljX25vdGlmaWVyX2NoYWluX3VucmVnaXN0ZXJfZXhwZWRpdGVkIC0gUmVtb3ZlIG5vdGlmaWVy
+IGZyb20gYW4NCj4gYXRvbWljIG5vdGlmaWVyIGNoYWluDQo+ID4gKyAqCUBuaDogUG9pbnRlciB0
+byBoZWFkIG9mIHRoZSBhdG9taWMgbm90aWZpZXIgY2hhaW4NCj4gPiArICoJQG46IEVudHJ5IHRv
+IHJlbW92ZSBmcm9tIG5vdGlmaWVyIGNoYWluDQo+ID4gKyAqDQo+ID4gKyAqCVJlbW92ZXMgYSBu
+b3RpZmllciBmcm9tIGFuIGF0b21pYyBub3RpZmllciBjaGFpbiBhbmQgZm9yY2VmdWxseQ0KPiA+
+ICsgKglhY2NlbGVyYXRlcyB0aGUgUkNVIGdyYWNlIHBlcmlvZC4NCj4gPiArICoNCj4gPiArICoJ
+UmV0dXJucyB6ZXJvIG9uIHN1Y2Nlc3Mgb3IgJS1FTk9FTlQgb24gZmFpbHVyZS4NCj4gDQo+IFdh
+cm5pbmc6IGtlcm5lbC9ub3RpZmllci5jOjIxMSBObyBkZXNjcmlwdGlvbiBmb3VuZCBmb3IgcmV0
+dXJuIHZhbHVlIG9mDQo+ICdhdG9taWNfbm90aWZpZXJfY2hhaW5fdW5yZWdpc3Rlcl9leHBlZGl0
+ZWQnDQo+IA0KPiBrZG9jIHdhbnRzIHlvdSB0byB1c2UgUmV0dXJuOiBvciBSZXR1cm5zOiB0aGUg
+Y29sb24gaXMgaG93IGl0IGtub3dzIHRoaXMgaXMgdGhlDQo+IGRvYyBmb3IgcmV0dXJuIHZhbHVl
+IG5vdCBqdXN0IGEgcmFuZG9tIG1lbnRpb24gb2YgdGhlIHdvcmQgUmV0dXJucw0KPiAtLQ0KSSB3
+aWxsIGZpeCB0aGlzIGluIHYyDQoNClRoYW5rIHlvdQ0KDQpbTGksUm9uZ3FpbmddIA0KDQo+IHB3
+LWJvdDogY3INCg==
 
