@@ -1,212 +1,168 @@
-Return-Path: <linux-rdma+bounces-18204-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18205-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CDFZOy9PuGlHbwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18204-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:42:55 +0100
+	id KHwtOOZUuGmKcAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18205-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 20:07:18 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889DC29F2B0
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C2429F83B
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 20:07:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7799C302B1B8
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 18:42:52 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3DFF73016EDA
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365C03E3DB1;
-	Mon, 16 Mar 2026 18:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63463E8C52;
+	Mon, 16 Mar 2026 19:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ufcf3msb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWmygqKM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC7D3E4C9D
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 18:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2363EE1F0;
+	Mon, 16 Mar 2026 19:07:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773686476; cv=none; b=QGB+AP0d2arqXnzcumvLKLVrDcyOnbTmJrovsBDW+VZ/jqpmGfJREoKn7sM+Z3C1UzjWkaREhq/ayo2h2t1WJrijPuYj+RzDNiz5PF32F3z62c3AZM0NgzLL0VAaPP2oen7lLLO0OghxRkIJQCILcmn4Lwk8DsorsHt6IMYy00k=
+	t=1773688028; cv=none; b=oc05SLCAc6djfWGvKkaLLfF8FF4Wwtuitn4lUpZLqYweNRNBiRx6CZiM4tCkk6g4Bn3vtOwog/99q2x4dCEgh2P0Us0E7bD/aitkeAk6QW+6lF39Lpc2oodrALAWNknaNedalkl4LW/S9BEdi4yoBJVBA8t8tnOKWZVsNcvFCFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773686476; c=relaxed/simple;
-	bh=wBLju+wWulDHlkOug6Cw3hTEbArb3Lq1MJ+cbr61FbE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XWDJqPJw2pMww6Qj7NqWVBZyFJJkt8DxBTHdDyITiw/1hJTvparu10v+sjKF+wBbd7Wsu6N0pm9aGv1V6apDtbJGYr3ydVAD7XlOeaIiCeIuNuL2HmSjYUEqzfIa8yoy+RO/l3e+PxPJLb676UTU8obI+gAGbUebo5LydhNR9jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ufcf3msb; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773686472; x=1805222472;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wBLju+wWulDHlkOug6Cw3hTEbArb3Lq1MJ+cbr61FbE=;
-  b=Ufcf3msba7IaRSYsCmbgvMpSQYgVIU9kheWGcxaTqg7mfu5mT9b/jzkk
-   wwJEujl6LGjIJ/P+ernIMPW0KpQ+sOxIiGYt5Tkm6b8/qw5msjzOYet01
-   73o5t8k2cppiUZ5OfYSxFsDARLkBAJl1kmO3L5ly3g1ZOo+ezfd64oYnw
-   cMrXIWMT3bBRhIxZk/bCymikdvhiVigZRcmrJFx19EYs8MdurmkiHeDJu
-   2zzpyROfTGJLSjOO+FSXHI4lsrB9YuDRcO11/N/WE2UfSd4zcLokuDqH9
-   8L2ace/5K6oFGevOWYFe6i5kDBX5khw9OT2hIwYvcJ/y0491LoYiFtpWQ
-   g==;
-X-CSE-ConnectionGUID: lOSIlrusTl6qjdKAtmrQFg==
-X-CSE-MsgGUID: zGTyrNYiTymRAOiIN2pkZQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11731"; a="86067637"
-X-IronPort-AV: E=Sophos;i="6.23,124,1770624000"; 
-   d="scan'208";a="86067637"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:55 -0700
-X-CSE-ConnectionGUID: P9KhtMiIR7KznQdYYFeiQg==
-X-CSE-MsgGUID: OILuMkWSRa+ntVueU7NMGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,124,1770624000"; 
-   d="scan'208";a="252520451"
-Received: from soc-pf51ragt.clients.intel.com ([10.122.184.229])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:53 -0700
-From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-To: jgg@nvidia.com,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	tatyana.e.nikolova@intel.com,
-	krzysztof.czurylo@intel.com,
-	Jacob Moroni <jmoroni@google.com>
-Subject: [for-next 12/12] RDMA/irdma: Add support for GEN4 hardware
-Date: Mon, 16 Mar 2026 13:39:49 -0500
-Message-ID: <20260316183949.261-13-tatyana.e.nikolova@intel.com>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
-References: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
+	s=arc-20240116; t=1773688028; c=relaxed/simple;
+	bh=BSXcvjYYI+K8eMOu0kcX0bUqyqggIH8za3wTFUV/fRI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rgLeU2T5JUlGowN1nm3f9CamEEMqDTnr1kwLY6vcUihX7l2yqlamTnjX7Q3hBz4svTBxa9v45Y2L1wtDLtiYrwbjz8N5FWKCvIEWc8xuihUbzdp2vFgg317vRiw/JGhaXK37dXAkjc6UwoRA3B/QNqu/V9xYu94I4Y/LkK38uRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWmygqKM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25585C19421;
+	Mon, 16 Mar 2026 19:07:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773688027;
+	bh=BSXcvjYYI+K8eMOu0kcX0bUqyqggIH8za3wTFUV/fRI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MWmygqKMf5IukIzyE0mKREyeicovCoeVR64iIVzD/t0+K7KBI5RvzMPxKz/LoHb7x
+	 xOHXIZ35Rt6sF53pc0zOVPn3frwe6PNiz+hfwCDaysJ0ukJP5/95D+6yNtmBpk4Bbm
+	 w6o1s8KKmA2UyWAdUnxBUfYwgJyG5hnjBpOjB8OK/7X3U3LXNz1h5XGezAtPbB3D79
+	 eMEHi81CfmmIIyk96FzF+FY7i/uyjM1oGTs4oAYO9rXntJXyFZV3ez7eZpaJgqvH5M
+	 uwSBnECwVz4eYc/YVKIJB8co//nPy4WwlgS8dBUToeWtn+SQS2G60403HC9Trukn0I
+	 6IQCI2/vdISBg==
+From: Leon Romanovsky <leon@kernel.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Petr Tesarik <ptesarik@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	=?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	linux-rdma@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v3 0/8] RDMA: Enable operation with DMA debug enabled
+Date: Mon, 16 Mar 2026 21:06:44 +0200
+Message-ID: <20260316-dma-debug-overlap-v3-0-1dde90a7f08b@nvidia.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20260305-dma-debug-overlap-21487c3fa02c
+X-Mailer: b4 0.15-dev-18f8f
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18204-lists,linux-rdma=lfdr.de];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18205-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:?];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[tatyana.e.nikolova@intel.com,linux-rdma@vger.kernel.org];
-	DMARC_DNSFAIL(0.00)[intel.com : SPF/DKIM temp error,none];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_SPAM(0.00)[0.951];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[6];
-	R_DKIM_TEMPFAIL(0.00)[intel.com:s=Intel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:mid]
-X-Rspamd-Queue-Id: 889DC29F2B0
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 59C2429F83B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Jacob Moroni <jmoroni@google.com>
+Add a new DMA_ATTR_REQUIRE_COHERENT attribute to the DMA API to mark
+mappings that must run on a DMA‑coherent system. Such buffers cannot
+use the SWIOTLB path, may overlap with CPU caches, and do not depend on
+explicit cache flushing.
 
-GEN4 hardware is similar to GEN3 and requires only a few special cases.
+Mappings using this attribute are rejected on systems where cache
+side‑effects could lead to data corruption, and therefore do not need
+the cache‑overlap debugging logic. This series also includes fixes for
+DMA_ATTR_CPU_CACHE_CLEAN handling.
+Thanks.
 
-Signed-off-by: Jacob Moroni <jmoroni@google.com>
-Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/irdma/ctrl.c       |  1 +
- drivers/infiniband/hw/irdma/hw.c         | 14 ++++++++++----
- drivers/infiniband/hw/irdma/ig3rdma_hw.c |  1 -
- drivers/infiniband/hw/irdma/irdma.h      |  1 +
- 4 files changed, 12 insertions(+), 5 deletions(-)
+Changes in v3:
+- Enriched commit messages and documentation
+- Added ROB tags
+- Link to v2: https://patch.msgid.link/20260311-dma-debug-overlap-v2-0-e00bc2ca346d@nvidia.com
 
-diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-index 13820f1a48a4..335ae3c82e17 100644
---- a/drivers/infiniband/hw/irdma/ctrl.c
-+++ b/drivers/infiniband/hw/irdma/ctrl.c
-@@ -6465,6 +6465,7 @@ static inline void irdma_sc_init_hw(struct irdma_sc_dev *dev)
- 		icrdma_init_hw(dev);
- 		break;
- 	case IRDMA_GEN_3:
-+	case IRDMA_GEN_4:
- 		ig3rdma_init_hw(dev);
- 		break;
- 	}
-diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-index 10eb21213cf9..c587872a430d 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -1082,6 +1082,7 @@ static int irdma_create_cqp(struct irdma_pci_f *rf)
- 		cqp_init_info.hw_maj_ver = IRDMA_CQPHC_HW_MAJVER_GEN_2;
- 		break;
- 	case IRDMA_GEN_3:
-+	case IRDMA_GEN_4:
- 		cqp_init_info.hw_maj_ver = IRDMA_CQPHC_HW_MAJVER_GEN_3;
- 		cqp_init_info.ts_override = 1;
- 		break;
-@@ -1508,7 +1509,7 @@ static int irdma_create_aeq(struct irdma_pci_f *rf)
- 		   hmc_info->hmc_obj[IRDMA_HMC_IW_CQ].cnt;
- 	aeq_size = min(aeq_size, dev->hw_attrs.max_hw_aeq_size);
- 	/* GEN_3 does not support virtual AEQ. Cap at max Kernel alloc size */
--	if (rf->rdma_ver == IRDMA_GEN_3)
-+	if (rf->rdma_ver >= IRDMA_GEN_3)
- 		aeq_size = min(aeq_size, (u32)((PAGE_SIZE << MAX_PAGE_ORDER) /
- 			       sizeof(struct irdma_sc_aeqe)));
- 	aeq->mem.size = ALIGN(sizeof(struct irdma_sc_aeqe) * aeq_size,
-@@ -1518,7 +1519,7 @@ static int irdma_create_aeq(struct irdma_pci_f *rf)
- 					 GFP_KERNEL | __GFP_NOWARN);
- 	if (aeq->mem.va)
- 		goto skip_virt_aeq;
--	else if (rf->rdma_ver == IRDMA_GEN_3)
-+	else if (rf->rdma_ver >= IRDMA_GEN_3)
- 		return -ENOMEM;
- 
- 	/* physically mapped aeq failed. setup virtual aeq */
-@@ -2192,8 +2193,13 @@ u32 irdma_initialize_hw_rsrc(struct irdma_pci_f *rf)
- 	set_bit(2, rf->allocated_pds);
- 
- 	INIT_LIST_HEAD(&rf->mc_qht_list.list);
--	/* stag index mask has a minimum of 14 bits */
--	mrdrvbits = 24 - max(get_count_order(rf->max_mr), 14);
-+
-+	if (rf->rdma_ver >= IRDMA_GEN_4)
-+		mrdrvbits = 24 - max(get_count_order(rf->max_mr), 16);
-+	else
-+		/* stag index mask has a minimum of 14 bits */
-+		mrdrvbits = 24 - max(get_count_order(rf->max_mr), 14);
-+
- 	rf->mr_stagmask = ~(((1 << mrdrvbits) - 1) << (32 - mrdrvbits));
- 
- 	return 0;
-diff --git a/drivers/infiniband/hw/irdma/ig3rdma_hw.c b/drivers/infiniband/hw/irdma/ig3rdma_hw.c
-index 2e8bb475e22a..f0361675c2de 100644
---- a/drivers/infiniband/hw/irdma/ig3rdma_hw.c
-+++ b/drivers/infiniband/hw/irdma/ig3rdma_hw.c
-@@ -113,7 +113,6 @@ void ig3rdma_init_hw(struct irdma_sc_dev *dev)
- 	dev->irq_ops = &ig3rdma_irq_ops;
- 	dev->hw_stats_map = ig3rdma_hw_stat_map;
- 
--	dev->hw_attrs.uk_attrs.hw_rev = IRDMA_GEN_3;
- 	dev->hw_attrs.uk_attrs.max_hw_wq_frags = IG3RDMA_MAX_WQ_FRAGMENT_COUNT;
- 	dev->hw_attrs.uk_attrs.max_hw_read_sges = IG3RDMA_MAX_SGE_RD;
- 	dev->hw_attrs.uk_attrs.max_hw_sq_chunk = IRDMA_MAX_QUANTA_PER_WR;
-diff --git a/drivers/infiniband/hw/irdma/irdma.h b/drivers/infiniband/hw/irdma/irdma.h
-index ff938a01d70c..b5ce515f4ee8 100644
---- a/drivers/infiniband/hw/irdma/irdma.h
-+++ b/drivers/infiniband/hw/irdma/irdma.h
-@@ -119,6 +119,7 @@ enum irdma_vers {
- 	IRDMA_GEN_1,
- 	IRDMA_GEN_2,
- 	IRDMA_GEN_3,
-+	IRDMA_GEN_4,
- 	IRDMA_GEN_NEXT,
- 	IRDMA_GEN_MAX = IRDMA_GEN_NEXT-1
- };
--- 
-2.31.1
+Changes in v2:
+- Added DMA_ATTR_REQUIRE_COHERENT attribute
+- Added HMM patch which needs this attribute as well
+- Renamed DMA_ATTR_CPU_CACHE_CLEAN to be DMA_ATTR_DEBUGGING_IGNORE_CACHELINES
+- Link to v1: https://patch.msgid.link/20260307-dma-debug-overlap-v1-0-c034c38872af@nvidia.com
+
+---
+Leon Romanovsky (8):
+      dma-debug: Allow multiple invocations of overlapping entries
+      dma-mapping: handle DMA_ATTR_CPU_CACHE_CLEAN in trace output
+      dma-mapping: Clarify valid conditions for CPU cache line overlap
+      dma-mapping: Introduce DMA require coherency attribute
+      dma-direct: prevent SWIOTLB path when DMA_ATTR_REQUIRE_COHERENT is set
+      iommu/dma: add support for DMA_ATTR_REQUIRE_COHERENT attribute
+      RDMA/umem: Tell DMA mapping that UMEM requires coherency
+      mm/hmm: Indicate that HMM requires DMA coherency
+
+ Documentation/core-api/dma-attributes.rst | 38 ++++++++++++++++++++++++-------
+ drivers/infiniband/core/umem.c            |  5 ++--
+ drivers/iommu/dma-iommu.c                 | 21 +++++++++++++----
+ drivers/virtio/virtio_ring.c              | 10 ++++----
+ include/linux/dma-mapping.h               | 15 ++++++++----
+ include/trace/events/dma.h                |  4 +++-
+ kernel/dma/debug.c                        |  9 ++++----
+ kernel/dma/direct.h                       |  7 +++---
+ kernel/dma/mapping.c                      |  6 +++++
+ mm/hmm.c                                  |  4 ++--
+ 10 files changed, 86 insertions(+), 33 deletions(-)
+---
+base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
+change-id: 20260305-dma-debug-overlap-21487c3fa02c
+
+Best regards,
+--  
+Leon Romanovsky <leonro@nvidia.com>
 
 
