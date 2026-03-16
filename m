@@ -1,77 +1,75 @@
-Return-Path: <linux-rdma+bounces-18191-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18192-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qHkrDUFHuGmLbAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18191-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:09:05 +0100
+	id GEpRGi9PuGlHbwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18192-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:42:55 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAFE729ED6A
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:09:04 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0CF29F29A
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5A907301DDD2
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 18:09:04 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9C8943040F83
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 18:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A68389109;
-	Mon, 16 Mar 2026 18:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1413E1CFD;
+	Mon, 16 Mar 2026 18:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="W6pixMuE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LOSKNGuO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.34.181.151])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38B2346782
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 18:08:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.34.181.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6109F3DFC6E
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 18:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773684541; cv=none; b=Lmw43imDvr4BOzXmYhDcbKVHzNpiCiQvslaJAEGd4NFfOtBM/j8VP9lMSqHKEaM3mvl+AjmZsWWyIgQyx+uPjYLYYhBPtmP3Q6wzAXCZsKSDX98qcKwBAZvIRISFoBKdCPshfLh5h6tPrD9dMwjfkflPE6ErROGfpRDPrc0s82Y=
+	t=1773686455; cv=none; b=GHl8f3w2YR8xsfy4Usy2XfbGvdR6pM8+l+OZZ6JgFUAxcE9BH5nvuSSN4BQww6YM+imHvz73b9ZXbrRzCkJ1t2s1txYYhfyUrjney4mud7ypW1BuquXLArrzxEqvf9FSPxUJ7v7CCobROerKcevDd+iIAOSjmL13D5eV2CdmbJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773684541; c=relaxed/simple;
-	bh=z3MeVHkvelwytsaKT/kgirwb6yLGocCJT+boM7S6jf0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QaX3UMq4MI0+AdckYb/1ik1XXOgWjPQFUJsArYQSWFNRtaLNNUkTs5x6y34QOuVbi8Rcc9wP7hTv39cGHmXLQDkImrldV9bUEF6KQvJlhwIHn7C02VWD/ujYzVq0rW0MNfkfTBgvFWsHMZ0r3nMcecrFdw3sVOpu8gdMytKyA/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=W6pixMuE; arc=none smtp.client-ip=52.34.181.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1773684538; x=1805220538;
+	s=arc-20240116; t=1773686455; c=relaxed/simple;
+	bh=el41HRONOrD+s1DEefkvDFf+kw5O9U7/+CJEMNwE7XY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CcwFxyKYcvJCt2FmKJ3Sv+YOkYSuxD3Xriu5UA6soA2yyvpWRVtc+WgV1c7fmHT+0QAtc77yt+ihHBKfsXS3X0xp/KuHwLre8Ebs+QQqhZeZhv+0FzRIiNYVZ1cGpAVtVYB7gqwWCr607UrJyVrIVi8i3V2plzYEYuq49UGDa94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LOSKNGuO; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1773686447; x=1805222447;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=d47aH07NMKw9Fyv2jUIxN9W+gKf7SWb6HLd2msxv/FM=;
-  b=W6pixMuEMeI3nMZ6eWhEJ1XJXbo0YL0C0EZxecAQyIzjxya/k31EtVYP
-   Ba1JlcZDfWSSGeTTF7qyBXzqSJUGsLf7AxKbEolfZAAcrZC/d6yzyXhrq
-   nLkPhM5le69gHz0ODkBeac2UGdZW3srtejxmplmlhqOqwTvHFmgESermt
-   WvDyBmwHuMPC98HlXUaAi8Yqvfx+TiuGkwzlf2mcyTKIdWocUrZ99oXG3
-   Yrfs1bLm0lQuf9S8eUwUtM3tsh+VO3CjCJXGaqSMym0K2ddB8HfASEBqw
-   aFa45HbHXZB+J1cmPs/KzzWtlEd/JZAC1XMCG5HGlS3hbpIylohzGFJRG
+  bh=el41HRONOrD+s1DEefkvDFf+kw5O9U7/+CJEMNwE7XY=;
+  b=LOSKNGuO2GRoYuuyZ0SkWgi6CBpd2pa+fB+TLOP2LH7nttPIkkrWCGla
+   E6mA0eDzm9v4taHADwDSqSFGVEYCvoGrNpyuNxasup79zKNEFYnTlZBkL
+   M/eEtapjU1gCsiVbTvGenZZ6VBhdqXTZueiggHzfUzcGTruiiQ7EQk+FL
+   wtXpBDKFFLUEYqJoKNLyLOesQheV4qAnnqv9WcrrVGnevR/Pg7aPNOwQm
+   hcVZ13WDqcTw8N6BPYcDfRBzf44/c4dpd/iAE++d9BSsCT4VfnioSpibY
+   jqrI/bir0rwX6haV9+yCcdYs3WNulWKy3OqZzkTHfyBjAoNArs/ydgjlN
    Q==;
-X-CSE-ConnectionGUID: /FK5VtbMSqW2olrfqW8wOA==
-X-CSE-MsgGUID: CZrBExr7T3WXAzlDYaRvbQ==
-X-IronPort-AV: E=Sophos;i="6.23,124,1770595200"; 
-   d="scan'208";a="15133613"
-Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
-  by internal-pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 18:08:55 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.178:28687]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.43.164:2525] with esmtp (Farcaster)
- id 88c0cd42-2a77-43f5-96bd-42c143351b99; Mon, 16 Mar 2026 18:08:55 +0000 (UTC)
-X-Farcaster-Flow-ID: 88c0cd42-2a77-43f5-96bd-42c143351b99
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 16 Mar 2026 18:08:55 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Mon, 16 Mar 2026
- 18:08:53 +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>
-Subject: [PATCH for-next] RDMA/efa: Rename alloc_ucontext comp_mask to supported_caps
-Date: Mon, 16 Mar 2026 18:08:46 +0000
-Message-ID: <20260316180846.30273-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.47.3
+X-CSE-ConnectionGUID: 33KGwc2lR5KN9SHksqh/lA==
+X-CSE-MsgGUID: 41PCYMX2ReWV/YGUBNQxvg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11731"; a="86067585"
+X-IronPort-AV: E=Sophos;i="6.23,124,1770624000"; 
+   d="scan'208";a="86067585"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:45 -0700
+X-CSE-ConnectionGUID: 3Y2P9dVmSDqlHHHrQvavKg==
+X-CSE-MsgGUID: QPzI+kNyRMGYrw81iJLSvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,124,1770624000"; 
+   d="scan'208";a="252520398"
+Received: from soc-pf51ragt.clients.intel.com ([10.122.184.229])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:42 -0700
+From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+To: jgg@nvidia.com,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	tatyana.e.nikolova@intel.com,
+	krzysztof.czurylo@intel.com
+Subject: [for-next 00/12] RDMA/irdma: A few fixes for irdma
+Date: Mon, 16 Mar 2026 13:39:37 -0500
+Message-ID: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -79,118 +77,97 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWC002.ant.amazon.com (10.13.139.230) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18191-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[amazon.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[intel.com:?];
+	TAGGED_FROM(0.00)[bounces-18192-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
-	RCPT_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	NEURAL_SPAM(0.00)[0.949];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[tatyana.e.nikolova@intel.com,linux-rdma@vger.kernel.org];
+	DMARC_DNSFAIL(0.00)[intel.com : query timed out];
 	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: EAFE729ED6A
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[5];
+	R_DKIM_TEMPFAIL(0.00)[intel.com:s=Intel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid]
+X-Rspamd-Queue-Id: 2F0CF29F29A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Following discussion [1], rename the comp_mask field in
-efa_ibv_alloc_ucontext_cmd to supported_caps to reflect its actual
-usage as a capabilities handshake mechanism rather than a standard
-comp_mask. Rename related constants and align function and macro names.
+This series includes a few irdma fixes:
 
-[1] https://lore.kernel.org/linux-rdma/20260312120858.GH1448102@nvidia.com/
+ - Change request_done type to atomic
+ - Change ah_valid type to atomic
+ - Clean up unnecessary dereference of event->cm_node
+ - Initialize free_qp completion before using it
+ - Harden SQ/RQ depth calculation functions
+ - Update ibqp state to error if QP is already in error state
+ - Fix deadlock during netdev reset with active connections
+ - Return EINVAL for invalid arp index error
+ - Remove a NOP wait_event() in irdma_modify_qp_roce()
+ - Remove reset check from irdma_modify_qp_to_err() to ensure disconnect
 
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- drivers/infiniband/hw/efa/efa_verbs.c | 17 +++++++++--------
- include/uapi/rdma/efa-abi.h           |  6 +++---
- 2 files changed, 12 insertions(+), 11 deletions(-)
+The series also include the following additions:
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index fc498663cd37..283c62d9cb3d 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1917,22 +1917,23 @@ static int efa_dealloc_uar(struct efa_dev *dev, u16 uarn)
- 	return efa_com_dealloc_uar(&dev->edev, &params);
- }
- 
--#define EFA_CHECK_USER_COMP(_dev, _comp_mask, _attr, _mask, _attr_str) \
--	(_attr_str = (!(_dev)->dev_attr._attr || ((_comp_mask) & (_mask))) ? \
-+#define EFA_CHECK_USER_SUPP(_dev, _supported_caps, _attr, _mask, _attr_str) \
-+	(_attr_str = (!(_dev)->dev_attr._attr || ((_supported_caps) & (_mask))) ? \
- 		     NULL : #_attr)
- 
--static int efa_user_comp_handshake(const struct ib_ucontext *ibucontext,
-+static int efa_user_supp_handshake(const struct ib_ucontext *ibucontext,
- 				   const struct efa_ibv_alloc_ucontext_cmd *cmd)
- {
- 	struct efa_dev *dev = to_edev(ibucontext->device);
- 	char *attr_str;
- 
--	if (EFA_CHECK_USER_COMP(dev, cmd->comp_mask, max_tx_batch,
--				EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH, attr_str))
-+	if (EFA_CHECK_USER_SUPP(dev, cmd->supported_caps, max_tx_batch,
-+				EFA_ALLOC_UCONTEXT_CMD_SUPP_CAPS_TX_BATCH,
-+				attr_str))
- 		goto err;
- 
--	if (EFA_CHECK_USER_COMP(dev, cmd->comp_mask, min_sq_depth,
--				EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR,
-+	if (EFA_CHECK_USER_SUPP(dev, cmd->supported_caps, min_sq_depth,
-+				EFA_ALLOC_UCONTEXT_CMD_SUPP_CAPS_MIN_SQ_WR,
- 				attr_str))
- 		goto err;
- 
-@@ -1966,7 +1967,7 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
- 		goto err_out;
- 	}
- 
--	err = efa_user_comp_handshake(ibucontext, &cmd);
-+	err = efa_user_supp_handshake(ibucontext, &cmd);
- 	if (err)
- 		goto err_out;
- 
-diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index 13225b038124..d5c18f8de182 100644
---- a/include/uapi/rdma/efa-abi.h
-+++ b/include/uapi/rdma/efa-abi.h
-@@ -22,12 +22,12 @@
-  */
- 
- enum {
--	EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH  = 1 << 0,
--	EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR = 1 << 1,
-+	EFA_ALLOC_UCONTEXT_CMD_SUPP_CAPS_TX_BATCH  = 1 << 0,
-+	EFA_ALLOC_UCONTEXT_CMD_SUPP_CAPS_MIN_SQ_WR = 1 << 1,
- };
- 
- struct efa_ibv_alloc_ucontext_cmd {
--	__u32 comp_mask;
-+	__u32 supported_caps;
- 	__u8 reserved_20[4];
- };
- 
+ - Add support for GEN4 hardware
+ - Provide scratch buffers to firmware for internal use
+
+Anil Samal (1):
+  RDMA/irdma: Fix deadlock during netdev reset with active connections
+
+Ivan Barrera (1):
+  RDMA/irdma: Clean up unnecessary dereference of event->cm_node
+
+Jacob Moroni (2):
+  RDMA/irdma: Initialize free_qp completion before using it
+  RDMA/irdma: Add support for GEN4 hardware
+
+Jay Bhat (1):
+  RDMA/irdma: Provide scratch buffers to firmware for internal use
+
+Krzysztof Czurylo (2):
+  RDMA/irdma: Fix data race on cqp_request->request_done
+  RDMA/irdma: Change ah_valid type to atomic
+
+Shiraz Saleem (1):
+  RDMA/irdma: Harden depth calculation functions
+
+Tatyana Nikolova (4):
+  RDMA/irdma: Update ibqp state to error if QP is already in error state
+  RDMA/irdma: Remove a NOP wait_event() in irdma_modify_qp_roce()
+  RDMA/irdma: Remove reset check from irdma_modify_qp_to_err()
+  RDMA/irdma: Return EINVAL for invalid arp index error
+
+ drivers/infiniband/hw/irdma/cm.c         | 31 +++++++++--------
+ drivers/infiniband/hw/irdma/ctrl.c       | 44 +++++++++++++++++++++++-
+ drivers/infiniband/hw/irdma/defs.h       |  4 +++
+ drivers/infiniband/hw/irdma/hw.c         | 27 ++++++++++++---
+ drivers/infiniband/hw/irdma/ig3rdma_hw.c |  1 -
+ drivers/infiniband/hw/irdma/irdma.h      |  1 +
+ drivers/infiniband/hw/irdma/main.h       |  2 +-
+ drivers/infiniband/hw/irdma/puda.c       |  2 +-
+ drivers/infiniband/hw/irdma/type.h       |  2 ++
+ drivers/infiniband/hw/irdma/uda.h        |  2 +-
+ drivers/infiniband/hw/irdma/uk.c         | 39 ++++++++++++---------
+ drivers/infiniband/hw/irdma/user.h       |  4 +--
+ drivers/infiniband/hw/irdma/utils.c      | 24 ++++++-------
+ drivers/infiniband/hw/irdma/verbs.c      | 16 +++++----
+ 14 files changed, 137 insertions(+), 62 deletions(-)
+
 -- 
-2.47.3
+2.31.1
 
 
