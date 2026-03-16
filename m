@@ -1,75 +1,76 @@
-Return-Path: <linux-rdma+bounces-18201-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18202-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kFH3CFhQuGlHbwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18201-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:47:52 +0100
+	id WGFqHV1QuGlHbwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18202-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:47:57 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA30529F399
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:47:51 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BDA029F3A8
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 19:47:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EE4A8309415C
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 18:42:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C34DE30967DC
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 18:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87AB3E4C9F;
-	Mon, 16 Mar 2026 18:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA30C3E51C6;
+	Mon, 16 Mar 2026 18:41:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T+7ZJzuL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZLPFO76P"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04F13E4C85
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 18:41:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9373E3DB1
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 18:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773686472; cv=none; b=tEHaqBU7Az29y+qn3WR7W8VvnqfDVYIUan7p2cYbJzJi2d4gYROMdFeWY/zzTzjZsTavk8q9fIQFPAQHoG42MhmMlErTXnau+nwO18gndTxniYWCLO1tu++As3wI+tu7VhMbyGCECbw3YvGy8faSaxk2wWxgpN4s3/gEdzqQdw0=
+	t=1773686475; cv=none; b=sTD50bY/f1breeKoo+NDupL6T5JuWmwvrNIX7KJzQAtwl9x03Rxv/JpXCyhH0ny3leYKmaKUwCzmRHfZgEPLqlFleOciTE9A9AaiKnjSWTmOeyrknEwnLeesbNsjdrvmkmJkRsa0kQ54nWMpuInAGUUalI13H2efrvRbDAZUJCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773686472; c=relaxed/simple;
-	bh=mnzlCxEk3JalcJk7G53bPfdDZdVFfszP0N7VVjZEGAk=;
+	s=arc-20240116; t=1773686475; c=relaxed/simple;
+	bh=u59NZuGnB1YhFhGYWaCTxCPWExiJiXkpQnXffvPPZoI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iVZMoSQhVrjiifufMk06mEdyCeqk9t2OaGEah/oSbYOKEaZwD3oD5eOgxOVifV2v045W5Y+LAz3J4Q/Z8y4poUpycyrt477NdsVNKNeyvdVz/jsbGKQT6RxlgE/5uaWaTMYf6Hc/Q9Xr4Qi05IN7g2NjLnz+pK8JppPknDS72TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T+7ZJzuL; arc=none smtp.client-ip=192.198.163.10
+	 MIME-Version; b=drLEihipcY2G023bVvlgn+ppXhgQ+ZBGIXqMVtkqedEvChVCLELfDGDnT/xVwP6bEW7V11w4gNZq1ZJ3V5J9ML+uDsFmPnd/CAr2h4grkonw3JTeJ2BFEetzUaiBx9+WzPJf3U3HqhN8yuk5OHvteL+3dpKGd+goMUXKZZ0I+UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZLPFO76P; arc=none smtp.client-ip=192.198.163.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773686468; x=1805222468;
+  t=1773686470; x=1805222470;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=mnzlCxEk3JalcJk7G53bPfdDZdVFfszP0N7VVjZEGAk=;
-  b=T+7ZJzuL5LlgkCmUQgjGBOKnbOIeFAOszINUWPoA+mAa9NjsHUtmsmPC
-   T9VKLeJhbfyRwTkeWqxkABEpUYOry0bz5c1siPzGq/Fs7zoQx7RcRjRZJ
-   YFwg19JCGfbJTQH1I17451VXDuNRcpp0Hyz3sRMnTLWiMyKV4IF+SLj4s
-   rhNDromH0msTd4z3HYGfC0wH7fHyJNhYkIPbRy6OZYrpxStbdftRw3pJv
-   HOWIO5OfR5JfEi4qM6AHuU8oj9WM4s6bPjdjan3o7ieavTSVTJRizyFhq
-   WU3qSJDa3Jo1+KyPt9t+LUQaj0YG2wVXgvMObexGYvOsrpfGrfW2Qw8+5
-   A==;
-X-CSE-ConnectionGUID: uJS8c7Q0R96mIQx5gYZPjQ==
-X-CSE-MsgGUID: LRfn9pWGRRm/6ym3v1fS2Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11731"; a="86067624"
+  bh=u59NZuGnB1YhFhGYWaCTxCPWExiJiXkpQnXffvPPZoI=;
+  b=ZLPFO76P/MtwCjTd6ZarQ0Ph5TJFHlxxjWt5IRr8VgL1lEoXnIv/GaPd
+   hzr0J6zDxYQKddpMK3RCDQTmKoBMiQ+EGDjCYQTbRHSi0lOTV5M+Zm3dr
+   je11/haQggYX6WJ3KZRkuBZqKmwZwF4b8xVaCVmMyjjOfaUP2TCtsIq0i
+   Diw7E5xr99bS3W4JBJSHFPX1akJQVfwKV+5P+lCRBlKel8Tol8y0J90sf
+   228BifEpLGY6gIFE0Ord7yIpzYGODankhD1PlPvMyu+wTT1VIBcwQoiSy
+   h211E4eRiq/XQnNytFcD6W6l5WTAnOweZcqOZrmTyuCYCeKdM52uY2miA
+   w==;
+X-CSE-ConnectionGUID: RwVcVIl9QR+iiyubB5XokA==
+X-CSE-MsgGUID: pSEKw626QZed/NX7aOMb0g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11731"; a="86067630"
 X-IronPort-AV: E=Sophos;i="6.23,124,1770624000"; 
-   d="scan'208";a="86067624"
+   d="scan'208";a="86067630"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:52 -0700
-X-CSE-ConnectionGUID: m0twXoDGRROPeAAlGFJrKA==
-X-CSE-MsgGUID: 437zMdokRfybhRCpqlS+4w==
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:53 -0700
+X-CSE-ConnectionGUID: +0A2ERqdRaaFWiNlcSStTQ==
+X-CSE-MsgGUID: BSJNHLB7Qvy87kEl1FEIsg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,124,1770624000"; 
-   d="scan'208";a="252520437"
+   d="scan'208";a="252520443"
 Received: from soc-pf51ragt.clients.intel.com ([10.122.184.229])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:50 -0700
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2026 11:40:51 -0700
 From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 To: jgg@nvidia.com,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	tatyana.e.nikolova@intel.com,
-	krzysztof.czurylo@intel.com
-Subject: [for-next 09/12] RDMA/irdma: Return EINVAL for invalid arp index error
-Date: Mon, 16 Mar 2026 13:39:46 -0500
-Message-ID: <20260316183949.261-10-tatyana.e.nikolova@intel.com>
+	krzysztof.czurylo@intel.com,
+	Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [for-next 10/12] RDMA/irdma: Harden depth calculation functions
+Date: Mon, 16 Mar 2026 13:39:47 -0500
+Message-ID: <20260316183949.261-11-tatyana.e.nikolova@intel.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
 References: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
@@ -83,105 +84,129 @@ Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18201-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18202-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	FROM_NEQ_ENVFROM(0.00)[tatyana.e.nikolova@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,intel.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AA30529F399
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:dkim,intel.com:email,intel.com:mid]
+X-Rspamd-Queue-Id: 2BDA029F3A8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When rdma_connect() fails due to an invalid arp index, user space rdma core
-reports ENOMEM which is confusing. Modify irdma_make_cm_node() to return the
-correct error code.
+From: Shiraz Saleem <shiraz.saleem@intel.com>
 
-Fixes: 146b9756f14c ("RDMA/irdma: Add connection manager")
+An issue was exposed where OS can pass in U32_MAX for SQ/RQ/SRQ size.
+This can cause integer overflow and truncation of SQ/RQ/SRQ depth
+returning a success when it should have failed.
+
+Harden the functions to do all depth calculations and boundary
+checking in u64 sizes.
+
+Fixes: 563e1feb5f6e ("RDMA/irdma: Add SRQ support")
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 ---
- drivers/infiniband/hw/irdma/cm.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/irdma/uk.c | 39 ++++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
-index 6557e1299a47..c952b735e187 100644
---- a/drivers/infiniband/hw/irdma/cm.c
-+++ b/drivers/infiniband/hw/irdma/cm.c
-@@ -2241,11 +2241,12 @@ irdma_make_cm_node(struct irdma_cm_core *cm_core, struct irdma_device *iwdev,
- 	int oldarpindex;
- 	int arpindex;
- 	struct net_device *netdev = iwdev->netdev;
-+	int ret;
+diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
+index ac3721a5747a..4718acf6c6fd 100644
+--- a/drivers/infiniband/hw/irdma/uk.c
++++ b/drivers/infiniband/hw/irdma/uk.c
+@@ -1438,7 +1438,7 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+  * irdma_round_up_wq - return round up qp wq depth
+  * @wqdepth: wq depth in quanta to round up
+  */
+-static int irdma_round_up_wq(u32 wqdepth)
++static u64 irdma_round_up_wq(u64 wqdepth)
+ {
+ 	int scount = 1;
  
- 	/* create an hte and cm_node for this instance */
- 	cm_node = kzalloc_obj(*cm_node, GFP_ATOMIC);
- 	if (!cm_node)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
+@@ -1491,15 +1491,16 @@ void irdma_get_wqe_shift(struct irdma_uk_attrs *uk_attrs, u32 sge,
+ int irdma_get_sqdepth(struct irdma_uk_attrs *uk_attrs, u32 sq_size, u8 shift,
+ 		      u32 *sqdepth)
+ {
+-	u32 min_size = (u32)uk_attrs->min_hw_wq_size << shift;
++	u32 min_hw_quanta = (u32)uk_attrs->min_hw_wq_size << shift;
++	u64 hw_quanta =
++		irdma_round_up_wq(((u64)sq_size << shift) + IRDMA_SQ_RSVD);
  
- 	/* set our node specific transport info */
- 	cm_node->ipv4 = cm_info->ipv4;
-@@ -2348,8 +2349,10 @@ irdma_make_cm_node(struct irdma_cm_core *cm_core, struct irdma_device *iwdev,
- 			arpindex = -EINVAL;
- 	}
+-	*sqdepth = irdma_round_up_wq((sq_size << shift) + IRDMA_SQ_RSVD);
+-
+-	if (*sqdepth < min_size)
+-		*sqdepth = min_size;
+-	else if (*sqdepth > uk_attrs->max_hw_wq_quanta)
++	if (hw_quanta < min_hw_quanta)
++		hw_quanta = min_hw_quanta;
++	else if (hw_quanta > uk_attrs->max_hw_wq_quanta)
+ 		return -EINVAL;
  
--	if (arpindex < 0)
-+	if (arpindex < 0) {
-+		ret = -EINVAL;
- 		goto err;
-+	}
- 
- 	ether_addr_copy(cm_node->rem_mac,
- 			iwdev->rf->arp_table[arpindex].mac_addr);
-@@ -2360,7 +2363,7 @@ irdma_make_cm_node(struct irdma_cm_core *cm_core, struct irdma_device *iwdev,
- err:
- 	kfree(cm_node);
- 
--	return NULL;
-+	return ERR_PTR(ret);
++	*sqdepth = hw_quanta;
+ 	return 0;
  }
  
- static void irdma_destroy_connection(struct irdma_cm_node *cm_node)
-@@ -3021,8 +3024,8 @@ static int irdma_create_cm_node(struct irdma_cm_core *cm_core,
+@@ -1513,15 +1514,16 @@ int irdma_get_sqdepth(struct irdma_uk_attrs *uk_attrs, u32 sq_size, u8 shift,
+ int irdma_get_rqdepth(struct irdma_uk_attrs *uk_attrs, u32 rq_size, u8 shift,
+ 		      u32 *rqdepth)
+ {
+-	u32 min_size = (u32)uk_attrs->min_hw_wq_size << shift;
+-
+-	*rqdepth = irdma_round_up_wq((rq_size << shift) + IRDMA_RQ_RSVD);
++	u32 min_hw_quanta = (u32)uk_attrs->min_hw_wq_size << shift;
++	u64 hw_quanta =
++		irdma_round_up_wq(((u64)rq_size << shift) + IRDMA_RQ_RSVD);
  
- 	/* create a CM connection node */
- 	cm_node = irdma_make_cm_node(cm_core, iwdev, cm_info, NULL);
--	if (!cm_node)
--		return -ENOMEM;
-+	if (IS_ERR(cm_node))
-+		return PTR_ERR(cm_node);
+-	if (*rqdepth < min_size)
+-		*rqdepth = min_size;
+-	else if (*rqdepth > uk_attrs->max_hw_rq_quanta)
++	if (hw_quanta < min_hw_quanta)
++		hw_quanta = min_hw_quanta;
++	else if (hw_quanta > uk_attrs->max_hw_rq_quanta)
+ 		return -EINVAL;
  
- 	/* set our node side to client (active) side */
- 	cm_node->tcp_cntxt.client = 1;
-@@ -3219,9 +3222,9 @@ void irdma_receive_ilq(struct irdma_sc_vsi *vsi, struct irdma_puda_buf *rbuf)
- 		cm_info.cm_id = listener->cm_id;
- 		cm_node = irdma_make_cm_node(cm_core, iwdev, &cm_info,
- 					     listener);
--		if (!cm_node) {
-+		if (IS_ERR(cm_node)) {
- 			ibdev_dbg(&cm_core->iwdev->ibdev,
--				  "CM: allocate node failed\n");
-+				  "CM: allocate node failed ret=%ld\n", PTR_ERR(cm_node));
- 			refcount_dec(&listener->refcnt);
- 			return;
- 		}
++	*rqdepth = hw_quanta;
+ 	return 0;
+ }
+ 
+@@ -1535,13 +1537,16 @@ int irdma_get_rqdepth(struct irdma_uk_attrs *uk_attrs, u32 rq_size, u8 shift,
+ int irdma_get_srqdepth(struct irdma_uk_attrs *uk_attrs, u32 srq_size, u8 shift,
+ 		       u32 *srqdepth)
+ {
+-	*srqdepth = irdma_round_up_wq((srq_size << shift) + IRDMA_RQ_RSVD);
++	u32 min_hw_quanta = (u32)uk_attrs->min_hw_wq_size << shift;
++	u64 hw_quanta =
++		irdma_round_up_wq(((u64)srq_size << shift) + IRDMA_RQ_RSVD);
+ 
+-	if (*srqdepth < ((u32)uk_attrs->min_hw_wq_size << shift))
+-		*srqdepth = uk_attrs->min_hw_wq_size << shift;
+-	else if (*srqdepth > uk_attrs->max_hw_srq_quanta)
++	if (hw_quanta < min_hw_quanta)
++		hw_quanta = min_hw_quanta;
++	else if (hw_quanta > uk_attrs->max_hw_srq_quanta)
+ 		return -EINVAL;
+ 
++	*srqdepth = hw_quanta;
+ 	return 0;
+ }
+ 
 -- 
 2.31.1
 
