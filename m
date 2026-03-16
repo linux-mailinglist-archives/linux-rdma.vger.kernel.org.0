@@ -1,129 +1,250 @@
-Return-Path: <linux-rdma+bounces-18182-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18183-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CDf7C2ETuGk7YwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18182-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 15:27:45 +0100
+	id +DaRJmMluGmNZgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18183-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 16:44:35 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D4829B55C
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 15:27:44 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FDCD29CA9E
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 16:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8F0CA300853E
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 14:27:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8AB3C300B3E0
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2026 15:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6131A27BF79;
-	Mon, 16 Mar 2026 14:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98B53A1D01;
+	Mon, 16 Mar 2026 15:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDW7PZos"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dItczp0J"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259532798ED
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2026 14:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EB739FCA5;
+	Mon, 16 Mar 2026 15:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773671262; cv=none; b=Wlb3NtmJnB7kTArDnh2OLh+IisYSZMOU7+l2W3JJwccYU/3diMJi3QKKSpJ0t6Fs7uwCwB+fEzESjZLPd1CInDgz3OIUKXJJMa/b831wwVj0EXQKbgGYt380TtsrErWSc5+e4qLVnCLSNb4v9cRjz4d0EUlvADwgqyiVhH3DDUo=
+	t=1773675857; cv=none; b=Wl0qspi+6sLTnl16w2FOD1dU6wxX9XyOKKZVd4KVojvCgK4aIf7fNItmxxF5FwlEbqIozENifyWfuQgL8ebesqQ+NpRfJy9dHPWQUHiFk7nhb2zo99tY7b9x1W0rp96dKeoZkRDgL5fklITUaqC1VWpXzpEDWzGHZcGxFulK4BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773671262; c=relaxed/simple;
-	bh=/NCT4N6e1sp+f7T5xJx4o+pZm0SJg8oWbphgWi/vD6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fEOY7IzWIMpxqRVfs5yBZKrgUxDnp1IGGmTHOoRUBTcbRHQe8Sf4v9BqvQkp9L/Aha7AO2Ab6TS8kuehPTo5+QCr0z74+lIyXeuyHbtqoo+/XcpLUBjWNOG3npnNDL7SKD1pe7RmToI3CwwsdbNDHMxFSQKMmaTLb0ltLtwbp6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDW7PZos; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BB18C19421;
-	Mon, 16 Mar 2026 14:27:41 +0000 (UTC)
+	s=arc-20240116; t=1773675857; c=relaxed/simple;
+	bh=rdPrmaCVzwqoOdH/w9Rq+WAUu6772RowRxAGuiDTynE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M4TbQALfGtxSs5dAyVriT+dC7KlEizhcnJ24ud85ekzMKpAl2VLX2u5w/uFfD1l+ZRJUqEk9Q105d2WmumRlwkXTdm1sFxiiZ8ZrNuoDg1iBzkpwq8c+ZMQkJhdi8UCIfUkFWmlvDTmsUe9dSH9+5IO9lLdUEjXtmePMHxoleAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dItczp0J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D886C19421;
+	Mon, 16 Mar 2026 15:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773671261;
-	bh=/NCT4N6e1sp+f7T5xJx4o+pZm0SJg8oWbphgWi/vD6I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eDW7PZosJvgsfFKAvJhTOid5mLVKstKq6l1t4jMjl+/6/LozDyKY4M6BVmX34Jki8
-	 XoqVYaOniPlx71l9ZZOlIrHI1urC64vXpXSWdiJoXq0i8Eoez5K4n1MBHXsyLfBdSZ
-	 kC+iD1Nt5TiKgGJ3VWVHhgl5GOo9gJVo7k4aLL4aQgj3MFuf7tGVeyPlvwuMP7aGMR
-	 9bbaO6a07xJqejyE5p4SkstUnMBUjs/5g2bxWFrPqm6mXqcnJbYZLkrhp5T6PgP8i3
-	 F4A08g70+QBZ6055gkoGDez5yQ/InOrtJeZhveZt5DQOtJXoP9DCfUvnfv/IAnktiT
-	 HYTiKDdYLy/VQ==
-Date: Mon, 16 Mar 2026 16:27:38 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: jgg@ziepe.ca, Dean Luick <dean.luick@cornelisnetworks.com>,
-	Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hfi2: Consolidate ABI files and setup
- uverbs access
-Message-ID: <20260316142738.GB61385@unreal>
-References: <177325043749.53056.7110333022279342594.stgit@awdrv-04.cornelisnetworks.com>
+	s=k20201202; t=1773675857;
+	bh=rdPrmaCVzwqoOdH/w9Rq+WAUu6772RowRxAGuiDTynE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dItczp0J7s3JbcmLYw6T+eYP8v6IxOLER3X08QrxDCF7vJ+LChgARvJWxxMSq9mCQ
+	 Zvuu6WN0xxAIrCiYX3UmyTUT614rpbkHr3r/yT8q0XC21gxKHkqVJZlgGailW5/21/
+	 QnpDs/s4WjNZVsHLJ5zbQngX0+8gkrOcdZxxp3Brg4jcKLq0te5gRz65FbOzKutoY3
+	 2Q+YgJinfB+TdSi6Nr/D8JVYKF9nvtK9VMjXrYqpxPRIl/ocOqmmZSUdZo9vqfd9N9
+	 QWuF7U4K2TuyKe1Sd2b+nTJgX2qIkGklDPE210SPSgeBnjUIkvvYtYwfRmpTL9Tuqe
+	 U3/fQMbmPNMMA==
+Message-ID: <f62948c5-8e40-4bb6-af30-c63b79112904@kernel.org>
+Date: Mon, 16 Mar 2026 16:44:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <177325043749.53056.7110333022279342594.stgit@awdrv-04.cornelisnetworks.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/10 net-next v2] ipv6: convert CONFIG_IPV6 to built-in
+ only and clean up Kconfigs
+To: Fernando Fernandez Mancera <fmancera@suse.de>, netdev@vger.kernel.org
+Cc: rbm@suse.com, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+ Simon Horman <horms@kernel.org>, Saurav Kashyap <skashyap@marvell.com>,
+ Javed Hasan <jhasan@marvell.com>,
+ "maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
+ <GR-QLogic-Storage-Upstream@marvell.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nilesh Javali <njavali@marvell.com>,
+ Manish Rangankar <mrangankar@marvell.com>, Varun Prakash
+ <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>,
+ David Teigland <teigland@redhat.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>,
+ Nikolay Aleksandrov <razor@blackwall.org>, David Ahern <dsahern@kernel.org>,
+ Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
+ Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>,
+ Marc Dionne <marc.dionne@auristor.com>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+ Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Eric Biggers <ebiggers@kernel.org>,
+ Michal Simek <michal.simek@amd.com>, Luca Weiss <luca.weiss@fairphone.com>,
+ Sven Peter <sven@kernel.org>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>,
+ Kuan-Wei Chiu <visitorckw@gmail.com>, Ryota Sakamoto
+ <sakamo.ryota@gmail.com>, Kir Chou <note351@hotmail.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Vikas Gupta <vikas.gupta@broadcom.com>,
+ Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
+ Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
+ =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+ "open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>,
+ "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>,
+ "open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
+ <linux-scsi@vger.kernel.org>,
+ "open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>,
+ "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>,
+ "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+ "open list:NETFILTER" <coreteam@netfilter.org>,
+ "open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>,
+ "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>,
+ "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+References: <20260310153506.5181-1-fmancera@suse.de>
+ <20260310153506.5181-2-fmancera@suse.de>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 a/A=
+In-Reply-To: <20260310153506.5181-2-fmancera@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18182-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[suse.com,linux-m68k.org,ziepe.ca,kernel.org,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,hotmail.com,gondor.apana.org.au,blochl.de,vger.kernel.org,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
+	TAGGED_FROM(0.00)[bounces-18183-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[69];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[krzk@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 96D4829B55C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux-m68k.org:url]
+X-Rspamd-Queue-Id: 4FDCD29CA9E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 11, 2026 at 01:33:57PM -0400, Dennis Dalessandro wrote:
-> hfi1 driver is being replaced eventually with an hfi2 driver. Until that
-> happens rather than have all the duplicated code in header files, make hfi1
-> use hfi2 variants where it can. When compatibility breaks we'll keep a
-> separate hfi1 version.
+On 10/03/2026 16:34, Fernando Fernandez Mancera wrote:
+> Maintaining a modular IPv6 stack offers image size and memory savings
+> for specific setups, this benefit is outweighed by the architectural
+> burden it imposes on the subsystems on implementation and maintenance.
+> Therefore, drop it.
 > 
-> This is the case for the <dev>_status struture. The hfi1 varaint is single
-> port and uses a freezemsg char array while the new hfi2 chip provides
-> multiple ports and thus needs and array of ports.
+> Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
+> dependencies across the tree that explicitly checked for IPV6=m. In
+> addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
+> and MODULE_LICENSE().
 > 
-> Likewise the tid info struct is expanded for hfi2 so we include both an
-> hfi1 and hfi2 vaiant.
+> This is also replacing module_init() by device_initcall(). It is not
+> possible to use fs_initcall() as IPv4 does because that creates a race
+> condition on IPv6 addrconf.
 > 
-> There is a naming conflict with the trace_hfi1_ctxt_info() call. It has been
-> renamed to remove the 1 from the function name to keep the code readable
-> but allow it to compile due to the #define in hfi1_ioctl.h.
+> Finally, modify the default configs from CONFIG_IPV6=m to CONFIG_IPV6=y
+> except for m68k as according to the bloat-o-meter the image is
+> increasing by 330KB~ and that isn't acceptable. Instead, disable IPv6 on
+> this architecture by default. This is aligned with m68k RAM requirements
+> and recommendations [1].
 > 
-> The big departure from hfi1 is that we are no longer supporting access from
-> users through a private character device. Instead we define two custom
-> verbs ojects. dv0/1, which proivdes methods for what in hfi1 are individual
-> IOCTLs. We have added an additional method to get stats related to page
-> pinning done by the driver.
+> [1] http://www.linux-m68k.org/faq/ram.html
 > 
-> The reason we are not removing the hfi1_ioctl.h and hfi1_user.h header
-> files is user application compatibility. User apps depend on having these
-> files available. Once user apps have converted and hfi1 is removed these
-> files will be deleted as well.
+> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+> ---
+> v2: updated m68k default configuration to CONFIG_IPV6=n and used
+> device_initcall() instead fs_initcall() to avoid a race condition.
 
-What are the applications that use include/uapi/rdma/hfi/hfi1_* directly?
-I have hard time to find any application on github which includes them.
+Don't know exavtly netdev policy about merging cover letters, but if the
+cover letter does not end up merged (e.g. with b4), then please move
+other bloatometer stats here. Although the best if cover letter is
+simply merged.
 
-Thanks
+> ---
+>  arch/arm64/configs/defconfig                |  2 +-
+
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org> # arm64
+
+>  arch/m68k/configs/amiga_defconfig           | 45 +-------------------
+>  arch/m68k/configs/apollo_defconfig          | 46 +-------------------
+>  arch/m68k/configs/atari_defconfig           | 45 +-------------------
+>  arch/m68k/configs/bvme6000_defconfig        | 45 +-------------------
+>  arch/m68k/configs/hp300_defconfig           | 47 +--------------------
+>  arch/m68k/configs/mac_defconfig             | 45 +-------------------
+>  arch/m68k/configs/multi_defconfig           | 45 +-------------------
+>  arch/m68k/configs/mvme147_defconfig         | 45 +-------------------
+>  arch/m68k/configs/mvme16x_defconfig         | 45 +-------------------
+>  arch/m68k/configs/q40_defconfig             | 45 +-------------------
+>  arch/m68k/configs/sun3_defconfig            | 45 +-------------------
+>  arch/m68k/configs/sun3x_defconfig           | 45 +-------------------
+
+Thanks Fernando for addressing the comments. Great job!
+
+Best regards,
+Krzysztof
 
