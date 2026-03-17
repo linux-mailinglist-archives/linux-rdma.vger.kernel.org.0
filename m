@@ -1,157 +1,136 @@
-Return-Path: <linux-rdma+bounces-18265-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18266-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KIRABHlzuWm8EgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18265-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 16:30:01 +0100
+	id IIh4GwGCuWmxHAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18266-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 17:32:01 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567962AD0F9
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 16:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0EC2AE050
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 17:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 96977305B470
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 15:26:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 55A3630BC598
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 16:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364B73E867E;
-	Tue, 17 Mar 2026 15:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6278A3161A1;
+	Tue, 17 Mar 2026 16:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWPgrlBI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DvMKgq9d"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEBC62DCC1C
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2026 15:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FBB31327F;
+	Tue, 17 Mar 2026 16:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773761188; cv=none; b=kFSUZqV4+0yu26wCoSA7APNC5+L0X6h4lELVZfDAB+4w7E5i+hVF7dlhFgPRpjr198rdaAAtsqrjXJCwecvOiq5oiqLMgrvRIh5OfJGpuLKxlx3Lto1dWXzM0/C5FhClbtmQWt160YtTVPAdbmqrf2qnO1xbruDnv5q6fs1mhmo=
+	t=1773764677; cv=none; b=ed351LE5HW10mZuH4pg3vXRFoUUbXH4QMSmxXQmL56HxmJY/7wPGftyrU/WBZJVV/EmpCp+Eg7dPtfDqGtM3X+amDYQNCSBGGIXkX1RsslMoIO7DNP5ber3HFFsuvB0ntSR/K982yUVhhwg8FGLHgtOpb4os2c/AGMz1NDkTv8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773761188; c=relaxed/simple;
-	bh=4AMERsTXdrPKHLtcoeTcSSizD6aR3Nfyj9rtRZkUCLY=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=utUHLa4ci+MWmBhnedRxnwsj1S5Jb/4ZPy6LD48yKKZNZUzyEZsjHlE+pdXJG+n412QM9BOjdhxhcdxusV/sLNwPNFpVgb5qSYI+LFG/bz3BjS2NPV24Z+nKcTdd+8Yrc+kbredOeyvY1usAhlZWNnjksyHSwoNauilvpw4guK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWPgrlBI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61CC8C4AF0B;
-	Tue, 17 Mar 2026 15:26:27 +0000 (UTC)
+	s=arc-20240116; t=1773764677; c=relaxed/simple;
+	bh=tg2TDiviKq7wj8EPRzpo5HT6fVsd7jc9gd/Lg9snXsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=phxh/cTb44JV/CLhs+TaPjHmqaB98aH6DI2NnFbaZGZbppM5b43k2jmcxXl59uIWJo5IpKJG2lZnx76kfqcV7JZ4FGeGavPzHO9VnPRcqIVakMDSZNRMDXVK/zNDUMRRMoMT0pyr6IeXYxzWU02DyeZBqHc+sm5QLr0yZzMEp9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DvMKgq9d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D393C4CEF7;
+	Tue, 17 Mar 2026 16:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773761187;
-	bh=4AMERsTXdrPKHLtcoeTcSSizD6aR3Nfyj9rtRZkUCLY=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=MWPgrlBIXR/xBLawjI6aqKc0iU1AEFYbLOASVqVVQFiA0UZSe+KV80gH9NTlokCfJ
-	 Nup3JSRxksOHgKkgWDh7K0/VzfvGJvTfaKJNbmg3KxQvUd3CwghIPrDQCCYF0ss0Y7
-	 JfZ/2XfYAiNgLb1NtyaFftVdCupWx+tgZ1ByUmwdoSlj8ChfBEtxhT8g9WL9MPUkR1
-	 gvbpFxFoarwfFP9k7sOkP8Gk1Tw26Jeu/ngd0jT+rk1BKTg6dApisf0xHshmJ1yXc2
-	 VEQztqpnqNDsJDIBsedosk6LzmK9BIV3Rc8efafqs7u+8PDZuWZ8TSc/yUlfAQAJJ5
-	 p43KD2npHO2aQ==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 6DC72F40083;
-	Tue, 17 Mar 2026 11:26:26 -0400 (EDT)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Tue, 17 Mar 2026 11:26:26 -0400
-X-ME-Sender: <xms:onK5aaqhusnrdcnTEj41akiAhtRJkMckUID3SS83MbCplcyaVy2aPA>
-    <xme:onK5aTdl_OEsHSMutslWux7dha9L5Kkgl_xsH8CF4aFYry33csdIgdDQlGkfw_LId
-    3xAR4DpYt0AGjgB47Jd7qEUsPC5ogAYFSUWV917JtUJQmeZrntOIko>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdduieduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
-    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
-    hnpefhffekffeftdfgheeiveekudeuhfdvjedvfedvueduvdegleekgeetgfduhfefleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhutg
-    hklhgvvhgvrhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeifeegleel
-    leehledqfedvleekgeegvdefqdgtvghlpeepkhgvrhhnvghlrdhorhhgsehfrghsthhmrg
-    hilhdrtghomhdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehhtghhsehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepjhhlrgihth
-    honheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhgvohhnsehkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehhtghhsehlshhtrdguvgdprhgtphhtthhopegthhhutghkrdhlvg
-    hvvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopegurghirdhnghhosehorhgrtghl
-    vgdrtghomhdprhgtphhtthhopehnvghilhgssehofihnmhgrihhlrdhnvghtpdhrtghpth
-    htohepohhkohhrnhhivghvsehrvgguhhgrthdrtghomhdprhgtphhtthhopehtohhmseht
-    rghlphgvhidrtghomh
-X-ME-Proxy: <xmx:onK5acMj94za36VvpGSM20rOttclYjsnUfxhsZJLR0y7UqfJefvH_w>
-    <xmx:onK5ae0-BBjHswNhLg6J3kX9YbobbBGzyzmDYjJcqXQvoAQ2Y30VVg>
-    <xmx:onK5aQTUnmJWFzoTdyhJBFnXBP1tDJbtOSa5o3SoTlL6YaCtqvhwzw>
-    <xmx:onK5aZlI_Vg9buybQnUdhHpy5NH-LL6oubWiILkve-fc-DyJPJjidw>
-    <xmx:onK5aZOYbtYZFxuekj3A-qf28QBLbGLcr7f69IltcdyGlzb6PpYG_IQw>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 3F779780077; Tue, 17 Mar 2026 11:26:26 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=k20201202; t=1773764677;
+	bh=tg2TDiviKq7wj8EPRzpo5HT6fVsd7jc9gd/Lg9snXsQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DvMKgq9dg5W8kF+CbgBRS+bDocU2RvPIvnS7+K7RI9XzIISbLFKWMi2r+JLPDLOwE
+	 1iQa/Qy4RcWSA0HM5wp0igeECQxAd8Eh82fUR5fSA2fsgUXtBomEc4P25U77Fkji+0
+	 5q8F7BI8YnP5n00zKw7xeT1dipYkTRSBXL0oKFShOhW5NG9a6UR2MuWHmtuSaTMWTq
+	 7bIn8QVKj2cLcEPxvm+Vs1WajgMX2gKPsEZVFOfyx9PGWaINtlYfdwMWD4E5bFfx+L
+	 cYh4vLt6DAeghiEVpXMgBgR7LTVNboJ068ha4+XReY1dpIBbvCucBL4sqWk9eE8sYc
+	 BYEIH26mCDWdw==
+Date: Tue, 17 Mar 2026 18:24:29 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Marco Crivellari <marco.crivellari@suse.com>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Michal Hocko <mhocko@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH] RDMA/rxe: Replace use of system_unbound_wq with
+ system_dfl_wq
+Message-ID: <20260317162429.GA61385@unreal>
+References: <20260313154023.298325-1-marco.crivellari@suse.com>
+ <20260316201301.GL61385@unreal>
+ <CAAofZF61VPo8VAX8zXUZnY-ydDYAR0N0mN2egaeTzXbiaKQbDw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AYNV0DTDvx0R
-Date: Tue, 17 Mar 2026 11:26:05 -0400
-From: "Chuck Lever" <cel@kernel.org>
-To: "Christoph Hellwig" <hch@lst.de>
-Cc: "Leon Romanovsky" <leon@kernel.org>, NeilBrown <neilb@ownmail.net>,
- "Jeff Layton" <jlayton@kernel.org>,
- "Olga Kornievskaia" <okorniev@redhat.com>, "Dai Ngo" <dai.ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, linux-nfs@vger.kernel.org,
- linux-rdma@vger.kernel.org, "Chuck Lever" <chuck.lever@oracle.com>,
- "Christoph Hellwig" <hch@infradead.org>
-Message-Id: <c5e41476-2086-4e76-8153-82788e1b9203@app.fastmail.com>
-In-Reply-To: <20260317142855.GD4367@lst.de>
-References: <20260313194201.5818-1-cel@kernel.org>
- <20260313194201.5818-5-cel@kernel.org> <20260317142855.GD4367@lst.de>
-Subject: Re: [PATCH v3 4/4] svcrdma: Use contiguous pages for RDMA Read sink buffers
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.15 / 15.00];
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAofZF61VPo8VAX8zXUZnY-ydDYAR0N0mN2egaeTzXbiaKQbDw@mail.gmail.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,ownmail.net,redhat.com,oracle.com,talpey.com,vger.kernel.org,infradead.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linutronix.de,suse.com,ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-18266-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18265-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[app.fastmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 567962AD0F9
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0D0EC2AE050
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Tue, Mar 17, 2026 at 03:32:01PM +0100, Marco Crivellari wrote:
+> On Mon, Mar 16, 2026 at 9:13 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > [...]
+> > I recall earlier efforts to replace system workqueues with per‑driver queues,
+> > because unloading a driver forces a flush of the entire system workqueue,
+> > which is undesirable for overall system behavior.
+> >
+> > Wouldn't it be better to introduce a local workqueue here and use that instead?
+> >
+> > Thanks
+> 
+> Hi,
+> 
+> There is only this wq here. But we can do so if needed, no problem.
+> 
+> Where do you think is the most appropriate place for the workqueue struct
+> declaration? Like `struct prefetch_mr_work` maybe?
+> 
+> Do you have suggestions for an appropriate place to allocate the workqueue?
 
-On Tue, Mar 17, 2026, at 10:28 AM, Christoph Hellwig wrote:
-> On Fri, Mar 13, 2026 at 03:42:01PM -0400, Chuck Lever wrote:
->> +#if PAGE_SIZE < SZ_64K
->> +
->> +/*
->> + * Limit contiguous RDMA Read sink allocations to 64KB
->> + * (order-4 on 4KB-page systems). Higher orders risk
->> + * allocation failure under __GFP_NORETRY, which would
->> + * negate the benefit of the contiguous fast path.
->> + */
->> +#define SVC_RDMA_CONTIG_MAX_ORDER	get_order(SZ_64K)
->
-> Isn't the limit really an order and thus grows with the page size,
-> instead of based on a fixed size?
+Actually, RXE already have one workqueue in rxe_alloc_wq(), just use it.
 
-So on a platform with 16KB pages, an order-4 allocation request
-(256KB) is still desirable for our purpose here?
+Thanks
 
-
--- 
-Chuck Lever
+> 
+> Thanks!
+> 
+> -- 
+> 
+> Marco Crivellari
+> 
+> L3 Support Engineer
 
