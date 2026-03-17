@@ -1,393 +1,304 @@
-Return-Path: <linux-rdma+bounces-18278-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18279-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AFu8LkCruWkhLwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18278-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 20:28:00 +0100
+	id gKXNFhasuWmEMAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18279-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 20:31:34 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9742B18A7
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 20:28:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F03FC2B18FD
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 20:31:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 02CAE304B834
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 19:27:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7D04830D878C
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 19:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC72533BBCC;
-	Tue, 17 Mar 2026 19:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75E9342507;
+	Tue, 17 Mar 2026 19:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W+C6dtxq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pB6WyXzH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D6315E5DC
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2026 19:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773775675; cv=fail; b=jCzDX5AcdKkKjR2N5OZehNEVcQNcNLBtVlsDuqOZ3buKjDpbHLrWtqwVZzwAxYLqH8+giEngrDGWHixO4DYVLgjMEOOED6sqWUOEXpTukoet0QYYJ4hfXlKo8H2HTmaMM0IUxPG6hhhKVUKGKA+ixSpzwONiH2+RK4taSO11QhY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773775675; c=relaxed/simple;
-	bh=efa9OoyhN+CbLLDu3bYjXIYqJ8Ooo7NwYHp1LglqNOk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=QTG3vaZTQdYX3qkj37iE+FsRC9Hbi1KoHGMY/I7Q1HDZoIaEx8ncC5NTnsjhPUZo6PB0w5m22BJSx0mu+xs2q+mC1pH6T77ucDMzmUalbPCrdxGSF/uFRHDjlBGhKfpbut3zQF7SJthPnbanL+hWO/CgdSrCWd6iAf0s5CnPJPo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W+C6dtxq; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773775674; x=1805311674;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=efa9OoyhN+CbLLDu3bYjXIYqJ8Ooo7NwYHp1LglqNOk=;
-  b=W+C6dtxqJz2F5EPRX+Cje8iah5ATZrB5cITWyk+Jb4d0Onzb+EYt+Kes
-   hhUB7ZJwP/QstFTJ8Wuhi1g47utGUmv/qu7+/i2zKwGWQmMfm1woPYkLJ
-   WhbStU6iIjBkGEzWv3lxuOVSTSUZlGGG+R1HoPcectac/rfowJgpJKXwL
-   BGaLoAjNjIkLgvhWkMbScjx5lH4CFLFCgT++e1BiS6UvXM54YL+XAAk1G
-   KQjzNqbHIaL+TjyvWusym7LLalfrYQtPbgvFKOVz5VyOir9fH3GKxD5Ik
-   67zI4iYo8KFEZUn4e+usmmBkWukJ9SxiRwJyGRdCey4cqETpNP9i524NM
-   w==;
-X-CSE-ConnectionGUID: QbG7n9XzQWudQlpKDOQmwA==
-X-CSE-MsgGUID: lqxpzhtWRq2dKbZIBDNhxw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11732"; a="85516428"
-X-IronPort-AV: E=Sophos;i="6.23,126,1770624000"; 
-   d="scan'208";a="85516428"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2026 12:27:53 -0700
-X-CSE-ConnectionGUID: W+6lkV/aQbyIUmV9/9fpRw==
-X-CSE-MsgGUID: Y4rsOuiMQt2ot8NRDb+tHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,126,1770624000"; 
-   d="scan'208";a="218024221"
-Received: from fmsmsx903.amr.corp.intel.com ([10.18.126.92])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2026 12:27:53 -0700
-Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
- fmsmsx903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Tue, 17 Mar 2026 12:27:52 -0700
-Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
- FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Tue, 17 Mar 2026 12:27:52 -0700
-Received: from CH4PR04CU002.outbound.protection.outlook.com (40.107.201.37) by
- edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Tue, 17 Mar 2026 12:27:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TXs7Uo8eyLrf94jL9iOwxGE3leLZfbPie0f6JlxDUhqvX2jsHn9qA4J9N7MklhAMnuc1Nj4vMuez/SgWlTmUZi+kyJ0hKh58bzM4dnVzaAM4HJ83Er8IF+Ii02vJid6e/P5ArnFMD451hc076D+lseJA/F0GWEMGVvrjh8h9ftwCBeV4DTmvCCZ+CqWk70veSkUo6yLCy3oMHi41wPHoxycOLOJBKtwkW7laATBSmwKfspAfFvyv8NM21vlq0hCxrA9xxKRjDrz5E3cDD+aUW3+mt6qk1lOLv49ov/EC08CbT2yHqFs6WspeoZaN9YL31SZI4DWVuTmY1r0r4bnhjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gtQ09MilFSvh6E3bUqxfIeoKMBu/pVg2Zs/IRFI2bKs=;
- b=ggS9IWgoAWmCu2nuHHOoQDuztmwg/6Oo76/aGweY1QOLjYVlfoqCtDSBi988isCq4hktWCFyewcAy0MFXlr6827dA/dCVnjOYBLi+QxNcWDlp82ORp3vv7SIe8g0k0etQw0XcKHwEKQzawuWSG/DZHMyAvAoBgKYW6NO9HIwqfYVTnANbOKz2vMo4id+dVt0uSpDMWi3BJ9/RN0w/apetS+Ivq3GkIKW8dfCm1241qXPS0CgEVUcKHPk4ZBONzEQeSkWazsjr5tICT2fbRbIOzxzneMuCU4217oOTYpBeoQv3H+kRalnkED+NwsV4VEimRe2r+3rgR9BrNHNgtA3yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS7PR11MB7740.namprd11.prod.outlook.com (2603:10b6:8:e0::11) by
- CY5PR11MB6390.namprd11.prod.outlook.com (2603:10b6:930:39::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9723.19; Tue, 17 Mar 2026 19:27:49 +0000
-Received: from DS7PR11MB7740.namprd11.prod.outlook.com
- ([fe80::ef15:dd09:86c1:9979]) by DS7PR11MB7740.namprd11.prod.outlook.com
- ([fe80::ef15:dd09:86c1:9979%2]) with mapi id 15.20.9723.018; Tue, 17 Mar 2026
- 19:27:47 +0000
-From: "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
-To: Leon Romanovsky <leon@kernel.org>, "Czurylo, Krzysztof"
-	<krzysztof.czurylo@intel.com>
-CC: "jgg@nvidia.com" <jgg@nvidia.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-Subject: RE: [for-next 02/12] RDMA/irdma: Fix data race on
- cqp_request->request_done
-Thread-Topic: [for-next 02/12] RDMA/irdma: Fix data race on
- cqp_request->request_done
-Thread-Index: AQHctXRtxKL21nQkEEaI4cjbI8Kv4bWykvsAgAARR4CAABMmgIAAY13Q
-Date: Tue, 17 Mar 2026 19:27:47 +0000
-Message-ID: <DS7PR11MB7740083B561AB5756A48DB6FCB41A@DS7PR11MB7740.namprd11.prod.outlook.com>
-References: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
- <20260316183949.261-3-tatyana.e.nikolova@intel.com>
- <20260317111230.GW61385@unreal>
- <DS0PR11MB7736961A569FE56FDB09631EEB41A@DS0PR11MB7736.namprd11.prod.outlook.com>
- <20260317132253.GX61385@unreal>
-In-Reply-To: <20260317132253.GX61385@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS7PR11MB7740:EE_|CY5PR11MB6390:EE_
-x-ms-office365-filtering-correlation-id: 04f22514-0745-473e-6673-08de845b4590
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700021|18002099003|22082099003|56012099003;
-x-microsoft-antispam-message-info: aSQE9lCQEdYHuLpcBbPjNyKBxGlqMR6W1aU3WvO2uQRo1f9+XrDO7QSmE5TPWha9fMSevTd6kOHWCmi4Basxh3vEgkeihIkRgxcQKF9AJOcyTDSIg1CubMIp+ybwdcb7wkSg1npmST4BxTGE1QUTOcDNT2Img4J0xizqRZw/7knlIi0wYmtUtdItlZdRWk4ZxenhX9TsOWuc2z4wfJ9D2i7Dv5zGZCthPqoI6POdEjg+rgDr2fcT/j3uwuIsWThVqoSXb4JVOwo54zoHC2EF3oARMRwWehZRoaDtgd31qrSFtOfsZ3n8EptG4oY8wNmExVRE+nEjq7WrfeoHO19w/eqnNjJyet3P1Ur14LS1cPkxlhP2WpMM5U3N5j2rCgf6D8FvjOfcZwi1ld9JNVEyVC+XxWESthjZpUIaVkTGKDHf9lvGxaiZMP9rzzJgXIHXRY4DqzoSSByl74jH4G1y6wHyDT2xxVfdpSF+rYBECJJd5G30EfTw1ILsEPraQtVE5s1fe658W/pC9B93Ma94fJzpaWI8RJxY6AL4897FDYOaRlNWeBHPX/ldcmN3PhfT+9npye2BKNRtuReH9tdTIZG/AQGsYAsqksnteqHPtPn6wTeEhIza7P+11OIUczoy8CIJ8VM/2TnyTZ/9NsDGGOr1eI7aNE6Q6hkLc8cIq5uMjkNLs9nUD+PrViXS6EI6XFklepvydqPHowLWiQTfiGL8jXV/L0vugIGQXD4awdPJOiMCBxKtZsvoyfHYs1qDIZWF0/FnPJHg8v6vncjwDgtROP+K/X6mAG3cUN3HqfI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB7740.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700021)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sSHdNacaCK6eAGGdbRjAqqcloIj13x2KgMBpv42ZJzCUPheqzg7CE2b/9vNL?=
- =?us-ascii?Q?yo50KlGuaT6l4c14zqfx80Wb/2nvdBE1HpYw3hACmirzdV3HdfphdxcMva/+?=
- =?us-ascii?Q?WAQpFrXHzAOY9lUJGOKhIFi7+hBL0Tnr28tD/X+1fXxfA9l9kEI6caJCMygX?=
- =?us-ascii?Q?U1dXAAYPwEpwavfCxbPJ6CVu6GEDl0DYaTdUn1JXM8qVKcybjHgLxCJvaTQD?=
- =?us-ascii?Q?XqNX2/cO+sPHr6s9RRJC83cZFtxWB2xAF0JJ2GocMKNgXnnYrNN8VBk1Zfp7?=
- =?us-ascii?Q?ytA30VD+1iNR42nvmSlqy7K1QMVdDGCtOlBYQcm4nrs+sVRbm/s46rT2ErVs?=
- =?us-ascii?Q?b6WtEuZqsmVHKqPe/7dI71QGMcKJFPx4eDYGtCdaIuAm1FrOpKMy5jv9inzC?=
- =?us-ascii?Q?HR9F6UVd3LOUJIEci+kpfA1v36lLeOZGrW0pzfn2VkWBFhIOj71RNFkLfGT0?=
- =?us-ascii?Q?W0e+zwAkvH0Kml9IrNMnrFVkKEwDwUSigisMXuVh58/VXltWUDQxuK3EoMRB?=
- =?us-ascii?Q?PLFLpe39IYrSSsjhtMaRD9enO7LUPziq2+wpaYe6IfL0FaDTxkNw9Yp/z8Db?=
- =?us-ascii?Q?jNqEcCl/BvKke1x/ruStIun3TbhXApJRpRzgc4NjkifNYUtVKshzeBORQONt?=
- =?us-ascii?Q?T1kpBz60FoZi6VKFsqdVZhIJURIaRkwxR/f2Bv/u+PYulDaYqVRIXK/TjG36?=
- =?us-ascii?Q?nFaRxzOZW007xdIxELaq/YWdrzanxbP6IQJwwD6pDyP6cPqgtgoAibi2G7BO?=
- =?us-ascii?Q?SRQW8Iq9nLoIDWBIH9w4SPaXwTw/8q+3O8O5ExjQg3ZgEIZJ0BlGImkhzkeE?=
- =?us-ascii?Q?4neGoYoKeXRxf9vkrqR+R9QcwMtfhQqdBxjBMg6N1sOdIkW1iFgigz41JGkn?=
- =?us-ascii?Q?0X176EpSX9mVsVpelo7ARbZ5qPMNVAaIKiNOulW6vwFCKyhfO/Sz0I4kEiTx?=
- =?us-ascii?Q?inrSsp+BIwD9Rmz2fcbDH2ClTvuG24rNrOWL8MFQvaK/qJ4ErElg9C6sVLpg?=
- =?us-ascii?Q?0IEGJ789bC3yvGa4oFwkODvzXE3KiZDGelxcWespSMVSS+4zPkRrz7gzYtqn?=
- =?us-ascii?Q?KA1LYhTn4gMrnzhs1F1EA5dI8PIteJh6X+BIDQ+r0k7lvzQq03+27zuMzU7s?=
- =?us-ascii?Q?Q1Js7jTiMTDYto0IWKz85J4sS4wJmF+w8Z2SvH16kef10IXio7OXIa/0nMet?=
- =?us-ascii?Q?UwlTvd2cClKlMezogfBaMtDn5qFDx5HjyySq3TGRUvJUDk8z5aTdR42AeoqC?=
- =?us-ascii?Q?PTMEUZCDc1PbcszPIpxmxCMglCUHpts+9TCC6/ULF2LecJx866dIi8rNVT0Z?=
- =?us-ascii?Q?cvw4Y3BkNhjcdtvq2GGfGQ5IyWuoAC2gN0W4yuWXVmjsAu/hmkKVH2FrLnUg?=
- =?us-ascii?Q?fjCMwnLS/vUJTNJULa718qp8X6I7s8c6XJ/wJhdtbDOpuu8gIJGU2B94LzQG?=
- =?us-ascii?Q?c65h/sf68ggguWGq+B1/Z//chC6+YgFugwtpi7dcp1Q6SbzlePS15Z1idyFG?=
- =?us-ascii?Q?JaTRGbjqt83L2S5d83IElCFnOPw3z+aNfLqV4Equ+vkOb5bxR4hxNO/8r+Zr?=
- =?us-ascii?Q?xw7oZkg7v5jC3dHawc/9N36Iz3qpLCgtFGCCRLeWv7dPSwGxDsXjzbvrorK6?=
- =?us-ascii?Q?CzEI5SqUMTuJnUvlE3JpnLLYWwYribKv0Xse/D7SAY8cgO1ElhFQD/p6JZoW?=
- =?us-ascii?Q?WCCn4QKWFpqgMHqLYCBC8ym7IttAjA+jmudXu6DsjWjHJlJC3X5JsYJuD2rm?=
- =?us-ascii?Q?ZFmDxVu8mA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D552FFDCC
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2026 19:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773775878; cv=none; b=ZX2Wjygnx9oLZ808lezkSEvK2nJddqF4oN33iyM1t/Gqi7aZ/nFVyopcMWlzq/mizjwj/pi1R5vNMqNN8iNjofoOJ7ffn0HhE+D+Ew+VIkpwtDKXDm+zIq0NrAN3rFHd3NaiWiW6muaKAkric8Lk6mfMM2+LBhohrkj8uYhVwI0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773775878; c=relaxed/simple;
+	bh=7sptMWRFBW5w7n2+7GUz3tjAz6fgS7J1xBXtd2gdxgU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hpgTgE4S9/o/FZbX1eJdMJnjuTtHMPy6/60Nnp+3ZmgsyZkIYrdxpvIaJaE28oABZCgzTppd55Prlx5w33mN/v1l//Amc1spvoIClv1QVzIr9h0qcJ0PV11M1S5YuXy/d8SCZjZsx6H/v/JQ/mw3ob3WJJper50ANNM5fmbGKwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pB6WyXzH; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <089fe865-0077-4253-85de-1bb05216b6e7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773775873;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BhcOI0RyAU+qQgHh7KDOQYiPyvZH/jvaN8Zdr5susus=;
+	b=pB6WyXzHY8yv7vOF7+IMisQDXc9gmNxRcNhNTiYC8WpBLhTmu1xMPjuFt//qP3z6D10CZo
+	Wpolfc10RbAJx2jtBMqEI/Z057rBldMU8oGaqyE/65bxZecYcTQXzkGphqKkDNFftzeYBN
+	GeAJOnGva23BWm0j7fVdCDJCaiiDkZ8=
+Date: Tue, 17 Mar 2026 12:31:08 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Exchange-RoutingPolicyChecked: ejeL9lJywd94N7+3/bbj+xH56HT+0jEuCOxQ9KrR3JqmdjnnAUM3o29Nsb3xM9VK6/KI7v5haZuy+euXCCL4mBp0qFB3qqeIu2T8cZ+cvIJbUlXz/0I6RGhhxQ4PsB3JsEeXjL7DqWFWD1PXgEhIujzeZ+Pwzmn93OYCqFJt1Tp7ABbWs8PCHfCR3NzTOic6FfEs+Xi1UADArIHLGT5pmBvQwtFYRjSmbVUYI1xVDfAaUD5g6aZKsU99lt+Izu1eJmJQsKHF0I4DLSx0BI+rVhlO1TwRzNMj9mpujI28YWsbkJFo3kECSljCYvcJIKCB9fzLktcI5kQTnXdM8KTUoA==
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB7740.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04f22514-0745-473e-6673-08de845b4590
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2026 19:27:47.6926
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: p6oV5rJG8VpeOfI5rY1J1O27VV83gsErAl4QMxW3+frcC9juKdtVm0uSCdnDRHvQwmnlUprZgWLR5Oprcm7LkjH+Jnm0XR9SvSUl7+ioJNY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6390
-X-OriginatorOrg: intel.com
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+Subject: Re: [PATCH] RDMA/rxe: Replace use of system_unbound_wq with
+ system_dfl_wq
+To: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Marco Crivellari <marco.crivellari@suse.com>,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Michal Hocko <mhocko@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>
+References: <20260313154023.298325-1-marco.crivellari@suse.com>
+ <20260316201301.GL61385@unreal>
+ <c5374d12-84ed-4298-92d3-90062988f68d@linux.dev>
+ <5de82ef1-3df6-44f8-a3c1-c6568c1110cf@linux.dev>
+ <20260317190314.GC61385@unreal>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <20260317190314.GC61385@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18278-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18279-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tatyana.e.nikolova@intel.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[suse.com,vger.kernel.org,kernel.org,gmail.com,linutronix.de,ziepe.ca];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[10]
-X-Rspamd-Queue-Id: 0C9742B18A7
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,linux.dev:dkim,linux.dev:mid]
+X-Rspamd-Queue-Id: F03FC2B18FD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
+On 3/17/26 12:03 PM, Leon Romanovsky wrote:
+> On Tue, Mar 17, 2026 at 10:24:11AM -0700, Yanjun.Zhu wrote:
+>> On 3/17/26 7:38 AM, Zhu Yanjun wrote:
+>>> 在 2026/3/16 13:13, Leon Romanovsky 写道:
+>>>> On Fri, Mar 13, 2026 at 04:40:23PM +0100, Marco Crivellari wrote:
+>>>>> This patch continues the effort to refactor workqueue APIs,
+>>>>> which has begun
+>>>>> with the changes introducing new workqueues and a new
+>>>>> alloc_workqueue flag:
+>>>>>
+>>>>>      commit 128ea9f6ccfb ("workqueue: Add system_percpu_wq and
+>>>>> system_dfl_wq")
+>>>>>      commit 930c2ea566af ("workqueue: Add new WQ_PERCPU flag")
+>>>>>
+>>>>> The point of the refactoring is to eventually alter the default
+>>>>> behavior of
+>>>>> workqueues to become unbound by default so that their workload
+>>>>> placement is
+>>>>> optimized by the scheduler.
+>>>>>
+>>>>> Before that to happen, workqueue users must be converted to the
+>>>>> better named
+>>>>> new workqueues with no intended behaviour changes:
+>>>>>
+>>>>>      system_wq -> system_percpu_wq
+>>>>>      system_unbound_wq -> system_dfl_wq
+>>>>>
+>>>>> This way the old obsolete workqueues (system_wq,
+>>>>> system_unbound_wq) can be
+>>>>> removed in the future.
+>>>> I recall earlier efforts to replace system workqueues with
+>>>> per‑driver queues,
+>>>> because unloading a driver forces a flush of the entire system
+>>>> workqueue,
+>>>> which is undesirable for overall system behavior.
+>>>>
+>>>> Wouldn't it be better to introduce a local workqueue here and use
+>>>> that instead?
+>>> Thanks.
+>>>
+>>> 1.The initialization should be:
+>>>
+>>> my_wq = alloc_workqueue("my_driver_queue", WQ_UNBOUND | WQ_MEM_RECLAIM,
+>>> 0);
+>>> if (!my_wq)
+>>>      return -ENOMEM;
+>>>
+>>> 2. The Submission should be:
+>>>
+>>> queue_work(my_wq, &my_work);
+>>>
+>>> 3. Destroy should be:
+>>>
+>>> destroy_workqueue()
+>>>
+>>> Thanks,
+>>> Zhu Yanjun
+>> Hi, Leon
+>>
+>> The diff for a new work queue in rxe is as below. Please review it.
+> I'm not sure that you need second workqueue and destroy_workqueue
+> already does flush_workqueue. There is no need to call it explicitly.
+flush_workqueue() can be removed.
 
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Tuesday, March 17, 2026 8:23 AM
-> To: Czurylo, Krzysztof <krzysztof.czurylo@intel.com>
-> Cc: jgg@nvidia.com; linux-rdma@vger.kernel.org; Nikolova, Tatyana E
-> <tatyana.e.nikolova@intel.com>
-> Subject: Re: [for-next 02/12] RDMA/irdma: Fix data race on cqp_request-
-> >request_done
->=20
-> On Tue, Mar 17, 2026 at 12:14:21PM +0000, Czurylo, Krzysztof wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Leon Romanovsky <leon@kernel.org>
-> > > Sent: 17 March, 2026 12:13
-> > > To: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>
-> > > Cc: jgg@nvidia.com; linux-rdma@vger.kernel.org; Czurylo, Krzysztof
-> > > <krzysztof.czurylo@intel.com>
-> > > Subject: Re: [for-next 02/12] RDMA/irdma: Fix data race on cqp_reques=
-t-
-> > > >request_done
-> > >
-> > > On Mon, Mar 16, 2026 at 01:39:39PM -0500, Tatyana Nikolova wrote:
-> > > > From: Krzysztof Czurylo <krzysztof.czurylo@intel.com>
-> > > >
-> > > > Changes type of request_done flag from bool to atomic_t to fix
-> > > > data race in irdma_complete_cqp_request / irdma_wait_event
-> > > > reported by KCSAN:
-> > >
-> > > Again, this fix is wrong too.
-> >
-> > Could you please elaborate on what is wrong with this fix?
-> > And/or suggest how to fix it properly?
-> >
-> > Please note 'request_done' is _not_ a bitfield and we only do simple
-> > load/store operations on it.  There is no RMW.
-> > Despite this, KCSAN still reports a data race on it.
-> >
-> > Honestly, the original idea was just to change the type from
-> > 'bool' to 'u8'.  This is enough to silence KCSAN, but it is
-> > not clear why.  Perhaps it indicates a bug in KCSAN?
->=20
-> Yes, both u8 and atomic_t behave the same, they can't be interrupted
-> during read/write. This is why KCSAN doesn't warn you.
->=20
-> > I mean, maybe the report below is a false positive?
->=20
-> Sounds like that.
+The introduction of the second workqueue is due to rxe_wq being heavily 
+utilized by QP tasks.
 
-Leon,
+The additional workqueue helps offload and distribute the workload, 
+preventing rxe_wq from becoming a bottleneck.
 
-Are you okay taking the rest of the patches in the series (they apply witho=
-ut the two KCSAN related patches) or you prefer that I resubmit the series?
+If you believe that the workload on rxe_wq is not significant, I can 
+simplify the design
 
-For this specific patch, are you okay with dropping all atomic changes, but=
- making request_done u8 (currently bool) to silence the KCSAN warning?
+by removing the second workqueue and using rxe_wq for all work items 
+instead.
 
-Thank you,
-Tatyana
+Zhu Yanjun
 
->=20
-> >
-> > Thanks
-> >
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > > BUG: KCSAN: data-race in irdma_complete_cqp_request [irdma] /
-> > > irdma_wait_event [irdma]
-> > > >
-> > > > write (marked) to 0xffffa0bef390ad5c of 1 bytes by task 7761 on cpu=
- 0:
-> > > >  irdma_complete_cqp_request+0x19/0x90 [irdma]
-> > > >  irdma_cqp_ce_handler+0x22d/0x290 [irdma]
-> > > >  cqp_compl_worker+0x1f/0x30 [irdma]
-> > > >  process_one_work+0x3dc/0x7c0
-> > > >  worker_thread+0xa6/0x6c0
-> > > >  kthread+0x17f/0x1c0
-> > > >  ret_from_fork+0x2c/0x50
-> > > >
-> > > > read to 0xffffa0bef390ad5c of 1 bytes by task 28566 on cpu 3:
-> > > >  irdma_wait_event+0x242/0x390 [irdma]
-> > > >  irdma_handle_cqp_op+0x93/0x210 [irdma]
-> > > >  irdma_hw_modify_qp+0xe3/0x2f0 [irdma]
-> > > >  irdma_modify_qp_roce+0x13df/0x1630 [irdma]
-> > > >  ib_security_modify_qp+0x34a/0x640 [ib_core]
-> > > >  _ib_modify_qp+0x16b/0x620 [ib_core]
-> > > >  ib_modify_qp_with_udata+0x3c/0x50 [ib_core]
-> > > >  modify_qp+0x6e1/0x920 [ib_uverbs]
-> > > >  ib_uverbs_ex_modify_qp+0xa6/0xf0 [ib_uverbs]
-> > > >  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x16c/0x200
-> [ib_uverbs]
-> > > >  ib_uverbs_run_method+0x342/0x380 [ib_uverbs]
-> > > >  ib_uverbs_cmd_verbs+0x365/0x440 [ib_uverbs]
-> > > >  ib_uverbs_ioctl+0x111/0x190 [ib_uverbs]
-> > > >  __x64_sys_ioctl+0xc3/0x100
-> > > >  do_syscall_64+0x3f/0x90
-> > > >  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > > >
-> > > > value changed: 0x00 -> 0x01
-> > > >
-> > > > Fixes: f0842bb3d388 ("RDMA/irdma: Fix data race on CQP request
-> done")
-> > > > Signed-off-by: Krzysztof Czurylo <krzysztof.czurylo@intel.com>
-> > > > Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-> > > > ---
-> > > >  drivers/infiniband/hw/irdma/hw.c    | 2 +-
-> > > >  drivers/infiniband/hw/irdma/main.h  | 2 +-
-> > > >  drivers/infiniband/hw/irdma/utils.c | 6 +++---
-> > > >  3 files changed, 5 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/hw/irdma/hw.c
-> > > b/drivers/infiniband/hw/irdma/hw.c
-> > > > index 6e0466ce83d1..3ba4809bc1ef 100644
-> > > > --- a/drivers/infiniband/hw/irdma/hw.c
-> > > > +++ b/drivers/infiniband/hw/irdma/hw.c
-> > > > @@ -235,7 +235,7 @@ static void irdma_complete_cqp_request(struct
-> > > irdma_cqp *cqp,
-> > > >  				       struct irdma_cqp_request *cqp_request)
-> > > >  {
-> > > >  	if (cqp_request->waiting) {
-> > > > -		WRITE_ONCE(cqp_request->request_done, true);
-> > > > +		atomic_set(&cqp_request->request_done, true);
-> > > >  		wake_up(&cqp_request->waitq);
-> > > >  	} else if (cqp_request->callback_fcn) {
-> > > >  		cqp_request->callback_fcn(cqp_request);
-> > > > diff --git a/drivers/infiniband/hw/irdma/main.h
-> > > b/drivers/infiniband/hw/irdma/main.h
-> > > > index 3d49bd57bae7..e22160e2ba33 100644
-> > > > --- a/drivers/infiniband/hw/irdma/main.h
-> > > > +++ b/drivers/infiniband/hw/irdma/main.h
-> > > > @@ -167,7 +167,7 @@ struct irdma_cqp_request {
-> > > >  	void (*callback_fcn)(struct irdma_cqp_request *cqp_request);
-> > > >  	void *param;
-> > > >  	struct irdma_cqp_compl_info compl_info;
-> > > > -	bool request_done; /* READ/WRITE_ONCE macros operate on it */
-> > > > +	atomic_t request_done;
-> > > >  	bool waiting:1;
-> > > >  	bool dynamic:1;
-> > > >  	bool pending:1;
-> > > > diff --git a/drivers/infiniband/hw/irdma/utils.c
-> > > b/drivers/infiniband/hw/irdma/utils.c
-> > > > index ab8c5284d4be..f9c99c216a2c 100644
-> > > > --- a/drivers/infiniband/hw/irdma/utils.c
-> > > > +++ b/drivers/infiniband/hw/irdma/utils.c
-> > > > @@ -480,7 +480,7 @@ void irdma_free_cqp_request(struct irdma_cqp
-> *cqp,
-> > > >  	if (cqp_request->dynamic) {
-> > > >  		kfree(cqp_request);
-> > > >  	} else {
-> > > > -		WRITE_ONCE(cqp_request->request_done, false);
-> > > > +		atomic_set(&cqp_request->request_done, false);
-> > > >  		cqp_request->callback_fcn =3D NULL;
-> > > >  		cqp_request->waiting =3D false;
-> > > >  		cqp_request->pending =3D false;
-> > > > @@ -515,7 +515,7 @@ irdma_free_pending_cqp_request(struct
-> irdma_cqp
-> > > *cqp,
-> > > >  {
-> > > >  	if (cqp_request->waiting) {
-> > > >  		cqp_request->compl_info.error =3D true;
-> > > > -		WRITE_ONCE(cqp_request->request_done, true);
-> > > > +		atomic_set(&cqp_request->request_done, true);
-> > > >  		wake_up(&cqp_request->waitq);
-> > > >  	}
-> > > >  	wait_event_timeout(cqp->remove_wq,
-> > > > @@ -610,7 +610,7 @@ static int irdma_wait_event(struct irdma_pci_f
-> *rf,
-> > > >  	do {
-> > > >  		irdma_cqp_ce_handler(rf, &rf->ccq.sc_cq);
-> > > >  		if (wait_event_timeout(cqp_request->waitq,
-> > > > -				       READ_ONCE(cqp_request-
-> >request_done),
-> > > > +				       atomic_read(&cqp_request-
-> >request_done),
-> > > >
-> msecs_to_jiffies(CQP_COMPL_WAIT_TIME_MS)))
-> > > >  			break;
-> > > >
-> > > > --
-> > > > 2.31.1
-> > > >
-> >
+>
+> Thanks
+>
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c
+>> b/drivers/infiniband/sw/rxe/rxe_odp.c
+>> index bc11b1ec59ac..03199fef47fb 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+>> @@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+>>           work->frags[i].mr = mr;
+>>       }
+>>
+>> -    queue_work(system_unbound_wq, &work->work);
+>> +    rxe_queue_aux_work(&work->work);
+>>
+>>       return 0;
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c
+>> b/drivers/infiniband/sw/rxe/rxe_task.c
+>> index f522820b950c..a2da699b969e 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+>> @@ -6,19 +6,36 @@
+>>
+>>   #include "rxe.h"
+>>
+>> +/* work for rxe_task */
+>>   static struct workqueue_struct *rxe_wq;
+>>
+>> +/* work for other rxe jobs */
+>> +static struct workqueue_struct *rxe_aux_wq;
+>> +
+>>   int rxe_alloc_wq(void)
+>>   {
+>> -    rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
+>> +    rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND | WQ_MEM_RECLAIM,
+>> +                WQ_MAX_ACTIVE);
+>>       if (!rxe_wq)
+>>           return -ENOMEM;
+>>
+>> +    rxe_aux_wq = alloc_workqueue("rxe_aux_wq",
+>> +                WQ_UNBOUND | WQ_MEM_RECLAIM, WQ_MAX_ACTIVE);
+>> +    if (!rxe_aux_wq) {
+>> +        destroy_workqueue(rxe_wq);
+>> +        return -ENOMEM;
+>> +
+>> +    }
+>> +
+>>       return 0;
+>>   }
+>>
+>>   void rxe_destroy_wq(void)
+>>   {
+>> +    flush_workqueue(rxe_aux_wq);
+>> +    destroy_workqueue(rxe_aux_wq);
+>> +
+>> +    flush_workqueue(rxe_wq);
+>>       destroy_workqueue(rxe_wq);
+>>   }
+>>
+>> @@ -254,6 +271,14 @@ void rxe_sched_task(struct rxe_task *task)
+>>       spin_unlock_irqrestore(&task->lock, flags);
+>>   }
+>>
+>> +/* rxe_wq for rxe tasks. rxe_aux_wq for other rxe jobs.
+>> + */
+>> +void rxe_queue_aux_work(struct work_struct *work)
+>> +{
+>> +    WARN_ON_ONCE(!rxe_aux_wq);
+>> +    queue_work(rxe_aux_wq, work);
+>> +}
+>> +
+>>   /* rxe_disable/enable_task are only called from
+>>    * rxe_modify_qp in process context. Task is moved
+>>    * to the drained state by do_task.
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_task.h
+>> b/drivers/infiniband/sw/rxe/rxe_task.h
+>> index a8c9a77b6027..e1c0a34808b4 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_task.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_task.h
+>> @@ -36,6 +36,7 @@ int rxe_alloc_wq(void);
+>>
+>>   void rxe_destroy_wq(void);
+>>
+>> +void rxe_queue_aux_work(struct work_struct *work);
+>>   /*
+>>    * init rxe_task structure
+>>    *    qp  => parameter to pass to func
+>>
+>> Zhu Yanjun
+>>
+>>>> Thanks
+>>>>
+>>>>> Link:
+>>>>> https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
+>>>>> Suggested-by: Tejun Heo <tj@kernel.org>
+>>>>> Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
+>>>>> ---
+>>>>>    drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>>> b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>>> index bc11b1ec59ac..d440c8cbaea5 100644
+>>>>> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>>> @@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct
+>>>>> ib_pd *ibpd,
+>>>>>            work->frags[i].mr = mr;
+>>>>>        }
+>>>>>    -    queue_work(system_unbound_wq, &work->work);
+>>>>> +    queue_work(system_dfl_wq, &work->work);
+>>>>>          return 0;
+>>>>>    --
+>>>>> 2.53.0
+>>>>>
 
