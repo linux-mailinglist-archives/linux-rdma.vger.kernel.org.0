@@ -1,134 +1,155 @@
-Return-Path: <linux-rdma+bounces-18237-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18238-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MBXyBEIkuWm1sQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18237-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 10:52:02 +0100
+	id QMCBKKEluWm1sQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18238-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 10:57:53 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CE2F2A744C
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 10:52:01 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A92562A75F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 10:57:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A981F307D622
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 09:44:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id CA33F302A409
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 09:49:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0297D35AC29;
-	Tue, 17 Mar 2026 09:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E4339EF1C;
+	Tue, 17 Mar 2026 09:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jFsrrK46"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mehyF8oF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7213377018;
-	Tue, 17 Mar 2026 09:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B31375F82;
+	Tue, 17 Mar 2026 09:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773740654; cv=none; b=DgY1EByxt35aBfKpqM4526bSSeC9gk9T5GjBnnEcB5kF6MaizvmeLabpTDvjxuhlphPzIg1FSvjfhhFF05i6QsdIjKT/iHXVU/rkezf5j2xmQSMs1Z9Ng3NGWK20+JS70MEXnauYv+A/rjuypwYeavQd1y+9I18Rw0z/jnjjQ2M=
+	t=1773740954; cv=none; b=str1Ke7OiDw2/OUnOGPcsTmYuhjvo8zIk9sekh3twMyWf5PXy8PY4l0pK6QiYgr1S5YOhse8pjbJSRgzL6SrA118i4tIrnsacbKCXQW3By2HZAuG+R29M5A6TTuN3tDQwe8DJ6bGOB0gPuYTEH4x98kV+gma3oJCPmH4bUkEW1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773740654; c=relaxed/simple;
-	bh=DoUrnSKK60JGnRQpOdFQ2pdKSwEqK9naRaMWFQdjX9U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z6bJUmINy7oXfvHS9m9SWlYDu0nfdeTEu2hLvsVgbQ15tU+keyTrD7ay1bhUyjdJZeAF2IiJoiCDOuuBwJZU1gzFQkNoEUnKhnAF4GPVa8gInXAzDCeSB1O1Qh5tgWLVVrHGtpts2DGt3zuGLUwOmLBol15OZt99gVYLK5Zeaiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jFsrrK46; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA83FC4CEF7;
-	Tue, 17 Mar 2026 09:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773740654;
-	bh=DoUrnSKK60JGnRQpOdFQ2pdKSwEqK9naRaMWFQdjX9U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jFsrrK46N0yQMKmGzxgPqupwLUxwcwWupv7otLOP7weascwHMNRnf8livg85qC5De
-	 PvWJ88I3YqAEZynzxaPIspjdHCDgGidXy4nidWhwp8jJcWaR6vEYqifjG7KKkxQWrU
-	 Tam0EBtwrBqYTwgW7ZKpxbs7USjkaJtnKqbPakGhL70qfF5UnKydpUnyKdkvixnlds
-	 JlmfHslWAg7xOtB+A7I2VnxYAwyoyWf+PzW1hSaGOiybGGYPzsMEpnsE3rAamcEIvo
-	 UF3ppjkZ45cUABKEcPNwJYwZYfPNcoJsimAMiVU2EngevYgpeIBgBYPGNqzJOx+OL+
-	 RW8rOvXxAMAzg==
-Date: Tue, 17 Mar 2026 11:44:08 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Long Li <longli@microsoft.com>
-Cc: Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH rdma-next v2] RDMA/mana_ib: hardening:
- Clamp adapter capability values from MANA_IB_GET_ADAPTER_CAP
-Message-ID: <20260317094408.GR61385@unreal>
-References: <20260312181642.989735-1-ernis@linux.microsoft.com>
- <20260316194929.GI61385@unreal>
- <SA1PR21MB66832D25A93394735624F454CE40A@SA1PR21MB6683.namprd21.prod.outlook.com>
+	s=arc-20240116; t=1773740954; c=relaxed/simple;
+	bh=ST5M2Ewq07s1JCa7AgMkHMnP9+1fRIS/TI7/2Wjvbgw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bmsCXs3DXnDd3+/BR67ikBJq2Fz3xkBCb3rrrHJHDbtznxiHAwMH3qWuStvzu4C8FxDt0ZNemBGiC9a8MQ7SeWi2srKYyS89TOT/WELqqFfAixDsDtYWSRbli9xH6GvPUFwjQohBsGwXFh/pwN1jqBuQAyOc+AXMfZ6BMFTGXTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mehyF8oF; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <07b0ee06-aae7-4c48-8ac6-503ee8f8ea63@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773740950;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ST5M2Ewq07s1JCa7AgMkHMnP9+1fRIS/TI7/2Wjvbgw=;
+	b=mehyF8oFTsntVJMHlvnIiNUjH0FSMJUagJOZMEjWl6IUqZl3lmlsz+TDxcTP1v9zaRymn/
+	x6StfFDAlEPF256xtn02xXMcrpeH83CSZYdbZ0if+ulY3eZLGS0AncsNLdAUG0i/D2jaOb
+	MgwCxRrgsgNTLvRmJuo1yLMfC+aCVUg=
+Date: Tue, 17 Mar 2026 17:48:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH net v1] IB/core: Fix use-after-free of ipvlan phy_dev in
+ ib_get_eth_speed
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+ Jiayuan Chen <jiayuan.chen@shopee.com>, Jianzhou Zhao <luckd0g@163.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Mark Bloch <mbloch@nvidia.com>,
+ Edward Srouji <edwards@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Patrisious Haddad <phaddad@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>,
+ Yishai Hadas <yishaih@nvidia.com>, Kees Cook <kees@kernel.org>,
+ Jang Ingyu <ingyujang25@korea.ac.kr>, Moni Shoua <monis@mellanox.com>,
+ Doug Ledford <dledford@redhat.com>, Christian Benvenuti <benve@cisco.com>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Yuval Shaia <yuval.shaia@oracle.com>, linux-kernel@vger.kernel.org
+References: <20260311100313.284589-1-jiayuan.chen@linux.dev>
+ <20260316162909.GG61385@unreal>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+In-Reply-To: <20260316162909.GG61385@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <SA1PR21MB66832D25A93394735624F454CE40A@SA1PR21MB6683.namprd21.prod.outlook.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18237-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18238-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,shopee.com,163.com,ziepe.ca,nvidia.com,broadcom.com,kernel.org,korea.ac.kr,mellanox.com,redhat.com,cisco.com,oracle.com];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9CE2F2A744C
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid,shopee.com:email]
+X-Rspamd-Queue-Id: A92562A75F9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 16, 2026 at 08:50:39PM +0000, Long Li wrote:
-> > On Thu, Mar 12, 2026 at 11:16:41AM -0700, Erni Sri Satya Vennela wrote:
-> > > As part of MANA hardening for CVM, clamp hardware-reported adapter
-> > > capability values from the MANA_IB_GET_ADAPTER_CAP response before
-> > > they are used by the IB subsystem.
-> > >
-> > > The response fields (max_qp_count, max_cq_count, max_mr_count,
-> > > max_pd_count, max_inbound_read_limit, max_outbound_read_limit,
-> > > max_qp_wr, max_send_sge_count, max_recv_sge_count) are u32 but are
-> > > assigned to signed int members in struct ib_device_attr. If hardware
-> > > returns a value exceeding INT_MAX, the implicit u32-to-int conversion
-> > > produces a negative value, which can cause incorrect behavior in the
-> > > IB core and userspace applications.
-> > 
-> > This sentence does not make sense in the context of the Linux kernel.
-> > The fundamental assumption is that the underlying hardware behaves correctly,
-> > and driver code should not attempt to guard against purely hypothetical
-> > failures. The kernel only implements such self‑protection when there is a
-> > documented hardware issue accompanied by official errata.
-> > 
-> > Thanks
-> 
-> The idea is that a malicious hardware can't corrupt and steal other data from the kernel.
-> 
-> The assumption is that in a public cloud environment, you can't trust the hardware 100%.
 
-You cannot separate functionality and claim that one line of code is trusted
-while another is not.
+On 3/17/26 12:29 AM, Leon Romanovsky wrote:
+> On Wed, Mar 11, 2026 at 06:03:08PM +0800, Jiayuan Chen wrote:
+>> From: Jiayuan Chen <jiayuan.chen@shopee.com>
+>>
+>> Jianzhou Zhao reported a NULL pointer dereference in
+>> __ethtool_get_link_ksettings [1]. The root cause is a use-after-free
+>> of ipvlan->phy_dev.
+>>
+>> In ib_get_eth_speed(), ib_device_get_netdev() obtains a reference to the
+>> ipvlan device outside of rtnl_lock(). This creates a race window: between
+>> ib_device_get_netdev() and rtnl_lock(), the underlying phy_dev (e.g. a
+>> dummy device) can be unregistered and freed by another thread.
+> If ib_device_get_netdev() worked as it was supposed to work, it can't.
+> That function grabs reference on netdev and returns or netdev with elevated
+> reference counter which can't be freed or returns NULL.
+>
+> Thanks
+>
+
+ipvlan's phy_dev is safe in the data path — TX/RX runs in softirq
+context with RCU protection, no lock needed per packet.
+
+The issue here is in the control path. __ethtool_get_link_ksettings()
+requires rtnl_lock() — all existing ethtool callers follow this:
+
+- ioctl path: rtnl_lock() is taken first, then __dev_get_by_name()
+looks up the dev without even holding a refcnt — relying entirely
+on RTNL for safety. (net/ethtool/ioctl.c:3571, 3249)
+- netlink path: dev is looked up with refcnt first, but the actual
+ethtool ops run under rtnl_lock(). (net/ethtool/netlink.c:527-533)
+
+Under RTNL, phy_dev cannot disappear because phy_dev unregistration
+triggers NETDEV_UNREGISTER which deletes ipvlan first — all within
+the same RTNL context. That's why no virtual netdev driver (ipvlan,
+macvlan, bond, etc.) holds an extra refcnt on the lower dev in its
+ethtool callbacks.
+
+ib_get_eth_speed() calls __ethtool_get_link_ksettings() under
+rtnl_lock(), but obtains the netdev before it. Moving the lookup
+inside rtnl_lock() makes the netdev resolution and ethtool call
+atomic w.r.t. device unregistration, consistent with how ethtool's
+own paths work.
+
 
 Thanks
+
 
