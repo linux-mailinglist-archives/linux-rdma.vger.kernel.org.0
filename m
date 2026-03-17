@@ -1,221 +1,260 @@
-Return-Path: <linux-rdma+bounces-18232-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18233-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uD8CGvuhuGlygwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-18232-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 01:36:11 +0100
+	id wOlYJVbAuGnSiwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-18233-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 03:45:42 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C2022A249A
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 01:36:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552B92A2E68
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 03:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2E082301F14F
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 00:36:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 714033029C10
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 02:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F171620C00A;
-	Tue, 17 Mar 2026 00:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FB3262FC0;
+	Tue, 17 Mar 2026 02:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baidu.com header.i=@baidu.com header.b="mUYmornL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BaZG9cFa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from outbound.baidu.com (mx15.baidu.com [111.202.115.100])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id D634720C012;
-	Tue, 17 Mar 2026 00:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.115.100
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50EA54723;
+	Tue, 17 Mar 2026 02:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773707766; cv=none; b=XYn2pcSHSywCjvPptdbf0cnVkAsw3x3IwsMSCvCiUxMrwhtE/F0QSTwDLxHDQYYOLtT0k8uL6TCG+r9dWkG0o4YQyX7rFWs87MyJ+jBbjU9hrtE7f89Gi3HBFOJ8nDIsJzqwzAUnGRp1fIuCX+RaPhdRomDRNlnrX7x8AHdzUcY=
+	t=1773715536; cv=none; b=PGO92xmWFDCfeM3qSaychfzb7Xl4jSFfkEWzcx5L7xSia+9E785OXuFY/ZSZG9GLB3d439H+KlGWMebbO/z3OkpljLNFxy73YpNSe+pjGt2UYyXPgFzI/Xqky96zo900DJTctIDgGr/zUdPGW0lyP01IJ749wBUEpmCwCNB0feQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773707766; c=relaxed/simple;
-	bh=JGjqeZTdlr33dtOhAGjHtxR6SyjH3lyit3YVGymEvXg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dDdH0uxZjaqJPQo2AIIgvOd1locBFLvSLjaOkLCa15nxuV3rtxTs68MkPEv+1ScOFA1qDEiDtXyzxEcbprCd9WMXhh928TnUqmpUakONbYOxjyZ+dnCER3ULeo09Xelx2pKBuwYecf/G6rBqty3Jv6fUaBGYhdQnmjliRa2ow4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; dkim=pass (2048-bit key) header.d=baidu.com header.i=@baidu.com header.b=mUYmornL; arc=none smtp.client-ip=111.202.115.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
-X-MD-Sfrom: lirongqing@baidu.com
-X-MD-SrcIP: 172.31.50.47
-From: lirongqing <lirongqing@baidu.com>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Li RongQing <lirongqing@baidu.com>, "Paul E . McKenney"
-	<paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-CC: liyongkang <liyongkang01@baidu.com>
-Subject: [PATCH][net-next v2] net/mlx5: Expedite notifier unregistration during device teardown
-Date: Mon, 16 Mar 2026 20:35:44 -0400
-Message-ID: <20260317003544.2583-1-lirongqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1773715536; c=relaxed/simple;
+	bh=o4KKEzECa0c9M2MuhD0pbm/LOj6Ot3Hiam15eo1ahHU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TdIv+Kp3uvtNf3r0LwPURxKUvkFdvAHjobvhDZjTdfXbew9nr+1KlHRqhuP+MFC5mZTqMbJ0CTvBld5/hzg8btIi+EMHT/I4vR/BCD/flZNkOAvz6QkDZhOhzWhJy8qqxa7E/r2kGXVuhiJ+xiy7AebrvjFuNNsY9+6JoJj8r/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BaZG9cFa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A37CC19421;
+	Tue, 17 Mar 2026 02:45:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773715536;
+	bh=o4KKEzECa0c9M2MuhD0pbm/LOj6Ot3Hiam15eo1ahHU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BaZG9cFalAXv2WDdl0pf+EDyBk7oQxbUGElaV9B3674mLjUkDZx7p9rgOH0s7rKuX
+	 0gxlFsG75qG1MoA7VngD/uWJaCUM8+xWAZ+nCrXckr+pQOZZb8hZAvWVpJ7hCrtrPJ
+	 8WCaMU7aKYOyWKHBhdcL28wVjTFLXaOXKUstfLJolJDERe27H/PJ5wQ/115Q/bJyUD
+	 Mqyybm1vOOYe1O6fWFO5459cv7j5l0CehgG7lZzlGu7I4w3b0oHuSwn+CMnwreptov
+	 IOC5AeXEckXk7hDcvSNSRTO73LC1n85NorhfKT6oUwqei+onGHsSfsLg0zs12PomMk
+	 TN16J/NB+HSwA==
+From: Jakub Kicinski <kuba@kernel.org>
+To: alibuda@linux.alibaba.com
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	netdev@vger.kernel.org,
+	edumazet@google.com,
+	tonylu@linux.alibaba.com,
+	wenjia@linux.ibm.com,
+	pabeni@redhat.com,
+	guwen@linux.alibaba.com,
+	davem@davemloft.net,
+	linux-kernel@vger.kernel.org,
+	mjambigi@linux.ibm.com,
+	dust.li@linux.alibaba.com,
+	oliver.yang@linux.alibaba.com,
+	sidraya@linux.ibm.com,
+	linux-s390@vger.kernel.org,
+	horms@kernel.org,
+	pasic@linux.ibm.com,
+	linux-rdma@vger.kernel.org
+Subject: Re: [net-next] net/smc: cap allocation order for SMC-R physically contiguous buffers
+Date: Mon, 16 Mar 2026 19:45:34 -0700
+Message-ID: <20260317024534.588136-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260312082154.36971-1-alibuda@linux.alibaba.com>
+References: <20260312082154.36971-1-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: bjkjy-exc3.internal.baidu.com (172.31.50.47) To
- bjkjy-exc3.internal.baidu.com (172.31.50.47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=baidu.com;
-	s=selector1; t=1773707758;
-	bh=gRO5j431xX28a4RYWB1D3tcE+WVpePvtAeGMMBX8AlY=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type;
-	b=mUYmornL4p0Fjt9evF1Ug+m4BR8Q43JqgVTbj1cpc+8HmlSlvwm3w8+rtUluzWKfW
-	 gwTkP8prV5BZmGua1k2ANUqHNRU3hO1qd1Qg2W1tMkMomdcD7u87GV3l/wG9sgXlU9
-	 X3ZIlF8FbKs7jw9aXNrOlMoefoTTDLEx18S7VXW3EA/428/7Y0+24jKRTZtt5oFXTl
-	 +qmqvfm4hcOVJqG9ApdKGUfGUhWxPDgdQG36ihp2hRsjOJ9vFST/f1QkyX9MhnTZ5x
-	 WH4uyK8bSjZXuueyoHnOXZlo7s3MBnjBrhknB/czDwIOCjkK5dv85N6Z5OBcCQEsh1
-	 nvaEx9zDA4Daw==
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[baidu.com,quarantine];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[baidu.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-18232-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18233-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[baidu.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4C2022A249A
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:url]
+X-Rspamd-Queue-Id: 552B92A2E68
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Li RongQing <lirongqing@baidu.com>
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 
-During device hot-unplug, the mlx5 driver expects quickly unregister
-notification chains. The standard atomic_notifier_chain_unregister()
-calls synchronize_rcu(), which introduces significant latency and
-can become a bottleneck during mass resource cleanup.
-
-Introduce atomic_notifier_chain_unregister_expedited() to leverage
-synchronize_rcu_expedited(), and use it significantly reducing wait
-times in the following paths:
- - Event Queue (EQ) notifier chain
- - Firmware event notifier chain
- - IRQ notifier chain
-
-On x86-64 with HZ=1000, 64 networking channels:
-- Average teardown time: 3.59s -> 1.9s (47% reduction)
-On x86-64 with HZ=250, 64 networking channels:
-- Average teardown time: 5.5s -> 1.9s (65% reduction)
-
-Co-developed-by: liyongkang <liyongkang01@baidu.com>
-Signed-off-by: liyongkang <liyongkang01@baidu.com>
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
 ---
-Diff with v1: fix doc warning and add detailed example
+net/smc: cap allocation order for SMC-R physically contiguous buffers
 
- drivers/net/ethernet/mellanox/mlx5/core/eq.c      |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/events.c  |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c |  2 +-
- include/linux/notifier.h                          |  2 ++
- kernel/notifier.c                                 | 24 +++++++++++++++++++++++
- 5 files changed, 29 insertions(+), 3 deletions(-)
+The alloc_page() cannot satisfy requests exceeding MAX_PAGE_ORDER, and
+attempting such allocations will lead to guaranteed failures and potential
+kernel warnings. For SMCR_PHYS_CONT_BUFS, cap the allocation order to
+MAX_PAGE_ORDER. This ensures the attempts to allocate the largest possible
+physically contiguous chunk succeed. For SMCR_MIXED_BUFS, if its order
+exceeds MAX_PAGE_ORDER, skip the physical allocation attempt and fallback to
+virtual memory immediately.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 22a6371..03ae6ed 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -1244,6 +1244,6 @@ int mlx5_eq_notifier_unregister(struct mlx5_core_dev *dev, struct mlx5_nb *nb)
- {
- 	struct mlx5_eq_table *eqt = dev->priv.eq_table;
- 
--	return atomic_notifier_chain_unregister(&eqt->nh[nb->event_type], &nb->nb);
-+	return atomic_notifier_chain_unregister_expedited(&eqt->nh[nb->event_type], &nb->nb);
- }
- EXPORT_SYMBOL(mlx5_eq_notifier_unregister);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/events.c b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-index 4d7f35b..753cb15 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/events.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-@@ -436,7 +436,7 @@ int mlx5_notifier_unregister(struct mlx5_core_dev *dev, struct notifier_block *n
- {
- 	struct mlx5_events *events = dev->priv.events;
- 
--	return atomic_notifier_chain_unregister(&events->fw_nh, nb);
-+	return atomic_notifier_chain_unregister_expedited(&events->fw_nh, nb);
- }
- EXPORT_SYMBOL(mlx5_notifier_unregister);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index e051b9a..826685d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -356,7 +356,7 @@ int mlx5_irq_detach_nb(struct mlx5_irq *irq, struct notifier_block *nb)
- {
- 	int err = 0;
- 
--	err = atomic_notifier_chain_unregister(&irq->nh, nb);
-+	err = atomic_notifier_chain_unregister_expedited(&irq->nh, nb);
- 	mlx5_irq_put(irq);
- 	return err;
- }
-diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 01b6c9d..156d958 100644
---- a/include/linux/notifier.h
-+++ b/include/linux/notifier.h
-@@ -159,6 +159,8 @@ extern int blocking_notifier_chain_register_unique_prio(
- 
- extern int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
- 		struct notifier_block *nb);
-+extern int atomic_notifier_chain_unregister_expedited(struct atomic_notifier_head *nh,
-+		struct notifier_block *nb);
- extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
- 		struct notifier_block *nb);
- extern int raw_notifier_chain_unregister(struct raw_notifier_head *nh,
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index 2f9fe7c..9b35822 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -198,6 +198,30 @@ int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
- EXPORT_SYMBOL_GPL(atomic_notifier_chain_unregister);
- 
- /**
-+ *	atomic_notifier_chain_unregister_expedited - Remove notifier from an atomic notifier chain
-+ *	@nh: Pointer to head of the atomic notifier chain
-+ *	@n: Entry to remove from notifier chain
-+ *
-+ *	Removes a notifier from an atomic notifier chain and forcefully
-+ *	accelerates the RCU grace period.
-+ *
-+ *	Return: 0 on success, or -ENOENT on failure.
-+ */
-+int atomic_notifier_chain_unregister_expedited(struct atomic_notifier_head *nh,
-+		struct notifier_block *n)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&nh->lock, flags);
-+	ret = notifier_chain_unregister(&nh->head, n);
-+	spin_unlock_irqrestore(&nh->lock, flags);
-+	synchronize_rcu_expedited();
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(atomic_notifier_chain_unregister_expedited);
-+
-+/**
-  *	atomic_notifier_call_chain - Call functions in an atomic notifier chain
-  *	@nh: Pointer to head of the atomic notifier chain
-  *	@val: Value passed unmodified to notifier function
+> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> index e2d083daeb7e..a18730edb7e0 100644
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -2314,6 +2314,10 @@ int smcr_buf_reg_lgr(struct smc_link *lnk)
+>  	return rc;
+>  }
+>
+> +/*
+> + * smcr_new_buf_create may allocate a buffer smaller than the requested
+> + * bufsize. Use buf_desc->len to determine the actual allocated size.
+> + */
+>  static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
+>  						int bufsize)
+>  {
+> @@ -2326,18 +2330,22 @@ static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
+>
+>  	switch (lgr->buf_type) {
+>  	case SMCR_PHYS_CONT_BUFS:
+> +		bufsize = min(bufsize, (int)PAGE_SIZE << MAX_PAGE_ORDER);
+> +		fallthrough;
+>  	case SMCR_MIXED_BUFS:
+>  		buf_desc->order = get_order(bufsize);
+> -		buf_desc->pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
+> -					      __GFP_NOMEMALLOC | __GFP_COMP |
+> -					      __GFP_NORETRY | __GFP_ZERO,
+> -					      buf_desc->order);
+> -		if (buf_desc->pages) {
+> -			buf_desc->cpu_addr =
+> -				(void *)page_address(buf_desc->pages);
+> -			buf_desc->len = bufsize;
+> -			buf_desc->is_vm = false;
+> -			break;
+> +		if (buf_desc->order <= MAX_PAGE_ORDER) {
+> +			buf_desc->pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
+> +						      __GFP_NOMEMALLOC | __GFP_COMP |
+> +						      __GFP_NORETRY | __GFP_ZERO,
+> +						      buf_desc->order);
+> +			if (buf_desc->pages) {
+> +				buf_desc->cpu_addr =
+> +					(void *)page_address(buf_desc->pages);
+> +				buf_desc->len = bufsize;
+> +				buf_desc->is_vm = false;
+> +				break;
+> +			}
+>  		}
+>  		if (lgr->buf_type == SMCR_PHYS_CONT_BUFS)
+>  			goto out;
+
+[ ... ]
+
+> @@ -2476,7 +2484,7 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
+>  		}
+>
+>  		SMC_STAT_RMB_ALLOC(smc, is_smcd, is_rmb);
+> -		SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, true, bufsize);
+> +		SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, true, buf_desc->len);
+>  		buf_desc->used = 1;
+>  		down_write(lock);
+>  		smc_lgr_buf_list_add(lgr, is_rmb, buf_list, buf_desc);
+>  		up_write(lock);
+>  		break; /* found */
+>  	}
+>
+>  	if (IS_ERR(buf_desc))
+>  		return PTR_ERR(buf_desc);
+>
+>  	if (!is_smcd) {
+>  		if (smcr_buf_map_usable_links(lgr, buf_desc, is_rmb)) {
+>  			smcr_buf_unuse(buf_desc, is_rmb, lgr);
+>  			return -ENOMEM;
+>  		}
+>  	}
+>
+>  	if (is_rmb) {
+>  		conn->rmb_desc = buf_desc;
+>  		conn->rmbe_size_comp = bufsize_comp;
+>  		smc->sk.sk_rcvbuf = bufsize * 2;
+>  		atomic_set(&conn->bytes_to_rcv, 0);
+>  		conn->rmbe_update_limit =
+>  			smc_rmb_wnd_update_limit(buf_desc->len);
+>  		if (is_smcd)
+>  			smc_ism_set_conn(conn); /* map RMB/smcd_dev to conn */
+>  	} else {
+>  		conn->sndbuf_desc = buf_desc;
+>  		smc->sk.sk_sndbuf = bufsize * 2;
+>  		atomic_set(&conn->sndbuf_space, bufsize);
+                                                 ^^^^^^^
+
+The comment added at smcr_new_buf_create() says "Use buf_desc->len to
+determine the actual allocated size," but __smc_buf_create() still uses the
+uncapped bufsize for several critical fields. Is this correct?
+
+For SMCR_PHYS_CONT_BUFS, smcr_new_buf_create() now caps bufsize internally
+to PAGE_SIZE << MAX_PAGE_ORDER (typically 4MB), so buf_desc->len can be
+smaller than the requested bufsize.
+
+However, __smc_buf_create() continues using the original uncapped bufsize
+for:
+
+    if (is_rmb) {
+        conn->rmbe_size_comp = bufsize_comp;
+        smc->sk.sk_rcvbuf = bufsize * 2;
+    } else {
+        smc->sk.sk_sndbuf = bufsize * 2;
+        atomic_set(&conn->sndbuf_space, bufsize);
+    }
+
+The sndbuf_space mismatch is particularly concerning. Looking at
+smc_tx.c:274, the comment states: "0 <= sndbuf_space <= sndbuf_desc->len".
+When sndbuf_space exceeds sndbuf_desc->len, smc_tx_sendmsg() could calculate
+writespace incorrectly:
+
+    int writespace = atomic_read(&conn->sndbuf_space);
+
+and the two-chunk copy loop might write beyond the actual buffer boundary.
+This is reachable with default sysctl settings (SMCR_PHYS_CONT_BUFS) and
+socket buffer sizes exceeding 4MB.
+
+Should these assignments use buf_desc->len instead of bufsize? For example:
+
+    atomic_set(&conn->sndbuf_space, buf_desc->len);
+    smc->sk.sk_sndbuf = buf_desc->len * 2;
+    smc->sk.sk_rcvbuf = buf_desc->len * 2;
+
+And should rmbe_size_comp be recalculated from buf_desc->len? The
+rmbe_size_comp value is sent to the peer via CLC messages in smc_clc.c:1125,
+and an inflated value might cause the peer to believe the RMB is larger than
+it actually is.
+
+>  	}
+>  	return 0;
+>  }
 -- 
-2.9.4
-
+pw-bot: cr
 
