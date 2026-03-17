@@ -1,474 +1,288 @@
-Return-Path: <linux-rdma+bounces-18267-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18268-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id COzGNf6CuWmxHAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18267-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 17:36:14 +0100
+	id aKBIItyTuWnKKgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18268-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 18:48:12 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5AF12AE1AB
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 17:36:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA31E2B024A
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 18:48:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9690A300BE95
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 16:27:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7B4223396098
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2026 17:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253A7318B9C;
-	Tue, 17 Mar 2026 16:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8682C36CE02;
+	Tue, 17 Mar 2026 17:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k8Eghyew"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FdPZq/RI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D838F3101C2;
-	Tue, 17 Mar 2026 16:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04043346A0
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2026 17:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773764850; cv=none; b=qLPhh0CIIN+SuVE6OX3GTbsjp6pWU+mYD+QUiyFXpqjXcRuKlvVInYWJxzWuayEr77Rha3Kfw8n7FKcsn7iFxuyi3G5L9yZZb11To+bguOwLfOOq9l5e26R+qNmGBlgei0F7/KpmVyrQ/xuCWaS39pfNJwDqAQce+s7hqYkra+w=
+	t=1773768264; cv=none; b=tyQGFfJF4p02HBsKVXa1Wa8LDwVPTte860CB7dpgycyzDvW49Jw976N1JrlcmOW/K6ulLQrBi/FNpNZ8hAGL8eh4JDRc22EJOSkGlhYFfZWReQmmtvtT8xd6qc4STWYJ7BlcdM92Uz6qFHkTesIhPDKpa55xJvvt0jrNlu6lGww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773764850; c=relaxed/simple;
-	bh=xPkxF8U8/0CYH+OEH6LoL8dX2Q03TIiHVJoLGTI5eYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MlfE3HCx+24Jyw5F5nXB7F4tRBLCZJSj8UD6CnLbcD9iZ7K4WR1KxGxMUU90njbzHbkc4JB8PF5U8Yt3+63WzFXB3nWiGKTd+ldakuH44rGPIUo7iC6CsYPB1rV51/JYl9P/9/fCpPkYFBjRqXMp8ytN/VgbXUIDRFPdxJd8nZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k8Eghyew; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D256CC4CEF7;
-	Tue, 17 Mar 2026 16:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773764850;
-	bh=xPkxF8U8/0CYH+OEH6LoL8dX2Q03TIiHVJoLGTI5eYE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k8Eghyew/mcoQjzRAe8gsbq0ABDeshegGXzObsJpJ+Rm/GRggCi0V3kJzqTbhvase
-	 cOF9A5Z9oldkuxAtfiCfnE8lEq1QiQVVyhLG1K6RhtnWa3gYmjL9wpUtoMAmyTLAFT
-	 JAAihERqG5dzZ6M/BFIX5uyCUdZ4KPAwg1sTAIG3IqmMxqA9hpFEvuk+C9VCLvMfC6
-	 gW2/KO68FMObcR630tI7Lt92RR9mmNAq6vkiYRwAkV2iKtPAdGPnyx/s7ehpzZ4Hgl
-	 /BJ57ZyiBhigckT4LOxpRCseGthzwhJr+Szv+ydQ+wl05rvpKj3uM3ubwf/yFTfsKG
-	 x9VKIc/9492cg==
-Date: Tue, 17 Mar 2026 18:27:25 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	Shiraz Saleem <shirazsaleem@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 1/1] RDMA/mana: Provide a modern CQ creation
- interface
-Message-ID: <20260317162725.GB61385@unreal>
-References: <20260303124825.301452-1-kotaranov@linux.microsoft.com>
- <20260304110500.GZ12611@unreal>
- <DU8PR83MB09757DD51165365AC8BBB884B47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <DU8PR83MB09750B39D50595F015641D7DB47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <DU8PR83MB0975A4114E1CFE0B6BFA2DBBB47CA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <20260304155913.GH12611@unreal>
- <DU8PR83MB0975407CC490BBDBFAAAAC4BB47DA@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <DU8PR83MB097562AF48B340E71D8E02CFB447A@DU8PR83MB0975.EURPRD83.prod.outlook.com>
- <20260311185544.GX12611@unreal>
- <DU8PR83MB09752C4B6AD1194C6CC9A7F7B441A@DU8PR83MB0975.EURPRD83.prod.outlook.com>
+	s=arc-20240116; t=1773768264; c=relaxed/simple;
+	bh=mBujKwtFGmmn7LhpHX9AHYeuQRCtCH+LEHuoud8E5HQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L2rWACaxy/5a5+LBRwpt4efmGGZPh22BB2/OacxORJ2pL1AebaflHLpAfbpMGWQcC31PveMRdvRzTyDsVUM48FHQQsOfufvNkVAC0/ZaHKiEUy6SLq2f1KtfLw+ygFm25PEwppuMTl8H1NgYAusyKSUjL/uh76twFQ2XFWfheKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FdPZq/RI; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5de82ef1-3df6-44f8-a3c1-c6568c1110cf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773768259;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YWLlWrGq22RHoaOwIqFVHpbB6nqXmnZCNeA8MKU5JWs=;
+	b=FdPZq/RIcNxWiRURHjsItOjynJ2cCTbrN3fqQh6I/as/IqVKZnsPiwXm6Q4szDuUbnALZm
+	aJJYLe4K7s59Ufbau3T0MpotQmWCCp4ApZ9qORcnhQOG4AQUV9Ews7S0gDrTjy0szUVWMN
+	G3G2E9dUAXhjFb0WDE3c+oMWtzZ85bE=
+Date: Tue, 17 Mar 2026 10:24:11 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU8PR83MB09752C4B6AD1194C6CC9A7F7B441A@DU8PR83MB0975.EURPRD83.prod.outlook.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Subject: Re: [PATCH] RDMA/rxe: Replace use of system_unbound_wq with
+ system_dfl_wq
+To: Leon Romanovsky <leon@kernel.org>,
+ Marco Crivellari <marco.crivellari@suse.com>,
+ Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Michal Hocko <mhocko@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>
+References: <20260313154023.298325-1-marco.crivellari@suse.com>
+ <20260316201301.GL61385@unreal>
+ <c5374d12-84ed-4298-92d3-90062988f68d@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <c5374d12-84ed-4298-92d3-90062988f68d@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18267-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18268-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linutronix.de,suse.com,ziepe.ca];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E5AF12AE1AB
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BA31E2B024A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 17, 2026 at 02:05:43PM +0000, Konstantin Taranov wrote:
-> > On Wed, Mar 11, 2026 at 01:29:22PM +0000, Konstantin Taranov wrote:
-> > > > > On Wed, Mar 04, 2026 at 02:06:21PM +0000, Konstantin Taranov wrote:
-> > > > > > > > > > The uverbs CQ creation UAPI allows users to supply their
-> > > > > > > > > > own umem for a
-> > > > > > > > > CQ.
-> > > > > > > > > > Update mana to support this workflow while preserving
-> > > > > > > > > > support for creating umem through the legacy interface.
-> > > > > > > > > >
-> > > > > > > > > > To support RDMA objects that own umem, extend
-> > > > > > > > > mana_ib_create_queue()
-> > > > > > > > > > to return the umem to the caller and do not allocate
-> > > > > > > > > > umem if it was allocted by the caller.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Konstantin Taranov
-> > > > > > > > > > <kotaranov@microsoft.com>
-> > > > > > > > > > ---
-> > > > > > > > > > v2: It is a rework of the patch proposed by Leon
-> > > > > > > > >
-> > > > > > > > > I am curious to know what changes were introduced?
-> > > > > > > >
-> > > > > > > > It is like your patch, but I kept get_umem in
-> > > > > > > > mana_ib_create_queue and introduced ownership.
-> > > > > > > > It made the code simpler and extendable. In your proposal,
-> > > > > > > > it was hard to track the changes and it led to double free of the
-> > umem.
-> > > > > > > > With new
-> > > > > > > > mana_ib_create_queue() it is clear from the caller what
-> > > > > > > > happens and no special changes in the caller required.
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > >  drivers/infiniband/hw/mana/cq.c      | 125
-> > +++++++++++++++++---
-> > > > ---
-> > > > > ----
-> > > > > > > > > >  drivers/infiniband/hw/mana/device.c  |   1 +
-> > > > > > > > > >  drivers/infiniband/hw/mana/main.c    |  30 +++++--
-> > > > > > > > > >  drivers/infiniband/hw/mana/mana_ib.h |   5 +-
-> > > > > > > > > >  drivers/infiniband/hw/mana/qp.c      |   5 +-
-> > > > > > > > > >  drivers/infiniband/hw/mana/wq.c      |   3 +-
-> > > > > > > > > >  6 files changed, 111 insertions(+), 58 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/infiniband/hw/mana/cq.c
-> > > > > > > > > > b/drivers/infiniband/hw/mana/cq.c index
-> > > > > > > > > > b2749f971..fa951732a
-> > > > > > > > > > 100644
-> > > > > > > > > > --- a/drivers/infiniband/hw/mana/cq.c
-> > > > > > > > > > +++ b/drivers/infiniband/hw/mana/cq.c
-> > > > > > > > > > @@ -8,12 +8,8 @@
-> > > > > > > > > >  int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > > > > > > > > > ib_cq_init_attr
-> > > > > > > > > *attr,
-> > > > > > > > > >  		      struct uverbs_attr_bundle *attrs)  {
-> > > > > > > > > > -	struct ib_udata *udata = &attrs->driver_udata;
-> > > > > > > > > >  	struct mana_ib_cq *cq = container_of(ibcq, struct
-> > > > > mana_ib_cq, ibcq);
-> > > > > > > > > > -	struct mana_ib_create_cq_resp resp = {};
-> > > > > > > > > > -	struct mana_ib_ucontext *mana_ucontext;
-> > > > > > > > > >  	struct ib_device *ibdev = ibcq->device;
-> > > > > > > > > > -	struct mana_ib_create_cq ucmd = {};
-> > > > > > > > > >  	struct mana_ib_dev *mdev;
-> > > > > > > > > >  	bool is_rnic_cq;
-> > > > > > > > > >  	u32 doorbell;
-> > > > > > > > > > @@ -26,48 +22,91 @@ int mana_ib_create_cq(struct ib_cq
-> > > > > > > > > > *ibcq, const
-> > > > > > > > > struct ib_cq_init_attr *attr,
-> > > > > > > > > >  	cq->cq_handle = INVALID_MANA_HANDLE;
-> > > > > > > > > >  	is_rnic_cq = mana_ib_is_rnic(mdev);
-> > > > > > > > > >
-> > > > > > > > > > -	if (udata) {
-> > > > > > > > > > -		if (udata->inlen < offsetof(struct mana_ib_create_cq,
-> > > > > flags))
-> > > > > > > > > > -			return -EINVAL;
-> > > > > > > > > > -
-> > > > > > > > > > -		err = ib_copy_from_udata(&ucmd, udata,
-> > > > > min(sizeof(ucmd),
-> > > > > > > > > udata->inlen));
-> > > > > > > > > > -		if (err) {
-> > > > > > > > > > -			ibdev_dbg(ibdev, "Failed to copy from udata
-> > > > > for
-> > > > > > > > > create cq, %d\n", err);
-> > > > > > > > > > -			return err;
-> > > > > > > > > > -		}
-> > > > > > > > > > +	if (attr->cqe > U32_MAX / COMP_ENTRY_SIZE / 2 + 1)
-> > > > > > > > > > +		return -EINVAL;
-> > > > > > > > >
-> > > > > > > > > We are talking about kernel verbs. ULPs are not designed
-> > > > > > > > > to provide attributes and recover from random driver limitations.
-> > > > > > > >
-> > > > > > > > I understand, but there was an ask before to add that check
-> > > > > > > > as some automated code verifier detected overflow. So if we
-> > > > > > > > remote it, I guess we get again an ask to fix the potential overflow.
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > -		if ((!is_rnic_cq && attr->cqe > mdev-
-> > > > > > > > > >adapter_caps.max_qp_wr) ||
-> > > > > > > > > > -		    attr->cqe > U32_MAX / COMP_ENTRY_SIZE) {
-> > > > > > > > > > -			ibdev_dbg(ibdev, "CQE %d exceeding
-> > > > > limit\n", attr-
-> > > > > > > > > >cqe);
-> > > > > > > > > > -			return -EINVAL;
-> > > > > > > > > > -		}
-> > > > > > > > > > +	buf_size = MANA_PAGE_ALIGN(roundup_pow_of_two(attr-
-> > > > > >cqe *
-> > > > > > > > > COMP_ENTRY_SIZE));
-> > > > > > > > > > +	cq->cqe = buf_size / COMP_ENTRY_SIZE;
-> > > > > > > > > > +	err = mana_ib_create_kernel_queue(mdev, buf_size,
-> > > > > GDMA_CQ,
-> > > > > > > > > &cq->queue);
-> > > > > > > > > > +	if (err) {
-> > > > > > > > > > +		ibdev_dbg(ibdev, "Failed to create kernel queue for
-> > > > > create
-> > > > > > > > > > +cq,
-> > > > > > > > > %d\n", err);
-> > > > > > > > > > +		return err;
-> > > > > > > > > > +	}
-> > > > > > > > > > +	doorbell = mdev->gdma_dev->doorbell;
-> > > > > > > > > >
-> > > > > > > > > > -		cq->cqe = attr->cqe;
-> > > > > > > > > > -		err = mana_ib_create_queue(mdev, ucmd.buf_addr,
-> > > > > cq->cqe
-> > > > > > > > > * COMP_ENTRY_SIZE,
-> > > > > > > > > > -					   &cq->queue);
-> > > > > > > > > > +	if (is_rnic_cq) {
-> > > > > > > > > > +		err = mana_ib_gd_create_cq(mdev, cq, doorbell);
-> > > > > > > > > >  		if (err) {
-> > > > > > > > > > -			ibdev_dbg(ibdev, "Failed to create queue for
-> > > > > create
-> > > > > > > > > cq, %d\n", err);
-> > > > > > > > > > -			return err;
-> > > > > > > > > > +			ibdev_dbg(ibdev, "Failed to create RNIC cq,
-> > > > > %d\n",
-> > > > > > > > > err);
-> > > > > > > > > > +			goto err_destroy_queue;
-> > > > > > > > > >  		}
-> > > > > > > > > >
-> > > > > > > > > > -		mana_ucontext = rdma_udata_to_drv_context(udata,
-> > > > > struct
-> > > > > > > > > mana_ib_ucontext,
-> > > > > > > > > > -							  ibucontext);
-> > > > > > > > > > -		doorbell = mana_ucontext->doorbell;
-> > > > > > > > > > -	} else {
-> > > > > > > > > > -		if (attr->cqe > U32_MAX / COMP_ENTRY_SIZE / 2 + 1)
-> > > > > {
-> > > > > > > > > > -			ibdev_dbg(ibdev, "CQE %d exceeding
-> > > > > limit\n", attr-
-> > > > > > > > > >cqe);
-> > > > > > > > > > -			return -EINVAL;
-> > > > > > > > > > -		}
-> > > > > > > > > > -		buf_size =
-> > > > > MANA_PAGE_ALIGN(roundup_pow_of_two(attr-
-> > > > > > > > > >cqe * COMP_ENTRY_SIZE));
-> > > > > > > > > > -		cq->cqe = buf_size / COMP_ENTRY_SIZE;
-> > > > > > > > > > -		err = mana_ib_create_kernel_queue(mdev, buf_size,
-> > > > > > > > > GDMA_CQ, &cq->queue);
-> > > > > > > > > > +		err = mana_ib_install_cq_cb(mdev, cq);
-> > > > > > > > > >  		if (err) {
-> > > > > > > > > > -			ibdev_dbg(ibdev, "Failed to create kernel
-> > > > > queue for
-> > > > > > > > > create cq, %d\n", err);
-> > > > > > > > > > -			return err;
-> > > > > > > > > > +			ibdev_dbg(ibdev, "Failed to install cq callback,
-> > > > > %d\n",
-> > > > > > > > > err);
-> > > > > > > > > > +			goto err_destroy_rnic_cq;
-> > > > > > > > > >  		}
-> > > > > > > > > > -		doorbell = mdev->gdma_dev->doorbell;
-> > > > > > > > > >  	}
-> > > > > > > > > >
-> > > > > > > > > > +	spin_lock_init(&cq->cq_lock);
-> > > > > > > > > > +	INIT_LIST_HEAD(&cq->list_send_qp);
-> > > > > > > > > > +	INIT_LIST_HEAD(&cq->list_recv_qp);
-> > > > > > > > > > +
-> > > > > > > > > > +	return 0;
-> > > > > > > > > > +
-> > > > > > > > > > +err_destroy_rnic_cq:
-> > > > > > > > > > +	mana_ib_gd_destroy_cq(mdev, cq);
-> > > > > > > > > > +err_destroy_queue:
-> > > > > > > > > > +	mana_ib_destroy_queue(mdev, &cq->queue);
-> > > > > > > > > > +
-> > > > > > > > > > +	return err;
-> > > > > > > > > > +}
-> > > > > > > > > > +
-> > > > > > > > > > +int mana_ib_create_user_cq(struct ib_cq *ibcq, const
-> > > > > > > > > > +struct
-> > > > > > > > > ib_cq_init_attr *attr,
-> > > > > > > > > > +			   struct uverbs_attr_bundle *attrs) {
-> > > > > > > > > > +	struct mana_ib_cq *cq = container_of(ibcq, struct
-> > > > > mana_ib_cq, ibcq);
-> > > > > > > > > > +	struct ib_udata *udata = &attrs->driver_udata;
-> > > > > > > > > > +	struct mana_ib_create_cq_resp resp = {};
-> > > > > > > > > > +	struct mana_ib_ucontext *mana_ucontext;
-> > > > > > > > > > +	struct ib_device *ibdev = ibcq->device;
-> > > > > > > > > > +	struct mana_ib_create_cq ucmd = {};
-> > > > > > > > > > +	struct mana_ib_dev *mdev;
-> > > > > > > > > > +	bool is_rnic_cq;
-> > > > > > > > > > +	u32 doorbell;
-> > > > > > > > > > +	int err;
-> > > > > > > > > > +
-> > > > > > > > > > +	mdev = container_of(ibdev, struct mana_ib_dev,
-> > > > > > > > > > +ib_dev);
-> > > > > > > > > > +
-> > > > > > > > > > +	cq->comp_vector = attr->comp_vector % ibdev-
-> > > > > >num_comp_vectors;
-> > > > > > > > > > +	cq->cq_handle = INVALID_MANA_HANDLE;
-> > > > > > > > > > +	is_rnic_cq = mana_ib_is_rnic(mdev);
-> > > > > > > > > > +
-> > > > > > > > > > +	if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
-> > > > > > > > > > +		return -EINVAL;
-> > > > > > > > > > +
-> > > > > > > > > > +	err = ib_copy_from_udata(&ucmd, udata,
-> > > > > > > > > > +min(sizeof(ucmd),
-> > > > > > > > > > +udata-
-> > > > > > > > > >inlen));
-> > > > > > > > > > +	if (err) {
-> > > > > > > > > > +		ibdev_dbg(ibdev, "Failed to copy from udata for
-> > > > > create cq,
-> > > > > > > > > %d\n", err);
-> > > > > > > > > > +		return err;
-> > > > > > > > > > +	}
-> > > > > > > > > > +
-> > > > > > > > > > +	if ((!is_rnic_cq && attr->cqe > mdev-
-> > > > > >adapter_caps.max_qp_wr) ||
-> > > > > > > > > > +	    attr->cqe > U32_MAX / COMP_ENTRY_SIZE)
-> > > > > > > > > > +		return -EINVAL;
-> > > > > > > > > > +
-> > > > > > > > > > +	cq->cqe = attr->cqe;
-> > > > > > > > > > +	err = mana_ib_create_queue(mdev, ucmd.buf_addr,
-> > > > > > > > > > +cq->cqe
-> > > > > *
-> > > > > > > > > COMP_ENTRY_SIZE,
-> > > > > > > > > > +				   &cq->queue, &ibcq->umem);
-> > > > > > >
-> > > > > > > I just realized that I forgot to handle the case when
-> > > > > > > ibcq->umem == NULL and mana fails later after this call. I
-> > > > > > > need to clean
-> > > > > > > ibcq->umem in
-> > > > > this case.
-> > > > > > > I will address that in v3. I am sorry.
-> > > > > > >
-> > > > > >
-> > > > > > Hi Leon,
-> > > > > > After re-reading the code, I see that there is no bug in v2 as
-> > > > > > the umem gets deallocated on failure inside the handler of
-> > > > > > UVERBS_METHOD_CQ_CREATE. I also see that you also had the same
-> > > > logic
-> > > > > > in v1. So, what is your recommendation? Leave v2 logic as is, so
-> > > > > > mana would immediately give ownership of umem to cq->umem, and
-> > > > > > if
-> > > > > > mana_ib_create_user_cq() fails at later stage it should not
-> > > > > > clean
-> > > > > > cq->umem
-> > > > > and leave it to the caller handle (i.e., UVERBS_METHOD_CQ_CREATE)
-> > > > > to clean
-> > > > > cq->umem regardless of who created it.
-> > > > > >
-> > > > > > Or should I make v3, where I will assign umem to cq->umem right
-> > > > > > before return 0, so that if
-> > > > > > mana_ib_create_user_cq() fails it does not change cq->umem at all.
-> > > > >
-> > > > > My suggestion is to stick with my original patch and remove
-> > > > > ib_umem_release(queue->umem) from mana_ib_destroy_queue().
-> > > >
-> > > > Unfortunately, this will break the code and will require more
-> > > > boilerplate workarounds.
-> > > > MANA still needs to allocate umem for many objects. I see that we
-> > > > can generalize for CQs, but mana RC QPs use 4 queues at the moment,
-> > > > and I am preparing a patch to have 5th queue for BIND WQEs for RC.
-> > > > Our UC QP will use 3 queues. Having a nice entity as mana queue
-> > > > allows us to have clean code and do not have extra complex
-> > > > conditions to detect whether a mana queue has an umem and the
-> > cleanup of mana queue handles that.
-> > > >
-> > > > My proposal is to keep the nice property of mana queues and just
-> > > > extend the
-> > > > mana_ib_create_queue() to satisfy your requirements without adding
-> > > > burden of special handling umems. As I understand the new API
-> > > > requirement is that umem for a CQ should be owned by the ib core,
-> > > > and that is what the helper
-> > > > achieves: the umem pointer is not stored and assigned to cq->umem
-> > directly.
-> > > > The only open question I have is what the requirement for writing an
-> > > > umem to cq->umem is. In your patch, I see that you mutate cq->umem
-> > > > even if
-> > > > mana_ib_create_user_cq() fails. Is it the behavior you
-> > > > need/want/allow and will it be enforced in other IB objects that have one
-> > umem (e.g., WQs, SRQs)?
-> > > > As it seems to be allowed in the UVERBS_METHOD_CQ_CREATE  code:
-> > > > 	if (ib_dev->ops.create_user_cq)
-> > > > 		ret = ib_dev->ops.create_user_cq(cq, &attr, attrs);
-> > > > 	else
-> > > > 		ret = ib_dev->ops.create_cq(cq, &attr, attrs);
-> > > > 	if (ret)
-> > > > 		goto err_free;
-> > > > ...
-> > > > err_free:
-> > > > 	ib_umem_release(cq->umem);
-> > > > If it is not expected, you might enforce it by adding
-> > > > WARN_ON(cq->umem != umem); before ib_umem_release() And I am
-> > happy
-> > > > to adjust mana code to satisfy this behavior.
-> > > >
-> > > > here I am just trying to get a win-win situation where we both can
-> > > > be happy about the code. I looked at your proposal and removing
-> > > > ib_umem_release from mana destroy queue will just add it after
-> > > > mana_ib_destroy_queue() in all code paths except the CQ. As well as
-> > > > we would need to add code to handle failures of ib_umem_get, so
-> > > > keeping it in the helper removes the need to have that. Instead, I
-> > > > would like to make the helper to handle the cases when umem is
-> > > > created by upper stack or is not created but want to be owned by the
-> > > > upper stack. What is more, I would like the helper be general enough
-> > > > to be used for other ib core objects and that is why I would like to know
-> > the model so I adjust the helper accordingly.
-> > >
-> > > Hi Leon! Could you please respond to the question above so I can
-> > > resend v2 or suggest a v3 of this patch. I am asking as I would like
-> > > to send patches for UC QP support in mana_ib and it uses
-> > > mana_ib_create_queue(). Or should I send UC QP patches now with
-> > > existing mana_ib_create_queue() signature and send a v3 for this patch
-> > later, where I also fix mana_ib_create_queue() for UC QP handling?
-> > 
-> > It depends on your readiness. If your UC QP support is complete, send it.
-> > 
-> > Regarding .create_user_cq(), you are not required to implement it if you
-> > prefer not to. Your driver did not support this callback before my series. The
-> > purpose of .create_user_cq() is to enable handling of additional UMEM
-> > types, such as dmabuf for GPU memory. Later in this cycle, memfd-based
-> > UMEMs will be added to improve ib_umem_get() performance.
-> > 
-> > If you want your driver to support these UMEM types, you will need to follow
-> > the API contract: do not call ib_umem_release in the
-> > .create_user_cq() or .destroy_cq() paths.
-> 
-> To confirm that we are on the same page.
-> It means that when mana gets cq->umem == NULL, I should assign it to ib_umem_get()
-> and if there is an error later, the mana_ib_create_user_cq() should not
-> call ib_umem_release() even though it created it.
-> Correct?
 
-Yes, we have a plan for removing that ib_umem_get() in the future.  
+On 3/17/26 7:38 AM, Zhu Yanjun wrote:
+> 在 2026/3/16 13:13, Leon Romanovsky 写道:
+>> On Fri, Mar 13, 2026 at 04:40:23PM +0100, Marco Crivellari wrote:
+>>> This patch continues the effort to refactor workqueue APIs, which 
+>>> has begun
+>>> with the changes introducing new workqueues and a new 
+>>> alloc_workqueue flag:
+>>>
+>>>     commit 128ea9f6ccfb ("workqueue: Add system_percpu_wq and 
+>>> system_dfl_wq")
+>>>     commit 930c2ea566af ("workqueue: Add new WQ_PERCPU flag")
+>>>
+>>> The point of the refactoring is to eventually alter the default 
+>>> behavior of
+>>> workqueues to become unbound by default so that their workload 
+>>> placement is
+>>> optimized by the scheduler.
+>>>
+>>> Before that to happen, workqueue users must be converted to the 
+>>> better named
+>>> new workqueues with no intended behaviour changes:
+>>>
+>>>     system_wq -> system_percpu_wq
+>>>     system_unbound_wq -> system_dfl_wq
+>>>
+>>> This way the old obsolete workqueues (system_wq, system_unbound_wq) 
+>>> can be
+>>> removed in the future.
+>>
+>> I recall earlier efforts to replace system workqueues with per‑driver 
+>> queues,
+>> because unloading a driver forces a flush of the entire system 
+>> workqueue,
+>> which is undesirable for overall system behavior.
+>>
+>> Wouldn't it be better to introduce a local workqueue here and use 
+>> that instead?
+>
+> Thanks.
+>
+> 1.The initialization should be:
+>
+> my_wq = alloc_workqueue("my_driver_queue", WQ_UNBOUND | 
+> WQ_MEM_RECLAIM, 0);
+> if (!my_wq)
+>     return -ENOMEM;
+>
+> 2. The Submission should be:
+>
+> queue_work(my_wq, &my_work);
+>
+> 3. Destroy should be:
+>
+> destroy_workqueue()
+>
+> Thanks,
+> Zhu Yanjun
 
-Thanks
+Hi, Leon
 
-> 
-> Konstantin
-> 
-> > 
-> > Thanks
-> > 
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > > Thanks
-> > > > Konstantin
-> > > >
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > > >
-> > > > > > > - Konstantin
-> > > > > > >
-> > > > > >
-> > > > > >
+The diff for a new work queue in rxe is as below. Please review it.
+
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c 
+b/drivers/infiniband/sw/rxe/rxe_odp.c
+index bc11b1ec59ac..03199fef47fb 100644
+--- a/drivers/infiniband/sw/rxe/rxe_odp.c
++++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+@@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+          work->frags[i].mr = mr;
+      }
+
+-    queue_work(system_unbound_wq, &work->work);
++    rxe_queue_aux_work(&work->work);
+
+      return 0;
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c 
+b/drivers/infiniband/sw/rxe/rxe_task.c
+index f522820b950c..a2da699b969e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -6,19 +6,36 @@
+
+  #include "rxe.h"
+
++/* work for rxe_task */
+  static struct workqueue_struct *rxe_wq;
+
++/* work for other rxe jobs */
++static struct workqueue_struct *rxe_aux_wq;
++
+  int rxe_alloc_wq(void)
+  {
+-    rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
++    rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND | WQ_MEM_RECLAIM,
++                WQ_MAX_ACTIVE);
+      if (!rxe_wq)
+          return -ENOMEM;
+
++    rxe_aux_wq = alloc_workqueue("rxe_aux_wq",
++                WQ_UNBOUND | WQ_MEM_RECLAIM, WQ_MAX_ACTIVE);
++    if (!rxe_aux_wq) {
++        destroy_workqueue(rxe_wq);
++        return -ENOMEM;
++
++    }
++
+      return 0;
+  }
+
+  void rxe_destroy_wq(void)
+  {
++    flush_workqueue(rxe_aux_wq);
++    destroy_workqueue(rxe_aux_wq);
++
++    flush_workqueue(rxe_wq);
+      destroy_workqueue(rxe_wq);
+  }
+
+@@ -254,6 +271,14 @@ void rxe_sched_task(struct rxe_task *task)
+      spin_unlock_irqrestore(&task->lock, flags);
+  }
+
++/* rxe_wq for rxe tasks. rxe_aux_wq for other rxe jobs.
++ */
++void rxe_queue_aux_work(struct work_struct *work)
++{
++    WARN_ON_ONCE(!rxe_aux_wq);
++    queue_work(rxe_aux_wq, work);
++}
++
+  /* rxe_disable/enable_task are only called from
+   * rxe_modify_qp in process context. Task is moved
+   * to the drained state by do_task.
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.h 
+b/drivers/infiniband/sw/rxe/rxe_task.h
+index a8c9a77b6027..e1c0a34808b4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.h
++++ b/drivers/infiniband/sw/rxe/rxe_task.h
+@@ -36,6 +36,7 @@ int rxe_alloc_wq(void);
+
+  void rxe_destroy_wq(void);
+
++void rxe_queue_aux_work(struct work_struct *work);
+  /*
+   * init rxe_task structure
+   *    qp  => parameter to pass to func
+
+Zhu Yanjun
+
+>
+>>
+>> Thanks
+>>
+>>>
+>>> Link: 
+>>> https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
+>>> Suggested-by: Tejun Heo <tj@kernel.org>
+>>> Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
+>>> ---
+>>>   drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c 
+>>> b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>> index bc11b1ec59ac..d440c8cbaea5 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>> @@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct 
+>>> ib_pd *ibpd,
+>>>           work->frags[i].mr = mr;
+>>>       }
+>>>   -    queue_work(system_unbound_wq, &work->work);
+>>> +    queue_work(system_dfl_wq, &work->work);
+>>>         return 0;
+>>>   --
+>>> 2.53.0
+>>>
+>
 
