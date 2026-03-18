@@ -1,208 +1,168 @@
-Return-Path: <linux-rdma+bounces-18308-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18309-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GPGkC8N7ummTWwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18308-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:17:39 +0100
+	id aClyBox8ummTWwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18309-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:21:00 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320DE2B9C1E
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:17:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE222B9CF0
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 58E49300468E
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:17:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 68F343022908
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDD335D5F2;
-	Wed, 18 Mar 2026 10:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D81734A3BF;
+	Wed, 18 Mar 2026 10:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s0SmqXc9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PsjoQqZU"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7424502F;
-	Wed, 18 Mar 2026 10:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5D43AA1A7
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 10:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773829053; cv=none; b=fRNNUn57P5MO1gIBpNg45PeRRucuuHGy8rRQ2FhJEXgoVeYxPfEKdbhVaFRXT+CGgXh6ODVMczd4Z2xicj81ct9s0lUksKDKD2eeydHyYjOGyxnmsgLLLnqafIY+QsuMDv8ZtBEqo79InicfDujOAvrM9eVO+ytQnHBKPiDFK0E=
+	t=1773829199; cv=none; b=KOnh3cA8HT7nGLwbJTFR7oYwVBPVeeOnXY9QkCX1wo11JpwUM0JimwXksyPxz8KjvtrPJqu2vxOV/Fxhhv/wut2dhOI5vxUztJg9c57m1CSIID9PMCKh88MrmffLhOsb6HZCKwRGFGBaCnUJRX0UYIZxhr9BsXpUzroNVld4Pvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773829053; c=relaxed/simple;
-	bh=YU9RRTBR1NfblpWQNU5Qzel4y4UMl5CcCMxnsMe/Ink=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=no5Y3cdiWB4dlR3xPNpCF7gYtvNhrHpkRN69RkcPYqc9gjYEsX4gtn7GlveqIBAYBtfHA1MoGGBR9MbYqgfGy/42XZ/8fVYRXWpP3frrf82Utwoi5IGYz0YX7DahBT/ihxHcULm1xFOn8n7b1Sr9MI/T/M/Sd/SsBi93SMOz40o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s0SmqXc9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC121C19421;
-	Wed, 18 Mar 2026 10:17:19 +0000 (UTC)
+	s=arc-20240116; t=1773829199; c=relaxed/simple;
+	bh=j/trxIMFuf/elYQnnQzXiumqW9bTQ89j/pQJqMyFT20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DNCMhHduJJjaTAJ2GRrAH3tXNErBMxGSSKv3rxaPzGCud560MKjsZBOAM2VrjKw7wAIaPs+mT6jjDUq36nYeFCE1BWvwI8eAzPPB50ky9LHatXsWSNiYKTTECbem7nxE11/DbXSL2m8gR8gtj82kCsKuoWz7BShtBTxScJCLqx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PsjoQqZU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A31FBC19421;
+	Wed, 18 Mar 2026 10:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773829052;
-	bh=YU9RRTBR1NfblpWQNU5Qzel4y4UMl5CcCMxnsMe/Ink=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=s0SmqXc9UeZuzujXZFm/QS+60/+h7lKTN1+cbovuRRb3Q6SjmwVzP8ye5Yc5UpR3Y
-	 qP8gHWRb44s2mSwT2uS/jA7hESFDdgjngMfzJmBtRI+16ewaf1bJLKLg3h8epiyzIz
-	 5n2yzLrQ/zqppUMX6mFy5UvD8TP10QcOQr5ad0N/e5/JRMZOQtGSueS1lm4DsRf/0f
-	 qAYDadLu5MVpM4SiqGIoVPehfNyCgIiWGoacVY7bxOjTnT0beKfRMSjim+fWayPEyE
-	 nFb9dbIXEdhCf30qUZbNRL77azteU07gNL/qjvOBA0OErw6UCtztUp2x+8royCgNkL
-	 kQANqTHoNUBuQ==
-Message-ID: <030bd523-88c6-4bb9-981a-794f7a5e4cfd@kernel.org>
-Date: Wed, 18 Mar 2026 11:17:17 +0100
+	s=k20201202; t=1773829198;
+	bh=j/trxIMFuf/elYQnnQzXiumqW9bTQ89j/pQJqMyFT20=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PsjoQqZU+VbuElwgw1OXSgfePKQjFMRcHpxTToWiU2s5LvlTSgneAvR9hCAXodwTD
+	 RdkfcuSVnRrFqE4EJutXMK+LrQsmayv6dssYzwAYzXtSkmyOk96kLujG4YGgOkaaIV
+	 PnP90W44kb9uDpLGYa0a/A7Kl++NyIuxVUgTUGPbFNAsvbvR+22c8r3GhASR3y37Mv
+	 Pcwpme5mg6AClRyukNYdJjcC136vCSgHKhhpu/UETbUcb06b/Rd/8qlgS2noU7xzZ/
+	 lp+s1qDboxWcWkFgn5bfB0Ssg6xMpT9rLX1lyimJZG6ZmonQO8ePEQ7imjpWL0jZS0
+	 AL3Nm+qgZ3w4Q==
+Date: Wed, 18 Mar 2026 12:19:50 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
+Cc: "Czurylo, Krzysztof" <krzysztof.czurylo@intel.com>,
+	"jgg@nvidia.com" <jgg@nvidia.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [for-next 02/12] RDMA/irdma: Fix data race on
+ cqp_request->request_done
+Message-ID: <20260318101950.GH61385@unreal>
+References: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
+ <20260316183949.261-3-tatyana.e.nikolova@intel.com>
+ <20260317111230.GW61385@unreal>
+ <DS0PR11MB7736961A569FE56FDB09631EEB41A@DS0PR11MB7736.namprd11.prod.outlook.com>
+ <20260317132253.GX61385@unreal>
+ <DS7PR11MB7740083B561AB5756A48DB6FCB41A@DS7PR11MB7740.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10 net-next v3] ipv6: convert CONFIG_IPV6 to built-in
- only and clean up Kconfigs
-To: Fernando Fernandez Mancera <fmancera@suse.de>,
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
- netdev@vger.kernel.org
-Cc: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Selvin Xavier
- <selvin.xavier@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Simon Horman <horms@kernel.org>, Saurav Kashyap <skashyap@marvell.com>,
- Javed Hasan <jhasan@marvell.com>, GR-QLogic-Storage-Upstream@marvell.com,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Nilesh Javali <njavali@marvell.com>,
- Manish Rangankar <mrangankar@marvell.com>, Varun Prakash
- <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>,
- David Teigland <teigland@redhat.com>,
- Andreas Gruenbacher <agruenba@redhat.com>,
- Nikolay Aleksandrov <razor@blackwall.org>, David Ahern <dsahern@kernel.org>,
- Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
- Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>,
- Marc Dionne <marc.dionne@auristor.com>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
- Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>,
- Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
- Eric Biggers <ebiggers@kernel.org>, Michal Simek <michal.simek@amd.com>,
- Luca Weiss <luca.weiss@fairphone.com>, Sven Peter <sven@kernel.org>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Kuan-Wei Chiu <visitorckw@gmail.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Ryota Sakamoto <sakamo.ryota@gmail.com>,
- Kuniyuki Iwashima <kuniyu@google.com>, Kir Chou <note351@hotmail.com>,
- David Gow <david@davidgow.net>, Vikas Gupta <vikas.gupta@broadcom.com>,
- Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
- Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
- =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
- linux-scsi@vger.kernel.org, gfs2@lists.linux.dev, bridge@lists.linux.dev,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
- linux-afs@lists.infradead.org, linux-sctp@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net
-References: <20260317140141.5723-1-fmancera@suse.de>
- <20260317140141.5723-2-fmancera@suse.de>
- <69dd007c-16d3-44c2-bc30-4e7f5a95addb@oss.qualcomm.com>
- <cac7dbac-3c6e-498c-b640-478b0e6adceb@suse.de>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <cac7dbac-3c6e-498c-b640-478b0e6adceb@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DS7PR11MB7740083B561AB5756A48DB6FCB41A@DS7PR11MB7740.namprd11.prod.outlook.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[suse.com,linux-m68k.org,ziepe.ca,kernel.org,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,gondor.apana.org.au,hotmail.com,davidgow.net,blochl.de,vger.kernel.org,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
-	TAGGED_FROM(0.00)[bounces-18308-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[69];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[krzk@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-18309-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux-m68k.org:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.de:email,suse.com:email]
-X-Rspamd-Queue-Id: 320DE2B9C1E
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:email,nvidia.com:email]
+X-Rspamd-Queue-Id: 8BE222B9CF0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 18/03/2026 11:14, Fernando Fernandez Mancera wrote:
->>>
->>> [1] http://www.linux-m68k.org/faq/ram.html
->>>
->>> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
->>> Tested-by: Ricardo B. Marlière <rbm@suse.com>
->>
->> That's a Kconfig/defconfig only patch, so build system. You cannot test
->> it in a meaning of testing code. Building code is not testing.
->>
+On Tue, Mar 17, 2026 at 07:27:47PM +0000, Nikolova, Tatyana E wrote:
 > 
-> I do not agree. This isn't a Kconfig/defconfig only patch. It is taking 
-> down some module logic like changing module_init() to device_initcall(). 
-> Indeed, on v1, this patch was introducing a regression as it was using 
-> fs_initcall().
+> 
+> > -----Original Message-----
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Tuesday, March 17, 2026 8:23 AM
+> > To: Czurylo, Krzysztof <krzysztof.czurylo@intel.com>
+> > Cc: jgg@nvidia.com; linux-rdma@vger.kernel.org; Nikolova, Tatyana E
+> > <tatyana.e.nikolova@intel.com>
+> > Subject: Re: [for-next 02/12] RDMA/irdma: Fix data race on cqp_request-
+> > >request_done
+> > 
+> > On Tue, Mar 17, 2026 at 12:14:21PM +0000, Czurylo, Krzysztof wrote:
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > Sent: 17 March, 2026 12:13
+> > > > To: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>
+> > > > Cc: jgg@nvidia.com; linux-rdma@vger.kernel.org; Czurylo, Krzysztof
+> > > > <krzysztof.czurylo@intel.com>
+> > > > Subject: Re: [for-next 02/12] RDMA/irdma: Fix data race on cqp_request-
+> > > > >request_done
+> > > >
+> > > > On Mon, Mar 16, 2026 at 01:39:39PM -0500, Tatyana Nikolova wrote:
+> > > > > From: Krzysztof Czurylo <krzysztof.czurylo@intel.com>
+> > > > >
+> > > > > Changes type of request_done flag from bool to atomic_t to fix
+> > > > > data race in irdma_complete_cqp_request / irdma_wait_event
+> > > > > reported by KCSAN:
+> > > >
+> > > > Again, this fix is wrong too.
+> > >
+> > > Could you please elaborate on what is wrong with this fix?
+> > > And/or suggest how to fix it properly?
+> > >
+> > > Please note 'request_done' is _not_ a bitfield and we only do simple
+> > > load/store operations on it.  There is no RMW.
+> > > Despite this, KCSAN still reports a data race on it.
+> > >
+> > > Honestly, the original idea was just to change the type from
+> > > 'bool' to 'u8'.  This is enough to silence KCSAN, but it is
+> > > not clear why.  Perhaps it indicates a bug in KCSAN?
+> > 
+> > Yes, both u8 and atomic_t behave the same, they can't be interrupted
+> > during read/write. This is why KCSAN doesn't warn you.
+> > 
+> > > I mean, maybe the report below is a false positive?
+> > 
+> > Sounds like that.
+> 
+> Leon,
+> 
+> Are you okay taking the rest of the patches in the series (they apply without the two KCSAN related patches) or you prefer that I resubmit the series?
 
-Indeed, hiding among Kconfigs there is one C file. I missed that, it's fine.
+Sure, let's me to pick them now.
 
-Best regards,
-Krzysztof
+> 
+> For this specific patch, are you okay with dropping all atomic changes, but making request_done u8 (currently bool) to silence the KCSAN warning?
+
+In general, I don't like changing code just to silence a tool, but in this
+case it is justified. Switching to u8 not only quiets the warning, it also
+reduces the size of struct irdma_cqp_request, just run pahole on it.
+
+Thanks
 
