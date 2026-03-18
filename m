@@ -1,68 +1,68 @@
-Return-Path: <linux-rdma+bounces-18334-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18335-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aKUJGz7Fumk8bwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18334-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:31:10 +0100
+	id YIW0C4nBumm6bgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18335-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:15:21 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151CD2BE411
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E37D2BDFD2
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 35ECB32A93B7
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 15:07:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CB2BF32D81B1
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 15:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E613ED11C;
-	Wed, 18 Mar 2026 15:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E965E3ED5DA;
+	Wed, 18 Mar 2026 15:03:32 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dl1-f45.google.com (mail-dl1-f45.google.com [74.125.82.45])
+Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com [74.125.82.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D3B3EB7FC
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 15:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C91F3EBF3F
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 15:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773846209; cv=none; b=Qn8n4g0wST2rZv3B3Ik4yiry2W1ogaM2o927I62gGIirqvHfhu6bCMtQ3/UC3vGiSOy3Zehrt60UAvkSf5ulR1oDXJAeWxVdYDqwaaaL0jHW/+jaU+oRig9uBcXd+ck7AF5FswDCiiYSOvzNIcQvhAxMeRIW8AJmJQ1CORAXUBc=
+	t=1773846211; cv=none; b=Txmv362Xz30bHWnOvDzRD01MneLU3x6s5doAKPlBBynE+dzScTJqOcdMRjqhl/CvS6SOPBH+ExZAHkitGP8nytl5gUT4ygJUDNSWcQshItPnUqirckXwNTOK2CytVtqZxC2gWhH5N44oGcgXbLD+xY5COy1dKBIso25KjbsTwFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773846209; c=relaxed/simple;
-	bh=5NcsxaHVIQ2NmCj9OLQh+nSLlXz0JVUjSv0mBYVb1MM=;
+	s=arc-20240116; t=1773846211; c=relaxed/simple;
+	bh=sVd8LTVEHoLKFD1aY4N3BnWCDAMnZxFR8UMGpqAS4sw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m+YJosUXXQ2WMnT7UCEE2dWBGKe/AcmaRJtKJG8eybydD5JPJiSxdSO14HgZo/2J3cd12RrYosGJLQv07QN+MVHS/Q0IzPXSxYHpfJ+aKjY72p5gRoyLPx5LORDR/4KoNoDDhQhPHLL4tBHkwUJCvQpXE8/7i8Jbrt15lH/YZHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.82.45
+	 MIME-Version; b=UvpUOchoTzR02vW98C78kw3akPOBNTypNybwMRe5Grx3bhghlrOKZFxYxd0ro/FKuwJg3UGuWpdulKRJuU/iDZCjnXxwmOdx0Rg0V2LXjG5I0gZMF/m6ckGSOF1rU+dWI9L+TNB0rvQ3iucMeSiUWWGpy0RsI3C6gLOSm6w6DQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.82.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f45.google.com with SMTP id a92af1059eb24-126ea4e9694so2428599c88.1
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 08:03:26 -0700 (PDT)
+Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-2c0bcd8f194so5425482eec.1
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 08:03:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773846206; x=1774451006;
+        d=1e100.net; s=20251104; t=1773846207; x=1774451007;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=HbyBRqP1dM0VO6fEJ4blZH7JfwL0DV5fAiX12aFZ5no=;
-        b=myeXYL0ls4ea44bxPdNIEa4gYqRHA8Zg2qklGpElum7QK5tZEW/PnbkqibXl8uaFrc
-         lC1TS1IIQAIVRpvvNdMgt/+TVosBinJzchka300gl9SQbJLaQdce0+5/q/hNuvsPaEXv
-         3z71BX67r0jv7QT6inV7gu5LlrNOlFUoIQJRkewSk46kXA6rLYVrjJ4iY8VOeiPfsmWy
-         OI4lEfN9f2QzZNFZKHjX8eiJy6bBWwCZP55AyTNrrh03nuPyUl6xx4Qhcv3Jq/w7aExE
-         i2DElOzgykHkDJsPaUuSZvkDZGU6V6b/hysOO3O4CDTHNczN6eHyotd6cQSK4s2E3tJ5
-         tSMA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/MmC0GTY+UhezRgcrqkXvUvUZU3EykDfEswXOtN6lBEmko59tSt5dljSxVyZlzEApYxZJYCWb6XrT@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxt/nLFYB8v5EbXxBN6eAyRWg9/SrOOWZoZ8imlXPoo0uExw3I4
-	eE2RVGVW4B7fKBbccvAoZH+OOFnfUNiFvBsB6qEJNT0kMVPd6eAkAsA=
-X-Gm-Gg: ATEYQzz/Ie9QGDNi2yDU6+UashUVKGFywhMLaaAAgb1M+lmrVTL+CZ1ubKEy+gD5Led
-	wvJ4WFL7WH2P6nGCpPOtqzp20DcfDlWSMR87x1MYWRV2y9kq1SekPuj5/9pLhS+Hxpj9REf7uTd
-	0B/UArXdVf4txLKGJm0JOpvZf5/zmqHwvTHfEgDFyaxsf6VBQcCipNXWXtfWhelOaA4aAjKV1sd
-	HG3mQ1ug2TJRZZDr2dKViaPjvhW9n8Q6aHL5bmVcnbuZ4smR1cJZnrRbyvbWOcjMtma0IRtD1Me
-	xz/4qH2eXPs0gN8F1lWakvFPobgRC7wp2kat8sblh+wbOvQnqt2KnG5IQrjw7TIp7PZuv01U0QK
-	oGi2pePNQRH7Lb5x5C4FCvg+SzYjv2lmSZBLEUWGlA/Elm1fYYJswT7kBpzUCcLI+IG/8K3gM1z
-	5iBNfgl7emlAkjE5im2k9FCkRFde8x8JPDJlV5HfU22uoJV3hjvlD2A4weT7bKeDzSj40W/M5B8
-	N60M3h7HFfNj6cxOQ==
-X-Received: by 2002:a05:7022:b9f:b0:128:d51a:5161 with SMTP id a92af1059eb24-129a715e828mr2027441c88.27.1773846205882;
-        Wed, 18 Mar 2026 08:03:25 -0700 (PDT)
+        bh=S2Eshwmt0Yi5gowTBPApYQhLiCclUhxDbq8BJfNjYyM=;
+        b=QOtTwCKLInjePwjthmuczbPe427bCGW0zgmKiabxmSs06Wg1rAP4L1n2EASAWr4YHn
+         oWWC22LG3rfs/1ysd4S5h4fO2OF3/enVIucLFmnfZ0tasAKgEriJWSYYYmU9shxDNpde
+         XGRuQWEz6+tuMNKFZtr1bvO96SsRr8VXCz+Pjxd2gTeqBHe7DN9Bdir3ffj7eb+EB455
+         OJRuJX+G8rb/egXF2g8Hh3dcMJ57VOVhxSJywBrvMkXN7ndr1AFtk2s9HF+5aET+IA51
+         xu8SpgsjT+muQg2AQ5MmXRdDOXhwsMncMzZyj1+I/lt+ad+8dcqXKHzAC4xhPz4cLFK5
+         HIDA==
+X-Forwarded-Encrypted: i=1; AJvYcCXegex2tfkhW9vBmzDqxB2msRJlx5FxNPulQ8Ievq5S1iRIpKk+4Qdq/YiM2EDyMWHR263+uYL+IPX5@vger.kernel.org
+X-Gm-Message-State: AOJu0YxqmHfOV38UVs6PdKC21wpiJ9KE1YbA0g9guqSkRC2y8hQ4KrMa
+	zr6ZG6mNer90sWHHCUag5eAXWp7OaXcMB2vgqyZftAse6gZs4wzsiqI=
+X-Gm-Gg: ATEYQzx1CwUDTf5TYzP5Pi3jT7gHN2sZpOc2+HfZQcogiWE5DkM5qtsuKt/DaU1A/fm
+	NauAzp5eWh1/wvjpWxsl11tlYAMn6mWOal5O7pjdyuCbSs+ItAYBLUHz5PGhotZcPY0gKQ63ec6
+	W7hK/HHcfpAUwZMdTJv/C2Ge9yQdQQNMJTuM6NGz7RYhO8auBaTJUVMkMuvcC4rT3tKTRFDIqJO
+	sfppFughEbliGpzgMsrLeTuyzXYxNb0k5G8+pYc8OPVlCg4WiAztYGvOqlGz6PUpuySvwj/k9Fb
+	WhBISUNjKrx5QY/1+bi8n4ftz3I61R+8326XQXETncvrw8H8UCd7YxMp9jfpx4s8rcZTHvbXQKP
+	XbANz9zGMT2fVcIoZAgmAlXBBsINSG/bMggKgIqur7oBX5ofZO+nHDXWIKTAoNCHbb0vrciVSTP
+	z06Rmd1q+PqsQXMMSMM/gpIZAi6wvMweI2dxXxVKjdl2vrPyzatrmfqd8Y6PBzUYRV2NnpczJ+O
+	qa23VVjWWywCRb/wg==
+X-Received: by 2002:a05:7300:fb97:b0:2ba:a3f2:958c with SMTP id 5a478bee46e88-2c0e4dc3156mr1648308eec.0.1773846207075;
+        Wed, 18 Mar 2026 08:03:27 -0700 (PDT)
 Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-129b41271aasm3384562c88.11.2026.03.18.08.03.25
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c0e55cd9cfsm3997754eec.26.2026.03.18.08.03.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Mar 2026 08:03:25 -0700 (PDT)
+        Wed, 18 Mar 2026 08:03:26 -0700 (PDT)
 From: Stanislav Fomichev <sdf@fomichev.me>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -99,9 +99,9 @@ Cc: davem@davemloft.net,
 	linux-wireless@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	leon@kernel.org
-Subject: [PATCH net-next v2 11/13] dummy: convert to ndo_set_rx_mode_async
-Date: Wed, 18 Mar 2026 08:03:03 -0700
-Message-ID: <20260318150305.123900-12-sdf@fomichev.me>
+Subject: [PATCH net-next v2 12/13] net: warn ops-locked drivers still using ndo_set_rx_mode
+Date: Wed, 18 Mar 2026 08:03:04 -0700
+Message-ID: <20260318150305.123900-13-sdf@fomichev.me>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260318150305.123900-1-sdf@fomichev.me>
 References: <20260318150305.123900-1-sdf@fomichev.me>
@@ -122,7 +122,7 @@ X-Spamd-Result: default: False [1.54 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18334-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18335-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_FIVE(0.00)[5];
 	FROM_HAS_DN(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
@@ -131,7 +131,7 @@ X-Spamd-Result: default: False [1.54 / 15.00];
 	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,lwn.net,linuxfoundation.org,lunn.ch,broadcom.com,intel.com,nvidia.com,fb.com,meta.com,sipsolutions.net,queasysnail.net,fomichev.me,gmail.com,vger.kernel.org,lists.osuosl.org];
 	MIME_TRACE(0.00)[0:+];
 	FROM_NEQ_ENVFROM(0.00)[sdf@fomichev.me,linux-rdma@vger.kernel.org];
-	NEURAL_SPAM(0.00)[0.027];
+	NEURAL_SPAM(0.00)[0.055];
 	PRECEDENCE_BULK(0.00)[];
 	R_DKIM_NA(0.00)[];
 	TO_DN_NONE(0.00)[];
@@ -141,43 +141,51 @@ X-Spamd-Result: default: False [1.54 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,fomichev.me:email,fomichev.me:mid]
-X-Rspamd-Queue-Id: 151CD2BE411
+X-Rspamd-Queue-Id: 8E37D2BDFD2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Convert dummy driver from ndo_set_rx_mode to ndo_set_rx_mode_async.
-The dummy driver's set_multicast_list is a no-op, so the conversion
-is straightforward: update the signature and the ops assignment.
+Now that all in-tree ops-locked drivers have been converted to
+ndo_set_rx_mode_async, add a warning in register_netdevice to catch
+any remaining or newly added drivers that use ndo_set_rx_mode with
+ops locking. This ensures future driver authors are guided toward
+the async path.
+
+Also route ops-locked devices through dev_rx_mode_work even if they
+lack rx_mode NDOs, to ensure netdev_ops_assert_locked() does not fire
+on the legacy path where only RTNL is held.
 
 Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
 ---
- drivers/net/dummy.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/core/dev.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/dummy.c b/drivers/net/dummy.c
-index d6bdad4baadd..f8a4eb365c3d 100644
---- a/drivers/net/dummy.c
-+++ b/drivers/net/dummy.c
-@@ -47,7 +47,9 @@
- static int numdummies = 1;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index d50d6dc6ac1f..187cd7b5074f 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9778,7 +9778,8 @@ void __dev_set_rx_mode(struct net_device *dev)
+ 	if (!netif_up_and_present(dev))
+ 		return;
  
- /* fake multicast ability */
--static void set_multicast_list(struct net_device *dev)
-+static void set_multicast_list(struct net_device *dev,
-+			       struct netdev_hw_addr_list *uc,
-+			       struct netdev_hw_addr_list *mc)
- {
- }
+-	if (ops->ndo_set_rx_mode_async || ops->ndo_change_rx_flags) {
++	if (ops->ndo_set_rx_mode_async || ops->ndo_change_rx_flags ||
++	    netdev_need_ops_lock(dev)) {
+ 		queue_work(rx_mode_wq, &dev->rx_mode_work);
+ 		return;
+ 	}
+@@ -11470,6 +11471,11 @@ int register_netdevice(struct net_device *dev)
+ 		goto err_uninit;
+ 	}
  
-@@ -87,7 +89,7 @@ static const struct net_device_ops dummy_netdev_ops = {
- 	.ndo_init		= dummy_dev_init,
- 	.ndo_start_xmit		= dummy_xmit,
- 	.ndo_validate_addr	= eth_validate_addr,
--	.ndo_set_rx_mode	= set_multicast_list,
-+	.ndo_set_rx_mode_async	= set_multicast_list,
- 	.ndo_set_mac_address	= eth_mac_addr,
- 	.ndo_get_stats64	= dummy_get_stats64,
- 	.ndo_change_carrier	= dummy_change_carrier,
++	if (netdev_need_ops_lock(dev) &&
++	    dev->netdev_ops->ndo_set_rx_mode &&
++	    !dev->netdev_ops->ndo_set_rx_mode_async)
++		netdev_WARN(dev, "ops-locked drivers should use ndo_set_rx_mode_async\n");
++
+ 	ret = netdev_do_alloc_pcpu_stats(dev);
+ 	if (ret)
+ 		goto err_uninit;
 -- 
 2.53.0
 
