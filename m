@@ -1,150 +1,214 @@
-Return-Path: <linux-rdma+bounces-18311-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18312-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4PmpNQ9+ummTWwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18311-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:27:27 +0100
+	id 0MtWCBeZumndZQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18312-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 13:22:47 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402722B9DB2
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:27:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB8A2BB61D
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 13:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 01E0A3011BD8
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:26:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 66FB630DB1E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 12:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D7534DB66;
-	Wed, 18 Mar 2026 10:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCA238B7D7;
+	Wed, 18 Mar 2026 12:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gTfIed2l"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IfyZOjKW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28AFA2AE78
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 10:25:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773829560; cv=none; b=iB5Jz107O+Tygn0IceXvYvKq1m1nBU1q6PBKpTRlZth8rpScuq4zLvaCgpgw8dhG685vMMkrYnSmLq6J6dNajpjN8Fy501J1EaNG74ov4BiwzCv0/dGypso871kNT6UTz2Ym0f5aVztcY5U5LJbVj100cuXZOwIZnVWuGVKx8+g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773829560; c=relaxed/simple;
-	bh=lMyOz6rMUb+HRBf07asSWJPxYYjay5tgd9sE6J3H/QM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KAClHkpnXNRX3Kt1EkdPCpPb06eHvao0UfiQPfwNnkAna4DaTnghZjtN7kUt+Ao8MZAS4VvugmgPDCTCC32D+uHvEQqULXvr4uhAoDbnaYNpkteV91VlKpqgQPeB4iF7PMPq51/UbTAU2+1daAgvThgZIvGequ52iuAI8R2iKwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gTfIed2l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0524FC19421;
-	Wed, 18 Mar 2026 10:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773829559;
-	bh=lMyOz6rMUb+HRBf07asSWJPxYYjay5tgd9sE6J3H/QM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gTfIed2l6tjgmsEMof1wXnR6ybj2Wh5ikdAxdZ1FscM9qTiRj22Kp0/1fEiz8qqsF
-	 r8a1STKvu6Ik/zIas1FXj7W/+ReihLci/kEkmyS0AvkR4W6LUqJsqgCGldwmOHJRCq
-	 6icR4HSFi1Kj2qzFS5z1UoNgw0QXV1quLkkNkpG1MYgE/vcI1LzmRuxiI0zC8iXwA3
-	 2Ocnxr1ImpQd3kSnNp1RSDExLPS/7Xz3rRCUYsH5uFOSt2+snVbY6bBQ1Qx7RoGJ9j
-	 3u3kz3UZifo/ciVdFkBKQuKIAcYI1kvSzJV954i6x52EA01tBdQLn78tSDmdMjGTlY
-	 Cnt7N9n9qnP9A==
-Date: Wed, 18 Mar 2026 12:25:55 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Cc: linux-rdma@vger.kernel.org, krzysztof.czurylo@intel.com
-Subject: Re: (subset) [for-next 00/12] RDMA/irdma: A few fixes for irdma
-Message-ID: <20260318102555.GA352386@unreal>
-References: <20260316183949.261-1-tatyana.e.nikolova@intel.com>
- <177382944206.752471.10465671999149444195.b4-ty@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1260B3E47B
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 12:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773836415; cv=pass; b=V3+7aAu8MoF4XllXToKvnG/BkNomJmZMkMIg8D7PF3/N51BACKFaWrZQ1C+j+gbLfxeUnaYNR/pMc4yDFzUb6C7sWI5YXGzlAgFfx2WpGRJHv7kNzDZjuYLG9NEbvDYrihN0r+EgcHKSPNGpednW9trLCw8aNfzgAvHzC7EBlXc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773836415; c=relaxed/simple;
+	bh=vvVhL/+wxuWqucAa77So5ZAeSkHYd5oXErxNuewvWWo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aYbgCfnkJO3oGxiYOms8mN40FY5IUYENZCaKMNnxMUrMg8YF/9AREuOHBUagZ57RrKeI3G/c4yE12h+bZVpk1/aYC2XShgXxx+Erlc3634mFiPUWflDiqXffwOPzxfzJAbZHMfgQKMI/FbJhtcQz86Libhxp9qEpra+VsPyJYwc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IfyZOjKW; arc=pass smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5a1307438ddso6758328e87.1
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 05:20:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773836412; cv=none;
+        d=google.com; s=arc-20240605;
+        b=QnpjcDr5nCvahpyfkEOxhOv0uKesFOiKqT93AuMrwQsehGp+XRCccVij+01LXF37cs
+         iZuwR8gDQpUYhLDz5VB/9u/jX2PDmA/H/akhWQAtEQgFYNI5zKzv0lunpd+OkVicLjEW
+         g9bW7fLkdlPfkd45u4QdRt8+lhYGVErn/zetFKZTX0+eUG1MIu20qFZOW+zNQRYVLw5E
+         SScWSI9mU2UKqgFRml98SgOahNMGad/r8Qq5QIo3plP/xGeP+bKTTCRRuKNctUvEojX3
+         Qm8puptrCxmU/P+lYpOoeLftQ4tMw3JQWCmT+1Gj8UTdBIyTuO1PRNLvwNy+lZ8aJ8gY
+         LtkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=aCsiVQYuuJsEXiT9TRjyOhELisP1aeklLB/cB8yzdNc=;
+        fh=I9BuGvu0q3WN+ChO9tETd/fUQSijQDjNDolDqVgetq8=;
+        b=Juo3sfrWXAr35N0NmlTTBcD9PScqXI8QIC0r3SCiFRtxdtICu1QJVt3BbrPueD68vR
+         CrIdfqCUOCmYEHHK7TTppOJ4EPzUnLhAc/W44RwvCl4Sf9mMdhS2vsekbsVlEjceCeMZ
+         iifBmsGzWinoWCFMkFxWC+bwloDTLGRfKoetSK9aEngIUAZUiQx3X/Ri98SYrtgfph9F
+         7aPcCCUJnrBBLpWr/T0GbNp05S7MsvyW3g39t3bB/lU5whq7X9c2l2V+5TWJqTSI6K2/
+         6Me0heDiUD4atntDCviTOAp/ui3LXxvmJW6tJqIM+xd7JGp070EkXUeup0LY6E27ve2g
+         UWlg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1773836412; x=1774441212; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aCsiVQYuuJsEXiT9TRjyOhELisP1aeklLB/cB8yzdNc=;
+        b=IfyZOjKWNMacJV7O361hGbUZh2JNEr1AnL8V93YsoKdOQaOFUr9rQueV5c3E8g4QSR
+         edFJHRk24nnL6oq8sFPe4CZ0SmtsBfv1Mn/FheuXzKptfuJbYXBgq3+6aHDhswftawId
+         kJNTv+oIDkOBu6l0QMUyGYbqFJiLlVeOFN3TbgaEggCsvTtmJRKzpmlJFLmhhPeV5UWw
+         xavBBMnQ6fcZzZVho0WUeTsoEWJ/c+w2YZWSwmDYtkXCtAuQKrtpdwoR2XEZcIIqaDjc
+         whQsrcqAPW4X1rkZ4R2ZDEe0h7PJGr15xEX23jGEPabjulbt5a/Ulu1pqmkWgXTJVfjC
+         EOFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773836412; x=1774441212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=aCsiVQYuuJsEXiT9TRjyOhELisP1aeklLB/cB8yzdNc=;
+        b=kzRzwgYgZQZyx3tnPGBa6c4ok+myVIv6txT7OxBIQ6yBOxHpTH1P4t9Tnj4Mev963T
+         Ix3aTF/NXvCTq/ncM1QhFGAPfOI6GKWE3iaGb+nKVchKMewHLfsB7xfGfwRq7awT0hQI
+         e92xyDYtZQwykceFBt5txYk6e4GGJfXbjwdtDwmK2eUHxtwBlopOsI4ONx6juyXPDhmT
+         w1GwoCiRr7tYep8mAw2zmlzS32afNvLlRrnhnC5jwH7nStdEqlMF68R3pTq3NZW4DLvU
+         2exRv6INNQho2AbeC1aumcnm2V9AXDeRsS2Gk9GgwpqV1spW4cju0QRJ+3OeEqp4swWB
+         rwYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXovLuWXJVFCOZFzcK8yZ0lxgRjGtbQ24QdpMUir4KhkgT2DoWUSihS7NgeNAKKOe74RCyZbX0CUqeS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+rGk4C/yGNqjO/04rA7mX24f6cneESIAsTRFH7YplR4+5sC94
+	KjSzikstIZITYe5IODdlj4P3hVOqC2K/2tZNvEL3++KKMLssudEJ1NZdCMhNZCdPB7jImA2mVm0
+	YmxGzhmFmTPlpOofKbjE6XwhNoF/CRJVrkozsB3DUHpCJKGui8jxu2pM=
+X-Gm-Gg: ATEYQzwai48mHN0GB+vbjiAjdL7nyj7sgXcGVUHKjpS1/NkxzjbuEkz/Wsl3DqIOA4n
+	Zwv0ftcy5q9DxJd1a7GSypivelkRfXfDEf+cnfWSbtrVsWp9/8ihBbxx2q2THuZqtXGv+qYpknH
+	MOZkVW4PxHk2wMTif3ghY6Kadlc+1bN1jKUdMe3nXqPlRhqqkdx71kxaxz3mUPl/TKdMNeYZ3go
+	W1rDECHBhGOeCqsl49jYE8RrBpSEPT36bIGpJ56okSRWFgLVBK36NU9XRHlprxzY+lRVfrfwTOZ
+	IdKxqhRWQ9M55i+qi9r8eekKTSx9ni+XY2pVxZVs
+X-Received: by 2002:a05:6512:4017:b0:5a1:4473:bb44 with SMTP id
+ 2adb3069b0e04-5a2796b946emr1207015e87.33.1773836412120; Wed, 18 Mar 2026
+ 05:20:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <177382944206.752471.10465671999149444195.b4-ty@kernel.org>
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+References: <20260313154023.298325-1-marco.crivellari@suse.com>
+ <20260316201301.GL61385@unreal> <CAAofZF61VPo8VAX8zXUZnY-ydDYAR0N0mN2egaeTzXbiaKQbDw@mail.gmail.com>
+ <20260317162429.GA61385@unreal>
+In-Reply-To: <20260317162429.GA61385@unreal>
+From: Marco Crivellari <marco.crivellari@suse.com>
+Date: Wed, 18 Mar 2026 13:20:01 +0100
+X-Gm-Features: AaiRm51UitvQ_l6oXBnLvI7rwVIxGe9L70kqCxgFIpHSmrPpblcraz8exSvis04
+Message-ID: <CAAofZF4jW2hD+UsBG8w3zYPeGGaHeSx0tSY2Prd2dXLLBkaf1g@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Replace use of system_unbound_wq with system_dfl_wq
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Frederic Weisbecker <frederic@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Michal Hocko <mhocko@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linutronix.de,suse.com,ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-18312-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18311-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 402722B9DB2
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[marco.crivellari@suse.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 7AB8A2BB61D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 18, 2026 at 06:24:02AM -0400, Leon Romanovsky wrote:
-> 
-> On Mon, 16 Mar 2026 13:39:37 -0500, Tatyana Nikolova wrote:
-> > This series includes a few irdma fixes:
-> > 
-> >  - Change request_done type to atomic
-> >  - Change ah_valid type to atomic
-> >  - Clean up unnecessary dereference of event->cm_node
-> >  - Initialize free_qp completion before using it
-> >  - Harden SQ/RQ depth calculation functions
-> >  - Update ibqp state to error if QP is already in error state
-> >  - Fix deadlock during netdev reset with active connections
-> >  - Return EINVAL for invalid arp index error
-> >  - Remove a NOP wait_event() in irdma_modify_qp_roce()
-> >  - Remove reset check from irdma_modify_qp_to_err() to ensure disconnect
-> > 
-> > [...]
-> 
-> Applied, thanks!
-> 
-> [01/12] RDMA/irdma: Initialize free_qp completion before using it
->         (no commit info)
-> [04/12] RDMA/irdma: Update ibqp state to error if QP is already in error state
->         (no commit info)
-> [05/12] RDMA/irdma: Remove a NOP wait_event() in irdma_modify_qp_roce()
->         (no commit info)
-> [06/12] RDMA/irdma: Clean up unnecessary dereference of event->cm_node
->         (no commit info)
-> [07/12] RDMA/irdma: Remove reset check from irdma_modify_qp_to_err()
->         (no commit info)
-> [08/12] RDMA/irdma: Fix deadlock during netdev reset with active connections
->         (no commit info)
-> [09/12] RDMA/irdma: Return EINVAL for invalid arp index error
->         (no commit info)
-> [10/12] RDMA/irdma: Harden depth calculation functions
->         (no commit info)
+On Tue, Mar 17, 2026 at 5:24=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+rote:
+> [...]
+>
+> Actually, RXE already have one workqueue in rxe_alloc_wq(), just use it.
 
-Everything above were applied to wip/leon-for-rc
+Hi Leon,
 
-> [11/12] RDMA/irdma: Provide scratch buffers to firmware for internal use
->         (no commit info)
-> [12/12] RDMA/irdma: Add support for GEN4 hardware
->         (no commit info)
+I noticed the workqueue is declared as static into a C file. So I
+changed it a bit, tell me if
+it's not the right approach.
+You can see the diff below:
 
-These were applied to wip/leon-for-next
+---
 
-Thanks
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rx=
+e.h
+index ff8cd53f5f28..c56bae376c7f 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -121,4 +121,6 @@ void rxe_port_up(struct rxe_dev *rxe);
+void rxe_port_down(struct rxe_dev *rxe);
+void rxe_set_port_state(struct rxe_dev *rxe);
 
-> 
-> Best regards,
-> -- 
-> Leon Romanovsky <leon@kernel.org>
-> 
-> 
++extern struct workqueue_struct *rxe_wq;
++
+#endif /* RXE_H */
+diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c
+b/drivers/infiniband/sw/rxe/rxe_odp.c
+index d440c8cbaea5..ff904d5e54a7 100644
+--- a/drivers/infiniband/sw/rxe/rxe_odp.c
++++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+@@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd=
+,
+               work->frags[i].mr =3D mr;
+       }
+
+-       queue_work(system_dfl_wq, &work->work);
++       queue_work(rxe_wq, &work->work);
+
+       return 0;
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c
+b/drivers/infiniband/sw/rxe/rxe_task.c
+index f522820b950c..801d06c969c9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -6,7 +6,7 @@
+
+#include "rxe.h"
+
+-static struct workqueue_struct *rxe_wq;
++struct workqueue_struct *rxe_wq;
+
+int rxe_alloc_wq(void)
+{
+
+---
+
+Thanks!
+
+--=20
+
+Marco Crivellari
+
+L3 Support Engineer
 
