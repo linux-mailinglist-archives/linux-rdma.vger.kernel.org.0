@@ -1,196 +1,240 @@
-Return-Path: <linux-rdma+bounces-18305-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18307-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WJTtJYp6ummTWwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18305-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:12:26 +0100
+	id QLsBOkB7ummTWwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18307-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:15:28 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9F62B9AEE
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:12:26 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD8B2B9B96
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D3B69306412B
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:09:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5F854300ACA3
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871D23BD25C;
-	Wed, 18 Mar 2026 10:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50197368962;
+	Wed, 18 Mar 2026 10:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bZ/FlLc8"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ofL7rmkW";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QZGgQxhz";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rjiHoQUv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zNi9ATAz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC4E3AA1B8;
-	Wed, 18 Mar 2026 10:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8F63A7F74
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 10:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773828557; cv=none; b=JoNJ3xE7D5ycG6bAGlZTgOiVrtMYGmfBqbrhCaIMWdjW1z1juGrbTLRzOt17GOG1xUT1k/JrCF78uakKt6XlMJU8QkUPgQlU4ANExDnA0gQfwBvwP3kWrSHdyeuL0QmjMmKviDauhiSNgZ+LbeyGqtjhSSeZ5X/KPKLtADQPKn4=
+	t=1773828914; cv=none; b=mGSqmRGJpYXSyQrT7YYX+nga4MbBUsuw5YhRzl8LVFfIi/SQWfezNz8CB4rAkwIE5QQOImdaeJfSnykUf9z4ho0Dlp2znGzc+ad4/aYdTo6hJbR+key5Sp7f41pGNrAZkPBZouMaA/3cuj/idJz2mwxthZEsyiCAy5+riMUyaK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773828557; c=relaxed/simple;
-	bh=RwF8uylKoOHKmbOSm14ruGnoPloK28/E7b/HHxSXYyY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GgCMoHO1K1i0SdyHPyc7F4f90J+KMekA1LPoM9ZEwmEz7EVvmMNTqRHZyvXvTrPchiEApFs0yta2vQ2UbFtIPk+g6CvFcs6EQflexs+gDYLnhnuk2gFSzm3PoafRd08C2VncfReWg29korlWPicdDENHqApiqyDB5GpFtf08ztg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bZ/FlLc8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F66DC19421;
-	Wed, 18 Mar 2026 10:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773828557;
-	bh=RwF8uylKoOHKmbOSm14ruGnoPloK28/E7b/HHxSXYyY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bZ/FlLc8DkIdZTQS1nK0S9AR5dra3y5QkPD9GxVIkVjaW/IS0Uo9lNDlIPKR7hPIj
-	 z7ehTclLErIYIpDJETUayyk3L9auC/TD9EkAQCH+ZAYxOVeOtYQPRwEAZ+c2DYSxzK
-	 SyhV3bqx3a9ltzfeOGVdZ/GQsbOA24UQpIBiZ9sNa7SYezPhU9JqAWvtl2ynbozpum
-	 QAF5tk7/XT0MtUYEvWjM/cV15pdmbnJAkO0Xmvp8P0/RSyAN4Yvf2RGDXFQvD0SzZg
-	 GxiM3BB0GGWrkZStAFPdL31PuB0TXHpCpMZAVqyj8T9OPy0oXVFe48S9saP4P6zvbA
-	 qbbGAmsuOmaqA==
-From: Leon Romanovsky <leon@kernel.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 4/4] RDMA/bnxt_re: Clean up uverbs CQ creation path
-Date: Wed, 18 Mar 2026 12:08:53 +0200
-Message-ID: <20260318-bnxt_re-cq-v1-4-381cb1b5e625@nvidia.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260318-bnxt_re-cq-v1-0-381cb1b5e625@nvidia.com>
-References: <20260318-bnxt_re-cq-v1-0-381cb1b5e625@nvidia.com>
+	s=arc-20240116; t=1773828914; c=relaxed/simple;
+	bh=CXh/U1ihuHA6LZF6ZGQCMi5uhNUQAbZHBzU1hKUTMFA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M6xLaF9ixLTxI+RR3aJZ6KDwulccR2cfyvqC7YrazJWY4G6iztHq3ZiroB2sAii6yZSz3DTQobcOr4jQ26JKPRJ3paWrTI0kwixChL9B4PFc373kMuI4DdVB6duQCfUQtl/opBsPVAXiStlSQZsDvWnvV5Q8AfIA5lxhBPAHpjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ofL7rmkW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QZGgQxhz; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rjiHoQUv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zNi9ATAz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ED89E5BEA0;
+	Wed, 18 Mar 2026 10:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773828904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G+1VVGhqZYl71Og99PfHZP+p6IZxOUEQZFy5WoUgigA=;
+	b=ofL7rmkWroXmYKoz4Ua0Ng9aWiD23VYMTe+oAM94VuC8FjaGtrGH8ViaxPXybcdulB3IG0
+	Xsp4tzk5UZeNSk+kixuZaB2NXxG1iLKsT9W3nQMFpoAavAvZplb4vmmJKw3Rq6+2OYDROI
+	CbX/XzgpCgTNepSzOq6nchfE/RyhRiE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773828904;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G+1VVGhqZYl71Og99PfHZP+p6IZxOUEQZFy5WoUgigA=;
+	b=QZGgQxhzYbmuX4YwkGig4p/vc01oUeu5h6o2GOfOinFTSFD0gt2587VSUYAURtDn4Ie+ZJ
+	Bff//Q+taN13UbCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773828902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G+1VVGhqZYl71Og99PfHZP+p6IZxOUEQZFy5WoUgigA=;
+	b=rjiHoQUvoZDMSQhHowT/BCbJaXhP2+WNQDABqYfzDG4LDZNOOzx3N731mCeeIA7m17yxC5
+	rw8Tit8gy/oR01L+c92WCRRNMBkwR+pP8emkdrconjMJgw4x1m6DXT68AIJz16tw94eU3B
+	Z1MSzhFu6xsdLG2a7e6eGgpCSbIw6/Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773828902;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G+1VVGhqZYl71Og99PfHZP+p6IZxOUEQZFy5WoUgigA=;
+	b=zNi9ATAzAXLwGbQsQYK4mOsbjiq3CKVJuacz2Df4c48Ic+wRBZYYH5PMEcyvNO7nBLIAMv
+	FxF9ZYyB6T7/EIBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2EDEF4273B;
+	Wed, 18 Mar 2026 10:14:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +1NDCCN7umlvWwAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Wed, 18 Mar 2026 10:14:59 +0000
+Message-ID: <cac7dbac-3c6e-498c-b640-478b0e6adceb@suse.de>
+Date: Wed, 18 Mar 2026 11:14:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.15-dev-18f8f
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/10 net-next v3] ipv6: convert CONFIG_IPV6 to built-in
+ only and clean up Kconfigs
+To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+ netdev@vger.kernel.org
+Cc: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, Selvin Xavier
+ <selvin.xavier@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+ Simon Horman <horms@kernel.org>, Saurav Kashyap <skashyap@marvell.com>,
+ Javed Hasan <jhasan@marvell.com>, GR-QLogic-Storage-Upstream@marvell.com,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nilesh Javali <njavali@marvell.com>,
+ Manish Rangankar <mrangankar@marvell.com>, Varun Prakash
+ <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>,
+ David Teigland <teigland@redhat.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>,
+ Nikolay Aleksandrov <razor@blackwall.org>, David Ahern <dsahern@kernel.org>,
+ Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
+ Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>,
+ Marc Dionne <marc.dionne@auristor.com>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
+ Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+ Eric Biggers <ebiggers@kernel.org>, Michal Simek <michal.simek@amd.com>,
+ Luca Weiss <luca.weiss@fairphone.com>, Sven Peter <sven@kernel.org>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Kuan-Wei Chiu <visitorckw@gmail.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Ryota Sakamoto <sakamo.ryota@gmail.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>, Kir Chou <note351@hotmail.com>,
+ David Gow <david@davidgow.net>, Vikas Gupta <vikas.gupta@broadcom.com>,
+ Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
+ Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
+ =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
+ linux-scsi@vger.kernel.org, gfs2@lists.linux.dev, bridge@lists.linux.dev,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ linux-afs@lists.infradead.org, linux-sctp@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net
+References: <20260317140141.5723-1-fmancera@suse.de>
+ <20260317140141.5723-2-fmancera@suse.de>
+ <69dd007c-16d3-44c2-bc30-4e7f5a95addb@oss.qualcomm.com>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <69dd007c-16d3-44c2-bc30-4e7f5a95addb@oss.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18305-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[suse.com,kernel.org,linux-m68k.org,ziepe.ca,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,gondor.apana.org.au,hotmail.com,davidgow.net,blochl.de,vger.kernel.org,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
+	DKIM_TRACE(0.00)[suse.de:+];
+	TAGGED_FROM(0.00)[bounces-18307-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_GT_50(0.00)[69];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2A9F62B9AEE
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux-m68k.org:url,suse.com:email,suse.de:dkim,suse.de:email,suse.de:mid]
+X-Rspamd-Queue-Id: 8FD8B2B9B96
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On 3/18/26 7:51 AM, Krzysztof Kozlowski wrote:
+> On 17/03/2026 15:00, Fernando Fernandez Mancera wrote:
+>> Maintaining a modular IPv6 stack offers image size savings for specific
+>> setups, this benefit is outweighed by the architectural burden it
+>> imposes on the subsystems on implementation and maintenance. Therefore,
+>> drop it.
+>>
+>> Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
+>> dependencies across the tree that explicitly checked for IPV6=m. In
+>> addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
+>> and MODULE_LICENSE().
+>>
+>> This is also replacing module_init() by device_initcall(). It is not
+>> possible to use fs_initcall() as IPv4 does because that creates a race
+>> condition on IPv6 addrconf.
+>>
+>> Finally, modify the default configs from CONFIG_IPV6=m to CONFIG_IPV6=y
+>> except for m68k as according to the bloat-o-meter the image is
+>> increasing by 330KB~ and that isn't acceptable. Instead, disable IPv6 on
+>> this architecture by default. This is aligned with m68k RAM requirements
+>> and recommendations [1].
+>>
+>> [1] http://www.linux-m68k.org/faq/ram.html
+>>
+>> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+>> Tested-by: Ricardo B. Marlière <rbm@suse.com>
+> 
+> That's a Kconfig/defconfig only patch, so build system. You cannot test
+> it in a meaning of testing code. Building code is not testing.
+> 
 
-Remove unnecessary checks, user‑visible prints that can flood dmesg,
-superfluous assignments, and convoluted goto label.
+I do not agree. This isn't a Kconfig/defconfig only patch. It is taking 
+down some module logic like changing module_init() to device_initcall(). 
+Indeed, on v1, this patch was introducing a regression as it was using 
+fs_initcall().
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+>> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> You removed important parts of Ack. It was not provided like that.
+> 
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 1aee4fec137eb..59ef56030dbe8 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3377,7 +3377,6 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 	struct bnxt_qplib_chip_ctx *cctx;
- 	struct bnxt_re_cq_resp resp = {};
- 	struct bnxt_re_cq_req req;
--	int cqe = attr->cqe;
- 	int rc;
- 	u32 active_cqs, entries;
- 
-@@ -3385,10 +3384,8 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 		return -EOPNOTSUPP;
- 
- 	/* Validate CQ fields */
--	if (cqe < 1 || cqe > dev_attr->max_cq_wqes) {
--		ibdev_err(&rdev->ibdev, "Failed to create CQ -max exceeded");
-+	if (attr->cqe > dev_attr->max_cq_wqes)
- 		return -EINVAL;
--	}
- 
- 	cq->rdev = rdev;
- 	cctx = rdev->chip_ctx;
-@@ -3409,15 +3406,13 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 		ibcq->umem = ib_umem_get(&rdev->ibdev, req.cq_va,
- 					 entries * sizeof(struct cq_base),
- 					 IB_ACCESS_LOCAL_WRITE);
--		if (IS_ERR(ibcq->umem)) {
--			rc = PTR_ERR(ibcq->umem);
--			goto fail;
--		}
-+		if (IS_ERR(ibcq->umem))
-+			return PTR_ERR(ibcq->umem);
- 	}
- 
- 	rc = bnxt_re_setup_sginfo(rdev, ibcq->umem, &cq->qplib_cq.sg_info);
- 	if (rc)
--		goto fail;
-+		return rc;
- 
- 	cq->qplib_cq.dpi = &uctx->dpi;
- 	cq->qplib_cq.max_wqe = entries;
-@@ -3426,10 +3421,8 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 	cq->qplib_cq.cnq_hw_ring_id = cq->qplib_cq.nq->ring_id;
- 
- 	rc = bnxt_qplib_create_cq(&rdev->qplib_res, &cq->qplib_cq);
--	if (rc) {
--		ibdev_err(&rdev->ibdev, "Failed to create HW CQ");
--		goto fail;
--	}
-+	if (rc)
-+		return rc;
- 
- 	cq->ib_cq.cqe = entries;
- 	cq->cq_period = cq->qplib_cq.period;
-@@ -3442,16 +3435,14 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 		hash_add(rdev->cq_hash, &cq->hash_entry, cq->qplib_cq.id);
- 		/* Allocate a page */
- 		cq->uctx_cq_page = (void *)get_zeroed_page(GFP_KERNEL);
--		if (!cq->uctx_cq_page) {
--			rc = -ENOMEM;
--			goto fail;
--		}
-+		if (!cq->uctx_cq_page)
-+			return -ENOMEM;
-+
- 		resp.comp_mask |= BNXT_RE_CQ_TOGGLE_PAGE_SUPPORT;
- 	}
- 	resp.cqid = cq->qplib_cq.id;
- 	resp.tail = cq->qplib_cq.hwq.cons;
- 	resp.phase = cq->qplib_cq.period;
--	resp.rsvd = 0;
- 	rc = ib_respond_udata(udata, resp);
- 	if (rc) {
- 		bnxt_qplib_destroy_cq(&rdev->qplib_res, &cq->qplib_cq);
-@@ -3462,7 +3453,6 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *att
- 
- free_mem:
- 	free_page((unsigned long)cq->uctx_cq_page);
--fail:
- 	return rc;
- }
- 
+Sorry about that. I will make sure to include the # arm64 on the next 
+revision.
 
--- 
-2.53.0
-
+Thanks,
+Fernando.
 
