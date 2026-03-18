@@ -1,195 +1,201 @@
-Return-Path: <linux-rdma+bounces-18353-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18354-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gI8ZBAvYumlacgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18353-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 17:51:23 +0100
+	id wDk/NSPfumk3cwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18354-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 18:21:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CE322BFA42
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 17:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F2152C0278
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 18:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 25D1E32F8308
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:35:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C5F9831866D2
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B60B3E8C56;
-	Wed, 18 Mar 2026 16:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A4F3FBEC6;
+	Wed, 18 Mar 2026 16:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AgFAqRFr"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ugw6fRG5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012057.outbound.protection.outlook.com [40.93.195.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD173101B8
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 16:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773850284; cv=none; b=tDLRGmPYQmLy75ZudygxYqJg/l/viiBSFARw8ucxc0O0QBWsPhBpJep4MJSlflxa8cEzasxOHHYMkwd7bV0x8PdhaFyRYdFUXVZjE3dQZnC4RR4gbIGoCpz7Z0A0Qy/4nyfeWWDnpp3nqmhmlKLTFfnsSdZH6BgySWScpxLfDyw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773850284; c=relaxed/simple;
-	bh=sSDi+K0/0a5BYNaze/SzNRiI6cLysWJg3J25A44e/AI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K5gXfek1QAu5ErXHmEWPOlC3dZ+NcE3QXM+i8Kr9kIl0/9aU9Fs6BX44bl+wN8tTGM9rbcOD684h7H1glR7AZv36CgSFtZxo6eeRunBKNlA4KIzqsrwJ45d430tNvkYs0ZUmzxhm7+ZKb6yg7yxhbRStMurvLKrtQziYh2iXDHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AgFAqRFr; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d46334d3-2344-403f-8376-52afa7089e48@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773850269;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rl/DY8lrkMQtwNaASDNkaKjbaXVQe48jBBUXJp2zTkM=;
-	b=AgFAqRFrsuc73G7zo59lRujPKErqYT+6djZ9dB6O6dS2BVAMdmUpD7muKeafdUZGExGU2p
-	Zilge2mKW+em1RwxWWRQ3e03AmTn2xNM7HAlON/KA/YZKQY4zZ5e9ms52dPZNeWDxIr8nt
-	uTon6321K1AbU2R6ynX+vSd8jtSL+Kk=
-Date: Wed, 18 Mar 2026 09:10:51 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDFD53FB049
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 16:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773850450; cv=fail; b=ZVRMPLvw2Wl6UNMZzuAvoYgoR8Iz+fol3yEUmpZBzNl/khS0DtJ+/7n2JXaULH46eELy2w4EoSdknUfz+rqg+dlAkpD5XIs0luwqSwRaNCFzzX6u25cPEqXk2OSy1IkIKN1Wm3FcFkMKOv6gKjF984hdFo7Y9wpweJHm9H62HhI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773850450; c=relaxed/simple;
+	bh=8xKk21KGqzFXRs3ZazCw4A9o51tjJtPCZCVDsiZO81E=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uigG2Ds1veJ06+D4iMtBdjvTsP91dIvXhLKaPUGUQEPdt7vvr5h9qdjw2Vn3/GuGSKLEZ7NN3dBmwkcpXcylS0aF8nBxIWOFgfl6w/GeJ1SXfYvEA2HpoFyo3r2LxrE0RFDIzBnqnhstniIDIyro1Lqh1a0DTKAnjnGiHpZT1Ug=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ugw6fRG5; arc=fail smtp.client-ip=40.93.195.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=h4UWCgfIRRy/ERKxJVEriOYx01pCP//DzIuwbl1wAsRLPjPQtlj/pugJH9DI6pJWmWah+hmViZF4z90XokpHC+0UZrveCSbhVA53/i3kDIPBz34Pcy82K/rLRDfCYnsjwBQjOs9/b9dcIaPQaSgYWQ6NUq8I6k1IO1cnqXpFePHOC2Gsucp0iWB17wQYW+GD8o6ETxVPoZ+goy79NX/Uze9WHKU9maWvfkcOhkjTdm0yjYHEvmJ8YhwXYAAbIh8yaa97jJv6zfvexoBsClH9aW8Nm1CgSwzlw25S422DMMH4R8dN7o4SVkpiWfNUIQy2FBqHMwWcyR4aK3GhiGl1FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lXusI6iBuQQyesCeijzfC6N4cajRRSeZow/Uy5ZVt14=;
+ b=ROAreI9Yh27ULwVmp3qDQd88xO8dYvpT3HLEpDjX5EJhhC655vm6kpRbpFXPoHtBEncwVeNPJrDT2oMGLSMt/nqC5RI6DnUeUWat5j5sHj/Iaq1IguZ8qh2BW3UtYqV/bjJH0GdvJx6cIzPwmvAuc0yKItiqltaDeEyFZ939XeiGRXAmOh5Pw+1JlYRyOD5/GVG0ulvGKO1k66D7qCZ1aAskT03Pe06AgeDYuYUV/kc2vdzFdx+WqDo/QcTk7UJihGQdO2nA0Txs5Am0iVQhaWebY20cXifBrccJF/va4C1du8J1aM1ks2Mler6Z/e8M3VChtvHVGeJQ9uluQG9opg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lXusI6iBuQQyesCeijzfC6N4cajRRSeZow/Uy5ZVt14=;
+ b=Ugw6fRG5KDvkLmHO1D4FCIqv6JufUtpBZClcF//PMVRtxliLp+O3mBT7b63UFZax7gXNuCJnYDOTpuI8IkDrVrwR5QLk2Fx+laab5zvBiYdwEYXRqIIzRQKX8R5MmNLnf3gU/Qw6jwYuv5VdTcyq9t1u+LeyVP2U6ChmcGgiKVUzAgkWas/V0BI/6kK5zxPWjVu4K82T89JCnNxDMQwSk7fk8WoDA56YqMVj9tNQIZCmadw2nxBKrCWx74I0r4S/FQrYMqNSlcr99yw3JHgdWjsXM2SNyJ11DTCMebhr4vwnS6wjd0ZqJttcvqDqTE31gYXhmVQZcpWUX5zc4tx9wg==
+Received: from BN9PR03CA0467.namprd03.prod.outlook.com (2603:10b6:408:139::22)
+ by CY8PR12MB7169.namprd12.prod.outlook.com (2603:10b6:930:5e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.19; Wed, 18 Mar
+ 2026 16:13:58 +0000
+Received: from BL6PEPF0001AB56.namprd02.prod.outlook.com
+ (2603:10b6:408:139:cafe::d6) by BN9PR03CA0467.outlook.office365.com
+ (2603:10b6:408:139::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9700.27 via Frontend Transport; Wed,
+ 18 Mar 2026 16:13:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF0001AB56.mail.protection.outlook.com (10.167.241.8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9700.17 via Frontend Transport; Wed, 18 Mar 2026 16:13:57 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 18 Mar
+ 2026 09:13:36 -0700
+Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 18 Mar
+ 2026 09:13:34 -0700
+Date: Wed, 18 Mar 2026 18:13:30 +0200
+From: Leon Romanovsky <leonro@nvidia.com>
+To: Siva Reddy Kallam <siva.kallam@broadcom.com>
+CC: <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA: Add BNG_RE to rdma_driver_id definition
+Message-ID: <20260318161330.GH352386@unreal>
+References: <20260114100728.484834-1-siva.kallam@broadcom.com>
+ <20260114115858.GA10680@unreal>
+ <CAMet4B5RtLYaY=wB_T3fBUGYQk-peaLbLsqXy_0Vhp=mqLDm8g@mail.gmail.com>
+ <20260217135209.GA281368@unreal>
+ <CAMet4B5jhJXU8WYmcuw1ba=SuJ2f-YCqnD9fGwQ1MNyjF_u3MQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Use a dedicated and robust workqueue for
- RXE tasks
-To: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
-References: <20260318025739.5058-1-yanjun.zhu@linux.dev>
- <20260318145327.GC352386@unreal>
- <9963f346-cd53-4f88-bb54-642a5babb768@linux.dev>
- <20260318154133.GF352386@unreal>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260318154133.GF352386@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+In-Reply-To: <CAMet4B5jhJXU8WYmcuw1ba=SuJ2f-YCqnD9fGwQ1MNyjF_u3MQ@mail.gmail.com>
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB56:EE_|CY8PR12MB7169:EE_
+X-MS-Office365-Filtering-Correlation-Id: 466ec3c4-9aca-42a9-5d70-08de85095c22
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|376014|36860700016|56012099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	LxQJ4k46JfXpf/MClt/GE511RVa68oOqm3OACcqldWTNF4eSFJ0YSyg3EcobZceRJLDiwY8bCpva8X0x+NzXuJHDu0TCRiaVACEEwJLDoreAesNjyd7NGuBj6ZmWJL++DukNwoGnCO5nyht0DMPpJPuZfOz28riCrElgMqFvZhsLim6vnNxM/JH3b3Qn2njhifX14IoX7viVLAmBk0SS51KBbtguJ11E8+PyQFv0vBJFxMi/xaZRgtK1F/Z6dseCUDiusVQ9yqsGQTZfLqslow9z8mTSTypxNdOeuf/ClB7GvBwZSqlLZbWhOZzTFlbUVEPEH/t2N0l6zvRfFciucxqFMq3kcdm69FUAxGHPIM5yIMDWfSMNeqpa8sNlmX2sUCwnyg/RkqowTsQ19UPHee3tojhhnnMW0XQovHPwGz+XaNXqzJBHTFYoXEvwNKOz5jnxGA3vfLkOXdpEvQOgrmyzb1LKJ6B8RjO3nv3ujhVNhMJKTJfblfS+1978ZP3uk2pV+cn+d77cJkcbCYNoAZeLNYsQmlI5cUaB2gVG98/zUJv1AFF9d8ZptTEvM+P1rlfSO+/0J3g2xYRT1wO14D8YJ21G6SIR5OAxgd6H5TVr/VLgt9bvPitV4bYRT7iNfEiTZ4dwqwDNa2H83fcDUMPGqvGViQllIcIETscjJInInzfdHM19QB+yUlWThUWMa4eAaelVoPL6gnJj5rlpfGmo3fB9cbXDl0/lKAVqoseOxqep+/3qgBB2MbBw8oqKTR+gNSExMJHe6UcZ2ZGlqQ==
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(376014)(36860700016)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	gYt5yXJDAKokEWgd0xA5TN42445w+1ofw6ZI43e9/gnBbdMXSoaMmDZ+k8Qszr9JBMu3I7Ax16TPWtMHK4jz72P6YmZ5Roiq4ILE9tnslyocGU2yQ1JDSrHtLGwmsX3nm1M0UgA0QuaQacl8Xl/F+2ffgR97E+5dmbWjulRgEC3iuR58VjpZTczBThRWvcex5hZ056SBIwChwoBOk14tZkIQOh2LVTAP3MWj9oVG7ZRL5YiMc1jLaUW9M+ClKUOUP2/0LN9uc7d795NCJnQrnK7o4Y7zHPKhjha7swy+fpag/4FiIHerJqhI1f+gsN4REQPug6uKnFYc+xmGO+ldKe/niZjbiOv9x2nISRt4BzN+d1ZqFCDr7t+EUazZ5/hhsq4Zmu5AZMSxIHeN7RjAwokeucAbaGYE9om+ayJX9+WjXEEhM5Nz1+oo+SBR2iT3
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2026 16:13:57.8324
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 466ec3c4-9aca-42a9-5d70-08de85095c22
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB56.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7169
+X-Spamd-Result: default: False [0.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18353-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18354-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.992];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:email];
+	RCPT_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leonro@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	NEURAL_HAM(-0.00)[-0.997];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 7CE322BFA42
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[8]
+X-Rspamd-Queue-Id: 2F2152C0278
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Wed, Feb 18, 2026 at 01:55:05PM +0530, Siva Reddy Kallam wrote:
+> On Tue, Feb 17, 2026 at 7:22 PM Leon Romanovsky <leonro@nvidia.com> wrote:
+> >
+> > On Thu, Jan 15, 2026 at 04:35:20PM +0530, Siva Reddy Kallam wrote:
+> > > On Wed, Jan 14, 2026 at 5:29 PM Leon Romanovsky <leonro@nvidia.com> wrote:
+> > > >
+> > > > On Wed, Jan 14, 2026 at 10:07:28AM +0000, Siva Reddy Kallam wrote:
+> > > > > Define RDMA_DRIVER_BNG_RE in enum rdma_driver_id.
+> > > >
+> > > > This should be accompanied with use of such define, where is the call to
+> > > > ib_register_device() in bng_re?
+> > > >
+> > > > Thanks
+> > > Hi Leon,
+> > > I was under the impression that driver_id can be added independently.
+> > > I am planning to send the next patch series including ib_register_device.
+> > > So, This change can be sent along with my next series. Thanks for the
+> > > clarification.
+> >
+> > What's the current status of enabling this driver?
+> >
+> > Thanks
+> 
+> Hi Leon,
+> 
+> Next series of bng_re is in progress. bng_re is dependent on some of
+> the bnge driver's code.
+> Next series of bng_re will be sent once required bnge changes are
+> merged. Internal testing of
+> bng_re with bnge is in progress.
 
-On 3/18/26 8:41 AM, Leon Romanovsky wrote:
-> On Wed, Mar 18, 2026 at 08:34:42AM -0700, Zhu Yanjun wrote:
->> 在 2026/3/18 7:53, Leon Romanovsky 写道:
->>> On Wed, Mar 18, 2026 at 03:57:39AM +0100, Zhu Yanjun wrote:
->>>> Currently, the RXE driver uses the system-wide 'system_unbound_wq' for
->>>> auxiliary tasks like ODP prefetching. This can lead to interference
->>>> from other system services and lacks guaranteed forward progress
->>>> under memory pressure.
->>>>
->>>> Currently make all the tasks queue into the driver-specific 'rxe_wq'.
->>>>
->>>> Suggested-by: Leon Romanovsky <leon@kernel.org>
->>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>> ---
->>>>    drivers/infiniband/sw/rxe/rxe_odp.c  |  2 +-
->>>>    drivers/infiniband/sw/rxe/rxe_task.c | 10 +++++++++-
->>>>    drivers/infiniband/sw/rxe/rxe_task.h |  1 +
->>>>    3 files changed, 11 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
->>>> index bc11b1ec59ac..98092dcc1870 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
->>>> @@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
->>>>    		work->frags[i].mr = mr;
->>>>    	}
->>>> -	queue_work(system_unbound_wq, &work->work);
->>>> +	rxe_queue_work(&work->work);
->>>>    	return 0;
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
->>>> index f522820b950c..4385137eb4d7 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_task.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
->>>> @@ -10,7 +10,8 @@ static struct workqueue_struct *rxe_wq;
->>>>    int rxe_alloc_wq(void)
->>>>    {
->>>> -	rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
->>>> +	rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND | WQ_MEM_RECLAIM,
->>> Why did you add WQ_MEM_RECLAIM flag? rxe_ib_advise_mr_prefetch() doesn't
->>> perform any memory reclaim.
->> You are correct that rxe_ib_advise_mr_prefetch() does not directly call
->> memory reclaim functions.
->>
->> However, the WQ_MEM_RECLAIM flag was added to prevent circular dependencies
->> during
->>
->> low-memory conditions.
->>
->> Since rxe handles memory regions that may be part of the storage or network
->> stack,
->>
->> the workqueue must be able to make progress even when the system is under
->> extreme
->>
->> memory pressure. Without this flag, if the kernel attempts to reclaim memory
->> and that
->>
->> reclaim process depends on an RDMA operation being processed by this
->> workqueue,
->>
->> the system could deadlock because the workqueue might be unable to spawn a
->> new
->>
->> worker thread.
->>
->> By setting WQ_MEM_RECLAIM, we ensure that a rescuer thread is pre-allocated,
->>
->> guaranteeing that prefetch and MR-related tasks can complete and allow the
->>
->> memory management subsystem to finish its reclaim cycle.
-> Zhu,
->
-> Please avoid relying on AI when answering ML-related questions. The
-> response you received is broadly correct, but it is incorrect for RXE.
-> You should set the WQ_MEM_RECLAIM flag only when the workqueue handlers
+What is the current status here? I think it is reasonable to expect that we
+should revert this driver if no progress is made before -rc7.
 
-OK. Thanks a lot.
+Thanks
 
-Zhu Yanjun
-
-> free memory. RXE does the opposite in rxe_ib_advise_mr_prefetch().
->
+> 
 > Thanks
->
->>
->> Zhu Yanjun
->>
->>> Thanks
->> -- 
->> Best Regards,
->> Yanjun.Zhu
->>
->>
+
+
 
