@@ -1,48 +1,49 @@
-Return-Path: <linux-rdma+bounces-18299-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18301-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MLr3Cad4ummTWwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18299-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:04:23 +0100
+	id aHd3Awd6ummTWwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18301-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:10:15 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6E32B99D5
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:04:22 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 368AA2B9A6C
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 11:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2706F30579F2
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:02:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8F9193039EC8
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 10:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210CB36B04E;
-	Wed, 18 Mar 2026 10:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF2F3B7B8F;
+	Wed, 18 Mar 2026 10:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KWIFJE0F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SpBum4gD"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4913624A6;
-	Wed, 18 Mar 2026 10:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC71F38E5C6;
+	Wed, 18 Mar 2026 10:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773828166; cv=none; b=nM8DdnGu0I7Fu+g7sQN8cywke+aUHuCuXPwwm6ljVts/mgNJ3R41OH3isuvwAFFCtkJ6ciNVJCVZ3IKLd1bAyqzHS4AcGAHr2pLdZXAzvXJhYZi6biA90yfsNV1P3qhoeNU4j081qty7YK7ednbQ7eCW78R+wJTQeAtul9wCoVM=
+	t=1773828174; cv=none; b=G2WiXw895NxjSQUHLSjGalyl/rc22VZdvPrBAAdo5PDoBX09LduAOaO/RXY90BFJCxlAQUgzhV70xrfCXuekSsb30e4RBX0I3auzY1YkXan5943v3LhyDlE13Lhpn1OoSTMl/rBmmQNiaOXI6OCpkK6/XsYeItpN7Mp+umUsdo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773828166; c=relaxed/simple;
-	bh=fUs/GwVvhw1nB9OWWrL3W4YPbFYa42FP3Y7gMK73z0c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mDy9zsGR9D68YjBNscJjhZY27rB45VLXUYDaNqlUsu1pM1PvCx6Riw3I1zSqOHabEdePsOUS+tXWDOi8ziyETDEf73sNCv1ugAsOQ/QaLRbPA9MJAlqverRwhaKevq7+KG5nmVGeY1yxV4tIdN55k3ShBRtv2VExq5U6Z3van3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KWIFJE0F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96AEEC19424;
-	Wed, 18 Mar 2026 10:02:44 +0000 (UTC)
+	s=arc-20240116; t=1773828174; c=relaxed/simple;
+	bh=IRsLprM8YhjSl7rr5EaIUZHnYerzJnEM5WNKqlHAi+U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Nmgc/5IRKcxfFA1Mm1SMdARir10Wi3vhZx55tOqNj5wiWiKghZ1RbPsMuii2GmNEmLqxjJyhxh41k3Cg0GdSiWGQgaWMJFGAPrGFB0V7db62y+5DUqAzftTNI7Yx8jQptV1U6rr/w6gAIqirFXpnUssvd92D9KS1RTHJixyubKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SpBum4gD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC4CAC19424;
+	Wed, 18 Mar 2026 10:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773828165;
-	bh=fUs/GwVvhw1nB9OWWrL3W4YPbFYa42FP3Y7gMK73z0c=;
-	h=From:To:Cc:Subject:Date:From;
-	b=KWIFJE0FxflNSkoTEoAS/kSQ6TloG0G6cjXZbGc9tJjSbvJCKO/xePWUJCDsFJoxi
-	 LmpaE+2OxjjPx1iHYjQm9atKEMRttgzPIMYlNJk71VYS2itNOaMQVSQn/D9o1p8b59
-	 TJCIMhSbB1t422Ou90KlQZNiTd/Z0zRMoyklCb2YADk06j7jj4GvI1CCvRZRbt1Qjp
-	 HjEQUumg1tcUu0hpsumfcrdhRwUFDNFkpiaj4NJ5N6uBLfzyiamjtw0ufVm22nCq8r
-	 QWyIK+y9jMnIF6aQIo2n//TRH/1ZdaM/64CGSvvPVcinDBWDcvyuDmaqpnn1SnhIQ0
-	 1wuOyOQ9Vnymg==
+	s=k20201202; t=1773828174;
+	bh=IRsLprM8YhjSl7rr5EaIUZHnYerzJnEM5WNKqlHAi+U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SpBum4gDwXdQYsTJRfACp5jI7/wXjdNmpk3agNogl9Q5CxhhU7jdgcI2zP/Zexe/z
+	 24pm85XNybTb0G+Oaw+CQupugvoB9znzxI1k6wrQjQTTczQD3NT4Qc78TwNGJuxMiw
+	 UbLzmoQfZfYX/mvi1QyDxY+nUHtizGZTTx+JFEWfyr+U2GFucXcFzZ+T+JWSV0bCZd
+	 WtyqN8on+7g/O48afkiIduDOyhDw944VVOQz471XVIGAztekyziCPAs0CsBGtVhMxO
+	 k1fWehj2xGcVlWOgRkfJEJLsHAO6f1dI1LVybf6GGQaw2h62N0aYmhSjdUbT03yIAw
+	 ds+1qr5kB+LZA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
@@ -55,10 +56,12 @@ To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Zhu Yanjun <zyjzyj2000@gmail.com>
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 0/2] RDMA: Clarify that CQ resize is a user-space verb
-Date: Wed, 18 Mar 2026 12:02:35 +0200
-Message-ID: <20260318-resize_cq-type-v1-0-b2846ed18846@nvidia.com>
+Subject: [PATCH rdma-next 1/2] RDMA/core: Remove unused ib_resize_cq() implementation
+Date: Wed, 18 Mar 2026 12:02:36 +0200
+Message-ID: <20260318-resize_cq-type-v1-1-b2846ed18846@nvidia.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260318-resize_cq-type-v1-0-b2846ed18846@nvidia.com>
+References: <20260318-resize_cq-type-v1-0-b2846ed18846@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -66,26 +69,25 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Change-ID: 20260318-resize_cq-type-a6208c447068
 X-Mailer: b4 0.15-dev-18f8f
 Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18299-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18301-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,broadcom.com,intel.com,nvidia.com,cornelisnetworks.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
@@ -94,38 +96,64 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,nvidia.com:mid]
-X-Rspamd-Queue-Id: 7D6E32B99D5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:email,nvidia.com:mid]
+X-Rspamd-Queue-Id: 368AA2B9A6C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Let's start to clean resize CQ path.
+From: Leon Romanovsky <leonro@nvidia.com>
+
+There are no in-kernel users of the CQ resize functionality, so drop it.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-Leon Romanovsky (2):
-      RDMA/core: Remove unused ib_resize_cq() implementation
-      RDMA: Clarify that CQ resize is a user‑space verb
+ drivers/infiniband/core/verbs.c | 10 ----------
+ include/rdma/ib_verbs.h         |  9 ---------
+ 2 files changed, 19 deletions(-)
 
- drivers/infiniband/core/device.c             |  2 +-
- drivers/infiniband/core/uverbs_cmd.c         |  4 ++--
- drivers/infiniband/core/verbs.c              | 10 ----------
- drivers/infiniband/hw/bnxt_re/main.c         |  2 +-
- drivers/infiniband/hw/irdma/verbs.c          |  2 +-
- drivers/infiniband/hw/mlx4/main.c            |  2 +-
- drivers/infiniband/hw/mlx5/main.c            |  2 +-
- drivers/infiniband/hw/mthca/mthca_provider.c |  2 +-
- drivers/infiniband/hw/ocrdma/ocrdma_main.c   |  2 +-
- drivers/infiniband/sw/rdmavt/vt.c            |  2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c        |  2 +-
- include/rdma/ib_verbs.h                      | 12 ++----------
- 12 files changed, 13 insertions(+), 31 deletions(-)
----
-base-commit: 5122be2a19aa0fc512ea689fd1064f7e05b45d17
-change-id: 20260318-resize_cq-type-a6208c447068
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 721cd43212380..bac87de9cc673 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2264,16 +2264,6 @@ int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+ }
+ EXPORT_SYMBOL(ib_destroy_cq_user);
+ 
+-int ib_resize_cq(struct ib_cq *cq, int cqe)
+-{
+-	if (cq->shared)
+-		return -EOPNOTSUPP;
+-
+-	return cq->device->ops.resize_cq ?
+-		cq->device->ops.resize_cq(cq, cqe, NULL) : -EOPNOTSUPP;
+-}
+-EXPORT_SYMBOL(ib_resize_cq);
+-
+ /* Memory regions */
+ 
+ struct ib_mr *ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 57b81ca0fabdc..37260d37144c5 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4103,15 +4103,6 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
+ #define ib_create_cq(device, cmp_hndlr, evt_hndlr, cq_ctxt, cq_attr) \
+ 	__ib_create_cq((device), (cmp_hndlr), (evt_hndlr), (cq_ctxt), (cq_attr), KBUILD_MODNAME)
+ 
+-/**
+- * ib_resize_cq - Modifies the capacity of the CQ.
+- * @cq: The CQ to resize.
+- * @cqe: The minimum size of the CQ.
+- *
+- * Users can examine the cq structure to determine the actual CQ size.
+- */
+-int ib_resize_cq(struct ib_cq *cq, int cqe);
+-
+ /**
+  * rdma_set_cq_moderation - Modifies moderation params of the CQ
+  * @cq: The CQ to modify.
 
-Best regards,
---  
-Leon Romanovsky <leonro@nvidia.com>
+-- 
+2.53.0
 
 
