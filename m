@@ -1,157 +1,195 @@
-Return-Path: <linux-rdma+bounces-18352-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18353-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2L5nLo3VummfcAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18352-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 17:40:45 +0100
+	id gI8ZBAvYumlacgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18353-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 17:51:23 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C4982BF718
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 17:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE322BFA42
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 17:51:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 605F931B1F97
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:23:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 25D1E32F8308
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 16:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42493328B58;
-	Wed, 18 Mar 2026 15:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B60B3E8C56;
+	Wed, 18 Mar 2026 16:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="K5h205g3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AgFAqRFr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954543E1208;
-	Wed, 18 Mar 2026 15:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD173101B8
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 16:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773849571; cv=none; b=e5vO3gXP8dV7UB73+IC/q37AZsmSirHmo2fRC751KqBrjfJlsFI87k7EUqjJvTCCSEO9tQ4sv2+ZzhplKrpxDKPqjvl5bcoAR9cr3D0NYmBoaDNNXb9zaqfA3j5eStAevohWs5pywdvX7aRwoZ/r4kT/stIEYN7snIUv0ldmTCI=
+	t=1773850284; cv=none; b=tDLRGmPYQmLy75ZudygxYqJg/l/viiBSFARw8ucxc0O0QBWsPhBpJep4MJSlflxa8cEzasxOHHYMkwd7bV0x8PdhaFyRYdFUXVZjE3dQZnC4RR4gbIGoCpz7Z0A0Qy/4nyfeWWDnpp3nqmhmlKLTFfnsSdZH6BgySWScpxLfDyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773849571; c=relaxed/simple;
-	bh=/X0YlCpfDx+7GE4gYCD2ji/irbhRczxe13pO90tN+ts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DGD6mHEoEeLS3Ngkq/3A+zdIs5aKJUspErGkIkRuQUc0Kx6m/0iEwXhnyIBOKotv2zwAa739f4PAUzJtS+CPH+U43Ay/zakUffh6qM6ggmiWzdDe6GjV/T0fNO/wLJQQSfvd1Ci2ZjqXi+AhekrkvuYC6sae9M+/SuJAZOTPF6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=K5h205g3; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=IveppaNPJT54QFrgVviokBkEo5h/cNL1a68V6Vsapn4=; b=K5h205g38VqadK+bKr61TqLPDr
-	sr5DSGstfyqcEiG9s0nLqqkewGb0yAJ6KlwaDCuBd3NDNKvmkWqhtNL/04ilUUci7BokG3O5usmg1
-	6ZCve42SkVC+AEn19S3zspkD1rxd8QaMSezAkBuXayo9v+2EojNYtqBz1ngb1RKesWXM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1w2tIX-00CEhX-Pn; Wed, 18 Mar 2026 16:59:05 +0100
-Date: Wed, 18 Mar 2026 16:59:05 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Naveen Mamindlapalli <naveenm@marvell.com>,
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
-	Danielle Ratson <danieller@nvidia.com>,
-	Hariprasad Kelam <hkelam@marvell.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Saeed Mahameed <saeedm@nvidia.com>, Shuah Khan <shuah@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Willem de Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 02/11] ethtool: Add loopback netlink UAPI
- definitions
-Message-ID: <7620dcbc-8423-4351-96d9-3e0e9e7c0b8a@lunn.ch>
-References: <20260310104743.907818-3-bjorn@kernel.org>
- <580debbb-8f6c-4b60-95ef-22c68480ded1@bootlin.com>
- <b3825c0d-02e5-4625-831f-4346ce4eabd2@lunn.ch>
- <085bb0a9-85d3-4d62-9ac4-3461b61da5f3@bootlin.com>
- <438dae03-4dac-4e66-9f4d-e08b0434c9b4@lunn.ch>
- <20260311195052.1202174f@kernel.org>
- <abJJY8whzSOB8O-X@pengutronix.de>
- <7c45ebf6-0cb2-4a4c-ac12-f4f9bb59c908@lunn.ch>
- <42abf88e-4fbf-4966-9490-8315f118ddea@bootlin.com>
- <873423y27k.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1773850284; c=relaxed/simple;
+	bh=sSDi+K0/0a5BYNaze/SzNRiI6cLysWJg3J25A44e/AI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K5gXfek1QAu5ErXHmEWPOlC3dZ+NcE3QXM+i8Kr9kIl0/9aU9Fs6BX44bl+wN8tTGM9rbcOD684h7H1glR7AZv36CgSFtZxo6eeRunBKNlA4KIzqsrwJ45d430tNvkYs0ZUmzxhm7+ZKb6yg7yxhbRStMurvLKrtQziYh2iXDHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AgFAqRFr; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d46334d3-2344-403f-8376-52afa7089e48@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773850269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rl/DY8lrkMQtwNaASDNkaKjbaXVQe48jBBUXJp2zTkM=;
+	b=AgFAqRFrsuc73G7zo59lRujPKErqYT+6djZ9dB6O6dS2BVAMdmUpD7muKeafdUZGExGU2p
+	Zilge2mKW+em1RwxWWRQ3e03AmTn2xNM7HAlON/KA/YZKQY4zZ5e9ms52dPZNeWDxIr8nt
+	uTon6321K1AbU2R6ynX+vSd8jtSL+Kk=
+Date: Wed, 18 Mar 2026 09:10:51 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <873423y27k.fsf@all.your.base.are.belong.to.us>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Subject: Re: [PATCH 1/1] RDMA/rxe: Use a dedicated and robust workqueue for
+ RXE tasks
+To: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
+References: <20260318025739.5058-1-yanjun.zhu@linux.dev>
+ <20260318145327.GC352386@unreal>
+ <9963f346-cd53-4f88-bb54-642a5babb768@linux.dev>
+ <20260318154133.GF352386@unreal>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <20260318154133.GF352386@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[lunn.ch,none];
-	R_DKIM_ALLOW(-0.20)[lunn.ch:s=20171124];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-18353-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18352-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[bootlin.com,pengutronix.de,kernel.org,vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,marvell.com,redhat.com,nvidia.com,broadcom.com,armlinux.org.uk];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,vger.kernel.org];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.959];
+	NEURAL_HAM(-0.00)[-0.992];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andrew@lunn.ch,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[lunn.ch:+];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lunn.ch:dkim,lunn.ch:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1C4982BF718
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7CE322BFA42
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-> So, maybe the next steps are:
-> 
->  1. Keep the current component model (MAC/PHY/MODULE) and the
->     NEAR_END/FAR_END direction (naming need to change as Maxime said).
->  
->  2. Add a depth (or order?) field to ETHTOOL_A_LOOPBACK_ENTRY as Jakub
->     suggested, local to each component instance. This addresses the
->     "multiple loopback points within one MAC" case without requiring a
->     global ordering. I hope it addresses what Oleksij's switch example
->     needs (multiple local loops at different depths within one
->     component) *insert that screaming emoji*.
->  
->  3. Document the viewpoint convention clearly.
->  
->  4. Punt on the grand topology dump. Too much to chew.
->  
->  5. Don't worry about DSA CPU ports - they don't have a netif, so
->     loopback doesn't apply there today. If someone adds netifs for CPU
->     ports later, depth handles it.
-> 
-> TL;DR: Add depth, document the viewpoint convention, and ship
-> it^W^Winterate.
-> 
-> Did I get that right?
 
-Sounds reasonable. The first version can be KISS, we just need to keep
-in mind reality is more complex and try to avoid adding any roadblocks
-for making it more complex to reflect that reality.
+On 3/18/26 8:41 AM, Leon Romanovsky wrote:
+> On Wed, Mar 18, 2026 at 08:34:42AM -0700, Zhu Yanjun wrote:
+>> 在 2026/3/18 7:53, Leon Romanovsky 写道:
+>>> On Wed, Mar 18, 2026 at 03:57:39AM +0100, Zhu Yanjun wrote:
+>>>> Currently, the RXE driver uses the system-wide 'system_unbound_wq' for
+>>>> auxiliary tasks like ODP prefetching. This can lead to interference
+>>>> from other system services and lacks guaranteed forward progress
+>>>> under memory pressure.
+>>>>
+>>>> Currently make all the tasks queue into the driver-specific 'rxe_wq'.
+>>>>
+>>>> Suggested-by: Leon Romanovsky <leon@kernel.org>
+>>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>> ---
+>>>>    drivers/infiniband/sw/rxe/rxe_odp.c  |  2 +-
+>>>>    drivers/infiniband/sw/rxe/rxe_task.c | 10 +++++++++-
+>>>>    drivers/infiniband/sw/rxe/rxe_task.h |  1 +
+>>>>    3 files changed, 11 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>> index bc11b1ec59ac..98092dcc1870 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>> @@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+>>>>    		work->frags[i].mr = mr;
+>>>>    	}
+>>>> -	queue_work(system_unbound_wq, &work->work);
+>>>> +	rxe_queue_work(&work->work);
+>>>>    	return 0;
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+>>>> index f522820b950c..4385137eb4d7 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+>>>> @@ -10,7 +10,8 @@ static struct workqueue_struct *rxe_wq;
+>>>>    int rxe_alloc_wq(void)
+>>>>    {
+>>>> -	rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
+>>>> +	rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND | WQ_MEM_RECLAIM,
+>>> Why did you add WQ_MEM_RECLAIM flag? rxe_ib_advise_mr_prefetch() doesn't
+>>> perform any memory reclaim.
+>> You are correct that rxe_ib_advise_mr_prefetch() does not directly call
+>> memory reclaim functions.
+>>
+>> However, the WQ_MEM_RECLAIM flag was added to prevent circular dependencies
+>> during
+>>
+>> low-memory conditions.
+>>
+>> Since rxe handles memory regions that may be part of the storage or network
+>> stack,
+>>
+>> the workqueue must be able to make progress even when the system is under
+>> extreme
+>>
+>> memory pressure. Without this flag, if the kernel attempts to reclaim memory
+>> and that
+>>
+>> reclaim process depends on an RDMA operation being processed by this
+>> workqueue,
+>>
+>> the system could deadlock because the workqueue might be unable to spawn a
+>> new
+>>
+>> worker thread.
+>>
+>> By setting WQ_MEM_RECLAIM, we ensure that a rescuer thread is pre-allocated,
+>>
+>> guaranteeing that prefetch and MR-related tasks can complete and allow the
+>>
+>> memory management subsystem to finish its reclaim cycle.
+> Zhu,
+>
+> Please avoid relying on AI when answering ML-related questions. The
+> response you received is broadly correct, but it is incorrect for RXE.
+> You should set the WQ_MEM_RECLAIM flag only when the workqueue handlers
 
-    Andrew
+OK. Thanks a lot.
+
+Zhu Yanjun
+
+> free memory. RXE does the opposite in rxe_ib_advise_mr_prefetch().
+>
+> Thanks
+>
+>>
+>> Zhu Yanjun
+>>
+>>> Thanks
+>> -- 
+>> Best Regards,
+>> Yanjun.Zhu
+>>
+>>
 
