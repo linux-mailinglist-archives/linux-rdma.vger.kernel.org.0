@@ -1,177 +1,173 @@
-Return-Path: <linux-rdma+bounces-18319-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18320-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oLPpIUm9ummqbQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18319-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 15:57:13 +0100
+	id SFmvIry8ummqbQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18320-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 15:54:52 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02D1A2BDAA1
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 15:57:12 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516842BD9C3
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 15:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AF534311050D
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 14:48:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C82C1304D816
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2026 14:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B503DEFFF;
-	Wed, 18 Mar 2026 14:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62F83E1210;
+	Wed, 18 Mar 2026 14:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MvQ4gbGY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Szx6C34I"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02DC3DEAE0
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2026 14:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026883DFC8E;
+	Wed, 18 Mar 2026 14:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773845261; cv=none; b=kXIiX/PQhC1C64zeZHIJtyJ0dAiRuLeELdnMKhMexrHryEOF86TgpIBFPptVrHbbUy3N4Tg1BJ13ctN/v5UFvgopYWbtDzdcaQaCJsarevAJhyKdZe/DOprjUhOIC0plDQWGUzFY67DXNvp13i0rlrt4c4P1D8JYFBh1PFVw8q8=
+	t=1773845374; cv=none; b=qwcYlWhJfpRsv5BNW6mA2tEyzupHHhGZJh/nWV3xDDwP13P4bTsmQ/52gJ0yNgJWt+ufnfRC2rw1nSa21RakujGUSDODF8ljOJw5ygFwxgo4hPGtMVCNjjR9s5bp7I1HNr0hhFNW0Ztn2LniMoZ/qUJJ2XoX+EpRghl8eaAjlTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773845261; c=relaxed/simple;
-	bh=g20IlxnyFB5ur1iWCZoqo6T8/IypSiEk3ILIh7oEDT8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FrPiBZDkXX7b8+bPe6tJV+HdrN9XPz1eWoFbGZM/h8BKGV4hso2QTrlF/S5EOesqFoHmhyjHansdsXYEXuO4zCo5oQxeAlns3c2rsU5kwTSeE3opYE+diKmMgXhwnQ2HrEHyAph/9Hp1tU6IMw2ScvjlSgt+xxNFe5OyHaoGVEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MvQ4gbGY; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <51303177-9a94-4525-9da1-19402ae31c7f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773845256;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LX7n7LmTnumw/UXvQNiBiI5k0zJwPGwfnsGE8K8wimU=;
-	b=MvQ4gbGYQnd0FffPgph9cAdhXWH1FvmEIPMgkMx6UCEoOrywNfzH7sdNp2Pg0/2n4gM7qf
-	zux0gReOuMWoa6DCUK+o5yeBEaQm+FcylQ2FSqpb5vZMnnj9BUNoCn2eMc/QiTSgbHKBRo
-	D63q/JmcmGTBOfZYLNoyuUWr9tTYZ1M=
-Date: Wed, 18 Mar 2026 07:47:29 -0700
+	s=arc-20240116; t=1773845374; c=relaxed/simple;
+	bh=wjL9ciqdCWcL/zpYteBo9jr8z/hJJuF/zC+yQOcCUKc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jiajy6YKgRbgI14WO4Rfk8jrTlDlvanumngsTgAzCu+FuCQY8OiC9dN7vE0PcdvGRWsVzQT7jkd3rgHyYa3/6m5bpvUQHQEefiXhgUpUw4IpKFy0slNJxWnnBJci3D9OpTyxK1lP7tQZ4GvFMooOLXhTsbQjMOCB1qzXUvr+Mck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Szx6C34I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F30C19421;
+	Wed, 18 Mar 2026 14:49:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773845373;
+	bh=wjL9ciqdCWcL/zpYteBo9jr8z/hJJuF/zC+yQOcCUKc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Szx6C34IHWdK/Rh2CQ60ByQ5z1LThBSbM4Ezrejp/Wv5RDkgeYBrUD8j69MulSh12
+	 fSHhxzrDJ0FkIhun/geXzhB5XtsD+SLghVpcwmd8mjfKFOfe2RWBIGtjMI/oopOqt+
+	 uUVOSYMlf2RzcEtFcRCQKGGi1EXP85u7w3u5x8b6BYn2g/DXI+a/ERstzOMHoKx+yP
+	 9++0g1ln9JNLL74gXaqgOGvONXo3IXN6EPCZ2+v1UMGz7NiAIQ4iku7NMEltPnfzI5
+	 /5+5Alykd3qF8LZJMP/rcai6adQ/IIduNv+eaEi62ZiSfdOCzg6CSGDQ99S1PvNlbd
+	 Ad8o1+fyDow+A==
+Date: Wed, 18 Mar 2026 16:49:27 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Long Li <longli@microsoft.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <DECUI@microsoft.com>, Simon Horman <horms@kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH rdma-next 0/8] RDMA/mana_ib: Handle
+ service reset for RDMA resources
+Message-ID: <20260318144927.GB352386@unreal>
+References: <20260307014723.556523-1-longli@microsoft.com>
+ <20260307173814.GN12611@unreal>
+ <20260313165928.GH1704121@ziepe.ca>
+ <20260316200843.GK61385@unreal>
+ <SA1PR21MB66832D0A369DE7E411ACCDEDCE41A@SA1PR21MB6683.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Replace use of system_unbound_wq with
- system_dfl_wq
-To: Marco Crivellari <marco.crivellari@suse.com>,
- Leon Romanovsky <leon@kernel.org>,
- "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Frederic Weisbecker <frederic@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Michal Hocko <mhocko@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-References: <20260313154023.298325-1-marco.crivellari@suse.com>
- <20260316201301.GL61385@unreal>
- <CAAofZF61VPo8VAX8zXUZnY-ydDYAR0N0mN2egaeTzXbiaKQbDw@mail.gmail.com>
- <20260317162429.GA61385@unreal>
- <CAAofZF4jW2hD+UsBG8w3zYPeGGaHeSx0tSY2Prd2dXLLBkaf1g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CAAofZF4jW2hD+UsBG8w3zYPeGGaHeSx0tSY2Prd2dXLLBkaf1g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <SA1PR21MB66832D0A369DE7E411ACCDEDCE41A@SA1PR21MB6683.namprd21.prod.outlook.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linutronix.de,suse.com,ziepe.ca];
-	TAGGED_FROM(0.00)[bounces-18319-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-18320-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.985];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid]
-X-Rspamd-Queue-Id: 02D1A2BDAA1
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-0.987];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 516842BD9C3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/3/18 5:20, Marco Crivellari 写道:
-> On Tue, Mar 17, 2026 at 5:24 PM Leon Romanovsky <leon@kernel.org> wrote:
->> [...]
->>
->> Actually, RXE already have one workqueue in rxe_alloc_wq(), just use it.
+On Tue, Mar 17, 2026 at 11:43:49PM +0000, Long Li wrote:
+> > 
+> > On Fri, Mar 13, 2026 at 01:59:28PM -0300, Jason Gunthorpe wrote:
+> > > On Sat, Mar 07, 2026 at 07:38:14PM +0200, Leon Romanovsky wrote:
+> > > > On Fri, Mar 06, 2026 at 05:47:14PM -0800, Long Li wrote:
+> > > > > When the MANA hardware undergoes a service reset, the ETH
+> > > > > auxiliary device
+> > > > > (mana.eth) used by DPDK persists across the reset cycle — it is
+> > > > > not removed and re-added like RC/UD/GSI QPs. This means userspace
+> > > > > RDMA consumers such as DPDK have no way of knowing that firmware
+> > > > > handles for their PD, CQ, WQ, QP and MR resources have become stale.
+> > > >
+> > > > NAK to any of this.
+> > > >
+> > > > In case of hardware reset, mana_ib AUX device needs to be destroyed
+> > > > and recreated later.
+> > >
+> > > Yeah, that is our general model for any serious RAS event where the
+> > > driver's view of resources becomes out of sync with the HW.
+> > >
+> > > You have tear down the ib_device by removing the aux and then bring
+> > > back a new one.
+> > >
+> > > There is an IB_EVENT_DEVICE_FATAL, but the purpose of that event is to
+> > > tell userspace to close and re-open their uverbs FD.
+> > >
+> > > We don't have a model where a uverbs FD in userspace can continue to
+> > > work after the device has a catasrophic RAS event.
+> > >
+> > > There may be room to have a model where the ib device doesn't fully
+> > > unplug/replug so it retains its name and things, but that is core code
+> > > not driver stuff.
+> > 
+> > Good luck with that model. It is going to break RDMA-CM hotplug support.
+> > 
 > 
-> Hi Leon,
+>    I think we can preserve RDMA-CM behavior without requiring ib_device
+>    unregister/re-register.
 > 
-> I noticed the workqueue is declared as static into a C file. So I
-> changed it a bit, tell me if
-> it's not the right approach.
-> You can see the diff below:
+>    On device reset, the driver can dispatch IB_EVENT_DEVICE_FATAL (or a
+>    new reset event) through ib_dispatch_event(). RDMA-CM already handles
+>    device events — we would add a handler that iterates all rdma_cm_ids
+>    on the device and sends RDMA_CM_EVENT_DEVICE_REMOVAL to each, same
+>    as cma_process_remove() does today. The difference: cma_device stays
+>    alive, so applications can reconnect on the same device after recovery
+>    instead of waiting for a new one to appear.
 > 
-> ---
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-> index ff8cd53f5f28..c56bae376c7f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.h
-> +++ b/drivers/infiniband/sw/rxe/rxe.h
-> @@ -121,4 +121,6 @@ void rxe_port_up(struct rxe_dev *rxe);
-> void rxe_port_down(struct rxe_dev *rxe);
-> void rxe_set_port_state(struct rxe_dev *rxe);
-> 
-> +extern struct workqueue_struct *rxe_wq;
-Hi, Marco
+>    The motivation for keeping ib_device alive is that some RDMA consumers
+>    — DPDK and NCCL — don't use RDMA-CM at all. They use raw verbs and
+>    manage QP state themselves.
 
-https://patchwork.kernel.org/project/linux-rdma/patch/20260318025739.5058-1-yanjun.zhu@linux.dev/
+RDMA-CM provides an "external QP" model where the QP is managed by the
+rdma-cm user.
 
-Please see the above link. A fix has already been ready for this problem.
+As Jason noted, you should propose the core changes together with the
+corresponding librdmacm updates. The final result must ensure that legacy
+applications continue to function correctly with the new kernel.
 
-Zhu Yanjun
-
-> +
-> #endif /* RXE_H */
-> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c
-> b/drivers/infiniband/sw/rxe/rxe_odp.c
-> index d440c8cbaea5..ff904d5e54a7 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> @@ -545,7 +545,7 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
->                 work->frags[i].mr = mr;
->         }
-> 
-> -       queue_work(system_dfl_wq, &work->work);
-> +       queue_work(rxe_wq, &work->work);
-> 
->         return 0;
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c
-> b/drivers/infiniband/sw/rxe/rxe_task.c
-> index f522820b950c..801d06c969c9 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_task.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-> @@ -6,7 +6,7 @@
-> 
-> #include "rxe.h"
-> 
-> -static struct workqueue_struct *rxe_wq;
-> +struct workqueue_struct *rxe_wq;
-> 
-> int rxe_alloc_wq(void)
-> {
-> 
-> ---
-> 
-> Thanks!
-> 
-
+Thanks
 
