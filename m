@@ -1,52 +1,52 @@
-Return-Path: <linux-rdma+bounces-18374-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18375-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +ELMB15gu2lujQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18374-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:33:02 +0100
+	id cNrgM5Rgu2lujQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18375-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:33:56 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B419E2C5017
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:33:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF3B2C5035
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:33:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 54CF1312B53F
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:30:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8FA1A31B8EC8
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3CD387591;
-	Thu, 19 Mar 2026 02:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548FD38A299;
+	Thu, 19 Mar 2026 02:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bl9kFmbj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JeV65ALh"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C118387562;
-	Thu, 19 Mar 2026 02:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153AA27979A;
+	Thu, 19 Mar 2026 02:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773887440; cv=none; b=rp0PwrlR4hBeKlDrGJycIIDXwWgmm762xlJNS45Bddg6FXvASPgEK0bbvD0J+k4bHP951r2F5hcLHLEV+BQyZ4drLfj5u9Qg2WzXaZoRtl+yre8iMOoekR0g0wQo7pPI6vB6oYRFmQyCDefWeA+Cm46B3KTE3owh+0/uQBUPZUk=
+	t=1773887442; cv=none; b=Y/URZAFmL/2nxT5YboqVVEWFI0OCcexc3lkhJZNru2pddT3jJuoM6bS7D80aheQAbbRDyxC6bi0aN6dkthBfmOYptYJ1eAVnw7dzrsbFbrelTSCQoT2f4l9dmlLLkROVMn2Pw4EWdGtiPbKrWruhAtfPrYiuyzUb8rZgIOk/5wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773887440; c=relaxed/simple;
-	bh=CL5U9R10/soHE24y27WznDYdmeKPUt6jGz54/c51JjM=;
+	s=arc-20240116; t=1773887442; c=relaxed/simple;
+	bh=JKPBBgrsfQgsMKtShfSZXaErvs8LjqErh2tg6cIi8Lc=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=DgR9K/GGP55HIzkTIkIswhLnoAaTS7BsA7vrTDWE3TATLWvaYBCHlJZHLo5VTMKA16rDgEleH6wEZPL8YdrxLf7Yevl/XNmI4omTMBUd1YaLKIJ/u+mc3Bcu2jbBCMvaqvyKR4xXpQGpHQH2QMxEt0p3Or13Qk2K1H41aW2ImdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bl9kFmbj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32FB0C2BCB0;
-	Thu, 19 Mar 2026 02:30:40 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=DVOz8dLt6EvD4AaskOlnm2hWReEwxdaZPZRhkph3KVbfA66EciTesaCklZ9p65URPcAaRe5Ue0r0lajFWfEmpcPn+YI/Y1d2b2+AVXzKPsc8fhGyHitQYW2aqti1hGt/duSFObt2kPoe8w3V+kO9dapBwA325fJtWnoCd9qfZxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JeV65ALh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD1DBC2BC87;
+	Thu, 19 Mar 2026 02:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773887440;
-	bh=CL5U9R10/soHE24y27WznDYdmeKPUt6jGz54/c51JjM=;
+	s=k20201202; t=1773887441;
+	bh=JKPBBgrsfQgsMKtShfSZXaErvs8LjqErh2tg6cIi8Lc=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Bl9kFmbjZvPDv2OMH15FNE2wz4OptV/0YVQZxdl23syXupp4WGZE0Q59/v2FUXAqJ
-	 g/tD50QKcsbN3g+awAPWFUGmpEnBU3B7tg//yPEM2+MjDuZI8h5fpUANQAuXj1U+GV
-	 5kQYAqvM1ac+K4QF88hMy7LsX3kMllTTckXlUcIJWdd+6L18EZSq7LvQqW6V9apLAY
-	 aR/PDsTi6w7I7Jg6LenebsxuV5G6y59AoI0eRtbD0C4JF1eL7fmnIzWYNFOBa0igjV
-	 j+1QKy015Cn/ldAEQjojmhIKx91tjOT3OW2whjwHDcgX8ACw4nw3o31oyNYF/u3gf1
-	 ZUvz5IYqAi7DA==
+	b=JeV65ALhyOzwzMTW9TUxdKNq1Cqj1lZT03+iyxtoP6m5UBhhcpz15lZ3Ah6+Z+fdy
+	 9+CBnw73lpZeQ9lYueFLzUNnezY0BTzvStagtPm5Pt/ekTlgZPDVtpsCdncKLO5oX6
+	 FUCZ9qrwSlDyFxFB3xcYvyo75m8NdJu0Cc3eu46PhkfnAMSRQECEAtuQiuH6hB2QJM
+	 XpUqhQGEN3v0KZTEmKEk3NQK/SvEx9xQuPKJw1nEBVCYJgK64SnAWZTayGumqKY/uE
+	 AebFbU9+X/RGULe0F2omsuF3b5pSNHQesVcOz39b/zoC640DsZrK0PADQmDdvMRmMc
+	 J6B2lmaUMqE/Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B9F8A3808200;
-	Thu, 19 Mar 2026 02:30:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3FCCE3808200;
+	Thu, 19 Mar 2026 02:30:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -55,62 +55,61 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] net/mlx5: Support PTM on ARM architecture
+Subject: Re: [pull-request] mlx5-next updates 2026-03-17
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <177388743153.997016.3022283738800722938.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Mar 2026 02:30:31 +0000
-References: <20260316133607.8738-1-tariqt@nvidia.com>
-In-Reply-To: <20260316133607.8738-1-tariqt@nvidia.com>
+ <177388743278.997016.6159278446535538861.git-patchwork-notify@kernel.org>
+Date: Thu, 19 Mar 2026 02:30:32 +0000
+References: <20260317075844.12066-1-tariqt@nvidia.com>
+In-Reply-To: <20260317075844.12066-1-tariqt@nvidia.com>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, richardcochran@gmail.com,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, gal@nvidia.com, moshe@nvidia.com,
- dtatulea@nvidia.com, cjubran@nvidia.com, shshitrit@nvidia.com
+ andrew+netdev@lunn.ch, davem@davemloft.net, leon@kernel.org, jgg@ziepe.ca,
+ saeedm@nvidia.com, mbloch@nvidia.com, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, gal@nvidia.com,
+ moshe@nvidia.com
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,nvidia.com,gmail.com,vger.kernel.org];
 	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-18374-lists,linux-rdma=lfdr.de,netdevbpf];
+	TAGGED_FROM(0.00)[bounces-18375-lists,linux-rdma=lfdr.de,netdevbpf];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FROM_NO_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	NEURAL_HAM(-0.00)[-0.963];
+	NEURAL_HAM(-0.00)[-0.981];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: B419E2C5017
+X-Rspamd-Queue-Id: 2CF3B2C5035
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This pull request was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 16 Mar 2026 15:36:05 +0200 you wrote:
+On Tue, 17 Mar 2026 09:58:44 +0200 you wrote:
 > Hi,
 > 
-> This series by Carolina refactors mlx5 crosststamp initialization and
-> enables cross-timestamp support on ARM.
+> The following pull-request contains common mlx5 updates
+> for your *net-next* tree.
+> Please pull and let me know of any problem.
 > 
 > Regards,
 > Tariq
@@ -118,10 +117,8 @@ On Mon, 16 Mar 2026 15:36:05 +0200 you wrote:
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/2] net/mlx5: Move crosststamp setup into helper function
-    https://git.kernel.org/netdev/net-next/c/f87ca3b905e2
-  - [net-next,2/2] net/mlx5: Support cross-timestamping on ARM architectures
-    https://git.kernel.org/netdev/net-next/c/96aca5efec8a
+  - [pull-request] mlx5-next updates 2026-03-17
+    https://git.kernel.org/netdev/net-next/c/76eea68d5fe5
 
 You are awesome, thank you!
 -- 
