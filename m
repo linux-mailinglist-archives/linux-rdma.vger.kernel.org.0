@@ -1,73 +1,61 @@
-Return-Path: <linux-rdma+bounces-18407-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18408-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sHXIEQSIvGlk0AIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18407-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 00:34:28 +0100
+	id aChpO8eMvGnz0QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18408-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 00:54:47 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F12B42D42AF
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 00:34:27 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D6FE2D44CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 00:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BC3003057C6B
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 23:32:25 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1541030185F4
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 23:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C94D402B88;
-	Thu, 19 Mar 2026 23:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CFD3BED32;
+	Thu, 19 Mar 2026 23:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVuqtNjF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oy3VHliM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2B2371884;
-	Thu, 19 Mar 2026 23:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC382989B5;
+	Thu, 19 Mar 2026 23:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773963094; cv=none; b=k4nUY91epDUWL1Ho7akOcAtWY33ry723bopkKXX5RaEXtKUjMtNfA5rDMkC1lXTvz7l9HHBUAUvUs8a0H/xnYGdIcsjt0IvG9ROsCcv+Y4B2CEgRCZnTF2BMgE6IjBlCXz00nori3yiHOLomnrOtBtZVpUWN/vNROANI+ME/Wrw=
+	t=1773964476; cv=none; b=U26bvj/wStJ9uxaGR5q2DaGC0thVzAz1Owxmx6KNnIj4Xj2xEBeWnt79fJ6UtVewRx/dIouayWBjf+ztTWk8OElm6ENNS/nfM8HwgyjqnJAHkqqmLFOeJZgGdFE+7fsxWJbhm2jR9HP2uQtwAS7QK9hiaqJp1KquqL1w561b/v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773963094; c=relaxed/simple;
-	bh=2ceLYHitrpgWnbijBLEURAHrA3SxUbD0jlo2sSsj2kA=;
+	s=arc-20240116; t=1773964476; c=relaxed/simple;
+	bh=NYxbVSAHM14rWliVEjZrDMJxKjuQDjiuCZ2YoV3tPCw=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uyGyfd2SCPqR6H3F0lYiHWYmeL0z/E86ye/QyED9rU+roIGG2ShRIJpIc8zAzxgUaaFWzLo3XW1YAeCLbHl9sYL6c47APKt6DDcBx3lPE++XZ+qKaoLWE0oGCY/E/af02/3ohv7pMu/BZ0sr8TYMvgsbRBLAmFpVFwbqG8N+tYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVuqtNjF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B8E3C19424;
-	Thu, 19 Mar 2026 23:31:32 +0000 (UTC)
+	 MIME-Version:Content-Type; b=IFXQ5hSKLwBtUaD3GrWWlK+3cIsMOXQpaFV8oQGF3mdLkeHZ7e5JTSDxD/VLGn8CHQafWpgfzywn1KdGhln7gw6CQdXkfk98N4KMzLZmqNqLF+yOW2psEF/Xn4/z9bwHIhKZd9raZQiPWRxQGiRO/qRdNE5yLgYaCB21uHWN2nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oy3VHliM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02FACC19424;
+	Thu, 19 Mar 2026 23:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773963093;
-	bh=2ceLYHitrpgWnbijBLEURAHrA3SxUbD0jlo2sSsj2kA=;
+	s=k20201202; t=1773964476;
+	bh=NYxbVSAHM14rWliVEjZrDMJxKjuQDjiuCZ2YoV3tPCw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CVuqtNjFaPpOozcHQ0mF58SrW1xcRvHJ1UN1gqC0BYNd+HIegbIO7XleLF+7YguxL
-	 9TDKoFqvqyOP4tDys+vTYocI/ji8rRjvUQf/Cl2rQw/e1piNSzXBezeMi8yoNlAb3o
-	 xVhaaSxLG2VFUXOPfuJ1SY+vrHcBj/MVU7riKCdMk3Viu1LX1lcinFUIUBdcy84xfM
-	 fCXd4jRrWkMJiQnxmrYGHv99ZG2qdINt+MCASHRn10VCCClzQh24dmch7hNXeUTLa6
-	 leIj0kVLiUYnU6wCckdIaclYQAnLJUvuV7IaE2aqyhXp9SdWSTcDrSGWW/herYMFD2
-	 Iq4hekz6OvrcA==
-Date: Thu, 19 Mar 2026 16:31:31 -0700
+	b=Oy3VHliM9AiW+4rOP+iaK3hYr75033hq4fO7W6SGJo6F2TYVpJ2dp3adJuoA+22fy
+	 8fmvCI9OT47OQbQPL4SCbpBLUSDnNTOrPROejZ7EqqiHBtVolUl8FgNDV9F+/XVpyo
+	 eO2T6CPF3xFpc3HEeuzN6TX3/jAWdhtTN05UjnZ08DR9C5+rnwzgHd4x6IoIh2d61J
+	 +7XBxIKNRop8rcLj0E1hvjqIwA1FwaEvKqvbxZaZ+zWX0mOQw/a6mJ+zt4NU6JqNyw
+	 OhWxramAV93TbX1x422IZMaijLVeAHbUdAG0rWzkG8xKIe5DX2snVzenY4ux+UKaqa
+	 zg5HYbx2n8oQw==
+Date: Thu, 19 Mar 2026 16:54:35 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
- sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
- mbloch@nvidia.com, andrew+netdev@lunn.ch, edumazet@google.com,
- pabeni@redhat.com, david@redhat.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, horms@kernel.org, jackmanb@google.com,
- hannes@cmpxchg.org, ziy@nvidia.com, ilias.apalodimas@linaro.org,
- willy@infradead.org, brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
- usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
- almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org, sfr@canb.auug.org.au,
- dw@davidwei.uk, ap420073@gmail.com, dtatulea@nvidia.com
-Subject: Re: [PATCH v5] mm: introduce a new page type for page pool in page
- type
-Message-ID: <20260319163131.2f160a5d@kernel.org>
-In-Reply-To: <20260316223113.20097-1-byungchul@sk.com>
-References: <20260316222901.GA59948@system.software.com>
-	<20260316223113.20097-1-byungchul@sk.com>
+To: Allison Henderson <achender@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ pabeni@redhat.com, edumazet@google.com, rds-devel@oss.oracle.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, allison.henderson@oracle.com
+Subject: Re: [PATCH net-next v2 1/2] selftests: rds: add
+ tools/testing/selftests/net/rds/config
+Message-ID: <20260319165435.4468160f@kernel.org>
+In-Reply-To: <20260319004618.2577324-2-achender@kernel.org>
+References: <20260319004618.2577324-1-achender@kernel.org>
+	<20260319004618.2577324-2-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -76,54 +64,61 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18407-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-18408-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,vger.kernel.org,skhynix.com,oracle.com,kernel.org,iogearbox.net,davemloft.net,gmail.com,fomichev.me,nvidia.com,lunn.ch,google.com,redhat.com,suse.cz,suse.com,cmpxchg.org,linaro.org,infradead.org,linux.alibaba.com,canb.auug.org.au,davidwei.uk];
-	RCPT_COUNT_TWELVE(0.00)[47];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.977];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.995];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F12B42D42AF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[config.sh:url,include.sh:url,test.py:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1D6FE2D44CA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, 17 Mar 2026 07:31:13 +0900 Byungchul Park wrote:
-> Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
-> determine if a page belongs to a page pool.  However, with the planned
-> removal of @pp_magic, we should instead leverage the page_type in struct
-> page, such as PGTY_netpp, for this purpose.
-> 
-> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
-> and __ClearPageNetpp() instead, and remove the existing APIs accessing
-> @pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
-> netmem_clear_pp_magic().
-> 
-> Plus, add @page_type to struct net_iov at the same offset as struct page
-> so as to use the page_type APIs for struct net_iov as well.  While at it,
-> reorder @type and @owner in struct net_iov to avoid a hole and
-> increasing the struct size.
+On Wed, 18 Mar 2026 17:46:17 -0700 Allison Henderson wrote:
+> --- a/tools/testing/selftests/net/rds/Makefile
+> +++ b/tools/testing/selftests/net/rds/Makefile
+> @@ -9,6 +9,7 @@ TEST_FILES := \
+>  	include.sh \
+>  	settings \
+>  	test.py \
+> +	config \
+>  # end of TEST_FILES
+>  
+>  EXTRA_CLEAN := \
+> diff --git a/tools/testing/selftests/net/rds/config b/tools/testing/selftests/net/rds/config
+> new file mode 100644
+> index 000000000000..103f9d941d10
+> --- /dev/null
+> +++ b/tools/testing/selftests/net/rds/config
+> @@ -0,0 +1,5 @@
+> +CONFIG_RDS=y
+> +CONFIG_RDS_TCP=y
+> +CONFIG_NET_NS=y
+> +CONFIG_VETH=y
+> +CONFIG_NET_SCH_NETEM=y
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Contents of both these files need to be sorted according to the whims
+of these scripts:
+selftests: rds: add config file and config.sh -c option 
 
