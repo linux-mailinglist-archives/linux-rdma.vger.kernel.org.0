@@ -1,129 +1,133 @@
-Return-Path: <linux-rdma+bounces-18375-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18376-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cNrgM5Rgu2lujQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18375-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:33:56 +0100
+	id UCO6HSZhu2lujQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18376-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:36:22 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF3B2C5035
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:33:56 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F762C5092
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8FA1A31B8EC8
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:30:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C5900301BF88
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548FD38A299;
-	Thu, 19 Mar 2026 02:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16A9386C2E;
+	Thu, 19 Mar 2026 02:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JeV65ALh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bVStI2Um"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153AA27979A;
-	Thu, 19 Mar 2026 02:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828DF330328;
+	Thu, 19 Mar 2026 02:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773887442; cv=none; b=Y/URZAFmL/2nxT5YboqVVEWFI0OCcexc3lkhJZNru2pddT3jJuoM6bS7D80aheQAbbRDyxC6bi0aN6dkthBfmOYptYJ1eAVnw7dzrsbFbrelTSCQoT2f4l9dmlLLkROVMn2Pw4EWdGtiPbKrWruhAtfPrYiuyzUb8rZgIOk/5wA=
+	t=1773887776; cv=none; b=UfgGVh0iTvhX+MUItRJeQzI/oIR5mNskDL9u4QR3xx5ITj9sovXqGZ9q0kphkMQ4VD+OwJ/jjy7qRQKx7OPqkr5G3gSOwna+8vdLrF46fp1ZJgQ9gj42xogbXEhNhbLITWiBHiQOwvc+un/k215Ksl0yronW14jKaqmq5hdV2PA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773887442; c=relaxed/simple;
-	bh=JKPBBgrsfQgsMKtShfSZXaErvs8LjqErh2tg6cIi8Lc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=DVOz8dLt6EvD4AaskOlnm2hWReEwxdaZPZRhkph3KVbfA66EciTesaCklZ9p65URPcAaRe5Ue0r0lajFWfEmpcPn+YI/Y1d2b2+AVXzKPsc8fhGyHitQYW2aqti1hGt/duSFObt2kPoe8w3V+kO9dapBwA325fJtWnoCd9qfZxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JeV65ALh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD1DBC2BC87;
-	Thu, 19 Mar 2026 02:30:41 +0000 (UTC)
+	s=arc-20240116; t=1773887776; c=relaxed/simple;
+	bh=bdi1RhJlIvIY3nRJ/Axr7Nfhl+z7qVjPxc3jaJHOOeU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d+F2CWVohaj0/QYDTIH9x7ly6zO4sKlFYezujAtVJall05oCfQT+uLCLKMtOvYXA5quDO6++Vxh8lkZKKmbNQfojnAeSkR1gh0gcpXtp8PAa7xYDv/oghXfnCjOt2u8cuS8AZ247CSaAPOSfDN8Hz731DowTyf4QhW2+iLHRAqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bVStI2Um; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E86C19421;
+	Thu, 19 Mar 2026 02:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773887441;
-	bh=JKPBBgrsfQgsMKtShfSZXaErvs8LjqErh2tg6cIi8Lc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=JeV65ALhyOzwzMTW9TUxdKNq1Cqj1lZT03+iyxtoP6m5UBhhcpz15lZ3Ah6+Z+fdy
-	 9+CBnw73lpZeQ9lYueFLzUNnezY0BTzvStagtPm5Pt/ekTlgZPDVtpsCdncKLO5oX6
-	 FUCZ9qrwSlDyFxFB3xcYvyo75m8NdJu0Cc3eu46PhkfnAMSRQECEAtuQiuH6hB2QJM
-	 XpUqhQGEN3v0KZTEmKEk3NQK/SvEx9xQuPKJw1nEBVCYJgK64SnAWZTayGumqKY/uE
-	 AebFbU9+X/RGULe0F2omsuF3b5pSNHQesVcOz39b/zoC640DsZrK0PADQmDdvMRmMc
-	 J6B2lmaUMqE/Q==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3FCCE3808200;
-	Thu, 19 Mar 2026 02:30:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1773887776;
+	bh=bdi1RhJlIvIY3nRJ/Axr7Nfhl+z7qVjPxc3jaJHOOeU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=bVStI2Umn7+FBYjYFa0IYkGcQb+0Gw3w/1EMEOXi0PCxqPJenVOw29a1jmw6IEoVR
+	 09wn0sbDQqKrK5HIicR/enLSIN2KRBQ0DkWIJlIj9xKKaXEULoNhCQv/RIsaNcD018
+	 g+gTMEBaI0BMCNsZ0VxsQ3UTZjPHxxUYDdpHdSporrU8G/obcqM3zIiy3kPXoum76b
+	 bBL6Jw3+2Vc7FYWg8kcvr4kAU+hFhQhfO+ZC+DmoRh3lNPbHSy+G+XsVgcDXT+9p9i
+	 W0j0IWxemVzmRSkmePIzTdbrNQB490ZvX/J4CjbGz8+RtMwXdbYVa6/YOB7G6vZGMI
+	 FAdAGEDsr0WEA==
+Date: Wed, 18 Mar 2026 19:36:14 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+ yury.norov@gmail.com, kees@kernel.org, ssengar@linux.microsoft.com,
+ gargaditya@linux.microsoft.com, shirazsaleem@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v3] net: mana: Expose hardware diagnostic info
+ via debugfs
+Message-ID: <20260318193614.22328bc8@kernel.org>
+In-Reply-To: <20260316112339.1208155-1-ernis@linux.microsoft.com>
+References: <20260316112339.1208155-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [pull-request] mlx5-next updates 2026-03-17
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177388743278.997016.6159278446535538861.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Mar 2026 02:30:32 +0000
-References: <20260317075844.12066-1-tariqt@nvidia.com>
-In-Reply-To: <20260317075844.12066-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, leon@kernel.org, jgg@ziepe.ca,
- saeedm@nvidia.com, mbloch@nvidia.com, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, gal@nvidia.com,
- moshe@nvidia.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-18376-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-18375-lists,linux-rdma=lfdr.de,netdevbpf];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NO_DN(0.00)[];
-	NEURAL_HAM(-0.00)[-0.981];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	NEURAL_HAM(-0.00)[-0.940];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 2CF3B2C5035
+X-Rspamd-Queue-Id: 96F762C5092
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
-
-This pull request was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 17 Mar 2026 09:58:44 +0200 you wrote:
-> Hi,
+On Mon, 16 Mar 2026 04:23:27 -0700 Erni Sri Satya Vennela wrote:
+> Add debugfs entries to expose hardware configuration and diagnostic
+> information that aids in debugging driver initialization and runtime
+> operations without adding noise to dmesg.
 > 
-> The following pull-request contains common mlx5 updates
-> for your *net-next* tree.
-> Please pull and let me know of any problem.
-> 
-> Regards,
-> Tariq
-> 
-> [...]
+> The debugfs directory creation and removal for each PCI device is
+> integrated into mana_gd_setup() and mana_gd_cleanup_device()
+> respectively, so that all callers (probe, remove, suspend, resume,
+> shutdown) share a single code path.
 
-Here is the summary with links:
-  - [pull-request] mlx5-next updates 2026-03-17
-    https://git.kernel.org/netdev/net-next/c/76eea68d5fe5
+Does not apply:
 
-You are awesome, thank you!
+Failed to apply patch:
+Applying: net: mana: Expose hardware diagnostic info via debugfs
+Using index info to reconstruct a base tree...
+M	drivers/net/ethernet/microsoft/mana/gdma_main.c
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/net/ethernet/microsoft/mana/gdma_main.c
+CONFLICT (content): Merge conflict in drivers/net/ethernet/microsoft/mana/gdma_main.c
+Recorded preimage for 'drivers/net/ethernet/microsoft/mana/gdma_main.c'
+error: Failed to merge in the changes.
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+hint: When you have resolved this problem, run "git am --continue".
+hint: If you prefer to skip this patch, run "git am --skip" instead.
+hint: To restore the original branch and stop patching, run "git am --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Patch failed at 0001 net: mana: Expose hardware diagnostic info via debugfs
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: cr
 
