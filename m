@@ -1,129 +1,153 @@
-Return-Path: <linux-rdma+bounces-18372-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18373-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GJ+9F+NRu2lMigIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18372-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:31:15 +0100
+	id SAibMoNeu2knjQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18373-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:25:07 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 705122C4756
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:31:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C85E2C4EBA
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 03:25:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 82E8C301DD1F
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 01:30:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2098530387F3
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2026 02:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226822DC322;
-	Thu, 19 Mar 2026 01:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA673859D0;
+	Thu, 19 Mar 2026 02:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tGvMYcu0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ky/0WQPw"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78E42DAFBD;
-	Thu, 19 Mar 2026 01:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CAD41CEADB;
+	Thu, 19 Mar 2026 02:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773883820; cv=none; b=Y3+IWUHVeTZmo4rFZ/srjstjxdRotK4eaXlvEPf7IbAnPf+ffjfMLW37IHfOx1qEsBWjwBnn0ZggmouXbHdu31MxDB/gK0FDqRia0WtmsRx3oZFn63w1bIvE+iso9P9ZAiKsrZLWmjrOx2NBcWcZaC7IZ6+ZJfZ1DACPEV5MUA4=
+	t=1773886993; cv=none; b=WYQ6BLTs0AajY+H9CDY/T4xL5Etj8jLWruOfeoRyMTv78ColtkTWajYs00ASljstr9FepkvSngfKD3uCs11Fcx/cyuTdxWvD4LUSd3/a+FiiejIvSzhSHNX6f1yEDpNZPvZPP7VPUWWc7Wh0vBbi6gYYzzAATVpxyreFZPwwmXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773883820; c=relaxed/simple;
-	bh=RfXx/GdX9I0tNkcvWvdQRskJruN1HU8dodwLwQjwUyw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JWEPhwaqU97OTbudkFXD47jrstbdiZqALRo3qFgdJAOpE7b0kRYEDdSi0BkMIQPtSS5zafqQYUavw68iTRZU0iqWI+1XKGXhhXw/oBxAKJKBTLS5nL2BwrQ1LLlkOqn5tIuUtUqLueEtZJ3jZEue8NHnFlx7/ykZYZeLbggKDX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tGvMYcu0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6692DC2BC87;
-	Thu, 19 Mar 2026 01:30:20 +0000 (UTC)
+	s=arc-20240116; t=1773886993; c=relaxed/simple;
+	bh=J7ByNCVdyp6p7hoc/up7uJ/7AQHt9/rYYPRSEUuXvFE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PasfZbSWrNAzGAXmZiBJHificcl1CODwNPLV/A1U+CCo9a4DkNjzFGlGKImTIXX9+i523I5FdPjVc7taiU1gjhk1v2JDMxpobXs3CGx3ZIbG6BNytpK3H1c3cgwbDN4IkmT42DDBpvmOpeA4D69ofFRHDy2f+31oy5iJCXEA3VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ky/0WQPw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC7CC19421;
+	Thu, 19 Mar 2026 02:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773883820;
-	bh=RfXx/GdX9I0tNkcvWvdQRskJruN1HU8dodwLwQjwUyw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tGvMYcu0hc/YWalRxo25S/KTfY15RBJ8RVjwbniOQX1QuYmDjaZ8haCTPQLJYb0r8
-	 4+jJfyzDEfMGj89A91ZDFArxELqHG02xME9db3jzm+uH68x+XxA06kjjmZBC8FyTLg
-	 cxicHRqq5Y8D6XhpNrKMuWdRwWpn0BJTgHvgX2rfxQ6bYVcnAruMmpp+QTJfvrz8QC
-	 dYz3DkqI2hjHkuGOwSwq/HjM9dClCJIBvFaM1miHSIAtrtKeZ0FAHTg2OAbi/gpWfp
-	 WHLwrPje8scNPhTQX+7QCc5+cEgH5BPrq+IcprNUbGnlNl1nZz34SRBkPW2173O2xQ
-	 n9yFKLB5F+qeg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02DB53808200;
-	Thu, 19 Mar 2026 01:30:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1773886993;
+	bh=J7ByNCVdyp6p7hoc/up7uJ/7AQHt9/rYYPRSEUuXvFE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ky/0WQPwpA4SLaViKimzr8eyaNp8qcqLIU/3vO6L33zkCni8dDi8dUgEmDzbjMznt
+	 5tv8LUp628AnXd0auPLh9IO/4AjKHxLHCK7p9ijFRssRTJWplsBo4AC7QVeDUl8mcH
+	 zAk/K1qJfwdyqI1JBmVYQFDs5d2WMUKWTT4MvslRnIJeHwGsbkeL40jPDaV4KxugO5
+	 Uatgxxh+FbSiSvGA5riKjysAiv0dtPMt6hqmQYg9PqEsmxGYcR+7hqEWmaGLH7tV49
+	 Zii8AhQlKySl7hTTWz0MbMGdwGc6KoBT8HSfyEK686CzQR+EBVSmsr6ju0EVGByG//
+	 kPo0beRhLeObg==
+Date: Wed, 18 Mar 2026 19:23:10 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Michael Chan <michael.chan@broadcom.com>, Pavan Chebbi
+ <pavan.chebbi@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan
+ <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Simon Horman <horms@kernel.org>, Shuah Khan
+ <shuah@kernel.org>, netdev@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Gal Pressman <gal@nvidia.com>, Willem de
+ Bruijn <willemb@google.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v6 1/4] ethtool: Track user-provided RSS
+ indirection table size
+Message-ID: <20260318192310.278ef325@kernel.org>
+In-Reply-To: <20260318122603.264550-2-bjorn@kernel.org>
+References: <20260318122603.264550-1-bjorn@kernel.org>
+	<20260318122603.264550-2-bjorn@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/mlx5e: Add hds-thresh query support via
- ethtool
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177388381153.978731.9539928416113084591.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Mar 2026 01:30:11 +0000
-References: <20260317104934.16124-1-tariqt@nvidia.com>
-In-Reply-To: <20260317104934.16124-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- mbloch@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
- moshe@nvidia.com, noren@nvidia.com, cjubran@nvidia.com, dtatulea@nvidia.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18372-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-18373-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.978];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.986];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 705122C4756
+	RCPT_COUNT_TWELVE(0.00)[20];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 8C85E2C4EBA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
+On Wed, 18 Mar 2026 13:25:58 +0100 Bj=C3=B6rn T=C3=B6pel wrote:
+> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> index e252cf20c22f..ee91f1155830 100644
+> --- a/net/ethtool/common.c
+> +++ b/net/ethtool/common.c
+> @@ -1204,6 +1204,26 @@ void ethtool_rxfh_context_lost(struct net_device *=
+dev, u32 context_id)
+>  }
+>  EXPORT_SYMBOL(ethtool_rxfh_context_lost);
+> =20
+> +bool netif_is_rxfh_configured(const struct net_device *dev)
+> +{
+> +	return dev->ethtool->rss_indir_user_size;
+> +}
+> +EXPORT_SYMBOL(netif_is_rxfh_configured);
+> +
+> +/**
+> + * ethtool_rxfh_indir_clear - Clear user indirection table config
+> + * @dev: network device
+> + *
+> + * Mark the default RSS context indirection table as unconfigured and
+> + * send an %ETHTOOL_MSG_RSS_NTF notification.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+If you're adding kdoc you should very clearly state this is function
+should only be called if the driver lost the ability to maintain the
+indirection table, usually after HW fault recovery reduced the max
+queue count.
 
-On Tue, 17 Mar 2026 12:49:34 +0200 you wrote:
-> From: Nimrod Oren <noren@nvidia.com>
-> 
-> Add support for reporting HDS (Header-Data Split) threshold via
-> ethtool. When applicable, mlx5 hardware splits packets of all sizes with
-> no configurable threshold, so report both hds-thresh and hds-thresh-max
-> as 0 (i.e. always split regardless of size).
-> 
-> [...]
+> + */
+> +void ethtool_rxfh_indir_clear(struct net_device *dev)
 
-Here is the summary with links:
-  - [net-next] net/mlx5e: Add hds-thresh query support via ethtool
-    https://git.kernel.org/netdev/net-next/c/d347b28c492e
+ethtool_rxfh_indir_lost() would be a better name, it would align with=20
+ethtool_rxfh_context_lost() right above the code you're adding, right?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +{
 
+Let's add an error in here like the one we have in
+ethtool_rxfh_context_lost(), this should stop arbitrary use.
+And you can remove the local warning in bnxt if we do that.
 
+> +	dev->ethtool->rss_indir_user_size =3D 0;
+> +	ethtool_rss_notify(dev, ETHTOOL_MSG_RSS_NTF, 0);
+> +}
+> +EXPORT_SYMBOL(ethtool_rxfh_indir_clear);
+> +
+>  enum ethtool_link_medium ethtool_str_to_medium(const char *str)
+>  {
+>  	int i;
 
