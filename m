@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-18428-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18429-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WGZsIO/KvGnT2wIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18428-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 05:19:59 +0100
+	id QF6xAAPLvGnT2wIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18429-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 05:20:19 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CBDE2D5C02
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 05:19:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8905E2D5C1C
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 05:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 69C9B30D2AB2
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 04:18:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E1FA30E6B27
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 04:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9592E8B8A;
-	Fri, 20 Mar 2026 04:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C0B2EC0A6;
+	Fri, 20 Mar 2026 04:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rdqf2+jS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jlAVjXEz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D77F2E6CA6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59412EACF2;
 	Fri, 20 Mar 2026 04:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773980317; cv=none; b=swZP3LMjNvoSkYgYew2v/u8TXDeXFUBAFcfqF7RoevuMQqC6SKAVTSDJxTdl1ka3WBySvWAvg2YalClA2Pdl94BugMYTzYb+Lbb+z1Rl6rcfPPSS4hlgtN6w+dEVUae5cfouCRC+gJMnKEGlfrOXPmINU2OJfFNc7U29NfdTwjQ=
+	t=1773980318; cv=none; b=m0jBt1ZS1/iefJktGRS3Ykdu4XdPbIylT5y0JWxZFQjo/wWRECLAUT12IMY10r5F1eSAQOeeqif6z5k4rs9EeVXVnzYZkbafqiTqCGtL/D9+Zho7+WM39OQbAYETFO2kVtbgwPV/Jd7U5N3Tr+cVKDggzFyv29+QAsjuINsS5U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773980317; c=relaxed/simple;
-	bh=6/2m7v2FTKlsxTQgTk/QAht/zdSlPXEdWJXqjyjWuR0=;
+	s=arc-20240116; t=1773980318; c=relaxed/simple;
+	bh=8Viogy5I6XdIOcsQgFjSY4jrz9LKSIZECDVq9Eqxz70=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pj7nyqUc2Nml+qgHOu0/sWUvwYvP3mk62W2R2Fg2Wxfsj/cl8XKgEaqbIb3aUARUGPC4An/JVvsvVVQySxMs4yBP3/g+2gVZR4t6OoM2veBIz407liQeOc5Hcr80QXBdjpeVMfdP8sviNTkIn4mzZvmOK6dc4p5PWiDdTp6vgcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rdqf2+jS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36785C2BCB0;
-	Fri, 20 Mar 2026 04:18:36 +0000 (UTC)
+	 MIME-Version; b=Y6Aq5euG6h1W9Xtg13eara2nPkKpoL75iI1KGiX/oh8ltLteXuaeM/3SKDUNsPMAnK8NqtroBt0bzTcFXBA7gLHip9jdvpR3MNg46SNoKfLk7zxvEy47qcmMc4cr2wPU3iPrHyqnxg+y93VfoVhgcM2ffIwJbBn7FgaXU/sZAW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jlAVjXEz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F467C19425;
+	Fri, 20 Mar 2026 04:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773980316;
-	bh=6/2m7v2FTKlsxTQgTk/QAht/zdSlPXEdWJXqjyjWuR0=;
+	s=k20201202; t=1773980317;
+	bh=8Viogy5I6XdIOcsQgFjSY4jrz9LKSIZECDVq9Eqxz70=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rdqf2+jSCfAwtau8mY3C1s+bn+/NpQ8+CilhDgjpn7mdKB4TwkHXyfHP+5kCuvxGU
-	 4ZmPwTtmKw7r4c7Q257vKjbaoJd+jTovzCa1kq9AwOMtfXm8SNgUSYyIzSmc9qdTJF
-	 U1ESiY+R6XYxb8wPljf2Z8rgOpTiWF13g8Mn5NHWQZB9z2FfCJf8K6702T5UUx8KsB
-	 tbXrFJEOm/LtwlMzLh3+EfAb42OPT3oYjv4RJ+MMkxGfR8BTEdrVzg76q8C7koODLC
-	 wPKhOe/X3fNWFkEytNLbdJlfKFfNkmVBgGPN0OH9OCwu9gUoNV9tfk2ht9aJKUN6IF
-	 GHoV+tnEKTAYw==
+	b=jlAVjXEzbhXH2HVFPFh83+mTlx02lBdtTJlQOlFLCfz38o7jz4YHxZFQZB+Xg/xo1
+	 zSGLKGxHORXuVVyI544qK9jBHJ9YtK20FSFKjHV+ueWWorKvVFAzbyaLFBeL4u1vFw
+	 1/henN0oAYusxJOa/gplRwewxSehTzwHtUvqlalX4DiVvQW523mdtqsp5beVpF5zDJ
+	 WLL1MHheNYKTRkuYdgYRnDSEvF0k1lGYJcw6cSH1tYxzmH1KEbp0MOtyUYY4LHWBam
+	 hftN+fDOhjVO7S3N4a/eAJ9Fvs3QbNCs7C8iD+IBFxDju5tzWgm4otSgwRqyy8o2Pk
+	 A4D/tsZv+uCvg==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org
 Cc: linux-kselftest@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc: linux-kselftest@vger.kernel.org,
 	horms@kernel.org,
 	linux-rdma@vger.kernel.org,
 	allison.henderson@oracle.com
-Subject: [PATCH net-next v3 1/2] selftests: rds: add tools/testing/selftests/net/rds/config
-Date: Thu, 19 Mar 2026 21:18:33 -0700
-Message-ID: <20260320041834.2761069-2-achender@kernel.org>
+Subject: [PATCH net-next v3 2/2] selftests: rds: Add -c config option to rds/config.sh
+Date: Thu, 19 Mar 2026 21:18:34 -0700
+Message-ID: <20260320041834.2761069-3-achender@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260320041834.2761069-1-achender@kernel.org>
 References: <20260320041834.2761069-1-achender@kernel.org>
@@ -73,7 +73,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -81,7 +81,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-18428-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18429-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -89,50 +89,117 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	NEURAL_HAM(-0.00)[-0.982];
+	NEURAL_HAM(-0.00)[-0.984];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,run.sh:url]
-X-Rspamd-Queue-Id: 2CBDE2D5C02
+	DBL_BLOCKED_OPENRESOLVER(0.00)[config.sh:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8905E2D5C1C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The ksft CI runtime needs an rds specific config file to build a
-minimal kernel with the right options enabled.  This patch adds
-an rds selftest config containing the required CONFIG_RDS* and
-CONFIG_NET_* options.
+This patch adds a new -c flag to config.sh that enables callers
+to specify the file path of the config they would like to update.
+If no config is specified, the default will be the .config of the
+current directory.
 
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/Makefile | 1 +
- tools/testing/selftests/net/rds/config   | 5 +++++
- 2 files changed, 6 insertions(+)
+ tools/testing/selftests/net/rds/README.txt |  5 ++-
+ tools/testing/selftests/net/rds/config.sh  | 37 +++++++++++++---------
+ 2 files changed, 26 insertions(+), 16 deletions(-)
 
-diff --git a/tools/testing/selftests/net/rds/Makefile b/tools/testing/selftests/net/rds/Makefile
-index fe363be8e358..a3462dadb47c 100644
---- a/tools/testing/selftests/net/rds/Makefile
-+++ b/tools/testing/selftests/net/rds/Makefile
-@@ -6,6 +6,7 @@ all:
- TEST_PROGS := run.sh
+diff --git a/tools/testing/selftests/net/rds/README.txt b/tools/testing/selftests/net/rds/README.txt
+index cbde2951ab13..c6fe003d503b 100644
+--- a/tools/testing/selftests/net/rds/README.txt
++++ b/tools/testing/selftests/net/rds/README.txt
+@@ -31,8 +31,11 @@ EXAMPLE:
+     # Alternatly create a gcov disabled .config
+     tools/testing/selftests/net/rds/config.sh
  
- TEST_FILES := \
-+	config \
- 	include.sh \
- 	settings \
- 	test.py \
-diff --git a/tools/testing/selftests/net/rds/config b/tools/testing/selftests/net/rds/config
-new file mode 100644
-index 000000000000..97db7ecb892a
---- /dev/null
-+++ b/tools/testing/selftests/net/rds/config
-@@ -0,0 +1,5 @@
-+CONFIG_NET_NS=y
-+CONFIG_NET_SCH_NETEM=y
-+CONFIG_RDS=y
-+CONFIG_RDS_TCP=y
-+CONFIG_VETH=y
++    # Config paths may also be specified with the -c flag
++    tools/testing/selftests/net/rds/config.sh -c .config.local
++
+     # build the kernel
+-    vng --build  --config tools/testing/selftests/net/config
++    vng --build --config .config
+ 
+     # launch the tests in a VM
+     vng -v --rwdir ./ --run . --user root --cpus 4 -- \
+diff --git a/tools/testing/selftests/net/rds/config.sh b/tools/testing/selftests/net/rds/config.sh
+index 791c8dbe1095..29a79314dd60 100755
+--- a/tools/testing/selftests/net/rds/config.sh
++++ b/tools/testing/selftests/net/rds/config.sh
+@@ -6,15 +6,20 @@ set -u
+ set -x
+ 
+ unset KBUILD_OUTPUT
++CONF_FILE=""
++FLAGS=()
+ 
+ GENERATE_GCOV_REPORT=0
+-while getopts "g" opt; do
++while getopts "gc:" opt; do
+   case ${opt} in
+     g)
+       GENERATE_GCOV_REPORT=1
+       ;;
++    c)
++      CONF_FILE=$OPTARG
++      ;;
+     :)
+-      echo "USAGE: config.sh [-g]"
++      echo "USAGE: config.sh [-g] [-c config]"
+       exit 1
+       ;;
+     ?)
+@@ -24,30 +29,32 @@ while getopts "g" opt; do
+   esac
+ done
+ 
+-CONF_FILE="tools/testing/selftests/net/config"
++if [[ "$CONF_FILE" != "" ]]; then
++	FLAGS=(--file "$CONF_FILE")
++fi
+ 
+ # no modules
+-scripts/config --file "$CONF_FILE" --disable CONFIG_MODULES
++scripts/config "${FLAGS[@]}" --disable CONFIG_MODULES
+ 
+ # enable RDS
+-scripts/config --file "$CONF_FILE" --enable CONFIG_RDS
+-scripts/config --file "$CONF_FILE" --enable CONFIG_RDS_TCP
++scripts/config "${FLAGS[@]}" --enable CONFIG_RDS
++scripts/config "${FLAGS[@]}" --enable CONFIG_RDS_TCP
+ 
+ if [ "$GENERATE_GCOV_REPORT" -eq 1 ]; then
+ 	# instrument RDS and only RDS
+-	scripts/config --file "$CONF_FILE" --enable CONFIG_GCOV_KERNEL
+-	scripts/config --file "$CONF_FILE" --disable GCOV_PROFILE_ALL
+-	scripts/config --file "$CONF_FILE" --enable GCOV_PROFILE_RDS
++	scripts/config "${FLAGS[@]}" --enable CONFIG_GCOV_KERNEL
++	scripts/config "${FLAGS[@]}" --disable GCOV_PROFILE_ALL
++	scripts/config "${FLAGS[@]}" --enable GCOV_PROFILE_RDS
+ else
+-	scripts/config --file "$CONF_FILE" --disable CONFIG_GCOV_KERNEL
+-	scripts/config --file "$CONF_FILE" --disable GCOV_PROFILE_ALL
+-	scripts/config --file "$CONF_FILE" --disable GCOV_PROFILE_RDS
++	scripts/config "${FLAGS[@]}" --disable CONFIG_GCOV_KERNEL
++	scripts/config "${FLAGS[@]}" --disable GCOV_PROFILE_ALL
++	scripts/config "${FLAGS[@]}" --disable GCOV_PROFILE_RDS
+ fi
+ 
+ # need network namespaces to run tests with veth network interfaces
+-scripts/config --file "$CONF_FILE" --enable CONFIG_NET_NS
+-scripts/config --file "$CONF_FILE" --enable CONFIG_VETH
++scripts/config "${FLAGS[@]}" --enable CONFIG_NET_NS
++scripts/config "${FLAGS[@]}" --enable CONFIG_VETH
+ 
+ # simulate packet loss
+-scripts/config --file "$CONF_FILE" --enable CONFIG_NET_SCH_NETEM
++scripts/config "${FLAGS[@]}" --enable CONFIG_NET_SCH_NETEM
+ 
 -- 
 2.43.0
 
