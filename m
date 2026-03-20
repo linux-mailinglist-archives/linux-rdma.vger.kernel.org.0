@@ -1,168 +1,162 @@
-Return-Path: <linux-rdma+bounces-18474-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18475-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KGNwMe/AvWmEBQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-18474-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 22:49:35 +0100
+	id eHFGAjTSvWm8CQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-18475-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 00:03:16 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29D42E17CA
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 22:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B7742E2307
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 00:03:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 73981302BA7C
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 21:49:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EE49C3053DE1
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 23:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D223F1669;
-	Fri, 20 Mar 2026 21:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9424389454;
+	Fri, 20 Mar 2026 23:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tGLxuJ9p"
+	dkim=pass (2048-bit key) header.d=dama-to.20230601.gappssmtp.com header.i=@dama-to.20230601.gappssmtp.com header.b="ceqaioKz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EED136BCE6
-	for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2026 21:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA663815CE
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2026 23:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774043372; cv=none; b=Ok0tgzKimrpz0ESxJqg4m9xv7DGZ3DFceRjqrxcyM/O4ahghs/1A+JPuNwyX3Jm/GYJirfLu/YNFk5/YHoA/sIzoCQV6QgihU9zzXu2KI4ZOwjb9LOlx0SF8M0Mi4+F7VIH3euxa0QEQnsGaXkcsv64Yr5pv/3fK/N2OztVTgJw=
+	t=1774047756; cv=none; b=kogMKEB/0G5tRv+N+3M4wFRa+9PgvMFvnhQWCHpxE/sQTOWGvFocoIiw77Qir6JJyO20SwXU4/ftcBE2C1ra3A9P6NA+3QTAiBs2ok/tsIzsiB86y0dtZK6+BWOYKrImv0fWmhx+JDBdB+g152uKYI6UWk5L8UTk0UI/PbFI0IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774043372; c=relaxed/simple;
-	bh=zrNNxZ/8GimuqANCW6vFmCyuozIHSNPlTpHP3NOiURk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qSSg1TY16MXbhOWsWg4JVKKC1LCYCvqsX6Vr0O/ua9VIqcQG8o31EEZUdnUMbHNohmG30Qxr+0doELRoHH4nf7qE2QucRKiX7ynxoY0T3nhRqBS1PjMXK1Rau+niZHeawukp4Z8KwEq2PLmY0+KOrtOPQtbNRaKuOSt9KO2omus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tGLxuJ9p; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <bb9c825b-56e8-468b-b1d8-9b4aa1177d10@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1774043368;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MLeX4Y8SCLTKIb/PvuT5EBGEMn05LREgOszX6Hgg9/c=;
-	b=tGLxuJ9pRE25OUEZoCv6QUkYNdLRNnNmt35EyuXFB9ydbkWk75jPZYIDVZfnul6GC7k+JY
-	HwMQlneMurmw4u3f46q/TO3F6Q07a51Dz9W7615pgowRRpmHFMD7OzgQUVxcwLTMI9MQ2Z
-	LZ8R47s9wn7IzW93RgjYxRdYNo+KrsM=
-Date: Fri, 20 Mar 2026 14:49:11 -0700
+	s=arc-20240116; t=1774047756; c=relaxed/simple;
+	bh=7UcKqNqUMGElXvB3apCmM1Rrjy8IGPj9FQ52Qpbs9gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pCZb/kSxce7qYl7TYLhS1k0nb3Jsi+Zu92LI1VISIcELVFStkTdEdnL5qf5208byrd7ctYxQjq3cNnAsragpUQ0R/yQp02FVw4vdFBlgL3ML0tcXQuh2hRWorWKl+rAI3xJUOenATn2YUdhaVAqFDH6YEwI2w0obNweS50Tzn8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dama.to; spf=none smtp.mailfrom=dama.to; dkim=pass (2048-bit key) header.d=dama-to.20230601.gappssmtp.com header.i=@dama-to.20230601.gappssmtp.com header.b=ceqaioKz; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dama.to
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=dama.to
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-35a288a2c00so1203955a91.2
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2026 16:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dama-to.20230601.gappssmtp.com; s=20230601; t=1774047755; x=1774652555; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AJCb1rgMxhRDKaUdftwMEyliYc1In3VuNS5gMJ0u0Zk=;
+        b=ceqaioKz0tzFFt5RQ6hWG6w6rVEO93frW10h88GxPSRWHPACeEtPeR9nzNxI8gHg3s
+         Rx5JVpS4OV/KFzqQ6tIhWjzCL/CG2FL8IwEwz4t8B1lgvbRVRAlMtw7fPZp0WsMsh54a
+         IpzUkqdoVhCyhci4TW4tinYNXTY0YOkuLjbABAROWDa9nTr77GEOkekC/e9suMgCZF9o
+         ZXVxjSDUFzQhsFbda8v3U9KxJPZUkoN1gUDYePt68SAC+sa2L83TlJmNl/8PF8Oe3Lu1
+         NxsaD24yUJXquSPNO6Keh6xlyk2neBpQcfXjAlANgQka7Z8ccZimdEz5ycWaI4WIltzB
+         AOwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774047755; x=1774652555;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AJCb1rgMxhRDKaUdftwMEyliYc1In3VuNS5gMJ0u0Zk=;
+        b=Ex2ScKV5fM8QXufdxTWa97YcElt+B2WcztFsAxln4a9W4c6fEuB4BXpNsANRA0+vaz
+         GMKXOZwgz9BwPjGdZORuBBqZ9XOSW5oBW4NAF1zxICOkOyDfSu+uBWE96O/BJqmLtSHM
+         28RrPTk/a6EMXNS1gJc6UG2wXJFcoE1AAE1aHaQudR2ZEGIgWKm70pramSWI0xI7XuTu
+         Gm8J3S/mMGXYudYMOCjCYn76gsHXT8590AsOmlYFdKB4CrcR3Cif2Xj9GKTggnxOpS8E
+         e0VqSsnPwIq5dvEPbYZvI4LYE/w2BX5GrNYd6vyuNFZbZHhiJbQv0gInafr3L65QC8tZ
+         wpvg==
+X-Forwarded-Encrypted: i=1; AJvYcCXexDHLhaiY9mcTM956u0g4CvRoY+Oj0dBMBucViZsQ2kXEJYgzLQ0DlJUYWxhKzQF88DL89yVSsbaW@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLPGoV/sj4R0NFEwu67wl5FnbC0GXTKU1/JU4ffpDY9ggOqaqM
+	0EPl9P0JbdIYZsqJyt2WX7DDGOJ16BEZT2RhEjqpdOLf4dx6Gv9ECKGvHHCMIlblBGc=
+X-Gm-Gg: ATEYQzymhO95Q0p8wBaRKe/o4v3ZSppFOOQUwXIhTClCMyV4WI98DfUMwCCQuseSvl2
+	EhSjYo7mg1AeGPE0/DPtzMXD3MCsVGMD5TbYbfbZIr4itolfwkt9ZXMNr39muHX+yUxXTeH7Rj+
+	FC+nB70A1fl6cGV5UN1fuzdXj6R31HuMsdOe05HMvSoW6TC0fjkOqh2v7GgEEM+2VHJWRbiOSB6
+	1YftDunYqU33EIoCgbScM0j3XJRRufVVJcgYjY83ecivV4cAgwvx2OxUWR05SkDFCMh/l2aHnAu
+	I01tt8lRQIxvzFwGFob5SSc5Iy/USwyLINjUSVSZSyE/WDtow5HY57S8a+5M2tv9L8y/o49YK++
+	5HBJ5M1X7irdcRO9p9SYWD+pK2ioE6orz71GYR6xPTqTjZ61Oj26JZ9zuoA2hmLe1KPO5PvPhIB
+	KjcbqgDb2e4lpGjg==
+X-Received: by 2002:a17:90b:2242:b0:35b:a7be:ae62 with SMTP id 98e67ed59e1d1-35bd2d2c8e1mr3707375a91.30.1774047754718;
+        Fri, 20 Mar 2026 16:02:34 -0700 (PDT)
+Received: from localhost ([2a03:2880:2ff:2::])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35bd4109c3bsm3000607a91.13.2026.03.20.16.02.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Mar 2026 16:02:34 -0700 (PDT)
+Date: Fri, 20 Mar 2026 16:02:33 -0700
+From: Joe Damato <joe@dama.to>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Moshe Shemesh <moshe@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+Subject: Re: [PATCH net-next 1/3] net/mlx5e: Move RX MPWQE slowpath fields
+ into a separate struct
+Message-ID: <ab3SCcyoqBJfQRmh@devvm20253.cco0.facebook.com>
+Mail-Followup-To: Joe Damato <joe@dama.to>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Moshe Shemesh <moshe@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+References: <20260319074338.24265-1-tariqt@nvidia.com>
+ <20260319074338.24265-2-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] [RESEND] RDMA/hfi1: use a struct group to avoid
- warning
-To: Arnd Bergmann <arnd@kernel.org>,
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Arnd Bergmann <arnd@arndb.de>, Kees Cook <kees@kernel.org>,
- Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260320151511.3420818-1-arnd@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260320151511.3420818-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260319074338.24265-2-tariqt@nvidia.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[dama-to.20230601.gappssmtp.com:s=20230601];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18474-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18475-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[dama.to];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[dama-to.20230601.gappssmtp.com:+];
 	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joe@dama.to,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[arndb.de:email,linux.dev:dkim,linux.dev:mid]
-X-Rspamd-Queue-Id: D29D42E17CA
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,devvm20253.cco0.facebook.com:mid,dama-to.20230601.gappssmtp.com:dkim,dama.to:email]
+X-Rspamd-Queue-Id: 5B7742E2307
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 3/20/26 8:12 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Mar 19, 2026 at 09:43:36AM +0200, Tariq Toukan wrote:
+> Move fields that are not read/written in fast path to a different
+> struct / cacheline in the RQ structure.
 > 
-> On gcc-11 and earlier, the driver sometimes produces a warning
-> for memset:
-> 
-> In file included from include/linux/string.h:392,
->                   from drivers/infiniband/hw/hfi1/mad.c:6:
-> In function 'fortify_memset_chk',
->      inlined from '__subn_get_opa_hfi1_cong_log' at drivers/infiniband/hw/hfi1/mad.c:3873:2,
->      inlined from 'subn_get_opa_sma' at drivers/infiniband/hw/hfi1/mad.c:4114:9:
-> include/linux/fortify-string.h:480:4: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror]
->      __write_overflow_field(p_size_field, size);
->      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> This seems to be a false positive, and I found no nice way to rewrite
-> the code to avoid the warning, but adding a a struct group works.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 > ---
-> resending as the patch did not get picked up last year
-> https://lore.kernel.org/all/20250410075928.GN199604@unreal/
-> ---
->   drivers/infiniband/hw/hfi1/hfi.h | 6 ++++--
->   drivers/infiniband/hw/hfi1/mad.c | 4 ++--
->   2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-> index 5a0310f758dc..ae17cea4e8c9 100644
-> --- a/drivers/infiniband/hw/hfi1/hfi.h
-> +++ b/drivers/infiniband/hw/hfi1/hfi.h
-> @@ -878,8 +878,10 @@ struct hfi1_pportdata {
->   	 * cc_log_lock protects all congestion log related data
->   	 */
->   	spinlock_t cc_log_lock ____cacheline_aligned_in_smp;
-> -	u8 threshold_cong_event_map[OPA_MAX_SLS / 8];
-> -	u16 threshold_event_counter;
-> +	struct_group (zero_event_map,
-> +		u8 threshold_cong_event_map[OPA_MAX_SLS / 8];
-> +		u16 threshold_event_counter;
-> +	);
->   	struct opa_hfi1_cong_log_event_internal cc_events[OPA_CONG_LOG_ELEMS];
->   	int cc_log_idx; /* index for logging events */
->   	int cc_mad_idx; /* index for reporting events */
-> diff --git a/drivers/infiniband/hw/hfi1/mad.c b/drivers/infiniband/hw/hfi1/mad.c
-> index 585f1d99b91b..9154638e9ce2 100644
-> --- a/drivers/infiniband/hw/hfi1/mad.c
-> +++ b/drivers/infiniband/hw/hfi1/mad.c
-> @@ -3869,8 +3869,8 @@ static int __subn_get_opa_hfi1_cong_log(struct opa_smp *smp, u32 am,
->   	 * Reset threshold_cong_event_map, and threshold_event_counter
->   	 * to 0 when log is read.
->   	 */
-> -	memset(ppd->threshold_cong_event_map, 0x0,
-> -	       sizeof(ppd->threshold_cong_event_map));
-> +	memset(&ppd->zero_event_map, 0x0,
-> +	       sizeof(ppd->zero_event_map));
->   	ppd->threshold_event_counter = 0;
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h      |  4 +++-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 12 +++++++-----
+>  2 files changed, 10 insertions(+), 6 deletions(-)
 
-Not sure if ppd->threshold_event_counter is also set to 0 in memset or 
-not. If yes, this line "ppd->threshold_event_counter = 0;" can be removed?
-
-Zhu Yanjun
-
->   
->   	spin_unlock_irq(&ppd->cc_log_lock);
-
+Reviewed-by: Joe Damato <joe@dama.to>
 
