@@ -1,146 +1,187 @@
-Return-Path: <linux-rdma+bounces-18442-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18443-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oAHRI/oZvWnG6QIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18442-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 10:57:14 +0100
+	id 4GVSF8kqvWmI7QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18443-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 12:08:57 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F792D85AA
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 10:57:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB3A62D951E
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 12:08:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 400783079504
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 09:56:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F24FF30166EF
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 11:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACFD362127;
-	Fri, 20 Mar 2026 09:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D270A3988FB;
+	Fri, 20 Mar 2026 11:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cUbg/8NX"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="tC3YC+f/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741991B3925;
-	Fri, 20 Mar 2026 09:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2843A0B2E
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2026 11:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774000560; cv=none; b=TPMqb5W3QOZ5oVe4Bq/ive9GgzxBSz80vgHGYgmJAO6fC7fXyRgc05Y17y/oHrI5/qdncU6+vBMUPKEsMGmnI0OQ2epFOsk2PalfPpzxTiCcR5moR8AoChBFHbKiwXjliSCPwyYhmmwZqIAT4Fsoy673TOW6aykBwirXZAl4oNE=
+	t=1774004924; cv=none; b=MJlxRKl3fV00IBLoIpn6vagcmON+vTc+Mq+clCkk4nmc1qmO2Td+duindst6aVKx1bKfaOqBuig+6PfJo0SMkv6gQW7HxWVxa2ItCNH04lhYo5j7dVGaaOlLIiatz9JZaIE8VNfWuQLwuRSs+TRHHJI5LkbJzbSKFVPr30jpnSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774000560; c=relaxed/simple;
-	bh=623iNHEo9Lx3CTyFj1XQ3Tb8dZwfqVZ4nDlwLICOGOQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gNH0ddx1JDIE0ZFW9M83uXSS5PFuT+eHr4tviSE5gEjbPSu+/f9//aBJNbdjY0KgxMzn9gkwJQE+IB2B1zLTMd+y1FjcNoc2yLPDKiZDo42RtCe1KiMK6HgXHWs3qZpqZZ5fMKV2CTB6MeYPuvJ+RmS2pABkAvAAdrPtfi3c5Ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cUbg/8NX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1273C4CEF7;
-	Fri, 20 Mar 2026 09:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774000559;
-	bh=623iNHEo9Lx3CTyFj1XQ3Tb8dZwfqVZ4nDlwLICOGOQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cUbg/8NXG3OZ3aqDbbu0ZF7Xlgg/mMa1uVvBe0VVF9qJu14G6q5weqLBn/KJ0hXZl
-	 fyhOqLwQvgE4h2q2K8SO9VdZCUZ2X6BOHS19VnEPmMPPJH8AgnOiN/qVJPwXODDOeA
-	 J5n8etfF55U+uF7YWjon2CNadkoKWL/EGsGhL3swqeUyDXWwpvPiD+55O7EKsOFrAj
-	 bxlOJlgB/wt6E6ICwceWIE/DykLmAhywBNAlxqePAA4F64y0VoJFvYqTZM4kaLrHva
-	 H63o6SYyJdAELw7SVHMcAa1EVm8hVeMw0DNDTBHtnyjtQqwkpv4hC/owWgJcT2wsG/
-	 L66DckitYpcKw==
-Date: Fri, 20 Mar 2026 09:55:53 +0000
-From: Simon Horman <horms@kernel.org>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, kotaranov@microsoft.com,
-	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
-	dipayanroy@linux.microsoft.com, yury.norov@gmail.com,
-	kees@kernel.org, ssengar@linux.microsoft.com,
-	gargaditya@linux.microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v4] net: mana: Expose hardware diagnostic info
- via debugfs
-Message-ID: <20260320095553.GD1753385@horms.kernel.org>
-References: <20260319070926.1459515-1-ernis@linux.microsoft.com>
+	s=arc-20240116; t=1774004924; c=relaxed/simple;
+	bh=DcSdZ1Od4bjS1xSpPlNiqp2KmerXVT1VSew5Vlvza1Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=HaB2EIpBhL4/VIQNSoX5LklgM8oakmr/SHBBjo+FOusbiRzMGVz1oBB/UDJ4bgQ6+2Tbpfd2QIUuLCziny9XZJ0CNp0Gn8vfG/G/uYk9rViO4Kf95sPH+Cfcs83B8I2ygu2WFEMW0GVeJHW7l/HYd5rO4GQqLnTwQD9F98Sd+7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=tC3YC+f/; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20260320110837euoutp01c4cd859b971509ec467575b9f3e10916~eiBLEAtep0470104701euoutp01c
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2026 11:08:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20260320110837euoutp01c4cd859b971509ec467575b9f3e10916~eiBLEAtep0470104701euoutp01c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1774004917;
+	bh=4qovv9+aD8RsPS13oGAV/y3xbW2UGToHDWte0hu5auQ=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=tC3YC+f/cwuKn2RlZKFwY2x8rUDgAsDAFY60UyBWpLPBL+67Y08nlVUxai1DNaN5D
+	 sFUfqzCG/9wmcnOrRRU7vo76g8QFm1fOPCix13urNlB577UaZgeKHor7NP4Zw+PBBu
+	 i0Qd/1bii8ZaKPiERbuc0j3N6JUtuaGTgrhxYrZ8=
+Received: from eusmtip2.samsung.com (unknown [203.254.199.222]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20260320110836eucas1p13ceb4f958f17b568b1b6a89ce9cdbea5~eiBKofPAW2282122821eucas1p1u;
+	Fri, 20 Mar 2026 11:08:36 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20260320110835eusmtip2ba021ee90f681f3ad044dd9fe0d2ed25~eiBI-eTqE1236312363eusmtip2w;
+	Fri, 20 Mar 2026 11:08:35 +0000 (GMT)
+Message-ID: <3fe54fb7-8192-4b0c-9f51-d04cb8ac1300@samsung.com>
+Date: Fri, 20 Mar 2026 12:08:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260319070926.1459515-1-ernis@linux.microsoft.com>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+User-Agent: Betterbird (Windows)
+Subject: Re: [PATCH v3 0/8] RDMA: Enable operation with DMA debug enabled
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Robin Murphy <robin.murphy@arm.com>, "Michael S. Tsirkin"
+	<mst@redhat.com>, Petr Tesarik <ptesarik@suse.com>, Jonathan Corbet
+	<corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Jason Wang
+	<jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, Jason Gunthorpe
+	<jgg@ziepe.ca>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+	<mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	virtualization@lists.linux.dev, linux-rdma@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Language: en-US
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20260318081858.GE61385@unreal>
+Content-Transfer-Encoding: 8bit
+X-CMS-MailID: 20260320110836eucas1p13ceb4f958f17b568b1b6a89ce9cdbea5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20260317190552eucas1p28f3e818f88d252b1e4161332be084177
+X-EPHeader: CA
+X-CMS-RootMailID: 20260317190552eucas1p28f3e818f88d252b1e4161332be084177
+References: <20260316-dma-debug-overlap-v3-0-1dde90a7f08b@nvidia.com>
+	<CGME20260317190552eucas1p28f3e818f88d252b1e4161332be084177@eucas1p2.samsung.com>
+	<20260317190538.GD61385@unreal>
+	<de23ccf6-75ef-48af-8c69-2f416c564f2d@samsung.com>
+	<20260318081858.GE61385@unreal>
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[samsung.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[samsung.com:s=mail20170921];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18442-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18443-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[samsung.com:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.969];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[m.szyprowski@samsung.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-0.930];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[horms.kernel.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 31F792D85AA
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: CB3A62D951E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 19, 2026 at 12:09:13AM -0700, Erni Sri Satya Vennela wrote:
-> Add debugfs entries to expose hardware configuration and diagnostic
-> information that aids in debugging driver initialization and runtime
-> operations without adding noise to dmesg.
-> 
-> The debugfs directory creation and removal for each PCI device is
-> integrated into mana_gd_setup() and mana_gd_cleanup_device()
-> respectively, so that all callers (probe, remove, suspend, resume,
-> shutdown) share a single code path.
-> 
-> Device-level entries (under /sys/kernel/debug/mana/<slot>/):
->   - num_msix_usable, max_num_queues: Max resources from hardware
->   - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
->   - num_vports, bm_hostmode: Device configuration
-> 
-> Per-vPort entries (under /sys/kernel/debug/mana/<slot>/vportN/):
->   - port_handle: Hardware vPort handle
->   - max_sq, max_rq: Max queues from vPort config
->   - indir_table_sz: Indirection table size
->   - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
->     Last applied steering configuration parameters
-> 
-> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-> ---
-> Changes in v4:
-> * Rebase and fix conflicts.
-> Changes in v3:
-> * Rename mana_gd_cleanup to mana_gd_cleanup_device.
-> * Add creation of debugfs entries in mana_gd_setup.
-> * Add removal of debugfs entries in mana_gd_cleanup_device.
-> * Remove bm_hostmode and num_vports from debugfs in mana_remove itself,
->   because "ac" gets freed before debugfs_remove_recursive, to avoid
->   Use-After-Free error.
-> * Add "goto out:" in mana_cfg_vport_steering to avoid populating apc
->   values when resp.hdr.status is not NULL.
+Hi Leon,
 
-Thanks for the updates.
+On 18.03.2026 09:18, Leon Romanovsky wrote:
+> On Wed, Mar 18, 2026 at 09:03:00AM +0100, Marek Szyprowski wrote:
+>> On 17.03.2026 20:05, Leon Romanovsky wrote:
+>>> On Mon, Mar 16, 2026 at 09:06:44PM +0200, Leon Romanovsky wrote:
+>>>> Add a new DMA_ATTR_REQUIRE_COHERENT attribute to the DMA API to mark
+>>>> mappings that must run on a DMA‑coherent system. Such buffers cannot
+>>>> use the SWIOTLB path, may overlap with CPU caches, and do not depend on
+>>>> explicit cache flushing.
+>>>>
+>>>> Mappings using this attribute are rejected on systems where cache
+>>>> side‑effects could lead to data corruption, and therefore do not need
+>>>> the cache‑overlap debugging logic. This series also includes fixes for
+>>>> DMA_ATTR_CPU_CACHE_CLEAN handling.
+>>>> Thanks.
+>>> <...>
+>>>
+>>>> ---
+>>>> Leon Romanovsky (8):
+>>>>         dma-debug: Allow multiple invocations of overlapping entries
+>>>>         dma-mapping: handle DMA_ATTR_CPU_CACHE_CLEAN in trace output
+>>>>         dma-mapping: Clarify valid conditions for CPU cache line overlap
+>>>>         dma-mapping: Introduce DMA require coherency attribute
+>>>>         dma-direct: prevent SWIOTLB path when DMA_ATTR_REQUIRE_COHERENT is set
+>>>>         iommu/dma: add support for DMA_ATTR_REQUIRE_COHERENT attribute
+>>>>         RDMA/umem: Tell DMA mapping that UMEM requires coherency
+>>>>         mm/hmm: Indicate that HMM requires DMA coherency
+>>>>
+>>>>    Documentation/core-api/dma-attributes.rst | 38 ++++++++++++++++++++++++-------
+>>>>    drivers/infiniband/core/umem.c            |  5 ++--
+>>>>    drivers/iommu/dma-iommu.c                 | 21 +++++++++++++----
+>>>>    drivers/virtio/virtio_ring.c              | 10 ++++----
+>>>>    include/linux/dma-mapping.h               | 15 ++++++++----
+>>>>    include/trace/events/dma.h                |  4 +++-
+>>>>    kernel/dma/debug.c                        |  9 ++++----
+>>>>    kernel/dma/direct.h                       |  7 +++---
+>>>>    kernel/dma/mapping.c                      |  6 +++++
+>>>>    mm/hmm.c                                  |  4 ++--
+>>>>    10 files changed, 86 insertions(+), 33 deletions(-)
+>>> Marek,
+>>>
+>>> Despite the "RDMA ..." tag in the subject, the diffstat clearly shows that
+>>> you are the appropriate person to take this patch.
+>> I plan to take the first 2 patches to the dma-mapping-fixes branch
+>> (v7.0-rc) and the next to dma-mapping-for-next. Should I also take the
+>> RDMA and HMM patches, or do You want a stable branch for merging them
+>> via respective subsystem trees?
+> I suggest taking all patches into the -fixes branch, as the "RDMA/..." patch
+> also resolves the dmesg splat. With -fixes, there is no need to worry about
+> a shared branch since we do not expect merge conflicts in that area.
+>
+> If you still prefer to split the series between -fixes and -next, it would be
+> better to use a shared branch in that case. There are patches on the RDMA
+> list targeted for -next that touch ib_umem_get().
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Okay, I will merge all patches to the -fixes branch then.
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
