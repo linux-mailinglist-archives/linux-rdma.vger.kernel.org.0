@@ -1,122 +1,182 @@
-Return-Path: <linux-rdma+bounces-18470-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18471-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eJUuBYGMvWnY+wIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18470-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 19:05:53 +0100
+	id iLNtGpiUvWnY+wIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18471-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 19:40:24 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947932DF25B
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 19:05:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30BD2DF8BF
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 19:40:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A775B309E790
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 18:01:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 10F06300A606
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 18:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236043126BF;
-	Fri, 20 Mar 2026 18:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2642D33FE0F;
+	Fri, 20 Mar 2026 18:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LYgLdN6D"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="JR3mMW/3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16C330C37E;
-	Fri, 20 Mar 2026 18:01:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39502D0C62;
+	Fri, 20 Mar 2026 18:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774029695; cv=none; b=Tf4qcIE58DNmxpL6RRyjxDkRiYlfKA5MXH7OEjAnwjU/yvWgrU2rSrwMGtduNMdfgQu6LxomKty6+a+pWXiLq+oNygyyMW63YUxc1L6KZEeCkTMdSwURrZf+msOQs6t+KmkB1VObdB13UsYm05KmwIBWQJLoApXt5zy40jyfHyk=
+	t=1774031857; cv=none; b=cYRFkIS9BCcFyyleD0jCB5/a7nCKEQg1Cx/eYjI7d5xvxMh+C0IGByNqwBf9miJRGdzfWlynYYdMGiHGH5yNqMmf1cpCKRd8KSJmK4oAtiay0dFxXJpegLdjcMDKOubiI2IUfOOHEAeLEne+n2tWFaWmvkjzC7fLaos1toP0wWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774029695; c=relaxed/simple;
-	bh=voOJxTIuc7syiB4KCb/UfinxouPOEg0BtSsyui5jF2Q=;
+	s=arc-20240116; t=1774031857; c=relaxed/simple;
+	bh=ndUmG6D4N/t76wmcE/rj0yYFZUJjdZW7OKDiXnUnTKo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSbz1TSSl46mPVQ6AY12Dslxs7eDo/PMDIQ51wthBLM+2WqyhsqcklkYA5rBO0hxy45I6x0Ex2ijVt3Wa6C5J2EJxvEBjwr797KY5S7djNLkTRs44wz8TgoQPMTP/QjqW6gD7JzKq49gkwXOGh/OeU8EN3mE+pVQq8RZiRVJom4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LYgLdN6D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E401C4CEF7;
-	Fri, 20 Mar 2026 18:01:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774029695;
-	bh=voOJxTIuc7syiB4KCb/UfinxouPOEg0BtSsyui5jF2Q=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=DFrd1uUJaf/g5cZl08HPFW3KwrDkvnvCeh4UwitnHHR+r2SctRF3Ck0XM2sDxsC3sGkAY900QCPr9ig4Y9+rxRyHM7lZRO2suni2hvkdMSTurtrUSSpcYzEiTlZ546u3p9J+hsjvqfxwz8RMgBlqtG/T/QUgEd2Wqb34TmEGGWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=JR3mMW/3; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id A29FB20B710C; Fri, 20 Mar 2026 11:37:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A29FB20B710C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1774031856;
+	bh=8jpPXr+y+3KENB6W41376ggBj6+74FClsqh2tUuZIug=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LYgLdN6DaqOtN1QpV90HDcLIygWcTzJmFRs8CGWwyQJVp5FxL+tFgCr34nn4ZMWOW
-	 m97SqIJTPO2diJKIc8fhnoZYz75+W5UvsFdXiig3Xe0d+uRiYkMwmVohNqN6Nm4eZS
-	 ZmHCJZ/Du4B/AOEe+PWnPeN1DoiF0VCcYuCG4dHB1ntP0YUWgiKSFNJVPwqxfQJ2AC
-	 7XQ5SVJmXx1PM39KgJC2e5KCjbj9E/t4yfkLfKawpZWub5HnshVKsBFV6eE4xL8mG6
-	 F0+nGJlgUd5ZcQc6Tezaa/i2FEMnu6jMa9d20kflddAi3JUK+IOpIM4ZGmKthq90Tx
-	 BnvCtDRBQim4g==
-Date: Fri, 20 Mar 2026 11:01:35 -0700
-From: Kees Cook <kees@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] [RESEND] RDMA/hfi1: use a struct group to avoid
- warning
-Message-ID: <202603201101.CA57529EAD@keescook>
-References: <20260320151511.3420818-1-arnd@kernel.org>
+	b=JR3mMW/3XjE+RSv1SuWsuNxVuWjbiFNQX3JEuSEoPj0eeUVtlHh4wYrAzU05/StIp
+	 Ak32D828kLEtVhySGqhpLcmQLZkQt2EnsCYVgZyB8X11m3M2IUTqdn7j8u1XkY1GC/
+	 VaRnxXufFAuziD1myFZ6o16h1RgUN+bwAGZxXuKM=
+Date: Fri, 20 Mar 2026 11:37:36 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next, v3] net: mana: Force full-page RX buffers for
+ 4K page size on specific systems.
+Message-ID: <ab2T8LgRiDHDIUHV@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <abDo8XTu1EiQFC7T@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20260314125053.41d6221b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260320151511.3420818-1-arnd@kernel.org>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260314125053.41d6221b@kernel.org>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18470-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18471-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kees@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-0.936];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.997];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 947932DF25B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,linux.microsoft.com:dkim]
+X-Rspamd-Queue-Id: B30BD2DF8BF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Mar 20, 2026 at 04:12:37PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Sat, Mar 14, 2026 at 12:50:53PM -0700, Jakub Kicinski wrote:
+> On Tue, 10 Mar 2026 21:00:49 -0700 Dipayaan Roy wrote:
+> > On certain systems configured with 4K PAGE_SIZE, utilizing page_pool
+> > fragments for RX buffers results in a significant throughput regression.
+> > Profiling reveals that this regression correlates with high overhead in the
+> > fragment allocation and reference counting paths on these specific
+> > platforms, rendering the multi-buffer-per-page strategy counterproductive.
 > 
-> On gcc-11 and earlier, the driver sometimes produces a warning
-> for memset:
-> 
-> In file included from include/linux/string.h:392,
->                  from drivers/infiniband/hw/hfi1/mad.c:6:
-> In function 'fortify_memset_chk',
->     inlined from '__subn_get_opa_hfi1_cong_log' at drivers/infiniband/hw/hfi1/mad.c:3873:2,
->     inlined from 'subn_get_opa_sma' at drivers/infiniband/hw/hfi1/mad.c:4114:9:
-> include/linux/fortify-string.h:480:4: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror]
->     __write_overflow_field(p_size_field, size);
->     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> This seems to be a false positive, and I found no nice way to rewrite
-> the code to avoid the warning, but adding a a struct group works.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Can you say more ? We could technically take two references on the page
+> right away if MTU is small and avoid some of the cost.
 
-Reviewed-by: Kees Cook <kees@kernel.org>
+There is a 15-20% shortfall in achieving line rate for MANA (180+ Gbps)
+on a particular ARM64 SKU. The issue is only specific to this processor SKU —
+not seen on other ARM64 SKUs (e.g., GB200) or x86 SKUs. Critically, the
+regression only manifests beyond 16 TCP connections, which strongly indicates
+seen when there is  high contention and traffic.
 
--- 
-Kees Cook
+  no. of     | rx buf backed       | rx buf backed
+ connections | with page fragments | with full page
+-------------+---------------------+---------------
+           4 |         139 Gbps    |     138 Gbps
+           8 |         140 Gbps    |     162 Gbps
+          16 |         186 Gbps    |     186 Gbps
+          32 |         136 Gbps    |     183 Gbps
+          48 |         159 Gbps    |     185 Gbps
+          64 |         165 Gbps    |     184 Gbps
+         128 |         170 Gbps    |     180 Gbps
+ 
+HW team is still working to RCA this hw behaviour.
+
+Regarding "We could technically take two references on the page right
+away", are you suggesting having page reference counting logic to driver
+instead of relying on page pool?
+
+> 
+> The driver doesn't seem to set skb->truesize accordingly after this
+> change. So you're lying to the stack about how much memory each packet
+> consumes. This is a blocker for the change.
+> 
+ACK. I will send out a separate patch with fixes tag to fix the skb true
+size.
+
+> > To mitigate this, bypass the page_pool fragment path and force a single RX
+> > packet per page allocation when all the following conditions are met:
+> >   1. The system is configured with a 4K PAGE_SIZE.
+> >   2. A processor-specific quirk is detected via SMBIOS Type 4 data.
+> 
+> I don't think we want the kernel to be in the business of carrying
+> matching on platform names and providing optimal config by default.
+> This sort of logic needs to live in user space or the hypervisor 
+> (which can then pass a single bit to the driver to enable the behavior)
+> 
+As per our internal discussion the hypervisor cannot provide the CPU
+version info(in vm as well as in bare metal offerings).
+
+On handling it from user side are you suggesting it to introduce a new
+ethtool Private Flags and have udev rules for the driver to set the private
+flag and switch to full page rx buffers? Given that the wide number of distro
+support this might be harder to maintain/backport. 
+
+Also the dmi parsing design was influenced by other net wireleass
+drivers as /wireless/ath/ath10k/core.c. If this approach is not
+acceptable for MANA driver then will have to take a alternate route
+based on the dsicussion right above it.
+
+> > This approach restores expected line-rate performance by ensuring
+> > predictable RX refill behavior on affected hardware.
+> > 
+> > There is no behavioral change for systems using larger page sizes
+> > (16K/64K), or platforms where this processor-specific quirk do not
+> > apply.
+> -- 
+> pw-bot: cr
+
+Thank you for your comments Jakub, and also pointing out the skb true
+size issue. I am sending out a separate to fix the skb true size issue.
+
+Regards
+Dipayaan Roy
+
 
