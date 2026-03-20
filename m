@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-18438-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18439-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WND8DHUNvWkO5gIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18438-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 10:03:49 +0100
+	id yIpaNHwNvWkO5gIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18439-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 10:03:56 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBF092D7B06
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 10:03:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7127E2D7B16
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 10:03:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 137BC310270B
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 08:58:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C312A31193F4
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 08:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7AA377036;
-	Fri, 20 Mar 2026 08:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476D43783AB;
+	Fri, 20 Mar 2026 08:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GpwrH3Su"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XdC1rSKM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4882D7DE4;
-	Fri, 20 Mar 2026 08:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C09349AF4;
+	Fri, 20 Mar 2026 08:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773997117; cv=none; b=Ag/Zalcal4f61GmjWXIjS2dSRjGu7AWawhst+hr3pVg4NhezSAnIy5KCsiw8FEGsdd0mB8b09vLZeC+RtU3DVKrv4O2ezbCS36xhBAZQKgoBZtQQvnCHcGARClixdW8A+zGvfxx1YIJUuRdYDjIFgC+zMkumIivnuY0yWvBwdzI=
+	t=1773997122; cv=none; b=tBBfpPCjp9Mdy9erMG2ZIGv6iSULzboY6Bhtnqk9Pb0CkhmQLt6n+r3bSLs/hnqnT4/A+qGu7VET8+8fGywUDNSQ1p8cYe8c/htVNXu8rsjnFrNMa1QDJKZYXYf0eWHYHqe3/V1HA36v++LlG4JYE3bvxiXBOt1bMNpX6OubU/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773997117; c=relaxed/simple;
-	bh=6m9tkWvyIEYbQh7eeAnxli8ETjP8g2pfc5BE2dXjep8=;
+	s=arc-20240116; t=1773997122; c=relaxed/simple;
+	bh=UCZU47xUTkuidjKDjsLx518TuD1e6dVmduvG2zfO1Gg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GickDQVSJavbtSY2SqRiRWFKZpOwkxtwgHNk51e4muh/VuYz8LSXMTYSKg4R5wiU0we2ZdiD20zdraZRXantCcbG+LMcBxlbYf+LSw21ep7xKexqf2OPWqKNIiYe0FCUDgwdHwcMiATGQsfw6dTeMAw2y2JSuHRuMofWeRhrBU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GpwrH3Su; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9586CC2BC87;
-	Fri, 20 Mar 2026 08:58:33 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RVFG00y1asG1enE4wCnw1OeWGo9gIphYMtSFqpligBFKVuA/O5IPr8uUiPl8NuV9BpiPgCUdxEzgE1XKbf4ryipffeQcVhzz56LsBbSiptsyzIYDiHmK8BHc9bo2gmhXeccmaunwVwzc7GXPUc81RBNtgtOVs9l/0kgOrOENBdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XdC1rSKM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB61FC2BCB0;
+	Fri, 20 Mar 2026 08:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773997117;
-	bh=6m9tkWvyIEYbQh7eeAnxli8ETjP8g2pfc5BE2dXjep8=;
+	s=k20201202; t=1773997121;
+	bh=UCZU47xUTkuidjKDjsLx518TuD1e6dVmduvG2zfO1Gg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GpwrH3Su8Gs8xSvUZsFamsQfWniXVOcYohwIvHN/XOtCDFz7No+YjrTWXKhotBq87
-	 F0knPum+a24xy2tCwVT/Futtpw9lxhyWJDKUh1vTYrSNDCvrb7/JxZE0WGbx6EIY+G
-	 fHSwWZQvHIIKlc8gySFkCN8vXld4n9o+RCFE2qMD5uNOINLmLYhZg5CgtKgMBdGzFr
-	 Oqk2b+MPdClPxeY9l9xitxJVyLN1KQSsPMbFEyA+/9MzqGzc4E5Rzv/do9s6i3Fug0
-	 BlMRELkY72H1dyZT4JEdIf+ygsEuGgvHbuVs1Wp7q2wx/+6m3Jsy0/Gp6xbF7q9TZZ
-	 +nZ/tjtdgTp1A==
+	b=XdC1rSKMJSnxSaVxtXpvBzgM+9VPTmQTz2sHm/KaxZAO1xUAeBxkV+ZDNVZQzylkp
+	 0at9Q3HxdpX/9xc7SsMPp626LMLOrxHOmOkXSNjjjfCcLCGJjwvMoGZFtkdu6ZYpe0
+	 1L3iqftAvJDiIkkZutRQ2/SPUOF3nZoRaIzR4NB2EzZIEagyCSMl0kL04QlX+D5bQz
+	 i6q17ISOZypGBaZEfVb9UTy7Ficc2gezM70jW9hsfhjuSXIdQEn1pqK7z1SK08vl7g
+	 AER9YkAa2HDXAKoNOqNGQV9uNw90pZtzKik99BfuaA1wekNxQwunRBloxrnpS/OY2l
+	 PQmRXoCDSbVIQ==
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To: Michael Chan <michael.chan@broadcom.com>,
 	Pavan Chebbi <pavan.chebbi@broadcom.com>,
@@ -66,9 +66,9 @@ Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH net-next v7 1/4] ethtool: Track user-provided RSS indirection table size
-Date: Fri, 20 Mar 2026 09:58:21 +0100
-Message-ID: <20260320085826.1957255-2-bjorn@kernel.org>
+Subject: [PATCH net-next v7 2/4] ethtool: Add RSS indirection table resize helpers
+Date: Fri, 20 Mar 2026 09:58:22 +0100
+Message-ID: <20260320085826.1957255-3-bjorn@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260320085826.1957255-1-bjorn@kernel.org>
 References: <20260320085826.1957255-1-bjorn@kernel.org>
@@ -80,19 +80,19 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.93 / 15.00];
+X-Spamd-Result: default: False [0.96 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.59)[subject];
+	R_MIXED_CHARSET(0.63)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18438-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18439-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -103,328 +103,224 @@ X-Spamd-Result: default: False [0.93 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.996];
+	NEURAL_HAM(-0.00)[-0.997];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CBF092D7B06
+X-Rspamd-Queue-Id: 7127E2D7B16
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Track the number of indirection table entries the user originally
-provided (context 0/default as well!).
+The core locks ctx->indir_size when an RSS context is created. Some
+NICs (e.g. bnxt) change their indirection table size based on the
+channel count, because the hardware table is a shared resource. This
+forces drivers to reject channel changes when RSS contexts exist.
 
-Replace IFF_RXFH_CONFIGURED with rss_indir_user_size: the flag is
-redundant now that user_size captures the same information.
+Add driver helpers to resize indirection tables:
 
-Add ethtool_rxfh_indir_lost() for drivers that must reset the
-indirection table.
+ethtool_rxfh_indir_can_resize() checks whether the default context
+indirection table can be resized.
 
-Convert bnxt and mlx5 to use it.
+ethtool_rxfh_indir_resize() resizes the default context table in
+place. Folding (shrink) requires the table to be periodic at the new
+size; non-periodic tables are rejected. Unfolding (grow) replicates
+the existing pattern. Sizes must be multiples of each other.
+
+ethtool_rxfh_ctxs_can_resize() validates all non-default RSS contexts
+can be resized.
+
+ethtool_rxfh_ctxs_resize() applies the resize.
 
 Signed-off-by: Björn Töpel <bjorn@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  3 +-
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 21 ++++++++------
- include/linux/ethtool.h                       |  7 +++++
- include/linux/netdevice.h                     |  7 +----
- net/ethtool/common.c                          | 28 +++++++++++++++++++
- net/ethtool/ioctl.c                           |  9 +++---
- net/ethtool/rss.c                             | 24 ++++++++++------
- 7 files changed, 70 insertions(+), 29 deletions(-)
+ include/linux/ethtool.h |   6 ++
+ net/ethtool/common.c    | 155 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 161 insertions(+)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 604966a398f5..84eb53b4172b 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -8118,8 +8118,7 @@ static int __bnxt_reserve_rings(struct bnxt *bp)
- 		    (bnxt_get_nr_rss_ctxs(bp, bp->rx_nr_rings) !=
- 		     bnxt_get_nr_rss_ctxs(bp, rx_rings) ||
- 		     bnxt_get_max_rss_ring(bp) >= rx_rings)) {
--			netdev_warn(bp->dev, "RSS table entries reverting to default\n");
--			bp->dev->priv_flags &= ~IFF_RXFH_CONFIGURED;
-+			ethtool_rxfh_indir_lost(bp->dev);
- 		}
- 	}
- 	bp->rx_nr_rings = rx_rings;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index f7009da94f0b..4429b4058daa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -6483,12 +6483,23 @@ int mlx5e_attach_netdev(struct mlx5e_priv *priv)
- 
- 	/* max number of channels may have changed */
- 	max_nch = mlx5e_calc_max_nch(priv->mdev, priv->netdev, profile);
-+
-+	/* Locking is required by ethtool_rxfh_indir_lost() (sends
-+	 * ETHTOOL_MSG_RSS_NTF) and by netif_set_real_num_*_queues in case
-+	 * the netdev has been registered by this point (if this function
-+	 * was called in the reload or resume flow).
-+	 */
-+	if (need_lock) {
-+		rtnl_lock();
-+		netdev_lock(priv->netdev);
-+	}
-+
- 	if (priv->channels.params.num_channels > max_nch) {
- 		mlx5_core_warn(priv->mdev, "MLX5E: Reducing number of channels to %d\n", max_nch);
- 		/* Reducing the number of channels - RXFH has to be reset, and
- 		 * mlx5e_num_channels_changed below will build the RQT.
- 		 */
--		priv->netdev->priv_flags &= ~IFF_RXFH_CONFIGURED;
-+		ethtool_rxfh_indir_lost(priv->netdev);
- 		priv->channels.params.num_channels = max_nch;
- 		if (priv->channels.params.mqprio.mode == TC_MQPRIO_MODE_CHANNEL) {
- 			mlx5_core_warn(priv->mdev, "MLX5E: Disabling MQPRIO channel mode\n");
-@@ -6505,15 +6516,7 @@ int mlx5e_attach_netdev(struct mlx5e_priv *priv)
- 	/* 1. Set the real number of queues in the kernel the first time.
- 	 * 2. Set our default XPS cpumask.
- 	 * 3. Build the RQT.
--	 *
--	 * Locking is required by netif_set_real_num_*_queues in case the
--	 * netdev has been registered by this point (if this function was called
--	 * in the reload or resume flow).
- 	 */
--	if (need_lock) {
--		rtnl_lock();
--		netdev_lock(priv->netdev);
--	}
- 	err = mlx5e_num_channels_changed(priv);
- 	if (need_lock) {
- 		netdev_unlock(priv->netdev);
 diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 656d465bcd06..34ca9261de82 100644
+index 34ca9261de82..1cb0740ba331 100644
 --- a/include/linux/ethtool.h
 +++ b/include/linux/ethtool.h
-@@ -176,6 +176,8 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
-  * struct ethtool_rxfh_context - a custom RSS context configuration
-  * @indir_size: Number of u32 entries in indirection table
-  * @key_size: Size of hash key, in bytes
-+ * @indir_user_size: number of user provided entries for the
-+ *	indirection table
-  * @priv_size: Size of driver private data, in bytes
-  * @hfunc: RSS hash function identifier.  One of the %ETH_RSS_HASH_*
-  * @input_xfrm: Defines how the input data is transformed. Valid values are one
-@@ -186,6 +188,7 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
- struct ethtool_rxfh_context {
- 	u32 indir_size;
- 	u32 key_size;
-+	u32 indir_user_size;
- 	u16 priv_size;
- 	u8 hfunc;
- 	u8 input_xfrm;
-@@ -214,6 +217,7 @@ static inline u8 *ethtool_rxfh_context_key(struct ethtool_rxfh_context *ctx)
- }
+@@ -218,6 +218,12 @@ static inline u8 *ethtool_rxfh_context_key(struct ethtool_rxfh_context *ctx)
  
  void ethtool_rxfh_context_lost(struct net_device *dev, u32 context_id);
-+void ethtool_rxfh_indir_lost(struct net_device *dev);
+ void ethtool_rxfh_indir_lost(struct net_device *dev);
++bool ethtool_rxfh_indir_can_resize(struct net_device *dev, const u32 *tbl,
++				   u32 old_size, u32 new_size);
++void ethtool_rxfh_indir_resize(struct net_device *dev, u32 *tbl,
++			       u32 old_size, u32 new_size);
++int ethtool_rxfh_ctxs_can_resize(struct net_device *dev, u32 new_indir_size);
++void ethtool_rxfh_ctxs_resize(struct net_device *dev, u32 new_indir_size);
  
  struct link_mode_info {
  	int	speed;
-@@ -1337,12 +1341,15 @@ int ethtool_virtdev_set_link_ksettings(struct net_device *dev,
-  * @rss_ctx:		XArray of custom RSS contexts
-  * @rss_lock:		Protects entries in @rss_ctx.  May be taken from
-  *			within RTNL.
-+ * @rss_indir_user_size: Number of user provided entries for the default
-+ *			 (context 0) indirection table.
-  * @wol_enabled:	Wake-on-LAN is enabled
-  * @module_fw_flash_in_progress: Module firmware flashing is in progress.
-  */
- struct ethtool_netdev_state {
- 	struct xarray		rss_ctx;
- 	struct mutex		rss_lock;
-+	u32			rss_indir_user_size;
- 	unsigned		wol_enabled:1;
- 	unsigned		module_fw_flash_in_progress:1;
- };
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 7ca01eb3f7d2..e82de6831e05 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1716,7 +1716,6 @@ struct net_device_ops {
-  * @IFF_OPENVSWITCH: device is a Open vSwitch master
-  * @IFF_L3MDEV_SLAVE: device is enslaved to an L3 master device
-  * @IFF_TEAM: device is a team device
-- * @IFF_RXFH_CONFIGURED: device has had Rx Flow indirection table configured
-  * @IFF_PHONY_HEADROOM: the headroom value is controlled by an external
-  *	entity (i.e. the master device for bridged veth)
-  * @IFF_MACSEC: device is a MACsec device
-@@ -1752,7 +1751,6 @@ enum netdev_priv_flags {
- 	IFF_OPENVSWITCH			= 1<<20,
- 	IFF_L3MDEV_SLAVE		= 1<<21,
- 	IFF_TEAM			= 1<<22,
--	IFF_RXFH_CONFIGURED		= 1<<23,
- 	IFF_PHONY_HEADROOM		= 1<<24,
- 	IFF_MACSEC			= 1<<25,
- 	IFF_NO_RX_HANDLER		= 1<<26,
-@@ -5569,10 +5567,7 @@ static inline bool netif_is_lag_port(const struct net_device *dev)
- 	return netif_is_bond_slave(dev) || netif_is_team_port(dev);
- }
- 
--static inline bool netif_is_rxfh_configured(const struct net_device *dev)
--{
--	return dev->priv_flags & IFF_RXFH_CONFIGURED;
--}
-+bool netif_is_rxfh_configured(const struct net_device *dev);
- 
- static inline bool netif_is_failover(const struct net_device *dev)
- {
 diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index e252cf20c22f..d7d832fa9e00 100644
+index d7d832fa9e00..ec9e45b5cc89 100644
 --- a/net/ethtool/common.c
 +++ b/net/ethtool/common.c
-@@ -1204,6 +1204,34 @@ void ethtool_rxfh_context_lost(struct net_device *dev, u32 context_id)
+@@ -1232,6 +1232,161 @@ void ethtool_rxfh_indir_lost(struct net_device *dev)
  }
- EXPORT_SYMBOL(ethtool_rxfh_context_lost);
+ EXPORT_SYMBOL(ethtool_rxfh_indir_lost);
  
-+bool netif_is_rxfh_configured(const struct net_device *dev)
++static bool ethtool_rxfh_is_periodic(const u32 *tbl, u32 old_size, u32 new_size)
 +{
-+	return dev->ethtool->rss_indir_user_size;
++	u32 i;
++
++	for (i = new_size; i < old_size; i++)
++		if (tbl[i] != tbl[i % new_size])
++			return false;
++	return true;
 +}
-+EXPORT_SYMBOL(netif_is_rxfh_configured);
++
++static bool ethtool_rxfh_can_resize(const u32 *tbl, u32 old_size, u32 new_size,
++				    u32 user_size)
++{
++	if (new_size == old_size)
++		return true;
++
++	if (!user_size)
++		return true;
++
++	if (new_size < old_size) {
++		if (new_size < user_size)
++			return false;
++		if (old_size % new_size)
++			return false;
++		if (!ethtool_rxfh_is_periodic(tbl, old_size, new_size))
++			return false;
++		return true;
++	}
++
++	if (new_size % old_size)
++		return false;
++	return true;
++}
++
++/* Resize without validation; caller must have called can_resize first */
++static void ethtool_rxfh_resize(u32 *tbl, u32 old_size, u32 new_size)
++{
++	u32 i;
++
++	/* Grow: replicate existing pattern; shrink is a no-op on the data */
++	for (i = old_size; i < new_size; i++)
++		tbl[i] = tbl[i % old_size];
++}
 +
 +/**
-+ * ethtool_rxfh_indir_lost - Notify core that the RSS indirection table was lost
++ * ethtool_rxfh_indir_can_resize - Check if context 0 indir table can resize
 + * @dev: network device
++ * @tbl: indirection table
++ * @old_size: current number of entries in the table
++ * @new_size: desired number of entries
 + *
-+ * Drivers should call this when the device can no longer maintain the
-+ * user-configured indirection table, typically after a HW fault recovery
-+ * that reduced the maximum queue count. Marks the default RSS context
-+ * indirection table as unconfigured and sends an %ETHTOOL_MSG_RSS_NTF
-+ * notification.
++ * Validate that @tbl can be resized from @old_size to @new_size without
++ * data loss. Uses the user_size floor from context 0. When user_size is
++ * zero the table is not user-configured and resize always succeeds.
++ * Read-only; does not modify the table.
++ *
++ * Return: true if resize is possible, false otherwise.
 + */
-+void ethtool_rxfh_indir_lost(struct net_device *dev)
++bool ethtool_rxfh_indir_can_resize(struct net_device *dev, const u32 *tbl,
++				   u32 old_size, u32 new_size)
 +{
-+	WARN_ONCE(!rtnl_is_locked() &&
-+		  !lockdep_is_held_type(&dev->ethtool->rss_lock, -1),
-+		  "RSS context lock assertion failed\n");
-+
-+	netdev_err(dev, "device error, RSS indirection table lost\n");
-+	dev->ethtool->rss_indir_user_size = 0;
-+	ethtool_rss_notify(dev, ETHTOOL_MSG_RSS_NTF, 0);
++	return ethtool_rxfh_can_resize(tbl, old_size, new_size,
++				       dev->ethtool->rss_indir_user_size);
 +}
-+EXPORT_SYMBOL(ethtool_rxfh_indir_lost);
++EXPORT_SYMBOL(ethtool_rxfh_indir_can_resize);
++
++/**
++ * ethtool_rxfh_indir_resize - Fold or unfold context 0 indirection table
++ * @dev: network device
++ * @tbl: indirection table (must have room for max(old_size, new_size) entries)
++ * @old_size: current number of entries in the table
++ * @new_size: desired number of entries
++ *
++ * Resize the default RSS context indirection table in place. Caller
++ * must have validated with ethtool_rxfh_indir_can_resize() first.
++ */
++void ethtool_rxfh_indir_resize(struct net_device *dev, u32 *tbl,
++			       u32 old_size, u32 new_size)
++{
++	if (!dev->ethtool->rss_indir_user_size)
++		return;
++
++	ethtool_rxfh_resize(tbl, old_size, new_size);
++}
++EXPORT_SYMBOL(ethtool_rxfh_indir_resize);
++
++/**
++ * ethtool_rxfh_ctxs_can_resize - Validate resize for all RSS contexts
++ * @dev: network device
++ * @new_indir_size: new indirection table size
++ *
++ * Validate that the indirection tables of all non-default RSS contexts
++ * can be resized to @new_indir_size. Read-only; does not modify any
++ * context. Intended to be paired with ethtool_rxfh_ctxs_resize().
++ *
++ * Return: 0 if all contexts can be resized, negative errno on failure.
++ */
++int ethtool_rxfh_ctxs_can_resize(struct net_device *dev, u32 new_indir_size)
++{
++	struct ethtool_rxfh_context *ctx;
++	unsigned long context;
++	int ret = 0;
++
++	if (!dev->ethtool_ops->rxfh_indir_space ||
++	    new_indir_size > dev->ethtool_ops->rxfh_indir_space)
++		return -EINVAL;
++
++	mutex_lock(&dev->ethtool->rss_lock);
++	xa_for_each(&dev->ethtool->rss_ctx, context, ctx) {
++		u32 *indir = ethtool_rxfh_context_indir(ctx);
++
++		if (!ethtool_rxfh_can_resize(indir, ctx->indir_size,
++					     new_indir_size,
++					     ctx->indir_user_size)) {
++			ret = -EINVAL;
++			goto unlock;
++		}
++	}
++unlock:
++	mutex_unlock(&dev->ethtool->rss_lock);
++	return ret;
++}
++EXPORT_SYMBOL(ethtool_rxfh_ctxs_can_resize);
++
++/**
++ * ethtool_rxfh_ctxs_resize - Resize all RSS context indirection tables
++ * @dev: network device
++ * @new_indir_size: new indirection table size
++ *
++ * Resize the indirection table of every non-default RSS context to
++ * @new_indir_size. Caller must have validated with
++ * ethtool_rxfh_ctxs_can_resize() first. An %ETHTOOL_MSG_RSS_NTF is
++ * sent for each resized context.
++ *
++ * Notifications are sent outside the RSS lock to avoid holding the
++ * mutex during notification delivery.
++ */
++void ethtool_rxfh_ctxs_resize(struct net_device *dev, u32 new_indir_size)
++{
++	struct ethtool_rxfh_context *ctx;
++	unsigned long context;
++
++	mutex_lock(&dev->ethtool->rss_lock);
++	xa_for_each(&dev->ethtool->rss_ctx, context, ctx) {
++		ethtool_rxfh_resize(ethtool_rxfh_context_indir(ctx),
++				    ctx->indir_size, new_indir_size);
++		ctx->indir_size = new_indir_size;
++	}
++	mutex_unlock(&dev->ethtool->rss_lock);
++
++	xa_for_each(&dev->ethtool->rss_ctx, context, ctx)
++		ethtool_rss_notify(dev, ETHTOOL_MSG_RSS_NTF, context);
++}
++EXPORT_SYMBOL(ethtool_rxfh_ctxs_resize);
 +
  enum ethtool_link_medium ethtool_str_to_medium(const char *str)
  {
  	int i;
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index ff4b4780d6af..3d31a5a041e3 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -1404,9 +1404,9 @@ static noinline_for_stack int ethtool_set_rxfh_indir(struct net_device *dev,
- 
- 	/* indicate whether rxfh was set to default */
- 	if (user_size == 0)
--		dev->priv_flags &= ~IFF_RXFH_CONFIGURED;
-+		dev->ethtool->rss_indir_user_size = 0;
- 	else
--		dev->priv_flags |= IFF_RXFH_CONFIGURED;
-+		dev->ethtool->rss_indir_user_size = rxfh_dev.indir_size;
- 
- out_unlock:
- 	mutex_unlock(&dev->ethtool->rss_lock);
-@@ -1721,9 +1721,9 @@ static noinline_for_stack int ethtool_set_rxfh(struct net_device *dev,
- 	if (!rxfh_dev.rss_context) {
- 		/* indicate whether rxfh was set to default */
- 		if (rxfh.indir_size == 0)
--			dev->priv_flags &= ~IFF_RXFH_CONFIGURED;
-+			dev->ethtool->rss_indir_user_size = 0;
- 		else if (rxfh.indir_size != ETH_RXFH_INDIR_NO_CHANGE)
--			dev->priv_flags |= IFF_RXFH_CONFIGURED;
-+			dev->ethtool->rss_indir_user_size = dev_indir_size;
- 	}
- 	/* Update rss_ctx tracking */
- 	if (rxfh_dev.rss_delete) {
-@@ -1736,6 +1736,7 @@ static noinline_for_stack int ethtool_set_rxfh(struct net_device *dev,
- 			ctx->indir_configured =
- 				rxfh.indir_size &&
- 				rxfh.indir_size != ETH_RXFH_INDIR_NO_CHANGE;
-+			ctx->indir_user_size = dev_indir_size;
- 		}
- 		if (rxfh_dev.key) {
- 			memcpy(ethtool_rxfh_context_key(ctx), rxfh_dev.key,
-diff --git a/net/ethtool/rss.c b/net/ethtool/rss.c
-index da5934cceb07..e6fc6e64fb27 100644
---- a/net/ethtool/rss.c
-+++ b/net/ethtool/rss.c
-@@ -686,7 +686,7 @@ rss_set_prep_indir(struct net_device *dev, struct genl_info *info,
- 
- 	*mod |= memcmp(rxfh->indir, data->indir_table, data->indir_size);
- 
--	return 0;
-+	return user_size;
- 
- err_free:
- 	kfree(rxfh->indir);
-@@ -833,6 +833,7 @@ ethnl_rss_set(struct ethnl_req_info *req_info, struct genl_info *info)
- 	struct nlattr **tb = info->attrs;
- 	struct rss_reply_data data = {};
- 	const struct ethtool_ops *ops;
-+	u32 indir_user_size;
- 	int ret;
- 
- 	ops = dev->ethtool_ops;
-@@ -845,8 +846,9 @@ ethnl_rss_set(struct ethnl_req_info *req_info, struct genl_info *info)
- 	rxfh.rss_context = request->rss_context;
- 
- 	ret = rss_set_prep_indir(dev, info, &data, &rxfh, &indir_reset, &mod);
--	if (ret)
-+	if (ret < 0)
- 		goto exit_clean_data;
-+	indir_user_size = ret;
- 	indir_mod = !!tb[ETHTOOL_A_RSS_INDIR];
- 
- 	rxfh.hfunc = data.hfunc;
-@@ -889,12 +891,15 @@ ethnl_rss_set(struct ethnl_req_info *req_info, struct genl_info *info)
- 	if (ret)
- 		goto exit_unlock;
- 
--	if (ctx)
-+	if (ctx) {
- 		rss_set_ctx_update(ctx, tb, &data, &rxfh);
--	else if (indir_reset)
--		dev->priv_flags &= ~IFF_RXFH_CONFIGURED;
--	else if (indir_mod)
--		dev->priv_flags |= IFF_RXFH_CONFIGURED;
-+		if (indir_user_size)
-+			ctx->indir_user_size = indir_user_size;
-+	} else if (indir_reset) {
-+		dev->ethtool->rss_indir_user_size = 0;
-+	} else if (indir_mod) {
-+		dev->ethtool->rss_indir_user_size = indir_user_size;
-+	}
- 
- exit_unlock:
- 	mutex_unlock(&dev->ethtool->rss_lock);
-@@ -999,6 +1004,7 @@ int ethnl_rss_create_doit(struct sk_buff *skb, struct genl_info *info)
- 	const struct ethtool_ops *ops;
- 	struct rss_req_info req = {};
- 	struct net_device *dev;
-+	u32 indir_user_size;
- 	struct sk_buff *rsp;
- 	void *hdr;
- 	u32 limit;
-@@ -1035,8 +1041,9 @@ int ethnl_rss_create_doit(struct sk_buff *skb, struct genl_info *info)
- 		goto exit_ops;
- 
- 	ret = rss_set_prep_indir(dev, info, &data, &rxfh, &indir_dflt, &mod);
--	if (ret)
-+	if (ret < 0)
- 		goto exit_clean_data;
-+	indir_user_size = ret;
- 
- 	ethnl_update_u8(&rxfh.hfunc, tb[ETHTOOL_A_RSS_HFUNC], &mod);
- 
-@@ -1080,6 +1087,7 @@ int ethnl_rss_create_doit(struct sk_buff *skb, struct genl_info *info)
- 
- 	/* Store the config from rxfh to Xarray.. */
- 	rss_set_ctx_update(ctx, tb, &data, &rxfh);
-+	ctx->indir_user_size = indir_user_size;
- 	/* .. copy from Xarray to data. */
- 	__rss_prepare_ctx(dev, &data, ctx);
- 
 -- 
 2.53.0
 
