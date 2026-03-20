@@ -1,97 +1,97 @@
-Return-Path: <linux-rdma+bounces-18434-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18435-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YKw4KXv9vGn15AIAu9opvQ
-	(envelope-from <linux-rdma+bounces-18434-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 08:55:39 +0100
+	id 0BSNOBD/vGn15AIAu9opvQ
+	(envelope-from <linux-rdma+bounces-18435-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 09:02:24 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 662842D6DF2
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 08:55:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED032D6EFA
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 09:02:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B677C300F1A2
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 07:55:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E84FD304ADB3
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2026 08:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA39936166C;
-	Fri, 20 Mar 2026 07:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D7436E496;
+	Fri, 20 Mar 2026 08:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lj3hNhGY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R0TrdVal"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7626C3603C2;
-	Fri, 20 Mar 2026 07:55:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D5C36D51D;
+	Fri, 20 Mar 2026 08:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773993331; cv=fail; b=LPPj8/Lrt+eVHDPmp99w4DPOq5yWBExTgP8QJtspIhjs8g3HKhRDDVAnbQRECb3QyTXNQWWkVOQyjBcWjih51A/BiNL57IE6gql6Ls2NR5Vj+2V/9m4QlkNNZWqoFPKPnrdDakxNetnTdJlbTmKOxCprcYl1i1SgC4g/TeNaEDg=
+	t=1773993724; cv=fail; b=GLKPzeL/0cKD4zT1A8HCpiiBBG2X1X9fPEzhnMhoYf2/8+Eu2VW0x02rAk2HI2J7Tk9KRprwuil2UVY04sjdJqStFV6J5jmdbpjrQGOBHcGs93hxdencUueW0bUZrx+xg8v7cI+RYeoCR7c1rKEBnm0ozUnbwiMDtBR3K8KEMbg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773993331; c=relaxed/simple;
-	bh=OrGIOimVW7GXvFTRJeUgSE5RNlQv+eluFWMH3jc9Yi8=;
+	s=arc-20240116; t=1773993724; c=relaxed/simple;
+	bh=yJrrvdtujMjixLfxuC0/z5sbFsdNwXZERUEljjeS908=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=q1NnGddk929FUr07E9aDLQWC3hmlhPPnNA53sqm3aLyCnbs9a1qm5uUI9Spj2yd9EYEpCUCnBemTNvq9qi2R7V/bozVvORb6EbGQ89CDfSWmGP6PIdXDeEq9vJojOhOj2rldxOwDw5+nmMXpLJvlqb3cgGzlFavVW3VM8GDgIVI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lj3hNhGY; arc=fail smtp.client-ip=192.198.163.8
+	 Content-Type:MIME-Version; b=U6+IR5Mlxx5mDefxrUWgGScgYJJ9jPrkomUhneDWQzbUY370wINGw8HNnpEkOBFngfagoUdv3Pdv1Y1Tf36NpxrHMG5IOJs5wSp6oFFvdPeACcahzPfX/yjx8s3d1sTJb8oE0GBpwnMwNpvwC5cKIZ6mFHVzjiKzLzSKaFkB48I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R0TrdVal; arc=fail smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773993326; x=1805529326;
+  t=1773993723; x=1805529723;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=OrGIOimVW7GXvFTRJeUgSE5RNlQv+eluFWMH3jc9Yi8=;
-  b=lj3hNhGYwQcas8mFZax9klC2Wt/l25eWOk/VkhPLtuq7CAvbbx4fngTZ
-   Pmm7FY/+BAyv5PdW9Wy1EM5EE55W+s8jZi1l7EO6keAgzVkgAaTVt9B48
-   gfAnlm/oRf94dAHOBBLaNy8W9WwZFoKJXFfOibEAfZHADqsy3DvKW6qev
-   xTIB0zxEfTa0qjNph9+UZo1LUqmJ0uHcHYZxSRkLBEJmJJ29jbL3Wsksq
-   fsfFfXWccsKXCBVHq+/2OmA1l0ldJ52V1vBQry4mYgOmw6c0khFbBPDOX
-   yi02W6Tcib3POSNxOQsIjrWx8imzp0uiLJ3K1b4D0K3M+vy2YQC4OgUVr
-   g==;
-X-CSE-ConnectionGUID: 573vaflxR5qPr69hKgLtwA==
-X-CSE-MsgGUID: j1VtLXvxQUiMk0diUw+AkA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11734"; a="92648931"
+  bh=yJrrvdtujMjixLfxuC0/z5sbFsdNwXZERUEljjeS908=;
+  b=R0TrdValY3s+XbgOQDoStIh8CH5GA/GtFUSwTmoGG/K6rH0h/H02D6lB
+   HbRSlyWEdilSsQbBTdEXyEOWccfOm3lXeK5h0yM2aoHSzMssAwOxez52b
+   dIVArdRVXHD1f1OzUnc9CGWdGXCdRkX2G0IoWm3QW9KfsM6pz438sXHmg
+   scIDV2PatdkpAxfZuWr1JwZHF5mcvBTcX4iN8CU0h2VVLltM1m9rhn3bh
+   IonH+UUrCf45w+BUDtDMYyENONJ3czFwxEJH00+XWSEPXS7e0oWQ+DoH2
+   0N2oeEWIhSxWIAUbDlQZGWQ599Ys92HGhncwkS5kTtEktfW331Yh1dvJc
+   w==;
+X-CSE-ConnectionGUID: KG0spiKURNCJchb6jPIP0A==
+X-CSE-MsgGUID: oTaQeRMWQ8+bwhxsC30i7A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11734"; a="86153517"
 X-IronPort-AV: E=Sophos;i="6.23,130,1770624000"; 
-   d="scan'208";a="92648931"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2026 00:55:24 -0700
-X-CSE-ConnectionGUID: I+QFUtX8TnurMAs1oHPqug==
-X-CSE-MsgGUID: H5sP1LaiSpeSCQoIc4byeg==
+   d="scan'208";a="86153517"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2026 01:02:03 -0700
+X-CSE-ConnectionGUID: yHaSzU71QMiybFml5tRgUQ==
+X-CSE-MsgGUID: l/mIxXFjTCOLDplzC2u9ag==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,130,1770624000"; 
-   d="scan'208";a="222308746"
+   d="scan'208";a="227691148"
 Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
-  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2026 00:55:24 -0700
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2026 01:02:01 -0700
 Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
  fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Fri, 20 Mar 2026 00:55:22 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
+ 15.2.2562.37; Fri, 20 Mar 2026 01:01:59 -0700
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
  FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Fri, 20 Mar 2026 00:55:22 -0700
-Received: from BL2PR02CU003.outbound.protection.outlook.com (52.101.52.0) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
+ 15.2.2562.37 via Frontend Transport; Fri, 20 Mar 2026 01:01:59 -0700
+Received: from CY3PR05CU001.outbound.protection.outlook.com (40.93.201.21) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Fri, 20 Mar 2026 00:55:21 -0700
+ 15.2.2562.37; Fri, 20 Mar 2026 01:01:58 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=N/XhzxkVCfkXFD7+JmkWptVOi7xaM745upgesu5wJS0hW4XzlqYhZWAMA/mf9Xgafrj6SNWBOMSc7j0eydKl7Bqs85u+09vNFUOU6VPOC7qPupeJ+ixRVuvtsjU6oWr1xWiGs3EoInS3HMeAJsTKbVFzXQ7nKXa7w/wvSk2EA/Z+Eq53fey7piNAgTJAz83zJBdYBeHDTDrW8ktSrMhzfyp3yrffGC72Ov8bcBJcbkXwGJ5/+TvXIaZdhRg8s27HvM+zbAHuVGPHuzSH6vrxqNUZptstZfIAkq9YmWjJmwhLsrboeqdGQFoo5QiEjG3V06CgJYS2aeV+5zIffzFD9g==
+ b=l5X2+0cVHXSasrdc6UxfMDtwAyewmgtLvRL8WbmjJFiprnoh3kWiLbxqL+IW+eBkCnDHQSr3kGokV9A4apMkcXSWZ35vvSEPx8bTkqpKUPRlfZns9h6NQXG9BC+6rN6hgjKZRzMOQEoDBd/tTva90FIKoWdxd8Si4ndjzcTsRx0TWGTzMgKtuHH2O82QFAwHfNhyfD3wiriv96QGiMnj0+T04UtQTTD05U8z4PtGggw8ECRejHvVTdiyfEbHaMtCtuzxEHbZVJqt5zO9zLDW8xVghHsra/+1xGrP4NFeaTRVo2yvBghccP7Ymwr+pH+DGbE5Uj0ERGJ54CxXo5KyLw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bEZpGfNl+sAzWUfz2Boy6I0GjZK4Adin0PKLxSbQoPM=;
- b=d+PhgwoU2UInVDXx8cpVCduUHLkPR1lxmOZw3a+rqVDuqvwMXf70VLwK0vIonXmKMIrszQE4X+ZaqJIIsXJ6VCqCvtI1mk6AwaTMOziMT9/2dPx2mx1DAqARQ9eECKNnc5r/8lqUPTznLjG9OPuT9C0LCiueLWYScZlQhpnRiiRn87Z44ISUOSqvCKYW2xcEZx3t9tYf068orMgHtVg/ZIYBTMKdAAbUDMrn2940yN0EIyBc3JjL1JFeI7/H2qmGu8xWvC+FXurNcSF2hJGjZFm5+dR8Spc+OB8HC3UQ8tFDgjYnZSkRdwQVr7RlGM24H8TuXWGWmKsCOsrZrhJKKQ==
+ bh=x2gnX6RWebOrSa0SZ/zsQbtg1142EymNvBnc99ndoc0=;
+ b=dKQGU3937UxVjsXshN3Z5zDcLZyNiEzDXjee4D/EwNzgr43VlwdwqMJk8NlkeUSvy79EqRCG1ny6JNWcWebucas3rMhgXwDpGuvR8/aGY9cxK+m0Jhq8/05u3JGbARFRrJlmuBWpqx2UdV6dPRRtJNHXXMx5hUiPkjUEN+yw/V5wFjSLUTycFxLNKZQLp0GhHjDnSFmTcXIv1SSjJh6C+vJuiiLbA55w33pB9ydx7YCUK8CWEQzu6zjySegdRg9Qikhs2vSixmdjH/OaSeB4zI5A0NkqiBP00lzkn4iK2HpTwzr+RXWhSLYO2tSqfsGeiY9P6lk8jJh7KGQzYtQ+uA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Received: from IA3PR11MB8986.namprd11.prod.outlook.com (2603:10b6:208:577::21)
- by CH3PR11MB7938.namprd11.prod.outlook.com (2603:10b6:610:12f::19) with
+ by DS7PR11MB8807.namprd11.prod.outlook.com (2603:10b6:8:255::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9745.9; Fri, 20 Mar
- 2026 07:55:13 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.19; Fri, 20 Mar
+ 2026 08:01:55 +0000
 Received: from IA3PR11MB8986.namprd11.prod.outlook.com
  ([fe80::e6f0:6afb:6ef9:ab5c]) by IA3PR11MB8986.namprd11.prod.outlook.com
  ([fe80::e6f0:6afb:6ef9:ab5c%5]) with mapi id 15.20.9723.006; Fri, 20 Mar 2026
- 07:55:13 +0000
+ 08:01:55 +0000
 From: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>
 To: Stanislav Fomichev <sdf@fomichev.me>, "netdev@vger.kernel.org"
 	<netdev@vger.kernel.org>
@@ -121,16 +121,16 @@ CC: "davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
 	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
 	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
 	"leon@kernel.org" <leon@kernel.org>
-Subject: RE: [PATCH net-next v3 12/13] net: warn ops-locked drivers still
- using ndo_set_rx_mode
-Thread-Topic: [PATCH net-next v3 12/13] net: warn ops-locked drivers still
- using ndo_set_rx_mode
-Thread-Index: AQHcuAhxLxV0+I1+hk+gEk6gdhgWJrW3DaGg
-Date: Fri, 20 Mar 2026 07:55:13 +0000
-Message-ID: <IA3PR11MB8986C8428A12288BDB1CBD3DE54CA@IA3PR11MB8986.namprd11.prod.outlook.com>
+Subject: RE: [PATCH net-next v3 04/13] net: move promiscuity handling into
+ dev_rx_mode_work
+Thread-Topic: [PATCH net-next v3 04/13] net: move promiscuity handling into
+ dev_rx_mode_work
+Thread-Index: AQHcuAhxDQko5K947EeqgLgFt+jJALW3Dr9Q
+Date: Fri, 20 Mar 2026 08:01:55 +0000
+Message-ID: <IA3PR11MB89866C27B28AE7D7D807F37EE54CA@IA3PR11MB8986.namprd11.prod.outlook.com>
 References: <20260320012501.2033548-1-sdf@fomichev.me>
- <20260320012501.2033548-13-sdf@fomichev.me>
-In-Reply-To: <20260320012501.2033548-13-sdf@fomichev.me>
+ <20260320012501.2033548-5-sdf@fomichev.me>
+In-Reply-To: <20260320012501.2033548-5-sdf@fomichev.me>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach:
@@ -138,44 +138,44 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA3PR11MB8986:EE_|CH3PR11MB7938:EE_
-x-ms-office365-filtering-correlation-id: b3bb27e0-026e-41cf-ea78-08de8656048d
+x-ms-traffictypediagnostic: IA3PR11MB8986:EE_|DS7PR11MB8807:EE_
+x-ms-office365-filtering-correlation-id: eaec0c20-3b60-4798-1834-08de8656f448
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024|7053199007|22082099003|56012099003|18002099003|38070700021;
-x-microsoft-antispam-message-info: EHaKwHKOT1FRn0OCYN1mBVOCxeRCmlLU+aiiAArX5759zK1G3UuvTJvmszvhIytutfqAL3u3LNAUUTdi1tnYBNFS5EiiqQjdobqNBRJKxJd0vygRjL9TE/OFQjw+jWrnIAH7kNbLPwT7xZnLY+44NLK8EUpM490gBdy4J8MID5oVZLf4ALTjMXhSU311Y3pNRCbZLthKs1J3eApM+KbgE27+IbktHoYImoZXfij/11KgfLgpKtdZ1wuzz9JPFTVoviiOqMaRojVfST790wY1MV0lIRcb9odf1UstYqfDialNFcqyZc71oPNDZ5i8p9fL5SV4R40vRcpfkb+qL7VtdIGM7E4dBG+yIhzLqQ1Jt9Ozd+niv+fvpXIHGmClKrfVabhtQ1JtXYO488/rhLJg6HejLiD39+57g/WJ5vhGXx2w0YAnz1or3nOnHvQcBLiyuPcMnZMoygfhyc/JqCP1yRs/pkrUOBFUHyPeFNSrzrn9Py70g4mjDsv1JtJ5t6EKDtKHazBiAFTudyeraqsTcH0XXtxIMhqOtSstDPrvN9YhgxsQ5nuulnDETs9UVLmLl4KA6/LUnAdNVTcQW6z3s0K5e9G7Yjusf8uWqiVJpG4NbmD4Z6LnFEkoiNiAFUXhFb19/Hf1rebZ88mbJ58LgZX9CTdJW7z9QRAmE3xspAR1xttCAwteE9Ay8SSjNmsI+gPXMAnNs1xYs+ZD9PMrrFM7skabrqOcaOIQfTarUfrOPf3BsW2MDfN8Hh5/0BtjH+BirqeDVc15JBZXapw7svFESrjHnn/lno1LSQEEBBo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA3PR11MB8986.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(7053199007)(22082099003)(56012099003)(18002099003)(38070700021);DIR:OUT;SFP:1101;
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024|56012099003|18002099003|22082099003|38070700021|7053199007;
+x-microsoft-antispam-message-info: pBSQftYDbJiuGPANwjh+srtUrqs0HHatho98JPK80gk+LFfcy+mcGdU5WGXr3WweLKBTX8TcZ4sN0VANRssUPJGTEyyZJ1Peu6Rr2E44PquVQOKzc8ZgqA4COBZ+W/Vo6ieT1SWlifCu88D7w/fEk1bO3zEk2E34kZlXm/tDQHzn4U1NFnUidGhLf8HU+IgLEhkmYrZlhOyukugQvl/6KuCzjPUgu6/vu0hpTGb5gtB9uiW4ma7AQEieAmz4QeuTqrDDjlIZvHowHikxIU+r/SmktZCQQiGp4MLP4gREpQCueaEd31PZ75wgcuwZuf3GWtdopR0pdqK01++J0bAnWCNJlQ2O+mobbnH6MYaKtNB0IxaAIwQa7JwSp0tnrJ9ofUDjIXy/PBaiwblFAr6mchynmP1UFj8n030Q50aLjJJHXjaWL03Cb5WRkJlLhR2G5j7Iif25IDjpzHazBc4qg/IDFh9K656vCjxdJD8JXs/8iv58B4tnlSXgSTNsyJENCsB1Rh4dGvIqyUpc7HzTXUazlVAxhuXBHwB2PLCgJX9EFxSpZv32dKFlWZwTDkQyt5sHxslerWCRCwHeOTjxaolTolO3IOKbsp4hkZZqHBKtcQdIcH6mbF18QECDQD9262QKQAynV6NYmBCudcNmyJWjvis1LDsLh38OAlm+rZuaYS+trEzxcwH2jJ02FXvJAUmBrhSkHRrBLcOed325y81PuNb2Uzh3sFWLxJHdeTBDXbVhIjx+CoVbzo7rMpO20k856ja82jjJv00EL0uWDYtTA9RHixIKfGBH8kQvRVA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA3PR11MB8986.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(56012099003)(18002099003)(22082099003)(38070700021)(7053199007);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?djeMXjqSGyiTv1HC3j6HnopNhJzPaOPayb0M8Mqfq/xP3Y2VgBq28NTeMOp2?=
- =?us-ascii?Q?BU6h1BdYTZaElBMoxnlv+dEZ67njnMZDFKfKE48Yej7GPgFXfoTNMoqjBYlV?=
- =?us-ascii?Q?4OYwfVpXFkNOvJxQ0CXRkeQKdaoPL10sBcFLONabsc7C6y5+qbr8Ak6XitWe?=
- =?us-ascii?Q?JiLTthHJZdIQtpMV96WApDy9O6xSN2kTh3ICIFE3VVgMappwXCpXVqMzxtLM?=
- =?us-ascii?Q?4DkPHO41/Pe1OBBGqh+Hc1j2UElHKD8HJA83FKqFzHktJQjBsRAGxk42oNKn?=
- =?us-ascii?Q?swqJPE8EppEMQUzynfTLN8S0UvnKprEfRmR5BKYK1GfQuk5Q2AH0VPuT9k4Z?=
- =?us-ascii?Q?LRw2M30/druphRctePSSxpjPTrvoCX/zRLkBLp/z80F+Lvl2P94cZ5o6lLEr?=
- =?us-ascii?Q?j6eqtLSWDqaywYLTtwXeO4OuY097Lr3Wjup8YO/t2R6ymnxTKbTM2ulvpK2e?=
- =?us-ascii?Q?PjsjP1dbYMJDZEFCKpdoWSw25jGJDxC02pBHbnHAvyLMCOCp0jbST3267yF1?=
- =?us-ascii?Q?iPk82ItQnS3UfkkTxkPBhuU8JC8uZKZ7Op14jbGx30K6kx9oxqXDtk8vt5f0?=
- =?us-ascii?Q?yyhY6BMHkhm4HfBJI5uuFZi4oxp74Uw6mdl1KHuapndBRh1LJ8bs7v5PZn03?=
- =?us-ascii?Q?QCQNCBY8eF/vl+LcuGvcsli08eofZrApOy1QBbp+OQm4dsbfyS6Za9PNHRza?=
- =?us-ascii?Q?GpXRp1ksZoXkH36oTnY6HC6Xx8xEbg5V0LttSTYLwqNd6uhvV00aL84cXLWg?=
- =?us-ascii?Q?wqcc5V6laxm+EyTytiqRIdD019WCEfkakPwNUkvNUbjBCQu5x0OnTMWmwK8O?=
- =?us-ascii?Q?NuEfG80+SElEY3bgS3MgO7hND49poAmoy4TXaRUcjE+1zirmtvy6LDCBnNjS?=
- =?us-ascii?Q?sM0i/Z+w4d7MIS+fddTdJheSbJ4K88drkEqWqUBw5dZFMRP+jkhHIL4NIfEm?=
- =?us-ascii?Q?7JddhBLDKwIiQ5H/mgwVpD1IiumH1Zltu7G3nkMGzdhfjM2gj6NctJFSU+AQ?=
- =?us-ascii?Q?UVXfdxm+knOOeOnJQh6lIRTq6Qg4ltuv9KYLVSRQqLzSDNMssnNdaKynnj2O?=
- =?us-ascii?Q?n+7ztZ5bZHo47nqXlxx3xetUp7MFgKx8tUekvU+MvbBrVA5zL339yGjsZHG4?=
- =?us-ascii?Q?QMvoMjTdp/+ullGxF5oxJvLOhzScrJRi1LKbRktqjOli2Lz5wvtdlQkVlDGw?=
- =?us-ascii?Q?XRh+H9JI4wUmeutjFa4R4WYAUdAhyf9KWRC46/m7obdrd0fF5pJBbPKKILjT?=
- =?us-ascii?Q?yn5ZrU+WpEPufuvWETMm5RDE+3A+zE0et6y1LF48NTlXBUfmgxlGi0AKFUml?=
- =?us-ascii?Q?r2kiyCZMlnibTRU4a7/OKJlf5owdhneq0oPGCkOsNuX+UkVzoyJZeN/d/uDA?=
- =?us-ascii?Q?TMkso4sKobEgs77r7hiaimEL7dxpQq6nzPXGac0ZCe9c4qD2/SEZPu5rujI3?=
- =?us-ascii?Q?+8I9IUQtJf8MvpRFME7KAOjUNrkFuLMxG/WW4/ussS3LjGebiVH996AyJmML?=
- =?us-ascii?Q?BseyUvDN1XPoGKxvdbseKo1Oz+uHtwcewUFU6JCvRPntisQdm/lqZMaDAVft?=
- =?us-ascii?Q?5x4SJ8Vhr7kaeBnVG60I/RIRstb9++yqb1fn2tgItzjRNEBo/adV0Afp8BIL?=
- =?us-ascii?Q?VoKHxp9YC/peFVrWtTbiQDtSysgc8z3KVlfZ/zU3JRsEr6CAL2IfgHMdQMi/?=
- =?us-ascii?Q?49cSgfKjMBZgq6n3+zrfMhyZrdnqtsoDYb5MiWCDVUUJilCbmEzYg8o8UPgs?=
- =?us-ascii?Q?JgrHLKquCMPoUIeGQFp+lvLqL7jxg1g=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VFRvvyhXLo69/UTmpOC6WpjCliHLxKVnk/xck7VZJ10a7Mbav35EkgZWCoF0?=
+ =?us-ascii?Q?H+RP41IWnq1GCqAzU1tlUPe1/Hc0x9UznDZgPOyEFLqJ0/5Puh1It7lJh5Bv?=
+ =?us-ascii?Q?6j0bpHHYimM5K7J2+IT4JTrqdsdYrxVEr/8PRrUR6INYuLAi85kZcvIJ0T3U?=
+ =?us-ascii?Q?q8brV+7TsRP0BEBGL1abi0MPYnDKvs6QwuBDxKQZyS4dYTfjah718OwWrs31?=
+ =?us-ascii?Q?sVGwN4dvaXPVhg1AWcpD7Aec6tB/6KSErEKa0/rvHpq+WCFYLQGFMIphSEWs?=
+ =?us-ascii?Q?PJSr7bw66Edo5P1NF3xovXK0DflhWZQOPJfL11BuxnJE6ZELXe95/BOCJ/vY?=
+ =?us-ascii?Q?1ujPZQyKhXkEEpIYKLvSeYGO+XblGhceW5kl/n0fiuM/2tT0569YLt6qPUpt?=
+ =?us-ascii?Q?KOemF9mN7eaNJ2UVYe5ji8irdAqldkQPWa0zgZG/ny2YbAZ1l8to7E88NzYR?=
+ =?us-ascii?Q?Dr1vcDizGjX/qlYbB7ATa4xQIRDSCH6iCTwo/rjJ40m1MfHcJOUAhM5mvvOa?=
+ =?us-ascii?Q?+prxEUa59a0m7dOMWJ+vbzcbNEHnFK5Ub81/xz0/Vzcyvvx6gafDlAx01UNu?=
+ =?us-ascii?Q?HdkwxevQSdy+ypE8qCGmDZe6p8swNaOG2jIPlJEdKGWkUAinrT6E061HYqcG?=
+ =?us-ascii?Q?ViEJSAKQokql6KwmZsL7Q5z6zveqbB0eSuqgxLr0OHqddPaxarF/fKixPXC7?=
+ =?us-ascii?Q?N+l+VXOW4J91RRX29l4ql842N/h1TXQ2TTiVpGj3Z1BLXFDLMHkMPm76c/2n?=
+ =?us-ascii?Q?MM4GVYjTV1YrmXT7cplDbyhjmSTwRn+X3gb6CXelAHLOtLn7CXW7WnETuZXz?=
+ =?us-ascii?Q?qIoDF3BVuO7LURB4HFLwrfvuALkS76qbp55S9CkV0Hqsyp0iCCv8+IT29+7h?=
+ =?us-ascii?Q?uO/al1eFSssIbNxzyHK+kO5YdWEn6vhpRQU/Z41Piu8NYaRyfKHaj+m9rslj?=
+ =?us-ascii?Q?Uc3XYDPeFY2zMBqehKAarjvbRJ9zIZhFzeNgfQdOOGqdIBnhRrbWh6VotrSC?=
+ =?us-ascii?Q?s/Wo2/rSRhKYutBsiSKBJ0BpT7BY0ZgbtPyLZMouYOSEZFHI7z3w9H/W/PNK?=
+ =?us-ascii?Q?+esH3LJlXlaf2tgpXYMbO9NHmnOWl0JGmNDeJQqH5HrGO3cFEnm/H4EzxBow?=
+ =?us-ascii?Q?ngt7HB5uXwFxXn7e/PogAoYnukM6ZtMxN5Uo7k3E314DuqI8B9aUyOJGccC7?=
+ =?us-ascii?Q?rmXW49QW7Kq5xypKFCFAuO3qeFLk6NAzzbD6CpSeYW+gAloQtWpjdWuZfbN1?=
+ =?us-ascii?Q?SKSwkzp/2+EIIR1GupfQ2N/YvJQ4HybSSW1oZGt39E3/nUBjM6dlvyc/gEnT?=
+ =?us-ascii?Q?ov+BiA6ydaMDzhnQyxqUMNq/bKXXsA9fiPv7c6zcZxtO0BkW6bulgtZWyQ/8?=
+ =?us-ascii?Q?ZKfWDV/WdkoQxuyw+TMVVL+uUK7wQ9sqo5lLTg2goCwKyK06DUmHwfHFp3j9?=
+ =?us-ascii?Q?DMdEGc885ECtBYvjVTFKr19H6PJfCZ11nJxb+vaU0/kGis/qrCYyyijjrsHM?=
+ =?us-ascii?Q?C+APn88WeHauUuNCCwmCtHD3lrvXZgjXWVH76I2F5yW5ySHDLaAnUior0Hfv?=
+ =?us-ascii?Q?xjwebWF3NW+HPLClqrBEN7rFKoo9cweQsDux76MLr0fqEsfATwgcr1dJBB7z?=
+ =?us-ascii?Q?Ac1rM3rUCMcEvDD7/eWCB18XLlq4kzrNDYi7IywwOE8C81yYerYH7I7yB2X1?=
+ =?us-ascii?Q?D4W8olwKXjOP7jXOxKS81ni1NEtlqzwyHxYs9kJ3u+HiLRn3STgjOlT679fd?=
+ =?us-ascii?Q?zXtvxIOa4qG3GEH5nN7sNPH84W3tg3U=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -184,47 +184,46 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Exchange-RoutingPolicyChecked: lH/FEMT0osjQAyaOU85yvhrC8T8faHIJacfgIufrKgfzCM4TznYRHhcmrJnjLoobW2k2zJonWXNpCaSplUyrpwyGxFyXd9yh9SkogBiDJD8JREBYuRjBzKhIXIbGHyKGkQMANUmWxfwRba3aSxu0Rru/aV5wLs7W0BQZtdAua2ujYjv905XYfLYhcKYgegFdNAhZqOoCw5Vo1193hTMoH8F9cOVsWxb1WMzijQ9WQWkL4pn3AVxG0FPGdGbrD2jcPcaqMJh70wKdLuRF9gC5/ebyvDzKIrbPoYVxHYoJ+RzMbRLaalehz2a0jvAzO93CUW4ajA1zxxTi3NoIHhkv+g==
+X-Exchange-RoutingPolicyChecked: lurZaLnFZi+4cd63sAWoJkvDyxD9r4UZ/U/+W3n3ZkdduHJfbIAEh6+EcQmrmJF+3uIOaodXikCn6EP8KEHWaXvISq5s3k97j+/0WjJ98f0x1BagcHPnzVx2cRHGQTKyEsRjrg/itooY4vkP902bKWQzh7q7NXYTvYOqU7abuwLDxoDst1UcKpIYZBcnz5vXkyKaEPTYHsgZ+Mu1QYg8Vc2lj0Rk8O6uRlvfhhJwk2UPubXE/BJrh4u8JqWGNqzJDtrpxZtsUcmB5/z9rnB0A0NeJvjGaIHOkjmOPPmZYz/6M6pdRSeg8Xzw2jyAOlelAKYbryVHGQyo8zP1gYVhJg==
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: IA3PR11MB8986.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3bb27e0-026e-41cf-ea78-08de8656048d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2026 07:55:13.4716
+X-MS-Exchange-CrossTenant-Network-Message-Id: eaec0c20-3b60-4798-1834-08de8656f448
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2026 08:01:55.6585
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +34IpHdGtrKYDoBLlwKTt8vs8VrCRn5fIAM9QFxXY7i42r7yTW4ExnhaSLrhCD2L4KLG9V69FSFQgvffiBg1re+Gz2YW+0d8l8u64NIz0CU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7938
+X-MS-Exchange-CrossTenant-userprincipalname: 1rF7shT+rLAZGwxId28w0IyL/SaikvhFxrYssXm1XP6v3NrOCtEqUGOKJ4UuvmmDXkLDIbRRFLaC3V4gYbSN1t7VNR94WxQ5W0DmuXldF8c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB8807
 X-OriginatorOrg: intel.com
 X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_TWELVE(0.00)[36];
+	TAGGED_FROM(0.00)[bounces-18435-lists,linux-rdma=lfdr.de];
 	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18434-lists,linux-rdma=lfdr.de];
 	FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,lwn.net,linuxfoundation.org,lunn.ch,broadcom.com,intel.com,nvidia.com,fb.com,meta.com,sipsolutions.net,queasysnail.net,gmail.com,vger.kernel.org,lists.osuosl.org];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[aleksandr.loktionov@intel.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.943];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.951];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[10]
-X-Rspamd-Queue-Id: 662842D6DF2
+X-Rspamd-Queue-Id: 8ED032D6EFA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -250,56 +249,120 @@ X-Rspamd-Server: lfdr
 > lan@lists.osuosl.org; linux-rdma@vger.kernel.org; linux-
 > wireless@vger.kernel.org; linux-kselftest@vger.kernel.org;
 > leon@kernel.org
-> Subject: [PATCH net-next v3 12/13] net: warn ops-locked drivers still
-> using ndo_set_rx_mode
+> Subject: [PATCH net-next v3 04/13] net: move promiscuity handling into
+> dev_rx_mode_work
 >=20
-> Now that all in-tree ops-locked drivers have been converted to
-> ndo_set_rx_mode_async, add a warning in register_netdevice to catch
-> any remaining or newly added drivers that use ndo_set_rx_mode with ops
-> locking. This ensures future driver authors are guided toward the
-> async path.
+> Move unicast promiscuity tracking into dev_rx_mode_work so it runs
+> under netdev_ops_lock instead of under the addr_lock spinlock. This is
+> required because __dev_set_promiscuity calls dev_change_rx_flags and
+> __dev_notify_flags, both of which may need to sleep.
 >=20
-> Also route ops-locked devices through dev_rx_mode_work even if they
-> lack rx_mode NDOs, to ensure netdev_ops_assert_locked() does not fire
-> on the legacy path where only RTNL is held.
+> Change ASSERT_RTNL() to netdev_ops_assert_locked() in
+> __dev_set_promiscuity, netif_set_allmulti and __dev_change_flags since
+> these are now called from the work queue under the ops lock.
 >=20
+> Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 > Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
 > ---
->  net/core/dev.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  Documentation/networking/netdevices.rst |  4 ++
+>  net/core/dev.c                          | 79 +++++++++++++++++-------
+> -
+>  2 files changed, 57 insertions(+), 26 deletions(-)
 >=20
-> diff --git a/net/core/dev.c b/net/core/dev.c index
-> fc5c9b14faa0..f38ab254708b 100644
+> diff --git a/Documentation/networking/netdevices.rst
+> b/Documentation/networking/netdevices.rst
+> index dc83d78d3b27..5cdaa1a3dcc8 100644
+> --- a/Documentation/networking/netdevices.rst
+> +++ b/Documentation/networking/netdevices.rst
+> @@ -298,6 +298,10 @@ struct net_device synchronization rules
+>  	Notes: Sleepable version of ndo_set_rx_mode. Receives snapshots
+>  	of the unicast and multicast address lists.
+>=20
+> +ndo_change_rx_flags:
+> +	Synchronization: rtnl_lock() semaphore. In addition, netdev
+> instance
+> +	lock if the driver implements queue management or shaper API.
+> +
+>  ndo_setup_tc:
+>  	``TC_SETUP_BLOCK`` and ``TC_SETUP_FT`` are running under NFT
+> locks
+>  	(i.e. no ``rtnl_lock`` and no device instance lock). The rest
+> of diff --git a/net/core/dev.c b/net/core/dev.c index
+> fedc423306fc..fc5c9b14faa0 100644
 > --- a/net/core/dev.c
 > +++ b/net/core/dev.c
-> @@ -9779,7 +9779,8 @@ void __dev_set_rx_mode(struct net_device *dev)
->  	if (!netif_up_and_present(dev))
->  		return;
+> @@ -9574,7 +9574,7 @@ static int __dev_set_promiscuity(struct
+> net_device *dev, int inc, bool notify)
+>  	kuid_t uid;
+>  	kgid_t gid;
 >=20
-> -	if (ops->ndo_set_rx_mode_async || ops->ndo_change_rx_flags) {
-> +	if (ops->ndo_set_rx_mode_async || ops->ndo_change_rx_flags ||
-> +	    netdev_need_ops_lock(dev)) {
->  		queue_work(rx_mode_wq, &dev->rx_mode_work);
->  		return;
->  	}
-> @@ -11471,6 +11472,11 @@ int register_netdevice(struct net_device
-> *dev)
->  		goto err_uninit;
->  	}
+> -	ASSERT_RTNL();
+> +	netdev_ops_assert_locked(dev);
+Can you explain why do you add new hard precondition of ops lock must be he=
+ld?
+
+
 >=20
-> +	if (netdev_need_ops_lock(dev) &&
-> +	    dev->netdev_ops->ndo_set_rx_mode &&
-> +	    !dev->netdev_ops->ndo_set_rx_mode_async)
-> +		netdev_WARN(dev, "ops-locked drivers should use
-> +ndo_set_rx_mode_async\n");
+>  	promiscuity =3D dev->promiscuity + inc;
+>  	if (promiscuity =3D=3D 0) {
+> @@ -9610,16 +9610,8 @@ static int __dev_set_promiscuity(struct
+> net_device *dev, int inc, bool notify)
+>=20
+>  		dev_change_rx_flags(dev, IFF_PROMISC);
+>  	}
+
+...
+
+>  	__hw_addr_init(&uc_snap);
+> @@ -9704,16 +9720,29 @@ static void dev_rx_mode_work(struct
+> work_struct *work)
+>  		if (!err)
+>  			err =3D __hw_addr_list_snapshot(&mc_ref, &dev->mc,
+>  						      dev->addr_len);
+> -		netif_addr_unlock_bh(dev);
+>=20
+>  		if (err) {
+>  			netdev_WARN(dev, "failed to sync uc/mc
+> addresses\n");
+>  			__hw_addr_flush(&uc_snap);
+>  			__hw_addr_flush(&uc_ref);
+>  			__hw_addr_flush(&mc_snap);
+> +			netif_addr_unlock_bh(dev);
+>  			goto out;
+>  		}
+>=20
+> +		promisc_inc =3D dev_uc_promisc_update(dev);
 > +
->  	ret =3D netdev_do_alloc_pcpu_stats(dev);
->  	if (ret)
->  		goto err_uninit;
+> +		netif_addr_unlock_bh(dev);
+> +	} else {
+> +		netif_addr_lock_bh(dev);
+> +		promisc_inc =3D dev_uc_promisc_update(dev);
+> +		netif_addr_unlock_bh(dev);
+> +	}
+> +
+> +	if (promisc_inc)
+> +		__dev_set_promiscuity(dev, promisc_inc, false);
+But it's being called here without any netdev_lock_ops(dev) ?
+
+> +
+> +	if (ops->ndo_set_rx_mode_async) {
+>  		ops->ndo_set_rx_mode_async(dev, &uc_snap, &mc_snap);
+>=20
+>  		netif_addr_lock_bh(dev);
+> @@ -9722,6 +9751,10 @@ static void dev_rx_mode_work(struct work_struct
+> *work)
+>  		__hw_addr_list_reconcile(&dev->mc, &mc_snap,
+>  					 &mc_ref, dev->addr_len);
+>  		netif_addr_unlock_bh(dev);
+> +	} else if (ops->ndo_set_rx_mode) {
+> +		netif_addr_lock_bh(dev);
+> +		ops->ndo_set_rx_mode(dev);
+> +		netif_addr_unlock_bh(dev);
+>  	}
+
+...
+
 > --
 > 2.53.0
-
-
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 
 
