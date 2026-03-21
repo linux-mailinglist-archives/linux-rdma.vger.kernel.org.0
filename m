@@ -1,125 +1,120 @@
-Return-Path: <linux-rdma+bounces-18495-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18496-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SCHiIsF8vmm8QwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-18495-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 12:10:57 +0100
+	id SABhLtemvmnxVgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-18496-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 15:10:31 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08E812E4F95
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 12:10:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E4DB2E5B0D
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 15:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4C54630B815F
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 11:01:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CD301300E3B6
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 14:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B703203A0;
-	Sat, 21 Mar 2026 11:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5D93019A4;
+	Sat, 21 Mar 2026 14:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SESjOqJL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DvRvlDt6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7742C0294
-	for <linux-rdma@vger.kernel.org>; Sat, 21 Mar 2026 11:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91ED40DFAA
+	for <linux-rdma@vger.kernel.org>; Sat, 21 Mar 2026 14:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774090880; cv=none; b=Em/ARbhBaljz4acdkkzKQS2ahQHVHFMIAtAfQgl9e8+gDUFght91YG3KUNK/lyZYNHyOz5fw9RPDmI/ATVtpogfw1WdMvGQKXeY+aw1yJ2I8Nu+0+4ZwCtX9DYCFcWUTJUWI1rDeps2rMfSsF/OApSXYABbJ9nUIlWopbqN5Qbg=
+	t=1774102226; cv=none; b=Epn0Jy6TrebhpSAdYsGLURB//nEnlHR4sUMHCX40cqrX/D41E9YZIvHu2umkcw/B1YxO1FvYzI0hyNtXVwNkfeRX6e+2YP0Zfs1+D7gp8VeTW+orTzkMAuB7hnGUSKk+KG65Xu/ZzvWKbDUQvAz9zdOpD+yz9SFzJTn/JAsk90A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774090880; c=relaxed/simple;
-	bh=wI1lo587N+kBtMlBBpEHIC8Jqqay840/qX04LqG1Aro=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=N88BXLvQLfs7Qjf3kXv3opJ6WBztJX4Z9PATaCEiu3FFXkVDJCIBOWOWSH7pjK36v8rXg1uxqS/obzOjDsRB3zRc0MDbm3yBOwwlEzNtaubDlmHd3BpmQygIK5ou+KuA2GAtj2jcS/96c1QQlNq2ujwssLkxTMI+0rzQAPLehTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SESjOqJL; arc=none smtp.client-ip=192.198.163.7
+	s=arc-20240116; t=1774102226; c=relaxed/simple;
+	bh=J1tGROWVw+jVhIakDMx8FFYZGBP9ij9umY8ruoyfqNs=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=MxxZt50AsIqDeNtRNprk1NwKxhV73RoEnxqXwkrMBOfbv44h/WBw/dgTtnxsFsKuNxmsIyFEQwDRwa66fUqiQ4ZopwaQhfT6iBeGmto8Uqv57rsLv6LOsW63S4NTKq4gGKtKBN0QMVj/aL8As//w5poE9mCzagBEDXx9CGOXzEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DvRvlDt6; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774090878; x=1805626878;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=wI1lo587N+kBtMlBBpEHIC8Jqqay840/qX04LqG1Aro=;
-  b=SESjOqJL7vWIKaX47Lddo+mrHZyJCbQ+oxqWCSBhCIFnNProQENKSHoj
-   CZtKTzuWyEzv4PVD0WotpaOWpiGlx+hQN3mLzPxaEnuHZQVmg1wCfIEkv
-   HYJPSRnqzDb+dPc7/UCZx3iavcMBto50q8rBUgzk8yjXx0JPu7vQarF94
-   xKiG0Q7S8kT9knK1gf2jCvnPa9cHB1EqV814lSiUMhl6P+7HskfQqIOSE
-   zxn/fOwH1w/rRRnRgsjK056seJuIf6s6KwhML7OJ1wPWU38/zdBOHD/IB
-   7HDAeHg4ekId0WGY1ZmTi81G5Qe08zD1LXE4HEcjxemGaIbS7iVhtdNaD
-   Q==;
-X-CSE-ConnectionGUID: 5hAmhca+Qa+r71fZQ0+IAA==
-X-CSE-MsgGUID: zPdIGeg9RemAgFMyw/Unxg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11735"; a="100617369"
+  t=1774102224; x=1805638224;
+  h=date:from:to:cc:subject:message-id;
+  bh=J1tGROWVw+jVhIakDMx8FFYZGBP9ij9umY8ruoyfqNs=;
+  b=DvRvlDt6i6bheXEVOUxMPWjURa2+zRY9CbxKPykZCyKwMXUK9rb7imQh
+   eljxjWt9vmQ9lyV/KsFFVZg9vrE/CO5DBpWdgZlR0e4RBnS9mg9Ml9eYL
+   zzoOaQaNOXHmppaWpLZHFWPAUo0B4246o7kVkfkFuM+WU1CO6TzQw8xwf
+   kDGtNkfB3/nBuxHku+88BecnvbrgzS3s+6QR1aBhhrZWKCH1eiCjpg5M1
+   X76cDFUYXkGQ/9DTaWM9cDrAo6iCwwo2Gvnd9nuh6cED1lIxBKQ3Es148
+   +IwG+KUjVZU8wIGbXhEKYNvDbBCBl/X6jNB+MqIbgTzHeU8pdyCvQ+b5q
+   A==;
+X-CSE-ConnectionGUID: Cf2cS5BQTWKEwrU7FZZ7gw==
+X-CSE-MsgGUID: or4qunn3TH2bgS7YHjUEcA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11736"; a="75364182"
 X-IronPort-AV: E=Sophos;i="6.23,133,1770624000"; 
-   d="scan'208";a="100617369"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2026 04:01:18 -0700
-X-CSE-ConnectionGUID: +MRHzoC/TqeIHLHAOJU83A==
-X-CSE-MsgGUID: GVqaPbzHSn6uJsI4qne96w==
+   d="scan'208";a="75364182"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2026 07:10:24 -0700
+X-CSE-ConnectionGUID: unRqn/5aRF25FTySCLiB3w==
+X-CSE-MsgGUID: rsj+UD3jR6Ces7oN5SXnPQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,133,1770624000"; 
-   d="scan'208";a="223755836"
+   d="scan'208";a="246596321"
 Received: from lkp-server02.sh.intel.com (HELO d7fefbca0d04) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 21 Mar 2026 04:01:15 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 21 Mar 2026 07:10:21 -0700
 Received: from kbuild by d7fefbca0d04 with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1w3u4v-000000000dD-2SIU;
-	Sat, 21 Mar 2026 11:01:13 +0000
-Date: Sat, 21 Mar 2026 19:00:31 +0800
+	id 1w3x1u-000000000rF-3JZb;
+	Sat, 21 Mar 2026 14:10:18 +0000
+Date: Sat, 21 Mar 2026 22:09:21 +0800
 From: kernel test robot <lkp@intel.com>
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Doug Ledford <dledford@redhat.com>,
  Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 5736e92b9168afaa8d110be171e62b765b54d9d5
-Message-ID: <202603211924.3VXedLmg-lkp@intel.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 2102cbaf8db4efb7eb8198129586ad1390ce395f
+Message-ID: <202603212214.mGb8FBd4-lkp@intel.com>
 User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[intel.com:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18495-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18496-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma,lists];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:dkim,intel.com:mid]
-X-Rspamd-Queue-Id: 08E812E4F95
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1E4DB2E5B0D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git =
-wip/leon-for-next
-branch HEAD: 5736e92b9168afaa8d110be171e62b765b54d9d5  RDMA: Clarify that C=
-Q resize is a user=E2=80=91space verb
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 2102cbaf8db4efb7eb8198129586ad1390ce395f  RDMA/rxe: Replace use of system_unbound_wq with rxe_wq
 
-elapsed time: 1180m
+elapsed time: 4071m
 
-configs tested: 197
-configs skipped: 2
+configs tested: 198
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -262,6 +257,7 @@ sh                                  defconfig    gcc-14
 sh                        edosk7760_defconfig    gcc-15.2.0
 sh                    randconfig-001-20260321    clang-23
 sh                    randconfig-002-20260321    clang-23
+sh                           se7705_defconfig    gcc-15.2.0
 sparc                             allnoconfig    clang-23
 sparc                             allnoconfig    gcc-15.2.0
 sparc                               defconfig    gcc-15.2.0
