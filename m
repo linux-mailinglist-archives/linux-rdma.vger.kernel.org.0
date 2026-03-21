@@ -1,53 +1,69 @@
-Return-Path: <linux-rdma+bounces-18492-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18493-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WDa8FCH+vWklFAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-18492-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 03:10:41 +0100
+	id KKWDLHp7vmm8QwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-18493-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 12:05:30 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2CE52E2DDC
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 03:10:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AFA42E4EC5
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 12:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0AFF3304972C
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 02:10:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5A2553083DFF
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2026 10:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0672C2349;
-	Sat, 21 Mar 2026 02:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F82D36C5AC;
+	Sat, 21 Mar 2026 10:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hhqvlaY7"
+	dkim=pass (1024-bit key) header.d=smail.nju.edu.cn header.i=@smail.nju.edu.cn header.b="Xu5LMT5n"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7ED29E10F;
-	Sat, 21 Mar 2026 02:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F6536A023;
+	Sat, 21 Mar 2026 10:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774059020; cv=none; b=c9L1OepHYiHe5wfJhB6Obho+08JoCYf4k6tFa6XL5Wv8cvpMnfAFvxHOk6elrVJuPgXVHoPZbhlvofhGi/h26rx5OuFGXMBmhNnG5OO8vrixvVHuHrE5iZQpIwqFRkN+CKgJKOubdTxRmOge0s+hZosLo6O3oAqOkYCesH4O5LU=
+	t=1774090762; cv=none; b=kFbaauiUWUDuFv3rtxWcgh7xV74bn9tzxzxGlj7xLb2WyxzZtCkleDcHA+eWeVf9XnkLd+GlNTXOEeUH/Lo1JwDi3fkl5ZuNCo1JR6rAqDJTM6t40/oO+VVNlxfoRlDtJSm1tps/RGM9g22QG9hHjaAD1+F2Jj4YugYz+6AtdlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774059020; c=relaxed/simple;
-	bh=FHN+jy/v6exz64De+HYRkHdLnswJzjjJLQOUpXLtf1U=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kpTd8Zh1DMyzzXkTRLohjvNN2efl3VHjQt6ZyL5IEDSfdrIZR0IA90kYikXguVmGMqxaByMWjHiGzPZUN+jYfQ/F977ROyeyJCu0ZrGsxDDirhSUGlHgXfmeeF9dRP+TSvWLb0BOKxLuqJeaAMqLQyi6flJvaO9EgbCd5Fl2EGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hhqvlaY7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8513EC2BCAF;
-	Sat, 21 Mar 2026 02:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774059020;
-	bh=FHN+jy/v6exz64De+HYRkHdLnswJzjjJLQOUpXLtf1U=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hhqvlaY7jnLRPEf2C+F0LRzML0sz6+YDjY2w785+lroH99zDG3RkXsqtZL5uv1XwJ
-	 K/IffWrZSewdOv31QS5ioEmOSdDdcZJ35JaGn8umSlmR9ubJbp8nbRPv4r6fO/250w
-	 H7AgJLXwXC5RH/htWeWelyPJf258XYaQLvisTxT6mEszNlIxEXdOm1/hhEPyrEW4+F
-	 J0Y9UKyr+BZV/F7JixE7dKyCro08wECOol1x0BrAHHpEDuY0iVKrgwpp3F2dmgq4JA
-	 1aE41gZsN5Uzxmk8AQ1+Emq4TfWfSrWz6mkhiHaEt49/F0l79x8rgsWPLrVwQbn9gb
-	 BuUybNOnc8vMw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B9F393808200;
-	Sat, 21 Mar 2026 02:10:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1774090762; c=relaxed/simple;
+	bh=PA5sWXArRLz3ZYeWWCBmsgNOowaJ63gCLWcd9t8/uNU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Wln8y4kCU8pGokB1wZa62M9bdJxKM0tRJOAfaS1bLs19NCLiNcQWgxl7SSOT/BotifP1W0d7u984fa+j2vGu3/NLhHT+EPulrKmDCvJGNAdVYoFnA4XlxwBu/0rOZIbMpthPpqNRD0iISeo978PvNx3dr4yDuSEAf2PEs7VUIqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=smail.nju.edu.cn; spf=pass smtp.mailfrom=smail.nju.edu.cn; dkim=pass (1024-bit key) header.d=smail.nju.edu.cn header.i=@smail.nju.edu.cn header.b=Xu5LMT5n; arc=none smtp.client-ip=54.204.34.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=smail.nju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smail.nju.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smail.nju.edu.cn;
+	s=iohv2404; t=1774090734;
+	bh=CLQdePZyrmssrlINvYExIWJm2CzCXQ4oKVoSBzxI4iI=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version;
+	b=Xu5LMT5nBUQ9LtVhFmHWRijzIX12m5tW8OCKiPVp8joCAnc7G4MESjK9UeyqHIOkb
+	 3//XOKV89C5S2obB2NpIC7lgv8850nlsKujNHEfqseUxo1WPhwJVE24W5YQ3ii4j1P
+	 yrWnMABOBZYDAis305U5mSCSfn8MSlZ/YnRG6ya0=
+X-QQ-mid: zesmtpgz9t1774090733tba5f8f41
+X-QQ-Originating-IP: fYhucm1zUykIwGMTKiSmNswVblya67qdh8q7jXGZm1k=
+Received: from localhost.localdomain ( [116.172.93.199])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Sat, 21 Mar 2026 18:58:51 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 6442523220461579557
+EX-QQ-RecipientCnt: 10
+From: Kexin Sun <kexinsun@smail.nju.edu.cn>
+To: dennis.dalessandro@cornelisnetworks.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: julia.lawall@inria.fr,
+	xutong.ma@inria.fr,
+	kexinsun@smail.nju.edu.cn,
+	yunbolyu@smu.edu.sg,
+	ratnadiraw@smu.edu.sg
+Subject: [PATCH] RDMA: update outdated references to hfi1_destroy_qp()
+Date: Sat, 21 Mar 2026 18:58:51 +0800
+Message-Id: <20260321105851.7556-1-kexinsun@smail.nju.edu.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -55,74 +71,98 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net/smc: fix double-free of smc_spd_priv when tee()
- duplicates splice pipe buffer
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177405901028.2723214.8587147008267182174.git-patchwork-notify@kernel.org>
-Date: Sat, 21 Mar 2026 02:10:10 +0000
-References: <20260318064847.23341-1-tpluszz77@gmail.com>
-In-Reply-To: <20260318064847.23341-1-tpluszz77@gmail.com>
-To: Qi Tang <tpluszz77@gmail.com>
-Cc: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com,
- sidraya@linux.ibm.com, wenjia@linux.ibm.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-kernel@vger.kernel.org
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpgz:smail.nju.edu.cn:qybglogicsvrgz:qybglogicsvrgz5b-0
+X-QQ-XMAILINFO: MbmjVFFpQnDJPYtcDZM8NhDfp8s3gY1+zCQl7aS/6wBLlsndfiD7IRax
+	/gECCNsD9BaEjW6h7Owlwt9l12yprB4Vzv+qFDrGtdDjtSj7hvtBPaFwcZHKQMsKUNDnDPC
+	TRLpmsjUhICIWzRjloyIFiKUdKGOJJjQaz6W0frxPX0zp2DWMUuFDqEUudcV4xEPgRHpXGs
+	YLDH9YYVkSYE/0iEFTWiB7UDHl212aYywuLbHTL6pVNwXSAvPEPT8w/hAX4dFFVRPPnA3r4
+	2DJNAfYrVbDW3AG7scl6rdSWK0Y8SXX8Xpnq1/Qhm1SudXlFhMsQxteQHIPYqNVEUS6tcxC
+	gCaYMXo0J7o755mQGYP0nruBA/KylN840Zev/rqU8ZvjLCxnaRldHlfNF4aQSEk6Oe8H+nM
+	+/Saer2M0QWUpSBmTqY0x7+CSnZnvXwSqaALwSU/r5dboo29CeYiXj4MVy9l+Mhoicbw2yK
+	WWfthty8RjCOskft++R213hH84JcGjNfG/qfsYSvV5QsbE0bQjXkSGCDuiWdPt9i2zIY9eK
+	m0xNmggOjd8qfhB82GByaTkAV1jxsxlfon/eUs7Uz9nIwREvaMRI8COTj7EFdw1NdXgjEHK
+	2fUOcIKvyG3j0K6MBq5HTgv3sFqx8/uQQutL5N5LTW9qUaEmMy5YWJ5M4Ua+KNaHTfAtB9+
+	zrL/myuuV6gjzLJtxBK+ZxCp5OWQhgPNFO6HHwtOjWSLlxki1mdcTj5YYKGCoSBOuFOQ3BG
+	y3i+fB6+kwJ9YGa2TnYCsrx3tCLd6uiX9j5OJYS+qziR30YUl0rHhy81seMeoKcDmAgy4Tg
+	uLAKrXIBpCu5bZuH0lNgNoupAbXtfUhMo92hi7l75SW1Rak0ikiAGjwrj/lBr7bScKgF0e7
+	fafM0Yh9lhPsIBb5J5/DOTWGz1Qn5/8jLh8k23j2QsWIO7JIpnB8l2SW/ReYsH1ZICdTgFJ
+	xBD/Ig4MtcuFI76CWv1fRzMpy3w/k8M33PhkX4yvJr0BmVfv9FBlEewt1zEQRf3DoMYcqK0
+	swUcHUsBoCfvhD31E5hIO/gZZwl5Vn7MAgpC9KWAwL4rS4Zo4LJTM1DLWQ8Wgaif76LUORs
+	ERFBgaAU3Sjv/vseCMsyzbtd2uZuXAyJw==
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+X-QQ-RECHKSPAM: 0
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[smail.nju.edu.cn,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[smail.nju.edu.cn:s=iohv2404];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-18492-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18493-lists,linux-rdma=lfdr.de];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kexinsun@smail.nju.edu.cn,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NO_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[smail.nju.edu.cn:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F2CE52E2DDC
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nju.edu.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,smail.nju.edu.cn:dkim,smail.nju.edu.cn:mid]
+X-Rspamd-Queue-Id: 1AFA42E4EC5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
+The function hfi1_destroy_qp() was removed in commit
+75261cc6ab66 ("staging/rdma/hfi1: Remove destroy qp verb") in
+favor of the rdmavt generic rvt_destroy_qp().  Two comments still
+reference hfi1_destroy_qp() as the waiter that rvt_put_qp() will
+wake up; the actual waiter is now rvt_destroy_qp().  Update both
+references.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Assisted-by: unnamed:deepseek-v3.2 coccinelle
+Signed-off-by: Kexin Sun <kexinsun@smail.nju.edu.cn>
+---
+ drivers/infiniband/hw/hfi1/qp.c      | 2 +-
+ drivers/infiniband/sw/rdmavt/mcast.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Wed, 18 Mar 2026 14:48:47 +0800 you wrote:
-> smc_rx_splice() allocates one smc_spd_priv per pipe_buffer and stores
-> the pointer in pipe_buffer.private.  The pipe_buf_operations for these
-> buffers used .get = generic_pipe_buf_get, which only increments the page
-> reference count when tee(2) duplicates a pipe buffer.  The smc_spd_priv
-> pointer itself was not handled, so after tee() both the original and the
-> cloned pipe_buffer share the same smc_spd_priv *.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net] net/smc: fix double-free of smc_spd_priv when tee() duplicates splice pipe buffer
-    https://git.kernel.org/netdev/net/c/24dd586bb4cb
-
-You are awesome, thank you!
+diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
+index f3d8c0c193ac..bbb23c0386ee 100644
+--- a/drivers/infiniband/hw/hfi1/qp.c
++++ b/drivers/infiniband/hw/hfi1/qp.c
+@@ -404,7 +404,7 @@ void hfi1_qp_wakeup(struct rvt_qp *qp, u32 flag)
+ 		hfi1_qp_schedule(qp);
+ 	}
+ 	spin_unlock_irqrestore(&qp->s_lock, flags);
+-	/* Notify hfi1_destroy_qp() if it is waiting. */
++	/* Notify rvt_destroy_qp() if it is waiting. */
+ 	rvt_put_qp(qp);
+ }
+ 
+diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
+index 1fda344d2056..c75be2c53b2d 100644
+--- a/drivers/infiniband/sw/rdmavt/mcast.c
++++ b/drivers/infiniband/sw/rdmavt/mcast.c
+@@ -49,7 +49,7 @@ static void rvt_mcast_qp_free(struct rvt_mcast_qp *mqp)
+ {
+ 	struct rvt_qp *qp = mqp->qp;
+ 
+-	/* Notify hfi1_destroy_qp() if it is waiting. */
++	/* Notify rvt_destroy_qp() if it is waiting. */
+ 	rvt_put_qp(qp);
+ 
+ 	kfree(mqp);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
 
