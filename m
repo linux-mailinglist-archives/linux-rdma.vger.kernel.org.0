@@ -1,135 +1,132 @@
-Return-Path: <linux-rdma+bounces-18497-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18498-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2vhDDcxfv2lz3wMAu9opvQ
-	(envelope-from <linux-rdma+bounces-18497-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 04:19:40 +0100
+	id GPRHECf2v2moBgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18498-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 15:01:11 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53AF62E8180
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 04:19:39 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5452E98D4
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 15:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1BAD93014106
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 03:19:38 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id EE27D3005594
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 14:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D103D29BD9A;
-	Sun, 22 Mar 2026 03:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF82436309D;
+	Sun, 22 Mar 2026 14:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJGhG57w"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D014A128395;
-	Sun, 22 Mar 2026 03:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AA135958;
+	Sun, 22 Mar 2026 14:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774149576; cv=none; b=U+8s5Jiz43qSxYHGTBu67bkHRDgKPo1bRV/VOWdNmC+CFOROr9LUOaDx5I395/VNxR68RGTDMPB+05YA66MOaiC6pS1f8QV0+dnUYy+rq4DBnP1qHA98dtYEblj4tZDQTT6kR/hJFmBRm1jE/yVUZ2NofVEPGUZOF25InQMx7oM=
+	t=1774188068; cv=none; b=J/Z45WrSP0fnEwdrwdWURb2b1+7rIvMh+x8Nnj9uZkDagU9WIBhKXmovvCHy5qOskS+HoOyGBJyhQmO9zbaVsIDHnz4vK1t46KdHPm1tEDYxhh+u+OUevFCcD+E6DxVGBPWaLy3QGJAdGJuco/+uQDyR/0c2HJRGYMC0bsf/kk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774149576; c=relaxed/simple;
-	bh=w9cG2MmTVkIf+Ak00/ckXOr4wnCnRqqbhmfMV5+Un7A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XZeEIT08wNNN8EpuHl2bx7iYvmWZCuQneAWhrAUP1dxFA2BS8rrHRe0j25xoElzVGg0Ob3QU70fQEQgpcTTCGfMLjtyDgZs9J74JOGzj2hbvcZgoV7+h2vafwOxd0sT+UPQFRz+KjU83UuvYls3GZY+GJ6FprFfN3kzx7wua//A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [111.196.245.197])
-	by APP-05 (Coremail) with SMTP id zQCowADXaw+6X79pyE8eCw--.33679S2;
-	Sun, 22 Mar 2026 11:19:23 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: linux-rdma@vger.kernel.org
-Cc: pengpeng@iscas.ac.cn,
-	Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
+	s=arc-20240116; t=1774188068; c=relaxed/simple;
+	bh=m9V2ZnuZzKZvw9uxxeL+KR4jnzKrnrmfvPC3w11TG4U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rPSwC0mC9YYMF7is6Nhou49A5GnY/91yZ+d/XCSsA/mfqpXTuISSXpvQUpzc2MNXMogI4s9Tmvn4swwcbfYu3MTSvBH9LBIgj9YKADZQKN5O0kVBJMjy7n9vvsxfDW5W69PjQIolVRKu02hEiOP1HuwiRXjGHJfEXlWzfItGJlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SJGhG57w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5061C19424;
+	Sun, 22 Mar 2026 14:01:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774188068;
+	bh=m9V2ZnuZzKZvw9uxxeL+KR4jnzKrnrmfvPC3w11TG4U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SJGhG57wIsOQodaVUWqQvwL7DlQu4fjDE1fqcofMm2te3+cczV5FNF8eqZtE1zZXY
+	 Rj9y6N3M5quba/nEqEMIXWMb87QeUOachsywQiopYdhsA40DfQR7aU57TpJa6/TIEq
+	 NqYqxaGN3/ToZNNwnxRJFMn4IRZDFAT4qDwRc11Zndj4n/Q8tguLiyXqFZBhCmmHBl
+	 UVbVoeSyVOKS0OlcIhgxlpt0Ngw/W193FYt47YrjHAwJM5FJ0+h3N7a4L5bSf+fO95
+	 SoGOv7fH70/U3Z84Gm8VPWZauwCbo8AWR9LmijYAqQU0GlwKQn3wrkHmbjEhRmIQiA
+	 /NrbM2eTAoMjw==
+Date: Sun, 22 Mar 2026 16:01:01 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, shirazsaleem@microsoft.com,
+	longli@microsoft.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] mlx5: bound raw flow rule match parameter copies
-Date: Sun, 22 Mar 2026 11:19:22 +0800
-Message-ID: <20260322031922.57975-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+Subject: Re: [PATCH rdma-next v3 1/1] RDMA/mana: Provide a modern CQ creation
+ interface
+Message-ID: <20260322140101.GA814676@unreal>
+References: <20260318175455.1419129-1-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowADXaw+6X79pyE8eCw--.33679S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrKFW5Xw1xCFW5CF15Gw1fCrg_yoW8Jr1rpF
-	43tr1fK345Za12grW3CayrZay5Ca97AFs8Gryjkw45ur9Ivr10vryvkryjvFWkJry5Wr17
-	Zr18AF48uFW7ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYNVyDU
-	UUU
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
-X-Spamd-Result: default: False [0.04 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260318175455.1419129-1-kotaranov@linux.microsoft.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[iscas.ac.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18497-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pengpeng@iscas.ac.cn,linux-rdma@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_FROM(0.00)[bounces-18498-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,iscas.ac.cn:email,iscas.ac.cn:mid]
-X-Rspamd-Queue-Id: 53AF62E8180
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: CB5452E98D4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-`_create_raw_flow_rule()` copies user-supplied match data and matcher
-mask bytes directly into the fixed `mlx5_flow_spec` arrays. The UAPI
-allows up to `MLX5_IB_DW_MATCH_PARAM` bytes for the input attributes,
-but the kernel object only allocates
-`MLX5_ST_SZ_DW(fte_match_param)` bytes for each buffer.
+On Wed, Mar 18, 2026 at 10:54:55AM -0700, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+> 
+> The uverbs CQ creation UAPI allows users to supply their own umem for a CQ.
+> Create cq->umem if it was not created and use it to create a mana queue.
+> The created umem is owned by IB/core and will be deallocated by IB/core.
+> 
+> To support RDMA objects that own umem, introduce mana_ib_create_queue_with_umem()
+> to use the umem provided by the caller and do not de-allocate umem if it was allocted
+> by the caller.
+> 
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+> v3: Make umem allocation explicit for cq->umem and use a new helper to create mana queue from it.
+>     Remove the universal helper that was added in v2
+> v2: Rework of Leon's commit. Introduce univesal helper that returned ownership of umem to caller.
+>     Added removed u32 overlow check for kernel cq.
+>  drivers/infiniband/hw/mana/cq.c      | 131 ++++++++++++++++++---------
+>  drivers/infiniband/hw/mana/device.c  |   1 +
+>  drivers/infiniband/hw/mana/main.c    |  27 +++---
+>  drivers/infiniband/hw/mana/mana_ib.h |   5 +-
+>  4 files changed, 106 insertions(+), 58 deletions(-)
 
-Validate the sizes before copying so oversized verbs requests cannot
-corrupt the spec object.
+<...>
 
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- drivers/infiniband/hw/mlx5/fs.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> +int mana_ib_create_queue_from_umem(struct mana_ib_dev *mdev, struct ib_umem *umem,
+> +				   struct mana_ib_queue *queue)
+> +{
+> +	queue->umem = NULL;
 
-diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-index cbccb0b9ac10..b5194f674c65 100644
---- a/drivers/infiniband/hw/mlx5/fs.c
-+++ b/drivers/infiniband/hw/mlx5/fs.c
-@@ -2069,6 +2069,12 @@ _create_raw_flow_rule(struct mlx5_ib_dev *dev,
- 
- 	INIT_LIST_HEAD(&handler->list);
- 
-+	if (inlen > sizeof(spec->match_value) ||
-+	    fs_matcher->mask_len > sizeof(spec->match_criteria)) {
-+		err = -EINVAL;
-+		goto free;
-+	}
-+
- 	memcpy(spec->match_value, cmd_in, inlen);
- 	memcpy(spec->match_criteria, fs_matcher->matcher_mask.match_params,
- 	       fs_matcher->mask_len);
--- 
-2.50.1 (Apple Git-155)
+Two things. First, I'm waiting for Jason to converge on this  
+ib_copy_*() work. Second, I still believe drivers should not cache  
+umem.
 
+Thanks
 
