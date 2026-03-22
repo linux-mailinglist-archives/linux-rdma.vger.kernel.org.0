@@ -1,146 +1,118 @@
-Return-Path: <linux-rdma+bounces-18504-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18505-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YDCtEho8wGmSFAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18504-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 19:59:38 +0100
+	id CBdxFTY8wGmSFAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18505-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 20:00:06 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C65F2EA672
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 19:59:37 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68462EA681
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 20:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B15E83006780
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 18:59:34 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2A81C3004902
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2026 19:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D32363C49;
-	Sun, 22 Mar 2026 18:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EF237C101;
+	Sun, 22 Mar 2026 19:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eV153z1/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VoH+Nu+O"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE171C14A;
-	Sun, 22 Mar 2026 18:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54BE368953;
+	Sun, 22 Mar 2026 19:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774205972; cv=none; b=al2KPwHmPNvGlUXOdaOowpJcbAvsO/hLXaQJOz2VHktqwSfiXa9NF2EHdBC9j3q+hXaac+Q+S+VU/hk6Hrqeps6X018dJZ1KunvlWtZU6JT0TZsDAmmfvQOV+tbnBs/g3ZcodiBDiwf+yqWffnoWPpHU7lpuyD1WGDdJ9nR8Zj0=
+	t=1774206002; cv=none; b=IbyGYixQRCMZItk+le09aNfgOC3IaROI70w/jtSO+YjqETZOWsl3I0VQdM3Pvo9N55ZoCAtrjxSi/j955hDqu8abknWeK35cH1eBrs9t2JoUwN8f4a3J4sfXU+P+L8ah5g5IvGy2cXBiVBPoZxDtDfDRj7noGvrXqhW+SiX3ALk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774205972; c=relaxed/simple;
-	bh=cQ2hea2uiUwcJSbEEgjcyZ/JSFXQjtXU/c8ohIadX6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TB96Kojv2ifAIkHl7l+eoZvxrfWYsDhNAWwcCQ+Ak5OlgGZJAN5gpaJT5GuByPVoLRAXXMQyQNpgSkjWtyRpCagUs2BTjddjKmtUxXj9kutCeiKiqrtK2yNm7tIfdeWw6i6bM/yETvuvGtzj/iM2e3UCzcFJIDuVwjdOkUjX0oY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eV153z1/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD7DC19424;
-	Sun, 22 Mar 2026 18:59:31 +0000 (UTC)
+	s=arc-20240116; t=1774206002; c=relaxed/simple;
+	bh=ZRDhWJeQvAaw4EkBF1d1Dl0Q7zmGecvafge/6JhUKZc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=HkNDWwzYGO+og+GitpbtrPKFKZBeU8PD3okljgatEaVyeQSII2WnaFAKc6IVnzPstVCaGd2sQ61NyIu9ruFLijiK/W4Hnt0jHU3aXtKuo9Q3w8xphUKZ7MnE9eZFbi9Cj6pD2MLYRvNTxNtTf1R4q8jYBHHkHgMmOcD6ojWgnms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VoH+Nu+O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5A8FC19424;
+	Sun, 22 Mar 2026 19:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774205972;
-	bh=cQ2hea2uiUwcJSbEEgjcyZ/JSFXQjtXU/c8ohIadX6Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eV153z1/Hm8LluW5JZ1frKJNn1SYzmsUu+ppqvyIpg4f5BKzK3suMqOHZxrKmWcsL
-	 AFoNFTS6H1M/hFR1MZl1QptSy7eW74K+1cwgby73pvI+Q79jARf2sw5wbf+xp/OIF/
-	 BVs3j0I2r6K7Iekh5+bNB4kP2e8cqw1p5Z/nXl3+7y2PrVw1ES5YwTqyonSJwJl6uV
-	 Y2v6RzfRccl6pftuLFTc+x2S6t0uCZmbtl8/HkNsmR7SSD9MR4zjcS8fmthNAcRWQL
-	 NIakdfUrF9p2J3wT3ItqU/P9q5pK82hPGRi9F4I8mB5pyHDUmq+q2VR7l945A+42bG
-	 zeSLRQdd7s5XA==
-Date: Sun, 22 Mar 2026 20:59:27 +0200
+	s=k20201202; t=1774206002;
+	bh=ZRDhWJeQvAaw4EkBF1d1Dl0Q7zmGecvafge/6JhUKZc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=VoH+Nu+OT1aGy8tPMM1jYTYvAvxTZGAO5fy97F1uIJ7vntfUesisX/y4fo44z5lMm
+	 2l/h0/qVezWp9nm578nlYvsfvnNXPKiRzepVOZ/hBpNt5FPbwBmqFxcQDtY9XxGY7d
+	 FmAyLGwLY8bMEhsGOqeiB/5NBc/T/+9mnth4OmfaFV2PfaVOiZSGxpZg2IFMnG9Jop
+	 To7EHKuNyK55cYTbFlODxVCC3Y+TEm1Andp45DEAgM1CPKf53eekhfDJioxzAmiW+H
+	 kweKjhpTCpTCoGrmi3HRDvbpOAOKkkLVYgdgae/Lh1Z8fLIZxOouTpiL4lgNB2HiSU
+	 nAJYAMDlNtSYA==
 From: Leon Romanovsky <leon@kernel.org>
-To: Kexin Sun <kexinsun@smail.nju.edu.cn>
-Cc: dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	julia.lawall@inria.fr, xutong.ma@inria.fr, yunbolyu@smu.edu.sg,
-	ratnadiraw@smu.edu.sg
-Subject: Re: [PATCH] RDMA: update outdated references to hfi1_destroy_qp()
-Message-ID: <20260322185927.GE814676@unreal>
-References: <20260321105851.7556-1-kexinsun@smail.nju.edu.cn>
+To: jgg@ziepe.ca, edwards@nvidia.com, yishaih@nvidia.com, parav@nvidia.com, 
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Kexin Sun <kexinsun@smail.nju.edu.cn>
+Cc: julia.lawall@inria.fr, xutong.ma@inria.fr, yunbolyu@smu.edu.sg, 
+ ratnadiraw@smu.edu.sg
+In-Reply-To: <20260321105859.7642-1-kexinsun@smail.nju.edu.cn>
+References: <20260321105859.7642-1-kexinsun@smail.nju.edu.cn>
+Subject: Re: [PATCH] RDMA/uverbs: update outdated reference to
+ remove_commit_idr_uobject()
+Message-Id: <177420599924.2048487.13855873772341432003.b4-ty@kernel.org>
+Date: Sun, 22 Mar 2026 14:59:59 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260321105851.7556-1-kexinsun@smail.nju.edu.cn>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-18f8f
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-18505-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18504-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nju.edu.cn:email]
-X-Rspamd-Queue-Id: 9C65F2EA672
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E68462EA681
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, Mar 21, 2026 at 06:58:51PM +0800, Kexin Sun wrote:
-> The function hfi1_destroy_qp() was removed in commit
-> 75261cc6ab66 ("staging/rdma/hfi1: Remove destroy qp verb") in
-> favor of the rdmavt generic rvt_destroy_qp().  Two comments still
-> reference hfi1_destroy_qp() as the waiter that rvt_put_qp() will
-> wake up; the actual waiter is now rvt_destroy_qp().  Update both
-> references.
-> 
-> Assisted-by: unnamed:deepseek-v3.2 coccinelle
-> Signed-off-by: Kexin Sun <kexinsun@smail.nju.edu.cn>
-> ---
->  drivers/infiniband/hw/hfi1/qp.c      | 2 +-
->  drivers/infiniband/sw/rdmavt/mcast.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
-> index f3d8c0c193ac..bbb23c0386ee 100644
-> --- a/drivers/infiniband/hw/hfi1/qp.c
-> +++ b/drivers/infiniband/hw/hfi1/qp.c
-> @@ -404,7 +404,7 @@ void hfi1_qp_wakeup(struct rvt_qp *qp, u32 flag)
->  		hfi1_qp_schedule(qp);
->  	}
->  	spin_unlock_irqrestore(&qp->s_lock, flags);
-> -	/* Notify hfi1_destroy_qp() if it is waiting. */
-> +	/* Notify rvt_destroy_qp() if it is waiting. */
 
-Just remove these comments, they have no value.
-
-Thanks
-
->  	rvt_put_qp(qp);
->  }
->  
-> diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
-> index 1fda344d2056..c75be2c53b2d 100644
-> --- a/drivers/infiniband/sw/rdmavt/mcast.c
-> +++ b/drivers/infiniband/sw/rdmavt/mcast.c
-> @@ -49,7 +49,7 @@ static void rvt_mcast_qp_free(struct rvt_mcast_qp *mqp)
->  {
->  	struct rvt_qp *qp = mqp->qp;
->  
-> -	/* Notify hfi1_destroy_qp() if it is waiting. */
-> +	/* Notify rvt_destroy_qp() if it is waiting. */
->  	rvt_put_qp(qp);
->  
->  	kfree(mqp);
-> -- 
-> 2.25.1
+On Sat, 21 Mar 2026 18:58:59 +0800, Kexin Sun wrote:
+> The function remove_commit_idr_uobject() was split into
+> destroy_hw_idr_uobject() and remove_handle_idr_uobject() by
+> commit 0f50d88a6e9a ("IB/uverbs: Allow all DESTROY commands
+> to succeed after disassociate").  The kref put that the
+> comment refers to now lives in remove_handle_idr_uobject().
+> Update the stale reference.
 > 
+> [...]
+
+Applied, thanks!
+
+[1/1] RDMA/uverbs: update outdated reference to remove_commit_idr_uobject()
+      https://git.kernel.org/rdma/rdma/c/3909d195fe68eb
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
