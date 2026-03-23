@@ -1,179 +1,206 @@
-Return-Path: <linux-rdma+bounces-18540-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18541-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kNa6Cz+ewWmFUAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18540-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 21:10:39 +0100
+	id iHtYJuSewWn+UAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18541-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 21:13:24 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BA112FCEF4
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 21:10:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CDA2FCFF9
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 21:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C5A133002F75
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 20:10:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BA7A0305F33A
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 20:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBDE369208;
-	Mon, 23 Mar 2026 20:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KASqr5Am"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F5A3CBE65;
+	Mon, 23 Mar 2026 20:11:17 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408F13382F9;
-	Mon, 23 Mar 2026 20:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1857036A027;
+	Mon, 23 Mar 2026 20:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774296629; cv=none; b=swGoDFs53qmPaUwDTt/OurwUOyPmtQMZY+BwWsiE25MynTiCJNuyJ+SCL7SKWdXalC/fZJhOnfHgoYvt26Fc0y6ThQDzUa8dN5UT+OobSau4dltKhanrUqQuMTiII+KwkaYy82y4mDkgjpJJ0WHxS5f2GQIuUqC9gcov6Vp5u1Q=
+	t=1774296677; cv=none; b=pwSjOqGTigB/WvVwobpVJmTmsbQXg2EQZSaqA3n33TBfZNM6uieDkccf20kreNCBV011UAHbWXiT6X17UUHQ1AS1nYf23Hp93iTq2jns5HZutj1kjnjcjHAOldOsC7QweqYdVDvZyv/dds7rBmJxHzao/AVFVHMM6GSXpDZvILs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774296629; c=relaxed/simple;
-	bh=9EUqw43IRwPSs7AIcAVQ7yfdM9pOZ5dryGY58RHj5z4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RkJXMKf4Q26ucaqC+IzhDFJ30DiD33Ol/r8k8Rg0bTR2+4xlknLhaaVhLICwmR0gbFMYDf+tty4N63eMW0iQfoY6hEgEjlir01IsRGaw5aPT4plUgxGGsqzVAozLj7yVhOJYbXoDXPZcfTZEd5c/insShz+N+Uh6C9RNfsPTr9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KASqr5Am; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F396CC4CEF7;
-	Mon, 23 Mar 2026 20:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774296629;
-	bh=9EUqw43IRwPSs7AIcAVQ7yfdM9pOZ5dryGY58RHj5z4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=KASqr5AmhkM3gcEi1v6BDOlCnS/6pUAWljiTOBEs+DyysTe+TumqZke4+oItRAeqX
-	 vdUxyKau2goR6wYYvCF80xO4HN2JmRIwG2WGN4OpDBXrwfkkCzuGpHyEqrsQB/P3iI
-	 DQGv4J1SUsraHwQK8AFLRgFjFPdhGLjrfkLEo9bB8zxdGudQqXTCApk2yU5QAuQ1DW
-	 wEdZ99HVXimy7d/MA0A4WeNlC4Q2F8Ul6JZg6d1AsfXcgKPaWHNNYKX5j/jbsWXudZ
-	 l7DUp3S9fc6gg0hlVbni6Y4XW2eraN/qiq09fH/Oal9ISIjcA6zGMWjDFFLtv6bGUe
-	 jxaARiCCDeUGA==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
+	s=arc-20240116; t=1774296677; c=relaxed/simple;
+	bh=ctZKRS/rP8G/EiO2MyeaogJ0eYgz6kFYMri2GaF1pJA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oGJwid/hqfmLl2qwwMYfz0wZe/l8okxpuOF+z7SwyfTsdq1moDsvi2WUrCxe9LqvyrwM3c/EvBkRNTPXU2Q1bx2xryvWopWussTu0tufOtiOuGbY0+BKfzVg/xlJ4cEEBrPUNTUD1XiPfxbZrPBDi1EpjjyJ1jzp5kXEH1m/RIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id 04D6120B6F01; Mon, 23 Mar 2026 13:11:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04D6120B6F01
+From: Long Li <longli@microsoft.com>
+To: Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
-	Michael Guralnik <michaelgur@nvidia.com>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/umem: Use consistent DMA attributes when unmapping entries
-Date: Mon, 23 Mar 2026 22:10:18 +0200
-Message-ID: <20260323-umem-dma-attrs-v1-1-d6890f2e6a1e@nvidia.com>
-X-Mailer: git-send-email 2.53.0
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K . Y . Srinivasan" <kys@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>
+Cc: Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH rdma v2] RDMA/mana_ib: Disable RX steering on RSS QP destroy
+Date: Mon, 23 Mar 2026 13:10:56 -0700
+Message-ID: <20260323201106.1768705-1-longli@microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Change-ID: 20260323-umem-dma-attrs-8e2b80e09c4c
-X-Mailer: b4 0.15-dev-18f8f
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [3.04 / 15.00];
+	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18540-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-18541-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3BA112FCEF4
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 04CDA2FCFF9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Leon Romanovsky <leonro@nvidia.com>=0D
-=0D
-The DMA API expects that mapping and unmapping use the same DMA=0D
-attributes. The RDMA umem code did not meet this requirement, so fix=0D
-the mismatch.=0D
-=0D
-Fixes: f03d9fadfe13 ("RDMA/core: Add weak ordering dma attr to dma mapping"=
-)=0D
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>=0D
----=0D
- drivers/infiniband/core/umem.c | 11 +++++------=0D
- include/rdma/ib_umem.h         |  1 +=0D
- 2 files changed, 6 insertions(+), 6 deletions(-)=0D
-=0D
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.=
-c=0D
-index 4eef7b76fe465..f5f187593ef17 100644=0D
---- a/drivers/infiniband/core/umem.c=0D
-+++ b/drivers/infiniband/core/umem.c=0D
-@@ -55,7 +55,7 @@ static void __ib_umem_release(struct ib_device *dev, stru=
-ct ib_umem *umem, int d=0D
- =0D
- 	if (dirty)=0D
- 		ib_dma_unmap_sgtable_attrs(dev, &umem->sgt_append.sgt,=0D
--					   DMA_BIDIRECTIONAL, 0);=0D
-+					   DMA_BIDIRECTIONAL, umem->dma_attrs);=0D
- =0D
- 	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i) {=0D
- 		unpin_user_page_range_dirty_lock(sg_page(sg),=0D
-@@ -169,7 +169,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, u=
-nsigned long addr,=0D
- 	unsigned long lock_limit;=0D
- 	unsigned long new_pinned;=0D
- 	unsigned long cur_base;=0D
--	unsigned long dma_attr =3D 0;=0D
- 	struct mm_struct *mm;=0D
- 	unsigned long npages;=0D
- 	int pinned, ret;=0D
-@@ -202,6 +201,9 @@ struct ib_umem *ib_umem_get(struct ib_device *device, u=
-nsigned long addr,=0D
- 	umem->iova =3D addr;=0D
- 	umem->writable   =3D ib_access_writable(access);=0D
- 	umem->owning_mm =3D mm =3D current->mm;=0D
-+	if (access & IB_ACCESS_RELAXED_ORDERING)=0D
-+		umem->dma_attrs |=3D DMA_ATTR_WEAK_ORDERING;=0D
-+=0D
- 	mmgrab(mm);=0D
- =0D
- 	page_list =3D (struct page **) __get_free_page(GFP_KERNEL);=0D
-@@ -254,11 +256,8 @@ struct ib_umem *ib_umem_get(struct ib_device *device, =
-unsigned long addr,=0D
- 		}=0D
- 	}=0D
- =0D
--	if (access & IB_ACCESS_RELAXED_ORDERING)=0D
--		dma_attr |=3D DMA_ATTR_WEAK_ORDERING;=0D
--=0D
- 	ret =3D ib_dma_map_sgtable_attrs(device, &umem->sgt_append.sgt,=0D
--				       DMA_BIDIRECTIONAL, dma_attr);=0D
-+				       DMA_BIDIRECTIONAL, umem->dma_attrs);=0D
- 	if (ret)=0D
- 		goto umem_release;=0D
- 	goto out;=0D
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h=0D
-index 38414281a686b..2ad52cc1d52bd 100644=0D
---- a/include/rdma/ib_umem.h=0D
-+++ b/include/rdma/ib_umem.h=0D
-@@ -18,6 +18,7 @@ struct ib_umem {=0D
- 	u64 iova;=0D
- 	size_t			length;=0D
- 	unsigned long		address;=0D
-+	unsigned long		dma_attrs;=0D
- 	u32 writable : 1;=0D
- 	u32 is_odp : 1;=0D
- 	u32 is_dmabuf : 1;=0D
-=0D
----=0D
-base-commit: 1c3eaf5186228f0b20ccb776e86233f069475380=0D
-change-id: 20260323-umem-dma-attrs-8e2b80e09c4c=0D
-=0D
-Best regards,=0D
---  =0D
-Leon Romanovsky <leonro@nvidia.com>=0D
-=0D
+When an RSS QP is destroyed (e.g. DPDK exit), mana_ib_destroy_qp_rss()
+destroys the RX WQ objects but does not disable vPort RX steering in
+firmware. This leaves stale steering configuration that still points to
+the destroyed RX objects.
+
+If traffic continues to arrive (e.g. peer VM is still transmitting) and
+the VF interface is subsequently brought up (mana_open), the firmware
+may deliver completions using stale CQ IDs from the old RX objects.
+These CQ IDs can be reused by the ethernet driver for new TX CQs,
+causing RX completions to land on TX CQs:
+
+  WARNING: mana_poll_tx_cq+0x1b8/0x220 [mana]  (is_sq == false)
+  WARNING: mana_gd_process_eq_events+0x209/0x290 (cq_table lookup fails)
+
+Fix this by disabling vPort RX steering before destroying RX WQ objects.
+Note that mana_fence_rqs() cannot be used here because the fence
+completion is delivered on the CQ, which is polled by user-mode (e.g.
+DPDK) and not visible to the kernel driver.
+
+Refactor the disable logic into a shared mana_disable_vport_rx() in
+mana_en, exported for use by mana_ib, replacing the duplicate code.
+The ethernet driver's mana_dealloc_queues() is also updated to call
+this common function.
+
+Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
+Cc: stable@vger.kernel.org
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+v2:
+  - Removed redundant ibdev_err on mana_disable_vport_rx() failure as
+    mana_cfg_vport_steering() already logs all failure scenarios.
+  - Added comment clarifying this is best effort.
+ drivers/infiniband/hw/mana/qp.c               | 15 +++++++++++++++
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 11 ++++++++++-
+ include/net/mana/mana.h                       |  1 +
+ 3 files changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 80cf4ade4b75..685e61e8436c 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -834,6 +834,21 @@ static int mana_ib_destroy_qp_rss(struct mana_ib_qp *qp,
+ 	ndev = mana_ib_get_netdev(qp->ibqp.device, qp->port);
+ 	mpc = netdev_priv(ndev);
+ 
++	/* Disable vPort RX steering before destroying RX WQ objects.
++	 * Otherwise firmware still routes traffic to the destroyed queues,
++	 * which can cause bogus completions on reused CQ IDs when the
++	 * ethernet driver later creates new queues on mana_open().
++	 *
++	 * Unlike the ethernet teardown path, mana_fence_rqs() cannot be
++	 * used here because the fence completion CQE is delivered on the
++	 * CQ which is polled by userspace (e.g. DPDK), so there is no way
++	 * for the kernel to wait for fence completion.
++	 *
++	 * This is best effort — if it fails there is not much we can do,
++	 * and mana_cfg_vport_steering() already logs the error.
++	 */
++	mana_disable_vport_rx(mpc);
++
+ 	for (i = 0; i < (1 << ind_tbl->log_ind_tbl_size); i++) {
+ 		ibwq = ind_tbl->ind_tbl[i];
+ 		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index b3c3a70f733f..0816279f525e 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2934,6 +2934,13 @@ static void mana_rss_table_init(struct mana_port_context *apc)
+ 			ethtool_rxfh_indir_default(i, apc->num_queues);
+ }
+ 
++int mana_disable_vport_rx(struct mana_port_context *apc)
++{
++	return mana_cfg_vport_steering(apc, TRI_STATE_FALSE, false, false,
++				       false);
++}
++EXPORT_SYMBOL_NS(mana_disable_vport_rx, "NET_MANA");
++
+ int mana_config_rss(struct mana_port_context *apc, enum TRI_STATE rx,
+ 		    bool update_hash, bool update_tab)
+ {
+@@ -3339,10 +3346,12 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 	 */
+ 
+ 	apc->rss_state = TRI_STATE_FALSE;
+-	err = mana_config_rss(apc, TRI_STATE_FALSE, false, false);
++	err = mana_disable_vport_rx(apc);
+ 	if (err && mana_en_need_log(apc, err))
+ 		netdev_err(ndev, "Failed to disable vPort: %d\n", err);
+ 
++	mana_fence_rqs(apc);
++
+ 	/* Even in err case, still need to cleanup the vPort */
+ 	mana_destroy_rxqs(apc);
+ 	mana_destroy_txq(apc);
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 204c2b612a62..2634e9135eed 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -574,6 +574,7 @@ struct mana_port_context {
+ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
+ int mana_config_rss(struct mana_port_context *ac, enum TRI_STATE rx,
+ 		    bool update_hash, bool update_tab);
++int mana_disable_vport_rx(struct mana_port_context *apc);
+ 
+ int mana_alloc_queues(struct net_device *ndev);
+ int mana_attach(struct net_device *ndev);
+-- 
+2.43.0
+
 
