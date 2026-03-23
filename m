@@ -1,141 +1,141 @@
-Return-Path: <linux-rdma+bounces-18509-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18510-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EP1TCIrhwGnAOAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18509-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 07:45:30 +0100
+	id mLs5J73hwGnAOAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18510-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 07:46:21 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FAA2ED254
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 07:45:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EFF42ED270
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 07:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C5EA93008228
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 06:45:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9139F3012EAE
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 06:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A4A34753B;
-	Mon, 23 Mar 2026 06:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F40D35BDC7;
+	Mon, 23 Mar 2026 06:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QWcBOrXg"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dEaXkNh2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ua1-f100.google.com (mail-ua1-f100.google.com [209.85.222.100])
+Received: from mail-dy1-f225.google.com (mail-dy1-f225.google.com [74.125.82.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56A7347516
-	for <linux-rdma@vger.kernel.org>; Mon, 23 Mar 2026 06:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.222.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23E435B63E
+	for <linux-rdma@vger.kernel.org>; Mon, 23 Mar 2026 06:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.225
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774248326; cv=pass; b=lfGvp3zhN7q4mhGY5owvDFjUhhE6qD53kHptNEXz4f0x4CCCTts2t3T9GMFwW4NldkK0Mcfxs+p6XRGGT1tS+IdoBQfIIfOkmCMvOb2DlTSGdo0cMn0k8ZCOnhmi5uwl0tyef6tt7pbjHGbrgiLxmdHEov7LKibYXn6Wg38xYek=
+	t=1774248375; cv=pass; b=mM+44V0/1J9g7V78/NlM/eSxmfzcf470h4p93oNcQ4jQ+9Io5ifCCMMII9OC+lTpzwTvrJ6gJt4sWKuNPktOat/OXhJXJh04gdlihCyTMeS/mXF4i8WMyWQ+QkSjqoaYoH9mivpC69IfJ1hMQVnRU5ztlbyEvAamoSv4Jjlwg2g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774248326; c=relaxed/simple;
-	bh=Yw7LMKNWXXwAjdRJq+70fMJio1LYtizj9lN5pYJTsAk=;
+	s=arc-20240116; t=1774248375; c=relaxed/simple;
+	bh=Hx7CkDowlYEr1uO8YZsfboi9X33Y9/x6VlqesMkuVY0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UMF8AxKINMQPHpPAlhJYpDkG1ISZRMRTAvt1YZqIc9WxDBfnKun/aeqGC1ZE4vJWnbLP+N7rxQsqbKJeubM+A2KBs9RYuGOBItNskAjWoWJBY87kcZtsIja7GHpLDpH8nccohbUjaLteTEZyh7EaF+PUO9aUmfLDi0bC71CbPrI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QWcBOrXg; arc=pass smtp.client-ip=209.85.222.100
+	 To:Cc:Content-Type; b=tkUDvIYwHcAlUzyuXnehmJFVFefa3z5mAGsJrg7/M+rEsbTsilv29TTzSMmPHV8PYs5CIYMQFck03xOzojQXcLm5Mr85EIDB/7MaH8JEvQPU6gsxNwT1avtFy7XCL0yLE6dsVUny4gb7aQ72TxrDtWZk4HHirdAiGHLPcFynxtw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dEaXkNh2; arc=pass smtp.client-ip=74.125.82.225
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ua1-f100.google.com with SMTP id a1e0cc1a2514c-94dd7178d63so2198759241.3
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Mar 2026 23:45:24 -0700 (PDT)
+Received: by mail-dy1-f225.google.com with SMTP id 5a478bee46e88-2c10a2e2cd1so1778736eec.0
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Mar 2026 23:46:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774248324; x=1774853124;
+        d=1e100.net; s=20251104; t=1774248373; x=1774853173;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MdrRotmPrVs4dhJETORIOXvlhBvG6061LYSYV7zLjCU=;
-        b=c34w2OQwS1SMpfQi8lNqD609wNfYxnqF8HscsPppjILK54I4/Ft0DII9oBcm+5ITOe
-         Bk9mBbsz8Fn3JhlXJMSSA9LPMZhmammBiOnN2hFQAljyTATAPI56dFkeh7SlxwhP+Ood
-         exU2+nhaLa4jro76Gs/XrF3G1efW2MGsHyFfSubAGAKJBrYv4u+Z5XnDEj3ijtjI8wFg
-         JektGq+kFe8t3RtFq0mZxM5T+uZTc2gw4CP//I/4SBGOxCl8FfDqAZ/9jr1st+lFXDrJ
-         OHtPLvrkkpUFuVW4aaDBszh2xkPyJjamT/jaeQLfGl86X7D6VPPa0zLN6Z+bDzziJKND
-         inaw==
-X-Forwarded-Encrypted: i=2; AJvYcCUhQz0/eQYjbHdlCIUMiCWiSYcEQtSheVpLoPKcPbwzaj1ymbvX3I5XvocVnMV2/+ITdbGNUnBpvBR5@vger.kernel.org
-X-Gm-Message-State: AOJu0YyagUvoaIS6pj3WGsVmygD/MIpkFXDitAUXwQeI/jmmHg4zEGJ6
-	QGFuw5Vj8Qd4pkWIiVLfrwYJkPgh7mWDfdhILcwJoziv90a4VD5NtaEV8FqECLk8nBCHYrwRg7h
-	KcpkS87J+XiSwuGXNPiiEO6DAPw+BKFx4xnc7fNcBJeP/tft7oABOu+riHmkJcqJlVEOtyuuq6A
-	VCX2bV7zTl5BNjz3SFIohZ5teMDUF9AXftmQTxI4NVSnDtjwQkn6fo4l1DpiU1ayrB+Ea61MBCl
-	WL8WPpxeS2j8TFMvw==
-X-Gm-Gg: ATEYQzz8lvAwqofGAlEvbDuzVWd6S+0OZrcXWjvm+f5jLWBfBFZ8VVs7MbNXgpFMHFN
-	Hhfmk+KtuvCoRwOdu+oa2j4nV36jjbeiatYZgSPXG5ie4kNWPv6auxzWrwR5/xqIODPEf1cj4n8
-	KraVkTe+5zlQfPomHFfE2qgEC9p+fYUzk1O6KSzcoqNcCJka8PPHJBl1q6p7AomPRfvOB8efoKV
-	+lifYBWqpXL3Vg+2RkdyXED9nYHF5qesbllpqyz3UFDC5F30Yv4clFsaEOFq0nnpgMJUCnHfD0+
-	qTGUyIHtE0W8E0q0oXgsNeN2vy2vf1sCi/O2Wv0a76mBIJyufi9ozs5RtNwYD8jWUu/kCDQEQSg
-	wqPPwbsgPbE8SnTBm1ufg0c3Ry0BJ5uEFZdLQmy0a0mWyQ+hg2uk6qyITaiuyeCHliqeri66uSj
-	0r6zHUJ5NRKPHNIZGLPOrHp6zFAxpFJWxNjI+Kj8ygCxe96kM2NlPV7UuGucK0
-X-Received: by 2002:a67:e7c8:0:b0:602:789e:9de9 with SMTP id ada2fe7eead31-602aed4704bmr4997472137.31.1774248323525;
-        Sun, 22 Mar 2026 23:45:23 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-117.dlp.protect.broadcom.com. [144.49.247.117])
-        by smtp-relay.gmail.com with ESMTPS id ada2fe7eead31-602afc3f3casm864493137.5.2026.03.22.23.45.23
+        bh=4mJZb8EihqVQOT49DDLjQ0dZ6//dj5L8fPtsWq/Ikag=;
+        b=GBHcLQliokNe/qKAY9A+eXVWucJmcENCgF9fj+rOEMNC5kDlYrGNRoNFlOd3JxtFyI
+         p7fF7i2HuFbOkBa7f3Rz7ZbMfUiVEHfV8F06zfJIgsmsDACVt60YeQTNhhpdTWadShbY
+         ojOEhLoiGXZS+dz70WJqfNYO/e1EtKkRyeWpG6ZlHtIag2TQRLNFWWGKCnoa87b6cggo
+         Urp8833DL/ZzjOPIHeVh4W4oTg4lXQjNJnVhhrI/qf3Op/WVxa68Ak2bDoNuFFBkzyZv
+         XjHIN4k0KSVe0bJPrtQGreiEUYuuqVypWaXNRIcMrXjUuBl5lJNQ/22JDjjnAEeMMKU6
+         3lIQ==
+X-Forwarded-Encrypted: i=2; AJvYcCX0kSECqTK4311ofZk4kMAHzuohyIuP0OiS+EnW763D/jCY7o0Ro50S5x6qM8ZicLUtA5T28lpNs+GY@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDh1XF4em4IqNnB/oFu3wPZetdq6jQCjN9QC3N6PwM91ah9LYw
+	LUU/ktydVy5GINOtJM8HnuaNy4pmO7mcOdXt+23O6XlJkgNM5pBM/FdSAe+r0/6JNLXQ6zb8/XF
+	+2mT1g9GqHyZ42f5cumN3kBTaKTBxAFytDBBl3X/ZMfcm+2EgKyRrYjeXEkROnLEjOPBTm89+K+
+	+D5GNt1y7V4K4DzlpqnMrWngimb2SYqlDVVTd+uIiN4AMalRs4ka9hZKz2EnH4xDUMMY91jwYoM
+	pM4ND/PcbTUynitVw==
+X-Gm-Gg: ATEYQzy9QH0VUroA4+30yvY8AGM0i1xP5pCiEjos7pNtnzkA+bvC6N0amqdGPNTqxk+
+	fOFnGqqXfIxFQZARaa7ICBfZNhkjmO/jzLaM50H4txGwpVGkZ16sKqIVGaF0MxuP3sXmCDCX5Nf
+	IKbGKPDNjmMX8WWfM7KiCxeD54gOG6mpjzJPEbzXEH0vkvITsvjSEIV+N+MQvbk0m+ofpn9idHZ
+	9OuWhARCJ6owdBdarKY6AIEOEQpamWZiYSCqIWvsO5IqsqFtgCytiYqh6ylT4ySZGjspTo7SsGJ
+	qLVcCkVm+oR5UHlWi6vKtwGvSGaCSGcdhYH+2NhupKprNhfkIUIGwq5zFaDI2gP8i38QZo4pY3o
+	Z8L0Tu2zD+D3PG0NyLaDd+ZHN2EOzYKgiSQp5/27tbt3r+pxpOwdsWg9nT5gP6y1HTCTZ2kUnV1
+	2U2EhE3wdEOHOLHJsmJf6xhefjzdGFWz4HN0aOSVrQEQZckBM1patBVWeW8iWq
+X-Received: by 2002:a05:7300:5b95:b0:2be:b00c:d083 with SMTP id 5a478bee46e88-2c1097ecb5bmr5690229eec.35.1774248372547;
+        Sun, 22 Mar 2026 23:46:12 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-102.dlp.protect.broadcom.com. [144.49.247.102])
+        by smtp-relay.gmail.com with ESMTPS id 5a478bee46e88-2c10b293092sm772321eec.7.2026.03.22.23.46.12
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 22 Mar 2026 23:45:23 -0700 (PDT)
+        Sun, 22 Mar 2026 23:46:12 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-7d7e9eefb7aso21609308a34.1
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Mar 2026 23:45:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1774248323; cv=none;
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-463ee33f9b2so14664650b6e.3
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Mar 2026 23:46:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774248371; cv=none;
         d=google.com; s=arc-20240605;
-        b=j9t9WoAcFuYMt8LCshgF5jtkoV54bXeOz8/4Z6xFb+Tvuoq9J/52RE7LEBlM/Bur2Y
-         U6JV9QdnV44lOktNmsztWfDyQIk8xCRFsIWJtqa2v+8SQe+8vnCi1cF4y4EM2vTcIgj3
-         u/CCiwfK+WocxQ1gI3odpGXf/5aDg9nSW4ORTPClPr/zMJggAoG2zxb2z8s0tD+7MkY+
-         z0OkQbN3QQThn7agrPGOorYnnXSY/7q8qPIX7OKkL1438qcP1AgDV7zuCAqz9gHObyEh
-         C0OP3rjnT8fnf8ndkpddfymjBGD58GqLFc9gskUnBMVQTn3CkoAWIxZKDYkyng8XiIdd
-         Pwjw==
+        b=NuEYvVII2mdUTpcfPvTc+CAxbx6hb1g8REmf1ovij4MfYs5q3mphBWrUbrZ3isZ9OQ
+         RlpsqAGM2kIK60ZCVebOq+IeEibDVxKn9adRIz3ZChCUcIi2SmZqkKJiPSYSddglw7Zy
+         On5LIChw2YhUpmScwA9arfgA+ZvzAb5sm2Qbaj4HFK6jZtFMGfmNrVUpBVyI17S/sgbC
+         LqHKJMBwPqW9cQ+8LapCVQu76duEImGTx48gP+QNaEyBX4N15K4XVn1JcARwi4XkqU+I
+         hn4yqfal4DKe/LbNeP/FY/hoaj71Y7wP1gZ+NX0JlPftss86vPdxJyyKVInuPGhxyo5e
+         zzZA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=MdrRotmPrVs4dhJETORIOXvlhBvG6061LYSYV7zLjCU=;
-        fh=kWPaUEATa0vPBxSNbQe0eAjI6HzdayZZ5bXBpJXNby4=;
-        b=HgasrlBzR1VECbgBtJ+CNG+4UEuXFbvzyvOkBIEs5WNQjGrC8TLDZe2LVIdwc4QMXd
-         hMI4MWxAmHb5scOsiIlpvpIbPWO5lIHArAcU22HHwr5gNVKpj9l1MZsak+aw7nlKG3E0
-         Z5IoZMUWInqbUEpzckeVlvq6lt9keWRlaIPugYgKGL5elbWbpDboRqPDN59Wh1OZ2/Gd
-         jxbun7njpHj1lV/u1MGH3LMDE1IxHxAftjy2NOCJICPf5pL9D53LzY2wZNjvj7d3wyY4
-         Gjg2OIVf/UioKE7IqMmiUM5KGg68/ne3v/9DMISQw9uLI6kDx+Ur8zxnNZeBH4YkUmzN
-         VUuQ==;
+        bh=4mJZb8EihqVQOT49DDLjQ0dZ6//dj5L8fPtsWq/Ikag=;
+        fh=Hv/jvgcaKG9nLWu4Xwycnof2dpgeXtTvfz2A6sEe0Vo=;
+        b=jm2ReL2IB5EZZ8edgHIGjOtlRR28flxLiFODTUwQS0zaWKX6a3ZjirVPOpJbZMu9nh
+         euJObyocZo354Nu/K82jrSbsfnNTzB6zie4yTp09tpUvV3rQ70/23buU+/obp9eP+rZ/
+         6lQ9gRgrS3foDgxdRRLvNInEuhg5J2usszf1aHHhmL95+RGvQn2aVlAbwTUKh0bI5wED
+         k+O8ystg3lSxLRF4h0kiLclyvQoMnivAJB5t/3PXBMK3dHHA/+WV7J2Wq0DSEA+1KMi5
+         0SYzCAzRr0bg4KD9rULPnMK7de4TjowpK+UuSNyasesqX7IMU1k2SpLrjU0LpQ3TDsjy
+         5GtA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1774248323; x=1774853123; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1774248371; x=1774853171; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MdrRotmPrVs4dhJETORIOXvlhBvG6061LYSYV7zLjCU=;
-        b=QWcBOrXgCMXdF5SIKa2YZ13vLq9lYWEsFRZfiBLSxyagpEiTzyhNy3S+IuZ+jnEJEV
-         E8CIBbLAaBySa1ktOC2z0Ec/He4B7mPQUlI8ukRnnu3HzBJ6BlEONWo8X+PnXG5LX+Bg
-         GNaRjTuDm2Uz/oNILSJK/d8tQZRW626U4pP7o=
-X-Forwarded-Encrypted: i=1; AJvYcCVXmiYXEjzR51ThsIc02862iD4CPCX+5y0Gjpzy5eSEDSmnXyffgKWWjHgXhij7LW+FpQESPId0b4GL@vger.kernel.org
-X-Received: by 2002:a05:6830:441f:b0:7d7:ea9f:c104 with SMTP id 46e09a7af769-7d7eac46a3bmr7736347a34.0.1774248322693;
-        Sun, 22 Mar 2026 23:45:22 -0700 (PDT)
-X-Received: by 2002:a05:6830:441f:b0:7d7:ea9f:c104 with SMTP id
- 46e09a7af769-7d7eac46a3bmr7736333a34.0.1774248322268; Sun, 22 Mar 2026
- 23:45:22 -0700 (PDT)
+        bh=4mJZb8EihqVQOT49DDLjQ0dZ6//dj5L8fPtsWq/Ikag=;
+        b=dEaXkNh27Y9EjgZ4uOiQg4SCIn+4d5ePnmWsVqTXshjQV64l1SgtgMIECmCdWYop2I
+         LXYk3AMKHqatGoDcBCFna66Oev3wB5DLwdYHdm/YZKytFt7/bPdYkbUvy2pFyz/1N4f1
+         VYAFTDwI0+i7VCDqxV9A8G2HU/iLyy2fj4BH8=
+X-Forwarded-Encrypted: i=1; AJvYcCXKcK/ySBtbwdg3p87884fKbaN67kuIC2HiDpCyJUzzh1xj3Um6Zyn2QvSET9WTwbHITWzQqZQw3aL4@vger.kernel.org
+X-Received: by 2002:a05:6808:2221:b0:466:fd51:6a65 with SMTP id 5614622812f47-467e5dd1240mr6376720b6e.23.1774248371116;
+        Sun, 22 Mar 2026 23:46:11 -0700 (PDT)
+X-Received: by 2002:a05:6808:2221:b0:466:fd51:6a65 with SMTP id
+ 5614622812f47-467e5dd1240mr6376712b6e.23.1774248370611; Sun, 22 Mar 2026
+ 23:46:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260318-bnxt_re-cq-v1-0-381cb1b5e625@nvidia.com> <20260318-bnxt_re-cq-v1-4-381cb1b5e625@nvidia.com>
-In-Reply-To: <20260318-bnxt_re-cq-v1-4-381cb1b5e625@nvidia.com>
+References: <20260318-bnxt_re-cq-v1-0-381cb1b5e625@nvidia.com> <20260318-bnxt_re-cq-v1-3-381cb1b5e625@nvidia.com>
+In-Reply-To: <20260318-bnxt_re-cq-v1-3-381cb1b5e625@nvidia.com>
 From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Mon, 23 Mar 2026 12:15:10 +0530
-X-Gm-Features: AaiRm51Le9Z1Lm7fCWMH9Y6nWvgAH6pGz4E3-B7E94oN2k7A34Cg1-PVYBns6o0
-Message-ID: <CA+sbYW1o6fxyJjzmdPhryBXbu1KR5k1=HHXJdNDMc9AqX7iL8w@mail.gmail.com>
-Subject: Re: [PATCH rdma-next 4/4] RDMA/bnxt_re: Clean up uverbs CQ creation path
+Date: Mon, 23 Mar 2026 12:15:58 +0530
+X-Gm-Features: AQROBzD1pFnLHVE-bT2D-Eb_tT69nwpBSl26-IV5fgeUL0n8pYGrAHP_qdQPWZ4
+Message-ID: <CA+sbYW1-jqFS6XwMNAa3wuS65PL2G0_yiXuirdvG04NQUue08Q@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 3/4] RDMA/bnxt_re: Replace kcalloc() with kzalloc_objs()
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000000ac8c3064dab61d2"
+	boundary="000000000000eba64e064dab630f"
 X-Spamd-Result: default: False [-4.26 / 15.00];
 	SIGNED_SMIME(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18509-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18510-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -149,15 +149,15 @@ X-Spamd-Result: default: False [-4.26 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[selvin.xavier@broadcom.com,linux-rdma@vger.kernel.org];
 	HAS_ATTACHMENT(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,broadcom.com:dkim,broadcom.com:email,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 78FAA2ED254
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,broadcom.com:dkim,broadcom.com:email]
+X-Rspamd-Queue-Id: 2EFF42ED270
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
---0000000000000ac8c3064dab61d2
+--000000000000eba64e064dab630f
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -166,121 +166,48 @@ rote:
 >
 > From: Leon Romanovsky <leonro@nvidia.com>
 >
-> Remove unnecessary checks, user=E2=80=91visible prints that can flood dme=
-sg,
-> superfluous assignments, and convoluted goto label.
+> New code should use kzalloc_objs() instead of kcalloc(). Update the drive=
+r
+> accordingly.
 >
 > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
-This patch looks good to me. But i think the unwind part during error
-is not correct in the original code in couple of cases. I will fix it
-separately.
 > ---
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 28 +++++++++-----------------=
---
->  1 file changed, 9 insertions(+), 19 deletions(-)
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 >
 > diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniban=
 d/hw/bnxt_re/ib_verbs.c
-> index 1aee4fec137eb..59ef56030dbe8 100644
+> index cb53dfdf69bab..1aee4fec137eb 100644
 > --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 > +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> @@ -3377,7 +3377,6 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, cons=
-t struct ib_cq_init_attr *att
->         struct bnxt_qplib_chip_ctx *cctx;
->         struct bnxt_re_cq_resp resp =3D {};
->         struct bnxt_re_cq_req req;
-> -       int cqe =3D attr->cqe;
->         int rc;
->         u32 active_cqs, entries;
+> @@ -3486,8 +3486,7 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const str=
+uct ib_cq_init_attr *attr,
+>         cq->qplib_cq.cq_handle =3D (u64)(unsigned long)(&cq->qplib_cq);
 >
-> @@ -3385,10 +3384,8 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, con=
-st struct ib_cq_init_attr *att
->                 return -EOPNOTSUPP;
+>         cq->max_cql =3D attr->cqe + 1;
+> -       cq->cql =3D kcalloc(cq->max_cql, sizeof(struct bnxt_qplib_cqe),
+> -                         GFP_KERNEL);
+> +       cq->cql =3D kzalloc_objs(struct bnxt_qplib_cqe, cq->max_cql);
+>         if (!cq->cql)
+>                 return -ENOMEM;
 >
->         /* Validate CQ fields */
-> -       if (cqe < 1 || cqe > dev_attr->max_cq_wqes) {
-> -               ibdev_err(&rdev->ibdev, "Failed to create CQ -max exceede=
-d");
-> +       if (attr->cqe > dev_attr->max_cq_wqes)
->                 return -EINVAL;
-> -       }
+> @@ -4413,7 +4412,7 @@ struct ib_mr *bnxt_re_alloc_mr(struct ib_pd *ib_pd,=
+ enum ib_mr_type type,
+>         mr->ib_mr.lkey =3D mr->qplib_mr.lkey;
+>         mr->ib_mr.rkey =3D mr->ib_mr.lkey;
 >
->         cq->rdev =3D rdev;
->         cctx =3D rdev->chip_ctx;
-> @@ -3409,15 +3406,13 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, co=
-nst struct ib_cq_init_attr *att
->                 ibcq->umem =3D ib_umem_get(&rdev->ibdev, req.cq_va,
->                                          entries * sizeof(struct cq_base)=
-,
->                                          IB_ACCESS_LOCAL_WRITE);
-> -               if (IS_ERR(ibcq->umem)) {
-> -                       rc =3D PTR_ERR(ibcq->umem);
-> -                       goto fail;
-> -               }
-> +               if (IS_ERR(ibcq->umem))
-> +                       return PTR_ERR(ibcq->umem);
->         }
->
->         rc =3D bnxt_re_setup_sginfo(rdev, ibcq->umem, &cq->qplib_cq.sg_in=
-fo);
->         if (rc)
-> -               goto fail;
-> +               return rc;
->
->         cq->qplib_cq.dpi =3D &uctx->dpi;
->         cq->qplib_cq.max_wqe =3D entries;
-> @@ -3426,10 +3421,8 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, con=
-st struct ib_cq_init_attr *att
->         cq->qplib_cq.cnq_hw_ring_id =3D cq->qplib_cq.nq->ring_id;
->
->         rc =3D bnxt_qplib_create_cq(&rdev->qplib_res, &cq->qplib_cq);
-> -       if (rc) {
-> -               ibdev_err(&rdev->ibdev, "Failed to create HW CQ");
-> -               goto fail;
-> -       }
-> +       if (rc)
-> +               return rc;
->
->         cq->ib_cq.cqe =3D entries;
->         cq->cq_period =3D cq->qplib_cq.period;
-> @@ -3442,16 +3435,14 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, co=
-nst struct ib_cq_init_attr *att
->                 hash_add(rdev->cq_hash, &cq->hash_entry, cq->qplib_cq.id)=
-;
->                 /* Allocate a page */
->                 cq->uctx_cq_page =3D (void *)get_zeroed_page(GFP_KERNEL);
-> -               if (!cq->uctx_cq_page) {
-> -                       rc =3D -ENOMEM;
-> -                       goto fail;
-> -               }
-> +               if (!cq->uctx_cq_page)
-> +                       return -ENOMEM;
-> +
->                 resp.comp_mask |=3D BNXT_RE_CQ_TOGGLE_PAGE_SUPPORT;
->         }
->         resp.cqid =3D cq->qplib_cq.id;
->         resp.tail =3D cq->qplib_cq.hwq.cons;
->         resp.phase =3D cq->qplib_cq.period;
-> -       resp.rsvd =3D 0;
->         rc =3D ib_respond_udata(udata, resp);
->         if (rc) {
->                 bnxt_qplib_destroy_cq(&rdev->qplib_res, &cq->qplib_cq);
-> @@ -3462,7 +3453,6 @@ int bnxt_re_create_user_cq(struct ib_cq *ibcq, cons=
-t struct ib_cq_init_attr *att
->
->  free_mem:
->         free_page((unsigned long)cq->uctx_cq_page);
-> -fail:
->         return rc;
->  }
->
+> -       mr->pages =3D kcalloc(max_num_sg, sizeof(u64), GFP_KERNEL);
+> +       mr->pages =3D kzalloc_objs(u64, max_num_sg);
+>         if (!mr->pages) {
+>                 rc =3D -ENOMEM;
+>                 goto fail;
 >
 > --
 > 2.53.0
 >
 
---0000000000000ac8c3064dab61d2
+--000000000000eba64e064dab630f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -374,14 +301,14 @@ B3fwJWxl7miwNFjWuu9M6Z+rcjm3JF5srcAu2fp/VzQD4AE5Kq7ywukMvlU4Y3X2t+D2eU1DH8pk
 c8mM1CtQWfWUboaoLABVmYmYfihDvTURkzGCAlcwggJTAgEBMGIwUjELMAkGA1UEBhMCQkUxGTAX
 BgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gR0NDIFI2IFNNSU1F
 IENBIDIwMjMCDDy76dRYp65lyF2c4zANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQg
-d8m8kCPpgqyItw0GuIbBsjdXAaxjZVPm+6RjzzY2z1wwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
-ATAcBgkqhkiG9w0BCQUxDxcNMjYwMzIzMDY0NTIzWjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFl
+OZ7cGcWEi51zE0RaVsXxKmIFwKiK4T9b0eHbzMXnQUUwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
+ATAcBgkqhkiG9w0BCQUxDxcNMjYwMzIzMDY0NjExWjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFl
 AwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBBzAL
-BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAewqa3SvSCUzrz3tDblJQqu9/aa1HLuDdaeAw
-vRX4y2w4IyK7LqhrXzz3dGAGwB2LnR7dDaEzyqCauS7957z1yLgTD0E3o+b6b4ehlMWbaWZOIut7
-vhFnCfO3BduPjXCdE8mxqlmGLHttQn9g7HOAe5MYgDuPuADas0xpJY5t8FfGmgzsYmRevXcUJpb1
-fGc1kFhF+xD5rPEZ5ZJTEbzQvLjygUjPvAVEQWx1juGiy9BJrtDD3Dbdvutv2AvTa8iITGapf3fs
-Jk465aBjnZvg7JStfvAgOCX0KTYzHUGG5AQP/10LltkYpQ/78516RDThHwBRnCKak+mcB5D1DCfz
-0g==
---0000000000000ac8c3064dab61d2--
+BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAbgdaLu6/LqkyDBSfyrFh14wz7SGTpR75WO+S
+RSKsr31ETJBuJsMaZfwLSSgnE8PfJbabB7BvtuLDmRZW6iWcKAn9V/U3QkUujNnsRWHPxs+0AI/H
+m9eunr9ftwUAieP2R4ZpmfyhRyj3SwapBX2+ZRxEB2tzvr4nBZRSaLC5JnAtkVCV8f7ZwfTew74+
+B5PgTpZxKh7zmGpz7GTafOMZnq0U/VBL7C+BV+uG99fj0qJD7k4+sy3ACM6meIxqC9e9xXTF7x8e
+XmE3OachKrJ3ZDrTf4rIPVg3zcltqn5RAWnMwuVP2m27jvbFGXHgHfWuX/I1nvhBIIj1qq3Mugyv
+uw==
+--000000000000eba64e064dab630f--
 
