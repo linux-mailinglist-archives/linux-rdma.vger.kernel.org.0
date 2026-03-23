@@ -1,193 +1,234 @@
-Return-Path: <linux-rdma+bounces-18525-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18527-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGZrGXWCwWnATgQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18525-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 19:12:05 +0100
+	id 8N4hD8GBwWl2TgQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18527-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 19:09:05 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279B02FB02F
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 19:12:05 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D2E62FAEF4
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 19:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 52B5531551E9
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 17:45:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0A5DD308D8B8
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 17:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F56C3CBE73;
-	Mon, 23 Mar 2026 17:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC28A3C943E;
+	Mon, 23 Mar 2026 17:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CbbIcVxL"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="VYn+LNOX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11021091.outbound.protection.outlook.com [52.101.62.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0833CA4AF;
-	Mon, 23 Mar 2026 17:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774287735; cv=none; b=utKoP/LXZnrwCCsP1dgQsvidx5bGRh69B+M2fWSTTkehkjJPGIA8VlqKsI82XoZ+ynMg0vrdCdFZBS6GzlBAvXT0CBgsCbTsvEx//uJJGjwilf0mnlmS2gCkF51XxyTXWkNTtEy4OMCuqlm9dBDpD4m1mIKzbOrV3UGJswdEBa0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774287735; c=relaxed/simple;
-	bh=zrLVJdsj2xj26f+5MMV71txjt9WOFbmNImdJJSiEXBg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eAqFh7Vub5Ai34AqlUx/jo0Tj7m1903yyhGibmd9D9HTUZJI1BeQlHZ+M9XxBBOhcdHCF5kVzwSH/OBJDy6gdoPBY1EwZlQ5qq5m7cgCGePHv6n2mfDRVqj0DQANGjgZNWGI5OM44hU4nj4UYFtNCSDokkgrALjamwS7LHcPGVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CbbIcVxL; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62N8sYjj3255707;
-	Mon, 23 Mar 2026 17:42:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=QwswFw
-	tV3LAFfylhjXBfUeHEfQMdVgAYk5tz+zm7JvQ=; b=CbbIcVxLsqqIOLEfPOUUni
-	7UlzXTvla2cetxnbRlMuutL5AtqB9R5jA6peHwZipIwlPgESkWacu/4HARiWwjQM
-	H+zW9Fo81GyTRl/RNc3K2yl52zogiIXGd+J9MLqzFSg1GdhRGftvjhTQfB3o3YgH
-	hMd/+ernXW28NCSq3tvTQBELQjGigp6VCfkRqyWU1wNF3AAh5cU8Ollb/H8Lk5H/
-	J50QFfv7qKoBP3lIPx/scE/qfDMhnid29dE5tZ6HHQ+ePY5yLsAaPkU4Wu7wO8/Q
-	ubcHnp+k2cQTUgB2TbROfAHde5dFnuJ7GsEuO3fVbyA5ioyYSKbrJV6YEC/hxE0Q
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d1kumfrs6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Mar 2026 17:42:06 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62NFriVg031592;
-	Mon, 23 Mar 2026 17:42:05 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4d25nspgwq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Mar 2026 17:42:05 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62NHg1VV45285696
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 23 Mar 2026 17:42:01 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8D4C520043;
-	Mon, 23 Mar 2026 17:42:01 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 55EEE2004D;
-	Mon, 23 Mar 2026 17:42:01 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.87.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 23 Mar 2026 17:42:01 +0000 (GMT)
-From: Gerd Bayer <gbayer@linux.ibm.com>
-Date: Mon, 23 Mar 2026 18:41:51 +0100
-Subject: [PATCH v5 2/2] PCI: AtomicOps: Update references to PCIe spec
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477223C5DAC;
+	Mon, 23 Mar 2026 17:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774288484; cv=fail; b=IGYUlkoMQJvIgxfp0GjFauGPuJ8RF7AB0Ydl6MpkcL1/WKASna/85tF26eDX/FHrXip3hw0XPvPofTofidaHrQF6Qw2sNss8zmjr9/C8ClV8F0P2OghTpWth8jB29ZapQ8rl/iZlgjmE9h2fAK7rWdTx4hcGfUwaNfZA8N4rgr4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774288484; c=relaxed/simple;
+	bh=B7Gglzknsyd/gNWSbze4Piop1XCg8zp51CBtQXUVjyM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=XtCuaWu9DBoWUXBbFdSdwpzYotYeykZVfyk4F1UbRNbl/r19hI2KI8vy20GQhQONpML6XD6liU6lDYp2hSBXpfbo1RRFH9qvI5EKtFSLyB4quBI42s6bbDK7EwJYQ8b3vwtxSTao3PCvjMKacL59/6AhR9me8vMEDkxRY++jftc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=VYn+LNOX; arc=fail smtp.client-ip=52.101.62.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D9DP/1FNUVc7gIaB+jPrm4vc06F4IFWtN147q0u0LVTS2Q2EswOH2qtJOFTbzO4sUGn5Cq0WfNrRPrEYpyfJjf56CLkOtyseyHLUzM9N2ELo/G+6cuLyZ6IdRzYrR6hmQUwq9LW101tF5pAgZE2IBjrRVtwK+Iw/4MH4Yp/Kid2qRBTLB4bTyv3HF1wIgbphVtfF7PGffPiiZGnh7RXabuFDJZwHLAq/jsFncPOlanx9/DUKYK88+Mc23hYiIpizDt5uOo1b7zRhkpc26weSgiWR5F2896TuJzjaESN9e9ZEAjsokpGVzfHcGonNgDDiKAZjD52LD7ep5hB989sXTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uPYLIcbpvI2YBb0O2FyAhnGz4D8T1oRwOhYAife5QbU=;
+ b=mNSSYB7dwc9EFJbijJRIkrAUq3JpAfatwg/9akdB+wuMK/i2+/oH2PR4RoqDWY3iQvHpp1LAOyFnWYptSaQte9GQR6s8z74URwcWdpNQaGIQqjP5Ye1/+zH8TR/nKxbaiyZf/XbqCpg6+VGFWaR17TyIhH4JHDIqPys6Ow0pFjHBrf5fanRftUHRubtuegkT42Ps0s1ZUqsqQ9GUaseW7oVjnIqfM/OivT7nLmr7RHumzpu+RkweuuYZNyRIIvP/WiL34fe9gF+ZbsPHcuOQatDcDT07H3HVk4zsdKjn5DRFrgpHDEd5kxcnz0n1k22hq4yEq5HH/DH09/MovPO8Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uPYLIcbpvI2YBb0O2FyAhnGz4D8T1oRwOhYAife5QbU=;
+ b=VYn+LNOXy7hHJKD7A3PISJjYW3y9Lta6veZQZ8dSHphhDLsslSZnOj5Z93F1Okhftiwb8C7N/yM5pKVqaG4dBq/P/RsxulaGSgcO6Jmc8XruAHejU4NSzIUsq/csOaFUwNWR7PsT56oisv5IAz46OnWyKbhkX2ayiECudi83XKQ=
+Received: from SA1PR21MB6683.namprd21.prod.outlook.com (2603:10b6:806:4a4::6)
+ by SA1PR21MB6491.namprd21.prod.outlook.com (2603:10b6:806:4aa::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.5; Mon, 23 Mar
+ 2026 17:54:40 +0000
+Received: from SA1PR21MB6683.namprd21.prod.outlook.com
+ ([fe80::879f:eec1:ca0e:d219]) by SA1PR21MB6683.namprd21.prod.outlook.com
+ ([fe80::879f:eec1:ca0e:d219%3]) with mapi id 15.20.9769.004; Mon, 23 Mar 2026
+ 17:54:39 +0000
+From: Long Li <longli@microsoft.com>
+To: Simon Horman <horms@kernel.org>
+CC: Konstantin Taranov <kotaranov@microsoft.com>, Jakub Kicinski
+	<kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>, Paolo Abeni
+	<pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
+	<leon@kernel.org>, Haiyang Zhang <haiyangz@microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<DECUI@microsoft.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH net-next] net: mana: Set default number of
+ queues to 16
+Thread-Topic: [EXTERNAL] Re: [PATCH net-next] net: mana: Set default number of
+ queues to 16
+Thread-Index: AQHcuMGPjXjdMdDZokyzyRw1HtgbTbW8KNQAgABBsSA=
+Date: Mon, 23 Mar 2026 17:54:39 +0000
+Message-ID:
+ <SA1PR21MB668396B0EA5D18AA6F9B3950CE4BA@SA1PR21MB6683.namprd21.prod.outlook.com>
+References: <20260320233027.1603495-1-longli@microsoft.com>
+ <20260323135848.GA81558@horms.kernel.org>
+In-Reply-To: <20260323135848.GA81558@horms.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f389827f-0a51-4c51-be36-054440aba960;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-03-23T17:53:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB6683:EE_|SA1PR21MB6491:EE_
+x-ms-office365-filtering-correlation-id: 6b2a9c0f-bffe-45b3-8e88-08de89054173
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|7416014|376014|1800799024|366016|38070700021|22082099003|18002099003|56012099003;
+x-microsoft-antispam-message-info:
+ yesirtVIcypvzbdSLYhSmZaeAWzYGc1YIj6x3Cadh7MG4v9jRUQcZHqt063DruUoPSEydHosq92Wgd46hZzlgRZIDlRLCdNfNwTkufYWU4q4T8z7wJkoP5XssuB7vKHNY6mNn8kOO5h/4eu42wdW1DVjyI3IppkAVhwM5tLr3bs2A3XUCnaKBnwVYuXyRhmrkkRs5ZqUp9SDrBdz0NIAno+zINv0SbrMGf0zyT3EVLT4iLgo1ziGmp00l1uIQRyn3ecPPObTyvkNkoZLeAGT70yfI0eHR/ykRMniYPwryK8L3oPAtYBEFIOXhIXwbRvapBdWm7H88ST0eupy++mYnSwj7X67cR20bnzw77mA/jVm/c23r0m9ECAgrSNYYZ/w+hYVuL0sIAPyLs0Lj4YhE80tm/a+DkE0xT7i3wGmNvusoUDk8LjdY4ETecsYrjMSoQnpJysHAZhpQZUyRz123rnY7+EhxMpYb2vMAQXtuYatl8J25E5mbz73mpztDPPP/gSRAvMDfRHfb+uyrgzZu7TPVNFBKh/qF9w8rd52/kJOhUhiHAkwlqsP2o2YE/KgleMJ9Ewlxv/hk/6JYJiAc+yeeqEfV59N80a9lNNrdjaYnJKgRDQ3oc4ovUhMh0yyPvr4q0ACy6NP08xBRt2XC7o2Rb4ZshJczES09XXFJF67GjaQryRFA89nA9igdS4NxVuhRp2sYxmS8pssbfzKZMCuTtjjkcyLI5CKjP/5xsEeKxlY9JapN9K0tl+2VRCuOKVmBsmn6xDMYylpx40NOOfduyfrKV7vodtZbD1QOrg=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB6683.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(38070700021)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?8sMP3peYGXyPY/4n5MALJtgZ5qx24aD8E7hkTkAp6ZW2cK4k0XeL6ePvXGKN?=
+ =?us-ascii?Q?6laf3ti+8VMNPgHw/DATzkCDjra8YhZ7/4KhICVx0r374qPduq4LHZQLauu8?=
+ =?us-ascii?Q?x1t1tGxj72n4ig3a4xAYDG5H/H87HyyQUT5H6HqWpNejNZxOS2AecTfj+Bcr?=
+ =?us-ascii?Q?KOVnNPvUxrnAWE/SsF/8RYcCmTAa70VG6B9wSoeWzbp5Rl7lxAsFbVkKaz/Q?=
+ =?us-ascii?Q?A5NaG+oc9HNqAxL4bi9HJOdYtoa8Cg9Np0keGTjQyX0NB1zpEgpu/0tGTQt7?=
+ =?us-ascii?Q?aJDi53WfEzJ2vTQjrtPJG8+rC+/ZzLg9kcivpQZzOaH89yrqFrrmrvg/+0hV?=
+ =?us-ascii?Q?UIQ/w+tvcw4dPDa+gKuJSf9DMztC6bOnvBg7Yx76AfX4va3WoY4TS14hcE//?=
+ =?us-ascii?Q?rvfv70C7zOwyTCnfnF9HBBPrdPLrQD8/xTahYPWUNBE5j/sBHIsEoUHaKp34?=
+ =?us-ascii?Q?MwtKd4Xx0aOdobmlZj6D2jembc3TRKh5RQBxoeB1unGRaWRBYHGCHBkSKstC?=
+ =?us-ascii?Q?2rVQr13N06ICepnmVIbdQX601ozcJ0sZArIcIEcWk5rFjVeQiFsQV0akhDlq?=
+ =?us-ascii?Q?QEXwAbOM3RITzi54UKRUPktjoMESciT+UkbaIGYP7dHp/CZEn/EPuo5Bq2el?=
+ =?us-ascii?Q?aSWFoYnF2fEihji0w0wMNtyN1XI0yaJ+mVAHtPGwpk/DZ/llLPvnH09U5hpo?=
+ =?us-ascii?Q?js+IUdFdVYF1SYUSf5l1rx9KmKDp04xsJP+O0Cg6QtMWFUiemtSadrHmjwoZ?=
+ =?us-ascii?Q?fbRI6lKqNXYpRaNYmQ2anD9V6dJQIWc8Eqbl088wWz/BP9tSOsAnjcklXFsd?=
+ =?us-ascii?Q?YzXIe/YPZLP+U24vLf7DW9j9Cxr8aWRquhhyddhB7ivLENwpJZuiEe0MCdZ9?=
+ =?us-ascii?Q?bHwJbv/wg+EgbA82zR6/Ps+8rVavzMmUqtUVEHizwRI7C/Q0kn+JUD2nmmjF?=
+ =?us-ascii?Q?E3zZaFP+ir6rB295GSYVrvewm8RlccY82ieKG//rAmXHSGlaurj9K8ObkCLj?=
+ =?us-ascii?Q?3n8NnYwh9kh/Xn+jfcr/cgb38X/TNVRtny/cwXxGGzXdyrr4H/QU3LgLe4WG?=
+ =?us-ascii?Q?9i/YLzJltjLqHbDAJFShoXjpeFFJ2q4q5/X+IaDvonUQLO1w1uvd8TUDfIuS?=
+ =?us-ascii?Q?T6ge8egTN219kzgLFBrZUx89a3hH6eDxgCM/RMTAcaM4a4fuHE1BsB3I4Wtu?=
+ =?us-ascii?Q?uZ279A1vPbdIg8r+e3SWQSwFdqoNqyqI8NRx/0bEj4t65Mdp14tKVm9Jy8dh?=
+ =?us-ascii?Q?oW7PvNCUu1OFg+4yMwIomgHdUHWat7cnuGiIGbyMjB9UmMJcdoSBNUllp/Fp?=
+ =?us-ascii?Q?LuG6lX77u0+ZitmRfLn4jxyKec14mc4M9fkCBTjPhwQb+05y15wrz+qlAII+?=
+ =?us-ascii?Q?VCSeV7mZW6CwqHkiXZ2LkAenE09aCqzSFkvxqgv6n3NougNGSm3c86wZXF6h?=
+ =?us-ascii?Q?ZKvig6TflVymK8oUFM2i0+B6Dfuk73S8gCxFghKdXZQPbwrdDQ9W7e8r9PjA?=
+ =?us-ascii?Q?VdSiHO4l4o67rCG2KsTXXzVDGAaDYgR6BRpIusV12xaU/rK+USrbd2O6BvJW?=
+ =?us-ascii?Q?PXvNyvVB2HqFYm2y9E8tkCTKgMRfe88y/SnM1IJln2pPmfhs+0Yi+CONMiO2?=
+ =?us-ascii?Q?6w71rL+KupIE9BGcvIQMgmIbMghumlOzqEjp1AplPBIynNjIQnkHVYEiwIuj?=
+ =?us-ascii?Q?HuZpii9lv0PEMWxb9TfD8FveeJBMhN19D6Y7tHRJjkKp9IVU?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260323-fix_pciatops-v5-2-fada7233aea8@linux.ibm.com>
-References: <20260323-fix_pciatops-v5-0-fada7233aea8@linux.ibm.com>
-In-Reply-To: <20260323-fix_pciatops-v5-0-fada7233aea8@linux.ibm.com>
-To: Bjorn Helgaas <bhelgaas@google.com>, Jay Cornwall <Jay.Cornwall@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, Leon Romanovsky <leon@kernel.org>,
-        Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Gerd Bayer <gbayer@linux.ibm.com>
-X-Mailer: b4 0.14.2
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: eWgJrRiVhxH3dps7lrlp1t5Vod0TM67w
-X-Proofpoint-ORIG-GUID: H6kcuBex_MfWrPpLOzOjXuvIj5egMWF1
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzIzMDEyNyBTYWx0ZWRfX55AyJXs8QiFa
- n1JR2Ug45Wyl6m5BTOUWVT1BAGjsa7sNYdwNCX5bV84N4F/Zc38NVki4STtxvkrnsZsauk/RAjY
- zbqEYxQlK2MfcLCcB9E4YMqBF5PZfVf8bISfQrrxS/hIWiXdGEQSdTk0elcI5c/y2626WHzNcep
- dPSzL3SDAd3eGpuzsItCmtl6mmqAnHhagRZrqUOZsc7Ne9vx0uMfzStV/Dl05uSJu2DXZj7AlQE
- 8U+/o8c/u0JKk8bknYyRXhr+vtIJIe60AiW4FQD8mq6fw6kzIieKslCsJiJq2zCwa1wHZKjX2Xx
- O+np1Vu90p9USmpv6txnx4/GxqlJKsGJj1goqOVAWaPrnLqWbqIJqV85FsoWF50N0by8meKat/9
- bcYZ4/gt8DFHcRJAsrw625TGYm/FrYW7YMxFaWOjtsCcWNIBFIbhXIxsP07ATxVgGghDlUvpuwX
- Z7Q35AbYZs7kagAVQiQ==
-X-Authority-Analysis: v=2.4 cv=KbXfcAYD c=1 sm=1 tr=0 ts=69c17b6e cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8
- a=GT8QqqGQBE3YBt8_gt0A:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-23_04,2026-03-23_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1015
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603230127
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB6683.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b2a9c0f-bffe-45b3-8e88-08de89054173
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2026 17:54:39.8616
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Vc/RUX6WP51fa+c0MumUXEzpUlbFgAjLBmk/sAE3QFLJ7vcYsqiNFTGlqJuTDXCgeRU+qlMOqRY7awBZgjSleQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB6491
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-18525-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18527-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[ibm.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[microsoft.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gbayer@linux.ibm.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	PRECEDENCE_BULK(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[11]
-X-Rspamd-Queue-Id: 279B02FB02F
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[SA1PR21MB6683.namprd21.prod.outlook.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1D2E62FAEF4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Point to the relevant sections in the most recent release 7.0 of the
-PCIe spec. Text has mostly just moved around without any semantic
-change.
+>=20
+> On Fri, Mar 20, 2026 at 04:30:27PM -0700, Long Li wrote:
+> > Set the default number of queues per vPort to MANA_DEF_NUM_QUEUES
+> > (16), as 16 queues can achieve optimal throughput for typical
+> > workloads. Users can increase the number of queues up to max_queues via
+> ethtool if needed.
+> >
+> > Signed-off-by: Long Li <longli@microsoft.com>
+> > ---
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 2 +-
+> >  include/net/mana/mana.h                       | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > index 49c65cc1697c..7cae8a7b9f31 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > @@ -3357,7 +3357,7 @@ static int mana_probe_port(struct mana_context
+> *ac, int port_idx,
+> >  	apc->ac =3D ac;
+> >  	apc->ndev =3D ndev;
+> >  	apc->max_queues =3D gc->max_num_queues;
+> > -	apc->num_queues =3D gc->max_num_queues;
+> > +	apc->num_queues =3D min(gc->max_num_queues,
+> MANA_DEF_NUM_QUEUES);
+>=20
+> Hi Long Li,
+>=20
+> Maybe I am misunderstanding things.  But it seems to me that this patch s=
+ets a
+> ceiling on the default number of queues. Which is subtly different to set=
+ting the
+> default. Even if not in practice if max_num_queues is never less than
+> MANA_DEF_NUM_QUEUES.
+>=20
+> If so I'm wondering if you could tweak the commit message accordingly.
 
-Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
----
- drivers/pci/pci.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Yes, will tweak the commit message and resend patch.
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index c1143f8e6b2a0f029feb3c4390ac6f33837f6de1..d0d52ccf1ac18ce5a1917a713af9ab87b61cb7f9 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3695,7 +3695,7 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
- 	u32 cap, ctl2;
- 
- 	/*
--	 * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
-+	 * Per PCIe r7.0, sec 7.5.3.16, the AtomicOp Requester Enable bit
- 	 * in Device Control 2 is reserved in VFs and the PF value applies
- 	 * to all associated VFs.
- 	 */
-@@ -3706,9 +3706,9 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
- 		return -EINVAL;
- 
- 	/*
--	 * Per PCIe r4.0, sec 6.15, endpoints and root ports may be
-+	 * Per PCIe r7.0, sec 6.15, endpoints and root ports may be
- 	 * AtomicOp requesters.  For now, we only support endpoints as
--	 * requesters and root ports as completers.  No endpoints as
-+	 * requesters and root ports as completers. No endpoints as
- 	 * completers, and no peer-to-peer.
- 	 */
- 
+Thanks,
+Long
 
--- 
-2.51.0
-
+>=20
+> >  	apc->tx_queue_size =3D DEF_TX_BUFFERS_PER_QUEUE;
+> >  	apc->rx_queue_size =3D DEF_RX_BUFFERS_PER_QUEUE;
+> >  	apc->port_handle =3D INVALID_MANA_HANDLE;
+>=20
+> ...
 
