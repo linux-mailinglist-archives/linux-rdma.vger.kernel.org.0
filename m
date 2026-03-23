@@ -1,169 +1,145 @@
-Return-Path: <linux-rdma+bounces-18515-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18516-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gFYjOLMdwWlaQwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18515-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 12:02:11 +0100
+	id CG4wE8QjwWmTQwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18516-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 12:28:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 835CA2F0BD7
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 12:02:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A79222F1336
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 12:28:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3BAC4301060A
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 11:01:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D26913033AB6
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2026 11:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B22D392C28;
-	Mon, 23 Mar 2026 11:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20AA2391E7C;
+	Mon, 23 Mar 2026 11:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IX4tHpFV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0cyVVGr"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09BE392802;
-	Mon, 23 Mar 2026 11:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E1238D6BA;
+	Mon, 23 Mar 2026 11:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774263714; cv=none; b=BNv1yuHDnNFRro3QvpsDZO0plNgQcxjfrzVNWGKanLKNuEuBTVHsxKlEjx7WT8M8M/s2AeqlWsaZGJ8gi/FmyfASrYmdBCxOVn8qP9uSXjlgLpGpvX/kL2c8kgRxaBS9ssal0hYNDEMewf5LImxv0CJ5xLm+LrvUt/WEjR8IxZA=
+	t=1774264449; cv=none; b=u6MUUide1Du/MqfbCJINvFhJ+FnXh+ICJ8VRengHYOViZDzzJRzENWqUUda8VEjomh88mMgC4Ot3jPtqVb8qFkvc9tE19geyOmrHXDFdBsR/pdXzT2JdUlpfmDQ7EkDarhysY7AGjCHbUmKyXtKCBEEhO9jiW4y+UWAVVo0WAHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774263714; c=relaxed/simple;
-	bh=imVv5EG3DZvwMibJMQPIQgAXd8NxzOALu6vmEfSTsPE=;
+	s=arc-20240116; t=1774264449; c=relaxed/simple;
+	bh=blTgKdsB6hMF8lUQQCxUPVNXYwUxtNk252kTVVYCDPU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VNwrc+Bqo6epyT0GVNPLxTGztTras/oHU8/yYMYFATL+AL5b8qgTLr1ZfWaSL1jlTfY3/RFvcoC/8prjzB1o3ZbHhEiijT/2iIJmFJaI0ud66xX+89kOqKkpIqwSvBqNaiDz5Kq8t2vZFloTBVqKMNcKTmd04AXN38s+AjIEMqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IX4tHpFV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3458C4CEF7;
-	Mon, 23 Mar 2026 11:01:52 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QybifKouOtJLuRk7X3jBYfbOWuIjX6PTA8XMykQlh22K8Kb8a0opze0qaRRdOWpkgfbRZEkn/RvwZVcYxcNRcCgKo7CimDcFedja90nLqyM4Wi+o9swqhmDL3DIJfvV7lGtH/rXEL1NNwFsyzb82RUdPEaXj5GqvgqcFQVfNoKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0cyVVGr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1269BC4CEF7;
+	Mon, 23 Mar 2026 11:14:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774263713;
-	bh=imVv5EG3DZvwMibJMQPIQgAXd8NxzOALu6vmEfSTsPE=;
+	s=k20201202; t=1774264449;
+	bh=blTgKdsB6hMF8lUQQCxUPVNXYwUxtNk252kTVVYCDPU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IX4tHpFVUpZsw6fAFSiGydpzX2vEz/VPYS7T8ep/6DT7rAdreGWGyfgMGYmINZVCy
-	 fGCRtVmQYbPpdAsGHP9loA7NwYi+nDE/ZOahYRZM9XeFvArnX0izGFoxwk4OMuNrRf
-	 fYzW1aODzleSVsDnkh0AsUFMbpQUGb6eQVkDbnA5uYGafi/MpfywmIQikdnmZMbTPL
-	 HWB8iJdXajwXnKZbn26UAU1uhu3YFzSGU5bx741L7DsafprV7DO+2sCDBnfICJ5G5f
-	 U3g1Fj3xRlAP5+ermCR9BO+87cjmOt6SZ0nSaSr8jUOSy0SwsQY2QXh175kSmFw8bn
-	 qS9+pZrA+Iecg==
-Date: Mon, 23 Mar 2026 13:01:44 +0200
+	b=e0cyVVGrRHeRcHpLHamnbE5lGsropL3mExESMYquGE23C8dOZvT58CheZicVx/xse
+	 P9Gsq9dsTwXlttfHfqnzW6xLW06+ZqzpsBpnfouP2s4TYkhfvF19EXf2H8Lw8xSlpJ
+	 jNuX9JylstAVPx5TA3pNegD5skJ6Bt2rD6obfa6ONjnUru2DpYNDqkFjNUlENqgy3v
+	 prb/GAy5hfKop8nBn5CHFISldPG2bAOCPAgSF2QZ4wWMgLVw8B8ns+Qva0sbrubtmO
+	 3JxrQ8tbWF/9SOLDVkzbwq8mMeSzIo1wJFrN6ulNA9Q/e0Uyk/z/ipk8nov9Fvwg7E
+	 NxDbVst2ke8XA==
+Date: Mon, 23 Mar 2026 13:14:01 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Arnd Bergmann <arnd@kernel.org>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Mike Marciniszyn <mike.marciniszyn@intel.com>,
-	"Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-	Doug Ledford <dledford@redhat.com>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Ingo Molnar <mingo@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 2/3] RDMA/hfi1, rdmavt: open-code rvt_set_ibdev_name()
-Message-ID: <20260323110144.GG814676@unreal>
-References: <20260320151511.3420818-1-arnd@kernel.org>
- <20260320151511.3420818-2-arnd@kernel.org>
- <6b56c476-86fd-4d43-8dee-c7f89d346941@app.fastmail.com>
- <20260323080848.GF814676@unreal>
- <5d5f25fc-e522-4131-ae4b-22db57b92d6e@app.fastmail.com>
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next 1/4] RDMA/bnxt_re: Simplify
+ bnxt_re_init_depth() callers and implementation
+Message-ID: <20260323111401.GH814676@unreal>
+References: <20260318-bnxt_re-cq-v1-0-381cb1b5e625@nvidia.com>
+ <20260318-bnxt_re-cq-v1-1-381cb1b5e625@nvidia.com>
+ <CA+sbYW0vhjp49vngMs21DXErN=tMRN3M8uxqSSjOHL+H0uAbvw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5d5f25fc-e522-4131-ae4b-22db57b92d6e@app.fastmail.com>
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+sbYW0vhjp49vngMs21DXErN=tMRN3M8uxqSSjOHL+H0uAbvw@mail.gmail.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18515-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,cornelisnetworks.com,ziepe.ca,intel.com,redhat.com,gmail.com,google.com,suse.com,vger.kernel.org,lists.linux.dev];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18516-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma,lkml];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 835CA2F0BD7
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A79222F1336
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 23, 2026 at 09:48:59AM +0100, Arnd Bergmann wrote:
-> On Mon, Mar 23, 2026, at 09:08, Leon Romanovsky wrote:
-> > On Fri, Mar 20, 2026 at 04:53:04PM +0100, Arnd Bergmann wrote:
-> >> On Fri, Mar 20, 2026, at 16:12, Arnd Bergmann wrote:
-> >> 
-> >> > +	 */
-> >> > +	ibdev = &dd->verbs_dev.rdi.ibdev;
-> >> > +	dev_set_name(&ibdev->dev, "%s_%d", class_name(), dd->unit);
-> >> > +	strscpy(&ibdev->name, dev_name(&ibdev->dev), IB_DEVICE_NAME_MAX);
-> >> > +
-> >> 
-> >> I messed this up during a rebase, that should have been 
-> >> 
-> >>        strscpy(ibdev->name, dev_name(&ibdev->dev), IB_DEVICE_NAME_MAX);
-> >> 
-> >> (without the extra &). I'll wait for comments before resending.
+On Mon, Mar 23, 2026 at 11:46:43AM +0530, Selvin Xavier wrote:
+> On Wed, Mar 18, 2026 at 3:39 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > The hfi1 driver is scheduled for removal. Dennis has already posted the
-> > hfi2 driver, which serves as its replacement.
-> 
-> Ok, that does sound like a sensible decision, and I'll just drop
-> patches 1 and 3 then, which are just cleanups.
-> 
-> The cover letter at [1] suggests that the two drivers will still
-> coexist for a bit though, so I think we'd still want patch 2/3
-> in order to get a clean 'allmodconfig' build when the 
-> -Wmissing-format-attribute is enabled by defaultt. I have a couple
-> of patches in flight.
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > All callers of bnxt_re_init_depth() compute the minimum between its return
+> > value and another internal variable, often mixing variable types in the
+> > process. Clean this up by making the logic simpler and more readable.
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 81 ++++++++++++++------------------
+> >  drivers/infiniband/hw/bnxt_re/ib_verbs.h |  9 ++--
+> >  2 files changed, 42 insertions(+), 48 deletions(-)
 
-Sure, builds need to be fixed.
+<...>
 
-> 
-> I took a quick look at the hfi2 driver, and noticed a few things
-> that that may be worth addressing before it gets merged, mostly
-> stuff copied from hfi1:
-> 
-> - A few global functions with questionable namespacing:
->   user_event_ack, ctxt_reset, iowait_init, register_pinning_interface,
->   sc_{alloc,free,enable,disable}, pio_copy, acquire_hw_mutex,
->   load_firmware, cap_mask.
->   It would make sense to prefix all global identifiers with 'hfi2_',
->   both out of principle, and to allow building hfi1 and hfi2 into
->   an allyesconfig kernel without link failures.
-> 
-> - The use of INFINIBAND_RDMAVT seems unnecessary: right now
->   this is only used by hfi1, now shared with hfi2 but later to
->   be exclusive to the latter. Since it is unlikely to ever
->   be used by another driver again, this may be a good time
->   to drop the abstraction again and integrate it all into
->   hfi2, with the old version getting dropped along with hfi1.
+> > -static inline u32 bnxt_re_init_depth(u32 ent, struct bnxt_re_ucontext *uctx)
+> > +static inline u32 bnxt_re_init_depth(u32 ent, u32 max,
+> > +                                    struct bnxt_re_ucontext *uctx)
+> >  {
+> > -       return uctx ? (uctx->cmask & BNXT_RE_UCNTX_CAP_POW2_DISABLED) ?
+> > -               ent : roundup_pow_of_two(ent) : ent;
+> > +       if (uctx && !(uctx->cmask & BNXT_RE_UCNTX_CAP_POW2_DISABLED))
+> > +               return min(roundup_pow_of_two(ent), max);
+> Looks like the min setting is missing in the else case. shouldn't we add that?
 
-The best approach is to drop rdmavt as well, since hfi2 is expected to
-align with the other drivers in drivers/infiniband/hw.
-
-Dennis, is this feasible?
+I did not add it because all callers of bnxt_re_init_depth() already check  
+that ent is less than max. However, roundup_pow_of_two() requires a  
+min() guard because it can overflow the prior range check.
 
 Thanks
+
+> 
+> > +
+> > +       return ent;
+> >  }
+> >
+> >  static inline bool bnxt_re_is_var_size_supported(struct bnxt_re_dev *rdev,
+> >
+> > --
+> > 2.53.0
+> >
+
+
 
