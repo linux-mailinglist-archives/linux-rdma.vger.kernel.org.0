@@ -1,65 +1,66 @@
-Return-Path: <linux-rdma+bounces-18546-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18547-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +MIWBvDdwWnxXQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18546-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2026 01:42:24 +0100
+	id 6CpnDdvewWnxXQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18547-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2026 01:46:19 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC5902FFDE6
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2026 01:42:23 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CEF62FFF4B
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2026 01:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D64FC3087EAF
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2026 00:39:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 43A9530610D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2026 00:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3584630B51D;
-	Tue, 24 Mar 2026 00:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C33030DEB0;
+	Tue, 24 Mar 2026 00:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rvbZtirt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qCd4Q3vB"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E912524BBF0;
-	Tue, 24 Mar 2026 00:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA85211A05;
+	Tue, 24 Mar 2026 00:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774312797; cv=none; b=Asl7rq1gcebyae15zha1ZJi0Mm5bqPToKyE0SfnCtKUUeDA9o3dFXtoTJo82co+1mVH9LgL2PIWj8MHxSdcxGF5zrRRQLgm2hXh/bRqIB2EdZXZaPI41+CPqOfbOs/4YkMglyh4gf5nxtZlwu2WZDGIGC4MS+zhqrcYNC676CvQ=
+	t=1774313087; cv=none; b=XGDXKLpdDA2Wt31CCJQwLZUpoBSmM5kg+o2EfI33vucdVGkkmfffSiMKqXi9pNW4g8axJ9smUpWhBB8rvPUjnfmNsPfM02tDrjM1ET2N4uEAtevY1dij87EAchzFm1dF1OXtUE5E/TRceL4SD2nGe95tG//KGQef9mTC72eQ6qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774312797; c=relaxed/simple;
-	bh=QjDO1u3tuu+DLUdsm+IoGRajW5P/NFNjR0ZmLm0KHdM=;
+	s=arc-20240116; t=1774313087; c=relaxed/simple;
+	bh=3NSu7dAMpTidKifNZ3xkJ8mY9uh7nIOtKm0YyLlr0gc=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jt/ltbFg4qLA6qaF0wYNtGYCwq/LwX2TkumY/xeRLotg6gM8sR2YtZWdeMTAJZYtMc8hCP11+XiQWGgSSXhSOiW5m4VBJPE4sRu7SPJRScKCT2iHGALpfSHjn20tMZuLmmaWzG3RZH36MtbQD5pUx11pBKMhBkUFerQVXoRSvkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rvbZtirt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F2CEC4CEF7;
-	Tue, 24 Mar 2026 00:39:56 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ESPngaxZ6IpKWUGz344fE47nwC022tHOq+e8oaMqWQNoxp1vB5neoPKVEjjGv5FqwK5TD7vcXY3JHPlnm7mRbyb1R5GKanBX+uqQeSXVO3Bn/WooATx6KChpziCTXJleoTYerelc15poFdNMBuq57jNl8OyHKhwpRV47JoQMEeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qCd4Q3vB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA5F9C4CEF7;
+	Tue, 24 Mar 2026 00:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774312796;
-	bh=QjDO1u3tuu+DLUdsm+IoGRajW5P/NFNjR0ZmLm0KHdM=;
+	s=k20201202; t=1774313086;
+	bh=3NSu7dAMpTidKifNZ3xkJ8mY9uh7nIOtKm0YyLlr0gc=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rvbZtirtWQcmgmdy0Gi61uqKYp5ygwRGU5IhMcYHSjn9Z/BMtIM9Fw6tNWFdb7un8
-	 r1uCd/E637Y8y2gDEoJCf2FpcIT7xnLg13kjNZZIYTeSd0Z7TzEqrKok7z6bIDAETn
-	 k3c687wTm/zZ7gZ5szV5krgXG5e1NovrkA45bBpkyRw60rmP5w0Y0Mq6lkMfUgRNdW
-	 9abpHVuRuknCPwXs1tpBEMkKAVHeNYdnuxpefASgPht+OaFFymn3Y23ZIqWKAL6hGc
-	 ouRP62NxrLGanHvAuWYKrRLNycqCmLOFqS492ZBjYi7vlmyKFHof2m10q33EfUQSq/
-	 BJXWmKG6vKEBA==
-Date: Mon, 23 Mar 2026 17:39:55 -0700
+	b=qCd4Q3vBmKwC5MsElOJY+nQA1z6tzazp9xgKuaDXql8okKIclHvZzXa7En2D1bIDq
+	 j+/nzNSawpniCaoaTp0P5W2/dLQ4Fymf/WgJklz6R8bCvJ9PpLHYtBGhKdwFy41+QG
+	 NuF67KIti868RCndQrOdNQls9ouGwf3vnvpgibMz38997iqgqlO2x5BTO5vUs7rOYI
+	 mV6UYtSkxgT1RbVZMebR23oTn3xifwy6ky+CljXK16ZEEZf2uvcg+hI5Lv+pMkTzxK
+	 /CNIJVxRL99eMopvx79siDEqU4FL89YUa6osaI2jB5k8JbORrcZ7ohBWqlmyxKPLmf
+	 GcCPWqBP03BGA==
+Date: Mon, 23 Mar 2026 17:44:44 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
- <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe
- Shemesh <moshe@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net-next 3/3] net/mlx5e: Speed up channel creation by
- initializing MKEY entries via UMR WQE
-Message-ID: <20260323173955.39c8c902@kernel.org>
-In-Reply-To: <20260319074338.24265-4-tariqt@nvidia.com>
-References: <20260319074338.24265-1-tariqt@nvidia.com>
-	<20260319074338.24265-4-tariqt@nvidia.com>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
+ dipayanroy@linux.microsoft.com, yury.norov@gmail.com, kees@kernel.org,
+ ssengar@linux.microsoft.com, gargaditya@linux.microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: mana: Expose hardware diagnostic info
+ via debugfs
+Message-ID: <20260323174444.2717da3d@kernel.org>
+In-Reply-To: <20260319070926.1459515-1-ernis@linux.microsoft.com>
+References: <20260319070926.1459515-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -73,191 +74,97 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18546-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18547-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: BC5902FFDE6
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8CEF62FFF4B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 19 Mar 2026 09:43:38 +0200 Tariq Toukan wrote:
-> Initializing all UMR MKEY entries as part of the CREATE_MKEY firmware
-> command is relatively slow. Since this operation is performed per RQ,
-> the cumulative latency becomes significant with a large number of
-> queues.
+On Thu, 19 Mar 2026 00:09:13 -0700 Erni Sri Satya Vennela wrote:
+> Add debugfs entries to expose hardware configuration and diagnostic
+> information that aids in debugging driver initialization and runtime
+> operations without adding noise to dmesg.
 > 
-> Move the entries initialization out of the CREATE_MKEY command and
-> perform it in the fast path by posting an appropriate UMR WQE on the
-> ICOSQ.
+> The debugfs directory creation and removal for each PCI device is
+> integrated into mana_gd_setup() and mana_gd_cleanup_device()
+> respectively, so that all callers (probe, remove, suspend, resume,
+> shutdown) share a single code path.
 > 
-> The UMR WQE is prepared and written to the ICOSQ before activation,
-> making it safe without additional locking, as it does not race with NOP
-> postings or early NAPI refills.
+> Device-level entries (under /sys/kernel/debug/mana/<slot>/):
+>   - num_msix_usable, max_num_queues: Max resources from hardware
+>   - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
+>   - num_vports, bm_hostmode: Device configuration
 > 
-> Performance results:
-> Setup: 248 channels, MTU 9000, RX/TX ring size 8K.
+> Per-vPort entries (under /sys/kernel/debug/mana/<slot>/vportN/):
+>   - port_handle: Hardware vPort handle
+>   - max_sq, max_rq: Max queues from vPort config
+>   - indir_table_sz: Indirection table size
+>   - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
+>     Last applied steering configuration parameters
 
 AI says:
 
-> @@ -397,57 +396,61 @@ static u8 mlx5e_mpwrq_access_mode(enum mlx5e_mpwrq_umr_mode umr_mode)
-> +static int mlx5e_rq_umr_mkey_data_alloc(struct mlx5e_rq *rq, u32 npages,
-> +					struct mlx5_wqe_data_seg *dseg)
-> +{
-> +	dma_addr_t data_addr;
-> +	int data_sz;
-> +	void *data;
+> @@ -1918,15 +1930,23 @@ static int mana_gd_setup(struct pci_dev *pdev)
+>  	struct gdma_context *gc = pci_get_drvdata(pdev);
+>  	int err;
 >  
-> -	octwords = mlx5e_mpwrq_umr_octowords(npages, umr_mode);
-> +	data_sz = mlx5e_mpwrq_umr_octowords(npages, rq->mpwqe.umr_mode) *
-> +		MLX5_OCTWORD;
-> +	rq->mpwqe_sp.init_data.p_unaligned =
-> +		kzalloc(data_sz + MLX5_UMR_ALIGN - 1, GFP_KERNEL);
-Is this allocation safe for large setups?
-For setups with large ring sizes like 8K WQEs in OVERSIZED mode, the data size
-can reach 256KB to 1MB. Requesting physically contiguous high-order allocations
-across many channels during interface bring-up might fail on memory-fragmented
-systems.
-Should this continue to fall back to vmalloc like the previous kvzalloc code
-did?
+> +	if (gc->is_pf)
+> +		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
+> +	else
+> +		gc->mana_pci_debugfs = debugfs_create_dir(pci_slot_name(pdev->slot),
+> +							  mana_debugfs_root);
 
-> @@ -455,48 +458,152 @@ static int mlx5e_create_umr_mkey(struct mlx5_core_dev *mdev,
-> +static int mlx5e_rq_umr_mkey_data_init(struct mlx5e_rq *rq, u32 npages)
-> +{
-> +	struct mlx5_wqe_ctrl_seg      *cseg;
-> +	struct mlx5_wqe_umr_ctrl_seg *ucseg;
-> +	struct mlx5e_icosq *sq = rq->icosq;
-> +	struct mlx5e_umr_wqe *umr_wqe;
-> +	u16 pi, num_wqebbs, octowords;
-> +	u8 ds_cnt;
-> +	int err;
-> +
-> +	/* + 1 for the data segment */
-> +	ds_cnt = 1 + DIV_ROUND_UP(offsetof(struct mlx5e_umr_wqe, dseg),
-> +				  MLX5_SEND_WQE_DS);
-> +	num_wqebbs = DIV_ROUND_UP(ds_cnt, MLX5_SEND_WQEBB_NUM_DS);
-> +	pi = mlx5e_icosq_get_next_pi(sq, num_wqebbs);
-> +	umr_wqe = mlx5_wq_cyc_get_wqe(&sq->wq, pi);
-> +	memset(umr_wqe, 0, num_wqebbs * MLX5_SEND_WQE_BB);
-> +
-> +	cseg = &umr_wqe->hdr.ctrl;
-> +	ucseg = &umr_wqe->hdr.uctrl;
-> +
-> +	cseg->opmod_idx_opcode =
-> +		cpu_to_be32((sq->pc << MLX5_WQE_CTRL_WQE_INDEX_SHIFT) |
-> +			    MLX5_OPCODE_UMR);
-> +	cseg->qpn_ds = cpu_to_be32((sq->sqn << MLX5_WQE_CTRL_QPN_SHIFT) |
-> +				   ds_cnt);
-> +	cseg->umr_mkey = rq->mpwqe_sp.umr_mkey_be;
-> +
-> +	octowords = mlx5e_mpwrq_umr_octowords(npages, rq->mpwqe.umr_mode);
-> +	ucseg->xlt_octowords = cpu_to_be16(octowords);
-> +	ucseg->mkey_mask = cpu_to_be64(MLX5_MKEY_MASK_FREE);
-> +
-> +	err = mlx5e_rq_umr_mkey_data_alloc(rq, npages, umr_wqe->dseg);
-> +	if (err)
-> +		return err;
-> +
-> +	mlx5e_rq_umr_mkey_data_fill(rq, npages);
+If pdev->slot is NULL (which can happen for VFs in environments like generic
+VFIO passthrough or nested KVM), will pci_slot_name(pdev->slot) cause a
+NULL pointer dereference?
 
-Could this sequence violate DMA coherency rules?
-The buffer is mapped to the device with dma_map_single inside
-mlx5e_rq_umr_mkey_data_alloc, but then mlx5e_rq_umr_mkey_data_fill writes the
-MKEY translation data into the buffer.
-On architectures without hardware cache coherency, the CPU writes might
-remain in the cache, causing the NIC to read stale memory instead of the
-actual MKEY data.
+Also, could this naming scheme cause name collisions? If multiple PFs are
+present, they would all try to use "0". Similarly, VFs across different
+PCI domains or buses might share the same physical slot identifier, leading
+to -EEXIST errors. Would it be safer to use the unique PCI BDF via
+pci_name(pdev) instead?
 
+> @@ -3141,6 +3149,24 @@ static int mana_init_port(struct net_device *ndev)
+>  	eth_hw_addr_set(ndev, apc->mac_addr);
+>  	sprintf(vport, "vport%d", port_idx);
+>  	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
 > +
-> +	sq->db.wqe_info[pi] = (struct mlx5e_icosq_wqe_info) {
-> +		.wqe_type   = MLX5E_ICOSQ_WQE_UMR_RX_INIT,
-> +		.num_wqebbs = num_wqebbs,
-> +		.umr.rq     = rq,
-> +	};
-> +
-> +	sq->pc += num_wqebbs;
-> +
-> +	sq->doorbell_cseg = cseg;
+> +	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
+> +			   &apc->port_handle);
 
-Can this leave a stale pointer in sq->doorbell_cseg?
-If a NOP WQE is later pushed to the ICOSQ but fails to clear this pointer, and
-a subsequent allocation error occurs during the first iteration of
-mlx5e_post_rx_mpwqes, the error path might use this stale doorbell_cseg.
-Modifying an already-executed WQE could desynchronize the queue and stall the
-ICOSQ.
+When operations like changing the MTU or setting an XDP program trigger a
+detach/attach cycle, mana_detach() invokes mana_cleanup_port_context(),
+which recursively removes the apc->mana_port_debugfs directory.
+During re-attachment, mana_attach() calls mana_init_port(), which
+recreates the directory and the new files added in this patch. However, the
+pre-existing current_speed file (created in mana_probe_port()) is not
+recreated here.
 
-> @@ -505,7 +612,6 @@ static int mlx5e_create_umr_mkey(struct mlx5_core_dev *mdev,
->  
->  static int mlx5e_create_rq_umr_mkey(struct mlx5_core_dev *mdev, struct mlx5e_rq *rq)
->  {
-> -	u32 xsk_chunk_size = rq->xsk_pool ? rq->xsk_pool->chunk_size : 0;
->  	u32 wq_size = mlx5_wq_ll_get_size(&rq->mpwqe.wq);
->  	u32 num_entries, max_num_entries;
->  	u32 umr_mkey;
-> @@ -522,9 +628,16 @@ static int mlx5e_create_rq_umr_mkey(struct mlx5_core_dev *mdev, struct mlx5e_rq
->  			      max_num_entries);
->  
->  	err = mlx5e_create_umr_mkey(mdev, num_entries, rq->mpwqe.page_shift,
-> -				    &umr_mkey, rq->wqe_overflow.addr,
-> -				    rq->mpwqe.umr_mode, xsk_chunk_size);
-> +				    &umr_mkey, rq->mpwqe.umr_mode);
-> +	if (err)
-> +		return err;
-> +
->  	rq->mpwqe_sp.umr_mkey_be = cpu_to_be32(umr_mkey);
-> +
-> +	err = mlx5e_rq_umr_mkey_data_init(rq, num_entries);
-> +	if (err)
-> +		mlx5_core_destroy_mkey(mdev, umr_mkey);
-> +
->  	return err;
->  }
-
-Does this code leak the initialization data and DMA mapping if a failure
-happens later during queue creation?
-If mlx5e_create_rq_umr_mkey completes successfully, but the broader
-mlx5e_alloc_rq fails on a subsequent step like page pool creation, the teardown
-seems to miss calling mlx5e_rq_umr_mkey_data_free for the newly allocated
-buffer.
-
-> @@ -1275,8 +1389,11 @@ int mlx5e_wait_for_min_rx_wqes(struct mlx5e_rq *rq, int wait_time)
->  	u16 min_wqes = mlx5_min_rx_wqes(rq->wq_type, mlx5e_rqwq_get_size(rq));
->  
->  	do {
-> -		if (mlx5e_rqwq_get_cur_sz(rq) >= min_wqes)
-> +		if (mlx5e_rqwq_get_cur_sz(rq) >= min_wqes) {
-> +			/* memory usage completed, can be freed already */
-> +			mlx5e_rq_umr_mkey_data_free(rq);
->  			return 0;
-> +		}
->  
->  		msleep(20);
->  	} while (time_before(jiffies, exp_time));
-
-Does this prematurely free the initialization buffer?
-The condition checking that cur_sz is greater than min_wqes tracks the CPU's
-NAPI thread pushing RX WQEs to the RQ, but it does not appear to guarantee that
-the hardware has actually finished executing the asynchronous
-MLX5E_ICOSQ_WQE_UMR_RX_INIT WQE on the ICOSQ.
-If unmapped and freed while the NIC DMA engine is still fetching the data,
-could this result in a DMA use-after-free and potential IOMMU faults?
+Does this cause the current_speed file to be permanently lost after a
+detach/attach cycle? Should the creation of current_speed be moved to
+mana_init_port() so it survives the cycle?
+-- 
+pw-bot: cr
 
