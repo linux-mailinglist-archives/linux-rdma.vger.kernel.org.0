@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-18602-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18601-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KJ0BNBe+w2mptwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18602-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 11:51:03 +0100
+	id WIO+FcO9w2kRtwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18601-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 11:49:39 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55AC03234E7
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 11:51:03 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C74103234A5
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 11:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2149630EE3F8
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 10:41:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7009630BCB75
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 10:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAB63BC67E;
-	Wed, 25 Mar 2026 10:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5D03BD64F;
+	Wed, 25 Mar 2026 10:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="rteyyJqC"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="OgyP8qaR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD953BE648;
-	Wed, 25 Mar 2026 10:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19B293BB9F6;
+	Wed, 25 Mar 2026 10:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774435266; cv=none; b=M+D2SreMPdzHZl6jK6wLb8nWMPN+rgFk9UVTEnEcCBLUGuO1HIzgeQKcbwjgKb0B0CLJBJbIrB95u3hkIm1n+y8dVMjnoVSeIagajv9CLvg+COgrrGDtBAGd/mZXRingmDsKHPkJVVGl06X610sGWk7gN+M24/gHG4Aeb40nvsA=
+	t=1774435261; cv=none; b=Th1HmdI3GCJ2MYdqt2QktuJokrf/qU+zR4nN/aq5JZKr2BhtilkqFwSEkCoxcllTniQvxkO2GiAucdJvJ/URfjaV7i2l9M7fOX7F7RJe30H/9VVtj4LXWjmH+FnlDVpHulqMXyaLi2KHuyJ7MWdfto4uxaINUZlLQIU4jGk0A7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774435266; c=relaxed/simple;
-	bh=+dYSH5LNbLrtuQR/hiaQV7eLv638QDZcF+DngRslZgQ=;
+	s=arc-20240116; t=1774435261; c=relaxed/simple;
+	bh=tZCOGB1Juv3CYG/AkkF+tXpBfRxAnEO0JPjpHr9bevI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dnXyANfniSxmAPTx/UlOOZC/HFX2CXwrEXIYJUpfsd9vJZjwZB5QLYYkN0kH6UKOIEP9LaUwL+r8ifBFb1tmQpe1rTg3QFy+fDbnuzIj1o8I7P8S6C38+VLk/gJ3mQeHGfGluL52St3yUW0RWfUlo/S11y+ZUJkbUN9jkDLsu4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=rteyyJqC; arc=none smtp.client-ip=113.46.200.219
+	 MIME-Version:Content-Type; b=IHMHyM7C57PN+e6EEXk+uT8h52BZtxUsWRKHdxNDCY9AO3kVPZyY+/36TWNCBZ0i2rV6m67QR/ZMHznQshKmn13UZrcLXag7KJP6SIhq+zMC+q3p52BE13H/Kp1zzVN4bjrjP/kE7QTvNgGV2NdG/jezL2RvLM+OkDeSHALZa3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=OgyP8qaR; arc=none smtp.client-ip=113.46.200.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=vBi36DUPKhHftc09L76w66t0B5jFNMkK0AVfFTuKFBo=;
-	b=rteyyJqCkBWM9xwD2Ir4jhQFGHjKE7oNPuy0s14foXOxAs2XfKDPi8aoVxP+5iOrRY5MH+QYe
-	YgJdCBMyAFlWyz6EpbmAIWMlqoBmeDmdP9gJens6r1L5SpCaEf4AQags3EfKsHEYYe/6SorDuB0
-	X+BTIB0VA3nULMOWLfYBKU4=
-Received: from mail.maildlp.com (unknown [172.19.162.140])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4fgjvq6HBMz1prLY;
-	Wed, 25 Mar 2026 18:34:47 +0800 (CST)
+	bh=DqCbZt5seHQqOT6l50iys6LoGplZkiKlohxPQFUtJv8=;
+	b=OgyP8qaRU7zvE/R0WPguFj+P/RbwyQUX9QjF+6DeIF3GMvweSp+XvvSzdprzWdIYXPg1jLSgw
+	rf/nkpcRGN5TBUePnl92Mg25Hrd94d7KfChyN40X09p3SBcP07mZSh6CEU4GOfVTBNlJO064C8X
+	IivZ4qL+xTOPx2sbkYeYfVo=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4fgjwT0GPpzpSty;
+	Wed, 25 Mar 2026 18:35:21 +0800 (CST)
 Received: from kwepemj500018.china.huawei.com (unknown [7.202.194.48])
-	by mail.maildlp.com (Postfix) with ESMTPS id 459332012A;
+	by mail.maildlp.com (Postfix) with ESMTPS id EA4A240569;
 	Wed, 25 Mar 2026 18:40:56 +0800 (CST)
 Received: from huawei.com (10.50.85.128) by kwepemj500018.china.huawei.com
  (7.202.194.48) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 25 Mar
- 2026 18:40:55 +0800
+ 2026 18:40:56 +0800
 From: Li Xiasong <lixiasong1@huawei.com>
 To: "D. Wythe" <alibuda@linux.alibaba.com>, Dust Li
 	<dust.li@linux.alibaba.com>, Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia
@@ -63,9 +63,9 @@ CC: <linux-rdma@vger.kernel.org>, <linux-s390@vger.kernel.org>,
 	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<yuehaibing@huawei.com>, <zhangchangzhong@huawei.com>,
 	<weiyongjun1@huawei.com>
-Subject: [PATCH net 1/2] net/smc: fix potential UAF in smc_pnet_add_ib for ib device
-Date: Wed, 25 Mar 2026 19:03:51 +0800
-Message-ID: <20260325110352.3833570-2-lixiasong1@huawei.com>
+Subject: [PATCH net 2/2] net/smc: fix potential UAF in smc_pnet_add_ib for smcd device
+Date: Wed, 25 Mar 2026 19:03:52 +0800
+Message-ID: <20260325110352.3833570-3-lixiasong1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260325110352.3833570-1-lixiasong1@huawei.com>
 References: <20260325110352.3833570-1-lixiasong1@huawei.com>
@@ -85,7 +85,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -93,9 +93,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18602-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18601-lists,linux-rdma=lfdr.de];
 	DKIM_TRACE(0.00)[huawei.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[lixiasong1@huawei.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -105,154 +105,147 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:dkim,huawei.com:email,huawei.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 55AC03234E7
+X-Rspamd-Queue-Id: C74103234A5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-smc_pnet_find_ib() returns an ib device pointer and releases the lock,
-then smc_pnet_apply_ib() is called to use this pointer. The device could
-be removed between these two calls, leading to a potential use-after-free
-when accessing the freed ib_dev pointer.
+smc_pnet_find_smcd() returns an smcd device pointer and releases the
+lock, then smc_pnet_apply_smcd() is called to use this pointer. The
+device could be removed between these two calls, leading to a potential
+use-after-free when accessing the freed smcd pointer.
 
     CPU 0                           CPU 1
     ----                            ----
     smc_pnet_add_ib()
-      ib_dev = smc_pnet_find_ib()
-        mutex_lock(&smc_ib_devices.mutex)
+      smcd = smc_pnet_find_smcd()
+        mutex_lock(&smcd_dev_list.mutex)
         list_for_each_entry() ...
-        mutex_unlock(&smc_ib_devices.mutex)
-                                    smc_ib_remove_dev()
-                                      mutex_lock(&smc_ib_devices.mutex)
-                                      list_del_init(&smcibdev->list)
-                                      mutex_unlock(&smc_ib_devices.mutex)
-                                      kfree(smcibdev)
-      smc_pnet_apply_ib(ib_dev)
-        ib_dev->pnetid[ib_port - 1]   <- UAF (ib_dev already freed)
+        mutex_unlock(&smcd_dev_list.mutex)
+                                    smcd_unregister_dev()
+                                      mutex_lock(&smcd_dev_list.mutex)
+                                      list_del_init(&smcd->list)
+                                      mutex_unlock(&smcd_dev_list.mutex)
+                                      kfree(smcd)
+      smc_pnet_apply_smcd(smcd)
+        smcd->pnetid                   <- UAF (smcd already freed)
 
-Fix this by introducing smc_pnet_find_ib_apply() which performs both
+Fix this by introducing smc_pnet_find_smcd_apply() which performs both
 find and apply under the same lock, preventing the device from being
 removed in between.
 
-Also refactor smc_pnet_apply_ib() into __smc_pnet_apply_ib() (without
-lock) and smc_pnet_apply_ib() (with lock) for reuse.
+Also refactor smc_pnet_apply_smcd() into __smc_pnet_apply_smcd()
+(without lock) and smc_pnet_apply_smcd() (with lock) for reuse.
 
-Fixes: 890a2cb4a966 ("net/smc: rework pnet table")
+Fixes: 69baaac9361e ("dibs: Define dibs_client_ops and dibs_dev_ops")
 Signed-off-by: Li Xiasong <lixiasong1@huawei.com>
 ---
- net/smc/smc_pnet.c | 63 ++++++++++++++++++++++++++++------------------
- 1 file changed, 39 insertions(+), 24 deletions(-)
+ net/smc/smc_pnet.c | 58 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 36 insertions(+), 22 deletions(-)
 
 diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-index 63e286e2dfaa..91c0b1c473b2 100644
+index 91c0b1c473b2..a1603740167b 100644
 --- a/net/smc/smc_pnet.c
 +++ b/net/smc/smc_pnet.c
-@@ -245,18 +245,25 @@ static int smc_pnet_remove_by_ndev(struct net_device *ndev)
+@@ -270,16 +270,22 @@ static bool smc_pnet_apply_ib(struct smc_ib_device *ib_dev, u8 ib_port,
  
- /* Apply pnetid to ib device when no pnetid is set.
+ /* Apply pnetid to smcd device when no pnetid is set.
   */
--static bool smc_pnet_apply_ib(struct smc_ib_device *ib_dev, u8 ib_port,
--			      char *pnet_name)
-+static bool __smc_pnet_apply_ib(struct smc_ib_device *ib_dev, u8 ib_port,
-+				char *pnet_name)
+-static bool smc_pnet_apply_smcd(struct smcd_dev *smcd_dev, char *pnet_name)
++static bool __smc_pnet_apply_smcd(struct smcd_dev *smcd_dev, char *pnet_name)
  {
 -	bool applied = false;
 -
--	mutex_lock(&smc_ib_devices.mutex);
- 	if (!smc_pnet_is_pnetid_set(ib_dev->pnetid[ib_port - 1])) {
- 		memcpy(ib_dev->pnetid[ib_port - 1], pnet_name,
- 		       SMC_MAX_PNETID_LEN);
- 		ib_dev->pnetid_by_user[ib_port - 1] = true;
+-	mutex_lock(&smcd_dev_list.mutex);
+ 	if (!smc_pnet_is_pnetid_set(smcd_dev->pnetid)) {
+ 		memcpy(smcd_dev->pnetid, pnet_name, SMC_MAX_PNETID_LEN);
+ 		smcd_dev->pnetid_by_user = true;
 -		applied = true;
 +		return true;
  	}
 +	return false;
 +}
 +
-+static bool smc_pnet_apply_ib(struct smc_ib_device *ib_dev, u8 ib_port,
-+			      char *pnet_name)
++static bool smc_pnet_apply_smcd(struct smcd_dev *smcd_dev, char *pnet_name)
 +{
 +	bool applied;
 +
-+	mutex_lock(&smc_ib_devices.mutex);
-+	applied = __smc_pnet_apply_ib(ib_dev, ib_port, pnet_name);
- 	mutex_unlock(&smc_ib_devices.mutex);
++	mutex_lock(&smcd_dev_list.mutex);
++	applied = __smc_pnet_apply_smcd(smcd_dev, pnet_name);
+ 	mutex_unlock(&smcd_dev_list.mutex);
  	return applied;
  }
-@@ -305,24 +312,42 @@ static bool smc_pnetid_valid(const char *pnet_name, char *pnetid)
- }
- 
- /* Find an infiniband device by a given name. The device might not exist. */
--static struct smc_ib_device *smc_pnet_find_ib(char *ib_name)
-+static struct smc_ib_device *__smc_pnet_find_ib(char *ib_name)
- {
- 	struct smc_ib_device *ibdev;
- 
--	mutex_lock(&smc_ib_devices.mutex);
- 	list_for_each_entry(ibdev, &smc_ib_devices.list, list) {
- 		if (!strncmp(ibdev->ibdev->name, ib_name,
- 			     sizeof(ibdev->ibdev->name)) ||
- 		    (ibdev->ibdev->dev.parent &&
- 		     !strncmp(dev_name(ibdev->ibdev->dev.parent), ib_name,
- 			     IB_DEVICE_NAME_MAX - 1))) {
--			goto out;
-+			return ibdev;
- 		}
- 	}
--	ibdev = NULL;
--out:
-+	return NULL;
-+}
-+
-+/* Find an ib device by name and apply pnetid under lock. */
-+static bool smc_pnet_find_ib_apply(char *ib_name, u8 ib_port, char *pnet_name)
-+{
-+	struct smc_ib_device *ibdev;
-+	bool rc = true;
-+
-+	mutex_lock(&smc_ib_devices.mutex);
-+	ibdev = __smc_pnet_find_ib(ib_name);
-+	if (ibdev) {
-+		if (!__smc_pnet_apply_ib(ibdev, ib_port, pnet_name))
-+			rc = false;
-+		else
-+			pr_warn_ratelimited("smc: ib device %s ibport %d "
-+					    "applied user defined pnetid "
-+					    "%.16s\n", ibdev->ibdev->name,
-+					    ib_port,
-+					    ibdev->pnetid[ib_port - 1]);
-+	}
- 	mutex_unlock(&smc_ib_devices.mutex);
--	return ibdev;
-+	return rc;
+@@ -351,23 +357,39 @@ static bool smc_pnet_find_ib_apply(char *ib_name, u8 ib_port, char *pnet_name)
  }
  
  /* Find an smcd device by a given name. The device might not exist. */
-@@ -412,23 +437,13 @@ static int smc_pnet_add_ib(struct smc_pnettable *pnettable, char *ib_name,
+-static struct smcd_dev *smc_pnet_find_smcd(char *smcd_name)
++static struct smcd_dev *__smc_pnet_find_smcd(char *smcd_name)
+ {
+ 	struct smcd_dev *smcd_dev;
+ 
+-	mutex_lock(&smcd_dev_list.mutex);
+ 	list_for_each_entry(smcd_dev, &smcd_dev_list.list, list) {
+ 		if (!strncmp(dev_name(&smcd_dev->dibs->dev), smcd_name,
+ 			     IB_DEVICE_NAME_MAX - 1) ||
+ 		    (smcd_dev->dibs->dev.parent &&
+ 		     !strncmp(dev_name(smcd_dev->dibs->dev.parent), smcd_name,
+ 			      IB_DEVICE_NAME_MAX - 1)))
+-			goto out;
++			return smcd_dev;
++	}
++	return NULL;
++}
++
++/* Find an smcd device by name and apply pnetid under lock. */
++static bool smc_pnet_find_smcd_apply(char *smcd_name, char *pnet_name)
++{
++	struct smcd_dev *smcd_dev;
++	bool rc = true;
++
++	mutex_lock(&smcd_dev_list.mutex);
++	smcd_dev = __smc_pnet_find_smcd(smcd_name);
++	if (smcd_dev) {
++		if (!__smc_pnet_apply_smcd(smcd_dev, pnet_name))
++			rc = false;
++		else
++			pr_warn_ratelimited("smc: smcd device %s applied user defined pnetid %.16s\n",
++					    dev_name(&smcd_dev->dibs->dev),
++					    smcd_dev->pnetid);
+ 	}
+-	smcd_dev = NULL;
+-out:
+ 	mutex_unlock(&smcd_dev_list.mutex);
+-	return smcd_dev;
++	return rc;
+ }
+ 
+ static int smc_pnet_add_eth(struct smc_pnettable *pnettable, struct net *net,
+@@ -437,22 +459,14 @@ static int smc_pnet_add_ib(struct smc_pnettable *pnettable, char *ib_name,
  			   u8 ib_port, char *pnet_name)
  {
  	struct smc_pnetentry *tmp_pe, *new_pe;
--	struct smc_ib_device *ib_dev;
- 	bool smcddev_applied = true;
--	bool ibdev_applied = true;
-+	bool ibdev_applied;
- 	struct smcd_dev *smcd;
+-	bool smcddev_applied = true;
++	bool smcddev_applied;
+ 	bool ibdev_applied;
+-	struct smcd_dev *smcd;
  	bool new_ibdev;
  
  	/* try to apply the pnetid to active devices */
--	ib_dev = smc_pnet_find_ib(ib_name);
--	if (ib_dev) {
--		ibdev_applied = smc_pnet_apply_ib(ib_dev, ib_port, pnet_name);
--		if (ibdev_applied)
--			pr_warn_ratelimited("smc: ib device %s ibport %d "
--					    "applied user defined pnetid "
--					    "%.16s\n", ib_dev->ibdev->name,
--					    ib_port,
--					    ib_dev->pnetid[ib_port - 1]);
+ 	ibdev_applied = smc_pnet_find_ib_apply(ib_name, ib_port, pnet_name);
+-	smcd = smc_pnet_find_smcd(ib_name);
+-	if (smcd) {
+-		smcddev_applied = smc_pnet_apply_smcd(smcd, pnet_name);
+-		if (smcddev_applied) {
+-			pr_warn_ratelimited("smc: smcd device %s applied user defined pnetid %.16s\n",
+-					    dev_name(&smcd->dibs->dev),
+-					    smcd->pnetid);
+-		}
 -	}
-+	ibdev_applied = smc_pnet_find_ib_apply(ib_name, ib_port, pnet_name);
- 	smcd = smc_pnet_find_smcd(ib_name);
- 	if (smcd) {
- 		smcddev_applied = smc_pnet_apply_smcd(smcd, pnet_name);
++	smcddev_applied = smc_pnet_find_smcd_apply(ib_name, pnet_name);
++
+ 	/* Apply fails when a device has a hardware-defined pnetid set, do not
+ 	 * add a pnet table entry in that case.
+ 	 */
 -- 
 2.34.1
 
