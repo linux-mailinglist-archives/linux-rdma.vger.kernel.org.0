@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-18611-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18612-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cGvwKeEAxGmlvQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18611-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 16:36:01 +0100
+	id CIKwC+73w2nPvAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18612-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 15:57:50 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D15D328215
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 16:36:00 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E84327498
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 15:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C476D31F0178
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 14:56:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4753A300407E
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 14:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBB73FFAAE;
-	Wed, 25 Mar 2026 14:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CA2402420;
+	Wed, 25 Mar 2026 14:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pa6hIt7r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dJJPFq3g"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D503FEB1B;
-	Wed, 25 Mar 2026 14:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706AB4014AF;
+	Wed, 25 Mar 2026 14:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774450273; cv=none; b=n7+d+GDlLTDrzKLwvs5sBX6FuxYqW3fxwMRD2Lmli2/fR8sw6Y9qI+I6R6Srj1x2D4GyAr2+gDHBdUiB+wVyGjxfeUB+C1IBWJ84jkToPdE+vsb9JzN+ixAmpdvq250ILfd4eSx7bBCpWifcGpkJgpZlybgsFTVKWj9tvNuvO2o=
+	t=1774450279; cv=none; b=eo7M22l6oXbmrcoHpSnWa1GWHTbrMWbYz4wHMGZ9pQXKdvD3CHA2aQnXNMNtV1vw83oW+EfV1G639EplDX/oH0aru+7yEtBHpHHNT/2xUoW3ePcw+DDv1wHY/lfVgQenI7BTNQWI42aDG7QYicNTawXHohYNzzZtoSqpEk1iaws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774450273; c=relaxed/simple;
-	bh=Ln70k+Ew5lUs03kdLTgoObxn1tC6NB4Q3fZApdGNOL8=;
+	s=arc-20240116; t=1774450279; c=relaxed/simple;
+	bh=y72tF5ZO1RpjsdtJDjYX62wJxRaUNOVIyHIWNuLrxeU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HfYl9/3qE2550z5T+nyYiZCXSfHu0dghj5pyJExgAPpQIuO7lyuWfjpAANnHfqJ+nM6XViQl+DjWk/WTiFfU0hrfiComcUZG89E5REUhyJ34AptLS9ZCuezVCzeq9tbO0BxATQoxj5VCKl5xz8S7gRolEYN78s8zLUsYhoLcXCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pa6hIt7r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 036E3C19423;
-	Wed, 25 Mar 2026 14:51:05 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jB6TDEXVVOpH/sNQtZa+K+1cr2+SiuNxLvGG5DRZaWXknPAcAlhrzH1PCQ1YZIs8usc3qq3jkvx7bSKlRgdxUtnTOwfY4mGz+ztrHR0DHkP67idPT88HEuqKBTbBtvamHdCf4QNcv9ybYWdm6eFXA4nugZNdSk+QubSLyWbEzHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dJJPFq3g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83603C2BCC6;
+	Wed, 25 Mar 2026 14:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774450272;
-	bh=Ln70k+Ew5lUs03kdLTgoObxn1tC6NB4Q3fZApdGNOL8=;
+	s=k20201202; t=1774450278;
+	bh=y72tF5ZO1RpjsdtJDjYX62wJxRaUNOVIyHIWNuLrxeU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pa6hIt7rhVJAOBw1PLMhpW4yV2rK4kbASBH63qosX17RY5Rd29tbPOt8SKPaB66pl
-	 i57+k4ZknP4/QbxfF06v4VTcDaUcctdRMSqvbLrMRqLawqs/cIVnVQwDAD36eVpFir
-	 9X8FoLqNSqrLBWuO35Coz7ZO6FRwVZDdXFCnlGAWIq1jfBgAeYrI/WKcWZTlu7ZJYh
-	 aM7BLgSbLn8iWvsnanEqz+/W1tF08ufRjQ3cuaHqkM9wZ6Ux6L+KHP8W3Q3L5RLb6y
-	 TOQqHeVAuqdafRoMCdR/j32721c8M+qfiqo69rE4lIy8eLwo2+QrS1O/PAh5JBL6P1
-	 QAxZ4MX1v/brA==
+	b=dJJPFq3gAqTeLQfuxDc0kmHVarENYUZTf8QFBDuUDBCirwA+h2W0ltYS/T91tMxwp
+	 kj4epmKvrl4BxWCZLBoegOuuJM2TzL2McuK5nT7WJa1rCmoss/QEJVDguUjXJuuTjp
+	 bd+btA1kvGIU/yssn7cvO/OFDw+F4s227EQG6gyInleasoWxEZzIIAPBB6IduluyFF
+	 TT8z9cwmpaJNUzjXmOJlLZRPeK5ZnYadDHp1u+7AnoGvM90dOkI956ylhk9rXH2Z0M
+	 kY96sLqiJSeD/MGx0dXlHrvdfc2SPfWZmqBgD7IB6jD7Wxbdk554P75r3e17+3Ao2P
+	 k2KJOzJvjd1mg==
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To: netdev@vger.kernel.org,
 	"David S. Miller" <davem@davemloft.net>,
@@ -74,9 +74,9 @@ Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v2 06/12] selftests: drv-net: Add loopback driver test
-Date: Wed, 25 Mar 2026 15:50:13 +0100
-Message-ID: <20260325145022.2607545-7-bjorn@kernel.org>
+Subject: [PATCH net-next v2 07/12] ethtool: Add MAC loopback support via ethtool_ops
+Date: Wed, 25 Mar 2026 15:50:14 +0100
+Message-ID: <20260325145022.2607545-8-bjorn@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260325145022.2607545-1-bjorn@kernel.org>
 References: <20260325145022.2607545-1-bjorn@kernel.org>
@@ -95,293 +95,186 @@ X-Spamd-Result: default: False [0.96 / 15.00];
 	R_MIXED_CHARSET(0.63)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18611-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,kernel.org,bootlin.com,marvell.com,redhat.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_FROM(0.00)[bounces-18612-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[vger.kernel.org,davemloft.net,lunn.ch,gmail.com,google.com,kernel.org,bootlin.com,marvell.com,redhat.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,marvell.com,bootlin.com,broadcom.com,pengutronix.de,gmail.com,armlinux.org.uk,google.com,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[29];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[bjorn@kernel.org,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,marvell.com,bootlin.com,broadcom.com,pengutronix.de,gmail.com,armlinux.org.uk,google.com,vger.kernel.org];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,loopback_drv.py:url,lib.py:url]
-X-Rspamd-Queue-Id: 0D15D328215
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 65E84327498
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Add a selftest for the ethtool loopback UAPI exercising module
-loopback via the loopback GET/SET netlink commands.
+Extend struct ethtool_ops with three loopback callbacks that drivers
+can implement for MAC-level loopback control:
 
-Works on any device that reports module loopback entries. Tests cover
-enable local and remote, disable, direction switching (mutual
-exclusivity), idempotent enable, and rejection while interface is up.
-Devices without module loopback support are skipped.
+ - get_loopback(dev, name, id, entry): exact lookup by name and
+   instance id, used by doit (single-entry GET) requests.
+
+ - get_loopback_by_index(dev, index, entry): flat enumeration by
+   index, used by dumpit (multi-entry GET) requests to iterate all
+   loopback points on a device.
+
+ - set_loopback(dev, entry, extack): apply a loopback configuration
+   change. Returns 1 if hardware state changed, 0 if no-op.
+
+Wire the MAC component into loopback.c's dispatch functions. For dump
+enumeration, MAC entries are tried first via the driver's
+get_loopback_by_index() op, then MODULE/CMIS entries follow at the
+next index offset.
 
 Signed-off-by: Björn Töpel <bjorn@kernel.org>
 ---
- .../testing/selftests/drivers/net/hw/Makefile |   1 +
- .../selftests/drivers/net/hw/loopback_drv.py  | 227 ++++++++++++++++++
- 2 files changed, 228 insertions(+)
- create mode 100755 tools/testing/selftests/drivers/net/hw/loopback_drv.py
+ include/linux/ethtool.h | 10 ++++++++
+ net/ethtool/loopback.c  | 56 ++++++++++++++++++++++++++++++++---------
+ 2 files changed, 54 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/drivers/net/hw/Makefile b/tools/testing/selftests/drivers/net/hw/Makefile
-index 3c97dac9baaa..5a6037a71f8f 100644
---- a/tools/testing/selftests/drivers/net/hw/Makefile
-+++ b/tools/testing/selftests/drivers/net/hw/Makefile
-@@ -32,6 +32,7 @@ TEST_PROGS = \
- 	iou-zcrx.py \
- 	irq.py \
- 	loopback.sh \
-+	loopback_drv.py \
- 	nic_timestamp.py \
- 	nk_netns.py \
- 	pp_alloc_fail.py \
-diff --git a/tools/testing/selftests/drivers/net/hw/loopback_drv.py b/tools/testing/selftests/drivers/net/hw/loopback_drv.py
-new file mode 100755
-index 000000000000..2d4652386159
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/hw/loopback_drv.py
-@@ -0,0 +1,227 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+"""Tests for ethtool loopback GET/SET with CMIS modules.
-+
-+Works on any device that reports module loopback entries. On devices
-+without CMIS loopback support, tests are skipped.
-+"""
-+
-+import errno
-+
-+from lib.py import ksft_run, ksft_exit, ksft_eq
-+from lib.py import KsftSkipEx, KsftFailEx, ksft_disruptive
-+from lib.py import EthtoolFamily, NlError
-+from lib.py import NetDrvEnv, ip, defer
-+
-+# Direction flags as YNL returns them (sets of flag name strings)
-+DIR_NONE = set()
-+DIR_LOCAL = {'local'}
-+DIR_REMOTE = {'remote'}
-+
-+
-+def _get_loopback(cfg):
-+    """GET loopback and return the list of entries (via DUMP)."""
-+    results = cfg.ethnl.loopback_get({
-+        'header': {'dev-index': cfg.ifindex}
-+    }, dump=True)
-+    entries = []
-+    for msg in results:
-+        if 'entry' in msg:
-+            entries.extend(msg['entry'])
-+    return entries
-+
-+
-+def _set_loopback(cfg, component, name, direction):
-+    """SET loopback for a single entry."""
-+    cfg.ethnl.loopback_set({
-+        'header': {'dev-index': cfg.ifindex},
-+        'entry': [{
-+            'component': component,
-+            'name': name,
-+            'direction': direction,
-+        }]
-+    })
-+
-+
-+def _require_module_entries(cfg):
-+    """Return module loopback entries, skip if none available."""
-+    entries = _get_loopback(cfg)
-+    mod_entries = [e for e in entries if e['component'] == 'module']
-+    if not mod_entries:
-+        raise KsftSkipEx("No module loopback entries")
-+    return mod_entries
-+
-+
-+@ksft_disruptive
-+def test_set_local(cfg):
-+    """SET a module entry to local loopback and verify via GET."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    near = [e for e in mod_entries
-+            if 'local' in e['supported']]
-+    if not near:
-+        raise KsftSkipEx("No local capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = near[0]
-+    _set_loopback(cfg, 'module', target['name'], 'local')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries
-+               if e['name'] == target['name']
-+               and 'local' in e['supported']]
-+    ksft_eq(len(updated), 1)
-+    ksft_eq(updated[0]['direction'], DIR_LOCAL)
-+
-+
-+@ksft_disruptive
-+def test_set_remote(cfg):
-+    """SET a module entry to remote loopback and verify via GET."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    far = [e for e in mod_entries
-+           if 'remote' in e['supported']]
-+    if not far:
-+        raise KsftSkipEx("No remote capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = far[0]
-+    _set_loopback(cfg, 'module', target['name'], 'remote')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries
-+               if e['name'] == target['name']
-+               and 'remote' in e['supported']]
-+    ksft_eq(len(updated), 1)
-+    ksft_eq(updated[0]['direction'], DIR_REMOTE)
-+
-+
-+@ksft_disruptive
-+def test_set_disable(cfg):
-+    """Enable then disable loopback and verify."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    near = [e for e in mod_entries
-+            if 'local' in e['supported']]
-+    if not near:
-+        raise KsftSkipEx("No local capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = near[0]
-+    _set_loopback(cfg, 'module', target['name'], 'local')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    # Disable
-+    _set_loopback(cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries if e['name'] == target['name']]
-+    ksft_eq(updated[0]['direction'], DIR_NONE,
-+            "Direction should be off after disable")
-+
-+
-+@ksft_disruptive
-+def test_set_direction_switch(cfg):
-+    """Enable local, then switch to remote. The kernel must disable
-+    local before enabling remote (mutual exclusivity).
-+    """
-+    mod_entries = _require_module_entries(cfg)
-+
-+    both = [e for e in mod_entries
-+            if 'local' in e['supported'] and 'remote' in e['supported']]
-+    if not both:
-+        raise KsftSkipEx("No entry with both local and remote support")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = both[0]
-+    _set_loopback(cfg, 'module', target['name'], 'local')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries if e['name'] == target['name']]
-+    ksft_eq(updated[0]['direction'], DIR_LOCAL)
-+
-+    # Switch to remote
-+    _set_loopback(cfg, 'module', target['name'], 'remote')
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries if e['name'] == target['name']]
-+    ksft_eq(updated[0]['direction'], DIR_REMOTE,
-+            "Should have switched to remote")
-+
-+
-+@ksft_disruptive
-+def test_set_idempotent(cfg):
-+    """Enable the same direction twice. Second call should not fail."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    near = [e for e in mod_entries
-+            if 'local' in e['supported']]
-+    if not near:
-+        raise KsftSkipEx("No local capable module entry")
-+
-+    ip(f"link set dev {cfg.ifname} down")
-+    defer(ip, f"link set dev {cfg.ifname} up")
-+
-+    target = near[0]
-+    _set_loopback(cfg, 'module', target['name'], 'local')
-+    defer(_set_loopback, cfg, 'module', target['name'], 0)
-+
-+    # Second enable of the same direction should succeed
-+    _set_loopback(cfg, 'module', target['name'], 'local')
-+
-+    entries = _get_loopback(cfg)
-+    updated = [e for e in entries
-+               if e['name'] == target['name']
-+               and 'local' in e['supported']]
-+    ksft_eq(updated[0]['direction'], DIR_LOCAL,
-+            "Direction should still be local")
-+
-+
-+@ksft_disruptive
-+def test_set_while_up(cfg):
-+    """SET while interface is UP should fail."""
-+    mod_entries = _require_module_entries(cfg)
-+
-+    target = mod_entries[0]
-+    direction = 'local'
-+    if direction not in target['supported']:
-+        direction = 'remote'
-+
-+    try:
-+        _set_loopback(cfg, 'module', target['name'], direction)
-+        raise KsftFailEx("Should have rejected SET while interface is up")
-+    except NlError as e:
-+        ksft_eq(e.error, errno.EBUSY,
-+                "Expected EBUSY when interface is up")
-+
-+
-+def main() -> None:
-+    """Run loopback driver tests."""
-+    with NetDrvEnv(__file__, nsim_test=False) as cfg:
-+        cfg.ethnl = EthtoolFamily()
-+
-+        ksft_run([
-+            test_set_local,
-+            test_set_remote,
-+            test_set_disable,
-+            test_set_direction_switch,
-+            test_set_idempotent,
-+            test_set_while_up,
-+        ], args=(cfg, ))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
+diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
+index 81a9c186564d..971be759a915 100644
+--- a/include/linux/ethtool.h
++++ b/include/linux/ethtool.h
+@@ -1168,6 +1168,9 @@ struct kernel_ethtool_ts_info {
+  * @get_mm: Query the 802.3 MAC Merge layer state.
+  * @set_mm: Set the 802.3 MAC Merge layer parameters.
+  * @get_mm_stats: Query the 802.3 MAC Merge layer statistics.
++ * @get_loopback: Get the state of a loopback entry identified by name and id.
++ * @get_loopback_by_index: Get the state of a loopback entry by its index.
++ * @set_loopback: Set the loopback mode for a given entry.
+  *
+  * All operations are optional (i.e. the function pointer may be set
+  * to %NULL) and callers must take this into account.  Callers must
+@@ -1337,6 +1340,13 @@ struct ethtool_ops {
+ 	int	(*set_mm)(struct net_device *dev, struct ethtool_mm_cfg *cfg,
+ 			  struct netlink_ext_ack *extack);
+ 	void	(*get_mm_stats)(struct net_device *dev, struct ethtool_mm_stats *stats);
++	int	(*get_loopback)(struct net_device *dev, const char *name,
++				u32 id, struct ethtool_loopback_entry *entry);
++	int	(*get_loopback_by_index)(struct net_device *dev, u32 index,
++					 struct ethtool_loopback_entry *entry);
++	int	(*set_loopback)(struct net_device *dev,
++				const struct ethtool_loopback_entry *entry,
++				struct netlink_ext_ack *extack);
+ };
+ 
+ int ethtool_check_ops(const struct ethtool_ops *ops);
+diff --git a/net/ethtool/loopback.c b/net/ethtool/loopback.c
+index 2d0ad62ce42f..60eb7b94a716 100644
+--- a/net/ethtool/loopback.c
++++ b/net/ethtool/loopback.c
+@@ -88,6 +88,10 @@ static int loopback_get(struct net_device *dev,
+ 			struct ethtool_loopback_entry *entry)
+ {
+ 	switch (component) {
++	case ETHTOOL_LOOPBACK_COMPONENT_MAC:
++		if (!dev->ethtool_ops->get_loopback)
++			return -EOPNOTSUPP;
++		return dev->ethtool_ops->get_loopback(dev, name, id, entry);
+ 	case ETHTOOL_LOOPBACK_COMPONENT_MODULE:
+ 		return ethtool_cmis_get_loopback(dev, name, entry);
+ 	default:
+@@ -95,10 +99,22 @@ static int loopback_get(struct net_device *dev,
+ 	}
+ }
+ 
+-static int loopback_get_by_index(struct net_device *dev, u32 index,
++static int loopback_get_by_index(struct net_device *dev,
++				 enum ethtool_loopback_component component,
++				 u32 index,
+ 				 struct ethtool_loopback_entry *entry)
+ {
+-	return ethtool_cmis_get_loopback_by_index(dev, index, entry);
++	switch (component) {
++	case ETHTOOL_LOOPBACK_COMPONENT_MAC:
++		if (!dev->ethtool_ops->get_loopback_by_index)
++			return -EOPNOTSUPP;
++		return dev->ethtool_ops->get_loopback_by_index(dev, index,
++							       entry);
++	case ETHTOOL_LOOPBACK_COMPONENT_MODULE:
++		return ethtool_cmis_get_loopback_by_index(dev, index, entry);
++	default:
++		return -EOPNOTSUPP;
++	}
+ }
+ 
+ static int loopback_prepare_data(const struct ethnl_req_info *req_base,
+@@ -118,7 +134,8 @@ static int loopback_prepare_data(const struct ethnl_req_info *req_base,
+ 		ret = loopback_get(dev, req_info->component, req_info->id,
+ 				   req_info->name, &data->entry);
+ 	else
+-		ret = loopback_get_by_index(dev, req_info->index, &data->entry);
++		ret = loopback_get_by_index(dev, req_info->component,
++					    req_info->index, &data->entry);
+ 
+ 	ethnl_ops_complete(dev);
+ 
+@@ -235,6 +252,10 @@ static int __loopback_set(struct net_device *dev,
+ 			  struct netlink_ext_ack *extack)
+ {
+ 	switch (entry->component) {
++	case ETHTOOL_LOOPBACK_COMPONENT_MAC:
++		if (!dev->ethtool_ops->set_loopback)
++			return -EOPNOTSUPP;
++		return dev->ethtool_ops->set_loopback(dev, entry, extack);
+ 	case ETHTOOL_LOOPBACK_COMPONENT_MODULE:
+ 		return ethtool_cmis_set_loopback(dev, entry, extack);
+ 	default:
+@@ -284,20 +305,31 @@ static int loopback_dump_one_dev(struct sk_buff *skb,
+ {
+ 	struct loopback_req_info *req_info =
+ 		container_of(ctx->req_info, struct loopback_req_info, base);
++	/* pos_sub encodes: upper 16 bits = component phase, lower 16 = index
++	 * within that component. dump_one_dev is called repeatedly with
++	 * increasing pos_sub until all components are exhausted.
++	 */
++	enum ethtool_loopback_component phase = *pos_sub >> 16;
++	u32 idx = *pos_sub & 0xffff;
+ 	int ret;
+ 
+-	for (;; (*pos_sub)++) {
+-		req_info->index = *pos_sub;
+-		ret = ethnl_default_dump_one(skb, ctx->req_info->dev, ctx,
+-					     info);
+-		if (ret == -EOPNOTSUPP)
+-			break;
+-		if (ret)
+-			return ret;
++	for (; phase <= ETHTOOL_LOOPBACK_COMPONENT_MODULE; phase++) {
++		for (;; idx++) {
++			req_info->component = phase;
++			req_info->index = idx;
++			ret = ethnl_default_dump_one(skb, ctx->req_info->dev,
++						     ctx, info);
++			if (ret == -EOPNOTSUPP)
++				break;
++			if (ret) {
++				*pos_sub = ((unsigned long)phase << 16) | idx;
++				return ret;
++			}
++		}
++		idx = 0;
+ 	}
+ 
+ 	*pos_sub = 0;
+-
+ 	return 0;
+ }
+ 
 -- 
 2.53.0
 
