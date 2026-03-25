@@ -1,213 +1,229 @@
-Return-Path: <linux-rdma+bounces-18635-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18636-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4PXtDm/+w2lXvQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18635-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 16:25:35 +0100
+	id GLfhOvcCxGm0vQQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18636-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 16:44:55 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CEF9327E31
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 16:25:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87BC9328503
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 16:44:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 43119311C266
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 15:11:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6AB633D75CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 15:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 073253E9F73;
-	Wed, 25 Mar 2026 15:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749383C4578;
+	Wed, 25 Mar 2026 15:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bxsBW043"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gneg3v9y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dl1-f53.google.com (mail-dl1-f53.google.com [74.125.82.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670503D1CC0
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Mar 2026 15:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE00020010C;
+	Wed, 25 Mar 2026 15:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774451192; cv=none; b=nt0ZVq6M9ZZCddpvJsRQ8Xx4eewDKcao07eNd79AQIXHyGt3SNcq2+JV7SLp+GZkvak2gfEiuBzR7to4pROPfJlxXbkDv6QcHjx0ueS4swrVfVrPFxFynnW6DdJ90Fszi2wnNNldZoKJvMMKDfqx3EJZTCp8ZTAF9mDhTOvg2cU=
+	t=1774451796; cv=none; b=BRocw2/GmocDGHjCEe9NjOww3xVAW2or7m4NAjOfoLjxplZx+ol9WjGEMAxUwcZFob4CUkekkKFyk5PZzwHCCW1Kc1cEBYqTy3RylINKhVB6pIngrplnjoZEVv+ochaakO+60vA1uY3oMbmOUlHofkuldhlGkk+8VuuFwwseOcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774451192; c=relaxed/simple;
-	bh=hueUun48O4250wdQs94dWOVmghwrQOiUb0g955DTCkk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U586udyECuRa//7JDDNwbVtUM046znI6FIH/W1eguUKYdkIj+zjK0VKk9ufrnCUSVylyZrwA7DSKCvQBxLCbHspThc3El8eqQ+bMjoKqLO5hZi6VEtcFzlewviFfBrWNztimMi0hbOFxQIXDP5Tp6PGiuXkFhuzBlhZTcZF4g9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bxsBW043; arc=none smtp.client-ip=74.125.82.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f53.google.com with SMTP id a92af1059eb24-126ea4e9694so12777086c88.1
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Mar 2026 08:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774451190; x=1775055990; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/d4Gn1kS5MGurytQaHUUdFFZv/IQSTbByU+x/UA/BgI=;
-        b=bxsBW043Y5w/Dz8Y7N/NIiibrY68N4RdaHozWOv+rAlIeRZyuQqI2cujs3ZfRtTMCc
-         RCO+i4urjzpZM9YVvNvg6cbNOBhzrhgQcFqq3CrLCxR3IgjvqUcRIT5b8kIF403L0dcc
-         05XD9q5JXZ5kRRBn6vQrz65dzfz9pavFtAAHKGiBYlFkMsZpeRR1dvTUfY/QMEYoYqKx
-         F2frc57Z8FHTlkTPdVhlzcwIu0/beNFkPhyYMJFNfqZq0qO2OTI2d9KFYnYFCsWUfCrG
-         WO5HKQKePtf+5mhwrbLyOd+0aDHDhmsWogVgXOPCmo65kTvjM+FdYcqFdd8OKuxTUHbX
-         wyCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774451190; x=1775055990;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/d4Gn1kS5MGurytQaHUUdFFZv/IQSTbByU+x/UA/BgI=;
-        b=YeAPXTJIEgdgosytTHPLk/JUak9UZgpW5wtcxs3OkZFEN2Cp1W4M7JGNP2gwKL72rr
-         bU29VN2YpRCzfDo+7x3j8+9c1TAK6608F/4Dr1aCw5HWmMmIdRvCvJyvrRmKRbpA5mAS
-         xP6D/BVafzPxJ2dr1cZXVrlF/siqJoxoMReI5vRm9pSUIex/3gbM46z6L0jaVuluy3Vo
-         KbiCUs/7UzWLyXxmfqBqINzSDfDSrjLebIwMrqlokyHVOaTCPCwXYQ4Cdioy89p+7tZE
-         4NsgSuQxw4E7j9uQtBmDBkZjf2zbFLQMjd1mFkC/fEDYyY7RyFvNkke3uSq7H+h0mbBw
-         IrnA==
-X-Forwarded-Encrypted: i=1; AJvYcCVjJEMY1I+m07pyfjapXZ5SOgGKAFrT/s6MGJFIbSmnafmw7f0J2fnhy/yNRfmNH8SBYyz2Lu4gBnML@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzc5LrmS4uS/yRyl7NDZtqliCftfkEIfmFAGh/EBy3S+KNq/z+K
-	hYlqtiYeh9g64u5zu1ZD67FMi3tngxktu5QhuRUNX2s/IQgaFMGhxF0=
-X-Gm-Gg: ATEYQzyoazv9uWAXPqqYyHqm6l403rLUS069VflxH9FCpyvpv9L6B0Tdsmylj+h29pQ
-	lM2PN/YSXBe6uKymwR7rtdspN5I/HCCm7JdLOpMHB4dShyfLf/8NpF7+g/nnutRjLex9UdfsMVk
-	QOC49mSrKv6DmdlB8k9tCmRuASReEFpc8kFuTbfw2Oo5U7RkqG830FPNwgev36MiNjarqSNy8+K
-	c1MwoW7Wh0RBOjfFEIRsf4to+q7gbLYHjZeAte0sNptzyqEoOFTkxdoB/LTtFfWTpcE8LR5Q/b7
-	pWqCDnKEveRM4yd1RpEYhm+DNAbF9R6Gs9LcFTYyAZzgRYR7gcjlGXMCYCayIOBr9nt5ECE7guz
-	uVLaqh9uvsvaev1ml+yooTFQIkqXPmQ1eJ9tHpXAbuwwrwiUVT+Pc1rgpPeYJqH9viT4eE5HBD6
-	T5+bULHijn3QFSEfHtzk3gYzlp4tFp62nNCC2wyH6g8b0x23hdjumZEqw8Q5nwOxzW1Vo0F1NrZ
-	y1M+eNVJj59xJdOUw==
-X-Received: by 2002:a05:7022:6984:b0:128:ca6f:adf0 with SMTP id a92af1059eb24-12a96e69cffmr1941893c88.17.1774451190214;
-        Wed, 25 Mar 2026 08:06:30 -0700 (PDT)
-Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12aa7248731sm29001c88.4.2026.03.25.08.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2026 08:06:29 -0700 (PDT)
-Date: Wed, 25 Mar 2026 08:06:28 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	horms@kernel.org, corbet@lwn.net, skhan@linuxfoundation.org,
-	andrew+netdev@lunn.ch, michael.chan@broadcom.com,
-	pavan.chebbi@broadcom.com, anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com, saeedm@nvidia.com, tariqt@nvidia.com,
-	mbloch@nvidia.com, alexanderduyck@fb.com, kernel-team@meta.com,
-	johannes@sipsolutions.net, sd@queasysnail.net, jianbol@nvidia.com,
-	dtatulea@nvidia.com, mohsin.bashr@gmail.com,
-	jacob.e.keller@intel.com, willemb@google.com, skhawaja@google.com,
-	bestswngs@gmail.com, aleksandr.loktionov@intel.com, kees@kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	leon@kernel.org
-Subject: Re: [PATCH net-next v3 03/13] net: introduce ndo_set_rx_mode_async
- and dev_rx_mode_work
-Message-ID: <acP59NM6HZhV9oAe@mini-arch>
-Mail-Followup-To: Stanislav Fomichev <stfomichev@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	horms@kernel.org, corbet@lwn.net, skhan@linuxfoundation.org,
-	andrew+netdev@lunn.ch, michael.chan@broadcom.com,
-	pavan.chebbi@broadcom.com, anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com, saeedm@nvidia.com, tariqt@nvidia.com,
-	mbloch@nvidia.com, alexanderduyck@fb.com, kernel-team@meta.com,
-	johannes@sipsolutions.net, sd@queasysnail.net, jianbol@nvidia.com,
-	dtatulea@nvidia.com, mohsin.bashr@gmail.com,
-	jacob.e.keller@intel.com, willemb@google.com, skhawaja@google.com,
-	bestswngs@gmail.com, aleksandr.loktionov@intel.com, kees@kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	leon@kernel.org
-References: <20260320012501.2033548-1-sdf@fomichev.me>
- <20260320012501.2033548-4-sdf@fomichev.me>
- <20260323162003.0d155055@kernel.org>
- <acLUMN1BYkIVyOk8@mini-arch>
- <20260324142114.216fcb01@kernel.org>
- <acMU93XN02PHmAGi@mini-arch>
- <20260324204440.1752423d@kernel.org>
+	s=arc-20240116; t=1774451796; c=relaxed/simple;
+	bh=VpbZhNuuSl/ns05S2kGFJP+U2qoOXBtQ2LQID/TIRtI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CvcXbzVNs7E1EUqwKThaVEewUw5ffP3WkLhl+ZJrTKYoCa4mfVTG/kahN08BXghm8k61xTaMc+eKKo0ekRv69Nj6T6lciCIMoy/pa3/hHO8/GDZ/K/Uk2eTstxFXDWmIlmIf0V0gKyGWb49lDB3p9iL/mrWRRQL4hR5mqGyuhJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gneg3v9y; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62P1HmXV2945148;
+	Wed, 25 Mar 2026 15:16:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=02sTmvQ1zAB6bEnH7R8KDUUjdfiw
+	m1jwy5u8OYUaRS8=; b=gneg3v9ykjLDh13RUpbib2s6I9us1k/FkHkgS7uMJeZ8
+	RUmp323tjLcEzXoN4Z8uyGKoHgLUcBR81qZNuKyyldGoghVWID6AiBzgMsE+5uLc
+	R9WyUuB6D5R4r5iZsmwvZtuZNNUxmgfQvCuvWZFaCzAeIKpeWkTWOsYKxq99MOWx
+	Yw224eEVbv/jihc4EyGsuRE0hTsK2hSRvVq9aYGlLpJMsGFU/Tsoorg5pb3RSXYk
+	A0lcp1fzbJ+34yvp8q/yjUnXJ/HjnD1gOc1tbgjbq/+CKOVJ6zlqY3z71x1HH1tm
+	qNSxTIUtrRt+Rw5bK7uFGtZWrMF9hCVH06m1A8tFGw==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d1ktv08m7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 25 Mar 2026 15:16:29 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62PC6MbX004380;
+	Wed, 25 Mar 2026 15:16:28 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4d28c26sgh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 25 Mar 2026 15:16:28 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62PFGOOd41156904
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 25 Mar 2026 15:16:24 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8B3092004B;
+	Wed, 25 Mar 2026 15:16:24 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3F0EB20040;
+	Wed, 25 Mar 2026 15:16:24 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.87.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 25 Mar 2026 15:16:24 +0000 (GMT)
+From: Gerd Bayer <gbayer@linux.ibm.com>
+Subject: [PATCH v6 0/2] PCI: AtomicOps: Fix pci_enable_atomic_ops_to_root()
+Date: Wed, 25 Mar 2026 16:16:16 +0100
+Message-Id: <20260325-fix_pciatops-v6-0-10bf19d76dd1@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260324204440.1752423d@kernel.org>
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAED8w2kC/23P3WrDMAwF4Fcpvp6LLdV23Ku9xxjDP8pqWJMQd
+ 6aj5N3nlI11JpdH4nxIN5ZpTpTZcXdjM5WU0zjUoJ92LJzc8E48xZoZCFBSCs37dH2bQnKXccr
+ cUKdFRyF4gaxWppnq/s69vNZ8Svkyzl93vch1+gNJ8R8qkgtOMajOKeM10PNHGj6v++TP+zCe2
+ YoV+ANANpcUqEAUEsl6Q0CbAP4CWmD7SsEKWBsl+OB6L+0WcHgAJDbAYQXQByOcRotqC1APALS
+ AqkDvojOA6Mh1LbAsyzeQ/xyisAEAAA==
+X-Change-ID: 20251106-fix_pciatops-7e8608eccb03
+To: Bjorn Helgaas <bhelgaas@google.com>, Jay Cornwall <Jay.Cornwall@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, Leon Romanovsky <leon@kernel.org>,
+        Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Gerd Bayer <gbayer@linux.ibm.com>, stable@vger.kernel.org
+X-Mailer: b4 0.14.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-ORIG-GUID: uQjG6wlYtha8bjQIqZwWRzjebZrwsQDO
+X-Authority-Analysis: v=2.4 cv=aMr9aL9m c=1 sm=1 tr=0 ts=69c3fc4d cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=vQOT1DpSoXcvsw1ccD4A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzI1MDEwNiBTYWx0ZWRfX2GpDRAcc6WTz
+ 1HSdAIaG00oASGwIuCFa6XeHxOR0NoGEHIKMQFmACACBss1N41BmzFVu63Ha//zUCjHgN2AAJW+
+ K3tFA3s0pOfj7Swva3WEFJJB70AuF+HSXhBlnEMf9Nbwiuf20Ggwjg3bwowAFt5TrrkSeD/LwyV
+ FXyC7FfxgwoG1JNG8nbzZvSqe+msGrPgxrbggPgxscqf82gMJsix/VmvjecEkp2jRpX4RxgScbn
+ IogOwZZ/+ka6J378SkulTFktb6oPiryxPOpm+dsmgsakLYmC5NPs9TjRzSS1At6/UFm7VpSB17+
+ bNOrHq6UK8CRkNtMG7dLQGqt2vb2fGON2mHVICp2M0XIblt2PAXH/XtUXLSOgAi5uCy6ud1nJkX
+ r455av+7ObpP8nAdwhLzF7n90SutxmmgOm88oXVxt6NDvJ7Tmy/q49X9Aae+ykrScIEbe6aSuoy
+ HZo88bJJ0GlPWMxv7EQ==
+X-Proofpoint-GUID: joWoaCiOBWI4xkTdCkeMdT5UmKbpaHg5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-25_04,2026-03-24_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 lowpriorityscore=0 adultscore=0 impostorscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603250106
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18635-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_FROM(0.00)[bounces-18636-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[37];
-	FREEMAIL_CC(0.00)[fomichev.me,vger.kernel.org,davemloft.net,google.com,redhat.com,kernel.org,lwn.net,linuxfoundation.org,lunn.ch,broadcom.com,intel.com,nvidia.com,fb.com,meta.com,sipsolutions.net,queasysnail.net,gmail.com,lists.osuosl.org];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[gbayer@linux.ibm.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[stfomichev@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6CEF9327E31
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 87BC9328503
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 03/24, Jakub Kicinski wrote:
-> On Tue, 24 Mar 2026 15:49:27 -0700 Stanislav Fomichev wrote:
-> > > > Not sure why cancel+release, maybe you're thinking about the unregister
-> > > > path? This is rtnl_unlock -> netdev_run_todo -> __rtnl_unlock + some
-> > > > extras.
-> > > > 
-> > > > And the flush is here to plumb the addresses to the real devices
-> > > > before we return to the callers. Mostly because of the following
-> > > > things we have in the tests:
-> > > > 
-> > > > # TEST: team cleanup mode lacp                                        [FAIL]
-> > > > #       macvlan unicast address not found on a slave
-> > > > 
-> > > > Can you explain a bit more on the suggestion?  
-> > > 
-> > > Oh, I thought it's here for unregister! Feels like it'd be cleaner to
-> > > add the flush in dev_*c_add() and friends? How hard would it be to
-> > > identify the callers in atomic context?  
-> > 
-> > Not sure we can do it in dev_xc_add because it runs under rtnl :-(
-> > I currently do flush in netdev_run_todo because that's the place that
-> > doesn't hold rtnl. Otherwise flush will get stuck because the work
-> > handler grabs it...
-> 
-> I was thinking of something a'la linkwatch. We can "steal" / "flush"
-> the pending work inline. I guess linkwatch is a major source of races
-> over the years...
->
-> Does the macvlan + team problem still happens with the current
-> implementation minus the flush? We are only flushing once so only
-> pushing the addresses thru one layer of async callbacks.
+Hi Bjorn et al.
 
-Yes, it does happen consistently when I remove the flush. It also
-happens with my internal v4, so I need to look again at what's going on.
-Not sure whether it's my internal regression or I was just sloppy/lucky
-(since you're correct in pointing out that we flush only once).
+On s390, AtomicOp Requests are enabled on a PCI function that supports
+them, despite the helper being ignorant about the root port's capability
+to supporting their completion.
 
-Before I went down the workqueue route, I had a simple
-net_todo_list-like approach: `list_add_tail` on enqueue and
-`while(!list_empty) run_work()` on rtnl_unlock. This had a nice properly of
-tracking re-submissions (by checking whether the device's list_head is
-linked into the list or not) and it was relatively easy to do the
-recursive flush. Let me try get back to this approach and see whether
-it solves the flush? Not sure what wq buys us at this point.
+Patch 1: Fix the logic in pci_enable_atomic_ops_to_root()
+Patch 2: Update references to PCIe spec in that function.
+
+I did test that the issue is fixed with these patches. Also, I verified
+that on a Mellanox/Nvidia ConnectX-6 adapter plugged straight into the
+root port of a x86 system still gets AtomicOp Requests enabled.
+
+Due to lacking the required hardware, I did not test this with any PCIe
+switches between root port and endpoint. So test exposure to other
+environments is highly appreciated. One particularly rare setup is a
+RCiEP that might act as a AtomicOps Requestor - but was subject to a
+regression in v4 as reported by Sashiko.
+
+v5 of this series tries to make no functional changes for that class of
+devices either.
+
+Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+---
+Changes in v6:
+- Incorporate Ilpo's editorial comments.
+- Correct logic in pci_is_atomicops_capable_rp() (annotated by Sashiko)
+- Link to v5: https://lore.kernel.org/r/20260323-fix_pciatops-v5-0-fada7233aea8@linux.ibm.com
+
+Changes in v5:
+- Introduce new pcibios_connects_to_atomicops_capable_rc() so arch's can
+  declare AtomicOps support outside of PCIe config space. Defaults to
+  "true" - except s390.
+- rebase to 7.0-rc5
+- Link to v4: https://lore.kernel.org/r/20260313-fix_pciatops-v4-0-93bc70a63935@linux.ibm.com
+
+Changes in v4:
+- drop patch 1 - it will become the base of a new series
+- previous patch 2, now 1: reword commit message
+- add a new patch to update references to PCI spec within
+  pci_enable_atomic_ops_to_root()
+- rebase to latest master
+- Link to v3: https://lore.kernel.org/r/20260306-fix_pciatops-v3-0-99d12bcafb19@linux.ibm.com
+
+Changes in v3:
+- rebase to 7.0-rc2
+- gentle ping
+- add netdev and rdma lists for awareness
+- Link to v2: https://lore.kernel.org/r/20251216-fix_pciatops-v2-0-d013e9b7e2ee@linux.ibm.com
+
+Changes in v2:
+- rebase to 6.19-rc1
+- otherwise unchanged to v1
+- Link to v1: https://lore.kernel.org/r/20251110-fix_pciatops-v1-0-edc58a57b62e@linux.ibm.com
+
+---
+Gerd Bayer (2):
+      PCI: AtomicOps: Do not enable without support in root complex
+      PCI: AtomicOps: Update references to PCIe spec
+
+ arch/s390/pci/pci.c |  5 +++++
+ drivers/pci/pci.c   | 54 +++++++++++++++++++++++++++++++++--------------------
+ include/linux/pci.h |  1 +
+ 3 files changed, 40 insertions(+), 20 deletions(-)
+---
+base-commit: c369299895a591d96745d6492d4888259b004a9e
+change-id: 20251106-fix_pciatops-7e8608eccb03
+
+Best regards,
+-- 
+Gerd Bayer <gbayer@linux.ibm.com>
+
 
