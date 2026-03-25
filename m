@@ -1,282 +1,246 @@
-Return-Path: <linux-rdma+bounces-18659-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18660-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uBz/F9pAxGlTxwQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18659-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 21:08:58 +0100
+	id 6JKcJMlKxGn5xwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18660-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 21:51:21 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1872632B9D8
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 21:08:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D52732C02B
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 21:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 844E03047DF5
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 20:08:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C31B33074F18
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2026 20:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF83936309F;
-	Wed, 25 Mar 2026 20:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A64313520;
+	Wed, 25 Mar 2026 20:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z9Kn5rjL"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="NEo798QA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11021074.outbound.protection.outlook.com [52.101.62.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D7C4F4F1;
-	Wed, 25 Mar 2026 20:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774469317; cv=none; b=Utloc6mUignDphi2XTgUiPBJhnRaSo6d6GMq8RX3wyRWoFnvtzGltqZIW6PFfMj+ArU9K+lwKdANLnCslBQ7tO2QN0wETW4hv0kqepWGjAi1COU6hoSSOt71P6CGl43qWvqMghWDk7sSB2QXfanZUGwVF10GO/paL3/KLIHEW04=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774469317; c=relaxed/simple;
-	bh=u0Cd5omrwW3YhsWw9m4ecHl9huofQib83nNWmHHNvaM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=g/ZEWvVUvtDougtFY+CmzeCM7/05Ly55P1SWq/v52HNPdueXyWrNL42CbJbIsPmZGUrwzLUg4LE03FoWbrrS3Ob3Ep/HIj7yuS86ZY4Dn3dd75w2LjkQV+LVFPr+AQvsw0EZjmi9H5lyFA/YHFTMPwhauj+xuFtUI26i92YtHnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z9Kn5rjL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06011C4CEF7;
-	Wed, 25 Mar 2026 20:08:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774469317;
-	bh=u0Cd5omrwW3YhsWw9m4ecHl9huofQib83nNWmHHNvaM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Z9Kn5rjLrhwK1kdqyaXdq9wyvg4ZxB1tPZ9jrqFS7RwJK2jJUBL+K3GypmqN49WUc
-	 7DF+RGwWI5JuMyhsC0VEXPeh93v1wJO7JvfeAJO0ldnRt6wJfPjLvSBUQai2E9Z94y
-	 rYO+BbiXWGd1o+13OdefEL0nuHWpvX+F0iemDZ2+CKOk6mHrz7Le9Q+mA03UxWfvFO
-	 VB5JM9Ml5U+22RVNF76VLqtK+gMk2Oz4adIOgGsd3tIKIV+b0RbOP1CEW5SPVZZMvh
-	 FGpia0iUKWLj+azTSqC1objNUboZrH/JXpm/l94LrGqBGhna07ebvTkNnVrNiN6EjE
-	 Vh7QS5w2CLHOg==
-Date: Wed, 25 Mar 2026 15:08:35 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Gerd Bayer <gbayer@linux.ibm.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Jay Cornwall <Jay.Cornwall@amd.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] PCI: AtomicOps: Do not enable without support in
- root complex
-Message-ID: <20260325200835.GA1290451@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBF030DEA2;
+	Wed, 25 Mar 2026 20:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774471660; cv=fail; b=eSY91543hqpRPJAdAxwzRAxat2Cc/hDHKaSkd750ibFkwM/SK3bcn9rKhqOFi7S9+e5KyQ2ECYv3IfuRhgiRkjBBwC72DSTBXaekQj0FrSOUKcNYSttX8puLJ0idzZtXz6P9VKJOSo9zOy496SRwHsWjcgNGByWGu/r5OqA9QVI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774471660; c=relaxed/simple;
+	bh=CMh6TeV7tQ3cQfhfAk4cx1TudtjUifm2Nqqw9ltNAQw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=DEcwS4EUKm1FmfhrSF70cdGJAiyQheTwN53QL0zjr5DWJMMCVFOu3dNt0ayEHtYi/5mN2f10tXL4odhf8sCT/MjEx/FbzibvFi6ry+lGX6z5fDo4K4zH1Ofnv4a7MvQk4gZLHYNb1h6ON8h/CWkqMHsZl0tRB7TmkdcZftrA4MU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=NEo798QA; arc=fail smtp.client-ip=52.101.62.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QtJX4c/kwR8qRmqB5DsCuNwBjTizdguqfPxoLgJuVJWJbfizejUCdyGRRXstYlVjOojYhm/gdNBHn4Fb47P3srpi3BnYzVsTOjYDWDVq4wksLn/LutDD/CPWlYxLCZqqXwNdMvYCrMvQCPXVpIK52Kt6+Ty9Ot/+iR+0DbMLRKHbonyqExwh2WLBdV4oAjVPZR2qQ30p9k4LwF+JLmtEZLBd0GuOo5mcFrErdYXuUSU2dSPAsUwSSqx3Yje11icILxa2ODsvYFSqXDpN8UXR1ghRjdjF3XP9nMsv4VyCydHv3Fbkf8IIqL0bNMQHec2WBuW1TXiYaXG5eaqGisg0AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CMh6TeV7tQ3cQfhfAk4cx1TudtjUifm2Nqqw9ltNAQw=;
+ b=LS0+cz+9pwcGg9cQAFY7mbqYOV/3wNAgRt00zWSCk/nXej02i1RO9QOUl/NFQq+mj/+ddYm6mRjSiTZxXQ1wV1V7kQ2caUSsSClU9u/5WIUIDOg3Itz1A4fWlkPROu9i7Ww0chvhz7WB7uelCPwwaq2INh4WPtQrjs3q3e7dAzAqbtWFbjnXCgc8Su8S9dMg1ICBgI2g0+b7P3n6G0fGIWnGzkbfhhfJBrdudJNTWwBuOh2/j+kIqG+nnQ3moxdKvG4G7AbjygeX7h2+7lq4P1O5TpCUF/3B2bkhZEm2dRprjkPaDcIfrf0kKwkOk+RO+KxJ+UqHdVhSuSmEeviMNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CMh6TeV7tQ3cQfhfAk4cx1TudtjUifm2Nqqw9ltNAQw=;
+ b=NEo798QA2mrmWTz07I3o5rDAsQMJUEiYIf2ZLR8amSbNJB4ps50k5SsvEagcLkLCfZCdjRgZDShMBEbxpoYjn4UEd0EGvtU8TYs7huR6MmwB4A22bpyoD5IcJwUfQnVtGl1PJgCIML+dijDItOqAGkA48dqDm4qbYLsftCHmzL8=
+Received: from SA1PR21MB6683.namprd21.prod.outlook.com (2603:10b6:806:4a4::6)
+ by SA3PR21MB5697.namprd21.prod.outlook.com (2603:10b6:806:498::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.6; Wed, 25 Mar
+ 2026 20:47:35 +0000
+Received: from SA1PR21MB6683.namprd21.prod.outlook.com
+ ([fe80::879f:eec1:ca0e:d219]) by SA1PR21MB6683.namprd21.prod.outlook.com
+ ([fe80::879f:eec1:ca0e:d219%3]) with mapi id 15.20.9769.006; Wed, 25 Mar 2026
+ 20:47:35 +0000
+From: Long Li <longli@microsoft.com>
+To: Long Li <longli@microsoft.com>, Simon Horman <horms@kernel.org>
+CC: Konstantin Taranov <kotaranov@microsoft.com>, Jakub Kicinski
+	<kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>, Paolo Abeni
+	<pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
+	<leon@kernel.org>, Haiyang Zhang <haiyangz@microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<DECUI@microsoft.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH net-next v5 0/6] net: mana: Per-vPort EQ
+ and MSI-X interrupt management
+Thread-Topic: [EXTERNAL] Re: [PATCH net-next v5 0/6] net: mana: Per-vPort EQ
+ and MSI-X interrupt management
+Thread-Index: AQHcuv+uY0rQdFhn2UyizOQL5sQArrW/ersAgAAxGzCAAA81cA==
+Date: Wed, 25 Mar 2026 20:47:35 +0000
+Message-ID:
+ <SA1PR21MB6683FB2D67A3BBCC74B62D45CE49A@SA1PR21MB6683.namprd21.prod.outlook.com>
+References: <20260323195952.1767304-1-longli@microsoft.com>
+ <20260325165646.GH111839@horms.kernel.org>
+ <SA1PR21MB66838DF94EC752617C9FED20CE49A@SA1PR21MB6683.namprd21.prod.outlook.com>
+In-Reply-To:
+ <SA1PR21MB66838DF94EC752617C9FED20CE49A@SA1PR21MB6683.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4cad47e1-f906-460b-926a-2da47ee79709;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-03-25T19:52:31Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB6683:EE_|SA3PR21MB5697:EE_
+x-ms-office365-filtering-correlation-id: d0182416-3ede-4aac-8016-08de8aafbe98
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|376014|1800799024|7416014|38070700021|22082099003|56012099003|18002099003;
+x-microsoft-antispam-message-info:
+ xsRSbk5f/uXtP92nYISp7IOmRbK8W1OXODrFaFiOUJJKOHE8P/k/k1EW268aIXsTGZ8kwUkJPh7pVr2zAPIFXK7WYWg4A/enWLK0QHSU159Pk8QuZtkx+nPbZqo/Z1iJ1tawdQmzoyVc0rh+B5mODzJSP6ozVdAFVQuSPJG26ZWc7vvr58Bn/bK0OLTqF3dYsNCoDIZ1zuuFZDb5xpxNYe/yxv0zRwACTgOHU/ARUWX25xF158uVRIcbgpf2GUlmRm9mbmh6kx6Y3jX1xhJ/y/WSD1yd1ZdG99LldiOH8uNps39QqZ3X0dT0VmRXo3EGGcDKdiTLQbgTD8OE2Rolb3leUCgoDb8RbYdABCgAu9diqqs6Y80flaMn7ELqycKlHMqDVL/hlEiGASyFRo3oqDE2Jg8QJ2GjHxygaXSMTgLh/VD5dXbXhxGJUIORuNYEL9zGGgAYLmF4fT91IgBDf9xF/BdU0NuwlCYYQLoQXOmd5jE9BUhzRt/iK37FC40p67hk9eIYMzyF5AVjf0MBcbChAgRP3xKvi+Ynz821gAoEO9MPjBN3GqwzfJhkUXN6tRVxLDuU9evcMaQL/ewWllzrTtkRrGVBneoSs3Attuym+FjDypyIQHR9ceLuAJNZraJTN2HbZQ0oGrQNCaxTHHn7FktJSEnW/YaMB/DG66iEE9RzPYgpFrzbgxbyNQrN7ciAMLtSBa5yK7BrQI97E5QwbN9M+99NvOxlO+BMDC25m9coWaxmUTuWD3stJ0tqUNPCDatZurqRSnmvxYSq/Ww1s1r0XjIxBFAgBqKDVmk=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB6683.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014)(38070700021)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?9GyVgZusTyHa/tQU4skUC3TCc230dGJFeHoVFYEsuguKw0GVlYye3x/+gFDl?=
+ =?us-ascii?Q?HNRHO8pIBs7LmnlQeLuVMUUobrj4ZnRTsqA+lhyFB3j4X2Nl5R9e6/Sv4+V6?=
+ =?us-ascii?Q?9Tv1rsoE2Iw+Y6JkHSqkPiD9XWEeUpod7rK05+7YmZlDMo8LOu+A7PHI5A7t?=
+ =?us-ascii?Q?jBsQrNkOCjgpdBajww8k/ezUk1SOaQlcR3SLszIdsMZv9vWUfUOBVmHOK3wT?=
+ =?us-ascii?Q?Q9ZqqFdLwMpLcYUuMuOUSYOQj3TBbpLxJJ1KQ1W0aBM6XsgCpiwYab4LKW6F?=
+ =?us-ascii?Q?0j39F+LJCxP7VXysd8XZm+Mt4JNwJcp3nfdC9V6gmds0JI9yXOBdEqD7ZJw5?=
+ =?us-ascii?Q?cMoz3ILEVKCY3iCOtBhVQWb7ttQKxH3VmtKcDXM9MOEuiQ2hU7VyW87QI2P2?=
+ =?us-ascii?Q?QFNdOM/HgPci1asknvgPxk9BBPXkKhvO4I/dE5k82GnWw/oHO7hwJPzbmyhp?=
+ =?us-ascii?Q?RuPPKafHoyparZB4+YZtsYVXsrGcVQqPKfPIu7PHwC5FQbzNjLS+pTmKJYC7?=
+ =?us-ascii?Q?BL78n+8Xb84xpmZpICytch5MNg5tAekVMboXx4tN/H5PtX5flGOMRgggSEBH?=
+ =?us-ascii?Q?eMzpGl7PGuR/9X8ufg9Ny+LvpkudyUK6IUZLMn9t2OBpzCryyBR/s361qS9j?=
+ =?us-ascii?Q?AILNHl7ClQwg0+2ozgp7Bh6lOWr6940CxVLzVvJB4gLXF3QpOg+VzkAX2JYk?=
+ =?us-ascii?Q?HEQMGgnk+56ypEKONEG0XcPcbTikju8qil0dmdkt4dn7m19l0fylMCpXQQgB?=
+ =?us-ascii?Q?wxFRs8Wwixeg3hyNYsDIMDkDgUmJVmmIRr8uyBUCP8juiLQgs5P+IpybA23b?=
+ =?us-ascii?Q?H3SJOdnJnQWAYedlipwNq8t0HLuk7NPYOdd5vUpRXcmkOVua+42SKiD+o49l?=
+ =?us-ascii?Q?Nr5at1OrKYMQk1KXWeXCCULDAfX45fkzFM06V9Gf+gxcejf5b0OKfRym6ORl?=
+ =?us-ascii?Q?xKjlTn+rSxT0kHVBogsjMjpMg/z3uusXMAEPfjAed1wAqIg0l7k5ye1FjhXM?=
+ =?us-ascii?Q?NgYkNwNuLoa2fpir8FCMX00c+edn02vaWunZYl7mSIR0tMNthhdeTv2vgxQP?=
+ =?us-ascii?Q?xusPkwvuQJzOkoF3u/6jPaxDDe9UnNkVwQ8qP5P+rtnO93kcrA8Xpic4R8jF?=
+ =?us-ascii?Q?/Avd//EN0TiyrEcAwbl5NzjPxHnYs9XKSXwO/6bFoY1hM1ugo/LuC9BL26cg?=
+ =?us-ascii?Q?ebZymQ9pc4hN6Ha8r71NY4iBtgs3OROSQ8sXyuRASNiw3MUbY7UJ7xEIJT3c?=
+ =?us-ascii?Q?j5PQAFtLN/6oZv3siPOgXkXc9NPgY2Ol+tPAHSY3X2wUqfPIoK15zTS9phpM?=
+ =?us-ascii?Q?PwZN0A1bxD6eCbWYRwonxSWnPhigVAtpo0xmP/OUdK2EYjo4D5yn5Td0iieG?=
+ =?us-ascii?Q?+/p1TwDubA8p3qjs/3Q4DhG2kFjSCLJZLhxWhBQy01dx5Y0WB5x6AZIQonAV?=
+ =?us-ascii?Q?Q5KrwfnbgCIEdL1Ov9HkrnTwnYb1nMLkcCk6AFrJ0IUN+Q1HKB9JlBA6ubdM?=
+ =?us-ascii?Q?cv5IepmG87Uh/fF7HQfy3mu0jrPbBHQDmH+BeiwCzRzW3bZ501n9WkqD1wJW?=
+ =?us-ascii?Q?VGIbm+f2y7m4z7/8KuriUhBhLhFm6lsQzkzmAfk10AX1+6gp3G9v6iWWXqYo?=
+ =?us-ascii?Q?Gk92wnVeMMchC1uXg2JAQDOi8tkAOz9gNFefi/csmimVvYQ8YyNqYSb7Q1dn?=
+ =?us-ascii?Q?iNxOqIppcbVkys7N1UBgyWoDPPLAuS7GGCV8MxxNeio40oop?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260325-fix_pciatops-v6-1-10bf19d76dd1@linux.ibm.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB6683.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0182416-3ede-4aac-8016-08de8aafbe98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2026 20:47:35.4560
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rpQMZgkE9DenQ9iQnB/iDsgnRNpSSlL27tSyXsXOejm6xlJbeVsp4aCoOzQnVioQfFRVrijEm8l8Mjn1JuJaQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR21MB5697
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-18660-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18659-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[microsoft.com:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[helgaas@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1872632B9D8
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[SA1PR21MB6683.namprd21.prod.outlook.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3D52732C02B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 25, 2026 at 04:16:17PM +0100, Gerd Bayer wrote:
-> When inspecting the config space of a Connect-X physical function in an
-> s390 system after it was initialized by the mlx5_core device driver, we
-> found the function to be enabled to request AtomicOps despite the
-> system's root-complex lacking support for completing them:
-> 
-> 1ed0:00:00.1 Ethernet controller: Mellanox Technologies MT2894 Family [ConnectX-6 Lx]
-> 	Subsystem: Mellanox Technologies Device 0002
->   [...]
-> 	DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-
-> 		 AtomicOpsCtl: ReqEn+
-> 		 IDOReq- IDOCompl- LTR- EmergencyPowerReductionReq-
-> 		 10BitTagReq- OBFF Disabled, EETLPPrefixBlk-
-> 
-> Turns out the device driver calls pci_enable_atomic_ops_to_root() which
-> defaulted to enable AtomicOps requests even if it had no information
-> about the root-port that the PCIe device is attached to. Similarly,
-> AtomicOps requests are enabled for root complex integrated endpoints
-> (RCiEPs) unconditionally.
-> 
-> Change the logic of pci_enable_atomic_ops_to_root() to fully traverse the
-> PCIe tree upwards, check that the bridge devices support delivering
-> AtomicOps transactions, and finally check that there is a root port at
-> the end that does support completing AtomicOps - or that the support for
-> completing AtomicOps at the root complex is announced through some other
-> arch specific way.
-> 
-> Introduce a new pcibios_connects_to_atomicops_capable_rc() function to
-> implement the check - and default to always "true". This leaves the
-> semantics for today's RCiEPs intact. Pass in the device in question and
-> the requested capabilities for future expansions.
-> For s390, override pcibios_connects_to_atomicops_capable_rc() to
-> always return "false".
-> 
-> Do not change the enablement of AtomicOps requests if there is no
-> positive confirmation that the root complex can complete PCIe AtomicOps.
-> 
-> Reported-by: Alexander Schmidt <alexs@linux.ibm.com>
-> Cc: stable@vger.kernel.org
-> Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> ---
->  arch/s390/pci/pci.c |  5 +++++
->  drivers/pci/pci.c   | 48 +++++++++++++++++++++++++++++++-----------------
->  include/linux/pci.h |  1 +
->  3 files changed, 37 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-> index 2a430722cbe415dd56c92fed2e513e524f46481a..a0bef77082a153a258fbe4abb1070b22e020888e 100644
-> --- a/arch/s390/pci/pci.c
-> +++ b/arch/s390/pci/pci.c
-> @@ -265,6 +265,11 @@ static int zpci_cfg_store(struct zpci_dev *zdev, int offset, u32 val, u8 len)
->  	return rc;
->  }
->  
-> +bool pcibios_connects_to_atomicops_capable_rc(struct pci_dev *dev, u32 cap_mask)
-> +{
-> +	return false;
-> +}
-> +
->  resource_size_t pcibios_align_resource(void *data, const struct resource *res,
->  				       resource_size_t size,
->  				       resource_size_t align)
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 8479c2e1f74f1044416281aba11bf071ea89488a..006aa589926cb290de43f152100ddaf9961407d1 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3660,6 +3660,19 @@ void pci_acs_init(struct pci_dev *dev)
->  	pci_disable_broken_acs_cap(dev);
->  }
->  
-> +static bool pci_is_atomicops_capable_rp(struct pci_dev *dev, u32 cap, u32 cap_mask)
-> +{
-> +	if (!dev || !(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT))
-> +		return false;
-> +
-> +	return (cap & cap_mask) == cap_mask;
-> +}
-> +
-> +bool __weak pcibios_connects_to_atomicops_capable_rc(struct pci_dev *dev, u32 cap_mask)
-> +{
-> +	return true;
-> +}
-> +
->  /**
->   * pci_enable_atomic_ops_to_root - enable AtomicOp requests to root port
->   * @dev: the PCI device
-> @@ -3676,8 +3689,9 @@ void pci_acs_init(struct pci_dev *dev)
->  int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
->  {
->  	struct pci_bus *bus = dev->bus;
-> -	struct pci_dev *bridge;
-> -	u32 cap, ctl2;
-> +	struct pci_dev *bridge = NULL;
-> +	u32 cap = 0;
-> +	u32 ctl2;
->  
->  	/*
->  	 * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
-> @@ -3714,29 +3728,29 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
->  		switch (pci_pcie_type(bridge)) {
->  		/* Ensure switch ports support AtomicOp routing */
->  		case PCI_EXP_TYPE_UPSTREAM:
-> -		case PCI_EXP_TYPE_DOWNSTREAM:
-> -			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
-> -				return -EINVAL;
-> -			break;
-> -
-> -		/* Ensure root port supports all the sizes we care about */
-> -		case PCI_EXP_TYPE_ROOT_PORT:
-> -			if ((cap & cap_mask) != cap_mask)
-> -				return -EINVAL;
-> -			break;
-> -		}
-> -
-> -		/* Ensure upstream ports don't block AtomicOps on egress */
-> -		if (pci_pcie_type(bridge) == PCI_EXP_TYPE_UPSTREAM) {
-> +			/* Upstream ports must not block AtomicOps on egress */
->  			pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2,
->  						   &ctl2);
->  			if (ctl2 & PCI_EXP_DEVCTL2_ATOMIC_EGRESS_BLOCK)
->  				return -EINVAL;
-> +			fallthrough;
-> +		/* All switch ports need to route AtomicOps */
-> +		case PCI_EXP_TYPE_DOWNSTREAM:
-> +			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
-> +				return -EINVAL;
-> +			break;
->  		}
-> -
->  		bus = bus->parent;
->  	}
->  
-> +	/*
-> +	 * Finally, last bridge must be root port and support requested sizes
-> +	 * or firmware asserts support
-> +	 */
-> +	if (!(pci_is_atomicops_capable_rp(bridge, cap, cap_mask) ||
-> +	      pcibios_connects_to_atomicops_capable_rc(dev, cap_mask)))
-> +		return -EINVAL;
+> > On Mon, Mar 23, 2026 at 12:59:46PM -0700, Long Li wrote:
+> > > This series adds per-vPort Event Queue (EQ) allocation and MSI-X
+> > > interrupt management for the MANA driver. Previously, all vPorts
+> > > shared a single set of EQs. This change enables dedicated EQs per
+> > > vPort with support for both dedicated and shared MSI-X vector
+> > > allocation
+> > modes.
+> > >
+> > > Patch 1 moves EQ ownership from mana_context to per-vPort
+> > > mana_port_context and exports create/destroy functions for the RDMA
+> > driver.
+> > >
+> > > Patch 2 adds device capability queries to determine whether MSI-X
+> > > vectors should be dedicated per-vPort or shared. When the number of
+> > > available MSI-X vectors is insufficient for dedicated allocation,
+> > > the driver enables sharing mode with bitmap-based vector assignment.
+> > >
+> > > Patch 3 introduces the GIC (GDMA IRQ Context) abstraction with
+> > > reference counting, allowing multiple EQs to safely share a single
+> > > MSI-X
+> > vector.
+> > >
+> > > Patch 4 converts the global EQ allocation in probe/resume to use the
+> > > new GIC functions.
+> > >
+> > > Patch 5 adds per-vPort GIC lifecycle management, calling get/put on
+> > > each EQ creation and destruction during vPort open/close.
+> > >
+> > > Patch 6 extends the same GIC lifecycle management to the RDMA
+> > > driver's EQ allocation path.
+> > >
+> > > Changes in v5:
+> > > - Rebased on net-next/main
+> >
+> > Hi Long Li,
+> >
+> > Unfortunately v5 also doesn't apply cleanly to net-next.
+> >
+> > --
+> > pw-bot: changes-requested
+>=20
+> Hi Simon,
+>=20
+> This patch set should apply after this patch: (which is also pending net-=
+next)
+> net: mana: Set default number of queues to 16
+>=20
+> Can you apply the patch set after this patch, or should I wait for the ne=
+xt patch
+> merge window?
+>=20
+> Thank you,
+> Long
 
-Sashiko says:
 
-  Since the generic weak implementation of
-  pcibios_connects_to_atomicops_capable_rc() unconditionally returns
-  true, the logical OR expression pci_is_atomicops_capable_rp(...) ||
-  true will always evaluate to true. This makes the entire if
-  condition evaluate to false.
+I'll send it over in the next patch merging window.
 
-  Because of this, it appears -EINVAL is never returned here, and any
-  standard endpoint behind a Root Port will successfully be granted
-  AtomicOps even if the Root Port lacks the capability in its
-  PCI_EXP_DEVCAP2 register.
-
-> +
->  	pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
->  				 PCI_EXP_DEVCTL2_ATOMIC_REQ);
->  	return 0;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 1c270f1d512301de4d462fe7e5097c32af5c6f8d..ef90604c39859ea8e61e5392d0bdaa1b0e43874b 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -692,6 +692,7 @@ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
->  				 void *release_data);
->  
->  int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge);
-> +bool pcibios_connects_to_atomicops_capable_rc(struct pci_dev *dev, u32 cap_mask);
->  
->  #define PCI_REGION_FLAG_MASK	0x0fU	/* These bits of resource flags tell us the PCI region flags */
->  
-> 
-> -- 
-> 2.51.0
-> 
+Thanks,
+Long
 
