@@ -1,261 +1,336 @@
-Return-Path: <linux-rdma+bounces-18710-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18711-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gFCWJYNLxWkU8wQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18710-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 16:06:43 +0100
+	id UOGrNj1jxWkJ+AQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18711-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 17:47:57 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B60933743A
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 16:06:43 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE8F338ABF
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 17:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AFBF230101DC
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 15:04:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DBC4F30903E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 16:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19FB3FFAD8;
-	Thu, 26 Mar 2026 15:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F1140FD99;
+	Thu, 26 Mar 2026 16:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="irUAyFQA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pisLqagj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11020106.outbound.protection.outlook.com [52.101.56.106])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5E23FF8B9;
-	Thu, 26 Mar 2026 15:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.106
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774537475; cv=fail; b=E3IYRHTr3YSjeSYOg5j/m24ApM+UH7Y32a7BK0wnRmt4Mpws/jVzDVoqYS8yyWi+Tk6SnV3avplqdVB9hkac4yo4Wmwn6FyMppNAYlr1YSl6SZWvSB1TH6BQUSOT0ccPOLSZ7fJFYFJk9E+x2jdMdbic/+iJg2BHviTNZId1ynM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774537475; c=relaxed/simple;
-	bh=40PF6aYl72TluClOctJHS85BMGBeSkF4YIR+BDu22MA=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=c7yCXkOFZc6dWVDNhKVMFflfGgvVcYwsyfQz5GI4CPWzG678Nr/Je8MF9k3Q72nhqEEu3A/zgwhSGUzX6u/LX4HSNuZWO2Sr/bqJMTAaj8Dj6SLPoIJIYwT3fkPTU0ClewYqrdnwidpBslG9kmodObCgVt3B9o02xZHPyfgQcis=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=irUAyFQA; arc=fail smtp.client-ip=52.101.56.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FBvkbBWDHfmCLotqQSNk0IqlQHg611wQSOcdX1t4mvpKESMAFFClwp7OAqrPaKwCi31yTVrwwmZI+2+I/CCI3Pzzgh10VB82piY219bS2uo06KCv4IV8HwxMqeGIvj83Fl3lHT2/1CcK+yvlWrQT1Z+rjlygWTIWVdPn0/SvO2mhOtNr2leYoB0U9VPRAMwQukefYbJo2s6bLVKaXpK9m1xu9hQk6GaqvUsCfoB6WE546JE7XXUINWff//HuVWv2GshkCJqx0HcrCRLYApFksBf7iMjQz0AZGjoUtOpECFMxbtXwwUuppssNf+lZsjRqYPLHAFEeTIHqtzxJfdCNng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CuQ4erPD+b47Nxw8GS0w/rh2HRjg7IDGNmKirHK6z5o=;
- b=H7vhQpRg1RWtg2OmT3iCGNyOj5fZoxmbGzoVT98PE5SrQtq+Kg9B/XrrvWwnzg0QZ0FIi1NbWIuM1PIY4ua8+U1W2T5rqxeyeTb6WbLb6Dt5Blpg8hS6x20PXbKFHev7FLIGwzITqhHHwWKy67CZI+6OERH6K0aEFFbPYcxR1UeoVKtHKCThFCA7efnbMITnNCuy/iO7TZzI6JqkBY5n0JQukqXtdYsTe7Yivt773o6ZemRk7VHSqNl9fKxDRTg/MjhVPnNNkEGqc9rMpQ/iYZTBGlt4aH6F3nmqei+fj0JKyrcoU6Kob6T1f0SC1lWMgpVBKZXm7eMsDwXLLp7Mnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CuQ4erPD+b47Nxw8GS0w/rh2HRjg7IDGNmKirHK6z5o=;
- b=irUAyFQAw9rmhVHOKp+z14kkdZOj7a+tS5736iQ5swNWSYbnuRxH4+HXZmt0azS/6hv8xex62E8qxyNn5+xMs05iDgS1JdnOoimlml5t2GrZw29jnccxTlaIfw/0wMHBqsI5W73dxG2gaeXowtmvxTgH2iCivBPDBni1q+Yor6U=
-Received: from BY1PR21MB3870.namprd21.prod.outlook.com (2603:10b6:a03:525::7)
- by LV9PR21MB5406.namprd21.prod.outlook.com (2603:10b6:408:2e6::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.8; Thu, 26 Mar
- 2026 15:04:29 +0000
-Received: from BY1PR21MB3870.namprd21.prod.outlook.com
- ([fe80::9faa:4fb0:486b:8267]) by BY1PR21MB3870.namprd21.prod.outlook.com
- ([fe80::9faa:4fb0:486b:8267%4]) with mapi id 15.20.9745.019; Thu, 26 Mar 2026
- 15:04:29 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>, KY Srinivasan
-	<kys@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui
-	<DECUI@microsoft.com>, "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
-	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org" <leon@kernel.org>,
-	Long Li <longli@microsoft.com>, Konstantin Taranov <kotaranov@microsoft.com>,
-	"horms@kernel.org" <horms@kernel.org>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "ssengar@linux.microsoft.com"
-	<ssengar@linux.microsoft.com>, "ernis@linux.microsoft.com"
-	<ernis@linux.microsoft.com>, Shiraz Saleem <shirazsaleem@microsoft.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"stephen@networkplumber.org" <stephen@networkplumber.org>,
-	"jacob.e.keller@intel.com" <jacob.e.keller@intel.com>, Dipayaan Roy
-	<dipayanroy@microsoft.com>
-Subject: RE: [PATCH net,v2] net: mana: Fix RX skb truesize accounting
-Thread-Topic: [PATCH net,v2] net: mana: Fix RX skb truesize accounting
-Thread-Index: AQHcu7oS4/BfnrhFE0utJ7wjdSrUdLXA68xg
-Date: Thu, 26 Mar 2026 15:04:28 +0000
-Message-ID:
- <BY1PR21MB38707172B2F76688C6B28252CA56A@BY1PR21MB3870.namprd21.prod.outlook.com>
-References:
- <acLUhLpLum6qrD/N@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-In-Reply-To:
- <acLUhLpLum6qrD/N@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=69808163-55de-4379-9325-9374dfe3c29c;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-03-26T15:02:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY1PR21MB3870:EE_|LV9PR21MB5406:EE_
-x-ms-office365-filtering-correlation-id: d39cdc08-b6ca-4b83-80b8-08de8b48fa84
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|7416014|366016|1800799024|38070700021|921020|22082099003|56012099003|18002099003|7053199004;
-x-microsoft-antispam-message-info:
- 16PVDXv2RBl1mYftBNJkXHgKwkHIxmqRJaAcfLF/m5YQyVC10ddsxVu/WAg013A8chFIi2YBWqpXlJX1w8w2aQl5Ej5H1rJXZ5T03X27bs4ys4NzbK5HRcNP9ivNmjlT646OZgQ37/Yj2Xae7tcRmTa7fQ3SrMIaWZdyzlBAONnU/Sgywj6qkSh1RTq4oiI+U9eEiFb+CjCeR/sy3SQ/SfFzev4I6nnYoMVmd9OaEiWjr26P8u1KbFo/c8cG/EFCP40ekLOCFRJuD3DSpOhyY9ovg5008ICFdptsDPFUGMH4Wuv0vHIvIoXS9+jufbujRNWiXzIyvgpRw9gSXv9zxC71/6ATQ3jVIGYUj87paz98Qo3yEy/omT0+bwZb8itl1Se03vIavFUyj0qUtw7aj+HD5asQficYcaEN6q8prxyj2dJ96g2CYChbaiZjH/qApfr0dER28dQPjDnYMpZ0UnFIqpZGkxsofsz1pCyubc4X/fCQEulU3Om2/+LPDU04vVbYcf5G4ERTDq9fYbV0CAUFNFn0NVUwIlv2PQDKjF8tU/SAo+3QNz5tvialD/mQI7Yzg0nPlmW6QdvFXoDWs/u7oNVvinvvio2Zq1F1Y7XdfVaGUEoisWzkWipwsyadO7yF7BUJR4koqrp+kAEDtmrFGOKZVKsx/KNMy3hKQHBh903K8/p/Z+EC5jmJa/kOghP++Uvlao49kHQ8ThYifoG8kJacOFYmCDl0lubTenrmheL/wIJM7SOeH+VVsoFlGZU0HFY1K6/31lQ2LB+NptbX0Tb2ZDX/PQf7FL4LcONxP9THSjw1oTkRV4QuTH0B
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY1PR21MB3870.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(38070700021)(921020)(22082099003)(56012099003)(18002099003)(7053199004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?NbFeU7LJFHgQYOD2GiuQf/6HdfBTssHdLBGtFSsi/oV8vrROYmWPeWHZpd6t?=
- =?us-ascii?Q?F1XEOpKoVvWVnAIndy1cxbvPkTVPnASAIfyWEIdzlCSziS78JPVHgDigj+gC?=
- =?us-ascii?Q?mv+ru2U8gtTkiWQvio1Rcae6ss92woXdm0DrI+q3owEFOixsOHvdsh+jdSkW?=
- =?us-ascii?Q?lU9IbQltFmW9LtKsy/7jokPWl/d413uyBmPlE+MJpqbNy9R8go9kqy9U+f7+?=
- =?us-ascii?Q?Y5g+1/FL2sDDIWbhakNwfEiBFsL5lz7zpMLW3oUFdUIMx8v3alR0dvB0FZTH?=
- =?us-ascii?Q?E3hDXKSVLLeAaduXqKHUz7FuxwUdPkPRFIayp9pbqA6dbnRFt1cEndwDp19m?=
- =?us-ascii?Q?EQdYIgOrA3Y0gSRjG/Wi7GQEm8uVSy9mJCO+2dfYnUFvsrdSQAIXTuoWn0E8?=
- =?us-ascii?Q?Yb6g4b/bpOeqMmwg6loWQSpaHK4vRuwNJ1JX++5idnqgW/+NPszpvndfR1nv?=
- =?us-ascii?Q?wm4jDuZGRmDWtj9xZVkbiiaqgb4MZjbWRPy8lpy85kvpIFPjQlDKCChj4hUb?=
- =?us-ascii?Q?7cmaQtwx3aap5WzYhbkIAb+SDbjhwUTU58QPijxdYh4BV3U6LxiQsgz41jZV?=
- =?us-ascii?Q?klynxBjJlKLcfwtPd7XRAbE8Zn8Xupy/FtJXiuPtXv2KW7u4qOBwLAlKjkGM?=
- =?us-ascii?Q?LPYqh18WSjkJw1fRB7Xa5Bi3o0ncA+6iYzAVf1e/D/+ItTwx898b1WVY/mjQ?=
- =?us-ascii?Q?u1sfHAumpwZN4JkNcKeKWZsHqgQ4mtCPyh+dBNOFGLjIfDHHHpn9TQm6H2U9?=
- =?us-ascii?Q?/yP5NoSN2wwyBM/7FRSX9pr0w1V+SstcJehzJ2/f2eXfG688eOlG4GL99vR+?=
- =?us-ascii?Q?kAMnxFiYYXZhzvZg1Z1xZcg0bSCQr2Rtv1iCKGmGY6jM+DuQtZxnNW3r3dtC?=
- =?us-ascii?Q?adJcakJCzFGyT9C8wijMdPF6M++VBOQTj7kliNjGTmQUn01KrLk1W6ZCiMbC?=
- =?us-ascii?Q?+w/W9HIFjNyhEgVjATVFtllNtrzPQim4uyUKAFPo1D5Nb8zXN1GsnWZ/1J/n?=
- =?us-ascii?Q?qQOAPKTeckDdQCdzkHA+Jv8+4iUL+p4zSzXBy7o0+khujFg4a49nCVmGzUSf?=
- =?us-ascii?Q?UummehYJ802dm6oza40GaqfoYaXHY/Cgq25G3xZDUQ123rqndrCEKmp1ywvD?=
- =?us-ascii?Q?PfhFGcmUjz+1AWsaKkdmCd9B052za1cUAoInm6xOvYGEJYLJnGugyN1yYT45?=
- =?us-ascii?Q?UeP9tsqPfGL2L+h7bbdcBJf7doGCM4kF9EqGwFVJL1zaTlGokdp6sENmoUzE?=
- =?us-ascii?Q?02BysioV6fqVrZ+jMd/7na0p8rPiULQt0uumP2RUj1bPZY4vX2iHrmN6+4M3?=
- =?us-ascii?Q?DndKIG4F2/2Sng4G0WbknIm7Vx4OFssXl/sRB6cKWfHRuRBaMdkbnWvGcG4v?=
- =?us-ascii?Q?oIJ0cEoBpHX/rO2Lsbw8kJoHXfNWWzIP2IQdiT+mTHvSoV2aIvORSd7OKoIS?=
- =?us-ascii?Q?fwyQ6aS2DHAGNKeKRFRZV8chO5SNeyi2B9MFEkd4MSWkGeBzZGXU7TwSC6+x?=
- =?us-ascii?Q?VUnKWbaYoAaVdcOhpRa/DbJqs/DBGqz6wweCpyhfjiYJOJFz93HGXfaJveCI?=
- =?us-ascii?Q?ubksrPMJUtcLyLerqhW8KantITGmFkkMuqKBo6tRckQp/1Zw/Rzh6RgJJm2p?=
- =?us-ascii?Q?qe4MsuejjB0ceG/BSr9Szc9biEfPAp2UtdD6A9ggRsNMl5P8dGiUAajYFlMF?=
- =?us-ascii?Q?2MS1ENSTCJldvBkjjXH0D4FGXbzWcfB6gwxQ+SlpoGk94FnYNaGCNW+ErPHr?=
- =?us-ascii?Q?/Er3HVJn4A=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A91F4035CD;
+	Thu, 26 Mar 2026 16:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774543204; cv=none; b=mJPOPdO8twPDzSqtwwy74+gCJnqE1Up6ToPA6vLThG99qYeQRjctwX+She/+zcil7neKm6ayEBqniWqNH9YhV1sY9TLJ7gyvcwJTemBJULYuAgFRitudfLW7e5j2cdcfvFHqElQPbB2Sd0KD4cZyRHbmjHbRjVRUB36FW1zV1hU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774543204; c=relaxed/simple;
+	bh=v9OxL3z6qKsfDWe7vgJygT5T/5mg3FeLB6gOdPjSyDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=AzwpW9huwKCjMnbMx3SFlL/M+7ZOzAVIYiZIp77Ap2h3AnY5WOw8Nd21+fB8oNIbiYvZDI3fyUfmtALHBhNFXAhdw/keQyHSTjceuEgewNng0cLINE/XjNKoZGEWYLal2r9dt95wh02nEQdVXfMFx5QpDoASVkvyDcz33meQqXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pisLqagj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BD1BC116C6;
+	Thu, 26 Mar 2026 16:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774543203;
+	bh=v9OxL3z6qKsfDWe7vgJygT5T/5mg3FeLB6gOdPjSyDk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=pisLqagj3vB7EHVWtrYeETBb1Gl8iQLkOtglrdUeLgotRTEpoTq6BAXEW845d4eTN
+	 DbK7B6mnUv8MXwuZy+l8Ewm1Bp4/wszn0Itp3iNaoURdrX4Vzb+EMTyANgbZJpqO3+
+	 Y641c7/ZpyRQV9qxCKNZmtH/wN1HWyA7PAFtaH/hUtCqlIJKajhEIgUGJlQoOvZKJ3
+	 rP/VpkLPjhOnP6NMR2/N4iMdpN4DFyZxnqRQnK/c8/XChTyXH8pv6P0BGsONKLOFSU
+	 QhDYiEU+YTg6LoechbtMk8kIA8WLWnwdnAeRqyKMIvrDYLDp35X3k32Bmf3LoSi0Bf
+	 EE4YkDDj60FvA==
+Date: Thu, 26 Mar 2026 11:40:02 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Gerd Bayer <gbayer@linux.ibm.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Jay Cornwall <Jay.Cornwall@amd.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stable@vger.kernel.org, Gerd Bayer <gerd.bayer@de.ibm.com>
+Subject: Re: [PATCH v6 1/2] PCI: AtomicOps: Do not enable without support in
+ root complex
+Message-ID: <20260326164002.GA1325368@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY1PR21MB3870.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d39cdc08-b6ca-4b83-80b8-08de8b48fa84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2026 15:04:28.9885
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eNfEbVSyfA6NHG54scVvL1iXvGOM/5BUE5OWwCcWPedrvCDOUFfXoBGyOa/4QYd/3x+vXArDe8br/4OqPaNWrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV9PR21MB5406
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[microsoft.com,reject];
-	R_DKIM_ALLOW(-0.20)[microsoft.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4183b471777efa949ce6f7b860c81282e91666ef.camel@linux.ibm.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18710-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18711-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[haiyangz@microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 0B60933743A
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[helgaas@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EDE8F338ABF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Thu, Mar 26, 2026 at 10:51:19AM +0100, Gerd Bayer wrote:
+> On Wed, 2026-03-25 at 15:08 -0500, Bjorn Helgaas wrote:
+> > On Wed, Mar 25, 2026 at 04:16:17PM +0100, Gerd Bayer wrote:
+> > > When inspecting the config space of a Connect-X physical function in an
+> > > s390 system after it was initialized by the mlx5_core device driver, we
+> > > found the function to be enabled to request AtomicOps despite the
+> > > system's root-complex lacking support for completing them:
+> > > 
+> > > 1ed0:00:00.1 Ethernet controller: Mellanox Technologies MT2894 Family [ConnectX-6 Lx]
+> > > 	Subsystem: Mellanox Technologies Device 0002
+> > >   [...]
+> > > 	DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-
+> > > 		 AtomicOpsCtl: ReqEn+
+> > > 		 IDOReq- IDOCompl- LTR- EmergencyPowerReductionReq-
+> > > 		 10BitTagReq- OBFF Disabled, EETLPPrefixBlk-
+> > > 
+> > > Turns out the device driver calls pci_enable_atomic_ops_to_root() which
+> > > defaulted to enable AtomicOps requests even if it had no information
+> > > about the root-port that the PCIe device is attached to. Similarly,
+> > > AtomicOps requests are enabled for root complex integrated endpoints
+> > > (RCiEPs) unconditionally.
+> > > 
+> > > Change the logic of pci_enable_atomic_ops_to_root() to fully traverse the
+> > > PCIe tree upwards, check that the bridge devices support delivering
+> > > AtomicOps transactions, and finally check that there is a root port at
+> > > the end that does support completing AtomicOps - or that the support for
+> > > completing AtomicOps at the root complex is announced through some other
+> > > arch specific way.
+> > > 
+> > > Introduce a new pcibios_connects_to_atomicops_capable_rc() function to
+> > > implement the check - and default to always "true". This leaves the
+> > > semantics for today's RCiEPs intact. Pass in the device in question and
+> > > the requested capabilities for future expansions.
+> > > For s390, override pcibios_connects_to_atomicops_capable_rc() to
+> > > always return "false".
+> > > 
+> > > Do not change the enablement of AtomicOps requests if there is no
+> > > positive confirmation that the root complex can complete PCIe AtomicOps.
+> > > 
+> > > Reported-by: Alexander Schmidt <alexs@linux.ibm.com>
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
+> > > Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+> > > ---
+> > >  arch/s390/pci/pci.c |  5 +++++
+> > >  drivers/pci/pci.c   | 48 +++++++++++++++++++++++++++++++-----------------
+> > >  include/linux/pci.h |  1 +
+> > >  3 files changed, 37 insertions(+), 17 deletions(-)
+> > > 
+> > > diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
+> > > index 2a430722cbe415dd56c92fed2e513e524f46481a..a0bef77082a153a258fbe4abb1070b22e020888e 100644
+> > > --- a/arch/s390/pci/pci.c
+> > > +++ b/arch/s390/pci/pci.c
+> > > @@ -265,6 +265,11 @@ static int zpci_cfg_store(struct zpci_dev *zdev, int offset, u32 val, u8 len)
+> > >  	return rc;
+> > >  }
+> > >  
+> > > +bool pcibios_connects_to_atomicops_capable_rc(struct pci_dev *dev, u32 cap_mask)
+> > > +{
+> > > +	return false;
+> > > +}
+> > > +
+> > >  resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+> > >  				       resource_size_t size,
+> > >  				       resource_size_t align)
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index 8479c2e1f74f1044416281aba11bf071ea89488a..006aa589926cb290de43f152100ddaf9961407d1 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -3660,6 +3660,19 @@ void pci_acs_init(struct pci_dev *dev)
+> > >  	pci_disable_broken_acs_cap(dev);
+> > >  }
+> > >  
+> > > +static bool pci_is_atomicops_capable_rp(struct pci_dev *dev, u32 cap, u32 cap_mask)
+> > > +{
+> > > +	if (!dev || !(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT))
+> > > +		return false;
+> > > +
+> > > +	return (cap & cap_mask) == cap_mask;
+> > > +}
+> > > +
+> > > +bool __weak pcibios_connects_to_atomicops_capable_rc(struct pci_dev *dev, u32 cap_mask)
+> > > +{
+> > > +	return true;
+> > > +}
+> > > +
+> > >  /**
+> > >   * pci_enable_atomic_ops_to_root - enable AtomicOp requests to root port
+> > >   * @dev: the PCI device
+> > > @@ -3676,8 +3689,9 @@ void pci_acs_init(struct pci_dev *dev)
+> > >  int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
+> > >  {
+> > >  	struct pci_bus *bus = dev->bus;
+> > > -	struct pci_dev *bridge;
+> > > -	u32 cap, ctl2;
+> > > +	struct pci_dev *bridge = NULL;
+> > > +	u32 cap = 0;
+> > > +	u32 ctl2;
+> > >  
+> > >  	/*
+> > >  	 * Per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable bit
+> > > @@ -3714,29 +3728,29 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
+> > >  		switch (pci_pcie_type(bridge)) {
+> > >  		/* Ensure switch ports support AtomicOp routing */
+> > >  		case PCI_EXP_TYPE_UPSTREAM:
+> > > -		case PCI_EXP_TYPE_DOWNSTREAM:
+> > > -			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
+> > > -				return -EINVAL;
+> > > -			break;
+> > > -
+> > > -		/* Ensure root port supports all the sizes we care about */
+> > > -		case PCI_EXP_TYPE_ROOT_PORT:
+> > > -			if ((cap & cap_mask) != cap_mask)
+> > > -				return -EINVAL;
+> > > -			break;
+> > > -		}
+> > > -
+> > > -		/* Ensure upstream ports don't block AtomicOps on egress */
+> > > -		if (pci_pcie_type(bridge) == PCI_EXP_TYPE_UPSTREAM) {
+> > > +			/* Upstream ports must not block AtomicOps on egress */
+> > >  			pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2,
+> > >  						   &ctl2);
+> > >  			if (ctl2 & PCI_EXP_DEVCTL2_ATOMIC_EGRESS_BLOCK)
+> > >  				return -EINVAL;
+> > > +			fallthrough;
+> > > +		/* All switch ports need to route AtomicOps */
+> > > +		case PCI_EXP_TYPE_DOWNSTREAM:
+> > > +			if (!(cap & PCI_EXP_DEVCAP2_ATOMIC_ROUTE))
+> > > +				return -EINVAL;
+> > > +			break;
+> > >  		}
+> > > -
+> > >  		bus = bus->parent;
+> > >  	}
+> > >  
+> > > +	/*
+> > > +	 * Finally, last bridge must be root port and support requested sizes
+> > > +	 * or firmware asserts support
+> > > +	 */
+> > > +	if (!(pci_is_atomicops_capable_rp(bridge, cap, cap_mask) ||
+> > > +	      pcibios_connects_to_atomicops_capable_rc(dev, cap_mask)))
+> > > +		return -EINVAL;
+> > 
+> > Sashiko says:
+> > 
+> >   Since the generic weak implementation of
+> >   pcibios_connects_to_atomicops_capable_rc() unconditionally returns
+> >   true, the logical OR expression pci_is_atomicops_capable_rp(...) ||
+> >   true will always evaluate to true. This makes the entire if
+> >   condition evaluate to false.
+> > 
+> >   Because of this, it appears -EINVAL is never returned here, and any
+> >   standard endpoint behind a Root Port will successfully be granted
+> >   AtomicOps even if the Root Port lacks the capability in its
+> >   PCI_EXP_DEVCAP2 register.
+> 
+> I've made the generic implementation of
+> pcibios_connects_to_atomicops_capable_rc() default to return "true" to
+> preserve the current code's handling of RCiEPs: Since they are not
+> attached to a root port, their dev->bus->parent is NULL and the entire
+> while-loop is bypassed - before this patch and after. (Sashiko was
+> pointing at that being regressed with v4.)
 
+The v4 patch definitely changed the behavior for RCiEPs: the current
+v7.0-rc1 code always enables AtomicOps for RCiEPs, and the v4 patch
+never enables AtomicOps for RCiEPs.  But I'm not sure this is a
+regression.  It definitely *could* break an RCiEP, but AFAIK we have
+no information about whether the RC supports AtomicOps, so enabling
+them and telling the driver that AtomicOps work might be a lie.
 
-> -----Original Message-----
-> From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Sent: Tuesday, March 24, 2026 2:14 PM
-> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> <DECUI@microsoft.com>; andrew+netdev@lunn.ch; davem@davemloft.net;
-> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; leon@kernel.org;
-> Long Li <longli@microsoft.com>; Konstantin Taranov
-> <kotaranov@microsoft.com>; horms@kernel.org;
-> shradhagupta@linux.microsoft.com; ssengar@linux.microsoft.com;
-> ernis@linux.microsoft.com; Shiraz Saleem <shirazsaleem@microsoft.com>;
-> linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-rdma@vger.kernel.org;
-> stephen@networkplumber.org; jacob.e.keller@intel.com; Dipayaan Roy
-> <dipayanroy@microsoft.com>
-> Subject: [PATCH net,v2] net: mana: Fix RX skb truesize accounting
->=20
-> MANA passes rxq->alloc_size to napi_build_skb() for all RX buffers.
-> It is correct for fragment-backed RX buffers, where alloc_size matches
-> the actual backing allocation used for each packet buffer. However, in
-> the non-fragment RX path mana allocates a full page, or a higher-order
-> page, per RX buffer. In that case alloc_size only reflects the usable
-> packet area and not the actual backing memory.
->=20
-> This causes napi_build_skb() to underestimate the skb backing allocation
-> in the single-buffer RX path, so skb->truesize is derived from a value
-> smaller than the real RX buffer allocation.
->=20
-> Fix this by updating alloc_size in the non-fragment RX path to the
-> actual backing allocation size before it is passed to napi_build_skb().
->=20
-> Fixes: 730ff06d3f5c ("net: mana: Use page pool fragments for RX buffers
-> instead of full pages to improve memory efficiency.")
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+IIUC, the motivation for this series was to avoid enabling AtomicOps
+on s390 where there is no visible Root Port, and you have platform
+knowledg that whatever is upstream from the endpoint in fact does not
+support them.
 
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+I think we should avoid enabling AtomicOps unless we know for certain
+that the completer (Root Port or RC) supports them.  To me that sounds
+like:
 
-> ---
-> Changes in v2:
->  - Added maintainers missed in v1.
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index ea71de39f996..884f8e548174 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -766,6 +766,13 @@ static void mana_get_rxbuf_cfg(struct
-> mana_port_context *apc,
->  		}
->=20
->  		*frag_count =3D 1;
-> +
-> +		/* In the single-buffer path, napi_build_skb() must see the
-> +		 * actual backing allocation size so skb->truesize reflects
-> +		 * the full page (or higher-order page), not just the usable
-> +		 * packet area.
-> +		 */
-> +		*alloc_size =3D PAGE_SIZE << get_order(*alloc_size);
->  		return;
->  	}
->=20
-> --
-> 2.43.0
->=20
+  1) Never enable AtomicOps for RCiEPs.
 
+  2) Only enable AtomicOps for endpoints below a Root Port that
+  supports AtomicOps.
+
+This could be two separate patches, where the second would fix the
+s390 issue reported by Alexander.
+
+If we come across RCiEPs that need AtomicOps and we somehow know that
+the RC supports them, we can add a quirk or something to take
+advantage of it.
+
+We are still hand-waving about peer-to-peer transactions; we don't
+even try to account for that because we don't know what peer might be
+the completer.
+
+> The whole point of pcibios_connects_to_atomicops_capable_rc() is to
+> allow different architectures to implement a discriminator outside of
+> PCIe's structure - potentially depending on CPU model or more.
+> 
+> The only point I wonder about: Should
+> pcibios_connects_to_atomicops_capable_rc() default to return "false"
+> and deliberately change the behavior for today's RCiEP's (if there are
+> any...)?
+> 
+> > 
+> > > +
+> > >  	pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+> > >  				 PCI_EXP_DEVCTL2_ATOMIC_REQ);
+> > >  	return 0;
+> > > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > > index 1c270f1d512301de4d462fe7e5097c32af5c6f8d..ef90604c39859ea8e61e5392d0bdaa1b0e43874b 100644
+> > > --- a/include/linux/pci.h
+> > > +++ b/include/linux/pci.h
+> > > @@ -692,6 +692,7 @@ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
+> > >  				 void *release_data);
+> > >  
+> > >  int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge);
+> > > +bool pcibios_connects_to_atomicops_capable_rc(struct pci_dev *dev, u32 cap_mask);
+> > >  
+> > >  #define PCI_REGION_FLAG_MASK	0x0fU	/* These bits of resource flags tell us the PCI region flags */
+> > >  
+> > > 
+> > > -- 
+> > > 2.51.0
+> > > 
+> 
+> Thanks,
+> Gerd
 
