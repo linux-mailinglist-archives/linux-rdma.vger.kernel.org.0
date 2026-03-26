@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-18716-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18717-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id Yz0sMKuxxWmpAwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18716-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 23:22:35 +0100
+	id EPmJDbayxWmpAwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18717-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 23:27:02 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7247433C4D8
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 23:22:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C3433C5B4
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 23:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 18026305ACB7
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 22:22:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 64D36301C151
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 22:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FB1329C71;
-	Thu, 26 Mar 2026 22:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADE733065C;
+	Thu, 26 Mar 2026 22:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iQpxCsQK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/sh3n5j"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6577717BA2;
-	Thu, 26 Mar 2026 22:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D342313E1B;
+	Thu, 26 Mar 2026 22:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774563751; cv=none; b=TqNfSJlrdQIJyMYLCyrMpbxBKthlbaHeCYPxIOBIy52hMEXMF+j5NQhyUphq1XpOmmC+LppdNdIAtS98Do/6j/e8JYM2aWjfISf4JYRYinmqj4SL36By8CYtDG/cNcRaFl+fUt/OxpJguMc5Nog2sx8B0LwTifE3J80cZ0pTLOY=
+	t=1774563819; cv=none; b=QisO2GBgq1/XSrr3r0VGxPH6o3a3wunpo/3vYoc03sc4Wsgn3ScHxEzhWZBbjZ2H1c4tFCwGkhxNMwAzc73ipC0hLk7PiJbJRVpHoUaQTjmDbS1mCW9AJf4upNmBKj3uSDwe40CPv97J6LICHFJIh9dTmZ6YjOu5REpt4mmH++w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774563751; c=relaxed/simple;
-	bh=Nn6bJFfe8m3I2yL5csiWVtZaPGCdWiiPQMHXhCUNrng=;
+	s=arc-20240116; t=1774563819; c=relaxed/simple;
+	bh=gd17ff83Qslzmu6nQdhq7Bpr2kdFpRbIISHbIzyiYpg=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N+UE3vS+sKrSjxbrlDGs77qOx+OP/yBcqWX+CRXOVj53/WzDEZ/XIv76eVlg7a8K7OkxrWG8dPsBIWf7opJdd4ME6RCkY5Efy2ykr/lmuycR2ezP950c1HU5+jCLtn+d+kQvExASFOolGHTnR31gFWunxW/dkub4nmyAlpkgWfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iQpxCsQK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF074C116C6;
-	Thu, 26 Mar 2026 22:22:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=BAtxxDxmyhRY1HRnXN++8nlfmsMgB+xKUoydNR4eeX/kVc6JOsgD7aWXx+3tmi7y9jxCBJ9pKtn091qSuVIQRTKUzQk1rPbSULaJssYb4B0+oc8LyX5VVRCkcSzoTNzXQ6BwZ5MlfMywhvd2JgKyFhikG2CE4ScVc842xaQJQuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/sh3n5j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF0F6C2BC87;
+	Thu, 26 Mar 2026 22:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774563750;
-	bh=Nn6bJFfe8m3I2yL5csiWVtZaPGCdWiiPQMHXhCUNrng=;
+	s=k20201202; t=1774563819;
+	bh=gd17ff83Qslzmu6nQdhq7Bpr2kdFpRbIISHbIzyiYpg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iQpxCsQKCY5ERbDNhb/9HPGLoLa6REYJ4W+cgNtyY4BD5eqcfyLXaNkOy7WRN2NFS
-	 7LKrTp+2+fCFM7mu5/n5sQD7JkVxmcJLjzucT4N9t0p3nglIORjRnOLYsUwipI161e
-	 6XMHwTmEMB7fMLPY9A1eUymx8PCsREK+9doK5h8QhbnJBzMTtcH0AnIcraqbkQ4Vaj
-	 4QwZlpFWh8Ys3qv9yFxgnZC9kot7Yvv4b2PDoohO1gfk2qxRRmNDOQLIOJlEaLHPPL
-	 lV8YqBm8WRC0k/RkmtkNui4um0SdrD3R7vWMZnqqJW9aeefNzoHG1KG4d/ovOAISH4
-	 Wn3mEqt/D+9EQ==
-Date: Thu, 26 Mar 2026 15:22:28 -0700
+	b=Y/sh3n5jSq5Y4zqHT1MXYwHYKcO/9HobHF4tfnFrzErwbT335YDZqcq2ireQ+EEzB
+	 mdHf3J/1PWEOw3WJk+Qw1+i++pcJ2XbkW7BTAz/U1jGA/B0zhfb0tII3IDId05p1aI
+	 /rEt8UbeZoq0HNoPUiojinswNIvgVqbZhtGACVzeEFHZmbkaQTKZqCDVTnAly+cy99
+	 bGdD7PwQWXfJgMkxatA6s2vZl8xBnMC7VGdHWVUUZAtrPCyERwAJAM2yflFNJz3I7a
+	 Oa8Gz+iEu3hR1KXJ+FcKdMZSKUy5aoWrcb5QWYKhN4BH5mIIrK9orlv90gmprr5YM8
+	 kzrg6zlmgl04A==
+Date: Thu, 26 Mar 2026 15:23:37 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Andrew
@@ -64,7 +64,7 @@ Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Andrew
  linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org
 Subject: Re: [PATCH net-next v2 03/12] ethtool: Add loopback netlink UAPI
  definitions
-Message-ID: <20260326152228.2c6937ca@kernel.org>
+Message-ID: <20260326152337.2cff3c24@kernel.org>
 In-Reply-To: <20260325145022.2607545-4-bjorn@kernel.org>
 References: <20260325145022.2607545-1-bjorn@kernel.org>
 	<20260325145022.2607545-4-bjorn@kernel.org>
@@ -81,11 +81,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18716-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18717-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -103,17 +103,34 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 7247433C4D8
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 92C3433C5B4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On Wed, 25 Mar 2026 15:50:10 +0100 Bj=C3=B6rn T=C3=B6pel wrote:
 > +      -
-> +        name: unspec
-> +        type: unused
-> +        value: 0
+> +        name: depth
+> +        type: u8
+> +        doc: |
+> +          Ordering index within a component instance. When a component
+> +          has multiple loopback points of the same type (e.g. two PCS
+> +          blocks inside a rate-adaptation PHY), depth distinguishes
+> +          them. Lower depth values are closer to the host side, higher
+> +          values are closer to the line/media side. Defaults to 0 when
+> +          there is only one loopback point per (component, name) tuple.
+> +      -
+> +        name: supported
+> +        type: u8
+> +        enum: loopback-direction
+> +        enum-as-flags: true
+> +        doc: Bitmask of supported loopback directions
+> +      -
+> +        name: direction
+> +        type: u8
+> +        enum: loopback-direction
+> +        doc: Current loopback direction, 0 means disabled
 
-I don't think we need to add unspec attrs for new sets ?
+u32, Netlink attrs are padded to 4B anyway
 
