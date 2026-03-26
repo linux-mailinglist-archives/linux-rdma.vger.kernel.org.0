@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-18684-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18685-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8Bj5L8baxGkq4gQAu9opvQ
-	(envelope-from <linux-rdma+bounces-18684-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 08:05:42 +0100
+	id kMrSMQLbxGkq4gQAu9opvQ
+	(envelope-from <linux-rdma+bounces-18685-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 08:06:42 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA4B33033A
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 08:05:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD9133036E
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 08:06:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0A4FF304A334
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 07:01:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C1637304C139
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2026 07:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE6733BBCF;
-	Thu, 26 Mar 2026 07:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975D434D4CE;
+	Thu, 26 Mar 2026 07:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="M4uQe63W"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hMCoDNaC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11013026.outbound.protection.outlook.com [40.93.201.26])
+Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11013014.outbound.protection.outlook.com [40.93.201.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8213C212FB9;
-	Thu, 26 Mar 2026 07:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E33335091;
+	Thu, 26 Mar 2026 07:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.14
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774508468; cv=fail; b=chGhM5u89BrOCYUprrjrhcCUfcudBgsL5aPgCoUSV5VbGT/jBemfDeF+NfeCj65ofXLqmrt4NJxLyvLqwtNdJnfwnkomBnE2qHCGz/m0p7eFqNrxOoYTh6aZ4RLN8vdencrg+SCygjzZNJ4Noke0jOg3bQJd198PVuT+/PsiL4g=
+	t=1774508484; cv=fail; b=D/aK8UFeg8dqGNkFf/WXXzTZn4JvKddThe4QlVCk8iRZSOeRr6tvyLNNgwUUMRhTz6IGrOzmXVY4bPGPYH3akRq66Xzhyk3366o95g/R8mPY7a/uVgP9QmsYXPiJE6927YsfuFgygZfiLjqWt2tJuDpkxQiFbuNq7KwwkmsBFLI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774508468; c=relaxed/simple;
-	bh=rVg+TMWTFvd84MmL6AgZ1GR7mtWchw28kpPxxvTO9J0=;
+	s=arc-20240116; t=1774508484; c=relaxed/simple;
+	bh=3SedDLhco9LimAFr3AOzDaNc9YwWW6F1c17oc+n1ytw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KttSCB6HaoAmA1WKltlwa4U+bKWnNyRobAmzBeUrNdphl9C0O07rwJx0kMKqEzBN3FU9kV7GM8LHwajDYIspATpv59dwc6XvZFzy3Ss2DNUQkHCBS08gwfC1qAhPl50LaG0K6d53SD4tIXTmHOfaSDXYmtQzfnIoCH1LJR0w710=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=M4uQe63W; arc=fail smtp.client-ip=40.93.201.26
+	 MIME-Version:Content-Type; b=FI1I5eSjn3A4U+dNADiCTdo0bH/mNRS20pS+25zv6d+TrZD8pQpWqbA3le8MMZKH8foujNyT2lN0IYsYiT0SB/UrxPVcxfA3pYtaBdOk3AzezVtZxA3aKDHZqE3X31zaq0kObZ3F4M5ZUPfAyr1ptYgCQiX3SzIPOat43MLP+XM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hMCoDNaC; arc=fail smtp.client-ip=40.93.201.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nBYjneiJ8zNlh3N/+pihEd6ePnZh6EWEXYdeUDsnx1KD5SlDGEET/st1uBPZD7i+DAhnVg+cRxxwDzJ7pOzKDywsw3oTVD3qFdpM6L/lwxDqyQ5BB7uh78ylXukMpTA9iMQUAu4gs5Wt+YM0Q9rKymcB2xKe22BMxtrS4QNu5hcE8Y1sILWE6t+BhINXv7v4iPJTlMHk8zK5yhqrprq789Qx3ccYB+aWJbXOQJnVau0SV07ikPR7N1QE+oQFCSsMfQek2Qch18stmQCcfiZHGJSSI/Kl1TMFYpWGrmsk+lH0kqy2fsyz0yUgvc6FM5r/w5tmg0WFG27RSYmv2fm2XA==
+ b=dJ36yURuRZZ6bAvv41CM/0wfPzizjqKLHmshLJ6lnmj56pcemQ5lXhM3u9RlHiX3hdEixJ9uCmRyoSMO9/HuUf6+zqTYh1AuT0AhTP7GJB2olEvUaPweMCdZ92IUKe4Ttu0ZgbUWO0HDDwfzrYrbggpWUs7FLABYEx6lhW3zuG14Lf9CoDRCDggWwo5fzaqIaSSA5ZN9c11MuiBAVnIVGtOaDciUYQPoyenOhYvIQUrzT73FruJFh/9+1L0cE7QTBDVi5QMWDCB0NxSTKS1OHkdnz0AyYJaxXDwZkfVaY3RaV4vDTtBQ/LuMk/hCffItNk888IHuGo/r0kav3zRRDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sWsTYEXkESQDWpVGX2UqaFDMCn/DNM1NXLnY74SaiD4=;
- b=bTesCjkx587LVi2ekqtixda1ggMqzpGA8FqzqBupol9I3mqJ6JaeAXye3ZOU2TjZhRQnSHuF3qwBg3iUrjXQaItWaYdG16mWCyiTxEDTMRrymZrkpgpo3qytRuBDOkLHmAtSjsItSsvRqLEg7O6mMMgnT7C0x8kqXCTrD8xQO6tm/JZcWNH7vVXzYd4agcnhkRPf2aHDeMnUJWfrRwpVcQ0Gfh65/OE1WfEpUFzyJRzeoJMhbUwdWsO/1fL506rTcvBBjWBNPbVVPEoa57cm+IWD8ii5CWI3PqC/iVQaQe37Ro2Z2rNMU3TKRCKGtxbqS2JgODVYn9jDkr0gsLY9CQ==
+ bh=EK6Pd15pI2mdB9pIoZ8pZBxqMen9HjHWtER+LYvQQx4=;
+ b=i3Rr3i7kpXgitjAL3V9m8aM57CYsfmRw1OmquOMvDVyuajy8cF53BlOMfPttzHnth5cLkwLrFdnWz++oEYF0nQGw7vA9CgxD17BcJxy+RKivLF6OVoHMJ/f+myLC8kO3CoZRkA+UZndR3z5VKBu8TJ5Zyz7DVEFg7BwAGm6vpKRbYy042LT7PI0X3+JuK+30wHQsPr7It10sZiQjB7ETnYsYmBleyvh3DdBvDYLu4aLXK1CRI+Vkd8zrLRjYa3rlYEUsQstdXO0wI7S6R/SsIcQbUlDSwEjMXJC/m4wf/qrSkK+mmwqgoQxwS7+a/7aBXfWHqnlLohCGNTKnqcJEog==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -48,18 +48,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sWsTYEXkESQDWpVGX2UqaFDMCn/DNM1NXLnY74SaiD4=;
- b=M4uQe63WQrwpgWqZ4QVU651c9mxdOsShIBxP3E7/hV4XJuN0t/Tji3TeWTiM5I/rMDf+ZhgRIaXbIOQ+8OAEIFUCDwL25uLDkEAnvwinuHneaXnbgAOCsBYHAsFegpVbMgK9W01eDYoobdl1ST6nLyqj9AsQTCBIvDSB7pdHMLRMknsyIb/uM+l0kXlX2CkRD+ELU/KoJMsWieK3cfkFu5HD3aIPXnM+ONPY1BXyIfD776pFAEMS792tGy+JZkBzJPFWbcG6hIDgRU9e3jqrZvofRQ28Uz47+bcTcSubTTqx4iDfUGvWiJ0yqgwD3DwHpiVCLUYyQoiTgpLxY4wkWw==
-Received: from MN0PR04CA0014.namprd04.prod.outlook.com (2603:10b6:208:52d::20)
- by MN2PR12MB4047.namprd12.prod.outlook.com (2603:10b6:208:1de::20) with
+ bh=EK6Pd15pI2mdB9pIoZ8pZBxqMen9HjHWtER+LYvQQx4=;
+ b=hMCoDNaCcuOXxbPCaKwKdJUrtHzMFYqz0Pxbrs+x9ung7aLXIktwnX3E7OwKcbyi/QakobfrhkEJXDKGtRJJUB/LHs+pSm2M6hRHv0eb8+XH8pnAwV5qaN1IbUypN4S5o+/EVgeHr/xNPyRjuFSUdSdG3YUpU4Ay0KZ4bflGfTVmd7mVpcfeV/CBRt8OJsDwXCf4rDpe8VCC9jaG8wioLwC1u9O3t0RCv8sNYPqcwhFFz/dMij3LDOVvLGnLjtMb0Ow2LGtBvgTp+Qp3aZ0TSsltbYzFOKPuojIvgjBb0l5q7lYom7qEiOABTHb7C4FHuElFygv9MChEDvbFDYHRmw==
+Received: from MN0PR04CA0022.namprd04.prod.outlook.com (2603:10b6:208:52d::21)
+ by LV2PR12MB5991.namprd12.prod.outlook.com (2603:10b6:408:14f::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.8; Thu, 26 Mar
- 2026 07:01:02 +0000
+ 2026 07:01:10 +0000
 Received: from BN2PEPF00004FBC.namprd04.prod.outlook.com
- (2603:10b6:208:52d:cafe::f2) by MN0PR04CA0014.outlook.office365.com
- (2603:10b6:208:52d::20) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:10b6:208:52d:cafe::71) by MN0PR04CA0022.outlook.office365.com
+ (2603:10b6:208:52d::21) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9723.32 via Frontend Transport; Thu,
- 26 Mar 2026 07:01:02 +0000
+ 26 Mar 2026 07:01:00 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -69,18 +69,18 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.118.232) by
  BN2PEPF00004FBC.mail.protection.outlook.com (10.167.243.182) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.21 via Frontend Transport; Thu, 26 Mar 2026 07:01:02 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ 15.20.9745.21 via Frontend Transport; Thu, 26 Mar 2026 07:01:09 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
  (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 26 Mar
- 2026 00:00:41 -0700
+ 2026 00:00:52 -0700
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Thu, 26 Mar 2026 00:00:40 -0700
+ 15.2.2562.20; Thu, 26 Mar 2026 00:00:51 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Thu, 26 Mar 2026 00:00:30 -0700
+ Transport; Thu, 26 Mar 2026 00:00:41 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -108,9 +108,9 @@ CC: Donald Hunter <donald.hunter@gmail.com>, Simon Horman <horms@kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, Gal Pressman
 	<gal@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next V9 02/14] devlink: Add helpers to lock nested-in instances
-Date: Thu, 26 Mar 2026 08:59:37 +0200
-Message-ID: <20260326065949.44058-3-tariqt@nvidia.com>
+Subject: [PATCH net-next V9 03/14] devlink: Migrate from info->user_ptr to info->ctx
+Date: Thu, 26 Mar 2026 08:59:38 +0200
+Message-ID: <20260326065949.44058-4-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260326065949.44058-1-tariqt@nvidia.com>
 References: <20260326065949.44058-1-tariqt@nvidia.com>
@@ -125,37 +125,37 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF00004FBC:EE_|MN2PR12MB4047:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b23a9e6-93bb-433d-7af2-08de8b057129
+X-MS-TrafficTypeDiagnostic: BN2PEPF00004FBC:EE_|LV2PR12MB5991:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4e0bfc26-6770-4827-d34f-08de8b0575d3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|82310400026|1800799024|7416014|376014|36860700016|22082099003|56012099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	E/vxr0zipJkBL8rf+LL4AWJRjfsWXtqMJzsobAth50Rbjpshl3UeW11Vp4Cy2EsIep/pz/UGumKLWcjAMKLZj60+s0Z26Rcg3aFRA/SUbbUVPwo3bujZ32Ok3QAh1X9QbOQq2AQPeSre+FPV5Xc4nEWpj+rH6PSNj439ClUZ1pfvh9u6EjLANUb8cxtBn1wLkDnuN0rzZ2HW517735gAIsYXFEJ5ZyEAvX28oMmor5TX1HC7yDBJjFdIh5MMCXHP2QWUSL/JbNa75HVUU7ZcloKt/Bet2fkVdcmH4lwQxLU+VmQzp3RYenWI498smePRzIxLv5IZfdZoyijLcH6evHSRMafrmrpfGwKChOh8nEbZ24SP0A+trFW4tVhHy9LCf8zyPnewrVg+XQ8fw8uzXnpc2N5k3USmXKsJDdoU24+aFzpvV6wfuAU7ap4N6u0QQG8nc3bwgXibxtfD2p+aesguZrSDm+HsInjHJe9UlWm2RIMGW9W9O9SBuXxTTu61lIrg9EAEQ6F9Q7Oh7XbqmEOCDwID1PHQNc/sznNNxKRT1/lW/JA0ITmb6h7NV82nuwixgpLXSaaC1IFWVkv2c5kZlrMiw0/VuvH9rz+mQasU1zk+5vjfqvJP7ZjKDx+TLUEz1mxfDv6BJxvZOeRcwjw717Vlc2xtp7hovxsU7FjWreik6VpK0DsCOxO9KV3a1LHf7up0xtLrZmuxEmZkPG/YLXnUTk+t+QsuguejEoWsZzpvlMYxhknZOqfK7S81FINjo6sKJ4EwqMLCp7xcxg==
+	HU3WWLSiZhX6g7PlQ9wkKgck71FZx8eywox6vdeocW0IIeagIyTqgkiFXWmLFEc52Wf2yQiC/VnvI5sCRDawyo6bkuynopVQ24RkCGsI42U6lI6sQEq+2+YjEDJTmug2YMkC3DPuGjSsMyQ8D4ZZquUo4advPbje0v4XVzz19cHUA+41HT4YX0M1fal92v7n0PtRiZZzrHlJahb+pyZL9ccSx3iOg1HFerphDuLfLlypLnGorNR7x7yKwSJVyxWHwcdiHwvnddsus99L3KUHtxqfQWOUxdQIsSiFCEy0Bp8RsNvJlXVi9OmANl6yuUT4qRtwQARXJhRACdR4t7msXwSmojn093rIy6WzEgbLQEt4rid9IG+Rd98dIl31I+3rbEQ4vTRffHq/i2T3N4yM07O1PINlcbWS/6ESgjC0U1Wh7rKnoFef75YiQRWfMLqd0cA8KBKeBAHD4J+IH28zR6Wd6/9KV0iO6DFofvWeqPsfZe8/+VFKY2jxt9bhKZqbehHwykJxIHbJNeOvCe9lPcSy8CJusbYxTUCOO6v3zq+0Wcn4oPuH0bqhp17K7L5Q6CZQdeADVH+yTBmIKNPh/I53RhAf6KLJgbAfSTRrsh8ewdOrwZ9UNMJ6zOu7GDPH/7ar1ia4SkZxtC6Iq6DEwum41n1DnTHGrMSXR93VuoM2Bz7qwSryoGAwFr8UUnYY1K66R8pBKD1fzIkzFfvWLTnhupmsHO+GJvv4hMdtj7JpQP+Ywd9dl3M4e0MRm0XZsp2RxRKs21i3kgdwto6xwg==
 X-Forefront-Antispam-Report:
 	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(7416014)(376014)(36860700016)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	CnoUN3kSjCN3/sJAs966NkCpVWBSTedw5XB4Cribo+l2uroOViM7L9RLNZrq7bN8u2Q6G97ku8VV+LVzRAmT+P6mmO8AX3+QZpJIBTjWhq9ML1qREXjPNJCcn7XpDvlUJ8kS7Vx2QQ7lO8fcrmTrnEmidycY8Kp3A2Sa7FbG7+x9p0d9adgulRFkAPpJ8Q+GduP+rn6euYCbZ4VMHaVCDUStjmmG1d50KODDD5hcSyRAZTJZXYmbd5sjWUPkR5/XOmkz1iN7EenzqBnCkZ+7Zd2OD9CqkRCnfUz9GoPLLOGrRZmuYQjHvb/J1FJuzyC3jKqs7np1pQ044atPYFaYmWEkSIu+3h39kYIQaiFcaXCNqysKWyTejawDlZxgqTBL+AzYTtuFzC+9C9wUUQ7KuOD4fg17GgR+9htMIVYAyGZIEhu+eZ2Min81lcQ0Efxl
+	7eKvdso83qeXyzYRcvzmnhvqRJQvksYj6NA9NKgnovSQHLjUuhGwuT+dn86WGYCbu7IfcZjnW9e88+DAGc225cxjEL/0t7bbL0X/p2KoTKLDuHPheM5fQOvQVncQo3dV/UpxtQmP35U8Twkpk2vCVnxVFKWfUskFYbPuvwnga18lvItKMC+djWVy8sOy7UvWxlxwMXCi2IoPOOhkX2wITarrqSPKRFFKfmjmeobAwu+dmun4cjMXjZnPhIbKHjBSW0kUkunyXSIAgvNfRBJ6gCEGCU5TgqsovjSLuLjwFt2TFyFyrdsuBAfRjLi5Umfw6qQx+C2gFKNFy4eZQlEL7lCnk561EhIX3fbI3hH3Rpqo0WvPkBV/JGjhLlS164F1MSLWaNSdjG8ajhGaL4SuMNAvitU0+O4GB5fLyqAjDy8ghFwiHettmHldJkspYV8/
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2026 07:01:02.1208
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2026 07:01:09.9470
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b23a9e6-93bb-433d-7af2-08de8b057129
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e0bfc26-6770-4827-d34f-08de8b0575d3
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	BN2PEPF00004FBC.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4047
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5991
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -163,7 +163,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	FREEMAIL_CC(0.00)[gmail.com,kernel.org,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,google.com,davidwei.uk,fomichev.me,iogearbox.net,dama.to,blackwall.org,linux.dev,redhat.com,openvpn.net,vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[49];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-18684-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18685-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
@@ -175,94 +175,657 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,Nvidia.com:dkim];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 5DA4B33033A
+X-Rspamd-Queue-Id: 6CD9133036E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Cosmin Ratiu <cratiu@nvidia.com>
 
-Upcoming code will need to obtain a reference to locked nested-in
-devlink instances. Add helpers to lock, obtain an already locked
-reference and unlock/unref the nested-in instance.
+Replace deprecated info->user_ptr[0]/[1] with a typed
+devlink_nl_ctx struct stored in info->ctx. The struct aliases
+the same union memory, so the migration is safe.
+
+There are no functionality changes here.
 
 Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- net/devlink/core.c          | 42 +++++++++++++++++++++++++++++++++++++
- net/devlink/devl_internal.h |  3 +++
- 2 files changed, 45 insertions(+)
+ net/devlink/dev.c           | 16 ++++++++--------
+ net/devlink/devl_internal.h | 13 +++++++++++++
+ net/devlink/dpipe.c         | 14 +++++++-------
+ net/devlink/health.c        | 12 ++++++------
+ net/devlink/linecard.c      |  4 ++--
+ net/devlink/netlink.c       |  8 ++++----
+ net/devlink/param.c         |  4 ++--
+ net/devlink/port.c          | 18 +++++++++---------
+ net/devlink/rate.c          |  8 ++++----
+ net/devlink/region.c        |  6 +++---
+ net/devlink/resource.c      |  6 +++---
+ net/devlink/sb.c            | 22 +++++++++++-----------
+ net/devlink/trap.c          | 12 ++++++------
+ 13 files changed, 78 insertions(+), 65 deletions(-)
 
-diff --git a/net/devlink/core.c b/net/devlink/core.c
-index eeb6a71f5f56..db11248df712 100644
---- a/net/devlink/core.c
-+++ b/net/devlink/core.c
-@@ -67,6 +67,48 @@ static void __devlink_rel_put(struct devlink_rel *rel)
- 		devlink_rel_free(rel);
- }
+diff --git a/net/devlink/dev.c b/net/devlink/dev.c
+index 57b2b8f03543..bcf001554e84 100644
+--- a/net/devlink/dev.c
++++ b/net/devlink/dev.c
+@@ -222,7 +222,7 @@ static void devlink_notify(struct devlink *devlink, enum devlink_command cmd)
  
-+struct devlink *devlink_nested_in_get_lock(struct devlink_rel *rel)
-+{
-+	struct devlink *devlink;
-+
-+	if (!rel)
-+		return NULL;
-+	devlink = devlinks_xa_get(rel->nested_in.devlink_index);
-+	if (!devlink)
-+		return NULL;
-+	devl_lock(devlink);
-+	if (devl_is_registered(devlink))
-+		return devlink;
-+	devl_unlock(devlink);
-+	devlink_put(devlink);
-+	return NULL;
-+}
-+
-+/* Returns the nested in devlink object and validates its lock is held. */
-+struct devlink *devlink_nested_in_get_locked(struct devlink_rel *rel)
-+{
-+	struct devlink *devlink;
-+	unsigned long index;
-+
-+	if (!rel)
-+		return NULL;
-+	index = rel->nested_in.devlink_index;
-+	devlink = xa_find(&devlinks, &index, index, DEVLINK_REGISTERED);
-+	if (devlink)
-+		devl_assert_locked(devlink);
-+	return devlink;
-+}
-+
-+void devlink_nested_in_put_unlock(struct devlink_rel *rel)
-+{
-+	struct devlink *devlink = devlink_nested_in_get_locked(rel);
-+
-+	if (devlink) {
-+		devl_unlock(devlink);
-+		devlink_put(devlink);
-+	}
-+}
-+
- static void devlink_rel_nested_in_notify_work(struct work_struct *work)
+ int devlink_nl_get_doit(struct sk_buff *skb, struct genl_info *info)
  {
- 	struct devlink_rel *rel = container_of(work, struct devlink_rel,
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+@@ -519,7 +519,7 @@ devlink_nl_reload_actions_performed_snd(struct devlink *devlink, u32 actions_per
+ 
+ int devlink_nl_reload_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	enum devlink_reload_action action;
+ 	enum devlink_reload_limit limit;
+ 	struct net *dest_net = NULL;
+@@ -683,7 +683,7 @@ static int devlink_nl_eswitch_fill(struct sk_buff *msg, struct devlink *devlink,
+ 
+ int devlink_nl_eswitch_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+@@ -704,7 +704,7 @@ int devlink_nl_eswitch_get_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_eswitch_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	const struct devlink_ops *ops = devlink->ops;
+ 	enum devlink_eswitch_encap_mode encap_mode;
+ 	u8 inline_mode;
+@@ -906,7 +906,7 @@ devlink_nl_info_fill(struct sk_buff *msg, struct devlink *devlink,
+ 
+ int devlink_nl_info_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+@@ -1134,7 +1134,7 @@ int devlink_nl_flash_update_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct nlattr *nla_overwrite_mask, *nla_file_name;
+ 	struct devlink_flash_update_params params = {};
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	const char *file_name;
+ 	u32 supported_params;
+ 	int ret;
+@@ -1302,7 +1302,7 @@ devlink_nl_selftests_fill(struct sk_buff *msg, struct devlink *devlink,
+ 
+ int devlink_nl_selftests_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+@@ -1372,7 +1372,7 @@ static const struct nla_policy devlink_selftest_nl_policy[DEVLINK_ATTR_SELFTEST_
+ int devlink_nl_selftests_run_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct nlattr *tb[DEVLINK_ATTR_SELFTEST_ID_MAX + 1];
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct nlattr *attrs, *selftests;
+ 	struct sk_buff *msg;
+ 	void *hdr;
 diff --git a/net/devlink/devl_internal.h b/net/devlink/devl_internal.h
-index 7dfb7cdd2d23..3b4364677b18 100644
+index 3b4364677b18..1af445f044e5 100644
 --- a/net/devlink/devl_internal.h
 +++ b/net/devlink/devl_internal.h
-@@ -136,6 +136,9 @@ typedef void devlink_rel_notify_cb_t(struct devlink *devlink, u32 obj_index);
- typedef void devlink_rel_cleanup_cb_t(struct devlink *devlink, u32 obj_index,
- 				      u32 rel_index);
+@@ -150,6 +150,19 @@ int devlink_rel_devlink_handle_put(struct sk_buff *msg, struct devlink *devlink,
+ 				   bool *msg_updated);
  
-+struct devlink *devlink_nested_in_get_lock(struct devlink_rel *rel);
-+struct devlink *devlink_nested_in_get_locked(struct devlink_rel *rel);
-+void devlink_nested_in_put_unlock(struct devlink_rel *rel);
- void devlink_rel_nested_in_clear(u32 rel_index);
- int devlink_rel_nested_in_add(u32 *rel_index, u32 devlink_index,
- 			      u32 obj_index, devlink_rel_notify_cb_t *notify_cb,
+ /* Netlink */
++struct devlink_nl_ctx {
++	struct devlink *devlink;
++	struct devlink_port *devlink_port;
++};
++
++static inline struct devlink_nl_ctx *
++devlink_nl_ctx(struct genl_info *info)
++{
++	BUILD_BUG_ON(sizeof(struct devlink_nl_ctx) >
++		     sizeof_field(struct genl_info, ctx));
++	return (struct devlink_nl_ctx *)info->ctx;
++}
++
+ enum devlink_multicast_groups {
+ 	DEVLINK_MCGRP_CONFIG,
+ };
+diff --git a/net/devlink/dpipe.c b/net/devlink/dpipe.c
+index c8d4a4374ae1..08c7b66fc3e8 100644
+--- a/net/devlink/dpipe.c
++++ b/net/devlink/dpipe.c
+@@ -213,7 +213,7 @@ static int devlink_dpipe_tables_fill(struct genl_info *info,
+ 				     struct list_head *dpipe_tables,
+ 				     const char *table_name)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_dpipe_table *table;
+ 	struct nlattr *tables_attr;
+ 	struct sk_buff *skb = NULL;
+@@ -290,7 +290,7 @@ static int devlink_dpipe_tables_fill(struct genl_info *info,
+ 
+ int devlink_nl_dpipe_table_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	const char *table_name =  NULL;
+ 
+ 	if (info->attrs[DEVLINK_ATTR_DPIPE_TABLE_NAME])
+@@ -478,7 +478,7 @@ int devlink_dpipe_entry_ctx_prepare(struct devlink_dpipe_dump_ctx *dump_ctx)
+ 	if (!dump_ctx->hdr)
+ 		goto nla_put_failure;
+ 
+-	devlink = dump_ctx->info->user_ptr[0];
++	devlink = devlink_nl_ctx(dump_ctx->info)->devlink;
+ 	if (devlink_nl_put_handle(dump_ctx->skb, devlink))
+ 		goto nla_put_failure;
+ 	dump_ctx->nest = nla_nest_start_noflag(dump_ctx->skb,
+@@ -563,7 +563,7 @@ static int devlink_dpipe_entries_fill(struct genl_info *info,
+ int devlink_nl_dpipe_entries_get_doit(struct sk_buff *skb,
+ 				      struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_dpipe_table *table;
+ 	const char *table_name;
+ 
+@@ -650,7 +650,7 @@ static int devlink_dpipe_headers_fill(struct genl_info *info,
+ 				      struct devlink_dpipe_headers *
+ 				      dpipe_headers)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct nlattr *headers_attr;
+ 	struct sk_buff *skb = NULL;
+ 	struct nlmsghdr *nlh;
+@@ -713,7 +713,7 @@ static int devlink_dpipe_headers_fill(struct genl_info *info,
+ int devlink_nl_dpipe_headers_get_doit(struct sk_buff *skb,
+ 				      struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 
+ 	if (!devlink->dpipe_headers)
+ 		return -EOPNOTSUPP;
+@@ -747,7 +747,7 @@ static int devlink_dpipe_table_counters_set(struct devlink *devlink,
+ int devlink_nl_dpipe_table_counters_set_doit(struct sk_buff *skb,
+ 					     struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	const char *table_name;
+ 	bool counters_enable;
+ 
+diff --git a/net/devlink/health.c b/net/devlink/health.c
+index 449c7611c640..7ff0d707734a 100644
+--- a/net/devlink/health.c
++++ b/net/devlink/health.c
+@@ -358,7 +358,7 @@ devlink_health_reporter_get_from_info(struct devlink *devlink,
+ int devlink_nl_health_reporter_get_doit(struct sk_buff *skb,
+ 					struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_health_reporter *reporter;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -456,7 +456,7 @@ int devlink_nl_health_reporter_get_dumpit(struct sk_buff *skb,
+ int devlink_nl_health_reporter_set_doit(struct sk_buff *skb,
+ 					struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_health_reporter *reporter;
+ 
+ 	reporter = devlink_health_reporter_get_from_info(devlink, info);
+@@ -715,7 +715,7 @@ EXPORT_SYMBOL_GPL(devlink_health_reporter_state_update);
+ int devlink_nl_health_reporter_recover_doit(struct sk_buff *skb,
+ 					    struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_health_reporter *reporter;
+ 
+ 	reporter = devlink_health_reporter_get_from_info(devlink, info);
+@@ -1157,7 +1157,7 @@ static int devlink_fmsg_dumpit(struct devlink_fmsg *fmsg, struct sk_buff *skb,
+ int devlink_nl_health_reporter_diagnose_doit(struct sk_buff *skb,
+ 					     struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_health_reporter *reporter;
+ 	struct devlink_fmsg *fmsg;
+ 	int err;
+@@ -1252,7 +1252,7 @@ int devlink_nl_health_reporter_dump_get_dumpit(struct sk_buff *skb,
+ int devlink_nl_health_reporter_dump_clear_doit(struct sk_buff *skb,
+ 					       struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_health_reporter *reporter;
+ 
+ 	reporter = devlink_health_reporter_get_from_info(devlink, info);
+@@ -1269,7 +1269,7 @@ int devlink_nl_health_reporter_dump_clear_doit(struct sk_buff *skb,
+ int devlink_nl_health_reporter_test_doit(struct sk_buff *skb,
+ 					 struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_health_reporter *reporter;
+ 
+ 	reporter = devlink_health_reporter_get_from_info(devlink, info);
+diff --git a/net/devlink/linecard.c b/net/devlink/linecard.c
+index 8315d35cb91d..fd18f2759770 100644
+--- a/net/devlink/linecard.c
++++ b/net/devlink/linecard.c
+@@ -171,7 +171,7 @@ void devlink_linecards_notify_unregister(struct devlink *devlink)
+ 
+ int devlink_nl_linecard_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_linecard *linecard;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -371,7 +371,7 @@ static int devlink_linecard_type_unset(struct devlink_linecard *linecard,
+ int devlink_nl_linecard_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_linecard *linecard;
+ 	int err;
+ 
+diff --git a/net/devlink/netlink.c b/net/devlink/netlink.c
+index 32ddbe244cb7..5624cf71592f 100644
+--- a/net/devlink/netlink.c
++++ b/net/devlink/netlink.c
+@@ -252,18 +252,18 @@ static int __devlink_nl_pre_doit(struct sk_buff *skb, struct genl_info *info,
+ 	if (IS_ERR(devlink))
+ 		return PTR_ERR(devlink);
+ 
+-	info->user_ptr[0] = devlink;
++	devlink_nl_ctx(info)->devlink = devlink;
+ 	if (flags & DEVLINK_NL_FLAG_NEED_PORT) {
+ 		devlink_port = devlink_port_get_from_info(devlink, info);
+ 		if (IS_ERR(devlink_port)) {
+ 			err = PTR_ERR(devlink_port);
+ 			goto unlock;
+ 		}
+-		info->user_ptr[1] = devlink_port;
++		devlink_nl_ctx(info)->devlink_port = devlink_port;
+ 	} else if (flags & DEVLINK_NL_FLAG_NEED_DEVLINK_OR_PORT) {
+ 		devlink_port = devlink_port_get_from_info(devlink, info);
+ 		if (!IS_ERR(devlink_port))
+-			info->user_ptr[1] = devlink_port;
++			devlink_nl_ctx(info)->devlink_port = devlink_port;
+ 	}
+ 	return 0;
+ 
+@@ -304,7 +304,7 @@ static void __devlink_nl_post_doit(struct sk_buff *skb, struct genl_info *info,
+ 	bool dev_lock = flags & DEVLINK_NL_FLAG_NEED_DEV_LOCK;
+ 	struct devlink *devlink;
+ 
+-	devlink = info->user_ptr[0];
++	devlink = devlink_nl_ctx(info)->devlink;
+ 	devl_dev_unlock(devlink, dev_lock);
+ 	devlink_put(devlink);
+ }
+diff --git a/net/devlink/param.c b/net/devlink/param.c
+index cf95268da5b0..201e0619683b 100644
+--- a/net/devlink/param.c
++++ b/net/devlink/param.c
+@@ -566,7 +566,7 @@ devlink_param_get_from_info(struct xarray *params, struct genl_info *info)
+ int devlink_nl_param_get_doit(struct sk_buff *skb,
+ 			      struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_param_item *param_item;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -667,7 +667,7 @@ static int __devlink_nl_cmd_param_set_doit(struct devlink *devlink,
+ 
+ int devlink_nl_param_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 
+ 	return __devlink_nl_cmd_param_set_doit(devlink, 0, &devlink->params,
+ 					       info, DEVLINK_CMD_PARAM_NEW);
+diff --git a/net/devlink/port.c b/net/devlink/port.c
+index 7fcd1d3ed44c..93b4a45892e0 100644
+--- a/net/devlink/port.c
++++ b/net/devlink/port.c
+@@ -594,7 +594,7 @@ void devlink_ports_notify_unregister(struct devlink *devlink)
+ 
+ int devlink_nl_port_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+@@ -830,7 +830,7 @@ static int devlink_port_function_set(struct devlink_port *port,
+ 
+ int devlink_nl_port_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
+ 	int err;
+ 
+ 	if (info->attrs[DEVLINK_ATTR_PORT_TYPE]) {
+@@ -856,8 +856,8 @@ int devlink_nl_port_set_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_port_split_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	u32 count;
+ 
+ 	if (GENL_REQ_ATTR_CHECK(info, DEVLINK_ATTR_PORT_SPLIT_COUNT))
+@@ -887,8 +887,8 @@ int devlink_nl_port_split_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_port_unsplit_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 
+ 	if (!devlink_port->ops->port_unsplit)
+ 		return -EOPNOTSUPP;
+@@ -899,7 +899,7 @@ int devlink_nl_port_new_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+ 	struct devlink_port_new_attrs new_attrs = {};
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_port *devlink_port;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -961,9 +961,9 @@ int devlink_nl_port_new_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_port_del_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 
+ 	if (!devlink_port->ops->port_del)
+ 		return -EOPNOTSUPP;
+diff --git a/net/devlink/rate.c b/net/devlink/rate.c
+index 41be2d6c2954..478142910919 100644
+--- a/net/devlink/rate.c
++++ b/net/devlink/rate.c
+@@ -239,7 +239,7 @@ int devlink_nl_rate_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
+ 
+ int devlink_nl_rate_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_rate *devlink_rate;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -585,7 +585,7 @@ static bool devlink_rate_set_ops_supported(const struct devlink_ops *ops,
+ 
+ int devlink_nl_rate_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_rate *devlink_rate;
+ 	const struct devlink_ops *ops;
+ 	int err;
+@@ -607,7 +607,7 @@ int devlink_nl_rate_set_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_rate_new_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_rate *rate_node;
+ 	const struct devlink_ops *ops;
+ 	int err;
+@@ -663,7 +663,7 @@ int devlink_nl_rate_new_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_rate_del_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_rate *rate_node;
+ 	int err;
+ 
+diff --git a/net/devlink/region.c b/net/devlink/region.c
+index 5588e3d560b9..537779bbff07 100644
+--- a/net/devlink/region.c
++++ b/net/devlink/region.c
+@@ -469,7 +469,7 @@ static void devlink_region_snapshot_del(struct devlink_region *region,
+ 
+ int devlink_nl_region_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_port *port = NULL;
+ 	struct devlink_region *region;
+ 	const char *region_name;
+@@ -588,7 +588,7 @@ int devlink_nl_region_get_dumpit(struct sk_buff *skb,
+ 
+ int devlink_nl_region_del_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_snapshot *snapshot;
+ 	struct devlink_port *port = NULL;
+ 	struct devlink_region *region;
+@@ -633,7 +633,7 @@ int devlink_nl_region_del_doit(struct sk_buff *skb, struct genl_info *info)
+ 
+ int devlink_nl_region_new_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_snapshot *snapshot;
+ 	struct devlink_port *port = NULL;
+ 	struct nlattr *snapshot_id_attr;
+diff --git a/net/devlink/resource.c b/net/devlink/resource.c
+index 351835a710b1..763355d22517 100644
+--- a/net/devlink/resource.c
++++ b/net/devlink/resource.c
+@@ -107,7 +107,7 @@ devlink_resource_validate_size(struct devlink_resource *resource, u64 size,
+ 
+ int devlink_nl_resource_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_resource *resource;
+ 	u64 resource_id;
+ 	u64 size;
+@@ -216,7 +216,7 @@ static int devlink_resource_put(struct devlink *devlink, struct sk_buff *skb,
+ static int devlink_resource_fill(struct genl_info *info,
+ 				 enum devlink_command cmd, int flags)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_resource *resource;
+ 	struct nlattr *resources_attr;
+ 	struct sk_buff *skb = NULL;
+@@ -284,7 +284,7 @@ static int devlink_resource_fill(struct genl_info *info,
+ 
+ int devlink_nl_resource_dump_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 
+ 	if (list_empty(&devlink->resource_list))
+ 		return -EOPNOTSUPP;
+diff --git a/net/devlink/sb.c b/net/devlink/sb.c
+index 49fcbfe08f15..129bd016e302 100644
+--- a/net/devlink/sb.c
++++ b/net/devlink/sb.c
+@@ -204,7 +204,7 @@ static int devlink_nl_sb_fill(struct sk_buff *msg, struct devlink *devlink,
+ 
+ int devlink_nl_sb_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_sb *devlink_sb;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -306,7 +306,7 @@ static int devlink_nl_sb_pool_fill(struct sk_buff *msg, struct devlink *devlink,
+ 
+ int devlink_nl_sb_pool_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_sb *devlink_sb;
+ 	struct sk_buff *msg;
+ 	u16 pool_index;
+@@ -415,7 +415,7 @@ static int devlink_sb_pool_set(struct devlink *devlink, unsigned int sb_index,
+ 
+ int devlink_nl_sb_pool_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	enum devlink_sb_threshold_type threshold_type;
+ 	struct devlink_sb *devlink_sb;
+ 	u16 pool_index;
+@@ -506,7 +506,7 @@ static int devlink_nl_sb_port_pool_fill(struct sk_buff *msg,
+ int devlink_nl_sb_port_pool_get_doit(struct sk_buff *skb,
+ 				     struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
+ 	struct devlink *devlink = devlink_port->devlink;
+ 	struct devlink_sb *devlink_sb;
+ 	struct sk_buff *msg;
+@@ -624,8 +624,8 @@ static int devlink_sb_port_pool_set(struct devlink_port *devlink_port,
+ int devlink_nl_sb_port_pool_set_doit(struct sk_buff *skb,
+ 				     struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_sb *devlink_sb;
+ 	u16 pool_index;
+ 	u32 threshold;
+@@ -716,7 +716,7 @@ devlink_nl_sb_tc_pool_bind_fill(struct sk_buff *msg, struct devlink *devlink,
+ int devlink_nl_sb_tc_pool_bind_get_doit(struct sk_buff *skb,
+ 					struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
+ 	struct devlink *devlink = devlink_port->devlink;
+ 	struct devlink_sb *devlink_sb;
+ 	struct sk_buff *msg;
+@@ -864,8 +864,8 @@ static int devlink_sb_tc_pool_bind_set(struct devlink_port *devlink_port,
+ int devlink_nl_sb_tc_pool_bind_set_doit(struct sk_buff *skb,
+ 					struct genl_info *info)
+ {
+-	struct devlink_port *devlink_port = info->user_ptr[1];
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink_port *devlink_port = devlink_nl_ctx(info)->devlink_port;
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	enum devlink_sb_pool_type pool_type;
+ 	struct devlink_sb *devlink_sb;
+ 	u16 tc_index;
+@@ -902,7 +902,7 @@ int devlink_nl_sb_tc_pool_bind_set_doit(struct sk_buff *skb,
+ 
+ int devlink_nl_sb_occ_snapshot_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	const struct devlink_ops *ops = devlink->ops;
+ 	struct devlink_sb *devlink_sb;
+ 
+@@ -918,7 +918,7 @@ int devlink_nl_sb_occ_snapshot_doit(struct sk_buff *skb, struct genl_info *info)
+ int devlink_nl_sb_occ_max_clear_doit(struct sk_buff *skb,
+ 				     struct genl_info *info)
+ {
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	const struct devlink_ops *ops = devlink->ops;
+ 	struct devlink_sb *devlink_sb;
+ 
+diff --git a/net/devlink/trap.c b/net/devlink/trap.c
+index 8edb31654a68..793ffc66dc11 100644
+--- a/net/devlink/trap.c
++++ b/net/devlink/trap.c
+@@ -302,7 +302,7 @@ static int devlink_nl_trap_fill(struct sk_buff *msg, struct devlink *devlink,
+ int devlink_nl_trap_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_trap_item *trap_item;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -412,7 +412,7 @@ static int devlink_trap_action_set(struct devlink *devlink,
+ int devlink_nl_trap_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_trap_item *trap_item;
+ 
+ 	if (list_empty(&devlink->trap_list))
+@@ -511,7 +511,7 @@ devlink_nl_trap_group_fill(struct sk_buff *msg, struct devlink *devlink,
+ int devlink_nl_trap_group_get_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_trap_group_item *group_item;
+ 	struct sk_buff *msg;
+ 	int err;
+@@ -682,7 +682,7 @@ static int devlink_trap_group_set(struct devlink *devlink,
+ int devlink_nl_trap_group_set_doit(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct devlink_trap_group_item *group_item;
+ 	bool modified = false;
+ 	int err;
+@@ -804,7 +804,7 @@ int devlink_nl_trap_policer_get_doit(struct sk_buff *skb,
+ {
+ 	struct devlink_trap_policer_item *policer_item;
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+@@ -924,7 +924,7 @@ int devlink_nl_trap_policer_set_doit(struct sk_buff *skb,
+ {
+ 	struct devlink_trap_policer_item *policer_item;
+ 	struct netlink_ext_ack *extack = info->extack;
+-	struct devlink *devlink = info->user_ptr[0];
++	struct devlink *devlink = devlink_nl_ctx(info)->devlink;
+ 
+ 	if (list_empty(&devlink->trap_policer_list))
+ 		return -EOPNOTSUPP;
 -- 
 2.44.0
 
