@@ -1,91 +1,93 @@
-Return-Path: <linux-rdma+bounces-18727-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18728-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SMGjL0lPxmk2IgUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18727-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 10:35:05 +0100
+	id 2NEgIeBNxmmgIAUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18728-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 10:29:04 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46393341C94
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 10:35:05 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 911EF341B57
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 10:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2E14B30620DF
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 09:26:58 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AED6C3039644
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 09:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E8E3C1998;
-	Fri, 27 Mar 2026 09:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784DC2F290E;
+	Fri, 27 Mar 2026 09:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="gKHgKmlE"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UPEMCxbH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f229.google.com (mail-qt1-f229.google.com [209.85.160.229])
+Received: from mail-vk1-f225.google.com (mail-vk1-f225.google.com [209.85.221.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24623D3482
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 09:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.229
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7B23DBD49
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 09:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774603616; cv=none; b=DMbXP4KAGWbnnC2c5T/uUFaXK96KhgTgLmhDz3X9CseCcIUEo59L/RcfUXVVwv7O2HuR11ZWEo2K0Czyz5iyGeKnbgjpHUQLBJN8+WlmUNxdB1LaUvm+aryw9OqlhprrhckiEM1/5O3IU03Mx2fz1K89ZjYLJ86albhtqqw+s+4=
+	t=1774603622; cv=none; b=ohsr73Q1PH80UQIb9avbUr5PNqt/dc0r/YWE9mzevUjFYtqum9wIxoZLBmKek6RJ48idOF+5vZWss4gm9fKbmHG9CkEX06sB9VeNHYBipqlFSAW3/VdNU5uLxwrkE7qT8cZBWjzJbOEoN4ZZK/gEqOWiXVRpAR/m8+lMQRj/P9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774603616; c=relaxed/simple;
-	bh=UkuBpeqHxhr9LqB+/HMPVdJ5S6rQRFUKODuMtQHmQNo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AXT62qaRV6qngJRxb+IWvLaZe+bHKFGAjNCmML44+wXQ9TFlx9NDPER5T450AqUulTwFuY/13vezi6JmDr7KwzMjmAvNs8U7AFS2AfzZwBgCOfPZYqqu14kYJHhn6IW6FXQCi6PbcJ5zvzadeXwxBjpZPYOAKcvAPa1AMVPdr3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=gKHgKmlE; arc=none smtp.client-ip=209.85.160.229
+	s=arc-20240116; t=1774603622; c=relaxed/simple;
+	bh=QlRSxZPlep2TEXujG7Q+X9as1JuV/bZuFev+UHkko4k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=LWebeQ7L6snLQqevQQxpd8VOCWonvWsRxUlz7LDoZ14JX3UB+Rt9AUyfIveTlO79N5V/9YyEWzej/Drc8XXmVYAggr4qLZ08mBQPKDICl3Sxttmzb3NZnNmkRuNEuEfWo0GY4XmhtdN9sELau0bKXj7L2I8VeEl0qg3waNmz1iM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UPEMCxbH; arc=none smtp.client-ip=209.85.221.225
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qt1-f229.google.com with SMTP id d75a77b69052e-50babbce85fso1324051cf.2
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 02:26:53 -0700 (PDT)
+Received: by mail-vk1-f225.google.com with SMTP id 71dfb90a1353d-56d3fa1ea69so453180e0c.3
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 02:26:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774603612; x=1775208412;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PvpLAeoDXmNz03WHRB0EatuqtW1TbwrM52SLJdDTuIk=;
-        b=HJVGpJeVRPGJef/hJNjyTrDJ2Y02OyLNvPUz5Mob5uj4E1CMEX3CqF76tjtG/sSiNJ
-         7RL87Q8pCNL13fQV1UUkZoQ6gmAVazkvLZeMSGjuQSvpsgb5UiPk9Zg3b5ZM8qzrixi1
-         jA37s24ytGhPrDLb+ByKpRWagO6ZeHtzjqUMtY3lQenGXvA0v8QI/e6lSxBF50Ya7Qqa
-         EgXeCFYk8Qx7sXGu/r7UcXW2vRAFdh4ilVAadbNxyg70oqadX6AVWal/e0bUOgO9x4Bh
-         wG0dSya0orptRYa2XvIgmUutJTmUT/LWddajdgDsU2wpMUT5lOH2xCYPQPz8DugF4gyd
-         pa3w==
-X-Gm-Message-State: AOJu0YyG1rxvHQzOumpZVBo7fvFEnn+FORZkTdM4VsgFZJP0BDo9aHL9
-	yPE/IDZQR/xrz0/2CNOfftNMOMtfIYYgC91kH0c7djpxUlBslSs7e6jtyfAxdWEl7h6Bvbb5rog
-	YjMEIin0tl4T45jQWPH7QVd28jLiSkiVr6EyDtInsmSGik9nwNx2FAVON+57m2S7clTJHVzWrUa
-	MluIFA2j76fFYFA2RWWUdkxCb/ZERJ3QBQIuSC1u+yUghj54axisGifjtQG7cE7VYQPljHdJig8
-	aPKGDQb0idPap/MObWXCgF7lbGwqpc=
-X-Gm-Gg: ATEYQzxtHkwfJ/xVwzS+6z+a7YGoFG0bQuYP0/apPCM++cySz5fa/AhYTQrx/mqDXbt
-	fAHaTt0KXiDBET+FRK8VxUXHg+n4o1cd4xogbNvfACssKWAVh4Zp81V5vsXKdNaz3SfFeoz/SYh
-	PdkDayCJpr6bTOitrMPPVZWuJagatl4WnkPH1FNhBpx8EdOn+vONlkWVWNKC1icOL/ebUW1zoPS
-	XEZ9Mb5yhNDaalAZaUUJjZ+UPImi+DAjBqzfz+XEpHjLPoTrFUbiDlsqywUA+BcN/6Au82xPVj9
-	zIjM5f9vHa1wfwH8QmlefiNF7bfbMRObc0hqmvclP5tJPqj/0DhFWqf7Lk+tPGWjPBSuKdBMewV
-	FDjVDahAbivSK5osM59MUWr7bSkFspC7I/Vtd/TG/gAVROPyjcUrw8E6Uz1oQFjqJPomM+rYnx1
-	+JiaIyQ88sovYgZRQHq5WlRRwKIgHw727H2Kfw6OibdIMDTH87+YwUpuZBs0HdwBTsCv75
-X-Received: by 2002:a05:622a:345:b0:50b:286e:ae7c with SMTP id d75a77b69052e-50ba395ec1dmr22133131cf.65.1774603612346;
-        Fri, 27 Mar 2026 02:26:52 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-15.dlp.protect.broadcom.com. [144.49.247.15])
-        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-50b921540d3sm4357621cf.1.2026.03.27.02.26.52
+        d=1e100.net; s=20251104; t=1774603618; x=1775208418;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uDAifMkXnehEa87ZgXss+I8/a2DS6R67VaVYARmF8vg=;
+        b=tKf8hUP6Oe1xhoruJ3LxaqHBGUwptiGtXdBPcnBqPS5aaxsbmga26LXtckOd1XRp8n
+         XrF0B8SLlew6b5FEic/M58azzEc7Y9+TgRaZTIqMc7I4JNRip60e4ohhZt37bAFJ79mR
+         I/l+aOW9vecBZMp1vSn4Ob2OvTSOPGSAK27xukh2PnE8Z6bsj2nqNFhefL5rn7gCBXsR
+         x0IBe8m5Z1pnMsKFrO/VwcYcj5zrsSEfMm8U7R85xVDRJdCoCp7cBkTzmf8m8geDhH5E
+         cn4Zi/2aNfDm2YUYjq90fr1jwLEn9MpdnVV9dQm62S9mt9z7uBE/AtSxuEURWXxcpft2
+         FtEA==
+X-Gm-Message-State: AOJu0YyoNY/XtgxwzjCvU0bFpHCi7BjYFj4jp+8GjVX13ymthpnPQ7Th
+	HlX9DBZnP3loxlzg3Ji95MfkvSsmn4U64vN3EpfuNmJITsoFRpIECyBTxNAxGqJa/rWGUeitQOa
+	8FntSPWs5l6ImVe62Ipkn7sBqrkIT7sifIuIRY5HfYU/qCd92hivFBRMVllNWd7bQ4stwaeWpM3
+	c23ZAJxsbNcS2ns7sp3oCmewfQIepOnrQGBH/7JTNdr4Ap8WzKcgSGedV8Q4HD2AV5t93/kEJig
+	BVZ1wjH1ArsDhHbwiXxuM5JbRgU
+X-Gm-Gg: ATEYQzy6yAfDd5O56of9yoiWpfAgd1tZfhbF4YgIGkwnUEYCpRKETYiITpsCFVcdGzw
+	OlLUuGMRY9COpLW3i1hLKZwW8b7Nvk+83HsQ6T0MhJ6O01M5WwuUhme35kQwDXhQU4p5PBNkz+g
+	bL9Q4r6kG0mHswE54XV+hgdEGA6c2CJXE/QfARCRxiflAU6OrV/jNA3jzkWaLIxC7znJ68bAdNo
+	LQJ3xERkHbIwoyS9kAiHTW8GWw98Jopjvwti54UIEPAQkl+Yv2A/kIaqIJPSweoQz3ploPax69r
+	hUhMX+FHugs4m7L9As25l1SOkWNPwNdM+teAGdKX7+UGzVyJjHZwBDFvehMkN2yfjqSNQ+kfx/H
+	1rFpQw2oenOCng/9qey9LSL4rv1Ga/QBmP5/mx+x5ZTqi7/g21BTCNiyzkOdLa9D8cY96SqJjUq
+	dUfxKonsSJ9xyS5dpoYIpqhJlYSENEDOkG1ZEUxPDfQI5k93ucSQjvbyYVDkWGU9DXf+KM
+X-Received: by 2002:a05:6122:31a4:b0:56a:e0e2:69b3 with SMTP id 71dfb90a1353d-56d4a0d9af2mr615363e0c.0.1774603617647;
+        Fri, 27 Mar 2026 02:26:57 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-25.dlp.protect.broadcom.com. [144.49.247.25])
+        by smtp-relay.gmail.com with ESMTPS id 71dfb90a1353d-56d44da82absm471718e0c.2.2026.03.27.02.26.56
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Mar 2026 02:26:52 -0700 (PDT)
+        Fri, 27 Mar 2026 02:26:57 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-79895ffb315so39831667b3.2
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 02:26:52 -0700 (PDT)
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-798531a0f58so41584877b3.0
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 02:26:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1774603611; x=1775208411; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PvpLAeoDXmNz03WHRB0EatuqtW1TbwrM52SLJdDTuIk=;
-        b=gKHgKmlE+kFVJPD0/1e1Z1dLpAeqFEFkyvnIyk+IcHBF/t46SZPWisNJuyawnOznAw
-         dJ3/EsSogmVbUKthxOIokcC6bYHh2CpyGw8CVsag6oyOqGHdlHvE7dsSa36RVHaIuOAe
-         EUcybacASPmn+lvmuAmEwdSqB8aVZN5/OsI5s=
-X-Received: by 2002:a05:690c:e3ee:b0:79a:56bc:245e with SMTP id 00721157ae682-79bde060752mr13979287b3.47.1774603611633;
-        Fri, 27 Mar 2026 02:26:51 -0700 (PDT)
-X-Received: by 2002:a05:690c:e3ee:b0:79a:56bc:245e with SMTP id 00721157ae682-79bde060752mr13979057b3.47.1774603611146;
-        Fri, 27 Mar 2026 02:26:51 -0700 (PDT)
+        d=broadcom.com; s=google; t=1774603616; x=1775208416; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uDAifMkXnehEa87ZgXss+I8/a2DS6R67VaVYARmF8vg=;
+        b=UPEMCxbHh9EzyCWGpK1HArL7HCQLFmW6sfkjcDp3oB2ZELSPy3sXFEl3V/UuMjUpu/
+         30bqoRzf7Bn5F54XoEr2TqqWpMpNk12dPjnc/nq5iMre13jCFV4eL0eAORL6S/Ct1kqX
+         jZ8Y0HdlKNcGnHuxlHHxCqymM9Bxrg/Pa/7a0=
+X-Received: by 2002:a05:690c:60ca:b0:79a:dc28:fbf8 with SMTP id 00721157ae682-79bde0a0920mr15103557b3.55.1774603615844;
+        Fri, 27 Mar 2026 02:26:55 -0700 (PDT)
+X-Received: by 2002:a05:690c:60ca:b0:79a:dc28:fbf8 with SMTP id 00721157ae682-79bde0a0920mr15103367b3.55.1774603615371;
+        Fri, 27 Mar 2026 02:26:55 -0700 (PDT)
 Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-79b17e4a0absm25718307b3.22.2026.03.27.02.26.47
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-79b17e4a0absm25718307b3.22.2026.03.27.02.26.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2026 02:26:50 -0700 (PDT)
+        Fri, 27 Mar 2026 02:26:54 -0700 (PDT)
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -94,10 +96,12 @@ Cc: linux-rdma@vger.kernel.org,
 	selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next v2 0/8] RDMA/bnxt_re: Support QP uapi extensions
-Date: Fri, 27 Mar 2026 14:47:47 +0530
-Message-ID: <20260327091755.47754-1-sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v2 1/8] RDMA/bnxt_re: Refactor bnxt_re_init_user_qp()
+Date: Fri, 27 Mar 2026 14:47:48 +0530
+Message-ID: <20260327091755.47754-2-sriharsha.basavapatna@broadcom.com>
 X-Mailer: git-send-email 2.51.2.636.ga99f379adf
+In-Reply-To: <20260327091755.47754-1-sriharsha.basavapatna@broadcom.com>
+References: <20260327091755.47754-1-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -111,7 +115,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -119,7 +123,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18727-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18728-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -127,79 +131,202 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,broadcom.com:dkim,broadcom.com:mid];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 46393341C94
+X-Rspamd-Queue-Id: 911EF341B57
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi,
+The umem changes for CQ added a helper - bnxt_re_setup_sginfo().
+Use the same helper for QP creation since we support only 4K
+pages for QP ring memory too.
 
-This patchset adds QP uapi extensions to the bnxt_re driver.
-This is required by applications that need to manage some of the
-RDMA HW resources directly and to implement the datapath in the
-application.
+Add a new helper function bnxt_re_get_psn_bytes() to improve
+readability as this code will be updated in subsequent patches.
 
-This series supports application allocated memory for QPs.
-The application takes into account SQ/RQ ring sizing constraints
-(extra entries, rounding up etc) while allocating this memory.
-The driver should avoid duplicating this logic while creating
-these QPs.
+Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 127 +++++++++++++----------
+ 1 file changed, 73 insertions(+), 54 deletions(-)
 
-The ring buffers provided by the application are pinned by the
-uverbs layer before they are passed (as ib_umem) to the driver.
-The uverbs changes are in review (see Changes below).
-
-uAPI changes in this series:
-- Patch#5: new uapi parameter 'sq_npsn' in bnxt_re_qp_req.
-- Patch#7: new driver specific attribute 'DBR_HANDLE' for doorbell region.
-- Patch#8: new comp_mask 'APP_ALLOCATED_QP_ENABLE' in bnxt_re_qp_req.
-
-Patch#1 Refactor bnxt_re_init_user_qp()
-Patch#2 Update rq depth for app allocated QPs
-Patch#3 Update sq depth for app allocated QPs
-Patch#4 Update umem for app allocated QPs
-Patch#5 Update msn table size for app allocated QPs
-Patch#6 Update hwq depth for app allocated QPs
-Patch#7 Support doorbells for app allocated QPs
-Patch#8 Enable app allocated QPs 
-
-Thanks,
--Harsha
-
-******
-
-Changes:
-
-v2:
-- Rebased to umem_list uverbs patch series:
-  https://patchwork.kernel.org/project/linux-rdma/cover/20260325150048.168341-1-jiri@resnulli.us/
-- Deleted Patch#9; create_qp_umem devop is not supported.
-
-v1: https://lore.kernel.org/linux-rdma/20260320135437.48716-1-sriharsha.basavapatna@broadcom.com/
-
-******
-
-Sriharsha Basavapatna (8):
-  RDMA/bnxt_re: Refactor bnxt_re_init_user_qp()
-  RDMA/bnxt_re: Update rq depth for app allocated QPs
-  RDMA/bnxt_re: Update sq depth for app allocated QPs
-  RDMA/bnxt_re: Update umem for app allocated QPs
-  RDMA/bnxt_re: Update msn table size for app allocated QPs
-  RDMA/bnxt_re: Update hwq depth for app allocated QPs
-  RDMA/bnxt_re: Support doorbells for app allocated QPs
-  RDMA/bnxt_re: Enable app allocated QPs
-
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 292 ++++++++++++++---------
- drivers/infiniband/hw/bnxt_re/ib_verbs.h |   1 +
- drivers/infiniband/hw/bnxt_re/uapi.c     |  18 ++
- include/uapi/rdma/bnxt_re-abi.h          |   6 +
- 4 files changed, 210 insertions(+), 107 deletions(-)
-
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index e63780c78781..2c7b1cfb7b1e 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -1136,34 +1136,64 @@ static int bnxt_re_setup_swqe_size(struct bnxt_re_qp *qp,
+ 	return 0;
+ }
+ 
++static int bnxt_re_setup_sginfo(struct bnxt_re_dev *rdev,
++				struct ib_umem *umem,
++				struct bnxt_qplib_sg_info *sginfo)
++{
++	unsigned long page_size;
++
++	if (!umem)
++		return -EINVAL;
++
++	page_size = ib_umem_find_best_pgsz(umem, SZ_4K, 0);
++	if (!page_size || page_size != SZ_4K)
++		return -EINVAL;
++
++	sginfo->umem = umem;
++	sginfo->npages = ib_umem_num_dma_blocks(umem, page_size);
++	sginfo->pgsize = page_size;
++	sginfo->pgshft = __builtin_ctz(page_size);
++	return 0;
++}
++
++static int bnxt_re_get_psn_bytes(struct bnxt_re_dev *rdev,
++				 struct bnxt_re_ucontext *cntx,
++				 struct bnxt_qplib_qp *qplib_qp,
++				 struct bnxt_re_qp_req *ureq)
++{
++	int psn_sz, psn_nume;
++
++	psn_sz = bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx) ?
++				sizeof(struct sq_psn_search_ext) :
++				sizeof(struct sq_psn_search);
++	if (cntx && bnxt_re_is_var_size_supported(rdev, cntx)) {
++		psn_nume = ureq->sq_slots;
++	} else {
++		psn_nume = (qplib_qp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC) ?
++		qplib_qp->sq.max_wqe : ((qplib_qp->sq.max_wqe * qplib_qp->sq.wqe_size) /
++			 sizeof(struct bnxt_qplib_sge));
++	}
++	if (_is_host_msn_table(rdev->qplib_res.dattr->dev_cap_flags2))
++		psn_nume = roundup_pow_of_two(psn_nume);
++
++	return psn_nume * psn_sz;
++}
++
+ static int bnxt_re_init_user_qp(struct bnxt_re_dev *rdev, struct bnxt_re_pd *pd,
+ 				struct bnxt_re_qp *qp, struct bnxt_re_ucontext *cntx,
+ 				struct bnxt_re_qp_req *ureq)
+ {
+ 	struct bnxt_qplib_qp *qplib_qp;
+-	int bytes = 0, psn_sz;
+ 	struct ib_umem *umem;
+-	int psn_nume;
++	int bytes;
++	int rc;
+ 
+ 	qplib_qp = &qp->qplib_qp;
+ 
+ 	bytes = (qplib_qp->sq.max_wqe * qplib_qp->sq.wqe_size);
+ 	/* Consider mapping PSN search memory only for RC QPs. */
+-	if (qplib_qp->type == CMDQ_CREATE_QP_TYPE_RC) {
+-		psn_sz = bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx) ?
+-						   sizeof(struct sq_psn_search_ext) :
+-						   sizeof(struct sq_psn_search);
+-		if (cntx && bnxt_re_is_var_size_supported(rdev, cntx)) {
+-			psn_nume = ureq->sq_slots;
+-		} else {
+-			psn_nume = (qplib_qp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC) ?
+-			qplib_qp->sq.max_wqe : ((qplib_qp->sq.max_wqe * qplib_qp->sq.wqe_size) /
+-				 sizeof(struct bnxt_qplib_sge));
+-		}
+-		if (_is_host_msn_table(rdev->qplib_res.dattr->dev_cap_flags2))
+-			psn_nume = roundup_pow_of_two(psn_nume);
+-		bytes += (psn_nume * psn_sz);
+-	}
++	if (qplib_qp->type == CMDQ_CREATE_QP_TYPE_RC)
++		bytes += bnxt_re_get_psn_bytes(rdev, cntx, qplib_qp, ureq);
+ 
+ 	bytes = PAGE_ALIGN(bytes);
+ 	umem = ib_umem_get(&rdev->ibdev, ureq->qpsva, bytes,
+@@ -1172,33 +1202,42 @@ static int bnxt_re_init_user_qp(struct bnxt_re_dev *rdev, struct bnxt_re_pd *pd,
+ 		return PTR_ERR(umem);
+ 
+ 	qp->sumem = umem;
+-	qplib_qp->sq.sg_info.umem = umem;
+-	qplib_qp->sq.sg_info.pgsize = PAGE_SIZE;
+-	qplib_qp->sq.sg_info.pgshft = PAGE_SHIFT;
+-	qplib_qp->qp_handle = ureq->qp_handle;
++	rc = bnxt_re_setup_sginfo(rdev, qp->sumem, &qplib_qp->sq.sg_info);
++	if (rc)
++		goto fail;
++
++	if (qp->qplib_qp.srq)
++		goto done;
+ 
+-	if (!qp->qplib_qp.srq) {
+-		bytes = (qplib_qp->rq.max_wqe * qplib_qp->rq.wqe_size);
+-		bytes = PAGE_ALIGN(bytes);
+-		umem = ib_umem_get(&rdev->ibdev, ureq->qprva, bytes,
+-				   IB_ACCESS_LOCAL_WRITE);
+-		if (IS_ERR(umem))
+-			goto rqfail;
+-		qp->rumem = umem;
+-		qplib_qp->rq.sg_info.umem = umem;
+-		qplib_qp->rq.sg_info.pgsize = PAGE_SIZE;
+-		qplib_qp->rq.sg_info.pgshft = PAGE_SHIFT;
++	bytes = (qplib_qp->rq.max_wqe * qplib_qp->rq.wqe_size);
++	bytes = PAGE_ALIGN(bytes);
++	umem = ib_umem_get(&rdev->ibdev, ureq->qprva, bytes,
++			   IB_ACCESS_LOCAL_WRITE);
++	if (IS_ERR(umem)) {
++		rc = PTR_ERR(umem);
++		goto fail;
+ 	}
+ 
++	qp->rumem = umem;
++	rc = bnxt_re_setup_sginfo(rdev, qp->rumem, &qplib_qp->rq.sg_info);
++	if (rc)
++		goto rqfail;
++
++done:
++	qplib_qp->qp_handle = ureq->qp_handle;
+ 	qplib_qp->dpi = &cntx->dpi;
+ 	qplib_qp->is_user = true;
+ 	return 0;
++
+ rqfail:
++	ib_umem_release(qp->rumem);
++	qp->rumem = NULL;
++	memset(&qplib_qp->rq.sg_info, 0, sizeof(qplib_qp->rq.sg_info));
++fail:
+ 	ib_umem_release(qp->sumem);
+ 	qp->sumem = NULL;
+ 	memset(&qplib_qp->sq.sg_info, 0, sizeof(qplib_qp->sq.sg_info));
+-
+-	return PTR_ERR(umem);
++	return rc;
+ }
+ 
+ static struct bnxt_re_ah *bnxt_re_create_shadow_qp_ah
+@@ -3345,26 +3384,6 @@ int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	return ib_respond_empty_udata(udata);
+ }
+ 
+-static int bnxt_re_setup_sginfo(struct bnxt_re_dev *rdev,
+-				struct ib_umem *umem,
+-				struct bnxt_qplib_sg_info *sginfo)
+-{
+-	unsigned long page_size;
+-
+-	if (!umem)
+-		return -EINVAL;
+-
+-	page_size = ib_umem_find_best_pgsz(umem, SZ_4K, 0);
+-	if (!page_size || page_size != SZ_4K)
+-		return -EINVAL;
+-
+-	sginfo->umem = umem;
+-	sginfo->npages = ib_umem_num_dma_blocks(umem, page_size);
+-	sginfo->pgsize = page_size;
+-	sginfo->pgshft = __builtin_ctz(page_size);
+-	return 0;
+-}
+-
+ int bnxt_re_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 			   struct uverbs_attr_bundle *attrs)
+ {
 -- 
 2.51.2.636.ga99f379adf
 
