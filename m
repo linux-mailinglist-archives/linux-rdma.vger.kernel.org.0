@@ -1,214 +1,132 @@
-Return-Path: <linux-rdma+bounces-18741-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18742-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kJ/KNwANx2nBSAUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18741-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 00:04:32 +0100
+	id MEG0G0wZx2mXSwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18742-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 00:57:00 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B5234C332
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 00:04:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E37034C960
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 00:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A2FA7302410D
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 23:04:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7880A3032F5A
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 23:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D8C37F8A5;
-	Fri, 27 Mar 2026 23:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945C134166B;
+	Fri, 27 Mar 2026 23:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vH/A4cUT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qU9Yuwlc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C3A29AB15
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 23:03:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEB234216C;
+	Fri, 27 Mar 2026 23:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774652642; cv=none; b=fiFiriWy8DlmKhu1P2acL+nL/pT6AlzOHVQ14j9MEoFIllHlzcz0IeUI1k1SMutphVW/Pnfn5o5ikGbfW55QWQWG9TSwzr2HJjb1qG9PyvE3Wm200XGrHa9shGYom657BxEoWw8MdUppLufxv3TTNBVX2e2m0ZdjTzq8sAgqh10=
+	t=1774655718; cv=none; b=UN99kkfa6stEs4eDHwltOAWvkzzKjr2+eKuSQ8DLdF8MVqoGHp7J7a+dNhDOGbNOZj56I9iFw5bG/WDkvDIQrjFo0LzBUfJ7+CnCHmUlai9wWvQCUP5mTcaGuhu/YX+7pLzhx+ycYvcDOISFcBuUSKAWslV5BiHUwc5H3hFh0xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774652642; c=relaxed/simple;
-	bh=d2Fa9db7navB7EVodrJyIFUSk2VOPg1LQTROuzvOFLs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cs6ve+6bhWYtGY069bLRb4rNevkoepamAkjv7c8Q44BASCOUhiUbjpmDa4UtoPfwZsGemR1/4auKAiwd20hHOtJNa+HgVFJRNGx4RaeCrV3jkZ2cRZXHhMqPTnhcSF+oUrmhblP64Y/x88w2v947M9C+VT9pZ6mVJq4fOEAEGUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vH/A4cUT; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4280105c-13aa-4a02-8fd5-ea68b8936b67@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1774652637;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3LFlv7GUxveGq2IohaQ6lr+SWKP6l9WKNAF6d2qAnRg=;
-	b=vH/A4cUTizd16Rri1ufSOZsgRlbJTnsqrVsMrqJsOlkI2Ne+3HBlbbGSl35cQnhKFQ7XCB
-	Wqh4f0/kvQ99RCkTmY6x0AUr/zC4A2iQB22SwCfnw4CEcC32iCO/NLlzv6hR6Dfrvrn9aw
-	A9/ifqG4LCammkzpLbEJkJy3NDSTVm4=
-Date: Fri, 27 Mar 2026 16:03:47 -0700
+	s=arc-20240116; t=1774655718; c=relaxed/simple;
+	bh=RnVNM/WM/sXq1Qxj0l9dY0/aSg/+qWWVxkrRCD9kPLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qKJjmDNz+jGMR6CQdVW4FOYkEoGUzh6fXLUL0JkmY0/lcUaxt+0+ckOu3iPsB3+hmsPEgufN7kAIl7wSwwJ7gPKt3eZGjs207mHepb139J+u3F0zM+VCCC6PwRY88UJj4OjRdnmc+eqLI17ToVz0KTHSwzE2U6W79hX+ATyXxTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qU9Yuwlc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DC64C19423;
+	Fri, 27 Mar 2026 23:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774655718;
+	bh=RnVNM/WM/sXq1Qxj0l9dY0/aSg/+qWWVxkrRCD9kPLs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qU9YuwlcGd76wQVMeMuEYfELfWK+jFLsKwkSYtic4A8rDO3NKlImWzEFsTGZvPzvJ
+	 6MfsmVgLW5lySjPdhsBmHeTY3oIc0jM7m5bHS5V1VrN6fUHgUvvK5mbuidkH3O7HPs
+	 HUCDiqN7QldIZ3zyZBNAPF+h87YETggU4s9QmqFTygL+CPUxf+SjIKbqEMAZb8Fd0a
+	 grHFPSMJxoQQqu/h1wLaNAsjYdubmCMAE29ULc4wtNGVY89UISlmCHbiGTTmAk/av3
+	 IDTnlCpG4T7I8tRAkAe+2GUF6n/hz6/vOQWXIjfqfDHEhS0WtDBAP4nRaESBV1WiIm
+	 UuX2wBSZ6Frqg==
+Date: Fri, 27 Mar 2026 16:55:12 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Long Li <longli@microsoft.com>
+Cc: Konstantin Taranov <kotaranov@microsoft.com>, "David S . Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
+ <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Haiyang Zhang
+ <haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Wei Liu
+ <wei.liu@kernel.org>, Dexuan Cui <DECUI@microsoft.com>, Simon Horman
+ <horms@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH net-next v2] net: mana: Set default
+ number of queues to 16
+Message-ID: <20260327165512.08f7b6f9@kernel.org>
+In-Reply-To: <SA1PR21MB668314B1AF002E40B379F1C0CE57A@SA1PR21MB6683.namprd21.prod.outlook.com>
+References: <20260323194925.1766385-1-longli@microsoft.com>
+	<20260326201841.3b7e5b78@kernel.org>
+	<SA1PR21MB668314B1AF002E40B379F1C0CE57A@SA1PR21MB6683.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 00/15] RDMA: Introduce generic buffer descriptor
- infrastructure for umem
-To: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, mrgolin@amazon.com,
- gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
- mbloch@nvidia.com, wangliang74@huawei.com, marco.crivellari@suse.com,
- roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
- ynachum@amazon.com, huangjunxian6@hisilicon.com,
- kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
- michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
- sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
- selvin.xavier@broadcom.com
-References: <20260325150048.168341-1-jiri@resnulli.us>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260325150048.168341-1-jiri@resnulli.us>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18741-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-18742-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 25B5234C332
+X-Rspamd-Queue-Id: 0E37034C960
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Fri, 27 Mar 2026 04:00:31 +0000 Long Li wrote:
+>   We considered netif_get_num_default_rss_queues() but chose a fixed default based on our performance testing. On Azure VMs, typical
+>   workloads plateau at around 16 queues - adding more queues beyond that doesn't improve throughput but increases memory usage and
+>   interrupt overhead.
+> 
+>   netif_get_num_default_rss_queues() would return 32-64 on large VMs (64-128 vCPUs), which wastes resources without benefit.
+> 
+>   That said, I agree that completely ignoring the core-based heuristic isn't ideal for consistency. One option is to use
+>   netif_get_num_default_rss_queues() but clamp it to a maximum of MANA_DEF_NUM_QUEUES (16), so small VMs still get enough queues and
+>   large VMs don't over-allocate. Something like:
+> 
+>    apc->num_queues = min(netif_get_num_default_rss_queues(), MANA_DEF_NUM_QUEUES);
+>    apc->num_queues = min(apc->num_queues, gc->max_num_queues);
+> 
+>   For reference, it seems mlx4 does something similar - it caps at DEF_RX_RINGS (16) regardless of core count.
 
-On 3/25/26 8:00 AM, Jiri Pirko wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
->
-> This patchset introduces a generic buffer descriptor infrastructure
-> for passing memory buffers (dma-buf or user VA) to uverbs commands,
-> and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
-> bnxt_re and mlx4 drivers.
+mlx4 is a bit ancient. And mlx5 does the wrong thing, which is why 
+I'm so sensitive to this issue :(
 
-While the current patch set successfully introduces a generic buffer 
-descriptor
+>   Do you want me to send a v2?
 
-infrastructure for CQ and QP creation, it raises the question of why
+Please send a follow up, let's leave this patch be and make an
+incremental change. 
 
-Memory Region (MR) allocation and registration have not been integrated 
-into
-
-this new ib_umem_list architecture.
-
-Given that MRs often require complex memory backing—such as discrete 
-dma-buf segments
-
-from GPUs or fragmented user-space virtual addresses—extending the 
-UVERBS_ATTR_BUFFERS
-
-array model to MRs would seem like a natural evolution. This would 
-provide a unified
-
-UAPI for handling heterogeneous memory sources and eliminate the need 
-for per-command
-
-attributes when registering composite memory regions. Are there specific 
-architectural
-
-constraints or synchronization concerns that necessitated keeping MR 
-registration on its legacy
-
-path for now?
-
-In short, I am wondering **whether this architecture can include MR 
-(memory region) or not**.
-
-As such, CQ/QP/MR can use the same architecture.
-
-Zhu Yanjun
-
-> Instead of adding per-command UAPI attributes for each new buffer
-> type, a single UVERBS_ATTR_BUFFERS array attribute carries all buffer
-> descriptors. Each descriptor specifies a buffer type and is indexed by
-> per-command slot enums. A consumption check ensures userspace and
-> driver agree on which buffers are used.
-> The patchset:
-> 1. Introduces the core ib_umem_list infrastructure and UAPI.
-> 2. Factors out CQ buffer umem processing into a helper.
-> 3. Integrates umem_list into CQ creation, with fallback to existing
->     per-attribute path.
-> 4-7. Converts efa, mlx5, bnxt_re and mlx4 to use umem_list for CQ
->     buffer.
-> 8. Removes the legacy umem field from struct ib_cq, now that all
->     drivers use umem_list for CQ buffer management.
-> 9. Adds a consumption check verifying all umem_list buffers were
->     consumed by the driver after CQ creation.
-> 10. Integrates umem_list into QP creation.
-> 11. Converts mlx5 QP creation to use umem_list.
-> 12-15. Extends CQ and QP with doorbell record buffer slots and
->     converts mlx5 to use them.
->
-> Note this re-works the original patchset trying to handle this:
-> https://lore.kernel.org/all/20260203085003.71184-1-jiri@resnulli.us/
-> The code is so much different I'm sending this is a new patchset.
->
-> Jiri Pirko (15):
->    RDMA/core: Introduce generic buffer descriptor infrastructure for umem
->    RDMA/uverbs: Push out CQ buffer umem processing into a helper
->    RDMA/uverbs: Integrate umem_list into CQ creation
->    RDMA/efa: Use umem_list for user CQ buffer
->    RDMA/mlx5: Use umem_list for user CQ buffer
->    RDMA/bnxt_re: Use umem_list for user CQ buffer
->    RDMA/mlx4: Use umem_list for user CQ buffer
->    RDMA/uverbs: Remove legacy umem field from struct ib_cq
->    RDMA/uverbs: Verify all umem_list buffers are consumed after CQ
->      creation
->    RDMA/uverbs: Integrate umem_list into QP creation
->    RDMA/mlx5: Use umem_list for QP buffers in create_qp
->    RDMA/uverbs: Add doorbell record buffer slot to CQ umem_list
->    RDMA/mlx5: Use umem_list for CQ doorbell record
->    RDMA/uverbs: Add doorbell record buffer slot to QP umem_list
->    RDMA/mlx5: Use umem_list for QP doorbell record
->
->   drivers/infiniband/core/core_priv.h           |   1 +
->   drivers/infiniband/core/umem.c                | 248 ++++++++++++++++++
->   drivers/infiniband/core/uverbs_cmd.c          |  18 +-
->   drivers/infiniband/core/uverbs_std_types_cq.c | 158 ++++++-----
->   drivers/infiniband/core/uverbs_std_types_qp.c |  26 +-
->   drivers/infiniband/core/verbs.c               |  26 +-
->   drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  23 +-
->   drivers/infiniband/hw/efa/efa_verbs.c         |  17 +-
->   drivers/infiniband/hw/mlx4/cq.c               |  21 +-
->   drivers/infiniband/hw/mlx5/cq.c               |  40 ++-
->   drivers/infiniband/hw/mlx5/doorbell.c         |  41 ++-
->   drivers/infiniband/hw/mlx5/mlx5_ib.h          |   3 +-
->   drivers/infiniband/hw/mlx5/qp.c               |  76 ++++--
->   drivers/infiniband/hw/mlx5/srq.c              |   2 +-
->   include/rdma/ib_umem.h                        |  54 ++++
->   include/rdma/ib_verbs.h                       |   5 +-
->   include/rdma/uverbs_ioctl.h                   |  14 +
->   include/uapi/rdma/ib_user_ioctl_cmds.h        |  17 ++
->   include/uapi/rdma/ib_user_ioctl_verbs.h       |  27 ++
->   19 files changed, 651 insertions(+), 166 deletions(-)
->
+Thanks!
 
