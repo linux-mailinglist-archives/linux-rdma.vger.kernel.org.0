@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-18736-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18737-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wMRJLHVvxmmkJwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18736-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 12:52:21 +0100
+	id 8AkYDOdwxmmkJwUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18737-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 12:58:31 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A246A343D28
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 12:52:20 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0CD343DFA
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 12:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 55F6B30682FC
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 11:45:19 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9614B305D628
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2026 11:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD4D37DEA0;
-	Fri, 27 Mar 2026 11:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF5C3909AD;
+	Fri, 27 Mar 2026 11:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="Fut8Pt2f"
+	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="S3bY1HHY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx4.wp.pl (mx4.wp.pl [212.77.101.11])
+Received: from mx4.wp.pl (mx4.wp.pl [212.77.101.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CD030BB83
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 11:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A9D38757D
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2026 11:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774611913; cv=none; b=GQL6s181StHrTV+cS6mEe+1BJ4CRrMIeoyWybUoUiIoCW0/Guz57StNnd8bcLoGSxonhSzClJxCo1FXJzSFSKRUABpHUg339gAUBFJRfJ7aJUA0cKGnwiCqUmGT3Bh9q3G+Cb4Eoffdr0/lEVSsSsoHg47RCzf9HWJ0R7bRLuJk=
+	t=1774612669; cv=none; b=rbHf74ZWORIOwvkZkRhobc+7Y48qDql8TmDqaOWyFigb2LsuGohYZiU5IfkWfirz+oEi5FRxR4l6jfamAqhky2zWnWIAVyxx5h3w7wkKpbJ/wFz4CiNnbgzVM7ipq69uELe9Fb0vX0TCoYz+JupUsVuDMkAIeS6YgIQBWEHLtEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774611913; c=relaxed/simple;
-	bh=S4w9Zb/UHoXsyxuEK/vrnzwO9gR74SVBfRFOdTg8F5I=;
+	s=arc-20240116; t=1774612669; c=relaxed/simple;
+	bh=JAvBqRz3sGl0D1/KcMB84ps8we2NlkvZTTNxuOOJK+U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MbYpkIuEeFDV9iuhxOCmK81AU/yZxam41n4iSYhke3cIjLeJOi/DT5+CFsdDCeQaxJj7dMc2n63GBw6cI3w6b+3qQHZQ70NykfV6az6YVKXHq5kpYBIyBuM2OQCow+ArF3F7u0bnnu/Yzs4fCaciqWBpvj4L2uYEWFXl1DQJqj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=Fut8Pt2f; arc=none smtp.client-ip=212.77.101.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=sYNPFILqOo49Jze7fJ+oY82w915qfUgMi33CiJmmzoMnqavRXKp7rWXm1fYrg8cTPcnMG/WE8ibZp0piGEdQ0I/A6X+7xZPVGHI8f7frFEsTK5b1fknymC6axrw2vjBYfkxneWVeRWFRbz3h7DpM53NUua+eWZ/BPX6Y9sF3lYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=S3bY1HHY; arc=none smtp.client-ip=212.77.101.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
-Received: (wp-smtpd smtp.wp.pl 26322 invoked from network); 27 Mar 2026 12:45:02 +0100
+Received: (wp-smtpd smtp.wp.pl 8113 invoked from network); 27 Mar 2026 12:57:39 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
-          t=1774611903; bh=ClyMAST5Ou9swdngfYyP3nxlyzXf+yDAbxpymoT0Rjk=;
+          t=1774612659; bh=dhTOyR8UKqY7SHJz5GHQLjXDNtmpvnLdVDZzqV+XcdA=;
           h=From:To:Cc:Subject;
-          b=Fut8Pt2f2FcKLZeKZU6PsuAH1IcmaM6XxqTkZQ8XewDKGzJKsPg+X/Axp2vAWRCc3
-           3qnAY22THiRL5JSsDnOi6LQ5NhDheTCBhr6BOTjaYeOZ6LBEdep/O+evxzNJJbYD04
-           K6A0diSmzXF22FjSBUU+0UZq99GX+WHfShkvuWqv8mc7O75d/HgkPLFkPzouFhag4n
-           1YaqJDXLW+SaLHU1+xH4m1VlwmeT/qC1MOuFnaj01GZlMeDtJD8dOe/Dc4s25FKJFi
-           OYova3fSHcfORauEu1dzJScFTX/KaH+Jbztse2qvin+3/6KGVc+cqlQ0xYFlhoy3qE
-           i1MDyFUefqg3w==
+          b=S3bY1HHYPKHernBCT0RMFPrtZRssIWCxkqHfL5/fCOzfr5qUTHh/sg6N/sbNdxDJf
+           jO5p17BB+e/SiBcNQlxoPOCCJzVxg3Z+LDCn1NI/8Dbe4MCEsyJRv6MLRWxb8tw2Pl
+           fEXiVvm92L+rpvByZatArkAXEwTp3ZdgjZGTPFwozoeO8zVOpc6JVAWe6z1BsU+sF4
+           bXlv2s2vz8e+rHmDa31b9+GF7vm6lFvFmurDdGVyCnP7a+v+H4h8ut2N1+hy+tDLJ/
+           eVJcTVSl7228LX/HbBqeaVslVfxnblUjGtACKc8DnIFUZ6TWq/8In6xsNFrOzeZCfm
+           Ha7teirKUZngw==
 Received: from 77-236-5-223.static.play.pl (HELO localhost) (stf_xl@wp.pl@[77.236.5.223])
           (envelope-sender <stf_xl@wp.pl>)
           by smtp.wp.pl (WP-SMTPD) with TLS_AES_256_GCM_SHA384 encrypted SMTP
-          for <jackmanb@google.com>; 27 Mar 2026 12:45:02 +0100
-Date: Fri, 27 Mar 2026 12:45:02 +0100
+          for <jackmanb@google.com>; 27 Mar 2026 12:57:39 +0100
+Date: Fri, 27 Mar 2026 12:57:39 +0100
 From: Stanislaw Gruszka <stf_xl@wp.pl>
 To: Brendan Jackman <jackmanb@google.com>
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -67,10 +67,9 @@ Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	kasan-dev@googlegroups.com, linux-mm@kvack.org,
 	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
 	rds-devel@oss.oracle.com
-Subject: Re: [PATCH v2 2/4] iwlegacy: 3945-mac: Fixup allocation failure log
-Message-ID: <20260327114502.GA16800@wp.pl>
+Subject: Re: [PATCH v2 0/4] treewide: fixup gfp_t printks
+Message-ID: <20260327115739.GB16800@wp.pl>
 References: <20260326-gfp64-v2-0-d916021cecdf@google.com>
- <20260326-gfp64-v2-2-d916021cecdf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -79,19 +78,19 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260326-gfp64-v2-2-d916021cecdf@google.com>
-X-WP-MailID: a5b414377b8f46f1eed9309472d3c6e9
+In-Reply-To: <20260326-gfp64-v2-0-d916021cecdf@google.com>
+X-WP-MailID: 935123e2e45b6b0ec231f92885b872d7
 X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [YTOh]                               
+X-WP-SPAM: NO 0000000 [weNh]                               
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[wp.pl,none];
 	R_DKIM_ALLOW(-0.20)[wp.pl:s=20241105];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18736-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18737-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[linux.intel.com,kernel.org,suse.de,gmail.com,ffwll.ch,google.com,linux-foundation.org,oracle.com,davemloft.net,redhat.com,lists.freedesktop.org,vger.kernel.org,googlegroups.com,kvack.org,oss.oracle.com];
@@ -107,57 +106,53 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[stf_xl@wp.pl,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[wp.pl:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wp.pl:dkim,wp.pl:email,wp.pl:mid,sashiko.dev:url]
-X-Rspamd-Queue-Id: A246A343D28
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,wp.pl:dkim,wp.pl:mid]
+X-Rspamd-Queue-Id: BE0CD343DFA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi,
+On Thu, Mar 26, 2026 at 12:31:56PM +0000, Brendan Jackman wrote:
+> This patchset used to be about switching gfp_t to unsigned long. That is
+> probably not gonna happen any more but while writing it I found these
+> cleanups that seem worthwhile regardless.
 
-On Thu, Mar 26, 2026 at 12:31:58PM +0000, Brendan Jackman wrote:
-> Fix 2 issues spotted by AI[0]:
-> 
-> 1. Missing space after the full stop.
-> 
-> 2. Wrong GFP flags are printed.
+For the record, these patches are independent and could be sent separately
+to the appropriate maintainers. Doing so would avoid unnecessarily large CC 
+lists for people not interested about the changes in other subsystems.
 
-We should also initialize gfp_mask = priority inside the loop.
-But this can be done as separate patch.
+Regards
+Stanislaw
 
-> And also switch to %pGg for the GFP flags. This produces nice readable
-> output and decouples the format string from the size of gfp_t.
-> 
-> [0] https://sashiko.dev/#/patchset/20260319-gfp64-v1-0-2c73b8d42b7f%40google.com
-> 
 > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-
-Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
-
 > ---
+
+> Changes in v2:
+> - Drop gfp_t changes
+> - Add correct CCs
+> - Add minor fixups to preexisting code spotted by AI review
+> - Link to v1: https://lore.kernel.org/r/20260319-gfp64-v1-0-2c73b8d42b7f@google.com
+> 
+> ---
+> Brendan Jackman (4):
+>       drm/managed: Use special gfp_t format specifier
+>       iwlegacy: 3945-mac: Fixup allocation failure log
+>       mm/kfence: Use special gfp_t format specifier
+>       net/rds: Use special gfp_t format specifier
+> 
+>  drivers/gpu/drm/drm_managed.c                  | 4 ++--
 >  drivers/net/wireless/intel/iwlegacy/3945-mac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  mm/kfence/kfence_test.c                        | 2 +-
+>  net/rds/tcp_recv.c                             | 2 +-
+>  4 files changed, 6 insertions(+), 6 deletions(-)
+> ---
+> base-commit: c369299895a591d96745d6492d4888259b004a9e
+> change-id: 20260319-gfp64-7a970a80ba4e
 > 
-> diff --git a/drivers/net/wireless/intel/iwlegacy/3945-mac.c b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-> index c148654aa9533..88b31e0b9568c 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-> +++ b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-> @@ -1002,9 +1002,9 @@ il3945_rx_allocate(struct il_priv *il, gfp_t priority)
->  				D_INFO("Failed to allocate SKB buffer.\n");
->  			if (rxq->free_count <= RX_LOW_WATERMARK &&
->  			    net_ratelimit())
-> -				IL_ERR("Failed to allocate SKB buffer with %0x."
-> +				IL_ERR("Failed to allocate SKB buffer with %pGg. "
->  				       "Only %u free buffers remaining.\n",
-> -				       priority, rxq->free_count);
-> +				       &gfp_mask, rxq->free_count);
->  			/* We don't reschedule replenish work here -- we will
->  			 * call the restock method and if it still needs
->  			 * more buffers it will schedule replenish */
-> 
+> Best regards,
 > -- 
-> 2.51.2
+> Brendan Jackman <jackmanb@google.com>
 > 
 
