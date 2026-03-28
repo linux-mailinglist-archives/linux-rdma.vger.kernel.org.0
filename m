@@ -1,189 +1,222 @@
-Return-Path: <linux-rdma+bounces-18751-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18752-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GCE3LtAXyGmjgwUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18751-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 19:02:56 +0100
+	id iBbqDbQqyGk2hgUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18752-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 20:23:32 +0100
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1B3234F7AA
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 19:02:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F7434FC98
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 20:23:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B6E4C302A2D6
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 18:02:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 497FB308011F
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2026 19:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD203385B6;
-	Sat, 28 Mar 2026 18:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7144343D63;
+	Sat, 28 Mar 2026 19:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VxtOCjnj"
+	dkim=pass (2048-bit key) header.d=bridgetech.tv header.i=@bridgetech.tv header.b="Br21SBn7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from PA4PR04CU001.outbound.protection.outlook.com (mail-francecentralazon11023072.outbound.protection.outlook.com [40.107.162.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC7B3A1D2;
-	Sat, 28 Mar 2026 18:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774720971; cv=none; b=QZiSqgL8osY7RXI+EWDAssAJSWfbp8vt/tjv079FKFwDjf4e4JBkacCLrgH56J66IQbkmvB+7uc+41RAqkBQICw28uhAeoMM58bvWwZyYoNc/Z6JyztncDmAQib+Sh1RvQ6aSc5Qbknqwb/jgYgF3PEHFitwl+t3eIGEGDdto5A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774720971; c=relaxed/simple;
-	bh=K4viw1bkLNt2zfpKpa4SYbYUeUvF2hDBuR2nyNYu2oo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YE2yQiV/GdrCzHBLr6sdHe4ecvcMF/t5fh8b/nr4ny4HV6YKVdBvCF3QtKjc3oDcu9Nk2liPm9Xu666PoBQUmMKC32fiH5ueg8/U11Y6VhpGp46c9C2NGRR0z5ZphOkx/awstBiiEGsboloUaLhHbtjJg7q5q+YjnSG27F5vWIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VxtOCjnj; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4f4c2881-d7b5-4528-807a-9bbbb6783d08@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1774720966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A4N6R38xS3/olYr0K68dx0QOhu41P4Kl0TWucYAAmtg=;
-	b=VxtOCjnj3tW/rqny7+O1EtbJCq73pQeVpit0VyL5x0L7BeT0uJw8wr90YvPrNijqKLu5A/
-	MRs9cSa67WY/fkIjrTnhs3KZp+exPlQGJZYo3Qe7s6LJUph1USrj5/G7EEIL1QVWrlzr5g
-	xzfS2KUslaOEAzmUcImJA91nyENcXvE=
-Date: Sat, 28 Mar 2026 11:02:33 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7FE13033DF;
+	Sat, 28 Mar 2026 19:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.162.72
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774725630; cv=fail; b=Q58XCzr1M6DKvg+S0RGHoLlCZ3GH1pdNapzR0/qT7mUUVLhCmYDQGpFrb1f5J1SFbOFiLxa5JaupWNPYGVlF7zIpr+P3dUobf6JJ8NkxOeWc/pyl8RxOVCUUxNnbTV0wBcxNWvzqdOpBBFgsp5Y5U+e0LX/V7e5beBR7m8nunjw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774725630; c=relaxed/simple;
+	bh=uRTBTgQi2EWKFOb+CzSK6i3o+uniSMPiC0ikbORWf8E=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=aO+hm1iYbsSHTqO3oIrTyF/vgBi9bOhCOw795H+gJs/GVA/iFowEru5d0N/uD3i54tfBpCkRMUNNkvym2+RpgKKxckGyoyYd3dvkAkcfnb4BkGc0RjImJAXWHpWeUtEXD3JyVpLvnm0m7VGGI+cyp00AG9nS1GhMkMkDWdTj7P0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bridgetech.tv; spf=pass smtp.mailfrom=bridgetech.tv; dkim=pass (2048-bit key) header.d=bridgetech.tv header.i=@bridgetech.tv header.b=Br21SBn7; arc=fail smtp.client-ip=40.107.162.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bridgetech.tv
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bridgetech.tv
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fttbbmrWy7YDgk4IleyIravTFmfWtrvNNtn8hqzsw5oXDq3Q08ckhNWniC5JlJzf97HY50eYYs8S9rpD3DEWAGVmNtUloCUvV3iGKKBTa6lvD9HKmu9Wn+lvunZ2uf2Xnq+5PFRtrZdSBANyYStGdzRSZDa3+lm30EOlBB9nCvlOPJ1v0LbdySdyhbqYMKU6fBU8xqlMUxmD3bDthj6A1UrukfoxUXarmDe2Ah5Jr5YSP22MaOSvIoNMTvPbHXFQoXFWcNzRHpYaNVZmE49Qtc1ytruRVBt4NN49ewHNhF95okHl+SH22gMzuXKLKzr8a/0FJeKrhm3Ve7evXUfDmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4dqpQ5mQDH2EE1ot5vbiA2Lpv6pyLgV5ToZGdIycKmE=;
+ b=WL//MkvwJTnnmkgHd46iyjT2GVfKhoMEC193O1AHUsNZzUztgbjLB4S3Ks20zaabowOd5Z1O21foZ7PSWo4KP/iTLe1PQXvc5qrQymJlEnhP8Au/1Xv1jog+qXKADNccixJg1FqwvcNB0idW+2JXphc/YVk795VBGD7F6Vcav/hsIGEwfleAUjzG0lvHN+FFh+G/+IcHw0R+vbb1W65ecO4tlH2tRE1DnNGHAHEMdP4zCpRn7Sph209iWmaC+ukwapBWyDhFULagnZyMf0Fer3xhS8wqVHLFhIY8jfQZmZJeb/176iEtoGR61rDLLouVHZP4YgzL/tbFN1irM6rbNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bridgetech.tv; dmarc=pass action=none
+ header.from=bridgetech.tv; dkim=pass header.d=bridgetech.tv; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bridgetech.tv;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4dqpQ5mQDH2EE1ot5vbiA2Lpv6pyLgV5ToZGdIycKmE=;
+ b=Br21SBn7fFa7Ce9P5RxerbH+3uCFQI9eQI5MSiek+o0xwVq1A9F2obSiNyDSWa43NwvhSJZFPIxhjfRYWrLO3uZWfI/Ukq3wQofO/z08+CpIVA18ZdyLgKsVcKBDWSndysnbYGIU6KaCuB4NifvSMMlShLBTM7Tljjl/2fnVMG7ZM0/H6CfsL0zk3zAG/7KQLuw7QNUgpHxRyiX+QXm63cgnGlWDYNwbeO9Mv34BBzlDyzboqsctsHlEAubfwbsD+aqg9tMp1p+tbVcKeuwRYPBhp43aky5fhk8DUB1jYyP0d2EmeJ1hjckCEgVbbhn1KGwl0f+E2vI3oZSLgnNqaA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bridgetech.tv;
+Received: from AS1PR08MB7611.eurprd08.prod.outlook.com (2603:10a6:20b:476::6)
+ by AS8PR08MB6485.eurprd08.prod.outlook.com (2603:10a6:20b:318::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9745.25; Sat, 28 Mar
+ 2026 19:20:25 +0000
+Received: from AS1PR08MB7611.eurprd08.prod.outlook.com
+ ([fe80::8c65:fe4e:ea79:bbb4]) by AS1PR08MB7611.eurprd08.prod.outlook.com
+ ([fe80::8c65:fe4e:ea79:bbb4%4]) with mapi id 15.20.9745.019; Sat, 28 Mar 2026
+ 19:20:25 +0000
+From: kenneth@bridgetech.tv
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Moshe Shemesh <moshe@nvidia.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kenneth Klette Jonassen <kenneth@bridgetech.tv>,
+	stable@vger.kernel.org
+Subject: [PATCH net] net/mlx5: fs, fix invalid pointer dereference in mlx5_fs_add_rule tracepoint
+Date: Sat, 28 Mar 2026 20:20:08 +0100
+Message-ID: <20260328192008.3525475-1-kenneth@bridgetech.tv>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: OS6P279CA0016.NORP279.PROD.OUTLOOK.COM
+ (2603:10a6:e10:33::6) To AS1PR08MB7611.eurprd08.prod.outlook.com
+ (2603:10a6:20b:476::6)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/3] RDMA/rxe: add SENT/RCVD bytes
-To: zhenwei pi <zhenwei.pi@linux.dev>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
-References: <20260328092839.111499-1-zhenwei.pi@linux.dev>
- <20260328092839.111499-3-zhenwei.pi@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260328092839.111499-3-zhenwei.pi@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS1PR08MB7611:EE_|AS8PR08MB6485:EE_
+X-MS-Office365-Filtering-Correlation-Id: 644c9dad-dd0a-4b36-9cbb-08de8cff1055
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|52116014|7416014|10070799003|376014|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	ybhZY5TYCJnVC31BB/5/wZ2Sz/5BRikhsBnAfPlHwTmlOUetlLeQ0cE0Yk0yf8MH4xqsaD67nXHJ9eYia7WcY4Uu7S58jBfET7eZbS5rR9+z9xo3Tp/ado8mSEPSLBlMttO5DmIwHwrx7i/Neyn9c3V24jcddst8MqltG1Jymz6g9cyHCkYxR5zNsqP6iBe63/Rf7nZ5N5GhyRiixXxIolsRDE/A+fIOC6mWzXLe+TnNCqAY1nqRmfGhKz+nmSaHQeAcRsVM7wka+vmhwh2igaYdTxwO/5b/hHFPBuaUHCZCI0yL6F+nqm7aWuBPB+0AH0RuwUyhtCh1E7R2qa2souhrfVC/mBjjoxiidS3fekGhDkecODUlBqTPLFh+1Jrna8Fp2/TsekLmOc2BrXDfxj100tYgB5HIkLUd+H9BJEHDzmBVW+U9U6k1r5S/nmufZ81zxZqA873LwSMxe3yOz71iIV156fDISxD1VaFcdieLn8cRbY3DJKi4BwPIsIx0yk/FKfKAD13EU45sW2rEtSK9CvN0wHpr+CZEeZZwB9pER6zcOBzf23CmjXRuu5SxCqgEn3JDPFIbzO9F3cIHv0AX5bfPcVXXPgYNFYnPxySBCffQ9104t44BlDIw5JhuReZ+0R+2WZLvbcG8zC+sh8d1EOB02dUo6Fy31mkyeXaqYtakTWbj7v7v3EhRMD7m
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS1PR08MB7611.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(52116014)(7416014)(10070799003)(376014)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?a1r0iFrIPIitG5+866XtYsp+QbtTtr51P+sfldW1pEtU4Nc6bJObQr/bFS23?=
+ =?us-ascii?Q?afYMNh1IagMBXPsBILuEsCUMcr1cRO4mXzOsi4g0Ejd3vk6kBUuyj+Q6TYDc?=
+ =?us-ascii?Q?Lto7e7QVqS0XokHBBF4hS7Pcz6NK/1Dt8vVU9Aelp3pZtPrHNX6PIvJJ7IDW?=
+ =?us-ascii?Q?vU6CNpSiJhr52nL3LiO9zBJpgHGlKz9rS9bCCOHbZX+6XW1x37ELxAffLSxq?=
+ =?us-ascii?Q?lm0jJPFnFwPiL7v7Gxg21cPczHUACv0MTeHeEsnG7E44Vo3T5MHoFxpV0Ngw?=
+ =?us-ascii?Q?fmHp6I03loSgCJf9RQI1pyLcxjhFwEL01otAI/VP3N5uH0vrD+kp2eMd3KdL?=
+ =?us-ascii?Q?xdEkIOvcoppQMnzWWesgHp0AfYOYV94brpfYR1m1IkSHyC1XMIUf81dRe5PV?=
+ =?us-ascii?Q?zAiBS6luXym+J08VFayWoYnmzH2cX6VVwND7l797OwHAxuTMsZsKki9vxoJg?=
+ =?us-ascii?Q?oc568NScqwM7z5qVt5NDQGxNt+s0iq5UHjATn3FVxDoH3TMI3phTWRO1DRWP?=
+ =?us-ascii?Q?4ZvxNnPzMd3Xr9hl3cgDaWBxGo9RkMpt1wv/PPFg0bGv0BNoq3l3wq6a/fq3?=
+ =?us-ascii?Q?j1Z33hFLPcPZaQOgOGbGQF7yQuVF+mTlpdYbHqTproiU0keF3DhAQb9WjM5g?=
+ =?us-ascii?Q?fnluKx/MUecUI4QLmaa+UapYPOl+fyK6MeoU3zAQqkun27t/N5wpNS+iAE+t?=
+ =?us-ascii?Q?9yIuB+0uWyulztFKOKMs38CJwdK8pzK55vo3+KkUFw/AXuWLoRkr0a6Z0bBb?=
+ =?us-ascii?Q?AAmVQxrLh5e3KlZsRMzzkDCC8tLEc2DZ82Qn3SFxxOa/HRwbRENekILJt4/h?=
+ =?us-ascii?Q?ntkfp0Twx49n8tTnwwDo7/t0MCU09JVhUCluQ92WdaElQHipPzaVDXgrIHK3?=
+ =?us-ascii?Q?5WyDk0SwcnDHAxcvqk1yV6iRoKEk1LNnw0D0gUYW14uoaWElud0bsqFfLV1t?=
+ =?us-ascii?Q?BWcMEiHq7Z95/7Cr+/LvqUs+tj7PUg/NOPVi9JHX0hcgUOmZaP4YYaFphYnj?=
+ =?us-ascii?Q?N7C/7Sn3QKANznFCOWTSkG1oQaYI3oZeJMMGXif+8SlkMarXW8Zzv4qEECIX?=
+ =?us-ascii?Q?iNRZKuW0cPMDRyMeILA65NGbWGS+EB7rh+ruGy4qHZ8n9QMPyDZu7R02AjnC?=
+ =?us-ascii?Q?6JjGnrkQxXQh9FT9HJXxRIcuFKR/rUxInCfHMTbSwlrz7mkPXD523eLX5sAc?=
+ =?us-ascii?Q?V1XcGF5Sh+xa22gDB9v6RSNhJs7Lgf1rqPL6utHzqWmid9VvW29HTtN09vuF?=
+ =?us-ascii?Q?92iegC/iV3Ty7/R/2S8RDOr5sHXM5KYXNNaHKeQU7JaByQI05DdJvayKm/1f?=
+ =?us-ascii?Q?VCAEUmEi54C1OcHU6ewijrPrcst5l7US54oMUTdfE6GYStx1R0oNPL2akm7s?=
+ =?us-ascii?Q?0nMl/vM0p+ECGixFOWoWZNTb1SssXQWjJHjGKay8CmqX7/JdmNoQcMJv8Vkw?=
+ =?us-ascii?Q?pnF0oXTzAA6nT7qjgbgI8GtmkGpcK5cuyVv7DztWTBQaN/UavA3pOYTGDX9T?=
+ =?us-ascii?Q?M1jK9emA0jofAZr07pHkR1e0E4uqeOQZPdpNIuafMIpO5rZKUfa44IC8A/aq?=
+ =?us-ascii?Q?3zzErYF5tdrC4aX1tNKtVGtGghfz8CPDbqaKdEi4FyO1amvGeDFSzseCGi52?=
+ =?us-ascii?Q?QmWP+ob1FrId6e0ZEPcalE/w9WlUiae4gFnMnKw/4ja4nAnxGD1vZxvHB8p3?=
+ =?us-ascii?Q?S2o8lr7VMT/ua92nhqzG5zQqlKEnMLEUibMJPZpqGiWBKKxuRqFY4O5IYoCy?=
+ =?us-ascii?Q?XwpjWyxs4PFS7uBGhL/FgSlhCzI+I2JEKxZ5qaxVGVyDXbyLbXKgL+80qdnD?=
+X-MS-Exchange-AntiSpam-MessageData-1: jn+qM6fBcdfvBS3aVCabl9G7XpMAkP4L5aM=
+X-OriginatorOrg: bridgetech.tv
+X-MS-Exchange-CrossTenant-Network-Message-Id: 644c9dad-dd0a-4b36-9cbb-08de8cff1055
+X-MS-Exchange-CrossTenant-AuthSource: AS1PR08MB7611.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2026 19:20:25.5527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 511b9776-65d2-4726-b5bc-af4fc772381e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vNzZlZcd7RNn1KAGc5hrQVYjjwy1vhxoSjbUWwPVSnas3J9FYXXY4DNKowe2eMLL+vVBAXuZyhUm0bfczrXsiWJ5L6rxEu6PMo3tCSCZCy8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB6485
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[bridgetech.tv,quarantine];
+	R_DKIM_ALLOW(-0.20)[bridgetech.tv:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18751-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18752-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: A1B3234F7AA
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kenneth@bridgetech.tv,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[bridgetech.tv:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NO_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A3F7434FC98
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/3/28 2:28, zhenwei pi 写道:
-> There is a lack of sent/received counter in bytes.
-> 
-> Signed-off-by: zhenwei pi <zhenwei.pi@linux.dev>
-> ---
->   drivers/infiniband/sw/rxe/rxe_hw_counters.c | 2 ++
->   drivers/infiniband/sw/rxe/rxe_hw_counters.h | 2 ++
->   drivers/infiniband/sw/rxe/rxe_net.c         | 1 +
->   drivers/infiniband/sw/rxe/rxe_recv.c        | 1 +
->   drivers/infiniband/sw/rxe/rxe_verbs.h       | 6 ++++++
->   5 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
-> index 437917a7d8f2..17edaa9a9b9b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
-> @@ -22,6 +22,8 @@ static const struct rdma_stat_desc rxe_counter_descs[] = {
->   	[RXE_CNT_LINK_DOWNED].name         =  "link_downed",
->   	[RXE_CNT_RDMA_SEND].name           =  "rdma_sends",
->   	[RXE_CNT_RDMA_RECV].name           =  "rdma_recvs",
-> +	[RXE_CNT_SENT_BYTES].name          =  "sent_bytes",
-> +	[RXE_CNT_RCVD_BYTES].name          =  "rcvd_bytes",
->   };
->   
->   int rxe_ib_get_hw_stats(struct ib_device *ibdev,
-> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.h b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
-> index 051f9e1c3852..01b355103cbc 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
-> @@ -26,6 +26,8 @@ enum rxe_counters {
->   	RXE_CNT_LINK_DOWNED,
->   	RXE_CNT_RDMA_SEND,
->   	RXE_CNT_RDMA_RECV,
-> +	RXE_CNT_SENT_BYTES,
-> +	RXE_CNT_RCVD_BYTES,
->   	RXE_NUM_OF_COUNTERS
->   };
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 20338cb8e3c2..ec0ae7479fe7 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -519,6 +519,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
->   	}
->   
->   	rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
-> +	rxe_counter_add(rxe, RXE_CNT_SENT_BYTES, skb->len);
->   	goto done;
->   
->   drop:
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index 5861e4244049..b5522017852d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -342,6 +342,7 @@ void rxe_rcv(struct sk_buff *skb)
->   		goto drop;
->   
->   	rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
-> +	rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skb->len);
->   
->   	if (unlikely(bth_qpn(pkt) == IB_MULTICAST_QPN))
->   		rxe_rcv_mcast_pkt(rxe, skb);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index fb149f37e91d..2bcfb919a40b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -460,6 +460,12 @@ static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
->   	atomic64_inc(&rxe->stats_counters[index]);
->   }
->   
-> +static inline void rxe_counter_add(struct rxe_dev *rxe, enum rxe_counters index,
-> +				   s64 val)
-> +{
-> +	atomic64_add(val, &rxe->stats_counters[index]);
+From: Kenneth Klette Jonassen <kenneth@bridgetech.tv>
 
-Currently atomic64 variable is used to calculate the statistics. But to 
-get better performance, per cpu variable is preferred. Since RXE is a 
-software emulation rdma driver, the atomic64 variable is fine in RXE.
+The mlx5_fs_add_rule tracepoint has used the flow destination type in
+a bitwise test since its introduction. However, that's not a valid way
+to treat it anymore (if it ever was), and after commit d639af621600dc
+("net/mlx5: fs, split software and IFC flow destination definitions"),
+this mismatch caused nearly any destination type to be mistaken as a
+flow counter, and thus stashing 32 bits of the mlx5_flow_destination
+union into the counter_id field of the tracepoint.
 
-To mlx5, broadcom and efa driver, to get better performance, the per cpu 
-variable is preferred.
+Later commit 95f68e06b41b9e ("net/mlx5: fs, add counter object to flow
+destination") exacerbates this issue by converting the counter union
+member from an integer to a pointer. Now the tracepoint dereferences
+whichever value is in the union, and in cases where that's not a valid
+pointer, it can lead to a kernel oops.
 
-Zhu Yanjun
+Fix the check. Reported by GitHub user whi71800.
 
-> +}
-> +
->   static inline struct rxe_dev *to_rdev(struct ib_device *dev)
->   {
->   	return dev ? container_of(dev, struct rxe_dev, ib_dev) : NULL;
+Cc: stable@vger.kernel.org
+Fixes: 95f68e06b41b9e ("net/mlx5: fs, add counter object to flow destination")
+Closes: https://github.com/knneth/mlnx-ofa_kernel/issues/1
+Signed-off-by: Kenneth Klette Jonassen <kenneth@bridgetech.tv>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h b/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h
+index d6e736c1fb24..b099fe71b781 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h
+@@ -289,7 +289,7 @@ TRACE_EVENT(mlx5_fs_add_rule,
+ 			   memcpy(__entry->destination,
+ 				  &rule->dest_attr,
+ 				  sizeof(__entry->destination));
+-			   if (rule->dest_attr.type &
++			   if (rule->dest_attr.type ==
+ 			       MLX5_FLOW_DESTINATION_TYPE_COUNTER)
+ 				__entry->counter_id =
+ 					mlx5_fc_id(rule->dest_attr.counter);
+-- 
+2.43.0
 
 
