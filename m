@@ -1,143 +1,127 @@
-Return-Path: <linux-rdma+bounces-18783-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18784-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sHtsNWRnymll8gUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18783-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:07:00 +0200
+	id ILqsClZuymnG8gUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18784-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:36:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5808A35ACDF
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:07:00 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C75635B1DE
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:36:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 578EC30763FA
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 11:58:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 698A5302F4FE
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 12:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DD03C5529;
-	Mon, 30 Mar 2026 11:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BwhgfWfB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1E03CA4A3;
+	Mon, 30 Mar 2026 12:28:02 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB12B3C5DCD;
-	Mon, 30 Mar 2026 11:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FD33CE49C
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Mar 2026 12:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774871897; cv=none; b=I0DL0Au8AhcLzKZk9eTrDusp0eHZmM1q6FrEQ6+PL2UFTouqYbn0NMx9fhlYkSZkElc40K9C8fuvqrl8ri6yajnQND7qkebTI7xF6JjIRKpWTm24f4ny2HbUaJxEDxXf31XBY1CAIE/cGKgRqsHTvvw9k1JceQkxObofpQ2eE9Y=
+	t=1774873681; cv=none; b=bVux1kCc5tTK/eD5EhB3J+yaKl0xUJaW2h8Kwqce3ZLfVlU9qtrddDByHVDeSJ+Gup1lRoDUftPx5zwFNhG1aJLkvYxWT4T+nJtktNFrD9YnTrwnZP1O855+YtvZB+ekoW8EluDf6qHsp3gZJ/iVnwopmGv1Eq1HFL5/jVBApU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774871897; c=relaxed/simple;
-	bh=/VSSXRZ1zlAZCJjZVtuKCEKvGJrUIfk49M8uwJbzjsE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uoft6sXq2xtMlrlpELNj9eSOaUeTAFOEj0Lp9f45WZ6NQmwY0T73Y7FvrVCJsVE4cmeaXj80i6mq8zTdiD5JcLpMsmq4cD63IL8N2jIx3WpNrcwynyDifOOcE2tRNfziQB+HMTBGr5liHvOTZmYlbLd9iWAt4w6eeWv3SrxgDas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BwhgfWfB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20B6AC2BCB1;
-	Mon, 30 Mar 2026 11:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774871896;
-	bh=/VSSXRZ1zlAZCJjZVtuKCEKvGJrUIfk49M8uwJbzjsE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BwhgfWfBAgrhZ64xcS3BzZ80zkJFPiEdgP1aqbgnWTvm5GOUgh2GhvrUg4obNpSXt
-	 CzE3VaVd19xuYUwh1MvPRrYftYvxLaMgkcfWjIU0V3WGy7FPKVZhAl+Nuna6NWzhg/
-	 HnzTGIeluUiagKDCuxq3T2+g6sBbPXxY3ySnKN0Q/CT7czXySt92WSSYu0rHNk3Pn6
-	 N+WAyYYZWS0dpiSuyW4CdTGdDX5CHGXK4QosfqpRTvGuvaazArlAbhAKE7iyJqSZ1N
-	 ly5JRlBsT9i7c0W2HxLcdO77UP4ExK5DJBUtNuNyWD6lfEJQycQeMSvpeMONVz1/Xg
-	 ou9VJoIz0GIPw==
-Date: Mon, 30 Mar 2026 14:58:10 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, shirazsaleem@microsoft.com,
-	longli@microsoft.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v2 1/1] RDMA/mana_ib: memory windows
-Message-ID: <20260330115810.GU814676@unreal>
-References: <20260318172323.1416803-1-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1774873681; c=relaxed/simple;
+	bh=1uxJ0UjV1G4S7C+2pfSx86fcX9uBM8TLtYD6EcnxhSU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q6HWZfFrfAcKJ1A0WCti3p518yPvIdJM0Sy6ZosJN78YvOw4uY1cA/qGdK7xJRrc0GOtqxk4bOoGfvZjjZClDffOd7bwW7N9ykxG/Cy8OntEbtmnfTABifUyUCp2lEfOUHJIw053oXmjfwU1q49CZs3xRNOH3VaBzpXBm/zANwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 8501960A55; Mon, 30 Mar 2026 14:27:56 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: linux-rdma@vger.kernel.org
+Cc: jgg@ziepe.ca,
+	leon@kernel.org,
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH rdma] RDMA/core: prefer NLA_NUL_STRING
+Date: Mon, 30 Mar 2026 14:27:39 +0200
+Message-ID: <20260330122742.13315-1-fw@strlen.de>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260318172323.1416803-1-kotaranov@linux.microsoft.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18783-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
+	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18784-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,linux-rdma@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_THREE(0.00)[4];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sashiko.dev:url]
-X-Rspamd-Queue-Id: 5808A35ACDF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
+X-Rspamd-Queue-Id: 2C75635B1DE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 18, 2026 at 10:23:23AM -0700, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> Implement .alloc_mw() and .dealloc_mw() for mana device.
-> 
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> ---
-> v2: fixed comments. Cleaned up the use of mana_gd_send_request()
->  drivers/infiniband/hw/mana/device.c  |  3 ++
->  drivers/infiniband/hw/mana/mana_ib.h |  8 +++++
->  drivers/infiniband/hw/mana/mr.c      | 53 +++++++++++++++++++++++++++-
->  include/net/mana/gdma.h              |  5 +++
->  4 files changed, 68 insertions(+), 1 deletion(-)
+These attributes are evaluated as c-string (passed to strcmp), but
+NLA_STRING doesn't check for the presence of a \0 terminator.
 
-<...>
+Either this needs to switch to nla_strcmp() and needs to adjust printf
+fmt specifier to not use plain %s, or this needs to use NLA_NUL_STRING.
 
-> +static int mana_ib_gd_create_mw(struct mana_ib_dev *dev, struct mana_ib_pd *pd, struct ib_mw *ibmw)
-> +{
-> +	struct mana_ib_mw *mw = container_of(ibmw, struct mana_ib_mw, ibmw);
-> +	struct gdma_context *gc = mdev_to_gc(dev);
-> +	struct gdma_create_mr_response resp = {};
-> +	struct gdma_create_mr_request req = {};
-> +	int err;
-> +
-> +	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, sizeof(req), sizeof(resp));
-> +	req.pd_handle = pd->pd_handle;
+As the code has been this way for long time, it seems to me that
+userspace does include the terminating nul, even tough its not enforced
+so far, and thus NLA_NUL_STRING use is the simpler solution.
 
-Both sashiko, which runs on Gemnini https://sashiko.dev/#/patchset/20260318172323.1416803-1-kotaranov@linux.microsoft.com
-and my local claude checks pointed to the same area of the code:
+Fixes: 30dc5e63d6a5 ("RDMA/core: Add support for iWARP Port Mapper user space service")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ compile tested only.
 
-   25 > +     mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, sizeof(req), sizeof(resp));
-   26 > +     req.pd_handle = pd->pd_handle;
-   27
-   28 mana_gd_init_req_hdr() sets msg_version to GDMA_MESSAGE_V1.
-   29 mana_ib_gd_create_mr() explicitly upgrades this to GDMA_MESSAGE_V2
-   30 for all GDMA_CREATE_MR requests, regardless of mr_type:
-   31
-   32 mana_ib_gd_create_mr() {
-   33         mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, ...);
-   34         req.hdr.req.msg_version = GDMA_MESSAGE_V2;
-   35         ...
-   36 }
-   37
-   38 Is it intentional that mana_ib_gd_create_mw() sends GDMA_CREATE_MR
-   39 at GDMA_MESSAGE_V1 rather than GDMA_MESSAGE_V2?
+ drivers/infiniband/core/iwpm_msg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
+diff --git a/drivers/infiniband/core/iwpm_msg.c b/drivers/infiniband/core/iwpm_msg.c
+index 69c85249b465..4625abd29ac0 100644
+--- a/drivers/infiniband/core/iwpm_msg.c
++++ b/drivers/infiniband/core/iwpm_msg.c
+@@ -365,9 +365,9 @@ int iwpm_remove_mapping(struct sockaddr_storage *local_addr, u8 nl_client)
+ /* netlink attribute policy for the received response to register pid request */
+ static const struct nla_policy resp_reg_policy[IWPM_NLA_RREG_PID_MAX] = {
+ 	[IWPM_NLA_RREG_PID_SEQ]     = { .type = NLA_U32 },
+-	[IWPM_NLA_RREG_IBDEV_NAME]  = { .type = NLA_STRING,
++	[IWPM_NLA_RREG_IBDEV_NAME]  = { .type = NLA_NUL_STRING,
+ 					.len = IWPM_DEVNAME_SIZE - 1 },
+-	[IWPM_NLA_RREG_ULIB_NAME]   = { .type = NLA_STRING,
++	[IWPM_NLA_RREG_ULIB_NAME]   = { .type = NLA_NUL_STRING,
+ 					.len = IWPM_ULIBNAME_SIZE - 1 },
+ 	[IWPM_NLA_RREG_ULIB_VER]    = { .type = NLA_U16 },
+ 	[IWPM_NLA_RREG_PID_ERR]     = { .type = NLA_U16 }
+@@ -677,7 +677,7 @@ int iwpm_remote_info_cb(struct sk_buff *skb, struct netlink_callback *cb)
+ 
+ /* netlink attribute policy for the received request for mapping info */
+ static const struct nla_policy resp_mapinfo_policy[IWPM_NLA_MAPINFO_REQ_MAX] = {
+-	[IWPM_NLA_MAPINFO_ULIB_NAME] = { .type = NLA_STRING,
++	[IWPM_NLA_MAPINFO_ULIB_NAME] = { .type = NLA_NUL_STRING,
+ 					.len = IWPM_ULIBNAME_SIZE - 1 },
+ 	[IWPM_NLA_MAPINFO_ULIB_VER]  = { .type = NLA_U16 }
+ };
+-- 
+2.52.0
+
 
