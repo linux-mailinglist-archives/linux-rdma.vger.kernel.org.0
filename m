@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-18803-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18804-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cCA7KhPSymmsAQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18803-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 21:42:11 +0200
+	id oHZEGALRymmsAQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18804-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 21:37:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04DF036091C
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 21:42:10 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A3E33607C5
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 21:37:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 78284308C5EC
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 19:35:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 067383010822
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 19:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B6139A807;
-	Mon, 30 Mar 2026 19:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6A739A7F2;
+	Mon, 30 Mar 2026 19:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SwqC01O8"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="RFn7ghiY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012036.outbound.protection.outlook.com [40.107.200.36])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011052.outbound.protection.outlook.com [52.101.62.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C7139A057;
-	Mon, 30 Mar 2026 19:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01E9399354;
+	Mon, 30 Mar 2026 19:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774899346; cv=fail; b=uik8nUitEDYHfB9BHteLC9yvtrGVz/dZY77UIGoaEBV3CkJ5SX478o5Lgs5NDKrZbbd33d4ZPJmdAwAD8QlZxeIoxYmwHSepwc6jD4qj9jPlU07MJJ7E84c3A8c6RIwWA5q32PqPlOd64D6VuIAmBzPGcaj85YEDxYtHbtPDfnE=
+	t=1774899353; cv=fail; b=hUpBIp/ox681bEgcYHdkfq813cph/aCrJNMI+Tuc9E9+49QvHgE1p9zG5bMdGA+AefIXc7W+mOW5cRHo6STdeEQYpoZ/AeSI4wHDzcct4CE0LAXKjJZsCoXIkTMZ8wnBHCwGy4WpywfzfaMzafWN/cn0O7S3FtvXrS5neCe66FI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774899346; c=relaxed/simple;
-	bh=OVd3RmrvqmPFI5xhVeCvOaBSiI2oeZvvwFXdtiHW43o=;
+	s=arc-20240116; t=1774899353; c=relaxed/simple;
+	bh=zHog/Dt7kGiSDxAhHp9RrrOlz48hwIu1cA3L0+jqanI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j9vpBdHBB3NUbd0+iED2v4Fs4PbiMOVSQn6artCVtjmRe28L0a2E/ZG6kSx/wVbfKnzddm86Dy1EsW35/Nmo88wYTLdc/l7JPcSzmbHo68GqfIzzcr7qnYqL0lAnjh2+QniN3GNaS7ZHu0nv60Tnfl98XWpvo1Zgfdwdo3aG7V0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SwqC01O8; arc=fail smtp.client-ip=40.107.200.36
+	 MIME-Version:Content-Type; b=t+nH/LgwxxbHAtyM8+PaR582P4BWIATxBKCcfgeQaiDJjL0P2whWC4g6dW7HnWAPRJBOAWZZ0JE+ILIauiml2WPFvINqsMN1FDWwaLqHHcXMkTAWyWMBZ9nOveefvucL4JQTsUwOeE5uqHq7jF3r42vCNjBQUpYSUTcFJ71zuRc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=RFn7ghiY; arc=fail smtp.client-ip=52.101.62.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KJxxQrzPufeV9tXChh4Fm2qCRqcIo1ScspRHMB3p1YBKBWBJwPclP8T/mfEk/7YLlP18sVDuakKH85BfHHYZ/m/WvsJ5GDEv4NDlis21Rpeqr8NySNr/7qlWckRCnn8ouXObA7+pa9WoQmj5v1XffN7CWt0NfSdLhK7Ng+emeNYEQKjp4D7qAZuZ4cQ91erO4tNMr3cQOQLCQJy/7P+DTfZOCt6p6UEv00jy9irJuAVDZ6p1UfjPoovuEpLnDvO3tk5KGepjHpbpoF4x1qJaFv++8LYvKxhJwHJBti5L2Fx+v2913mzR6PLiwIpvAelRP1ezI3WTTFQ0A2ZbNWUvmQ==
+ b=qkqxcLW+jB3MhmCUzrXA4bGyTJhxjE85I3hxr1EiJ8ms/4Rin90b56qZedcDqgdn1sNlsNXI17LVuVzsuBlpU+FJpJ4w+bSV15D+QCVf8uv7INtbH6b0VioUiHc9JUQrZ4XVjM4qBFHtQfC6A2wFLeYXEPNYF46GTwNfACk8tGNsuheQ4Gzage7GBxLyBZvn8ltbjBWpZnSwRPwqqEHq3tWu5LXCPyjJU0htS/cXvd9KYYhTdjCwcNHip1X0N0bSHDK4rsW6HR1OTvW2F9hC2LX2abzq90Hh4hpEqtmnv2WDYan48Cprp6hq0/GwBmS70C2l/X1614p6Kc3pkqufHQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y7xU1a/vZn6oCF1xo3iRL7cZxfD4tMF9TclgBMHONnM=;
- b=mWr2VxwtbCaNEWZfEC+TsVk48E5MhCWMDZY8ydO4UfwXoG7MOd3MJrY8DWzhoPAWeIZdgEfZAGe1n4qXtxG3bCY5kWKwPoNXcszMOmZn/JVXQvbVxUITGxDtUtW8ILhpjPbn1e5MH4QkC7HKHDN4hkodJzw0yrACkqii4YHi58rHnuT+siPrXTg59caRgtt+Oxqtir0M5TYqWxuRZ0ggmVFQev/j2Q5M80HBKyYFwpt7sLGq58/MqayorzKWRVos5qqr8TtUTyv68B170A0ZYCh3piQwusrAmZvvzvxlFl7Cg/zBCwSema23yAOgMQmqJE1/FFQDhhMU10NUq1AjHA==
+ bh=jzw98y/XbxlO4bUOO/5YM4Ov59ryTTXnsZbx2lY9LJk=;
+ b=F94A0MWmQESziuXSJjTZl34We9A0dP22f6O0fBDGMUOrINfEhYnzbebqCx48x3d5c7VYxY+6Xu30Bdjsa8ubTtcJ08qBnTePfr+Cbt7kFVKD7kctnG1reke9m6XWQl2JSh2Xxfb2q83UeEdfpP4tLfEzjhNm1xkQV6CPlmb4m/tArGH6XwTh7Dm/muW7H9NI3IP+6rLY0AcOr4WG0gFOGWW3sznGefwtVlu4rYb6U0VkJDq08fGVlJfhlNK6hFFvMmBXWaQWRbFG/n2sHmUaYfNIa/J1dfbUMDItkuT6DYFm9N7hCRXQGIkdmVIO51zqZKtUy28C3ppIhOCAQntVfQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -48,18 +48,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y7xU1a/vZn6oCF1xo3iRL7cZxfD4tMF9TclgBMHONnM=;
- b=SwqC01O8emEO4QgS9smzpZnKptfhGPzpdSia4TdSOoFGDnsPnUKoai29BBsp4mIojcZLkmVkJSXkpfoTCY11HKT9bZLCkKDkkmW6EL79KTQhWnDwQc3WxEvVA1WVhHiJOZcDwKMeVMSVxmJUlRboYZ/M5W4GMnH8VZM7cw13m2m2V4V+8IodJK/o+spcjvQxQ/+KBKcuEQL9OOoGlQa721VxmytVHo9Ve+8GkhWRzD0wnrBPFXY4Si05AoClJ1K3wQ5gl7u5sJgNfDWvdEQfY4LyC0HzZQ65ZWk3SBlohNtRN2HWcmxgss6jClyY0NL5d4HooqY24+JWS1jb0pZ/rA==
-Received: from SJ0PR13CA0149.namprd13.prod.outlook.com (2603:10b6:a03:2c6::34)
- by MN2PR12MB4093.namprd12.prod.outlook.com (2603:10b6:208:198::11) with
+ bh=jzw98y/XbxlO4bUOO/5YM4Ov59ryTTXnsZbx2lY9LJk=;
+ b=RFn7ghiYhBOFzIJj1GXvHYuCCreFrznkFpka/dvTu0y1Nhd7B3njStJ8bMcj8joh5gDHpvhQnfU31ny9a+Nn6kpF+s5HKZDXEUJL9d35SigM292Wam1HDeX8zNy4SHhU6tg+iuGiONN/oO4JdB0bYzvE1o8voFJcG4F/8+RZLFm4/mqZlI1cacMpQNkQwkKHfW9OiuqHvmZ0n8+EBFQa/jT75FXHaOkVwL9kZIqZB1zoaZhDItJ+cSUyMPlv6ihtmlIFyP15whghk4aq2t1YGUqXRvi2hmMVPGfzz1tuVA8LhtvDVTvqvgj+w/1O+v8zSlCQKPfWloX2C+akvotfRg==
+Received: from SJ0PR13CA0124.namprd13.prod.outlook.com (2603:10b6:a03:2c6::9)
+ by DS0PR12MB9422.namprd12.prod.outlook.com (2603:10b6:8:1bb::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.15; Mon, 30 Mar
- 2026 19:35:40 +0000
+ 2026 19:35:42 +0000
 Received: from SJ5PEPF000001D7.namprd05.prod.outlook.com
- (2603:10b6:a03:2c6:cafe::9d) by SJ0PR13CA0149.outlook.office365.com
- (2603:10b6:a03:2c6::34) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:10b6:a03:2c6:cafe::43) by SJ0PR13CA0124.outlook.office365.com
+ (2603:10b6:a03:2c6::9) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9745.28 via Frontend Transport; Mon,
- 30 Mar 2026 19:35:39 +0000
+ 30 Mar 2026 19:35:42 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -69,18 +69,18 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.117.161) by
  SJ5PEPF000001D7.mail.protection.outlook.com (10.167.242.59) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.21 via Frontend Transport; Mon, 30 Mar 2026 19:35:39 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ 15.20.9745.21 via Frontend Transport; Mon, 30 Mar 2026 19:35:42 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 30 Mar
- 2026 12:35:19 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 12:35:23 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 30 Mar
- 2026 12:35:18 -0700
+ 2026 12:35:23 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Mon, 30
- Mar 2026 12:35:14 -0700
+ Mar 2026 12:35:19 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -92,9 +92,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
 	<phaddad@nvidia.com>, Gal Pressman <gal@nvidia.com>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH net 1/3] net/mlx5e: SD, Fix race condition in secondary device probe/remove
-Date: Mon, 30 Mar 2026 22:34:10 +0300
-Message-ID: <20260330193412.53408-2-tariqt@nvidia.com>
+Subject: [PATCH net 2/3] net/mlx5: SD, Keep multi-pf debugfs entries on primary
+Date: Mon, 30 Mar 2026 22:34:11 +0300
+Message-ID: <20260330193412.53408-3-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260330193412.53408-1-tariqt@nvidia.com>
 References: <20260330193412.53408-1-tariqt@nvidia.com>
@@ -109,30 +109,30 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D7:EE_|MN2PR12MB4093:EE_
-X-MS-Office365-Filtering-Correlation-Id: 80258cd6-0c30-4f1d-3a84-08de8e938652
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D7:EE_|DS0PR12MB9422:EE_
+X-MS-Office365-Filtering-Correlation-Id: b28b38a6-e849-418e-65c4-08de8e9387dc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|1800799024|82310400026|376014|7416014|18002099003|56012099003|22082099003;
+	BCL:0;ARA:13230040|82310400026|36860700016|1800799024|376014|7416014|56012099003|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	8Oa3oi5757fEEXjtbPIA/yYX7LhU595cSgHuqYsvbatV6RirV5hxMeWjaWcAHWPeBBCNYrY/ZTZ6RxgfMcA7XO1kQipVTnS/ecKirRjOqk8OsrpvElMx7t0LytFcgZscr8wuk0cSwh49V3o/D0AxfUnKgvyaUA9blx1bFiD/zBeRh8H9BJ/q7p8sh/pCMROtU9uhEeiLRVAD67slw5eVOTMGoAK2o+z9T73V7F0vbLCk6J1ptQ95WY6S0r8OUJgrWzbWKNs+juX0oq6GX4MQdhH+f6kzEeSGqtRRXyPVNX6dfeZjzywd8Y2ChBPYwNpNyYkKuFdA6DnVDIYDF4Gc+IiBaCR4mN5Xj2jsDHUfXVgzqmH7vv+rDqdyy1EhN5TeSiXtG4Syb7/DwTEfT3+NKUGf4bfOAs1lELYNIIdW60MM0c/c36XbdsCr1yTdTIYi/nFq+1nZQj/H6Tn3KAhO7dDuq9snapQA6XmvFGDmXhYQlPdiR/t1YBjrPjB5qmBOEHQUiGFEqX6o1Y5EtM8JlCLYgb0+7GHSCXAYyHbKaBFI1HkibvimZIiH2qOEdIVH3KZ+6SdRi9oBdvszBnFFlgBQloMM8ARoDKD13OAbMNkxysDBYpauROrGAR5UcZj1N6gwbq3sdr/eKI1ytrhIYGinw+I6EAVK8OkFaWSPFmP94HtbMz8x77yay+GurM2MtCHUTGbXTIM+t/3y4IvKYnhR0SGO6EE5aSCdQDIDjq0aLb6YHUPq68o3LL1FJoUIfCQ81pvZZPOnTsjKZ9sagA==
+	FDtlGo7sUeol9kSTBgeWrhEgq4QK3DX3SvwgVwlTqm3a5dabGIKxA4Pt8plnH4tFJJqNN/Gd+1zQgkSvmybq0kOq9RP/P6dUADRw9e2q+naJMYmBbNukppQwQ785h4sSWq3do9N4oMKkb41/OUhq6OahxiaEAmh78JyA+Ekqs/BgRg+xbdFbLyOhCJ2CIrH12BF276g2+8Sl5DoYvue8OxV+xbDnpaUPEU3lajjqCWAgyMb/Dqhmb02/PUI1/6KtXSyf2rGCNWIIXel0nMrroY7fgLivrg8Q0vSFdVmLcaaEltmCZpl/5uh4OicdDC7ICgos6nplxaccxg3wC7yqJFilOzbnxUruj160Jq8Nm3x9mOIKpdwCRkiQ6WRTuM7eUYSgeRR5BysTjTDhGgMZM2HdqrN4CKdb2yZuyEAh14tRfBCKPNtkLai1S+LrofB++6yaKMLgmSpKb+DeHHe2vhD459HJE5zfP4KgIZz1PnI0oIn6FH+t5l4s/lQDZEqn9rF29WTqDIVaRDJyuwtnuw3jcA3DEKdIB6JUj4mvAHMl6kAOMx7UMQA/l//Dd4crBEmo0nq8E/3AvnpopR34l+gXJJcrZqC68JVUQsOG9Fscemwjj0l1V2o2zxy3sdF0SFLJjXvPgV90mtJvKJE3rN2pgxFHWnO7S4Xvjl3l+gA326/gcBNC8l5dBC6WpvVa8tyn5ZdTd6znewTa5Y7r7KX8Hi5SpxVeyf2wIyZZ3xJ7VsaW0RwlyHc5LCKQFic8WbFJNWpqFFAFF4zWjxi92Q==
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(1800799024)(82310400026)(376014)(7416014)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(1800799024)(376014)(7416014)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	a3usjad7eJJqJ7wJ7NFpLeMJDYBCJwZJ/MH/h4vMn7Bjoe4oLFeSnvpu022a5icLGrB9J2prysMM5lTHE+xwZuW0UUKjvbUpYCZPH2jg6vLM9/v60oMUwAUrYbkKI+EPIjtJjGFirzn3HL0caCgcmlXc5Yl+3JpEFtuqIgCBs4qSuDrhjvtmAptnDSciP9x8T0AwnXuq1Mxzq+3WQsxWveZ4iAzaLX21jerzhPhwb7ea0mA8ucdYh8Usqq0vCNTNZfCi2aNNFjP2Ru+CSP4PitQh7GNAkydrI95qmRVNnC0bh+/s1jfYtsRP5fB1EFipnYmxeTSqt8tiMg6XtgEnYC6S+L8g8EI46LQ8y/QcuEYyPs0pKktlBEcBWmuLIjxlgvkZoy5gFMHVJ4Bzh61wPMSivxXCB6aA48M/JJlAPbg5tqzUS8X7hgKNqeQEPL4t
+	XPCHncUDYs6gzT9HpSZY9BOWYuU7M6rORrQs6V0DNiIt2aXQ34GIkguCEZeQcZpco9FCFqUBYmkixXrmHsqMetVS25wMrdNq9Mv9EoYLtwqQlq4ryl2NwtHziZrGI/A8/22JHqpxOwwyW0ory9WsnhYV8el8QoDWFUD7oJDLyQAJrIl+9AaOv3NX+Zk1egZsM5sBC4asTfHZ9WF0oJxBn1jVNmqW1GcqUfrf+iGer8o5g2ynVw75d62j/Lnu/azyVe6cg4SnfsRMVGlwYT4DxclZAdFqtn0WZmqcfFKN3LyCMNWaMiEIXSehB1ELOu85P2lAZG+hHbFvhUKg1zBzD2kSwYgMMJhkzxTb8HeY61wwOjM5FjEyEeHnEl8BRoc1DpQHAv8xyhfES8krtYmmH5vusTQg3FriYrm49xXSPWZvx1Gg4D5a7kAd1QM9U9mQ
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2026 19:35:39.7721
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2026 19:35:42.3460
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80258cd6-0c30-4f1d-3a84-08de8e938652
+X-MS-Exchange-CrossTenant-Network-Message-Id: b28b38a6-e849-418e-65c4-08de8e9387dc
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	SJ5PEPF000001D7.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4093
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9422
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -140,7 +140,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -148,178 +148,122 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-18803-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18804-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qemu.org:url,nvidia.com:email,nvidia.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 04DF036091C
+X-Rspamd-Queue-Id: 9A3E33607C5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Shay Drory <shayd@nvidia.com>
 
-When utilizing Socket-Direct single netdev functionality the driver
-resolves the actual auxiliary device using mlx5_sd_get_adev(). However,
-the current implementation returns the primary ETH auxiliary device
-without holding the device lock, leading to a potential race condition
-where the ETH device could be unbound or removed concurrently during
-probe, suspend, resume, or remove operations.[1]
+mlx5_sd_init() creates the "multi-pf" debugfs directory under the
+primary device debugfs root, but stored the dentry in the calling
+device's sd struct. When sd_cleanup() run on a different PF,
+this leads to using the wrong sd->dfs for removing entries, which
+results in memory leak and an error in when re-creating the SD.[1]
 
-Fix this by introducing mlx5_sd_put_adev() and updating
-mlx5_sd_get_adev() so that secondaries devices would acquire the device
-lock of the returned auxiliary device. After the lock is acquired, a
-second devcom check is needed[2].
-In addition, update The callers to pair the get operation with the new
-put operation, ensuring the lock is held while the auxiliary device is
-being operated on and released afterwards.
+Fix it by explicitly storing the debugfs dentry in the primary
+device sd struct and use it for all per-group files.
 
 [1]
-for example:
-BUG: kernel NULL pointer dereference, address: 0000000000000370
-PGD 0 P4D 0
-Oops: Oops: 0000 [#1] SMP
-CPU: 4 UID: 0 PID: 3945 Comm: bash Not tainted 6.19.0-rc3+ #1 NONE
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-RIP: 0010:mlx5e_dcbnl_dscp_app+0x23/0x100 [mlx5_core]
-Call Trace:
- <TASK>
- mlx5e_remove+0x82/0x12a [mlx5_core]
- device_release_driver_internal+0x194/0x1f0
- bus_remove_device+0xc6/0x140
- device_del+0x159/0x3c0
- ? devl_param_driverinit_value_get+0x29/0x80
- mlx5_rescan_drivers_locked+0x92/0x160 [mlx5_core]
- mlx5_unregister_device+0x34/0x50 [mlx5_core]
- mlx5_uninit_one+0x43/0xb0 [mlx5_core]
- remove_one+0x4e/0xc0 [mlx5_core]
- pci_device_remove+0x39/0xa0
- device_release_driver_internal+0x194/0x1f0
- unbind_store+0x99/0xa0
- kernfs_fop_write_iter+0x12e/0x1e0
- vfs_write+0x215/0x3d0
- ksys_write+0x5f/0xd0
- do_syscall_64+0x55/0xe90
- entry_SYSCALL_64_after_hwframe+0x4b/0x53
+debugfs: 'multi-pf' already exists in '0000:08:00.1'
 
-[2]
-    CPU0 (primary)                     CPU1 (secondary)
-==========================================================================
-mlx5e_remove() (device_lock held)
-                                     mlx5e_remove() (2nd device_lock held)
-                                      mlx5_sd_get_adev()
-                                       mlx5_devcom_comp_is_ready() => true
-                                       device_lock(primary)
- mlx5_sd_get_adev() ==> ret adev
- _mlx5e_remove()
- mlx5_sd_cleanup()
- // mlx5e_remove finished
- // releasing device_lock
-                                       //need another check here...
-                                       mlx5_devcom_comp_is_ready() => false
-
-Fixes: 381978d28317 ("net/mlx5e: Create single netdev per SD group")
+Fixes: 4375130bf527 ("net/mlx5: SD, Add debugfs")
 Signed-off-by: Shay Drory <shayd@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c  | 18 ++++++++++++++----
- .../net/ethernet/mellanox/mlx5/core/lib/sd.c   | 13 +++++++++++++
- .../net/ethernet/mellanox/mlx5/core/lib/sd.h   |  2 ++
- 3 files changed, 29 insertions(+), 4 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/lib/sd.c  | 23 ++++++++++++++-----
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index b6c12460b54a..5761f655f488 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -6657,8 +6657,11 @@ static int mlx5e_resume(struct auxiliary_device *adev)
- 		return err;
- 
- 	actual_adev = mlx5_sd_get_adev(mdev, adev, edev->idx);
--	if (actual_adev)
--		return _mlx5e_resume(actual_adev);
-+	if (actual_adev) {
-+		err = _mlx5e_resume(actual_adev);
-+		mlx5_sd_put_adev(actual_adev, adev);
-+		return err;
-+	}
- 	return 0;
- }
- 
-@@ -6698,6 +6701,8 @@ static int mlx5e_suspend(struct auxiliary_device *adev, pm_message_t state)
- 		err = _mlx5e_suspend(actual_adev, false);
- 
- 	mlx5_sd_cleanup(mdev);
-+	if (actual_adev)
-+		mlx5_sd_put_adev(actual_adev, adev);
- 	return err;
- }
- 
-@@ -6787,8 +6792,11 @@ static int mlx5e_probe(struct auxiliary_device *adev,
- 		return err;
- 
- 	actual_adev = mlx5_sd_get_adev(mdev, adev, edev->idx);
--	if (actual_adev)
--		return _mlx5e_probe(actual_adev);
-+	if (actual_adev) {
-+		err = _mlx5e_probe(actual_adev);
-+		mlx5_sd_put_adev(actual_adev, adev);
-+		return err;
-+	}
- 	return 0;
- }
- 
-@@ -6841,6 +6849,8 @@ static void mlx5e_remove(struct auxiliary_device *adev)
- 		_mlx5e_remove(actual_adev);
- 
- 	mlx5_sd_cleanup(mdev);
-+	if (actual_adev)
-+		mlx5_sd_put_adev(actual_adev, adev);
- }
- 
- static const struct auxiliary_device_id mlx5e_id_table[] = {
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-index 954942ad93c5..060649645012 100644
+index 060649645012..4c80b9d25283 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-@@ -528,5 +528,18 @@ struct auxiliary_device *mlx5_sd_get_adev(struct mlx5_core_dev *dev,
- 	if (dev == primary)
- 		return adev;
+@@ -426,6 +426,7 @@ int mlx5_sd_init(struct mlx5_core_dev *dev)
+ 	struct mlx5_core_dev *primary, *pos, *to;
+ 	struct mlx5_sd *sd = mlx5_get_sd(dev);
+ 	u8 alias_key[ACCESS_KEY_LEN];
++	struct mlx5_sd *primary_sd;
+ 	int err, i;
  
-+	device_lock(&primary->priv.adev[idx]->adev.dev);
-+	/* In case primary finish removing its adev */
-+	if (!mlx5_devcom_comp_is_ready(sd->devcom)) {
-+		device_unlock(&primary->priv.adev[idx]->adev.dev);
-+		return NULL;
-+	}
- 	return &primary->priv.adev[idx]->adev;
- }
-+
-+void mlx5_sd_put_adev(struct auxiliary_device *actual_adev,
-+		      struct auxiliary_device *adev)
-+{
-+	if (actual_adev != adev)
-+		device_unlock(&actual_adev->dev);
-+}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.h
-index 137efaf9aabc..9bfd5b9756b5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.h
-@@ -15,6 +15,8 @@ struct mlx5_core_dev *mlx5_sd_ch_ix_get_dev(struct mlx5_core_dev *primary, int c
- struct auxiliary_device *mlx5_sd_get_adev(struct mlx5_core_dev *dev,
- 					  struct auxiliary_device *adev,
- 					  int idx);
-+void mlx5_sd_put_adev(struct auxiliary_device *actual_adev,
-+		      struct auxiliary_device *adev);
+ 	err = sd_init(dev);
+@@ -444,6 +445,7 @@ int mlx5_sd_init(struct mlx5_core_dev *dev)
+ 		return 0;
  
- int mlx5_sd_init(struct mlx5_core_dev *dev);
- void mlx5_sd_cleanup(struct mlx5_core_dev *dev);
+ 	primary = mlx5_sd_get_primary(dev);
++	primary_sd = mlx5_get_sd(primary);
+ 
+ 	for (i = 0; i < ACCESS_KEY_LEN; i++)
+ 		alias_key[i] = get_random_u8();
+@@ -452,9 +454,13 @@ int mlx5_sd_init(struct mlx5_core_dev *dev)
+ 	if (err)
+ 		goto err_sd_unregister;
+ 
+-	sd->dfs = debugfs_create_dir("multi-pf", mlx5_debugfs_get_dev_root(primary));
+-	debugfs_create_x32("group_id", 0400, sd->dfs, &sd->group_id);
+-	debugfs_create_file("primary", 0400, sd->dfs, primary, &dev_fops);
++	primary_sd->dfs =
++		debugfs_create_dir("multi-pf",
++				   mlx5_debugfs_get_dev_root(primary));
++	debugfs_create_x32("group_id", 0400, primary_sd->dfs,
++			   &primary_sd->group_id);
++	debugfs_create_file("primary", 0400, primary_sd->dfs, primary,
++			    &dev_fops);
+ 
+ 	mlx5_sd_for_each_secondary(i, primary, pos) {
+ 		char name[32];
+@@ -464,7 +470,8 @@ int mlx5_sd_init(struct mlx5_core_dev *dev)
+ 			goto err_unset_secondaries;
+ 
+ 		snprintf(name, sizeof(name), "secondary_%d", i - 1);
+-		debugfs_create_file(name, 0400, sd->dfs, pos, &dev_fops);
++		debugfs_create_file(name, 0400, primary_sd->dfs, pos,
++				    &dev_fops);
+ 
+ 	}
+ 
+@@ -479,7 +486,8 @@ int mlx5_sd_init(struct mlx5_core_dev *dev)
+ 	mlx5_sd_for_each_secondary_to(i, primary, to, pos)
+ 		sd_cmd_unset_secondary(pos);
+ 	sd_cmd_unset_primary(primary);
+-	debugfs_remove_recursive(sd->dfs);
++	debugfs_remove_recursive(primary_sd->dfs);
++	primary_sd->dfs = NULL;
+ err_sd_unregister:
+ 	sd_unregister(dev);
+ err_sd_cleanup:
+@@ -491,6 +499,7 @@ void mlx5_sd_cleanup(struct mlx5_core_dev *dev)
+ {
+ 	struct mlx5_sd *sd = mlx5_get_sd(dev);
+ 	struct mlx5_core_dev *primary, *pos;
++	struct mlx5_sd *primary_sd;
+ 	int i;
+ 
+ 	if (!sd)
+@@ -500,10 +509,12 @@ void mlx5_sd_cleanup(struct mlx5_core_dev *dev)
+ 		goto out;
+ 
+ 	primary = mlx5_sd_get_primary(dev);
++	primary_sd = mlx5_get_sd(primary);
+ 	mlx5_sd_for_each_secondary(i, primary, pos)
+ 		sd_cmd_unset_secondary(pos);
+ 	sd_cmd_unset_primary(primary);
+-	debugfs_remove_recursive(sd->dfs);
++	debugfs_remove_recursive(primary_sd->dfs);
++	primary_sd->dfs = NULL;
+ 
+ 	sd_info(primary, "group id %#x, uncombined\n", sd->group_id);
+ out:
 -- 
 2.44.0
 
