@@ -1,177 +1,117 @@
-Return-Path: <linux-rdma+bounces-18812-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18813-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sF8YKK3uymkkBQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18812-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 23:44:13 +0200
+	id YELeM/v5ymmlBwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18813-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 00:32:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381153618F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 23:44:13 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2C2361F9B
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 00:32:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1C7EF301D076
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 21:42:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B2F6730C4390
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 22:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90993A543F;
-	Mon, 30 Mar 2026 21:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87303E3D8D;
+	Mon, 30 Mar 2026 22:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4IC9t/9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X0rYMfry"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668513A4532;
-	Mon, 30 Mar 2026 21:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F8B3DDDB1;
+	Mon, 30 Mar 2026 22:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774906975; cv=none; b=jL4fxhLa6rw6AoC4mtqN9SUnfrk9hsnV6e5KwtRIYCXcQ56E9S0aQS2yd4Zix8IlXa/6QMesyAaH5yZYRbQZjnUnRDLNnZdKRZbQ3wOIKfA8YkaUO8AQz+rPHNd2irXsshRbncomx/EmHe89rW0UtqR9Y5eSUaB12vaaePBwrG0=
+	t=1774909402; cv=none; b=e+5oWSvHIo/LgktVmgT4y7GPTXg1jQUSY3RRMaSdG1GSXfzmZ7Uyy+Rbcq7b2S81pwJuVqQxkH7oH9BYP3yhhSFtpqNT2yf7Wzo90HFanPqienxF835FmcoSo5bpShl0vrVspDn+zMsWU5IcCazQ+XydEzj2coD9pOOBEfkPSG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774906975; c=relaxed/simple;
-	bh=WDmKX5hyCYCsZw9yvr0oU4+GmiqTh75fiyz8/DAsRWA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=CBiPcCPOcfLAzs23fdj388cufd3RMZoIl30C3BMYbhw7X+eWm4DsviUSZfW3Q1hb5gvkJTfoZLk5ubaSDhejdSEB1p+oN89fiNmSd5+PFXJ236dl6YS4/tdvvW0puLFOMlnc3QWA2wOpc35JjUiZNxtgcgZyS3sQ9YPloyskrCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4IC9t/9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F285C4CEF7;
-	Mon, 30 Mar 2026 21:42:55 +0000 (UTC)
+	s=arc-20240116; t=1774909402; c=relaxed/simple;
+	bh=R/RTYULXwMk5jUyXPTlsjfkiAucxmpo5A8GIlmR+4pI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L9KpfDNy8+zTgr1/k/4XYi/iDabxRdad8LGqd8W2+xW6D6gO+HeLMxiAC94a0Kx57gpzG+FMe8e9Xp8BBX1/LMvIFjwx7fj84EsAZtU6dK/LRhTRPrDi+CLRrC8p3oMF6sLqRQf+T7nnpu/7CWzm2giYXApEmbXmrEYCDQZtPmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X0rYMfry; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7EB4C4CEF7;
+	Mon, 30 Mar 2026 22:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774906975;
-	bh=WDmKX5hyCYCsZw9yvr0oU4+GmiqTh75fiyz8/DAsRWA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=n4IC9t/9kMlDfn3o72V3jZPI6iJYHmJHV+A1YEz4cLBcZrXHDboxAGObjtIy9KecY
-	 xcqaUGg/W40l3Zqlidf83ecSn0Mg/+nmI9mIa7G1JHexHwfEfn1HbSY1Y/r9U5JPUK
-	 tH7e6O9QOa4xznvpZVisd8QxwheStdjdng4i4piQ2+Ym+gkcY8fYLkB4G4SgBIP/L2
-	 0Hp9oS+L8oH9RZi02qe37K5dPaRrMnHmC1GFXKnUfU89SrgLqhwOXDBcBhWdJoEpHZ
-	 n9tNyv6c4Y0WSpqc+7ESC+cWocrV0MFGJm+3fIQ/jd7XAzMzvs73MjYWjU0Ine+9g3
-	 pwp+v9byuUMxQ==
-Date: Mon, 30 Mar 2026 16:42:53 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Gerd Bayer <gbayer@linux.ibm.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Jay Cornwall <Jay.Cornwall@amd.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexander Schmidt <alexs@linux.ibm.com>, linux-s390@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v7 1/3] PCI: AtomicOps: Do not enable requests by RCiEPs
-Message-ID: <20260330214253.GA92498@bhelgaas>
+	s=k20201202; t=1774909401;
+	bh=R/RTYULXwMk5jUyXPTlsjfkiAucxmpo5A8GIlmR+4pI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=X0rYMfryywhutY6O4h5DcOtft954Mqqbo5clo1gTAQiKIfqI2gr263Ib68H1c878N
+	 aGehaKv/M3SGBbBhpXye4W0sHfhmB8v4XkbiBdXXcBxxL2fnDNcTKLhhjZ05/W3O2Z
+	 a3RZ/iE5LeQEwlH6m7zKLtHtmXxotgZFzO7x/YhOPVdbqMXzpxDP0xYmnKPAxu7Cl5
+	 RA+Zlj9AJ4u6oV0vwBYzfr3tunqPhVC+ja03upecAu/kYlEKe5BF2AtxoEMpIBbnMY
+	 O7FWd9HlrjlCgG++1J0ODjkGg/q15snobTvSXA8Ra5P1rsxU+5CZcs3xXyydDLxOGb
+	 mcrPri0YQjK/w==
+Date: Mon, 30 Mar 2026 15:23:18 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
+ dipayanroy@linux.microsoft.com, yury.norov@gmail.com, kees@kernel.org,
+ ssengar@linux.microsoft.com, gargaditya@linux.microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: mana: Expose hardware diagnostic info
+ via debugfs
+Message-ID: <20260330152318.144c1b30@kernel.org>
+In-Reply-To: <acrKgG0USsGABqYT@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260319070926.1459515-1-ernis@linux.microsoft.com>
+	<20260323174444.2717da3d@kernel.org>
+	<acK56AlPfVW8cDPe@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	<acrKgG0USsGABqYT@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260330-fix_pciatops-v7-1-f601818417e8@linux.ibm.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-18813-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18812-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[helgaas@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 381153618F7
+X-Rspamd-Queue-Id: 3E2C2361F9B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-[+to amdgpu, bnxe_re, mlx5 IB, qedr, mlx5 maintainers]
+On Mon, 30 Mar 2026 12:09:52 -0700 Erni Sri Satya Vennela wrote:
+> Just a quick follow=E2=80=91up on this. Since these issues were pre=E2=80=
+=91existing and
+> not introduced by this patch, would you prefer that I send them as a
+> separate fix patch, or fold the fixes into the current patch?
 
-On Mon, Mar 30, 2026 at 03:09:44PM +0200, Gerd Bayer wrote:
-> Since root complex integrated end points (RCiEPs) attach to a bus that
-> has no bridge device describing the root port, the capability to
-> complete AtomicOps requests cannot be determined with PCIe methods.
-> 
-> Change default of pci_enable_atomic_ops_to_root() to not enable
-> AtomicOps requests on RCiEPs.
-
-I know I suggested this because there's nothing explicit that tells us
-whether the RC supports atomic ops from RCiEPs [1].  But I'm concerned
-that GPUs, infiniband HCAs, and NICs that use atomic ops may be
-implemented as RCiEPs and would be broken by this.
-
-These drivers use pci_enable_atomic_ops_to_root():
-
-  amdgpu
-  bnxt_re (infiniband)
-  mlx5 (infinband)
-  qedr (infiniband)
-  mlx5 (ethernet)
-
-Maybe we should assume that because RCiEPs are directly integrated
-into the RC, the RCiEP would only allow AtomicOp Requester Enable to
-be set if the RC supports atomic ops?
-
-I don't like making assumptions like that, but it'd be worse to break
-these devices.
-
-[1] https://lore.kernel.org/all/20260326164002.GA1325368@bhelgaas
-
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> ---
->  drivers/pci/pci.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 8479c2e1f74f1044416281aba11bf071ea89488a..135e5b591df405e87e7f520a618d7e2ccba55ce1 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3692,15 +3692,14 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
->  
->  	/*
->  	 * Per PCIe r4.0, sec 6.15, endpoints and root ports may be
-> -	 * AtomicOp requesters.  For now, we only support endpoints as
-> -	 * requesters and root ports as completers.  No endpoints as
-> +	 * AtomicOp requesters.  For now, we only support (legacy) endpoints
-> +	 * as requesters and root ports as completers.  No endpoints as
->  	 * completers, and no peer-to-peer.
->  	 */
->  
->  	switch (pci_pcie_type(dev)) {
->  	case PCI_EXP_TYPE_ENDPOINT:
->  	case PCI_EXP_TYPE_LEG_END:
-> -	case PCI_EXP_TYPE_RC_END:
->  		break;
->  	default:
->  		return -EINVAL;
-> 
-> -- 
-> 2.51.0
-> 
+Anything that's pre-existing should be a separate patch, before any new
+code. If the bug exists only in net-next - earlier in the same series,
+if the bug exists in net - posted separately for the net tree.
 
