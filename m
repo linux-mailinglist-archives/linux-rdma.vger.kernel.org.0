@@ -1,127 +1,117 @@
-Return-Path: <linux-rdma+bounces-18784-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18785-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ILqsClZuymnG8gUAu9opvQ
-	(envelope-from <linux-rdma+bounces-18784-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:36:38 +0200
+	id AFKpJ3BuymnG8gUAu9opvQ
+	(envelope-from <linux-rdma+bounces-18785-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:37:04 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C75635B1DE
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:36:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB00535B1F7
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 14:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 698A5302F4FE
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 12:28:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5D59F30467F7
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2026 12:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1E03CA4A3;
-	Mon, 30 Mar 2026 12:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B0D3CFF6E;
+	Mon, 30 Mar 2026 12:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LnIFx0gD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FD33CE49C
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Mar 2026 12:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0083C552D;
+	Mon, 30 Mar 2026 12:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774873681; cv=none; b=bVux1kCc5tTK/eD5EhB3J+yaKl0xUJaW2h8Kwqce3ZLfVlU9qtrddDByHVDeSJ+Gup1lRoDUftPx5zwFNhG1aJLkvYxWT4T+nJtktNFrD9YnTrwnZP1O855+YtvZB+ekoW8EluDf6qHsp3gZJ/iVnwopmGv1Eq1HFL5/jVBApU0=
+	t=1774873970; cv=none; b=oY2AL5MZALaFtxpizri93cqjoYsIOS3QNiHsYBdNi3Td+2HTQQ0qI5EkaeJispJQJSYufQI/eEtBXon8u8ikCgOPsLYxyG2BHv7vQ4Tjv1o9411GlK655sJpxhDerIO7mydgSDLSiPxFjC4r4QFwo8uCpIVp5zWDc0Ha5ySp9MY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774873681; c=relaxed/simple;
-	bh=1uxJ0UjV1G4S7C+2pfSx86fcX9uBM8TLtYD6EcnxhSU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q6HWZfFrfAcKJ1A0WCti3p518yPvIdJM0Sy6ZosJN78YvOw4uY1cA/qGdK7xJRrc0GOtqxk4bOoGfvZjjZClDffOd7bwW7N9ykxG/Cy8OntEbtmnfTABifUyUCp2lEfOUHJIw053oXmjfwU1q49CZs3xRNOH3VaBzpXBm/zANwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 8501960A55; Mon, 30 Mar 2026 14:27:56 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca,
-	leon@kernel.org,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH rdma] RDMA/core: prefer NLA_NUL_STRING
-Date: Mon, 30 Mar 2026 14:27:39 +0200
-Message-ID: <20260330122742.13315-1-fw@strlen.de>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1774873970; c=relaxed/simple;
+	bh=x768oepB+eu62Vi9T/UriFrLat3EfNqHLyitLAzJK3Q=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=kZ80ncN9XOKURbGA0WmtfA4EyNRjMgQy2sfiUargcIw8fjMWlT+ZQyG4cRUSdwULVkrWIzuGK5VCUhfGgZG35rSwZPV0Z0y7iRzjtWuytVhnM+jF3yj0yPf7pzPj47zhLvix2w5jpvDIVZ5t4KzuzYvq/oc6DVB7Wyd4UD6qsgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LnIFx0gD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7502CC4CEF7;
+	Mon, 30 Mar 2026 12:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774873970;
+	bh=x768oepB+eu62Vi9T/UriFrLat3EfNqHLyitLAzJK3Q=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=LnIFx0gDkJ8FW8wcZovX7Wrj9KIp0FHKAVomkTbOGrLIbZvUbz1d6Gpx5vPy8oIx1
+	 jwqCh+yeVBQeuNwSRbubx1O+Tww9othoXm5UqG8eNTGTtGwNv/njUOQHdlms9LIwVh
+	 uC3xyPnektKL8vz873/JDD9ehVyUiGFwjd8hLMGri2Tl+XLTCE0EuRPVsgN2lAMdSN
+	 EDxaVA8CBZ80JGkQOg/VQyrjqMRR7ENBA6gbc5sjpToddRdayCnFlzudehvcl8QqMz
+	 4a38qttgIbEYkt5misJi57yfV7T6L/SNQ10urFK+MrxTm66ktDWxc92HxLjcdD40DA
+	 tJNMnAPBGb2DQ==
+From: Leon Romanovsky <leon@kernel.org>
+To: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Jiri Pirko <jiri@resnulli.us>, Jiri Pirko <jiri@resnulli.us>
+In-Reply-To: <20260325-fix-mlx4-external-umem-v1-1-1c7c0e779329@nvidia.com>
+References: <20260325-fix-mlx4-external-umem-v1-1-1c7c0e779329@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx4: Restrict external umem for CQ
+ when copy_to_user() is used
+Message-Id: <177487396689.3810252.14139340352108174634.b4-ty@kernel.org>
+Date: Mon, 30 Mar 2026 08:32:46 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-18f8f
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-18785-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18784-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,linux-rdma@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
-X-Rspamd-Queue-Id: 2C75635B1DE
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EB00535B1F7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-These attributes are evaluated as c-string (passed to strcmp), but
-NLA_STRING doesn't check for the presence of a \0 terminator.
 
-Either this needs to switch to nla_strcmp() and needs to adjust printf
-fmt specifier to not use plain %s, or this needs to use NLA_NUL_STRING.
+On Wed, 25 Mar 2026 20:16:03 +0200, Leon Romanovsky wrote:
+> When the mlx4 firmware reports the MLX4_DEV_CAP_FLAG2_SW_CQ_INIT capability,
+> libmlx4 from the rdma-core package expects the driver to initialize memory
+> at the address provided in the buf_addr parameter of ucmd.
+> 
+> This behavior cannot be supported by any external umem implementation, so
+> restrict it accordingly.
+> 
+> [...]
 
-As the code has been this way for long time, it seems to me that
-userspace does include the terminating nul, even tough its not enforced
-so far, and thus NLA_NUL_STRING use is the simpler solution.
+Applied, thanks!
 
-Fixes: 30dc5e63d6a5 ("RDMA/core: Add support for iWARP Port Mapper user space service")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- compile tested only.
+[1/1] RDMA/mlx4: Restrict external umem for CQ when copy_to_user() is used
+      https://git.kernel.org/rdma/rdma/c/1c47f6aa0a13d1
 
- drivers/infiniband/core/iwpm_msg.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/core/iwpm_msg.c b/drivers/infiniband/core/iwpm_msg.c
-index 69c85249b465..4625abd29ac0 100644
---- a/drivers/infiniband/core/iwpm_msg.c
-+++ b/drivers/infiniband/core/iwpm_msg.c
-@@ -365,9 +365,9 @@ int iwpm_remove_mapping(struct sockaddr_storage *local_addr, u8 nl_client)
- /* netlink attribute policy for the received response to register pid request */
- static const struct nla_policy resp_reg_policy[IWPM_NLA_RREG_PID_MAX] = {
- 	[IWPM_NLA_RREG_PID_SEQ]     = { .type = NLA_U32 },
--	[IWPM_NLA_RREG_IBDEV_NAME]  = { .type = NLA_STRING,
-+	[IWPM_NLA_RREG_IBDEV_NAME]  = { .type = NLA_NUL_STRING,
- 					.len = IWPM_DEVNAME_SIZE - 1 },
--	[IWPM_NLA_RREG_ULIB_NAME]   = { .type = NLA_STRING,
-+	[IWPM_NLA_RREG_ULIB_NAME]   = { .type = NLA_NUL_STRING,
- 					.len = IWPM_ULIBNAME_SIZE - 1 },
- 	[IWPM_NLA_RREG_ULIB_VER]    = { .type = NLA_U16 },
- 	[IWPM_NLA_RREG_PID_ERR]     = { .type = NLA_U16 }
-@@ -677,7 +677,7 @@ int iwpm_remote_info_cb(struct sk_buff *skb, struct netlink_callback *cb)
- 
- /* netlink attribute policy for the received request for mapping info */
- static const struct nla_policy resp_mapinfo_policy[IWPM_NLA_MAPINFO_REQ_MAX] = {
--	[IWPM_NLA_MAPINFO_ULIB_NAME] = { .type = NLA_STRING,
-+	[IWPM_NLA_MAPINFO_ULIB_NAME] = { .type = NLA_NUL_STRING,
- 					.len = IWPM_ULIBNAME_SIZE - 1 },
- 	[IWPM_NLA_MAPINFO_ULIB_VER]  = { .type = NLA_U16 }
- };
+Best regards,
 -- 
-2.52.0
+Leon Romanovsky <leon@kernel.org>
 
 
