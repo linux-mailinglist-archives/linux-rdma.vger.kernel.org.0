@@ -1,190 +1,179 @@
-Return-Path: <linux-rdma+bounces-18825-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18826-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gEzqJVcty2n8EQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18825-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:11:35 +0200
+	id GGAjKCFiy2nCHAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18826-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:56:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372E0363519
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:11:35 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A7AE364444
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:56:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 23D5E3094D2F
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 02:08:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B4FB7303B979
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 05:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B12368964;
-	Tue, 31 Mar 2026 02:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BB5371071;
+	Tue, 31 Mar 2026 05:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U7eLPna2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PkYAQvBF"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E961036826D;
-	Tue, 31 Mar 2026 02:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36AE3611E;
+	Tue, 31 Mar 2026 05:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774922904; cv=none; b=cBogbtRWyqTMpYGIcbUNhhv4AnS4ZVYHgRG6Utr2t9+rZJaltBc93k1k8HIPomzzjLNeDIuGHlP/3VU89FDYwoQVUPh5eRtgce23XOC2AkXiXuY76fbugRfqGYYjMjAG5DwM2hNnVmh1UKUkRRyC26f+0YxhX7fnhAnVj2S7JYk=
+	t=1774936606; cv=none; b=aOSHW2vGD21usnWjD+3fekpE68qZX5kFv6KPuN2j2YzxyIFSj6YkmiAu5PqR0siBW+LxRpNlUSXyiJsS+8pNDlw+5y/ObE7Qg+hwAnkPOYlivCJc1EohWynnR0t36Hp2/615kWM6PNf6wtWRHtMA+2+/BmMbjaWehUygLuavWxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774922904; c=relaxed/simple;
-	bh=Ti2rwlshDR79ZI/BGbAVD6CjcN6oVYO5Ai7SaqZamXk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mNLaDul7WptmxNAVeY5NPcA3A6KdDiSlMQRoCJh6P4f/5Yy+rDrHEktMdL+Hr4f1/J5Ce0cYyq5R8RsOkgvyyhFMRsB5Is0QLDaoJLcz0DGNmGV6RRxbwsR+tnIONvUSU+HQ7UOz6dEZPHapYpe66kNGp6c8A6Sg6Yi7j4Sbr50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U7eLPna2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B8FC19423;
-	Tue, 31 Mar 2026 02:08:21 +0000 (UTC)
+	s=arc-20240116; t=1774936606; c=relaxed/simple;
+	bh=A2zYglo1Gfo+yff/OlPEexyVPm4pn2nuiVBrulA3KFg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n5jdx9W8g5iBOL1IN5BQxohV+9ANTdqO/3JZfiJOTkKG2CgQ5K6jbRmb+Soj8+zbNypT0dB8PhWv9ft8UEHNJ5AMXiCyXV/Tr1OI3dgx54GYiftwlqFuY3du1xhBxBTUnnJ1/dtQvJ7/jRiYqnZSgAtliwwmYEKibTWcaCkFhQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PkYAQvBF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C34FC19423;
+	Tue, 31 Mar 2026 05:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774922903;
-	bh=Ti2rwlshDR79ZI/BGbAVD6CjcN6oVYO5Ai7SaqZamXk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U7eLPna2zLPQvleiKAUeNeTyNuhbmXZy6joPxF+meNPF0vuJq0MP7KczjS5CMpASR
-	 XjUxBemZlQu8OMqjojw8eVLh2Z+fWu++qcCB2q2fsM2PmUhbsznMl9/bUOgsv4AuLZ
-	 9yS0IjOuMWJyrRNr+I5rDK1RWlwH24ISao6FdTlK2ol+I5FW20vb5kLL3Zv3+dDtZ+
-	 IyKPUzKevuDXOj+cGRrv8+PsmMVb0P86T08oXiP5/dtOiwor8ewxi17EQRCG5bF91l
-	 VA4Wd1CekwLXgI868pwSzAGrXVNu3/cf+EW6gv5EZ73fQxT4aV/wONbDKHT1rVBIb9
-	 PEUVRy4ipgjkA==
-From: Jakub Kicinski <kuba@kernel.org>
-To: tariqt@nvidia.com
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	donald.hunter@gmail.com,
-	horms@kernel.org,
-	jiri@resnulli.us,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	mbloch@nvidia.com,
-	shuah@kernel.org,
-	chuck.lever@oracle.com,
-	matttbe@kernel.org,
-	cjubran@nvidia.com,
-	cratiu@nvidia.com,
-	dtatulea@nvidia.com,
-	jacob.e.keller@intel.com,
-	shshitrit@nvidia.com,
-	daniel.zahka@gmail.com,
-	parav@nvidia.com,
-	ajayachandra@nvidia.com,
-	kees@kernel.org,
-	shayd@nvidia.com,
-	danielj@nvidia.com,
-	moshe@nvidia.com,
-	willemb@google.com,
-	dw@davidwei.uk,
-	petrm@nvidia.com,
-	sdf@fomichev.me,
-	daniel@iogearbox.net,
-	joe@dama.to,
-	razor@blackwall.org,
-	vadim.fedorenko@linux.dev,
-	mst@redhat.com,
-	antonio@openvpn.net,
-	allison.henderson@oracle.com,
-	minhquangbui99@gmail.com,
-	noren@nvidia.com,
-	netdev@vger.kernel.org,
+	s=k20201202; t=1774936605;
+	bh=A2zYglo1Gfo+yff/OlPEexyVPm4pn2nuiVBrulA3KFg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PkYAQvBFBpk21JSYN/aAbeuAzEoRKDShu47jqQB/sVWwdSsgAONuF3Wpyw5VRTcDF
+	 K3NwNe0GTLJW8TJ2KlGTCRkTV4FBZIhUP96Km7pKextNbfn4v07BDlhqrNJn1i7l3t
+	 X6nmgsRfphG2JPUhcAVR2vRjfNfdfnwgdONYt8W4qVks1ddIoZc92AS4WFyiMEmmSq
+	 7Az3DBUMrnbOqULqe+gtqnDEWukPqGA5+jm6U8mYFYfoLzyIUP3AuHVRABZR4kBG3r
+	 nvaXKUCTbMTtlP1l2WvXzjpsci0yVRfkw17xTNPl0+OC9AwVuwBdp8yctuiRtYntc2
+	 PaWus3+/c/qug==
+From: Leon Romanovsky <leon@kernel.org>
+To: KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
-	gal@nvidia.com,
-	jiri@nvidia.com
-Subject: Re: [PATCH net-next V9 12/14] net/mlx5: qos: Support cross-device tx scheduling
-Date: Mon, 30 Mar 2026 19:08:20 -0700
-Message-ID: <20260331020820.3525138-1-kuba@kernel.org>
+	linux-rdma@vger.kernel.org,
+	Chiara Meiohas <cmeiohas@nvidia.com>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>
+Subject: [PATCH v2 0/4] Firmware LSM hook
+Date: Tue, 31 Mar 2026 08:56:32 +0300
+Message-ID: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260326065949.44058-13-tariqt@nvidia.com>
-References: <20260326065949.44058-13-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20260309-fw-lsm-hook-7c094f909ffc
+X-Mailer: b4 0.15-dev-18f8f
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,davidwei.uk,fomichev.me,iogearbox.net,dama.to,blackwall.org,linux.dev,openvpn.net,vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[49];
-	TAGGED_FROM(0.00)[bounces-18825-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18826-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.975];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 372E0363519
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email,nvidia.com:mid]
+X-Rspamd-Queue-Id: 1A7AE364444
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
+From Chiara:
+
+This patch set introduces a new BPF LSM hook to validate firmware commands
+triggered by userspace before they are submitted to the device. The hook
+runs after the command buffer is constructed, right before it is sent
+to firmware.
+
+The goal is to allow a security module to allow or deny a given command
+before it is submitted to firmware. BPF LSM can attach to this hook
+to implement such policies. This allows fine-grained policies for different
+firmware commands. 
+
+In this series, the new hook is called from RDMA uverbs and from the fwctl
+subsystem. Both the uverbs and fwctl interfaces use ioctl, so an obvious
+candidate would seem to be the file_ioctl hook. However, the userspace
+attributes used to build the firmware command buffer are copied from
+userspace (copy_from_user()) deep in the driver, depending on various
+conditions. As a result, file_ioctl does not have the information required
+to make a policy decision.
+
+This newly introduced hook provides the command buffer together with relevant
+metadata (device, command class, and a class-specific device identifier), so
+security modules can distinguish between different command classes and devices.
+
+The hook can be used by other drivers that submit firmware commands via a command
+buffer.
+
+Thanks
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-net/mlx5: qos: Support cross-device tx scheduling
+Changes in v2:
+- Fixed style formatting issues pointed by Jonathan
+- Added Jonathan's and Dave's ROB tags
+- Implemented as BPF LSM hook instead of general LSM hook
+- Added selftest to execute that new hook
+- Removed extra FW_CMD_CLASS_MAX enum, it is not needed
+- Link to v1: https://patch.msgid.link/20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com
 
-This commit relaxes the restriction that rate groups can only contain vports
-from the same E-Switch. It enables cross-device TX scheduling if the hardware
-supports it, LAG is enabled, and the E-Switches share a devlink device.
+---
+Chiara Meiohas (4):
+      bpf: add firmware command validation hook
+      selftests/bpf: add test cases for fw_validate_cmd hook
+      RDMA/mlx5: Externally validate FW commands supplied in DEVX interface
+      fwctl/mlx5: Externally validate FW commands supplied in fwctl
 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
+ drivers/fwctl/mlx5/main.c                        | 12 +++++-
+ drivers/infiniband/hw/mlx5/devx.c                | 49 ++++++++++++++++++------
+ include/linux/bpf_lsm.h                          | 41 ++++++++++++++++++++
+ kernel/bpf/bpf_lsm.c                             | 11 ++++++
+ tools/testing/selftests/bpf/progs/verifier_lsm.c | 23 +++++++++++
+ 5 files changed, 122 insertions(+), 14 deletions(-)
+---
+base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
+change-id: 20260309-fw-lsm-hook-7c094f909ffc
 
-[ ... ]
+Best regards,
+--  
+Leon Romanovsky <leonro@nvidia.com>
 
-> @@ -1738,18 +1761,44 @@ int mlx5_esw_devlink_rate_node_del(struct devlink_rate *rate_node, void *priv,
->  	return 0;
->  }
->  
-> +static int
-> +mlx5_esw_validate_cross_esw_scheduling(struct mlx5_eswitch *esw,
-> +				       struct mlx5_esw_sched_node *parent,
-> +				       struct netlink_ext_ack *extack)
-> +{
-
-[ ... ]
-
-> +	if (!mlx5_lag_is_active(esw->dev)) {
-> +		NL_SET_ERR_MSG_MOD(extack,
-> +				   "Cross E-Switch scheduling requires LAG to be activated");
-> +		return -EOPNOTSUPP;
-> +	}
-
-What happens to the cross-device rate scheduling if LAG is deactivated
-after the configuration is applied?
-
-When LAG is deactivated, the LAG state is torn down in hardware, but there
-does not appear to be a corresponding cleanup or update triggered for the
-cross-eswitch QoS scheduling elements.
-
-Could this result in a regression where the hardware TSAR tree and devlink
-rate configuration remain pointing to a now-invalid VHCA association,
-bypassing the state validation and causing traffic drops or firmware errors?
-
-> +
-> +	return 0;
-> +}
 
