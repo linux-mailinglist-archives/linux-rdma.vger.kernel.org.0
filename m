@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-18824-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18825-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kNJUKqssy2n8EQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18824-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:08:43 +0200
+	id gEzqJVcty2n8EQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18825-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:11:35 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 609923634AC
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:08:43 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 372E0363519
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:11:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7EA8B3048076
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 02:08:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 23D5E3094D2F
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 02:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5BB36895D;
-	Tue, 31 Mar 2026 02:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B12368964;
+	Tue, 31 Mar 2026 02:08:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3NHhIoq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U7eLPna2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F92367F39;
-	Tue, 31 Mar 2026 02:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E961036826D;
+	Tue, 31 Mar 2026 02:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774922900; cv=none; b=i99+ZVZn3gDIXmLUjJs0jg59BjYnqMORWSRtetgEBiqiG1nYIJL0QC34QGPBh74fahfzVugjMGTxMiTU6tI4bFhK1EDpbOsYn4sYphkTcB2mBqCcyM2QGRCiNuYWLSj6IvPyR5juixPdFwAefnePqFL5P0V82Ebg+K6ALNIJSKU=
+	t=1774922904; cv=none; b=cBogbtRWyqTMpYGIcbUNhhv4AnS4ZVYHgRG6Utr2t9+rZJaltBc93k1k8HIPomzzjLNeDIuGHlP/3VU89FDYwoQVUPh5eRtgce23XOC2AkXiXuY76fbugRfqGYYjMjAG5DwM2hNnVmh1UKUkRRyC26f+0YxhX7fnhAnVj2S7JYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774922900; c=relaxed/simple;
-	bh=G7Vy2RYfpWGsgppluQlynglszZf9OOhmdm5D0oSaJ1A=;
+	s=arc-20240116; t=1774922904; c=relaxed/simple;
+	bh=Ti2rwlshDR79ZI/BGbAVD6CjcN6oVYO5Ai7SaqZamXk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pMAO4OtKNJU4DhJMk7aHxB0+ywmovwTPzEpPLu+OFju1IMdcnmC7gEt7aXTg5PCUHdpItZBjao1271eZJnzzJd16eDklZ6wrTX6RA1sHyb5Gv9zw2qxaao0tFcl6TM+WPzBAlWttWt0w4RsczAWKYHcK7Pcko2ZnKtqGdOf4QAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3NHhIoq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80564C4CEF7;
-	Tue, 31 Mar 2026 02:08:18 +0000 (UTC)
+	 MIME-Version; b=mNLaDul7WptmxNAVeY5NPcA3A6KdDiSlMQRoCJh6P4f/5Yy+rDrHEktMdL+Hr4f1/J5Ce0cYyq5R8RsOkgvyyhFMRsB5Is0QLDaoJLcz0DGNmGV6RRxbwsR+tnIONvUSU+HQ7UOz6dEZPHapYpe66kNGp6c8A6Sg6Yi7j4Sbr50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U7eLPna2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B8FC19423;
+	Tue, 31 Mar 2026 02:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774922900;
-	bh=G7Vy2RYfpWGsgppluQlynglszZf9OOhmdm5D0oSaJ1A=;
+	s=k20201202; t=1774922903;
+	bh=Ti2rwlshDR79ZI/BGbAVD6CjcN6oVYO5Ai7SaqZamXk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l3NHhIoqIcFF1KbpcauTdjvPWinIJogYUTNKVUuEqTk93nyS1xClsj8GxaXi3w4Y0
-	 g9NHhozKSk1GwaSYe8A3UYqpnacdq/7gPDiWiCnmM5qcoczamEzp1LWg9dwZ9QZqsn
-	 NvlM+8QbzOEAemgZEL5SRXqRmaV5CcxDBvUavOZnjb9uZkwG5mydPpeRlPidrz7m81
-	 upKUvsUljvNzuyZL4X/asO17GFw2S96CnI8oNpTg8xV4ocHUjdRnmgnKI7G9HdSp0p
-	 TyQ3e39evTqfu1bNof+nRfbDhhjblvyjtURRKW3NRXGY3kdwoaWTR0ksiYzwYABv8t
-	 OglC5tUfYC9rg==
+	b=U7eLPna2zLPQvleiKAUeNeTyNuhbmXZy6joPxF+meNPF0vuJq0MP7KczjS5CMpASR
+	 XjUxBemZlQu8OMqjojw8eVLh2Z+fWu++qcCB2q2fsM2PmUhbsznMl9/bUOgsv4AuLZ
+	 9yS0IjOuMWJyrRNr+I5rDK1RWlwH24ISao6FdTlK2ol+I5FW20vb5kLL3Zv3+dDtZ+
+	 IyKPUzKevuDXOj+cGRrv8+PsmMVb0P86T08oXiP5/dtOiwor8ewxi17EQRCG5bF91l
+	 VA4Wd1CekwLXgI868pwSzAGrXVNu3/cf+EW6gv5EZ73fQxT4aV/wONbDKHT1rVBIb9
+	 PEUVRy4ipgjkA==
 From: Jakub Kicinski <kuba@kernel.org>
 To: tariqt@nvidia.com
 Cc: Jakub Kicinski <kuba@kernel.org>,
@@ -94,12 +94,12 @@ Cc: Jakub Kicinski <kuba@kernel.org>,
 	linux-kselftest@vger.kernel.org,
 	gal@nvidia.com,
 	jiri@nvidia.com
-Subject: Re: [PATCH net-next V9 11/14] net/mlx5: qos: Remove qos domains and use shd lock
-Date: Mon, 30 Mar 2026 19:08:17 -0700
-Message-ID: <20260331020817.3525089-1-kuba@kernel.org>
+Subject: Re: [PATCH net-next V9 12/14] net/mlx5: qos: Support cross-device tx scheduling
+Date: Mon, 30 Mar 2026 19:08:20 -0700
+Message-ID: <20260331020820.3525138-1-kuba@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260326065949.44058-12-tariqt@nvidia.com>
-References: <20260326065949.44058-12-tariqt@nvidia.com>
+In-Reply-To: <20260326065949.44058-13-tariqt@nvidia.com>
+References: <20260326065949.44058-13-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -114,14 +114,14 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[kernel.org,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,davidwei.uk,fomichev.me,iogearbox.net,dama.to,blackwall.org,linux.dev,openvpn.net,vger.kernel.org];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[49];
-	TAGGED_FROM(0.00)[bounces-18824-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18825-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -134,125 +134,57 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 609923634AC
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 372E0363519
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 This is an AI-generated review of your patch. The human sending this
 email has considered the AI review valid, or at least plausible.
 ---
-    net/mlx5: qos: Remove qos domains and use shd lock
+net/mlx5: qos: Support cross-device tx scheduling
 
-This commit removes QoS domains and switches to using the shd lock to
-protect against concurrent QoS modifications. It also enables the
-supported_cross_device_rate_nodes devlink ops attribute.
-
-Link: https://lore.kernel.org/netdev/20250213180134.323929-1-tariqt@nvidia.com/
-
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> index 6698ac55a4bfa..c051605fecd23 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> @@ -385,6 +385,7 @@ static const struct devlink_ops mlx5_devlink_ops = {
->  	.rate_node_del = mlx5_esw_devlink_rate_node_del,
->  	.rate_leaf_parent_set = mlx5_esw_devlink_rate_leaf_parent_set,
->  	.rate_node_parent_set = mlx5_esw_devlink_rate_node_parent_set,
-> +	.supported_cross_device_rate_nodes = true,
-
-The commit message states that enabling supported_cross_device_rate_nodes
-now is safe because mlx5_esw_qos_vport_update_parent rejects cross-esw
-parent updates.
-
-When a user provides a DEVLINK_ATTR_PARENT_DEV belonging to an unrelated
-device, the devlink core (devlink_nl_rate_parent_node_set) drops the lock on
-the parent devlink and calls devlink_rate_node_get_by_name(). This function
-traverses the rate_list of the unlocked parent devlink instance.
-
-Does this leave the devlink core exposed to data races and potential
-use-after-free vulnerabilities, since the driver's rejection callback
-executes only after this lockless list traversal has occurred?
+This commit relaxes the restriction that rate groups can only contain vports
+from the same E-Switch. It enables cross-device TX scheduling if the hardware
+supports it, LAG is enabled, and the E-Switches share a devlink device.
 
 > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-> index 0be516003bcde..f67f99428959f 100644
 > --- a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
 > +++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-> @@ -1110,7 +1068,7 @@ void mlx5_esw_qos_vport_disable(struct mlx5_vport *vport)
->  	struct mlx5_esw_sched_node *parent;
->  
->  	lockdep_assert_held(&esw->state_lock);
-> -	esw_qos_lock(esw);
-> +	devl_lock(esw->dev->shd);
-
-Could esw->dev->shd be NULL here?
-
-In mlx5_shd_init(), initialization is explicitly skipped for non-PF devices,
-meaning Sub-Functions (SFs) acting as E-Switch managers will have a NULL
-shd pointer. If the device lacks VPD data, pci_vpd_alloc() returns -ENODEV,
-causing mlx5_shd_init() to return 0 but leaving dev->shd as NULL.
-
-When QoS operations are attempted on these devices, calling devl_lock()
-dereferences the pointer, which could cause an immediate NULL pointer
-dereference and kernel panic.
-
-Additionally, this acquires the devlink lock while already holding
-esw->state_lock, establishing the lock order:
-state_lock -> devlink->lock.
-
-Conversely, the devlink core invokes driver callbacks with the devlink
-instance lock held, and the driver subsequently acquires esw->state_lock
-inside these callbacks, creating the reverse order:
-devlink->lock -> state_lock.
-
-Does this introduce a circular locking dependency splat between state_lock
-and the devlink instance lock?
-
-> @@ -1159,26 +1117,25 @@ int mlx5_esw_qos_set_vport_rate(struct mlx5_vport *vport, u32 max_rate, u32 min_
->  	struct mlx5_eswitch *esw = vport->dev->priv.eswitch;
->  	int err;
->  
-> -	esw_qos_lock(esw);
-> +	devl_lock(esw->dev->shd);
-
-This function is invoked by mlx5_eswitch_set_vport_rate(), which acts as the
-handler for the ndo_set_vf_rate netdev callback. The core network stack
-executes ndo_set_vf_rate with the rtnl_lock held, establishing the lock
-order: rtnl_lock -> devlink->lock.
-
-However, the devlink subsystem enforces the opposite locking order
-(devlink->lock -> rtnl_lock). Because all devlink locks share the same
-lockdep class, does this inversion trigger a circular locking dependency
-lockdep splat and pose an ABBA deadlock risk?
 
 [ ... ]
 
-> @@ -1859,13 +1763,15 @@ mlx5_esw_qos_vport_update_parent(struct mlx5_vport *vport,
->  						  parent ? : esw->qos.root,
->  						  extack);
->  	}
-> -	esw_qos_unlock(esw);
-> +
->  	return err;
+> @@ -1738,18 +1761,44 @@ int mlx5_esw_devlink_rate_node_del(struct devlink_rate *rate_node, void *priv,
+>  	return 0;
 >  }
 >  
->  void mlx5_esw_qos_vport_clear_parent(struct mlx5_vport *vport)
->  {
-> +	devl_lock(vport->dev->shd);
->  	mlx5_esw_qos_vport_update_parent(vport, NULL, NULL);
-> +	devl_unlock(vport->dev->shd);
->  }
+> +static int
+> +mlx5_esw_validate_cross_esw_scheduling(struct mlx5_eswitch *esw,
+> +				       struct mlx5_esw_sched_node *parent,
+> +				       struct netlink_ext_ack *extack)
+> +{
 
-During device teardown, execution paths such as mlx5_unload_one_devl_locked()
-hold the primary devlink instance lock. This path invokes
-mlx5_eswitch_unload_vf_vports() -> mlx5_esw_offloads_devlink_port_unregister()
--> mlx5_esw_qos_vport_clear_parent().
+[ ... ]
 
-Because both the primary devlink instance lock and the shd devlink instance
-lock are initialized from the same site (devlink_alloc), they share the same
-lockdep class.
+> +	if (!mlx5_lag_is_active(esw->dev)) {
+> +		NL_SET_ERR_MSG_MOD(extack,
+> +				   "Cross E-Switch scheduling requires LAG to be activated");
+> +		return -EOPNOTSUPP;
+> +	}
 
-Does calling devl_lock() directly (instead of using the devlink core's
-mutex_lock_nested capability) while a lock of the same class is already held
-trigger a recursive locking lockdep warning?
+What happens to the cross-device rate scheduling if LAG is deactivated
+after the configuration is applied?
+
+When LAG is deactivated, the LAG state is torn down in hardware, but there
+does not appear to be a corresponding cleanup or update triggered for the
+cross-eswitch QoS scheduling elements.
+
+Could this result in a regression where the hardware TSAR tree and devlink
+rate configuration remain pointing to a now-invalid VHCA association,
+bypassing the state validation and causing traffic drops or firmware errors?
+
+> +
+> +	return 0;
+> +}
 
