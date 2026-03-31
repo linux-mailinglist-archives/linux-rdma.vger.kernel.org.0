@@ -1,92 +1,105 @@
-Return-Path: <linux-rdma+bounces-18820-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18821-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iOuIDQ8ny2mmEQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18820-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 03:44:47 +0200
+	id eNr1Fo8sy2n8EQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18821-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:08:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A183631F1
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 03:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0CBE363460
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 04:08:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id CE78F3008250
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 01:44:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B49C83018F02
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 02:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE3C3630AD;
-	Tue, 31 Mar 2026 01:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C31836681B;
+	Tue, 31 Mar 2026 02:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MIcVmaqj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLh6tvlv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1CB29E10F
-	for <linux-rdma@vger.kernel.org>; Tue, 31 Mar 2026 01:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF55A364930;
+	Tue, 31 Mar 2026 02:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774921484; cv=none; b=RjMMXC7mTOfULSoycCT8ofnwQ8sFjKaMErX7CcnhqdYKKzsjcQRkaUlN47Byrijlmh+gKUHwEG3tmVnT2rJZG6UYzsNTFxGjmvZXtS5GHFk8fQ7Bx085B6CO/TAR6QlgrNHC6HJpBTPoLjTNeEBsjI3nBrxcxxmB2H1o5r7YAM0=
+	t=1774922890; cv=none; b=ciuwcchhZOhevK/TgEgapeaAREnxnVY52aHvh/rt5OXeWu5z0FhB4ynFeYuEuDmDIFyC5PTrBElL4L0qUr8OGkLFYAkTIjX+1kCu+CPj8q4c4ZXgzrWFPe+RT7T7CPc5xE5LxINOzmnFuUCstr9wK0i7dqgPXL/6Ie3B+LG8arw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774921484; c=relaxed/simple;
-	bh=CAd9CsIw5uBt745HRHWccms+aIxJBHEFfd2l1zBYTmU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ABsKg41ED650sCL7GrVRsDOir/ZH67obB1rr0WBoNcp0w3mMSNC3Yeubj+fvsUel+7uDU4X5IsoV0GRlE4D7mEMh3LOpnoiTW5LVEIBE2eVMAfX2B6tA9c4SCOmeU+9fxO7QLX6Gxuy1kl2EM+p1Gg/welcomJsD2KkppsVhmHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MIcVmaqj; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-48558d6ef83so51184205e9.3
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Mar 2026 18:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774921481; x=1775526281; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0u4XGipzXcrllq+GKNKoK9rSohfYPlxp6GgA+a5PaTE=;
-        b=MIcVmaqjrhMqGBtGDV+XNGriWFUzjAaNjHQgsrprhIxfVatsbU/KfxniG/QK/ZT4pq
-         pl3l9PFkASgaonv9f3ryJmsfxcsQvIRl/MYZusdS1Steud9ELG2rzL938MSAgIfiChxw
-         nxH/Nllk0XaA+Wn0OGOzri3oe/fZsORFwWOOXW52aSgvTEkCbiyUclCcsyNS03tMoA2b
-         0pG1u2vUCTsfBDiZv3FgMOeo2I7zqufZJkFXxGlANMffMVQLqfoDQXRfNUFdiwZd94/7
-         F3zIU4YQm+9m+70eBdTuKYZxn88mDJE+x9jml9PlsxHdh2HuKACInDEWR8aCOmokM6xd
-         rdqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774921481; x=1775526281;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0u4XGipzXcrllq+GKNKoK9rSohfYPlxp6GgA+a5PaTE=;
-        b=Sz+6/ePWAXGnNL2PYMxZxxpczaVpZOVkJt2qicWDRVFB9R00Rj/QZ8S3Ss/Qpt1J17
-         Jq4zNLxLOthBa/gSwEsu2Rg/hr7Ck9GfqlPBG0+LFCbaiptQrOfkimeryliPAwZyYcWp
-         0FxXp0r5zU+xFPpL71ryoaBMwm91bF6AMpjGzmbagZB6oN8s+lBdH02C9wm22gks82GZ
-         hFRxCkqqCfAvqSLufSodbXM9TisggLOP8ivUU1Gu2HCdrRrceOe3su7w6TDPGnzwAwWE
-         QhdpOr46B9rdlTWh8qwsX7FIOtTM84RNOC9SGwZ7n1L1hBQteSM503W62DKT2qcwQYYn
-         /1EQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUmvK3VgXZqztrPe1KYkocohBPjEqMxF+XPzS/vmF/sKeC45qEZWn14PUABMQnWmsR7AzdXOyhnRT4O@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOoGp+oIbDqRf2KDT+HUt+1W8XZQLM2mk7bLLp/ArW5AYiFBlI
-	k4k++KeHsRGIhNL+g97LHWKCHZzSI/M6BMd1YQ82RraA0VjYEGdlD6Nh
-X-Gm-Gg: ATEYQzyP0mzqaJXGVc8q4axLU/d/sHxNLXj/Y2HxVLDC4Ry4HbsRNEvjGAv/am1Abva
-	dk9ANUQFGxkIoGCROhBzFZWcyAwE+YH4sBOYGGNjxmSYAWT13Ia2mOvWrIPOKl5iS+t2we+mzUt
-	84wOUPkc1CgyKiJBzgJgIoZwIxudAUAO1hnFdNo36W/e3jHNMVZt7nKI8T7+4UNlFXK7I1QQJxo
-	DG5iDRrvzo8bsoYClw43v3bxwegqZ3OA54Je55dLh2qYG+BWxD/OhhHyKLq9b8qTqAY8mxc0tMJ
-	Z1phv5fcPA1Om9nPIBBRh+vR6tgM/bToFmxP8m2VC+SxQSonMckzY0IslgQpl8cUUAqJFci9Qpe
-	jTTNphm/nkn45e+YMioBa31/V42f5i8TCLky5RR868+ZXqsKE0tnt2/5JuJXEIBFTOlIxhc5vcF
-	mZE7HCoeLxjH7oEC3heIizP6O1WWUDLmfJcyImOD+KNssJzXGfDs3W8TvOA5wl6a4JD9aT4prLT
-	xbg0gqqStvZLkvVjFiv2Gq1WASdB66cgfJPAEuR96HxVw38UZ+/mN9qNcM=
-X-Received: by 2002:a05:600c:4744:b0:486:af22:4a2a with SMTP id 5b1f17b1804b1-48727d5a2e4mr239523885e9.7.1774921480961;
-        Mon, 30 Mar 2026 18:44:40 -0700 (PDT)
-Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48722c84988sm284035275e9.5.2026.03.30.18.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Mar 2026 18:44:40 -0700 (PDT)
-From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-To: Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Haggai Eran <haggaie@mellanox.com>,
-	Doug Ledford <dledford@redhat.com>,
-	linux-rdma@vger.kernel.org,
+	s=arc-20240116; t=1774922890; c=relaxed/simple;
+	bh=jDFlpr+6/4jIivPkrjpKtCcAqx2kOVDbPkhzYMq73PE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=USeeg3u1E5Zepxvy/nh44FJl20p5aY3Mhdpq1J2P036ICmqB2Dw2SqxvvPGSDCC/hIqQ4AWHxFBaJEbREFqcMMDKdujsMWYtelYWAnIZYRkB/Pai2DyPuG+HmejHxdIhKCrDnrk4h4mX5SyjvuSWqH2bi1nYXJQW35oqK5ButMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLh6tvlv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FDCCC4CEF7;
+	Tue, 31 Mar 2026 02:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774922890;
+	bh=jDFlpr+6/4jIivPkrjpKtCcAqx2kOVDbPkhzYMq73PE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dLh6tvlvSB/3cWNTAzkpl6luGHm4IglfcTGHxCRNMHEcb0RZaoydhTudMSrsNQg/I
+	 cH/XUSf+j4gfYtzVoqjbIlQu5NxG8K6sMddXG0RKhtoP7CvAWSP3CHEVlWz6HhO3Rn
+	 9XI96zMK0CCUd/QXviCBmyC//JXcZqtxa6hwdM5puEWQSSjAdfmn7SV8i92Z0ibYci
+	 Qf3zsi0p+f3zovxsmKyIWh2Q7oKNKVs8ecko/L6lRs++Agx7+eGdS87q7YP8Uk/M3+
+	 LsOUKBxJ2WyRNvRUhILHpacMR98OFsPAcwYcSgSOZcQjy4y7epK9fPpTW/JvWRvoJk
+	 y4l0DuKuku9Rg==
+From: Jakub Kicinski <kuba@kernel.org>
+To: tariqt@nvidia.com
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	donald.hunter@gmail.com,
+	horms@kernel.org,
+	jiri@resnulli.us,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	mbloch@nvidia.com,
+	shuah@kernel.org,
+	chuck.lever@oracle.com,
+	matttbe@kernel.org,
+	cjubran@nvidia.com,
+	cratiu@nvidia.com,
+	dtatulea@nvidia.com,
+	jacob.e.keller@intel.com,
+	shshitrit@nvidia.com,
+	daniel.zahka@gmail.com,
+	parav@nvidia.com,
+	ajayachandra@nvidia.com,
+	kees@kernel.org,
+	shayd@nvidia.com,
+	danielj@nvidia.com,
+	moshe@nvidia.com,
+	willemb@google.com,
+	dw@davidwei.uk,
+	petrm@nvidia.com,
+	sdf@fomichev.me,
+	daniel@iogearbox.net,
+	joe@dama.to,
+	razor@blackwall.org,
+	vadim.fedorenko@linux.dev,
+	mst@redhat.com,
+	antonio@openvpn.net,
+	allison.henderson@oracle.com,
+	minhquangbui99@gmail.com,
+	noren@nvidia.com,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-Subject: [PATCH] IB/mlx5: Fix potential NULL dereference in query_device
-Date: Tue, 31 Mar 2026 02:44:27 +0100
-Message-ID: <20260331014427.11756-1-prathameshdeshpande7@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	linux-doc@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	gal@nvidia.com,
+	jiri@nvidia.com
+Subject: Re: [PATCH net-next V9 02/14] devlink: Add helpers to lock nested-in instances
+Date: Mon, 30 Mar 2026 19:08:06 -0700
+Message-ID: <20260331020807.3524811-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260326065949.44058-3-tariqt@nvidia.com>
+References: <20260326065949.44058-3-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,69 +107,108 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[mellanox.com,redhat.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-18820-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[49];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18821-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,google.com,redhat.com,lunn.ch,davemloft.net,gmail.com,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,davidwei.uk,fomichev.me,iogearbox.net,dama.to,blackwall.org,linux.dev,openvpn.net,vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C0A183631F1
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: F0CBE363460
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Smatch reported an inconsistent NULL check for 'uhw' in
-mlx5_ib_query_device(). While 'uhw_outlen' is checked at the end of
-the function before calling ib_copy_to_udata(), 'uhw' is explicitly
-checked for NULL earlier in the same function.
-
-If a caller provides a non-zero 'uhw_outlen' but a NULL 'uhw' pointer,
-ib_copy_to_udata() will attempt to dereference 'uhw', leading to a
-kernel panic. Fix this by checking the 'uhw' pointer directly.
-
-Fixes: 4835709176e8 ("RDMA/mlx5: Don't fake udata for kernel path")
-
-Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 ---
- drivers/infiniband/hw/mlx5/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+devlink: Add helpers to lock nested-in instances
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 635002e684a5..471dc8df4a52 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1353,7 +1353,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
- 			fill_esw_mgr_reg_c0(mdev, &resp);
- 	}
- 
--	if (uhw_outlen) {
-+	if (uhw) {
- 		err = ib_copy_to_udata(uhw, &resp, resp.response_length);
- 
- 		if (err)
+Upcoming code will need to obtain a reference to locked nested-in
+devlink instances. Add helpers to lock, obtain an already locked
+reference and unlock/unref the nested-in instance.
+
+> diff --git a/net/devlink/core.c b/net/devlink/core.c
+> index eeb6a71f5f56e..db11248df7120 100644
+> --- a/net/devlink/core.c
+> +++ b/net/devlink/core.c
+
+[ ... ]
+
+> +/* Returns the nested in devlink object and validates its lock is held. */
+> +struct devlink *devlink_nested_in_get_locked(struct devlink_rel *rel)
+> +{
+> +	struct devlink *devlink;
+> +	unsigned long index;
+> +
+> +	if (!rel)
+> +		return NULL;
+> +	index = rel->nested_in.devlink_index;
+> +	devlink = xa_find(&devlinks, &index, index, DEVLINK_REGISTERED);
+> +	if (devlink)
+> +		devl_assert_locked(devlink);
+
+Can this dereference a freed pointer if the lock is not actually held?
+
+xa_find() acquires and releases the RCU read lock internally. When it returns,
+the devlink pointer is no longer protected by RCU or a reference count.
+
+If a caller invokes this helper without holding the devlink lock (which is the
+exact scenario the assertion is designed to detect), another thread could
+concurrently unregister and free the devlink.
+
+If the RCU grace period expires before the assertion executes,
+devl_assert_locked() would dereference freed memory. Should the lookup and
+assertion be enclosed within an explicit rcu_read_lock() block to safely
+assert the lock?
+
+> +	return devlink;
+> +}
+> +
+> +void devlink_nested_in_put_unlock(struct devlink_rel *rel)
+> +{
+> +	struct devlink *devlink = devlink_nested_in_get_locked(rel);
+
+Could this corrupt the mutex state and cause a refcount underflow?
+
+This helper takes a devlink_rel pointer instead of the devlink pointer
+acquired by devlink_nested_in_get_lock(), and performs a secondary global
+lookup to find the devlink.
+
+If a caller mistakenly calls this in an error cleanup path where they did not
+actually acquire the lock, the global xa_find() will still locate the
+registered devlink. This would execute devl_unlock() and devlink_put() on a
+devlink the current thread does not own.
+
+Would it be safer for unlock/put helpers to take the exact pointer returned by
+the lock/get helper to ensure safe resource cleanup?
+
+> +
+> +	if (devlink) {
+> +		devl_unlock(devlink);
+> +		devlink_put(devlink);
+> +	}
+> +}
 -- 
-2.43.0
-
+pw-bot: cr
 
