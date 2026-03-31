@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-18828-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18830-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kBo5A0Jiy2nCHAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18828-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:57:22 +0200
+	id aM/ZDGRiy2nCHAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18830-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:57:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B46CF36445A
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7461364477
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:57:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D6037305BB8F
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 05:56:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 33B8C30683A5
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 05:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8F0371D0F;
-	Tue, 31 Mar 2026 05:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129AB40DFCA;
+	Tue, 31 Mar 2026 05:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FEDlhw7V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b8H84but"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699D0371890;
-	Tue, 31 Mar 2026 05:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C591B28002B;
+	Tue, 31 Mar 2026 05:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774936614; cv=none; b=UBVLa8mpXzkgMp3afh64U9qy4LD6xGtA+AIDcEWEnOeBk1Nff1qKUpSxAk6q/a1qnHB9g61BDTBf8ge59sn2s/4XcwI7PscgIcRRHVjlKwceLgaT6M0H/T/gmA+ukGnqdz5O9F33f4WYNf3hg7VCJu5AnFPKuR+RnHFxPRjANrY=
+	t=1774936621; cv=none; b=MBcdqDyJXbdbfZgWTy2c+FbBSSCBBMkphi9hFKooGpkMCM1dqRq+85QBc4uAqFZAlq167joTr6UT0oY4xzGVjl1UlYDLYdDNgPKJKmNyxVGq9NsMKegGka4rVXilXvZJ/05NR09YwjjTrohEvlsGdjWk2eQd7jlwBljBIGgjHLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774936614; c=relaxed/simple;
-	bh=8PCIPCDnlGfi9fRYFfkIETHKvqA/mw9m2S1aONNRJdQ=;
+	s=arc-20240116; t=1774936621; c=relaxed/simple;
+	bh=2sUVXWm6gNzbVe8kaPMIgxN7RRU36ux1iye5UqtO5zY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a4o7KCuJQ9uIYYrpDHg6ulYOWeG6hq68dD/wKOHfoLKGmwJsqgfqmCAhCsOpg1v5qA0eInv6064mwPVMyMg64aZ6cIXjHYnlX3t8C6gqo0DKuXcx71JYTxeL8GNpy/4rfSR1yssB7zxRpkz/u8nj3/Q1YPdL1+IfpYJ2ZQLu1Xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FEDlhw7V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69E68C19424;
-	Tue, 31 Mar 2026 05:56:53 +0000 (UTC)
+	 MIME-Version:Content-Type; b=iCeiQ23xA60bBzs7eblNRcSjI7ZhTakfXCBOHhIk2wJZUn6KFaW7Hynlk6m4fEOVHDMIxwUOhxKIt5T5gIj4u5gnyoJpxU0n8FyQHGpJbROAjAqSLSVVS6kxQNCmPlYQT0zBXXx9tBtWQAfK+3TnTDyUWYHwm5UfHZ7X0yW4Bf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b8H84but; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D21EFC2BCB2;
+	Tue, 31 Mar 2026 05:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774936614;
-	bh=8PCIPCDnlGfi9fRYFfkIETHKvqA/mw9m2S1aONNRJdQ=;
+	s=k20201202; t=1774936621;
+	bh=2sUVXWm6gNzbVe8kaPMIgxN7RRU36ux1iye5UqtO5zY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FEDlhw7VVzT/CYwpIFBHeexNZr3ySdv6Q6DFNCI6hRvVoRs448+dEJWih0bXjsHVW
-	 5HnhMQ2/qutuLUfw6oHPWRr8ywJ9aFQa4ncfBYUvae+bNS8H/lo7qWeGjFSmrkk1b1
-	 OQ90B3YryNMfu2cC8upcdvjd19qix0+awhiM4ttAA6BrLPNL6zyxSHfAvebRbxYU5s
-	 0QdrDTbr0BZbLaJN2w3NrEkU3rSvr6s7hWeAUcZDQut6OJCpdFENnK5asilqh7uuPB
-	 Pxr6UlLob6z+Gm6ajWWU5VwZB6BhnIhNYoDQ95JX0avI7AAnbziAvlzKNOLHO5bD0T
-	 KDcvkpWxhaEaw==
+	b=b8H84butCoPCRLEFvp8G0bCPS9e/YZqXvfcgpLlYxU8v0Q2hb9g2cQrGUEBxjOoQK
+	 v6kqvevV2I22huT1MSDikjrDpi5lN2aUjU6u8nXblALEoExcZ6ZHZQzm/hhkJP0v8a
+	 SHIncaR3H+a0IZAhk5WMueCzUUAbmG7xxZWDhoUQM0tUMF1/O6B1voDl5ozOnX0yJW
+	 xWj4mIK/thjVdMF2aOVCQBZ2DrXI+hDa/CKniLrY9v6PDuasX8RlU6vwC1XjOiCSc/
+	 /YkcC7XHb+oMDBNtxMkpyh6MuutaDDJn7rcsh2BKn8cX6N5A1pWheExXoiLMujfqBX
+	 Y27YV0xzQmHWg==
 From: Leon Romanovsky <leon@kernel.org>
 To: KP Singh <kpsingh@kernel.org>,
 	Matt Bobrowski <mattbobrowski@google.com>,
@@ -70,10 +70,11 @@ Cc: bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	Chiara Meiohas <cmeiohas@nvidia.com>,
-	Maher Sanalla <msanalla@nvidia.com>
-Subject: [PATCH v2 2/4] selftests/bpf: add test cases for fw_validate_cmd hook
-Date: Tue, 31 Mar 2026 08:56:34 +0300
-Message-ID: <20260331-fw-lsm-hook-v2-2-78504703df1f@nvidia.com>
+	Maher Sanalla <msanalla@nvidia.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>
+Subject: [PATCH v2 3/4] RDMA/mlx5: Externally validate FW commands supplied in DEVX interface
+Date: Tue, 31 Mar 2026 08:56:35 +0300
+Message-ID: <20260331-fw-lsm-hook-v2-3-78504703df1f@nvidia.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
 References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
@@ -95,12 +96,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18828-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18830-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[26];
+	RCPT_COUNT_TWELVE(0.00)[27];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -108,64 +109,162 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-0.998];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B46CF36445A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,huawei.com:email,nvidia.com:email,nvidia.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C7461364477
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-The first test validates that the BPF verifier accepts a program
-that accesses the hook parameters (in_len) and returns
-values in the valid errno range.
+DEVX is an RDMA uverbs extension that allows userspace to submit
+firmware command buffers. The driver inspects the command and then
+passes the buffer through for firmware execution.
 
-The second test validates that the BPF verifier rejects a program
-that returns a positive value, which is outside the valid [-4095, 0]
-return range for BPF-LSM hooks.
+Call bpf_lsm_fw_validate_cmd() before dispatching firmware commands
+through DEVX.
+
+This allows BPF programs to implement custom policies and enforce
+per-command security policy on user-triggered firmware commands.
+For example, a BPF program could restrict specific firmware
+operations to privileged users.
 
 Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
 Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
+Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- tools/testing/selftests/bpf/progs/verifier_lsm.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/infiniband/hw/mlx5/devx.c | 49 +++++++++++++++++++++++++++++----------
+ 1 file changed, 37 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_lsm.c b/tools/testing/selftests/bpf/progs/verifier_lsm.c
-index 38e8e91768620..9b2487948f8cb 100644
---- a/tools/testing/selftests/bpf/progs/verifier_lsm.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_lsm.c
-@@ -188,4 +188,27 @@ int BPF_PROG(null_check, struct file *file)
- 	return 0;
- }
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 0066b2738ac89..b7a2e19987018 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -18,6 +18,7 @@
+ #include "devx.h"
+ #include "qp.h"
+ #include <linux/xarray.h>
++#include <linux/bpf_lsm.h>
  
-+SEC("lsm/fw_validate_cmd")
-+__description("lsm fw_validate_cmd: validate hook parameters")
-+__success
-+int BPF_PROG(fw_validate_cmd_test, const void *in, size_t in_len,
-+	     const struct device *dev, enum fw_cmd_class class_id, u32 id)
-+{
-+	if (!in_len)
-+		return -22;
+ #define UVERBS_MODULE_NAME mlx5_ib
+ #include <rdma/uverbs_named_ioctl.h>
+@@ -1111,6 +1112,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OTHER)(
+ 	struct mlx5_ib_dev *dev;
+ 	void *cmd_in = uverbs_attr_get_alloced_ptr(
+ 		attrs, MLX5_IB_ATTR_DEVX_OTHER_CMD_IN);
++	int cmd_in_len = uverbs_attr_get_len(attrs,
++					MLX5_IB_ATTR_DEVX_OTHER_CMD_IN);
+ 	int cmd_out_len = uverbs_attr_get_len(attrs,
+ 					MLX5_IB_ATTR_DEVX_OTHER_CMD_OUT);
+ 	void *cmd_out;
+@@ -1135,9 +1138,12 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OTHER)(
+ 		return PTR_ERR(cmd_out);
+ 
+ 	MLX5_SET(general_obj_in_cmd_hdr, cmd_in, uid, uid);
+-	err = mlx5_cmd_do(dev->mdev, cmd_in,
+-			  uverbs_attr_get_len(attrs, MLX5_IB_ATTR_DEVX_OTHER_CMD_IN),
+-			  cmd_out, cmd_out_len);
++	err = bpf_lsm_fw_validate_cmd(cmd_in, cmd_in_len, &dev->ib_dev.dev,
++				      FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
++	if (err)
++		return err;
 +
-+	return 0;
-+}
++	err = mlx5_cmd_do(dev->mdev, cmd_in, cmd_in_len, cmd_out, cmd_out_len);
+ 	if (err && err != -EREMOTEIO)
+ 		return err;
+ 
+@@ -1570,6 +1576,11 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
+ 		devx_set_umem_valid(cmd_in);
+ 	}
+ 
++	err = bpf_lsm_fw_validate_cmd(cmd_in, cmd_in_len, &dev->ib_dev.dev,
++				      FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
++	if (err)
++		goto obj_free;
 +
-+SEC("lsm/fw_validate_cmd")
-+__description("lsm fw_validate_cmd: invalid positive return")
-+__failure __msg("R0 has smin=1 smax=1 should have been in [-4095, 0]")
-+__naked int fw_validate_cmd_fail(void *ctx)
-+{
-+	asm volatile (
-+	"r0 = 1;"
-+	"exit;"
-+	::: __clobber_all);
-+}
+ 	if (opcode == MLX5_CMD_OP_CREATE_DCT) {
+ 		obj->flags |= DEVX_OBJ_FLAGS_DCT;
+ 		err = mlx5_core_create_dct(dev, &obj->core_dct, cmd_in,
+@@ -1646,6 +1657,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_MODIFY)(
+ 	struct uverbs_attr_bundle *attrs)
+ {
+ 	void *cmd_in = uverbs_attr_get_alloced_ptr(attrs, MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN);
++	int cmd_in_len = uverbs_attr_get_len(attrs,
++					MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN);
+ 	int cmd_out_len = uverbs_attr_get_len(attrs,
+ 					MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_OUT);
+ 	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs,
+@@ -1676,10 +1689,12 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_MODIFY)(
+ 
+ 	MLX5_SET(general_obj_in_cmd_hdr, cmd_in, uid, uid);
+ 	devx_set_umem_valid(cmd_in);
++	err = bpf_lsm_fw_validate_cmd(cmd_in, cmd_in_len, &mdev->ib_dev.dev,
++				      FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
++	if (err)
++		return err;
+ 
+-	err = mlx5_cmd_do(mdev->mdev, cmd_in,
+-			  uverbs_attr_get_len(attrs, MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN),
+-			  cmd_out, cmd_out_len);
++	err = mlx5_cmd_do(mdev->mdev, cmd_in, cmd_in_len, cmd_out, cmd_out_len);
+ 	if (err && err != -EREMOTEIO)
+ 		return err;
+ 
+@@ -1693,6 +1708,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_QUERY)(
+ 	struct uverbs_attr_bundle *attrs)
+ {
+ 	void *cmd_in = uverbs_attr_get_alloced_ptr(attrs, MLX5_IB_ATTR_DEVX_OBJ_QUERY_CMD_IN);
++	int cmd_in_len = uverbs_attr_get_len(attrs,
++					     MLX5_IB_ATTR_DEVX_OBJ_QUERY_CMD_IN);
+ 	int cmd_out_len = uverbs_attr_get_len(attrs,
+ 					      MLX5_IB_ATTR_DEVX_OBJ_QUERY_CMD_OUT);
+ 	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs,
+@@ -1722,9 +1739,12 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_QUERY)(
+ 		return PTR_ERR(cmd_out);
+ 
+ 	MLX5_SET(general_obj_in_cmd_hdr, cmd_in, uid, uid);
+-	err = mlx5_cmd_do(mdev->mdev, cmd_in,
+-			  uverbs_attr_get_len(attrs, MLX5_IB_ATTR_DEVX_OBJ_QUERY_CMD_IN),
+-			  cmd_out, cmd_out_len);
++	err = bpf_lsm_fw_validate_cmd(cmd_in, cmd_in_len, &mdev->ib_dev.dev,
++				      FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
++	if (err)
++		return err;
 +
- char _license[] SEC("license") = "GPL";
++	err = mlx5_cmd_do(mdev->mdev, cmd_in, cmd_in_len, cmd_out, cmd_out_len);
+ 	if (err && err != -EREMOTEIO)
+ 		return err;
+ 
+@@ -1832,6 +1852,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_ASYNC_QUERY)(
+ {
+ 	void *cmd_in = uverbs_attr_get_alloced_ptr(attrs,
+ 				MLX5_IB_ATTR_DEVX_OBJ_QUERY_ASYNC_CMD_IN);
++	int cmd_in_len = uverbs_attr_get_len(attrs,
++				MLX5_IB_ATTR_DEVX_OBJ_QUERY_ASYNC_CMD_IN);
+ 	struct ib_uobject *uobj = uverbs_attr_get_uobject(
+ 				attrs,
+ 				MLX5_IB_ATTR_DEVX_OBJ_QUERY_ASYNC_HANDLE);
+@@ -1894,9 +1916,12 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_ASYNC_QUERY)(
+ 	async_data->ev_file = ev_file;
+ 
+ 	MLX5_SET(general_obj_in_cmd_hdr, cmd_in, uid, uid);
+-	err = mlx5_cmd_exec_cb(&ev_file->async_ctx, cmd_in,
+-		    uverbs_attr_get_len(attrs,
+-				MLX5_IB_ATTR_DEVX_OBJ_QUERY_ASYNC_CMD_IN),
++	err = bpf_lsm_fw_validate_cmd(cmd_in, cmd_in_len, &mdev->ib_dev.dev,
++				      FW_CMD_CLASS_UVERBS, RDMA_DRIVER_MLX5);
++	if (err)
++		goto free_async;
++
++	err = mlx5_cmd_exec_cb(&ev_file->async_ctx, cmd_in, cmd_in_len,
+ 		    async_data->hdr.out_data,
+ 		    async_data->cmd_out_len,
+ 		    devx_query_callback, &async_data->cb_work);
 
 -- 
 2.53.0
