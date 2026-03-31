@@ -1,83 +1,78 @@
-Return-Path: <linux-rdma+bounces-18829-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18831-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YOb6DlRiy2nCHAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18829-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:57:40 +0200
+	id yNJONHCIy2kuIwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18831-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 10:40:16 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23E5364468
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 07:57:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52E483664A9
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 10:40:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 348C33061231
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 05:57:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B20863032CF0
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 08:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE62371D0F;
-	Tue, 31 Mar 2026 05:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27EAA3E0C43;
+	Tue, 31 Mar 2026 08:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mQB++NZ7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="inH7+CYT"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26307371888;
-	Tue, 31 Mar 2026 05:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAEE3DFC72;
+	Tue, 31 Mar 2026 08:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774936618; cv=none; b=f+P9b2hsVmMA/nfCdjp43vNPwczC7UpV9piATV+k55sDV6Gnmg37YnVV14YqLR0XQCfTIQAryKzVxBHCy0wntrW0HHVnpqzK9BV9xv3Nk6vYye8otd5rbGKLMdM5+h4scyNWMzksBuGv5foG8R0B/82aHHJFDUxwVtgCPwCLSLw=
+	t=1774946124; cv=none; b=gvxrX8Ur+6NCqdu7DoK56hp5TZnDJNIa1lnqdM4yo74LvsVy7kayPUojMcMnOCC5KLQwV5EnZ1n9OyPRpL4rlK/YL1+Pj1KXMgzkVyGg1Ys+DeQvUxU+9qARTOUOvTUbMNF3gHrwe2r2aQkMtvj9UenyEvSNM4zGureZh2RgJwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774936618; c=relaxed/simple;
-	bh=5k4T59VFMXQz4OG6JuaoBzpu2XM/Crd28cH9bMwomqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KofVrVJ3RmeAAKDdBXqT7/bdgyaEXvQzpOz3ZA5oZ7VByaSPj5ocJRYs8Lla3gCNIkyFlwRukV/5eagX7VxLF9btmGnW3uP2wQhoB9vieBMSgdRnw99bNoruE3tTkUF0aAFANFMk2ujro9n0YMVPwtfNlEj9+ZoAbqvf3UrDBi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mQB++NZ7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09719C19423;
-	Tue, 31 Mar 2026 05:56:57 +0000 (UTC)
+	s=arc-20240116; t=1774946124; c=relaxed/simple;
+	bh=4PxGJGHThb4XA2T2D+sB4KkxVzrAmQWcMhgkUx2dkh0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=ESquyYwbip3kft3M4FZqBheNCbTrgmATVBYPYQkX/NvoD5WWk3JEaU6uPxXce+881vrnezItukU+KVjiVlYl7ufDOKgTZ0chORQevOWcehXqtfaMPu7KFtkWvznOs8kq/zY3ooNoY+HBn58s+xks8vaJPth1kZr4SZZEqc2uvM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=inH7+CYT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7FE7C19423;
+	Tue, 31 Mar 2026 08:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774936617;
-	bh=5k4T59VFMXQz4OG6JuaoBzpu2XM/Crd28cH9bMwomqg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mQB++NZ7favTt7zBJAmAee27yfICYaVMXGS3znVvRwI+zSm4HOdxscrw/IoIqHWfR
-	 PjkZXfY2urp0+wtffL5e8OgaHdqH+we7dT73ogipnwzkUs4im9hG/8gEDDX5T7fcoC
-	 Tq9F8lVpgMJlwW5LuUatq1ZPi7MBY9XUOU5UGklFGMogahi61m1X4XLlq7w1BuA/eo
-	 cc0xKcYlHgzMOS/8c25bHpjhDqu2wHNOZQbHYcVqsEQkeqZpbzOBrJ+7ZYdAu87opO
-	 vadPPXXxliFaLMBwqwVDrSbkT78BbcKtL+NrpaojzcxTucsctkZtzTdQf48jOK8WDZ
-	 ffBnqz9lggytQ==
+	s=k20201202; t=1774946124;
+	bh=4PxGJGHThb4XA2T2D+sB4KkxVzrAmQWcMhgkUx2dkh0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=inH7+CYTX7DG2DDaly+qKAdgfh+vFtWcQ8PaZTxXVKfvakF5RsC75qOmR82y1sipZ
+	 JrvpHTtlGmieqvX1nhDvpCuz1oJfph3ygqao+fP6fS3UOhHbZB03tdky7GCSMiY4rb
+	 N08P2ZFd103mkviNdo7Dq73bP8jRVbDc/RVMuamAxvm3LNYHzkDUqElldtod4h2+JV
+	 OmzGbi6DYG4GOoTsk9KbTtxOE/8xKzrTj6OsB7RMPLWUOpNQdAK18dEIUhJ2cvJibH
+	 2UdeqSbj0MvAX+OT+kg+6eLle8Girz/+AJafHsmK6hP9FlAP31vGiIjWcKa1t7O3t/
+	 7RaZGcPaewTQA==
 From: Leon Romanovsky <leon@kernel.org>
-To: KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Itay Avraham <itayavr@nvidia.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Chiara Meiohas <cmeiohas@nvidia.com>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>
-Subject: [PATCH v2 4/4] fwctl/mlx5: Externally validate FW commands supplied in fwctl
-Date: Tue, 31 Mar 2026 08:56:36 +0300
-Message-ID: <20260331-fw-lsm-hook-v2-4-78504703df1f@nvidia.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
-References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
+To: Abhijit Gangurde <abhijit.gangurde@amd.com>, 
+ Allen Hubbe <allen.hubbe@amd.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Bernard Metzler <bernard.metzler@linux.dev>, 
+ Bryan Tan <bryan-bt.tan@broadcom.com>, 
+ Cheng Xu <chengyou@linux.alibaba.com>, 
+ Gal Pressman <gal.pressman@linux.dev>, 
+ Junxian Huang <huangjunxian6@hisilicon.com>, 
+ Kai Shen <kaishen@linux.alibaba.com>, 
+ Konstantin Taranov <kotaranov@microsoft.com>, 
+ Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
+ linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ Michal Kalderon <mkalderon@marvell.com>, 
+ Michael Margolin <mrgolin@amazon.com>, Nelson Escobar <neescoba@cisco.com>, 
+ Satish Kharat <satishkh@cisco.com>, 
+ Selvin Xavier <selvin.xavier@broadcom.com>, 
+ Yossi Leybovich <sleybo@amazon.com>, 
+ Chengchang Tang <tangchengchang@huawei.com>, 
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
+ Vishnu Dasa <vishnu.dasa@broadcom.com>, Yishai Hadas <yishaih@nvidia.com>, 
+ Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Long Li <longli@microsoft.com>, patches@lists.linux.dev
+In-Reply-To: <0-v2-f4ac6f418bd6+12c5-rdma_udata_req_jgg@nvidia.com>
+References: <0-v2-f4ac6f418bd6+12c5-rdma_udata_req_jgg@nvidia.com>
+Subject: Re: [PATCH v2 00/16] Update drivers to use
+ ib_copy_validate_udata_in()
+Message-Id: <177494612145.4056125.9188398247456851629.b4-ty@kernel.org>
+Date: Tue, 31 Mar 2026 04:35:21 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -85,102 +80,90 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-18f8f
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18829-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-18831-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[amd.com,broadcom.com,linux.dev,linux.alibaba.com,hisilicon.com,microsoft.com,intel.com,vger.kernel.org,marvell.com,amazon.com,cisco.com,huawei.com,nvidia.com,gmail.com,ziepe.ca];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[27];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.978];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:email,huawei.com:email]
-X-Rspamd-Queue-Id: B23E5364468
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 52E483664A9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-fwctl is subsystem which exposes a firmware interface directly to
-userspace: it allows userspace to send device specific command
-buffers to firmware. fwctl is focused on debugging, configuration
-and provisioning of the device.
+On Wed, 25 Mar 2026 18:26:46 -0300, Jason Gunthorpe wrote:
+> Progress the uAPI work by shifting nearly all drivers to use
+> ib_copy_validate_udata_in() and its variations.
+> 
+> These helpers are easier to use and enforce a tighter uAPI protocol
+> for the udata.
+> 
+> v2:
+>  - Drop EFA patch, rename the field instead
+>  - Fix the mlx5 mw change, userspace doesn't use the udata struct at all
+> v1: https://patch.msgid.link/r/0-v1-2b86f54cda42+7d-rdma_udata_req_jgg@nvidia.com
+> 
+> [...]
 
-Call bpf_lsm_fw_validate_cmd() before dispatching the user-provided
-firmware command.
+Applied, thanks!
 
-This allows BPF programs to implement custom policies and enforce
-per-command security policy on user-triggered firmware commands.
-For example, a BPF program could filter firmware commands based on
-their opcode.
+[01/16] RDMA: Consolidate patterns with offsetofend() to ib_copy_validate_udata_in()
+        (no commit info)
+[02/16] RDMA: Consolidate patterns with offsetof() to ib_copy_validate_udata_in()
+        (no commit info)
+[03/16] RDMA: Consolidate patterns with sizeof() to ib_copy_validate_udata_in()
+        (no commit info)
+[04/16] RDMA: Use ib_copy_validate_udata_in() for implicit full structs
+        (no commit info)
+[05/16] RDMA/pvrdma: Use ib_copy_validate_udata_in() for srq
+        (no commit info)
+[06/16] RDMA/mlx5: Use ib_copy_validate_udata_in() for SRQ
+        (no commit info)
+[07/16] RDMA/mlx5: Use ib_copy_validate_udata_in() for MW
+        (no commit info)
+[08/16] RDMA/mlx4: Use ib_copy_validate_udata_in()
+        (no commit info)
+[09/16] RDMA/mlx4: Use ib_copy_validate_udata_in() for QP
+        (no commit info)
+[10/16] RDMA/hns: Use ib_copy_validate_udata_in()
+        (no commit info)
+[11/16] RDMA: Use ib_copy_validate_udata_in_cm() for zero comp_mask
+        (no commit info)
+[12/16] RDMA/mlx5: Pull comp_mask validation into ib_copy_validate_udata_in_cm()
+        (no commit info)
+[13/16] RDMA/hns: Add missing comp_mask check in create_qp
+        (no commit info)
+[14/16] RDMA/irdma: Add missing comp_mask check in alloc_ucontext
+        (no commit info)
+[15/16] RDMA: Remove redundant = {} for udata req structs
+        (no commit info)
+[16/16] RDMA/hns: Remove the duplicate calls to ib_copy_validate_udata_in()
+        (no commit info)
 
-Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
-Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/fwctl/mlx5/main.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/fwctl/mlx5/main.c b/drivers/fwctl/mlx5/main.c
-index e86ab703c767a..c49dfa1d172d9 100644
---- a/drivers/fwctl/mlx5/main.c
-+++ b/drivers/fwctl/mlx5/main.c
-@@ -7,6 +7,7 @@
- #include <linux/mlx5/device.h>
- #include <linux/mlx5/driver.h>
- #include <uapi/fwctl/mlx5.h>
-+#include <linux/bpf_lsm.h>
- 
- #define mlx5ctl_err(mcdev, format, ...) \
- 	dev_err(&mcdev->fwctl.dev, format, ##__VA_ARGS__)
-@@ -324,6 +325,15 @@ static void *mlx5ctl_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
- 	if (!mlx5ctl_validate_rpc(rpc_in, scope))
- 		return ERR_PTR(-EBADMSG);
- 
-+	/* Enforce the user context for the command */
-+	MLX5_SET(mbox_in_hdr, rpc_in, uid, mfd->uctx_uid);
-+
-+	ret = bpf_lsm_fw_validate_cmd(rpc_in, in_len, &mcdev->fwctl.dev,
-+				      FW_CMD_CLASS_FWCTL,
-+				      FWCTL_DEVICE_TYPE_MLX5);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
- 	/*
- 	 * mlx5_cmd_do() copies the input message to its own buffer before
- 	 * executing it, so we can reuse the allocation for the output.
-@@ -336,8 +346,6 @@ static void *mlx5ctl_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
- 			return ERR_PTR(-ENOMEM);
- 	}
- 
--	/* Enforce the user context for the command */
--	MLX5_SET(mbox_in_hdr, rpc_in, uid, mfd->uctx_uid);
- 	ret = mlx5_cmd_do(mcdev->mdev, rpc_in, in_len, rpc_out, *out_len);
- 
- 	mlx5ctl_dbg(mcdev,
-
+Best regards,
 -- 
-2.53.0
+Leon Romanovsky <leon@kernel.org>
 
 
