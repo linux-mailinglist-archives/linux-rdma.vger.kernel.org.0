@@ -1,169 +1,165 @@
-Return-Path: <linux-rdma+bounces-18831-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18832-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yNJONHCIy2kuIwYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18831-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 10:40:16 +0200
+	id 2K3xFNaIy2kuIwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18832-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 10:41:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E483664A9
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 10:40:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B6336653E
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 10:41:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B20863032CF0
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 08:35:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 06ECA30AB167
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2026 08:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27EAA3E0C43;
-	Tue, 31 Mar 2026 08:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBC23E3143;
+	Tue, 31 Mar 2026 08:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="inH7+CYT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eYOeSSSF"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAEE3DFC72;
-	Tue, 31 Mar 2026 08:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DD43BE649;
+	Tue, 31 Mar 2026 08:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774946124; cv=none; b=gvxrX8Ur+6NCqdu7DoK56hp5TZnDJNIa1lnqdM4yo74LvsVy7kayPUojMcMnOCC5KLQwV5EnZ1n9OyPRpL4rlK/YL1+Pj1KXMgzkVyGg1Ys+DeQvUxU+9qARTOUOvTUbMNF3gHrwe2r2aQkMtvj9UenyEvSNM4zGureZh2RgJwI=
+	t=1774946282; cv=none; b=bHVOjvKVxzi7H9xJyfWuE4vOAlZtqV6ir+sJzPuri5sc3YpnUgTjtiUaZ58pZl53eTOJpm8S6qk8wUK2nT9w1TIgVu0aj2I9S4xy3sxdkMB3fJUs2xDIrdw0OnYiuQcfQXfYfCbDTsUNivNbzvs7cE16adAq7No2n45UCIAYLsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774946124; c=relaxed/simple;
-	bh=4PxGJGHThb4XA2T2D+sB4KkxVzrAmQWcMhgkUx2dkh0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ESquyYwbip3kft3M4FZqBheNCbTrgmATVBYPYQkX/NvoD5WWk3JEaU6uPxXce+881vrnezItukU+KVjiVlYl7ufDOKgTZ0chORQevOWcehXqtfaMPu7KFtkWvznOs8kq/zY3ooNoY+HBn58s+xks8vaJPth1kZr4SZZEqc2uvM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=inH7+CYT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7FE7C19423;
-	Tue, 31 Mar 2026 08:35:23 +0000 (UTC)
+	s=arc-20240116; t=1774946282; c=relaxed/simple;
+	bh=lkgsi7G8x5At2O5V1snIySUQ9gANaxTJ3/quUuCINCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eLQSo5WdBGnlKPkKEOJLjF1rsTtlNFSUIdIB0arzu1jm6GcIiJ4f5tCVLtAYHq1WOjdR8zeb4aGF6PQO2C2h1JFkLlRVm4k0cSJ+V2ZFAcKbFkz87VlS4cZIQTG2xNoYxII/ZHNx5AdMZptakMDoudo8j1SmuXCzzbA6QBNdHQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eYOeSSSF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08CB8C19423;
+	Tue, 31 Mar 2026 08:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774946124;
-	bh=4PxGJGHThb4XA2T2D+sB4KkxVzrAmQWcMhgkUx2dkh0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=inH7+CYTX7DG2DDaly+qKAdgfh+vFtWcQ8PaZTxXVKfvakF5RsC75qOmR82y1sipZ
-	 JrvpHTtlGmieqvX1nhDvpCuz1oJfph3ygqao+fP6fS3UOhHbZB03tdky7GCSMiY4rb
-	 N08P2ZFd103mkviNdo7Dq73bP8jRVbDc/RVMuamAxvm3LNYHzkDUqElldtod4h2+JV
-	 OmzGbi6DYG4GOoTsk9KbTtxOE/8xKzrTj6OsB7RMPLWUOpNQdAK18dEIUhJ2cvJibH
-	 2UdeqSbj0MvAX+OT+kg+6eLle8Girz/+AJafHsmK6hP9FlAP31vGiIjWcKa1t7O3t/
-	 7RaZGcPaewTQA==
+	s=k20201202; t=1774946282;
+	bh=lkgsi7G8x5At2O5V1snIySUQ9gANaxTJ3/quUuCINCg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eYOeSSSFW0WXX4mmb2MsptPkJdbl34XCp/M4zjYe56EoUT29R9MHtfTXKQPdaNTCC
+	 km+65bU1EFEOKw5dFVpsTcaiMT//g3eVQ5wQFTIo/I7oJ/THNQwpC5I8OveBHsLJSv
+	 3TLow+1Vv81z+6ZpRvaJ+yJWkL2V+tUPyY4nPDYssx0+yV1YmWFpME3575WC2Pv8mV
+	 GFTL9SNY7QSYH4J+O7uv1C5fcawUeC5d6HW7UF+4i8Box0HYi2vuZ4MBWER521nK0Q
+	 SenJKH1W+1P9Rtm0e28iNy23S+AdcNCUTs9CjfxLv0EdzgY1EGenaxFTOtyUWS9Nz4
+	 6i/D/wPac9ByA==
+Date: Tue, 31 Mar 2026 11:37:58 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Abhijit Gangurde <abhijit.gangurde@amd.com>, 
- Allen Hubbe <allen.hubbe@amd.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Bernard Metzler <bernard.metzler@linux.dev>, 
- Bryan Tan <bryan-bt.tan@broadcom.com>, 
- Cheng Xu <chengyou@linux.alibaba.com>, 
- Gal Pressman <gal.pressman@linux.dev>, 
- Junxian Huang <huangjunxian6@hisilicon.com>, 
- Kai Shen <kaishen@linux.alibaba.com>, 
- Konstantin Taranov <kotaranov@microsoft.com>, 
- Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
- linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
- Michal Kalderon <mkalderon@marvell.com>, 
- Michael Margolin <mrgolin@amazon.com>, Nelson Escobar <neescoba@cisco.com>, 
- Satish Kharat <satishkh@cisco.com>, 
- Selvin Xavier <selvin.xavier@broadcom.com>, 
- Yossi Leybovich <sleybo@amazon.com>, 
- Chengchang Tang <tangchengchang@huawei.com>, 
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
- Vishnu Dasa <vishnu.dasa@broadcom.com>, Yishai Hadas <yishaih@nvidia.com>, 
- Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Long Li <longli@microsoft.com>, patches@lists.linux.dev
-In-Reply-To: <0-v2-f4ac6f418bd6+12c5-rdma_udata_req_jgg@nvidia.com>
-References: <0-v2-f4ac6f418bd6+12c5-rdma_udata_req_jgg@nvidia.com>
-Subject: Re: [PATCH v2 00/16] Update drivers to use
- ib_copy_validate_udata_in()
-Message-Id: <177494612145.4056125.9188398247456851629.b4-ty@kernel.org>
-Date: Tue, 31 Mar 2026 04:35:21 -0400
+To: Keith Busch <kbusch@kernel.org>
+Cc: Zhiping Zhang <zhipingz@meta.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-rdma@vger.kernel.org,
+	linux-pci@vger.kernel.org, netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, Yochai Cohen <yochai@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [RFC v2 1/2] vfio: add callback to get tph info for dmabuf
+Message-ID: <20260331083758.GA814676@unreal>
+References: <20260324234615.3731237-1-zhipingz@meta.com>
+ <20260324234615.3731237-2-zhipingz@meta.com>
+ <20260325082534.GN814676@unreal>
+ <acW2BwQKaUbS3eL9@kbusch-mbp>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-18f8f
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acW2BwQKaUbS3eL9@kbusch-mbp>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18831-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18832-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[amd.com,broadcom.com,linux.dev,linux.alibaba.com,hisilicon.com,microsoft.com,intel.com,vger.kernel.org,marvell.com,amazon.com,cisco.com,huawei.com,nvidia.com,gmail.com,ziepe.ca];
-	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[27];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.978];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 52E483664A9
+X-Rspamd-Queue-Id: E8B6336653E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-
-On Wed, 25 Mar 2026 18:26:46 -0300, Jason Gunthorpe wrote:
-> Progress the uAPI work by shifting nearly all drivers to use
-> ib_copy_validate_udata_in() and its variations.
+On Thu, Mar 26, 2026 at 04:41:11PM -0600, Keith Busch wrote:
+> On Wed, Mar 25, 2026 at 10:25:34AM +0200, Leon Romanovsky wrote:
+> > On Tue, Mar 24, 2026 at 04:46:02PM -0700, Zhiping Zhang wrote:
+> > >  struct vfio_device_feature_dma_buf {
+> > >  	__u32	region_index;
+> > >  	__u32	open_flags;
+> > > -	__u32   flags;
+> > > -	__u32   nr_ranges;
+> > > +	__u32	flags;
+> > > +#define VFIO_DMABUF_FL_TPH		(1U << 0) /* TPH info is present */
+> > > +#define VFIO_DMABUF_TPH_PH_SHIFT	1         /* bits 1-2: PH (2-bit) */
+> > > +#define VFIO_DMABUF_TPH_PH_MASK	0x6U
+> > > +#define VFIO_DMABUF_TPH_ST_SHIFT	16        /* bits 16-31: steering tag */
+> > > +#define VFIO_DMABUF_TPH_ST_MASK		0xffff0000U
+> > 
+> > This extension of flags is basically kills future extension of this
+> > struct for anything that includes TPH.
+> > 
+> > Add new
+> > enum vfio_device_feature_dma_buf_flags {
+> >     VFIO_DMABUF_FL_TPH  = 1 << 0
+> > }
+> > 
+> > > +	__u32	nr_ranges;
+> > 
+> > add your "__u16 steering_tag" and "__u8 ph" fields here.
 > 
-> These helpers are easier to use and enforce a tighter uAPI protocol
-> for the udata.
+> You're suggesting that Ziping append the new fields to the end of this
+> struct? I don't think we can modify the layout of a uapi.
+
+He needs to add before flex array. This struct is submitted by the user
+and kernel can easily calculate the position of that array.
+
+Something like this:
+diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
+index b1d658b8f7b51..d78d915992232 100644
+--- a/drivers/vfio/pci/vfio_pci_dmabuf.c
++++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
+@@ -237,7 +237,11 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
+        if (get_dma_buf.region_index >= VFIO_PCI_ROM_REGION_INDEX)
+                return -ENODEV;
+
+-       dma_ranges = memdup_array_user(&arg->dma_ranges, get_dma_buf.nr_ranges,
++       if (!tph_supplied)
++               dma_ranges = memdup_array_user(old_dma_ranges_pos, get_dma_buf.nr_ranges,
++                                      sizeof(*dma_ranges));
++       else
++               dma_ranges = memdup_array_user(&arg->dma_ranges, get_dma_buf.nr_ranges,
+                                       sizeof(*dma_ranges));
+        if (IS_ERR(dma_ranges))
+                return PTR_ERR(dma_ranges);
+~
+
+
+Thanks
+
 > 
-> v2:
->  - Drop EFA patch, rename the field instead
->  - Fix the mlx5 mw change, userspace doesn't use the udata struct at all
-> v1: https://patch.msgid.link/r/0-v1-2b86f54cda42+7d-rdma_udata_req_jgg@nvidia.com
-> 
-> [...]
-
-Applied, thanks!
-
-[01/16] RDMA: Consolidate patterns with offsetofend() to ib_copy_validate_udata_in()
-        (no commit info)
-[02/16] RDMA: Consolidate patterns with offsetof() to ib_copy_validate_udata_in()
-        (no commit info)
-[03/16] RDMA: Consolidate patterns with sizeof() to ib_copy_validate_udata_in()
-        (no commit info)
-[04/16] RDMA: Use ib_copy_validate_udata_in() for implicit full structs
-        (no commit info)
-[05/16] RDMA/pvrdma: Use ib_copy_validate_udata_in() for srq
-        (no commit info)
-[06/16] RDMA/mlx5: Use ib_copy_validate_udata_in() for SRQ
-        (no commit info)
-[07/16] RDMA/mlx5: Use ib_copy_validate_udata_in() for MW
-        (no commit info)
-[08/16] RDMA/mlx4: Use ib_copy_validate_udata_in()
-        (no commit info)
-[09/16] RDMA/mlx4: Use ib_copy_validate_udata_in() for QP
-        (no commit info)
-[10/16] RDMA/hns: Use ib_copy_validate_udata_in()
-        (no commit info)
-[11/16] RDMA: Use ib_copy_validate_udata_in_cm() for zero comp_mask
-        (no commit info)
-[12/16] RDMA/mlx5: Pull comp_mask validation into ib_copy_validate_udata_in_cm()
-        (no commit info)
-[13/16] RDMA/hns: Add missing comp_mask check in create_qp
-        (no commit info)
-[14/16] RDMA/irdma: Add missing comp_mask check in alloc_ucontext
-        (no commit info)
-[15/16] RDMA: Remove redundant = {} for udata req structs
-        (no commit info)
-[16/16] RDMA/hns: Remove the duplicate calls to ib_copy_validate_udata_in()
-        (no commit info)
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+> If we can't carve the space for this out of the existing unused flags
+> field, I think we'd have to introduce a new vfio device feature that
+> basically copies VFIO_DEVICE_FEATURE_DMA_BUF with the extra hints
+> fields.
+>  
+> > >  	struct vfio_region_dma_range dma_ranges[] __counted_by(nr_ranges);
+> > >  };
 
