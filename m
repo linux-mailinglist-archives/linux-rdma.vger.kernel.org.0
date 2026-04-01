@@ -1,111 +1,111 @@
-Return-Path: <linux-rdma+bounces-18885-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18886-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4MEnHD7izGmjXQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18885-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 11:15:42 +0200
+	id KHnTEjfkzGmjXQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18886-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 11:24:07 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4874377631
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 11:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B35A2377855
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 11:24:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 65C2F3072D1F
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2026 09:11:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 128B0303D642
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2026 09:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856DC3C945E;
-	Wed,  1 Apr 2026 09:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3443CCA1A;
+	Wed,  1 Apr 2026 09:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="twFnRIT8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PcbMzFc1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E48B3C5DD6
-	for <linux-rdma@vger.kernel.org>; Wed,  1 Apr 2026 09:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD153CBE6B
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Apr 2026 09:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.222.181
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775034706; cv=pass; b=E1bJhK9UnFId0Kj5IYCuZ6lOMevLlfbiNZpxn8etY9W+NT1jf9Ao3BXJE0kmh2upGd2hwwipvyd35OVOsFTvm+F+BLFtlvBLgI7vqVasTMZBwjJIaHaEsUYKz2ZmbJEDX7Fs0p0YRmovCOcUrfZ2XGFThxOWUk3/fVC34J7DUfI=
+	t=1775034901; cv=pass; b=SRwranEpAxKveIYSNQ3PJ5DYlGvtYqu02rx4mc/lXs/BWyfTaLYEfsZ2d5G8mGdYUIGtq0Fg5PyMiw0TTh2r3eeg5ZS58nxn3BwgOL0bxmuEP0JKNnMwX6nVJmJzElmVYLmQjIxaLYG5262XRzMSOpYhpTjs4y/R2rlCM7CGYMU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775034706; c=relaxed/simple;
-	bh=dmaTcuAy6jfJ+bmzS1Jm/uyBrkTWgyDnScrFaQ2/nas=;
+	s=arc-20240116; t=1775034901; c=relaxed/simple;
+	bh=Px8VZ/mZa/wVBiSvlhUqswxvgLPunBza8vM2mBYbtJ0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XkmGih7acj6veWXVgU1FpAVN2SxTACTj06JBZdFjuMjv6xqRkTNtn5IyvXpT3yapl23KQL2Nufxw7nVSk2t5O6PaGxsE+GcnJPLFbDom3s2M4683aWjduIs639pAgi9+121TB8Y98BW3meM4mhD0MyeK/vQyhTWzPqW5kkyYaTs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=twFnRIT8; arc=pass smtp.client-ip=209.85.160.175
+	 To:Cc:Content-Type; b=ND3vOCHk6MNKIxh0xZ/lG2DHhWD82OIq7uxy4RpSjIpUNmdgD4mMcm7PdOcLmuO2mP4OCN6mC5oOMEDlduCJHe2VrMcJ+1uAN56qgJbRzCVxdhQV/82GqzxD/wMYvENuSYrfqKSZ2t7HDoASoYux/2LRziXjuBtOvDDEMjQ1ANg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PcbMzFc1; arc=pass smtp.client-ip=209.85.222.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-509134ab2d2so52358901cf.0
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Apr 2026 02:11:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1775034703; cv=none;
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-8cd7c372929so718521285a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Apr 2026 02:14:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1775034898; cv=none;
         d=google.com; s=arc-20240605;
-        b=aPbTSjqDadiA/So7v/4nYh1oaXw1BLXAW6vRKj7d6ePjjOip0HU8Ip43rkjovvDbc8
-         IpW/P/lt2BbBqM+wmoiMVm0ZtGauPIcgQFlOR27epAhpBU5M6Z+ds8mBK0QpU03HY/VS
-         lnwfxnB60Jilbs27tORPcLgnMAegvtSJH/zDT5+W8PSKweLPi0RI6io1cnQPagh9kmd3
-         O4xlhTgSkelYTK6Jq9qPokk4l3mXOrR/ZQawIhd7pNayeqbWM4R9TseqwLh7b+hBk1Y4
-         CjKD1BkxvN6A9e8tFSI/DahpUuVJXPu1lFfqsPigcfphokpQKxaPUR3aqQ1HNHG4LYUF
-         w9+w==
+        b=FI/X02A//YU93Bb2GF7+fWHhkl//B5aqH7skli2+Wigh0WDizORYkIpsJFMGRit6Gz
+         m8+35d0WRnHBsb/BTEPoxiHY1lGMvMVO1SXiDQwwTm8K5rQV0fVDBPyLE59pKEH8QEQ5
+         JVd01kZ8cyX8QHtEmclq6SpglLObyVS2k4ob37r2Eb5053UuRg/XdI9cWS/Jk0jSsvlm
+         gmWNNNMPUlIWN1UJ4yuxuxezw2sjEBEmPamMxvfxY4IBWCMGm3LsqdZAv6A669DvuyLt
+         WAZIFgcwIZUU6oUPLsIpKQFYwx520ciQMGL/K4do12jNLuqMcWzwPRl4ETCej5aOgQ1r
+         xWHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=lctUVgmnSzTUnScobr+jAtLkB/onmBi35F0YaMEt+UE=;
-        fh=R3kK73G9UUzE1BeYkxdv31oDNvbUSfZEoIT9+IZ2MDI=;
-        b=UuFAwfvGhQjXrw5jLHuW0a3za+2ZgR75nV0lbSMwSe3t2P5ayjy3mHdmtFx7d0nV92
-         Er9G6VTZJAKMIjdeW67a8EgzltA0Aw5GZW54a/Bq06GYgtT6r/690USHfeKZWcHM6RBQ
-         9W3VXo8Ke6PN2KW9m6IybX2kVQn+bwatVNw6pRsV7z31lB2/eLorx7oXPSk0oh7omCQH
-         OJaOnqEw4NzLXMFNCnf8nHf+yD4UmvqLnb6eg2NOAUqBlBmyAl9N0p+haE8q/gSkAHJ3
-         dKXOtda/chXXoqkSk1OMoqNGRH3o8Lu9aFdSR2s/dBWctmbOZ+C7xVNQGHLc2UGB4KFm
-         QCyw==;
+        bh=QNCKy3dqIhDpgGkChFZLtJKaP66u94+8Bb0TUa2FxLg=;
+        fh=w76YB9mvkaaL3xDr1qXeWfaJYLMnSOPCD5CuJtsY+ms=;
+        b=FOzlFSo/H5CDD70/5FNQUxJ2MDaVFZLaX4Yv2c3QZ290oNmu3gU0R5yfCCaTjL9LK3
+         rbpzIyaAB56h1vQGnKbUNYQRh4gp+snrXime/eFP3xxhFy/C/oXiVYmj6rh3zaGDDORb
+         M15K3QOSGKVrIt4JrnmzTHbg/jDhUZ5r7RPpfxhYu1XCfjV9Ib7pJKS2iRloEEKnJUQO
+         LGHqCmFpgs0SLUTBQiRrj0cf3goSPCqVAxfF5tPlV14qRleGxLjzyCrpCTSztOST26f4
+         qA9KctfVzB+DNBiV6+1Acm2nf0qloiwhac5k/+fOrBoLcDeBNMLNtSaUUELvlej5iJcO
+         HMmw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1775034703; x=1775639503; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1775034898; x=1775639698; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lctUVgmnSzTUnScobr+jAtLkB/onmBi35F0YaMEt+UE=;
-        b=twFnRIT8SirtW12uUCHs6hTeF/J2DOg5PKAmKI/mwRCncAk4AIvZwUq8xR7yTK0iJ+
-         4ImgI8xWhYvzAYMKo33ksmbew7TAwPlXPwRplqecw+NYSPwHcYD8NcIFmA0v/FzgmIrA
-         GlgznlRQinWJpsA4qp4IlnNYa4zu4LMzYJu3khv64uuDL3+ybWpc3gfaIp1N30uXymnh
-         o/KWJm7bZFr+X8f9bK2b9IBUwDPo2JrcV4mBBOIg3fqCL5h118wWZzw/mlpOg5YazSse
-         2pJzkr32Nm/rqUXZUcHdfdBBA5R+Rztx/u8eIHbmmnYHi26nHKuFO8CqGzwdfgZfHKXJ
-         VrAg==
+        bh=QNCKy3dqIhDpgGkChFZLtJKaP66u94+8Bb0TUa2FxLg=;
+        b=PcbMzFc143UJPNLa1IszL9pPW8NVryFgbF485R7GCAGuU6p+ZrBk02ECuyE3QGpPPR
+         s8PmzFSS1wArBXxvuc+UtXXMnAOwCJ+jq+1vNSV+UniMmd1Z5E8/yTmPY7jdYzGGTVr6
+         NzWp9TOvjIix3ogAaxIjggzONpWn1bnYrGEVP35Jv2A4mKUlB7v6q/VKR1ubhl2Awk3s
+         Kxcz59bI9slSkfdhXbqubS/KzGRsdYjcTJgVAK0tjaZi0oohw05fsUO/dcsMUFE+pl0E
+         aVByIpngrWTZAFOiI7hgEJOSTa3dRZmFq7KhzfK0ZJxLzy54WLBvphLnzo2fZIpudTwx
+         M7AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775034703; x=1775639503;
+        d=1e100.net; s=20251104; t=1775034898; x=1775639698;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=lctUVgmnSzTUnScobr+jAtLkB/onmBi35F0YaMEt+UE=;
-        b=P4Jm/MytcSjZTV0vqB+K73JFJFnQhy8qGSe7hZilb1BaZ2u8uTfjb4j778fdXLcD4M
-         jaySZybsprDE0NszGlYVLp/uijM51B/dR5U+FRYhVqyGoQqmbyURSc4kTklWzkQoiOgt
-         h6csXnRL6RCNGcCFcCNHU0q5dTvNsZAVb1x6AGH1n+2WGUkPpe7vSmJPXfcHKBR3glQh
-         r8DKJonbOGq6ObjygtfWUa1/4aZeNkuG6v/45BTg6wbEsPcgZ1Tvuy35pabhVUdYvhtT
-         /1hN2HSjuhYivn9bM0RxcuBTDSekS9/dI+4dJAjY9Y+suV3tbqFppDqUlHtjwIKCuKVT
-         JB7A==
-X-Forwarded-Encrypted: i=1; AJvYcCW8MKDzWYlX9GgFN5X7EsnJJaNvA6+0dJPRdvffKPaHSAEJAPPiWhySsv0uCEm26v9yPAoXepAorFx5@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2bqBlREsgtf8apeyGWMUosKMAtX8F+eYPlY8QNGITwh1BgqD0
-	ZJrHLSiQoGqMsYSXN0hD7qBLGPOxepbHHE8Xl3iknoXHdGb8VEarAUdgCSk1HIrTUmuE6IulMrY
-	944B+/ZIfA9wDEroulq0o20KYze4oTB4hzPUFcOPA
-X-Gm-Gg: ATEYQzy0z91+OyK/rxzXWwx8qRShyvuxHyVEEBHE1fPhNkc6xvAlAT4Vt76FH4OrVB/
-	UbHNEKOtdAzxiMBIcLUTTFd2M9PmNm5TeAfOArxNfgM1xD2oq3r/4TPFjInpbBy1my4X7z2V9xj
-	bZxWdCaegHi8ssqHPrWGqId1lryBRNyQsAkjSeP0mmPr0oZ83KiljfD3FYZ9S+kNlPYkkAwi17R
-	/pd3hJD1vj85vOWg0Esyq86njlgmoplhEjUs8WMq+HS57on4vru4XXL4zyqMZNUVl3e6Pl0RuaS
-	m2jcSwk/Bu1Cuopy
-X-Received: by 2002:a05:622a:5909:b0:4ed:b2da:966f with SMTP id
- d75a77b69052e-50d3bd84b29mr44808651cf.31.1775034702251; Wed, 01 Apr 2026
- 02:11:42 -0700 (PDT)
+        bh=QNCKy3dqIhDpgGkChFZLtJKaP66u94+8Bb0TUa2FxLg=;
+        b=DuL+gSHAqYjEQrbChW/k6TpsZXtqTf+bDFB89mQ3H4C5jZQljm3kEZ67qilpYUYcRz
+         rNXvz3RmpGSic7J3KKi8CTMaybPiG8EXWD76SfDGVsFc1QpteLknjkZz6yyuzDhMwb0A
+         pQ0dqpwn6Ox78A6QzNmHjMNcXKayhbUkqq86Pw7ZjcYdt+1kTzCyInN+D3jsxEKJ337/
+         kLNmPsrqbgTzA2/nJIH22YgzYD80tG8unrqod8MdTb49IKAB4zzOeDNcczrCKx0oNcqY
+         C7Ux9MXcV7wG6BgWfIzNcf9AdIjegCyywVctkZ0svqx+0J8MXsFcW1cljMTcHsxHq005
+         W0ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXKDBbT4eH79H2k2TPcho3HaEblWWhmxP88tD83lhpj3hYfKTLHdUmJf7C0GqRUYs4JP35RL4OBTZSG@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG/UX9z+zSwZuPuhJw7ZPk5cVcnhMx4s2+YRmZGNwJjragThSw
+	6vJiSeFYguVC1iQj18dH273Z+OAobTwkWKathVgtUaY3d6eR10zGO+z4QMIMyjGG9QjlCtFznP6
+	6qn3tVnp3NAIRULMEnzECSHwhc5UfSh/yUATnl/jt
+X-Gm-Gg: ATEYQzz9pZPQ7dFFeh9ZEOvrhElZv05qPTqn4Iw1QtgGWe3KeNHAcXA8dbPNnJOnE0A
+	dgxuM1qG/nIxK92k1sPdQwqhxMVTlK4rkGmY0qeTXuRnfuK79LQ7UHb7jHHHXDPEjDkSw6/1aov
+	eEpeaHg08LU6JxewQFhgtaPvBDiMK7euoV+N0wTgmCXyhRJPdWk9Fd1hNFFYBEP07UjySHb4ZmG
+	AVdmWbKUUidhSaZ0KpS1mZQfA0uYiRxvicRcVJ2TmaL1/YVfjVnER0xgOOpc4aSYgzoN2j8uQIx
+	7R0yPQ==
+X-Received: by 2002:a05:622a:1c05:b0:509:2ef7:7034 with SMTP id
+ d75a77b69052e-50d3bcf5f5dmr36705111cf.50.1775034897967; Wed, 01 Apr 2026
+ 02:14:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260401074509.1897527-1-dwmw2@infradead.org> <20260401074509.1897527-7-dwmw2@infradead.org>
-In-Reply-To: <20260401074509.1897527-7-dwmw2@infradead.org>
+References: <20260401074509.1897527-1-dwmw2@infradead.org> <20260401074509.1897527-4-dwmw2@infradead.org>
+In-Reply-To: <20260401074509.1897527-4-dwmw2@infradead.org>
 From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 1 Apr 2026 02:11:31 -0700
-X-Gm-Features: AQROBzDMpjzScINQf3v40GgXHFr7zNRIwe6Qb5aBvyyAycV5Up8H_bwJXHOzd_8
-Message-ID: <CANn89i+GHkkubJp3MTKZ_r4tde1qLejfsxUh+w0gPZ3ec+YdjQ@mail.gmail.com>
-Subject: Re: [PATCH 6/6] net: Warn when processes listen on AF_INET sockets
+Date: Wed, 1 Apr 2026 02:14:45 -0700
+X-Gm-Features: AQROBzAoGbAvZgGI1SP1QOjEPB9AfHu4JQqffzH3Pc3uWqwtvvbxFW3VGI6Tc4w
+Message-ID: <CANn89i+iRUgqtd+eirfSUM3k+keNZKzLwsHxZtwE+vHdv7H5PQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] net: Guard Legacy IP entry points with CONFIG_LEGACY_IP
 To: David Woodhouse <dwmw2@infradead.org>
 Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
 	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
@@ -138,7 +138,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18885-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18886-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
@@ -154,8 +154,8 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[amazon.co.uk:email,mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B4874377631
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email,amazon.co.uk:email]
+X-Rspamd-Queue-Id: B35A2377855
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -164,29 +164,28 @@ g> wrote:
 >
 > From: David Woodhouse <dwmw@amazon.co.uk>
 >
-> There is no need to listen on AF_INET sockets; a modern application can
-> listen on IPv6 (without IPV6_V6ONLY) and will accept connections from
-> the 20th century via IPv4-mapped addresses (::ffff:x.x.x.x) on the IPv6
-> socket.
+> Wrap the IPv4-specific registrations in inet_init() with
+> CONFIG_LEGACY_IP guards. When LEGACY_IP is disabled, the kernel
+> will not:
+>  - Register the AF_INET socket family
+>  - Register the ETH_P_IP packet handler (ip_rcv)
+>  - Initialize ARP, ICMP, IGMP, or IPv4 routing
+>  - Register IPv4 protocol handlers (TCP/UDP/ICMP over IPv4)
+>  - Initialize IPv4 multicast routing, proc entries, or fragmentation
 >
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->  net/ipv4/af_inet.c | 3 +++
->  1 file changed, 3 insertions(+)
+> The shared INET infrastructure (tcp_prot, udp_prot, tcp_init, etc.)
+> remains initialized for use by IPv6.
 >
-> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> index dc358faa1647..3838782a8437 100644
-> --- a/net/ipv4/af_inet.c
-> +++ b/net/ipv4/af_inet.c
-> @@ -240,6 +240,9 @@ int inet_listen(struct socket *sock, int backlog)
->         struct sock *sk =3D sock->sk;
->         int err =3D -EINVAL;
->
-> +       pr_warn_once("process '%s' (pid %d) is listening on an AF_INET so=
-cket. Consider using AF_INET6 with IPV6_V6ONLY=3D0 instead.\n",
-> +                    current->comm, task_pid_nr(current));
-> +
 
-Some kernels are built without CONFIG_IPV6, so this warning would be
-quite misleading.
+...
+
+>
+>         /* Add UDP-Lite (RFC 3828) */
+> -       udplite4_register();
+> +       if (IS_ENABLED(CONFIG_LEGACY_IP))
+> +               udplite4_register();
+
+udplite has been removed in net-next.
+
+I would think your patch series is net-next material ?
 
