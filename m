@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-18875-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18877-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +HMwMXPQzGlFWwYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18875-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 09:59:47 +0200
+	id KEfDHf7QzGlFWwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18877-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 10:02:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08DE37668A
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 09:59:46 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786DA3766E0
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 10:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5B1043063DA5
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2026 07:46:23 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 217EF30946E5
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2026 07:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9434392C52;
-	Wed,  1 Apr 2026 07:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8039639EF3F;
+	Wed,  1 Apr 2026 07:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QnCIxoUy"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IKoGyQZr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9144B389470;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA86338A2BE;
 	Wed,  1 Apr 2026 07:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775029547; cv=none; b=N8P7FIWVLlONEjgcpcbUHJjvfje34QRDPoO5hLPHEeTWd9fAOYt7OrG1twCPLQ3FqbpZvEIudK6CmTM9R6DbB8OLlHLafuKu/uvEyZU8GTsPOElXYGC0+TwqjHddzZP6S8/bPxgUM6xC6+RIJ4OOuu14B4eS0wJmoMpTaRSntXE=
+	t=1775029550; cv=none; b=Z6bHQ81uw1i/gM5bR2E1SirY/sogUn3g7X/+/vMwd5SqRZBVBM5N/stBVrmE7VFNathS3ev+HPbQmFxnK2os04IJWyBCONljQ/Pc6qBxhPYhC42SSaMcz8SWkyBoCkeH3ySdfQhGoGbfJI6M1Uih5gyzonxNwb1TyLDNXV0Ohik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775029547; c=relaxed/simple;
-	bh=fz1vVpZ+XixTWvLK2fUSSSwxU2g035/t57UleVQMxCs=;
+	s=arc-20240116; t=1775029550; c=relaxed/simple;
+	bh=rXA64fn6y56PibOyI9IkFgYw3RfBJKBTSkxUiNBk0fg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dun3n6+MRi9b6AZk2qp5D5SOrbFlO6a4XIXqtoSmuKvX2GaVKdha/ZTwlypZnOGqyftnh+6Iv9NQXNxfX0l5Qj9WQvdWDj6tuEkGMnhqzIe3FMpve7oOxkE2fe3KN2ET9kgnTtDfb3zCULWoj3JV75aIaUqGnKWF1X2RDui0FJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QnCIxoUy; arc=none smtp.client-ip=90.155.92.199
+	 MIME-Version; b=bFTQ22hYND0eoMexycJGRNYvoIP5I6aHr9r6TUPC1BfMOflw9pE2kMTB3w719zTuUadSPqbijlNHvbyBOw2yfcw0mIwOp5DjoYFGrzDos0tjsQN8K+S8qmBSCCVTLBIYF/g9p6yXAMJ559YrH4zOHpkGS2laf6udKbxzOa67Zyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IKoGyQZr; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:
-	From:Reply-To:Cc:Content-ID:Content-Description;
-	bh=7U4Yiy0/CwnvZWt3C0BtwDa2Bz5Q5jm510x17jkSpQk=; b=QnCIxoUyOmPrAkseFjcccD4s1i
-	JKfLE7Jom17QlfF7S1IPYullmh2F3/ktBNXwJtxAGsOTgDCOiJWXNBKrEVRZ7iSEc36uqowLb3S7S
-	BV99jdHasZRiZk8U5OleuPJgXdXYle1tJH1CZy4rg4gBT9EPLs2Ahr0cAKXcgZFRfJ05SDokSHTfN
-	jXPrhzGgoWmGQJy+kbKGacztvzPAG0VZY7QODBlz2dhxkauyvny4QYD1Sn93zFjoRwz7rtxIeRSFT
-	/5vAOJQYyW6nfO9WESy0lFzuia8lcNbI1r3pmzzQ440e2a0h03XVEvkS4BGy8eJMOxAk8Vd/9wfQn
-	N1CDYbUQ==;
+	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:From:Reply-To:
+	Cc:Content-Type:Content-ID:Content-Description;
+	bh=pISmS11V1tQprFst6l/klCiCb/4SA1I27pPJorGm5gg=; b=IKoGyQZrkoZMy+DdfIsGPzhp0f
+	KsIQdc38aM7WkyiOFbPySG9hwJzfNFlal9JXYEWJnbzwgdeh/WsfWiBQfnKxXyVWjEKC3JnIn1wCS
+	XLH6oP6mkrblKJheY/uUD63e5eaEz3K5D/eByo/0O+mHJB+zeTTHvB69OKxY58EqDBJCB7a8N9Nta
+	6DxzwcmeiCL8m04LDqLpPO3KNROO5rmNBrfJbFnZLPDswK9grm3HKuCAtJ3rSy2DWpH52TSGMz8ss
+	gUPg2JoI4zG+A3IFRw9/IshiTVLa2XNTriAS+LQGPeDZVsm65nqSkr+qsXqvaeI8j2Vy4tlcJjAbS
+	hyDMrxrA==;
 Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7qGN-0000000HLQR-0Bwg;
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w7qGM-0000000A0NP-419U;
 	Wed, 01 Apr 2026 07:45:19 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7qGM-00000007xeH-2STV;
+	id 1w7qGM-00000007xeL-2p8k;
 	Wed, 01 Apr 2026 08:45:18 +0100
 From: David Woodhouse <dwmw2@infradead.org>
 To: Saeed Mahameed <saeedm@nvidia.com>,
@@ -101,9 +101,9 @@ To: Saeed Mahameed <saeedm@nvidia.com>,
 	coreteam@netfilter.org,
 	torvalds@linux-foundation.org,
 	jon.maddog.hall@gmail.com
-Subject: [PATCH 4/6] net: Make IPv4-only Kconfig options depend on LEGACY_IP
-Date: Wed,  1 Apr 2026 08:44:18 +0100
-Message-ID: <20260401074509.1897527-5-dwmw2@infradead.org>
+Subject: [PATCH 5/6] net: Change CONFIG_INET to CONFIG_LEGACY_IP for IPv4-only code
+Date: Wed,  1 Apr 2026 08:44:19 +0100
+Message-ID: <20260401074509.1897527-6-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260401074509.1897527-1-dwmw2@infradead.org>
 References: <20260401074509.1897527-1-dwmw2@infradead.org>
@@ -113,274 +113,220 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18875-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,blackwall.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,sipsolutions.net,netfilter.org,strlen.de,nwl.cc,amazon.co.uk,paul-moore.com,vger.kernel.org,corigine.com,lists.linux.dev,linux-foundation.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[49];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18877-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,blackwall.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,sipsolutions.net,netfilter.org,strlen.de,nwl.cc,amazon.co.uk,paul-moore.com,vger.kernel.org,corigine.com,lists.linux.dev,linux-foundation.org];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[dwmw2@infradead.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	NEURAL_HAM(-0.00)[-0.997];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MAILSPIKE_FAIL(0.00)[104.64.211.4:query timed out];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,amazon.co.uk:email]
-X-Rspamd-Queue-Id: D08DE37668A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,infradead.org:dkim,infradead.org:mid,amazon.co.uk:email]
+X-Rspamd-Queue-Id: 786DA3766E0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-Add 'depends on LEGACY_IP' to Kconfig options that are purely
-IPv4-specific, so they are automatically disabled when LEGACY_IP=n.
+Several functions guarded by CONFIG_INET are actually IPv4-specific
+and should be gated by CONFIG_LEGACY_IP instead:
 
-IPv4-only options gated:
- - IP_MULTICAST, IP_ADVANCED_ROUTER, IP_FIB_TRIE_STATS,
-   IP_MULTIPLE_TABLES, IP_ROUTE_MULTIPATH, IP_ROUTE_VERBOSE,
-   IP_ROUTE_CLASSID — IPv4 routing features
- - IP_PNP (and children DHCP/BOOTP/RARP) — IPv4 autoconfiguration
- - NET_IPIP, NET_IPGRE_DEMUX, NET_IPGRE, NET_IPGRE_BROADCAST — IPv4
-   tunnels
- - IP_MROUTE_COMMON, IP_MROUTE, IP_MROUTE_MULTIPLE_TABLES,
-   IP_PIMSM_V1, IP_PIMSM_V2 — IPv4 multicast routing
- - NET_IPVTI, NET_FOU_IP_TUNNELS — IPv4 VTI and FOU tunnels
- - INET_AH, INET_ESP, INET_ESP_OFFLOAD, INET_ESPINTCP,
-   INET_IPCOMP — IPv4 IPsec (IPv6 has separate INET6_* options)
- - INET_XFRM_TUNNEL, INET_TUNNEL — IPv4 tunnel infrastructure
+ - bpf_out_neigh_v4(): BPF IPv4 neighbour output helper
+ - bpf_ipv4_fib_lookup(): BPF IPv4 FIB lookup
+ - case AF_INET in bpf_xdp_fib_lookup/bpf_skb_fib_lookup switch
+ - br_arp_send(): bridge ARP proxy (ARP is IPv4-only)
 
-Options intentionally left ungated (shared with IPv6):
- - SYN_COOKIES, NET_IP_TUNNEL, NET_UDP_TUNNEL, NET_FOU
- - INET_TABLE_PERTURB_ORDER, INET_DIAG and children
- - TCP_CONG_*, DEFAULT_TCP_CONG, TCP_SIGPOOL, TCP_AO, TCP_MD5SIG
+This allows the compiler to eliminate these functions when
+LEGACY_IP=n.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- net/ipv4/Kconfig | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ net/bridge/br_arp_nd_proxy.c    |  2 +-
+ net/bridge/br_private.h         |  8 ++++++++
+ net/core/filter.c               | 10 +++++-----
+ net/core/sock.c                 |  2 +-
+ net/mac80211/main.c             | 10 +++++-----
+ net/netfilter/nfnetlink_queue.c |  2 +-
+ 6 files changed, 21 insertions(+), 13 deletions(-)
 
-diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
-index aef2c5349e62..03b5ba75c3cf 100644
---- a/net/ipv4/Kconfig
-+++ b/net/ipv4/Kconfig
-@@ -15,6 +15,7 @@ config LEGACY_IP
+diff --git a/net/bridge/br_arp_nd_proxy.c b/net/bridge/br_arp_nd_proxy.c
+index 1e2b51769eec..e056fa0cd1fe 100644
+--- a/net/bridge/br_arp_nd_proxy.c
++++ b/net/bridge/br_arp_nd_proxy.c
+@@ -39,7 +39,7 @@ void br_recalculate_neigh_suppress_enabled(struct net_bridge *br)
+ 	br_opt_toggle(br, BROPT_NEIGH_SUPPRESS_ENABLED, neigh_suppress);
+ }
  
- config IP_MULTICAST
- 	bool "IP: multicasting"
-+	depends on LEGACY_IP
- 	help
- 	  This is code for addressing several networked computers at once,
- 	  enlarging your kernel by about 2 KB. You need multicasting if you
-@@ -25,6 +26,7 @@ config IP_MULTICAST
+-#if IS_ENABLED(CONFIG_INET)
++#if IS_ENABLED(CONFIG_LEGACY_IP)
+ static void br_arp_send(struct net_bridge *br, struct net_bridge_port *p,
+ 			struct net_device *dev, __be32 dest_ip, __be32 src_ip,
+ 			const unsigned char *dest_hw,
+diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+index 9b55d38ea9ed..28131fa0a7c5 100644
+--- a/net/bridge/br_private.h
++++ b/net/bridge/br_private.h
+@@ -2347,8 +2347,16 @@ static inline void br_switchdev_init(struct net_bridge *br)
  
- config IP_ADVANCED_ROUTER
- 	bool "IP: advanced router"
-+	depends on LEGACY_IP
- 	help
- 	  If you intend to run your Linux box mostly as a router, i.e. as a
- 	  computer that forwards and redistributes network packets, say Y; you
-@@ -66,6 +68,7 @@ config IP_ADVANCED_ROUTER
+ /* br_arp_nd_proxy.c */
+ void br_recalculate_neigh_suppress_enabled(struct net_bridge *br);
++#if IS_ENABLED(CONFIG_LEGACY_IP)
+ void br_do_proxy_suppress_arp(struct sk_buff *skb, struct net_bridge *br,
+ 			      u16 vid, struct net_bridge_port *p);
++#else
++static inline void br_do_proxy_suppress_arp(struct sk_buff *skb,
++					    struct net_bridge *br,
++					    u16 vid, struct net_bridge_port *p)
++{
++}
++#endif
+ void br_do_suppress_nd(struct sk_buff *skb, struct net_bridge *br,
+ 		       u16 vid, struct net_bridge_port *p, struct nd_msg *msg);
+ struct nd_msg *br_is_nd_neigh_msg(const struct sk_buff *skb, struct nd_msg *m);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index ad71ceefcb5e..ef99bd9fddd6 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2310,7 +2310,7 @@ static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev,
+ }
+ #endif /* CONFIG_IPV6 */
  
- config IP_FIB_TRIE_STATS
- 	bool "FIB TRIE statistics"
-+	depends on LEGACY_IP
- 	depends on IP_ADVANCED_ROUTER
- 	help
- 	  Keep track of statistics on structure of FIB TRIE table.
-@@ -73,6 +76,7 @@ config IP_FIB_TRIE_STATS
+-#if IS_ENABLED(CONFIG_INET)
++#if IS_ENABLED(CONFIG_LEGACY_IP)
+ static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb,
+ 			    struct net_device *dev, struct bpf_nh_params *nh)
+ {
+@@ -2419,7 +2419,7 @@ static int __bpf_redirect_neigh_v4(struct sk_buff *skb, struct net_device *dev,
+ 	kfree_skb(skb);
+ 	return NET_XMIT_DROP;
+ }
+-#endif /* CONFIG_INET */
++#endif /* CONFIG_LEGACY_IP */
  
- config IP_MULTIPLE_TABLES
- 	bool "IP: policy routing"
-+	depends on LEGACY_IP
- 	depends on IP_ADVANCED_ROUTER
- 	select FIB_RULES
- 	help
-@@ -90,6 +94,7 @@ config IP_MULTIPLE_TABLES
+ static int __bpf_redirect_neigh(struct sk_buff *skb, struct net_device *dev,
+ 				struct bpf_nh_params *nh)
+@@ -6095,7 +6095,7 @@ static int bpf_fib_set_fwd_params(struct bpf_fib_lookup *params, u32 mtu)
+ }
+ #endif
  
- config IP_ROUTE_MULTIPATH
- 	bool "IP: equal cost multipath"
-+	depends on LEGACY_IP
- 	depends on IP_ADVANCED_ROUTER
- 	help
- 	  Normally, the routing tables specify a single action to be taken in
-@@ -102,6 +107,7 @@ config IP_ROUTE_MULTIPATH
+-#if IS_ENABLED(CONFIG_INET)
++#if IS_ENABLED(CONFIG_LEGACY_IP)
+ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+ 			       u32 flags, bool check_mtu)
+ {
+@@ -6390,7 +6390,7 @@ BPF_CALL_4(bpf_xdp_fib_lookup, struct xdp_buff *, ctx,
+ 		return -EINVAL;
  
- config IP_ROUTE_VERBOSE
- 	bool "IP: verbose route monitoring"
-+	depends on LEGACY_IP
- 	depends on IP_ADVANCED_ROUTER
- 	help
- 	  If you say Y here, which is recommended, then the kernel will print
-@@ -113,9 +119,11 @@ config IP_ROUTE_VERBOSE
+ 	switch (params->family) {
+-#if IS_ENABLED(CONFIG_INET)
++#if IS_ENABLED(CONFIG_LEGACY_IP)
+ 	case AF_INET:
+ 		return bpf_ipv4_fib_lookup(dev_net(ctx->rxq->dev), params,
+ 					   flags, true);
+@@ -6431,7 +6431,7 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+ 		check_mtu = true;
  
- config IP_ROUTE_CLASSID
- 	bool
-+	depends on LEGACY_IP
+ 	switch (params->family) {
+-#if IS_ENABLED(CONFIG_INET)
++#if IS_ENABLED(CONFIG_LEGACY_IP)
+ 	case AF_INET:
+ 		rc = bpf_ipv4_fib_lookup(net, params, flags, check_mtu);
+ 		break;
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 5976100a9d55..6b2914702a38 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -4267,7 +4267,7 @@ int sock_load_diag_module(int family, int protocol)
+ 				      NETLINK_SOCK_DIAG, family);
+ 	}
  
- config IP_PNP
- 	bool "IP: kernel level autoconfiguration"
-+	depends on LEGACY_IP
- 	help
- 	  This enables automatic configuration of IP addresses of devices and
- 	  of the routing table during kernel boot, based on either information
-@@ -172,6 +180,7 @@ config IP_PNP_RARP
+-#ifdef CONFIG_INET
++#ifdef CONFIG_LEGACY_IP
+ 	if (family == AF_INET &&
+ 	    protocol != IPPROTO_RAW &&
+ 	    protocol < MAX_INET_PROTOS &&
+diff --git a/net/mac80211/main.c b/net/mac80211/main.c
+index 616f86b1a7e4..7c1bbbb2c5c7 100644
+--- a/net/mac80211/main.c
++++ b/net/mac80211/main.c
+@@ -558,7 +558,7 @@ void ieee80211_restart_hw(struct ieee80211_hw *hw)
+ }
+ EXPORT_SYMBOL(ieee80211_restart_hw);
  
- config NET_IPIP
- 	tristate "IP: tunneling"
-+	depends on LEGACY_IP
- 	select INET_TUNNEL
- 	select NET_IP_TUNNEL
- 	help
-@@ -190,6 +199,7 @@ config NET_IPIP
+-#ifdef CONFIG_INET
++#ifdef CONFIG_LEGACY_IP
+ static int ieee80211_ifa_changed(struct notifier_block *nb,
+ 				 unsigned long data, void *arg)
+ {
+@@ -1624,7 +1624,7 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+ 	wiphy_unlock(hw->wiphy);
+ 	rtnl_unlock();
  
- config NET_IPGRE_DEMUX
- 	tristate "IP: GRE demultiplexer"
-+	depends on LEGACY_IP
- 	help
- 	  This is helper module to demultiplex GRE packets on GRE version field criteria.
- 	  Required by ip_gre and pptp modules.
-@@ -202,6 +212,7 @@ config NET_IP_TUNNEL
+-#ifdef CONFIG_INET
++#ifdef CONFIG_LEGACY_IP
+ 	local->ifa_notifier.notifier_call = ieee80211_ifa_changed;
+ 	result = register_inetaddr_notifier(&local->ifa_notifier);
+ 	if (result)
+@@ -1642,11 +1642,11 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
  
- config NET_IPGRE
- 	tristate "IP: GRE tunnels over IP"
-+	depends on LEGACY_IP
- 	depends on (IPV6 || IPV6=n) && NET_IPGRE_DEMUX
- 	select NET_IP_TUNNEL
- 	help
-@@ -217,6 +228,7 @@ config NET_IPGRE
+ #if IS_ENABLED(CONFIG_IPV6)
+  fail_ifa6:
+-#ifdef CONFIG_INET
++#ifdef CONFIG_LEGACY_IP
+ 	unregister_inetaddr_notifier(&local->ifa_notifier);
+ #endif
+ #endif
+-#if defined(CONFIG_INET) || defined(CONFIG_IPV6)
++#if defined(CONFIG_LEGACY_IP) || defined(CONFIG_IPV6)
+  fail_ifa:
+ #endif
+ 	wiphy_unregister(local->hw.wiphy);
+@@ -1673,7 +1673,7 @@ void ieee80211_unregister_hw(struct ieee80211_hw *hw)
+ 	tasklet_kill(&local->tx_pending_tasklet);
+ 	tasklet_kill(&local->tasklet);
  
- config NET_IPGRE_BROADCAST
- 	bool "IP: broadcast GRE over IP"
-+	depends on LEGACY_IP
- 	depends on IP_MULTICAST && NET_IPGRE
- 	help
- 	  One application of GRE/IP is to construct a broadcast WAN (Wide Area
-@@ -226,10 +238,12 @@ config NET_IPGRE_BROADCAST
+-#ifdef CONFIG_INET
++#ifdef CONFIG_LEGACY_IP
+ 	unregister_inetaddr_notifier(&local->ifa_notifier);
+ #endif
+ #if IS_ENABLED(CONFIG_IPV6)
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index 47f7f62906e2..e453fdb2254c 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -339,7 +339,7 @@ static struct nf_hook_entries *nf_hook_entries_head(const struct net *net, u8 pf
  
- config IP_MROUTE_COMMON
- 	bool
-+	depends on LEGACY_IP
- 	depends on IP_MROUTE || IPV6_MROUTE
+ static int nf_ip_reroute(struct sk_buff *skb, const struct nf_queue_entry *entry)
+ {
+-#ifdef CONFIG_INET
++#ifdef CONFIG_LEGACY_IP
+ 	const struct ip_rt_info *rt_info = nf_queue_entry_reroute(entry);
  
- config IP_MROUTE
- 	bool "IP: multicast routing"
-+	depends on LEGACY_IP
- 	depends on IP_MULTICAST
- 	select IP_MROUTE_COMMON
- 	help
-@@ -242,6 +256,7 @@ config IP_MROUTE
- 
- config IP_MROUTE_MULTIPLE_TABLES
- 	bool "IP: multicast policy routing"
-+	depends on LEGACY_IP
- 	depends on IP_MROUTE && IP_ADVANCED_ROUTER
- 	select FIB_RULES
- 	help
-@@ -256,6 +271,7 @@ config IP_MROUTE_MULTIPLE_TABLES
- 
- config IP_PIMSM_V1
- 	bool "IP: PIM-SM version 1 support"
-+	depends on LEGACY_IP
- 	depends on IP_MROUTE
- 	help
- 	  Kernel side support for Sparse Mode PIM (Protocol Independent
-@@ -269,6 +285,7 @@ config IP_PIMSM_V1
- 
- config IP_PIMSM_V2
- 	bool "IP: PIM-SM version 2 support"
-+	depends on LEGACY_IP
- 	depends on IP_MROUTE
- 	help
- 	  Kernel side support for Sparse Mode PIM version 2. In order to use
-@@ -314,6 +331,7 @@ config SYN_COOKIES
- 
- config NET_IPVTI
- 	tristate "Virtual (secure) IP: tunneling"
-+	depends on LEGACY_IP
- 	depends on IPV6 || IPV6=n
- 	select INET_TUNNEL
- 	select NET_IP_TUNNEL
-@@ -341,6 +359,7 @@ config NET_FOU
- 
- config NET_FOU_IP_TUNNELS
- 	bool "IP: FOU encapsulation of IP tunnels"
-+	depends on LEGACY_IP
- 	depends on NET_IPIP || NET_IPGRE || IPV6_SIT
- 	select NET_FOU
- 	help
-@@ -350,6 +369,7 @@ config NET_FOU_IP_TUNNELS
- 
- config INET_AH
- 	tristate "IP: AH transformation"
-+	depends on LEGACY_IP
- 	select XFRM_AH
- 	help
- 	  Support for IPsec AH (Authentication Header).
-@@ -365,6 +385,7 @@ config INET_AH
- 
- config INET_ESP
- 	tristate "IP: ESP transformation"
-+	depends on LEGACY_IP
- 	select XFRM_ESP
- 	help
- 	  Support for IPsec ESP (Encapsulating Security Payload).
-@@ -380,6 +401,7 @@ config INET_ESP
- 
- config INET_ESP_OFFLOAD
- 	tristate "IP: ESP transformation offload"
-+	depends on LEGACY_IP
- 	depends on INET_ESP
- 	select XFRM_OFFLOAD
- 	default n
-@@ -393,6 +415,7 @@ config INET_ESP_OFFLOAD
- 
- config INET_ESPINTCP
- 	bool "IP: ESP in TCP encapsulation (RFC 8229)"
-+	depends on LEGACY_IP
- 	depends on XFRM && INET_ESP
- 	select STREAM_PARSER
- 	select NET_SOCK_MSG
-@@ -405,6 +428,7 @@ config INET_ESPINTCP
- 
- config INET_IPCOMP
- 	tristate "IP: IPComp transformation"
-+	depends on LEGACY_IP
- 	select INET_XFRM_TUNNEL
- 	select XFRM_IPCOMP
- 	help
-@@ -425,11 +449,13 @@ config INET_TABLE_PERTURB_ORDER
- 
- config INET_XFRM_TUNNEL
- 	tristate
-+	depends on LEGACY_IP
- 	select INET_TUNNEL
- 	default n
- 
- config INET_TUNNEL
- 	tristate
-+	depends on LEGACY_IP
- 	default n
- 
- config INET_DIAG
+ 	if (entry->state.hook == NF_INET_LOCAL_OUT) {
 -- 
 2.51.0
 
