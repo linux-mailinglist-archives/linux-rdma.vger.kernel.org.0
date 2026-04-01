@@ -1,250 +1,189 @@
-Return-Path: <linux-rdma+bounces-18881-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18882-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2IiPFBjYzGnnWwYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18881-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 10:32:24 +0200
+	id UNx1EvfazGlzXAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18882-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 10:44:39 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9BB376D7F
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 10:32:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ADCE377088
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Apr 2026 10:44:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CF8A73131A42
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2026 08:25:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0572B307BF10
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2026 08:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13C93AA512;
-	Wed,  1 Apr 2026 08:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77653B47D2;
+	Wed,  1 Apr 2026 08:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iqxQiJAS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QpUoTwk7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62727395244;
-	Wed,  1 Apr 2026 08:25:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F2339D6D7;
+	Wed,  1 Apr 2026 08:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775031924; cv=none; b=LWQo+ZanAC7ytD0vhPJxaDUa8ON2X4xOCWfnv3TLm3ZMPNdvnQ8FnnnhJocPwY/EOC2fjZKL7WljmERpBtGAnjXLT0+8sSbzWbmRuTJyyPVMdigwR7ltPLnx7/+hIm2owkO8UwdCWssdQEt5QDwD7Co/1a1SYkNiA1koVyEAxo0=
+	t=1775032588; cv=none; b=FzKR57K/AWpcX8SuoM06Xbi+/mlDCNWPBZeV2Wmre/UW+Ocx24v3/Eg8UMXZzL5qP8cbhMpWtrMDMjgLZAU1dT7PwqK1LjA195BAysCkMMrTiJiJOPhyLTpW41nlIXnYm3XnKLI/E/y4mvTE7/MjpVWzeReWhosYsGUl/nrLk/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775031924; c=relaxed/simple;
-	bh=hJvssJ1aE92yB4kSJ6ju9lEu6s6as2r/EOxgcBtHsrA=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XXt/UBekCqHsugoljir3LPFj50FkcrLFQwnYr1uLD3001utiDYy0cJ89lVaqhIQ0SvD+rRw/HLIcFcpyzuNT3gCHvuwgpErsgyrCYutGODgriHUKLF0mN8WRw/rUCwjPHYvB3jdncS6+rTSRkuuazWqiMl8nCYTJpl6j1vQ1NW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iqxQiJAS; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hJvssJ1aE92yB4kSJ6ju9lEu6s6as2r/EOxgcBtHsrA=; b=iqxQiJAS4Ctm4qO+G8wwQCsQSV
-	rAMVJUM5DcAsOf1l+ydzP0Z2ZEazzL/HAleOL4elVSt1FDUFexvTpAs6WgD7tPzDvGNHtLyaM1tGk
-	kNpv+XFwRKVbIACkgOeca7zpfbKuimzpOcfFWr99Yjk6hmTv/AAFpmJvEG5aqiJIj1K/8mrSlQxqv
-	gCBpxeH3oX70yOpYCMBGGx8r/mVh6Lxaxxh6h+h6i04OruCpRuh5fDvutsfS3ZcMdpUeuiqU+V6z2
-	h1/6Dh0sV0JWz4WP0J4wqWrhQMA/TLzcJyINLHrH+bMaZxFwGJjU5tHprOmF4Xpiwfq6m3PCLjvp1
-	2g3dwmeg==;
-Received: from [172.31.31.148] (helo=u09cd745991455d.ant.amazon.com)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7qsu-0000000HQKo-3PxY;
-	Wed, 01 Apr 2026 08:25:09 +0000
-Message-ID: <2cb91533e22ed6cb11205dbc56b8aeedbbce0cca.camel@infradead.org>
-Subject: Re: [PATCH 0/6] Deprecate Legacy IP
-From: David Woodhouse <dwmw2@infradead.org>
-To: Fernando Fernandez Mancera <fmancera@suse.de>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
- <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Nikolay
- Aleksandrov <razor@blackwall.org>, Ido Schimmel <idosch@nvidia.com>, Martin
- KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev
- <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>,  Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Kuniyuki Iwashima <kuniyu@google.com>,  Willem de
- Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, Neal
- Cardwell <ncardwell@google.com>,  Johannes Berg
- <johannes@sipsolutions.net>, Pablo Neira Ayuso <pablo@netfilter.org>,
- Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, Guillaume Nault
- <gnault@redhat.com>,  Kees Cook <kees@kernel.org>, Alexei Lazar
- <alazar@nvidia.com>, Gal Pressman <gal@nvidia.com>, Paul Moore
- <paul@paul-moore.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, oss-drivers@corigine.com,
- bridge@lists.linux.dev,  bpf@vger.kernel.org,
- linux-wireless@vger.kernel.org,  netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org,  torvalds@linux-foundation.org,
- jon.maddog.hall@gmail.com
-Date: Wed, 01 Apr 2026 09:25:08 +0100
-In-Reply-To: <42caa438-3854-449c-b0ee-4f40772e5c1b@suse.de>
-References: <20260401074509.1897527-1-dwmw2@infradead.org>
-	 <42caa438-3854-449c-b0ee-4f40772e5c1b@suse.de>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-rkNnNAovcM/WfY4nycAG"
-User-Agent: Evolution 3.52.3-0ubuntu1.1 
+	s=arc-20240116; t=1775032588; c=relaxed/simple;
+	bh=vO4qgjTinnMC1E1PuMj9/Ho/t5lOuicCn6JPkQ20wN8=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=qkK8VbXkGLKnG9G5MwhLiDCcwpP5v/ZDH1CpIigmw72WaB9q8pnEYjR8OCjv4yBbMxd/8MLyjxcCbiuv0ehAgJtwGcqcbdHPa3E2dKLCUEGl3N/nokJwLoIsQoqrTWqg+iGqW2eSjbAg3HOGlv5hqawhzCVqX6fDiZgHOIL92VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QpUoTwk7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1367AC4CEF7;
+	Wed,  1 Apr 2026 08:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775032587;
+	bh=vO4qgjTinnMC1E1PuMj9/Ho/t5lOuicCn6JPkQ20wN8=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=QpUoTwk74QPJEWMqb5UT+C3b3BVVTYMJ1bpaIIDXAdCWrTOtLHYTprWub8HSG4NoX
+	 xGOTfuppXShBKFrYjUbF8daw/gwsqKclKtfS50sruytvxvuFDadMub6I63BywDMWVY
+	 wAdvkgN2f+BYzN4rjdJDabg1w0q48JsHTu7rkYUoycDAMMEXTP27dhIAesu17bgzHk
+	 KQnhB+ee22M3Eu7p02ciNlOuGPW1DX9aGAUBAy3JsRC1hpP5nk3aaC1Q/Sw42y/4ZK
+	 Ehk+ECDxGhz7EPVQmeK7OULTFxWEO+HzLoqqlWcAIaW9DpYypNEWTMagQ3E8azMVdk
+	 g76UKEGVG+iZg==
+Content-Type: multipart/mixed; boundary="===============6776902789597443804=="
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
-X-Spamd-Result: default: False [-2.76 / 15.00];
-	SIGNED_SMIME(-2.00)[];
+Message-Id: <5550407278cf0a1b19f3bca88abc38fdf04c8732a9e543e63590a21b38196313@mail.kernel.org>
+In-Reply-To: <20260401074509.1897527-5-dwmw2@infradead.org>
+References: <20260401074509.1897527-5-dwmw2@infradead.org>
+Subject: Re: [PATCH 4/6] net: Make IPv4-only Kconfig options depend on LEGACY_IP
+From: bot+bpf-ci@kernel.org
+To: dwmw2@infradead.org,saeedm@nvidia.com,leon@kernel.org,tariqt@nvidia.com,mbloch@nvidia.com,andrew+netdev@lunn.ch,davem@davemloft.net,edumazet@google.com,kuba@kernel.org,pabeni@redhat.com,horms@kernel.org,razor@blackwall.org,idosch@nvidia.com,martin.lau@linux.dev,daniel@iogearbox.net,john.fastabend@gmail.com,sdf@fomichev.me,ast@kernel.org,andrii@kernel.org,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,kpsingh@kernel.org,haoluo@google.com,jolsa@kernel.org,kuniyu@google.com,willemb@google.com,dsahern@kernel.org,ncardwell@google.com,johannes@sipsolutions.net,pablo@netfilter.org,fw@strlen.de,phil@nwl.cc,gnault@redhat.com,dwmw@amazon.co.uk,kees@kernel.org,alazar@nvidia.com,gal@nvidia.com,paul@paul-moore.com,netdev@vger.kernel.org,linux-rdma@vger.kernel.org,linux-kernel@vger.kernel.org,oss-drivers@corigine.com,bridge@lists.linux.dev,bpf@vger.kernel.org,linux-wireless@vger.kernel.org,netfilter-devel@vger.kernel.org,coreteam@netfilter.org,torvalds@linux-foundation.org,jon.maddo
+ g.hall@gmail.com
+Cc: ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed,  1 Apr 2026 08:36:27 +0000 (UTC)
+X-Spamd-Result: default: False [2.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	ARC_REJECT(1.00)[signature check failed: fail, {[1] = sig:subspace.kernel.org:reject}];
+	CTYPE_MIXED_BOGUS(1.00)[];
+	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18881-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,linux-rdma@vger.kernel.org];
+	R_DKIM_REJECT(0.00)[kernel.org:s=k20201202];
+	TAGGED_FROM(0.00)[bounces-18882-lists,linux-rdma=lfdr.de,bpf-ci];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[suse.de,nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,blackwall.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,sipsolutions.net,netfilter.org,strlen.de,nwl.cc,paul-moore.com,vger.kernel.org,corigine.com,lists.linux.dev,linux-foundation.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[49];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FROM_HAS_DN(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,iogearbox.net,gmail.com,linux.dev,meta.com];
+	FREEMAIL_TO(0.00)[infradead.org,nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,blackwall.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,sipsolutions.net,netfilter.org,strlen.de,nwl.cc,amazon.co.uk,paul-moore.com,vger.kernel.org,corigine.com,lists.linux.dev,linux-foundation.org];
+	NEURAL_SPAM(0.00)[0.999];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	MIME_TRACE(0.00)[0:+,1:+];
+	RCPT_COUNT_GT_50(0.00)[58];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dwmw2@infradead.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:-];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,infradead.org:dkim,infradead.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CC9BB376D7F
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_NO_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.kernel.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9ADCE377088
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+--===============6776902789597443804==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
---=-rkNnNAovcM/WfY4nycAG
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
+> index aef2c5349e62..03b5ba75c3cf 100644
+> --- a/net/ipv4/Kconfig
+> +++ b/net/ipv4/Kconfig
 
-On Wed, 2026-04-01 at 10:07 +0200, Fernando Fernandez Mancera wrote:
-> =C2=A0
->=20
-> Dammit, you've beaten me to it! This was my next step for 7.2.
->=20
-> Fully-endorsed-by: Fernando Fernandez Mancera <fmancera@suse.de>
+[ ... ]
 
-Yeah. The date notwithstanding, I do actually think we should do most
-of this for real.
+> @@ -113,9 +119,11 @@ config IP_ROUTE_VERBOSE
+>
+>  config IP_ROUTE_CLASSID
+>  	bool
+> +	depends on LEGACY_IP
 
-Maybe we don't get away with the actual deprecation and the warnings on
-use *just* yet, and *maybe* we won't even get away with calling the
-config option CONFIG_LEGACY_IP, although I would genuinely like to see
-us moving consistently towards saying "Legacy IP" instead of "IPv4"
-everywhere.
+IP_ROUTE_CLASSID is selected by NETFILTER_XT_MATCH_REALM in
+net/netfilter/Kconfig and by NET_CLS_ROUTE4 in net/sched/Kconfig,
+neither of which depends on LEGACY_IP.
 
-But we *should* clean up the separation of CONFIG_INET and
-CONFIG_IPV[64] and make it possible to build with either protocol
-alone.
+Would this produce unmet direct dependency warnings when either of
+those options is enabled with LEGACY_IP=n?
 
---=-rkNnNAovcM/WfY4nycAG
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+> @@ -190,6 +199,7 @@ config NET_IPIP
+>
+>  config NET_IPGRE_DEMUX
+>  	tristate "IP: GRE demultiplexer"
+> +	depends on LEGACY_IP
+>  	help
+>  	  This is helper module to demultiplex GRE packets on GRE version field criteria.
+>  	  Required by ip_gre and pptp modules.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCD9Aw
-ggSOMIIDdqADAgECAhAOmiw0ECVD4cWj5DqVrT9PMA0GCSqGSIb3DQEBCwUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yNDAxMzAwMDAwMDBaFw0zMTEx
-MDkyMzU5NTlaMEExCzAJBgNVBAYTAkFVMRAwDgYDVQQKEwdWZXJva2V5MSAwHgYDVQQDExdWZXJv
-a2V5IFNlY3VyZSBFbWFpbCBHMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMjvgLKj
-jfhCFqxYyRiW8g3cNFAvltDbK5AzcOaR7yVzVGadr4YcCVxjKrEJOgi7WEOH8rUgCNB5cTD8N/Et
-GfZI+LGqSv0YtNa54T9D1AWJy08ZKkWvfGGIXN9UFAPMJ6OLLH/UUEgFa+7KlrEvMUupDFGnnR06
-aDJAwtycb8yXtILj+TvfhLFhafxroXrflspavejQkEiHjNjtHnwbZ+o43g0/yxjwnarGI3kgcak7
-nnI9/8Lqpq79tLHYwLajotwLiGTB71AGN5xK+tzB+D4eN9lXayrjcszgbOv2ZCgzExQUAIt98mre
-8EggKs9mwtEuKAhYBIP/0K6WsoMnQCcCAwEAAaOCAVwwggFYMBIGA1UdEwEB/wQIMAYBAf8CAQAw
-HQYDVR0OBBYEFIlICOogTndrhuWByNfhjWSEf/xwMB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6en
-IZ3zbcgPMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIweQYI
-KwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYB
-BQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RD
-QS5jcnQwRQYDVR0fBD4wPDA6oDigNoY0aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0
-QXNzdXJlZElEUm9vdENBLmNybDARBgNVHSAECjAIMAYGBFUdIAAwDQYJKoZIhvcNAQELBQADggEB
-ACiagCqvNVxOfSd0uYfJMiZsOEBXAKIR/kpqRp2YCfrP4Tz7fJogYN4fxNAw7iy/bPZcvpVCfe/H
-/CCcp3alXL0I8M/rnEnRlv8ItY4MEF+2T/MkdXI3u1vHy3ua8SxBM8eT9LBQokHZxGUX51cE0kwa
-uEOZ+PonVIOnMjuLp29kcNOVnzf8DGKiek+cT51FvGRjV6LbaxXOm2P47/aiaXrDD5O0RF5SiPo6
-xD1/ClkCETyyEAE5LRJlXtx288R598koyFcwCSXijeVcRvBB1cNOLEbg7RMSw1AGq14fNe2cH1HG
-W7xyduY/ydQt6gv5r21mDOQ5SaZSWC/ZRfLDuEYwggWbMIIEg6ADAgECAhAH5JEPagNRXYDiRPdl
-c1vgMA0GCSqGSIb3DQEBCwUAMEExCzAJBgNVBAYTAkFVMRAwDgYDVQQKEwdWZXJva2V5MSAwHgYD
-VQQDExdWZXJva2V5IFNlY3VyZSBFbWFpbCBHMjAeFw0yNDEyMzAwMDAwMDBaFw0yODAxMDQyMzU5
-NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqGSIb3DQEBAQUAA4IC
-DwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZeYAS/SRV6zmfXlXaZ
-sNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2zkC9S7/yHDYnqegqt
-w4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qGpgFdZEk2/c//ZvUN
-i12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41vav1RhZJzYan4a1gU0
-kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0cvnO8FM6PTqsnSbcc
-0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PWPU6zfQTOMZ9uLQRR
-ci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXtREF5lLXxp+CJ6KKS
-blPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQrlR0gO3lBzuyPPArV
-hvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7IqaAovAX0d+f1YjbmC
-VsAwjhLmveFjNwIDAQABo4IBsDCCAawwHwYDVR0jBBgwFoAUiUgI6iBOd2uG5YHI1+GNZIR//HAw
-HQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3bXcyQGluZnJhZGVh
-ZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEBMA4GA1UdDwEB/wQE
-AwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwewYDVR0fBHQwcjA3oDWgM4YxaHR0
-cDovL2NybDMuZGlnaWNlcnQuY29tL1Zlcm9rZXlTZWN1cmVFbWFpbEcyLmNybDA3oDWgM4YxaHR0
-cDovL2NybDQuZGlnaWNlcnQuY29tL1Zlcm9rZXlTZWN1cmVFbWFpbEcyLmNybDB2BggrBgEFBQcB
-AQRqMGgwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBABggrBgEFBQcwAoY0
-aHR0cDovL2NhY2VydHMuZGlnaWNlcnQuY29tL1Zlcm9rZXlTZWN1cmVFbWFpbEcyLmNydDANBgkq
-hkiG9w0BAQsFAAOCAQEAQXc4FPiPLRnTDvmOABEzkIumojfZAe5SlnuQoeFUfi+LsWCKiB8Uextv
-iBAvboKhLuN6eG/NC6WOzOCppn4mkQxRkOdLNThwMHW0d19jrZFEKtEG/epZ/hw/DdScTuZ2m7im
-8ppItAT6GXD3aPhXkXnJpC/zTs85uNSQR64cEcBFjjoQDuSsTeJ5DAWf8EMyhMuD8pcbqx5kRvyt
-JPsWBQzv1Dsdv2LDPLNd/JUKhHSgr7nbUr4+aAP2PHTXGcEBh8lTeYea9p4d5k969pe0OHYMV5aL
-xERqTagmSetuIwolkAuBCzA9vulg8Y49Nz2zrpUGfKGOD0FMqenYxdJHgDCCBZswggSDoAMCAQIC
-EAfkkQ9qA1FdgOJE92VzW+AwDQYJKoZIhvcNAQELBQAwQTELMAkGA1UEBhMCQVUxEDAOBgNVBAoT
-B1Zlcm9rZXkxIDAeBgNVBAMTF1Zlcm9rZXkgU2VjdXJlIEVtYWlsIEcyMB4XDTI0MTIzMDAwMDAw
-MFoXDTI4MDEwNDIzNTk1OVowHjEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJ
-KoZIhvcNAQEBBQADggIPADCCAgoCggIBANqWLse95HW2F7FhfH9bugyT/danKmmXrbMnz5GZNAfj
-Jl5gBL9JFXrOZ9eVdpmw04Tp6aDxZctFLoEDvSWKi367Q7Sg+ci+fH4KwwfQ8Pi0IpIKx2n5emEg
-nbOQL1Lv/IcNiep6Cq3DiyaSpSp/RZf+CAfUNySHS8eWmhLU6jGpSD6hxTpYKye7PmrmvMWwfGEP
-WoamAV1kSTb9z/9m9Q2LXa89aKmTxNwnAfD3Ohn9mtU3JukwILRMewn9QRXK7KzM+01h5hkCE4nj
-W9q/VGFknNhqfhrWBTSQoE9CSVylASGrjzCgS7XmKy/BaH3/7mOOHQv5g1o3Qj/+cdKnpT0I5Qb1
-nRy+c7wUzo9OqydJtxzSP4ZyHA4dELto/a3m/ay1XHcpum1pgTOLgxAfGb/T4dCkwRUstSKLMmpL
-g9Y9TrN9BM4xn24tBFFyL5znGG0wQGzOVAM68RBzIQb6Fz758fjsr4yZnPbVsU1+gHEs/puNHrG0
-9e1EQXmUtfGn4InoopJuU8p5VGD9S3Ikd4UoBlc7xl5yjtNlQxUeYrRlnUSmdlucCEoTX1n4UmtA
-9CuVHSA7eUHO7I88CtWG9bGOU7tLgOZoSEvNqtaL/N7sQbBZK4jZ4Rr/zNTQg1SwYjjLB7u96lDP
-sipoCi8BfR35/ViNuYJWwDCOEua94WM3AgMBAAGjggGwMIIBrDAfBgNVHSMEGDAWgBSJSAjqIE53
-a4blgcjX4Y1khH/8cDAdBgNVHQ4EFgQUXGIam3Bs59Y60yTmWgfDu6pZQ6cwMAYDVR0RBCkwJ4ET
-ZHdtdzJAaW5mcmFkZWFkLm9yZ4EQZGF2aWRAd29vZGhvdS5zZTAUBgNVHSAEDTALMAkGB2eBDAEF
-AQEwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDB7BgNVHR8E
-dDByMDegNaAzhjFodHRwOi8vY3JsMy5kaWdpY2VydC5jb20vVmVyb2tleVNlY3VyZUVtYWlsRzIu
-Y3JsMDegNaAzhjFodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vVmVyb2tleVNlY3VyZUVtYWlsRzIu
-Y3JsMHYGCCsGAQUFBwEBBGowaDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29t
-MEAGCCsGAQUFBzAChjRodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vVmVyb2tleVNlY3VyZUVt
-YWlsRzIuY3J0MA0GCSqGSIb3DQEBCwUAA4IBAQBBdzgU+I8tGdMO+Y4AETOQi6aiN9kB7lKWe5Ch
-4VR+L4uxYIqIHxR7G2+IEC9ugqEu43p4b80LpY7M4KmmfiaRDFGQ50s1OHAwdbR3X2OtkUQq0Qb9
-6ln+HD8N1JxO5nabuKbymki0BPoZcPdo+FeRecmkL/NOzzm41JBHrhwRwEWOOhAO5KxN4nkMBZ/w
-QzKEy4PylxurHmRG/K0k+xYFDO/UOx2/YsM8s138lQqEdKCvudtSvj5oA/Y8dNcZwQGHyVN5h5r2
-nh3mT3r2l7Q4dgxXlovERGpNqCZJ624jCiWQC4ELMD2+6WDxjj03PbOulQZ8oY4PQUyp6djF0keA
-MYIDuzCCA7cCAQEwVTBBMQswCQYDVQQGEwJBVTEQMA4GA1UEChMHVmVyb2tleTEgMB4GA1UEAxMX
-VmVyb2tleSBTZWN1cmUgRW1haWwgRzICEAfkkQ9qA1FdgOJE92VzW+AwDQYJYIZIAWUDBAIBBQCg
-ggE3MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2MDQwMTA4MjUw
-OFowLwYJKoZIhvcNAQkEMSIEIIGuTNTsZ54FEuBd1Hh3VofkAPR0rtqPuyBf99YWkmGHMGQGCSsG
-AQQBgjcQBDFXMFUwQTELMAkGA1UEBhMCQVUxEDAOBgNVBAoTB1Zlcm9rZXkxIDAeBgNVBAMTF1Zl
-cm9rZXkgU2VjdXJlIEVtYWlsIEcyAhAH5JEPagNRXYDiRPdlc1vgMGYGCyqGSIb3DQEJEAILMVeg
-VTBBMQswCQYDVQQGEwJBVTEQMA4GA1UEChMHVmVyb2tleTEgMB4GA1UEAxMXVmVyb2tleSBTZWN1
-cmUgRW1haWwgRzICEAfkkQ9qA1FdgOJE92VzW+AwDQYJKoZIhvcNAQEBBQAEggIAZKsIslHeUYHY
-Zj4x94O6duOzAmYD+y4cf4TsPA+aMcfcsrmbBbTC4gx5Oc6bARm7siDlxIc/QvYqWuz2VFg0qEuk
-N0FX5/I3UNKtyave8PXDtBSLdfPWUjln/PIMxd5ZJzT5EUqeUusEi4C1hkN9LOSZyRJvxi9CTNyD
-6tRW++ERHnJgBw5Tjz8FEKhu2QcyssjGxSCR7RJ0oBzVIghelzEWPYhI9dDUE0HNXt9WlmnihiS5
-cfKvy0joWQn7gQCR+Zp2Py54+V4ZFVbelwHJ2gsM9gW0Fjmjad2lYviMyiwqVQUeAcglEKg/LXln
-gwkYJZg7SwV7rhMCHOkUEJ63wrqVoTDokpiHIN3LUKw3vXvJjWU3PrRvKBgjhvYFpjJv9hKC9zri
-5tHlw9HxZZytYQIdScnKJdOAay8fr2WydZ0xiJCYhZD27GwwBtiTHrxSHaVK1GWO8YxJm13ZJUvX
-zOAGopHRp7kESyOS7zNzRu4CLa9xqypIPuH99u3ectKCFMCWOktUGrz3mf6HfXxgQWV6ivoAaHwg
-H/uFA1dV+QqZ9ebhGXXWJdlUwpFQVwh8pj67tUXK1lZVMMkSgqkhl16sIEb4UiIaFspuFj8jUrQM
-cw0sQ3LwjUFLpx9SI25A5XKjjSVOZRXorZ27BcLIJLwE2kXwJh7rC9nzSIe9b7YAAAAAAAA=
+IPV6_GRE in net/ipv6/Kconfig has 'depends on NET_IPGRE_DEMUX'.
+ip6_gre.c uses gre_parse_header() from the GRE demux module.
+
+Gating NET_IPGRE_DEMUX on LEGACY_IP silently makes IPv6 GRE tunneling
+unavailable on IPv6-only systems. Should this option be left ungated,
+similar to NET_IP_TUNNEL?
+
+[ ... ]
+
+> @@ -226,10 +238,12 @@ config NET_IPGRE_BROADCAST
+>
+>  config IP_MROUTE_COMMON
+>  	bool
+> +	depends on LEGACY_IP
+>  	depends on IP_MROUTE || IPV6_MROUTE
+
+IP_MROUTE_COMMON is shared infrastructure between IPv4 and IPv6
+multicast routing. ipmr_base.c describes itself as "Common logic
+shared by IPv4 [ipmr] and IPv6 [ip6mr] implementation".
+
+IPV6_MROUTE in net/ipv6/Kconfig does 'select IP_MROUTE_COMMON'
+without depending on LEGACY_IP. When LEGACY_IP=n and IPV6_MROUTE=y,
+this will produce an unmet dependency warning.
+
+Should IP_MROUTE_COMMON be left ungated, like NET_IP_TUNNEL and the
+other shared options listed in the commit message?
+
+[ ... ]
+
+> @@ -425,11 +449,13 @@ config INET_TABLE_PERTURB_ORDER
+>
+>  config INET_XFRM_TUNNEL
+>  	tristate
+> +	depends on LEGACY_IP
+>  	select INET_TUNNEL
+>  	default n
+>
+>  config INET_TUNNEL
+>  	tristate
+> +	depends on LEGACY_IP
+>  	default n
+
+IPV6_SIT in net/ipv6/Kconfig does 'select INET_TUNNEL' without
+depending on LEGACY_IP. When LEGACY_IP=n and IPV6_SIT is enabled,
+this will produce an unmet dependency warning for INET_TUNNEL.
+
+SIT is inherently IPv4-dependent (IPv6-in-IPv4 tunneling), so perhaps
+IPV6_SIT also needs 'depends on LEGACY_IP'?
 
 
---=-rkNnNAovcM/WfY4nycAG--
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/23838411859
+--===============6776902789597443804==--
 
