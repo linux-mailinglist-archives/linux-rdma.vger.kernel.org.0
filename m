@@ -1,52 +1,52 @@
-Return-Path: <linux-rdma+bounces-18932-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18933-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eIauOZbOzWnghgYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18932-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 04:04:06 +0200
+	id WGhCIKjOzWmthgYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18933-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 04:04:24 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A41DA382834
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 04:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E754382849
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 04:04:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E68E130F70C8
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 02:00:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D7E5D3103B82
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 02:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E3D332EA0;
-	Thu,  2 Apr 2026 02:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324603264F6;
+	Thu,  2 Apr 2026 02:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m1ISt/OL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6fsdBxB"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758972C21DF;
-	Thu,  2 Apr 2026 02:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B9229B78B;
+	Thu,  2 Apr 2026 02:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775095227; cv=none; b=bVd/Hn+9KMzOZHcezKVX5IJ+jVhDElU3A/WNNf+I3dW/Bi9gCTjCPE3M6CDPX9vNlOzGJir19xbM7D84KK+8I1qfEPgQ5NZFB5QjN8ht1ZTk1dxdNOTS7T/iUmENpwtForliH4ZZhjjeCvEN721zveOPn7uYyb58rPlSEiIzauw=
+	t=1775095234; cv=none; b=ZFqouh/P+iVjv3BhfoM5Jx5cjOrGW/UPys+z1gBUVzBCHlQzth/TfKJhV33fbtyZmPMgRCAHBFTmo9CHl+kniAWeqa1gcaMPyM8YE7GHI7wRXs8SH7zL+/5qlIpdDFVdQL8dlzfR+ou9pm0p3Bmh9pAzDZJDarUeC3iUr9gJ3o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775095227; c=relaxed/simple;
-	bh=B1P50xXIR20pcrrFSRYniKhfNsrcUuNjIUPaNY6Hbk4=;
+	s=arc-20240116; t=1775095234; c=relaxed/simple;
+	bh=Xih59V3gH67vQJtzzGf2xs8Vv1KtPZUFpYZoG6RDt8I=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=mI8zEHQ+L0pV2RHTcXZlzLwjXBJX34PkAJ8FClxDcuRuNQAneUMTDSl6BYpyK11noWuS0B/9X40CTOiNFOvvAbLEEzNfZLNib7eeyLi1p81xi5Dl6RQ1wHCd0huPSgh6irV9MBLqYREaOZjukXbySQybPBiivBScbH7im/e2Mvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m1ISt/OL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BE02C116C6;
-	Thu,  2 Apr 2026 02:00:27 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Lu8Mn52JhIoCjCcpHMKY9DNMfUqZ2ptR8qkWyJppxPa6Fwz9EFR6tdq+0id3mPUrj+Kb5mPNtthXrXL39+aQIdgA8K1Wf7sWW3T8v9NyM5GFD3g83FaG321lB3R2A/80Qlgeg2a4ngYO7Wvzpw1OLhflKuhiSww62EfFUf/iXjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6fsdBxB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93259C4CEF7;
+	Thu,  2 Apr 2026 02:00:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775095227;
-	bh=B1P50xXIR20pcrrFSRYniKhfNsrcUuNjIUPaNY6Hbk4=;
+	s=k20201202; t=1775095233;
+	bh=Xih59V3gH67vQJtzzGf2xs8Vv1KtPZUFpYZoG6RDt8I=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=m1ISt/OLTANcenuzyL99Gz6QnWhrQK0CVHNkjvrFKuufA7v2FUnWdTKu2t/IN5u8D
-	 bNE0QpGxH6AehIkZ2ifYlZbEzu9Kh0w6iDNsJccG3RzgfkUkRhy6xr24VchrDzh1aE
-	 ckHR5nOj5C/348IRqFhRvlZWHkSYy1fboKjbW2vSwDhGCG8vK5u0/BcoKnvEbQBbno
-	 IC8nCWV3vvDWz/8VqF0G2joPL7mBoW2w1eHknfWnmkfLv+0/Gh2sk+Cy8x/QNLdzFN
-	 9B6L6GfUe6kfjV6zKbdlj1F6XuIrxh8gXTCp8rfDy/n8WKmGNpYXpnVxpXAzbz1Qgl
-	 PzhQ7/QKSv77g==
+	b=L6fsdBxBD7AhF21laWE9RFcB0mOMfSSl/SDA30Pnqj+92iRQBgxLHLkYCPpc/5r5d
+	 V3H4tD2h3ZBbsN5QXrFNn/z0igdRT348pu93/oDnO5tvuq+lupLpbU4zhZ9gU/wAsb
+	 Tc8TsXlDUdgkNA0aB2KG1IJCoytWj4szPlduvkOjgv1s6oTs5lIHD/EzsRJGoJPz95
+	 /Ur0DWJZvI6SX6LQfHimUHIpPZO8koOyGdcGmoArg8BdM8+pmoT+eBgCH9OD/0shMv
+	 IwYDxXK2jUGBrnfI3dhlu3vw9tDczyDkpxeD4WV4fOBqwq85UjOWmBFglzPL9JoUDb
+	 MegeOWvhtmXPQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02F2F3808203;
-	Thu,  2 Apr 2026 02:00:11 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CE393808203;
+	Thu,  2 Apr 2026 02:00:17 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -55,20 +55,21 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] rds: ib: reject FRMR registration before IB
- connection is
- established
+Subject: Re: [PATCH][net-next] net/mlx5: Move command entry freeing outside of
+ spinlock
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <177509520956.3948497.3083161529511693686.git-patchwork-notify@kernel.org>
-Date: Thu, 02 Apr 2026 02:00:09 +0000
-References: <20260330163237.2752440-2-bestswngs@gmail.com>
-In-Reply-To: <20260330163237.2752440-2-bestswngs@gmail.com>
-To: Weiming Shi <bestswngs@gmail.com>
-Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, xmei5@asu.edu
-X-Spamd-Result: default: False [-2.16 / 15.00];
+ <177509521628.3948497.11808048348029175163.git-patchwork-notify@kernel.org>
+Date: Thu, 02 Apr 2026 02:00:16 +0000
+References: <20260331122604.1933-1-lirongqing@baidu.com>
+In-Reply-To: <20260331122604.1933-1-lirongqing@baidu.com>
+To: lirongqing <lirongqing@baidu.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
@@ -76,51 +77,48 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-18932-lists,linux-rdma=lfdr.de,netdevbpf];
+	TAGGED_FROM(0.00)[bounces-18933-lists,linux-rdma=lfdr.de,netdevbpf];
 	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.997];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NO_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A41DA382834
+X-Rspamd-Queue-Id: 3E754382849
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 31 Mar 2026 00:32:38 +0800 you wrote:
-> rds_ib_get_mr() extracts the rds_ib_connection from conn->c_transport_data
-> and passes it to rds_ib_reg_frmr() for FRWR memory registration. On a
-> fresh outgoing connection, ic is allocated in rds_ib_conn_alloc() with
-> i_cm_id = NULL because the connection worker has not yet called
-> rds_ib_conn_path_connect() to create the rdma_cm_id. When sendmsg() with
-> RDS_CMSG_RDMA_MAP is called on such a connection, the sendmsg path parses
-> the control message before any connection establishment, allowing
-> rds_ib_post_reg_frmr() to dereference ic->i_cm_id->qp and crash the
-> kernel.
+On Tue, 31 Mar 2026 08:26:04 -0400 you wrote:
+> From: Li RongQing <lirongqing@baidu.com>
+> 
+> Move the kfree() call outside the critical section to reduce lock
+> holding time. This aligns with the general principle of minimizing
+> work under locks.
+> 
+> Signed-off-by: Li RongQing <lirongqing@baidu.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] rds: ib: reject FRMR registration before IB connection is established
-    https://git.kernel.org/netdev/net/c/a54ecccfae62
+  - [net-next] net/mlx5: Move command entry freeing outside of spinlock
+    https://git.kernel.org/netdev/net-next/c/2897c697b326
 
 You are awesome, thank you!
 -- 
