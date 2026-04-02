@@ -1,234 +1,156 @@
-Return-Path: <linux-rdma+bounces-18938-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18939-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yEYTHz4Ezml+kQYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18938-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 07:53:02 +0200
+	id wCdiBj8czml7lAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18939-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 09:35:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACEF0384301
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 07:52:56 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98088385424
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 09:35:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 39AA3302FF1C
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 05:52:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D64373064204
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 07:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257D6363091;
-	Thu,  2 Apr 2026 05:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 353C737C103;
+	Thu,  2 Apr 2026 07:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baidu.com header.i=@baidu.com header.b="lnwnmM1U"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rbna5ldT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from outbound.baidu.com (jpmx.baidu.com [119.63.196.201])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id AC23A2FE582;
-	Thu,  2 Apr 2026 05:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=119.63.196.201
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D759F2571B8
+	for <linux-rdma@vger.kernel.org>; Thu,  2 Apr 2026 07:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775109159; cv=none; b=a4vX6z7L5kCoMd9iqzAHfwqgPQmQU7vMm7SdNy2ZH76ySmSACQsigwwdhQyCk1F8byhdcas9jmBi5sYVCzpQYQQSO1QwGUpu+wDsRkMTJwxIHXQKKxAv6hVkcYZY0cNVcU19aYzfJe6BqR5u8p+XYJy2pnxrdd8HDvRo+lcn/dU=
+	t=1775115007; cv=none; b=TUFJ2WGw/KhmGC6lWMmiFq13roninJp6LsQGrpO6XfqlYg7vxhubG+lDXBPqR+NcxS7JSfuWvLvzZaR8Af7g6SlNE14+qYkryHlLrDObU00YH+PBANmlfBgkay+oGawsF5OiZ5HwrlnR6M5Zti6MhS1tfF3LMrziGuHjkBrBsCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775109159; c=relaxed/simple;
-	bh=PQppXGaETl7HsBl4FNqbEK6u0tJ+4rAmM7mQIV1pMso=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FabLClXTWZ9XJNsfqQs7NWE1m+BZ2RvUBpM1d6JudHwyS4gw0Ngu1vN6YspCYXHDX2vZT1/3FhL4VC10OazojjINdA4wc6w5XNzJGX2IKSdeIrbKP0sTL4oVIpEto0MQV5DOe/87x6d29QBZtBwgisqiSnlc69CC/lYgRWGuSIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; dkim=pass (2048-bit key) header.d=baidu.com header.i=@baidu.com header.b=lnwnmM1U; arc=none smtp.client-ip=119.63.196.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
-X-MD-Sfrom: lirongqing@baidu.com
-X-MD-SrcIP: 172.31.50.47
-From: lirongqing <lirongqing@baidu.com>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
-	Boris Pismenny <borisp@nvidia.com>, Richard Cochran
-	<richardcochran@gmail.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
-	<dtatulea@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Li RongQing
-	<lirongqing@baidu.com>, Kees Cook <kees@kernel.org>, Akiva Goldberger
-	<agoldberger@nvidia.com>, Simon Horman <horms@kernel.org>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next] net/mlx5: Use dma_wmb() for completion queue doorbell updates
-Date: Thu, 2 Apr 2026 01:52:06 -0400
-Message-ID: <20260402055206.2311-1-lirongqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1775115007; c=relaxed/simple;
+	bh=GpDQCFgEMVa6WZvouZwTquTwpu6mWZTVVFjArT8OiNE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=T+YJnW9Hn+0fUVcJOnxjFUixq3uhtrhmfbwyZGYNv6BXbE+8cqE9/qrmFC2msqRjoUXfaV+JJylHvrefkjRtrvILXU7TJ4g/RPeYV/t6N8yrpoGAc4PM9vIoIrLmBWNc26hrYhwwvqMWNlrwsl2CSF46CLhS3cT/7zNxGhTdjJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--shivajikant.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rbna5ldT; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--shivajikant.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-82a6c70f1f8so405643b3a.0
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Apr 2026 00:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1775115005; x=1775719805; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fi6i98rsnzRjLaE+pBgUUzL0LZaOxpHA+vPLz5+YMnI=;
+        b=rbna5ldTgXXgKVaszaei0gVt3eeQ2wyvRqDNEZ5QQZVyWf4ubUWFdpIOOBRL0qQOAn
+         TD64N7MjladZObscbgGJcyqSMZaH6YigjoYc4K3T0obsPxqBM0iPvEfp+Nc+VfST6Oh3
+         2ksxA59E+i7aW/qddO0rSTtyBviivZKbhiILvPXMli2phLEqSVjn8sO+pl2HQrmvurW2
+         54yult4d6fRjF8nU6XWTe14QNqWQ0oJXc60LZEEq51tg5gz5VpUcFqlKUEIhOUAQSWxV
+         2P8NhvGtL3Dpf/4XI2Bzi5HtubrRLMFxOjlqmbAQgE3rbCDXn9ZVNkU+X2TaS/zLFMCY
+         Jx4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775115005; x=1775719805;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fi6i98rsnzRjLaE+pBgUUzL0LZaOxpHA+vPLz5+YMnI=;
+        b=pcCAf8Hw8nc6fehmrnMaKeBj3iVhi9wqQvN0o5oru9RKcQ9791LnJERmOt+5nnb8Bh
+         TSuVLpLqh794c2RJ13nJDc7s9otUX25izwb5xamHQH4sUkZQ/nu1HAH+NU1EONGbzLZu
+         RF83bZuviZZU5HfkoTCMV1o1VQveWWsK+S6pfM15MHlCSW/E1J9jU0fPu+5XCUYtE63S
+         0LFGuQKBLJgv613wIJ5Wn0SjZx7EQeppK+YhKxXcQaDVJXdoKq1sZrEF1fnSvA5NDQdw
+         UOLywsyuk6L2gH3r4TSSA4UYOR6PJSiLE6j5g9KfG3G9DVxcvw6DC5eoxYzmrdVSZdyC
+         BAiA==
+X-Forwarded-Encrypted: i=1; AJvYcCV14GIYg26rt2BRfiIKMn8degO+dyku2mGX2qg6eSHAK7OBoHUIEp23cCuua/YvFx3m0gcITnw63caG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBnztTH3/gyBJtKgNMGlzbk8vmkHCYThlvfFardZqroSUgt9Xw
+	JUnokX9KwFsik5zGTBQd5n7Tv0z3BW6ccjuEni+5YMw+1YRSDcqbkTLlnU1lQvX7rgliCftFE8b
+	mMLs7YN0jrRwIUZrB2qCU0+wpHw==
+X-Received: from pfvb22.prod.google.com ([2002:a05:6a00:cd6:b0:82c:6863:427a])
+ (user=shivajikant job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:3d53:b0:82a:7ad8:75f2 with SMTP id d2e1a72fcca58-82cfbeb58d0mr2498752b3a.56.1775115004949;
+ Thu, 02 Apr 2026 00:30:04 -0700 (PDT)
+Date: Thu,  2 Apr 2026 07:30:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: bjkjy-exc13.internal.baidu.com (172.31.51.13) To
- bjkjy-exc3.internal.baidu.com (172.31.50.47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=baidu.com;
-	s=selector1; t=1775109140;
-	bh=OkYJlBEhGU26NMF/nb5A1ytM4XV7GIufN+Se8VGdGyc=;
-	h=From:To:Subject:Date:Message-ID:Content-Type;
-	b=lnwnmM1UPi9HcCJlunM4oqGJy6xxHBysvOaX/ybrWHhwb82H+z3eM5+AEQtwK0wPW
-	 fqvG+O8pY4jziu04XNiwfmelBPvqcXue/lyQmgL3CVXBzB6s6IxtIXwGdeoaQ/nMgB
-	 Bkx6PNGY/OZZgt/EusO6WFgnbIWRQ+jZdnt+OiMLJgUugz8KV7sfgQRYNCaYN5l6r+
-	 t4aVAEt0g7mlp1DhdAa66UK2G7z5M2qsQc2HecvvvNP87yTvK+eXyITob2zyel5kHU
-	 4MxZ2lvw+nj0OkhaaRycMZvz1PNoBvDcqAVRyua5wECOYmRLSZfgUVVlI3BmRGfzZo
-	 eV5xDsaL1JkKw==
-X-Spamd-Result: default: False [1.54 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.53.0.1185.g05d4b7b318-goog
+Message-ID: <20260402073001.2039625-1-shivajikant@google.com>
+Subject: [RFC PATCH v2] nvme: enable PCI P2PDMA support for RDMA transport
+From: Shivaji Kant <shivajikant@google.com>
+To: kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me
+Cc: linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Shivaji Kant <shivajikant@google.com>, 
+	Pranjal Shrivastava <praan@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-18938-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,iogearbox.net,gmail.com,fomichev.me,baidu.com,vger.kernel.org];
-	NEURAL_SPAM(0.00)[0.983];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DMARC_DNSFAIL(0.00)[baidu.com : SPF/DKIM temp error,quarantine];
+	TAGGED_FROM(0.00)[bounces-18939-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[google.com:+];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lirongqing@baidu.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[baidu.com:?];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	R_DKIM_TEMPFAIL(0.00)[baidu.com:s=selector1];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: ACEF0384301
+	FROM_NEQ_ENVFROM(0.00)[shivajikant@google.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 98088385424
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Li RongQing <lirongqing@baidu.com>
+Enable BLK_FEAT_PCI_P2PDMA on the NVMe when the underlying
+RDMA controller supports it.
 
-dma_wmb() barriers are specifically for ordering writes to DMA
-coherent memory that is accessible to both the CPU and DMA capable
-devices.
+This patch depends on the PCI P2PDMA support added in this
+patch [1].
 
-The dma_wmb() barrier is lighter than wmb() on some architectures
-because it only ensures ordering for DMA writes, not for all writes
-including MMIO accesses.
-
-In the MLX5 driver, completion queue (CQ) doorbell records are
-allocated as DMA coherent memory via mlx5_dma_zalloc_coherent_node().
-The CQ update pattern is:
-  1. Update CQ space (device reads via DMA)
-  2. Update doorbell record (device reads via DMA)
-  3. Memory barrier
-  4. Enable more CQEs
-
-Since only DMA coherent memory accesses are involved (no MMIO accesses
-follow), can safely use dma_wmb() instead of wmb().
-
-This change improves performance slightly on architectures where
-dma_wmb() is lighter than wmb().
-
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Suggested-by: Pranjal Shrivastava <praan@google.com>
+Signed-off-by: Shivaji Kant <shivajikant@google.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c     | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c     | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c   | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/wc.c        | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+[1] https://lore.kernel.org/all/20260323234416.46944-3-kch@nvidia.com/
+---
+ drivers/nvme/host/rdma.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
-index 1b76647..7bd6dfc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
-@@ -259,7 +259,7 @@ static bool mlx5e_ptp_poll_ts_cq(struct mlx5e_cq *cq, int napi_budget)
- 	mlx5_cqwq_update_db_record(cqwq);
- 
- 	/* ensure cq space is freed before enabling more cqes */
--	wmb();
-+	dma_wmb();
- 
- 	while (metadata_buff_sz > 0)
- 		mlx5e_ptp_metadata_fifo_push(&ptpsq->metadata_freelist,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 80f9fc1..dde8856 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -805,7 +805,7 @@ bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq)
- 	mlx5_cqwq_update_db_record(&cq->wq);
- 
- 	/* ensure cq space is freed before enabling more cqes */
--	wmb();
-+	dma_wmb();
- 
- 	sq->cc = sqcc;
- 	return (i == MLX5E_TX_CQ_POLL_BUDGET);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 268e208..f17e7f1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -2447,7 +2447,7 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
- 	mlx5_cqwq_update_db_record(cqwq);
- 
- 	/* ensure cq space is freed before enabling more cqes */
--	wmb();
-+	dma_wmb();
- 
- 	return work_done;
- }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 9f02726..7ba319f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -849,7 +849,7 @@ bool mlx5e_poll_tx_cq(struct mlx5e_cq *cq, int napi_budget)
- 	mlx5_cqwq_update_db_record(&cq->wq);
- 
- 	/* ensure cq space is freed before enabling more cqes */
--	wmb();
-+	dma_wmb();
- 
- 	sq->dma_fifo_cc = dma_fifo_cc;
- 	sq->cc = sqcc;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
-index 1f6bde5..1341874 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
-@@ -384,7 +384,7 @@ static inline void mlx5_fpga_conn_cqes(struct mlx5_fpga_conn *conn,
- 
- 	mlx5_fpga_dbg(conn->fdev, "Re-arming CQ with cc# %u\n", conn->cq.wq.cc);
- 	/* ensure cq space is freed before enabling more cqes */
--	wmb();
-+	dma_wmb();
- 	mlx5_fpga_conn_arm_cq(conn);
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 35c0822edb2d..09eefd7c3ff4 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -2189,6 +2189,13 @@ static void nvme_rdma_reset_ctrl_work(struct work_struct *work)
+ 	nvme_rdma_reconnect_or_remove(ctrl, ret);
  }
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c
-index 614cd57..8f7a89a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c
-@@ -421,7 +421,7 @@ int mlx5_aso_poll_cq(struct mlx5_aso *aso, bool with_data)
- 	mlx5_cqwq_update_db_record(&cq->wq);
++static bool nvme_rdma_supports_pci_p2pdma(struct nvme_ctrl *ctrl)
++{
++	struct nvme_rdma_ctrl *r_ctrl = to_rdma_ctrl(ctrl);
++
++	return ib_dma_pci_p2p_dma_supported(r_ctrl->device->dev);
++}
++
+ static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
+ 	.name			= "rdma",
+ 	.module			= THIS_MODULE,
+@@ -2203,6 +2210,7 @@ static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
+ 	.get_address		= nvmf_get_address,
+ 	.stop_ctrl		= nvme_rdma_stop_ctrl,
+ 	.get_virt_boundary	= nvme_get_virt_boundary,
++	.supports_pci_p2pdma	= nvme_rdma_supports_pci_p2pdma,
+ };
  
- 	/* ensure cq space is freed before enabling more cqes */
--	wmb();
-+	dma_wmb();
- 
- 	if (with_data)
- 		aso->cc += MLX5_ASO_WQEBBS_DATA;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wc.c b/drivers/net/ethernet/mellanox/mlx5/core/wc.c
-index 7d3d4d7..1afbdd19 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/wc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/wc.c
-@@ -314,7 +314,7 @@ static void mlx5_wc_post_nop(struct mlx5_wc_sq *sq, unsigned int *offset,
- 	/* ensure doorbell record is visible to device before ringing the
- 	 * doorbell
- 	 */
--	wmb();
-+	dma_wmb();
- 
- 	mlx5_iowrite64_copy(sq, mmio_wqe, sizeof(mmio_wqe), *offset);
- 
+ /*
 -- 
-2.9.4
+2.53.0.1185.g05d4b7b318-goog
 
 
