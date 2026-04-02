@@ -1,204 +1,173 @@
-Return-Path: <linux-rdma+bounces-18929-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18930-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UFpPFdq4zWm5gAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18929-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:31:22 +0200
+	id SPqGE8q6zWnqgAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18930-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:39:38 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC3E9382018
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:31:21 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A79A33820B5
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:39:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C0823014C19
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 00:31:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A60443028B18
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 00:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763DA1DF26E;
-	Thu,  2 Apr 2026 00:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EACA221F1C;
+	Thu,  2 Apr 2026 00:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BoECNvID"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SBOt7xs7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEAD1514E4
-	for <linux-rdma@vger.kernel.org>; Thu,  2 Apr 2026 00:31:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B21146A66;
+	Thu,  2 Apr 2026 00:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775089874; cv=none; b=ssw+QOsoJN+0eLnDx5Vre/jYNdUeevjLDjc52yIS+5CPvb3QjIdXKcxNZo1kIVQtY9EhvVDLSCBawkunWG54k6rnxbQ8UfQkpkwDepw0bkjuVW10JTzFYRYRChZY43/lcKxHTs+rF8AZSbrs4K0XW0mF1MJgfVZfQ/sBymMP0jU=
+	t=1775090216; cv=none; b=HG6KOzNU+9z/s0eKZSqvqAvgOSVBFa+2uSrNPHHmT/8f9IhMgmsW51fe9Pjm2sqG7JLVBhpTR05vY6036dUwiPqvmvvagYoDwbn5Pk+jYPk24x8QHKedyZnrq/qJJkFtQbx8gGNbXaruKYaTyNv2GxUsRPSIJE/uIiJZKTUQ+3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775089874; c=relaxed/simple;
-	bh=2iwCLWZ4VLKRtnQx7QyjpjFIZKV8KdDMkRsHy/Rus6I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SgjkIbtiIidfFFsMFa6NNq8p5ndEogkWBjz/NIFQ8XPyGA0zt8VdNe32XWS6hcBUWqSgOKVlxfn02EFG1OrILUGtzvKPl+fuko8JUG0zUyXYOeCPkkozcOuGY+aMEnXW/dfMN7V/K3Ibp8SdzHL8C02vUQfnXQINEW0IgHKj7mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BoECNvID; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4887eca00c4so1612205e9.2
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Apr 2026 17:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775089871; x=1775694671; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ckU4tVP2UGswkeqkYvSpP/w2XpfG0QEws3yAc9wqFaE=;
-        b=BoECNvID+w47/y6zjgdCe06a/b3Q6psOasUsGZVhmopVeJxcdyH4JzlYT/vT8r89x1
-         3PZfTKqQ92tAbS7lysNtm2Av17qDoCNnOb1cV1IOIQRuEPcBYVfb8DoI3DRt1f90rQs3
-         cFC3Jyy9i3tw21u0yjDc+7OcDnojjG8zDJp6J5g8E6hBLashVL8lJrKp0O1l5bEnybvn
-         k3tXRyVxCzFI02h6/7Rop7SBmQPmesZ5jyP1CwoK+AMZ5SdFSXAHLKmY9ITsWW23BuHI
-         YWgaRcNYuVIKvd1ZLZ4LekkwunMNTv5UHu03+nJbt12MXdfWCV2ufthlYHpDU3+Q73Mf
-         3zVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775089871; x=1775694671;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ckU4tVP2UGswkeqkYvSpP/w2XpfG0QEws3yAc9wqFaE=;
-        b=FhlYL3siCNKX3jj/gDS8l9lOjWaz9w0aBWOHP0HTQxPtW/YfwvKzRRwYDTo0WoN5gx
-         STrRitl2oOpeB0s4JIWgDKZ2RjrZ21VNuDoj7BvfqsK7FavnQNCHA7ParnoH61zIAwSl
-         A7ETXykqGsDOso3Ig2gWe08N2B5RCUsePJqGVmd7sXJcBRhQJEW3CdVCOaOJ3wTNEzMP
-         +qIJ4dA5Hu9OTdzrHiycjssh8GK2P9QuodO4FyIShI1sQQkTCalBoBNxxlYvwKihE5vp
-         eu1x9SWMNrYFspfQRXOJPqKWtM7Vox+Kk2HA6onceIN/cmBFu7UgCqwVQNvP4NScYwSX
-         19Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCUChct5wI6xgqfp7UADtX5ljLogGQu8S8qk1u8DtWKrBSjOTfLEQkQyH9EVJxf4Acc5BW4hWKlWMN2Q@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrqaIfJYh+sOcDEy0B9dTKAE6Sck9Og01oXpwpaycu+377TRTS
-	lhIvWuQMuYy7MkoERKMfQFEeyLWGY+pbl7jq7xokV0gMim/VivwZcXCC
-X-Gm-Gg: ATEYQzzqqdIRb2l47nJVLG3CJbjGS5cySphbTBINe503VeG8sBZad0OF6tC8dlPI4LS
-	owpLllJqaINZTVbeSILJ75JuD/ndZq1H+dSyvEE/RiBhdd6hMhNEETSJ1hP8oExs/2nHv3+0k99
-	Aou1eqRkDZZcBoJJRIhPAtZ1tj9D68rRCwHHqt1BMQcUDzP8A/BivmTqJqST2w/bJSXuUut4iHH
-	1XtHqbrVrcLhAvtBpCBwwLZq4VB55nItoMM/pF59Qm8RWG5nTGsb6RNXNOHiPab88ZZ8kBxJAtm
-	qpI3wYCv8mFAFoME9G0uZaEF9Vv7SAwh+ZCT9TVnYAJgJf+/W6mw6DbliJGLz7SRh35SdmYsp48
-	7apecknYlwhnl7Dn+8xyyYteOO2sVJWM+yS12QZyar9hQ7pHE3xl4Y64fD7l98FABjhoDSB/FIF
-	BK9sy2/75+2KFrvMU0eJm3NagjrSpZPaQnpiU6KN3RJnua6ugduoBLvZ6RDm0XuzrqaDweMcflc
-	cQTbtVN7z5RkMA4QXiFt+mFVsu/YVo0PfyHYy6g5QsQB6rt
-X-Received: by 2002:a05:600c:c056:b0:485:3a03:ceca with SMTP id 5b1f17b1804b1-488835b30a7mr64106445e9.23.1775089871151;
-        Wed, 01 Apr 2026 17:31:11 -0700 (PDT)
-Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4888a65635fsm31433565e9.6.2026.04.01.17.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Apr 2026 17:31:10 -0700 (PDT)
-From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-To: prathameshdeshpande7@gmail.com
-Cc: leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	mbloch@nvidia.com,
-	netdev@vger.kernel.org,
-	richardcochran@gmail.com,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com
-Subject: [PATCH v2] net/mlx5: Fix OOB access and stack information leak in PTP event handling
-Date: Thu,  2 Apr 2026 01:30:47 +0100
-Message-ID: <20260402003047.24684-1-prathameshdeshpande7@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260331153152.16766-1-prathameshdeshpande7@gmail.com>
-References: <20260331153152.16766-1-prathameshdeshpande7@gmail.com>
+	s=arc-20240116; t=1775090216; c=relaxed/simple;
+	bh=I9XmIlaaGS8O9PlHryu2TNe0bSVMKDY9S66r55Vddco=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=F1uEad5lC7yANpmfIRbk8fMcAmgm8Eyuj6qIugVRBF0JDO3i6mDEWg1t5XqbbT+mE7bdiK8ULjs8GkgaOWZ16I0KXNfjFDtmw7EQYBe/iq98iZy/h2rO0mWDEqrjB1jjNb2YlM2u4z1mQ/ivQvnf9xtVHL9LnV8j9/V8fiHG4Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SBOt7xs7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D2C8C4CEF7;
+	Thu,  2 Apr 2026 00:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775090215;
+	bh=I9XmIlaaGS8O9PlHryu2TNe0bSVMKDY9S66r55Vddco=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=SBOt7xs7Poe03PP+mL0ZWGG2xRoupRJ3YPgwe/jnpdM+SwGzqyNYtiFG/Gi8FTWuV
+	 X0QulQvo1pjvaJcbdJGKdVnQdFcXzr4BwZWQ1W1wXOZR0/oDLVWdmTL1rcCfcea3E5
+	 EP6BhXg0PnH7Jt9vl+rLurMLEydndp2+YoOj096pgu53+MzLB6GUueBju/dKb3Nm9C
+	 JP3zrsrN2sCyRNDN+LAM+m8m1zp+UjB/EKqYinSaLeOioIVcSKxkym5gqWVuNa8+z6
+	 qJUxszQRAPZcu3s3lsTAZOiCL+c8wJ4C/Ap2poJVIM1uxNldeZXpDBIiOJGyPdCdlb
+	 aZr5G87hXJ6DA==
+Message-ID: <b34739e6a4ac19fe4d8f361177056e3bdb30fa71.camel@kernel.org>
+Subject: Re: [PATCH net] rds: ib: reject FRMR registration before IB
+ connection is established
+From: Allison Henderson <achender@kernel.org>
+To: Weiming Shi <bestswngs@gmail.com>, "David S . Miller"
+ <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, Xiang Mei <xmei5@asu.edu>
+Date: Wed, 01 Apr 2026 17:36:53 -0700
+In-Reply-To: <20260330163237.2752440-2-bestswngs@gmail.com>
+References: <20260330163237.2752440-2-bestswngs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-18930-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18929-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,nvidia.com,gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com,davemloft.net,google.com,kernel.org,redhat.com];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AC3E9382018
+	DBL_BLOCKED_OPENRESOLVER(0.00)[asu.edu:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A79A33820B5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In mlx5_pps_event(), several critical issues were identified during
-review by Sashiko:
+On Tue, 2026-03-31 at 00:32 +0800, Weiming Shi wrote:
+> rds_ib_get_mr() extracts the rds_ib_connection from conn->c_transport_dat=
+a
+> and passes it to rds_ib_reg_frmr() for FRWR memory registration. On a
+> fresh outgoing connection, ic is allocated in rds_ib_conn_alloc() with
+> i_cm_id =3D NULL because the connection worker has not yet called
+> rds_ib_conn_path_connect() to create the rdma_cm_id. When sendmsg() with
+> RDS_CMSG_RDMA_MAP is called on such a connection, the sendmsg path parses
+> the control message before any connection establishment, allowing
+> rds_ib_post_reg_frmr() to dereference ic->i_cm_id->qp and crash the
+> kernel.
+>=20
+> The existing guard in rds_ib_reg_frmr() only checks for !ic (added in
+> commit 9e630bcb7701), which does not catch this case since ic is allocate=
+d
+> early and is always non-NULL once the connection object exists.
+>=20
+>  KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+>  RIP: 0010:rds_ib_post_reg_frmr+0x50e/0x920
+>  Call Trace:
+>   rds_ib_post_reg_frmr (net/rds/ib_frmr.c:167)
+>   rds_ib_map_frmr (net/rds/ib_frmr.c:252)
+>   rds_ib_reg_frmr (net/rds/ib_frmr.c:430)
+>   rds_ib_get_mr (net/rds/ib_rdma.c:615)
+>   __rds_rdma_map (net/rds/rdma.c:295)
+>   rds_cmsg_rdma_map (net/rds/rdma.c:860)
+>   rds_sendmsg (net/rds/send.c:1363)
+>   ____sys_sendmsg
+>   do_syscall_64
+>=20
+> Add a check in rds_ib_get_mr() that verifies ic, i_cm_id, and qp are all
+> non-NULL before proceeding with FRMR registration, mirroring the guard
+> already present in rds_ib_post_inv(). Return -ENODEV when the connection
+> is not ready, which the existing error handling in rds_cmsg_send() conver=
+ts
+> to -EAGAIN for userspace retry and triggers rds_conn_connect_if_down() to
+> start the connection worker.
+>=20
+> Fixes: 1659185fb4d0 ("RDS: IB: Support Fastreg MR (FRMR) memory registrat=
+ion mode")
+> Reported-by: Xiang Mei <xmei5@asu.edu>
+> Signed-off-by: Weiming Shi <bestswngs@gmail.com>
+> ---
+>  net/rds/ib_rdma.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/net/rds/ib_rdma.c b/net/rds/ib_rdma.c
+> index 077f7041df155..2cfec252eeac2 100644
+> --- a/net/rds/ib_rdma.c
+> +++ b/net/rds/ib_rdma.c
+> @@ -604,8 +604,13 @@ void *rds_ib_get_mr(struct scatterlist *sg, unsigned=
+ long nents,
+>  		return ibmr;
+>  	}
+> =20
+> -	if (conn)
+> +	if (conn) {
+>  		ic =3D conn->c_transport_data;
+> +		if (!ic || !ic->i_cm_id || !ic->i_cm_id->qp) {
+> +			ret =3D -ENODEV;
+> +			goto out;
+> +		}
+> +	}
+> =20
+>  	if (!rds_ibdev->mr_8k_pool || !rds_ibdev->mr_1m_pool) {
+>  		ret =3D -ENODEV;
 
-1. The 'pin' index from the hardware event was used without bounds
-   checking to index 'pin_config' and 'pps_info->start', leading to
-   potential out-of-bounds memory access.
-2. 'ptp_event' was not zero-initialized. Since it contains a union,
-   assigning a timestamp partially leaves the 'ts_raw' field with
-   uninitialized stack memory, which can leak kernel data or
-   corrupt time sync logic in hardpps().
-3. A NULL 'pin_config' could be dereferenced if initialization failed.
-4. 'clock->ptp' could be NULL if ptp_clock_register() failed.
+Hi Weiming,
 
-Fix these by zero-initializing the event struct, adding a bounds
-check against MAX_PIN_NUM, and adding appropriate NULL guards.
+Apologies for the delay, this looks looks fine to me.  Thanks for catching =
+this.
 
-Fixes: 7c39afb394c7 ("net/mlx5: PTP code migration to driver core section")
-
-Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
----
-v2:
-- Zero-initialize ptp_event to prevent stack information leak [Sashiko].
-- Add bounds check for hardware pin index to prevent OOB access [Sashiko].
-- Add NULL guard for pin_config to handle initialization failures [Sashiko].
-- Add NULL check for clock->ptp as originally intended.
-
- drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index bd4e042077af..a4d8c5c39abc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -1164,12 +1164,18 @@ static int mlx5_pps_event(struct notifier_block *nb,
- 							       pps_nb);
- 	struct mlx5_core_dev *mdev = clock_state->mdev;
- 	struct mlx5_clock *clock = mdev->clock;
--	struct ptp_clock_event ptp_event;
-+	struct ptp_clock_event ptp_event = {};
- 	struct mlx5_eqe *eqe = data;
- 	int pin = eqe->data.pps.pin;
- 	unsigned long flags;
- 	u64 ns;
- 
-+	if (!clock->ptp_info.pin_config)
-+		return NOTIFY_OK;
-+
-+	if (pin < 0 || pin >= MAX_PIN_NUM)
-+		return NOTIFY_OK;
-+
- 	switch (clock->ptp_info.pin_config[pin].func) {
- 	case PTP_PF_EXTTS:
- 		ptp_event.index = pin;
-@@ -1185,8 +1191,8 @@ static int mlx5_pps_event(struct notifier_block *nb,
- 		} else {
- 			ptp_event.type = PTP_CLOCK_EXTTS;
- 		}
--		/* TODOL clock->ptp can be NULL if ptp_clock_register fails */
--		ptp_clock_event(clock->ptp, &ptp_event);
-+		if (clock->ptp)
-+			ptp_clock_event(clock->ptp, &ptp_event);
- 		break;
- 	case PTP_PF_PEROUT:
- 		if (clock->shared) {
--- 
-2.43.0
+Reviewed-by: Allison Henderson <achender@kernel.org>
 
 
