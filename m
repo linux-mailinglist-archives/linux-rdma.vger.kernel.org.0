@@ -1,152 +1,204 @@
-Return-Path: <linux-rdma+bounces-18928-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18929-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IOiuOfq3zWkLgAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18928-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:27:38 +0200
+	id UFpPFdq4zWm5gAYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18929-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:31:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57975381FD2
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3E9382018
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 02:31:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5488C305DF7F
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 00:24:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9C0823014C19
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 00:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACEB1DF26E;
-	Thu,  2 Apr 2026 00:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763DA1DF26E;
+	Thu,  2 Apr 2026 00:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSE4OCdp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BoECNvID"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826561C84DC;
-	Thu,  2 Apr 2026 00:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEAD1514E4
+	for <linux-rdma@vger.kernel.org>; Thu,  2 Apr 2026 00:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775089444; cv=none; b=XBUniX78UKo8nSrivRohKff0Ee6w2DsP8cUDl+hVNG7j6UVpxw0P1uqhkF1IOTrn0istbqHFXFzJPoGan+xL+38LLgZspuPfqNeVAwKgY+jq3LbZUrc1bXCQJZZLenZNXoxYk2H1QPFGN+ZMh7/lmH/PkWKG3oJE0OGBIQIl1bg=
+	t=1775089874; cv=none; b=ssw+QOsoJN+0eLnDx5Vre/jYNdUeevjLDjc52yIS+5CPvb3QjIdXKcxNZo1kIVQtY9EhvVDLSCBawkunWG54k6rnxbQ8UfQkpkwDepw0bkjuVW10JTzFYRYRChZY43/lcKxHTs+rF8AZSbrs4K0XW0mF1MJgfVZfQ/sBymMP0jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775089444; c=relaxed/simple;
-	bh=EOi2ONHFkZ7HVDG2V6IsB9nDlSSaQOiYvCtTGJCt0B4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s9adWhEZ2ajuyK31iJJBq2C9+VlxBxz1BbC0hugvKBlS1MQvCbuwUJaRiM2Hhulie6/41omxR6/6JkyqCDSSoYmICLLBRQ7zrUy0aDmMqFllsJgx3DoniWlp0kj8yW60pRRAFltmFurISeza+DuUG3ey5dbD4vIGZQRoZ+YsMTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bSE4OCdp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3554C4CEF7;
-	Thu,  2 Apr 2026 00:24:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775089444;
-	bh=EOi2ONHFkZ7HVDG2V6IsB9nDlSSaQOiYvCtTGJCt0B4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bSE4OCdphnhOFz1IR/oaKM/RcfetOMfwYEzuiGQkh4hYOFrGSlut7d9/Dtm8fefds
-	 B3eDUkHReirOO4ZRAMM5c5sMO72LL0pEZLENcDGyGwLCgwEWmwKZimlTqiBTQj7RIa
-	 P9qqPOGrCWy6cI3RaXjY4I5KK8dve1YNL5rzsL6KAOlJcAJTwKB6u1dAE+hrv0xs+t
-	 sVu6aEPpSRc1R2s681WT+pYodXzXGgYFIDRFAmPoNoJ0F9QgKfd9Xr9yNxAknk42eT
-	 5c/YNeNtjPK8Y07qpI28SqpDVQp5kdFQzA921ADZlaldO+F8ETnM3BASXxWBG25Fhx
-	 DXLpdvQqWa5HQ==
-Date: Wed, 1 Apr 2026 17:24:00 -0700
-From: patchwork-bot+netdevbpf <kuba@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Nikolay Aleksandrov <razor@blackwall.org>, Ido
- Schimmel <idosch@nvidia.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Kuniyuki Iwashima
- <kuniyu@google.com>, Willem de Bruijn <willemb@google.com>, David Ahern
- <dsahern@kernel.org>, Neal Cardwell <ncardwell@google.com>, Johannes Berg
- <johannes@sipsolutions.net>, Pablo Neira Ayuso <pablo@netfilter.org>,
- Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, Guillaume Nault
- <gnault@redhat.com>, David Woodhouse <dwmw@amazon.co.uk>, Kees Cook
- <kees@kernel.org>, Alexei Lazar <alazar@nvidia.com>, Gal Pressman
- <gal@nvidia.com>, Paul Moore <paul@paul-moore.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- oss-drivers@corigine.com, bridge@lists.linux.dev, bpf@vger.kernel.org,
- linux-wireless@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, torvalds@linux-foundation.org,
- jon.maddog.hall@gmail.com
-Subject: Re: [PATCH 0/6] Deprecate Legacy IP
-Message-ID: <20260401172400.41df7edf@kernel.org>
-In-Reply-To: <20260401074509.1897527-1-dwmw2@infradead.org>
-References: <20260401074509.1897527-1-dwmw2@infradead.org>
+	s=arc-20240116; t=1775089874; c=relaxed/simple;
+	bh=2iwCLWZ4VLKRtnQx7QyjpjFIZKV8KdDMkRsHy/Rus6I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SgjkIbtiIidfFFsMFa6NNq8p5ndEogkWBjz/NIFQ8XPyGA0zt8VdNe32XWS6hcBUWqSgOKVlxfn02EFG1OrILUGtzvKPl+fuko8JUG0zUyXYOeCPkkozcOuGY+aMEnXW/dfMN7V/K3Ibp8SdzHL8C02vUQfnXQINEW0IgHKj7mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BoECNvID; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4887eca00c4so1612205e9.2
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Apr 2026 17:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775089871; x=1775694671; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ckU4tVP2UGswkeqkYvSpP/w2XpfG0QEws3yAc9wqFaE=;
+        b=BoECNvID+w47/y6zjgdCe06a/b3Q6psOasUsGZVhmopVeJxcdyH4JzlYT/vT8r89x1
+         3PZfTKqQ92tAbS7lysNtm2Av17qDoCNnOb1cV1IOIQRuEPcBYVfb8DoI3DRt1f90rQs3
+         cFC3Jyy9i3tw21u0yjDc+7OcDnojjG8zDJp6J5g8E6hBLashVL8lJrKp0O1l5bEnybvn
+         k3tXRyVxCzFI02h6/7Rop7SBmQPmesZ5jyP1CwoK+AMZ5SdFSXAHLKmY9ITsWW23BuHI
+         YWgaRcNYuVIKvd1ZLZ4LekkwunMNTv5UHu03+nJbt12MXdfWCV2ufthlYHpDU3+Q73Mf
+         3zVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775089871; x=1775694671;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ckU4tVP2UGswkeqkYvSpP/w2XpfG0QEws3yAc9wqFaE=;
+        b=FhlYL3siCNKX3jj/gDS8l9lOjWaz9w0aBWOHP0HTQxPtW/YfwvKzRRwYDTo0WoN5gx
+         STrRitl2oOpeB0s4JIWgDKZ2RjrZ21VNuDoj7BvfqsK7FavnQNCHA7ParnoH61zIAwSl
+         A7ETXykqGsDOso3Ig2gWe08N2B5RCUsePJqGVmd7sXJcBRhQJEW3CdVCOaOJ3wTNEzMP
+         +qIJ4dA5Hu9OTdzrHiycjssh8GK2P9QuodO4FyIShI1sQQkTCalBoBNxxlYvwKihE5vp
+         eu1x9SWMNrYFspfQRXOJPqKWtM7Vox+Kk2HA6onceIN/cmBFu7UgCqwVQNvP4NScYwSX
+         19Mw==
+X-Forwarded-Encrypted: i=1; AJvYcCUChct5wI6xgqfp7UADtX5ljLogGQu8S8qk1u8DtWKrBSjOTfLEQkQyH9EVJxf4Acc5BW4hWKlWMN2Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrqaIfJYh+sOcDEy0B9dTKAE6Sck9Og01oXpwpaycu+377TRTS
+	lhIvWuQMuYy7MkoERKMfQFEeyLWGY+pbl7jq7xokV0gMim/VivwZcXCC
+X-Gm-Gg: ATEYQzzqqdIRb2l47nJVLG3CJbjGS5cySphbTBINe503VeG8sBZad0OF6tC8dlPI4LS
+	owpLllJqaINZTVbeSILJ75JuD/ndZq1H+dSyvEE/RiBhdd6hMhNEETSJ1hP8oExs/2nHv3+0k99
+	Aou1eqRkDZZcBoJJRIhPAtZ1tj9D68rRCwHHqt1BMQcUDzP8A/BivmTqJqST2w/bJSXuUut4iHH
+	1XtHqbrVrcLhAvtBpCBwwLZq4VB55nItoMM/pF59Qm8RWG5nTGsb6RNXNOHiPab88ZZ8kBxJAtm
+	qpI3wYCv8mFAFoME9G0uZaEF9Vv7SAwh+ZCT9TVnYAJgJf+/W6mw6DbliJGLz7SRh35SdmYsp48
+	7apecknYlwhnl7Dn+8xyyYteOO2sVJWM+yS12QZyar9hQ7pHE3xl4Y64fD7l98FABjhoDSB/FIF
+	BK9sy2/75+2KFrvMU0eJm3NagjrSpZPaQnpiU6KN3RJnua6ugduoBLvZ6RDm0XuzrqaDweMcflc
+	cQTbtVN7z5RkMA4QXiFt+mFVsu/YVo0PfyHYy6g5QsQB6rt
+X-Received: by 2002:a05:600c:c056:b0:485:3a03:ceca with SMTP id 5b1f17b1804b1-488835b30a7mr64106445e9.23.1775089871151;
+        Wed, 01 Apr 2026 17:31:11 -0700 (PDT)
+Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4888a65635fsm31433565e9.6.2026.04.01.17.31.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Apr 2026 17:31:10 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: prathameshdeshpande7@gmail.com
+Cc: leon@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	mbloch@nvidia.com,
+	netdev@vger.kernel.org,
+	richardcochran@gmail.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com
+Subject: [PATCH v2] net/mlx5: Fix OOB access and stack information leak in PTP event handling
+Date: Thu,  2 Apr 2026 01:30:47 +0100
+Message-ID: <20260402003047.24684-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260331153152.16766-1-prathameshdeshpande7@gmail.com>
+References: <20260331153152.16766-1-prathameshdeshpande7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18928-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-18929-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,nvidia.com,gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,blackwall.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,sipsolutions.net,netfilter.org,strlen.de,nwl.cc,amazon.co.uk,paul-moore.com,vger.kernel.org,corigine.com,lists.linux.dev,linux-foundation.org];
-	RCPT_COUNT_TWELVE(0.00)[49];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 57975381FD2
+X-Rspamd-Queue-Id: AC3E9382018
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
+In mlx5_pps_event(), several critical issues were identified during
+review by Sashiko:
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+1. The 'pin' index from the hardware event was used without bounds
+   checking to index 'pin_config' and 'pps_info->start', leading to
+   potential out-of-bounds memory access.
+2. 'ptp_event' was not zero-initialized. Since it contains a union,
+   assigning a timestamp partially leaves the 'ts_raw' field with
+   uninitialized stack memory, which can leak kernel data or
+   corrupt time sync logic in hardpps().
+3. A NULL 'pin_config' could be dereferenced if initialization failed.
+4. 'clock->ptp' could be NULL if ptp_clock_register() failed.
 
-On Wed,  1 Apr 2026 08:44:14 +0100 David Woodhouse wrote:
-> RFC1883, the IPv6 standard, was published in the final decade of the 1900s.
-> That's closer in time to the Apollo 11 moon landing than it was to today.
-> 
-> Even our esteemed Maddog has worked with computers for longer in the IPv6
-> era, than he ever did before it.
-> [...]
+Fix these by zero-initializing the event struct, adding a bounds
+check against MAX_PIN_NUM, and adding appropriate NULL guards.
 
-Here is the summary with links:
-  - [net-next,v4,1/6] net: Simplify tautological CONFIG_INET/CONFIG_IPV6 guards
-    https://git.kernel.org/netdev/net-next/c/8888bf4fb980
-  - [net-next,v4,2/6] net: Add CONFIG_LEGACY_IP option
-    https://git.kernel.org/netdev/net-next/c/9b29afa11660
-  - [net-next,v4,3/6] net: Guard Legacy IP entry points with CONFIG_LEGACY_IP
-    https://git.kernel.org/netdev/net-next/c/f26d43acf12f
-  - [net-next,v4,4/6] net: Make IPv4-only Kconfig options depend on LEGACY_IP
-    https://git.kernel.org/netdev/net-next/c/ba5d4128fca8
-  - [net-next,v4,5/6] net: Change CONFIG_INET to CONFIG_LEGACY_IP for IPv4-only code
-    https://git.kernel.org/netdev/net-next/c/ff1cb3ad2abc
-  - [net-next,v4,6/6] net: Warn when processes listen on AF_INET sockets
-    https://git.kernel.org/netdev/net-next/c/7dae8ffb0987
+Fixes: 7c39afb394c7 ("net/mlx5: PTP code migration to driver core section")
 
-You are awesome, thank you!
+Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+---
+v2:
+- Zero-initialize ptp_event to prevent stack information leak [Sashiko].
+- Add bounds check for hardware pin index to prevent OOB access [Sashiko].
+- Add NULL guard for pin_config to handle initialization failures [Sashiko].
+- Add NULL check for clock->ptp as originally intended.
+
+ drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index bd4e042077af..a4d8c5c39abc 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -1164,12 +1164,18 @@ static int mlx5_pps_event(struct notifier_block *nb,
+ 							       pps_nb);
+ 	struct mlx5_core_dev *mdev = clock_state->mdev;
+ 	struct mlx5_clock *clock = mdev->clock;
+-	struct ptp_clock_event ptp_event;
++	struct ptp_clock_event ptp_event = {};
+ 	struct mlx5_eqe *eqe = data;
+ 	int pin = eqe->data.pps.pin;
+ 	unsigned long flags;
+ 	u64 ns;
+ 
++	if (!clock->ptp_info.pin_config)
++		return NOTIFY_OK;
++
++	if (pin < 0 || pin >= MAX_PIN_NUM)
++		return NOTIFY_OK;
++
+ 	switch (clock->ptp_info.pin_config[pin].func) {
+ 	case PTP_PF_EXTTS:
+ 		ptp_event.index = pin;
+@@ -1185,8 +1191,8 @@ static int mlx5_pps_event(struct notifier_block *nb,
+ 		} else {
+ 			ptp_event.type = PTP_CLOCK_EXTTS;
+ 		}
+-		/* TODOL clock->ptp can be NULL if ptp_clock_register fails */
+-		ptp_clock_event(clock->ptp, &ptp_event);
++		if (clock->ptp)
++			ptp_clock_event(clock->ptp, &ptp_event);
+ 		break;
+ 	case PTP_PF_PEROUT:
+ 		if (clock->shared) {
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
