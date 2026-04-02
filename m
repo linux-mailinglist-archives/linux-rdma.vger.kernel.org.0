@@ -1,156 +1,232 @@
-Return-Path: <linux-rdma+bounces-18939-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18940-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wCdiBj8czml7lAYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18939-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 09:35:27 +0200
+	id QGs6EA4vzmnIlQYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18940-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 10:55:42 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98088385424
-	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 09:35:26 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FCB83865B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Apr 2026 10:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D64373064204
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 07:30:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9A4E2300D9C4
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Apr 2026 08:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 353C737C103;
-	Thu,  2 Apr 2026 07:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA063C5DD6;
+	Thu,  2 Apr 2026 08:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rbna5ldT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XlmJEIv8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D759F2571B8
-	for <linux-rdma@vger.kernel.org>; Thu,  2 Apr 2026 07:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC4A3C5DB6
+	for <linux-rdma@vger.kernel.org>; Thu,  2 Apr 2026 08:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775115007; cv=none; b=TUFJ2WGw/KhmGC6lWMmiFq13roninJp6LsQGrpO6XfqlYg7vxhubG+lDXBPqR+NcxS7JSfuWvLvzZaR8Af7g6SlNE14+qYkryHlLrDObU00YH+PBANmlfBgkay+oGawsF5OiZ5HwrlnR6M5Zti6MhS1tfF3LMrziGuHjkBrBsCo=
+	t=1775119751; cv=none; b=S10IZ9psspm5b6MtjoBMADvksAmOKzqZXdb3R+T0M6VGHSZOLZU/EjI900vc2eEXvfqYBLPKHo9C7B3bW6tIu1HUt/WLzaJ8MuPm48s3sh3gT1rWf3sTS2IhM+PlMmCEUB1Z2T99fMaKJfgFg+EcxYeQtIhcjoq/69UoCODbR+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775115007; c=relaxed/simple;
-	bh=GpDQCFgEMVa6WZvouZwTquTwpu6mWZTVVFjArT8OiNE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=T+YJnW9Hn+0fUVcJOnxjFUixq3uhtrhmfbwyZGYNv6BXbE+8cqE9/qrmFC2msqRjoUXfaV+JJylHvrefkjRtrvILXU7TJ4g/RPeYV/t6N8yrpoGAc4PM9vIoIrLmBWNc26hrYhwwvqMWNlrwsl2CSF46CLhS3cT/7zNxGhTdjJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--shivajikant.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rbna5ldT; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--shivajikant.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-82a6c70f1f8so405643b3a.0
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Apr 2026 00:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1775115005; x=1775719805; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fi6i98rsnzRjLaE+pBgUUzL0LZaOxpHA+vPLz5+YMnI=;
-        b=rbna5ldTgXXgKVaszaei0gVt3eeQ2wyvRqDNEZ5QQZVyWf4ubUWFdpIOOBRL0qQOAn
-         TD64N7MjladZObscbgGJcyqSMZaH6YigjoYc4K3T0obsPxqBM0iPvEfp+Nc+VfST6Oh3
-         2ksxA59E+i7aW/qddO0rSTtyBviivZKbhiILvPXMli2phLEqSVjn8sO+pl2HQrmvurW2
-         54yult4d6fRjF8nU6XWTe14QNqWQ0oJXc60LZEEq51tg5gz5VpUcFqlKUEIhOUAQSWxV
-         2P8NhvGtL3Dpf/4XI2Bzi5HtubrRLMFxOjlqmbAQgE3rbCDXn9ZVNkU+X2TaS/zLFMCY
-         Jx4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775115005; x=1775719805;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fi6i98rsnzRjLaE+pBgUUzL0LZaOxpHA+vPLz5+YMnI=;
-        b=pcCAf8Hw8nc6fehmrnMaKeBj3iVhi9wqQvN0o5oru9RKcQ9791LnJERmOt+5nnb8Bh
-         TSuVLpLqh794c2RJ13nJDc7s9otUX25izwb5xamHQH4sUkZQ/nu1HAH+NU1EONGbzLZu
-         RF83bZuviZZU5HfkoTCMV1o1VQveWWsK+S6pfM15MHlCSW/E1J9jU0fPu+5XCUYtE63S
-         0LFGuQKBLJgv613wIJ5Wn0SjZx7EQeppK+YhKxXcQaDVJXdoKq1sZrEF1fnSvA5NDQdw
-         UOLywsyuk6L2gH3r4TSSA4UYOR6PJSiLE6j5g9KfG3G9DVxcvw6DC5eoxYzmrdVSZdyC
-         BAiA==
-X-Forwarded-Encrypted: i=1; AJvYcCV14GIYg26rt2BRfiIKMn8degO+dyku2mGX2qg6eSHAK7OBoHUIEp23cCuua/YvFx3m0gcITnw63caG@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBnztTH3/gyBJtKgNMGlzbk8vmkHCYThlvfFardZqroSUgt9Xw
-	JUnokX9KwFsik5zGTBQd5n7Tv0z3BW6ccjuEni+5YMw+1YRSDcqbkTLlnU1lQvX7rgliCftFE8b
-	mMLs7YN0jrRwIUZrB2qCU0+wpHw==
-X-Received: from pfvb22.prod.google.com ([2002:a05:6a00:cd6:b0:82c:6863:427a])
- (user=shivajikant job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:3d53:b0:82a:7ad8:75f2 with SMTP id d2e1a72fcca58-82cfbeb58d0mr2498752b3a.56.1775115004949;
- Thu, 02 Apr 2026 00:30:04 -0700 (PDT)
-Date: Thu,  2 Apr 2026 07:30:01 +0000
+	s=arc-20240116; t=1775119751; c=relaxed/simple;
+	bh=qdiNykKpwczeQMUwnypd2rrY+HNlXX0BL7X6y8yUxT8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BMcpcawuAZuh47bfAyS/I3SjCK5q+WSwrushmJPQY40xnlR09S3iFbUU2Bsy/o+POKljdEQoEXZ7AvBgDyuLRacxuObwlpp8dUrsVofIvDFAjx8kPR116hF39KiUh1aSK7pjSy3/lUnOF8x3qUYhjOLtCpEgJLnqdA0o9TKmlq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XlmJEIv8; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1775119749;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k5ouUt8tmgR98iV2s3/o0x+cLo/+6OojSrpAJEklpa8=;
+	b=XlmJEIv8cvEru2PUBloKah38DKrGfqzK7enAid4/eF9rDrSNwseckN7JSZNWdwVOTKwDks
+	W7IQ9AS2DOkxs/Sk39+0mZOckbTKMjcmTMFnsboIMBOg0LxQhVjk1PGskxGYgaJzVw8VvA
+	ziDNiK4/IMgq2pgrog5y4+/jy02K0W8=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-203-vgYmaqtkPt6Etqe38KbaXg-1; Thu,
+ 02 Apr 2026 04:49:06 -0400
+X-MC-Unique: vgYmaqtkPt6Etqe38KbaXg-1
+X-Mimecast-MFC-AGG-ID: vgYmaqtkPt6Etqe38KbaXg_1775119743
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 49A731956053;
+	Thu,  2 Apr 2026 08:49:03 +0000 (UTC)
+Received: from gerbillo.redhat.com (unknown [10.44.32.195])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id BB66E30002D2;
+	Thu,  2 Apr 2026 08:48:56 +0000 (UTC)
+From: Paolo Abeni <pabeni@redhat.com>
+To: rkannoth@marvell.com
+Cc: jiri@resnulli.us,
+	cjubran@nvidia.com,
+	edumazet@google.com,
+	mbloch@nvidia.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	sgoutham@marvell.com,
+	dtatulea@nvidia.com,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	matttbe@kernel.org,
+	chuck.lever@oracle.com,
+	tariqt@nvidia.com,
+	linux-rdma@vger.kernel.org,
+	andrew+netdev@lunn.ch,
+	donald.hunter@gmail.com,
+	netdev@vger.kernel.org,
+	leon@kernel.org,
+	davem@davemloft.net,
+	linux-kernel@vger.kernel.org
+Subject: Re: [v9,net-next,5/6] octeontx2-af: npc: cn20k: dynamically allocate and free default MCAM entries
+Date: Thu,  2 Apr 2026 10:48:40 +0200
+Message-ID: <20260402084840.128387-1-pabeni@redhat.com>
+In-Reply-To: <20260330053105.2722453-6-rkannoth@marvell.com>
+References: <20260330053105.2722453-6-rkannoth@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.53.0.1185.g05d4b7b318-goog
-Message-ID: <20260402073001.2039625-1-shivajikant@google.com>
-Subject: [RFC PATCH v2] nvme: enable PCI P2PDMA support for RDMA transport
-From: Shivaji Kant <shivajikant@google.com>
-To: kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me
-Cc: linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Shivaji Kant <shivajikant@google.com>, 
-	Pranjal Shrivastava <praan@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-0.66 / 15.00];
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18939-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[google.com:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shivajikant@google.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_FROM(0.00)[bounces-18940-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 98088385424
+	FREEMAIL_CC(0.00)[resnulli.us,nvidia.com,google.com,kernel.org,marvell.com,redhat.com,oracle.com,vger.kernel.org,lunn.ch,gmail.com,davemloft.net];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: 9FCB83865B1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Enable BLK_FEAT_PCI_P2PDMA on the NVMe when the underlying
-RDMA controller supports it.
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 
-This patch depends on the PCI P2PDMA support added in this
-patch [1].
-
-Suggested-by: Pranjal Shrivastava <praan@google.com>
-Signed-off-by: Shivaji Kant <shivajikant@google.com>
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
 ---
-[1] https://lore.kernel.org/all/20260323234416.46944-3-kch@nvidia.com/
----
- drivers/nvme/host/rdma.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+octeontx2-af: npc: cn20k: dynamically allocate and free default MCAM entries
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 35c0822edb2d..09eefd7c3ff4 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -2189,6 +2189,13 @@ static void nvme_rdma_reset_ctrl_work(struct work_struct *work)
- 	nvme_rdma_reconnect_or_remove(ctrl, ret);
- }
- 
-+static bool nvme_rdma_supports_pci_p2pdma(struct nvme_ctrl *ctrl)
-+{
-+	struct nvme_rdma_ctrl *r_ctrl = to_rdma_ctrl(ctrl);
-+
-+	return ib_dma_pci_p2p_dma_supported(r_ctrl->device->dev);
-+}
-+
- static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
- 	.name			= "rdma",
- 	.module			= THIS_MODULE,
-@@ -2203,6 +2210,7 @@ static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
- 	.get_address		= nvmf_get_address,
- 	.stop_ctrl		= nvme_rdma_stop_ctrl,
- 	.get_virt_boundary	= nvme_get_virt_boundary,
-+	.supports_pci_p2pdma	= nvme_rdma_supports_pci_p2pdma,
- };
- 
- /*
--- 
-2.53.0.1185.g05d4b7b318-goog
+Improve MCAM utilization by tying default (broadcast, multicast,
+promisc, ucast) entry lifetime to NIX LF usage. On NIX LF alloc,
+allocate default MCAM entries if missing; on NIX LF free, release
+them so they return to the pool.
+
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> index ef5b081162eb..1f2128c61ade 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+
+[ ... ]
+
+> @@ -1566,8 +1567,8 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
+>
+>  	/* Alloc NIX RQ HW context memory and config the base */
+>  	hwctx_size = 1UL << ((ctx_cfg >> 4) & 0xF);
+> -	err = qmem_alloc(rvu->dev, &pfvf->rq_ctx, req->rq_cnt, hwctx_size);
+> -	if (err)
+> +	rc = qmem_alloc(rvu->dev, &pfvf->rq_ctx, req->rq_cnt, hwctx_size);
+> +	if (rc)
+>  		goto free_mem;
+>
+>  	pfvf->rq_bmap = kcalloc(req->rq_cnt, sizeof(long), GFP_KERNEL);
+> @@ -1583,8 +1584,8 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
+>
+>  	/* Alloc NIX SQ HW context memory and config the base */
+>  	hwctx_size = 1UL << (ctx_cfg & 0xF);
+> -	err = qmem_alloc(rvu->dev, &pfvf->sq_ctx, req->sq_cnt, hwctx_size);
+> -	if (err)
+> +	rc = qmem_alloc(rvu->dev, &pfvf->sq_ctx, req->sq_cnt, hwctx_size);
+> +	if (rc)
+>  		goto free_mem;
+>
+>  	pfvf->sq_bmap = kcalloc(req->sq_cnt, sizeof(long), GFP_KERNEL);
+> @@ -1599,8 +1600,8 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
+>
+>  	/* Alloc NIX CQ HW context memory and config the base */
+>  	hwctx_size = 1UL << ((ctx_cfg >> 8) & 0xF);
+> -	err = qmem_alloc(rvu->dev, &pfvf->cq_ctx, req->cq_cnt, hwctx_size);
+> -	if (err)
+> +	rc = qmem_alloc(rvu->dev, &pfvf->cq_ctx, req->cq_cnt, hwctx_size);
+> +	if (rc)
+>  		goto free_mem;
+>
+>  	pfvf->cq_bmap = kcalloc(req->cq_cnt, sizeof(long), GFP_KERNEL);
+
+[ ... ]
+
+> @@ -1699,9 +1706,12 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
+>
+>  	goto exit;
+>
+> +free_dft:
+> +	if (is_cn20k(rvu->pdev))
+> +		npc_cn20k_dft_rules_free(rvu, pcifunc);
+> +
+>  free_mem:
+>  	nix_ctx_free(rvu, pfvf);
+> -	rc = -ENOMEM;
+>
+>  exit:
+>  	/* Set macaddr of this PF/VF */
+
+Does the removal of `rc = -ENOMEM;` cause the function to return success
+when kcalloc() fails?
+
+Looking at the kcalloc calls for rq_bmap, sq_bmap, and cq_bmap:
+
+drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:rvu_mbox_handler_nix_lf_alloc() {
+	...
+	rc = qmem_alloc(rvu->dev, &pfvf->rq_ctx, req->rq_cnt, hwctx_size);
+	if (rc)
+		goto free_mem;
+
+	pfvf->rq_bmap = kcalloc(req->rq_cnt, sizeof(long), GFP_KERNEL);
+	if (!pfvf->rq_bmap)
+		goto free_mem;
+	...
+}
+
+These three kcalloc failure paths reach free_mem with rc == 0 because the
+preceding qmem_alloc() succeeded and set rc = 0. Previously, the code set
+rc = -ENOMEM at the free_mem label, ensuring that any path reaching it
+would return an error.
+
+With the removal of this assignment, don't these paths now fall through
+to exit: and return rc == 0, falsely indicating success?
+
+The caller would believe NIX LF allocation succeeded with a partially
+torn-down pfvf structure (NULL bitmaps, freed contexts), potentially
+leading to NULL pointer dereferences on subsequent NIX LF operations.
+
+Should the kcalloc failure paths set rc = -ENOMEM before jumping to
+free_mem?
 
 
