@@ -1,261 +1,184 @@
-Return-Path: <linux-rdma+bounces-18966-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18967-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QKB0Mnhaz2kXvgYAu9opvQ
-	(envelope-from <linux-rdma+bounces-18966-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 03 Apr 2026 08:13:12 +0200
+	id GORQCBOCz2mwwwYAu9opvQ
+	(envelope-from <linux-rdma+bounces-18967-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 03 Apr 2026 11:02:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77EB639156E
-	for <lists+linux-rdma@lfdr.de>; Fri, 03 Apr 2026 08:13:12 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC0873927FC
+	for <lists+linux-rdma@lfdr.de>; Fri, 03 Apr 2026 11:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 820CD3015461
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Apr 2026 06:13:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0EE4230387B9
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Apr 2026 09:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F857365A1A;
-	Fri,  3 Apr 2026 06:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3840F365A11;
+	Fri,  3 Apr 2026 09:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="NBh3q3+t"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tkB6d7Z9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011049.outbound.protection.outlook.com [40.93.194.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA3B36AB75;
-	Fri,  3 Apr 2026 06:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775196779; cv=none; b=oVW/8FLkzOpwtVsJD4Q/SJVIMA4CslhM9xV6mUvoJ2/8KYUd5JWf+MVoXK02QTxffv5SozAlyl+IRFxOxXFGQLyoyCF/fQEHkZmQxCNYXKNvvpd0mNTCFGgN1+3d2+ogmFKXk+pUffjNIa+qBvs0VyUXE7cS1z8krogEdKMMGts=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775196779; c=relaxed/simple;
-	bh=EQZaI5PHfXci8DKm8J0i0XohFutvWleIPjnUUV3JVjI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RQFHr2LhnxLU2wODCYNL4UuoBsLdB06A5taoawos/+Kk75X1wKNt/6a8YwSpDd2jZg5+oHRU098wdQgLwwnUSGrnuDn5rV7kXqGHU6+RSXHWS12Fu628rkdN3lq5t1pcWaKcKTE92mnKF1uyki2qAeWvbtn5niNVv2BvGVpRcXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=NBh3q3+t; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1775196767; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=R+HPzqgoEuNzBhc0ht4XM/gQ1ivcrvcLvJRpDlLm3nA=;
-	b=NBh3q3+tKEPtu/RuG7DtWKo54p5OQhkDJHdm/epL2f77IlEtU4Bpos+M5hAlDJh8rIC+FTJiauR57LBocMg4iFqFVBIMzR9VvlrvWwng6cAutkLADHuMAcdAqcxoM1M/e6P3vqsMnreyaGvN8gjIlW/l0P36FDA8iNT0GZXbyms=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045133197;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0X0JJZSC_1775196766;
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X0JJZSC_1775196766 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 03 Apr 2026 14:12:46 +0800
-Date: Fri, 3 Apr 2026 14:12:46 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: alibuda@linux.alibaba.com, netdev@vger.kernel.org, edumazet@google.com,
-	tonylu@linux.alibaba.com, wenjia@linux.ibm.com, pabeni@redhat.com,
-	guwen@linux.alibaba.com, davem@davemloft.net,
-	linux-kernel@vger.kernel.org, mjambigi@linux.ibm.com,
-	dust.li@linux.alibaba.com, oliver.yang@linux.alibaba.com,
-	sidraya@linux.ibm.com, linux-s390@vger.kernel.org, horms@kernel.org,
-	pasic@linux.ibm.com, linux-rdma@vger.kernel.org
-Subject: Re: [net-next] net/smc: cap allocation order for SMC-R physically
- contiguous buffers
-Message-ID: <20260403061246.GA61656@j66a10360.sqa.eu95>
-References: <20260312082154.36971-1-alibuda@linux.alibaba.com>
- <20260317024534.588136-1-kuba@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1F43019BA;
+	Fri,  3 Apr 2026 09:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1775206879; cv=fail; b=rwh+7+2772+FDecrIiMgzJmmg2AA1OM0BSZgWUcRkrC813/on30eKERaTWOzpDy2aQFSyYTzKyB0HlKM5TJUEwRnGXbaghbnb/0Haw8Al5h58KAPR1SDbJaN654OPAhoX2p/qH4+RH+Ck0o2/Y0oodv3sO/xdJuee0raQQkvrbo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1775206879; c=relaxed/simple;
+	bh=3KH3zuaicakQgMLFGz2LgkCHOaiIH8NsdvR0Alt9plk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q7xkzUXUljnwyY94H6TePbNSEQozv5Im8/FZJe4tzDNKGXLpsYstHuvukMccyTY/IrupevozzBxalFmwa370Art5BbpsS0bQdNBaugupbPundftdq2SUf6SEOmJS1I15rS1H7kMJp7rBinbemESfR67fhYQwKPbVubWBLUgSs+A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tkB6d7Z9; arc=fail smtp.client-ip=40.93.194.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rQymLlwjMZnCacqpW1tZsD5kTZGd7p74EUHE/ZRzEeSmCV8mX2uAnTMWJcETDoMRS8Mk7Z35cNkejooqqo7aK+X6QKx6veTBpc1KTyrhQ4yi1bLAPIjvr/2bbokg9hZQSekDK36YVu9zrKht6D6AOKUauH50JrFXfoBpWwAyChPhL6aLJ4SSkBDF5RCP8KZvR99vAsT2ykXvLy4hiSFV1/5nN5yxKRnibn8IxMtYJny9R44kHOMDHORf+6FfIqen6CmXS8D7NNKh5TWzKGEMJy2Okl+LigZ5eeliguX0KtMekwiQRNZvyhHb6YXOjXDBEHZjWASkTo0X1xWa5sUtGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=40OdODC5/mR2iTYFZx5z0I++7pvj+yVAaaczw7MqSKs=;
+ b=xydYefVOkMD/8hAX4K582CJS0GFcOS0bmO8okdPxqhQTUCMTWLI7QFZ9ZRrhrNR+MgB7tvnEBuu7eCICl6sUydVa80W5JgUNrvVHzKvh+XbBs6Wp/YG3F2lkfnVVMngaKI8AgQkRyT8CqGsk8pfwXI5KH9C69/ZOHqUT3SuUNnqPwYQofoKG4bLQsBzloL8KKTyL/4ToWz/szWgveS7VGfC57QmuQ1+bXeRVysXJu96JgLhkbNv/5XAWfrF/u495JG6kEW20HBZ0NxJ9oBu8Q7K72XolzAztRLCbIGLIfvpqws/w2FCTavFcCL4gBZqgxkes7bqp5Uf+TCcr3O5nVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=40OdODC5/mR2iTYFZx5z0I++7pvj+yVAaaczw7MqSKs=;
+ b=tkB6d7Z9002Q9xHrQSd30Y0lctpIRQlklp3GJ5944ajWq5fgQJ7o+GnILgA2y3L7KAQ9H+ss3F1F1RD9SZ+WGSejYUffbYmKwA1fC/kBaO8oy7Ki1vSJAjflCVhpKPIJLkngQ7NV4iiK9VG1yFGmjzXN0vRTNKwyeQBLPoSETN/S//E3vM5WWZ1p3x7zBHs1H89HVf6cJIneo4uPzMNYv9jm0QW4opxLrMTFLAKNPEdr7ljuC/zIDFXbu+sXrgyNRxTEzcC+0yxalM7YTXlrxWBpv0Ixzfm7OOZdb1smjqHSQjU7Y918kxAsh+Wb6//FYTTczTnKOlhn7gxmjdQLgw==
+Received: from CH2PR14CA0057.namprd14.prod.outlook.com (2603:10b6:610:56::37)
+ by PH8PR12MB7325.namprd12.prod.outlook.com (2603:10b6:510:217::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.18; Fri, 3 Apr
+ 2026 09:01:10 +0000
+Received: from CH2PEPF00000143.namprd02.prod.outlook.com
+ (2603:10b6:610:56:cafe::72) by CH2PR14CA0057.outlook.office365.com
+ (2603:10b6:610:56::37) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9769.21 via Frontend Transport; Fri,
+ 3 Apr 2026 09:01:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CH2PEPF00000143.mail.protection.outlook.com (10.167.244.100) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9769.17 via Frontend Transport; Fri, 3 Apr 2026 09:01:10 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 3 Apr
+ 2026 02:00:51 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 3 Apr
+ 2026 02:00:51 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Fri, 3 Apr
+ 2026 02:00:47 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Mark Bloch <mbloch@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>
+Subject: [PATCH mlx5-next 0/2] mlx5-next updates 2026-04-03
+Date: Fri, 3 Apr 2026 12:00:26 +0300
+Message-ID: <20260403090028.137783-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260317024534.588136-1-kuba@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF00000143:EE_|PH8PR12MB7325:EE_
+X-MS-Office365-Filtering-Correlation-Id: 30be65e9-22a0-444a-2fca-08de915f8ce4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|82310400026|36860700016|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	STkP2GJpdZZHvgU43ccALaRuNDEpzbT26NEkskh1PP1fExbBeyxiQmn3BApzh1HNKQp5JLjtclBl/Z4L4W9leEnuROdDc1c93fEzZtuYYjiCPzvXY6qvfkb1FBJHUmq+lZW1sCCCd1MbToe8Hvfd7gmFOO5SZEaldMPt8XS31eA9qLaWPeGBLlEfggo25UN/lTxpEZhf0qCNy2be1Ppvhx2xJivYpRphi3gTSoab3KfZJ+uJ6Q7a0i6SQrqUXHMY4ETomu7Lq6GlBytMR3bBk+d8abnpYNN0VNVfAQYmCg98kAubPQ+NgzQuH7/n9by7Q2Fdrr+BrJgPpR2CG/mz9corVU5u6zx2y3MV0BZuS1o1HBzkQIqNgP+slR7+yq896saNnA15aObHKBOAowJUa2IEdb7qxDToRHFMnlFMYjyEIPPKyCcBJVnNoaWHocBUMWrCXzCDIVRp5GxJLYkuMhrIzEBL+YsR37qbucHXAwFHm6xztKeIL00CjYE1INqjNt8dVoHUoCk7nQ4NIT1DXKse74bOoEK+7dyjMCTfY4xqZY0pkAMY4ZqTKYWbL9UTlDOyFNeftXTC50YEdnGnqhmqcc9PD7320bZ8g8enBVfU12jryayqypY8A/sE57mIAUXK8gf9Bv66hA5Jn6wR75GOvPUxRanysZrztE+xFTjSDdlOC2NXsCdPEE56RuJIhNRzImdXThObRu36IKfqeP4ZaAQtVQYK1V8YuXUnTzQbVliuIxs6ncWm0RTbBLy4zuxBg8YouQJ21G2l+OIXbA==
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(82310400026)(36860700016)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	iaoJUp2fbd+wOnzsUrZeszDZ+uvyxPlKYf1EHdFL1wouApAPpYqQ3hgWrwHbqqqo6gCvGN/huFpNUE5S5AO1dQMMLMPe3BhwXlmBDhKPNxltPU24QyoqFqumYRjt7b7NQDGbHqCCgcBU88q+oda6eUKHBQVuORLoGQxEHPPX67cnMCEaOtSrQL/WbGDpRPaMVmSAkcbOzUoIW5G9tbKhFEbX3twf7+v879PbwW4RTXZVr+/gmOJUk+ZVsC1ilKHQMTLL7Cya+AhgyifCIV+qJdZmgsOWjEe4UdifttgsB//+PQdRhp13+P+5RSS4oHzNUiqHQ6XSnAueABH+sPKrQVWWYQ4mQCi0iy/FNGE9xmUTRFSJLb8JS2J1/c1RDRPEUof1p6dcfW3yaGcXq6O6XXx50vXSYDVn25ZhocpJSE+FnwgF8bHMAcxnhMASxGx8
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2026 09:01:10.3228
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30be65e9-22a0-444a-2fca-08de915f8ce4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF00000143.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7325
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18966-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+]
-X-Rspamd-Queue-Id: 77EB639156E
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-18967-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:mid];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
+X-Rspamd-Queue-Id: AC0873927FC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 16, 2026 at 07:45:34PM -0700, Jakub Kicinski wrote:
-> This is an AI-generated review of your patch. The human sending this
-> email has considered the AI review valid, or at least plausible.
-> 
-> For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
-> ---
-> net/smc: cap allocation order for SMC-R physically contiguous buffers
-> 
-> The alloc_page() cannot satisfy requests exceeding MAX_PAGE_ORDER, and
-> attempting such allocations will lead to guaranteed failures and potential
-> kernel warnings. For SMCR_PHYS_CONT_BUFS, cap the allocation order to
-> MAX_PAGE_ORDER. This ensures the attempts to allocate the largest possible
-> physically contiguous chunk succeed. For SMCR_MIXED_BUFS, if its order
-> exceeds MAX_PAGE_ORDER, skip the physical allocation attempt and fallback to
-> virtual memory immediately.
-> 
-> > diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> > index e2d083daeb7e..a18730edb7e0 100644
-> > --- a/net/smc/smc_core.c
-> > +++ b/net/smc/smc_core.c
-> > @@ -2314,6 +2314,10 @@ int smcr_buf_reg_lgr(struct smc_link *lnk)
-> >  	return rc;
-> >  }
-> >
-> > +/*
-> > + * smcr_new_buf_create may allocate a buffer smaller than the requested
-> > + * bufsize. Use buf_desc->len to determine the actual allocated size.
-> > + */
-> >  static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
-> >  						int bufsize)
-> >  {
-> > @@ -2326,18 +2330,22 @@ static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
-> >
-> >  	switch (lgr->buf_type) {
-> >  	case SMCR_PHYS_CONT_BUFS:
-> > +		bufsize = min(bufsize, (int)PAGE_SIZE << MAX_PAGE_ORDER);
-> > +		fallthrough;
-> >  	case SMCR_MIXED_BUFS:
-> >  		buf_desc->order = get_order(bufsize);
-> > -		buf_desc->pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
-> > -					      __GFP_NOMEMALLOC | __GFP_COMP |
-> > -					      __GFP_NORETRY | __GFP_ZERO,
-> > -					      buf_desc->order);
-> > -		if (buf_desc->pages) {
-> > -			buf_desc->cpu_addr =
-> > -				(void *)page_address(buf_desc->pages);
-> > -			buf_desc->len = bufsize;
-> > -			buf_desc->is_vm = false;
-> > -			break;
-> > +		if (buf_desc->order <= MAX_PAGE_ORDER) {
-> > +			buf_desc->pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
-> > +						      __GFP_NOMEMALLOC | __GFP_COMP |
-> > +						      __GFP_NORETRY | __GFP_ZERO,
-> > +						      buf_desc->order);
-> > +			if (buf_desc->pages) {
-> > +				buf_desc->cpu_addr =
-> > +					(void *)page_address(buf_desc->pages);
-> > +				buf_desc->len = bufsize;
-> > +				buf_desc->is_vm = false;
-> > +				break;
-> > +			}
-> >  		}
-> >  		if (lgr->buf_type == SMCR_PHYS_CONT_BUFS)
-> >  			goto out;
-> 
-> [ ... ]
-> 
-> > @@ -2476,7 +2484,7 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
-> >  		}
-> >
-> >  		SMC_STAT_RMB_ALLOC(smc, is_smcd, is_rmb);
-> > -		SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, true, bufsize);
-> > +		SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, true, buf_desc->len);
-> >  		buf_desc->used = 1;
-> >  		down_write(lock);
-> >  		smc_lgr_buf_list_add(lgr, is_rmb, buf_list, buf_desc);
-> >  		up_write(lock);
-> >  		break; /* found */
-> >  	}
-> >
-> >  	if (IS_ERR(buf_desc))
-> >  		return PTR_ERR(buf_desc);
-> >
-> >  	if (!is_smcd) {
-> >  		if (smcr_buf_map_usable_links(lgr, buf_desc, is_rmb)) {
-> >  			smcr_buf_unuse(buf_desc, is_rmb, lgr);
-> >  			return -ENOMEM;
-> >  		}
-> >  	}
-> >
-> >  	if (is_rmb) {
-> >  		conn->rmb_desc = buf_desc;
-> >  		conn->rmbe_size_comp = bufsize_comp;
-> >  		smc->sk.sk_rcvbuf = bufsize * 2;
-> >  		atomic_set(&conn->bytes_to_rcv, 0);
-> >  		conn->rmbe_update_limit =
-> >  			smc_rmb_wnd_update_limit(buf_desc->len);
-> >  		if (is_smcd)
-> >  			smc_ism_set_conn(conn); /* map RMB/smcd_dev to conn */
-> >  	} else {
-> >  		conn->sndbuf_desc = buf_desc;
-> >  		smc->sk.sk_sndbuf = bufsize * 2;
-> >  		atomic_set(&conn->sndbuf_space, bufsize);
->                                                  ^^^^^^^
-> 
-> The comment added at smcr_new_buf_create() says "Use buf_desc->len to
-> determine the actual allocated size," but __smc_buf_create() still uses the
-> uncapped bufsize for several critical fields. Is this correct?
-> 
-> For SMCR_PHYS_CONT_BUFS, smcr_new_buf_create() now caps bufsize internally
-> to PAGE_SIZE << MAX_PAGE_ORDER (typically 4MB), so buf_desc->len can be
-> smaller than the requested bufsize.
-> 
-> However, __smc_buf_create() continues using the original uncapped bufsize
-> for:
-> 
->     if (is_rmb) {
->         conn->rmbe_size_comp = bufsize_comp;
->         smc->sk.sk_rcvbuf = bufsize * 2;
->     } else {
->         smc->sk.sk_sndbuf = bufsize * 2;
->         atomic_set(&conn->sndbuf_space, bufsize);
->     }
-> 
-> The sndbuf_space mismatch is particularly concerning. Looking at
-> smc_tx.c:274, the comment states: "0 <= sndbuf_space <= sndbuf_desc->len".
-> When sndbuf_space exceeds sndbuf_desc->len, smc_tx_sendmsg() could calculate
-> writespace incorrectly:
-> 
->     int writespace = atomic_read(&conn->sndbuf_space);
-> 
-> and the two-chunk copy loop might write beyond the actual buffer boundary.
-> This is reachable with default sysctl settings (SMCR_PHYS_CONT_BUFS) and
-> socket buffer sizes exceeding 4MB.
-> 
-> Should these assignments use buf_desc->len instead of bufsize? For example:
-> 
->     atomic_set(&conn->sndbuf_space, buf_desc->len);
->     smc->sk.sk_sndbuf = buf_desc->len * 2;
->     smc->sk.sk_rcvbuf = buf_desc->len * 2;
-> 
-> And should rmbe_size_comp be recalculated from buf_desc->len? The
-> rmbe_size_comp value is sent to the peer via CLC messages in smc_clc.c:1125,
-> and an inflated value might cause the peer to believe the RMB is larger than
-> it actually is.
-> 
+Hi,
 
-Thanks for catching this.
+This series contains mlx5 shared updates as preparation for upcoming
+features.
 
-After rethinking this, I think we should not change the semantic of
-smcr_new_buf_create() to return a potentially smaller buffer than
-requested. The MAX_PAGE_ORDER limit is better handled in __smc_buf_create(),
-where the effective buffer size is already known and used to initialize
-socket/accounting state.
+Regards,
+Tariq
 
-I'll update the patch accordingly.
+Moshe Shemesh (2):
+  net/mlx5: Rename MLX5_PF page counter type to MLX5_SELF
+  net/mlx5: Add icm_mng_function_id_mode cap bit
 
-> >  	}
-> >  	return 0;
-> >  }
-> -- 
-> pw-bot: cr
+ drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 3 ++-
+ include/linux/mlx5/driver.h                         | 2 +-
+ include/linux/mlx5/mlx5_ifc.h                       | 8 +++++++-
+ 3 files changed, 10 insertions(+), 3 deletions(-)
+
+
+base-commit: 26469110c750c8179560637dd813e5d65b8148d2
+-- 
+2.44.0
+
 
