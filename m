@@ -1,126 +1,151 @@
-Return-Path: <linux-rdma+bounces-19003-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19004-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MB/eDs220mn+ZwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19003-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 21:23:57 +0200
+	id qNVtN+3a0mnebgcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19004-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 23:58:05 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8483D39F614
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 21:23:56 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E43ED39FED5
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 23:58:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C32903008D3B
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 19:22:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9BCE33001CF7
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 21:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB0E2F39B9;
-	Sun,  5 Apr 2026 19:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9096384237;
+	Sun,  5 Apr 2026 21:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vIZGY7YI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bj9ml0z7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E362F1FC9;
-	Sun,  5 Apr 2026 19:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EC1382F18
+	for <linux-rdma@vger.kernel.org>; Sun,  5 Apr 2026 21:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775416967; cv=none; b=k6F9ThL71OZ89MmHNKjCyuXqarlItt5Z/mBV33dnlfqHlFpOFmC5UNJdJFtLSu++5ZiscCvGNxIlfnQmE19ZfwwITndJoviRsOlMvI8SZQjQqt/hNQD3Q8n/Wu2j5K8/S5cQBbIbCFSplb3KHAF4dJ5s9SI0DGeG0k2vRxlRQUc=
+	t=1775426279; cv=none; b=OET8VjSj79oNUsvrqg57pUMtXry9/CwXtNq0qRn77l1Ly5rzHY9+xD9Z0PXXgSnO8nMvHKdFXMnEIAMC7bS2v1qvXE9CkPcr5FifPpJ781nwFHVI8ld0POReOPJ7U/MFmqg/Qgw0UmauPrpHfQAE4r1BlNHOfrRkah73ssG59qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775416967; c=relaxed/simple;
-	bh=zlGVdjZym/ggnuiF/r1Dn/kupJT9wsr/28GKVLVmXfI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fMtWpj4zhjx/iYU9tzMSvQkbxKHY52gbKhYGDhqyPKhfdAiyyUmRFU2r8U5d4UKUXGF9hEjXxQbw3EM+eJ6lWFPVVYdWImuyhJ9TUOpSApufDbuuOhucchJp49fYlsAC+XBHQbkvgrjPobsb9+FMBt8+zBfVmyJx7CmPVOTW7iI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vIZGY7YI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E2D0C116C6;
-	Sun,  5 Apr 2026 19:22:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775416967;
-	bh=zlGVdjZym/ggnuiF/r1Dn/kupJT9wsr/28GKVLVmXfI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vIZGY7YIM0+ZuTqKW/8MlP9fmsyUfrOqq8oLRIksCPr1kFwQX7/PHn91qnwpGqch/
-	 B3GG4BlYZXaOpg+s2pZOTRuJOB8d0Sego5EiNVm0uDqViOIURRJQmpuYJcKGreV047
-	 xG4/YbU8M3MpAX+s6GDkR3aDdxUxLUd79nWX1Nk7u5msSfwoKFi7X35sPPpo/Gp16u
-	 OfEO7cVtHCONCHq4KkE9DsdkeFZ0VQ6MAPlSmiOuqtmkASxlOOVM5kNRBa7ls3BPW3
-	 xioNBk17jvw87KepOQahdJnfrr287gZeoS27/urixJ/WDXhEH6BBxdteSLJi5V48dc
-	 36rmnMWLTeu0w==
-Date: Sun, 5 Apr 2026 22:22:44 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-Cc: linux-rdma@vger.kernel.org, dledford@redhat.com, haggaie@mellanox.com,
-	jgg@ziepe.ca, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/2] Fix loopback leaks and return paths
-Message-ID: <20260405192244.GD86584@unreal>
-References: <20260404230759.15131-1-prathameshdeshpande7@gmail.com>
- <20260405130924.18901-1-prathameshdeshpande7@gmail.com>
+	s=arc-20240116; t=1775426279; c=relaxed/simple;
+	bh=uFe0BS9nIwlNQLOaXhof9AdRSoCSOGLtYXd5e8z7Tl4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lXP6xw93TySz1tm16oGoj7l1tV08ew8XCAWZ++yEGz/bNhTpFqDaklbRGb8taQaQ2xjvfbTym4P9+36c2vX7M7TmT9LV8TvidW0o14l/F4d35Ag0dJI/EbHeoabM3QhnMEZAHwc8ecvqa4qZWdARfj9rB/gU4Z4FD7cCbfUJ5nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bj9ml0z7; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-483487335c2so34271525e9.2
+        for <linux-rdma@vger.kernel.org>; Sun, 05 Apr 2026 14:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775426276; x=1776031076; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ABbgCzppaW1tFyIqmtlKlRa6pt5yFPCBT+4g9lle4Tk=;
+        b=Bj9ml0z7kcf9qdZTs/ZT4mH+wQ2J5ajk5na3YGadjp0nP9k6fuAXfPRvOiYEradgKI
+         uUOIdjyyDk5Mj8cYdPILz5OLUGHjIz0d71FPdzs00IgS5nIfDi4pP4QBELTPj1EibFu+
+         ICkV+j/8pyY1hvsSZOtAiZ7hn2fhwLX5N8JwNV813mUnYGs3JL5uP1tfWfYuw6iZY0XR
+         BV945mscxHRPlvsZbB0KwObFISss/VUYwXU4ldQ7L7X274iAJ9Rai1UD0yVSpG0Tg/PM
+         /IoLPDePet13GsMYj4DcwQ4FbEy4Q0UDDmnjrcKIe0UjTh8RAhGWDqQ0Ln4uQfinMOJC
+         kjaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775426276; x=1776031076;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ABbgCzppaW1tFyIqmtlKlRa6pt5yFPCBT+4g9lle4Tk=;
+        b=rLlYMrLgv0NLkjqYHKJ7Nh8YD/jx8IjzPjXnir3kLdvy4NG5/rYGN198rSrMIUjbsr
+         +B7ryM2j7amQnh+Z7t+PBCb7aPwTuPxGVlfZDYqQIxaQb2jnqOozTvjYsz0SVZUi+q/I
+         rVuEX3G+afEEAuoVvmdbwD7C+CWQEle9fp1lTPHtvkvrtXixEtMAvtzXQjJovOK7XupJ
+         rXBu2aLQPsIF9B5V6XgTEy9k1ZbzJMdhguLioeau4Se/zIUMt6IbcxN092Tx0J6ufC4n
+         j6OvAmD3S/cJAQrWgRUXPSIDJDTqpye0L+Hof5EzoGCydW0yWsENQfA4hgzXj/02PP0T
+         gw+Q==
+X-Gm-Message-State: AOJu0YwkOEzV6LmP25F74TXGRzvHFEa3JGRwHa+wH8Zigq66UCjxLnS9
+	ZMlKTEixtKYBi7zy9VExX7kXfNMhjnTgZ2hVk71kImPwf1ldybrr9Uur6Akl1eSJ
+X-Gm-Gg: AeBDiethnVVWABJ4nh9sjj+cQC9A6+Tp+eqDCMlDqhs9qcKu7KnU/RGdAcOqa650UfR
+	ypd8Vo9WzSmGkXb7eTr9ghDPZlaFugf8QGyRIgq61syL0ZwZg03dCMSuU0ZnXe7yqiwh4I5/ec5
+	us/Ye2YKsFSrCQo8J6/peZrmNyRYT8/D4jwk7yDGS8V4rT6B9i6r9C0Oqm5VYbQU5ugdpou3xCV
+	aeWldZ8phJCXya8GtY2PE4T7Lew5yj7rvlnpFBFt1Zr9GpsULA6VaCLB/Rli4d+v9Cmdd6t24v4
+	pBtXxlJAAvzqxdEwnVuQ4goXbdVhTkux0mYcU5d9bwIhOXLXludqix3YVzcHi019V5wIMcZ8dNh
+	QMAYwPfuhMpj5ILPOpDZKpPF7DDwHyimLnYPnHgGsEDH+TCDoDzf8b3BJMlyuRtW9OakccPgUZg
+	AuG5i81Sq+843WjY3Kb3NvmpeSiKtLZXP5b93G/eIUjrEpjwrkHkuD0o3MhHcUCcYyJEn3SjMsD
+	oMzyb+u87UAZcjufR9hes+Sv03XG9d5qIoYtuIUzULfUkPy
+X-Received: by 2002:a05:600c:1396:b0:486:fb0b:ad79 with SMTP id 5b1f17b1804b1-488997d10ffmr157413395e9.20.1775426276317;
+        Sun, 05 Apr 2026 14:57:56 -0700 (PDT)
+Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4887e822227sm479479095e9.4.2026.04.05.14.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2026 14:57:55 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: linux-rdma@vger.kernel.org
+Cc: prathameshdeshpande7@gmail.com,
+	dledford@redhat.com,
+	haggaie@mellanox.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/2] Fix loopback leaks and return paths
+Date: Sun,  5 Apr 2026 22:57:16 +0100
+Message-ID: <20260405215718.19301-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260405130924.18901-1-prathameshdeshpande7@gmail.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19003-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_FROM(0.00)[bounces-19004-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,redhat.com,mellanox.com,ziepe.ca,kernel.org,vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8483D39F614
+	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E43ED39FED5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sun, Apr 05, 2026 at 02:09:21PM +0100, Prathamesh Deshpande wrote:
-> This series fixes a return-value bug in the transport domain allocation 
-> path and refactors the loopback enablement logic to resolve reference 
-> count leaks and premature hardware deactivation.
-> 
-> In v7, the patchset is split into two parts:
-> 1. A direct fix for the return-value bug and mutex initialization.
-> 2. A refactor of the loopback state machine to ensure symmetric counter 
->    updates and correct hardware toggling at zero-count transitions.
-> 
-> The split allows for cleaner bisection and separates the immediate 
-> bug fixes from the lifecycle improvements identified during review.
-> 
-> Prathamesh Deshpande (2):
->   IB/mlx5: Fix success return path and mutex initialization
->   IB/mlx5: Fix loopback refcounting leaks and premature disable
-> 
->  drivers/infiniband/hw/mlx5/main.c | 45 ++++++++++++++++---------------
->  1 file changed, 23 insertions(+), 22 deletions(-)
+This series fixes a return-value bug in the transport domain allocation 
+path and refactors the loopback enablement logic to resolve reference 
+count leaks and premature hardware deactivation.
 
-If you want this series to be taken seriously, please submit each new
-revision as a new thread, rather than replying to a previous one.
+In v7, the patchset is split into two parts:
+1. A direct fix for the return-value bug and mutex initialization.
+2. A refactor of the loopback state machine to ensure symmetric counter 
+   updates and correct hardware toggling at zero-count transitions.
 
-Thanks
+The split allows for cleaner bisection and separates the immediate 
+bug fixes from the lifecycle improvements identified during review.
 
-> 
-> -- 
-> 2.43.0
-> 
+Prathamesh Deshpande (2):
+  IB/mlx5: Fix success return path and mutex initialization
+  IB/mlx5: Fix loopback refcounting leaks and premature disable
+
+ drivers/infiniband/hw/mlx5/main.c | 45 ++++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
+
+-- 
+2.43.0
+
 
