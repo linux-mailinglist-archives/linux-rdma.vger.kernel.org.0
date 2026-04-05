@@ -1,283 +1,293 @@
-Return-Path: <linux-rdma+bounces-18981-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18982-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SwOLBPuZ0WnqLgcAu9opvQ
-	(envelope-from <linux-rdma+bounces-18981-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 01:08:43 +0200
+	id mK62FqnT0Wn9OQcAu9opvQ
+	(envelope-from <linux-rdma+bounces-18982-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 05:14:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47FCC39CD3D
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 01:08:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B2939D32D
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 05:14:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C36BB30078F3
-	for <lists+linux-rdma@lfdr.de>; Sat,  4 Apr 2026 23:08:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D8E0E300B544
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 03:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DFB342538;
-	Sat,  4 Apr 2026 23:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D675F346763;
+	Sun,  5 Apr 2026 03:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZrCrIgZN"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="X2t2U6ur"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2420423D7FF
-	for <linux-rdma@vger.kernel.org>; Sat,  4 Apr 2026 23:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDA21F1304;
+	Sun,  5 Apr 2026 03:14:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775344118; cv=none; b=IETjT386AGHZFc9KqnjHtzqZZcqijwgNQP8QTBHWZ4gR07VoqHGE4VNkuOuDWrn2k4ANf/TLB3QdcOSZWlXjNE6y/I9zJi4mhnuRPTedM45Mp4FSghRS1NeygCi2BK7TrbB8vC3QUf2diXBGw8FT6MULiwbxk+TxC4ULKADwBkU=
+	t=1775358882; cv=none; b=EpLynJTrg5oTf9gcmcIo4qUiGsDgLbLh9Ief5SM2hoDaWWv8LO6xt54+kRuz796ite8bXVHnb3VvIhZHPS+4hh4Y4tXZkmp/jbX96oO6K5+hZmmKWnbUCJg2eHYzPMZ36uh6JLSHtzuJTyYtUf1+oQ7bozCNLmwFWAq1khhZeCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775344118; c=relaxed/simple;
-	bh=xpg9Q/ksUK8DcRTOQbzD6p0gQtdWyK+r1oMqC0fUAnQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rxwfs7VbWltqst1lu5U54vOhkmWPL/Sllr0Qw18ELdwRLGzGKuck161JDfDGb1jFGkolYkeoeQLrN36poT4E7VTcxdM45Y2Y6DEaXwqmoqMo86xapStE690FHfUAvIsaPDYFCRxbKBUTpkRonQfjHy67nEGuoOez+4rlhHSvaVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZrCrIgZN; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4887ca8e529so22583035e9.0
-        for <linux-rdma@vger.kernel.org>; Sat, 04 Apr 2026 16:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775344115; x=1775948915; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0hZbwZb7uVS7mrdKS76KPEmzeWc8xmna+sIeGDuLXBQ=;
-        b=ZrCrIgZN39uCemqCafF+Zin1EqzmquEAFoz45v8A+enRp+LEvm+H28ZDfXdaQWqYRG
-         +bHtMICUuys2ewQckunmJkptA78yp1tBmGWxcNga1wSIDP0sIi9E0TbjeUf8QRUgxpO2
-         0DYvKBvUtdFZMMgKZpsmNvRhQ4grA2/eHyiJ1ZTtoPqXPj5N7qkWe2PkrAY9YmsjZDvJ
-         RkKLkmR77fvlyM8VcrYOQ1/y7KOSruFjhYag+bSJ35Fbs2LUGgBW1JD4AbimWByzE//k
-         1yyquh3WzvcR98o3tz+UyVhb2i5uXbIL1DNVYoMROY0ISmEodBC57Uv8KecIYLKgGh45
-         gGgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775344115; x=1775948915;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=0hZbwZb7uVS7mrdKS76KPEmzeWc8xmna+sIeGDuLXBQ=;
-        b=Q3qmK7cM8SS22ibbDn7Xw9DKEw0PeQCnFJNfgZ0WpkETxzSfpK3Jf984BypyXToqG/
-         90Dlg6Mknaz0CNi4SEy0jJ7uVylx2MSkM5uSd5tCdrdvKzOB5A9JnunpEfjdFiuKl7jR
-         XIXlmGt9uQzIkFxkQrH+d2V+Zs1oqvqkyQQC/yjlVbQtmNH3/RfgM79puv2A+w5U3kRb
-         3/K7bsWeWzOtjgqk9zJWdGsSbwDrBqXZDky4kOnNYy0PoM6o2ypuau7EjSjpKesv3n2O
-         igfZMWERxrDM9vYnNbBsQmAiOTpknqgKYnKtDEi/JdHTdOspmKWBFUgwULBuyda4rcii
-         9ArQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU52gnNaidtB4mTUXQ5eZwmIBJWp/fRWVBg7ogbTmymX0c/ysLPsXk4ybv01gDg1j0g+k1yRLb2VY0S@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZbtD79I9wffpFouvz43ohuEXD7y3UK4n1zdk2FxNsle28/M3e
-	OgDVrlRXwMKZ4ulIsnfjTYLhvdZ1gKcGLgHC/CMLO8OqVnQcnL8gLy65
-X-Gm-Gg: AeBDieubs6XrC2xOZPzNUpQLGgo7acZvXoay6pf793clKme77XtWnwxGqOXPsMWtai9
-	zWAW7/7I0SdTkZHb7NldjalI+nfvbG51qv2c9uz9BrCjeqQiWmKnPKbSZkpQPAZflYdN7A2zH5J
-	YMGgWxhIQ9Le+k+eugks7GY2DhaTT6pGuBB9mqKL5vQIayEmtmmCuL3dbHKJ5dGzwuBYrHEPOkY
-	EKv67c9wtmQ1VA8cnM0C678DxN7uDzVDqIdHIRnSBtUvXp9FhCLAXF1z/2f4pr4iHZes6lPmSuP
-	/Rj0JfgLZtdz4++Hxfi5fAiw7+2eA0S/gGvjdUyB5rmFBAfCv1EAIUPLNKJyjQKqKd/czfwzn6t
-	+54dLRvM463qt7JTOWOUqqss5rheq1Ink3E3XUjd9KDRO1mjJhrWjLR6ipoZl+sTqJ+B06S3ybv
-	GQTcP2mD0PkT5M2f4xlLI7YiHyZ/VYmN2M7QpUExC55I3/fOsXhln03MThBRGYY7Q31Ff9i1sWV
-	RqJaP7LCf1p36bdZ0/9Xst+ANJWAi7bKnPE2ruMVurkm+b6
-X-Received: by 2002:a05:600c:5289:b0:487:22ad:403e with SMTP id 5b1f17b1804b1-488994b34b4mr127115975e9.14.1775344115272;
-        Sat, 04 Apr 2026 16:08:35 -0700 (PDT)
-Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488a3d6944bsm82743405e9.11.2026.04.04.16.08.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Apr 2026 16:08:34 -0700 (PDT)
-From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-To: prathameshdeshpande7@gmail.com
-Cc: dledford@redhat.com,
-	haggaie@mellanox.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH v6] IB/mlx5: Fix loopback enablement state and resource leaks
-Date: Sun,  5 Apr 2026 00:07:58 +0100
-Message-ID: <20260404230759.15131-1-prathameshdeshpande7@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260404215155.13254-1-prathameshdeshpande7@gmail.com>
-References: <20260404215155.13254-1-prathameshdeshpande7@gmail.com>
+	s=arc-20240116; t=1775358882; c=relaxed/simple;
+	bh=P7Zi725YLqzVdA8rZ6y665+moo1oSEn103nvnKydJuo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lnQpcgKmZfPBxAOL+BTMqCOwro2Dryxo6jAxJrHZeln0+3/vw45vL3qpXP3YQxrofs5BAavgxNd9Zg7O5/ttHkWdzKvV7dXTEPZhKxxUsSpjmNzTnIfSnyklk9g/QGNW6zahxbR1/Mz13wpctdNe5t1mk+vGOjhIGbjuyfHMyS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=X2t2U6ur; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 1203C20B6F01; Sat,  4 Apr 2026 20:14:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1203C20B6F01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1775358875;
+	bh=0bIrpRaHD+mAUYoibbvyttAD2W1I8KUuNlGO0fbluV4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X2t2U6ur0kfYXDqeiiCh8PISRbLCDk9zLmiYCXxvqrA8WWupJNh/EeDUlNkySlhB8
+	 4bmnyI0RN6Z4sc/2Snw9acNABIe59y/p9j6ef/iTghQQXyI0TFg7qtuIJh1uRLkm2k
+	 pEnRSxQFeuLehYlIi3KzBz6oJCudJKil0lsRaJoI=
+Date: Sat, 4 Apr 2026 20:14:35 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stephen@networkplumber.org, jacob.e.keller@intel.com,
+	leitao@debian.org, kees@kernel.org, dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next,v4] net: mana: Force full-page RX buffers via
+ ethtool private flag
+Message-ID: <adHTm2SvjDrezEdv@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <acrkwuIFyBXhwICF@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20260330154755.6a8c73a6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260330154755.6a8c73a6@kernel.org>
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-18981-lists,linux-rdma=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-18982-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 47FCC39CD3D
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-0.996];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 19B2939D32D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In mlx5_ib_alloc_transport_domain(), an early success path was
-incorrectly returning a variable instead of a literal 0. Additionally,
-the loopback (LB) infrastructure required updates to address
-initialization and concurrency issues:
+On Mon, Mar 30, 2026 at 03:47:55PM -0700, Jakub Kicinski wrote:
+> On Mon, 30 Mar 2026 14:01:54 -0700 Dipayaan Roy wrote:
+> > On some ARM64 platforms with 4K PAGE_SIZE, page_pool fragment
+> > allocation in the RX refill path can cause 15-20% throughput
+> > regression under high connection counts (>16 TCP streams).
+> 
+> Did you investigate what makes such a difference exactly?
+> As I said I suspect there are some improvements we could
+> make in the page pool fragmentation logic that could yield
+> similar wins without bothering the user.
+>
+I collected the perf numbers, shared the analysis below.
+> > Add an ethtool private flag "full-page-rx" that allows the user to
+> > force one RX buffer per page, bypassing the page_pool fragment path.
+> > This restores line-rate(180+ Gbps) performance on affected platforms.
+> > 
+> > Usage:
+> >   ethtool --set-priv-flags eth0 full-page-rx on
+> > 
+> > There is no behavioral change by default. The flag must be explicitly
+> > enabled by the user or udev rule.
+> > 
+> > The existing single-buffer-per-page logic for XDP and jumbo frames is
+> > consolidated into a new helper mana_use_single_rxbuf_per_page().
+> 
+> ethtool -g rx-buf-len could also fit the bill but I guess this is more
+> of a hack / workaround than legit config so no strong preference.
+> 
+ok, want to stay with private flag.
+> > -static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
+> > +static void mana_get_strings_stats(struct mana_port_context *apc, u8 **data)
+> >  {
+> > -	struct mana_port_context *apc = netdev_priv(ndev);
+> >  	unsigned int num_queues = apc->num_queues;
+> >  	int i, j;
+> >  
+> > -	if (stringset != ETH_SS_STATS)
+> > -		return;
+> >  	for (i = 0; i < ARRAY_SIZE(mana_eth_stats); i++)
+> > -		ethtool_puts(&data, mana_eth_stats[i].name);
+> > +		ethtool_puts(data, mana_eth_stats[i].name);
+> >  
+> >  	for (i = 0; i < ARRAY_SIZE(mana_hc_stats); i++)
+> > -		ethtool_puts(&data, mana_hc_stats[i].name);
+> > +		ethtool_puts(data, mana_hc_stats[i].name);
+> >  
+> >  	for (i = 0; i < ARRAY_SIZE(mana_phy_stats); i++)
+> > -		ethtool_puts(&data, mana_phy_stats[i].name);
+> > +		ethtool_puts(data, mana_phy_stats[i].name);
+> >  
+> >  	for (i = 0; i < num_queues; i++) {
+> > -		ethtool_sprintf(&data, "rx_%d_packets", i);
+> > -		ethtool_sprintf(&data, "rx_%d_bytes", i);
+> > -		ethtool_sprintf(&data, "rx_%d_xdp_drop", i);
+> > -		ethtool_sprintf(&data, "rx_%d_xdp_tx", i);
+> > -		ethtool_sprintf(&data, "rx_%d_xdp_redirect", i);
+> > -		ethtool_sprintf(&data, "rx_%d_pkt_len0_err", i);
+> > +		ethtool_sprintf(data, "rx_%d_packets", i);
+> 
+> Please factor out the noisy, no-op prep work into a separate patch for
+> ease of review
+Ack, will split it out in 2 separate patches in v5.
+> -- 
+> pw-bot: cr
 
-1. Initialization: The LB mutex was initialized conditionally, but
-   paths like create_raw_packet_qp_tir() in qp.c call LB functions
-   regardless of those conditions. Move initialization to
-   stage_init_init() to ensure the lock is always valid.
-2. State Integrity: Update mlx5_ib_enable_lb() to roll back reference
-   counters if the hardware command fails, ensuring software state
-   matches hardware.
-3. Concurrency: Move 'force_enable' checks inside the mutex in both
-   enable/disable paths to prevent potential counter underflows.
-4. Resource Leak: Deallocate the transport domain if LB enablement
-   fails in mlx5_ib_alloc_transport_domain().
+Hi Jakub,
 
-Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
----
-v6:
-- Always update software counters regardless of force_enable to prevent 
-  underflows during dynamic unbinding [Sashiko].
-- Updated disable condition to user_td <= 1 to prevent HW state leaks 
-  on systems without transport domains [Sashiko].
-- Rebased on rdma/for-next to resolve baseline application failures.
-v5:
-- Moved mutex_init to stage_init_init to prevent crashes on non-ETH hardware.
-- Implemented 'goto unlock' for concurrency safety in enable/disable paths.
-- Added atomic rollback and fixed tdn leak.
-v4:
-- Moved rollback logic into mlx5_ib_enable_lb() to ensure atomicity
-  within the mutex and prevent race conditions [Sashiko].
-v3:
-- Also call mlx5_ib_disable_lb() on failure to roll back software state/counters
-  [Sashiko].
-v2:
-- Added deallocation of tdn if mlx5_ib_enable_lb() fails [Sashiko].
-- Reworded commit message to reflect the functional fix and credit the tool.
+I did some perf analysis on the ARM64 platform for which we want to
+have this work around of full page rx buffers:
 
- drivers/infiniband/hw/mlx5/main.c | 39 +++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+test: ntttcp with 48 tcp connections
+perf: perf record -ag --call-graph dwarf -C 0-33 -- sleep 32
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index b74bf2697655..c2fafa00b60c 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2009,23 +2009,31 @@ int mlx5_ib_enable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- {
- 	int err = 0;
- 
--	if (dev->lb.force_enable)
--		return 0;
--
- 	mutex_lock(&dev->lb.mutex);
- 	if (td)
- 		dev->lb.user_td++;
- 	if (qp)
- 		dev->lb.qps++;
- 
--	if (dev->lb.user_td == 2 ||
-+	if (dev->lb.force_enable)
-+		goto unlock;
-+
-+	if (dev->lb.user_td == 1 ||
- 	    dev->lb.qps == 1) {
- 		if (!dev->lb.enabled) {
- 			err = mlx5_nic_vport_update_local_lb(dev->mdev, true);
--			dev->lb.enabled = true;
-+			if (err) {
-+				if (td)
-+					dev->lb.user_td--;
-+				if (qp)
-+					dev->lb.qps--;
-+			} else {
-+				dev->lb.enabled = true;
-+			}
- 		}
- 	}
- 
-+unlock:
- 	mutex_unlock(&dev->lb.mutex);
- 
- 	return err;
-@@ -2033,16 +2041,16 @@ int mlx5_ib_enable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- 
- void mlx5_ib_disable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- {
-+	mutex_lock(&dev->lb.mutex);
- 	if (dev->lb.force_enable)
--		return;
-+		goto unlock;
- 
--	mutex_lock(&dev->lb.mutex);
- 	if (td)
- 		dev->lb.user_td--;
- 	if (qp)
- 		dev->lb.qps--;
- 
--	if (dev->lb.user_td == 1 &&
-+	if (dev->lb.user_td <= 1 &&
- 	    dev->lb.qps == 0) {
- 		if (dev->lb.enabled) {
- 			mlx5_nic_vport_update_local_lb(dev->mdev, false);
-@@ -2050,6 +2058,7 @@ void mlx5_ib_disable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- 		}
- 	}
- 
-+unlock:
- 	mutex_unlock(&dev->lb.mutex);
- }
- 
-@@ -2068,9 +2077,13 @@ static int mlx5_ib_alloc_transport_domain(struct mlx5_ib_dev *dev, u32 *tdn,
- 	if ((MLX5_CAP_GEN(dev->mdev, port_type) != MLX5_CAP_PORT_TYPE_ETH) ||
- 	    (!MLX5_CAP_GEN(dev->mdev, disable_local_lb_uc) &&
- 	     !MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
--		return err;
-+		return 0;
-+
-+	err = mlx5_ib_enable_lb(dev, true, false);
-+	if (err)
-+		mlx5_cmd_dealloc_transport_domain(dev->mdev, *tdn, uid);
- 
--	return mlx5_ib_enable_lb(dev, true, false);
-+	return err;
- }
- 
- static void mlx5_ib_dealloc_transport_domain(struct mlx5_ib_dev *dev, u32 tdn,
-@@ -4515,6 +4528,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
- 	mutex_init(&dev->data_direct_lock);
- 	INIT_LIST_HEAD(&dev->qp_list);
- 	spin_lock_init(&dev->reset_flow_resource_lock);
-+	mutex_init(&dev->lb.mutex);
- 	xa_init(&dev->odp_mkeys);
- 	xa_init(&dev->sig_mrs);
- 	atomic_set(&dev->mkey_var, 0);
-@@ -4786,11 +4800,6 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
- 	if (err)
- 		return err;
- 
--	if ((MLX5_CAP_GEN(dev->mdev, port_type) == MLX5_CAP_PORT_TYPE_ETH) &&
--	    (MLX5_CAP_GEN(dev->mdev, disable_local_lb_uc) ||
--	     MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
--		mutex_init(&dev->lb.mutex);
--
- 	if (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
- 			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q) {
- 		err = mlx5_ib_init_var_region(dev);
--- 
-2.43.0
+Page pool overhead summary: 
+(framgment based rx buff vs full page rx buff on the same ARM64
+platform)
 
+  Function                        Fragment   Full-page   Delta
+  ─----------------------------   ─-------   ---------   -----
+  napi_pp_put_page                  3.93%      0.85%    +3.08%
+  page_pool_alloc_frag_netmem       1.93%         —     +1.93%
+  Total page_pool overhead          5.86%      0.85%    +5.01%
+
+In fragment mode, napi_pp_put_page performs an atomic decrement of
+the shared page refcount on every packet free. This single operation
+accounts for ~3% more CPU than in full-page mode, where the page is
+sole-owned and the atomic is skipped entirely. Additionally,
+page_pool_alloc_frag_netmem adds ~2% overhead on the allocation
+path for fragments.
+
+Further annotation of the hot page pool functions in fragment mode
+shows:
+
+napi_pp_put_page:
+
+    0.09 :   ffff80008117c240:       b       ffff80008117c268
+<napi_pp_put_page+0x68>
+         : 64               ATOMIC64_FETCH_OP(        , al, op, asm_op,
+"memory")
+         :
+         : 66               ATOMIC64_FETCH_OPS(andnot, ldclr)
+         : 67               ATOMIC64_FETCH_OPS(or, ldset)
+         : 68               ATOMIC64_FETCH_OPS(xor, ldeor)
+         : 69               ATOMIC64_FETCH_OPS(add, ldadd)
+    0.00 :   ffff80008117c244:       mov     x3, #0xffffffffffffffff
+// #-1
+    0.08 :   ffff80008117c248:       add     x0, x2, #0x28
+    0.06 :   ffff80008117c24c:       ldaddal x3, x3, [x0]
+         : 73               }
+         :
+         : 75               ATOMIC64_OP_ADD_SUB_RETURN(_relaxed)
+         : 76               ATOMIC64_OP_ADD_SUB_RETURN(_acquire)
+         : 77               ATOMIC64_OP_ADD_SUB_RETURN(_release)
+         : 78               ATOMIC64_OP_ADD_SUB_RETURN(        )
+   88.09 :   ffff80008117c250:       sub     x3, x3, #0x1
+         :
+         : 81               return 0;
+         : 82               }
+
+88% of this function's cycles stall on the sub that depends on
+ldaddal.
+
+
+page_pool_alloc_frag_netmem:
+
+         : 151              ATOMIC64_FETCH_OPS(add, ldadd)
+    0.00 :   ffff8000811fd40c:       add     x1, x21, #0x28
+    0.14 :   ffff8000811fd410:       ldaddal x0, x1, [x1]
+         : 154              }
+         :
+         : 156              ATOMIC64_OP_ADD_SUB_RETURN(_relaxed)
+         : 157              ATOMIC64_OP_ADD_SUB_RETURN(_acquire)
+         : 158              ATOMIC64_OP_ADD_SUB_RETURN(_release)
+         : 159              ATOMIC64_OP_ADD_SUB_RETURN(        )
+   75.09 :   ffff8000811fd414:       add     x0, x0, x1
+         : 161              WARN_ON(ret < 0);
+    0.16 :   ffff8000811fd418:       cmp     x0, #0x0
+    0.00 :   ffff8000811fd41c:       b.lt    ffff8000811fd394
+<page_pool_alloc_frag_netmem+0xb4>  // b.tstop
+
+
+75% of this function's cycles stall on the same pattern.
+
+
+Full comparison (top functions, >0.5%):
+
+Fragment mode:                          Full-page mode:
+-------------                           --------------
+ 15.88%  __wake_up_sync_key             13.66%  __wake_up_sync_key
+  9.66%  default_idle_call              10.41%  default_idle_call
+  8.38%  handle_softirqs                 8.89%  handle_softirqs
+  3.93%  napi_pp_put_page       ←        0.85%  napi_pp_put_page
+  3.18%  tcp_gro_receive                 3.43%  tcp_gro_receive
+  1.93%  page_pool_alloc_frag   ←           —
+     —                                   1.14%
+page_pool_recycle_in_cache
+     —                                   1.06%
+page_pool_put_unrefed_netmem
+  0.93%  napi_build_skb                  1.24%  napi_build_skb
+  0.56%  __build_skb_around              1.46%  __build_skb_around
+
+In full page rx buffers mode  'napi_pp_put_page' took just 0.85% on
+the same ARM64 platform.
+
+Comparing with another platform(x86):
+
+To confirm this behaviour is specific to this ARM64 platform, I
+collected the same data on a x86 Vm (Intel, 192 vCPUs, same MANA NIC 200Gbps)
+Here both full page rx buff mode and fragment modes rx buffs achieves identical
+~182 Gbps on x86.
+
+x86 fragment mode:                      x86 full-page mode:
+─-----------------                      ─------------------
+ 61.69%  pv_native_safe_halt            50.91%  pv_native_safe_halt
+  4.17%  _raw_spin_unlock_irqrestore     6.19%
+_raw_spin_unlock_irqrestore
+  3.95%  handle_softirqs                 4.02%  handle_softirqs
+  2.51%  _copy_to_iter                   2.53%  _copy_to_iter
+  0.60%  napi_pp_put_page                  —    napi_pp_put_page (<0.5%)
+
+On x86, napi_pp_put_page is only 0.60% in fragment mode (vs 3.93%
+on the ARM64 platform data shared earlier).
+
+Note: I did not had a different arm64 platform available to run and compare
+it with.
+
+From the above data, seems to be an issue specific to this ARM64
+platform.
+
+
+Regards
 
