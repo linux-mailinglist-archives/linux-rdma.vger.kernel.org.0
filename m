@@ -1,326 +1,169 @@
-Return-Path: <linux-rdma+bounces-18985-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18986-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +OSfCl/b0WnJPQcAu9opvQ
-	(envelope-from <linux-rdma+bounces-18985-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 05:47:43 +0200
+	id sGj3DRbi0Wm8PwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-18986-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 06:16:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1419039D449
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 05:47:43 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8624139D486
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 06:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 662613006177
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 03:47:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8302D300C90C
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 04:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EE51A23A6;
-	Sun,  5 Apr 2026 03:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CB11D798E;
+	Sun,  5 Apr 2026 04:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kAgMqVx1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KIR26xj1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED32340DFD6;
-	Sun,  5 Apr 2026 03:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D667454726;
+	Sun,  5 Apr 2026 04:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775360858; cv=none; b=V7IqxPFF2YazPPW3gskyo5d039bbMbWtRPFTRSUJQiLr0SCKCO4AvAzO9N/ED9rQysaZAiVfJAV7cC3dy2P+y6HbUl3me7egJJArVoKb7jnubLugD9Vbneikpjm00AXuD0+us5w65lNo7cBC0pUaUVDzqjhGmPxE6yneeng7baI=
+	t=1775362574; cv=none; b=LRgsLr8rblsF+3ggZDPNEWhf1dusgqE7GesVnZ9kr77wYca7ZSHfU0wU/QJBk8qCnlMRic0KvhUso6X9nm+RoTldLFeM3oepHFlPXKmfNdJt7BmIsQdflN/deoDT3KIOQg2HGC1lpQhpGewJsZCzA0ZvO4zDx9F4r/jlEOBWNYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775360858; c=relaxed/simple;
-	bh=GE6Xqp35Q4safSXDXCWd6QGGmtmNjvwlFxfUS+p/2HE=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=p/+Lxmp1uQpq9ymjyAMd1uIo+rvC5dBa/m0sMKZlQFb7nSx9Tb95b1LxcK2waluSJ0zfQTHBaSfroZ5HdK0xG6hbUx9Q86v+F1/uDTtxe/t9cnr3xjK/6LQEElDosaND2Q77S3PvtVZ6Gc2DnmNdLNYFEwNP3PWb13n+QEOkYxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kAgMqVx1; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id A98DE20B6F01; Sat,  4 Apr 2026 20:47:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A98DE20B6F01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1775360856;
-	bh=QYs8uZsCpDirbEisT0uHXS5U6nK+4UiJEvZ1Irrd4YE=;
-	h=Date:From:To:Subject:From;
-	b=kAgMqVx1fTNdmGaILPmZPvgYnMVrSC5zxvsXvu1RZ8tXxi/MctqVQ0HerOvtgQziZ
-	 Qyj8reiY7s+sLvLUXnt+tT4nvE9lFMzu34Z7y2vcwCevCicoIRMDgCa3SOlSA/7XQU
-	 MeBJuGugqEiL9HfNdiXoaLSq7TH0M5UTa5i//7CI=
-Date: Sat, 4 Apr 2026 20:47:36 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
-	horms@kernel.org, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
-	jacob.e.keller@intel.com, dipayanroy@microsoft.com,
-	leitao@debian.org, kees@kernel.org
-Subject: [PATCH net-next v5 2/2] net: mana: force full-page RX buffers via
- ethtool private flag
-Message-ID: <adHbWGh3DE0L2glq@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1775362574; c=relaxed/simple;
+	bh=3x27M9yg/TErPyCGNhXZlvzZcXchlXEBtlxieSz9rdQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=W/pumfJmrwgz4gK5OYobhIa9E1c/vfnh7BvY8MreqsdSvwyZbK7HP+AIxzGtqek78mCmWSztBc/JWv72UN3Z1q6VNcB4N3PfMvF5Pyj95yKKGeght8oRG3Re6lb8zmGAHjnk2tUu0koxBC9bzoDDxLRNObsacXea8Azg3/ZzHb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KIR26xj1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4759C116C6;
+	Sun,  5 Apr 2026 04:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775362574;
+	bh=3x27M9yg/TErPyCGNhXZlvzZcXchlXEBtlxieSz9rdQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KIR26xj14CXYWOtWGlq5lzrkHqINCp2dMDnLQyKuQcE4Glhj6QmOAwQJ/TKVywSRo
+	 388fZQkfeoHbLymmbVVpIhiKGNs49VFvOmNSF3WhnVpoGdPVnS4KAmdjOAkch6Fz32
+	 DgqolB7xo4mbTFKXuRwTTpwOdBavWiIl6hYkeHJk/6ksq+10pfGI1D9ZKTtRH4EAHE
+	 3P/GXmBa4LO84arB55qJ4gd3oru0bRsc1BySmZnmShUvvBJj7vlNmEzqlAvnUY70Vn
+	 Tp/BoTeW+3BkaQVIho0d0O269kN/ZRIKJ3d0Mt9N2dp9CYcADnT91iXgCx5ZJLxwS5
+	 H9/YFL30+CIZw==
+From: Allison Henderson <achender@kernel.org>
+To: netdev@vger.kernel.org
+Cc: pabeni@redhat.com,
+	edumazet@google.com,
+	rds-devel@oss.oracle.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	achender@kernel.org
+Subject: [PATCH net v1 0/2] net/rds: Fix use-after-free in RDS/IB for non-init namespaces
+Date: Sat,  4 Apr 2026 21:16:11 -0700
+Message-ID: <20260405041613.309958-1-achender@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-18985-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-18986-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1419039D449
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url]
+X-Rspamd-Queue-Id: 8624139D486
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On some ARM64 platforms with 4K PAGE_SIZE, page_pool fragment
-allocation in the RX refill path can cause 15-20% throughput
-regression under high connection counts (>16 TCP streams).
+This series fixes syzbot bug da8e060735ae02c8f3d1
+https://syzkaller.appspot.com/bug?extid=da8e060735ae02c8f3d1
 
-Add an ethtool private flag "full-page-rx" that allows the user to
-force one RX buffer per page, bypassing the page_pool fragment path.
-This restores line-rate (180+ Gbps) performance on affected platforms.
+The report finds a use-after-free bug where ib connections access an
+invalid network namespace after it has been freed.  The stack is:
 
-Usage:
-  ethtool --set-priv-flags ethx full-page-rx on
+    rds_rdma_cm_event_handler_cmn
+      rds_conn_path_drop
+        rds_destroy_pending
+          check_net()  <-- use-after-free
 
-There is no behavioral change by default. The flag must be explicitly
-enabled by the user or udev rule.
+This is initially introduced in:
+d5a8ac28a7ff ("RDS-TCP: Make RDS-TCP work correctly when it is set up
+in a netns other than init_net").
 
-The existing single-buffer-per-page logic for XDP and jumbo frames is
-consolidated into a new helper mana_use_single_rxbuf_per_page() which
-is now the single decision point for both the automatic and
-user-controlled paths.
+Here, we made RDS aware of the namespace by storing a net pointer in
+each connection.  But it is not explicitly restricted to init_net in
+the case of ib. The RDS/TCP transport has its own pernet exit handler
+(rds_tcp_exit_net) that destroys connections when a namespace is torn
+down. But RDS/IB does not support more than the initial namespace and
+has no such handler. The initial namespace is statically allocated,
+and never torn down, so it always has at least one reference.
 
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 22 ++++-
- .../ethernet/microsoft/mana/mana_ethtool.c    | 89 +++++++++++++++++++
- include/net/mana/mana.h                       |  8 ++
- 3 files changed, 117 insertions(+), 2 deletions(-)
+Allowing non init namespaces that do not have a persistent reference
+means that when their refcounts drop to zero, they are released through
+cleanup_net(). Which would call any registered pernet clean up handlers
+if it had any, but since they don't in this case, the extra
+rds_connections remain with stale c_net pointers.  Which are then
+accessed later causing the use-after-free bug.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 49c65cc1697c..59a1626c2be1 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -744,6 +744,25 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
- 	return va;
- }
- 
-+static bool
-+mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
-+{
-+	/* On some platforms with 4K PAGE_SIZE, page_pool fragment allocation
-+	 * in the RX refill path (~2kB buffer) can cause significant throughput
-+	 * regression under high connection counts. Allow user to force one RX
-+	 * buffer per page via ethtool private flag to bypass the fragment
-+	 * path.
-+	 */
-+	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
-+		return true;
-+
-+	/* For xdp and jumbo frames make sure only one packet fits per page. */
-+	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
-+		return true;
-+
-+	return false;
-+}
-+
- /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
- static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 			       int mtu, u32 *datasize, u32 *alloc_size,
-@@ -754,8 +773,7 @@ static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 	/* Calculate datasize first (consistent across all cases) */
- 	*datasize = mtu + ETH_HLEN;
- 
--	/* For xdp and jumbo frames make sure only one packet fits per page */
--	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
-+	if (mana_use_single_rxbuf_per_page(apc, mtu)) {
- 		if (mana_xdp_get(apc)) {
- 			*headroom = XDP_PACKET_HEADROOM;
- 			*alloc_size = PAGE_SIZE;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index a28ca461c135..0547c903f613 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -133,6 +133,10 @@ static const struct mana_stats_desc mana_phy_stats[] = {
- 	{ "hc_tc7_tx_pause_phy", offsetof(struct mana_ethtool_phy_stats, tx_pause_tc7_phy) },
- };
- 
-+static const char mana_priv_flags[MANA_PRIV_FLAG_MAX][ETH_GSTRING_LEN] = {
-+	[MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF] = "full-page-rx"
-+};
-+
- static int mana_get_sset_count(struct net_device *ndev, int stringset)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -144,6 +148,10 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
- 		       ARRAY_SIZE(mana_phy_stats) +
- 		       ARRAY_SIZE(mana_hc_stats)  +
- 		       num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-+
-+	case ETH_SS_PRIV_FLAGS:
-+		return MANA_PRIV_FLAG_MAX;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -192,6 +200,14 @@ static void mana_get_strings_stats(struct mana_port_context *apc, u8 **data)
- 	}
- }
- 
-+static void mana_get_strings_priv_flags(u8 **data)
-+{
-+	int i;
-+
-+	for (i = 0; i < MANA_PRIV_FLAG_MAX; i++)
-+		ethtool_puts(data, mana_priv_flags[i]);
-+}
-+
- static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -200,6 +216,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 	case ETH_SS_STATS:
- 		mana_get_strings_stats(apc, &data);
- 		break;
-+	case ETH_SS_PRIV_FLAGS:
-+		mana_get_strings_priv_flags(&data);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -590,6 +609,74 @@ static int mana_get_link_ksettings(struct net_device *ndev,
- 	return 0;
- }
- 
-+static u32 mana_get_priv_flags(struct net_device *ndev)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+
-+	return apc->priv_flags;
-+}
-+
-+static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+	u32 changed = apc->priv_flags ^ priv_flags;
-+	u32 old_priv_flags = apc->priv_flags;
-+	bool schedule_port_reset = false;
-+	int err = 0;
-+
-+	if (!changed)
-+		return 0;
-+
-+	/* Reject unknown bits */
-+	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
-+		return -EINVAL;
-+
-+	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
-+		apc->priv_flags = priv_flags;
-+
-+		if (!apc->port_is_up) {
-+			/* Port is down, flag updated to apply on next up
-+			 * so just return.
-+			 */
-+			return 0;
-+		}
-+
-+		/* Pre-allocate buffers to prevent failure in mana_attach
-+		 * later
-+		 */
-+		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+		if (err) {
-+			netdev_err(ndev,
-+				   "Insufficient memory for new allocations\n");
-+			apc->priv_flags = old_priv_flags;
-+			return err;
-+		}
-+
-+		err = mana_detach(ndev, false);
-+		if (err) {
-+			netdev_err(ndev, "mana_detach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+			goto out;
-+		}
-+
-+		err = mana_attach(ndev);
-+		if (err) {
-+			netdev_err(ndev, "mana_attach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+			schedule_port_reset = true;
-+		}
-+	}
-+
-+out:
-+	mana_pre_dealloc_rxbufs(apc);
-+
-+	if (err && schedule_port_reset)
-+		queue_work(apc->ac->per_port_queue_reset_wq,
-+			   &apc->queue_reset_work);
-+
-+	return err;
-+}
-+
- const struct ethtool_ops mana_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_CQE_FRAMES,
- 	.get_ethtool_stats	= mana_get_ethtool_stats,
-@@ -608,4 +695,6 @@ const struct ethtool_ops mana_ethtool_ops = {
- 	.set_ringparam          = mana_set_ringparam,
- 	.get_link_ksettings	= mana_get_link_ksettings,
- 	.get_link		= ethtool_op_get_link,
-+	.get_priv_flags		= mana_get_priv_flags,
-+	.set_priv_flags		= mana_set_priv_flags,
- };
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 3336688fed5e..fd87e3d6c1f4 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -30,6 +30,12 @@ enum TRI_STATE {
- 	TRI_STATE_TRUE = 1
- };
- 
-+/* MANA ethtool private flag bit positions */
-+enum mana_priv_flag_bits {
-+	MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF = 0,
-+	MANA_PRIV_FLAG_MAX,
-+};
-+
- /* Number of entries for hardware indirection table must be in power of 2 */
- #define MANA_INDIRECT_TABLE_MAX_SIZE 512
- #define MANA_INDIRECT_TABLE_DEF_SIZE 64
-@@ -531,6 +537,8 @@ struct mana_port_context {
- 	u32 rxbpre_headroom;
- 	u32 rxbpre_frag_count;
- 
-+	u32 priv_flags;
-+
- 	struct bpf_prog *bpf_prog;
- 
- 	/* Create num_queues EQs, SQs, SQ-CQs, RQs and RQ-CQs, respectively. */
+So, the simple fix is to disallow more than the initial namespace
+to be created in the case of ib connections.
+
+Fixes are ported from UEK patches found here:
+
+  https://github.com/oracle/linux-uek/commit/8ed9a82376b7
+  Patch 1 is a prerequisite optimization to rds_ib_laddr_check() that
+  avoids excessive rdma_bind_addr() calls during transport probing by
+  first checking rds_ib_get_device().  This is needed because patch 2
+  adds a namespace check at the top of the same function.
+
+    UEK: 8ed9a82376b7 ("rds: ib: Optimize rds_ib_laddr_check")
+
+  https://github.com/oracle/linux-uek/commit/bd9489a08004
+  Patch 2 restricts RDS/IB to the initial network namespace.  It adds
+  checks in both rds_ib_laddr_check() and rds_set_transport() to reject
+  IB use from non-init namespaces with -EPROTOTYPE.  This prevents the
+  use-after-free by ensuring IB connections cannot exist in namespaces
+  that may be torn down.
+
+    UEK: bd9489a08004 ("net/rds: Restrict use of RDS/IB to the initial
+    network namespace")
+
+Questions, comments and feedback appreciated!
+
+Thank you!
+Allison
+
+Greg Jumper (1):
+  net/rds: Restrict use of RDS/IB to the initial network namespace
+
+Håkon Bugge (1):
+  net/rds: Optimize rds_ib_laddr_check
+
+ net/rds/af_rds.c  | 10 ++++++++--
+ net/rds/ib.c      | 23 +++++++++++++++++++++--
+ net/rds/ib.h      |  1 +
+ net/rds/ib_rdma.c |  2 +-
+ 4 files changed, 31 insertions(+), 5 deletions(-)
+
 -- 
 2.43.0
 
