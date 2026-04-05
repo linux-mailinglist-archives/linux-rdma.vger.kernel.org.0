@@ -1,260 +1,194 @@
-Return-Path: <linux-rdma+bounces-18999-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19000-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KHqfLJKy0mlKZwcAu9opvQ
-	(envelope-from <linux-rdma+bounces-18999-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 21:05:54 +0200
+	id CI3+BIuz0ml/ZwcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19000-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 21:10:03 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F13E239F55B
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 21:05:53 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E81E39F568
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 21:10:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 93C943007E24
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 19:05:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 12BAC3005678
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 19:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99A02EAB6F;
-	Sun,  5 Apr 2026 19:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8652ED846;
+	Sun,  5 Apr 2026 19:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="j2KNGpBr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMNRw4/G"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011015.outbound.protection.outlook.com [40.93.194.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B7B5433B3;
-	Sun,  5 Apr 2026 19:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775415945; cv=fail; b=VISet8bkGvJOmN5/yfbe/VSXfTO8iRp4HMnZ9Lwq4hOmbeSiaLtlKIr8rYJuzDg721Q37xvM13NoF7ILJWMX0sot9vbWKV2+hIGpHZuml5t+6BUsH9MWFpztCt7jXtoXgBjUPYWVk7GSiN9kwd6UwN0UhMs+Qk07iPZ0SIzzcmQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775415945; c=relaxed/simple;
-	bh=awdvCo6CGmIgywBYESmyUqvBZrePQ91P8dAblV00UeI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=BW8oyNM9xvzgX8HmX0IZawFS4OwS9R7WbUskfptDHPxsvhuhZUS5MDIa44rpU/Fyuk2+haDgsE47Itdz0fmAd4g8T6pGXqoHl6Gq+qogE4qSvPULacbKn8Z4/LyxwsNeXhDYPH0R79pbj9AMRtuqYkNgLTCVGaJVl8GNwxjQpr4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=j2KNGpBr; arc=fail smtp.client-ip=40.93.194.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=jHolmXAFghR/QddUyVFbhSO0m615QRX1IOWuLghbwd9FtLVCKzZFu4BaGTAnR1TGa7sEvaVhgYw1XdOJUmdvqiFpli3pCES48g9t7Zx1hPIygpOHSbgVys7f3/7HZBU484+j1CQgsz56nfAHT0WsQ1hythlS4Oivr+1+PgSOvUuWh3JifhjTRPKPR5bPzZJ6fjmnI4BBvALZgDwHpBJ3zixyeJXcVWoMNGGqqoqU84e5lVSbGdfl3PclEog7E8OBZkAohn1jQfkzIe8YfR63oH/OaS6g8M9ZME5N0MC1rm9S2iIFIhRXZ8dSh15mIE86z65d30Goxch/Vmf6y1xosw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UEjwZZrlVhG68nJ6xpqtY4JFzkh8bmQy7vMqL57ixWc=;
- b=DGrg4FD8vmpSWLsannzCJ6GCM5eZC1lfZL7oIBsPEKiDYFuitl7VAc4x8HA1ZeM2uXcpYHeakinlVfy/cDUFOfRO4GSXLpWU6GRusZg2Ok2sB7+y7UlgcoF5bt8lrJUCW0ZK97DRVUN2VXJh9zFvL2NgwuKpH72glnyQduIIUG5Yxoo5ZMbq4okNjkz86ZUHByjijfRzLAsFTUwft/VPpJEusEGkLWhe9jd3Yvj6bySFnTfBpehy1DtPKSQuC6NZoo83P+vX6I6n3Cl2FcswuqGum21qOrdrfaPVCGKTXhzDtoF5sj8SA1G/i1OhO0l75d94jicIBY9L+lGGYYijTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UEjwZZrlVhG68nJ6xpqtY4JFzkh8bmQy7vMqL57ixWc=;
- b=j2KNGpBrPQAR0rri1LU5Ij7dU3SWWCt0Cwn6YcTWOQ3K+SeDcajpjdqlKjeCcLGNOYEQtCFPC7HzbIK/sBsmeSa4JvReNTYvDYTe3A4EOxukEVyWh9qJIQEQNjpIZhGGpNHMSh81rydCKCjZiGW5+TQuj0FHT4HTde9aHZKTnEMZuQdBTnFtqgwNoUZGFtu0aqsnfmuh/4qLdjDtIpflCBEeIKa/GNJ9HmvHNy6YgR3NfD9iD9ShZ8yYAE9+Th40bxO4bJgORQayCcnQ5V4btNF1k9cZzs3l9badTh3yLKvvOvCjiJdGZArJHROn5ssAKsYjmN8UCdV9PI/RAz3fnA==
-Received: from CH0PR08CA0022.namprd08.prod.outlook.com (2603:10b6:610:33::27)
- by BL1PR12MB5876.namprd12.prod.outlook.com (2603:10b6:208:398::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.18; Sun, 5 Apr
- 2026 19:05:39 +0000
-Received: from CH1PEPF0000A34A.namprd04.prod.outlook.com
- (2603:10b6:610:33:cafe::3f) by CH0PR08CA0022.outlook.office365.com
- (2603:10b6:610:33::27) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9769.32 via Frontend Transport; Sun,
- 5 Apr 2026 19:05:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CH1PEPF0000A34A.mail.protection.outlook.com (10.167.244.5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9769.17 via Frontend Transport; Sun, 5 Apr 2026 19:05:38 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 5 Apr
- 2026 12:05:30 -0700
-Received: from [10.221.229.87] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 5 Apr
- 2026 12:05:25 -0700
-Message-ID: <0faddbe5-3b2e-46af-9fbf-0c86bc32ee4b@nvidia.com>
-Date: Sun, 5 Apr 2026 22:05:23 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9E21EFF8D;
+	Sun,  5 Apr 2026 19:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1775416199; cv=none; b=WbHm7AiLftQ0NJrk6svd3H+OR2g9fPphRMNdHoJR4BPmhyl3D8mMIBGtDHBJSzbq9LS8zAkQPXCXITDiEzeUhRzAsBy0az2wtkqwxc+NJbvU3KlKQCg4q+ZAwfnhn1qm6Zw0/g8UL6cX3hz9tiF9ZgonaNdx0iVsXPdr637ZJJk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1775416199; c=relaxed/simple;
+	bh=pZsvqn/xapk03wpgrCiOjNHlIdWklWZuoB52UOp3JrU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DWkoxBkaRIYf6n5YTJ4Y7bsLhb4sbkctDL6mXqCz5Wx4B+7PnhLBjW+KgGy0YJXb9gowF4ujzX5ni/WOI0t646TxRW+rmslJTJDPjoNexbnzXJGao5bckAEZ3HwBZFDDp25lMmwKaEp0iw7gB7Xy3xBGthGcsp4AtpMVnd4WtRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMNRw4/G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF62CC116C6;
+	Sun,  5 Apr 2026 19:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775416199;
+	bh=pZsvqn/xapk03wpgrCiOjNHlIdWklWZuoB52UOp3JrU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RMNRw4/GckF78ik0U47TTHYImepIQJ0KyWLTazU1nIrfxWtQfJLGgdSgAWc+ERmeO
+	 0RaHicgMhYgYoV+lgdOceQkGliUjuxPRC8u1AhZ2IWgvUcJYRTqlPbNDSgnce2n+R5
+	 Pc8dSD194bw6aLCv/zyTG4duMRuegdobZwVbop0hjOAW7Tb8I/E6+A9biWYI1YupjZ
+	 C/bTu9hAZarAV5vy3smS1386A8mEJpoU+taJwm2XC/rWdrY1QZiPxhqCgz0aRP8dRk
+	 rBluFbxoeF9zIyxz0y5EPujEMBmufu8VYJIAwHxtBx7VzZr3eb7fBGGEh1gPKw1L4k
+	 PMEDXA4zJrEJg==
+Date: Sun, 5 Apr 2026 22:09:54 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: zhenwei pi <zhenwei.pi@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	zyjzyj2000@gmail.com, jgg@ziepe.ca
+Subject: Re: [PATCH v3 1/3] RDMA/rxe: use RXE_PORT instead of magic number 1
+Message-ID: <20260405190954.GA86584@unreal>
+References: <20260329054156.125362-1-zhenwei.pi@linux.dev>
+ <20260329054156.125362-2-zhenwei.pi@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/3] net/mlx5e: SD, Fix race condition in secondary
- device probe/remove
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, "Mark
- Bloch" <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Simon Horman
-	<horms@kernel.org>, Kees Cook <kees@kernel.org>, Parav Pandit
-	<parav@nvidia.com>, Patrisious Haddad <phaddad@nvidia.com>, Gal Pressman
-	<gal@nvidia.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20260330193412.53408-1-tariqt@nvidia.com>
- <20260330193412.53408-2-tariqt@nvidia.com>
- <20260401200842.79322a24@kernel.org>
- <53c3bf8c-0b0e-4986-91f3-3eec53fc2b1a@nvidia.com>
- <20260402174531.33ff0ff6@kernel.org>
-Content-Language: en-US
-From: Shay Drori <shayd@nvidia.com>
-In-Reply-To: <20260402174531.33ff0ff6@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH1PEPF0000A34A:EE_|BL1PR12MB5876:EE_
-X-MS-Office365-Filtering-Correlation-Id: 28f4b029-cdea-493f-f76a-08de93465382
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|376014|36860700016|82310400026|56012099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	PWZ/kW9kN8DymbcJbEv2JysCDZkMzSKafStyrxvYtji8XPeV4lnzUyDe3xZbP+IlvArk38EFx4iIEiYkNZNmdppeUSGQ4aTXOcLHBKDN9EuMGhhfPocnHBP+Qxw+J02PjTc7/JE67ZpLPDbfbeDYr6+G546B73QQUKJS2zxS8qYoHDPeNxMExlTXES7qtszjm2QtDpmYo4N7lT8Pwsh/NEYV4s7qBnEc5/whjIXhINaLWrETIkgHTOy0Hc3B4UGDKHqDqsVmf1KJmHgSnX7yU0ol1QVDUcIwvTNId9Tb1TURHY2KqmZOFljvqj0ZSF6bY5+pPx69cxBCGbOuY7C8pvOo7uZgly9SE0GMC3KofEU7LcFBoiPObdnenHwXpNhAA7RDIHY+iu7/4GTlCuO1H2SZsXGeERZ+5pDBnwf6cchXEqfkaWaJcgEcaIvM1WPL9WAFKMTT3vltCtIjf7ebd1p6SsCF6eqjVUGTkbsln86LQ6CXRdTzBPel/z9foKcCxOEDetzXT0o/VRdvmgejPfxfWzY/c8RjQ8zDgq612R38dL6G76W6hrOdMt7R1u8zgxBp7OR/6aNKmJZfbCacfeRMqLLcXYd3IhSI32VTFQ1pZqoQdBUqbd1jCAshpSlCkCzyrUrHkiGGPbQtogMySrc3VZbArpeYI7O88NHjPGYqHfn0h/bl+nZASvRMhGbdUK+FZIjzpikQXn9SIa642fkR6tD43L2BA7KFATFnrReKYJGjzIllXl12BzSgG6PxWc4IDmgZ+p+ElHiagARC5g==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(36860700016)(82310400026)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	CHwmJHxXKv2f3dkXbyl1WdIYKNWq4JiK/kOs/aW8XpL9cxcpJCV4Y+R3MNe7tOfmgVcKEdZubNm1PezcFd5a1+Nzku9z1klucndWd3Iod8kUxFPeTqqmMHZl1VL45XLU5erffWt5SCLtmBxCV92WbspTtqJIwHJK7boTHDj8VEcd0amV6rJc+VvLHHEQq9sX/JhhxXtJ2i3hq93rri3KxeuZ/B3jQBUMNvcyQn9tn5Jni2Gzl6FaxM7H7+s43OUmjrOagfNBa03PBW/3yaTM7ML/8hsM6fij7lcsrx3El3DDj3Yae3ulRJAPV3/TZei7Y3S0J8VZIipcjzqkN8k8LoMU3vt+UuGJMTcH0+Zaf11+QhMvhYGowtk4jNK7XmIrE+7Bl+WEJkinZrNoSpEr7ugyk1da7r8LeK1X34dAwFV7pLJzZSo9/CGwtFiyNO2Z
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2026 19:05:38.9662
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28f4b029-cdea-493f-f76a-08de93465382
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH1PEPF0000A34A.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5876
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260329054156.125362-2-zhenwei.pi@linux.dev>
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-18999-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19000-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,ziepe.ca];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shayd@nvidia.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: F13E239F55B
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6E81E39F568
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Sun, Mar 29, 2026 at 01:41:54PM +0800, zhenwei pi wrote:
+> Align with the existing code:
+> static ... rxe_ib_device_get_netdev(struct ib_device *dev)
+> {
+>         return ib_device_get_netdev(dev, RXE_PORT);
+> }
 
+Please submit the inverse patch that removes the rxe_ib_device_get_netdev()
+wrapper and the RXE_PORT definition. These additions do not improve readability,
+and RXE has always had only a single port.
 
-On 03/04/2026 3:45, Jakub Kicinski wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Thu, 2 Apr 2026 23:03:10 +0300 Shay Drori wrote:
->> On 02/04/2026 6:08, Jakub Kicinski wrote:
->>> On Mon, 30 Mar 2026 22:34:10 +0300 Tariq Toukan wrote:
->>>> From: Shay Drory <shayd@nvidia.com>
->>>>
->>>> When utilizing Socket-Direct single netdev functionality the driver
->>>> resolves the actual auxiliary device using mlx5_sd_get_adev(). However,
->>>> the current implementation returns the primary ETH auxiliary device
->>>> without holding the device lock, leading to a potential race condition
->>>> where the ETH device could be unbound or removed concurrently during
->>>> probe, suspend, resume, or remove operations.[1]
->>>>
->>>> Fix this by introducing mlx5_sd_put_adev() and updating
->>>> mlx5_sd_get_adev() so that secondaries devices would acquire the device
->>>> lock of the returned auxiliary device. After the lock is acquired, a
->>>> second devcom check is needed[2].
->>>> In addition, update The callers to pair the get operation with the new
->>>> put operation, ensuring the lock is held while the auxiliary device is
->>>> being operated on and released afterwards.
->>>
->>> Please explain why the "primary" designation is reliable, and therefore
->>> we can be sure there will be no ABBA deadlock here
->>
->> The "primary" designation is determined once in sd_register(). It's set
->> before devcom is marked ready, and it never changes after that.
->> In Addition, The primary path never locks a secondary: When the primary
->> device invoke mlx5_sd_get_adev(), it sees dev == primary and returns.
->> no additional lock is taken.
->> Therefore lock ordering is always: secondary_lock → primary_lock. The
->> reverse never happens, so ABBA deadlock is impossible.
-> 
-> And the device_lock instances have separate lockdep classes?
-> So lockdep will also understand this?
-
-I tested this patches with lockdep enable and didn't get a splat,
-so it seems lockdep understand.
+Thanks
 
 > 
->> Does the above is the explanation you looked for?
->> If not, can you elaborate?
->> If yes, to add it to the commit message in V2?
+> Use *RXE_PORT* instead of magic number 1 for all.
 > 
-> Sounds good, please add to the msg.
+> Signed-off-by: zhenwei pi <zhenwei.pi@linux.dev>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_net.c   | 6 +++---
+>  drivers/infiniband/sw/rxe/rxe_verbs.c | 8 ++++----
+>  2 files changed, 7 insertions(+), 7 deletions(-)
 > 
->>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->>>> index b6c12460b54a..5761f655f488 100644
->>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
->>>> @@ -6657,8 +6657,11 @@ static int mlx5e_resume(struct auxiliary_device *adev)
->>>>                 return err;
->>>>
->>>>         actual_adev = mlx5_sd_get_adev(mdev, adev, edev->idx);
->>>> -     if (actual_adev)
->>>> -             return _mlx5e_resume(actual_adev);
->>>> +     if (actual_adev) {
->>>> +             err = _mlx5e_resume(actual_adev);
->>>> +             mlx5_sd_put_adev(actual_adev, adev);
->>>> +             return err;
->>>> +     }
->>>>         return 0;
->>>
->>> Feels like I recently complained about similar code y'all were trying
->>> to add. Magically and conditionally locking something in a get helper
->>> makes for extremely confusing code.
->>
->> Do you think explicit locking API is preferred here?
->> something like:
->> new_locking_api()
->>
->> mlx5_sd_get_adev()
->>
->> new_unlocking_api()
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> index 0bd0902b11f7..20338cb8e3c2 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> @@ -234,7 +234,7 @@ static int rxe_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
+>  
+>  	udph = udp_hdr(skb);
+>  	pkt->rxe = rxe;
+> -	pkt->port_num = 1;
+> +	pkt->port_num = RXE_PORT;
+>  	pkt->hdr = (u8 *)(udph + 1);
+>  	pkt->mask = RXE_GRH_MASK;
+>  	pkt->paylen = be16_to_cpu(udph->len) - sizeof(*udph);
+> @@ -535,7 +535,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+>  	struct sk_buff *skb = NULL;
+>  	struct net_device *ndev;
+>  	const struct ib_gid_attr *attr;
+> -	const int port_num = 1;
+> +	const int port_num = RXE_PORT;
+>  
+>  	attr = rdma_get_gid_attr(&rxe->ib_dev, port_num, av->grh.sgid_index);
+>  	if (IS_ERR(attr))
+> @@ -630,7 +630,7 @@ static void rxe_port_event(struct rxe_dev *rxe,
+>  	struct ib_event ev;
+>  
+>  	ev.device = &rxe->ib_dev;
+> -	ev.element.port_num = 1;
+> +	ev.element.port_num = RXE_PORT;
+>  	ev.event = event;
+>  
+>  	ib_dispatch_event(&ev);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index fe41362c5144..bcd486e8668b 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -44,7 +44,7 @@ static int rxe_query_port(struct ib_device *ibdev,
+>  	struct net_device *ndev;
+>  	int err, ret;
+>  
+> -	if (port_num != 1) {
+> +	if (port_num != RXE_PORT) {
+>  		err = -EINVAL;
+>  		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>  		goto err_out;
+> @@ -147,7 +147,7 @@ static int rxe_modify_port(struct ib_device *ibdev, u32 port_num,
+>  	struct rxe_port *port;
+>  	int err;
+>  
+> -	if (port_num != 1) {
+> +	if (port_num != RXE_PORT) {
+>  		err = -EINVAL;
+>  		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>  		goto err_out;
+> @@ -180,7 +180,7 @@ static enum rdma_link_layer rxe_get_link_layer(struct ib_device *ibdev,
+>  	struct rxe_dev *rxe = to_rdev(ibdev);
+>  	int err;
+>  
+> -	if (port_num != 1) {
+> +	if (port_num != RXE_PORT) {
+>  		err = -EINVAL;
+>  		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>  		goto err_out;
+> @@ -200,7 +200,7 @@ static int rxe_port_immutable(struct ib_device *ibdev, u32 port_num,
+>  	struct ib_port_attr attr = {};
+>  	int err;
+>  
+> -	if (port_num != 1) {
+> +	if (port_num != RXE_PORT) {
+>  		err = -EINVAL;
+>  		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
+>  		goto err_out;
+> -- 
+> 2.43.0
 > 
-> Readability is hard, I'd just push the locking up into the callers TBH.
-> Looks like there's only 4, the LoC delta isn't going to be huge.
-
-I though about it, but AFAIU your suggestion, a race is still possible:
-your suggestion is to lock the adev returned from mlx5_sd_get_adev().
-but between mlx5_sd_get_adev() and the lock, the adev can be free...
-
-Therefore, an SD helper is still needed.
-do you have a preferred approach here?
-
-thanks
-
+> 
 
