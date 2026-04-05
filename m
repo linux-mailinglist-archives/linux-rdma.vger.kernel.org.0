@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-18992-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-18993-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iPdPKydf0mm6XAcAu9opvQ
-	(envelope-from <linux-rdma+bounces-18992-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 15:09:59 +0200
+	id CGi6ETtf0mm6XAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-18993-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 15:10:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158CD39E841
-	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 15:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F6039E858
+	for <lists+linux-rdma@lfdr.de>; Sun, 05 Apr 2026 15:10:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 65F4F3008D03
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 13:09:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 328C730078ED
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Apr 2026 13:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE34322533;
-	Sun,  5 Apr 2026 13:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F109934752B;
+	Sun,  5 Apr 2026 13:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KIBE9yM6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="p2w/1XfD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599DE20DD51
-	for <linux-rdma@vger.kernel.org>; Sun,  5 Apr 2026 13:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B3526E6F2
+	for <linux-rdma@vger.kernel.org>; Sun,  5 Apr 2026 13:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775394592; cv=none; b=jWCitJD3NIo9j858SD+Zik/oMRMLjUI7zGcvR/dPGCA/xUOCYir32iqmLGkXiYRxg33bEZ3HVuIrxtp5BUYXtpgBtKzEy5elDow7Xsy8OaIX6E+jkUMUYYVt/2gzMj7uKalJnPHgsa7V7nzkjKzqRK5CuFVqvtuj3Wnpvh/pUig=
+	t=1775394593; cv=none; b=bCcgi1n8Wq+lS0bJYfVpY8AUza3M6/aNksnyXMM/dPdR0+ScgUCYR+PG8Qhz5e3nE/0Sq2oH+5CjRfxZggYzdgP9pIAqRPc1b3F3BhYPk4tqG9xOoy9CO54JaSfoCsjqIcYb0vt1ZRJdfy8A2Vky1mESpDx8d4pq4Ch24ieDkVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775394592; c=relaxed/simple;
-	bh=uFe0BS9nIwlNQLOaXhof9AdRSoCSOGLtYXd5e8z7Tl4=;
+	s=arc-20240116; t=1775394593; c=relaxed/simple;
+	bh=YfHmKYI37GoShLNMdwhL2o5tuNgdu9lle6dFckw+2VQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lTyVCcE524EDHflsS7l8xjP5qLhwNlji9oWT0zNcQk4PqiUFXTdSzUYEjyHeM4wtkaA4xc0VufK3QHjEEdH1bz/vsRJsHY6W0h7ZyFljvnUFaz5tvcguoV6YallYjkRqHHmSXjksjV8XzJNtS8Smf86YDPnDATkzZEjqhQfpNLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KIBE9yM6; arc=none smtp.client-ip=209.85.128.54
+	 MIME-Version; b=tukQE/7sgfMj7synkehBEncdisKg6Ju5KzOXezGZYM48Kkm6NJe+OAncwNzpIFDnpLJhKDeBVhujVJP+SVXjPTOYJpzqgUmGqtgQzhXm8EHAG4EwSEqYty9VdJUOWqvlOUCwFjJGXnMBzNoCGu+l34aEFzybCi9OsyzHy1mT4VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=p2w/1XfD; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4887eca00c4so21418105e9.2
-        for <linux-rdma@vger.kernel.org>; Sun, 05 Apr 2026 06:09:51 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-488b00ed86fso1644765e9.3
+        for <linux-rdma@vger.kernel.org>; Sun, 05 Apr 2026 06:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775394589; x=1775999389; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1775394590; x=1775999390; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ABbgCzppaW1tFyIqmtlKlRa6pt5yFPCBT+4g9lle4Tk=;
-        b=KIBE9yM6qjYZaXX8169GX5tWlFIsYRPyuw/Doqc86w50nusPoH4yddPvja0gP/qV7R
-         iLhiCCgw2w/drQqMKHX3R9hilUeLD3YWPbjsc/UvhC6u9ZFR2BanHd/jBMRSQld2M1BK
-         cQNKkZX5Ml8ibQowtzPb88XUNTH3U1X2g2yynXfC1iI16osC2XqtxEmbg3dFFbal929w
-         dx8grY1nFA98SGTucMBVKXAk0117a4Yfd/OOc8AvisM5c29bG85M/Y+V7y0Ze3JD0ezQ
-         8pMqxxA7OK8xuWT50BKYGZM4KSY7EBMD6iykrj2sFrtStDBsN36lCOWavHQacqGnX5m+
-         tHMQ==
+        bh=NBvtBljrek8teKlQeknTTprNwlFhKwreqPuWUjtwfNQ=;
+        b=p2w/1XfDAUKAR6K/RrYXbX2K+giLxdCUld0TIwgE/wM5vkveqLdW/phuYC5S7l0fnf
+         wv4ZSf7X1R2qfNGa/IfaHBvzma7Wzw1ztpntzFyDPwfpLOWcRIXCV5GokLCQb5GIjJfX
+         W7XZ8sZowBheJe9fFDParXrMOi9X27y1XoZXdmdac0NMGVVFCBWQ4NXd7L9cmru8TXmA
+         9h+zc1hwWkGlNJxy+rZtCihDtQIjNGY6dyAL4NmsumLVdZLN4NHMxmEk9MVSNokvEUlC
+         P8whnBBpk5RCJxtC9kGs9D4kiNwhGSOi/wRI5LnJPIi3nR2xrdeglR8wCadKUDpxXrkp
+         Yf9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775394589; x=1775999389;
+        d=1e100.net; s=20251104; t=1775394590; x=1775999390;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ABbgCzppaW1tFyIqmtlKlRa6pt5yFPCBT+4g9lle4Tk=;
-        b=PHuRNl4DsgGncTH3pi39elrXN6embu9eyYD1UgMpGA6cjDtjKt7Y13FPQgLWcB13kr
-         4lc3oJUKNUfBh9pcbRXMIdfnC1xq0XqMeTfDR+i6bZPrivKzIazFc/mriCB7tl60GE0t
-         iLPcXkeD31pxcrcfZlc7YSF3FaCYjHDmDdVHnfGXq5rBN7PxXRmaWi9awm9pj6nRoPBz
-         rPRuFVgOwkxAre+SdvtY3rQPi3MfiIWWpUwy6ZWP/CjwhEIDcwVlC6qWifS91pKJHjMQ
-         WT4FqX/5HBDAC0JIWIwi5EtwhWhybhXHuOK56QLCs/mn8xlqZ5gVHbN7jl4fwFjJKsiu
-         gLYw==
-X-Gm-Message-State: AOJu0YxWk/UzFopnnQT6jOCnwfsTZ0HxcCLO8ezPVjLpAWmRliYVbZTr
-	6PNmButWYhF1GwzFETt24DNEf00OzeSoA5Yt2FXNJEWMOJySPZvLXQj+4YHiCctk
-X-Gm-Gg: AeBDievi9OzJuSSpFEZFay+Ktr0QyDl/A1mP88mumqKQwUgEPHlUgZWAf/ri9XM7zTg
-	ry1PB/+BeFsmyHc42cLzD7uag6DYDMQO4vpqa7a4PUOwPzy+pJR6uqMzO0nQqS4SFEv6djjrSvv
-	CLQTcZQWtec7uAQS+2Vt0QwcpNwiiDH+JWDO8R7y6trGE4yTbc8V7ShaPi3n6d+d/glloX4Gp0q
-	aBicaf4/0EfiWZqmL6yhplCkK0NgdYy9t9ik7tVByrxTTJ3ZufEBjuKLCnOgh+LVaE+VBWle37C
-	beIphK1cLcAApZy2JqkIh8WsEo8gibuTt3rov3F1scmtrNnoqphW5tEiHj+dwQihS2KiLzVw7Qm
-	hvAOvS/ChD2sPHt3oGyOMymbKoSssFrb+w6eDywauGWX5VEe2DXGgu00+TE84BxxfGOFQO3/cwB
-	ROAwbJXiBdYyCIa6WSAvimrk0y/CfpLinGqaRCJUrgNHyQP4WIRxn7Mt3rbfGZWADugncn0XOoG
-	Z3+8s/A76qICRtyZxxtWRseodPVtp1+qhhQpA1/qeAyhx/5etGLqlIJcDU=
-X-Received: by 2002:a05:600c:630a:b0:488:8840:e5ae with SMTP id 5b1f17b1804b1-488997eed8bmr143593855e9.24.1775394589145;
-        Sun, 05 Apr 2026 06:09:49 -0700 (PDT)
+        bh=NBvtBljrek8teKlQeknTTprNwlFhKwreqPuWUjtwfNQ=;
+        b=dw/995QgDL11nhP3MX+WWFZivzPTLprnP8pOJHRjUkoUYCHdKzQzosa0n/73pVJHtY
+         wqgyo7tPA+OUbqwWZqlW7wAo2bOufUPb4soZFBvfkFniN414YxiEHYxv4oVGvLniZWA2
+         F0JnrItaCzzis2LskgvaOchZzMxgThH0j8obyFJ8AFDpbr0FtHrhTsj40CeoMhynR3sX
+         ObUJpTa4n6ZXn29ruQfgp/sj/NIfbtoLirr2Z2LRmfZgaDqMdBFOO7FyQmRp6rsInm40
+         U+7m8s3KdRzR2yN6UJYOe9ioNojlOaKu/qn4CmTX8G3xrct7G7USutpFOR3sWbX0A5gt
+         sryA==
+X-Gm-Message-State: AOJu0YxkGoXGNl9joGgfB2yE9EaUD+l+NntsuKBrb+YtTDG+xXWLIuWH
+	viub1q5ay8rIljYh5gcsxUHzXG83N6Xv/Q2CStS0Ue8FEdj/V9gK82HMjgHjvv8W
+X-Gm-Gg: AeBDieuxgEfAGVhYXlB5yS2srgYt6c4+GvopS2CwE5YdabsRxWjlDA70JqbjTT6GGBj
+	2o+7LXNzro0KrPokFNptss3T76DMqWAF8CjhoTSfsBXZhS7ojW+w1kChh0S0CZ/+Y79Ix0UOcx/
+	/Vt2KI6iphObswGaPRmIQ3wbzvYSL2oH8ddkxGJzjiXRpWTKtSH2HscdndKENUMRbhJywLV3OPs
+	BuNbi+sbxfSCULCsqB44mpUGH6GpCaJCD/UYDvLyfzF/omT4BJljeHCFHfjRymj+dAGlxJWHk+j
+	vVM/7NDmWkgscb0Turr86KRYnyqwNfb5g+RgzOGbog0GCalhWAgnWcvpZDs77698PlKdXcmB85G
+	lZ2K3hH9+Xa05rOJwcAKJr5P2w1tG/+q/miUlLWAc6Op9/cF8nEFAQm7yj8iDQrdFpEkw8ydCRz
+	z0jZfTPmpwrxb3oKm9j/5vl1JMyCVCj3GPqWp9G8+iGirDb1WIcQSmffesGF7/UpuGIaQzc+FWV
+	9Dl0sYhmaIQ/CvzOlCwCOpD91gbnCJ3xDVIFdjtlOfe+rSG
+X-Received: by 2002:a05:600c:8b34:b0:487:1fb4:7e1 with SMTP id 5b1f17b1804b1-488997d530fmr141904315e9.22.1775394590467;
+        Sun, 05 Apr 2026 06:09:50 -0700 (PDT)
 Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4889f6843dfsm180115695e9.12.2026.04.05.06.09.47
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4889f6843dfsm180115695e9.12.2026.04.05.06.09.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Apr 2026 06:09:48 -0700 (PDT)
+        Sun, 05 Apr 2026 06:09:49 -0700 (PDT)
 From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
 To: linux-rdma@vger.kernel.org
 Cc: prathameshdeshpande7@gmail.com,
@@ -84,12 +84,13 @@ Cc: prathameshdeshpande7@gmail.com,
 	jgg@ziepe.ca,
 	leon@kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 0/2] Fix loopback leaks and return paths
-Date: Sun,  5 Apr 2026 14:09:21 +0100
-Message-ID: <20260405130924.18901-1-prathameshdeshpande7@gmail.com>
+Subject: [PATCH v7 1/2] IB/mlx5: Fix success return path and mutex initialization
+Date: Sun,  5 Apr 2026 14:09:22 +0100
+Message-ID: <20260405130924.18901-2-prathameshdeshpande7@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260404230759.15131-1-prathameshdeshpande7@gmail.com>
+In-Reply-To: <20260405130924.18901-1-prathameshdeshpande7@gmail.com>
 References: <20260404230759.15131-1-prathameshdeshpande7@gmail.com>
+ <20260405130924.18901-1-prathameshdeshpande7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -109,7 +110,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_FROM(0.00)[bounces-18992-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-18993-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[gmail.com,redhat.com,mellanox.com,ziepe.ca,kernel.org,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
@@ -126,29 +127,63 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 158CD39E841
+X-Rspamd-Queue-Id: B6F6039E858
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This series fixes a return-value bug in the transport domain allocation 
-path and refactors the loopback enablement logic to resolve reference 
-count leaks and premature hardware deactivation.
+Fix an incorrect return path in mlx5_ib_alloc_transport_domain() where
+a success case could return an uninitialized error value instead of 0.
 
-In v7, the patchset is split into two parts:
-1. A direct fix for the return-value bug and mutex initialization.
-2. A refactor of the loopback state machine to ensure symmetric counter 
-   updates and correct hardware toggling at zero-count transitions.
+Additionally, move dev->lb.mutex initialization to
+mlx5_ib_stage_init_init(). This ensures the mutex is initialized
+before potential access by create_raw_packet_qp_tir(), preventing
+a null pointer dereference.
 
-The split allows for cleaner bisection and separates the immediate 
-bug fixes from the lifecycle improvements identified during review.
+Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+---
+v7:
+- Split from the main loopback refactor into a standalone patch to
+  improve bisection and isolate the return-value fix.
+v1-v6:
+- Part of the combined "IB/mlx5: Fix loopback enablement state and 
+  resource leaks" patch.
 
-Prathamesh Deshpande (2):
-  IB/mlx5: Fix success return path and mutex initialization
-  IB/mlx5: Fix loopback refcounting leaks and premature disable
+ drivers/infiniband/hw/mlx5/main.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
- drivers/infiniband/hw/mlx5/main.c | 45 ++++++++++++++++---------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
-
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index b74bf2697655..f49f746bc5bd 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -2068,7 +2068,7 @@ static int mlx5_ib_alloc_transport_domain(struct mlx5_ib_dev *dev, u32 *tdn,
+ 	if ((MLX5_CAP_GEN(dev->mdev, port_type) != MLX5_CAP_PORT_TYPE_ETH) ||
+ 	    (!MLX5_CAP_GEN(dev->mdev, disable_local_lb_uc) &&
+ 	     !MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
+-		return err;
++		return 0;
+ 
+ 	return mlx5_ib_enable_lb(dev, true, false);
+ }
+@@ -4515,6 +4515,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+ 	mutex_init(&dev->data_direct_lock);
+ 	INIT_LIST_HEAD(&dev->qp_list);
+ 	spin_lock_init(&dev->reset_flow_resource_lock);
++	mutex_init(&dev->lb.mutex);
+ 	xa_init(&dev->odp_mkeys);
+ 	xa_init(&dev->sig_mrs);
+ 	atomic_set(&dev->mkey_var, 0);
+@@ -4786,11 +4787,6 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
+ 	if (err)
+ 		return err;
+ 
+-	if ((MLX5_CAP_GEN(dev->mdev, port_type) == MLX5_CAP_PORT_TYPE_ETH) &&
+-	    (MLX5_CAP_GEN(dev->mdev, disable_local_lb_uc) ||
+-	     MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
+-		mutex_init(&dev->lb.mutex);
+-
+ 	if (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
+ 			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q) {
+ 		err = mlx5_ib_init_var_region(dev);
 -- 
 2.43.0
 
