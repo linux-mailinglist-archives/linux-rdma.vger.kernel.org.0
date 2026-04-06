@@ -1,211 +1,118 @@
-Return-Path: <linux-rdma+bounces-19039-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19040-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KOeRE53J02m7mAcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19039-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 16:56:29 +0200
+	id UIahFDzL02nomAcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19040-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 17:03:24 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC1E3A4717
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 16:56:28 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7E33A47EE
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 17:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C092F30015AA
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Apr 2026 14:56:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 88FAE3012EA6
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Apr 2026 15:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEEB3859DD;
-	Mon,  6 Apr 2026 14:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387EE386424;
+	Mon,  6 Apr 2026 15:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="en5s2sRj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xii0MaFj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC5930F7EF
-	for <linux-rdma@vger.kernel.org>; Mon,  6 Apr 2026 14:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC00C2DF717;
+	Mon,  6 Apr 2026 15:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775487370; cv=none; b=ArBKmnKARl/zPRoFIq/js/Ft+X0FFtLtZZZA3vpTJexuvycuNH7F9Ziv0asazXupUMMzhV6qmJeSeCSH/k667mqtXUDTgaMUwk+t1GZRakGoteW1XCMt9KcbXBHlIZRrR/fzGyfdQV1gjIOa7M6s+kkn9Dj0GP8MOFlFmfd2274=
+	t=1775487775; cv=none; b=mJuArrntPDj8o2QtSXVMxZQ7JYXEpZt2CYbykz6yzW8rkZUI9e0t9Opj5PA5qnCNj51nlW01CiVSp1f+rjxQXl1JMbELlX7t5d1qOBcGfQdR1IzNI/y/NAtxD65lv/wEHG1jLfGyItygGKujJ/9VMnyLqa/ujOO4preRzsSXnJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775487370; c=relaxed/simple;
-	bh=2oCDeTTAz4i+oRoQx9Lwjvq3SOYNYNQbJ/oFMugWHhM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f8bYXRttfsAfkhKDteFcvTnigrq7tx+d/bI1B/ADhZgZZFDnmmJ8xoSuooIDwYNaXQndygKb8YSm+lvxYg84p5GTTExzkTTPjPw6UuR3gT4c0fa7oNjyGy2a+yX0HWL+geJ5j5tgdx2Er63S11RXPvhzm8MrVFaeWOtpPPTRxsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=en5s2sRj; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <92943fb0-b0ec-443e-a04f-204faba0c9cf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1775487357;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wyF5qRaqjabeid2cTBHwWHRbO+gNt0L032MGRaraC74=;
-	b=en5s2sRjaeyVZIMCYu3xKOULPJLBKTcv0vlCs6lzCx0D93QQMFCq9Ky2o0D3cLUFE+oJLJ
-	4YYWkFypiRhr2JQfTM4Ql2GeuVHLL1AETT7JCiCcyeDa9iN++wh3aLQNwt8GdFIUSNRgX/
-	dqYGfksungNY4aXBnoscxVXOlIh72pc=
-Date: Mon, 6 Apr 2026 07:55:41 -0700
+	s=arc-20240116; t=1775487775; c=relaxed/simple;
+	bh=/zWTTEwu/4ZvHrECK/ZptCOk4mvqjq4tGCDOOrZFik4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e/Ion+OGkY33iVkJwYIzP6phmHVWpvhN78YyUftBZklbBJVPSKPIF8xJA+Pf6laZNjsignHfplOlptHbPImVJtgzZOT9pCrg5PZbwqTXveUeEovJ4MD7+phfUoSUW8pHIBkCpAhO8thvMvXEwi48VjJ6DE2FKQuAt5KZWExaojU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xii0MaFj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C76DFC4CEF7;
+	Mon,  6 Apr 2026 15:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775487774;
+	bh=/zWTTEwu/4ZvHrECK/ZptCOk4mvqjq4tGCDOOrZFik4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xii0MaFjExvsIQcUvAeczdhUiDvrdopDAvaRxpwdpJZni2L1gqeh/hgnwstwshDRq
+	 jxT+YEcaWwqAf15XkxeVfCUWMS7tuIiC7qonC73r1Nmr6mWduiZPur8hJm14TEb++w
+	 b6iBvxj84KbE3mgkdVdGyvokgk7rVno5kNkaC5fsCDBFQqsUhk3Jv0HkhXsJchPZw3
+	 aQ8iMdh9ZQ9bwJHbRapwIS+Jdg6eNs41pEwlDePE2qYZbcZCJRGmkGwnJR9AwAR9Gm
+	 SvbdckSWuL57eqWQaMeKY4/6lmsWd4+4RQfrTsb26UU/T8BlT/UyKEZ7D4oHic0eHl
+	 R1ORlDu1Jbs6A==
+Date: Mon, 6 Apr 2026 16:02:49 +0100
+From: Simon Horman <horms@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>, stable@vger.kernel.org,
+	Patrisious Haddad <phaddad@nvidia.com>
+Subject: Re: [PATCH net-next] net/mlx5: Update the list of the PCI supported
+ devices
+Message-ID: <20260406150249.GA410024@kernel.org>
+References: <20260403091756.139583-1-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 3/4] RDMA/rxe: add SENT/RCVD bytes
-To: zhenwei pi <zhenwei.pi@linux.dev>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
-References: <20260406132830.435381-1-zhenwei.pi@linux.dev>
- <20260406132830.435381-4-zhenwei.pi@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260406132830.435381-4-zhenwei.pi@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260403091756.139583-1-tariqt@nvidia.com>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19039-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19040-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: 5CC1E3A4717
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EB7E33A47EE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/4/6 6:28, zhenwei pi 写道:
-> There is a lack of sent/received counter in bytes.
+On Fri, Apr 03, 2026 at 12:17:56PM +0300, Tariq Toukan wrote:
+> From: Michael Guralnik <michaelgur@nvidia.com>
 > 
-> Signed-off-by: zhenwei pi <zhenwei.pi@linux.dev>
-> ---
->   drivers/infiniband/sw/rxe/rxe_hw_counters.c | 2 ++
->   drivers/infiniband/sw/rxe/rxe_hw_counters.h | 2 ++
->   drivers/infiniband/sw/rxe/rxe_net.c         | 2 ++
->   drivers/infiniband/sw/rxe/rxe_recv.c        | 6 ++++++
->   drivers/infiniband/sw/rxe/rxe_verbs.h       | 6 ++++++
->   5 files changed, 18 insertions(+)
+> Add the upcoming ConnectX-10 NVLink-C2C device ID to the table of
+> supported PCI device IDs.
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
-> index 437917a7d8f2..17edaa9a9b9b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
-> @@ -22,6 +22,8 @@ static const struct rdma_stat_desc rxe_counter_descs[] = {
->   	[RXE_CNT_LINK_DOWNED].name         =  "link_downed",
->   	[RXE_CNT_RDMA_SEND].name           =  "rdma_sends",
->   	[RXE_CNT_RDMA_RECV].name           =  "rdma_recvs",
-> +	[RXE_CNT_SENT_BYTES].name          =  "sent_bytes",
-> +	[RXE_CNT_RCVD_BYTES].name          =  "rcvd_bytes",
->   };
->   
->   int rxe_ib_get_hw_stats(struct ib_device *ibdev,
-> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.h b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
-> index 051f9e1c3852..01b355103cbc 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
-> @@ -26,6 +26,8 @@ enum rxe_counters {
->   	RXE_CNT_LINK_DOWNED,
->   	RXE_CNT_RDMA_SEND,
->   	RXE_CNT_RDMA_RECV,
-> +	RXE_CNT_SENT_BYTES,
-> +	RXE_CNT_RCVD_BYTES,
->   	RXE_NUM_OF_COUNTERS
->   };
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 6621d01ac32d..86660031ffa2 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -503,6 +503,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
->   	int err;
->   	int is_request = pkt->mask & RXE_REQ_MASK;
->   	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-> +	unsigned int skblen = skb->len;
->   	unsigned long flags;
->   
->   	spin_lock_irqsave(&qp->state_lock, flags);
-> @@ -526,6 +527,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
->   	}
->   
->   	rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
-> +	rxe_counter_add(rxe, RXE_CNT_SENT_BYTES, skblen);
->   	goto done;
->   
->   drop:
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index 5861e4244049..0d9112e95eae 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -318,6 +318,7 @@ void rxe_rcv(struct sk_buff *skb)
->   	int err;
->   	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->   	struct rxe_dev *rxe = pkt->rxe;
-> +	unsigned int skblen = skb->len + sizeof(struct udphdr);
->   
->   	if (unlikely(skb->len < RXE_BTH_BYTES))
->   		goto drop;
-> @@ -341,6 +342,11 @@ void rxe_rcv(struct sk_buff *skb)
->   	if (unlikely(err))
->   		goto drop;
->   
-> +	if (skb->protocol == htons(ETH_P_IP))
-> +		skblen += sizeof(struct iphdr);
-> +	else if (skb->protocol == htons(ETH_P_IPV6))
-> +		skblen += sizeof(struct ipv6hdr);
-> +	rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+> Reviewed-by: Patrisious Haddad <phaddad@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
- From the above source code, I think that you want to calculate total 
-length starting from the Network Layer (IP Header).
-Maybe the following is compact.
-
-"
-unsigned int skblen = skb->len - skb_network_offset(skb);
-rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
-"
-
-Zhu Yanjun
-
->   	rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
->   
->   	if (unlikely(bth_qpn(pkt) == IB_MULTICAST_QPN))
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index e800545d1046..0f5ffd94643f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -455,6 +455,12 @@ static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
->   	atomic64_inc(&rxe->stats_counters[index]);
->   }
->   
-> +static inline void rxe_counter_add(struct rxe_dev *rxe, enum rxe_counters index,
-> +				   s64 val)
-> +{
-> +	atomic64_add(val, &rxe->stats_counters[index]);
-> +}
-> +
->   static inline struct rxe_dev *to_rdev(struct ib_device *dev)
->   {
->   	return dev ? container_of(dev, struct rxe_dev, ib_dev) : NULL;
+Reviewed-by: Simon Horman <horms@kernel.org>
 
 
