@@ -1,150 +1,162 @@
-Return-Path: <linux-rdma+bounces-19021-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19022-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2BEMALZ502nPiQcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19021-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 11:15:34 +0200
+	id AEHMMx5802koigcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19022-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 11:25:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E3383A282D
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 11:15:33 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE1563A2A22
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 11:25:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EE7A830158A1
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Apr 2026 09:15:23 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 866363019393
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Apr 2026 09:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57FD431E83F;
-	Mon,  6 Apr 2026 09:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA8A3264DE;
+	Mon,  6 Apr 2026 09:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BwLl4cFI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IWx4PM9s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC64DF59
-	for <linux-rdma@vger.kernel.org>; Mon,  6 Apr 2026 09:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.180
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775466922; cv=pass; b=qseKNJqIZTnUzbRN7MKhAge/sFJbdzKk35XUyIti9dcIIk+6tQm1tgBInweBUMzn8np5d9cgVBH9NLhAfL7qORWPHw/HWg2lsnYwpj/Z5KqwNQE3BClaUx+aiyW2FpPdubP7wsAu3HMHHbXRO7wxO1OvwuqbDqfdcg6PUPkHNRI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775466922; c=relaxed/simple;
-	bh=HKRZUxx0d6eEo6q2GZbMwkNDM+q5e/G8yBg0maNSgFQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DLForQTGvySsYWR9VGFjAOiaMtjhA1r87x3QHGAI+O6BahB3kBIvLl2OcuUwOXgGHi9+XRNaJn3xNLlpJU9WNzvszIxoLBJkUlfJjSx96zIwQ9k175Qj+E7o90IWbXS1vJbZgLqWR1nEdCt7wwY9KjzERyAYbcBpbUeuJb447+4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BwLl4cFI; arc=pass smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FF031C57B
+	for <linux-rdma@vger.kernel.org>; Mon,  6 Apr 2026 09:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1775467302; cv=none; b=U8JVw6Ki1M20YtG19o6KMn1NEZA69f0glJ2ximlMF+AmasR9wPPRhANoxol0fPviLgeEO3+CfMCUudVTA4J3DoCN0NWLd6MsLb/LOBJoURSkv2AdghNFNNh29/HgUdJa26gIqRnH/1KuFFQWg+b7EQ69SHwznOYMYxMGdOYBCcw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1775467302; c=relaxed/simple;
+	bh=fn+IBnDbfxTI4SRNrjqrYY1Mf+GVGPS+hAM6OVyNWPQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=HSboyU6fNosVl+XdPhHxCrn5GPuBQq+SMWwqERwoYOGqjsZO1d/+CbET19otla0izMVio90wsiot12Dqst76j84iDEnQtX16f+tiV7niSSJHYRp/IcYNBvIY4nxD94soHR+T/4mIb1gKS2CU6UyDBgI9ZhUD3cHsjStHfHlCrhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--shivajikant.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IWx4PM9s; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-50d864c23bdso548011cf.1
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Apr 2026 02:15:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1775466919; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Z7D+UGRVYbe21Kyi7kTLCL6KP6O+EXLT5GP8eVc4Z8TUf3EBW1OdDRctXtxgXs5iOw
-         7hFgjI5yy/KNLSnPAcn2eB+EZKdBdUDHNzW+7Ie5FpmmJflOAzMN2Q2JHgaHfJrdER0F
-         4z91TGbiCM8U2K+1windFs91HY2IFIruxF5sdOULdMtUji1Si/ymef7B/3jkg19u6FgZ
-         zNyGOAuq7ELHDzakem9wWeU3qV80HH7qQK0VHOoI/MLZO1f5p00Z3s3jNpNF6zpX8sPj
-         jvrCkYx0dZnwLPgdjiyez0Qd8R52L0s/adgVWLByZIhHpxS9NMekwAtKLmC1jGydElsn
-         509g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=HKRZUxx0d6eEo6q2GZbMwkNDM+q5e/G8yBg0maNSgFQ=;
-        fh=yFLWFbibU0CY8FjML9Gl7mKwpf5PMupoCUJ39TwrfN4=;
-        b=VdfmT4LSP4P0Na+aIxU/1JhIGsAmc+DverNaPhZTZ55wppsFViMTET+D9IXtXCe3XF
-         txZgBtpExnCHsPcYLXcD0RHDZCeimS3YEFz5XtRkS2cQikHcd3whNrL7PwGABvukd1Oi
-         l/jbLFV2uCKd9eqcJvMq0UWT47VloRexJiG6tomClaiWWHe9ywSwqj15DyrqKJWpEO6i
-         1JL85Jf/vDKk3FlrrSM6U6zjdomnv4G4BUjrqbwyUqyaqVkhHl+B9M88wfC7LLp2Rclx
-         QLrqrP5YY/xB+Qsts6lLe79MBQGvuEsE3kOKmVwY2u+ZiAaU8UWirgogcyXYmVHRiNx0
-         v3Tg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--shivajikant.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-35da37203d2so8654227a91.3
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Apr 2026 02:21:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1775466919; x=1776071719; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HKRZUxx0d6eEo6q2GZbMwkNDM+q5e/G8yBg0maNSgFQ=;
-        b=BwLl4cFIJv+PuFlvtlVLY/trTbLG/ZZRLkfM2d6PClfvPcBYOkuPVcBYOCpaICffuu
-         Px7NIAes3wy77d+yH7g+RSJM7RX2uwKTXMiGR4E2QnDrTjdpKMXtuzjbTjzkyAF4QD8E
-         16NEEpbEvvVesqJedBzKLVtcVrLeZYdN6JGURcrlFWF1/2OU8ntKg/GepcS827TL+bsB
-         vJpCU2rpCKy0gAvhnzyA2ox+ylLoEkEvXbctUBJQ23klCH4Lw3uVHztXTzk2gYV6BF3O
-         QFqzGUa/+8VEuX85idvgT1q3lOLxwEVeW80BVjJdXrIjLE5GMkcJzY/illolpUjXxXjp
-         hz0g==
+        d=google.com; s=20251104; t=1775467299; x=1776072099; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BDX1PhWlT04ihT2rWEm0Zx1VkEl3UrtVSdzsbOx4DV8=;
+        b=IWx4PM9sjsjG2JTin73gx4jEVusSXXFSYG0ks8PZABCoh0R9rgLj17fAWjz5BeL06/
+         ZPV2NN58yOdGYP2W3iFPL/CZ+u78FjsvHHL5zLaEF83mOo7DaxETFlJsDhHrcMYaxPJo
+         nABJIHrIX1jNHOhNSJPrlunEvQvyc/abMBI4zN9JCH7jpdnQBFaqCqaBXBgU/SHeNEE0
+         d543woFSKMrjz3HrZ7KUuMtvEuZJjouCzY+VkxNuYkW3ZNYVMJ1f89OshOrmTjrLfWv3
+         zFAT2McHzg2ik6Y+KiJq5QrbFxc5n5AfwFuADpT36Ktb9TIfxUAUCDAr9dEg3XV7zjvJ
+         6QWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775466919; x=1776071719;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=HKRZUxx0d6eEo6q2GZbMwkNDM+q5e/G8yBg0maNSgFQ=;
-        b=G75fHJcxwrx7aBbfhet6C/R0LjII/vhLRNACFLBoOAGnJPJceU2iUmNLhKgH1tJWQP
-         Qo+5Bu++STR0yzUqSW0aJ92hzwj42cdc6PfHr1qyVne6BMJHjtOOL9vbCwMW5XJF5/V7
-         oIhIw+6ybhvWVgZjHlezsiicbMlXzKxI+80TNiXwx6M6DpfF6q6KAQ9zImMqUK4viNZg
-         tmQfbFKJioZYsW2tp6nBx4EjBddlUcKffSER+7DwFD+rw4a7Ipkocdxl+PNrshZoDYQT
-         C0NUpVqd8jfaeaW6CWneAQi4biswoi0Z3ZH+i9Ov1z+f3ZbI7OC1y3Wd6tqGXkvOiGyc
-         CllQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2765igYgEMyHye0QtZoRar3/4sOnPoGBKt/ptplehGiUphQ40puYGCjU9LkA7guKgG4ozIXWjlK6B@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+AQkc+M780O80LN6y0ZuFENtiNBkB3C1zKSxBuhO6s5nmRLeF
-	Gmy+oOg4Jta9Q0GBUgUA8/B0BrO85cDX56MP5wmRgHjqQQug9SbVktTj+0/Q9O+fa8ELgRZxhzL
-	bcSv8qPxmuV3hSFZlRUNoJ6yMqvW4Smu6+hYgrvTz
-X-Gm-Gg: AeBDieu1NYzyd/xhK3iJYcw7KHfcMrfhFZakdijxKKJcnODKm5arFCmOv5nsntBZFxG
-	I2pwzMjfG3Dmpkba4u9mmANZAUyT9sYztmEMhb4r3j4rO7k6tC4wJ4s/HJ+lElnvRUHFBRKUFHf
-	zRCJjxphY8R3IqReYM7djzrGNnNVKj5Y414VBlY2Uk4qlmRdeC5QrNUNTdDelgmP0WQTcqBsaTd
-	wjVWgV86xhfZ3akPTtZOxCFmpVYu40i4STj6OKwvKgP57KUVYVa0bZK6fCBUCKqCNicwe2pgDt/
-	4wksRgyI3vRcSI74+fA16sdWu8tZ+hCLDDjL8g==
-X-Received: by 2002:a05:622a:244e:b0:509:cd7:aa18 with SMTP id
- d75a77b69052e-50d63fa63b3mr36921051cf.10.1775466918615; Mon, 06 Apr 2026
- 02:15:18 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1775467299; x=1776072099;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BDX1PhWlT04ihT2rWEm0Zx1VkEl3UrtVSdzsbOx4DV8=;
+        b=dsqSrKIeo4hotfx7f25Gl67TPcbQmOE6oJMY8R8W9xZHIDnrNFp+QkWqpwxTBDtL/u
+         algIE7aZe5zE7l3Lo7V5rsGyMcgQE878ufbRtkLPRhvIuEE0b5jANASsRkO4o1LxwAQv
+         1sGFovNYj4r3+5/1rCXJ7IhlgayXqWKMp8wWVcuvbT00V7E2rSCOWmehrCKHOMBZj/8v
+         Z4N6WFVq1jKOZb60F/O4JoqXKvpZnRdUD6pVHv8J+pQ9dmYvKKZcRIptJsrE1wvzAEf4
+         jjWdtgd8zP4Odpo2bTy9enH/N2plTEyBLQBXzB0C7GI8KY05ZSvUVVhDONCJZDBfoDi9
+         WgcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrPLOgDANw1gYiXRD2Ikknls+SF6e7XF1yLvZY8CfQfyeGGLNuZNA7OMS8b/kEwcBt8SwTT3cLsM8l@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmzZeOD2CF34sEpsVxVuLB00cTvhnfy3EKk4xmQgbPANOaOuhJ
+	W1IdBEwuqdKssmeH8jBO80HFxQ4xB+/FxluHdQ74TX7l7eztrggzINW959pJ3LmWpbsqDQTnDoB
+	gKtiosFkdELAjOwRrJpZlhlxyKw==
+X-Received: from pgkp23.prod.google.com ([2002:a63:f457:0:b0:c73:987f:4708])
+ (user=shivajikant job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6300:210d:b0:38b:d9b5:5de2 with SMTP id adf61e73a8af0-39f2f1080f2mr11734892637.50.1775467298997;
+ Mon, 06 Apr 2026 02:21:38 -0700 (PDT)
+Date: Mon,  6 Apr 2026 09:21:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260402073001.2039625-1-shivajikant@google.com> <azabfvzjn4juc77xdq6qhszd6py6hkb35jgi2xymplpnkj5ra4@vpjpaoeenvlu>
-In-Reply-To: <azabfvzjn4juc77xdq6qhszd6py6hkb35jgi2xymplpnkj5ra4@vpjpaoeenvlu>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.53.0.1213.gd9a14994de-goog
+Message-ID: <20260406092132.1333458-1-shivajikant@google.com>
+Subject: [PATCH v3] nvme: enable PCI P2PDMA support for RDMA transport
 From: Shivaji Kant <shivajikant@google.com>
-Date: Mon, 6 Apr 2026 14:45:07 +0530
-X-Gm-Features: AQROBzCBoFtSiCOZ2D6lpeeNP-4-fqlKvW0e9IW54BqrMes9KgUGxPB7EiJOF20
-Message-ID: <CAMEhMpnjmbT1YWDstZfWnxOTU8nwreUziYcz6whsxv1TK7KuTw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] nvme: enable PCI P2PDMA support for RDMA transport
-To: Henrique Carvalho <henrique.carvalho@suse.com>
-Cc: kbusch@kernel.org, axboe@kernel.dk, Christoph Hellwig <hch@lst.de>, sagi@grimberg.me, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Pranjal Shrivastava <praan@google.com>, kch@nvidia.com, linux-nvme@lists.infradead.org
+To: kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, 
+	henrique.carvalho@suse.com
+Cc: linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Shivaji Kant <shivajikant@google.com>, 
+	Pranjal Shrivastava <praan@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	MV_CASE(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19021-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19022-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[google.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[shivajikant@google.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[10];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 5E3383A282D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:email]
+X-Rspamd-Queue-Id: CE1563A2A22
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Thanks for reviewing.
+Enable BLK_FEAT_PCI_P2PDMA on the NVMe when the underlying
+RDMA controller supports it.
 
-On Sun, Apr 5, 2026 at 9:59=E2=80=AFPM Henrique Carvalho
-<henrique.carvalho@suse.com> wrote:
->
-> Reviewed-by: Henrique Carvalho <henrique.carvalho@suse.com>
+Suggested-by: Pranjal Shrivastava <praan@google.com>
+Reviewed-by: Pranjal Shrivastava <praan@google.com>
+Reviewed-by: Henrique Carvalho <henrique.carvalho@suse.com>
+Signed-off-by: Shivaji Kant <shivajikant@google.com>
+
+---
+v2: https://lore.kernel.org/all/20260402073001.2039625-1-shivajikant@google.com/
+
+Changes in v3:
+Dropped the reference to multiplath patch from git log as commented
+by Christoph Hellwig.
+---
+ drivers/nvme/host/rdma.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 35c0822edb2d..09eefd7c3ff4 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -2189,6 +2189,13 @@ static void nvme_rdma_reset_ctrl_work(struct work_struct *work)
+ 	nvme_rdma_reconnect_or_remove(ctrl, ret);
+ }
+ 
++static bool nvme_rdma_supports_pci_p2pdma(struct nvme_ctrl *ctrl)
++{
++	struct nvme_rdma_ctrl *r_ctrl = to_rdma_ctrl(ctrl);
++
++	return ib_dma_pci_p2p_dma_supported(r_ctrl->device->dev);
++}
++
+ static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
+ 	.name			= "rdma",
+ 	.module			= THIS_MODULE,
+@@ -2203,6 +2210,7 @@ static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
+ 	.get_address		= nvmf_get_address,
+ 	.stop_ctrl		= nvme_rdma_stop_ctrl,
+ 	.get_virt_boundary	= nvme_get_virt_boundary,
++	.supports_pci_p2pdma	= nvme_rdma_supports_pci_p2pdma,
+ };
+ 
+ /*
+-- 
+2.53.0.1213.gd9a14994de-goog
+
 
