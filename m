@@ -1,69 +1,76 @@
-Return-Path: <linux-rdma+bounces-19061-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19062-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qAXBE7Ly02lxoQcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19061-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 19:51:46 +0200
+	id EG2xJtf702k8owcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19062-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 20:30:47 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4A603A5E8F
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 19:51:45 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E24B3A6412
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Apr 2026 20:30:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7FC843015455
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Apr 2026 17:51:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0DE1A301F4BB
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Apr 2026 18:30:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1863939A5;
-	Mon,  6 Apr 2026 17:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715A438C2D0;
+	Mon,  6 Apr 2026 18:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLWGHv2n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRo4eiad"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A21639151C;
-	Mon,  6 Apr 2026 17:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3361A2D4816;
+	Mon,  6 Apr 2026 18:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775497898; cv=none; b=rcDShFXBpDaOo5hFfP3e1yKaMRiH66+utEfMsg2ZCqs4oadmwiPc1j7QWYrH00WR8JzMNxb/9xiKtO2y0KnLRDS7rxfKpN0p5Lz4YVf5E4fBMhRF+L50rkguagwWRLdkEfDGhyRUizDHeNK7ksTWJHTlVCd4FpJWIobmjeKrjXQ=
+	t=1775500241; cv=none; b=hoCjimtwMqrfkTWhpvMJEMfVyagXE1MRXZvdpn8dcc3Le33MZ5Xaq/XSAn0Puq7EpDzu56FVmLJlfLCORqc/D2tfs3tNvw9TeDibyx8/XdxQckWz3qtpPHL5aRDYjai3jeJDCGj3MId3O3x2OEiDx/6aY1WBoLFvYh3w/iuarVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775497898; c=relaxed/simple;
-	bh=aOE7o6CfWDeEXlNasCvA6VtuO3c6A+iWm2BI/VVTy8U=;
+	s=arc-20240116; t=1775500241; c=relaxed/simple;
+	bh=X3LmDlOL7oHsiksL0XYneAIo6ey0U0WWWnsaiFK0W0g=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QZsrjJpJxEn0K0q/04t62BzG9guSd5iiBaX6YCW0ZqP2Qkhm6Nm2EnM2GLC0eY4ErH0H1Iijm06CtFKC4/K31BXnI4YU/dGA7DDhxjUINtv4x0jnVsvTZNB/w3bpvuAo/A83qSJNHgxCnzO9Q2fgSvV5WU68mHZlAzo02TCJX6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RLWGHv2n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CB90C4CEF7;
-	Mon,  6 Apr 2026 17:51:37 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WEuJRHjnJrsn+bwoY0/DKpgbzqUsWW/l+pI1lmpc8hdtJTtvbF6C/QbZ2LoA+pofKka9bIe8OjHzq0rRlxf4yw0uA6BcOJuYgiR6eWUvWfD/w1k9cth1y7HhpuuBe1KBDkqsXg6X8AC8bqH0oO/3xbC0b7TzP5RuZtd4amppUSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WRo4eiad; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BA58C19421;
+	Mon,  6 Apr 2026 18:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775497898;
-	bh=aOE7o6CfWDeEXlNasCvA6VtuO3c6A+iWm2BI/VVTy8U=;
+	s=k20201202; t=1775500240;
+	bh=X3LmDlOL7oHsiksL0XYneAIo6ey0U0WWWnsaiFK0W0g=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RLWGHv2nHqR6OOlc3WD9/QohEKn5qnQ0C4IlpSX9N1dC2BeLGFibY+wyKS+IKcd3/
-	 zmm5UPjEYYMXiZXlZ2pjNRmhki7GdfgVWCB4ok9RwJ40MQeSgIzG7a4D4b1xOov2RY
-	 XlurxrQXxxFi3tcS9vXrGa0J7cldmy/HeoL6TIrl5ABZ92dcu/f8hwCyhUP60oyZu1
-	 SZcVnOB1x/uxszZ+++xx/VeDJDyeQ7WGw05PkLndcURL1sXEovvBssdHqiKagVLyQL
-	 Ua/8tOCgFLZ8gLpD9ZYnl1JBZrv9jrd1f5QGS6tazDVGFQIOslIxIiVvLsYOyumf7u
-	 9cxsF0aXd0wqQ==
-Date: Mon, 6 Apr 2026 10:51:36 -0700
+	b=WRo4eiadFuh+rmR1IwitFB11BMn6R4ph56sofV3YJ+i1JSiMo+hxXRNDvGvebn8vr
+	 nHslEjnLnZT1NIBACMpsYxVkNQXdN3I5Vx9W7AjXSNjb1635T1tlTfk7jvHDPvVAwc
+	 3XQZMI2036P3CuyWtVoVT1ZBZwoPce5pjzu7oV9HJ4hcakpDsMHLB2SyJ23o/hBzPp
+	 S9VyfnPpQHp9bQn/VH3LZY+S96MevoRDC6uof8k4PCwgi6rL31S7fPMPV5T9R0x6rn
+	 UQ74416t8l0IHVyIAWnywnPPnO1C2wYt8xxK3NcI5Y5fskCDAeJmQEanTA7YQ9coBK
+	 btc8zLu/1+S9w==
+Date: Mon, 6 Apr 2026 11:30:38 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
- kees@kernel.org, dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next,v4] net: mana: Force full-page RX buffers via
- ethtool private flag
-Message-ID: <20260406105136.5e02420e@kernel.org>
-In-Reply-To: <adHTm2SvjDrezEdv@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <acrkwuIFyBXhwICF@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-	<20260330154755.6a8c73a6@kernel.org>
-	<adHTm2SvjDrezEdv@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Dragos Tatulea <dtatulea@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
+ Cosmin Ratiu <cratiu@nvidia.com>, Simon Horman <horms@kernel.org>, Jacob
+ Keller <jacob.e.keller@intel.com>, Lama Kayal <lkayal@nvidia.com>, Michal
+ Swiatkowski <michal.swiatkowski@linux.intel.com>, Carolina Jubran
+ <cjubran@nvidia.com>, Nathan Chancellor <nathan@kernel.org>, Daniel Zahka
+ <daniel.zahka@gmail.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>, Raed
+ Salem <raeds@nvidia.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Gal Pressman <gal@nvidia.com>
+Subject: Re: [PATCH net-next V2 4/5] net/mlx5e: XDP, Use a single linear
+ page per rq
+Message-ID: <20260406113038.212d91c0@kernel.org>
+In-Reply-To: <e0ac9755-fd49-4620-92ce-0f5e4203a95e@nvidia.com>
+References: <20260403090927.139042-1-tariqt@nvidia.com>
+	<20260403090927.139042-5-tariqt@nvidia.com>
+	<adH5yAsPJ8rNgT0k@x13>
+	<20260406084344.5d315f01@kernel.org>
+	<e0ac9755-fd49-4620-92ce-0f5e4203a95e@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -77,43 +84,67 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19061-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19062-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FREEMAIL_CC(0.00)[nvidia.com,google.com,redhat.com,lunn.ch,davemloft.net,kernel.org,iogearbox.net,gmail.com,fomichev.me,intel.com,linux.intel.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A4A603A5E8F
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5E24B3A6412
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, 4 Apr 2026 20:14:35 -0700 Dipayaan Roy wrote:
->   Function                        Fragment   Full-page   Delta
->   =E2=94=80----------------------------   =E2=94=80-------   ---------   =
------
->   napi_pp_put_page                  3.93%      0.85%    +3.08%
->   page_pool_alloc_frag_netmem       1.93%         =E2=80=94     +1.93%
->   Total page_pool overhead          5.86%      0.85%    +5.01%
+On Mon, 6 Apr 2026 19:31:03 +0300 Mark Bloch wrote:
+> On 06/04/2026 18:43, Jakub Kicinski wrote:
+> > On Sun, 5 Apr 2026 08:08:06 +0200 Dragos Tatulea wrote: =20
+> >> sashiko says: =20
+> >=20
+> > Thanks a lot for reviewing the review! It takes a lot of maintainer tim=
+e =20
+>=20
+> Just to add some context: we started running Sashiko internally,
+> so hopefully trivial issues won=E2=80=99t be missed. I don=E2=80=99t know=
+ if
+> you remember our on-list discussion from a few weeks ago, following that
+> discussion right now we have three different internal AI tools reviewing =
+each
+> commit.
+>=20
+> At the moment this is still manageable, and I think developers should
+> look over all comments from all tools. In our case that currently
+> means three review outputs per commit. It would also be useful to have
+> some official guidance on what authors are recommended to run before
+> posting, so obvious issues can be caught earlier and less reviewer/mainta=
+iner
+> time is spent on them.
+>=20
+> For example:
+>=20
+> =E2=80=9CBefore posting, authors could run a recommended baseline of revi=
+ew tools,
+> where available, to catch obvious issues early. During review, tools such
+> as review-prompts and Sashiko may be used to assist the reviewer.=E2=80=9D
 
-
-Thanks for the analysis, and presumably recycling the full page is
-cheaper because page_pool_put_unrefed_netmem() hits the fastpath
-because page_pool_napi_local() returns true?
+Please send patches if you think something should be mentioned
+somewhere. It'd be awesome if y'all participated more in upstream
+reviews so that you recommendation could be rooted in what happens
+on the list not just what happens within nVidia.
 
