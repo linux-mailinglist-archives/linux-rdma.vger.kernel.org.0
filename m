@@ -1,226 +1,186 @@
-Return-Path: <linux-rdma+bounces-19068-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19069-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id LlwcC/BW1GkStQcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19068-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 02:59:28 +0200
+	id edgdN45b1GlrtQcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19069-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 03:19:10 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D673A887F
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 02:59:27 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id C20CF3A8A60
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 03:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2CBE33023DB2
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2026 00:59:26 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 180B1300ACB8
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2026 01:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD9B1DE4FB;
-	Tue,  7 Apr 2026 00:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEAA1F1534;
+	Tue,  7 Apr 2026 01:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KL+bznNf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iQsTiFiX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCAE0165F16
-	for <linux-rdma@vger.kernel.org>; Tue,  7 Apr 2026 00:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3AA1AAE17;
+	Tue,  7 Apr 2026 01:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775523564; cv=none; b=HRbN15ItSldXhXntiXPVOyjnH1kXjyfAVwFODGEa+1N33QtX7UU2i0fTexq0PxRotBuJxkqzuQUyFekc13flvWxxL9w1sLcyL77FMm/aiI7c6qsYwfwTpbtwzx6LgBerzVilEI4UTcYB7fy30LYNCuJDKdhZO7sk/sRcp2DNUvQ=
+	t=1775524747; cv=none; b=dDgqJGdHfENMIrb5MrPRAMR6koYhONdzgHrbVmLhWuXUJFwG6AxvfQzU+rRNgU52JQdnckw0FG/B4gjlaDkA1Sj9eLMAAx2YJzoXyBnOZQahcp48GKylIt8PV2iV2pgzrIrO8YXxlqCahS+himBA3P0IhONbtK7dqdM7faBCwjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775523564; c=relaxed/simple;
-	bh=Ruh2hw9g1yIA5sM/JvdtPU+1+diSx8vcr11yMSGBpNY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U87DpY+eaViPwbwDNlqYwLHycwyIAiOT5NETAZuDK3Oni+x7u+DbvayphmIs+JtI16+/AmbQDrPHSVZsl4p5EjkeMkIXj3YvVNOCS6DvccCUTveKez8OvmJY9Pwj7R6noHlSOTarXO7jB8B6qVsWICcKGNakgrZitIPNjniVU9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KL+bznNf; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cd0427bc-badd-4e54-ae91-e8ad6557fb95@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1775523559;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F/x41L2AHVWKTqLTiopJhOr7DaAP3xYk8NAlRbjTExo=;
-	b=KL+bznNfbBLvKdwm/DyotBoIHLJu2LB9Qb1O5zvnqFQ3bat0AsPTWiT8W0ONKRqCyZ+Ai9
-	LawzhbblyCvYScGGSz5/mJmveHWMscYvY0+VFbX5UBk/UyxqgwudIkLOeSkOoCmaCqByOu
-	IPWGR/T4wqVmu+0J9D1UqkLLlZQ9dmk=
-Date: Tue, 7 Apr 2026 08:58:57 +0800
+	s=arc-20240116; t=1775524747; c=relaxed/simple;
+	bh=7pRZlUGhH6jAxJA84NlqKbWQd/to3feeYUT3bgBqYHs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=qLzPjz1ZflHNPiv2d6hpVP/NImCDDRuV3p8J92OHwMxfAPnpyGoBxhogjHQEKesKlROALiNbJsQPNQWKvWG8VZmTLXd8hh3Tl4naqO4HwJmbDyaXiS4hDyY6Pe3I6yWDdSBYJzYzs7g1TbxYchWF2ILjgCFCELkV3uEv2e1rGpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iQsTiFiX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B666C4CEF7;
+	Tue,  7 Apr 2026 01:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775524747;
+	bh=7pRZlUGhH6jAxJA84NlqKbWQd/to3feeYUT3bgBqYHs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iQsTiFiXa2J6iXfmK1k5HuTsGc1VOzZo5QD1GSFzjCdOAGdI7jTOfjHSbNGgjJFKb
+	 4GztNM4ai2ie9fwAVbqkSCvpCWajq8rIFWMDIrWHqRRPoPGJL5o9ValaRhx/CSDvb1
+	 N+HhG/noO9V3BQYV7d9tyRB/ZZQQT3f6vcpZcnqkZ7ObAI642bV5T7qodAK3z/9rl3
+	 J9TpT+12gNLuSD9WbOdeHr0diLZIp9KwW8mqrbyY2juSHN76zQ5TSXHYztHGy9CZoE
+	 6Bnos9GTTSmGYufe1p+hA6WGeVTgw0xhPvw3r0HnVUl2/gCCYLMdSLiT+n44W2MGjV
+	 aY/8Z2sseKk0A==
+From: Jakub Kicinski <kuba@kernel.org>
+To: achender@kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	rds-devel@oss.oracle.com,
+	edumazet@google.com,
+	linux-rdma@vger.kernel.org,
+	horms@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH net v1 1/2] net/rds: Optimize rds_ib_laddr_check
+Date: Mon,  6 Apr 2026 18:19:00 -0700
+Message-ID: <20260407011900.3596320-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260405041613.309958-2-achender@kernel.org>
+References: <20260405041613.309958-2-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 3/4] RDMA/rxe: add SENT/RCVD bytes
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
-References: <20260406132830.435381-1-zhenwei.pi@linux.dev>
- <20260406132830.435381-4-zhenwei.pi@linux.dev>
- <92943fb0-b0ec-443e-a04f-204faba0c9cf@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: zhenwei pi <zhenwei.pi@linux.dev>
-In-Reply-To: <92943fb0-b0ec-443e-a04f-204faba0c9cf@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19068-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-19069-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhenwei.pi@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: 79D673A887F
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C20CF3A8A60
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
 
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+---
+net/rds: Optimize rds_ib_laddr_check
 
-On 4/6/26 22:55, Zhu Yanjun wrote:
-> 在 2026/4/6 6:28, zhenwei pi 写道:
->> There is a lack of sent/received counter in bytes.
->>
->> Signed-off-by: zhenwei pi <zhenwei.pi@linux.dev>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_hw_counters.c | 2 ++
->>   drivers/infiniband/sw/rxe/rxe_hw_counters.h | 2 ++
->>   drivers/infiniband/sw/rxe/rxe_net.c         | 2 ++
->>   drivers/infiniband/sw/rxe/rxe_recv.c        | 6 ++++++
->>   drivers/infiniband/sw/rxe/rxe_verbs.h       | 6 ++++++
->>   5 files changed, 18 insertions(+)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/ 
->> infiniband/sw/rxe/rxe_hw_counters.c
->> index 437917a7d8f2..17edaa9a9b9b 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
->> @@ -22,6 +22,8 @@ static const struct rdma_stat_desc 
->> rxe_counter_descs[] = {
->>       [RXE_CNT_LINK_DOWNED].name         =  "link_downed",
->>       [RXE_CNT_RDMA_SEND].name           =  "rdma_sends",
->>       [RXE_CNT_RDMA_RECV].name           =  "rdma_recvs",
->> +    [RXE_CNT_SENT_BYTES].name          =  "sent_bytes",
->> +    [RXE_CNT_RCVD_BYTES].name          =  "rcvd_bytes",
->>   };
->>   int rxe_ib_get_hw_stats(struct ib_device *ibdev,
->> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.h b/drivers/ 
->> infiniband/sw/rxe/rxe_hw_counters.h
->> index 051f9e1c3852..01b355103cbc 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
->> @@ -26,6 +26,8 @@ enum rxe_counters {
->>       RXE_CNT_LINK_DOWNED,
->>       RXE_CNT_RDMA_SEND,
->>       RXE_CNT_RDMA_RECV,
->> +    RXE_CNT_SENT_BYTES,
->> +    RXE_CNT_RCVD_BYTES,
->>       RXE_NUM_OF_COUNTERS
->>   };
->> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/ 
->> sw/rxe/rxe_net.c
->> index 6621d01ac32d..86660031ffa2 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_net.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
->> @@ -503,6 +503,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct 
->> rxe_pkt_info *pkt,
->>       int err;
->>       int is_request = pkt->mask & RXE_REQ_MASK;
->>       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->> +    unsigned int skblen = skb->len;
->>       unsigned long flags;
->>       spin_lock_irqsave(&qp->state_lock, flags);
->> @@ -526,6 +527,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct 
->> rxe_pkt_info *pkt,
->>       }
->>       rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
->> +    rxe_counter_add(rxe, RXE_CNT_SENT_BYTES, skblen);
->>       goto done;
->>   drop:
->> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/ 
->> infiniband/sw/rxe/rxe_recv.c
->> index 5861e4244049..0d9112e95eae 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
->> @@ -318,6 +318,7 @@ void rxe_rcv(struct sk_buff *skb)
->>       int err;
->>       struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->>       struct rxe_dev *rxe = pkt->rxe;
->> +    unsigned int skblen = skb->len + sizeof(struct udphdr);
->>       if (unlikely(skb->len < RXE_BTH_BYTES))
->>           goto drop;
->> @@ -341,6 +342,11 @@ void rxe_rcv(struct sk_buff *skb)
->>       if (unlikely(err))
->>           goto drop;
->> +    if (skb->protocol == htons(ETH_P_IP))
->> +        skblen += sizeof(struct iphdr);
->> +    else if (skb->protocol == htons(ETH_P_IPV6))
->> +        skblen += sizeof(struct ipv6hdr);
->> +    rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
-> 
->  From the above source code, I think that you want to calculate total 
-> length starting from the Network Layer (IP Header).
-> Maybe the following is compact.
-> 
-> "
-> unsigned int skblen = skb->len - skb_network_offset(skb);
-> rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
-> "
-> 
-> Zhu Yanjun
-> 
+This patch optimizes rds_ib_laddr_check() to avoid excessive
+rdma_bind_addr() calls by checking if an address has been used before.
+It renames the original function to rds_ib_laddr_check_cm() and
+introduces a new wrapper that first checks rds_ib_get_device() before
+falling back to the CM-based check.
 
-Yes, TX side uses the total length of IP + UDP + IB as sent bytes, RX 
-side should record the same length. Because IP and UDP headers have 
-already been pulled at this stage, so add the addional length here. 
-skb_network_offset(skb) is fine, I'll use it instead in the next version 
-later.
+> diff --git a/net/rds/ib.c b/net/rds/ib.c
+> index ac6affa33ce7..73e01984ee9a 100644
+> --- a/net/rds/ib.c
+> +++ b/net/rds/ib.c
+> @@ -401,8 +401,8 @@ static void rds6_ib_ic_info(struct socket *sock, unsigned int len,
+>   * allowed to influence which paths have priority.  We could call userspace
+>   * asserting this policy "routing".
+>   */
+> -static int rds_ib_laddr_check(struct net *net, const struct in6_addr *addr,
+> -			      __u32 scope_id)
+> +static int rds_ib_laddr_check_cm(struct net *net, const struct in6_addr *addr,
+> +				 __u32 scope_id)
+>  {
+>  	int ret;
+>  	struct rdma_cm_id *cm_id;
 
-Thanks.
+[ ... ]
 
->>       rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
->>       if (unlikely(bth_qpn(pkt) == IB_MULTICAST_QPN))
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/ 
->> infiniband/sw/rxe/rxe_verbs.h
->> index e800545d1046..0f5ffd94643f 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> @@ -455,6 +455,12 @@ static inline void rxe_counter_inc(struct rxe_dev 
->> *rxe, enum rxe_counters index)
->>       atomic64_inc(&rxe->stats_counters[index]);
->>   }
->> +static inline void rxe_counter_add(struct rxe_dev *rxe, enum 
->> rxe_counters index,
->> +                   s64 val)
->> +{
->> +    atomic64_add(val, &rxe->stats_counters[index]);
->> +}
->> +
->>   static inline struct rxe_dev *to_rdev(struct ib_device *dev)
->>   {
->>       return dev ? container_of(dev, struct rxe_dev, ib_dev) : NULL;
-> 
+> @@ -487,6 +487,20 @@ static int rds_ib_laddr_check(struct net *net, const struct in6_addr *addr,
+>  	return ret;
+>  }
+>
+> +static int rds_ib_laddr_check(struct net *net, const struct in6_addr *addr,
+> +			      __u32 scope_id)
+> +{
+> +	struct rds_ib_device *rds_ibdev = rds_ib_get_device(addr->s6_addr32[3]);
+> +
+> +	if (rds_ibdev) {
+> +		rds_ib_dev_put(rds_ibdev);
+> +
+> +		return 0;
+> +	}
+> +
+> +	return rds_ib_laddr_check_cm(net, addr, scope_id);
+> +}
+> +
 
+Can this code handle pure IPv6 addresses correctly? The function extracts
+addr->s6_addr32[3] and passes it to rds_ib_get_device(), which looks up
+devices by IPv4 address.
+
+For IPv4-mapped IPv6 addresses, addr->s6_addr32[3] contains the IPv4
+address. But for pure IPv6 addresses (when CONFIG_IPV6 is enabled),
+addr->s6_addr32[3] contains the last 32 bits of the IPv6 address, which
+could accidentally match a stored IPv4 address.
+
+When this collision occurs, the function returns 0 (success) without
+calling rds_ib_laddr_check_cm(), which performs the full validation
+including rdma_bind_addr() and IPv6 link-local scope_id checks. This
+means a pure IPv6 address could be incorrectly accepted as valid for IB
+transport.
+
+Should this be guarded with an ipv6_addr_v4mapped(addr) check? For
+example:
+
+    if (ipv6_addr_v4mapped(addr)) {
+        rds_ibdev = rds_ib_get_device(addr->s6_addr32[3]);
+        ...
+    }
+
+The existing callers of rds_ib_get_device (rds_ib_get_mr,
+rds_ib_update_ipaddr) operate in post-connection contexts where the
+address type is already validated, but rds_ib_laddr_check is the
+validation gate called during bind/transport-selection for any address
+type.
+
+>  static void rds_ib_unregister_client(void)
+>  {
+>  	ib_unregister_client(&rds_ib_client);
+
+[ ... ]
+-- 
+pw-bot: cr
 
