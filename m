@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-19097-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19098-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AHY5D5sa1Wli0wcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19097-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 16:54:19 +0200
+	id ECt0Mrka1WmZ0wcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19098-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 16:54:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F753B06B8
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 16:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 532053B06E1
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 16:54:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B848930B2F21
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2026 14:48:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 806F030C815C
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2026 14:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C2031E833;
-	Tue,  7 Apr 2026 14:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4EF3328B56;
+	Tue,  7 Apr 2026 14:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Xx3RXmsa"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="IruX2oPJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C211E31D75E;
-	Tue,  7 Apr 2026 14:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3258D30E84D;
+	Tue,  7 Apr 2026 14:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775573275; cv=none; b=PSprweTeR7ZGrcuqxg1/jK3YqSKI+UoeZrGl/fBe4hcQv77Moggo5oEcy0AroedjLbP2jOvsaENYV+sjVu1cKeJH4hnVfS3nO+LIU9zzXbLLlwE/G/BH00FSORDnnc207zOjYH3VeZzk6HDTX2VRkEIVQhgH5p4QtQy0Vjg/r18=
+	t=1775573278; cv=none; b=JbdjHn9wamrITwOrfkzgKffZ33+mNQp0H/s4c+zNhg4+e0S23DSW4FC41As2K9m5bh0VjXWcOFODIspuijTbz5R7j8TON/Ns/XlJkqG0+Joy0xqHJtutF1w8/W6Q2aDGQfYvW2+bDoTg73TBgS7P693vGoTf+0qWZHL7M046l6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775573275; c=relaxed/simple;
-	bh=R2fi9jfNGCmEa2UTj605KIX/CDVli+KSD2VOhFhUuTI=;
+	s=arc-20240116; t=1775573278; c=relaxed/simple;
+	bh=2dq2P+0tdbsbjZz2u/DeRU8PxALkmPrOdEZzk4yADsY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=quQ/P7u30vuIYx2SGynmzvhEDySPyenNqZ18ROK5Ec6xUK4ZGBLzFg8qPhM2jE1yRe7yRqis02R1C57sKvA9qamqW/dbHSwQDFCDX83s8xlwz/qKbVzhpSBqMF76nQVZ7yvSCBoUHIBzGFtnNhxI3HgrPvXpUtNOUYhcuFUuAPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Xx3RXmsa; arc=none smtp.client-ip=144.76.82.148
+	 MIME-Version; b=kCj7D5Pb689rKiKFfJV/5PaB3BPLkmZOfmvU0FXdjlwjy9mGzyM/tqPfon8lmGGO1uqJ2/70allMp9Lspu7EN61vI4YkoMQKKu49/xOxr4t1vgXhpYs12rtAceoYRw7J1u8Ox8jHmYeU1Nph2cpXT57quPHsntajnF/0qexHs3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=IruX2oPJ; arc=none smtp.client-ip=144.76.82.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
 	s=42; h=Message-ID:Date:Cc:To:From;
-	bh=4qor25fDclrX4Tl2iTvjhE+2WdvSIagxoKLaDTejWrY=; b=Xx3RXmsaYFifQqQsF6rXmATthr
-	mnpGPXyvBxQAstinyZJzYrgroWI11pW/bFFwyc0SRAqoXQVr5dIeULjITyYYkS6Uhj2hX1p03P1Wt
-	g9huFfo5PPryvujlvRt8BmR3T9vn2T8VlTNhwifyIcg1dCLcQx3QDYRFaCampTfaEBtigChA1IC3X
-	e2W3UDQB7HTCmjDD4mqYv8xIibupEtkauUR+ksdL42G6OflaE7z56Bg45esmyPFTr+iPnL+7DzfAc
-	+xBrPcKG2kpt15rTBGyqEaRNCg0uZUzCYqcCPrlJgC9IZZWTKZaW9KTOOAK5/gk9QB27pkT+pS+m4
-	oZk4k/bwMziRqKiJrntrgapPiKAumGnfPzEwU2jT1gYSGkeCKZHjXw5f6kUykUkRMDuDAdBnP0ldV
-	YQ/wIwQm69lFp7QNnM/3LK9k7zg8MoCs2TzyfN1wqKSt1p5WGdNw9e/DNjY0zEmAv48Er26OL5KSc
-	J8hZNlTkNV0t/FbVRxqBNmjg;
+	bh=ZZvdJM7m8CwmDYuF3I+bBNMABHxGKhrdyV5j+jSjLAw=; b=IruX2oPJmWUD91PA2Qmj99TRw0
+	fZ1Hg2rJrtq4sTrTJda7uGgSy8toTHCBd7quynm8ktkEfBsFNP988bkCCRz2q3xZkVXiA5bos/vrw
+	nkCpNma/IlCmD8bKm2nAe8SKXXomnqx2U0k5t/t1cE83Or/3Rr657+54GGxcSnSgc78L+PBWD45fS
+	BHf37mKku9NYbi8VfPnwJo7PSSNSwcgMA+Q/QWotfEfngct76DTnkMgu4gol1SAJgmxC1ulq+zamy
+	6gxEx7RywbcgcxcswXLsJyyKrRCSPTEcBmfrlldEc618j7bCvObONRjPcknrodhYt+n34pMtQ89zV
+	gLEwySw3R2HtjxVXWWvjindUftapZs6jlFyh9nhZH4a5TNHaHc/QdOhFxHsqcEiuOhl/4x8Lt4SYc
+	bmwV+d5ioKaSEDXDO8UxKfg8m27oEasmL0BCOwqjv/I6sj4j73kMDnPfY3BnuftHrnB35nmdlJQkg
+	AdGFm+yJWmfCTaPMTbTPt6hN;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
 	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
 	(Exim)
-	id 1wA7iT-00000007WSV-48OV;
-	Tue, 07 Apr 2026 14:47:46 +0000
+	id 1wA7iZ-00000007WTu-3ZuH;
+	Tue, 07 Apr 2026 14:47:51 +0000
 From: Stefan Metzmacher <metze@samba.org>
 To: linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org
@@ -71,9 +71,9 @@ Cc: metze@samba.org,
 	quic@lists.linux.dev,
 	linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 7/8] smb: client: make use of IPPROTO_SMBDIRECT sockets
-Date: Tue,  7 Apr 2026 16:46:33 +0200
-Message-ID: <3d447904e3a370f61d4d4fe8aaee8bfdbb299c9c.1775571957.git.metze@samba.org>
+Subject: [PATCH 8/8] smb: server: make use of IPPROTO_SMBDIRECT sockets
+Date: Tue,  7 Apr 2026 16:46:34 +0200
+Message-ID: <e1972e6f1fda9842c5724b7daf4a2aa7779901a5.1775571957.git.metze@samba.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1775571957.git.metze@samba.org>
 References: <cover.1775571957.git.metze@samba.org>
@@ -98,7 +98,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_CC(0.00)[samba.org,gmail.com,talpey.com,microsoft.com,kernel.org,redhat.com,suse.com,davemloft.net,google.com,vger.kernel.org,lists.linux.dev];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[21];
-	TAGGED_FROM(0.00)[bounces-19097-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19098-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -113,7 +113,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B3F753B06B8
+X-Rspamd-Queue-Id: 532053B06E1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -124,17 +124,7 @@ This reduces the function calls for special smbdirect features to
 - smbdirect_socket_set_kernel_settings()
 - smbdirect_socket_get_current_parameters()
 - smbdirect_connection_is_connected()
-- smbdirect_connection_send_single_iter()
-- smbdirect_connection_send_wait_zero_pending()
-- smbdirect_connection_register_mr_io()
-- smbdirect_mr_io_fill_buffer_descriptor()
-- smbdirect_connection_deregister_mr_io()
-- smbdirect_connection_legacy_debug_proc_show()
-
-In future with modifications from David Howells
-we'll also be able to use sock_sendmsg() and avoid
-direct calls to smbdirect_connection_send_single_iter() and
-smbdirect_connection_send_wait_zero_pending().
+- smbdirect_connection_rdma_xmit()
 
 This will also make it easier to implement the QUIC
 transport Henrique Carvalho is working on.
@@ -172,948 +162,330 @@ Cc: linux-rdma@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Stefan Metzmacher <metze@samba.org>
 ---
- fs/smb/client/cifs_debug.c |   2 +-
- fs/smb/client/cifsfs.c     |   2 +-
- fs/smb/client/cifsglob.h   |   7 +-
- fs/smb/client/connect.c    | 123 +++++++++--------
- fs/smb/client/file.c       |   8 +-
- fs/smb/client/sess.c       |   4 +-
- fs/smb/client/smb2ops.c    |   8 +-
- fs/smb/client/smb2pdu.c    |  10 +-
- fs/smb/client/smbdirect.c  | 275 +++++++++++--------------------------
- fs/smb/client/smbdirect.h  |  27 +---
- fs/smb/client/transport.c  |   2 +-
- 11 files changed, 170 insertions(+), 298 deletions(-)
+ fs/smb/server/transport_rdma.c | 119 +++++++++++++++++++--------------
+ 1 file changed, 70 insertions(+), 49 deletions(-)
 
-diff --git a/fs/smb/client/cifs_debug.c b/fs/smb/client/cifs_debug.c
-index 0691d2a3e04b..70f30b1f8cda 100644
---- a/fs/smb/client/cifs_debug.c
-+++ b/fs/smb/client/cifs_debug.c
-@@ -481,7 +481,7 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
+diff --git a/fs/smb/server/transport_rdma.c b/fs/smb/server/transport_rdma.c
+index 706a2c897948..64be48165cda 100644
+--- a/fs/smb/server/transport_rdma.c
++++ b/fs/smb/server/transport_rdma.c
+@@ -82,13 +82,13 @@ static struct smb_direct_listener {
  
- 		seq_printf(m, "\nServer capabilities: 0x%x", server->capabilities);
+ 	struct task_struct	*thread;
  
--		if (server->rdma)
-+		if (cifs_rdma_enabled(server))
- 			seq_printf(m, "\nRDMA ");
- 		seq_printf(m, "\nTCP status: %d Instance: %d"
- 				"\nLocal Users To Server: %d SecMode: 0x%x Req On Wire: %d",
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index 32d0305a1239..12986050e16c 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -529,7 +529,7 @@ cifs_show_address(struct seq_file *s, struct TCP_Server_Info *server)
- 	default:
- 		seq_puts(s, "(unknown)");
- 	}
--	if (server->rdma)
-+	if (cifs_rdma_enabled(server))
- 		seq_puts(s, ",rdma");
- }
+-	struct smbdirect_socket *socket;
++	struct socket		*sock;
+ } smb_direct_ib_listener, smb_direct_iw_listener;
  
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 709e96e07791..f7b62bcaadd9 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -35,6 +35,7 @@
- #define SMB_PATH_MAX 260
- #define CIFS_PORT 445
- #define RFC1001_PORT 139
-+#define SMBD_IWARP_PORT 5445
+ struct smb_direct_transport {
+ 	struct ksmbd_transport	transport;
  
- /*
-  * The sizes of various internal tables and strings
-@@ -759,10 +760,8 @@ struct TCP_Server_Info {
- 	bool	sec_mskerberos;		/* supports legacy MS Kerberos */
- 	bool	sec_iakerb;		/* supports pass-through auth for Kerberos (krb5 proxy) */
- 	bool	large_buf;		/* is current buffer large? */
--	/* use SMBD connection instead of socket */
--	bool	rdma;
--	/* point to the SMBD connection if RDMA is used instead of socket */
--	struct smbd_connection *smbd_conn;
-+	int	ipproto; /* IPPROTO_TCP or IPOROTO_SMBDIRECT */
-+#define cifs_rdma_enabled(__server)	((__server)->ipproto == IPPROTO_SMBDIRECT)
- 	struct delayed_work	echo; /* echo ping workqueue job */
- 	char	*smallbuf;	/* pointer to current "small" buffer */
- 	char	*bigbuf;	/* pointer to current "big" buffer */
-diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
-index 69b38f0ccf2b..d42abe1d3772 100644
---- a/fs/smb/client/connect.c
-+++ b/fs/smb/client/connect.c
-@@ -313,8 +313,6 @@ cifs_abort_connection(struct TCP_Server_Info *server)
- 			 server->ssocket->flags);
- 		sock_release(server->ssocket);
- 		server->ssocket = NULL;
--	} else if (cifs_rdma_enabled(server)) {
--		smbd_destroy(server);
- 	}
- 	server->sequence_number = 0;
- 	server->session_estab = false;
-@@ -408,10 +406,7 @@ static int __cifs_reconnect(struct TCP_Server_Info *server,
- 			cifs_dbg(FYI, "%s: reconn_set_ipaddr_from_hostname: rc=%d\n", __func__, rc);
- 		}
+-	struct smbdirect_socket *socket;
++	struct socket		*sock;
+ };
  
--		if (cifs_rdma_enabled(server))
--			rc = smbd_reconnect(server);
--		else
--			rc = generic_ip_connect(server);
-+		rc = generic_ip_connect(server);
- 		if (rc) {
- 			cifs_server_unlock(server);
- 			cifs_dbg(FYI, "%s: reconnect error %d\n", __func__, rc);
-@@ -468,10 +463,7 @@ static int __reconnect_target_locked(struct TCP_Server_Info *server,
- 		cifs_dbg(FYI, "%s: reconn_set_ipaddr_from_hostname: rc=%d\n", __func__, rc);
- 	}
- 	/* Reconnect the socket */
--	if (cifs_rdma_enabled(server))
--		rc = smbd_reconnect(server);
--	else
--		rc = generic_ip_connect(server);
-+	rc = generic_ip_connect(server);
- 
- 	return rc;
- }
-@@ -746,10 +738,7 @@ cifs_readv_from_socket(struct TCP_Server_Info *server, struct msghdr *smb_msg)
- 
- 		if (server_unresponsive(server))
- 			return -ECONNABORTED;
--		if (cifs_rdma_enabled(server) && server->smbd_conn)
--			length = smbd_recv(server->smbd_conn, smb_msg);
--		else
--			length = sock_recvmsg(server->ssocket, smb_msg, 0);
-+		length = sock_recvmsg(server->ssocket, smb_msg, 0);
- 
- 		spin_lock(&server->srv_lock);
- 		if (server->tcpStatus == CifsExiting) {
-@@ -1088,8 +1077,6 @@ clean_demultiplex_info(struct TCP_Server_Info *server)
- 	wake_up_all(&server->request_q);
- 	/* give those requests time to exit */
- 	msleep(125);
--	if (cifs_rdma_enabled(server))
--		smbd_destroy(server);
- 	if (server->ssocket) {
- 		sock_release(server->ssocket);
- 		server->ssocket = NULL;
-@@ -1542,7 +1529,7 @@ match_port(struct TCP_Server_Info *server, struct sockaddr *addr)
- 	__be16 port, *sport;
- 
- 	/* SMBDirect manages its own ports, don't match it here */
--	if (server->rdma)
-+	if (cifs_rdma_enabled(server))
- 		return true;
- 
- 	switch (addr->sa_family) {
-@@ -1649,7 +1636,7 @@ static int match_server(struct TCP_Server_Info *server,
- 	if (server->echo_interval != ctx->echo_interval * HZ)
- 		return 0;
- 
--	if (server->rdma != ctx->rdma)
-+	if (cifs_rdma_enabled(server) != ctx->rdma)
- 		return 0;
- 
- 	if (server->ignore_signature != ctx->ignore_signature)
-@@ -1791,7 +1778,7 @@ cifs_get_tcp_session(struct smb3_fs_context *ctx,
- 	tcp_ses->noblocksnd = ctx->noblocksnd || ctx->rootfs;
- 	tcp_ses->noautotune = ctx->noautotune;
- 	tcp_ses->tcp_nodelay = ctx->sockopt_tcp_nodelay;
--	tcp_ses->rdma = ctx->rdma;
-+	tcp_ses->ipproto = ctx->rdma ? IPPROTO_SMBDIRECT : IPPROTO_TCP;
- 	tcp_ses->in_flight = 0;
- 	tcp_ses->max_in_flight = 0;
- 	tcp_ses->credits = 1;
-@@ -1844,29 +1831,18 @@ cifs_get_tcp_session(struct smb3_fs_context *ctx,
- 	++tcp_ses->srv_count;
- 	tcp_ses->echo_interval = ctx->echo_interval * HZ;
- 
--	if (tcp_ses->rdma) {
--#ifndef CONFIG_CIFS_SMB_DIRECT
--		cifs_dbg(VFS, "CONFIG_CIFS_SMB_DIRECT is not enabled\n");
--		rc = -ENOENT;
--		goto out_err_crypto_release;
--#endif
--		tcp_ses->smbd_conn = smbd_get_connection(
--			tcp_ses, (struct sockaddr *)&ctx->dstaddr);
--		if (tcp_ses->smbd_conn) {
--			cifs_dbg(VFS, "RDMA transport established\n");
--			rc = 0;
--			goto smbd_connected;
--		} else {
-+	rc = ip_connect(tcp_ses);
-+	if (rc < 0) {
-+		if (cifs_rdma_enabled(tcp_ses) && rc == -EPROTONOSUPPORT) {
-+			cifs_dbg(VFS, "CONFIG_CIFS_SMB_DIRECT is not enabled\n");
- 			rc = -ENOENT;
- 			goto out_err_crypto_release;
- 		}
--	}
--	rc = ip_connect(tcp_ses);
--	if (rc < 0) {
- 		cifs_dbg(VFS, "Error connecting to socket. Aborting operation.\n");
- 		goto out_err_crypto_release;
- 	}
--smbd_connected:
-+	if (cifs_rdma_enabled(tcp_ses))
-+		cifs_dbg(VFS, "RDMA transport established\n");
- 	/*
- 	 * since we're in a cifs function already, we know that
- 	 * this will succeed. No need for try_module_get().
-@@ -3331,6 +3307,7 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 	struct sockaddr *saddr;
- 	struct socket *socket;
- 	int slen, sfamily;
-+	const char *pname = cifs_rdma_enabled(server) ? "smbdirect" : "tcp";
- 	__be16 sport;
- 	int rc = 0;
- 
-@@ -3342,28 +3319,32 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 		sport = ipv6->sin6_port;
- 		slen = sizeof(struct sockaddr_in6);
- 		sfamily = AF_INET6;
--		cifs_dbg(FYI, "%s: connecting to [%pI6]:%d\n", __func__, &ipv6->sin6_addr,
--				ntohs(sport));
-+		cifs_dbg(FYI, "%s: connecting with %s to [%pI6]:%d\n",
-+			 __func__, pname, &ipv6->sin6_addr, ntohs(sport));
- 	} else {
- 		struct sockaddr_in *ipv4 = (struct sockaddr_in *)&server->dstaddr;
- 
- 		sport = ipv4->sin_port;
- 		slen = sizeof(struct sockaddr_in);
- 		sfamily = AF_INET;
--		cifs_dbg(FYI, "%s: connecting to %pI4:%d\n", __func__, &ipv4->sin_addr,
--				ntohs(sport));
-+		cifs_dbg(FYI, "%s: connecting with %s to %pI4:%d\n",
-+			 __func__, pname, &ipv4->sin_addr, ntohs(sport));
- 	}
- 
- 	if (server->ssocket) {
--		socket = server->ssocket;
--	} else {
-+		sock_release(server->ssocket);
-+		server->ssocket = NULL;
-+	}
-+
-+	{
- 		struct net *net = cifs_net_ns(server);
- 		struct sock *sk;
- 
- 		rc = sock_create_kern(net, sfamily, SOCK_STREAM,
--				      IPPROTO_TCP, &server->ssocket);
-+				      server->ipproto, &server->ssocket);
- 		if (rc < 0) {
--			cifs_server_dbg(VFS, "Error %d creating socket\n", rc);
-+			cifs_server_dbg(VFS, "Error %d creating %s socket\n",
-+					rc, pname);
- 			return rc;
- 		}
- 
-@@ -3371,7 +3352,7 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 		sk_net_refcnt_upgrade(sk);
- 
- 		/* BB other socket options to set KEEPALIVE, NODELAY? */
--		cifs_dbg(FYI, "Socket created\n");
-+		cifs_dbg(FYI, "%s socket created\n", pname);
- 		socket = server->ssocket;
- 		socket->sk->sk_allocation = GFP_NOFS;
- 		socket->sk->sk_use_task_frag = false;
-@@ -3382,8 +3363,10 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 	}
- 
- 	rc = bind_socket(server);
--	if (rc < 0)
--		return rc;
-+	if (rc < 0) {
-+		cifs_dbg(FYI, "Error %d bind_socket() %s\n", rc, pname);
-+		goto close_socket;
-+	}
- 
- 	/*
- 	 * Eventually check for other socket options to change from
-@@ -3404,6 +3387,17 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 	if (server->tcp_nodelay)
- 		tcp_sock_set_nodelay(socket->sk);
- 
-+	switch (server->ipproto) {
-+	case IPPROTO_SMBDIRECT:
-+		rc = smbd_prepare_socket(server, ntohs(sport));
-+		if (rc < 0) {
-+			cifs_dbg(FYI, "Error %d from smbd_prepare_socket(port=%u)\n",
-+				 rc, ntohs(sport));
-+			goto close_socket;
-+		}
-+		break;
-+	}
-+
- 	cifs_dbg(FYI, "sndbuf %d rcvbuf %d rcvtimeo 0x%lx\n",
- 		 socket->sk->sk_sndbuf,
- 		 socket->sk->sk_rcvbuf, socket->sk->sk_rcvtimeo);
-@@ -3418,11 +3412,8 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 	if (server->noblockcnt && rc == -EINPROGRESS)
- 		rc = 0;
- 	if (rc < 0) {
--		cifs_dbg(FYI, "Error %d connecting to server\n", rc);
--		trace_smb3_connect_err(server->hostname, server->conn_id, &server->dstaddr, rc);
--		sock_release(socket);
--		server->ssocket = NULL;
--		return rc;
-+		cifs_dbg(FYI, "Error %d connecting with %s to server\n", rc, pname);
-+		goto close_socket;
- 	}
- 	trace_smb3_connect_done(server->hostname, server->conn_id, &server->dstaddr);
- 
-@@ -3434,9 +3425,20 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 	 */
- 	if (server->with_rfc1001 ||
- 	    server->rfc1001_sessinit == 1 ||
--	    (server->rfc1001_sessinit == -1 && sport == htons(RFC1001_PORT)))
-+	    (server->rfc1001_sessinit == -1 && sport == htons(RFC1001_PORT))) {
- 		rc = ip_rfc1001_connect(server);
-+		if (rc < 0) {
-+			cifs_dbg(FYI, "Error %d from ip_rfc1001_connect\n", rc);
-+			goto close_socket;
-+		}
-+	}
-+
-+	return rc;
- 
-+close_socket:
-+	trace_smb3_connect_err(server->hostname, server->conn_id, &server->dstaddr, rc);
-+	sock_release(socket);
-+	server->ssocket = NULL;
- 	return rc;
- }
- 
-@@ -3446,6 +3448,13 @@ ip_connect(struct TCP_Server_Info *server)
- 	__be16 *sport;
- 	struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)&server->dstaddr;
- 	struct sockaddr_in *addr = (struct sockaddr_in *)&server->dstaddr;
-+	u16 port1 = CIFS_PORT;
-+	u16 port2 = RFC1001_PORT;
-+
-+	if (cifs_rdma_enabled(server)) {
-+		port1 = SMBD_IWARP_PORT;
-+		port2 = CIFS_PORT;
-+	}
- 
- 	if (server->dstaddr.ss_family == AF_INET6)
- 		sport = &addr6->sin6_port;
-@@ -3455,15 +3464,15 @@ ip_connect(struct TCP_Server_Info *server)
- 	if (*sport == 0) {
- 		int rc;
- 
--		/* try with 445 port at first */
--		*sport = htons(CIFS_PORT);
-+		/* try with port1 at first */
-+		*sport = htons(port1);
- 
- 		rc = generic_ip_connect(server);
- 		if (rc >= 0)
- 			return rc;
- 
--		/* if it failed, try with 139 port */
--		*sport = htons(RFC1001_PORT);
-+		/* if it failed, try with port2 */
-+		*sport = htons(port2);
- 	}
- 
- 	return generic_ip_connect(server);
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index a69e05f86d7e..8ca9f60ff429 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -97,9 +97,9 @@ static void cifs_prepare_write(struct netfs_io_subrequest *subreq)
- 			      cifs_trace_rw_credits_write_prepare);
- 
- #ifdef CONFIG_CIFS_SMB_DIRECT
--	if (server->smbd_conn) {
-+	if (cifs_rdma_enabled(server)) {
- 		const struct smbdirect_socket_parameters *sp =
--			smbd_get_parameters(server->smbd_conn);
-+			smbd_get_parameters(server);
- 
- 		stream->sreq_max_segs = sp->max_frmr_depth;
- 	}
-@@ -191,9 +191,9 @@ static int cifs_prepare_read(struct netfs_io_subrequest *subreq)
- 			      cifs_trace_rw_credits_read_submit);
- 
- #ifdef CONFIG_CIFS_SMB_DIRECT
--	if (server->smbd_conn) {
-+	if (cifs_rdma_enabled(server)) {
- 		const struct smbdirect_socket_parameters *sp =
--			smbd_get_parameters(server->smbd_conn);
-+			smbd_get_parameters(server);
- 
- 		rreq->io_streams[0].sreq_max_segs = sp->max_frmr_depth;
- 	}
-diff --git a/fs/smb/client/sess.c b/fs/smb/client/sess.c
-index 698bd27119ae..9e79439002e6 100644
---- a/fs/smb/client/sess.c
-+++ b/fs/smb/client/sess.c
-@@ -207,7 +207,7 @@ int cifs_try_adding_channels(struct cifs_ses *ses)
- 		list_for_each_entry_safe_from(iface, niface, &ses->iface_list,
- 				    iface_head) {
- 			/* do not mix rdma and non-rdma interfaces */
--			if (iface->rdma_capable != ses->server->rdma)
-+			if (iface->rdma_capable != cifs_rdma_enabled(ses->server))
- 				continue;
- 
- 			/* skip ifaces that are unusable */
-@@ -395,7 +395,7 @@ cifs_chan_update_iface(struct cifs_ses *ses, struct TCP_Server_Info *server)
- 		}
- 
- 		/* do not mix rdma and non-rdma interfaces */
--		if (iface->rdma_capable != server->rdma)
-+		if (iface->rdma_capable != cifs_rdma_enabled(server))
- 			continue;
- 
- 		if (!iface->is_active ||
-diff --git a/fs/smb/client/smb2ops.c b/fs/smb/client/smb2ops.c
-index 509fcea28a42..208797de0c31 100644
---- a/fs/smb/client/smb2ops.c
-+++ b/fs/smb/client/smb2ops.c
-@@ -503,9 +503,9 @@ smb3_negotiate_wsize(struct cifs_tcon *tcon, struct smb3_fs_context *ctx)
- 	wsize = ctx->got_wsize ? ctx->vol_wsize : SMB3_DEFAULT_IOSIZE;
- 	wsize = min_t(unsigned int, wsize, server->max_write);
- #ifdef CONFIG_CIFS_SMB_DIRECT
--	if (server->rdma) {
-+	if (cifs_rdma_enabled(server)) {
- 		const struct smbdirect_socket_parameters *sp =
--			smbd_get_parameters(server->smbd_conn);
-+			smbd_get_parameters(server);
- 
- 		if (server->sign)
- 			/*
-@@ -554,9 +554,9 @@ smb3_negotiate_rsize(struct cifs_tcon *tcon, struct smb3_fs_context *ctx)
- 	rsize = ctx->got_rsize ? ctx->vol_rsize : SMB3_DEFAULT_IOSIZE;
- 	rsize = min_t(unsigned int, rsize, server->max_read);
- #ifdef CONFIG_CIFS_SMB_DIRECT
--	if (server->rdma) {
-+	if (cifs_rdma_enabled(server)) {
- 		const struct smbdirect_socket_parameters *sp =
--			smbd_get_parameters(server->smbd_conn);
-+			smbd_get_parameters(server);
- 
- 		if (server->sign)
- 			/*
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index 957aca2222b5..e954c75b36da 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -4472,7 +4472,7 @@ static inline bool smb3_use_rdma_offload(struct cifs_io_parms *io_parms)
- 		return false;
- 
- 	/* we can only offload on an rdma connection */
--	if (!server->rdma || !server->smbd_conn)
-+	if (!cifs_rdma_enabled(server))
- 		return false;
- 
- 	/* we don't support signed offload yet */
-@@ -4483,6 +4483,10 @@ static inline bool smb3_use_rdma_offload(struct cifs_io_parms *io_parms)
- 	if (smb3_encryption_required(tcon))
- 		return false;
- 
-+	/* this implicitly sets up server->rdma_readwrite_threshold */
-+	if (!smbd_get_parameters(server))
-+		return false;
-+
- 	/* offload also has its overhead, so only do it if desired */
- 	if (io_parms->length < server->rdma_readwrite_threshold)
- 		return false;
-@@ -4540,7 +4544,7 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
- 		struct smbdirect_buffer_descriptor_v1 *v1;
- 		bool need_invalidate = server->dialect == SMB30_PROT_ID;
- 
--		rdata->mr = smbd_register_mr(server->smbd_conn, &rdata->subreq.io_iter,
-+		rdata->mr = smbd_register_mr(server, &rdata->subreq.io_iter,
- 					     true, need_invalidate);
- 		if (!rdata->mr)
- 			return -EAGAIN;
-@@ -5134,7 +5138,7 @@ smb2_async_writev(struct cifs_io_subrequest *wdata)
- 		struct smbdirect_buffer_descriptor_v1 *v1;
- 		bool need_invalidate = server->dialect == SMB30_PROT_ID;
- 
--		wdata->mr = smbd_register_mr(server->smbd_conn, &wdata->subreq.io_iter,
-+		wdata->mr = smbd_register_mr(server, &wdata->subreq.io_iter,
- 					     false, need_invalidate);
- 		if (!wdata->mr) {
- 			rc = -EAGAIN;
-diff --git a/fs/smb/client/smbdirect.c b/fs/smb/client/smbdirect.c
-index 9e67adcdc7d3..7d4fa896efc0 100644
---- a/fs/smb/client/smbdirect.c
-+++ b/fs/smb/client/smbdirect.c
-@@ -11,10 +11,6 @@
- #include "smb2proto.h"
- #include "../common/smbdirect/smbdirect_public.h"
- 
--/* Port numbers for SMBD transport */
--#define SMB_PORT	445
--#define SMBD_PORT	5445
--
- /* Address lookup and resolve timeout in ms */
- #define RDMA_RESOLVE_TIMEOUT	5000
- 
-@@ -81,18 +77,9 @@ int rdma_readwrite_threshold = 4096;
- /* Transport logging functions
-  * Logging are defined as classes. They can be OR'ed to define the actual
-  * logging level via module parameter smbd_logging_class
-- * e.g. cifs.smbd_logging_class=0xa0 will log all log_rdma_recv() and
-- * log_rdma_event()
-+ * e.g. cifs.smbd_logging_class=0xa0 will log all SMBDIRECT_LOG_RDMA_RECV and
-+ * SMBDIRECT_LOG_RDMA_EVENT
-  */
--#define LOG_OUTGOING			0x1
--#define LOG_INCOMING			0x2
--#define LOG_READ			0x4
--#define LOG_WRITE			0x8
--#define LOG_RDMA_SEND			0x10
--#define LOG_RDMA_RECV			0x20
--#define LOG_KEEP_ALIVE			0x40
--#define LOG_RDMA_EVENT			0x80
--#define LOG_RDMA_MR			0x100
- static unsigned int smbd_logging_class;
- module_param(smbd_logging_class, uint, 0644);
- MODULE_PARM_DESC(smbd_logging_class,
-@@ -114,17 +101,6 @@ static bool smbd_logging_needed(struct smbdirect_socket *sc,
- 	BUILD_BUG_SAME(ERR);
- 	BUILD_BUG_SAME(INFO);
- #undef BUILD_BUG_SAME
--#define BUILD_BUG_SAME(x) BUILD_BUG_ON(x != SMBDIRECT_ ##x)
--	BUILD_BUG_SAME(LOG_OUTGOING);
--	BUILD_BUG_SAME(LOG_INCOMING);
--	BUILD_BUG_SAME(LOG_READ);
--	BUILD_BUG_SAME(LOG_WRITE);
--	BUILD_BUG_SAME(LOG_RDMA_SEND);
--	BUILD_BUG_SAME(LOG_RDMA_RECV);
--	BUILD_BUG_SAME(LOG_KEEP_ALIVE);
--	BUILD_BUG_SAME(LOG_RDMA_EVENT);
--	BUILD_BUG_SAME(LOG_RDMA_MR);
--#undef BUILD_BUG_SAME
- 
- 	if (lvl <= smbd_logging_level || cls & smbd_logging_class)
- 		return true;
-@@ -148,22 +124,7 @@ do {									\
- 		cifs_dbg(VFS, "%s:%d " fmt, __func__, __LINE__, ##args);\
- } while (0)
- 
--#define log_outgoing(level, fmt, args...) \
--		log_rdma(level, LOG_OUTGOING, fmt, ##args)
--#define log_incoming(level, fmt, args...) \
--		log_rdma(level, LOG_INCOMING, fmt, ##args)
--#define log_read(level, fmt, args...)	log_rdma(level, LOG_READ, fmt, ##args)
--#define log_write(level, fmt, args...)	log_rdma(level, LOG_WRITE, fmt, ##args)
--#define log_rdma_send(level, fmt, args...) \
--		log_rdma(level, LOG_RDMA_SEND, fmt, ##args)
--#define log_rdma_recv(level, fmt, args...) \
--		log_rdma(level, LOG_RDMA_RECV, fmt, ##args)
--#define log_keep_alive(level, fmt, args...) \
--		log_rdma(level, LOG_KEEP_ALIVE, fmt, ##args)
--#define log_rdma_event(level, fmt, args...) \
--		log_rdma(level, LOG_RDMA_EVENT, fmt, ##args)
--#define log_rdma_mr(level, fmt, args...) \
--		log_rdma(level, LOG_RDMA_MR, fmt, ##args)
-+#define log_write(level, fmt, args...)	log_rdma(level, SMBDIRECT_LOG_WRITE, fmt, ##args)
- 
- static int smbd_post_send_full_iter(struct smbdirect_socket *sc,
- 				    struct smbdirect_send_batch *batch,
-@@ -195,82 +156,24 @@ static int smbd_post_send_full_iter(struct smbdirect_socket *sc,
- 	return bytes;
- }
- 
--/*
-- * Destroy the transport and related RDMA and memory resources
-- * Need to go through all the pending counters and make sure on one is using
-- * the transport while it is destroyed
-- */
--void smbd_destroy(struct TCP_Server_Info *server)
--{
--	struct smbd_connection *info = server->smbd_conn;
--
--	if (!info) {
--		log_rdma_event(INFO, "rdma session already destroyed\n");
--		return;
--	}
--
--	smbdirect_socket_release(info->socket);
--
--	kfree(info);
--	server->smbd_conn = NULL;
--}
--
--/*
-- * Reconnect this SMBD connection, called from upper layer
-- * return value: 0 on success, or actual error code
-- */
--int smbd_reconnect(struct TCP_Server_Info *server)
--{
--	log_rdma_event(INFO, "reconnecting rdma session\n");
--
--	if (!server->smbd_conn) {
--		log_rdma_event(INFO, "rdma session already destroyed\n");
--		goto create_conn;
--	}
--
--	/*
--	 * This is possible if transport is disconnected and we haven't received
--	 * notification from RDMA, but upper layer has detected timeout
--	 */
--	log_rdma_event(INFO, "disconnecting transport\n");
--	smbd_destroy(server);
--
--create_conn:
--	log_rdma_event(INFO, "creating rdma session\n");
--	server->smbd_conn = smbd_get_connection(
--		server, (struct sockaddr *) &server->dstaddr);
--
--	if (server->smbd_conn) {
--		cifs_dbg(VFS, "RDMA transport re-established\n");
--		trace_smb3_smbd_connect_done(server->hostname, server->conn_id, &server->dstaddr);
--		return 0;
--	}
--	trace_smb3_smbd_connect_err(server->hostname, server->conn_id, &server->dstaddr);
--	return -ENOENT;
--}
--
- /* Create a SMBD connection, called by upper layer */
--static struct smbd_connection *_smbd_get_connection(
--	struct TCP_Server_Info *server, struct sockaddr *dstaddr, int port)
-+int smbd_prepare_socket(struct TCP_Server_Info *server, int port)
+ static bool smb_direct_logging_needed(struct smbdirect_socket *sc,
+@@ -165,18 +165,23 @@ void init_smbd_max_io_size(unsigned int sz)
+ unsigned int get_smbd_max_read_write_size(struct ksmbd_transport *kt)
  {
--	struct net *net = cifs_net_ns(server);
--	struct smbd_connection *info;
--	struct smbdirect_socket *sc;
-+	struct smbdirect_socket *sc = NULL;
- 	struct smbdirect_socket_parameters init_params = {};
- 	struct smbdirect_socket_parameters *sp;
--	__be16 *sport;
- 	u64 port_flags = 0;
+ 	struct smb_direct_transport *t;
++	struct smbdirect_socket *sc;
+ 	const struct smbdirect_socket_parameters *sp;
+ 
+ 	if (kt->ops != &ksmbd_smb_direct_transport_ops)
+ 		return 0;
+ 
+ 	t = SMBD_TRANS(kt);
+-	sp = smbdirect_socket_get_current_parameters(t->socket);
++	sc = smbdirect_socket_from_sock(t->sock);
++
++	if (!smbdirect_connection_is_connected(sc))
++		return 0;
++	sp = smbdirect_socket_get_current_parameters(sc);
+ 
+ 	return sp->max_read_write_size;
+ }
+ 
+-static struct smb_direct_transport *alloc_transport(struct smbdirect_socket *sc)
++static struct smb_direct_transport *alloc_transport(struct socket *client_sock)
+ {
+ 	struct smb_direct_transport *t;
+ 	struct ksmbd_conn *conn;
+@@ -184,7 +189,7 @@ static struct smb_direct_transport *alloc_transport(struct smbdirect_socket *sc)
+ 	t = kzalloc_obj(*t, KSMBD_DEFAULT_GFP);
+ 	if (!t)
+ 		return NULL;
+-	t->socket = sc;
++	t->sock = client_sock;
+ 
+ 	conn = ksmbd_conn_alloc();
+ 	if (!conn)
+@@ -209,13 +214,13 @@ static void smb_direct_free_transport(struct ksmbd_transport *kt)
+ {
+ 	struct smb_direct_transport *t = SMBD_TRANS(kt);
+ 
+-	smbdirect_socket_release(t->socket);
++	sock_release(t->sock);
+ 	kfree(t);
+ }
+ 
+ static void free_transport(struct smb_direct_transport *t)
+ {
+-	smbdirect_socket_shutdown(t->socket);
++	kernel_sock_shutdown(t->sock, SHUT_RDWR);
+ 	ksmbd_conn_free(KSMBD_TRANS(t)->conn);
+ }
+ 
+@@ -223,7 +228,6 @@ static int smb_direct_read(struct ksmbd_transport *t, char *buf,
+ 			   unsigned int size, int unused)
+ {
+ 	struct smb_direct_transport *st = SMBD_TRANS(t);
+-	struct smbdirect_socket *sc = st->socket;
+ 	struct msghdr msg = { .msg_flags = 0, };
+ 	struct kvec iov = {
+ 		.iov_base = buf,
+@@ -231,9 +235,7 @@ static int smb_direct_read(struct ksmbd_transport *t, char *buf,
+ 	};
  	int ret;
  
- 	switch (port) {
--	case SMBD_PORT:
-+	case SMBD_IWARP_PORT:
- 		/*
- 		 * only allow iWarp devices
- 		 * for port 5445.
- 		 */
- 		port_flags |= SMBDIRECT_FLAG_PORT_RANGE_ONLY_IW;
- 		break;
--	case SMB_PORT:
-+	case CIFS_PORT:
- 		/*
- 		 * only allow InfiniBand, RoCEv1 or RoCEv2
- 		 * devices for port 445.
-@@ -281,6 +184,12 @@ static struct smbd_connection *_smbd_get_connection(
- 		break;
+-	iov_iter_kvec(&msg.msg_iter, ITER_DEST, &iov, 1, size);
+-
+-	ret = smbdirect_connection_recvmsg(sc, &msg, 0);
++	ret = kernel_recvmsg(st->sock, &msg, &iov, 1, size, 0);
+ 	if (ret == -ERESTARTSYS)
+ 		ret = -EINTR;
+ 	return ret;
+@@ -244,13 +246,14 @@ static int smb_direct_writev(struct ksmbd_transport *t,
+ 			     bool need_invalidate, unsigned int remote_key)
+ {
+ 	struct smb_direct_transport *st = SMBD_TRANS(t);
+-	struct smbdirect_socket *sc = st->socket;
+-	struct iov_iter iter;
++	struct msghdr msg = { .msg_flags = MSG_NOSIGNAL, };
++	struct smbdirect_cmsg_buffer cbuffer = { .msg_control = {0, }, };
++	u32 _remote_token = remote_key;
++	const u32 *remote_token = need_invalidate ? &_remote_token : NULL;
+ 
+-	iov_iter_kvec(&iter, ITER_SOURCE, iov, niovs, buflen);
++	smbdirect_buffer_remote_invalidate_cmsg_prepare(&msg, &cbuffer, remote_token);
+ 
+-	return smbdirect_connection_send_iter(sc, &iter, 0,
+-					      need_invalidate, remote_key);
++	return kernel_sendmsg(st->sock, &msg, iov, niovs, buflen);
+ }
+ 
+ static int smb_direct_rdma_write(struct ksmbd_transport *t,
+@@ -259,7 +262,10 @@ static int smb_direct_rdma_write(struct ksmbd_transport *t,
+ 				 unsigned int desc_len)
+ {
+ 	struct smb_direct_transport *st = SMBD_TRANS(t);
+-	struct smbdirect_socket *sc = st->socket;
++	struct smbdirect_socket *sc = smbdirect_socket_from_sock(st->sock);
++
++	if (!smbdirect_connection_is_connected(sc))
++		return -ENOTCONN;
+ 
+ 	return smbdirect_connection_rdma_xmit(sc, buf, buflen,
+ 					      desc, desc_len, false);
+@@ -271,7 +277,10 @@ static int smb_direct_rdma_read(struct ksmbd_transport *t,
+ 				unsigned int desc_len)
+ {
+ 	struct smb_direct_transport *st = SMBD_TRANS(t);
+-	struct smbdirect_socket *sc = st->socket;
++	struct smbdirect_socket *sc = smbdirect_socket_from_sock(st->sock);
++
++	if (!smbdirect_connection_is_connected(sc))
++		return -ENOTCONN;
+ 
+ 	return smbdirect_connection_rdma_xmit(sc, buf, buflen,
+ 					      desc, desc_len, true);
+@@ -280,7 +289,7 @@ static int smb_direct_rdma_read(struct ksmbd_transport *t,
+ static void smb_direct_disconnect(struct ksmbd_transport *t)
+ {
+ 	struct smb_direct_transport *st = SMBD_TRANS(t);
+-	struct smbdirect_socket *sc = st->socket;
++	struct smbdirect_socket *sc = smbdirect_socket_from_sock(st->sock);
+ 
+ 	ksmbd_debug(RDMA, "Disconnecting sc=%p\n", sc);
+ 
+@@ -290,23 +299,23 @@ static void smb_direct_disconnect(struct ksmbd_transport *t)
+ static void smb_direct_shutdown(struct ksmbd_transport *t)
+ {
+ 	struct smb_direct_transport *st = SMBD_TRANS(t);
+-	struct smbdirect_socket *sc = st->socket;
++	struct smbdirect_socket *sc = smbdirect_socket_from_sock(st->sock);
+ 
+ 	ksmbd_debug(RDMA, "smb-direct shutdown sc=%p\n", sc);
+ 
+-	smbdirect_socket_shutdown(sc);
++	kernel_sock_shutdown(st->sock, SHUT_RDWR);
+ }
+ 
+ static int smb_direct_new_connection(struct smb_direct_listener *listener,
+-				     struct smbdirect_socket *client_sc)
++				     struct socket *client_sock)
+ {
+ 	struct smb_direct_transport *t;
+ 	struct task_struct *handler;
+ 	int ret;
+ 
+-	t = alloc_transport(client_sc);
++	t = alloc_transport(client_sock);
+ 	if (!t) {
+-		smbdirect_socket_release(client_sc);
++		sock_release(client_sock);
+ 		return -ENOMEM;
  	}
  
-+	if (server && cifs_rdma_enabled(server) && server->ssocket)
-+		sc = smbdirect_socket_from_sock(server->ssocket);
-+
-+	if (WARN_ON_ONCE(!sc))
-+		return -ENOTCONN;
+@@ -328,22 +337,21 @@ static int smb_direct_new_connection(struct smb_direct_listener *listener,
+ static int smb_direct_listener_kthread_fn(void *p)
+ {
+ 	struct smb_direct_listener *listener = (struct smb_direct_listener *)p;
+-	struct smbdirect_socket *client_sc = NULL;
++	struct socket *client_sock = NULL;
+ 
+ 	while (!kthread_should_stop()) {
+-		struct proto_accept_arg arg = { .err = -EINVAL, };
+-		long timeo = MAX_SCHEDULE_TIMEOUT;
++		int ret;
+ 
+-		if (!listener->socket)
++		if (!listener->sock)
+ 			break;
+-		client_sc = smbdirect_socket_accept(listener->socket, timeo, &arg);
+-		if (!client_sc && arg.err == -EINVAL)
++		ret = kernel_accept(listener->sock, &client_sock, 0);
++		if (ret == -EINVAL)
+ 			break;
+-		if (!client_sc)
++		if (ret)
+ 			continue;
+ 
+ 		ksmbd_debug(CONN, "connect success: accepted new connection\n");
+-		smb_direct_new_connection(listener, client_sc);
++		smb_direct_new_connection(listener, client_sock);
+ 	}
+ 
+ 	ksmbd_debug(CONN, "releasing socket\n");
+@@ -354,8 +362,12 @@ static void smb_direct_listener_destroy(struct smb_direct_listener *listener)
+ {
+ 	int ret;
+ 
+-	if (listener->socket)
+-		smbdirect_socket_shutdown(listener->socket);
++	if (listener->sock) {
++		ret = kernel_sock_shutdown(listener->sock, SHUT_RDWR);
++		if (ret)
++			pr_err("Failed to shutdown socket: %d %1pe\n",
++			       ret, ERR_PTR(ret));
++	}
+ 
+ 	if (listener->thread) {
+ 		ret = kthread_stop(listener->thread);
+@@ -364,9 +376,9 @@ static void smb_direct_listener_destroy(struct smb_direct_listener *listener)
+ 		listener->thread = NULL;
+ 	}
+ 
+-	if (listener->socket) {
+-		smbdirect_socket_release(listener->socket);
+-		listener->socket = NULL;
++	if (listener->sock) {
++		sock_release(listener->sock);
++		listener->sock = NULL;
+ 	}
+ 
+ 	listener->port = 0;
+@@ -376,6 +388,7 @@ static int smb_direct_listen(struct smb_direct_listener *listener,
+ 			     int port)
+ {
+ 	struct net *net = current->nsproxy->net_ns;
++	struct socket *ksmbd_socket;
+ 	struct task_struct *kthread;
+ 	struct sockaddr_in sin = {
+ 		.sin_family		= AF_INET,
+@@ -410,13 +423,21 @@ static int smb_direct_listen(struct smb_direct_listener *listener,
+ 		return -ENODEV;
+ 	}
+ 
+-	ret = smbdirect_socket_create_kern(net, &sc);
++	ret = sock_create_kern(net, PF_INET, SOCK_STREAM, IPPROTO_SMBDIRECT,
++			       &ksmbd_socket);
+ 	if (ret) {
+-		pr_err("smbdirect_socket_create_kern() failed: %d %1pe\n",
++		pr_err("Can't create IPPROTO_SMBDIRECT socket: %d %1pe\n",
+ 		       ret, ERR_PTR(ret));
+ 		return ret;
+ 	}
+ 
++	sc = smbdirect_socket_from_sock(ksmbd_socket);
++	if (WARN_ON_ONCE(!sc)) {
++		ret = -EINVAL;
++		pr_err("smbdirect_socket_from_sock returned NULL\n");
++		goto err;
++	}
 +
  	/*
  	 * Create the initial parameters
  	 */
-@@ -301,107 +210,40 @@ static struct smbd_connection *_smbd_get_connection(
- 	sp->keepalive_interval_msec = smbd_keep_alive_interval * 1000;
- 	sp->keepalive_timeout_msec = KEEPALIVE_RECV_TIMEOUT * 1000;
- 
--	info = kzalloc_obj(*info);
--	if (!info)
--		return NULL;
--	ret = smbdirect_socket_create_kern(net, &sc);
--	if (ret)
--		goto socket_init_failed;
- 	smbdirect_socket_set_logging(sc, NULL, smbd_logging_needed, smbd_logging_vaprintf);
- 	ret = smbdirect_socket_set_initial_parameters(sc, sp);
- 	if (ret)
--		goto set_params_failed;
-+		return ret;
- 	ret = smbdirect_socket_set_kernel_settings(sc, IB_POLL_SOFTIRQ, GFP_KERNEL);
- 	if (ret)
--		goto set_settings_failed;
--
--	if (dstaddr->sa_family == AF_INET6)
--		sport = &((struct sockaddr_in6 *)dstaddr)->sin6_port;
--	else
--		sport = &((struct sockaddr_in *)dstaddr)->sin_port;
--
--	*sport = htons(port);
-+		return ret;
- 
--	ret = smbdirect_connect_sync(sc, dstaddr);
--	if (ret) {
--		log_rdma_event(ERR, "connect to %pISpsfc failed: %1pe\n",
--			       dstaddr, ERR_PTR(ret));
--		goto connect_failed;
--	}
--
--	info->socket = sc;
--	return info;
--
--connect_failed:
--set_settings_failed:
--set_params_failed:
--	smbdirect_socket_release(sc);
--socket_init_failed:
--	kfree(info);
--	return NULL;
-+	return 0;
- }
- 
--const struct smbdirect_socket_parameters *smbd_get_parameters(struct smbd_connection *conn)
-+const struct smbdirect_socket_parameters *smbd_get_parameters(struct TCP_Server_Info *server)
- {
--	if (unlikely(!conn->socket)) {
--		static const struct smbdirect_socket_parameters zero_params;
-+	struct smbdirect_socket *sc = NULL;
-+	const struct smbdirect_socket_parameters *sp = NULL;
- 
--		return &zero_params;
--	}
--
--	return smbdirect_socket_get_current_parameters(conn->socket);
--}
-+	if (server && cifs_rdma_enabled(server) && server->ssocket)
-+		sc = smbdirect_socket_from_sock(server->ssocket);
- 
--struct smbd_connection *smbd_get_connection(
--	struct TCP_Server_Info *server, struct sockaddr *dstaddr)
--{
--	struct smbd_connection *ret;
--	const struct smbdirect_socket_parameters *sp;
--	int port = SMBD_PORT;
--
--try_again:
--	ret = _smbd_get_connection(server, dstaddr, port);
-+	if (!sc) {
-+		static const struct smbdirect_socket_parameters zero_params;
- 
--	/* Try SMB_PORT if SMBD_PORT doesn't work */
--	if (!ret && port == SMBD_PORT) {
--		port = SMB_PORT;
--		goto try_again;
-+		return &zero_params;
+@@ -450,22 +471,22 @@ static int smb_direct_listen(struct smb_direct_listener *listener,
+ 		goto err;
  	}
--	if (!ret)
--		return NULL;
  
--	sp = smbd_get_parameters(ret);
-+	sp = smbdirect_socket_get_current_parameters(sc);
+-	ret = smbdirect_socket_bind(sc, (struct sockaddr *)&sin);
++	ret = kernel_bind(ksmbd_socket, (struct sockaddr_unsized *)&sin, sizeof(sin));
+ 	if (ret) {
+-		pr_err("smbdirect_socket_bind() failed: %d %1pe\n",
++		pr_err("Failed to bind IPPROTO_SMBDIRECT socket: %d %1pe\n",
+ 		       ret, ERR_PTR(ret));
+ 		goto err;
+ 	}
  
--	server->rdma_readwrite_threshold =
--		rdma_readwrite_threshold > sp->max_fragmented_send_size ?
--		sp->max_fragmented_send_size :
--		rdma_readwrite_threshold;
-+	if (server->rdma_readwrite_threshold == 0)
-+		server->rdma_readwrite_threshold =
-+			rdma_readwrite_threshold > sp->max_fragmented_send_size ?
-+			sp->max_fragmented_send_size :
-+			rdma_readwrite_threshold;
+-	ret = smbdirect_socket_listen(sc, 10);
++	ret = kernel_listen(ksmbd_socket, 10);
+ 	if (ret) {
+-		pr_err("Port[%d] smbdirect_socket_listen() failed: %d %1pe\n",
++		pr_err("Port[%d] kernel_listen() error: %d %1pe\n",
+ 		       port, ret, ERR_PTR(ret));
+ 		goto err;
+ 	}
  
--	return ret;
--}
--
--/*
-- * Receive data from the transport's receive reassembly queue
-- * All the incoming data packets are placed in reassembly queue
-- * iter: the buffer to read data into
-- * size: the length of data to read
-- * return value: actual data read
-- *
-- * Note: this implementation copies the data from reassembly queue to receive
-- * buffers used by upper layer. This is not the optimal code path. A better way
-- * to do it is to not have upper layer allocate its receive buffers but rather
-- * borrow the buffer from reassembly queue, and return it after data is
-- * consumed. But this will require more changes to upper layer code, and also
-- * need to consider packet boundaries while they still being reassembled.
-- */
--int smbd_recv(struct smbd_connection *info, struct msghdr *msg)
--{
--	struct smbdirect_socket *sc = info->socket;
--
--	if (!smbdirect_connection_is_connected(sc))
--		return -ENOTCONN;
--
--	return smbdirect_connection_recvmsg(sc, msg, 0);
-+	return sp;
- }
+ 	listener->port = port;
+-	listener->socket = sc;
++	listener->sock = ksmbd_socket;
  
- /*
-@@ -410,12 +252,11 @@ int smbd_recv(struct smbd_connection *info, struct msghdr *msg)
-  * rqst: the data to write
-  * return value: 0 if successfully write, otherwise error code
-  */
--int smbd_send(struct TCP_Server_Info *server,
-+static int smbd_send_locked(struct TCP_Server_Info *server,
- 	int num_rqst, struct smb_rqst *rqst_array)
- {
--	struct smbd_connection *info = server->smbd_conn;
--	struct smbdirect_socket *sc = info->socket;
--	const struct smbdirect_socket_parameters *sp = smbd_get_parameters(info);
-+	struct smbdirect_socket *sc = NULL;
-+	const struct smbdirect_socket_parameters *sp = smbd_get_parameters(server);
- 	struct smb_rqst *rqst;
- 	struct iov_iter iter;
- 	struct smbdirect_send_batch_storage bstorage;
-@@ -424,6 +265,9 @@ int smbd_send(struct TCP_Server_Info *server,
- 	int rc, i, rqst_idx;
- 	int error = 0;
+ 	kthread = kthread_run(smb_direct_listener_kthread_fn,
+ 			      listener,
+@@ -489,7 +510,7 @@ int ksmbd_rdma_init(void)
+ 	int ret;
  
-+	if (server && cifs_rdma_enabled(server) && server->ssocket)
-+		sc = smbdirect_socket_from_sock(server->ssocket);
-+
- 	if (!smbdirect_connection_is_connected(sc))
- 		return -EAGAIN;
+ 	smb_direct_ib_listener = smb_direct_iw_listener = (struct smb_direct_listener) {
+-		.socket = NULL,
++		.sock = NULL,
+ 	};
  
-@@ -508,6 +352,28 @@ int smbd_send(struct TCP_Server_Info *server,
+ 	ret = smb_direct_listen(&smb_direct_ib_listener,
+@@ -499,8 +520,8 @@ int ksmbd_rdma_init(void)
+ 		goto err;
+ 	}
+ 
+-	ksmbd_debug(RDMA, "InfiniBand/RoCEv1/RoCEv2 RDMA listener. socket=%p\n",
+-		    smb_direct_ib_listener.socket);
++	ksmbd_debug(RDMA, "InfiniBand/RoCEv1/RoCEv2 RDMA listener. sock=%p\n",
++		    smb_direct_ib_listener.sock);
+ 
+ 	ret = smb_direct_listen(&smb_direct_iw_listener,
+ 				SMB_DIRECT_PORT_IWARP);
+@@ -509,8 +530,8 @@ int ksmbd_rdma_init(void)
+ 		goto err;
+ 	}
+ 
+-	ksmbd_debug(RDMA, "iWarp RDMA listener. socket=%p\n",
+-		    smb_direct_iw_listener.socket);
++	ksmbd_debug(RDMA, "iWarp RDMA listener. sock=%p\n",
++		    smb_direct_iw_listener.sock);
+ 
  	return 0;
- }
- 
-+int smbd_send(struct TCP_Server_Info *server,
-+	int num_rqst, struct smb_rqst *rqst_array)
-+{
-+	struct smbdirect_socket *sc = NULL;
-+	struct sock *sk = NULL;
-+	int ret;
-+
-+	if (server && cifs_rdma_enabled(server) && server->ssocket) {
-+		sc = smbdirect_socket_from_sock(server->ssocket);
-+		sk = server->ssocket->sk;
-+	}
-+
-+	if (!smbdirect_connection_is_connected(sc))
-+		return -EAGAIN;
-+
-+	lock_sock(sk);
-+	ret = smbd_send_locked(server, num_rqst, rqst_array);
-+	release_sock(sk);
-+
-+	return ret;
-+}
-+
- /*
-  * Register memory for RDMA read/write
-  * iter: the buffer to register memory with
-@@ -515,11 +381,14 @@ int smbd_send(struct TCP_Server_Info *server,
-  * need_invalidate: true if this MR needs to be locally invalidated after I/O
-  * return value: the MR registered, NULL if failed.
-  */
--struct smbdirect_mr_io *smbd_register_mr(struct smbd_connection *info,
-+struct smbdirect_mr_io *smbd_register_mr(struct TCP_Server_Info *server,
- 				 struct iov_iter *iter,
- 				 bool writing, bool need_invalidate)
- {
--	struct smbdirect_socket *sc = info->socket;
-+	struct smbdirect_socket *sc = NULL;
-+
-+	if (server && cifs_rdma_enabled(server) && server->ssocket)
-+		sc = smbdirect_socket_from_sock(server->ssocket);
- 
- 	if (!smbdirect_connection_is_connected(sc))
- 		return NULL;
-@@ -546,15 +415,25 @@ void smbd_deregister_mr(struct smbdirect_mr_io *mr)
- 
- void smbd_debug_proc_show(struct TCP_Server_Info *server, struct seq_file *m)
- {
--	if (!server->rdma)
-+	struct smbdirect_socket *sc = NULL;
-+
-+	if (!cifs_rdma_enabled(server))
- 		return;
- 
--	if (!server->smbd_conn) {
-+	if (server->ssocket) {
-+		sc = smbdirect_socket_from_sock(server->ssocket);
-+		/*
-+		 * setup server->rdma_readwrite_threshold is required
-+		 */
-+		(void) smbd_get_parameters(server);
-+	}
-+
-+	if (!sc) {
- 		seq_puts(m, "\nSMBDirect transport not available");
- 		return;
- 	}
- 
--	smbdirect_connection_legacy_debug_proc_show(server->smbd_conn->socket,
-+	smbdirect_connection_legacy_debug_proc_show(sc,
- 						    server->rdma_readwrite_threshold,
- 						    m);
- }
-diff --git a/fs/smb/client/smbdirect.h b/fs/smb/client/smbdirect.h
-index 0017d5b2de44..44b37234d87c 100644
---- a/fs/smb/client/smbdirect.h
-+++ b/fs/smb/client/smbdirect.h
-@@ -8,7 +8,6 @@
- #define _SMBDIRECT_H
- 
- #ifdef CONFIG_CIFS_SMB_DIRECT
--#define cifs_rdma_enabled(server)	((server)->rdma)
- 
- #include "cifsglob.h"
- 
-@@ -23,29 +22,18 @@ extern int smbd_max_send_size;
- extern int smbd_send_credit_target;
- extern int smbd_receive_credit_max;
- 
--struct smbd_connection {
--	struct smbdirect_socket *socket;
--};
-+/* prepare a SMBDirect session */
-+int smbd_prepare_socket(struct TCP_Server_Info *server, int port);
- 
--/* Create a SMBDirect session */
--struct smbd_connection *smbd_get_connection(
--	struct TCP_Server_Info *server, struct sockaddr *dstaddr);
--
--const struct smbdirect_socket_parameters *smbd_get_parameters(struct smbd_connection *conn);
--
--/* Reconnect SMBDirect session */
--int smbd_reconnect(struct TCP_Server_Info *server);
--/* Destroy SMBDirect session */
--void smbd_destroy(struct TCP_Server_Info *server);
-+const struct smbdirect_socket_parameters *smbd_get_parameters(struct TCP_Server_Info *server);
- 
- /* Interface for carrying upper layer I/O through send/recv */
--int smbd_recv(struct smbd_connection *info, struct msghdr *msg);
- int smbd_send(struct TCP_Server_Info *server,
- 	int num_rqst, struct smb_rqst *rqst);
- 
- /* Interfaces to register and deregister MR for RDMA read/write */
- struct smbdirect_mr_io *smbd_register_mr(
--	struct smbd_connection *info, struct iov_iter *iter,
-+	struct TCP_Server_Info *server, struct iov_iter *iter,
- 	bool writing, bool need_invalidate);
- void smbd_mr_fill_buffer_descriptor(struct smbdirect_mr_io *mr,
- 				    struct smbdirect_buffer_descriptor_v1 *v1);
-@@ -54,13 +42,6 @@ void smbd_deregister_mr(struct smbdirect_mr_io *mr);
- void smbd_debug_proc_show(struct TCP_Server_Info *server, struct seq_file *m);
- 
- #else
--#define cifs_rdma_enabled(server)	0
--struct smbd_connection {};
--static inline void *smbd_get_connection(
--	struct TCP_Server_Info *server, struct sockaddr *dstaddr) {return NULL;}
--static inline int smbd_reconnect(struct TCP_Server_Info *server) {return -1; }
--static inline void smbd_destroy(struct TCP_Server_Info *server) {}
--static inline int smbd_recv(struct smbd_connection *info, struct msghdr *msg) {return -1; }
- static inline int smbd_send(struct TCP_Server_Info *server, int num_rqst, struct smb_rqst *rqst) {return -1; }
- #endif
- 
-diff --git a/fs/smb/client/transport.c b/fs/smb/client/transport.c
-index 05f8099047e1..e64becee928f 100644
---- a/fs/smb/client/transport.c
-+++ b/fs/smb/client/transport.c
-@@ -253,7 +253,7 @@ int __smb_send_rqst(struct TCP_Server_Info *server, int num_rqst,
- 	if (cifs_rdma_enabled(server)) {
- 		/* return -EAGAIN when connecting or reconnecting */
- 		rc = -EAGAIN;
--		if (server->smbd_conn)
-+		if (ssocket)
- 			rc = smbd_send(server, num_rqst, rqst);
- 		goto smbd_done;
- 	}
+ err:
 -- 
 2.43.0
 
