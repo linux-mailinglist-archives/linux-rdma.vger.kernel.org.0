@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-19111-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19112-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8CHdKahe1Wlq5QcAu9opvQ
-	(envelope-from <linux-rdma+bounces-19111-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 21:44:40 +0200
+	id OMUjDMFe1WnU5QcAu9opvQ
+	(envelope-from <linux-rdma+bounces-19112-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 21:45:05 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 884C43B3E6F
-	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 21:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 155393B3EA1
+	for <lists+linux-rdma@lfdr.de>; Tue, 07 Apr 2026 21:45:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 70869302578F
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2026 19:43:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 880DA3035B2A
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2026 19:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D649B37A496;
-	Tue,  7 Apr 2026 19:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5B6379989;
+	Tue,  7 Apr 2026 19:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KJfZRgCE"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="P6+SRL5g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010052.outbound.protection.outlook.com [52.101.201.52])
+Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011026.outbound.protection.outlook.com [52.101.57.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427683793AA;
-	Tue,  7 Apr 2026 19:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E093368B2;
+	Tue,  7 Apr 2026 19:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.26
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775591010; cv=fail; b=AEQFIzE9Vgb7hL8HHENnJJhPs86nAv4Hhas0MQjjkgP1HeB2WBhc9G+IjK6kj/y1It8Z9CFZ+BPXsgiZ8I9cB1nuEb6iJlDFg5tnuU8JxGDAfxVdi4dRvsmCpKq12/KnO9HRXGG6qqhLa1Lg+sEh3gRAR31mQ8Q9Mzz/DJgiYN4=
+	t=1775591019; cv=fail; b=hPAXwYYryxiQaIWcYkxOR3XrQmYJGtz4XJOLMLNmw86JDUl70ag25Dqraug5S4x0EaZfhishSLJ49F83VX3D325vvkEX40MwTyeXYxxOiwW2YPzSRh48p1IbHHCxthLhC1UKM7HfH895SoIR50VYApvzTxg11W0uRr8B2eNXF34=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775591010; c=relaxed/simple;
-	bh=NbXsMUvWQMqPAxAGJntF7oc52EiiDoxMJRzBnkoro78=;
+	s=arc-20240116; t=1775591019; c=relaxed/simple;
+	bh=uMltVMxkcsObmUU6RL33wlbljy6WMHPxu9oA3vjFULM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jv1lpGuHYUb+c2SLACOzlCXlfVc7d00Z531kVWIE/x+RTo+LJXB/2wuwnSs6IJoqdlzTTHfKn5EF/hyd1oGsZrEcLKLe2qByjzbH8WrEgKS8W9022/y3ldL8HSoVrIR8mH7K9lXU8WV5sOVCmexrh1/9LRarsaNKb4YlGuYTZVo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KJfZRgCE; arc=fail smtp.client-ip=52.101.201.52
+	 MIME-Version:Content-Type; b=Sjr+RBbSpP8POyLLoitZF6igX0/V2iAcSSM84csHyDlb2Mh6o79BkuBsW9XiRu4SyLYTronLjtiG5tXViJBUGzlUxlw1JbSinvD8Fv+Rxi9JpDrhdbGj5DW/YJLhRMbLs4yHgelWAfoURMUQWQmNjXkL96H6xigJbwXtho6GLmk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=P6+SRL5g; arc=fail smtp.client-ip=52.101.57.26
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=k3HfGZrsp9DXnJ7oEytTTz/COzo72F5jNNVYKeJxAXlYAbGlBLCeCNooN/CMLtD/mFr5/h+4HyDE7GbkVTZArdn+zDXtLrQFwHveQOYUX3abEj56JhHgwBjTn+Ah6z8arBhLminILyFrq8BXsBJ12mTOAIdatSz3Dte5e6+bYz9ASYlfxs61O9aCoe+aEbUqHWAhO/rxochIX0Dt+2LzmN83PXrAO8dvYUVbpId+6O9fQUxCHksJUrHdmY7OtER7sLo8SG/tXGaSmvyfnZZmcT1PFZvk6JNQhYD9gTW01ETGXjNcVXDOZbnC3op1UMlPeZb2q13F0ZUo3NAYzh7XNg==
+ b=Yau1HPPNEAYuJJxhZLEjuWI/yuNgxUFjJbaJSmPAkwFtCO1DRZzWj1ZZksWLz/N5CGNGxi6gCU2XNtWy1USI7LssWNj8l2TAr2MTekvj367FXFtLv9wxGg2Rsv+nqx7C4LePMxtV62ZX9w4BsPnqFiVTreHyuCrUB9eBGj1brFc8ujEnEqTyXrkoq86ECzLKTog0wixbTKyRN7hqGt+55Zk0dNBxB1njCtkVgTjp62LS1L2rK/404G/jwnkqiaFQFhL5o2kOXmosdohAks9TxmruSKwPYTi35nQ42189CikaiK3+uZR+pJnWSQ49YqlBh1iMQIafs2IHeTw/q9d5xw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zBMzI8zfOOVQ1PucAWar0F5NDjlTcnjInWTwF8+xY5w=;
- b=yekKKtficzsneBrUspJXLXWZaWHvskDgSjm8X+VJdEzPM1zdjinRhkoY2JPswmwlgaoyNWC49C/i55fgR76b0OYV3XtxYZCFh3pNfyT8QZad0l2N9krgF27e0L1K/KX3RgYbLRjL0OWjJ/SjbLnclWzKT0YiEoSBv0hwXZo076/D+FrE7Q3RjZyVx2hr57X6Ee1gjRcsvqCFJYvp1gEEE7mlb+y3Xt25hrK8X1SdaXSNkwVvVLus9JynXf2ti153Wtq5w+shA++W9LXZVBDSWYiTlJxM22a/l8lEC2y+wKeh6PvbPRQiA5n6DSQ3HyeBQTpy3NbNK0gTeOzLs+oAKw==
+ bh=DN8e3Pf2McqbnqAlK3W7nK7pJnya/7OhdTLvv7ousGA=;
+ b=dXv9ExBOcT5BsXfeIK9JpbRHx3m/Djz3DiZUg2PQZ3K6wEEtWoO7ceVTl1dQ54z+6kI2GXzJeFT3GTn18zGdG70iVf/zWFbHsBDQ7xS/d9amf76NYt6zjdIaECjCmvpDw1UH2wGcz51EOKY0IcuNlbJF1d8KJVQRRvRTxuyK2ohv1/U1eBSA2xWzZSD4MifydEOcqA4zeVSwXBXjJP2DlIfZrkh/TpBGws9l145RnOkKwZu26ST6SYWz5eoWuLvm7aCUGqB5PxPYBHwAMHRw4dwr84Ldw9UWm3AxZsDUAshvfl4XUXUG4FN6LR0F9K9CtoyYfO8RMv49A14/YYui7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -48,18 +48,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zBMzI8zfOOVQ1PucAWar0F5NDjlTcnjInWTwF8+xY5w=;
- b=KJfZRgCEMXv4AZ60YMB+dW2g7Y/Pe/aS/2fHsBBMA/9m/LvJrY5njQJodtJ5kEiijKdjm6tkLCBd5F2+Gb+623kvz+nOHJ9jibp4urRXQDB6q4IGQ8hsRgjZhqYSVLlffzNVUQBO39+0ge1qPkGEErIM1mEhgbNV9aoQwx3gWpVKgkkUZN8I8uMhGrRQYBD/5GsYrnnWTpbLtXCXp5tfyU0a+zxlKRFW8zpFw9j8zja0DSx8UMrci58t8r6K7p0mqvlF7zeQYr+7a/U+OMdDuZOiqhOS4IB6gsu2mNSJTRJ3uffYb7+S75KErjS7GDR5tMHqAIWzxQ1P5pHjO2tGjA==
-Received: from BN9PR03CA0363.namprd03.prod.outlook.com (2603:10b6:408:f7::8)
- by SJ5PPF183341E5B.namprd12.prod.outlook.com (2603:10b6:a0f:fc02::98c) with
+ bh=DN8e3Pf2McqbnqAlK3W7nK7pJnya/7OhdTLvv7ousGA=;
+ b=P6+SRL5g80AEHHOY8fhdUOZx+Yt3f6hgjLNe6PTiaXNTbZpJepBwRbGXaULOV/7nhJf/yQXR6hx11eVORPc4nAv5SXk53NrLMyOHMFDWX7w1qQhIYoh4SKLJC8nDoHID+WObGC++aaahObJziCcDjEM9NNxMWM4wTQsF7TyZ6rH8t5kFfH9Ehscp3kg6lWuyoNd1S1zkRCv7p86oh7NODrhh5lkPG9oSVBggD/zTSHnu7EZfOcc2xkkxIGrONxRgIctOoD7mn1dELSK9lxOe9nv64ropbKQYzfInacgLjRw2IVDxt1H/b6w48z6S+kL8xYIpsMmlbUZVR/7WCrcorg==
+Received: from BN9PR03CA0713.namprd03.prod.outlook.com (2603:10b6:408:ef::28)
+ by CY8PR12MB8243.namprd12.prod.outlook.com (2603:10b6:930:78::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.10; Tue, 7 Apr
- 2026 19:43:24 +0000
-Received: from BN3PEPF0000B06E.namprd21.prod.outlook.com
- (2603:10b6:408:f7:cafe::33) by BN9PR03CA0363.outlook.office365.com
- (2603:10b6:408:f7::8) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.20; Tue, 7 Apr
+ 2026 19:43:32 +0000
+Received: from BN3PEPF0000B06D.namprd21.prod.outlook.com
+ (2603:10b6:408:ef:cafe::42) by BN9PR03CA0713.outlook.office365.com
+ (2603:10b6:408:ef::28) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9769.33 via Frontend Transport; Tue,
- 7 Apr 2026 19:43:24 +0000
+ 7 Apr 2026 19:43:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -67,20 +67,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.160 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.160) by
- BN3PEPF0000B06E.mail.protection.outlook.com (10.167.243.73) with Microsoft
+ BN3PEPF0000B06D.mail.protection.outlook.com (10.167.243.72) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9818.0 via Frontend Transport; Tue, 7 Apr 2026 19:43:24 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ 15.20.9818.0 via Frontend Transport; Tue, 7 Apr 2026 19:43:32 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 7 Apr
- 2026 12:43:06 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 12:43:15 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 7 Apr
- 2026 12:43:05 -0700
+ 2026 12:43:14 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Tue, 7 Apr
- 2026 12:42:57 -0700
+ 2026 12:43:06 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -100,10 +100,10 @@ CC: Simon Horman <horms@kernel.org>, Donald Hunter <donald.hunter@gmail.com>,
 	<danielj@nvidia.com>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, Gal Pressman
-	<gal@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next V5 09/12] devlink: Document port-level resources and full dump
-Date: Tue, 7 Apr 2026 22:41:04 +0300
-Message-ID: <20260407194107.148063-10-tariqt@nvidia.com>
+	<gal@nvidia.com>
+Subject: [PATCH net-next V5 10/12] devlink: Add resource scope filtering to resource dump
+Date: Tue, 7 Apr 2026 22:41:05 +0300
+Message-ID: <20260407194107.148063-11-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260407194107.148063-1-tariqt@nvidia.com>
 References: <20260407194107.148063-1-tariqt@nvidia.com>
@@ -118,30 +118,30 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06E:EE_|SJ5PPF183341E5B:EE_
-X-MS-Office365-Filtering-Correlation-Id: 698c194e-cdb4-4348-dd32-08de94ddeea0
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06D:EE_|CY8PR12MB8243:EE_
+X-MS-Office365-Filtering-Correlation-Id: fca85cd4-38d2-447f-ec21-08de94ddf350
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|36860700016|82310400026|18002099003|56012099003|22082099003;
+	BCL:0;ARA:13230040|7416014|376014|36860700016|82310400026|1800799024|56012099003|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	iyPb5pL1vmhNaYJJjJEniJa/tLllC3s3v+H9krv08hMHCtTMjfs24mZieeQA7khXSK4eSmnucDAUwkDVwClxJLXrabKcSmDb7As7MwhazUJOXCjvs+RyvXOr8UPleEC3opl6jiS8B/x7SL9sh9VZVXUmC4VAv5kx/N3LvM/uv7+HyZGz4LybBN/XYd9ZmCDeVbxfZcHOE1557GzdzkGmDfmy4X/4Q322ZKMNWnIDKGzDl91qknlEBE4g7LordK1nOkzDUqydmUdI/kT7lYjMZ+jq/EiTAl1Af0wswY5xqe5Flmq2nslIAw1k+Vj4nbSjX/9CNLx4JemEEWSrekpydtVScB2vt6x/ghq9lyQ+Vb4JRiNIvO0zBUC/DGbxrehL4vdKUFBOhGPXweOkW424aZhGuFZhqMT0WTJRAnzt5JNkOaLfL4EO3hsQDsPM0c5q1TC/MuikfGzprjVvAGHPAnpnpnlG/GdynFmDeClu3FH11UraiwI7xefwvRAIMlcgNsFDxHD07Ckv1UFdPh4VGxGxWjjrZK4lANfd0XnvZI/FWDeuULB8ZNmi6JJ2CLRp5fq7UbwRc/Cb1pqLLCgK12v77lot4GZ144Srv7Tyxl2x1Q3e/cxhyKuE/UPr/cX0Q/nidRHTsqriHb2ou1ixnNpL1axVyrNtDV65e7MxUddYUQ5oKn9NJ2Z1vBQ87HqO6nhzRZ727UIUSnHMjZofLTtAeEIBgXKI0yjmRFDR48sFQK4Qsir7TCX8KchJQ472KzzTP2YKJaxunv5LbdUeaA==
+	h2Lml6ECyDve3mb5m8IJcWvSgjBn7id5s03yfJRzm73PfXqGajV5li39gGnqRCApU84OJC4vd7OjmXxZqHlo1xkPt0aeenKGGBEcorZCWBZ3S4NwN0yluMOGvJfrVFifjck5lw3Qv0vnDmpCnUyI93Ap3bvni9pLTmuysLD4MvVnPLLCFfLoHU2L7RSSUoQfBVTx3zYfDC2AVHRV3Gh+F+POHi6TNUDlzFKd46oUfvyntbrIRvlit6WxCbtOxhv+2kIRrjVudDMnMdHJH0uRTDuEtM4VpQDesGH8N2LpfyYRbeeu/+lcJjDiz+7CyE9PCbNSNXadRpY0mhLguvhcgB+A9Ig+9FASPb3ozgZh03uaYnxsdQ50d+N+zcvkvNinOjlHdeqNI7k84bXUc5FMBhRT0j8YXOuby14fMvHncEHh/dwzjmXxCAVshu8gIYZFIjOFgY3iEcekO6pZK0km8ldwokwS4URYZNFUmFt9AQs0tmqsZQ4+qZuTPupurLVwBskBh5abGctlibHG8Y9jfAShpUEJjJRqfE/s5Ygmx58Eb1yKpCfUB4UgYPxXF30bBRfZ33LuB4Um1Kyekc9Fux8OvtP1ub47yng9Oj4O979yZVHVNjqH8EU0KG9UIyhY+X+SkjraHD/d4/7V0/ZiudjwLaqKaVWrkBszvIgN54FsYikQZeLHvzy5vMbYtYo0trEMnrhMJfnDTuoO8KVLV35zhy9nvXsSMPLaGuPq/KWhHUypPXWWOfN62wokjrm2XjOxl7dTMelK2mpymgCADA==
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(36860700016)(82310400026)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700016)(82310400026)(1800799024)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	vyI5nvC/fF+lKR17keq7H0xNYoAUhURoOGeeVQqiEda/zcSRnHj0ZysEbx0asqeCnsCm2z6LVQHXttjE+RAUyaoyoKrnTfYD+wHphpjD/raE4C0KfZPecgEhOUwkAunKFOB57jP2afKkTyrMj8IYcb77dD5Q+QAVDA4wHdF2d60dF6I6g/6F/T9Z08Oil+E3SVf6/ysEqGpmNesbcjMv97+Al9WQ718xhjxAB1hSgi5qrS/SEXt3grskpUIR+v62ZESCoSuvJABvuKkt0SM1wKxy3KIAMMCaElqJlqb7rooyq+TMy2bQ8FCjnjjehNTuIz5RMnDSy4HEF2ZsfVDeu5ZSvPSsmHz67j8xCdfApc4u4Dka1PH+96JMU44nLQ7wsPuHw6HEoq6glcFdF/ad1mL2uahnHSonk+R/MQZBTc6Z7mgXfZjLRtkWaosUNst6
+	XC7K6lmr2+IneAOcsKR0UZCwBhXokw3b4mMlc9ycZx1iR/tm6m5PmEgNHB6sF46mSs2Or3QzQXtmuiqLBjI5KqWLzxNOewwmLfVVMGw6Zu3t37vGBj3KIQ/2+M3rEWSESd96yk7F+Fja7WCp6dqGWF5hl1N3+7rbe4+BpXdZkPc3z/z6VGa1sGfpgUB8BrURq+IBhBY55u8H84MyrJZefZvwiFC4hCpo5Ndwf2T0MG8sTaz5Z7bp1PuANdlXz2LtP8714G3omRZ+u4qO5ccHZjz1fs/4k0WYK4hzq+pHa18gPKb0xN0O/MxDXQMOPtaVjEF8BIsq3FBGxEyHNvUvgl3LUQB2xUh6EJRd0povkbJGHo7aacsz2CIwuQlJ+CfF8Mzv/mJp+4YJyJXwREqJhgo7sVNjRGsREkvEu+YyL1N/EQraqexleh65ChgjY7q7
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2026 19:43:24.3548
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2026 19:43:32.2126
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 698c194e-cdb4-4348-dd32-08de94ddeea0
+X-MS-Exchange-CrossTenant-Network-Message-Id: fca85cd4-38d2-447f-ec21-08de94ddf350
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B06E.namprd21.prod.outlook.com
+	BN3PEPF0000B06D.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPF183341E5B
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8243
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -154,9 +154,9 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[kernel.org,gmail.com,resnulli.us,lwn.net,linuxfoundation.org,nvidia.com,oracle.com,intel.com,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[37];
+	RCPT_COUNT_TWELVE(0.00)[36];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-19111-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19112-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
@@ -170,67 +170,199 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	NEURAL_HAM(-0.00)[-0.997];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 884C43B3E6F
+X-Rspamd-Queue-Id: 155393B3EA1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Or Har-Toov <ohartoov@nvidia.com>
 
-Document the port-level resource support and the option to dump all
-resources, including both device-level and port-level entries.
+Allow filtering the resource dump to device-level or port-level
+resources using the 'scope' option.
+
+Example - dump only device-level resources:
+
+  $ devlink resource show scope dev
+  pci/0000:03:00.0:
+    name max_local_SFs size 128 unit entry dpipe_tables none
+    name max_external_SFs size 128 unit entry dpipe_tables none
+  pci/0000:03:00.1:
+    name max_local_SFs size 128 unit entry dpipe_tables none
+    name max_external_SFs size 128 unit entry dpipe_tables none
+
+Example - dump only port-level resources:
+
+  $ devlink resource show scope port
+  pci/0000:03:00.0/196608:
+    name max_SFs size 128 unit entry dpipe_tables none
+  pci/0000:03:00.0/196609:
+    name max_SFs size 128 unit entry dpipe_tables none
+  pci/0000:03:00.1/196708:
+    name max_SFs size 128 unit entry dpipe_tables none
+  pci/0000:03:00.1/196709:
+    name max_SFs size 128 unit entry dpipe_tables none
 
 Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
-Reviewed-by: Shay Drori <shayd@nvidia.com>
 Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../networking/devlink/devlink-resource.rst   | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ Documentation/netlink/specs/devlink.yaml | 24 +++++++++++++++++++++++-
+ include/uapi/linux/devlink.h             | 11 +++++++++++
+ net/devlink/netlink_gen.c                |  5 +++--
+ net/devlink/resource.c                   | 19 ++++++++++++++++++-
+ 4 files changed, 55 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/networking/devlink/devlink-resource.rst b/Documentation/networking/devlink/devlink-resource.rst
-index 3d5ae51e65a2..9839c1661315 100644
---- a/Documentation/networking/devlink/devlink-resource.rst
-+++ b/Documentation/networking/devlink/devlink-resource.rst
-@@ -74,3 +74,38 @@ attribute, which represents the pending change in size. For example:
+diff --git a/Documentation/netlink/specs/devlink.yaml b/Documentation/netlink/specs/devlink.yaml
+index 34aa81ba689e..247b147d689f 100644
+--- a/Documentation/netlink/specs/devlink.yaml
++++ b/Documentation/netlink/specs/devlink.yaml
+@@ -157,6 +157,14 @@ definitions:
+     entries:
+       -
+         name: entry
++  -
++    type: enum
++    name: resource-scope
++    entries:
++      -
++        name: dev
++      -
++        name: port
+   -
+     type: enum
+     name: reload-action
+@@ -873,6 +881,16 @@ attribute-sets:
+         doc: Unique devlink instance index.
+         checks:
+           max: u32-max
++      -
++        name: resource-scope-mask
++        type: u32
++        enum: resource-scope
++        enum-as-flags: true
++        doc: |
++          Bitmask selecting which resource classes to include in a
++          resource-dump response. Bit 0 (dev) selects device-level
++          resources; bit 1 (port) selects port-level resources.
++          When absent all classes are returned.
+   -
+     name: dl-dev-stats
+     subset-of: devlink
+@@ -1775,7 +1793,11 @@ operations:
+             - resource-list
+       dump:
+         request:
+-          attributes: *dev-id-attrs
++          attributes:
++            - bus-name
++            - dev-name
++            - index
++            - resource-scope-mask
+         reply: *resource-dump-reply
  
- Note that changes in resource size may require a device reload to properly
- take effect.
+     -
+diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+index 7de2d8cc862f..0b165eac7619 100644
+--- a/include/uapi/linux/devlink.h
++++ b/include/uapi/linux/devlink.h
+@@ -645,6 +645,7 @@ enum devlink_attr {
+ 	DEVLINK_ATTR_PARAM_RESET_DEFAULT,	/* flag */
+ 
+ 	DEVLINK_ATTR_INDEX,			/* uint */
++	DEVLINK_ATTR_RESOURCE_SCOPE_MASK,	/* u32 */
+ 
+ 	/* Add new attributes above here, update the spec in
+ 	 * Documentation/netlink/specs/devlink.yaml and re-generate
+@@ -704,6 +705,16 @@ enum devlink_resource_unit {
+ 	DEVLINK_RESOURCE_UNIT_ENTRY,
+ };
+ 
++enum devlink_resource_scope {
++	DEVLINK_RESOURCE_SCOPE_DEV_BIT,
++	DEVLINK_RESOURCE_SCOPE_PORT_BIT,
++};
 +
-+Port-level Resources and Full Dump
-+==================================
++#define DEVLINK_RESOURCE_SCOPE_DEV \
++	_BITUL(DEVLINK_RESOURCE_SCOPE_DEV_BIT)
++#define DEVLINK_RESOURCE_SCOPE_PORT \
++	_BITUL(DEVLINK_RESOURCE_SCOPE_PORT_BIT)
 +
-+In addition to device-level resources, ``devlink`` also supports port-level
-+resources. These resources are associated with a specific devlink port rather
-+than the device as a whole.
+ enum devlink_port_fn_attr_cap {
+ 	DEVLINK_PORT_FN_ATTR_CAP_ROCE_BIT,
+ 	DEVLINK_PORT_FN_ATTR_CAP_MIGRATABLE_BIT,
+diff --git a/net/devlink/netlink_gen.c b/net/devlink/netlink_gen.c
+index 9cc372d9ee41..81899786fd98 100644
+--- a/net/devlink/netlink_gen.c
++++ b/net/devlink/netlink_gen.c
+@@ -313,10 +313,11 @@ static const struct nla_policy devlink_resource_dump_do_nl_policy[DEVLINK_ATTR_I
+ };
+ 
+ /* DEVLINK_CMD_RESOURCE_DUMP - dump */
+-static const struct nla_policy devlink_resource_dump_dump_nl_policy[DEVLINK_ATTR_INDEX + 1] = {
++static const struct nla_policy devlink_resource_dump_dump_nl_policy[DEVLINK_ATTR_RESOURCE_SCOPE_MASK + 1] = {
+ 	[DEVLINK_ATTR_BUS_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_INDEX] = NLA_POLICY_FULL_RANGE(NLA_UINT, &devlink_attr_index_range),
++	[DEVLINK_ATTR_RESOURCE_SCOPE_MASK] = NLA_POLICY_MASK(NLA_U32, 0x3),
+ };
+ 
+ /* DEVLINK_CMD_RELOAD - do */
+@@ -974,7 +975,7 @@ const struct genl_split_ops devlink_nl_ops[75] = {
+ 		.cmd		= DEVLINK_CMD_RESOURCE_DUMP,
+ 		.dumpit		= devlink_nl_resource_dump_dumpit,
+ 		.policy		= devlink_resource_dump_dump_nl_policy,
+-		.maxattr	= DEVLINK_ATTR_INDEX,
++		.maxattr	= DEVLINK_ATTR_RESOURCE_SCOPE_MASK,
+ 		.flags		= GENL_CMD_CAP_DUMP,
+ 	},
+ 	{
+diff --git a/net/devlink/resource.c b/net/devlink/resource.c
+index bf5221fb3e64..3d2f42bc2fb5 100644
+--- a/net/devlink/resource.c
++++ b/net/devlink/resource.c
+@@ -398,11 +398,25 @@ devlink_nl_resource_dump_one(struct sk_buff *skb, struct devlink *devlink,
+ 			     struct netlink_callback *cb, int flags)
+ {
+ 	struct devlink_nl_dump_state *state = devlink_dump_state(cb);
++	const struct genl_info *info = genl_info_dump(cb);
+ 	struct devlink_port *devlink_port;
++	struct nlattr *scope_attr = NULL;
+ 	unsigned long port_idx;
++	u32 scope = 0;
+ 	int err;
+ 
+-	if (!state->port_ctx.index_valid) {
++	if (info->attrs && info->attrs[DEVLINK_ATTR_RESOURCE_SCOPE_MASK]) {
++		scope_attr = info->attrs[DEVLINK_ATTR_RESOURCE_SCOPE_MASK];
++		scope = nla_get_u32(scope_attr);
++		if (!scope) {
++			NL_SET_ERR_MSG_ATTR(info->extack, scope_attr,
++					    "empty resource scope selection");
++			return -EINVAL;
++		}
++	}
 +
-+To list resources for all devlink devices and ports:
-+
-+.. code:: shell
-+
-+    $ devlink resource show
-+    pci/0000:03:00.0:
-+      name max_local_SFs size 128 unit entry dpipe_tables none
-+      name max_external_SFs size 128 unit entry dpipe_tables none
-+    pci/0000:03:00.0/196608:
-+      name max_SFs size 128 unit entry dpipe_tables none
-+    pci/0000:03:00.0/196609:
-+      name max_SFs size 128 unit entry dpipe_tables none
-+    pci/0000:03:00.1:
-+      name max_local_SFs size 128 unit entry dpipe_tables none
-+      name max_external_SFs size 128 unit entry dpipe_tables none
-+    pci/0000:03:00.1/196708:
-+      name max_SFs size 128 unit entry dpipe_tables none
-+    pci/0000:03:00.1/196709:
-+      name max_SFs size 128 unit entry dpipe_tables none
-+
-+To show resources for a specific port:
-+
-+.. code:: shell
-+
-+    $ devlink resource show pci/0000:03:00.0/196608
-+    pci/0000:03:00.0/196608:
-+      name max_SFs size 128 unit entry dpipe_tables none
++	if (!state->port_ctx.index_valid &&
++	    (!scope || (scope & DEVLINK_RESOURCE_SCOPE_DEV))) {
+ 		err = devlink_resource_dump_fill_one(skb, devlink, NULL,
+ 						     cb, flags, &state->idx);
+ 		if (err)
+@@ -410,6 +424,8 @@ devlink_nl_resource_dump_one(struct sk_buff *skb, struct devlink *devlink,
+ 		state->idx = 0;
+ 	}
+ 
++	if (scope && !(scope & DEVLINK_RESOURCE_SCOPE_PORT))
++		goto out;
+ 	/* Check in case port was removed between dump callbacks. */
+ 	if (state->port_ctx.index_valid &&
+ 	    !xa_load(&devlink->ports, state->port_ctx.index))
+@@ -425,6 +441,7 @@ devlink_nl_resource_dump_one(struct sk_buff *skb, struct devlink *devlink,
+ 		}
+ 		state->idx = 0;
+ 	}
++out:
+ 	state->port_ctx.index_valid = false;
+ 	state->port_ctx.index = 0;
+ 	return 0;
 -- 
 2.44.0
 
