@@ -1,176 +1,135 @@
-Return-Path: <linux-rdma+bounces-19129-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19130-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IyIOMDMM1mmfAwgAu9opvQ
-	(envelope-from <linux-rdma+bounces-19129-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 08 Apr 2026 10:05:07 +0200
+	id kPN8GBsP1mmxAwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-19130-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 08 Apr 2026 10:17:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C6E73B8B80
-	for <lists+linux-rdma@lfdr.de>; Wed, 08 Apr 2026 10:05:04 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD1773B8E2B
+	for <lists+linux-rdma@lfdr.de>; Wed, 08 Apr 2026 10:17:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BE28830254FA
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2026 08:04:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BE59D3098E33
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2026 08:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD0A39DBD9;
-	Wed,  8 Apr 2026 08:04:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C0039D6F9;
+	Wed,  8 Apr 2026 08:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pg7Df3/8"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="O690T2qb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82A639B96C;
-	Wed,  8 Apr 2026 08:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6519F37CD24;
+	Wed,  8 Apr 2026 08:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775635464; cv=none; b=AdLu+SyPxlQZouwMPutUYpmWk0nAaIT/WAJI2Qs8DGemBMJzaUvAviM4ByBvZcugBCEs8NGPrBRYPmXoBEzS/yQrCZ/jd+4S1jgeeiTNm3FAiEY4KZIwcsu/XIy6mw5SG0R1rQD8bZNlp7VQdIK+hNk8keOdQCYA1tLMEUFYFYE=
+	t=1775635928; cv=none; b=R6zhpJYmnN1ufYZ2Qgs2iVPbSAVRMZgokaWfFXb46HUJq/1XlU/DLNUvu9DGbYL4ACChfAM6kFJYG0WbbemzCKbKkEAPLzRkpy3UE2jIA0O4NrYCaTc9neyqpCWDsf7c/40F/BMknxnCpjHIwgshWxRWX5k5nsSyjbVcDmf/+1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775635464; c=relaxed/simple;
-	bh=80BPbrP2oPK+wFlleEXaatTAXaOpxycwsYHH/QBPTRQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bO03iYnWEcqJs4hfrMhQPVKFagEYiWaG1TZ77pEPR19UnBlZRd0BIKWmEKW8frMUn5unaqAA1ArsnnQv7H/IhxCW290/hnL/8WEuqsoeWCtbpMt6KQwu0eWVedzT+vTbdE6PquMy2IE1CMbBpRgQ0weWmExDMXApjFp/UUcAteU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pg7Df3/8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4209BC19425;
-	Wed,  8 Apr 2026 08:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775635463;
-	bh=80BPbrP2oPK+wFlleEXaatTAXaOpxycwsYHH/QBPTRQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pg7Df3/8qGwGM0AgWGtaG3h2zO/J76we/39LOEk0Msj1P522o9EkDMbR8iHBwtOSM
-	 KYYAmLwIuyBYDMtgRmO5YzLI6/xuD6cbDMbp/v492ed161KMis1jHlNjcqiQVUrz4l
-	 4F58myBugnFlo7aDDfxLzleRh2NC3u2P/HVMTvCVn0uijq9QY0wlT8D89APpgaJxsv
-	 AaV+ytpOLl7xyhUO46h7CBa89z3J0vGgm7Y+VDlnPX+NYUTboVbxoAkP3WcgYO+Vit
-	 olXtCUnvYCht4Md9CnSh4b2lKTGNtyLQ9xweO85C2p66WoRoKVp8GwWfkudy7/tfem
-	 NU8/U5j7eYzaA==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org
-Cc: pabeni@redhat.com,
-	edumazet@google.com,
-	rds-devel@oss.oracle.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	achender@kernel.org
-Subject: [PATCH net v2 2/2] net/rds: Restrict use of RDS/IB to the initial network namespace
-Date: Wed,  8 Apr 2026 01:04:20 -0700
-Message-ID: <20260408080420.540032-3-achender@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260408080420.540032-1-achender@kernel.org>
-References: <20260408080420.540032-1-achender@kernel.org>
+	s=arc-20240116; t=1775635928; c=relaxed/simple;
+	bh=EJuqV1+fInOk87kbbNNnIrWbCrELIglJ42EeOqSe/rU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tg+Bw8iTYS8QPumwVrZWc7+esHaA9U4fzXzBIZz8QsgTdUPLKBQxbYjfX77mRKnkKPijsvFox5VylpQcpj3fFjWO0i21nZeq1T/oVHXiyE2xU1s7z7z0YTo8XPK0H/kTe6EfgDIFBaBDRQIK+2ZVKQKBUZQE6V/Ke207munJlT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=O690T2qb; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id F1BF020B710C; Wed,  8 Apr 2026 01:12:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F1BF020B710C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1775635920;
+	bh=nOosIgFEeprE3iORS4lijVt8tQ0t0+4fZlDJtMeza1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O690T2qbTJm/FfkmAws/zZyCKkSLPge4P9CB1bMPZOHXFoQTVSe0EqebWfhR1cqyg
+	 4AtAOOSRn3YwuW/XbSjyN/vQyKmG8hsfBCb1lYK5NVAvklgFbykavd4NrIXxGlb0Fv
+	 TstxOU3U9xIG0xX5naCsLUb0006d57wTJyhNfbTo=
+Date: Wed, 8 Apr 2026 01:12:00 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Simon Horman <horms@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
+	yury.norov@gmail.com, kees@kernel.org, ssengar@linux.microsoft.com,
+	dipayanroy@linux.microsoft.com, gargaditya@linux.microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v5 1/3] net: mana: Use pci_name() for debugfs
+ directory naming
+Message-ID: <adYN0F/vtpZ2AQwz@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260402182704.2474739-1-ernis@linux.microsoft.com>
+ <20260402182704.2474739-2-ernis@linux.microsoft.com>
+ <20260404090514.GS113102@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260404090514.GS113102@horms.kernel.org>
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-19129-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19130-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,oracle.com:email,syzkaller.appspot.com:url]
-X-Rspamd-Queue-Id: 8C6E73B8B80
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BD1773B8E2B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Greg Jumper <greg.jumper@oracle.com>
+On Sat, Apr 04, 2026 at 10:05:14AM +0100, Simon Horman wrote:
+> On Thu, Apr 02, 2026 at 11:26:55AM -0700, Erni Sri Satya Vennela wrote:
+> > Use pci_name(pdev) for the per-device debugfs directory instead of
+> > hardcoded "0" for PFs and pci_slot_name(pdev->slot) for VFs. The
+> > previous approach had two issues:
+> > 
+> > 1. pci_slot_name() dereferences pdev->slot, which can be NULL for VFs
+> >    in environments like generic VFIO passthrough or nested KVM,
+> >    causing a NULL pointer dereference.
+> > 
+> > 2. Multiple PFs would all use "0", and VFs across different PCI
+> >    domains or buses could share the same slot name, leading to
+> >    -EEXIST errors from debugfs_create_dir().
+> > 
+> > pci_name(pdev) returns the unique BDF address, is always valid, and
+> > is unique across the system.
+> > 
+> > Fixes: 6607c17c6c5e ("net: mana: Enable debugfs files for MANA device")
+> > Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+> 
+> Hi Erni,
+> 
+> Possibly the code differs between net and net-next.
+> But if this is fixing a bug in code present in net - as per the cited
+> commit - then I think it should be a patch that targets net.
+> With some strategy for merging that change into net-next
+> if conflicts are expected.
 
-Prevent using RDS/IB in network namespaces other than the initial one.
-The existing RDS/IB code will not work properly in non-initial network
-namespaces.
+Thankyou for the clarity Simon.
+I will send a separate patchset for net tree with the fixes.
 
-Fixes: d5a8ac28a7ff ("RDS-TCP: Make RDS-TCP work correctly when it is set up in a netns other than init_net")
-Reported-by: syzbot+da8e060735ae02c8f3d1@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=da8e060735ae02c8f3d1
-Signed-off-by: Greg Jumper <greg.jumper@oracle.com>
-Signed-off-by: Allison Henderson <achender@kernel.org>
----
- net/rds/af_rds.c | 10 ++++++++--
- net/rds/ib.c     |  4 ++++
- 2 files changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-index b396c673dfaf..76f625986a7f 100644
---- a/net/rds/af_rds.c
-+++ b/net/rds/af_rds.c
-@@ -357,7 +357,8 @@ static int rds_cong_monitor(struct rds_sock *rs, sockptr_t optval, int optlen)
- 	return ret;
- }
- 
--static int rds_set_transport(struct rds_sock *rs, sockptr_t optval, int optlen)
-+static int rds_set_transport(struct net *net, struct rds_sock *rs,
-+			     sockptr_t optval, int optlen)
- {
- 	int t_type;
- 
-@@ -373,6 +374,10 @@ static int rds_set_transport(struct rds_sock *rs, sockptr_t optval, int optlen)
- 	if (t_type < 0 || t_type >= RDS_TRANS_COUNT)
- 		return -EINVAL;
- 
-+	/* RDS/IB is restricted to the initial network namespace */
-+	if (t_type != RDS_TRANS_TCP && !net_eq(net, &init_net))
-+		return -EPROTOTYPE;
-+
- 	rs->rs_transport = rds_trans_get(t_type);
- 
- 	return rs->rs_transport ? 0 : -ENOPROTOOPT;
-@@ -433,6 +438,7 @@ static int rds_setsockopt(struct socket *sock, int level, int optname,
- 			  sockptr_t optval, unsigned int optlen)
- {
- 	struct rds_sock *rs = rds_sk_to_rs(sock->sk);
-+	struct net *net = sock_net(sock->sk);
- 	int ret;
- 
- 	if (level != SOL_RDS) {
-@@ -461,7 +467,7 @@ static int rds_setsockopt(struct socket *sock, int level, int optname,
- 		break;
- 	case SO_RDS_TRANSPORT:
- 		lock_sock(sock->sk);
--		ret = rds_set_transport(rs, optval, optlen);
-+		ret = rds_set_transport(net, rs, optval, optlen);
- 		release_sock(sock->sk);
- 		break;
- 	case SO_TIMESTAMP_OLD:
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index 412ff61e74fa..39f87272e071 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -492,6 +492,10 @@ static int rds_ib_laddr_check(struct net *net, const struct in6_addr *addr,
- {
- 	struct rds_ib_device *rds_ibdev = NULL;
- 
-+	/* RDS/IB is restricted to the initial network namespace */
-+	if (!net_eq(net, &init_net))
-+		return -EPROTOTYPE;
-+
- 	if (ipv6_addr_v4mapped(addr)) {
- 		rds_ibdev = rds_ib_get_device(addr->s6_addr32[3]);
- 		if (rds_ibdev) {
--- 
-2.43.0
-
+- Vennela
 
