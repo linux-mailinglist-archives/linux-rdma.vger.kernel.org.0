@@ -1,156 +1,353 @@
-Return-Path: <linux-rdma+bounces-19145-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19146-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0Gd9J6k412nwLggAu9opvQ
-	(envelope-from <linux-rdma+bounces-19145-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 07:27:05 +0200
+	id IAIWNg5a12lqMwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-19146-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 09:49:34 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B3343C64B7
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 07:27:04 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5861A3C7423
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 09:49:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6BFEF30072B8
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 05:27:01 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B37703011050
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 07:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA2F2EA749;
-	Thu,  9 Apr 2026 05:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D293803CF;
+	Thu,  9 Apr 2026 07:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ioTLOn39"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="KRFxFHjX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.42.203.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7F52F3C3E
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Apr 2026 05:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6CE37104C
+	for <linux-rdma@vger.kernel.org>; Thu,  9 Apr 2026 07:49:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.42.203.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775712420; cv=none; b=Bqmc0pLu0ZmqekISh9mTQGXTzZm3OwaUhAa4Nwt3Ajf/vl2LMLlkSl9ixpkVBggHOyT62G/RvEAoN987GRRjbxp+ZYKTsiGpOR6PseywU7V73RxT0NKLGSXf/Yo4EhQMAxlOWApMV4mp8+iCImWf4TEPhB0reE7bQAvIP78GxqU=
+	t=1775720969; cv=none; b=L/YHHCaaljJWSfpfkwBVKK7mpW2OJCWdp2Z558snUv6LaA+C5TjUdHhEEqUnReko19rgkEHDHdgoakDLLvRguynaVTI60V1iSfl7J3rUBp5KqyNDDmMxWURM5ZGTcfgqku5o1ofHiIArge/ufF4l000jNEuaKTSnQUvFqwLnKcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775712420; c=relaxed/simple;
-	bh=6ix+a5Rm0eQUsImyIQA8KqXzYyQzzTN51y11diP5/U8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ooHRJTelm05/GqgoEk0uo2E8abaIuiufa22G2QAdRbuk5hCQBIESLenYiavzrzorvQ6ESM9cdaZgbUkpvHvqP/pGdc156aDoVk8rTrFa0q5GUD813Z/Z7qNTn3QoXDVvGLz8VDSG2pEk3yTdu31P1NUu2j5c7wQNRRkq/BURg1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ioTLOn39; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c46ef990-f011-465d-be83-ddad0082d4d1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1775712406;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D25wIH05oHnxo5lg0PiW0xA4fW+v1IyN6zMZtWyPhMY=;
-	b=ioTLOn39k+igxwByGYG96lPVCL4w7i90DHkx7D2CtL/Mx9T0snFhfLY7zX2WO2Z81ouaqE
-	U64Q2gsONugBpMikQxdbz/0WFC2aL8jXTDJZR7LdD43W0uoPvcmw/PorlXOsNEfadEdP10
-	v95Dvtxe78KQm0isfr74XlnPmuBrkmo=
-Date: Wed, 8 Apr 2026 22:26:27 -0700
+	s=arc-20240116; t=1775720969; c=relaxed/simple;
+	bh=nh0c8nnTcc31TM7DBAptWGaP/TkBB5P9ZLKwKVX9YbE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ab9E8hgxyi3MYaFCneHDpIJ1z8az1IKIQbouvrRdadJSi1MFJXgaqiqW43Sjhc8+lm12xiDSKwOxQ9pFEvxr1l4XsxSoJ4xmBOsmacelVMu7AT81+eiuxXh/sozvrET0RsIRKODWPT9Wb6ixaGUs2QnzJvAx+iaVn6VCQwxddU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=KRFxFHjX; arc=none smtp.client-ip=52.42.203.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1775720968; x=1807256968;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/BqNTm6lfwztRwTvMUVyQiZ3Y+aB3PrSsmeBTv64UeI=;
+  b=KRFxFHjXjANIlYhm4Mqu5RoYBHnFETSbOU1DetxnnVUy4dCi8LcfIwaN
+   FyaQB71+ED+ox9GGUpm2VQ9A9ayuQACqiPWQ1gHsC7p8WGYN5oNR9mM5W
+   CbDIczcVD2dCuWyuqBSy7VEZILPyrLjKFYnKPYsKWMbo7XKF2c8IOzntV
+   8Xm79J3N2upJIOprZ8EtbR4eJuP9eDrVI7jIv2UgeWCdrcB/SGNFzmO1K
+   ZIFPrfnzXVf1mzzLSgTf2sQL9IsnUgvO5uJIkDPthWFGE1derJhHtMonP
+   ROzW7ohEpQwwbzPp6ercx1w6mn9abHy58W3SQS5HMEvXSt+nG0Tq9UNST
+   A==;
+X-CSE-ConnectionGUID: kbYWEwjzSvatYhMlJh6DfA==
+X-CSE-MsgGUID: KhWeNnAuR7+XB1+wdewn6Q==
+X-IronPort-AV: E=Sophos;i="6.23,169,1770595200"; 
+   d="scan'208";a="16912032"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2026 07:49:23 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.178:30570]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.232:2525] with esmtp (Farcaster)
+ id fdc10c4b-b1c9-4de8-88c8-13ae3571319f; Thu, 9 Apr 2026 07:49:22 +0000 (UTC)
+X-Farcaster-Flow-ID: fdc10c4b-b1c9-4de8-88c8-13ae3571319f
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Thu, 9 Apr 2026 07:49:21 +0000
+Received: from dev-dsk-ynachum-1b-0ecf7b87.eu-west-1.amazon.com
+ (10.13.226.176) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Thu, 9 Apr 2026
+ 07:49:19 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>, Firas Jahjah
+	<firasj@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Add checksum support for admin responses
+Date: Thu, 9 Apr 2026 07:49:05 +0000
+Message-ID: <20260409074905.3126023-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 0/3] Support PERF MGMT for RXE
-To: zhenwei pi <zhenwei.pi@linux.dev>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
-References: <20260408000956.486522-1-zhenwei.pi@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260408000956.486522-1-zhenwei.pi@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D033UWC004.ant.amazon.com (10.13.139.225) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19145-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19146-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid]
-X-Rspamd-Queue-Id: 9B3343C64B7
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 5861A3C7423
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/4/7 17:09, zhenwei pi 写道:
-> v5:
-> - remove patch "RDMA/core: Fix memory free for GID table", it was
->    applied by Jason separately.
-> - suggested by Yanjun, use 'skb_network_offset' to calculate the
->    length of received packets.
-> 
+EFA devices added support for CRC16 checksum on admin responses and to
+expose it to the driver the API version increased to 0.2. Add a check
+for support on device init and if supported validate the checksum on
+each admin response the driver receives. If the checksum validation
+failed, drop the CQE.
 
-I am not sure whether you would prefer to add a test case under 
-tools/testing/selftests/rdma or in rdma-core to verify this feature.
+Add the CRC16 module to Kconfig to have the in-tree dependency.
 
-If it is possible to include a test case in either selftests or 
-rdma-core, it would be very helpful for the supporters to validate this 
-patch set.
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+---
+ drivers/infiniband/hw/efa/Kconfig             |  3 +-
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   |  3 --
+ drivers/infiniband/hw/efa/efa_admin_defs.h    | 15 +++---
+ drivers/infiniband/hw/efa/efa_com.c           | 50 ++++++++++++++++---
+ drivers/infiniband/hw/efa/efa_com.h           |  4 +-
+ 5 files changed, 55 insertions(+), 20 deletions(-)
 
-Just my two cents.
-
-Zhu Yanjun
-
-> v4:
-> - drop rxe_ib_device_get_netdev and RXE_PORT, use 1 instead
-> - avoid UAF to get skb length
-> - remove one-line wrapper rxe_counter_get, use atomic64_read instead
-> - fix memory free for GID table, this is a new patch in this series.
-> 
-> v3:
-> - merge 'RDMA/rxe: use rxe_counter_get' into previous commit
-> - zero *out* MAD memory
-> - return success with error status rather than failure to avoid
->    uplayer hang
-> 
-> v2:
-> - Fix overflow for PMA counter *link_downed_counter*
-> - Use *rxe_counter_get* instead of *atomic64_read* for hw-counters
-> 
-> v1:
-> Support PERF MGMT for RXE, add sent/received bytes for RXE counters,
-> also improve coding style.
-> 
-> zhenwei pi (3):
->    RDMA/rxe: remove rxe_ib_device_get_netdev() and RXE_PORT
->    RDMA/rxe: add SENT/RCVD bytes
->    RDMA/rxe: support perf mgmt GET method
-> 
->   drivers/infiniband/sw/rxe/Makefile          |   1 +
->   drivers/infiniband/sw/rxe/rxe_hw_counters.c |   2 +
->   drivers/infiniband/sw/rxe/rxe_hw_counters.h |   2 +
->   drivers/infiniband/sw/rxe/rxe_loc.h         |   6 ++
->   drivers/infiniband/sw/rxe/rxe_mad.c         | 101 ++++++++++++++++++++
->   drivers/infiniband/sw/rxe/rxe_mcast.c       |   4 +-
->   drivers/infiniband/sw/rxe/rxe_net.c         |   9 +-
->   drivers/infiniband/sw/rxe/rxe_recv.c        |   2 +
->   drivers/infiniband/sw/rxe/rxe_verbs.c       |   5 +-
->   drivers/infiniband/sw/rxe/rxe_verbs.h       |  10 +-
->   10 files changed, 129 insertions(+), 13 deletions(-)
->   create mode 100644 drivers/infiniband/sw/rxe/rxe_mad.c
-> 
+diff --git a/drivers/infiniband/hw/efa/Kconfig b/drivers/infiniband/hw/efa/Kconfig
+index 457e18ba1d57..ff7f7c0870b3 100644
+--- a/drivers/infiniband/hw/efa/Kconfig
++++ b/drivers/infiniband/hw/efa/Kconfig
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+-# Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
++# Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+ #
+ # Amazon fabric device configuration
+ #
+@@ -8,6 +8,7 @@ config INFINIBAND_EFA
+ 	tristate "Amazon Elastic Fabric Adapter (EFA) support"
+ 	depends on PCI_MSI && 64BIT && !CPU_BIG_ENDIAN
+ 	depends on INFINIBAND_USER_ACCESS
++	select CRC16
+ 	help
+ 	  This driver supports Amazon Elastic Fabric Adapter (EFA).
+ 
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index 57178dad5eb7..dd9bfcabe8c4 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -6,9 +6,6 @@
+ #ifndef _EFA_ADMIN_CMDS_H_
+ #define _EFA_ADMIN_CMDS_H_
+ 
+-#define EFA_ADMIN_API_VERSION_MAJOR          0
+-#define EFA_ADMIN_API_VERSION_MINOR          1
+-
+ /* EFA admin queue opcodes */
+ enum efa_admin_aq_opcode {
+ 	EFA_ADMIN_CREATE_QP                         = 1,
+diff --git a/drivers/infiniband/hw/efa/efa_admin_defs.h b/drivers/infiniband/hw/efa/efa_admin_defs.h
+index 35700c93e639..02f86edabed8 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_defs.h
+@@ -1,18 +1,20 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_ADMIN_H_
+ #define _EFA_ADMIN_H_
+ 
++#define EFA_ADMIN_API_VERSION_MAJOR          0
++#define EFA_ADMIN_API_VERSION_MINOR          2
++
+ enum efa_admin_aq_completion_status {
+ 	EFA_ADMIN_SUCCESS                           = 0,
+ 	EFA_ADMIN_RESOURCE_ALLOCATION_FAILURE       = 1,
+ 	EFA_ADMIN_BAD_OPCODE                        = 2,
+ 	EFA_ADMIN_UNSUPPORTED_OPCODE                = 3,
+ 	EFA_ADMIN_MALFORMED_REQUEST                 = 4,
+-	/* Additional status is provided in ACQ entry extended_status */
+ 	EFA_ADMIN_ILLEGAL_PARAMETER                 = 5,
+ 	EFA_ADMIN_UNKNOWN_ERROR                     = 6,
+ 	EFA_ADMIN_RESOURCE_BUSY                     = 7,
+@@ -78,13 +80,10 @@ struct efa_admin_acq_common_desc {
+ 	 */
+ 	u8 flags;
+ 
+-	u16 extended_status;
++	/* Poly 0x8005 CRC16 with initial value 0xFFFF and final XOR of 0xFFFF */
++	u16 checksum;
+ 
+-	/*
+-	 * indicates to the driver which AQ entry has been consumed by the
+-	 * device and could be reused
+-	 */
+-	u16 sq_head_indx;
++	u16 reserved;
+ };
+ 
+ struct efa_admin_acq_entry {
+diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
+index e97b5f0d7003..7cc3f4af0bb9 100644
+--- a/drivers/infiniband/hw/efa/efa_com.c
++++ b/drivers/infiniband/hw/efa/efa_com.c
+@@ -3,6 +3,7 @@
+  * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
++#include <linux/crc16.h>
+ #include <linux/log2.h>
+ 
+ #include "efa_com.h"
+@@ -22,6 +23,14 @@
+ #define EFA_CTRL_MINOR          0
+ #define EFA_CTRL_SUB_MINOR      1
+ 
++#define EFA_CRC16_INIT_VAL 0xffff
++
++#define EFA_CRC_MIN_ADMIN_API_VERSION_MAJOR 0
++#define EFA_CRC_MIN_ADMIN_API_VERSION_MINOR 2
++
++#define EFA_MIN_ADMIN_API_VERSION_MAJOR 0
++#define EFA_MIN_ADMIN_API_VERSION_MINOR 1
++
+ enum efa_cmd_status {
+ 	EFA_CMD_UNUSED,
+ 	EFA_CMD_ALLOCATED,
+@@ -167,9 +176,8 @@ static int efa_com_admin_init_cq(struct efa_com_dev *edev)
+ 	struct efa_com_admin_queue *aq = &edev->aq;
+ 	struct efa_com_admin_cq *cq = &aq->cq;
+ 	u16 size = aq->depth * sizeof(*cq->entries);
+-	u32 acq_caps = 0;
+-	u32 addr_high;
+-	u32 addr_low;
++	u32 acq_caps = 0, crc_min_ver = 0;
++	u32 addr_high, addr_low;
+ 
+ 	cq->entries =
+ 		dma_alloc_coherent(aq->dmadev, size, &cq->dma_addr, GFP_KERNEL);
+@@ -178,6 +186,11 @@ static int efa_com_admin_init_cq(struct efa_com_dev *edev)
+ 
+ 	spin_lock_init(&cq->lock);
+ 
++	EFA_SET(&crc_min_ver, EFA_REGS_VERSION_MAJOR_VERSION, EFA_CRC_MIN_ADMIN_API_VERSION_MAJOR);
++	EFA_SET(&crc_min_ver, EFA_REGS_VERSION_MINOR_VERSION, EFA_CRC_MIN_ADMIN_API_VERSION_MINOR);
++	if (edev->dev_api_ver >= crc_min_ver)
++		cq->validate_checksum = true;
++
+ 	cq->cc = 0;
+ 	cq->phase = 1;
+ 
+@@ -409,12 +422,35 @@ static int efa_com_submit_admin_cmd(struct efa_com_admin_queue *aq,
+ 	return 0;
+ }
+ 
++static bool efa_com_cqe_checksum_valid(struct efa_com_admin_queue *aq,
++				       struct efa_admin_acq_entry *cqe)
++{
++	u16 cqe_checksum = cqe->acq_common_descriptor.checksum;
++	u16 calc_checksum;
++
++	cqe->acq_common_descriptor.checksum = 0;
++
++	calc_checksum = crc16(EFA_CRC16_INIT_VAL, (u8 *)cqe, sizeof(*cqe)) ^ EFA_CRC16_INIT_VAL;
++	if (calc_checksum != cqe_checksum) {
++		ibdev_err(aq->efa_dev,
++			  "Received completion with invalid checksum, cqe[%u], calc[%u], sq producer[%d], sq consumer[%d], cq consumer[%d]\n",
++			  cqe_checksum, calc_checksum, aq->sq.pc, aq->sq.cc,
++			  aq->cq.cc);
++		return false;
++	}
++
++	return true;
++}
++
+ static int efa_com_handle_single_admin_completion(struct efa_com_admin_queue *aq,
+ 						  struct efa_admin_acq_entry *cqe)
+ {
+ 	struct efa_comp_ctx *comp_ctx;
+ 	u16 cmd_id;
+ 
++	if (aq->cq.validate_checksum && !efa_com_cqe_checksum_valid(aq, cqe))
++		return -EINVAL;
++
+ 	cmd_id = EFA_GET(&cqe->acq_common_descriptor.command,
+ 			 EFA_ADMIN_ACQ_COMMON_DESC_COMMAND_ID);
+ 
+@@ -954,16 +990,16 @@ int efa_com_validate_version(struct efa_com_dev *edev)
+ 		  EFA_GET(&ver, EFA_REGS_VERSION_MAJOR_VERSION),
+ 		  EFA_GET(&ver, EFA_REGS_VERSION_MINOR_VERSION));
+ 
+-	EFA_SET(&min_ver, EFA_REGS_VERSION_MAJOR_VERSION,
+-		EFA_ADMIN_API_VERSION_MAJOR);
+-	EFA_SET(&min_ver, EFA_REGS_VERSION_MINOR_VERSION,
+-		EFA_ADMIN_API_VERSION_MINOR);
++	EFA_SET(&min_ver, EFA_REGS_VERSION_MAJOR_VERSION, EFA_MIN_ADMIN_API_VERSION_MAJOR);
++	EFA_SET(&min_ver, EFA_REGS_VERSION_MINOR_VERSION, EFA_MIN_ADMIN_API_VERSION_MINOR);
+ 	if (ver < min_ver) {
+ 		ibdev_err(edev->efa_dev,
+ 			  "EFA version is lower than the minimal version the driver supports\n");
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	edev->dev_api_ver = ver;
++
+ 	ibdev_dbg(
+ 		edev->efa_dev,
+ 		"efa controller version: %d.%d.%d implementation version %d\n",
+diff --git a/drivers/infiniband/hw/efa/efa_com.h b/drivers/infiniband/hw/efa/efa_com.h
+index 4d9ca97e4296..f8c692b0e092 100644
+--- a/drivers/infiniband/hw/efa/efa_com.h
++++ b/drivers/infiniband/hw/efa/efa_com.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_COM_H_
+@@ -25,6 +25,7 @@ struct efa_com_admin_cq {
+ 	struct efa_admin_acq_entry *entries;
+ 	dma_addr_t dma_addr;
+ 	spinlock_t lock; /* Protects ACQ */
++	bool validate_checksum;
+ 
+ 	u16 cc; /* consumer counter */
+ 	u8 phase;
+@@ -112,6 +113,7 @@ struct efa_com_dev {
+ 	u32 supported_features;
+ 	u32 dma_addr_bits;
+ 
++	u32 dev_api_ver;
+ 	struct efa_com_mmio_read mmio_read;
+ };
+ 
+-- 
+2.50.1
 
 
