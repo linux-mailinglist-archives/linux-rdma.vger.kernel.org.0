@@ -1,150 +1,178 @@
-Return-Path: <linux-rdma+bounces-19160-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19161-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +L+iDnuZ12lNQAgAu9opvQ
-	(envelope-from <linux-rdma+bounces-19160-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 14:20:11 +0200
+	id EJ8rNL6b12kUQQgAu9opvQ
+	(envelope-from <linux-rdma+bounces-19161-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 14:29:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114163CA502
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 14:20:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73FB03CA6D3
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 14:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3BA433007F4B
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 12:19:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DB7BB30414BA
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 12:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CACC381B11;
-	Thu,  9 Apr 2026 12:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="QdEHGD9N"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA8B3C5525;
+	Thu,  9 Apr 2026 12:28:10 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5C21A262A
-	for <linux-rdma@vger.kernel.org>; Thu,  9 Apr 2026 12:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B4A3C454E;
+	Thu,  9 Apr 2026 12:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775737170; cv=none; b=u+J4ZjYpqrUhN8MrNDKxTPq1mGXOsaVQZTAwnsPX/wMcGnRHPZP5S5kB9kjGkR5xCpj/e7zL3t8mwineu0IgoVTcmqOo6qm27O84w3m8BWJh6E0o1UX/E7khK+mSvBDbHrtLDMJshv0LsvbcIqWGXEob/ukuQfSiJnL87qwskAI=
+	t=1775737690; cv=none; b=CvKoF0u/O3Ob9WImNJpuPQwfA9oxnK5eSp4phkiPPY9zO2eYJNqewocwCu0qWSJsHeDw2wIwxSfGHL4dBS1UZ4YgZqi5CVJoeiapdR/gwgwzWRH11Gm3kEWuFKLHtB1a5rVL5Fw7MHggx73x+b2bcGNgPTEEkQR6UiJxFfb5raQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775737170; c=relaxed/simple;
-	bh=aoryTLhZZaAhcoydzNlXGsaHYHenjlGGRt3TbanhX2g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n0wGFxewDqSTrk+0rc9VQ6BUNIUO+Zdp0u0DfwudDagZUxV0u5ZaLoqLeblCNDGIjZyVE984bE3ljN4qGJ9CiFfYsYC11cI7sgqlfInSnyYclZx5JZazIuL1JbXbPVtr1YZ1QIPHPLdNnRlhS4Z4enmPkSfV+pfu3VtKQX5m8OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=QdEHGD9N; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-488b8efed61so7057215e9.1
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Apr 2026 05:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1775737165; x=1776341965; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aTwJERCihkOfuqJB5utbCuHcFs2g0GNjn1E8yryPsDo=;
-        b=QdEHGD9N+4OXZa2ohUI/kq4ANp/iIlYbB1vevgLipa+IMD9xw1XNHbGvxABsVjgC0e
-         sLoBlCSVUK+EtxWKt7yq5zXmRooPvM32wuCmj7uW6MOEsY4mzKTpoHyieSrThUpshTmC
-         c5aJlCfv7s/Ax4HZL5hh9MzAw0ebxB6NbQxFWryi7aCQtmwoM6rXMlk+7n6FeFDeoOpA
-         RoeIAxOlBxdshixlikoc3ED698SWKnBQjodUBFX09Dw2GdkIb02k/y4HIuoa5SV5wbAY
-         hfB5ODBN4CulH6/KdroPBUccb/KuJcn2ZjZxKnohUWyzlYxMcmUdRl+W0JLRPFQDvUsl
-         gtKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775737165; x=1776341965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aTwJERCihkOfuqJB5utbCuHcFs2g0GNjn1E8yryPsDo=;
-        b=VZZD8QWa9szZMEgY2Ipv49jujWZC8XtL22851OrxVoAzplRYxSJLmGfiqE5xg2fNiv
-         GSJ0ijD9UxVpiV55vscwusPshxzGPWuT6g6Qb2ignulGo0lGUb95XZnVaR5SOpVfoZDN
-         RlX7z++6JDqhzUfchTmC8vxas6E8fEcVVo6CxfIrHtwnDuSMrhdfv93DBecC9vj3RtAS
-         TMW+m3K+aVcQdspqNCHwAgGilMeMDfn7mpZiQotpi+esv4fFjnFrIMGGRDyMVEkv3DnO
-         SvQM5zwbailS+H7fZq9zSyXQwp2JowEBf+06Nrmr/gWmMqnUnXzbtTg1jebkLfG0iT+H
-         emVA==
-X-Gm-Message-State: AOJu0YzxyCpO5S1QDiTF6gnk3prWUR3PtVcN8emj0qIX8Qe9vpm0vOm6
-	cbSnjRlf8roIgd5IVOfF1nkzyzhwpWgLTDbgja88NluoNu/gEyDFL0+HnJksCXEY+Hys4zedAVZ
-	a5EnS
-X-Gm-Gg: AeBDieujyUwiSFAaQMenRWV7g+WOLSqL9mLUL7SG+mg77A21oQb+DbIiFWaJCjzWl26
-	uq9zS/Cg2w8Qsy2cOk30V1jDjWW8H/0OgZ5G5l8GbCFRdbWA/y/Bj0gOsrwfvn8Dpq70dFdXo1m
-	bYvKu9MTmLsHx9TMhyqRuY4IL+hVnPXiESYtav+wnEzEYG/V+M0kifVTFK+iLWIX9qH17kK3u08
-	5x8aTYBpcf+n95UgHypU0qNUFwQt+HAvg0Vwzp9tMGA4zvn9wP0SLr4B+atZVz6bBO/R61b9X/S
-	GGUvVNLX3S/oAZnTqAnfNhEFyh6KNYZozc0NwpEQn6jJSusw0jfpGVUPb2l5DXLFUYuv0SfBmpA
-	sJnJMG+pfxEuYbvVaM81HyQ44m6W1077fBBT896BiR3qOMWFTRno8ctuaZRN77If0wXrQVRORSz
-	ci/5srTAWY3guu1T8jVcwVt5N1GrRZLZNOtX8=
-X-Received: by 2002:a05:600c:4e01:b0:485:3e00:944a with SMTP id 5b1f17b1804b1-488cd556b22mr48155305e9.9.1775737164377;
-        Thu, 09 Apr 2026 05:19:24 -0700 (PDT)
-Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488cd18e466sm22295095e9.24.2026.04.09.05.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2026 05:19:23 -0700 (PDT)
-Date: Thu, 9 Apr 2026 14:19:19 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, mrgolin@amazon.com, 
-	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, mbloch@nvidia.com, 
-	yanjun.zhu@linux.dev, wangliang74@huawei.com, marco.crivellari@suse.com, 
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
-	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next 07/15] RDMA/mlx4: Use umem_list for user CQ
- buffer
-Message-ID: <sgq7tehn7pgw5gm6dqrqhqj2c6tfcqf2flzhtxfpge6okiowue@upf4ejwvma5t>
-References: <20260325150048.168341-1-jiri@resnulli.us>
- <20260325150048.168341-8-jiri@resnulli.us>
+	s=arc-20240116; t=1775737690; c=relaxed/simple;
+	bh=EjSozxrj+12LZ6FmGgkaCxCJVy6nYxsUeszd8Ocgt7U=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YtigCPIjxMVtH9+os1GPaAC0ASbXGZHrupboCHrTHK5ORQLv7n+3H7Gh+YWa2AQ+dWsHkmIqPIou46jaSClw1zZk4uxJFa1FTG7Cg94LCJhZpu4DYBl6lCtN3LXB+4x2wV9SX0ImE2EogN5WiR9OwOJDmCy9lW7VKGK4NguPq5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.224.235])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTPS id 4frzcq3mgXz1HC3C;
+	Thu,  9 Apr 2026 20:23:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 6ED1840569;
+	Thu,  9 Apr 2026 20:28:00 +0800 (CST)
+Received: from [10.204.63.22] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwDnH+1Bm9dphfUEAg--.11564S2;
+	Thu, 09 Apr 2026 13:27:59 +0100 (CET)
+Message-ID: <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 0/4] Firmware LSM hook
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Leon Romanovsky <leon@kernel.org>, KP Singh <kpsingh@kernel.org>, Matt
+ Bobrowski <mattbobrowski@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri
+ Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,  Jason Gunthorpe
+ <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>, Itay Avraham
+ <itayavr@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, Chiara Meiohas
+ <cmeiohas@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>,
+ paul@paul-moore.com,  linux-security-module@vger.kernel.org
+Date: Thu, 09 Apr 2026 14:27:43 +0200
+In-Reply-To: <20260409121230.GA720371@unreal>
+References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
+	 <20260409121230.GA720371@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260325150048.168341-8-jiri@resnulli.us>
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-CM-TRANSID:LxC2BwDnH+1Bm9dphfUEAg--.11564S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw4xAF17ZFy8Ary5Wr4xCrg_yoW8XF13pF
+	Z5K3WftFWkJF4agF43Xr47uayYgan5JrW8JFnxt34Ut3sYyrn7Xw17Kr909FZrWFyfWw1F
+	yw42gFyDWF1kZ37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIF
+	4iUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgASBGnXEi8JxgAAsY
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19160-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-19161-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FREEMAIL_TO(0.00)[kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[roberto.sassu@huaweicloud.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 114163CA502
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:mid,nvidia.com:email]
+X-Rspamd-Queue-Id: 73FB03CA6D3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Wed, Mar 25, 2026 at 04:00:40PM +0100, jiri@resnulli.us wrote:
->From: Jiri Pirko <jiri@nvidia.com>
->
->Use ib_umem_list_load_or_get() and ib_umem_list_replace() to work
->with umem instead of ibcq->umem.
->
->Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+On Thu, 2026-04-09 at 15:12 +0300, Leon Romanovsky wrote:
+> On Tue, Mar 31, 2026 at 08:56:32AM +0300, Leon Romanovsky wrote:
+> > From Chiara:
+> >=20
+> > This patch set introduces a new BPF LSM hook to validate firmware comma=
+nds
+> > triggered by userspace before they are submitted to the device. The hoo=
+k
+> > runs after the command buffer is constructed, right before it is sent
+> > to firmware.
+>=20
+> <...>
+>=20
+> > ---
+> > Chiara Meiohas (4):
+> >       bpf: add firmware command validation hook
+> >       selftests/bpf: add test cases for fw_validate_cmd hook
+> >       RDMA/mlx5: Externally validate FW commands supplied in DEVX inter=
+face
+> >       fwctl/mlx5: Externally validate FW commands supplied in fwctl
+>=20
+> Hi,
+>=20
+> Can we get Ack from BPF/LSM side?
 
-This patch needs to be rebased on top of Leon's fix:
++ Paul, linux-security-module ML
 
-commit 911e5ca3e16975866739f49b6e24c858110110bc
-Author: Leon Romanovsky <leon@kernel.org>
-Date:   Wed Mar 25 20:16:03 2026 +0200
+Hi
 
-    RDMA/mlx4: Restrict external umem for CQ when copy_to_user() is used
+probably you also want to get an Ack from the LSM maintainer (added in
+CC with the list). Most likely, he will also ask you to create the
+security_*() functions counterparts of the BPF hooks.
 
-I will be reposting this patchset.
+Roberto
+
+> Thanks
+>=20
+> >=20
+> >  drivers/fwctl/mlx5/main.c                        | 12 +++++-
+> >  drivers/infiniband/hw/mlx5/devx.c                | 49 ++++++++++++++++=
+++------
+> >  include/linux/bpf_lsm.h                          | 41 ++++++++++++++++=
+++++
+> >  kernel/bpf/bpf_lsm.c                             | 11 ++++++
+> >  tools/testing/selftests/bpf/progs/verifier_lsm.c | 23 +++++++++++
+> >  5 files changed, 122 insertions(+), 14 deletions(-)
+> > ---
+> > base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
+> > change-id: 20260309-fw-lsm-hook-7c094f909ffc
+> >=20
+> > Best regards,
+> > -- =20
+> > Leon Romanovsky <leonro@nvidia.com>
+> >=20
+
 
