@@ -1,70 +1,70 @@
-Return-Path: <linux-rdma+bounces-19180-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19181-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QC5eJNHo12mrUggAu9opvQ
-	(envelope-from <linux-rdma+bounces-19180-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 19:58:41 +0200
+	id iDgqM33p12msUggAu9opvQ
+	(envelope-from <linux-rdma+bounces-19181-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:01:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1EA13CE5F0
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 19:58:40 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E893CE654
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AB34F3009B20
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 17:58:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 11F53300B2B4
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 18:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E703E0C5D;
-	Thu,  9 Apr 2026 17:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775482EBBA4;
+	Thu,  9 Apr 2026 18:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eEwC1Fck"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KGnIobnb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011063.outbound.protection.outlook.com [52.101.62.63])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011019.outbound.protection.outlook.com [40.93.194.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDC23B6C01;
-	Thu,  9 Apr 2026 17:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F318BE9;
+	Thu,  9 Apr 2026 18:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.19
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775757515; cv=fail; b=LFhFWQ7VRliFnbw2WK7qti+YVk3aM++P8Ho36qKgFHqArj5xXbrBujmKNMUTt4+Er2gfcOsrWZtaj4k0kqz/503sSv7Fl/eroZLd+9zS8knMtFGo4u0c22lLt4rT4i0cz1tWysfhpmyAKFkakYBbZ37nAWs/Pf2L4bCgvXTH7yw=
+	t=1775757687; cv=fail; b=rvCMZCv2qOL0jRdqZl8aKF0zai/SRErYE6eeQ4psgydcUE7L/vRf8U/kSqMjt8DIH59MzStpaZwVsG83ey1apukkcdRjesCCjYcMyagKG9b93CtjUHd71yGSNI40naziIVJi0tud76WthxwCLgf1ymVi4dcebbSzPHe/QkbXMUM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775757515; c=relaxed/simple;
-	bh=C2MkhaRjjXhgRuIAt7l02AFjhGu3A18jVwd7srxvNi4=;
+	s=arc-20240116; t=1775757687; c=relaxed/simple;
+	bh=VD0QTuEYlbMJoxOFpvxwU56KUAdRG0W3k85DOgf1bsQ=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KVCx2DtXuqIJIDI2PVE/y4jCeL8hbDopTr5NAjX8Fpr/Suy+TPAjtVBekTbWeeHvQaKorvdHzQwLFsLNm9BfKwqX2GAa/0RKJOouN3N9OtXu8HIWoeP45IKLxaVbhhGObKrvpMgFP8lz31iWbXuZtePowf1mrLsLB4UqP1d3k8M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=eEwC1Fck; arc=fail smtp.client-ip=52.101.62.63
+	 Content-Type:MIME-Version; b=BgA0L3lZ6jRwqaOOC+p9682GwF2gc6iSzeH/Ex+683yTpzoKetp+jA+tXtJ+JZLpR2HpHwV1EjLVNx8tHU9R+hRaxzNR4/RxF6+BcstBEnCtOvKW8S1N3DdTxlRYT3KaX9XVK5eWcmZAgsPKFqvxj2r6TgX6nJbgL5QV54Lq0q4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KGnIobnb; arc=fail smtp.client-ip=40.93.194.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KiujW6C+hS8IKYMH1y2kdRwM7qC8ItbYenENyuAEiWzacEek9Lqhwkb9oxDbeDibq6gR6TJWSMeFl00+Lp0wVtCxoeL/Zxiu46rnHuFdAKaVGxfDz0myBT/pZq2Oci9yaECi05qjbEPhmoxSFKB+hMoQEUjGICtoFGnhM2LMTomMZvktG+4xrMeQEVZnAHqiWHl0mJU/9qAaqV+/gsz032RekLHUU1kOXwJhUGdv3ov+5alVf92/nSoqfKiP5wr5gJtamLGST+UVxezlbPi3jr98GyO2U8PlBMEFMBQ0BYbXoze/piXwQZeHdWeDpd0pi3q95/7bkktYKIAW3C9qBg==
+ b=Y0J/NhIrA+crIjQVrh2enUEotTX1qFXJGZ2hXtF9KatSl2k3nrO21TY8wz68hwUIaXzdru/qKs+oTRJCz7f5BCIZCKqJd5J6vwOddQmTK89nfGpVJqh7WU6EwV9yxYpH7o5dx+uPPNvQO/1Rl7LyGvjjiLOqroiCk3YN8O1GRdgjYSEfzWsoP4FaS1hC9yvvi+rT2BHGsOjkmxLXL70BwaQ17OsXXCh1u2LD72/iNrt+y1ZuOCqCpy5YoquiuvEwbupbCZlgOgsQ0JFsMUOesAF6mhz5/GFoTt03wFjS6M47x+re/boIgKk8hcdRgt6yBCcgCMFOLtF2uoWgCaG1SA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2h1riok/It4UZTj4n/1LS5GlMxXRSw8Vlv0eIN2AQtw=;
- b=K8aghVEn7dE68kE/hacymUhpTT/jjibFwz3LREpiTPSWnz8Mm/zUUr2HxKH1Y6gXCJ8GBn/Q/cvo03SAZBcx7q4wUdKKskpnZ4vxoM0VDEuyKD50NOq5sHyA2UEWWwrHaRzp/sUfGRcrxv0xnBGboW54eoJ75jqP1mhjqrbKexeeueEo1Y2IFwThmAJlFN/1rpccXFIP6dJ/H6D855w3ndGUyzDk4j2Octl4lj0AB0wzJ73YqFM+1EN4++1ZQ4ri+WeQYxEbdqXI6nIeU2LM3h9Fi+j5WB6Du+5xzTtLIYu8nvsEt31SXHUxrG0vyMulE7QUY17JYHQnG2fb3WpsXw==
+ bh=gsVXQN+/sQaQZBGLP6IQ53xUABee2qenHVGFrVZX9vA=;
+ b=BxjUolsLa3GxvFDXmpxexhNb6Ynkyx2JmdL7231XwbQ+tX8C3fBhz9I47nZuNsRYmHdMWv4NFZqVl4q+iYOP4qHGMb1/0aQSxT+xhq9Wj6haiSD4HE3X1TjNomtudukwnjLH6wKGYd7lsaN68waJyvB+i3w6+YCXyrR6Ywgc7n2NYAotxp9wigx+FuVTKpH0FqLHxqjnw5F6poJYiuuPoXGNDDUG8kiF9sdzavDrGV1PjZShXwfXxaoc7TAhgg3CejEdQGvlRh9yBc5pW/W3Co1ZOPJ7Nz+tVQ/kg/BgRl/ORw8VUfblaEatLCuOC0q/ifpD7oOwEg637PfBj2poFQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2h1riok/It4UZTj4n/1LS5GlMxXRSw8Vlv0eIN2AQtw=;
- b=eEwC1FckMk4Y77ibwdqdQIs3reH0UdAowiQsQD+QeouGLL/rumHmXRt38Po/KPgjWPLyZICzn4Gl13B4Py0qHmyGV80dMCuo3O3B+2VfwBOSb0kZ/OLwwiHI2W0/2P9EPbW9zSCEhvqA1WXHAfnW4tTXDeRQ7ELiFARIK6CMTQ5EFmMJY8Nyfqs0R43YB+2ebPO4Y78yWhhxKOO56bG7WZ8hQH3OHfeXWkDGerHa2/N5ktqd6VnZUz03tNFI136W/v9xxTFqnLarMQc7hE+RZSSEISCsDsdxyI/rCsPzBgHBkaDDt7evpiZFBPRkVIhgCK4dR4Ec0yHhY45LrImuWg==
+ bh=gsVXQN+/sQaQZBGLP6IQ53xUABee2qenHVGFrVZX9vA=;
+ b=KGnIobnb/LOWfmjgLMsezVpdp7eOx4w5yWtiP/9kHenaqvCGoLl6u3dfumx2FAW2xgho17I1m4dsgCcluGu+TvB5974b25xKWvty/lfVGVQMP+6SvR35LfznrjqF+bqL2KG+rpX47ydbKnTgGWnxzW5ZlZdLstIwhc8m2EGdJATpGiU3YKK0lEGUvw8wQOJ9KYR/wuqUfnH1AR1HfjlsXW4vzj/rfBMsfKui3BeSX01gCHEVrgsEObmx2oAjKMxoQHMM3qvuTJ9Qh9fPmklPsD05hrE89yEPohhvC4xKG5N0AzIaATowXKP0qYkKle4YNbC2fdjmCtP2yu7ulyFaDQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from IA1PR12MB7541.namprd12.prod.outlook.com (2603:10b6:208:42f::13)
- by LV9PR12MB9831.namprd12.prod.outlook.com (2603:10b6:408:2e7::8) with
+ by IA0PR12MB8907.namprd12.prod.outlook.com (2603:10b6:208:492::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.19; Thu, 9 Apr
- 2026 17:58:30 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.20; Thu, 9 Apr
+ 2026 18:01:19 +0000
 Received: from IA1PR12MB7541.namprd12.prod.outlook.com
  ([fe80::4445:7716:8576:62c7]) by IA1PR12MB7541.namprd12.prod.outlook.com
  ([fe80::4445:7716:8576:62c7%5]) with mapi id 15.20.9769.018; Thu, 9 Apr 2026
- 17:58:30 +0000
-Message-ID: <bcd32076-5f52-4d8c-81da-7a2aed3990b0@nvidia.com>
-Date: Thu, 9 Apr 2026 20:58:26 +0300
+ 18:01:17 +0000
+Message-ID: <42467041-f99c-4a17-9c6c-1b09c1d9a094@nvidia.com>
+Date: Thu, 9 Apr 2026 21:01:14 +0300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/7] net/mlx5: E-Switch, move work queue
- generation counter
+Subject: Re: [PATCH net-next 4/7] net/mlx5: E-Switch, fix deadlock between
+ devlink lock and esw->wq
 To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
@@ -79,14 +79,14 @@ Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
  Dragos Tatulea <dtatulea@nvidia.com>
 References: <20260409115550.156419-1-tariqt@nvidia.com>
- <20260409115550.156419-3-tariqt@nvidia.com>
+ <20260409115550.156419-5-tariqt@nvidia.com>
 Content-Language: en-US
 From: Mark Bloch <mbloch@nvidia.com>
-In-Reply-To: <20260409115550.156419-3-tariqt@nvidia.com>
+In-Reply-To: <20260409115550.156419-5-tariqt@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TL2P290CA0030.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:3::16) To IA1PR12MB7541.namprd12.prod.outlook.com
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: TL2P290CA0019.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:3::14) To IA1PR12MB7541.namprd12.prod.outlook.com
  (2603:10b6:208:42f::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -95,84 +95,84 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB7541:EE_|LV9PR12MB9831:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2a75782-78ba-4e64-9f4c-08de96619b81
+X-MS-TrafficTypeDiagnostic: IA1PR12MB7541:EE_|IA0PR12MB8907:EE_
+X-MS-Office365-Filtering-Correlation-Id: edd6543c-39dc-48d4-9ee4-08de9661ff6b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|56012099003|18002099003|22082099003;
+	BCL:0;ARA:13230040|7416014|376014|1800799024|366016|56012099003|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	zJ6OR0J3e5t/7CICeeaMmPOEGsX6V4euX+19kqdEJhfywusgTIOI3mqr+NSgYi43NmpBqJWJLXn6Q3XcFk5WbSyeP4FrPcUg/5saIjpLQlryNj8ncz2hx77xsknmR8g3XOGjZ2MUEuuJc+AtAueuSJ7jz+hld5Q76M5ZcBxZaUk4sTkjPkyQX5fx/JfzGxHTnYOy8yKi12lDPz7ST0IuiUILIo/dbKsg2+I3bmkus7T7q/pe7jD8ESr8GiOkkh8n9kKW3ST0onProWj6+5Cn2oTgnWBbzjSqH8JqrDHPBb2jpKDaa1hZjoMyQ/D4MhLm4lC3y0waIZgW8ECO+nQURVBF6iU3CQ1CAkv22R4PUdqcs/cSKYDOCIN/3yW5Uhc9xFTErxg5gM5n5Hp+QMbBHfdwWj7ul1n2xoqZBNCJs9KEfIyZWQKjZF7D8oUtE09MuggDBmhlPSU920JcKudfn5lZEsRdIPsz/GvpSpfSyuANVJAbgDR6YqySuZCh5sshd+7YtVgpHBJ5y32B6E1B5rX4KuTjXXlMEgtP4KciWWZY3Ef3uZMnX4ze0n7kEsX6ATOPc7WbrdOLiASdAezSU7q+nJ0EX73fmtYDIuz1FQcLT9hf+kyp8dPIhClqFX8EYTjo4pzB/3CrUdVueFzUCPAZor4/02T3ef8EJ+NW3otWGNB7/JLkGoo1hiq7V1AEtyq4QWTMSu17TXmuqhTbnxQZZj/LA1hTIWXEcLdmjZ8=
+	YZz6d8O/dnGroxqyI8tTSBfGv4Po62CALdcusugp2uEBxsllgZXu8WHNrSsJOmEdngGtEGRUoX1C4tbBmyGxdnGaM58TPmHCsEq15V8Ve/S+N8jY5m5E8JlgAK1c5BLSpB+jo3tV6HH/s+aqMNIP7LLvX2TjiBqQPWYhXNfN5kQExc2xJyjhVTocvO1yVfqmlGrG0ePmktZxZqt9ImaZursMUpQBrdEhndf+TxkTqgCuwg2ZpzAJr9jaHy4nctzM9nfo+357iwQkK2JbaFaCyJUq/dW1NVzgDu8cwbTMyoPIh5bvFDWmVdcI9LTHoUbQKHHfi+zPjGjN2SXcTa/zvVERb+26yAwCL/1dtJbHchLq72f3e9/oonUQbRAaPPCB1roxtELFeHd3JUb8pW0U26phuGWm+B8jaM2u448UfOv6qodqyk1aG/bbxFSvyM1ABEC+sdJ+z8WxbcOjWk45i5cuH63Z5/l83oEDFbT7aMUuoAllvQUHbGrEvg7C0A+qQGWHYUBS+1hs5c2myk0zSZOjLbxdLg8gsaJh4bfN5ge5ZEtseALd9nR586TiqAwT4e5J5u3f3vwRdBMVSCESuWb5CH+gsalo1G7ihjQ/LcP0BKLA5aAbBkHmMvWhK9ShOBc0GxYBxgHxWGQdiZf6vRj60MCqAckkhMrXBK9/+cN0sDc1vgbsduBNpGdjnedUVVEbLumy2inxzih9FzhmOMgQ4mRLcEKbgV0tFhrFVSM=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7541.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7541.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NmNpNFdrYjJPeWJCcHo1Y0xzdno0L0lUNTc3T3JDL1VaQTMrYVNyQTVVS04z?=
- =?utf-8?B?cVdLRWkvRThHRCs0RVRRakNRdmtYRUl6SDZjbUlFbkc3blpZNWpYV0laQmVU?=
- =?utf-8?B?cE1TVHBiQVRmNWdsZnR3Z1hnM0czVzRlcXBlZEJJL0U3NFpZdFFwR2xXbXRT?=
- =?utf-8?B?V0NEdU84MDlTbHROZ2xiTlFESS9iUFdMR1VqRXRxam5HN1JNY3htN29sWXN4?=
- =?utf-8?B?VFFtQWdxWE5KZ0w0cit1YVFrN0N2SlJaek5wVXB4c2V2T1FWMW5lVDhtZlZr?=
- =?utf-8?B?Uk1TbDRnM0JadzFUL0JXaW5sUVBNN0ljL1N0TEVmYlZtNVJVeDJ3dVlKWktw?=
- =?utf-8?B?aXY1aEM2Zm9kbTd5d2VPMVpDNk5QSE5DRnpNUExYT1QwbjRUb2syZ0ptdjFV?=
- =?utf-8?B?eTRPR0x6RXFXdjlDS1ZQc3ZwTWl5TFBlNjZFTHFKS0ZPWE5qdVpvbGtoUnNN?=
- =?utf-8?B?d0Z0KzRuRFlPdnl3SmFrc3NBVFZRTVRacjVVNlpWL1FObDR6SHdnb0U4ZlIy?=
- =?utf-8?B?QkRNdUxSZHJlV2dGTnYxRUR0ZVB6ajR1ZlpVTmxaUmxrSDhpR1oyK3diMlFn?=
- =?utf-8?B?M3ZFekpERDEyOWZVb0ltQ1ZDMVdFdUhTYmZCbmxMOGFLTHFZLy9YTXRxSmJx?=
- =?utf-8?B?L1BnazJma1dKV1dDM3RMcW5lQ0tOZGlrOUswUkREQngxeFVKZFhubEJvZGJ3?=
- =?utf-8?B?aFNtdm9JUThzcFJVeldSWUZDQnlBOVNpdHFjRnRzMmJ5Z3RKVkNvNFNiL3hI?=
- =?utf-8?B?Z2RoQkFYTXdYKytXL0VQNzRnb3o4VHcxYmRnTWNhRTJPNjFhdVhPWXlaRkc1?=
- =?utf-8?B?R1NzOExuUm12cjk1RGxkSW1vTGJScktlRityaFpUZmZsdG1TMGYxUFZPMFBo?=
- =?utf-8?B?eVR4a2M4V1ZHaGY5a01oV1FESTlUcE9rTWZYejhKOWVvNVF5UStzQzlOSGVn?=
- =?utf-8?B?em1tMkFsNTJYb0czTTUweUJxM0JMaFhyL3NDdm55Q0ZpWm5qcDdLNUtGeG1B?=
- =?utf-8?B?Wm9veTMwV0xBUnBpY3JJUk5hU05Fay9HN0RtTDIwZlBmVGJJQS9QV0NtemE1?=
- =?utf-8?B?TzVJREZrYTF2RGxwWGdSYkw3Rmt2RzZJVGtIT01LdWEzSnBmek12RnJwREFZ?=
- =?utf-8?B?ZzlrYkJjNjcxemFGRmV6MndCOEZwcHZoZ1hjU1FQNFFtRG1CUXo2eUl5SS84?=
- =?utf-8?B?V2JoVWlIOG1ncXBHU21pUTQrN0FaUWhlclV3UTRtYS9wWllZenJ0R1FtaVBi?=
- =?utf-8?B?UDNtSXU2TFBQb3F5RFYxNGhoZHg0MXdkUHFvSWp2UnJ3UGk4SUV1dUJTLzI1?=
- =?utf-8?B?OURRV0c5aGtPSm0vSFVGUUtuZFJKbDJlYTdCVlB0UDU4WTdaSTJRcGw5cGI5?=
- =?utf-8?B?NVNBaUJUYUNRdEo4dWsxclVMVVkzMVMyL01Xa2g4RkM3TXgxRk1LTjNEcHM2?=
- =?utf-8?B?YXViV1l2eitIZnVKZktNUEJUTHhieXpHdTl2Wm84Nkt1aStIM3IvUEU1dHVJ?=
- =?utf-8?B?Y251TUttL3pkUGkvZUdZVG9EUHkzcVZPbmQvNUx6cUpVQUVYTnBMcDVvczBa?=
- =?utf-8?B?eFd3Q1NqNzh1aFZXQzAvU0JRRHpwaHUrZXltb3UrNDNjbXhZZVRSRnNwUkp6?=
- =?utf-8?B?R2IxZmRzWkRHOHF0bFVwQVozbGhsTU5WUWZ1cjAyZDV4N1AybGl3VjFHWXhR?=
- =?utf-8?B?OHpOK3o0eU56eTEvWWs0NG5mUzNSRTdUYWZoRndKUXROSkN6V2F0Y2dhN2gv?=
- =?utf-8?B?dHRRNXc1dGYwQzBPQ0wwQS9HK0kyVnFoMElaUERjMVNiRDZDZ0FNRU80M0hy?=
- =?utf-8?B?WnlPSFhEZGk1dUVlUXdQWDNwS2VIYnUzWFdlOGY4VzFRdXptSmNtTEM4cjZE?=
- =?utf-8?B?dFBvWlZjNG03cFVyVDNqZGQrUEhXRi9iWGErTURXM0JUT0VRQmZWTlNYbkVp?=
- =?utf-8?B?bDYvbktFdE41Z3E2SXNqRlhac0lnOGd5YVovYlcrUlhzM0Fjc1d2dGkxbDd2?=
- =?utf-8?B?aXh5UXlEYllHVjRSZ3lGOXZ2STdGVXRIMUpTZVRTVUFDNXVKSEJtT1h1Zkp3?=
- =?utf-8?B?VXJnSWt3bWZzRWdpOHNSSys1R1pzSW51bmNtSG1hSDgrQUpPa2Z1M1BLSXlP?=
- =?utf-8?B?dlJERVRjaXZWbHArT2xTRlZPTmo1UVVaSjdLK2JNbHpOaXROWWF0aU9qd2JV?=
- =?utf-8?B?cG15NjZCZW1SYmtBY3B2THc2ZzJHTUJsWkRRY1hoL25vUUhIaEZ3czN2eFIx?=
- =?utf-8?B?N2ZRS0dJTlFvWDdIVXhZWnEyY0cxS0doQ3cwZWFLRW1HZ3ozQjZubmZ5S2RY?=
- =?utf-8?B?R1Y5aldBaWNLTWFXbVJKdElQV1JRUmw3QTE0ejFLdEo0U1lkZU96UT09?=
+	=?utf-8?B?WXhUeEJWd3BpaHVDc0c3V0IvN2dadFgxVXI4STZVN0VpWGl6YkloTktKM2VX?=
+ =?utf-8?B?RUxmRmIrVWlwTmhEVTBDL2pSNmFDT0pLT3dPV3dZTGUxd25Db1VaeWNFVVZa?=
+ =?utf-8?B?NGxFeHlRUVJiUmZhUjRGMG55S0M4cDVhSStjQTYrUDhTYWFPU21aY1QrNTdL?=
+ =?utf-8?B?YzFFcExjQlkzUTdlM0tEZDh6cXcvSzd4YUQvZG5ibnRHTS9xUkxpdjgybFc0?=
+ =?utf-8?B?YkFDaXdSejhrQ3BER0NFM0NnVnA1NEY2bWQ5cUQxWjlaTWswR2ZOditINnM3?=
+ =?utf-8?B?bUdWS0wyanlLb0d0MTUzLzhJRTFSWjlRTXJWc1EvamprdlNZeGVxWUF2L1Ny?=
+ =?utf-8?B?RGhoMXRKM3NIZGN1TnRoYkJ6aWJtTTBuOHZBSU5WRG0rblJvcG9TblpJdUhP?=
+ =?utf-8?B?UWdSbStuVUpUdmtFSDllc0lWWm1abFM3YmhOeHdQRFV5TndqZUpwUlFUUVZP?=
+ =?utf-8?B?L0o2RGxCRGxTTEwrSUMvbDRSalA5OHRWd2plOGxjRHlzNjl6SnNwOEtNQ0R1?=
+ =?utf-8?B?emVxMzZiN0Q3cjVUR2lsN0xGQ1hBYkFoNVVXTDBSNGZGMENYUEowTmZDS2NI?=
+ =?utf-8?B?TVdtbTJtbEhvdGdhaEpyTEFXUEVBTDlSSktBSXBJektyN2ZVcFJNRW9EaCt1?=
+ =?utf-8?B?aGNBSmFvNzh6N0dMaFlvaGx1K3lhVWluVmNZcWQ2WnJNcHdsM3pGblpaNFJK?=
+ =?utf-8?B?d3FNN21QcjNxcDRBVU1GR1RuckJhdDUyY2tJZk8rR0QyVmFqN2kzOHFWWTRv?=
+ =?utf-8?B?VFhUZWFtWjVsU01wQ0IxK2QveG5hN0I3V0FoYThOa2VyUzRyZzRpckR3dEU2?=
+ =?utf-8?B?YmNDTVk2QjM2eExxL0VZR0VWLzR2Sk9aS1cxSCtQUnFHb0F1bWU2TWd1cXl6?=
+ =?utf-8?B?QWtER09SZWMzaDBZZ1Y5L2ptQVV5S3hmZWNrZ05KaE5obnJjTWNYWjJHTE1O?=
+ =?utf-8?B?UEtyMU1TQzlKS1I3ZTN1OXdXMEU2MkdUS0RDK2JsWlQ2NXg3dzlGdjQ4cGsr?=
+ =?utf-8?B?YlhPckVvZHNQSnhwajd1aldiUklzbTFTNjhQVGVwTTJJN1RLVW5EcTJYRm5S?=
+ =?utf-8?B?RnppL0MvRTh6T0tCS2NUS20yajRDbTg0aDY3Tnk2YTJyTzBtampScE0zQVRP?=
+ =?utf-8?B?WEJNa3c4VzJYUVdlbEkvM005Mm94NnB3cjV0cUw4S0pnb0I4cXNaMHRLUjFU?=
+ =?utf-8?B?elJBaFRhSTVmaFNTT24yVUg5eHRhU1lhaHJ4Rk5HU25rcUQ2aEtOSHFDYUJU?=
+ =?utf-8?B?djdXOW9xVEVTci9zU3NwTm9vNmFyUWtQb1AwRFFNYWN4RnJFS3BXQ0xuTGZq?=
+ =?utf-8?B?bmo4TENrTVRIOUxCdnM2M2lYRXBwL2ZoOGhlYjZ3R1dRUTdCb2I5Sk5tbHpr?=
+ =?utf-8?B?cmREMVB3TUJwdVE4TU4yQ0tIN3o2TkpLN0hKWWE1RnZudlg4ZTNlSm4yZ0lK?=
+ =?utf-8?B?K0xnWjBDT0pPV0NwUTlvSDZjb0t4Sjhjd2VKcEFFVmRHeTdHeHVXdHNaMTlI?=
+ =?utf-8?B?bndESHp3NndHVDgzaW1STXZaSzNqeTdQZ3RxRElhK1F0NHhiRWhOd1RDMGlh?=
+ =?utf-8?B?eGhmaWV4KzZKdmwzdnlhZzNpZEdheEtTTlgyckE5YnI1WERvNHNvQ1B3dnl5?=
+ =?utf-8?B?VWhQSHJjcDNtSzg5N25GSlF0Wmk3cTFNeVFLUkRDT1RkWi9iKzAzS1l2Wmxl?=
+ =?utf-8?B?akxKR3g3ZWhtQlI2TFFMVWM4STYrOHkvek5XZWt2ajRKbW9JT3ZzOXBLS05p?=
+ =?utf-8?B?K0JraHZRNCt0NlVhL2NpY2Fqc1JpeE96VFJBK2RXc2dSVGJja1VIOW5ML1ZU?=
+ =?utf-8?B?ZDdkNko4aUhuUXY5VVNDTXd4SHVWNjRCRyt0NzhVMmdKbVVOUHZwcGlBVnM3?=
+ =?utf-8?B?UmlYMW1EakhpVDRvZ3htU203dU0rRW9XQnRCaDM5Tyt5NnN4UUk3azltelVZ?=
+ =?utf-8?B?WC9hTFIxb2I4WFY0eHRybks1enJCcnlRaXhhek1CdTdoMFJheGpWME4vL1ZN?=
+ =?utf-8?B?dHUyWkhmM1VpTHlqV3o0dXhFTmxQTjZrTVpjVFpMaVJWMUtjYVkwK3ZFMWRN?=
+ =?utf-8?B?cHNaWWVGYVh0OENOWERLWkd1WVdpQjI0QkljYnd1QmthcTFCamE1Y05SbVQ3?=
+ =?utf-8?B?RGhPdmFLQ3hiU24vSEJzVmhQZ2pzY2h2RTBUZlFVeVAvNjJQMUVKU2hVR0Y3?=
+ =?utf-8?B?TUlzeEhBSVdOS0x4THo0WnR5RkQ1UjF6M1VqU2JGVlVUbFpFUHY4Ujh3am5u?=
+ =?utf-8?B?Y1FPby9jVVZhcHM2RnN2dUVhN3FXNzRseGRFN3JkWU91RkZOckI3RVlaNHpp?=
+ =?utf-8?B?bko5dXIwZnpaWW5VVkI4b21CeVZZMUF5NzVKYWh1Wk0vS3JIbmFldz09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2a75782-78ba-4e64-9f4c-08de96619b81
+X-MS-Exchange-CrossTenant-Network-Message-Id: edd6543c-39dc-48d4-9ee4-08de9661ff6b
 X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB7541.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2026 17:58:29.9644
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2026 18:01:17.6373
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TREhFxF39HBav8lGKavjBAPU1rLxhPkqy78enoOUpKNAnKxNPlIXICo7fs3jMPaekO3EUjG2wOzxQh7AnnIj+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV9PR12MB9831
+X-MS-Exchange-CrossTenant-UserPrincipalName: eEAhff9bMTscwdiEShvYmRrQU816XbC40aYFQBVh6BRX9b5nbFBNwSI6ZlS6gk2ZYcxcrPuU8iLDlPoZycajmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8907
 X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19180-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19181-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCPT_COUNT_TWELVE(0.00)[25];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
@@ -182,7 +182,7 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: E1EA13CE5F0
+X-Rspamd-Queue-Id: D0E893CE654
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -191,116 +191,210 @@ X-Rspamd-Server: lfdr
 On 09/04/2026 14:55, Tariq Toukan wrote:
 > From: Mark Bloch <mbloch@nvidia.com>
 > 
-> The generation counter in mlx5_esw_functions is used to detect stale
-> work items on the E-Switch work queue. Move it from mlx5_esw_functions
-> to the top-level mlx5_eswitch struct so it can guard all work types,
-> not just function-change events.
+> mlx5_eswitch_cleanup() calls destroy_workqueue() while holding the
+> devlink lock (via mlx5_uninit_one()). Workers on the queue call
+> devl_lock() before checking whether their work is stale, which
+> deadlocks:
 > 
-> This is a mechanical refactor: no behavioral change.
+>   mlx5_uninit_one (holds devlink lock)
+>     mlx5_eswitch_cleanup()
+>       destroy_workqueue()     <- waits for workers to finish
+>                                  worker: devl_lock() <- blocked on
+>                                          devlink lock held above
+> 
+> The same pattern affects mlx5_devlink_eswitch_mode_set(), which can
+> drain the queue while holding devlink lock.
+> 
+> Fix by making esw_wq_handler() check the generation counter BEFORE
+> acquiring the devlink lock, using devl_trylock() in a loop with
+> cond_resched(). If the work is stale the handler exits immediately
+> without ever contending for the lock.
+> 
+> To guarantee stale detection, increment the generation counter at
+> every E-Switch operation boundary:
+> 
+> - mlx5_eswitch_cleanup(): increment before destroy_workqueue() so
+>   any in-flight worker sees stale and drains without blocking. Also
+>   move mlx5_esw_qos_cleanup() to after destroy_workqueue() so it
+>   runs only once all workers have finished.
+> - mlx5_devlink_eswitch_mode_set(): increment before starting the
+>   mode change so workers from the previous mode are discarded.
+> - mlx5_eswitch_disable(): increment so workers queued before the
+>   disable see stale and exit.
+> - mlx5_eswitch_enable() and mlx5_eswitch_disable_sriov(): increment
+>   so in-flight work against an old VF count or mode is discarded
+>   when these operations begin.
+> 
+> Remove the conditional atomic_inc() in
+> mlx5_eswitch_event_handler_unregister(); the mlx5_eswitch_disable()
+> increment now covers it unconditionally and earlier in the call chain.
 > 
 > Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 > Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch.c          | 3 ++-
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch.h          | 2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 4 ++--
->  3 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> index 123c96716a54..1986d4d0e886 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> @@ -1075,7 +1075,7 @@ static void mlx5_eswitch_event_handler_unregister(struct mlx5_eswitch *esw)
->  	if (esw->mode == MLX5_ESWITCH_OFFLOADS &&
->  	    mlx5_eswitch_is_funcs_handler(esw->dev)) {
->  		mlx5_eq_notifier_unregister(esw->dev, &esw->esw_funcs.nb);
-> -		atomic_inc(&esw->esw_funcs.generation);
-> +		atomic_inc(&esw->generation);
->  	}
->  }
->  
-> @@ -2072,6 +2072,7 @@ int mlx5_eswitch_init(struct mlx5_core_dev *dev)
->  	mutex_init(&esw->state_lock);
->  	init_rwsem(&esw->mode_lock);
->  	refcount_set(&esw->qos.refcnt, 0);
-> +	atomic_set(&esw->generation, 0);
->  
->  	esw->enabled_vports = 0;
->  	esw->offloads.inline_mode = MLX5_INLINE_MODE_NONE;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> index 5128f5020dae..0c3d2bdebf8c 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> @@ -340,7 +340,6 @@ struct mlx5_host_work {
->  
->  struct mlx5_esw_functions {
->  	struct mlx5_nb		nb;
-> -	atomic_t		generation;
->  	bool			host_funcs_disabled;
->  	u16			num_vfs;
->  	u16			num_ec_vfs;
-> @@ -410,6 +409,7 @@ struct mlx5_eswitch {
->  	struct mlx5_devcom_comp_dev *devcom;
->  	u16 enabled_ipsec_vf_count;
->  	bool eswitch_operation_in_progress;
-> +	atomic_t generation;
->  };
->  
->  void esw_offloads_disable(struct mlx5_eswitch *esw);
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> index a078d06f4567..b2e7294d3a5c 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> @@ -3667,7 +3667,7 @@ esw_vfs_changed_event_handler(struct mlx5_eswitch *esw, int work_gen,
->  	devl_lock(devlink);
->  
->  	/* Stale work from one or more mode changes ago. Bail out. */
-> -	if (work_gen != atomic_read(&esw->esw_funcs.generation))
-> +	if (work_gen != atomic_read(&esw->generation))
->  		goto unlock;
 
 Sashiko writes:
 
-> Does this generation counter pattern allow stale work to bypass the guard?
-> While this issue seems to have existed before this patch, it appears the
-> notifier can execute concurrently with the teardown path, creating a race
-> condition.
-> If a concurrent hardware event triggers mlx5_esw_funcs_changed_handler() on
-> another CPU during mode teardown:
-> 1. The teardown path calls mlx5_eswitch_event_handler_unregister(), which
->    unregisters the notifier and increments esw->generation.
-> 2. mlx5_eq_notifier_unregister() removes the callback but does not
->    synchronize with currently executing RCU readers.
-> 3. The concurrently running notifier reads the newly incremented generation
->    number via atomic_read(&esw->generation) and queues host_work with it.
-> 4. The worker thread (esw_vfs_changed_event_handler) blocks waiting for
->    devl_lock(devlink), which is currently held by the teardown thread.
-> 5. Once teardown finishes transitioning to legacy mode and drops the lock,
->    the worker resumes and checks the generation.
-> 6. Since both the work_gen and esw->generation match the newly incremented
->    value, the guard is bypassed.
-> Because teardown set esw_funcs.num_vfs = 0 but firmware might still report
-> new_num_vfs > 0 (as VFs remain active), the worker calls
-> mlx5_eswitch_load_vf_vports(). Could this execute offloads-specific
-> initialization while the eswitch is in legacy mode and lead to state
-> corruption?
+> This commit modifies the E-Switch workqueue handlers to use a generation
+> counter and a trylock loop to avoid deadlocks when tearing down the
+> workqueue while holding the devlink lock.
+> Does the open-coded trylock retry loop in esw_wq_handler() violate the
+> networking subsystem locking guidelines?
+> The updated handler uses a loop that repeatedly calls devl_trylock() and
+> cond_resched() to wait for the lock. The networking guidelines explicitly
+> warn that using a trylock in a loop to avoid a lock ordering issue is a
+> sign of incorrect locking design.
+> Can this lead to a priority inversion livelock? If a thread holds the
+> devlink lock for a long-running operation and is preempted, a worker thread
+> with a higher scheduling priority could spin continuously in this loop,
+> preventing the lock holder from ever completing its work and releasing the
+> lock.
 
-False positive, atomic_notifier_call_chain() runs under rcu
-read lock, while atomic_notifier_chain_unregister()
-performs a synchronize_rcu() before returning.
+There is no such worker today, although in theory such a scenario is
+possible. It is the driver’s responsibility to ensure that long-held
+devlink locks are not combined with conditions that could lead to such
+starvation.
+
+> Does moving the atomic_inc() of esw->generation before unregistering the EQ
+> notifier introduce a race condition?
+> In mlx5_eswitch_disable() and mlx5_devlink_eswitch_mode_set(), the
+> generation counter is now incremented before mlx5_eswitch_disable_locked()
+> unregisters the asynchronous EQ notifier.
+> If a hardware EQ event fires in the narrow window after the generation
+> counter is incremented but before the notifier is unregistered:
+> - The event handler queues a new work item tagged with the newly incremented
+>   generation counter.
+> - The teardown or mode change finishes and releases the devlink lock.
+> - The worker thread executes, and because its host_work->work_gen matches
+>   the new esw->generation, the stale check evaluates to false.
+> - The worker then executes its payload on an E-Switch that has already been
+>   transitioned to legacy mode or disabled.
+> Could this sequence lead to state corruption by running offloads setup code
+> on a torn-down E-Switch?
+
+Good catch, this looks like a real issue don't know why our internal sashiko
+didn't flag this :/
+
+In both mlx5_devlink_eswitch_mode_set() and mlx5_eswitch_disable(),
+the atomic_inc() should come after
+mlx5_eswitch_disable_locked() to avoid the race described above.
+
+Commit aed763abf0e905b4b8d747d1ba9e172961572f57 was intended to address
+this class of problems. Some of the discussion around it can be found here:
+https://lore.kernel.org/all/1769503961-124173-3-git-send-email-tariqt@nvidia.com/
+
+However, Cosmin’s approach does not cover all deadlock scenarios.
+Specifically, mlx5_eswitch_cleanup() is invoked under the devlink lock
+and calls destroy_workqueue(esw->work_queue). If work was already queued,
+this can still lead to a deadlock.
+
+It’s also worth noting that mlx5_eswitch_cleanup() is only reached when
+the driver is being torn down. At that point we must guarantee that all
+resources are freed, so some form of synchronization / waiting is
+unavoidable.
 
 Mark
+
+
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/eswitch.c  | 11 +++++++----
+>  .../mellanox/mlx5/core/eswitch_offloads.c      | 18 +++++++++++++++++-
+>  2 files changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> index 1986d4d0e886..d315484390c8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> @@ -1073,10 +1073,8 @@ static void mlx5_eswitch_event_handler_register(struct mlx5_eswitch *esw)
+>  static void mlx5_eswitch_event_handler_unregister(struct mlx5_eswitch *esw)
+>  {
+>  	if (esw->mode == MLX5_ESWITCH_OFFLOADS &&
+> -	    mlx5_eswitch_is_funcs_handler(esw->dev)) {
+> +	    mlx5_eswitch_is_funcs_handler(esw->dev))
+>  		mlx5_eq_notifier_unregister(esw->dev, &esw->esw_funcs.nb);
+> -		atomic_inc(&esw->generation);
+> -	}
+>  }
 >  
->  	new_num_vfs = MLX5_GET(query_esw_functions_out, out,
-> @@ -3729,7 +3729,7 @@ int mlx5_esw_funcs_changed_handler(struct notifier_block *nb, unsigned long type
->  	esw = container_of(esw_funcs, struct mlx5_eswitch, esw_funcs);
+>  static void mlx5_eswitch_clear_vf_vports_info(struct mlx5_eswitch *esw)
+> @@ -1701,6 +1699,8 @@ int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int num_vfs)
+>  	if (toggle_lag)
+>  		mlx5_lag_disable_change(esw->dev);
 >  
->  	host_work->esw = esw;
-> -	host_work->work_gen = atomic_read(&esw_funcs->generation);
-> +	host_work->work_gen = atomic_read(&esw->generation);
+> +	atomic_inc(&esw->generation);
+> +
+>  	if (!mlx5_esw_is_fdb_created(esw)) {
+>  		ret = mlx5_eswitch_enable_locked(esw, num_vfs);
+>  	} else {
+> @@ -1745,6 +1745,7 @@ void mlx5_eswitch_disable_sriov(struct mlx5_eswitch *esw, bool clear_vf)
+>  	esw_info(esw->dev, "Unload vfs: mode(%s), nvfs(%d), necvfs(%d), active vports(%d)\n",
+>  		 esw->mode == MLX5_ESWITCH_LEGACY ? "LEGACY" : "OFFLOADS",
+>  		 esw->esw_funcs.num_vfs, esw->esw_funcs.num_ec_vfs, esw->enabled_vports);
+> +	atomic_inc(&esw->generation);
 >  
->  	INIT_WORK(&host_work->work, esw_functions_changed_event_handler);
->  	queue_work(esw->work_queue, &host_work->work);
+>  	if (!mlx5_core_is_ecpf(esw->dev)) {
+>  		mlx5_eswitch_unload_vf_vports(esw, esw->esw_funcs.num_vfs);
+> @@ -1809,6 +1810,7 @@ void mlx5_eswitch_disable(struct mlx5_eswitch *esw)
+>  		return;
+>  
+>  	devl_assert_locked(priv_to_devlink(esw->dev));
+> +	atomic_inc(&esw->generation);
+>  	mlx5_lag_disable_change(esw->dev);
+>  	mlx5_eswitch_disable_locked(esw);
+>  	esw->mode = MLX5_ESWITCH_LEGACY;
+> @@ -2110,8 +2112,9 @@ void mlx5_eswitch_cleanup(struct mlx5_eswitch *esw)
+>  
+>  	esw_info(esw->dev, "cleanup\n");
+>  
+> -	mlx5_esw_qos_cleanup(esw);
+> +	atomic_inc(&esw->generation);
+>  	destroy_workqueue(esw->work_queue);
+> +	mlx5_esw_qos_cleanup(esw);
+>  	WARN_ON(refcount_read(&esw->qos.refcnt));
+>  	mutex_destroy(&esw->state_lock);
+>  	WARN_ON(!xa_empty(&esw->offloads.vhca_map));
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+> index 23af5a12dc07..988595e1b425 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+> @@ -3699,7 +3699,20 @@ static void esw_wq_handler(struct work_struct *work)
+>  	esw = host_work->esw;
+>  	devlink = priv_to_devlink(esw->dev);
+>  
+> -	devl_lock(devlink);
+> +	/* Check for stale work BEFORE acquiring devlink lock.
+> +	 * mlx5_eswitch_cleanup() increments the generation counter
+> +	 * before destroy_workqueue() while holding devlink lock,
+> +	 * so acquiring devlink lock here would deadlock.
+> +	 */
+> +	for (;;) {
+> +		if (host_work->work_gen != atomic_read(&esw->generation))
+> +			goto free;
+> +
+> +		if (devl_trylock(devlink))
+> +			break;
+> +
+> +		cond_resched();
+> +	}
+>  
+>  	/* Stale work from one or more mode changes ago. Bail out. */
+>  	if (host_work->work_gen != atomic_read(&esw->generation))
+> @@ -3709,6 +3722,7 @@ static void esw_wq_handler(struct work_struct *work)
+>  
+>  unlock:
+>  	devl_unlock(devlink);
+> +free:
+>  	kfree(host_work);
+>  }
+>  
+> @@ -4161,6 +4175,8 @@ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
+>  		goto skip;
+>  	}
+>  
+> +	atomic_inc(&esw->generation);
+> +
+>  	if (mlx5_mode == MLX5_ESWITCH_LEGACY)
+>  		esw->dev->priv.flags |= MLX5_PRIV_FLAGS_SWITCH_LEGACY;
+>  	if (mlx5_mode == MLX5_ESWITCH_OFFLOADS)
 
 
