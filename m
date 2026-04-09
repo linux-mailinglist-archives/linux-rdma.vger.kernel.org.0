@@ -1,70 +1,70 @@
-Return-Path: <linux-rdma+bounces-19182-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19183-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UCgaO7vp12msUggAu9opvQ
-	(envelope-from <linux-rdma+bounces-19182-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:02:35 +0200
+	id CEF1KOPp12msUggAu9opvQ
+	(envelope-from <linux-rdma+bounces-19183-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:03:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6DB3CE66A
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3FF3CE69C
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:03:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C39E2300A3A3
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 18:02:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D37B03026A8E
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 18:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7273AE713;
-	Thu,  9 Apr 2026 18:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 524623E0C55;
+	Thu,  9 Apr 2026 18:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lMc8pwY0"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="k/EQjOLH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011021.outbound.protection.outlook.com [52.101.62.21])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012043.outbound.protection.outlook.com [40.107.200.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88991A682F;
-	Thu,  9 Apr 2026 18:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F703321DC;
+	Thu,  9 Apr 2026 18:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.43
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775757748; cv=fail; b=rrjgezcJcjGGpJXw4QWWzkyp3VhK/vsaaii6DRmHIrB76Uo9u0eJ+WkC4N+lQhkIyT97vm9eJVZsgo3glGO0gwEi68uqFnRGKuYdxmlSxs9VhLZ932ltw1S9o0O14ABxxZB0G4br+8tpGFQgDiG2YFMO6ei7IxvY9sG56ULb648=
+	t=1775757753; cv=fail; b=Xbo/TyjZO4Lmb0A1fr0F3mlqgwyKc/zPx8aX8zIbLBaqzsrBbfluOqBmbxiW3fGD00WE1rRS9bR9DpAneR5sBvqRSYTNvKOldlSIdfjz7V9Ka5nG+8Iu615DO5oAncPteGbPPW7G6SOH2UGqf2N92gBXhBYBEYD4YYcUcQBKoZg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775757748; c=relaxed/simple;
-	bh=vL3pYTYIfuFpmj2H/dYWWd7v1OLWAXcm8l3pNTa4CtY=;
+	s=arc-20240116; t=1775757753; c=relaxed/simple;
+	bh=YmijSEkUsb0iY51z1i/HikJVOBC3MBYMU6L2SppTgTU=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=a7P06TP2AluntWTfzT7h9wDHCKmSTGGTQRN2ru9ni0ZcYFjh5QDdZ8XLwZ/1Zxm1Q5hZ41COQ5nh8nxwHpkyIHRdtCThaJnvGFgC/gVKWTXDwBMjDnuMr3NogZv9xu+CvpFJFZB5oZm7BTrlSoaZleY7FUp5PN2smKFE1qP8aso=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lMc8pwY0; arc=fail smtp.client-ip=52.101.62.21
+	 Content-Type:MIME-Version; b=CMTe53QVkqQl9joLF2VRzLj5WIhLPG5YL00YqZyZoty1rlMEqAmM2yulVYAfLy7LsxRTIgnK6w/JkMg5SVGNxoi2nTabE00LvVoSDRYT/PljXJne5kz+56CdIlQAdAVtNLJC1rePNkU7agWpCBUENdCo+95qPpRMQqulFtzVhcs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=k/EQjOLH; arc=fail smtp.client-ip=40.107.200.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ePSX24uGXJHxIgsrcF2km3O8B5wi8vc4tu2QvODKQUMZzFamm0QdegiWZBuY2cxNT9oT28k7iInxBFJtdV+YzasGEpLEcNKoWytiRb8acJlO3xbIZ+kjinbFa6HkCRu3e56355Z7x3TrVfbIKVQbEMtvZip47k1GgvXR+/kf9YhNtipZ0uLeBhLSrLvCuqZlhwI3xWlXl8io08k19zK6rBntpe/9SnMX6vw1uK1btgW5P4KC5yNNWhnxStmahcQZY81RR5FiRR3dUwj/hNueo16CJsVNmEWmj8s1GJcT2MQS2EAEmA/oc9POyTzfXq4UIUjaHAZauU7G40FAkUdItw==
+ b=yH8YZemGgAVXoSn/lNY+ipi0aa8sLEzhva/WbB3Up1YbUB2EK3UTkR+3eLf73DWmMHmYdcKjxy50HZQSyRzB3MCxljbKdq6LPpVU+sbdNYNxdoXRt3FyzThgc9ABYYgkYk6zYhEHiO+2GEWHXlZZT/HaScqwqVjfq2zkljES/+nv1FdFwOC8sRStGkMdQzlz1SQVV8VPIkBBARhPCqBfjbghefV8ihjgVkfW+45EgBn6QukRVigSLOwLmTwrMRw1K5AKZfTrvUsQFNvlfVPsyu8PAhgpyfrTBIwqZllmrIP7QgUN43Uq8fzDShqmfxxzUU25YZO4yqqmrAMJqCKb7g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RPxw+I8iaQ899hP61gkED7c+bAoWDuPn9FESOxXC/vg=;
- b=Vg98zENWWfN2/erpbsyfxT7tWZPA1k3vZbjKNuqgYWKlrKM4wWJ+gBxzx9nq4WB3tz1Havfdulsf9mbCQQlzN4PDJVAETNr++Rbwgr2xZjIFE6FjVbYxf3+A9z7hmNTS5Ck8GYHVBDrRzznKDDkOGtPSiNL2bBLObZKINe2lZ2fZpe/6At8aQ+o2pw9F+Es98ebaTNbJbUAQGpBSlD8r0QpfiSMWv/np0t9vTr8Ac1S7w0cJ9gzHqWXnzwOHhhvDFOwHgFkWtQ/2w0a3zlGGZ8Meu1It/U0frxhUmpN0JHgWuPsRXwReqDPcrKYVPmGj3Tj5BNwFouTTMPEFhw/lNQ==
+ bh=r992cBmiKdLj8/gvJFcGmafapo5pBCHX2hu3j/nuEnA=;
+ b=yMxKByrrneEvZXaWpgPJ+lo1LpVdW1Gjs9LtEz3zTOC86P5FQTRYaZ2LSLfx4m4Dy0AW0D9jbCj+tmmZaKgIYKqgVbd8O0wo8crTnktspMFMItN00eZL8Mf9wUMOP2CHd/k6jODgVxoYoL6X7SjSE4OstsjG3vxzr4GXoUa4xXH/MXqXY3khuuu1S7ahPmsFUQ3NErLdDpwZvPNG3naxzoUezgDi1IxSjpmlVcuLTo2KWJWi9RykTBlTlBjXcJb/yMAyvGLvXcp5vRy6AWRumitpqNzDpGZqtTJNnzFAq++gIakjFr3ZFpuix9zGUfP4PaSCTP7kXxtl7irfgZE1ew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RPxw+I8iaQ899hP61gkED7c+bAoWDuPn9FESOxXC/vg=;
- b=lMc8pwY0hqFKneJkRDluS+8AW+ZH1naYaH8vMcBNqal4kJdL2QbOcCaidH+UHqEl5mvSVteDlZS5oiiIEthZgQpP3jM5vwy8pvh6YFB8JRmTjPZ48kySow7xJ3mF6rCwzQ5BsnlJyMMpWtyMAQR20PJ1yrXjKMukjYRl1WN0A/aJlWdKLEaOfUkJQlgrVcMGpMH8k4x75NwkSkfqW1UmmZwcLc/EYukqq+lvTdpoaoCEieHj3BhE3bjRXxDw0KnGB5l15E+kefpEseXf5mlNtAJmlIp+Nx51QT5r4R9jbrf5PVcqCDBx6/0CU5ZIr4KhuwPoFFmu79zAiyXSDC7A2Q==
+ bh=r992cBmiKdLj8/gvJFcGmafapo5pBCHX2hu3j/nuEnA=;
+ b=k/EQjOLHMfTt67jP9YRY+2KYTpY71JYDTJxuIEeS5uU+/SG6C3ma2Jb6qLB6zdvPk8ypVhKGOomyN5Fp8wJj+bJM8KoMXZT6Lttv/8aBawHTOi6P6hw8wB601KRpXqxyBOXIlzcMmWO50MhLqOmOEepf97yeddlT4xtCQSWlMrgf7bUmvuM1VxsA/4FnAQAnz6WDpA4weSreXvBJ7LLqyc6vazND0BoxcIKaioWpwsZ16kQBdwvfoCgw0HjHs17B64lbH6CzIt3Q3O3I9ul2+W0Wxzmi7jNesImUzoQdZSYR3NhYz9mGh04/D/s6mC5MfcXcYjwkm1MIQ4kjDcqVBQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from IA1PR12MB7541.namprd12.prod.outlook.com (2603:10b6:208:42f::13)
  by MN0PR12MB6366.namprd12.prod.outlook.com (2603:10b6:208:3c1::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.12; Thu, 9 Apr
- 2026 18:02:04 +0000
+ 2026 18:02:23 +0000
 Received: from IA1PR12MB7541.namprd12.prod.outlook.com
  ([fe80::4445:7716:8576:62c7]) by IA1PR12MB7541.namprd12.prod.outlook.com
  ([fe80::4445:7716:8576:62c7%5]) with mapi id 15.20.9769.018; Thu, 9 Apr 2026
- 18:02:04 +0000
-Message-ID: <27ff77e7-ff33-41cd-92c5-6dff25cb0fd4@nvidia.com>
-Date: Thu, 9 Apr 2026 21:02:00 +0300
+ 18:02:22 +0000
+Message-ID: <99a9bf58-a2d9-4857-9f98-8ab771e94178@nvidia.com>
+Date: Thu, 9 Apr 2026 21:02:19 +0300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 5/7] net/mlx5: E-Switch, block representors
- during reconfiguration
+Subject: Re: [PATCH net-next 6/7] net/mlx5: E-switch, load reps via work queue
+ after registration
 To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
@@ -79,14 +79,14 @@ Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
  Dragos Tatulea <dtatulea@nvidia.com>
 References: <20260409115550.156419-1-tariqt@nvidia.com>
- <20260409115550.156419-6-tariqt@nvidia.com>
+ <20260409115550.156419-7-tariqt@nvidia.com>
 Content-Language: en-US
 From: Mark Bloch <mbloch@nvidia.com>
-In-Reply-To: <20260409115550.156419-6-tariqt@nvidia.com>
+In-Reply-To: <20260409115550.156419-7-tariqt@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TL2P290CA0023.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:3::12) To IA1PR12MB7541.namprd12.prod.outlook.com
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: TL2P290CA0019.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:3::14) To IA1PR12MB7541.namprd12.prod.outlook.com
  (2603:10b6:208:42f::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -96,66 +96,66 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: IA1PR12MB7541:EE_|MN0PR12MB6366:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d5e24ab-04cb-42f5-f478-08de96621acf
+X-MS-Office365-Filtering-Correlation-Id: 82e3422e-0f25-475a-573e-08de9662263e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|366016|7416014|376014|1800799024|22082099003|18002099003|56012099003;
 X-Microsoft-Antispam-Message-Info:
-	DLXCPDRCKIQj0PWHEs1Uu43kk7ogZw5Ikv8JGJMiPguw3q+7ho8cWg3BiWbjroo7iLCCJmea8bh9wMlT2A80g1BV11MzLID5ovLuAE1OEwnnRrGhrcPXNR+9LeOAuqwxQn3fkZkCmBUV7NaCZjNi9av85MiJLp4bgLI+9j3iLlyOhc7F7io2QvE1/+tIL20i3i9iDGX5JlR16w6A3yYkxlm4cxQIeyZD5YxLVkbrbl1M551nN7RzEf5hsxwi2Cc7LvqJ1mZZEu5WNfaiDRNImzHqUC4EOPNEuklb8VCQ3TyjxtXaEgWgr3LBz2qAvNExeCLfTkONA3cMY819sAa+Qmtz+rq1nAAlRHb6RdwufK+DoLMAT77JSC8odx/ddvAitRHoC0WIdcnpmjEPfwe4QFSH9CVoXmwjRIqUtQYWObtOHtUNu0mmwuQSnMBCeXIhymPcgs5CHEv3MATcWbRQiUvGpMyjLOAVvD4DlNxYJJUc3ERTPWqP+5XDuXniQKdeSGPTBbCXLp00LtgvB9n+B6AYw7dUuUaZWLFmqzqtImku3Eb1H93n7z2eZqWf03Brv1ChFUk5nD28H34HLwlO1ObZMOjLEMmMKFoGB6BQ6Bu5uDZgK7g0t2OsGr5pSfP6sI+/TowMDM3gnUp1uvs4Dv/KERA6yhvqGRihlkmRgPGRfjJN4NB5P/Z4bCnbXOuKlKSpkL5zQYtB4s1w3gmAsagkQqvQpQTy4nnm+JcOWJk=
+	nG+TAkxd7isYAZxYU1o9CwzH4DY7Zko5S3+tJZ7WEoSSvC6dcs6H91HHLk3zOqtOUiQBRJcW+5jfSUukETQqLLTYAKM2tGddG6sINIMOjxkzoxcNEJ7Mfa8wfE6j7++xvirjNmb7dewskp9LZ4U0Xv9nC6hA+EmumSOHmOmm6G34nZEftT6wWPpHdzH1vszcXyE+1DWRthSJau38YGb+0AJHUvy0dhggKOmNmYRKXnGYAz7ySHq9rm/Hf70nywcYN5VFaa6Ru7Z+F2ZUmExJ/Pch1HwAHBcEHwkB9Yn8QdUm6diTC2b3w5qcGeC1XtbRySsNoLo6f9+CW2r5uzn6eojuUS630HKQypYx4ZrC+BzJ/p8HhcJToQ3/zbUMvI6/DezAGT1DpcQdrjtvOitPuxdLs7YBS23pwL//4LCmdDPxsGSkt/6dXGI8xhCu4eIXE/pr5++PCsCof5caeGxUAObxz7E34Sune3qzKGzwWJi4KVYH4OGa6Fq+PPLTWWtj8wIZD8Shjb5Ilr+ZxglgwTWhMQWEnErPfxOzlX2FtJrREi+xzm1ClUC3zsRukJRzFnSgWOQjCtDaY+bMUO+/Kgbtw8lAfTt0je0esFHNrwqF5kdCZC3iGnyN9wN9hmeuvoOqXkdUbzMMbSwn/i0Rg8bmztm4EC88LyOL20Tc7aygqQM6HFaMzud7yYhuXme0UmfntywFOGPkMknMMINZNK/YaInlghyeAs//WEY2emc=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7541.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VXZMOEVIQUFmRzl1NXBJSXk0ck9MNnFtSEE2bkVHdTZQNEtuaER6dGVrNEh6?=
- =?utf-8?B?dlczdVNVYisydURpS3RmUlM4YWR4N1h6dm44dkphTkFvTzlCVTRZY0cyN3c0?=
- =?utf-8?B?Y0dtSWdxdkl6aW8xRWxwRFlaTXNFdVdycVFSKzNIV0lhTFlINEJJSTNRK2xn?=
- =?utf-8?B?aHFucHEydkRuK2hBRS9sRGtta1pMci9Vc0hFR0JEbTA4OUVrbCsvMHNHTlNZ?=
- =?utf-8?B?cHNoY0xmbW92Q21hSVU5dThWQmRObzJZMTFpLzNINXBIWHl3MWhua09hWUt2?=
- =?utf-8?B?RGtHekMxSlYxVU9jd0poaURFUms0ajFjemtYWXZzTlJwbTBhUzAyQThoSzRj?=
- =?utf-8?B?R2EzSG4vMk11QjFNRmFQOFR3MW82akVPU3p4RGNTbi9ZRnYwNzhheWpkNHpq?=
- =?utf-8?B?dS80M1BUdUQ4cGJmWUdRdURMbnlKV3VCNFlwRDU1QzV3dmJtVXFSWWVRTUtG?=
- =?utf-8?B?QVZzWVd6REN5OTJPbWszMGdURHdkbi8rNzRNRXJNNUVHcjJQaklMVlJnTFFP?=
- =?utf-8?B?elM3RGFCM1pJK0llNDFsOWRtYXlORnJBbTRkN3QwV3k1d29xVGJQKzQ0V0JS?=
- =?utf-8?B?Nk0xNGFBQTNwNUpFdmdrUThaeStlTHorSVI0UlhiRGFZVVNXd25KTy9uZXdJ?=
- =?utf-8?B?eVBacFJHSEwzMWIyTmVPMXNwMittUUg4aFV4dTRrcHU4RHdBdmdSMkFQMWRh?=
- =?utf-8?B?bC9BWUE2Rm9JU2NIc2RJMUNSS1VkVjZ2TEFqbkkzSTYwMGtBZkdNSVJVYWRQ?=
- =?utf-8?B?Y0l4a3hhb0x4dmZ0aFlmYlRkcUlYWFVpUVVTV1ZTendGWWxsakFKWHRNeXhN?=
- =?utf-8?B?VUpNRHl1dHJqamFqN252d3ZRVUJZUFRwSitVYlR4NlkxeE42L3Z0bWhSSXJN?=
- =?utf-8?B?Mlorb2ZBRGd2RlVFOEIvNktpSFkzNGdSRXJUQkdLRGppMDBNYWhPZEdWb3Y5?=
- =?utf-8?B?MkN3K0FXRW9pcFRzeEFJQmlrMmtnWE96WUpkOFNGeU00RTc1czJOdHAyNy9Z?=
- =?utf-8?B?Y1N3NGJBNzdNRkFjZWRPL3EwOXFzL05laUhGY0t0MVVoM0x3TFB5cW5VUWl2?=
- =?utf-8?B?R2xIbDBxSzFlcjRXUGFabXNBN0o2bVREY3VsY1NEWnNGWUdKUUxpR2xvNDBl?=
- =?utf-8?B?NXhtL0hrSE9GYXVlUkwvZXdpK0pJdXpVTkh2WEF5Tk5pb1VZVEdGdnJHTVl1?=
- =?utf-8?B?c0xsdEJVK0l0SVV5TXB1akU4RHBYNTFDUEp2VXQ4VVZSQnUwRnRkdW9mS0xq?=
- =?utf-8?B?bHhqKzNHTmsrWGhDV2pMeXpxaDRPenR3YjhMSHgzc2dMSFMzaFpCMjRjSHN5?=
- =?utf-8?B?VkJTRE5aMjQ1d08rTkZMaEYxUHBsbGtWVEIrUCtKUlRZeWFQYTRwaTBLOURY?=
- =?utf-8?B?Zyt3b2NsUEoyU3o4R2p3NmdycnovQXJxbC9ZZUtVbU52TTlsQlZxcTIvVEkw?=
- =?utf-8?B?aFlZbE1Sbnh6LzVJTU5xMlcyaENQZWExdm9VQXBzMlUrd284Y1pZR1JQVmo0?=
- =?utf-8?B?L1RSQU9hWHQwNmJKME55RWtrbTVMZlZteTVoTW45aFkxbXF1c25Uazk4cVFn?=
- =?utf-8?B?TmpRNmNSZ3g3NmFQWkViMlBlZVlrYjk3bnVmMElPU2lWOG9OSk1qYlllTGRJ?=
- =?utf-8?B?QTE0TmpHdUhaczJnOEZLaFZSbG5SZmN4QkdHcy8wSEdNZzFLRWJZSXJxRnUx?=
- =?utf-8?B?QU5ZODZSVzVjRnVQaTFVRXFjdUw3TWRqOHB4UEIrOVQwc2ZRSHY0WDVhRXB1?=
- =?utf-8?B?VjlzWlhJaE1QcE9kUENnOHEyNmtlMThxbTFKTFNKWG0zeUlNNFM3SjFJVnBj?=
- =?utf-8?B?TmhvaFN3R1h6ZWtub3pkZksvdlUzWE9xUVBzREdlNEhDaUhydk5Ia1Z3aVhs?=
- =?utf-8?B?ZVhqWjU5Z2FRVU9NTlpmSWVrQVRKemlYMGxWSEVEZ3J6RkpaQnZJdmxJMHF0?=
- =?utf-8?B?c0VGMXpNYkVPbVl5THd4VytZL3EzLy9takd1ZXRtKzFVQ002RFYzWmI0RUhI?=
- =?utf-8?B?NnJIVUtMTWN0S0pHQjdmQ2Rhblh4b1VSNzNSOUdmRlhHMVlFSWRvWS9acFpG?=
- =?utf-8?B?UHNLem5idW1rQUZSdlVSUmE3OSt1ekE3NnZqRkVtZXh0eFVyeGc0bkgwYWx6?=
- =?utf-8?B?Zmtvc2J4cGluMUlHd3FKTi9jWHNtVS93UUdWMCszSk1nYXllcmFJQ2pVdTE1?=
- =?utf-8?B?Tk9weSt4Y1JHRVlPSFdnWFNVeUtGdjJCdm1nbE9hTklPeVY3eVRMWVk4Nlky?=
- =?utf-8?B?eUlXMFJRWXgzNkZxa2JqdnZ3WjZrM000QTZmcXdBYmZxdXhFSE4xN05ra1h6?=
- =?utf-8?B?aS9MRzNDbVhUOVZoMUlaT1hjenpiV1BlUFFsR2ZDK2NhL3dnUldxUT09?=
+	=?utf-8?B?NnB5ZTR5VWFmUnBkOFRHZkJZYmJ4MTRSM3dKc0oxMkdxM1hQd2daem8wVUFD?=
+ =?utf-8?B?blBDclR4ZHp4MGRpc2c5V1RVMHlUSTlDVGpYS0Z5bHVSRGw1Ui9SUDEzR1Mx?=
+ =?utf-8?B?TGRLd0d3bEhIQnFYWXlucnJJVitGZUYzV0ZsZGFtbDI5KzZBMmluS3BNOVpI?=
+ =?utf-8?B?Z1E5cmhKY0Z6dzZOdUlVQi9mb214ekpwUjU3SmVCNXpFalpNQ0JCejlpemZz?=
+ =?utf-8?B?cXVMdXhJWUxIcTRNai9ieUhzU2dsZzVEVnZYUFRSNWVjOVdtMlFtc2tkSE9Q?=
+ =?utf-8?B?RW5hMkhENE1HdnJrV1BnRU5RQW1qR0NabjRMd3NYOUN5dGV0TG8zcC96Rmti?=
+ =?utf-8?B?Z1JjOG1rdnQwMERHejZlRlIxeFN1NU5ybjVuU2x4OXcwV2xGUVd4TzhpU1V6?=
+ =?utf-8?B?L2NPTnlNNnF0Q2xtT1F2T2diQU5UclJYdVJSamxNNUpTbHRpUUVoT0hZc2Vh?=
+ =?utf-8?B?OWpzcFBLUXd5alk5TWxRVisyZDNZQkh1cElrRWUzUnlLWUlGd0pJeWoyY0dV?=
+ =?utf-8?B?dVFKdDlsajQyREc1Q0FhNXA1eDlVREd4dzF3MXQ0VHNXV2t3YjZpaTcyQzV2?=
+ =?utf-8?B?RW5WWjJ0cklSSHgwTlZnYWZ5YXNydnJKUUFlWEJUQVNyYXJZaUN4cmt2blN5?=
+ =?utf-8?B?dngzY1VwTEx5bXNkMWNGTjA4dEcyRTlVaXJETUI2T0FRUDR1dEF5TjdwbldK?=
+ =?utf-8?B?QjRVQ3o0V1Vwd3JkM254VHV1QXhQNWtqYVFkK0c5NDBrTHZZc2d5WW00bGtP?=
+ =?utf-8?B?Y09wT2YraXgzWndOazlSNGsydXVoWnBHNHFwL1RrMWVhNXFndGZXam40THB3?=
+ =?utf-8?B?RGJVMGN6SFdhR3dlRElEb1EwNzh5cXN2R3NyaWpKbmVTNmlpQXlrV2xNRE1S?=
+ =?utf-8?B?Rk5uNkdxSDc1dmRQRVVlcDRYNzlDdDV6Z3hlaU5Vd0UyMXFUTzEyTVkwYW9w?=
+ =?utf-8?B?MG54azdsMjAyRWlHMnRMbE5PVnIxVFl1SEw3NVUzdTRpOXVpTnFXakNjd01P?=
+ =?utf-8?B?QU01STlMVVg5dTVldlo1c1lkazd1TDRnbEdDbjJHY0YxazIxUG53cEdCZmps?=
+ =?utf-8?B?SGJPQU9zT3N0RUtFR0hWSW9ZR3ZUbkhEOTErN1JWK0E2SWdxZVk1S0w0L0Z0?=
+ =?utf-8?B?dVh6Zjd0SkNwekNKRjZrSDRTbWYxc1VNZ0dKQWhKM2Y1ZW50bmRQZFFELzBv?=
+ =?utf-8?B?Qi96L3lBVmZYL0d5KzNxWkJjaThvUlNSdXJSbUprSWJVdVlvUm9WSmxOZWlT?=
+ =?utf-8?B?SzluRFh6OXMyZ3lBRFl2YmlyMGlWWE9vNFJUTmhqYzViZlNCdUhtRW8zd1pL?=
+ =?utf-8?B?eDg3RVJSQWRzblNDNHZHSHpvSXpJRWRRS2xvWTcxaUwrYlZ1ZTBmTjQ4d0lw?=
+ =?utf-8?B?YTNyWTZKZTlZbkM2RHdvS1M2Qzc2U1EvdHcxVlRweGJYaEQ5ajVGd1B2bW01?=
+ =?utf-8?B?YWlhaW11RURYTFBGTDlUOHRBdG56MncwVlA0VWNlbWZucjdhZlpWVGlvRnV5?=
+ =?utf-8?B?STVBQWVWZDNzRndYKzBuQW1RYlU3akUzNUlWdk44ZEN3cnBoOFlHTWdPOTV5?=
+ =?utf-8?B?a2ZjZnhpU2ZpWXRPNHFrSkNLdi9pT0l5REVOU1k3dk11VXkvcnRiNHVZNGh1?=
+ =?utf-8?B?dDJwZWVRVnB2b1dHZlAwb29oWUlTUzhhcGIwTkRjNzJZTVlCV1NMRFZNajJy?=
+ =?utf-8?B?c3k3bldvS3JvOStjTzgxT0JHSllpdk00V0hpM0tWUXFaYjRnemZlMXlxa0FU?=
+ =?utf-8?B?N3F6UDZ5MWhjZmcwSGgzQ0Npenp0eUVjZGcvL0ovaVVNb2NpTzlwMlNHZ203?=
+ =?utf-8?B?ZFVCSmhlVGtVdmJrbTg4S2Nmb0pIV0hvaGo4MUx5SGtCa2FWMExpUzJ1RytS?=
+ =?utf-8?B?OHNvTTlSR0pCTHlydWRncS9idGJBTDJaZjJYaTdSelYwdGRSbDRldzBwdWEv?=
+ =?utf-8?B?VzNRYnUyMFNSRE1CNXNOSHc4ZzJvQ3RyY2U1TmVwZzhzS3d5bXRxSjk1QmJq?=
+ =?utf-8?B?V3kyOUtBdnhsakRrNjFLZ3FWR0U1d1IwV3FrZ3MvNlRzUWpxamNseGlqTkJ5?=
+ =?utf-8?B?MmV6RS92dk1NRnJIZGpyc0QxUFVZaTJVMktiVGc2a2FuRlNGMHkwSmxPdFJW?=
+ =?utf-8?B?SDNTMllwcllZUHd0TG4rQ09JQ0pJdy8yQnA3SnZkQ3dBUnNsSUJLdE5ZUVB2?=
+ =?utf-8?B?V1VOT3U4NFB6aWpjVXNYRHlSRHlZb1pMcktNYzBHano1V2ZuT2pISkUza2dH?=
+ =?utf-8?B?aWZvbUxycysrdGxDMndkN2NtZ0xKa3FQRzNnU3l1eUxqQ2ZQMUVkY0ZTdWlR?=
+ =?utf-8?B?OTNJL2lBSlNuWGhPZ1JmenZQcFgrdHRJMit3UmdHM2ZYYVp3bjBoQT09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d5e24ab-04cb-42f5-f478-08de96621acf
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82e3422e-0f25-475a-573e-08de9662263e
 X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB7541.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2026 18:02:04.7427
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2026 18:02:22.8740
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VMf5lDrTjzMJkMpa4D0Q6rGmPScwTqV3NPGGz9iTgbI3r8XaJwKNFGtkKnDoUT3F4kmg/yoo4IRtRoXewOM9tQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: kGBd0ITr2nNWnYrVysEMM3ooNNNOoapBO7TA9bSJHpunTfFMagZSp0KvH3gbziidcn+4z24jqWUJrr7UNGlzFA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6366
 X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -166,7 +166,7 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19182-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19183-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -182,7 +182,7 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 4D6DB3CE66A
+X-Rspamd-Queue-Id: 0C3FF3CE69C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -191,446 +191,140 @@ X-Rspamd-Server: lfdr
 On 09/04/2026 14:55, Tariq Toukan wrote:
 > From: Mark Bloch <mbloch@nvidia.com>
 > 
-> Introduce a simple atomic block state via mlx5_esw_reps_block() and
-> mlx5_esw_reps_unblock(). Internally, mlx5_esw_mark_reps() spins a
-> cmpxchg between the UNBLOCKED and BLOCKED states. All E-Switch
-> reconfiguration paths (mode set, enable, disable, VF/SF add/del, LAG
-> reload) now bracket their work with this guard so representor changes
-> won't race with the ongoing E-Switch update, yet we remain
-> non-blocking and avoid new locks.
-> 
-> A spinlock is out because the protected work can sleep (RDMA ops,
-> devcom, netdev callbacks). A mutex won't work either: esw_mode_change()
-> has to drop the guard mid-flight so mlx5_rescan_drivers_locked() can
-> reload mlx5_ib, which calls back into mlx5_eswitch_register_vport_reps()
-> on the same thread. Beyond that, any real lock would create an ABBA
-> cycle: the LAG side holds the LAG lock when it calls reps_block(), and
-> the mlx5_ib side holds RDMA locks when it calls register_vport_reps(),
-> and those two subsystems talk to each other. The atomic CAS loop avoids
-> all of this - no lock ordering, no sleep restrictions, and the owner
-> can drop the guard and let a nested caller win the next transition
-> before reclaiming it.
-> 
-> With this infrastructure in place, downstream patches can safely tie
-> representor load/unload to the mlx5_ib module's lifecycle. Loading
-> mlx5_ib while the device is in switchdev mode has failed to bring up
-> the IB representors for years; those patches will finally fix that.
+> mlx5_eswitch_register_vport_reps() merely sets the callbacks. The actual
+> representor load/unload requires devlink locking and shouldn’t run from
+> the registration context. Queue a work that acquires the devlink lock,
+> loads all relevant reps. This lets load happen where the needed locks
+> can be taken.
 > 
 
 Sashiko writes:
 
-> Note: The format of this report is altered to provide a free-form summary of
-> the findings without directly quoting the original patch code due to system
-> recitation restrictions.
-> commit c88c0130c17d45e785dce9dae505cf3bd9664ab3
+> (Note: Due to system recitation restrictions, this report does not quote the
+> original patch code directly. Instead, it provides a free-form summary of
+> the questions and observations regarding the changes.)
+> commit 8bc15ac3cf1f185bce88ba5499055d1546dae606
 > Author: Mark Bloch <mbloch@nvidia.com>
-> net/mlx5: E-Switch, block representors during reconfiguration
-> This commit introduces an atomic block state via mlx5_esw_reps_block() and
-> mlx5_esw_reps_unblock() to guard E-Switch reconfiguration paths. It uses an
-> atomic CAS loop instead of standard locks to avoid sleep restrictions and an
-> existing ABBA deadlock cycle.
-> The commit message states that an atomic CAS loop is used because the
-> protected work can sleep and a real lock would create an ABBA cycle. Does
-> introducing an ad-hoc busy-wait lock to protect sleepable sections risk
-> soft lockups or priority inversion when the lock owner sleeps?
-> Furthermore, does bypassing lockdep with a custom loop hide the underlying
-> ABBA deadlock rather than resolving it structurally? Could a standard
-> synchronization primitive like a mutex be used while fixing the lock
-> inversion?
+> net/mlx5: E-switch, load reps via work queue after registration
+> This commit shifts the representor load operation to an asynchronous
+> workqueue so that the necessary devlink locks can be properly acquired,
+> avoiding locking issues in the registration context.
+> The commit message notes that actual representor load and unload require
+> devlink locking and shouldn't run from the registration context. The patch
+> successfully defers the load operation, but it appears the unload path
+> in mlx5_eswitch_unregister_vport_reps() was not updated. Will
+> mlx5_eswitch_unregister_vport_reps_blocked() and __unload_reps_all_vport()
+> still be called synchronously without the devlink lock, leaving the
+> teardown path unprotected?
 
-What we actually guard here is the assignment/clearing of
-esw->offloads.rep_ops[rep_type].
+This is not worse than the current behavior. The block/unblock mechanism
+ensures correctness even without holding the devlink lock, although this
+is not ideal.
 
-The root of the problem is the current mlx5 architecture, where
-mlx5_core and mlx5_ib are separate modules. The auxiliary bus was
-introduced to decouple them, but it also introduced additional
-complexity.
+Fixing the unload path to follow the same model is planned as a follow-up
+series
 
-In particular, during eswitch mode transitions (handled in mlx5_core),
-the IB module may be loaded or unloaded concurrently. While this may
-sound benign, switching into or out of switchdev mode requires creating
-or destroying an IB device, which makes the interaction non-trivial.
+> When mlx5_eswitch_register_vport_reps() queues the asynchronous work item,
+> there doesn't seem to be a corresponding cancellation or flush in
+> mlx5_eswitch_unregister_vport_reps(). If the registering module
+> unregisters the representors and unloads before the work executes, could
+> the delayed mlx5_eswitch_reload_reps() run and dereference stale callbacks,
+> causing a use-after-free?
 
-To handle this, the eswitch code performs a fairly complex sequence of
-auxiliary device reloads during mode transitions, to ensure the system
-remains consistent.
+Each representor maintains state per rep type, and together with the
+E-Switch generation counter we avoid executing work on stale instances.
+If the E-Switch generation changes, the queued work will not proceed
+with loading representors for the old state.
 
-The api here is intentionally minimal: the critical paths are
-mlx5_eswitch_register_vport_reps() and
-mlx5_eswitch_unregister_vport_reps(), which are invoked by mlx5_ib.
-These functions primarily assign state and ops, and the goal is to
-ensure that rep_ops is not cleared or reassigned in the middle of a
-representor load/unload sequence.
+> The call to mlx5_esw_add_work() to enqueue the representor load operation
+> might fail and return an error code like -ENOMEM. Since the return value
+> isn't checked in mlx5_eswitch_register_vport_reps(), will a failure
+> leave the representors in the REP_REGISTERED state but completely unloaded,
+> without notifying the caller?
 
-There is still a known issue on the unregister path, where representors
-are torn down. I plan to address this in a follow-up series. This patch
-does not make the situation worse; it ensures that all existing cases
-are handled, with the remaining gap being that unloading should not be
-performed directly under mlx5_eswitch_unregister_vport_reps(). This
-will be fixed separately.
+This change addresses the case where the eswitch is already in
+switchdev mode and the IB module is loaded afterwards. Prior to this
+patch, no representors would be created in that scenario.
 
-> In esw_mode_change(), the representor block is intentionally released and
-> then reacquired to allow mlx5_rescan_drivers_locked() to run. Because this
-> custom atomic guard lacks owner tracking, does dropping it mid-flight open a
-> window where any other concurrent thread could acquire the block and mutate
-> representor state? Does this defeat the mutual exclusion the block was
-> intended to provide against concurrent operations?
+After this change, representors are created when possible, improving the
+overall user experience. If workqueue allocation fails (e.g. -ENOMEM),
+there is little meaningful recovery we can provide in this context.
 
-This is intentional.
+> In the new mlx5_eswitch_reload_reps_blocked() function, if loading the
+> uplink representor fails, the function returns early. Similarly, any
 
-We do not require strict exclusion with respect to IB representors
-during mode transitions. The requirement is that the eswitch and the
-driver remain in a consistent and safe state (i.e., no crashes or
-corruption).
+The uplink representor is a prerequisite for all other representors.
+If it fails to load, the rest cannot be meaningfully initialized, so it
+is treated as a critical failure.
 
-If userspace races IB module load/unload with E-Switch mode changes,
-the worst expected outcome after this change is that no IB device is
-present. That is considered acceptable behavior.
+> failures when loading individual VF representors in the loop are not
+> checked. Since this now runs asynchronously, are these errors permanently
+> lost, potentially leaving the subsystem in a partially initialized state
+> with no fallback?
 
-> The mlx5_esw_assert_reps_blocked() function checks if the global
-> reps_conf_state is set to BLOCKED. Since there is no lock ownership
-> tracking, if one thread holds the block, wouldn't this assertion silently
-> pass for an entirely different thread that failed to acquire the block?
-> Could this provide a false sense of security compared to a proper
-> lockdep_assert_held() check?
-
-This assertion is not meant to provide ownership guarantees like
-lockdep_assert_held(). Its purpose is to catch incorrect usage of the
-api.
-
-In practice, there is effectively a single call path that manipulates
-representors at a time, and triggering concurrent access requires deliberate
-effort. The assertion is therefore primarily a safeguard against future
-code paths accidentally bypassing the intended sequencing.
+Failures when loading individual vf representors are intentionally not
+treated as fatal. The operation is best-effort, and partial
+initialization is acceptable in this context.
 
 Mark
 
 > Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 > ---
->  .../net/ethernet/mellanox/mlx5/core/eswitch.c | 13 ++++
->  .../net/ethernet/mellanox/mlx5/core/eswitch.h |  6 ++
->  .../mellanox/mlx5/core/eswitch_offloads.c     | 77 +++++++++++++++++--
->  .../net/ethernet/mellanox/mlx5/core/lag/lag.c |  2 +
->  .../ethernet/mellanox/mlx5/core/sf/devlink.c  |  5 ++
->  include/linux/mlx5/eswitch.h                  |  5 ++
->  6 files changed, 100 insertions(+), 8 deletions(-)
+>  .../mellanox/mlx5/core/eswitch_offloads.c     | 34 +++++++++++++++++++
+>  1 file changed, 34 insertions(+)
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> index d315484390c8..a7701c9d776a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> @@ -1700,6 +1700,7 @@ int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int num_vfs)
->  		mlx5_lag_disable_change(esw->dev);
->  
->  	atomic_inc(&esw->generation);
-> +	mlx5_esw_reps_block(esw);
->  
->  	if (!mlx5_esw_is_fdb_created(esw)) {
->  		ret = mlx5_eswitch_enable_locked(esw, num_vfs);
-> @@ -1723,6 +1724,8 @@ int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int num_vfs)
->  		}
->  	}
->  
-> +	mlx5_esw_reps_unblock(esw);
-> +
->  	if (toggle_lag)
->  		mlx5_lag_enable_change(esw->dev);
->  
-> @@ -1747,6 +1750,8 @@ void mlx5_eswitch_disable_sriov(struct mlx5_eswitch *esw, bool clear_vf)
->  		 esw->esw_funcs.num_vfs, esw->esw_funcs.num_ec_vfs, esw->enabled_vports);
->  	atomic_inc(&esw->generation);
->  
-> +	mlx5_esw_reps_block(esw);
-> +
->  	if (!mlx5_core_is_ecpf(esw->dev)) {
->  		mlx5_eswitch_unload_vf_vports(esw, esw->esw_funcs.num_vfs);
->  		if (clear_vf)
-> @@ -1757,6 +1762,8 @@ void mlx5_eswitch_disable_sriov(struct mlx5_eswitch *esw, bool clear_vf)
->  			mlx5_eswitch_clear_ec_vf_vports_info(esw);
->  	}
->  
-> +	mlx5_esw_reps_unblock(esw);
-> +
->  	if (esw->mode == MLX5_ESWITCH_OFFLOADS) {
->  		struct devlink *devlink = priv_to_devlink(esw->dev);
->  
-> @@ -1812,7 +1819,11 @@ void mlx5_eswitch_disable(struct mlx5_eswitch *esw)
->  	devl_assert_locked(priv_to_devlink(esw->dev));
->  	atomic_inc(&esw->generation);
->  	mlx5_lag_disable_change(esw->dev);
-> +
-> +	mlx5_esw_reps_block(esw);
->  	mlx5_eswitch_disable_locked(esw);
-> +	mlx5_esw_reps_unblock(esw);
-> +
->  	esw->mode = MLX5_ESWITCH_LEGACY;
->  	mlx5_lag_enable_change(esw->dev);
->  }
-> @@ -2075,6 +2086,8 @@ int mlx5_eswitch_init(struct mlx5_core_dev *dev)
->  	init_rwsem(&esw->mode_lock);
->  	refcount_set(&esw->qos.refcnt, 0);
->  	atomic_set(&esw->generation, 0);
-> +	atomic_set(&esw->offloads.reps_conf_state,
-> +		   MLX5_ESW_OFFLOADS_REP_TYPE_UNBLOCKED);
->  
->  	esw->enabled_vports = 0;
->  	esw->offloads.inline_mode = MLX5_INLINE_MODE_NONE;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> index e3ab8a30c174..256ac3ad37bc 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> @@ -315,6 +315,7 @@ struct mlx5_esw_offload {
->  	DECLARE_HASHTABLE(termtbl_tbl, 8);
->  	struct mutex termtbl_mutex; /* protects termtbl hash */
->  	struct xarray vhca_map;
-> +	atomic_t reps_conf_state;
->  	const struct mlx5_eswitch_rep_ops *rep_ops[NUM_REP_TYPES];
->  	u8 inline_mode;
->  	atomic64_t num_flows;
-> @@ -949,6 +950,8 @@ mlx5_esw_lag_demux_fg_create(struct mlx5_eswitch *esw,
->  struct mlx5_flow_handle *
->  mlx5_esw_lag_demux_rule_create(struct mlx5_eswitch *esw, u16 vport_num,
->  			       struct mlx5_flow_table *lag_ft);
-> +void mlx5_esw_reps_block(struct mlx5_eswitch *esw);
-> +void mlx5_esw_reps_unblock(struct mlx5_eswitch *esw);
->  #else  /* CONFIG_MLX5_ESWITCH */
->  /* eswitch API stubs */
->  static inline int  mlx5_eswitch_init(struct mlx5_core_dev *dev) { return 0; }
-> @@ -1026,6 +1029,9 @@ mlx5_esw_host_functions_enabled(const struct mlx5_core_dev *dev)
->  	return true;
->  }
->  
-> +static inline void mlx5_esw_reps_block(struct mlx5_eswitch *esw) {}
-> +static inline void mlx5_esw_reps_unblock(struct mlx5_eswitch *esw) {}
-> +
->  static inline bool
->  mlx5_esw_vport_vhca_id(struct mlx5_eswitch *esw, u16 vportn, u16 *vhca_id)
->  {
 > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> index 988595e1b425..4b626ffcfa8e 100644
+> index 4b626ffcfa8e..279490c0074c 100644
 > --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
 > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> @@ -2410,23 +2410,56 @@ static int esw_create_restore_table(struct mlx5_eswitch *esw)
->  	return err;
+> @@ -4535,6 +4535,38 @@ mlx5_eswitch_register_vport_reps_blocked(struct mlx5_eswitch *esw,
+>  	}
 >  }
 >  
-> +static void mlx5_esw_assert_reps_blocked(struct mlx5_eswitch *esw)
+> +static void mlx5_eswitch_reload_reps_blocked(struct mlx5_eswitch *esw)
 > +{
-> +	if (atomic_read(&esw->offloads.reps_conf_state) ==
-> +	    MLX5_ESW_OFFLOADS_REP_TYPE_BLOCKED)
+> +	struct mlx5_vport *vport;
+> +	unsigned long i;
+> +
+> +	if (esw->mode != MLX5_ESWITCH_OFFLOADS)
 > +		return;
 > +
-> +	esw_warn(esw->dev, "reps state machine violated: expected BLOCKED\n");
+> +	if (mlx5_esw_offloads_rep_load(esw, MLX5_VPORT_UPLINK))
+> +		return;
+> +
+> +	mlx5_esw_for_each_vport(esw, i, vport) {
+> +		if (!vport)
+> +			continue;
+> +		if (!vport->enabled)
+> +			continue;
+> +		if (vport->vport == MLX5_VPORT_UPLINK)
+> +			continue;
+> +		if (!mlx5_eswitch_vport_has_rep(esw, vport->vport))
+> +			continue;
+> +
+> +		mlx5_esw_offloads_rep_load(esw, vport->vport);
+> +	}
 > +}
 > +
-> +static void mlx5_esw_mark_reps(struct mlx5_eswitch *esw,
-> +			       enum mlx5_esw_offloads_rep_type_state old,
-> +			       enum mlx5_esw_offloads_rep_type_state new)
-> +{
-> +	atomic_t *reps_conf_state = &esw->offloads.reps_conf_state;
-> +
-> +	do {
-> +		atomic_cond_read_relaxed(reps_conf_state, VAL == old);
-> +	} while (atomic_cmpxchg(reps_conf_state, old, new) != old);
-> +}
-> +
-> +void mlx5_esw_reps_block(struct mlx5_eswitch *esw)
-> +{
-> +	mlx5_esw_mark_reps(esw, MLX5_ESW_OFFLOADS_REP_TYPE_UNBLOCKED,
-> +			   MLX5_ESW_OFFLOADS_REP_TYPE_BLOCKED);
-> +}
-> +
-> +void mlx5_esw_reps_unblock(struct mlx5_eswitch *esw)
-> +{
-> +	mlx5_esw_mark_reps(esw, MLX5_ESW_OFFLOADS_REP_TYPE_BLOCKED,
-> +			   MLX5_ESW_OFFLOADS_REP_TYPE_UNBLOCKED);
-> +}
-> +
->  static void esw_mode_change(struct mlx5_eswitch *esw, u16 mode)
->  {
-> +	mlx5_esw_reps_unblock(esw);
->  	mlx5_devcom_comp_lock(esw->dev->priv.hca_devcom_comp);
->  	if (esw->dev->priv.flags & MLX5_PRIV_FLAGS_DISABLE_IB_ADEV ||
->  	    mlx5_core_mp_enabled(esw->dev)) {
->  		esw->mode = mode;
-> -		mlx5_rescan_drivers_locked(esw->dev);
-> -		mlx5_devcom_comp_unlock(esw->dev->priv.hca_devcom_comp);
-> -		return;
-> +		goto out;
->  	}
->  
->  	esw->dev->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
->  	mlx5_rescan_drivers_locked(esw->dev);
->  	esw->mode = mode;
->  	esw->dev->priv.flags &= ~MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
-> +out:
->  	mlx5_rescan_drivers_locked(esw->dev);
->  	mlx5_devcom_comp_unlock(esw->dev->priv.hca_devcom_comp);
-> +	mlx5_esw_reps_block(esw);
->  }
->  
->  static void mlx5_esw_fdb_drop_destroy(struct mlx5_eswitch *esw)
-> @@ -2761,6 +2794,8 @@ void esw_offloads_cleanup(struct mlx5_eswitch *esw)
->  static int __esw_offloads_load_rep(struct mlx5_eswitch *esw,
->  				   struct mlx5_eswitch_rep *rep, u8 rep_type)
->  {
-> +	mlx5_esw_assert_reps_blocked(esw);
-> +
->  	if (atomic_cmpxchg(&rep->rep_data[rep_type].state,
->  			   REP_REGISTERED, REP_LOADED) == REP_REGISTERED)
->  		return esw->offloads.rep_ops[rep_type]->load(esw->dev, rep);
-> @@ -2771,6 +2806,8 @@ static int __esw_offloads_load_rep(struct mlx5_eswitch *esw,
->  static void __esw_offloads_unload_rep(struct mlx5_eswitch *esw,
->  				      struct mlx5_eswitch_rep *rep, u8 rep_type)
->  {
-> +	mlx5_esw_assert_reps_blocked(esw);
-> +
->  	if (atomic_cmpxchg(&rep->rep_data[rep_type].state,
->  			   REP_LOADED, REP_REGISTERED) == REP_LOADED) {
->  		if (rep_type == REP_ETH)
-> @@ -3673,6 +3710,7 @@ static void esw_vfs_changed_event_handler(struct mlx5_eswitch *esw)
->  	if (new_num_vfs == esw->esw_funcs.num_vfs || host_pf_disabled)
->  		goto free;
->  
-> +	mlx5_esw_reps_block(esw);
->  	/* Number of VFs can only change from "0 to x" or "x to 0". */
->  	if (esw->esw_funcs.num_vfs > 0) {
->  		mlx5_eswitch_unload_vf_vports(esw, esw->esw_funcs.num_vfs);
-> @@ -3682,9 +3720,11 @@ static void esw_vfs_changed_event_handler(struct mlx5_eswitch *esw)
->  		err = mlx5_eswitch_load_vf_vports(esw, new_num_vfs,
->  						  MLX5_VPORT_UC_ADDR_CHANGE);
->  		if (err)
-> -			goto free;
-> +			goto unblock;
->  	}
->  	esw->esw_funcs.num_vfs = new_num_vfs;
-> +unblock:
-> +	mlx5_esw_reps_unblock(esw);
->  free:
->  	kvfree(out);
->  }
-> @@ -4164,6 +4204,7 @@ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
->  		goto unlock;
->  	}
->  
-> +	mlx5_esw_reps_block(esw);
->  	esw->eswitch_operation_in_progress = true;
->  	up_write(&esw->mode_lock);
->  
-> @@ -4203,6 +4244,7 @@ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
->  		mlx5_devlink_netdev_netns_immutable_set(devlink, false);
->  	down_write(&esw->mode_lock);
->  	esw->eswitch_operation_in_progress = false;
-> +	mlx5_esw_reps_unblock(esw);
->  unlock:
->  	mlx5_esw_unlock(esw);
->  enable_lag:
-> @@ -4474,9 +4516,10 @@ mlx5_eswitch_vport_has_rep(const struct mlx5_eswitch *esw, u16 vport_num)
->  	return true;
->  }
->  
-> -void mlx5_eswitch_register_vport_reps(struct mlx5_eswitch *esw,
-> -				      const struct mlx5_eswitch_rep_ops *ops,
-> -				      u8 rep_type)
-> +static void
-> +mlx5_eswitch_register_vport_reps_blocked(struct mlx5_eswitch *esw,
-> +					 const struct mlx5_eswitch_rep_ops *ops,
-> +					 u8 rep_type)
->  {
->  	struct mlx5_eswitch_rep_data *rep_data;
->  	struct mlx5_eswitch_rep *rep;
-> @@ -4491,9 +4534,20 @@ void mlx5_eswitch_register_vport_reps(struct mlx5_eswitch *esw,
->  		}
->  	}
->  }
-> +
-> +void mlx5_eswitch_register_vport_reps(struct mlx5_eswitch *esw,
-> +				      const struct mlx5_eswitch_rep_ops *ops,
-> +				      u8 rep_type)
+> +static void mlx5_eswitch_reload_reps(struct mlx5_eswitch *esw)
 > +{
 > +	mlx5_esw_reps_block(esw);
-> +	mlx5_eswitch_register_vport_reps_blocked(esw, ops, rep_type);
+> +	mlx5_eswitch_reload_reps_blocked(esw);
 > +	mlx5_esw_reps_unblock(esw);
 > +}
+> +
+>  void mlx5_eswitch_register_vport_reps(struct mlx5_eswitch *esw,
+>  				      const struct mlx5_eswitch_rep_ops *ops,
+>  				      u8 rep_type)
+> @@ -4542,6 +4574,8 @@ void mlx5_eswitch_register_vport_reps(struct mlx5_eswitch *esw,
+>  	mlx5_esw_reps_block(esw);
+>  	mlx5_eswitch_register_vport_reps_blocked(esw, ops, rep_type);
+>  	mlx5_esw_reps_unblock(esw);
+> +
+> +	mlx5_esw_add_work(esw, mlx5_eswitch_reload_reps);
+>  }
 >  EXPORT_SYMBOL(mlx5_eswitch_register_vport_reps);
 >  
-> -void mlx5_eswitch_unregister_vport_reps(struct mlx5_eswitch *esw, u8 rep_type)
-> +static void
-> +mlx5_eswitch_unregister_vport_reps_blocked(struct mlx5_eswitch *esw,
-> +					   u8 rep_type)
->  {
->  	struct mlx5_eswitch_rep *rep;
->  	unsigned long i;
-> @@ -4504,6 +4558,13 @@ void mlx5_eswitch_unregister_vport_reps(struct mlx5_eswitch *esw, u8 rep_type)
->  	mlx5_esw_for_each_rep(esw, i, rep)
->  		atomic_set(&rep->rep_data[rep_type].state, REP_UNREGISTERED);
->  }
-> +
-> +void mlx5_eswitch_unregister_vport_reps(struct mlx5_eswitch *esw, u8 rep_type)
-> +{
-> +	mlx5_esw_reps_block(esw);
-> +	mlx5_eswitch_unregister_vport_reps_blocked(esw, rep_type);
-> +	mlx5_esw_reps_unblock(esw);
-> +}
->  EXPORT_SYMBOL(mlx5_eswitch_unregister_vport_reps);
->  
->  void *mlx5_eswitch_get_uplink_priv(struct mlx5_eswitch *esw, u8 rep_type)
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> index c402a8463081..ff2e6f6caa0c 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> @@ -1105,7 +1105,9 @@ int mlx5_lag_reload_ib_reps(struct mlx5_lag *ldev, u32 flags)
->  			struct mlx5_eswitch *esw;
->  
->  			esw = pf->dev->priv.eswitch;
-> +			mlx5_esw_reps_block(esw);
->  			ret = mlx5_eswitch_reload_ib_reps(esw);
-> +			mlx5_esw_reps_unblock(esw);
->  			if (ret)
->  				return ret;
->  		}
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> index 8503e532f423..2fc69897e35b 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> @@ -245,8 +245,10 @@ static int mlx5_sf_add(struct mlx5_core_dev *dev, struct mlx5_sf_table *table,
->  	if (IS_ERR(sf))
->  		return PTR_ERR(sf);
->  
-> +	mlx5_esw_reps_block(esw);
->  	err = mlx5_eswitch_load_sf_vport(esw, sf->hw_fn_id, MLX5_VPORT_UC_ADDR_CHANGE,
->  					 &sf->dl_port, new_attr->controller, new_attr->sfnum);
-> +	mlx5_esw_reps_unblock(esw);
->  	if (err)
->  		goto esw_err;
->  	*dl_port = &sf->dl_port.dl_port;
-> @@ -367,7 +369,10 @@ int mlx5_devlink_sf_port_del(struct devlink *devlink,
->  	struct mlx5_sf_table *table = dev->priv.sf_table;
->  	struct mlx5_sf *sf = mlx5_sf_by_dl_port(dl_port);
->  
-> +	mlx5_esw_reps_block(dev->priv.eswitch);
->  	mlx5_sf_del(table, sf);
-> +	mlx5_esw_reps_unblock(dev->priv.eswitch);
-> +
->  	return 0;
->  }
->  
-> diff --git a/include/linux/mlx5/eswitch.h b/include/linux/mlx5/eswitch.h
-> index 67256e776566..786b1ea83843 100644
-> --- a/include/linux/mlx5/eswitch.h
-> +++ b/include/linux/mlx5/eswitch.h
-> @@ -29,6 +29,11 @@ enum {
->  	REP_LOADED,
->  };
->  
-> +enum mlx5_esw_offloads_rep_type_state {
-> +	MLX5_ESW_OFFLOADS_REP_TYPE_UNBLOCKED,
-> +	MLX5_ESW_OFFLOADS_REP_TYPE_BLOCKED,
-> +};
-> +
->  enum mlx5_switchdev_event {
->  	MLX5_SWITCHDEV_EVENT_PAIR,
->  	MLX5_SWITCHDEV_EVENT_UNPAIR,
 
 
