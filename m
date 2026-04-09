@@ -1,70 +1,70 @@
-Return-Path: <linux-rdma+bounces-19184-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19185-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sBFsMSLq12msUggAu9opvQ
-	(envelope-from <linux-rdma+bounces-19184-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:04:18 +0200
+	id cDreHAvu12kbUwgAu9opvQ
+	(envelope-from <linux-rdma+bounces-19185-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:20:59 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F143CE6B6
-	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E0F03CEA42
+	for <lists+linux-rdma@lfdr.de>; Thu, 09 Apr 2026 20:20:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3F6D63011C6F
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 18:02:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EAAFA300877A
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Apr 2026 18:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C1953D9DB2;
-	Thu,  9 Apr 2026 18:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201D3331209;
+	Thu,  9 Apr 2026 18:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ryXLtWTQ"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="afcFUtFj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010064.outbound.protection.outlook.com [52.101.61.64])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011041.outbound.protection.outlook.com [52.101.62.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040631A682F;
-	Thu,  9 Apr 2026 18:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68563204C3B;
+	Thu,  9 Apr 2026 18:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775757768; cv=fail; b=PLNiIfxLus0H2E5WToan7BUrwxHAmdi/Kyai8EWzrvqjLllwvCTH4nlX+YFs1f5SwDKAqBHzeZ+gzsTG3Snjvv8On+YgsrlAp97dhWwZxtFuKhGYqTGr045d3+LOx3gmeaz4xzqmJny250zuW6wZ84Ph8isUSgTXHHz/S5mPawU=
+	t=1775758855; cv=fail; b=tXJBcdMGocZA4aSIL9iUyq6DrKvoYDT9C8Hp4oM8+h/6P80q2cAHNQ8T/mOPn2FWFeLL7SCuW2EjiyROVxTNm2reyrAE0phbwumWXl/kounA5/6OYGgbGDst+n7F7gg5AuRbjGoAOHUwefUETldyprMaprVm7mI/qvMEI9IJUr8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775757768; c=relaxed/simple;
-	bh=FIuo/MTjLgUOaBfnxRz4oUkUEi+9F5lFRGTkrxBelKg=;
+	s=arc-20240116; t=1775758855; c=relaxed/simple;
+	bh=w4ZfGkIvl1wl7Nvz09gdIRD3edH2YAKH8KGCm4EqdAk=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=XAf2GPkOB10HiPtnkHeLsS7v91EwGJ/hnuIY/rXjmCSu69i7Y1I3Da0tB/8i4fjhKeUmlBMLG9HSUmxhPDSbaO6uYanMl2CaCVil9Q7LrZjWi1/5dTxOpMZn0p2D+/mRCnfbCV4GypWJd+Nt+eIqZuC/26fD18IZ6xDJ6AwK5n8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ryXLtWTQ; arc=fail smtp.client-ip=52.101.61.64
+	 Content-Type:MIME-Version; b=sjmXhvBZNe1Qh51ai96Rv/46ibaHD8EgRDea5vZydTmVhZhIs8+hQOCb+FqvKENWEl5rQU40b+F7sD/yd7LgZiCzvYljPyhSSjEYBBuggQubN/H4QrhQafClMEKeDbWBTMM8wz1w5/uhKjMzcRyVOm5k0ZKIN+nAPeUGk1NcsJE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=afcFUtFj; arc=fail smtp.client-ip=52.101.62.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eMwt4tsHYOj34jica3s4kVlUsgyVMFklpLv+qT4a1LRX07QgWoimgd5sZlxKjIgaoyyuslryoyKxxpZooUymxBRB9Ab3BIoDTDa3nQffIo901QIJzdcEyTJ5wnru2zrvU9q3iBhY2ceAn63093iZ6LxDUd4/N97+Kg73S7k0VRlQKz/NwaOJL6LFnMgrLaEd49/sT2DxGj/IdjWxTbyZGxzlG2pUqosmeVolqgMYtZ4y4s9+hy6g/+1fLDzZDUoZd5cq4XcBmM3XZTiLNdPkC7LXW/OL4nNxI2VSZZ6oGKPgc2yIrfOD1bfcNOr/HjPlglLqh5yWI8mUPZ6g0DMb4Q==
+ b=TC5+a7HeH1uUl9T5uPo9xMjYOzwci11bG8Gsngvfru5WwdKRS3Bs44B42mzPpVwOFSNp7KpEN9S/0x4jRGa+IF7iMqRtJIU9gCqrZbCiemTNDPT6Eoi6WfPu48VUgTgyyz6Pb4m2S8KxmuahGNpfFKvE66zFOAhIKgwR9vhAK0vKoAYMiq3CcaJSXbZNFv7fESyhWSKyzhEO2ODcqtfMr3u05SPE4KXfcvCNTHfZ49wRXkxCvZwP81GH4Gp0ZxIHZYrhxxZY3LhHAsgdyWGmxYWfYSRbyb09YqNfxvGaLM7JiDQpcBTO79VtoIUHuTQp170sbZOy7WFGmP2/CxTgcA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JfH6FeRnuIh9DuJ8EvJd0kGlIkMbkHn7iwaVYKEIKWE=;
- b=HoT1fF7MRLV4mdbowh9FJhjKldy6iAEOg6cZymhTyzJh0FB3CearCyAE61nF46XoBb3IA1LcEuNOMqWt9ZbPI510VOvtO2WIFvrNuF4nLEw9IjYDguZBzRJcKi/GGwK5PRNtTlnDATG6Kc+z3rGA3l8jtzOohDnPjb/qIboJIdK6b5JltKzSSGH45rpLjlDNqnUJ1/niZ6eBybZplnMWeFqJHAyJz5UcXNbRy9cEfKB35jZY3SmAUTVQsWc15zPlZXYT/peS09wqM8ZXluEaYsVKaD/q5lzBq6m6N/XPcW/9dJZGN4iTHS4oeLRueWURTtL1KviLcfo8dnYY3Dy1rg==
+ bh=TbrJDvN1NnrYFKYsJ/AxsfAQAziBTbM8z+FaNjFkWpU=;
+ b=ABq7/MNl/iEdR49TPsxmtXc133m0dRLYbVCIAMMHK+fB3ExJakWd3dsQP0W8Y4XOPIuOwn4N6UqxeHOMZLOqG3cohrX4BBOFpgw+g7IFVj6TlD8KBAufT2Bd3I5hj7iV36nhIuLFewAv9HrGqKn6Ok1rZrCgxcyhjdVT/HrQ4AQb7RxrHcz4QcaSYKn0CVl1JP+9CSYg0y1hY+XGIwtOKOBc5I2PApL5YQphMltQ2iYLgylW677wQrNj9jIzRhME4iH80+6HOaqM84p4oTxjtsoeUr24jIVnndwrcotVGvuTmXYI6kQLN4LWV8z2kMPGPNviuadPvyTgvrHh7/2b+w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JfH6FeRnuIh9DuJ8EvJd0kGlIkMbkHn7iwaVYKEIKWE=;
- b=ryXLtWTQWkorgVTUKRuYV/3q6lm4mWPRF1hIFqiEtp/yWwhLP6K9OTLSxXCoB/ydC26v6fieBkKh9vWWZmt2eBqrtQA7t16dhfP+5lTKmTAq8w8ukPen/4ISwWmfTUh56CI3lAYK98DYFe9zuj2qQRnjRbFI3EG5R0G3CjqQwmpLePiFTb1kVwJHxy/wRFQxCYSWKlnrlTbeu73evwFoYTDVuTBbcTYSU7X0+aUHRnydAup7Cn04T5JRIsvnObcSah7TIH3RgQhAfIZReLZZkVYxwkISUK923Bdoo7cGeEtfSOodoY0Rw8ftlvATe68HNluO7h2XuWCr4WR0ONWwKw==
+ bh=TbrJDvN1NnrYFKYsJ/AxsfAQAziBTbM8z+FaNjFkWpU=;
+ b=afcFUtFjT1EJOdPLR0Gz/OlNVg1KKzVpdsXLD7+pjho/KBuo0wqnkzTqmypiHV6gQ3xV7NNJXUF2d89x46jsXEW4BpK9ski9OO69dVcbmEahcvAKrZDQ0BoGVDjgU0aufSrMawqf9MhO5LKaUmn4DZ6vangDStsAEF19XlrqbSvEMY45cb8P/J6LglAGVo2H/hPRytyGMSGjYQx9h/E3ihxdGdeH1YVB3jLvdX34mWjWeHdiTQvCfNY2rPL2uAsQvoa1yKI7uehZcjbRLQK831RBbCoYWoeqdzOzjKsnDVgJGgXR6fWeN7ApeJM7fj8h0vOK6NzcK18jRG7Xhg7iaw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from IA1PR12MB7541.namprd12.prod.outlook.com (2603:10b6:208:42f::13)
- by IA0PR12MB8907.namprd12.prod.outlook.com (2603:10b6:208:492::19) with
+ by SJ0PR12MB7457.namprd12.prod.outlook.com (2603:10b6:a03:48d::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.20; Thu, 9 Apr
- 2026 18:02:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.18; Thu, 9 Apr
+ 2026 18:20:49 +0000
 Received: from IA1PR12MB7541.namprd12.prod.outlook.com
  ([fe80::4445:7716:8576:62c7]) by IA1PR12MB7541.namprd12.prod.outlook.com
  ([fe80::4445:7716:8576:62c7%5]) with mapi id 15.20.9769.018; Thu, 9 Apr 2026
- 18:02:43 +0000
-Message-ID: <77ebbbc8-2991-40cf-baa3-080f670aaae5@nvidia.com>
-Date: Thu, 9 Apr 2026 21:02:39 +0300
+ 18:20:49 +0000
+Message-ID: <e4708c37-ccd3-466f-b08c-653d241260dd@nvidia.com>
+Date: Thu, 9 Apr 2026 21:20:45 +0300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 7/7] net/mlx5: Add profile to auto-enable
- switchdev mode at device init
+Subject: Re: [PATCH net-next 0/7] net/mlx5: Improve representor lifecycle and
+ fix work queue deadlock
 To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
@@ -79,14 +79,13 @@ Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
  Dragos Tatulea <dtatulea@nvidia.com>
 References: <20260409115550.156419-1-tariqt@nvidia.com>
- <20260409115550.156419-8-tariqt@nvidia.com>
 Content-Language: en-US
 From: Mark Bloch <mbloch@nvidia.com>
-In-Reply-To: <20260409115550.156419-8-tariqt@nvidia.com>
+In-Reply-To: <20260409115550.156419-1-tariqt@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TL2P290CA0018.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:3::17) To IA1PR12MB7541.namprd12.prod.outlook.com
+X-ClientProxiedBy: TL0P290CA0003.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:5::18) To IA1PR12MB7541.namprd12.prod.outlook.com
  (2603:10b6:208:42f::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -95,68 +94,68 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB7541:EE_|IA0PR12MB8907:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2b82b635-b369-4995-4089-08de9662323f
+X-MS-TrafficTypeDiagnostic: IA1PR12MB7541:EE_|SJ0PR12MB7457:EE_
+X-MS-Office365-Filtering-Correlation-Id: ebf0376e-e0d6-4e8b-1d9e-08de9664b9d9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|18092099006|56012099003|22082099003|18002099003;
+	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|56012099003|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	s9auFtBW3beBIQZdaDim3eNgUdfJEku+miyCMR8zJMUrq5ZrGN0mscrvHuJd2F7ir+fKU1gWREh8cLa62NiBfSEnSbx30vIksU09InYS85Tg+KXcJhmvkI+J7E8MRxsQswdhLJgCaTJZG3yFHP7G1AYqTzlXc8YPK8x+oRI2NybzlNBBFSD33USVGr795whhk7RPhWeKa3llaka2DHmVnpII0HcYX99odnsUsCyU1hTHZNKwaKdE25aJqMbC6Q/pGDqsyw7efVFqSxSljBp2lV+mKPDcqnr51bIVISuF9nBvTPZA/dsisIhzCNyZfKcn4zr9uSjl0lh/8v+e4e659c5PuxE2ZQemWl6wceQNKcwgexKMw9qQuGcSbLDBtY5C/5WYm4s1uiS3AD02GjoS5nR98BSNEu6TRoSVbOPrlP+9dSShpua7Rs0uwQZIlWRKM1ag/H7XcRhzNM5Md4TSNTbiL2gIiJ1hWl4Od0B2kzkt2uzFgRQ49LRdrs/erKUecGonC/W8FI1faPjwNChbNq3pbvOUXBHOtgy3RlEdYoi/NRJJn9UaJI4E32bxJib5DKpFL1nAu1wXvqnJkAxFi31uRkGce69lb53Y9TcIdwzFTtKmzGnTZQlsVcZRdeqBld41oM52uV8GOpYukPO2F2isLo3MlV00sev/loDZWYW6nrN/Jex75OYVO+x9OyJDQOFS1db+fsSHRrfN+vx/7ev6zVq2BfE4gOclJL2MFBM=
+	39GJNWoAGpPkS8mjmqLAVG56Q8SeE9ClRNrUX5r1G3ECQiNbZq/Tu6p67UoABQ9HzRsVwd/BDuHNPa44uAMzH5B8HAgttquYcLsVtHtHLJtE+u0lEiL46/FF575W+9Vhs2ptmoH43iIuAkVwVOJeBEnOxkjAgXi1jfWauuNcZFa1LzkrcDHWDXS2ECX3JdGvFwXl1iR7MmrIrMdHFg5NUMrJ9Yjdgsyp6s1vxLFymcnddktTySzNKa8ZMTuY3NgmmGez/FN8cqn+w2qMNQCoWpz/AVpP8P+8FNCv+LFt10m99rHH3mJvPHoHQpJcwXz8T5H0+WwP5z/UGPfgV43BtLIHwbRgx2mtIid+4xkIvf54E5fPKRQ7KtnqN8zgzlcACREa3i2fcZiMzw53PsA9DlKm9nHL/BO71nf9tQQtTfjf7IgisKQhmaZXn0vjW4Ek04inpqwXYemRZd5xFkqfZNQwACqfOh0B8o3hvQ5f2RjJJT5AWZUBoSPEALg1VPokWJADHjbp5DcTzvwmHSX5KQZtpI0reUxMIBWQBrFdFk9f+NgwcXshoXCOpyd/AmwhE7g3PGoy9ZAfU/PqKMqA8rr4/q8GeQj8MysJ1wdJlKv5mcWg0Mrdoao1Nv31TEXAjSP0PtVBkeCAFgk3vGjGfaEjn/0ZnDuclWSyQTLnbnXIIGIWHXgRnZNFfl5seYePaq4ORUaClKeqc89VGCxeCRm+HAB5wUBK/HFcYSwc5rg=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7541.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(18092099006)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7541.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NUpzMVdjVE1yMVJZOGtRUlhyZUFXZlZlM1B5Q1RQUVk0SnBLc3REM2pSU01j?=
- =?utf-8?B?c0Ixckhzd2N6L1BqaFFWUXdRa3RHU1BiSUhTQkRjZjA0SG9KaTRCdCtSb1dy?=
- =?utf-8?B?Q1BURjFBMDNGUW8zTFNRQmZPUGIyWUM4N2lzV3dzcVN1VDNOUHNMcDFvNVRX?=
- =?utf-8?B?d3BQMW93OERVMHBmeStFV3FJMXVXcnFCK0p3Mmh5dzZkS2VzQVNodUZ5RWpV?=
- =?utf-8?B?YnhTa0UwU0Q2b2dwN29lYXhNK2FYd3d5RjRlQmVKdGFRd3pENGF5RkhNdmdP?=
- =?utf-8?B?eWI4OFFGbENjNGtvNFNXc0ZzSDBNQVBBMDl2SWprQzl5QmNmc2RnWXZCa2xz?=
- =?utf-8?B?SlZYTERmY1hSM3ZJMzlqY2ZjU2I3aUVZK0JIZFV4UEpiTTR0YXFabDE4aU9Z?=
- =?utf-8?B?N2VpVmFzM0N0cGE5SGZyc2lVTU1wRjBBRVRTUlFnU1pTa0lmWEFCbEtHSGt0?=
- =?utf-8?B?WHB2MWVXTERVbDNiRlF5WFpkSXIvSCtHOXZyalhyNjQzTE9NUlVvNnRmZytI?=
- =?utf-8?B?NThUZEI4c29XMVVUTmMrV3ZDMzJ5MUlMT3JmbkViQkxLOGlPTlhKSGIrVXBX?=
- =?utf-8?B?UlpXNXpBVmVjUWZ3S2Q1eUo2aitzbm9EaFpZbDc0bm5URlZmYlRkcnRNaUNQ?=
- =?utf-8?B?NFl5aUw4bll0WThaY2tuTHp0Rm4ya1hVZVpxMHRHL2s3d2RWUThZaG5FSjE5?=
- =?utf-8?B?VVhHN29nZG9GV1JxbVpLQUNwN28yZXVDZ2Nud0dxOGVyQWRWbHo2MEZiWW4r?=
- =?utf-8?B?TlpheExtanljUnZDWDl0UjdmR3NKazgrMTFpVmJ6d2NOWURBWkJHcEZHYVlO?=
- =?utf-8?B?Y29kcUxmbUtYN21MNm1BNHBQVmY1eXNYdTMzczBqOXROQXpXbnFNM3puRXRG?=
- =?utf-8?B?UnYxN3dNTytuR2xTZVJZYWtJOFJNMkF0dW13MDd3aSt5N0djYkl2NXJ1eUpU?=
- =?utf-8?B?ck9UOUlFM0pVRUtmR0NRcFNZU2dKTHFqaldKbUVIcS95ZDVCaFZnRkI3QnJa?=
- =?utf-8?B?WXd3TStnUFlINmoyRktnZTFad29FTzZDeVB3MUwzbktiMEl4cUlEMkZMNW9V?=
- =?utf-8?B?Wi94TVgwSXFJeDZSMEpROCtwMFZVNW5QRUY0NGM5NFNteW1RUXFZRmxNQlpS?=
- =?utf-8?B?WktGdi9Jb3lVOEg2UXZWSndMM3o5WnZ2Q2xqRVZ1WTRybjVKR2RBZncwT0ZS?=
- =?utf-8?B?N1dnRjcvaytpR0hzMFdKdzZFbTV1eUUrS21MNFd5cFdQUmNEWjFsK1NMMFpV?=
- =?utf-8?B?OWZZM3QvYzA3M1l0NEozZGljY0loVGJXQlllZkMvdTZQWThsNWNJU05KL1pH?=
- =?utf-8?B?MFp1ZTY0dnA3Wnh4a0Q3OHFaM0htdTIxbmlFbFNjRUlCY1JlV1FJY2NsNFRu?=
- =?utf-8?B?d3BWNE1pd0lDMjRaU2FKUUtuOGlxMEY0OG9ra3VHTDV2VDJ0VHBPN1p0VnJq?=
- =?utf-8?B?MlRRWUNiYzJlanhyWHdPdWU1TFEydmk3UGZvUkltbVBzdEFvNDFtWDJoR0Z2?=
- =?utf-8?B?WS8vS2RLL29QL0FWbkZFNngrbWVMMXh6YThpUjZ4cnJQK291UVRlSzdJeEp0?=
- =?utf-8?B?ZWx6TFZrREpPdG1CVk1CbytWMFJVTjZ4c2V4RVhndXVJOVBJUnc5eXV2ZFNZ?=
- =?utf-8?B?a3VqaHNNc1hLdnkzaFlBTTUyeGVMY0t5bTY3Z3dGSXNGdFdDUDdiK1JkTzdj?=
- =?utf-8?B?OVRuUzU4TnJvMmNGRGdmQmtmc3J0YnkxR0EyWVBpcUMyby90NU0xSnNnVUwr?=
- =?utf-8?B?QnhsNnozYi9GNHlNMm5MOGJRb2ZyaVBHSDE4T1owaG9FUEQyT0J2aytTbisv?=
- =?utf-8?B?V05uZHpHSzhrRDJ3dnhOZXFDSm1TT01OQi95RkFKN2cwTWFib2dWMDZIWi9l?=
- =?utf-8?B?RnhUV21ySGtaREZsNm9NVHh4QXltNFhyMklOK0FQVHZaYXlEckZ1akNPVmhO?=
- =?utf-8?B?bDlUSDIxcGtHUDJLNm5aYVZKeVRUdERiWC9rL0R1Qmd1TEh6UFdZcXZzTXQr?=
- =?utf-8?B?TW1OZWVaVFFRWDdiZVNYcXptbzMzNjluVS9tMFpETE1qaW44K0lDR1dpdjVE?=
- =?utf-8?B?SVlJMGlobTlyK2hjS1BHMkpkUTBxZlNDOXZCUXAweG1EMHo1WHlnc3p5Qk5H?=
- =?utf-8?B?ZFVHUjlXaWxUK1ZpM2RqY1pCbTh2dlNMTkFxZE5IdGpLbEovRTVXMjBaKytq?=
- =?utf-8?B?Lys0dGlVUUJjZGFucW1oaGttc2F4R2JZV3Bxd004MnRyWm5La3VmNEJqVGRP?=
- =?utf-8?B?cjBZM0VqR2tmQkFwN3cxT2tUUGlmemozaVQ0MDMxRm56K1ZxalhjYXRQSE1W?=
- =?utf-8?B?dE9OVk84d2U3a2w2SWlucHBZSlZWWGNTUTYzZjh2eEtUSnBsTWdHdz09?=
+	=?utf-8?B?cDEvYnBBZEpLTlRBRCtqdjE5K2J4WVdZZ2ExQ2F5M0U4aXhlUmJrcjl2N3hR?=
+ =?utf-8?B?VU5oZ2pqTXBvZ01mRWhSWk9GU0JvdkM2bGNPM2kyR09GUzdzb0t4V2JPQ3c4?=
+ =?utf-8?B?SjZ0Y01zT3oybnJYVW8zT0h6NEd4enVHS3RrNWYyQ3ZydWZwUWx5Z0E5VkFD?=
+ =?utf-8?B?M3lkTVBBakhLam1BTUhwYllWOWpaZnFnQ0NsbHFqdURGdzBJbUlHRkpGeU41?=
+ =?utf-8?B?OWF4NGl1T0d5cFpzZkE3a3U3QU1XQnNrb0I5Qjg0MFBDTllhTEZ0WnF4MGZh?=
+ =?utf-8?B?TDBVOGZqWWVNbUkvZ3E1K0NDNnVhZEpRTDhib01DallpUlRJSXNmOGVndldZ?=
+ =?utf-8?B?ajA5OXFncHR3UmUxUzBVdXdWa3QzaHhlSWIwZjFaeVYwbXZPRkJqd1lJZzl3?=
+ =?utf-8?B?Y21KWCtCbk9YN1VDMHBuNFlZQkVVb1M4cStmWWpacFpBNTlCRkVNdEc1b3pB?=
+ =?utf-8?B?YmNyZVY5MnhvaElSL09LMGRPT2FvMFBEaUVHc2xka0YxMmdodUdhSFJDcmRo?=
+ =?utf-8?B?V2ROTkppdGVMKzB5VXNaU3RkZURtbzJ4ZjI3dUY3VVVnT2tUVnVsbFNSUHRm?=
+ =?utf-8?B?RjJYR1hkb0R2dmtVaHErUUxWV1BXTGRxTndoc2Q3L0JLQkJUL01FV1dkRTBx?=
+ =?utf-8?B?OFgxQVhBTC9wTGNMV3BGM3RXd2p0aGNkQ1dhOFZ5SERacUljOEZLNU5VVDdt?=
+ =?utf-8?B?ZXRTQ3BZQVhLbDd1MHNKNHBUcHdTL3M5VklBalVRSDZoQXZmMTV0eUJKRUhE?=
+ =?utf-8?B?U0U1RzR4NmRjZ2xiUnhmRzhhZjVFMERwZE12WHFMeEw0SHZaQmtnRldTZ0dh?=
+ =?utf-8?B?dFNUdHJrRTB3bCtqajZ1NzJGL0FRNHh4b2ZHZE5TOHM0M0t5aE93Q2xYWjND?=
+ =?utf-8?B?ME5EeStXcXhsTk0wQmhuUGdTSFY4c1dKa1ZrS1hLQUVYQVdGSVd5WnpkcXla?=
+ =?utf-8?B?aU5oQUFuQnVpZjkrRXF4MDh5WkdhS0lQbm8wWURGZ2l2YVJHRTRhd3JDcjRo?=
+ =?utf-8?B?azh5emV5ZzlWQStlM0w0RWJHTE8xU0R3V0tFUU9DelRLb2NxV2dlMldyRGlU?=
+ =?utf-8?B?TTgyK3pXaXNFNjRwOTVZZWc1VnV6bWxtd0dadzRaN1R5bzNMRldBNFM1cnpP?=
+ =?utf-8?B?QlFQSkg0NDJQMWU1eUZtNCtWWGJxZVdCOWQ3Nm9HNTB0U1ZZZEtONzZyRGE1?=
+ =?utf-8?B?dkcwVG9jUE9OV1U0TmdHVkxuSHY4SzRPR3ZYc0hPYmVjMGVzdEk4cjFzOG9Z?=
+ =?utf-8?B?RklDYWFhS3VHRDFYOVZwK2E4TVllKzdMWGZOWWlsMlYxa3dya2l6RStMQXIx?=
+ =?utf-8?B?MEVJcFFKVmRuUkFsK0M3Y0hVS016TkQ1ZHg0TFpDQWpzMGdZQUtocVZGTnlT?=
+ =?utf-8?B?NG55R3M5VjBRaDJNZUtwaDBSbFVGMkY3UStWdjJTbTNUZDJ1MHRGT095UHFK?=
+ =?utf-8?B?UE1CazRTTU9IY2lvME0rdlJqMlFKcmNEdkVNQnlqMVJYd0lIN2pPSzFuM0tM?=
+ =?utf-8?B?dEEwZlR5bm9Vd1dkSElreWcwMjFxUXFoMHl4MU5EQUg2Nnd0Z2IrVGp6K3l5?=
+ =?utf-8?B?NzVIWkZyQVZKY3IyV2NFNXJoNVBsL2Rqa3g2cFVuQjd0cVBzc0FIUEtNK2sz?=
+ =?utf-8?B?NnowN2tGMkQwZCtHN3YrTzZHWkZKaUUzMWl4OXVtWWJrUlZubkdWdWlremto?=
+ =?utf-8?B?WnZGRVM4eTg5T3gyS1N4NFNxLzBOcE9mdXRRMVhxQnFJUmtJL0pIaWZGN0hw?=
+ =?utf-8?B?dVMzWXZCaUlrYlVkelgvU044VTRCNUY1VW56Y1JYYVZ4R0NRVkxRUFJUVkFl?=
+ =?utf-8?B?Skptc0E0VWZKaVA4ejVoK1hZU3h6djM0SmNES29nUk9zaEg0N01qNFhpdzV4?=
+ =?utf-8?B?K0dTdGxZdFBZWW9YOUphQnFZSTIwTDFrcTJlREFXcUExbmFuR0lWMWlSQjZS?=
+ =?utf-8?B?d2ZZRFJRa2FjeStVNThPVm5KZWlXenRYaVYvb0l6dVNGSysySjZMeStDb1Bh?=
+ =?utf-8?B?UGtudDlTcHdlY1NaNGk2MHdpVWtYdVVqSk4yVjhzbmJVRHVzemNudmNZd1Uw?=
+ =?utf-8?B?Vm5vcGtUZER1S0xuekNmR0hVbTc2YklUVTdGSms4L0UyNEhWa2RzV2h6Sk9E?=
+ =?utf-8?B?S3RqTEVSN2FaWWtnZWgwSmpsbWtVTU5HWlcxRjBvZ0RPTHNzc1FyckZ0UzBp?=
+ =?utf-8?B?R3BwZzJDMDdrbTJ1WG80eUhiQ3N6VFVXNFdnTk0rOVRIZnQ1R0lrQlRYU3oy?=
+ =?utf-8?B?R21FTjdtbGF2RFNNU1ZXZ080OXFKYWtFU0g2RDFaVzZVMnRsLzkrcXRuRE4v?=
+ =?utf-8?B?bWdlQSswcTJTSGlOOEF3OE45ZENtc3FKa0Q3ODFaZ3A1SnJ6LzdRZz09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b82b635-b369-4995-4089-08de9662323f
+X-MS-Exchange-CrossTenant-Network-Message-Id: ebf0376e-e0d6-4e8b-1d9e-08de9664b9d9
 X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB7541.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2026 18:02:43.0556
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2026 18:20:49.3777
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JNovXOxna1ncHuDRweRnjxDVNWHmwupjM6eErolI+MhzZCuPmmAlCm9azyvvVdGciE9vn9XJOv7xBNCPVQMDuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8907
+X-MS-Exchange-CrossTenant-UserPrincipalName: +fgp5rIOt5mQCTM61sea+tfzOwJmqCrOJY+pqaKJqNyqmRZG/g1DAgZt4EiF+bVLGP69utQ0kWfzUEWsH5Gkdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7457
 X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
@@ -166,200 +165,192 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19184-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	TAGGED_FROM(0.00)[bounces-19185-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[25];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 66F143CE6B6
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:mid]
+X-Rspamd-Queue-Id: 1E0F03CEA42
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
 
 On 09/04/2026 14:55, Tariq Toukan wrote:
-> From: Mark Bloch <mbloch@nvidia.com>
+> Hi,
 > 
-> Deployments that always operate in switchdev mode currently require
-> manual devlink configuration after driver probe, which complicates
-> automated provisioning.
+> See detailed description by Mark below [1].
 > 
-> Introduce MLX5_PROF_MASK_DEF_SWITCHDEV, a new profile mask bit, and
-> profile index 4. When a device is initialized or reloaded with this
-> profile, the driver automatically switches the e-switch to switchdev
-> mode by calling mlx5_devlink_eswitch_mode_set() immediately after
-> bringing the device online.
-> 
-> A no-op stub of mlx5_devlink_eswitch_mode_set() is added for builds
-> without CONFIG_MLX5_ESWITCH.
-> 
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  .../net/ethernet/mellanox/mlx5/core/eswitch.h |  6 +++++
->  .../net/ethernet/mellanox/mlx5/core/main.c    | 26 ++++++++++++++++++-
->  include/linux/mlx5/driver.h                   |  1 +
->  3 files changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> index 256ac3ad37bc..5dcca59c3125 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-> @@ -1047,6 +1047,12 @@ mlx5_esw_lag_demux_rule_create(struct mlx5_eswitch *esw, u16 vport_num,
->  	return ERR_PTR(-EOPNOTSUPP);
->  }
->  
-> +static inline int
-> +mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
-> +			      struct netlink_ext_ack *extack)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  #endif /* CONFIG_MLX5_ESWITCH */
->  
->  #endif /* __MLX5_ESWITCH_H__ */
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> index dc7f20a357d9..12f39b4b6c2a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> @@ -86,7 +86,7 @@ MODULE_PARM_DESC(debug_mask, "debug mask: 1 = dump cmd data, 2 = dump cmd exec t
->  
->  static unsigned int prof_sel = MLX5_DEFAULT_PROF;
->  module_param_named(prof_sel, prof_sel, uint, 0444);
-> -MODULE_PARM_DESC(prof_sel, "profile selector. Valid range 0 - 2");
-> +MODULE_PARM_DESC(prof_sel, "profile selector. Valid range 0 - 4");
 
-Sashiko writes:
-"Is it appropriate to expand a module parameter to configure a feature that
-already has a standard devlink API (devlink dev eswitch set ... mode
-switchdev)? Automated provisioning is typically expected to be handled in
-userspace rather than configured via driver module parameters."
+Sashiko flagged a few issues in the series. The main ones are in patch 4
+([PATCH net-next 4/7] net/mlx5: E-Switch, fix deadlock between devlink lock and esw->wq).
+These are known, and I currently consider them acceptable trade-offs rather than bugs.
 
-This is intended as an intermediate step.
+That said, reviewers/maintainers may reasonably see this differently.
+Before sending a v2 focused on patch 4, I’d appreciate feedback on the overall
+approach and direction of the series, please see sashiko's comments here:
+https://sashiko.dev/#/patchset/20260409115550.156419-1-tariqt%40nvidia.com
 
-The end goal is that for certain environments (e.g. ECPF/DPU), only
-switchdev mode is supported and it becomes the default without requiring
-user configuration.
+I've provided my commetns on each patch on the mailing list and
+included what was found by sashiko.
 
-There is also the question of multi-NIC systems, where a user may want
-only a subset of devices to default to switchdev. This patch does not
-aim to solve that. The long-term direction is to tie the behavior to the
-NIC type / platform rather than expose it as a generic user-facing knob.
+the patch series can be broken into 3:
 
-Accordingly, this is not meant to be a general-purpose api. It is intended
-for controlled environments (e.g. DPU deployments) where switchdev is
-the only supported mode.
+[patches 2/3/4] – workqueue deadlock:
 
->  
->  static u32 sw_owner_id[4];
->  #define MAX_SW_VHCA_ID (BIT(__mlx5_bit_sz(cmd_hca_cap_2, sw_vhca_id)) - 1)
-> @@ -185,6 +185,11 @@ static struct mlx5_profile profile[] = {
->  		.log_max_qp	= LOG_MAX_SUPPORTED_QPS,
->  		.num_cmd_caches = 0,
->  	},
-> +	[4] = {
-> +		.mask = MLX5_PROF_MASK_DEF_SWITCHDEV | MLX5_PROF_MASK_QP_SIZE,
-> +		.log_max_qp = LOG_MAX_SUPPORTED_QPS,
-> +		.num_cmd_caches = MLX5_NUM_COMMAND_CACHES,
-> +	},
->  };
->  
->  static int wait_fw_init(struct mlx5_core_dev *dev, u32 max_wait_mili,
-> @@ -1451,6 +1456,17 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
->  	mlx5_free_bfreg(dev, &dev->priv.bfreg);
->  }
->  
-> +static void mlx5_set_default_switchdev(struct mlx5_core_dev *dev)
-> +{
-> +	int err;
-> +
-> +	err = mlx5_devlink_eswitch_mode_set(priv_to_devlink(dev),
-> +					    DEVLINK_ESWITCH_MODE_SWITCHDEV,
-> +					    NULL);
+During teardown we must ensure all pending work is completed.
+However, since the teardown path already holds the devlink lock,
+we cannot have work items blocking on that same lock without
+risking a deadlock.
 
-Sashiko writes:
-"Does calling the internal driver eswitch mode function directly bypass the
-devlink core? This appears to prevent the devlink subsystem from emitting
-proper netlink state notifications to userspace when the mode transitions.
-"
+[patches 5/6] – reps block/unblock state
+The interaction between mlx5_core and mlx5_ib (load/unload),
+eswitch mode transitions, and auxiliary device handling makes
+this particularly tricky.
 
-The intent here is to support platforms where switchdev must be the
-default (notably DPU/ARM side). Today this transition is handled via
-userspace scripts.
+Several conventional locking/synchronization approaches were
+explored, but they either reintroduced deadlocks or created
+even more complex issues. The current approach is admittedly
+not the cleanest, but it has proven to behave correctly in practice.
 
-This change provides an intermediate step, allowing the device to come
-up directly in switchdev mode without relying on userspace orchestration.
-It still requires explicit opt-in via the profile.
+[patch 7] – switchdev by default
+The long-term goal is to have switchdev as the default mode
+for DPU environments. Flipping that behavior globally in one
+step is risky.
 
-
-> +	if (err && err != -EOPNOTSUPP)
-> +		mlx5_core_warn(dev, "failed setting switchdev as default\n");
-> +}
-> +
->  int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
->  {
->  	bool light_probe = mlx5_dev_is_lightweight(dev);
-> @@ -1497,6 +1513,10 @@ int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
->  		mlx5_core_err(dev, "mlx5_hwmon_dev_register failed with error code %d\n", err);
->  
->  	mutex_unlock(&dev->intf_state_mutex);
-> +
-> +	if (dev->profile.mask & MLX5_PROF_MASK_DEF_SWITCHDEV)
-> +		mlx5_set_default_switchdev(dev);
-> +
-
-Sashiko write:
-"If a user boots with prof_sel=4 but later manually changes the eswitch mode
-to legacy via standard devlink commands, will this call force the device
-back into switchdev mode during a firmware recovery or device reload? This
-seems to override user-driven runtime devlink configurations."
-
-Given the intended use case, this is acceptable.
-
-These devices are considered “switchdev by default”, so after a firmware
-reset or device reload it is expected that they return to switchdev mode.
-Preserving a prior user override to legacy mode is not a requirement for
-this configuration.
+This patch provides a controlled, incremental way to move in
+that direction, allowing validation in real deployments before
+making it the default.
 
 Mark
 
->  	return 0;
->  
->  err_register:
-> @@ -1598,6 +1618,10 @@ int mlx5_load_one_devl_locked(struct mlx5_core_dev *dev, bool recovery)
->  		goto err_attach;
->  
->  	mutex_unlock(&dev->intf_state_mutex);
-> +
-> +	if (dev->profile.mask & MLX5_PROF_MASK_DEF_SWITCHDEV)
-> +		mlx5_set_default_switchdev(dev);
-> +
->  	return 0;
->  
->  err_attach:
-> diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-> index 1268fcf35ec7..cfbc0ff6292a 100644
-> --- a/include/linux/mlx5/driver.h
-> +++ b/include/linux/mlx5/driver.h
-> @@ -706,6 +706,7 @@ struct mlx5_st;
->  enum {
->  	MLX5_PROF_MASK_QP_SIZE		= (u64)1 << 0,
->  	MLX5_PROF_MASK_MR_CACHE		= (u64)1 << 1,
-> +	MLX5_PROF_MASK_DEF_SWITCHDEV    = (u64)1 << 2,
->  };
->  
->  enum {
+> Regards,
+> Tariq
+> 
+> [1]
+> This series addresses three problems that have been present for years.
+> First, there is no coordination between E-Switch reconfiguration and
+> representor registration. The E-Switch can be mid-way through a mode
+> change or VF count update while mlx5_ib walks in and registers or
+> unregisters representors. Nothing stops them. The race window is small
+> and there is no field report, but it is clearly wrong.
+> 
+> A mutex is not the answer. The representor callbacks reach into RDMA,
+> netdev, and LAG layers that already hold their own locks, making a
+> new mutex in the E-Switch layer a deadlock waiting to happen.
+> 
+> Second, the E-Switch work queue has a deadlock of its own.
+> mlx5_eswitch_cleanup() drains the work queue while holding the devlink
+> lock. Workers on that queue acquire devlink lock before checking whether
+> their work is still relevant. They block. The cleanup path waits for
+> them to finish. Deadlock.
+> 
+> Third, loading mlx5_ib while the device is already in switchdev mode
+> does not bring up the IB representors. This has been broken for years.
+> mlx5_eswitch_register_vport_reps() only stores callbacks; nobody
+> triggers the actual load after registration.
+> 
+> For the work queue deadlock: introduce a generation counter in the
+> top-level mlx5_eswitch struct (moved from mlx5_esw_functions,
+> which only covered function-change events) and a generic dispatch helper
+> mlx5_esw_add_work(). The worker esw_wq_handler() checks the counter
+> before touching the devlink lock using devl_trylock() in a loop. Stale
+> work exits immediately without ever contending. The counter is
+> incremented at every E-Switch operation boundary: cleanup, disable,
+> mode-set, enable, disable_sriov.
+> 
+> For the registration race: a simple atomic block state guards all
+> reconfiguration paths. mlx5_esw_reps_block()/mlx5_esw_reps_unblock()
+> spin a cmpxchg between UNBLOCKED and BLOCKED. Every reconfiguration
+> path (mode set, enable, disable, VF/SF add/del, LAG reload, and the
+> register/unregister calls themselves) brackets its work with this guard.
+> No new locks, no deadlock risk.
+> 
+> For the missing IB representors: now that the work queue infrastructure
+> is in place, mlx5_eswitch_register_vport_reps() queues a work item that
+> acquires the devlink lock and loads all relevant representors. This is
+> the change that actually fixes the long-standing bug.
+> 
+> One thing worth calling out: the block guard is non-reentrant. A caller
+> that tries to transition UNBLOCKED->BLOCKED while the E-Switch is already
+> BLOCKED will spin forever. All call sites were audited:
+> 
+>  - mlx5_eswitch_enable/disable/disable_sriov hold BLOCKED only around
+>    low-level vport helpers that do not call register/unregister.
+> 
+>  - Inside mlx5_eswitch_unregister_vport_reps the unload callbacks run
+>    while BLOCKED is held. The one callback that calls unregister
+>    (mlx5_ib_vport_rep_unload in LAG shared-FDB mode) only does so on
+>    peer E-Switch instances, each with its own independent atomic.
+> 
+>  - mlx5_devlink_eswitch_mode_set acquires BLOCKED, then calls
+>    esw_offloads_start/stop -> esw_mode_change. esw_mode_change releases
+>    BLOCKED before calling rescan_drivers so that the probe/remove
+>    callbacks that trigger register/unregister see UNBLOCKED.
+>    esw_mode_change re-acquires before returning, and mode_set releases
+>    at the end. This is an explicit hand-off of the guard across the
+>    rescan window.
+> 
+>  - mlx5_eswitch_register_vport_reps holds BLOCKED only while storing
+>    callbacks and queuing the load work. The actual rep loading runs from
+>    the work queue after the guard is released.
+> 
+> Patch 1 is cleanup. LAG and MPESW had the same representor reload
+> sequence duplicated in several places and the copies had started to
+> drift. This consolidates them into one helper.
+> 
+> Patches 2-4 fix the work queue deadlock in three steps: first move the
+> generation counter from mlx5_esw_functions to mlx5_eswitch;
+> then introduce the generic esw_wq_handler/mlx5_esw_add_work dispatch
+> infrastructure; then apply the actual fix by switching to devl_trylock
+> and adding generation increments at all operation boundaries.
+> 
+> Patch 5 adds the atomic block guard for representor registration,
+> protecting all reconfiguration paths.
+> 
+> Patch 6 moves the representor load triggered by
+> mlx5_eswitch_register_vport_reps() onto the work queue. This is the
+> patch that fixes IB representors not coming up when mlx5_ib is loaded
+> while the device is already in switchdev mode.
+> 
+> Patch 7 adds a driver profile that auto-enables switchdev at device
+> init, for deployments that always operate in switchdev mode and want
+> to avoid a manual devlink command after every probe.
+> 
+> Mark Bloch (7):
+>   net/mlx5: Lag: refactor representor reload handling
+>   net/mlx5: E-Switch, move work queue generation counter
+>   net/mlx5: E-Switch, introduce generic work queue dispatch helper
+>   net/mlx5: E-Switch, fix deadlock between devlink lock and esw->wq
+>   net/mlx5: E-Switch, block representors during reconfiguration
+>   net/mlx5: E-switch, load reps via work queue after registration
+>   net/mlx5: Add profile to auto-enable switchdev mode at device init
+> 
+>  .../net/ethernet/mellanox/mlx5/core/eswitch.c |  25 ++-
+>  .../net/ethernet/mellanox/mlx5/core/eswitch.h |  15 +-
+>  .../mellanox/mlx5/core/eswitch_offloads.c     | 204 ++++++++++++++----
+>  .../net/ethernet/mellanox/mlx5/core/lag/lag.c |  46 ++--
+>  .../net/ethernet/mellanox/mlx5/core/lag/lag.h |   1 +
+>  .../ethernet/mellanox/mlx5/core/lag/mpesw.c   |  12 +-
+>  .../net/ethernet/mellanox/mlx5/core/main.c    |  26 ++-
+>  .../ethernet/mellanox/mlx5/core/sf/devlink.c  |   5 +
+>  include/linux/mlx5/driver.h                   |   1 +
+>  include/linux/mlx5/eswitch.h                  |   5 +
+>  10 files changed, 267 insertions(+), 73 deletions(-)
+> 
+> 
+> base-commit: 9700282a7ec721e285771d995ccfe33845e776dc
 
 
