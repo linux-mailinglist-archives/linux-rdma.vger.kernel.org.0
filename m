@@ -1,120 +1,215 @@
-Return-Path: <linux-rdma+bounces-19201-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19202-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eG0tKdhT2GmqbwgAu9opvQ
-	(envelope-from <linux-rdma+bounces-19201-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 03:35:20 +0200
+	id mKTPIFJY2GkvcQgAu9opvQ
+	(envelope-from <linux-rdma+bounces-19202-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 03:54:26 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6616C3D121F
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 03:35:20 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8489F3D13D8
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 03:54:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9C77E301412B
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 01:35:16 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 64635300F7A2
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 01:54:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA9131E85A;
-	Fri, 10 Apr 2026 01:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B41431691C;
+	Fri, 10 Apr 2026 01:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OZ2ksg1b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KAWbWJ/G"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3ED28003A;
-	Fri, 10 Apr 2026 01:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75B72BE641
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Apr 2026 01:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775784912; cv=none; b=MEEklbIOTCL7gs2ubc8BpRzLKNoUfZ0dz4IWdaSyOUHt98WNr906MAlS2EfNUCkWcXahyv1feGVuIF3dE/nEwbX6tFAOC9rT1skfgoMwgoTikffm03R9rzsk52V+nL338izCVrDBhbd2UmrlH1Y+x4/b8S1MOQoURGhGFez+smI=
+	t=1775786060; cv=none; b=ifwbWThXbqnjHjpvt1BWOxdtGmRPVpP5CKwxPcSUDoTAMYAAXwruF3w6mPNSIxIjj7HxS1Vh+JoRDcnDn7GSvfesxdElA7X2xGaZ0slm2+1HVnWU48v1g+JxNUA14scIPlL3Z/i3i6MKq+WyUOrNYfuLkvhZC2R9XCSMTdtPbbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775784912; c=relaxed/simple;
-	bh=XJOTva4mMOagP8Rzl2OcqxIKEtJKfglxHGAZ1JQFuas=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nY3sIhNBSJ8z7KWe9Za67EC0lTxP9ASvrDvRCHQYo0QRDCJ7liZxA/kX2ApCrIHt6BED3swIAw54g2wdkOrBMfY0vzVUcn4qDMhDkphVLUxtRHpVaYM79sKBP3m6R9b5wQXQE9l5fqM4Sn0+ea3TMJ25TW+zq2sBB6q3GaS1+2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OZ2ksg1b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 998E1C4CEF7;
-	Fri, 10 Apr 2026 01:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775784912;
-	bh=XJOTva4mMOagP8Rzl2OcqxIKEtJKfglxHGAZ1JQFuas=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OZ2ksg1b2Zyer7P05w8qvm0ZGKDRQ14IlXYAxvwA8lPtfQVCYVbTRlNY8Kab9gql1
-	 hyzNNhFl1lYWj7E428NWb1sfQTzKrMQwRJo5LyKWBMfBm/wIaRi5GD6pWYoSVYYlt9
-	 9QhGQ1okWNju/6hgGg6KOWOnsefSPoz3BRPQPxxJ6ezvYPaYXHfCGkhEfMeP0owLO0
-	 BmLsJ4+T8O8C5sZc7GF7Sc0+RITaHVjDQTWACsjupZtjA8DKCEw/BybijwMmmxwon0
-	 esIL3orMYB8sorl2PgmtaUBXjXonsm0bP2eYncC1RLnS9fUxnDEvb3aoMpqksVUtrP
-	 Q7sz9zWKzVqbQ==
-Date: Thu, 9 Apr 2026 18:35:09 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
- kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
- dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
- full-page RX buffers
-Message-ID: <20260409183509.0b24dea6@kernel.org>
-In-Reply-To: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
-References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
+	s=arc-20240116; t=1775786060; c=relaxed/simple;
+	bh=9n9e7BOpD0JJg+GvMEUM4/CCjFhf8fyYpDSfLRwJ4kU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZVgWYVw19uLKVP2GMY6fChWx5RuNzCgqmqnX3OS5+idIDyB1kmISfbbb0Iv5rR1bsbEMoSRKIprkyQT5Vw0QvnBDZotNoNssx9Zel7c2IHAZWBgjV1gG9BF89dS6Kqa4v196K/baBp5tEdy51Jfn9P5fTcjLKEIoZy81vG57Rbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KAWbWJ/G; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-488ba840146so14276375e9.1
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Apr 2026 18:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775786057; x=1776390857; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dFt/ccalP4guf4oXhpfkftFkSiO5srQjmAfQqO3hweU=;
+        b=KAWbWJ/G9bphNHHEW+KC3m1EYOjiBgIPeZL+pvMe1LyMojiqUHYesR3ARV7VoHUPQe
+         y0yDY9g+XouaX4D0KBaQecmTBX3a1bdWgfwhomLo0wrJTwpQMY6R3TF/kyr9w4sTlidJ
+         X/O5/+utIWFRpYTR8CqX9BiS8XzoPAb+b6I30bb/m7c9j66Qf25dOFj039ZHbr9+EKhJ
+         wGBmS3eyYFVMHGBaFU6ILkkyJgM0mUhIaHK/cCiL91R/kwY50m4stMcbhMd/o28E/YRY
+         mPlaM8/mE+8XUHUP176IJ3wBLYmHPFm5cNsoD9pAsrjLSGCFjWMweMww2dO03wQc6qSm
+         Svag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775786057; x=1776390857;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dFt/ccalP4guf4oXhpfkftFkSiO5srQjmAfQqO3hweU=;
+        b=HiGxmkQDRmgDxj4eW/HxZK30OTxXThoY4/j81Of95Mb/eHAxjJwAmsmmsKz3H+0AXJ
+         btoh+jM3mgbl8jLXppNEI1982kR8+I5T9V3RSheAsj6s4LLHAVMBs6AZFuttd4lnFpLw
+         H/Xu8L9Z/UgpbJMgwngC87RbBES9gfHM5TmT3bDANENU5P2dgWRdllgEYEEA9rHffiIu
+         dBtGVaK5//YdwJO9qO+hnra5CbeeXF0GeBIKYX0Xg/G+Z2OI4ONDeAnBRfntzxxZwJN7
+         37yjt/W+g/qRbUdZcE/3GNUHSgk6F8YOhxLvL6gY5EK1omLUZOCr+q8hDu25n0VzqwUZ
+         TdsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEHQhhaFcvqAwveZ+2+PyCaAabo4/W9othxA957PdYXdqsSNDBTu77mQ+Zzl/Rh77w9eh6rUaq0rQf@vger.kernel.org
+X-Gm-Message-State: AOJu0YwELTkdHpTFwcnAJyV2vD16hUzxtmfC4NKf4RYTvFVR/AuC+q5m
+	nxpcxiqPZPFEyoVdYtzqjGygsOF9nTiE0B8nE4qOzgqJRASW6CcGoiv+
+X-Gm-Gg: AeBDieuE1uFgH9/gbfuhtuS5RaYQIuqUKB8MSlo8DqY1kguU+MyxCNno0W1TqGL25pZ
+	bq4L83/88b6bN2rwoJFy3Edp49uLI5xuH0cTHcuQHscHoubrXj/MJcS3oWgBEoiyNvI5MkOeMY1
+	kkHi8jxDa2K1vL4GVv4gV068l8OdDhn9Qf8agz10LWJVhp949kjlBntG3CNTq/MgQtVnjPP+r6p
+	Y76LY//hvGVaEjJsiNLR26IZs+cj98WNRBI19dJ8NN+42WbYBw1XbJv2/lgmZL3HHvkXCi83BNI
+	aF4Zfxol3d8HWJQ50/H1nOeV20VESqSk/qia0XcFd/VvAxwgdlXow50/PPwVOYba9g5+ZLWZUww
+	KjaOG+XilcvkKsPAqwEmud+XrZohuAaTBeJyCOr9Ben3cqp599i6hsvIFXVOH/Sh5EOAT3TFwrI
+	GtPQ9pzVOlO1Yy/C7ep+utidVPDMKUi7SfNVBDOKGJiqWb1c38f3Dln63dvIyzLa99AJZ4G596h
+	EiaBzcLb0eiX3wH1vhPVUbjb7FGlQ5MyfGrXpObxmdcumG3
+X-Received: by 2002:a05:600c:a109:b0:488:af7f:7751 with SMTP id 5b1f17b1804b1-488d6836508mr8227665e9.15.1775786057077;
+        Thu, 09 Apr 2026 18:54:17 -0700 (PDT)
+Received: from DESKTOP-NQ2T5I7.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d533e596sm39254295e9.6.2026.04.09.18.54.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2026 18:54:16 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: Carolina Jubran <cjubran@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: Richard Cochran <richardcochran@gmail.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Subject: [PATCH v3] net/mlx5: Fix OOB access and stack information leak in PTP event handling
+Date: Fri, 10 Apr 2026 02:53:36 +0100
+Message-ID: <20260410015336.7353-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19201-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gmail.com,nvidia.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19202-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[32];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 6616C3D121F
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email]
+X-Rspamd-Queue-Id: 8489F3D13D8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue,  7 Apr 2026 12:59:17 -0700 Dipayaan Roy wrote:
-> This behavior is observed on a single platform; other platforms
-> perform better with page_pool fragments, indicating this is not a
-> page_pool issue but platform-specific.
+In mlx5_pps_event(), several critical issues were identified during
+review by Sashiko:
 
-Well, someone has to run some experiments and confirm other ARM
-platforms are not impacted, with data. I was hoping to do it myself
-but doesn't look like that will happen in time for the merge window :(
+1. The 'pin' index from the hardware event was used without bounds
+   checking to index 'pin_config' and 'pps_info->start', leading to
+   potential out-of-bounds memory access.
+2. 'ptp_event' was not zero-initialized. Since it contains a union,
+   assigning a timestamp partially leaves the 'ts_raw' field with
+   uninitialized stack memory, which can leak kernel data or
+   corrupt time sync logic in hardpps().
+3. A NULL 'pin_config' could be dereferenced if initialization failed.
+4. 'clock->ptp' could be NULL if ptp_clock_register() failed.
 
-> Changes in v6:
->  - Added missed maintainers.
+Fix these by zero-initializing the event struct, adding a bounds
+check against n_pins, and adding appropriate NULL guards.
 
-STOP REPOSTING PATCHES FOR NO REASON.
+Fixes: 7c39afb394c7 ("net/mlx5: PTP code migration to driver core section")
+Suggested-by: Carolina Jubran <cjubran@nvidia.com>
+Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+---
+v3:
+- Fix union corruption by using a local timestamp variable [Sashiko].
+- Validate pin index against n_pins with WARN_ON_ONCE [Carolina].
+- Remove redundant pin < 0 check and cleanup TODO comment.
+v2:
+- Zero-initialize ptp_event to prevent stack information leak [Sashiko].
+- Add bounds check for hardware pin index to prevent OOB access [Sashiko].
+- Add NULL guard for pin_config to handle initialization failures [Sashiko].
+- Add NULL check for clock->ptp as originally intended.
+
+ .../net/ethernet/mellanox/mlx5/core/lib/clock.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index bd4e042077af..674dd048a6b8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -1164,16 +1164,22 @@ static int mlx5_pps_event(struct notifier_block *nb,
+ 							       pps_nb);
+ 	struct mlx5_core_dev *mdev = clock_state->mdev;
+ 	struct mlx5_clock *clock = mdev->clock;
+-	struct ptp_clock_event ptp_event;
++	struct ptp_clock_event ptp_event = {};
+ 	struct mlx5_eqe *eqe = data;
+ 	int pin = eqe->data.pps.pin;
+ 	unsigned long flags;
+ 	u64 ns;
+ 
++	if (!clock->ptp_info.pin_config)
++		return NOTIFY_OK;
++
++	if (WARN_ON_ONCE(pin >= clock->ptp_info.n_pins))
++		return NOTIFY_OK;
++
+ 	switch (clock->ptp_info.pin_config[pin].func) {
+ 	case PTP_PF_EXTTS:
+ 		ptp_event.index = pin;
+-		ptp_event.timestamp = mlx5_real_time_mode(mdev) ?
++		ns = mlx5_real_time_mode(mdev) ?
+ 			mlx5_real_time_cyc2time(clock,
+ 						be64_to_cpu(eqe->data.pps.time_stamp)) :
+ 			mlx5_timecounter_cyc2time(clock,
+@@ -1181,12 +1187,13 @@ static int mlx5_pps_event(struct notifier_block *nb,
+ 		if (clock->pps_info.enabled) {
+ 			ptp_event.type = PTP_CLOCK_PPSUSR;
+ 			ptp_event.pps_times.ts_real =
+-					ns_to_timespec64(ptp_event.timestamp);
++					ns_to_timespec64(ns);
+ 		} else {
+ 			ptp_event.type = PTP_CLOCK_EXTTS;
++			ptp_event.timestamp = ns;
+ 		}
+-		/* TODOL clock->ptp can be NULL if ptp_clock_register fails */
+-		ptp_clock_event(clock->ptp, &ptp_event);
++		if (clock->ptp)
++			ptp_clock_event(clock->ptp, &ptp_event);
+ 		break;
+ 	case PTP_PF_PEROUT:
+ 		if (clock->shared) {
+-- 
+2.43.0
+
 
