@@ -1,92 +1,96 @@
-Return-Path: <linux-rdma+bounces-19218-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19219-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGV/Lipw2WnGpggAu9opvQ
-	(envelope-from <linux-rdma+bounces-19218-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 23:48:26 +0200
+	id IEu6KiZw2WnGpggAu9opvQ
+	(envelope-from <linux-rdma+bounces-19219-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 23:48:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CDC3DD0A0
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 23:48:26 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EBE53DD099
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 23:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 209B5302EEB5
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 21:46:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AE2973014B94
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Apr 2026 21:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D123A963A;
-	Fri, 10 Apr 2026 21:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792F921ADB7;
+	Fri, 10 Apr 2026 21:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="E4Z6DVMz"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="gbQ8Dt9M"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048B1347503
-	for <linux-rdma@vger.kernel.org>; Fri, 10 Apr 2026 21:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13322313272
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Apr 2026 21:48:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775857607; cv=none; b=RuhNBnLDZ7Kuo7nmYZ1Ia1SkGf3rtP/qXSqKXDSFhbBFqGqrnniq0BTgfEdHQ0csVTJmCmlY9UwNlX237/hhFeEnscm/dTAcQq43YYjz9R1tdWaKZdYEOzlAMcxlYa+5NpZMKn3zdcjK/5uridYhRJA8e08yqbFTQVaNbHc641o=
+	t=1775857700; cv=none; b=i8e38oLjhCIXfT1WxFa5SqaE5sk79ShVV0mYyF28cM5h9XPZQA5To9zDoJJB862EbQXr6X0lJrfWmzSn3TTIrjWlA7rXntUkXRaf4uWSjGvBrViJF2QdDEHTZA07qK8HG4YC92BYtS5wyFEYbFxXCEz5lZoHTrk4rJESwVPBHwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775857607; c=relaxed/simple;
-	bh=GITtlFAdk/iYbZpZKDv5zRed5TTMIBoL7DDTwImRmf8=;
+	s=arc-20240116; t=1775857700; c=relaxed/simple;
+	bh=TJv8FGun1HUQxSmvAKJDjPI10T9Lj3G39QAyamGQo0g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wj/s7EmUuL6ItT/W7iR1BuBJmuxEs4E/sQ7JlszWln5QAhQac3b4uNA+9KpC5AodRxJdO2Rae0+O3c4ZEH7bQNvCqfMztqeZ4U19e3XzB2YLtrVb2w1c/eZuhZifPVLH3txMGoJJez95DHI5d4AUeWqjf6KzjnfOJG4gyesqfvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=E4Z6DVMz; arc=none smtp.client-ip=209.85.222.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=ScGP0YFnXjhKy8zMIbGKSnf0BfX6SBHBiAeDqwqpBQWSI2Fb9FF+2OH3A5+EMCWu1HM84p+OIO3lE2w/0cvYFfN+u/Ex/J8HJIovNWNAIBbcZMyN6/0wMIZZPPFpzutvx8UxUqt44y5PQ9tgun9V6HNJ2GDyfezW0MhtTM7rz0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=gbQ8Dt9M; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8d65f4073bfso366687785a.3
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Apr 2026 14:46:45 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-89cc797547fso31218756d6.2
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Apr 2026 14:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1775857605; x=1776462405; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1775857698; x=1776462498; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GITtlFAdk/iYbZpZKDv5zRed5TTMIBoL7DDTwImRmf8=;
-        b=E4Z6DVMz0knvMdK19f+RGtgQR+OgWk0mQyA31cxofE1IQMs0/Rxft0jRWjYlrjMwL4
-         bVR+h+fT16VcPsG1ypH7FDb97hm6wT+AAfP9urPIofjLNHhZuARd2R79LiZPXWRvonIs
-         m0qBBhcYDFBUKvzWDxSulXe/mkDyXzoHzrQ6nRb3Ld//nRRKQ0ROwEJa/68SnDcdGdX9
-         Uajs7Qt/9UaQrpG35JQhMhhH+cUnonvDbR1RAdzpkhWzLqLQm3kutkmd9Pd47R8LEJCC
-         /dkEa2/rP+Z8ON2xwuw6S36BHFZmrnI+6LqfmkOvSwzNLC6eZ+xZ1ZciEzynMxzZClaz
-         eRQg==
+        bh=QXzOPjJ6xsvXhrTyUz0w4eis3xDyYjIh70RU1MfKQSs=;
+        b=gbQ8Dt9Mpl4dWFsleTLMeDtJZCzIKIPJfh/BKH92taUSkq4QKsmSirMnZFRohzn0xn
+         1rEomORTTcyUGaQ3LW1tEdy/GGxubHZZ/4SBYB3IGLEo1FThLgAaW+BFLljmgznLuHws
+         3rjGONopYpsr3G5ZfVjUodvPGs+8m5TZXXgH8sJgcdjw0bWZ1W0qwxDbCZMU7ini+7pg
+         Mb4hegDIkAdKMcV/gSiKgPN0YOnSsOOmhselVCe6R6peNq+ISyhogFuoTqZsPpt13S55
+         yAyUBrAuwZyBejam8v0Uyjqdl7f1gnMH7NcTOKbZc3qwhD2GkURRVzEuGO+q70Q6mdr2
+         Fs3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775857605; x=1776462405;
+        d=1e100.net; s=20251104; t=1775857698; x=1776462498;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GITtlFAdk/iYbZpZKDv5zRed5TTMIBoL7DDTwImRmf8=;
-        b=M3KkYzKx38Eud9kBWG2X3BdLonD7+BGmh5XulABKpxXTBvPaA6tPEyT8JUgq7IyrUo
-         bytxarFJ4tC3CRzbog+kmemIE41+qdgq/3xCxC248fKK88s1/EhURnfm0bqwzN/E9HUX
-         NsIHkiukUe6nJFc61lieVB3lTguB0qWtJIKFncWbRZQ0dVR83BU2qLeF8Vr7bwKU+eBV
-         fstwxrJh875Y5FRy4sTZcu8o87igjz1yaZH6OuJaoTQqoHtCBP5hEA+kki7MHs6SDWkt
-         yIWbTQaFIVsJZH/2V1UzoqZyvkq1RMySoRsUOf9yAk9z+UyVZ9Rh6LmiVSFWUAAjxFd6
-         RNhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUXc0w70qGf6upZch2HOYvSNoTkfxMYpoGkYhxHQ8vZMmacSOs4YKtKpbJbU9cfvgpFW5YVaPr7zoQp@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTmhsQhbacxO7OEn/mJirUX2oQHpkWp9ZFPyIPPG3MrsxTWyCq
-	bCAvnX3AxGsRFR0uwxaeo64bkppDW9ce6WsB4gWWwl9rAck8V0JL09s5ZX7un9cDo78=
-X-Gm-Gg: AeBDiesclQgq9TYWb/LNKxW0PIYru6hm6lURfFF2S1GQO75yiaWoz7Fw0OXUg4IIF3q
-	B0EzWsmGpYTvs9Lc2TiBemLQ0AST2X6xzhKC6CTR+CSZ02dy3SYs6oz5b4CELd+OaxlE9Q2zNU1
-	uH+Wja0YsuYqx42drBJMNcpKoyBTIwTN3ii5vh67wx1RlNCCZA8+Pdz7mq357EMiiR6ZRFX1r+L
-	UIKDctJ3JS9GMypz2xFH+bGqkX3p19xAfyqXGpYvd5DguygMGPY7z3tEXJ9IQykEd/KJM+6gkPK
-	8zZZCAFj3QABwg62mw2m6wlIIBAqEpLowXi8e+Yec6ei+w92ghIi0IrPd7rd8tGbtHPgDoOk5cK
-	YumdiZ3HlLCeAH35rlSe7LNBsEHTgM+2Q3H7FscB2QiUIauqbfM5kWio3lTMwHlY6gXXfN/Ih4b
-	P3ghxheYTrFl8Q2RTBpN9eIKkT+goCQWQ2GTGLDq2XRSLK+zGFfmj19CEK/IB6/rfQX8tBSw==
-X-Received: by 2002:a05:620a:3707:b0:8ca:4545:aeee with SMTP id af79cd13be357-8ddcf5b3415mr694224985a.37.1775857604893;
-        Fri, 10 Apr 2026 14:46:44 -0700 (PDT)
+        bh=QXzOPjJ6xsvXhrTyUz0w4eis3xDyYjIh70RU1MfKQSs=;
+        b=BMcllhmkgWyhm3PbJEdoZZyIthj49UBzGxb+/F80D6kNviltytu3DHxFjku1nVHlt2
+         h3x8Wg++4R9ycJRokV54AliYv1Ql/AXJKjMHGxEhZ9sP/hfszbOz/kY57X6lNt3Fok6L
+         aIUGuqyPH9TovX198VjUL1plWDrQuIQMaxbQ8eMZLloT5PwvvFO/EPsDsknWIAj9Jfdl
+         8Sc5f8t2WTekobzzw5Cf3okVf1ihc5ztZ7wi5lOp2kfwIghzWP27yrvb5JA7iwspZ4rF
+         NUf622xzmn9ElVt0Y2JSpfy7Os7CND4xCkwiK0m0mCy01KWBjE+lnYcxvFVTD7Nm3H8p
+         sluA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3i3xbs0Jnm2PIDl5xIN4gArfGjkxKyyPYrDWPbHE2NAF+mS+LnJ+hLvAfcuz0+BfPfpOGy303zJts@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNN++jG9rV/AUDNsvCLv9cXe+KyAl5Ms0gKloy52r0ePv7dKPH
+	DImdcqmihRXU3yjV26Sv6P1IbBpR9bCQ8ylsWc0/x+yYybJJXI477wl1kp4P0L9NKq0=
+X-Gm-Gg: AeBDies3aBnpWxcx0eMWEX+MQi4D5VXNT9pYMVftPKQdfGjQTtaVgaspH7+60TZcJI/
+	70pDGiSLvDqUVNLBCgzb9kvwIzWNwrdOe5q7FSoG8Iy81basPgU2DAOkYQMCYSED/DBhOHFrF+y
+	9ees41VAXzypJ0PNFy1RQGBpYFrGWnceDTP4meB1FqCBAtYD0FcIE5jmGL82P2J9zJpQtd5NPp1
+	vXeoqtz36gTkp16NifsRQ4CiAcWycG4zGWMoV4PbzZST21Ez3qnAOkRTGYWTfMbNJRFyzOm0Nhc
+	vu76s0Yx57MEZD240Xdmd7epNkzboJqtoVYBBqlRzEoAJD36iZtcIvW7mdRIUEzkXYGN3kNQbos
+	y7h/wTwFncwI8TDMH2OL94bj7r4csPAeymL4nrWtbh5lQZWiKxoyea+Tl+Ut0gM9GlTHxG3G11Q
+	WKTI6YVab4gcWccy5xYxziKDsulLyR81uNl566Vk0lJ2ydALixUV6C9S0PmHzIVE/Ik/tmXg==
+X-Received: by 2002:a05:6214:c2b:b0:8ac:8337:ca08 with SMTP id 6a1803df08f44-8ac86245532mr78356446d6.51.1775857698072;
+        Fri, 10 Apr 2026 14:48:18 -0700 (PDT)
 Received: from ziepe.ca (mctnnbsa70w-159-2-73-22.dhcp-dynamic.fibreop.nb.bellaliant.net. [159.2.73.22])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8ddb5f8886csm293491485a.6.2026.04.10.14.46.44
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ac84c464a4sm33259956d6.28.2026.04.10.14.48.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2026 14:46:44 -0700 (PDT)
+        Fri, 10 Apr 2026 14:48:17 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1wBJgZ-0000000GLim-2xxN;
-	Fri, 10 Apr 2026 18:46:43 -0300
-Date: Fri, 10 Apr 2026 18:46:43 -0300
+	id 1wBJi5-0000000GMB4-0Agn;
+	Fri, 10 Apr 2026 18:48:17 -0300
+Date: Fri, 10 Apr 2026 18:48:17 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: leon@kernel.org, Nick Child <nchild@cornelisnetworks.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/umem: Initialize iova for dmabuf umem
-Message-ID: <20260410214643.GA3694781@ziepe.ca>
-References: <177584750586.341184.13583748105422169656.stgit@awdrv-04.cornelisnetworks.com>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: leon@kernel.org, kees@kernel.org, eaujames@ddn.com, parav@nvidia.com,
+	maorg@nvidia.com, rosenp@gmail.com, jiri@resnulli.us,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzbot+4334f9a250019c1b79b4@syzkaller.appspotmail.com
+Subject: Re: [PATCH] RDMA/cache: fix invalid-free of flex-array data_vec in
+ release_gid_table
+Message-ID: <20260410214817.GB3694781@ziepe.ca>
+References: <20260401012810.11876-1-kartikey406@gmail.com>
+ <CADhLXY4B7zkBQUv1ayicHXuSopy5AG0HrOPuNqcynPzs7R5CxA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -95,18 +99,20 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <177584750586.341184.13583748105422169656.stgit@awdrv-04.cornelisnetworks.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+In-Reply-To: <CADhLXY4B7zkBQUv1ayicHXuSopy5AG0HrOPuNqcynPzs7R5CxA@mail.gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[kernel.org,ddn.com,nvidia.com,gmail.com,resnulli.us,vger.kernel.org,syzkaller.appspotmail.com];
 	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-19218-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-19219-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -116,29 +122,36 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,4334f9a250019c1b79b4];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 58CDC3DD0A0
+X-Rspamd-Queue-Id: 4EBE53DD099
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Apr 10, 2026 at 02:58:25PM -0400, Dennis Dalessandro wrote:
-> As of commit 4fbc3a52cd4d ("RDMA/core: Fix umem iterator when PAGE_SIZE is
-> greater then HCA pgsz") rdma_umem_for_each_dma_block() iterates at most
-> ib_umem_num_dma_blocks() times. ib_umem_num_dma_blocks() calculates the
-> number of blocks by extending iova + length to page boundaries.
-> Previously, a call to ib_umem_dmabuf_get_pinned_with_dma_device() followed
-> by rdma_umem_for_each_dma_block() would leave iova uninitialized and
-> iteration would only cover a subset of blocks if the memory did not
-> begin on a boundary.
+On Fri, Apr 10, 2026 at 05:22:54PM +0530, Deepanshu Kartikey wrote:
+> > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+> > index 896486fa6185..647a547e2d7f 100644
+> > --- a/drivers/infiniband/core/cache.c
+> > +++ b/drivers/infiniband/core/cache.c
+> > @@ -801,7 +801,6 @@ static void release_gid_table(struct ib_device *device,
+> >         }
+> >
+> >         mutex_destroy(&table->lock);
+> > -       kfree(table->data_vec);
+> >         kfree(table);
+> >  }
+> >
+> >
+> 
+> Gentle ping on this patch. Please let me know the status of this patch.
 
-Well that's illegal. Drivers must always call ib_umem_find_best_pgsz()
-which always sets iova properly. Fix the driver that isn't doing this
-sequence right.
+Oh, I think a different version was picked up
 
+Thanks,
 Jason
 
