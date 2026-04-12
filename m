@@ -1,142 +1,128 @@
-Return-Path: <linux-rdma+bounces-19258-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19259-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MLKBD1fK22nzGgkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19258-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 18:37:43 +0200
+	id sONtK6H522mbKAkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19259-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 21:59:29 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88ECB3E4DF6
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 18:37:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E8513E5CD8
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 21:59:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C354302A6FF
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 16:36:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B8512300C98A
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 19:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5AE2E975E;
-	Sun, 12 Apr 2026 16:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7D237E315;
+	Sun, 12 Apr 2026 19:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kon2JfsS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJK2fyDo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6712DC331;
-	Sun, 12 Apr 2026 16:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E623137CD3C;
+	Sun, 12 Apr 2026 19:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776011792; cv=none; b=Ox8PRGVovlDm2qBNP2hDYFBkUQoMF0N3MSoAukET4nYrQNKRdBTQoTns0mhI/F+QvKqOYs99uKh+Gg3qvHXkOeksubrmFzSqWDkkM+H6zznceZVT8FDTPsEgrEOlxIcQ9BuqGv6AcbHYKJrxGnt0BdjfbBfueoHYJIL2k8bCuQc=
+	t=1776023961; cv=none; b=RVmC9lQRbqqRlB7mPyb8h3YM+obPh+lkiQG4M1LyG4IVqOG2xSdk6k0c+8Bx8J07MOcwybyDTahw7lrZBzpDUY1SaKUBymwbG61NR+qNCyXX+i8jL08a1EYEJGOzdcMv5ZIOrjYiqZzJ0w+XnauNkzZfoLRt+9kpSNZSW5kCKvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776011792; c=relaxed/simple;
-	bh=4QjD8Gil0KJjjLLI+MuDfyRITEVYm2cDNV44JrR0LNg=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m6/6rGBUOq83Xv+HNHZ1TNeiHS0eFitUuKlkdy2NRMB/lHUb36KNrZVZowNaWwtcS1kmbkhG6/SilBVLJ5spwK6MkX0TKAfA/Kuera44XcM5ZQWAdhkh6H6B5VhH5UdF6bJp2ozAn1qkVO87hTtHsF5xvAkWXOmj7klYKQMQwL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kon2JfsS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3517C19424;
-	Sun, 12 Apr 2026 16:36:31 +0000 (UTC)
+	s=arc-20240116; t=1776023961; c=relaxed/simple;
+	bh=5JFGMjojVLjVjBuXH5cwllbciCfN+kWLL0KPdVKa2C8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SEklIZKgYitKGQ1QE/TNz/xIuSut2rEnJnWfG8e+9nUZbVNCLdzgy43XSlFFMq0m0HgQBSzbqbFrbT1Xtyw1QjAJN/rQrEFzdEUJOvYyhnItFN9IjMq/rxPUKdLYFANWbKmab2RRyo4qbd+/xTvPypfgHjPm1GvsYVjSuw1+VjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SJK2fyDo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7F10C19424;
+	Sun, 12 Apr 2026 19:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776011792;
-	bh=4QjD8Gil0KJjjLLI+MuDfyRITEVYm2cDNV44JrR0LNg=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=kon2JfsSdeJ0OJF/zLZ76ZzAGIUgLO6vVq7rQECZyWzXP85caRpaC7JatXxGYVtzw
-	 Zf0CPHhlMlEJVJnz+Oy/JyIhvBd0UrslvunFuHFcl+lR0TrI5MZmBN4NUILVoLnmC/
-	 Ho6A3Unlb7faFK5SrMJm5CEE982WUybkF4Q0f63wvYXVAaUuHTy+BluhrTGzrrwUQl
-	 eI8uAqFNVn3K/lXa0W1+ufV++gdszRoU7L+WprW4J+YTjs+R3kHLif3cCnSey9Ydln
-	 7yAgbVeORxW5yyitxlszVOjz6rWCtVLN6bKBSnvAulSn/jIK+4aJnrTsxhQJSigChF
-	 XSPabJVLS/5yQ==
-Date: Sun, 12 Apr 2026 19:36:26 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-	drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	linux-block@vger.kernel.org,
-	Joel Colledge <joel.colledge@linbit.com>,
-	linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH 06/20] drbd: add RDMA transport implementation
-Message-ID: <20260412163626.GE21470@unreal>
-References: <20260327223820.2244227-1-christoph.boehmwalder@linbit.com>
- <20260327223820.2244227-7-christoph.boehmwalder@linbit.com>
- <adXq36pbGLXMZc2r@infradead.org>
- <adZCPanS7iZlcPE9@localhost.localdomain>
+	s=k20201202; t=1776023960;
+	bh=5JFGMjojVLjVjBuXH5cwllbciCfN+kWLL0KPdVKa2C8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SJK2fyDoSooRHzLNt5CadoC2V/OLevsHmQiX/kwT/hgDiCMZW47r0vtntQ5y5dPsX
+	 FUAjq5nH42WG1qkmVtNMKRCGqTlM5d8iDQIQFaQ/13fh+wMVHAggqU8y3hvTkcBe3n
+	 uYg3WHRpNVBKr/cr9eSeX82hsA78TSYOXNLfcLoekJFloux2HRtLUM7Cf8xjSuvWIF
+	 v8lsRzCaMsab/lUygANYwMTUqb9Bt5I7kQEuH7dq9TmnN2x+AMIfUWxl2IzcjHRi5G
+	 LPAfcQhTkXsAd0KJcx5+qEXaSEsnlBJJYK79GEqu0WJo6skejxRwcSOkzeLiFdvGB+
+	 XX8BuDDmOFIwQ==
+Date: Sun, 12 Apr 2026 12:59:17 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
+ kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
+ dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
+ full-page RX buffers
+Message-ID: <20260412125917.4fa8fc8d@kernel.org>
+In-Reply-To: <20260409183509.0b24dea6@kernel.org>
+References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
+	<20260409183509.0b24dea6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <adZCPanS7iZlcPE9@localhost.localdomain>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19259-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19258-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	RCPT_COUNT_TWELVE(0.00)[32];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[rdmamojo.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 88ECB3E4DF6
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6E8513E5CD8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 08, 2026 at 02:01:43PM +0200, Christoph Böhmwalder wrote:
-> On Tue, Apr 07, 2026 at 10:42:55PM -0700, Christoph Hellwig wrote:
-> > You really need to add the RDMA mailing list before adding new RDMA
-> > code.  I'll try to review the bits I still remember, but you also
-> > need a maintainer ACK.
+On Thu, 9 Apr 2026 18:35:09 -0700 Jakub Kicinski wrote:
+> On Tue,  7 Apr 2026 12:59:17 -0700 Dipayaan Roy wrote:
+> > This behavior is observed on a single platform; other platforms
+> > perform better with page_pool fragments, indicating this is not a
+> > page_pool issue but platform-specific.  
 > 
-> Thanks for the hint and your detailed feedback. I'll address all that
-> in v2 (plus some other similar fixes).
+> Well, someone has to run some experiments and confirm other ARM
+> platforms are not impacted, with data. I was hoping to do it myself
+> but doesn't look like that will happen in time for the merge window :(
 
-Thanks Christoph for adding us.
-I fast-forward read the patch and immediately spotted two things:
-1. Please don't call directly to HW drivers.
-+	err = device->ops.query_device(device, &dev_attr, &uhw);
-+	if (err) {
-+		tr_err(transport, "ib_query_device: %d\n", err);
-+		return err;
-+	}
+Please repost with the perf analysis on other commercially available
+ARM platform. Something like:
 
-2. Add any missing API to RDMA subsystem, don't leave it to the users:
-+	} else if (reduced) {
-+		/* ib_create_qp() may return -ENOMEM if max_send_wr or max_recv_wr are
-+		   too big. Unfortunately there is no way to find the working maxima.
-+		   http://www.rdmamojo.com/2012/12/21/ibv_create_qp/
-+		   Suggests "Trial end error" to find the maximal number. */
-+
-+		tr_warn(transport, "Needed to adjust buffer sizes for HCA\n");
-+		tr_warn(transport, "rcvbuf = %d sndbuf = %d \n",
-+			path->flow[DATA_STREAM].rx_descs_max * DRBD_SOCKET_BUFFER_SIZE,
-+			path->flow[DATA_STREAM].tx_descs_max * DRBD_SOCKET_BUFFER_SIZE);
-+		tr_warn(transport, "It is recommended to apply this change to the configuration\n");
-+	}
-+
-
-Thanks
-
-
-> 
-> Thanks,
-> Christoph
+  This is a workaround applicable to only some platforms. Modifying
+  driver X to use a similar workaround on [Ampere Max|nVidia
+  Grace|Amazon Graviton 3|..] the performance for split pages is
+  y% higher than when using single pages.
+-- 
+pw-bot: cr
 
