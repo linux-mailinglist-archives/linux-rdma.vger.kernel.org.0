@@ -1,208 +1,580 @@
-Return-Path: <linux-rdma+bounces-19249-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19250-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id U421LCJf22lXBAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19249-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 11:00:18 +0200
+	id uz0EG1+R22kTDgkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19250-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:34:39 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E4F3E3332
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 11:00:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA19A3E3CB7
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:34:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3FE6C3004614
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 09:00:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 87CB83005D1E
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 12:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFC1313E21;
-	Sun, 12 Apr 2026 09:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B40126059D;
+	Sun, 12 Apr 2026 12:33:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jp8RS9Py"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="GsfLgBKJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com [34.218.115.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888B930BBAE;
-	Sun, 12 Apr 2026 09:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943BB2472A2
+	for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 12:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.218.115.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775984412; cv=none; b=Bwww+7JDoWNpHAFC2//YA9B6Y7ANoSaM64hyFedrV1C3Cvxwz6vD7zEi3rCoixkuJSfJaxvPOX+7sL8fDCRHWhIb1n+mYP459uwiJj2IdZXLO4mNaeZml5jyzE9EwU/6d8nckv6MFw6rRpE1Q6vmPZxlBOvqEIzBipOYxXz7R3Q=
+	t=1775997221; cv=none; b=fOF9xVKFXpbBWRNNVopcYuo9uYYfda84OecZjeaYD7kder6nE50T36hOu/i2oXwfhmv/92XRwyU6bKQY9ixVb9T0v8ow47U7/oHZE39MZrGYfw3vT+EOPohSWC89UE752UTM+U5jRtmUi2ujGajK6tycV3ZQ8Et8KIJn5Oxa09o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775984412; c=relaxed/simple;
-	bh=XLSXOqKfHWfTPS6C6Vq2UT2HUb3l8dn3SksR7uKAF1I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ICGLxQm+6CxD1uTOrCow4rBaGpOMxagPDEN3Gh/R8F6Vhi4+4MJAlOfTc9FeOQ+2+Qb2nAmUoH4nEYntIee/n+7kB9o5IYoatygZ6s0504nxsuVyVml7Wyr9gkmO+kc33kj1baTarB8f5xG65cpIcpsxfliNTPlwbxAs64OVTDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jp8RS9Py; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B8EAC19424;
-	Sun, 12 Apr 2026 09:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775984412;
-	bh=XLSXOqKfHWfTPS6C6Vq2UT2HUb3l8dn3SksR7uKAF1I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Jp8RS9PyXTYJFvkzzLsKbqdk9YThojx4/3xYFhM36XYBeKqzD1VS87sgR3Ep4G+wj
-	 nIDIotasekxgRR2+0LR1ZnRFKfv6A7hEbes2g4J5SoihEugtVrNR7XvlNzaLHEZS2r
-	 cHZihj147Ov2kMt/c0JJRi/9bPg/TdDk4SdHu+WdXL0qjA0ahVxxKxP7Kc3PwKLHmk
-	 b2Opz8lmLzC4ig2Rs95Ar//4WLPrxMnbu3drosCYDokJ6cVPTWVa/Z4SoW7kMZaHjC
-	 UkqezaVoZsCnLgyhyOrwMVesW6JK6+EAfZsldb0dCG8a1n/N7VSqtXivIBgWjVJo2f
-	 1WwiEbGVseE+Q==
-Date: Sun, 12 Apr 2026 12:00:06 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
-	Itay Avraham <itayavr@nvidia.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-Message-ID: <20260412090006.GA21470@unreal>
-References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
- <20260409121230.GA720371@unreal>
- <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
- <20260409124553.GB720371@unreal>
- <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
+	s=arc-20240116; t=1775997221; c=relaxed/simple;
+	bh=ZRXLTlwIaKnExgrPdcDijsJOh//duCE1TJQe4SGx05E=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N5cS67U+KW1T/TXTreLf6ahVDMJxdEOP5K3KjIZqNzBlJMFwRNZ0peedLbWmlDQmwAQ/iegUKkbzdCIztsJp9VBgnBKrKOaovWYeTRluVh8L0KKUctuFOYL1a9DldmhINovZX/huITi1WUbvMXfM6QmHo29Wha9N7TOh8GpMPsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=GsfLgBKJ; arc=none smtp.client-ip=34.218.115.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1775997217; x=1807533217;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=V0s5tr8H2PDcKgeaadKCSnm3yNzX0mnK6MUNI3oFMU4=;
+  b=GsfLgBKJhjYxVseapphD6WTSKM6pdBm/0zFAti6kGD+aoikHPo1QVydQ
+   wO8akrpxUsqlK0dTAPVJrom61Jo6zW+5fBm1Q3csQN859QGchEaZtDB2I
+   AIXWzuUj8xYJfdccUy5w+dOHXSlJgElAFCu/Lp96l7oV9VDYhpA9NPTkT
+   aHeQ9RMkiq2uQP+NsvCXCdN5TvtHxWyZv8pkFaixlUAtSSq0XyAyXeoXt
+   I4dJrpL/9uVab7kyqa2BrrOEeFmalCA5Mi7eFSSmh4MDg6Jk1lT4o1/ZJ
+   SprDDPxaZ3b1fbNrTvYmNsObLGk4yQmzNCeLxM13h7DzTuRM6D/AjEzsG
+   A==;
+X-CSE-ConnectionGUID: WCjkdQGcRWK0dMLX4i2uQQ==
+X-CSE-MsgGUID: 5EygDbzvRvmt8/SmS8cryA==
+X-IronPort-AV: E=Sophos;i="6.23,175,1770595200"; 
+   d="scan'208";a="16910294"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2026 12:33:34 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:30020]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.232:2525] with esmtp (Farcaster)
+ id a33374bf-0c8e-4a8d-aa1f-c6251fb640ab; Sun, 12 Apr 2026 12:33:34 +0000 (UTC)
+X-Farcaster-Flow-ID: a33374bf-0c8e-4a8d-aa1f-c6251fb640ab
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Sun, 12 Apr 2026 12:33:33 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Sun, 12 Apr 2026
+ 12:33:29 +0000
+Date: Sun, 12 Apr 2026 12:33:22 +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: Jiri Pirko <jiri@resnulli.us>
+CC: <linux-rdma@vger.kernel.org>, <jgg@ziepe.ca>, <leon@kernel.org>,
+	<gal.pressman@linux.dev>, <sleybo@amazon.com>, <parav@nvidia.com>,
+	<mbloch@nvidia.com>, <yanjun.zhu@linux.dev>, <marco.crivellari@suse.com>,
+	<roman.gushchin@linux.dev>, <phaddad@nvidia.com>, <lirongqing@baidu.com>,
+	<ynachum@amazon.com>, <huangjunxian6@hisilicon.com>,
+	<kalesh-anakkur.purayil@broadcom.com>, <ohartoov@nvidia.com>,
+	<michaelgur@nvidia.com>, <shayd@nvidia.com>, <edwards@nvidia.com>,
+	<sriharsha.basavapatna@broadcom.com>, <andrew.gospodarek@broadcom.com>,
+	<selvin.xavier@broadcom.com>
+Subject: Re: [PATCH rdma-next v2 01/15] RDMA/core: Introduce generic buffer
+ descriptor infrastructure for umem
+Message-ID: <20260412123322.GA5166@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
+References: <20260411144915.114571-1-jiri@resnulli.us>
+ <20260411144915.114571-2-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <20260411144915.114571-2-jiri@resnulli.us>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: EX19D036UWB002.ant.amazon.com (10.13.139.139) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19249-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[huaweicloud.com,kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19250-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com:mid];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,paul-moore.com:url,msgid.link:url]
-X-Rspamd-Queue-Id: 00E4F3E3332
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: AA19A3E3CB7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Apr 09, 2026 at 05:04:24PM -0400, Paul Moore wrote:
-> On Thu, Apr 9, 2026 at 8:45 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > On Thu, Apr 09, 2026 at 02:27:43PM +0200, Roberto Sassu wrote:
-> > > On Thu, 2026-04-09 at 15:12 +0300, Leon Romanovsky wrote:
-> > > > On Tue, Mar 31, 2026 at 08:56:32AM +0300, Leon Romanovsky wrote:
-> > > > > From Chiara:
-> > > > >
-> > > > > This patch set introduces a new BPF LSM hook to validate firmware commands
-> > > > > triggered by userspace before they are submitted to the device. The hook
-> > > > > runs after the command buffer is constructed, right before it is sent
-> > > > > to firmware.
-> > > >
-> > > > <...>
-> > > >
-> > > > > ---
-> > > > > Chiara Meiohas (4):
-> > > > >       bpf: add firmware command validation hook
-> > > > >       selftests/bpf: add test cases for fw_validate_cmd hook
-> > > > >       RDMA/mlx5: Externally validate FW commands supplied in DEVX interface
-> > > > >       fwctl/mlx5: Externally validate FW commands supplied in fwctl
-> > > >
-> > > > Hi,
-> > > >
-> > > > Can we get Ack from BPF/LSM side?
-> > >
-> > > + Paul, linux-security-module ML
-> > >
-> > > Hi
-> > >
-> > > probably you also want to get an Ack from the LSM maintainer (added in
-> > > CC with the list). Most likely, he will also ask you to create the
-> > > security_*() functions counterparts of the BPF hooks.
-> >
-> > We implemented this approach in v1:
-> > https://patch.msgid.link/20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com
-> > and were advised to pursue a different direction.
+On Sat, Apr 11, 2026 at 04:49:01PM +0200, Jiri Pirko wrote:
+> From: Jiri Pirko <jiri@nvidia.com>
 > 
-> I'm assuming you are referring to my comments? If so, that isn't exactly what I said,
-> I mentioned at least one other option besides
-> going directly to BPF.  Ultimately, it is your choice to decide how
-> you want to proceed, but to claim I advised you to avoid a LSM based
-> solution isn't strictly correct.
-
-Yes, this matches how we understood your comments:  
-https://lore.kernel.org/all/20260311081955.GS12611@unreal/
-
-In the end, the goal is to build something practical and avoid adding
-unnecessary complexity that brings no real benefit to users.
-
+> Add a unified mechanism for userspace to pass memory buffers to any
+> uverbs command via a single UVERBS_ATTR_BUFFERS attribute. Each
+> buffer is described by struct ib_uverbs_buffer_desc with a type
+> discriminator supporting dma-buf and user VA backed memory, extensible
+> for future buffer types.
 > 
-> Regardless, looking at your v2 patchset, it looks like you've taken an
-> unusual approach of using some of the LSM mechanisms, e.g. LSM_HOOK(),
-> but not actually exposing a LSM hook with proper callbacks.
-> Unfortunately, that's not something we want to support.  If you want
-> to pursue an LSM based solution, complete with a security_XXX() hook,
-> use of LSM_HOOK() macros, etc. then that's fine, I'm happy to work
-> with you on that.
-
-The issue is that the sentence below was the reason we did not merge v1 with v2:
-https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm-hooks
-"pass through implementations, such as the BPF LSM, are not eligible for
-LSM hook reference implementations."
-
-
-> However, if you've decided that your preferred
-> option is to create a BPF hook you should avoid using things like
-> LSM_HOOK() and locating your hook/code in bpf_lsm.c.
-
-We are not limited to LSM solution, the goal is to intercept commands
-which are submitted to the FW and "security" bucket sounded right to us.
-
+> The ib_umem_list API enables any uverbs command to accept multiple
+> buffers indexed by per-command slot enums, without requiring new UAPI
+> attributes for each buffer. A consumption check ensures userspace and
+> driver agree on which buffers are used.
 > 
-> The good news is that there are plenty of other examples of BPF
-> plugable code that you could use as an example, one such thing is the
-> update_socket_protocol() BPF hook that was originally proposed as a
-> LSM hook, but moved to a dedicated BPF hook as we generally want to
-> avoid changing non-LSM kernel objects within the scope of the LSMs.
-> While your proposed case is slightly different, I think the basic idea
-> and mechanism should still be useful.
+> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+> ---
+>  drivers/infiniband/core/umem.c          | 248 ++++++++++++++++++++++++
+>  include/rdma/ib_umem.h                  |  54 ++++++
+>  include/rdma/uverbs_ioctl.h             |  14 ++
+>  include/uapi/rdma/ib_user_ioctl_cmds.h  |   1 +
+>  include/uapi/rdma/ib_user_ioctl_verbs.h |  27 +++
+>  5 files changed, 344 insertions(+)
 > 
-> https://lore.kernel.org/all/cover.1692147782.git.geliang.tang@suse.com
+> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+> index 786fa1aa8e55..f5b03e903b9d 100644
+> --- a/drivers/infiniband/core/umem.c
+> +++ b/drivers/infiniband/core/umem.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/sched/signal.h>
+>  #include <linux/sched/mm.h>
+> +#include <linux/err.h>
+>  #include <linux/export.h>
+>  #include <linux/slab.h>
+>  #include <linux/pagemap.h>
+> @@ -332,3 +333,250 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+>  		return 0;
+>  }
+>  EXPORT_SYMBOL(ib_umem_copy_from);
+> +
+> +struct ib_umem_list {
+> +	unsigned int count; /* Total slots in the list. */
+> +	unsigned long provided; /* Bitmask of slots provided by the user. */
+> +	unsigned long loaded; /* Bitmask of slots loaded by the driver. */
+> +	struct ib_umem *umems[] __counted_by(count);
+> +};
+> +
+> +/**
+> + * ib_umem_list_create - Create a umem list from UVERBS_ATTR_BUFFERS
+> + * @device: IB device
+> + * @attrs: uverbs attribute bundle
+> + * @slot_max: highest buffer slot index (count = slot_max + 1)
+> + *
+> + * Return: umem list, or ERR_PTR on failure.
+> + */
+> +struct ib_umem_list *ib_umem_list_create(struct ib_device *device,
+> +					 const struct uverbs_attr_bundle *attrs,
+> +					 unsigned int slot_max)
+> +{
+> +	const struct ib_uverbs_buffer_desc *descs;
+> +	struct ib_umem_dmabuf *umem_dmabuf;
+> +	struct ib_umem_list *list;
+> +	struct ib_umem *umem;
+> +	unsigned int count;
+> +	int num_descs;
+> +	int err;
+> +	int i;
+> +
+> +	if (WARN_ON_ONCE(slot_max >= BITS_PER_LONG))
+> +		return ERR_PTR(-EINVAL);
+> +	count = slot_max + 1;
+> +
+> +	num_descs = uverbs_attr_ptr_get_array_size(
+> +		(struct uverbs_attr_bundle *)attrs, UVERBS_ATTR_BUFFERS,
+> +		sizeof(*descs));
+> +	if (num_descs == -ENOENT) {
+> +		num_descs = 0;
+> +		descs = NULL;
+> +	} else if (num_descs < 0) {
+> +		return ERR_PTR(num_descs);
+> +	} else if (num_descs > count) {
+> +		return ERR_PTR(-EINVAL);
+> +	} else {
+> +		descs = uverbs_attr_get_alloced_ptr(attrs, UVERBS_ATTR_BUFFERS);
+> +		if (IS_ERR(descs))
+> +			return ERR_CAST(descs);
+> +	}
+> +
+> +	list = kzalloc(struct_size(list, umems, count), GFP_KERNEL);
+> +	if (!list)
+> +		return ERR_PTR(-ENOMEM);
+> +	list->count = count;
+> +
+> +	for (i = 0; i < num_descs; i++) {
 
-Thanks
+While I like the idea of standardizing the way we pass buffer
+information to the kernel, the list thing looks like over generalization
+to me, especially after Leon's refactoring of CQ creation. Maybe we can
+add buffer as a new attribute type that can be used for multiple
+parameters in a command, and have a helper with the code below that
+takes an attribute id and returns a umem object, letting each handler
+store it. This would also make it easier for drivers to pass their
+private buffers using this infrastructure.
 
-> 
+Michael
+
+> +		unsigned int idx = descs[i].index;
+> +
+> +		if (descs[i].reserved) {
+> +			err = -EINVAL;
+> +			goto err_release;
+> +		}
+> +		if (idx >= count || (list->provided & BIT(idx))) {
+> +			err = -EINVAL;
+> +			goto err_release;
+> +		}
+> +
+> +		switch (descs[i].type) {
+> +		case IB_UVERBS_BUFFER_TYPE_DMABUF:
+> +			umem_dmabuf = ib_umem_dmabuf_get_pinned(
+> +				device, descs[i].addr, descs[i].length,
+> +				descs[i].fd, IB_ACCESS_LOCAL_WRITE);
+> +			if (IS_ERR(umem_dmabuf)) {
+> +				err = PTR_ERR(umem_dmabuf);
+> +				goto err_release;
+> +			}
+> +			list->umems[idx] = &umem_dmabuf->umem;
+> +			break;
+> +		case IB_UVERBS_BUFFER_TYPE_VA:
+> +			umem = ib_umem_get(device, descs[i].addr,
+> +					   descs[i].length, IB_ACCESS_LOCAL_WRITE);
+> +			if (IS_ERR(umem)) {
+> +				err = PTR_ERR(umem);
+> +				goto err_release;
+> +			}
+> +			list->umems[idx] = umem;
+> +			break;
+> +		default:
+> +			err = -EINVAL;
+> +			goto err_release;
+> +		}
+> +		list->provided |= BIT(idx);
+> +	}
+> +
+> +	return list;
+> +
+> +err_release:
+> +	ib_umem_list_release(list);
+> +	return ERR_PTR(err);
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_create);
+> +
+> +/**
+> + * ib_umem_list_release - Release all umems in the list and free it
+> + * @list: umem list
+> + */
+> +void ib_umem_list_release(struct ib_umem_list *list)
+> +{
+> +	int i;
+> +
+> +	if (!list)
+> +		return;
+> +	for (i = 0; i < list->count; i++)
+> +		ib_umem_release(list->umems[i]);
+> +	kfree(list);
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_release);
+> +
+> +/**
+> + * ib_umem_list_check_consumed - Verify all provided umems were loaded
+> + * @list: umem list
+> + *
+> + * Return: 0 if all provided slots were loaded, -EINVAL otherwise.
+> + */
+> +int ib_umem_list_check_consumed(const struct ib_umem_list *list)
+> +{
+> +	return (list->provided & ~list->loaded) == 0 ? 0 : -EINVAL;
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_check_consumed);
+> +
+> +/**
+> + * ib_umem_list_insert - Insert a umem into the list at a given index
+> + * @list: umem list
+> + * @index: per-command buffer slot index
+> + * @umem: umem pointer to store
+> + *
+> + * Stores @umem at @index (replacing any existing). For use from create_cq
+> + * when the buffer comes from legacy ATTRs rather than the buffer list.
+> + */
+> +void ib_umem_list_insert(struct ib_umem_list *list, unsigned int index,
+> +			 struct ib_umem *umem)
+> +{
+> +	ib_umem_list_replace(list, index, umem);
+> +	if (umem)
+> +		list->provided |= BIT(index);
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_insert);
+> +
+> +/**
+> + * ib_umem_list_load - Load a umem from the list by index
+> + * @list: umem list (may be NULL)
+> + * @index: per-command buffer slot index
+> + * @size: minimum required umem length
+> + *
+> + * Return: umem pointer, or NULL if the slot is empty or
+> + * the slot is out of bounds, or ERR_PTR(-EINVAL) if the umem is too small.
+> + */
+> +struct ib_umem *ib_umem_list_load(struct ib_umem_list *list,
+> +				 unsigned int index, size_t size)
+> +{
+> +	struct ib_umem *umem;
+> +
+> +	if (!list || index >= list->count)
+> +		return NULL;
+> +	umem = list->umems[index];
+> +	if (!umem)
+> +		return NULL;
+> +	if (umem->length < size)
+> +		return ERR_PTR(-EINVAL);
+> +	list->loaded |= BIT(index);
+> +	return umem;
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_load);
+> +
+> +/**
+> + * ib_umem_list_load_or_get - Umem from list or pin user memory
+> + * @list: umem list (may be NULL)
+> + * @index: per-command buffer slot index
+> + * @device: IB device for ib_umem_get when the list slot is empty
+> + * @addr: user virtual address for ib_umem_get
+> + * @size: length for ib_umem_get
+> + * @access: access flags for ib_umem_get
+> + *
+> + * If @list has a umem at @index, returns it like ib_umem_list_load() (and
+> + * marks the slot loaded). Otherwise calls ib_umem_get() with the given
+> + * @access flags and on success stores the result at @index when
+> + * @list is non-NULL.
+> + *
+> + * Return: valid umem pointer, or ERR_PTR.
+> + */
+> +struct ib_umem *ib_umem_list_load_or_get(struct ib_umem_list *list,
+> +					 unsigned int index,
+> +					 struct ib_device *device,
+> +					 unsigned long addr, size_t size,
+> +					 int access)
+> +{
+> +	struct ib_umem *umem;
+> +
+> +	umem = ib_umem_list_load(list, index, size);
+> +	if (IS_ERR(umem) || umem)
+> +		return umem;
+> +	umem = ib_umem_get(device, addr, size, access);
+> +	if (IS_ERR(umem))
+> +		return umem;
+> +	if (list && index < list->count)
+> +		list->umems[index] = umem;
+> +	return umem;
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_load_or_get);
+> +
+> +/**
+> + * ib_umem_list_replace - Replace umem at index, releasing the previous one
+> + * @list: umem list (may be NULL)
+> + * @index: per-command buffer slot index
+> + * @umem: new umem pointer (may be NULL to clear the slot)
+> + *
+> + * Stores @umem at @index. If a different umem was already stored there, it is
+> + * released. Used for CQ resize and similar.
+> + */
+> +void ib_umem_list_replace(struct ib_umem_list *list, unsigned int index,
+> +			  struct ib_umem *umem)
+> +{
+> +	struct ib_umem *old;
+> +
+> +	if (!list || index >= list->count)
+> +		return;
+> +	old = list->umems[index];
+> +	list->umems[index] = umem;
+> +	if (old && old != umem)
+> +		ib_umem_release(old);
+> +}
+> +EXPORT_SYMBOL(ib_umem_list_replace);
+> +
+> +/**
+> + * ib_umem_release_non_listed - Release a umem that is not stored in the list
+> + * @list: umem list
+> + * @index: per-command buffer slot index
+> + * @umem: umem pointer to release
+> + *
+> + * Releases @umem if it is not stored in @list.
+> + */
+> +void ib_umem_release_non_listed(struct ib_umem_list *list, unsigned int index,
+> +				struct ib_umem *umem)
+> +{
+> +	if (!list || index >= list->count || list->umems[index] != umem)
+> +		ib_umem_release(umem);
+> +}
+> +EXPORT_SYMBOL(ib_umem_release_non_listed);
+> diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+> index 2ad52cc1d52b..924acb8d08c3 100644
+> --- a/include/rdma/ib_umem.h
+> +++ b/include/rdma/ib_umem.h
+> @@ -11,6 +11,7 @@
+>  
+>  struct ib_device;
+>  struct dma_buf_attach_ops;
+> +struct uverbs_attr_bundle;
+>  
+>  struct ib_umem {
+>  	struct ib_device       *ibdev;
+> @@ -80,6 +81,36 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+>  void ib_umem_release(struct ib_umem *umem);
+>  int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+>  		      size_t length);
+> +
+> +/**
+> + * struct ib_umem_list - collection of pre-mapped umems
+> + *
+> + * Created from the UVERBS_ATTR_BUFFERS attribute. Each entry is indexed
+> + * by a per-command buffer slot enum (e.g., IB_UMEM_CQ_BUF for CQ CREATE).
+> + * Drivers use ib_umem_list_load() to retrieve a specific umem by index.
+> + */
+> +struct ib_umem_list;
+> +
+> +struct ib_umem_list *ib_umem_list_create(struct ib_device *device,
+> +					 const struct uverbs_attr_bundle *attrs,
+> +					 unsigned int slot_max);
+> +void ib_umem_list_release(struct ib_umem_list *list);
+> +int ib_umem_list_check_consumed(const struct ib_umem_list *list);
+> +void ib_umem_list_insert(struct ib_umem_list *list, unsigned int index,
+> +			 struct ib_umem *umem);
+> +
+> +struct ib_umem *ib_umem_list_load(struct ib_umem_list *list,
+> +				  unsigned int index, size_t size);
+> +struct ib_umem *ib_umem_list_load_or_get(struct ib_umem_list *list,
+> +					 unsigned int index,
+> +					 struct ib_device *device,
+> +					 unsigned long addr, size_t size,
+> +					 int access);
+> +void ib_umem_list_replace(struct ib_umem_list *list, unsigned int index,
+> +			  struct ib_umem *umem);
+> +void ib_umem_release_non_listed(struct ib_umem_list *list, unsigned int index,
+> +				struct ib_umem *umem);
+> +
+>  unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+>  				     unsigned long pgsz_bitmap,
+>  				     unsigned long virt);
+> @@ -230,5 +261,28 @@ static inline void ib_umem_dmabuf_revoke_lock(struct ib_umem_dmabuf *umem_dmabuf
+>  static inline void ib_umem_dmabuf_revoke_unlock(struct ib_umem_dmabuf *umem_dmabuf) {}
+>  static inline void ib_umem_dmabuf_revoke(struct ib_umem_dmabuf *umem_dmabuf) {}
+>  
+> +struct ib_umem_list;
+> +
+> +static inline void ib_umem_list_release(struct ib_umem_list *list) { }
+> +static inline struct ib_umem *ib_umem_list_load(struct ib_umem_list *list,
+> +						unsigned int index,
+> +						size_t size)
+> +{
+> +	return ERR_PTR(-EOPNOTSUPP);
+> +}
+> +static inline struct ib_umem *
+> +ib_umem_list_load_or_get(struct ib_umem_list *list, unsigned int index,
+> +			 struct ib_device *device, unsigned long addr,
+> +			 size_t size, int access)
+> +{
+> +	return ERR_PTR(-EOPNOTSUPP);
+> +}
+> +static inline void ib_umem_list_replace(struct ib_umem_list *list,
+> +					unsigned int index,
+> +					struct ib_umem *umem) { }
+> +static inline void ib_umem_release_non_listed(struct ib_umem_list *list,
+> +					      unsigned int index,
+> +					      struct ib_umem *umem) { }
+> +
+>  #endif /* CONFIG_INFINIBAND_USER_MEM */
+>  #endif /* IB_UMEM_H */
+> diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
+> index e2af17da3e32..05bcab27a87d 100644
+> --- a/include/rdma/uverbs_ioctl.h
+> +++ b/include/rdma/uverbs_ioctl.h
+> @@ -590,6 +590,20 @@ struct uapi_definition {
+>  			    UA_OPTIONAL,                                       \
+>  			    .is_udata = 1)
+>  
+> +/*
+> + * Optional array of struct ib_uverbs_buffer_desc describing memory regions
+> + * backed by dma-buf or user virtual address. Can be added to any method
+> + * that needs external buffer support.
+> + * Each entry carries an index field selecting the per-command buffer slot.
+> + * Use ib_umem_list_create() to map them and ib_umem_list_load() to access.
+> + */
+> +#define UVERBS_ATTR_BUFFERS()                                                  \
+> +	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_BUFFERS,                               \
+> +			   UVERBS_ATTR_MIN_SIZE(                               \
+> +				sizeof(struct ib_uverbs_buffer_desc)),         \
+> +			   UA_OPTIONAL,                                        \
+> +			   UA_ALLOC_AND_COPY)
+> +
+>  /* =================================================
+>   *              Parsing infrastructure
+>   * =================================================
+> diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+> index 72041c1b0ea5..10aa6568abf1 100644
+> --- a/include/uapi/rdma/ib_user_ioctl_cmds.h
+> +++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+> @@ -64,6 +64,7 @@ enum {
+>  	UVERBS_ATTR_UHW_IN = UVERBS_ID_DRIVER_NS,
+>  	UVERBS_ATTR_UHW_OUT,
+>  	UVERBS_ID_DRIVER_NS_WITH_UHW,
+> +	UVERBS_ATTR_BUFFERS,
+>  };
+>  
+>  enum uverbs_methods_device {
+> diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
+> index 90c5cd8e7753..41ed9f75b4de 100644
+> --- a/include/uapi/rdma/ib_user_ioctl_verbs.h
+> +++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
+> @@ -273,4 +273,31 @@ struct ib_uverbs_gid_entry {
+>  	__u32 netdev_ifindex; /* It is 0 if there is no netdev associated with it */
+>  };
+>  
+> +enum ib_uverbs_buffer_type {
+> +	IB_UVERBS_BUFFER_TYPE_DMABUF,
+> +	IB_UVERBS_BUFFER_TYPE_VA,
+> +};
+> +
+> +/*
+> + * Describes a single buffer backed by dma-buf or user virtual address.
+> + * Passed as an array via UVERBS_ATTR_BUFFERS. Each uverb command that
+> + * accepts this attribute defines its own per-command buffer slot enum.
+> + * The index field selects the buffer slot this descriptor maps to.
+> + *
+> + * @fd: dma-buf file descriptor (valid for IB_UVERBS_BUFFER_TYPE_DMABUF)
+> + * @type: buffer type from enum ib_uverbs_buffer_type
+> + * @index: per-command buffer slot index
+> + * @reserved: must be zero
+> + * @addr: offset within dma-buf, or user virtual address for VA
+> + * @length: buffer length in bytes
+> + */
+> +struct ib_uverbs_buffer_desc {
+> +	__s32 fd;
+> +	__u32 type;
+> +	__u32 index;
+> +	__u32 reserved;
+> +	__aligned_u64 addr;
+> +	__aligned_u64 length;
+> +};
+> +
+>  #endif
 > -- 
-> paul-moore.com
+> 2.53.0
 > 
 
