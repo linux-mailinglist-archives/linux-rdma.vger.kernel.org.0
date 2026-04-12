@@ -1,205 +1,140 @@
-Return-Path: <linux-rdma+bounces-19251-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19252-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sP0dB92T22lvDgkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19251-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:45:17 +0200
+	id QDidNQCV22mxDgkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19252-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:50:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B49183E3D46
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:45:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36BDB3E3D70
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:50:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 135C73004F30
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 12:45:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D89053007663
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 12:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926712E0B71;
-	Sun, 12 Apr 2026 12:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB4C37B012;
+	Sun, 12 Apr 2026 12:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QOOGO3K/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXZoEuOX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9ADA281530
-	for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 12:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9511B4F2C;
+	Sun, 12 Apr 2026 12:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775997908; cv=none; b=n9Ez04g+iYximeLFLtoVcCUMrdSD9SzxAlf5Zn2+pSksZ+wFE+dvg8l7MTZgq8RdlnA4lCLUsost+lwn6LByutYjCn4b8DlSD822UIhYPEb1af1buwbFoWy6G8cayJtK4cVrXSDnhtF1R0Qj3hVgQJgKA4DbRi5iKfw01n3n1Hk=
+	t=1775998205; cv=none; b=HifRRAxy5B3CeKcDMGUnZTNj25WnsARGaYKLv1W1rfZIY3S/LmwuuwKbIdhv1Dvky4Ma/jlYPW793MxbH/kb2v3LoXQnr8IaH30BPla7wZGfKBj6bNDuNf/2TBvHjeEHOHIdJBeVBG2+cEoZSDVA19p4HWBz3y/c3smA3u2XNLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775997908; c=relaxed/simple;
-	bh=8Ln9L+1bUr1auVhrM1bMb8RKDwIuVqKervYg3i/L+/4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RiDqDWRkGxnrXZ5sNZy9bOU41xto7kJzMepj3CCTEE7PD1FpfpolMWyTcLSlQ8MVP7jmbn1yNloq8IyuMp3mOjtJJ+sCBaBA14NxwIgwQezB9H8Sopnsu6/acayg4wqRBxNM3E+2QBn4qSIfH5swvd8dXcZohsq5kW/b7IPEQBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QOOGO3K/; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2b299b3c739so14834025ad.3
-        for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 05:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775997905; x=1776602705; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gvU9RvpBK2u7s6ovScuGMG+gjl6YN1La+ofcMQ5MbNc=;
-        b=QOOGO3K/Tpb2g2ixVQWmRjGzjVV+IXEaZ0aRmrm3UUxo7YwMNoeIypR4wZJ8j60hEj
-         BPZV6TfQ7Jtx7G9qsGij6p77OJnlozD5G3lFFNxZ1m5u3E8vbN3ME06493rby3g53c3x
-         em2calVPZ0Pg6lb/FNjjOxlVBtsU/hvWq5EwBx3/Wa+bXpIakrH5vpsrc7akXQVnTv0g
-         S/f5F557Of225IKdyhP4EHDKhO7BdGM6Bv/yL1BemjqaS6j9rvshVesMUVH2K+zBC9G0
-         /s9o4xDGijjPW1svIHY3hxhRvTQtzqQXNmZQYEPN8f5wMt+4pGLsm/ZxuevT/dBS3GxD
-         PVbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775997905; x=1776602705;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gvU9RvpBK2u7s6ovScuGMG+gjl6YN1La+ofcMQ5MbNc=;
-        b=ZeGHcoMgZwoyucVt38zwyBt9IUvi/1h9kLfb0Q4+i2FtHPvRfU0vzG9UaXeNIFkzdt
-         /K9HQzbYMq5NgbETQ6cqTbzrWtIZ73WZe5gC5s1iBF5tbhLnpJ8OYvYd0J1nn2dHn+y2
-         2LC0g2eqDMJ15Sjd5MR7RswfjEoLvSJc30894Ky07sXF3f02oexW1wpRM0h3rFzacM3F
-         8fF6x2D7KXRGVhlTSoCtgoMldjH423qJse+bbQVVJh04qOsNrpRs96y/irn/VF37IZ3y
-         GtUwa5xljfrGclqTM3PWg/ewoyb8yPhmOGmrqKKewM55ByWA79nVLXwQfoZwZZ4RtyJY
-         Kjtg==
-X-Forwarded-Encrypted: i=1; AFNElJ87kqnUnBkIeRsQMO7/IlMy7U43WcDt7XT7b6/8kyzAkm0/k4V4ShhhdUeugS8KGjpzvXDAZsRDIn/y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxtVKGWSm0Oqz37XhQcssQ0wpDfCj338U2ennGkay0P37oSAXfP
-	z5VJ/Mis1sIl5ySceb5L7+z1CV2/bo71jN1gXtfyxFa8pG6zYjgZowb3
-X-Gm-Gg: AeBDietxafF2LrZWT57djdcNUoDkpHDRzINDFjwWGagcCO3MtGCfaIs5RggGQHjl+YG
-	lq3o9wapXioEpOQ3ajpH5krtSFfjb+WkG7xnI+EY3cfLQWMd6/HTMyH8tYY/+gxFKN8vOp/R9rp
-	b4Ts9yPqW3ec1wMNN2xq+Vjt0tjNEHzt3uBaZBa17cqzQfGmAIguSApsNcOuOLWAKkadPbQkORY
-	sJ7BajOqczpigzbmCzQlbS0hRNAEUUIkrFdAeLbcTvEVMMiweC+PxXhVMH/fTX+A5IoeMn09RuC
-	FBcWrV2g4uogZO2t4pJTEiyPEJ0ckSKrhvFXz8EyhcAm/2T4I5ufmhCZu0T/SaOOvgCEq+DTzhL
-	NuafApfuQGJtGWo2PlYpH6XbfL70TTMRdzuB+b94VJ98IA+NAB6PZhg+U82gMM+j7Xye34XqU9N
-	/0WmXiqwT4YcSB7rWIGx1OJGxdpAi9a3X6pH9qutA/qcVUWJrI9Dt2ZJEjUtZTU547vs6Gz15h7
-	NCNwfMDt9sgKkSw2s5/h2QiSkkF
-X-Received: by 2002:a17:902:ba94:b0:2b2:5840:80c4 with SMTP id d9443c01a7336-2b2d5a291e5mr70378175ad.25.1775997905142;
-        Sun, 12 Apr 2026 05:45:05 -0700 (PDT)
-Received: from localhost.localdomain (ec2-54-199-123-161.ap-northeast-1.compute.amazonaws.com. [54.199.123.161])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b2d4f431c3sm80273025ad.79.2026.04.12.05.45.00
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 12 Apr 2026 05:45:04 -0700 (PDT)
-From: Xiaobo Liu <cppcoffee@gmail.com>
-To: Allison Henderson <achender@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org,
-	Xiaobo Liu <cppcoffee@gmail.com>
-Subject: [PATCH] RDS: Fix memory leak in rds_rdma_extra_size()
-Date: Sun, 12 Apr 2026 20:44:55 +0800
-Message-ID: <20260412124455.2008-1-cppcoffee@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1775998205; c=relaxed/simple;
+	bh=cbC6PZSXYKpThgPVPXKvotKY9vK1A+vj+Eg9/VR8KXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G/JoYk+VFRlFN4RxU9oeZ9IgooRNjiukjEy0rpTiqDqHFq485K7Enf9/J1eF8hFdJ5OrfDdxN4gbcJQhJCHJfG4yAQPUMoogytAhxvCuBn9nxm2gf6k6wujIRXUN40mripPbrKb6S+qTWJvzw3/TquJm6r5dPkZs8m1RTQ28RK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXZoEuOX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE702C19424;
+	Sun, 12 Apr 2026 12:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775998204;
+	bh=cbC6PZSXYKpThgPVPXKvotKY9vK1A+vj+Eg9/VR8KXc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VXZoEuOXPwbEtyYCBEl1GVBjV/PyvZcIavkVwmJtwptwlbdd6jkqxalo9FGyMJQcA
+	 qjdMG5GvABpwrrnWaW1owSP0ECHnt3PKmeWlqzTfMEj/JwDGph5wBj39X+aPGi0AyJ
+	 bpTfTcTqgmo/fnGJ9yrOX8ynWxdhgIl+S+Wym5ZpQ8pkVw3LeMAeRpwa9GGLrARtg6
+	 xq04TeJAgHtR7lOtTaasb5FhcwyAdsJZkXiVoieKAmqToP7WtjD1eImPxIpnoVzw0O
+	 GyoeW4K/cHxNGElU8SJ/M+8ww0Hw+1UOdyHGrr9S0CaIWOnigjzT5T9SpTX7OuHWYo
+	 XMEnE9SFao2BQ==
+Date: Sun, 12 Apr 2026 13:49:58 +0100
+From: Simon Horman <horms@kernel.org>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
+	yury.norov@gmail.com, kees@kernel.org, ssengar@linux.microsoft.com,
+	dipayanroy@linux.microsoft.com, gargaditya@linux.microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v6] net: mana: Expose hardware diagnostic info
+ via debugfs
+Message-ID: <20260412124958.GH469338@kernel.org>
+References: <20260408081555.302620-1-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260408081555.302620-1-ernis@linux.microsoft.com>
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19252-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,oss.oracle.com,gmail.com];
-	TAGGED_FROM(0.00)[bounces-19251-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cppcoffee@gmail.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B49183E3D46
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 36BDB3E3D70
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Free iov->iov when copy_from_user() or page count validation fails in rds_rdma_extra_size().
+On Wed, Apr 08, 2026 at 01:15:46AM -0700, Erni Sri Satya Vennela wrote:
+> Add debugfs entries to expose hardware configuration and diagnostic
+> information that aids in debugging driver initialization and runtime
+> operations without adding noise to dmesg.
+> 
+> The debugfs directory for each PCI device is named using pci_name()
+> (the unique BDF address), and its creation and removal is integrated
+> into mana_gd_setup() and mana_gd_cleanup_device() respectively, so
+> that all callers (probe, remove, suspend, resume, shutdown) share a
+> single code path.
+> 
+> Device-level entries (under /sys/kernel/debug/mana/<BDF>/):
+>   - num_msix_usable, max_num_queues: Max resources from hardware
+>   - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
+>   - num_vports, bm_hostmode: Device configuration
+> 
+> Per-vPort entries (under /sys/kernel/debug/mana/<BDF>/vportN/):
+>   - port_handle: Hardware vPort handle
+>   - max_sq, max_rq: Max queues from vPort config
+>   - indir_table_sz: Indirection table size
+>   - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
+>     Last applied steering configuration parameters
+> 
+> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+> ---
+> This patch depends on the following fixes submitted to net:
+>   - "net: mana: Use pci_name() for debugfs directory naming"
+>   - "net: mana: Move current_speed debugfs file to mana_init_port()"
+> Conflict resolution may be needed when net merges into net-next.
 
-This preserves the existing success path and avoids leaking the allocated iovec array on error.
----
- net/rds/rdma.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+Unfortunately this patch doesn't apply to net-next,
+which is a requirement for our workflow.
 
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index aa6465dc7..91a20c1e2 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -560,6 +560,7 @@ int rds_rdma_extra_size(struct rds_rdma_args *args,
- 	struct rds_iovec *vec;
- 	struct rds_iovec __user *local_vec;
- 	int tot_pages = 0;
-+	int ret = 0;
- 	unsigned int nr_pages;
- 	unsigned int i;
- 
-@@ -578,16 +579,20 @@ int rds_rdma_extra_size(struct rds_rdma_args *args,
- 	vec = &iov->iov[0];
- 
- 	if (copy_from_user(vec, local_vec, args->nr_local *
--			   sizeof(struct rds_iovec)))
--		return -EFAULT;
-+			   sizeof(struct rds_iovec))) {
-+		ret = -EFAULT;
-+		goto out;
-+	}
- 	iov->len = args->nr_local;
- 
- 	/* figure out the number of pages in the vector */
- 	for (i = 0; i < args->nr_local; i++, vec++) {
- 
- 		nr_pages = rds_pages_in_vec(vec);
--		if (nr_pages == 0)
--			return -EINVAL;
-+		if (nr_pages == 0) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 
- 		tot_pages += nr_pages;
- 
-@@ -595,11 +600,20 @@ int rds_rdma_extra_size(struct rds_rdma_args *args,
- 		 * nr_pages for one entry is limited to (UINT_MAX>>PAGE_SHIFT)+1,
- 		 * so tot_pages cannot overflow without first going negative.
- 		 */
--		if (tot_pages < 0)
--			return -EINVAL;
-+		if (tot_pages < 0) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 	}
- 
--	return tot_pages * sizeof(struct scatterlist);
-+	ret = tot_pages * sizeof(struct scatterlist);
-+
-+out:
-+	if (ret < 0) {
-+		kfree(iov->iov);
-+		iov->iov = NULL;
-+	}
-+	return ret;
- }
- 
- /*
 -- 
-2.34.1
-
+pw-bot: changes-requested
 
