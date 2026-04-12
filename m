@@ -1,298 +1,208 @@
-Return-Path: <linux-rdma+bounces-19248-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19249-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MNjeNqPz2mn87QgAu9opvQ
-	(envelope-from <linux-rdma+bounces-19248-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 03:21:39 +0200
+	id U421LCJf22lXBAkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19249-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 11:00:18 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE6C3E25A5
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 03:21:39 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00E4F3E3332
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 11:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 598BD30557CB
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 01:20:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3FE6C3004614
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 09:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F8A2D12EC;
-	Sun, 12 Apr 2026 01:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFC1313E21;
+	Sun, 12 Apr 2026 09:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lSjJJ2kL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jp8RS9Py"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167A12BF3F4
-	for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 01:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888B930BBAE;
+	Sun, 12 Apr 2026 09:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775956806; cv=none; b=Ak1RN62T8fJ3pwecnzVt5ANjrzGu7Gju/2BO5m+2yiUNUHQCn0myA9mX2J859xyOtxuIy21fhCUSXS/IPj2n7D+lCVRw/L4ZYOXju4wm0+7hDE9CJ6u1/fT9qAmf9rxDWZ2TrnaD1jJnQePGaXKh84TZfivbVsOLHs3WYgDnUos=
+	t=1775984412; cv=none; b=Bwww+7JDoWNpHAFC2//YA9B6Y7ANoSaM64hyFedrV1C3Cvxwz6vD7zEi3rCoixkuJSfJaxvPOX+7sL8fDCRHWhIb1n+mYP459uwiJj2IdZXLO4mNaeZml5jyzE9EwU/6d8nckv6MFw6rRpE1Q6vmPZxlBOvqEIzBipOYxXz7R3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775956806; c=relaxed/simple;
-	bh=ihDeI2uUOMIXgbdjNzbAOR7OO6RhP62EWTOPWtclGYE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eYE5kXCVfbTq/UVL27Oo9I8SBi9jlsFhxdEGYTal8HKgt3go8j2ccTIQ2fiHIh9pX0tAZHdC76I31StjRT8yjmdRqQD2uiK8cUNM51o1yG6kh9OQKgHYq0aMviR88a8jn7HnPSC5Wy0Yv+r8kGTsLzh0us7QXKj9AoZOOVtmKTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lSjJJ2kL; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-43ba1f3fa7eso3366846f8f.2
-        for <linux-rdma@vger.kernel.org>; Sat, 11 Apr 2026 18:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775956802; x=1776561602; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w88ok4FjcXWQxMS0ICUIgG8uXvZuVdvGncjq3kPMsik=;
-        b=lSjJJ2kL2rGkahS4Y3QsiTfRiS54D1chOXmKhNU0hzVUSGglESTXNYM7LQ3gpQt+Bl
-         lxCNOWqbWY9eNcycpSj1I5nTn32yNSD7sTttjyJoQxRI5+Oh1PtK3j/s1D3HLll8MNAt
-         YW4qpWfV74Az52BhYxnNZ5rBIeXBkpW94GRXq6pumTsI8Uqp857lkXPcNLNPKfuntJKv
-         2Cqat0cAxyuFdA05peeV1qXXWQC7qiVsjMcKFF+/Tl1nACcyel6N52ueQmqKjVV55BSB
-         jZx3dthNlYKqi3bqy79njO4l+2aWz+7e6ECutRMlqRoT5ApaxsPTxnt3E1bDs1siJ0i6
-         8a+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775956802; x=1776561602;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=w88ok4FjcXWQxMS0ICUIgG8uXvZuVdvGncjq3kPMsik=;
-        b=FzadzPR6rpSa8eP5UMBKSMf50xJGtF6SpOHYWsX5/kk3YDzY9XnQ48R+CZSGn31cLb
-         Bz4S0T5pQaPmL2ZegYb9Hbg4NXoDhxlb8LOqnjmwqNvyo9rRRwqUu5S50r3QyCWqUyei
-         2SBtmuZHTVWXzNHxYC01J7WeiLXh8CrftPxbhAWornuzxv3oFFNEkfieicI3jqFosKUd
-         iOXCiNAGDigS/ABgO64o9WgfpsFtuAPgj92rdYdzkqWPeicnchlUt0rmEir4oNLWT1tb
-         1iJob0hfCi9W6mMd5HYOgIrMVYlNLHxSIXUlXgS+0wTMwIubiDZPXyzmNsSsnzBlc75h
-         /P5w==
-X-Gm-Message-State: AOJu0Yyaa2s3w8zshd7dhKxFtBoMw/1yImAmCm3PvweO8XWAaoxM2Rli
-	IfSl7S6AIq1S5R++zfK/7pPaKEEWNt9WbahPnxPqgqyOX3AzZ3yTs34H
-X-Gm-Gg: AeBDietuwgwFeMu1lQMWG8ibqgjfyoIOwOOkSsW3cRjUS93ccJjfaNXWG1LPS/Iprjj
-	9fDa0b472ijfYTbwhEhr5m02GGYrE44Ww2xF5/nLCspEC5ZoO7zL0tHmB1DH4lyJl/YiJYcymUc
-	X9PYk6ycpinMKZO7F5Fhf4R3c1PK3wvnpQKslCPJfSORdRLVzM3cSWnqHFUx77J+/1EHr+8vP6k
-	NAHMy1JKxaCN7YL3jJlB85G3o70DFGRm5mE62ftXMXpilTqbsxj5+IXMBh8TKvEx8pnPbRoljVJ
-	ESMw538Me2jLE1Dfc76WPh6o34FWw4SoOEZA/k8bn433wmnHW9ueSBgkbW4XTJRR/7rWmSYfWy2
-	613pycqfR6xuaWvEYMVBtVFbsHJeKzAJM0shg+hxPTIfph9f87G3avFfzUbvyn9HzZIHPUYZ2Ev
-	Yl61WTBMLrUccHuUL4yZnSqr3/AH1AOhsGahZpiO9Jn2Qq9g6/6KAKFpimouWqif/lKTZ+XqNur
-	wNmFKcnPKyCFY2QBreS10qU26fma3Y=
-X-Received: by 2002:a05:6000:25c2:b0:43c:f1a5:56f6 with SMTP id ffacd0b85a97d-43d642dd457mr12496295f8f.43.1775956802317;
-        Sat, 11 Apr 2026 18:20:02 -0700 (PDT)
-Received: from SD.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d63dec295sm19903643f8f.14.2026.04.11.18.20.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Apr 2026 18:20:01 -0700 (PDT)
-From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-To: Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dledford@redhat.com,
-	haggaie@mellanox.com,
-	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-Subject: [PATCH v10 2/2] IB/mlx5: Serialize force-enable state and preserve loopback accounting
-Date: Sun, 12 Apr 2026 02:18:50 +0100
-Message-ID: <20260412011942.13744-3-prathameshdeshpande7@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260412011942.13744-1-prathameshdeshpande7@gmail.com>
-References: <20260412011942.13744-1-prathameshdeshpande7@gmail.com>
+	s=arc-20240116; t=1775984412; c=relaxed/simple;
+	bh=XLSXOqKfHWfTPS6C6Vq2UT2HUb3l8dn3SksR7uKAF1I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ICGLxQm+6CxD1uTOrCow4rBaGpOMxagPDEN3Gh/R8F6Vhi4+4MJAlOfTc9FeOQ+2+Qb2nAmUoH4nEYntIee/n+7kB9o5IYoatygZ6s0504nxsuVyVml7Wyr9gkmO+kc33kj1baTarB8f5xG65cpIcpsxfliNTPlwbxAs64OVTDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jp8RS9Py; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B8EAC19424;
+	Sun, 12 Apr 2026 09:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775984412;
+	bh=XLSXOqKfHWfTPS6C6Vq2UT2HUb3l8dn3SksR7uKAF1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jp8RS9PyXTYJFvkzzLsKbqdk9YThojx4/3xYFhM36XYBeKqzD1VS87sgR3Ep4G+wj
+	 nIDIotasekxgRR2+0LR1ZnRFKfv6A7hEbes2g4J5SoihEugtVrNR7XvlNzaLHEZS2r
+	 cHZihj147Ov2kMt/c0JJRi/9bPg/TdDk4SdHu+WdXL0qjA0ahVxxKxP7Kc3PwKLHmk
+	 b2Opz8lmLzC4ig2Rs95Ar//4WLPrxMnbu3drosCYDokJ6cVPTWVa/Z4SoW7kMZaHjC
+	 UkqezaVoZsCnLgyhyOrwMVesW6JK6+EAfZsldb0dCG8a1n/N7VSqtXivIBgWjVJo2f
+	 1WwiEbGVseE+Q==
+Date: Sun, 12 Apr 2026 12:00:06 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] Firmware LSM hook
+Message-ID: <20260412090006.GA21470@unreal>
+References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
+ <20260409121230.GA720371@unreal>
+ <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
+ <20260409124553.GB720371@unreal>
+ <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+In-Reply-To: <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19249-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,redhat.com,mellanox.com,gmail.com];
-	TAGGED_FROM(0.00)[bounces-19248-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[huaweicloud.com,kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4CE6C3E25A5
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,paul-moore.com:url,msgid.link:url]
+X-Rspamd-Queue-Id: 00E4F3E3332
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-force_enable is shared between MP bind/unbind flows and regular loopback
-enable/disable flows. MP helpers updated force_enable without lb.mutex,
-while regular paths read it under lb.mutex, allowing races and state
-mismatches.
+On Thu, Apr 09, 2026 at 05:04:24PM -0400, Paul Moore wrote:
+> On Thu, Apr 9, 2026 at 8:45 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > On Thu, Apr 09, 2026 at 02:27:43PM +0200, Roberto Sassu wrote:
+> > > On Thu, 2026-04-09 at 15:12 +0300, Leon Romanovsky wrote:
+> > > > On Tue, Mar 31, 2026 at 08:56:32AM +0300, Leon Romanovsky wrote:
+> > > > > From Chiara:
+> > > > >
+> > > > > This patch set introduces a new BPF LSM hook to validate firmware commands
+> > > > > triggered by userspace before they are submitted to the device. The hook
+> > > > > runs after the command buffer is constructed, right before it is sent
+> > > > > to firmware.
+> > > >
+> > > > <...>
+> > > >
+> > > > > ---
+> > > > > Chiara Meiohas (4):
+> > > > >       bpf: add firmware command validation hook
+> > > > >       selftests/bpf: add test cases for fw_validate_cmd hook
+> > > > >       RDMA/mlx5: Externally validate FW commands supplied in DEVX interface
+> > > > >       fwctl/mlx5: Externally validate FW commands supplied in fwctl
+> > > >
+> > > > Hi,
+> > > >
+> > > > Can we get Ack from BPF/LSM side?
+> > >
+> > > + Paul, linux-security-module ML
+> > >
+> > > Hi
+> > >
+> > > probably you also want to get an Ack from the LSM maintainer (added in
+> > > CC with the list). Most likely, he will also ask you to create the
+> > > security_*() functions counterparts of the BPF hooks.
+> >
+> > We implemented this approach in v1:
+> > https://patch.msgid.link/20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com
+> > and were advised to pursue a different direction.
+> 
+> I'm assuming you are referring to my comments? If so, that isn't exactly what I said,
+> I mentioned at least one other option besides
+> going directly to BPF.  Ultimately, it is your choice to decide how
+> you want to proceed, but to claim I advised you to avoid a LSM based
+> solution isn't strictly correct.
 
-Serialize MP force-enable transitions under lb.mutex. In regular loopback
-paths, update counters before checking force_enable
-and roll them back if HW enable fails. Also keep pre-existing
-master loopback enabled when MP enable fails on the slave side.
+Yes, this matches how we understood your comments:  
+https://lore.kernel.org/all/20260311081955.GS12611@unreal/
 
-Use a TD-capability-aware baseline for user_td transitions so threshold
-checks are correct on both TD-capable and no-TD hardware.
+In the end, the goal is to build something practical and avoid adding
+unnecessary complexity that brings no real benefit to users.
 
-Fixes: 08aae7860450 ("RDMA/mlx5: Fix vport loopback forcing for MPV device")
-Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
----
- drivers/infiniband/hw/mlx5/main.c | 67 +++++++++++++++++++++++++------
- 1 file changed, 55 insertions(+), 12 deletions(-)
+> 
+> Regardless, looking at your v2 patchset, it looks like you've taken an
+> unusual approach of using some of the LSM mechanisms, e.g. LSM_HOOK(),
+> but not actually exposing a LSM hook with proper callbacks.
+> Unfortunately, that's not something we want to support.  If you want
+> to pursue an LSM based solution, complete with a security_XXX() hook,
+> use of LSM_HOOK() macros, etc. then that's fine, I'm happy to work
+> with you on that.
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index b3b297bc2f2b..1f11ab443233 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1973,25 +1973,45 @@ static void deallocate_uars(struct mlx5_ib_dev *dev,
- 					     context->devx_uid);
- }
- 
-+static inline u32 mlx5_ib_lb_td_base(struct mlx5_core_dev *mdev)
-+{
-+	return MLX5_CAP_GEN(mdev, log_max_transport_domain) ? 1 : 0;
-+}
-+
- static int mlx5_ib_enable_lb_mp(struct mlx5_core_dev *master,
- 				struct mlx5_core_dev *slave,
- 				struct mlx5_ib_lb_state *lb_state)
- {
-+	bool user_enabled;
- 	int err;
- 
-+	lockdep_assert_held(&mlx5_ib_multiport_mutex);
-+
-+	mutex_lock(&lb_state->mutex);
-+	if (lb_state->force_enable) {
-+		mutex_unlock(&lb_state->mutex);
-+		return 0;
-+	}
-+	user_enabled = lb_state->enabled;
-+
- 	err = mlx5_nic_vport_update_local_lb(master, true);
- 	if (err)
--		return err;
-+		goto unlock;
- 
- 	err = mlx5_nic_vport_update_local_lb(slave, true);
- 	if (err)
- 		goto out;
- 
- 	lb_state->force_enable = true;
-+	lb_state->enabled = true;
-+	mutex_unlock(&lb_state->mutex);
- 	return 0;
- 
- out:
--	mlx5_nic_vport_update_local_lb(master, false);
-+	if (!user_enabled)
-+		mlx5_nic_vport_update_local_lb(master, false);
-+unlock:
-+	mutex_unlock(&lb_state->mutex);
- 	return err;
- }
- 
-@@ -1999,33 +2019,53 @@ static void mlx5_ib_disable_lb_mp(struct mlx5_core_dev *master,
- 				  struct mlx5_core_dev *slave,
- 				  struct mlx5_ib_lb_state *lb_state)
- {
--	mlx5_nic_vport_update_local_lb(slave, false);
--	mlx5_nic_vport_update_local_lb(master, false);
-+	u32 td_base = mlx5_ib_lb_td_base(master);
-+
-+	lockdep_assert_held(&mlx5_ib_multiport_mutex);
-+
-+	mutex_lock(&lb_state->mutex);
- 
-+	mlx5_nic_vport_update_local_lb(slave, false);
- 	lb_state->force_enable = false;
-+	if (lb_state->enabled &&
-+	    lb_state->user_td <= td_base && lb_state->qps == 0) {
-+		mlx5_nic_vport_update_local_lb(master, false);
-+		lb_state->enabled = false;
-+	}
-+
-+	mutex_unlock(&lb_state->mutex);
- }
- 
- int mlx5_ib_enable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- {
-+	u32 td_base = mlx5_ib_lb_td_base(dev->mdev);
- 	int err = 0;
- 
--	if (dev->lb.force_enable)
--		return 0;
--
- 	mutex_lock(&dev->lb.mutex);
- 	if (td)
- 		dev->lb.user_td++;
- 	if (qp)
- 		dev->lb.qps++;
- 
--	if (dev->lb.user_td == 2 ||
-+	if (dev->lb.force_enable)
-+		goto unlock;
-+
-+	if (dev->lb.user_td == td_base + 1 ||
- 	    dev->lb.qps == 1) {
- 		if (!dev->lb.enabled) {
- 			err = mlx5_nic_vport_update_local_lb(dev->mdev, true);
--			dev->lb.enabled = true;
-+			if (err) {
-+				if (td)
-+					dev->lb.user_td--;
-+				if (qp)
-+					dev->lb.qps--;
-+			} else {
-+				dev->lb.enabled = true;
-+			}
- 		}
- 	}
- 
-+unlock:
- 	mutex_unlock(&dev->lb.mutex);
- 
- 	return err;
-@@ -2033,8 +2073,7 @@ int mlx5_ib_enable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- 
- void mlx5_ib_disable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- {
--	if (dev->lb.force_enable)
--		return;
-+	u32 td_base = mlx5_ib_lb_td_base(dev->mdev);
- 
- 	mutex_lock(&dev->lb.mutex);
- 	if (td)
-@@ -2042,7 +2081,10 @@ void mlx5_ib_disable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- 	if (qp)
- 		dev->lb.qps--;
- 
--	if (dev->lb.user_td == 1 &&
-+	if (dev->lb.force_enable)
-+		goto unlock;
-+
-+	if (dev->lb.user_td <= td_base &&
- 	    dev->lb.qps == 0) {
- 		if (dev->lb.enabled) {
- 			mlx5_nic_vport_update_local_lb(dev->mdev, false);
-@@ -2050,6 +2092,7 @@ void mlx5_ib_disable_lb(struct mlx5_ib_dev *dev, bool td, bool qp)
- 		}
- 	}
- 
-+unlock:
- 	mutex_unlock(&dev->lb.mutex);
- }
- 
--- 
-2.43.0
+The issue is that the sentence below was the reason we did not merge v1 with v2:
+https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm-hooks
+"pass through implementations, such as the BPF LSM, are not eligible for
+LSM hook reference implementations."
 
+
+> However, if you've decided that your preferred
+> option is to create a BPF hook you should avoid using things like
+> LSM_HOOK() and locating your hook/code in bpf_lsm.c.
+
+We are not limited to LSM solution, the goal is to intercept commands
+which are submitted to the FW and "security" bucket sounded right to us.
+
+> 
+> The good news is that there are plenty of other examples of BPF
+> plugable code that you could use as an example, one such thing is the
+> update_socket_protocol() BPF hook that was originally proposed as a
+> LSM hook, but moved to a dedicated BPF hook as we generally want to
+> avoid changing non-LSM kernel objects within the scope of the LSMs.
+> While your proposed case is slightly different, I think the basic idea
+> and mechanism should still be useful.
+> 
+> https://lore.kernel.org/all/cover.1692147782.git.geliang.tang@suse.com
+
+Thanks
+
+> 
+> -- 
+> paul-moore.com
+> 
 
