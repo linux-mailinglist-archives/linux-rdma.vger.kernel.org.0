@@ -1,128 +1,133 @@
-Return-Path: <linux-rdma+bounces-19259-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19260-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sONtK6H522mbKAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19259-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 21:59:29 +0200
+	id 4QD3JqEF3GkgLQkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19260-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 22:50:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E8513E5CD8
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 21:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0486F3E5F00
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 22:50:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B8512300C98A
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 19:59:25 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8F396300A115
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 20:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7D237E315;
-	Sun, 12 Apr 2026 19:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19829375AAB;
+	Sun, 12 Apr 2026 20:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJK2fyDo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="acMQAq1K"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E623137CD3C;
-	Sun, 12 Apr 2026 19:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02BC239E76;
+	Sun, 12 Apr 2026 20:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776023961; cv=none; b=RVmC9lQRbqqRlB7mPyb8h3YM+obPh+lkiQG4M1LyG4IVqOG2xSdk6k0c+8Bx8J07MOcwybyDTahw7lrZBzpDUY1SaKUBymwbG61NR+qNCyXX+i8jL08a1EYEJGOzdcMv5ZIOrjYiqZzJ0w+XnauNkzZfoLRt+9kpSNZSW5kCKvs=
+	t=1776027037; cv=none; b=q+W7odHu7jtSNc13iV8Zef1dfghmDhVsMX/BDoqRcwiYHBIwE24ZRVGkQf7HlQyGiFD3LwefV2xFfiGyMuf77rmMShtXmiGTJ+7WLtdM2QafjJ0xG8xukOPCERIroYOpdrd0Z1rrB1R6fFTgWNDhn0JDctn/UCEzighS4/FBzug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776023961; c=relaxed/simple;
-	bh=5JFGMjojVLjVjBuXH5cwllbciCfN+kWLL0KPdVKa2C8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SEklIZKgYitKGQ1QE/TNz/xIuSut2rEnJnWfG8e+9nUZbVNCLdzgy43XSlFFMq0m0HgQBSzbqbFrbT1Xtyw1QjAJN/rQrEFzdEUJOvYyhnItFN9IjMq/rxPUKdLYFANWbKmab2RRyo4qbd+/xTvPypfgHjPm1GvsYVjSuw1+VjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SJK2fyDo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7F10C19424;
-	Sun, 12 Apr 2026 19:59:18 +0000 (UTC)
+	s=arc-20240116; t=1776027037; c=relaxed/simple;
+	bh=6Z6UNS2ebQrH305yaq3CKGzqIvM0rJkgbl+imUkZLUc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=EeaeMwWZ1ksVv9PFnzoj0DcjvHrlYFmVbZcY0fARz8Ref5j34hW7+jXjzTePVPjWmpB5sUZdpPRdonpmWLYVPBdTUii5ctN1xCqD+616vdXVsBg0Mg+qoFssFNVBBMP9wTocYj1YeakdywJLnJc9b/jssb3pU4Y44vhglo3lVK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=acMQAq1K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 715D7C19424;
+	Sun, 12 Apr 2026 20:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776023960;
-	bh=5JFGMjojVLjVjBuXH5cwllbciCfN+kWLL0KPdVKa2C8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SJK2fyDoSooRHzLNt5CadoC2V/OLevsHmQiX/kwT/hgDiCMZW47r0vtntQ5y5dPsX
-	 FUAjq5nH42WG1qkmVtNMKRCGqTlM5d8iDQIQFaQ/13fh+wMVHAggqU8y3hvTkcBe3n
-	 uYg3WHRpNVBKr/cr9eSeX82hsA78TSYOXNLfcLoekJFloux2HRtLUM7Cf8xjSuvWIF
-	 v8lsRzCaMsab/lUygANYwMTUqb9Bt5I7kQEuH7dq9TmnN2x+AMIfUWxl2IzcjHRi5G
-	 LPAfcQhTkXsAd0KJcx5+qEXaSEsnlBJJYK79GEqu0WJo6skejxRwcSOkzeLiFdvGB+
-	 XX8BuDDmOFIwQ==
-Date: Sun, 12 Apr 2026 12:59:17 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
- kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
- dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
- full-page RX buffers
-Message-ID: <20260412125917.4fa8fc8d@kernel.org>
-In-Reply-To: <20260409183509.0b24dea6@kernel.org>
-References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
-	<20260409183509.0b24dea6@kernel.org>
+	s=k20201202; t=1776027037;
+	bh=6Z6UNS2ebQrH305yaq3CKGzqIvM0rJkgbl+imUkZLUc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=acMQAq1KL8Dv5JOmUq2KjdP+9o9oI8cFjvpDhpPs87R1psEPGZAZIFQPWWaGed0we
+	 nLnivfx8ABiN0q88Nwaixm8XQXEnzf181ctTvOIpDtRcHcVmRravQUoy1W3ENAtPe9
+	 LyAaO8YKoaYl6VfF7nqOMw1khL8KpfXJVcc9e8oY6QXcnJVOcFELLSE6RC/uphgMKc
+	 SxeyatNnn8D/TzZw93VoNA4VHgLhWe8z+bgESgkMRysrwq3U25VA+7pmBMTVxsvZmw
+	 Tth9riIxS+qGB/PPqvbX1M0a0eewq7Y68dB8b9ARtSze7Elv//FFZTUo4TeF9LuZx2
+	 5u/4fklhRoweg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02BDA3809A8C;
+	Sun, 12 Apr 2026 20:50:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2 0/2] net/rds: Fix use-after-free in RDS/IB for
+ non-init
+ namespaces
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177602700979.3405581.15178712327198304598.git-patchwork-notify@kernel.org>
+Date: Sun, 12 Apr 2026 20:50:09 +0000
+References: <20260408080420.540032-1-achender@kernel.org>
+In-Reply-To: <20260408080420.540032-1-achender@kernel.org>
+To: Allison Henderson <achender@kernel.org>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
+ rds-devel@oss.oracle.com, kuba@kernel.org, horms@kernel.org,
+ linux-rdma@vger.kernel.org
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19259-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	RCPT_COUNT_TWELVE(0.00)[32];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_TLS_LAST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19260-lists,linux-rdma=lfdr.de,netdevbpf];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6E8513E5CD8
+X-Rspamd-Queue-Id: 0486F3E5F00
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 9 Apr 2026 18:35:09 -0700 Jakub Kicinski wrote:
-> On Tue,  7 Apr 2026 12:59:17 -0700 Dipayaan Roy wrote:
-> > This behavior is observed on a single platform; other platforms
-> > perform better with page_pool fragments, indicating this is not a
-> > page_pool issue but platform-specific.  
+Hello:
+
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed,  8 Apr 2026 01:04:18 -0700 you wrote:
+> This series fixes syzbot bug da8e060735ae02c8f3d1
+> https://syzkaller.appspot.com/bug?extid=da8e060735ae02c8f3d1
 > 
-> Well, someone has to run some experiments and confirm other ARM
-> platforms are not impacted, with data. I was hoping to do it myself
-> but doesn't look like that will happen in time for the merge window :(
+> The report finds a use-after-free bug where ib connections access an
+> invalid network namespace after it has been freed.  The stack is:
+> 
+>     rds_rdma_cm_event_handler_cmn
+>       rds_conn_path_drop
+>         rds_destroy_pending
+>           check_net()  <-- use-after-free
+> 
+> [...]
 
-Please repost with the perf analysis on other commercially available
-ARM platform. Something like:
+Here is the summary with links:
+  - [net,v2,1/2] net/rds: Optimize rds_ib_laddr_check
+    https://git.kernel.org/netdev/net/c/236f718ac885
+  - [net,v2,2/2] net/rds: Restrict use of RDS/IB to the initial network namespace
+    https://git.kernel.org/netdev/net/c/ebf71dd4aff4
 
-  This is a workaround applicable to only some platforms. Modifying
-  driver X to use a similar workaround on [Ampere Max|nVidia
-  Grace|Amazon Graviton 3|..] the performance for split pages is
-  y% higher than when using single pages.
+You are awesome, thank you!
 -- 
-pw-bot: cr
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
