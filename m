@@ -1,292 +1,211 @@
-Return-Path: <linux-rdma+bounces-19243-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19244-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yG2SKKeZ2mkC4QgAu9opvQ
-	(envelope-from <linux-rdma+bounces-19243-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Apr 2026 20:57:43 +0200
+	id COK8MPnh2mnA6wgAu9opvQ
+	(envelope-from <linux-rdma+bounces-19244-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 02:06:17 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E663E15FC
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Apr 2026 20:57:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4375C3E20C1
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 02:06:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9B923302EE84
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Apr 2026 18:57:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BAB5F3037C3C
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 00:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D0A3B9D9C;
-	Sat, 11 Apr 2026 18:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4104D22D7B9;
+	Sun, 12 Apr 2026 00:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HVPwgZ1z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="syT+vB0s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17ACB391E73
-	for <linux-rdma@vger.kernel.org>; Sat, 11 Apr 2026 18:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A211A840A
+	for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 00:04:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775933841; cv=none; b=dWlBUm7sBIRtl79034jTFEO4V5xe5R7h+ycekYLWYqADnsVRZXLiBDom4Lsts0vJ7YQIf2sVle6HILLzK4eLsPJONS6qvG6zTF39dA/RmuBye6gGdKOylU3CR5h0Q2wZJjViz0os+swagfkn0KYlvkPowyE1lplYCuApGVP7ADM=
+	t=1775952289; cv=none; b=SjSixrD0bgTEaepgsWWG66WNQI1muBzflFJpL/B9GWLkuLVRhPQ1DIKICyDIGU+zOHVZBzdFZotyJOE/RBo+sWj0zoOzy4KKZCVsTMB/f/5b6U0jf+JULngz5idkIV3GKkWIL3ZrbSwmBxKrMTfeYxxF0fTHM+PTz0p8czGfzD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775933841; c=relaxed/simple;
-	bh=B95nYRMQ4tVlg4cBVJStGLNV9C06HOfF8ftw9m7JyQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L1DL+cvN3soyjbQi1/i1qeXsy5DBAqlb962jmRxUmSe5QaI8VKjCGTu0kkM7MIjZj0OZ1lVfv7JD3O5Ea51tuefNpYIQ5bWC6N9WqNjAGTQTVbeUYcxrnPt5rkG1rV2GGKgz841A5mdReSf54G5qYX3Dgj+f3Mfj68xYTt7JWvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HVPwgZ1z; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <918b51f8-6742-43aa-be74-b0f9ce2c687b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1775933828;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NGPpjEwsTpFI49S9TGq14Qade94tIfF4RVUpMI1t+VU=;
-	b=HVPwgZ1z/R70V29c5RCbMjER/QOdPHn5Xl0eNMhhuphs0hLNe4iqFQ2EQyZeS0a0LD310E
-	9yp9pYw+pXgnaW7wD7vYDlbRZNBD116Be/a9SsyVI7L5HW49aU3hjBtnFcZEDFjdy8oZNU
-	Q5LRChr2V9ITYlHeogo7ca8v1NMxhn8=
-Date: Sat, 11 Apr 2026 11:57:01 -0700
+	s=arc-20240116; t=1775952289; c=relaxed/simple;
+	bh=QBK/RINE8I0qyXqKrQoDfDxVkFmB1WnivJRFhq24a5M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n0UP9UeHdIZ5Wga0y3IxtqdON3qt4KhpAQGItbOZ84+vykm8auW3EUrxjW6mVKzT3K5EjGAKcJQoAMPhHT30LwQ93Oh/Pf7uvlCiiddxZmYE54Hk1cFdG+L7U+Ms4MotLnB5AumCmm6uEaPhcozjkV/9Fhn/tl3OfvCN/gHJB9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=syT+vB0s; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-43d03db7f87so2064566f8f.3
+        for <linux-rdma@vger.kernel.org>; Sat, 11 Apr 2026 17:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775952283; x=1776557083; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GSvVMtxzXjPYe5WEdSEEP8xXV+mSZx/Y6/geHYnLhkU=;
+        b=syT+vB0sYwnejruFcAFjvTObTmh4jIpirhIxJXy+a4NwkVZ68YIdQVnvfL3xaLMfc9
+         J78E3gpZrPyT+BAMBk0RtpPkwjyEB5twRS8+xU9SMZ+4Von7lkfrKbI7D/gogGCpOAuW
+         g1ElMIo3YP97zveHFXQVxY+MUFxoOAO2PiOzYGj1qjxinSTRmK5aYzA7YJKJRE3dZoYY
+         CnVlVtNB/99d1B9y52Md+0xQHBloZ/fzvL2puZTW6NahdeLDxxy3y3N4/VN2JOQ33jDZ
+         tId+/SvziNfuv1Q6fOnwjrOPJWPp33G+Ax+2l7/yHh1T6VCF+s54ADkHY9wtYUuP/IBY
+         JsHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775952283; x=1776557083;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GSvVMtxzXjPYe5WEdSEEP8xXV+mSZx/Y6/geHYnLhkU=;
+        b=XKzMGiA2Yc2dpXIuxCO6Q/2ZqKQVLyzCnmIXAQnkmfNBVOx3YlHBpMK3gO/oLSfJFP
+         Lrrbayc2G1iSk5SFUocWkBO8OzuQgnWmNnROaioTl8t6wuMrlDp0/13xrnQ/eTS/NN2T
+         GJkmtWE4aD3p1KVyUWPQcaQ12fRi4dRoTKgu+SIrNsTVkqhCS/rPBWp6rpME8LMIuTtx
+         rs1zSfXXcU7R6HZBPjx0sNkax+KxTSuOAPWggRS24QU9LL0CYjadXvkg24en8g31OAOI
+         jMWBXnhrhAklUmGNUTd+Sr6RLdYF/G6k42cZrITBq2fO+eMAYuCQMNTc20iBCPrb1bjw
+         cX2g==
+X-Forwarded-Encrypted: i=1; AFNElJ/gWE6kaMS/4sicmVWxZEWs4PxrQTZ4uGoY2ZtSGLdJo+tUBBBXDIMnFdo2CuHweVwyvVE1ujBD47lT@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeDtAevb2co+ZNzJv9Dj9kZ8VmMNSKI1pOR2G6buHaZuUKlEae
+	PO3FfI2za8zYC9gXRsXqc6dqa8a+2nXC7OaNVelHCP2Sn6SHCShwzISa
+X-Gm-Gg: AeBDievpXRj5+9vp3llcnpkgCsOOqM40plPmLdrMRbxcRbOLnpvufMsTe9bmR8o5is1
+	UfbaIF268PrbbMYxQD50PFkPmfwS2/BvbHz9DfEZ8BjT/NBEnqhnmA7psUWaCU6y0AlSGDF1iVv
+	96NB0vieS1x5AZE7/Teww/8Xmbltq5QezHFWGoUyrN69AUk6JGaRVN8MqYRsblGiEMVVfYwjDnr
+	3QU2NqTd8zXwQBVH5MckqAuzv1igCSh8Ot7emtekKrqM/hbyNXfr5lf80CmWZE3c4+UL76DvEvL
+	C49mTVZTC/Nwy2g21H0XLCnbaOsuiPYc+pb/BzY0EH43TCglom9Ylwk2JTAYf2FdqMZrKKmCmTi
+	er9PDIwOS54E3jDrw81sHv2i/NLWJ0pZZlJlABr2gU3xSHgNsnay8zhvoHaG4GmVsJynHAZ6eqC
+	3qu83Sv2TbIfykiy5zg8KrXazFGN0dupxZK/Pgd15Ak+NUKXPPQcJVXFSZtRKAg+tVVH/AnC5xf
+	V0O5Ke2mjCWkQL99WQ+c9DwYXs0uMTHcIOQNeKPOQ==
+X-Received: by 2002:a5d:64e6:0:b0:43d:c75:9479 with SMTP id ffacd0b85a97d-43d642b6965mr13228236f8f.31.1775952283220;
+        Sat, 11 Apr 2026 17:04:43 -0700 (PDT)
+Received: from SD.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d63e5061fsm20373377f8f.30.2026.04.11.17.04.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Apr 2026 17:04:41 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: Carolina Jubran <cjubran@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: Richard Cochran <richardcochran@gmail.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Subject: [PATCH v4] net/mlx5: Fix OOB access and stack information leak in PTP event handling
+Date: Sun, 12 Apr 2026 01:04:10 +0100
+Message-ID: <20260412000418.8415-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 2/3] RDMA/rxe: add SENT/RCVD bytes
-To: zhenwei pi <zhenwei.pi@linux.dev>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
-References: <20260408000956.486522-1-zhenwei.pi@linux.dev>
- <20260408000956.486522-3-zhenwei.pi@linux.dev>
- <090caa77-f1ca-4854-9975-87b9e4f2bf74@linux.dev>
- <6f5dd82d-a5a8-4c0f-a7a3-1e7f47f51210@linux.dev>
- <fbd49324-a7e8-4679-a3a5-b3092a578c0c@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <fbd49324-a7e8-4679-a3a5-b3092a578c0c@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19243-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,nvidia.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19244-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F0E663E15FC
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: 4375C3E20C1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-在 2026/4/11 0:24, zhenwei pi 写道:
-> 
-> 
-> On 4/11/26 09:45, Zhu Yanjun wrote:
->>
->> 在 2026/4/10 15:37, yanjun.zhu 写道:
->>> On 4/7/26 5:09 PM, zhenwei pi wrote:
->>>> There is a lack of sent/received counter in bytes.
->>>>
->>>> Signed-off-by: zhenwei pi <zhenwei.pi@linux.dev>
->>>> ---
->>>>   drivers/infiniband/sw/rxe/rxe_hw_counters.c | 2 ++
->>>>   drivers/infiniband/sw/rxe/rxe_hw_counters.h | 2 ++
->>>>   drivers/infiniband/sw/rxe/rxe_net.c         | 2 ++
->>>>   drivers/infiniband/sw/rxe/rxe_recv.c        | 2 ++
->>>>   drivers/infiniband/sw/rxe/rxe_verbs.h       | 6 ++++++
->>>>   5 files changed, 14 insertions(+)
->>>>
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/ 
->>>> infiniband/sw/rxe/rxe_hw_counters.c
->>>> index 437917a7d8f2..17edaa9a9b9b 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
->>>> @@ -22,6 +22,8 @@ static const struct rdma_stat_desc 
->>>> rxe_counter_descs[] = {
->>>>       [RXE_CNT_LINK_DOWNED].name         =  "link_downed",
->>>>       [RXE_CNT_RDMA_SEND].name           =  "rdma_sends",
->>>>       [RXE_CNT_RDMA_RECV].name           =  "rdma_recvs",
->>>> +    [RXE_CNT_SENT_BYTES].name          =  "sent_bytes",
->>>> +    [RXE_CNT_RCVD_BYTES].name          =  "rcvd_bytes",
->>>>   };
->>>>     int rxe_ib_get_hw_stats(struct ib_device *ibdev,
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.h b/drivers/ 
->>>> infiniband/sw/rxe/rxe_hw_counters.h
->>>> index 051f9e1c3852..01b355103cbc 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.h
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
->>>> @@ -26,6 +26,8 @@ enum rxe_counters {
->>>>       RXE_CNT_LINK_DOWNED,
->>>>       RXE_CNT_RDMA_SEND,
->>>>       RXE_CNT_RDMA_RECV,
->>>> +    RXE_CNT_SENT_BYTES,
->>>> +    RXE_CNT_RCVD_BYTES,
->>>>       RXE_NUM_OF_COUNTERS
->>>>   };
->>>>   diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/ 
->>>> infiniband/sw/rxe/rxe_net.c
->>>> index 6621d01ac32d..86660031ffa2 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_net.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
->>>> @@ -503,6 +503,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct 
->>>> rxe_pkt_info *pkt,
->>>>       int err;
->>>>       int is_request = pkt->mask & RXE_REQ_MASK;
->>>>       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->>>> +    unsigned int skblen = skb->len;
->>>>       unsigned long flags;
->>>>         spin_lock_irqsave(&qp->state_lock, flags);
->>>> @@ -526,6 +527,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct 
->>>> rxe_pkt_info *pkt,
->>>>       }
->>>>         rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
->>>> +    rxe_counter_add(rxe, RXE_CNT_SENT_BYTES, skblen);
->>>>       goto done;
->>>>     drop:
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/ 
->>>> infiniband/sw/rxe/rxe_recv.c
->>>> index 5861e4244049..e7bab89e7d8d 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
->>>> @@ -318,6 +318,7 @@ void rxe_rcv(struct sk_buff *skb)
->>>>       int err;
->>>>       struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->>>>       struct rxe_dev *rxe = pkt->rxe;
->>>> +    unsigned int skblen = skb->len - skb_network_offset(skb);
->>>>         if (unlikely(skb->len < RXE_BTH_BYTES))
->>>>           goto drop;
->>>> @@ -341,6 +342,7 @@ void rxe_rcv(struct sk_buff *skb)
->>>>       if (unlikely(err))
->>>>           goto drop;
->>>>   +    rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
->>>>       rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
->>>>         if (unlikely(bth_qpn(pkt) == IB_MULTICAST_QPN))
->>>
->>> int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
->>>                     struct sk_buff *skb)
->>> {
->>>         int err;
->>>         int is_request = pkt->mask & RXE_REQ_MASK;
->>>         struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->>>         unsigned long flags;
->>>
->>> skb->len is printed here, that is len1
->>> ...
->>>         if (pkt->mask & RXE_LOOPBACK_MASK)
->>>                 err = rxe_loopback(skb, pkt);
->>>         else
->>>                 err = rxe_send(skb, pkt);
->>> ...
->>> }
->>>
->>> In the following function
->>>
->>> static int rxe_loopback(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->>> {
->>> ...
->>>         if (skb->protocol == htons(ETH_P_IP))
->>>                 skb_pull(skb, sizeof(struct iphdr));
->>>         else
->>>                 skb_pull(skb, sizeof(struct ipv6hdr));
->>>
->>> ...
->>>         /* remove udp header */
->>>         skb_pull(skb, sizeof(struct udphdr));
->>>
->>> print skb->len here, that is len2
->>>
->>>         rxe_rcv(skb);
->>>
->>> ...
->>> }
->>>
->>> Does len1 equal to len2?
->>
->> I have made tests. The difference between len1 and len2 is 28.
->>
->> It should be the total of ipv4 header + udp header because I use ipv4 
->> address to make tests.
->>
->> I am not sure if the bytes of recv data should equal to the bytes of 
->> xmit data.
->>
->>
->> Zhu Yanjun
->>
-> 
-> Yes, I got the same result of 28 bytes difference during v4 version. So 
-> I try to use such logic to recalculate the length:
-> 
-> +    unsigned int skblen = skb->len + sizeof(struct udphdr);
-> ...
-> +    if (skb->protocol == htons(ETH_P_IP))
-> +        skblen += sizeof(struct iphdr);
-> +    else if (skb->protocol == htons(ETH_P_IPV6))
-> +        skblen += sizeof(struct ipv6hdr);
-> +    rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
-> 
-> then use 'unsigned int skblen = skb->len - skb_network_offset(skb);' in v5.
+In mlx5_pps_event(), several critical issues were identified:
 
-Thanks. Not necessary to use this 'unsigned int skblen = skb->len - 
-skb_network_offset(skb);'.
+1. The 'pin' index from the hardware event was used without bounds
+   checking to index 'pin_config' and 'pps_info->start'. Check against
+   MAX_PIN_NUM to prevent out-of-bounds access.
+2. 'ptp_event' was not zero-initialized, potentially leaking stack
+   memory through the union.
+3. A NULL 'pin_config' could be dereferenced if initialization failed.
+4. 'clock->ptp' could be NULL if ptp_clock_register() failed.
 
-The above udphdr and iphdr/ip6hdr should be OK.
+Fixes: 7c39afb394c7 ("net/mlx5: PTP code migration to driver core section")
+Suggested-by: Carolina Jubran <cjubran@nvidia.com>
+Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+---
+v4:
+- Validate pin index against MAX_PIN_NUM instead of n_pins [Carolina].
+v3:
+- Fix union corruption by using a local timestamp variable [Sashiko].
+- Validate pin index against n_pins with WARN_ON_ONCE [Carolina].
+- Remove redundant pin < 0 check and cleanup TODO comment.
+v2:
+- Zero-initialize ptp_event to prevent stack information leak [Sashiko].
+- Add bounds check for hardware pin index to prevent OOB access [Sashiko].
+- Add NULL guard for pin_config to handle initialization failures [Sashiko].
+- Add NULL check for clock->ptp as originally intended.
 
-Thanks a lot.
-Zhu Yanjun
+ .../net/ethernet/mellanox/mlx5/core/lib/clock.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-> 
->>>
->>> If not, the transmitted length appears to differ from the received 
->>> length when using loopback.
->>>
->>> I am not sure whether this is expected behavior.
->>>
->>> The same observation also applies to the non-loopback case.
->>>
->>> Zhu Yanjun
->>>
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/ 
->>>> infiniband/sw/rxe/rxe_verbs.h
->>>> index e800545d1046..0f5ffd94643f 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->>>> @@ -455,6 +455,12 @@ static inline void rxe_counter_inc(struct 
->>>> rxe_dev *rxe, enum rxe_counters index)
->>>>       atomic64_inc(&rxe->stats_counters[index]);
->>>>   }
->>>>   +static inline void rxe_counter_add(struct rxe_dev *rxe, enum 
->>>> rxe_counters index,
->>>> +                   s64 val)
->>>> +{
->>>> +    atomic64_add(val, &rxe->stats_counters[index]);
->>>> +}
->>>> +
->>>>   static inline struct rxe_dev *to_rdev(struct ib_device *dev)
->>>>   {
->>>>       return dev ? container_of(dev, struct rxe_dev, ib_dev) : NULL;
->>
-> 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index bd4e042077af..ff03dfa12a67 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -1164,16 +1164,22 @@ static int mlx5_pps_event(struct notifier_block *nb,
+ 							       pps_nb);
+ 	struct mlx5_core_dev *mdev = clock_state->mdev;
+ 	struct mlx5_clock *clock = mdev->clock;
+-	struct ptp_clock_event ptp_event;
++	struct ptp_clock_event ptp_event = {};
+ 	struct mlx5_eqe *eqe = data;
+ 	int pin = eqe->data.pps.pin;
+ 	unsigned long flags;
+ 	u64 ns;
+ 
++	if (!clock->ptp_info.pin_config)
++		return NOTIFY_OK;
++
++	if (WARN_ON_ONCE(pin >= MAX_PIN_NUM))
++		return NOTIFY_OK;
++
+ 	switch (clock->ptp_info.pin_config[pin].func) {
+ 	case PTP_PF_EXTTS:
+ 		ptp_event.index = pin;
+-		ptp_event.timestamp = mlx5_real_time_mode(mdev) ?
++		ns = mlx5_real_time_mode(mdev) ?
+ 			mlx5_real_time_cyc2time(clock,
+ 						be64_to_cpu(eqe->data.pps.time_stamp)) :
+ 			mlx5_timecounter_cyc2time(clock,
+@@ -1181,12 +1187,13 @@ static int mlx5_pps_event(struct notifier_block *nb,
+ 		if (clock->pps_info.enabled) {
+ 			ptp_event.type = PTP_CLOCK_PPSUSR;
+ 			ptp_event.pps_times.ts_real =
+-					ns_to_timespec64(ptp_event.timestamp);
++					ns_to_timespec64(ns);
+ 		} else {
+ 			ptp_event.type = PTP_CLOCK_EXTTS;
++			ptp_event.timestamp = ns;
+ 		}
+-		/* TODOL clock->ptp can be NULL if ptp_clock_register fails */
+-		ptp_clock_event(clock->ptp, &ptp_event);
++		if (clock->ptp)
++			ptp_clock_event(clock->ptp, &ptp_event);
+ 		break;
+ 	case PTP_PF_PEROUT:
+ 		if (clock->shared) {
+-- 
+2.43.0
 
 
