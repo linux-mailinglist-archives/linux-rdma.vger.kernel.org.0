@@ -1,65 +1,63 @@
-Return-Path: <linux-rdma+bounces-19252-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19253-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QDidNQCV22mxDgkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19252-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:50:08 +0200
+	id UKjREgWV22mxDgkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19253-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:50:13 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36BDB3E3D70
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:50:08 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A5A3E3D80
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 14:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D89053007663
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 12:50:06 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 35EFC30022C1
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2026 12:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB4C37B012;
-	Sun, 12 Apr 2026 12:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92A71B4F2C;
+	Sun, 12 Apr 2026 12:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXZoEuOX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LVJiijhl"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9511B4F2C;
-	Sun, 12 Apr 2026 12:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA25376492;
+	Sun, 12 Apr 2026 12:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775998205; cv=none; b=HifRRAxy5B3CeKcDMGUnZTNj25WnsARGaYKLv1W1rfZIY3S/LmwuuwKbIdhv1Dvky4Ma/jlYPW793MxbH/kb2v3LoXQnr8IaH30BPla7wZGfKBj6bNDuNf/2TBvHjeEHOHIdJBeVBG2+cEoZSDVA19p4HWBz3y/c3smA3u2XNLQ=
+	t=1775998210; cv=none; b=bcRUlnhOy7JYwKiikZV1tMyUnUVUFJKpaCfMCDWUdd4hPJOAirSTRBQ269Oon1IOv0NZOcOH7+BJHAk277clrDNLUyf+z3Vd4qx3K8tMgBNODXw9RSGiwzN73sPEzdQ+eXWOjjxXo4JlD99NISwg6/Lg4Wu0CWy9GmNcme3oF3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775998205; c=relaxed/simple;
-	bh=cbC6PZSXYKpThgPVPXKvotKY9vK1A+vj+Eg9/VR8KXc=;
+	s=arc-20240116; t=1775998210; c=relaxed/simple;
+	bh=UctMIAZJjUIkI9bcFxFVqtMglx8Sn3GMHxD5PPywcD4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G/JoYk+VFRlFN4RxU9oeZ9IgooRNjiukjEy0rpTiqDqHFq485K7Enf9/J1eF8hFdJ5OrfDdxN4gbcJQhJCHJfG4yAQPUMoogytAhxvCuBn9nxm2gf6k6wujIRXUN40mripPbrKb6S+qTWJvzw3/TquJm6r5dPkZs8m1RTQ28RK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXZoEuOX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE702C19424;
-	Sun, 12 Apr 2026 12:50:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=n1t5y2Y2bW5LIKzoTi5CZjRLkpnKimsmW597qQu5n+9xgcJjKIGfDfYNkrhxoTeqSJfzexc1ECMTpVjGM2m/1gx+1i3RpbMO7RRqFTSzgG/jD6ROtNBeQ8P+J7q5OrNFQ0JxEe6DbZIU1P5FyNNz4fkIz2j8fsHnt3bUSp5TYT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LVJiijhl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 995D9C19424;
+	Sun, 12 Apr 2026 12:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775998204;
-	bh=cbC6PZSXYKpThgPVPXKvotKY9vK1A+vj+Eg9/VR8KXc=;
+	s=k20201202; t=1775998210;
+	bh=UctMIAZJjUIkI9bcFxFVqtMglx8Sn3GMHxD5PPywcD4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VXZoEuOXPwbEtyYCBEl1GVBjV/PyvZcIavkVwmJtwptwlbdd6jkqxalo9FGyMJQcA
-	 qjdMG5GvABpwrrnWaW1owSP0ECHnt3PKmeWlqzTfMEj/JwDGph5wBj39X+aPGi0AyJ
-	 bpTfTcTqgmo/fnGJ9yrOX8ynWxdhgIl+S+Wym5ZpQ8pkVw3LeMAeRpwa9GGLrARtg6
-	 xq04TeJAgHtR7lOtTaasb5FhcwyAdsJZkXiVoieKAmqToP7WtjD1eImPxIpnoVzw0O
-	 GyoeW4K/cHxNGElU8SJ/M+8ww0Hw+1UOdyHGrr9S0CaIWOnigjzT5T9SpTX7OuHWYo
-	 XMEnE9SFao2BQ==
-Date: Sun, 12 Apr 2026 13:49:58 +0100
-From: Simon Horman <horms@kernel.org>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, kotaranov@microsoft.com,
-	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
-	yury.norov@gmail.com, kees@kernel.org, ssengar@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com, gargaditya@linux.microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v6] net: mana: Expose hardware diagnostic info
- via debugfs
-Message-ID: <20260412124958.GH469338@kernel.org>
-References: <20260408081555.302620-1-ernis@linux.microsoft.com>
+	b=LVJiijhlBb3b8995eHFh0+LVGq4XGVZVjQr+WlYMF2XHwIMkfeyzE1ylwx2du7s9v
+	 IVuHUNJEXwMOglYKE4m7UXDTd0cIbAlMuua0PKRlxdKNa/2Fzov2d45VdcP3Ki7M0n
+	 S318Ec8ZJFEXPRi8827HjMzU3Oc84wBf6cjbHvVasuFH1z3wizT1xmsuq9VvrBpvtQ
+	 IPjCGILrRAw6lWAcxZCcLH0QxoUyd47L8cTPXjN0VZfP8+smpznmtFaX0lAbj3+BiK
+	 7iQM793FIGhpkTIYwn73xzpWJFRjOr/9na/QJtgUxwIbClhcbSwKPjGmzebdOhrPNW
+	 XZw+6AUJ09vGw==
+Date: Sun, 12 Apr 2026 15:50:05 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Junrui Luo <moonafterrain@outlook.com>
+Cc: Chengchang Tang <tangchengchang@huawei.com>,
+	Junxian Huang <huangjunxian6@hisilicon.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Xi Wang <wangxi11@huawei.com>,
+	Weihang Li <liweihang@huawei.com>, Wei Xu <xuwei5@hisilicon.com>,
+	Shengming Shu <shushengming1@huawei.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yuhao Jiang <danisjiang@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] RDMA/hns: fix out-of-bounds write in IRQ array during
+ configuration
+Message-ID: <20260412125005.GB21470@unreal>
+References: <SYBPR01MB7881512F49EA80F0146EEEA1AF5CA@SYBPR01MB7881.ausprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -68,73 +66,51 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260408081555.302620-1-ernis@linux.microsoft.com>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <SYBPR01MB7881512F49EA80F0146EEEA1AF5CA@SYBPR01MB7881.ausprd01.prod.outlook.com>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19252-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-19253-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_TO(0.00)[outlook.com];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[huawei.com,hisilicon.com,ziepe.ca,vger.kernel.org,gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 36BDB3E3D70
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 28A5A3E3D80
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 08, 2026 at 01:15:46AM -0700, Erni Sri Satya Vennela wrote:
-> Add debugfs entries to expose hardware configuration and diagnostic
-> information that aids in debugging driver initialization and runtime
-> operations without adding noise to dmesg.
+On Sun, Apr 05, 2026 at 04:15:44PM +0800, Junrui Luo wrote:
+> hns_roce_hw_v2_get_cfg() writes IRQ vector numbers into hr_dev->irq[]
+> using handle->rinfo.num_vectors as the loop bound. num_vectors originates
+> from firmware via hclge_query_pf_resource() without validation against
+> the array size.
 > 
-> The debugfs directory for each PCI device is named using pci_name()
-> (the unique BDF address), and its creation and removal is integrated
-> into mana_gd_setup() and mana_gd_cleanup_device() respectively, so
-> that all callers (probe, remove, suspend, resume, shutdown) share a
-> single code path.
-> 
-> Device-level entries (under /sys/kernel/debug/mana/<BDF>/):
->   - num_msix_usable, max_num_queues: Max resources from hardware
->   - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
->   - num_vports, bm_hostmode: Device configuration
-> 
-> Per-vPort entries (under /sys/kernel/debug/mana/<BDF>/vportN/):
->   - port_handle: Hardware vPort handle
->   - max_sq, max_rq: Max queues from vPort config
->   - indir_table_sz: Indirection table size
->   - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
->     Last applied steering configuration parameters
-> 
-> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-> ---
-> This patch depends on the following fixes submitted to net:
->   - "net: mana: Use pci_name() for debugfs directory naming"
->   - "net: mana: Move current_speed debugfs file to mana_init_port()"
-> Conflict resolution may be needed when net merges into net-next.
+> If firmware reports more than 128 MSI-X vectors for RoCE, the loop
+> overflows hr_dev->irq[], corrupting adjacent struct members in the
+> heap-allocated hns_roce_dev structure.
 
-Unfortunately this patch doesn't apply to net-next,
-which is a requirement for our workflow.
+Is this an actual issue, or just another imagined problem?
 
--- 
-pw-bot: changes-requested
+Thanks
 
