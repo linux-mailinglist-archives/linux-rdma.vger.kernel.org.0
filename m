@@ -1,171 +1,252 @@
-Return-Path: <linux-rdma+bounces-19302-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19301-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +OJoL3cu3Wn1aQkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19302-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 19:57:11 +0200
+	id YKZ0NC8r3WmVaQkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19301-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 19:43:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C8A3F1BB9
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 19:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7BE3F19F4
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 19:43:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id DC1BC3009E1C
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 17:56:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5F48F300ADB2
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 17:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D623B6347;
-	Mon, 13 Apr 2026 17:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C59376BCA;
+	Mon, 13 Apr 2026 17:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="g/RnZw6O"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="RAC1ntsB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from sonic304-27.consmr.mail.ne1.yahoo.com (sonic304-27.consmr.mail.ne1.yahoo.com [66.163.191.153])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D30B3B584A
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 17:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145F6375F8A
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 17:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776103006; cv=none; b=VCRNAaPcxk2Gn0dLNFDX0lSMBcqrSFu2PQhfqFcj6O7zSLvrAkIpXdmGusLO+O1zl2rs4AEwYip13nv1xEhtoerFkDfJu/P8bCzuTRz+lBA6NqxCTSLUGIiUiIDoEFi+hLYcrVqWaa1j8zbuX8/VQSVGnOFFrNQMoEvH29NHi44=
+	t=1776102155; cv=none; b=RKBL+DoC5DnJ6mYew5kIp1vUOAABxfGyKhFhNbjPFYInyVbncIh5HUVUC1r5/cnVS3FUvW/UJ9KOpci4axnF7Xf5C7O0f/8lnCvEbG8JsqLRIvrAqWC+LWeaNblbAYjmuzgwN3OJzw/1Ldu1CuA0FyZ4ahP/Gk/7vFjeggGlTVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776103006; c=relaxed/simple;
-	bh=rmBTtrz9chI/mbl/+nEwMS5pf2+6uFRDUaAG1DPa390=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V96EHpsal44Qoa+yNPziAW8T7S6YYFBA+wpBQuRXyj2zh7vzQG+rdPyYWt+C4QeXIU32BT71noKcrD8Yoes9jL0toZibVGBTNgOdAFCXVWaaauNrsw7or8fViL+Hu3/ZAVJltcM43hCjH6/nzCYMnZIeLnfSy8pgPhQmY4IoCDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=g/RnZw6O; arc=none smtp.client-ip=66.163.191.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1776103003; bh=rmBTtrz9chI/mbl/+nEwMS5pf2+6uFRDUaAG1DPa390=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=g/RnZw6Ob/tVDfz888VQl8f9F4+lZyiuMuMtyHZz4TN3Nhyc1mTSMXvJmGmXhSSvL2kPVPH1KlaFyULgHZ/wmmT+wB4P/2Szc3hPIh28CNrYVh0mNoHEEEla7eRBL4bOYkf2b9sU4PgDpGSrfVVXl4ihshixU+wGM6Ix5FDZreF9xLQ7THgj5jYQpjELMsa1LXty/PGd7kqKXqwfFptcOMIsvpbM4y1pgo8jT5o0SrKjYchQdABgmRHw908WTSr/p5j9DAowei9HX4NRlKMkbNfHPreC/IRqZKpEVNoMD1MgdAgQwtyymLbKIzNelO8ltLeZCGU7fSwC1Gv57WMhFQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1776103003; bh=lH5eDplIdmWSGuX/ToReB8fKRnuurmR/+UhKAIOV4G/=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=kOVkNE0/ej/woNpNTRziNmWAlc1tqtjnkRLVgAL0vOWhfdWRHQJKH9cCNSKvv0WgoKpW1v+uGIEoeVktPjZZAf1rUPiYg9LzyjbeBo3CqDeCIpUqJH7yRAWVtNAeyfjaW2gonc5KR9WLVzn/EZBSLtdUFUnK8Kb8LnK6Y+lnL0tVU8BQN7NLmRElyOakTTz37GPuXBlmdYYTD5wDfSjJw6Ddk65rVlSD7LW/+GYK2BiQvgtj3ChhqLBv4kWdZWvGxHo88p30sfmObob5TNdikWulckZaQXL1kzBRgE/EpwMfFZZBkOvr3DZaFQs2yCPlhyGOC8jD/LHRDt07cuEtTw==
-X-YMail-OSG: Q4M_pPwVM1nv6EaRII.6WBpG_K6KUDVr67FR5BPMefwsjqkpMk8uT2qG1idDE5E
- WGB206otxTuQeEcQkfJ6LjBtbeTxskR4DcDkeRrQaD5SGY58qk0m5O0ay_sOdmsFbkOaIvhuXnVO
- 2AkCqsJ3j7uCctBZhAW9qQROi.JhGIs7i.Iq9DGLSGOQlSKM.EufFlshOBDG01cndr.NfJXHf9y_
- mcTJFoO1xYphgMDavQxgcOJSfrvQRNdSkewWKUdx1O_G56r_ofyrT.gk4eom9Poz6_lNPCm_btaL
- KPpvJWGeYBLRnEYivpB7_dxxZ60ybXzpwPz14hRCev2C5YDSI2yhy2ZgbuaokPp1PQxZoZuCds6y
- ov4n4i2gpKwO3zDJjTVi.az8LC9EmYhT4F6e_0ix8kLXDHVoMbFVdC0eGi.HPdlhZDMP_IirLODz
- LPggQd9qjsTbw6WueiIGwWc8sABqYvAbGvoYUd3Rr9NqJ55M7D30fny2DNIINYV3KbLMeT.68P24
- JE7dqzQ9O2X4lDyruvlIJIHl_XOOBbrzaqDlGKxakWedeDRfSZBQXKgEzh6v1iXGfQf8o87.wBQc
- BPJaqmRdlBWbgPcXtNliyMB7ZB_mUtkoPAzpDbh5QUEZKdLEmywtMYuKUATO3z9px1wYgPkIxHaM
- wkiwKijOwja9_pZRFSHHDMtmY7mJEFkLsJNVkHVELaiRGbm4RPDWQ7J5vcjVPaOgSBT6PN4ajTKp
- z0v8RIeXfUg4eAGoADDVu35ejkp4nqfjfDpjbDOBOXal00zz6aFNCu3faeiv2BqXx363SW8Z29rt
- NiYC8a.dA2pYdKbzbc9OUOPJA88u7HuIO4gcKeDDBVOkMkyr00lPUNsXFvC3JXAExLLFiwT4rbZU
- V_JKdnGHBT7SywCTgy.8aKCAMRLhjHVBJeLryIVlCEboQyG53Eub8EAOiF6QBC5yfbFXOht8KclA
- hbQ8QUS6UJ_ZG4eYiPH01bZaV0R5DUV05cDBUcB4s0WXmfWkvu__x6T5i78j.cni9FDF461QTw0o
- Omqf.b4SW6ICh6Zq5DyJJ5FU4W4SquW80UJhREm9jK3prNFkyVEu.nfAe76dI4rL3LmiTUCVeSyj
- iznTrTdyc8vFQ4g648sZy6m31G77s9zikPPlIh2ZKW0RXLTjaS0T8GKFVflsHNuE0RlhQt8gmi.e
- 9Jrg2jq2DhTd9h3SQVimW4sxo5rxmshzjVlvdegqs3Pu0HhxWHogdW2_xS6cvGE.ft3xjwOWTug0
- 0vtNthaB2b0UDvDugk3JYV8JTekNIUMsH.bBFrzDUJHlx6jpEjOPPrUkJSmfwJlYqtjTZMJaY3Wf
- dJpViVcwtKuxadUjKMuNnzzIPntrblLnFEqd50yXCvc4o88z.EypVkYRhkhXgV0wY_1gLtE9yc_y
- ZM4LzXx8W2PlfdXTQ0kvvVtkQjKHCWFwH1CourWrAnkuJQgsNOtIaNRUxAreDXEVqHjgF9qm64Cf
- cTicxV5jCycINI78oaPUssir8_stEcOHp8LVmjG6LH0n_vsJlMJBxr0QQKNt8PrtBxNW2B53Usik
- _0DBKCBgXl3tjd_6SL.Ebgb1VxOVepX54NC.v2lltWTsU8hQFlyQgFl5KMDMGv6ieU9JZZ1UCpoQ
- FDvysIYDpMLZAsMl2vVFZlL3b4iRYUyrIhYWfay2VC8eokjgWLw_fCjKPEZQUszhdzfeNa.2_BBm
- vp6J9jVyHA1NcD_pcLGQRqDfn92I70NgwrdZg9u9pSVqr40ku.FGv1qUra5c6fQecup9yTTDepOh
- dSDLNkUDZEzP3DjxshO4vCWlZi7P_jIZI1FFqdakPnSTNF47SO0sFvUhfafrtXk8.2b.tURmUmrA
- Zl7GX2XvDugs6_bTIoYfgXPlzKw1wZO5K9c82wcu8okp5X.Ap8Mf8FnlhjwqPvwQecGGBELaF9tM
- lDGZHQePfW2np0PWeOBojfWWQ6ogNyzPdvnqiH1DIoL0wyFX4E98ly5Iesn0x5ZPXipcSFe7PFY_
- kn_LDkIoWSNifQQXCJkLRS0aTDfXvruUf2zuPCUs87g.ugeBA9d8_vPCJoEuqSVuGPrhi0gi.DZI
- oxnR5oz8mN2t9QhuHIGToJ3pYY45vl2fJdswtUWC7OPr_WvEDEvZibZkgC3LvNo7wnYl5omt4D8F
- M4o2TwkUTel_fgTZJLnpQIm3CEVlm2i3BeQvwdGiRpH5ddnCeJwgqG9vyXSpFCGSVWXwOpBhveKi
- RCLPxwd51bhRwbqrX69hKqMH0ZZUocGg5vMInedDXzK9JaDwK_giFBIKOnDCS
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 955de430-2ace-48ee-8b4f-2fc6e9871f3b
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Mon, 13 Apr 2026 17:56:43 +0000
-Received: by hermes--production-gq1-6dfcf9f8b-xs62w (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID b13f36faa7b702ca1ab4e41c810c08a5;
-          Mon, 13 Apr 2026 17:36:25 +0000 (UTC)
-Message-ID: <bd7d139f-b5d6-42e1-be2c-4f71feed63cf@schaufler-ca.com>
-Date: Mon, 13 Apr 2026 10:36:22 -0700
+	s=arc-20240116; t=1776102155; c=relaxed/simple;
+	bh=40D9/sGMozIjmtBqWMzTTl8LH1+xqFnrILKvDECrlQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DfIDloUkvm3+uOf36U+/A1IvrGN+ErqkPVwX9Q5sRT6bLdhy6M9BVtVfmTDjAujCxya1ChPHdPJ730n2iHjalF+RQFGE0yb9vtJVjGw+jZmYjDAZlvW0TPBC5Rl0v/ztlzQOPW0ZtZLDrR73Y1UxNZmvo0ffCg+Q3jIhZj4fMr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=RAC1ntsB; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-50b2b289925so39063771cf.2
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 10:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1776102150; x=1776706950; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9P15ZvH/WcKMIIoGY4JlV5XMiItkZb3l1DLJfQHNL7c=;
+        b=RAC1ntsB5OQ3J+H2SB5xfnKvep+R3Ii8tdUccmYgGCd1Qpo5knRA9Omk6QGgFOxFOA
+         WnXOvMgpvA4oDFs4pEJWkNB78hKbt3bkBnuuCt8p0XZ3W01Rj7+bqNh9OwohDWFA0hAh
+         RMZTM3mZSOacPNojNciMbGiMrI0OP09nz3u4DaPTPpMkSFfKq2wj6HPNbRfZ5IB3lKMK
+         m1uBvpYBN1b3VJK+WaF8ucbqV71I2qbEZiLO96Hcq7OF5P/jDfQ1e3bsvQFSjUnvs39x
+         /jFByl2xuZtqfLfUmyBqLJ1VS+5PS4pZE89kVhQmk8MxVBWAu6oAj/07SMdRDeCnZzbm
+         ldzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776102150; x=1776706950;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9P15ZvH/WcKMIIoGY4JlV5XMiItkZb3l1DLJfQHNL7c=;
+        b=h4Pjs0yk1YZVTKQNq0w7wJvpfjwybXzS/Lo5cO0B15h+HP7emyNB4tUsPhODeyGjYh
+         8upfOhxh/JL+ElgolFYh3Nr9tMx50JO1FzODBJ6gUhlx9qtxdx5mEIa3mXmT2uveYErt
+         pV6BVTTUnOsDFMoGt2ox3RBmt2ktsyRr/RNikDOMaeR+16rUGCs+ABTxvgj89sqzLTqh
+         /ekyY5+VuL8hWb9kWKlI91gvWAuvGnWPklmJhPcbr8a56A7i0D+/9Rzn93HMVETuNEL0
+         A1vY7c24ybzAW5d7aL+eCB3OhjUIT2nLVLYYA6hLmo9I/Vb6hKWk5EInwiEWC7LuR8xd
+         M6pQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+IznKxNq5F/MX8In49b3iH3JZev+0EjGrtkrXa1lik/YxOpz+F8m0Z4fbJO2np0Ifrus0/EuN+d36M@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZLxR9AYuDykg7+ZyAmQ4kdx84U+ZwVesePQ0DSFGipe6bInwN
+	dLzcyo/wunFwX3bHg/jS+kV2lSXq4aLhrev2nqOefymQU76gbVV6uw2oR/Ts+FqkB5E=
+X-Gm-Gg: AeBDievjJK6hkV9cP4Z6y5cAxuRjjPyI3E8bjxtR/oKe+Y0zWFGwUm7fmX9gA58ysXu
+	5+PQAdYLKezLwWe6sTGubc2lSS5aIzXsJ8uYWdVGQ4Z1v2VvjZ9P4vOBObTQOmOJtJnon01YA2a
+	rVJ6ze9NQqlnKQ5iEkUq7CJj0t312tSaN931qxmgJNq93I0cko6QMbvd/0Ird5/XyKuJVZ9KodY
+	jQ/jK3OahVdWW6jfkrrG6p3uP5on7WzyzvKGFE5kuA31GsxxNo/db+fhGHBH/Dc/QdgSD8AZ0Hv
+	eMBSciartDUG9atIFpERiTc25pBP639oGye9m0SfQl9X3d8WJjiRCj+dTLuNArMZRjVoiF+LSQ/
+	swWMVYeaqmL9hKT/IU7oh00IXW/x62APWloriS4D9+wnkOObbImgk2pASB21KGAuJhfU77Eci3U
+	kaCX5Yw47hxqWYD/9dm4lsLXfymI0ij2GPW4VRCPcgojcmG/+qKtqVQEfvK5wvCXn/l0kW30tXD
+	R/TJg==
+X-Received: by 2002:a05:622a:2305:b0:509:1009:e7a6 with SMTP id d75a77b69052e-50dd5ba317fmr229021571cf.43.1776102149554;
+        Mon, 13 Apr 2026 10:42:29 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ac84a180a2sm104198376d6.15.2026.04.13.10.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2026 10:42:28 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wCLIq-00000005q47-1UXO;
+	Mon, 13 Apr 2026 14:42:28 -0300
+Date: Mon, 13 Apr 2026 14:42:28 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Jiri Pirko <jiri@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>,
+	syzbot <syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [rdma?] WARNING in ib_dealloc_device
+Message-ID: <20260413174228.GQ3694781@ziepe.ca>
+References: <69dc3310.a00a0220.475f0.0018.GAE@google.com>
+ <20260413154353.GK21470@unreal>
+ <PH7PR12MB66356E0176748BFFF081D9B4B0242@PH7PR12MB6635.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-To: Jason Gunthorpe <jgg@ziepe.ca>, Paul Moore <paul@paul-moore.com>
-Cc: Leon Romanovsky <leon@kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, KP Singh
- <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
- Dave Jiang <dave.jiang@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
- Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
- <20260409121230.GA720371@unreal>
- <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
- <20260409124553.GB720371@unreal>
- <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
- <20260412090006.GA21470@unreal>
- <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
- <20260413164220.GP3694781@ziepe.ca>
-Content-Language: en-US
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20260413164220.GP3694781@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.25495 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR12MB66356E0176748BFFF081D9B4B0242@PH7PR12MB6635.namprd12.prod.outlook.com>
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[yahoo.com:s=s2048];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19302-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[schaufler-ca.com: no valid DMARC record];
+	TAGGED_FROM(0.00)[bounces-19301-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:dkim,ziepe.ca:mid];
+	DMARC_NA(0.00)[ziepe.ca];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org,schaufler-ca.com];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[yahoo.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[casey@schaufler-ca.com,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A9C8A3F1BB9
+	TAGGED_RCPT(0.00)[linux-rdma,03393ff6c35fd2cc43de];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: CC7BE3F19F4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/13/2026 9:42 AM, Jason Gunthorpe wrote:
-> On Sun, Apr 12, 2026 at 09:38:35PM -0400, Paul Moore wrote:
->>> We are not limited to LSM solution, the goal is to intercept commands
->>> which are submitted to the FW and "security" bucket sounded right to us.
->> Yes, it does sound "security relevant", but without a well defined
->> interface/format it is going to be difficult to write a generic LSM to
->> have any level of granularity beyond a basic "load firmware"
->> permission.
-> I think to step back a bit, what this is trying to achieve is very
-> similar to the iptables fwmark/secmark scheme.
->
-> secmark allows the user to specify programmable rules via iptables
-> which results in each packet being tagged with a SELinux context and
-> then the userspace policy can consume that and make security decision
-> based on that.
+On Mon, Apr 13, 2026 at 04:12:09PM +0000, Jiri Pirko wrote:
+>    Will check it tmrw
 
-If you want to pursue something like this DO NOT USE A u32 TO REPRESENT
-THE SECURITY CONTEXT! Use a struct lsm_context pointer. The limitations
-imposed by a "secid" don't show up in SELinux, which introduced them, but
-they sure do in Smack, and they really gum up the works for general LSM
-stacking.
+I fed it to Claude and after 40 mins it is stumped too.. It should not
+be possible for this to happen.
 
+__ib_unregister_device() always calls down to disable_device()
+
+Which always removes it from all visibility, drives the refcount to 0
+and then cleans the xarray:
+
+	xa_for_each (&device->compat_devs, index, cdev)
+		remove_one_compat_dev(device, index);
+
+Then ib_dealloc_device() checks it is empty:
+
+	WARN_ON(!xa_empty(&device->compat_devs));
+
+At the point the xa_for_each is run there should be no cocurrent
+threads that can see the device. The refcount is zero, it was removed
+from the xarray. The add_one_compat_dev() is never called in an
+condition that could see a stray device.
+
+It should not be possible for the compat_devs of a 0 refcount
+ib_device removed from the device's xarray to be mutated between those
+two checks.
+
+One notable thing about xarray is you can have a xa_for_each() iterate
+over nothing and also have xa_empty() be false. Maybe that is
+happening here, but I could not find any way that should happen.
+
+I guess just keep watching this and see if it happens ever again. Add
+some debugging to print out the xarray. Maybe the way we are using
+xarray is unexpectedly triggering a stray 0 entry?
+
+Jason
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 4c174f7f1070cb..592e29b0cccf39 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1020,6 +1020,71 @@ static void remove_compat_devs(struct ib_device *device)
+ 
+ 	xa_for_each (&device->compat_devs, index, cdev)
+ 		remove_one_compat_dev(device, index);
++
++	if (!xa_empty(&device->compat_devs)) {
++		struct xa_node *node;
++		void *head;
++		unsigned int i;
++
++		dev_warn(&device->dev,
++			 "compat_devs xarray not empty after removal!\n");
++
++		xa_lock(&device->compat_devs);
++		head = xa_head_locked(&device->compat_devs);
++		dev_warn(&device->dev, "  xa_head=%px xa_flags=%x\n",
++			 head, device->compat_devs.xa_flags);
++
++		if (!xa_is_node(head)) {
++			/* Single entry at index 0 stored directly in head */
++			if (xa_is_zero(head))
++				dev_warn(&device->dev,
++					 "  head[0]: zero entry (leaked xa_reserve)\n");
++			else if (!xa_is_internal(head))
++				dev_warn(&device->dev,
++					 "  head[0]: pointer %px\n", head);
++			else
++				dev_warn(&device->dev,
++					 "  head[0]: internal %px (%lu)\n",
++					 head, xa_to_internal(head));
++		} else {
++			node = xa_to_node(head);
++			dev_warn(&device->dev,
++				 "  node %px shift %d count %d nr_values %d\n",
++				 node, node->shift, node->count,
++				 node->nr_values);
++			for (i = 0; i < XA_CHUNK_SIZE; i++) {
++				void *entry = xa_entry_locked(
++					&device->compat_devs, node, i);
++
++				if (!entry)
++					continue;
++				if (xa_is_zero(entry))
++					dev_warn(&device->dev,
++						 "  slot[%u]: zero entry (leaked xa_reserve)\n",
++						 i);
++				else if (xa_is_sibling(entry))
++					dev_warn(&device->dev,
++						 "  slot[%u]: sibling -> slot %lu\n",
++						 i, xa_to_sibling(entry));
++				else if (xa_is_retry(entry))
++					dev_warn(&device->dev,
++						 "  slot[%u]: retry\n", i);
++				else if (xa_is_node(entry))
++					dev_warn(&device->dev,
++						 "  slot[%u]: node %px (deeper tree)\n",
++						 i, xa_to_node(entry));
++				else if (!xa_is_internal(entry))
++					dev_warn(&device->dev,
++						 "  slot[%u]: pointer %px\n",
++						 i, entry);
++				else
++					dev_warn(&device->dev,
++						 "  slot[%u]: unknown internal %px\n",
++						 i, entry);
++			}
++		}
++		xa_unlock(&device->compat_devs);
++	}
+ }
+ 
+ static int add_compat_devs(struct ib_device *device)
 
