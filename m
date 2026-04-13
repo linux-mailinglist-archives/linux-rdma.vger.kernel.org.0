@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-19267-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19268-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GFBFB36P3GkmTAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19267-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 08:38:54 +0200
+	id AHZzL42P3GkmTAkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19268-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 08:39:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 848F83E7CFB
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 08:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FBF03E7D11
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 08:39:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4DB2E3013EF8
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 06:38:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3625530182AE
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 06:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7449A31716E;
-	Mon, 13 Apr 2026 06:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5403921EC;
+	Mon, 13 Apr 2026 06:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iAdsajVO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C4+LocfM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93656389E08
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 06:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D922A39280C
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 06:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776062323; cv=none; b=dtyy5XPVtZJ/YgHTkcE9m63ZNk+4OaWkGIMLymW6Lps4NDLBTpQVcvR3A4ud71hujFJAYNW92Z/VFCUje+ok3Acx1NGtSElUvfrcEgnKDZVjXB3z3eWCCgaC8lf/+tFtmQP8vgQF/X6J3fgMrxFAjXZQ7UycHFNGK7Z9soNTZf0=
+	t=1776062326; cv=none; b=fchcI3e/p2oL3e3gwzTOMSiKymMiLTRlbS30wyKM4rWA2hBtSwh0yETmtQGlBALW4uWjlmrqXnrfEE/GjVa7Oyag6WczzFwWs3HUrSpfEAaklbTwXcyO/GpuAS1skoRxkMeXOvgxTGVOBIQcV18tSivbM5RKbCmTi+CVp04SSXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776062323; c=relaxed/simple;
-	bh=cw4GjcWsuYnUl046fx3PRCDnY8sVbCME0H9EzD/IhbA=;
+	s=arc-20240116; t=1776062326; c=relaxed/simple;
+	bh=ELC5Aa2urYtusIfibB/7Fu6EIJmnCqfSr71rffWhcMo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qZfzTqXnCdeQdkIGqXqBgj0Gerxp7U6l9TEbsktioAwZJTxym0jEcjeseBrbs1Dphx5ynUE/qy5QDg5RMijFRYJGE7KZ6g0R5JRG6y55WEHaYVf+PDza3iz1toWIfqOHr/bn1NmrDLIqhV7ndXZbUCg6Tp8JGNppaNQ8qvnoJ/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iAdsajVO; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version; b=jVMvtqXX3PUyVtwD4EsA5n3y9yeqhsbMUHtfS+4u+CzHBfLhT3ovUmWJse8UTs+vy/Mmz4EJIdXr6SGq4vNvjOzk2ThGoKjzx/NAbl1/9j10DOcWfjp/7fZgyATQTGG8PryyTbH8e2QrK3L+Z0e6oGAJoos6kaU6AnMreu82uew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C4+LocfM; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1776062319;
+	t=1776062323;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JRFy4q6+w0PLU2dSrVBHct706edyWSjeEhmFgbFlE9k=;
-	b=iAdsajVOioTkx8Wb9lSjgzgLR9DiIont54yenWa/ZK01X5+26bJRD08p7t6kaH18xlemyL
-	QMSy1PAiA5+SWRqAKHU02gtr3Msdp+YRn+/dAzrGFEgE8vpQRWSOhmazTMgnyWQvQKWBJf
-	DWi9vB2StWnAJVnyafgSV1DRc//jngk=
+	bh=khPAm7yRKyvsyjet7XrXUNeDJARjrHbHUKpjHIDa6EI=;
+	b=C4+LocfMIb50G4BOWfJpMZH7hJ97+QTpJZ98v+ZVtH+9UJrsuQZfE/GfAUlFmKqmwWjE1e
+	BM8Om0ig8u0RE/r6XtZkYPYxRXg5410ufZewJMHWcnHcaqQOTqZyY5OOSo9iKBZg27TxcP
+	PQveuiaMsFe418Sf+d8AlycduR87obw=
 From: zhenwei pi <zhenwei.pi@linux.dev>
 To: linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: zyjzyj2000@gmail.com,
 	jgg@ziepe.ca,
 	leon@kernel.org,
 	zhenwei pi <zhenwei.pi@linux.dev>
-Subject: [PATCH v6 1/4] RDMA/rxe: remove rxe_ib_device_get_netdev() and RXE_PORT
-Date: Mon, 13 Apr 2026 14:38:14 +0800
-Message-ID: <20260413063817.636423-2-zhenwei.pi@linux.dev>
+Subject: [PATCH v6 2/4] RDMA/rxe: add SENT/RCVD bytes
+Date: Mon, 13 Apr 2026 14:38:15 +0800
+Message-ID: <20260413063817.636423-3-zhenwei.pi@linux.dev>
 In-Reply-To: <20260413063817.636423-1-zhenwei.pi@linux.dev>
 References: <20260413063817.636423-1-zhenwei.pi@linux.dev>
 Precedence: bulk
@@ -78,7 +78,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org,linux.dev];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-19267-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19268-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
@@ -92,127 +92,105 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 848F83E7CFB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
+X-Rspamd-Queue-Id: 5FBF03E7D11
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Suggested by Leon, remove the rxe_ib_device_get_netdev() wrapper and
-the RXE_PORT definition. These additions do not improve readability,
-and RXE has always had only a single port.
+There is a lack of sent/received counter in bytes.
 
 Signed-off-by: zhenwei pi <zhenwei.pi@linux.dev>
 ---
- drivers/infiniband/sw/rxe/rxe_mcast.c | 4 ++--
- drivers/infiniband/sw/rxe/rxe_net.c   | 7 +++----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 4 ++--
- drivers/infiniband/sw/rxe/rxe_verbs.h | 6 ------
- 4 files changed, 7 insertions(+), 14 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c | 2 ++
+ drivers/infiniband/sw/rxe/rxe_hw_counters.h | 2 ++
+ drivers/infiniband/sw/rxe/rxe_net.c         | 2 ++
+ drivers/infiniband/sw/rxe/rxe_recv.c        | 2 ++
+ drivers/infiniband/sw/rxe/rxe_verbs.h       | 6 ++++++
+ 5 files changed, 14 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 5cad72073eca..acd03bd87794 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -34,7 +34,7 @@ static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
- 	struct net_device *ndev;
- 	int ret;
+diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+index 437917a7d8f2..17edaa9a9b9b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
++++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+@@ -22,6 +22,8 @@ static const struct rdma_stat_desc rxe_counter_descs[] = {
+ 	[RXE_CNT_LINK_DOWNED].name         =  "link_downed",
+ 	[RXE_CNT_RDMA_SEND].name           =  "rdma_sends",
+ 	[RXE_CNT_RDMA_RECV].name           =  "rdma_recvs",
++	[RXE_CNT_SENT_BYTES].name          =  "sent_bytes",
++	[RXE_CNT_RCVD_BYTES].name          =  "rcvd_bytes",
+ };
  
--	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+	ndev = ib_device_get_netdev(&rxe->ib_dev, 1);
- 	if (!ndev)
- 		return -ENODEV;
- 
-@@ -59,7 +59,7 @@ static int rxe_mcast_del(struct rxe_dev *rxe, union ib_gid *mgid)
- 	struct net_device *ndev;
- 	int ret;
- 
--	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+	ndev = ib_device_get_netdev(&rxe->ib_dev, 1);
- 	if (!ndev)
- 		return -ENODEV;
+ int rxe_ib_get_hw_stats(struct ib_device *ibdev,
+diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.h b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
+index 051f9e1c3852..01b355103cbc 100644
+--- a/drivers/infiniband/sw/rxe/rxe_hw_counters.h
++++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
+@@ -26,6 +26,8 @@ enum rxe_counters {
+ 	RXE_CNT_LINK_DOWNED,
+ 	RXE_CNT_RDMA_SEND,
+ 	RXE_CNT_RDMA_RECV,
++	RXE_CNT_SENT_BYTES,
++	RXE_CNT_RCVD_BYTES,
+ 	RXE_NUM_OF_COUNTERS
+ };
  
 diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 211bd3000acc..6621d01ac32d 100644
+index 6621d01ac32d..86660031ffa2 100644
 --- a/drivers/infiniband/sw/rxe/rxe_net.c
 +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -602,7 +602,7 @@ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num)
- 	struct net_device *ndev;
- 	char *ndev_name;
+@@ -503,6 +503,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 	int err;
+ 	int is_request = pkt->mask & RXE_REQ_MASK;
+ 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
++	unsigned int skblen = skb->len;
+ 	unsigned long flags;
  
--	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+	ndev = ib_device_get_netdev(&rxe->ib_dev, 1);
- 	if (!ndev)
- 		return NULL;
- 	ndev_name = ndev->name;
-@@ -646,12 +646,11 @@ static void rxe_sock_put(struct sock *sk,
- 
- void rxe_net_del(struct ib_device *dev)
- {
--	struct rxe_dev *rxe = container_of(dev, struct rxe_dev, ib_dev);
- 	struct net_device *ndev;
- 	struct sock *sk;
- 	struct net *net;
- 
--	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+	ndev = ib_device_get_netdev(dev, 1);
- 	if (!ndev)
- 		return;
- 
-@@ -699,7 +698,7 @@ void rxe_set_port_state(struct rxe_dev *rxe)
- {
- 	struct net_device *ndev;
- 
--	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
-+	ndev = ib_device_get_netdev(&rxe->ib_dev, 1);
- 	if (!ndev)
- 		return;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 4d4891dc2884..eb17b6086d5e 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -50,7 +50,7 @@ static int rxe_query_port(struct ib_device *ibdev,
- 		goto err_out;
+ 	spin_lock_irqsave(&qp->state_lock, flags);
+@@ -526,6 +527,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
  	}
  
--	ndev = rxe_ib_device_get_netdev(ibdev);
-+	ndev = ib_device_get_netdev(ibdev, 1);
- 	if (!ndev) {
- 		err = -ENODEV;
- 		goto err_out;
-@@ -1441,7 +1441,7 @@ static int rxe_enable_driver(struct ib_device *ib_dev)
- 	struct rxe_dev *rxe = container_of(ib_dev, struct rxe_dev, ib_dev);
- 	struct net_device *ndev;
+ 	rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
++	rxe_counter_add(rxe, RXE_CNT_SENT_BYTES, skblen);
+ 	goto done;
  
--	ndev = rxe_ib_device_get_netdev(ib_dev);
-+	ndev = ib_device_get_netdev(ib_dev, 1);
- 	if (!ndev)
- 		return -ENODEV;
+ drop:
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 5861e4244049..e7bab89e7d8d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -318,6 +318,7 @@ void rxe_rcv(struct sk_buff *skb)
+ 	int err;
+ 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
+ 	struct rxe_dev *rxe = pkt->rxe;
++	unsigned int skblen = skb->len - skb_network_offset(skb);
  
+ 	if (unlikely(skb->len < RXE_BTH_BYTES))
+ 		goto drop;
+@@ -341,6 +342,7 @@ void rxe_rcv(struct sk_buff *skb)
+ 	if (unlikely(err))
+ 		goto drop;
+ 
++	rxe_counter_add(rxe, RXE_CNT_RCVD_BYTES, skblen);
+ 	rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
+ 
+ 	if (unlikely(bth_qpn(pkt) == IB_MULTICAST_QPN))
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index d92f80d16f78..e800545d1046 100644
+index e800545d1046..0f5ffd94643f 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -415,7 +415,6 @@ struct rxe_port {
- 	u32			qp_gsi_index;
- };
- 
--#define	RXE_PORT	1
- struct rxe_dev {
- 	struct ib_device	ib_dev;
- 	struct ib_device_attr	attr;
-@@ -451,11 +450,6 @@ struct rxe_dev {
- 	struct rxe_port		port;
- };
- 
--static inline struct net_device *rxe_ib_device_get_netdev(struct ib_device *dev)
--{
--	return ib_device_get_netdev(dev, RXE_PORT);
--}
--
- static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
- {
+@@ -455,6 +455,12 @@ static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
  	atomic64_inc(&rxe->stats_counters[index]);
+ }
+ 
++static inline void rxe_counter_add(struct rxe_dev *rxe, enum rxe_counters index,
++				   s64 val)
++{
++	atomic64_add(val, &rxe->stats_counters[index]);
++}
++
+ static inline struct rxe_dev *to_rdev(struct ib_device *dev)
+ {
+ 	return dev ? container_of(dev, struct rxe_dev, ib_dev) : NULL;
 -- 
 2.43.0
 
