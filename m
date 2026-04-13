@@ -1,175 +1,256 @@
-Return-Path: <linux-rdma+bounces-19263-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19264-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MPSBIhgz3GlMOAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19263-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 02:04:40 +0200
+	id KCLTCjBJ3GmbOwkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19264-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 03:38:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFB7A3E6713
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 02:04:39 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 808B73E6AA7
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 03:38:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BFB35300C025
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 00:04:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E8D19300A4D4
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 01:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10AF3125D0;
-	Mon, 13 Apr 2026 00:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292C9212554;
+	Mon, 13 Apr 2026 01:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="eKE915kT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93912256D
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 00:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.208
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776038674; cv=none; b=OZG7NIEN+TnfdTG7g7pxexnY0U8of9A79g/yjVPBW9UJG+Lfuu66G29EoEqAL04z0pFr8MdSco4W6XKwMf5DnOWJcmMixW45AOqrZmhGVBFBwG6hiPFfey0VE5xZJeye+wPEFUlLWtM5i3G4M4VfYol/cdyOG8sBSQGxhhQ2Rk0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776038674; c=relaxed/simple;
-	bh=MWUJx1V+5VpSpWKKTFvXqcAGEEC994baHy9CpepjCXw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=prCm6WkX6N3c83fGyDvXmgmfHrlXuCGLsMbCZWW6PHeynq8mDcEDToigZUfuW396feA2xlUaeayvR2DpauKsfjMlIaZDE7BniHmqoBWzImMJPeldCdqGhfnNTVwyJVxeZr7QBbOcQ6LtrQ7t3gH5q3pv4EIoI0aqx0MCnvy++Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-463ee33f9b2so2131098b6e.3
-        for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 17:04:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C827633985
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 01:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776044330; cv=pass; b=jkVA+bBqYJLNQe1Uk/6mpSDGDjluKG1fU8pLlBI6BV8F7OLYy1Q6PxoT36bGb1Is1sJM9fmhGCNxxpj/znGtjP/UFQXZv6tbSqhpp1yErykZ8FSX1KMLO7Wb0dQal9Xed9Slzcg3NsbhPu4+e2/0rqSmk+/ObcZDmLwNWsv+FMA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776044330; c=relaxed/simple;
+	bh=nFQMxFVF63QIAvOySvI+1iQgD3HbEkVh9BhKaGfv3zE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dg5DetXYpwDERtGPgKBcteVfcnfT5XQ8Cb8B+UJSvrVGztyUOUJ9kMZw47pTvpRvWSqYGPEtpd2h6M6jUK4tioAo9hVyxq8NQJfTiPYltLytaqgqfvtzjHHMRJc1G1Jgztm+j8a5nOyivPIaTuvQR6Nn2ogofLQZjp9yEVm2Oks=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=eKE915kT; arc=pass smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-358ed696623so1626187a91.0
+        for <linux-rdma@vger.kernel.org>; Sun, 12 Apr 2026 18:38:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776044328; cv=none;
+        d=google.com; s=arc-20240605;
+        b=RL6zRbC5L4QmrWZS0ZDCfoyj4v3k6Vs/XWPcf2peeVMUZrTJMb/eut/BdWOamtWXGX
+         b8DHP/1AJvPtxP2LjuSxebxwEwyY6LRP0WHSBlxGeTP2nONwf0pxWcLM+yO8Bs0qYnPp
+         3xYY3XdUS4RPh94V55CZ+xAgTsUaaIwLAQ4opVSFHQJXxMvEVTBrx3SS0QTaN5RzywD4
+         dqD0fOq9zAUQ+kbrcxGeh3WxQ/caWTmSYaLOXvJN7cvG53M0BNpXsWbfb89iiiu1UsIH
+         EKot52qntxNFtFol7u2HD3Zx4MlCv/uf5cP1tZvClnYKQ64bUuv/eu3Lap9lSkpDevKt
+         dw6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=rHM3YXF7LUUih11DEyeSF4HP2j8S81Um3Rlg3lvVGk8=;
+        fh=cy3mHjuoyee+m5JaO5RcFamKr/Aau5XzSvANPmgTws0=;
+        b=bBmqIbZKpEpp33hJGzPpp82f0dsZXcw0tvq+lVvTgTUnjgnmW7ZyMwlkJyQUiNf5oQ
+         dbcafAeLI2LhPounZjQajRBPE+d70iS5Yh3fCp+qO4PmJrEOFq6SBgis/mwHmV+01SjL
+         fdCVY1MBYNdU43FRQMHelgT1a9+xtUN1uCxNenvfIZvf04rvU7Uubgpu0RUsm7ty7Sf0
+         WfkW/7OcxmHhkiCIz3dw0iIdBuyLX3WS/nIW92pKd4IyEskeANf12zH2ScN7hnEjdhtm
+         QSob7ulyFFobQ6e1grP1wIOHVM6zMnq1gHvWn4KyDM+Uy5kShOPSyOighDBzsgYPFQ3T
+         zQLQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1776044328; x=1776649128; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rHM3YXF7LUUih11DEyeSF4HP2j8S81Um3Rlg3lvVGk8=;
+        b=eKE915kT3+S+mLQpSv3WJJllJZL/rf+5tW81dTt/VcQBQmgXELrog27o4zy4CEjsoU
+         +v3RHtxTvZeZt2a9GAo4Qmr626+pPtGF3BOBmSlcJ8ZBDxC8LM7kCyz4QShBkEC+5w3f
+         hOpDkHeIynke8mnG7Z1NnJXU2fC1A5ZHio1CnH4fR887v4rM26xdrha6gmofMI5Duh/N
+         E/CAq+/NIBUNICffAMLYY+17nyxZaBuK31dz9PyF7xfHLF2nrXJ3U+ipmQZYS3/FQSFh
+         HhDDtTrE02yaipqxGDhtYhVW8CEBlnX58VdF3oDqn6uaZEj/ruFLfnwN7FnCvdXbEBfN
+         Tm6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776038672; x=1776643472;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p2eJ0fho1jTALd5M7XFCO9YJ4jGgTlsPgXpXtRrUmBo=;
-        b=FeJKAlW28uLkj6vlbQSmVO1yZubkzmbeu6QSdLZ+Z8EoUNgzMxEdp+N5Zzy7W1a9NU
-         1AHlabPw1EL69k4LuEGNQ47PNijFhNn/Cm5uDxpaEngSfqNOm55j/HeWPdZ6DTksEPb8
-         03cD8s1xaHAzDu/SLkuJdFwd2rKFcS94LU0mW78MXBRmCZMPuoRejA+JpUqTxu4aFFOP
-         7G0pQHDu+HPbrE7NVVwrXzvUA653CR1ZVK2NGfVlKD6K04X0sx+73/1JLHOTJf/ve39U
-         Iw4KeHKgBYYfB2oEOKf9LXGYIx9Z/mNGXRWbwEZy4VPdTcuMzTnX0WWZMK/UI8JX5fzG
-         qIDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV/vZ623bT5Y5Dh2vWtWroetnDhGv02PuGhjh7shTpXQ3dK5/5lYMlCOSKBvHCaDu6rXhmxEFi8wt4K@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzEoN28geRxJoON3uHbZrps8dpn4v7K58RWDIUKcWxflNEhOEv
-	CfsZB5Ux3dgCMzkBgq8bNeoiYDeZW43FgtEW/UBu+wHVAUWdE5DGnUkPfpMss59yObUunGTjzAe
-	kw6lPfTvEdXOTktE5DQ7zE1A2+hxbFULW+jLLcoEv5sxtDxJQEL4bsYaKhxg=
+        d=1e100.net; s=20251104; t=1776044328; x=1776649128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=rHM3YXF7LUUih11DEyeSF4HP2j8S81Um3Rlg3lvVGk8=;
+        b=iRXi+qCl6YvuObHLZqb1RvnZB2/gu5WSeq9NHSF4hVp9sZE2p1jK68PAEcfMilbBW8
+         F7Yb/aJjYutHu5SXIZ+mao00lMGw4Usvt1IEEYXEvyJ8RKltxrjpIDT5GWcXKgkD6qCO
+         doiLeOxxT4m+5gffylWDaq0//kjeiiuIdKPtJEwRWzo8+RYKv1qjvGmVjPFDK9npfof2
+         C3oLlRUjDhDqp691J6WHQYC22YhQk4CziJ+W+m6IyHQ6/TbX6uIZQNq0XYsTHN8tKwgz
+         l9eQ4ivNWk4sioZnrU95gTJbpgupXQNWFhmG/NTeMQA1/n1azpKOigUZV9mPGNpUkLM9
+         yxPA==
+X-Forwarded-Encrypted: i=1; AFNElJ/lSVJ7YNuoWELvGEXwyjPSCLxTTQW8QK+89h1R6yy53udDYDc835KU7lwzhurw6pc/aNYFhe/pBUOB@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQs1DW23dGEqu7mNHrSBdUn3fGLTJrQXP2BSm2yuJ6Yr3kX+vB
+	qSj8rymSmEwYRQ/oMfSGnnKSliClHvv3JvAmYJIouwrF5O30yL76t9dZqGTw5rFQqiJNE/D8N8I
+	XdtvoKPVb6XV44gUF+47NNJhRVpdkkoxjgwpTRfTI
+X-Gm-Gg: AeBDieskvdSewT+bkDAXxX4oFXjnNlunac+Fm7BhEuAkUp7bYrqo5cyspavVuoI2YFL
+	yqOLIRIo9zwoyRaeMBzF0iu8bPWH5NuC/EJrZdcXWa5wKCqnbz54cUjSgKxlJukCGJDxkEkq/Yz
+	k9OZdVmzG+CUBufj9GcwqncEEIjLRJl7EZDpYXQahAwjx6u7uARk91OTGl/enmkH2ZEdIOaOKWF
+	+7Rp0IedX7x+Oo+ud8wZLJpqnjLdL5J3aQ/L0irxqK310rIHcWlmqcwpHN+g3JoKIYcACDb2IAn
+	cVeyrZc=
+X-Received: by 2002:a17:90a:289:b0:35e:58d3:3286 with SMTP id
+ 98e67ed59e1d1-35e58d3350cmr2477282a91.24.1776044328031; Sun, 12 Apr 2026
+ 18:38:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:1626:b0:68e:1120:d4aa with SMTP id
- 006d021491bc7-68e1120d593mr2818974eaf.11.1776038672634; Sun, 12 Apr 2026
- 17:04:32 -0700 (PDT)
-Date: Sun, 12 Apr 2026 17:04:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69dc3310.a00a0220.475f0.0018.GAE@google.com>
-Subject: [syzbot] [rdma?] WARNING in ib_dealloc_device
-From: syzbot <syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com>
-To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
+ <20260409121230.GA720371@unreal> <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
+ <20260409124553.GB720371@unreal> <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
+ <20260412090006.GA21470@unreal>
+In-Reply-To: <20260412090006.GA21470@unreal>
+From: Paul Moore <paul@paul-moore.com>
+Date: Sun, 12 Apr 2026 21:38:35 -0400
+X-Gm-Features: AQROBzAOzVjdc2Fm0JK51NQkLRAYu7tuztXcHDPMGgqzx6OZVzpwqD1l_OckOpE
+Message-ID: <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Firmware LSM hook
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>, 
+	Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-0.36 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=45cb3c58fd963c27];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19264-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-19263-lists,linux-rdma=lfdr.de,03393ff6c35fd2cc43de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[huaweicloud.com,kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[paul-moore.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,storage.googleapis.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DFB7A3E6713
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 808B73E6AA7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello,
+On Sun, Apr 12, 2026 at 5:00=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
+rote:
+> On Thu, Apr 09, 2026 at 05:04:24PM -0400, Paul Moore wrote:
+> > On Thu, Apr 9, 2026 at 8:45=E2=80=AFAM Leon Romanovsky <leon@kernel.org=
+> wrote:
+> > > On Thu, Apr 09, 2026 at 02:27:43PM +0200, Roberto Sassu wrote:
+> > > > On Thu, 2026-04-09 at 15:12 +0300, Leon Romanovsky wrote:
+> > > > > On Tue, Mar 31, 2026 at 08:56:32AM +0300, Leon Romanovsky wrote:
 
-syzbot found the following issue on:
+...
 
-HEAD commit:    7f87a5ea75f0 Merge tag 'hid-for-linus-2026040801' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11778eba580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=45cb3c58fd963c27
-dashboard link: https://syzkaller.appspot.com/bug?extid=03393ff6c35fd2cc43de
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+> > > We implemented this approach in v1:
+> > > https://patch.msgid.link/20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidi=
+a.com
+> > > and were advised to pursue a different direction.
+> >
+> > I'm assuming you are referring to my comments? If so, that isn't exactl=
+y what I said,
+> > I mentioned at least one other option besides
+> > going directly to BPF.  Ultimately, it is your choice to decide how
+> > you want to proceed, but to claim I advised you to avoid a LSM based
+> > solution isn't strictly correct.
+>
+> Yes, this matches how we understood your comments:
+> https://lore.kernel.org/all/20260311081955.GS12611@unreal/
+>
+> In the end, the goal is to build something practical and avoid adding
+> unnecessary complexity that brings no real benefit to users.
+>
+> > Regardless, looking at your v2 patchset, it looks like you've taken an
+> > unusual approach of using some of the LSM mechanisms, e.g. LSM_HOOK(),
+> > but not actually exposing a LSM hook with proper callbacks.
+> > Unfortunately, that's not something we want to support.  If you want
+> > to pursue an LSM based solution, complete with a security_XXX() hook,
+> > use of LSM_HOOK() macros, etc. then that's fine, I'm happy to work
+> > with you on that.
+>
+> The issue is that the sentence below was the reason we did not merge v1 w=
+ith v2:
+> https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm=
+-hooks
+> "pass through implementations, such as the BPF LSM, are not eligible for
+> LSM hook reference implementations."
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I can expand on that in a minute, but I'd like to return to your use
+of the LSM_HOOK() macro and locating the hook within the BPF LSM as
+that is the most concerning issue from my perspective.  One should
+only use the LSM_HOOK() macro and locate code within bpf_lsm.c if that
+code is part of the BPF LSM, utilizing an LSM hook.  Since this
+patchset doesn't use an LSM hook or any part of the LSM framework, the
+implementation choices seem odd and are not something we want to
+support.  As mentioned in my prior reply, you could do something very
+similar though the use of a normal BPF hook similar to what was done
+with the update_socket_protocol() BPF hook.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0f5deca1373e/disk-7f87a5ea.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6aea6c1c6b6e/vmlinux-7f87a5ea.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/61444b289e96/bzImage-7f87a5ea.xz
+There are multiple reasons why out-of-tree and pass through LSMs are
+not considered eligible for reference implementations of LSM hooks.  I
+think is most relevant to this patchset is that an out-of-tree hook
+implementation doesn't necessarily require a stable interface, and
+without a stable interface it is impossible to make a generic API at
+the LSM framework layer.  As you mentioned previously, each vendor and
+each firmware version brings the possibility of a new
+format/interface, and while that may not be a problem for out-of-tree
+code which is left to the user/admin to manage, it makes upstream
+development difficult.  I did mention at least one approach that might
+be a possibility to enable upstream, in-tree support of this, but you
+seem to prefer a BPF approach that doesn't require a well defined
+format.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com
+> > However, if you've decided that your preferred
+> > option is to create a BPF hook you should avoid using things like
+> > LSM_HOOK() and locating your hook/code in bpf_lsm.c.
+>
+> We are not limited to LSM solution, the goal is to intercept commands
+> which are submitted to the FW and "security" bucket sounded right to us.
 
-------------[ cut here ]------------
-!xa_empty(&device->compat_devs)
-WARNING: drivers/infiniband/core/device.c:682 at ib_dealloc_device+0x187/0x200 drivers/infiniband/core/device.c:682, CPU#0: kworker/u8:37/4856
-Modules linked in:
-CPU: 0 UID: 0 PID: 4856 Comm: kworker/u8:37 Tainted: G             L      syzkaller #0 PREEMPT_{RT,(full)} 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
-Workqueue: ib-unreg-wq ib_unregister_work
-RIP: 0010:ib_dealloc_device+0x187/0x200 drivers/infiniband/core/device.c:682
-Code: e8 de ec ad f9 48 89 df e8 56 59 07 00 48 81 c3 30 08 00 00 48 89 df 5b 41 5c 41 5e 41 5f 5d e9 0f 09 60 fd e8 ba ec ad f9 90 <0f> 0b 90 e9 72 ff ff ff e8 ac ec ad f9 90 0f 0b 90 eb 8f e8 a1 ec
-RSP: 0018:ffffc9000f49fa18 EFLAGS: 00010293
-RAX: ffffffff88169536 RBX: ffff888039d40000 RCX: ffff88806a691e80
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff888039d41308 R08: 0000000000000000 R09: 0000000000000000
-R10: dffffc0000000000 R11: fffffbfff1ed4eb7 R12: 1ffff110073a81fd
-R13: dffffc0000000000 R14: ffff888039d41268 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff888126332000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff6d2897e9c CR3: 0000000022382000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000f1ffffdf
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __ib_unregister_device+0x393/0x3f0 drivers/infiniband/core/device.c:1545
- ib_unregister_work+0x19/0x30 drivers/infiniband/core/device.c:1639
- process_one_work kernel/workqueue.c:3276 [inline]
- process_scheduled_works+0xb6e/0x18c0 kernel/workqueue.c:3359
- worker_thread+0xa53/0xfc0 kernel/workqueue.c:3440
- kthread+0x388/0x470 kernel/kthread.c:436
- ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+Yes, it does sound "security relevant", but without a well defined
+interface/format it is going to be difficult to write a generic LSM to
+have any level of granularity beyond a basic "load firmware"
+permission.
 
+> > The good news is that there are plenty of other examples of BPF
+> > plugable code that you could use as an example, one such thing is the
+> > update_socket_protocol() BPF hook that was originally proposed as a
+> > LSM hook, but moved to a dedicated BPF hook as we generally want to
+> > avoid changing non-LSM kernel objects within the scope of the LSMs.
+> > While your proposed case is slightly different, I think the basic idea
+> > and mechanism should still be useful.
+> >
+> > https://lore.kernel.org/all/cover.1692147782.git.geliang.tang@suse.com
+>
+> Thanks
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Good luck on whatever you choose, and while I'm guessing it is
+unlikely, if you do decide to pursue a LSM based solution please let
+us know and we can work with you to try and find ways to make it work.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--=20
+paul-moore.com
 
