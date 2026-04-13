@@ -1,228 +1,168 @@
-Return-Path: <linux-rdma+bounces-19286-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19287-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YIK4ANHb3GlwXgkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19286-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:04:33 +0200
+	id oANnBOHc3GlwXgkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19287-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:09:05 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0B33EBAE3
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:04:32 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0DE63EBB76
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:09:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 10CDE3011A51
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 12:04:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 16365301300F
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 12:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5543835E93C;
-	Mon, 13 Apr 2026 12:04:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B3A3C3C12;
+	Mon, 13 Apr 2026 12:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="rd+dzGDr"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="k4ACmIf5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CB42D3A69;
-	Mon, 13 Apr 2026 12:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037383C3457
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 12:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776081856; cv=none; b=NOZI514GaQkHQrWp7njwJqdJfj6CO2c9uYmTkJIOfBfb/5NAcZN8EmKRYN9p5oc9Awh55jfWydgctoSkMTvDtOKXwJfcox1ZcAFujzWo/hrRUwv8TGwAujgDkAJBTXwYwzQ5dNH9VUqVQdBevtqpzWy23ltLLJLOX4dWa5vDyS0=
+	t=1776082137; cv=none; b=tA6X5eEyvbg5nJHSwPt7T5lcBYf4PVEjbj1ntVvRJssYkX4Jhx/D+NWUUoUPwR+8ymWRh35SDFC/qIm3E0NEhUdVmxuUNyMomceipVo9rf8NlKGMbKN37WGTEosebR3svJ6+UBgfOlKIJRQAs21Uwe/2DXFeAZ0LmhZ/UcRXuK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776081856; c=relaxed/simple;
-	bh=nifHmy4CfEu0sFBEYinSbwZp6o8pBbzvtZ8EkMTOWiQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=npXT1jb0/EWfZZ51kfKnKCtxiWKM4vkpbwA72Kn6FFrJby7jmNvTUmVKGS4TpbMxXV3mdPBRza50qwrn21rElHEx/tSQZyohLFkM+E4qEipN8NTELnzMrGse2J9dFt5mD64C80BBQi4Ehdaew3DpW1MtbxkUz2t5lIX5jm7pE7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=rd+dzGDr; arc=none smtp.client-ip=113.46.200.222
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=7cEXSPR5yFHS4LAS4tuybv+AQrYQOOWxZH5AGU0cAX4=;
-	b=rd+dzGDrJpa8Qgu7l+zQ0zoXIF5nnq4gSHdmjPq49OUS5Lzt8XMvEBhc3dvvXW4AFt2yT9oA6
-	LejKNykM2J7GnPw+41MTJa5GKAIxQyMu5zsBtWU2jZYQ1xQGBa9WyIJ59oO8ePaPRIV1bHkDx6z
-	Grp3JUANEDXeYsQtQ1d6eEo=
-Received: from mail.maildlp.com (unknown [172.19.163.15])
-	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4fvQry6py1zLlYX;
-	Mon, 13 Apr 2026 19:57:54 +0800 (CST)
-Received: from kwepemk500009.china.huawei.com (unknown [7.202.194.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5A3A640571;
-	Mon, 13 Apr 2026 20:04:11 +0800 (CST)
-Received: from [10.67.121.161] (10.67.121.161) by
- kwepemk500009.china.huawei.com (7.202.194.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 13 Apr 2026 20:04:10 +0800
-Message-ID: <c3a6c6ca-3b71-476c-947a-5f2393d046bd@huawei.com>
-Date: Mon, 13 Apr 2026 20:04:10 +0800
+	s=arc-20240116; t=1776082137; c=relaxed/simple;
+	bh=b2oAs+7vRWLLh/ZhqKcI6Wf3Rh+33ekKWwGwtI3FYVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BgyJyc/ov/2YYpnp7B6n+QwBxm83rzh01fWxWliEm6uVnvn1XsvHnYKDJOMDbbYHNNYJl/JDR3gcSMFOLGV8VAKhxjhh3pZZqhbqv2rkK5z8DSTDCKoq/Z9+fLB8yuUnrFIMLRDV3uFYJz96rwDj6QyJeB16GLgOI4iFDk37IVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=k4ACmIf5; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-488a8ca4aadso50900025e9.3
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 05:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1776082131; x=1776686931; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IRwudnmggZ/XUXjz8Dn4rqFQM8+32hzeX1Hgry14NgQ=;
+        b=k4ACmIf5ffGmWi25liCp2Y6LH8mtiV1g5BEtmb7iIfZPGvdtIpx0Mvk2NkOztVPAPG
+         2r5I7/yTDgAm/f+bhugfjKSDmWyzUYtCUbeSFRa4cNOv6VjHZzyJJ5SOuvbsyGFit7ns
+         Ox9oZ3dD3kIyW09hT3vah6mnnlo2OPNmpWfMuFiISGdCLx+OIam2Tkq/Kyq9gENQ3M/n
+         vy+8TDGe5MPyTwLCydwX9rryjOhsmN9ii1O+HHUgvfo/sUuHkqLj8f56u7L58E9ZJ1Ey
+         EFkt3DX/PFB9EPKS04nKU7yQVLxEuHKSKUqQsOK6sn86Hiie/LVXc3f2PJe3gID9CguH
+         7Zcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776082131; x=1776686931;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IRwudnmggZ/XUXjz8Dn4rqFQM8+32hzeX1Hgry14NgQ=;
+        b=mJtYCMzzmx83g22XqN/2jd6IqrcMj+ntkglUbKzvpi81gBLu1Ys/V/ys1zE3IhbW0m
+         jS1rZ/QiTE7kZ7lUaak91Rf9szkR2THC3GfzyqL7W6Izg0PGVJ7yTXfFVxQNS0ISKbzg
+         AxzJEZirrn5hrbFlwaWyQBk537L+ejPppfU36IB15mS6NzrIzQgkpZMRigIO+qwoFMxB
+         wBruc8djX4p8xpQTBTtcIr6fzuobNZ5L3QXPwOQKuCP0aTDc7+TCYkQY4yBUoIClq0ar
+         Dm9ZCNgR5fiQO5dcbECR/SZFXtUHsf4rOLVztdyiUIGZP4mqNkG7z6yG1H+ptPyZuLWz
+         2ACg==
+X-Forwarded-Encrypted: i=1; AFNElJ8VHAxje8vjJZl3B66qCSumohHS17Y++wyJr3I5pdI1tGH+oyk99DzJFNXHbPrO4PZtxZaXgjvHRU6F@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEPur/0nz3tBk5CVNDEQtZUAcbJq5K0onIeuzbqzA9DSUhgCCU
+	x5bAPXzoK9DXi7xPTMj6RZbOTbp2Ip3wp0Ev7vMk+ylK7kvVA2C/ZnU3D2RHO5EtvtQ=
+X-Gm-Gg: AeBDieu5HAmSoI65tI+bbyumGwwsTVKFMlSWaHcjxtn/BHggrdrwKPCzYzQwNohtWmn
+	OVGcgqruTsQ5W0ABkhMoKv2G4UYGux/+iWlWM5BNxinPu75bwmv/PZv70RMTodt54oigjUAoZNE
+	aiPzhF+4oLpecz3GCXH3jr4l4XGeFBPAIDi8h08io70OUjy4Md2lEdrNNILMLGV3vqYlpt59D/R
+	eY8CFinXZRkMhrYNi7S3NuxxAbE0S6x8auXvmE2Uhieoe0WXJwDfPbOMm04fHmP2Akj0t9CSoJe
+	hwDF4zPAOoTEqxEwl5CidXtV/IKeZTQEDOrMOkW1iXjV/er3HSOmQA2b/4bEBgzcfdgzsKdsv9x
+	v58FjmY7lNPISpaL/gP+wnTnqlVzP3OWbqE4CA/ohqzTQAl0/KBI1ZX1VlLDk4Dz2zgWguKdtnX
+	WJEB3FdNlzpgA31VFDzzeWxM2IMerFoLE=
+X-Received: by 2002:a05:600c:3149:b0:488:ab26:8fe0 with SMTP id 5b1f17b1804b1-488d68432f2mr183678385e9.15.1776082131150;
+        Mon, 13 Apr 2026 05:08:51 -0700 (PDT)
+Received: from FV6GYCPJ69 ([208.127.45.21])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d68479b2sm92668315e9.25.2026.04.13.05.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2026 05:08:50 -0700 (PDT)
+Date: Mon, 13 Apr 2026 14:08:47 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, sgoutham@marvell.com, andrew+netdev@lunn.ch, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, donald.hunter@gmail.com, 
+	horms@kernel.org, chuck.lever@oracle.com, matttbe@kernel.org, cjubran@nvidia.com, 
+	saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com, 
+	dtatulea@nvidia.com
+Subject: Re: [PATCH v11 net-next 4/7] devlink: Implement devlink param multi
+ attribute nested data values
+Message-ID: <3pk4hkzgwy3a55zveapgmk23bsevru55xv75vhkzbpmzkfofcx@rlnkrvynofig>
+References: <20260409025055.1664053-1-rkannoth@marvell.com>
+ <20260409025055.1664053-5-rkannoth@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Proposal: Add sysfs interface for PCIe TPH Steering Tag
- retrieval and configuration
-To: Leon Romanovsky <leon@kernel.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, Bjorn Helgaas <bhelgaas@google.com>,
-	<linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>, Keith Busch
-	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
-	<yishaih@nvidia.com>, Zhiping Zhang <zhipingz@meta.com>
-References: <6ea4c4c2-774e-aa76-3665-918e2a24cc84@huawei.com>
- <20260413100152.GG21470@unreal>
-Content-Language: en-US
-From: fengchengwen <fengchengwen@huawei.com>
-In-Reply-To: <20260413100152.GG21470@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- kwepemk500009.china.huawei.com (7.202.194.94)
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260409025055.1664053-5-rkannoth@marvell.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19287-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FREEMAIL_CC(0.00)[vger.kernel.org,marvell.com,lunn.ch,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,oracle.com,nvidia.com];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fengchengwen@huawei.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19286-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[huawei.com:+]
-X-Rspamd-Queue-Id: AB0B33EBAE3
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email]
+X-Rspamd-Queue-Id: C0DE63EBB76
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/13/2026 6:01 PM, Leon Romanovsky wrote:
-> On Fri, Apr 10, 2026 at 10:30:52PM +0800, fengchengwen wrote:
->> Hi all,
->>
->> I'm writing to propose adding a sysfs interface to expose and configure the
->> PCIe TPH
->> Steering Tag for PCIe devices, which is retrieved inside the kernel.
->>
->>
->> Background: The TPH Steering Tag is tightly coupled with both a PCIe device
->> (identified
->> by its BDF) and a CPU core. It can only be obtained in kernel mode. To allow
->> user-space
->> applications to fetch and set this value securely and conveniently, we need
->> a standard
->> kernel-to-user interface.
->>
->>
->> Proposed Solution: Add several sysfs attributes under each PCIe device's
->> sysfs directory:
->> 1. /sys/bus/pci/devices/<BDF>/tph_mode to query the TPH mode (interrupt or
->> device specific)
->> 2. /sys/bus/pci/devices/<BDF>/tph_enable to control the TPH feature
->> 3. /sys/bus/pci/devices/<BDF>/tph_st to support both read and write
->> operations, e.g.:
->>    Read operation:
->>      echo "cpu=3" > /sys/bus/pci/devices/0000:01:00.0/tph_st
->>      cat /sys/bus/pci/devices/0000:01:00.0/tph_st
->>    Write operation:
->>      echo "index=10 st=123" > /sys/bus/pci/devices/0000:01:00.0/tph_st
->>
->>
->> The design strictly follows PCI subsystem sysfs standards and has the
->> following key properties:
->>
->> 1. Dynamic Visibility: The sysfs attributes will only be present for PCIe
->> devices that
->>    support TPH Steering Tag. Devices without TPH capability will not show
->> these nodes,
->>    avoiding unnecessary user confusion.
->>
->> 2. Permission Control: The attributes will use 0600 file permissions,
->> ensuring only
->>    privileged root users can read or write them, which satisfies security
->> requirements
->>    for hardware configuration interfaces.
->>
->> 3. Standard Implementation Location: The interface will be implemented in
->>    drivers/pci/pci-sysfs.c, the canonical location for all PCI device sysfs
->> attributes,
->>    ensuring consistency and maintainability within the PCI subsystem.
->>
->>
->> Why sysfs instead of alternatives like VFIO-PCI ioctl:
->>
->> - Universality: sysfs does not require binding the device to a special
->> driver such as
->>   vfio-pci. It is available to any privileged user-space component,
->> including system
->>   utilities, daemons, and monitoring tools.
->>
->> - Simplicity: Both user-space usage (cat/echo) and kernel implementation are
->>   straightforward, reducing code complexity and long-term maintenance cost.
->>
->> - Design Alignment: TPH Steering Tag is a generic PCIe device feature, not
->> specific to
->>   user-space drivers like DPDK or VFIO. Exposing it via sysfs matches the
->> kernel's
->>   standard pattern for hardware capabilities.
->>
->>
->> I look forward to your comments about this design before submitting the
->> final patch.
-> 
-> You need to explain more clearly why this write functionality is useful
-> and necessary outside the VFIO/RDMA context:
-> https://lore.kernel.org/all/20260324234615.3731237-1-zhipingz@meta.com/
-> 
-> AFAIK, for non-VFIO TPH callers, kernel has enough knowledge to set
-> right ST values.
-> 
-> There are several comments regarding the implementation, but those can wait
-> until the rationale behind the proposal is fully clarified.
+Thu, Apr 09, 2026 at 04:50:52AM +0200, rkannoth@marvell.com wrote:
+>From: Saeed Mahameed <saeedm@nvidia.com>
 
-Thanks for your review and comments.
+[...]
 
-Let me clarify the rationale behind this user-space sysfs interface:
 
-1. VFIO is just one of the user-space device access frameworks.
-   There are many other in-kernel frameworks that expose devices
-   to user space, such as UIO, UACCE, etc., which may also require
-   TPH Steering Tag support.
+>diff --git a/net/devlink/param.c b/net/devlink/param.c
+>index 4595fffbd825..8c9165797b32 100644
+>--- a/net/devlink/param.c
+>+++ b/net/devlink/param.c
+>@@ -252,6 +252,14 @@ devlink_nl_param_value_put(struct sk_buff *msg, enum devlink_param_type type,
+> 				return -EMSGSIZE;
+> 		}
+> 		break;
+>+	case DEVLINK_PARAM_TYPE_U64_ARRAY:
+>+		if (val->u64arr.size > __DEVLINK_PARAM_MAX_ARRAY_SIZE)
 
-2. The kernel can automatically program Steering Tags only when
-   the device provides a standard ST table in MSI-X or config space.
-   However, many devices implement vendor-specific or platform-specific
-   Steering Tag programming methods that cannot be fully handled
-   by the generic kernel code.
+From UAPI perspective, what's the motivation for such limitation? I
+don't think we need it. Whatever kernel/user fits into skb is okay, no?
 
-3. For such devices, user-space applications or framework drivers
-   need to retrieve and configure TPH Steering Tags directly.
-   A unified sysfs interface allows all user-space frameworks
-   (not just VFIO) to use a common, standard way to manage
-   TPH Steering Tags, rather than implementing duplicated logic
-   in each subsystem.
 
-This interface provides a uniform method for any user-space
-device access solution to work with TPH, which is why I believe
-it is useful and necessary beyond the VFIO/RDMA case.
 
-Thanks
 
-> 
-> Thanks
-> 
->>
->> Best regards,
->> Chengwen Feng
->>
+>+			return -EMSGSIZE;
+>+
+>+		for (int i = 0; i < val->u64arr.size; i++)
+>+			if (nla_put_uint(msg, nla_type, val->u64arr.val[i]))
+>+				return -EMSGSIZE;
+>+		break;
+> 	}
+> 	return 0;
+> }
 
+[...]
 
