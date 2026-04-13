@@ -1,181 +1,225 @@
-Return-Path: <linux-rdma+bounces-19294-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19295-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qFguA9EQ3WkOZQkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19294-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 17:50:41 +0200
+	id mMyqLG8T3WkOZQkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19295-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 18:01:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57FA23EE2F1
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 17:50:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F383EE41B
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 18:01:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 12747301AF77
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 15:44:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6DA2930BED12
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 15:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D483BF68E;
-	Mon, 13 Apr 2026 15:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1700B3DFC7D;
+	Mon, 13 Apr 2026 15:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FZY+rwfh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ia0sDvZ4"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA237262F;
-	Mon, 13 Apr 2026 15:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E1E125A9;
+	Mon, 13 Apr 2026 15:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776095039; cv=none; b=N8/WOMKG8bDU13oc2Hv+lhF6VbLnY2OWB6exDOS7zUAooLdDFFgjoF0nXw+FPunYrgDyMTQd+QBYsevQEjc6ZSSJzuJBBuuhsfB+OC69rNnzaBdIUf+mEgFHjxYAxbkgyLdapNQbxFcsr+FFuq1qOnW8C1+UVvNIi37+n7mm/jU=
+	t=1776095616; cv=none; b=dix1E8+no/Yv00CqE+12xxhLy1Tc1LMm5q1dPd7v84eHhircEjMyUxdwhW+EzRiSFPx1hrGjNqQiKAkim3+TbF2Iw6aQDKMt5m7i5jsXJQ/bOcP5HGYe6i0J3Xqf7Eo3/FjbkE+3sZUF3Fr3Pv8sVNbKKeoxpYqRspcssPR6ZFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776095039; c=relaxed/simple;
-	bh=7h0XxI+w9IS8gzg0n1Zgs6B7YWeMT+op97h0d1y8m2I=;
+	s=arc-20240116; t=1776095616; c=relaxed/simple;
+	bh=9M6tnLgIr+sMqBYY17RTZRwcr2YkcNi64g6q6UG2hdk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xx2kuE1tYAxiB20VRJSVUKuQ/ntzXnATLqFKbTpwREVmgF+HFADaESyu8KBbalqFcsbDNE8axH7R+6sv3rCDZlxoTymmu0ufveqe+2/Z29HDjmBUa/F1y2Jo/t6aBGzjLOKG2sJcy/GvY+EVFwLtMBFJ/2CQeQFpJG0eIcSPfa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FZY+rwfh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB8FC2BCAF;
-	Mon, 13 Apr 2026 15:43:58 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=B4QeJ3Fse7ZUlZRvHFYiAwiWiR1QZ4Ao3tyZC+Hd81uZ54QiiLIFxjpn4XgFR3UfkgBq4E+tbBA4IAC6+eRIoi5AxlwJ7mFfmthYaFDSne6AqLUvFpPxy4c3zhYNbCgR8d7EDbyjJf1UDFBfoYaG9Skx/IqugIE4rGlM2885FAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ia0sDvZ4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F00D0C2BCAF;
+	Mon, 13 Apr 2026 15:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776095039;
-	bh=7h0XxI+w9IS8gzg0n1Zgs6B7YWeMT+op97h0d1y8m2I=;
+	s=k20201202; t=1776095616;
+	bh=9M6tnLgIr+sMqBYY17RTZRwcr2YkcNi64g6q6UG2hdk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FZY+rwfhOCRPgZmJfpDnURVfnagsJGLfSqVB6qh0FzP0vpwCAEIt0L3fyvl2iLi+w
-	 VTfuPnuLXrOP2UGrDaBH+2XuUuGLtujyzIZPzAYchWKdjElzd/IupZc8TzgOkfDhUs
-	 +SISzRa4NKRmYbCLOxjgRlY/KY3SQZwFUpxcxow53TUtCevxkyo+f38jAKhsyzrgPL
-	 Dme/ILUQ2Z33aE1xL7XY5LMAbIzAYHENxqAcuDlhymW8DQYiT7JFqeyH5pDLCBipbi
-	 O+R9ii2PpCck/tP1fbO9Eo7KQFLt1LiL26FqxAjOV5yM1upyyvqIDCaLDxDaW2dAUW
-	 p7vfPUnbwIAmg==
-Date: Mon, 13 Apr 2026 18:43:53 +0300
+	b=ia0sDvZ4lmIa/fXnarKKku6xXJW3V+56XzaeZOpO6F3X8Ow8pD6wXa3N/3VWNOAaj
+	 ybUrRO4+LWB/5UiKpAQ4KCdCijHpeH92xtAcIsSXadz4Mjdwsy6+q6BRwZwIRZuukC
+	 rOlAtExAFewHXIQ9FAu0e5DUTneN75JJM7i5S3d00aZi3kXvvwQSnxf9KvBEmlcmTd
+	 JIWQwF74SQOLwTJArhFb2WflOc5KaoUtx84BBU2DXw4Z8AmFmuiOPXOMlpp13767Th
+	 4qOLCEHoEV9tnM0NFO2zR/uV3LdtOOzTFqT322eQxO1KOeIgxzYadv6TGqsVCZvUwF
+	 OMb79RWzbXHAQ==
+Date: Mon, 13 Apr 2026 18:53:32 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: syzbot <syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com>
-Cc: jgg@ziepe.ca, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [syzbot] [rdma?] WARNING in ib_dealloc_device
-Message-ID: <20260413154353.GK21470@unreal>
-References: <69dc3310.a00a0220.475f0.0018.GAE@google.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] Firmware LSM hook
+Message-ID: <20260413155332.GL21470@unreal>
+References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
+ <20260409121230.GA720371@unreal>
+ <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
+ <20260409124553.GB720371@unreal>
+ <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
+ <20260412090006.GA21470@unreal>
+ <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <69dc3310.a00a0220.475f0.0018.GAE@google.com>
-X-Spamd-Result: default: False [0.84 / 15.00];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=45cb3c58fd963c27];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-19294-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19295-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,appspotmail.com:email,googlegroups.com:email,syzkaller.appspot.com:url,storage.googleapis.com:url,msgid.link:url];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[huaweicloud.com,kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,ziepe.ca,nvidia.com,intel.com,huawei.com,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma,03393ff6c35fd2cc43de];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	RCPT_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Queue-Id: 57FA23EE2F1
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,paul-moore.com:url]
+X-Rspamd-Queue-Id: 11F383EE41B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sun, Apr 12, 2026 at 05:04:32PM -0700, syzbot wrote:
-> Hello,
+On Sun, Apr 12, 2026 at 09:38:35PM -0400, Paul Moore wrote:
+> On Sun, Apr 12, 2026 at 5:00 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > On Thu, Apr 09, 2026 at 05:04:24PM -0400, Paul Moore wrote:
+> > > On Thu, Apr 9, 2026 at 8:45 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > On Thu, Apr 09, 2026 at 02:27:43PM +0200, Roberto Sassu wrote:
+> > > > > On Thu, 2026-04-09 at 15:12 +0300, Leon Romanovsky wrote:
+> > > > > > On Tue, Mar 31, 2026 at 08:56:32AM +0300, Leon Romanovsky wrote:
 > 
-> syzbot found the following issue on:
+> ...
 > 
-> HEAD commit:    7f87a5ea75f0 Merge tag 'hid-for-linus-2026040801' of git:/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11778eba580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=45cb3c58fd963c27
-> dashboard link: https://syzkaller.appspot.com/bug?extid=03393ff6c35fd2cc43de
-> compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+> > > > We implemented this approach in v1:
+> > > > https://patch.msgid.link/20260309-fw-lsm-hook-v1-0-4a6422e63725@nvidia.com
+> > > > and were advised to pursue a different direction.
+> > >
+> > > I'm assuming you are referring to my comments? If so, that isn't exactly what I said,
+> > > I mentioned at least one other option besides
+> > > going directly to BPF.  Ultimately, it is your choice to decide how
+> > > you want to proceed, but to claim I advised you to avoid a LSM based
+> > > solution isn't strictly correct.
+> >
+> > Yes, this matches how we understood your comments:
+> > https://lore.kernel.org/all/20260311081955.GS12611@unreal/
+> >
+> > In the end, the goal is to build something practical and avoid adding
+> > unnecessary complexity that brings no real benefit to users.
+> >
+> > > Regardless, looking at your v2 patchset, it looks like you've taken an
+> > > unusual approach of using some of the LSM mechanisms, e.g. LSM_HOOK(),
+> > > but not actually exposing a LSM hook with proper callbacks.
+> > > Unfortunately, that's not something we want to support.  If you want
+> > > to pursue an LSM based solution, complete with a security_XXX() hook,
+> > > use of LSM_HOOK() macros, etc. then that's fine, I'm happy to work
+> > > with you on that.
+> >
+> > The issue is that the sentence below was the reason we did not merge v1 with v2:
+> > https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm-hooks
+> > "pass through implementations, such as the BPF LSM, are not eligible for
+> > LSM hook reference implementations."
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> I can expand on that in a minute, but I'd like to return to your use
+> of the LSM_HOOK() macro and locating the hook within the BPF LSM as
+> that is the most concerning issue from my perspective.  One should
+> only use the LSM_HOOK() macro and locate code within bpf_lsm.c if that
+> code is part of the BPF LSM, utilizing an LSM hook.  Since this
+> patchset doesn't use an LSM hook or any part of the LSM framework, the
+> implementation choices seem odd and are not something we want to
+> support.  As mentioned in my prior reply, you could do something very
+> similar though the use of a normal BPF hook similar to what was done
+> with the update_socket_protocol() BPF hook.
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0f5deca1373e/disk-7f87a5ea.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6aea6c1c6b6e/vmlinux-7f87a5ea.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/61444b289e96/bzImage-7f87a5ea.xz
+> There are multiple reasons why out-of-tree and pass through LSMs are
+> not considered eligible for reference implementations of LSM hooks.  I
+> think is most relevant to this patchset is that an out-of-tree hook
+> implementation doesn't necessarily require a stable interface, and
+> without a stable interface it is impossible to make a generic API at
+> the LSM framework layer.  As you mentioned previously, each vendor and
+> each firmware version brings the possibility of a new
+> format/interface, and while that may not be a problem for out-of-tree
+> code which is left to the user/admin to manage, it makes upstream
+> development difficult.  I did mention at least one approach that might
+> be a possibility to enable upstream, in-tree support of this, but you
+> seem to prefer a BPF approach that doesn't require a well defined
+> format.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com
+> > > However, if you've decided that your preferred
+> > > option is to create a BPF hook you should avoid using things like
+> > > LSM_HOOK() and locating your hook/code in bpf_lsm.c.
+> >
+> > We are not limited to LSM solution, the goal is to intercept commands
+> > which are submitted to the FW and "security" bucket sounded right to us.
 > 
-> ------------[ cut here ]------------
-> !xa_empty(&device->compat_devs)
-> WARNING: drivers/infiniband/core/device.c:682 at ib_dealloc_device+0x187/0x200 drivers/infiniband/core/device.c:682, CPU#0: kworker/u8:37/4856
+> Yes, it does sound "security relevant", but without a well defined
+> interface/format it is going to be difficult to write a generic LSM to
+> have any level of granularity beyond a basic "load firmware"
+> permission.
+> 
+> > > The good news is that there are plenty of other examples of BPF
+> > > plugable code that you could use as an example, one such thing is the
+> > > update_socket_protocol() BPF hook that was originally proposed as a
+> > > LSM hook, but moved to a dedicated BPF hook as we generally want to
+> > > avoid changing non-LSM kernel objects within the scope of the LSMs.
+> > > While your proposed case is slightly different, I think the basic idea
+> > > and mechanism should still be useful.
+> > >
+> > > https://lore.kernel.org/all/cover.1692147782.git.geliang.tang@suse.com
+> >
+> > Thanks
+> 
+> Good luck on whatever you choose, and while I'm guessing it is
+> unlikely, if you do decide to pursue a LSM based solution please let
+> us know and we can work with you to try and find ways to make it work.
 
-I think that we have only one patch in this area https://patch.msgid.link/20260127093839.126291-1-jiri@resnulli.us
+Thanks a lot. We should know which direction we'll take in a week or two,
+once Chiara wraps up her internal commitments and returns to this series.
+
+I appreciate your help.
 
 Thanks
 
-
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 4856 Comm: kworker/u8:37 Tainted: G             L      syzkaller #0 PREEMPT_{RT,(full)} 
-> Tainted: [L]=SOFTLOCKUP
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
-> Workqueue: ib-unreg-wq ib_unregister_work
-> RIP: 0010:ib_dealloc_device+0x187/0x200 drivers/infiniband/core/device.c:682
-> Code: e8 de ec ad f9 48 89 df e8 56 59 07 00 48 81 c3 30 08 00 00 48 89 df 5b 41 5c 41 5e 41 5f 5d e9 0f 09 60 fd e8 ba ec ad f9 90 <0f> 0b 90 e9 72 ff ff ff e8 ac ec ad f9 90 0f 0b 90 eb 8f e8 a1 ec
-> RSP: 0018:ffffc9000f49fa18 EFLAGS: 00010293
-> RAX: ffffffff88169536 RBX: ffff888039d40000 RCX: ffff88806a691e80
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffff888039d41308 R08: 0000000000000000 R09: 0000000000000000
-> R10: dffffc0000000000 R11: fffffbfff1ed4eb7 R12: 1ffff110073a81fd
-> R13: dffffc0000000000 R14: ffff888039d41268 R15: dffffc0000000000
-> FS:  0000000000000000(0000) GS:ffff888126332000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ff6d2897e9c CR3: 0000000022382000 CR4: 00000000003526f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000f1ffffdf
-> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __ib_unregister_device+0x393/0x3f0 drivers/infiniband/core/device.c:1545
->  ib_unregister_work+0x19/0x30 drivers/infiniband/core/device.c:1639
->  process_one_work kernel/workqueue.c:3276 [inline]
->  process_scheduled_works+0xb6e/0x18c0 kernel/workqueue.c:3359
->  worker_thread+0xa53/0xfc0 kernel/workqueue.c:3440
->  kthread+0x388/0x470 kernel/kthread.c:436
->  ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->  </TASK>
 > 
+> -- 
+> paul-moore.com
 > 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
 
