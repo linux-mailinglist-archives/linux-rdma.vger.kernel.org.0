@@ -1,186 +1,228 @@
-Return-Path: <linux-rdma+bounces-19285-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19286-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MK9fNJLc3GlwXgkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19285-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:07:46 +0200
+	id YIK4ANHb3GlwXgkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19286-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:04:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 376573EBB51
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:07:45 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB0B33EBAE3
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 14:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CEA70302AD11
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 12:00:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 10CDE3011A51
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2026 12:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFCD3C2796;
-	Mon, 13 Apr 2026 12:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5543835E93C;
+	Mon, 13 Apr 2026 12:04:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NAHT55EH"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="rd+dzGDr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9C232F749
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 12:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CB42D3A69;
+	Mon, 13 Apr 2026 12:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776081603; cv=none; b=nykgzizEW/SyRVJWqq4XJSZqGGMtbVN4F4UtpITvO0Asmhd4nksbDinrJ3fwAwxh1Zr9bXS9SK6/h2WtUvn85SjIlvvbA5ChKml9rrlDlMGlmZory+knyvB18t4aK8xPqV75s854L/Ov3vkCHRk1VOK0C/jB2csaBoP6n/aOdu0=
+	t=1776081856; cv=none; b=NOZI514GaQkHQrWp7njwJqdJfj6CO2c9uYmTkJIOfBfb/5NAcZN8EmKRYN9p5oc9Awh55jfWydgctoSkMTvDtOKXwJfcox1ZcAFujzWo/hrRUwv8TGwAujgDkAJBTXwYwzQ5dNH9VUqVQdBevtqpzWy23ltLLJLOX4dWa5vDyS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776081603; c=relaxed/simple;
-	bh=6fwLwWNLs1EfDGkdX3ygPgU9zxnBYk06z+iVq0IN+O4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RE3VFpqnEYeicND35rNJ+FZGnhj0JKjBfibkcWZXahLtdATeh5cKwaAgFEtSmkMW5ZMaXzEusoSb/B7kLYY2ilPwGNRWOvWblSFbGhRJkfdYJjukZfte5eR2m0yI/uz4TLU9TuDmfuMYVlWso6RrxL1nn4hzUfVU5szeo1351N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NAHT55EH; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-c741692db4cso1072803a12.1
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 05:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776081601; x=1776686401; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3u8EWySsHMnJmBCST1Ast9PFMWGZFxzWnCzXib4HbCo=;
-        b=NAHT55EHxxUmHG/sJlomRZbP0jXVWEoeLLns7CAvoZO44nWxqhs5W5BX0SY3kRD2H3
-         O49mfKq0AWmi+Bi++aHzN43uOhduJvfmphxi9ECZ8kQ82EdVP3Oe2Of2rK+vkYeHHPxE
-         hazlMwpVkhOUmSVJlNvFfZEpbetmvBLPKCdpN2GOgbL6sw5jmBE90L/24IGY0h3DoPXi
-         kMTfkhbF/pNu6AaYVsFl8ck0H+92Ug1Hg7lAUbWZEEUIzqfEqXpKop9w2G1otQ5ykJii
-         FLxP7ZuKWSUwgD/zqLBmRbH3rWYyIe8+oCO/G914GU2/fmQgKNT2X35kqZgPZ9uVD7Ub
-         2feQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776081601; x=1776686401;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3u8EWySsHMnJmBCST1Ast9PFMWGZFxzWnCzXib4HbCo=;
-        b=o7kI4/nnC4plEu2HovYUVoIgDrSDaiKIGJndAQ3mfwfC2StMgbqoG2/5VqxaJg4ASd
-         OFatm77W2Og+wWaLGYYCgseje6YkCiKVn61JtVPOzHr2EssR1TM6qbB1Q8rqkE4D+8pV
-         tjJtV+rFMVktD+indmLNYe3kQmQXdNFPJ/FwfrEzqT2Dno3Vs9oiEJn6iMNBRPh41+hM
-         6sAsBUIPV1azi4yHs0qp0TwN+5QPD6vbq+RlnOUpyniFJJamO2Y/i3cLlF1W1xDJgc3K
-         IxGJVL0OYZnRVj1GINCY+wigMj+zjKGwfTvNB80S6CISObld6eDv2m6TodQmseEeViyp
-         jQ5w==
-X-Forwarded-Encrypted: i=1; AFNElJ/P5bphaKMCDTq+dtITMTdpITvU2xs4Pt4VUU+3CRGk9P7Dk6ictdTnRL6/FUlX8EC9YLpItjbnD+rw@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5eWRUYkSnqTVhGCHHauG/xAccwtZOHSnD1rC8zsAbebP/kWlQ
-	MzVC6XBb469LAsPJ0K5CRL6fJOk9v7qP0j5EJaxzkPaw9yjhMUF3EgZv
-X-Gm-Gg: AeBDiesVOxqG/hAlDIxN6s/CxeYxgruUXzmtzptrTLa/IXPSlM4BpKfoz9NU/8/L1Pa
-	vYxlxmp4f3zMdj/i7RGSDJ+cXlffbHJIjuf4NTS98Jevu9NpTsg4oxTDwH/I2Z0bgGP3quGVJFy
-	/6GaoruqsRKMlESjVwwrhxkROPwcB0GoiRMPUTjp0sYf75URKBHB80y4WELCOLpvdRvnkla//YZ
-	b1JsnDMrMsclJvkWFapbdRgzvmUsNhVMnJTvfsK9RTDFeiMzJPTVwvfN+UnRBNRbtPoIb822Azi
-	QqZAwqoeEyCJ3tVB3yijeyuYgIqVfrfXqQGj1ELnIycdp1ct91EYBFFmfl9jvd+fl4VsrDxr6+k
-	Ez5RncpIN64KnTQAUuKC7rgd/LUjMQknKGNRErk6yDiKxx9mU2aUltIdgey2wugyf3VgpyLoidP
-	UcQuRKq0UjB16WhJPzg/98OMFNVETbGVw=
-X-Received: by 2002:a05:6a20:e212:b0:39f:48fe:830b with SMTP id adf61e73a8af0-39fc95aa2d7mr17020912637.30.1776081601292;
-        Mon, 13 Apr 2026 05:00:01 -0700 (PDT)
-Received: from lgs.. ([2409:893d:1188:142d:db27:7a46:955d:48f7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c7944cd52d0sm764199a12.21.2026.04.13.04.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 05:00:00 -0700 (PDT)
-From: Guangshuo Li <lgs201920130244@gmail.com>
-To: Yishai Hadas <yishaih@nvidia.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Roland Dreier <roland@purestorage.com>,
-	Jack Morgenstein <jackm@dev.mellanox.co.il>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Guangshuo Li <lgs201920130244@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] IB/mlx4: Fix refcount leak in add_port() error path
-Date: Mon, 13 Apr 2026 19:59:48 +0800
-Message-ID: <20260413115949.2799399-1-lgs201920130244@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1776081856; c=relaxed/simple;
+	bh=nifHmy4CfEu0sFBEYinSbwZp6o8pBbzvtZ8EkMTOWiQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=npXT1jb0/EWfZZ51kfKnKCtxiWKM4vkpbwA72Kn6FFrJby7jmNvTUmVKGS4TpbMxXV3mdPBRza50qwrn21rElHEx/tSQZyohLFkM+E4qEipN8NTELnzMrGse2J9dFt5mD64C80BBQi4Ehdaew3DpW1MtbxkUz2t5lIX5jm7pE7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=rd+dzGDr; arc=none smtp.client-ip=113.46.200.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=7cEXSPR5yFHS4LAS4tuybv+AQrYQOOWxZH5AGU0cAX4=;
+	b=rd+dzGDrJpa8Qgu7l+zQ0zoXIF5nnq4gSHdmjPq49OUS5Lzt8XMvEBhc3dvvXW4AFt2yT9oA6
+	LejKNykM2J7GnPw+41MTJa5GKAIxQyMu5zsBtWU2jZYQ1xQGBa9WyIJ59oO8ePaPRIV1bHkDx6z
+	Grp3JUANEDXeYsQtQ1d6eEo=
+Received: from mail.maildlp.com (unknown [172.19.163.15])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4fvQry6py1zLlYX;
+	Mon, 13 Apr 2026 19:57:54 +0800 (CST)
+Received: from kwepemk500009.china.huawei.com (unknown [7.202.194.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5A3A640571;
+	Mon, 13 Apr 2026 20:04:11 +0800 (CST)
+Received: from [10.67.121.161] (10.67.121.161) by
+ kwepemk500009.china.huawei.com (7.202.194.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 13 Apr 2026 20:04:10 +0800
+Message-ID: <c3a6c6ca-3b71-476c-947a-5f2393d046bd@huawei.com>
+Date: Mon, 13 Apr 2026 20:04:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] Proposal: Add sysfs interface for PCIe TPH Steering Tag
+ retrieval and configuration
+To: Leon Romanovsky <leon@kernel.org>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, Bjorn Helgaas <bhelgaas@google.com>,
+	<linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>, Keith Busch
+	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
+	<yishaih@nvidia.com>, Zhiping Zhang <zhipingz@meta.com>
+References: <6ea4c4c2-774e-aa76-3665-918e2a24cc84@huawei.com>
+ <20260413100152.GG21470@unreal>
+Content-Language: en-US
+From: fengchengwen <fengchengwen@huawei.com>
+In-Reply-To: <20260413100152.GG21470@unreal>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemk500009.china.huawei.com (7.202.194.94)
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-19285-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lgs201920130244@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-0.999];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 376573EBB51
+	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fengchengwen@huawei.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19286-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[huawei.com:+]
+X-Rspamd-Queue-Id: AB0B33EBAE3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-After kobject_init_and_add(), the lifetime of the embedded struct
-kobject is expected to be managed through the kobject core reference
-counting.
+On 4/13/2026 6:01 PM, Leon Romanovsky wrote:
+> On Fri, Apr 10, 2026 at 10:30:52PM +0800, fengchengwen wrote:
+>> Hi all,
+>>
+>> I'm writing to propose adding a sysfs interface to expose and configure the
+>> PCIe TPH
+>> Steering Tag for PCIe devices, which is retrieved inside the kernel.
+>>
+>>
+>> Background: The TPH Steering Tag is tightly coupled with both a PCIe device
+>> (identified
+>> by its BDF) and a CPU core. It can only be obtained in kernel mode. To allow
+>> user-space
+>> applications to fetch and set this value securely and conveniently, we need
+>> a standard
+>> kernel-to-user interface.
+>>
+>>
+>> Proposed Solution: Add several sysfs attributes under each PCIe device's
+>> sysfs directory:
+>> 1. /sys/bus/pci/devices/<BDF>/tph_mode to query the TPH mode (interrupt or
+>> device specific)
+>> 2. /sys/bus/pci/devices/<BDF>/tph_enable to control the TPH feature
+>> 3. /sys/bus/pci/devices/<BDF>/tph_st to support both read and write
+>> operations, e.g.:
+>>    Read operation:
+>>      echo "cpu=3" > /sys/bus/pci/devices/0000:01:00.0/tph_st
+>>      cat /sys/bus/pci/devices/0000:01:00.0/tph_st
+>>    Write operation:
+>>      echo "index=10 st=123" > /sys/bus/pci/devices/0000:01:00.0/tph_st
+>>
+>>
+>> The design strictly follows PCI subsystem sysfs standards and has the
+>> following key properties:
+>>
+>> 1. Dynamic Visibility: The sysfs attributes will only be present for PCIe
+>> devices that
+>>    support TPH Steering Tag. Devices without TPH capability will not show
+>> these nodes,
+>>    avoiding unnecessary user confusion.
+>>
+>> 2. Permission Control: The attributes will use 0600 file permissions,
+>> ensuring only
+>>    privileged root users can read or write them, which satisfies security
+>> requirements
+>>    for hardware configuration interfaces.
+>>
+>> 3. Standard Implementation Location: The interface will be implemented in
+>>    drivers/pci/pci-sysfs.c, the canonical location for all PCI device sysfs
+>> attributes,
+>>    ensuring consistency and maintainability within the PCI subsystem.
+>>
+>>
+>> Why sysfs instead of alternatives like VFIO-PCI ioctl:
+>>
+>> - Universality: sysfs does not require binding the device to a special
+>> driver such as
+>>   vfio-pci. It is available to any privileged user-space component,
+>> including system
+>>   utilities, daemons, and monitoring tools.
+>>
+>> - Simplicity: Both user-space usage (cat/echo) and kernel implementation are
+>>   straightforward, reducing code complexity and long-term maintenance cost.
+>>
+>> - Design Alignment: TPH Steering Tag is a generic PCIe device feature, not
+>> specific to
+>>   user-space drivers like DPDK or VFIO. Exposing it via sysfs matches the
+>> kernel's
+>>   standard pattern for hardware capabilities.
+>>
+>>
+>> I look forward to your comments about this design before submitting the
+>> final patch.
+> 
+> You need to explain more clearly why this write functionality is useful
+> and necessary outside the VFIO/RDMA context:
+> https://lore.kernel.org/all/20260324234615.3731237-1-zhipingz@meta.com/
+> 
+> AFAIK, for non-VFIO TPH callers, kernel has enough knowledge to set
+> right ST values.
+> 
+> There are several comments regarding the implementation, but those can wait
+> until the rationale behind the proposal is fully clarified.
 
-In add_port(), if kobject_init_and_add() fails, the error path frees p
-directly instead of releasing the kobject reference with kobject_put().
-This may leave the reference count of the embedded struct kobject
-unbalanced, resulting in a refcount leak and potentially leading to a
-use-after-free.
+Thanks for your review and comments.
 
-The issue was identified by a static analysis tool I developed and
-confirmed by manual review.
+Let me clarify the rationale behind this user-space sysfs interface:
 
-Fix this by using kobject_put(&p->kobj) in the kobject_init_and_add()
-failure path.
+1. VFIO is just one of the user-space device access frameworks.
+   There are many other in-kernel frameworks that expose devices
+   to user space, such as UIO, UACCE, etc., which may also require
+   TPH Steering Tag support.
 
-Fixes: c1e7e466120b ("IB/mlx4: Add iov directory in sysfs under the ib device")
-Cc: stable@vger.kernel.org
-Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
----
-v2:
-  - note that the issue was identified by my static analysis tool
-  - and confirmed by manual review
+2. The kernel can automatically program Steering Tags only when
+   the device provides a standard ST table in MSI-X or config space.
+   However, many devices implement vendor-specific or platform-specific
+   Steering Tag programming methods that cannot be fully handled
+   by the generic kernel code.
 
- drivers/infiniband/hw/mlx4/sysfs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+3. For such devices, user-space applications or framework drivers
+   need to retrieve and configure TPH Steering Tags directly.
+   A unified sysfs interface allows all user-space frameworks
+   (not just VFIO) to use a common, standard way to manage
+   TPH Steering Tags, rather than implementing duplicated logic
+   in each subsystem.
 
-diff --git a/drivers/infiniband/hw/mlx4/sysfs.c b/drivers/infiniband/hw/mlx4/sysfs.c
-index 88f534cf690e..15b36b9e4bd6 100644
---- a/drivers/infiniband/hw/mlx4/sysfs.c
-+++ b/drivers/infiniband/hw/mlx4/sysfs.c
-@@ -642,7 +642,7 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
- 				   kobject_get(dev->dev_ports_parent[slave]),
- 				   "%d", port_num);
- 	if (ret)
--		goto err_alloc;
-+		goto err_kobj;
- 
- 	p->pkey_group.name  = "pkey_idx";
- 	p->pkey_group.attrs =
-@@ -689,6 +689,11 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
- 	kobject_put(dev->dev_ports_parent[slave]);
- 	kfree(p);
- 	return ret;
-+
-+err_kobj:
-+	kobject_put(&p->kobj);
-+	return ret;
-+
- }
- 
- static int register_one_pkey_tree(struct mlx4_ib_dev *dev, int slave)
--- 
-2.43.0
+This interface provides a uniform method for any user-space
+device access solution to work with TPH, which is why I believe
+it is useful and necessary beyond the VFIO/RDMA case.
+
+Thanks
+
+> 
+> Thanks
+> 
+>>
+>> Best regards,
+>> Chengwen Feng
+>>
 
 
