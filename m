@@ -1,277 +1,177 @@
-Return-Path: <linux-rdma+bounces-19314-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19315-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UFVAKVqT3WnkfwkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19314-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 03:07:38 +0200
+	id aNxoG12i3Wl8hAkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19315-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 04:11:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254BA3F4BE3
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 03:07:38 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E3443F4EA8
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 04:11:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7082E30285D8
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 01:07:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A89C23041A7B
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 02:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD30264617;
-	Tue, 14 Apr 2026 01:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B570E3009EE;
+	Tue, 14 Apr 2026 02:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="fEHYzxyU"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jwgNvNCm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B51CA6F;
-	Tue, 14 Apr 2026 01:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19024A0C;
+	Tue, 14 Apr 2026 02:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776128852; cv=none; b=i3Gon0ifF/utg+dhjqP+9pVnv/F73MkEDsMVitQERzoqV/3tXPYEIYXK9npYsF4txMm84kOPzZzo0W6YNgUIlrbERKWIpmLdsNQUy7YVn9AoN0QTBq6WGAYGQCUpQu8nJPconhdi1zPwTBN8Fio/2YkoXk1lbwfO8kFfjB+IHf4=
+	t=1776132667; cv=none; b=AlEZQ5EmnFP5zyWGOtgOmPvc/h5bn2Uf90CPZmdmkR0wWvAYul0YXucnOSvr1qlmz67vKchwSlbcskUpzxR/UYuOS/CUx/ai3XbUJT0CRYJJxl04SaVAgb1y/NBpz8O0Df0KeY8/mfvXrWZRSb6IWZ4rcRccSzDW08Oa4iiWuRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776128852; c=relaxed/simple;
-	bh=CH613hP3rAJOLQLOPMxNqp07gAB5d1LhGCHzal5iYPE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NRQaVmPjCHuCgNGiyl9p3G/ctt4ssftAyXcVWHBcXpgRvFkhkRP1BOb3KuJtpJ8muxip1EgfMTdpBYKenYy5L8C4NyH/phG7l6MqBIWjeGzOusib3mtj1zvyyI/HSnuu5N2KqS/tTc5D0lpkoC9x6jiYpxDLnR/ICYgR1xRRMx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=fEHYzxyU; arc=none smtp.client-ip=113.46.200.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=3TWuPqOXVr+wiChyghMPQRDXRsnJFg3rCZg1x3+SN3o=;
-	b=fEHYzxyUO+/vn47ZZ7/IJ2n490P9RD8ppTozrDWUGNL94XTsXSB45WDJVSxv/EuWAJO8/sLNd
-	WF0JnrEODFHCgRSiMDQhAjRRR9tRhUw/3vtTgVSKmiOdKOgevmASN6LKux8hn1RnX8jzA/YVpt7
-	/xnkR2iR0OIEMjhyuH0EzGw=
-Received: from mail.maildlp.com (unknown [172.19.162.197])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4fvmDW0sMGzcZyN;
-	Tue, 14 Apr 2026 09:00:59 +0800 (CST)
-Received: from kwepemk500009.china.huawei.com (unknown [7.202.194.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id BAB5F40569;
-	Tue, 14 Apr 2026 09:07:26 +0800 (CST)
-Received: from [10.67.121.161] (10.67.121.161) by
- kwepemk500009.china.huawei.com (7.202.194.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 14 Apr 2026 09:07:26 +0800
-Message-ID: <b95ced54-339f-4859-b3eb-8bf261393ffc@huawei.com>
-Date: Tue, 14 Apr 2026 09:07:23 +0800
+	s=arc-20240116; t=1776132667; c=relaxed/simple;
+	bh=qONVCwTdjOsPJicXgg54drut12/jVHItxnBei3Ez/24=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gW4ygj3nZKUTpEIaYyfD5ZL0ExMaazxBh7ssls6OlM5Bs9NVN1UflzeiA3WSvp2rzRgON9KBgkiao09N5JHEsWHCvTfLmHyL6KLEQRqhxixyOyh8gMs98qE97RCOWwrH7W8tZyiPSBHqLiWP4DGS4uKkbPvmArTgHUGAVT3ko8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jwgNvNCm; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1776132655; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=2GEV5QxYqXEC3gg+qrv5++VkT+kGhafbXkPa1JP+x14=;
+	b=jwgNvNCmZjLE6NyUS2+Ts9NXVRZfpboa65Z4tqH5IkenwiDSSuzogCSl4K43vAdopPYODX+CC4DO5U2BbMgP8KgwTxJsuOn2RF/nwRA2WGksm5GgHB7f5kCAaLYzTMuO+QJKLCLjEUgm+uMaT5tjhGzhvtG1TUw026oV611RBME=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0X1.hUBx_1776132654;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X1.hUBx_1776132654 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 14 Apr 2026 10:10:54 +0800
+Date: Tue, 14 Apr 2026 10:10:54 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Simon Horman <horms@kernel.org>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org, oliver.yang@linux.alibaba.com,
+	pasic@linux.ibm.com
+Subject: Re: [PATCH net-next v2] net/smc: cap allocation order for SMC-R
+ physically contiguous buffers
+Message-ID: <20260414021054.GA111420@j66a10360.sqa.eu95>
+References: <20260407124337.88128-1-alibuda@linux.alibaba.com>
+ <20260410151631.GY469338@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Proposal: Add sysfs interface for PCIe TPH Steering Tag
- retrieval and configuration
-To: Leon Romanovsky <leon@kernel.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, Bjorn Helgaas <bhelgaas@google.com>,
-	<linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>, Keith Busch
-	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
-	<yishaih@nvidia.com>, Zhiping Zhang <zhipingz@meta.com>
-References: <6ea4c4c2-774e-aa76-3665-918e2a24cc84@huawei.com>
- <20260413100152.GG21470@unreal>
- <c3a6c6ca-3b71-476c-947a-5f2393d046bd@huawei.com>
- <20260413191930.GP21470@unreal>
-Content-Language: en-US
-From: fengchengwen <fengchengwen@huawei.com>
-In-Reply-To: <20260413191930.GP21470@unreal>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemk500009.china.huawei.com (7.202.194.94)
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <20260410151631.GY469338@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[huawei.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19314-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-19315-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fengchengwen@huawei.com,linux-rdma@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 254BA3F4BE3
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email,linux.alibaba.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0E3443F4EA8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/14/2026 3:19 AM, Leon Romanovsky wrote:
-> On Mon, Apr 13, 2026 at 08:04:10PM +0800, fengchengwen wrote:
->> On 4/13/2026 6:01 PM, Leon Romanovsky wrote:
->>> On Fri, Apr 10, 2026 at 10:30:52PM +0800, fengchengwen wrote:
->>>> Hi all,
->>>>
->>>> I'm writing to propose adding a sysfs interface to expose and configure the
->>>> PCIe TPH
->>>> Steering Tag for PCIe devices, which is retrieved inside the kernel.
->>>>
->>>>
->>>> Background: The TPH Steering Tag is tightly coupled with both a PCIe device
->>>> (identified
->>>> by its BDF) and a CPU core. It can only be obtained in kernel mode. To allow
->>>> user-space
->>>> applications to fetch and set this value securely and conveniently, we need
->>>> a standard
->>>> kernel-to-user interface.
->>>>
->>>>
->>>> Proposed Solution: Add several sysfs attributes under each PCIe device's
->>>> sysfs directory:
->>>> 1. /sys/bus/pci/devices/<BDF>/tph_mode to query the TPH mode (interrupt or
->>>> device specific)
->>>> 2. /sys/bus/pci/devices/<BDF>/tph_enable to control the TPH feature
->>>> 3. /sys/bus/pci/devices/<BDF>/tph_st to support both read and write
->>>> operations, e.g.:
->>>>    Read operation:
->>>>      echo "cpu=3" > /sys/bus/pci/devices/0000:01:00.0/tph_st
->>>>      cat /sys/bus/pci/devices/0000:01:00.0/tph_st
->>>>    Write operation:
->>>>      echo "index=10 st=123" > /sys/bus/pci/devices/0000:01:00.0/tph_st
->>>>
->>>>
->>>> The design strictly follows PCI subsystem sysfs standards and has the
->>>> following key properties:
->>>>
->>>> 1. Dynamic Visibility: The sysfs attributes will only be present for PCIe
->>>> devices that
->>>>    support TPH Steering Tag. Devices without TPH capability will not show
->>>> these nodes,
->>>>    avoiding unnecessary user confusion.
->>>>
->>>> 2. Permission Control: The attributes will use 0600 file permissions,
->>>> ensuring only
->>>>    privileged root users can read or write them, which satisfies security
->>>> requirements
->>>>    for hardware configuration interfaces.
->>>>
->>>> 3. Standard Implementation Location: The interface will be implemented in
->>>>    drivers/pci/pci-sysfs.c, the canonical location for all PCI device sysfs
->>>> attributes,
->>>>    ensuring consistency and maintainability within the PCI subsystem.
->>>>
->>>>
->>>> Why sysfs instead of alternatives like VFIO-PCI ioctl:
->>>>
->>>> - Universality: sysfs does not require binding the device to a special
->>>> driver such as
->>>>   vfio-pci. It is available to any privileged user-space component,
->>>> including system
->>>>   utilities, daemons, and monitoring tools.
->>>>
->>>> - Simplicity: Both user-space usage (cat/echo) and kernel implementation are
->>>>   straightforward, reducing code complexity and long-term maintenance cost.
->>>>
->>>> - Design Alignment: TPH Steering Tag is a generic PCIe device feature, not
->>>> specific to
->>>>   user-space drivers like DPDK or VFIO. Exposing it via sysfs matches the
->>>> kernel's
->>>>   standard pattern for hardware capabilities.
->>>>
->>>>
->>>> I look forward to your comments about this design before submitting the
->>>> final patch.
->>>
->>> You need to explain more clearly why this write functionality is useful
->>> and necessary outside the VFIO/RDMA context:
->>> https://lore.kernel.org/all/20260324234615.3731237-1-zhipingz@meta.com/
->>>
->>> AFAIK, for non-VFIO TPH callers, kernel has enough knowledge to set
->>> right ST values.
->>>
->>> There are several comments regarding the implementation, but those can wait
->>> until the rationale behind the proposal is fully clarified.
->>
->> Thanks for your review and comments.
->>
->> Let me clarify the rationale behind this user-space sysfs interface:
->>
->> 1. VFIO is just one of the user-space device access frameworks.
->>    There are many other in-kernel frameworks that expose devices
->>    to user space, such as UIO, UACCE, etc., which may also require
->>    TPH Steering Tag support.
->>
->> 2. The kernel can automatically program Steering Tags only when
->>    the device provides a standard ST table in MSI-X or config space.
->>    However, many devices implement vendor-specific or platform-specific
->>    Steering Tag programming methods that cannot be fully handled
->>    by the generic kernel code.
->>
->> 3. For such devices, user-space applications or framework drivers
->>    need to retrieve and configure TPH Steering Tags directly.
->>    A unified sysfs interface allows all user-space frameworks
->>    (not just VFIO) to use a common, standard way to manage
->>    TPH Steering Tags, rather than implementing duplicated logic
->>    in each subsystem.
->>
->> This interface provides a uniform method for any user-space
->> device access solution to work with TPH, which is why I believe
->> it is useful and necessary beyond the VFIO/RDMA case.
+On Fri, Apr 10, 2026 at 04:16:31PM +0100, Simon Horman wrote:
+> On Tue, Apr 07, 2026 at 08:43:37PM +0800, D. Wythe wrote:
+> > The alloc_pages() cannot satisfy requests exceeding MAX_PAGE_ORDER,
+> > and attempting such allocations will lead to guaranteed failures
+> > and potential kernel warnings.
+> > 
+> > For SMCR_PHYS_CONT_BUFS, cap the allocation order to MAX_PAGE_ORDER.
+> > This ensures the attempts to allocate the largest possible physically
+> > contiguous chunk succeed, instead of failing with an invalid order.
+> > This also avoids redundant "try-fail-degrade" cycles in
+> > __smc_buf_create().
+> > 
+> > For SMCR_MIXED_BUFS, no cap is needed: if the order exceeds
+> > MAX_PAGE_ORDER, alloc_pages() will silently fail (__GFP_NOWARN)
+> > and automatically fall back to virtual memory.
+> > 
+> > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > ---
+> > Changes v1 -> v2:
+> > https://lore.kernel.org/netdev/20260312082154.36971-1-alibuda@linux.alibaba.com/
+> > 
+> > - Move the bufsize cap from smcr_new_buf_create() up to
+> >   __smc_buf_create(), which is simpler and avoids touching
+> >   the allocation logic itself.
 > 
-> I understand the rationale for providing a read interface, for example for
-> debugging, but I do not see any justification for a write interface.
+> The nit below notwithstanding, this looks good to me.
+> 
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> 
+> > ---
+> >  net/smc/smc_core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> > index e2d083daeb7e..cdd881746e21 100644
+> > --- a/net/smc/smc_core.c
+> > +++ b/net/smc/smc_core.c
+> > @@ -2440,6 +2440,10 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
+> >  		/* use socket send buffer size (w/o overhead) as start value */
+> >  		bufsize = smc->sk.sk_sndbuf / 2;
+> >  
+> > +	/* limit bufsize for physically contiguous buffers */
+> > +	if (!is_smcd && lgr->buf_type == SMCR_PHYS_CONT_BUFS)
+> > +		bufsize = min_t(int, bufsize, (PAGE_SIZE << MAX_PAGE_ORDER));
+> 
+> nit: I think min() is sufficient here, and the inner parentheses are
+>      unnecessary
 
-Thank you for the comment!
+Hi Simon,
 
-As I explained, read interface is not only for debugging. It was used to
-such device who don't declare ST location in MSI-X or config-space, the following
-is Intel X710 NIC device's lspci output (only TPH part):
+I think min_t is required here because min() triggers a signedness
+error:
 
-	Capabilities: [1a0 v1] Transaction Processing Hints
-		Device specific mode supported
-		No steering table available
+././include/linux/compiler_types.h:706:38: error: call to
+‘__compiletime_assert_950’ declared with attribute error: min(bufsize,
+((1UL) << 12) << 10) signedness error
 
-So we could not config the ST for device on kernel because it's vendor specific.
-But we could configure ST by it's vendor user-space driver, in this case, we
-should get ST from kernel to user-space.
+The inner parentheses can be removed, though.
 
-
-As for write interface, which was used to devices whose ST location is known, I
-think we could simple it, and only passing <index, cpu>, then kernel query cpu's ST
-and set to corresponding index.
+D. Wythe
 
 > 
-> TPH is defined by the PCI specification. If a device intends to support it,
-> then it should conform to the specification.
-
-According to the PCI specification 6.17.3 ST Modes of Operation:
-
-  Device Specific Mode: It is recommended for the Function to use a Steering Tag value from an ST Table entry, but it is not required.
-
-  In the Device Specific Mode of operation, the assignment of the Steering Tags to Requests is device specific. The number
-  of Steering Tags used by the Function is permitted to be different than the number of interrupt vectors allocated for the
-  Function, irrespective of the ST Table location, and Steering Tag values used in Requests are not required to come from
-  the architected ST Table.
-
-Thanks
-
-> 
-> Thanks
-> 
-> 
->>
->> Thanks
->>
->>>
->>> Thanks
->>>
->>>>
->>>> Best regards,
->>>> Chengwen Feng
->>>>
->>
->>
-
+> > +
+> >  	for (bufsize_comp = smc_compress_bufsize(bufsize, is_smcd, is_rmb);
+> >  	     bufsize_comp >= 0; bufsize_comp--) {
+> >  		if (is_rmb) {
+> > -- 
+> > 2.45.0
+> > 
 
