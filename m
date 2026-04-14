@@ -1,165 +1,171 @@
-Return-Path: <linux-rdma+bounces-19343-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19346-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QAXGOh5c3mlfCQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19343-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 17:24:14 +0200
+	id OIx3FBha3mmLCAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19346-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 17:15:36 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7343B3FBBC5
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 17:24:14 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388DC3FB98B
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 17:15:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9304D3059318
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 15:11:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2DBCF30201BD
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 15:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB8C3E958A;
-	Tue, 14 Apr 2026 15:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DC53E95B5;
+	Tue, 14 Apr 2026 15:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LOR05mK+"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jJdRn+Pj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEDE3E9580
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2026 15:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787463E95A9;
+	Tue, 14 Apr 2026 15:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776179489; cv=none; b=QHxWNIctt16ZZZs7FyLcgz0N27buvE3kWbzyjq56ymwV6WBRGf3UXEh2GC9+2BUqUjoIVizb+3VV6Cndl//ZNl3fMcOv5z9AZjsEAJMkL3Y2lYdOwJMHj727o7UgL5UfiJg65guUgkr2XNQb7pXMt1B4I6MNjBriQnLHGcG//Vc=
+	t=1776179720; cv=none; b=Jyn1Ge/pYsheqhM7Cz89oJq5LmRdnUUgJFcEgz9bi0/zvHnocplSHWIDJlI41V9/mlMR9O3YuPGut4dz8uWhfPEltkWGjE1qBs+kUI6QwWvbgHWyNJoIJjggzO9ReUd619BVGCCBaMzXKqRpmEfHIHmtbLP/vicC7D+KoB7imrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776179489; c=relaxed/simple;
-	bh=wtmKouu1J13QOKEWpC/Rhgp+PUitDlJyO7jIdqkEIVo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gsTfZhP5UNsnsSLpRj6TpzYZmvy5ZE5lyn5Y5w4HFZdFGxfM591T9NU0kFJ+FYjn99J4nlOG3Ts1PX5AfNBHNA2HOVpDzUgMa7GQF017CvO7NltKBMTV2mwwtnAUxSmsSck2dJ6xVqviwI3LCTeU2B76MvFZtnzSSEfmcMrAGAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=LOR05mK+; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-8acb3daf2aaso26922226d6.0
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2026 08:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1776179487; x=1776784287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KYWxsN8NcBk0hkmTwyrJ9dFetqgCC/fPQOeOuZaqCQI=;
-        b=LOR05mK+HpHUZy18w4Dk7mDIMTVt2CqGJv6K1mBA55KO1uywBz8h8IBKBzhn4aHAO9
-         vH0NS+fuTcuiKi0VoxchkLiUtLN6rj7dqxajvrCuQyW0IdXx5NElXiYa4YWn5DDd/BtR
-         WFgWMEErubR+eerVtOWit7waU1BfplQlQbeI0ukBBX1Hfp8klPZxXlCJOs/B4824tYD6
-         vOMiryVGnE37XdbdYE5g3wxBwhLNymPEJbmA6ALYM/d6B+I5HUMss6Fc9WF0N1a3VH7u
-         OcXMJI2BDU4/8aMgg7lU7yp0PYDLaJwX/fP8wrU46jXXqbpXimJy41RSnyg/4SlBtXPv
-         9LPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776179487; x=1776784287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KYWxsN8NcBk0hkmTwyrJ9dFetqgCC/fPQOeOuZaqCQI=;
-        b=GquMixKFrZ9ZHymafsRqr2sHEPE0iDALcn1Pp3qMGGx+3vKHG5VT3099DKW/PTI45B
-         7Ktm4RLb/6KrIoxxvhSKtwZ8os1+auG4m1iOxe2uhJw/bynWoa5NSo7wToQvLq27N4Wx
-         /9Lzpktc4L6dRxUUAk1E24GUV+QCsFmUejVCKCdi9Zqo7CERSB/ITbx30+TTCiEjYpwA
-         EpPXs2PtvL5n2GCMwzA+56efHK1P4pMA68cgh4tRqDUJWeYjL56zlBcVgFArg7crRQA9
-         wSmcGP801YlSkcXSHtkQudVh6fo1goQnUR0FRH2EZ5hYQJihuCDVbvfPoAXZK/3ETNCq
-         w6VQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8NcamPfq9knORIPyUAHv6WDNEGFdKGgpB/p9TxAiDyaydgcy8RQ4NVByOfOLAlo/hGAF8O6gbxCK39@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/IHegQNFOMtvix9cDlF+APGXzYSK+H74Lgr576jLvPDc3r1/b
-	Cq/LGtPbQWLXesGIO7E9eCoxsNE7QLR7yfYYdCJ2yFXZ/UvT9f534DiW1dInjxRtg2k=
-X-Gm-Gg: AeBDieujcRI4zMHDpGw6GItMb7Ploo/3ANSIcSmhno1rXmjhHErtcYe0nprnTBtcS1l
-	T/W79m5ZsGXYP+L4135bvAa9L3IJfGUteNRGXXip8EF3Uq+WMCqEpGdYCYAfkdlxNZRseWS78I0
-	GsxljkZc/M2WadPgVSRmtAYnK6iyBOOTRcOWgEGWttc4et29OgKByELZblGbG+u5wjbXS1OXZ3f
-	hgML89YQmH217rhuF3DBoYCjXWqGf36uCVjuy7QjyHO1bSSd8gKLhmKkYhR3TOjMy6fJ6ZoHxuu
-	BfyT33/kW/dN51Fd7B8Ou/CL3eIMrBvLVAPpatHC4IOsTqSvKMWkstySMTK2LQh4aP0H6D1bDZX
-	zt+6715fk886+CG9SdGDCIwUx4nVmttNcrzhEfJtBGdtmfqxHOrQPFCJ7GlOrOnWGMk00eN0tRQ
-	HEASCVS9OGrHpTaTze3Jm/lZ23T9xfAz0O0UFvAyoNUMP7f45cmSKVePCsOHZMHuMKHrPtU/yUK
-	1oXkA==
-X-Received: by 2002:a05:6214:4a01:b0:89c:8709:d238 with SMTP id 6a1803df08f44-8ac862b51e2mr284214856d6.40.1776179487026;
-        Tue, 14 Apr 2026 08:11:27 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ac849e35afsm159006516d6.3.2026.04.14.08.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2026 08:11:26 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wCfQD-0000000BNfx-2aVf;
-	Tue, 14 Apr 2026 12:11:25 -0300
-Date: Tue, 14 Apr 2026 12:11:25 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: fengchengwen <fengchengwen@huawei.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhiping Zhang <zhipingz@meta.com>
-Subject: Re: [RFC] Proposal: Add sysfs interface for PCIe TPH Steering Tag
- retrieval and configuration
-Message-ID: <20260414151125.GF2577880@ziepe.ca>
-References: <6ea4c4c2-774e-aa76-3665-918e2a24cc84@huawei.com>
- <20260413100152.GG21470@unreal>
- <c3a6c6ca-3b71-476c-947a-5f2393d046bd@huawei.com>
- <20260413191930.GP21470@unreal>
- <b95ced54-339f-4859-b3eb-8bf261393ffc@huawei.com>
- <20260414085723.GR21470@unreal>
- <84bf119e-fa8c-4c97-9197-3377b7e2b250@huawei.com>
- <20260414103547.GA361495@unreal>
- <11eaea26-ec10-264a-db1e-951f6b46078d@huawei.com>
+	s=arc-20240116; t=1776179720; c=relaxed/simple;
+	bh=j9M29PHUu4QzpxXOdZ8HdXPKWG1HRS2IhD1l2gJjzz0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=OUrwpFYuYJoYGLfXFqwdWwq7hwZIY9gVXLlo9UleTLjiScoFqICyUPJa32PSdUZZXapiauAKQgywGNcTh+smNpwzeS/Nu+rL1IiCAaEBFldoFpJn6mDed18c3OUhjua5rvYMx6Lr3cdQ83qIL90yGopO56/83k7rDXj9+lQu3fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jJdRn+Pj; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1231)
+	id 5717720B6F01; Tue, 14 Apr 2026 08:15:11 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5717720B6F01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1776179711;
+	bh=76UaCt7m9qkU00fT5oqnIBRKGwTRxVqIsQNXt0w0ZGQ=;
+	h=From:To:Subject:Date:From;
+	b=jJdRn+Pj80pI4jVUiXvqv7FzQ1idXvrx/bcuGRBLQTKeJ1vCNNfB1JCfLl6GWh5PI
+	 D59f6qAl54DYHzp1mKXOJoIoex3EnVH5tG4lWlqqGoqtmBfMNnbxrNlt11QkImSoyJ
+	 PHrOsRq4X/6NQItha9nrV38lfGx63ktxEoN/WFf8=
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	longli@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	ssengar@linux.microsoft.com,
+	jacob.e.keller@intel.com,
+	dipayanroy@linux.microsoft.com,
+	ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	kees@kernel.org,
+	sbhatta@marvell.com,
+	leitao@debian.org,
+	netdev@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	gargaditya@microsoft.com,
+	gargaditya@linux.microsoft.com
+Subject: [PATCH net-next 0/2] net: mana: Avoid queue struct allocation failure under memory fragmentation
+Date: Tue, 14 Apr 2026 08:13:28 -0700
+Message-ID: <20260414151456.687506-1-gargaditya@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11eaea26-ec10-264a-db1e-951f6b46078d@huawei.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-19343-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_FROM(0.00)[bounces-19346-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ziepe.ca:dkim,ziepe.ca:mid]
-X-Rspamd-Queue-Id: 7343B3FBBC5
+	FROM_NEQ_ENVFROM(0.00)[gargaditya@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.998];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 388DC3FB98B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 14, 2026 at 10:46:00PM +0800, fengchengwen wrote:
->    We have a real platform requirement:
-> 
->      * 1. Devices in TPH Device-Specific Mode with no standard ST table
->      * 2. Steering Tags must be obtained from ACPI _DSM (kernel-only)
->      * 3. Devices are fully managed by userspace drivers (VFIO/UIO)
->      * 4. Userspace must program STs into vendor-specific registers
+The MANA driver can fail to load on systems with high memory
+utilization because several allocations in the queue setup paths
+require large physically contiguous blocks via kmalloc. Under memory
+fragmentation these high-order allocations may fail, preventing the
+driver from creating queues at probe time or when reconfiguring
+channels, ring parameters or MTU at runtime.
 
-No, this is nonsenscial too.
+Allocation sizes that are problematic:
 
-If you want to control the steering tags for MMIO BAR memory exposed
-by VFIO then the DMABUF mechanism Keith & co has been working on is
-the correct approach.
+  mana_create_txq -> tx_qp flat array (sizeof(mana_tx_qp) = 35528):
+    16 queues (default): 35528 * 16 =  ~555 KB contiguous
+    64 queues (max):     35528 * 64 = ~2220 KB contiguous
 
-If the VFIO user needs to control steering tags for the device it is
-directly controling then it must do that through VFIO ioctls.
+  mana_create_rxq -> rxq struct with flex array
+  (sizeof(mana_rxq) = 35712, rx_oobs=296 per entry):
+    depth 1024 (default): 35712 + 296 * 1024 =  ~331 KB per queue
+    depth 8192 (max):     35712 + 296 * 8192 = ~2403 KB per queue
 
-Nobody messes around with other devices under the covers of the
-operating kernel driver. Stop proposing that.
+  mana_pre_alloc_rxbufs -> rxbufs_pre and das_pre arrays:
+    16 queues, depth 1024 (default): 16 * 1024 * 8 =  128 KB each
+    64 queues, depth 8192 (max):     64 * 8192 * 8 = 4096 KB each
 
-Jason
+This series addresses the issue by:
+  1. Converting the tx_qp flat array into an array of pointers with
+     per-queue kvzalloc (~35 KB each), replacing a single contiguous
+     allocation that can reach ~2.2 MB at 64 queues.
+  2. Switching rxbufs_pre, das_pre, and rxq allocations to
+     kvmalloc/kvzalloc so the allocator can fall back to vmalloc
+     when contiguous memory is unavailable.
+
+Throughput testing confirms no regression. Since kvmalloc falls
+back to vmalloc under memory fragmentation, all kvmalloc calls
+were temporarily replaced with vmalloc to simulate the fallback
+path (iperf3, GBits/sec):
+
+                 Physically contiguous         vmalloc region
+  Connections      TX          RX              TX          RX
+  --------------------------------------------------------------
+  1                47.2        46.9            46.8        46.6
+  16               181         181             181         181
+  32               181         181             181         181
+  64               181         181             181         181
+
+Aditya Garg (2):
+  net: mana: Use per-queue allocation for tx_qp to reduce allocation
+    size
+  net: mana: Use kvmalloc for large RX queue and buffer allocations
+
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |  2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 61 +++++++++++--------
+ .../ethernet/microsoft/mana/mana_ethtool.c    |  2 +-
+ include/net/mana/mana.h                       |  2 +-
+ 4 files changed, 39 insertions(+), 28 deletions(-)
+
+-- 
+2.43.0
+
 
