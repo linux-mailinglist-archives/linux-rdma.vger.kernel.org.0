@@ -1,240 +1,206 @@
-Return-Path: <linux-rdma+bounces-19327-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19328-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YKfcNDQC3mkRmAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19327-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 11:00:36 +0200
+	id MM/1KPQD3mkQmQkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19328-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 11:08:04 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F78B3F79AF
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 11:00:36 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE4D3F7A8F
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 11:08:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5E38830ACD04
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 08:57:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 62005300E6A1
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 09:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178A23B892D;
-	Tue, 14 Apr 2026 08:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EDA344DA2;
+	Tue, 14 Apr 2026 09:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aTptth0E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XUBd5FTL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6F2291864;
-	Tue, 14 Apr 2026 08:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2538A1A23A4
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2026 09:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776157049; cv=none; b=YYX7kWajwcoQ+Ta+PHE8p4YTVuUE90z+YfESP4pxYHAXQeIXR4CHae1nojo3iCVNKNFD2nRg17cKpFZJbnVniXFCpXtHPL32P+abrlLke7bn2tUKkfJXSDjg31EId/aMWFZ5c5tO6legupWGReVseoCqbCF9agKlE78LdkpMixw=
+	t=1776157679; cv=none; b=hROsFXhuUbOLS63xsrj0i7t5SNUCiGgKMdZhl/fyc6VST6q8mSI1Ht6EAbnFiELxlhjqjEifG9ZRiYczErUc+FJU1YyTcyd073okk9Q6OGpYNiA8QAK9Yem4hFwD4+otjPGl25gFKlIgYixO3S3jALA82guLh+OqhRFoAokk1EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776157049; c=relaxed/simple;
-	bh=rQKc8v59XzD1cpt3QCxbzpps+5F+/WGW9EBay0AMWu0=;
+	s=arc-20240116; t=1776157679; c=relaxed/simple;
+	bh=74ny5oLd3SfWNFXDj9N75p51Z9YkhNCZX5SF0rBXvKk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QYS+lcO0vkC0KT9xrK788yZaZlU2yENQF7ia8y8WkntTv/AbAqwp01Ingjs3r8bavmdLF2fpG2L/M/xrXEDgJtF/AEp7LkguW9gcREeeZIC0ZiXEKPLQ927fTDt4hSZVKknGVxmwCQEMdf+PPkkHIP26jAaMO5n9SQ+2FmBXzhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aTptth0E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E10CDC19425;
-	Tue, 14 Apr 2026 08:57:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=M+GoklCDX5aSuR8NicW3Nexln+xL6P3WIsuKzxZaldRkhT0aCE/XqprpJI0pk+3/ipdZR7/tFcTXxiLYJrvGNON1TYp8Ee/XO5qw326exwJkQ1rh+csS5HqnMwGL/caSZupRTomUPQDQYJgfxOvuh4KRNASYatpHwBuMqqV+2w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XUBd5FTL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA0EC19425;
+	Tue, 14 Apr 2026 09:07:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776157049;
-	bh=rQKc8v59XzD1cpt3QCxbzpps+5F+/WGW9EBay0AMWu0=;
+	s=k20201202; t=1776157678;
+	bh=74ny5oLd3SfWNFXDj9N75p51Z9YkhNCZX5SF0rBXvKk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aTptth0EgcRkqW0OkwpOl0eLy+Qxf4N5hMwDkbu0z2s+y5FJQ0craQAeWdUzFJwe5
-	 WRy/SFXgp6u9O3QE/ycW8gukmiePZn9uObgcHdH9aF4M93+Fslk0peYNCGvdq3fvyJ
-	 mW6SLT56cSRGM4VqGD/74JVx+hSDFmBxNQWrE5jL0Tla6Y4b4DlBQRPM4Uw2AVSc6Y
-	 uAJnOClPvFonWlcrIHHzNhVXUciib9RZXOrOSYk9fvdE4NRKzxMDhGS2O/DuCVa7m/
-	 PQMeOE6yBJcrAaSCan657vfJ1RpuUVYd5w7zQMQDzVHE/wbcYh7U9eQVkjvzL/DB89
-	 IooNyMe6QqOUA==
-Date: Tue, 14 Apr 2026 11:57:23 +0300
+	b=XUBd5FTLaIWvKoIXZ50bD7hkawIA8Yh3DKcgCeE+I+cYN32uyg5o7BigLUR9pXFrT
+	 pM2MuzpHfakgje7tpzRAns6c33wdto2+UpIkRRru04C+ZWjGi8sgUOHJ584zU3AVM3
+	 BNem/+bhv70NQ1eu1arCau+IOs6PCkrBkI4SOzBmr6jWr2bRT06xo6A19+3RBFdbL/
+	 D22NrDgqh7WguSgNMKCSjcxcl0BP+UWuCFAo1AZzeHUkprIiIQIzqvaZop1fl2HyGG
+	 5a3ksFfFeBzYjN06xflZIAabxQ5wrJDeOWtcc58XQxFxsUTOcjHHKQva4HtSqCpojs
+	 yE9o9oXUr4iZA==
+Date: Tue, 14 Apr 2026 12:07:53 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: fengchengwen <fengchengwen@huawei.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhiping Zhang <zhipingz@meta.com>
-Subject: Re: [RFC] Proposal: Add sysfs interface for PCIe TPH Steering Tag
- retrieval and configuration
-Message-ID: <20260414085723.GR21470@unreal>
-References: <6ea4c4c2-774e-aa76-3665-918e2a24cc84@huawei.com>
- <20260413100152.GG21470@unreal>
- <c3a6c6ca-3b71-476c-947a-5f2393d046bd@huawei.com>
- <20260413191930.GP21470@unreal>
- <b95ced54-339f-4859-b3eb-8bf261393ffc@huawei.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Michael Bommarito <michael.bommarito@gmail.com>, security@kernel.org,
+	RDMA mailing list <linux-rdma@vger.kernel.org>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	hkbinbin <hkbinbinbin@gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Reject unknown opcodes before ICRC processing
+Message-ID: <20260414090753.GS21470@unreal>
+References: <20260414011725.1615286-1-michael.bommarito@gmail.com>
+ <e71fe83d-3e15-4bf2-89bf-4e0e42cbe2b5@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b95ced54-339f-4859-b3eb-8bf261393ffc@huawei.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+In-Reply-To: <e71fe83d-3e15-4bf2-89bf-4e0e42cbe2b5@linux.dev>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19327-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-19328-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,vger.kernel.org,ziepe.ca];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6F78B3F79AF
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9CE4D3F7A8F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 14, 2026 at 09:07:23AM +0800, fengchengwen wrote:
-> On 4/14/2026 3:19 AM, Leon Romanovsky wrote:
-> > On Mon, Apr 13, 2026 at 08:04:10PM +0800, fengchengwen wrote:
-> >> On 4/13/2026 6:01 PM, Leon Romanovsky wrote:
-> >>> On Fri, Apr 10, 2026 at 10:30:52PM +0800, fengchengwen wrote:
-> >>>> Hi all,
-> >>>>
-> >>>> I'm writing to propose adding a sysfs interface to expose and configure the
-> >>>> PCIe TPH
-> >>>> Steering Tag for PCIe devices, which is retrieved inside the kernel.
-> >>>>
-> >>>>
-> >>>> Background: The TPH Steering Tag is tightly coupled with both a PCIe device
-> >>>> (identified
-> >>>> by its BDF) and a CPU core. It can only be obtained in kernel mode. To allow
-> >>>> user-space
-> >>>> applications to fetch and set this value securely and conveniently, we need
-> >>>> a standard
-> >>>> kernel-to-user interface.
-> >>>>
-> >>>>
-> >>>> Proposed Solution: Add several sysfs attributes under each PCIe device's
-> >>>> sysfs directory:
-> >>>> 1. /sys/bus/pci/devices/<BDF>/tph_mode to query the TPH mode (interrupt or
-> >>>> device specific)
-> >>>> 2. /sys/bus/pci/devices/<BDF>/tph_enable to control the TPH feature
-> >>>> 3. /sys/bus/pci/devices/<BDF>/tph_st to support both read and write
-> >>>> operations, e.g.:
-> >>>>    Read operation:
-> >>>>      echo "cpu=3" > /sys/bus/pci/devices/0000:01:00.0/tph_st
-> >>>>      cat /sys/bus/pci/devices/0000:01:00.0/tph_st
-> >>>>    Write operation:
-> >>>>      echo "index=10 st=123" > /sys/bus/pci/devices/0000:01:00.0/tph_st
-> >>>>
-> >>>>
-> >>>> The design strictly follows PCI subsystem sysfs standards and has the
-> >>>> following key properties:
-> >>>>
-> >>>> 1. Dynamic Visibility: The sysfs attributes will only be present for PCIe
-> >>>> devices that
-> >>>>    support TPH Steering Tag. Devices without TPH capability will not show
-> >>>> these nodes,
-> >>>>    avoiding unnecessary user confusion.
-> >>>>
-> >>>> 2. Permission Control: The attributes will use 0600 file permissions,
-> >>>> ensuring only
-> >>>>    privileged root users can read or write them, which satisfies security
-> >>>> requirements
-> >>>>    for hardware configuration interfaces.
-> >>>>
-> >>>> 3. Standard Implementation Location: The interface will be implemented in
-> >>>>    drivers/pci/pci-sysfs.c, the canonical location for all PCI device sysfs
-> >>>> attributes,
-> >>>>    ensuring consistency and maintainability within the PCI subsystem.
-> >>>>
-> >>>>
-> >>>> Why sysfs instead of alternatives like VFIO-PCI ioctl:
-> >>>>
-> >>>> - Universality: sysfs does not require binding the device to a special
-> >>>> driver such as
-> >>>>   vfio-pci. It is available to any privileged user-space component,
-> >>>> including system
-> >>>>   utilities, daemons, and monitoring tools.
-> >>>>
-> >>>> - Simplicity: Both user-space usage (cat/echo) and kernel implementation are
-> >>>>   straightforward, reducing code complexity and long-term maintenance cost.
-> >>>>
-> >>>> - Design Alignment: TPH Steering Tag is a generic PCIe device feature, not
-> >>>> specific to
-> >>>>   user-space drivers like DPDK or VFIO. Exposing it via sysfs matches the
-> >>>> kernel's
-> >>>>   standard pattern for hardware capabilities.
-> >>>>
-> >>>>
-> >>>> I look forward to your comments about this design before submitting the
-> >>>> final patch.
-> >>>
-> >>> You need to explain more clearly why this write functionality is useful
-> >>> and necessary outside the VFIO/RDMA context:
-> >>> https://lore.kernel.org/all/20260324234615.3731237-1-zhipingz@meta.com/
-> >>>
-> >>> AFAIK, for non-VFIO TPH callers, kernel has enough knowledge to set
-> >>> right ST values.
-> >>>
-> >>> There are several comments regarding the implementation, but those can wait
-> >>> until the rationale behind the proposal is fully clarified.
-> >>
-> >> Thanks for your review and comments.
-> >>
-> >> Let me clarify the rationale behind this user-space sysfs interface:
-> >>
-> >> 1. VFIO is just one of the user-space device access frameworks.
-> >>    There are many other in-kernel frameworks that expose devices
-> >>    to user space, such as UIO, UACCE, etc., which may also require
-> >>    TPH Steering Tag support.
-> >>
-> >> 2. The kernel can automatically program Steering Tags only when
-> >>    the device provides a standard ST table in MSI-X or config space.
-> >>    However, many devices implement vendor-specific or platform-specific
-> >>    Steering Tag programming methods that cannot be fully handled
-> >>    by the generic kernel code.
-> >>
-> >> 3. For such devices, user-space applications or framework drivers
-> >>    need to retrieve and configure TPH Steering Tags directly.
-> >>    A unified sysfs interface allows all user-space frameworks
-> >>    (not just VFIO) to use a common, standard way to manage
-> >>    TPH Steering Tags, rather than implementing duplicated logic
-> >>    in each subsystem.
-> >>
-> >> This interface provides a uniform method for any user-space
-> >> device access solution to work with TPH, which is why I believe
-> >> it is useful and necessary beyond the VFIO/RDMA case.
+On Mon, Apr 13, 2026 at 10:23:55PM -0700, Zhu Yanjun wrote:
+> 
+> åœ¨ 2026/4/13 18:17, Michael Bommarito å†™é“:
+> > Even after applying commit 7244491dab34 ("RDMA/rxe: Validate pad and ICRC
+> > before payload_size() in rxe_rcv"), a single unauthenticated UDP packet
+> > can still trigger panic.  That patch handled payload_size() underflow
+> > only for valid opcodes with short packets, not for packets carrying an
+> > unknown opcode.  The unknown-opcode OOB read described below
+> > predates that commit and reaches back to the initial Soft RoCE driver.
 > > 
-> > I understand the rationale for providing a read interface, for example for
-> > debugging, but I do not see any justification for a write interface.
+> > The check added there reads
+> > 
+> >      pkt->paylen < header_size(pkt) + bth_pad(pkt) + RXE_ICRC_SIZE
+> > 
+> > where header_size(pkt) expands to rxe_opcode[pkt->opcode].length.  The
+> > rxe_opcode[] array has 256 entries but is only populated for defined IB
+> > opcodes; any other entry (for example opcode 0xff) is zero-initialized,
+> > so length == 0 and the check degenerates to
+> > 
+> >      pkt->paylen < 0 + bth_pad(pkt) + RXE_ICRC_SIZE
+> > 
+> > which does not constrain pkt->paylen enough.  rxe_icrc_hdr() then
+> > computes
+> > 
+> >      rxe_opcode[pkt->opcode].length - RXE_BTH_BYTES
+> > 
+> > which underflows when length == 0 and passes a huge value to
+> > rxe_crc32(), causing an out-of-bounds read of the skb payload.
+> > 
+> > Reproduced on v7.0-rc7 with that fix applied, QEMU/KVM with
+> > CONFIG_RDMA_RXE=y and CONFIG_KASAN=y, after
+> > 
+> >      rdma link add rxe0 type rxe netdev eth0
+> > 
+> > A single 48-byte UDP packet to port 4791 with BTH opcode=0xff and
+> > QPN=IB_MULTICAST_QPN triggers:
+> > 
+> >      BUG: KASAN: slab-out-of-bounds in crc32_le+0x115/0x170
+> >      Read of size 1 at addr ...
+> >      The buggy address is located 0 bytes to the right of
+> >       allocated 704-byte region
+> >      Call Trace:
+> >       crc32_le+0x115/0x170
+> >       rxe_icrc_hdr.isra.0+0x226/0x300
+> >       rxe_icrc_check+0x13f/0x3a0
+> >       rxe_rcv+0x6e1/0x16e0
+> >       rxe_udp_encap_recv+0x20a/0x320
+> >       udp_queue_rcv_one_skb+0x7ed/0x12c0
+> > 
+> > Subsequent packets with the same shape fault on unmapped memory and
+> > panic the kernel.  The trigger requires only module load and
+> > "rdma link add"; no QP, no connection, and no authentication.
+> > 
+> > Fix this by rejecting packets whose opcode has no rxe_opcode[] entry,
+> > detected via the zero mask, before any length arithmetic runs.
+> > 
+> > Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> > Cc:stable@vger.kernel.org
+> > Assisted-by: Claude:claude-opus-4-6
+> > Signed-off-by: Michael Bommarito<michael.bommarito@gmail.com>
+> > ---
+> >   drivers/infiniband/sw/rxe/rxe_recv.c | 9 +++++++++
+> >   1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+> > index f79214738c2b..413e1e954ce0 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_recv.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+> > @@ -330,6 +330,15 @@ void rxe_rcv(struct sk_buff *skb)
+> >   	pkt->qp = NULL;
+> >   	pkt->mask |= rxe_opcode[pkt->opcode].mask;
+> > +	/*
+> > +	 * Unknown opcodes have a zeroed rxe_opcode[] entry (mask == 0 and
+> > +	 * length == 0).  Reject them before any length math: rxe_icrc_hdr()
+> > +	 * would otherwise compute length - RXE_BTH_BYTES and pass the
+> > +	 * underflowed value to rxe_crc32(), producing an out-of-bounds read.
+> > +	 */
+> > +	if (unlikely(rxe_opcode[pkt->opcode].mask == 0))
 > 
-> Thank you for the comment!
+> Add rdma maillist.
 > 
-> As I explained, read interface is not only for debugging. It was used to
-> such device who don't declare ST location in MSI-X or config-space, the following
-> is Intel X710 NIC device's lspci output (only TPH part):
+> if (unlikely(!rxe_opcode[pkt->opcode].mask &&
+> !rxe_opcode[pkt->opcode].length))
 > 
-> 	Capabilities: [1a0 v1] Transaction Processing Hints
-> 		Device specific mode supported
-> 		No steering table available
+> I am not sure if "rxe_opcode[pkt->opcode].length == 0" should also be taken
+> into account.
 > 
-> So we could not config the ST for device on kernel because it's vendor specific.
-> But we could configure ST by it's vendor user-space driver, in this case, we
-> should get ST from kernel to user-space.
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Vendor-specific, in the context of the PCI specification, does not mean the
-kernel cannot configure it. It simply means that the ST values are not
-stored in the ST table.
+We need patch to be sent to the ML, so we can merge it.
 
 Thanks
+
+> 
+> Zhu Yanjun
+> 
+> > +		goto drop;
+> > +
+> >   	if (unlikely(pkt->paylen < header_size(pkt) + bth_pad(pkt) +
+> >   		       RXE_ICRC_SIZE))
+> >   		goto drop;
+> 
+> -- 
+> Best Regards,
+> Yanjun.Zhu
 
