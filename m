@@ -1,280 +1,179 @@
-Return-Path: <linux-rdma+bounces-19332-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19333-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eP7EMnUa3mmFnAkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19332-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 12:44:05 +0200
+	id +MtMHJQc3mmFnAkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19333-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 12:53:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77C803F8E5C
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 12:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC173F8F9E
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 12:53:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4082D30FAA1A
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 10:37:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F14843045EEF
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 10:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62DB73D6CBA;
-	Tue, 14 Apr 2026 10:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481A33D646A;
+	Tue, 14 Apr 2026 10:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WKPWgq5y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhrLIiP7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63C93D7D9E;
-	Tue, 14 Apr 2026 10:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915CC396B98;
+	Tue, 14 Apr 2026 10:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776162955; cv=none; b=IhjRXKZzxjEZ1dt5zD2qOoTYy3R4c2a9NlSMKDrDA7p1uIc1CvKQZtpnrAbP0wViFF2MDGr43t7qeXNUHn9ve2UxhyKt0tVqJYVCJcOO5tZTuErU+uLf75v7tx1eRG/wUseAvB/Mg8Zjk652yGtpnig5a2WCTywc2Nas+6ckEN8=
+	t=1776163625; cv=none; b=No6N9K3XZ3zX8NNfzt4Vognzb82vl4sP/vVpMQogxO5Ks+vAatFLycnfFl4875He8Cw6pN9r9/oqh7MnAtkBfuKH1z5jF0auKQdSCBLAmODSSvLVBrpLRx/J0k/yuDvMzjVB2v4EeUilsm7KlFDoJenojMb9jW27YgBTGt1O7S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776162955; c=relaxed/simple;
-	bh=SFNQ0GUXZDmko3umJzr38nltBojjjdV+yz2yRE036ik=;
+	s=arc-20240116; t=1776163625; c=relaxed/simple;
+	bh=n9ct7ScsO07xA8DCNZjaYpaEG49x02N8cAQdoUQFVvo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SdADOrCscmrROw+Tl3h7gGZ0Ak637JZxJJNH13rGl+JLxqGyJSKSjul4cKtDudITEIEi47/tul8bMmZUO17bwvtHvH/xIw/c0uxPqa/QkVdMQRC9AWBMN0jr5KsyOetv3WCpPrQAemWgKQnoaToCQGABfKeJcB7cRBSQoEphZnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WKPWgq5y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B61C19425;
-	Tue, 14 Apr 2026 10:35:52 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VPsHI5uhlnoq7D+ai1IhtOrsVV5aCjNAqV+WjKemp3NF0TNn2K5gJWcHJubnpnThP7RzyV8NW0tGPqH67izDC17wpqKntSmjPRTI/OO02yHq7I60w2Yk263LeuM2y5u2A/wkKwD9aD7e+DEBbVL98jJCWxLDgA2lmQL7fKwxV1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhrLIiP7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74D5AC19425;
+	Tue, 14 Apr 2026 10:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776162954;
-	bh=SFNQ0GUXZDmko3umJzr38nltBojjjdV+yz2yRE036ik=;
+	s=k20201202; t=1776163625;
+	bh=n9ct7ScsO07xA8DCNZjaYpaEG49x02N8cAQdoUQFVvo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WKPWgq5yvXTwdm6Mn7ddnAlqSEEiLBiWHTaX5mT5aGATcja8JjLui6ZcqNanm6scd
-	 CvXrq5dpTAh4lfYq1EVZUX4GCculXV6aUZ8B2O66uXnN4hL8M3IpV0q1QnBYf/Cgl2
-	 uXmzZTnbW+Tg8K5+cr8iHrkx2+6e8RjuZe77W4iUy0UXTXGq+qIpq/A/xcKV1UjzsD
-	 tSBo0NXcGq1hWol0n071OCMjHVTW3JNe8xQS1eQwar0Cs0wcpqFjwIeRuJfCLbea1B
-	 MZfrvQ0InJkZRVLl5oIPVYvATc3jjlfrLG2y30pSPcM877QPNc8FyNTCL8ekqjzoew
-	 0U2KV9PxBXr2w==
-Date: Tue, 14 Apr 2026 13:35:47 +0300
+	b=RhrLIiP7sSz4GKbsKQPvWBGl3joH+Mk7pakrFmbjX0aKPTQWye1YYpgKTmOnJ38Uw
+	 gbIQuVrKcOP7tBWqwGnQGz4bOT4SdeBsuQVlb28Oxg3fGngxVGAMgjpEE65YDJ4S7Q
+	 +9sOhYbW/azERbzv8rPNyGuaBqnVmPH2GB4mJm08gFZmN1H8ExyyZJGuK8S9AfN0Wm
+	 BZJ0ULLFHEJgrxygSmxe6H3Nd+lHsaNVQfuPlvVq8ResmL6SZmC9ekVTw8ED6UPCuO
+	 qwuLOtLM/YEdcyBxLvWt2Okm65yyWAvjLfBcAjZ0yfP71HdBnbzMzNkHNDmP3pXPf3
+	 OkIIkRtbpfB/Q==
+Date: Tue, 14 Apr 2026 13:47:01 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: fengchengwen <fengchengwen@huawei.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Keith Busch <kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhiping Zhang <zhipingz@meta.com>
-Subject: Re: [RFC] Proposal: Add sysfs interface for PCIe TPH Steering Tag
- retrieval and configuration
-Message-ID: <20260414103547.GA361495@unreal>
-References: <6ea4c4c2-774e-aa76-3665-918e2a24cc84@huawei.com>
- <20260413100152.GG21470@unreal>
- <c3a6c6ca-3b71-476c-947a-5f2393d046bd@huawei.com>
- <20260413191930.GP21470@unreal>
- <b95ced54-339f-4859-b3eb-8bf261393ffc@huawei.com>
- <20260414085723.GR21470@unreal>
- <84bf119e-fa8c-4c97-9197-3377b7e2b250@huawei.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Jiri Pirko <jiri@nvidia.com>,
+	syzbot <syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [rdma?] WARNING in ib_dealloc_device
+Message-ID: <20260414104701.GB361495@unreal>
+References: <69dc3310.a00a0220.475f0.0018.GAE@google.com>
+ <20260413154353.GK21470@unreal>
+ <PH7PR12MB66356E0176748BFFF081D9B4B0242@PH7PR12MB6635.namprd12.prod.outlook.com>
+ <20260413174228.GQ3694781@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <84bf119e-fa8c-4c97-9197-3377b7e2b250@huawei.com>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+In-Reply-To: <20260413174228.GQ3694781@ziepe.ca>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19332-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19333-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 77C803F8E5C
+	TAGGED_RCPT(0.00)[linux-rdma,03393ff6c35fd2cc43de];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: 8DC173F8F9E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 14, 2026 at 05:30:09PM +0800, fengchengwen wrote:
-> On 4/14/2026 4:57 PM, Leon Romanovsky wrote:
-> > On Tue, Apr 14, 2026 at 09:07:23AM +0800, fengchengwen wrote:
-> >> On 4/14/2026 3:19 AM, Leon Romanovsky wrote:
-> >>> On Mon, Apr 13, 2026 at 08:04:10PM +0800, fengchengwen wrote:
-> >>>> On 4/13/2026 6:01 PM, Leon Romanovsky wrote:
-> >>>>> On Fri, Apr 10, 2026 at 10:30:52PM +0800, fengchengwen wrote:
-> >>>>>> Hi all,
-> >>>>>>
-> >>>>>> I'm writing to propose adding a sysfs interface to expose and configure the
-> >>>>>> PCIe TPH
-> >>>>>> Steering Tag for PCIe devices, which is retrieved inside the kernel.
-> >>>>>>
-> >>>>>>
-> >>>>>> Background: The TPH Steering Tag is tightly coupled with both a PCIe device
-> >>>>>> (identified
-> >>>>>> by its BDF) and a CPU core. It can only be obtained in kernel mode. To allow
-> >>>>>> user-space
-> >>>>>> applications to fetch and set this value securely and conveniently, we need
-> >>>>>> a standard
-> >>>>>> kernel-to-user interface.
-> >>>>>>
-> >>>>>>
-> >>>>>> Proposed Solution: Add several sysfs attributes under each PCIe device's
-> >>>>>> sysfs directory:
-> >>>>>> 1. /sys/bus/pci/devices/<BDF>/tph_mode to query the TPH mode (interrupt or
-> >>>>>> device specific)
-> >>>>>> 2. /sys/bus/pci/devices/<BDF>/tph_enable to control the TPH feature
-> >>>>>> 3. /sys/bus/pci/devices/<BDF>/tph_st to support both read and write
-> >>>>>> operations, e.g.:
-> >>>>>>    Read operation:
-> >>>>>>      echo "cpu=3" > /sys/bus/pci/devices/0000:01:00.0/tph_st
-> >>>>>>      cat /sys/bus/pci/devices/0000:01:00.0/tph_st
-> >>>>>>    Write operation:
-> >>>>>>      echo "index=10 st=123" > /sys/bus/pci/devices/0000:01:00.0/tph_st
-> >>>>>>
-> >>>>>>
-> >>>>>> The design strictly follows PCI subsystem sysfs standards and has the
-> >>>>>> following key properties:
-> >>>>>>
-> >>>>>> 1. Dynamic Visibility: The sysfs attributes will only be present for PCIe
-> >>>>>> devices that
-> >>>>>>    support TPH Steering Tag. Devices without TPH capability will not show
-> >>>>>> these nodes,
-> >>>>>>    avoiding unnecessary user confusion.
-> >>>>>>
-> >>>>>> 2. Permission Control: The attributes will use 0600 file permissions,
-> >>>>>> ensuring only
-> >>>>>>    privileged root users can read or write them, which satisfies security
-> >>>>>> requirements
-> >>>>>>    for hardware configuration interfaces.
-> >>>>>>
-> >>>>>> 3. Standard Implementation Location: The interface will be implemented in
-> >>>>>>    drivers/pci/pci-sysfs.c, the canonical location for all PCI device sysfs
-> >>>>>> attributes,
-> >>>>>>    ensuring consistency and maintainability within the PCI subsystem.
-> >>>>>>
-> >>>>>>
-> >>>>>> Why sysfs instead of alternatives like VFIO-PCI ioctl:
-> >>>>>>
-> >>>>>> - Universality: sysfs does not require binding the device to a special
-> >>>>>> driver such as
-> >>>>>>   vfio-pci. It is available to any privileged user-space component,
-> >>>>>> including system
-> >>>>>>   utilities, daemons, and monitoring tools.
-> >>>>>>
-> >>>>>> - Simplicity: Both user-space usage (cat/echo) and kernel implementation are
-> >>>>>>   straightforward, reducing code complexity and long-term maintenance cost.
-> >>>>>>
-> >>>>>> - Design Alignment: TPH Steering Tag is a generic PCIe device feature, not
-> >>>>>> specific to
-> >>>>>>   user-space drivers like DPDK or VFIO. Exposing it via sysfs matches the
-> >>>>>> kernel's
-> >>>>>>   standard pattern for hardware capabilities.
-> >>>>>>
-> >>>>>>
-> >>>>>> I look forward to your comments about this design before submitting the
-> >>>>>> final patch.
-> >>>>>
-> >>>>> You need to explain more clearly why this write functionality is useful
-> >>>>> and necessary outside the VFIO/RDMA context:
-> >>>>> https://lore.kernel.org/all/20260324234615.3731237-1-zhipingz@meta.com/
-> >>>>>
-> >>>>> AFAIK, for non-VFIO TPH callers, kernel has enough knowledge to set
-> >>>>> right ST values.
-> >>>>>
-> >>>>> There are several comments regarding the implementation, but those can wait
-> >>>>> until the rationale behind the proposal is fully clarified.
-> >>>>
-> >>>> Thanks for your review and comments.
-> >>>>
-> >>>> Let me clarify the rationale behind this user-space sysfs interface:
-> >>>>
-> >>>> 1. VFIO is just one of the user-space device access frameworks.
-> >>>>    There are many other in-kernel frameworks that expose devices
-> >>>>    to user space, such as UIO, UACCE, etc., which may also require
-> >>>>    TPH Steering Tag support.
-> >>>>
-> >>>> 2. The kernel can automatically program Steering Tags only when
-> >>>>    the device provides a standard ST table in MSI-X or config space.
-> >>>>    However, many devices implement vendor-specific or platform-specific
-> >>>>    Steering Tag programming methods that cannot be fully handled
-> >>>>    by the generic kernel code.
-> >>>>
-> >>>> 3. For such devices, user-space applications or framework drivers
-> >>>>    need to retrieve and configure TPH Steering Tags directly.
-> >>>>    A unified sysfs interface allows all user-space frameworks
-> >>>>    (not just VFIO) to use a common, standard way to manage
-> >>>>    TPH Steering Tags, rather than implementing duplicated logic
-> >>>>    in each subsystem.
-> >>>>
-> >>>> This interface provides a uniform method for any user-space
-> >>>> device access solution to work with TPH, which is why I believe
-> >>>> it is useful and necessary beyond the VFIO/RDMA case.
-> >>>
-> >>> I understand the rationale for providing a read interface, for example for
-> >>> debugging, but I do not see any justification for a write interface.
-> >>
-> >> Thank you for the comment!
-> >>
-> >> As I explained, read interface is not only for debugging. It was used to
-> >> such device who don't declare ST location in MSI-X or config-space, the following
-> >> is Intel X710 NIC device's lspci output (only TPH part):
-> >>
-> >> 	Capabilities: [1a0 v1] Transaction Processing Hints
-> >> 		Device specific mode supported
-> >> 		No steering table available
-> >>
-> >> So we could not config the ST for device on kernel because it's vendor specific.
-> >> But we could configure ST by it's vendor user-space driver, in this case, we
-> >> should get ST from kernel to user-space.
-> > 
-> > Vendor-specific, in the context of the PCI specification, does not mean the
-> > kernel cannot configure it. It simply means that the ST values are not
-> > stored in the ST table.
+On Mon, Apr 13, 2026 at 02:42:28PM -0300, Jason Gunthorpe wrote:
+> On Mon, Apr 13, 2026 at 04:12:09PM +0000, Jiri Pirko wrote:
+> >    Will check it tmrw
 > 
-> Thank you for the clarification!
-> 
-> I agree with your interpretation of "vendor-specific" in PCI spec terms—it
-> does not prevent the kernel from handling TPH in principle. However, the
-> real problem is that the kernel has no standardized way to know where or
-> how to program those vendor-specific ST values.
+> I fed it to Claude and after 40 mins it is stumped too.. It should not
+> be possible for this to happen.
 
-No one here is opposed to you implementing the appropriate callbacks or
-extending the existing in-kernel API to support a device‑specific mode.
+Interesting, I used Chris's prompts for this debug and got the following
+suggestions (CONFIG_PREEMPT_RT=y in this .config):
 
-> 
-> When a device  reports "No steering table available" and operates in
-> device-specific mode, the method used to set ST values is entirely
-> device-specific and not covered by the PCI specification. If the device
-> is taken over to user-space by UIO framework (e.g. VFIO or IGB_UIO), the
-> generic kernel cannot infer the proper programming sequence or registers
-> for each vendor-specific implementation.
-> 
-> In these cases, the configuration must be done by the vendor’s
-> user-space driver, which is aware of the device’s private programming
-> model. But such a user-space driver still needs to obtain valid,
-> platform-provided ST values (from ACPI _DSM), which it cannot do
-> without a kernel interface.
+------------------------------------------------------------------------
+REMAINING HYPOTHESES
+------------------------------------------------------------------------
 
-The objection applies to this point. The PCI device exists in kernel space,
-and the kernel is responsible for managing its internal state.
+1. PREEMPT_RT rwsem behavior (most likely for syzkaller SOFTLOCKUP trigger):
+   Under PREEMPT_RT, down_write/down_read use rt_mutex internally. Priority
+   inheritance and preemption semantics differ from non-RT. There may be a
+   window in the rwsem downgrade path inside enable_device_and_get (which
+   downgrades from WRITE to READ after setting DEVICE_REGISTERED) that allows
+   a concurrent disable_device to observe an inconsistent state.
 
-> 
-> This is why a read-only interface to retrieve ST values is still
-> needed: the kernel holds the valid platform tags, while the user-space
-> driver handles the device-specific programming.
-> 
-> Thanks
-> 
-> > 
-> > Thanks
-> 
+   Specifically: enable_device_and_get does:
+     down_write(devices_rwsem)
+     xa_set_mark(DEVICE_REGISTERED)
+     downgrade_write(devices_rwsem)  [WRITE -> READ]
+     add_compat_devs()
+     up_read(devices_rwsem)
+
+   Under PREEMPT_RT, could disable_device acquire WRITE between the xa_set_mark
+   and downgrade_write? If so, it would clear DEVICE_REGISTERED while
+   add_compat_devs is about to run (but hasn't yet seen the mark cleared).
+
+2. xa_for_each skipping entries during concurrent xa_erase restructuring:
+   If rdma_dev_exit_net's remove_one_compat_dev erases an entry concurrently
+   with remove_compat_devs iterating, xas_shrink (called inside xa_erase) could
+   restructure the xarray tree. If xa_find_after then traverses a restructured
+   tree and skips a subsequent entry, that entry remains in compat_devs.
+
+   This is subtle: xa_erase takes the xarray spinlock (or rt_mutex), but
+   xa_for_each calls xa_find_after under RCU. The RCU read side might see a
+   partially-restructured tree that looks different from the spinlock-visible
+   view. Under PREEMPT_RT, RCU critical sections can be longer.
+
+3. rdma_compatdev_set (ib_devices_shared_netns sysctl) race:
+   add_all_compat_devs() is guarded by DEVICE_REGISTERED + devices_rwsem, so
+   the same analysis as T3a applies and the race is eliminated. However, if
+   there is a remove_all_compat_devs() implementation, its interaction with
+   the unregistration flow deserves verification.
+
+------------------------------------------------------------------------
+RECOMMENDED NEXT STEPS
+------------------------------------------------------------------------
+
+1. Add WARN_ON with stack trace inside add_one_compat_dev (compat_devs_mutex
+   held) that fires if DEVICE_REGISTERED is not set. If this never fires, the
+   insertion is always properly gated. If it fires, the unmarked insertion path
+   is identified.
+
+2. Add ftrace or kprobe on remove_compat_devs and add_one_compat_dev to
+   capture the exact sequence of events. The key question: does any
+   add_one_compat_dev call happen AFTER remove_compat_devs for the same device?
+
+3. Check whether the bug exists on non-PREEMPT_RT kernels. If only PREEMPT_RT
+   is affected, hypothesis 1 (rwsem downgrade race) or hypothesis 2 (RCU/xarray
+   interaction) is more likely.
+
+4. Look at the kernel version of the syzkaller report. Check git log for any
+   changes to drivers/infiniband/core/device.c around the report date that may
+   have introduced or fixed the issue.
+
+5. Investigate enable_device_and_get's downgrade_write() path -- specifically
+   whether a concurrent disable_device can observe DEVICE_REGISTERED set between
+   xa_set_mark and the downgrade, then fail to clear it before add_compat_devs runs.
+
+------------------------------------------------------------------------
 
