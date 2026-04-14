@@ -1,367 +1,295 @@
-Return-Path: <linux-rdma+bounces-19316-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19317-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cHBLM7643WkRiQkAu9opvQ
-	(envelope-from <linux-rdma+bounces-19316-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 05:47:10 +0200
+	id kHsUAzPb3WnukAkAu9opvQ
+	(envelope-from <linux-rdma+bounces-19317-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 08:14:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B08E3F557F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 05:47:10 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E30B3F5E08
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 08:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DDD9B3018BFF
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 03:46:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D0823300DCC2
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2026 06:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D38931326C;
-	Tue, 14 Apr 2026 03:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9C130BF6F;
+	Tue, 14 Apr 2026 06:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="lEs12Y/Y"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Z0ZKHvIB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C072EFDAF;
-	Tue, 14 Apr 2026 03:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776138413; cv=none; b=B+zpjsxkcfyKrCw26IOA5/5rQBgnayINtnMucsS6O4RR6knFQhj5bDKMoLeSbnr6q568fQnC/HFUmopIKwAmq8p8yidvyZ5w9b4DpgT0AU6arNyZR8VaNdZ6MY1uZc0kTuB8ddyklXyLzAQ9AePZh5Sg3PkoZelnUXvtidpPAis=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776138413; c=relaxed/simple;
-	bh=h+8tYZnDNut7N+qjHrTNV6ZQ1BZ4tm0AsavZ8FV5pjw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c7E65SXg814AkXkiZRzci7POQBH6WioYwPWIBLzEzg0AsylJwk18l5KKCuGFoP72HlodHfU1Zeb9M0VXm39WSzJyvfrhtN6I2PQOYo+0n/UYqzkLRe4RXiDpjRSpsLuYEuvdI4wuEnDRNUv7KD+bY3CcgIdeo6nipyrjzlB8oZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=lEs12Y/Y; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63DL7lus1628427;
-	Mon, 13 Apr 2026 20:46:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pfpt0220; bh=YiWf24idfLOna0cEbxoX+AYgB
-	F1BS4mOvgW6ikn7h3g=; b=lEs12Y/Y8KuYm36DSYCd0FkR2ncwV+4tdoCCTmzP7
-	FgVH55RbnQ0Od5s5+gnnoDgrNVz4nrMBJT1FLpzBE2d9wy+N9vAIhPNTF7lxYkw6
-	CMFP/3eP29kJXEGIwAvzyEoXjm9xJk0B7tQaqR88s4d1zasS31A7E2IIrbasPXe/
-	CbW1McULEjqDgnLwHp3wzoBFD6gcQmCkVxd0nPcYfJSHZ+bsmarRYD/Ux3zdPg5G
-	3F0/Iwpj2MIWWCIz78QzdmiJs0Ssida/o2DcA4Fs7FFOOQAxiHU3Cj9rRX080ikh
-	8OEoYGECYgkB+QgXZR4R9qhhWKxXGb5Wmi45uKcBNGCYw==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 4dh84qrrpf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Apr 2026 20:46:34 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Mon, 13 Apr 2026 20:46:34 -0700
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Mon, 13 Apr 2026 20:46:33 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.25 via Frontend
- Transport; Mon, 13 Apr 2026 20:46:33 -0700
-Received: from rkannoth-OptiPlex-7090 (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id 181F33F703F;
-	Mon, 13 Apr 2026 20:46:26 -0700 (PDT)
-Date: Tue, 14 Apr 2026 09:16:25 +0530
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: Paolo Abeni <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <sgoutham@marvell.com>,
-        <andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <donald.hunter@gmail.com>, <horms@kernel.org>,
-        <jiri@resnulli.us>, <chuck.lever@oracle.com>, <matttbe@kernel.org>,
-        <cjubran@nvidia.com>, <saeedm@nvidia.com>, <leon@kernel.org>,
-        <tariqt@nvidia.com>, <mbloch@nvidia.com>, <dtatulea@nvidia.com>
-Subject: Re: [PATCH v11 net-next 5/7] octeontx2-af: npc: cn20k: add subbank
- search order control
-Message-ID: <ad24kZnhUXkysNKF@rkannoth-OptiPlex-7090>
-References: <20260409025055.1664053-1-rkannoth@marvell.com>
- <20260409025055.1664053-6-rkannoth@marvell.com>
- <b9ffa72d-ebe2-4fd1-b668-93620f206179@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D01223323
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2026 06:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.226
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776147248; cv=pass; b=f1MGXFGjyTg18wNGK6+DKbZeRUyRdij/6U5gnuntIkMgwGDedeSaYxttS4CHYUzqNPGfOSfWUoIO2AcpPBqbOdsiVn/ve0vWhRRThfQ2pXPay1EPmPj4tmSOMDll6RpXJn2QPf3BFAMT3Sj80yuzN4bs3sImd8QDYeHm+wJcE3A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776147248; c=relaxed/simple;
+	bh=U3PccDEYwUkFRrd9zERsyqdy45nCkpD3lVhWdnqEcs8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CmFAO9efW4qzprkc6wJBooP9S3ffpO0see1zfDO1gMm57F9kBPjdhU6/9HGwKu+B48a1vqZmMiLCT3fFg1sttePAL1J/Uy92l7g8zFd4tkiENvYCH4Cf9FhifB6y6VcRUXh4RFrtlkVwB4vxHpT2K7SuvW2nI+KIrUgjvxbjWIg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Z0ZKHvIB; arc=pass smtp.client-ip=209.85.214.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2b2ea1b3962so13097495ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 23:14:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776147246; x=1776752046;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gTeIbq7yXVmVDlgN0G+N44dPQ0xMtrIHiJKutfMi6bE=;
+        b=GeMjYdoqD/B4n0u8svQm7u4pAcQSVAzYPSVpJOIkjAzf5iWH3JScdF70s2q6exOo8j
+         fsHhqbPsEhXSWNbhTdiM8pKEPVq1HGgl8i/SRP2Aj9ejtORUoA+umii29R1uXuFJZm/y
+         N3a14v3b1ZdPNg+sZ8ZjHKokLTNS3ij+vwN8xxlDW/M7+IGa9Q0PhXplYIIiDzfbSew4
+         pA+nLc19/ZvCE9XQEozbJYsFa/V8C5w9aiWuBIVjdHhJD1ONVjfp59OTibpnxGg5Qzmn
+         hgFjLZ9tw3CfJFczsX7DA+a3TR/iGt41kxENBBYFLlXDteI7pQYmPTzV3LQWymHKvCuF
+         1gig==
+X-Forwarded-Encrypted: i=2; AFNElJ+GKcpgniadOQYa1QSyA0kVTVGkDzM0607lJYSIQQALhDM/odOfSP48vVF9zSH2oli/hyIUFioImZDp@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx5ecbAjsm1/T5QpFqda7epWIx/bq9eSdTWaUDBnWog2o6F7Opi
+	+TZ/cjXydqS3G5J3v5cHS1PH5aFhXLMqJ3Zc3//xRx9lHdug5hFr7zAJXBZQAHSs50LQ3lUOiLJ
+	2dLks7l0bZLv5HuD5ZYpIn71RyhOhmz+K63ofbLO0/MB7gU1ObZE+Cwluo/EGG88VkqcoP/H7+b
+	nH+4BivuL5ptmD/WEDFl7BLUgEiwVORgUYGNwDtaqpa/oXPbYvnqNIAMlaVDNz2iKGt6jDycCpD
+	oSn6cFdOzPVepxrh82BvvUAO7UI
+X-Gm-Gg: AeBDiev2scWOiXuZrYbqXi0u9oOkRFnxpUYDo8prxFX4k48/VoN79LUKgxvTTY/mxRE
+	0wBnPYIUksDgstJSEYKckaVhAPzsis9DZXO5VjtRPpH45FsHXIPwina+3qlBCGXE3Y6ko9ZbOnF
+	D1gWKltBWcJVTKsd1XHdmN34YUqDThY8r/003TOWDucqQ9nhqS9O7OsmNLkKkfE55c538hhNP5G
+	Tp+j8ga/v+xeZdzSMdzOruhjyOaVWH9B7BkqpJ3LJQYll2E2ns2Ohlp5JNf/vOr408pnXaR5JuY
+	x7o/r4CL6Zma5hnoNk96tEyg5S4ujL7/JSDA68Xe1Ly0FlXHlC1yk8vpJDIzQ3ASL4i4WG8SK+5
+	XY/G9qhP/8YBodv/s+1mzXWAGu0FFfYyvNGaT1WnJn7kWDy5bYuA0RDSBLrKWMXmcb35ci5fdZj
+	VqorW09iBeaYhCKGVsmbivGlxGy5rTshyg232O1GTt82QCU55MEN5/fSN47AQOpfisPJML
+X-Received: by 2002:a17:903:3dc9:b0:2b2:54e5:b3af with SMTP id d9443c01a7336-2b2d5aac9b5mr122149635ad.45.1776147246268;
+        Mon, 13 Apr 2026 23:14:06 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-29.dlp.protect.broadcom.com. [144.49.247.29])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2b4637cdfa3sm3176565ad.28.2026.04.13.23.14.05
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 Apr 2026 23:14:06 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-35d9f68d00fso10270908a91.2
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Apr 2026 23:14:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776147244; cv=none;
+        d=google.com; s=arc-20240605;
+        b=KSDSFDJT6/X1iaBqneRnE3tUd0judqHLWx9pxY5TxLdgAeZP9T6D6MeWkqh7cfSxsc
+         yDxcH2Kkyy8fu7VnPvW1aVMuewwb2PaJ56dEDcNWlvHO/y6wsaIULjUclN8HYkWUTuGy
+         /yAmShATJZ/PmnBCNWB62au81nqHBtdFOD3hJs93gsjZ2pEseyA+itTU508BRlxrA9md
+         /3SSmwxJQwlaqFu3mVpqb+ZK8DTv7DsnjC0+wc22uIDad1FgaasdJN76g8xVJF/drTGc
+         wizeXRwV3Ffo+jdXD3oJbDBnbYkHHw3zOd71dKjGJkQwrs+AKgc+7qNSoHPcvanWhAJH
+         KORg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=gTeIbq7yXVmVDlgN0G+N44dPQ0xMtrIHiJKutfMi6bE=;
+        fh=DRjSbTEZvoanMNTjV3z9sUc9hYXEtaNZhtczvUcXHT4=;
+        b=lk380nna4DHpACLlUq9Anc/KQM6lS4HLXikQFKBqXb2oaiQ8FEy3h860aN2YGJb7ey
+         NS+Bt7jA8Dq826YMEGd5Mp+8gaMABhsDbRmXHAehUjY8D+gxlb8CHHR+CGxG58JsD4cr
+         l37ILrC6J+M+wT1JZLj7dK6YD4VJShWSl53+bBS5vXmeqGvOGlv8KKSM9PT0nltyxqoH
+         67yeaNIwQ9xsf1BGE8LAvk685xVoUjIVA7xtO6+I2J1E3m8M6QmzEbL0cpGTOLntzZ9J
+         hOPnukEqRCCwx/16eO72u5oOEFBwigqfGyVwAHdlKSthdlA8yjXVXk3n2ji8Os0QZKWr
+         VYBg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1776147244; x=1776752044; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gTeIbq7yXVmVDlgN0G+N44dPQ0xMtrIHiJKutfMi6bE=;
+        b=Z0ZKHvIB+CYDRg0dyOou88JoQ1Vw1/7CpR+FkyY//a7w1nat9SHr99klgl1kUZSeLk
+         HWe+25I0Sk5NyGdhg9eGur//NGZEDH4lkUELxPRxVz0ymIm4faorveIWbb/spq25t+Wy
+         Yee7apWFCc47G2MNCRi5q5HZTevfAIKmBNBn4=
+X-Forwarded-Encrypted: i=1; AFNElJ//SSyxv7zwKZ1bbv67oqGHc0atGPBQxBf30BQ/tWkW0pcHpFoNWIkJnAA3H+Tpt4YEF4DSLc8oeqe+@vger.kernel.org
+X-Received: by 2002:a05:6a20:7292:b0:39b:d9f1:6d00 with SMTP id adf61e73a8af0-39fe3ff1405mr17742162637.43.1776147244572;
+        Mon, 13 Apr 2026 23:14:04 -0700 (PDT)
+X-Received: by 2002:a05:6a20:7292:b0:39b:d9f1:6d00 with SMTP id
+ adf61e73a8af0-39fe3ff1405mr17742146637.43.1776147244221; Mon, 13 Apr 2026
+ 23:14:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <b9ffa72d-ebe2-4fd1-b668-93620f206179@redhat.com>
-X-Proofpoint-ORIG-GUID: orukX0zeH64LpU1d97G3ejZgOW0NItZH
-X-Proofpoint-GUID: orukX0zeH64LpU1d97G3ejZgOW0NItZH
-X-Authority-Analysis: v=2.4 cv=arqCzyZV c=1 sm=1 tr=0 ts=69ddb89a cx=c_pps
- a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17
- a=kj9zAlcOel0A:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=l0iWHRpgs5sLHlkKQ1IR:22 a=EAYMVhzMl8SCOHhVQcBL:22 a=c92rfblmAAAA:8
- a=M5GUcnROAAAA:8 a=20KFwNOVAAAA:8 a=f7ZYTRpxgPyUO7SbQ74A:9 a=CjuIK1q_8ugA:10
- a=GvGzcOZaWPEFPQC_NcjD:22 a=OBjm3rFKGHvpk9ecZwUJ:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDE0MDAzMiBTYWx0ZWRfX2dHgW4gWTWlP
- F9oSOU9aFOwtRZ8D9tsqF8dPO8PR3nEbQMFIQV/+luW4ZrAhnwBGd2LeL7esO2Q6frI+YN/8LRW
- qnIRV7q78yJFRo6oP5TafZMqOQP0GspNGKHc0zNuYj7Z4Mgdcoqk7qt1ROuIttUnZUH1AulJK2t
- Cwq0ceAgeupvln7oKhopOqAZ3t7WG0TeU/rlUiJEbp6tvQdhO/fgNZfVTTi70AJlZvJVstABvER
- mPWveEzBRFDBQgc5EPlmp2+82yTkpkEcBDdY2S6B09qJP8NSz4yMwSpY+JntL0frjLhaLxR3dvq
- 1vI3Mmd5rBJUhNhj9OucHostK+SI/xRU6nZfxd2ALOcqSlI1RKRT43lE0KHUQ0qKryrbfjPvno/
- 2mLzhQ2lad8XdsrfGXj3B2CQ6jiZD+O4rbPvsMSfXs4mw7sGh9Tt1fdQBNxMYsYsXYXX8+kzqxl
- BSncZbX3byRG9W7fLIA==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-13_03,2026-04-13_04,2025-10-01_01
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[marvell.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[marvell.com:s=pfpt0220];
+References: <20260327091755.47754-1-sriharsha.basavapatna@broadcom.com> <20260410152509.GX2551565@ziepe.ca>
+In-Reply-To: <20260410152509.GX2551565@ziepe.ca>
+From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Date: Tue, 14 Apr 2026 11:43:41 +0530
+X-Gm-Features: AQROBzAfEOJLM2ednWI_QA7UcfWqL6hACQHQ_N-apeM7JMHoqsMJ8Sv6PHUppu4
+Message-ID: <CAHHeUGUQgO_XGkwtYXZnWYxMZkSpZ74ipdHQ9M_9n29HFrRkAA@mail.gmail.com>
+Subject: Re: [PATCH rdma-next v2 0/8] RDMA/bnxt_re: Support QP uapi extensions
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, 
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com, 
+	kalesh-anakkur.purayil@broadcom.com, 
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000991a25064f658104"
+X-Spamd-Result: default: False [-4.26 / 15.00];
+	SIGNED_SMIME(-2.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19316-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,marvell.com,lunn.ch,davemloft.net,google.com,kernel.org,gmail.com,resnulli.us,oracle.com,nvidia.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[marvell.com:dkim,sashiko.dev:url];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[rkannoth@marvell.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19317-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[marvell.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	HAS_ATTACHMENT(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[broadcom.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 6B08E3F557F
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid,ziepe.ca:email]
+X-Rspamd-Queue-Id: 9E30B3F5E08
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 2026-04-13 at 18:26:00, Paolo Abeni (pabeni@redhat.com) wrote:
-> > +	xa_for_each(&npc_priv.xa_sb_free, index, v) {
-> > +		val = xa_to_value(v);
-> > +		fslots[fcnt][0] = index;
-> > +		fslots[fcnt][1] = val;
-> > +		xa_erase(&npc_priv.xa_sb_free, index);
-> > +		fcnt++;
-> > +	}
-> > +
-> > +	/* xa_store() is done under lock. If xa_store fails
-> > +	 * ,no rollback is planned as it might also fail.
+--000000000000991a25064f658104
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 10, 2026 at 8:55=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
 >
-> Why do you need to go throuh erase and add loop? Why can't you directly
-> xa_store() the new value? Note that xa_store() can fail due to memory
-> pressure.
+> On Fri, Mar 27, 2026 at 02:47:47PM +0530, Sriharsha Basavapatna wrote:
+> > Sriharsha Basavapatna (8):
+> >   RDMA/bnxt_re: Refactor bnxt_re_init_user_qp()
+> >   RDMA/bnxt_re: Update rq depth for app allocated QPs
+> >   RDMA/bnxt_re: Update sq depth for app allocated QPs
+> >   RDMA/bnxt_re: Update umem for app allocated QPs
+> >   RDMA/bnxt_re: Update msn table size for app allocated QPs
+> >   RDMA/bnxt_re: Update hwq depth for app allocated QPs
+> >   RDMA/bnxt_re: Support doorbells for app allocated QPs
+> >   RDMA/bnxt_re: Enable app allocated QPs
 >
-> Avoiding the previous erase will prevent deallocation and re allocation
-> and will avoid any reasonable xa_store() failure.
-ACK.
-
+> Can you split this into two halfs, one just QP stuff and the other
+> allowing QPs to use different umems? I think we can merge the first
+> part more quickly
 >
-> AFAICS there are a few more items reported by sashiko, please have a look:
->
-> https://sashiko.dev/#/patchset/20260409025055.1664053-1-rkannoth%40marvell.com
->
-> /P
->
+> Jason
+I have split this into a series with just QP changes (dropped the
+'Update umem' patch above) and I can post the umem patch when the
+kernel uverbs changes are ready.
+Thanks,
+-Harsha
 
-Patch 1: [PATCH v11 net-next 1/7] octeontx2-af: npc: cn20k: debugfs enhancements
+--000000000000991a25064f658104
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
->"+static u64 dstats[MAX_NUM_BANKS][MAX_SUBBANK_DEPTH * MAX_NUM_SUB_BANKS] = {};
->Is it safe to use a static global array here? If multiple RVU AF devices exist
->in the system, it looks like they might share this array and overwrite each
->other's hardware statistics."
-There is only one single rvu AF device in the system. Ignore the comment.
-as it is false positive.
-
->"Also, since there are no locks, could concurrent reads of the debugfs file by
->multiple threads cause a data race and corrupt the stored statistics?"
-ACK. added a mutex lock.
-
->"Since en_map is added to the global npc_priv structure, is it ever explicitly
->cleared during device initialization?"
-npc_priv is defined as static. So all fields are set to 0, by default.
-Anyway, added bitmap clear to get rid of this AI review warning.
-
->"Does updating dstats inline during the seq_file show callback break the
->statistics if the buffer overflows?"
-ACK. Used seq open with size() API to set required size of buffer at the start.
-Added a check to see if there is a buffer over flow by counting buffers wrote into
-seq_file. dstats are "delta stats", and used for debugging.
-
->"Does updating dstats inline during the seq_file show callback break the
->statistics if the buffer overflows?Does updating dstats inline during the seq_file show callback break the
->statistics if the buffer overflows?"
-ACK.
-
->"When seq_read detects the overflow, it allocates a larger buffer and calls
->this show callback again from the beginning. During the retry,
->stats == dstats[bank][idx] will evaluate to true because the array was
->already updated, which skips all the previously overflowing entries."
-ACK.
-
->"This isn't a bug, but using the ternary operator for its void side-effects
->is generally avoided in the kernel. Could this be written using an if/else
->block, or the assign_bit() macro instead?"
-ACK.
-
->"Since en_map is added to the global npc_priv structure, is it ever explicitly
->cleared during device initialization?
->If the PCI device is unbound and rebound via sysfs, could en_map retain bits
->from the previous lifecycle and cause the new mismatch debugfs file to falsely
->report old enabled rules as mismatched?"
-ACK. Reset bitmap to zero on deinit.
-
-Patch 2: [PATCH v11 net-next 2/7] net/mlx5e: heap-allocate devlink param values
-
->Could we avoid the dynamic allocation entirely? Instead of storing all four
->values at once, could a single union devlink_param_value be declared inside
->the loop, populated, and immediately assigned to the respective config field?
->This would reduce the stack usage to a single union, avoiding both the frame
->size warning and the new memory allocation failure path."
-ACK.
-
-Patch 3: [PATCH v11 net-next 3/7] devlink: Change function syntax.
-
->"The commit message notes that exported APIs will be updated to pass the
->unions by pointer. Is this incomplete? Exported APIs like
->devl_param_driverinit_value_set and the validate callback in struct
->devlink_param still appear to take the union by value, which might continue
->to push the large structure onto the stack during validation."
-ACK.
-
->"This isn't a bug, but it looks like an automated search and replace
->accidentally modified the word "values" in this comment."
-ACK.
-
-Patch 5: [PATCH v11 net-next 5/7] octeontx2-af: npc: cn20k: add subbank search order control
-
->Does this code overflow uslots[]?
->Looking at npc_priv_init(), num_subbanks is populated directly from the
->hardware register NPC_AF_CONST2. While it ensures the value is a power of 2,
->there doesn't seem to be a check that restricts it to MAX_NUM_SUB_BANKS.
->If the hardware reports a value larger than 32, ucnt could exceed the
->bounds of the stack-allocated uslots array.
-ACK.
-
->Can this approach cause a permanent leak of the erased subbanks?
->If any xa_store() call fails, the function jumps to fail_used and returns
->without rolling back the state. Since the subbanks were already erased from
->the xarray into the local stack arrays, failing to re-insert them leaves the
->hardware allocator state partially empty and corrupts it for the lifetime of
->the system.
->Would it be safer to pre-allocate with xa_reserve(), or build new xarrays and
->swap them in on success?
-Used xa_store without xa_erase. If xa_store fails due to memory pressure, error is
-unrecoverable as this error can happen in between (for loop).
-
-[PATCH v11 net-next 6/7] octeontx2-af: npc: cn20k: dynamically allocate and free default MCAM entries
-
->"The NIX_LF_DONT_FREE_DFT_IDXS flag is read directly from the mailbox message
->structure. Since mailbox messages can be initiated by Virtual Functions, what
->prevents an unprivileged VF from repeatedly allocating and freeing LFs with
->this flag set to exhaust the hardware MCAM entries?"
-rvu_mbox_handler_nix_lf_alloc() ---> npc_cn20k_dft_rules_alloc(). npc_cn20k_dft_rules_alloc() will alloc default entries if and only if it is not already there. So if
-VF calls alloc and free LF without setting the flag, the default entries wont be allocated or freed.
-
->Are the values in ptr[] virtual or physical MCAM indices? It appears that
->npc_cn20k_dft_rules_idx_get() retrieves virtual indices, but they are used
->here as direct indices into mcam->entry2pfvf_map and passed to
->npc_mcam_clear_bit(). Since those structures are sized for physical indices,
->could this cause an out-of-bounds memory corruption or an integer underflow?
-default entries are allways allocated by setting "ref_entry" field in struct npc_mcam_alloc_entry_req. Then, rvu_mbox_handler_npc_mcam_alloc_entry() wont return a virtual
-mcam index.
-
->If xa_erase() fails above and returns NULL, ptr[i] is not cleared and the
->code falls through to the free_rules label. Will this result in
->unconditionally calling npc_cn20k_idx_free() on the stale index, potentially
->causing a double-free?
-ACK.
-
->Furthermore, if a VF manually frees its default MCAM rules via the
->NPC_MCAM_FREE_ENTRY mailbox command before this NIX LF teardown occurs,
->npc_cn20k_idx_free() will be called during that manual free. Since the manual
->free does not remove the index from xa_pf2dfl_rmap, could this teardown path
->fetch the same index and attempt to free it again?
-default mcam rules are allocated in rvu_mbox_handler_nix_lf_alloc(). Not thru
-NPC_MCAM_FREE_ENTRY. if it does intentionally, then it is a violation. we have dev_err() there, and need to debug at User point.
-
->Does the caller of this function properly handle negative error codes?
->For example, in npc_enadis_default_mce_entry() and
->npc_enadis_default_entries(), the returned index is passed directly to
->npc_enable_mcam_entry() and nix_update_mce_list() without checking for a
->negative value. This could lead to a WARN(1) in npc_enable_mcam_entry() or an
->out-of-bounds write in nix_update_mce_list().
-We intentionally did the change to find out the flow which pass wrong mcam index.
-So we need a splat using WARN(1)
-
->Here, index is a physical index from the bitmap iteration, but the values
->returned into dft_idxs[] by npc_cn20k_dft_rules_idx_get() are virtual
->indices. Will this comparison always fail, causing default rules to be
->erroneously physically freed?
-No. default indexes are not virtual. This is ensured during allocation itself.
-
->Additionally, if the NIX LF is freed with NIX_LF_DONT_FREE_DFT_IDXS to
->preserve default rules, the ownership mapping is cleared here.
-ACK.
-
->Upon
->re-allocation, npc_cn20k_dft_rules_alloc() will detect the rules in
->xa_pf2dfl_rmap but won't restore the ownership in entry2pfvf_map, meaning
->subsequent operations on these rules will fail verification.
-ACK.
-
->Does this make the firmware layout dependent on the internal size of
->ikpu_action_entries?
-Yes.
->If future kernel versions add new packet kinds and increase the size of
->this array, older firmware files will fail this bounds check and be rejected.
-struct npc_kpu_profile_fwdata does not have a field to indicate the size of ikpu_action_entries.
-We can't modify the structure as it would break backward compatability on old fw.
-
->ill this trigger a compiler warning or build failure on strict builds?
->The min() macro performs strict type checking, and fw_kpu->entries appears
->to be a signed int, while rvu->hw->npc_kpu_entries is an unsigned u16.
-ACK.
-
->Could a negative value in fw_kpu->entries cause an integer underflow here?
->If fw_kpu->entries is read from untrusted firmware as a negative value, the
->offset calculation can underflow the size_t offset variable.
->This would bypass the subsequent bounds check because the wrapped offset
->plus hdr_sz wraps again to a small positive value.
->On the next iteration, calculating fw_kpu = fw->data + offset could result
->in an out-of-bounds memory read.
-Addded check to return on invalid value.
-
->Does modifying profile->kpu here corrupt the global default profile state?
->Earlier in the flow, profile->kpu is initialized to point to the global
->static array npc_kpu_profiles. Allocating device-managed memory into
->profile->kpu[kpu].cam2 overwrites this global state with device-specific
->pointers.
->When the device is unbound and the memory is freed, could this leave dangling
->pointers in the global array for other RVU devices in the system? The same
->applies to the legacy firmware parsing path where cam[entry] is overwritten.
-
->We are not using profile->kpu after unbind and memory is freed. During reinit, these
->fields are intialized again. So there is no issue with it.
->
->Could this printk formatter read past the end of the profile name?
->The name array in the firmware header is 32 bytes. If a user provides a
->firmware file with exactly 32 non-null characters, the string will lack a
->null terminator.
->Printing this with %s can leak adjacent heap memory contents into the kernel
->log. Using %.32s would ensure the read stays within bounds.
-ACK.
-
->Do these fields require an endianness conversion before use?
->The 16-bit values like dp0, dp1, and dp2 are read directly from the firmware
->blob.
->If the firmware payload uses little-endian byte order, applying these
->directly to hardware registers could result in misprogramming on big-endian
->architectures. Would it be safer to use le16_to_cpu() here?
-s/w is validated only for little endian as HW is little endian. if big endian required,
-we will provide seperate firmware for the same.
+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
+tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
+2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
+phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
+a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
+ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
+07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
+SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
+rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGszCCBJug
+AwIBAgIMPiCpKhlPGjqoQ++SMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
+ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
+MDIzMB4XDTI1MDYyMDEzNTQwNVoXDTI3MDYyMTEzNTQwNVowgfIxCzAJBgNVBAYTAlVTMRMwEQYD
+VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
+MDExNzEUMBIGA1UEBBMLQmFzYXZhcGF0bmExEjAQBgNVBCoTCVNyaWhhcnNoYTEWMBQGA1UEChMN
+QlJPQURDT00gSU5DLjErMCkGA1UEAwwic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNv
+bTExMC8GCSqGSIb3DQEJARYic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNvbTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKS3kXt4zVFK0i5F3y88WV5rV0rr2S3nOVTaCGMB
+o6Se8pIb2HJcdpQ4rMiJuIRSyG2XDWv6OB+66eM/6cD2oklFcdzpC4/eYOQFWJ/XM8+ms6HT7P5e
+uE7sY6CeUzLzHNjcRwVgZRWlELghY7DIW9fbMzRNDFsbxuIN/7eSofavP1q7PF3+DqhHZpmrVkDu
+vcEBTRZSn8NWZ0Xhy4a+Y3KN2W55hh6pWQWO0lt2TtpyaqYp95egJGqDUPtqydci+qrBzXbL05Q0
+gcK0NfqGJwLsEVqxHwzz/jRrzKBYKQEK4Bpau91oxVGLmxy1nQDiyI1121xyvsJBDctKH245XZkC
+AwEAAaOCAeYwggHiMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcBAQSB
+hjCBgzBGBggrBgEFBQcwAoY6aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3Nn
+Y2NyNnNtaW1lY2EyMDIzLmNydDA5BggrBgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5j
+b20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUGA1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAyASgw
+QgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9y
+ZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dz
+Z2NjcjZzbWltZWNhMjAyMy5jcmwwLQYDVR0RBCYwJIEic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJy
+b2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBQAKTaeXHq6D68tUC3b
+oCOFGLCgkjAdBgNVHQ4EFgQU9Dwqof/Zp1ZdK6zi7XdRGdBWQt0wDQYJKoZIhvcNAQELBQADggIB
+AKzx/6ognUMhNv+rh7iQOeHdGA7WMDixk+zrD7TZL6O5DPqXfFqaTLpswyruTymA3AVxZkMJyF6D
+zOAsRfU23BjVlgC95zl1glr7DorZW7B/CQDwbLHlkFy92Oa3E+gBzwdiDMjnq6tOW5p83zoVqiV4
+qm4OwC9JILEkslV4uZVXHPm5cZoOQURTECE2BN34Qhg5qD3EKYqOTeMVRed1qQiIPqQv1b4xjPVS
+qBwNPl7/4TJGiZGnRB7FsNnNUQRJONnEFifM3KGqjbqA4F8BhLXCYjqtBxxCGA5506StNfsjT8UU
+28E6lcuJXC4hQXau+xXQ5GWqS4ecWwm22FAVy/i8FJVfXPTJnZeixmqaadbIU3fOJs5+XfyNkU2T
+mlCafSr7KgV570M6tITSyminW/7rc8hdznGYypCNa+45JYJTaK4x1+Ejptaxc7TCS12B1zQNCxa7
+AHX5PZra3SpDb7g1p1i1Ax0JVJTkThiCSNDbiauVn7xIJpf+H8HC6O2ddGmtKUxe6NseFnSGJsi6
+7lO/cU+TpduV7w3weUy+nHhp+GsbClfvAGhFAs/GkyONExCwwIEVlFp9Mj5JLAgB+ceMbojBIoaO
+d5rOzdIII5FDwKAAqyjHuniYLrP0xIH4L5kWOAy+LudP4PSze7uAxTiCiSJg5AaNBTa5NuwTnSX6
+MYICVzCCAlMCAQEwYjBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEo
+MCYGA1UEAxMfR2xvYmFsU2lnbiBHQ0MgUjYgU01JTUUgQ0EgMjAyMwIMPiCpKhlPGjqoQ++SMA0G
+CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCDGWHLtPbJ9QPYKlu652AjBPRV3WlQ8HQTZ
+mWCk8dMJYTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjA0MTQw
+NjE0MDRaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
+ZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
+AASCAQBUDJktKOSCy7Pc8YYwmgkHgtBCNUTaojQScLKyFO74rMfwfM2REXydwed6Scsatjv9oLJJ
+rUcpyTQEpNEFQDY0fpxN3AcklXQorNO0dZbG251CLGPXSpr/I0q9VbjFLkJh6DQpL51vmvOHJsaf
+XJbAovHqJRovUjJYfDTIX7dl7+Kf61RNQ0ob5xyuKNbzbKvCW3WyunpcTWPXSTr08vd0zLIkZnEy
+O5jYFAZOerWopk5Ha3OEcJDt4oNFsGhX2kiPBBaF4QbokrRvvUj+pQVNlJ6GMx5El+nJ/1CmrgOY
+mWGoY6a6QA9v9Goy0lvefXc5Cd+hrerbPmWX58a+v9J/
+--000000000000991a25064f658104--
 
