@@ -1,218 +1,384 @@
-Return-Path: <linux-rdma+bounces-19380-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19379-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8A91JjsG4Gn4bgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19380-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 23:42:19 +0200
+	id YDM/BeEF4Gn4bgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19379-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 23:40:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A0EB4083D5
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 23:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B08614083A8
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 23:40:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F5B0300FEEB
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 21:42:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6FC75301919D
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 21:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A6738F648;
-	Wed, 15 Apr 2026 21:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823EB38F233;
+	Wed, 15 Apr 2026 21:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="eJu37NhQ"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BcOtAwql"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from sonic317-33.consmr.mail.bf2.yahoo.com (sonic317-33.consmr.mail.bf2.yahoo.com [74.6.129.88])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEBD38A727
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2026 21:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.6.129.88
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776289332; cv=none; b=skUDm8IPURAVOSFc5rVeOujcLnbOLh0VBXpP8jwlc3h5eUP7Kc/EnAQ/zqYKSvJe4koUmImV8J0BowsLQYMjAcWN9hWqpI5IcWCJHTpYRTiSNX1I6wRtSDu+fX67VMkNVs5VPkC3ck3fzCFFmdVbcPdlIezl2gLHCfxgOkhu5pw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776289332; c=relaxed/simple;
-	bh=1VRzEwc9as955hJAJQZkD8aoU2tfmXZsG3lk/RyK87w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BUjD4aloxtui1oR7YZ9d2ihOEa6131soHOAciEaUw1LU9BJcLQA5tcL3H/1d/BF2H71K3USomjnkcO3gaFN5kRHLcsgy75y2/vmN5XW7WVijDH0I5snA4aEecbjW9AUFvBVGYZiVQoolBJaK70NPmrJ4nrYK+Td8RfugdDWyZXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=eJu37NhQ; arc=none smtp.client-ip=74.6.129.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1776289330; bh=PCIEZUDtvL4fKDuA56MB9W3LMeOH6yBvvyQFCUOW0uA=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=eJu37NhQ9EZB//KES6VcA0ZoEgNKhQmmCG7uQjJS3rVnD2JaGXLbYtCXag3d0fcwdsahRQF2hlwysg0L28CiZ5pjbhD4WF7ZHd4ciPlivW2AeQZMEjLfVL5QBUBB/LGREFIn3suNbvu3GRotEugIWvaggm/H7HMDLP78FyE20DpxrDVyAwR32W65ghDONJOEQBS2zEo3HUWnyMB5698B/xD8Cziuv/6lw62lPQDxJQg1lHd7ebBMSOujJu4t84j3UtHn4zfdRCcdFMSpc8nsAkvl5BDP3py5bY7Qvd1KZK1L2bppKSW67d1vQ6hSVkLNEsr+U82Nc1qu2ZBmzDQSHw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1776289330; bh=8Nd23b9kPnbMVrpDoG9ynVPDR3R5ucFWAVwcAHdS5Sl=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=gVpkB0nxfGM8gMDWVSfuXpiZXPyNYKgF/CWs3oMUarn8N1DOt/osm1Zbapqi5vjQ+3oh9mac8iHxflT7mVYrvVLYF0lccbT2Fmp5lMNnjxqld7ocuQ1aRiO7IwnOTKhi7FoO4yoB2JrljYgCZYN4eaQ2FWxodZGmscEbldgOik2IwfcdWEpaLyx557iUNIynvgA9CA73Ce8baxm3vEqn1Yh3Mkf2Q1pWBrAOCRK7BdTyDgCOVU3JNql/mE+Oi8thArADac66JLfv7rPznlJVDqTouehqKWHIWexPWD5WyFPpcJpeU5W2pt4ovsNixvmzwrYN259czmGuM8V/b4NjUQ==
-X-YMail-OSG: OTWDq0wVM1kWBKlAClbtD.6W.Rgce4yInLQVN97jyOJxSa1hGgVXGNaz8TPVgxy
- wm5N0OZz2yEOydYM1i9uZWkp53km0ZmaQkIg_xaEAQozcV1Di9tdpXDzSQWS1GhrMcTVr3m201Bf
- 40FW9DxdNkcJtDsTRUNTPDV9kKxT42IPULUl3WPiN7iJCfkWKxlDyLXiE8eTt0KGHvmb.OoGEgBy
- AoXITcef2y4r_WqBS2gLbeKfpnr1RVZihFcNWgCsuIY63wgZbLoMSXSSjm1XtlxfjrPk.DP6XoZC
- biDFbDHSnoY5P9o7u2G.zZilDjVYT.qCa0GNh_g_RDahhSok_q3mp79XDGMCZAGQ.GG.syh6lTHX
- P7fXQ8bkTWUIQA8pTh0KLK6O_1mk6agZcCD3Ba8WhDTDCI7CxauFy.kkMolNdYB_qGXENI.wK3n3
- eBbZ.zjPooFiUCULsa6jzGX.C7VFGzcpLXp1s9hOl1yvdRHIBO0LmhANf.o2aFhh7tnWhAssqd41
- e_7RHNS.i_dixFkALoTeixj6VYYlduEwIzAcQU5DS8ILULg9kFLEmT4DNKPS0CkuuJeRHBCmrG3o
- AN0p75xLlz27f3QoKImoBCNd.2n7G78LfZfgTQ0Qjzg2SUpjIcYwmgzopERLZ92zOXS3Tciopgwy
- yCK65MgTPVZ5BKNBwRd5qxwDf0FBmVAPEhU5ZhPw9k.NIUN13Fmbh3t8EQ7c0wJU4UUTYAWoGELY
- .LJrht6FcvDWGCYBfkzbVmb6XFam4HNtRSKaUTlA9OiHwHtm4gMX6iAVbf.ULGI8J3eJrnntvS0p
- XpUvYDl0cC3V.rXaUlnGmT7GMnjYPfVDhGwbXH9KtEfnW30DQXVtyassb5E4w9w8Vf7IngNVsRXO
- mn3heo2tZw.TslL5cexILIeli0HuHhHv1gRQeKHyrrreLLWuSlxsrfNCTw1L1pITqKrl_dgGrjyu
- viLWNKZR5sCA6YzRt6RbMZQt5xVnI0HbQwMsQWV_gN5.f2AruKDVsBxY4TFUyvDhbJjwFNlf3fz2
- UVUZFtplvxfr5uMIzH2lrhuZ1GGcR0IjajNfhfkiXLpQs9ENLFaZ4fjYKayEcBz5vZ51jv_PSS64
- 4K8wVVo4mekXJZGTTq1T8UA0tcFgUGXEBuIXeAVcudJcqwA0mfOcXvy1_5jPVTKsMvLeCcN65g6w
- xrm73ukJDYwf.jg46aqpYnZ6TPb.GN0YXJIRAb9s2BOY0f4DZxCSMUXfAdsLJOxSCd9OC8VMQsIU
- gmw5mLLKSQQWibutpi_be0SxKGt3H1XNppl0cQ7R99F8GcVjzUNg0y9dGrr34MOOURzBwF3U33Ku
- K8LCt.8.s_uWAIRmEKnx6a.V1bPc1dUMi_NIyNSxu.i2B1kHAPIkQgYd8HRjO4E3fM_qPEonpCnI
- skpVSJd3.ApsyiDhpSaV1ChED8ZpoUR4gG42uRBcYph2GHBrpLPUAC2LeOuFRWfAWXf.t.pcgEtd
- I8.UAg67i33D8xJhxToGhcBAnnFzFVSU0F8X2ApA.R4cvXHwS6ZBOO_7n5mk6N2LjeT8O5D87MHa
- YsbmoFSX3my0K6SGsK4XAgU.IuU4.sRCz52du8xWXED03Gi9wbAKiSdf7dok7tBZ7eOoBFGnKsXx
- G5aUNd9kJb6PXeflkbmlkl.Hs5P9Vsi8qtExRZMzAot9nsj2JxmaUkbKB9tHX1vrw_3Qx6syt5_.
- BVYaEa2QtTpNlEdb.hpQJTLRIT5szY2eni9XytJwEoClRDx5LWvfA9V10yoTKxAu5F_Df4GD..UB
- bd.4yenjrfIj3EkXhPq3NBD3gAwoVihMUlAl3ODeP29zNpyOq0_N0WAiC6APoM07UeLtKQyjRvE.
- qnp9CFNvRm7fPc5FDQJeNuDkfKYHAQjzJIvKrokib13kmBLEV5owRT_LJ1ubfTS8aeSlgP5SNQIE
- kOdiOmBLN0dOFrUYyr8ZwYTJVNITmEKnN5uDKN28VKEMM7BwTMxmAAOxmndwH1xJH0Ae6jLHZfJv
- qxgF70jsVRzidZkW32xeYRfkwwhxR1woQAEr0QbYBG2sdw3GyfzgdHXaDZLdQS1EWuQh3h5N.BeU
- mHAuyoXwIrnAH89NmLZq0xjL6gWB1FuxCdLDovUk8Oxny3CjWzGWxtLnW6L7xlF5SHDrqX6bu3mq
- ue50btk6e7y1bf2iXuJf1pQAdHL5rTGCQi5z5ROlkBGtq_MzNHPTQSjrKvrZYdvCHiFwjRie0rI1
- 8d2LalaiufdwZdKZYuWCgbmv.p9efZbZyLJR8Zs1qEF8r8gNBIpCazw--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 2d41aabe-9af5-437d-8e9e-568444c670cb
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.bf2.yahoo.com with HTTP; Wed, 15 Apr 2026 21:42:10 +0000
-Received: by hermes--production-gq1-6dfcf9f8b-h78wr (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID b799781f33bb01013e1e244a638df756;
-          Wed, 15 Apr 2026 21:21:52 +0000 (UTC)
-Message-ID: <a77f43dc-f05f-4dd3-9f0f-296447c44e8d@schaufler-ca.com>
-Date: Wed, 15 Apr 2026 14:21:50 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6F8386442
+	for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2026 21:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776289218; cv=pass; b=WFb0zWraimUN4x61hc1y/IuJyw25OLGtelvWm7SDapXsx8PZxW6LpRdd16lRQdzYIxKor9PS7zu30FCLxCoOweMxt+BgLly97CgJ7Nyq9NijeiM6QsHoTcJp0GC+K7VJjulwqd1HI8igm+mlR6FgzwCH+ItNR3Pu1A9Wb/Cm36I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776289218; c=relaxed/simple;
+	bh=8UR0cDfhMut89P6pq2m3AtdE1q+9Y0wHgL4ZA4SRoPM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mXqXj0To3tmtdA/Oj7mC5I98y0Y5Y5edUuNhmhN8Mp0R/CZ5nenTVQioZbgPYhbX+/nhaw1zgroWikc3w60wJ9FGHv9uDgD5CSVYfw8/Mp716Ku2AYCPOo08SgGzwFfPabmTzLsk43zmILwrxiyOIKARthN3vqdEINDQWKcvbxI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BcOtAwql; arc=pass smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2b23fcf90b2so68980115ad.3
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2026 14:40:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776289216; cv=none;
+        d=google.com; s=arc-20240605;
+        b=YogduzQsbNAjz8wqpPJcryJevXAHNbzEiRn6GaFwhWbTHNROKws5hfVuj6ei7s7vF8
+         luvWd0iH9kotZliztgEu3GrQhP8ukjObc7NYfJbcFY8m03z06bcDcC7r/lkE6sGA0aph
+         46c7OAf+iNq/d+u56+r5l5MluBr2gW17mBKUFW4aNsInfD1UBFWosJi4sdow6CcDOXFV
+         KgGIAOqE7FT0M5miuodjsKgQbYWN+jtWbVHi2k61kfLWoRRF5/AfpH7aR7pqoOUnH96u
+         PTGVFoKYEsTHLgML33YDfvrvu07P9xt5ra99cBH6l0xB0gbeCP4SlfILyRN9ZmN3bB0c
+         P7xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=XAztYF0GmlO3kNqglTk5wxwxcVj4RUNUTqhb0zF4bE8=;
+        fh=kSa/ts8Rm33LSX53Rtc+kuFS3v3GCsyqpyz9YdUy2Ho=;
+        b=hYutMYSJXz5S8eVaC69mjS2wJ+xS0HUc+9OZk/t+Az4TFyGeYyYiRLvR4NpuWdfyzw
+         swkZTFKJb1Ec/ezp5eS4mMQqydFmyVTiL1nLU0f/Di0L88VX8rHuPKsHgXfkCDmrEo0q
+         CtDefYGoE05W3/8Y+K4XAWGNcY/mJzy+CTLzWFGNRZZjK2bpCo6HNhpD4ZpuCWSAFeTU
+         TRJKMdxbE64tr6tnAfBJmHzQHWQyMGAHODxEMP3vNJy5vbOg3/6qsuRlETS/niQMpVRh
+         pihyT8huIadhHDA+r3mMIlAExF0z2GJ5J+hkdUrZwePowBocaciFKKHbfisrWC+kYbZ+
+         nRsg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1776289216; x=1776894016; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XAztYF0GmlO3kNqglTk5wxwxcVj4RUNUTqhb0zF4bE8=;
+        b=BcOtAwqlEurfknwp7jdNCxVQeHrdkO5jKP42hmDqgS5W5QQx01RLTeKPzlrw+X2fFt
+         6C/3ow8TDL/OMILDXBf5nxTZh+3utD9QRDi5a+eOZie7KaJQ2ERJdc7jCELB5vsNmojf
+         50vbRbE1lxvh3eoa9HBxtih2siyloGwx+GXsUFlE/xVSSTA5jHG3kvNlle0fB4RTls4/
+         S9tkZlnIw5J02o62E7bwToewDq221Y8c6ZzskLdvPhImUb7Iafg9onU1DIpwvgFFvNGR
+         ZztUWosIm/WHs6rWK1nEJOF97zLA3783cW/e1YtDY3Dcq6tZABDB3vk8Uslaxpb+O2gW
+         GcQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776289216; x=1776894016;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=XAztYF0GmlO3kNqglTk5wxwxcVj4RUNUTqhb0zF4bE8=;
+        b=ol2Rlt8gGpbQu5Yh+cxDFsGPc3Omf+RZw/IQr6lhT4VCPlnhHim+VRJ6xL8iKus2S2
+         lFeKBZ0apVXL1jDCsYvAfCc3Ka/vJcRqnaVXmOjS4Vb7MCKqLxp33PlhTeP3yOeFUfOB
+         HDSTJDCCOgAR7dsJ9geqix3bNkzWJaDJEg7pNjIuVrwxo91/r4aqLhpyW8yRi+Pktcso
+         E2uAQTGxZ6aHZAyA35JkLQ0ws48epwhPRbrLZLJ4h74WyGqRhzyyhFEvruWkmAe3uKtQ
+         9OiOORFaZ26d8o04aPBi9R1Qzca4wlwDMka2Em2gbcD7a0FNeyELO+vMGxNDJEW058G3
+         rwJQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9YLnRrY/n6JaHkEr+dovYh4MQv9nMbAZNqwJF4AHbd3rftw04zknhWiZzF7LUHvGigvQTaz7hGG41i@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVG5tMTKwZYxcq4ByzipIvJuojcxR0otvB+YATWFMPUoK6R9lw
+	mkb63jCkVZSK4hCrha+kF7SU5iT/0NdnVVTZVmwnft+hpn7TlZVUe8OaGKHsu7J6D2t/2SkWs/y
+	OjWBhuEZTkPdrpI1Ug/BloASVW/o6xwZc1A7v+BYK
+X-Gm-Gg: AeBDies1YuONXV2FmRyxKI5StIJeq9W9EUJ9HJ6BnTNUe7xbTFn7vpqzsUCwBnxmqVF
+	8B8bKMFmryOwTPi5R1BmnE7yAJBtT6YWne0oFI20Qp7b49UD1BOplIdMoKqL/dXfUTLLyYj5VKE
+	R1haaye7+E1hL8TDJlphA3QGiNhmkREegQANaz4WYBCbWrD9EMgwT4PNYN0uxg65xydjAAyeCHG
+	nixEd/Qh6tIN07umdQBIpSRkAM/8gU56sKrIYHZSfVfXXwErIlxBhqc55aw8f+1vHk6rtIqgvXi
+	F+Ax5MA=
+X-Received: by 2002:a17:902:d507:b0:2b4:5cd0:b6c3 with SMTP id
+ d9443c01a7336-2b45cd0bb63mr176613365ad.29.1776289216207; Wed, 15 Apr 2026
+ 14:40:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20260409121230.GA720371@unreal> <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
+ <20260409124553.GB720371@unreal> <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
+ <20260412090006.GA21470@unreal> <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
+ <20260413164220.GP3694781@ziepe.ca> <CAHC9VhR1Uke9P==CELKavBcogHoNCtMZFfNWUbgm5HYUfomhtw@mail.gmail.com>
+ <20260413231920.GS3694781@ziepe.ca> <CAHC9VhTLamfe4C81ZNRVT=H32x+KLxSqH3o0eBfrHsWAgAqxCA@mail.gmail.com>
+ <20260415134705.GG2577880@ziepe.ca>
+In-Reply-To: <20260415134705.GG2577880@ziepe.ca>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 15 Apr 2026 17:40:04 -0400
+X-Gm-Features: AQROBzCNI3m8c-jwsYPK1Y_GRo5FoCh3UrWW71P1zu__g4Bit16U6EWg6GpNPb8
+Message-ID: <CAHC9VhSECYihup=tURo_Qk__xUdYYPkHgnz5CWA0BrRAkvwbog@mail.gmail.com>
 Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-To: Paul Moore <paul@paul-moore.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, KP Singh
- <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
- Dave Jiang <dave.jiang@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
- Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20260331-fw-lsm-hook-v2-0-78504703df1f@nvidia.com>
- <20260409121230.GA720371@unreal>
- <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
- <20260409124553.GB720371@unreal>
- <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
- <20260412090006.GA21470@unreal>
- <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
- <20260413164220.GP3694781@ziepe.ca>
- <CAHC9VhR1Uke9P==CELKavBcogHoNCtMZFfNWUbgm5HYUfomhtw@mail.gmail.com>
- <20260413231920.GS3694781@ziepe.ca>
- <4cf6b20b-f53b-4b5e-ba03-c7ac01bec0c2@schaufler-ca.com>
- <CAHC9VhTm9MG-NzdwxtqJA6LZeTEsmUjyy8da2=8KOVxgDtEqWQ@mail.gmail.com>
- <53a532e8-5981-49b4-896e-0bf5021ff78b@schaufler-ca.com>
- <CAHC9VhRoaECt03Rs-ZyoGhW2_qZkA_1weTYYjiXc41Yf5U8A_g@mail.gmail.com>
- <a5fe292b-77c8-4190-8989-1d32cadb5689@schaufler-ca.com>
- <CAHC9VhS1sVMGHpO-5Zn0K0w6suTB-i_SwvouDpEmT8sXffsRfg@mail.gmail.com>
-Content-Language: en-US
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAHC9VhS1sVMGHpO-5Zn0K0w6suTB-i_SwvouDpEmT8sXffsRfg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.25495 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spamd-Result: default: False [-0.16 / 15.00];
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Itay Avraham <itayavr@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>, 
+	Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[yahoo.com:s=s2048];
+	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19380-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[schaufler-ca.com: no valid DMARC record];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[ziepe.ca,kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org,schaufler-ca.com];
-	RCPT_COUNT_TWELVE(0.00)[30];
+	TAGGED_FROM(0.00)[bounces-19379-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[yahoo.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[casey@schaufler-ca.com,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[paul-moore.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3A0EB4083D5
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: B08614083A8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/15/2026 2:03 PM, Paul Moore wrote:
-> On Tue, Apr 14, 2026 at 6:42 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->> On 4/14/2026 1:44 PM, Paul Moore wrote:
->>> On Tue, Apr 14, 2026 at 4:10 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->>>> On 4/14/2026 12:09 PM, Paul Moore wrote:
->>>>> On Tue, Apr 14, 2026 at 1:05 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> ..
+On Wed, Apr 15, 2026 at 9:47=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+> On Tue, Apr 14, 2026 at 04:27:58PM -0400, Paul Moore wrote:
+> > On Mon, Apr 13, 2026 at 7:19=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> =
+wrote:
+> > > On Mon, Apr 13, 2026 at 06:36:06PM -0400, Paul Moore wrote:
+> > > > On Mon, Apr 13, 2026 at 12:42=E2=80=AFPM Jason Gunthorpe <jgg@ziepe=
+.ca> wrote:
+> > > > > On Sun, Apr 12, 2026 at 09:38:35PM -0400, Paul Moore wrote:
+
+...
+
+> > > > We've already talked about the first issue, parsing the request, an=
+d
+> > > > my suggestion was to make the LSM hook call from within the firmwar=
+e
+> > > > (the firmware must have some way to call into the kernel/driver cod=
+e,
+> > > > no?)
+> > >
+> > > No, that's not workable on so many levels. It is sort of anaologous t=
+o
+> > > asking the NIC to call the LSM to apply the secmark while sending the
+> > > packet.
+> >
+> > From the LSM's perspective it really doesn't matter who calls the LSM
+> > hook as long as the caller can be trusted to handle the access control
+> > verdict properly.
 >
->> CMW MLS and SELinux MLS can be mapped. They have the same components.
-> Yes, one of the fields in a full SELinux label can be an MLS field,
-> but that doesn't mean there isn't translation needed.  The important
-> point is that security label translation, mapping, etc. is necessary,
-> possible, and has been proven to work across a variety of systems.
+> The NIC doesn't know anything more than the kernel to call the LSM
+> hook. It can't magically generate the label the admin wants to use any
+> better than the kernel can.
 
-I'm not especially concerned about translation between systems.
-The problem at hand is negotiating between LSMs on the same system.
+The NIC presumably knows how to parse the firmware request and extract
+whatever security relevant info is needed to pass to the kernel so the
+driver can make an access control request.
 
+> Just like you could never get everyone to agree on a fixed set of
+> labels for network packets we could never get agreemnt on a fixed set
+> of labels for command packets either.
+
+I don't follow you here ... I'm guessing you are talking about secmark
+labels?  The secmark concept was created not due to any disagreements
+on packet labels, but rather the challenges and impacts associated
+with packet matching directly in the SELinux code.  Secmark was seen
+as a more elegant approach to packet matching than the older
+"compat_net" SELinux code it replaced.  Even with secmark on SELinux,
+the packet labels need to be defined in the SELinux policy, the
+netfilter code simply assigns these labels to packets using the
+netfilter config.
+
+> > > > so that only the firmware would need to parse the request.  If we
+> > > > wanted to adopt a secmark-esque approach, one could develop a secon=
+d
+> > > > parsing mechanism that would be responsible for assigning a LSM lab=
+el
+> > > > to the request, and then pass the firmware request to the LSM, but =
+I
+> > > > do worry a bit about the added complexity associated with keeping t=
+he
+> > > > parser sync'd with the driver/fw.
+> > >
+> > > In practice it would be like iptables, the parser would be entirely
+> > > programmed by userspace and there is nothing to keep in sync.
+> >
+> > You've mentioned a few times now that the firmware/request will vary
+> > across not only devices, but firmware revisions too,
 >
->>>> SELinux transmits the MLS component of the security context. Smack passes
->>>> the text of its context.
->>> Arguably the NetLabel/CIPSO interoperability challenge between SELinux
->>> and Smack is due more to differences in how Smack encodes its security
->>> labels into MLS attributes than from any inherent interop limitation.
->> Yes. That is correct. The big issue I see is that SELinux does not represent
->> the entire context in the CIPSO header. Thus, you're up against many SELinux
->> contexts having the same wire representation, where Smack will have a unique
->> on wire for each context ...
-> That isn't always true is it?  From my understanding of the "cipso2"
-> interface an admin could easily map multiple Smack labels to a single
-> CIPSO label.
+> I never said firmware revisions, part of the requirement is strong ABI
+> compatability in these packets.
 
-True, but you can't map multiple Smack labels to the same CIPSO label
-without introducing ambiguity.
+That was my mistake; it was Leon.
 
-> It's important to remember that if you wanted to utilize CIPSO to
-> communicate between SELinux and Smack, the label translation is not
-> between SELinux and Smack but rather between SELinux and CIPSO as well
-> as between Smack and CIPSO.
+Leon mentioned that different firmware revisions would have different
+parameters for a given opcode, and that one would need to inspect
+those parameters to properly filter the command.  Is that not true, or
+am I misreading or misunderstanding Leon's comments?
+
+https://lore.kernel.org/all/20260310175759.GD12611@unreal
+
+> > this implies there will need to be some effort to keep whatever
+> > parser you develop (BPF, userspace config, etc.) in sync with the
+> > parser built into the firmware.  Or am I misunderstanding something?
 >
->>>>> Use of the NetLabel translation cache, e.g. netlbl_cache_add(), would
->>>>> require some additional work to convert over to a lsm_prop instead of
->>>>> a u32/secid, but if you look at the caching code that should be
->>>>> trivial.  It might be as simple as adding a lsm_prop to the
->>>>> netlbl_lsm_secattr::attr struct since the cache stores a full secattr
->>>>> and not just a u32/secid.
->>>> Indeed. But with no viable users it seems like a lower priority task.
->>> You need to be very careful about those "viable users" claims ...
->> Today there are no users.
-> That you are aware of at the moment.  You are also well aware of my
-> feelings on this issue and ultimately I'm the one who has to sign off
-> on that stuff.
+> I would not use the word "sync". It is very similar to deep packet
+> inspection, if you want to look inside, say, RPC messages carried
+> within HTTP then you have to keep up to date. How onerous that is
+> depends on what the admin's labeling goals are.
 
-Understood. There are a serious number of considerations that need to
-be worked through.
+I'm not sure what to say here, that sounds like a synchronization task
+to me, but if you have another term you prefer I'm happy to use that
+instead.
 
+> > > > However, even if we solve the parsing problem, I worry we have
+> > > > another, closely related issue, of having to categorize all of the
+> > > > past, present, and future firmware requests into a set of LSM speci=
+fic
+> > > > actions.
+> > >
+> > > Why? secmark doesn't have this issue? The classifer would return the
+> > > same kind of information as secmark, some user provided label that is
+> > > delivered to the LSM policy side.
+> >
+> > I think there is a misunderstanding in either how secmark works or how
+> > the LSMs use secmark labels when enforcing their security policy.
+> >
+> > The secmark label is set on a packet to represent the network
+> > properties of a packet.  While the rules governing how a packet's
+> > secmark is set and the semantic meaning of that secmark label is going
+> > to be LSM and solution specific,
 >
->> There are other problems (e.g. mount options) that have yet to be addressed.
-> The existence of one problem does not mean another does not exist.
+> "network properties" are a bit vauge ...
 
-True enough.
+That is one of the main reasons we moved from the old "compat_net"
+solution to secmark so that we could leverage all of netfilter's
+packet matching capabilities.  Once again, if the issue is simply a
+matter of phrasing, please let me know what terminology you would
+prefer.
 
+> > secmark labels represent the properties of a packet and not the
+> > operation, e.g.  send/receive/forward/etc., being requested at a
+> > given access control point.
+>
+> Yes, still aligned.
+>
+> > The access control point itself represents the requested
+> > operation.  This is possible because the number of networking
+> > operations on a given packet is well defined and fairly limited; at a
+> > high level the packet is either being sent from the node, received by
+> > the node, or is passing through the node.
+>
+> I think we have the same split, fwctl send/recive analog is also very
+> limited.
+
+Sure, but I thought the goal was to enforce access controls on the
+firmware requests based on the opcodes/parameters contained within the
+firmware request blob/mailbox?  Or are you happy with a single
+send/receive level of granularity?
+
+> > As I understand the firmware controls being proposed here, encoded
+> > within the firmware request blob is the operation being requested.
+>
+> I am not proposing that kind of interpretation, I want to stay in the
+> secmark model.
+>
+> When the packet blob is sent into the kernel at the uAPI boundary
+> (send_msg, send, write, FWCTL_CMD_RPC, etc) that is your access
+> control point.
+>
+> Deep inspection on the packet blob determines the secmark.
+
+... and this would be done by your BPF classifier, yes?
+
+> LSM takes the secmark and determines if the access control point
+> accept/rejects.
+
+At this point I think it would be helpful to write out the
+subject-access-object triple for an example operation and explain how
+an LSM could obtain each component of the access request.
+
+> > While we've discussed possible solutions on how to parse the request
+> > blob to determine the operation, we haven't really discussed how to
+> > represent the requested operation to the LSMs.
+>
+> I don't understand this? The secmark example I pulled up is this:
+>
+> iptables -t mangle -A INPUT -p tcp --dport 80 -j SECMARK --selctx system_=
+u:object_r:httpd_packet_t:s0
+>
+> The "represent the requested operation" is the string
+> "system_u:object_r:httpd_packet_t:s0", which is entirely admin
+> defined, right?
+
+No it isn't.  The string you've identified is the packet's secmark
+label, one of two packet object labels in SELinux (we'll ignore the
+other for our discussion).  Ignoring the managment controls, the
+"requested operation" in SELinux is going to be either send, receive,
+forward_in, or forward_out.  If we look at some example
+subject-op-object triples for a secmark packets, entering or leaving
+the system you might see the following:
+
+ httpd_t RECV httpd_packet_t
+ browser_t SEND httpd_packet_t
+
+> > I'm assuming there isn't a well defined set of operations, and like
+> > the request format itself, the set of valid operations will vary
+> > from device and firmware revision.  I hope you can understand both
+> > how this differs from secmark and that it is a challenge that really
+> > hasn't been addressed in the proposals we've discussed.
+>
+> I still don't see the difference from iptables. IPSEC, SIP, DNS, HTTP,
+> etc are all protocols with the same lack of any commonality.
+>
+> > At a very high level the access control decision for firmware/device
+> > requests depends on whether the LSM wants to allow process A to do B
+> > to device C.  The identity/credentials associated with process A are
+> > easy to understand, we have plenty of examples both inside and outside
+> > of the LSM on how to do that.  The device identity/attributes
+> > associated with device C can be a bit trickier, but once again we have
+> > plenty of examples to draw from, and we can even fall back to a
+> > generic "kernel" id/attribute if the LSM chooses not to distinguish
+> > entities below the userspace/kernel boundary.
+>
+> I think I would feed that into the classifier as well. Like iptables
+> can have a netdev argument to only match against specific devices, we
+> can have the same logical thing.
+>
+> > I think the hardest issue with the firmware request hooks is going
+> > to be determining what operation is being requested, the "B",
+> > portion of access request tuple.  If we can create a well defined
+> > set of operations and leave it to the parser to characterize the
+> > operation we've potentially got a solution, but if the operation is
+> > truly going to be arbitrary then we have a real problem.  How do you
+> > craft a meaningful access control policy when you don't understand
+> > what is being requested?
+>
+> Same as for networking. Admin understands, admin defines, kernel is
+> just a programmable classifier.
+
+Are you able to define all of the firmware request operations at this
+point in time?  That is my largest concern at this point, and perhaps
+the answer is a simple "yes", but I haven't seen it yet.
+
+--=20
+paul-moore.com
 
