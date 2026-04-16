@@ -1,283 +1,167 @@
-Return-Path: <linux-rdma+bounces-19382-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19383-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iPuiJDSN4GnNjgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19382-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 09:18:12 +0200
+	id wBiVMsia4GnokAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19383-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 10:16:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13B3940AF35
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 09:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C269640B678
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 10:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E6F0730247FF
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 07:17:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 68D003188BF4
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 08:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6553F3890E1;
-	Thu, 16 Apr 2026 07:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA01D38A72B;
+	Thu, 16 Apr 2026 08:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="LDbSdHS0"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="ZHgb1Pfa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE403563DD
-	for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2026 07:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5451838F620
+	for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2026 08:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776323863; cv=none; b=Rgow1P1Y+nDtghTOKOIrMhxfjxZsg5aKc571f/ZMm4UQesxOEgWPbVxvGRgEM1pMB57lmZYtJAAo2cgEDxe3MvJOfJWOhvkZAPBBGCUM7pg3Y5J4bizSn4Qm0RR6L9HhZygtFffbAB6QSu/oDdMyGRzqBiUxTyUHcrHlfCQf3v8=
+	t=1776327042; cv=none; b=jAY7zzoL9i4w6Q4Gu9Bwqlgn4qlNGODJfgfDZoZiGp7PBvZvGsGJV0sOvjefmSfZaoIqUJDJ36vbhyUypq1y0JxnHpWjpYgeb9ITP73KUms+OUGs6q/t36WfxP4sAK8IG+navFWw1BPZmNIYXNM1+t869X+UPBbBB5IG9UxqSds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776323863; c=relaxed/simple;
-	bh=XPDX8mrYjg3Jp/T4eisN5D3/bfj+vWk6KNANQ5CM9Ng=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E7nU2lXC7X5iEymc0IzRAC6Tvu0687GSNUpukhoim8aGnDWqQC3KqTBq8myFapRua8m9G76d63AiwGLTKjVpLKDRYwLM7DC7ehDiKbFKqVWWKCayR1kOSAIXeJPOZbLnYHDn9ykgTsvVtGtYbDhRtr7Uaojps0nwY44mx9AMdMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=LDbSdHS0; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9E0B43F790
-	for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2026 07:17:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1776323852;
-	bh=y61MtlkOiybG1V4CwysVZFJDayQvZg3YVFuKkra8lkU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=LDbSdHS0D3OZFmQXfvAto3n+s9AssrFlFo/YJ1Bv0gE8qLsbhw/OZyrNasEs1s2gG
-	 3nL955VBdByMEbCc3t3dWcyhI5dvagq0yoppK03f9qyJLjDE4gzSBjUvMMszjGb2bJ
-	 3VIJGYRPxg0bXcO++F722q1BaVeVImdn6z040Zv5Fg5MU9Cw4FEW7Vv+8WhQtDuY7X
-	 8TUfmyuQ6sBy7dZ3MQUKFOQ7WRRPiLU+evnVqmkuK2W2nH05B99+d1bE5i2ZvKuj0H
-	 Lg0cQaYGduGjOGV4r122s9jtN7QcP77ADM3O6r5eiYSxIvfox/oI5J1Ic65Y9E2Htc
-	 v/CmT1wFQvgIGJ6ZWtniIW3jVyP8G7StjoqSUOoOOR2Latr/fu4GbO4l4r21FXGelj
-	 GzABitEenawRQSAwOsxId/1UW3laSBozG/7Y50m0/WqHW+omGXJ7Fy700P9HhYeoUj
-	 SFoLKZQZR8hIlyGuS6+Vt9SV/k3hxDDIMb3BFi069B944iqgZt0kNnk3PDYhFIDrUd
-	 pu313ojjzEnHiUCE9ZzxPWyJL11heqWOvFXg6LNUb3C4K9MWnPskRUZen5+8DSmY94
-	 9DNH6jA59Lhaj/97J9if7oqvTyq/8OkAtO3Uz3JAm97BlztwjOBAGDPj0sTyKaCTBE
-	 KuevdEdqRQBVQlJxNoTncVHo=
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-c795fa31e18so597665a12.2
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2026 00:17:32 -0700 (PDT)
+	s=arc-20240116; t=1776327042; c=relaxed/simple;
+	bh=jg5zaFaKeUborNApjCd0f5asUfh56T+z7ogxGPEpmqE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DZGj7X21WYNbMkt0AlxvG/Yugd6vLeC3XoVWavT1IiKME9M3RZNfVxiKSfCRsyXReyWy/GZy5pBDG4u4/MkrBSrRMI4VlaSRQbUhzUZ/0uJ+in6jHnHaNEiu0JciGGCDlsQQkuURd5xQBpeWres2xHjZF3Afkunc/xypSg2ZETs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=ZHgb1Pfa; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-488aa77a06eso125760635e9.0
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2026 01:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1776327037; x=1776931837; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iia17LFU5lZBgfBQq2iW4nYXKngxri2AJ2e7eZmTBLE=;
+        b=ZHgb1PfaeGNQppqb4NpzhX9qyTVN8kpvD1bejGBb470tzNc0++WKgEMg/vr6MiiGqo
+         nhkQorMt2OCDzvLzPCjhXetOKtJC+Brdt7Wa4uhB9PFCEDOwJtu43RpQeFGcfghtAn7U
+         LjY59q8qozwsVxLOyJhWplzV12w41eBB1DBZDs7TWDAwRR3X83qWIAFYHYVrdudfty+m
+         Yi5NEcnD8MoClBRRu1d3oTDzAmJERkY8WzJZFo3PQSgC4/cN8iJ4lEO144wimUVMnbZ0
+         BsFYsskDsX813Fd+moj7CRJV6rHKyAVHTIfEErbeaeed6/skx9RRRUKuamhctvzMwJwt
+         sk9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776323850; x=1776928650;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y61MtlkOiybG1V4CwysVZFJDayQvZg3YVFuKkra8lkU=;
-        b=JgF5jWlneOVH2uKL2e0K4SH9ONuBO0R8ZrJiC3+vYGVyuvXdbn79xg8bkv31/DQwBQ
-         kCMA0uBwy2MSHNHVsEejvID01J7d6ne1xR7cllJSlUigCmocykiSDLi78/Az5IqMbfRB
-         eBErcIJhZhDvmmDBf7mA7A13oyhLnD7mA7E+2T56i6RZXNez2tagrHN0mSUoCUkexooM
-         Kd5tP2o1gJUpBeoAF7H1WWYeop4ZFssDnKDNZ5qMNELt6ZxZCrT5K2zL41Ww78AA14zw
-         zvM1KzdypYfTgDyCb7xhPOyxUmCDVWlz5B619nc9HSz7xt/OX9QA0XK4sYUyBi4gjNrz
-         ByAQ==
-X-Gm-Message-State: AOJu0YyN5l23ATsHL2e6zAAsAG2X5HDZ5bk67f5Tai5UPetgK20DUW3J
-	ls75efs3hujw65WhN7P/22bYj+BJMwtRNjUN4j4RNzYYj7VJsFCB/YZgH28WKtZoVGgFptrTDit
-	HVTbS5+qALQOQscise/eQmGmvjzc8jftrWn8+4kmQ9DL9zcYT2Gm4hCVSyQeEeML2MXsztFwRH+
-	WQBAzVcdhn9RDXpA==
-X-Gm-Gg: AeBDievy9buWFc/xzgONPNawd5exGAjXX6++3R3ipKW0t2TgjHm1D5W43ZACRWsGcNC
-	8bQxBzEWqTSGVHc2WMoa7USepuXwk93fhyDUX69aiaT7UuvGAYu7FgAQaaDUBJlXDeFalmFc7QT
-	9yS0arBDYGYHcH3n2OWMC3Q3EE/klXgWzpiU84+g0OPgKFxpHbmxYvvmtF3RRbKyWA3RoRfd9F6
-	RzufqyYfuIoN54nsUW5rhmGO/60TAhFzCGZ6/STXr6YYzFiXk/wqFS5tMCiuyK5YeVYowW/2MQG
-	0uMC9IWkGSHeo1a1di50aGyixgeZnVQhMZ5rQf0jT/yaa6IPLw/ByJRWm7waBOA2XZYIgGevo5R
-	D3L9Bc6TZiPYOlFQSnI2gosmKxoboNKhr7VryunOJCQ==
-X-Received: by 2002:a05:6a20:4306:b0:398:c351:aa0e with SMTP id adf61e73a8af0-39fe3da4293mr25012672637.25.1776323850451;
-        Thu, 16 Apr 2026 00:17:30 -0700 (PDT)
-X-Received: by 2002:a05:6a20:4306:b0:398:c351:aa0e with SMTP id adf61e73a8af0-39fe3da4293mr25012643637.25.1776323850024;
-        Thu, 16 Apr 2026 00:17:30 -0700 (PDT)
-Received: from cnode.tail.seyeong.kim ([39.118.66.20])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c79581a2fc2sm3976343a12.21.2026.04.16.00.17.27
+        d=1e100.net; s=20251104; t=1776327037; x=1776931837;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Iia17LFU5lZBgfBQq2iW4nYXKngxri2AJ2e7eZmTBLE=;
+        b=QPvHr/8hxOfWQdZcluYs2HvdgGIiXNx8aN58DPoHqgE/KKK/OTWJK6qxlZLkf9hGso
+         J9JWTUYomVys4pkdh149NJipQLZaNw8WThAiytz0El4fUtXei+47R2yYM7YxkOB3ti2X
+         EsVabprnT/Q27TjU/wk8qinDLrdaWBk6HjtydVVM97BJWN3M+Vpw7V9eTpdUQqco8jwT
+         z7lIaqv2qzsRvlBYCO55XEg/SG5Il+0z9C2sxjI+ShddtSwgXYOXOTi8aYAZidqDwSBE
+         +VDF9UeiYQEWaG8P8191QborZD/MTbIXTULwlMzGhcCEColFrjkTmjl0mV+myTb8hkpL
+         ihFg==
+X-Forwarded-Encrypted: i=1; AFNElJ+VYxKwgmh4u3lE3gsXloPcdNuLbN2cDKWQ6bRHEiMYIgKpEhckFbPPXlUEXGUHPpeNeE0DJF1U85qe@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzvi+uZKa/462teh8/W6wHy9AfA7I5swuDUGj35JtfBR+dlG/wr
+	sQ58GWlGOu54P6mXbbQ+oqAQl8F1FIS8pM6sSHLsx5nSFlbbC8FLK7Zegyc0o1ose5FUyAphW92
+	/nMsc
+X-Gm-Gg: AeBDievJLvRyKsKSHEbguuLKEPO5oSpJvsBD47k8CcFP3s8XyYoMo7CbTlvwF6p1onG
+	/7BkOQNQoMWzBuuqTZ5E76LD0oziwFnxBZof//SCjICEyra5tJaObU3oNQgHY2qHZJP+2a5mjyi
+	QOSm1035eL5iWniNw4Gu0mjM2m7Nc0wa9434xiTKOE3CR7t+gVFADU8PLIUp+pOqef9+Iz5YHWA
+	k2MakRM3kT7FAotcSet/TU5GURGCOC9rmgZ822YSMYQfknH2Y2LvdHlYGUVGyS5ymFdx+PdLg9z
+	q4bE9RBJDdO/oOfllYWtN1T010OxlaDzkjFRufvf9Hom3mDj3hE1okppgg7/MGXqiGD2O3nzBr+
+	lVHcPbyaLThNRz3ehuFwj08AkIo5/0wLN36yyUwInVwE7DaMhn8F3hF+hfwPpm1qnN8hId6VoBY
+	9Z7r8oTHLI5mq6lYLx7b1kq2tywM7uOGgv1j3Vy/MypkVjmQ==
+X-Received: by 2002:a05:600d:d:b0:488:c14b:201b with SMTP id 5b1f17b1804b1-488d67e737amr268167565e9.10.1776327036805;
+        Thu, 16 Apr 2026 01:10:36 -0700 (PDT)
+Received: from FV6GYCPJ69 ([140.209.217.211])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488f5813954sm30409085e9.3.2026.04.16.01.10.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2026 00:17:29 -0700 (PDT)
-From: Seyeong Kim <seyeong.kim@canonical.com>
-To: linux-rdma@vger.kernel.org
-Cc: Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Seyeong Kim <seyeong.kim@canonical.com>
-Subject: [RFC PATCH] RDMA/irdma: Suppress PF reset on HMC error
-Date: Thu, 16 Apr 2026 07:15:41 +0000
-Message-ID: <20260416071541.3899471-1-seyeong.kim@canonical.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 16 Apr 2026 01:10:36 -0700 (PDT)
+Date: Thu, 16 Apr 2026 10:10:33 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: syzbot <syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com>, 
+	jgg@ziepe.ca, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, Jiri Pirko <jiri@nvidia.com>
+Subject: Re: [syzbot] [rdma?] WARNING in ib_dealloc_device
+Message-ID: <ymvuyxjfiyfo2da2cqftjcan3lqr5onofnrcb52cubigsh4pnz@5u7e43rrumdo>
+References: <69dc3310.a00a0220.475f0.0018.GAE@google.com>
+ <20260413154353.GK21470@unreal>
+ <tinnwpbb7kwhfp33lfltl6ryaymuamtimac7xenbqhsbbofiw2@xgfvtcs5yjwk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tinnwpbb7kwhfp33lfltl6ryaymuamtimac7xenbqhsbbofiw2@xgfvtcs5yjwk>
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=45cb3c58fd963c27];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[canonical.com,reject];
-	R_MISSING_CHARSET(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[canonical.com:s=20251003];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19383-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[storage.googleapis.com:url,resnulli.us:email,msgid.link:url,appspotmail.com:email,syzkaller.appspot.com:url];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
 	ASN_FAIL(0.00)[10.253.234.172.asn.rspamd.com:server fail];
-	TAGGED_FROM(0.00)[bounces-19382-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[canonical.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-0.999];
-	FROM_NEQ_ENVFROM(0.00)[seyeong.kim@canonical.com,linux-rdma@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 13B3940AF35
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,03393ff6c35fd2cc43de];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: C269640B678
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The irdma driver currently issues an unconditional PF reset whenever the
-HMC Error interrupt (PFINT_OICR bit 26) fires:
+Tue, Apr 14, 2026 at 05:57:19PM +0200, jiri@resnulli.us wrote:
+>Mon, Apr 13, 2026 at 05:43:53PM +0200, leon@kernel.org wrote:
+>>On Sun, Apr 12, 2026 at 05:04:32PM -0700, syzbot wrote:
+>>> Hello,
+>>> 
+>>> syzbot found the following issue on:
+>>> 
+>>> HEAD commit:    7f87a5ea75f0 Merge tag 'hid-for-linus-2026040801' of git:/..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=11778eba580000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=45cb3c58fd963c27
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=03393ff6c35fd2cc43de
+>>> compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+>>> 
+>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>> 
+>>> Downloadable assets:
+>>> disk image: https://storage.googleapis.com/syzbot-assets/0f5deca1373e/disk-7f87a5ea.raw.xz
+>>> vmlinux: https://storage.googleapis.com/syzbot-assets/6aea6c1c6b6e/vmlinux-7f87a5ea.xz
+>>> kernel image: https://storage.googleapis.com/syzbot-assets/61444b289e96/bzImage-7f87a5ea.xz
+>>> 
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+03393ff6c35fd2cc43de@syzkaller.appspotmail.com
+>>> 
+>>> ------------[ cut here ]------------
+>>> !xa_empty(&device->compat_devs)
+>>> WARNING: drivers/infiniband/core/device.c:682 at ib_dealloc_device+0x187/0x200 drivers/infiniband/core/device.c:682, CPU#0: kworker/u8:37/4856
+>>
+>>I think that we have only one patch in this area https://patch.msgid.link/20260127093839.126291-1-jiri@resnulli.us
+>
+>Unable to find a link to this patch. But I don't see a scenario on which
+>this WARN can happen either. Very odd.
 
-	if (event->reg & IRDMAPFINT_OICR_HMC_ERR_M) {
-		ibdev_err(&iwdev->ibdev, "HMC Error\n");
-		iwdev->rf->reset = true;
-	}
-
-request_reset() issues an IIDC_PFR to ice. In practice a single HMC_ERR
-can trigger cascading PF resets, IOMMU faults during teardown, and
-teardown of every RDMA connection on the device.
-
-i40e handles the identically-named interrupt by reading
-PFHMC_ERRORINFO and PFHMC_ERRORDATA and logging them without touching
-device state; see commit 9c010ee0ea5f ("i40e: Suppress HMC error to
-Interrupt message level") which removed the reset as "not necessary".
-This patch mirrors that handling on irdma.
-
-With this change, repeated HMC_ERR no longer produces a reset storm and
-RDMA traffic on the device continues uninterrupted.
-
-Signed-off-by: Seyeong Kim <seyeong.kim@canonical.com>
----
-Notes for reviewers
--------------------
-
-Posted as RFC because some details are inferred rather than verified
-against the E810 datasheet:
-
-1. Register offsets. PFHMC_ERRORINFO (0x00520400) and PFHMC_ERRORDATA
-   (0x00520500) are inferred from the same 0x00520000 PFHMC bank as
-   PFHMC_PDINV (0x00520300); they have not been verified against the
-   datasheet.
-
-2. HMC error semantics. The assumption that every E810 HMC_ERR is
-   safe to continue past is not datasheet-confirmed. A conditional
-   reset branch analogous to the existing PE_CRITERR /
-   IRDMA_Q1_RESOURCE_ERR whitelist can be added on top if needed.
-
-3. Test methodology. The interrupt was forced via a /dev/mem bit
-   write to PFINT_OICR, which exercises the handler path but does
-   not reproduce firmware-triggered HMC errors directly.
-
-Testing details
----------------
-
-Tested on:
-  Kernel   : 6.8.0-110-generic (Ubuntu 24.04.4)
-  Adapter  : Intel E810-XXV for SFP [8086:159b rev02], 2-port
-  NVM      : 3.10, fw.mgmt 6.1.9, irdma fw 1.57, DDP 1.3.36.0
-  Repro    : writel(BIT(26), BAR0 + 0x0016CA00) via /dev/mem
-  Workload : ib_write_bw -R -F -q 4 -D 60 across the two ports
-             (netns-isolated), HMC_ERR forced three times during
-             the 60-second run
-
-Before the patch, one forced HMC_ERR produced "HMC Error / Requesting
-a reset" followed by two further HMC_ERR occurrences during the reset
-cycle, plus DMAR DMA read faults on each teardown. After the patch,
-each forced HMC_ERR produced a single "HMC Error: errinfo=...
-errdata=..." line and no reset; the ib_write_bw run completed at
-1103 MB/s with no interruption.
-
- drivers/infiniband/hw/irdma/i40iw_hw.c  | 4 +++-
- drivers/infiniband/hw/irdma/icrdma_hw.c | 2 ++
- drivers/infiniband/hw/irdma/icrdma_hw.h | 2 ++
- drivers/infiniband/hw/irdma/icrdma_if.c | 8 ++++++--
- drivers/infiniband/hw/irdma/irdma.h     | 2 ++
- 5 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/i40iw_hw.c b/drivers/infiniband/hw/irdma/i40iw_hw.c
-index 60c1f2b1811d..8301938b4543 100644
---- a/drivers/infiniband/hw/irdma/i40iw_hw.c
-+++ b/drivers/infiniband/hw/irdma/i40iw_hw.c
-@@ -29,7 +29,9 @@ static u32 i40iw_regs[IRDMA_MAX_REGS] = {
- 	I40E_PFHMC_PDINV,
- 	I40E_GLHMC_VFPDINV(0),
- 	I40E_GLPE_CRITERR,
--	0xffffffff      /* PFINT_RATEN not used in FPK */
-+	0xffffffff,     /* PFINT_RATEN not used in FPK */
-+	0xffffffff,     /* PFHMC_ERRORINFO not used in FPK */
-+	0xffffffff      /* PFHMC_ERRORDATA not used in FPK */
- };
- 
- static u32 i40iw_stat_offsets[] = {
-diff --git a/drivers/infiniband/hw/irdma/icrdma_hw.c b/drivers/infiniband/hw/irdma/icrdma_hw.c
-index 32f26284a788..b1f1b5485762 100644
---- a/drivers/infiniband/hw/irdma/icrdma_hw.c
-+++ b/drivers/infiniband/hw/irdma/icrdma_hw.c
-@@ -29,6 +29,8 @@ static u32 icrdma_regs[IRDMA_MAX_REGS] = {
- 	GLHMC_VFPDINV(0),
- 	GLPE_CRITERR,
- 	GLINT_RATE(0),
-+	PFHMC_ERRORINFO,
-+	PFHMC_ERRORDATA,
- };
- 
- static u64 icrdma_masks[IRDMA_MAX_MASKS] = {
-diff --git a/drivers/infiniband/hw/irdma/icrdma_hw.h b/drivers/infiniband/hw/irdma/icrdma_hw.h
-index d97944ab45da..0acdeda1236d 100644
---- a/drivers/infiniband/hw/irdma/icrdma_hw.h
-+++ b/drivers/infiniband/hw/irdma/icrdma_hw.h
-@@ -40,6 +40,8 @@
- #define GLHMC_VFPDINV(_i)	(0x00528300 + ((_i) * 4)) /* _i=0...31 */
- #define GLPE_CRITERR		0x00534000
- #define GLINT_RATE(_INT)	(0x0015A000 + ((_INT) * 4)) /* _i=0...2047 */ /* Reset Source: CORER */
-+#define PFHMC_ERRORINFO		0x00520400
-+#define PFHMC_ERRORDATA		0x00520500
- 
- #define ICRDMA_DB_ADDR_OFFSET		(8 * 1024 * 1024 - 64 * 1024)
- 
-diff --git a/drivers/infiniband/hw/irdma/icrdma_if.c b/drivers/infiniband/hw/irdma/icrdma_if.c
-index 2172a2092e3f..4b451d8482a4 100644
---- a/drivers/infiniband/hw/irdma/icrdma_if.c
-+++ b/drivers/infiniband/hw/irdma/icrdma_if.c
-@@ -91,8 +91,12 @@ static void icrdma_iidc_event_handler(struct iidc_rdma_core_dev_info *cdev_info,
- 			}
- 		}
- 		if (event->reg & IRDMAPFINT_OICR_HMC_ERR_M) {
--			ibdev_err(&iwdev->ibdev, "HMC Error\n");
--			iwdev->rf->reset = true;
-+			u32 hmc_errinfo = readl(iwdev->rf->sc_dev.hw_regs[IRDMA_PFHMC_ERRORINFO]);
-+			u32 hmc_errdata = readl(iwdev->rf->sc_dev.hw_regs[IRDMA_PFHMC_ERRORDATA]);
-+
-+			/* Log diagnostics; do not reset here. */
-+			ibdev_warn(&iwdev->ibdev, "HMC Error: errinfo=0x%08x errdata=0x%08x\n",
-+				   hmc_errinfo, hmc_errdata);
- 		}
- 		if (event->reg & IRDMAPFINT_OICR_PE_PUSH_M) {
- 			ibdev_err(&iwdev->ibdev, "PE Push Error\n");
-diff --git a/drivers/infiniband/hw/irdma/irdma.h b/drivers/infiniband/hw/irdma/irdma.h
-index ff938a01d70c..e8cda27d7854 100644
---- a/drivers/infiniband/hw/irdma/irdma.h
-+++ b/drivers/infiniband/hw/irdma/irdma.h
-@@ -66,6 +66,8 @@ enum irdma_registers {
- 	IRDMA_GLHMC_VFPDINV,
- 	IRDMA_GLPE_CRITERR,
- 	IRDMA_GLINT_RATE,
-+	IRDMA_PFHMC_ERRORINFO,
-+	IRDMA_PFHMC_ERRORDATA,
- 	IRDMA_MAX_REGS, /* Must be last entry */
- };
- 
--- 
-2.43.0
-
+Was digging a bit more, still unable to find the issue.
 
