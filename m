@@ -1,432 +1,260 @@
-Return-Path: <linux-rdma+bounces-19392-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19393-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SMPMNsbs4Gk4ngAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19392-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 16:05:58 +0200
+	id WOHqEnHv4Gl4ngAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19393-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 16:17:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A7AF40F57D
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 16:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BB6B40F791
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 16:17:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49DB730659E3
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 14:02:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 841A430413AA
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 14:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B61F3DB645;
-	Thu, 16 Apr 2026 14:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01141A8F84;
+	Thu, 16 Apr 2026 14:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Y3PENRK2"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gd2C0G8R"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5883C0625;
-	Thu, 16 Apr 2026 14:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776348153; cv=none; b=gzqGl1aTiR1Uyl3v3Z2Ic+bvjmGOiQg6vyJLW+zZzkrBPIggTYjt6V2+3Fx+ddoqYTzJOefWwNoTU6ZPOGxYGarKaWzy1qbkCc6HrbrYpNomYFQJtvLq9rrSNlEcqsg1EmsOgcN+JvijOxsprUw2p992NB8dAf88GyAQjEUExD0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776348153; c=relaxed/simple;
-	bh=SKmtEwmTQ918ue5cQz9r8z+yvol6V9cUHf0AuHbh/eQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ONxpqWcYV43cJ/XSX45n6oa0tYl3T20RCAumhbGPUqagqrI1luzSR+uhuF8MNd0CchxvRVoAjSCCE8kgdI9Ar8HQvQuWxWt/8m2xok1rIGsh59J0NNBFRSxA9KiNH5PH7KzNW0K1MGOSv7WaVFFEcZyk2luCtPu4maHYRw5StKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Y3PENRK2; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id CB12220B6F01; Thu, 16 Apr 2026 07:02:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CB12220B6F01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1776348151;
-	bh=lKVXQY/j9yx3ICjyO5aXXEoFL8h3QxrZhLPGks44tX0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Y3PENRK22g3iNw89Od/IBmdveOthd3AD/zxqLGAXBC+cKqGY1Vdt9rNvynwrwbfgD
-	 4tPQGB9qdu2+K0UJCTyOMpfovwwdA+qJQGuzO0QwiLw+tDmjnLG4Nnq3M89CYE5d9x
-	 UfawUX+S5YxqY/Xnl+CTK1wlu8WvisUODMtASz/I=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	shirazsaleem@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v3 1/1] RDMA/mana_ib: UC QP support for UAPI
-Date: Thu, 16 Apr 2026 07:02:31 -0700
-Message-ID: <20260416140231.825205-1-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011033.outbound.protection.outlook.com [52.101.57.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D35B33120C;
+	Thu, 16 Apr 2026 14:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.33
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776348719; cv=fail; b=s3mcwW/eJUUmmc+v9mKVOFTg/zmQiQzAhb/C/MZ7ZWVrSguOjzDNa5hGrRb9oWnyDfK+IqCAIjvsFSbZwav7s1iQBV8jKcUqcfLphdswQISoeNPnP8P5DDo4HnGj1At9SsRBfp5pT+qTLGLPu1tR4WOQiGe+PuJI0xB6PeBa3A8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776348719; c=relaxed/simple;
+	bh=rBBEIjML0hsRfD5yo2Hp/zVqbK7sLeJNUMTZ8OY4/hM=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=daouaXm9mAvIzQFkMeaHaJhujuQlV+/bY31xZ75M1F6mzsKXGYRO8HFkrSrf7wS43tvb4fn1FRSicQVXYgp0+1ypH+AoU7hKfdro34F662pgYolxHh2nxncUziHdKvJpePQPQ6ha2Abtn/uuobCBkYCURMnWQ7+RA3hqTV8yQ5Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gd2C0G8R; arc=fail smtp.client-ip=52.101.57.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=PFXW5xGy6/xGs3wASFAvqjo67O7pWlKef1F9/GiQMyzBnzqSTwsMHvE7o+fdLbdWbC2v1onPwp/unPktLFC08vuddYj+DLEy/6zHk5qJqGfuf51SObY5b0gV1oE4ForVBksAmTGrV9Y3F0iBof7uYCIT9G8HuJ2TSJh5MNwCR/P/+oRanzwwIC3Ejq4C2/b2PJ1nbZLDqBo2dhQSdvfagl5x3NX1+Z4tzWCdRvV+xD9LcZNjTwlvJ6yqPcLhZa2m/u5rvOuz77TmPxFZme2ZBmnnLLk5PnWcplQF/G84lrRkBGk1OUbGhsb5Q/TDjQB/sN7IdxbQsG+cwX7mtvpz2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8IgrbqAjKd0bwuWqFVEIhtsqma9bKwslORbTF/ZDsYg=;
+ b=C31NkpzPedX5wKs0W2wUw9OJIqHzx4DqjheTStLBhlslQYPMihdcO36TCXRoaWrGaN43AKAQV4X3YpshIluXvifPp7tFR5Ya/Fqgzkc2aRQSorpmDUeA1NXn8RFXNFrulUjMlvC+ucyW9lacEvZyTlxhmJGnZjflksGMDQan8IP9EFoXHSNAilHZQWeLdK8unUMYK5+xrUNPeDeMYy7JlxBneDGeCkZTTl0Co1PUVLSggvoMpjTE7M1D32pK2+0niSiOlZop8B8ROO0ZvZLTaSPS4Gu2ijumo5nZX5Wdh7oLd+KUcjpxilI7GwwQP4KWGINx1TbvESdDXqUCqgZTkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8IgrbqAjKd0bwuWqFVEIhtsqma9bKwslORbTF/ZDsYg=;
+ b=gd2C0G8R1ShezgimayqGC3HDtfNSIVGMPDke9+sMqpmxlH3HNmZU55PElfsgrOvS84GfxTxHVf+xxAPWLX1GuwinIsHQ4CwUEe7qw3mDZAOsYTdmOZxlry8jxvLdcw5GRU3wjegyK3IngJpomGb0la1TNs9odgmtLwD2A+sR1LofEdqStqepYe/StqA72vHpz/nMo/4guur9KRWAB2o6tl6FX5tpaGjwsgNBcSRiyGwXRBZkBBB+AlJ3ryP/ixQVMRvS/So/FDRvTuLHq3OxhB4rWm1H68X1Y73cWKV/bsxc0rg4BbBJg/YbQfBQt418YgYOlcXy2eSowIelhFr4/w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by MN0PR12MB5907.namprd12.prod.outlook.com (2603:10b6:208:37b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9818.25; Thu, 16 Apr
+ 2026 14:11:54 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528%5]) with mapi id 15.20.9818.017; Thu, 16 Apr 2026
+ 14:11:54 +0000
+Date: Thu, 16 Apr 2026 11:11:53 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-rdma@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+	Saeed Mahameed <saeedm@nvidia.com>
+Subject: [GIT PULL] Please pull FWCTL subsystem changes
+Message-ID: <20260416141153.GA1646988@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="n+R94BSBfpwtzvW3"
+Content-Disposition: inline
+X-ClientProxiedBy: MN2PR22CA0010.namprd22.prod.outlook.com
+ (2603:10b6:208:238::15) To LV8PR12MB9620.namprd12.prod.outlook.com
+ (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_MISSING_CHARSET(0.50)[];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|MN0PR12MB5907:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5149a2a-baed-4ef8-213c-08de9bc21ce8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|376014|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	BfV7q0IUwajm55BE1lie4zMKjlF3ti72pUDpANAUfKs6Nb4cQkqeeoKbFQd1D5iGXS1jFut6fu4SdR+AKukoyWqoGrRwCMwGM0OWkqZd3nAwS8Js2F93GCkAQCctwAy9diJFUsTA7bIuW+fi0pqtBdl/L4Ww8ClX03qcS8BSJNkGzj1VCgRhiyc4pGWzjmbqX3tjL6ybs9COtezoPG8E7k2A6grRpmrwgZJyijPCrgVG1jyjE9AdHv1sYEffF0ELMH4GOmm2J4AncSza1R0n9ytT37He1UZgsZq7xpF8nBdZD+h5TLv0JN/VHPBDAGPzupPIkpy84jw5bmvRRYmjKwp0kHw/y349Fw9EQ89odbo0HHMsDCx1DNUPFz47nXuO5jfgdRBEUYtx5RSugUty2YQIKi7kdqKONFTX8vxXeAmoYXkFx1QfgSOKKRZPPySLmBdYJ1ezs1vjhAu5ews9k+SQdGRIiCJCDAbimAt3mMAKUwtlV/j2VQonvWgCYNAwshvpD48oc3dbYhE13aY6HkTEx65YE37PY2a1Bf0kfA5sMYgDcy9IxJRytMe+J0EokyGlUHaO39s7BGfikJkLjtLrsVzC3eerwwtNneiMYCU5yG2jCg9grsUUmR9O2xtVvXTK0GQ5CcbO395OQ15b01nA5xc7+P+s0/0UMAWY9Y+6cMm/k5TQpQI+noIdj9uQ878z31K6qly9SZLUqa94WXYJ8+bmcj+Si1oYG+0B0ng=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6qqpvovc+eR0qZHkDM8pPeQ5eDVKQeYINBtqzNfDjYhiuZNlzVekArV6XxkD?=
+ =?us-ascii?Q?0XCqsNKUk1oWGij4VnI7fuucNyRicn7Sme/u1Em/TzjjtFPgMl0hGcca+AUy?=
+ =?us-ascii?Q?spl9m/0eWwX1beAs8GqqPOPUbepNEPuzkAJhPyJCF+5CTe32RM6tvmE1eH/f?=
+ =?us-ascii?Q?s3WDLdZs2/3TxINYzSqRkNoCQwd8sJopyiRTDQnD5ShgRkrDsRZi01r4y5jn?=
+ =?us-ascii?Q?T4DN9tEIlWK28iIySBTzTAVTSk/2HZ2Y0KWUEGv8hF46aDMgxWDOQfxv6ujr?=
+ =?us-ascii?Q?6C0sYLQOuohTxkOuJqfkzU9a2wdZdoSxnGwvjO21WlejmzwiQ+1Gm5VT/dvu?=
+ =?us-ascii?Q?bbxYBYrMQWPa3+2B2k+yZGRVebKrDD0y6b6Cs1SyL/VxUpQIypnG5GdJqvgF?=
+ =?us-ascii?Q?RJStQK6q17ALtQgA2b4E/IclsghYIqYKauQr3tmMYm91F3n86uVta3iL+lO5?=
+ =?us-ascii?Q?fTtIPp1SbT01G8nrfsMk0SDxDOlk5S8uCISsz15u8TI2vZcdHq+nzrqCmKps?=
+ =?us-ascii?Q?z6Hp8AWpvA0zL7ziRLDlFxbvoywhczaXhrOR0P3Satc3uIvc/5xB2Pk2g9B1?=
+ =?us-ascii?Q?1PLXuTgSPk33aLtW7q5DaKIeuQwOY0Syxi6dojv3aav0J8jxoap4+spEU4zh?=
+ =?us-ascii?Q?nN8KtGCaIs/+NH1RV7TmKE4skrNWknmjURwgaWztNjaFbBYzJ5hwqAC0POkr?=
+ =?us-ascii?Q?tdo4LMy7JVaEhgeMEJS958BQ11r2GmuBIpR7dYBEqlRXyweg8VO/Xs+dQjyQ?=
+ =?us-ascii?Q?xNv3CH0NUoMdQcepfUaaflYKWGhx+4s9mCT+hTVPGyJl1TDI6vy53CArlz3a?=
+ =?us-ascii?Q?Kk9zoCgGw1rveU2lepesh8V8clQDc1FT4IbCbWtAjzv9XWi70LN8i63dTbsd?=
+ =?us-ascii?Q?mqPaukxiP+o9lhydjJomffxil6XOGyR/4mlR+bCNRGdnM/rm8RJVFcTYNVpu?=
+ =?us-ascii?Q?buR12S8+d398qdA/K/YMJdf0hz/e93gkcmvfhaA7bBV9FeCfGkzF49t/AEDm?=
+ =?us-ascii?Q?N21Vy9Tj9rweKhThRoHLauArEsXicVUcZ8kQWNkzNq6f476pYID2LVjvgSZN?=
+ =?us-ascii?Q?7o7BcDw2f+hNUwuy+kMjmsBbi2hAZ+aBkr1pt1Ct2DoUxQ9GMO3/8epJrNFw?=
+ =?us-ascii?Q?ZXrQHhubWvtODz9uzJSwB79NPlQsz1NAhq2glyFaCg+2rjha241lo//Qjfmo?=
+ =?us-ascii?Q?4eBjdDqmj+ucUyIwJX6cVv/wMB9UlMULPMi2cGBG2hYAxTh3zbyWnmc9sNH9?=
+ =?us-ascii?Q?F6CWIhdFKsb4hKfpobMqAkJHuvv13ySAbUqY518PD0/ZAbv4lllSr54DcGTL?=
+ =?us-ascii?Q?1GZqB+U83KTaztEduEU7cQY0JC7QzAau67+4R3kmT1bAXEWjFfxz1zUilzoH?=
+ =?us-ascii?Q?eYY8YnB8AyM60ffwhUPv6oS0mfBGHAuBsApIIEhFbXwPpj4/cg5lSlAHeGMI?=
+ =?us-ascii?Q?iW9cjPaG4SokY7aVRDXS+IDvG2lzUaWh6FvPqbV4Pf4TBvvajNEVfFnDQOQx?=
+ =?us-ascii?Q?csHRMzbkRIN66u3CnbIT91xlp1XuyVeU4zxvIn53do/jZ+srLdA9nIKtRerZ?=
+ =?us-ascii?Q?DNdF5SUGsoXhG8R8XvybPuhAC1DnbiGdKP2cfaPBuWDdUZP06W/mu7MBITYx?=
+ =?us-ascii?Q?vmLgsx1DA4dRLReFo1C4H4yNLx6PiA3wd9Wj9NqewVVrsC6njW9nvW11y1Rb?=
+ =?us-ascii?Q?/5dgSekhiq2IuzGFDkTQcVJeTuwa/HtArrddfkICjzVazDQx?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5149a2a-baed-4ef8-213c-08de9bc21ce8
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2026 14:11:54.6700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SzF5Tu0y6gfe+E4/JKOlf9V0CM30Iarm61WFeGlA2FB4Zv4OJyFe4s9PXhUGx5dG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5907
+X-Spamd-Result: default: False [-2.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19393-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19392-lists,linux-rdma=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-0.999];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3A7AF40F57D
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:mid]
+X-Rspamd-Queue-Id: 9BB6B40F791
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+--n+R94BSBfpwtzvW3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Implement UC QP creation in the RNIC HW for user API. An UC QP is exposed
-as three work queues: send, receive, and memory management. The latter is
-used for bind and invalidate WQEs to support memory windows.
+Hi Linus,
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
-v3: use new udata helpers
-v2: removed udata check and removed enum from mana-abi.h
- drivers/infiniband/hw/mana/main.c    | 41 ++++++++++++-
- drivers/infiniband/hw/mana/mana_ib.h | 41 ++++++++++++-
- drivers/infiniband/hw/mana/qp.c      | 89 ++++++++++++++++++++++++++--
- include/uapi/rdma/mana-abi.h         | 11 ++++
- 4 files changed, 173 insertions(+), 9 deletions(-)
+Small fwctl update, another new driver for Broadcom RDMA NICs.=20
 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index ac5e75dd3..42567c30e 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -978,7 +978,46 @@ int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
- 	return 0;
- }
- 
--int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+int mana_ib_gd_create_uc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
-+			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags)
-+{
-+	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_cq *recv_cq = container_of(qp->ibqp.recv_cq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_pd *pd = container_of(qp->ibqp.pd, struct mana_ib_pd, ibpd);
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	struct mana_rnic_create_uc_qp_resp resp = {};
-+	struct mana_rnic_create_uc_qp_req req = {};
-+	int err, i;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_UC_QP, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = mdev->gdma_dev->dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.pd_handle = pd->pd_handle;
-+	req.send_cq_handle = send_cq->cq_handle;
-+	req.recv_cq_handle = recv_cq->cq_handle;
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; i++)
-+		req.dma_region[i] = qp->uc_qp.queues[i].gdma_region;
-+	req.doorbell_page = doorbell;
-+	req.max_send_wr = attr->cap.max_send_wr;
-+	req.max_recv_wr = attr->cap.max_recv_wr;
-+	req.max_send_sge = attr->cap.max_send_sge;
-+	req.max_recv_sge = attr->cap.max_recv_sge;
-+	req.flags = flags;
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err)
-+		return err;
-+
-+	qp->qp_handle = resp.qp_handle;
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; i++) {
-+		qp->uc_qp.queues[i].id = resp.queue_ids[i];
-+		/* The GDMA regions are now owned by the RNIC QP handle */
-+		qp->uc_qp.queues[i].gdma_region = GDMA_INVALID_DMA_REGION;
-+	}
-+	return 0;
-+}
-+
-+int mana_ib_gd_destroy_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- {
- 	struct mana_rnic_destroy_rc_qp_resp resp = {0};
- 	struct mana_rnic_destroy_rc_qp_req req = {0};
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index c9c94e86a..0f21a4b25 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -166,6 +166,17 @@ struct mana_ib_rc_qp {
- 	struct mana_ib_queue queues[MANA_RC_QUEUE_TYPE_MAX];
- };
- 
-+enum mana_uc_queue_type {
-+	MANA_UC_SEND_QUEUE_REQUESTER = 0,
-+	MANA_UC_RECV_QUEUE_RESPONDER,
-+	MANA_UC_SEND_QUEUE_MMQ,
-+	MANA_UC_QUEUE_TYPE_MAX,
-+};
-+
-+struct mana_ib_uc_qp {
-+	struct mana_ib_queue queues[MANA_UC_QUEUE_TYPE_MAX];
-+};
-+
- enum mana_ud_queue_type {
- 	MANA_UD_SEND_QUEUE = 0,
- 	MANA_UD_RECV_QUEUE,
-@@ -184,6 +195,7 @@ struct mana_ib_qp {
- 	union {
- 		struct mana_ib_queue raw_sq;
- 		struct mana_ib_rc_qp rc_qp;
-+		struct mana_ib_uc_qp uc_qp;
- 		struct mana_ib_ud_qp ud_qp;
- 	};
- 
-@@ -221,6 +233,7 @@ enum mana_ib_command_code {
- 	MANA_IB_CREATE_RC_QP    = 0x3000a,
- 	MANA_IB_DESTROY_RC_QP   = 0x3000b,
- 	MANA_IB_SET_QP_STATE	= 0x3000d,
-+	MANA_IB_CREATE_UC_QP    = 0x30020,
- 	MANA_IB_QUERY_VF_COUNTERS = 0x30022,
- 	MANA_IB_QUERY_DEVICE_COUNTERS = 0x30023,
- };
-@@ -380,6 +393,29 @@ struct mana_rnic_destroy_rc_qp_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_rnic_create_uc_qp_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	mana_handle_t pd_handle;
-+	mana_handle_t send_cq_handle;
-+	mana_handle_t recv_cq_handle;
-+	u64 dma_region[MANA_UC_QUEUE_TYPE_MAX];
-+	u64 flags;
-+	u32 doorbell_page;
-+	u32 max_send_wr;
-+	u32 max_recv_wr;
-+	u32 max_send_sge;
-+	u32 max_recv_sge;
-+	u32 reserved;
-+}; /* HW Data */
-+
-+struct mana_rnic_create_uc_qp_resp {
-+	struct gdma_resp_hdr hdr;
-+	mana_handle_t qp_handle;
-+	u32 queue_ids[MANA_UC_QUEUE_TYPE_MAX];
-+	u32 reserved;
-+}; /* HW Data*/
-+
- struct mana_rnic_create_udqp_req {
- 	struct gdma_req_hdr hdr;
- 	mana_handle_t adapter;
-@@ -722,8 +758,9 @@ int mana_ib_gd_destroy_cq(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
- 
- int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
- 			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
--int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
--
-+int mana_ib_gd_destroy_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
-+int mana_ib_gd_create_uc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
-+			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
- int mana_ib_gd_create_ud_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
- 			    struct ib_qp_init_attr *attr, u32 doorbell, u32 type);
- int mana_ib_gd_destroy_ud_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 645581359..b13449b48 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -420,13 +420,13 @@ static enum gdma_queue_type mana_ib_queue_type(struct ib_qp_init_attr *attr, u32
- 	return type;
- }
- 
--static int mana_table_store_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+static int mana_table_store_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- {
- 	return xa_insert_irq(&mdev->qp_table_wq, qp->ibqp.qp_num, qp,
- 			     GFP_KERNEL);
- }
- 
--static void mana_table_remove_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+static void mana_table_remove_rnic_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- {
- 	xa_erase_irq(&mdev->qp_table_wq, qp->ibqp.qp_num);
- }
-@@ -468,7 +468,8 @@ static int mana_table_store_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
- 
- 	switch (qp->ibqp.qp_type) {
- 	case IB_QPT_RC:
--		return mana_table_store_rc_qp(mdev, qp);
-+	case IB_QPT_UC:
-+		return mana_table_store_rnic_qp(mdev, qp);
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_table_store_ud_qp(mdev, qp);
-@@ -485,7 +486,8 @@ static void mana_table_remove_qp(struct mana_ib_dev *mdev,
- {
- 	switch (qp->ibqp.qp_type) {
- 	case IB_QPT_RC:
--		mana_table_remove_rc_qp(mdev, qp);
-+	case IB_QPT_UC:
-+		mana_table_remove_rnic_qp(mdev, qp);
- 		break;
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
-@@ -567,13 +569,67 @@ static int mana_ib_create_rc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	return 0;
- 
- destroy_qp:
--	mana_ib_gd_destroy_rc_qp(mdev, qp);
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
- destroy_queues:
- 	while (i-- > 0)
- 		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
- 	return err;
- }
- 
-+static int mana_ib_create_uc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
-+				struct ib_qp_init_attr *attr, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev = container_of(ibpd->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-+	struct mana_ib_create_uc_qp_resp resp = {};
-+	struct mana_ib_ucontext *mana_ucontext;
-+	struct mana_ib_create_uc_qp ucmd;
-+	u64 flags = 0;
-+	u32 doorbell;
-+	int err, i;
-+
-+	if (!udata)
-+		return -EINVAL;
-+
-+	mana_ucontext = rdma_udata_to_drv_context(udata, struct mana_ib_ucontext, ibucontext);
-+	doorbell = mana_ucontext->doorbell;
-+	err = ib_copy_validate_udata_in(udata, ucmd, reserved);
-+	if (err)
-+		return err;
-+
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i) {
-+		err = mana_ib_create_queue(mdev, ucmd.queue_buf[i], ucmd.queue_size[i],
-+					   &qp->uc_qp.queues[i]);
-+		if (err)
-+			goto destroy_queues;
-+	}
-+
-+	err = mana_ib_gd_create_uc_qp(mdev, qp, attr, doorbell, flags);
-+	if (err)
-+		goto destroy_queues;
-+
-+	qp->ibqp.qp_num = qp->uc_qp.queues[MANA_UC_RECV_QUEUE_RESPONDER].id;
-+	qp->port = attr->port_num;
-+
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i)
-+		resp.queue_id[i] = qp->uc_qp.queues[i].id;
-+
-+	err = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
-+	if (err)
-+		goto destroy_qp;
-+
-+	err = mana_table_store_qp(mdev, qp);
-+	if (err)
-+		goto destroy_qp;
-+	return 0;
-+destroy_qp:
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
-+destroy_queues:
-+	while (i-- > 0)
-+		mana_ib_destroy_queue(mdev, &qp->uc_qp.queues[i]);
-+	return err;
-+}
-+
- static void mana_add_qp_to_cqs(struct mana_ib_qp *qp)
- {
- 	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
-@@ -685,6 +741,8 @@ int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
- 		return mana_ib_create_qp_raw(ibqp, ibqp->pd, attr, udata);
- 	case IB_QPT_RC:
- 		return mana_ib_create_rc_qp(ibqp, ibqp->pd, attr, udata);
-+	case IB_QPT_UC:
-+		return mana_ib_create_uc_qp(ibqp, ibqp->pd, attr, udata);
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_ib_create_ud_qp(ibqp, ibqp->pd, attr, udata);
-@@ -766,6 +824,7 @@ int mana_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- {
- 	switch (ibqp->qp_type) {
- 	case IB_QPT_RC:
-+	case IB_QPT_UC:
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_ib_gd_modify_qp(ibqp, attr, attr_mask, udata);
-@@ -849,13 +908,29 @@ static int mana_ib_destroy_rc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
- 	/* Ignore return code as there is not much we can do about it.
- 	 * The error message is printed inside.
- 	 */
--	mana_ib_gd_destroy_rc_qp(mdev, qp);
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
- 	for (i = 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i)
- 		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
- 
- 	return 0;
- }
- 
-+static int mana_ib_destroy_uc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev =
-+		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
-+	int i;
-+
-+	mana_table_remove_qp(mdev, qp);
-+	/* Ignore return code as there is not much we can do about it.
-+	 * The error message is printed inside.
-+	 */
-+	mana_ib_gd_destroy_rnic_qp(mdev, qp);
-+	for (i = 0; i < MANA_UC_QUEUE_TYPE_MAX; ++i)
-+		mana_ib_destroy_queue(mdev, &qp->uc_qp.queues[i]);
-+	return 0;
-+}
-+
- static int mana_ib_destroy_ud_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
- {
- 	struct mana_ib_dev *mdev =
-@@ -891,6 +966,8 @@ int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 		return mana_ib_destroy_qp_raw(qp, udata);
- 	case IB_QPT_RC:
- 		return mana_ib_destroy_rc_qp(qp, udata);
-+	case IB_QPT_UC:
-+		return mana_ib_destroy_uc_qp(qp, udata);
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
- 		return mana_ib_destroy_ud_qp(qp, udata);
-diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
-index a75bf32b8..f844afb6b 100644
---- a/include/uapi/rdma/mana-abi.h
-+++ b/include/uapi/rdma/mana-abi.h
-@@ -57,6 +57,17 @@ struct mana_ib_create_rc_qp_resp {
- 	__u32 queue_id[4];
- };
- 
-+struct mana_ib_create_uc_qp {
-+	__aligned_u64 queue_buf[3];
-+	__u32 queue_size[3];
-+	__u32 reserved;
-+};
-+
-+struct mana_ib_create_uc_qp_resp {
-+	__u32 queue_id[3];
-+	__u32 reserved;
-+};
-+
- struct mana_ib_create_wq {
- 	__aligned_u64 wq_buf_addr;
- 	__u32 wq_buf_size;
--- 
-2.43.0
+this brings the number to four. At least two more seem to be in
+progress, and there are some WIP rust bindings for the subsystem as
+well that we may see in future PRs.
 
+Thanks,
+Jason
+
+
+The following changes since commit c369299895a591d96745d6492d4888259b004a9e:
+
+  Linux 7.0-rc5 (2026-03-22 14:42:17 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/fwctl/fwctl.git tags/for-li=
+nus-fwctl
+
+for you to fetch changes up to a55f80233f384dc89ef3425b2e1dd0e6d44bcf29:
+
+  fwctl: Fix class init ordering to avoid NULL pointer dereference on devic=
+e removal (2026-04-10 11:21:06 -0300)
+
+----------------------------------------------------------------
+fwctl 7.1 merge window pull request
+
+- New fwctl driver for Broadcom RDMA NICs
+
+- Bug fix for non-modular builds
+
+----------------------------------------------------------------
+Pavan Chebbi (5):
+      fwctl/bnxt_en: Move common definitions to include/linux/bnxt/
+      fwctl/bnxt_en: Refactor aux bus functions to be more generic
+      fwctl/bnxt_en: Create an aux device for fwctl
+      fwctl/bnxt_fwctl: Add bnxt fwctl device
+      fwctl/bnxt_fwctl: Add documentation entries
+
+Richard Cheng (1):
+      fwctl: Fix class init ordering to avoid NULL pointer dereference on d=
+evice removal
+
+ Documentation/userspace-api/fwctl/bnxt_fwctl.rst   |  74 +++++
+ Documentation/userspace-api/fwctl/fwctl.rst        |   1 +
+ Documentation/userspace-api/fwctl/index.rst        |   1 +
+ MAINTAINERS                                        |   6 +
+ drivers/fwctl/Kconfig                              |  11 +
+ drivers/fwctl/Makefile                             |   1 +
+ drivers/fwctl/bnxt/Makefile                        |   4 +
+ drivers/fwctl/bnxt/main.c                          | 281 +++++++++++++++++
+ drivers/fwctl/main.c                               |   2 +-
+ drivers/infiniband/hw/bnxt_re/debugfs.c            |   2 +-
+ drivers/infiniband/hw/bnxt_re/main.c               |   2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c           |   2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h          |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c          |  49 +--
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h          |  19 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c  |  10 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c  |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c    |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c      | 349 +++++++++++++----=
+----
+ .../bnxt/bnxt_ulp.h =3D> include/linux/bnxt/ulp.h    |  26 +-
+ include/uapi/fwctl/bnxt.h                          |  26 ++
+ include/uapi/fwctl/fwctl.h                         |   1 +
+ 22 files changed, 698 insertions(+), 177 deletions(-)
+ create mode 100644 Documentation/userspace-api/fwctl/bnxt_fwctl.rst
+ create mode 100644 drivers/fwctl/bnxt/Makefile
+ create mode 100644 drivers/fwctl/bnxt/main.c
+ rename drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h =3D> include/linux/bn=
+xt/ulp.h (86%)
+ create mode 100644 include/uapi/fwctl/bnxt.h
+
+--n+R94BSBfpwtzvW3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCaeDuJgAKCRCFwuHvBreF
+YfVpAQDbs2KNRMD7BZdKqXQBhF+WGbClT7MnDxKM5UWN6AbT1wEA0KHNAARU8JBz
+E55vaniOK4kTnCZsDXm2oixJ0n3zFgI=
+=4wUh
+-----END PGP SIGNATURE-----
+
+--n+R94BSBfpwtzvW3--
 
