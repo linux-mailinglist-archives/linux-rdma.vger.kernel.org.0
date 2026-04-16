@@ -1,144 +1,121 @@
-Return-Path: <linux-rdma+bounces-19394-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19395-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iPgQMgD64GlloAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19394-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 17:02:24 +0200
+	id SPZjEogB4WmJoQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19395-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 17:34:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEE6F41018F
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 17:02:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE72C410EE5
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 17:34:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C98DD300A5B5
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 15:02:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8DCA5312F3C3
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 15:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF1D25A642;
-	Thu, 16 Apr 2026 15:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9A23E2771;
+	Thu, 16 Apr 2026 15:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhrioTF/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJeQKmWH"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7DA86331;
-	Thu, 16 Apr 2026 15:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04E431D372;
+	Thu, 16 Apr 2026 15:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776351736; cv=none; b=A74JTDYcwxDxK2rQMA5YvIzB8AqJm309pgHDN1pREx5By5Jnu+v4w3gCZYU+5egStpgym9W9q8IyTTglDX4RKxwjlMmQ1aI2JcwlKNmYq26QvoxOi8/pendXcJvhEg8AmV7PK0lQwzw+PCaJ3yEilLRIAQeGbK6k0aMe4J+ksPg=
+	t=1776353513; cv=none; b=pUrbQPVrNMSq0DRTXsNoO9ojmJG1WWPVGP030yYAPuqOposg8iIYyZAAJi4y3TXxEZxMBtvVuaotysQN3AlwfRsI1hZiO1W5p2uhqEEpAu7dz8AbOmO6G2b0/u/QE8vw54SPdkEdGH+WFoihNFi4wX15kja1BBhxnPT7l+OtLcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776351736; c=relaxed/simple;
-	bh=LajyyeXFg0XU7KHL5KLjvwU6v+hIuEgmiN/u26dKcZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RoQV8vr66YIKI+k5gTw6VIySor1rhVPfOVxueEdadtj/bBwFnBXOlqPkCm5PTTaZTrZJz5UIKYSMMPFaZP1y5+kHckQ/+M5Q6h89oXAo20gtiydR7hGkIAwqskO7KGICq/SYxmluI505Ubmiw60xb0LHMMJtjHfOBhj3DVrcxe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qhrioTF/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1577C2BCAF;
-	Thu, 16 Apr 2026 15:02:15 +0000 (UTC)
+	s=arc-20240116; t=1776353513; c=relaxed/simple;
+	bh=jssH9UnmqcByLPfuDr/larPx0BO5IHoq0niW0tXf3+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Y5wazEPCbZqc2k1QS2aDSmg5gBki2ecGV820MSlqhV7sYguEREIPevT9VewpgAr9Nc+bgxKnK9GMAEOjDKoM+bxog+5tO/Ky3pD1eouDEL1SafmwnkH4oIIuuJFVZDLMP/Akj8r3fH0mewR3Z/qvJXmEmMrR6i749+wDdkOKdRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJeQKmWH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42F8FC2BCAF;
+	Thu, 16 Apr 2026 15:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776351736;
-	bh=LajyyeXFg0XU7KHL5KLjvwU6v+hIuEgmiN/u26dKcZQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qhrioTF/nUjIILQb/3ks6P0iT3MY7XHIdCg5esBsxcB9DKnAPPpVrJPlX3sD5gUKA
-	 r1stjtKNE7NEaVw92sCphwGdE1kEG7RU6HK7IWwLM5zpB4cN/eOYx/YdtWIGkq+DEo
-	 ZtiZ65/wa/OHPGfVLNyY7C+5m+2NXaWuTX0H2RJ3/ekra7k+OrgzmLOl5779IlP6P6
-	 ZnDxgbM3U0VKyzMs22S510AJBtZCWhZCHl4u0YMfbUHaY1S3y79rWag7tfg8FhRb3O
-	 n0wYxe3r1UIlVCveqjjNdOtww3HUnZl1OTfGgGINPFruG2qjku8oZkI7DSeq4m6RNk
-	 +eOg0KAns6Trw==
-Date: Thu, 16 Apr 2026 18:02:11 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Keith Busch <kbusch@kernel.org>
-Cc: Zhiping Zhang <zhipingz@meta.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-rdma@vger.kernel.org,
-	linux-pci@vger.kernel.org, netdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, Yochai Cohen <yochai@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [RFC v2 1/2] vfio: add callback to get tph info for dmabuf
-Message-ID: <20260416150211.GG361495@unreal>
-References: <20260331083758.GA814676@unreal>
- <acvFV8c5QVxnt3Em@kbusch-mbp>
- <20260331132942.GC814676@unreal>
- <acvNsvS5ShlQlrox@kbusch-mbp>
- <20260331140309.GH814676@unreal>
- <acvWplw67b3Gwlkc@kbusch-mbp>
- <20260331190220.GI814676@unreal>
- <acwkAo2k41xaxdTS@kbusch-mbp>
- <20260409120415.GF86584@unreal>
- <ad56liSM4zI2SWWp@kbusch-mbp>
+	s=k20201202; t=1776353513;
+	bh=jssH9UnmqcByLPfuDr/larPx0BO5IHoq0niW0tXf3+M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rJeQKmWH9lDUzBvTjARIDU98AO0+auPSAoka02Vtd1q2HWyFeHjfPxrliSbxxkM1b
+	 RTKMoYRGIOENlqhwZEfa0zuUiHFOyu5bWVFvVHDRYd40Rg/cotfqdg3HDtOOWzuv/J
+	 FndVfnAcgyJ5yBjbW8QLsf4JJ4CfMNahcsWg0d6wYpnJbOEgq+du9T0bHoWjx9eDMi
+	 AkgTiJ1Lnn3cArm8BA1E2d1LFPBhTnko5yW/56Q2Spx8My+14LjXoMYeQ7qBaNXPb6
+	 MrQ6EN4LludV/tbqrwNcmTY8tyRoyltnryGLp70Nch/VjCpf8E1/ZZ1vEQmE0XehmR
+	 MGoi9BpIGfCiA==
+Date: Thu, 16 Apr 2026 08:31:46 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
+ kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
+ dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
+ full-page RX buffers
+Message-ID: <20260416083146.0bb94d2b@kernel.org>
+In-Reply-To: <ad5kuCZz+gR1TlSh@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
+	<20260409183509.0b24dea6@kernel.org>
+	<20260412125917.4fa8fc8d@kernel.org>
+	<ad5kuCZz+gR1TlSh@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad56liSM4zI2SWWp@kbusch-mbp>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19395-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19394-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	RCPT_COUNT_TWELVE(0.00)[32];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CEE6F41018F
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DE72C410EE5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 14, 2026 at 11:34:14AM -0600, Keith Busch wrote:
-> On Thu, Apr 09, 2026 at 03:04:15PM +0300, Leon Romanovsky wrote:
-> > Something like that, on top of this proposal:
-> 
-> ...
->   
-> > +struct vfio_region_dma_tph {
-> > +	u16 tag;
-> > +	u8 ph;
-> > +};
-> > +
-> >  struct vfio_region_dma_range {
-> > -	__u64 offset;
-> > -	__u64 length;
-> > +	union {
-> > +		__u64 offset;
-> > +		struct vfio_region_dma_tph tph;
-> > +	};
-> > +	union {
-> > +		__u64 length;
-> > +		__u64 reserved;
-> > +	};
-> > +};
-> > +
-> > +enum {
-> > +	VFIO_DMABUF_FLAG_TPH = 1 << 0,
-> >  };
-> 
-> Okay, so you have the hints as a separate action from the dmabuf
-> creation. 
+On Tue, 14 Apr 2026 09:00:56 -0700 Dipayaan Roy wrote:
+> I still see roughly a 5% overhead from the atomic refcount operation
+> itself, but on that platform there is no throughput drop when using
+> page fragments versus full-page mode.
 
-I'm not sure I fully understood your point, but in my proposal the entire
-operation is done in one pass, with the hints provided as the final entry in
-the dma_range array.
-
-Thanks
+That seems to contradict your claim that it's a problem with a specific
+platform.. Since we're in the merge window I asked David Wei to try to
+experiment with disabling page fragmentation on the ARM64 platforms we
+have at Meta. If it repros we should use the generic rx-buf-len
+ringparam because more NICs may want to implement this strategy.
 
