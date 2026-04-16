@@ -1,384 +1,308 @@
-Return-Path: <linux-rdma+bounces-19379-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19381-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YDM/BeEF4Gn4bgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19379-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 23:40:49 +0200
+	id wJkdOEyE4GmmiwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19381-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 08:40:12 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B08614083A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 23:40:48 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7740740AB77
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 08:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6FC75301919D
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2026 21:40:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2ADF7307EB5C
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2026 06:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823EB38F233;
-	Wed, 15 Apr 2026 21:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2509B37B007;
+	Thu, 16 Apr 2026 06:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BcOtAwql"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="ShF3aWhJ";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="XdXswdwm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6F8386442
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2026 21:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E9330C608;
+	Thu, 16 Apr 2026 06:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776289218; cv=pass; b=WFb0zWraimUN4x61hc1y/IuJyw25OLGtelvWm7SDapXsx8PZxW6LpRdd16lRQdzYIxKor9PS7zu30FCLxCoOweMxt+BgLly97CgJ7Nyq9NijeiM6QsHoTcJp0GC+K7VJjulwqd1HI8igm+mlR6FgzwCH+ItNR3Pu1A9Wb/Cm36I=
+	t=1776321603; cv=fail; b=XDZCG8S6bTZaGAZXxpmxfVgCnUYVLWX/HJGdOyfGVEtj6xIGMv/ecB7pzOBWNkk30Y/xLzEUbWwnW8++2AXDx1zoo9oLcy40212S63p+IC6yqWIMssAMqRQf6fa3AnWq1QIrMu7LxB52gPE+/OS4HjEL1dRednUCUqt8K5/U4Bo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776289218; c=relaxed/simple;
-	bh=8UR0cDfhMut89P6pq2m3AtdE1q+9Y0wHgL4ZA4SRoPM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mXqXj0To3tmtdA/Oj7mC5I98y0Y5Y5edUuNhmhN8Mp0R/CZ5nenTVQioZbgPYhbX+/nhaw1zgroWikc3w60wJ9FGHv9uDgD5CSVYfw8/Mp716Ku2AYCPOo08SgGzwFfPabmTzLsk43zmILwrxiyOIKARthN3vqdEINDQWKcvbxI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BcOtAwql; arc=pass smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2b23fcf90b2so68980115ad.3
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2026 14:40:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776289216; cv=none;
-        d=google.com; s=arc-20240605;
-        b=YogduzQsbNAjz8wqpPJcryJevXAHNbzEiRn6GaFwhWbTHNROKws5hfVuj6ei7s7vF8
-         luvWd0iH9kotZliztgEu3GrQhP8ukjObc7NYfJbcFY8m03z06bcDcC7r/lkE6sGA0aph
-         46c7OAf+iNq/d+u56+r5l5MluBr2gW17mBKUFW4aNsInfD1UBFWosJi4sdow6CcDOXFV
-         KgGIAOqE7FT0M5miuodjsKgQbYWN+jtWbVHi2k61kfLWoRRF5/AfpH7aR7pqoOUnH96u
-         PTGVFoKYEsTHLgML33YDfvrvu07P9xt5ra99cBH6l0xB0gbeCP4SlfILyRN9ZmN3bB0c
-         P7xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=XAztYF0GmlO3kNqglTk5wxwxcVj4RUNUTqhb0zF4bE8=;
-        fh=kSa/ts8Rm33LSX53Rtc+kuFS3v3GCsyqpyz9YdUy2Ho=;
-        b=hYutMYSJXz5S8eVaC69mjS2wJ+xS0HUc+9OZk/t+Az4TFyGeYyYiRLvR4NpuWdfyzw
-         swkZTFKJb1Ec/ezp5eS4mMQqydFmyVTiL1nLU0f/Di0L88VX8rHuPKsHgXfkCDmrEo0q
-         CtDefYGoE05W3/8Y+K4XAWGNcY/mJzy+CTLzWFGNRZZjK2bpCo6HNhpD4ZpuCWSAFeTU
-         TRJKMdxbE64tr6tnAfBJmHzQHWQyMGAHODxEMP3vNJy5vbOg3/6qsuRlETS/niQMpVRh
-         pihyT8huIadhHDA+r3mMIlAExF0z2GJ5J+hkdUrZwePowBocaciFKKHbfisrWC+kYbZ+
-         nRsg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	s=arc-20240116; t=1776321603; c=relaxed/simple;
+	bh=sOvftSr8hvESe+OZLhfAEkKTr0PNxfBKAtJaDMaYZFk=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=DmjB6kkPmJpKm2obPNZ7YB6kanj+wPuVsKkl5L9LdKSJ+ubmTelGZ85YxfOB7LAZte/MesYSHPX0Udk9NYA0eu8GPkJYtx09Ah49jmojF94z8FrQJpn2pPNgXqUi5v0/oT+HNTnmZHolZ6+MbLVRygBREjBmo8+EkWE+Wi6QHjY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=ShF3aWhJ; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=XdXswdwm; arc=fail smtp.client-ip=68.232.141.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1776321602; x=1807857602;
+  h=from:to:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=sOvftSr8hvESe+OZLhfAEkKTr0PNxfBKAtJaDMaYZFk=;
+  b=ShF3aWhJ7cJk9o+C0nxgxOcjCMml9Y604qhAMSmFjWfJ95J+cudZQIp5
+   B8QqhRYfoz5HyymNaE/mE1A/D/+S+t1STPOd3gCX3EOrzIL4L4aZQ34dQ
+   NngXTb93TJ1sp4WXG9Ww83Fo3NVoWRcDRortsHnKXkCa2vXnk0JtOiw67
+   qX9Cr72j5J1UHtLhGh7TiUn4xOOZ9CWI6z7Fsfjidi3CUIO1bzzuz+62D
+   bZQ3DYaUhIETt2W+WTk701ULq+ppFHV4ZUAr+oM1UtK6DkOuikofVBEiY
+   YXcI4yRhK3jPmgUMfGWqEXpzsL8Hxzf5XVDnu9On0ICx1CGLP8nZo9N9Q
+   A==;
+X-CSE-ConnectionGUID: LHL2HxsETp+qcULeUvA4jA==
+X-CSE-MsgGUID: vW/298JSQ0W27olEU279Qg==
+X-IronPort-AV: E=Sophos;i="6.23,181,1770566400"; 
+   d="scan'208";a="144619433"
+Received: from mail-westus3azon11010025.outbound.protection.outlook.com (HELO PH7PR06CU001.outbound.protection.outlook.com) ([52.101.201.25])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2026 14:39:55 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QkzBJTX8z1c7P7Hu9or5km6aT0y3LWsBLuLFe10Ah9SuSMyJsSs5O635eWiP2RPXLmr1yHDFwqWHyTvZ+nkp+GbFO8/u/AHUFDRq4VlgxD0z54AKkezY4C/iYJGHhV+fx4OIvC0CRE2yYPtT6g5nRITbnF9d/KW/tkBXqjTkbyy1qZgT14TffNHs6hsluvs9U47pKCbiiOhvaLC9pmWF/iIO/+TctQnIPfgZY0njvuInkW8d/7GuOtyhqrOKjFUbCl/vc4n/dlGi3isKpXYoGPEqCZ6U+LGcCcAYtHIU+nb9SiG1XauFwR6Jxmax27l4a7FVnKstYdb0IhK4f2SVlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qCWykaewaOkU0KsQqQMBxaI/9URgKBC3eTUp7msqMLg=;
+ b=n0Db2OX5qTRcr8UlxmOWwzJtoQUhCsm5BK8/JjEmjdO+rbOeQhVjOhMDsGblXaQni7u6QmV3bUGanyrMrgBOab5KRiCVuM9I6oqoqbtGkm6Ur+S5mAI7vGE773twThiznggjkbcmbqHROsWpSePGswKu425QLpmJci3ASXb/ww+mC3HAObnVzLbmzi1O4OtP92Iq6svtD7DxssLYW9DO/bIbStu1b+2msLOtcZTxrrKLvZiJavf8Lwr+69oVXCK+631GZUwsYj2Gsz66NufwZOhVCjpdLpUcrHgfwr+kR73YMwq0E2VXLRbje+1fIywTSrcSc//vAlVbaJnCyvWicg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1776289216; x=1776894016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XAztYF0GmlO3kNqglTk5wxwxcVj4RUNUTqhb0zF4bE8=;
-        b=BcOtAwqlEurfknwp7jdNCxVQeHrdkO5jKP42hmDqgS5W5QQx01RLTeKPzlrw+X2fFt
-         6C/3ow8TDL/OMILDXBf5nxTZh+3utD9QRDi5a+eOZie7KaJQ2ERJdc7jCELB5vsNmojf
-         50vbRbE1lxvh3eoa9HBxtih2siyloGwx+GXsUFlE/xVSSTA5jHG3kvNlle0fB4RTls4/
-         S9tkZlnIw5J02o62E7bwToewDq221Y8c6ZzskLdvPhImUb7Iafg9onU1DIpwvgFFvNGR
-         ZztUWosIm/WHs6rWK1nEJOF97zLA3783cW/e1YtDY3Dcq6tZABDB3vk8Uslaxpb+O2gW
-         GcQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776289216; x=1776894016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=XAztYF0GmlO3kNqglTk5wxwxcVj4RUNUTqhb0zF4bE8=;
-        b=ol2Rlt8gGpbQu5Yh+cxDFsGPc3Omf+RZw/IQr6lhT4VCPlnhHim+VRJ6xL8iKus2S2
-         lFeKBZ0apVXL1jDCsYvAfCc3Ka/vJcRqnaVXmOjS4Vb7MCKqLxp33PlhTeP3yOeFUfOB
-         HDSTJDCCOgAR7dsJ9geqix3bNkzWJaDJEg7pNjIuVrwxo91/r4aqLhpyW8yRi+Pktcso
-         E2uAQTGxZ6aHZAyA35JkLQ0ws48epwhPRbrLZLJ4h74WyGqRhzyyhFEvruWkmAe3uKtQ
-         9OiOORFaZ26d8o04aPBi9R1Qzca4wlwDMka2Em2gbcD7a0FNeyELO+vMGxNDJEW058G3
-         rwJQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9YLnRrY/n6JaHkEr+dovYh4MQv9nMbAZNqwJF4AHbd3rftw04zknhWiZzF7LUHvGigvQTaz7hGG41i@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVG5tMTKwZYxcq4ByzipIvJuojcxR0otvB+YATWFMPUoK6R9lw
-	mkb63jCkVZSK4hCrha+kF7SU5iT/0NdnVVTZVmwnft+hpn7TlZVUe8OaGKHsu7J6D2t/2SkWs/y
-	OjWBhuEZTkPdrpI1Ug/BloASVW/o6xwZc1A7v+BYK
-X-Gm-Gg: AeBDies1YuONXV2FmRyxKI5StIJeq9W9EUJ9HJ6BnTNUe7xbTFn7vpqzsUCwBnxmqVF
-	8B8bKMFmryOwTPi5R1BmnE7yAJBtT6YWne0oFI20Qp7b49UD1BOplIdMoKqL/dXfUTLLyYj5VKE
-	R1haaye7+E1hL8TDJlphA3QGiNhmkREegQANaz4WYBCbWrD9EMgwT4PNYN0uxg65xydjAAyeCHG
-	nixEd/Qh6tIN07umdQBIpSRkAM/8gU56sKrIYHZSfVfXXwErIlxBhqc55aw8f+1vHk6rtIqgvXi
-	F+Ax5MA=
-X-Received: by 2002:a17:902:d507:b0:2b4:5cd0:b6c3 with SMTP id
- d9443c01a7336-2b45cd0bb63mr176613365ad.29.1776289216207; Wed, 15 Apr 2026
- 14:40:16 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qCWykaewaOkU0KsQqQMBxaI/9URgKBC3eTUp7msqMLg=;
+ b=XdXswdwmcg8WiOXtKDRbtd4bWfgbWVhZM+GBEnQI09uRkqlGj41qEFRVjnsN1RhRbDbn9Rm+/3KFFMeP+YBuby/d0dTWUhLxmIZjBFVSho60Wi23OrS4aV9tkTiuOozWawE1AsTxOq234A/sDusAelmoRN/39R2GWr4kja3/imA=
+Received: from SN7PR04MB8532.namprd04.prod.outlook.com (2603:10b6:806:350::6)
+ by MW6PR04MB8881.namprd04.prod.outlook.com (2603:10b6:303:247::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.48; Thu, 16 Apr
+ 2026 06:39:53 +0000
+Received: from SN7PR04MB8532.namprd04.prod.outlook.com
+ ([fe80::ce42:7775:2df8:8729]) by SN7PR04MB8532.namprd04.prod.outlook.com
+ ([fe80::ce42:7775:2df8:8729%6]) with mapi id 15.20.9769.046; Thu, 16 Apr 2026
+ 06:39:53 +0000
+From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"nbd@other.debian.org" <nbd@other.debian.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+Subject: blktests failures with v7.0 kernel
+Thread-Topic: blktests failures with v7.0 kernel
+Thread-Index: AQHczWvUD0+ZsAHQ0U2NzyLBL90meg==
+Date: Thu, 16 Apr 2026 06:39:52 +0000
+Message-ID: <aeCDXI5hY_ivSWm4@shinmob>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR04MB8532:EE_|MW6PR04MB8881:EE_
+x-ms-office365-filtering-correlation-id: 5ed0ed28-6aa4-44af-5613-08de9b82f752
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|19092799006|366016|1800799024|38070700021|18002099003|56012099003;
+x-microsoft-antispam-message-info:
+ he9WO0Th9lo/PPQORPlxK/VWPNSmOcX+eNGaw+tHEjM93fw3cGsvF0LD34sSiI31mOeUDYQkqI+EYQJp/FBHVtWEIcKX3bIIo4eDgvnS/3Tt0kWDGmB+59Scnrzh1axkpnmfbzyTajkLD3QmrT1y6kIgc3O10mIZ+ITL6AwKqFdFnZBUs+4XaONP0cNrbgR4monDNq2lx3HVWze+WvpFe4k7gLCvXR5oHsznaX43yZya6TPuQamOOxmA6DPfe4dyketS/NVsoKAFlGVl+k/7wGPUxVvwDP+EWSPZbSC896JjbUYfXZVVIJAX7fDBqfZb7N1r0JGCkuDKd7J4cx9KO/slq4uRI+z4wyXcM4n24F3KYDxrhauDpJCPiNk8bz0isW7WxFv2N63JxIiNc/ZqBaSnLe/sZG5uXft2w+taLoBJPfKbNBSHdjttAmo0nj2ImUTjk2qVqReUcIdDTxRkk6PGFeBezIUw6Px3HrpOC8woRUaSG50/MbwbK5Y8YallDGfo/rblCYSnpZfRJCa26kCXDHdu/rlS7yMqASB54PJ4qgxxD5M5gOlEbVdeCKSTf7yN7FIWvB7RapNCuAzTve/+hmRvnL1Cqe725iX9HDQBdgWAtkYB3B9WskkmnVjn/6H1J0cm1Aw3ZZeQ/Sh2SWN1TpGyPYyvzwiUBNqK9FaUnLSKgLV7Xhzo3/GTeph28AaN28jpleJsoOShGQMkOhPBA9ycS6yn9Ay5T4Kl5d/iq6GXoMS9GBufp25okWNGMbFoy60q4GHBbOx76QZ2pbskFwtEU2B9cBl9YcaxbJs=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR04MB8532.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(19092799006)(366016)(1800799024)(38070700021)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?C0DCqlki0Sd7VDbiumcY7uto15AAZUKblHnT9icr6PZN4YH5WGi4MWzh+5Sm?=
+ =?us-ascii?Q?xrgkvSZrDeCPGaNmsqE1Itq5ZIX06fDsBkaP1gZh5gVXc2owmaMrAWm8UE5U?=
+ =?us-ascii?Q?3XDcofrBdWqtd7xVsyMAoVgQ8CmorkRvFsUNkVaOKQhHVUyXms0eWjV2a0w8?=
+ =?us-ascii?Q?p47m+Zcfj2oYbPWzc1+LvyngyLa7BR/OMjEWpbAvHiGqNMX0JiZcL/94bK73?=
+ =?us-ascii?Q?QCEspe4EMtK6pFsI4WaCc1pl7GGFMQyJD8X9FxcuywCyLVJA9IsiZoctVwsE?=
+ =?us-ascii?Q?PiasT4GT7xH62UuqSRCdfiYVmv+pRoAdLdGn/h6o0yKQAj/mj6tU7gVxFVWe?=
+ =?us-ascii?Q?cPg/gL/wRxRM6NkbUELguyyfgKkZAFQg86GoU1CgULuPToOLB/qHKCpXe9Sz?=
+ =?us-ascii?Q?ztbT4Qb4spyXSPQSxl/CDIf1njEYuF2JlyLeGwPObtyEI9/qY/WMQNnCZCZl?=
+ =?us-ascii?Q?MZw9uXULRJjJyoxZ6Y4QRd9lWHZzIhMJnWjNxYeX+5VejdLf7cPT3WseuBSA?=
+ =?us-ascii?Q?jPPE6lvQuABm5Q/6hWnzgOrgYPx0mpCFGR3a/wZXTDvZkGdfqvEopajcrTp7?=
+ =?us-ascii?Q?X6/3xCOhEWirz8vc7wOmHQdOvx6BigGLpobUqKcy8ApuoeHj9OgERXDr0dMy?=
+ =?us-ascii?Q?MPV6FXrnRBazt6gsB7BJf2OODwrYK+jG4Ephx4WQXB3+92ha+mrYF77oxq6C?=
+ =?us-ascii?Q?tuBwwmoxz128vytqEmnmxnIU6SJKp2AeRdzR0Dexq+6DckyqCkvp8nyEeWNq?=
+ =?us-ascii?Q?+QgPhNyKLU2DWxamPqQJpCmYf9jj5pzWlpaq+XXceAR4cLavSAR1HPSv1q9c?=
+ =?us-ascii?Q?L6lxqxM0G2PY2YFh+4ZeRfjkM9w+GWy5Bp9/q9xljTG4I9ZcMrsqjLEPCNEn?=
+ =?us-ascii?Q?DuUELZHWQIoxFCG3RX1m2Lh3e2ot7CZMcVgCVdNT8CZtaLXgVyMmb2C5a4XZ?=
+ =?us-ascii?Q?h/GXyWAAd940Kqn7j1JPgR4rs7fDYSzf9LfsYA2KMRXV/5t1DKBTX6uTqPoy?=
+ =?us-ascii?Q?uAluj86YvpGUCkhTLws0j3fUFHUyPOd+C4cak4MoZMw5Uwqn6VWFrRdociRo?=
+ =?us-ascii?Q?qprnLX7I9kvPGurOdG4erlcQIaSWB9vjBM10+LSsYAGQbzUAEwsDpX+BV3zJ?=
+ =?us-ascii?Q?y+47ctbYEf8oMrHUenz4GP+j8txfWk53EzxylbaYYZzfRgHuAee9aYVbT2Vn?=
+ =?us-ascii?Q?jpFI2LFRsvfCt/h6GaUshQZ3TDV5OVSStXbaQTRMil6ltFHkZl5OYehQ4Hgf?=
+ =?us-ascii?Q?Z1afB61BPdeiT39Cnrq/AA0BFRdsyGrrXg7Xf+gwWh1Luc/A3iH2T147mZ/d?=
+ =?us-ascii?Q?JpKQro3yTJpmLSl/AsTGyKE9T2W3TifFTgjIFbrtArs3GvvT0Ras1WgyjJUG?=
+ =?us-ascii?Q?lUUlQ3FgEul0WjchjXVQaufJzIr42ZpRawXizg7CXGTsF+Whl4pvJh8sgduL?=
+ =?us-ascii?Q?ztq31C8IeFs3M9ud9mNIAZq3BRZS3mVmV610YaKaBsQ8gWdYX3HnwlnAYcmX?=
+ =?us-ascii?Q?66CIQo90bdF0GWDpqd/hFy8VYP4SD3DlUNnmhQ4tcNYaEQTBqcs4errtHZU/?=
+ =?us-ascii?Q?SQ+E59M0iQZ2DAEQLGRmaVRRMCAhlW57MIR3sfm6HsRhnhslok3RZaL4tIfv?=
+ =?us-ascii?Q?rBWBegPUlm0cE/asaIVzHHpxzEtNyYCkCKq6q+fmGW69afRrLX0n7cAjUJ1H?=
+ =?us-ascii?Q?OUlqbWNRwleCaq1KmrEx63kUG+AFolTwk97UVGZ38+spaMr7rELRPO824Tsp?=
+ =?us-ascii?Q?R6k+0WjumojTXiFdClbcDnt3UAf9Mqo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E638F93FBBCD1D468AB7D16F0D8DAD62@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260409121230.GA720371@unreal> <2dd138a2ae87f90c55dbc3178d9c798294fd4450.camel@huaweicloud.com>
- <20260409124553.GB720371@unreal> <CAHC9VhT1X4HX4bGrK=mEzu=g=mZ-Wg-LDXVgZVe-e6oM+W9aHg@mail.gmail.com>
- <20260412090006.GA21470@unreal> <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
- <20260413164220.GP3694781@ziepe.ca> <CAHC9VhR1Uke9P==CELKavBcogHoNCtMZFfNWUbgm5HYUfomhtw@mail.gmail.com>
- <20260413231920.GS3694781@ziepe.ca> <CAHC9VhTLamfe4C81ZNRVT=H32x+KLxSqH3o0eBfrHsWAgAqxCA@mail.gmail.com>
- <20260415134705.GG2577880@ziepe.ca>
-In-Reply-To: <20260415134705.GG2577880@ziepe.ca>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 15 Apr 2026 17:40:04 -0400
-X-Gm-Features: AQROBzCNI3m8c-jwsYPK1Y_GRo5FoCh3UrWW71P1zu__g4Bit16U6EWg6GpNPb8
-Message-ID: <CAHC9VhSECYihup=tURo_Qk__xUdYYPkHgnz5CWA0BrRAkvwbog@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Itay Avraham <itayavr@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>, 
-	Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
+X-Exchange-RoutingPolicyChecked:
+	cZGRS/cBdSR0Il4+u8HXpUp0Siw46acA53/1nMcaFbY77GmmQKRze1dArZ+xoVvUuRIxOQol8/Z8ehTqgEfLL/l6LjvxpQVnHTlOCrC2uMp7+vrIYW/HEHjNZyK57FiLHjIZdId0KT4PmE4CaAqOO5ox2bdgsWYiHqUKHUFLkauht0jFny5Vbm27QBu9WXSBKZ8T2hsUtGUIeS3HmDznxsa5GaKs8boX0ENq7gueIuM1Um0HU1wm1JyCv6STZh6aHdgkkXc4TylZx6LrlJtHuwCxzj9X97i2ns/qc1ay7/Ygdm1U06IDlpB4v5r9zZ7pEB4lqYh++AjvDLWyAueVew==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	ewdmFDx8BQud4q1UOiGC1ooy9ND4c5ZdFeejEpTO+NQ0LTJnsYAZ6bVUBnxHGXmtRNFA0RCcN850eB6o5onrRTFYQ3pfBM+VFmoWLj8zG15FPtc9M+qhVpPAiITVpFM7Ezn3yuDfzpbP7SCzV8LiRDvqXSee/iWnLMsvUe2/UQIUpT+yujiCGikPy5BwizpHoXqor5VIOKTCHaevR1BVRydyZk1J2/RhSS3JQ9NTDyEFNYgOfrJG0Y0S9MwpMXujDfjRYkrQ5CfiBzWY+dqUe9NhAWcS0K8JauGveEvkTWe2hd3Hts3nh7/ytkbWhEZU/aw4Jqrr51uRNAaK7CSdswIpzrMeHmq0rfml+Di3aPgV4Z8vCPr22jmKHpGfRqWeOQSWcmCIgslPLlyP5Q0V5PwEVY6ndTbS+XOKCUPLMc20LWICPlsDi+TXwy7Mb3+ZamhRnahX604nXb4LOf+IjIrk4s8FT/lKls7QeMkkcLtnnTbSxNBkoP89A/DMVafa4bmswV4pMdjB4KJlRaCj2f6XIoje3rLN7RujREUjskzJIdlDfR6fwFqhe7S8d+/VjnBcOEJ+lo7W5Jbqcz2vZlrU6wBZJE2BdO6ShqnYoG9cHa3m8mOBk0vVzPQUSMER
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR04MB8532.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ed0ed28-6aa4-44af-5613-08de9b82f752
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2026 06:39:53.0189
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4n6l/UC8dS8Z0hRHyJSfUgsVL4UWmZrcT2qXlJLasuDUlrRcp8v93GrO/Z+mr4R7JEQu/NRq7q8MSm9EAyDxL0lkPjT/zoNubH+AvYfqweY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR04MB8881
+X-Spamd-Result: default: False [0.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19379-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19381-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN_FAIL(0.00)[1.2.3.5.c.f.2.1.0.0.0.0.0.0.0.0.b.d.0.0.1.0.0.e.a.0.c.3.0.0.6.2.asn6.rspamd.com:server fail];
+	TO_DN_EQ_ADDR_ALL(0.00)[];
+	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	FROM_NEQ_ENVFROM(0.00)[shinichiro.kawasaki@wdc.com,linux-rdma@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[paul-moore.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-1.000];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: B08614083A8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sharedspace.onmicrosoft.com:dkim,wdc.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7740740AB77
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 15, 2026 at 9:47=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
-> On Tue, Apr 14, 2026 at 04:27:58PM -0400, Paul Moore wrote:
-> > On Mon, Apr 13, 2026 at 7:19=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> =
-wrote:
-> > > On Mon, Apr 13, 2026 at 06:36:06PM -0400, Paul Moore wrote:
-> > > > On Mon, Apr 13, 2026 at 12:42=E2=80=AFPM Jason Gunthorpe <jgg@ziepe=
-.ca> wrote:
-> > > > > On Sun, Apr 12, 2026 at 09:38:35PM -0400, Paul Moore wrote:
+Hi all,
 
-...
-
-> > > > We've already talked about the first issue, parsing the request, an=
-d
-> > > > my suggestion was to make the LSM hook call from within the firmwar=
+I ran the latest blktests (git hash: 255189f0c4e5) with the v7.0 kernel. I
+observed 6 failures listed below. Comparing with the previous report for th=
 e
-> > > > (the firmware must have some way to call into the kernel/driver cod=
-e,
-> > > > no?)
-> > >
-> > > No, that's not workable on so many levels. It is sort of anaologous t=
-o
-> > > asking the NIC to call the LSM to apply the secmark while sending the
-> > > packet.
-> >
-> > From the LSM's perspective it really doesn't matter who calls the LSM
-> > hook as long as the caller can be trusted to handle the access control
-> > verdict properly.
->
-> The NIC doesn't know anything more than the kernel to call the LSM
-> hook. It can't magically generate the label the admin wants to use any
-> better than the kernel can.
+v7.0-rc1 kernel [1], 2 failure were resolved (blktrace/002, zbd/009) and th=
+e
+hangs at nvme/058 and nvme/061 are no longer observed. Thank you very much =
+for
+the fixes.
 
-The NIC presumably knows how to parse the firmware request and extract
-whatever security relevant info is needed to pass to the kernel so the
-driver can make an access control request.
+[1] https://lore.kernel.org/linux-block/aZ_-cH8euZLySxdD@shinmob/
 
-> Just like you could never get everyone to agree on a fixed set of
-> labels for network packets we could never get agreemnt on a fixed set
-> of labels for command packets either.
 
-I don't follow you here ... I'm guessing you are talking about secmark
-labels?  The secmark concept was created not due to any disagreements
-on packet labels, but rather the challenges and impacts associated
-with packet matching directly in the SELinux code.  Secmark was seen
-as a more elegant approach to packet matching than the older
-"compat_net" SELinux code it replaced.  Even with secmark on SELinux,
-the packet labels need to be defined in the SELinux policy, the
-netfilter code simply assigns these labels to packets using the
-netfilter config.
+List of failures
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+#1: nvme/005,063 (tcp transport)
+#2: nvme/058 (fc transport)(kmemleak)
+#3: nvme/060
+#4: nvme/061 (rdma transport, siw driver)(kmemleak)
+#5: nvme/061 (fc transport)
+#6: nbd/002
 
-> > > > so that only the firmware would need to parse the request.  If we
-> > > > wanted to adopt a secmark-esque approach, one could develop a secon=
+
+Failure description
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+#1: nvme/005,063 (tcp transport)
+
+    The test case nvme/005 and 063 fail for tcp transport due to the lockde=
+p
+    WARN related to the three locks q->q_usage_counter, q->elevator_lock an=
 d
-> > > > parsing mechanism that would be responsible for assigning a LSM lab=
-el
-> > > > to the request, and then pass the firmware request to the LSM, but =
-I
-> > > > do worry a bit about the added complexity associated with keeping t=
-he
-> > > > parser sync'd with the driver/fw.
-> > >
-> > > In practice it would be like iptables, the parser would be entirely
-> > > programmed by userspace and there is nothing to keep in sync.
-> >
-> > You've mentioned a few times now that the firmware/request will vary
-> > across not only devices, but firmware revisions too,
->
-> I never said firmware revisions, part of the requirement is strong ABI
-> compatability in these packets.
+    set->srcu. Refer to the nvme/063 failure report for v6.16-rc1 kernel [2=
+].
 
-That was my mistake; it was Leon.
+    [2] https://lore.kernel.org/linux-block/4fdm37so3o4xricdgfosgmohn63aa7w=
+j3ua4e5vpihoamwg3ui@fq42f5q5t5ic/
 
-Leon mentioned that different firmware revisions would have different
-parameters for a given opcode, and that one would need to inspect
-those parameters to properly filter the command.  Is that not true, or
-am I misreading or misunderstanding Leon's comments?
+#2: nvme/058 (fc transport)(kmemleak)
 
-https://lore.kernel.org/all/20260310175759.GD12611@unreal
+    When the test case nvme/058 is repeated for fc transport several times =
+on
+    the kernel with CONFIG_DEBUG_KMEMLEAK enabled, it fails with kmemleak
+    messages. Refer to the report for v7.0-rc1 [1]. This test case had hang=
+ed
+    with v7.0-rc1 kernel. The hang is no longer observed, but still kmemlea=
+k is
+    observed.
 
-> > this implies there will need to be some effort to keep whatever
-> > parser you develop (BPF, userspace config, etc.) in sync with the
-> > parser built into the firmware.  Or am I misunderstanding something?
->
-> I would not use the word "sync". It is very similar to deep packet
-> inspection, if you want to look inside, say, RPC messages carried
-> within HTTP then you have to keep up to date. How onerous that is
-> depends on what the admin's labeling goals are.
+#3: nvme/060 (rdma transport)
 
-I'm not sure what to say here, that sounds like a synchronization task
-to me, but if you have another term you prefer I'm happy to use that
-instead.
+    When the test case is repeated for rdma transports around 50 times, the=
+ test
+    case fails. There are two failure symptoms. Both symptoms does not look
+    kernel side problems, but blktests side problems. I will allocate time =
+to
+    look into them.
 
-> > > > However, even if we solve the parsing problem, I worry we have
-> > > > another, closely related issue, of having to categorize all of the
-> > > > past, present, and future firmware requests into a set of LSM speci=
-fic
-> > > > actions.
-> > >
-> > > Why? secmark doesn't have this issue? The classifer would return the
-> > > same kind of information as secmark, some user provided label that is
-> > > delivered to the LSM policy side.
-> >
-> > I think there is a misunderstanding in either how secmark works or how
-> > the LSMs use secmark labels when enforcing their security policy.
-> >
-> > The secmark label is set on a packet to represent the network
-> > properties of a packet.  While the rules governing how a packet's
-> > secmark is set and the semantic meaning of that secmark label is going
-> > to be LSM and solution specific,
->
-> "network properties" are a bit vauge ...
+  [symptom 1]
+  nvme/060 (tr=3Drdma) (test nvme fabrics target reset)          [failed]
+      runtime    ...  87.444s
+      --- tests/nvme/060.out      2026-02-20 12:15:11.066947841 +0000
+      +++ /home/fedora/blktests/results/nodev_tr_rdma/nvme/060.out.bad    2=
+026-02-20 15:06:44.552705787 +0000
+      @@ -1,2 +1,3 @@
+       Running nvme/060
+      +FAIL: nvme connect return error code
+       Test complete
 
-That is one of the main reasons we moved from the old "compat_net"
-solution to secmark so that we could leverage all of netfilter's
-packet matching capabilities.  Once again, if the issue is simply a
-matter of phrasing, please let me know what terminology you would
-prefer.
+  [symptom 2]
+  nvme/060 (tr=3Drdma) (test nvme fabrics target reset)          [failed]
+      runtime    ...  22.545s
+      --- tests/nvme/060.out      2025-08-26 21:28:52.798847739 +0900
+      +++ /home/shin/Blktests/blktests/results/nodev_tr_rdma/nvme/060.out.b=
+ad     2026-02-26 15:20:36.973686247 +0900
+      @@ -1,2 +1,3 @@
+       Running nvme/060
+      +_: line 1: /sys/kernel/debug/nvmet/blktests-subsystem-1/ctrl1/state:=
+ No such file or directory
+       Test complete
 
-> > secmark labels represent the properties of a packet and not the
-> > operation, e.g.  send/receive/forward/etc., being requested at a
-> > given access control point.
->
-> Yes, still aligned.
->
-> > The access control point itself represents the requested
-> > operation.  This is possible because the number of networking
-> > operations on a given packet is well defined and fairly limited; at a
-> > high level the packet is either being sent from the node, received by
-> > the node, or is passing through the node.
->
-> I think we have the same split, fwctl send/recive analog is also very
-> limited.
+#4: nvme/061 (rdma transport, siw driver)(kmemleak)
 
-Sure, but I thought the goal was to enforce access controls on the
-firmware requests based on the opcodes/parameters contained within the
-firmware request blob/mailbox?  Or are you happy with a single
-send/receive level of granularity?
+    When the test case nvme/061 is repeated twice for the rdma transport an=
+d the
+    siw driver on the kernel v6.19 with CONFIG_DEBUG_KMEMLEAK enabled, it f=
+ails
+    with a kmemleak message. Refer to the nvme/061 failure report for v6.19
+    kernel [3].
 
-> > As I understand the firmware controls being proposed here, encoded
-> > within the firmware request blob is the operation being requested.
->
-> I am not proposing that kind of interpretation, I want to stay in the
-> secmark model.
->
-> When the packet blob is sent into the kernel at the uAPI boundary
-> (send_msg, send, write, FWCTL_CMD_RPC, etc) that is your access
-> control point.
->
-> Deep inspection on the packet blob determines the secmark.
+    [3] https://lore.kernel.org/linux-block/aY7ZBfMjVIhe_wh3@shinmob/
 
-... and this would be done by your BPF classifier, yes?
+#5: nvme/061 (fc transport)
 
-> LSM takes the secmark and determines if the access control point
-> accept/rejects.
+    When the test case nvme/061 is repeated around 50 times for the fc
+    transport, the test process fails after Oops and KASAN null-ptr-deref. =
+It
+    had hanged with v7.0-rc1 kernel, but it does not hang with v7.0 kernel =
+:)
+    Further debug is required for the Oops and KASAN. Refer to the kernel
+    report for v6.19 kernel [1].
 
-At this point I think it would be helpful to write out the
-subject-access-object triple for an example operation and explain how
-an LSM could obtain each component of the access request.
+#6: nbd/002
 
-> > While we've discussed possible solutions on how to parse the request
-> > blob to determine the operation, we haven't really discussed how to
-> > represent the requested operation to the LSMs.
->
-> I don't understand this? The secmark example I pulled up is this:
->
-> iptables -t mangle -A INPUT -p tcp --dport 80 -j SECMARK --selctx system_=
-u:object_r:httpd_packet_t:s0
->
-> The "represent the requested operation" is the string
-> "system_u:object_r:httpd_packet_t:s0", which is entirely admin
-> defined, right?
+    The test case nbd/002 fails due to the lockdep WARN related to
+    mm->mmap_lock, sk_lock-AF_INET6 and fs_reclaim. Refer to the nbd/002 fa=
+ilure
+    report for v6.18-rc1 kernel [4].
 
-No it isn't.  The string you've identified is the packet's secmark
-label, one of two packet object labels in SELinux (we'll ignore the
-other for our discussion).  Ignoring the managment controls, the
-"requested operation" in SELinux is going to be either send, receive,
-forward_in, or forward_out.  If we look at some example
-subject-op-object triples for a secmark packets, entering or leaving
-the system you might see the following:
-
- httpd_t RECV httpd_packet_t
- browser_t SEND httpd_packet_t
-
-> > I'm assuming there isn't a well defined set of operations, and like
-> > the request format itself, the set of valid operations will vary
-> > from device and firmware revision.  I hope you can understand both
-> > how this differs from secmark and that it is a challenge that really
-> > hasn't been addressed in the proposals we've discussed.
->
-> I still don't see the difference from iptables. IPSEC, SIP, DNS, HTTP,
-> etc are all protocols with the same lack of any commonality.
->
-> > At a very high level the access control decision for firmware/device
-> > requests depends on whether the LSM wants to allow process A to do B
-> > to device C.  The identity/credentials associated with process A are
-> > easy to understand, we have plenty of examples both inside and outside
-> > of the LSM on how to do that.  The device identity/attributes
-> > associated with device C can be a bit trickier, but once again we have
-> > plenty of examples to draw from, and we can even fall back to a
-> > generic "kernel" id/attribute if the LSM chooses not to distinguish
-> > entities below the userspace/kernel boundary.
->
-> I think I would feed that into the classifier as well. Like iptables
-> can have a netdev argument to only match against specific devices, we
-> can have the same logical thing.
->
-> > I think the hardest issue with the firmware request hooks is going
-> > to be determining what operation is being requested, the "B",
-> > portion of access request tuple.  If we can create a well defined
-> > set of operations and leave it to the parser to characterize the
-> > operation we've potentially got a solution, but if the operation is
-> > truly going to be arbitrary then we have a real problem.  How do you
-> > craft a meaningful access control policy when you don't understand
-> > what is being requested?
->
-> Same as for networking. Admin understands, admin defines, kernel is
-> just a programmable classifier.
-
-Are you able to define all of the firmware request operations at this
-point in time?  That is my largest concern at this point, and perhaps
-the answer is a simple "yes", but I haven't seen it yet.
-
---=20
-paul-moore.com
+    [4] https://lore.kernel.org/linux-block/ynmi72x5wt5ooljjafebhcarit3pvu6=
+axkslqenikb2p5txe57@ldytqa2t4i2x/=
 
