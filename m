@@ -1,215 +1,158 @@
-Return-Path: <linux-rdma+bounces-19419-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19420-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UNSfJziT4mkt7gAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19419-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 22:08:24 +0200
+	id WNQqIUu34mnb9QAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19420-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2026 00:42:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE4241E72F
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 22:08:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA88541EEFA
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2026 00:42:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2183B3033A80
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 20:08:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 93FBD30610E1
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 22:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A0F311C2D;
-	Fri, 17 Apr 2026 20:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F01348465;
+	Fri, 17 Apr 2026 22:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cMbvrqAH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gJl7io4t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B672E2DDD;
-	Fri, 17 Apr 2026 20:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EC02BEFED
+	for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2026 22:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776456479; cv=none; b=F/ozciWucZQ7RG00SuzZAveo9xIPxd8VSap+r1CHil7JjG34c2gTqM8TqxNf3R493yR8RRwsd+bM4H5G4IxXehIWp0DW/EGOwxSCquPjhuJUXda2n+ySfC6+2lfgUFpmLvt0z94H9V93oc/gqQ7hLFGvR6zzwQcy+dSlJauzdEI=
+	t=1776465735; cv=none; b=Rf8Gw/72c0neMb5f2w8jSvce3xYhnTDS1IDpzFKA77zeoaJn5XwCtal1l/ADP36utIbNmrmznG5TvwBoW9KGf0rdpXAyD1zt7WQ6HHUA3hoFugN+0AUUGr8l/avRnZW54W9NayUQvULi9gYEK/EfFwPYWw/vfUz1mhjh2Z13eDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776456479; c=relaxed/simple;
-	bh=bisWL2qqSYUYacd8xHtjBdVVCXmH5lYC3aeC9TX92yA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ryo63dHMg3sjTb2KmGbDmUMS0tUyqwUwDFgqSt6p2caDu/7uodz+JjkLyVgvah71YX/rDrkYTUVmt9BQqXZQTuylhv+cEYRI9lKVUvAsKaM4j32KNnx0kYPuUIH5m7SuUqwJ0B+YoufeuNt2YWG8Dgzd1A2LAmxb68yTylhyiVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cMbvrqAH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BF29C19425;
-	Fri, 17 Apr 2026 20:07:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776456478;
-	bh=bisWL2qqSYUYacd8xHtjBdVVCXmH5lYC3aeC9TX92yA=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=cMbvrqAHld7I6ZAeNpIOHVCEANrvuHkt/dmyeiEnf42S606HWjCqUOmLbgHUdtpws
-	 T4Y3HWjoc71p4+dQ/1eJGajT2vX3TiV/QkCT942uEr73n1kbdIY8N6fje9SLr/mk7n
-	 xxx36K1EFdXSYL6fc1UYIrq5sBGJQ7XuaniJ5kX0ockP67BExZuZCItxN4j6Zc0EVB
-	 Qrs3vT4oh/TZ1kbDRQ87lJmqKTXqnQ/E3GjTvPix26j6K0mZBCxcSPdiwYYIsAi139
-	 YxZAmjSpQobalxncNukq2iKpQoeOuOkRD+EobAca6D7Rm47JXgutUGAsmvtLG6l9pT
-	 6zbQaq2KBiSTg==
-Message-ID: <a30638c3498f5b12a0824211d942b1e97fd1a084.camel@kernel.org>
-Subject: Re: [PATCH] rds: zero per-item info buffer before handing it to
- visitors
-From: Allison Henderson <achender@kernel.org>
-To: Michael Bommarito <michael.bommarito@gmail.com>, "David S . Miller"
-	 <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	 <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
-	linux-kernel@vger.kernel.org
-Date: Fri, 17 Apr 2026 13:07:56 -0700
-In-Reply-To: <20260417141916.494761-1-michael.bommarito@gmail.com>
-References: <20260417141916.494761-1-michael.bommarito@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3-0ubuntu1.1 
+	s=arc-20240116; t=1776465735; c=relaxed/simple;
+	bh=gLJioYZHlOEyzNxIQ/0Yra8oQ/a1rnFkA96oshq5NFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QvfBwDC0b+uOHCWl/3u2zNSgRRYVB0JTvnKfU7mvCbAFC9CLOwKW9tUOANWQRDPJr78UXTHiIfQeuM+PUT/Zto+ZheeUxrU7oD+h3P6WGZtaRwHrNZzqLs0xF5YbQg7A+lKR4JcrImaeMSmYLHCOgOkwvjrmiYDA7km+ZRVkCdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gJl7io4t; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1776465734; x=1808001734;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gLJioYZHlOEyzNxIQ/0Yra8oQ/a1rnFkA96oshq5NFM=;
+  b=gJl7io4tUgrhb6RVmZc0jvGomZ9KmuzpPDZmsp5zHOpeP1AblX/8Lgk2
+   nk2fh0VaKGiEPrJZME9JA2DYhy6WVM89iXUsaW5DTuK4abkTquuzXQn1i
+   fw3G84Cli5aBulUqSQwTm5q42A3MpF9xZ4KEK7I0QtJYHlY4+SPEaDgIi
+   /LX3t8FxWOZEw4X4jQGqwZPOE2eUgNHUdmgGdzlr2zrqrhc9VA69lgdU8
+   uCe8scsQ99DiWOW67AaJnJqgokl7N4Nb9zNcIQ718NeMnKDNfiZNdMrg1
+   5JKp/HX41EI4mMRvxV7pe8k4Sh1bSfds7UUg4sefP55v1u5Gw2S+T9pd0
+   A==;
+X-CSE-ConnectionGUID: YIOrttuaQJSsaMdgPtgrhA==
+X-CSE-MsgGUID: C7wojdn7Qcal2Pj6nm+76w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11762"; a="77352303"
+X-IronPort-AV: E=Sophos;i="6.23,185,1770624000"; 
+   d="scan'208";a="77352303"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2026 15:42:13 -0700
+X-CSE-ConnectionGUID: u61miJJhS92b+YiJbtz3GA==
+X-CSE-MsgGUID: pWd17O6JRO6G6n4tSDV5VA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,185,1770624000"; 
+   d="scan'208";a="226812127"
+Received: from igk-lkp-server01.igk.intel.com (HELO bdf09bfdbd5f) ([10.211.93.152])
+  by fmviesa010.fm.intel.com with ESMTP; 17 Apr 2026 15:42:11 -0700
+Received: from kbuild by bdf09bfdbd5f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wDrt2-000000001R3-32VT;
+	Fri, 17 Apr 2026 22:42:08 +0000
+Date: Sat, 18 Apr 2026 00:41:18 +0200
+From: kernel test robot <lkp@intel.com>
+To: Michael Margolin <mrgolin@amazon.com>, jgg@nvidia.com, leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, sleybo@amazon.com, matua@amazon.com,
+	gal.pressman@linux.dev
+Subject: Re: [PATCH for-next 4/4] RDMA/efa: Add Completion Counters support
+Message-ID: <202604180019.QPe3yyCy-lkp@intel.com>
+References: <20260407115424.13359-5-mrgolin@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260407115424.13359-5-mrgolin@amazon.com>
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19419-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com,davemloft.net,google.com,kernel.org,redhat.com];
 	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	TAGGED_FROM(0.00)[bounces-19420-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4AE4241E72F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,intel.com:dkim,intel.com:mid,01.org:url]
+X-Rspamd-Queue-Id: DA88541EEFA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, 2026-04-17 at 10:19 -0400, Michael Bommarito wrote:
-> Yet another from my "clanker."  This only applies to people who
-> don't use CONFIG_INIT_STACK_ALL_ZERO, but I presume that's
-> still enough people that it's worth backporting since it can
-> be chained through leaked addresses to defeat KASLR.
->=20
-> rds_for_each_conn_info() and rds_walk_conn_path_info() both hand a
-> caller-allocated on-stack u64 buffer to a per-connection visitor and
-> then copy the full item_len bytes back to user space via
-> rds_info_copy() regardless of how much of the buffer the visitor
-> actually wrote.
->=20
-> rds_ib_conn_info_visitor() and rds6_ib_conn_info_visitor() only
-> write a subset of their output struct when the underlying
-> rds_connection is not in state RDS_CONN_UP (src/dst addr, tos, sl
-> and the two GIDs via explicit memsets).  Several u32 fields
-> (max_send_wr, max_recv_wr, max_send_sge, rdma_mr_max, rdma_mr_size,
-> cache_allocs) and the 2-byte alignment hole between sl and
-> cache_allocs remain as whatever stack contents preceded the visitor
-> call and are then memcpy_to_user()'d out to user space.
->=20
-> struct rds_info_rdma_connection and struct rds6_info_rdma_connection
-> are the only rds_info_* structs in include/uapi/linux/rds.h that are
-> not marked __attribute__((packed)), so they have a real alignment
-> hole.  The other info visitors (rds_conn_info_visitor,
-> rds6_conn_info_visitor, rds_tcp_tc_info, ...) write all fields of
-> their packed output struct today and are not known to be vulnerable,
-> but a future visitor that adds a conditional write-path would have
-> the same bug.
->=20
-> Reproduction on a kernel built without CONFIG_INIT_STACK_ALL_ZERO=3Dy:
-> a local unprivileged user opens AF_RDS, sets SO_RDS_TRANSPORT=3DIB,
-> binds to a local address on an RDMA-capable netdev (rxe soft-RoCE on
-> any netdev is sufficient), sendto()'s any peer on the same subnet
-> (fails cleanly but installs an rds_connection in the global hash in
-> RDS_CONN_CONNECTING), then calls getsockopt(SOL_RDS,
-> RDS_INFO_IB_CONNECTIONS).  The returned 68-byte item contains 26
-> bytes of stack garbage including kernel text/data pointers:
->=20
->     0..7   0a 63 00 01 0a 63 00 02     src=3D10.99.0.1 dst=3D10.99.0.2
->     8..39  00 ...                      gids (memset-zeroed)
->     40..47 e0 92 a3 81 ff ff ff ff     kernel pointer (max_send_wr)
->     48..55 7f 37 b5 81 ff ff ff ff     kernel pointer (rdma_mr_max)
->     56..59 01 00 08 00                 rdma_mr_size (garbage)
->     60..61 00 00                       tos, sl
->     62..63 00 00                       alignment padding
->     64..67 18 00 00 00                 cache_allocs (garbage)
->=20
-> Fix by zeroing the per-item buffer in both rds_for_each_conn_info()
-> and rds_walk_conn_path_info() before invoking the visitor.  This
-> covers the IPv4/IPv6 IB visitors and hardens all current and future
-> visitors against the same class of bug.
->=20
-> No functional change for visitors that fully populate their output.
->=20
-> Fixes: ec16227e1414 ("RDS/IB: Infiniband transport")
-> Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
-> Assisted-by: Claude:claude-opus-4-7
+Hi Michael,
 
-Hi Micheal,
+kernel test robot noticed the following build errors:
 
-The change looks fine to me.  Since this is a bug fix, you'll want to cc st=
-able
-tree stable@vger.kernel.org, and note the target tree and component in the
-subject line like this: =C2=A0
+[auto build test ERROR on rdma/for-next]
+[also build test ERROR on next-20260417]
+[cannot apply to linus/master v7.0]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[PATCH net v2] net/rds: zero per-item info buffer before handing it to visi=
-tors
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Margolin/RDMA-core-Add-Completion-Counters-support/20260417-170427
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20260407115424.13359-5-mrgolin%40amazon.com
+patch subject: [PATCH for-next 4/4] RDMA/efa: Add Completion Counters support
+config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20260418/202604180019.QPe3yyCy-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260418/202604180019.QPe3yyCy-lkp@intel.com/reproduce)
 
-Other than that, the patch looks good to me.  Thanks Micheal.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202604180019.QPe3yyCy-lkp@intel.com/
 
-Reviewed-by: Allison Henderson <achender@kernel.org>
+All errors (new ones prefixed by >>):
 
-Allison
+>> drivers/infiniband/core/uverbs_std_types_comp_cntr.c:8:10: fatal error: rdma/ib_umem_dmabuf.h: No such file or directory
+       8 | #include <rdma/ib_umem_dmabuf.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
 
-> ---
->  net/rds/connection.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->=20
-> diff --git a/net/rds/connection.c b/net/rds/connection.c
-> index 412441aaa298..c10b7ed06c49 100644
-> --- a/net/rds/connection.c
-> +++ b/net/rds/connection.c
-> @@ -701,6 +701,13 @@ void rds_for_each_conn_info(struct socket *sock, uns=
-igned int len,
->  	     i++, head++) {
->  		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
-> =20
-> +			/* Zero the per-item buffer before handing it to the
-> +			 * visitor so any field the visitor does not write -
-> +			 * including implicit alignment padding - cannot leak
-> +			 * stack contents to user space via rds_info_copy().
-> +			 */
-> +			memset(buffer, 0, item_len);
-> +
->  			/* XXX no c_lock usage.. */
->  			if (!visitor(conn, buffer))
->  				continue;
-> @@ -750,6 +757,13 @@ static void rds_walk_conn_path_info(struct socket *s=
-ock, unsigned int len,
->  			 */
->  			cp =3D conn->c_path;
-> =20
-> +			/* Zero the per-item buffer for the same reason as
-> +			 * rds_for_each_conn_info(): any byte the visitor
-> +			 * does not write (including alignment padding) must
-> +			 * not leak stack contents via rds_info_copy().
-> +			 */
-> +			memset(buffer, 0, item_len);
-> +
->  			/* XXX no cp_lock usage.. */
->  			if (!visitor(cp, buffer))
->  				continue;
 
+vim +8 drivers/infiniband/core/uverbs_std_types_comp_cntr.c
+
+   > 8	#include <rdma/ib_umem_dmabuf.h>
+     9	#include "rdma_core.h"
+    10	#include "uverbs.h"
+    11	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
