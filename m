@@ -1,125 +1,113 @@
-Return-Path: <linux-rdma+bounces-19406-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19407-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EMHHIKqW4WnIvAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19406-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 04:10:50 +0200
+	id wDX5JC234WnxxAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19407-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 06:29:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D703F416238
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 04:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E08EA416D9F
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 06:29:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 30A02302BE3D
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 02:08:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C263830CE99F
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 04:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF78F275114;
-	Fri, 17 Apr 2026 02:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9671EE7C6;
+	Fri, 17 Apr 2026 04:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kTJAkF33"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ul7xI9jw"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D43C1C695;
-	Fri, 17 Apr 2026 02:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6255730EF82;
+	Fri, 17 Apr 2026 04:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776391719; cv=none; b=GaLKRAbXNa/wOXOa0SNgFgJZVKugjochq+DK3/7Ya2H0yikIIt7VHVuxvzq2IbLNU4ZSYgmxe/T2CcaeFfqnFW4sWpIeVGGWtO6Kk2x4u4dG8Ee0MN/X/sWYIZ2esaMQHAyilfg3+25/yS5M5CWMxAnrnHlveT1YNMRaeSLoESI=
+	t=1776400147; cv=none; b=mD/0opfL4pbomGd3iWun1GwG0ljd7Qo6dXNjw20RDOMZu+jFy/pWahAJMJQ5IpJtOes/lWA/H3qSPeoeToDqEjBleBQVTwybGRoDJh1ERW45ehiAD3ncc4RuSR2+JFjInCnG0A22VJWkwqxm7ScxuEVC3omdhh8xhCN1MlouPto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776391719; c=relaxed/simple;
-	bh=AcRid5prjAQXvUSeIkmfK4VJfuY3OU39hoa0Ru3vYj0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BCKIl9ZNyWhDk8dTfUvqLS+HF7voPZTEaVr9S4I32ljXcfyhLMTw+4Q1tITLA/nHcMubK+4HPSQypHxJCO/GYlpvqC0uZTl1KHdikQZCm0blH2hU1XGPmr6zxMfiw0hYckdWoZ8TeRurzbjlEMnJjrkUeXuw5FTJFy1gPVxia0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kTJAkF33; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32E96C2BCAF;
-	Fri, 17 Apr 2026 02:08:38 +0000 (UTC)
+	s=arc-20240116; t=1776400147; c=relaxed/simple;
+	bh=IEfe9oki188nLOX4Bd/cL9c4EcqAthvst6DVxATAG5U=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=RRj6KAN2TMB9wRBzkFcvZwqzMpz+8TcAUJiMaIrkSqqwTOsKceJcV2NqbYcj3Hvg6LsOU5EZNTo1gkEPSGxuqa1wEsLRceJRnvXp8Ss4Iug6tHGf9WW3CZsUhN+GdvaJW+NMuy6bQKtYOODJmJGZSHXeI9NBHeZkj0EMsootvzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ul7xI9jw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00E2EC19425;
+	Fri, 17 Apr 2026 04:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776391719;
-	bh=AcRid5prjAQXvUSeIkmfK4VJfuY3OU39hoa0Ru3vYj0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kTJAkF33ZkfgARlXaqE5jH3i1puexRKtjGK5S4H7MjqjzLk4DOmXlpBgL8EWhJdOR
-	 6+CJxbIczNH6Qr47jp1q29tC/tVUX26LHffwaCvso7WWxvsmZNl+dFhI1Zrgmga5be
-	 VUK07xIBRbUReIw1dZg05JBBjIaW3PZrXxMCSpU4IxB8rWUTZrsObS6/4swfkeT9Ey
-	 pAOGrI/iVwUfzpych8P/teOFi4hTXZk+H05Ym9Cy1h1m199voGIzcxia+kxOAFWL49
-	 xpxAPNu+1shCq8YRzzwSjV8fW+tMRoWExOJeJrVWr2VoydrE/73+ZAknD5gxbvAWyd
-	 J5egRT7HHe2Yw==
-Date: Thu, 16 Apr 2026 19:08:37 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Aditya Garg <gargaditya@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- kotaranov@microsoft.com, horms@kernel.org, ssengar@linux.microsoft.com,
- jacob.e.keller@intel.com, dipayanroy@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com, kees@kernel.org,
- sbhatta@marvell.com, leitao@debian.org, netdev@vger.kernel.org,
- linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, gargaditya@microsoft.com
-Subject: Re: [PATCH net-next 0/2] net: mana: Avoid queue struct allocation
- failure under memory fragmentation
-Message-ID: <20260416190837.6b060bbe@kernel.org>
-In-Reply-To: <20260414151456.687506-1-gargaditya@linux.microsoft.com>
-References: <20260414151456.687506-1-gargaditya@linux.microsoft.com>
+	s=k20201202; t=1776400147;
+	bh=IEfe9oki188nLOX4Bd/cL9c4EcqAthvst6DVxATAG5U=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=ul7xI9jwMmxIrxBJic0vDQTwwaXj35a80YRdBPSgB56TIG0LAtMv+0i15TWFo0CNs
+	 VWhf8FhM9sLtUSKmYeAU0HAFlLnd4lZ8WdT0//VCcW9UTzdWuRR4B19IX377ejVos+
+	 8qVZSNv2HyHwk2NCxG+POBQeyqGCycqtTf903cYM0amwTpKKtybd20TdLsnapQbQc7
+	 ldWAz+CwkJLyqpniFFuBygJYtOmZFZbaqepgjTmWYxxhWq+6jD9Vj/R351jiNPIbHb
+	 3Msr/ddkB1z4FsVYMJBCtdxkc/6q/bluGh8Y6zkSPCxR3XCt0YspKulcflNVsOwqx0
+	 mYFNgfAzy/5UQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3FD7F380AA78;
+	Fri, 17 Apr 2026 04:28:36 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull FWCTL subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20260416141153.GA1646988@nvidia.com>
+References: <20260416141153.GA1646988@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20260416141153.GA1646988@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/fwctl/fwctl.git tags/for-linus-fwctl
+X-PR-Tracked-Commit-Id: a55f80233f384dc89ef3425b2e1dd0e6d44bcf29
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 87fe97a184c000a3941e2b53671742993abb1ddc
+Message-Id: <177640011468.3538458.14524320514426798479.pr-tracker-bot@kernel.org>
+Date: Fri, 17 Apr 2026 04:28:34 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>, Saeed Mahameed <saeedm@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19406-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19407-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NO_DN(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: D703F416238
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E08EA416D9F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, 14 Apr 2026 08:13:28 -0700 Aditya Garg wrote:
-> The MANA driver can fail to load on systems with high memory
-> utilization because several allocations in the queue setup paths
-> require large physically contiguous blocks via kmalloc. Under memory
-> fragmentation these high-order allocations may fail, preventing the
-> driver from creating queues at probe time or when reconfiguring
-> channels, ring parameters or MTU at runtime.
+The pull request you sent on Thu, 16 Apr 2026 11:11:53 -0300:
 
-## Form letter - net-next-closed
+> git://git.kernel.org/pub/scm/linux/kernel/git/fwctl/fwctl.git tags/for-linus-fwctl
 
-We have already submitted our pull request with net-next material for v7.1,
-and therefore net-next is closed for new drivers, features, code refactoring
-and optimizations. We are currently accepting bug fixes only.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/87fe97a184c000a3941e2b53671742993abb1ddc
 
-Please repost when net-next reopens after Apr 27th.
+Thank you!
 
-RFC patches sent for review only are obviously welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
 -- 
-pw-bot: defer
-pv-bot: closed
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
