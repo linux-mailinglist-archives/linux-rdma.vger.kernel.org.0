@@ -1,231 +1,185 @@
-Return-Path: <linux-rdma+bounces-19411-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19412-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aPHrD3NC4mlh4AAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19411-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 16:23:47 +0200
+	id gMUJGt5P4mnx4QAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19412-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 17:21:02 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E1241C004
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 16:23:42 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 981F841C83C
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 17:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 58D743049292
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 14:19:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DD16F3013195
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2026 15:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548C13AD502;
-	Fri, 17 Apr 2026 14:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798322DF6E9;
+	Fri, 17 Apr 2026 15:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UDHgDUaB"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ami2mYkt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010055.outbound.protection.outlook.com [52.101.85.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF683ACA5D
-	for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2026 14:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776435571; cv=none; b=NlDgHx9Ao1i7J+/QIHWw+rVHy1OEhaqYXgh+Uc8l08+gUOMCvpLz0zUujMXwsBMUf34m0dw2uacCt9u426Zeo7lr/AbBkApmNTxjk9UD/bRg2thCQnwn4+WxfNkXb2IPZq0dNrj0/V29WQ43SjF/a0siTlK8O48+G21jrb6Yljg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776435571; c=relaxed/simple;
-	bh=ZlvQik8s0fGgOwMLxcaH7L+q0Axcry6zpYxcKJ8NclE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BxDGZwu8nEz5W5xyyzuWdDdfA2oB9pu+nRlfox1FDRtP7ZR5ImzkUfKXnSkmeP2EI3vFJCWGd657ysv5VDsDbJOy+ZFM/pEGmDT6pl/Q7jf1ORowDdfE15yBOqAGUvBF21Ms6DDr8+oorzf09ZwznESchCHXxLpd/YK6mXCeZQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UDHgDUaB; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-8acb3dab8dfso4472666d6.1
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2026 07:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776435566; x=1777040366; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EKUMg6aZSBP+/AxTkMlkdmtJNfbxujumsmere2O+qGA=;
-        b=UDHgDUaBg+4EE00E4WlzuPXIr1lnzKjrbIEFVZtDT6DiaDxmeDKXZdKSXZBJ3bAL0R
-         9TC3bu82mCHDzksbqOwbhmrAIUQdtd5sfBHN2xRGHYkkL8dyoAlfw1Fs6bJNsSBFlB+R
-         fZHSUw+eXcCNWYbQq3v2/0+J1P6pMyGQQShSj1FvN4tM+tTpeihWHMChEf5qnTzjKlHG
-         uJzVJWQZQYhPlhJqkaspv+AZTQRFiaeIiRazwvf7Ui9pLUgWKvsxUERF8kA30sQ96DiU
-         XCqp0tWoQ+Lv0VZyUphM4kwFz5D+myaab869rn4SKS7uhZKBh0VKjxBk65LnAZSxyNvb
-         W7lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776435566; x=1777040366;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EKUMg6aZSBP+/AxTkMlkdmtJNfbxujumsmere2O+qGA=;
-        b=i00iJu1782TmYn2GyJ+nrUYBJpkRTnLvbwjJo2ODrWLWmON3KvDGtXx5Zo2xZaW+Ng
-         CS6M6lSedLPd4GtGyKltz2410+JyCLR8z/tF2F67QUkY6coKHRTZ0ieRiYPdWIxBbQn6
-         ImDCd9EuePL+1Fd4BxRRPOalizPEgmgwa1Kexhy3UUahpz1Ubb/CEj00HOzboSEu0wix
-         q87qbrWlQUrxXINkDyTNYx5q3sB94+/99guv3Jdk86yuBT91edjFaxfnQd0enVL34imj
-         fRcEQZVYbMXLayK8qz69X1awqfHPKOV9YfDuBQfR2NWXqojovMSmGAnKPILHaQQEmNTJ
-         7mEg==
-X-Forwarded-Encrypted: i=1; AFNElJ9LxhjrYnjIYcStGswub7F3PpBeh0kJ7PdUKC9sHFZc0bHAkX8tTyL5bShdfH3fPyx4FKwDwazoupKM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjBPr6HP1GRNCCQcPnKUmu8IBwJFpvw/e4+Yxh8WyftgeLrBYs
-	JLR8kwOTxO4+QPRueL2zaTV4WmaGdyMJ7qGD/e8uknEVy+8B0tP6FmTe
-X-Gm-Gg: AeBDievqUH+BlPlOkO1Qcb++S0+zhDHTBjhNGfYwJG1J3LS3YU2Vff3UYJEWktLA7Hk
-	h83WN8YgR9SJZEHMA9sMSMhZf4B9jaKIGiSgdpelXU++oQ2ln6XVIAl02Ouk7YUVT8a9VLVZe6z
-	pfqVRb4pBStDjod4ldT4AUP3L1EvS9CxD+i7g8yFuXfu/fUQuxxHiFkRxvkoLlTJp4qI2WED/4N
-	q36uowLpuyi2I31Rl6kNjwxgW8QvjrXhivqLhQ8YC58x7i3m/hljQKBjBU+OuU27mVPTgC1k/xf
-	THstI22Y+jEzdWXquVMc90VoMYvkn6tJZ+3E2VaY9XYA8JMVneVR0DPmMivlid1tS8Lh3uy7pHE
-	gHrpOS1oSY1FJuxeOyO7Z+zzQfvFn/n+E5enP62WUD4BPEi07Ao5S5AAXXNvYhQWeS7Hx3Y3Mg0
-	dzmDE13n53XvNE30vUbfFsnWrlmB3ly+lzvBAb1qA9HSztJtVqJp9ds5iojBQj9MmwpUDX8zT4V
-	M6wi+c3mPhc1Gb0alz/TDS7ySewfPd7dZnWLoCSXbgtZosthmgKoQ==
-X-Received: by 2002:ad4:5f8e:0:b0:8a3:6f43:c78a with SMTP id 6a1803df08f44-8b02812da1fmr51027316d6.39.1776435566212;
-        Fri, 17 Apr 2026 07:19:26 -0700 (PDT)
-Received: from server0.tail6e7dd.ts.net (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8b02ae97d89sm11875726d6.42.2026.04.17.07.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2026 07:19:25 -0700 (PDT)
-From: Michael Bommarito <michael.bommarito@gmail.com>
-To: Allison Henderson <achender@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org,
-	Michael Bommarito <michael.bommarito@gmail.com>
-Subject: [PATCH] rds: zero per-item info buffer before handing it to visitors
-Date: Fri, 17 Apr 2026 10:19:16 -0400
-Message-ID: <20260417141916.494761-1-michael.bommarito@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05AF08472
+	for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2026 15:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776439238; cv=fail; b=Ms+wMUBe3zf4DwBPtHKub7OSecfW0ClrQxJ2GLJvfOmJQYmdrAlTh0S07Qij9Yz+/KzwHDmTqaHzF2iWJNfXhefB0uZMBeRMzmte4o3aaBdDW8R1DYPtULFKmY9hjDOpJDlq8n3zaDd2T9m9BpnyyhjDQKygK3emrDN37bMEE3o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776439238; c=relaxed/simple;
+	bh=L4ha6My23xpy+Oz19uWdGbpfneobBk7FQB+uwEzpPHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=V8dNx7AyHM88M9d7PgG5/tL6uXehEgIm1H4TF+jVFAVPzAZkh/NSnR+JAaj/aXrRoXTN9hVP0ybyzFNVJuRwKOIYtl/VkloiXL8/qnAXlB24HokVcWn8DYCMfHZ2TMVg5jJxBTy3qR0g5jcS3EZaho9/IPh+F1Ah0cbekacgLYY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ami2mYkt; arc=fail smtp.client-ip=52.101.85.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=SZyGsx3WhTL/G2BmFLR91B159jyCrgMJ5lQYA/0I9KdM3QPAf199hvSysWyJgBOTqoVyqn61L98Cy9YTAbWe9YwOEY1J+8GvKWmVW9lfkMm6GWthn5CBLldIifapdhhmeJ0nTNJXMkOb4m3YEqMN+1H0WM0IijGOAhhJqtpPE3A/MkU65fu/Ef9daB3Bc2xkrpNpwfXMRNMLXZB5nPJRaZ8p19Zj9ojnuxmjImdpw7oxy7wziKfRyGjH/O7htjR8mK0k4EYrX1Gq0IPWU9Cf3qpFDGV3bfAt/ImgXbkTBwb0ZUuEFQLZlLei8hfxemCOIvJZVpFISNP61qy1Ql+ocA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WKh0YYBaGqr4kr5i4vodtiFoeTMRPFPx8ZUk6/OwlhA=;
+ b=A3HAIGTyqlLBNfsmDx2azAILf6gpUT8b1BFpiOiMqZqFdBMkk2h7x2RJ/6Gvp/I0mI3lh0xdZmVuejMwW80GB1DOKYvwotDAtAx2GUua1tMQB9cYYwHVW/eCXsLxv/WJoTSlNS5gPNak4GywQYyeHy37OANAIGlWHwP3ZQsd3Z5Ljj2o8+gkCdVrr7CK0+HsUjDT7x88wt8RAqSNbtSoy0pU4kIUilGLWu0SqGL8R+DLTTsJmwjIzbXMOrs2KZLQkE9BtH2dgoBpPdZe3N9dXQjxHn6z6kQ7tkaa2NjdeXDDCLwhcbic/vqefatShbUKPnh7+BTvcP8v7F3nHQsp7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WKh0YYBaGqr4kr5i4vodtiFoeTMRPFPx8ZUk6/OwlhA=;
+ b=Ami2mYktXoSqaPksWcIXP4QpGc5gHR1R3MBbom3NO7LGD3nR4rHp0thK9OLtCjVFEroWfPVya3KpV+7uJJTCzIsyJaKSOBuTHysYcudNHpnoe7jBe7iopyTLSWuHBjz+JgvidH/rPIkICl8XAG8pjXpRh7VySrE02IliWtyduS8+BECJlzhnrk68EQUfP/iirlL9rLIZzZEycYMsc4rJiZu7zskhJBTJlJBnGQDIwL20P75l2gz22FtY8h0H+EpB+DXRGWM1ar/Y9yEw7vB0aajycXpmGrgaPYo+lEeOeh/7T9pxwEPG9xflXlK4iSw+CZXt/+xpZ9RJdXJSEUwC3Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by CH2PR12MB4182.namprd12.prod.outlook.com (2603:10b6:610:ae::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9818.21; Fri, 17 Apr
+ 2026 15:20:31 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::299d:f5e0:3550:1528%5]) with mapi id 15.20.9818.017; Fri, 17 Apr 2026
+ 15:20:31 +0000
+Date: Fri, 17 Apr 2026 12:20:30 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Michael Margolin <mrgolin@amazon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, sleybo@amazon.com,
+	matua@amazon.com, gal.pressman@linux.dev
+Subject: Re: [PATCH for-next] RDMA/core: Fix user CQ creation for drivers
+ without create_cq
+Message-ID: <20260417152030.GG761338@nvidia.com>
+References: <20260416201408.13980-1-mrgolin@amazon.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260416201408.13980-1-mrgolin@amazon.com>
+X-ClientProxiedBy: BN1PR12CA0002.namprd12.prod.outlook.com
+ (2603:10b6:408:e1::7) To LV8PR12MB9620.namprd12.prod.outlook.com
+ (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|CH2PR12MB4182:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa8079d7-c696-4dc7-6dfa-08de9c94dd2d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|18002099003|56012099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	6rqdeSDRxViN+zOkgwXl0hxp0g8zQ3AGXnVaSzellUtReCpBQh1h/hlloWPYlq+OqmF9U1os5BjMxKbkAarbHKxfNIdHbupFtPCnppNueQxKChf6EiQi8lEzSCXQ/rPN/xujX39wKPCRguQIcmlQO8+OLKK08NVRRgE0du88GXfDcNQct8yKe81CBsgHlNdzAlFMXkJL0DiXXtfwt/PXyN1bG1+RFn0QhpixLhwHLJTtPkSXDuDzfMRlbAbCvPuMxFRXBkU1QxiV7xWIdiSlg6jqrHd/ZAFSJ2Rd4UwvJEEjZqZBdB68xOtciCYATTnNH4iS0nXHUuWI1VvJ23U4XrbzMViYf7Altj4IUBo/nA+VLeQI1x0hLkbsrVvcUl1L9hLKvJegCbBJWseyvoxTlcPwfLzCQiErEiLe2HGWuZ/cMWSoFyelHHpTLbflKG1bEeavJj1THyQb2qD6mQVnTuEL9DxRiGGBR6aDFiDYsW/9r6JhpFzI7yX1T5PN3CF9QODDB2P3W+zAXU3SuDCPPNumuS2l43rCdCPGANaLsEExtVEHp5e0xAKq6B/LlDpMmoByKX+RW08a5UFHOWNmJ04guHPGcDMdZ0SeXM4y90j6PxGgr/3UCWZrqZgVW0NiSrgRyfEL5ljI9Vuo4/asxtLrxW9XZdiDUsCaAK6U5hiVPghNq37VnSOt8clt60cZkxFBQ7LkuQMZfZyXmlvOFJN5x92nDuIJbRTQlms8YB4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?vKfWqIY0GKuCqBhUTYq+j7+/QjQNoL78lnWTSiElis2430YXj8xUP0bo+sv1?=
+ =?us-ascii?Q?J3xWdFzys+C8V5X05o1Yv+fPXmmTcxhh5L0P53E3ZM4aS507VFFlBKIIYLCm?=
+ =?us-ascii?Q?vuDwOPv5Dx84dsvmGURN3OXhoVB4zSY/rLtdfO0tG2TGhGJJtLDBZ16EV8I8?=
+ =?us-ascii?Q?DZgPJWVqVaXmidNNEYx4NmG53z5BfHgHlUxQgIJrBdxkVzxfOK+MVUaZOBGB?=
+ =?us-ascii?Q?worlSOE3odKJtVzDug3Gyg/BKF/UKPiuk4Tw56KDsBupN6YjKYE5DB5HT4cQ?=
+ =?us-ascii?Q?StkmmFDuzKZX6CesS9frypelhfo7KwlvsnUGE8FnSeX8k6vfJpitPYxkWlRY?=
+ =?us-ascii?Q?rNu36JOkFnLmDTIEfHA4DyLjjLu0N1WUExOHywKtd6zQ9Wgpk5hUgTMrBLME?=
+ =?us-ascii?Q?RJiV0MYNYGkmbX00Z8XiVTl64WfXsJ7975L3oIFS1bCfJ8cRB/471Lrkh2YO?=
+ =?us-ascii?Q?g5TvrKV7RNt2JsRk6aYmWe+o0x63oejXNI/KLOX+nzErl5nhamN5ECctZrmC?=
+ =?us-ascii?Q?w9v+8tcmiZJiT8WV8adwam0CKynqakiDOmbyCM3lDHVDvMEm9pazWx1Qm2G8?=
+ =?us-ascii?Q?8sWZxGVNlE+XTL1nabyx3ERv1bWNqqaOXWcXAA0uYFLObznMVWITHpApYLRb?=
+ =?us-ascii?Q?m8z65A41W8UJ52fNM0/cy4UnvCBrpsARkfw3E9lFF9k7gVpgIJrukq2U96tY?=
+ =?us-ascii?Q?fs21aD6VSKVMhe+04ErpNqtBvyYQ/p+5qw2yfRgH1znKl9g51MnQAd++cMDE?=
+ =?us-ascii?Q?9BaFuruThjMWpQV9+yJrpgxcp0mlA7WkqjubQPrvYu7fKZ0zdMHB1tLQ5I+c?=
+ =?us-ascii?Q?Fcp4C+ULCGggVeo9vWxaNqnvhfUGEyPeFRYruQpJNDw14zKekO/36sqUD9j4?=
+ =?us-ascii?Q?tKF/icqPOpYrTM10wdC+TDZ1kIfGFweSiNyWaNvgM0Kz8IR3eq6GuKryG/HX?=
+ =?us-ascii?Q?L7dfbQyyLJ8SXV+k/dAOHpenvvrfUYzAvU01tmn4iMzFFOLAJrss4t2mfRqi?=
+ =?us-ascii?Q?4SUqu/v//NFdfM2HW1ObLozmSQcRBHjYCeDXr9aDO9OPcIZ241jBBlbeOwnm?=
+ =?us-ascii?Q?QvGpnLYTH5M64oEs7z3zYoOZQQkdHRUJEbfEjmSg9pZuxZqndF3eK/a9YKeA?=
+ =?us-ascii?Q?RvfKEJcxm7Ly7wlnQ0NEnzgNLrlJcBcMCGR6ANk1Hre/biUjePxo8EHKzwSK?=
+ =?us-ascii?Q?58stn+m8d/mMdRIldZGBo4kkk3EcPxuDgPXnb0xQ1xsv1C/Dl8ADbOve+I+W?=
+ =?us-ascii?Q?PJq4IgsOhsxDHAETAmbwcJH9FD6QZXOjPug4+2m1fPEDZo8A2rxhKjie4rHo?=
+ =?us-ascii?Q?P/WH07UWoyDCtGYM1sMctUsPnn9IZrf0JynQX+kSwT3Zjkjz4eD2mRsr3ht/?=
+ =?us-ascii?Q?iCHA0+QBbGCDSdTE7irCT0AVsDX+uR6mins5uMt4scLENXrZQibHgjqzP/s1?=
+ =?us-ascii?Q?fxXzZenVUuubtnTm2m4fiZ1PeOGgIqN7Xa2BF3QPcp8iu6+u0qkfMX3voU/f?=
+ =?us-ascii?Q?zX22UU5YCdQeoNFrW3UFWxHgcHIRljj86lEZmHEyw259ouoW8e3Ggz1mtTM/?=
+ =?us-ascii?Q?uB/umn19aZLYutshZq756Iv3y2kYTyo/9gCUIXqfUkDIE21rTiJMrPBRLMlB?=
+ =?us-ascii?Q?RhFWqAc5KA6aCVnTnv2RBHlPXk+GneQ7Hw0rRNVstueF0wmTtMwqg4hqD59Q?=
+ =?us-ascii?Q?FdFBloauWcDfD36X+8Mcteq3W/2wGjYFtbyPL7FH8sTaVBTU?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa8079d7-c696-4dc7-6dfa-08de9c94dd2d
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2026 15:20:31.4596
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FQGFcfduglfmGtsGpCMMuKC4D9Xi1+11fCgqYUIDdqgVMm+ekDic/eZevHzOTdH9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4182
 X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19412-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19411-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,oss.oracle.com,gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[michaelbommarito@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[jgg@nvidia.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B3E1241C004
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,Nvidia.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 981F841C83C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Yet another from my "clanker."  This only applies to people who
-don't use CONFIG_INIT_STACK_ALL_ZERO, but I presume that's
-still enough people that it's worth backporting since it can
-be chained through leaked addresses to defeat KASLR.
+On Thu, Apr 16, 2026 at 08:14:08PM +0000, Michael Margolin wrote:
+> CQ creation is failing for drivers that only implement create_user_cq
+> (e.g. EFA), when buffer isn't provided by userspace. This because of a
+> leftover check that requires create_cq existence in such case.
+> 
+> Remove the create_cq existence check from the no-buffer path. The
+> buffer is optional and drivers that handle their own memory should work
+> through create_user_cq regardless.
+> 
+> Fixes: 584ec74748e6 ("RDMA/core: Prepare create CQ path for API unification")
+> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+> ---
+>  drivers/infiniband/core/uverbs_std_types_cq.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-rds_for_each_conn_info() and rds_walk_conn_path_info() both hand a
-caller-allocated on-stack u64 buffer to a per-connection visitor and
-then copy the full item_len bytes back to user space via
-rds_info_copy() regardless of how much of the buffer the visitor
-actually wrote.
+Applied thanks!
 
-rds_ib_conn_info_visitor() and rds6_ib_conn_info_visitor() only
-write a subset of their output struct when the underlying
-rds_connection is not in state RDS_CONN_UP (src/dst addr, tos, sl
-and the two GIDs via explicit memsets).  Several u32 fields
-(max_send_wr, max_recv_wr, max_send_sge, rdma_mr_max, rdma_mr_size,
-cache_allocs) and the 2-byte alignment hole between sl and
-cache_allocs remain as whatever stack contents preceded the visitor
-call and are then memcpy_to_user()'d out to user space.
-
-struct rds_info_rdma_connection and struct rds6_info_rdma_connection
-are the only rds_info_* structs in include/uapi/linux/rds.h that are
-not marked __attribute__((packed)), so they have a real alignment
-hole.  The other info visitors (rds_conn_info_visitor,
-rds6_conn_info_visitor, rds_tcp_tc_info, ...) write all fields of
-their packed output struct today and are not known to be vulnerable,
-but a future visitor that adds a conditional write-path would have
-the same bug.
-
-Reproduction on a kernel built without CONFIG_INIT_STACK_ALL_ZERO=y:
-a local unprivileged user opens AF_RDS, sets SO_RDS_TRANSPORT=IB,
-binds to a local address on an RDMA-capable netdev (rxe soft-RoCE on
-any netdev is sufficient), sendto()'s any peer on the same subnet
-(fails cleanly but installs an rds_connection in the global hash in
-RDS_CONN_CONNECTING), then calls getsockopt(SOL_RDS,
-RDS_INFO_IB_CONNECTIONS).  The returned 68-byte item contains 26
-bytes of stack garbage including kernel text/data pointers:
-
-    0..7   0a 63 00 01 0a 63 00 02     src=10.99.0.1 dst=10.99.0.2
-    8..39  00 ...                      gids (memset-zeroed)
-    40..47 e0 92 a3 81 ff ff ff ff     kernel pointer (max_send_wr)
-    48..55 7f 37 b5 81 ff ff ff ff     kernel pointer (rdma_mr_max)
-    56..59 01 00 08 00                 rdma_mr_size (garbage)
-    60..61 00 00                       tos, sl
-    62..63 00 00                       alignment padding
-    64..67 18 00 00 00                 cache_allocs (garbage)
-
-Fix by zeroing the per-item buffer in both rds_for_each_conn_info()
-and rds_walk_conn_path_info() before invoking the visitor.  This
-covers the IPv4/IPv6 IB visitors and hardens all current and future
-visitors against the same class of bug.
-
-No functional change for visitors that fully populate their output.
-
-Fixes: ec16227e1414 ("RDS/IB: Infiniband transport")
-Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
-Assisted-by: Claude:claude-opus-4-7
----
- net/rds/connection.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/net/rds/connection.c b/net/rds/connection.c
-index 412441aaa298..c10b7ed06c49 100644
---- a/net/rds/connection.c
-+++ b/net/rds/connection.c
-@@ -701,6 +701,13 @@ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
- 	     i++, head++) {
- 		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
- 
-+			/* Zero the per-item buffer before handing it to the
-+			 * visitor so any field the visitor does not write -
-+			 * including implicit alignment padding - cannot leak
-+			 * stack contents to user space via rds_info_copy().
-+			 */
-+			memset(buffer, 0, item_len);
-+
- 			/* XXX no c_lock usage.. */
- 			if (!visitor(conn, buffer))
- 				continue;
-@@ -750,6 +757,13 @@ static void rds_walk_conn_path_info(struct socket *sock, unsigned int len,
- 			 */
- 			cp = conn->c_path;
- 
-+			/* Zero the per-item buffer for the same reason as
-+			 * rds_for_each_conn_info(): any byte the visitor
-+			 * does not write (including alignment padding) must
-+			 * not leak stack contents via rds_info_copy().
-+			 */
-+			memset(buffer, 0, item_len);
-+
- 			/* XXX no cp_lock usage.. */
- 			if (!visitor(cp, buffer))
- 				continue;
--- 
-2.53.0
-
+Jason
 
