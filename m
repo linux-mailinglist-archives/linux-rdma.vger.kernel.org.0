@@ -1,113 +1,129 @@
-Return-Path: <linux-rdma+bounces-19443-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19444-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +BpVFcJ75mkHxAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19443-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2026 21:17:22 +0200
+	id kKgHODKi5mkrzAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19444-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 00:01:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D316433373
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2026 21:17:21 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55A5B4346C0
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 00:01:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 779433077E25
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2026 19:13:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1DCB4302D0B9
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2026 22:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285BC3BFE4A;
-	Mon, 20 Apr 2026 19:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0513CFF47;
+	Mon, 20 Apr 2026 22:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eidY5MXx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="btajVv++"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF1B3BF695;
-	Mon, 20 Apr 2026 19:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A02274FD0;
+	Mon, 20 Apr 2026 22:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776712425; cv=none; b=jaR10c7zzNAm5FsJ59blubt+G+4kyDiBDXy2itZxmKjS2bw0MDi1GZ26+KmY0vMzE+DkrADPh0tWqE/gS6qTebS0wdn7Hn3B9Fzh6CSMTVesSafBSnWMLBgsmbAs/CMQS5qgRZ05w0VHV9UyqL+6qAG66gcd3M1ynAdiWM++x2k=
+	t=1776722426; cv=none; b=iFAdQisl5ZEcYdzA6udSoiNYONtd+blP9wNnWbL3LZGYUNHVtfTD3tOZlzlK5AqijdGMmiHFdB4B6V5A9VssL17YSJEwyuP8RCEmuhWF1V1PKAGd7gnD+myY5cg54+D20hgzVG3EuzWl724kh0lfUtXOSgbHz8NndKspQVvqDNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776712425; c=relaxed/simple;
-	bh=6+dACo+pSN1xb9U0frc0h3YLRzFmJOc4YLc/Xa13ZDA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=OH303dRjb+mRMQ0qdi/hfoemuANZWBBWxBW1lIn2JpyNu24mWDLgjc3svKkaZtyY8nJcg9glt0uXMEMq3+EQbByZpH66UwjPQuZ7iKP2YjRUk0AhlMmDTBl1683rImKT7XjTOewhQ8BOv3gFSd58CTmxYoKQk+Pq6uVj/CB+NuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eidY5MXx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4DE8C2BCB7;
-	Mon, 20 Apr 2026 19:13:45 +0000 (UTC)
+	s=arc-20240116; t=1776722426; c=relaxed/simple;
+	bh=oHaDKe4pfNjvvj0Ijcm+SiMZhGHTBipXa16iV4hH07A=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=cbwqzgpqnhmBb27pq9XFfs8MnLDv08gN3qjInApLRZeoAqJIksYJZ/fju2BlrPis7Blb0z3fburfbmTpxK72CdgZxQKAVzjNb7XsCG/CRSDOu0eTHoSHZwKxtegD+G4JiCM4OqcEMkbE8kX9DrhVWkF/bqHi1cKk9V/cAN0WThY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=btajVv++; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F16EC19425;
+	Mon, 20 Apr 2026 22:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776712425;
-	bh=6+dACo+pSN1xb9U0frc0h3YLRzFmJOc4YLc/Xa13ZDA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=eidY5MXxtdtC8GwB73CoXmO2TlMYQDRqtLWqSp77SENwxvMdFGT0U0chNJ7C4vU1M
-	 lDHvSw7yvQ3K9sdcMKWUTPS2J00Lxn6GjYNW5rrRTYeA/HY2qu7vUQcauDY1ASHKEr
-	 2wAjvEw++PXwqIHvQ10FdvpoNL0EHQkMDlNG8Jm9S27Dcyc1x1Ickw632jaFAEgTeK
-	 3TaRvuWm4VV1OQOZEfrrleGaDGn6QdS8p/HbXYnOJ4wMu9le5og8w47qmhYXKT9Lbl
-	 Zn7eeTI0AzbOQGJ49A+L5AiWrq3jjjTJJ3oZyBilH1wVrtzJad8V4XI1MhWyg0BNEH
-	 UDS3rx7Wf10wA==
+	s=k20201202; t=1776722424;
+	bh=oHaDKe4pfNjvvj0Ijcm+SiMZhGHTBipXa16iV4hH07A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=btajVv+++pG+ETuXRzn+QGDbq7nIFEpnj9ABNytobsxXw1oKVzcy067+pVpIHP6Nw
+	 MBgIfpkOy56Vxc7NOJJtOvs3FoAWYrejOrOp9sdAF4dHNutloI25bABavL/4BVz9XS
+	 xgd3E/Kgcj4BaqdE8ukKY3da7mUGVwq1/vpWCvEkL+aIpixCCPsDdCwvipQ4/7FpX3
+	 XoAjXpCJ4k9sF/is+IggicpwmdsB2eX3qRPL6E6uy2e9P5y7mqgOhuivoImg9ry3Wv
+	 M41in2i92Xif5OGpzcBWcoC81o0QCkd+y1i6UMorA0GTX6YIklqpemVpH1ZSTdW4jd
+	 Z+pzo2vkBupGg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CDF13809A22;
-	Mon, 20 Apr 2026 19:13:11 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20260420121905.GA2902776@nvidia.com>
-References: <20260420121905.GA2902776@nvidia.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20260420121905.GA2902776@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 9091e3b59f2bef11c0a841096327565ae0ca220b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4b0b946019e7376752456380b67e54eea2f10a7c
-Message-Id: <177671239014.1954049.4655837683017857890.pr-tracker-bot@kernel.org>
-Date: Mon, 20 Apr 2026 19:13:10 +0000
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 0313D3930022;
+	Mon, 20 Apr 2026 21:59:50 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v1] net/mlx5: Fix HCA caps leak on notifier init
+ failure
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177672238865.1802062.5421654335000570916.git-patchwork-notify@kernel.org>
+Date: Mon, 20 Apr 2026 21:59:48 +0000
+References: <20260415005022.34764-1-prathameshdeshpande7@gmail.com>
+In-Reply-To: <20260415005022.34764-1-prathameshdeshpande7@gmail.com>
+To: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, cjubran@nvidia.com, cratiu@nvidia.com,
+ tariqt@nvidia.com, kuba@kernel.org, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19443-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19444-lists,linux-rdma=lfdr.de,netdevbpf];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FROM_NO_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-rdma@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9D316433373
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 55A5B4346C0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The pull request you sent on Mon, 20 Apr 2026 09:19:05 -0300:
+Hello:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4b0b946019e7376752456380b67e54eea2f10a7c
+On Wed, 15 Apr 2026 01:49:37 +0100 you wrote:
+> mlx5_mdev_init() allocates HCA caps via mlx5_hca_caps_alloc() before
+> calling mlx5_notifiers_init(). If notifier initialization fails, the
+> error path jumps to err_hca_caps and skips mlx5_hca_caps_free(), leaking
+> allocated caps.
+> 
+> Add a dedicated unwind label for notifier-init failure that frees HCA
+> caps before continuing the existing cleanup sequence.
+> 
+> [...]
 
-Thank you!
+Here is the summary with links:
+  - [net,v1] net/mlx5: Fix HCA caps leak on notifier init failure
+    https://git.kernel.org/netdev/net/c/d03fc81a5795
 
+You are awesome, thank you!
 -- 
 Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
