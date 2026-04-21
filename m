@@ -1,181 +1,230 @@
-Return-Path: <linux-rdma+bounces-19451-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19452-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8MiONdR652mZ9QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19451-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 15:25:40 +0200
+	id iJPjI+5752nC9QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19452-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 15:30:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7275643B4D8
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 15:25:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20C8343B5D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 15:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D9D5D300B45F
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 13:25:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 64088303309D
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2026 13:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035283A3E87;
-	Tue, 21 Apr 2026 13:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="pYRn6tiy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939983D5661;
+	Tue, 21 Apr 2026 13:28:12 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from air.basealt.ru (air.basealt.ru [193.43.8.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286AE1F5858
-	for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2026 13:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D43F2417D9;
+	Tue, 21 Apr 2026 13:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.43.8.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776777936; cv=none; b=U1b1FSqg9Zcq79Rl40PqPNMq1z4vK8LLEQffPl6JCJSoYUPhQHk2m7XRp9YA74fN/NH2+tu6Hq8OmDg7Zkk7qIt8eaTL28TpTYzyUIUm/9tW5fugpJxv23TFyKIcqB9k9OZ9Y5LoJUeaDs9nGRAV6+ebqgUSUdtEsklzEZOt26k=
+	t=1776778092; cv=none; b=EQSBHG/RsXxdvcBMXdFcmBMADyFvAUWQQ2elnG36rWXS7eliI6m8hXp6vwH7fF6VA9wNDTRlftg2BOdcY4dXVRrTfKVV2Ej8w7GyLANFpk/wj3d56Ir897q7YaGSaVXPhqPKg/UF5n6knZYi5m1PkX9hbuDyEv5cHVOByd2wJq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776777936; c=relaxed/simple;
-	bh=HFMaS4EVxN4dXsTaK+IAQN6qqlRuo5M4bvY1Ai7BQC4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=avivsbW5CF9Fl2x8oNU2FzAvph3XoV1vi1nYf5zO5quYW4MXT9uEXhc8stJs82bMAjnJqT4bIEGsLjzlMkbUdGKWRey1EeNhc9bZ5IAlxuXORN1OlZDhs/x9V6JLEeHfQaMrQ8fi++ldK6urWijwoNbzkAY6l2xAmYBIHSN0+8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=pYRn6tiy; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-50e614fdb42so18838931cf.3
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2026 06:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1776777934; x=1777382734; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LVHNM3wywB+X9jjCcWjUgKOlkWg+UkGA1ew5VJwsorI=;
-        b=pYRn6tiypQuAm8S2dAXDgtoyo6Gs8wDpJRd5uz82SULhrTkbBKLIIKQmtUdvt+h0SJ
-         2HMuAPrGPTDaS0HE5zy/vm/t2LIWYJXOjO7ymfViGrg8kat7Cn0h5HDnGuq4aCz5CAHL
-         NilLrw8WMk0+LrfzKOWMt9o9MVuFU3OFEhsxAdOD9T+7hKxDsq/Nx3jchtqzaQeU0r7e
-         6K3VVZvQOvw4YPiRPrk117nR75mVi2iqlKEaOim8JyNevhA7+Vfbs8pYIwfY2t85h2lY
-         0A37BW2m23po4mCbrBh6p6qwuhwwEzG9H0iBXOkV8w5dhtXRZ8oo9v0WuJZizJ28vO6l
-         rNRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776777934; x=1777382734;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LVHNM3wywB+X9jjCcWjUgKOlkWg+UkGA1ew5VJwsorI=;
-        b=TQdkoBuaYVZnz3yghyLwC3GQZPQsOAtPNIKNVFKIkLG7r1YZ2RMqQyneXBGGJ6bufb
-         EdD/dvnj2T5Tm6UMJdfyLztGLcIY2MsxMEWyXh9qmlRu7Tics7FO50Al5q0lRZXzokkg
-         EXgJzBln2t3QvfytjMAxY+PTVqCnYwVD/t59vIwBuQ8ORADelAtoi+9w06c01qAeSTFC
-         N7O+r/M2AHgklFPOU2rTkienUZdm6J+HQN0MTwPgfCloN6jHJtnR40pZPC21hGW3nnNZ
-         evM1MtPvBMGxjAhhDm8s+J0BjCyAZVp5AZLLMAV9DRGxk/PhPeqs9Fdo/YI6sERRNiJu
-         +cGA==
-X-Gm-Message-State: AOJu0Yw9uX0sDDEfLalgpu+nDFMRPpbxYDHS0Tapxn0iU+youSBylNJR
-	SbvNjH8NLym3K4Q742tWgA44OYK7e7B21DqnnkyFXwoPb3JNIejNIdSsoG416o77T2I=
-X-Gm-Gg: AeBDietOzmY02zCmf5a3fXEDMeE0NapIRM5kYF/oEotT56bVZi4ap/qsZQ4upAfldtY
-	i7hteSLDyWmsz9bfaOC6HmiW9Q4Hp7PwKqiEKmS5MfhyWcoxWB3ND+R9fZwanjtUlnVRMI399Jl
-	a8uxsU3cj726x5nH3HrTQFIOk7/wsND0Wyyh0YHcn1I4pzORwlwoHUVuz1Qllxc5g3QSqHCgTBj
-	4E834yUmP1XTM+DML+n0tKjt38QGhwT6sqnbYFFqHb3c2+SC45U/Ti7okwl8LZmnLzHeFIRdZGR
-	5+bWvR9YqE1mGkF5n+h45bEZhgfKBHLAK4qmAbCBpxneZtPo3SILcN28qrKYIn+MLF3SPRqaI3T
-	cCjJQqO+K70bYhJzePwdsIxgg/cYtb8+WSxNyTxJGn4DK+Myy8gJPqo0yshbyvd0x2+gMU5E+MC
-	hiqUmxithrbcYU2JG+mFlb+5jrJDQP9qlbZVkm2YZD9fpVHsf1jCVe6QFu01bdjYbWRpSf3bA0N
-	okYToE4YpHCh4cw
-X-Received: by 2002:a05:622a:4c18:b0:50d:7aa1:f405 with SMTP id d75a77b69052e-50e36b88d72mr262137991cf.9.1776777933910;
-        Tue, 21 Apr 2026 06:25:33 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50fb80a5636sm9593731cf.6.2026.04.21.06.25.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2026 06:25:33 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wFB6a-00000001aXY-2qu0;
-	Tue, 21 Apr 2026 10:25:32 -0300
-Date: Tue, 21 Apr 2026 10:25:32 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
-	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
-	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
-	ynachum@amazon.com, huangjunxian6@hisilicon.com,
-	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v2 02/15] RDMA/uverbs: Push out CQ buffer umem
- processing into a helper
-Message-ID: <20260421132532.GA360923@ziepe.ca>
-References: <20260411144915.114571-1-jiri@resnulli.us>
- <20260411144915.114571-3-jiri@resnulli.us>
+	s=arc-20240116; t=1776778092; c=relaxed/simple;
+	bh=nB2CSSPIMzaLjMggI6Fx4gyuEbPax/F4VyVi6w66dn0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=knNqC1dSu7BwDN9hva7fG0irHC6cL8m9D0FKtqbYLdukUVGxBYFAa9eHWxI9ZfnykEqy9B8FupnkN0MKeGo7WIkDU58krFZHLv+ecm648j22XSUPUZ6SGDlR4wLt8VkNTZDgjqemvoHzs39rLoRT1uno+PdJFvUfl8pRTryh3wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=193.43.8.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from altlinux.ipa.basealt.ru (unknown [193.43.11.2])
+	(Authenticated sender: kovalevvv)
+	by air.basealt.ru (Postfix) with ESMTPSA id D011A23390;
+	Tue, 21 Apr 2026 16:28:08 +0300 (MSK)
+From: Vasiliy Kovalev <kovalev@altlinux.org>
+To: stable@vger.kernel.org
+Cc: Leon Romanovsky <leon@kernel.org>,
+	Leonid Ravich <lravich@gmail.com>,
+	Doug Ledford <dledford@redhat.com>,
+	linux-rdma@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	kovalev@altlinux.org
+Subject: [PATCH 5.10.y] IB/mad: Don't call to function that might sleep while in atomic context
+Date: Tue, 21 Apr 2026 16:28:08 +0300
+Message-Id: <20260421132808.38664-1-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260411144915.114571-3-jiri@resnulli.us>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,redhat.com,vger.kernel.org,linuxtesting.org,altlinux.org];
+	TAGGED_FROM(0.00)[bounces-19452-lists,linux-rdma=lfdr.de];
+	DMARC_NA(0.00)[altlinux.org];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19451-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 7275643B4D8
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kovalev@altlinux.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.997];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,altlinux.org:mid,altlinux.org:email]
+X-Rspamd-Queue-Id: 20C8343B5D3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, Apr 11, 2026 at 04:49:02PM +0200, Jiri Pirko wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
-> 
-> Extract the UVERBS_ATTR_CREATE_CQ_BUFFER_* attribute processing from
-> the CQ create handler into uverbs_create_cq_get_umem() and separate
-> buffer acquisition logic from the rest of CQ creation.
-> 
-> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
-> ---
->  drivers/infiniband/core/uverbs_std_types_cq.c | 127 ++++++++++--------
->  1 file changed, 69 insertions(+), 58 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
-> index d2c8f71f934c..4afe27fef6c9 100644
-> --- a/drivers/infiniband/core/uverbs_std_types_cq.c
-> +++ b/drivers/infiniband/core/uverbs_std_types_cq.c
-> @@ -58,6 +58,72 @@ static int uverbs_free_cq(struct ib_uobject *uobject,
->  	return 0;
->  }
->  
-> +static struct ib_umem *uverbs_create_cq_get_umem(struct ib_device *ib_dev,
-> +						  struct uverbs_attr_bundle *attrs)
-> +{
+From: Leonid Ravich <lravich@gmail.com>
 
-I suggest making a function like this:
+commit 5c20311d76cbaeb7ed2ecf9c8b8322f8fc4a7ae3 upstream.
 
-int uverbs_create_cq_to_umem_desc(struct uverbs_attr_bundle *attrs,
-                                  struct ib_uverbs_buffer_desc *dec);
+Tracepoints are not allowed to sleep, as such the following splat is
+generated due to call to ib_query_pkey() in atomic context.
 
-And lets focus the umem code on working consistently with struct
-ib_uverbs_buffer_desc.
+WARNING: CPU: 0 PID: 1888000 at kernel/trace/ring_buffer.c:2492 rb_commit+0xc1/0x220
+CPU: 0 PID: 1888000 Comm: kworker/u9:0 Kdump: loaded Tainted: G           OE    --------- -  - 4.18.0-305.3.1.el8.x86_64 #1
+ Hardware name: Red Hat KVM, BIOS 1.13.0-2.module_el8.3.0+555+a55c8938 04/01/2014
+ Workqueue: ib-comp-unb-wq ib_cq_poll_work [ib_core]
+ RIP: 0010:rb_commit+0xc1/0x220
+ RSP: 0000:ffffa8ac80f9bca0 EFLAGS: 00010202
+ RAX: ffff8951c7c01300 RBX: ffff8951c7c14a00 RCX: 0000000000000246
+ RDX: ffff8951c707c000 RSI: ffff8951c707c57c RDI: ffff8951c7c14a00
+ RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+ R10: ffff8951c7c01300 R11: 0000000000000001 R12: 0000000000000246
+ R13: 0000000000000000 R14: ffffffff964c70c0 R15: 0000000000000000
+ FS:  0000000000000000(0000) GS:ffff8951fbc00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f20e8f39010 CR3: 000000002ca10005 CR4: 0000000000170ef0
+ Call Trace:
+  ring_buffer_unlock_commit+0x1d/0xa0
+  trace_buffer_unlock_commit_regs+0x3b/0x1b0
+  trace_event_buffer_commit+0x67/0x1d0
+  trace_event_raw_event_ib_mad_recv_done_handler+0x11c/0x160 [ib_core]
+  ib_mad_recv_done+0x48b/0xc10 [ib_core]
+  ? trace_event_raw_event_cq_poll+0x6f/0xb0 [ib_core]
+  __ib_process_cq+0x91/0x1c0 [ib_core]
+  ib_cq_poll_work+0x26/0x80 [ib_core]
+  process_one_work+0x1a7/0x360
+  ? create_worker+0x1a0/0x1a0
+  worker_thread+0x30/0x390
+  ? create_worker+0x1a0/0x1a0
+  kthread+0x116/0x130
+  ? kthread_flush_work_fn+0x10/0x10
+  ret_from_fork+0x35/0x40
+ ---[ end trace 78ba8509d3830a16 ]---
 
-Ie as a general plan lets try to convert all the different
-descriptions we have in the uapi for umems into a
-ib_uverbs_buffer_desc and convert that to a umem?
+Fixes: 821bf1de45a1 ("IB/MAD: Add recv path trace point")
+Signed-off-by: Leonid Ravich <lravich@gmail.com>
+Link: https://lore.kernel.org/r/Y2t5feomyznrVj7V@leonid-Inspiron-3421
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+[ kovalev: bp to fix CVE-2022-50472 ]
+Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+---
+ drivers/infiniband/core/mad.c |  5 -----
+ include/trace/events/ib_mad.h | 13 ++++---------
+ 2 files changed, 4 insertions(+), 14 deletions(-)
 
-Broadly I'd imagine introducing a new uattr for CQ to pass the
-ib_uverbs_buffer_desc as well so the end result of all this churn has
-the option for every umem to be described by ib_uverbs_buffer_desc at
-the uapi boundary.
+diff --git a/drivers/infiniband/core/mad.c b/drivers/infiniband/core/mad.c
+index 19540a13cb84..e38ae4ac454f 100644
+--- a/drivers/infiniband/core/mad.c
++++ b/drivers/infiniband/core/mad.c
+@@ -59,9 +59,6 @@ static void create_mad_addr_info(struct ib_mad_send_wr_private *mad_send_wr,
+ 			  struct ib_mad_qp_info *qp_info,
+ 			  struct trace_event_raw_ib_mad_send_template *entry)
+ {
+-	u16 pkey;
+-	struct ib_device *dev = qp_info->port_priv->device;
+-	u8 pnum = qp_info->port_priv->port_num;
+ 	struct ib_ud_wr *wr = &mad_send_wr->send_wr;
+ 	struct rdma_ah_attr attr = {};
+ 
+@@ -69,8 +66,6 @@ static void create_mad_addr_info(struct ib_mad_send_wr_private *mad_send_wr,
+ 
+ 	/* These are common */
+ 	entry->sl = attr.sl;
+-	ib_query_pkey(dev, pnum, wr->pkey_index, &pkey);
+-	entry->pkey = pkey;
+ 	entry->rqpn = wr->remote_qpn;
+ 	entry->rqkey = wr->remote_qkey;
+ 	entry->dlid = rdma_ah_get_dlid(&attr);
+diff --git a/include/trace/events/ib_mad.h b/include/trace/events/ib_mad.h
+index 59363a083ecb..d92691c78cff 100644
+--- a/include/trace/events/ib_mad.h
++++ b/include/trace/events/ib_mad.h
+@@ -49,7 +49,6 @@ DECLARE_EVENT_CLASS(ib_mad_send_template,
+ 		__field(int,            retries_left)
+ 		__field(int,            max_retries)
+ 		__field(int,            retry)
+-		__field(u16,            pkey)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -89,7 +88,7 @@ DECLARE_EVENT_CLASS(ib_mad_send_template,
+ 		  "hdr : base_ver 0x%x class 0x%x class_ver 0x%x " \
+ 		  "method 0x%x status 0x%x class_specific 0x%x tid 0x%llx " \
+ 		  "attr_id 0x%x attr_mod 0x%x  => dlid 0x%08x sl %d "\
+-		  "pkey 0x%x rpqn 0x%x rqpkey 0x%x",
++		  "rpqn 0x%x rqpkey 0x%x",
+ 		__entry->dev_index, __entry->port_num, __entry->qp_num,
+ 		__entry->agent_priv, be64_to_cpu(__entry->wrtid),
+ 		__entry->retries_left, __entry->max_retries,
+@@ -100,7 +99,7 @@ DECLARE_EVENT_CLASS(ib_mad_send_template,
+ 		be16_to_cpu(__entry->class_specific),
+ 		be64_to_cpu(__entry->tid), be16_to_cpu(__entry->attr_id),
+ 		be32_to_cpu(__entry->attr_mod),
+-		be32_to_cpu(__entry->dlid), __entry->sl, __entry->pkey,
++		be32_to_cpu(__entry->dlid), __entry->sl,
+ 		__entry->rqpn, __entry->rqkey
+ 	)
+ );
+@@ -204,7 +203,6 @@ TRACE_EVENT(ib_mad_recv_done_handler,
+ 		__field(u16,            wc_status)
+ 		__field(u32,            slid)
+ 		__field(u32,            dev_index)
+-		__field(u16,            pkey)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -224,9 +222,6 @@ TRACE_EVENT(ib_mad_recv_done_handler,
+ 		__entry->slid = wc->slid;
+ 		__entry->src_qp = wc->src_qp;
+ 		__entry->sl = wc->sl;
+-		ib_query_pkey(qp_info->port_priv->device,
+-			      qp_info->port_priv->port_num,
+-			      wc->pkey_index, &__entry->pkey);
+ 		__entry->wc_status = wc->status;
+ 	),
+ 
+@@ -234,7 +229,7 @@ TRACE_EVENT(ib_mad_recv_done_handler,
+ 		  "base_ver 0x%02x class 0x%02x class_ver 0x%02x " \
+ 		  "method 0x%02x status 0x%04x class_specific 0x%04x " \
+ 		  "tid 0x%016llx attr_id 0x%04x attr_mod 0x%08x " \
+-		  "slid 0x%08x src QP%d, sl %d pkey 0x%04x",
++		  "slid 0x%08x src QP%d, sl %d",
+ 		__entry->dev_index, __entry->port_num, __entry->qp_num,
+ 		__entry->wc_status,
+ 		__entry->length,
+@@ -244,7 +239,7 @@ TRACE_EVENT(ib_mad_recv_done_handler,
+ 		be16_to_cpu(__entry->class_specific),
+ 		be64_to_cpu(__entry->tid), be16_to_cpu(__entry->attr_id),
+ 		be32_to_cpu(__entry->attr_mod),
+-		__entry->slid, __entry->src_qp, __entry->sl, __entry->pkey
++		__entry->slid, __entry->src_qp, __entry->sl
+ 	)
+ );
+ 
+-- 
+2.50.1
 
-Jason
 
