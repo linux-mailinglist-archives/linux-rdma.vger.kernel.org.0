@@ -1,101 +1,95 @@
-Return-Path: <linux-rdma+bounces-19466-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19467-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2A3EGcij6GkaOQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19466-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 12:32:40 +0200
+	id GMEhN5Sp6GnEOQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19467-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 12:57:24 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A6E444C0B
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 12:32:39 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F218544507B
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 12:57:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3A797301A7C1
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 10:32:38 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B22813011D4F
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 10:57:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DB935AC36;
-	Wed, 22 Apr 2026 10:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4FC3CD8A2;
+	Wed, 22 Apr 2026 10:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="ItUqCDt5"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="tkPaPnvI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CFF36A02F
-	for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 10:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C38C3BED56
+	for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 10:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776853957; cv=none; b=NSFGLzLzURin3BDAuyLG2cmBzbx6JqW7KiFrWvkzrrphYK/hKjLPW3VVqM2jqg28PDg1VjqIVATfxH6WYArSKGElGJJGvSKFG/NYGf614ivTV1pBzNTMYFRVZoaj/HUhIU4iYMyeHgZ5HHAZteZUvhdHS1E/5P9/4/oQmCI9ijc=
+	t=1776855419; cv=none; b=a3feKx6BwbPbmbxae7HAE5ZtCANB8MUWVCDTyn5i2e+RVLYc8tLczKA6ShrwJoN9KB0mWSnNtZzaEE4cL/frAE8KjeDBwAC8h+2o/gyrdgEnkK6PNhPmDlXbNqiXAfeEs7RZYtbTPAzabKxd/YmusmNO0YcXWs/wG03oxELKEjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776853957; c=relaxed/simple;
-	bh=PoOO9nfPkmu/ukKHCawxjS1ia7rSUc8iX7t+KFKG7yw=;
+	s=arc-20240116; t=1776855419; c=relaxed/simple;
+	bh=6Y80RHuR/ATqFnS+pqsk8XA75E228gx75Mt4R1vqkh8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZVixcYYGg7ptiLHWA0Rf//oO0MpM4RTpSTp7w2V1UlpL/aM0EwOB6DCJDqvH9wdevYWRKsSGb7zSDFwlDFBdwi3e5uIGlFJjPgjoelk7B8xO+fxvVunnYm0gQCoFph9K+UF4s5mI4P6pqs957Quvj05+/aE3QiY2EJ4QpAA19qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=ItUqCDt5; arc=none smtp.client-ip=209.85.221.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=STM7fDsOP4bLx85Q7RYQpoSf3FZl3pE30S6GP7niJMCUP2aC9gGNkPfb2b8qiAP+XLlefOxh//VcT/IN/O0f2rc68WrC101j/weCuzy32eftl1fQeXl1WmneVCr1SAVFo1u4Q1ZItJVbMzTdXMe2GRsRameaH3g/3ZqCZuEFSlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=tkPaPnvI; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-43d7e23defbso3359162f8f.0
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 03:32:32 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-488ba840146so48853765e9.1
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 03:56:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1776853951; x=1777458751; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1776855415; x=1777460215; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FWIPfGVubDnyAhwzz3JLAkLWm0PkXLXxgZ7ClgZlSek=;
-        b=ItUqCDt5Mt7PoSzXERoSWUY9GU63/TpM2H3aLlY9O+CpvJVt0HdLYMLI5/df0VYzx3
-         RdkiCyxv6xeUmAgWNLU3mcZmH64aCP0vIJSA6o9SP40Vl/LrtiYHszbNtG6xyVPyNECc
-         MUqkC1dHDWqZLMo8gd7yErCWe85Pw/NyukVaT9QXOdFTJxGu2bw6oC651zdxtXlYAFeS
-         6u/T6tVSD2LSil5fFK06oGEt5crERQ99vQ0dubwi291YsRtWDb49MgoeMjzTA+pDXdfJ
-         jKzcTjmQ0N025AQVkFO3om6KTH0gVLSzkn1CSdGMEpi0MAjPPuKH3qlWLdHgX6bqK6yM
-         DMig==
+        bh=uaf6KSxagz8WZxoypgJbdEJbIMgWWZxRaU40qt3gDMY=;
+        b=tkPaPnvIMvusfdC5eVaSlLiXlnVX3FhnNeg8UWFm1gqeRFAMmaVv5Iw7T14iTxbBt6
+         JT94EHQ2qMQkjwzbvc0fFPghWkABWC134WVdMq/FsD3N/pNnIDfdqIED1tzed9J0V5Bf
+         g2SzFqII3yOPgcLeAbTkhicTBO1N9KVyqQFKKWKxLhh0yMh6V9DALSgmdVP7PcVbq2P/
+         WE3eUfQqv0sxqVbAL9np/vwwsasJLwfHsWlewaE7MawioRphrM9gGYRlk5uopjsL1dJZ
+         YEAVb8hr3D5QVqjNPJhJziYiuPeusWCIRipXaQbADExJqJSnWLUoyn0neqrT6DUTJF/f
+         gA6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776853951; x=1777458751;
+        d=1e100.net; s=20251104; t=1776855415; x=1777460215;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FWIPfGVubDnyAhwzz3JLAkLWm0PkXLXxgZ7ClgZlSek=;
-        b=NlK5hXE+9U+GLPJQcps/KfM8sLwL9yRtulgnBVhm9mkLph9mA8nXBNGlVftvWXzyml
-         xlQQCrhAGPmGpmd2Xkfkct8jxApAIDLZuBsmt7Xtq3tQ38fXU0HWKsjE8rkpwGCkgltA
-         gwSI3+jLqY08ktB4eqlIS6Su6Usc1DfyYaTAlfjNacGmtNR2L6g+XezNwoChwscKmJXR
-         aJm8orIVsZnOGSRvxwxlf/K4nPx1QBrMN0hFfo+Cc9oF0oFhApZSinnlZts85jx2g1jQ
-         VZvzIT7GdfesKVz+M17SgeuMkojPfKEf1LqWcTi20FgT4hCLFJ2MUhxXpVDS88U8eMAW
-         k+qQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9p7titwjqbFPu7QcdeVicbNmBPxFbgauzh99Q6Y6/8Epu5onXA6r+OYYiT+P1896dL+qIMsUrztgmF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz7kdaITCtGzpZ3avIoxFDfTUSC0pdfTRR4mPJYgWouHrNh5jB/
-	7MgZrMz/tSFpAqslnSJUiuU9LxKOzIm3iJ18/vXc352/uh3deHsczDG9AVxe4BiICtw=
-X-Gm-Gg: AeBDiesZCc7ZUy0qMnmIN63vM2f/Y5QdoU/EjfVFL7fKYZ2znk3FYGegKfdtQlWwZEn
-	byXtX9VwCZZkbfmeb2sEv9cd38np8LgUrteL4MDYK9zoB3HYNMNijzeEWSowMbjRiORGY8PzeGi
-	s2JeQctTUcasFgZa+8Ya28XHS2tKLXjsXIO5kR2QzG3QeFDNcdhjWvdCwEp7TpU4yVksTIFhhiv
-	Sp8FmlUUZwfHZnc6xY5EQC2Cr2etAj17Rg2Ix9xpBt6PDO6nZucno7juB8WaoTvYTsys5HfpvBZ
-	GL/OeMbj75+Fi5GxqK6j1wYJK8btMw8NrVFu4RDwGOCXjWFq656PM099QEQ5XTF50Fv8pc6jMb/
-	lcLjHfZJ9ZEFbF1vLQ87zEJ2tXxNKHVcRbB4xTGS73P9N3DHWkNwnTjw9q8Vh0ON3SYsYDQ+7ul
-	5Q/Y3Q/gg+vHbLS6VrQcYdJVxiT1PS5kFrStE4OWjYP6/Vxg==
-X-Received: by 2002:a05:6000:3101:b0:441:1d3c:f7d6 with SMTP id ffacd0b85a97d-4411d3cf7efmr12081272f8f.9.1776853951302;
-        Wed, 22 Apr 2026 03:32:31 -0700 (PDT)
+        bh=uaf6KSxagz8WZxoypgJbdEJbIMgWWZxRaU40qt3gDMY=;
+        b=F6SUkDeRmQX6cee/UPxuKfKpaSmXGa2RDWqr+I0+ENHxMEWICdQ6XuVBYNTURnOg4M
+         7xUugQfcQ70fie1Jb9kVHc+WSEXo1IH5udIyv9NaR11C5En81TN1D7bueUXXcfuojImR
+         fqa8cepxD7n3dlLYdcvS2RQ5kMjv1s9R/yTY0CWSmjKb7WyoD56XqIX3wFNbGnpQYOaJ
+         iZigEW2EIUJV/PvNQ9Be+YKgQSEF5PkDczeZBigrKjxPPvSnaFEXSkseUDQJQu/7sqSm
+         chWsYij82i167m+wshNWWiQnv4Le4oOP14Td0qNjhnIF2i0VdWrsR61W9nCNchh9Swbg
+         q8XA==
+X-Gm-Message-State: AOJu0Yy1HZJQ0YDseSjpo/yFgsXxO6AAUAtXQUiOWuuu8KGm9v823Wgp
+	oIqltxSGY/55xHH4kStwOZPURSNzaTfsAlOSrt79IWJ4Yfh/7X7fqybc2+PyhMlI/iw=
+X-Gm-Gg: AeBDievBEPKoZmGlcKdeRPatt3iSkEHjGRrPtD6trgVrBIo6HCnkMw/QNLmh5gWbdyh
+	gm6oKXGp+IC9DfREjXA82YpENPc2brQpPiomc1427IzryUvPhL7nl7cvS2buT79XwB+JUeUaTSM
+	HIqgNshFtekFWHg+GQ0IfMPK9N58YEwKDsh3Wlz3QrR25Klm3WRcFnTbwDT2ZvpoJC+BhIHVdVH
+	Or+FWBFLpjqq8VdL5MPcYyKkLS2heJfCshPT+j40wo1WQAs/7QNhnZVO2RUkY/gdJ+tu1n+pCXx
+	LYduuKtVi1CwVpVnJjTLDGhlTcGxT55AVzVK1+2bl9ZBKWfOGJBBwca3ojMgSfrthABCcn4WMZc
+	3tJsWIRfTe+7SOYg3gVZgGOb/+/N94W5vtGkp1MKInrAqpqCMv2RtM0sEZ8gF6Ml1AX6Xx6AZOL
+	WTf8RR98vvCgIujlBvHohDZNOQiocyuuwmxAuAoNkPFeOarw==
+X-Received: by 2002:a05:600c:1554:b0:485:439b:683f with SMTP id 5b1f17b1804b1-488fb775fd5mr295836315e9.20.1776855415000;
+        Wed, 22 Apr 2026 03:56:55 -0700 (PDT)
 Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43fe4e59f97sm49557178f8f.37.2026.04.22.03.32.28
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43fe4e3a18csm51039410f8f.20.2026.04.22.03.56.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2026 03:32:30 -0700 (PDT)
-Date: Wed, 22 Apr 2026 12:32:26 +0200
+        Wed, 22 Apr 2026 03:56:54 -0700 (PDT)
+Date: Wed, 22 Apr 2026 12:56:52 +0200
 From: Jiri Pirko <jiri@resnulli.us>
 To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Michael Margolin <mrgolin@amazon.com>, linux-rdma@vger.kernel.org, 
-	leon@kernel.org, gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, 
-	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com, 
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com, 
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, mbloch@nvidia.com, 
+	yanjun.zhu@linux.dev, marco.crivellari@suse.com, roman.gushchin@linux.dev, 
+	phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
 	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
 	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
 	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v2 01/15] RDMA/core: Introduce generic buffer
- descriptor infrastructure for umem
-Message-ID: <3wltr6vsnqqmgopafwjnhfndbbfmsnsxalhvrxjat2qeq72kau@poidixh2jwwm>
+Subject: Re: [PATCH rdma-next v2 02/15] RDMA/uverbs: Push out CQ buffer umem
+ processing into a helper
+Message-ID: <7hbhqdwc4vboiwi5d2yqpqgxhvouqmuxzar3dzvkxhll2eb23s@43ftpwsavstd>
 References: <20260411144915.114571-1-jiri@resnulli.us>
- <20260411144915.114571-2-jiri@resnulli.us>
- <20260412123322.GA5166@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
- <fzughzkkr5zkr436pdzu6p2j4sdlphtxpbbpztxoerbms6a37f@4dzcxphdyjg2>
- <20260413160232.GA21984@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
- <dy6nbf2vibl3aeopeb7im7fksh5436isqcmcarghkm5e2ontoi@unvvimhthp53>
- <20260416121000.GA20519@dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com>
- <20260421125212.GF3611611@ziepe.ca>
+ <20260411144915.114571-3-jiri@resnulli.us>
+ <20260421132532.GA360923@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -104,11 +98,11 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260421125212.GF3611611@ziepe.ca>
+In-Reply-To: <20260421132532.GA360923@ziepe.ca>
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -117,11 +111,11 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19466-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19467-lists,linux-rdma=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
@@ -131,24 +125,58 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim,ziepe.ca:email]
-X-Rspamd-Queue-Id: D0A6E444C0B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,ziepe.ca:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: F218544507B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Tue, Apr 21, 2026 at 02:52:12PM +0200, jgg@ziepe.ca wrote:
->On Thu, Apr 16, 2026 at 12:10:00PM +0000, Michael Margolin wrote:
->> > >> >> @@ -64,6 +64,7 @@ enum {
->> > >> >>  	UVERBS_ATTR_UHW_IN = UVERBS_ID_DRIVER_NS,
->> > >> >>  	UVERBS_ATTR_UHW_OUT,
->> > >> >>  	UVERBS_ID_DRIVER_NS_WITH_UHW,
->> > >> >> +	UVERBS_ATTR_BUFFERS,
+Tue, Apr 21, 2026 at 03:25:32PM +0200, jgg@ziepe.ca wrote:
+>On Sat, Apr 11, 2026 at 04:49:02PM +0200, Jiri Pirko wrote:
+>> From: Jiri Pirko <jiri@nvidia.com>
 >> 
->> I don't think you can add anything here as it overlaps with driver
->> specific attributes. I suggest defining per command attr id and passing
->> it by caller into ib_umem_list_create.
+>> Extract the UVERBS_ATTR_CREATE_CQ_BUFFER_* attribute processing from
+>> the CQ create handler into uverbs_create_cq_get_umem() and separate
+>> buffer acquisition logic from the rest of CQ creation.
+>> 
+>> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+>> ---
+>>  drivers/infiniband/core/uverbs_std_types_cq.c | 127 ++++++++++--------
+>>  1 file changed, 69 insertions(+), 58 deletions(-)
+>> 
+>> diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
+>> index d2c8f71f934c..4afe27fef6c9 100644
+>> --- a/drivers/infiniband/core/uverbs_std_types_cq.c
+>> +++ b/drivers/infiniband/core/uverbs_std_types_cq.c
+>> @@ -58,6 +58,72 @@ static int uverbs_free_cq(struct ib_uobject *uobject,
+>>  	return 0;
+>>  }
+>>  
+>> +static struct ib_umem *uverbs_create_cq_get_umem(struct ib_device *ib_dev,
+>> +						  struct uverbs_attr_bundle *attrs)
+>> +{
 >
->Right, the expectation would be to have a ATTRS_QP_BUFFERS
+>I suggest making a function like this:
+>
+>int uverbs_create_cq_to_umem_desc(struct uverbs_attr_bundle *attrs,
+>                                  struct ib_uverbs_buffer_desc *dec);
+>
+>And lets focus the umem code on working consistently with struct
+>ib_uverbs_buffer_desc.
 
-Okay. I was under impression I can add a generic attr, I was wrong :/
+Okay, makes sense.
+
+
+>
+>Ie as a general plan lets try to convert all the different
+>descriptions we have in the uapi for umems into a
+>ib_uverbs_buffer_desc and convert that to a umem?
+>
+>Broadly I'd imagine introducing a new uattr for CQ to pass the
+>ib_uverbs_buffer_desc as well so the end result of all this churn has
+>the option for every umem to be described by ib_uverbs_buffer_desc at
+>the uapi boundary.
+
+Wait, I'm missing something. I'm already introducing the BUFFERS attr
+that passes a list of ib_uverbs_buffer_desc. What exactly do you mean
+here?
 
