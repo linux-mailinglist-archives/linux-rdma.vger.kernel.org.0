@@ -1,179 +1,162 @@
-Return-Path: <linux-rdma+bounces-19475-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19476-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AIJ+GBrr6GkGRwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19475-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 17:36:58 +0200
+	id UJ1fDb7t6GkdRwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19476-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 17:48:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA23447FB5
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 17:36:57 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 395BD4481A1
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 17:48:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BF86A30138BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 15:36:56 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9CC993014889
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 15:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4548E340293;
-	Wed, 22 Apr 2026 15:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QT3E+80I"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D55364046;
+	Wed, 22 Apr 2026 15:47:54 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37C91DE4EF
-	for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 15:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B844B244687;
+	Wed, 22 Apr 2026 15:47:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776872216; cv=none; b=M1xSp/IACJD9gbaQlCgpPekzKnI5vQSpHJ8ht57wes1bi5v2EJ0gqiQ/chBnnuL+TvU/+0ryfBPFG61dMGBDlXmi5dg9xhxYs4U/GnJxmniRf/hkYeZsnyNW+JTFWV1JSmbe+zfvZvU4eUcYtKOuODK3Qh8x/Qu2zr6GfafYGiA=
+	t=1776872873; cv=none; b=gWC+FRXo38Jj2ReYqTt1LwpTV/iEdBcKUapoCsHGJZ6wUrDdT/NAt3aPXsxJ1eNKKm9ExYGCHDm5wCdU80tUaRxNcEoEgu54d0OhcgsZsuQ0eCrqBwdOYNoezWquUz/+YGrq6+VtGXtKYnmGLtjJXtPw8VEx+65Yvu4Ayt8rIgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776872216; c=relaxed/simple;
-	bh=I4Jmwzz1ODBCvCGD3inyJttCoNK7K9OZ/Wca1zGloR4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sol1qtx0hPI7ECt9IJ4UzHMS/7on0TxElAkDsVgOnlTfSjCWtJi7FlN8PoFQ1qD7jRYQfOBemJ/hjl75lwOsQDmm+fQJF1CEqar3He3+33kDFoAJWOgOgIDx4IlFihWXJEkxrEpvcWnKYzOPza3HMnNgBYx7jSgqyvWdJXnecs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QT3E+80I; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-65c0891f4e9so9287014a12.1
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 08:36:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1776872213; x=1777477013; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6+DwNRPBKYrcNA3RvMgBSsOLry+hrRQ+hSlc37tD2IM=;
-        b=QT3E+80IWCDmcPyrWXy0Fn3L7dsT6+3G896rsCyUtwzLBWE1oKlOWEfsLnExPJ69v8
-         4Ehcoa6PtTHHs2jw/+nl8PTimwN3OSlD0IdySkBbRgAcSP3WxC0fR3AaBMiR16bdrSrA
-         zzbMtGxqulWXcRIkBkGMvgfdq7vq/MsX+3xD8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776872213; x=1777477013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=6+DwNRPBKYrcNA3RvMgBSsOLry+hrRQ+hSlc37tD2IM=;
-        b=PVQCqIm2Zplz9CHXPdZIGMyJX1FJ5q1FuSnPlGi75w25o4x/lqDEoLWaGZA3YW7rJA
-         ear6BDaygsICL26dt/d4eyZ4F+096i3qTl6uiZvC0fVRkkIa8Ylg/BR0Nuk08qc1OYrm
-         ckjZEfU1RQeEVNOmLCbHEjWd3UC/5aGFgz4ib6NFbRkCJ5EFQKOfwJ0Nwwi64cVVPHRm
-         Bf3Kc6fFE7vzd1HEyf4z1sGKCSzIdgMxOK4P6jHrqaSCZor3jqucPPaeAitTMK3oWxFI
-         h7DZMawpE/7QXyhMLp10FP52Oz+taXJgkMyt4+p32hnXA8opupOVZE5mQ9+IOE1iGlOG
-         jhBA==
-X-Forwarded-Encrypted: i=1; AFNElJ9xhN8n5jM1b71BdnbHv4bSbQNU6ypdGYcak+4xd5AbT7TfE5wwSaBpuLwbvRxMFbHC1dkcyBgdE+1l@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlXEne8m2z6D28UrA6R83d9JdUs7YQtTmmP+KvfC55UnrUJG+U
-	NI4ROYokFfywS+SF4JtNsSP8CGDxGSr6QWR1dmfluhLSKLJUbKSYo8v11ehEwHmh70OxdrhoAaW
-	8Ntar4FE=
-X-Gm-Gg: AeBDievgJhWSajuTcgjIeO1vpW5rf2C2pSgJYt/FFbS61I/HvQgLYTOdL9qnTauiBIR
-	GqtVcDeKFA+gNMgdP67vMJyZl40O58g05Ip8qNmPDmkfQTDD2klNspO+vdGJaBZrCJXSfegJHlx
-	RKuBAtSEcJVPXWixuZfPHCipIbExvL5+ErFUYmLayk7Nb4yegNkW1sc8VvGi5S2kec40iF2irBH
-	+q5Z9C7RHpzm5nHtyQe3X+pSGLPgd6UTm2n0mPvmhW3CE3fNZAuL5uBmH2qhpkIDGeYtJqrs2tb
-	bSWZzT7imsvEvebbMpNS/iFgpIA50Y0r6Je7HUs7EwrQN7yryxNp6Lj/sJTc/9SRdkoo0MF/Ctz
-	RQbssdr7lXhJTfLr30bJOpkVLQxx+NGyD6le+4jnlRvPVM8ssvdmLm6XG1BXEnTDTPkVQ3rvP7O
-	tQQ0pvZKY+tOp2WaSazD6sPUzBrw5gRNTGUd/FAGD9xdhwNKsls1g1Zntad7awbEy/tLHJeITy8
-	svIeHYmjTk=
-X-Received: by 2002:a05:6402:2810:b0:671:eac2:d328 with SMTP id 4fb4d7f45d1cf-672bfd9d002mr10550351a12.10.1776872212945;
-        Wed, 22 Apr 2026 08:36:52 -0700 (PDT)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-673032b9e83sm3396532a12.4.2026.04.22.08.36.51
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2026 08:36:51 -0700 (PDT)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-671ab90fc1fso11255239a12.0
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 08:36:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ+3ABJ0YI44wHJuGsjxFjTSKnC+UQa7LfgYzVt8Dqb2bj/9FMCv4spFafV4lxGpw9dMNnDUS/s8U43N@vger.kernel.org
-X-Received: by 2002:a17:907:a646:b0:ba9:3f1a:8735 with SMTP id
- a640c23a62f3a-ba93f1a878amr484489766b.33.1776872209534; Wed, 22 Apr 2026
- 08:36:49 -0700 (PDT)
+	s=arc-20240116; t=1776872873; c=relaxed/simple;
+	bh=dsDR49geHPzdemRpkZ9D6/CfTpekhKLr7k9tL5+mf3U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DbH3KWGPv0L2YFL0Bj/BHQJzzimyFFAbCT7GUjgWO1cRP5YD4WmRKGR/ETgSodT1MDZiFCwNksGJ4CDxRhoIiNjpg8fQEcokAAxgSa8E3uuIKJr1XIq8Nhzuq46vQkN0ku8fj1hrbL0t2AQt2diBeP9OXgEjCiy65UtNTGSb3z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
+Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
+	by app2 (Coremail) with SMTP id zQmowAAnv4WR7ehpSfJBAA--.34266S3;
+	Wed, 22 Apr 2026 23:47:32 +0800 (CST)
+From: Ren Wei <n05ec@lzu.edu.cn>
+To: linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: alibuda@linux.alibaba.com,
+	dust.li@linux.alibaba.com,
+	sidraya@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	mjambigi@linux.ibm.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	ubraun@linux.vnet.ibm.com,
+	yuantan098@gmail.com,
+	yifanwucs@gmail.com,
+	tomapufckgml@gmail.com,
+	bird@lzu.edu.cn,
+	ruijieli51@gmail.com,
+	n05ec@lzu.edu.cn
+Subject: [PATCH net 1/1] net/smc: avoid early lgr access in smc_clc_wait_msg
+Date: Wed, 22 Apr 2026 23:40:18 +0800
+Message-ID: <08c68a5c817acf198cce63d22517e232e8d60718.1776850759.git.ruijieli51@gmail.com>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <cover.1776850759.git.ruijieli51@gmail.com>
+References: <cover.1776850759.git.ruijieli51@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260419192018.3046449-1-metze@samba.org> <aehrPuY60VMcYGU8@infradead.org>
- <9cb0901c-18c5-4858-941c-3b37ee112af9@samba.org> <CAH2r5msb3-HiPSv+HgBknEwDXGsv0xU=TGCxHdmc-VCLKzYCmw@mail.gmail.com>
-In-Reply-To: <CAH2r5msb3-HiPSv+HgBknEwDXGsv0xU=TGCxHdmc-VCLKzYCmw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 22 Apr 2026 08:36:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whHACPH7vBLo8CVSqR5-mgzP4ff7qJU6F=1exKTpQ0-7g@mail.gmail.com>
-X-Gm-Features: AQROBzAXxjIZr7XwIp1v_ivj2KCglqqVek-fwbJ8jkNR7q5nEXQKW0WRvzxwAW8
-Message-ID: <CAHk-=whHACPH7vBLo8CVSqR5-mgzP4ff7qJU6F=1exKTpQ0-7g@mail.gmail.com>
-Subject: Re: [PATCH] smb: smbdirect: move fs/smb/common/smbdirect/ to fs/smb/smbdirect/
-To: Steve French <smfrench@gmail.com>
-Cc: Stefan Metzmacher <metze@samba.org>, Christoph Hellwig <hch@infradead.org>, linux-cifs@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
-	samba-technical@lists.samba.org, Tom Talpey <tom@talpey.com>, 
-	Namjae Jeon <linkinjeon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQmowAAnv4WR7ehpSfJBAA--.34266S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4xJry5uw1kuw4ftFW5ZFb_yoW8Ary3pF
+	W3Gw1vkrWDJryjv3W0kryIgFWYgFWktr1xCrZIk3WUJF1kJrnYyrWFq39FvF4qyFsruFWr
+	tr4I9rWavF4akrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
+	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_GFv_Wrylc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY2
+	0_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7sRi_HU3UUUUU==
+X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQ0FCWnoi2EIVAAAs3
+X-Spamd-Result: default: False [-0.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=google];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19475-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[linux-foundation.org:+];
-	DMARC_NA(0.00)[linux-foundation.org];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[torvalds@linux-foundation.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_FROM(0.00)[bounces-19476-lists,linux-rdma=lfdr.de];
+	DMARC_NA(0.00)[lzu.edu.cn];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[linux.alibaba.com,linux.ibm.com,davemloft.net,google.com,kernel.org,redhat.com,linux.vnet.ibm.com,gmail.com,lzu.edu.cn];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	TO_DN_NONE(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,linux-rdma@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,samba.org:email]
-X-Rspamd-Queue-Id: CAA23447FB5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,lzu.edu.cn:email]
+X-Rspamd-Queue-Id: 395BD4481A1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 22 Apr 2026 at 07:49, Steve French <smfrench@gmail.com> wrote:
->
-> On Wed, Apr 22, 2026 at 3:16=E2=80=AFAM Stefan Metzmacher <metze@samba.or=
-g> wrote:
-> > >
-> > > Why is this not in net/smbdirect/ or driver/infiniband/ulp/smdirect?
-> >
-> > Yes, I also thought about net/smbdirect.
->
-> I would prefer to leave it in fs/smb for the time being, since it makes i=
-t
-> easier to track since fs/smb/server and fs/smb/client have dependencies
-> on it.   In the long run, I don't mind moving it, if it starts being
-> used outside of smb client and server.
+From: Ruijie Li <ruijieli51@gmail.com>
 
-I personally have no hugely strong opinions, but I think Christophs
-very question that gives two different alternative locations argues
-for just leaving it in fs/smb/
+A CLC decline can be received while the handshake is still in an early
+stage, before the connection has been associated with a link group.
 
-That driver/infiniband/ulp/smdirect location in particular is just a
-disgusting path.
+The decline handling in smc_clc_wait_msg() updates link-group level sync
+state for first-contact declines, but that state only exists after link
+group setup has completed. Guard the link-group update accordingly and
+keep the per-socket peer diagnosis handling unchanged.
 
-It sure as hell is *not* a driver, it just uses the rdma infrastructure.
+This preserves the existing sync_err handling for established link-group
+contexts and avoids touching link-group state before it is available.
 
-If rdma were to eventually itself split itself up into the driver code
-and non-driver code (like networking does), that might change things,
-but that's not happening now.
+Fixes: 0cfdd8f92cac ("smc: connection and link group creation")
+Cc: stable@kernel.org
+Reported-by: Yuan Tan <yuantan098@gmail.com>
+Reported-by: Yifan Wu <yifanwucs@gmail.com>
+Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+Reported-by: Xin Liu <bird@lzu.edu.cn>
+Signed-off-by: Ruijie Li <ruijieli51@gmail.com>
+Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+---
+ net/smc/smc_clc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And as long as we expect smbdirect code to go through the smb
-maintainer, I'd rather have the location be about that clear situation
-rather than some arbitrary "it uses the rdma code" or "it's
-networking".
+diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+index c38fc7bf0a7e..014d527d5462 100644
+--- a/net/smc/smc_clc.c
++++ b/net/smc/smc_clc.c
+@@ -788,8 +788,8 @@ int smc_clc_wait_msg(struct smc_sock *smc, void *buf, int buflen,
+ 		dclc = (struct smc_clc_msg_decline *)clcm;
+ 		reason_code = SMC_CLC_DECL_PEERDECL;
+ 		smc->peer_diagnosis = ntohl(dclc->peer_diagnosis);
+-		if (((struct smc_clc_msg_decline *)buf)->hdr.typev2 &
+-						SMC_FIRST_CONTACT_MASK) {
++		if ((dclc->hdr.typev2 & SMC_FIRST_CONTACT_MASK) &&
++		    smc->conn.lgr) {
+ 			smc->conn.lgr->sync_err = 1;
+ 			smc_lgr_terminate_sched(smc->conn.lgr);
+ 		}
+-- 
+2.34.1
 
-Because that code is not primarily about networking or about rdma.
-That code is primarily about smb.
-
-So while I have no *strong* opinions and can deal with whatever
-maintainers find convenient, I think fs/smb/smbdirect is at least
-currently the sane location.
-
-          Linus
 
