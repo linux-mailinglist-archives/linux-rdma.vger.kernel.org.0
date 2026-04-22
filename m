@@ -1,162 +1,167 @@
-Return-Path: <linux-rdma+bounces-19476-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19477-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UJ1fDb7t6GkdRwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19476-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 17:48:14 +0200
+	id cclfGm/36GlYSQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19477-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 18:29:35 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 395BD4481A1
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 17:48:12 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1D2F448A88
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 18:29:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9CC993014889
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 15:48:05 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 147623005A97
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2026 16:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D55364046;
-	Wed, 22 Apr 2026 15:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874E135DA5B;
+	Wed, 22 Apr 2026 16:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="pJvx2Y7f"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B844B244687;
-	Wed, 22 Apr 2026 15:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC84637CD28
+	for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 16:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776872873; cv=none; b=gWC+FRXo38Jj2ReYqTt1LwpTV/iEdBcKUapoCsHGJZ6wUrDdT/NAt3aPXsxJ1eNKKm9ExYGCHDm5wCdU80tUaRxNcEoEgu54d0OhcgsZsuQ0eCrqBwdOYNoezWquUz/+YGrq6+VtGXtKYnmGLtjJXtPw8VEx+65Yvu4Ayt8rIgg=
+	t=1776875372; cv=none; b=Qa8D7sEEvelqv1vlfhJIq42Mx9OESSNcNOPvMet3qYlzcvfkl6elFE3ZKge8fcZ6nWXNlEScqQL/IeN2KQFASm/wv3Xxg8ecGkSIA03kpXTLftX3jN5Z5dYHiHFE3z1Q5HnYfTHYKH1o1TASHs0wVLg3Rj/sxVlLWc6kgauKOyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776872873; c=relaxed/simple;
-	bh=dsDR49geHPzdemRpkZ9D6/CfTpekhKLr7k9tL5+mf3U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DbH3KWGPv0L2YFL0Bj/BHQJzzimyFFAbCT7GUjgWO1cRP5YD4WmRKGR/ETgSodT1MDZiFCwNksGJ4CDxRhoIiNjpg8fQEcokAAxgSa8E3uuIKJr1XIq8Nhzuq46vQkN0ku8fj1hrbL0t2AQt2diBeP9OXgEjCiy65UtNTGSb3z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=162.243.161.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
-Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
-	by app2 (Coremail) with SMTP id zQmowAAnv4WR7ehpSfJBAA--.34266S3;
-	Wed, 22 Apr 2026 23:47:32 +0800 (CST)
-From: Ren Wei <n05ec@lzu.edu.cn>
-To: linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: alibuda@linux.alibaba.com,
-	dust.li@linux.alibaba.com,
-	sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	mjambigi@linux.ibm.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	ubraun@linux.vnet.ibm.com,
-	yuantan098@gmail.com,
-	yifanwucs@gmail.com,
-	tomapufckgml@gmail.com,
-	bird@lzu.edu.cn,
-	ruijieli51@gmail.com,
-	n05ec@lzu.edu.cn
-Subject: [PATCH net 1/1] net/smc: avoid early lgr access in smc_clc_wait_msg
-Date: Wed, 22 Apr 2026 23:40:18 +0800
-Message-ID: <08c68a5c817acf198cce63d22517e232e8d60718.1776850759.git.ruijieli51@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1776850759.git.ruijieli51@gmail.com>
-References: <cover.1776850759.git.ruijieli51@gmail.com>
+	s=arc-20240116; t=1776875372; c=relaxed/simple;
+	bh=7nUTpLDZcNwHVIBFnUXlZ2h+DqdD9r7qtP5b75FfdX8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q1LIOFXdVRn10sWAFqIJkvIWnegizOxvrTQPQFAs0kftCZ+w9eVBaEOFaJN1CdZjUnfN/QyGu8GWFcTVqHI2kco05uVkhFUVFAki3A7JgSpWpznr+yGOLuegZEG3kuA6vmO0BcZc4MvUDQci8nW58LtdDqgBKK5k+argt7wc/tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=pJvx2Y7f; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-50e5ad864a6so31616891cf.0
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2026 09:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1776875370; x=1777480170; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h9IY/0ZHCf/patsFxziV9u+pjgUJWDhTV7Q7rdgygPM=;
+        b=pJvx2Y7fJ5pRaa87U2jGMRAagGCpZPf/KPXYOkaL7GhCt6l6UhqQZ/A0y/BhTI0DcR
+         7ESGzMELWUIIPm4cauAh9D/DzCJU3MXqnZn2QEj6UXZlGvpe5AaCgULd5jhGWP5gbC5k
+         cjW1khqmaDO4AAgE+7i1Jw32Lif3HY4W15HkkQ1O8iHli1j3wVrEWMW1GJlZlvSYlXmi
+         RGyaDzp7uoxx3YF1rVKy04lCwZazcXGkSorGhtUb9eygF71AqmacasFi+VsHlXGIZeln
+         +7qjZktq7NYcYRfxHPfvoZyhSRbvw9gYj1nNZUu7kCiMf3BpsGBEvSzo4Jfcxon6U5zl
+         k5SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776875370; x=1777480170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h9IY/0ZHCf/patsFxziV9u+pjgUJWDhTV7Q7rdgygPM=;
+        b=pohh8UAqMJ58sLxZIT+3k+vZ7235FRpDi2YBo1TuACdUq5lFr08T/Z0MT0/Qc7oIni
+         etX04lM4VVhWZR3LgeNB7QngVCMnbLXurhAQSvZXlPhab56yOIJQx0Okf5raIlCnDPGz
+         qf/aC5inEOFfmVwrSezSBPeyjlUSF+FRSYEe0pPcM1xj4r7LjPV6YEwovOi0doQ7Qyb7
+         7t9UDpqCHDT6NUcghekD+7eZFCX2YRwZi/Scsy0OafLLNDPsS9wE6HJdjRNL5YbGNopm
+         X0HphqsYP0t9qrKaQ5zLuUhGko6GMTdpFXdZ0ni9F1b9IP6O7E3YPiby60BpleCflhpN
+         66Pg==
+X-Forwarded-Encrypted: i=1; AFNElJ+dJvOMrAIO8dYnI9RmqzpNTaZRynq1YljoBnUJVLlIKDlcWUOO/CoVbI7Hr4RKHHju87A82F9rxiXE@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/4LqgVJA3jSzGo7ELV8YEg+JvCyPBeOln1EI6W4g/+TmFcHXA
+	JanDdnp3iSFYBvlRlNsldvFa36yv+UJz44Ax7bl/Ov74Vtd/G3mfh+A0tmUhxUyL+rw=
+X-Gm-Gg: AeBDieu95RVLerzdd11IgQ2ik9PRserBS61FT2uzT1s3hO7QrHK3s+3iRCjK5S6mP6b
+	NVVGkhf6SGKxsPspRQbN+pk3WirKy7dBI192rG3QsU/mmuNoEzUvCSAmqzlRIM/B3wal1UJpbtP
+	5/i3sEHWgXjbtC2nNkMAt7TDlqRyk/7oEhCMFwqAyAe5heAsZThil45pUMdTMP4yKI/A8FyCtYN
+	/b9K9mEqQ3c5BkxJPMXHizENh+LQFBBQD+k09B2EDa/BHD2JS2FDAhngtEXqUFohfaXxfobj0lB
+	YMFWREuypolKxLROKdeU3Pb7kEsir0uhrZWyz7y0sH5RVLjZDNwVMsW3Kq7e8BBRVZZ1x2kL2g8
+	oeriaoYIiIl/XgDXwIP4C3q9y274tw5xXHtouzYNzImVhk0ZEq5onsOKRdp+Y6JE/XElF/m2DEs
+	ujW768HNwjlAtMZOt7Z7/oIUmtfjIK7GgFtu/PHvzcGfHLKgkdO7+6LeJV3OpFyF7N8JPSuAlke
+	H2BrRncwkXjxj8d
+X-Received: by 2002:ac8:58c6:0:b0:50e:635b:5579 with SMTP id d75a77b69052e-50e635b57e4mr184629681cf.19.1776875369960;
+        Wed, 22 Apr 2026 09:29:29 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50e5d5ecffdsm83483301cf.29.2026.04.22.09.29.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2026 09:29:29 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wFaS8-00000008cG7-3pDK;
+	Wed, 22 Apr 2026 13:29:28 -0300
+Date: Wed, 22 Apr 2026 13:29:28 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Alex Williamson <alex@shazbot.org>
+Cc: Zhiping Zhang <zhipingz@meta.com>, Stanislav Fomichev <sdf@meta.com>,
+	Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Bjorn Helgaas <helgaas@kernel.org>, linux-rdma@vger.kernel.org,
+	linux-pci@vger.kernel.org, netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, Yochai Cohen <yochai@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH v1 1/2] vfio: add callback to get tph info for dma-buf
+Message-ID: <20260422162928.GL3611611@ziepe.ca>
+References: <20260420183920.3626389-1-zhipingz@meta.com>
+ <20260420183920.3626389-2-zhipingz@meta.com>
+ <20260422092327.3f629ad6@shazbot.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQmowAAnv4WR7ehpSfJBAA--.34266S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4xJry5uw1kuw4ftFW5ZFb_yoW8Ary3pF
-	W3Gw1vkrWDJryjv3W0kryIgFWYgFWktr1xCrZIk3WUJF1kJrnYyrWFq39FvF4qyFsruFWr
-	tr4I9rWavF4akrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
-	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
-	w2AFwI0_GFv_Wrylc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY2
-	0_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7sRi_HU3UUUUU==
-X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQ0FCWnoi2EIVAAAs3
-X-Spamd-Result: default: False [-0.96 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260422092327.3f629ad6@shazbot.org>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19476-lists,linux-rdma=lfdr.de];
-	DMARC_NA(0.00)[lzu.edu.cn];
+	TAGGED_FROM(0.00)[bounces-19477-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux.alibaba.com,linux.ibm.com,davemloft.net,google.com,kernel.org,redhat.com,linux.vnet.ibm.com,gmail.com,lzu.edu.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	TO_DN_NONE(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,linux-rdma@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,lzu.edu.cn:email]
-X-Rspamd-Queue-Id: 395BD4481A1
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:dkim,ziepe.ca:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: F1D2F448A88
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Ruijie Li <ruijieli51@gmail.com>
+On Wed, Apr 22, 2026 at 09:23:27AM -0600, Alex Williamson wrote:
+> In general though, I'm really hoping that someone interested in
+> enabling TPH as an interface through vfio actually decides to take
+> resource targeting and revocation seriously.  There's no validation of
+> the steering tag here relative to what the user has access to and no
+> mechanism to revoke those tags if access changes.  In fact, there's not
+> even a proposed mechanism allowing the user to derive valid steering
+> tags.  Does the user implicitly know the value and the kernel just
+> allows it because... yolo? 
 
-A CLC decline can be received while the handshake is still in an early
-stage, before the connection has been associated with a link group.
+This is the steering tag that remote devices will send *INTO* the VFIO
+device.
 
-The decline handling in smc_clc_wait_msg() updates link-group level sync
-state for first-contact declines, but that state only exists after link
-group setup has completed. Guard the link-group update accordingly and
-keep the per-socket peer diagnosis handling unchanged.
+IMHO it is entirely appropriate that the driver controlling the device
+decide what tags are sent into it and when, so that's the VFIO
+userspace.
 
-This preserves the existing sync_err handling for established link-group
-contexts and avoids touching link-group state before it is available.
+There is no concept of access here since the entire device is captured
+by VFIO.
 
-Fixes: 0cfdd8f92cac ("smc: connection and link group creation")
-Cc: stable@kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Signed-off-by: Ruijie Li <ruijieli51@gmail.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
----
- net/smc/smc_clc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If the VFIO device catastrophically malfunctions when receiving
+certain steering tags then it is incompatible with VFIO and we should
+at least block this new API..
 
-diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-index c38fc7bf0a7e..014d527d5462 100644
---- a/net/smc/smc_clc.c
-+++ b/net/smc/smc_clc.c
-@@ -788,8 +788,8 @@ int smc_clc_wait_msg(struct smc_sock *smc, void *buf, int buflen,
- 		dclc = (struct smc_clc_msg_decline *)clcm;
- 		reason_code = SMC_CLC_DECL_PEERDECL;
- 		smc->peer_diagnosis = ntohl(dclc->peer_diagnosis);
--		if (((struct smc_clc_msg_decline *)buf)->hdr.typev2 &
--						SMC_FIRST_CONTACT_MASK) {
-+		if ((dclc->hdr.typev2 & SMC_FIRST_CONTACT_MASK) &&
-+		    smc->conn.lgr) {
- 			smc->conn.lgr->sync_err = 1;
- 			smc_lgr_terminate_sched(smc->conn.lgr);
- 		}
--- 
-2.34.1
+The only requirement is that the device limit the TPH to only the
+function that is perceiving them. If a device is really broken and
+doesn't meet that then it should be blocked off and it is probably not
+safe to be used with VMs at all.
 
+Jason
 
