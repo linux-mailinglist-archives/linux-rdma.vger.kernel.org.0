@@ -1,154 +1,196 @@
-Return-Path: <linux-rdma+bounces-19515-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19516-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mBqNGo9v6mmLzQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19515-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 21:14:23 +0200
+	id 2J1SKPtw6mlBzQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19516-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 21:20:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 894054568F5
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 21:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3753F456A99
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 21:20:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9346E300288E
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 19:14:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9CC903002336
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 19:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21A4392823;
-	Thu, 23 Apr 2026 19:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FC9391E51;
+	Thu, 23 Apr 2026 19:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="NvqlUclk"
+	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="gdx1ISCQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZUvdr8y6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BBC386557;
-	Thu, 23 Apr 2026 19:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9D83909B8;
+	Thu, 23 Apr 2026 19:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776971659; cv=none; b=BxHh2UplV/yGp/kGYcLyDjF1PRHz3Vfwda8ZlyiHCspRojjk6FKJ/3FHMwdRZK914+IvDNcdz00RzpHSH2Q6qn/Yl7jwEduZjdEWP74C4obb8aa7lJX6BduUZlYWFWPOZIoxjNmp7VKuL6g+TgXD+2yrmYPYHkG4o4TllmOLpD8=
+	t=1776972022; cv=none; b=Q5Flld9huVbWJg15xXRKye27E7Lh0oz4VeybOTDOQS08fBgk+yrFBs0juJY5YVsXAV17dC+qGkDFiZDxySRbjQ2ehkf/bUQYC8hITe0TxD+kQQ0jVN1z3pCb0U054/AyCaPsjpONT/8Y82ExfNlOawzOfK0iNgDg/eS8xviLl+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776971659; c=relaxed/simple;
-	bh=0/kYI9nntU+3cuXXL/zPv/qL56aQxM1oszkFiqCXqtM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J6bP6sjqzfVXfvE0yZ5T5ndksi8VBJw8rmLgt75oe5IoHkXgldrdMGTm2lZmrkMDM2hRfXCfmKUFTH5rEHM8XSN3Fgf2uTsKBgfMFXyzHPex6SPNG6sZ8jAWhV73KOdmllgb5Nu8fqhlhC/ED6kjpBDWF8CM1uH6LQsU02hSip4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=NvqlUclk; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 9D63620B7165; Thu, 23 Apr 2026 12:14:16 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9D63620B7165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1776971656;
-	bh=RA4mvuAjlH+oxj2ch9HaoJ3O7maNpOWXkD3uf3/Ozvw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NvqlUclkx+2a5lGeuqdlDSCGbqHdyFca1IHF5N5ZPfAMfiV6Je45Y5VPK+RtAsntB
-	 PA0zWyeexlLW45Sd/CURMZUZ1miw80Pa6mSCJ0kIeAik0AQnOjt/8UM8y6QInPyQeO
-	 fRHvuivhzi/uuvj72a6G5X7RpgX733/Cg4HbQNug=
-Date: Thu, 23 Apr 2026 12:14:16 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
-	horms@kernel.org, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
-	jacob.e.keller@intel.com, dipayanroy@microsoft.com,
-	leitao@debian.org, kees@kernel.org, john.fastabend@gmail.com,
-	hawk@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, sdf@fomichev.me, yury.norov@gmail.com
-Subject: Re: [PATCH net] net: mana: hardening: Validate SHM offset from BAR0
- register to prevent crash due to alignment fault
-Message-ID: <aepviNMszMBtiB/H@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <aepF3NwyANeklkfD@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <edccaafd-73f3-421d-a48e-a6cb704d39e6@lunn.ch>
+	s=arc-20240116; t=1776972022; c=relaxed/simple;
+	bh=7OAMBqFezqilmW4ZrrxTT+MbAtt0mJHp17fXOTvbY7g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OobOmx6ylQdH+hY3ZWAuEScJUqXpRjM1yA5cQQPkRSKAac4PG1LNeCzslSKQ1cotf9guUldNe8GrLgr1bhwhatFd29CtL5fCft94Str2K49yAmYOWzDrZwkmTzFr6D4ZTX3eUlQGjMq4bsOxbCbaiNX9p21MYgiT/yx1BkpP064=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=gdx1ISCQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZUvdr8y6; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 517CD140016D;
+	Thu, 23 Apr 2026 15:20:18 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Thu, 23 Apr 2026 15:20:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1776972018;
+	 x=1777058418; bh=zgX8pUM+ByGW1BJ4PzJmLl3HUKg2UKXk7RpMYuVX26w=; b=
+	gdx1ISCQg+TSBOVzJw59r+B2kL6yGJACfaN4o+jfw1+LVBJo8M4CLyvxMZqpWhIx
+	8fpOYl9DQkAlFfIqSSi144Ul6oti8nQ6hSCVKDwxC+s/lBtdHrv7lReF2ZngadSN
+	Od1QCcLnTHuxXOT44WWZfQzQACQhujzMpDPuxVnmfq8rkKaOQ+ikX7We+iSqzRzO
+	lrBOtjeU4I9U3WCOUqUbHutFZXTRaEeWJ9839dNT5HYMu8eu7IaaETPPNEntcAqf
+	63YieUjaDu3Uo65EwCqgbc3T4uzS9avWCXOdukTXE1yhHm8iyNTcNLelKZkXBko7
+	FtdcikH0aPB8qC7aZQPDxQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1776972018; x=
+	1777058418; bh=zgX8pUM+ByGW1BJ4PzJmLl3HUKg2UKXk7RpMYuVX26w=; b=Z
+	Uvdr8y6kuGVNdu3c0ZQYsoJsU40DdAh5s3HryOIhEf7x0mApZTi4iFdEyC/sOHH+
+	7uxNgxnxV0i/uJwA9+WLgOk7+eKspnp5ZmPGowwF76c5XZwyVTXpJCuE6G9SI9pI
+	JCXmyMKupSQ7GgZl01RmGH4oa/94yXKLCW9Jopu44qiDXX7TzAG9eJuKBK3KwBOp
+	53Gh7vFoSv8P9lglzIdViXCpVS4wYjSOwwFvMBAmTuraMIYTfxi5YM5DohZxfUsS
+	zagp3HpVZ+gSqBaYoQKpsSWl2Gh7GpamX+WRzFOIOfxUOSimzBmOvbZCFSowXc1n
+	s/AaHraDRy7mAx+OBWdZQ==
+X-ME-Sender: <xms:8nDqaSocVBUsGX6Dqv_G5w1rlJmoZL84errVQL3TlmWj8TRDyuK1aw>
+    <xme:8nDqaV0BVjnH0Hj5F-hlKcd8X682cxE0tqu2brwkqUO7P9eoU9sbW3qd158Z-qwg3
+    dcfVuqBvxksctosoEesiDf4wm47d41NEex_UAhQcNeIFqWc4Db3og>
+X-ME-Received: <xmr:8nDqaamq_rWSOK6CdZLMRBlb5SJREhMRV-lT_9V1GmTwxSd5W0bWC35lALQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdeijeeljecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfgjfhfogggtgfesthejredtredtvdenucfhrhhomheptehlvgigucgh
+    ihhllhhirghmshhonhcuoegrlhgvgiesshhhrgiisghothdrohhrgheqnecuggftrfgrth
+    htvghrnhepvdekfeejkedvudfhudfhteekudfgudeiteetvdeukedvheetvdekgfdugeev
+    ueeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hlvgigsehshhgriigsohhtrdhorhhgpdhnsggprhgtphhtthhopedufedpmhhouggvpehs
+    mhhtphhouhhtpdhrtghpthhtohepjhhgghesiihivghpvgdrtggrpdhrtghpthhtohepii
+    hhihhpihhnghiisehmvghtrgdrtghomhdprhgtphhtthhopehsughfsehmvghtrgdrtgho
+    mhdprhgtphhtthhopehksghushgthheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
+    gvohhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgv
+    lhdrohhrghdprhgtphhtthhopehlihhnuhigqdhrughmrgesvhhgvghrrdhkvghrnhgvlh
+    drohhrghdprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:8nDqaRa_rMoY3-Gu0IG6in9WxOQrtHLSZfodCQRs-3oWG0hGYNOALQ>
+    <xmx:8nDqac-z_p1atCzPwxluejmtD6AzXG34JJfqwXlRQXFPUayD4aMd4w>
+    <xmx:8nDqaREJs6AGZct-AGSAW1QRMET9_rt_kBglLTDnxIKI0-7uxp8MxQ>
+    <xmx:8nDqaWezx6LiHdIh6_5BLrSXwi94wLwltOZ7z-ABrrvRs79Kw8U4iQ>
+    <xmx:8nDqaSlZyN88SxHutEDRqgWwDrmlZGWMI7VKYXHLfjociova4Iy6orlE>
+Feedback-ID: i03f14258:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 23 Apr 2026 15:20:17 -0400 (EDT)
+Date: Thu, 23 Apr 2026 13:20:16 -0600
+From: Alex Williamson <alex@shazbot.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Zhiping Zhang <zhipingz@meta.com>, Stanislav Fomichev <sdf@meta.com>,
+ Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>, Bjorn
+ Helgaas <helgaas@kernel.org>, linux-rdma@vger.kernel.org,
+ linux-pci@vger.kernel.org, netdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Yochai Cohen <yochai@nvidia.com>, Yishai
+ Hadas <yishaih@nvidia.com>, alex@shazbot.org
+Subject: Re: [PATCH v1 1/2] vfio: add callback to get tph info for dma-buf
+Message-ID: <20260423132016.4a25e074@shazbot.org>
+In-Reply-To: <20260423142828.GQ3611611@ziepe.ca>
+References: <20260420183920.3626389-1-zhipingz@meta.com>
+	<20260420183920.3626389-2-zhipingz@meta.com>
+	<20260422092327.3f629ad6@shazbot.org>
+	<20260422162928.GL3611611@ziepe.ca>
+	<20260422132740.5f809bf7@shazbot.org>
+	<20260423142828.GQ3611611@ziepe.ca>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <edccaafd-73f3-421d-a48e-a6cb704d39e6@lunn.ch>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm1,messagingengine.com:s=fm2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19515-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-19516-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
-X-Rspamd-Queue-Id: 894054568F5
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,shazbot.org:dkim,shazbot.org:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3753F456A99
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Apr 23, 2026 at 06:37:04PM +0200, Andrew Lunn wrote:
-> > The root cause is in mana_gd_init_vf_regs(), which computes:
-> > 
-> >   gc->shm_base = gc->bar0_va + mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
-> > 
-> > without validating the offset read from hardware. If the register
-> > returns a garbage value that is neither within bar 0 bounds nor aligned
-> > to the 4-byte granularity, thus causing the alignment fault.
+On Thu, 23 Apr 2026 11:28:28 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Wed, Apr 22, 2026 at 01:27:40PM -0600, Alex Williamson wrote:
 > 
-> Is GDMA_REG_SHM_OFFSET special?
-Hi Andrew,
-GDMA_REG_SHM_OFFSET is not special. It was simply the only register
-read that had no validation at all. The other two registers
-(GDMA_REG_DB_PAGE_SIZE, GDMA_REG_DB_PAGE_OFFSET) already have checks
-in place. Also shm_off becomes gc->shm_base (bar0_va + shm_off) and
-gc->shm_base is dereferenced via readl() (ldr w1, [x20]) in
-mana_smc_poll_register(), which is why it requires 4-byte alignment on arm64
-device memory. Or else a misaligned shm_off propagates directly into a
-misaligned shm_base, causing an alignment fault (FSC=0x21).
->
-> What if GDMA_REG_DB_PAGE_SIZE or GDMA_REG_DB_PAGE_OFFSET have returned
-> garbage? Are you going to die a horrible death as well?
-Those two already have validation in the current code:
-
-- GDMA_REG_DB_PAGE_SIZE is checked for < SZ_4K (returns -EPROTO)
-- GDMA_REG_DB_PAGE_OFFSET is checked for >= bar0_size (returns -EPROTO)
-
-The same checks exist for the PF equivalents (GDMA_PF_REG_DB_PAGE_SIZE
-and GDMA_PF_REG_DB_PAGE_OFF) as well.
+> > So why does vfio need to be involved in any of the sequence proposed
+> > here?  It seems like it would be a much cleaner design, avoiding
+> > overloading the existing vfio feature and questionable array semantics,
+> > if there were a set-tph ioctl on the resulting dma-buf instead of
+> > making some vfio specific interface bundling creation with tph
+> > hints.  
 > 
-> Isn't there a way you can poll the firmware to ask it if it is ready?
-Unfortunately no, as there is no separate readiness register to
-poll.
-
-The existing recovery flow already waits MANA_SERVICE_PERIOD (10
-seconds) after suspend before attempting resume. If the registers are
-still invalid after that, the -EPROTO triggers a PCI remove/rescan,
-which re-probes the device.
+> Realistically only VFIO dmabufs will have this property that user
+> space can set any TPH.
 > 
-> And what about the PF case. Can GDMA_PF_REG_SHM_OFF also be garbage?
-Yes. This patch also adds bounds and alignment validation for the PF path:
-both GDMA_SRIOV_REG_CFG_BASE_OFF and the SHM offset read via
-(sriov_base_off + GDMA_PF_REG_SHM_OFF) are validated before use.
+> Other in-kernel drivers should accept some kind of hint from userspace
+> when creating their dmabuf that makes sense for their device, not a
+> raw TPH value. Like a GPU might accept a hint that specifies which
+> dielet or something like that.
 > 
->       Andrew
+> So I don't see a generality here from that perspective. The generality
+> is that exporting drivers that can use TPH now have the option to tell
+> the importing driver to send them.
 
-Regards
-Dipayaan Roy
+Ok, if dma_buf_ops.get_tph serves the common case of the driver
+presenting TPH values and vfio's case of the driver being only a
+conduit of user specified TPH values is unique, let's work on the vfio
+uAPI.
+
+Why do we need to bundle dma-buf creation and TPH setting into a single
+ioctl?  That's what the proposal here does and it results in a really
+ugly extension with an off-by-one baked into it.
+
+My suggestion would be that we leave VFIO_DEVICE_FEATURE_DMA_BUF
+unchanged and add a VFIO_DEVICE_FEATURE_DMA_BUF_TPH ioctl which takes
+the fd from VFIO_DEVICE_FEATURE_DMA_BUF, along with a steering tag and
+processing hint.  It would fdget() the dmabuf fd, validate it's a
+dmabuf via f_ops, validate it's a vfio exported dmabuf via dmabuf->ops,
+find the matching vfio_pci_dma_buf via priv under memory_lock, and
+stuff the provided TPH values into the object.  It would be left to the
+user to sequence setting the TPH values on the dmabuf before the dmabuf
+is consumed by the importer.
+
+Is that a more reasonable uAPI?  Thanks,
+
+Alex
 
