@@ -1,131 +1,212 @@
-Return-Path: <linux-rdma+bounces-19485-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19486-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kISuMsSz6WkDiAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19485-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 07:53:08 +0200
+	id 2Mf/Cv+46WlJigIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19486-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 08:15:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFDF44D54C
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 07:53:07 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0CA44D749
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 08:15:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 31CDB30312D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 05:53:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 32FFB3014507
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 06:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605C33CD8B2;
-	Thu, 23 Apr 2026 05:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oqW5LJG9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E32738F929;
+	Thu, 23 Apr 2026 06:14:26 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B322868A9;
-	Thu, 23 Apr 2026 05:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198852E62A4
+	for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2026 06:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776923578; cv=none; b=GHw09UVK1a22UzD505X24hbJzzz4Pw9CnTq1FlhPwwCLiD1ikzgFR69kIQo6VnA0tXpHF9CspV+O0hZZXVZdxyKpyhVxEfLUNnsFniQXfkuT16vY2uxzx1bf6p3ayruZEtCCG1dXPORIkMMFityZoQbEze5HBr2XNoE6GTsMXCs=
+	t=1776924865; cv=none; b=PuvStzPFoB7UL5HJLGpz5BBA3WnEpXYRXgMYTEc+VDYqPfdz/pBj6EdNkqNeMxHOJjWJE97UOuEuzzmaMZt8z6fcRYLD07bAWi01XFJtRavwhStikkqP431nS3P+l7foyf9wjSGdjD1AbvI4wk7/pAHDBrgG5n5QvL/USizY5bY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776923578; c=relaxed/simple;
-	bh=IzCwPU5c6Gq1BGhh1bSpdiyTomucNDB4qIjOeZl0cpQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nJ4u6wPibtEhfoWDBWaiZjbnsoECYQ617yYyzpO/AoY/j/S0Ky6MYkTNyDWkY8Zv+i/4FD3j3+2jiBnB3uG4i9tDWSrfhX4ceOPbj2KYCWDSrmSjIhggDdxDlPYdNqeVhy1F5AJRJXeTiPpOG1LV7JAUj196cOwW5ttvLhw0SUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oqW5LJG9; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=9rvPFEC2MVsXs7hPa8zHFKo530p+I6oXYlmvjIl2f6c=; b=oqW5LJG9fBwRuI/xBRFobENbPC
-	E2uvZY4hTPcJzshqHMNSCNbAq1dXR74jh5AhK6rjwJQopAwWdBcjljK/TRLi4yKxlGuQUND23+U8U
-	w5Zkbj04KaIgmIEimRnmZGsrkmc9AMWznDHn4iFp/gJ+S7Wu9MyD79MuzxqNJa8IhFk2I4Y9/iTJ5
-	AUSWR3mcrOicr1F20MyexfpWI0aRj2+sdb+t1QJtkJxTvNn7Uub/5MGetU1EoNeTpgEUYEx53Lf4R
-	5ndHsoHJi23cbvWDVNz5n8B0GgeU76CG/iM63b2QSXHz+1hzOM3mbKOjt0jsx3G9XerWvX2ydjtku
-	rEQfaDWw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFmze-0000000B5Fr-2IF8;
-	Thu, 23 Apr 2026 05:52:54 +0000
-Date: Wed, 22 Apr 2026 22:52:54 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-cifs@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	samba-technical@lists.samba.org, Tom Talpey <tom@talpey.com>,
-	Steve French <smfrench@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Alex Markuze <amarkuze@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>, ceph-devel@vger.kernel.org,
-	Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH] smb: smbdirect: move fs/smb/common/smbdirect/ to
- fs/smb/smbdirect/
-Message-ID: <aemztk8jTqgfKu4y@infradead.org>
-References: <20260419192018.3046449-1-metze@samba.org>
- <aehrPuY60VMcYGU8@infradead.org>
- <9cb0901c-18c5-4858-941c-3b37ee112af9@samba.org>
+	s=arc-20240116; t=1776924865; c=relaxed/simple;
+	bh=UFLaNQT0I7DuHtgDya8ymZtjuyw37TwGfYNzrbymVUo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EiiXcwHLvwIuW1oCODsJ2cGf3W+1AqFYxLyr58NkM2qGGiXYjH5rCWJJow4z1m3KcW6Ma6UEjYBOjLGtDIRCsdIApWDmby07gJ5BugJTm6HONK6KArpT2X80XEypTaO3UsAeITsAya3fT7MUIFBLPf0XMcshJAjoZvpizkGcKXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: a1b104dc3edb11f1aa26b74ffac11d73-20260423
+X-CTIC-Tags:
+	HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS
+	GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:8c437727-03bd-41ab-97ae-9824bcf1cf82,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:5
+X-CID-INFO: VERSION:1.3.12,REQID:8c437727-03bd-41ab-97ae-9824bcf1cf82,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:5
+X-CID-META: VersionHash:e7bac3a,CLOUDID:a80c503ebd22b53e0d979b714de545ca,BulkI
+	D:260423141408UHKFYTPX,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
+	898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:
+	nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:1,BRE:0,AR
+	C:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: a1b104dc3edb11f1aa26b74ffac11d73-20260423
+X-User: cuitao@kylinos.cn
+Received: from ctao-book.. [(223.70.160.239)] by mailgw.kylinos.cn
+	(envelope-from <cuitao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 388451070; Thu, 23 Apr 2026 14:14:05 +0800
+From: Tao Cui <cuitao@kylinos.cn>
+To: jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Tao Cui <cuitao@kylinos.cn>
+Subject: [PATCH 1/2] RDMA/nldev: add resource summary max values for usage rate display
+Date: Thu, 23 Apr 2026 14:13:51 +0800
+Message-ID: <20260423061352.359749-1-cuitao@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9cb0901c-18c5-4858-941c-3b37ee112af9@samba.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19485-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[kylinos.cn];
+	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,vger.kernel.org,lists.samba.org,talpey.com,gmail.com,linux-foundation.org,kernel.org,redhat.com,dubeyko.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-19486-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,linux-rdma@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_THREE(0.00)[4];
 	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:mid]
-X-Rspamd-Queue-Id: BEFDF44D54C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8E0CA44D749
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 22, 2026 at 10:16:41AM +0200, Stefan Metzmacher wrote:
-> > Why is this not in net/smbdirect/ or driver/infiniband/ulp/smdirect?
-> 
-> Yes, I also thought about net/smbdirect.
-> 
-> As IPPROTO_SMBDIRECT or PF_SMBDIRECT will be the next step,
-> see the open discussion here:
-> https://lore.kernel.org/linux-cifs/cover.1775571957.git.metze@samba.org/
-> (I'll follow with that discussion soon)
+Add RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX netlink attribute to expose
+device resource limits (max_qp, max_cq, max_mr, max_pd, max_srq) in
+the resource summary alongside the existing current count. This allows
+userspace tools like iproute2's rdma to display resource usage rates.
 
-Seems like it is the right fit then.
+The new attribute is optional and backward compatible - old userspace
+tools will simply ignore it.
 
-> I was just unsure about the consequences, e.g. would
-> the maintainer/pull request flow have to change in that case?
-> Or would Steve be able to take the changes via his trees?
-> Any I also didn't want to offend anybody, so I just took
-> what Linus proposed.
+Signed-off-by: Tao Cui <cuitao@kylinos.cn>
+---
+ drivers/infiniband/core/nldev.c  | 29 ++++++++++++++++++++++++++---
+ include/uapi/rdma/rdma_netlink.h |  5 +++++
+ 2 files changed, 31 insertions(+), 3 deletions(-)
 
-You might want to ask the sunrpc or ceph maintainers as they have a
-similar split.
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 96c745d5bac4..879aaa7960fe 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -187,6 +187,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD] = { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES] = { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_KERNEL_VENDOR_KEY] = { .type = NLA_U64 },
++	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX]	= { .type = NLA_U64 },
+ };
+ 
+ static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
+@@ -412,7 +413,7 @@ static int fill_port_info(struct sk_buff *msg,
+ }
+ 
+ static int fill_res_info_entry(struct sk_buff *msg,
+-			       const char *name, u64 curr)
++			       const char *name, u64 curr, u64 max)
+ {
+ 	struct nlattr *entry_attr;
+ 
+@@ -426,6 +427,9 @@ static int fill_res_info_entry(struct sk_buff *msg,
+ 	if (nla_put_u64_64bit(msg, RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR, curr,
+ 			      RDMA_NLDEV_ATTR_PAD))
+ 		goto err;
++	if (nla_put_u64_64bit(msg, RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX, max,
++			      RDMA_NLDEV_ATTR_PAD))
++		goto err;
+ 
+ 	nla_nest_end(msg, entry_attr);
+ 	return 0;
+@@ -449,7 +453,7 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device,
+ 	};
+ 
+ 	struct nlattr *table_attr;
+-	int ret, i, curr;
++	int ret, i, curr, max = 0;
+ 
+ 	if (fill_nldev_handle(msg, device))
+ 		return -EMSGSIZE;
+@@ -462,7 +466,26 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device,
+ 		if (!names[i])
+ 			continue;
+ 		curr = rdma_restrack_count(device, i, show_details);
+-		ret = fill_res_info_entry(msg, names[i], curr);
++		switch (i) {
++		case RDMA_RESTRACK_QP:
++			max = device->attrs.max_qp;
++			break;
++		case RDMA_RESTRACK_CQ:
++			max = device->attrs.max_cq;
++			break;
++		case RDMA_RESTRACK_MR:
++			max = device->attrs.max_mr;
++			break;
++		case RDMA_RESTRACK_PD:
++			max = device->attrs.max_pd;
++			break;
++		case RDMA_RESTRACK_SRQ:
++			max = device->attrs.max_srq;
++			break;
++		default:
++			max = 0;
++		}
++		ret = fill_res_info_entry(msg, names[i], curr, max);
+ 		if (ret)
+ 			goto err;
+ 	}
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index aac9782ddc09..bf98e0d25007 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -604,6 +604,11 @@ enum rdma_nldev_attr {
+ 	RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES,	/* u32 */
+ 	RDMA_NLDEV_ATTR_FRMR_POOL_KEY_KERNEL_VENDOR_KEY,	/* u64 */
+ 
++	/*
++	 * Resource summary entry maximum value, used to calculate usage rate.
++	 */
++	RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX,		/* u64 */
++
+ 	/*
+ 	 * Always the end
+ 	 */
+-- 
+2.43.0
 
 
