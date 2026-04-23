@@ -1,136 +1,154 @@
-Return-Path: <linux-rdma+bounces-19514-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19515-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sG10O9pg6mmrygIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19514-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 20:11:38 +0200
+	id mBqNGo9v6mmLzQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19515-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 21:14:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FCA455F09
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 20:11:38 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894054568F5
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 21:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4E26F304D1E7
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 18:10:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9346E300288E
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2026 19:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7800D31D371;
-	Thu, 23 Apr 2026 18:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21A4392823;
+	Thu, 23 Apr 2026 19:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q44zK/K/"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="NvqlUclk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AAE387371;
-	Thu, 23 Apr 2026 18:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BBC386557;
+	Thu, 23 Apr 2026 19:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776967851; cv=none; b=jWNvQZLt06nT5xIvVaE+M1PEgYY6B7uQ1+NqrE9lEtJtQWTDXlNmQHtMqt/fcQ6n3ALK51EHev3/TmKIvmMzACADHMzh3nVLx1MVcNCfne95HkEO3f0D4k9n8afp0i8wycHkPbau0OBtTpLrtuAzbCBe1tk4N4/IP53WqVsGeyk=
+	t=1776971659; cv=none; b=BxHh2UplV/yGp/kGYcLyDjF1PRHz3Vfwda8ZlyiHCspRojjk6FKJ/3FHMwdRZK914+IvDNcdz00RzpHSH2Q6qn/Yl7jwEduZjdEWP74C4obb8aa7lJX6BduUZlYWFWPOZIoxjNmp7VKuL6g+TgXD+2yrmYPYHkG4o4TllmOLpD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776967851; c=relaxed/simple;
-	bh=M2m0lylbcjBqMB6H3osZ6It0h+AD0HrakMeuJekAciE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=dWAMWOEmf8MqyIqpYXqSU7Dz9NrPKsd2dXeZ9g7qGq26IKn+IME/CzxWozoQ4EX9XFnMX3qnT7dJv/nVHYjayT88x8Jqd5kGgYZ6XaGdx1j+KNKS7V+bAzh3B7cHL3uCCEFoBGwlbbKr1BmNrfnzELRxx8XaPtOvCnkISt7+Y8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q44zK/K/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D979FC2BCB4;
-	Thu, 23 Apr 2026 18:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776967850;
-	bh=M2m0lylbcjBqMB6H3osZ6It0h+AD0HrakMeuJekAciE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Q44zK/K/0gnv7BlnJPfpQgf25n5tDJdX8/4bxkYBeJvfvSe5Aw0Z/FqKNAAv3jtgI
-	 PBAcEU4PimfMwzrnWce8PlRONHOJMQU9VAtsdyamAFtMvvwnV/YLzsWGT1CAmN0iVf
-	 Sre+Qi7Wtgd4pr/1mi/X1jj1gdr4eQpzMpfR2ySAQaRKQudfo54nNo7Lk/Cfw+uJ6Q
-	 WzJ9jj+na5R0GSAi/oBM+yiWmhteoEMyYBI0ub7fbvwoGL4qM9T2jAixaLZs0fMLYI
-	 MegJebctEd5sDZ6QTULup+GaSpC3K0mX1dgEkje32ALESiXOmRwiDt7nDgP+q7sy71
-	 NVJgzeODOQiFg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CC9638111D6;
-	Thu, 23 Apr 2026 18:10:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1776971659; c=relaxed/simple;
+	bh=0/kYI9nntU+3cuXXL/zPv/qL56aQxM1oszkFiqCXqtM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J6bP6sjqzfVXfvE0yZ5T5ndksi8VBJw8rmLgt75oe5IoHkXgldrdMGTm2lZmrkMDM2hRfXCfmKUFTH5rEHM8XSN3Fgf2uTsKBgfMFXyzHPex6SPNG6sZ8jAWhV73KOdmllgb5Nu8fqhlhC/ED6kjpBDWF8CM1uH6LQsU02hSip4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=NvqlUclk; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 9D63620B7165; Thu, 23 Apr 2026 12:14:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9D63620B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1776971656;
+	bh=RA4mvuAjlH+oxj2ch9HaoJ3O7maNpOWXkD3uf3/Ozvw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NvqlUclkx+2a5lGeuqdlDSCGbqHdyFca1IHF5N5ZPfAMfiV6Je45Y5VPK+RtAsntB
+	 PA0zWyeexlLW45Sd/CURMZUZ1miw80Pa6mSCJ0kIeAik0AQnOjt/8UM8y6QInPyQeO
+	 fRHvuivhzi/uuvj72a6G5X7RpgX733/Cg4HbQNug=
+Date: Thu, 23 Apr 2026 12:14:16 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
+	horms@kernel.org, shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
+	jacob.e.keller@intel.com, dipayanroy@microsoft.com,
+	leitao@debian.org, kees@kernel.org, john.fastabend@gmail.com,
+	hawk@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, sdf@fomichev.me, yury.norov@gmail.com
+Subject: Re: [PATCH net] net: mana: hardening: Validate SHM offset from BAR0
+ register to prevent crash due to alignment fault
+Message-ID: <aepviNMszMBtiB/H@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <aepF3NwyANeklkfD@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <edccaafd-73f3-421d-a48e-a6cb704d39e6@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/1] net/smc: avoid early lgr access in
- smc_clc_wait_msg
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177696781230.700507.12840295464610058143.git-patchwork-notify@kernel.org>
-Date: Thu, 23 Apr 2026 18:10:12 +0000
-References: 
- <08c68a5c817acf198cce63d22517e232e8d60718.1776850759.git.ruijieli51@gmail.com>
-In-Reply-To: 
- <08c68a5c817acf198cce63d22517e232e8d60718.1776850759.git.ruijieli51@gmail.com>
-To: Ren Wei <n05ec@lzu.edu.cn>
-Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, alibuda@linux.alibaba.com, dust.li@linux.alibaba.com,
- sidraya@linux.ibm.com, wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
- tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- ubraun@linux.vnet.ibm.com, yuantan098@gmail.com, yifanwucs@gmail.com,
- tomapufckgml@gmail.com, bird@lzu.edu.cn, ruijieli51@gmail.com
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <edccaafd-73f3-421d-a48e-a6cb704d39e6@lunn.ch>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,linux.alibaba.com,linux.ibm.com,davemloft.net,google.com,kernel.org,redhat.com,linux.vnet.ibm.com,gmail.com,lzu.edu.cn];
-	TAGGED_FROM(0.00)[bounces-19514-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[22];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19515-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 64FCA455F09
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
+X-Rspamd-Queue-Id: 894054568F5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 22 Apr 2026 23:40:18 +0800 you wrote:
-> From: Ruijie Li <ruijieli51@gmail.com>
+On Thu, Apr 23, 2026 at 06:37:04PM +0200, Andrew Lunn wrote:
+> > The root cause is in mana_gd_init_vf_regs(), which computes:
+> > 
+> >   gc->shm_base = gc->bar0_va + mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
+> > 
+> > without validating the offset read from hardware. If the register
+> > returns a garbage value that is neither within bar 0 bounds nor aligned
+> > to the 4-byte granularity, thus causing the alignment fault.
 > 
-> A CLC decline can be received while the handshake is still in an early
-> stage, before the connection has been associated with a link group.
+> Is GDMA_REG_SHM_OFFSET special?
+Hi Andrew,
+GDMA_REG_SHM_OFFSET is not special. It was simply the only register
+read that had no validation at all. The other two registers
+(GDMA_REG_DB_PAGE_SIZE, GDMA_REG_DB_PAGE_OFFSET) already have checks
+in place. Also shm_off becomes gc->shm_base (bar0_va + shm_off) and
+gc->shm_base is dereferenced via readl() (ldr w1, [x20]) in
+mana_smc_poll_register(), which is why it requires 4-byte alignment on arm64
+device memory. Or else a misaligned shm_off propagates directly into a
+misaligned shm_base, causing an alignment fault (FSC=0x21).
+>
+> What if GDMA_REG_DB_PAGE_SIZE or GDMA_REG_DB_PAGE_OFFSET have returned
+> garbage? Are you going to die a horrible death as well?
+Those two already have validation in the current code:
+
+- GDMA_REG_DB_PAGE_SIZE is checked for < SZ_4K (returns -EPROTO)
+- GDMA_REG_DB_PAGE_OFFSET is checked for >= bar0_size (returns -EPROTO)
+
+The same checks exist for the PF equivalents (GDMA_PF_REG_DB_PAGE_SIZE
+and GDMA_PF_REG_DB_PAGE_OFF) as well.
 > 
-> The decline handling in smc_clc_wait_msg() updates link-group level sync
-> state for first-contact declines, but that state only exists after link
-> group setup has completed. Guard the link-group update accordingly and
-> keep the per-socket peer diagnosis handling unchanged.
+> Isn't there a way you can poll the firmware to ask it if it is ready?
+Unfortunately no, as there is no separate readiness register to
+poll.
+
+The existing recovery flow already waits MANA_SERVICE_PERIOD (10
+seconds) after suspend before attempting resume. If the registers are
+still invalid after that, the -EPROTO triggers a PCI remove/rescan,
+which re-probes the device.
 > 
-> [...]
+> And what about the PF case. Can GDMA_PF_REG_SHM_OFF also be garbage?
+Yes. This patch also adds bounds and alignment validation for the PF path:
+both GDMA_SRIOV_REG_CFG_BASE_OFF and the SHM offset read via
+(sriov_base_off + GDMA_PF_REG_SHM_OFF) are validated before use.
+> 
+>       Andrew
 
-Here is the summary with links:
-  - [net,1/1] net/smc: avoid early lgr access in smc_clc_wait_msg
-    https://git.kernel.org/netdev/net/c/5a8db80f721d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Regards
+Dipayaan Roy
 
