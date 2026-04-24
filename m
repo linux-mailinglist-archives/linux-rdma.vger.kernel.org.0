@@ -1,89 +1,89 @@
-Return-Path: <linux-rdma+bounces-19527-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19528-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IJe6Gmp862npNAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19527-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 16:21:30 +0200
+	id WDaHCON/62lLNgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19528-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 16:36:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EA9460216
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 16:21:29 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22197460482
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 16:36:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 293B83031E9E
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 14:19:27 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D33483003822
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 14:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881B83DC4BC;
-	Fri, 24 Apr 2026 14:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8BC3DD52B;
+	Fri, 24 Apr 2026 14:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="igpKv7ta"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="GkVxPYqJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA5B3DBD72
-	for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 14:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CCF3DC4C1
+	for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 14:36:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777040366; cv=none; b=odfwS4Q39IKLxBYZ4aKHS8evFjhIWEtWq+1nZV9vuqpmHLeGJVgefz9yT2QpoDGiMFl+5e/WItaoaqhOmOIMpwMpQyOyRRWZN/chrjKTz7Q0Yc8BbTrqHI0Am0QLwy8MWuxMxkN2tswZmDXaAwAHyQitWwadEGXQPTMkjbmpjZc=
+	t=1777041368; cv=none; b=VRVhkOHlRnoeyPXoJM/1nNTjysK/nOxqQwdNuChIA3YbzJbxHy61wKy+oiK/XvjU//yt+sZ1vQ0nUt89gHZChtMrbCC3uBll8vMz5vm8J4CublgiGwqI9Gg0WmYEG6zNVMJg4qONusngs/ODHok+HlmoMDIFZLZJY1bdhXvVl7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777040366; c=relaxed/simple;
-	bh=sR29cvVWWj1zEvLPCnOluGKLlUo6GPJZv7ipVNXVONw=;
+	s=arc-20240116; t=1777041368; c=relaxed/simple;
+	bh=Re59DPAnmFnNzJbvxM1fdICxhhUUbMUQeMYokWbznfw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gopqhzNz1mtsFMJrBZ38wvtrihPJvVwy7I3L4p0CDsL0mEy/Dv3ULsnzHZOiHyQ9PNpHQMbx2Pre49jiTu1QK9DeO2IFA1jedhPNPftVhEQAfu92GzcCiWuuYcnmhctRyVdaRIcLJ3PzsmIK86rZxLfDNIzc30NwsyPPG6Zpb4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=igpKv7ta; arc=none smtp.client-ip=209.85.217.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=c7BYythAf3/S6hgqGM2aktdUeTsatjvjEZ0Knv4S+gitcQFqpOkBLYk9UVtDBIbrtGjp5Iz5pBe9+mS9cKBSBZdsqYfAirEDejoPg5b8Ofqt7c+k84NO7tZLfXUBcSkc9u6pWX0rwBXPVsqjv2hb6pkeH4/nyyZnbVplEyNzAHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=GkVxPYqJ; arc=none smtp.client-ip=209.85.219.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-6201fc9ac0eso955328137.0
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 07:19:24 -0700 (PDT)
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-8acae26e564so90518676d6.2
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 07:36:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1777040364; x=1777645164; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1777041366; x=1777646166; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zV0Gq4Db+XurRwmLehRl8plU7HsCQBBchm2UxZdn8eA=;
-        b=igpKv7tavJsOoMZy48+l67X+sKqw4fGrLFlfTwBT8xEv50hjj/UwxHNUnf6A7XM62x
-         6SO9kz0XzK1vDDn1Fw1/WKyMSl4z+tC1/eqSsCRIpe2RiqDq2/uHMMKjUOH7fnKEYoV6
-         m4GWv5P5pMeL4gPkHQV4216zlJVaxS4kVcC3kwsVW/FfqTCKIaVt8hiEaaf9iO4v0gdB
-         YeTTXCdYGuPMDVBEYlVxdNnSGim+WPSH2z22x/JCLWF1KqQHsC2FqQnEEao6vrYN1GCO
-         +UtOJC3nva1hzI0OMrjCuvSu0Q9pxqVbXYH4JVx7vv1Ysw6H7gkDMjw7KhsYQ+vfetw1
-         spWA==
+        bh=gqpHsu9O8KQfZPJUE6YxK9zkVCDI7j2Hht6awCscAf8=;
+        b=GkVxPYqJJZrDQrQTwHmS1QvV6RRqUgu7h198QFhcR6eyvXs2rcY3NR0Eng9PvZvEE/
+         DUlJnvJIQhReHJiPzLpSy0ak5OCqNfom/AFOHG6QWcATt0TXAruWbwzqCR9gDQt8FmTr
+         GLruX4eYXsTEvIADxRqd3s109vADjWwKkfhTs0Q57O2l48ZHgGP9jnc2UyT1bm+/n3qT
+         vZo4WGwWee2ZEMvN4GOhnOFmtW/R6rQIR55Hqo4ZKXvq/pRxzNSTOFSk6VkorNxyH/8n
+         wzPHpYTHs2ME6PuAYA0uCYiotrDb2w2tbCwtvICrBqYcuPeNNSp/EIR8J/1xtL+Gg9t0
+         gFgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777040364; x=1777645164;
+        d=1e100.net; s=20251104; t=1777041366; x=1777646166;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zV0Gq4Db+XurRwmLehRl8plU7HsCQBBchm2UxZdn8eA=;
-        b=FgL7IMSWeNJZtFKL3JJ4CdPEmicZzYJPtywk6euAoszkC+FzW7t2yiACCWYjIz/kV6
-         oG4eHQ2FRIP1Hz/WV0eUTsZlnhZudW42j1U2NPU9c5XIVy5YBCsDVYRgXVBsU14aeM50
-         eHahJ2pwNe65crW5lJVNZT7ht01fS+8tEglYU0WV7my4DZcNAKqKAE9GtrEAn69EmzPz
-         ONNBOvRgct/6+itrCA4XcL47tBhEfzmmBZ9qZPePC/DFpKQR1GhBEE3gfKgQW9mBOHL/
-         D1y8wnrEhBTA6HqAomiMFsnvOptPo1QeL/AJr0M0IZXsnxSyjYHYV194tgB9ZWeZNMJ6
-         KuoA==
-X-Forwarded-Encrypted: i=1; AFNElJ+T5Z65xMrqDhrju5gEgSqQbabM/Jz1Ztkbz5CH1RUblK/4EQ133bmIcYDcKxlQei9x43KPUPIzfQ3A@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+1v3MR5enrNR849ky45BKzVQNQyW0BbmFQ1t/66MRqZGi+/Wo
-	yzO9xeaj1rDJWJgNAzwVT5QV1ZZhkANaytLsxfHl8MBto7mOgXITlJ6vfNpZ7SE0BCY=
-X-Gm-Gg: AeBDievx4wqsBvc9O97m74cRJWcriSktAR2LUEJP3Ncci2FInUtHmwm8LXaPl/uzojO
-	Q250CWVHxhGgyhC95LN6jDovXTg3Fve9l960H1JiC1G2seXqEOHJDkObXEVUL7OFIt/lWulGcsz
-	2WsE+8HrpLDz+/C4xNTZSA29HhQoLcz1O4bwNkcymSfjpqlUypBMN+zDoC2mYEkPtQ7gqV1b7or
-	ugRIHqPeynDMSdIGRse2EnEhkETUYa/jF8TMEEfyHQNaYLaRD5wXYPbN1LErkGdhgWP1m2mxJEJ
-	kDJj9wyqB8wJ53oS3ZxLnQKpmi72PvAyf6hZMVaDmvd1UfrBYP60YdMH8SHZNd0hPaukXO9DkKv
-	r3/uZHMPC1YEzO21OYbJgjTxy6q3NJCSEje+ufSpJ1TEa84EhrY+FvM0YdHpRxY9Fw41eYvuw7U
-	AcbKj0WCD56/lLYDPJ2BhSacdf/nBNHVdc9nlpzTvz9lOCawhUUszOhpfQlUogucpWFijjfFMva
-	KKlbaPA0r8ePkYU
-X-Received: by 2002:a05:6102:6cd:b0:602:6784:3eef with SMTP id ada2fe7eead31-616f90e6f07mr16856701137.28.1777040363554;
-        Fri, 24 Apr 2026 07:19:23 -0700 (PDT)
+        bh=gqpHsu9O8KQfZPJUE6YxK9zkVCDI7j2Hht6awCscAf8=;
+        b=Rks0gSw1/hwiD6M2lgsc7PayWZG4VJEUlLiov2YlEvqzCVH0+WnPkopFIXmDV2lkhv
+         +fT1FmE94kX1ZvTTxQYAuhmcicEV27L3iSQQ6CtUz3PlMqL63Qm3g3UJp8FtpEbCkfZb
+         adAuTnoRAZeQ6ze9AoTqjZASwB1wmtnCGeMxl1fsGjYc8lpCZq+tBR4Hr7BTH+3++qQh
+         x7NfJvPVl5kF4rxIWjfDQXZGBmcLViZloCGmvibZzEYI5pq4aJBblw6ChAs3FFW/tAM8
+         q8oS6oC9i1tSk2ti3no8+I0HRt2hRT9jyjKeldomglOYX2Q7G0THfCaqQtMfiXH539S+
+         /i9A==
+X-Forwarded-Encrypted: i=1; AFNElJ/iU00tA1QiL8/HyF3GhfesNTJQuIHhvfWVw+BRj/jT9moCYZ8WVigDIaxRd/+EU/Mu87WY+arzi+6q@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7mFjKDJMiv67pnK2BUtJjWAIeu6D5K3ryMPijbBSx3bjdSZuH
+	QcqV4rRzzTraYWISXp0JQApnlZJ+BgwV3wuEr4ESjzabpVXTAHxLGiGz1ty9QWcA3eI=
+X-Gm-Gg: AeBDievH+4brhmheaqXoyrGjQNeMQN5UYejLNpiRTaxk83DQibjNWUyBc6tjKEDYHdy
+	velJHDo6uzQbe30Skr7xhKWvkgkHbnytjYi04ll97sWgxTqZpqhCbiqtG+F/Zo8tsKubfEaNq0G
+	I0d7Ou9LPBI9WU8y1yAsFfnMv56PeNrJqQfIGaSI5l8K2DSlPBBL8E8/JuR3oEjGdN2Z01Ua3PD
+	YWDdcVzPGMQxAtsRX/Vvf3v8ldfDTYEfIIDNARyD0WbSuV20VH8UJgoy+Jil1C3Xt8NpKwDJGfp
+	Zj5KP2MnOdDclqeaD2OZTNtt7uEFeJvMYHqUoqoLXXj7OjR9ldPEQZt1c7Ey+zGZql6rfMOUsad
+	tlD5kXsYcSwTjZ/lgu/+mpHOtH0oX9iwH1xAp1p3JZHOQDEQUzDdXMTbq4Xe3e2vvBI7usVcAmk
+	v7ejNnfuksJJwOPuD32bbOre2wCP6n2r2tVgudXTMmw4dm/He0yBxfKdN7g/JBb3PQcabQnyajP
+	ge7D3nTfybX0sCoOAkwhwgOqjY=
+X-Received: by 2002:a05:6214:5d82:b0:89f:9bc2:20d1 with SMTP id 6a1803df08f44-8b0280c8cf0mr475388426d6.7.1777041365807;
+        Fri, 24 Apr 2026 07:36:05 -0700 (PDT)
 Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8b02ac81a9dsm186723106d6.21.2026.04.24.07.19.22
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8b031f65a27sm180664046d6.16.2026.04.24.07.36.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2026 07:19:22 -0700 (PDT)
+        Fri, 24 Apr 2026 07:36:04 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1wGHNK-00000002j9p-04Ph;
-	Fri, 24 Apr 2026 11:19:22 -0300
-Date: Fri, 24 Apr 2026 11:19:21 -0300
+	id 1wGHdT-00000002nbb-2MlG;
+	Fri, 24 Apr 2026 11:36:03 -0300
+Date: Fri, 24 Apr 2026 11:36:03 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Paul Moore <paul@paul-moore.com>,
+To: Paul Moore <paul@paul-moore.com>
+Cc: Leon Romanovsky <leon@kernel.org>,
 	Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Matt Bobrowski <mattbobrowski@google.com>,
@@ -105,7 +105,7 @@ Cc: Paul Moore <paul@paul-moore.com>,
 	Maher Sanalla <msanalla@nvidia.com>,
 	linux-security-module@vger.kernel.org
 Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-Message-ID: <20260424141921.GA3611611@ziepe.ca>
+Message-ID: <20260424143603.GB3611611@ziepe.ca>
 References: <20260412090006.GA21470@unreal>
  <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
  <20260413164220.GP3694781@ziepe.ca>
@@ -115,7 +115,7 @@ References: <20260412090006.GA21470@unreal>
  <20260415134705.GG2577880@ziepe.ca>
  <CAHC9VhSECYihup=tURo_Qk__xUdYYPkHgnz5CWA0BrRAkvwbog@mail.gmail.com>
  <20260417191749.GK2577880@ziepe.ca>
- <20260423140950.GE172828@unreal>
+ <CAHC9VhQbpS9XpO6dWu7gOiX=ppjtAxnNBOFe6s5wjEZNpMRjgw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -124,28 +124,28 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260423140950.GE172828@unreal>
-X-Rspamd-Queue-Id: C2EA9460216
+In-Reply-To: <CAHC9VhQbpS9XpO6dWu7gOiX=ppjtAxnNBOFe6s5wjEZNpMRjgw@mail.gmail.com>
+X-Rspamd-Queue-Id: 22197460482
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19527-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19528-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[paul-moore.com,huaweicloud.com,kernel.org,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[ziepe.ca:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
@@ -156,23 +156,102 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:dkim,ziepe.ca:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-On Thu, Apr 23, 2026 at 05:09:50PM +0300, Leon Romanovsky wrote:
-
-> > > Leon mentioned that different firmware revisions would have different
-> > > parameters for a given opcode, and that one would need to inspect
-> > > those parameters to properly filter the command.  Is that not true, or
-> > > am I misreading or misunderstanding Leon's comments?
-> > 
-> > They are ABI stable, so there will be rules about future changes that
-> > old software can follow to ignore or reject future things it doesn't
-> > understand.
+On Mon, Apr 20, 2026 at 08:58:09PM -0400, Paul Moore wrote:
+> > > > > The access control point itself represents the requested
+> > > > > operation.  This is possible because the number of networking
+> > > > > operations on a given packet is well defined and fairly limited; at a
+> > > > > high level the packet is either being sent from the node, received by
+> > > > > the node, or is passing through the node.
+> > > >
+> > > > I think we have the same split, fwctl send/recive analog is also very
+> > > > limited.
+> > >
+> > > Sure, but I thought the goal was to enforce access controls on the
+> > > firmware requests based on the opcodes/parameters contained within the
+> > > firmware request blob/mailbox?
+> >
+> > Yes, that's the goal. It is the same as iptables being able to
+> > identify that a send system call has a packet that is http or dns.
 > 
-> It is wishful thinking and applicable only to mlx5 devices. No one
-> promises that other devices follow same ABI rules.
+> I think we still have a disconnect here.  A packet being a DNS or HTTP
+> packet is different from an opcode.  The opcode in the iptables isn't
+> "DNS" or "HTTP" it is "INPUT", "OUTPUT", or "FORWARD".
 
-Well, I will definately kick them out of fwctl if they don't.
+I understand that
+
+> Most LSMs will want to know who is initiating the firmware request
+> (the subject), the requested operation/opcode (the action/verb), and
+> the target of the request (the object, which in this case is likely
+> the kernel or the device).
+
+How is
+  system_u:object_r:httpd_packet_t:s0
+
+A kernel or device? It is a label for packet contents. I also want a
+label for packet contents.
+
+> As I understand things, the action/verb is going to be the opcode
+> within the firmware request.  If you believe I'm wrong about this
+> please help me understand why.
+
+You could make that choice, I'm arguing we should not, and it should
+be in the object side.
+
+> > - op_X_t is the result of the classifier inspecting the RPC
+> >   packet. Admin tells the classifier to return op_X_t similar to
+> >   how --selctx does for iptables.
+> 
+> I've tried to explain how this doesn't match with secmark, but I'm
+> evidently doing a poor job.  
+
+Yeah, I don't get it at all, sorry. I fell you are making some very
+nuanced distinction with HTTP being an object but the HTTP-equivilant
+in fwctl is not an object, I can't follow it at all.
+
+By that logic:
+
+   iptables -p 80 --string "GET"
+
+Is an action, and it should get a unique action in the tuple.
+
+> If you want to continue with the secmark comparisons it might be
+> helpful to spend some time configuring secmark on a SELinux system,
+> and writing policy for it, to see how it works.
+
+I think I have a pretty good idea, you haven't said anything that
+contradicts what I expect..
+
+> certain action on an object.  My concern with your example is that the
+> object isn't what is actually being acted upon, it's the requested
+> action.
+
+Object is a label for the packet contents.
+
+> The fwctl ioctl/API allows a user to act on a device, with the
+> actual action being specified by the fwctl payload.  From what I can
+> see, the classifier's output is the action, not the object.
+
+You can take that view, it is certainly one valid way to look at it.
+
+But it is completely impractical.
+
+I am arguing for the secmark like view where the content of the packet
+decides the object label.
+
+> > The same way secmark cannot pre-identify all the XXX_packet_t's.
+> 
+> Once again, I think there is a disconnect or misunderstanding, on a
+> SELinux system using secmark all of the packet types, e.g.
+> "XXX_packet_t's", *are* pre-defined in the SELinux policy.
+
+"Pre-defined" in a text files in user space controlled by the admin.
+
+Admin can "pre-define" their fwctl ones too, what is the issue?
+
+AFAICT the only debate here is you want to make fwctl's packet content
+an action while allowing iptable's packet content to be an object.
 
 Jason
 
