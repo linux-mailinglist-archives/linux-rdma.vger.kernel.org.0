@@ -1,223 +1,293 @@
-Return-Path: <linux-rdma+bounces-19532-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19533-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AEbtHA/N62kdRgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19532-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 22:05:35 +0200
+	id YI0ENsjZ62nfSAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19533-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 22:59:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E221A4631B5
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 22:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C477463600
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 22:59:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 744C5301ABB9
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 20:05:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2D1E230269C1
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 20:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D45336921E;
-	Fri, 24 Apr 2026 20:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F0B37AA8C;
+	Fri, 24 Apr 2026 20:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20251104.gappssmtp.com header.i=@davidwei-uk.20251104.gappssmtp.com header.b="EpgKNC3N"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="AFYxgzKY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCAE136CDE2
-	for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 20:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777061131; cv=none; b=HcJjDFzKiLCJjilHtJn/4xqdLlEs7AHTYTodMiodXiKK2Jp0SgEb6JoBkHuBiq6YHu8cpUMI4UWggsrIg42s2jbXuG9ZNiawOY1JSuJGry8BQ6Plx3+LFQTPI4y4m8Ztg+wrKIxlukrbZqqnLyiPhWj+02G9AriXJtG07etcxxk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777061131; c=relaxed/simple;
-	bh=/f45TGhiRpH2RbxOCsOiCwxyvAjF88RmLq2aBHY2Fs0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OgUFgstE8/VhT9gaMH+WjPhY6N8GdDHcP4D7eW3N32XBpR4T0vEg0VUWRlCH4RDsFInQZpsbTfxyUtiyQ2hyEqICP95yMIc7eAguLMMBqPu3RIk8nK84k0xoogZJF0lBin9cJpyipamhIH+ytgD6ODVeZIJlUhWk3OpBvzWXpuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20251104.gappssmtp.com header.i=@davidwei-uk.20251104.gappssmtp.com header.b=EpgKNC3N; arc=none smtp.client-ip=74.125.82.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-2ba895adfeaso9103792eec.0
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 13:05:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A593FB7DC
+	for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 20:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.170
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777064385; cv=pass; b=hvix7lpnBONfDFpr2InZDxvZ0ngsrgiHyn5JWt17oyDVKU96+4K9YqBQFOz/PiSdDH+B5/2V2aHzsexnlwtLfZCHKXIVL/DNq8XtKVCDAO0uDwBcVR4EtQlgikacgGHtRbUrp+/AbNDqhp1n1KNOQRCZhpafNIolzey4BBvwcVg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777064385; c=relaxed/simple;
+	bh=UeH21MWoLZK9qwhPVVQmSENxjvt2h6USDonb8uOfEZ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hIzhTcJ5kYkEr7lm4Ckvjly2iPcMedjbk3P4ycCsJUBhg3gTBb3rVYFULp1fefOkkS6+p2NjXzNJ/xDMS8BbbwO4mFAEKBNDW4+Y2PY/zRdwTJnivDfgVdETy/0HTpOZ9IOKrKEvoGx1oEJw++aPnLlxs0iU7WbIXnraxWFTdbo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=AFYxgzKY; arc=pass smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2a8fba3f769so37780405ad.2
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 13:59:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1777064384; cv=none;
+        d=google.com; s=arc-20240605;
+        b=VwcGF1yiHCqL3pSLQm5rnmcCAhoVqDX+QrIMAqwS3j7l2CD4EvwoiV1iLGZIs5BjJE
+         XseW2nvLQ6DdkK8bZcPPE55r0A2B6+6xujqrKw2YzysjjVLfmM+2kdGNzGtJkXElldsJ
+         DxCleLUBae3FUgo6gcEMbIYQJMP6YK0AqqKumQRA0lYFFus9TraU7zAy9teqCEaITVxG
+         p/1k23/iib5E0Vqif5JqDhTvMSekXz0hwCkl1SljDhGV0K+oEIRn1zDqKfjr9nki+EOv
+         jb9ubklg5Flq+VP6TN6PuTXW3cCk+QLoPS1v3jchq4E3E5fAGUoxYf/7rwTD11644hfZ
+         JN5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=cx20PlWvPq7t/jSP14LCSKX3HGCyhuna9yTPTpknTk0=;
+        fh=nj1h/rwdOvqdLxEerGWcRpavvEEeJO2g7GrHl6GZITQ=;
+        b=WmaCtP3YnjUpDHK3vG5CMS+5X+NfOuSVGuGY+yt7OIrGmPtnnNRxNz8r2TlbUzndrp
+         Yq3k+cbTavwK9m2sjiaDFM/QfOqB88IuzuSOtvmZyMzwh+3GbnjAk9tI+ug24WZVRvfi
+         g82uOxU9BmpyYkG5AsKv5Wkq7EkZ7+sHxtOFkJga39/KaC0IYyGdRflSA4gHj5B05jvX
+         iSz6J8IURy6dbLMgzMOLzX0tVc5Bpeu+tsMEUMFjEXLlOAEvvGrPp184rI3K3u7q6gW1
+         KmXmRxixZp9mJQYD32mIfTuBpgoQ5qgO2tbdRixQiLwwfRTpOglHUlSAafD/tQDFhtpz
+         1lag==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20251104.gappssmtp.com; s=20251104; t=1777061129; x=1777665929; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bmQ/TEcLmXYNdfvNlx7+MJGDvd0ss7R7PnbOgKIaRis=;
-        b=EpgKNC3Nw3MaNXMr385VZ5hoDkdqcvtN606XDHEgLRV79Zxevmd5KyME9zj96B4IvI
-         TnIh17o546uTxhsjaGStXvKS9VphXERvh/VcIvTu9EHlFVAEP8xMjDG2FE+2w66+mc0Z
-         oNeegKoIMJjX5pOu3eFs3mD60OhAIQZjyCruoDa3Mvkb06TxML4WphJk+la/LMszVACa
-         87FT4Ug+H8aX7ooA11vni+8C9N4wqaUojarY1cGa9c8zCLJY71HZnPIv5n5LKUPQfyS5
-         UH8rgnosmt1cg7OcDJISFvGI+QBlKU0YujCBdxtVxMnoWYgQntsnxBRF8XRM937BgP8h
-         Z7nw==
+        d=paul-moore.com; s=google; t=1777064384; x=1777669184; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cx20PlWvPq7t/jSP14LCSKX3HGCyhuna9yTPTpknTk0=;
+        b=AFYxgzKYRbUDqVkO6uhmxHDIhrpxxUfLe9M8Nc9HTLwwXEU8iJLJ47I10OAByCP2pp
+         uUMkGmNNpDr6FjxxFMIRfQrLgrK12q1r7gw1bPCg3dM0BgDPbm+Ct3B+ifv1CSd5fcgz
+         vXaE6nCxV81WZ0UE/05xEUWmEcatmb+MA0xfj1kIUNNalWC45UW3Oy6bmqpQa7A8C2GH
+         EJx2Rxtc86GS5d2V5u1aL8f6S2lQIe5dNBg33IWreA02sX7/2dqZFzKf/YekFFhEDvBs
+         iTyoEj+N2pHryD/mVdnL+d8xAbs+ACpsZohmWh6glBzJ40vxQAeD9huI84+0xkQxnIT0
+         I1gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777061129; x=1777665929;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bmQ/TEcLmXYNdfvNlx7+MJGDvd0ss7R7PnbOgKIaRis=;
-        b=r7eC2gzrXbxB5bxhBdu+8+Oh9HFTLDy2nu0XH/p2NIpTlJ9Nispv7LmpayZMvmz4MZ
-         gS+Fbz3F1D1vFejn8jEMH3gbLoCrYXcPvqgltmKxZCCqYxRx/hCpNPULm6cRH6DtyhPu
-         FOGned0/pKqajYSTmXUUYcij5KDFfWnj3hFNEQRDTFC3udPkSOjBcuK2Rs+95Xb1gS1G
-         Sc2hfh99zZMQE0z/eOmxyXwb9cW2NFFGhWdUZE1vCTRNy244rqFj4Oble6YuKOy109vc
-         QmIx/kgtVyc5NYyDVexLbAxjqIL5gCxrlJPr/q06QD/OjuLYM8FURwp1yA7Oa5xroR+V
-         r6rA==
-X-Forwarded-Encrypted: i=1; AFNElJ+B8TFEjaugof0WK+U4sX/i5PoVZitVoHhQyCULD1R3N9pEo0GP2wmemfJQK9azDdFUcL4pnMp8u8nx@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAqvYF5B3zN6Ob+Qp5wetcZK70hTSyUDI229mnJImJ3S8lPOyB
-	obChPCxMeocMFyAlc5FlQVArYN/Y7IhCS6xygsrtkmWXO1NjmS2gPAWU3yqFNJdwWUo=
-X-Gm-Gg: AeBDietzF7/tkwPg+neExVTAqZEykoeCnVkci4flLyq1tz3pPCSArKg3deTmHBv+ceO
-	3LSIZAhGBJ63BVzP6Ns0wXVWC1Z7aSo4egdxx/aI92qg7MHi3JCAwahGPbXvFTS1qptDxxDiNdf
-	RYtmI+RZ4AQ84tv7BL1v1j8ctGLaNHb/xEGBmB/Pad8ADOkCL/Prcsg+qV5BGoXLrjHgPgHsaUu
-	zrFj3imzI2aJvUOOgd21bHM6EgnBioT5nhpj/vpgyc8dRPJ5G1jmbxeK8S4qofbBYPvdzv7hKsK
-	nrcArhtp20kvBapIgzMRsQ+24ENj7VPCesAny1shZ3KeavkvcADb+OFYcKuFdqLuXt5Nqn1wHv7
-	lt/DsU/DOEHa5YeR4BQlITbnvguRCGVFgqSTgtUF3X8TMf3q2yJqx8HeCfyQGctvElbauVT+JNH
-	ZXI6YmD2k6V1N95F4uPrcfHSpiz67LoczJOR3Z56I7wQk+itrN2021sKOc5Pq3T1h5PBGu7ds27
-	6J8yPjoRcqlT/KU9ld7I75g245hoGgIw+Q=
-X-Received: by 2002:a05:7301:4586:b0:2e2:27bb:a4a2 with SMTP id 5a478bee46e88-2e47873a866mr19109354eec.13.1777061128748;
-        Fri, 24 Apr 2026 13:05:28 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:1:c8f:b917:4342:fa09? ([2620:10d:c090:500::1:eae7])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2e539fa6134sm34784052eec.3.2026.04.24.13.05.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2026 13:05:27 -0700 (PDT)
-Message-ID: <685d7bf9-062d-4bd2-8448-f7714bb05302@davidwei.uk>
-Date: Fri, 24 Apr 2026 13:05:24 -0700
+        d=1e100.net; s=20251104; t=1777064384; x=1777669184;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cx20PlWvPq7t/jSP14LCSKX3HGCyhuna9yTPTpknTk0=;
+        b=qGQ11U0ZjywyDj0Sranarn/D0pxm9IIfAHbNu7aWZIiC6AsNLDZP/9sFP7tgVWuG0B
+         xT+Lu2kBmRj+RhWTcRNufHYryTGhX7lqRX7txb6/G4U6Z1X2aG87O+XNNEuFYggn4Jgo
+         Ak6X4Ainqth0x4GEgVdx/4x56UEkiFRRZl7x/O2Eg4ucm5uROqZX70UMuqf6en3fBaRn
+         JpXYdcwH9ZAufKP4OwVPDPNHYfJphxKMfMVh7+mySbtOFZHnStwh2u6SDawSDMv903xi
+         xGIu70uJ/rrkvZQe8bkpDj75V3t/efxLULoVFvbNmmrGIY7zUMm4M70UGiDkxushhqgF
+         dE7Q==
+X-Forwarded-Encrypted: i=1; AFNElJ8wlQPcomtTWCE/KZ8WQ0MhHJ+Y41nol02+fQJJptK7i6sPyPDt0iJW8LfkfP1jvaY0LxCcQ8shV5gJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJucfIJEOeL2CjTm0Zw4cJILZ+AFs4zAXq55SFTV4EUgUzQ/3f
+	1qSrbIxC9qSmSbyYYwY5/qfc2Q81aDEKx8i1Jhl9BTraldWUVUYx62q5w2z/BCU/oniOsNvLVv/
+	lZzI3Nj8ZKko3ATcQbWvgL45LXZ/f65E9lPbyeDjY
+X-Gm-Gg: AeBDiesWk5VbPUMx28TNLycb6KChYZG4ZqJ22tzxgHlnLdc95BMMz1/E3wXynsPNP4A
+	ORzU+hRNSc7ln/lR1zBfOGvBrDkRyseJXUNIEIV5jSdrQVxBbCghyjW+r+7GHBzr8gpprzlURW+
+	6zuCur6uH66b+aQctS6vGoPFr39GiirtKR3KXcKhtpduX+NqYnby4hOVtQJxqbnLC4ASoR8BUSL
+	44PNCJKrUCxT7C3CyrlmDCN1WcDYVmHL3j1clEJv/FSjtxaG8N6agxmvB5bYyWmVVsOnjkPQMbL
+	+6WVI0TaJvaa6M9Keg==
+X-Received: by 2002:a17:903:3d43:b0:2b0:5d60:7f3f with SMTP id
+ d9443c01a7336-2b5f9ee90bdmr253173065ad.16.1777064383845; Fri, 24 Apr 2026
+ 13:59:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
- full-page RX buffers
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
- kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
- dipayanroy@microsoft.com
-References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
- <20260409183509.0b24dea6@kernel.org> <20260412125917.4fa8fc8d@kernel.org>
- <ad5kuCZz+gR1TlSh@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20260416083146.0bb94d2b@kernel.org>
- <aeoVC27mIzoKytqA@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Language: en-US
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <aeoVC27mIzoKytqA@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E221A4631B5
+References: <20260412090006.GA21470@unreal> <CAHC9VhRnYXjg+vE9a8PeykbXk91is12zYLaO7EFdfZPKMxDfPA@mail.gmail.com>
+ <20260413164220.GP3694781@ziepe.ca> <CAHC9VhR1Uke9P==CELKavBcogHoNCtMZFfNWUbgm5HYUfomhtw@mail.gmail.com>
+ <20260413231920.GS3694781@ziepe.ca> <CAHC9VhTLamfe4C81ZNRVT=H32x+KLxSqH3o0eBfrHsWAgAqxCA@mail.gmail.com>
+ <20260415134705.GG2577880@ziepe.ca> <CAHC9VhSECYihup=tURo_Qk__xUdYYPkHgnz5CWA0BrRAkvwbog@mail.gmail.com>
+ <20260417191749.GK2577880@ziepe.ca> <CAHC9VhQbpS9XpO6dWu7gOiX=ppjtAxnNBOFe6s5wjEZNpMRjgw@mail.gmail.com>
+ <20260424143603.GB3611611@ziepe.ca>
+In-Reply-To: <20260424143603.GB3611611@ziepe.ca>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 24 Apr 2026 16:59:30 -0400
+X-Gm-Features: AQROBzBvtUdT2Z9qKk4YO4TpY44cZkRRfodVGSuPlBOevRtYkwWicMOMpHeLYC0
+Message-ID: <CAHC9VhR++21SD+v4Bb16SQmYHgJYZ0ytQ+BecGPNK+fEOe4G7g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Firmware LSM hook
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Itay Avraham <itayavr@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>, 
+	Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 9C477463600
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[davidwei-uk.20251104.gappssmtp.com:s=20251104];
+	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	TAGGED_FROM(0.00)[bounces-19533-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19532-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[davidwei.uk];
-	DKIM_TRACE(0.00)[davidwei-uk.20251104.gappssmtp.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dw@davidwei.uk,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[paul-moore.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[]
 
-On 2026-04-23 05:48, Dipayaan Roy wrote:
-> On Thu, Apr 16, 2026 at 08:31:46AM -0700, Jakub Kicinski wrote:
->> On Tue, 14 Apr 2026 09:00:56 -0700 Dipayaan Roy wrote:
->>> I still see roughly a 5% overhead from the atomic refcount operation
->>> itself, but on that platform there is no throughput drop when using
->>> page fragments versus full-page mode.
->>
->> That seems to contradict your claim that it's a problem with a specific
->> platform.. Since we're in the merge window I asked David Wei to try to
->> experiment with disabling page fragmentation on the ARM64 platforms we
->> have at Meta. If it repros we should use the generic rx-buf-len
->> ringparam because more NICs may want to implement this strategy.
-> 
-> Hi Jakub,
-> 
-> Thanks. I think I was not precise enough in my previous reply.
-> 
-> What I meant is that the atomic refcount cost itself does not appear to
-> be unique to the affected platform. I see a similar ~5% overhead on
-> another ARM64 platformi (different vendor) as well. However, on that platform
-> there is no throughput delta between fragment mode and full-page mode; both reach
-> line rate.
-> 
-> On the affected platform, fragment mode shows an additional ~15%
-> throughput drop versus full-page mode. So the current data suggests that
-> the atomic overhead is common, but the throughput regression is not
-> explained by that overhead alone and likely depends on an additional
-> platform-specific factor.
-> 
-> Separately, the hardware team collected PCIe traces on the affected
-> platform and reported stalls in the fragment-mode case that are not seen
-> in full-page mode. They are still investigating the root cause, but
-> their current hypothesis is that this is related to that platform’s
-> PCIe/root-port microarchitecture rather than to page_pool refcounting
-> alone.
-> 
-> That said, I agree the right direction depends on whether this
-> reproduces on other ARM64 platforms. If David is able to reproduce the
-> same behavior, then using the generic rx-buf-len ringparam sounds like
-> the better direction.
-> 
-> Please let me know what David finds, and I can rework the patch
-> accordingly.
+On Fri, Apr 24, 2026 at 10:36=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wro=
+te:
+> On Mon, Apr 20, 2026 at 08:58:09PM -0400, Paul Moore wrote:
+> > > > > > The access control point itself represents the requested
+> > > > > > operation.  This is possible because the number of networking
+> > > > > > operations on a given packet is well defined and fairly limited=
+; at a
+> > > > > > high level the packet is either being sent from the node, recei=
+ved by
+> > > > > > the node, or is passing through the node.
+> > > > >
+> > > > > I think we have the same split, fwctl send/recive analog is also =
+very
+> > > > > limited.
+> > > >
+> > > > Sure, but I thought the goal was to enforce access controls on the
+> > > > firmware requests based on the opcodes/parameters contained within =
+the
+> > > > firmware request blob/mailbox?
+> > >
+> > > Yes, that's the goal. It is the same as iptables being able to
+> > > identify that a send system call has a packet that is http or dns.
+> >
+> > I think we still have a disconnect here.  A packet being a DNS or HTTP
+> > packet is different from an opcode.  The opcode in the iptables isn't
+> > "DNS" or "HTTP" it is "INPUT", "OUTPUT", or "FORWARD".
+>
+> I understand that
+>
+> > Most LSMs will want to know who is initiating the firmware request
+> > (the subject), the requested operation/opcode (the action/verb), and
+> > the target of the request (the object, which in this case is likely
+> > the kernel or the device).
+>
+> How is
+>   system_u:object_r:httpd_packet_t:s0
+>
+> A kernel or device?
 
-I ran a test on Grace, 4 KB pages, 72 cores, 1 NUMA node.
+It's not.  It's one of two labels on a packet.  I've cautioned you
+about leaning too heavily on the secmark comparison as it falls apart
+in a number of places, this is one of those places.
 
-Broadcom NIC, bnxt driver, 50 Gbps bandwidth. Hacked it up to either
-give me 1 or 2 frags per page. No agg ring, no HDS, no HW GRO.
+> It is a label for packet contents. I also want a label for packet content=
+s.
 
-Use 1 combined queue only for the server. Affinitized its net rx softirq
-to run on core 4.
+According to your explanations, my understanding is that you want a
+fwctl RPC operation.  That is not the same as the secmark label
+assigned by an iptables/nftables rule.
 
-Ran iperf3 server, taskset onto cpu cores 32-47. The iperf3 client is
-running on a host w/ same hw in the same region. Using 32 queues, no
-softirq affinities. The idea is to hammer page->pp_ref_count from
-different cores.
+> > As I understand things, the action/verb is going to be the opcode
+> > within the firmware request.  If you believe I'm wrong about this
+> > please help me understand why.
+>
+> You could make that choice, I'm arguing we should not, and it should
+> be in the object side.
 
-* 1 frag/page  -> 32.3 Gbps
-* 2 frags/page -> 36.0 Gbps
+Okay, you believe I'm wrong, that's fine, but you need to provide a
+(better) explanation for why I'm wrong and your approach is The Right
+Way.  Present your case, but please do it without referencing secmark
+as that comparison is horribly broken at this point in the discussion.
 
-Comparing perf, for 2 frags/page the cost of skb_release_data() hitting
-pp_ref_count goes up, as expected. Is this what you see? When you say
-there's a +5% overhead, what function?
+> > > - op_X_t is the result of the classifier inspecting the RPC
+> > >   packet. Admin tells the classifier to return op_X_t similar to
+> > >   how --selctx does for iptables.
+> >
+> > I've tried to explain how this doesn't match with secmark, but I'm
+> > evidently doing a poor job.
+>
+> Yeah, I don't get it at all, sorry. I fell you are making some very
+> nuanced distinction with HTTP being an object but the HTTP-equivilant
+> in fwctl is not an object, I can't follow it at all.
+>
+> By that logic:
+>
+>    iptables -p 80 --string "GET"
+>
+> Is an action, and it should get a unique action in the tuple.
 
-Overall tput is higher with multiple frags. That's to be expected w/
-page pool.
+Let's both do ourselves a favor and drop the secmark comparisons; I
+think it is only hurting things at this point.  If we stick with the
+secmark analogy I worry we are going to keep repeating the same things
+to each other without making any forward progress.
 
-There are some 200 Gbps NICs but they're mlx5 so I'd have to redo the
-driver hack. Are you going to re-implement this change with rx-buf-len
-instead of a private flag? If so, I won't spend more time running this
-test.
+> > If you want to continue with the secmark comparisons it might be
+> > helpful to spend some time configuring secmark on a SELinux system,
+> > and writing policy for it, to see how it works.
+>
+> I think I have a pretty good idea, you haven't said anything that
+> contradicts what I expect..
 
-> 
-> 
-> Regards
-> Dipayaan Roy
+Frankly, several comments, including in your last reply, indicate you
+don't really grasp secmark, subject/verb/object, SELinux, or some
+combination thereof ... and that's okay, you don't really need to
+understand those details.  Let's move past the failed secmark analogy
+and return to the fwctl hooks, that's the ultimate goal.
+
+> > certain action on an object.  My concern with your example is that the
+> > object isn't what is actually being acted upon, it's the requested
+> > action.
+>
+> Object is a label for the packet contents.
+>
+> > The fwctl ioctl/API allows a user to act on a device, with the
+> > actual action being specified by the fwctl payload.  From what I can
+> > see, the classifier's output is the action, not the object.
+>
+> You can take that view, it is certainly one valid way to look at it.
+>
+> But it is completely impractical.
+
+Elaborate on that, because from what I can tell that is the valid way
+to look at it from a subject/verb/object perspective.
+
+> > > The same way secmark cannot pre-identify all the XXX_packet_t's.
+> >
+> > Once again, I think there is a disconnect or misunderstanding, on a
+> > SELinux system using secmark all of the packet types, e.g.
+> > "XXX_packet_t's", *are* pre-defined in the SELinux policy.
+>
+> "Pre-defined" in a text files in user space controlled by the admin.
+
+That's not correct.  It's kinda like saying the NIC driver sources are
+simply "text files in user space controlled by the admin".  The
+SELinux secmark labels are defined in the SELinux policy sources which
+must be compiled and loaded into the kernel before they are valid on a
+running system.  Policy must be written not only to define the secmark
+labels, but also to define the access control rules which govern how
+those packets are handled by the system.  The iptables/nftables
+command lines simply assign a secmark label to a packet; that's
+important, but only a small part of the total equation.
+
+--=20
+paul-moore.com
 
