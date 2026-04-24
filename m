@@ -1,309 +1,169 @@
-Return-Path: <linux-rdma+bounces-19522-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19523-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yJfYMCff6mkNFAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19522-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 05:10:31 +0200
+	id aITvAH/j6mkbFQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19523-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 05:29:03 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D70C4595BA
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 05:10:29 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7396145972A
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 05:29:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C2830300B859
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 03:10:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 15B97300AC39
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 03:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AB32868B4;
-	Fri, 24 Apr 2026 03:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB2F33A014;
+	Fri, 24 Apr 2026 03:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="in8g97Pa"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="s62oztTN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F27914AD0D
-	for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 03:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8005333710F;
+	Fri, 24 Apr 2026 03:28:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777000227; cv=none; b=mYyt8PhigSrfTSBpMPYv60+mPpMREOW332r6GhBLxK1duqJ9RwVrqx+cdT1PbowLh2sYjPwe4BEwfBl0gMSO8x/kNfBIth1+Fu7S3dgggTIt/bg4cl/WIzvN3K239FBQ5GmaFvQwxZpoINAhnBAKnMRyP0MXyUuxHIyzIMLJImM=
+	t=1777001337; cv=none; b=nEJC+rummXbh4//IUWihWaYNlTRqI4Wn7aUiHXMEOZS/X5D3nqslGKKbOwq4XiLQH3HAK6XkCX7hOJaH89TAJRru17s+mi/28aMlr1kmfngijtm/jmQf/LK25yg7sLKHXywSfGyPOZX+oFV186LAuiNi5TJ5eGpA9iPbguTGVg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777000227; c=relaxed/simple;
-	bh=iYdkwsl9nznfLIp/PffPBhsWkO69rpu9/3olgcnmO6Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iFNbZTeJrD+L6Bw9JNrUubIU7ZcLqNLAHxFVldSXpsLJVMSRXMZUqJoMXLmlwIYZdjTCGI8vlr8HPr1rv29RiaEPi8JrxJhrtx9Bg1yNALXlpCH1cy3lfmt5RlbiOgM6aY5DgHkir4eLrbTT6jRKu/8RPrOZTsuR5ayZ6aNZXiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=in8g97Pa; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <14cf9ac5-1f11-428e-abf7-cf5075d6c9f9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777000223;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=34LuSlBT9uayz0YgDfCAkFGE1rNGA4UR49LoJ6SQbKs=;
-	b=in8g97PaHd2pb+b7q0IWTFObOIDNM0/a21amd0V7nmqruaSYE8H2JQyNWkiPaqWbUuiGXF
-	KbzVQ64isiHwAboCiKaBBTUsB5X/A3+CM4cK2873/l5PTWxLeRlQkbOzejsMmeUzZSSUQg
-	4UIpUKHMeUzNg8L6LkZknYrLMm3uYXo=
-Date: Thu, 23 Apr 2026 20:10:17 -0700
+	s=arc-20240116; t=1777001337; c=relaxed/simple;
+	bh=8KbY4d9Sc1hur3MrKTEc3ePr/WWJlpdT80t8kvm2Slo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTF7i3SXlKSqzYZaX/fCZEZCDG/l6Eqp2hw28X7t3W2TEgVb9Rg6ZfmOZCwEfcchMH8x2E2BB5/mfgJqk5TNA1ctEnZuysvy/Oocb+1x/QUy2nOIt6yNBaOb29mRFM1xaOG0t5TTBXvcQgXz/9c1T77MnCj1Mg1kiQj8/pjWwfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=s62oztTN; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 5EFDF20B7165; Thu, 23 Apr 2026 20:28:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5EFDF20B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1777001335;
+	bh=hozJVYNbCa3wzecJn7QvQ9EMZSOZzc1JqZvHkZlE9Zo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s62oztTNxMqGVuyaG2gEvGu12rVs6B0C5CMdSYnyxlsFB9uJ03pN+q5zWKBEuMwx5
+	 L6UvbtEEU07uN8K57dKz84WtwOg7rV1dbI1AVqLbiwG1FU5chgJDIbxLQMbNXw72HA
+	 TpEcyo9QNs20D6sNbK8Gaa/FamMqDPv9Yz/F83EU=
+Date: Thu, 23 Apr 2026 20:28:55 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
+	horms@kernel.org, shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
+	jacob.e.keller@intel.com, dipayanroy@microsoft.com,
+	leitao@debian.org, kees@kernel.org, john.fastabend@gmail.com,
+	hawk@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, sdf@fomichev.me, yury.norov@gmail.com
+Subject: Re: [PATCH net] net: mana: hardening: Validate SHM offset from BAR0
+ register to prevent crash due to alignment fault
+Message-ID: <aerjdzgetiIeiBto@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <aepF3NwyANeklkfD@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <edccaafd-73f3-421d-a48e-a6cb704d39e6@lunn.ch>
+ <aepviNMszMBtiB/H@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <7c4dbe89-9b51-45d6-ae89-39d4183e66b1@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Fix null-ptr-deref in kernel_sock_shutdown().
-To: Kuniyuki Iwashima <kuniyu@google.com>, Zhu Yanjun <zyjzyj2000@gmail.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, linux-rdma@vger.kernel.org,
- syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-References: <20260424013759.728288-1-kuniyu@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260424013759.728288-1-kuniyu@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 3D70C4595BA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c4dbe89-9b51-45d6-ae89-39d4183e66b1@lunn.ch>
+X-Rspamd-Queue-Id: 7396145972A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19522-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_TO(0.00)[google.com,gmail.com,ziepe.ca,kernel.org,linux.dev];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,syzkaller.appspotmail.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19523-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid,appspotmail.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
+On Thu, Apr 23, 2026 at 09:44:04PM +0200, Andrew Lunn wrote:
+> On Thu, Apr 23, 2026 at 12:14:16PM -0700, Dipayaan Roy wrote:
+> > On Thu, Apr 23, 2026 at 06:37:04PM +0200, Andrew Lunn wrote:
+> > > > The root cause is in mana_gd_init_vf_regs(), which computes:
+> > > > 
+> > > >   gc->shm_base = gc->bar0_va + mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
+> > > > 
+> > > > without validating the offset read from hardware. If the register
+> > > > returns a garbage value that is neither within bar 0 bounds nor aligned
+> > > > to the 4-byte granularity, thus causing the alignment fault.
+> > > 
+> > > Is GDMA_REG_SHM_OFFSET special?
+> > Hi Andrew,
+> > GDMA_REG_SHM_OFFSET is not special. It was simply the only register
+> > read that had no validation at all. The other two registers
+> > (GDMA_REG_DB_PAGE_SIZE, GDMA_REG_DB_PAGE_OFFSET) already have checks
+> > in place.
+> 
+> I must be missing something:
+> 
+> grep page_size *
+> 
+> gdma_main.c:	gc->db_page_size = mana_gd_r32(gc, GDMA_PF_REG_DB_PAGE_SIZE) & 0xFFFF;
+> gdma_main.c:	gc->db_page_size = mana_gd_r32(gc, GDMA_REG_DB_PAGE_SIZE) & 0xFFFF;
+> gdma_main.c:	void __iomem *addr = gc->db_page_base + gc->db_page_size * db_index;
+> 
 
-在 2026/4/23 18:37, Kuniyuki Iwashima 写道:
-> syzbot reported null-ptr-deref in kernel_sock_shutdown(). [0]
->
-> The problem is rxe_net_del() can be called for the same
-> device concurrently.
->
-> Multiple threads might call udp_tunnel_sock_release()
-> for the same socket.
->
-> Let's add a per-netns mutex to synchronise rxe_net_del().
->
-> [0]:
-> Oops: general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] SMP KASAN NOPTI
-> KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
-> CPU: 3 UID: 0 PID: 12652 Comm: syz.7.1709 Tainted: G             L      syzkaller #0 PREEMPT(full)
-> Tainted: [L]=SOFTLOCKUP
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> RIP: 0010:kernel_sock_shutdown+0x47/0x70 net/socket.c:3785
-> Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 33 48 b8 00 00 00 00 00 fc ff df 4c 8b 63 20 49 8d 7c 24 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 1a 49 8b 44 24 68 89 ee 48 89 df 5b 5d 41 5c e9 46
-> RSP: 0018:ffffc9000566f180 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: ffff888058587240 RCX: 0000000000000000
-> RDX: 000000000000000d RSI: ffffffff895ced12 RDI: 0000000000000068
-> RBP: 0000000000000002 R08: 0000000000000001 R09: ffffed1006d98945
-> R10: ffff888036cc4a2b R11: 0000003683c25c00 R12: 0000000000000000
-> R13: ffff88805c998000 R14: 0000000000000002 R15: 0000000000000018
-> FS:  00007f1306d976c0(0000) GS:ffff8880d65db000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f1306d97d58 CR3: 00000000404f1000 CR4: 0000000000352ef0
-> DR0: ffffffffffffffff DR1: 00000000000001f8 DR2: 0000000000000002
-> DR3: ffffffffefffff15 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   udp_tunnel_sock_release+0x68/0x80 net/ipv4/udp_tunnel_core.c:202
->   rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
->   rxe_sock_put+0xae/0x130 drivers/infiniband/sw/rxe/rxe_net.c:639
->   rxe_net_del+0x83/0x120 drivers/infiniband/sw/rxe/rxe_net.c:660
->   rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
->   nldev_dellink+0x289/0x3c0 drivers/infiniband/core/nldev.c:1849
->   rdma_nl_rcv_msg+0x392/0x6f0 drivers/infiniband/core/netlink.c:195
->   rdma_nl_rcv_skb.constprop.0.isra.0+0x2cb/0x410 drivers/infiniband/core/netlink.c:239
->   netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
->   netlink_unicast+0x585/0x850 net/netlink/af_netlink.c:1344
->   netlink_sendmsg+0x8b0/0xda0 net/netlink/af_netlink.c:1894
->   sock_sendmsg_nosec net/socket.c:787 [inline]
->   __sock_sendmsg net/socket.c:802 [inline]
->   ____sys_sendmsg+0x9e1/0xb70 net/socket.c:2698
->   ___sys_sendmsg+0x190/0x1e0 net/socket.c:2752
->   __sys_sendmsg+0x170/0x220 net/socket.c:2784
->   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->   do_syscall_64+0x10b/0xf80 arch/x86/entry/syscall_64.c:94
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f1305f9c819
-> Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f1306d97028 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f1306216090 RCX: 00007f1305f9c819
-> RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000003
-> RBP: 00007f1306032c91 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007f1306216128 R14: 00007f1306216090 R15: 00007ffd8ecad288
->   </TASK>
-> Modules linked in:
->
-> Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-> Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/69ea344f.a00a0220.17a17.0040.GAE@google.com/
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_net.c |  2 ++
->   drivers/infiniband/sw/rxe/rxe_ns.c  | 18 ++++++++++++++++++
->   drivers/infiniband/sw/rxe/rxe_ns.h  |  2 ++
->   3 files changed, 22 insertions(+)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 50a2cb5405e2..1b3615c9262a 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -655,6 +655,7 @@ void rxe_net_del(struct ib_device *dev)
->   
->   	net = dev_net(ndev);
->   
-> +	rxe_ns_pernet_sk_lock(net);
->   	sk = rxe_ns_pernet_sk4(net);
->   	if (sk)
->   		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
-> @@ -662,6 +663,7 @@ void rxe_net_del(struct ib_device *dev)
->   	sk = rxe_ns_pernet_sk6(net);
->   	if (sk)
->   		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
-> +	rxe_ns_pernet_sk_unlock(net);
+Hi Andrew,
+There are 2 upstream commits regarding these, I think you missed
+them please check once:
 
-If one thread is calling rxe_net_del (destroying the socket) while 
-another thread simultaneously
+commit fb4b4a05aeeb8b0f253c5ddce21f4635dadc9550
+Author: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Date:   Wed Mar 25 11:04:17 2026 -0700
+ 
+    net: mana: Use at least SZ_4K in doorbell ID range check
 
-calls rxe_newlink to create the socket, I am not sure if a race 
-condition will occur or not.
+commit 89fe91c65992a37863241e35aec151210efc53ce
+Author: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Date:   Fri Mar 6 13:12:06 2026 -0800
+ 
+    net: mana: hardening: Validate doorbell ID from GDMA_REGISTER_DEVICE response
 
-If yes, I think all locations that modify these pointers should hold the 
-mutex.
+> So if GDMA_REG_DB_PAGE_SIZE returns garbage, it is at least masked,
+> but it is still a random number.
+> 
+> mana_gd_ring_doorbell() takes this random number, multiples by
+> db_index, adds, gc->db_page_base and then does:
+> 
+> writeq(e.as_uint64, addr);
+> 
+> So you write to a random address. 
+> 
+> I don't see any sanity checks here. Cannot you check that db_page_size
+> is at least one of the expected page sizes?
+As mentioned above checks are already present in this commit: 89fe91c65992a37863241e35aec151210efc53ce
+> 
+>    Andrew
 
->   
->   	dev_put(ndev);
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-> index 8b9d734229b2..375c7d79d9d3 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-> @@ -16,6 +16,7 @@
->   struct rxe_ns_sock {
->   	struct sock __rcu *rxe_sk4;
->   	struct sock __rcu *rxe_sk6;
-> +	struct mutex rxe_sk_lock;
->   };
->   
->   /*
-> @@ -28,9 +29,12 @@ static unsigned int rxe_pernet_id;
->    */
->   static int rxe_ns_init(struct net *net)
->   {
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
->   	/* defer socket create in the namespace to the first
->   	 * device create.
->   	 */
-> +	mutex_init(&ns_sk->rxe_sk_lock);
-
-The lock is initialized in rxe_ns_init, but this lock is not handled in 
-rxe_ns_exit
-
-(or the corresponding cleanup function).
-
-Although a mutex typically does not require special operations upon 
-destruction,
-
-the presence of pending lock contention could potentially cause the 
-namespace destruction process to hang.
-
-So in rxe_ns_exit or other cleanup functions, add 
-"mutex_destroy(&ns_sk->rxe_sk_lock);"
-
-This seems more professional.
-
->   
->   	return 0;
->   }
-> @@ -71,6 +75,20 @@ static struct pernet_operations rxe_net_ops = {
->   	.size = sizeof(struct rxe_ns_sock),
->   };
->   
-> +void rxe_ns_pernet_sk_lock(struct net *net)
-> +{
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	mutex_lock(&ns_sk->rxe_sk_lock);
-> +}
-> +
-> +void rxe_ns_pernet_sk_unlock(struct net *net)
-> +{
-> +	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> +
-> +	mutex_unlock(&ns_sk->rxe_sk_lock);
-> +}
-> +
-
-Introducing a mutex lock will serialize all RXE device deletion operations
-
-within the same network namespace (netns). Although deletion is not a
-
-fast path operation, it may increase control-plane latency in environments
-
-with a large number of virtual adapters. It is necessary to verify 
-whether a more
-
-lightweight solution (such as an xchg atomic exchange operation) exists to
-
-handle the extraction and nullification of the socket pointers.
-
-Although rxe is a simulation driver, it does not focus on the 
-performance. But a lighter lock
-
-might as well benefit the whole system
-
-Thanks a lot.
-
-Zhu Yanjun
-
->   struct sock *rxe_ns_pernet_sk4(struct net *net)
->   {
->   	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
-> index 4da2709e6b71..c5262843bb63 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.h
-> @@ -3,6 +3,8 @@
->   #ifndef RXE_NS_H
->   #define RXE_NS_H
->   
-> +void rxe_ns_pernet_sk_lock(struct net *net);
-> +void rxe_ns_pernet_sk_unlock(struct net *net);
->   struct sock *rxe_ns_pernet_sk4(struct net *net);
->   void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk);
->   
-
--- 
-Best Regards,
-Yanjun.Zhu
-
+Regards
+Dipayaan Roy
 
