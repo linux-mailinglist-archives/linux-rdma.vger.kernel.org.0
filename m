@@ -1,238 +1,159 @@
-Return-Path: <linux-rdma+bounces-19544-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19545-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CBc7HuR17GmxYwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19544-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 10:05:56 +0200
+	id qHAACvmK7GmtZgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19545-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 11:35:53 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B998465792
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 10:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7875465B35
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 11:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A3823300FC46
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 08:05:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5ED00300CC08
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 09:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30CB34A767;
-	Sat, 25 Apr 2026 08:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86E9386C25;
+	Sat, 25 Apr 2026 09:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jIIc3NO6"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="NhDkwtUJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CCB1D61BC;
-	Sat, 25 Apr 2026 08:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131FA291864;
+	Sat, 25 Apr 2026 09:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777104344; cv=none; b=KJ+PWPJKTd8L7MoogHeooQ+9A7lRbkv8nA7d6woEZIrV1US7R9oLYu2TGuSsrwmCGUULYafQM7Gat/QPcSjhnVHIPdq07C6T618svQzbh4S8KTNOvYpQrE16xHgRVCTZ6iFgGm6Kf1SwSJ5IfM+IaEaAh+9Lo7f1I1KP3rXzJPE=
+	t=1777109722; cv=none; b=IxKx3h8gjkqsaO7cLHGyNWLr/fcPF249FbiRIp//dG29HL7Z/gBNIMCStvlZFBO/gKF//R2gz6qtvlp4HI7mLvqIjEnBwhwO+qrz4B6Obh2EnDti8ihSK3jGEIoa25rq6Pny011m4PG3tW4tjs6ySzrvn1JivmMCnIXPgqgW3Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777104344; c=relaxed/simple;
-	bh=S0X0pN8srarPwBPkfnx0eU3gnbLxXj9lMASqd+jq/0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mxlfrXwq8wuPQm2oq4PpeIH9eN12TsHZ2NUEywIGZXDmooywpjuH28o406J+6nhC3VCnU5JGpj363qXz8loIhag85YWs+lKLptp86TDgAUFvjuVquZQmwIfZkfyKX/85jybDlGP+WENZgUuMYuZ7FuGSTKVjICIds25w8jE7pNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jIIc3NO6; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 5E3E220B7165; Sat, 25 Apr 2026 01:05:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5E3E220B7165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1777104343;
-	bh=IkB9waU1QRQIGvPZnWRyZzWRYRvNT5pe3n4MZbVXQhI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jIIc3NO6qYngtvOses01TkQFruO+Ii5pevg0TCcHPvJBRUFzaF5qs+ZJqneqEElZ0
-	 i0FcK/csMFPU/duYoCuPLHLjjHCpfAIMfQxc1eYOcwTZJy+pU+9lXwyU7WWNXh2LQH
-	 FBkTQVb5twwtc4+KfgD3Kb6VGmogh2WIWmI9yuNA=
-Date: Sat, 25 Apr 2026 01:05:43 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: David Wei <dw@davidwei.uk>, kuba@kernel.org
-Cc: Jakub Kicinski <kuba@kernel.org>, kys@microsoft.com,
-	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
-	kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	stephen@networkplumber.org, jacob.e.keller@intel.com,
-	leitao@debian.org, kees@kernel.org, john.fastabend@gmail.com,
-	hawk@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, sdf@fomichev.me, dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
- full-page RX buffers
-Message-ID: <aex119OtL8CEGXkb@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
- <20260409183509.0b24dea6@kernel.org>
- <20260412125917.4fa8fc8d@kernel.org>
- <ad5kuCZz+gR1TlSh@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20260416083146.0bb94d2b@kernel.org>
- <aeoVC27mIzoKytqA@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <685d7bf9-062d-4bd2-8448-f7714bb05302@davidwei.uk>
+	s=arc-20240116; t=1777109722; c=relaxed/simple;
+	bh=LQPnE0yGcQn7HycJmDAgXmRpDVz1POSk7D4JnPb7erI=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=nXvcdBwYDpn7Q5csmEls0kPJCdX5gXVXDang7OInfVUEEsKWnAsj8SsYhvOxBh59plXVT1mcIfQG/Yf7gv2fGvuWV6dQbHML5jrNPJZp2q+qJrQOSV8PjZW790wwVJd40vcWFQ4G6L3pUrWG4HfsF/vxL4x0+blcJa2jdvffzDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=NhDkwtUJ; arc=none smtp.client-ip=113.46.200.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=WC16CckvRz6XfRpMJ3/ZX+wdcc3h6T3wHCMFNEI8I70=;
+	b=NhDkwtUJE6uaGFBKF0xoGNXE10EsTkQrjBR3cO+7iebuTAx7PiBUCmsk5wUxphsUucgbkqUnK
+	bFJpC5Q1qrG5o8o8lXQgD5Kd1nwwFsnoSfDGlIVj8s/k0k10vEPeiPh6freRY4J6d1iM/5BRAtA
+	gRYp0jeg35GOffo063lR9o4=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4g2kzL3qFVzLlSv;
+	Sat, 25 Apr 2026 17:28:46 +0800 (CST)
+Received: from kwepemk100013.china.huawei.com (unknown [7.202.194.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 393924056F;
+	Sat, 25 Apr 2026 17:35:10 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemk100013.china.huawei.com (7.202.194.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Sat, 25 Apr 2026 17:35:09 +0800
+Message-ID: <6ae96ead-61b3-470a-a30b-3418350a45f0@huawei.com>
+Date: Sat, 25 Apr 2026 17:35:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <685d7bf9-062d-4bd2-8448-f7714bb05302@davidwei.uk>
-X-Rspamd-Queue-Id: 0B998465792
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>
+Subject: Re: [PATCH v4 net 3/3] net: hns3: fix CWR handling in drivers to
+ preserve ACE signal
+To: <chia-yu.chang@nokia-bell-labs.com>, <linyunsheng@huawei.com>,
+	<andrew+netdev@lunn.ch>, <parav@nvidia.com>, <jasowang@redhat.com>,
+	<mst@redhat.com>, <shenjian15@huawei.com>, <salil.mehta@huawei.com>,
+	<saeedm@nvidia.com>, <tariqt@nvidia.com>, <mbloch@nvidia.com>,
+	<leonro@nvidia.com>, <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <horms@kernel.org>, <ij@kernel.org>,
+	<ncardwell@google.com>, <koen.de_schepper@nokia-bell-labs.com>,
+	<g.white@cablelabs.com>, <ingemar.s.johansson@ericsson.com>,
+	<mirja.kuehlewind@ericsson.com>, <cheshire@apple.com>, <rs.ietf@gmx.at>,
+	<Jason_Livingood@comcast.com>, <vidhi_goel@apple.com>
+References: <20260417152642.71674-1-chia-yu.chang@nokia-bell-labs.com>
+ <20260417152642.71674-4-chia-yu.chang@nokia-bell-labs.com>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20260417152642.71674-4-chia-yu.chang@nokia-bell-labs.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemk100013.china.huawei.com (7.202.194.61)
+X-Rspamd-Queue-Id: C7875465B35
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19544-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	FREEMAIL_CC(0.00)[kernel.org,microsoft.com,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[nokia-bell-labs.com,huawei.com,lunn.ch,nvidia.com,redhat.com,vger.kernel.org,davemloft.net,google.com,kernel.org,cablelabs.com,ericsson.com,apple.com,gmx.at,comcast.com];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19545-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[huawei.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[30];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[shaojijie@huawei.com,linux-rdma@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_NONE(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,linux.microsoft.com:dkim]
-
-On Fri, Apr 24, 2026 at 01:05:24PM -0700, David Wei wrote:
-> On 2026-04-23 05:48, Dipayaan Roy wrote:
-> > On Thu, Apr 16, 2026 at 08:31:46AM -0700, Jakub Kicinski wrote:
-> > > On Tue, 14 Apr 2026 09:00:56 -0700 Dipayaan Roy wrote:
-> > > > I still see roughly a 5% overhead from the atomic refcount operation
-> > > > itself, but on that platform there is no throughput drop when using
-> > > > page fragments versus full-page mode.
-> > > 
-> > > That seems to contradict your claim that it's a problem with a specific
-> > > platform.. Since we're in the merge window I asked David Wei to try to
-> > > experiment with disabling page fragmentation on the ARM64 platforms we
-> > > have at Meta. If it repros we should use the generic rx-buf-len
-> > > ringparam because more NICs may want to implement this strategy.
-> > 
-> > Hi Jakub,
-> > 
-> > Thanks. I think I was not precise enough in my previous reply.
-> > 
-> > What I meant is that the atomic refcount cost itself does not appear to
-> > be unique to the affected platform. I see a similar ~5% overhead on
-> > another ARM64 platformi (different vendor) as well. However, on that platform
-> > there is no throughput delta between fragment mode and full-page mode; both reach
-> > line rate.
-> > 
-> > On the affected platform, fragment mode shows an additional ~15%
-> > throughput drop versus full-page mode. So the current data suggests that
-> > the atomic overhead is common, but the throughput regression is not
-> > explained by that overhead alone and likely depends on an additional
-> > platform-specific factor.
-> > 
-> > Separately, the hardware team collected PCIe traces on the affected
-> > platform and reported stalls in the fragment-mode case that are not seen
-> > in full-page mode. They are still investigating the root cause, but
-> > their current hypothesis is that this is related to that platform’s
-> > PCIe/root-port microarchitecture rather than to page_pool refcounting
-> > alone.
-> > 
-> > That said, I agree the right direction depends on whether this
-> > reproduces on other ARM64 platforms. If David is able to reproduce the
-> > same behavior, then using the generic rx-buf-len ringparam sounds like
-> > the better direction.
-> > 
-> > Please let me know what David finds, and I can rework the patch
-> > accordingly.
-> 
-> I ran a test on Grace, 4 KB pages, 72 cores, 1 NUMA node.
-> 
-> Broadcom NIC, bnxt driver, 50 Gbps bandwidth. Hacked it up to either
-> give me 1 or 2 frags per page. No agg ring, no HDS, no HW GRO.
-> 
-> Use 1 combined queue only for the server. Affinitized its net rx softirq
-> to run on core 4.
-> 
-> Ran iperf3 server, taskset onto cpu cores 32-47. The iperf3 client is
-> running on a host w/ same hw in the same region. Using 32 queues, no
-> softirq affinities. The idea is to hammer page->pp_ref_count from
-> different cores.
-> 
-> * 1 frag/page  -> 32.3 Gbps
-> * 2 frags/page -> 36.0 Gbps
-> 
-> Comparing perf, for 2 frags/page the cost of skb_release_data() hitting
-> pp_ref_count goes up, as expected. Is this what you see? When you say
-> there's a +5% overhead, what function?
-> 
-> Overall tput is higher with multiple frags. That's to be expected w/
-> page pool.
-
-Hi David,
-
-Thanks for running this. Your results are consistent with mine.
-
-I have tested this on 2 ARM64 platforms from different vendors,
-running ntttcp and iperf3 using 4k as base page size.
-In my observation I see both platforms show a 5% overhead in
-napi_pp_put_page (~3.9%) and page_pool_alloc_frag_netmem (~1.9%)
-when running in fragment mode, both stalling on the LSE ldaddal
-atomic that maintains pp_ref_count.
-This seems to be same as your observation as well. However in my
-observation one of the platform shows 15% drop in throughput when
-in fragment mode vs page mode. The other platform I ran the test on
-infact performs slighty better in fragment mode than in full page
-mode (simillar observation as yours).
-
-So the atomic refcount overhead appears to be common across ARM64
-platforms, but it does not cause a throughput regression.
-The throughput regression seems specific to one platform only for which
-we want to have the full page work around, also the HW team has
-identified PCIe stalls in fragment mode that are absent in full-page mode.
-Their investigation points to a suspected microarchitectural
-issue in the PCIe root port. IMO, there seems to be no issue with
-page_pool itself.
-
-Given that:
- - Grace shows fragments are faster (your data)
- - A second ARM64 platform shows no regression (my data)
- - Only the affected platform shows a throughput drop
- - The HW team suspects this to a platform-specific PCIe issue,
-   also form our experiment data the drop in throughput seems to
-   be platform specific only.
-
-I believe this remains a platform-specific workaround rather than
-a generic issue. Would a private flag still be acceptable for this
-case?
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nokia-bell-labs.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
 
-> 
-> There are some 200 Gbps NICs but they're mlx5 so I'd have to redo the
-> driver hack. Are you going to re-implement this change with rx-buf-len
-> instead of a private flag? If so, I won't spend more time running this
-> test.
-> 
-I can go either way depending on what Jakub prefers.
-Hi Jakub,
-with this new data from David, is it convincing enough for a mana driver
-specific private flag, which can be set from user space by a udev rule
-by detecting the underlying platform? If not then I will send the next
-version with the other rxbuflen approach. 
-> > 
-> > 
-> > Regards
-> > Dipayaan Roy
+on 2026/4/17 23:26, chia-yu.chang@nokia-bell-labs.com wrote:
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+>
+> Currently, hns3 Rx paths use SKB_GSO_TCP_ECN flag when a TCP segment
+> with the CWR flag set. This is wrong because SKB_GSO_TCP_ECN is only
+> valid for RFC3168 ECN on Tx, and using it on Rx allows RFC3168 ECN
+> offload to clear the CWR flag. As a result, incoming TCP segments
+> lose their ACE signal integrity required for AccECN (RFC9768),
+> especially when the packet is forwarded and later re-segmented by GSO.
+>
+> Fix this by setting SKB_GSO_TCP_ACCECN for any Rx segment with the CWR
+> flag set. SKB_GSO_TCP_ACCECN ensure that RFC3168 ECN offload will
+> not clear the CWR flag, therefore preserving the ACE signal.
+>
+> Fixes: d474d88f88261 ("net: hns3: add hns3_gro_complete for HW GRO process")
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> ---
+>   drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> index a3206c97923e..e1b0dba56182 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> @@ -3904,7 +3904,7 @@ static int hns3_gro_complete(struct sk_buff *skb, u32 l234info)
+>   
+>   	skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
+>   	if (th->cwr)
+> -		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ECN;
+> +		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ACCECN;
+>   
+>   	if (l234info & BIT(HNS3_RXD_GRO_FIXID_B))
+>   		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_FIXEDID;
+
+I agree with Paolo's previous point;
+for already released hardware, it is indeed not suitable to modify it.
+During the hardware aggregation process, the ACE signal may have already been lost.
+
+Jijie Shao
 
 
-Thanks and Regards
-Dipayaan Roy
+
 
