@@ -1,187 +1,238 @@
-Return-Path: <linux-rdma+bounces-19543-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19544-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2H1dLopZ7GkXXwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19543-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 08:04:58 +0200
+	id CBc7HuR17GmxYwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19544-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 10:05:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AB646518F
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 08:04:58 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B998465792
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 10:05:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 24D143020FDC
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 06:04:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A3823300FC46
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 08:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5FE2C234A;
-	Sat, 25 Apr 2026 06:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30CB34A767;
+	Sat, 25 Apr 2026 08:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fh5A37ap"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jIIc3NO6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A86280CFB
-	for <linux-rdma@vger.kernel.org>; Sat, 25 Apr 2026 06:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CCB1D61BC;
+	Sat, 25 Apr 2026 08:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777097085; cv=none; b=HhuqwUjOIDUltG1HaWY6mjUZxwvUqtKikwN1ljr9Jh9WrveNY3KKr1RY8GQyHCIPymTFoVAsrVwOcgHPT+yrRFL2Yezdcm/B+mpJfbsvnFAYRNUuyxVSDlV9IpApR93TY3HriZSRAQTCFeaRNi1Zkzvo7lsHkH1RCBVhuLn9Duc=
+	t=1777104344; cv=none; b=KJ+PWPJKTd8L7MoogHeooQ+9A7lRbkv8nA7d6woEZIrV1US7R9oLYu2TGuSsrwmCGUULYafQM7Gat/QPcSjhnVHIPdq07C6T618svQzbh4S8KTNOvYpQrE16xHgRVCTZ6iFgGm6Kf1SwSJ5IfM+IaEaAh+9Lo7f1I1KP3rXzJPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777097085; c=relaxed/simple;
-	bh=nVP7a4u4kcoKhc95G5SJm+ut0OW6aixMLGxLSXddiGQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=bXKrf/Lje4aVt6XMUopPMFA5OJ4Ot36Q01MHR0QBF/zADs2O+13wQySFvheHK/utJTFL1SKpfngZztB9jsqtEPSzdrdA5IeLa0+v/9n2z3kt4L4QEgi4QIMTpUy5cUJBEmFdrXV0ZEZhCA7z2ug25LU7cOtSWR9qnkSTBC3itag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fh5A37ap; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-82f9aa52c92so8864919b3a.1
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 23:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1777097083; x=1777701883; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wG5jMzgODlf9E7FvlCb3oQpSui4d6D8ekFhYY5Msm4A=;
-        b=fh5A37apedI+VMTBZfJIgN0jbI9z1ymjUoglBDNi4kAbGxGuteFKua2lt9aeIEblsk
-         FFajpAaKA7o410M6Pdw4lPIHbEsa/T40ly+BGQyVkUIBNzFFKyXvQkAdgOl4aBofkhFH
-         DwkbLDgmV+6EVFsRktSwWe9taYO5L003Rv70PcfVts5whmsRn5NwOaegZDaCLec/KSUw
-         Gx1dw6cf35rXb3SqVmbLK4sCO9IcFiUDYjPua1YOXpvAOJ8WNdyjboKfL8lKQScszgD4
-         hBMvLSm8vQjZGE66pBcUoq9sD7BFNcSJ7WtzvIcXXKvlJ+l32yO/vCrXyLHbPjRSX+y4
-         9DSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777097083; x=1777701883;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wG5jMzgODlf9E7FvlCb3oQpSui4d6D8ekFhYY5Msm4A=;
-        b=iSqAH2VNsGoQ30nZD9WgN41ZB+PLsIdMRXMC/BfKee3Kn+2GY5/mDYH5xzVd55mhLi
-         0hwm4HDgVqSfk75JzKPkFS+zqJ9Zwj+QbSZvsX6Pn94GwamAQ1vb7FzeK4E3uOlLzdb7
-         cDJMjtXLlr4fR1rQNRs1jWPIc4gel8XoQVuonLt0wKrPy4guF8Bw1vA74sVtnPv35SPk
-         JYdujrJ0Zs0J8Z6Kp8PGM990Zk3/jCljfJFYpezH3/EaDmuOt0f9wFsmQ9ebWktQceMX
-         I64eS+A+NHI5JoVoJ5tpJk6eUGrcLFllljTJfGYhPEUNZ5zxC75LzkaFjbXCqK41XSsL
-         NKag==
-X-Forwarded-Encrypted: i=1; AFNElJ9glYQcYdo2w59skyYeV171pkFqoTlBYojPr/rq2KgM3Bn/g5B6eAIJ8PjTPoaRufGEpMZ5JB8z5Cbc@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+z5bDLKjbHqFFnY5VH6Xhshi5koSKezuEeC3g7tbAFrxSKZCR
-	POqWwvGw8ujxjHEI71RUO/bFj9u5iSev3/SNXuOHx2ABOz7Z3LdOYcpf7oAJnF4bTnBk+2vjoCZ
-	57bDZrw==
-X-Received: from pfbfc32.prod.google.com ([2002:a05:6a00:2e20:b0:82f:5eca:2b2d])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:4088:b0:82c:6d88:2a8e
- with SMTP id d2e1a72fcca58-82f8c836788mr39038563b3a.20.1777097083160; Fri, 24
- Apr 2026 23:04:43 -0700 (PDT)
-Date: Sat, 25 Apr 2026 06:04:14 +0000
-In-Reply-To: <20260425060436.2316620-1-kuniyu@google.com>
+	s=arc-20240116; t=1777104344; c=relaxed/simple;
+	bh=S0X0pN8srarPwBPkfnx0eU3gnbLxXj9lMASqd+jq/0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mxlfrXwq8wuPQm2oq4PpeIH9eN12TsHZ2NUEywIGZXDmooywpjuH28o406J+6nhC3VCnU5JGpj363qXz8loIhag85YWs+lKLptp86TDgAUFvjuVquZQmwIfZkfyKX/85jybDlGP+WENZgUuMYuZ7FuGSTKVjICIds25w8jE7pNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jIIc3NO6; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 5E3E220B7165; Sat, 25 Apr 2026 01:05:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5E3E220B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1777104343;
+	bh=IkB9waU1QRQIGvPZnWRyZzWRYRvNT5pe3n4MZbVXQhI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jIIc3NO6qYngtvOses01TkQFruO+Ii5pevg0TCcHPvJBRUFzaF5qs+ZJqneqEElZ0
+	 i0FcK/csMFPU/duYoCuPLHLjjHCpfAIMfQxc1eYOcwTZJy+pU+9lXwyU7WWNXh2LQH
+	 FBkTQVb5twwtc4+KfgD3Kb6VGmogh2WIWmI9yuNA=
+Date: Sat, 25 Apr 2026 01:05:43 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: David Wei <dw@davidwei.uk>, kuba@kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>, kys@microsoft.com,
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+	pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+	kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stephen@networkplumber.org, jacob.e.keller@intel.com,
+	leitao@debian.org, kees@kernel.org, john.fastabend@gmail.com,
+	hawk@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, sdf@fomichev.me, dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
+ full-page RX buffers
+Message-ID: <aex119OtL8CEGXkb@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
+ <20260409183509.0b24dea6@kernel.org>
+ <20260412125917.4fa8fc8d@kernel.org>
+ <ad5kuCZz+gR1TlSh@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20260416083146.0bb94d2b@kernel.org>
+ <aeoVC27mIzoKytqA@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <685d7bf9-062d-4bd2-8448-f7714bb05302@davidwei.uk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260425060436.2316620-1-kuniyu@google.com>
-X-Mailer: git-send-email 2.54.0.rc2.544.gc7ae2d5bb8-goog
-Message-ID: <20260425060436.2316620-3-kuniyu@google.com>
-Subject: [PATCH v2 2/2] RDMA/rxe: Fix up RCU usage for rxe_ns_pernet_sk6().
-From: Kuniyuki Iwashima <kuniyu@google.com>
-To: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>, Kuniyuki Iwashima <kuniyu@google.com>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 75AB646518F
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <685d7bf9-062d-4bd2-8448-f7714bb05302@davidwei.uk>
+X-Rspamd-Queue-Id: 0B998465792
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,google.com,gmail.com,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19543-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-19544-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FREEMAIL_CC(0.00)[kernel.org,microsoft.com,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuniyu@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid,linux.microsoft.com:dkim]
 
-rxe_ns_pernet_sk6() is fundamentally broken.
+On Fri, Apr 24, 2026 at 01:05:24PM -0700, David Wei wrote:
+> On 2026-04-23 05:48, Dipayaan Roy wrote:
+> > On Thu, Apr 16, 2026 at 08:31:46AM -0700, Jakub Kicinski wrote:
+> > > On Tue, 14 Apr 2026 09:00:56 -0700 Dipayaan Roy wrote:
+> > > > I still see roughly a 5% overhead from the atomic refcount operation
+> > > > itself, but on that platform there is no throughput drop when using
+> > > > page fragments versus full-page mode.
+> > > 
+> > > That seems to contradict your claim that it's a problem with a specific
+> > > platform.. Since we're in the merge window I asked David Wei to try to
+> > > experiment with disabling page fragmentation on the ARM64 platforms we
+> > > have at Meta. If it repros we should use the generic rx-buf-len
+> > > ringparam because more NICs may want to implement this strategy.
+> > 
+> > Hi Jakub,
+> > 
+> > Thanks. I think I was not precise enough in my previous reply.
+> > 
+> > What I meant is that the atomic refcount cost itself does not appear to
+> > be unique to the affected platform. I see a similar ~5% overhead on
+> > another ARM64 platformi (different vendor) as well. However, on that platform
+> > there is no throughput delta between fragment mode and full-page mode; both reach
+> > line rate.
+> > 
+> > On the affected platform, fragment mode shows an additional ~15%
+> > throughput drop versus full-page mode. So the current data suggests that
+> > the atomic overhead is common, but the throughput regression is not
+> > explained by that overhead alone and likely depends on an additional
+> > platform-specific factor.
+> > 
+> > Separately, the hardware team collected PCIe traces on the affected
+> > platform and reported stalls in the fragment-mode case that are not seen
+> > in full-page mode. They are still investigating the root cause, but
+> > their current hypothesis is that this is related to that platform’s
+> > PCIe/root-port microarchitecture rather than to page_pool refcounting
+> > alone.
+> > 
+> > That said, I agree the right direction depends on whether this
+> > reproduces on other ARM64 platforms. If David is able to reproduce the
+> > same behavior, then using the generic rx-buf-len ringparam sounds like
+> > the better direction.
+> > 
+> > Please let me know what David finds, and I can rework the patch
+> > accordingly.
+> 
+> I ran a test on Grace, 4 KB pages, 72 cores, 1 NUMA node.
+> 
+> Broadcom NIC, bnxt driver, 50 Gbps bandwidth. Hacked it up to either
+> give me 1 or 2 frags per page. No agg ring, no HDS, no HW GRO.
+> 
+> Use 1 combined queue only for the server. Affinitized its net rx softirq
+> to run on core 4.
+> 
+> Ran iperf3 server, taskset onto cpu cores 32-47. The iperf3 client is
+> running on a host w/ same hw in the same region. Using 32 queues, no
+> softirq affinities. The idea is to hammer page->pp_ref_count from
+> different cores.
+> 
+> * 1 frag/page  -> 32.3 Gbps
+> * 2 frags/page -> 36.0 Gbps
+> 
+> Comparing perf, for 2 frags/page the cost of skb_release_data() hitting
+> pp_ref_count goes up, as expected. Is this what you see? When you say
+> there's a +5% overhead, what function?
+> 
+> Overall tput is higher with multiple frags. That's to be expected w/
+> page pool.
 
-rcu_read_lock() only silences rcu_dereference() splat.
+Hi David,
 
-The returned socket is no longer protected, and it may be
-freed during ip6_dst_lookup_flow().
+Thanks for running this. Your results are consistent with mine.
 
-Let's call rxe_ns_pernet_sk6() and ip6_dst_lookup_flow()
-under RCU.
+I have tested this on 2 ARM64 platforms from different vendors,
+running ntttcp and iperf3 using 4k as base page size.
+In my observation I see both platforms show a 5% overhead in
+napi_pp_put_page (~3.9%) and page_pool_alloc_frag_netmem (~1.9%)
+when running in fragment mode, both stalling on the LSE ldaddal
+atomic that maintains pp_ref_count.
+This seems to be same as your observation as well. However in my
+observation one of the platform shows 15% drop in throughput when
+in fragment mode vs page mode. The other platform I ran the test on
+infact performs slighty better in fragment mode than in full page
+mode (simillar observation as yours).
 
-Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
----
- drivers/infiniband/sw/rxe/rxe_net.c | 11 ++++++++---
- drivers/infiniband/sw/rxe/rxe_ns.c  |  7 +------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+So the atomic refcount overhead appears to be common across ARM64
+platforms, but it does not cause a throughput regression.
+The throughput regression seems specific to one platform only for which
+we want to have the full page work around, also the HW team has
+identified PCIe stalls in fragment mode that are absent in full-page mode.
+Their investigation points to a suspected microarchitectural
+issue in the PCIe root port. IMO, there seems to be no issue with
+page_pool itself.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 9080d4c893a1..8fca5c24c8b1 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -133,16 +133,21 @@ static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
- 					 struct in6_addr *saddr,
- 					 struct in6_addr *daddr)
- {
--	struct dst_entry *ndst;
-+	struct dst_entry *ndst = NULL;
- 	struct flowi6 fl6 = {};
-+	struct sock *sk;
- 
- 	fl6.flowi6_oif = ndev->ifindex;
- 	memcpy(&fl6.saddr, saddr, sizeof(*saddr));
- 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
- 	fl6.flowi6_proto = IPPROTO_UDP;
- 
--	ndst = ip6_dst_lookup_flow(net, rxe_ns_pernet_sk6(net), &fl6, NULL);
--	if (IS_ERR(ndst)) {
-+	rcu_read_lock();
-+	sk = rxe_ns_pernet_sk6(net);
-+	if (sk)
-+		ndst = ip6_dst_lookup_flow(net, sk, &fl6, NULL);
-+	rcu_read_unlock();
-+	if (IS_ERR_OR_NULL(ndst)) {
- 		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
- 		return NULL;
- 	}
-diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-index 06eb2e2387a1..ef408ffc0558 100644
---- a/drivers/infiniband/sw/rxe/rxe_ns.c
-+++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-@@ -91,13 +91,8 @@ static struct pernet_operations rxe_net_ops = {
- struct sock *rxe_ns_pernet_sk6(struct net *net)
- {
- 	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
--	struct sock *sk;
--
--	rcu_read_lock();
--	sk = rcu_dereference(ns_sk->rxe_sk6);
--	rcu_read_unlock();
- 
--	return sk;
-+	return rcu_dereference(ns_sk->rxe_sk6);
- }
- #endif /* IPV6 */
- 
--- 
-2.54.0.rc2.544.gc7ae2d5bb8-goog
+Given that:
+ - Grace shows fragments are faster (your data)
+ - A second ARM64 platform shows no regression (my data)
+ - Only the affected platform shows a throughput drop
+ - The HW team suspects this to a platform-specific PCIe issue,
+   also form our experiment data the drop in throughput seems to
+   be platform specific only.
 
+I believe this remains a platform-specific workaround rather than
+a generic issue. Would a private flag still be acceptable for this
+case?
+
+
+> 
+> There are some 200 Gbps NICs but they're mlx5 so I'd have to redo the
+> driver hack. Are you going to re-implement this change with rx-buf-len
+> instead of a private flag? If so, I won't spend more time running this
+> test.
+> 
+I can go either way depending on what Jakub prefers.
+Hi Jakub,
+with this new data from David, is it convincing enough for a mana driver
+specific private flag, which can be set from user space by a udev rule
+by detecting the underlying platform? If not then I will send the next
+version with the other rxbuflen approach. 
+> > 
+> > 
+> > Regards
+> > Dipayaan Roy
+
+
+Thanks and Regards
+Dipayaan Roy
 
