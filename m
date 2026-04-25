@@ -1,258 +1,362 @@
-Return-Path: <linux-rdma+bounces-19534-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19535-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kP/gBwDr62nhSwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19534-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 00:13:20 +0200
+	id oJK2IMEF7GlbTwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19535-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 02:07:29 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8A73463BEF
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 00:13:19 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0311464324
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 02:07:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EE588300AC80
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2026 22:13:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BA66F3011BFB
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 00:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294323E5EDD;
-	Fri, 24 Apr 2026 22:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B3A1C01;
+	Sat, 25 Apr 2026 00:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="H5m4vQCZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X0qcx/Cs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0A9349B1C
-	for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 22:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777068794; cv=none; b=KO9IxSvRNB2eYKkPZe3TCZ3ynuUIc0/CP0x8gLR8xLtn+q/0Xi2oHfo3EpAvQ8bB97fT8twxOkwnoxgmcabHPwpqsv1Dd+JHiGab91o5MKom8IJ34d0FcmzpBiIjaMPCpLZE/g1BD5MjCytPVjBX0tnuVy4R7iJFXLtOjqKc1kE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777068794; c=relaxed/simple;
-	bh=edkfnYqeyMC0Qt+W6n8ze5hGF7NTNhj3oyNEAcTDdxw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NlCV6GAuGTprAeaHaec4Ha1iLdOb4lzzFBK+XeOfrj8wXJ5XKXPAUNjThjOUNqsHyAsx2N17mXCs6jS5gv1jHHKBYzoicVLu9veAiyyaWL30/5GbFxYPBd/ArhB3Bww8o2kvXrm+zDbmXYJl7iFvgOd6w14Tu1IzUqO+ld2XhVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=H5m4vQCZ; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-8cb40149037so858281785a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 15:13:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98E317993
+	for <linux-rdma@vger.kernel.org>; Sat, 25 Apr 2026 00:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777075621; cv=pass; b=AxrpTfHPYchSNvsZCKmpW3cd9JFBPD6ZAV4srrEvsn5lRzeOCJPls8nNfyYhuURc1ZH4ytGTcZF2U1ZXtGu6SPWSWvcJk9n8bC1jGGPeJnOm5wVWRbP2C1z5IcaqYMOJUp+CJ/y4LXdNxTXV+Ew82fQqWZ1LL5Ec5inoRJnjEgg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777075621; c=relaxed/simple;
+	bh=gmdk9RpSibV09mnK8vad4Jev9Bj/0aIzQ/+OBqdkTVU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HSW8hZIWlaGIMwY5s/t5RXmANgv/46KKdvlQd6BUfpls//uwJ+ftcL8zRF1qrfF2vkoUMLevp1gcKj+0IvP5UdEKUrWAC5hIB54//9xlJVMspV6zSiOUX3ZKa8rXNmcsJWYqwbUT7A0xlyPRKSenq2Z+h8JQoy6UsRnyL+G/SY0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X0qcx/Cs; arc=pass smtp.client-ip=74.125.82.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-12dcdcd54adso98952c88.1
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 17:06:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1777075619; cv=none;
+        d=google.com; s=arc-20240605;
+        b=OWDrf9Pkt/Z1NRS+SlIqMLweBVnx+mldykDeX0pUr9IMvNq3obWPkjPEz2Ep7+2tw/
+         /C11Zx9XH8z3XM+fQvEwMrhQl63g5Y2SBaVk8xqHYs8mFv83/je6PhbaV+d3PX1su0XC
+         UQg48YKeE4ND3ExDEQka9m7yHw/qVXw8300E3ZqvnI+7cWfVwIMZT95QYq5PZB5smP1s
+         v210CYSXzUTjPcH5UEYMUEDT/bU1xTjV+C8r9d9jtim/X2MxLn7n94ilA+hGLnhfXkgU
+         UMS7M5cHOTh6WpuY0BSQrM5Uwm9xHn1PO/GY07ZwYqiStm61I+iKOGhJw5q7hBiA//td
+         eCkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=56ZmdRyb9HqO8v/x2MD60ePI1t8EyQI80TonLQFFWug=;
+        fh=yMIpH0qHbXYRpb+5gqdVenInQSWrDxZ3bbx2KYVScDk=;
+        b=TQLcR92h7ki28QrdV7BqpMsKq3XKui0WeCZYVtKvlEMkbH/UUU28WH5hxn1wXOq35U
+         AV4iivQQF6yJTSxDAAkjDlHTHOj6K9l5Vo3/Il6HTJdw2be31LY/IVJRF7eslcm/Q42v
+         OHdC4cEIPSnladhW8MAV8CWAhbjG4D6oj3c/cSILXUnH+Ydo+rWKOjgZgOvqmhEaaemC
+         0vNVKoxSl5Qp7OgFVRKJ+sB1M31xiiXFsCqZZcrS8o7pCorlIunKCZnqRrkH9GM1aS8B
+         019Y4RWw78v9QRUQHQqSj6sBOUdxhj8ToLtYogBNe40ICD03mc9/dgauZNQa6T7ifJ+Q
+         bdeA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1777068792; x=1777673592; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p1Bt8LRPmWuCECk46OUK1KhCrmrzQEbzIWvPlDI3cp4=;
-        b=H5m4vQCZE27E+gDtn8BVCf5jLiPS6GNSYRuHd7oK/ryAnR76eU7gh4QWRI3SAXCvku
-         xwbAjZ3hIBI5GEUgbOSGuhXCViPpczYPF9VhNc2dh89l7qQROTD8YZ3pfblRmIXAApD+
-         LLNyElsdRzbz0O8P7asNE1yJaILYoWrFSeatd7+ExO8xnYjLQgg2muQOyOklYWskuFkU
-         cwfy9M7PKhf/GFqDNR2idR9iNUU//TC3BIEIHtpqSrhi/HtxH3xMTkMDNiCC7PJfnIaI
-         RfTF+U+c9gQck78mXjxg5cQFxiXkgiK0mPHrBDKGiKFmfg+/2VAfJKkgnb8JLTc01FjS
-         F9Hg==
+        d=google.com; s=20251104; t=1777075619; x=1777680419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=56ZmdRyb9HqO8v/x2MD60ePI1t8EyQI80TonLQFFWug=;
+        b=X0qcx/Csf2eAoeghjc4KQa7cVqlR4LyGqtV5TUfgaSBWgvB+kxO/Ppf03/GG9qqsOB
+         vv9DF2p3tjE89Bp/UuThHkS8JPLVVDB6Euz9quXOKkjhR9/BzzzM66gc/9rwJ4dDuo6h
+         0TULngBXH7cj9DKTaV+lGcl2P+Jev9nZLIZ53/WItGtc/UqdU6JlhMo9wqZnRuQHq/aH
+         QT+dc94bzHXE/Z8dYv4K9R68nLMLLxVJaxKJT1a8Emr/07vFyMOZqg528o+WE5TNAOmE
+         2p8GL8s9RqGc7Kfl/e/XflYOAxS1qx53Ar9HvPZZ0wX/Ss+qQkw8zB00qmuEAMjpFbGV
+         XsQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777068792; x=1777673592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p1Bt8LRPmWuCECk46OUK1KhCrmrzQEbzIWvPlDI3cp4=;
-        b=mH2WcAqxCCuAQZ/BnI0k/FDvNQfuZmrBiy3VshQY/K5oOUUskKKqkqxKQ7QoVeG4Hn
-         pNpe6PUG1Y7N/3a59iYoxIyX0q2QADnx1YJFrIkJWLy8/hopzc3dv9Z85tFKcQp6QZ/f
-         Pux9ToDEhXkjpDA+9QgVXwcyiUNWX6eXXOj9VHI1Lyv0vb1Bb55As+sxFQIHaLQLITBu
-         Z46sZUGXz+jDHioJFgP7rvrIknYXaZSbbHNNx/NVzZbQtD2fmIr3mcReohwyJE5XQuv0
-         BKKzTrwCJNFPKRTHX+2zdVKRNyM1EEa3aThc/bxqFzGrGWEODmvBJsfk+94/YsOHAK9I
-         t+5A==
-X-Forwarded-Encrypted: i=1; AFNElJ9+tImIMVxImRSTD4rsYjvrx72cYzorSvJgNhl41VAFdtqyxaAZvg99dm+/ImCi8UKidp5pQBgD7nie@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1CD7Lb8G2+Y8SPqX4SbjD4qJnYM0cb178dfZD7eJS347EHScM
-	jiv8HAoIRap3AT2MXylp+Sx+TRUWKx9YGluQdufqWP9K9b/x08G1qAZB1B+6JiYdgFSmaWmM9xi
-	XGnqXiVA=
-X-Gm-Gg: AeBDieuAJu/1z/tN+o42OfFD8dpnFVc5rb7V2EWZtF3wK2Khls3YD3l9K1X1Dc0J3br
-	g2xP89vxRk33ZaqEciJk0rw2+xvsmjX9Ep1jG+y9TCSzchxdEP1YdmIbHAipBGEqmFiGhCP+Mpc
-	njbZMDwUI5mHRFjJ/Z7wBJAN84DnMzNn2rIORzdSEmtHCqj1UjSSHRo++UdyYS92fx9iuJJ8f5h
-	QETLoAP+3yJKJ0PEVLRg8WqPftIaqra+jN33h2t6Dl024vTeVVxxTCdYLOzeCzgTHaz1m9fZi3M
-	vsVf7YSabkA2t5U800QAhtj1mfJtrgCK0roHe0B0G5NfK6eU6HZPrFuos/hzE7a2taFzak0RCcW
-	Ok/OdwSgnLStPpMd0CVkgynOVNH3iNujjmVL3ArIoxtauh0UeDXQAtvQQt2permPcHrE0h2AYPJ
-	k3tYQ+jBdKVqlxyh7uFYBVlVOnpFv6WZBEx/8a1Icw7mNlQTS7zkTGLNC4L0skTV4N/vHbd5w+v
-	QCHoqBcj6HPYiOs
-X-Received: by 2002:ac8:7d15:0:b0:50f:b13e:b740 with SMTP id d75a77b69052e-50fb13eb934mr273244551cf.9.1777068792308;
-        Fri, 24 Apr 2026 15:13:12 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50fc42c7fabsm78174021cf.9.2026.04.24.15.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2026 15:13:11 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wGOlq-00000004lHz-0nuV;
-	Fri, 24 Apr 2026 19:13:10 -0300
-Date: Fri, 24 Apr 2026 19:13:10 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Leon Romanovsky <leon@kernel.org>,
-	Roberto Sassu <roberto.sassu@huaweicloud.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Itay Avraham <itayavr@nvidia.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-Message-ID: <20260424221310.GA804026@ziepe.ca>
-References: <20260413164220.GP3694781@ziepe.ca>
- <CAHC9VhR1Uke9P==CELKavBcogHoNCtMZFfNWUbgm5HYUfomhtw@mail.gmail.com>
- <20260413231920.GS3694781@ziepe.ca>
- <CAHC9VhTLamfe4C81ZNRVT=H32x+KLxSqH3o0eBfrHsWAgAqxCA@mail.gmail.com>
- <20260415134705.GG2577880@ziepe.ca>
- <CAHC9VhSECYihup=tURo_Qk__xUdYYPkHgnz5CWA0BrRAkvwbog@mail.gmail.com>
- <20260417191749.GK2577880@ziepe.ca>
- <CAHC9VhQbpS9XpO6dWu7gOiX=ppjtAxnNBOFe6s5wjEZNpMRjgw@mail.gmail.com>
- <20260424143603.GB3611611@ziepe.ca>
- <CAHC9VhR++21SD+v4Bb16SQmYHgJYZ0ytQ+BecGPNK+fEOe4G7g@mail.gmail.com>
+        d=1e100.net; s=20251104; t=1777075619; x=1777680419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=56ZmdRyb9HqO8v/x2MD60ePI1t8EyQI80TonLQFFWug=;
+        b=LIe/C8lIBjc9iwInxsVBatVHbniB9ie3f92t2c0NrEo/xxBI+n5E1ZAKkXUv4JioBd
+         CWYpZXWE2xkr+XFU2UbxOnQ1y3Hx0g16Mk9MSXuFnKjSIT3Yf80VvMD2u/42/HHDXfMF
+         TLASlbvzgzClZ/yViTTU8/MieW4xRLqs1ohiWZzYXHzNviduMaSxbyz85x27yjHWiwt8
+         a+ct/QarZ6l//+n/sU8KWNc2oqrCTBlQk9kTA2PG+/DJB2yAwOQay9GOKlBqp7UxTHLE
+         lJvnEnIqFDLywU7k8cAs92F7e6632838JUxhhNciXyMSx1sJ/YbzMBlSujiiXO/0bqgd
+         QTVg==
+X-Forwarded-Encrypted: i=1; AFNElJ+b9yBt9ec9nB1rWZRPOYh2wouYuG5XPPXahvhLHCX37ERnTBwYSE4hcbulx0S0I9S3KAYdHBOJx1zk@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTnrKn9Pp3PXzEx/tqd4qRbNsMWTuejtmgGvE+Cv0DZvH2hsVB
+	2Limh5YIC0u/14SD1z0Cdw/cjvi0y1QfBJtZlKqoximfM98vPEyGOw5LznIcPuAML5GpxIfvD8T
+	V+3ZV+2lt0b0J7KV/a1jODe6O6TcthI7lVqrRjkti
+X-Gm-Gg: AeBDievfHUYv7+Njr2ag137OIKm6svLTF5h7AwIi5O1MwdBqL/AkGSCwvAc0kJylVsZ
+	A6mO0XfkJ46LPpl9nLWzetVDQdVdcQxp0ikRSNKuUBb5ijAwEM9jmXE+aLRzcZI8gyNsJn14bRl
+	P/Nqz9SkfEGrT7TSmoqMbe82eXafuQo2hE81a9Q6tcni74cjYqtg00D6mcXVps1inbfBku7B7Ko
+	QXiA/oFVsPts0kqWN1fgmDGgOCdjEk2rAT3HKdJulCbMPqKX7FsHX3Nsspq7l9A+CmeSvX2sUPZ
+	xfWBz2QnoKcItGlbrChd3fQyVcssrZU8vzegkBDp7R3JO/URq55s0UUdHwrZ8SvyfQKoNifTcFY
+	AsqUDvvLwZ4RQa96wWuiya4JHI3yQp12yU9RM+tED5ttAxY80qnTTJeeJIsMeuafRl7hOlnWn7Q
+	==
+X-Received: by 2002:a05:7022:6289:b0:12a:9b80:8a1b with SMTP id
+ a92af1059eb24-12c73fb27fcmr18782265c88.34.1777075617474; Fri, 24 Apr 2026
+ 17:06:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhR++21SD+v4Bb16SQmYHgJYZ0ytQ+BecGPNK+fEOe4G7g@mail.gmail.com>
-X-Rspamd-Queue-Id: A8A73463BEF
+References: <20260424013759.728288-1-kuniyu@google.com> <14cf9ac5-1f11-428e-abf7-cf5075d6c9f9@linux.dev>
+In-Reply-To: <14cf9ac5-1f11-428e-abf7-cf5075d6c9f9@linux.dev>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Fri, 24 Apr 2026 17:06:46 -0700
+X-Gm-Features: AQROBzBa-8MqL1QsHIlrDkwmyoN-LtP0lPzFdg13mS-BaIpH4_2edLDdJUKV50g
+Message-ID: <CAAVpQUB_t5zd_MYcxR4k_pfN69QpwbzJNMYUuNxGBgoOt6x96Q@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Fix null-ptr-deref in kernel_sock_shutdown().
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Kuniyuki Iwashima <kuni1840@gmail.com>, linux-rdma@vger.kernel.org, 
+	syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: E0311464324
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-19534-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,syzkaller.appspotmail.com];
+	TAGGED_FROM(0.00)[bounces-19535-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuniyu@google.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
 
-On Fri, Apr 24, 2026 at 04:59:30PM -0400, Paul Moore wrote:
-> >
-> > > Most LSMs will want to know who is initiating the firmware request
-> > > (the subject), the requested operation/opcode (the action/verb), and
-> > > the target of the request (the object, which in this case is likely
-> > > the kernel or the device).
-> >
-> > How is
-> >   system_u:object_r:httpd_packet_t:s0
-> >
-> > A kernel or device?
-> 
-> It's not.  It's one of two labels on a packet.  I've cautioned you
-> about leaning too heavily on the secmark comparison as it falls apart
-> in a number of places, this is one of those places.
-
-But I want to label a packet too, you keep going back to it not being
-the same thing and I keep repeating that all I want to do is put
-labels on FWCTL packets :(
-
-> > It is a label for packet contents. I also want a label for packet contents.
-> 
-> According to your explanations, my understanding is that you want a
-> fwctl RPC operation.  That is not the same as the secmark label
-> assigned by an iptables/nftables rule.
-
-I view fwctl as an opaque packet based messaging subsystem. It
-communicates a packet to a remote CPU and returns a response packet
-back to the userspace.
-
-Trying to have the kernel assign fixed meaning to the content of the
-packets inside the kernel is contrary to the entire design of fwctl.
-
-It is like demanding the netstack parse HTTP packets as a precondition
-to using LSM. It makes no sense.
-
-Any LSM integration requires a labeling system that is not hard wired
-into the built kernel. I don't much care what it is, so long as the
-classification and label space are defined by userspace.
-
-You say it is not like secmark, fine, but I see a perfect mirror in
-secmark...
-
-> > You can take that view, it is certainly one valid way to look at it.
-> >
-> > But it is completely impractical.
-> 
-> Elaborate on that, because from what I can tell that is the valid way
-> to look at it from a subject/verb/object perspective.
-
-We cannot have the kernel predefine verb labels.
-
-I'm completely fine with using verb if it can be dynamic and userspace
-can tell the kernel what the verbs labels are.
-
-This is the only reason I pointed at secmark, it shows a system that
-has both a user controller classifier and dynamic labels that are not
-fixed into the built kernel. ie it is flexible.
-
-> > > > The same way secmark cannot pre-identify all the XXX_packet_t's.
-> > >
-> > > Once again, I think there is a disconnect or misunderstanding, on a
-> > > SELinux system using secmark all of the packet types, e.g.
-> > > "XXX_packet_t's", *are* pre-defined in the SELinux policy.
-> >
-> > "Pre-defined" in a text files in user space controlled by the admin.
+On Thu, Apr 23, 2026 at 8:10=E2=80=AFPM Zhu Yanjun <yanjun.zhu@linux.dev> w=
+rote:
 >
-> That's not correct.  It's kinda like saying the NIC driver sources are
-> simply "text files in user space controlled by the admin".  
+>
+> =E5=9C=A8 2026/4/23 18:37, Kuniyuki Iwashima =E5=86=99=E9=81=93:
+> > syzbot reported null-ptr-deref in kernel_sock_shutdown(). [0]
+> >
+> > The problem is rxe_net_del() can be called for the same
+> > device concurrently.
+> >
+> > Multiple threads might call udp_tunnel_sock_release()
+> > for the same socket.
+> >
+> > Let's add a per-netns mutex to synchronise rxe_net_del().
+> >
+> > [0]:
+> > Oops: general protection fault, probably for non-canonical address 0xdf=
+fffc000000000d: 0000 [#1] SMP KASAN NOPTI
+> > KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
+> > CPU: 3 UID: 0 PID: 12652 Comm: syz.7.1709 Tainted: G             L     =
+ syzkaller #0 PREEMPT(full)
+> > Tainted: [L]=3DSOFTLOCKUP
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-=
+1.16.3-2 04/01/2014
+> > RIP: 0010:kernel_sock_shutdown+0x47/0x70 net/socket.c:3785
+> > Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 33 48 b8 00 00 00 00=
+ 00 fc ff df 4c 8b 63 20 49 8d 7c 24 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 =
+75 1a 49 8b 44 24 68 89 ee 48 89 df 5b 5d 41 5c e9 46
+> > RSP: 0018:ffffc9000566f180 EFLAGS: 00010202
+> > RAX: dffffc0000000000 RBX: ffff888058587240 RCX: 0000000000000000
+> > RDX: 000000000000000d RSI: ffffffff895ced12 RDI: 0000000000000068
+> > RBP: 0000000000000002 R08: 0000000000000001 R09: ffffed1006d98945
+> > R10: ffff888036cc4a2b R11: 0000003683c25c00 R12: 0000000000000000
+> > R13: ffff88805c998000 R14: 0000000000000002 R15: 0000000000000018
+> > FS:  00007f1306d976c0(0000) GS:ffff8880d65db000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007f1306d97d58 CR3: 00000000404f1000 CR4: 0000000000352ef0
+> > DR0: ffffffffffffffff DR1: 00000000000001f8 DR2: 0000000000000002
+> > DR3: ffffffffefffff15 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >   <TASK>
+> >   udp_tunnel_sock_release+0x68/0x80 net/ipv4/udp_tunnel_core.c:202
+> >   rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inlin=
+e]
+> >   rxe_sock_put+0xae/0x130 drivers/infiniband/sw/rxe/rxe_net.c:639
+> >   rxe_net_del+0x83/0x120 drivers/infiniband/sw/rxe/rxe_net.c:660
+> >   rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
+> >   nldev_dellink+0x289/0x3c0 drivers/infiniband/core/nldev.c:1849
+> >   rdma_nl_rcv_msg+0x392/0x6f0 drivers/infiniband/core/netlink.c:195
+> >   rdma_nl_rcv_skb.constprop.0.isra.0+0x2cb/0x410 drivers/infiniband/cor=
+e/netlink.c:239
+> >   netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
+> >   netlink_unicast+0x585/0x850 net/netlink/af_netlink.c:1344
+> >   netlink_sendmsg+0x8b0/0xda0 net/netlink/af_netlink.c:1894
+> >   sock_sendmsg_nosec net/socket.c:787 [inline]
+> >   __sock_sendmsg net/socket.c:802 [inline]
+> >   ____sys_sendmsg+0x9e1/0xb70 net/socket.c:2698
+> >   ___sys_sendmsg+0x190/0x1e0 net/socket.c:2752
+> >   __sys_sendmsg+0x170/0x220 net/socket.c:2784
+> >   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+> >   do_syscall_64+0x10b/0xf80 arch/x86/entry/syscall_64.c:94
+> >   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> > RIP: 0033:0x7f1305f9c819
+> > Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007f1306d97028 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> > RAX: ffffffffffffffda RBX: 00007f1306216090 RCX: 00007f1305f9c819
+> > RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000003
+> > RBP: 00007f1306032c91 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 00007f1306216128 R14: 00007f1306216090 R15: 00007ffd8ecad288
+> >   </TASK>
+> > Modules linked in:
+> >
+> > Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruct=
+ion per net namespace")
+> > Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/all/69ea344f.a00a0220.17a17.0040.GAE@go=
+ogle.com/
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
+> > ---
+> >   drivers/infiniband/sw/rxe/rxe_net.c |  2 ++
+> >   drivers/infiniband/sw/rxe/rxe_ns.c  | 18 ++++++++++++++++++
+> >   drivers/infiniband/sw/rxe/rxe_ns.h  |  2 ++
+> >   3 files changed, 22 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/s=
+w/rxe/rxe_net.c
+> > index 50a2cb5405e2..1b3615c9262a 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> > @@ -655,6 +655,7 @@ void rxe_net_del(struct ib_device *dev)
+> >
+> >       net =3D dev_net(ndev);
+> >
+> > +     rxe_ns_pernet_sk_lock(net);
+> >       sk =3D rxe_ns_pernet_sk4(net);
+> >       if (sk)
+> >               rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
+> > @@ -662,6 +663,7 @@ void rxe_net_del(struct ib_device *dev)
+> >       sk =3D rxe_ns_pernet_sk6(net);
+> >       if (sk)
+> >               rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
+> > +     rxe_ns_pernet_sk_unlock(net);
+>
+> If one thread is calling rxe_net_del (destroying the socket) while
+> another thread simultaneously
+>
+> calls rxe_newlink to create the socket, I am not sure if a race
+> condition will occur or not.
+>
+> If yes, I think all locations that modify these pointers should hold the
+> mutex.
 
-That's very pedantic. I mean to the point I wonder if we are even
-speaking the same language.
+I haven't looked into newlink path as dellink had
+__sock_put(), but yeah, it looks very racy.
 
-I said the labels are defined by userspace, you said no, and then
-explained that they are defined by userspace going through a bunch of
-steps:
 
-> The SELinux secmark labels are defined in the SELinux policy sources
-> which must be compiled and loaded into the kernel before they are
-> valid on a running system. Policy must be written not only to define
-> the secmark labels, but also to define the access control rules
-> which govern how those packets are handled by the system.  The
-> iptables/nftables command lines simply assign a secmark label to a
-> packet; that's important, but only a small part of the total
-> equation.
 
-I understand all of this, I am totally fine with it. A package will
-install, a distribution will provide, or admin will write these
-things, and do all the steps to load them into the kernel. I don't see
-any issue with that.
+> >
+> >       dev_put(ndev);
+> >   }
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw=
+/rxe/rxe_ns.c
+> > index 8b9d734229b2..375c7d79d9d3 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_ns.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
+> > @@ -16,6 +16,7 @@
+> >   struct rxe_ns_sock {
+> >       struct sock __rcu *rxe_sk4;
+> >       struct sock __rcu *rxe_sk6;
+> > +     struct mutex rxe_sk_lock;
+> >   };
+> >
+> >   /*
+> > @@ -28,9 +29,12 @@ static unsigned int rxe_pernet_id;
+> >    */
+> >   static int rxe_ns_init(struct net *net)
+> >   {
+> > +     struct rxe_ns_sock *ns_sk =3D net_generic(net, rxe_pernet_id);
+> > +
+> >       /* defer socket create in the namespace to the first
+> >        * device create.
+> >        */
+> > +     mutex_init(&ns_sk->rxe_sk_lock);
+>
+> The lock is initialized in rxe_ns_init, but this lock is not handled in
+> rxe_ns_exit
+>
+> (or the corresponding cleanup function).
+>
+> Although a mutex typically does not require special operations upon
+> destruction,
+>
+> the presence of pending lock contention could potentially cause the
+> namespace destruction process to hang.
+>
+> So in rxe_ns_exit or other cleanup functions, add
+> "mutex_destroy(&ns_sk->rxe_sk_lock);"
+>
+> This seems more professional.
+>
+> >
+> >       return 0;
+> >   }
+> > @@ -71,6 +75,20 @@ static struct pernet_operations rxe_net_ops =3D {
+> >       .size =3D sizeof(struct rxe_ns_sock),
+> >   };
+> >
+> > +void rxe_ns_pernet_sk_lock(struct net *net)
+> > +{
+> > +     struct rxe_ns_sock *ns_sk =3D net_generic(net, rxe_pernet_id);
+> > +
+> > +     mutex_lock(&ns_sk->rxe_sk_lock);
+> > +}
+> > +
+> > +void rxe_ns_pernet_sk_unlock(struct net *net)
+> > +{
+> > +     struct rxe_ns_sock *ns_sk =3D net_generic(net, rxe_pernet_id);
+> > +
+> > +     mutex_unlock(&ns_sk->rxe_sk_lock);
+> > +}
+> > +
+>
+> Introducing a mutex lock will serialize all RXE device deletion operation=
+s
+>
+> within the same network namespace (netns). Although deletion is not a
+>
+> fast path operation, it may increase control-plane latency in environment=
+s
+>
+> with a large number of virtual adapters. It is necessary to verify
+> whether a more
+>
+> lightweight solution (such as an xchg atomic exchange operation) exists t=
+o
+>
+> handle the extraction and nullification of the socket pointers.
+>
+> Although rxe is a simulation driver, it does not focus on the
+> performance. But a lighter lock
+>
+> might as well benefit the whole system
 
-Hardwiring things into the built kernel is a problem that must be
-avoided because end users only run the kernel provided by the
-distribution. "recompiling the driver" is not an option that is
-available.
+I will move socket creation/destruction to __net_init and
+ __net_exit instead of adding mutex.  Then, sock_hold()
+and __sock_put() will be unnecessary too.
 
-Jason
+I don't find a good reason to defer socket creation to
+the first device creation, which needs synchronisation
+within the same netns anyway.
 
