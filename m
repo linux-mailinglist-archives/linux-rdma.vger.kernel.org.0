@@ -1,91 +1,80 @@
-Return-Path: <linux-rdma+bounces-19537-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19538-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OLdVFYwS7Gl8UAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19537-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 03:02:04 +0200
+	id oC4yHbYU7GnWUAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19538-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 03:11:18 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA4A464601
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 03:02:03 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68466464646
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 03:11:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 509A83017076
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 01:02:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D6083300D324
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 01:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7121F1513;
-	Sat, 25 Apr 2026 01:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20467155C82;
+	Sat, 25 Apr 2026 01:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZElFdXBr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m06eL3KB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829B51E7C23
-	for <linux-rdma@vger.kernel.org>; Sat, 25 Apr 2026 01:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8362E65D;
+	Sat, 25 Apr 2026 01:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777078919; cv=none; b=EUL+S/C41v/yIivXrPu48oCOtXrP478S/NkwlGJ5nHFaKwZugskJn+raGQ88E30TxwgPd6K98xrldCQooGDlSzA8jBw1SQTaGaS2bmrzzxjIp8ALfQWmNy5HlWLqxizPcg7OQcNJ8yUq/xYKjUhdEWyL5Jk7CI2BMW4RbJpHPNI=
+	t=1777079473; cv=none; b=NYnxUQeFq88h/k4Wz7uPhOhHMIQuBNDpVvtFph7Xg4C1d8lrkJe1ksnDaK21iLD2YNTCiqHbq8OD6fk821Mx4RNwOq4Qyygx41wnddlIW5LVQKjhKtEhidLST8gKK2vh4ytSw7LoB7YUMrvXu6sqpfLRmpbFAYxUnJwJEC01mZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777078919; c=relaxed/simple;
-	bh=pGKwd41KQ8VX0PGv0k92ogSM3xjtZyf2NxufUOzNjD0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oiJ8o8bd0nbMBs+iPsPAPalSykXVSrSylDn3+gKufES4OIF9jA9VtttJiqOFZbFULkNrsl9qTOsURdr5raIOk4+iVFSxhUGzRxZMcH5aXBfycMhUo776NEqN8HpjrivdOMgP5Ouaz/C0gyBVbiN3DOInSN2rbAh+PMRW3Kn/FEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZElFdXBr; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-488ab2db91aso115241705e9.3
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2026 18:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777078916; x=1777683716; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkRSJPCvN16HLT6MSy3CwRc7MA4DpomgTY4ehFZ/ow0=;
-        b=ZElFdXBryzfqOpNzONXivzh3xfV0niHeG+PNAtpV1LI8L86D+6UmV552sxeDD8E0Nd
-         jxn+jRHG3dVJxw7hw0s7uu3xQ6EbpzB1xfD6e1p9MQY6Ke8EdSi3NG2A2DvEbax5aLwV
-         4liEh2mRT0C/zwBihElQtMRTntUen930eYaidwWv2/WylrfD19nMo3d1bryKG6WrIZfq
-         WfgE5cbtVl3bIpz+5HUuTOPdviCPujJAGQEpQC7PLeHAmTO9Z9MEhvO1eKrQIRrPn6VL
-         viE6AZSpB9yMKn4Q7RSA+jyu9QHxhu0pfwS9XHcYI42+Qe8Zv6A5HpOhGiRvoMEfzfd+
-         7afQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777078916; x=1777683716;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gkRSJPCvN16HLT6MSy3CwRc7MA4DpomgTY4ehFZ/ow0=;
-        b=KwyGEJcndUL/TFxm3sSNMp2ypaO1aLymlAT19FQjaZQ8wJJA9BZO0oKCp1BL5BkRW8
-         PC1kHnZF2jiqrM3s7NeBJMdl+LJ4h3N6Cs4Wadi3LyxRE/2cLvbXQPlYv3ifbgscwNN4
-         /jvBKH7SeDdJWFsJVXP/pKTwkng/w+35S8rC53xA8brb+pllWWMwpjf1xMmoEf04pNFZ
-         z5+khpmn4Jiwb6iq5MsJvkWRiOGBuHzDmqMb6UR9PtMCeCtGFronw/rjNS3hZgNt72AT
-         9J3ROqQ2csKdoqi4W9iiXzcrYP61MQIb0k3ySegvUk7N+wm+85ZYZDvKFrraVOnMy2PM
-         6sOQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9/keGY/Zlkqsl0YpzH3lIw5E8Dia5bTZ7fgyUJCgwodyMLvWaDjFVaQlCdouBgQYREmWLb51n2Xpi7@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz07WSR4UhaxAZdyx5hVdgybIqq2s2xE13VFQSfFnqEopmjxnlL
-	OCnD9LwAi5fqKYPkQfnADManPDeKCeVNLDyd3pBUYYcU5JuGTJGCFUCu
-X-Gm-Gg: AeBDieuCCIATcicszyvV4NhZ2pv7oJk6S7BemzvRGGzEr79JS44XXZeqf8p3Ckt4hcf
-	I/BiiypUJYam6wbvBe8m67cpOw4hCSwI7XRhZ2GtA7hZVqk3WjJ/RSlyWcs61KPCtmwS9u9nGRH
-	CkVue8ZOBCtCsJp7LvNcIXj+niOz2siuWSom3stvCfxL4WVqNOlG58+bvLOdqAF29q5wIOjPS0N
-	Te/sYztKvrsScwoQVFmTs6hDrjvOsUUQ8+i2od0D2Xp6SH0fGkVpciQQ4tEYzUuUWkMyfiUSNa7
-	b+rYLe3zCHvya147WjXPYJnguKsDdVvEpkSga4ut3zjJZhK1tUt8OuZZv20EpA4RRtRikCE59l3
-	GhS0GKuQc/aR9U4vd8D0Gcvsg8TFOjJdH4vPeMtVt5E4/4/6bkGr23Z858CiwWa+xJPc/t6In3Q
-	Qom8M1K4/p9aYYm2VTzrTznl7CKGbPTIWep4HNWKDOaPRQsx0qaZEBwq6PFPaDnaDW7W+2lr69M
-	h0OwhxhYvZfksyZImEEawzKxX9gtNg3zCE5FLUzTxgoDReapkXs
-X-Received: by 2002:a05:600c:1614:b0:489:1e8a:90b4 with SMTP id 5b1f17b1804b1-4891e8a91e8mr203282145e9.21.1777078915677;
-        Fri, 24 Apr 2026 18:01:55 -0700 (PDT)
-Received: from SD.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a5549f582sm98835785e9.33.2026.04.24.18.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2026 18:01:55 -0700 (PDT)
-From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-To: jgg@ziepe.ca,
-	leon@kernel.org
-Cc: yishaih@mellanox.com,
+	s=arc-20240116; t=1777079473; c=relaxed/simple;
+	bh=RX98IrciXUc5Mgh1BiQcNQ/X6SjvkQeVMibJ3fVYsB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cCsqiw4lWvgGvOfdCM8OGBoqnbSqfCY93kXVDUHouy2ApQ6s/5Mu6DBdAVA0G3fA5OE4I9wWNf6Ly1lSdRdJMn8OpE547qk/wVN0QBpbDBM8+au8b7RojG4mmQpC0Cjl5Mf0mZCi4HYJuP0snzQ0rNZAbFfPETYczpFSvxetpUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m06eL3KB; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1777079471; x=1808615471;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=RX98IrciXUc5Mgh1BiQcNQ/X6SjvkQeVMibJ3fVYsB4=;
+  b=m06eL3KB/5IVn+zGOfgfakqrWs1zWOsOAdCE5vWkLhMIZklwasw3YpAF
+   WuTzJevq4uZRjDj8NC903emYX5uCDybRdmZk0yENjAuYAfZgLdbk6iTcX
+   xC4bx/iFyXG3fOeSFXo6TtjTNrHI0eiAoEpJ1Bmv1HdVZhc5tbRtJMIqT
+   GSNp3YCTdNX50ieZ+eXzLmYSXoFv+yvc4ldij1nV9ZmVvSURQnlKlATsJ
+   Phgrz6AE8zf/ah8Gywtmj7FzboeyewdfarsNUbYZDxQ3d7QzLbhH8ROhc
+   EJVTP13U5Q4lvrVDhLj5+5ecevBkwEb+FnFbNAwLgXCud+wdhlVfItbTn
+   g==;
+X-CSE-ConnectionGUID: 0SG4pWh6QIqqjnghlZXZ8A==
+X-CSE-MsgGUID: TqRhdCiCQ9+0/3tF75+7ZQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11766"; a="88373622"
+X-IronPort-AV: E=Sophos;i="6.23,197,1770624000"; 
+   d="scan'208";a="88373622"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2026 18:11:10 -0700
+X-CSE-ConnectionGUID: NgtTs5/bT2SenE7Vdi8CQg==
+X-CSE-MsgGUID: gy2pU2wqSiysT8aoLOHdNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,197,1770624000"; 
+   d="scan'208";a="232990183"
+Received: from arjan-box.jf.intel.com ([10.88.27.153])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2026 18:11:11 -0700
+From: Arjan van de Ven <arjan@linux.intel.com>
+To: kuniyu@google.com
+Cc: Arjan van de Ven <arjan@linux.intel.com>,
 	linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
-Subject: [PATCH rdma v1] RDMA/mlx5: Fix devx subscribe-event unwind NULL dereference
-Date: Sat, 25 Apr 2026 01:59:15 +0100
-Message-ID: <20260425010107.19586-1-prathameshdeshpande7@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Subject: Re: [syzbot] [net?] general protection fault in kernel_sock_shutdown (4)
+Date: Fri, 24 Apr 2026 18:12:25 -0700
+Message-ID: <20260425011228.363364-1-arjan@linux.intel.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <69ea344f.a00a0220.17a17.0040.GAE@google.com>
+References: <69ea344f.a00a0220.17a17.0040.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -93,93 +82,192 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: CAA4A464601
+X-Rspamd-Queue-Id: 68466464646
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[mellanox.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-19537-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-19538-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[linux.intel.com,vger.kernel.org,gmail.com,ziepe.ca,kernel.org];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[arjan@linux.intel.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DKIM_TRACE(0.00)[intel.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	SUBJECT_HAS_QUESTION(0.00)[]
 
-MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT() links event_sub into sub_list
-before initializing the fields used by the shared error path.
 
-If eventfd_ctx_fdget() then fails, the unwind path dereferences
-event_sub->ev_file in uverbs_uobject_put() and calls
-subscribe_event_xa_dealloc() with event_sub->xa_key_level1 still unset.
+Unfortunately the AI had a burp and did not write out the proper URL
+for analysis data; it should have been
 
-Also, if kzalloc_obj() for event_sub fails after
-subscribe_event_xa_alloc() succeeds, the current iteration is not yet
-tracked in sub_list, so the shared unwind path cannot undo the XA
-allocation.
+http://oops.fenrus.org/reports/lkml/69ea344f.a00a0220.17a17.0040.GAE_google.com/report.html
 
-Initialize the shared-unwind fields before linking event_sub into
-sub_list and explicitly unwind the XA allocation on event_sub allocation
-failure.
+and in addition, it made a candidate patch (below)
 
-Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over DEVX")
-Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+
+
+
+
+
+
+
+
+
+
+From: Arjan van de Ven <arjan@linux.intel.com>
+Subject: [PATCH] RDMA/rxe: fix double-release race on UDP tunnel socket teardown
+
+This patch is based on a BUG as reported at
+https://lore.kernel.org/r/69ea344f.a00a0220.17a17.0040.GAE@google.com.
+
+The Soft RoCE (RXE) driver stores per-network-namespace UDP tunnel
+sockets for IPv4 and IPv6 encapsulation. Two independent code paths
+tear these sockets down: rxe_ns_exit(), called when a network
+namespace is destroyed, and rxe_net_del(), called when an RDMA link
+is deleted via netlink. Both paths read the per-namespace socket
+pointer and call udp_tunnel_sock_release() on it.
+
+A time-of-check/time-of-use (TOCTOU) race exists in rxe_net_del().
+It reads the socket pointer via rxe_ns_pernet_sk4(), then passes it
+to rxe_sock_put() for release. If rxe_ns_exit() runs concurrently
+between the read and the release, it clears the pointer and calls
+udp_tunnel_sock_release() first, causing sock_release() to set
+sock->ops = NULL. When rxe_net_del() then calls
+udp_tunnel_sock_release() on the same socket, kernel_sock_shutdown()
+dereferences the now-NULL sock->ops, triggering a KASAN null-ptr-deref
+at offset 0x68 (the shutdown function pointer in struct proto_ops).
+
+A minimal alternative would guard against NULL sock->ops inside
+udp_tunnel_sock_release() before calling kernel_sock_shutdown(). That
+treats the symptom rather than the root cause and leaves the
+double-release of socket state intact.
+
+Add rxe_ns_pernet_take_sk4() and rxe_ns_pernet_take_sk6() which use
+xchg() to atomically swap the per-namespace socket pointer to NULL
+and return the old value. Replace the non-atomic reads in
+rxe_net_del() with these take variants, and release the socket
+directly via udp_tunnel_sock_release() without going through
+rxe_sock_put().
+
+Whichever teardown path executes take first claims ownership of the
+socket; the second caller gets NULL and skips the release, closing
+the double-release window.
+
+Link: https://lore.kernel.org/r/69ea344f.a00a0220.17a17.0040.GAE@google.com
+Oops-Analysis: http://oops.fenrus.org/reports/lkml/69ea344f.a00a0220.17a17.0040.GAE_google.com/report.html
+Fixes: 13f2a53c2a71 ("RDMA/rxe: Add net namespace support for IPv4/IPv6 sockets")
+Fixes: f1327abd6abe ("RDMA/rxe: Support RDMA link creation and destruction per net namespace")
+Assisted-by: GitHub Copilot patcher:claude linux-kernel-oops-x86.
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+
 ---
- drivers/infiniband/hw/mlx5/devx.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_net.c |    8 ++++----
+ drivers/infiniband/sw/rxe/rxe_ns.c  |   14 ++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_ns.h  |    7 +++++++
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 645ebcc0832d..3d1528b1c816 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -2160,10 +2160,16 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 50a2cb5405e22..4f604636cb7b4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -655,13 +655,13 @@ void rxe_net_del(struct ib_device *dev)
  
- 		event_sub = kzalloc_obj(*event_sub);
- 		if (!event_sub) {
-+			subscribe_event_xa_dealloc(devx_event_table,
-+						   key_level1,
-+						   obj,
-+						   obj_id);
- 			err = -ENOMEM;
- 			goto err;
- 		}
+ 	net = dev_net(ndev);
  
-+		event_sub->ev_file = ev_file;
-+		event_sub->xa_key_level1 = key_level1;
- 		list_add_tail(&event_sub->event_list, &sub_list);
- 		uverbs_uobject_get(&ev_file->uobj);
- 		if (use_eventfd) {
-@@ -2178,9 +2184,6 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
- 		}
+-	sk = rxe_ns_pernet_sk4(net);
++	sk = rxe_ns_pernet_take_sk4(net);
+ 	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk4, net);
++		udp_tunnel_sock_release(sk->sk_socket);
  
- 		event_sub->cookie = cookie;
--		event_sub->ev_file = ev_file;
--		/* May be needed upon cleanup the devx object/subscription */
--		event_sub->xa_key_level1 = key_level1;
- 		event_sub->xa_key_level2 = obj_id;
- 		INIT_LIST_HEAD(&event_sub->obj_list);
- 	}
--- 
-2.43.0
-
+-	sk = rxe_ns_pernet_sk6(net);
++	sk = rxe_ns_pernet_take_sk6(net);
+ 	if (sk)
+-		rxe_sock_put(sk, rxe_ns_pernet_set_sk6, net);
++		udp_tunnel_sock_release(sk->sk_socket);
+ 
+ 	dev_put(ndev);
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
+index 8b9d734229b24..d9d376e3c670f 100644
+--- a/drivers/infiniband/sw/rxe/rxe_ns.c
++++ b/drivers/infiniband/sw/rxe/rxe_ns.c
+@@ -91,6 +91,13 @@ void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk)
+ 	synchronize_rcu();
+ }
+ 
++struct sock *rxe_ns_pernet_take_sk4(struct net *net)
++{
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	return xchg((__force struct sock **)&ns_sk->rxe_sk4, NULL);
++}
++
+ #if IS_ENABLED(CONFIG_IPV6)
+ struct sock *rxe_ns_pernet_sk6(struct net *net)
+ {
+@@ -111,6 +118,13 @@ void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
+ 	rcu_assign_pointer(ns_sk->rxe_sk6, sk);
+ 	synchronize_rcu();
+ }
++
++struct sock *rxe_ns_pernet_take_sk6(struct net *net)
++{
++	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
++
++	return xchg((__force struct sock **)&ns_sk->rxe_sk6, NULL);
++}
+ #endif /* IPV6 */
+ 
+ int rxe_namespace_init(void)
+diff --git a/drivers/infiniband/sw/rxe/rxe_ns.h b/drivers/infiniband/sw/rxe/rxe_ns.h
+index 4da2709e6b714..9d9a5106b77c8 100644
+--- a/drivers/infiniband/sw/rxe/rxe_ns.h
++++ b/drivers/infiniband/sw/rxe/rxe_ns.h
+@@ -5,10 +5,17 @@
+ 
+ struct sock *rxe_ns_pernet_sk4(struct net *net);
+ void rxe_ns_pernet_set_sk4(struct net *net, struct sock *sk);
++struct sock *rxe_ns_pernet_take_sk4(struct net *net);
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+ void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk);
+ struct sock *rxe_ns_pernet_sk6(struct net *net);
++struct sock *rxe_ns_pernet_take_sk6(struct net *net);
+ #else /* IPv6 */
+ static inline struct sock *rxe_ns_pernet_sk6(struct net *net)
+ {
+@@ -18,6 +25,10 @@ static inline void rxe_ns_pernet_set_sk6(struct net *net, struct sock *sk)
+ {
+ }
+ 
++static inline struct sock *rxe_ns_pernet_take_sk6(struct net *net)
++{
++	return NULL;
++}
+ #endif /* IPv6 */
+ 
+ int rxe_namespace_init(void);
 
