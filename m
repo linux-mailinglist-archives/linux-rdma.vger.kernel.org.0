@@ -1,514 +1,191 @@
-Return-Path: <linux-rdma+bounces-19551-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19552-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +uSSD1w97WmwhAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19551-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 00:17:00 +0200
+	id g0rxM0TQ7Wn2nwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19552-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 10:43:48 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF2F468068
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 00:16:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25D1546921A
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 10:43:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B36443008E32
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2026 22:16:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7200A301E96B
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 08:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03223115BC;
-	Sat, 25 Apr 2026 22:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C253446AB;
+	Sun, 26 Apr 2026 08:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sjcons.kr header.i=@sjcons.kr header.b="yuFmhWNp"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="IaugDa5o"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hqmissioninboxes.com (hqmissioninboxes.com [212.56.37.4])
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013031.outbound.protection.outlook.com [40.93.196.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC2C54723
-	for <linux-rdma@vger.kernel.org>; Sat, 25 Apr 2026 22:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.56.37.4
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777155415; cv=none; b=h4kZJsW80y9V2e7X/KREFdDJSbiZpR1rZWnXHAEeCGGI/4dXkRC6pKENYIhZuaC6N4lxM/5QmHAXfIMgJkkGA67hJtWm/cGPcntIULV3aul9dm1CEI2361IXoCvFpiCdj7hkaPKYWUQkQiEP4GMh8cr5Jm27jdYqyWyTbAeCh0w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777155415; c=relaxed/simple;
-	bh=X1KcEk65a1bQ2E/DlJCvEKiq6VJjJzP+QWrrtFP8Xf8=;
-	h=Date:From:To:Message-ID:Subject:Mime-Version:Content-Type; b=Aj0UwVWZzzXLG+FOtHLPkvxVDOtFBCUNJP5meSuEa/foVdAYD/xV+hUEe5pocPydELQ0CRam94LU5cytMhrwkIGGeURhtjyBJDuyUBNTyFflZH8s3G92e2ZqkEBs1HtmILhGouoTYPu6oLsK9QxkKOitzXTjkvWQVuIl8vkr0iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sjcons.kr; spf=pass smtp.mailfrom=sjcons.kr; dkim=pass (1024-bit key) header.d=sjcons.kr header.i=@sjcons.kr header.b=yuFmhWNp; arc=none smtp.client-ip=212.56.37.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sjcons.kr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjcons.kr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=sjcons.kr;
-	s=mi-owGeXK; t=1777155075;
-	bh=GUIjqwUfvV9p/9ASBGotl+T4fkYX1SiStV7Trj/Jcq4=;
-	h=date:from:to:message-id:subject:mime-version:content-type:content-transfer-encoding;
-	b=yuFmhWNp7rIarBpzEM4ZRTeLYjWcsVYsxeycIR3cvNfvDi71KaC+tfNJkAgUCb8Fawb0xAOR
-	q+C/f4uX0DF0Ve+oscYysjFV85yZ0AD0XLldH2qfDCVZCcFuRVZn0htqmLlpcaDVF5pr9EO2
-	E/M545B7/LLnCyWOnpulLWfVamQ=
-X-MI-Unique: xVhe69eoGk4Xi328
-Received: from api by mi.secureoutboxment.com with HTTP; Sat, 25 Apr 2026 22:11:15 +0000
-Date: Sat, 25 Apr 2026 22:11:15 +0000
-From: Support <info@sjcons.kr>
-To: linux-rdma@vger.kernel.org
-Message-ID: <e293b972-416f-4919-bae0-56d00ac4da2f@sjcons.kr>
-Subject: Domain Renewal Notice
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A9D342C98;
+	Sun, 26 Apr 2026 08:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.31
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777192741; cv=fail; b=bEPRYSIyiPIg60lCE9MOToENDmlzze+5wDiHKlz+dja2qPRmsXktu1GIH/6PoXNSZiYIFA7dn/Cmt8kE+3SF/SUOo5Sy1CPsgjyy2k4X+n8aMzzI7ZMf0ELBP4634fxsnV2NoKPIzzwmX3pEpCegsYGMIJavkciUzFdbRRBlmR0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777192741; c=relaxed/simple;
+	bh=RLgAWE+OZvKH+iY+OVjxd7PTEIFPGabSTvSkSKdYvA4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bVWqNA60Y3o1Szvxydte6sgQrDfb1U+0dWhUlDRHXTCtneEjTpi82CC8ROqTm3f4udoFdH2GaOJDpDpF3sAKiyiK9nASF698IxBbUz4qmiBj5+URjc7PzdJpcD5HgDRHGe+5CVcxX7RqWz902fHQfUoSfPXtcOU4spmsbB4uQMw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=IaugDa5o; arc=fail smtp.client-ip=40.93.196.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rEoO5TQ1ZbghCv0sXGxp53o5aFKNW6gPJVLeSNJ/y2cPNSCIPr53OyCgGbBiylTYMdnQKSIR8+sH80+bJVnAJTPZdfmIJyshq1SZgNdjGRmt9/GcH+eofIaCU4QoucJQ8rDgO1RPPc8pLGtmiKr05xCrZwwg7tQBizvX+t41fzX/Cos5wzgPM/u8aaVy9mvqfqfwGJ23Yu+KpgcoxF9qqjDOQ0lGjTgcl9uLyRiSOVJDfz7WxLx5tvBxR086EyouJYWI3kr4sbToN8bkK2pWrvXY8/vBYmUjTo7YR2fIF1boTLm7lk1Ha5vpi+jn0JC2hSlZlZvWgfhx+3aZ6VDwOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ASD5TSYm9Y9PwjbLUR7uHEmVZZH8chZyiEtv+0ypBfA=;
+ b=nrvsxejzfkFJk8VKnPQTqLyX9oQIjTLR/RrzIJcSHRShp1LaFmEmzverd35ckUVFKycGeVX2saXKhfCUDbjO9PfMjGWOAVsLys7YhBLtJvrv3K1YBl9vQe5k3NE3Tkld+ZBpAq4dHJA5a5aOTbl8Z4b7X/Hob7EAoM5mKoS9PhEoehrzRYTPVWKMLrlMc2EjfYmltt2AdrPOkmLNC+kNjSnppaES8VPoEBt5AjH5uy9V5PUYM1qoDd5pRlKM4PYjuDZz9xPmbkrtc8i7Yvi503T0wXbh738dMjd3EhSIAvgk5VVIUcj0rDCar2O9pPiGFkehu7sSo11CEkTDcNkkiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ASD5TSYm9Y9PwjbLUR7uHEmVZZH8chZyiEtv+0ypBfA=;
+ b=IaugDa5oNg+oWhvEI+BMYzyTooHTfZrJD4GqcEBaLN0aUCNPlR9BfVH9mythtnwJ8Dv4y2ZOnVVmLUcNcUFE7ii9YzKAYaupGAve4b5/be53eYpND3UEQ6W34MaOC01z+RxQ5N9ndGNNCuAxTcv1RKU3L0XrF1d2YsvX1JSCRs8AngftUyltKmHK5U5KLJx0bwnexo3Hj+a709aIgI+pBfAT6vjzMB8+LDgl8R7EUuKDa4JTXwukJzlf3LHEksNAFZLPGJVRJhyH1f29Le0qqR8zu8mY3KT57lw/UihL6+fiD460/gJC2oKO8Ii3aRTzyS7naHB3/JXHlt1C3ycAKA==
+Received: from BYAPR04CA0018.namprd04.prod.outlook.com (2603:10b6:a03:40::31)
+ by SA0PR12MB4413.namprd12.prod.outlook.com (2603:10b6:806:9e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.14; Sun, 26 Apr
+ 2026 08:38:56 +0000
+Received: from MWH0EPF000A6730.namprd04.prod.outlook.com
+ (2603:10b6:a03:40:cafe::85) by BYAPR04CA0018.outlook.office365.com
+ (2603:10b6:a03:40::31) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9846.25 via Frontend Transport; Sun,
+ 26 Apr 2026 08:38:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000A6730.mail.protection.outlook.com (10.167.249.22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9846.18 via Frontend Transport; Sun, 26 Apr 2026 08:38:56 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 26 Apr
+ 2026 01:38:39 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 26 Apr
+ 2026 01:38:39 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Sun, 26
+ Apr 2026 01:38:34 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Boris Pismenny <borisp@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, "Mark
+ Bloch" <mbloch@nvidia.com>, Daniel Zahka <daniel.zahka@gmail.com>, "Willem de
+ Bruijn" <willemdebruijn.kernel@gmail.com>, Cosmin Ratiu <cratiu@nvidia.com>,
+	Raed Salem <raeds@nvidia.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>, Kees Cook <kees@kernel.org>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>
+Subject: [PATCH net V2 0/2] net/mlx5e: PSP fixes
+Date: Sun, 26 Apr 2026 11:38:17 +0300
+Message-ID: <20260426083819.208937-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="--==_mimepart_69ed3c03cebc3_137b2095312c0";
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 6BF2F468068
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000A6730:EE_|SA0PR12MB4413:EE_
+X-MS-Office365-Filtering-Correlation-Id: 52e5d044-4be3-4621-0817-08dea36f410b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|36860700016|376014|82310400026|1800799024|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	Kdt1EF+w9stAwDDgdwbnBQKvQcIY/qs1G+9e0VWeJN6gNriuHSwKS2VcWcF9SuAN2lUY4x3E31WtVGq2QAYI6rSrGlRgwWr0/WSM0P539a5xd9nQ0NUxRv548IxpXL80JOzqGVoykaHyPqTk9LU2hDrKry6asyw8gL4TjjnwqsITrF7H8dU+PT/twFEr8fCMrRqpWH4BNNWBeWaxihtTOtdQ+OoSIAg3VNEJX9ojUWHSo4Ia26OxlZun9Y1m48XiFhZE9KT65g6nt7mFwy8h4jpER34vEeNYpgZtNG7jQiQ/zIDnOBx62xajEpg1G/niLIpciUCsPNErjsq+wp25+aPYjakpbr7DRcZrDKdx4ibBovvx3zcXKPtYN1nnZGD0aCOK9QxcYkyiWhoq/MBM/4/sFN4ZEG37LHxDDhXfk8SyB19LQaXb9Q7vpQ8adW/c3IkxCZQ9xbHfhdoAeIxqRoKqyPQYUXMY1ER4QsGkElVQUqC1h/HafDW9eQWxAQ2c1NnJ+6Gfjurn8ggIiaWPpxfCZo/X92LA3PoREwds7Tk8Fqh35Je5csmFnyJv6ko0QnBA/ztklMlpgnrMnkxKFQqKEivOlQQ4pPsuUHq/pPLbdyx9NKllNS4+4nZZVdualQaBCtB6S5ea76ogJVM8jYAFubbGoRPobhwA9tiffM39XPuZIyRhCMhRvMtdXyzW2GvGnegezcA1ziUyeeyJ0+sg3R3TwYlzACSLRW3gL9/H7h8PS6ghHtBeAIjE2F7TWh14Cg8+mvPBfMvMDQrotg==
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(36860700016)(376014)(82310400026)(1800799024)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	1dknxCvu17rYonwe9iqxJEuqc17pDhg3+RjNFR2P7WyHFv/GVWK+umOmhpJ5/oS8HReKmKqhvj6H3oeWmFe6XzxJ95Egpvcdo6e3rExtLx+l5fR8aSok9/DSUhzE395xIpQgbeQ4bd6i3TSMvvr8qhTpf8hMmvh1+GS1uwYEvqDaG9yp4wmKHFo3gVQxfELNoYNp94r4C4r3or5SwqSvBXJ6IZtZP9VkObrjEimuJWBDvah78ucC5g/CSix1xmU10C1sGS/g3nzIr0uBUZonPmMwIDUzTnH0ly7NwN6VP4pacBKa5E2s6OiXHiAKFiezkkrMynLJcgFTBHSjalT9ruAmHEtwvyPyJQ91KiHjrhoLGNRJhIphkcVyBFtY5NwghLEZ5RzF0MOY1vY1C0TDp7UQx2GJS5nKACacLzNxFVblMbdHtFoI+Ryzwn1p1ZB0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2026 08:38:56.0026
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52e5d044-4be3-4621-0817-08dea36f410b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000A6730.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4413
+X-Rspamd-Queue-Id: 25D1546921A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.20 / 15.00];
-	CTYPE_MIXED_BOGUS(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[sjcons.kr,quarantine];
-	R_PARTS_DIFFER(0.41)[70.6%];
-	R_DKIM_ALLOW(-0.20)[sjcons.kr:s=mi-owGeXK];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[multipart/mixed,multipart/alternative,text/plain];
-	MANY_INVISIBLE_PARTS(0.05)[1];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	NEURAL_SPAM(0.00)[0.758];
-	TAGGED_FROM(0.00)[bounces-19551-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[nvidia.com,kernel.org,gmail.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-19552-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
-	RCPT_COUNT_ONE(0.00)[1];
-	DKIM_TRACE(0.00)[sjcons.kr:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[info@sjcons.kr,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[notifications.googleapis.com:url]
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:mid];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
+
+Hi,
+
+This patchset provides bug fixes from Cosmin to the mlx5e PSP feature.
+
+Thanks,
+Tariq.
+
+V2:
+- Link to V1:
+  https://lore.kernel.org/all/20260417050201.192070-1-tariqt@nvidia.com/
+- Expand commit message in patch #1.
+
+Cosmin Ratiu (2):
+  net/mlx5e: psp: Fix invalid access on PSP dev registration fail
+  net/mlx5e: psp: Hook PSP dev reg/unreg to profile enable/disable
+
+ .../mellanox/mlx5/core/en_accel/psp.c         | 36 ++++++++++---------
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  4 +--
+ 2 files changed, 22 insertions(+), 18 deletions(-)
 
 
-----==_mimepart_69ed3c03cebc3_137b2095312c0
-Content-Type: multipart/alternative;
- boundary="--==_mimepart_69ed3c03ce62e_137b209531168"
-Content-Transfer-Encoding: 7bit
+base-commit: d40831b016b4986e70d20d0ad14e6a0c62318986
+-- 
+2.44.0
 
-
-----==_mimepart_69ed3c03ce62e_137b209531168
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Let's Keep Your Domain Active
-    
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background-color: #f7f8fc;
-            color: #2d3748;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-        }
-        .header {
-            background: linear-gradient(135deg, #0073aa 0%, #005a87 100%);
-            padding: 48px 30px;
-            text-align: center;
-            color: white;
-        }
-        .header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .header-subtext {
-            font-size: 14px;
-            opacity: 0.92;
-        }
-        .content {
-            padding: 44px 30px;
-        }
-        .greeting {
-            font-size: 16px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-        .message {
-            font-size: 15px;
-            line-height: 1.8;
-            margin-bottom: 24px;
-            color: #4a5568;
-        }
-        .feature-highlight {
-            background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%);
-            border-radius: 8px;
-            padding: 24px;
-            margin: 28px 0;
-            border: 1px solid #bfdbfe;
-        }
-        .feature-highlight .label {
-            font-size: 12px;
-            color: #0073aa;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .feature-highlight .domain-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0073aa;
-            word-break: break-all;
-        }
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #0073aa 0%, #005a87 100%);
-            color: white;
-            padding: 16px 40px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 28px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 14px rgba(0,115,170,0.2);
-            width: 100%;
-            text-align: center;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,115,170,0.3);
-        }
-        .reassurance-section {
-            background: #f9fafb;
-            padding: 22px;
-            border-radius: 8px;
-            margin: 24px 0;
-            border: 1px solid #e2e8f0;
-        }
-        .reassurance-section h3 {
-            font-size: 14px;
-            color: #0073aa;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .reassurance-section p {
-            font-size: 14px;
-            color: #4a5568;
-            margin: 0;
-        }
-        .help-content {
-            background: #f0f6ff;
-            padding: 22px;
-            border-radius: 8px;
-            margin: 28px 0;
-            border-left: 4px solid #0073aa;
-        }
-        .help-content p {
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: #1e3a8a;
-        }
-        .help-content a {
-            color: #0073aa;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .help-content a:hover {
-            text-decoration: underline;
-        }
-        .footer {
-            background-color: #f7f8fc;
-            padding: 28px 30px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 12px;
-            color: #718096;
-            text-align: center;
-        }
-        .footer-logo {
-            margin-bottom: 12px;
-            font-weight: 700;
-            color: #0073aa;
-            font-size: 14px;
-        }
-    
-
-
-    
-        
-            Let's Get Your Domain Back on Track
-            A quick payment update is all we need
-        
-        
-        
-            Hi there,
-            
-            
-                We tried to renew your domain, but our system encountered a hiccup with the payment. The good news? It's super easy to fix! Just update your payment details, and your domain vger.kernel.org will be good to go for another year.
-            
-            
-            
-                Domain Needing Renewal
-                vger.kernel.org
-            
-            
-            Update Your Payment Now
-            
-           
-            
-            
-                Need a hand?
-                Don't worry, we've got you covered. Head over to wordpress.com/support to find helpful resources, guides, and our friendly support team ready to assist you.
-            
-        
-        
-        
-            WordPress.com
-            60 29th St, San Francisco, CA 94110
-----==_mimepart_69ed3c03ce62e_137b209531168
-Content-Type: text/html;
- charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE html>
-<html lang=3D"en">
-<head>
-    <meta charset=3D"UTF-8">
-    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scal=
-e=3D1.0">
-    <title>Let's Keep Your Domain Active</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', '=
-Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background-color: #f7f8fc;
-            color: #2d3748;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-        }
-        .header {
-            background: linear-gradient(135deg, #0073aa 0%, #005a87 100%)=
-;
-            padding: 48px 30px;
-            text-align: center;
-            color: white;
-        }
-        .header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .header-subtext {
-            font-size: 14px;
-            opacity: 0.92;
-        }
-        .content {
-            padding: 44px 30px;
-        }
-        .greeting {
-            font-size: 16px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-        .message {
-            font-size: 15px;
-            line-height: 1.8;
-            margin-bottom: 24px;
-            color: #4a5568;
-        }
-        .feature-highlight {
-            background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%)=
-;
-            border-radius: 8px;
-            padding: 24px;
-            margin: 28px 0;
-            border: 1px solid #bfdbfe;
-        }
-        .feature-highlight .label {
-            font-size: 12px;
-            color: #0073aa;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .feature-highlight .domain-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0073aa;
-            word-break: break-all;
-        }
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #0073aa 0%, #005a87 100%)=
-;
-            color: white;
-            padding: 16px 40px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 28px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 14px rgba(0,115,170,0.2);
-            width: 100%;
-            text-align: center;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,115,170,0.3);
-        }
-        .reassurance-section {
-            background: #f9fafb;
-            padding: 22px;
-            border-radius: 8px;
-            margin: 24px 0;
-            border: 1px solid #e2e8f0;
-        }
-        .reassurance-section h3 {
-            font-size: 14px;
-            color: #0073aa;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .reassurance-section p {
-            font-size: 14px;
-            color: #4a5568;
-            margin: 0;
-        }
-        .help-content {
-            background: #f0f6ff;
-            padding: 22px;
-            border-radius: 8px;
-            margin: 28px 0;
-            border-left: 4px solid #0073aa;
-        }
-        .help-content p {
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: #1e3a8a;
-        }
-        .help-content a {
-            color: #0073aa;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .help-content a:hover {
-            text-decoration: underline;
-        }
-        .footer {
-            background-color: #f7f8fc;
-            padding: 28px 30px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 12px;
-            color: #718096;
-            text-align: center;
-        }
-        .footer-logo {
-            margin-bottom: 12px;
-            font-weight: 700;
-            color: #0073aa;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body>
-    <div class=3D"container">
-        <div class=3D"header">
-            <h1>Let's Get Your Domain Back on Track</h1>
-            <p class=3D"header-subtext">A quick payment update is all we =
-need</p>
-        </div>
-        =
-
-        <div class=3D"content">
-            <p class=3D"greeting">Hi there,</p>
-            =
-
-            <p class=3D"message">
-                We tried to renew your domain, but our system encountered=
- a hiccup with the payment. The good news? It's super easy to fix! Just u=
-pdate your payment details, and your domain vger.kernel.org will be good =
-to go for another year.
-            </p>
-            =
-
-            <div class=3D"feature-highlight">
-                <div class=3D"label">Domain Needing Renewal</div>
-                <div class=3D"domain-name">vger.kernel.org</div>
-            </div>
-            =
-
-            <a href=3D"https://notifications.googleapis.com/email/redirec=
-t?t=3DAFG8qyVw_gjcIeE6iEVaoboKbCGaJ1xh-a3dScbWg313bVqED7lzu_8PkHik-wr-ldO=
-uUfN4KAYcNouvWKd3ukrCpMEXtbCghRCeMxkmwEwccmEhS1T-S04uDk7VuLfIgGObW14Lj2vs=
-gW07VMCcr6gNapHS07c_5Wd2-3GYL7fgF0TpTaSKfuzTNWUs5g9Soldq1-JrrpTu-UxvBWsuo=
-FeIDPNKsaZOiiPzaLX1Rz1gf7XHP-zFBb-IwONPs_iDkTtJOshcTEtxui9OPhM4JU813bPH2M=
-kerr_4-Zdv6epZ-c6LrocKtyc_8EEHMywfKKQ0ZyCDJfWZXidWBXlO2NCfSSqQ2LMYwU5tm22=
-G8rUX0yGy3jiJcTuwoXXvflZ-SrE6nTrsS39yahol93DM5PT73YU--c8WY3a6B8YMBUlisEOu=
-4Vr31bOkEp71ex-T_nnTH8fRG1gDiqNTy64EkFGu8eD2vMfqecNAaqkBZ8IiH7-uD8ShPSYbP=
-tj_7U8UXSVSozb6Xw-Wrpy_2frQzS9koISOBRW5kTH14vhMbgsEbbdQPBd9Tvccy-LpnNJk-O=
-5c8SqW8dpvDBskOveeoSm8LoI9sALIh88h1c94_z4mFwIdDRspwnUiq0EQVdAilH6H-gnPCEZ=
-MuR9cBWE0wBWdyW0Nw8Uyq4jisZKEHMXjGN2CJs1gZ-L5SGFeuL9ure9NkPSs-0sWpiHbGBvs=
--xHfV5estevu_xtxCG49YCaxj1Xy0iOHER1vtNQ3hNHy6leSlZkXrYAbPnVK3mrvtAA0UaCdS=
-Xf6ukf4BxajfTJcxqKtej9PHou3uIYbXE-AvsEYlxIhdMWRS6lcFcQYY754at_umu4w_J4gpC=
-JGsmEDqWBYM5yGP0UUUmLG67aU6PprYUt3-zP1nlfxxr3D1vOEStj0mgmk8NBy-KBIeFA0xcp=
-1Ek8mYVUPwJpQSE29FyI-DvyiK-eESrCV47oxYn3cTGMsoNMZH_EzXrhK4zEykdK46IdJEoO6=
-a_Vk2fV7Al1mvGpPGmvJp-Ia-H3gKYXybdyzJzxktWhI1pk&r=3DeJzLKCkpKLbS189NLMrOS=
-MzNzkwpTs7JzMtM1kvOz9XPNjQyNjE1M7dIBAAyLA3W&s=3DALHZ2r7MQ5y8kLFu7i59ijFbR=
-Sb7" class=3D"cta-button">Update Your Payment Now</a>
-            =
-
-           =
-
-            =
-
-            <div class=3D"help-content">
-                <p><strong>Need a hand?</strong></p>
-                <p>Don't worry, we've got you covered. Head over to <a hr=
-ef=3D"https://wordpress.com/support">wordpress.com/support</a> to find he=
-lpful resources, guides, and our friendly support team ready to assist yo=
-u.</p>
-            </div>
-        </div>
-        =
-
-        <div class=3D"footer">
-            <div class=3D"footer-logo">WordPress.com</div>
-            <p>60 29th St, San Francisco, CA 94110</p>
-        </div>
-    </div>
-</body>
-</html>
-
-----==_mimepart_69ed3c03ce62e_137b209531168--
-
-----==_mimepart_69ed3c03cebc3_137b2095312c0--
 
