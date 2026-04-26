@@ -1,180 +1,165 @@
-Return-Path: <linux-rdma+bounces-19562-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19563-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wGx1NV0Q7mndqQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-19562-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 15:17:17 +0200
+	id yyd4IvkR7mkSqgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-19563-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 15:24:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81248469EDF
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 15:17:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD429469F28
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 15:24:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 96F2F3003376
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 13:17:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CF72C300C01E
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2026 13:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE8B362120;
-	Sun, 26 Apr 2026 13:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA2D361DD0;
+	Sun, 26 Apr 2026 13:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gWXx/g9Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q5Lk5kxR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8327635E93C
-	for <linux-rdma@vger.kernel.org>; Sun, 26 Apr 2026 13:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F1236166F
+	for <linux-rdma@vger.kernel.org>; Sun, 26 Apr 2026 13:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777209432; cv=none; b=FBEa7mnCDQTy8SvkNwZqlx9Cfia2EVnD69gOj2PY1NSwbe2xgko8qELLLjmmSqwz5aFwON6N5/B0kPGbhB5hzQD349S/WhlGmcePYIWothEefBkhZLM2CDCWj3JXqTYbPyGa/gp1Vfa7Nmpw0v8mcR/nR4Wek9CPQCsPIXh9Ha4=
+	t=1777209844; cv=none; b=s0/X6BIktM0iYxfa4qzOYUQr+KOLj4IMbeKv8dm3uSExisXLr216BQFj+8Fzwm7OGwGaaE7KyaH64cMgraWQTJfOTUX/YahfYNSx/i3IJmX81n4JFb3LDsTpGk+e0tI5rP9jDz2RuhrRl8+A4ZkBnwm10ZfppOjawqqysg/Nkn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777209432; c=relaxed/simple;
-	bh=x+YYTxWMWBTUs8+xGvsnwglC/8O2WZrLZrMExkdN7Ys=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=rgwljfTYdRNaHUAJokQKs5vv+mgRBVh8bbKlsaW4tRTzdx53gO67Qcl131334gMzUp0WFViOMyX59z2pvkZQ+kEKrnOrzWgR074O6ocmKeDgnvUc8qPXkFIeBZL8EQJ6gfrC9hHXXmSs3n08yvETvZV2PszQjkA3JSjODFqt3Og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gWXx/g9Y; arc=none smtp.client-ip=209.85.128.171
+	s=arc-20240116; t=1777209844; c=relaxed/simple;
+	bh=LWM6HVvLB3siDa8uee4eKBpkMgIxMcJcTfUZ2PDqrpk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HCfVoMTnAyuE6FF7zViwSg+1pZJqIiKAR9w0uErTy5TqJ/Rae7Yt/KOxCWTiA4tCh5amyhwnwAoMUgREWDSFRh8V/p6WirtJDmhG2aDBTmsU8NFq1zp7/9eDRUpF2iz0eYO/tczfpqgQbYgnQab6hz340iYLKplK9MF2E2rvI2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q5Lk5kxR; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-7b6ae2ea4a1so91626837b3.2
-        for <linux-rdma@vger.kernel.org>; Sun, 26 Apr 2026 06:17:11 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-488af96f6b2so121612055e9.0
+        for <linux-rdma@vger.kernel.org>; Sun, 26 Apr 2026 06:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777209430; x=1777814230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dHs0YRZHBGD67vbxwSlbpv9/TtMO58IvmgOpPAVdTog=;
-        b=gWXx/g9YJWzTr9dU5q1MVxVahov59zr2J5YpwlKpDyxmtfwWrv33G3VM0f6Sn1dtJi
-         W+PTzQhqR8w0/8cDSPArNGCYtLWJNSX9h6tjmHOhRcjnI4Gka4Qt+42zMmb16/7L8OYJ
-         DiDllHeFE12Xp7+nFJujHP/kuihUI0yRcI2uPC6wCagdlODdwwOKwzYng8d6e6NRS68D
-         CXLp5pFi6QY3qqE9JN5ga8OFztLFg6OrXLrPZyiDQY23+l2SGZUsbFTd/ngy0TJBrYzk
-         lKvwBKAzteKYaXFN6K2OqmQolI1AR07+0FBzXVXIs3fi92oqM3LIl7LN20MAMYFnIhxo
-         FxJg==
+        d=gmail.com; s=20251104; t=1777209841; x=1777814641; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=glWTzLuCweIyCCW4tksfnjVH1VqFaefOjJWpjhDpMUo=;
+        b=Q5Lk5kxRvNLPiFU8aRm8JODwoRyNXqGSolBkPS7UhOaDueHFg/VaFoWL3RnRQ35ixP
+         grLAFlZz44EgKKG24++NReNimSkMh1HXjrcGNHTbpjxKAg0mZ2iJN93cszoC8TOoeDvA
+         VyJih2aBYrAjlWGpe4PKrO25lGnqsgm2rGVuZmKtoKHfbOOyi22NFoNMtmeueqcUIhEO
+         kKAEfad8PdWI7Rl1WUhXgL4n9A8GWCBJzH+x13PDTBZHgs5lyBLlHGIw515eisb2FgNc
+         ehsdixMG/a1xB6UgS6zwwxYj8R/yTFv2I2fznMBh1xCf8ddVTs5iJh1nmpMo4VrzDljI
+         SjXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777209430; x=1777814230;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dHs0YRZHBGD67vbxwSlbpv9/TtMO58IvmgOpPAVdTog=;
-        b=GJQgxGqf73AGbmlx33nLEAoN+LQkYDga3H/L+SH6FT9mT4usNnSnGFgnplqAEjBE7P
-         kr3bTw4COgM0eMT5+DqI6BlPxweXUlzPrwRJpaZSS9VueXXxYHOYfItd4c+I6SMcO0V6
-         /AniSPsX8inX3JZYlypRgZgo84xEMFnIFIqy75Pcpz3+iWgl/3vabkBcD2werQKNJr0f
-         Mu8NcgclX35WGchxxH49gYr4F+2t4op0msA1/AYdHgwWLVyUFpd3+iApz5bCqPf9SHKN
-         jZM6J8i/MoEAUWrpoOe02jkDZJDoAZg+5xCJR9B/Pb5MmMCIlk4F9RkYEsYTNQbsNQEY
-         sqcg==
-X-Forwarded-Encrypted: i=1; AFNElJ8lkgsnENlGaoYbHjVqGaAS3CfsFZIBusomnjVtB1dCbgua3hgPo37JkprC6PCSS3pHvb/OXfeZrz/U@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj04KsL0S1KuTE/9RQQapduAPFt9ZTHxN9qt1x3Ag0PLUhuwBK
-	tu4eXwKQj79/UNIoWZx6zhbQDPOoOfJbVA1zw0EjC0iRVwQQS0wip/tE
-X-Gm-Gg: AeBDiesguiNnlZvFLjrH7Yhdr1EoX8Kk5pvTYcVAkYZbjlpHw1jOEAKGxLl55aJZdyL
-	iuVVFhPzlxoM54K93nOs5vOk7s+SbuNAqzY9l2dNvG2LOX+uWAT5ltewAKrM5Q6mmZDkuOvUh5l
-	2T6TH3XKTr1GgjirxEzKtGcjmJOqQ1SIjceoxB+YYE26MLhOqP7T7Zu27wng2uGmXyshHP8yuua
-	0jS8+42KEHGTf3Sp3wF6Hgv3OkzgZBcFuUEtmT2sOWRvIjx6aVJfANvK4//qw+RyII/D9/A9v/T
-	rESezsvGLmiaspQaKeFToMkv6UXTFuIxYaf4Fu7iAzIZKwI2YR3Z8pfAFLULw8rH6MDeCI0D4Mr
-	pDxE0LCeQehpNH9s+ZroQl6zqJliV9qtSy2v+eMMQR7KhUJJFCIOp3p3EMOxStrMtf8GLhLDjg4
-	lbngFyQq4jl5zp4y1wfjvd8SLJa0r/gYXZbu38eAoFntlzL3Mja4MLir/n8M42xVJGjfqcGhJJX
-	ze64Q2UlJfo11Y=
-X-Received: by 2002:a05:690c:e3e9:b0:7b3:9175:30c5 with SMTP id 00721157ae682-7b9ecfdaf23mr390919617b3.35.1777209430402;
-        Sun, 26 Apr 2026 06:17:10 -0700 (PDT)
-Received: from gmail.com (172.165.85.34.bc.googleusercontent.com. [34.85.165.172])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-7b9ee9b22e2sm113515307b3.34.2026.04.26.06.17.09
+        d=1e100.net; s=20251104; t=1777209841; x=1777814641;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=glWTzLuCweIyCCW4tksfnjVH1VqFaefOjJWpjhDpMUo=;
+        b=ojomq5TCoYeHpNxYcrXROd+xGr1IAinrUrKKF2KNocToYdvUJGl/dS3MoLGj7F5VcX
+         TV/gmeUCOonaH+TOpm2bdvTgKPpjtoIjZ7K696Ues7HryKWhsWnL5Wcmx+jGiAaFQqei
+         07jobykHA96e/op/vkC/QyHimIBysRZWRp0PXEUw/smW9P8jfX7sVWHYbhi5ZjuHgh/6
+         zAk29/ZOe7Z5F54bNIwBYP8OquEDAe79a5GwrrGOw2yXjG2hw3YNkLVWnh4BeGbW6CpY
+         nzSAHXN+aJr0NYMykARAcvGtRNy3aBmKgRXvcDE4rLGhJEVB5I+wcTTlD0cJCVVT7leE
+         V3rw==
+X-Forwarded-Encrypted: i=1; AFNElJ9M6g4J25jlpMoTPTLLrtp3WQWBf0QFSqdvUvX3hGrF4OzPiDzbXr3QfnqtOlfkW/0HX96n70G+pJwS@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHa3MKKR6rA0AF/ClWLdquS+1NWGAiLCbIB5FCDqG3LuP7/kZi
+	VKRJG6CbfTdqZDn7d0+oIHXY1m6H6XJ4MKLX1OGx54MTwMOzKs/LuI2f
+X-Gm-Gg: AeBDiesdyoClz/9WAJbJtmPbXUu6qf3brejRhY/DuB4zBxw+cq3mUjFFrf8F8f09u3D
+	60ZYcqQszcDav+FtYEAhOLIwpC9UYcMIM29+fOi2k89ClOinEUu9PJLQ48dfVuwqA8gd1Ray9RJ
+	/1yKE2QuEDT423xx8b3GPskBAkjQEOWjwxZ/SzRaxf2/rBNj3CsTGYp0ad2XYOP+RvXWdv8g7eT
+	09A5jrHZ2BwjCnCvVlHzgO1fMOhUeTr6p/F9EMvN7j/ScPzEteHXonzF9BT2XkSg5GZwLLpfspJ
+	txCj+KTAAIhbTYPDeAP8Y31STa2aOsdSdE1RlaqhKM00uHsGRkIWXzTY15oUEQrnOXoOzkTsZUt
+	t1MV5nGcbwmJBZcx7URFWvOHc06ORLh7bmxddZJZPoRO1+dVJhaB+eWw7reLn2wHM/gD18AppOH
+	SNqm3ZvDrWiWogGMZh3vF2pCXpanGofX2y8dk9D5YP4XmBlVshXUS05ppgqo7S6Ak2QGxYUQD4X
+	xDSbhzblAHx4lB8JpqAkavpriLVNWcWCaBMUAPD+A==
+X-Received: by 2002:a05:600c:4fd2:b0:488:e192:6fbd with SMTP id 5b1f17b1804b1-488fb790869mr549903445e9.30.1777209840929;
+        Sun, 26 Apr 2026 06:24:00 -0700 (PDT)
+Received: from SD.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a52583fe7sm401895935e9.13.2026.04.26.06.23.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Apr 2026 06:17:09 -0700 (PDT)
-Date: Sun, 26 Apr 2026 09:17:08 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Tariq Toukan <tariqt@nvidia.com>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>
-Cc: Boris Pismenny <borisp@nvidia.com>, 
- Saeed Mahameed <saeedm@nvidia.com>, 
- Leon Romanovsky <leon@kernel.org>, 
- Tariq Toukan <tariqt@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, 
- Daniel Zahka <daniel.zahka@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Cosmin Ratiu <cratiu@nvidia.com>, 
- Raed Salem <raeds@nvidia.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Dragos Tatulea <dtatulea@nvidia.com>, 
- Kees Cook <kees@kernel.org>, 
- netdev@vger.kernel.org, 
- linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Gal Pressman <gal@nvidia.com>
-Message-ID: <willemdebruijn.kernel.2f90e0de4485b@gmail.com>
-In-Reply-To: <20260426083819.208937-2-tariqt@nvidia.com>
-References: <20260426083819.208937-1-tariqt@nvidia.com>
- <20260426083819.208937-2-tariqt@nvidia.com>
-Subject: Re: [PATCH net V2 1/2] net/mlx5e: psp: Fix invalid access on PSP dev
- registration fail
+        Sun, 26 Apr 2026 06:24:00 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: michaelgur@nvidia.com,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Subject: [PATCH v2] RDMA/mlx5: Fix UMR XLT cleanup on ODP populate failure
+Date: Sun, 26 Apr 2026 14:23:41 +0100
+Message-ID: <20260426132356.22264-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 81248469EDF
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: DD429469F28
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19562-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[nvidia.com,kernel.org,gmail.com,vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[willemdebruijnkernel@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_CC(0.00)[nvidia.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-19563-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-Tariq Toukan wrote:
-> From: Cosmin Ratiu <cratiu@nvidia.com>
-> 
-> priv->psp->psp is initialized with the PSP device as returned by
-> psp_dev_create(). This could also return an error, in which case a
-> future psp_dev_unregister() will result in unpleasantness.
-> 
-> Avoid that by using a local variable and only saving the PSP device when
-> registration succeeds.
-> Also apply some light refactoring of the functions managing the PSP
-> device in order to make them more readable/safe.
+mlx5r_umr_update_xlt() allocates and DMA maps an XLT buffer with
+mlx5r_umr_create_xlt(). The buffer is released by the common cleanup path
+through mlx5r_umr_unmap_free_xlt().
 
-This is generally discouraged as it obfuscates the fix.
+After mlx5_odp_populate_xlt() became fallible, its error path returned
+directly and skipped that cleanup. This leaks the XLT DMA mapping and
+buffer. If the emergency XLT page was used, it also leaves
+xlt_emergency_page_mutex locked.
 
-That said, the fix on its own makes sense.
+Break out of the loop so execution falls through the existing cleanup path.
 
-> In case psp_dev_create() fails, priv->psp and steering structs are left
-> in place, but they will be inert. The unchecked access of priv->psp in
-> mlx5e_psp_offload_handle_rx_skb() won't happen because without a PSP
-> device, there can be no SAs added and therefore no packets will be
-> successfully decrypted and be handed off to the SW handler.
-> 
-> Fixes: 89ee2d92f66c ("net/mlx5e: Support PSP offload functionality")
-> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Fixes: 1efe8c0670d6 ("RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page linkage")
+Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+---
+v2:
+ - Use 'break' instead of 'goto' as the loop already checks 'err'. (Michael Gur)
+
+ drivers/infiniband/hw/mlx5/umr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
+index 29488fba21a0..71f331ce6d89 100644
+--- a/drivers/infiniband/hw/mlx5/umr.c
++++ b/drivers/infiniband/hw/mlx5/umr.c
+@@ -915,7 +915,7 @@ int mlx5r_umr_update_xlt(struct mlx5_ib_mr *mr, u64 idx, int npages,
+ 		 */
+ 		err = mlx5_odp_populate_xlt(xlt, idx, npages, mr, flags);
+ 		if (err)
+-			return err;
++			break;
+ 		dma_sync_single_for_device(ddev, sg.addr, sg.length,
+ 					   DMA_TO_DEVICE);
+ 		sg.length = ALIGN(size_to_map, MLX5_UMR_FLEX_ALIGNMENT);
+-- 
+2.43.0
+
 
