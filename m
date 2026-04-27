@@ -1,163 +1,203 @@
-Return-Path: <linux-rdma+bounces-19596-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19597-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CK8LBiSq72kCDwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19596-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 20:25:40 +0200
+	id WLz0AKur72kCDwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19597-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 20:32:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810D247888C
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 20:25:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D3D4789F9
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 20:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2648130234E6
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 18:25:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 38D6130A8508
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 18:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3BA3EB7FA;
-	Mon, 27 Apr 2026 18:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D913EBF16;
+	Mon, 27 Apr 2026 18:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20251104.gappssmtp.com header.i=@networkplumber-org.20251104.gappssmtp.com header.b="OMa4dji2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8HK9Rkg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com [74.125.82.174])
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C573D6CD4
-	for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 18:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425703BC680
+	for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 18:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777314312; cv=none; b=lSDqlKijqeEitaXWVCljvqb40vOMdXBYAj5MZ5akFmRcz3iJq2qCcl91hnY5pxSuRSOPMIQg2CTwmp19sdsrnY3GpAF2JxKZNnmrfbnWDDM2sb9AWaFElPQ7SaoYxd0gW56Am64JnQcQDLO8e98l9GdItDVX+if6kdy1S8akpZ8=
+	t=1777314439; cv=none; b=V0AXeQ9aFHePl2EAtmIluHi93QfgBzpTrpofhvizCUdOlyXVshID4YXyq3Ik/1oAc+kBqzRlc1d8pJs6kBuC3XAqBM9/v38Qqfpa1Gkkh6O1smny72tdQV3L87uVnEjp0sPk62C/6smu/DISH9gR5M5lF9/O9szg1vfzFJ6TnTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777314312; c=relaxed/simple;
-	bh=x8daYy/xe2IGqkndE63c9mrqTq6cO/rv1/64decL3Uk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LXusQ3VzPkJ9kkP6U2CZNiljEy8R8HxztKPIPe0Z4M2oBKlFBkF60zGLi6Tld1kfP3v5oiUwlYHVMmA3A2sPQyLV5QBb5WI4ufuoyS6jUpQ3RxKVWSepR5nzibZ/NxDEGQx4LIpFScn/dEUwenvfxYHiEJ4XYTDEfNNJbZZ/h3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20251104.gappssmtp.com header.i=@networkplumber-org.20251104.gappssmtp.com header.b=OMa4dji2; arc=none smtp.client-ip=74.125.82.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-2d832f2f44cso8904474eec.0
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 11:25:09 -0700 (PDT)
+	s=arc-20240116; t=1777314439; c=relaxed/simple;
+	bh=hfkSb5iSK+jnG60DLGgd+UagdkvWshNa7oLEFPu+t10=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=az42dHvlnnZoJr0MgKzfcedjG9by4isGZ9xGn2Hab1KcgG5DYXOxFqjGDffr9tPJ7oSz/uPtJGF6Iuc/hVt8xa03O3/2KX7loGzYC59oLoPvzuSk7W+X2JAy34FS2UC/sFMRQnZDzascL9nTEhqx4SFbpaBNYEqz/eEQBgUJOYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L8HK9Rkg; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-4645dde00a7so8117336b6e.1
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 11:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20251104.gappssmtp.com; s=20251104; t=1777314309; x=1777919109; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r62aUJ0jnce9kgdNQ/Nlm4it1uU6lIZXN3jr7p6GKXA=;
-        b=OMa4dji2yoscdggFxpN6U1TI4K52pVo09e7PLvdqfYoHchFET8ZQ/r3sYI0HV7ec5+
-         +Y4eaiWG7C64TVvv0EHXv/f9nRtmHOLhPbK1f63eXYELE0fPHOsjfGoZA/OSRQHMUbwz
-         t8aGKIIO85IOH66a9b4RUbG/LZE90dqCPGBqQTStTOVdQzQRuOGIpqbo7+tIOKTAWg6g
-         2C+TKUXsxqnMULOwBugiaB6/dSonbClcx2EGhBESeTDkZVrIs4EIHFhw0CyB/j4xVCpm
-         MtxQ9vGTsS3x+EbJZ+sb0Qk6ApN/Zx0Y2+L5gBoKX2hTNBCwjS81oBswoIRJkC9og8xo
-         OxQQ==
+        d=gmail.com; s=20251104; t=1777314437; x=1777919237; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qUxrFoC8fiASca5qWozFg3oZ8Q9N01+/TQY2br6q3VU=;
+        b=L8HK9RkgWrv6nUTzfogIxwsJdEHW+phreVVAqCTMP7+x4J8+w77VbeVmGYbQhtC6hx
+         ZuHPtkESsyJr8hvj5amfMql/9w27Fpc4XBODbQkLXCFtJgDJ5DKod/FxPwk9NVSLkL2Q
+         P5S4x/fgsV0i1w8jilvdxasdIPPQC1T22kdswSWrsMn2kJ+nzejAhTDQeinmc2wgicaI
+         PoihBmqT1g0ozW7vbSyrqNyM6r3BDMZVHid7OFif+iOlzI7x1uM6movOkb8Ly33HutLG
+         MLlbPlPfp+mlopj6hEe2CAgtyPzJOBFl+TUYu38CJ0nebGIA0o0ui3DXRQmvjSGcBZif
+         YqIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777314309; x=1777919109;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=r62aUJ0jnce9kgdNQ/Nlm4it1uU6lIZXN3jr7p6GKXA=;
-        b=rTjP9Dn997h31XC2uRIhNOfhX1qP2mXntS+6yi/02nLDEqqbtvHeddp83YItEMXpTr
-         zi/67p1mwR9udJIWqgNx4Mc6gNNE7s6W2UZX0fm0Mxi6OPb6ew0ub+ZpaXZSL+DTq74X
-         4Yff+sVTQ3FlKI3wfpDdxOZcu6ikI4mt3mVdou+XjZ3HU6rgy7bQwvwa0vZZYWSqobv3
-         baxCk4RwZN6Hvx+TX0JnrPkcmns11/nvN3iYTY5j+4qN1/929uj119ibEBZnOoxvjYx0
-         3XBWoWqClKU+l0ql3TTBkXIq1y4sBW6HZmc5J/L2RuRtFSx7qHOunpknJKpr1JzJWFBB
-         Yh4w==
-X-Forwarded-Encrypted: i=1; AFNElJ/I/I6ow5Uhf6n5D/tldvPdBoRLAEFyrsrMWQduyNoXUKl8QVScfAbIoVGp8+yg864NZwliC1XWbCN+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqEQO9T8tsrZmxzyJ379M1IgLYsVlFjGg71OQo34VPJntq+fTD
-	9rRJy1x5kn1CXdi3ZkvM8Sx0x5U7vQysOMUAfDdh3XcWgkgH3kpu0CQrwokgcLQ0YI0=
-X-Gm-Gg: AeBDiet4Oklo09tFpZaFNiw88hLVIZ41wRXVwmhVLhHPqxn/8fpE3vi4BViNmLSn8Js
-	NZz9pDuKBcYphACHi1jxQEfVKna9yfIIQ5S8R5RT49XgmqXpiRcNCYb3hD9tu+hMyqbWS+3OocK
-	rq7An7i4Y4gE8J4ZQZJZ9iLJp+aVgfDIASrxrvqirUpdVHxqbsKHVWJmgNwm2OI54bTOTAM6He9
-	EkljZdSUzxPrBtD57lTgfK4G0dHfHNjG/ArUHckI78USJr+DDhVV3QK7sw64OWTy0DfpdhrOoaT
-	wWhW9J4UTTa7em06W1AQZDqZPYhUaQxvM4az2TZfj/30w+j69ConSqSOaFdOJU9/Ij5XnvVdCV/
-	TpgY3Canp6Ke3/g1i80p2XRtHAUnFxaPCS3fqRWoSjehK6WvxyEht4OVKpG9IN4RtA1qxO+ZLUN
-	0++iB6WdA/kLvh/Vot9YRFI8s0qhDgg4KdYgeE2WWcx1pWNQ==
-X-Received: by 2002:a05:7300:fd15:b0:2d0:239a:23cb with SMTP id 5a478bee46e88-2ed09b7d31bmr51555eec.16.1777314308449;
-        Mon, 27 Apr 2026 11:25:08 -0700 (PDT)
-Received: from phoenix.local ([104.202.41.210])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2e53d8aed43sm43833183eec.26.2026.04.27.11.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 11:25:08 -0700 (PDT)
-Date: Mon, 27 Apr 2026 11:25:05 -0700
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: Chiara Meiohas <cmeiohas@nvidia.com>
-Cc: <leon@kernel.org>, <dsahern@gmail.com>, <michaelgur@nvidia.com>,
- <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
- Patrisious Haddad <phaddad@nvidia.com>
-Subject: Re: [PATCH v2 iproute2-next 1/4] rdma: Update headers
-Message-ID: <20260427112505.684c21f3@phoenix.local>
-In-Reply-To: <20260330173118.766885-2-cmeiohas@nvidia.com>
-References: <20260330173118.766885-1-cmeiohas@nvidia.com>
-	<20260330173118.766885-2-cmeiohas@nvidia.com>
+        d=1e100.net; s=20251104; t=1777314437; x=1777919237;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qUxrFoC8fiASca5qWozFg3oZ8Q9N01+/TQY2br6q3VU=;
+        b=YIbEOtnh1Q1BOQQOhjB9Q55ZQObtdpLWeiNXTG6DIDzxp4s3TVgCba0x4zsp6WUI7M
+         qviRxLFvxRH5UJBBP2JQTYnewoaBrlEBACM3DTRrs1B+zT6I9m9aiUzvPovjG+NOxrjr
+         KTjvIDQskPy3SkihBZ3G+4gv62C+NAmajAoXS5F0QFVkY5fbq2yNqWrCVFtuPB4y+O8Z
+         MZNXTHd4FCn+41WGhZVo+MZm8RlIipKvp3WVqAxlWyYG6Pntnu1xJFoOKbfmGltg3IcW
+         l4bBpEnD3J+EmAXMqHJBf+p2W0/nPNKj+oTNnb4zXNEokYCtsA1aR8rvnVIY2vMji2Pd
+         7Xsw==
+X-Forwarded-Encrypted: i=1; AFNElJ95U63ZsYA9JQhiCzmdCnsdHizK8k0+3v2ubFK6HVYRs2SDQbIpCUvBz4aKANUkebrTnljH4M+gzpgX@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzfk1G7ONdwWhTs0REB5o5ayjgkT0tFDW1yo8Zq98T1K+P/QpS8
+	cAt2vaDplMYOYzUnv0kZhcMBLGno5vvELJckCO/Z7tSo55nB5jZMRz2m
+X-Gm-Gg: AeBDieueyRT/w/nET2RrdLS+aP0Gsp3Bu6j4rbflHss1yRafyBTQfucOH6egguM/nL5
+	AyOstzzWuv08emK6PkPkwI2hnuEyXy+lsy6e6jZiHU+0ZmOHJrpqYFseb/ZcU1AN8UxrJ9c5k35
+	RjlXxmEAq/Q2TH1Ukvh7w/cki2kaYtvX9Ux3bxnGFaqin4iUf7pukP86qwJ93wvIGb+Fs1U3RgS
+	Hwt7jYwue3PlofEM1I9yVlN/YFKOT8ZER340UAgPK1F/rFz0mZwedCvLN/3vHl+zwR2XliJTO9m
+	6vMSe/MyCgUxC5Z9CR8ViGiehSBrygDhMVxv3Wz3wyCxgzsBs2h7V1bq6K1oaKG0gAWEXx/jg1b
+	kB4Qo3HvhcGfVeW2X8+g9HMZ/UMWtrSxPfERBLoMmkX1BxulNTb3C/xkXjt8q6qNwEdWxAMiB3y
+	a6FiZkJ7cRUEVbBq0VhRk8u+Zan3wJL/I5JCupssbqEE8tZd3LJVAFdJY1qJrKlWJ+JzX1sv3CZ
+	ER607yuw5kfeDvpSFmVcPRZzVku
+X-Received: by 2002:a05:6808:3448:b0:472:c4ba:32d9 with SMTP id 5614622812f47-47c26cba3fdmr138293b6e.20.1777314437166;
+        Mon, 27 Apr 2026 11:27:17 -0700 (PDT)
+Received: from ?IPV6:2601:282:1e02:1040:7006:cec4:dca9:62e0? ([2601:282:1e02:1040:7006:cec4:dca9:62e0])
+        by smtp.googlemail.com with ESMTPSA id 46e09a7af769-7de986a6da5sm124806a34.20.2026.04.27.11.27.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2026 11:27:16 -0700 (PDT)
+Message-ID: <77e1a762-e204-497b-b7cb-40d5a93f8ec7@gmail.com>
+Date: Mon, 27 Apr 2026 12:27:15 -0600
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 iproute2-next 1/4] rdma: Update headers
+Content-Language: en-US
+To: Stephen Hemminger <stephen@networkplumber.org>,
+ Chiara Meiohas <cmeiohas@nvidia.com>
+Cc: leon@kernel.org, michaelgur@nvidia.com, jgg@nvidia.com,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+ Patrisious Haddad <phaddad@nvidia.com>
+References: <20260330173118.766885-1-cmeiohas@nvidia.com>
+ <20260330173118.766885-2-cmeiohas@nvidia.com>
+ <20260427112505.684c21f3@phoenix.local>
+From: David Ahern <dsahern@gmail.com>
+In-Reply-To: <20260427112505.684c21f3@phoenix.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 810D247888C
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 72D3D4789F9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.56 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[networkplumber-org.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[networkplumber.org : SPF not aligned (relaxed), DKIM not aligned (relaxed),quarantine,sampled_out];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,nvidia.com,vger.kernel.org];
-	DKIM_TRACE(0.00)[networkplumber-org.20251104.gappssmtp.com:+];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19596-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_FROM(0.00)[bounces-19597-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[stephen@networkplumber.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[dsahern@gmail.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email,phoenix.local:mid,networkplumber-org.20251104.gappssmtp.com:dkim]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email]
 
-On Mon, 30 Mar 2026 20:31:15 +0300
-Chiara Meiohas <cmeiohas@nvidia.com> wrote:
+On 4/27/26 12:25 PM, Stephen Hemminger wrote:
+> On Mon, 30 Mar 2026 20:31:15 +0300
+> Chiara Meiohas <cmeiohas@nvidia.com> wrote:
+> 
+>> From: Michael Guralnik <michaelgur@nvidia.com>
+>>
+>> Update rdma_netlink.h file up to kernel commit dbd0472fd7a5
+>> ("RDMA/nldev: Expose kernel-internal FRMR pools in netlink")
+>>
+>> Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+>> Reviewed-by: Patrisious Haddad <phaddad@nvidia.com>
+>> Reviewed-by: Chiara Meiohas <cmeiohas@nvidia.com>
+> 
+> The upstream macro names changed, the iproute2 build is broken after
+> current headers sync.
+> 
+> In file included from res.c:7:
+> res.h: In function ‘_res_frmr_pools’:
+> res.h:203:26: error: ‘RDMA_NLDEV_CMD_RES_FRMR_POOLS_GET’ undeclared (first use in this function); did you mean ‘RDMA_NLDEV_CMD_FRMR_POOLS_GET’?
+>   203 | RES_FUNC(res_frmr_pools, RDMA_NLDEV_CMD_RES_FRMR_POOLS_GET,
+>       |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> res.h:56:44: note: in definition of macro ‘RES_FUNC’
+>    56 |                 _command = res_get_command(command, rd);                               \
+>       |                                            ^~~~~~~
+> res.h:203:26: note: each undeclared identifier is reported only once for each function it appears in
+>   203 | RES_FUNC(res_frmr_pools, RDMA_NLDEV_CMD_RES_FRMR_POOLS_GET,
+>       |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> res.h:56:44: note: in definition of macro ‘RES_FUNC’
+>    56 |                 _command = res_get_command(command, rd);                               \
+>       |                                            ^~~~~~~
 
-> From: Michael Guralnik <michaelgur@nvidia.com>
->=20
-> Update rdma_netlink.h file up to kernel commit dbd0472fd7a5
-> ("RDMA/nldev: Expose kernel-internal FRMR pools in netlink")
->=20
-> Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
-> Reviewed-by: Patrisious Haddad <phaddad@nvidia.com>
-> Reviewed-by: Chiara Meiohas <cmeiohas@nvidia.com>
 
-The upstream macro names changed, the iproute2 build is broken after
-current headers sync.
+Looks like the merged API does not have the _RES part of the uapi:
 
-In file included from res.c:7:
-res.h: In function =E2=80=98_res_frmr_pools=E2=80=99:
-res.h:203:26: error: =E2=80=98RDMA_NLDEV_CMD_RES_FRMR_POOLS_GET=E2=80=99 un=
-declared (first use in this function); did you mean =E2=80=98RDMA_NLDEV_CMD=
-_FRMR_POOLS_GET=E2=80=99?
-  203 | RES_FUNC(res_frmr_pools, RDMA_NLDEV_CMD_RES_FRMR_POOLS_GET,
-      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-res.h:56:44: note: in definition of macro =E2=80=98RES_FUNC=E2=80=99
-   56 |                 _command =3D res_get_command(command, rd);         =
-                      \
-      |                                            ^~~~~~~
-res.h:203:26: note: each undeclared identifier is reported only once for ea=
-ch function it appears in
-  203 | RES_FUNC(res_frmr_pools, RDMA_NLDEV_CMD_RES_FRMR_POOLS_GET,
-      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-res.h:56:44: note: in definition of macro =E2=80=98RES_FUNC=E2=80=99
-   56 |                 _command =3D res_get_command(command, rd);         =
-                      \
-      |                                            ^~~~~~~
+kernel vs iproute2:
+
+@@ -590,19 +590,19 @@
+ 	/*
+ 	 * FRMR Pools attributes
+ 	 */
+-	RDMA_NLDEV_ATTR_FRMR_POOLS,		/* nested table */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_ENTRY,	/* nested table */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_KEY,		/* nested table */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_KEY_ATS,	/* u8 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_KEY_ACCESS_FLAGS,	/* u32 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_KEY_VENDOR_KEY,	/* u64 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_KEY_NUM_DMA_BLOCKS,	/* u64 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_QUEUE_HANDLES,	/* u32 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_MAX_IN_USE,	/* u64 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_IN_USE,	/* u64 */
+-	RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD,	/* u32 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES,	/* u32 */
+-	RDMA_NLDEV_ATTR_FRMR_POOL_KEY_KERNEL_VENDOR_KEY,	/* u64 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOLS,			/* nested table */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_ENTRY,		/* nested table */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY,		/* nested table */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY_ATS,		/* u8 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY_ACCESS_FLAGS,	/* u32 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY_VENDOR_KEY,	/* u64 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY_NUM_DMA_BLOCKS, /* u64 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_QUEUE_HANDLES,	/* u32 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_MAX_IN_USE,	/* u64 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_IN_USE,		/* u64 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_AGING_PERIOD,	/* u32 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_PINNED,		/* u32 */
++	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY_KERNEL_VENDOR_KEY, /* u64 */
+
+ 	/*
 
