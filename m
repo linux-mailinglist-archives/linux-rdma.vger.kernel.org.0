@@ -1,148 +1,175 @@
-Return-Path: <linux-rdma+bounces-19583-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19584-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OFXnMABY72n5AQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19583-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 14:35:12 +0200
+	id UEQFG7pm72kIBAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19584-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 15:38:02 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66395472909
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 14:35:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0BE147392D
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 15:38:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6DD22300644A
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 12:35:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E783301DCD0
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 13:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4477A3A9631;
-	Mon, 27 Apr 2026 12:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BAA3CC9EA;
+	Mon, 27 Apr 2026 13:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PX2SKNlw"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="fpXs1g+j"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B73F9C0
-	for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 12:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3393C8716;
+	Mon, 27 Apr 2026 13:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777293310; cv=none; b=hpdtBV/kj56zQ2HSP4j6L0gooQrplsgq5LEof988E+S4wbgCmITm3rkbDauVqXB0RvWqhfvG+0uXnVIX3lE/g+VoBSeIU5sDc93oJ2w3FDBbWuT9HmkTBe810OACy4D95wTb05FuI96lBluA1pj3FYrxvObA0U8tBq6K3UrmUvE=
+	t=1777296927; cv=none; b=rbxwF27hhPUQHkLZtQsa07RxuNMUS76h2MRTb+cihDRjlyQJRMd3DAQGbLbab/rPIz96DrfSIu4Blx25LLi8wJviU+GCIfAjBWPu/aa138fkjbcjyztX4ubkwF2kF/jJ8gtfi8aGD8PnnYS0pmhk+ULDUG3aBm/ykvSXVluoyVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777293310; c=relaxed/simple;
-	bh=3HYWUiEdemEaCQruPtJ6hJQxuyAJh/B6JNvduhRCa5I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KW4vRfxwTwHqUL2IPbZb21kTxbd6u4bCGaVNmdePG980QcsdaHdEtXp56IyEOG/S2eMD23TwQzzoGWaTc1FOZy6jPtXyQRcL7bzOBenlQC3yghLQqkXSoug3ckipZzfrE/GWJSPOsg+C9Gea+73qVYOq74/QIpTWJo9JxpERtH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PX2SKNlw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED2D6C19425;
-	Mon, 27 Apr 2026 12:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777293309;
-	bh=3HYWUiEdemEaCQruPtJ6hJQxuyAJh/B6JNvduhRCa5I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PX2SKNlw0rW1O6sibeJXmph0TIWDy/TgOtYRlBGUVx1JIvJXrXEL5MFj1xpDJIB/X
-	 kwHx4ENM4oH74xbWJuzWq6x1q/wq9sAapUXc5n8VnpIscZIooIYqLz57/YadHtwTmd
-	 6QqMWUZN3jMuN04wKwvBD3IkSmkWO+8fE81SNJEcdfOhuYjTLndPD2TwQKJGJDgbso
-	 3CCV7O1XdcFUWps0lyyHBp+RvRe6KSeZr3NAJ8BReDfUcEVrOxAaLwZyiDEMAafMt+
-	 mh9NFmhvI9/vMSko8gnovOqni4FPxHLN57pdJcSg6E0fLeiPqRD/O7IT+ob1l9AYrU
-	 pfRe2dLdDk5LQ==
-Date: Mon, 27 Apr 2026 15:35:03 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix unsafe socket release during namespace
- cleanup
-Message-ID: <20260427123503.GI440345@unreal>
-References: <20260424043522.22901-1-yanjun.zhu@linux.dev>
+	s=arc-20240116; t=1777296927; c=relaxed/simple;
+	bh=Hrd3Ufbn0yIBkbjycfXpMJ9mBOrSVze4ikAYNtzpkMc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=kvAKViOxXwYuZ9LmB1rnuljYumtC/+2Z0mgEnijxkia9d/v8b8pqKfDOb5n4EfypBC472tfv6X6OcUo0b9MjEHX7b7PMVjXIatAD5+aITLTXXCtA/2zek9bUweW6laFWLvMZDRNUGWG6+c+1y6/7fPwFyt08rMydqNlPoy+i3y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=fpXs1g+j; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1231)
+	id 2A95820B716A; Mon, 27 Apr 2026 06:35:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2A95820B716A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1777296926;
+	bh=WsS2t80x+GGz7CqR25akz3086Hpb7Gp6QxW+DhOqL00=;
+	h=From:To:Subject:Date:From;
+	b=fpXs1g+jp/xD8PeBW9r9WrxfznWah99eMaY6m7AZKmmZq2t8QAzLxIW1Jojo0UZDS
+	 JHUwY/rury8nDfx6NokHY8FQYlHIn1086VwqLMw1zvLSv8f6dABVi4j+dsaQGznQqS
+	 Pg0wTkfw1/zDOW/EaQYxfTwU4AtJPcY1zts0RGfI=
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	longli@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	ssengar@linux.microsoft.com,
+	jacob.e.keller@intel.com,
+	dipayanroy@linux.microsoft.com,
+	ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	kees@kernel.org,
+	sbhatta@marvell.com,
+	leitao@debian.org,
+	netdev@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	gargaditya@microsoft.com,
+	gargaditya@linux.microsoft.com
+Subject: [PATCH net-next v2 0/2] net: mana: Avoid queue struct allocation failure under memory fragmentation
+Date: Mon, 27 Apr 2026 06:23:33 -0700
+Message-ID: <20260427132807.1642290-1-gargaditya@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260424043522.22901-1-yanjun.zhu@linux.dev>
-X-Rspamd-Queue-Id: 66395472909
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: D0BE147392D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19583-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19584-lists,linux-rdma=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	FROM_NEQ_ENVFROM(0.00)[gargaditya@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.microsoft.com:dkim,linux.microsoft.com:mid]
 
-On Fri, Apr 24, 2026 at 06:35:22AM +0200, Zhu Yanjun wrote:
-> Since all the sockets are created in rdma link create command
-> and destroyed in rdma link delete command, keeping
-> udp_tunnel_sock_release in rxe_ns_exit risks a "double-free" if
-> the namespace and the device are being cleaned up simultaneously.
+The MANA driver can fail to load on systems with high memory
+utilization because several allocations in the queue setup paths
+require large physically contiguous blocks via kmalloc. Under memory
+fragmentation these high-order allocations may fail, preventing the
+driver from creating queues at probe time or when reconfiguring
+channels, ring parameters or MTU at runtime.
 
-Please add a ladder diagram to clarify how it can be possible.
+Allocation sizes that are problematic:
 
-Thanks
+  mana_create_txq -> tx_qp flat array (sizeof(mana_tx_qp) = 35528):
+    16 queues (default): 35528 * 16 =  ~555 KB contiguous
+    64 queues (max):     35528 * 64 = ~2220 KB contiguous
 
-> 
-> Fixes: 13f2a53c2a71 ("RDMA/rxe: Add net namespace support for IPv4/IPv6 sockets")
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> ---
->  drivers/infiniband/sw/rxe/rxe_ns.c | 20 --------------------
->  1 file changed, 20 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_ns.c b/drivers/infiniband/sw/rxe/rxe_ns.c
-> index 8b9d734229b2..53add78b8e3a 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_ns.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_ns.c
-> @@ -39,26 +39,6 @@ static void rxe_ns_exit(struct net *net)
->  {
->  	/* called when the network namespace is removed
->  	 */
-> -	struct rxe_ns_sock *ns_sk = net_generic(net, rxe_pernet_id);
-> -	struct sock *sk;
-> -
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk4);
-> -	rcu_read_unlock();
-> -	if (sk) {
-> -		rcu_assign_pointer(ns_sk->rxe_sk4, NULL);
-> -		udp_tunnel_sock_release(sk->sk_socket);
-> -	}
-> -
-> -#if IS_ENABLED(CONFIG_IPV6)
-> -	rcu_read_lock();
-> -	sk = rcu_dereference(ns_sk->rxe_sk6);
-> -	rcu_read_unlock();
-> -	if (sk) {
-> -		rcu_assign_pointer(ns_sk->rxe_sk6, NULL);
-> -		udp_tunnel_sock_release(sk->sk_socket);
-> -	}
-> -#endif
->  }
->  
->  /*
-> -- 
-> 2.43.0
-> 
-> 
+  mana_create_rxq -> rxq struct with flex array
+  (sizeof(mana_rxq) = 35712, rx_oobs=296 per entry):
+    depth 1024 (default): 35712 + 296 * 1024 =  ~331 KB per queue
+    depth 8192 (max):     35712 + 296 * 8192 = ~2403 KB per queue
+
+  mana_pre_alloc_rxbufs -> rxbufs_pre and das_pre arrays:
+    16 queues, depth 1024 (default): 16 * 1024 * 8 =  128 KB each
+    64 queues, depth 8192 (max):     64 * 8192 * 8 = 4096 KB each
+
+This series addresses the issue by:
+  1. Converting the tx_qp flat array into an array of pointers with
+     per-queue kvzalloc (~35 KB each), replacing a single contiguous
+     allocation that can reach ~2.2 MB at 64 queues.
+  2. Switching rxbufs_pre, das_pre, and rxq allocations to
+     kvmalloc/kvzalloc so the allocator can fall back to vmalloc
+     when contiguous memory is unavailable.
+
+Throughput testing confirms no regression. Since kvmalloc falls
+back to vmalloc under memory fragmentation, all kvmalloc calls
+were temporarily replaced with vmalloc to simulate the fallback
+path (iperf3, GBits/sec):
+
+                 Physically contiguous         vmalloc region
+  Connections      TX          RX              TX          RX
+  --------------------------------------------------------------
+  1                47.2        46.9            46.8        46.6
+  16               181         181             181         181
+  32               181         181             181         181
+  64               181         181             181         181
+
+---
+Changes in v2:
+  - Rebased onto v7.1-rc1 (was v7.0-rc7)
+
+Aditya Garg (2):
+  net: mana: Use per-queue allocation for tx_qp to reduce allocation
+    size
+  net: mana: Use kvmalloc for large RX queue and buffer allocations
+
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |  2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 61 +++++++++++--------
+ .../ethernet/microsoft/mana/mana_ethtool.c    |  2 +-
+ include/net/mana/mana.h                       |  2 +-
+ 4 files changed, 39 insertions(+), 28 deletions(-)
+
+-- 
+2.43.0
+
 
