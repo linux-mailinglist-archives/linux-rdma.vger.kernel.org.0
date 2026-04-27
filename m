@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-19613-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19614-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KANFJrXx72nYMgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19613-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 01:31:01 +0200
+	id CKLlJL/x72nYMgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19614-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 01:31:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1090347BD8B
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 01:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EFDC47BDA0
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 01:31:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 386023068EEB
+	by sea.lore.kernel.org (Postfix) with ESMTP id F05443072118
 	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 23:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A03F3FD139;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C923D3B6BF2;
 	Mon, 27 Apr 2026 23:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TqxWhrZV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G58UwvGR"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3323B38BE;
-	Mon, 27 Apr 2026 23:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E413B4EB0;
+	Mon, 27 Apr 2026 23:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777332572; cv=none; b=lspAGZODZJvVeVvIFxLY7xS2MT/hIlb8qgLDh6D3pJfrScxCXQIeDdDy0Tbx9GecpTuPASIDNB68XSbXjtxM5M+VBUAdzB4L7iZZnP9LunV2UAF1FQBBDY+4Jg9H2FDo2iGzRHebyoTxF4ZmXro2L/+RbX10eGF1OQUcxe+PRMQ=
+	t=1777332572; cv=none; b=TWOKAm3JzvqdWlE8/rAa/Q67GE+3RQE3Ib9Qgr2iTmovYkIAOM/Ity6ZDFJ8HsjOJS64PNs9PLEK39UUukWKn/qLFfBkO3xsoMtjNRd0I1xHnHCwHdvkbBXd+VrJuBCcrBmzdfp8jAR5EpiPPxoPYisalWcOvFzb7fmdVC0z2gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1777332572; c=relaxed/simple;
-	bh=QqLIPFFrNU4pGo791LfTUzK8uXHG4Bv2RCgS+awKohs=;
+	bh=aT3wh2p3LdeaKD14G7HhELAKzRc4rEQVzVrqO1AXWqs=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Yul75w8x38OvWGfiT9coHNV+2bj4uBked8J7NvJJ5Ka2oe7zdhdJcz2w0ODufrpaNEJ9EP3AnyFzIa3Jcc9CxF6Ctysu8YllO05qHWJ3nxjZ3GJNPEflC387skCASP28CYhS1qp5yL3+8EtSbHL3lIeBPZEFFQwhF7vdepkDEUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TqxWhrZV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C75C19425;
+	 MIME-Version; b=SPN5dg7R1jQAqMROsgeWH/0GAqCBlsylXMaxFkdxbXYArwva4ijnGDtyWWIQ+mia4bMUglvZFE8jM5wjmmieDnJxjWgKWgOULPn6VnIh3WAKnLbZY7hztLsrDCnmFPESYP9WjrHsGn6+bzAaM0lVJRaMG4sgjxus9qm/6Xn+lOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G58UwvGR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA429C2BCB6;
 	Mon, 27 Apr 2026 23:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777332571;
-	bh=QqLIPFFrNU4pGo791LfTUzK8uXHG4Bv2RCgS+awKohs=;
+	s=k20201202; t=1777332572;
+	bh=aT3wh2p3LdeaKD14G7HhELAKzRc4rEQVzVrqO1AXWqs=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=TqxWhrZV660EpPNliTqKJE+ASsn/C92C7suDcXg4l3yuwfxYGVW0Jn1/ZsnmWxr1k
-	 z4pFLPE4jWXTEKuKfXTqKKcBBnbgc0U1PRVBhzkLiy08C17R9DBch7mDc4kat0HODY
-	 PVUiwGLCOmAAuRsQfIc9KGVat9BkFUIavut4nXXYSA08cVDfTaKeHvSyPtmiOfPE0x
-	 huDm383JTG7RWB1T+Vkm/V9hMppMYNVGrCHqvgflDYL5pahxNgkVc50gzoCz0/oPu8
-	 Cw8RSeO3me4sMsydcFQnETvRwkO1gJAsKzwwZXh91MfThPuanXFcwWxJcfoP/EkI5O
-	 dff6Tp/hRg/7Q==
+	b=G58UwvGRoEU2ja/JxTaBh3mkL6h9uzHMeQmT51gHMI6Qd9i16Do6T0L+9dGcdKaiN
+	 sUQYk20yPFavzn2jXEBUZQvZIkjOMUGmprF3Qt4xRG4bemWwb5fbS1LoU3ZwfH+Dtx
+	 TZsWfg1omAzchJNJOc3g/gbh6GFa0Pi3zBLCALLeBfV3ac13oriTqkzEkYcbQq/pro
+	 t4GqIRpjm8BqxpHcETH9U8/ss1mmfbJUBJWcsTmzXIbVeLgbW/XhJdCHpaIT4/I/Pt
+	 2jj65rzH9avATRl9meKDLm4HQQF4zKL/8ublHFqsJE7/lMMu2EhfHYf+LAtikpjBZ5
+	 cffTmoxc8yf3Q==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org,
 	pabeni@redhat.com,
@@ -52,9 +52,9 @@ To: netdev@vger.kernel.org,
 	horms@kernel.org,
 	linux-rdma@vger.kernel.org,
 	achender@kernel.org
-Subject: [PATCH net-next v1 4/6] selftests: rds: Fix gcov and pcap collection
-Date: Mon, 27 Apr 2026 16:29:25 -0700
-Message-Id: <20260427232927.2712755-5-achender@kernel.org>
+Subject: [PATCH net-next v1 5/6] selftests: rds: Collect pcaps on timeout
+Date: Mon, 27 Apr 2026 16:29:26 -0700
+Message-Id: <20260427232927.2712755-6-achender@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260427232927.2712755-1-achender@kernel.org>
 References: <20260427232927.2712755-1-achender@kernel.org>
@@ -65,7 +65,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1090347BD8B
+X-Rspamd-Queue-Id: 3EFDC47BDA0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -79,7 +79,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19613-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19614-lists,linux-rdma=lfdr.de];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
@@ -89,82 +89,66 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,run.sh:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-The vng guest shares the host filesystem via 9p and runs a minimal
-systemd inherited from the host's /lib/systemd/system/. As a result,
-which filesystems get auto-mounted in the guest depends on the host OS
-and its systemd version.
-
-The tcpdump pcaps are initially saved to /tmp because 9p does not support
-chown which tcpdump requires. But whether /tmp is already a tmpfs depends
-on the host's systemd configuration and may still sometimes fail if /tmp
-is not mounted by default. Fix this by mounting tmpfs on /tmp in run.sh
-when it is not already a separately mounted filesystem.
-
-A similar dependency exists for gcov. debugfs is not mounted automatically
-in vng guest, so the gcov data copy from /sys/kernel/debug/gcov/
-silently finds nothing depending on whether debugfs is mounted by default
-on the host OS. Fix this by mounting debugfs in run.sh before copying the
-gcda files.
-
-Finally, when invoked through the kselftest runner, the working directory
-is the test directory rather than the kernel source root. gcovr defaults
---root to the current working directory, causing it to filter out all
-coverage data for files under net/rds/ since they are not under the test
-directory. Fix this by passing --root to gcovr explicitly.
+The timeout signal handler for the rds selftests currently just
+exits when the time limit is exceeded, and forgets to collect the
+network dumps.  Which can be valueable for discerning why the test
+timed out in the first place.  Fix this by hoisting the network
+dump collection into a helper function, and call it from the
+signal handler before exiting
 
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/run.sh | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/rds/test.py | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/net/rds/run.sh b/tools/testing/selftests/net/rds/run.sh
-index bc2e53126aab..3fc116d23410 100755
---- a/tools/testing/selftests/net/rds/run.sh
-+++ b/tools/testing/selftests/net/rds/run.sh
-@@ -197,6 +197,13 @@ COVR_DIR="${LOG_DIR}/coverage/"
- mkdir -p  "$LOG_DIR"
- mkdir -p "$COVR_DIR"
+diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
+index 90f9adad18b3..6685b960d013 100755
+--- a/tools/testing/selftests/net/rds/test.py
++++ b/tools/testing/selftests/net/rds/test.py
+@@ -66,11 +66,20 @@ def netns_socket(netns, *sock_args):
+     u1.close()
+     return socket.fromfd(fds[0], *sock_args)
  
-+# tcpdump saves pcaps to /tmp because it requires chown to save the
-+# pcap but chown is not supported by 9p.  Mount tmpfs on /tmp if it is
-+# not already a separate filesystem
-+if ! mountpoint -q /tmp 2>/dev/null; then
-+	mount -t tmpfs tmpfs /tmp
-+fi
++def collect_pcaps():
++    print("Stopping network packet captures")
++    for p, pcap_tmp, pcap, fd in tcpdump_procs:
++        p.terminate()
++        p.wait()
++        os.close(fd)
++        shutil.move(pcap_tmp, pcap)
 +
- set +e
- echo running RDS tests...
- echo Traces will be logged to "$TRACE_FILE"
-@@ -210,6 +217,12 @@ dmesg > "${LOG_DIR}/dmesg.out"
+ def signal_handler(_sig, _frame):
+     """
+     Test timed out signal handler
+     """
+     print('Test timed out')
++    collect_pcaps()
+     sys.exit(1)
  
- if [ "$GENERATE_GCOV_REPORT" -eq 1 ]; then
-        echo saving coverage data...
-+
-+       # Ensure debugfs is mounted
-+       if ! test -d /sys/kernel/debug/gcov; then
-+               mount -t debugfs debugfs /sys/kernel/debug 2>/dev/null || true
-+       fi
-+
-        (set +x; cd /sys/kernel/debug/gcov; find ./* -name '*.gcda' | \
-        while read -r f
-        do
-@@ -218,7 +231,7 @@ if [ "$GENERATE_GCOV_REPORT" -eq 1 ]; then
+ #Parse out command line arguments.  We take an optional
+@@ -246,13 +255,7 @@ for s in sockets:
+                 pass
  
-        echo running gcovr...
-        gcovr -s --html-details --gcov-executable "$GCOV_CMD" --gcov-ignore-parse-errors \
--             -o "${COVR_DIR}/gcovr" "${ksrc_dir}/net/rds/"
-+             --root "${ksrc_dir}" -o "${COVR_DIR}/gcovr" "${ksrc_dir}/net/rds/"
- else
-        echo "Coverage report will be skipped"
- fi
+ print(f"getsockopt(): {nr_success}/{nr_error}")
+-
+-print("Stopping network packet captures")
+-for p, pcap_tmp, pcap, fd in tcpdump_procs:
+-    p.terminate()
+-    p.wait()
+-    os.close(fd)
+-    shutil.move(pcap_tmp, pcap)
++collect_pcaps()
+ 
+ # We're done sending and receiving stuff, now let's check if what
+ # we received is what we sent.
 -- 
 2.25.1
 
