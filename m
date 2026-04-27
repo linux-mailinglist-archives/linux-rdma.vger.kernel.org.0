@@ -1,284 +1,237 @@
-Return-Path: <linux-rdma+bounces-19592-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19593-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sEUdGqKM72l5CwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19592-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 18:19:46 +0200
+	id uL4MO5aO72mhCwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19593-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 18:28:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D57F4763AB
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 18:19:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7D74765CE
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 18:28:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E110C311F404
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 16:02:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0696A312CF79
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2026 16:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038D034B1A4;
-	Mon, 27 Apr 2026 16:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB0134F275;
+	Mon, 27 Apr 2026 16:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20251104.gappssmtp.com header.i=@davidwei-uk.20251104.gappssmtp.com header.b="kmnqlfzT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X/LY17o0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1CA23396F4
-	for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 16:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777305715; cv=none; b=S47JXYgHLSGVDnhy6/YaSYFfFljVr+ciFgKqlE7m7C0dZt0fo3A8hpe7YBCF7iFHhghu362xd4aeHMskQd2Ea+Sk/HGjBRtSNj4TRuq1ruwJrzKoFboWTocfcjCLXHSSJ5idAgyLHExJEFFYV/tfMdhQHWU9RAPBjhvSM4Rshcw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777305715; c=relaxed/simple;
-	bh=3nI4jh0qSpjXgDdJgMsEeE+LnWsU7E6SKeCla5t9yI8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NkpbdQHEgNP3MAibyXKLBV+QlVFi5fOpl/Q+BnnGnc9iRrlrUHgIE7Z5KOL1Ihozg7tLcXTooQg/Szcbu2SeMrV7uAlwjURqgZkfrMImjF5JqfQDjTN6BJb5X0YARgEJHIls7Gqv0YxfQJ7q1VuQSRSOgslxsn51BIkOzXIZK+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20251104.gappssmtp.com header.i=@davidwei-uk.20251104.gappssmtp.com header.b=kmnqlfzT; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-48374014a77so135943295e9.3
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 09:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20251104.gappssmtp.com; s=20251104; t=1777305712; x=1777910512; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wUIn/GeHnKQMX3ItFkglQNbpq/QxkRY25o0nGMIbjjc=;
-        b=kmnqlfzT+VLa4gehYeZswkCKagxg08sH8GjJYZl2/2/P1VC3/8sMxqAT8tyWytFdp/
-         gujNcseGsm4It1DG1yAtSZbt0fAExk07ewBTz0BDE3j/au0wHaRWWCUUesoCh4Nn7gOb
-         5+20SiBbryxZ2gYymMKFbEGYq4CZy8nhDYqSFiQzUdLBcdiAv1WjLJ7sCHIF+mlQnBKZ
-         hZv9RqMX1bJvPshZXlOChFYQ7DPMThWEvQSYBr/n8df7hpo3L2jcDHbAhUVfscbX0mF7
-         33y6L63pADVRMkSZenN80mt6DlUoqZOQj1weSbI3Dc7prHxkrs7US46qS62iXrZaw3mm
-         cNaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777305712; x=1777910512;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wUIn/GeHnKQMX3ItFkglQNbpq/QxkRY25o0nGMIbjjc=;
-        b=NQPr2C+cT2KOB0Xx/8Lm6vOsCxFOfo9+cwx/yXea9PFppA63R8SIWHJjcEplYUNYXA
-         uCDgXNCQu84VKVTEW3MVo4KZfErhFsM75YZwBK1TgoPdolJ4YUSQclax9kSOPfMJGqRJ
-         opucpW61HWsmC5nfjhj2FZmMKDqQWIG7y2/SNRyHk7AsjBurBEN0ESFDPKQ0aSNmKSdB
-         zoj2XPwyNoi2nLzNh6yNfLTfWluv1de89l//vrrnMxTe4rP+F/enlfq9jNvf1UesDLPn
-         sfzv2XUi6P4dw52m7dxYd962xqKiZ/zWQHFUIO4k1wlerTKoj3saKNkZtgU3PcEGdZpy
-         WdeA==
-X-Forwarded-Encrypted: i=1; AFNElJ/Uq5/BWYWdP2R/86JrseW0zeDfBrWQ+cliMiKb8BX2Qee2pwqrz5/L+CiEwiptoWKdmAgtvCSS6FYl@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhISMHKQ77x++ocUjNGq0CHxKsXkiLRDwfbRqwZLUZC3dBJSSN
-	HB+0bIaxfQanwn9sWxdV5uLb22xEUZ8sdqxyix5U9mv1qwXHvhs/9d8qRNMQU+7afs8=
-X-Gm-Gg: AeBDietycsno2Wbm4SNq3+9SXmgI9NxWBONioKJJDmOlriMW5CJll1NMPve4A5++JoQ
-	xxUKgC8kn2A1eGkOyA9ICJgmdUjM7ziEwSBKMqLlxSpXUX9X6l4LGN9qjqqUXYlHreNbbe+xObf
-	x2nrd3vqzSuAvcy/bd0G7ZzKd+n0sXdDSUeJu85kUIXk+cQMCMjiLSi6khVGvF49L7UV6wFBHd6
-	A3Uc74U0nUk/8AuD2LIbH0gbntrDHmpo5OXiehQ5PQqMFsowawMMKSzydxzwMTG/mIqkKBZg4rX
-	Y31dAUlRt89M1YSSuXH3pvZPxb5aUCWqcPgs3qxB6N2mVQy/wi/GTiMOq96/7qBJa5CBKqqG3KV
-	uQxnoY7VtLTqBNyEY1hiwwh1sluc15ZeqwrgICdbSTpCuAkrGti95OqlGCE6n1HCZHcUzJS52nh
-	/nZP6rfHqUZmuyJZG7OYlPjQhsIGfcO3WFnFTrEZfLmi8JHZjtl+K2F/N48DrxRoqTQ26I9FZ1M
-	O4pkeYN7Bs++gE+GpPPw5x/PljzUUE30QJX
-X-Received: by 2002:a05:600c:6216:b0:48a:52ee:5776 with SMTP id 5b1f17b1804b1-48a76f53b01mr8705e9.11.1777305711990;
-        Mon, 27 Apr 2026 09:01:51 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1126:4:142d:11f2:435b:9d94? ([2620:10d:c092:500::7:64e5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a59816b71sm230488865e9.1.2026.04.27.09.01.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2026 09:01:51 -0700 (PDT)
-Message-ID: <5d5f74ae-602e-4380-b4d3-442b4dc2ceb4@davidwei.uk>
-Date: Mon, 27 Apr 2026 17:01:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9032930EF75
+	for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2026 16:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777306202; cv=fail; b=YZ1mR6EROtsGUEm06eSqmArXutiumvZaFtl7gFNxM8rEd9p6sZRYNnlh2U893g5ki/fa2nY2Up207Mj2sNhBQjPU1X/rLSjPzixp8scC/9ibXyCdi7G8P8m5O7atSPRi8ESFGtIx5zhBXVXBgRw160F7jb+HhYMqHmgg5kWM07c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777306202; c=relaxed/simple;
+	bh=3smLnV0nM/q3k/Kw3UEuoIHLsQTuqbC+IYP/EuLgVgg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=dcrlZeWGPxSiWQi6uKDpzE0NdTpC1/wvBBVDBBC3zmWB+EpmFZTDXTMbBQyq+TmBF6s7E9afEu6+ENNKthzjoUlMwJeQiJvGmCEO6YO0RGifWwoCKu0Nkqq2WLcO4hYJ7EwSN2UUeXLW2YO1IGQuFkyDZP7ePR2V4EQIoNeqL04=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X/LY17o0; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1777306201; x=1808842201;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=3smLnV0nM/q3k/Kw3UEuoIHLsQTuqbC+IYP/EuLgVgg=;
+  b=X/LY17o03JNEBcdd6VUhVdMsdxUmhObZxDpcPNgAKpw6XTAqEhGsIkO4
+   Pes0ioNgVVUyRXYerBCikubBBJtvRgtFlFTAZPvaw/d+u3pcE0ToYpAX8
+   +jKqxQN/KQNLrSlcjkgrxqTmrxkVVvj9Acv/9VnOALECUeNJ3L4IDyFYH
+   lNEbwbnwkd1chhf4yAvYw+AYVkLsRncVGfL3KEJOYDlqU2wH2f1EKAR9o
+   f8sejgJ7rdoenQuj+sHmrv1eLLGtBffWM9D057wB+p6Qeuyu1hEv65Dmy
+   P9RFaOW/8cI94DNRvboG4l4MXqgGRqLSxMJqvj1vXKdyRivHHoy7jvpV/
+   g==;
+X-CSE-ConnectionGUID: WEVPy+xlRTKXST1E3lo3yQ==
+X-CSE-MsgGUID: g5XfnbsSSDuitd1j0gssZQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11769"; a="78217797"
+X-IronPort-AV: E=Sophos;i="6.23,202,1770624000"; 
+   d="scan'208";a="78217797"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2026 09:10:01 -0700
+X-CSE-ConnectionGUID: 6nULNJaPShu/MRtTO/VP2g==
+X-CSE-MsgGUID: e9sRFjeRSxO4SvjrqD1SDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,202,1770624000"; 
+   d="scan'208";a="238667460"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2026 09:09:59 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Mon, 27 Apr 2026 09:09:59 -0700
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Mon, 27 Apr 2026 09:09:59 -0700
+Received: from BYAPR05CU005.outbound.protection.outlook.com (52.101.85.39) by
+ edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Mon, 27 Apr 2026 09:09:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MRF37GTUHrRqVvZKvFRVL+y7THaqj6mxsHbOJRcakpMmwEDCN9rhUHrQ01CgH0Ss3EDIynZQC38tENqDItm31qj2GjBkJ/kvDfS2BseeLQtvZmlh1NAOve3e0UZJ+B9qf4XZgS+tX+f+alRqESSRIWC9F3xYw3NA5URmbhFVg9nR797MoC4mJFlSVnSQU3/wSTS8KUQkVQmHjocycf7/++VjErS0S5ijYkRVAjaWxWJRLcB4Z+V1N3t64T139zRPNf8UnQ+EB+6g/jmIZLFHXaYI9ORGx5vCcYQAPQOIE4RhYyKjIJcctGb+FnXpjCF1/gmI87wT4bwMAzIFyCa+og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3smLnV0nM/q3k/Kw3UEuoIHLsQTuqbC+IYP/EuLgVgg=;
+ b=edY5D4Zhbh4IgGs8iAcMY0I8XKsBSH/KYN6razMFZ/qOxL2bbkDwLVk9qHes2hJiffVFy/RUJhQZ9V73ReD4lr05he3oBb3B6ID5OyQf44uA0GENNb8ZXLXuLYV4JXJ5oeJzkQjBpQbPGIHh461+biRD/Fr8dF7r5waqK4Y+kamhakSDyNYeZmoIC0F28lk92qctCxBuu/SXAra2eVRBBIRNFuLjyZ4PEJkOKdPrDQaacgWWeQHGC3VAWRKnCL69QPC5lUSCk4m71VLAvFiP9FH30RT2R1Cst/76llYKqKKG5rM+aIzsrbXAfFHrfFXDeUJKqUQLDkpkMNkeLhaAyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS7PR11MB7740.namprd11.prod.outlook.com (2603:10b6:8:e0::11) by
+ IA1PR11MB8248.namprd11.prod.outlook.com (2603:10b6:208:447::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.15; Mon, 27 Apr
+ 2026 16:09:55 +0000
+Received: from DS7PR11MB7740.namprd11.prod.outlook.com
+ ([fe80::ef15:dd09:86c1:9979]) by DS7PR11MB7740.namprd11.prod.outlook.com
+ ([fe80::ef15:dd09:86c1:9979%2]) with mapi id 15.20.9870.013; Mon, 27 Apr 2026
+ 16:09:55 +0000
+From: "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Leon Romanovsky <leon@kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, Jacob Moroni <jmoroni@google.com>
+Subject: RE: rdma-core user space irdma
+Thread-Topic: rdma-core user space irdma
+Thread-Index: AdzRtFOnr3MtxlquT7qKWQvP2MogiACQ3rmAAJmzx8A=
+Date: Mon, 27 Apr 2026 16:09:55 +0000
+Message-ID: <DS7PR11MB774061A88AD7DFDF4555EFA6CB362@DS7PR11MB7740.namprd11.prod.outlook.com>
+References: <IA1PR11MB7727AFB5228A90E1C7115C21CB2C2@IA1PR11MB7727.namprd11.prod.outlook.com>
+ <20260424143659.GC3611611@ziepe.ca>
+In-Reply-To: <20260424143659.GC3611611@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS7PR11MB7740:EE_|IA1PR11MB8248:EE_
+x-ms-office365-filtering-correlation-id: 7fcdfbd6-feb1-4104-234d-08dea4776c19
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700021|22082099003|18002099003|56012099003;
+x-microsoft-antispam-message-info: L238Ze2w58QlNBgpTiaXciWJ3OVn/jioWqmbSlRPqOhY4fQwEHd1Wltw1EQb2kmSJrPXajpFxNUtgQ+lgRObMfAq3Zz+Fh0ymPlscYXsWCSw/77N2mio605s/sxT0DM4g97hM4iNUvnEI8GT+n46lX25q6YTPdPtMsyWV/PbQtfuq567zBdcBza+w1HkqpUw8LfOhjtAnAEK/cdKQ2rKJd7qKtGbV0i3p+jfrd6ehFUCi7ZE9fD/7DXgCBSrKmAhByw6lt+7J43ZS9UFGhXjmJBV2/rsnRIIuLabThBz3q0LMLDHtNGAzUPdwBbhwDC5OYo9U/1piRfKYeYO+0hA71Fy47mYaCWnzd19Nd919nfhWIqystdJRYvJQE5VegVO+wIHNHw0W1jtwr6YI7GovrbVVjoUpZONLTrr70f3RKZ3cQ4gNmpF666sp4g1s6iiHL9aAWGzsj52OoTdFIqqR4gQZskJMSgMGweYuQBs9xGRbfXihMvd089UWGznukNMgZDxcAUAuFHIpMWvGy7SrigxIeSFVnXNZO5Wxo2KrnVov6QVcPsyzuH8QSznT9oir1iyd59puSrwly7AZoa0nsYnGuuujC0SEIzjselF60st4CZoxFTuTop7257oXuN3T0vKIHhkCnp7np6uJIV4TwnuZ6ijk7odfWaG7o8vZsYpeHistrv6poJJQvzRrZ8pP0RBlDYsL0UaDV33ssGq/oj5pMgi7gheSYPhuM/x63/tapURLPrnULLWTzsFDKPUGSCHrdd/2/HLyC1QHWI7/6DB1abRcKNjy5qiAQLQN1g=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB7740.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700021)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gtOA9G14kNRQeLmvkdhXchEBcC5z6K5WP2kRT77Vnz48+j2fbmtXjBP8AWCE?=
+ =?us-ascii?Q?LJvMdlfzIslf5399AAFeBVfnPx3V43VNRb2qjg4lukOmxgcM/Ozds5v0QSnS?=
+ =?us-ascii?Q?0GBkL5Ll/SEKDtulYSEdOMIkVv8GX8zodfccGvKgCwCan2FUFV0q5Jgr1maZ?=
+ =?us-ascii?Q?cZ9c6k0N/o/wLsEAXwKdR5pEYd8ltfFxJh0IwzvmLH+6fUZfNl1ovPdBtsQe?=
+ =?us-ascii?Q?zbhBSOdpndKuAtNt6qluMt0rR9dh0DuJ9xEzaYuuQhzlYDDeYoqO+9kAI87l?=
+ =?us-ascii?Q?XqHLVdayCx4inTp4e6aF+XQzRJxKuYdk/ggMNGdhXak6NwiaSWmjDs9WWs0A?=
+ =?us-ascii?Q?0lhoTqeZ6lX67cax0ca04SKz6EhkFWf1ZEnN27wijfAu/lAPOsoS0XE8caxx?=
+ =?us-ascii?Q?WAod0aC3SiO+214QNbR7hlz+OsJECL8o/Wpzu36DXY+1BG9kjE6vUZgYK62L?=
+ =?us-ascii?Q?Hwg2tPnIuuuZfZMtF11GQ0AeG9UkGTlMCf/3xxhprJZshjkcrDhQ+zKNRBBK?=
+ =?us-ascii?Q?L7PWiJ8P5YNk3DrwlEawCy1zouOQFeIruZTdR18mfod73l7ePMwO5hjKt0wH?=
+ =?us-ascii?Q?SUOp9fLzgW4Cll4uR9rxw4mbd/GbMW2DtDwXt+2PSXT98scHBMEWSNXoklXm?=
+ =?us-ascii?Q?7uRdAmRzZP1A5rvKUUWoo8bP5y+AT55raBj5ZGq3octsXw/HPq7cTKvWKphQ?=
+ =?us-ascii?Q?Qhl7CApHRO7SOf4Z3/8nkARhI9OuDjTUw87cT8yCfyBXNFdHp4BP2cHRsOY1?=
+ =?us-ascii?Q?KL90/ts+W1czi+MxKrKmxCeDO/9iazfka9MI5ar3J+zZGWrgePDIklY2GP4D?=
+ =?us-ascii?Q?zimuvCVxzpy4O5ICckKvMI/CbvWl9An5wTYkFJtKGhDPGBrI3e9X/cdX39gU?=
+ =?us-ascii?Q?30ujAqhcB1nPTKTOJdaP6ctUSMpdWPp7pUtayl1IJjRaGS5Ldl1ZXYIoyptY?=
+ =?us-ascii?Q?RJKjl74tLlGlG/+jeuBqvmg6IyJfDG7K4sHPYEKUO/tl01saZb4FjQd/lKsg?=
+ =?us-ascii?Q?PvC/yBsKt603DNoyV9Nau0mGRgcgVt3f8nXcEqAvmplPFVIPvssvAdPj0CF2?=
+ =?us-ascii?Q?IUNHDgRdxnOFG4m5CbLQRzWx8n9roWqHDiSgag2aS7tIRto+51VGxwk8TJ/i?=
+ =?us-ascii?Q?LiN8lPgrY/p6kXZL08GcV4sgChkPObj+uGF+0hz+4ORAyd+qdRll8jZGdaqt?=
+ =?us-ascii?Q?thFFf2mhtwfJvfkhBxUdP3nBM28BOfWXKZtwAks6jBeJJIRhlY52wTPBAQll?=
+ =?us-ascii?Q?gkvN0gIQuLLTsWV6NaXPyM+mdMwsTUq/jvIGIhu4xlufAY+GtT84VZ2dxDvp?=
+ =?us-ascii?Q?KJVT8lsHKFM3/0wqZWq1LI1gNjekLgWXzC29IFsI+IhcRkI9Sw2z0oVALrDX?=
+ =?us-ascii?Q?WcCOOw7WpG9fZW8v0IZOu7okGEeE/YUiHbbVqW+M0SCowESlXVr3g7wJ/SaZ?=
+ =?us-ascii?Q?jq4KhPfxhNCzAHcAMiZgnpqY7sO4SQwMa47+TzZvdV/sbt9OZz+60QUhn5yc?=
+ =?us-ascii?Q?SwbEQIKN1Kz45NKLdyZHWS6cO9rU6icTetEH4/VcsC7sVk6aFJ9SJFTfcReo?=
+ =?us-ascii?Q?wipJw1u4mgpIJycFVbdmsMm6CNRgC8oUhLjGpDeF9HCLzzI3XHC35p3KP8r2?=
+ =?us-ascii?Q?Cgxvy3P0R7w8nMzEeIST16AxBaxEwrWPSJtk+LaI2ZvK3hpF6fdEMF34LNwo?=
+ =?us-ascii?Q?xaZs/ddPzwuSZNWUkwR9K4Uu72tuIpVoP5fC3JPVlvPxI612sg5QpIw4Lbuf?=
+ =?us-ascii?Q?Pgh5CdyLqQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 0/2] net: mana: add ethtool private flag for
- full-page RX buffers
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>, kuba@kernel.org
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- stephen@networkplumber.org, jacob.e.keller@intel.com, leitao@debian.org,
- kees@kernel.org, john.fastabend@gmail.com, hawk@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org, sdf@fomichev.me,
- dipayanroy@microsoft.com
-References: <20260407200216.272659-1-dipayanroy@linux.microsoft.com>
- <20260409183509.0b24dea6@kernel.org> <20260412125917.4fa8fc8d@kernel.org>
- <ad5kuCZz+gR1TlSh@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20260416083146.0bb94d2b@kernel.org>
- <aeoVC27mIzoKytqA@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <685d7bf9-062d-4bd2-8448-f7714bb05302@davidwei.uk>
- <aex119OtL8CEGXkb@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Language: en-US
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <aex119OtL8CEGXkb@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5D57F4763AB
+X-Exchange-RoutingPolicyChecked: VQaAtKqH7IQOCwDcqIihabzw6zJVwh65R22ujlOMUoT7f211B1eZn+wbXeuY47D4u09jPjkX4dFc9FkGSJ8XkerbK28V7MFqOI3heVL/WWFkRbZyucLjXtJTXnKTKoBcTQ+BUGJFfu6kowDEHi4GL9OOEFuokWhcpbq3DK4N72DlPb1yrtq9m3CFNpsRlNJytnkqg7jyzefRt5nYzqZM/UeUqQmSy7li9b/XisVosBQVt+GEK6Wlp3e0UiQtH2mXGSyP/sUHadJ7D6/oZqN1Pll85H+Pqhp9g2V48RDgpShBqT7XwTYM8pZb/lvx3Z8wVBSi5Jc3MW7qFYlZkT7agg==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB7740.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fcdfbd6-feb1-4104-234d-08dea4776c19
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2026 16:09:55.4418
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WtasEQ9MX7Z3c6rZyIg0Z9ljSMxkkz3DyOlJHPGqZBTBieNVg5snWMV5S5xXJqwUWRdlEtpFao2VQOqMvXc9qODSYAqmfyzFRGu16igZCJY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB8248
+X-OriginatorOrg: intel.com
+X-Rspamd-Queue-Id: 4C7D74765CE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
-	R_DKIM_ALLOW(-0.20)[davidwei-uk.20251104.gappssmtp.com:s=20251104];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19592-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19593-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[davidwei.uk];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	RCPT_COUNT_TWELVE(0.00)[33];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[davidwei-uk.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dw@davidwei.uk,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tatyana.e.nikolova@intel.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,davidwei.uk:mid]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[10]
 
-On 2026-04-25 01:05, Dipayaan Roy wrote:
-> On Fri, Apr 24, 2026 at 01:05:24PM -0700, David Wei wrote:
->> On 2026-04-23 05:48, Dipayaan Roy wrote:
->>> On Thu, Apr 16, 2026 at 08:31:46AM -0700, Jakub Kicinski wrote:
->>>> On Tue, 14 Apr 2026 09:00:56 -0700 Dipayaan Roy wrote:
->>>>> I still see roughly a 5% overhead from the atomic refcount operation
->>>>> itself, but on that platform there is no throughput drop when using
->>>>> page fragments versus full-page mode.
->>>>
->>>> That seems to contradict your claim that it's a problem with a specific
->>>> platform.. Since we're in the merge window I asked David Wei to try to
->>>> experiment with disabling page fragmentation on the ARM64 platforms we
->>>> have at Meta. If it repros we should use the generic rx-buf-len
->>>> ringparam because more NICs may want to implement this strategy.
->>>
->>> Hi Jakub,
->>>
->>> Thanks. I think I was not precise enough in my previous reply.
->>>
->>> What I meant is that the atomic refcount cost itself does not appear to
->>> be unique to the affected platform. I see a similar ~5% overhead on
->>> another ARM64 platformi (different vendor) as well. However, on that platform
->>> there is no throughput delta between fragment mode and full-page mode; both reach
->>> line rate.
->>>
->>> On the affected platform, fragment mode shows an additional ~15%
->>> throughput drop versus full-page mode. So the current data suggests that
->>> the atomic overhead is common, but the throughput regression is not
->>> explained by that overhead alone and likely depends on an additional
->>> platform-specific factor.
->>>
->>> Separately, the hardware team collected PCIe traces on the affected
->>> platform and reported stalls in the fragment-mode case that are not seen
->>> in full-page mode. They are still investigating the root cause, but
->>> their current hypothesis is that this is related to that platform’s
->>> PCIe/root-port microarchitecture rather than to page_pool refcounting
->>> alone.
->>>
->>> That said, I agree the right direction depends on whether this
->>> reproduces on other ARM64 platforms. If David is able to reproduce the
->>> same behavior, then using the generic rx-buf-len ringparam sounds like
->>> the better direction.
->>>
->>> Please let me know what David finds, and I can rework the patch
->>> accordingly.
->>
->> I ran a test on Grace, 4 KB pages, 72 cores, 1 NUMA node.
->>
->> Broadcom NIC, bnxt driver, 50 Gbps bandwidth. Hacked it up to either
->> give me 1 or 2 frags per page. No agg ring, no HDS, no HW GRO.
->>
->> Use 1 combined queue only for the server. Affinitized its net rx softirq
->> to run on core 4.
->>
->> Ran iperf3 server, taskset onto cpu cores 32-47. The iperf3 client is
->> running on a host w/ same hw in the same region. Using 32 queues, no
->> softirq affinities. The idea is to hammer page->pp_ref_count from
->> different cores.
->>
->> * 1 frag/page  -> 32.3 Gbps
->> * 2 frags/page -> 36.0 Gbps
->>
->> Comparing perf, for 2 frags/page the cost of skb_release_data() hitting
->> pp_ref_count goes up, as expected. Is this what you see? When you say
->> there's a +5% overhead, what function?
->>
->> Overall tput is higher with multiple frags. That's to be expected w/
->> page pool.
-> 
-> Hi David,
-> 
-> Thanks for running this. Your results are consistent with mine.
-> 
-> I have tested this on 2 ARM64 platforms from different vendors,
-> running ntttcp and iperf3 using 4k as base page size.
-> In my observation I see both platforms show a 5% overhead in
-> napi_pp_put_page (~3.9%) and page_pool_alloc_frag_netmem (~1.9%)
-> when running in fragment mode, both stalling on the LSE ldaddal
-> atomic that maintains pp_ref_count.
-> This seems to be same as your observation as well. However in my
-> observation one of the platform shows 15% drop in throughput when
-> in fragment mode vs page mode. The other platform I ran the test on
-> infact performs slighty better in fragment mode than in full page
-> mode (simillar observation as yours).
 
-That's not what I observe. I don't see napi_pp_put_page at all, and
-page_pool_alloc_frag_netmem is actually lower with 2 frags/page (4.06%)
-than 1 frag/page (5.73%).
 
-The main difference is in skb_release_data which goes from
-0.85% (1 frag/page) to 3.32% (2 frags/page).
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Friday, April 24, 2026 9:37 AM
+> To: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>
+> Cc: Leon Romanovsky <leon@kernel.org>; linux-rdma@vger.kernel.org; Jacob
+> Moroni <jmoroni@google.com>
+> Subject: Re: rdma-core user space irdma
+>=20
+> On Tue, Apr 21, 2026 at 05:32:50PM +0000, Nikolova, Tatyana E wrote:
+> > Hi Jason and Leon,
+> >
+> > Could you please review the irdma user space PR at
+> https://github.com/linux-rdma/rdma-core/pull/1640 and provide guidance
+> on how to proceed with it?
+> > I have rebased it and the required kernel patches have been merged.
+>=20
+> Is it ready now? I admit to being confused what its state is over all
+> this time?
+>=20
+> Jason
 
-> 
-> So the atomic refcount overhead appears to be common across ARM64
-> platforms, but it does not cause a throughput regression.
-> The throughput regression seems specific to one platform only for which
-> we want to have the full page work around, also the HW team has
-> identified PCIe stalls in fragment mode that are absent in full-page mode.
-> Their investigation points to a suspected microarchitectural
-> issue in the PCIe root port. IMO, there seems to be no issue with
-> page_pool itself.
-> 
-> Given that:
->   - Grace shows fragments are faster (your data)
->   - A second ARM64 platform shows no regression (my data)
->   - Only the affected platform shows a throughput drop
->   - The HW team suspects this to a platform-specific PCIe issue,
->     also form our experiment data the drop in throughput seems to
->     be platform specific only.
-> 
-> I believe this remains a platform-specific workaround rather than
-> a generic issue. Would a private flag still be acceptable for this
-> case?
-> 
-> 
->>
->> There are some 200 Gbps NICs but they're mlx5 so I'd have to redo the
->> driver hack. Are you going to re-implement this change with rx-buf-len
->> instead of a private flag? If so, I won't spend more time running this
->> test.
->>
-> I can go either way depending on what Jakub prefers.
-> Hi Jakub,
-> with this new data from David, is it convincing enough for a mana driver
-> specific private flag, which can be set from user space by a udev rule
-> by detecting the underlying platform? If not then I will send the next
-> version with the other rxbuflen approach.
->>>
->>>
->>> Regards
->>> Dipayaan Roy
-> 
-> 
-> Thanks and Regards
-> Dipayaan Roy
+Hi Jason,
+
+The PR is ready. We have been testing our upstream irdma driver with latest=
+ rdma-core and this PR applied.
+Regarding the PR state over time, it needed kernel headers when it was firs=
+t submitted, later GEN 3 support in irdma driver was merged and the kernel =
+headers became available.=20
+
+Thank you,
+Tatyana
+
+
 
