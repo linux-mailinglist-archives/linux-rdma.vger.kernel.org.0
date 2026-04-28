@@ -1,214 +1,226 @@
-Return-Path: <linux-rdma+bounces-19712-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19713-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aNwgJ/k48Wm/egEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19712-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:47:21 +0200
+	id EKpuLIY48Wn4egEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19713-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:45:26 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99F7148CCA1
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:47:20 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 539B948CC23
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:45:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3A0983032A79
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 22:43:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3C1F7300B597
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 22:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152A83A6404;
-	Tue, 28 Apr 2026 22:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70409381AE3;
+	Tue, 28 Apr 2026 22:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mkCBgfK8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WV/NZNR8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F7D3A453C
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 22:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8F937F8DB
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 22:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777416149; cv=none; b=JCSUdT96FSpF2gLylIHM2Qg3U1ZWZG1nFmXvEJT2Tq2LG4bYidfqxmwT4S3VsKVQwO8gfSF5zL4LTdzLzI31a3cuCBzEmwt3uxTvXN6q1HAGuxBz8pCeUSORaPe1NVfNjXKbUpfGVMpOJcT7+9IxuffFJIgur46JmL9JIAwjDwI=
+	t=1777416223; cv=none; b=KOnQCF6yXG8rfVHKSEl0AMFLs/v/0G3I04oYPSzGYWSJEmpyq714B9Jybulkc90IqUfEO1C25vKzLUIBcb4AvaFzI+qzc+KJsHOCp8X9nQ0wy1VjVjeS0llvbGu3i6lttznq/r8bxKNzCXyvrXtT+XM+084qhF6utbmnh7sxtgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777416149; c=relaxed/simple;
-	bh=9CfxHHUrdkC2HOcb/TS/DNlnMmhpx5XoMYQJ/X3bIM4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SGJ4+IZiw9kEyhWpk1ZfaVNfp3/NBumoRD3xFY48jhWUmG6NYAbTOFwXh01fzKC1/NHTlZdu7shouOOvkse32IMjYcplrs+lxD54C+FfzEPmUGFAPWQ1oG55OGxhSWCPib5411dirZuRANjT33+WPkx66os6qDgACStLT7FgAKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mkCBgfK8; arc=none smtp.client-ip=209.85.210.179
+	s=arc-20240116; t=1777416223; c=relaxed/simple;
+	bh=iYv+2vCSh7ekf6vNdDj7xBAkRnM/Nwz2fkMJWksszM4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z4/k20mlJBo8qu/QpxRMwjNE26dRn6VpAEtIphgVng26OXxsUBBUirhzXB+fKN2lm1R7XpLv/9TxzJmow88t3+axPVCHPNxEEaXY7I2XzfXDhPRsnUmyBq5paFAImEcoUSXX/zjsqIscffs8vsftCfu+bSBVHrOCmQ0X2gbkhkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WV/NZNR8; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-82f8893bff3so5599644b3a.2
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 15:42:27 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-44509921fbcso1717347f8f.3
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 15:43:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777416147; x=1778020947; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zt/Ht0RhxHPOrumBmtiIhgjoCgVfyyPmVo07gYfbsYg=;
-        b=mkCBgfK8IZCr029gch80jB56L0daRQ0xrq+mlojAk5EoADEJaBGZsLeSiqbKv9WNoh
-         NqmoegMAZekTc4FYJzsrNMxDQSB9BgDL833cykHXh1GmO+4XAXSbWjHp3lXfen50X2MN
-         M+fVOpsfIqIK2lsppRsl0085WaUYd8rqQQfpak+6nPnOQGQ4iZ838I7/aLGmrmzQ7s6B
-         cN/WDOS270ZL2FP/E061dEy/QgmTJilrnHhb0VlZpkO2nsCo0g/1m5DIhfD78un31WD5
-         GtbouO1ZfLTdddCmyRF9dCsCW+cpIIzRjHTxX1oMg7Z1phoBmVrO98tcDBXVUOcDtTMu
-         NxMw==
+        d=gmail.com; s=20251104; t=1777416220; x=1778021020; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DD9EGaci6HkgE3pm5bh6W6PLldGlybHFeBAUFYCl54o=;
+        b=WV/NZNR8Ne5tuED2dU+58P2hSVAU3Zcfjiak7d9ooVyE+WDT9QQ3VXGeT4IYTXTi38
+         4NWVloL8Jy8yy/JyFcKsnVVNqHQ0d3j9HEEpNOBVOFrdJ37Tt6DD9tlVaPT2utN0pT9M
+         yWUqO7jVZhLb1t13wXuseOUfgMuvqmdiXZCdTH59AT30YG6dZkqsZuGBJjI16P9XbIOy
+         SwcnZljWmUp4YDWBirMYo3DXfzu7Gl/etcHiZ0TMwzCZ81UeMCQ10Ux+nMd8AMWoBMhn
+         t6teAMso4rF+TIfgH3jyntDYF+EqwSrHiSrbKFFQaswtBhJkpxgQPAhbWlS3WcLXKjEc
+         4FKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777416147; x=1778020947;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Zt/Ht0RhxHPOrumBmtiIhgjoCgVfyyPmVo07gYfbsYg=;
-        b=eqJ1eBywC5HqOa8dASq1gIQtcATdWcNzDCYAlB7jA9ZPB8rrYtF504PBUnUSQq6YvN
-         oqaBAZYXNibPAR9qdgFpKYFPZU1fV1uqd7JwkpdjdpdBKSjluZIh8eZMF2nLlJUvM8+X
-         o+BEy6iAEc45VEZZy1XWuFxaF/aaNLyrHcrBMqbbpPaiaKb3ajWIti7YronKtSjQs/Uy
-         E/XBvzMzlBMHmCH/piD+5fj+NuJwhwfI0vkrWB9RaPclhB+7IaUOMLmXJWxZcFcVATlx
-         Ti1IIsfA7PgGHL/QBILPHlLtqVGdgrTwS2BCHO2Zq0d6nCWwewYfYijMqcftcUrmhac/
-         IrDA==
-X-Forwarded-Encrypted: i=1; AFNElJ+6Vi1mYQjpKymF8HZXXzjwSa8XliKG8YTiuX3x4/Oytlw1xIB+wthRdzx97OPXhFjWJI82ZBugxu8l@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVPWTn2t3KnUHLxtItSrmJF8FHvtkskuJMOcv/kVgZx9uLYJ9J
-	ikS/ml9I5BhVCN+9Wqg3dJ7MCpD1GQYVWFU59L1PbRYCLWQ9Hu/4XdbP
-X-Gm-Gg: AeBDievtLM5RaFyF5csRiUUj/U82o+/JBI4dWOqaW7TXErPAhRfNmusiRvMscqz2tWM
-	x6/QLoRlTPT5serLItz7undUjpmODdd606kBWZkwfrbqZYaxfubqchrAA6o/X+sGz0QWnrn21d6
-	r/qouwgVFHd7JbJljGKPw6TDMoJIfp0C4mwjm3MSPC8EVx+NnxzJdmJH7+sgnh5lBLCTIM/08mm
-	LOJrR/hkiUANducLxQknSQwyPtukS/rL1zc+F65Ihb6aCtXPVFCdWyn+MSBNMF132zuTFxStECy
-	Ur7TMy3czFwgcbwzI8FuBYCwOkM2ZBkHheTCyN/UUmUAp45ImHRJ9jLVlCq0sQfUDqTVtoa0GUO
-	wXYXEzP+I+EPHWMmc61IiP0mkB7qZi/Yj5uF7mF4EsPpWkK4udS52k5uR/cPuJ/JRSVkWUVoomZ
-	IQSytu+TQvc/BNiRcZYEK/Pz2l6ETcXQ==
-X-Received: by 2002:aa7:88c1:0:b0:82f:1973:4b96 with SMTP id d2e1a72fcca58-834ddc14602mr5517283b3a.26.1777416146426;
-        Tue, 28 Apr 2026 15:42:26 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:70::])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-834ed80f906sm96681b3a.60.2026.04.28.15.42.25
+        d=1e100.net; s=20251104; t=1777416220; x=1778021020;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DD9EGaci6HkgE3pm5bh6W6PLldGlybHFeBAUFYCl54o=;
+        b=G9kScaRhyz+hB2kW9g004Bt09pmLZsTaCETwREsjB30RsXUG79bg8X2AhlmRePLucD
+         HLUzDnJzJp1rzOr8/klsNGoSHNOG1qPEUcGVudNjruZifP013tnwBqqjEA1UfeZvP3qF
+         fwpbP+MOcxs3gNXFwv/372JmDgrfG3jj4Slp3MWHv8tOjbgcxSfOThkJpE6QuSqZ7vr7
+         FI/Rjt4DGL5c5cbnxCcu5IzOOaPylaHCB347p4Mk6zrzqoiprWlR39f8JjGGwqq7Lh0G
+         6hy2lcQQJehArxpVGc4PexHryUbbOZbT1LJyPo4C7OxnjcR1gqEv3KgEtZX0yDDxIE1z
+         13dw==
+X-Forwarded-Encrypted: i=1; AFNElJ8pWwktn0Gzrm1LrdkmGmD+2xFbW7u1Wc/ZWAqnQxbaEyK/ti6AJK38llssXK9tCu5dxKc4TgHVZT2n@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzu4yAW+E+oCxcF/rSn8IysJUZ3vM+mKFQ0pHw6PpwaUDzJVyZ8
+	IkXKFZK/FjWmHRn9HA5LhAS0QUNtgI3hks0UgZ2GXkdI95RGGExLxbrYDKM+2LwG
+X-Gm-Gg: AeBDieu1RFf6G6mffFv7V+HgsP+QNr1DGEvAvwCrtDMbZNAp/oaidvXgUS3iKWvA40G
+	ls4/ydfOARoTuFALxWcH12vpDRNmhErA0ueAubEVVV+gpjk8CG3hFE0h1jWbehYI2AMVWtQMd17
+	5q9b2yD9i8MLVLPDjDdp8rPlnvmliot6HrnLsW2T1BBN8+d2h/wAN4JI9zxSRJ6VvGZFbkDD5jj
+	URvpffsTx18FerZCI0EgId1VnsnJfRFtrMmhElxlXZ1BZLZ7qEbmbtupoIeKEkC/RZxkK8ow0mQ
+	X9OkqFIe7NiDlZgukuX+vWNSx8VXQKsnFNNF+dyZedYVI47TBbUVtdFz+aD7gP7e7BOQLzAOi84
+	SC0ruySVwg0uEJ8ungG81mm3s9nja+l64+08058OCz+hawRIbJNcTVzJwwHoKQLkW3F+Ksys500
+	Mbw3Xu4zfEXHMPL4ZozARyne7lIsvVcYUnfApsZjVQoivEl9jXwHYEdG7Wa4kAfJbfwhXg/G8iv
+	ztLeJxiW4yinM2Ozeo+ist9vlf9IsWL/Mz6WuibHw==
+X-Received: by 2002:a05:6000:250e:b0:43d:7bc9:9b2c with SMTP id ffacd0b85a97d-4478e993497mr1821523f8f.17.1777416220213;
+        Tue, 28 Apr 2026 15:43:40 -0700 (PDT)
+Received: from SD.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-447b3d47ff1sm1073294f8f.6.2026.04.28.15.43.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2026 15:42:26 -0700 (PDT)
-From: Bobby Eshleman <bobbyeshleman@gmail.com>
-Date: Tue, 28 Apr 2026 15:42:08 -0700
-Subject: [PATCH net-next 11/11] selftests: drv-net: add netkit devmem tests
+        Tue, 28 Apr 2026 15:43:39 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: yishaih@nvidia.com,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Subject: [PATCH v2] RDMA/mlx5: Fix devx subscribe-event unwind NULL dereference
+Date: Tue, 28 Apr 2026 23:42:49 +0100
+Message-ID: <20260428224319.37682-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260428-tcp-dm-netkit-v1-11-719280eba4d2@meta.com>
-References: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
-In-Reply-To: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
-To: Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, Alex Shi <alexs@kernel.org>, 
- Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu <dzm91@hust.edu.cn>, 
- Michael Chan <michael.chan@broadcom.com>, 
- Pavan Chebbi <pavan.chebbi@broadcom.com>, 
- Joshua Washington <joshwash@google.com>, 
- Harshitha Ramamurthy <hramamurthy@google.com>, 
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Nikolay Aleksandrov <razor@blackwall.org>, Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Stanislav Fomichev <sdf@fomichev.me>, Mina Almasry <almasrymina@google.com>, 
- Bobby Eshleman <bobbyeshleman@meta.com>
-X-Mailer: b4 0.14.3
-X-Rspamd-Queue-Id: 99F7148CCA1
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 539B948CC23
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19712-lists,linux-rdma=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19713-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[nvidia.com,vger.kernel.org,gmail.com];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bobbyeshleman@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lib.py:url,nk_devmem.py:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,meta.com:mid,meta.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-From: Bobby Eshleman <bobbyeshleman@meta.com>
+MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT() links event_sub into sub_list
+before initializing the fields used by the shared error path.
 
-Add nk_devmem.py with four tests for TCP devmem through a netkit device:
+If eventfd_ctx_fdget() then fails, the unwind path dereferences
+event_sub->ev_file in uverbs_uobject_put() and calls
+subscribe_event_xa_dealloc() with an unset xa_key_level1.
 
-These tests are just duplicates of the original devmem tests, with some
-adjusted parameters such as telling ncdevmem to avoid device setup
-(since it only has access to netkit, not a phys device).
+subscribe_event_xa_alloc() creates the XA entry exactly once for a given
+key_level1, on the first occurrence of that key. The unwind path must
+therefore call subscribe_event_xa_dealloc() exactly once for it as well.
 
-Each test uses NetDrvContEnv with primary_rx_redirect=True to set up the
-BPF redirect program on the primary netkit interface.
+Enforce that by adding devx_key_in_sub_list() and calling
+subscribe_event_xa_dealloc() only when the last matching pending entry is
+being cleaned up.
 
-Assisted-by: Claude Code:claude-sonnet-4-6
-Signed-off-by: Bobby Eshleman <bobbyeshleman@meta.com>
+Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over DEVX")
+Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
 ---
- .../testing/selftests/drivers/net/hw/nk_devmem.py  | 40 ++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+v2:
+   - fix duplicate-key unwind by deallocating each XA entry only once
+   - add devx_key_in_sub_list() to detect the last matching pending entry
+   - keep event_sub->ev_file and xa_key_level1 initialization before sub_list insertion
+   - update commit message to explain the duplicate-key unwind rule
 
-diff --git a/tools/testing/selftests/drivers/net/hw/nk_devmem.py b/tools/testing/selftests/drivers/net/hw/nk_devmem.py
-new file mode 100755
-index 000000000000..c069d525798b
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/hw/nk_devmem.py
-@@ -0,0 +1,40 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+"""Test devmem TCP with netkit."""
-+
-+from os import path
-+from lib.py import ksft_run, ksft_exit, ksft_disruptive
-+from lib.py import NetDrvContEnv
-+from lib.py.devmem import setup_test, run_rx, run_tx, run_tx_chunks, run_rx_hds
-+
-+
-+@ksft_disruptive
-+def check_nk_rx(cfg) -> None:
-+    run_rx(cfg)
-+
-+
-+@ksft_disruptive
-+def check_nk_tx(cfg) -> None:
-+    run_tx(cfg)
-+
-+
-+@ksft_disruptive
-+def check_nk_tx_chunks(cfg) -> None:
-+    run_tx_chunks(cfg)
-+
-+
-+@ksft_disruptive
-+def check_nk_rx_hds(cfg) -> None:
-+    run_rx_hds(cfg)
-+
-+
-+def main() -> None:
-+    with NetDrvContEnv(__file__, rxqueues=2, primary_rx_redirect=True) as cfg:
-+        setup_test(cfg, path.abspath(path.dirname(__file__) + "/ncdevmem"))
-+        ksft_run([check_nk_rx, check_nk_tx, check_nk_tx_chunks, check_nk_rx_hds],
-+                 args=(cfg,))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
+ drivers/infiniband/hw/mlx5/devx.c | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 645ebcc0832d..c2ae5a140471 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -1913,6 +1913,17 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_ASYNC_QUERY)(
+ 	return err;
+ }
+ 
++static bool devx_key_in_sub_list(struct list_head *list, u32 key_level1)
++{
++	struct devx_event_subscription *s;
++
++	list_for_each_entry(s, list, event_list)
++		if (s->xa_key_level1 == key_level1)
++			return true;
++
++	return false;
++}
++
+ static void
+ subscribe_event_xa_dealloc(struct mlx5_devx_event_table *devx_event_table,
+ 			   u32 key_level1,
+@@ -2160,10 +2171,17 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
+ 
+ 		event_sub = kzalloc_obj(*event_sub);
+ 		if (!event_sub) {
++			if (!devx_key_in_sub_list(&sub_list, key_level1))
++				subscribe_event_xa_dealloc(devx_event_table,
++							   key_level1,
++							   obj,
++							   obj_id);
+ 			err = -ENOMEM;
+ 			goto err;
+ 		}
+ 
++		event_sub->ev_file = ev_file;
++		event_sub->xa_key_level1 = key_level1;
+ 		list_add_tail(&event_sub->event_list, &sub_list);
+ 		uverbs_uobject_get(&ev_file->uobj);
+ 		if (use_eventfd) {
+@@ -2178,9 +2196,6 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
+ 		}
+ 
+ 		event_sub->cookie = cookie;
+-		event_sub->ev_file = ev_file;
+-		/* May be needed upon cleanup the devx object/subscription */
+-		event_sub->xa_key_level1 = key_level1;
+ 		event_sub->xa_key_level2 = obj_id;
+ 		INIT_LIST_HEAD(&event_sub->obj_list);
+ 	}
+@@ -2225,10 +2240,11 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
+ 	list_for_each_entry_safe(event_sub, tmp_sub, &sub_list, event_list) {
+ 		list_del(&event_sub->event_list);
+ 
+-		subscribe_event_xa_dealloc(devx_event_table,
+-					   event_sub->xa_key_level1,
+-					   obj,
+-					   obj_id);
++		if (!devx_key_in_sub_list(&sub_list, event_sub->xa_key_level1))
++			subscribe_event_xa_dealloc(devx_event_table,
++						   event_sub->xa_key_level1,
++						   obj,
++						   obj_id);
+ 
+ 		if (event_sub->eventfd)
+ 			eventfd_ctx_put(event_sub->eventfd);
 -- 
-2.52.0
+2.43.0
 
 
