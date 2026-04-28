@@ -1,193 +1,112 @@
-Return-Path: <linux-rdma+bounces-19688-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19689-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6A7/LIf38GkpbgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19688-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 20:08:07 +0200
+	id WM0XE7f48GlpbgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19689-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 20:13:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF9E48A6FC
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 20:08:07 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1C9048A854
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 20:13:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 503DC30DA179
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 18:04:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0BAD13026C9D
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 18:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF7C45BD4B;
-	Tue, 28 Apr 2026 18:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B139146AF0B;
+	Tue, 28 Apr 2026 18:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGw7uSwh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K714a/eO"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBB6453498;
-	Tue, 28 Apr 2026 18:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711F7466B5E;
+	Tue, 28 Apr 2026 18:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777399457; cv=none; b=mioD+Pvbl+jTeyvsinf+r0s6A0obWqhkr5SXqELO+e+5bh6SXmU5Dzle5Xo0sKrp6cmvGFptzeehBpA+fUNT3GuDrcouxtxEA1+ly1qPxy8qpxelRJCr6lWxjCmTVnlx87HuIWe3ISHuMFazLpJulr0ykxJR7ipcb3AtLBIHEZU=
+	t=1777399896; cv=none; b=Rj7FqfkMzpy4cOCTZ5rzVskA0hROyv+JoPVdRbYI/j5nSlU8SupJdM4PIyNgH4eW9cJe+ggtRFTHNZl0kcKBoSqUvV7unl6AmVyQzJyviKqehzSv34XFN/iKwb97PwGKJ9xY2WStWxuUdPaUqAZpGRQEzKkdkSzK8YkplN6HfK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777399457; c=relaxed/simple;
-	bh=GWFtmM9Hu2ib2uf29Mr0N4GV7xJ0c7rxZc4+BWOCe/o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Qqodq5D1pthGb7rxGA03HIMJb4zc6o5OLqXOebdB0Uf1A9mK8BB3/KvlDGM1DaRq3TTvJ/6bN8svd3HwqZfBqfBX9tbLKdPYiYgGVaOND4eJPAZvgLR9MJJTE5y1rz7Ba98V28u0nFtVMpiNgyEXQ0QXk3eXiyHgNoHmx//ABcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sGw7uSwh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 70F0CC2BCAF;
-	Tue, 28 Apr 2026 18:04:17 +0000 (UTC)
+	s=arc-20240116; t=1777399896; c=relaxed/simple;
+	bh=S/AnHKW3MK/QE2PR1Fk+tXCjOwZd0eCKlknwW999+GY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rcwZTEdiAzzD+Qc9oUEyrf0h5doyBlVrDOz85uHaZOme3LAhiIT+w2aG9QKPbQ9DWYqn3KC/Scxnp5AAr2IgN6HsIssFHnscF76hV1eL1Ki/rHTmKDL/7Ree65jlU7vsYTbm6tMJEaaMpk0pmFIxvPARqOCQo1l8JUjv7AGLonQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K714a/eO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11162C2BCB5;
+	Tue, 28 Apr 2026 18:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777399457;
-	bh=GWFtmM9Hu2ib2uf29Mr0N4GV7xJ0c7rxZc4+BWOCe/o=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=sGw7uSwhihpTRi6QNL+6b0QWmHQ4/GaHfP1v5IUr3yyYuLQR9r+V8RBAy7X2MQRAb
-	 i2XzE1Vni4dRhNSpp6OO1lQ4N5kNnpnJTKLmzbxmCIynb2IyHZ25++e/WxRKUIjBSc
-	 7N7K18OJqLLsIUOiMs22Ekt72ouH+lIYy0T+4SiIbC1yG+KlJcPaoIZl51SYe+JHND
-	 gHL+P9mKPyxkBcE6XcvBvDljd+RfKE8jDrCBbHn6Q/kAPqIEcC5pnkLMhz2C194a1m
-	 HNpdQmBzIXPmCF+jGvM4eX3kA5Ol5pImcz3eQFIwK5Rb4N9F4NiWJ8YNNcmSf1CwWG
-	 fvKaw6P4DR2bw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66D77FF886F;
-	Tue, 28 Apr 2026 18:04:17 +0000 (UTC)
-From: Max Boone via B4 Relay <devnull+mboone.akamai.com@kernel.org>
-Date: Tue, 28 Apr 2026 20:04:14 +0200
-Subject: [PATCH RFC] net/mlx5: check whether VFs are assigned before
- disabling SR-IOV
+	s=k20201202; t=1777399896;
+	bh=S/AnHKW3MK/QE2PR1Fk+tXCjOwZd0eCKlknwW999+GY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K714a/eO+/Y7k7FhslO+mkEDqrtUdvQnYBBGcPDmuyC/av0LquXiS3ZSo/NwBNlTe
+	 LjPE9P74ZLxA6qWdok7vWL20cA6PG0XKASXYhBXzSKzx6L82DWz8T9JjUZyt7lGqOE
+	 vkj/i3t3fC1Hu/ui2zk3Q8wHlsTKkNYoQiBt9VFMMIa7VAtL/QJmszfYgfYhiYD4+h
+	 ZIw8FOeWH17tNrKM3OuoVZ3KERZkXu/6Q5h8ouDcmYeN5oSf1JSkei58CpCTMGZkCF
+	 onsKkG6ps1cZMQJKTDgYmBJe0Ydr2lt792035v+hxq9wGBQLxOPwDfVMVEmBMs6ZzX
+	 EkoBWpID0Tk5w==
+Date: Tue, 28 Apr 2026 19:11:31 +0100
+From: Simon Horman <horms@kernel.org>
+To: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, kuba@kernel.org, tariqt@nvidia.com,
+	cratiu@nvidia.com, cjubran@nvidia.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v1] net/mlx5: Fix eswitch offloads cleanup on QoS
+ init failure
+Message-ID: <20260428181131.GV900403@horms.kernel.org>
+References: <20260425003046.6889-1-prathameshdeshpande7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260428-mlx5-sriov-in-use-check-v1-1-c7b9e18c99a8@akamai.com>
-X-B4-Tracking: v=1; b=H4sIAJ328GkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDEyML3dycClPd4qLM/DLdzDzd0uJU3eSM1ORsXdPkZKNEc0szY4tUUyW
- g7oKi1LTMCrDJ0UpBbs5KsbW1AJ6bm0JuAAAA
-X-Change-ID: 20260428-mlx5-sriov-in-use-check-5cc2a79638e5
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Max Boone <mboone@akamai.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1777399456; l=2829;
- i=mboone@akamai.com; s=20260317; h=from:subject:message-id;
- bh=mkoemVwnFGeOEz/ltYOEqOoOvjAbOxb3nCL6rP2fq0E=;
- b=qNoCEt363xktAl0UM2/HTfSVD15+he3s20EebK4zJcoEOpu59TRij4kCh+lLpVYSY5atEaNhv
- kWtbH5x890kBoEI1Sh6QFWpveUcp1GkIJIRsvpm7AxTX1Qy5UvVvxTP
-X-Developer-Key: i=mboone@akamai.com; a=ed25519;
- pk=jWdC/h5H2KWQCiC2kpr/puMVX0mJmP9W5sM8YTGBXA4=
-X-Endpoint-Received: by B4 Relay for mboone@akamai.com/20260317 with
- auth_id=685
-X-Original-From: Max Boone <mboone@akamai.com>
-Reply-To: mboone@akamai.com
-X-Rspamd-Queue-Id: 1EF9E48A6FC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260425003046.6889-1-prathameshdeshpande7@gmail.com>
+X-Rspamd-Queue-Id: F1C9048A854
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19688-lists,linux-rdma=lfdr.de,mboone.akamai.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-19689-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,linux-rdma@vger.kernel.org];
-	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	HAS_REPLYTO(0.00)[mboone@akamai.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[akamai.com:email,akamai.com:replyto,akamai.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,horms.kernel.org:mid]
 
-From: Max Boone <mboone@akamai.com>
+On Sat, Apr 25, 2026 at 01:29:59AM +0100, Prathamesh Deshpande wrote:
+> If mlx5_esw_qos_init() fails after esw_offloads_init() succeeds,
+> mlx5_eswitch_init() jumps to reps_err and skips esw_offloads_cleanup(),
+> leaking the offloads initialization state.
+> 
+> Add a dedicated unwind label for QoS init failure that cleans up
+> offloads before continuing the existing vport and outer eswitch cleanup.
+> 
+> Fixes: cac7356c653d ("net/mlx5: Rework esw qos domain init and cleanup")
+> Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
 
-When MLX5 cards are passed through to a VM, disabling SR-IOV by
-setting the sriov_numvfs to 0 will render the machine unstable.
-
-Other drivers (such as ixgbe, bnxt and octep) add this check to
-see whether the VFs are passed through to a VM.
-
-Signed-off-by: Max Boone <mboone@akamai.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/sriov.c     | 11 +++++++++--
- 2 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index 1507e881d..85fe89c00 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -240,7 +240,7 @@ void mlx5_sriov_cleanup(struct mlx5_core_dev *dev);
- int mlx5_sriov_attach(struct mlx5_core_dev *dev);
- void mlx5_sriov_detach(struct mlx5_core_dev *dev);
- int mlx5_core_sriov_configure(struct pci_dev *dev, int num_vfs);
--void mlx5_sriov_disable(struct pci_dev *pdev, bool num_vf_change);
-+int mlx5_sriov_disable(struct pci_dev *pdev, bool num_vf_change);
- int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count);
- int mlx5_core_enable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_core_disable_hca(struct mlx5_core_dev *dev, u16 func_id);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-index bf6f631cf..07c61a73b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-@@ -200,16 +200,23 @@ static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- 	return err;
- }
- 
--void mlx5_sriov_disable(struct pci_dev *pdev, bool num_vf_change)
-+int mlx5_sriov_disable(struct pci_dev *pdev, bool num_vf_change)
- {
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	struct devlink *devlink = priv_to_devlink(dev);
- 	int num_vfs = pci_num_vf(dev->pdev);
- 
-+	if (pci_vfs_assigned(dev->pdev)) {
-+		mlx5_core_warn(dev, "can't disable sriov, VFs are assigned\n");
-+		return -EPERM;
-+	}
-+
- 	pci_disable_sriov(pdev);
- 	devl_lock(devlink);
- 	mlx5_device_disable_sriov(dev, num_vfs, true, num_vf_change);
- 	devl_unlock(devlink);
-+
-+	return 0;
- }
- 
- int mlx5_core_sriov_configure(struct pci_dev *pdev, int num_vfs)
-@@ -223,7 +230,7 @@ int mlx5_core_sriov_configure(struct pci_dev *pdev, int num_vfs)
- 	if (num_vfs)
- 		err = mlx5_sriov_enable(pdev, num_vfs);
- 	else
--		mlx5_sriov_disable(pdev, true);
-+		err = mlx5_sriov_disable(pdev, true);
- 
- 	if (!err)
- 		sriov->num_vfs = num_vfs;
-
----
-base-commit: dca922e019dd758b4c1b4bec8f1d509efddeaab4
-change-id: 20260428-mlx5-sriov-in-use-check-5cc2a79638e5
-
-Best regards,
--- 
-Max Boone <mboone@akamai.com>
-
+Reviewed-by: Simon Horman <horms@kernel.org>
 
 
