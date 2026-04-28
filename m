@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-19681-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19682-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0L+kJSTo8Gn2awEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19681-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 19:02:28 +0200
+	id QKR7Dh3r8GmBbAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19682-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 19:15:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFDCB489888
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 19:02:27 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB625489BC2
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 19:15:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 44E923037880
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 16:56:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9EF80307737C
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 16:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F89D32ED27;
-	Tue, 28 Apr 2026 16:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414AC33B6CB;
+	Tue, 28 Apr 2026 16:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fYNZpQBX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UlYTCl6e"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F933382C9
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 16:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7F72765FF
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 16:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777395407; cv=none; b=o7x8FFv265igxU7vBkRBv5LLE5TLrDgZN5IVmsMk5z9z0pG2l6SgGb57PploSmHeiVyKxxu3g4ReRdfc0edfpWs4Pqai8YACqHXRZTHp6NyNpqrUhcIIuBbifnOzfSeKsZaVcvQSSmR8RXyRhe0JZUjsqALh23shSYNbXRN1MBs=
+	t=1777395408; cv=none; b=iY0MU3X3TssISCV4jOPK6+qc5mczjkmPCRVYssD+U2fyRGO2tsdWH7/7Ey8mUL50ggtCmLkz8yHPhGot2IPvrzpfK2ivpVEOvIqm8RyVBkobH3+8K2PbAFRjHDonYZW8Pmk1sc3lDfeDE/88FuEnIJ7x1K2hE5dgi/cuYNiIOx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777395407; c=relaxed/simple;
+	s=arc-20240116; t=1777395408; c=relaxed/simple;
 	bh=/wF2i7aGRZ+viYFLgcDZ9R9H5XwFuKhg/wWVFwxv4/8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TQfQXDPsg8Ab3SE9sJHrBQIo00TNZk28abtjJl9Mx+kJWel5PYr/7RIrURIfNaio4hpegb2eaxZHyI4ohEsp2jEikKHiYw9Moj7Qm1t66/u8xmVLTWqltycSQhA/r37rVY6/GRBy2mrw81ZCvmi1kCWbvrw4ml/EGQM1HzbnhYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fYNZpQBX; arc=none smtp.client-ip=91.218.175.180
+	 In-Reply-To:Content-Type; b=aMNRpg8GkvQZVJu48SiWaiopWd+xwtFDkPZ/To0j26+chfK/5L9kz6A0fIZDigd9+9wAnaFDxZFYoaO0XA8XxhTV2R+FX6CEhh7txi+Eyo8H6LVM7TrGpvfUsceljOf1KHl26CD2ecY+XnZxUR+mN3Nvb6AGgdb7ctSj0v/nzuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UlYTCl6e; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Message-ID: <0e05de34-79a0-415f-afb2-cc6c194ad87d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777395402;
+	t=1777395404;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
 	bh=KfQQ0a9kdz7I4BU0hht/o9f9vSuGDE3HbXG+4cIXQ04=;
-	b=fYNZpQBXobeFqTZhsoU9TAXE6IVkrOrionW/8cy041h+0dIMYdsVkto26YE04wIKX7m5vb
-	FHffHz7bLEcryhX7aRpUG1f0OV+CCH5htoxsy6ucLEKq90KFqSvhyrujIA6jo6Kgg6xvkz
-	Rd/LP4776hgDQ6xmH8i6PmHZeyQ3Zn4=
+	b=UlYTCl6ea9yYTqKlHGd3c4AB7/r3utH/ls6pmgYWksZYYGVFuZae0v27vyofx0uBI71qzw
+	kvY7udrMViHN8RlVLKPmMdeAM7EbHdV0Xu0ZTMeMOg7PbX7pNkA2CMXt5Aj5idfCgITe1F
+	8iHg0K9YeI13PYsFhh0MceEuZLjgFsw=
 Date: Tue, 28 Apr 2026 09:56:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -82,7 +82,7 @@ In-Reply-To: <CAAVpQUBS0aeCEUK2Nvkq_9NqePiTaLoVQ5T4V8gPiJpbvDYj8Q@mail.gmail.com
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: EFDCB489888
+X-Rspamd-Queue-Id: AB625489BC2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -90,12 +90,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[kernel.org,gmail.com,ziepe.ca,vger.kernel.org,syzkaller.appspotmail.com];
-	TAGGED_FROM(0.00)[bounces-19681-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19682-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
@@ -104,15 +104,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-0.998];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
 On 4/27/26 11:39 PM, Kuniyuki Iwashima wrote:
 > On Mon, Apr 27, 2026 at 11:30 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
