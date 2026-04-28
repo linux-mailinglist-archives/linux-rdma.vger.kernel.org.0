@@ -1,146 +1,325 @@
-Return-Path: <linux-rdma+bounces-19643-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19644-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KO8NDT5v8Gn9TQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19643-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 10:26:38 +0200
+	id oLmJHDxz8GldTgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19644-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 10:43:40 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813CC48002D
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 10:26:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD19D480625
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 10:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 840A7304BCB3
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 08:20:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D186D306246F
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 08:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6ED3D330A;
-	Tue, 28 Apr 2026 08:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FCD235358;
+	Tue, 28 Apr 2026 08:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="C3QK6nKa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f226.google.com (mail-qt1-f226.google.com [209.85.160.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E6C3D1CB1
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 08:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834BC2D0614
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 08:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777364436; cv=none; b=hlHJQ6Fx4X9WEm4j9acZyt+vCO6RT7MI8difGyHeRHeWuay4JK5VGd1dbKrxX2N42jZz1/1mD3EGLcHPCPV9U4V4g6X1JbsRP6oxw1uMGbY1tPPO+atlCp8z+DEpGVfjTdKmUztJzURXS3as5eLYwvrN6uuQxuIud+HpIAmieZ8=
+	t=1777365124; cv=none; b=YQvM/8ZJA+KpQnMqS1mBLBN6tNWfASZovwMV05J4FCW59+Ismiy4flFxK0cqGBdpleq+w4y2Bi46mOH+nf+b1ROh+LxWhFoHNn1KJugZr3ENa/dKd7FBTADgT9cQgrJktDIv66xFmMVJ9xUjrsrcIqZsFwS7CxQhg7vi2eJo7Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777364436; c=relaxed/simple;
-	bh=Bry3OdUIPVJT+mPlGje/2I3PrEFztMu929+G773ylFY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bvPGsuO+X50eahlDAKwdEO048ipmog+54cqRJXvYej8EYLBQqdStrq5lHE0hsRdR7K3JSmnd6x3FjdQq5XIbyR9eKzqJhYgLspRwmIVBS9q35Aks4JJdjDU5new/4ICCLNgPaRkvEMeSBBvpMWTvR2125jJfrywO9vfvTjZ40jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 1d36b34242db11f1aa26b74ffac11d73-20260428
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:0cc552a9-f77f-4bc1-ba2f-438f18c3f889,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:15
-X-CID-INFO: VERSION:1.3.12,REQID:0cc552a9-f77f-4bc1-ba2f-438f18c3f889,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:15
-X-CID-META: VersionHash:e7bac3a,CLOUDID:3d0938ebe441c15fd8327da365924021,BulkI
-	D:260426204238VAH4KHHD,BulkQuantity:2,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|127|841|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:0,File:nil,RT:
-	nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
-	,BRR:1,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 1d36b34242db11f1aa26b74ffac11d73-20260428
-X-User: cuitao@kylinos.cn
-Received: from [192.168.108.130] [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <cuitao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
-	with ESMTP id 311302831; Tue, 28 Apr 2026 16:20:28 +0800
-Message-ID: <9722fa3e-aee1-4fce-869f-8b2f9591539b@kylinos.cn>
-Date: Tue, 28 Apr 2026 16:20:25 +0800
+	s=arc-20240116; t=1777365124; c=relaxed/simple;
+	bh=idki5IDSpjSeLZ6iToxkgpIB3UbA5hXsN7pvbvmjt54=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z4AsPUmmMn0TIpzm6z34oPHbFAkjiHadlBjbwJNE8jG8a6jTlAR+rNzPgnRFzJasTlt84I74AhVAtBmRfr045nYETdosilLe3FEwScx3a6V5TCGaWllnxVt7YUyzoe7uOFYviR0B2GHBjAsHgeOJPJE+L2RIlfdMDpAdiM6B5A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=C3QK6nKa; arc=none smtp.client-ip=209.85.160.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qt1-f226.google.com with SMTP id d75a77b69052e-506a7bbe9d0so91167361cf.0
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 01:32:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777365121; x=1777969921;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uk6dzkfOhM+kckQqlNbepEbhRv5aj4v/XKWlb5L72S0=;
+        b=KCAugaoDuX/0U0B/1MjPnrNkPHnQ4UV+ElwdkI9Y2UgntmeFLhuXYvZgwPXaGoUOn0
+         xBDLcdwhA9YO5n+Z2YSila038wU6eG8/SjGli4PZV7b7Um+FKMipTIrsqk9gx79nS9le
+         GAosthC1G6kyWXrynltOSW8AQsrN1RJW1V2mEXJQZD7JEM2p1Pa80ZCg+LbEVobknPSu
+         SHq2vJVkKAbPexwznwAvJLWfZRnHNJXY757++xl7j+dBU+d8P0tmUnPLmlCxKvr9UAP2
+         w4BiL/f0dodAysWVh22Yt0LuhcFXTylv34kTYa7UI22Wh2dTDVH5sNv5J7/NGDlsOzZI
+         pj4g==
+X-Gm-Message-State: AOJu0YyBGY1hvqGKbgpDFUE9fNEfsqBvYcJFiSsi5Y+T1lUOWkhCk/vP
+	XFxRgVtAAK1njP3wIbGWlP4JtWI9U1dA0xu4AuFJcN5vuBZMrJXB7qMXHeNrca8eh88INpBSjCL
+	XKkOC+d/Dw90wNYYh4yEZD4x+QA3/d9bpLN+E8qLpDnmp+DvWeM8MMg8mtlkXQrHfY+G/53hjhy
+	33wSThusFSeB9GuE/5Zig4mUsVorQI47OhrJCtPXIQpLrw5KB8aYPikpScblJOy28wq5KTIW1tW
+	lCPXlMS+vTDppiDjE2rDvTJtswI
+X-Gm-Gg: AeBDieu8F4XSbooW1A5xCCtPW/Z6wM7+1VeXOBxp6F4eADpDcUqJnalmjcC9reX7mBR
+	U0TxAavAD7Xeg/Hm2bSSEbZJNkXiN/k2Eg/unUx7808BjQrCnls84c2TzngydNPjmxDB4UNQMSi
+	lRlTxDCjEdMJqjdlduZmQiuvbTyFrPIjIWdsBfVSKKK8iBYIZ07KRYsEVWMV16bu5vzxn/LNWFT
+	giYB+VlAQOCr5GB8VHalQKm8CleNdgsrHmQMjFk1UYKubZP8qUr03ObTN1SvcgdYht9TWJwmaVC
+	c7pKx1kHtAFk58Chm9oe357KE54Ngeh+GGwbjuUe/k93TRumv6l23gXr3z1i6JhBY87EhcWYE61
+	E0jGu8FFZKUZ8/oUp1hmrfQNumlASejLvhzrM/y1BkPeBB9HbyqDY7MZESx16lTlbBR9z7jFDZL
+	ORgsVHcCn1xZACULO5BEG89INp4Lo=
+X-Received: by 2002:ac8:6f05:0:b0:509:348f:bc1a with SMTP id d75a77b69052e-5100e1465f3mr26679571cf.26.1777365121178;
+        Tue, 28 Apr 2026 01:32:01 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com ([144.49.247.127])
+        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-51013779459sm180881cf.22.2026.04.28.01.32.00
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2026 01:32:01 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-43d1fec59c9so7329427f8f.0
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 01:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1777365118; x=1777969918; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uk6dzkfOhM+kckQqlNbepEbhRv5aj4v/XKWlb5L72S0=;
+        b=C3QK6nKabn+99v3lBN+1oolhpEhRtzaNUAMDf5SQ49Ct90Kyp1GSjd1FvoatqgDtbF
+         YJTvLcT9nFylAKNXThUdmVEGaliAeTI/twE5xBEJoNmvQbv4rwJiwDLA4Pkl8o9EqgR3
+         yyEzP94bqmVWtPeepC/BzoaTkv/orsrVeJTWY=
+X-Received: by 2002:a5d:644b:0:b0:43d:210:2b2d with SMTP id ffacd0b85a97d-44652b863a5mr2394341f8f.31.1777365118486;
+        Tue, 28 Apr 2026 01:31:58 -0700 (PDT)
+X-Received: by 2002:a5d:644b:0:b0:43d:210:2b2d with SMTP id
+ ffacd0b85a97d-44652b863a5mr2394295f8f.31.1777365117914; Tue, 28 Apr 2026
+ 01:31:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] RDMA/nldev: add resource summary max values for usage
- rate display
-To: Leon Romanovsky <leon@kernel.org>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org
-References: <20260423061352.359749-1-cuitao@kylinos.cn>
- <20260426124223.GF440345@unreal>
-From: Tao Cui <cuitao@kylinos.cn>
-In-Reply-To: <20260426124223.GF440345@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 813CC48002D
+References: <20260415054957.36745-1-sriharsha.basavapatna@broadcom.com>
+In-Reply-To: <20260415054957.36745-1-sriharsha.basavapatna@broadcom.com>
+From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Date: Tue, 28 Apr 2026 14:01:44 +0530
+X-Gm-Features: AVHnY4L1-gbtpN_kNPBKlXndfqiuV7EE5gmBMqMaVTwVxtA5d3Ap0YGS6cQoq1Q
+Message-ID: <CAHHeUGUVx9q=SVAgmDSyZmSVK4VpKLy9Wbaxoy1oUeOddOXwgg@mail.gmail.com>
+Subject: Re: [PATCH rdma-next v3 0/7] RDMA/bnxt_re: Support QP uapi extensions
+To: leon@kernel.org, jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
+	selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com, 
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000008d16d00650811046"
+X-Rspamd-Queue-Id: DD19D480625
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-4.26 / 15.00];
+	SIGNED_SMIME(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,kylinos.cn:mid,kylinos.cn:email];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-0.986];
-	MID_RHS_MATCH_FROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19644-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	HAS_ATTACHMENT(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[broadcom.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sriharsha.basavapatna@broadcom.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19643-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_THREE(0.00)[3]
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,broadcom.com:dkim,broadcom.com:email]
 
+--0000000000008d16d00650811046
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 15, 2026 at 11:28=E2=80=AFAM Sriharsha Basavapatna
+<sriharsha.basavapatna@broadcom.com> wrote:
+>
+> Hi,
+>
+> This patchset adds QP uapi extensions to the bnxt_re driver.
+> This is required by applications that need to manage some of the
+> RDMA HW resources directly and to implement the datapath in the
+> application.
+>
+> This series supports application allocated memory for QPs.
+> The application takes into account SQ/RQ ring sizing constraints
+> (extra entries, rounding up etc) while allocating this memory.
+> The driver should avoid duplicating this logic while creating
+> these QPs.
+>
+> uAPI changes in this series:
+> - Patch#4: new uapi parameter 'sq_npsn' in bnxt_re_qp_req.
+> - Patch#6: new driver specific attribute 'DBR_HANDLE' for doorbell region=
+.
+> - Patch#7: new comp_mask 'APP_ALLOCATED_QP_ENABLE' in bnxt_re_qp_req.
+>
+> Patch#1 Refactor bnxt_re_init_user_qp()
+> Patch#2 Update rq depth for app allocated QPs
+> Patch#3 Update sq depth for app allocated QPs
+> Patch#4 Update msn table size for app allocated QPs
+> Patch#5 Update hwq depth for app allocated QPs
+> Patch#6 Support doorbells for app allocated QPs
+> Patch#7 Enable app allocated QPs
+>
+> Thanks,
+> -Harsha
+>
+> ******
+>
+> Changes:
+>
+> v3:
+> - Removed umem patch from the series, that is dependent on uverbs support=
+.
+> - Patch#7: Process DBR_HANDLE attr regardless of app_qp comp_mask.
+>
+> v2:
+> - Rebased to umem_list uverbs patch series:
+>   https://patchwork.kernel.org/project/linux-rdma/cover/20260325150048.16=
+8341-1-jiri@resnulli.us/
+> - Deleted Patch#9; create_qp_umem devop is not supported.
+>
+> v2: https://lore.kernel.org/linux-rdma/20260327091755.47754-1-sriharsha.b=
+asavapatna@broadcom.com/
+> v1: https://lore.kernel.org/linux-rdma/20260320135437.48716-1-sriharsha.b=
+asavapatna@broadcom.com/
+>
+> ******
+>
+> Sriharsha Basavapatna (7):
+>   RDMA/bnxt_re: Refactor bnxt_re_init_user_qp()
+>   RDMA/bnxt_re: Update rq depth for app allocated QPs
+>   RDMA/bnxt_re: Update sq depth for app allocated QPs
+>   RDMA/bnxt_re: Update msn table size for app allocated QPs
+>   RDMA/bnxt_re: Update hwq depth for app allocated QPs
+>   RDMA/bnxt_re: Support doorbells for app allocated QPs
+>   RDMA/bnxt_re: Enable app allocated QPs
+>
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 270 +++++++++++++++--------
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.h |   1 +
+>  drivers/infiniband/hw/bnxt_re/uapi.c     |  18 ++
+>  include/uapi/rdma/bnxt_re-abi.h          |   6 +
+>  4 files changed, 206 insertions(+), 89 deletions(-)
+>
+> --
+> 2.51.2.636.ga99f379adf
+>
+Rebased on latest rdma tree (Linux 7.1-rc1, commit: 254f49634ee1). The
+series applied cleanly without any code changes. Please let me know if
+I should send a new version.
+Thanks,
+-Harsha
 
-在 2026/4/26 20:42, Leon Romanovsky 写道:
-> On Thu, Apr 23, 2026 at 02:13:51PM +0800, Tao Cui wrote:
->> Add RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX netlink attribute to expose
->> device resource limits (max_qp, max_cq, max_mr, max_pd, max_srq) in
->> the resource summary alongside the existing current count. This allows
->> userspace tools like iproute2's rdma to display resource usage rates.
-> 
-> Historically, we try to avoid duplicating functionality, and this already
-> exists in ibv_devinfo. What is the reason for adding it to rdmatool as well?
-> 
-Thanks for your review.
+--0000000000008d16d00650811046
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-You're right that ibv_devinfo exposes these limits via the verbs API.
-The motivation here is not to duplicate ibv_devinfo, but to make the
-existing `rdma resource show` output more self-contained.
-
-Currently `rdma resource show` displays current resource counts (curr),
-but not the maximum limits. To compute usage rates, a user must
-cross-reference two separate tools using different interfaces
-(ibv_devinfo via verbs vs. rdma via netlink). This is especially
-inconvenient for monitoring and automation use cases that rely on
-netlink + JSON output.
-
-By adding max alongside curr in the same resource summary entry, the
-rdma tool can present a complete picture in one query, and userspace
-can compute usage rates without querying two different interfaces.
-
-That said, if you feel this doesn't justify the addition, I'm happy
-to withdraw or adjust the approach. For example, an alternative would
-be to not add a new netlink attribute and instead let userspace tools
-do the cross-referencing, though I think the single-query approach
-provides better usability.
-
->>
->> The new attribute is optional and backward compatible - old userspace
->> tools will simply ignore it.
->>
->> Signed-off-by: Tao Cui <cuitao@kylinos.cn>
-
+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
+tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
+2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
+phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
+a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
+ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
+07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
+SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
+rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGszCCBJug
+AwIBAgIMPiCpKhlPGjqoQ++SMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
+ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
+MDIzMB4XDTI1MDYyMDEzNTQwNVoXDTI3MDYyMTEzNTQwNVowgfIxCzAJBgNVBAYTAlVTMRMwEQYD
+VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
+MDExNzEUMBIGA1UEBBMLQmFzYXZhcGF0bmExEjAQBgNVBCoTCVNyaWhhcnNoYTEWMBQGA1UEChMN
+QlJPQURDT00gSU5DLjErMCkGA1UEAwwic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNv
+bTExMC8GCSqGSIb3DQEJARYic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJyb2FkY29tLmNvbTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKS3kXt4zVFK0i5F3y88WV5rV0rr2S3nOVTaCGMB
+o6Se8pIb2HJcdpQ4rMiJuIRSyG2XDWv6OB+66eM/6cD2oklFcdzpC4/eYOQFWJ/XM8+ms6HT7P5e
+uE7sY6CeUzLzHNjcRwVgZRWlELghY7DIW9fbMzRNDFsbxuIN/7eSofavP1q7PF3+DqhHZpmrVkDu
+vcEBTRZSn8NWZ0Xhy4a+Y3KN2W55hh6pWQWO0lt2TtpyaqYp95egJGqDUPtqydci+qrBzXbL05Q0
+gcK0NfqGJwLsEVqxHwzz/jRrzKBYKQEK4Bpau91oxVGLmxy1nQDiyI1121xyvsJBDctKH245XZkC
+AwEAAaOCAeYwggHiMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcBAQSB
+hjCBgzBGBggrBgEFBQcwAoY6aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3Nn
+Y2NyNnNtaW1lY2EyMDIzLmNydDA5BggrBgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2lnbi5j
+b20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUGA1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAyASgw
+QgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9y
+ZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dz
+Z2NjcjZzbWltZWNhMjAyMy5jcmwwLQYDVR0RBCYwJIEic3JpaGFyc2hhLmJhc2F2YXBhdG5hQGJy
+b2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBQAKTaeXHq6D68tUC3b
+oCOFGLCgkjAdBgNVHQ4EFgQU9Dwqof/Zp1ZdK6zi7XdRGdBWQt0wDQYJKoZIhvcNAQELBQADggIB
+AKzx/6ognUMhNv+rh7iQOeHdGA7WMDixk+zrD7TZL6O5DPqXfFqaTLpswyruTymA3AVxZkMJyF6D
+zOAsRfU23BjVlgC95zl1glr7DorZW7B/CQDwbLHlkFy92Oa3E+gBzwdiDMjnq6tOW5p83zoVqiV4
+qm4OwC9JILEkslV4uZVXHPm5cZoOQURTECE2BN34Qhg5qD3EKYqOTeMVRed1qQiIPqQv1b4xjPVS
+qBwNPl7/4TJGiZGnRB7FsNnNUQRJONnEFifM3KGqjbqA4F8BhLXCYjqtBxxCGA5506StNfsjT8UU
+28E6lcuJXC4hQXau+xXQ5GWqS4ecWwm22FAVy/i8FJVfXPTJnZeixmqaadbIU3fOJs5+XfyNkU2T
+mlCafSr7KgV570M6tITSyminW/7rc8hdznGYypCNa+45JYJTaK4x1+Ejptaxc7TCS12B1zQNCxa7
+AHX5PZra3SpDb7g1p1i1Ax0JVJTkThiCSNDbiauVn7xIJpf+H8HC6O2ddGmtKUxe6NseFnSGJsi6
+7lO/cU+TpduV7w3weUy+nHhp+GsbClfvAGhFAs/GkyONExCwwIEVlFp9Mj5JLAgB+ceMbojBIoaO
+d5rOzdIII5FDwKAAqyjHuniYLrP0xIH4L5kWOAy+LudP4PSze7uAxTiCiSJg5AaNBTa5NuwTnSX6
+MYICVzCCAlMCAQEwYjBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEo
+MCYGA1UEAxMfR2xvYmFsU2lnbiBHQ0MgUjYgU01JTUUgQ0EgMjAyMwIMPiCpKhlPGjqoQ++SMA0G
+CWCGSAFlAwQCAQUAoIHHMC8GCSqGSIb3DQEJBDEiBCBMi0hi4j4VKToKYlKg67XVPM0yIC2BeuLJ
+owb66kX9tjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNjA0Mjgw
+ODMxNThaMFwGCSqGSIb3DQEJDzFPME0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglghkgB
+ZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
+AASCAQCe5tyOiZPR3oMu7AjgQQ7qaC3mb2a5tdUU6VWmZjU/Cx6fc+L3bbmqNzL/nAbfesGOJWPz
+OuactAbgAzpaIVIy9KpllAdg/FRFfjzlUdnCQwOg/7641xYT6Jo3TvjMR0Wt/3bsESXldiYfcx4g
+7DG4+W4TfE1MgqJGMpZRpbA8drLAV0kurvA94QK0gd0twVmF/FVqJ0Bj14CM0XiWdJ+RzXXAc4q5
+tv14z+fXE9HCKBvarC3FgHUcgN4AYkZ+3q58/PSQnDMtDX/y6a26lHtobU29S39VY/hbDVdGSqrm
+VyR7c0osb5f1QfZnRG0AQ4kSfsiZHzzEv4vmxPBjem2X
+--0000000000008d16d00650811046--
 
