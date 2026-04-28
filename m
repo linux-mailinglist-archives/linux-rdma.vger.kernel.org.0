@@ -1,62 +1,60 @@
-Return-Path: <linux-rdma+bounces-19618-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19619-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id L5QSCmAG8GmoNQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19618-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 02:59:12 +0200
+	id sHm7Gj4Y8GmNOQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19619-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 04:15:26 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60CE947C45D
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 02:59:10 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB1D447CAA8
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 04:15:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D58CA302DA3B
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 00:58:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CECC9301F483
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 02:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7156C2848A1;
-	Tue, 28 Apr 2026 00:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFC638E5DA;
+	Tue, 28 Apr 2026 02:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqn5ADPL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vz0mdGHY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FFB26B74A
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 00:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7077355F47
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 02:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777337920; cv=none; b=CC2YDq7uPbbBWguqIIVzE+PuW/PQ7ksEhg7jPxeEZFOqxM4XtLEUMzkF+YHs6+Tjs8kYtMePxBqK0EN4f4ROt7HbRB8HNXKebbcFSiosG/vnFTxg8DWKa3ndBBP8zBsRZF6AhpG/OClIhsz7w44mwRC84UGddkfdPQaxJuLSQL8=
+	t=1777342523; cv=none; b=QTjAzBT+EtVHXSleNwpG91CrWHYjZ/C1Vq6FF0Itkxo0SZgI/hCOtJB/WnbqjzKm+7OBQw32z6kWxuK5BhSxaWr/SJC+jjXZ6JwNm4I2frHQ+fMZx6jgXB65fMm9M3XBn518CAGOTXb83knJxO2sgKNMpFF9JpdSy5jRM2YEMXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777337920; c=relaxed/simple;
-	bh=o4knKAc6QwanZkMYuNvml2KCFjuGpUo1cJgFacZj4rw=;
+	s=arc-20240116; t=1777342523; c=relaxed/simple;
+	bh=nkxGLuW7w9llD4Cl9gHgWH4rjRfRUjEizKs4BPfT1yk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ke1gIKFR0kXhbRbIx8tT8V3xiDP/XDeiI9P68LvjGYVpaRz9zefayJCvmCYqg6121CbUwzHcDJprcRAkS+zA5HqrVzTs8kqvF3crbyxbI93n+m8TcshniHWqgZ+tQv1uO/LzLIXvvI90pty76+GfDOdHmyF9lYFVbvb7/fjp6DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sqn5ADPL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E8B8C19425;
-	Tue, 28 Apr 2026 00:58:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777337919;
-	bh=o4knKAc6QwanZkMYuNvml2KCFjuGpUo1cJgFacZj4rw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sqn5ADPLBRSiX0OYhDoWfmULlQFNsz4/j3qXJ27VabPPYnVAOHXGwWZDsvS6Us0kB
-	 JO/7Ygew3lnDgQtUJib45rTicSfZSZZZOLyCzuEsj9SxYfZlfV0efjPAmf/TEtM7uV
-	 Cxd9MFLu+QLzwm1fLHiycKUEPzLl/gV5O7RzjrC3hCum3YE59mSdXCEiRL2P8YNeCG
-	 4zhpRNYjqH8iT2IwHJAAKvOLNQmGc3Z0OPss8yQlFILjgYiu5nw2cqkTypVVdRCSi4
-	 R+1BuL6ITUVqpF4q8XoCtLwLfrH7uI0qIRbbmkLXwpVEoFExiMiN6Pm4K1Fd2UD8AJ
-	 kijiruQss6HsA==
-Message-ID: <0c1258e2-7060-4084-9a07-dd7af8262dec@kernel.org>
-Date: Mon, 27 Apr 2026 18:58:38 -0600
+	 In-Reply-To:Content-Type; b=fTqu8uCYps0OyqxCHc1hO+vNSPbGn3GstE2O/nEcmUMqfvzFReTN3WiGrQq/4K7FugkVkoNxwUmLd6pgBRb0vmCsy20O2dpUCfaxy4qDMlfSNrfq7OlIQIgPxNaihEcttU23scoSbeq+aAiy2vh40oHwGlkXdeYqRyns0T4svOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vz0mdGHY; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0ef2f2e0-e437-4ec9-8ebe-21c702041acb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777342519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mgOjJvb3XCt8mC/UY9IfviKJMwFQRRCL4Ls6LrRK7cc=;
+	b=Vz0mdGHY4kVuJd5Ugnz2O1/ak4KIVNdmKRax5MkaosCA3xhQiLrHgGj4FPBvqUYUSrJHZG
+	+yflVg4jwYAZyJPx6G30xXqs+jTA4DhjNCAxpbq1PXZ/lQpykYNzfOxd78wyUxY/n6V5jL
+	3Y2kbSw6uy+Vb2awkzIo9yJiGJ8VtLA=
+Date: Mon, 27 Apr 2026 19:15:14 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 1/2] RDMA/rxe: Fix null-ptr-deref in
  kernel_sock_shutdown().
-Content-Language: en-US
-To: Kuniyuki Iwashima <kuniyu@google.com>, "yanjun.zhu" <yanjun.zhu@linux.dev>
+To: David Ahern <dsahern@kernel.org>, Kuniyuki Iwashima <kuniyu@google.com>
 Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
  Leon Romanovsky <leon@kernel.org>, Kuniyuki Iwashima <kuni1840@gmail.com>,
  linux-rdma@vger.kernel.org,
@@ -71,49 +69,69 @@ References: <20260425060436.2316620-1-kuniyu@google.com>
  <9681c9e2-79a9-4d72-b1ad-229ba6d7aab7@kernel.org>
  <0cf42593-0149-4019-a51b-36f74ff67f51@linux.dev>
  <CAAVpQUDVb4VDibeXz-DmAHF7gOAvDenSTGA6DpEwwS5HaQjM5w@mail.gmail.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <CAAVpQUDVb4VDibeXz-DmAHF7gOAvDenSTGA6DpEwwS5HaQjM5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 60CE947C45D
+ <0c1258e2-7060-4084-9a07-dd7af8262dec@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <0c1258e2-7060-4084-9a07-dd7af8262dec@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: DB1D447CAA8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19618-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,syzkaller.appspotmail.com];
+	TAGGED_FROM(0.00)[bounces-19619-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dsahern@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid]
 
-On 4/27/26 6:52 PM, Kuniyuki Iwashima wrote:
-> 
-> To be clear, you meant implementing David' idea, right ?
-> I'm asking because dellink won't need locking then.
 
-dellink is not needed with my suggestion. It was added to manage
-basically a refcount on the socket to close on last rxe delete in the
-namespace.
+在 2026/4/27 17:58, David Ahern 写道:
+> On 4/27/26 6:52 PM, Kuniyuki Iwashima wrote:
+>> To be clear, you meant implementing David' idea, right ?
+>> I'm asking because dellink won't need locking then.
+> dellink is not needed with my suggestion. It was added to manage
+> basically a refcount on the socket to close on last rxe delete in the
+
+This is my original implementation.
+
+@Kuniyuki Iwashima, can you reproduce this problem in your local host or 
+other test environments?
+
+If yes, can you make tests after applying the commit in the link: 
+https://patchwork.kernel.org/project/linux-rdma/patch/20260424043522.22901-1-yanjun.zhu@linux.dev/
+
+Thanks a lot.
+
+Zhu Yanjun
+
+> namespace.
+
+-- 
+Best Regards,
+Yanjun.Zhu
+
 
