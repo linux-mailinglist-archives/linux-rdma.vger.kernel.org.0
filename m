@@ -1,201 +1,138 @@
-Return-Path: <linux-rdma+bounces-19714-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19716-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SK3XGXA48Wn4egEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19714-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:45:04 +0200
+	id GOjkC6858WkmewEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19716-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:50:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA48348CC06
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F9CA48CD58
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 00:50:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 88EFB305AD6A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 22:44:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A7B05302D132
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 22:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E4238424B;
-	Tue, 28 Apr 2026 22:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18757382F0D;
+	Tue, 28 Apr 2026 22:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KtUy9M9+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BaMwRH+a"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dy1-f202.google.com (mail-dy1-f202.google.com [74.125.82.202])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C5B37F8DB
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 22:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE0037E319
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 22:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777416297; cv=none; b=ridv3Wip/vMr57B4o9AmbM4EujwXFfMH4AMP3FuG23rkxojwn0dexSpka/O/kUvzlyvTbaUAHHWvSRmSpTPmFp+Q1B10G9ZfbtEszh7ynYIV15ZB/PejIrrKOJnfoOYbePWQyZaG6ooFW2NrcY9ZGN147uGIIlqQdBm8bgKOMsk=
+	t=1777416591; cv=none; b=hHTYZzPWn4C/+NjwGp4GuG96gcCdaD+58LDcnIse+BQfBGZ0uXU0yLS+KfEUPRVKOnq5SodmnWSWkr1RHbX1yElFb3eJpKoAwj7IkywHyU+LlEpONvckYri3WXkmTNt2JmfP6lNSV2yUmPUCHWkeyN1uDAC6BjXrBwgbPwy/8Xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777416297; c=relaxed/simple;
-	bh=ai8QUQpe+eGBNcBYzX5wgc4QtQufT5uTE6GhpsaCC0Y=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ghit+WOszhVUGAqNfELp8CNKHU2d98/OQWQmfuW4Hd9OPuE+LJw4Pkr6jD4VoANif0V0uQHFVsWttP0UBZJDlsHjAWIizDaH/fU8ifkHFo9hXknC102ni2/S8sOX1UCoAKpoMuX/lbbH01ncmWJas1eWlvi7obqc5eGizwtafq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--marcharvey.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KtUy9M9+; arc=none smtp.client-ip=74.125.82.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--marcharvey.bounces.google.com
-Received: by mail-dy1-f202.google.com with SMTP id 5a478bee46e88-2ba8013a9e3so14721022eec.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 15:44:55 -0700 (PDT)
+	s=arc-20240116; t=1777416591; c=relaxed/simple;
+	bh=OQEv3vECksF1yg5m1J9iB4Qygwv4grU+j2uR7n6iAuE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ImXHU9/5+vbZPDU03eF3EbYNdlq18oBnVkA9YVeqXtkqKFRwbLvy4fwfahWqiea/3UobDcxPfQqNgqQXQUXTb7l1miwiDjIg1/4iAsClnM9u9ikenqUbYPY4FexoorjmnnrwTxnLEM8km6b9l4wrqzYKkDrRRIj9dHCgVhUMiXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BaMwRH+a; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-488b0046078so107226915e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 15:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1777416295; x=1778021095; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4TUkxWmkceVVg+Z+lQyOtJ2XfCE43FvOGg/yLxop1NU=;
-        b=KtUy9M9+B3xni5dI9gUq6zNtsKaHFeC6cQ/4AOe6tKCbZa1OrIMPu/TORV23hCT73O
-         t4N34CU8YoLuUwuv5sG8UKGA1gkGqr4wMUfN8T9fiY5ZJfZrQ918UJCzKCjeEJdfW/0A
-         Ab/LCF0AMzU1xQ01TKSmz9xhXTxyik2JZxC+CE7dvsucEb5eS13nXKHPzVXEsegOBwwM
-         HShdGQqJxsKEAinIqalGUFQZpnt/9cz489ZMZVsVRNKAyLYVEa0+hYGi1TqbS8ake+2Z
-         nEKdkJ2CDyFicx8Qkt9pxA4awa2QZTBoP4OB0FrpFTPIyNHZ3vfsPmlZErR6aXq9N03A
-         ZVBg==
+        d=gmail.com; s=20251104; t=1777416589; x=1778021389; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OQEv3vECksF1yg5m1J9iB4Qygwv4grU+j2uR7n6iAuE=;
+        b=BaMwRH+aHymVnwGfm1l/wIKQDUlKGNyIngtdKBwfbP0TngQI6th+iLD2482rG7jE6r
+         2Z5FwF4Qo3Unt1DV4qDiuMzQTgIKNfdd8Ad0cVrMkmmqyJqNVb4FjWnOvw9O5RwAJNcK
+         73nzfljYcFegUE2LZ9RpXPhnQ4WXQCoq4r7t8YBNpd3ORFHfeiJNb8OAkuWdPpbPd6I1
+         LacDMnI99MWml/HvLsAdw8r0QqTWPVL2Is6VATym4C80MbAu+rlIqLp6y5Pp+l5s+I18
+         hL49d5wsG0k+qXhG9xvc7IN8/YwXf+fZp3MJtr9NKQEQvvNtpfYO8RM8ioeYRPYpmwyf
+         8AJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777416295; x=1778021095;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4TUkxWmkceVVg+Z+lQyOtJ2XfCE43FvOGg/yLxop1NU=;
-        b=N/qReiNwXziEfHL1Z33/oqNUDQx9xhnS0aGGrd2k3yzo/oCmbOQGQPTFoN8sWU1lok
-         KznawKhvVs1jH22/9XuQUt+LqkcW4GAJis1EAVsLeXXoLHEprjm9dFXpD9Tt+41BCvIm
-         XAE200sVUTYvqmD7rSy4n1Myta6KoSKnn4DsBBc69MSa6JfFBs0YYNcqKznmDnRRcsPp
-         0+NDA/WJaS1qKoh/cfTXmGEX4xBR0x5YPuv2AI8i34BX0grfUfZ6hen6xC5+rKrFHExY
-         +ObYnHZdlERijBl215HkHX+93qHrnKQhO8RXSksU7FyeZDfoqfFqMxcUiJ5QzdPhvtl8
-         cwfA==
-X-Forwarded-Encrypted: i=1; AFNElJ8Vavl28mZ0jNw1bBABzoF41DNNZf4RLCtCy+z7qc+Pczqi6xAgNYFBLI4zgtyRhJVdcU67D0xLakir@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeWVT9g14DF5v2RUgm+1bDMMh9iZMxjBYVwczL+9vq0NSvq/Uv
-	dWQ8YD6ABNO9nUH8w1RcJKQpO5AyMFPFy008e1d8QBb4OqSUjgvMo/+Aq2pKORE8wT7C1JpwGw6
-	cl2bcK0yRM0QHqwqGoyCMcQ==
-X-Received: from dycoh5.prod.google.com ([2002:a05:7301:da05:b0:2d8:4599:1d20])
- (user=marcharvey job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7301:d8f:b0:2d8:b814:29af with SMTP id 5a478bee46e88-2ed19716925mr687253eec.3.1777416294853;
- Tue, 28 Apr 2026 15:44:54 -0700 (PDT)
-Date: Tue, 28 Apr 2026 22:44:34 +0000
+        d=1e100.net; s=20251104; t=1777416589; x=1778021389;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OQEv3vECksF1yg5m1J9iB4Qygwv4grU+j2uR7n6iAuE=;
+        b=SiKkI/V3TARbhVaBNfxmoFhwMEvVjVEpWr2Sa6Wo+AMIpJWmaVb+LpX2ly6F88apKF
+         Wi12xToaWU4DnCqxHti7q3wmlGXS98v/s9ooofFASwNwxuwR0JuT6pqNOy2vYs2k3VPz
+         O5n8XB6IPzrgtUrFUbkPkz17eq36PUUMURNjx+vRLwJnwfq3EiqrtZxZ+KF/Hp84UArK
+         w59f8CXZGmn1+1Y5A0FTYIiGDLN6glDm5/szRPWcpmTKjIzJaz0GemIj0y6FhjGOo+Os
+         bYItppponxByibKdA4baahUyWxXZa4UsPP+XB83DD9bbWnkY/F6fz5b/JujPAdD+Znbp
+         8qiw==
+X-Forwarded-Encrypted: i=1; AFNElJ9ifM5cZYgOykW8GpdrNPkDqa9M6nIA1S62jA3NnHDIoLzyGAsHG0mtiaw77Op12OjkMkvIuc5gugq8@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzfs3yK8NL1layGzwIGpzwIDCsn1m2JjBkxPROQp7MTI9TUXR2H
+	8id3JfYlEqgQPkotwULdYeUsbM5rcocOGBpsPh1TL+jXBTxHfrwqpcN0
+X-Gm-Gg: AeBDievMPAx7C1hEi7qiDWERty3+yMblZvduSixZKRn/oEGLWj1TZhuqMo2+IQeLamH
+	Z6l4IzT9HRU8EKNTmFVFz+/vaAkLHjdv8xd/0rHnnrQogSXE1JUvx/aZolikGmQpSVTZTrliGdd
+	ITN3PM113UGJvQzJDLrxyeziquFnCrQ0FznK52YhRyqKN1MPLnn+/Ku8c1PKqeiFKnecG1yYi/o
+	Hcng7LiljcfPWufk89QjScvszTZcOmphjRXRJdePIkgZg0qsquQxbBl2Dj84NcjpngU81r6WtGh
+	sPo60+bGxeapqDDoAPmmJlm9/4FWnFy33sacHOHrzhRKSiQHZx2lwEFxuJmEromqYVkgcbx2CWj
+	VGL6FCVA5eGu3u6vNjCZ5mgtWWxWUvZoDX0pn5RvE4Rbdd92Fw4MzzNmApin+8evBg7PiPi3At7
+	VEGkD/T3gHBQZrcTJfRH/Wk0Nn4ZCNzcqntUDuna/XCdN3u8h16b7g2ifXrfZahoBc/i72B2xws
+	Houf6uhCBxvtrHuabjV6454bcwPIPXf/gE1Uu2wGQ==
+X-Received: by 2002:a05:6000:200e:b0:43f:dd94:3c30 with SMTP id ffacd0b85a97d-44648b51105mr9146088f8f.14.1777416588909;
+        Tue, 28 Apr 2026 15:49:48 -0700 (PDT)
+Received: from SD.localdomain (heme-13-b2-v4wan-167795-cust403.vm32.cable.virginm.net. [81.108.45.148])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-447b4216ed6sm1276715f8f.16.2026.04.28.15.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2026 15:49:48 -0700 (PDT)
+From: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+To: yishaih@nvidia.com
+Cc: jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	prathameshdeshpande7@gmail.com
+Subject: Re: [PATCH rdma v1] RDMA/mlx5: Fix devx subscribe-event unwind NULL dereference
+Date: Tue, 28 Apr 2026 23:49:27 +0100
+Message-ID: <20260428224932.37778-1-prathameshdeshpande7@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <4cdbb076-59c8-4ed8-b182-2ec644fd97e8@nvidia.com>
+References: <4cdbb076-59c8-4ed8-b182-2ec644fd97e8@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFI48WkC/x3MTQqAIBBA4avErBNKsr+rRITWVAM1hUoI4d2Tl
- t/ivRccWkIHffaCxYccXZxQ5hnMu+YNBS3JIAtZF5VsxHkENT3h0CyaUtVdZ1pjUEMKbosrhX8 2AKMXjMHDGOMHGgZed2YAAAA=
-X-Change-Id: 20260427-mlx5_vxlan-715699b8bbea
-X-Developer-Key: i=marcharvey@google.com; a=ed25519; pk=OzOeciadbfF5Bug/4/hyEAwfrruSY4tn0Q0LocyYUL0=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1777416293; l=3018;
- i=marcharvey@google.com; s=20260401; h=from:subject:message-id;
- bh=ai8QUQpe+eGBNcBYzX5wgc4QtQufT5uTE6GhpsaCC0Y=; b=vg5g7vP2EM46YpgEoKVKKpCPrEdNIlWCVg6lGbsIIfELTu4gk8o+Fa/nww2xQIL96DpvPEsWc
- eoaHiL67gr0DIzm5DhBIKIZ4TR7fBMGOajPs2Xar5rRs+twXcU0iEgS
-X-Mailer: b4 0.14.3
-Message-ID: <20260428-mlx5_vxlan-v1-1-cf666d042618@google.com>
-Subject: [PATCH net-next] net/mlx5: Add MLX5_VXLAN config option
-From: Marc Harvey <marcharvey@google.com>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kuniyuki Iwashima <kuniyu@google.com>, 
-	Marc Harvey <marcharvey@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Rspamd-Queue-Id: BA48348CC06
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 7F9CA48CD58
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19714-lists,linux-rdma=lfdr.de];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[14];
+	FREEMAIL_CC(0.00)[ziepe.ca,kernel.org,vger.kernel.org,gmail.com];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19716-lists,linux-rdma=lfdr.de];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[prathameshdeshpande7@gmail.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[marcharvey@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-Currently, there is no way to disable mlx5 vxlan offloading if vxlan
-is enabled. We've (possibly) seen some minor udp rr and udp stream
-regressions when enabling vxlan, and want a way to disable this
-offloading. Also coupling vxlan offloading with vxlan enablement
-generally limits the flexability of vxlan setups.
+On 28 Apr 2026 17:55:22 +0300, Yishai Hadas wrote:
+> Can you please come with V2 while addressing it ?
 
-Add a new config option for mlx5 vxlan offloading specifically, so
-that users can use vxlan without automatically opting in to the
-offloading.
-
-To keep the same behavior as before, the new config option is enabled
-by default if vxlan is enabled.
-
-Signed-off-by: Marc Harvey <marcharvey@google.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/Kconfig     | 11 +++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/Makefile    |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.h |  2 +-
- 3 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-index 3c3e84100d5a..d2e091bdbafc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-@@ -218,3 +218,14 @@ config MLX5_EN_PSP
- 	  interfaces to PSP Stack which supports PSP crypto offload.
- 
- 	  If unsure, say Y.
-+
-+config MLX5_VXLAN
-+	bool "Mellanox Technologies vxlan offloading"
-+	depends on VXLAN
-+	depends on MLX5_CORE_EN
-+	default y
-+	help
-+	  mlx5 device offload support for vxlan. Makes the mlx5 driver always
-+	  attempt to initialize device handling of vxlan packets.
-+
-+	  If unsure, say Y.
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-index d39fe9c4a87c..6f2cc5414d07 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-@@ -86,7 +86,7 @@ mlx5_core-$(CONFIG_MLX5_BRIDGE)    += esw/bridge.o esw/bridge_mcast.o esw/bridge
- 
- mlx5_core-$(CONFIG_HWMON)          += hwmon.o
- mlx5_core-$(CONFIG_MLX5_MPFS)      += lib/mpfs.o
--ifneq ($(CONFIG_VXLAN),)
-+ifneq ($(CONFIG_MLX5_VXLAN),)
- 	mlx5_core-y		   += lib/vxlan.o
- endif
- mlx5_core-$(CONFIG_PTP_1588_CLOCK) += lib/clock.o
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.h
-index 34ef662da35e..67d0c126c2ae 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.h
-@@ -50,7 +50,7 @@ static inline bool mlx5_vxlan_allowed(struct mlx5_vxlan *vxlan)
- 	return !IS_ERR_OR_NULL(vxlan);
- }
- 
--#if IS_ENABLED(CONFIG_VXLAN)
-+#if IS_ENABLED(CONFIG_MLX5_VXLAN)
- struct mlx5_vxlan *mlx5_vxlan_create(struct mlx5_core_dev *mdev);
- void mlx5_vxlan_destroy(struct mlx5_vxlan *vxlan);
- int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port);
-
----
-base-commit: 790ead9394860e7d70c5e0e50a35b243e909a618
-change-id: 20260427-mlx5_vxlan-715699b8bbea
-
-Best regards,
--- 
-Marc Harvey <marcharvey@google.com>
-
+Thanks for the feedback, Yishai. I have sent v2 which addresses these points.
 
