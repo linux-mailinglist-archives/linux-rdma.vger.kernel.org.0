@@ -1,269 +1,231 @@
-Return-Path: <linux-rdma+bounces-19680-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19681-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ACYdCJPk8GmoagEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19680-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 18:47:15 +0200
+	id 0L+kJSTo8Gn2awEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19681-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 19:02:28 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC28D489453
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 18:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFDCB489888
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 19:02:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B77FF30D24A8
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 16:32:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 44E923037880
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2026 16:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED5C3033F5;
-	Tue, 28 Apr 2026 16:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F89D32ED27;
+	Tue, 28 Apr 2026 16:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PFWpn26c"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fYNZpQBX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B593195E4
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 16:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F933382C9
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 16:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777393948; cv=none; b=lO/OdweMhuow/Ngyy5gnZNlGSyj59L2m5GXdwstvEonSIwhmkejRJc571oQn8WzUlYXXkhozqpXIKRO93yVWmKWQUrPgoi7yUE7/9hBOyhxgfmQsPApwXPl1i/0do7t+UPmC4fLiNIPmG1xSM4UdEoKWM39suI7aOCJWoS7D2tY=
+	t=1777395407; cv=none; b=o7x8FFv265igxU7vBkRBv5LLE5TLrDgZN5IVmsMk5z9z0pG2l6SgGb57PploSmHeiVyKxxu3g4ReRdfc0edfpWs4Pqai8YACqHXRZTHp6NyNpqrUhcIIuBbifnOzfSeKsZaVcvQSSmR8RXyRhe0JZUjsqALh23shSYNbXRN1MBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777393948; c=relaxed/simple;
-	bh=0ENRuXWI0OBYQahVdx+XhQkYgeiN8tN1qPvBInEH5dM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RxC9YWu0u4ILZ6VmuhokOrciPjtDJlgUYyQ8jhx0h6xisrFE+2SMQf2UZ+JsQDNMU5RFW2P4baJFE8v60+/OxF9ZiMHW15YKeXdNxUDJvQW20g5FkOUt5k1fbGK2hkv3AcTuluwzabt8dVMBPKN43dPYPjIf8ltl/Uo7pZJmZK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PFWpn26c; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-82faf871346so7285855b3a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2026 09:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777393947; x=1777998747; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kF3liaLTsQt3vcqZoazicjJL/7jtNYNyKZT6lA6QbTA=;
-        b=PFWpn26cswgQcVH0Y8W1MjOJEM3M9b7bYA+E908TKr9TTnGfgcVEYBbScM9kQUpq6K
-         BoRMll+fJSyRMos+S3B92XCSpJbPpVi8mUftBLzNnc9g8+A/rW86GdjV3lw6H6uIboj6
-         ZYWIjlcJkaSsncQ99bNcet7NsfM+CR6Yjoxq4h7KAO5FDkUpVXFFQPx9V/FB7P7YIxU5
-         YCAtQH2QAlvb77NfvuJdCeLj1vLDXI8qQcWPguq3QzHWj+5lPSNNfGD9Lo5Nb2evNQpD
-         u5cTrR61w2THeQNig+dbPHpWkFuHkZxZ2bJRQscvRhXGZtiunLINEZDo1kwb/wu9wHUK
-         0ICQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777393947; x=1777998747;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kF3liaLTsQt3vcqZoazicjJL/7jtNYNyKZT6lA6QbTA=;
-        b=Fqc178Y7+Aj/ieLruCKihz+ARE5oID+pV4VgA+hM4iLOJGfkfhN+/uoMKueBQ1WIEU
-         1f88GsG1IFlBJ9+f+CXoeHPjYuNwujIM3yOKt9m+cMyDazC0KyByw6nqKOoPCQLuKNF9
-         o1WoLmLnm+kg9wZBnmn7kXGPgJ6WhGmYjyoe9CsMcJrWiNqjU4Ccr1y6vvek2lbOwMPY
-         3kII2sZbp1CNZ3BF2QBRg0Gq9tNhSQr3jbK4g2vAlLHHoiMzyW9SKfckOzLL0wLn2JS7
-         +/ovl+UT/XvTP/sKYquStnK5OiXRSGyYnjqGjvvaXXFvMm3Qj7SQmKd3TVZI/NpNjJS5
-         13pg==
-X-Forwarded-Encrypted: i=1; AFNElJ+OOus4SyFFHSEeEbI30UG6fqKl4H91Bs9/lywIJjDxNKNs7X/cNBTsstcom0ngqwuHG9ixPfhUFbWb@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJwQiiyzaI+400ENybMHl0pVQrAeBzcCJzudu0aRyudVXsnVdb
-	2fZ5yP9vd/2Rgs2QP96XV7y7G1U6VOaKT+E175+yzBwufUxIIcW2J6Eh
-X-Gm-Gg: AeBDieuGoSDhhriNKij4dREhfMRwHxLAIh8pB23Ll8r4bcBRxp+7WOtu6O1Sie2wl45
-	pm4HKlqC+1JoMNJhb0H/cQn9nwJB2YYdxbxsBh2WJ12OPZhWcKGWP9GFLzwCVzgj9+QfgBJnf1C
-	ttuprBwJ34ahRWyl7Lhm6vbmQFJIaCnGxEtgM/zGUcfpqwrvK9Gi+04QF+kQB0IOm0rfkHNrPtf
-	RH/QOM3BZT14I48M6uJD9V7oWtIHBi64GJjN53Vt5+E3k/bCE5nm3Kb1SxMnO6aEn3hdYBdeydL
-	g8SSLAUwFj/nfLnHi820Zi6IytsMfEcQnh2UzOxPL1xHeEjYCeT9lOz6mFD68ZYOJACDxQFcgjz
-	Qq3OgMGjQJqyDJDw57rvRv3SwbPYA2LoQtDP2bbsfXvMOGFU0/GnrE93Y1mDhRixV/6YndWHmxr
-	RyL2EMTRWbum9uLAH3nM24eQ+H1vg=
-X-Received: by 2002:a05:6a00:f93:b0:82f:8b20:9165 with SMTP id d2e1a72fcca58-834ddc9b31dmr4003728b3a.44.1777393946400;
-        Tue, 28 Apr 2026 09:32:26 -0700 (PDT)
-Received: from lgs.. ([2001:250:5800:1000::5a26])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-834dae00a4fsm3212266b3a.5.2026.04.28.09.32.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2026 09:32:25 -0700 (PDT)
-From: Guangshuo Li <lgs201920130244@gmail.com>
-To: Yishai Hadas <yishaih@nvidia.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Roland Dreier <roland@purestorage.com>,
-	Jack Morgenstein <jackm@dev.mellanox.co.il>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Guangshuo Li <lgs201920130244@gmail.com>
-Subject: [PATCH v4] IB/mlx4: Fix refcount leak in add_port() error path
-Date: Wed, 29 Apr 2026 00:30:14 +0800
-Message-ID: <20260428163014.379069-1-lgs201920130244@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1777395407; c=relaxed/simple;
+	bh=/wF2i7aGRZ+viYFLgcDZ9R9H5XwFuKhg/wWVFwxv4/8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TQfQXDPsg8Ab3SE9sJHrBQIo00TNZk28abtjJl9Mx+kJWel5PYr/7RIrURIfNaio4hpegb2eaxZHyI4ohEsp2jEikKHiYw9Moj7Qm1t66/u8xmVLTWqltycSQhA/r37rVY6/GRBy2mrw81ZCvmi1kCWbvrw4ml/EGQM1HzbnhYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fYNZpQBX; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0e05de34-79a0-415f-afb2-cc6c194ad87d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777395402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KfQQ0a9kdz7I4BU0hht/o9f9vSuGDE3HbXG+4cIXQ04=;
+	b=fYNZpQBXobeFqTZhsoU9TAXE6IVkrOrionW/8cy041h+0dIMYdsVkto26YE04wIKX7m5vb
+	FHffHz7bLEcryhX7aRpUG1f0OV+CCH5htoxsy6ucLEKq90KFqSvhyrujIA6jo6Kgg6xvkz
+	Rd/LP4776hgDQ6xmH8i6PmHZeyQ3Zn4=
+Date: Tue, 28 Apr 2026 09:56:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 1/2] RDMA/rxe: Fix null-ptr-deref in
+ kernel_sock_shutdown().
+To: Kuniyuki Iwashima <kuniyu@google.com>, Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: David Ahern <dsahern@kernel.org>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Kuniyuki Iwashima <kuni1840@gmail.com>, linux-rdma@vger.kernel.org,
+ syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+References: <20260425060436.2316620-1-kuniyu@google.com>
+ <20260425060436.2316620-2-kuniyu@google.com>
+ <030d3487-b5b9-4067-8b8c-89b4e8756e1a@linux.dev>
+ <86499305-4522-4a82-a689-0247f2d5f6c0@kernel.org>
+ <4196fe33-88c2-416d-ac20-b68bf7f328a6@linux.dev>
+ <CAAVpQUAh2KT=YpfDO5nkqrzH0kbAXEBVe6jtOtLc93wjs3N7Fg@mail.gmail.com>
+ <e2e1406f-8d9d-4a96-949d-e75096446d1a@linux.dev>
+ <9681c9e2-79a9-4d72-b1ad-229ba6d7aab7@kernel.org>
+ <0cf42593-0149-4019-a51b-36f74ff67f51@linux.dev>
+ <CAAVpQUDVb4VDibeXz-DmAHF7gOAvDenSTGA6DpEwwS5HaQjM5w@mail.gmail.com>
+ <0c1258e2-7060-4084-9a07-dd7af8262dec@kernel.org>
+ <0ef2f2e0-e437-4ec9-8ebe-21c702041acb@linux.dev>
+ <bbaf583c-2170-41d8-9226-2d4e742f71d1@linux.dev>
+ <CAAVpQUDVFb5=DNahoRkhv1iM1TYU4_keJEETeLswUx_QFT6G4w@mail.gmail.com>
+ <73aea9b3-6afc-4e93-8bd6-b23d43591879@linux.dev>
+ <CAAVpQUBS0aeCEUK2Nvkq_9NqePiTaLoVQ5T4V8gPiJpbvDYj8Q@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "yanjun.zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <CAAVpQUBS0aeCEUK2Nvkq_9NqePiTaLoVQ5T4V8gPiJpbvDYj8Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: BC28D489453
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: EFDCB489888
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-19680-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,ziepe.ca,vger.kernel.org,syzkaller.appspotmail.com];
+	TAGGED_FROM(0.00)[bounces-19681-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lgs201920130244@gmail.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
 
-After kobject_init_and_add(), the lifetime of the embedded struct
-kobject is expected to be managed through the kobject core reference
-counting.
+On 4/27/26 11:39 PM, Kuniyuki Iwashima wrote:
+> On Mon, Apr 27, 2026 at 11:30 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>
+>> 在 2026/4/27 22:22, Kuniyuki Iwashima 写道:
+>>> On Mon, Apr 27, 2026 at 10:12 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>>>
+>>>>
+>>>>
+>>>> 在 2026/4/27 19:15, Zhu Yanjun 写道:
+>>>>>
+>>>>> 在 2026/4/27 17:58, David Ahern 写道:
+>>>>>> On 4/27/26 6:52 PM, Kuniyuki Iwashima wrote:
+>>>>>>> To be clear, you meant implementing David' idea, right ?
+>>>>>>> I'm asking because dellink won't need locking then.
+>>>>>> dellink is not needed with my suggestion. It was added to manage
+>>>>>> basically a refcount on the socket to close on last rxe delete in the
+>>>>>
+>>>>> This is my original implementation.
+>>>>>
+>>>>> @Kuniyuki Iwashima, can you reproduce this problem in your local host or
+>>>>> other test environments?
+>>>
+>>> The syzbot does not have a repro, but I think it can be
+>>> reproduced by calling newlink and dellink with multiple
+>>> threads.
+>>>
+>>> newlink would trigger kmemleak splat while dellink trigger
+>>> KASAN splat.
+>>>
+>>>
+>>>>>
+>>>>> If yes, can you make tests after applying the commit in the link:
+>>>>> https://patchwork.kernel.org/project/linux-rdma/
+>>>>> patch/20260424043522.22901-1-yanjun.zhu@linux.dev/
+>>>>>
+>>>>> Thanks a lot.
+>>>>
+>>>> Hi, David && Kuniyuki
+>>>>
+>>>> I read the call trace again.
+>>>>
+>>>> If net namespace has already released socket in A thread, then rdma link
+>>>> del command is called in B thread to release socket.
+>>>>
+>>>> So A thread has released socket firstly, then B thread also release socket.
+>>>>
+>>>> The similar call trace would appear.
+>>>>
+>>>> The followiing is the explanation to the commit
+>>>> https://patchwork.kernel.org/project/linux-rdma/patch/20260424043522.22901-1-yanjun.zhu@linux.dev/
+>>>>
+>>>> The double-free occurs as follows:
+>>>>
+>>>> CPU 0 (Net NameSpace cleanup)        CPU 1 (RDMA device removal)
+>>>> ---------------------                ---------------------------
+>>>> rxe_ns_exit()                        rxe_link_delete() (rdma link del )
+>>>
+>>> If rxe_link_delete() is in progress, it means the user thread is
+>>> alive, holding the netns refcount, and rxe_ns_exit() cannot be
+>>> called.
+>>>
+>>> So, dellink() never races with rxe_ns_exit(), and it races only
+>>> with the concurrent dellink().
+>>>
+>>> And when that occurs, the number of threads is not limited to
+>>> two, theoretically triple-free, quad-free, ... are possible.
+>>
+>> Thread 1: rdma link del          Thread 2: rdma link del
+>>        (User A calls dellink)           (User B calls dellink)
+>>                 |                                 |
+>>         (1) Get Socket Pointer            (2) Get Socket Pointer
+>>             sk = ns_sk->rxe_sk4               sk = ns_sk->rxe_sk4
+>>                 |                                 |
+>>         (3) Release Socket                (4) Release Socket
+>>             udp_tunnel_sock_release(sk)       udp_tunnel_sock_release(sk)
+>>                 |                                 |
+>>           [ FIRST FREE ]                          |
+>>                 |                          [ DOUBLE FREE! ]
+>>                 v                                 v
+>>           (Memory freed)                  (Kernel Panic / Crash)
+>>
+>> I think the above should explain your idea. If so, your solution makes
+>> senses to add a per-netns mutex to synchronise.
+>>
+>> Let us use the first solution
+>> https://lore.kernel.org/all/20260424013759.728288-1-kuniyu@google.com/
+>>
+>> BTW, 1) add mutex_destroy 2) take into account of rdma link add.
+>>
+>> I am not sure if it is OK or not. @David Ahern
+> 
+> No, newlink is still racy and the same kind of race leaks
+> the udp tunnel.
+> 
+> If we defer allocation, there are two options:
+> 
+> 1. David's idea, allocate on first use, and no free
+>    until netns destruction (newlink can add a fast path
+>    like check the pointer and only take mutex when it's
+>    NULL, and check again under mutex and allcoate a
+>   tunnel if not yet allocated)
+> 
+> 2. Manage refcount properly.  (If we allocate a dedicated
+>    refcount for each tunnel socket in rxe_ns_sock, we
+>    can implement a similar fast path for newlink, and dellink
+>    will be lockless thanks to atomic)
 
-In add_port(), several failure paths after kobject_init_and_add() free
-struct mlx4_port directly instead of releasing the embedded kobject with
-kobject_put(). This leaves the kobject reference count unbalanced and can
-lead to incorrect lifetime handling.
+I suggest we stick with Option 2 (proper refcounting) but move away from 
+a purely lockless dellink. By protecting the tunnel destruction with a 
+mutex, we can effectively close the race window and ensure the UDP 
+tunnel is cleaned up reliably without compromising the efficiency of the 
+fast path in newlink.
 
-Fix this by routing all failures after kobject_init_and_add() through a
-single kobject_put() based error path. Since the release callback may now
-be called for partially initialized mlx4_port objects, make
-mlx4_port_release() tolerate NULL attribute arrays.
-
-The issue was identified by a static analysis tool I developed and
-confirmed by manual review.
-
-Fixes: c1e7e466120b ("IB/mlx4: Add iov directory in sysfs under the ib device")
-Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
----
-v4:
-  - route all add_port() failures after kobject_init_and_add() through
-    a single kobject_put() based error path
-  - remove duplicated attribute array frees from add_port()
-  - keep mlx4_port_release() tolerant of partially initialized objects
-
-v3:
-  - make mlx4_port_release() tolerate NULL attribute arrays
-  - drop the parent kobject reference on the kobject_init_and_add()
-    failure path before putting the embedded kobject
-
-v2:
-  - note that the issue was identified by my static analysis tool
-  - and confirmed by manual review
-
- drivers/infiniband/hw/mlx4/sysfs.c | 44 ++++++++++++++----------------
- 1 file changed, 20 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/sysfs.c b/drivers/infiniband/hw/mlx4/sysfs.c
-index b8fa4ecfc961..fe505e07849d 100644
---- a/drivers/infiniband/hw/mlx4/sysfs.c
-+++ b/drivers/infiniband/hw/mlx4/sysfs.c
-@@ -380,12 +380,17 @@ static void mlx4_port_release(struct kobject *kobj)
- 	struct attribute *a;
- 	int i;
- 
--	for (i = 0; (a = p->pkey_group.attrs[i]); ++i)
--		kfree(a);
--	kfree(p->pkey_group.attrs);
--	for (i = 0; (a = p->gid_group.attrs[i]); ++i)
--		kfree(a);
--	kfree(p->gid_group.attrs);
-+	if (p->pkey_group.attrs) {
-+		for (i = 0; (a = p->pkey_group.attrs[i]); ++i)
-+			kfree(a);
-+		kfree(p->pkey_group.attrs);
-+	}
-+
-+	if (p->gid_group.attrs) {
-+		for (i = 0; (a = p->gid_group.attrs[i]); ++i)
-+			kfree(a);
-+		kfree(p->gid_group.attrs);
-+	}
- 	kfree(p);
- }
- 
-@@ -623,7 +628,6 @@ static void remove_vf_smi_entries(struct mlx4_port *p)
- static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
- {
- 	struct mlx4_port *p;
--	int i;
- 	int ret;
- 	int is_eth = rdma_port_get_link_layer(&dev->ib_dev, port_num) ==
- 			IB_LINK_LAYER_ETHERNET;
-@@ -640,7 +644,7 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
- 				   kobject_get(dev->dev_ports_parent[slave]),
- 				   "%d", port_num);
- 	if (ret)
--		goto err_alloc;
-+		goto err_put;
- 
- 	p->pkey_group.name  = "pkey_idx";
- 	p->pkey_group.attrs =
-@@ -649,44 +653,36 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
- 				  dev->dev->caps.pkey_table_len[port_num]);
- 	if (!p->pkey_group.attrs) {
- 		ret = -ENOMEM;
--		goto err_alloc;
-+		goto err_put;
- 	}
- 
- 	ret = sysfs_create_group(&p->kobj, &p->pkey_group);
- 	if (ret)
--		goto err_free_pkey;
-+		goto err_put;
- 
- 	p->gid_group.name  = "gid_idx";
- 	p->gid_group.attrs = alloc_group_attrs(show_port_gid_idx, NULL, 1);
- 	if (!p->gid_group.attrs) {
- 		ret = -ENOMEM;
--		goto err_free_pkey;
-+		goto err_put;
- 	}
- 
- 	ret = sysfs_create_group(&p->kobj, &p->gid_group);
- 	if (ret)
--		goto err_free_gid;
-+		goto err_put;
- 
- 	ret = add_vf_smi_entries(p);
- 	if (ret)
--		goto err_free_gid;
-+		goto err_put;
- 
- 	list_add_tail(&p->kobj.entry, &dev->pkeys.pkey_port_list[slave]);
- 	return 0;
- 
--err_free_gid:
--	kfree(p->gid_group.attrs[0]);
--	kfree(p->gid_group.attrs);
--
--err_free_pkey:
--	for (i = 0; i < dev->dev->caps.pkey_table_len[port_num]; ++i)
--		kfree(p->pkey_group.attrs[i]);
--	kfree(p->pkey_group.attrs);
--
--err_alloc:
-+err_put:
- 	kobject_put(dev->dev_ports_parent[slave]);
--	kfree(p);
-+	kobject_put(&p->kobj);
- 	return ret;
-+
- }
- 
- static int register_one_pkey_tree(struct mlx4_ib_dev *dev, int slave)
--- 
-2.43.0
-
+Zhu Yanjun
 
