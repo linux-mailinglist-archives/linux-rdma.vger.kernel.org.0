@@ -1,151 +1,307 @@
-Return-Path: <linux-rdma+bounces-19718-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19719-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KDr4GDFq8WmhggEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19718-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 04:17:21 +0200
+	id 8JFlLGSr8WkAjgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19719-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 08:55:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F0D948E462
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 04:17:16 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E0E549007D
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 08:55:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B0F4E30438C0
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 02:17:14 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0B104300EDAE
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 06:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A702B37D12D;
-	Wed, 29 Apr 2026 02:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20DF39DBC7;
+	Wed, 29 Apr 2026 06:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QoFJz4L1"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mRYNGpKk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067641EB5C2;
-	Wed, 29 Apr 2026 02:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8D339BFE7;
+	Wed, 29 Apr 2026 06:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777429030; cv=none; b=Hw3teNOm0WKNF3EoHFhPEO+O9Gj3TFu1L1BM1F1yN84kjDAMvEYDBwipidLKodp1/Dphc2annmg6ebgdQeswDwuqymn3zBB45QylXXaucx2WnJqQn1qAeWC+10wQsXzrxiY9Lc1wL8+ANh785zCoXOw8LFnHOk45G2yhZcOtm0g=
+	t=1777445716; cv=none; b=iCNcOo5r1JhTh9JhfmXjBcSbNMiIiNydzesToF6qZ1vKlr1PlYTTAS3LoB75+wGqXyAnnJqssvTxr+AiT2sGx5K77xbBPs17VL6idN28vz0FZvddLHAiLzI4VcSgyDgqcJoVsp/5Y3RukPV1i8R/HUsNbhLk73CMyvBBrc2y4iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777429030; c=relaxed/simple;
-	bh=V2FQoXfu5HGEMJp0t7jIWmcfuJAWZrfh+b9gSNE/Gis=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Yw7lAmJmfIkXBo2sjOq7Z9bMmb5OY6DBdlIaAo8hHvM1Yo9sJuo/WBt5qeCh/FoOROyxKc+avQfLAQkfAS8NfzjyfVdv01nkVkMv3Xdtn5h2A4zV8qZZaX5txoemdN6wQPwVJSxpELTksW9gjpY/9ywjgJUszGIGfh3i9glSLRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QoFJz4L1; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1777429023; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=N7vK4YGVGIaTJ0ADV12JN68NVGi80oWQzrH4TA+OltI=;
-	b=QoFJz4L1C3HvpU09qJXVpJiyIVKbzL9fWjPCnS8gXt+OkiEDGwmi5EKiuKqANIOk76Q9Qv27BtXwOGRvq/G2w7d4qWQimb285yRhRzY5ClN2XqmdxDHKtnEvu/Vbbz1a7QngTsEN1UUYK0tzG9AW66cjUI/3p91U8zsEjmiLJek=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X1w.CqB_1777428997;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X1w.CqB_1777428997 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 29 Apr 2026 10:17:02 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Dust Li <dust.li@linux.alibaba.com>,
+	s=arc-20240116; t=1777445716; c=relaxed/simple;
+	bh=kYYeufPkRyGcr0hiIW6bKGaXhz8Q+nnaSSo0fxSS6co=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UWdJy73NlEUWD1wNquPzln6IAf1BxlgxtcCXILsqpY95sYe3/5GW/kE0JsNUNgU6v30G/L9/8w49Fv+EzvvAWmozlyMm/Q8FGg3RbU5L8t6CaZdbofQtmzpKrHX/PS6Xv9LZtO8h/Qk5m6d0Ewbimrh13p9H1ZFG1nNlSGR/XhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mRYNGpKk; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1777445715; x=1808981715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=kYYeufPkRyGcr0hiIW6bKGaXhz8Q+nnaSSo0fxSS6co=;
+  b=mRYNGpKkdPZn92Js4w44vvHbhSgXVXy1f8mAr+/9W1FABmA43BvjO7EP
+   GVD0J2RI12BQWLSVn+4pSjmpK3tJLexJPN1TP7IkIGvcp1XQ3/d//xFrS
+   CJp3WQFbkvgN16LA4psH1fQ+t2XLRziSgU91OeRpokNK6AaSQAq0gdaSG
+   uvWDZk0FksjFnREON71yB0shU5ojBgYqTUbdKAnKCfQpfx76Fc62Dnd3u
+   WaBINNRZ0vVuN8peK/uponY/3gyaThgUpnevzRqr5fFlkDu/NtPvnOYcD
+   K8l9VlBFLlOf6aC4AUDY9hYTH3ZFoMnxoSpVTUBBdaTPfOlQyc0M39ger
+   w==;
+X-CSE-ConnectionGUID: UupN5YIITw+bGaoBrMuS9g==
+X-CSE-MsgGUID: BFAAvPR8QBqruOecGbaejw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11770"; a="89456642"
+X-IronPort-AV: E=Sophos;i="6.23,205,1770624000"; 
+   d="scan'208";a="89456642"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2026 23:55:14 -0700
+X-CSE-ConnectionGUID: NWCIGupGRW+k5c69AnHXJQ==
+X-CSE-MsgGUID: 5oHPhrg7Q1iV2x0zLMtPhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,205,1770624000"; 
+   d="scan'208";a="235958719"
+Received: from ettammin-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.245.141])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2026 23:54:56 -0700
+Date: Wed, 29 Apr 2026 09:54:54 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
+Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com,
-	pasic@linux.ibm.com
-Subject: [PATCH net-next v3] net/smc: cap allocation order for SMC-R physically contiguous buffers
-Date: Wed, 29 Apr 2026 10:16:37 +0800
-Message-ID: <20260429021637.21815-1-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Krzysztof Halasa <khc@pm.waw.pl>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Steffen Klassert <klassert@kernel.org>,
+	David Dillow <dave@thedillows.org>,
+	Ion Badulescu <ionut@badula.org>, Mark Einon <mark.einon@gmail.com>,
+	Rasesh Mody <rmody@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+	Sudarsana Kalluru <skalluru@marvell.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Denis Kirjanov <kirjanov@gmail.com>,
+	Jijie Shao <shaojijie@huawei.com>,
+	Jian Shen <shenjian15@huawei.com>,
+	Cai Huoqing <cai.huoqing@linux.dev>, Fan Gong <gongfan1@huawei.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+	Yibo Dong <dong100@mucse.com>, Simon Horman <horms@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com,
+	Jiri Pirko <jiri@resnulli.us>,
+	Francois Romieu <romieu@fr.zoreil.com>,
+	Daniele Venzano <venza@brownhat.org>,
+	Samuel Chessman <chessman@tux.org>,
+	Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Kevin Curtis <kevin.curtis@farsite.co.uk>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Kees Cook <kees@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+	Thomas Fourier <fourier.thomas@gmail.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Zilin Guan <zilin@seu.edu.cn>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Philipp Stanner <phasta@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Yeounsu Moon <yyyynoom@gmail.com>,
+	Denis Benato <benato.denis96@gmail.com>,
+	Peiyang Wang <wangpeiyang1@huawei.com>,
+	Yonglong Liu <liuyonglong@huawei.com>,
+	Yicong Hui <yiconghui@gmail.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	MD Danish Anwar <danishanwar@ti.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Sai Krishna <saikrishnag@marvell.com>,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Larysa Zaremba <larysa.zaremba@intel.com>, Joe Damato <joe@dama.to>,
+	Double Lo <double.lo@cypress.com>,
+	Chi-hsien Lin <chi-hsien.lin@cypress.com>,
+	Colin Ian King <colin.i.king@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-parisc@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com
+Subject: Re: [PATCH net-next] net: Consistently define pci_device_ids using
+ named initializers
+Message-ID: <afGrPvUeZ-DjWbC8@ashevche-desk.local>
+References: <20260428171845.2288395-2-u.kleine-koenig@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0F0D948E462
+In-Reply-To: <20260428171845.2288395-2-u.kleine-koenig@baylibre.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
+X-Rspamd-Queue-Id: 7E0E549007D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19718-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[pengutronix.de,lunn.ch,davemloft.net,google.com,kernel.org,redhat.com,pm.waw.pl,sipsolutions.net,baylibre.com,thedillows.org,badula.org,gmail.com,marvell.com,chelsio.com,huawei.com,linux.dev,intel.com,nvidia.com,mucse.com,realtek.com,resnulli.us,fr.zoreil.com,brownhat.org,tux.org,trustnetic.com,net-swift.com,farsite.co.uk,broadcom.com,bootlin.com,seu.edu.cn,suse.com,infradead.org,ti.com,dama.to,cypress.com,vger.kernel.org,lists.osuosl.org,corigine.com,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-19719-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
+	HAS_ORG_HEADER(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,alibaba.com:email,linux.alibaba.com:dkim,linux.alibaba.com:mid]
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[intel.com:+];
+	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@intel.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[84];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,ashevche-desk.local:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-The alloc_pages() cannot satisfy requests exceeding MAX_PAGE_ORDER,
-and attempting such allocations will lead to guaranteed failures
-and potential kernel warnings.
+On Tue, Apr 28, 2026 at 07:18:44PM +0200, Uwe Kleine-König (The Capable Hub) wrote:
+> ... and PCI device helpers.
+> 
+> The various struct pci_device_id arrays were initialized mostly by one
+> the PCI_DEVICE macros and then list expressions. The latter isn't easily
+> readable if you're not into PCI. Using named initializers is more
+> explicit and thus easier to parse.
+> 
+> Also use PCI_DEVICE* helper macros to assign .vendor, .device,
+> .subvendor and .subdevice where appropriate and skip explicit
+> assignments of 0 (which the compiler takes care of).
+> 
+> The secret plan is to make struct pci_device_id::driver_data an
+> anonymous union (similar to
+> https://lore.kernel.org/all/cover.1776579304.git.u.kleine-koenig@baylibre.com/)
+> and that requires named initializers. But it's also a nice cleanup on
+> its own.
+> 
+> This change doesn't introduce changes to the compiled pci_device_id
+> arrays. Tested on x86 and arm64.
 
-For SMCR_PHYS_CONT_BUFS, cap the allocation order to MAX_PAGE_ORDER.
-This ensures the attempts to allocate the largest possible physically
-contiguous chunk succeed, instead of failing with an invalid order.
-This also avoids redundant "try-fail-degrade" cycles in
-__smc_buf_create().
+...
 
-For SMCR_MIXED_BUFS, no cap is needed: if the order exceeds
-MAX_PAGE_ORDER, alloc_pages() will silently fail (__GFP_NOWARN)
-and automatically fall back to virtual memory.
+> -	{0,}						/* 0 terminated list. */
+> +	{ }						/* 0 terminated list. */
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
----
-Changes v2 -> v3:
-https://lore.kernel.org/netdev/20260407124337.88128-1-alibuda@linux.alibaba.com/
-Remove unnecessary parentheses
-Changes v1 -> v2:
-https://lore.kernel.org/netdev/20260312082154.36971-1-alibuda@linux.alibaba.com/
----
- net/smc/smc_core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The comments like these are just noises. The rule of thumb is to play with a
+trailing comma:
+- always drop it in the terminator entry
+- always keep it in the normal initialisers when semantically it's not a
+terminator
 
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index e2d083daeb7e..cf6b620fef05 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -2440,6 +2440,10 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
- 		/* use socket send buffer size (w/o overhead) as start value */
- 		bufsize = smc->sk.sk_sndbuf / 2;
- 
-+	/* limit bufsize for physically contiguous buffers */
-+	if (!is_smcd && lgr->buf_type == SMCR_PHYS_CONT_BUFS)
-+		bufsize = min_t(int, bufsize, PAGE_SIZE << MAX_PAGE_ORDER);
-+
- 	for (bufsize_comp = smc_compress_bufsize(bufsize, is_smcd, is_rmb);
- 	     bufsize_comp >= 0; bufsize_comp--) {
- 		if (is_rmb) {
+...
+
+>  static const struct pci_device_id liquidio_pci_tbl[] = {
+>  	{       /* 68xx */
+> -		PCI_VENDOR_ID_CAVIUM, 0x91, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0
+> +		PCI_VDEVICE(CAVIUM, 0x91)
+
+Use full fixed-width device id value(s). 0x0091 here and so on...
+
+>  	},
+
+Also seems that you may decrease number of LoC here putting it as
+
+	{ PCI_VDEVICE(CAVIUM, 0x0091) }, /* 68xx */
+
+and so on...
+
+>  	{       /* 66xx */
+> -		PCI_VENDOR_ID_CAVIUM, 0x92, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0
+> +		PCI_VDEVICE(CAVIUM, 0x92)
+>  	},
+>  	{       /* 23xx pf */
+> -		PCI_VENDOR_ID_CAVIUM, 0x9702, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0
+> +		PCI_VDEVICE(CAVIUM, 0x9702)
+>  	},
+> -	{
+> -		0, 0, 0, 0, 0, 0, 0
+> -	}
+> +	{ }
+>  };
+
+...
+
+>  #define CH_PCI_DEVICE_ID_TABLE_DEFINE_END \
+> -		{ 0, } \
+> +		{ } \
+>  	}
+
+Why do we have this macro at all?
+
+
+> -#define CH_PCI_DEVICE_ID_TABLE_DEFINE_END { 0, } }
+> +#define CH_PCI_DEVICE_ID_TABLE_DEFINE_END { } }
+
+Ditto.
+
+...
+
+>  static const struct pci_device_id de_pci_tbl[] = {
+> -	{ PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_TULIP,
+> -	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
+> -	{ PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_TULIP_PLUS,
+> -	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1 },
+> +	{ PCI_VDEVICE(DEC, PCI_DEVICE_ID_DEC_TULIP), .driver_data = 0 },
+> +	{ PCI_VDEVICE(DEC, PCI_DEVICE_ID_DEC_TULIP_PLUS), .driver_data = 1 },
+>  	{ },
+
+Drop comma. I.o.w. please make sure you also unify the style of the ID tables,
+including terminator entries.
+
+>  };
+
+...
+
+>  static const struct pci_device_id sis190_pci_tbl[] = {
+> -	{ PCI_DEVICE(PCI_VENDOR_ID_SI, 0x0190), 0, 0, 0 },
+> -	{ PCI_DEVICE(PCI_VENDOR_ID_SI, 0x0191), 0, 0, 1 },
+> -	{ 0, },
+> +	{ PCI_VDEVICE(SI, 0x0190), .driver_data = 0 },
+> +	{ PCI_VDEVICE(SI, 0x0191), .driver_data = 1 },
+> +	{ },
+
+Ditto and so on...
+
+>  };
+
+...
+
+Also I somehow managed to remove, but I remember you had an inner comma in some
+cases after the .driver_data, when the full ID entry is located on a single
+line. I.o.w. do
+
+	{ PCI_...(), .driver_data = ... // no trailing comma here! },
+
+When it's a single line trailing comma inside helps nothing and just makes
+lines longer and harder to read.
+
 -- 
-2.45.0
+With Best Regards,
+Andy Shevchenko
+
 
 
