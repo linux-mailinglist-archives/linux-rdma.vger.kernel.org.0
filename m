@@ -1,213 +1,124 @@
-Return-Path: <linux-rdma+bounces-19740-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19741-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UO9vD1Uq8mkxogEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19740-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 17:57:09 +0200
+	id QDLyJzst8mlvogEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19741-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 18:09:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9730497573
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 17:57:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B5F49780A
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 18:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1E2E23080793
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 15:53:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D786730CCCA6
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 16:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2357368269;
-	Wed, 29 Apr 2026 15:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F05377EDA;
+	Wed, 29 Apr 2026 16:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="af1gvbfY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XuX4RpXW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C91B376BEA;
-	Wed, 29 Apr 2026 15:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B363F2EDD69
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2026 16:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777477996; cv=none; b=rN3lG/W38h4sJsDWV9YFqU/F/RlTuuWQeUzsqT2/5r9PJTNfvii6EYuZPhveHq7LmYa1fE0WDr3k628eFx0on3TAlCcVRkH8DtXAv2BBHcUDsLAN3+rdvA6wuAQSBzznEXqAPr9LtNsiLOqhu5/n6jVu94obr59Gk6vkKL0Oi1Q=
+	t=1777478674; cv=none; b=eL5+JM0Xl/beJZHE5ZZtCrs1nS+mQAvZE0zE5jG1XF9j4d6Hc4xOuvqfMWvWc/X8kdVbdKp1MBw7BbsPXT/X2VMzYRYX0+vWsaFZ3FE07zGpkU1za16Hgh+o4ypF8vxfvTqXPjuHS5L2AatSc8c6+4fNoIVrHzsR6O1RvVhhBws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777477996; c=relaxed/simple;
-	bh=Wgc+fzUeQy6BIDSoqGQeEQKlTFxm1pwRCZQfp7NVZYA=;
+	s=arc-20240116; t=1777478674; c=relaxed/simple;
+	bh=qG7kr8Ms/PBiIXPO+nJkfeDaNPmqqc0GifexNjHfKxQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PlEJhqejmKklQE/XzPZwDNX9mKiqsNZ7dpm3HklDQsarI4Yq3kVVWJ28dbTW9ZBD33RAP0ASKFQAoaXbQ+MGI0hZ9ddcGPRzoW6SsboOETnbXd0vrMhTVqmt07OFW/4M4HkonW+hg0WRA7jvIVclXxtkdbjbmmzEomCYXtalh/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=af1gvbfY; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=pJSnP36j7nm87VEAhELZt3pO8S9PyBUJBnT+ZpbZzw8=; b=af1gvbfY7CINeFxucq8ZaQDf6k
-	zF7IpOiikUu+tksNucK1j1jNcGvC9Z7L3jkmcPD+MVw8y42/+fJuXTVpNGc267kJ46tS6mw6nsyHU
-	W2ufcDZHUWt08U8jLxDDUbvmsQbLfs8cC+R7jhXyCYxE6i2PElgf3DVSEiBAwfxWiJlFdYlId6uiS
-	TOTKkIfMpKTHOFj1G7jpBpxyy32stwitPs6vuiE9iMBvQ+IxThyYTHCg0qmg+7u2913UvBg2TPyZb
-	FVjXbQHP6IY1CIFfpI01nHIWn7859kgQtiEYGtygs84UyPm68HhTqehJCMUigVuyFLGUuKFEB+qei
-	/QSBAfVg==;
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1wI6uZ-000CZm-1I;
-	Wed, 29 Apr 2026 17:33:15 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1wI6uW-000Hg8-2g;
-	Wed, 29 Apr 2026 17:33:13 +0200
-Message-ID: <54e77e9d-cc5e-42dc-af00-b005d2f6b04b@iogearbox.net>
-Date: Wed, 29 Apr 2026 17:33:12 +0200
+	 In-Reply-To:Content-Type; b=O/KFpU2q/kL8Hmrf7Nt3CBpiRuVlQqro4DihD/lkLrXRHS722H67xQAlIlck+JR4eoza9v3r5/xkPhAOLbjkY7go/js9K6IO8O5SzADrNvr1s/Gd9IpUfEP/OcXn7nIn/jdVm6zPe4k2smQUnOu1XPNsB3YCSHZMb9slE0msbaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XuX4RpXW; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <58485c92-0ee5-4927-b9e4-dd4858219b17@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777478670;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gPZrBoLsbuD0OEZX2ZqYvNJjGhWHSghCFzaorvk3Iys=;
+	b=XuX4RpXWFkltBmr0ckMvYnhUOSSjvZS95312VHHONYi1r8kpkbtEexqiAdK0R4aXZWb0sn
+	QPP/VRfHqzyIhc3s6wVXBtTQb3m3wZcn/5tNglhhZJX5poyVZEjPZUdZywFievMVRWDalf
+	qACNR+B7Krp5kQP1hQ67U8AbNNjXDOg=
+Date: Wed, 29 Apr 2026 18:04:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 00/11] net: devmem: support devmem with netkit
- devices
-To: Bobby Eshleman <bobbyeshleman@gmail.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>, Alex Shi <alexs@kernel.org>,
- Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu <dzm91@hust.edu.cn>,
- Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Joshua Washington <joshwash@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com,
- Nikolay Aleksandrov <razor@blackwall.org>, Shuah Khan <shuah@kernel.org>,
- David Wei <dw@davidwei.uk>, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Stanislav Fomichev <sdf@fomichev.me>,
- Mina Almasry <almasrymina@google.com>,
- Bobby Eshleman <bobbyeshleman@meta.com>
-References: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
- <f954a636-4d21-47c0-8afa-cc4b24adb0fb@iogearbox.net>
- <afIhP5dtlzCtzn1T@devvm29614.prn0.facebook.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <afIhP5dtlzCtzn1T@devvm29614.prn0.facebook.com>
+Subject: Re: [RFC PATCH] RDMA/siw: use kzalloc_flex
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: rosenp@gmail.com, leon@kernel.org, kees@kernel.org,
+ gustavoars@kernel.org, linux-rdma@vger.kernel.org
+References: <20260421192821.2305-1-bernard.metzler@linux.dev>
+ <20260428155536.GA2774550@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20260428155536.GA2774550@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.4.3/27986/Wed Apr 29 08:25:43 2026)
-X-Rspamd-Queue-Id: D9730497573
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: D5B5F49780A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[iogearbox.net,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[iogearbox.net:s=default2302];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-19741-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19740-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,vger.kernel.org];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[daniel@iogearbox.net,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[iogearbox.net:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,iogearbox.net:dkim,iogearbox.net:mid]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid,sashiko.dev:url]
 
-On 4/29/26 5:18 PM, Bobby Eshleman wrote:
-> On Wed, Apr 29, 2026 at 02:08:31PM +0200, Daniel Borkmann wrote:
->> On 4/29/26 12:41 AM, Bobby Eshleman wrote:
->>> This series enables TCP devmem TX through netkit devices.
->>>
->>> Netkit now supports queue leasing. A physical NIC's RX queue can be
->>> leased to a netkit guest interface inside a container namespace. This
->>> gives the container a devmem-capable data path on the RX side (bind-rx,
->>> etc...). On the TX side, the container process binds to its netkit guest
->>> interface and sends traffic that netkit redirects (via BPF or ip
->>> forwarding) to the physical NIC for DMA.
->> [...]
->> Thanks for working on this, after the RX queue leasing got merged, I've
->> been looking into the same actually. :)
+On 28.04.2026 17:55, Jason Gunthorpe wrote:
+> On Tue, Apr 21, 2026 at 09:28:21PM +0200, bernard.metzler@linux.dev wrote:
+>> From: Bernard Metzler <bernard.metzler@linux.dev>
 >>
->> I think the NETMEM_TX_* enum approach seems reasonable.
+>> Simplify umem allocation by using flexible array member.
+>> Add __counted_by to get extra runtime analysis.
 >>
->> What I have a PoC on is to build out TX queue leasing as first-class
->> symmetric infrastructure to complement the RX queue leasing - basically
->> I implemented an equivalent to the latter in netdev_nl_queue_create_doit
->> et al, so you can have independent RX and TX leases and per-queue
->> accountability, such that ynl queue-get op shows the full picture, and
->> lastly we could also enable AF_XDP TX-only support through this infra.
->>
->> Would you be open to collab on integrating both and migrating the devmem
->> code to work off an TX queue object? Next week is LSF/MM/BPF, are you
->> there by any chance to catch up in person?
+>> Suggested-by: Rosen Penev <rosenp@gmail.com>
+>> Signed-off-by: Bernard Metzler <bernard.metzler@linux.dev>
+>> ---
+>>   drivers/infiniband/sw/siw/siw.h     |  4 ++--
+>>   drivers/infiniband/sw/siw/siw_mem.c | 19 ++++++-------------
+>>   drivers/infiniband/sw/siw/siw_mem.h |  2 +-
+>>   3 files changed, 9 insertions(+), 16 deletions(-)
 > 
-> Definitely am open to that. I will unfortunately not be at LSF/MM/BPF,
-> but maybe we can schedule a meeting offline to sync up?
+> Sashiko has quite a few interesting things to say about this:
+> 
+> https://sashiko.dev/#/patchset/20260421192821.2305-1-bernard.metzler%40linux.dev
+> 
+> Jason
+Excellent. I thought about that issue, but probably my
+conclusion that's all right is just wrong.
+I'll rework.
 
-Ack, absolutely, will reach out offline to find sth after LSF/MM/BPF week.
-If anyone else wants to join, just DM me.
-
-Cheers,
-Daniel
+Thanks,
+Bernard.
 
