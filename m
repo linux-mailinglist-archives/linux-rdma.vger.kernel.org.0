@@ -1,452 +1,190 @@
-Return-Path: <linux-rdma+bounces-19738-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19739-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8FG4Gdsf8mm/oAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19738-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 17:12:27 +0200
+	id 0M9OJZkj8mmOoQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19739-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 17:28:25 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21734496A12
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 17:12:22 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id B543D496E27
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 17:28:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 99820300DECB
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 15:09:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D9EB43051C4A
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2026 15:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F81925A642;
-	Wed, 29 Apr 2026 15:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D3C3783CC;
+	Wed, 29 Apr 2026 15:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X7yOqr9Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b7iJCGba"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7C937755C
-	for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2026 15:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8D437756A
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2026 15:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777475336; cv=none; b=jb6gtnfOxwxu7CqWjHlRZs/ioKx1FXLDzmqd3IlIrlc2oCTCITxUbpl+AcMnwhQ60LHztLJDOEQV39ymIbQwvbuqJOS4w1zxv8vfwityu/yqHmb1CU5jNYSTDXilDkO9qIw3buNTaDP9pcdfeA5YIw8No4Ywj6YEwXzCJFH6X2w=
+	t=1777475916; cv=none; b=ZGtK+4mc12dvNVkZCIA1GDFXBS8MXAP60MjX5Te2++9MUmQd1ggkPqDma6N84S/XAXOJIZ0fXaRfC367G9Wq1be+9lYV7eFK2zpOrp5hbShjxdUwH+31yKyTGjO3pcQiVwov/f6i2CRaHEtCEldETanbjHA6UEcX49xSXsZugrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777475336; c=relaxed/simple;
-	bh=nSpDh5JAVcMnvJl6TvFSJ4oampsPYHyg3/ychU1qErg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KxGDzwG0SfDty9izkMYPsDTkU+cGrwkGJhMB3fM2kOgax+0vfJSh6Xi9iOdmIv8h5Ej+qYXAEHBdM1nmpp8Y50+poQrPuFl/BhhBolbNeRFV2IwevEG8wWMAFzZT48bQDpgukIsnz3MGYCZUcmdks9fmnw+8rAd2J8ayQ5yTKwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X7yOqr9Z; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1777475333;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GNccpgI2xsz1sZwJ9hab0PdIysEcq8xFnw8tQlOiyts=;
-	b=X7yOqr9ZvBgJh5NgFYgYVwPeNMav/lTshdSlOgty0stvmw/ZuoL6sD97W+HkNbwFWpSAvH
-	l5bKpJPKcQkeAabpcK4LMZn5S1ZCsMK/nnVkj+pqMUzorD8MG9K1tkb5WQv8Vm06iNl/pZ
-	09A/vsoo8xrzNMAcTK760qAEGiAfg48=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-199-WIWQZtjOMeSMWeqaOxmNQQ-1; Wed,
- 29 Apr 2026 11:08:47 -0400
-X-MC-Unique: WIWQZtjOMeSMWeqaOxmNQQ-1
-X-Mimecast-MFC-AGG-ID: WIWQZtjOMeSMWeqaOxmNQQ_1777475322
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4FE811800378;
-	Wed, 29 Apr 2026 15:08:41 +0000 (UTC)
-Received: from p16v.redhat.com (unknown [10.44.49.234])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5E87119560B7;
-	Wed, 29 Apr 2026 15:08:34 +0000 (UTC)
-From: Ivan Vecera <ivecera@redhat.com>
-To: netdev@vger.kernel.org
+	s=arc-20240116; t=1777475916; c=relaxed/simple;
+	bh=/BimwSCUsuashVXwD+dzxd+4t5G8fzzhA6oBT4Cnlr0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fo5iaWcoTesBvzHuiMNDQjPCJd/qgw5YHjxHi9easbt9hkMSdCTLjHaLLnx/iLVydPcdqggO+zPCqAWzuBhKoQDR8dXJmp/ia+mI35FJt7c5n66uHk9dCTgQm+2YRZsPE1kvuecWlnK8Iv23XC/EqUNl+xeNjgha/rzOTsQKq0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b7iJCGba; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-7dbd23bc684so7133166a34.2
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2026 08:18:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777475913; x=1778080713; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7hCAZnYdZvdp+ak79vsUFUwhsK90OGnLnVC3WYq76N8=;
+        b=b7iJCGbaNlXtp4X0g6/WayFeLAL1bJl7AXsejxs7Gg1yd3+tXxfLCqVRJ6zgl+87Ty
+         AzkjBbmGxQXA5dPHLvzunpTs8WxAQ7r7BYtmSYzNn8xmKooUmrYgvDByEfrGR9oMNHST
+         6CYlQCxvgSVqcxF4KUQH1q7M9m7OjIWYp2+HxRh/LoRPURMvrEgXRK9WNLNlB7BsykRX
+         Pmu2UsOH9F8ek8o5h+A7RETSgO/zEg5diwBo2XSltxub7IYnetVfLLiar8QOKiuubRSR
+         mVR2pcvukrXZxLDMZLKOgq8uo+utneT0SkFkFgAMAA8W5wNs+4wTTLLdIaYkjcrXUpMc
+         ExWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777475913; x=1778080713;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7hCAZnYdZvdp+ak79vsUFUwhsK90OGnLnVC3WYq76N8=;
+        b=hmdqpYCpWwf8sNqK3zwBHfzBYoNuHvTJGLNDTXCz0+OoDjYjHV0IF3+FZ8wzgg6fdX
+         6M6yudZjwn6Fl7JVqY/TYeXY2HxKP1E+ZRSRZrXC0PQU0I9RWuarDbZfdT+nahjVdzhY
+         syy7t9yOkuyeieQIpHdwBvdvbZ4O8QkaSK0zSsl5oDjevIGqizRdaD4qsAs/kVSmylQ5
+         kZIawa8nlfproTB6cmNSZjc8D+WeH/hM8/RO5kbf7Vcfy0gWP2V1KLmBGgF89RsjlFUD
+         X9HwDyIGXyPcXst4etgTEanXSSY8SsBQUbkAZWObp5/Kmke8Si/ZxiDRk+HdftzLdAEN
+         qC9Q==
+X-Forwarded-Encrypted: i=1; AFNElJ9Hb30zG+rwiQQQGknH3Uwd/S03+McrrBE/8JyoY/SbqXZRy0C3oDqyPBjPazO6ZdfsPzLCgu6ZDQ45@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/wiPAKN0KXT4PM/ehFxm0O4pZsr5H5FLzFmsuWTlOrhOJJKzh
+	+hLtzi0jUe/F19S9aF3uEnrv/LBKpw+HajmM6BQVKa21duExnBoktd2T
+X-Gm-Gg: AeBDiesnnoPuFd7vOMWc+j78zWyx22A3GxNBVay+UvXE3qUyf3xvwfrayKKxxiX8MRM
+	QRAUwBmiAjqb8zooT5pqlsU29dYFhTJDH9KHkeUIY1NLA4otLnxHdehBoxGCzRCHzwtEYkDqOgS
+	4vv02CpjftcESX+DC8GtVIWx3fsHVPQYaH8oo6EbX8XuT26kRrdOh/tMXVOvn1B87kmOWLZd4Wl
+	N/ryh81pfLkfocxiCK5h8fAfcWm2bqcJopguzLvSm++HJ1YpQYV/OLPocg/wmCmwBQPo3NIFAsv
+	WBCs7gCx8kLDFQM7Qcxd/2ctbx0A49SpZ6PPhP0MZdCpx/J/3FjaklpSVVGCiu/C9w54Ov2wc+H
+	qXHdfRPAtHXiyyhHrwfmyCjoQmlk1ZAk6ujJjGgDZasDqzhH94e0jsnDCv9iTkBaeTjTwgK8HDu
+	GjIcjGuG048buFK3Rx/SPW4MJDcis55J+WyUH6eLrb9Y4c1lgcG1Ik+zcNBw==
+X-Received: by 2002:a05:6830:25d1:b0:7dc:da80:42b4 with SMTP id 46e09a7af769-7de9a1002c7mr4284996a34.24.1777475913099;
+        Wed, 29 Apr 2026 08:18:33 -0700 (PDT)
+Received: from devvm29614.prn0.facebook.com ([2a03:2880:f812:6a::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7deab99036asm1469135a34.17.2026.04.29.08.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2026 08:18:32 -0700 (PDT)
+Date: Wed, 29 Apr 2026 08:18:23 -0700
+From: Bobby Eshleman <bobbyeshleman@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
 	"David S. Miller" <davem@davemloft.net>,
-	Donald Hunter <donald.hunter@gmail.com>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Bloch <mbloch@nvidia.com>,
-	Michal Schmidt <mschmidt@redhat.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Pasi Vaananen <pvaanane@redhat.com>,
-	Petr Oros <poros@redhat.com>,
-	Prathosh Satish <Prathosh.Satish@microchip.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>, Alex Shi <alexs@kernel.org>,
+	Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu <dzm91@hust.edu.cn>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Joshua Washington <joshwash@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Simon Horman <horms@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 2/2] dpll: zl3073x: report FFO as DPLL vs input reference offset
-Date: Wed, 29 Apr 2026 17:08:17 +0200
-Message-ID: <20260429150817.3059763-3-ivecera@redhat.com>
-In-Reply-To: <20260429150817.3059763-1-ivecera@redhat.com>
-References: <20260429150817.3059763-1-ivecera@redhat.com>
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Shuah Khan <shuah@kernel.org>, David Wei <dw@davidwei.uk>,
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Mina Almasry <almasrymina@google.com>,
+	Bobby Eshleman <bobbyeshleman@meta.com>
+Subject: Re: [PATCH net-next 00/11] net: devmem: support devmem with netkit
+ devices
+Message-ID: <afIhP5dtlzCtzn1T@devvm29614.prn0.facebook.com>
+References: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
+ <f954a636-4d21-47c0-8afa-cc4b24adb0fb@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Rspamd-Queue-Id: 21734496A12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f954a636-4d21-47c0-8afa-cc4b24adb0fb@iogearbox.net>
+X-Rspamd-Queue-Id: B543D496E27
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[lunn.ch,intel.com,davemloft.net,gmail.com,google.com,kernel.org,resnulli.us,lwn.net,nvidia.com,redhat.com,microchip.com,linuxfoundation.org,linux.dev,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-19738-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ivecera@redhat.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_FROM(0.00)[bounces-19739-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bobbyeshleman@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,devvm29614.prn0.facebook.com:mid]
 
-Replace the per-reference frequency offset measurement (which was
-redundant with measured-frequency) with a direct read of the DPLL's
-delta frequency offset vs its tracked input reference.
+On Wed, Apr 29, 2026 at 02:08:31PM +0200, Daniel Borkmann wrote:
+> Hi Bobby,
+> 
+> On 4/29/26 12:41 AM, Bobby Eshleman wrote:
+> > This series enables TCP devmem TX through netkit devices.
+> > 
+> > Netkit now supports queue leasing. A physical NIC's RX queue can be
+> > leased to a netkit guest interface inside a container namespace. This
+> > gives the container a devmem-capable data path on the RX side (bind-rx,
+> > etc...). On the TX side, the container process binds to its netkit guest
+> > interface and sends traffic that netkit redirects (via BPF or ip
+> > forwarding) to the physical NIC for DMA.
+> [...]
+> Thanks for working on this, after the RX queue leasing got merged, I've
+> been looking into the same actually. :)
+> 
+> I think the NETMEM_TX_* enum approach seems reasonable.
+> 
+> What I have a PoC on is to build out TX queue leasing as first-class
+> symmetric infrastructure to complement the RX queue leasing - basically
+> I implemented an equivalent to the latter in netdev_nl_queue_create_doit
+> et al, so you can have independent RX and TX leases and per-queue
+> accountability, such that ynl queue-get op shows the full picture, and
+> lastly we could also enable AF_XDP TX-only support through this infra.
+> 
+> Would you be open to collab on integrating both and migrating the devmem
+> code to work off an TX queue object? Next week is LSF/MM/BPF, are you
+> there by any chance to catch up in person?
+> 
 
-The new implementation uses the dpll_df_offset_x register with
-ref_ofst=1 via the dpll_df_read_x semaphore mechanism. This
-provides 2^-48 resolution (~3.5 fE) and reports the actual
-frequency difference between the DPLL and its active input.
+Hey Daniel,
 
-FFO is now reported only for the active input pin in the nested
-(pin vs parent DPLL) context. Top-level FFO returns -ENODATA.
+Definitely am open to that. I will unfortunately not be at LSF/MM/BPF,
+but maybe we can schedule a meeting offline to sync up?
 
-Rewrite ffo_check to compare the cached df_offset converted to PPT
-instead of using the old per-reference measurement. Remove the
-ref_ffo_update periodic measurement and the ref ffo field since
-they are no longer needed.
+On the approach, explicit TX queue leasing sounds like a better way to
+permit devmem's tx binding than implicitly via RX lease.
 
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/dpll/zl3073x/chan.c | 31 +++++++++++++++++++++++--
- drivers/dpll/zl3073x/chan.h | 14 ++++++++++++
- drivers/dpll/zl3073x/core.c | 45 -------------------------------------
- drivers/dpll/zl3073x/dpll.c | 34 ++++++++++++----------------
- drivers/dpll/zl3073x/ref.h  | 14 ------------
- drivers/dpll/zl3073x/regs.h | 15 +++++++++++++
- 6 files changed, 72 insertions(+), 81 deletions(-)
-
-diff --git a/drivers/dpll/zl3073x/chan.c b/drivers/dpll/zl3073x/chan.c
-index 2f48ca2391494..2fe3c3da84bb5 100644
---- a/drivers/dpll/zl3073x/chan.c
-+++ b/drivers/dpll/zl3073x/chan.c
-@@ -18,6 +18,7 @@
- int zl3073x_chan_state_update(struct zl3073x_dev *zldev, u8 index)
- {
- 	struct zl3073x_chan *chan = &zldev->chan[index];
-+	u64 val;
- 	int rc;
- 
- 	rc = zl3073x_read_u8(zldev, ZL_REG_DPLL_MON_STATUS(index),
-@@ -25,8 +26,34 @@ int zl3073x_chan_state_update(struct zl3073x_dev *zldev, u8 index)
- 	if (rc)
- 		return rc;
- 
--	return zl3073x_read_u8(zldev, ZL_REG_DPLL_REFSEL_STATUS(index),
--			       &chan->refsel_status);
-+	rc = zl3073x_read_u8(zldev, ZL_REG_DPLL_REFSEL_STATUS(index),
-+			     &chan->refsel_status);
-+	if (rc)
-+		return rc;
-+
-+	/* Read df_offset vs tracked reference */
-+	rc = zl3073x_poll_zero_u8(zldev, ZL_REG_DPLL_DF_READ(index),
-+				  ZL_DPLL_DF_READ_SEM);
-+	if (rc)
-+		return rc;
-+
-+	rc = zl3073x_write_u8(zldev, ZL_REG_DPLL_DF_READ(index),
-+			      ZL_DPLL_DF_READ_SEM | ZL_DPLL_DF_READ_REF_OFST);
-+	if (rc)
-+		return rc;
-+
-+	rc = zl3073x_poll_zero_u8(zldev, ZL_REG_DPLL_DF_READ(index),
-+				  ZL_DPLL_DF_READ_SEM);
-+	if (rc)
-+		return rc;
-+
-+	rc = zl3073x_read_u48(zldev, ZL_REG_DPLL_DF_OFFSET(index), &val);
-+	if (rc)
-+		return rc;
-+
-+	chan->df_offset = sign_extend64(val, 47);
-+
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/dpll/zl3073x/chan.h b/drivers/dpll/zl3073x/chan.h
-index 481da2133202b..4353809c69122 100644
---- a/drivers/dpll/zl3073x/chan.h
-+++ b/drivers/dpll/zl3073x/chan.h
-@@ -17,6 +17,7 @@ struct zl3073x_dev;
-  * @ref_prio: reference priority registers (4 bits per ref, P/N packed)
-  * @mon_status: monitor status register value
-  * @refsel_status: reference selection status register value
-+ * @df_offset: frequency offset vs tracked reference in 2^-48 steps
-  */
- struct zl3073x_chan {
- 	struct_group(cfg,
-@@ -26,6 +27,7 @@ struct zl3073x_chan {
- 	struct_group(stat,
- 		u8	mon_status;
- 		u8	refsel_status;
-+		s64	df_offset;
- 	);
- };
- 
-@@ -37,6 +39,18 @@ int zl3073x_chan_state_set(struct zl3073x_dev *zldev, u8 index,
- 
- int zl3073x_chan_state_update(struct zl3073x_dev *zldev, u8 index);
- 
-+/**
-+ * zl3073x_chan_df_offset_get - get cached df_offset vs tracked reference
-+ * @chan: pointer to channel state
-+ *
-+ * Return: frequency offset in 2^-48 steps
-+ */
-+static inline s64
-+zl3073x_chan_df_offset_get(const struct zl3073x_chan *chan)
-+{
-+	return chan->df_offset;
-+}
-+
- /**
-  * zl3073x_chan_mode_get - get DPLL channel operating mode
-  * @chan: pointer to channel state
-diff --git a/drivers/dpll/zl3073x/core.c b/drivers/dpll/zl3073x/core.c
-index 5f1e70f3e40a0..b3345060490db 100644
---- a/drivers/dpll/zl3073x/core.c
-+++ b/drivers/dpll/zl3073x/core.c
-@@ -704,44 +704,6 @@ zl3073x_ref_freq_meas_update(struct zl3073x_dev *zldev)
- 	return 0;
- }
- 
--/**
-- * zl3073x_ref_ffo_update - update reference fractional frequency offsets
-- * @zldev: pointer to zl3073x_dev structure
-- *
-- * The function asks device to latch the latest measured fractional
-- * frequency offset values, reads and stores them into the ref state.
-- *
-- * Return: 0 on success, <0 on error
-- */
--static int
--zl3073x_ref_ffo_update(struct zl3073x_dev *zldev)
--{
--	int i, rc;
--
--	rc = zl3073x_ref_freq_meas_latch(zldev,
--					 ZL_REF_FREQ_MEAS_CTRL_REF_FREQ_OFF);
--	if (rc)
--		return rc;
--
--	/* Read DPLL-to-REFx frequency offset measurements */
--	for (i = 0; i < ZL3073X_NUM_REFS; i++) {
--		s32 value;
--
--		/* Read value stored in units of 2^-32 signed */
--		rc = zl3073x_read_u32(zldev, ZL_REG_REF_FREQ(i), &value);
--		if (rc)
--			return rc;
--
--		/* Convert to ppt
--		 * ffo = (10^12 * value) / 2^32
--		 * ffo = ( 5^12 * value) / 2^20
--		 */
--		zldev->ref[i].ffo = mul_s64_u64_shr(value, 244140625, 20);
--	}
--
--	return 0;
--}
--
- static void
- zl3073x_dev_periodic_work(struct kthread_work *work)
- {
-@@ -776,13 +738,6 @@ zl3073x_dev_periodic_work(struct kthread_work *work)
- 		}
- 	}
- 
--	/* Update references' fractional frequency offsets */
--	rc = zl3073x_ref_ffo_update(zldev);
--	if (rc)
--		dev_warn(zldev->dev,
--			 "Failed to update fractional frequency offsets: %pe\n",
--			 ERR_PTR(rc));
--
- 	list_for_each_entry(zldpll, &zldev->dplls, list)
- 		zl3073x_dpll_changes_check(zldpll);
- 
-diff --git a/drivers/dpll/zl3073x/dpll.c b/drivers/dpll/zl3073x/dpll.c
-index 6e9dfaf7309f7..06dec77b2a516 100644
---- a/drivers/dpll/zl3073x/dpll.c
-+++ b/drivers/dpll/zl3073x/dpll.c
-@@ -299,8 +299,12 @@ zl3073x_dpll_input_pin_ffo_get(const struct dpll_pin *dpll_pin, void *pin_priv,
- {
- 	struct zl3073x_dpll_pin *pin = pin_priv;
- 
--	/* Only rx vs tx symbol rate FFO is supported */
--	if (dpll)
-+	/* Only nested FFO (pin vs parent DPLL) is supported */
-+	if (!dpll)
-+		return -ENODATA;
-+
-+	/* Report FFO only for the active pin */
-+	if (pin->operstate != DPLL_PIN_OPERSTATE_ACTIVE)
- 		return -ENODATA;
- 
- 	*ffo = pin->freq_offset;
-@@ -1699,37 +1703,27 @@ zl3073x_dpll_pin_phase_offset_check(struct zl3073x_dpll_pin *pin)
- }
- 
- /**
-- * zl3073x_dpll_pin_ffo_check - check for pin fractional frequency offset change
-+ * zl3073x_dpll_pin_ffo_check - check for FFO change on active pin
-  * @pin: pin to check
-  *
-- * Check for the given pin's fractional frequency change.
-- *
-- * Return: true on fractional frequency offset change, false otherwise
-+ * Return: true on change, false otherwise
-  */
- static bool
- zl3073x_dpll_pin_ffo_check(struct zl3073x_dpll_pin *pin)
- {
- 	struct zl3073x_dpll *zldpll = pin->dpll;
--	struct zl3073x_dev *zldev = zldpll->dev;
--	const struct zl3073x_ref *ref;
--	u8 ref_id;
-+	const struct zl3073x_chan *chan;
- 	s64 ffo;
- 
--	/* Get reference monitor status */
--	ref_id = zl3073x_input_pin_ref_get(pin->id);
--	ref = zl3073x_ref_state_get(zldev, ref_id);
--
--	/* Do not report ffo changes if the reference monitor report errors */
--	if (!zl3073x_ref_is_status_ok(ref))
-+	if (pin->operstate != DPLL_PIN_OPERSTATE_ACTIVE)
- 		return false;
- 
--	/* Compare with previous value */
--	ffo = zl3073x_ref_ffo_get(ref);
-+	chan = zl3073x_chan_state_get(zldpll->dev, zldpll->id);
-+	ffo = mul_s64_u64_shr(zl3073x_chan_df_offset_get(chan),
-+			      244140625, 36);
-+
- 	if (pin->freq_offset != ffo) {
--		dev_dbg(zldev->dev, "%s freq offset changed: %lld -> %lld\n",
--			pin->label, pin->freq_offset, ffo);
- 		pin->freq_offset = ffo;
--
- 		return true;
- 	}
- 
-diff --git a/drivers/dpll/zl3073x/ref.h b/drivers/dpll/zl3073x/ref.h
-index 55e80e4f08734..e140ca3ea17dc 100644
---- a/drivers/dpll/zl3073x/ref.h
-+++ b/drivers/dpll/zl3073x/ref.h
-@@ -22,7 +22,6 @@ struct zl3073x_dev;
-  * @freq_ratio_n: FEC mode divisor
-  * @sync_ctrl: reference sync control
-  * @config: reference config
-- * @ffo: current fractional frequency offset
-  * @meas_freq: measured input frequency in Hz
-  * @mon_status: reference monitor status
-  */
-@@ -40,7 +39,6 @@ struct zl3073x_ref {
- 		u8	config;
- 	);
- 	struct_group(stat, /* Status */
--		s64	ffo;
- 		u32	meas_freq;
- 		u8	mon_status;
- 	);
-@@ -58,18 +56,6 @@ int zl3073x_ref_state_update(struct zl3073x_dev *zldev, u8 index);
- 
- int zl3073x_ref_freq_factorize(u32 freq, u16 *base, u16 *mult);
- 
--/**
-- * zl3073x_ref_ffo_get - get current fractional frequency offset
-- * @ref: pointer to ref state
-- *
-- * Return: the latest measured fractional frequency offset
-- */
--static inline s64
--zl3073x_ref_ffo_get(const struct zl3073x_ref *ref)
--{
--	return ref->ffo;
--}
--
- /**
-  * zl3073x_ref_meas_freq_get - get measured input frequency
-  * @ref: pointer to ref state
-diff --git a/drivers/dpll/zl3073x/regs.h b/drivers/dpll/zl3073x/regs.h
-index d425dc67250fe..b8bbea31748f8 100644
---- a/drivers/dpll/zl3073x/regs.h
-+++ b/drivers/dpll/zl3073x/regs.h
-@@ -157,6 +157,11 @@
- #define ZL_DPLL_MODE_REFSEL_MODE_NCO		4
- #define ZL_DPLL_MODE_REFSEL_REF			GENMASK(7, 4)
- 
-+#define ZL_REG_DPLL_DF_READ(_idx)					\
-+	ZL_REG_IDX(_idx, 5, 0x28, 1, ZL3073X_MAX_CHANNELS, 1)
-+#define ZL_DPLL_DF_READ_SEM			BIT(4)
-+#define ZL_DPLL_DF_READ_REF_OFST		BIT(3)
-+
- #define ZL_REG_DPLL_MEAS_CTRL			ZL_REG(5, 0x50, 1)
- #define ZL_DPLL_MEAS_CTRL_EN			BIT(0)
- #define ZL_DPLL_MEAS_CTRL_AVG_FACTOR		GENMASK(7, 4)
-@@ -169,6 +174,16 @@
- #define ZL_REG_DPLL_PHASE_ERR_DATA(_idx)				\
- 	ZL_REG_IDX(_idx, 5, 0x55, 6, ZL3073X_MAX_CHANNELS, 6)
- 
-+/*******************************
-+ * Register Pages 6-7, DPLL Data
-+ *******************************/
-+
-+#define ZL_REG_DPLL_DF_OFFSET_03(_idx)					\
-+	ZL_REG_IDX(_idx, 6, 0x00, 6, 4, 0x20)
-+#define ZL_REG_DPLL_DF_OFFSET_4		ZL_REG(7, 0x00, 6)
-+#define ZL_REG_DPLL_DF_OFFSET(_idx)					\
-+	((_idx) < 4 ? ZL_REG_DPLL_DF_OFFSET_03(_idx) : ZL_REG_DPLL_DF_OFFSET_4)
-+
- /***********************************
-  * Register Page 9, Synth and Output
-  ***********************************/
--- 
-2.53.0
-
+Best,
+Bobby
 
