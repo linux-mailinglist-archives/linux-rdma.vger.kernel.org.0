@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-19794-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19795-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0EH6LzaT82mL5AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19794-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2026 19:36:54 +0200
+	id 6EFwOFWT82mL5AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19795-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2026 19:37:25 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F91A4A67F8
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2026 19:36:54 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9821A4A683B
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2026 19:37:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D011A30055A5
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2026 17:36:52 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1745A3015F8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2026 17:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247AD478864;
-	Thu, 30 Apr 2026 17:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9929447A0D8;
+	Thu, 30 Apr 2026 17:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DsBgOrsA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bHolFLsZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8186D47887A
-	for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2026 17:36:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76C0478849
+	for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2026 17:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777570604; cv=none; b=hR4E023f7MsNdSHEvbYxD/OgP08Fc2vRggRQcq4wqq4SeP4UcHlAgFZJQno/3SBU/1qUq3dCCp+IgLdXtgljuT0tXr3yC0m0xYar/+lwqSvw1VuKjUBHznPpzEUUQosKXBHGpi3rV2PJRl24AdLRpE+XZjr6bGF43wdfNVDFtus=
+	t=1777570614; cv=none; b=eJ2vn0vGZltGHwC23MU2/K+/ibOWeUibn56purQXi4kGX5RvZwWv/F5K21f1HeaxkEW+W8vWnsw/50wcHNhUF3xLEK52NOJ5wYvUlSSCowL0C6K6O0f3mq1Xyxy6Q2raluvZIqFLABCe93YhuDIHwZNXDGCR5NhSci3C6Pmoetw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777570604; c=relaxed/simple;
-	bh=BXaXtycup6r2lHo5RiHjVkFCF3fmTg/MRthXv6HjgoQ=;
+	s=arc-20240116; t=1777570614; c=relaxed/simple;
+	bh=gyjeCm4C6s/g+YxN83efSIDXOaboBpxUC+pv8Xyj7L0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uRfWfIN+QO83ZV0qxKrTmuBaWyVi4mdWH8qt+PMd1BhORxFwvFlMFXDVFQTTB79hppF3WLNJNPtlUOOoWXckNDbo4zKZGoag9cC8s27wopdSWr00x6Kv8CDqUStEOuy3ov35tGR6UaL5g/VnV7wEnzoZOFsgFQFp2MVzkKC7yto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DsBgOrsA; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=jVn/01HQSBBPXqlhGt5y140x2jv2DShJ7RM8eYYjqTYLMpn8GrFnx1Y7iKmQK2gkN4M21FLPs8YZ4l64/AGlPjbn7oiNfFS0siHbEDlRwMLJQfSLN0l6bZszSLvc2+XEEqHFeKCPOp6UV2bt1O/XIvHz8RnUMVGA9Sp78ich9HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bHolFLsZ; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1777570595;
+	s=mimecast20190719; t=1777570599;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=46YBdtJW0itADe3RtaC5ta5a1ODPHL0raWyRpmozoTM=;
-	b=DsBgOrsA5KwEFSyej1s+bY6igDYVfnZ/ecHc3ApJpweVVG3eKRaNajfggkEzvN31KlQDIs
-	+Kjf2yuBp1n/ZcSPju1JBAIe0NJTQ/3Role+xMxDNiGQkXVQmwSJ7GwL0IX8eI3OgYcfGA
-	la3Rrc/v2TcrJCOd4GDWeVA1NHS0kh8=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	bh=4Fvbn2nUgyC7Geb8di9ysUEYNo+TOhgpJ3gf7mQkWWY=;
+	b=bHolFLsZa3Vs4jN6as2bIfcTU3yLHpb94ndko1pUpXBWQyt8LzzxKzyLCD/QFwezx6JHjL
+	rICzeLCQ5Ma00Ni1+bKwMwStyg4AkpfCqcv5UQZLhB9losU/cfFDxIzbSN4OG+VpS6CTG+
+	ixGnLkLp21lmeKMKPkU5AnIHJwdal9U=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-358-FCXjoXIsPCqK-cYGlB85zQ-1; Thu,
- 30 Apr 2026 13:36:29 -0400
-X-MC-Unique: FCXjoXIsPCqK-cYGlB85zQ-1
-X-Mimecast-MFC-AGG-ID: FCXjoXIsPCqK-cYGlB85zQ_1777570587
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-503-UUmbBOKiMou8G0lDUf0osg-1; Thu,
+ 30 Apr 2026 13:36:35 -0400
+X-MC-Unique: UUmbBOKiMou8G0lDUf0osg-1
+X-Mimecast-MFC-AGG-ID: UUmbBOKiMou8G0lDUf0osg_1777570593
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4DA571956056;
-	Thu, 30 Apr 2026 17:36:26 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0AE1E195609F;
+	Thu, 30 Apr 2026 17:36:33 +0000 (UTC)
 Received: from p16v.redhat.com (unknown [10.44.49.13])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0094A180058B;
-	Thu, 30 Apr 2026 17:36:19 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B3B03180045E;
+	Thu, 30 Apr 2026 17:36:26 +0000 (UTC)
 From: Ivan Vecera <ivecera@redhat.com>
 To: netdev@vger.kernel.org
 Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
@@ -85,9 +85,9 @@ Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v2 1/2] dpll: move fractional-frequency-offset-ppt under pin-parent-device
-Date: Thu, 30 Apr 2026 19:36:10 +0200
-Message-ID: <20260430173611.3312596-2-ivecera@redhat.com>
+Subject: [PATCH net-next v2 2/2] dpll: zl3073x: report FFO as DPLL vs input reference offset
+Date: Thu, 30 Apr 2026 19:36:11 +0200
+Message-ID: <20260430173611.3312596-3-ivecera@redhat.com>
 In-Reply-To: <20260430173611.3312596-1-ivecera@redhat.com>
 References: <20260430173611.3312596-1-ivecera@redhat.com>
 Precedence: bulk
@@ -98,7 +98,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Rspamd-Queue-Id: 7F91A4A67F8
+X-Rspamd-Queue-Id: 9821A4A683B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.84 / 15.00];
@@ -107,7 +107,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -115,7 +115,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_CC(0.00)[lunn.ch,intel.com,davemloft.net,gmail.com,google.com,kernel.org,resnulli.us,lwn.net,nvidia.com,redhat.com,microchip.com,linuxfoundation.org,linux.dev,vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-19794-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19795-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -128,201 +128,324 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-Move the fractional-frequency-offset-ppt attribute from the top-level
-pin attributes into the pin-parent-device nested attribute set. This
-makes it consistent with phase-offset which is already per-parent and
-clarifies that FFO PPT represents the frequency difference between
-a pin and its parent DPLL device.
+Replace the per-reference frequency offset measurement (which was
+redundant with measured-frequency) with a direct read of the DPLL's
+delta frequency offset vs its tracked input reference.
 
-The top-level fractional-frequency-offset attribute (in PPM) remains
-unchanged for backward compatibility.
+The new implementation uses the dpll_df_offset_x register with
+ref_ofst=1 via the dpll_df_read_x semaphore mechanism. This
+provides 2^-48 resolution (~3.5 fE) and reports the actual
+frequency difference between the DPLL and its active input.
 
-Distinguish the two contexts in the ffo_get callback by passing
-dpll=NULL for the top-level (rx vs tx symbol rate) call and a valid
-dpll pointer for the nested (pin vs parent DPLL) call. Update mlx5
-and zl3073x drivers to return -ENODATA for the nested context they
-do not yet support.
+FFO is now reported only for the active input pin in the nested
+(pin vs parent DPLL) context. Top-level FFO returns -ENODATA.
 
-Add documentation for both FFO attributes to dpll.rst.
+Rewrite ffo_check to compare the cached df_offset converted to PPT
+instead of using the old per-reference measurement. Remove the
+ref_ffo_update periodic measurement and the ref ffo field since
+they are no longer needed.
 
 Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 ---
- Documentation/driver-api/dpll.rst             | 16 +++++++++
- Documentation/netlink/specs/dpll.yaml         | 11 +++---
- drivers/dpll/dpll_netlink.c                   | 34 ++++++++++++++-----
- drivers/dpll/dpll_nl.c                        |  1 +
- drivers/dpll/zl3073x/dpll.c                   |  4 +++
- .../net/ethernet/mellanox/mlx5/core/dpll.c    |  4 +++
- 6 files changed, 56 insertions(+), 14 deletions(-)
+ drivers/dpll/zl3073x/chan.c | 31 +++++++++++++++++++++++--
+ drivers/dpll/zl3073x/chan.h | 14 ++++++++++++
+ drivers/dpll/zl3073x/core.c | 45 -------------------------------------
+ drivers/dpll/zl3073x/dpll.c | 34 ++++++++++++----------------
+ drivers/dpll/zl3073x/ref.h  | 14 ------------
+ drivers/dpll/zl3073x/regs.h | 15 +++++++++++++
+ 6 files changed, 72 insertions(+), 81 deletions(-)
 
-diff --git a/Documentation/driver-api/dpll.rst b/Documentation/driver-api/dpll.rst
-index 37eaef785e304..8576d360a5815 100644
---- a/Documentation/driver-api/dpll.rst
-+++ b/Documentation/driver-api/dpll.rst
-@@ -258,6 +258,22 @@ in the ``DPLL_A_PIN_PHASE_OFFSET`` attribute.
-   ``DPLL_A_PHASE_OFFSET_MONITOR`` attr state of a feature
-   =============================== ========================
- 
-+Fractional frequency offset
-+===========================
-+
-+The fractional frequency offset (FFO) represents the frequency difference
-+between a pin and its parent DPLL device. It is reported in the
-+``DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET_PPT`` attribute nested under
-+the parent device, in parts per trillion (PPT, 10^-12).
-+
-+This is analogous to ``DPLL_A_PIN_PHASE_OFFSET`` but in the frequency
-+domain. It is typically reported only for the currently active input pin.
-+
-+The top-level ``DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET`` attribute (in PPM)
-+represents the RX vs TX symbol rate offset on the media associated with
-+the pin (e.g. for SyncE ethernet ports) and is independent of the
-+per-parent FFO PPT attribute.
-+
- Frequency monitor
- =================
- 
-diff --git a/Documentation/netlink/specs/dpll.yaml b/Documentation/netlink/specs/dpll.yaml
-index c45de70a47ce6..a5807169eb126 100644
---- a/Documentation/netlink/specs/dpll.yaml
-+++ b/Documentation/netlink/specs/dpll.yaml
-@@ -492,12 +492,10 @@ attribute-sets:
-         name: fractional-frequency-offset-ppt
-         type: sint
-         doc: |
--          The FFO (Fractional Frequency Offset) of the pin with respect to
--          the nominal frequency.
--          Value = (frequency_measured - frequency_nominal) / frequency_nominal
-+          The FFO (Fractional Frequency Offset) between a pin and its
-+          parent DPLL device, similar to phase-offset but in frequency
-+          domain.
-           Value is in PPT (parts per trillion, 10^-12).
--          Note: This attribute provides higher resolution than the standard
--          fractional-frequency-offset (which is in PPM).
-       -
-         name: measured-frequency
-         type: u64
-@@ -534,6 +532,8 @@ attribute-sets:
-         name: operstate
-       -
-         name: phase-offset
-+      -
-+        name: fractional-frequency-offset-ppt
-   -
-     name: pin-parent-pin
-     subset-of: pin
-@@ -703,7 +703,6 @@ operations:
-             - phase-adjust-max
-             - phase-adjust
-             - fractional-frequency-offset
--            - fractional-frequency-offset-ppt
-             - esync-frequency
-             - esync-frequency-supported
-             - esync-pulse
-diff --git a/drivers/dpll/dpll_netlink.c b/drivers/dpll/dpll_netlink.c
-index 05cf946b4be5e..39b99382be40d 100644
---- a/drivers/dpll/dpll_netlink.c
-+++ b/drivers/dpll/dpll_netlink.c
-@@ -418,6 +418,27 @@ dpll_msg_add_phase_offset(struct sk_buff *msg, struct dpll_pin *pin,
- static int dpll_msg_add_ffo(struct sk_buff *msg, struct dpll_pin *pin,
- 			    struct dpll_pin_ref *ref,
- 			    struct netlink_ext_ack *extack)
-+{
-+	const struct dpll_pin_ops *ops = dpll_pin_ops(ref);
-+	s64 ffo;
-+	int ret;
-+
-+	if (!ops->ffo_get)
-+		return 0;
-+	ret = ops->ffo_get(pin, dpll_pin_on_dpll_priv(ref->dpll, pin),
-+			   NULL, NULL, &ffo, extack);
-+	if (ret) {
-+		if (ret == -ENODATA)
-+			return 0;
-+		return ret;
-+	}
-+	return nla_put_sint(msg, DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET,
-+			    div_s64(ffo, 1000000));
-+}
-+
-+static int dpll_msg_add_ffo_ppt(struct sk_buff *msg, struct dpll_pin *pin,
-+				struct dpll_pin_ref *ref,
-+				struct netlink_ext_ack *extack)
+diff --git a/drivers/dpll/zl3073x/chan.c b/drivers/dpll/zl3073x/chan.c
+index 2f48ca2391494..2fe3c3da84bb5 100644
+--- a/drivers/dpll/zl3073x/chan.c
++++ b/drivers/dpll/zl3073x/chan.c
+@@ -18,6 +18,7 @@
+ int zl3073x_chan_state_update(struct zl3073x_dev *zldev, u8 index)
  {
- 	const struct dpll_pin_ops *ops = dpll_pin_ops(ref);
- 	struct dpll_device *dpll = ref->dpll;
-@@ -433,14 +454,8 @@ static int dpll_msg_add_ffo(struct sk_buff *msg, struct dpll_pin *pin,
- 			return 0;
- 		return ret;
- 	}
--	/* Put the FFO value in PPM to preserve compatibility with older
--	 * programs.
--	 */
--	ret = nla_put_sint(msg, DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET,
--			   div_s64(ffo, 1000000));
--	if (ret)
--		return -EMSGSIZE;
--	return nla_put_sint(msg, DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET_PPT,
-+	return nla_put_sint(msg,
-+			    DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET_PPT,
- 			    ffo);
+ 	struct zl3073x_chan *chan = &zldev->chan[index];
++	u64 val;
+ 	int rc;
+ 
+ 	rc = zl3073x_read_u8(zldev, ZL_REG_DPLL_MON_STATUS(index),
+@@ -25,8 +26,34 @@ int zl3073x_chan_state_update(struct zl3073x_dev *zldev, u8 index)
+ 	if (rc)
+ 		return rc;
+ 
+-	return zl3073x_read_u8(zldev, ZL_REG_DPLL_REFSEL_STATUS(index),
+-			       &chan->refsel_status);
++	rc = zl3073x_read_u8(zldev, ZL_REG_DPLL_REFSEL_STATUS(index),
++			     &chan->refsel_status);
++	if (rc)
++		return rc;
++
++	/* Read df_offset vs tracked reference */
++	rc = zl3073x_poll_zero_u8(zldev, ZL_REG_DPLL_DF_READ(index),
++				  ZL_DPLL_DF_READ_SEM);
++	if (rc)
++		return rc;
++
++	rc = zl3073x_write_u8(zldev, ZL_REG_DPLL_DF_READ(index),
++			      ZL_DPLL_DF_READ_SEM | ZL_DPLL_DF_READ_REF_OFST);
++	if (rc)
++		return rc;
++
++	rc = zl3073x_poll_zero_u8(zldev, ZL_REG_DPLL_DF_READ(index),
++				  ZL_DPLL_DF_READ_SEM);
++	if (rc)
++		return rc;
++
++	rc = zl3073x_read_u48(zldev, ZL_REG_DPLL_DF_OFFSET(index), &val);
++	if (rc)
++		return rc;
++
++	chan->df_offset = sign_extend64(val, 47);
++
++	return 0;
  }
  
-@@ -686,6 +701,9 @@ dpll_msg_add_pin_dplls(struct sk_buff *msg, struct dpll_pin *pin,
- 		if (ret)
- 			goto nest_cancel;
- 		ret = dpll_msg_add_phase_offset(msg, pin, ref, extack);
-+		if (ret)
-+			goto nest_cancel;
-+		ret = dpll_msg_add_ffo_ppt(msg, pin, ref, extack);
- 		if (ret)
- 			goto nest_cancel;
- 		nla_nest_end(msg, attr);
-diff --git a/drivers/dpll/dpll_nl.c b/drivers/dpll/dpll_nl.c
-index 58235845fa3d5..23108574b8fb4 100644
---- a/drivers/dpll/dpll_nl.c
-+++ b/drivers/dpll/dpll_nl.c
-@@ -19,6 +19,7 @@ const struct nla_policy dpll_pin_parent_device_nl_policy[DPLL_A_PIN_OPERSTATE +
- 	[DPLL_A_PIN_STATE] = NLA_POLICY_RANGE(NLA_U32, 1, 3),
- 	[DPLL_A_PIN_OPERSTATE] = NLA_POLICY_RANGE(NLA_U32, 1, 4),
- 	[DPLL_A_PIN_PHASE_OFFSET] = { .type = NLA_S64, },
-+	[DPLL_A_PIN_FRACTIONAL_FREQUENCY_OFFSET_PPT] = { .type = NLA_SINT, },
+ /**
+diff --git a/drivers/dpll/zl3073x/chan.h b/drivers/dpll/zl3073x/chan.h
+index 481da2133202b..4353809c69122 100644
+--- a/drivers/dpll/zl3073x/chan.h
++++ b/drivers/dpll/zl3073x/chan.h
+@@ -17,6 +17,7 @@ struct zl3073x_dev;
+  * @ref_prio: reference priority registers (4 bits per ref, P/N packed)
+  * @mon_status: monitor status register value
+  * @refsel_status: reference selection status register value
++ * @df_offset: frequency offset vs tracked reference in 2^-48 steps
+  */
+ struct zl3073x_chan {
+ 	struct_group(cfg,
+@@ -26,6 +27,7 @@ struct zl3073x_chan {
+ 	struct_group(stat,
+ 		u8	mon_status;
+ 		u8	refsel_status;
++		s64	df_offset;
+ 	);
  };
  
- const struct nla_policy dpll_pin_parent_pin_nl_policy[DPLL_A_PIN_STATE + 1] = {
+@@ -37,6 +39,18 @@ int zl3073x_chan_state_set(struct zl3073x_dev *zldev, u8 index,
+ 
+ int zl3073x_chan_state_update(struct zl3073x_dev *zldev, u8 index);
+ 
++/**
++ * zl3073x_chan_df_offset_get - get cached df_offset vs tracked reference
++ * @chan: pointer to channel state
++ *
++ * Return: frequency offset in 2^-48 steps
++ */
++static inline s64
++zl3073x_chan_df_offset_get(const struct zl3073x_chan *chan)
++{
++	return chan->df_offset;
++}
++
+ /**
+  * zl3073x_chan_mode_get - get DPLL channel operating mode
+  * @chan: pointer to channel state
+diff --git a/drivers/dpll/zl3073x/core.c b/drivers/dpll/zl3073x/core.c
+index 5f1e70f3e40a0..b3345060490db 100644
+--- a/drivers/dpll/zl3073x/core.c
++++ b/drivers/dpll/zl3073x/core.c
+@@ -704,44 +704,6 @@ zl3073x_ref_freq_meas_update(struct zl3073x_dev *zldev)
+ 	return 0;
+ }
+ 
+-/**
+- * zl3073x_ref_ffo_update - update reference fractional frequency offsets
+- * @zldev: pointer to zl3073x_dev structure
+- *
+- * The function asks device to latch the latest measured fractional
+- * frequency offset values, reads and stores them into the ref state.
+- *
+- * Return: 0 on success, <0 on error
+- */
+-static int
+-zl3073x_ref_ffo_update(struct zl3073x_dev *zldev)
+-{
+-	int i, rc;
+-
+-	rc = zl3073x_ref_freq_meas_latch(zldev,
+-					 ZL_REF_FREQ_MEAS_CTRL_REF_FREQ_OFF);
+-	if (rc)
+-		return rc;
+-
+-	/* Read DPLL-to-REFx frequency offset measurements */
+-	for (i = 0; i < ZL3073X_NUM_REFS; i++) {
+-		s32 value;
+-
+-		/* Read value stored in units of 2^-32 signed */
+-		rc = zl3073x_read_u32(zldev, ZL_REG_REF_FREQ(i), &value);
+-		if (rc)
+-			return rc;
+-
+-		/* Convert to ppt
+-		 * ffo = (10^12 * value) / 2^32
+-		 * ffo = ( 5^12 * value) / 2^20
+-		 */
+-		zldev->ref[i].ffo = mul_s64_u64_shr(value, 244140625, 20);
+-	}
+-
+-	return 0;
+-}
+-
+ static void
+ zl3073x_dev_periodic_work(struct kthread_work *work)
+ {
+@@ -776,13 +738,6 @@ zl3073x_dev_periodic_work(struct kthread_work *work)
+ 		}
+ 	}
+ 
+-	/* Update references' fractional frequency offsets */
+-	rc = zl3073x_ref_ffo_update(zldev);
+-	if (rc)
+-		dev_warn(zldev->dev,
+-			 "Failed to update fractional frequency offsets: %pe\n",
+-			 ERR_PTR(rc));
+-
+ 	list_for_each_entry(zldpll, &zldev->dplls, list)
+ 		zl3073x_dpll_changes_check(zldpll);
+ 
 diff --git a/drivers/dpll/zl3073x/dpll.c b/drivers/dpll/zl3073x/dpll.c
-index 6fd718696de0d..f2d430d1a8e7b 100644
+index f2d430d1a8e7b..af50cd6200001 100644
 --- a/drivers/dpll/zl3073x/dpll.c
 +++ b/drivers/dpll/zl3073x/dpll.c
-@@ -299,6 +299,10 @@ zl3073x_dpll_input_pin_ffo_get(const struct dpll_pin *dpll_pin, void *pin_priv,
+@@ -299,8 +299,12 @@ zl3073x_dpll_input_pin_ffo_get(const struct dpll_pin *dpll_pin, void *pin_priv,
  {
  	struct zl3073x_dpll_pin *pin = pin_priv;
  
-+	/* Only rx vs tx symbol rate FFO is supported */
-+	if (dpll)
+-	/* Only rx vs tx symbol rate FFO is supported */
+-	if (dpll)
++	/* Only nested FFO (pin vs parent DPLL) is supported */
++	if (!dpll)
 +		return -ENODATA;
 +
++	/* Report FFO only for the active pin */
++	if (pin->operstate != DPLL_PIN_OPERSTATE_ACTIVE)
+ 		return -ENODATA;
+ 
  	*ffo = pin->freq_offset;
+@@ -1733,37 +1737,27 @@ zl3073x_dpll_pin_phase_offset_check(struct zl3073x_dpll_pin *pin)
+ }
  
- 	return 0;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/dpll.c b/drivers/net/ethernet/mellanox/mlx5/core/dpll.c
-index bce72e8d1bc31..ef2c58c390efa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/dpll.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/dpll.c
-@@ -306,6 +306,10 @@ static int mlx5_dpll_ffo_get(const struct dpll_pin *pin, void *pin_priv,
- 	struct mlx5_dpll *mdpll = pin_priv;
- 	int err;
+ /**
+- * zl3073x_dpll_pin_ffo_check - check for pin fractional frequency offset change
++ * zl3073x_dpll_pin_ffo_check - check for FFO change on active pin
+  * @pin: pin to check
+  *
+- * Check for the given pin's fractional frequency change.
+- *
+- * Return: true on fractional frequency offset change, false otherwise
++ * Return: true on change, false otherwise
+  */
+ static bool
+ zl3073x_dpll_pin_ffo_check(struct zl3073x_dpll_pin *pin)
+ {
+ 	struct zl3073x_dpll *zldpll = pin->dpll;
+-	struct zl3073x_dev *zldev = zldpll->dev;
+-	const struct zl3073x_ref *ref;
+-	u8 ref_id;
++	const struct zl3073x_chan *chan;
+ 	s64 ffo;
  
-+	/* Only rx vs tx symbol rate FFO is supported */
-+	if (dpll)
-+		return -ENODATA;
+-	/* Get reference monitor status */
+-	ref_id = zl3073x_input_pin_ref_get(pin->id);
+-	ref = zl3073x_ref_state_get(zldev, ref_id);
+-
+-	/* Do not report ffo changes if the reference monitor report errors */
+-	if (!zl3073x_ref_is_status_ok(ref))
++	if (pin->operstate != DPLL_PIN_OPERSTATE_ACTIVE)
+ 		return false;
+ 
+-	/* Compare with previous value */
+-	ffo = zl3073x_ref_ffo_get(ref);
++	chan = zl3073x_chan_state_get(zldpll->dev, zldpll->id);
++	ffo = mul_s64_u64_shr(zl3073x_chan_df_offset_get(chan),
++			      244140625, 36);
 +
- 	err = mlx5_dpll_synce_status_get(mdpll->mdev, &synce_status);
- 	if (err)
- 		return err;
+ 	if (pin->freq_offset != ffo) {
+-		dev_dbg(zldev->dev, "%s freq offset changed: %lld -> %lld\n",
+-			pin->label, pin->freq_offset, ffo);
+ 		pin->freq_offset = ffo;
+-
+ 		return true;
+ 	}
+ 
+diff --git a/drivers/dpll/zl3073x/ref.h b/drivers/dpll/zl3073x/ref.h
+index 55e80e4f08734..e140ca3ea17dc 100644
+--- a/drivers/dpll/zl3073x/ref.h
++++ b/drivers/dpll/zl3073x/ref.h
+@@ -22,7 +22,6 @@ struct zl3073x_dev;
+  * @freq_ratio_n: FEC mode divisor
+  * @sync_ctrl: reference sync control
+  * @config: reference config
+- * @ffo: current fractional frequency offset
+  * @meas_freq: measured input frequency in Hz
+  * @mon_status: reference monitor status
+  */
+@@ -40,7 +39,6 @@ struct zl3073x_ref {
+ 		u8	config;
+ 	);
+ 	struct_group(stat, /* Status */
+-		s64	ffo;
+ 		u32	meas_freq;
+ 		u8	mon_status;
+ 	);
+@@ -58,18 +56,6 @@ int zl3073x_ref_state_update(struct zl3073x_dev *zldev, u8 index);
+ 
+ int zl3073x_ref_freq_factorize(u32 freq, u16 *base, u16 *mult);
+ 
+-/**
+- * zl3073x_ref_ffo_get - get current fractional frequency offset
+- * @ref: pointer to ref state
+- *
+- * Return: the latest measured fractional frequency offset
+- */
+-static inline s64
+-zl3073x_ref_ffo_get(const struct zl3073x_ref *ref)
+-{
+-	return ref->ffo;
+-}
+-
+ /**
+  * zl3073x_ref_meas_freq_get - get measured input frequency
+  * @ref: pointer to ref state
+diff --git a/drivers/dpll/zl3073x/regs.h b/drivers/dpll/zl3073x/regs.h
+index 8015808bdf548..9578f00095282 100644
+--- a/drivers/dpll/zl3073x/regs.h
++++ b/drivers/dpll/zl3073x/regs.h
+@@ -164,6 +164,11 @@
+ #define ZL_DPLL_MODE_REFSEL_MODE_NCO		4
+ #define ZL_DPLL_MODE_REFSEL_REF			GENMASK(7, 4)
+ 
++#define ZL_REG_DPLL_DF_READ(_idx)					\
++	ZL_REG_IDX(_idx, 5, 0x28, 1, ZL3073X_MAX_CHANNELS, 1)
++#define ZL_DPLL_DF_READ_SEM			BIT(4)
++#define ZL_DPLL_DF_READ_REF_OFST		BIT(3)
++
+ #define ZL_REG_DPLL_MEAS_CTRL			ZL_REG(5, 0x50, 1)
+ #define ZL_DPLL_MEAS_CTRL_EN			BIT(0)
+ #define ZL_DPLL_MEAS_CTRL_AVG_FACTOR		GENMASK(7, 4)
+@@ -176,6 +181,16 @@
+ #define ZL_REG_DPLL_PHASE_ERR_DATA(_idx)				\
+ 	ZL_REG_IDX(_idx, 5, 0x55, 6, ZL3073X_MAX_CHANNELS, 6)
+ 
++/*******************************
++ * Register Pages 6-7, DPLL Data
++ *******************************/
++
++#define ZL_REG_DPLL_DF_OFFSET_03(_idx)					\
++	ZL_REG_IDX(_idx, 6, 0x00, 6, 4, 0x20)
++#define ZL_REG_DPLL_DF_OFFSET_4		ZL_REG(7, 0x00, 6)
++#define ZL_REG_DPLL_DF_OFFSET(_idx)					\
++	((_idx) < 4 ? ZL_REG_DPLL_DF_OFFSET_03(_idx) : ZL_REG_DPLL_DF_OFFSET_4)
++
+ /***********************************
+  * Register Page 9, Synth and Output
+  ***********************************/
 -- 
 2.53.0
 
