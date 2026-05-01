@@ -1,714 +1,207 @@
-Return-Path: <linux-rdma+bounces-19829-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19830-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0J/3Hwks9GlA+wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19829-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 06:28:57 +0200
+	id 2KMoGjcv9GlM/AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19830-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 06:42:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853504AA55C
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 06:28:56 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100DA4AA5E0
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 06:42:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 472E33018287
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 04:27:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 69F0530151D2
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 04:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673FE2D9EFF;
-	Fri,  1 May 2026 04:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33ED2F25E4;
+	Fri,  1 May 2026 04:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZlKZRJvA"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bRFTLNSx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012037.outbound.protection.outlook.com [40.107.209.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5FF29ACF7
-	for <linux-rdma@vger.kernel.org>; Fri,  1 May 2026 04:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777609660; cv=none; b=FJ9Zbm7523SFNNRbQ6W0lgBpCStQBv+Yqqn5w+L+0bC15TPd2rAbNLcjJGGhBqIwbyvPRdhbQKemDkaqPPNN1ZfMeY+HXFr2YzG/g7VoDiDWmFRkR0ZJ+cZH/yqRA7ar4qYiYWBMINZD6hA0cODxYrnM7iT4a0lxOjdOXVy6WIE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777609660; c=relaxed/simple;
-	bh=toqOm+86kNdSOarGOpWdeZf5k6y6zC6URP7ljkK0BxM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZqCf5LUZHgLu1K7/EG/lzocibDE4grFMagmk7HbfmqkYSzVdAMvmOHrn6L4fql3c1jtLpu14LcSAt0dW2k5BEq91j0d9RrRKgGrGMTcZjDd0O6H71Kk2nxqxAQWC+I8mIkEvjsLb1D1BeUzYN+OQqMCOT4qAJ8/ZVzvM2OoYQ8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZlKZRJvA; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4e4500c0-a524-41b4-9a40-935c412ec4a1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777609654;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k7iQn2BUW1R5FAQK351wiFYPYzQJ3uqOINgVqrWOOio=;
-	b=ZlKZRJvAZPRmd9J8zX5/N5wdFmn0h+QG6eu/If8/3h7gHiuj7ZPTNsdSWLABflIdjCutw7
-	QXKPiMZh4+qClqUHj+FbOlUIBQlQYiz3Ynop9kRa52DdmsTy97iF84SrnwB7D1R2HyRt8P
-	NdldsRywraYY6NBlHGg3zTibAI1ebqg=
-Date: Thu, 30 Apr 2026 21:27:22 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4481F7569;
+	Fri,  1 May 2026 04:42:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.37
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777610546; cv=fail; b=YYDwxxLc2P7mLBdhWxr9+pz04FD7y8QLYG3m3fSQa9ErHEAej9UndEjT8hHiuWIlEvO32DBwDP2xDsUw0R7wC8aZd78tJM1EaZkSsJtGMfSMgz+TxNv3Rk7E0mbQM9iwlBkPXtWm1bQ69636O8IcelA3PuF2Ei96EkffrMy2ctE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777610546; c=relaxed/simple;
+	bh=RCHrKqw3zvZo/4UpRdZsHHlGQlUkBmitYQXYiJYIs9Q=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lu+EyAwB8XUA0OZP3B91OusOxtctjGytKRRJlfwyI8Y+Gdce8ma68hPDRDs91xFsqwsRw/dA5AM13yEyqkLrFl01tGEiHobizd0c0PCnCnS1FPa8zTOzL9hNGHrCuMIJqoblUsvJAWxPFNyUjUW3Z13IRkvHk5ph8FvX54p47U8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bRFTLNSx; arc=fail smtp.client-ip=40.107.209.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=KzNYh52/POcyhJyJyoeq4voBu0MMhNdL9vLB95T6G7+E1LuNdzfiPEJW4Ev9+O78FtR7J/vthzpB7n/RYCKZ6ToFAi2/JPzmAmE2sAeht5TBfV4bClzw6T6f0cXqTHFIn/Zx06YlPeR+5D1Y65MMocqL+ZXmqgFS+6tha5RFcf63KIYabWYcKrRIy+ekodSHxBW/ZOoBoAwk7P8lm/dYICyhm3M8oS2/Qf0C0MWg4CtFr645Y5J18edcNhEn9PkyaFlKCzx25HOdRkgb3KCBE7eOLvsCe2KwENbvB72ZnRUfTgxNw4T91+olOCnTDvEAq4HXZCZKSfTZgKXKA0NH7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZTynscPRszaBJeVUQ2WwsQ1nVuT8Expnep9LsIiFdXY=;
+ b=QVDb+sa4temM+E5ezNfSPQadTcJfCyBUnV6cOzctxe8U9LyDYoQ/HAFX/tuCye3HeNjFhAsVlUjvqd5ZU0N8ZHI+8VOoIh6rRKWaHDBnCWZ+U69obicn1ANJDbhvG3NtqEhPaIDwTi23r0wkVGJiFgLd+N3cf5E/nxQYgJgR/HFym7qX1MQ46rZQXizocYGlRF8HxaV4EFLqNR3FOhnNHSV0/EZ+9dnGPdsQe7MjlLd7KI39kRwBKJ9O9Xyc1tlXAtJDHhXHfdXLMXbbiSZXOmhw2go1nA8/tqjaJOLqHB8yvvactKpGPweFmKp91mLbCC5TXgxg3vgCtG/H5QFmYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZTynscPRszaBJeVUQ2WwsQ1nVuT8Expnep9LsIiFdXY=;
+ b=bRFTLNSxpjkUPr1c2pCsc2cxc/KAV1blq+Vsc5O7lcK3Yk5CngaVZRBZAOwO+DsnG32iZdpowcotuJM5u4tOu4/0g56lNZficRT1d53hNLyZvcIu/ti0B928hAUU5AGBSPGhehouRCXwPgDuhAc3A4m9uj3S1FCKdZedxpRaWOa7mHPqwx5nwMCK5yd+J9bXAQT+5bS1Ri5UJAHi8kVmI10LYJ3wkVeRjHCV84PJpUYP9l3128ch67eNwiDF/UyzhwCzfcxSv8U1SsI8C5atVX9KxTbqWhNA8mHeNb302F5OpV5fIfi2Ihs2Bxl4PN4QM7stCJ5+ZXlf3IDpajJ50g==
+Received: from BN9PR03CA0219.namprd03.prod.outlook.com (2603:10b6:408:f8::14)
+ by CY5PR12MB6407.namprd12.prod.outlook.com (2603:10b6:930:3c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.20; Fri, 1 May
+ 2026 04:42:20 +0000
+Received: from BN3PEPF0000B074.namprd04.prod.outlook.com
+ (2603:10b6:408:f8:cafe::4f) by BN9PR03CA0219.outlook.office365.com
+ (2603:10b6:408:f8::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9870.21 via Frontend Transport; Fri,
+ 1 May 2026 04:42:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BN3PEPF0000B074.mail.protection.outlook.com (10.167.243.119) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9891.9 via Frontend Transport; Fri, 1 May 2026 04:42:20 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Apr
+ 2026 21:42:08 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Apr
+ 2026 21:42:07 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 30
+ Apr 2026 21:42:03 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, "Moshe
+ Shemesh" <moshe@nvidia.com>, Akiva Goldberger <agoldberger@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>
+Subject: [PATCH net-next 0/3] net/mlx5: ICM page management in VHCA_ID mode
+Date: Fri, 1 May 2026 07:41:53 +0300
+Message-ID: <20260501044156.260875-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] RDMA/CM: add RDMA CM observability regression scripts
-To: Chenguang Zhao <zhaochenguang@kylinos.cn>, Jason Gunthorpe
- <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Shuah Khan <shuah@kernel.org>, "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc: linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20260428071216.1212775-1-zhaochenguang@kylinos.cn>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20260428071216.1212775-1-zhaochenguang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 853504AA55C
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B074:EE_|CY5PR12MB6407:EE_
+X-MS-Office365-Filtering-Correlation-Id: f5373bd3-21f8-40bb-98cf-08dea73c07db
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|1800799024|36860700016|18002099003|56012099003;
+X-Microsoft-Antispam-Message-Info:
+	zKxz3UJXdiOAITuKvbQhz0LsVLD4AajPaXDErUsyOfuxf+eh+wBRY9Do1aKAceeSZPUsQWyE+PpZwVpW+IvpNuatGLCUmwHnSpwXB9x8zwrqmPNWOe1zBMEjH2W7jMZv24/C6zMxIBvcRddzRaSu/hb4Vn6d6BUBzKsnydofy9NsJBzBXE5JDtDYp458ACsAbnw9NulXany41Wrvqfsod1iJ5dtmZp6sBwi4zIv17HR1jnjVelipvancD640j0m3FA299THoBq5rUz1z3jkPYhY/cwHSFOXRtveFnMESN0XaE4pdXtVHLctjgPHo91o/uup5pqfXGitHefJ8Oaa4c9eqWrpFlFrWIUlh4zMD8p0tXVAA2aSrJIvgmn5NQQvdlJ9b/c0Nz0UF/nyraSt5EEjTxwf0ijPAJrsq/eUQ4ENUDlTC4NyFNcsuzF/oEyiAW+X2/mpDXG+be+QZ66Gc5/J/bhtcxDJhaOCLlCBF6Q6B2/Q2lVNzPapoyjF143IaeIOm5qfg6UtSFVnRMcHAVunS8FxaCUcqnUz9QyFlbzvqgjn5U4oJtX5CiQk/k6Y/+lnH4uDuDy6D64wMqSrZR9TOuGKB42rRTAX3gY3q52+pihvr/0FjOkEwYtxuSogrXOt2Votsx+is+PbkPQtjZj0Ou7+SLUrnTvrMvwQWHdJ4Pxz6/sOgwctAVrI11icFqcEgCB3k6yLcLg2wG85ziUDAP4XajMnf9iXVMv2stY8=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(1800799024)(36860700016)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	TnGqds/L3sZVABESHFrwNpo6ptKTyYux1t5XIWebJSeh1LfIOW8mC4LFqTyo+OhCyKk7AaZO+kAgUU2SaOpFR1FX9MirJN/OirUb6wtubCJKsL0xhXWcLwoS+Ovq358pKex7wL+A4z/yUccNoZeZi/40qsBGrlp556ge4Ndt2+1Zu5D5ghoAJFSKp5XAU3fZYwrab4WNGbhX5rFlX2c7dWhmkiXOexAzpGAvPx0ipH77cmIyHTSkT6vX4XRzFGCEcqAoZfrSjvg8GwiCvq4VyMF9sEh+5mQBFQcHIneS25X9X3tBFqP63/7QL7MqvrkwWZfflDWHE3ilHtRQyUUET4A75RZo63Mi+NBA7t7g5Tn3ySSPvZm/3QmVSf7XLsHCR3oc+MZaJ4g8YLfwWBF8P07+2rRzyvYPhPR5x5gMv8jO39KGp3ZTOODlqXddiYsk
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2026 04:42:20.3072
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5373bd3-21f8-40bb-98cf-08dea73c07db
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN3PEPF0000B074.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6407
+X-Rspamd-Queue-Id: 100DA4AA5E0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+X-Spamd-Result: default: False [2.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19829-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,rdma_cm_fault_injection.sh:url]
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-19830-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,Nvidia.com:dkim];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.992];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
 
-在 2026/4/28 0:12, Chenguang Zhao 写道:
-> This adds a minimal RDMA CM selftest suite that captures observability
-> baselines and runs trace, counter-delta, and fault-injection-oriented
-> checks, plus a review-loop helper for repeated validation rounds.
-> 
-> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
-> ---
->   v2:
->   - Move the test scripts to tools/testing/selftests/rdma
->     as suggested by Leon.
-> 
->   - rdma_cm_baseline.sh:rdma_cm_baseline.sh: Captures baseline
->     observability data for RDMA CM, establishing a reference
->     point for testing.
-> 
->   - rdma_cm_counter_delta.sh: Monitors and reports counter deltas
->     during RDMA operations to detect unexpected behavior
-> 
->   - rdma_cm_fault_injection.sh: Performs fault injection to test
->     RDMA CM's handling of failures and error scenarios.
-> 
->   - rdma_cm_review_loop.sh: Automates repeated testing for continuous
->     validation of RDMA CM functionality.
-> 
->   - rdma_cm_trace_sequence.sh: Captures a trace sequence of RDMA
->     operations to ensure proper flow and aid in troubleshooting.
-> 
->   - rdma_common.sh: Contains shared utility functions used across
->     the above scripts for consistency and reusability.
-> ---
->   tools/testing/selftests/Makefile              |   1 +
->   tools/testing/selftests/rdma/Makefile         |  10 ++
->   tools/testing/selftests/rdma/config           |   6 +
->   .../selftests/rdma/rdma_cm_baseline.sh        |  58 ++++++++
->   .../selftests/rdma/rdma_cm_counter_delta.sh   |  72 ++++++++++
->   .../selftests/rdma/rdma_cm_fault_injection.sh |  95 +++++++++++++
->   .../selftests/rdma/rdma_cm_review_loop.sh     |  35 +++++
->   .../selftests/rdma/rdma_cm_trace_sequence.sh  |  83 ++++++++++++
->   tools/testing/selftests/rdma/rdma_common.sh   | 126 ++++++++++++++++++
->   9 files changed, 486 insertions(+)
->   create mode 100755 tools/testing/selftests/rdma/rdma_cm_baseline.sh
->   create mode 100755 tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
->   create mode 100755 tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
->   create mode 100755 tools/testing/selftests/rdma/rdma_cm_review_loop.sh
->   create mode 100755 tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
->   create mode 100755 tools/testing/selftests/rdma/rdma_common.sh
-> 
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> index 6e59b8f63e41..5794d55a92b2 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -22,6 +22,7 @@ TARGETS += drivers/ntsync
->   TARGETS += drivers/s390x/uvdevice
->   TARGETS += drivers/net
->   TARGETS += drivers/net/bonding
-> +TARGETS += rdma
+Hi,
 
-In the latest linux kernel, in the file tools/testing/selftests/Makefile
-"
-...
-  99 TARGETS += ptrace
-100 TARGETS += openat2
-101 TARGETS += rdma
-102 TARGETS += resctrl
-103 TARGETS += riscv
-104 TARGETS += rlimits
-...
-"
-rdma has already been in this file.
+Find detailed description by Moshe below.
 
-I am wondering if this rdma still needs to be added into this file.
+Regards,
+Tariq
 
-Zhu Yanjun
+This series adds driver support for the VHCA_ID page management mode.
+When firmware and driver support this mode, ICM (Interconnect Context
+Memory) page management uses the device vhca_id as the function
+identifier in MANAGE_PAGES, QUERY_PAGES, and page request events instead
+of the legacy function_id + ec_function pair.
 
->   TARGETS += drivers/net/netconsole
->   TARGETS += drivers/net/team
->   TARGETS += drivers/net/virtio_net
-> diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
-> index 7dd7cba7a73c..04c52db4b9d9 100644
-> --- a/tools/testing/selftests/rdma/Makefile
-> +++ b/tools/testing/selftests/rdma/Makefile
-> @@ -4,4 +4,14 @@ TEST_PROGS := rxe_rping_between_netns.sh \
->   		rxe_socket_with_netns.sh \
->   		rxe_test_NETDEV_UNREGISTER.sh
->   
-> +TEST_PROGS += \
-> +	rdma_cm_baseline.sh \
-> +	rdma_cm_trace_sequence.sh \
-> +	rdma_cm_counter_delta.sh \
-> +	rdma_cm_fault_injection.sh
-> +
-> +TEST_FILES += \
-> +	rdma_common.sh \
-> +	rdma_cm_review_loop.sh
-> +
->   include ../lib.mk
-> diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
-> index 4ffb814e253b..e22141838c19 100644
-> --- a/tools/testing/selftests/rdma/config
-> +++ b/tools/testing/selftests/rdma/config
-> @@ -1,3 +1,9 @@
->   CONFIG_TUN
->   CONFIG_VETH
->   CONFIG_RDMA_RXE
-> +CONFIG_DEBUG_KERNEL
-> +CONFIG_FAULT_INJECTION
-> +CONFIG_SYSFS
-> +CONFIG_DEBUG_FS
-> +CONFIG_FAULT_INJECTION_DEBUG_FS
-> +CONFIG_FAILSLAB
-> diff --git a/tools/testing/selftests/rdma/rdma_cm_baseline.sh b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
-> new file mode 100755
-> index 000000000000..b0d8b3e46470
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
-> @@ -0,0 +1,58 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -euo pipefail
-> +
-> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-> +source "${SCRIPT_DIR}/rdma_common.sh"
-> +
-> +require_root
-> +require_cmd date
-> +require_cmd uname
-> +
-> +trace_dir="$(tracefs_dir || true)"
-> +counter_root="$(find_cm_counter_root || true)"
-> +out_dir="/tmp/rdma_cm_baseline.$(date +%s)"
-> +dmesg_lines=400
-> +dmesg_pattern="ib_cm|infiniband|rdma|roce|mlx|hns_roce|irdma|siw|rxe"
-> +
-> +mkdir -p "${out_dir}"
-> +
-> +log_info "writing baseline to ${out_dir}"
-> +
-> +{
-> +	echo "timestamp=$(date -u +%FT%TZ)"
-> +	echo "kernel=$(uname -r)"
-> +	echo "hostname=$(uname -n)"
-> +	echo "dmesg_lines=${dmesg_lines}"
-> +	echo "dmesg_pattern=${dmesg_pattern}"
-> +} >"${out_dir}/env.txt"
-> +
-> +if [[ -n "${trace_dir}" && -d "${trace_dir}/events/ib_cma" ]]; then
-> +	find "${trace_dir}/events/ib_cma" -maxdepth 2 -name enable -print \
-> +		>"${out_dir}/trace_events.list" 2>/dev/null || true
-> +else
-> +	log_warn "tracefs or ib_cma trace events are unavailable"
-> +fi
-> +
-> +if [[ -n "${counter_root}" ]]; then
-> +	{
-> +		echo "counter_root=${counter_root}"
-> +		for group in "${RDMA_COUNTER_GROUPS[@]}"; do
-> +			for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-> +				value="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
-> +				echo "${group}.${attr}=${value}"
-> +			done
-> +		done
-> +	} >"${out_dir}/cm_counters.before"
-> +else
-> +	log_warn "cm counters are unavailable under /sys/class/infiniband"
-> +fi
-> +
-> +if command -v dmesg >/dev/null 2>&1; then
-> +	dmesg | tail -n "${dmesg_lines}" | grep -E "${dmesg_pattern}" \
-> +		>"${out_dir}/dmesg.rdma.tail" || true
-> +fi
-> +
-> +log_info "baseline collection completed"
-> +exit 0
-> diff --git a/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh b/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
-> new file mode 100755
-> index 000000000000..060adf9fe78a
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
-> @@ -0,0 +1,72 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -euo pipefail
-> +
-> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-> +source "${SCRIPT_DIR}/rdma_common.sh"
-> +
-> +require_root
-> +counter_root="$(find_cm_counter_root || true)"
-> +counter_wait_sec=2
-> +
-> +if [[ -z "${counter_root}" ]]; then
-> +	log_warn "cm counters are unavailable under /sys/class/infiniband"
-> +	exit "${ksft_skip}"
-> +fi
-> +
-> +declare -A before after
-> +
-> +for group in "${RDMA_COUNTER_GROUPS[@]}"; do
-> +	for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-> +		key="${group}.${attr}"
-> +		before["${key}"]="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
-> +	done
-> +done
-> +
-> +if [[ "${counter_wait_sec}" != "0" ]]; then
-> +	log_info "waiting ${counter_wait_sec}s before workload"
-> +	sleep "${counter_wait_sec}"
-> +fi
-> +
-> +workload_rc=0
-> +run_workload || workload_rc=$?
-> +if [[ "${workload_rc}" -eq "${ksft_skip}" ]]; then
-> +	exit "${ksft_skip}"
-> +fi
-> +if [[ "${workload_rc}" -ne 0 ]]; then
-> +	log_err "workload failed with rc=${workload_rc}"
-> +	exit "${workload_rc}"
-> +fi
-> +
-> +for group in "${RDMA_COUNTER_GROUPS[@]}"; do
-> +	for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-> +		key="${group}.${attr}"
-> +		after["${key}"]="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
-> +		delta=$((after["${key}"] - before["${key}"]))
-> +		echo "${key}.delta=${delta}"
-> +		if ((delta < 0)); then
-> +			log_err "counter regressed: ${key}"
-> +			exit 1
-> +		fi
-> +	done
-> +done
-> +
-> +dup_limit=10
-> +retry_limit=10
-> +
-> +for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-> +	dup_delta=$((after["cm_rx_duplicates.${attr}"] - before["cm_rx_duplicates.${attr}"]))
-> +	retry_delta=$((after["cm_tx_retries.${attr}"] - before["cm_tx_retries.${attr}"]))
-> +
-> +	if ((dup_delta > dup_limit)); then
-> +		log_err "duplicate counter exceeds limit: ${attr}=${dup_delta}"
-> +		exit 1
-> +	fi
-> +	if ((retry_delta > retry_limit)); then
-> +		log_err "retry counter exceeds limit: ${attr}=${retry_delta}"
-> +		exit 1
-> +	fi
-> +done
-> +
-> +exit 0
-> diff --git a/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh b/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
-> new file mode 100755
-> index 000000000000..0202ee901386
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
-> @@ -0,0 +1,95 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -euo pipefail
-> +
-> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-> +source "${SCRIPT_DIR}/rdma_common.sh"
-> +
-> +require_root
-> +
-> +debugfs_fail="/sys/kernel/debug/failslab"
-> +recovery_wait_sec=2
-> +if [[ ! -d "${debugfs_fail}" ]]; then
-> +	log_warn "failslab is unavailable: ${debugfs_fail}"
-> +	exit "${ksft_skip}"
-> +fi
-> +
-> +for knob in probability interval times task-filter; do
-> +	if [[ ! -f "${debugfs_fail}/${knob}" ]]; then
-> +		log_warn "failslab knob missing: ${knob}"
-> +		exit "${ksft_skip}"
-> +	fi
-> +done
-> +
-> +orig_probability="$(cat "${debugfs_fail}/probability")"
-> +orig_interval="$(cat "${debugfs_fail}/interval")"
-> +orig_times="$(cat "${debugfs_fail}/times")"
-> +orig_task_filter="$(cat "${debugfs_fail}/task-filter")"
-> +
-> +restore_knobs()
-> +{
-> +	echo "${orig_probability}" >"${debugfs_fail}/probability" || true
-> +	echo "${orig_interval}" >"${debugfs_fail}/interval" || true
-> +	echo "${orig_times}" >"${debugfs_fail}/times" || true
-> +	echo "${orig_task_filter}" >"${debugfs_fail}/task-filter" || true
-> +}
-> +
-> +trap restore_knobs EXIT
-> +
-> +log_failslab_state()
-> +{
-> +	local state="$1"
-> +	local task_filter probability interval times
-> +
-> +	task_filter="$(cat "${debugfs_fail}/task-filter")"
-> +	probability="$(cat "${debugfs_fail}/probability")"
-> +	interval="$(cat "${debugfs_fail}/interval")"
-> +	times="$(cat "${debugfs_fail}/times")"
-> +
-> +	log_info "failslab ${state}: task-filter=${task_filter} probability=${probability}"
-> +	log_info "failslab ${state}: interval=${interval} times=${times}"
-> +}
-> +
-> +echo 1 >"${debugfs_fail}/task-filter"
-> +echo 1 >"${debugfs_fail}/probability"
-> +echo 100 >"${debugfs_fail}/interval"
-> +echo 1 >"${debugfs_fail}/times"
-> +log_failslab_state "enabled"
-> +
-> +if [[ -z "${CM_WORKLOAD_CMD:-}" && -n "${CM_VALIDATE_RECOVERY_CMD:-}" ]]; then
-> +	CM_WORKLOAD_CMD="${CM_VALIDATE_RECOVERY_CMD}"
-> +	log_warn "CM_WORKLOAD_CMD is not set; fallback to CM_VALIDATE_RECOVERY_CMD"
-> +fi
-> +
-> +injected_rc=0
-> +run_workload || injected_rc=$?
-> +if [[ "${injected_rc}" -eq "${ksft_skip}" ]]; then
-> +	exit "${ksft_skip}"
-> +fi
-> +log_info "workload rc under injection=${injected_rc}"
-> +
-> +echo 0 >"${debugfs_fail}/probability"
-> +echo 0 >"${debugfs_fail}/times"
-> +echo 0 >"${debugfs_fail}/task-filter"
-> +log_failslab_state "disabled"
-> +
-> +recovery_cmd="${CM_VALIDATE_RECOVERY_CMD:-${CM_WORKLOAD_CMD:-}}"
-> +if [[ -z "${recovery_cmd}" ]]; then
-> +	log_warn "CM_VALIDATE_RECOVERY_CMD and CM_WORKLOAD_CMD are both unset"
-> +	exit "${ksft_skip}"
-> +fi
-> +
-> +if [[ "${recovery_wait_sec}" != "0" ]]; then
-> +	log_info "waiting ${recovery_wait_sec}s before recovery workload"
-> +	sleep "${recovery_wait_sec}"
-> +fi
-> +
-> +log_info "running recovery workload: ${recovery_cmd}"
-> +if ! bash -c "${recovery_cmd}"; then
-> +	log_err "recovery workload failed after disabling fault injection"
-> +	log_err "hint: ensure remote server is restarted and listening for a second connection"
-> +	exit 1
-> +fi
-> +
-> +exit 0
-> diff --git a/tools/testing/selftests/rdma/rdma_cm_review_loop.sh b/tools/testing/selftests/rdma/rdma_cm_review_loop.sh
-> new file mode 100755
-> index 000000000000..c156090b17e3
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_cm_review_loop.sh
-> @@ -0,0 +1,35 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -euo pipefail
-> +
-> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-> +cd "${SCRIPT_DIR}"
-> +
-> +declare -A rc
-> +
-> +run_step()
-> +{
-> +	local name="$1"
-> +	local cmd="$2"
-> +
-> +	echo "==== ${name} ===="
-> +	if bash -c "${cmd}"; then
-> +		rc["${name}"]=0
-> +	else
-> +		rc["${name}"]=$?
-> +	fi
-> +	echo "==== ${name} rc=${rc["${name}"]} ===="
-> +}
-> +
-> +run_step baseline "./rdma_cm_baseline.sh"
-> +run_step trace "./rdma_cm_trace_sequence.sh"
-> +run_step counters "./rdma_cm_counter_delta.sh"
-> +run_step fault_injection "./rdma_cm_fault_injection.sh"
-> +
-> +echo "==== summary ===="
-> +for name in baseline trace counters fault_injection; do
-> +	echo "${name}=${rc["${name}"]}"
-> +done
-> +
-> +exit 0
-> diff --git a/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh b/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
-> new file mode 100755
-> index 000000000000..7e68289345e8
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
-> @@ -0,0 +1,83 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -euo pipefail
-> +
-> +SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-> +source "${SCRIPT_DIR}/rdma_common.sh"
-> +
-> +require_root
-> +require_cmd bash
-> +require_cmd grep
-> +
-> +trace_dir="$(tracefs_dir || true)"
-> +if [[ -z "${trace_dir}" ]]; then
-> +	log_warn "tracefs is unavailable"
-> +	exit "${ksft_skip}"
-> +fi
-> +
-> +if [[ ! -d "${trace_dir}/events/ib_cma" ]]; then
-> +	log_warn "ib_cma trace events are unavailable"
-> +	exit "${ksft_skip}"
-> +fi
-> +
-> +workload_rc=0
-> +
-> +cleanup_trace()
-> +{
-> +	local event
-> +
-> +	for event in icm_send_req icm_send_rep icm_send_rtu icm_recv_unknown_attr; do
-> +		[[ -f "${trace_dir}/events/ib_cma/${event}/enable" ]] && \
-> +			echo 0 >"${trace_dir}/events/ib_cma/${event}/enable"
-> +	done
-> +	[[ -f "${trace_dir}/events/ib_cma/enable" ]] && echo 0 >"${trace_dir}/events/ib_cma/enable"
-> +	echo 0 >"${trace_dir}/tracing_on"
-> +}
-> +
-> +trap cleanup_trace EXIT
-> +
-> +echo 0 >"${trace_dir}/tracing_on"
-> +echo >"${trace_dir}/trace"
-> +echo 1 >"${trace_dir}/events/ib_cma/enable"
-> +
-> +for event in icm_send_req icm_send_rep icm_send_rtu; do
-> +	if [[ -f "${trace_dir}/events/ib_cma/${event}/enable" ]]; then
-> +		echo 1 >"${trace_dir}/events/ib_cma/${event}/enable"
-> +	fi
-> +done
-> +
-> +echo 1 >"${trace_dir}/tracing_on"
-> +run_workload || workload_rc=$?
-> +echo 0 >"${trace_dir}/tracing_on"
-> +
-> +if [[ "${workload_rc}" -eq "${ksft_skip}" ]]; then
-> +	exit "${ksft_skip}"
-> +fi
-> +
-> +trace_log="/tmp/rdma_cm_trace.$(date +%s).log"
-> +cat "${trace_dir}/trace" >"${trace_log}"
-> +log_info "captured trace at ${trace_log}"
-> +
-> +if ! grep -Eq "icm_send_(req|rep|rtu)" "${trace_log}"; then
-> +	log_err "missing CM send trace events (req/rep/rtu)"
-> +	exit 1
-> +fi
-> +
-> +err_lines="$(grep "icm_.*_err" "${trace_log}" || true)"
-> +if [[ -n "${err_lines}" ]]; then
-> +	# DREP send failure while already in TIMEWAIT is a common teardown
-> +	# race and is tolerated for this smoke-style validation script.
-> +	untolerated_err_lines="$(
-> +		printf '%s\n' "${err_lines}" | \
-> +			grep -Ev "icm_send_drep_err: .*state=TIMEWAIT" || true
-> +	)"
-> +	if [[ -n "${untolerated_err_lines}" ]]; then
-> +		log_err "error trace event detected in ib_cma path"
-> +		printf '%s\n' "${untolerated_err_lines}" >&2
-> +		exit 1
-> +	fi
-> +	log_warn "only tolerated TIMEWAIT drep errors observed"
-> +fi
-> +
-> +exit 0
-> diff --git a/tools/testing/selftests/rdma/rdma_common.sh b/tools/testing/selftests/rdma/rdma_common.sh
-> new file mode 100755
-> index 000000000000..ee3d8b0d86b2
-> --- /dev/null
-> +++ b/tools/testing/selftests/rdma/rdma_common.sh
-> @@ -0,0 +1,126 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +ksft_skip=4
-> +RET=0
-> +
-> +RDMA_COUNTER_GROUPS=(
-> +	cm_tx_msgs
-> +	cm_tx_retries
-> +	cm_rx_msgs
-> +	cm_rx_duplicates
-> +)
-> +
-> +RDMA_COUNTER_ATTRS=(
-> +	req
-> +	mra
-> +	rej
-> +	rep
-> +	rtu
-> +	dreq
-> +	drep
-> +	sidr_req
-> +	sidr_rep
-> +	lap
-> +	apr
-> +)
-> +
-> +log_info()
-> +{
-> +	echo "INFO: $*"
-> +}
-> +
-> +log_warn()
-> +{
-> +	echo "WARN: $*" >&2
-> +}
-> +
-> +log_err()
-> +{
-> +	echo "ERROR: $*" >&2
-> +}
-> +
-> +require_root()
-> +{
-> +	if [[ "$(id -u)" -ne 0 ]]; then
-> +		log_warn "this test requires root privileges"
-> +		exit "${ksft_skip}"
-> +	fi
-> +}
-> +
-> +require_cmd()
-> +{
-> +	local cmd="$1"
-> +
-> +	command -v "${cmd}" >/dev/null 2>&1 || {
-> +		log_warn "missing required command: ${cmd}"
-> +		exit "${ksft_skip}"
-> +	}
-> +}
-> +
-> +tracefs_dir()
-> +{
-> +	if [[ -d /sys/kernel/tracing ]]; then
-> +		echo /sys/kernel/tracing
-> +	elif [[ -d /sys/kernel/debug/tracing ]]; then
-> +		echo /sys/kernel/debug/tracing
-> +	else
-> +		return 1
-> +	fi
-> +}
-> +
-> +find_cm_counter_root()
-> +{
-> +	local base
-> +	local port
-> +	local candidate
-> +
-> +	for base in /sys/class/infiniband/*; do
-> +		[[ -d "${base}" ]] || continue
-> +
-> +		for port in "${base}"/ports/*; do
-> +			[[ -d "${port}" ]] || continue
-> +			# RoCE / newer sysfs: cm_* groups live directly under ports/<N>/
-> +			if [[ -d "${port}/cm_tx_msgs" ]]; then
-> +				echo "${port}"
-> +				return 0
-> +			fi
-> +			# Legacy layout: under counters/ or hw_counters/
-> +			for candidate in "${port}/counters" "${port}/hw_counters"; do
-> +				[[ -d "${candidate}/cm_tx_msgs" ]] || continue
-> +				echo "${candidate}"
-> +				return 0
-> +			done
-> +		done
-> +	done
-> +
-> +	return 1
-> +}
-> +
-> +read_cm_counter()
-> +{
-> +	local root="$1"
-> +	local group="$2"
-> +	local attr="$3"
-> +	local path="${root}/${group}/${attr}"
-> +
-> +	if [[ -f "${path}" ]]; then
-> +		cat "${path}" 2>/dev/null
-> +	else
-> +		echo 0
-> +	fi
-> +}
-> +
-> +run_workload()
-> +{
-> +	local cmd="${CM_WORKLOAD_CMD:-}"
-> +
-> +	if [[ -z "${cmd}" ]]; then
-> +		log_warn "CM_WORKLOAD_CMD is not set"
-> +		return "${ksft_skip}"
-> +	fi
-> +
-> +	log_info "running workload: ${cmd}"
-> +	bash -c "${cmd}"
-> +}
-> +
+Background
+Firmware can operate page management in two modes:
+FUNC_ID mode (current): Function identity is (function_id, ec_function).
+This remains the default and is used for boot pages and when the new
+mode capability is not set.
+VHCA_ID mode (new): Function identity is vhca_id only; ec_function is
+ignored. This aligns page management with the vhca_id-based model used
+by other firmware commands and simplifies identification on SmartNIC and
+multi-function setups.
+
+
+Moshe Shemesh (3):
+  net/mlx5: Relax capability check for eswitch query paths
+  net/mlx5: Make debugfs page counters by function type dynamic
+  net/mlx5: Add VHCA_ID page management mode support
+
+ .../net/ethernet/mellanox/mlx5/core/debugfs.c |  39 ++-
+ .../ethernet/mellanox/mlx5/core/esw/ipsec.c   |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  48 +++-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h |   7 +
+ .../mellanox/mlx5/core/eswitch_offloads.c     |  14 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  10 +-
+ .../ethernet/mellanox/mlx5/core/pagealloc.c   | 226 ++++++++++++++----
+ include/linux/mlx5/driver.h                   |   9 +
+ 8 files changed, 289 insertions(+), 66 deletions(-)
+
+
+base-commit: 4e37987362bcac8909f2d4b4458f3aa645e41641
+-- 
+2.44.0
 
 
