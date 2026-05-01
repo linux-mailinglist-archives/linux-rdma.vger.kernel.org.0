@@ -1,50 +1,50 @@
-Return-Path: <linux-rdma+bounces-19814-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19815-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +KKkC53682mY9QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19814-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 02:58:05 +0200
+	id eJ4WKG7782mY9QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19815-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 03:01:34 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B5B4A96A7
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 02:58:04 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 437CC4A96FD
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 03:01:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 598083028B29
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 00:57:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 54B8E301F5CC
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 00:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F8E284693;
-	Fri,  1 May 2026 00:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD8C2857EA;
+	Fri,  1 May 2026 00:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oL9KNxZS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nmfxkNGm"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03238267B07;
-	Fri,  1 May 2026 00:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294E81DE4EF;
+	Fri,  1 May 2026 00:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777597047; cv=none; b=JD4c2rLDfWlXOcZWPdJkHcZu4jkl5w4HdRaNj1qZ18HiMmtWs8Svaxq7g/Sbnmt2a6LImacj5AgR6oKbI4AOJwoy7Sapo6yuKoEhDAU6LH2V2f+B0RxshBxG7+dSnvsWA92wAoslc9GB7XM1yKjxmDJzuB4MGFqTN/O68vlRXH4=
+	t=1777597188; cv=none; b=HKOoBRCaVNk5T0TXuDblAyfSC61tu5Es4AwCrF2rHoTP41D0vFEgX0TEzmagxez/xj/6QtutuZzMaEfvSdeqE/yMfa6nsgZLx5JqEhZI6sNr+g0M0nFprj+32Ma8PyrJl/hU1FntnZHBhaauyznXDiW9VQ8NZSfVibU0qGo/j8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777597047; c=relaxed/simple;
-	bh=bs05aRDwfyaoPAgx838AnsLYLubyaA3dlIOPWod+1Y8=;
+	s=arc-20240116; t=1777597188; c=relaxed/simple;
+	bh=YW/4yuQ6/5Cle0pEbg+zkbBo3GeqgoK5U8Q6OCextFw=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NLmm3ir5XRclqCfupRLzDEd4cnzhBVPA2Y2KpCxHHus4AeLFa/5VvNuPP6Xd3h7Q8sObOursrlz/so4w+A1Il4sBmb9MgxxUI0KRH4oCxQlSjak2muob9TMmKm5FKNZ+fGv80VA7L5JrG1/PFzXpnzNI6JHrOowNX02eOf1sRsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oL9KNxZS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8953EC2BCB3;
-	Fri,  1 May 2026 00:57:25 +0000 (UTC)
+	 MIME-Version:Content-Type; b=G6s7quWVBwLyLl8prfUEKqQaaz7ItxPIO3v+MoBpMmg2Y0n3L1OnkD/N4DbbL5pV3UOmL968IQSQ1k79fV7o7SdZ2VvKMPB2TAEIhs05/JQ870QFjD11VPQczL7R7XJ4rhdTADFoYfQ0O/0Wc3aJSnHRXlpbNvuMcJU0JuzN9fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nmfxkNGm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46324C2BCB3;
+	Fri,  1 May 2026 00:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777597046;
-	bh=bs05aRDwfyaoPAgx838AnsLYLubyaA3dlIOPWod+1Y8=;
+	s=k20201202; t=1777597187;
+	bh=YW/4yuQ6/5Cle0pEbg+zkbBo3GeqgoK5U8Q6OCextFw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oL9KNxZS0ZtiRkjef9sVKNyf4iisFfLGGPVRLgjI3Ykn73Pdz6xvS6dfrqE2ygcPv
-	 bLIhEmQlxG6faHCYchb2dVOEEbX2LVpLbw830jUWwcs4x7X4HK1YlF/UNau/t7Kiq9
-	 HTVWjnsq/e4P8gbPCMVmLn2jIV+uA3swtV3M614QO67pxQOA+D6i53AmjBBQva4p0u
-	 QIt/71GKKjQHAlr+KuHvT8UMZ+GA2GLOXPFJIqK/Fsb9ZqGmOzZPlOvvWvb5i6EUFk
-	 l4FNG9tyPtC9zWfX3R0lBpW5ppy26FZTo/1ANIyvRCoosEh2jitBofEiME7/UEziyj
-	 U0yKPeDSEfB4A==
-Date: Thu, 30 Apr 2026 17:57:24 -0700
+	b=nmfxkNGm2r9Krz5Ob+1cT7UfS4f9OwLzrtqLoIZHcydQJRKKyeNa4zoHSpU7LJ377
+	 Znmdpw0EiGbIs5BKLmAtkRPtPtFHDBRke4rphx9R3lWYSD8NXGSCSvJWXN+mNJElQ8
+	 JMmNwNmJ4ekRxyb5k6uXINV6wjd65+0TUER/5quO/ElS+04uqBCmIgGySzOhtJi/cn
+	 XyeWQ1pGaPS0cvspJM/gJrXKkI2YpLCBmkxs3t2bpKRGBT8jGusQMvUYPQpQhHVZW8
+	 iDSryEqVSHqX3S+e/bSs7vjqnf9n8XjzcWom5xiBxnVAoSZCAp/EnvMjlJq9BMq2qu
+	 IaEgUbzF40uoQ==
+Date: Thu, 30 Apr 2026 17:59:45 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Bobby Eshleman <bobbyeshleman@gmail.com>
 Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
@@ -64,12 +64,11 @@ Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
  bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, Stanislav Fomichev
  <sdf@fomichev.me>, Mina Almasry <almasrymina@google.com>, Bobby Eshleman
  <bobbyeshleman@meta.com>
-Subject: Re: [PATCH net-next 07/11] net: devmem: support TX over
- NETMEM_TX_NO_DMA devices
-Message-ID: <20260430175724.0c134a0d@kernel.org>
-In-Reply-To: <20260428-tcp-dm-netkit-v1-7-719280eba4d2@meta.com>
+Subject: Re: [PATCH net-next 00/11] net: devmem: support devmem with netkit
+ devices
+Message-ID: <20260430175945.476734ca@kernel.org>
+In-Reply-To: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
 References: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
-	<20260428-tcp-dm-netkit-v1-7-719280eba4d2@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -78,7 +77,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: C8B5B4A96A7
+X-Rspamd-Queue-Id: 437CC4A96FD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -86,21 +85,20 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19814-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-19815-lists,linux-rdma=lfdr.de];
 	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[33];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
@@ -108,36 +106,22 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-On Tue, 28 Apr 2026 15:42:04 -0700 Bobby Eshleman wrote:
->  	shinfo = skb_shinfo(skb);
-> +	if (shinfo->nr_frags == 0)
-> +		goto out;
+On Tue, 28 Apr 2026 15:41:57 -0700 Bobby Eshleman wrote:
+>       net: add netmem_tx modes that indicate dma capability
+>       net: bnxt: convert netmem_tx from bool to NETMEM_TX_DMA enum
+>       gve: convert netmem_tx from bool to NETMEM_TX_DMA enum
+>       net/mlx5e: convert netmem_tx from bool to NETMEM_TX_DMA enum
+>       eth: fbnic: convert netmem_tx from bool to NETMEM_TX_DMA enum
+>       netkit: set NETMEM_TX_NO_DMA for unreadable skb passthrough
+>       net: devmem: support TX over NETMEM_TX_NO_DMA devices
 
-Feels tempting to cover the NETMEM_TX_NO_DMA / NETMEM_TX_NONE
-cases here before we even look at the frags?
+I think it looks reasonable over all, but the assumption that rx lease
+implies tx queue does not seem great. Sounds like Daniel has that part
+covered tho :)
 
-> -	if (shinfo->nr_frags > 0) {
-> -		niov = netmem_to_net_iov(skb_frag_netmem(&shinfo->frags[0]));
-> -		if (net_is_devmem_iov(niov) &&
-> -		    READ_ONCE(net_devmem_iov_binding(niov)->dev) != dev)
-> +	niov = netmem_to_net_iov(skb_frag_netmem(&shinfo->frags[0]));
-> +	if (!net_is_devmem_iov(niov))
-> +		goto out;
-> +
-> +	binding = net_devmem_iov_binding(niov);
-> +
-> +	switch (dev->netmem_tx) {
-> +	case NETMEM_TX_DMA:
-> +		if (READ_ONCE(binding->dev) != dev)
->  			goto out_free;
-> +		break;
-> +	case NETMEM_TX_NO_DMA:
-> +		break;
-> +	default: /* NETMEM_TX_NONE */
-> +		goto out_free;
->  	}
+When you post v2 - you can squash the driver patches into patch 1.
 
