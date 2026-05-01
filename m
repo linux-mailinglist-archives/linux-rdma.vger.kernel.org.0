@@ -1,357 +1,297 @@
-Return-Path: <linux-rdma+bounces-19820-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19821-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gGX7Hj0U9GkW+QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19820-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 04:47:25 +0200
+	id 0C3yI10r9GlA+wEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19821-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 06:26:05 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D67A84A9D9C
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 04:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 251824AA511
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 06:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4BE5A301C166
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 02:47:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3C218301904D
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 04:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692FF2DEA89;
-	Fri,  1 May 2026 02:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994E52DECC6;
+	Fri,  1 May 2026 04:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="sklgjJFf"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="MwuPDFGi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A8D2248A0;
-	Fri,  1 May 2026 02:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777603634; cv=none; b=KcvAAZl2bcx5x202iNhWIQV+bKmTsYRbCjgVhtcWCdNaGb31S2gRsDK6DL6apiEiCuadC9oPw4tQn9GrZhddiuuLL5hPH7VB6JknrGmxY+oTYanx83H2ft/0I1IzKvziSvq4Zgn0j37tSHtV+ZxZvniS2qjXsCjkmam5ny5nELs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777603634; c=relaxed/simple;
-	bh=mp7wCVHKYP/qulllPnqf7wgBjMtQWA+Ux3allb23uLc=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=hEVRjvc2PXWA6QHoAzHPUjSPzpWUWdtgk5muYBZMpKIPGWZ5X60MwzMbuAzXQUzGLW33Yv3SBBFpte3HolNGO8DPI/ROiE/99rtnDGdpArJbh5VHH3Do8pOpvG2V25LC2LZJNYgSnlCyNFEGzSPViiv0XsCZ+pYL2sGzfZ39F4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=sklgjJFf; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id CE62A20B7165; Thu, 30 Apr 2026 19:47:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CE62A20B7165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1777603632;
-	bh=a0poFJQ1XUcEZiu4/+aYzPlxXTd3s8PJOPHeWEIdnNY=;
-	h=Date:From:To:Subject:From;
-	b=sklgjJFfUvuT89yG2ci3SkvoX3jh0f6iWagbrJ9jiUxXEFD9KgT6/LWyqViTZfQo2
-	 HVuoXdgf5GpDY697bHewQ7ZX7qYr0f4Bdlsu9zM4q9wFgppYh5nL6ooD7SVNryKLhU
-	 OnxMi82weHXHvZgHKO1oLnIlZxqlxsjGX3gm6hAQ=
-Date: Thu, 30 Apr 2026 19:47:12 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	leon@kernel.org, longli@microsoft.com, kotaranov@microsoft.com,
-	horms@kernel.org, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, stephen@networkplumber.org,
-	jacob.e.keller@intel.com, dipayanroy@microsoft.com,
-	leitao@debian.org, kees@kernel.org, john.fastabend@gmail.com,
-	hawk@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, sdf@fomichev.me, yury.norov@gmail.com
-Subject: [PATCH net, v3] net: mana: Fix crash from unvalidated SHM offset
- read from BAR0 during FLR
-Message-ID: <afQUMClyjmBVfD+u@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012011.outbound.protection.outlook.com [40.107.200.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01872D9EC2;
+	Fri,  1 May 2026 04:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777609062; cv=fail; b=iTxbd0Munvgpwjq4dUgIURlVKRREWW2KQJJpu6G06z7a4Q75Ny2Jbx/4YTJucDKBmXl2A6BNeIQohp1sJr20EPxguILb4aAPcAlCTwJCQukpaYtn8KG28FeITSxICF/y+C5o4zZyIO1A3KOPHSIqsvVRh2f/mtL/MyAm6jFKJgU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777609062; c=relaxed/simple;
+	bh=FwPp7Xs/RWWaDZ8/IDPrRlkh3T3ku7l7F9rLHdeuIbw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ptcTsixpQDhLAzkNM2xbp34Yz1xN0qFBD2YZRmCdC+rx3MiELGgeuWNj8O8Vss1+nsbiwL6Y1aA6vryQNTcljCBJu5kUZkyLByIHuAZiIXWXBWOSVO1qIy+CuK1dhO/9EVMjvtDSVf7YeLoItsV0uW9pWfKLuMbq8QO5S7mFh4A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=MwuPDFGi; arc=fail smtp.client-ip=40.107.200.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=TGgYty0D38tSzBEao7kbpe8Lmp240yrLcNsmFV5SGdm2l7mJKOW0DzF9xFU7f9pDNnub1S0O8M9W8kOuvGE5SwNwpkSrF5T+VZLxvIKyLFLChUVMLzMefaOpL1yWGPn/k+/fP/fc44AZiOX0TzIb2bbQeqv7lpqKiUfAagKJGlvjxsT23RjMj7MZbqOZSJxTRBIEVNPA5lclXRSsWWVTkz9Gon5KO+4UAwIHI82iPZXsd2N1cTb1aOFXqzNYPcZGI2jUCeayoeYVKgS/blJYQnM2bjg3VXc7K/4piUuEAVCUn7e0NejQNZF+5Xf4hVg3z3R7cZafg4ZJ7iHPT8P8Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mb3jcAQAA1dP62INaFyrTkeXTiObtoIizB/9kUmd4SE=;
+ b=S+xQqU0WyLccABInszODe0AgFLyTJw7GFpMW3Y7YzFsUjqxymcWd4zjf++QUUHMbHpPT9/OVTmhM01JD52VinsBxg5g54tjfn5UyVu4W4KV/yen6hThWoQj7lg3lSKTGmUV3AncVBFnWX+Ygd0qAOQPpt7kBec48c6fTBeRPcalUCWToOBcrURDdgDfbjcIS8NhrfKCcqGgFQ5V7uAlfD8SkzrIekxBOYnUziTtt6OpOM1KUZpHF4NOmz/84wQ8gM6wfZnQ9dww2b5TWN3VE1E2lzRiA8VSVk0ZZLsY42ObSa5aYVmn2Nuu4vI8OJo8U170Cd87H+wZxzNjawMNWYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mb3jcAQAA1dP62INaFyrTkeXTiObtoIizB/9kUmd4SE=;
+ b=MwuPDFGiEgo6Y8LLGGecKL/+SmuEGJVIseRTYsPAYwhl5GIIRIB6/bwNuC4z5ViOv3Ep+nYGrrBrNN7tuNcsLJF0c5Y6APY5AyyWdGCjTbg6bBbh3JNmAh0OetwRwsyAj3EjQf+8u5HBt4+Wl36Njue7Sc7BZgB9hLVrA77xRybSgFK19daMVjyyXlZ7yLEX7leA/YhYih1Vnk1nXTLAod5psAtnRAORANYVzWhx7WnLVQKCTu7yDFzWBtGDQ+eKXiLnDFiiowtVTRwbw5l0vzl2ifZjjeRJ1QXhFQau1gVcu5C5jQRBM5TzeYodV9mt2cItZvbxHpNKa7V5ZiALVQ==
+Received: from MN2PR08CA0009.namprd08.prod.outlook.com (2603:10b6:208:239::14)
+ by IA0PR12MB7676.namprd12.prod.outlook.com (2603:10b6:208:432::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.20; Fri, 1 May
+ 2026 04:17:35 +0000
+Received: from BL6PEPF00020E60.namprd04.prod.outlook.com
+ (2603:10b6:208:239:cafe::2b) by MN2PR08CA0009.outlook.office365.com
+ (2603:10b6:208:239::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9870.21 via Frontend Transport; Fri,
+ 1 May 2026 04:17:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF00020E60.mail.protection.outlook.com (10.167.249.21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9891.9 via Frontend Transport; Fri, 1 May 2026 04:17:35 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Apr
+ 2026 21:17:19 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Apr
+ 2026 21:17:19 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 30
+ Apr 2026 21:17:12 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Shay Drory <shayd@nvidia.com>, Or Har-Toov
+	<ohartoov@nvidia.com>, Edward Srouji <edwards@nvidia.com>, Maher Sanalla
+	<msanalla@nvidia.com>, Simon Horman <horms@kernel.org>, Gerd Bayer
+	<gbayer@linux.ibm.com>, Moshe Shemesh <moshe@nvidia.com>, Kees Cook
+	<kees@kernel.org>, Patrisious Haddad <phaddad@nvidia.com>, Parav Pandit
+	<parav@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu
+	<cratiu@nvidia.com>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>, Gal Pressman
+	<gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
+Subject: [PATCH net-next V2 0/7] net/mlx5: Improve representor lifecycle and allow switchdev by default
+Date: Fri, 1 May 2026 07:16:26 +0300
+Message-ID: <20260501041633.231662-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Rspamd-Queue-Id: D67A84A9D9C
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF00020E60:EE_|IA0PR12MB7676:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0698054b-b85e-492c-051c-08dea73892bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|376014|7416014|13003099007|18002099003|56012099003;
+X-Microsoft-Antispam-Message-Info:
+	E+o1o//j1hZhctsp3AYYh7+HvjFWizBAx/Z1fd9Xs86dAqDOk1mUZ6F62U+ADlthvx+gLedsM+/utLYZwQU9/zooX/fowjoKxl1CtswyengHSUdx9KaB/+s8LxZ5Y0K/5njFr4Pg8TPIoVLvhYf6EHXgW44benNJybLsgFCOfI3yWxzYb0A8ramOfCZOVNaij808qwznqYyDCD2KAxEEuGr0nVdKO8L/jyJGEx/fg2GS9Bo4FvebNRg0+c+ceeeFUxmrinoxP95KQz2kkMH4iu5U/dtnwJ8mnTDdYjMdi6e/WqjM971GzqnAMG/lxcajo8MT77UGAJbtvm58lTSQ1RqNH/9k1N4oODYZwfF3s4PmonC71nhyb45+m15ff/cTG2v1BRlptr1SPxyLyZRkOQ6HiyVaBJOsnbF7Eyb48dOlHfMGz2zzuyzLA4xCNZkRSxdKzU1olpkJHZgamCMWjfvAofKB0xvKzXcbnY2zsM0RpAAEH8CfWAAGms1VCdjWcCACCwg8S4K6wavI1rwKATBmEvsYuzPYB3wk/n9git0DhqwxnCWJaeE4HAdOd0CJNdIVS/IMfyAH8uyCTi0EwNYYr4p2Jr79WBPG6QyFGP1Jup9RHOCVgyYZJnlRn1fWrYS6juICGu06tC8O2b+o8eoX56QLJ7Deb06oqeX7NXpv6bTOvUJ0XJ5YRTOCC854R4O4pVlfPuT4taBM+51kQQ67TxcMY9WI7RwxzMs3X/Xq8W948WY5dj73URudHdy6
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(376014)(7416014)(13003099007)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	+c70JGvTKjsH4JOkyjCaf+GCVG6HdHR3Js5Dt6FtWnx3R6HXs3jaiNoyNW24P050KLPLG3Kn4GBP6MmnLHvUDTn7QOjoqXIXhnY5P8HjzYprHzpBhDOAj858/dBffpmk/ago2PbkKP6JfNZjU6yzjF408e/QRiMrFX+6Pby9HfuZAikz/FQ/YpGNnYpflpECFd3K6bLj/Y/uiQn5b8IjtYiUd45kcF+OAV2QcPJMak7hRBrf+6mUbq6utxg3p3GObXKmFAKXTqkShNI+J4RzEsRgeUSUstdgS9zU075zB+LV5Oa+n8x/qeY9pYKBFj773ROL/+n2XcvKmXNqyWNxBSAv+aUidbS++VpDty+nI+WrZ5/UVmJLS+hY4dCtdl4L4KMwwysISGG2J8c1VpKo0lgOw2DycnsOEcvNHW+l9aYV8HKud01sRcXdS9h4XP2A
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2026 04:17:35.3147
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0698054b-b85e-492c-051c-08dea73892bb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF00020E60.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7676
+X-Rspamd-Queue-Id: 251824AA511
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [2.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19820-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	TAGGED_FROM(0.00)[bounces-19821-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
+	RCVD_COUNT_SEVEN(0.00)[9]
 
-During Function Level Reset recovery, the MANA driver reads
-hardware BAR0 registers that may temporarily contain garbage values.
-The SHM (Shared Memory) offset read from GDMA_REG_SHM_OFFSET is used
-to compute gc->shm_base, which is later dereferenced via readl() in
-mana_smc_poll_register(). If the hardware returns an unaligned or
-out-of-range value, the driver must not blindly use it, as this would
-propagate the hardware error into a kernel crash.
+Hi,
 
-The following crash was observed on an arm64 Hyper-V guest running
-kernel 6.17.0-3013-azure during VF reset recovery triggered by HWC
-timeout.
+Find detailed description by Mark below.
 
-[13291.785274] Unable to handle kernel paging request at virtual address ffff8000a200001b
-[13291.785311] Mem abort info:
-[13291.785332]   ESR = 0x0000000096000021
-[13291.785343]   EC = 0x25: DABT (current EL), IL = 32 bits
-[13291.785355]   SET = 0, FnV = 0
-[13291.785363]   EA = 0, S1PTW = 0
-[13291.785372]   FSC = 0x21: alignment fault
-[13291.785382] Data abort info:
-[13291.785391]   ISV = 0, ISS = 0x00000021, ISS2 = 0x00000000
-[13291.785404]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[13291.785412]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[13291.785421] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000014df3a1000
-[13291.785432] [ffff8000a200001b] pgd=1000000100438403, p4d=1000000100438403, pud=1000000100439403, pmd=0068000fc2000711
-[13291.785703] Internal error: Oops: 0000000096000021 [#1]  SMP
-[13291.830975] Modules linked in: tls qrtr mana_ib ib_uverbs ib_core xt_owner xt_tcpudp xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_compat nf_tables cfg80211 8021q garp mrp stp llc binfmt_misc joydev serio_raw nls_iso8859_1 hid_generic aes_ce_blk aes_ce_cipher polyval_ce ghash_ce sm4_ce_gcm sm4_ce_ccm sm4_ce sm4_ce_cipher hid_hyperv sm4 sm3_ce sha3_ce hv_netvsc hid vmgenid hyperv_keyboard hyperv_drm sch_fq_codel nvme_fabrics efi_pstore dm_multipath nfnetlink vsock_loopback vmw_vsock_virtio_transport_common hv_sock vmw_vsock_vmci_transport vmw_vmci vsock dmi_sysfs ip_tables x_tables autofs4
-[13291.862630] CPU: 122 UID: 0 PID: 61796 Comm: kworker/122:2 Tainted: G        W           6.17.0-3013-azure #13-Ubuntu VOLUNTARY
-[13291.869902] Tainted: [W]=WARN
-[13291.871901] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 01/08/2026
-[13291.878086] Workqueue: events mana_serv_func
-[13291.880718] pstate: 62400005 (nZCv daif +PAN -UAO +TCO -DIT -SSBS BTYPE=--)
-[13291.884835] pc : mana_smc_poll_register+0x48/0xb0
-[13291.887902] lr : mana_smc_setup_hwc+0x70/0x1c0
-[13291.890493] sp : ffff8000ab79bbb0
-[13291.892364] x29: ffff8000ab79bbb0 x28: ffff00410c8b5900 x27: ffff00410d630680
-[13291.896252] x26: ffff004171f9fd80 x25: 000000016ed55000 x24: 000000017f37e000
-[13291.899990] x23: 0000000000000000 x22: 000000016ed55000 x21: 0000000000000000
-[13291.904497] x20: ffff8000a200001b x19: 0000000000004e20 x18: ffff8000a6183050
-[13291.908308] x17: 0000000000000000 x16: 0000000000000000 x15: 000000000000000a
-[13291.912542] x14: 0000000000000004 x13: 0000000000000000 x12: 0000000000000000
-[13291.916298] x11: 0000000000000000 x10: 0000000000000001 x9 : ffffc45006af1bd8
-[13291.920945] x8 : ffff000151129000 x7 : 0000000000000000 x6 : 0000000000000000
-[13291.925293] x5 : 000000015f214000 x4 : 000000017217a000 x3 : 000000016ed50000
-[13291.930436] x2 : 000000016ed55000 x1 : 0000000000000000 x0 : ffff8000a1ffffff
-[13291.934342] Call trace:
-[13291.935736]  mana_smc_poll_register+0x48/0xb0 (P)
-[13291.938611]  mana_smc_setup_hwc+0x70/0x1c0
-[13291.941113]  mana_hwc_create_channel+0x1a0/0x3a0
-[13291.944283]  mana_gd_setup+0x16c/0x398
-[13291.946584]  mana_gd_resume+0x24/0x70
-[13291.948917]  mana_do_service+0x13c/0x1d0
-[13291.951583]  mana_serv_func+0x34/0x68
-[13291.953732]  process_one_work+0x168/0x3d0
-[13291.956745]  worker_thread+0x2ac/0x480
-[13291.959104]  kthread+0xf8/0x110
-[13291.961026]  ret_from_fork+0x10/0x20
-[13291.963560] Code: d2807d00 9417c551 71000673 54000220 (b9400281)
-[13291.967299] ---[ end trace 0000000000000000 ]---
+Regards,
+Tariq
 
-Disassembly of mana_smc_poll_register() around the crash site:
 
-Disassembly of section .text:
+This series addresses three problems that have been present for years, and
+fixes one representor reload error-unwind case exposed while making the
+reload path reusable.
 
-00000000000047c8 <mana_smc_poll_register>:
-    47c8: d503201f        nop
-    47cc: d503201f        nop
-    47d0: d503233f        paciasp
-    47d4: f800865e        str     x30, [x18], #8
-    47d8: a9bd7bfd        stp     x29, x30, [sp, #-48]!
-    47dc: 910003fd        mov     x29, sp
-    47e0: a90153f3        stp     x19, x20, [sp, #16]
-    47e4: 91007014        add     x20, x0, #0x1c
-    47e8: 5289c413        mov     w19, #0x4e20
-    47ec: f90013f5        str     x21, [sp, #32]
-    47f0: 12001c35        and     w21, w1, #0xff
-    47f4: 14000008        b       4814 <mana_smc_poll_register+0x4c>
-    47f8: 36f801e1  tbz  w1, #31, 4834 <mana_smc_poll_register+0x6c>
-    47fc: 52800042        mov     w2, #0x2
-    4800: d280fa01        mov     x1, #0x7d0
-    4804: d2807d00        mov     x0, #0x3e8
-    4808: 94000000        bl      0 <usleep_range_state>
-    480c: 71000673        subs    w19, w19, #0x1
-    4810: 54000200        b.eq    4850 <mana_smc_poll_register+0x88>
-    4814: b9400281      ldr   w1, [x20] <-- **** CRASHED HERE *****
-    4818: d50331bf        dmb     oshld
-    481c: 2a0103e2        mov     w2, w1
-    ...
+First, there is no coordination between E-Switch reconfiguration and
+representor registration. The E-Switch can be mid-way through a mode
+change or VF count update while mlx5_ib walks in and registers or
+unregisters representors. Nothing stops them. The race window is small
+and there is no field report, but it is clearly wrong.
 
-From the crash signature x20 = ffff8000a200001b, this address
-ends in 0x1b which is not 4-byte aligned, so the 'ldr w1, [x20]'
-instruction (readl) triggers the arm64 alignment fault (FSC = 0x21).
+Second, loading mlx5_ib while the device is already in switchdev mode
+does not bring up the IB representors. mlx5_eswitch_register_vport_reps()
+only stores callbacks; nobody triggers the actual load after registration.
 
-The root cause is in mana_gd_init_vf_regs(), which computes:
+Third, deployments that always use switchdev mode still need a manual
+devlink mode change after probe. That makes automated provisioning more
+fragile than needed.
 
-  gc->shm_base = gc->bar0_va + mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
+The series fixes the registration race with a per-E-Switch representor
+mutex. The lock is introduced first, then LAG shared-FDB and multiport
+E-Switch transitions are adjusted so auxiliary device rescans and IB
+representor reloads do not hold ldev->lock while taking the representor
+lock. This keeps the intermediate commits bisectable before the stricter
+E-Switch serialization and lock assertions are enabled.
 
-The offset is used without any validation.  The same problem exists
-in mana_gd_init_pf_regs() for sriov_base_off and sriov_shm_off.
+After the LAG ordering is fixed, all E-Switch reconfiguration paths that
+create, destroy, load, or unload representors take the representor mutex.
+esw_mode_change() deliberately drops the mutex around
+mlx5_rescan_drivers_locked(), because auxiliary probe and remove paths
+re-enter mlx5_eswitch_register_vport_reps() and
+mlx5_eswitch_unregister_vport_reps() on the same thread.
 
-Fix this by validating all offsets before use:
+The shared-FDB peer IB registration path can hold one E-Switch
+representor mutex and then register peer representor ops on another
+E-Switch. The series annotates that case as nested locking so lockdep can
+distinguish it from recursive locking on the same E-Switch.
 
-- VF: check shm_off is within BAR0, properly aligned to 4 bytes
-  (readl requirement), and leaves room for the full 256-bit
-  (32-byte) SMC aperture.
+For the missing IB representors, mlx5_eswitch_register_vport_reps() queues
+a work item that acquires the devlink lock and loads all relevant
+representors. This is the change that actually fixes the long-standing
+bug.
 
-- PF: check sriov_base_off is within BAR0, aligned to 8 bytes
-  (readq requirement), and leaves room to safely read the
-  sriov_shm_off register at sriov_base_off + GDMA_PF_REG_SHM_OFF.
-  Then check sriov_shm_off leaves room for the full SMC aperture.
-  All arithmetic uses subtraction rather than addition to avoid
-  integer overflow on garbage values.
+The reload path also learns to track which representor types were loaded by
+the current attempt, so an error does not unload representors that were
+already active before the retry.
 
-Define SMC_APERTURE_SIZE (32 bytes, derived from the 256-bit aperture
-width)
+Patch 1 is cleanup. LAG and MPESW had the same representor reload
+sequence duplicated in several places and the copies had started to
+drift. This consolidates them into one helper.
 
-Return -EPROTO on invalid values.  The existing recovery path in
-mana_serv_reset() already handles -EPROTO by falling through to PCI
-device rescan, giving the hardware another chance to present valid
-register values after reset.
+Patch 2 adds the per-E-Switch representor lifecycle lock and helper APIs.
 
-Fixes: 9bf66036d686 ("net: mana: Handle hardware recovery events when probing the device")
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
-Changes in v3:
-- Fixed commit message.
-- Removed macro duplicates.
-Changes in v2:
-- Fix sriov_base_off alignment check: sizeof(u32) to sizeof(u64), since
-  mana_gd_r64() (readq) requires 8-byte alignment on arm64.
-- Fix sriov_base_off bounds: also verify enough space remains in BAR0
-  to safely read sriov_shm_off at offset GDMA_PF_REG_SHM_OFF + 8 bytes.
-- Fix integer overflow: rewrite bounds checks using subtraction
-  (remaining = bar0_size - base) instead of addition.
-- Fix SMC aperture size: add gc->bar0_size - shm_off < SMC_APERTURE_SIZE
-  checks in both VF and PF paths; previously only the start address was
-  validated, but mana_smc_poll_register() accesses up to shm_base + 0x1c
-  (28 bytes from base, 32 bytes total).
-- Export SMC_APERTURE_SIZE to shm_channel.h.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 40 ++++++++++++++++---
- .../net/ethernet/microsoft/mana/shm_channel.c |  5 ---
- include/net/mana/shm_channel.h                |  6 +++
- 3 files changed, 41 insertions(+), 10 deletions(-)
+Patch 3 adjusts the LAG shared-FDB and multiport E-Switch transitions so
+auxiliary device rescans and IB representor reloads run without
+ldev->lock held while taking the representor lock.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 098fbda0d128..d8e816882f02 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -43,8 +43,9 @@ static u64 mana_gd_r64(struct gdma_context *g, u64 offset)
- static int mana_gd_init_pf_regs(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
--	void __iomem *sriov_base_va;
-+	u64 remaining_barsize;
- 	u64 sriov_base_off;
-+	u64 sriov_shm_off;
- 
- 	gc->db_page_size = mana_gd_r32(gc, GDMA_PF_REG_DB_PAGE_SIZE) & 0xFFFF;
- 
-@@ -73,10 +74,28 @@ static int mana_gd_init_pf_regs(struct pci_dev *pdev)
- 	gc->phys_db_page_base = gc->bar0_pa + gc->db_page_off;
- 
- 	sriov_base_off = mana_gd_r64(gc, GDMA_SRIOV_REG_CFG_BASE_OFF);
-+	if (sriov_base_off >= gc->bar0_size ||
-+	    gc->bar0_size - sriov_base_off <
-+		GDMA_PF_REG_SHM_OFF + sizeof(u64) ||
-+	    !IS_ALIGNED(sriov_base_off, sizeof(u64))) {
-+		dev_err(gc->dev,
-+			"SRIOV base offset 0x%llx out of range or unaligned (BAR0 size 0x%llx)\n",
-+			sriov_base_off, (u64)gc->bar0_size);
-+		return -EPROTO;
-+	}
- 
--	sriov_base_va = gc->bar0_va + sriov_base_off;
--	gc->shm_base = sriov_base_va +
--			mana_gd_r64(gc, sriov_base_off + GDMA_PF_REG_SHM_OFF);
-+	remaining_barsize = gc->bar0_size - sriov_base_off;
-+	sriov_shm_off = mana_gd_r64(gc, sriov_base_off + GDMA_PF_REG_SHM_OFF);
-+	if (sriov_shm_off >= remaining_barsize ||
-+	    remaining_barsize - sriov_shm_off < SMC_APERTURE_SIZE ||
-+	    !IS_ALIGNED(sriov_shm_off, sizeof(u32))) {
-+		dev_err(gc->dev,
-+			"SRIOV SHM offset 0x%llx out of range or unaligned (BAR0 size 0x%llx)\n",
-+			sriov_shm_off, (u64)gc->bar0_size);
-+		return -EPROTO;
-+	}
-+
-+	gc->shm_base = gc->bar0_va + sriov_base_off + sriov_shm_off;
- 
- 	return 0;
- }
-@@ -84,6 +103,7 @@ static int mana_gd_init_pf_regs(struct pci_dev *pdev)
- static int mana_gd_init_vf_regs(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	u64 shm_off;
- 
- 	gc->db_page_size = mana_gd_r32(gc, GDMA_REG_DB_PAGE_SIZE) & 0xFFFF;
- 
-@@ -111,7 +131,17 @@ static int mana_gd_init_vf_regs(struct pci_dev *pdev)
- 	gc->db_page_base = gc->bar0_va + gc->db_page_off;
- 	gc->phys_db_page_base = gc->bar0_pa + gc->db_page_off;
- 
--	gc->shm_base = gc->bar0_va + mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
-+	shm_off = mana_gd_r64(gc, GDMA_REG_SHM_OFFSET);
-+	if (shm_off >= gc->bar0_size ||
-+	    gc->bar0_size - shm_off < SMC_APERTURE_SIZE ||
-+	    !IS_ALIGNED(shm_off, sizeof(u32))) {
-+		dev_err(gc->dev,
-+			"SHM offset 0x%llx out of range or unaligned (BAR0 size 0x%llx)\n",
-+			shm_off, (u64)gc->bar0_size);
-+		return -EPROTO;
-+	}
-+
-+	gc->shm_base = gc->bar0_va + shm_off;
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/microsoft/mana/shm_channel.c b/drivers/net/ethernet/microsoft/mana/shm_channel.c
-index 0f1679ebad96..d21b5db06e50 100644
---- a/drivers/net/ethernet/microsoft/mana/shm_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/shm_channel.c
-@@ -61,11 +61,6 @@ union smc_proto_hdr {
- 	};
- }; /* HW DATA */
- 
--#define SMC_APERTURE_BITS 256
--#define SMC_BASIC_UNIT (sizeof(u32))
--#define SMC_APERTURE_DWORDS (SMC_APERTURE_BITS / (SMC_BASIC_UNIT * 8))
--#define SMC_LAST_DWORD (SMC_APERTURE_DWORDS - 1)
--
- static int mana_smc_poll_register(void __iomem *base, bool reset)
- {
- 	void __iomem *ptr = base + SMC_LAST_DWORD * SMC_BASIC_UNIT;
-diff --git a/include/net/mana/shm_channel.h b/include/net/mana/shm_channel.h
-index 5199b41497ff..dbabcfb95daf 100644
---- a/include/net/mana/shm_channel.h
-+++ b/include/net/mana/shm_channel.h
-@@ -4,6 +4,12 @@
- #ifndef _SHM_CHANNEL_H
- #define _SHM_CHANNEL_H
- 
-+#define SMC_APERTURE_BITS 256
-+#define SMC_BASIC_UNIT (sizeof(u32))
-+#define SMC_APERTURE_DWORDS (SMC_APERTURE_BITS / (SMC_BASIC_UNIT * 8))
-+#define SMC_LAST_DWORD (SMC_APERTURE_DWORDS - 1)
-+#define SMC_APERTURE_SIZE  (SMC_APERTURE_BITS / 8)
-+
- struct shm_channel {
- 	struct device *dev;
- 	void __iomem *base;
+Patch 4 protects the E-Switch reconfiguration, representor registration
+and peer IB representor paths with the representor lock.
+
+Patch 5 fixes representor load error unwind so only representor types
+loaded by the current attempt are unloaded on failure.
+
+Patch 6 moves the representor load triggered by
+mlx5_eswitch_register_vport_reps() onto the work queue. This is the patch
+that fixes IB representors not coming up when mlx5_ib is loaded while the
+device is already in switchdev mode.
+
+Patch 7 adds a driver profile that auto-enables switchdev at device init,
+for deployments that always operate in switchdev mode and want to avoid a
+manual devlink command after every probe.
+
+V2:
+
+Split v1 into two parts: the E-Switch workqueue deadlock fix and the
+representor lifecycle changes. This is the second part; the first part
+has already been accepted [1].
+
+Patch 1: Add a cont_on_fail flag so callers can decide whether reload
+should continue after a failure.
+
+Patches 2, 3, 4: Replace the atomic-variable based scheme with a mutex,
+per Jakub's feedback.
+
+Patch 5: New patch that fixes the unwind on representor load failure.
+
+Patch 7: Switch from profile 4 to profile 8. Since the profile mainly
+targets E-Switch handling, keep it separate from the NIC profiles.
+
+[1] https://lore.kernel.org/all/20260428051018.219093-1-tariqt@nvidia.com/
+
+Link to V1:
+https://lore.kernel.org/all/20260409115550.156419-1-tariqt@nvidia.com/
+
+Mark Bloch (7):
+  net/mlx5: Lag: refactor representor reload handling
+  net/mlx5: E-Switch, add representor lifecycle lock
+  net/mlx5: Lag, avoid LAG and representor lock cycles
+  net/mlx5: E-Switch, serialize representor lifecycle
+  net/mlx5: E-Switch, unwind only newly loaded representor types
+  net/mlx5: E-switch, load reps via work queue after registration
+  net/mlx5: Add profile to auto-enable switchdev mode at device init
+
+ drivers/infiniband/hw/mlx5/ib_rep.c           |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  10 +
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h |  12 ++
+ .../mellanox/mlx5/core/eswitch_offloads.c     | 186 ++++++++++++++++--
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.c | 171 ++++++++++++----
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.h |   5 +
+ .../ethernet/mellanox/mlx5/core/lag/mpesw.c   |  18 +-
+ .../ethernet/mellanox/mlx5/core/lib/devcom.c  |   8 +
+ .../ethernet/mellanox/mlx5/core/lib/devcom.h  |   1 +
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  43 +++-
+ .../ethernet/mellanox/mlx5/core/sf/devlink.c  |   5 +
+ include/linux/mlx5/driver.h                   |   2 +
+ include/linux/mlx5/eswitch.h                  |   6 +
+ 13 files changed, 405 insertions(+), 68 deletions(-)
+
+
+base-commit: 4e37987362bcac8909f2d4b4458f3aa645e41641
 -- 
-2.43.0
+2.44.0
 
 
