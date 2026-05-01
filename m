@@ -1,188 +1,199 @@
-Return-Path: <linux-rdma+bounces-19817-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19818-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yKE8J+D882nK9QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-19817-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 03:07:44 +0200
+	id SMneHjr982nP9QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-19818-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 03:09:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45E94A9765
-	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 03:07:43 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1EE4A9792
+	for <lists+linux-rdma@lfdr.de>; Fri, 01 May 2026 03:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C4D87301BF56
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 01:07:38 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 217223022900
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2026 01:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEF2299923;
-	Fri,  1 May 2026 01:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJOX65wu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4557728C035;
+	Fri,  1 May 2026 01:09:11 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD917285C9D
-	for <linux-rdma@vger.kernel.org>; Fri,  1 May 2026 01:07:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E2C1D89EF;
+	Fri,  1 May 2026 01:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.164.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777597657; cv=none; b=qICL/CzybV1bQaXY618hR8GzCxKY9EzFCXZbyR4vGmjlZv7PsUYQJzWYz0ArcK9wqL769Kr5i+VGruh5pdghDcw29+HKOlsbXbiIDdqN3R1Jdj7hAamiWuxBC/1FWaXd1CPPQwPElkm4cBM+K4Ng7xSIL6+b7MuTgUITIlvJFrY=
+	t=1777597751; cv=none; b=qNGuvDWXsq11n3JfDJTDJwGNdhDZwpF9F8z1GAegYEu9xwhxkJBvOpOMhAYM6qAxWDNa1bhIgW5Y8vdUIhjYYysChBWGHYB5VSUAVKE7+/IQo7wDCudEReHVWVzdDb6bNNr3jVbtQj3/nRM/HBy2Jb+SNS2HdMWj4PD947Xk9XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777597657; c=relaxed/simple;
-	bh=bzjWLrIg2CCN3/hGH9Hbm2IFgPMgmGCzp/tnDAxT9M8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cr/b9gn7727imzX8EudIkyceh0djZZRAEhxN4kFOEb+ZETCJWTzqcG4nC+MUlAhqJjxveFaJ3LeYJ/wwTmlZP6tcbIcqpEJHHLmdLrvG/+h02QBxyszty66VJ0FoBNT8HS9cKyMXB/2jVOrpgf6xp1chvkmOyJ6/vNIN2ObAKIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJOX65wu; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8d65f4073bfso192619485a.3
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2026 18:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777597655; x=1778202455; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=luFHJPJpmJJ6ifj+D224jn0aiIzHHo2nBsB+na/dGdA=;
-        b=MJOX65wufmDQeqKx+vwHw03RyQT9lsJPsjLW7k/6ZLPq7CxaUZ7dTyBDlybRSduKLt
-         dFq1nfTiOJgS9d1B7nARYKb0jiG4jV38iFuIwRB7CGF+f25SuuUGfbEVBAvyuHokZUsU
-         iONNlx8TjiehBmGif707jRp0OG3Ty5PjBQI9A8zvsUzVleaBlXNGgUdi/8xS5e52RVsQ
-         zIcREcDAbNqGZr2LFax8rYh0SK+CyFwQzavB//8J+pEvYkkRKpdW0ARUFubew0zHL6K9
-         Cp7RvW9yO+Mzz/qLvFRktTAPrzBGY+X6tFN7yj743axJJ5szrzSkaNkOLQvoIDIppYcj
-         xxHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777597655; x=1778202455;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=luFHJPJpmJJ6ifj+D224jn0aiIzHHo2nBsB+na/dGdA=;
-        b=BJdlg1K98XU1dvpEVmg+a0iDAKTxombxvz+mpX1z/DhELQ0QvBcYMjT0o7x9A0m2xn
-         DGtR8pJ2KEU8C3e6A36hwDo5DsXSRau0/541BAsvOyA6KplFuZepkeFMLPBBg3Awp6r0
-         1vvcEA+F63jiPEJY65vEtA9hfLAiF9BUPeqA5g4k6c7fM2/PCxL67QJ5UOifjV0JH9JI
-         /auUqlmDoMYuE3H4VpzpDcd4JRlA8wHRzzitWpbFe0/UFDUaY2YoigvIvee5kGDlmyza
-         hRwLuaQ3waT/I4yY9HLKMhrr4MEOJva/voLtgd/DkJPLwOF36DTRdDLqy17g3Ku7T5vE
-         HveQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/bqToNpPnGYBpEDz5rPv0q790ItNBhOHkg6PiDoqpnbKgJZBp0AoaQ7EADCvxEsXViPL99cfMx4nwa@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLq62oM43xYwYwChMeErcieWXLLvxu/qzNjpRX1Wyv6tee9/63
-	+1tBul6DGvdB4NtTmeULcTT1AuC9FS4ezIu2wR8fEqrVV4Sm3SztYDWG
-X-Gm-Gg: AeBDiesBkKKUYXWOMjH3gv6piSQ7a5KlbsLKMvOUCnzc7a1BFxY49N4CuNThVZdl51q
-	EzYgbNj0u0Km4cp+szvwSFlncYswUnqbyQ+ieGdlmlKUo4FxRsxcNT+mZKNfUiDaXaQpFWt3gxc
-	brohTsUX6i11tRs+s5CGGftni2fWMpiKi/TpZ5SAGo7wywYlyMkGBo9eAiH/ifin4M4g53luQ67
-	j8xMPde4saAsuNsdSTF8QbWm3o6hNGfa8R1J9fazEBF7qo3m7Om7UekAevY/kAJr2rxCoz/Fbao
-	vIQKt0BP43YfcodnG9EWVjNhHAML/7HTQabcxQMncY5Vj/UiX92VboCA+cHRU/xGDgNV3Zd4yQK
-	OinT4sDpSrzHMs50HSIlhXbEojYwZ/1eeJGzUurbiJQF/6JemY24qwKWIxOwJxjGMtEfEWeEJvD
-	2AHTsF5P/4HZTP2jJ9M8Dk3Z7x4BC3jgC8Yk25P0pSv7+e+pctM731vzVNCP+OcpHIIVIP
-X-Received: by 2002:a05:620a:469f:b0:8ee:e011:a77a with SMTP id af79cd13be357-8fa863df021mr885936585a.13.1777597654699;
-        Thu, 30 Apr 2026 18:07:34 -0700 (PDT)
-Received: from devvm29614.prn0.facebook.com ([2a03:2880:f814:17::])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8fc2c253264sm18485785a.22.2026.04.30.18.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2026 18:07:34 -0700 (PDT)
-Date: Thu, 30 Apr 2026 18:07:28 -0700
-From: Bobby Eshleman <bobbyeshleman@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>, Alex Shi <alexs@kernel.org>,
-	Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu <dzm91@hust.edu.cn>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Joshua Washington <joshwash@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Mina Almasry <almasrymina@google.com>,
-	Bobby Eshleman <bobbyeshleman@meta.com>
-Subject: Re: [PATCH net-next 07/11] net: devmem: support TX over
- NETMEM_TX_NO_DMA devices
-Message-ID: <afP80MVBJSYJQTx/@devvm29614.prn0.facebook.com>
-References: <20260428-tcp-dm-netkit-v1-0-719280eba4d2@meta.com>
- <20260428-tcp-dm-netkit-v1-7-719280eba4d2@meta.com>
- <20260430175724.0c134a0d@kernel.org>
+	s=arc-20240116; t=1777597751; c=relaxed/simple;
+	bh=BMyjissjNhljnO/Sgml67txfSPuZY0gxsDs4aRf+6NE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nS1dy0zdaoH7K2XV8WBQ50kIyGYHP3nAImUyh7Ot4ZS4jn1CBoABKQ0qkLZ03r/KzWXNv5eydPvq7X/JKzAJ91lJsG2CT6MOpYtzDP1drPIWZ1EypQ6XdL+IvSP4vFX5qYVzGhRCORoh0O3D1z3Z2L+/ejUGNziJ2rVrbGXarQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=162.243.164.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
+Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
+	by app2 (Coremail) with SMTP id zQmowAAXr4Uc_fNpKz9IAA--.31177S3;
+	Fri, 01 May 2026 09:08:45 +0800 (CST)
+From: Ren Wei <n05ec@lzu.edu.cn>
+To: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com
+Cc: achender@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	santosh.shilimkar@oracle.com,
+	sowmini.varadhan@oracle.com,
+	willemb@google.com,
+	yuantan098@gmail.com,
+	yifanwucs@gmail.com,
+	tomapufckgml@gmail.com,
+	bird@lzu.edu.cn,
+	lx24@stu.ynu.edu.cn,
+	tonanli66@gmail.com,
+	n05ec@lzu.edu.cn
+Subject: [PATCH net 1/1] net/rds: handle zerocopy send cleanup before the message is queued
+Date: Fri,  1 May 2026 09:08:44 +0800
+Message-ID: <d2ea98a6313d5467bac00f7c9fef8c7acddb9258.1777550074.git.tonanli66@gmail.com>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <cover.1777550074.git.tonanli66@gmail.com>
+References: <cover.1777550074.git.tonanli66@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260430175724.0c134a0d@kernel.org>
-X-Rspamd-Queue-Id: E45E94A9765
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQmowAAXr4Uc_fNpKz9IAA--.31177S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr1ruw4UWrWUuryfGFy5twb_yoW5Xw18p3
+	4fGrnYkFWkZrW7Ca10gr40vF1UWrn3GryDG3sYyay7Jws0qF1fJrWvya47XFW8AFyru3yr
+	Zr4jqF1q9w4DZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+	jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+	x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+	GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+	8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVW8ZVWrXwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8V
+	W8GwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRpOJnUUUUU=
+X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQEOCWnzF2OIWwAAs6
+X-Rspamd-Queue-Id: 5C1EE4A9792
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+X-Spamd-Result: default: False [3.84 / 15.00];
+	SEM_URIBL(3.50)[ynu.edu.cn:email];
+	R_MISSING_CHARSET(0.50)[];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19817-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,davemloft.net,google.com,redhat.com,oracle.com,gmail.com,lzu.edu.cn,stu.ynu.edu.cn];
+	TAGGED_FROM(0.00)[bounces-19818-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[33];
+	DMARC_NA(0.00)[lzu.edu.cn];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bobbyeshleman@gmail.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,devvm29614.prn0.facebook.com:mid]
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	FROM_HAS_DN(0.00)[];
+	NEURAL_HAM(-0.00)[-0.915];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	R_DKIM_NA(0.00)[];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c04:e001:36c::/64:c];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
-On Thu, Apr 30, 2026 at 05:57:24PM -0700, Jakub Kicinski wrote:
-> On Tue, 28 Apr 2026 15:42:04 -0700 Bobby Eshleman wrote:
-> >  	shinfo = skb_shinfo(skb);
-> > +	if (shinfo->nr_frags == 0)
-> > +		goto out;
-> 
-> Feels tempting to cover the NETMEM_TX_NO_DMA / NETMEM_TX_NONE
-> cases here before we even look at the frags?
+From: Nan Li <tonanli66@gmail.com>
 
-That sounds good to me (had considered it, but opted out cause I felt it
-might look odd with the switch-case that follows). And I'll address the
-bug(s) the model called out here/elsewhere too.
+A zerocopy send can fail after user pages have been pinned but before
+the message is attached to the sending socket.
 
-Thanks,
-Bobby
+The purge path currently infers zerocopy state from rm->m_rs, so an
+unqueued message can be cleaned up as if it owned normal payload pages.
+However, zerocopy ownership is really determined by the presence of
+op_mmp_znotifier, regardless of whether the message has reached the
+socket queue.
 
-> 
-> > -	if (shinfo->nr_frags > 0) {
-> > -		niov = netmem_to_net_iov(skb_frag_netmem(&shinfo->frags[0]));
-> > -		if (net_is_devmem_iov(niov) &&
-> > -		    READ_ONCE(net_devmem_iov_binding(niov)->dev) != dev)
-> > +	niov = netmem_to_net_iov(skb_frag_netmem(&shinfo->frags[0]));
-> > +	if (!net_is_devmem_iov(niov))
-> > +		goto out;
-> > +
-> > +	binding = net_devmem_iov_binding(niov);
-> > +
-> > +	switch (dev->netmem_tx) {
-> > +	case NETMEM_TX_DMA:
-> > +		if (READ_ONCE(binding->dev) != dev)
-> >  			goto out_free;
-> > +		break;
-> > +	case NETMEM_TX_NO_DMA:
-> > +		break;
-> > +	default: /* NETMEM_TX_NONE */
-> > +		goto out_free;
-> >  	}
+Capture op_mmp_znotifier up front in rds_message_purge() and use it as
+the cleanup discriminator. If the message is already associated with a
+socket, keep the existing completion path. Otherwise, drop the pinned
+page accounting directly and release the notifier before putting the
+payload pages.
+
+This keeps early send failure cleanup consistent with the zerocopy
+lifetime rules without changing the normal queued completion path.
+
+Fixes: 0cebaccef3ac ("rds: zerocopy Tx support.")
+Cc: stable@kernel.org
+Reported-by: Yuan Tan <yuantan098@gmail.com>
+Reported-by: Yifan Wu <yifanwucs@gmail.com>
+Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+Reported-by: Xin Liu <bird@lzu.edu.cn>
+Co-developed-by: Xiao Liu <lx24@stu.ynu.edu.cn>
+Signed-off-by: Xiao Liu <lx24@stu.ynu.edu.cn>
+Signed-off-by: Nan Li <tonanli66@gmail.com>
+Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+---
+ net/rds/message.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/net/rds/message.c b/net/rds/message.c
+index eaa6f22601a4..25fedcb3cd00 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -131,24 +131,34 @@ static void rds_rm_zerocopy_callback(struct rds_sock *rs,
+  */
+ static void rds_message_purge(struct rds_message *rm)
+ {
++	struct rds_znotifier *znotifier;
+ 	unsigned long i, flags;
+-	bool zcopy = false;
++	bool zcopy;
+ 
+ 	if (unlikely(test_bit(RDS_MSG_PAGEVEC, &rm->m_flags)))
+ 		return;
+ 
+ 	spin_lock_irqsave(&rm->m_rs_lock, flags);
++	znotifier = rm->data.op_mmp_znotifier;
++	rm->data.op_mmp_znotifier = NULL;
++	zcopy = !!znotifier;
++
+ 	if (rm->m_rs) {
+ 		struct rds_sock *rs = rm->m_rs;
+ 
+-		if (rm->data.op_mmp_znotifier) {
+-			zcopy = true;
+-			rds_rm_zerocopy_callback(rs, rm->data.op_mmp_znotifier);
++		if (znotifier) {
++			rds_rm_zerocopy_callback(rs, znotifier);
+ 			rds_wake_sk_sleep(rs);
+-			rm->data.op_mmp_znotifier = NULL;
+ 		}
+ 		sock_put(rds_rs_to_sk(rs));
+ 		rm->m_rs = NULL;
++	} else if (znotifier) {
++		/*
++		 * Zerocopy can fail before the message is queued on the
++		 * socket, so there is no rs to carry the notification.
++		 */
++		mm_unaccount_pinned_pages(&znotifier->z_mmp);
++		kfree(rds_info_from_znotifier(znotifier));
+ 	}
+ 	spin_unlock_irqrestore(&rm->m_rs_lock, flags);
+ 
+-- 
+2.43.0
+
 
