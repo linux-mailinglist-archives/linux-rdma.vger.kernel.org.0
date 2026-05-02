@@ -1,77 +1,77 @@
-Return-Path: <linux-rdma+bounces-19859-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19860-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8P+WBYMv9mmdSwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19859-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 19:08:19 +0200
+	id YKSgCkBB9mlYTQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19860-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 20:24:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED214B2F4E
-	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 19:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBB64B3326
+	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 20:23:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E0FE4300F9F2
-	for <lists+linux-rdma@lfdr.de>; Sat,  2 May 2026 17:08:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BDCDE303A91B
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 May 2026 18:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A0B382F10;
-	Sat,  2 May 2026 17:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65F2388397;
+	Sat,  2 May 2026 18:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sz1l8ErP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUHBbgCh"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496E0299AAB;
-	Sat,  2 May 2026 17:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EA73876A9;
+	Sat,  2 May 2026 18:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777741690; cv=none; b=nYu8ObIs9FZMX5RQT7EQVQIP6Xlb9kCcWNmWLqbnSwy8lsndRRxyWEaYR9JHXTeZq1H0fHaoidDYXaEpeiwEnan6HF2RpA0MWALBMDhAgYCL0Q2D0ma/vRnGnuGynfjJ0ipBveUQlJN/35BM10Rylu1KVhOO3JDlDPX73zoOWYk=
+	t=1777746078; cv=none; b=Xo3MaxVhtaOryVKQpgRXaEkrek/WJXDglMHbgHQmWu+q0riBkKgGaIRyV6P/SG9ayHvO2RjzCZDBGGYGy4fKi/7blmXBurjxYjtABS+rMRMT+0tR0Zv2xU9L9LYg3dFEZX+PpHCIFssIS/Y2bchTndAEBZYaPNlO6c/C1T42Mlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777741690; c=relaxed/simple;
-	bh=30Uahu0v/XehWUtxu9l0X2lqpXU+V5dHVU5p7Ysft0E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DV1DGEYaak5vTy8ybMrFGnRnT0k/0uQXouBl+tzO8gVu6kfzd8uETNEzXpldnmeKR1RwNhUiqZ0oD7DncBxz5Gs1NPArw7/tXeHeeyT7LlOP1Znq6eAMXcmJICuGt68P/UbpT43g9kOYgtiQU91tdp++6JRmO04Kj0aXsa4I434=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sz1l8ErP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83176C19425;
-	Sat,  2 May 2026 17:08:06 +0000 (UTC)
+	s=arc-20240116; t=1777746078; c=relaxed/simple;
+	bh=bVOZK9Mo21hpEl651U46SE5lBm9+7itxGfP1kgqIbgw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Vzx08ulIkGoj1etuj4AfcdhLXUDeNLALJqnWtulzvtZYhb9Kcvh6f+zJyIIgehdmTRTqDbeqpw86T5b8NHRhAjBWqWTTuC0dmcL4LQYv3H4Gt5bjhmN9ngVMJNBuQR898kw1pzE9fblEg6bxcbd87kZVyRKsMR0uRqEGWEztrGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kUHBbgCh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74443C19425;
+	Sat,  2 May 2026 18:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777741689;
-	bh=30Uahu0v/XehWUtxu9l0X2lqpXU+V5dHVU5p7Ysft0E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Sz1l8ErPMSmuGu5loMwMeOHJJoP6PmNqPQEEDsbePAJyAKGYVdDFxggRkgSIO3wbN
-	 mli1wfSei6iPbPT2uItrmqj1BH8TsgUMa+cWkKiccABu1tCJ5CkHosnPd32seXAkfp
-	 ou9Os54dP2xL/HZj8MMkT9eLrdrD1FDe8l/SIzut01aUyHI8SHRbaafO4TmBrqZhNU
-	 bX4eWLrt78am3eiKB/W/ffXIlJ/WjdmRI4UfJQdK4d08E2hLhqzCjjF9qs0OFQAj4+
-	 /oiy/XBt4dsMGYEuu1K7xJWHxp81h+xVmhQfdQpvKtD22tFfimRV+s+cz77T9B2WuR
-	 vKWY6zIFLUPHQ==
-Date: Sat, 2 May 2026 18:08:04 +0100
-From: Simon Horman <horms@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
-	Jianbo Liu <jianbol@nvidia.com>, Kees Cook <kees@kernel.org>,
-	Dragos Tatulea <dtatulea@nvidia.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH net-next] net/mlx5: Add vhca_id_type support to IPsec
- alias creation
-Message-ID: <20260502170804.GN15617@horms.kernel.org>
-References: <20260430061958.225245-1-tariqt@nvidia.com>
+	s=k20201202; t=1777746078;
+	bh=bVOZK9Mo21hpEl651U46SE5lBm9+7itxGfP1kgqIbgw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=kUHBbgChEGnAOufuqgODrVGZtBKeyW4XwFfxktggUdY4UiBBd94C/l628auOZIDmT
+	 tW3YgeQv7ti8TALdyj2+dvy+1vskB9FskRxYHLExKeS8ZDslivF8oWKw/4QONkEBGM
+	 Ua+UQmfEKkj2JmBg9F0fh7wI3aQ6FJBdPO+1TUbycy3fJeXu/UiyjC+IoGGrD2f8ic
+	 qbd7Cz/83peg2vRDKBRNrID2SzZQLqaGqXiCycpFR2evGTy2BgWZk+iXPrht3zGWqZ
+	 hT1sMIFdJtCWw085cv7NnzKS1cm5zWWJ4IhcIzxhuK9TIZWjLN/7vF2pD2n7KrOhXh
+	 UthkD/F4aTNuQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02D0A380CEFF;
+	Sat,  2 May 2026 18:20:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net/mlx5: Add vhca_id_type support to IPsec
+ alias
+ creation
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177774603055.3903048.10928743349173579298.git-patchwork-notify@kernel.org>
+Date: Sat, 02 May 2026 18:20:30 +0000
+References: <20260430061958.225245-1-tariqt@nvidia.com>
 In-Reply-To: <20260430061958.225245-1-tariqt@nvidia.com>
-X-Rspamd-Queue-Id: 5ED214B2F4E
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, phaddad@nvidia.com, jianbol@nvidia.com,
+ kees@kernel.org, dtatulea@nvidia.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ leonro@nvidia.com
+X-Rspamd-Queue-Id: BBBB64B3326
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -83,27 +83,32 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19859-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19860-lists,linux-rdma=lfdr.de,netdevbpf];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[horms.kernel.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email]
 
-On Thu, Apr 30, 2026 at 09:19:58AM +0300, Tariq Toukan wrote:
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 30 Apr 2026 09:19:58 +0300 you wrote:
 > From: Patrisious Haddad <phaddad@nvidia.com>
 > 
 > When creating an alias FT for MPV IPsec, if alias creation with
@@ -116,10 +121,16 @@ On Thu, Apr 30, 2026 at 09:19:58AM +0300, Tariq Toukan wrote:
 > resolves the issue by using sw_vhca_id instead which doesn't change post
 > migration.
 > 
-> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> [...]
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Here is the summary with links:
+  - [net-next] net/mlx5: Add vhca_id_type support to IPsec alias creation
+    https://git.kernel.org/netdev/net-next/c/c8300af614b2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
