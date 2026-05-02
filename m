@@ -1,150 +1,178 @@
-Return-Path: <linux-rdma+bounces-19844-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19845-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mOfwKvGO9WmyMQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19844-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 07:43:13 +0200
+	id +HOEI8mr9WmXNwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19845-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 09:46:17 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CAFA4B10E8
-	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 07:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E32004B14D0
+	for <lists+linux-rdma@lfdr.de>; Sat, 02 May 2026 09:46:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B83C03010D8D
-	for <lists+linux-rdma@lfdr.de>; Sat,  2 May 2026 05:43:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9521C3026312
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 May 2026 07:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4522E173B;
-	Sat,  2 May 2026 05:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2C63033D8;
+	Sat,  2 May 2026 07:46:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VUM/ilRS"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="pesVMCp5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5212C1F5EA;
-	Sat,  2 May 2026 05:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE6E1FBEBC;
+	Sat,  2 May 2026 07:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777700586; cv=none; b=KbmSP3+RcoNEWkaXnm5KVmaN1bu09IwXDqd4mDmtDMKEokrxkFlydynS2sKwz7A/eUhSHQWHerbTtImFIYzPG5sxZbHqq23xMGPEqdFyyHstjk8+enpn/YzQNrU29MigYQiYHazhQmgJQ0/hmoe7E8TeGekQlyd1wKdhKqyNYAg=
+	t=1777707962; cv=none; b=evQplxgDcesi7/8qMckDtD8M/AZbJ1fuF1m+TrvWcHow6YmMe1eKsrodYb7lmhNy7Brmr7XPcfcXYQOLiQbOQR8StQltDa9gRROd72O0RDKx5B1ynhXFF39GJrBFSaFl6Jk8TP2GfZkBJxGqzXjB/uVolF3izFlsDwzKZAVmdSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777700586; c=relaxed/simple;
-	bh=Nr7AV1GzCHWBC8xql0XXEM349ProPu1/5328GUpuDRY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=K51YzWrOoWokZHHUE6x10pxCm3LagXqfKd9+Fvo9VW2W8WsBC24BFVKpk7OqikxQrgh81fSOsM0ZZF5ZdoLPb75RUcLSGtI6nIW4rVnVuFBBjMmbHovBzaDSks6iwo+R+MkHA5X5Jtjn8sGgQt4Vi6DI7SiAefCtFOLTPDS4MS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VUM/ilRS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CC8C19425;
-	Sat,  2 May 2026 05:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777700586;
-	bh=Nr7AV1GzCHWBC8xql0XXEM349ProPu1/5328GUpuDRY=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=VUM/ilRSVApNL2bTxhJGsPkQJJ4gnCKJHKFHumKW7eT8JuoeuyeF5KGpBOStH1Feu
-	 oaq6O0TNmk8ILGZJ9i0IRRihkgZ6sZTz575JHVW2VcbMjBYXqOnUkRyTr7rHPWSsv7
-	 j6aG6Xq/Nhnd95+wo/iQ/rJtZvj7N+ClEwxvsFmyj35E7Rxj64Ku50CMYXSeyqEHqZ
-	 BXNOSSHVCDEs/Ao9ZXBrE8D6krakOWl0TFWkCH9sBRKNv1YDDPHkpt+OPHRHiZmvrr
-	 JhHgerIlXAzFKOryPPmaj/wKdKFVse/csFKJ+EBF0iXMhHsvq1QTq9RGoUxXK6Fnh3
-	 36tq50/aNKysg==
-Message-ID: <843faae8c03ce534fad28e73b155d33c84f69bee.camel@kernel.org>
-Subject: Re: [PATCH net-next v2 5/7] selftests: rds: Fix gcov and pcap
- collection
-From: Allison Henderson <achender@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com, 
- horms@kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org,  shuah@kernel.org
-Date: Fri, 01 May 2026 22:43:04 -0700
-In-Reply-To: <20260429194806.6ae176a9@kernel.org>
-References: <20260428222716.2960871-6-achender@kernel.org>
-	 <20260430024206.2452353-1-kuba@kernel.org>
-	 <20260429194806.6ae176a9@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3-0ubuntu1.1 
+	s=arc-20240116; t=1777707962; c=relaxed/simple;
+	bh=0mivkUHFDn9Au6xdSnveP52KNalzl+1AEurCyUgAVgk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=oFpzlIm2OjPK+K07iXiyuBhxtm5X+v4bZukq5WyqjeKL7rKLA4Bolng1ULUN1uEtlX8iotoPYNaUDir98OoUzAu/cpvpL9wPT+HT0RSbiv0IPKyAnh4ICQHKlXwLtwobh76UZghqKF16dEAMqBad6sIlp7JYyUnivarFjuhrhLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=pesVMCp5; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1231)
+	id B972120B7168; Sat,  2 May 2026 00:46:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B972120B7168
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1777707960;
+	bh=03x7EIYF/FMwQq7bQmdUDG6fCjU5r08G2vuUxTlhwNc=;
+	h=From:To:Subject:Date:From;
+	b=pesVMCp534M9wqbRM3ujMyMrFqDQPedO87XPTVukjfJg2OdiEI2RkZ7kbbxV1QLZw
+	 Hi8k3h53d8U8l8BEZogox+kT0CvpXsUHsH/SIKuOlWYqDaYQr/SDJvwfdMTyhRxnnb
+	 /Ek+IT8GD4EDDR4Vxo3zc+49PkNonS9J979Mez98=
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	longli@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	ssengar@linux.microsoft.com,
+	jacob.e.keller@intel.com,
+	dipayanroy@linux.microsoft.com,
+	ernis@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	kees@kernel.org,
+	sbhatta@marvell.com,
+	leitao@debian.org,
+	netdev@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	gargaditya@microsoft.com,
+	gargaditya@linux.microsoft.com
+Subject: [PATCH net-next v3 0/2] net: mana: Avoid queue struct allocation failure under memory fragmentation
+Date: Sat,  2 May 2026 00:45:32 -0700
+Message-ID: <20260502074552.23857-1-gargaditya@linux.microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 5CAFA4B10E8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: E32004B14D0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19844-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19845-lists,linux-rdma=lfdr.de];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,simult_flows.sh:url,run.sh:url]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gargaditya@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	NEURAL_HAM(-0.00)[-0.957];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-On Wed, 2026-04-29 at 19:48 -0700, Jakub Kicinski wrote:
-> On Wed, 29 Apr 2026 19:42:06 -0700 Jakub Kicinski wrote:
-> > > +# tcpdump saves pcaps to /tmp because it requires chown to save the
-> > > +# pcap but chown is not supported by 9p.  Mount tmpfs on /tmp if it =
-is
-> > > +# not already a separate filesystem
-> > > +if ! mountpoint -q /tmp 2>/dev/null; then
-> > > +	mount -t tmpfs tmpfs /tmp
-> > > +fi
-> > > + =20
-> >=20
-> > Could this introduce a regression when the test is run directly on a ho=
-st
-> > workstation rather than inside an isolated VM?
-> >=20
-> > If /tmp is a regular directory on the root filesystem, mounting tmpfs o=
-ver it
-> > will instantly hide all existing files and UNIX domain sockets in /tmp.
-> >=20
-> > Since there is no cleanup trap to unmount it on exit or failure, does t=
-his
-> > leave the host system in a degraded state?
->=20
-> I share Sashiko's mixed feelings here. Do other tests mount /tmp ?
-> Seems like something that belongs in the "CI setup", external
-> to ksft itself.
-Ok, I did some looking around, and while I dont see any tests that mount /t=
-mp, I did notice that mptcp_join.sh and
-simult_flows.sh use a $SUDO_USER, presumably to get away from the chown iss=
-ue. But without getting off the 9p fs
-with some sort of scratch area, we still end up with empty pcaps.
+The MANA driver can fail to load on systems with high memory
+utilization because several allocations in the queue setup paths
+require large physically contiguous blocks via kmalloc. Under memory
+fragmentation these high-order allocations may fail, preventing the
+driver from creating queues when opening the interface or when
+reconfiguring channels, ring parameters or MTU at runtime.
 
->=20
-> point #2 my vng does have an overlayfs mounted over /tmp so the
-> mountpoint check doesn't trigger IDK if this is what you meant=20
-> or I have a different version.
+Allocation sizes that are problematic:
 
-I did try using --overlay-rwdir, and I think that gives rw to the guest, bu=
-t it's ro to the host, so we dont get to keep
-the pcaps post mortem.
+  mana_create_txq -> tx_qp flat array (sizeof(mana_tx_qp) = 35528):
+    16 queues (default): 35528 * 16 =  ~555 KB contiguous
+    64 queues (max):     35528 * 64 = ~2220 KB contiguous
 
-What we can do, if it sounds ok to you, is set up a temp scratch area in th=
-e rds_logs folder so it's not mounting over
-/tmp, and then run.sh can handle the mount with a cleanup trap addressing S=
-ashiko's concern
+  mana_create_rxq -> rxq struct with flex array
+  (sizeof(mana_rxq) = 35712, rx_oobs=296 per entry):
+    depth 1024 (default): 35712 + 296 * 1024 =  ~331 KB per queue
+    depth 8192 (max):     35712 + 296 * 8192 = ~2403 KB per queue
 
-Let me know what you think?
+  mana_pre_alloc_rxbufs -> rxbufs_pre and das_pre arrays:
+    16 queues, depth 1024 (default): 16 * 1024 * 8 =  128 KB each
+    64 queues, depth 8192 (max):     64 * 8192 * 8 = 4096 KB each
 
-Thank you for the reviews!
-Allison
+This series addresses the issue by:
+  1. Converting the tx_qp flat array into an array of pointers with
+     per-queue kvzalloc (~35 KB each), replacing a single contiguous
+     allocation that can reach ~2.2 MB at 64 queues.
+  2. Switching rxbufs_pre, das_pre, and rxq allocations to
+     kvmalloc/kvzalloc so the allocator can fall back to vmalloc
+     when contiguous memory is unavailable.
+
+Throughput testing confirms no regression. Since kvmalloc falls
+back to vmalloc under memory fragmentation, all kvmalloc calls
+were temporarily replaced with vmalloc to simulate the fallback
+path (iperf3, GBits/sec):
+
+                 Physically contiguous         vmalloc region
+  Connections      TX          RX              TX          RX
+  --------------------------------------------------------------
+  1                47.2        46.9            46.8        46.6
+  16               181         181             181         181
+  32               181         181             181         181
+  64               181         181             181         181
+
+---
+Changes in v3:
+  - Rebased to latest net-next (net-next reopened)
+
+Changes in v2:
+  - Rebased to latest net-next
+
+Aditya Garg (2):
+  net: mana: Use per-queue allocation for tx_qp to reduce allocation
+    size
+  net: mana: Use kvmalloc for large RX queue and buffer allocations
+
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |  2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 61 +++++++++++--------
+ .../ethernet/microsoft/mana/mana_ethtool.c    |  2 +-
+ include/net/mana/mana.h                       |  2 +-
+ 4 files changed, 39 insertions(+), 28 deletions(-)
+
+-- 
+2.43.0
 
 
