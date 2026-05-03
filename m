@@ -1,88 +1,79 @@
-Return-Path: <linux-rdma+bounces-19879-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19880-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0L3PEDs692kIdwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19879-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 03 May 2026 14:06:19 +0200
+	id gCVxG7hj92mZgwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19880-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 03 May 2026 17:03:20 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948EF4B5755
-	for <lists+linux-rdma@lfdr.de>; Sun, 03 May 2026 14:06:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3624B6295
+	for <lists+linux-rdma@lfdr.de>; Sun, 03 May 2026 17:03:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A9AE83009FBC
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 May 2026 12:06:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ED844300916D
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 May 2026 15:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015043AD53B;
-	Sun,  3 May 2026 12:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C69C299944;
+	Sun,  3 May 2026 15:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z9Yfq2tL"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="QDt7Yj6+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-010.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-010.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.12.53.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F283ACEE8
-	for <linux-rdma@vger.kernel.org>; Sun,  3 May 2026 12:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F15221277
+	for <linux-rdma@vger.kernel.org>; Sun,  3 May 2026 15:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.12.53.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777809972; cv=none; b=s2wFV8wpBTVCnBxLjmuwfjR4S+aPuGlv4InaQ1+Y/5ptZl2CVnw/slNV/dod+1vMfAH3yRW4e9HurwkRl+uJ4bSN0R0G/d95PHMDS+/REBFfOVw5QARPy9VOFA80MMcyWn9vvF1Ko0OjQHrS6nTjIiTlc4lsUr5bbZiShGEjurs=
+	t=1777820593; cv=none; b=J78PPl7etHgch8N7HE/Ygz7EqPtrK0swPZcNfgMGYYkL53HEiPWNliV9tm1h60oK5Wo4npda3hWdq1ImEmsgGKD7YHXK8aLW9pvsuZFXaQx6MGFcFqvc1hNGgEWmMqParDOO8DqQR7Me5gcZX/P2zgmMCcY/61ZfVUeobe6jUmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777809972; c=relaxed/simple;
-	bh=jtGYQmyKXhp0rnGo6CcPJp1nFhwv6NBzCQzmbG72KeU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qt1aAoggJLkl4tw0XItLCha9yikVHQAEsC2cVkjK9fsAYLgrzM2ZFMMyQZpD73MA9zyToBav7vZoOrnuCUPGKklXINrjpWkds8Uq2yauJkW6BdEJkRGpZjErJIuezOGPNfig1owgT4kEjXTo+Yg62bl2ZEM5CtkWdzeUxNYldjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z9Yfq2tL; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-364ff382b0bso1828341a91.2
-        for <linux-rdma@vger.kernel.org>; Sun, 03 May 2026 05:06:11 -0700 (PDT)
+	s=arc-20240116; t=1777820593; c=relaxed/simple;
+	bh=SmsycKGD84uJFaDjMDDWUHCx2uTB4vhTDJlj2677Qtg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bq3z7Abt4oigLCnWaAwkA8zdjZexdsI7Uj3xfZOEd36WmN2cibKP6fPSpvdoi8Q2Q+AtSxU+k63FGlq47A+7/jwBSQQaXBcFB/2URszrG+V+YOYP7ndfbzSFOkmX074GfjRr1AQED2H1kHiFTjkTz4FGMGIeqNeflemSbrkl6vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=QDt7Yj6+; arc=none smtp.client-ip=52.12.53.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777809970; x=1778414770; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=84tX2retdJJR2pohtx/GVxeV0We5TCZ6puvzbQ7vd/c=;
-        b=Z9Yfq2tLhfZuv6U2/IDermvw5vuSiJMDwy3HtMteNjgfAm6V1q/t8nhU4JFQJ/EYya
-         P2HLogOhqAGblJkGY7+pbYC+CndG6uARWnAkIoE/aspSZZS20+gd3Ms3owJtoheTsAgw
-         vEg00H178MGEpGjFSA1Sd11Wd7j0uA99Uu45g4H39a/ITTJbkI4aVnoRq7lhelDB4cVU
-         Cy2MSMv4hcrk322ejOwpZ6EDrm0727XZy5cg+CRHSKSRQxN2udt5DiyacAV+vW89MaqB
-         UT65unJk84kPaAl6jXEJMCat3kGf0T48jcjZRIDiO8AEhF12ZIG8Sz99jv2X9BeCY1pC
-         q1tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777809970; x=1778414770;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=84tX2retdJJR2pohtx/GVxeV0We5TCZ6puvzbQ7vd/c=;
-        b=QMr+povfKrfkP6nDLr/tv+ebeoGPc2yoOL7e1orbtBGcpiJjuK+J8O/tDwxewL1cm2
-         HOeuRnUz14VVYv0cOQashsHQlfrReJpzXfXGZUwHqUHNhW25plRU0CsYVj0NyRZ6R7bg
-         iLi1JImol4G05tTYy3k0vaIH62vuCLWhC5aLAWhDsXC5IkxGearqNpcvOUDtyFwYGHSj
-         7cs6o6oN9o6Neg6rhyKqKikpG4dE7iv4ALm1kf0nd6qBpFHyy2TrrQEthxKEE5cXsmzN
-         tLb/rck/05L1iS8JPkgYtoLDglsxlL0w6niGDM7WFQ6DyoHXEd/vLrSIC9YB6sG6VNee
-         glKA==
-X-Gm-Message-State: AOJu0YzkB0avLFzQrkXLp+ItAcryKNAQ/igm9UmpF53I8vrkDkB+u51z
-	ECFov2JvOMNK+LbMtGV0sI1crPEDlDx3t8fi6WTKdNXoMR0En9R7tIxGvRW0DZrvx2U=
-X-Gm-Gg: AeBDieup3cH+TJxTIfFmJ+LeGjZ6eqYQum47VaDN+FBFUzmFdXWUPrz1BRmXEMjeAFx
-	9f1M5xdnVTyx7BQqnINuSO/NoRdS5NUcB+kY7yv2JKkhawfhWk2SUDUOuCNcBu1mUecN7KbILUX
-	B/BK24NvmpB0LcXRElJCNDqCYWqUg0OujWnXE4olJTq8T5APQLqZWrrMm1s9TLCqF8ldl3CXala
-	Q84VRdyt3l/pqqcNSG5TLx3ZgQ2HCUfq4vjYScssNvQyktn0h2E6SqDFwFyFONWFBMxtWiOWb6C
-	J47nhTRiGztGkv0+i3Py1YQzscjNSN0y3gNSCsNpmZYmn+JNq4LT7xxghq8s3OL+HDQFHeYFvpX
-	ZY2CZQSaQrQzTocUwnW9GN5l12q5R+7So/eSt28FTxmjWxdJr9g6N2cCl68Y8KJp4ngnvEMa+LM
-	dELKR8QGYm3OwAwEx6lcxQ6vuE5aQlxbt8OyEUUwW9P9hlZYqv9Is5
-X-Received: by 2002:a17:90b:2b8b:b0:35a:329:73d8 with SMTP id 98e67ed59e1d1-3650cd8646fmr5924299a91.4.1777809970547;
-        Sun, 03 May 2026 05:06:10 -0700 (PDT)
-Received: from shirinkaul.localdomain ([122.172.84.203])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-364f3c55bfasm4386797a91.0.2026.05.03.05.06.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 May 2026 05:06:09 -0700 (PDT)
-From: Shirin Kaul <shirin.kaul11@gmail.com>
-To: linux-rdma@vger.kernel.org
-Cc: leon@kernel.org,
-	jgg@ziepe.ca,
-	linux-kernel@vger.kernel.org,
-	Shirin Kaul <shirin.kaul11@gmail.com>
-Subject: [PATCH] infiniband: hw : use clamp() in _mlx5r_umr_zap_mkey()
-Date: Sun,  3 May 2026 12:04:57 +0000
-Message-ID: <20260503120457.49220-1-shirin.kaul11@gmail.com>
-X-Mailer: git-send-email 2.43.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1777820592; x=1809356592;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZTek/PqlERtw4aDUX53B5sjYEKk/hI+lcAatxAvbUsc=;
+  b=QDt7Yj6+JHQoo19J6daVeWcf8vJxnUlkqHt8astcxkbFRAwccF5NNN+j
+   /J10oaacsYKHPWUEdC49vV/DcSg2uNhaj46SIEFd+9KYakBJJ+3cOlVQ1
+   nDPvP94Gx9FFH4SAs0X0MP7bZL8DTOXdcqHQ++wjg/Dc0hZhOo6dBERDj
+   kNpLh5U45tJM3iQjQakTNAUkdgTAasUZGT7wNQb8RO4Mlaiz5yliNzz0D
+   I7AYPXUvxRNIxgp6PIUoIDdWCs3UjS1bP49yA40LEdLXEhb6vfu6fPEO2
+   rok4VM2qlmKnzHw+v41NGnEAcOQF3CFyHgBr1rqWQ0lteBpNHiffSg4xU
+   Q==;
+X-CSE-ConnectionGUID: iUMnMRKETXOs6Md6nHR0XQ==
+X-CSE-MsgGUID: zEqVtW7+QPyhGiCquA+taA==
+X-IronPort-AV: E=Sophos;i="6.23,213,1770595200"; 
+   d="scan'208";a="18618950"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-010.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2026 15:03:09 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.178:15264]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.4.227:2525] with esmtp (Farcaster)
+ id 0105a5a8-e8fc-42d5-8fb3-cefe490c5d56; Sun, 3 May 2026 15:03:09 +0000 (UTC)
+X-Farcaster-Flow-ID: 0105a5a8-e8fc-42d5-8fb3-cefe490c5d56
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Sun, 3 May 2026 15:03:05 +0000
+Received: from dev-dsk-ynachum-1b-0ecf7b87.eu-west-1.amazon.com
+ (10.13.226.176) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Sun, 3 May 2026
+ 15:03:03 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Yonatan Nachum <ynachum@amazon.com>, "Yehuda
+ Yitschak" <yehuday@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Expose device P2P DMA support via device query
+Date: Sun, 3 May 2026 15:02:46 +0000
+Message-ID: <20260503150246.2349679-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -90,62 +81,108 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 948EF4B5755
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D039UWB001.ant.amazon.com (10.13.138.119) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Rspamd-Queue-Id: CF3624B6295
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,ziepe.ca,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-19880-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19879-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shirinkaul11@gmail.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.985];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
 
-Use clamp() instead of min(max()) to make the code easier to
-understand.
+Expose device P2P DMA support using the query device verbs.
+If the device support P2P DMA, it can DMA directly to and from a peer
+PCIe device
 
-Signed-off-by: Shirin Kaul <shirin.kaul11@gmail.com>
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Reviewed-by: Yehuda Yitschak <yehuday@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
 ---
- drivers/infiniband/hw/mlx5/umr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 10 +++++++++-
+ drivers/infiniband/hw/efa/efa_verbs.c           |  3 +++
+ include/uapi/rdma/efa-abi.h                     |  1 +
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
-index 29488fba21a0..92b76ee65779 100644
---- a/drivers/infiniband/hw/mlx5/umr.c
-+++ b/drivers/infiniband/hw/mlx5/umr.c
-@@ -1014,7 +1014,7 @@ static int _mlx5r_umr_zap_mkey(struct mlx5_ib_mr *mr,
- 		 MLX5_IB_UPD_XLT_ATOMIC;
- 	max_log_size = get_max_log_entity_size_cap(dev, access_mode);
- 	max_page_shift = order_base_2(mr->ibmr.length);
--	max_page_shift = min(max(max_page_shift, page_shift), max_log_size);
-+	max_page_shift = clamp(max_page_shift, page_shift, max_log_size);
- 	/* Count blocks in units of max_page_shift, we will zap exactly this
- 	 * many to make the whole MR non-present.
- 	 * Block size must be aligned to MLX5_UMR_FLEX_ALIGNMENT since it may
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index ad34ea5da6b0..097b3303f3e9 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -725,7 +725,11 @@ struct efa_admin_feature_device_attr_desc {
+ 	 *    on TX queues
+ 	 * 4 : unsolicited_write_recv - If set, unsolicited
+ 	 *    write with imm. receive is supported
+-	 * 31:5 : reserved - MBZ
++	 * 5 : event_counters - If set, event counters are
++	 *    supported
++	 * 6 : p2p_dma - If set the device can DMA directly
++	 *    to and from a peer PCIe device
++	 * 31:7 : reserved - MBZ
+ 	 */
+ 	u32 device_caps;
+ 
+@@ -1132,6 +1136,10 @@ struct efa_admin_host_info {
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_DATA_POLLING_128_MASK BIT(2)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_WRITE_MASK  BIT(3)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_UNSOLICITED_WRITE_RECV_MASK BIT(4)
++#define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_EVENT_COUNTERS_SHIFT 5
++#define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_EVENT_COUNTERS_MASK BIT(5)
++#define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_P2P_DMA_SHIFT    6
++#define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_P2P_DMA_MASK     BIT(6)
+ 
+ /* create_eq_cmd */
+ #define EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS_MASK       GENMASK(4, 0)
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 7bd0838ebc99..b16f470f7d30 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -270,6 +270,9 @@ int efa_query_device(struct ib_device *ibdev,
+ 		if (EFA_DEV_CAP(dev, UNSOLICITED_WRITE_RECV))
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV;
+ 
++		if (EFA_DEV_CAP(dev, P2P_DMA))
++			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_P2P_DMA;
++
+ 		if (dev->neqs)
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS;
+ 
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index d5c18f8de182..d19cb59d822d 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -133,6 +133,7 @@ enum {
+ 	EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
+ 	EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV = 1 << 6,
+ 	EFA_QUERY_DEVICE_CAPS_CQ_WITH_EXT_MEM = 1 << 7,
++	EFA_QUERY_DEVICE_CAPS_P2P_DMA = 1 << 8,
+ };
+ 
+ struct efa_ibv_ex_query_device_resp {
 -- 
-2.43.0
+2.50.1
 
 
