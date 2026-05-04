@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-19924-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19925-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4FsdLqGm+GkExgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19924-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:05 +0200
+	id 8OeSMLWm+GkExgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19925-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:25 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A2E4BE548
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:02 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 148EB4BE581
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A258304C976
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 13:57:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B6D4E3053DD4
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 13:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C866B3DDDDE;
-	Mon,  4 May 2026 13:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5499934753C;
+	Mon,  4 May 2026 13:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="cjPDddM+"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="MO7neBQp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06FF03DDDD7
-	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 13:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712033DDDD6
+	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 13:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777903076; cv=none; b=R+ENFJ19Q/2DkEIbEiMqj7ySJ38Sc6MtZdS1Z7CDg+fKNRiCb+dKiVtHFOFS5xd7p37+UrN25JzZYJqWeUfDSB1NZc8OhTPJsGFN0dIMom0LBYSyL8gPn7SFk6ENyw43txkkRP1moKFwCDiNDUXE0Ya+Z/WkkXcTS4zEKtf5MgM=
+	t=1777903078; cv=none; b=HDu3oYBFcZUqLYg1VS5aaEVuJieVorhRgTuT3NwjLsz/Du2IAYbWV+ELOiEuWadKIDmJ2nXWk4fV2laMiOxuVBldQFy9be2ARM+Gtl8+ymoXmvVMKJCdgHgGkHl1vwGKlq6lydhTOngZPbdLdbkOsu7NAqJ5Xfxi7YK4ynzN2Ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777903076; c=relaxed/simple;
-	bh=+8R7aaMMa7pWDBJg3jNABtAT06FpnkwLiglCp/tfUZc=;
+	s=arc-20240116; t=1777903078; c=relaxed/simple;
+	bh=Cvles9uFUzEeNxA2FpWegDVVerNdUiy20WYHFOOs8/o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Kb+nFTUN1f5rfpl/0CtiTAWvJcc5Mi1ksn6zzb/egTn+CNVflGFfAwnMvrtfU1FSqU6BdHtZ15wevMD9QxrVeZcf0OlgQqb2oos4ltHzsDkeoof0yvZ98GWpJEWBlTZpXYgCT81lr4qX4aVyk9AVcTethfI9+eV91rOdw28XhVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=cjPDddM+; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=u7NhaXeNK7v2gkND2gV6sFwOjzRMnxm04fj3kvZ0DyaTd1y2B+yBljqTmtzamWJ+L1nnQHBfU4nNq/rZaxWImXwr1vzJEwPDIkceTv9pyXN3NXUyWInzbl88ZisWqtAGu1RrrUdIRMJrvUYdNAFG/OpYA3G9MyHOGw3sFdc4Yh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=MO7neBQp; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-48d102471a4so7579725e9.2
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 06:57:54 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4891e86fabeso51688745e9.1
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 06:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777903073; x=1778507873; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777903075; x=1778507875; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KM8J3dwDrt2LUcO6M6DOcNvFtMPeFBMeHtYnSOecjXU=;
-        b=cjPDddM+zHA74gKRkI1K6P3tTRe8bwQ44OQEoVhFmNb1e6GvsMS3uwUm0pYXkJTMee
-         MRMNDaVp8qwZjrWMr1xJZQ3unb5HCHB00do+KJ04BbKM412Eo2rh+viNvk4npx4LG5l7
-         +tiwx2IUKElQWRrdeT7uRcwpvoEqWYLxtMYmeC1cRnGuH9SaQ07B0XmmTZLFsWC0aV5C
-         gzdCR13G7Zzr3kbFIWm8JooLHG54OzfjU7k0Hhhp3vgDW0tU9F4vop3tgeWsBF89ADDp
-         f6qaeJfEDBD/wTjm1Ih4dnb3+PYVfyD0ySzCYQ57ZX5O7UATvKMTKYerxTZ2gKDHnAgY
-         KP9A==
+        bh=aA1lOLpbGDfkec7O/THi5p1zEO7TEcy1/4BaA6IgNzs=;
+        b=MO7neBQpIPzsNscwbMwwOtqTH1KegRqYOSEqjS9kE0cZsRmDSCwFGZdexCr5AP2gqt
+         MA6nctbtqy4s7EizITrpHdF2HE7/kUDM4vnG6CRc3FydahyWfl2Vh3Sfc+cUnK7QfRog
+         JyfL6n828BnxOTQta0aAHO4+YRnDwiLlba4h5U486QFqs1Pcaa7OT74xlJSsKJhrZc4B
+         fPgyKPdsUoge8mltMvxpz0uZkGmv2KL5v0Q7Gjz79c/fIeOsmzHzPc75ow19StgrcekE
+         5iRfyeShhzCja55bfTOl46ZQalUdOGpfrZP8ayk67nJpjR97e8zPC7x3rii5bJAc+hJi
+         cUFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777903073; x=1778507873;
+        d=1e100.net; s=20251104; t=1777903075; x=1778507875;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=KM8J3dwDrt2LUcO6M6DOcNvFtMPeFBMeHtYnSOecjXU=;
-        b=b2Ot0zwFx5avd6PDLxJ2L1b+JQ0Fi10MY+rn+2Gixrl1Ht34OQfpLKjffE6lYudddI
-         dSURqlJgsymKzGrRRbT9aplkdFZWeVbJ9E8RQbgpJqIZEcMl4M1N3ZsTc8QEEJqPaA4p
-         NGz/eLTLU9nnQ21YxqpFWbd2K3Q8zrTEpQYEwJdauUzdCMPM+AnKXzsnQ0mKCJuxUQxt
-         nlwunCVq7vu4towo+CgsFZZhxYrDf20Bj8Xj+AwsIOnvcSwv2bHbU2F7nKexLSlgvZNt
-         5fr1gO8nrr0s54GvuRLRFs3WAW1LsObubS4qnN1+p+OniTiuxpL74iTYxehBO6+cmJiA
-         QfTg==
-X-Gm-Message-State: AOJu0YxQfbHKTShOKcigxlTyj3Z7ycOYA5wexveKKBFgO2kv7M6dKVq+
-	WJgqid5r1rHgvDa/Nun2SBrhZu/MhP6VZmtM9Zchuw0ZV3eHIp/KwDS1KhJMjdraCbbRM4UZlgK
-	wxTbJtYM=
-X-Gm-Gg: AeBDietvubZO5Z/Stgy38BvMrfuk8mVir9k47Qtk2XRB/DY8ao/UBIlw7o/e7lOZsh9
-	PVno2Ppf1TIJ6T/HkQNo08EJ6bP9hWtsueU1gQ0ewq7dI2Dagx+SMrdoMuGVuzGA9DSOnUMIa7j
-	oKf03sGJwigvAjzWXr2UTJl/ExLi5SVPF5ZuPJ+tXNrdRNVlKzj/jgDl8npsO+yRylt2MWPuWJ/
-	Po8aSivUN4eDdFUoxtzAtg1hlgXzU0TFUYsCMOi9u4xTQqDQVCiedPnuH0y11mnHc1dJJLPUFqM
-	ERAXNUvZv8dxN4qA0Pb+9z4qHPmHayAgtpKsvRNgEFnJD/C8of4iAQByeRgnkpFYFJfHsPEdhgt
-	Bsmb2Uhkz21uYcjJ4FFx/2/tcNuRHAqQ/KdBdiVEepR6KUyb9BCIi3Qi8Igym/5c29nQzncVlIc
-	MvnqQjOLWabF23P3wapStRjvTO
-X-Received: by 2002:a05:600c:154b:b0:488:936a:6220 with SMTP id 5b1f17b1804b1-48a988a705dmr176896865e9.21.1777903073501;
-        Mon, 04 May 2026 06:57:53 -0700 (PDT)
+        bh=aA1lOLpbGDfkec7O/THi5p1zEO7TEcy1/4BaA6IgNzs=;
+        b=l9aq/Ke+MuEGE6OiIZ3iVD2dYdsenxJXdnDeGEyVl/XjAfu/TGFSm9+67YqLFB5Qel
+         N7v+bWBtsg+E14e/x+5kCZoDOwT2mWRtIizir1wrsfvFT/UvJUFh0SRqNNhImVuGsBOF
+         mBpkJvO4J95HPJ2efQmhaxV4iFUnG38VLbbU0C49hY4V950lV0ztxpxtpX+XO2XwVE9j
+         LzqmTNl7FQHr/u5fjrSs0F5m26/3gVbj5qeiVXgdG9Mj4th6P/lH0RAMoEO1K7T/HP+E
+         w8dGoUvaJ+zBJ59NkbE1IHb1P6SiXXXuRMCJAsCNIJR7lohqU2TO1ESXp2b9nxo2cpPS
+         h1+w==
+X-Gm-Message-State: AOJu0YzUTCQNIDap4wGfEratD+VdOWks1EsDm6oYOFq+BtA7yL4CDa6g
+	D0MzvOqxC0kuXM3LbilOMH5L/B2TpeQgxAVhsy+qujV8wVOj1zqxbWH7wq3GRz+VciIdSnV46eR
+	noPFFtY4=
+X-Gm-Gg: AeBDiesE8iTJO7z+VlcukZ7E1sVsZuD+5lMdfHDGWqy5xK8r++pUtBPKHEHIB0g9QT2
+	ZfG+QnZwh2U2YGqxTSLZ0eO9ckAEUtuXhBfMVaCaxXDx3X7sNjhSCFQlJWC1d1nPEdNqzDZhoMk
+	yzJraMLpaeimtQXsRakwFQH/9cEuvQfPRhaPB/U0Zqj/XqbV8bll3v09RPkSS9GBZzvcy02KCHO
+	iJSg4wpwRFhYc7PjqYFK4IoL/hMinCPT5mqj9NUy14TgrT1AMKQDVkPyj92DSbcJ4NfzhhKEaO5
+	242J4WDbe9Qy4u4NZ1Bu1M/rCp7TWQpJJzwSm5ldbwCYMPkR3etHm2b4XBp308ZOwjTJ7VEvfWo
+	FxsRnZ/EOmgaq05HJLjykeaFJ1rQwHj0PttLd88xLYeqpAiJDkAAZYDynnF9ls07Rcdkm/4nN6Z
+	wA/rNXNXhC/X2BBx1yLrt2NYjs
+X-Received: by 2002:a05:600c:a40a:b0:485:3a03:ceca with SMTP id 5b1f17b1804b1-48d09ccf58fmr59393715e9.23.1777903074853;
+        Mon, 04 May 2026 06:57:54 -0700 (PDT)
 Received: from localhost ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a8fee4f79sm77805805e9.20.2026.05.04.06.57.52
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a81ed6b89sm328172355e9.1.2026.05.04.06.57.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 06:57:52 -0700 (PDT)
+        Mon, 04 May 2026 06:57:54 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -100,9 +100,9 @@ Cc: jgg@ziepe.ca,
 	sriharsha.basavapatna@broadcom.com,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: [PATCH rdma-next v3 11/17] RDMA/mlx4: Use ib_umem_get_cq_buf() for user CQ buffer
-Date: Mon,  4 May 2026 15:57:25 +0200
-Message-ID: <20260504135731.2345383-12-jiri@resnulli.us>
+Subject: [PATCH rdma-next v3 12/17] RDMA/uverbs: Remove legacy umem field from struct ib_cq
+Date: Mon,  4 May 2026 15:57:26 +0200
+Message-ID: <20260504135731.2345383-13-jiri@resnulli.us>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260504135731.2345383-1-jiri@resnulli.us>
 References: <20260504135731.2345383-1-jiri@resnulli.us>
@@ -113,19 +113,19 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B2A2E4BE548
+X-Rspamd-Queue-Id: 148EB4BE581
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19924-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19925-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
@@ -134,7 +134,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -143,135 +143,201 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_TWELVE(0.00)[23];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli.us:mid,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli.us:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email]
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Pin the user CQ buffer with ib_umem_get_cq_buf() and take
-ownership of the umem in the driver; fall back to
-ib_umem_get_va() for the legacy UHW VA path. Apply the same
-ownership pattern to the resize path.
+Now that all drivers use helper to get umem and manage the lifetime,
+legacy umem field in struct ib_cq is no longer needed. Remove it
+along with ib_umem_get_cq_tmp() helper that populated it and both
+error and destroy paths.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
 v2->v3:
-- used ib_umem_get_cq_buf() to get umem, with ib_umem_get_va()
-  as the legacy UHW VA fallback; stored in new struct mlx4_ib_cq
-  field cq->umem
-- replaced ib_umem_release_non_listed() with ib_umem_release()
-- added release to mlx4_ib_destroy_cq(), the create error path
-  and the resize error path
-v1->v2:
-- rebase on top of Leon's fix
+- rebased on top of umem_list removal
 ---
- drivers/infiniband/hw/mlx4/cq.c      | 50 +++++++++++++++++-----------
- drivers/infiniband/hw/mlx4/mlx4_ib.h |  1 +
- 2 files changed, 31 insertions(+), 20 deletions(-)
+ drivers/infiniband/core/umem.c                | 29 -------------------
+ drivers/infiniband/core/uverbs_cmd.c          |  1 -
+ drivers/infiniband/core/uverbs_std_types_cq.c | 17 -----------
+ drivers/infiniband/core/verbs.c               |  7 -----
+ include/rdma/ib_umem.h                        |  7 -----
+ include/rdma/ib_verbs.h                       |  1 -
+ 6 files changed, 62 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/cq.c b/drivers/infiniband/hw/mlx4/cq.c
-index 381c7dfa4667..86557b413ca5 100644
---- a/drivers/infiniband/hw/mlx4/cq.c
-+++ b/drivers/infiniband/hw/mlx4/cq.c
-@@ -172,32 +172,40 @@ int mlx4_ib_create_user_cq(struct ib_cq *ibcq,
- 	if (err)
- 		goto err_cq;
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 04684411c82e..b1877b83b021 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -475,35 +475,6 @@ struct ib_umem *ib_umem_get_cq_buf_or_va(struct ib_device *device,
+ }
+ EXPORT_SYMBOL(ib_umem_get_cq_buf_or_va);
  
--	if (ibcq->umem &&
--	    (dev->dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_SW_CQ_INIT))
--		return -EOPNOTSUPP;
+-/**
+- * ib_umem_get_cq_tmp - Temporary CQ buffer umem getter.
+- * @device: IB device.
+- * @attrs:  uverbs attribute bundle.
+- *
+- * Pins a CQ buffer described by the legacy CQ buffer attributes.
+- * Returns NULL when none are supplied.
+- *
+- * Will be removed once all CQ drivers have switched to get
+- * their buffer directly.
+- *
+- * Return: caller-owned umem on success; NULL when no legacy attribute
+- * is supplied; ERR_PTR(...) on error.
+- */
+-struct ib_umem *ib_umem_get_cq_tmp(struct ib_device *device,
+-				   struct uverbs_attr_bundle *attrs)
+-{
+-	struct ib_uverbs_buffer_desc desc = {};
+-	int ret;
 -
--	buf_addr = (void *)(unsigned long)ucmd.buf_addr;
+-	ret = uverbs_create_cq_get_buffer_desc(attrs, &desc);
+-	if (ret == -ENODATA)
+-		return NULL;
+-	if (ret)
+-		return ERR_PTR(ret);
+-	return ib_umem_get_desc(device, &desc, IB_ACCESS_LOCAL_WRITE);
+-}
+-EXPORT_SYMBOL(ib_umem_get_cq_tmp);
 -
--	if (!ibcq->umem)
--		ibcq->umem = ib_umem_get_va(&dev->ib_dev, ucmd.buf_addr,
--					    entries * cqe_size,
--					    IB_ACCESS_LOCAL_WRITE);
--	if (IS_ERR(ibcq->umem)) {
--		err = PTR_ERR(ibcq->umem);
-+	cq->umem = ib_umem_get_cq_buf(&dev->ib_dev, udata, entries * cqe_size,
-+				      IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(cq->umem)) {
-+		err = PTR_ERR(cq->umem);
- 		goto err_cq;
+ /**
+  * ib_umem_release - release pinned memory
+  * @umem: umem struct to release
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 30fa08d12feb..2a70774c639a 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -1079,7 +1079,6 @@ static int create_cq(struct uverbs_attr_bundle *attrs,
+ 	return uverbs_response(attrs, &resp, sizeof(resp));
+ 
+ err_free:
+-	ib_umem_release(cq->umem);
+ 	rdma_restrack_put(&cq->res);
+ 	kfree(cq);
+ err_file:
+diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
+index 05d1294762c0..148cdd180dab 100644
+--- a/drivers/infiniband/core/uverbs_std_types_cq.c
++++ b/drivers/infiniband/core/uverbs_std_types_cq.c
+@@ -68,7 +68,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+ 	struct ib_device *ib_dev = attrs->context->device;
+ 	struct ib_cq_init_attr attr = {};
+ 	struct ib_uobject *ev_file_uobj;
+-	struct ib_umem *umem = NULL;
+ 	struct ib_cq *cq;
+ 	u64 user_handle;
+ 	int ret;
+@@ -117,16 +116,9 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+ 	INIT_LIST_HEAD(&obj->comp_list);
+ 	INIT_LIST_HEAD(&obj->uevent.event_list);
+ 
+-	umem = ib_umem_get_cq_tmp(ib_dev, attrs);
+-	if (IS_ERR(umem)) {
+-		ret = PTR_ERR(umem);
+-		goto err_event_file;
+-	}
+-
+ 	cq = rdma_zalloc_drv_obj(ib_dev, ib_cq);
+ 	if (!cq) {
+ 		ret = -ENOMEM;
+-		ib_umem_release(umem);
+ 		goto err_event_file;
  	}
-+	if (cq->umem) {
-+		if (dev->dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_SW_CQ_INIT) {
-+			err = -EOPNOTSUPP;
-+			goto err_umem;
-+		}
-+	} else {
-+		cq->umem = ib_umem_get_va(&dev->ib_dev, ucmd.buf_addr,
-+					  entries * cqe_size,
-+					  IB_ACCESS_LOCAL_WRITE);
-+		if (IS_ERR(cq->umem)) {
-+			err = PTR_ERR(cq->umem);
-+			goto err_cq;
-+		}
-+	}
  
--	shift = mlx4_ib_umem_calc_optimal_mtt_size(cq->ibcq.umem, 0, &n);
-+	buf_addr = (void *)(unsigned long)ucmd.buf_addr;
-+
-+	shift = mlx4_ib_umem_calc_optimal_mtt_size(cq->umem, 0, &n);
- 	if (shift < 0) {
- 		err = shift;
--		goto err_cq;
-+		goto err_umem;
+@@ -135,11 +127,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+ 	cq->comp_handler  = ib_uverbs_comp_handler;
+ 	cq->event_handler = ib_uverbs_cq_event_handler;
+ 	cq->cq_context    = ev_file ? &ev_file->ev_queue : NULL;
+-	/*
+-	 * If UMEM is not provided here, legacy drivers will set it during
+-	 * CQ creation based on their internal udata.
+-	 */
+-	cq->umem = umem;
+ 	atomic_set(&cq->usecnt, 0);
+ 
+ 	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
+@@ -152,9 +139,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+ 	if (ret)
+ 		goto err_free;
+ 
+-	/* Check that driver didn't overrun existing umem */
+-	WARN_ON(umem && cq->umem != umem);
+-
+ 	obj->uevent.uobject.object = cq;
+ 	obj->uevent.uobject.user_handle = user_handle;
+ 	rdma_restrack_add(&cq->res);
+@@ -165,7 +149,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+ 	return ret;
+ 
+ err_free:
+-	ib_umem_release(cq->umem);
+ 	rdma_restrack_put(&cq->res);
+ 	kfree(cq);
+ err_event_file:
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index bac87de9cc67..de7d19fabd75 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2221,12 +2221,6 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
+ 		kfree(cq);
+ 		return ERR_PTR(ret);
  	}
+-	/*
+-	 * We are in kernel verbs flow and drivers are not allowed
+-	 * to set umem pointer, it needs to stay NULL.
+-	 */
+-	WARN_ON_ONCE(cq->umem);
+-
+ 	rdma_restrack_add(&cq->res);
+ 	return cq;
+ }
+@@ -2257,7 +2251,6 @@ int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+ 	if (ret)
+ 		return ret;
  
- 	err = mlx4_mtt_init(dev->dev, n, shift, &cq->buf.mtt);
- 	if (err)
--		goto err_cq;
-+		goto err_umem;
+-	ib_umem_release(cq->umem);
+ 	rdma_restrack_del(&cq->res);
+ 	kfree(cq);
+ 	return ret;
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index 174788a0640d..e5a0bff2c4bf 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -98,8 +98,6 @@ struct ib_umem *ib_umem_get_cq_buf(struct ib_device *device,
+ struct ib_umem *ib_umem_get_cq_buf_or_va(struct ib_device *device,
+ 					 struct ib_udata *udata, u64 addr,
+ 					 size_t size, int access);
+-struct ib_umem *ib_umem_get_cq_tmp(struct ib_device *device,
+-				   struct uverbs_attr_bundle *attrs);
  
--	err = mlx4_ib_umem_write_mtt(dev, &cq->buf.mtt, cq->ibcq.umem);
-+	err = mlx4_ib_umem_write_mtt(dev, &cq->buf.mtt, cq->umem);
- 	if (err)
- 		goto err_mtt;
+ static inline struct ib_umem *ib_umem_get_va(struct ib_device *device,
+ 					     unsigned long addr, size_t size,
+@@ -227,11 +225,6 @@ static inline struct ib_umem *ib_umem_get_cq_buf_or_va(struct ib_device *device,
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+-static inline struct ib_umem *
+-ib_umem_get_cq_tmp(struct ib_device *device, struct uverbs_attr_bundle *attrs)
+-{
+-	return ERR_PTR(-EOPNOTSUPP);
+-}
+ static inline struct ib_umem *ib_umem_get_va(struct ib_device *device,
+ 					     unsigned long addr, size_t size,
+ 					     int access)
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index b4291ae12922..d06071b87d96 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1739,7 +1739,6 @@ struct ib_cq {
+ 	u8 interrupt:1;
+ 	u8 shared:1;
+ 	unsigned int comp_vector;
+-	struct ib_umem *umem;
  
-@@ -234,7 +242,9 @@ int mlx4_ib_create_user_cq(struct ib_cq *ibcq,
- 
- err_mtt:
- 	mlx4_mtt_cleanup(dev->dev, &cq->buf.mtt);
--	/* UMEM is released by ib_core */
-+
-+err_umem:
-+	ib_umem_release(cq->umem);
- 
- err_cq:
- 	return err;
-@@ -471,8 +481,8 @@ int mlx4_ib_resize_cq(struct ib_cq *ibcq, unsigned int entries,
- 	if (ibcq->uobject) {
- 		cq->buf      = cq->resize_buf->buf;
- 		cq->ibcq.cqe = cq->resize_buf->cqe;
--		ib_umem_release(cq->ibcq.umem);
--		cq->ibcq.umem     = cq->resize_umem;
-+		ib_umem_release(cq->umem);
-+		cq->umem     = cq->resize_umem;
- 
- 		kfree(cq->resize_buf);
- 		cq->resize_buf = NULL;
-@@ -532,7 +542,7 @@ int mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
- 				struct mlx4_ib_ucontext,
- 				ibucontext),
- 			&mcq->db);
--		/* UMEM is released by ib_core */
-+		ib_umem_release(mcq->umem);
- 	} else {
- 		mlx4_ib_free_cq_buf(dev, &mcq->buf, cq->cqe);
- 		mlx4_db_free(dev->dev, &mcq->db);
-diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-index 5a799d6df93e..598954dd0613 100644
---- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
-+++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-@@ -121,6 +121,7 @@ struct mlx4_ib_cq {
- 	struct mlx4_db		db;
- 	spinlock_t		lock;
- 	struct mutex		resize_mutex;
-+	struct ib_umem	       *umem;
- 	struct ib_umem	       *resize_umem;
- 	/* List of qps that it serves.*/
- 	struct list_head		send_qp_list;
+ 	/*
+ 	 * Implementation details of the RDMA core, don't use in drivers:
 -- 
 2.53.0
 
