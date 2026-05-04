@@ -1,219 +1,203 @@
-Return-Path: <linux-rdma+bounces-19963-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19964-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iFWlNhMf+Wlw5wIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19963-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:34:59 +0200
+	id MOZsGIMf+Wlw5wIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19964-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:36:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6C54C46D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:34:58 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 044DB4C471F
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:36:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AE84C3034AA0
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 22:34:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 75425302171E
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 22:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4C338655A;
-	Mon,  4 May 2026 22:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B1C386561;
+	Mon,  4 May 2026 22:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="b474DNHm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gUaCOBo3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A6D37C930
-	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 22:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777934039; cv=pass; b=IggZwcRaLHpweOgOoU9Iwz5UxgTe/nrZ/k9TmaVFIGxKBZu5nYVitxoQUCpsgfZBlCbgeTwXa7KiTBD6C+6TXzZnZE1f0yLPABfdDohbfz3+mrn2hhXVMe9gRahiCktNdXNBU9luSEWuJBWonzWE//LeQr0U0IX9W1aYIbD70ps=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777934039; c=relaxed/simple;
-	bh=SRyzc0UaWv+n7V9qD3GfiNb+SIIGW8GsbwmzjOQHX18=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YMtD9z8g7ldAxJe4C0x6h0i5BrLcCSTDJH4pYU/VFcAf2KLcvDhkXFDTAjlqXOWTXQu80TgOVtH2sPf8xNONOECEONt45bD/2vRcXSbFMUo+eL0VReVpokZVRs5MZ5CMfv51G1lC3kl5nL/KE2SduORQCikXmaE9BGeyHBH6h/k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=b474DNHm; arc=pass smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-3567e2b4159so3556047a91.0
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 15:33:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1777934037; cv=none;
-        d=google.com; s=arc-20240605;
-        b=YE+f7gUdnB91O67MlpJ26KHJkwGqkU51s0XL7XeNMfqBNP81E3VtafQiR+UR3tKrha
-         HdPWM4OzIdVRsMDORPSZ8/ezSZPKabLblh4oYuy+9jDE0XzRzIqguAVe3J0FLuVbKyyq
-         wyQroMo+OLB01/A70XADu8UMn54++lLoh1WORSlr7yM3lkcZ2SpvIIXl64jLiVGI1iJN
-         a5lMD3Gnxk3Eh2tscvMQrrZeJtUYHwuTGDyJRHnyLHz+FHwOoLD6zsTdynBHh6CKRiYt
-         sqYfiNKrsh5uEZhNw969Txa4DmKWqO3FLq6Qehqfa4XxEeJfQCXTqyIehmPDfYUKaTnY
-         ardw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=7hnYb5QDpibHPGWq61YUR3Nlj5MGB0V4/cWv+6o2s9s=;
-        fh=VNGu0jMMd637QfgEaWhlpIKV4xhOBcvXRfJ4fhL/rpw=;
-        b=YMnHg7/UYl2K4HcfIknQsP6NM/NhIDd2wP0YCEZBWqJRL0rvwfdJoNMjknz7vF6386
-         0ftStHad5zQSGUsBgHt94/bcIlVoiyQyrMA/icCMtMNkz4GME1mN2FlKUVc19Z/IKVsa
-         DTZ0S7gsbnmDK80Slv5NbinJD2VuJWwSgnU3z+ncKDsNue73njD+A66PyyK6N+fR0YnV
-         IMb+pypvf1Lw8cn9WpQ/JxvQk1KVOXMUNDLer1/xINYbV6ctUtZbatHLeBG7hTkeWa+y
-         dV3SSn7ABuxIUPirSUXXZCfWPyIPK0lm/z1zM5K79grJgVIqgpCiRmPmqVWdjvnypqHA
-         ANaw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE03386567
+	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 22:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777934149; cv=none; b=OWsfbvuJXsKYAsYGlKEsVYml8wVjAbIaqEdi5hrI7KlGK7yUi70y9S+jLe56xK4xLeYyjdOtHFr7C+NRC+PocK63KBG9tcmFUpJyE8uz7ryOfZ4Te9IwTmjqmieByNTvj15Gb+itd0oyFMYnyhXZfOM/8PpHP82Va+Cv4fZPBfk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777934149; c=relaxed/simple;
+	bh=053J+k+T3qlqygZGjMWRpvpwj73ZalGKJrYZu+NUK2s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sML2dvSe/iH+ttopar0mXHDYWk9jDKR3KtBi+KjhUPIRSEZ+zJB6146i/tza8VwmfiCCl3506I6+Z61bo9YJ1GQsOei/pDeeeC4FDC4FuMs5EwXHUzm6YLcpbGiFGBrsyoy+41y114ssJrhn6Mt/ejNczLLumNXTXnLBJ39mBuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gUaCOBo3; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-c7973f67f4dso1489258a12.1
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 15:35:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1777934037; x=1778538837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7hnYb5QDpibHPGWq61YUR3Nlj5MGB0V4/cWv+6o2s9s=;
-        b=b474DNHmLbyPnOY4UtiXM5GN+X9I+S0u72RdwKdxeGJHFbyi8dy3N/skGTD8aswwJT
-         mQh/fHxQh2XMu0/wXWmILNqAoHVz64tnsQj3uwYrG/nMHnMiR3+62Bg5+hYVAMqGGZa3
-         Yhzv530XbxJbU0D0vwHq2/YSke9JUBH34F8cjupFBBSgKFVJDHqdHlHLgKPIsy++DjBg
-         CSXKH02/rcKaE2K2wh+4yhWhycJgwprwu1F5I1VKpVbKdHi6Ab35lJlWSVF3M/jPkfFU
-         QubU5hVrrXJSyul/eUU6NZH9S3lF2JCWM8rscrobVAwd5+udUgedARCiFdjuMMWnSxUC
-         /4Ug==
+        d=google.com; s=20251104; t=1777934148; x=1778538948; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PQ3tNPMFkM7QrJ5Q+mR4uTB1pqSv2OnkcWUNEBkdVs8=;
+        b=gUaCOBo32sIC5Xy0u8Jwox7KkqYuM8Saf4HXhvj8cCNhQ+enMJ21rEWaazHjDmEZ3V
+         rYf1PMP3l2KagKvbEAZiwtu6yEuP2yV/SxjwwR9xrj4WaJJTbFdIHu/yGIqxqQAYroME
+         tUpLIwWCUvHMxDVEVOp6rIcwn69yvS9tV+VxUNDPGecbAVyZdaYtpgF1LhlSeWsCZZjR
+         dSG+IQBVZq8z3k4tfWnUXiMaAqI95VnC+0fNbrQoIf0MVs7m2gdC+cdCBfyQo9W4Vxx4
+         pn2zSV/9uT6qAj1vLTXCgkRtZ46kMUCFSlaLpTt8b3zLYmx1McVBZhrng5QrMVFuUo8V
+         hsKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777934037; x=1778538837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=7hnYb5QDpibHPGWq61YUR3Nlj5MGB0V4/cWv+6o2s9s=;
-        b=UdXlZjUK9fb6wocOexzGjM9bNtLM4o+spA6lz8NX0rXzVpgoqJIkSybodzj/35c6c+
-         spQX9mJjsOWuHgY46FltNnYKyu4/kJx8LbHAMBY5CQ/Mv5cAP0WN4JBD2eavNbctU3Hi
-         mRg1JPpYLp2rTZTWTyNFkolehB3jNOgAA58rA4px+pv051Mtz7t5+8Dgq9D2icbt/yMb
-         lAMdHC/4InNo4OHqgnPuKpe9aGehoYacju2Z3wus1D01APVzolLXCwiZFZoFstJw5TAT
-         SsepAz+fA8WllbIF0ucOugkaoTdfhJ1kPJVCADQwpWIOhCfTWzG9mnLq8A4zeAaSROot
-         2GjA==
-X-Forwarded-Encrypted: i=1; AFNElJ90fi0tbPhZTwPsHtOGrkiQgIFZJkRSYFMcmm1rl7M4Q8Ja7iGPZviCp2AVMMFhP5w3SfDQavw5hWr7@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxxf5boNxp1jnKpFaPSgnwbyYVqGKC64QiGhj7YzupDPPZAB1ys
-	mMwwvv3XXTguQOc935096HmUzNW9ySukGCHuvjoo6OOVSRsJ1dAuJCwHrK20zEiT3TXp3VQxrSW
-	twd4ZIMCgMYTgXuZLqvx/nK5zrBCiS8Dj9HIqFUcn
-X-Gm-Gg: AeBDietLg3/4fWPE/hHkPmXmp0QgVBzpZ6p3McefbxzqLgMSXxpa9kaDEcsFFRLpuLt
-	fZVdteTcdUcki25pcn0qIRKEKuiNnsIbCgiyK9KU16Z8Cf/XOrv1busiZ4gPFqofYrSb06D3mlp
-	l0Z1DWUiE4h/Y8bXcfWi9F64yKYiSv2ia/2L51mr02xTT3Dss33XaE3WDIaepF1SLvObxH2D0/Q
-	22wxAl0zTJrBOnGtXB1Xk+mhkFMGqMJqfvUWIcXfxvsQWySBeKI/o8PJuag+ixnQqEJIPzwhA3y
-	ebUwBbKQFNI2T4xRGg==
-X-Received: by 2002:a17:90b:1343:b0:35f:bb33:d721 with SMTP id
- 98e67ed59e1d1-3650cd08160mr11400198a91.5.1777934037438; Mon, 04 May 2026
- 15:33:57 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1777934148; x=1778538948;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PQ3tNPMFkM7QrJ5Q+mR4uTB1pqSv2OnkcWUNEBkdVs8=;
+        b=ZZfk3aZLpD8q5FxdGYX18xJQFYBKe91v1WPCPBL4M+Rg0jKE/t248wC53Kp3Nmam3t
+         iwZYuOwz1QKZWs5LDvpkdb0wsWOoG88nTqyiuMAIfhH47xhxxLWQip1W2+L05Do+SM5B
+         0J3QdG8CoaYsasW//ZQiEz0PSvm1w7jJTIhTAbgdYr/qQruOVzD1eQ/kkpHPUJKYBE4k
+         AoxOFat91Fi6e03tk2+xAlWEW6nnQOsTHHTgqd1/tU/SJ3iLtsEZTbwkrHECnboni92j
+         RSTLViSzuOFvUI0y2bmBN61HMIExModTTCceYFok7H9K64cQUxbcU0e9ehVDbPf26fWq
+         //Kw==
+X-Forwarded-Encrypted: i=1; AFNElJ9ErZwuVz5Achp89z8lxLUang/FMQrn0+4FR9k6XMcYtzgS4d+UuBM3qnGx3lsP+nyKOrKSzSst6YCT@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyb36X3EJiOLZkqQJ9UcO7/cLj5e95+1k0i4E0uWbl6AgiGyOQW
+	naQ4v3uNKGnpTrfa6ZugzEr8urnN1Fexpv5TLK0NjbVkgc7iyBycMuX0+P1t/NDyiA==
+X-Gm-Gg: AeBDiesy/ukITnN89ZIaLJcDQPcpunTxbe7JY8T45ZFM1SMrpwS/SdJ2heYyqfvR+7G
+	M1KJBCmtH6uVTbcyrSnkzLhoABefbifQq/R8ou+azP9LSPOAbEQnJjYLkE9Cb5M3rNBXZUzqxai
+	wzIKtK287Dnz3YbZZ9oDudZaYCPbjP9p3XxX4oy3FGJdfBTUko+oXskOFSZPckdaHOFsOak66QF
+	cQ+4OnOQ8qEgrM3wiKCMxWf2CUW2xT1MSpGunKRu/M1xeq8NP0dZ/WD5VdgW7AOb4fMnKEg55Ma
+	tti87mLHVzAlHC8mZU3jRgYMDhdOTw60CelQ2NF0R+YFYVdKuZ184u6WSpM96aHy4pgsEGLUFGw
+	Ioj1ByA0giBVuNKaXOMyuSAYuF0/SfYW7fWCNOtAGu44OwQ9AQhGWiN2EsPGjW1A7omydyNVtK2
+	vQCVydQ9AdDdHDBcqBm+a9/QmkQKeiToESQgOgS6tA6FtyeI4rIWP5pIF3eA3o28yM/B/VF+jqJ
+	nMTHw==
+X-Received: by 2002:a05:6300:210d:b0:3a2:cbd1:11f with SMTP id adf61e73a8af0-3a9ea589e46mr1260508637.5.1777934147330;
+        Mon, 04 May 2026 15:35:47 -0700 (PDT)
+Received: from google.com (76.9.127.34.bc.googleusercontent.com. [34.127.9.76])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c7ffbcaa477sm10680045a12.31.2026.05.04.15.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2026 15:35:46 -0700 (PDT)
+Date: Mon, 4 May 2026 22:35:43 +0000
+From: David Matlack <dmatlack@google.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alex Williamson <alex@shazbot.org>, kvm@vger.kernel.org,
+	Leon Romanovsky <leon@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+	Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	patches@lists.linux.dev
+Subject: Re: [PATCH 09/11] vfio: selftests: Add mlx5 driver - HW init and
+ command interface
+Message-ID: <afkfP-8UHaoyLd5Y@google.com>
+References: <0-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
+ <9-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260413164220.GP3694781@ziepe.ca> <CAHC9VhR1Uke9P==CELKavBcogHoNCtMZFfNWUbgm5HYUfomhtw@mail.gmail.com>
- <20260413231920.GS3694781@ziepe.ca> <CAHC9VhTLamfe4C81ZNRVT=H32x+KLxSqH3o0eBfrHsWAgAqxCA@mail.gmail.com>
- <20260415134705.GG2577880@ziepe.ca> <CAHC9VhSECYihup=tURo_Qk__xUdYYPkHgnz5CWA0BrRAkvwbog@mail.gmail.com>
- <20260417191749.GK2577880@ziepe.ca> <CAHC9VhQbpS9XpO6dWu7gOiX=ppjtAxnNBOFe6s5wjEZNpMRjgw@mail.gmail.com>
- <20260424143603.GB3611611@ziepe.ca> <CAHC9VhR++21SD+v4Bb16SQmYHgJYZ0ytQ+BecGPNK+fEOe4G7g@mail.gmail.com>
- <20260424221310.GA804026@ziepe.ca>
-In-Reply-To: <20260424221310.GA804026@ziepe.ca>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 4 May 2026 18:33:45 -0400
-X-Gm-Features: AVHnY4L0o11c1AyvQPCh6gK_ec0IV1Rogd7iCBcWBXwoMyFuE6qppAiDKI-2lpU
-Message-ID: <CAHC9VhTsx6cpKMP8nVgK4F=drXTFJtK3_D9k9pmKr56+ZFUu9w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Firmware LSM hook
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Itay Avraham <itayavr@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>, 
-	Maher Sanalla <msanalla@nvidia.com>, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 4F6C54C46D3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
+X-Rspamd-Queue-Id: 044DB4C471F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19963-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[paul-moore.com:+];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,huaweicloud.com,google.com,iogearbox.net,gmail.com,linux.dev,fomichev.me,nvidia.com,intel.com,huawei.com,vger.kernel.org];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-19964-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,paul-moore.com:dkim,paul-moore.com:url]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dmatlack@google.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-On Fri, Apr 24, 2026 at 6:13=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> ... I wonder if we are even speaking the same language.
+On 2026-04-30 09:08 PM, Jason Gunthorpe wrote:
 
-Let's reset the conversation.
+> +/*
+> + * Driver state — overlaid on device->driver.region.vaddr.
+> + *
+> + * Contains both software-only state and HW-visible DMA buffers. HW buffers need
+> + * strict IOVA alignment.
+> + */
+> +struct mlx5st_device {
 
-As I understand it, based on our discussion in this thread and Leon's
-previous patchsets, the basic idea is to enable LSMs to enforce access
-control over fwctl requests/commands sent from userspace.  I'm going
-to start with that as a basis.
+Can we do s/mlx5st/mlx5/ on the series?
 
-Using the kernel's docs on fwctl, the userspace API appears to consist
-mostly of ioctls with some basic sysfs interfaces.  It looks like we
-can mostly ignore the sysfs interface and focus on the ioctl side of
-the API, do you agree?
+I assume st is for selftests and that is already implied by this file
+being under tools/testing/selftests.
 
-https://docs.kernel.org/userspace-api/fwctl/fwctl.html
+> +/*
+> + * Probe — match mlx5 devices by PCI vendor/device ID.
+> + */
+> +
+> +#define PCI_VENDOR_ID_MELLANOX 0x15b3
 
-While normally I would suggest simply using the existing
-security_file_ioctl() hook, Leon previously mentioned that the hook is
-too early for fwctl as the userspace copy happens much later.  Looking
-at the code, it appears that the copy happens in fwctl_fops_ioctl()
-for all fwctl ioctls regardless of the device or ioctl, is that
-correct?
+nit: Use #include <linux/pci_ids.h>
 
-Assuming the above is correct, how about the following LSM hook,
-called after the copy_struct_from_user() in fwctl_fops_ioctl()?
-
- union fwctl_data {
-   struct fwctl_info info;
-   struct fwctl_rpc rpc;
- }
-
- int security_fwctl_ioctl(struct file *filep, unsigned int cmd, union
-fwctl_data *arg)
-
-Where @filep is the file/device being sent the ioctl, @cmd is the
-ioctl command number (e.g. FWCTL_RPC), and @arg is the copied ioctl
-data (e.g. ucmd.cmd in fwctl_fops_ioctl).  In addition to applying
-access controls based on the ioctl command number, a capability that
-already exists via the security_file_ioctl() hook, LSMs could also
-apply access controls based on the RPC scope as well as any other well
-defined data in the ioctl payload.
-
-I expect most of the existing LSMs would implement callbacks for this
-new hook with the subject being the process submitting the ioctl, the
-object being the file/device that is being operated on with the
-ioctl() call, and the access/privilege/verb/etc. being something along
-the lines of INFO, RPC_CONFIG, RPC_DEBUG_READ, RPC_DEBUG_WRITE, or
-RPC_DEBUG_WRITE_FULL.  Of course these are just quick examples to
-demonstrate a point, please don't take those names as hard
-requirements.  Each LSM is free to characterize the access request
-however they like, in a way that best aligns with their security
-model.
-
---=20
-paul-moore.com
+> +static int mlx5st_probe(struct vfio_pci_device *device)
+> +{
+> +	static const u16 mlx5st_pci_ids[] = {
+> +		0x1011, /* Connect-IB */
+> +		0x1012, /* Connect-IB VF */
+> +		0x1013, /* ConnectX-4 */
+> +		0x1014, /* ConnectX-4 VF */
+> +		0x1015, /* ConnectX-4LX */
+> +		0x1016, /* ConnectX-4LX VF */
+> +		0x1017, /* ConnectX-5 */
+> +		0x1018, /* ConnectX-5 VF */
+> +		0x1019, /* ConnectX-5 Ex */
+> +		0x101a, /* ConnectX-5 Ex VF */
+> +		0x101b, /* ConnectX-6 */
+> +		0x101c, /* ConnectX-6 VF */
+> +		0x101d, /* ConnectX-6 Dx */
+> +		0x101e, /* ConnectX-6 Dx VF */
+> +		0x101f, /* ConnectX-6 LX */
+> +		0x1021, /* ConnectX-7 */
+> +		0x1023, /* ConnectX-8 */
+> +		0x1025, /* ConnectX-9 */
+> +		0x1027, /* ConnectX-10 */
+> +		0x2101, /* ConnectX-10 NVLink-C2C */
+> +		0xa2d2, /* BlueField integrated ConnectX-5 */
+> +		0xa2d3, /* BlueField integrated ConnectX-5 VF */
+> +		0xa2d6, /* BlueField-2 integrated ConnectX-6 Dx */
+> +		0xa2dc, /* BlueField-3 integrated ConnectX-7 */
+> +		0xa2df, /* BlueField-4 integrated ConnectX-8 */
+> +	};
+> +	unsigned int i;
+> +	u16 did;
+> +
+> +	if (vfio_pci_config_readw(device, PCI_VENDOR_ID) !=
+> +	    PCI_VENDOR_ID_MELLANOX)
+> +		return -ENODEV;
+> +
+> +	did = vfio_pci_config_readw(device, PCI_DEVICE_ID);
+> +	for (i = 0; i < ARRAY_SIZE(mlx5st_pci_ids); i++) {
+> +		if (mlx5st_pci_ids[i] == did)
+> +			return 0;
+> +	}
+> +
+> +	return -ENODEV;
+> +}
 
