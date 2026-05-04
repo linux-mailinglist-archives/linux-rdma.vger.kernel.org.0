@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-19917-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19918-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uP5iHVWm+GkExgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19917-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 15:59:49 +0200
+	id SMXgAlam+GkExgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19918-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 15:59:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8AD4BE461
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 15:59:48 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 916974BE463
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 15:59:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 65ADA302D132
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 13:57:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 64D09303EC08
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 13:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366133DDDCC;
-	Mon,  4 May 2026 13:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331713DD53E;
+	Mon,  4 May 2026 13:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="YZaDW35d"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="VrUI5EgD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD052183CC3
-	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 13:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686423DDDDE
+	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 13:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777903065; cv=none; b=DFf7C9L2n0l46ortVufBxujdONlp6oO1Dd2wf1WOwdzZAPvvEZ8Kd/HQ39gKK7KiT8JLAlrRlo4icYD71hpcAqN3EsT3+BkivKVeJo1xvPPqYNBvc2pWADpmIU7b9eKmZtyg66NmIVxgv343t+9uBLc8LM/LOwukxK+WHwP4UMI=
+	t=1777903067; cv=none; b=MUY9HpeNfHfICVvlWlrUjtH39OxjHWFt1XqF6vYnGPpTIM1utzROX/4W1Xbm7uvKQA6A3L6eQ5EtT8zC+gJPootNcKUVtyQAj7kU9pp0/arj7Z73/ymUussFsPkMfiA4ZHPFZp4qCsd0uHUJewe+mR6MASqqIevpl8X8CqzCkAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777903065; c=relaxed/simple;
-	bh=iYQVK2XsLxav0msJuktEvJsP/R008GbpSVbOGR0ID9Y=;
+	s=arc-20240116; t=1777903067; c=relaxed/simple;
+	bh=tmsjg+Etxqr6V+hp72JixkUm/hqrMRMVi5v4y6uAUfw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gM73pKWgBeyKqQdpURp7cULiYeFy1bO4aYDgaN3ulv9j1bsfgYI2DLomaaGz3L1vgm2uy6AhFQe3MpAEDlaRI7wcJV1nypEICFl2DLs6hqttHEP0myCWeLLxvE2F6j8pfEN+IDLiOH6q+4TEgOGtN6nAY7Zm+5+iPZz0w0yi9oY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=YZaDW35d; arc=none smtp.client-ip=209.85.221.42
+	 MIME-Version; b=hQBiOmqFaimPQeB8d6uJYyrHCwicJA1bHUIJB61icaFJWogALRbfR9+5rJTdtbaFYisWb/cBtPsBuYwDktuHaUp/GpSMW0oyCA5wmp2Bb8fBvzsSnybCWTlQFg/ZQAKIYP+HAFXlA7Bkg9wEVC49GhG+THLNoI0bp3FEF38cIwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=VrUI5EgD; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-44e5624c053so567304f8f.2
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 06:57:43 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-43d734223e4so2391321f8f.0
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 06:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777903062; x=1778507862; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777903064; x=1778507864; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E8A7qlvVgt/00gLtm8+ufb2aymcugTupQxED/trSs3M=;
-        b=YZaDW35dLNU3HDHVFLqkmTJkfSJJyJ5UZoM2MFm9O/ScMC7SNJhrD/8OSCgUCVutEh
-         DW1CoWkjIP+BWOrccFvi5NKYCogPA9zTLM1l82qRhpAEgp+E/pnfirmEX6nNzlbndHbR
-         YAG9qns7GoepOxiaNFKY+yi/vxnUtcEp+Bz3VIFgYTEphKAiOoRLH4FMRtOSBoQG4QXQ
-         XKEumOybY185ppV1ZSJdkN5zhmNgqo0FqsU1+iT3ciZbGDGp2jGkPogJTDMawDxUvzyk
-         L2inEhXpl3W+uhMZuLhbIWnUsnAjn4Zi0//srRyiOQEO0+LSaeyeZZo1qBXPdDw6hljp
-         oESA==
+        bh=wWaOc6Z+4IHpfL7UbxWDnnqnz4RqsOC5J6tY4txS2dk=;
+        b=VrUI5EgDNBTFkjSB42noTiHBIJzZEGNcbnkF8LU2e2uQ83+hbbYu3oMqtNlGnjNV8P
+         GLBE9D469lPjUnZBLWaBAI1mwbFwCMquSiLFQUqHW0dH9Xfn55GVGz1exQ12HVmKGYkO
+         ze9xTJZV6+VqWPquKHmjKTE0Z3sb3bErAVdhRr4KuvUIM66f0rCdeEjbVuQ0IaQoDRkr
+         3+HtU+SPD+eahM7a/viyvXi04L/herqwQovqkNrSMidBeiMGLwt+tOLbsqJyI4ZQMR98
+         S1AsUpY/oBEZhL2RgTfp3oDz2aTXsmsXYlR+7KT8WKguWc8FVymMKhscIC5n2GpiC4eF
+         wHWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777903062; x=1778507862;
+        d=1e100.net; s=20251104; t=1777903064; x=1778507864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=E8A7qlvVgt/00gLtm8+ufb2aymcugTupQxED/trSs3M=;
-        b=BXYddAd/Zl0+0v7C8xwoqq20SVkiFibISjgUVPIycq/o5ynriYb8HyaJVxbMS6f0S2
-         HzqQ61jmtp/hAZZokaB7flQtL3QvOVzw8WmbcJCMa1tsxLkmhi6iOQrJ/MVuI60hrGPU
-         m7syr0x7IasieBb1C9cFzpmM8Kl8rZGbExdTW3E9MLzDvE6TpccoGdjjF8yjSlIpkTur
-         9dtwJC+nr4NtRVR7Dv6D6ERQvNglPNdkpbriuzjUuIKTMkSFkSHDCmKhKXJalskcNIh6
-         yjHC53+uXTp2h53y3Ok6PTTE5ED6D6Ylnl+KpNDqiROL2b17k05WtSt8cpz3RGNPYEfq
-         ++Kw==
-X-Gm-Message-State: AOJu0YypjBhBz6KpksLZIw4JwTfzGr2ux/1tnHbwYr/8eursO22tBV4R
-	Cqb/iF74sBL0v+AFGnmNGEwDnRHR5AbYq7/hl/g4Xh+5bMQDlCAn7MYD3Wr+6IBPElfgep7Eq47
-	BJi299fE=
-X-Gm-Gg: AeBDievhUAx4fj+GYvqQnducji5/3GFpKRV8nAeu8akw1RRYI2xAXci6m+Jw0u6v3ln
-	K8JW++t+m8cc0FvvtclU+ijnEK0v0LBKh4x1/pqwUe1bsLIX85yeMgv3T0yAXQl7WjpPX6yyHLF
-	WaywUsTfiHooz61Yp9F/K6Bm7al2dTmx0n8aVaD/cnfeFy9osGw3GPQeCb0M930JE9U3AXbdkmj
-	dFlooqpOboldNluI3h4sNSyGUcRifNrLpJ+nRsvYnd1LPKs4c6UiLsj3hygcIhOnUrOnpetvZp5
-	uGZljaq9WYTXRu1Vmxu4DZxsIF9z1SgQKmta+rfz8/O2qRu4Yykcl2Sa4nlcfErf6XgRjvlGbV9
-	ha/ijxW4/qKpeMg2p6AN8U1k7AlJ78O/ucdFAa4C2GrH9ZswZnV0JGHkIwr+uqY5/gUYWzwxIlI
-	j9yk7kcnHP5C9y+s5eY5As9/hL
-X-Received: by 2002:a05:6000:184f:b0:43f:e94a:e773 with SMTP id ffacd0b85a97d-44bb558caadmr16257924f8f.27.1777903062088;
-        Mon, 04 May 2026 06:57:42 -0700 (PDT)
+        bh=wWaOc6Z+4IHpfL7UbxWDnnqnz4RqsOC5J6tY4txS2dk=;
+        b=oz7DbJg1RxjTmNTsD6w+naP/Nq7ZHVVDqLo/nnPyLyzNh4rsIWJAWeB4lVtFxKZaa4
+         uMLMH4Uqq19y/aCvK3gyRgvTX+jsptZDLCVYjxsoRlLjfckM52QlbNTNTp6xr549gIUP
+         eg1p5hgDZJGEVjTBYNEa1iD2ID6OmYBwMpTvAIVysdXKuztdMM6S9WYe53Pjp2PIeW64
+         ivPbD3sc/VAQnT/GYvqQ1LDnDgRqHX1HUEfUHV2iiOmDR3g2402RwXmi/HR5SOkmfPb6
+         7JM6dx/NBeJouhw4oi3TPbfTny2jER9RSj6af6pf/ZLnYHT7MuHoa4B23NSJFupDHdYC
+         vvmw==
+X-Gm-Message-State: AOJu0YyhC6HO6y9j2JcWqwYTMhyjDKfhBW+0HI7gvbzj+c0nRsyuH6N9
+	2Wz9n8tOY4OVGQboMP7cFlJveXbF6/2DiNi2TYjftSvz4n/yLXFTmataxKcGoeZYtGOUgMvlbPk
+	6f7CUTnA=
+X-Gm-Gg: AeBDieuu9TeOT5vB/0lWI4Rw85rb2k/EFNpcvSgOGS9+b7qz+FsM5UAZYHlvR9la4CP
+	PbgeWaKPpbb2omZ5xtpsttfjmf8OHrM20/eSTOQotO+di7R1CzWW4C1lv+WH3C4porecreSejWd
+	dcJqy/WQ8OJ5+S4okS2JP3zC7oqraITLkcapMqVvyXk9W7Gtm2p0n9OEim9L1a1+w4pGirTArkD
+	rMx+4CTEbWvB/88Mv3A7TMeeIzMRksimNHJsaNJ1QTPWAqpgDhcQ40ddF3gPIAvFHNzC5sUWFUJ
+	5BXOCjZuzQsLvkuBInmdKCsj4swicOIFPMxj1bPGz26q2bh1cX+0hDKqlUhP5FQ7rWvUQEAJ8yX
+	zPq5AUUw8pwd3o+i4oG2cz2uqCkc4t0HsH/NgYO0e1kYqSVCKmPI64U/8KDqqgi7mT2DhAgeeZw
+	wegamPaMe2kaqx+K9lNvCtdwNg
+X-Received: by 2002:a05:6000:44df:b0:43f:e56a:636e with SMTP id ffacd0b85a97d-4494fe78a09mr18498965f8f.18.1777903063701;
+        Mon, 04 May 2026 06:57:43 -0700 (PDT)
 Received: from localhost ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-44a8f424032sm25884285f8f.15.2026.05.04.06.57.41
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-44a8f237368sm24949912f8f.14.2026.05.04.06.57.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 06:57:41 -0700 (PDT)
+        Mon, 04 May 2026 06:57:42 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -100,9 +100,9 @@ Cc: jgg@ziepe.ca,
 	sriharsha.basavapatna@broadcom.com,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: [PATCH rdma-next v3 04/17] RDMA/umem: Route ib_umem_get_va() through ib_umem_get()
-Date: Mon,  4 May 2026 15:57:18 +0200
-Message-ID: <20260504135731.2345383-5-jiri@resnulli.us>
+Subject: [PATCH rdma-next v3 05/17] RDMA/uverbs: Inline _uverbs_get_const_{signed,unsigned}()
+Date: Mon,  4 May 2026 15:57:19 +0200
+Message-ID: <20260504135731.2345383-6-jiri@resnulli.us>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260504135731.2345383-1-jiri@resnulli.us>
 References: <20260504135731.2345383-1-jiri@resnulli.us>
@@ -113,19 +113,19 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9C8AD4BE461
+X-Rspamd-Queue-Id: 916974BE463
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19917-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19918-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
@@ -134,7 +134,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -143,69 +143,151 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_TWELVE(0.00)[23];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,resnulli.us:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli.us:mid,nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-ib_umem_get_va() is now redundant: ib_umem_get() with va_fallback=true
-covers the same path. Make it a static inline wrapper instead of a
-separately exported symbol.
+uverbs_get_raw_fd() and the related const helpers expand to
+out-of-line _uverbs_get_const_{signed,unsigned}() exported
+from ib_uverbs. Callers outside of drivers (for example the
+about to be introduced CQ buffer-desc filler in ib_core's umem.c)
+therefore cannot use them without unnecessary extra dependency.
+
+Both functions are short and only call already-inline
+accessors. Move them into the header and drop the two
+now-redundant exports, making uverbs_get_raw_fd() and the
+related const helpers header-only and usable from anywhere
+that includes <rdma/uverbs_ioctl.h>.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
 v2->v3:
 - new patch
 ---
- drivers/infiniband/core/umem.c | 15 ---------------
- include/rdma/ib_umem.h         |  9 +++++++--
- 2 files changed, 7 insertions(+), 17 deletions(-)
+ drivers/infiniband/core/uverbs_ioctl.c | 47 ------------------------
+ include/rdma/uverbs_ioctl.h            | 51 ++++++++++++++++++++++----
+ 2 files changed, 44 insertions(+), 54 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index d9073b1012bc..b0ab4133d47d 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -377,21 +377,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, struct ib_udata *udata,
+diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
+index b61af625e679..a2182d3401da 100644
+--- a/drivers/infiniband/core/uverbs_ioctl.c
++++ b/drivers/infiniband/core/uverbs_ioctl.c
+@@ -785,53 +785,6 @@ int uverbs_output_written(const struct uverbs_attr_bundle *bundle, size_t idx)
+ 	return uverbs_set_output(bundle, attr);
  }
- EXPORT_SYMBOL(ib_umem_get);
  
--/**
-- * ib_umem_get_va - Pin and DMA map userspace memory.
-- *
-- * @device: IB device to connect UMEM
-- * @addr: userspace virtual address to start at
-- * @size: length of region to pin
-- * @access: IB_ACCESS_xxx flags for memory being pinned
-- */
--struct ib_umem *ib_umem_get_va(struct ib_device *device, unsigned long addr,
--			       size_t size, int access)
+-int _uverbs_get_const_signed(s64 *to,
+-			     const struct uverbs_attr_bundle *attrs_bundle,
+-			     size_t idx, s64 lower_bound, u64 upper_bound,
+-			     s64  *def_val)
 -{
--	return __ib_umem_get_va(device, addr, size, access);
--}
--EXPORT_SYMBOL(ib_umem_get_va);
+-	const struct uverbs_attr *attr;
 -
- /**
-  * ib_umem_release - release pinned memory
-  * @umem: umem struct to release
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 4897c7599fa3..fd45162eb017 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -92,8 +92,13 @@ struct ib_umem *ib_umem_get(struct ib_device *device, struct ib_udata *udata,
- 			    u16 attr_id,
- 			    ib_umem_buf_desc_filler_t legacy_filler,
- 			    bool va_fallback, u64 addr, size_t size, int access);
--struct ib_umem *ib_umem_get_va(struct ib_device *device, unsigned long addr,
--			       size_t size, int access);
-+
-+static inline struct ib_umem *ib_umem_get_va(struct ib_device *device,
-+					     unsigned long addr, size_t size,
-+					     int access)
-+{
-+	return ib_umem_get(device, NULL, 0, NULL, true, addr, size, access);
-+}
+-	attr = uverbs_attr_get(attrs_bundle, idx);
+-	if (IS_ERR(attr)) {
+-		if ((PTR_ERR(attr) != -ENOENT) || !def_val)
+-			return PTR_ERR(attr);
+-
+-		*to = *def_val;
+-	} else {
+-		*to = attr->ptr_attr.data;
+-	}
+-
+-	if (*to < lower_bound || (*to > 0 && (u64)*to > upper_bound))
+-		return -EINVAL;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(_uverbs_get_const_signed);
+-
+-int _uverbs_get_const_unsigned(u64 *to,
+-			       const struct uverbs_attr_bundle *attrs_bundle,
+-			       size_t idx, u64 upper_bound, u64 *def_val)
+-{
+-	const struct uverbs_attr *attr;
+-
+-	attr = uverbs_attr_get(attrs_bundle, idx);
+-	if (IS_ERR(attr)) {
+-		if ((PTR_ERR(attr) != -ENOENT) || !def_val)
+-			return PTR_ERR(attr);
+-
+-		*to = *def_val;
+-	} else {
+-		*to = attr->ptr_attr.data;
+-	}
+-
+-	if (*to > upper_bound)
+-		return -EINVAL;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(_uverbs_get_const_unsigned);
+-
+ int uverbs_copy_to_struct_or_zero(const struct uverbs_attr_bundle *bundle,
+ 				  size_t idx, const void *from, size_t size)
+ {
+diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
+index 76e94ede668e..70caa7299dbf 100644
+--- a/include/rdma/uverbs_ioctl.h
++++ b/include/rdma/uverbs_ioctl.h
+@@ -900,13 +900,50 @@ static inline __malloc void *uverbs_kcalloc(struct uverbs_attr_bundle *bundle,
+ 	return uverbs_zalloc(bundle, bytes);
+ }
  
- static inline struct ib_umem *
- ib_umem_get_attr(struct ib_device *device, struct ib_udata *udata,
+-int _uverbs_get_const_signed(s64 *to,
+-			     const struct uverbs_attr_bundle *attrs_bundle,
+-			     size_t idx, s64 lower_bound, u64 upper_bound,
+-			     s64 *def_val);
+-int _uverbs_get_const_unsigned(u64 *to,
+-			       const struct uverbs_attr_bundle *attrs_bundle,
+-			       size_t idx, u64 upper_bound, u64 *def_val);
++static inline int
++_uverbs_get_const_signed(s64 *to,
++			 const struct uverbs_attr_bundle *attrs_bundle,
++			 size_t idx, s64 lower_bound, u64 upper_bound,
++			 s64 *def_val)
++{
++	const struct uverbs_attr *attr;
++
++	attr = uverbs_attr_get(attrs_bundle, idx);
++	if (IS_ERR(attr)) {
++		if ((PTR_ERR(attr) != -ENOENT) || !def_val)
++			return PTR_ERR(attr);
++		*to = *def_val;
++	} else {
++		*to = attr->ptr_attr.data;
++	}
++
++	if (*to < lower_bound || (*to > 0 && (u64)*to > upper_bound))
++		return -EINVAL;
++
++	return 0;
++}
++
++static inline int
++_uverbs_get_const_unsigned(u64 *to,
++			   const struct uverbs_attr_bundle *attrs_bundle,
++			   size_t idx, u64 upper_bound, u64 *def_val)
++{
++	const struct uverbs_attr *attr;
++
++	attr = uverbs_attr_get(attrs_bundle, idx);
++	if (IS_ERR(attr)) {
++		if ((PTR_ERR(attr) != -ENOENT) || !def_val)
++			return PTR_ERR(attr);
++		*to = *def_val;
++	} else {
++		*to = attr->ptr_attr.data;
++	}
++
++	if (*to > upper_bound)
++		return -EINVAL;
++
++	return 0;
++}
+ int uverbs_copy_to_struct_or_zero(const struct uverbs_attr_bundle *bundle,
+ 				  size_t idx, const void *from, size_t size);
+ 
 -- 
 2.53.0
 
