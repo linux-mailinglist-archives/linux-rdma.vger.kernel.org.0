@@ -1,382 +1,145 @@
-Return-Path: <linux-rdma+bounces-19954-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19955-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IJWnOWYT+WnV5AIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19954-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 23:45:10 +0200
+	id qKYZLkcU+WkY5QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19955-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 23:48:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC8C4C433A
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 23:45:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B33D4C437A
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 23:48:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 26190301468B
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 21:45:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D3A0A301C8A8
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 21:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 685663630AC;
-	Mon,  4 May 2026 21:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8B5366DB9;
+	Mon,  4 May 2026 21:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b="u2WYQ6Uu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aKlRNK6C"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="adKnOEFo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BCE3630B2;
-	Mon,  4 May 2026 21:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40501D6195
+	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 21:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777931107; cv=none; b=jbqoQyyqg+zUy8Z9edg8HbOCN584kH8wyXy4kS5maC9+FD1EUZfe3oydChQNlmQ7bbNP5KbZdoUTRMy23Rb/VjLVfNsFGaFYki4wxN/u8yfWSxeqoUFOX+wPiyvpy8uibou6FKCTzUD/fUYmhTrEh8iX2MT1Wb/w00CIgFYTUSQ=
+	t=1777931329; cv=none; b=dhajcBhX5cALMyoyWHCkkdZROES//itbeRvFGSTW+BM9l9RHgGgmH4GT/f4EfRy6cc7GGX9wAn56/cvG3bQNJdTf7RTtIZ1KCjajJ2Y3r8dMASMquKCxYBfE7L7tpmjbNI20nib1Q7yjgYq94B1nQ1aFjO54fUQYWlSYtAoFQ7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777931107; c=relaxed/simple;
-	bh=2V0GjmRpASTcxDhwzO1jdLMdFPf0GxO5qhZOBZdEFmg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RaUu9vDz6Xz/8EeNCYftKRrS2lUnqGGnErkrNcHSo6ymFsWP4RwdJh48yqf42gbFQOK1Z49msFREUdsHz3p4KpPGhjn+L8D9rYDbQIpzL04SjH2EZs9w3SmJogHkpGvmOrRz4E8wSmOrhReXmUWE+Bonrnp+jSR7Gw81jlO8En8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org; spf=pass smtp.mailfrom=shazbot.org; dkim=pass (2048-bit key) header.d=shazbot.org header.i=@shazbot.org header.b=u2WYQ6Uu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aKlRNK6C; arc=none smtp.client-ip=202.12.124.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shazbot.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shazbot.org
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 2DFFD7A00E1;
-	Mon,  4 May 2026 17:45:04 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 04 May 2026 17:45:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shazbot.org; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1777931103;
-	 x=1778017503; bh=OlSrzNwR1CmvKwsGitkBEdA3NqGhfCJH662kCZt/3r0=; b=
-	u2WYQ6Uu2KBrknnMFCQlgjyWBH5bLy2MKSnl9TL87RibXUahAgyKLZQz/sscqRng
-	hKQHdRwLh1RL158ZjL3IPdSZHHIbxX8nSpyDNQai8Rf2wdrKozW1W9F5GqzQSnQE
-	uKOq+WQr5rKq9uifY/F0VIaHDmmqHySIQ7Y6zBya/laY0e+UK+JhVG8L6C+sEuBQ
-	TrVDfVA6kpKBu/ciRky42FfOsLpdX2YLCizuh2pB2mJnTwo/G+t2ne2WOvwjkuAW
-	lGqWQSDUe67s2cL4Ae/nr3M5P084kiwDr6I/fhW2EDLFSyT1iTVsDMdOoFvjl4VI
-	d8jgFikcBoRdWyTvw+mCKg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1777931103; x=
-	1778017503; bh=OlSrzNwR1CmvKwsGitkBEdA3NqGhfCJH662kCZt/3r0=; b=a
-	KlRNK6CDog0qPrHp2p3/xHIFC6EAUPUwTgZfc6zyZIugdY2hoDC+C5o9CCg0oSC/
-	xkdSBhEOr8zX4lHUUWFNMs51R3R98/vLgIulIliN8aehif8/3TSU3h1rCQAZk0s3
-	EqKTDGxg0XXR/ns+S8j1zgZzKpx1RkvXOCN0/yVd72zfop1rqCaJkKB+2HezFA/u
-	AVfxnu97ysc2gaTfIhNVglneNkfjnBSuybXPizAl6gRcUCrRn2pO7gsw/pTH25w+
-	48MiCuy5J83ZMKvpC3BV5sP4S+jsl47vlXCnMJjSpN2jBXk/OQ5arksBN/Wq5R3n
-	2g4iB+MUCj3QRW39pW38g==
-X-ME-Sender: <xms:XxP5abNp_6jzROaygyUxuZIi2Sfe9p9hH9fCqo7KYS4ZVEalARZ87Q>
-    <xme:XxP5acVRJWvhqDkKINawXeGKvu29RbXTAx_TLFsm63ETyLKo_5f_DmN8Vm7uekHXO
-    29Qa6zpc8IN4VBE1PvbATfeUunP4drZ8ReM9Cya1PYkU5jpJtvqVw>
-X-ME-Received: <xmr:XxP5aWjw5togl-E-fvGwT1lgnhNB50KrU8cG8NFcARCOdN7PwcL8KBQ7Uas>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdelleelhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfgjfhfogggtgfesthejredtredtvdenucfhrhhomheptehlvgigucgh
-    ihhllhhirghmshhonhcuoegrlhgvgiesshhhrgiisghothdrohhrgheqnecuggftrfgrth
-    htvghrnhepkeelffevieeuheeiieeifeelteffheeiffekledvleejgedthfdvjeehudff
-    ledvnecuffhomhgrihhnpehsrghshhhikhhordguvghvnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghlvgigsehshhgriigsohhtrdhorhhg
-    pdhnsggprhgtphhtthhopeduvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepii
-    hhihhpihhnghiisehmvghtrgdrtghomhdprhgtphhtthhopehjghhgseiiihgvphgvrdgt
-    rgdprhgtphhtthhopehlvghonheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlh
-    hgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrhgumhgrsehv
-    ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvg
-    hrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvghtuggvvhesvhhgvghrrdhkvghr
-    nhgvlhdrohhrghdprhgtphhtthhopegurhhiqdguvghvvghlsehlihhsthhsrdhfrhgvvg
-    guvghskhhtohhprdhorhhgpdhrtghpthhtohepkhgsuhhstghhsehkvghrnhgvlhdrohhr
-    gh
-X-ME-Proxy: <xmx:XxP5adhrn-X3lMuQKFhBxNc05YU7BNl-iLyjUMQ5ANsGEhJua-JtQg>
-    <xmx:XxP5acEFz1M3kD8WF8YH1HN2mgUFzmuFGgW1BHE9gppL4vbipx5RWg>
-    <xmx:XxP5aSAl52d32IoyjnYnW-0WGkwRxr_6Duss9bz4vMn9gu1Iclsucg>
-    <xmx:XxP5aaBxM1wcE8nEMklL4h8FOTerGFfDxsGx2GtGHkdGlHJOdrvaXw>
-    <xmx:XxP5aaCL4_QhABUW956FJqUirCoMKNMZoo1aDA6d0eZOFbJYiH530tSq>
-Feedback-ID: i03f14258:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 4 May 2026 17:45:00 -0400 (EDT)
-Date: Mon, 4 May 2026 15:44:59 -0600
-From: Alex Williamson <alex@shazbot.org>
-To: Zhiping Zhang <zhipingz@meta.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Bjorn
- Helgaas <helgaas@kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>,
- <dri-devel@lists.freedesktop.org>, Keith Busch <kbusch@kernel.org>, Yochai
- Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
- alex@shazbot.org
-Subject: Re: [PATCH v2 1/2] vfio: add dma-buf get_tph callback and
- DMA_BUF_TPH feature
-Message-ID: <20260504154459.77b8153d@shazbot.org>
-In-Reply-To: <20260430200704.352228-2-zhipingz@meta.com>
-References: <20260430200704.352228-1-zhipingz@meta.com>
-	<20260430200704.352228-2-zhipingz@meta.com>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1777931329; c=relaxed/simple;
+	bh=LEfOvRpQYcrDqT5+S4ih49Shh2djX8a2POcizZgtyEE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPcS2S8Swk1kQHtBN5AD2/4Ftj2timGVRTvoq9nlD2Fi78kDmozafx9V/yvf0HnrZ3PXcvKmiVX3HY2XbPfYiB/qOycxMEwlgyjdWNoml+Vai2ycul4qXFWr2JbrKnavLQKs8g7kCdYp/AjzOJdP7aLTcrncS+44rV3a40YnL6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=adKnOEFo; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2ad9f316d68so18105935ad.2
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 14:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1777931328; x=1778536128; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vleGyxmKxeO4GNIP1qujBMrg4IEFuG1bs35WPUgfDlk=;
+        b=adKnOEFoXz8qKyDlRnCzuv19P42xuHX1j5IMWit1iPOaACz58vLrro7+KtChAqMHi4
+         NN0kxyh6ALYhlQPMtHP5elg8BDhKa/STk1m40G4b1+uyyDWrFybAu4s0AKgUWN+Iu+gv
+         7drE30Tz3QjQmQj85S9V3p9GxoQd1iJUfjXgMZAmOYsI+0Sb76almUULwwTvJk+ZOfo+
+         vJynjbc3R+DgLb6ACaqfjvG62vFHcwsZ6Uv+NEVai6jqefs3VdFCDonF83jqLhSAabkN
+         BiK3rPc2fD6Gva8X7ep67gmyVKygxwyPymokKyKyPqKDCQmPUQ1yxsQ5oZHhEakGEH/q
+         8ZzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777931328; x=1778536128;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vleGyxmKxeO4GNIP1qujBMrg4IEFuG1bs35WPUgfDlk=;
+        b=ULb3IDjkhLQDJH8HDSPw1ADwSITBtYM6AVf+SIIm7ldK6KdzI+NFiuCD96Wf3zRdv/
+         EC8fDRI+0lEzo2bNxxZ5rhm5yWv8B3/7iLELn0/dGp7WXLC83xnwN6CaThGE+iix++p7
+         2hACUkTQl75VdCKngftkhUHLuncJ/nMk+lh0XfZbe2SMbvU8Lwd+ZFMifHlhEIVjbhwg
+         s+zDjIcaWqnp59NcxiN8+50P0XY9JyR0vmvVVIrQ+jHGWBc6hoVoE/lwZ7Ji/UMvykUh
+         X1W5TU+IwW+uShMasAyMcerYaq+fR1GzHq3elyDPgcpIUSh8oMCXhASSZVUCCG/8tysf
+         FH9Q==
+X-Forwarded-Encrypted: i=1; AFNElJ/jTgoPYHLO/rjgiSoaAC9bnCcZgeWfxWzBLSpfBHd6xHgq3ORLSTw2raH5mB9m7lGK0b5T0qQqWQgQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfAihS81EBNZ4tajYW/qsuOiYQ82479Hvcc91I55eL+9MDzLTI
+	KRfEGURXXMAfnNlbTC6Y+H2lIJdxcygpjIj10549s4OOOKKc0InvcpWCeOpyCbKEvA==
+X-Gm-Gg: AeBDies7rsMjy5DNO/ZBiiuajXxK7INb3OcNTl4bQ9gGOfe9iUiDlI343zvv5tEp0qa
+	sBl8eGSzd9/icXWFHXXk25TkDlJDZC1rIbr7xZ56p71ZxeYoYlBf7vVcTlnMlGRKf6qkQ6qdXWf
+	eics1jAs7Olbr5wC2qQIHWHSDh508kX5z54sqYg+aqHuEBGCcetWz9ohDTXC+OD+6bt2tQwSSGe
+	nqvgjfPP1vuI8wlCgzeAx4OJztSFxWVS87ReqKs8nluSefNPGh/RI5WlQaN0yL6taTszXSBVl5i
+	2htv1bfN2svapjF7q5gBjDYTvfpBdp8EvzsiGyt1K7S1d3gVtqDzb5uva6fEDGC8GJoOHmmJbCy
+	lJA6o4t2eZfxKernUXIMLPx0NlGiw9U8IB6uIx9dnCz7RgSZkxr0gnZ+1ZE9go+yoi0sfHNI5wg
+	ft2rLIWbwJ+pRZGlF09AtRsMryv7We3jODmeLobjULjIvkyu/o7Xq/70jKyayk1gb3U322iehpH
+	6pPjw==
+X-Received: by 2002:a17:903:40d1:b0:2b0:ccad:de1a with SMTP id d9443c01a7336-2b9f260b4a7mr121673915ad.30.1777931327578;
+        Mon, 04 May 2026 14:48:47 -0700 (PDT)
+Received: from google.com (76.9.127.34.bc.googleusercontent.com. [34.127.9.76])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b9caa7ebc6sm115903505ad.5.2026.05.04.14.48.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2026 14:48:47 -0700 (PDT)
+Date: Mon, 4 May 2026 21:48:43 +0000
+From: David Matlack <dmatlack@google.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alex Williamson <alex@shazbot.org>, kvm@vger.kernel.org,
+	Leon Romanovsky <leon@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+	Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	patches@lists.linux.dev
+Subject: Re: [PATCH 05/11] selftests: Add additional kernel functions to
+ tools/include/
+Message-ID: <afkUO56H6KPy5afA@google.com>
+References: <0-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
+ <5-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 5CC8C4C433A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
+X-Rspamd-Queue-Id: 4B33D4C437A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[shazbot.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[shazbot.org:s=fm2,messagingengine.com:s=fm3];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19954-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19955-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[shazbot.org:+,messagingengine.com:+];
+	DKIM_TRACE(0.00)[google.com:+];
 	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alex@shazbot.org,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[dmatlack@google.com,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[shazbot.org:dkim,shazbot.org:mid,meta.com:email,sashiko.dev:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,messagingengine.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-On Thu, 30 Apr 2026 13:06:56 -0700
-Zhiping Zhang <zhipingz@meta.com> wrote:
-
-> Add a dma-buf callback that returns raw TPH metadata from the exporter
-> so peer devices can reuse the steering tag and processing hint
-> associated with a VFIO-exported buffer.
+On 2026-04-30 09:08 PM, Jason Gunthorpe wrote:
+> These are needed by the VFIO mlx5 selftest in the following patches,
+> which includes some headers from mlx5 and also needs a few more
+> MMIO-related features.
 > 
-> Add a new VFIO_DEVICE_FEATURE_DMA_BUF_TPH ioctl that takes the fd from
-> VFIO_DEVICE_FEATURE_DMA_BUF along with a steering tag and processing
-> hint, validates the fd is a vfio-exported dma-buf belonging to this
-> device, and stores the TPH values under memory_lock. This keeps the
-> existing VFIO_DEVICE_FEATURE_DMA_BUF uAPI completely unchanged.
-> 
-> The user sequences setting TPH on the dma-buf before the importer
-> consumes it.
-> 
-> Add an st_width parameter to get_tph() so the exporter can reject
-> steering tags that exceed the consumer's supported width (8 vs 16 bit).
-> When no TPH metadata was supplied, get_tph() returns -EOPNOTSUPP.
-> 
-> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+> - DECLARE_FLEX_ARRAY in new tools/include/linux/stddef.h (wraps
+>   existing __DECLARE_FLEX_ARRAY from uapi/linux/stddef.h)
 
-The uAPI is better, but sashiko has some review comments[1] for you.
+Is this needed? I don't see it used anywhere.
 
-Please also copy the kvm list for vfio related development.  Thanks,
-
-Alex
-
-[1]https://sashiko.dev/#/patchset/20260430200704.352228-1-zhipingz@meta.com
-
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -1534,6 +1534,9 @@ int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
->  		return vfio_pci_core_feature_token(vdev, flags, arg, argsz);
->  	case VFIO_DEVICE_FEATURE_DMA_BUF:
->  		return vfio_pci_core_feature_dma_buf(vdev, flags, arg, argsz);
-> +	case VFIO_DEVICE_FEATURE_DMA_BUF_TPH:
-> +		return vfio_pci_core_feature_dma_buf_tph(vdev, flags, arg,
-> +							 argsz);
->  	default:
->  		return -ENOTTY;
->  	}
-> diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
-> +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> @@ -19,6 +19,9 @@ struct vfio_pci_dma_buf {
->  	u32 nr_ranges;
->  	struct kref kref;
->  	struct completion comp;
-> +	u16 steering_tag;
-> +	u8 ph;
-> +	u8 tph_present : 1;
->  	u8 revoked : 1;
->  };
->  
-> @@ -69,6 +72,22 @@ vfio_pci_dma_buf_map(struct dma_buf_attachment *attachment,
->  	return ret;
->  }
->  
-> +static int vfio_pci_dma_buf_get_tph(struct dma_buf *dmabuf, u16 *steering_tag,
-> +				    u8 *ph, u8 st_width)
-> +{
-> +	struct vfio_pci_dma_buf *priv = dmabuf->priv;
-> +
-> +	if (!priv->tph_present)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (st_width < 16 && priv->steering_tag > ((1U << st_width) - 1))
-> +		return -EINVAL;
-> +
-> +	*steering_tag = priv->steering_tag;
-> +	*ph = priv->ph;
-> +	return 0;
-> +}
-> +
->  static void vfio_pci_dma_buf_unmap(struct dma_buf_attachment *attachment,
->  				   struct sg_table *sgt,
->  				   enum dma_data_direction dir)
-> @@ -101,6 +120,7 @@ static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
->  
->  static const struct dma_buf_ops vfio_pci_dmabuf_ops = {
->  	.attach = vfio_pci_dma_buf_attach,
-> +	.get_tph = vfio_pci_dma_buf_get_tph,
->  	.map_dma_buf = vfio_pci_dma_buf_map,
->  	.unmap_dma_buf = vfio_pci_dma_buf_unmap,
->  	.release = vfio_pci_dma_buf_release,
-> @@ -331,6 +351,55 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
->  	return ret;
->  }
->  
-> +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
-> +				      u32 flags,
-> +				      struct vfio_device_feature_dma_buf_tph __user *arg,
-> +				      size_t argsz)
-> +{
-> +	struct vfio_device_feature_dma_buf_tph set_tph;
-> +	struct vfio_pci_dma_buf *priv;
-> +	struct dma_buf *dmabuf;
-> +	int ret;
-> +
-> +	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_SET,
-> +				 sizeof(set_tph));
-> +	if (ret != 1)
-> +		return ret;
-> +
-> +	if (copy_from_user(&set_tph, arg, sizeof(set_tph)))
-> +		return -EFAULT;
-> +
-> +	if (set_tph.reserved)
-> +		return -EINVAL;
-> +
-> +	dmabuf = dma_buf_get(set_tph.dmabuf_fd);
-> +	if (IS_ERR(dmabuf))
-> +		return PTR_ERR(dmabuf);
-> +
-> +	if (dmabuf->ops != &vfio_pci_dmabuf_ops) {
-> +		ret = -EINVAL;
-> +		goto out_put;
-> +	}
-> +
-> +	priv = dmabuf->priv;
-> +	down_write(&vdev->memory_lock);
-> +	if (priv->vdev != vdev) {
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +
-> +	priv->steering_tag = set_tph.steering_tag;
-> +	priv->ph = set_tph.ph;
-> +	priv->tph_present = 1;
-> +	ret = 0;
-> +
-> +out_unlock:
-> +	up_write(&vdev->memory_lock);
-> +out_put:
-> +	dma_buf_put(dmabuf);
-> +	return ret;
-> +}
-> +
->  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
->  {
->  	struct vfio_pci_dma_buf *priv;
-> diff --git a/drivers/vfio/pci/vfio_pci_priv.h b/drivers/vfio/pci/vfio_pci_priv.h
-> --- a/drivers/vfio/pci/vfio_pci_priv.h
-> +++ b/drivers/vfio/pci/vfio_pci_priv.h
-> @@ -118,6 +118,10 @@ static inline bool vfio_pci_is_vga(struct pci_dev *pdev)
->  int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
->  				  struct vfio_device_feature_dma_buf __user *arg,
->  				  size_t argsz);
-> +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
-> +				      u32 flags,
-> +				      struct vfio_device_feature_dma_buf_tph __user *arg,
-> +				      size_t argsz);
->  void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev);
->  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked);
->  #else
-> @@ -128,6 +132,13 @@ vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
->  {
->  	return -ENOTTY;
->  }
-> +static inline int
-> +vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev, u32 flags,
-> +				  struct vfio_device_feature_dma_buf_tph __user *arg,
-> +				  size_t argsz)
-> +{
-> +	return -ENOTTY;
-> +}
->  static inline void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
->  {
->  }
-> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> --- a/include/linux/dma-buf.h
-> +++ b/include/linux/dma-buf.h
-> @@ -113,6 +113,23 @@ struct dma_buf_ops {
->  	 */
->  	void (*unpin)(struct dma_buf_attachment *attach);
->  
-> +	/**
-> +	 * @get_tph:
-> +	 * @dmabuf: DMA buffer for which to retrieve TPH metadata
-> +	 * @steering_tag: Returns the raw TPH steering tag
-> +	 * @ph: Returns the TPH processing hint
-> +	 * @st_width: Consumer's supported steering tag width in bits (8 or 16)
-> +	 *
-> +	 * Return the TPH (TLP Processing Hints) metadata associated with this
-> +	 * DMA buffer. Exporters that do not provide TPH metadata should return
-> +	 * -EOPNOTSUPP. If the steering tag exceeds @st_width bits, return
-> +	 * -EINVAL.
-> +	 *
-> +	 * This callback is optional.
-> +	 */
-> +	int (*get_tph)(struct dma_buf *dmabuf, u16 *steering_tag, u8 *ph,
-> +		       u8 st_width);
-> +
->  	/**
->  	 * @map_dma_buf:
->  	 *
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -1534,6 +1534,28 @@ struct vfio_device_feature_dma_buf {
->   */
->  #define VFIO_DEVICE_FEATURE_MIG_PRECOPY_INFOv2  12
->  
-> +/**
-> + * Upon VFIO_DEVICE_FEATURE_SET associate TPH (TLP Processing Hints) metadata
-> + * with a vfio-exported dma-buf. The dma-buf must have been created by
-> + * VFIO_DEVICE_FEATURE_DMA_BUF on this device.
-> + *
-> + * dmabuf_fd is the file descriptor returned by VFIO_DEVICE_FEATURE_DMA_BUF.
-> + * steering_tag and ph are the raw TPH values that importing drivers should use
-> + * when accessing the buffer.
-> + *
-> + * The user must set TPH on the dma-buf before the importer consumes it.
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +#define VFIO_DEVICE_FEATURE_DMA_BUF_TPH 13
-> +
-> +struct vfio_device_feature_dma_buf_tph {
-> +	__s32	dmabuf_fd;
-> +	__u16	steering_tag;
-> +	__u8	ph;
-> +	__u8	reserved;
-> +};
-> +
->  /* -------- API for Type1 VFIO IOMMU -------- */
->  
->  /**
-
+  $ git grep DECLARE_FLEX_ARRAY tools/testing/selftests/vfio
 
