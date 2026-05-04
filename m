@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-19899-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19900-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MKXUBcUx+GlBrQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19899-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:42:29 +0200
+	id 2A+TLxMy+Gl1rQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19900-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:43:47 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B93DA4B89C8
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:42:28 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A554B8A6D
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:43:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A647B3007B94
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 05:42:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9EF4E3022924
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 05:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060B92D1914;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D124F29AAEA;
 	Mon,  4 May 2026 05:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K20D9JCu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BxnQdYq2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1792C21C3;
-	Mon,  4 May 2026 05:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932C2277C81;
+	Mon,  4 May 2026 05:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777873309; cv=none; b=BtJ9kBzJmT8i1UDlWUc/Zv/4J6hibBvsGnFW/by50C0HODuCLXPAFBnLXDflvSDmBEbTbTC0AY1GhD6X7gy2veKwpo8nbCjCR3pHXLB0JBRUGkN7LxDH5M7iNNPxggKQK3gZa2fQ9d5YPB/Qu2tBHP9D+BM+EMOHSrF5MNEWnVY=
+	t=1777873310; cv=none; b=QjMpnzYArD264bJey9APuBssy7XhGeOaZe3jRq01R442HXOxwtp6tTapODAG4dpURzsolEtNNxviaMGM+70Lnp9yT/yYRp6bgYm/GivJSE1C8aRzJbp6x+2rmnXRO4k2tXkAdamvY8KyPhFt/GgyDqtTgRSbHKLNnx2gWkbknLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777873309; c=relaxed/simple;
-	bh=GHnhpE7QrcXGRTTtf6gkxbHNmub/XiSwpyrPsA7iBnA=;
+	s=arc-20240116; t=1777873310; c=relaxed/simple;
+	bh=L3Sot7e5iY2B6BA0Y7EJ7d72qlutg4wPCr87yV/MqyU=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SE7MAJXvJDGbtMgQZfWC/W5ud2EQieQgWgF3WQmz3Lrm+y3hDzwh7661eenB3MJ462+0yrdrUK8cqnB8guQYwVWU0UYTQGUqAw1IBWvJ/hmL0kCGYYXN1lYqjzJJqshLnhcDPHMDSuxWaACQhGwkZUBLsNI5Z8ZSXGgshyu88J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K20D9JCu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16251C2BCF4;
+	 MIME-Version; b=T0ClQncsPH8X2uoYsg91Uj4FRl5alDQFzGhQ/w840NNht0InVpBwTtut2+vd5/xIHPzMqZ9vIAsvnc1ZfwFsMR1SoY+F2eoKNXISHCwvKiDj1YHe3VOtHBvuAoIOozsStiEwJULgSAb29TLuCkxhftUChbBlLKr1aNVtQ9rX6Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BxnQdYq2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7071C32781;
 	Mon,  4 May 2026 05:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777873309;
-	bh=GHnhpE7QrcXGRTTtf6gkxbHNmub/XiSwpyrPsA7iBnA=;
+	s=k20201202; t=1777873310;
+	bh=L3Sot7e5iY2B6BA0Y7EJ7d72qlutg4wPCr87yV/MqyU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=K20D9JCunDUvr3Wy1jpclTRG5d6yxzp72MARcYoo3cC3ZF6UUobmNrtHAK+nI3x/x
-	 m1yGl/phXXE+I8ihVbWWZfUdJolKLyiQBaYda+VOYFch4B2N92hjCzFM9Tnm0IXC5A
-	 2/vFtXSShAdKmvKPobo4uzTQYge/Xn+KgM3Eg67HWCSeOizk1FqPkrGgOpPP1C3Nfg
-	 Srm5qSaRKMYACBN+4bAu7ZOH6tpFul/huwKVnXEdtTN7jXoEkAuS3i8AqQuoHxQyf1
-	 eaSkm/eC1y8rXpL0dVj7B54TIkG7svm/MW0X6MWyiN9Zutnmmt7Gc/JS9pOqaQz/vc
-	 S6MoXGhw3uyRA==
+	b=BxnQdYq2JALaOjcmOLfDPqZCrtSGx+2PGUQlcU0C5oOhhw1RlOuOdg83H7KjglKZD
+	 joDRsv6mlHsL0XAlTauG6HvNR/M2QeWM+DDi+UpRLyQSNdldjEBU8GXmLnz+KhOrB8
+	 P3kLsSvV9DOBRBGz/YembgrHWdu07+uFuRvHbsaIwwd8oM3GffEBy/89sHgk2YlTO2
+	 vitdG660msVCqlCUtIaqGsi85ZeTjivI+7rNbhzebp+9lj9ws8XqXaR2OpWRbjcvzr
+	 bWtKSlA//adGe3uiXCIf+cuSJcqR7nlWLV6Yym2x1pInNHoqW/P3wS13y5nXzAsLqt
+	 brG/64hjTVmZw==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	achender@kernel.org,
 	linux-kselftest@vger.kernel.org,
 	shuah@kernel.org
-Subject: [PATCH net-next v3 07/10] selftests: rds: Remove tmp pcaps
-Date: Sun,  3 May 2026 22:41:40 -0700
-Message-Id: <20260504054143.4027538-8-achender@kernel.org>
+Subject: [PATCH net-next v3 08/10] selftests: rds: Stop tcpdump on timeout
+Date: Sun,  3 May 2026 22:41:41 -0700
+Message-Id: <20260504054143.4027538-9-achender@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260504054143.4027538-1-achender@kernel.org>
 References: <20260504054143.4027538-1-achender@kernel.org>
@@ -67,7 +67,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B93DA4B89C8
+X-Rspamd-Queue-Id: 81A554B8A6D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -75,7 +75,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-19899-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19900-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -91,64 +91,75 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
-This patch removes the initial tmp tcpdumps and instead saves
-the pcaps directly to the logdir if it is set.
+The timeout signal handler for the rds selftests currently just
+exits when the time limit is exceeded, and forgets to stop the
+network dumps.  Fix this by hoisting the tcpdump terminate commands
+into a helper function, and call it from the signal handler before
+exiting
+
+Bound proc.wait() with a timeout (and fall back to proc.kill())
+so an unresponsive tcpdump cannot hang the timeout path itself.
+
+We also pop() tcpdump_procs as we iterate, so stop_pcaps() is safe
+to call from both the normal cleanup path and the signal handler,
+since the second invocation simply has nothing to do
 
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/test.py | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ tools/testing/selftests/net/rds/test.py | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
-index 7a3616ac288f..a7be57ef6ece 100755
+index a7be57ef6ece..faf751863478 100755
 --- a/tools/testing/selftests/net/rds/test.py
 +++ b/tools/testing/selftests/net/rds/test.py
-@@ -14,8 +14,6 @@ import signal
- import socket
- import subprocess
- import sys
--import tempfile
--import shutil
+@@ -68,11 +68,29 @@ def netns_socket(netns, *sock_args):
+     u1.close()
+     return socket.fromfd(fds[0], *sock_args)
  
- # Allow utils module to be imported from different directory
- this_dir = os.path.dirname(os.path.realpath(__file__))
-@@ -133,17 +131,16 @@ tcpdump_procs = []
- if logdir is not None:
-     for net in [NET0, NET1]:
-         pcap = logdir+'/'+net+'.pcap'
--        fd, pcap_tmp = tempfile.mkstemp(suffix=".pcap", prefix=f"{net}-", dir="/tmp")
++def stop_pcaps():
++    """Stop tcpdump processes.
++
++    We use pop() here to drain the list in the event that the test
++    completes after the signal handler is fired.  List will be empty
++    if logdir is not set
++    """
++    print("Stopping network packet captures")
++    while tcpdump_procs:
++        proc = tcpdump_procs.pop()
++        proc.terminate()
++        try:
++            proc.wait(timeout=5)
++        except subprocess.TimeoutExpired:
++            proc.kill()
++            proc.wait()
++
+ def signal_handler(_sig, _frame):
+     """
+     Test timed out signal handler
+     """
+     print('Test timed out')
++    stop_pcaps()
+     sys.exit(1)
  
-         tcpdump_cmd = ['ip', 'netns', 'exec', net, '/usr/sbin/tcpdump']
-         sudo_user = os.environ.get('SUDO_USER')
-         if sudo_user:
-             tcpdump_cmd.extend(['-Z', sudo_user])
--        tcpdump_cmd.extend(['-i', 'any', '-w', pcap_tmp])
-+        tcpdump_cmd.extend(['-i', 'any', '-w', pcap])
+ #Parse out command line arguments.  We take an optional
+@@ -255,11 +273,7 @@ for s in sockets:
  
-         # pylint: disable-next=consider-using-with
-         p = subprocess.Popen(tcpdump_cmd)
--        tcpdump_procs.append((p, pcap_tmp, pcap, fd))
-+        tcpdump_procs.append(p)
+ print(f"getsockopt(): {nr_success}/{nr_error}")
  
- # simulate packet loss, duplication and corruption
- for net, iface in [(NET0, VETH0), (NET1, VETH1)]:
-@@ -260,11 +257,9 @@ print(f"getsockopt(): {nr_success}/{nr_error}")
- 
- if logdir is not None:
-     print("Stopping network packet captures")
--    for p, pcap_tmp, pcap, fd in tcpdump_procs:
-+    for p in tcpdump_procs:
-         p.terminate()
-         p.wait()
--        os.close(fd)
--        shutil.move(pcap_tmp, pcap)
+-if logdir is not None:
+-    print("Stopping network packet captures")
+-    for p in tcpdump_procs:
+-        p.terminate()
+-        p.wait()
++stop_pcaps()
  
  # We're done sending and receiving stuff, now let's check if what
  # we received is what we sent.
