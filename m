@@ -1,174 +1,178 @@
-Return-Path: <linux-rdma+bounces-19966-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19967-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QIsuH2Mh+Wmz5wIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19966-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:44:51 +0200
+	id iGmXHCkk+Wmz5wIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19967-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:56:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC4B4C484F
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:44:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 157D24C49E6
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:56:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A5D8F300AD89
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 22:44:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 67A56304C075
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 22:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A18B387581;
-	Mon,  4 May 2026 22:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B8238BF80;
+	Mon,  4 May 2026 22:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JgjxUrbz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DZV+R6HH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8116D333730
-	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 22:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777934680; cv=pass; b=Y1ag4bN0EL5RaL/7L2jCyChAxtDZRFXybUc0aJGDAUI8osy3NLoyZNLRUrXpVuzOkcQ+3PMqdEaPD+3pReddbr/Q+4I/1Dun0IrscAIoXxlH8SpW717GWHqB12FOIPtOYmUjJktDbQQw0OoiHLQRN4zZ00lSlA+qzzPJ3qwI1qo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777934680; c=relaxed/simple;
-	bh=h4g/aXIAan0ee1uFOoXPGBT468lGBaAVwYmjcBxQ4Oc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qsnP1BktmGyPpQidla6g1kswuuFiEdcKNKv2U0npJkeL9VVEqLG0Q25IgvYbdScUPne8IMRWQ/LejNFEzeGhGazsIQxSEuFAzAGXeP0EKoSqlI0A9A5483xtRl1QgG3rao1FUdMUZrhyJ2qLemUOrmfnqcQ2NDI/DfdIsXk3Sm4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JgjxUrbz; arc=pass smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9FD38B150
+	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 22:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777935255; cv=none; b=QAdcUIFb2yOaQAtaAexEuHxhH1y0+errm3iHJelDe6JehVO8obP4WW7uUcze13HADUe7YWqPDzkzdT5eWDzX0x1flVwY29GkawkL2hB1PaE2U9TJP3i7W3jvDIVRtbOf00E7nlbbBO8EnCbeTc4TsBZUwfic7BCwHw3kznP6ZXQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777935255; c=relaxed/simple;
+	bh=GJA5seVahYpViKnGZOh3rNiBjtA0B+KD0LRZTUEpgoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E/y7zIldk7UN4SallQwCduuYQKzWitj7UQzpORODcwFFiayhSBMby3cMGwhmkD1DWpcoNj31621zfz3OmkQlFrd/yV9EiknajM7jDRjBjsD4uLpC/A1iAVSuTBpReMKGC9RqwbJqOHCBQpKAdmgcsP3vozLBfkrtMZVFZdQOpFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DZV+R6HH; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-67bf769704eso2264a12.0
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 15:44:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1777934678; cv=none;
-        d=google.com; s=arc-20240605;
-        b=XNEwjDNXOXgk8PxqDTI8Nu9zwIRyWXclBaPDkGIDOj4SX86BuQe5KCRKcUReaMRXgn
-         HM47qHCqI7BN9HCkg4FIYZbnpuuaP2VRtfjm/Bqq7oXvf/WEDVJQJ/BwyXBMs8b8V3pJ
-         ukHk0I4I+z5uFlI/7EA9eLy9Wq77Jw5vdk9CTs+TznEVXMnaPfzTZs7SxOozFD+KQOKh
-         hdb7gNwxufbjmDY6Hh0PL3w1tF2SoslDq+lpSi6wstvzqoFC5VYvirC5Gu3yDUD/Xl7/
-         hqTpOEHm0HFqKNbqBrSQa+DAhdjSX7nY9E+LOB193BspdXRNkueMrnWwTfApfFIeoInJ
-         x8rQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=h4g/aXIAan0ee1uFOoXPGBT468lGBaAVwYmjcBxQ4Oc=;
-        fh=ruR0fY3lPdTlSJCIb2xxSHVqCN9LF4HUzl1HlBAqQOc=;
-        b=c3rqQ1n1/4q91zJg7586XH7p96xeMmszTCFKe+qu5X49mYkuBszi4kQrO1Q+CDgmbD
-         Zw8NYEXifT5tNAo+hzJQrZO8mD9iwGs+dXrm5RDZaGGv+6Df2npVauoWXEwg/krwHd+j
-         2GUvi1gCOE4rw5JYjGq4wRTnriqneUphZZFIHF+bzgKxBsy+w5yWGuUNxraDVUSR0jee
-         L0w4Nd5WZWB5lP+Ied9GmOUQBzUKr1dMOHqLXtNmq68HZ1PJBtokJVNSHaxtELywzLOO
-         Ve+Zr0tKNHYs2hdGNBqFRzcz1OCvg0sJIdsthyObXdy8UJGla2WJf4iBwSmRsEVB5At0
-         zTAg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-36536771300so1094410a91.1
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 15:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1777934678; x=1778539478; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h4g/aXIAan0ee1uFOoXPGBT468lGBaAVwYmjcBxQ4Oc=;
-        b=JgjxUrbzRxZJnFoxwn+lkGfk9p6dyi2/BALGU2HDZARuAtdZT6q44GpYulSPolihSB
-         6J8UQcN3es2bbnn7oeaWECe7mkGp4jPyQW9rEn8uC85TIZIhqSQzlEwNkYMiyCcH8Lfz
-         Y23E2hwhegi/KLE7q/o1CkUUa5qogMoPCi18YCqXiU6hnct8pbCxdBqLMF5XxhUlDN2s
-         UYQyFf/8X8zXlZq5rwteIJ6vkZzVVYjOVynO1M0rSM/G+066gwDGWcAqVGzFB6QpQrq7
-         5NNBm8h3j05y30RJOVvmo4xvUd8mIi9lXiBFpJ3bCML/t7W/v9MYViO6CzjAuBMSxVuI
-         e4Dg==
+        d=google.com; s=20251104; t=1777935253; x=1778540053; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9ugfH2lM7nQgOC3+hZY16zqoQboC9qbhlDerkTWHT2Q=;
+        b=DZV+R6HHRl2Ey2t3N3yv3xwGuB30C/kzGN7Tq/IPskIxfiKxxF0RXYE5d19hJeWkh7
+         M3eceaUMnvjnz2yu5bKALKMVbo5tTJ0zSQOEwetuBV7Y1jQFJipQ8SV1H7OSIHHoVA59
+         HIsPgRuPqqHCtqWkKqzRugFIbu/QbGOHWLl6QKrCi4zCBp1GurcsCSxu8O6fyKaMfNam
+         +OFzRzwSGViW00TaV2NafVAphvxP34SKk4SB7j3MiJdW1avgzQRsNLxknPA6tMS/l/oL
+         ssl6edK1TGxxm4uJR09O8l1RmfZyC5o+fr+xYWhEuJQzE4rtGSTmuxt6faHImSwEY+Ry
+         raWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777934678; x=1778539478;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=h4g/aXIAan0ee1uFOoXPGBT468lGBaAVwYmjcBxQ4Oc=;
-        b=mSY4WtB1CofNrCMLDDqjbAIxozQotIz9tpQ8xgLci4IwxvjeJLSHBLGDKffwfDacaQ
-         /Ua2mTYT9x2E5FZp8+KoLfgLiNuvUhJI/FQglEkNsFvqGNuIfEEAGPH0zX/w+2k4g3nD
-         yM/uUHrElURlLVOu1BEjzmfszBy61DQaKpaKafvVAolPtdzYv7QafCNfw3cC/sa1swq2
-         H5DiuVgOSA4BSKqjF6mrDnk9jIor1PuuUjHsC55V7IgCX1EtWPliZo4skE+K1wBDp28v
-         siZBFHg5YA/7g2YzVHrDAM12rkU80hxo/p8VxUU7MRal2g/TtdxpdkAtqE15zr7o+Xak
-         QmtA==
-X-Forwarded-Encrypted: i=1; AFNElJ9t1vdgmytxnOHojK8KNIAn9KZhi0HRnr6ch7IFE/+jF6sCJWXszMmHWAIoUTus62M1QDUpZB4WlZfM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxaVu0+JyGU+4uATcDyTFrKxpn76IK1Wzj3omc03JwGCKaf93XJ
-	qEv5aphwSJAQvNuJQ9ymPh6bD10qsa1xqnSV1EV5DgitfxiTlVSuioCVLm7KnQaKbC5t9DgiVM1
-	ptmLLzdd3gu0s16L3E5cuyG+CWZ5BGw5j1q1hynMn
-X-Gm-Gg: AeBDieu485DvtnUhOlY+C6HK9Rg8luBGljWX4AzGJZFq6HjQ3LBmV10o5tEgk3RSMyN
-	l2eALjXaZnNV6ZMM2kp+FsflP8hlhp9rzVNUPYXhHAGyE9qXU3Vkz/KuNDnltktdiYRLBnRJ9BE
-	V/TwQee1+rlbMSRolAS3uzVkgvMrZAvyWWOiRPbSzP+md3g/JOksQKph6hSf+Z7BmuuStAZh+J3
-	eDdJB+6LiVbKgp0PYlcEp3dW0zqXzLRwjJuTucNdm3abOIegys+6i7r2uCEwmebvAN8+1U+kEDN
-	mJzVgQ99QbgZd2yhjUBo2++Bmj4rcmadAi5iorJy4nEHp+/7HtB4idZd5qNwAvskAjNoeJYticU
-	i/LRuT3eC31L9Qurd+GJ2lZcTxw==
-X-Received: by 2002:a05:6402:71a:b0:678:a5c3:4d12 with SMTP id
- 4fb4d7f45d1cf-67cccf0f26bmr7665a12.3.1777934677562; Mon, 04 May 2026 15:44:37
- -0700 (PDT)
+        d=1e100.net; s=20251104; t=1777935253; x=1778540053;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ugfH2lM7nQgOC3+hZY16zqoQboC9qbhlDerkTWHT2Q=;
+        b=Z2mqe5toDjPTieCeF3ZljPsOVnJ9uGT/chjZiKpIBepxqc46tdt4HFNAv2XJl+Ae5K
+         JSZ9s8haJM9sjLhFvDytDSXFEzFNrClEZQsxfXENC7WJCFVMMIsUoQH9Ywl/viSht97D
+         bO4BGfRb2wMruUYkeZeY/u8b7uII5R/ktvhvdbF/gOr89SXd8g/VNyT3HOR3eRVAPSsj
+         ehjI+pgH8Mt9/Q5cl/bLH7WslPMMY/RZRWFd1hIOSIFnNQ415CaMz/b0WylORoArAAJe
+         iG8jQYq8QMF1P/0i/BISJdGQ5bjyn6ZE2+qyI6vvyg1kCUXH8UJ9KQ5RLuWTZWmmRei1
+         PEEQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/lFymSnwqoxw2HFwM+OELWhfrXSnyvL34l4DDQHLAmh/cR89RziPCKQgAkboASrE6KAdM7YJyV5TPc@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1LqLMaQRwsjY/gIYnYuGQulcUOGOfjvcnAurCMMEyD3fMQ1ZO
+	KZo0ahm3BMJ0lunp2SC+sgmWYuchYD319R8GV4SFyDNLct2D8df5qW14VZo9QZYKBw==
+X-Gm-Gg: AeBDiesoRhJvTlgF7VG4VE8ubc1otUinAu48JH1IsH61kYaYDaiL52PIGygKVHdDnX5
+	n74lNhHS99GizGi3YE6rLukGz5BMjmbMowhimgAGsOLqXRortUYrBns23dYkoVVffiSJz+5A5K0
+	pfXIw+kvazZPGTsJiHXVq7It4PEIDljNxiWz/+SMI4iCz4bDB29gqZ15Y2h69NwZcFVA+XSpEAx
+	npIHWTx6Rcx6Y9wiNp/XdAA6i6Yqx6MGkc5nu+puOIz+PDHK3lSVt1UOoYGSXRv6vz/YDK0M8GZ
+	Nw+cjl0VmMDLA8mk5L8ID2qPt5rb+quMLMAftYqfrHwqVMArfiIU3yxBWKNbutkUaByh4/imyHs
+	+udvMrkHKAD94e4vXWmzqrmz/aULzPj/AQI/t5T3rNApGWorH7MnHOfkiLkPVPSa2AhwelPQ0Ih
+	oAkTwiqFk49wSeglOI5hV3/d4isTD8R4um9a8GJZVGa1fDWMP2tkB8CgNsxEnVKMJYMld5fXFxz
+	CoSPg==
+X-Received: by 2002:a17:90b:2e85:b0:364:a497:db8f with SMTP id 98e67ed59e1d1-365727322f8mr956720a91.9.1777935252914;
+        Mon, 04 May 2026 15:54:12 -0700 (PDT)
+Received: from google.com (76.9.127.34.bc.googleusercontent.com. [34.127.9.76])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b9f0b21c4bsm88242915ad.29.2026.05.04.15.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2026 15:54:12 -0700 (PDT)
+Date: Mon, 4 May 2026 22:54:08 +0000
+From: David Matlack <dmatlack@google.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alex Williamson <alex@shazbot.org>, kvm@vger.kernel.org,
+	Leon Romanovsky <leon@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+	Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	patches@lists.linux.dev, Josh Hilke <jrhilke@google.com>
+Subject: Re: [PATCH 00/11] mlx5 support for VFIO self test
+Message-ID: <afkjkBq8B-4KjhS_@google.com>
+References: <0-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
+ <CALzav=ci8bi3=sY+F3HJTB5sOQ_pJ8Lm+kz0CDBBWVXry5P98w@mail.gmail.com>
+ <20260501164314.GA1381708@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260428-mlx5_vxlan-v1-1-cf666d042618@google.com>
- <20260428184631.40f1f1b7@kernel.org> <CANkEMgkBnuRfurKcFEUAZcJcX1XYSnHbBozZGP8DpnKq--tWbw@mail.gmail.com>
- <20260429190150.417b0302@kernel.org>
-In-Reply-To: <20260429190150.417b0302@kernel.org>
-From: Marc Harvey <marcharvey@google.com>
-Date: Mon, 4 May 2026 15:44:26 -0700
-X-Gm-Features: AVHnY4J3w0BS71H3Vp7F7zgIqkv3XQzUGxKzlNG30V6pti40qOkOAPp-uV87PII
-Message-ID: <CANkEMg=Xc9jN8McZmLerK_ffOwRFfX+yO=4Ha6+umVogbkBj3A@mail.gmail.com>
-Subject: Re: [PATCH net-next] net/mlx5: Add MLX5_VXLAN config option
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kuniyuki Iwashima <kuniyu@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 7CC4B4C484F
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260501164314.GA1381708@nvidia.com>
+X-Rspamd-Queue-Id: 157D24C49E6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19966-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[marcharvey@google.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-19967-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[google.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dmatlack@google.com,linux-rdma@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mail.gmail.com:mid]
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qemu.org:url]
 
-On Wed, Apr 29, 2026 at 7:01=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> Are you aware of NETIF_F_RX_UDP_TUNNEL_PORT ?
-> I haven't checked it does exactly what we need, but I recall there was
-> a ethtool feature for this..
+On 2026-05-01 01:43 PM, Jason Gunthorpe wrote:
+> On Fri, May 01, 2026 at 09:11:11AM -0700, David Matlack wrote:
+> > On Thu, Apr 30, 2026 at 5:08 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > Add an mlx5 driver to VFIO self test. This is largely a remix of the
+> > > existing VFIO mlx5 driver in rdma-core. It uses an RDMA loopback QP
+> > > to issue RDMA WRITE operations which effectively perform memory
+> > > copies using DMA. Since mlx5 has a stable programming ABI this
+> > > should work on devices from CX5 to current HW. The device FW must
+> > > support the QP loopback configuration.
+> > 
+> > > This entire series was coded by Claude Code in about 4 days.
+> > 
+> > Very exciting. Josh Hilke from Google is also working on using AI to
+> > create a selftest driver for Intel IGB NICs so VFIO selftests can run
+> > in QEMU [1]. So it's encouraging to see you were able to do it with
+> > mlx5.
+> > 
+> > [1] https://www.qemu.org/docs/master/system/devices/igb.html
+> 
+> Yes! I would feed DPDK in as well in this case? Combined with the
+> kernel driver it should be doable. It is much easier if you understand
+> how the NIC works, of course. This worked out significantly because I
+> guided it through sufficiently small steps and knew where to find all
+> the quality reference material..
+> 
+> > >  - Make it work on a PF too (this is surprisingly hard!).
+> > 
+> > Can it work on CX VFs? We're interested in continuously performing
+> > memory copies across a Live Update using a VF via selftests to
+> > demonstrate SR-IOV preservation (when we eventually get there).
+> 
+> Yes, I started with VF because it is simpler.
 
-Thanks, I didn't know about that feature and mlx5 uses it. However,
-mlx5 unconditionally sets the `UDP_TUNNEL_NIC_INFO_STATIC_IANA_VXLAN`
-flag, which excludes port 4789 from the entire UDP tunnel core offload
-management (see `__udp_tunnel_nic_add_port()`).
+Makes sense. I tested it out and was able to get vfio_pci_driver_test
+passing with a CX7 VF.
 
-So using ethtool to disable `NETIF_F_RX_UDP_TUNNEL_PORT` will not
-disable vxlan offload for port 4789.
+> The PF support flow requires a bunch more complicated stuff.
 
-I think a better approach would be to just remove this static
-automatic offloading for port 4789, mlx5 is the only driver using
-`UDP_TUNNEL_NIC_INFO_STATIC_IANA_VXLAN` anyway. However, there might
-be a reason for this, such as some supported hardware offloading vxlan
-on port 4789 by default even without commands from the driver.
-
-If mlx5 continues to use the `UDP_TUNNEL_NIC_INFO_STATIC_IANA_VXLAN`
-flag, then some change is required to fully disable vxlan offloading.
+Do you think it's worth supporting PFs? If anyone with a CX NIC can
+enable SR-IOV and run selftests on a VF then we can keep the driver
+somewhat simpler.
 
