@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-19926-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19927-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wBeGOL+m+GnQxQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19926-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:35 +0200
+	id gNW0BM6m+GkExgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19927-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F05D4BE593
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:33 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661A84BE5C0
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 16:01:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1E6D6305582A
+	by sea.lore.kernel.org (Postfix) with ESMTP id BB4AA3057622
 	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 13:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CF43DE42F;
-	Mon,  4 May 2026 13:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717683DE420;
+	Mon,  4 May 2026 13:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="HXxx1+Yj"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Ot8yDRq7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636253DE423
-	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 13:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025873DE422
+	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 13:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777903080; cv=none; b=ODvTVq1GCuWgQy91vyIwHfg0NnL0pWZMaDrIt0E7+g/y6jITSqi+XE47BXRdVq9AKL0b1i+P/cY5y8pzdNK+f2MKucN9EuB3pt5avFUYMimB5nKJCRNXsCnQt2/2tE2Ok0yh94qb61Pf2gOj+GNIe7S1SKRz1RQAq3/IWZzjr2Y=
+	t=1777903082; cv=none; b=by4cmz5dCSOCGYuVBmA64y3QWXgO0BK7g1+4bXuszcMORmjitciUcKUQi1bnwb0aSlPWkxWtd5VVxxhcajmO++UiQ60hemWPpkjnGVkQK2Y53mZqdFUa9a0Kk1rMq6lhn3hkQbG8WvPg5Xd+F2OJmX4jgu7Zv+RKi6IMwC5hb2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777903080; c=relaxed/simple;
-	bh=rKoudYG4ZFZBYsazazBODGyKDIU2PtKwggK5yTTQy50=;
+	s=arc-20240116; t=1777903082; c=relaxed/simple;
+	bh=gABPEPrINVsmNm2kPuoC4XU+FiIuPDV42sEnHT594Cs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p2SqiJ1DR3zqQV3+7ciQT4Jtcnd12ATr0ixfFJBnlLNijBcuiAgOX9AOKGDkeMkejmy4JXXyDg0EAjJF49o/fV999QHkWaxdEj+mMzMjht3vhKCpS4JMUIlyZe0I+xjgoiKRvHcvEvHu7X85rE2cRwF957TKrCRoiQtMejAF/JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=HXxx1+Yj; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=lZrzRLa9UHu9TgwfG3xvfz22gMCWNk0hoAFQLDVufN7Z+e94XvNfrU5xiJUb7SvTK8VpNQdp4dNrINswcK0J8GyYNxS2yjpD9nHIkEFBm088an8hTjtsOaDMaHXuDdNvhfTc/MtL6n7NmJa/Cr0kewQC7iaSb7ZOUlUUxRLiTOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Ot8yDRq7; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4891c00e7aeso34419935e9.2
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 06:57:58 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-44a74032ff8so2042665f8f.1
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 06:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777903077; x=1778507877; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777903078; x=1778507878; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VKdXVB2G4F0HIS73eicCKD9fJgbhr2V8cKaC6AryIEc=;
-        b=HXxx1+YjMRMqLh/8RHo5r0U37Os6z5xQFWsb2UFO6SdfUht4gw8wWv9/Mjd544aeoQ
-         tYSZC+noZ5wWMxMh7vFCClvt/QtNBVuQROXRZOHYRRmlTo6C6CFvqbMBl8a+N/XrC58i
-         r8K6DE5IOl1I8ens4EgYdWKJoqE4pC6le4z+2UiB5ocxuzvHXGj3hv2IF4RWp6ma4/K2
-         UlWmlMnwaUoG4Jxymfkym8Am2oDXSSan4csfWhsGcIn91bgxXfi4uVDXG8hl6VRHw8Oq
-         ClP6m6sUZho22VOJCmyxGBI+ZNIKIVsvt1xs53/sbOgQ6nWhff451O2qEh3VaiDoiolu
-         eIFQ==
+        bh=ck/LWvFuXnQuEuDnYHrJV0AD8h/kdwztdGUOToGCZ4I=;
+        b=Ot8yDRq7BMyj2WsHF/fvuYN3xSbl/NFMVmKPef/3h1FJHthKyH9+Kf8HQtOgPMV+Z5
+         OlKW+zCprRektsdcjOI0+3Clr+2QAXzqejQ9O/UQPM30MK0N08eSYcuV9UARpO4rByoE
+         3CAozHMLlwGcEayzqw6o3cpS4Dh0PZ1MDB0aTY9mgnnu6YMDqiVH/Echa7BBMkvzWjn/
+         c2YRZ59svjCiqAMsgZbIIbiNj2z3Oma3OPDYOn4cRzsPNuOHlR9M0OttaDV5h0RzsaAD
+         XzfTmUL9rH8DYxjzWuMlhIAnQUcl9eN50VNKh9CQ57V8QlAeUu58ZNGTLxabOex6Epkk
+         gmrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777903077; x=1778507877;
+        d=1e100.net; s=20251104; t=1777903078; x=1778507878;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=VKdXVB2G4F0HIS73eicCKD9fJgbhr2V8cKaC6AryIEc=;
-        b=I2cAqArQ7wgQ4lI9a2iRFbhqfpULFRJdQQdUrpyBkMph4WSphd6LlyMkuddlqyDBsq
-         ArSEjCSQkZN33k4TPyGMYKtGe7Tujwln9oaC5nnVeWbHq4nQgY5HnCLKwH9CSbWnYdEG
-         L3mKCeb5HRtXyurpe5VRvTdqSkwWHhHrfah0xp2sy3tMRhgPFqUdstKOtm8U74rdyDSP
-         3t3gaJrXF7YDk2ah0lf6nttyBDEvfJwW12yPObavL7tKGQVnKYMlJjTP+FEqcPHH1srW
-         Oy2IG2Dnn1h3aoBzADlR5eUi0oQ1MsbnCLlvN2FgJrmiD6yRmp3GiG3dTTsLEht/IxBI
-         M37g==
-X-Gm-Message-State: AOJu0YzvuWoIee1BXKc9qjZAc5R3VodVeLkfZJqbeopiGLR6kI4+hPFr
-	2OI4vyPlroZjyg1Tt/wKRMFCsIt8LhexWvW7lY6yfDQhsbCqKIpsOwhtt3WadaL2XHegUYb/Ux/
-	g7dVaxD0=
-X-Gm-Gg: AeBDieuTMvOqhALYzSw53fnEiFywc//As66Foj1+RR++3krk/3alcFXl9Z6uyzqP3Sy
-	jslv+DZTuJrbJWk4dVABbyBKkpNOn61PA/T7NtDWtoNOykzs+aLrPxGlosUHKtSJq59EWZgpU2Z
-	JKWUxPtlk7KckXSfIVZQFrI4OM082JEBzeGW0yPNQt6N6QNfD6Z/0GJpJLzkWvj0ruAK7zmfInZ
-	TikHEkNQ+SM3e6RbOPRRYoVTMo8rHsu8b8pX4VDj1vDEnxb/AV5jqg5fqetNfJSuDNC86iYEqBE
-	cwEhXn6rHy0SnkWXec1xhiGMOTCpabP7IMNijoPOUu/bGBhqJ+boJpwIPmGu/WAbAals9ZC8pmO
-	2OH8rMMC5woMucGGYFmQiOmZvYaBTAbdlEADtrI8WCExNyXXlIdjR54DKn6V0Y7ZTi5jO17Qc5P
-	o69vmvZeFNJhzcmW1KsLLZY/a1
-X-Received: by 2002:a05:600c:c08a:b0:485:3ff1:d5ed with SMTP id 5b1f17b1804b1-48a9852c5fbmr134420245e9.1.1777903076811;
-        Mon, 04 May 2026 06:57:56 -0700 (PDT)
+        bh=ck/LWvFuXnQuEuDnYHrJV0AD8h/kdwztdGUOToGCZ4I=;
+        b=mR93Y2p8CiIQrlsYadgux2oCIQOodiHEmOkTUw+vIc8RQgajuIhU7ZFkASJzKWXjpR
+         KCfN/mELwEVq6TDZRNYgUOdppQ3nGx0BFICdTxr5nv7gO5tN4Tf3RMRmD5gotHtiArmd
+         RVflVp/NFTP2/Jhbpi0Gq4GGU/+beMLzh+ZgChlm725tFIbQPs4115712OhigAqg7zOA
+         2ahYkj/6HCyq3xpqYNpnB9jDbMaFKDcgQEJ9exvdaPduXmpeTxyVr5GPrSP/pBPCt1rL
+         0JDUGK3jaUAS+kYm53rNKABBX16wawATjSVU5MjXE4Tzxoze4UX0zk6mzd21d3U3HYDX
+         gOKQ==
+X-Gm-Message-State: AOJu0YwiKHCXdOCPGfGwBjLXyhIa8SS/pdBzzyEP3oN1+WmdesfkTvno
+	ji8GVmjznfaFazm+My9W4bJU7TvU4wso22lFJOga1tROA+LtK2YihYZ6rfWFaM5bxaZ0zxe7ev8
+	MSZ5mHFQ=
+X-Gm-Gg: AeBDieukNbiMZ/Axloh3DFwFDhjMD6lG9C2qlH1f/9tv59Cpr4H3SRCtJtZF3Li4Zht
+	At8qWhY05wFPiEO1/vwCFoKoxjhbE64vdmRm68/QTs9piknfp9b14ZPIzrsfgn8I40y+tXIUXGc
+	DRDrunSTMLHhv1hF0EfAN776uxStPZ1nRM9k3SBguqbZmc51V0lgpomZp7cf+M5Qm3cB071gLP3
+	gUaEME08cSmhK4OQUhLMdZssMQ32Wrh7o4C0ZpqD5cKHLK8dutUUhD7IDJkudEU3xQVLYjzwSXL
+	1AOTlyJ2RcJvldlfByUylnu7yw6w73PVOEcg+yVox+z953OSwXoyMAoe0IZBYgm5kopMp7YJ9No
+	Hm20cqZNIoF1RwBZCuboaQYYlll3vLKXiD94KuRS+teMssQuz1fMwNUbcRATMO+5+mWrr/1zFj/
+	UqH86hDgCVWHwG8k0pZVuxxzGX
+X-Received: by 2002:a05:6000:2313:b0:441:1fa5:457f with SMTP id ffacd0b85a97d-44bb67cd185mr16048245f8f.28.1777903078239;
+        Mon, 04 May 2026 06:57:58 -0700 (PDT)
 Received: from localhost ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a822c3422sm303472795e9.8.2026.05.04.06.57.55
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-44a9879ef89sm30090746f8f.30.2026.05.04.06.57.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 06:57:55 -0700 (PDT)
+        Mon, 04 May 2026 06:57:57 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -100,9 +100,9 @@ Cc: jgg@ziepe.ca,
 	sriharsha.basavapatna@broadcom.com,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: [PATCH rdma-next v3 13/17] RDMA/uverbs: Use UMEM attributes for QP creation
-Date: Mon,  4 May 2026 15:57:27 +0200
-Message-ID: <20260504135731.2345383-14-jiri@resnulli.us>
+Subject: [PATCH rdma-next v3 14/17] RDMA/mlx5: Use UMEM attributes for QP buffers in create_qp
+Date: Mon,  4 May 2026 15:57:28 +0200
+Message-ID: <20260504135731.2345383-15-jiri@resnulli.us>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260504135731.2345383-1-jiri@resnulli.us>
 References: <20260504135731.2345383-1-jiri@resnulli.us>
@@ -113,89 +113,121 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9F05D4BE593
+X-Rspamd-Queue-Id: 661A84BE5C0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-19926-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	FROM_HAS_DN(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RSPAMD_URIBL_FAIL(0.00)[resnulli-us.20251104.gappssmtp.com:query timed out];
+	TAGGED_FROM(0.00)[bounces-19927-lists,linux-rdma=lfdr.de];
+	DMARC_NA(0.00)[resnulli.us];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	RCPT_COUNT_TWELVE(0.00)[23];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email]
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Apply the per-attribute UMEM model to the QP create method. Add
-optional UMEM attributes for the whole-QP, RQ, and SQ buffers
-that drivers pick from.
+Use the per-attribute UMEM helpers to pin QP buffer umems on
+demand. The QP-type predicate selects between the BUF and RQ_BUF
+attrs; raw-packet SQ uses its own dedicated SQ_BUF attr.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
 v2->v3:
-- replaced the array-form UVERBS_ATTR_BUFFERS attribute and its
-  uverbs_buf_qp_slots enum with per-attribute UMEM attrs
-- dropped qp->umem_list field, handler allocation, write-path NULL
-  arg, and the umem_list parameter on ib_create_qp_user()
-v1->v2:
-- fixed umem_list double free
+- changed to use ib_umem_get_attr_or_va() per-attr
+- added ubuffer->umem / sq->ubuffer.umem to store umem
+- renamed mlx5_qp_buf_slot() -> mlx5_qp_buf_attr()
+- replaced ib_umem_release_non_listed() with ib_umem_release()
 ---
- drivers/infiniband/core/uverbs_std_types_qp.c | 6 ++++++
- include/uapi/rdma/ib_user_ioctl_cmds.h        | 3 +++
- 2 files changed, 9 insertions(+)
+ drivers/infiniband/hw/mlx5/qp.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index be0730e8509e..e44974abc6b5 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -340,6 +340,12 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
- 			   UVERBS_ATTR_TYPE(u32),
- 			   UA_MANDATORY),
-+	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_BUF_UMEM,
-+			 UA_OPTIONAL),
-+	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
-+			 UA_OPTIONAL),
-+	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
-+			 UA_OPTIONAL),
- 	UVERBS_ATTR_UHW());
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 1bc279d14749..1b764a573dd7 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -938,6 +938,14 @@ static int adjust_bfregn(struct mlx5_ib_dev *dev,
+ 				bfregn % MLX5_NON_FP_BFREGS_PER_UAR;
+ }
  
- static int UVERBS_HANDLER(UVERBS_METHOD_QP_DESTROY)(
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index 02835b7fd76d..839835bd4b23 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -159,6 +159,9 @@ enum uverbs_attrs_create_qp_cmd_attr_ids {
- 	UVERBS_ATTR_CREATE_QP_EVENT_FD,
- 	UVERBS_ATTR_CREATE_QP_RESP_CAP,
- 	UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
-+	UVERBS_ATTR_CREATE_QP_BUF_UMEM,
-+	UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
-+	UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
- };
++static u16 mlx5_qp_buf_attr(struct mlx5_ib_qp *qp)
++{
++	if (qp->type == IB_QPT_RAW_PACKET ||
++	    qp->flags & IB_QP_CREATE_SOURCE_QPN)
++		return UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM;
++	return UVERBS_ATTR_CREATE_QP_BUF_UMEM;
++}
++
+ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 			   struct mlx5_ib_qp *qp, struct ib_udata *udata,
+ 			   struct ib_qp_init_attr *attr, u32 **in,
+@@ -998,14 +1006,20 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	if (err)
+ 		goto err_bfreg;
  
- enum uverbs_attrs_destroy_qp_cmd_attr_ids {
+-	if (ucmd->buf_addr && ubuffer->buf_size) {
++	ubuffer->umem = NULL;
++	if (ubuffer->buf_size) {
+ 		ubuffer->buf_addr = ucmd->buf_addr;
+-		ubuffer->umem = ib_umem_get_va(&dev->ib_dev, ubuffer->buf_addr,
+-					       ubuffer->buf_size, 0);
++		ubuffer->umem = ib_umem_get_attr_or_va(&dev->ib_dev, udata,
++						       mlx5_qp_buf_attr(qp),
++						       ubuffer->buf_addr,
++						       ubuffer->buf_size, 0);
+ 		if (IS_ERR(ubuffer->umem)) {
+ 			err = PTR_ERR(ubuffer->umem);
++			ubuffer->umem = NULL;
+ 			goto err_bfreg;
+ 		}
++	}
++	if (ubuffer->umem) {
+ 		page_size = mlx5_umem_find_best_quantized_pgoff(
+ 			ubuffer->umem, qpc, log_page_size,
+ 			MLX5_ADAPTER_PAGE_SHIFT, page_offset, 64,
+@@ -1015,8 +1029,6 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 			goto err_umem;
+ 		}
+ 		ncont = ib_umem_num_dma_blocks(ubuffer->umem, page_size);
+-	} else {
+-		ubuffer->umem = NULL;
+ 	}
+ 
+ 	*inlen = MLX5_ST_SZ_BYTES(create_qp_in) +
+@@ -1352,8 +1364,10 @@ static int create_raw_packet_qp_sq(struct mlx5_ib_dev *dev,
+ 	if (ts_format < 0)
+ 		return ts_format;
+ 
+-	sq->ubuffer.umem = ib_umem_get_va(&dev->ib_dev, ubuffer->buf_addr,
+-					  ubuffer->buf_size, 0);
++	sq->ubuffer.umem = ib_umem_get_attr_or_va(&dev->ib_dev, udata,
++						  UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
++						  ubuffer->buf_addr,
++						  ubuffer->buf_size, 0);
+ 	if (IS_ERR(sq->ubuffer.umem))
+ 		return PTR_ERR(sq->ubuffer.umem);
+ 	page_size = mlx5_umem_find_best_quantized_pgoff(
 -- 
 2.53.0
 
