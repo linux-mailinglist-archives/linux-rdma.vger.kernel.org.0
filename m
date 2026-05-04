@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-19893-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19894-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cMLZIKwx+GlBrQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19893-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:42:04 +0200
+	id IBCNBr4x+GlBrQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19894-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:42:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F30B14B899A
-	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC93E4B89B9
+	for <lists+linux-rdma@lfdr.de>; Mon, 04 May 2026 07:42:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E6A0B3012BC0
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 05:41:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 14B8830157D0
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 05:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D3B280CFB;
-	Mon,  4 May 2026 05:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82D2285058;
+	Mon,  4 May 2026 05:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r9WHwAqJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BH/XddlE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B7327B50F;
-	Mon,  4 May 2026 05:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA25283CBF;
+	Mon,  4 May 2026 05:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777873305; cv=none; b=pXK31G6Lm+/Nd2snaDNh62uLaxiDAJ4K4oGuNeeP72f/Hsq6jasGk2keSj0sEAVY/x0gOS++Ks6xIANTzVk5uy4NaHFvN6Ukb76ZcVyZridZTdGuwAPbRcg1pgHz7C6jh81peXqcMu6VjSbzqMiUNCWku7Y1QQqCv/F8U3u3T34=
+	t=1777873306; cv=none; b=Dbu1FDNd2hsB4HO05LJlfZOEuqUAgUwO6qiXNqiCyf8m152AuYwJHmBqtzLDg3B8XazQGvwkkp9O+K5qjqV4UYNYLFhnF9KvppOYdHz5QmS7AQHKYPzqZP5Gft1DQ2edfNtMk8CJMUXA+763AM7myCRG9fhLUWk7cStp+ULMhrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777873305; c=relaxed/simple;
-	bh=ELl+5FcS3itoozWPf/UNsLQ1fqPBJAhMt2j2GnSGKl0=;
+	s=arc-20240116; t=1777873306; c=relaxed/simple;
+	bh=VnU9cbuNXK7XHGXDGnGhmYs9ax3rEEsAC1dhreDC7x4=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=A3HVNuY9A3ElsXjPj/93gVKtgRf9blE2JQphD9XYEAgGOLJ11j4SA0INxxS1v1HF257jvnO08kH7Dl17k3IESSAyK255Vc61NeUdbDt085+ZoQ2Iqu7rfVLCRgnwjnC1a4QQxxXESOQ1lpnHtkn3um09CJrnIh0sCzDKOkk1+fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r9WHwAqJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3C3C2BCC9;
-	Mon,  4 May 2026 05:41:44 +0000 (UTC)
+	 MIME-Version; b=dKGXAxP50JeAINDDXJ2Vx87LZSpGQubfuqm6Vuy+6aCvcTNjZXchJR5QjV8VAP/gh2YSb3LaQ4eKITlyC7TAdG/dTZXa0a19tHG7U3Y6wr1UxRSoy29Dqo6gGLNx11lPo8XQ9azdRZnqch3LPghFyRwUPdiGfOtQ5sPDFNWQEvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BH/XddlE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F232C2BCF4;
+	Mon,  4 May 2026 05:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777873305;
-	bh=ELl+5FcS3itoozWPf/UNsLQ1fqPBJAhMt2j2GnSGKl0=;
+	s=k20201202; t=1777873306;
+	bh=VnU9cbuNXK7XHGXDGnGhmYs9ax3rEEsAC1dhreDC7x4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=r9WHwAqJIbqj/cEGTuPZI4YtZFrO1KqkaIPArpH0p6GYQra7bCKnYXHEJoZPqTCRb
-	 L1MejYGVcqxCsfkE3RAd/fjTiBbteUiSSlrpS2GWgBZG84vScIB5Dg15NGWN42ljTy
-	 p8lNuAbuzwb8lcn6BlXO3r2HwRLcHZLQdNgPAQhjzOZ5To+YdLkF59pY4hg849mlBW
-	 Vt4OQpw3W8FExeKttm/oAosm0F32tzOeJorcpQH20o26Ms6SiXvsoNG9kGQLqysOWh
-	 FK4iuzyJqICFPvDFY2Efks7nFUCR2MdT4pb2nqTFP5MedtN5nsqi4GtnOHnruMRf42
-	 FPAQ/hO3mLWnw==
+	b=BH/XddlEo9zStMxQuCvWqmZqyKXDkYDg0VNWop9O/KNkAwY8VgeP6NGL5FfhlaRd9
+	 +SjpZ9CxttepPtHHZVwTtfNXlNDQXwjgB25eNjqBn72eeLjeQbNFcLhMOI6sCF30jV
+	 m53ku0GQlR0Qyv4Hp2wADj4NVWtrkOcUkPp4anwlB2RgbDinGKtFX1cejDFPZ0Tbkk
+	 9LQLHg9FRQcfY7eH7f7XUf3ABFYSQ40JxnvepCv87rLRUYGo6Rb4qno2s4N9LCnM/8
+	 OcVmEUB05Ag3eEXyGIzsPQjY2bVEyUp5+fQdYtf7Cbuv2MrDLrrTd6+J7i3+4N18b9
+	 dzZL2mOIx4PMQ==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	achender@kernel.org,
 	linux-kselftest@vger.kernel.org,
 	shuah@kernel.org
-Subject: [PATCH net-next v3 01/10] selftests: rds: Increase selftest timeout
-Date: Sun,  3 May 2026 22:41:34 -0700
-Message-Id: <20260504054143.4027538-2-achender@kernel.org>
+Subject: [PATCH net-next v3 02/10] selftests: rds: Update USAGE string for run.sh
+Date: Sun,  3 May 2026 22:41:35 -0700
+Message-Id: <20260504054143.4027538-3-achender@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260504054143.4027538-1-achender@kernel.org>
 References: <20260504054143.4027538-1-achender@kernel.org>
@@ -67,7 +67,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: F30B14B899A
+X-Rspamd-Queue-Id: CC93E4B89B9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-19893-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19894-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -94,30 +94,45 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,run.sh:url]
 
-The 400s time out was originally developed under a leaner
-kernel config that booted much faster than a default config.
-Boot up is included as part of the over all test runtime, as
-well as any log collection done when the test is complete.
-A slower config combined with the gcov enabled test means
-we'll need more time to accommodate the boot up and log
-collection.  So, bump time out to 800s.
+The run.sh script does not have a -g flag.  Update USAGE string with
+correct flags.  Also fix typo packet_duplcate -> packet_duplicate
 
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/settings | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/net/rds/README.txt | 2 +-
+ tools/testing/selftests/net/rds/run.sh     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/rds/settings b/tools/testing/selftests/net/rds/settings
-index d2009a64589c..8cb41e6a83cc 100644
---- a/tools/testing/selftests/net/rds/settings
-+++ b/tools/testing/selftests/net/rds/settings
-@@ -1 +1 @@
--timeout=400
-+timeout=800
+diff --git a/tools/testing/selftests/net/rds/README.txt b/tools/testing/selftests/net/rds/README.txt
+index c6fe003d503b..8df6cc35dd10 100644
+--- a/tools/testing/selftests/net/rds/README.txt
++++ b/tools/testing/selftests/net/rds/README.txt
+@@ -12,7 +12,7 @@ kernel may optionally be configured to omit the coverage report as well.
+ 
+ USAGE:
+ 	run.sh [-d logdir] [-l packet_loss] [-c packet_corruption]
+-	       [-u packet_duplcate]
++	       [-u packet_duplicate]
+ 
+ OPTIONS:
+ 	-d	Log directory.  Defaults to tools/testing/selftests/net/rds/rds_logs
+diff --git a/tools/testing/selftests/net/rds/run.sh b/tools/testing/selftests/net/rds/run.sh
+index 897d17d1b8db..73a9b986b0ef 100755
+--- a/tools/testing/selftests/net/rds/run.sh
++++ b/tools/testing/selftests/net/rds/run.sh
+@@ -171,7 +171,7 @@ while getopts "d:l:c:u:" opt; do
+       ;;
+     :)
+       echo "USAGE: run.sh [-d logdir] [-l packet_loss] [-c packet_corruption]" \
+-           "[-u packet_duplcate] [-g]"
++           "[-u packet_duplicate]"
+       exit 1
+       ;;
+     ?)
 -- 
 2.25.1
 
