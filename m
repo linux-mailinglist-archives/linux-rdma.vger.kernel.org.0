@@ -1,85 +1,85 @@
-Return-Path: <linux-rdma+bounces-19978-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19979-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yBydHtc6+Wkn7AIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19978-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 02:33:27 +0200
+	id sLjLIAM7+Wkn7AIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19979-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 02:34:11 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254D24C57B8
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 02:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0250C4C5802
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 02:34:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C6D2130BB8BC
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 00:28:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EB37230BD50B
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 00:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2433451A7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD992F0661;
 	Tue,  5 May 2026 00:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lIZkiPnu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MDa2Dl2c"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-yx1-f48.google.com (mail-yx1-f48.google.com [74.125.224.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3A82882B6
-	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 00:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C172C375A
+	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 00:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777940892; cv=none; b=nL327nApMMgRqxLkQpqpLrp//53Btd3kVUf8IeuEYX/NJ8X2F8DeuztkChuvMyGIr9p3zur+Jo7ekyV2FsPs/9PLtfGBg7f6uBivVWn0oMeWgfKQWWlznbmxWaYLo8rdfPQ7IiXnmrCpKl4zBcfzQl1PFWfe9j7R/YoScIXqZAo=
+	t=1777940892; cv=none; b=RV00Hhk1ej4jMmiSYmWyd3Slanw+ZVGeLGA+cS74w2f7iA+vQxHeweDy+VWS8sspytsK1dzAA7nAZ3uGU196l6r07AK1p6T6wrffapqv0rnf3mIqmSF1rEoxjR08jCop9A419s4rH60W9vXHqKvNAjV9lzfVjofdq/Dc6cNPYVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1777940892; c=relaxed/simple;
-	bh=pZx1YkARmGowE47Fjinw6aGk/1Z/1eqLPS3aBUwU4zo=;
+	bh=rz0GaQVWFC5Ldv7XCxhQcnrPcxM3OWUNdbw0/XWxahY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HdBepzPMSC0xNKR8Yzxd2j2SuZe2BR5bhZqXQ7HeFsicGo3UOIFh2aHyUWFg240x2xqgVr11XQeyU+c7W5elqx3Y1lHp20XNHCifQEGu9jQ0aLNvHay4r5aP7OwQ+nw8uO5rD8zO7qdt+gii551gO+G5yXil9UpFLilNAEcatoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lIZkiPnu; arc=none smtp.client-ip=209.85.160.170
+	 In-Reply-To:To:Cc; b=PTwmfPf9eiHhUb/0ADEWhMOrdIaUNctc19H2uuZYSmLsRDjJjuJ9ToXvpN3Ir8jO3nmKjMX6W+VrnM7je7TZ7IBrb3l8gh9xrF2Xt3ogjGZ2r/DqiakW5TelHiD0aYyHi5ncUmVHdFvXRO2QWQ0XxTjFPrb++ybo9StQK/g7cVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MDa2Dl2c; arc=none smtp.client-ip=74.125.224.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-51306c9f2e1so2160831cf.0
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 17:28:08 -0700 (PDT)
+Received: by mail-yx1-f48.google.com with SMTP id 956f58d0204a3-65c5361142fso1513234d50.0
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 17:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777940887; x=1778545687; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1777940889; x=1778545689; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7WIazItlhuwSwfo6on4yEwmRZQUGTlMWmE/koiDnhNI=;
-        b=lIZkiPnupTpPzOuzkDC4Yw1Cu1BgO3sOdLFuMCHCBhJA9cLhjmz1Bc/scN5fYqaFQ0
-         GFp1cMHeEotCuoGPs+fzIkih7NtQvdM+iZxVoJ22X/RrjN3QT5/6wekz3JcYQ+rv6GYO
-         /A4iFcfXDCpOKdtjwVXjiHzg+BKYZ3Qzpn/fJCY9YoF95NCCJvO2OO+Nni2MxNBea7H1
-         zkewXblbuO3Zo++1gUKEAaqGE9l7KGzIqrypEo5QkcJ24Bepd/hmJ0nlK2mhMSjyeU2I
-         wCt3FOM+UssBy6AzGxlBmLYUvrzyRspkzoTm2h8Uf8q0uCVowKqoSnihQZ/vifxhDsPL
-         CCAA==
+        bh=TSp2GUXkgxtGrFcBtn8vEntUxKtdvA3MvOWwc4dLMzU=;
+        b=MDa2Dl2ca6GUYsU2a7xMr0ZWI0GwSUsx99y85UMGJrdr/6fezJxNDssw/37zR49cHV
+         ORLgcwD0xL+9lxuvRmGoGXCAnAer/y8Tu2Fjf51Scpgp5RIBuhTn+Ou/Q8F0pwShjJ6z
+         UnaHXDe9T2eSnyfO1KIHX26/+3VfeZfA8i7MCiJY+lPRrUhsagBE3cNCKSlhJ7jzlIS1
+         guFPRzm+p18+GD5+ZkB+OzXCk/yy6IkBlDM4tieLvfG0HatfEolLYlQlo6P0DvgtRZvq
+         cnux6lda/RdvmEtsoiBbYh3V++0EEVcc3WHwRFAJlKZRah5IbSNVmXPbAhIqGJyF7OAV
+         eMgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777940887; x=1778545687;
+        d=1e100.net; s=20251104; t=1777940889; x=1778545689;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=7WIazItlhuwSwfo6on4yEwmRZQUGTlMWmE/koiDnhNI=;
-        b=Iy3D1h7YdtaSY3Caydw1+V1X2FzyQKzDvdwBwVxb5EeztDGUnTaQhfKUs5fOZnIKMP
-         +lqoCxoVTFoVxNbfhqlR1SFhldH2jLBlVOgVPZLreq1GYq/aoKsqNRhkHplXJO2JhgEH
-         RY/A32cRmXNKU52BJVqw6dfW60+5g7Coj35bQoSELTLwICLfm6x6hXOKT3bXLZ+sWWZF
-         kjz7xC/YA1s7hxCpyW3BPgILFx3DbqiScClCw/mRBKlgcQouMkkNCjOXfc4CMwlk/LIW
-         tWIEgcDs70b54rMkAee6TY4Fk09UkWNpz5Gq6S/wJQ78M9Qj86f1CFRXUdn9nCkuJiGY
-         99Qw==
-X-Forwarded-Encrypted: i=1; AFNElJ+2ECmjH73y/PbmR75GVTbRS5Ou4l/RQTGcUTt70aBL7tc8jjIq4WTLD+2QeW4hvJcI5DFclgQS2ql/@vger.kernel.org
-X-Gm-Message-State: AOJu0YxURKCNBRonkWZ7FE/crwGKGxIgq+//uasKAM/Zx5vmt22KTNEO
-	23Kbel7YYArCDe11N5vRVBWd2acK+P1VFy+bIKlA6K2cKUx5NRpD9L/eEoUbtq/7x+0=
-X-Gm-Gg: AeBDiescTD4/jRdfAQRm9oD3VJrTz1iifOg1bcbnN6Lq9cfC6KqqeXjltxQqI/3VgjK
-	kOlMgBz/cE32yxnGGzBXZMgRIRP1UtIp/Mbypz6WOpgQLeaEPYAb/kD4nECd+T31q5ikvko3fgF
-	392b0tFLyY25+bc/yhHgKsnqQ7gSt5dyFoSCrGkuNWdk+Sluvyx30EaICX88HG5NGZCZQoZAFwW
-	yYXHYwpdgjDxuZlH3ZVtdcUYBnzV+3ASxRHoBMOTSfwnGCSsTvIylteIE6Rr9uNRE8HjU+yy4Is
-	oq3wqbtKqm6rufPG8e+TJloJ7nCWDICmW3j5ow5NtotwrV864LUzSL61aQsJB1AF5Rdv4Fse2D0
-	0k+Gn94FmXkDbkP/j74EnWrnVB3AChF6FFtaDp0ChAfc1i4hHVr6Km1AM5Dr6KKu3EvW5PMceGm
-	oHlllZOtPL85O+nMNAC4drA1OP/+CvYTQC1xa0mj/GY4M=
-X-Received: by 2002:a05:622a:509:b0:50f:9c33:af18 with SMTP id d75a77b69052e-5104bf964f0mr168578611cf.51.1777940886765;
-        Mon, 04 May 2026 17:28:06 -0700 (PDT)
-Received: from localhost ([2a03:2880:f804:2e::])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51040ba8967sm107239171cf.29.2026.05.04.17.28.06
+        bh=TSp2GUXkgxtGrFcBtn8vEntUxKtdvA3MvOWwc4dLMzU=;
+        b=Md9sarYZGH1CWgyBiPIohAfsdaRlTIDWhY3HvGof5K8cT9StSv7YMrTIMsCJctBWrB
+         VssurRT0sDq6EmeAe+kID8Y+0LZuFnDfQ3IJ4e8R0YwLRcLiisM3iLPTETwV6OzzzgOI
+         4kYZ0Ynt5kFclxhtiawGyW04/ZAJRCplAHwx29UTfeqaJo/z0T687jXfMApbAMtAm8ZO
+         taO2cVAC6z1X1irdBcBybF1NRIY1miFdg9Yuu4ZKjDkqYuPo31F/EgW7Bd9W488Bd772
+         QrYGbnHVJGoCWzOBk1sQMNEsnNtp1j54YxkG2HZCFs0M5QSJZZXVYq6gEY7Rt+VEcpcc
+         wwwg==
+X-Forwarded-Encrypted: i=1; AFNElJ/SnSSeK/uka7e3Ot/Y7m7dQSmKQ3GKLXXI4Jvce0NE+JPtjbPOvGYqtk+TJt60PtyN+d/OS3B+0SqO@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjrZqLpniSz0bbTEOrctLrYVTOQRH5ygttDyiCz83MSSwneL5a
+	33QyIDmhh5bp8bM8pyAHqbvr3z9JaOCUXQlwif7SbD9Iii3m58CZ3XxK5iOM972L
+X-Gm-Gg: AeBDies7ha+Fn7ZQKIgDBEaY6o+QV1/nMT2AE33cP/DQ1pC33mRSXySDXeRImwCpiD+
+	NzfipkRSCpJ/ZvVdDghq+RRBYdkKGDssdPAFjDNV2/fXJRUJQ6SlnWvcpgoZKWRzgPRKy8+KbIb
+	VdI2JF8uXNdBfOl90g4bKXPZvlowK/JWHsJ2oz8v11A9bsRZNWe1kouHr2cGaG4SG+Hys750YFZ
+	KB5DjV0CVqJ+aSAkh2sKDIYYOX+NHat38Kj7mxVMu4TnL+VDq1SE5645OyXBEpzTEDz43RVQtQS
+	hdCbDXpS8+Usv4+D5HT+ofE+00w1FVnjZuGv9UO7Uh23FKiVKUbsgI3zNBKIa1bYHEI5ko2MgwW
+	2Vu4fiHv2uvHpo8zqyjp4qyHRrBPdWjJuasnJBOu9Nmc7a9AGx45Z3fXe7TZy0JnbfsqLm6Gbd1
+	+z6PVn/jN32rTMbFZLG+JpdO+F6+mahihAExxvcNsa
+X-Received: by 2002:a05:690e:1c08:b0:64e:e896:a86 with SMTP id 956f58d0204a3-65c3db39b1dmr12329280d50.36.1777940888641;
+        Mon, 04 May 2026 17:28:08 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:73::])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-65c2e8ae9c7sm6268726d50.19.2026.05.04.17.28.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 17:28:06 -0700 (PDT)
+        Mon, 04 May 2026 17:28:08 -0700 (PDT)
 From: Bobby Eshleman <bobbyeshleman@gmail.com>
-Date: Mon, 04 May 2026 17:27:52 -0700
-Subject: [PATCH net-next v2 5/6] selftests: drv-net: add
- primary_rx_redirect support to NetDrvContEnv
+Date: Mon, 04 May 2026 17:27:53 -0700
+Subject: [PATCH net-next v2 6/6] selftests: drv-net: add netkit devmem
+ tests
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -88,7 +88,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260504-tcp-dm-netkit-v2-5-56d52ac72fd4@meta.com>
+Message-Id: <20260504-tcp-dm-netkit-v2-6-56d52ac72fd4@meta.com>
 References: <20260504-tcp-dm-netkit-v2-0-56d52ac72fd4@meta.com>
 In-Reply-To: <20260504-tcp-dm-netkit-v2-0-56d52ac72fd4@meta.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>, 
@@ -112,7 +112,7 @@ Cc: netdev@vger.kernel.org, linux-doc@vger.kernel.org,
  Stanislav Fomichev <sdf@fomichev.me>, Mina Almasry <almasrymina@google.com>, 
  Bobby Eshleman <bobbyeshleman@meta.com>
 X-Mailer: b4 0.14.3
-X-Rspamd-Queue-Id: 254D24C57B8
+X-Rspamd-Queue-Id: 0250C4C5802
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -125,7 +125,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19978-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19979-lists,linux-rdma=lfdr.de];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
@@ -139,213 +139,90 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[bobbyeshleman@gmail.com,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,meta.com:mid,meta.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,meta.com:mid,meta.com:email,nk_devmem.py:url,lib.py:url]
 
 From: Bobby Eshleman <bobbyeshleman@meta.com>
 
-When sending from a namespace that has access to a netkit device with a
-leased queue, the nk primary in the host namespace needs to redirect its
-RX to the physical device. This patch adds that redirection bpf program
-and teaches the harness to install it.
+Add nk_devmem.py with four tests for TCP devmem through a netkit device:
 
-Add primary_rx_redirect=False parameter to NetDrvContEnv.__init__().
-When enabled, _attach_primary_rx_redirect_bpf() attaches a new BPF TC
-program (nk_primary_rx_redirect.bpf.c) to the primary (host-side) netkit
-interface.  The program redirects non-ICMPv6 IPv6 packets to the
-physical NIC via bpf_redirect_neigh(), with the physical ifindex
-configured via the .bss map.
+These tests are just duplicates of the original devmem tests, with some
+adjusted parameters such as telling ncdevmem to avoid device setup
+(since it only has access to netkit, not a phys device).
 
-Extract _find_bss_map_id() from _attach_bpf() into a reusable helper so
-other BPF attachment methods can use it.
-
-Also add an IPv6 host route on the remote endpoint for the netkit guest
-IP via the physical NIC address, so the remote can send packets that
-traverse the redirect path to the guest.
+Each test uses NetDrvContEnv with primary_rx_redirect=True to set up the
+BPF redirect program on the primary netkit interface.
 
 Signed-off-by: Bobby Eshleman <bobbyeshleman@meta.com>
 ---
- .../drivers/net/hw/nk_primary_rx_redirect.bpf.c    | 41 +++++++++++++
- tools/testing/selftests/drivers/net/lib/py/env.py  | 67 ++++++++++++++++++----
- 2 files changed, 96 insertions(+), 12 deletions(-)
+Changes in v2:
+- Add nk_devmem.py to TEST_PROGS in Makefile (Sashiko)
+---
+ tools/testing/selftests/drivers/net/hw/Makefile    |  1 +
+ .../testing/selftests/drivers/net/hw/nk_devmem.py  | 40 ++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/tools/testing/selftests/drivers/net/hw/nk_primary_rx_redirect.bpf.c b/tools/testing/selftests/drivers/net/hw/nk_primary_rx_redirect.bpf.c
-new file mode 100644
-index 000000000000..fe3c127a4fd0
+diff --git a/tools/testing/selftests/drivers/net/hw/Makefile b/tools/testing/selftests/drivers/net/hw/Makefile
+index 85ca4d1ecf9e..2f78c6aec397 100644
+--- a/tools/testing/selftests/drivers/net/hw/Makefile
++++ b/tools/testing/selftests/drivers/net/hw/Makefile
+@@ -34,6 +34,7 @@ TEST_PROGS = \
+ 	irq.py \
+ 	loopback.sh \
+ 	nic_timestamp.py \
++	nk_devmem.py \
+ 	nk_netns.py \
+ 	nk_qlease.py \
+ 	ntuple.py \
+diff --git a/tools/testing/selftests/drivers/net/hw/nk_devmem.py b/tools/testing/selftests/drivers/net/hw/nk_devmem.py
+new file mode 100755
+index 000000000000..c069d525798b
 --- /dev/null
-+++ b/tools/testing/selftests/drivers/net/hw/nk_primary_rx_redirect.bpf.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ipv6.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
++++ b/tools/testing/selftests/drivers/net/hw/nk_devmem.py
+@@ -0,0 +1,40 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++"""Test devmem TCP with netkit."""
 +
-+#define TC_ACT_OK 0
-+#define ETH_P_IPV6 0x86DD
-+#define IPPROTO_ICMPV6 58
++from os import path
++from lib.py import ksft_run, ksft_exit, ksft_disruptive
++from lib.py import NetDrvContEnv
++from lib.py.devmem import setup_test, run_rx, run_tx, run_tx_chunks, run_rx_hds
 +
-+#define ctx_ptr(field)		((void *)(long)(field))
 +
-+volatile __u32 phys_ifindex;
++@ksft_disruptive
++def check_nk_rx(cfg) -> None:
++    run_rx(cfg)
 +
-+SEC("tc/ingress")
-+int nk_primary_rx_redirect(struct __sk_buff *skb)
-+{
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	struct ethhdr *eth;
-+	struct ipv6hdr *ip6h;
 +
-+	eth = data;
-+	if ((void *)(eth + 1) > data_end)
-+		return TC_ACT_OK;
++@ksft_disruptive
++def check_nk_tx(cfg) -> None:
++    run_tx(cfg)
 +
-+	if (eth->h_proto != bpf_htons(ETH_P_IPV6))
-+		return TC_ACT_OK;
 +
-+	ip6h = data + sizeof(struct ethhdr);
-+	if ((void *)(ip6h + 1) > data_end)
-+		return TC_ACT_OK;
++@ksft_disruptive
++def check_nk_tx_chunks(cfg) -> None:
++    run_tx_chunks(cfg)
 +
-+	if (ip6h->nexthdr == IPPROTO_ICMPV6)
-+		return TC_ACT_OK;
 +
-+	return bpf_redirect_neigh(phys_ifindex, NULL, 0, 0);
-+}
++@ksft_disruptive
++def check_nk_rx_hds(cfg) -> None:
++    run_rx_hds(cfg)
 +
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/drivers/net/lib/py/env.py b/tools/testing/selftests/drivers/net/lib/py/env.py
-index 24ce122abd9c..d569d01ef791 100644
---- a/tools/testing/selftests/drivers/net/lib/py/env.py
-+++ b/tools/testing/selftests/drivers/net/lib/py/env.py
-@@ -336,15 +336,17 @@ class NetDrvContEnv(NetDrvEpEnv):
-               +---------------+
-     """
- 
--    def __init__(self, src_path, rxqueues=1, **kwargs):
-+    def __init__(self, src_path, rxqueues=1, primary_rx_redirect=False, **kwargs):
-         self.netns = None
-         self._nk_host_ifname = None
-         self._nk_guest_ifname = None
-         self._tc_clsact_added = False
-         self._tc_attached = False
-+        self._primary_rx_redirect_attached = False
-         self._bpf_prog_pref = None
-         self._bpf_prog_id = None
-         self._init_ns_attached = False
-+        self._remote_route_added = False
-         self._old_fwd = None
-         self._old_accept_ra = None
- 
-@@ -396,8 +398,14 @@ class NetDrvContEnv(NetDrvEpEnv):
- 
-         self._setup_ns()
-         self._attach_bpf()
-+        if primary_rx_redirect:
-+            self._attach_primary_rx_redirect_bpf()
- 
-     def __del__(self):
-+        if self._primary_rx_redirect_attached:
-+            cmd(f"tc qdisc del dev {self._nk_host_ifname} clsact", fail=False)
-+            self._primary_rx_redirect_attached = False
 +
-         if self._tc_attached:
-             cmd(f"tc filter del dev {self.ifname} ingress pref {self._bpf_prog_pref}")
-             self._tc_attached = False
-@@ -406,6 +414,11 @@ class NetDrvContEnv(NetDrvEpEnv):
-             cmd(f"tc qdisc del dev {self.ifname} clsact")
-             self._tc_clsact_added = False
- 
-+        if self._remote_route_added:
-+            cmd(f"ip -6 route del {self.nk_guest_ipv6}/128",
-+                host=self.remote, fail=False)
-+            self._remote_route_added = False
++def main() -> None:
++    with NetDrvContEnv(__file__, rxqueues=2, primary_rx_redirect=True) as cfg:
++        setup_test(cfg, path.abspath(path.dirname(__file__) + "/ncdevmem"))
++        ksft_run([check_nk_rx, check_nk_tx, check_nk_tx_chunks, check_nk_rx_hds],
++                 args=(cfg,))
++    ksft_exit()
 +
-         if self._nk_host_ifname:
-             cmd(f"ip link del dev {self._nk_host_ifname}")
-             self._nk_host_ifname = None
-@@ -459,6 +472,9 @@ class NetDrvContEnv(NetDrvEpEnv):
-         ip(f"-6 addr add {self.nk_guest_ipv6}/64 dev {self._nk_guest_ifname} nodad", ns=self.netns)
-         ip(f"-6 route add default via fe80::1 dev {self._nk_guest_ifname}", ns=self.netns)
- 
-+        ip(f"-6 route add {self.nk_guest_ipv6}/128 via {self.addr_v['6']}", host=self.remote)
-+        self._remote_route_added = True
 +
-     def _tc_ensure_clsact(self):
-         qdisc = json.loads(cmd(f"tc -j qdisc show dev {self.ifname}").stdout)
-         for q in qdisc:
-@@ -476,6 +492,15 @@ class NetDrvContEnv(NetDrvEpEnv):
-                 return (bpf['pref'], bpf['options']['prog']['id'])
-         raise Exception("Failed to get BPF prog ID")
- 
-+    def _find_bss_map_id(self, prog_id):
-+        """Find the .bss map ID for a loaded BPF program."""
-+        prog_info = bpftool(f"prog show id {prog_id}", json=True)
-+        for map_id in prog_info.get("map_ids", []):
-+            map_info = bpftool(f"map show id {map_id}", json=True)
-+            if map_info.get("name", "").endswith("bss"):
-+                return map_id
-+        raise Exception(f"Failed to find .bss map for prog {prog_id}")
-+
-     def _attach_bpf(self):
-         bpf_obj = self.test_dir / "nk_forward.bpf.o"
-         if not bpf_obj.exists():
-@@ -487,17 +512,7 @@ class NetDrvContEnv(NetDrvEpEnv):
-         self._tc_attached = True
- 
-         (self._bpf_prog_pref, self._bpf_prog_id) = self._get_bpf_prog_ids()
--        prog_info = bpftool(f"prog show id {self._bpf_prog_id}", json=True)
--        map_ids = prog_info.get("map_ids", [])
--
--        bss_map_id = None
--        for map_id in map_ids:
--            map_info = bpftool(f"map show id {map_id}", json=True)
--            if map_info.get("name").endswith("bss"):
--                bss_map_id = map_id
--
--        if bss_map_id is None:
--            raise Exception("Failed to find .bss map")
-+        bss_map_id = self._find_bss_map_id(self._bpf_prog_id)
- 
-         ipv6_addr = ipaddress.IPv6Address(self.ipv6_prefix)
-         ipv6_bytes = ipv6_addr.packed
-@@ -505,3 +520,31 @@ class NetDrvContEnv(NetDrvEpEnv):
-         value = ipv6_bytes + ifindex_bytes
-         value_hex = ' '.join(f'{b:02x}' for b in value)
-         bpftool(f"map update id {bss_map_id} key hex 00 00 00 00 value hex {value_hex}")
-+
-+    def _attach_primary_rx_redirect_bpf(self):
-+        """Attach BPF redirect program on the primary netkit ingress."""
-+        bpf_obj = self.test_dir / "nk_primary_rx_redirect.bpf.o"
-+        if not bpf_obj.exists():
-+            raise KsftSkipEx("Primary RX redirect BPF prog not found")
-+
-+        cmd(f"tc qdisc add dev {self._nk_host_ifname} clsact")
-+        cmd(f"tc filter add dev {self._nk_host_ifname} ingress"
-+            f" bpf obj {bpf_obj} sec tc/ingress direct-action")
-+        self._primary_rx_redirect_attached = True
-+
-+        filters = json.loads(
-+            cmd(f"tc -j filter show dev {self._nk_host_ifname} ingress").stdout)
-+        redirect_prog_id = None
-+        for bpf in filters:
-+            if 'options' not in bpf:
-+                continue
-+            if bpf['options']['bpf_name'].startswith('nk_primary_rx_redirect'):
-+                redirect_prog_id = bpf['options']['prog']['id']
-+                break
-+        if redirect_prog_id is None:
-+            raise Exception("Failed to get primary RX redirect BPF prog ID")
-+
-+        bss_map_id = self._find_bss_map_id(redirect_prog_id)
-+        phys_ifindex_bytes = self.ifindex.to_bytes(4, byteorder='little')
-+        value_hex = ' '.join(f'{b:02x}' for b in phys_ifindex_bytes)
-+        bpftool(f"map update id {bss_map_id} key hex 00 00 00 00 value hex {value_hex}")
++if __name__ == "__main__":
++    main()
 
 -- 
 2.52.0
