@@ -1,100 +1,90 @@
-Return-Path: <linux-rdma+bounces-20002-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20003-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wOlYJY6i+WnR+QIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20002-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:55:58 +0200
+	id uDjVOTOi+WnR+QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20003-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:54:27 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89C804C8592
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:55:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E9284C851D
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 01BAA306B102
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 07:49:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0C72D300DF78
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 07:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2633F0A9E;
-	Tue,  5 May 2026 07:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419403E3DB6;
+	Tue,  5 May 2026 07:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="LswpkPtP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pxkl77qW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E90A3ED11C
-	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 07:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A583D16E9
+	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 07:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777967271; cv=none; b=g1+FlLHyrq9xAgFcl+eaIthCmEnsbIJAA6F3Ps3mDM+AZhtZK9IAu3UIr24hwUJyXf4U63iRrV6z+XKV4kuk0UJ95ZzqkLqi2mVbx5RBOUhJPkIahHDgPa92G42GMw9gjGJJCqKSLocpYIowmaCsN1yzBJjViWx4C0JzvNQJqjQ=
+	t=1777967624; cv=none; b=tX78XMw+u4+BQ2XSs0wDMFfS3IKjItkPdQBGaAGo/sQ6JVK8bszbHXDpplRU8T2GCZVlZx/w1Jt1CXT/4T75f7jdzU4YwXJqn09XFwIn5YJDItET849nWonPFbBfoVDAkvUg3uD6f0grmhkun65mHNSLYEtQ1nLksLsQwisXO2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777967271; c=relaxed/simple;
-	bh=m3VnSMM2QtOWFjvotg7TV3q/DN1mgtB9oq+ih2Z0h1w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZUB0HYEyP1MxpC3rYychgJXVXsmS4TduiR2ZkdPhGRKsuRLX1/r852sfyn+i7iEfspLsEf00yAfhUo72WO61nOlgwGZwCMvj7Vh1DYMQk6lZacSAsNU6y9v3yprbVpCrPSbR81aqFyxXB06PbdEeC4tmxWNNKEOyHWMOQaerCOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=LswpkPtP; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4890d945eb4so32885075e9.0
-        for <linux-rdma@vger.kernel.org>; Tue, 05 May 2026 00:47:49 -0700 (PDT)
+	s=arc-20240116; t=1777967624; c=relaxed/simple;
+	bh=G7NQ9xK87Vy25GZpSkQxeaDpn5ozStN9LaYzBBcTLRs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jWi8qwCzSzGtoZqkTe1M1m/PD4sXDBLC8y+fcpLzdh1rDOuxFclfEpfwbhefDpWP5MXqTwFzUShXiuDx33V0tvoI+DWrpsz9CGPLO+XWM1EuaGYUk5zMVXkeOV8NeqFZjOGEmIOxmFMrwYOaUO7ngWtkoztDjyIChwvYJ04i4OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pxkl77qW; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-c80167f5716so939185a12.2
+        for <linux-rdma@vger.kernel.org>; Tue, 05 May 2026 00:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1777967268; x=1778572068; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=63kUHHgmHe5aHRdq16aqP1LCZFlEN5uhqVLiLtPxsH8=;
-        b=LswpkPtPymN7j1kirDXXa5h/c7LOiytYYE3VujZvRrkmcbOr7QB+70QvH1avjDf3Gu
-         RrGm5VQ1Taq0eAiScG2Z/argb2LfewL7rXLPeY8/okN4YSRqQNXnufwANarjVM98swNu
-         wvmAhhyG2ujeDE1FT6nCeixdNYdofiEq5VmrRn6rSJCcksvQ123nISDXwyThjIbpCo0I
-         NQLQXpVk5eKAenHUpBXQ/FMNS+lvCuBakGBFij4EYLRE7ugp1CQJbSYlccdoFEkDN9yE
-         G1zFvM9H10rsMtQyTCkkhnm3vpYX03RX4o1SD088/pFkfYgJqbS8PleyS6eC+wLqdiGX
-         bhmw==
+        d=gmail.com; s=20251104; t=1777967622; x=1778572422; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ERQqOrOMLsG822WUo4beOA7hvczmubAvpN48ynoq3gs=;
+        b=pxkl77qWtbjt/pna5ILWZEmxesit7pO+v2bGRXuxF47qrWtzptjggUPpaVOw9fgiS6
+         UaLMg1QxCB9xys8dM/U51dBm1eww5cVQYUydPRP/IBpDkdzRfQcqF9atPFvFysO+p7JI
+         ChdU5fLBZ/D78yj76hK8kqXX4RTYISjsN0JcML8h5dmTFXpYXDr/T20fydA82CElF3ug
+         DlTcYlU3RfZWlBbCBuKzr/oZt1MBnkbopNIX/QwuWAaZ1tzb0tW9TvI1rIMn7efIC1rL
+         uG3ZBoavd9BeFdbSYzUETyNwXfP8qn2xF4HCNps2dX8u22lN5SuOBAf3LMvZbOvRskCL
+         TRqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777967268; x=1778572068;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=63kUHHgmHe5aHRdq16aqP1LCZFlEN5uhqVLiLtPxsH8=;
-        b=sYXVw8fZ1u3smBSkzzgM6FKXxPI49tceo+SOAt1W9x5BO7RpdFONhCpQFvdlCUasAK
-         Es/9PSEzDTkefxPe1DcG4GAtTW6EsYTbo4YAGwdUmvsNkFH8MfMdRRQ+pyjZ4MBrlQpZ
-         5b0JpAaXCUkFNuX/jxHM1cVpD+qUA1woOwvtrXFNfSqBVhtQy8KavOgVcDToIic7f7/M
-         vx3ORy6xpHxVS+xwNo3ZjNv4LSgOISaFkEdULJpMFoqs4eh1UAKWPARQmGgVbZGqcrPF
-         n0TyXoKdbjoVpzrvAFGnjY7v6efNODGFCn7oKO+GNB78ci8xc+IeF2ik0dSRp1jB5Y9K
-         mRwQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8MwV5dJlsEaevRhJymEJBH6oKGvghFt3x7dp2sP31fDBvyo7Qz5Ok7gBazULf+rBh/Zw3Xrh9QvDxe@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEG+Z0caEP3JKCedR+zu6lAbnIySdNXb7a+Jfp99hz2klGtayE
-	DFp6CYrNa+2SAN43YBXkjYzX4RX/trx5kyNaWXtu7joSNyaofUnjd5MP+aE6SQjVm3M=
-X-Gm-Gg: AeBDiethMzOEe3FI7lagfUUOUW6WE4Mf0vN5IzlWhxw+Nbq67/i64HsHVhEb2aFCPmj
-	OgepsMsZUN/m7TrtjGlpvMoPAysEfSTJOGehZFBl3PlmwuzWolde7hFE6PY6aChN1FwleBH4vVL
-	Jp8Re2RAdkbKj61U5hGVIXkMLvloXlPe5LCw+jGxJj0uHWoIwkKJy72doFup0nevYMZUEhNGLv8
-	bypgXcbRPHpspZ0mMdpkgvoLvibzlwYy2TxxhgwxLm93BfRH4G7GJlfoHTSuCIixB7EI6uUz9we
-	ki1VeBreLPq7f7rnRP/TBJM8ATDFZvla0UjlLbH6r6WfqtreVZ3mr6zl34hNoZxQ1ZsCfIv9nqX
-	8nx53vG+9oqOhiedC8GkltRijbvSCmOdxly/auG91/Tw46+ioUNIt9ACqOW9wy73xqLIAK4mgcM
-	uwcCgvwvhHXvOkVz/wldRAbySp9ctRbgAGzbqHvZQ8j+Wj7LFcdcgCHl5bB/zBkgCf4tdzQfPcw
-	ijvpgfBt3602Qcq1/mJtEx6N7nfvnb4HkiePxPencA31A==
-X-Received: by 2002:a05:600c:19d4:b0:485:3c2e:60d5 with SMTP id 5b1f17b1804b1-48d1422baefmr39849435e9.2.1777967267641;
-        Tue, 05 May 2026 00:47:47 -0700 (PDT)
-Received: from lb03189.fkb.profitbricks.net ([213.147.98.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48d186d97c4sm10617125e9.35.2026.05.05.00.47.45
+        d=1e100.net; s=20251104; t=1777967622; x=1778572422;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ERQqOrOMLsG822WUo4beOA7hvczmubAvpN48ynoq3gs=;
+        b=oZcEje9HDowZm7vH+Am/HLj01Mjvf/ABKhuSlWNbDrkJKUzLYLr/j/QfSFVyfrN4Ei
+         nH1P7j20HkyLvxreSda0DEOrARTeNjQaYsEY4vnyAYHzKlap9F4rrnuYNoKHFrJcHYaF
+         322XLc25YtOX3kJBuRmGOW2VqJhiYdIegeAPcGodGbe4lXJbQAN+el+sP/6SV/0uTEIv
+         U23L53z7iRkIByveNLgv/8KWyK42w4b84+FQMumfNUvkBXjGGfaaMZgCA9gZJruV3ltd
+         4A2oqT0ZW+9PFIjZFUUHWlYkfbyeME6CDN+uHQklLNMsiG1niSW9ELLhPhvAOPAggORm
+         RQgQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/LRosCv1vQblNZGQqi6kaoM5vTr89AXVrTthysZqZ7InXsohEBvDCkjOEcZCQoaKV8dWCtkuaJ/Myf@vger.kernel.org
+X-Gm-Message-State: AOJu0YyleWnHhxJRtBBzfS4CJHKYd/ddoCJpboO0cwfhGqQRlscbJ/Eq
+	gH2k7cgMJytas7E6FhcR/Lv3F5XXlq5upbi/Gk9ns1hRf2Vq62z0q3AG
+X-Gm-Gg: AeBDievrQVYhBazGTiAcl+5UsTxGKmMxCyBeYhh3UJthg0QeZtbMFtOTZTtNojaWxyy
+	vz54xhiF+XgmcRTr2zbv4LwVME6Axa79FliGHnMcC840MHMR8ULMw8+5XjDy5400JgiRNqZEcK/
+	pB/wr+Sl4zZHcROcv3S4cN+RFgkme4T3ocIaC4YGcK+cxBVh6BpT9ojNBA36e1bmHjQ1k5WpogN
+	0Co0B9Qn3XFARC1eiH+dIlKeyLgEUotkf8ktiH9bpHbZvciuJOzIPqndAm7y9YTDKxVeAIkBPPo
+	RZPNEzYcdUO1tYLmfdwQkb2dys09K7Q2hFPG3CIThGvd6xyD+5VKFRY5bhCJFnXt1L+UPxdNedw
+	zPhOb8BEIVLwt1M20G3i0atS+w2omZnKFMrXSS830sDm5Y1gcEv4mR2fJjCOqXSByeu9guWBnSv
+	k5HBK7I1EHGwrStFOFyw0SAO9k
+X-Received: by 2002:a05:6a20:6a09:b0:34f:14d6:15f5 with SMTP id adf61e73a8af0-3a7f1bf6293mr13539826637.29.1777967622024;
+        Tue, 05 May 2026 00:53:42 -0700 (PDT)
+Received: from dev.. ([129.41.58.4])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c7ffbc6f66dsm11921069a12.15.2026.05.05.00.53.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2026 00:47:47 -0700 (PDT)
-From: Md Haris Iqbal <haris.iqbal@ionos.com>
-To: linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	axboe@kernel.dk,
-	bvanassche@acm.org,
-	hch@lst.de,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	jinpu.wang@ionos.com,
-	Md Haris Iqbal <haris.iqbal@ionos.com>,
-	Jia Li <jia.li@ionos.com>
-Subject: [PATCH 13/13] block/brmr: include client and server modules into kernel compilation
-Date: Tue,  5 May 2026 09:46:25 +0200
-Message-ID: <20260505074644.195453-14-haris.iqbal@ionos.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260505074644.195453-1-haris.iqbal@ionos.com>
-References: <20260505074644.195453-1-haris.iqbal@ionos.com>
+        Tue, 05 May 2026 00:53:41 -0700 (PDT)
+From: Rohit Chavan <roheetchavan@gmail.com>
+To: yishaih@nvidia.com,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Rohit Chavan <roheetchavan@gmail.com>
+Subject: [PATCH] RDMA/mlx4: Use secs_to_jiffies() instead of open-coding
+Date: Tue,  5 May 2026 13:23:07 +0530
+Message-Id: <20260505075308.1754861-1-roheetchavan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -102,145 +92,65 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 89C804C8592
+X-Rspamd-Queue-Id: 6E9284C851D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[ionos.com,reject];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ionos.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[ionos.com:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20002-lists,linux-rdma=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-20003-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[haris.iqbal@ionos.com,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[roheetchavan@gmail.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ionos.com:email,ionos.com:dkim,ionos.com:mid]
+	NEURAL_HAM(-0.00)[-0.998];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-Add the per-directory Kconfig and Makefile, and wire them into the
-parent drivers/block Kconfig and Makefile so BRMR can be enabled in
-a kernel build.
+The conversion from seconds to jiffies is currently performed by
+multiplying the value by 1000 and passing it to msecs_to_jiffies().
 
-Three Kconfig symbols are introduced:
+Use the more direct secs_to_jiffies() helper instead. This simplifies the
+code, improves readability, and avoids the manual multiplication step
+by using the dedicated kernel API.
 
-  CONFIG_BLK_DEV_BRMR		(silent, selected by either side)
-  CONFIG_BLK_DEV_BRMR_CLIENT	(depends on INFINIBAND_RMR_CLIENT)
-  CONFIG_BLK_DEV_BRMR_SERVER	(depends on INFINIBAND_RMR_SERVER)
-
-The Makefile builds two modules: brmr-client.ko and brmr-server.ko.
-The server side acts as a consumer of the RMR server-side IO store
-interface (struct rmr_srv_store_ops) to back an RMR pool with a
-local block device.
-
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Jia Li <jia.li@ionos.com>
+Signed-off-by: Rohit Chavan <roheetchavan@gmail.com>
 ---
- drivers/block/Kconfig       |  2 ++
- drivers/block/Makefile      |  1 +
- drivers/block/brmr/Kconfig  | 28 ++++++++++++++++++++++++++++
- drivers/block/brmr/Makefile | 16 ++++++++++++++++
- 4 files changed, 47 insertions(+)
- create mode 100644 drivers/block/brmr/Kconfig
- create mode 100644 drivers/block/brmr/Makefile
+ drivers/infiniband/hw/mlx4/alias_GUID.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index 858320b6ebb7..65167fcb1357 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -353,6 +353,8 @@ config BLKDEV_UBLK_LEGACY_OPCODES
- 
- source "drivers/block/rnbd/Kconfig"
- 
-+source "drivers/block/brmr/Kconfig"
-+
- config BLK_DEV_ZONED_LOOP
- 	tristate "Zoned loopback device support"
- 	depends on BLK_DEV_ZONED
-diff --git a/drivers/block/Makefile b/drivers/block/Makefile
-index 2d8096eb8cdf..4793c9b0b383 100644
---- a/drivers/block/Makefile
-+++ b/drivers/block/Makefile
-@@ -33,6 +33,7 @@ obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
- 
- obj-$(CONFIG_ZRAM) += zram/
- obj-$(CONFIG_BLK_DEV_RNBD)	+= rnbd/
-+obj-$(CONFIG_BLK_DEV_BRMR)	+= brmr/
- 
- obj-$(CONFIG_BLK_DEV_NULL_BLK)	+= null_blk/
- obj-$(CONFIG_BLK_DEV_RUST_NULL) += rnull/
-diff --git a/drivers/block/brmr/Kconfig b/drivers/block/brmr/Kconfig
-new file mode 100644
-index 000000000000..a38d59d2c1d4
---- /dev/null
-+++ b/drivers/block/brmr/Kconfig
-@@ -0,0 +1,28 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+config BLK_DEV_BRMR
-+	bool
-+
-+config BLK_DEV_BRMR_CLIENT
-+	tristate "Block device over RMR (BRMR) client"
-+	depends on INFINIBAND_RMR_CLIENT
-+	select BLK_DEV_BRMR
-+	help
-+	  BRMR client is a block device driver that sits on top of the
-+	  RMR ULP and exposes a standard Linux block device (/dev/brmrX)
-+	  backed by an RMR pool.  Together with RMR it provides a
-+	  single-hop replication and resynchronization solution for
-+	  RDMA-connected storage clusters.
-+
-+	  If unsure, say N.
-+
-+config BLK_DEV_BRMR_SERVER
-+	tristate "Block device over RMR (BRMR) server"
-+	depends on INFINIBAND_RMR_SERVER
-+	select BLK_DEV_BRMR
-+	help
-+	  BRMR server exports a local block device as the backing store
-+	  for an RMR pool, so that BRMR clients can map it remotely
-+	  over RDMA.
-+
-+	  If unsure, say N.
-diff --git a/drivers/block/brmr/Makefile b/drivers/block/brmr/Makefile
-new file mode 100644
-index 000000000000..894ba2720557
---- /dev/null
-+++ b/drivers/block/brmr/Makefile
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+ccflags-y := -I$(srctree)/drivers/infiniband/ulp/rtrs \
-+	     -I$(srctree)/drivers/infiniband/ulp/rmr \
-+	     -I$(srctree)/drivers/block/brmr
-+
-+brmr-client-y := brmr-clt.o \
-+		 brmr-clt-sysfs.o \
-+		 brmr-clt-reque.o \
-+		 brmr-clt-stats.o
-+
-+brmr-server-y := brmr-srv-sysfs.o \
-+		 brmr-srv.o
-+
-+obj-$(CONFIG_BLK_DEV_BRMR_CLIENT) += brmr-client.o
-+obj-$(CONFIG_BLK_DEV_BRMR_SERVER) += brmr-server.o
+diff --git a/drivers/infiniband/hw/mlx4/alias_GUID.c b/drivers/infiniband/hw/mlx4/alias_GUID.c
+index c6e1b9e4122a..fc23960cf1fd 100644
+--- a/drivers/infiniband/hw/mlx4/alias_GUID.c
++++ b/drivers/infiniband/hw/mlx4/alias_GUID.c
+@@ -437,7 +437,7 @@ static void aliasguid_query_handler(int status,
+ 		queue_delayed_work(dev->sriov.alias_guid.ports_guid[port_index].wq,
+ 				   &dev->sriov.alias_guid.ports_guid[port_index].
+ 				   alias_guid_work,
+-				   msecs_to_jiffies(resched_delay_sec * 1000));
++				   secs_to_jiffies(resched_delay_sec));
+ 	}
+ 	if (cb_ctx->sa_query) {
+ 		list_del(&cb_ctx->list);
 -- 
-2.43.0
+2.34.1
 
 
