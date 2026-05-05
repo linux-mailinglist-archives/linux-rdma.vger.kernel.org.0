@@ -1,156 +1,114 @@
-Return-Path: <linux-rdma+bounces-20033-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20034-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qIRhHDU0+mlLKwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20033-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 20:17:25 +0200
+	id KCJnHPo2+mm0KwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20034-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 20:29:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D41984D28E1
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 20:17:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613C34D2A8C
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 20:29:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A0CFD3024A3A
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 18:17:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 709FC30CD4C0
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 18:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC8847DD67;
-	Tue,  5 May 2026 18:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0AD492195;
+	Tue,  5 May 2026 18:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LjijxrqB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vf+O7ma5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCEB2EDD58
-	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 18:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.170
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778005040; cv=pass; b=ht/g0mUQDq9op65KULz0Bmc3jUnfFF5IUeyT0RltSwgCeO6lmm8awADQypZorYOl6m28syA+yDT0hMS8UuY4xr814A5vAdN5GZ1WCitxJG2o5j4JfGz+YmnF3eHEhW4y+57rctS6moH0+uitIVyRBfaW4+dzUTRH969LNuPUACM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778005040; c=relaxed/simple;
-	bh=cmhqILGEd5qLLh6dNDNKgm7aiTK4wKmiofSyHUHPbQ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kp6Wyw29GWYre7BHOsaqliEdtOXvahq/aKjIGZkGILIxV+C9Wr96IyFUXOcjSlFIdUcI9NEszd2IGUqhFsaLxKhooSs+9Wf7WMSZ3AkGtSSMqtjMgxBkKNSzHhX+zP368OC8N0yGSPJs9+5Bbt66Ai3GaPeNWF2CeHSx3mbucWQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LjijxrqB; arc=pass smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-479d68a9063so1958091b6e.0
-        for <linux-rdma@vger.kernel.org>; Tue, 05 May 2026 11:17:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778005038; cv=none;
-        d=google.com; s=arc-20240605;
-        b=evlQfKpKLKXbUYMy+dPZxvBzxtv4wRWO3DJ7/VEds3bewdc0c6Y3xGHnSICklivGJc
-         GbtN2P6rqoFDwk3Wlr1HWSnHQlzJr8NVgpwhtipcBvGBo6csmXK1ohDZvRc7cryth6ER
-         2sBdLDy8epOi+kB2HlCGBTM2bVVmTjeaK8XGsddkWJ/eyNySz01Ko8qo+sBpwBwNF//5
-         Paf8kdayBnVeTdLWzB4WPnyEN6HbKgq6l3do2BmKZQDJ0xcrcbcyBaR5FtrQbA7gfWyC
-         Q5ItJk+hzRVF+3Uo8IjpZpmghGLFZCqFUHHIuFqNd9+Dfw1HbLM5MlvPxmUBYEUeZtru
-         NzWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=cmhqILGEd5qLLh6dNDNKgm7aiTK4wKmiofSyHUHPbQ8=;
-        fh=dkNVL9g+XabVGerQH+wrcQr313lnS6FS3BgoBec7XfE=;
-        b=TZt9wqp1VboPtIFJth+yS17vFAGZCDICIxje1SxN30USb1IzamKwSh7C2nTo9kHgm4
-         m4b4d7NWKMLwxHyQ7gB2ijQbtAAykoa7ETNOaaLnZEKKEYYy/wHiZu9jVf9t6AAobJGm
-         Y6nWlLniieg39vDnRA6ct2AMPvYJZ5gM/unjvBmC1APBZMAmmmwt76xCTLncfYPNL1o6
-         wea2Op5/Kwgh/wCelTI0Cd0bpw7XAnAwUzJxbgeV8eFtpYtb89bUVkOY4ym20gxxof9u
-         osRcAOQA10rY4T5paDGRu6TZK7SfByh+zyG7HgqeYPhVv/3i2w52YmVnKpQW+T2oOPFt
-         CSLQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1778005038; x=1778609838; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cmhqILGEd5qLLh6dNDNKgm7aiTK4wKmiofSyHUHPbQ8=;
-        b=LjijxrqB2AaSBN6x3rcmXh+smj+t5vaz2DPi3qXuk918US4T7u18h7qTkB64y7Z+7E
-         fnouMTR8dYqCUTO/G2pui18EvU5qShF2TG7OJPV7FRfW3TS/z3lzwbEcqEnd5i0PGOUV
-         Ed8rFuCuSowGGsJGzAeR+Nfp4fSFFLXUKrWQd0HQbIcCoaHZWvoIXnL8NapKbG2DwTt7
-         9eUlK9OGYABxFVUayCviND3g/hmgRjMTlxyaQ+W9elTCmwdWkAia3BMRt1MHFrZdRDS+
-         EAvR5PY4ZSCaznkLrgh+THi7528FihHudC9YhRsJ4bnJcQ2Au4hHtG5pZJuQPnw3UX8p
-         VBfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778005038; x=1778609838;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cmhqILGEd5qLLh6dNDNKgm7aiTK4wKmiofSyHUHPbQ8=;
-        b=XMdidY9Xjtg7U9zFxi9wByJThw7CX76xBTBVVawULEf5cQGUmm++mrcBIOvxWgNy73
-         PhH7cD8i04nNj4T7g3mVDdvVEiNI0m7tou0N0MXdOcbGaVeQk6A+M6y+/Nzv8o+zCqph
-         0N8WbXg8AzjZFYmj53+7qlBh4HIJY0BDAyBt5WD+Aox+Ypvb0FogTs9LG+W+3OCP8QTy
-         HYxOpuQeCJZdSOxnDHBHvlN8OH5fzjFdWgEoNS2GAZdsF1AMQ176si178Tya3EnROX/p
-         UIYgjEhPmxYx/PiN+D2oDAyocozVkJRZccBMgP3MoRHEQu/HlUx7WLpga+DGZfMW8Yvb
-         DwPQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8jvSergXpc+FOs1RkttDCzBZtLeR7cGmBAYdWYB4juTyQDMbkSgS4NroqAGy303Ihi5ltcyiFfP8GG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzuj2V3BYH9RD/cs5EljONiKXFTsPO0BX81ssUZLqDA4rpmJs66
-	+yNdxNXrTXVoA2p3jsLycEjsGrsCliUpcdNXfTDYfslwjTsdXv8jxt3X8Q4ncNORwUjn06w5NB1
-	YUtrLZUXqwMlwATstVBoM8kthaF9ES+3ox0nnzS9C
-X-Gm-Gg: AeBDievjkKzB4ygZHrmFM+Y041vJmAf4Wnq+U7Vrd9sm8GthHunZ+D1Ok77tX9Ynfwd
-	rzb/HdN1b7qZscuDeM594mA1Q20R9xeFSKsTKxs4xWg4o0IjPSqUpsU0CRB93UIlB5zr+VpE0UU
-	8KB2kuECQsNTMWYvgPjyy7f3vZphm+iXSyf3MK7V5+F7hYcnyMC3zkiHHwSTEavvICMkFBflXgn
-	xmUWtDZil5ugcJ5DDG72b8YrLNyStfU5HTp1hb+ekeiTnmvImsAocyt6ulcLKJM34edm0FfXX/c
-	aGj5xxDQQK5SxhBsm8rMkVo56X36sg==
-X-Received: by 2002:a05:6808:e642:b0:467:1c6b:ee14 with SMTP id
- 5614622812f47-480424c8fc4mr73825b6e.33.1778005037983; Tue, 05 May 2026
- 11:17:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C462D5A19;
+	Tue,  5 May 2026 18:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778005595; cv=none; b=cM7FVp82qdwAwJrLWCP7j/G6gxrTKEkbabaAAoE2xd8qGq/Z+YjZuYnH/2ANyo6KP/9SxsC8ZmTKvgaNTnYdeAhjAWysbv6UiHNPtNZMCeAl7SDsglLiLTKKa5CmDzB4LeYiicKuOaTitDxiey/33deunGRiH2IPbGnGmWNifnM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778005595; c=relaxed/simple;
+	bh=eSmG1lkVAuk9IotYVlQN7OjG9TWA7zSQ4fj6E7+pxFs=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=JQkh0pxbWf0W8qpKrSIyQ6AIUMJLOuQXkhc3icC5CftdWherLvXj1HVYbKtd1XbbTaYUesJ2UfcxaFFGI3yP2u4xrElywGH5AxPvRx2ne4mhir+8oYfUG1jlmdz7V+EanwSoi58CEQ8vdxpCuNBjMjaSwoneb3++X3WGlOnPVDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vf+O7ma5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F282C2BCB4;
+	Tue,  5 May 2026 18:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778005595;
+	bh=eSmG1lkVAuk9IotYVlQN7OjG9TWA7zSQ4fj6E7+pxFs=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=Vf+O7ma51naoayzOivFg26s4pKRdq36XGf6f5DnJ5cBDk3mUL2FC0VmBYrheh4lpu
+	 Txtx0/c/RIIdrowHX8PdGKvcZXZIdWii1aASVNFnTNheT4QptQONjhA/ZpA1fsKyFm
+	 alIOO5s2ER95HnZRh7jlj2h5aIlmp33XnbUdRTCJEGEQCnsW4CM2DKCE20JWYNxLJ0
+	 /x+3GZBVe88oWlpGN1QHKdcFmMZDlWOJwZv2JnT7wbxo9hV3yhtGEglGOst411NY0j
+	 dtROPGGmIevYhBnAScJ4aK3pb+QkuxtgL6M9rTCvJsP7hstCaUZSeipApGAOA/Lamg
+	 +FBMzD0sEjJAg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B9F863930198;
+	Tue,  5 May 2026 18:25:46 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <afoKDicC2EmULhF+@nvidia.com>
+References: <afoKDicC2EmULhF+@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <afoKDicC2EmULhF+@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 0c99acbc8b6c6dd526ae475a48ee1897b61072fb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9207d47f966be9f4d52e7e0119ac2b7a7e366f3e
+Message-Id: <177800554519.2215775.12758755533200283999.pr-tracker-bot@kernel.org>
+Date: Tue, 05 May 2026 18:25:45 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260505061149.2361536-1-jiri@resnulli.us> <20260505061149.2361536-3-jiri@resnulli.us>
- <CAHYDg1SSkV42nfjakR1W=zu8-E7svsswxoTesXuLvpF6c5WvqA@mail.gmail.com> <afoUqiDgZmhE4Kog@ziepe.ca>
-In-Reply-To: <afoUqiDgZmhE4Kog@ziepe.ca>
-From: Jacob Moroni <jmoroni@google.com>
-Date: Tue, 5 May 2026 14:17:06 -0400
-X-Gm-Features: AVHnY4KeUiplxxSrMAX_m4bCwvyjpFsBT4HFUs9fVOkaXTFfVwqhEC7xy_LUTYE
-Message-ID: <CAHYDg1RpqHxz_hYzHvsYzPpHG-WQA+7L_OPauB2DTuSJTuq1ZQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-next 2/2] RDMA/umem: block plain userspace memory
- registration under CoCo bounce
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org, leon@kernel.org, 
-	edwards@nvidia.com, kees@kernel.org, parav@nvidia.com, mbloch@nvidia.com, 
-	yishaih@nvidia.com, lirongqing@baidu.com, huangjunxian6@hisilicon.com, 
-	liuy22@mails.tsinghua.edu.cn
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: D41984D28E1
+X-Rspamd-Queue-Id: 613C34D2A8C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20034-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20033-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[google.com:+]
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NO_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-> Jiri has been looking at both options, but kernel side irdma must be
-> upgraded to accept a dmabuf for every kind of userspace memory.
+The pull request you sent on Tue, 5 May 2026 12:17:34 -0300:
 
-I think changing the irdma kernel driver to support dmabufs for the rings may
-be a relatively straightforward change if we can adopt an approach similar to
-how it's currently done using normal mrs (which are explicitly registered during
-the QP/CQ creation process). If so, it may just amount to adding a ptr attr to
-pass a struct irdma_mem_reg_req and using ibv_cmd_reg_dmabuf_mr instead
-of ibv_cmd_reg_mr.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-Thanks,
-Jake
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9207d47f966be9f4d52e7e0119ac2b7a7e366f3e
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
