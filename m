@@ -1,83 +1,82 @@
-Return-Path: <linux-rdma+bounces-20000-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20001-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uEVxMd6i+WnR+QIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20000-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:57:18 +0200
+	id AC++IYai+WnR+QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20001-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:55:50 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245D14C85BF
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:57:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53CF4C8587
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 09:55:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BD2A1302AF1B
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 07:49:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F03CD3066BC2
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 07:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA6C3ED12F;
-	Tue,  5 May 2026 07:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A46C3F0771;
+	Tue,  5 May 2026 07:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="XZ0geRA+"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="WbIFrHc4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278123ECBCD
-	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 07:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448903F0759
+	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 07:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777967269; cv=none; b=nnv+//vbxym9+5ObtVSqgkhdOWHgPiDLyZjrSDZiIxPu2kTGMdvvtt/qW7T7sGj2gqbyyRVwUo3Mnz6dYUd42x4nIlFkbZ1bbkwAJQvL0biCLZrd9EhhPk0H3X1D2rE2XoFi88x4H8+jcEb2CPgEOSTeZyfzqj5YjTlOfw/bSO4=
+	t=1777967270; cv=none; b=LGZfR1jdQJmEvJfzGgRBEMmrmNBdHuRFwqbidPPZwiLsaN/XfVBBiB/1VLevXSCqh5dXeAbUKUzdM25HK8G3CGQ2busFL0wyHqx/qqFYgglWPJmSnCNoLqfRdSouY1corvq6POZPv4Dtl7XipK8YGkTJnUiplrvjf64c1jbkRmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777967269; c=relaxed/simple;
-	bh=3rief6qDJXHB/aC4wcSUve21HLh8BJq4NSVnb8sBP2I=;
+	s=arc-20240116; t=1777967270; c=relaxed/simple;
+	bh=bNPMjRK/9zc5WmfGqTDIbzwmoE4hgIMJpwf3II1ievY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BULJ5nL5KFKrPrDUAgGaYtNeAgFqPRHSeD6oCsfQHQ42m4F/WXu0RWkL78qzbNUgjOMyhBhXRVhnEj+RVM0wel64Lk06YEa5iJI+MTiOAe5sah4/i6SGmS7JQ8ti6e+8AUb260KNzcjQDOJXT1No+HUaORZhMBnVxp5BSjHmOgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=XZ0geRA+; arc=none smtp.client-ip=209.85.128.54
+	 MIME-Version; b=Qh8DMHOPTOsff7bM2r2oA7q9vOAD9yNhsoNGpXgUIq8C6IvQ2gve3gC70J72LS5J8E3WJIXYwJ4EtyQQZm9PsimqOq9xscjKqxqd9pHCCzTfygrbMD0SGI3hwXdAFcF2UZPI0GE0uGxFEaFX9oxBF5QSDNLSCo7QDz8hl6a8WN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=WbIFrHc4; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4891c0620bcso34693665e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 05 May 2026 00:47:44 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4852a9c6309so39347445e9.0
+        for <linux-rdma@vger.kernel.org>; Tue, 05 May 2026 00:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1777967263; x=1778572063; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1777967266; x=1778572066; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9gxGZ7Rf3gqYhmtGphUcSqCeh4ddy3PY0+J97zFGWYc=;
-        b=XZ0geRA+6GtPyU2u/IuzXn6SeEfq+iSg/Z74PT/pKtVze6OrXFr4yDoLigg+8La6R/
-         4Me5LgTpDxu5RM0Lh/ubk+9F/n326/S3uFjjkuC7TvPebSdLYjUUCEO3PXVrnrMHUpHt
-         7rpre9/HXYFmhAOLGFuxYDelOfzTe6v9ChNuc5RIU9WSjPLtC/lqLffF0vY/xrXwVN3O
-         j+KBYB5sBYs/JM0mXNGjkMp1LgzdUaUcI25SrJv6PfgyDc9eTNnkAIc0AVYJ3GbRGd1U
-         1q0VpH/BFMPE/KrKn7mlzdPvFRHtbEFK/ln0TE3D4NBbp3KlJKWqOuSLLU4r3+1jBFA1
-         FyLg==
+        bh=BwY0oJ9mAmiBb5l+7tRNvn9yezGrGkzpmxT/seGzEBM=;
+        b=WbIFrHc4wse9dTxevUn4s/4Kt8MbMSpcCgKeIuCP1Bp5be/lAN1pcai8m8OkaZ9Njb
+         JRzYLamsc4QZAYcDnR/0iHrVbXC79iU5KIGY5F6N6Hxo2Eo+gYL1ZiUEJqSFR2hKEjzU
+         jPWC9giBEn7BIOQcDcZe3T7++TjOQ6ZMVSGfMQ8Lq+SZIQth8HdPxkBYXOhEYUcOCjuO
+         KrsPdbeneVu5n10+/3DVpdhnVn36yIcwW3ol765VI1+Upr829v+ab06HvEZ5nn4zNL/t
+         z71M/yNwU/mKy362hZi5si4J01ywgibGQUzoWtt4Rri3/8sh/3/kgNZ5xRfCFrXW+LNw
+         2XGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777967263; x=1778572063;
+        d=1e100.net; s=20251104; t=1777967266; x=1778572066;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=9gxGZ7Rf3gqYhmtGphUcSqCeh4ddy3PY0+J97zFGWYc=;
-        b=hLoC0A4NR1mfqerVJKF439ttq9SXwUBu7PF6dUtzpVZHj12YelBx6XYm12Hwq2QB2R
-         sIMvAF6jfu3tiQFcPrk/LVxLUnLMadewALxF1Xd92TTSI+gq2uYlVt5+4OvuH30YI1JB
-         ax8bsWMEqqfNSdkrh7HBiXgKsXGY3ZicMtNHProDPqZ8WZqfPCB3+e0N/MoopW1ypIBT
-         z0XJKrVqLpQ1Oj86aEk5aCSZ50+rGUUWPOfXPFHxsofYqn6VvIyPU1UIF1pF3DZTYKiQ
-         SOOSs3y4dEyLsTThGXOq1AQaFi1RL4KiRSreZks/d5c5T4PVkt80Wuh5EZiMLP5qhq87
-         ierQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9511Und/m0+iYlT+8ZLbPdXihtBlswwoqTkuR956raZZcW9Xox7u/rzlu4o0WkZIiIn7x2pVanR91y@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7aPDNVt4QC15DN7bQP/owVXevCsGawGdO9zAREOAKxHz2nC+G
-	LPZuxKmynswHkwLywqcCmJtIYuJHuVpAZrnP6sbNS6vdTW0ufXOb/MNc89nEiGTu/Op/d4AUwt7
-	2tkI/4in/4w==
-X-Gm-Gg: AeBDiesAHeBlzIsT85xtPbjKYBqqitIjEu1fQGAni/U03HBLMDgLCNesT9QpQGPY+uQ
-	nxUE0ITi2lgQhu2XnvGoV/HnSnSf32vUXk8xZxxrfdcfh7/uvVi4lx0kOMhknHo79IFr+g+o1Xt
-	aUF7u2KHdfylol0WHt9VOTSl3ipxfDiWrZ6TOAW9XDXFUabC4lGtCnCIDkkUJMP1Up0cozNo15a
-	OtNMS+Igq7rV0gGOR/zUEFhzfl/pfWJLzJnnpzngEQe9sQLSX24qtwZme3nbn2OhnW0WQTBPSaD
-	hebhQ4+BHLa4pl1TODCQW8OUEZeqSo97Mt6Crp6xjq4XCpi71IuPmZqHCVY15x/8JT3e0mrL4gP
-	m7YLDLs6LsmwCs2y8it+eTq8+9bnRmHEme3Lg9gDZ2YpBGBL0l8D/8e+na8s8zxYq1+5qzP/jnB
-	5nmFwIz1WfJg63pKrUawfZu/9FlZN1jt5jW/8FBrCuqFGSd3S11OaoIYwJuQNcuv8mFui5mK5yR
-	Gh8QZKxeuGfh77X/tpvsnZsU3mdXvnendPSGaHtO2dB/Q==
-X-Received: by 2002:a05:600c:154b:b0:488:936a:6220 with SMTP id 5b1f17b1804b1-48a988a705dmr229344305e9.21.1777967263345;
-        Tue, 05 May 2026 00:47:43 -0700 (PDT)
+        bh=BwY0oJ9mAmiBb5l+7tRNvn9yezGrGkzpmxT/seGzEBM=;
+        b=TgetLsXnMai5XvkH09uC3Brqf+s6bThUPXRkNBwUDGPN6SJKQJ+szwW4L7NQB7nUxK
+         HeS9sUVnYaeHvZAlwQIfqOFuhX06eXRQwx8rNsQ81KvQKh77VRWjT+383NhIbd4AGSFu
+         6S4jVAvyiKSFb9WYHGfjG5RSp4JVQ2iZgFBHHI9Oq+52wyS9gJKg3F4dk5S5eHy5qAMv
+         TJHP6b27MZwgeX1ZZgrqFlp8YscU2JzR4wyUmMhuQz3XFdQfN7x2PMvj1PczZaUFPGT8
+         CWrxiDxMJEMt/pZD6WFYNsos59vqXFEKo64EvYjlX+oblBpU3+4nHV5o24eIYT2RgesM
+         GEUQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9EMI2liLy2IZA0btmBZ9lwtvt6sdeN9sCHlDnhsXDOCNxZ6AQH+8lzabpkGo1QhEMklpBG78qpIwy0@vger.kernel.org
+X-Gm-Message-State: AOJu0YwiRqhPMb1274t8vr/lxD2lm45y7s/yWlqveZhKAGi3VS7/31Xf
+	8vRA5idn7CAtdxpkA6EfWxV3TMMKAYOEDD1gx47YzmdHZHikJ76JyIehqNszD9wkMGA=
+X-Gm-Gg: AeBDieuFryTdrvcAPcWkHk8zbvor4xbTnz/PNnd1zc1VIwDN7mosshgphZV+Ig8UVwV
+	n0plRBhRn6dfyU78B/vu0FhK88aLJl5f/pBkA95rObRATaBt8N65sGoNrLQmxg4MPedZn4cs4Xp
+	b+DPN5qCM9csozZGkA3GoeaWVi1jUncY3yi8lfhfEfwz45r8jGKblZd08Q3g4FmN97faaCAz3NR
+	y6UuTenTXtHj2Aep80RdDeD4fL51xMVGB+ev8ZeOy/aqPIuid7n2EZm5tIJJYP+kVWAFDMAlfz2
+	Jdxt5v97DRvAnN0Ip8jWO+WqbtOeiIbCg6Kg6onOepdNkWPO4Zs9VX7V6h1JzC8y/+Uco6wBCZL
+	4bxQ+f5iMEPLpLlePq+j2oxWn2lH7wG1yGKVtLOyufuhvwI6U4+/VtDSCTUB6G9ffKRUHvvVqfb
+	6jiQSDDQfixMNcWkA9tvksJozXuxlHtCmTJkq2qq21YNL7X1sTDZcl7dkSlM2jvf4CDa1clwg4X
+	fTCcU9/xDdlvN60h3JH8FDljgjIPKxvmZpQGBbAib+trQ==
+X-Received: by 2002:a05:600c:a30a:b0:489:149a:f9e6 with SMTP id 5b1f17b1804b1-48d18cef14dmr19006305e9.28.1777967265550;
+        Tue, 05 May 2026 00:47:45 -0700 (PDT)
 Received: from lb03189.fkb.profitbricks.net ([213.147.98.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48d186d97c4sm10617125e9.35.2026.05.05.00.47.38
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48d186d97c4sm10617125e9.35.2026.05.05.00.47.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2026 00:47:42 -0700 (PDT)
+        Tue, 05 May 2026 00:47:44 -0700 (PDT)
 From: Md Haris Iqbal <haris.iqbal@ionos.com>
 To: linux-block@vger.kernel.org,
 	linux-rdma@vger.kernel.org
@@ -90,9 +89,9 @@ Cc: linux-kernel@vger.kernel.org,
 	jinpu.wang@ionos.com,
 	Md Haris Iqbal <haris.iqbal@ionos.com>,
 	Jia Li <jia.li@ionos.com>
-Subject: [PATCH 11/13] block/brmr: server: main functionality
-Date: Tue,  5 May 2026 09:46:23 +0200
-Message-ID: <20260505074644.195453-12-haris.iqbal@ionos.com>
+Subject: [PATCH 12/13] block/brmr: server: sysfs interface functions
+Date: Tue,  5 May 2026 09:46:24 +0200
+Message-ID: <20260505074644.195453-13-haris.iqbal@ionos.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260505074644.195453-1-haris.iqbal@ionos.com>
 References: <20260505074644.195453-1-haris.iqbal@ionos.com>
@@ -103,7 +102,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 245D14C85BF
+X-Rspamd-Queue-Id: D53CF4C8587
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -111,7 +110,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[ionos.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[ionos.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -119,7 +118,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[ionos.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20000-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20001-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -127,23 +126,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[haris.iqbal@ionos.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	RCPT_COUNT_SEVEN(0.00)[11];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ionos.com:email,ionos.com:dkim,ionos.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cmd_priv.dev:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ionos.com:email,ionos.com:dkim,ionos.com:mid]
 
-Add the BRMR server implementation that exports a local block device
-as the backing store for an RMR pool.
-
-brmr-srv.c implements the struct rmr_srv_store_ops interface
-provided by RMR (rmr-srv.h) and registers each backing device with
-rmr_srv_register().  The submit_req and submit_md_req callbacks
-issue bios to the underlying block_device, propagating the
-completion back to RMR via rmr_srv_endreq().  The on-disk metadata
-header at the end of the device is validated on bring-up and used
-to detect re-mapping into an existing pool.
+Add the BRMR server sysfs interface used to register and unregister
+backing block devices.  Writes to
+/sys/devices/virtual/brmr-server/ctl/map_device open the named
+block device, validate or initialise its on-disk metadata, and
+register it with RMR as the IO store for the named pool.
 
 This file is not compiled until the modules are wired into the
 build in a later patch in this series.
@@ -151,1418 +145,723 @@ build in a later patch in this series.
 Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Jia Li <jia.li@ionos.com>
 ---
- drivers/block/brmr/brmr-srv.c | 1402 +++++++++++++++++++++++++++++++++
- 1 file changed, 1402 insertions(+)
- create mode 100644 drivers/block/brmr/brmr-srv.c
+ drivers/block/brmr/brmr-srv-sysfs.c | 707 ++++++++++++++++++++++++++++
+ 1 file changed, 707 insertions(+)
+ create mode 100644 drivers/block/brmr/brmr-srv-sysfs.c
 
-diff --git a/drivers/block/brmr/brmr-srv.c b/drivers/block/brmr/brmr-srv.c
+diff --git a/drivers/block/brmr/brmr-srv-sysfs.c b/drivers/block/brmr/brmr-srv-sysfs.c
 new file mode 100644
-index 000000000000..cf85a54e4511
+index 000000000000..7e413eb258bb
 --- /dev/null
-+++ b/drivers/block/brmr/brmr-srv.c
-@@ -0,0 +1,1402 @@
++++ b/drivers/block/brmr/brmr-srv-sysfs.c
+@@ -0,0 +1,707 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Block device over RMR (BRMR)
 + *
 + * Copyright (c) 2026 IONOS SE
 + */
-+
-+#undef pr_fmt
-+#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
-+
-+#include <linux/bio.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/ctype.h>
++#include <linux/parser.h>
 +#include <linux/module.h>
-+#include <linux/blkdev.h>
++#include <linux/fs.h>
++#include <linux/uaccess.h>
++#include <linux/device.h>
 +#include <linux/slab.h>
 +
 +#include "brmr-srv.h"
 +#include "rmr-srv.h"
 +
-+MODULE_AUTHOR("The RMR and BRMR developers");
-+MODULE_VERSION(BRMR_SERVER_VER_STRING);
-+MODULE_DESCRIPTION("BRMR Server");
-+MODULE_LICENSE("GPL");
++#undef pr_fmt
++#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
 +
-+LIST_HEAD(store_list);
-+DEFINE_MUTEX(store_mutex);	/* mutex to protect store_list */
++static struct class *rmr_str_class;
++static struct device *rmr_ctl_dev;
++static struct device *rmr_strs_dev;
 +
-+/**
-+ * brmr_srv_blk_validate_md() - Parse metadata for the given rmr block device and validate it
-+ *
-+ * @dev:	RMR block device against which the md is to be validated
-+ * @meta:	pointer to metadata to be checked
-+ *
-+ * Return:
-+ *	0:	On success
-+ *	-Error:	On failure
-+ */
-+int brmr_srv_blk_validate_md(struct brmr_srv_blk_dev *dev, struct brmr_srv_blk_dev_meta *meta)
++enum {
++	BRMR_SRV_STR_OPT_ERR = 0,
++	BRMR_SRV_STR_OPT_DEVICE = 1 << 0,
++	BRMR_SRV_STR_OPT_POOL = 1 << 2,
++	BRMR_SRV_STR_OPT_MAPPED_SIZE = 1 << 3,
++	BRMR_SRV_STR_OPT_MODE = 1 << 4,
++};
++
++static const unsigned int rmr_str_opt_mandatory[] = {
++	BRMR_SRV_STR_OPT_POOL,
++	BRMR_SRV_STR_OPT_DEVICE,
++	BRMR_SRV_STR_OPT_MAPPED_SIZE,
++};
++
++static const match_table_t rmr_str_opt_tokens = {
++	{ BRMR_SRV_STR_OPT_POOL, "pool=%s" },
++	{ BRMR_SRV_STR_OPT_DEVICE, "device=%s" },
++	{ BRMR_SRV_STR_OPT_MAPPED_SIZE, "mapped_size=%s" },
++	{ BRMR_SRV_STR_OPT_MODE, "mode=%s" },
++	{ BRMR_SRV_STR_OPT_ERR, NULL },
++};
++
++struct brmr_srv_str_options {
++	char *pool;
++	char *device;
++	unsigned long mapped_size;
++};
++
++static void brmr_srv_remove_store(struct brmr_srv_blk_dev *dev, struct kobj_attribute *attr,
++				  bool delete)
 +{
-+	if (meta->magic != BRMR_BLK_STORE_MAGIC) {
-+		pr_warn("No md found. store %s md magic=%llX does not match %X\n",
-+			dev->poolname, meta->magic, BRMR_BLK_STORE_MAGIC);
-+		return -EINVAL;
-+	}
-+
-+	// TODO: check version!
-+
-+	if (dev->dev_size && dev->dev_size != meta->dev_size) {
-+		pr_err("store %s dev_size %llu does not match md value %llu\n",
-+		       dev->poolname, dev->dev_size, meta->dev_size);
-+		return -EINVAL;
-+	}
-+
-+	if (dev->mapped_size != meta->mapped_size) {
-+		pr_err("store %s mapped_size %llu does not match md value %llu\n",
-+		       dev->poolname, dev->mapped_size, meta->mapped_size);
-+		return -EINVAL;
-+	}
-+
-+	if (strncmp(dev->poolname, meta->poolname, NAME_MAX)) {
-+		pr_err("store %s does not match md value %s\n",
-+		       dev->poolname, meta->poolname);
-+		return -EINVAL;
-+	}
-+
-+	pr_debug("store %s md: mapped_size=%llu\n",
-+		dev->poolname, meta->mapped_size);
-+	pr_debug("md parsing is done for store %s\n", dev->poolname);
-+
-+	return 0;
-+}
-+
-+/**
-+ * brmr_srv_blk_fill_md() - Fill metadata from brmr srv block device
-+ *
-+ * @dev:	BRMR server block device from which data is to be taken
-+ * @data:	pointer to metadata
-+ *
-+ * Return:
-+ *	0:	On success
-+ *	-Error:	On failure
-+ */
-+static int brmr_srv_blk_fill_md(struct brmr_srv_blk_dev *dev, void *data)
-+{
-+	struct brmr_srv_blk_dev_meta *meta = data;
-+
-+	meta->magic = BRMR_BLK_STORE_MAGIC;
-+	meta->version = 0;
-+	meta->dev_size = dev->dev_size;
-+	meta->offset = BLK_STR_MD_SIZE_SECTORS;
-+	meta->ts = jiffies; // or ktime_get_real_seconds();
-+	meta->mapped_size = dev->mapped_size;
-+	meta->state = dev->state;
-+
-+	memcpy(&meta->dev_params, &dev->dev_params, sizeof(struct rmr_blk_dev_params));
-+
-+	strscpy(meta->poolname, dev->poolname, NAME_MAX);
-+
-+	pr_debug("md filling pool %s is done for dev %s\n", meta->poolname, dev->name);
-+
-+	return 0;
-+}
-+
-+static int brmr_srv_blk_md_io_sync(struct block_device *bdev, int rw, void *md_data)
-+{
-+	int err = 0;
-+	struct bio *bio;
-+	blk_opf_t bio_flags = REQ_META;
-+	u32 bytes;
-+
-+	bio = bio_alloc(bdev, 1, bio_flags, GFP_NOIO);
-+	if (!bio) {
-+		pr_err("Failed to allocate metadata bio\n");
-+		return -ENOMEM;
-+	}
-+
-+	bytes = bio_add_page(bio, virt_to_page(md_data), PAGE_SIZE, 0);
-+	if (bytes != PAGE_SIZE) {
-+		pr_err("Failed to add page to bio, bytes returned=%u, expected %lu\n",
-+		       bytes, PAGE_SIZE);
-+		err = -EINVAL;
-+		goto bio_put;
-+	}
-+
-+	if (rw == READ)
-+		bio->bi_opf = REQ_OP_READ;
-+	else
-+		bio->bi_opf = REQ_OP_WRITE | REQ_FUA;
-+
-+	bio->bi_opf |= bio_flags;
-+	bio->bi_iter.bi_sector = 0;
-+	bio_set_dev(bio, bdev);
-+
-+	pr_debug("submit_bio_wait dev %s, rw %s\n",
-+		 bdev->bd_disk->disk_name, rw == WRITE ? "WRITE" : "READ");
-+	err = submit_bio_wait(bio);
-+	if (err) {
-+		pr_err("Error reading md from %s, err %d\n",
-+		       bdev->bd_disk->disk_name, err);
-+		goto bio_put;
-+	}
-+	pr_info("%s: for dev %s md rw %s is completed with code %d\n",
-+		__func__, bdev->bd_disk->disk_name, rw == WRITE ? "WRITE" : "READ", err);
-+
-+bio_put:
-+	bio_put(bio);
-+
-+	return err;
-+}
-+
-+/**
-+ * brmr_srv_blk_read_md() - read md from given block device
-+ *
-+ * @bdev:	block device from which to read md
-+ * @md_page:	buffer to fill with md
-+ */
-+static int brmr_srv_blk_bdev_read_md(struct block_device *bdev, char *md_page)
-+{
-+	int err = 0;
-+
-+	err = brmr_srv_blk_md_io_sync(bdev, READ, md_page);
-+	if (err) {
-+		pr_err("error reading md from %s, err %d\n", bdev->bd_disk->disk_name, err);
-+		return err;
-+	}
-+
-+	pr_debug("read md from dev %s is done\n", bdev->bd_disk->disk_name);
-+
-+	return err;
-+}
-+
-+static int brmr_srv_blk_write_md(struct brmr_srv_blk_dev *dev)
-+{
-+	int err = 0;
-+	void *md_page;
-+
-+	pr_debug("flush md to dev %s\n", dev->name);
-+	md_page = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!md_page) {
-+		pr_err("Failed to allocate page to read md\n");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	err = brmr_srv_blk_fill_md(dev, md_page);
-+	if (err) {
-+		pr_err("error filling md for dev %s, err %d\n", dev->name, err);
-+		goto free_md_page;
-+	}
-+
-+	err = brmr_srv_blk_md_io_sync(dev->bdev, WRITE, md_page);
-+	if (err) {
-+		pr_err("error writing md to %s, err %d\n", dev->name, err);
-+		goto free_md_page;
-+	}
-+	pr_debug("flush md to dev is done %s\n", dev->name);
-+
-+free_md_page:
-+	kfree(md_page);
-+out:
-+	return err;
-+}
-+
-+static void brmr_srv_blk_zero_md(struct brmr_srv_blk_dev *dev)
-+{
-+	int err = 0;
-+	void *md_page;
-+
-+	pr_debug("zero md on dev %s\n", dev->name);
-+	md_page = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!md_page) {
-+		pr_warn("Failed to allocate page to read md\n");
-+		return;
-+	}
-+
-+	err = brmr_srv_blk_md_io_sync(dev->bdev, WRITE, md_page);
-+	if (err)
-+		pr_warn("error writing zero md to %s, err %d\n", dev->name, err);
-+
-+	pr_debug("zero md on dev is done %s\n", dev->name);
-+	kfree(md_page);
-+}
-+
-+static void brmr_srv_ref_kill(struct brmr_srv_blk_dev *dev)
-+{
-+	percpu_ref_kill(&dev->kref);
-+	wait_for_completion(&dev->comp);
-+}
-+
-+static void brmr_srv_blk_release(struct percpu_ref *kref)
-+{
-+	struct brmr_srv_blk_dev *dev;
-+
-+	dev = container_of(kref, struct brmr_srv_blk_dev, kref);
-+	complete(&dev->comp);
-+}
-+
-+/**
-+ * brmr_srv_blk_close() - Close a brmr srv block device
-+ *
-+ * @dev:	BRMR server block device to be closed
-+ *
-+ * Description:
-+ *	Close an opened brmr srv store block device.
-+ *	This function is the opposite of brmr_srv_blk_open.
-+ *	This function is supposed to be the check and stop for inflight IOs.
-+ *
-+ * Locks:
-+ *	store_mutex should be held while calling this.
-+ */
-+void brmr_srv_blk_close(struct brmr_srv_blk_dev *dev, bool delete)
-+{
-+	pr_info("rmr store name: %s; dev %s is closing\n", dev->poolname, dev->name);
-+	brmr_srv_blk_clear_state(dev, BRMR_SRV_STORE_OPEN);
-+
-+	list_del(&dev->entry);
-+
-+	pr_info("brmr server store blk dev %s wait for io to complete.\n", dev->name);
-+	brmr_srv_ref_kill(dev);
-+
-+	/*
-+	 * Reinit the ref counter so that RMR can send metadata requests.
-+	 */
-+	reinit_completion(&dev->comp);
-+	percpu_ref_reinit(&dev->kref);
-+
-+	rmr_srv_unregister(dev->poolname, delete);
-+	dev->pool = NULL;
-+	brmr_srv_ref_kill(dev);
-+
-+	if (delete)
-+		brmr_srv_blk_zero_md(dev);
-+}
-+
-+static int brmr_srv_blk_do_discard(struct brmr_srv_blk_dev *dev)
-+{
-+	struct rmr_pool *pool = dev->pool;
-+	int err;
-+
-+	pr_info("store id %s has mapped size of %llu, send discarded chunks to rmr pool %s\n",
-+		dev->poolname, dev->mapped_size, dev->pool->poolname);
-+
-+	err = rmr_srv_discard_id(pool, 0, 0, 0, true);
-+	if (err)
-+		pr_err("store %s failed to discard all data\n", dev->poolname);
-+
-+	return err;
-+}
-+
-+/**
-+ * brmr_srv_init_cmd() - Initialize message command
-+ *
-+ * @msg:	command message where to init
-+ */
-+static void brmr_srv_init_cmd(struct brmr_msg_cmd *msg)
-+{
-+	memset(msg, 0, sizeof(*msg));
-+
-+	msg->hdr.type = cpu_to_le16(BRMR_MSG_CMD);
-+	msg->hdr.__padding = 0;
-+	msg->ver = BRMR_PROTO_VER_MAJOR;
-+}
-+
-+/**
-+ * brmr_srv_cmd_conf() - Confirmation function for brmr srv store internal command message
-+ *
-+ * @priv:	priv pointer to brmr command private data
-+ * @errno:	error number passed from RMR.
-+ *		See description of errno in RMR function.
-+ *
-+ * Description:
-+ *	Command response for a map new command can fail on multiple levels.
-+ *	If RMR fails to send the message to any or one of the nodes, that would reflect on the
-+ *	errno. If the command fails on BRMR level, that would reflect on the rsp struct.
-+ *	The error number will be used differently by different commands accordingly.
-+ */
-+static void brmr_srv_cmd_conf(void *priv, int errno)
-+{
-+	struct brmr_cmd_priv *cmd_priv = (struct brmr_cmd_priv *)priv;
-+
-+	cmd_priv->errno = errno;
-+
-+	switch (cmd_priv->cmd_type) {
-+	case BRMR_CMD_GET_PARAMS:
-+		if (cmd_priv->errno)
-+			pr_err("%s: BRMR_CMD_GET_PARAMS failed with err=%pe on sending",
-+				 __func__, ERR_PTR(errno));
-+
-+		break;
-+
-+	default:
-+		cmd_priv->errno = -EINVAL;
-+		pr_err("%s: Unknown command type %d err=%d\n", __func__, cmd_priv->cmd_type, errno);
-+	}
-+
-+	complete(&cmd_priv->complete_done);
-+}
-+
-+/**
-+ * brmr_srv_send_msg_cmd() - Sends command message to internal rmr pool through rmr-srv pool
-+ *
-+ * @dev:		pointer to brmr device
-+ * @msg:		msg struct to be sent
-+ * @rsp_buf:		response buffer where the response of the storage side is stored
-+ * @rsp_buf_len:	length of the response buffer
-+ *
-+ * Return:
-+ *	Negative if failed to sent command
-+ *	As handled by each command in brmr_cmd_conf, if succeeded to send command
-+ *
-+ * Context:
-+ *	Would block until response is received
-+ */
-+static int brmr_srv_send_msg_cmd(struct brmr_srv_blk_dev *dev, struct brmr_msg_cmd *msg,
-+				 void *rsp_buf, size_t rsp_buf_len)
-+{
-+	struct brmr_cmd_priv cmd_priv;
-+	struct kvec vec;
-+	int ret;
-+
-+	vec = (struct kvec) {
-+		.iov_base = msg,
-+		.iov_len  = sizeof(*msg)
-+	};
-+
-+	cmd_priv.dev = dev;
-+	cmd_priv.cmd_type = msg->cmd_type;
-+	cmd_priv.rsp_buf = rsp_buf;
-+	cmd_priv.rsp_buf_len = rsp_buf_len;
-+	cmd_priv.errno = 0;
-+	init_completion(&cmd_priv.complete_done);
-+
-+	ret = rmr_srv_pool_cmd_with_rsp(dev->pool, brmr_srv_cmd_conf, &cmd_priv, &vec, 1, rsp_buf,
-+				       rsp_buf_len, sizeof(struct brmr_msg_cmd_rsp));
-+
-+	if (!ret) {
-+		wait_for_completion(&cmd_priv.complete_done);
-+		ret = cmd_priv.errno;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * brmr_srv_blk_get_params() - Get parameters from other servers
-+ *
-+ * @dev:		Backend device for which to be checked
-+ *
-+ * Description:
-+ *	Check whether parameters from other servers are consistent with this server through
-+ *	internal network.
-+ *
-+ * Return:
-+ *	0 on success of checks
-+ *	-Negative error value on failure of checks.
-+ *	-EAGAIN if no sync sessions are connected to this server.
-+ */
-+static int brmr_srv_blk_get_params(void *device)
-+{
-+	struct brmr_srv_blk_dev *dev;
-+	struct brmr_msg_cmd msg;
-+	struct brmr_msg_cmd_rsp *brmr_cmd_rsp;
-+	void *rsp_buf;
-+	size_t rsp_buf_len;
-+	int err = 0, i;
-+	bool checked = false;
-+
-+	dev = (struct brmr_srv_blk_dev *)device;
-+	brmr_srv_init_cmd(&msg);
-+	msg.cmd_type = BRMR_CMD_GET_PARAMS;
-+
-+	rsp_buf_len = sizeof(struct brmr_msg_cmd_rsp) * RMR_POOL_MAX_SESS;
-+	rsp_buf = kzalloc(rsp_buf_len, GFP_KERNEL);
-+	if (!rsp_buf)
-+		return -ENOMEM;
-+
-+	err = brmr_srv_send_msg_cmd(dev, &msg, rsp_buf, rsp_buf_len);
-+	if (err < 0) {
-+		pr_warn("%s: brmr_send_msg_cmd failed with errno %d\n", __func__, err);
-+		/*
-+		 * Sending could fail for various reasons. The server may be isolated and has
-+		 * no connected sync sessions to other nodes. Or the connected server has no
-+		 * store attached.
-+		 */
-+		goto free_data;
-+	}
-+
-+	/*
-+	 * We do not care if the command failed for few storage nodes, as long as we get a good
-+	 * response from one of them.
-+	 *
-+	 * The mapped size of all storage nodes which are connected should be the same, whether
-+	 * the backend device of those nodes is mapped or not.
-+	 *
-+	 * TODO: If the responses of other storage nodes are different, then use values from
-+	 * nodes which are mapped. If there are no mapped devices in the pool, then the check
-+	 * will fail when the mapped sizes are different.
-+	 */
-+	brmr_cmd_rsp = (struct brmr_msg_cmd_rsp *)rsp_buf;
-+	for (i = 0; i < RMR_POOL_MAX_SESS; i++, brmr_cmd_rsp++) {
-+		struct brmr_cmd_get_params_rsp *get_params_rsp = &brmr_cmd_rsp->get_params_rsp;
-+		struct brmr_blk_dev_params *rsp_dev_params;
-+
-+		/*
-+		 * If there is no magic, or the command failed,
-+		 * we do not use that nodes info to perform the check.
-+		 */
-+		if (brmr_cmd_rsp->magic != BRMR_CMD_RSP_MAGIC ||
-+		    brmr_cmd_rsp->status)
-+			continue;
-+
-+		if (dev->mapped_size != le64_to_cpu(get_params_rsp->mapped_size)) {
-+			pr_err("%s: Mismatch in mapped_size: %llu != %llu\n", __func__,
-+			       dev->mapped_size, le64_to_cpu(get_params_rsp->mapped_size));
-+			err = -EINVAL;
-+			goto free_data;
-+		}
-+
-+		rsp_dev_params = &get_params_rsp->dev_params;
-+
-+		dev->dev_params.max_hw_sectors = le32_to_cpu(rsp_dev_params->max_hw_sectors);
-+		dev->dev_params.max_write_zeroes_sectors =
-+					le32_to_cpu(rsp_dev_params->max_write_zeroes_sectors);
-+		dev->dev_params.max_discard_sectors =
-+					le32_to_cpu(rsp_dev_params->max_discard_sectors);
-+		dev->dev_params.discard_granularity =
-+					le32_to_cpu(rsp_dev_params->discard_granularity);
-+		dev->dev_params.discard_alignment = le32_to_cpu(rsp_dev_params->discard_alignment);
-+		dev->dev_params.physical_block_size =
-+					le16_to_cpu(rsp_dev_params->physical_block_size);
-+		dev->dev_params.logical_block_size =
-+					le16_to_cpu(rsp_dev_params->logical_block_size);
-+		dev->dev_params.max_segments = le16_to_cpu(rsp_dev_params->max_segments);
-+		dev->dev_params.secure_discard = le16_to_cpu(rsp_dev_params->secure_discard);
-+		dev->dev_params.cache_policy = rsp_dev_params->cache_policy;
-+
-+		/*
-+		 * At least check passed with one mapped storage node
-+		 *
-+		 * We still perform the check for other mapped storage nodes just for sanity.
-+		 */
-+		checked = true;
-+	}
-+
-+	if (checked == false) {
-+		pr_err("%s: Check for mapped_size failed for dev %s.\n",
-+		       __func__, dev->poolname);
-+		err = -EINVAL;
-+	}
-+
-+free_data:
-+	kfree(rsp_buf);
-+
-+	return err;
-+}
-+
-+/**
-+ * brmr_srv_blk_add_handle_replace() - Handle check and discard for a store which was replaced
-+ *
-+ * @dev:	RMR block device to be closed
-+ *
-+ * Description:
-+ *	When an empty disk is added to an already existing brmr server store, it means that the
-+ *	empty disk is to replace the disk which was present in the existing brmr srv store.
-+ *	Before replacing the disk with the new empty one, there are a number of things to be done.
-+ *	This function performs the following task,
-+ *	1) Get some parameters from other storage node through the internal network, and checks
-+ *	whether the mapped_size passed for the new empty disk is correct or not.
-+ *	2) If the above check passed, then discard is sent above to rmr-server.
-+ *
-+ * Return:
-+ *	0 on success
-+ *	-Error value on error
-+ */
-+static int brmr_srv_blk_add_handle_replace(struct brmr_srv_blk_dev *dev)
-+{
-+	int err = 0;
-+
-+	/*
-+	 * The check passed. We can now do the discard safely.
-+	 */
-+	err = brmr_srv_blk_do_discard(dev);
-+	if (err) {
-+		pr_err("%s: brmr_srv_blk_do_discard failed for dev %s\n", __func__, dev->poolname);
-+		return err;
-+	}
-+
-+	/*
-+	 * We are done with everything, and we are good.
-+	 * We now set the MAPPED state and write metadata again so it is persisted.
-+	 * so that IOs can be served.
-+	 */
-+	brmr_srv_blk_set_state(dev, BRMR_SRV_STORE_MAPPED);
-+	err = brmr_srv_blk_write_md(dev);
-+	if (err) {
-+		pr_err("%s: dev %s: write md error %d\n", __func__, dev->name, err);
-+		brmr_srv_blk_clear_state(dev, BRMR_SRV_STORE_MAPPED);
-+		return err;
-+	}
-+
-+	/*
-+	 * After the discarded entries are sent to rmr-server, set the map version of
-+	 * rmr pool to zero.
-+	 */
-+	rmr_srv_replace_store(dev->pool);
-+	return 0;
-+}
-+
-+/**
-+ * brmr_srv_read_and_check_md() - Read and check metadata if it exists
-+ *
-+ * @dev:	BRMR server block device for which the metadata is to be checked
-+ * @md_page:	pointer to the buf where to read the metadata
-+ *
-+ * Description:
-+ *	Read metadata from the given store device, and check whether metadata exists.
-+ *
-+ * Return:
-+ *	0:	read was successful and metadata exists
-+ *	-1:	read was successful but metadata doesn't exists
-+ *	-Errno:	read failed
-+ */
-+int brmr_srv_read_and_check_md(struct brmr_srv_blk_dev *dev, void *md_page)
-+{
-+	struct brmr_srv_blk_dev_meta *meta = md_page;
-+	int err;
-+
-+	err = brmr_srv_blk_bdev_read_md(dev->bdev, md_page);
-+	if (err) {
-+		pr_err("%s: failed to read md, err=%d\n", __func__, err);
-+		return -EINVAL;
-+	}
-+
-+	if (meta->magic != BRMR_BLK_STORE_MAGIC) {
-+		pr_info("%s: No MD exists for block device %s, md magic=%llX does not match %X\n",
-+			__func__, dev->name, meta->magic, BRMR_BLK_STORE_MAGIC);
-+		return -1;
-+	}
-+
-+	pr_info("%s: %s MD exists for block device %s\n", __func__, meta->poolname, dev->name);
-+
-+	return 0;
-+}
-+
-+/**
-+ * brmr_srv_blk_open() - Open an brmr srv block device
-+ *
-+ * @dev:	BRMR server block device structure to be used.
-+ * @path:	path to the block device.
-+ * @create:	Whether to create a new store or open an existing one.
-+ * @replace:	Whether the device is being added to replace an empty disk.
-+ *
-+ * Description:
-+ *	Open the block device "path", and populate the brmr srv block device "dev"
-+ *	with the details.
-+ *	To close the device, call brmr_srv_blk_close()
-+ *
-+ * Return:
-+ *	0 on success
-+ *	-Error value on error
-+ *
-+ * Locks:
-+ *	store_mutex should be held while calling this.
-+ */
-+int brmr_srv_blk_open(struct brmr_srv_blk_dev *dev, const char *path,
-+		      bool create, bool replace)
-+{
-+	struct rmr_attrs attr;
-+	int err;
-+
-+	err = rmr_srv_query(NULL, dev->mapped_size, &attr);
-+	if (err) {
-+		pr_err("dev %s: rmr srv query failed %d\n", dev->name, err);
-+		return err;
-+	}
-+
-+	if ((dev->mapped_size + BLK_STR_MD_SIZE_SECTORS + attr.rmr_md_size) > dev->dev_size) {
-+		pr_err("%s: dev %s: No space for rmr metadata %llu(in sectors)\n",
-+		       __func__, dev->name, attr.rmr_md_size);
-+		return -ENOSPC;
-+	}
-+
-+	/*
-+	 * After the device registers to the RMR server pool, there will be metadata requests from
-+	 * RMR server transmitted to the device which starts reference counting. The reference
-+	 * count of the device must be initialized before any in flight requests are sent to BRMR.
-+	 */
-+	err = percpu_ref_init(&dev->kref, brmr_srv_blk_release, PERCPU_REF_ALLOW_REINIT, GFP_KERNEL);
-+	if (err) {
-+		pr_err("%s: percpu ref init failed.\n", __func__);
-+		return -EINVAL;
-+	}
-+	init_completion(&dev->comp);
-+
-+	dev->pool = rmr_srv_register(dev->poolname, &pstore_blk_ops, dev,
-+				     dev->mapped_size, create ? RMR_SRV_DISK_CREATE :
-+						       (replace ? RMR_SRV_DISK_REPLACE :
-+							RMR_SRV_DISK_ADD));
-+	if (!dev->pool) {
-+		pr_err("Failed registering blk store %s, err\n", dev->poolname);
-+		brmr_srv_ref_kill(dev);
-+		return -EINVAL;
-+	}
-+
-+	brmr_srv_blk_set_state(dev, BRMR_SRV_STORE_OPEN);
-+
-+	if (!create) {
-+		err = brmr_srv_blk_get_params(dev);
-+		if (replace) {
-+			/*
-+			 * Any failure of getting parameters is not allowed when replacing a store.
-+			 * Either it failed to send the command or the parameters are different.
-+			 */
-+			if (err) {
-+				pr_err("%s: replace_store: brmr_srv_blk_get_params failed with err %d\n",
-+				       __func__, err);
-+				goto close_dev;
-+			}
-+		} else {
-+			/*
-+			 * The store creation will fail if the connected servers to this server
-+			 * share different parameter values. If sending the command of getting
-+			 * parameters failed due to no sync sessions connected to this server
-+			 * where no parameters are received, the store will be created, delaying
-+			 * checks when this server is connected to some other servers.
-+			 */
-+			if (err && err != -EAGAIN) {
-+				pr_err("%s: create_store: brmr_srv_blk_get_params failed with err %d\n",
-+				       __func__, err);
-+				goto close_dev;
-+			}
-+		}
-+
-+		/*
-+		 * TODO: Would we be creating the maps for replace (empty disk) at the
-+		 * same time as we create one for create_disk?
-+		 */
-+		if (replace) {
-+			err = brmr_srv_blk_add_handle_replace(dev);
-+			if (err) {
-+				pr_err("%s: replace_store %s: handling replace failed with err %d",
-+				       __func__, dev->poolname, err);
-+				goto close_dev;
-+			}
-+		}
-+	}
-+
-+	/* we write md in both cases (new or old device) just to check if device is ok
-+	 * for writing
-+	 */
-+	err = brmr_srv_blk_write_md(dev);
-+	if (err) {
-+		pr_err("dev %s: write md error %d\n", dev->name, err);
-+		goto close_dev;
-+	}
-+
-+	list_add(&dev->entry, &store_list);
-+
-+	pr_info("%s: brmr srv blk str %s, dev %s set state to open\n", __func__, dev->poolname,
-+		dev->name);
-+
-+	return 0;
-+
-+close_dev:
-+	brmr_srv_blk_clear_state(dev, BRMR_SRV_STORE_OPEN);
-+	/*
-+	 * TODO: Ideally, the unregister should be called with (create || replace).
-+	 * But right now there is no way to RMR to go ahead with the delete,
-+	 * even if marked_delete is not set.
-+	 */
-+	rmr_srv_unregister(dev->poolname, create);
-+	dev->pool = NULL;
-+	brmr_srv_ref_kill(dev);
-+
-+	return err;
-+}
-+
-+/**
-+ * brmr_srv_blk_cleanup() - Cleanup all the opened and active brmr srv block devices
-+ *
-+ * Description:
-+ *	This function is called when the module brmr server store is getting removed.
-+ *	It closes, destroys and frees all the open and active brmr server block devices.
-+ */
-+static void brmr_srv_blk_cleanup(void)
-+{
-+	struct brmr_srv_blk_dev *dev, *tmp;
-+
 +	mutex_lock(&store_mutex);
-+	list_for_each_entry_safe(dev, tmp, &store_list, entry) {
-+		blk_str_destroy_sysfs_files(dev, NULL);
-+		brmr_srv_blk_close(dev, false);
 +
-+		pr_info("put blkdev %s\n", dev->bdev->bd_disk->disk_name);
-+		bdev_fput(dev->bdev_file);
++	blk_str_destroy_sysfs_files(dev, &attr->attr);
 +
-+		brmr_srv_blk_destroy(dev);
-+	}
++	brmr_srv_blk_close(dev, delete);
++
++	pr_info("put blkdev %s\n", dev->bdev->bd_disk->disk_name);
++	bdev_fput(dev->bdev_file);
++
++	pr_info("%s store %s, store name %s.\n", (delete ? "Delete" : "Remove"),
++		dev->name, dev->poolname);
++	brmr_srv_blk_destroy(dev);
 +	mutex_unlock(&store_mutex);
 +}
 +
-+/**
-+ * brmr_srv_blk_create() - Create an brmr_srv_blk_dev with the given data
-+ *
-+ * @path:	path to the block device.
-+ * @poolname:	Name to be given to the created block device
-+ *
-+ * Description:
-+ *	To destroy a created brmr server block device, call brmr_srv_blk_destroy()
-+ *
-+ * Return:
-+ *	Pointer to the allocated brmr srv block device on success
-+ *	Error pointer on error
-+ */
-+struct brmr_srv_blk_dev *brmr_srv_blk_create(const char *path, char *poolname)
++static int brmr_srv_parse_add_opts(const char *buf, struct brmr_srv_str_options *opt,
++				   unsigned int *replace)
++{
++	char *options, *sep_opt;
++	char *p;
++	substring_t args[MAX_OPT_ARGS];
++	int opt_mask = 0;
++	int token;
++	int ret = -EINVAL;
++	int i;
++
++	options = kstrdup(buf, GFP_KERNEL);
++	if (!options)
++		return -ENOMEM;
++
++	sep_opt = strstrip(options);
++	while ((p = strsep(&sep_opt, " ")) != NULL) {
++		if (!*p)
++			continue;
++
++		token = match_token(p, rmr_str_opt_tokens, args);
++		opt_mask |= token;
++
++		switch (token) {
++		case BRMR_SRV_STR_OPT_POOL:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++			if (strlen(p) > NAME_MAX) {
++				pr_err("add_store: pool name is too long\n");
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++			strscpy(opt->pool, p, NAME_MAX);
++			kfree(p);
++			break;
++
++		case BRMR_SRV_STR_OPT_DEVICE:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++			if (strlen(p) > NAME_MAX) {
++				pr_err("add_store: device name is too long\n");
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++			strscpy(opt->device, p, NAME_MAX);
++			kfree(p);
++			break;
++
++		case BRMR_SRV_STR_OPT_MAPPED_SIZE:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			ret = kstrtoul(p, 0, &opt->mapped_size);
++			if (ret) {
++				pr_err("mapped_size isn't an integer: %d\n", ret);
++				kfree(p);
++				goto out;
++			}
++
++			if (opt->mapped_size == 0) {
++				pr_err("mapped_size cannot be 0\n");
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++
++			kfree(p);
++			break;
++
++		case BRMR_SRV_STR_OPT_MODE:
++			if (!replace) {
++				pr_err("%s: mode option not supported here\n", __func__);
++				ret = -EINVAL;
++				goto out;
++			}
++
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			if (!strcmp(p, "replace")) {
++				*replace = true;
++			} else {
++				pr_err("%s: Unknown mode '%s'\n", __func__, p);
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++			kfree(p);
++			break;
++
++		default:
++			pr_err("add_store: Unknown parameter or missing value '%s'\n",
++			       p);
++			ret = -EINVAL;
++			goto out;
++		}
++	}
++
++	for (i = 0; i < ARRAY_SIZE(rmr_str_opt_mandatory); i++) {
++		if ((opt_mask & rmr_str_opt_mandatory[i])) {
++			ret = 0;
++		} else {
++			pr_err("add_store: Parameters missing\n");
++			ret = -EINVAL;
++			break;
++		}
++	}
++
++out:
++	kfree(options);
++	return ret;
++}
++
++static ssize_t blk_str_dev_size_show(struct kobject *kobj,
++				     struct kobj_attribute *attr, char *page)
 +{
 +	struct brmr_srv_blk_dev *dev;
-+	int err = 0;
 +
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-+	if (!dev) {
-+		err = -ENOMEM;
-+		goto err;
++	dev = container_of(kobj, struct brmr_srv_blk_dev, kobj);
++
++	return sysfs_emit(page, "%llu\n", dev->dev_size);
++}
++
++static struct kobj_attribute blk_str_dev_size_attr =
++	__ATTR(dev_size, 0644, blk_str_dev_size_show, NULL);
++
++static ssize_t blk_str_mapped_size_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *page)
++{
++	struct brmr_srv_blk_dev *dev;
++
++	dev = container_of(kobj, struct brmr_srv_blk_dev, kobj);
++
++	return sysfs_emit(page, "%llu\n", dev->mapped_size);
++}
++
++static struct kobj_attribute blk_str_mapped_size_attr =
++	__ATTR(mapped_size, 0644, blk_str_mapped_size_show, NULL);
++
++static ssize_t blk_str_bdev_name_show(struct kobject *kobj,
++				      struct kobj_attribute *attr, char *page)
++{
++	struct brmr_srv_blk_dev *dev;
++
++	dev = container_of(kobj, struct brmr_srv_blk_dev, kobj);
++
++	return sysfs_emit(page, "%s\n", dev->name);
++}
++
++static struct kobj_attribute blk_str_bdev_name_attr =
++	__ATTR(bdev_name, 0644, blk_str_bdev_name_show, NULL);
++
++static ssize_t blk_str_remove_store_show(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 char *page)
++{
++	return scnprintf(page, PAGE_SIZE, "Usage: echo 1 to remove the store\n");
++}
++
++static ssize_t blk_str_remove_store_store(struct kobject *kobj,
++					  struct kobj_attribute *attr,
++					  const char *buf, size_t count)
++{
++	struct brmr_srv_blk_dev *dev;
++
++	dev = container_of(kobj, struct brmr_srv_blk_dev, kobj);
++	if (!sysfs_streq(buf, "1")) {
++		pr_err("%s, %s unknown value: '%s'\n",
++		       dev->name, attr->attr.name, buf);
++		return -EINVAL;
 +	}
 +
-+	strscpy(dev->poolname, poolname, NAME_MAX);
++	brmr_srv_remove_store(dev, attr, false);
 +
-+	dev->io_priv_cache = kmem_cache_create("brmr_srv_io_priv_cache",
-+					       sizeof(struct brmr_srv_io_priv), 0, 0, NULL);
-+	if (!dev->io_priv_cache) {
-+		pr_err("failed to create cache for device %s\n", poolname);
-+		err = -ENOMEM;
-+		goto free_dev;
++	return count;
++}
++
++static struct kobj_attribute blk_str_remove_store_attr =
++	__ATTR(remove_store, 0644,
++	       blk_str_remove_store_show, blk_str_remove_store_store);
++
++static ssize_t blk_str_delete_store_show(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 char *page)
++{
++	return scnprintf(page, PAGE_SIZE, "Usage: echo 1 to delete the store\n");
++}
++
++static ssize_t blk_str_delete_store_store(struct kobject *kobj,
++					  struct kobj_attribute *attr,
++					  const char *buf, size_t count)
++{
++	struct brmr_srv_blk_dev *dev;
++
++	dev = container_of(kobj, struct brmr_srv_blk_dev, kobj);
++	if (!sysfs_streq(buf, "1")) {
++		pr_err("%s, %s unknown value: '%s'\n",
++		       dev->name, attr->attr.name, buf);
++		return -EINVAL;
 +	}
 +
-+	pr_debug("brmr srv blk store with name %s created\n", poolname);
++	brmr_srv_remove_store(dev, attr, true);
++
++	return count;
++}
++
++static struct kobj_attribute blk_str_delete_store_attr =
++	__ATTR(delete_store, 0644,
++	       blk_str_delete_store_show, blk_str_delete_store_store);
++
++static ssize_t state_show(struct kobject *kobj,
++			  struct kobj_attribute *attr, char *page)
++{
++	struct brmr_srv_blk_dev *dev;
++	size_t count = 0;
++
++	dev = container_of(kobj, struct brmr_srv_blk_dev, kobj);
++
++	if (test_bit(BRMR_SRV_STORE_OPEN, &dev->state))
++		count += sysfs_emit_at(page, count, "open\n");
++	else
++		count += sysfs_emit_at(page, count, "closed\n");
++
++	if (test_bit(BRMR_SRV_STORE_MAPPED, &dev->state))
++		count += sysfs_emit_at(page, count, "mapped\n");
++	else
++		count += sysfs_emit_at(page, count, "unmapped\n");
++
++	return count;
++}
++
++static struct kobj_attribute blk_str_state_attr =
++	__ATTR_RO(state);
++
++static struct attribute *blk_str_map_attrs[] = {
++	&blk_str_dev_size_attr.attr,
++	&blk_str_mapped_size_attr.attr,
++	&blk_str_bdev_name_attr.attr,
++	&blk_str_remove_store_attr.attr,
++	&blk_str_delete_store_attr.attr,
++	&blk_str_state_attr.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(blk_str_map);
++
++static struct kobj_type blk_str_device_ktype = {
++	.sysfs_ops = &kobj_sysfs_ops,
++	.default_groups = blk_str_map_groups,
++};
++
++static int blk_str_create_sysfs_files(struct brmr_srv_blk_dev *dev)
++{
++	int ret;
++
++	ret = kobject_init_and_add(&dev->kobj, &blk_str_device_ktype,
++				   &rmr_strs_dev->kobj,
++				   "%s", dev->poolname);
++	if (ret)
++		pr_err("Failed to create sysfs dir for store %s, name %s, err=%d\n",
++		       dev->name, dev->poolname, ret);
++
++	return ret;
++}
++
++void blk_str_destroy_sysfs_files(struct brmr_srv_blk_dev *dev,
++				 const struct attribute *sysfs_self)
++{
++	if (sysfs_self)
++		sysfs_remove_file_self(&dev->kobj, sysfs_self);
++
++	kobject_del(&dev->kobj);
++	kobject_put(&dev->kobj);
++}
++
++/**
++ * brmr_srv_blk_dev_exit() - Destroy and put the blkdev
++ *
++ * @dev:	RMR block device structure to be used.
++ *
++ * Description:
++ *	This function gives up the blkdev reference, and destroys the rmr block device
++ */
++static void brmr_srv_blk_dev_exit(struct brmr_srv_blk_dev *dev)
++{
++	pr_info("%s: put blkdev %s\n", __func__, dev->name);
++	bdev_fput(dev->bdev_file);
++
++	brmr_srv_blk_destroy(dev);
++}
++
++/**
++ * brmr_srv_blk_dev_init() - Create and initialize a brmr server store block device
++ *
++ * @pool_name:	Name to be given to the created rmr block device
++ * @dev_name:	path to the block device
++ * @mapped_size:mapped size of the block device
++ *
++ * Description:
++ *	This function checks whether the rmr pool is available to be registered.
++ *	It then creates the block device, and initializes it.
++ *
++ * Return:
++ *	Pointer to the created rmr block device on success
++ *	Error pointer on error
++ */
++static struct brmr_srv_blk_dev *brmr_srv_blk_dev_init(char *pool_name, char *dev_name,
++						      u64 mapped_size)
++{
++	struct file *bdev_file;
++	struct brmr_srv_blk_dev *dev;
++
++	dev = brmr_srv_blk_create(dev_name, pool_name);
++	if (IS_ERR(dev)) {
++		pr_err("failed to alloc store for device %s: %pe\n", pool_name, dev);
++		return dev;
++	}
++
++	bdev_file = bdev_file_open_by_path(dev_name, DEFAULT_BLK_OPEN_FLAGS,
++					   dev, NULL);
++	if (IS_ERR(bdev_file)) {
++		pr_err("%s: bdev_file_open_by_path for device %s failed with err (%pe)\n",
++		       __func__, dev_name, bdev_file);
++		brmr_srv_blk_destroy(dev);
++		return ERR_CAST(bdev_file);
++	}
++
++	dev->bdev_file = bdev_file;
++	dev->bdev = file_bdev(bdev_file);
++	dev->dev_size = get_capacity(dev->bdev->bd_disk);
++	strscpy(dev->name, dev->bdev->bd_disk->disk_name, sizeof(dev->name));
++
++	if (mapped_size < BLK_STR_MIN_MAPPED_SIZE) {
++		pr_err("%s: Given mapped size %llu less than minimum default(%lu) for dev %s\n",
++		       __func__, mapped_size, BLK_STR_MIN_MAPPED_SIZE, dev->name);
++		brmr_srv_blk_dev_exit(dev);
++		return ERR_PTR(-ENOSPC);
++	}
++
++	if (mapped_size + BLK_STR_MD_SIZE_SECTORS > dev->dev_size) {
++		pr_err("can not map %llu, only %llu available %s\n",
++		       mapped_size, dev->dev_size - BLK_STR_MD_SIZE_SECTORS, dev->name);
++		brmr_srv_blk_dev_exit(dev);
++		return ERR_PTR(-ENOSPC);
++	}
++
++	dev->mapped_size = mapped_size;
++
++	pr_info("%s: succeeded\n", __func__);
 +
 +	return dev;
-+
-+free_dev:
-+	kfree(dev);
-+err:
-+	return ERR_PTR(err);
 +}
 +
-+/**
-+ * brmr_srv_blk_destroy() - Destroy a given brmr_srv_blk_dev
-+ *
-+ * @dev:	brmr server block device to be destroyed
-+ * @sysfs_self:	Pointer to self attribute
-+ *
-+ * Description:
-+ *	This function is the opposite of brmr_srv_blk_create()
-+ *	The pointer to the self attribute is used to denote whether the destroy call
-+ *	is a result of a sysfs task for its own device.
-+ */
-+void brmr_srv_blk_destroy(struct brmr_srv_blk_dev *dev)
++static ssize_t brmr_srv_create_store_store(struct kobject *kobj,
++				       struct kobj_attribute *attr,
++				       const char *buf, size_t count)
 +{
-+	kmem_cache_destroy(dev->io_priv_cache);
-+	kfree(dev);
-+}
-+
-+/**
-+ * brmr_srv_blk_map_dev() - Process a map command from the client side
-+ *
-+ * @dev:	brmr server block device to be destroyed
-+ * @map_cmd:	Pointer to structure holding map command info
-+ *
-+ * Description:
-+ *	We save all the data and param sent in the command in out metadata,
-+ *	since these are assured to have been validated across all storage nodes.
-+ *
-+ *	For future get params requests, we send back these instead of reading them
-+ *	from the underlying block device.
-+ *
-+ * Return:
-+ *	0 on success
-+ *	-Error value on error
-+ */
-+static int brmr_srv_blk_map_dev(struct brmr_srv_blk_dev *dev,
-+				const struct brmr_msg_map_new_cmd *map_cmd)
-+{
-+	const struct brmr_blk_dev_params *cmd_dev_params = &map_cmd->dev_params;
-+	int err;
-+	u64 recvd_mapped_size = map_cmd->mapped_size;
-+
-+	pr_info("%s: Mapping device %s with mapped_size %llu, recvd size %llu\n",
-+		__func__, dev->name, dev->mapped_size, recvd_mapped_size);
-+
-+	if (test_bit(BRMR_SRV_STORE_MAPPED, &dev->state)) {
-+		pr_err("%s: Received map command for already mapped device %s\n",
-+		       __func__, dev->name);
-+		return -EINVAL;
-+	}
-+
-+	if (recvd_mapped_size > dev->dev_size - BLK_STR_MD_SIZE_SECTORS) {
-+		pr_err("can not map %llu, only %llu available %s\n",
-+		       recvd_mapped_size, dev->dev_size - BLK_STR_MD_SIZE_SECTORS, dev->name);
-+		return -ENOSPC;
-+	}
-+
-+	if (dev->mapped_size && dev->mapped_size != recvd_mapped_size) {
-+		pr_err("dev %s is already mapped with size %llu, does not match %llu",
-+		       dev->name, dev->mapped_size, recvd_mapped_size);
-+		return -EINVAL;
-+	}
-+
-+	dev->mapped_size = recvd_mapped_size;
-+
-+	dev->dev_params.max_hw_sectors = le32_to_cpu(cmd_dev_params->max_hw_sectors);
-+	dev->dev_params.max_write_zeroes_sectors =
-+				le32_to_cpu(cmd_dev_params->max_write_zeroes_sectors);
-+	dev->dev_params.max_discard_sectors = le32_to_cpu(cmd_dev_params->max_discard_sectors);
-+	dev->dev_params.discard_granularity = le32_to_cpu(cmd_dev_params->discard_granularity);
-+	dev->dev_params.discard_alignment = le32_to_cpu(cmd_dev_params->discard_alignment);
-+	dev->dev_params.physical_block_size = le16_to_cpu(cmd_dev_params->physical_block_size);
-+	dev->dev_params.logical_block_size = le16_to_cpu(cmd_dev_params->logical_block_size);
-+	dev->dev_params.max_segments = le16_to_cpu(cmd_dev_params->max_segments);
-+	dev->dev_params.secure_discard = le16_to_cpu(cmd_dev_params->secure_discard);
-+	dev->dev_params.cache_policy = cmd_dev_params->cache_policy;
-+
-+	brmr_srv_blk_set_state(dev, BRMR_SRV_STORE_MAPPED);
-+
-+	err = brmr_srv_blk_write_md(dev);
-+	if (err) {
-+		pr_err("failed to write md for %s, err %d\n", dev->name, err);
-+		dev->mapped_size = 0;
-+		brmr_srv_blk_clear_state(dev, BRMR_SRV_STORE_MAPPED);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Always succeeds. */
-+static int brmr_srv_blk_unmap_dev(struct brmr_srv_blk_dev *dev)
-+{
-+	pr_info("unmap device: %s\n", dev->name);
-+	brmr_srv_blk_clear_state(dev, BRMR_SRV_STORE_MAPPED);
-+
-+	return 0;
-+}
-+
-+static bool brmr_srv_blk_io_allowed(void *store_priv)
-+{
-+	struct brmr_srv_blk_dev *dev = store_priv;
-+
-+	if (!dev) {
-+		pr_err("no store registered\n");
-+		return false;
-+	}
-+
-+	return test_bit(BRMR_SRV_STORE_OPEN, &dev->state) &&
-+	       test_bit(BRMR_SRV_STORE_MAPPED, &dev->state);
-+}
-+
-+#define bio_disk_name(bio)    ((bio)->bi_bdev->bd_disk->disk_name)
-+#define bio_first_sector(bio) ((bio_end_sector(bio) - bio_sectors(bio)))
-+
-+static void brmr_srv_bi_end_io(struct bio *bio)
-+{
-+	struct brmr_srv_io_priv *io_priv = bio->bi_private;
-+	struct brmr_srv_blk_dev *dev = io_priv->dev;
-+	int err;
-+
-+	err = blk_status_to_errno(bio->bi_status);
-+	pr_debug("end io called for dev %s, bio=%p, err=%d\n", dev->poolname, bio, err);
-+
-+	if (err) {
-+		brmr_srv_blk_clear_state(dev, BRMR_SRV_STORE_OPEN);
-+		pr_err("Dev %s, Bio %p type %s, err=%d bdev_name=%s\n", dev->poolname,
-+		       bio, bio_data_dir(bio) == WRITE ? "W" : "R", err, bio_disk_name(bio));
-+	}
-+
-+	rmr_srv_req_resp(io_priv->priv, err);
-+
-+	kmem_cache_free(dev->io_priv_cache, io_priv);
-+	brmr_srv_blk_put_ref(dev);
-+	bio_put(bio);
-+}
-+
-+static int brmr_srv_submit_bi(struct brmr_srv_blk_dev *dev, void *data, u64 offset, u32 length,
-+			      unsigned long flags, u16 prio, void *priv)
-+{
-+	struct bio *bio;
-+	struct brmr_srv_io_priv *io_priv;
-+	blk_opf_t bio_flags;
-+	int ret = 0;
-+	bool is_md_op = false;
-+
-+	switch (rmr_op(flags)) {
-+	case RMR_OP_READ:
-+		bio_flags = REQ_OP_READ;
-+		break;
-+	case RMR_OP_WRITE:
-+	case RMR_OP_SYNCREQ:
-+		bio_flags = REQ_OP_WRITE;
-+		break;
-+	case RMR_OP_DISCARD:
-+		bio_flags = REQ_OP_DISCARD;
-+		break;
-+	case RMR_OP_WRITE_ZEROES:
-+		bio_flags = REQ_OP_WRITE_ZEROES;
-+		break;
-+	case RMR_OP_FLUSH:
-+		bio_flags = REQ_OP_WRITE | REQ_PREFLUSH;
-+		break;
-+	case RMR_OP_MD_READ:
-+		bio_flags = REQ_OP_READ;
-+		is_md_op = true;
-+		break;
-+	case RMR_OP_MD_WRITE:
-+		bio_flags = REQ_OP_WRITE;
-+		is_md_op = true;
-+		break;
-+	default:
-+		pr_err("Wrong flags=%lu\n", flags);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Most md IO are created on rmr-srv and does not get priority value passed on from rmr-clt
-+	 */
-+	if (is_md_op) {
-+		bio_flags |= REQ_META;
-+		if (rmr_op(flags) == RMR_OP_MD_WRITE)
-+			bio_flags |= REQ_FUA;
-+	}
-+
-+	if (flags & RMR_F_SYNC)
-+		bio_flags |= REQ_SYNC;
-+
-+	if (flags & RMR_F_FUA)
-+		bio_flags |= REQ_FUA;
-+
-+	bio = bio_alloc(dev->bdev, 1, bio_flags, GFP_KERNEL);
-+	if (bio_add_page(bio, virt_to_page(data), length,
-+			 offset_in_page(data)) != length) {
-+		pr_err("Failed to map data to bio\n");
-+		ret = -EINVAL;
-+		goto put_bio;
-+	}
-+
-+	io_priv = kmem_cache_zalloc(dev->io_priv_cache, GFP_KERNEL);
-+	if (!io_priv) {
-+		pr_err("Failed to alloc io_priv for op %lx dev %s\n", flags, dev->poolname);
-+		ret = -ENOMEM;
-+		goto put_bio;
-+	}
-+
-+	io_priv->dev = dev;
-+	io_priv->priv = priv;
-+
-+	bio->bi_private = io_priv;
-+	bio->bi_end_io = brmr_srv_bi_end_io;
-+	bio->bi_iter.bi_sector = offset;
-+	bio->bi_iter.bi_size = length;
-+	bio_set_dev(bio, dev->bdev);
-+
-+	pr_debug("Submit %s bio=%p, disk=%s, flag=[%lx], bio_flag=[%x], op=[%x]"
-+		 "first_sect=%llu, sectors=%d\n",
-+		 is_md_op ? "md req" : "req", bio, bio_disk_name(bio),
-+		 flags, bio_flags, rmr_op(flags),
-+		 (u64)bio_first_sector(bio), bio_sectors(bio));
-+
-+	if (is_md_op) {
-+		ret = submit_bio_wait(bio);
-+		if (ret) {
-+			pr_err("Error waiting md from %s, err %d\n",
-+			       dev->bdev->bd_disk->disk_name, ret);
-+		}
-+		goto end_bio;
-+	} else {
-+		/*
-+		 * Most md IO are created on rmr-srv and does not get priority value passed on from
-+		 * rmr-clt
-+		 */
-+		bio->bi_ioprio = prio;
-+		submit_bio(bio);
-+	}
-+
-+	return 0;
-+end_bio:
-+	rmr_srv_req_resp(io_priv->priv, ret);
-+	kmem_cache_free(dev->io_priv_cache, io_priv);
-+put_bio:
-+	bio_put(bio);
-+	return ret;
-+}
-+
-+/**
-+ * brmr_srv_process_blk_req() - Processes brmr srv store IO messages
-+ *
-+ * @dev:               pointer to rmr block device
-+ * @data:              pointer to data
-+ * @data_offset:       offset on disk (represented in bytes)
-+ * @length:            length of data in bytes
-+ * @flags:             IO flags
-+ * @prio:              prio from block layer
-+ * @priv:              pointer to priv data for rmr
-+ *
-+ * Return:
-+ *     0 in case of success
-+ *     negative in case of failure
-+ */
-+static int brmr_srv_process_blk_req(void *device, void *data, u32 data_offset,
-+				    u32 length, unsigned long flags, u16 prio, void *priv)
-+{
-+	struct brmr_srv_blk_dev *dev = (struct brmr_srv_blk_dev *)device;
-+	u64 offset = 0; /* in sectors */
-+	int ret = 0;
-+
-+	if (!brmr_srv_blk_get_ref(dev)) {
-+		pr_err("for dev %s, name %s, failed to get_ref\n",
-+		       dev->name, dev->poolname);
-+		return -EIO;
-+	}
-+
-+	if (!brmr_srv_blk_io_allowed(dev)) {
-+		pr_err("Store name %s, offset %u, length %u, io is not allowed!\n",
-+		       dev->poolname, data_offset, length);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	offset = BLK_STR_MD_SIZE_SECTORS;
-+	offset += (data_offset) >> SECTOR_SHIFT; //bytes to sectors;
-+
-+	pr_debug("Submitted req to %s, flag %lu offset %llu length %u\n",
-+		 dev->name, flags, offset, length);
-+	ret = brmr_srv_submit_bi(dev, data, offset, length, flags, prio, priv);
-+	if (ret) {
-+		pr_err("%s: bio submission failed for data IO\n", __func__);
-+		goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	brmr_srv_blk_put_ref(dev);
-+	return ret;
-+}
-+
-+/**
-+ * brmr_srv_process_blk_md_req() - Process the requests for rmr metadata
-+ *
-+ * Return:
-+ *	0 on success
-+ *
-+ * Description:
-+ *	The rmr metadata will be stored at the end of the device.
-+ */
-+static int brmr_srv_process_blk_md_req(void *device, void *data, u32 data_offset,
-+				       u32 length, unsigned long flags, void *priv)
-+{
-+	struct brmr_srv_blk_dev *dev = device;
-+	int err;
-+	u64 offset = 0; /* in sectors */
-+
-+	if (!brmr_srv_blk_get_ref(dev)) {
-+		pr_err("for dev %s, name %s, failed to get_ref\n",
-+		       dev->name, dev->poolname);
-+		return -EIO;
-+	}
-+
-+	/* The mapped_size is in sectors. */
-+	offset = BLK_STR_MD_SIZE_SECTORS + dev->mapped_size;
-+	offset += (data_offset) >> SECTOR_SHIFT; //bytes to sectors;
-+	pr_debug("Submitted md req to %s, flag %lu offset %llu length %u\n",
-+		 dev->name, flags, offset, length);
-+	/*
-+	 * It's no need to return err to upper layer here. If the submission of md request fails,
-+	 * it will go through the endreq path after the server req finishes processing.
-+	 */
-+	err = brmr_srv_submit_bi(dev, data, offset, length, flags, 0, priv);
-+	if (err)
-+		pr_err("%s: bio submission failed for metadata IO\n", __func__);
-+	brmr_srv_blk_put_ref(dev);
-+	return 0;
-+}
-+
-+/**
-+ * brmr_srv_init_cmd_rsp() - Initialize command response
-+ *
-+ * @msg:	command response to initialize
-+ */
-+static void brmr_srv_init_cmd_rsp(struct brmr_msg_cmd_rsp *msg)
-+{
-+	memset(msg, 0, sizeof(*msg));
-+
-+	msg->hdr.type = cpu_to_le16(BRMR_MSG_CMD);
-+	msg->hdr.__padding = 0;
-+	msg->magic = BRMR_CMD_RSP_MAGIC;
-+	msg->ver = BRMR_PROTO_VER_MAJOR;
-+	msg->cmd_type = BRMR_CMD_RSP;
-+}
-+
-+/**
-+ * brmr_srv_fill_dev_param_dev() - Fill dev params from the saved params in brmr srv block device
-+ *
-+ * @dev:	pointer to brmr server block device
-+ * @rsp:	Pointer to command response structure holding params
-+ *
-+ * Return:
-+ *	0 in case of success
-+ *	negative in case of failure
-+ */
-+static int brmr_srv_fill_dev_param_dev(struct brmr_srv_blk_dev *dev,
-+				       struct brmr_cmd_get_params_rsp *rsp)
-+{
++	struct brmr_srv_str_options opt;
++	char dev_name[NAME_MAX];
++	char pool_name[NAME_MAX];
++	struct brmr_srv_blk_dev *dev;
 +	struct brmr_srv_blk_dev_meta *md_page;
-+	struct brmr_blk_dev_params *rsp_dev_params = &rsp->dev_params;
-+	int ret;
++	int md_state, err;
++
++	opt.pool = pool_name;
++	opt.device = dev_name;
++	opt.mapped_size = 0;
++
++	if (brmr_srv_parse_add_opts(buf, &opt, NULL))
++		goto out;
 +
 +	md_page = kzalloc(PAGE_SIZE, GFP_KERNEL);
 +	if (!md_page) {
-+		ret = -ENOMEM;
++		pr_err("%s: Failed to allocate page to read md\n", __func__);
 +		goto out;
 +	}
 +
-+	/*
-+	 * We have to read the metadata from the device.
-+	 */
-+	ret = brmr_srv_blk_bdev_read_md(dev->bdev, (void *)md_page);
-+	if (ret) {
-+		pr_err("%s: failed to read md, err=%d\n", __func__, ret);
-+		goto out;
++	mutex_lock(&store_mutex);
++
++	dev = brmr_srv_blk_dev_init(pool_name, dev_name, opt.mapped_size);
++	if (IS_ERR(dev)) {
++		pr_err("%s: brmr_srv_blk_dev_init failed: %pe\n", __func__, dev);
++		goto mut_unlock;
 +	}
 +
-+	if (md_page->magic != BRMR_BLK_STORE_MAGIC) {
-+		pr_warn("%s: No md found. store %s md magic=%llX does not match %X\n",
-+			__func__, dev->poolname, md_page->magic, BRMR_BLK_STORE_MAGIC);
-+		ret =  -EINVAL;
-+		goto out;
++	md_state = brmr_srv_read_and_check_md(dev, md_page);
++	if (md_state != -1) {
++		/*
++		 * read and check md failed. It could be read error or that md exists
++		 */
++		pr_err("%s: md read and check failed: %d\n", __func__, md_state);
++		goto dev_exit;
 +	}
 +
-+	rsp_dev_params->max_hw_sectors = cpu_to_le32(md_page->dev_params.max_hw_sectors);
-+	rsp_dev_params->max_write_zeroes_sectors =
-+				cpu_to_le32(md_page->dev_params.max_write_zeroes_sectors);
-+	rsp_dev_params->max_discard_sectors = cpu_to_le32(md_page->dev_params.max_discard_sectors);
-+	rsp_dev_params->discard_granularity = cpu_to_le32(md_page->dev_params.discard_granularity);
-+	rsp_dev_params->discard_alignment = cpu_to_le32(md_page->dev_params.discard_alignment);
-+	rsp_dev_params->physical_block_size = cpu_to_le16(md_page->dev_params.physical_block_size);
-+	rsp_dev_params->logical_block_size = cpu_to_le16(md_page->dev_params.logical_block_size);
-+	rsp_dev_params->max_segments = cpu_to_le16(md_page->dev_params.max_segments);
-+	rsp_dev_params->secure_discard = cpu_to_le16(md_page->dev_params.secure_discard);
-+	rsp_dev_params->cache_policy = md_page->dev_params.cache_policy;
++	err = brmr_srv_blk_open(dev, dev_name, true, false);
++	if (err) {
++		pr_err("failed to open %s, err %d\n", dev_name, err);
++		goto dev_exit;
++	}
 +
-+out:
++	err = blk_str_create_sysfs_files(dev);
++	if (err) {
++		pr_err("failed to create sysfs files\n");
++		goto dev_close;
++	}
++
++	mutex_unlock(&store_mutex);
++	pr_info("Created new blk store for %s, with disk %s\n", pool_name, dev_name);
++
 +	kfree(md_page);
-+	return ret;
++	return count;
++
++dev_close:
++	brmr_srv_blk_close(dev, true);
++dev_exit:
++	brmr_srv_blk_dev_exit(dev);
++mut_unlock:
++	mutex_unlock(&store_mutex);
++	kfree(md_page);
++out:
++	return -EINVAL;
 +}
 +
-+/**
-+ * brmr_srv_fill_dev_param_bdev() - Fill dev params from the underlying block device
-+ *
-+ * @dev:	pointer to brmr server block device
-+ * @rsp:	Pointer to command response structure holding params
-+ *
-+ * Return:
-+ *	0 in case of success
-+ *	negative in case of failure
-+ */
-+static int brmr_srv_fill_dev_param_bdev(struct brmr_srv_blk_dev *dev,
-+				       struct brmr_cmd_get_params_rsp *rsp)
++static ssize_t brmr_srv_create_store_show(struct kobject *kobj,
++				      struct kobj_attribute *attr,
++				      char *page)
 +{
-+	struct block_device *bdev = dev->bdev;
-+	struct request_queue *q = bdev_get_queue(bdev);
-+	struct brmr_blk_dev_params *rsp_dev_params = &rsp->dev_params;
-+
-+	if (!q) {
-+		pr_err("%s: no queue for dev %s\n", __func__, dev->name);
-+		return -EINVAL;
-+	}
-+
-+	rsp_dev_params->logical_block_size =
-+		cpu_to_le16(bdev_logical_block_size(bdev));
-+	rsp_dev_params->physical_block_size =
-+		cpu_to_le16(bdev_physical_block_size(bdev));
-+	rsp_dev_params->max_segments =
-+		cpu_to_le16(queue_max_segments(q));
-+	rsp_dev_params->max_hw_sectors =
-+		cpu_to_le32(queue_max_hw_sectors(q));
-+	rsp_dev_params->max_write_zeroes_sectors =
-+		cpu_to_le32(bdev_write_zeroes_sectors(bdev));
-+	rsp_dev_params->max_discard_sectors = cpu_to_le32(bdev_max_discard_sectors(bdev));
-+	rsp_dev_params->discard_granularity =
-+		cpu_to_le32(bdev_get_queue(bdev)->limits.discard_granularity);
-+	rsp_dev_params->discard_alignment =
-+		cpu_to_le32(bdev_get_queue(bdev)->limits.discard_alignment);
-+	rsp_dev_params->secure_discard = cpu_to_le16(bdev_max_secure_erase_sectors(bdev));
-+	rsp_dev_params->cache_policy = 0;
-+
-+	if (blk_queue_write_cache(q))
-+		rsp_dev_params->cache_policy |= BRMR_WRITEBACK;
-+	if (bdev_fua(bdev))
-+		rsp_dev_params->cache_policy |= BRMR_FUA;
-+
-+	return 0;
++	return scnprintf(page, PAGE_SIZE,
++			 "Usage: echo \"pool=<name of the rmr pool> device=<full path of block device> mapped_size=<size of given block device to be mapped>\" > %s\n\n",
++			 attr->attr.name);
 +}
 +
-+/**
-+ * brmr_srv_fill_get_params_rsp() - Fill dev params into the command response structure
-+ *
-+ * @dev:		pointer to brmr server block device
-+ * @brmr_cmd_rsp:	Pointer to command response structure
-+ *
-+ * Description:
-+ *	For mapped devices, we need to pick up the params from the brmr server block device itself
-+ *	These are the same ones which are saved in the metadata of the device.
-+ *
-+ *	For unmapped devices, we need to extract this info from the underlying block device
-+ *
-+ * Return:
-+ *	0 in case of success
-+ *	negative in case of failure
-+ */
-+static int brmr_srv_fill_get_params_rsp(struct brmr_srv_blk_dev *dev,
-+				       struct brmr_msg_cmd_rsp *brmr_cmd_rsp)
++static struct kobj_attribute brmr_srv_create_store_attr =
++	__ATTR(create_store, 0644,
++	       brmr_srv_create_store_show, brmr_srv_create_store_store);
++
++static ssize_t brmr_srv_add_store_store(struct kobject *kobj, struct kobj_attribute *attr,
++				       const char *buf, size_t count)
 +{
-+	struct brmr_cmd_get_params_rsp *rsp;
-+	int ret;
++	struct brmr_srv_blk_dev *dev;
++	char dev_name[NAME_MAX];
++	char pool_name[NAME_MAX];
++	struct brmr_srv_str_options opt;
++	struct brmr_srv_blk_dev_meta *md_page;
++	int md_state, ret;
++	unsigned int replace = false;
 +
-+	if (!dev) {
-+		pr_err("%s: no brmr srv blk dev to get params\n", __func__);
-+		return -ENODEV;
-+	}
++	opt.pool = pool_name;
++	opt.device = dev_name;
++	opt.mapped_size = 0;
 +
-+	if (!dev->bdev) {
-+		pr_err("%s: no bdev opened for dev %s\n", __func__, dev->name);
-+		return -EINVAL;
-+	}
-+
-+	rsp = &brmr_cmd_rsp->get_params_rsp;
++	if (brmr_srv_parse_add_opts(buf, &opt, &replace))
++		goto out;
 +
 +	/*
-+	 * For a mapped device, we get the saved params in the device structure (read from md)
-+	 * since those are the ones which would have gone through validation,
-+	 * when the map happened.
-+	 *
-+	 * For unmapped device, we get params from the underlying bdev.
++	 * Disable replace mode for now.
++	 * Most of the code for replace mode to work is present, but there are some
++	 * edge cases which needs work, and a info exchange between storage nodes which
++	 * needs to be added.
 +	 */
-+	if (test_bit(BRMR_SRV_STORE_MAPPED, &dev->state))
-+		ret = brmr_srv_fill_dev_param_dev(dev, rsp);
-+	else
-+		ret = brmr_srv_fill_dev_param_bdev(dev, rsp);
-+
-+	if (ret) {
-+		pr_err("%s: Fill dev params failed for dev %s\n", __func__, dev->name);
-+		return -EINVAL;
++	if (replace) {
++		pr_err("%s: Replace mode not supported yet\n", __func__);
++		goto out;
 +	}
 +
-+	rsp->mapped = test_bit(BRMR_SRV_STORE_MAPPED, &dev->state);
-+	rsp->mapped_size = cpu_to_le64(dev->mapped_size);
-+	pr_info("%s: dev %s, mapped_size %llu\n", __func__,
-+		dev->name, le64_to_cpu(rsp->mapped_size));
-+
-+	return 0;
-+}
-+
-+/**
-+ * brmr_srv_blk_cmd() - Processes brmr srv store command messages
-+ *
-+ * @device:	brmr server store device
-+ * @usr_buf:	user buffer containing the command message struct (ones sent as kvec to rmr)
-+ * @usr_len:	length of the usr_buf
-+ * @data:	data buffer where the response can be sent back for brmr client to read
-+ * @datalen:	length of data buffer
-+ *
-+ * Return:
-+ *	0 in case of success
-+ *	negative in case of failure
-+ */
-+static int brmr_srv_blk_cmd(void *device, const void *usr_buf, int usr_len, void *data,
-+			     int datalen)
-+{
-+	struct brmr_srv_blk_dev *dev = device;
-+	const struct brmr_msg_cmd *msg = (const struct brmr_msg_cmd *)usr_buf;
-+	struct brmr_msg_cmd_rsp *brmr_cmd_rsp = (struct brmr_msg_cmd_rsp *)data;
-+	int ret = 0;
-+
-+	if (datalen < sizeof(*brmr_cmd_rsp)) {
-+		WARN_ON(1);
-+		return -EINVAL;
++	md_page = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!md_page) {
++		pr_err("Failed to allocate page to read md\n");
++		goto out;
 +	}
 +
-+	if (!brmr_srv_blk_get_ref(dev)) {
-+		pr_err("for dev %s, name %s, failed to get_ref to process command %d\n",
-+		       dev->name, dev->poolname, msg->cmd_type);
-+		return -EIO;
++	mutex_lock(&store_mutex);
++
++	dev = brmr_srv_blk_dev_init(pool_name, dev_name, opt.mapped_size);
++	if (IS_ERR(dev)) {
++		pr_err("brmr_srv_blk_dev_init failed: %pe\n", dev);
++		goto mut_unlock;
 +	}
 +
-+	brmr_srv_init_cmd_rsp(brmr_cmd_rsp);
-+
-+	switch (msg->cmd_type) {
-+	case BRMR_CMD_MAP:
-+		pr_info("%s: BRMR_CMD_MAP\n", __func__);
-+
-+		brmr_cmd_rsp->status = brmr_srv_blk_map_dev(dev, &msg->map_new_cmd);
-+		if (brmr_cmd_rsp->status) {
-+			pr_err("Failed to map new dev to %s, err %d\n",
-+			       dev->name, brmr_cmd_rsp->status);
++	md_state = brmr_srv_read_and_check_md(dev, md_page);
++	if (md_state == -1) {
++		/*
++		 * md doesn't exists. This means the disk is an empty one.
++		 * We have to replace, so check the mode first
++		 */
++		if (!replace) {
++			pr_err("%s: Incorrect mode %d. md doesn't exists\n", __func__, replace);
++			goto dev_exit;
 +		}
-+		break;
-+	case BRMR_CMD_REMAP:
-+		pr_info("%s: BRMR_CMD_REMAP\n", __func__);
-+		break;
-+	case BRMR_CMD_UNMAP:
-+		pr_info("%s: BRMR_CMD_UNMAP\n", __func__);
 +
-+		brmr_cmd_rsp->status = brmr_srv_blk_unmap_dev(dev);
-+		break;
-+	case BRMR_CMD_GET_PARAMS:
-+		pr_info("%s: BRMR_CMD_GET_PARAMS\n", __func__);
++		/*
++		 * we have to do the following,
++		 *
++		 * 1) Check params like mapped size from at least one other storage node
++		 * 2) Do discard
++		 */
++		pr_info("%s: No md found. Replacing disk %s for pool %s, size %llu\n",
++			__func__, dev_name, pool_name, dev->mapped_size);
++	} else if (md_state == 0) {
++		/*
++		 * md exists.
++		 * We are restoring an earlier used device.
++		 */
++		if (replace) {
++			pr_err("%s: Incorrect mode %d. md exists\n", __func__, replace);
++			goto dev_exit;
++		}
 +
-+		brmr_cmd_rsp->status = brmr_srv_fill_get_params_rsp(dev, brmr_cmd_rsp);
-+		break;
++		/*
++		 * Validate the metadata stored with the data provided.
++		 */
++		ret = brmr_srv_blk_validate_md(dev, md_page);
++		if (ret) {
++			pr_err("Local metadata validation failed\n");
++			goto dev_exit;
++		}
 +
-+	default:
-+		pr_err("%s: Unknown command type %d\n", __func__, msg->cmd_type);
++		memcpy(&dev->dev_params, &md_page->dev_params, sizeof(struct rmr_blk_dev_params));
++		dev->state = md_page->state;
++
++		pr_info("%s: md found. Re-adding disk %s for pool %s, size %llu\n",
++			__func__, dev_name, pool_name, dev->mapped_size);
++	} else {
++		pr_err("%s: md cannot be read for block device %s, Err = %d\n",
++		       __func__, dev->name, md_state);
++		goto dev_exit;
 +	}
 +
-+	brmr_srv_blk_put_ref(dev);
++	if (brmr_srv_blk_open(dev, dev_name, false /* create */, replace)) {
++		pr_err("failed to open %s\n", dev_name);
++		goto dev_exit;
++	}
 +
-+	return ret;
++	ret = blk_str_create_sysfs_files(dev);
++	if (ret) {
++		pr_err("failed to create sysfs files\n");
++		goto dev_close;
++	}
++
++	mutex_unlock(&store_mutex);
++
++	kfree(md_page);
++	return count;
++
++dev_close:
++	brmr_srv_blk_close(dev, replace);
++dev_exit:
++	brmr_srv_blk_dev_exit(dev);
++mut_unlock:
++	mutex_unlock(&store_mutex);
++	kfree(md_page);
++out:
++	return -EINVAL;
 +}
 +
-+struct rmr_srv_store_ops pstore_blk_ops = {
-+	.submit_req = brmr_srv_process_blk_req,
-+	.submit_md_req = brmr_srv_process_blk_md_req,
-+	.submit_cmd = brmr_srv_blk_cmd,
-+	.io_allowed = brmr_srv_blk_io_allowed,
-+	.get_params = brmr_srv_blk_get_params,
++static ssize_t brmr_srv_add_store_show(struct kobject *kobj,
++				      struct kobj_attribute *attr,
++				      char *page)
++{
++	return scnprintf(page, PAGE_SIZE,
++			 "Usage: echo \"pool=<name of the rmr pool> device=<full path of block device> mapped_size=<size of given block device to be mapped>\" > %s\n\n",
++			 attr->attr.name);
++}
++
++static struct kobj_attribute brmr_srv_add_store_attr =
++	__ATTR(add_store, 0644,
++	       brmr_srv_add_store_show, brmr_srv_add_store_store);
++
++static struct attribute *default_attrs[] = {
++	&brmr_srv_create_store_attr.attr,
++	&brmr_srv_add_store_attr.attr,
++	NULL,
 +};
 +
-+static int __init brmr_srv_init_module(void)
++static struct attribute_group default_attr_group = {
++	.attrs = default_attrs,
++};
++
++int brmr_srv_create_sysfs_files(void)
 +{
-+	int err = 0;
++	int err;
++	dev_t devt = MKDEV(0, 0);
 +
-+	pr_info("Loading module %s, version %s\n",
-+		KBUILD_MODNAME, BRMR_SERVER_VER_STRING);
++	rmr_str_class = class_create("brmr-server");
++	if (IS_ERR(rmr_str_class))
++		return PTR_ERR(rmr_str_class);
 +
-+	err = brmr_srv_create_sysfs_files();
-+	if (err) {
-+		pr_err("rmr_store_create_sysfs_files(), err: %d\n", err);
-+		goto out;
++	rmr_ctl_dev = device_create(rmr_str_class, NULL, devt, NULL, "ctl");
++	if (IS_ERR(rmr_ctl_dev)) {
++		err = PTR_ERR(rmr_ctl_dev);
++		goto cls_destroy;
 +	}
 +
++	rmr_strs_dev = device_create(rmr_str_class, NULL, devt, NULL, "stores");
++	if (IS_ERR(rmr_strs_dev)) {
++		err = PTR_ERR(rmr_strs_dev);
++		goto ctl_destroy;
++	}
++
++	err = sysfs_create_group(&rmr_ctl_dev->kobj, &default_attr_group);
++	if (unlikely(err))
++		goto strs_destroy;
++
 +	return 0;
-+out:
++
++strs_destroy:
++	device_unregister(rmr_strs_dev);
++ctl_destroy:
++	device_unregister(rmr_ctl_dev);
++cls_destroy:
++	class_destroy(rmr_str_class);
++
 +	return err;
 +}
 +
-+static void __exit brmr_srv_cleanup_module(void)
++void brmr_srv_destroy_sysfs_files(void)
 +{
-+	brmr_srv_blk_cleanup();
-+	brmr_srv_destroy_sysfs_files();
-+
-+	pr_info("Module %s unloaded\n", KBUILD_MODNAME);
++	sysfs_remove_group(&rmr_ctl_dev->kobj, &default_attr_group);
++	device_unregister(rmr_strs_dev);
++	device_unregister(rmr_ctl_dev);
++	class_destroy(rmr_str_class);
 +}
-+
-+module_init(brmr_srv_init_module);
-+module_exit(brmr_srv_cleanup_module);
 -- 
 2.43.0
 
