@@ -1,178 +1,108 @@
-Return-Path: <linux-rdma+bounces-19967-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19968-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGmXHCkk+Wmz5wIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19967-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:56:41 +0200
+	id p7WTAeAz+Wl46gIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19968-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 02:03:44 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 157D24C49E6
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 00:56:40 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 755364C514C
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 02:03:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 67A56304C075
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 May 2026 22:54:16 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A05863008FFA
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 00:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B8238BF80;
-	Mon,  4 May 2026 22:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DZV+R6HH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126891B808;
+	Tue,  5 May 2026 00:03:39 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9FD38B150
-	for <linux-rdma@vger.kernel.org>; Mon,  4 May 2026 22:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C471540DFDA;
+	Tue,  5 May 2026 00:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777935255; cv=none; b=QAdcUIFb2yOaQAtaAexEuHxhH1y0+errm3iHJelDe6JehVO8obP4WW7uUcze13HADUe7YWqPDzkzdT5eWDzX0x1flVwY29GkawkL2hB1PaE2U9TJP3i7W3jvDIVRtbOf00E7nlbbBO8EnCbeTc4TsBZUwfic7BCwHw3kznP6ZXQ=
+	t=1777939418; cv=none; b=KqtiqckcIiA9whGhr349N4Wet9VRbtO2iwPpmevWBupJbB8AWZUzYqbVltEpEjR9mcsjojcomMG6KqUKmA/fSC5BYeGNFyDvVFQ7Fd7jaNwvcnC97rL9CR2Q1kFzZykMIp5JsyrQ8/tdswa1S4AI/8Zh2buqcrsVmLyzbrE6H/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777935255; c=relaxed/simple;
-	bh=GJA5seVahYpViKnGZOh3rNiBjtA0B+KD0LRZTUEpgoI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E/y7zIldk7UN4SallQwCduuYQKzWitj7UQzpORODcwFFiayhSBMby3cMGwhmkD1DWpcoNj31621zfz3OmkQlFrd/yV9EiknajM7jDRjBjsD4uLpC/A1iAVSuTBpReMKGC9RqwbJqOHCBQpKAdmgcsP3vozLBfkrtMZVFZdQOpFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DZV+R6HH; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-36536771300so1094410a91.1
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 15:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1777935253; x=1778540053; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9ugfH2lM7nQgOC3+hZY16zqoQboC9qbhlDerkTWHT2Q=;
-        b=DZV+R6HHRl2Ey2t3N3yv3xwGuB30C/kzGN7Tq/IPskIxfiKxxF0RXYE5d19hJeWkh7
-         M3eceaUMnvjnz2yu5bKALKMVbo5tTJ0zSQOEwetuBV7Y1jQFJipQ8SV1H7OSIHHoVA59
-         HIsPgRuPqqHCtqWkKqzRugFIbu/QbGOHWLl6QKrCi4zCBp1GurcsCSxu8O6fyKaMfNam
-         +OFzRzwSGViW00TaV2NafVAphvxP34SKk4SB7j3MiJdW1avgzQRsNLxknPA6tMS/l/oL
-         ssl6edK1TGxxm4uJR09O8l1RmfZyC5o+fr+xYWhEuJQzE4rtGSTmuxt6faHImSwEY+Ry
-         raWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777935253; x=1778540053;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ugfH2lM7nQgOC3+hZY16zqoQboC9qbhlDerkTWHT2Q=;
-        b=Z2mqe5toDjPTieCeF3ZljPsOVnJ9uGT/chjZiKpIBepxqc46tdt4HFNAv2XJl+Ae5K
-         JSZ9s8haJM9sjLhFvDytDSXFEzFNrClEZQsxfXENC7WJCFVMMIsUoQH9Ywl/viSht97D
-         bO4BGfRb2wMruUYkeZeY/u8b7uII5R/ktvhvdbF/gOr89SXd8g/VNyT3HOR3eRVAPSsj
-         ehjI+pgH8Mt9/Q5cl/bLH7WslPMMY/RZRWFd1hIOSIFnNQ415CaMz/b0WylORoArAAJe
-         iG8jQYq8QMF1P/0i/BISJdGQ5bjyn6ZE2+qyI6vvyg1kCUXH8UJ9KQ5RLuWTZWmmRei1
-         PEEQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/lFymSnwqoxw2HFwM+OELWhfrXSnyvL34l4DDQHLAmh/cR89RziPCKQgAkboASrE6KAdM7YJyV5TPc@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1LqLMaQRwsjY/gIYnYuGQulcUOGOfjvcnAurCMMEyD3fMQ1ZO
-	KZo0ahm3BMJ0lunp2SC+sgmWYuchYD319R8GV4SFyDNLct2D8df5qW14VZo9QZYKBw==
-X-Gm-Gg: AeBDiesoRhJvTlgF7VG4VE8ubc1otUinAu48JH1IsH61kYaYDaiL52PIGygKVHdDnX5
-	n74lNhHS99GizGi3YE6rLukGz5BMjmbMowhimgAGsOLqXRortUYrBns23dYkoVVffiSJz+5A5K0
-	pfXIw+kvazZPGTsJiHXVq7It4PEIDljNxiWz/+SMI4iCz4bDB29gqZ15Y2h69NwZcFVA+XSpEAx
-	npIHWTx6Rcx6Y9wiNp/XdAA6i6Yqx6MGkc5nu+puOIz+PDHK3lSVt1UOoYGSXRv6vz/YDK0M8GZ
-	Nw+cjl0VmMDLA8mk5L8ID2qPt5rb+quMLMAftYqfrHwqVMArfiIU3yxBWKNbutkUaByh4/imyHs
-	+udvMrkHKAD94e4vXWmzqrmz/aULzPj/AQI/t5T3rNApGWorH7MnHOfkiLkPVPSa2AhwelPQ0Ih
-	oAkTwiqFk49wSeglOI5hV3/d4isTD8R4um9a8GJZVGa1fDWMP2tkB8CgNsxEnVKMJYMld5fXFxz
-	CoSPg==
-X-Received: by 2002:a17:90b:2e85:b0:364:a497:db8f with SMTP id 98e67ed59e1d1-365727322f8mr956720a91.9.1777935252914;
-        Mon, 04 May 2026 15:54:12 -0700 (PDT)
-Received: from google.com (76.9.127.34.bc.googleusercontent.com. [34.127.9.76])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b9f0b21c4bsm88242915ad.29.2026.05.04.15.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 15:54:12 -0700 (PDT)
-Date: Mon, 4 May 2026 22:54:08 +0000
-From: David Matlack <dmatlack@google.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Alex Williamson <alex@shazbot.org>, kvm@vger.kernel.org,
-	Leon Romanovsky <leon@kernel.org>, linux-kselftest@vger.kernel.org,
-	linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-	Shuah Khan <shuah@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	patches@lists.linux.dev, Josh Hilke <jrhilke@google.com>
-Subject: Re: [PATCH 00/11] mlx5 support for VFIO self test
-Message-ID: <afkjkBq8B-4KjhS_@google.com>
-References: <0-v1-dc5fa250ca1d+3213-mlx5st_jgg@nvidia.com>
- <CALzav=ci8bi3=sY+F3HJTB5sOQ_pJ8Lm+kz0CDBBWVXry5P98w@mail.gmail.com>
- <20260501164314.GA1381708@nvidia.com>
+	s=arc-20240116; t=1777939418; c=relaxed/simple;
+	bh=8I/hVAxtgOoP2n2/kmLok5hTmrkCfguXUluau3/Oqr0=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=Nnsgvg+OTa5Nm1D8AFkmj0byImAKJ8Ujy9GH49uMD/Ae1siwkZd5mxsfZiakkRAGpFrl7NaGYjGUkPtp1QFAhUxWZcMUoo6HsYaTGohG9ZWz9xhV9IE87GtT78B72qsQP+S1KYb38EteZFP8tg3+s882s+dPxjDF4ZtxxZ37PMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 5196092009C; Tue,  5 May 2026 02:03:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 4A75792009B;
+	Tue,  5 May 2026 01:03:34 +0100 (BST)
+Date: Tue, 5 May 2026 01:03:34 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Bjorn Helgaas <bhelgaas@google.com>, 
+    Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] PCI+IB/hfi1: Fold duplicate secondary bus reset
+ code
+Message-ID: <alpine.DEB.2.21.2605050042390.46195@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260501164314.GA1381708@nvidia.com>
-X-Rspamd-Queue-Id: 157D24C49E6
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 755364C514C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-19967-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-19968-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DMARC_NA(0.00)[orcam.me.uk];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MIME_TRACE(0.00)[0:+];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dmatlack@google.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qemu.org:url]
+	FROM_NEQ_ENVFROM(0.00)[macro@orcam.me.uk,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.912];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	R_DKIM_NA(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[angie.orcam.me.uk:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-On 2026-05-01 01:43 PM, Jason Gunthorpe wrote:
-> On Fri, May 01, 2026 at 09:11:11AM -0700, David Matlack wrote:
-> > On Thu, Apr 30, 2026 at 5:08 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > Add an mlx5 driver to VFIO self test. This is largely a remix of the
-> > > existing VFIO mlx5 driver in rdma-core. It uses an RDMA loopback QP
-> > > to issue RDMA WRITE operations which effectively perform memory
-> > > copies using DMA. Since mlx5 has a stable programming ABI this
-> > > should work on devices from CX5 to current HW. The device FW must
-> > > support the QP loopback configuration.
-> > 
-> > > This entire series was coded by Claude Code in about 4 days.
-> > 
-> > Very exciting. Josh Hilke from Google is also working on using AI to
-> > create a selftest driver for Intel IGB NICs so VFIO selftests can run
-> > in QEMU [1]. So it's encouraging to see you were able to do it with
-> > mlx5.
-> > 
-> > [1] https://www.qemu.org/docs/master/system/devices/igb.html
-> 
-> Yes! I would feed DPDK in as well in this case? Combined with the
-> kernel driver it should be doable. It is much easier if you understand
-> how the NIC works, of course. This worked out significantly because I
-> guided it through sufficiently small steps and knew where to find all
-> the quality reference material..
-> 
-> > >  - Make it work on a PF too (this is surprisingly hard!).
-> > 
-> > Can it work on CX VFs? We're interested in continuously performing
-> > memory copies across a Live Update using a VF via selftests to
-> > demonstrate SR-IOV preservation (when we eventually get there).
-> 
-> Yes, I started with VF because it is simpler.
+Hi,
 
-Makes sense. I tested it out and was able to get vfio_pci_driver_test
-passing with a CX7 VF.
+ This v2 of the patch series addresses a documentation issue raised in v1.
 
-> The PF support flow requires a bunch more complicated stuff.
+ In the course of verifying my PCIe link training failure workaround (cf. 
+<https://lore.kernel.org/r/alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk/>) 
+in the context of secondary bus reset handling I found a piece of code in 
+the InfiniBand HFI1 driver that duplicates what we already have as private 
+code in PCI core.  This patch series removes this duplication by exporting 
+said private code and than making use of it in the HFI1 driver.
 
-Do you think it's worth supporting PFs? If anyone with a CX NIC can
-enable SR-IOV and run selftests on a VF then we can keep the driver
-somewhat simpler.
+ As I have no means to run-time verify InfiniBand code I have only build 
+these patches, for x86-64, with the HFI1 driver both built in and modular.
+Please see individual change descriptions for further details.
+
+ Please consider.
+
+ Previous iterations:
+
+- v1 at: <https://lore.kernel.org/r/alpine.DEB.2.21.2306200153110.14084@angie.orcam.me.uk/>.
+
+  Maciej
 
