@@ -1,79 +1,81 @@
-Return-Path: <linux-rdma+bounces-19984-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-19986-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kHxRHz6K+Wnh9gIAu9opvQ
-	(envelope-from <linux-rdma+bounces-19984-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 08:12:14 +0200
+	id uIG0OYuK+Wnh9gIAu9opvQ
+	(envelope-from <linux-rdma+bounces-19986-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 08:13:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC00A4C71A8
-	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 08:12:13 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E6A24C71E9
+	for <lists+linux-rdma@lfdr.de>; Tue, 05 May 2026 08:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5A8D530071F1
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 06:12:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 52E373043D7C
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2026 06:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235EF3C9EFB;
-	Tue,  5 May 2026 06:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B08E3CBE74;
+	Tue,  5 May 2026 06:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="MY9hub9d"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="uK7aw2E7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1199F3C7DF0
-	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 06:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0561B3C8729
+	for <linux-rdma@vger.kernel.org>; Tue,  5 May 2026 06:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777961518; cv=none; b=YNpuTQ5DNYXMZv/Y3OgseOODDSAeGrI0AaZV8X30IHt33X0C2yALBLH0GBwQTLtNzyaBvRhfESOkPkZvAA0nyyvcP1PI4arHEazKisnID5EXGUOtkHNjeupnXFfteZ1/Qnd+FT3eYRbM52+ApJg6rFiqClfb8kkBjg+8I44mJro=
+	t=1777961521; cv=none; b=tAWPdyl5MVHIRJ36Qlu2TXEk/G2vC9lr6684/BQLejLX2pXDdlW/ot31S9oiMPjJ0dcUtEsw+08FfzpAVTvxsJ8IaPhRHI2hjIosQTwn5DGONN/yqL5RRKz6lwVrH3Zs7OHYpt8as7/WW/QZi7baMwtKnXO337bF60fEPREgbCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777961518; c=relaxed/simple;
-	bh=1fDy67ZIt+76U7ELVPRK6oH0sf4xFnIRSwmuu1Y1qGc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ePyd/JK5MPyyf1VBNezxTT1uunABLfcfBSJw0S071WUgD2Pg1TrVPo31fHlbv7iOqcixCzpSG3tfYnKkTc5GvAozNHZ63Q9NI1NpnllXdR3jN5H2x158VneN8rSP+VoHiagf26ehQytwIWiN9LhTcjnbrcM8+i9FsvRS449PMMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=MY9hub9d; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1777961521; c=relaxed/simple;
+	bh=wTHHWR8xnN3+8MTTxzKkim/R71uDYVjvpK3WaWzElBY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=bqy18nG6IsbXAFXpqSG9/YiY3IaZVnIN8ACInEpq0qzTReoDNy1PvTEdoSBzoU5LVUL2gAyLzmFIdfpPwUhEN+osNE9Ih6tFh2cTBAugFXUA9tMlFDa+5UYCm4Yb9JZ5OMHi8fO7y6h8uBl8HODLtkqVe7FaIp+Pw3TOcGqIWQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=uK7aw2E7; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-488b0046078so40498645e9.1
-        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 23:11:54 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-445795cf6f1so2884934f8f.1
+        for <linux-rdma@vger.kernel.org>; Mon, 04 May 2026 23:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777961513; x=1778566313; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SFZnVBw74yDv2rII7+QCgPiDcxwzQQhR7d5tsxCR0Dk=;
-        b=MY9hub9dwF5mY0+7Tq89f2bw95ePJfL1YnVGYkwwN/IpLBPR0HNfu6e/Gzt4hGiWkM
-         6ItcPQlB8m8+0JichddQiGjkrNbM04ZrXqx9R+Pqs63lkXS/6BzJQpoY36bDDeAMBqY7
-         xyEBN3tX6S4A++n/7mcmTFv3NNkOQy7KeFf9uxcjavS9E3zDMMx/uITPBv8K7uXIWueP
-         VQO547sNd0wBpBqu8ON+jMgHboE5Z/D1gOINT+DB9FAlGhWTt5QnTlb1Wu9kIKy956zu
-         p9JC2/bI9d0rGFAg+Z5y6tdrSnvHcWXFnKI4QtiKDxopflGq03D/05YV4o4QzzRpT0Kp
-         MrMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777961513; x=1778566313;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1777961515; x=1778566315; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SFZnVBw74yDv2rII7+QCgPiDcxwzQQhR7d5tsxCR0Dk=;
-        b=hD+8Wtxz+j/UT2s+u52lJxNq8HO8V4FTlrGxY8Sjg1jHmr8Ror8jf86b3etKBErbCP
-         1AwrKd4fvT15NmILjo6IVmDYeHBoa2D6IdHEYLVRBwT8DxaWaLHZkwlk4WL5dGGd2xCS
-         3SlKVUYMqahNXxfwEpXhWu5LQPOallu3QbCSk9pHvLVn1f+Re4JcMyYSK4tqYS5AwMHl
-         fCuc9U6p7C3XhxPGQUw8ugvq4MQSq+HP45i+4QnXH8BIvdjo9B/Xs4DAk7mS4K6t1gzk
-         NVgmZG6tl7wtohK2jnCj8ZhX+4+bWztd3aminProK8kSjLY9KsPLDMVwWTv9fqoNDqlx
-         Y3Qw==
-X-Gm-Message-State: AOJu0YwIGDMPnd481CarkdKPP6cM/I8tVYFn8n1j2+p2W2qL8X+oOxkO
-	rdaA9COy3IzOD9GVsysTCCeSFpyk/7fQJoSJHleoinU27eaVRT/Vkm6EOpFV3M+eQp7vfPOPhYp
-	9FmhC
-X-Gm-Gg: AeBDietM32e9INIhl1G+ctMDk8Q83n1lN1M7JNy5Yl0+LRod32oGoWo5r/KcM+pTMr8
-	RXpDE03RN+oAJVgjLAJ54Y1+Uu9pcoiyvT9ZOli4HTHaUK2vJhKx0Vg5dHR1IaLIq3yEZfrpF+z
-	VsqvMVZsE9NEbO8YkvNaeaETXEXMSBeoNIv/DxTW25/WBoKwVRCZyku3T1pRW0HiKLErK4M7Hud
-	kxYwFqo8burmCCLSbuA8D6CNvX/cpASO2iTA8zy3YyimX+/VFbgxg2bVNPz08AWaSZN2MB1joGW
-	IGXwbZmwJG/M4tSGQ7zy5DtxdXBO4m8JPg0g1mFNPs3gSKlTW9wuowoMio3YyA+BYVeX5q38Rxe
-	QF+DVwu0vQsPe86zbF5LOXCEgvFYOCVoTK6JOpUUgNKT7bS2e9hUpu+WAdOftWdRWRgx/LAWwwy
-	WzyydGe8iye+gxegTFPUBFZYnjH0sXewA1Mu3QpjiMrLvSN5iNGfk/O7Jl
-X-Received: by 2002:a05:600c:c058:b0:488:b99b:4177 with SMTP id 5b1f17b1804b1-48a9866f1f4mr153503405e9.25.1777961513158;
-        Mon, 04 May 2026 23:11:53 -0700 (PDT)
+        bh=Qgv8Nu4lwCwl1JcWgOpH3eoML0uI5ZuiaWITMWsA420=;
+        b=uK7aw2E778dXB3gbIEJFsyeCWEo6ZcFD4qt2We6Ice8PMG7qNCVcoacl08OYuOlv2b
+         FzDxT+zwuMMmOWWztTQRcKo51Q+Kj79ttvaaUqpR2KlLe+Gc4UciLIeml/+Jg38Vv436
+         85zmNgJ0MKli4o+S/hmGIAEj4KzkpErS96Ut6trIF3ir0rQQhku7X41p0eCEV6Kb/jve
+         TeGBM/DvKmVAfq/xzr973DusA8P/chY6aTRgZ3ZWfVcFAQMW9oLmh6aSeRo0ngO8dBAQ
+         oPyTNr+l+3plNaopaFZbH8yf5cbP1ff92GmOhyiQIdt3S7df/ubFFvRmtgOyejeBZbhS
+         H/PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777961515; x=1778566315;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Qgv8Nu4lwCwl1JcWgOpH3eoML0uI5ZuiaWITMWsA420=;
+        b=l/fPPyINCqwkntlDegOJuFqHW7v3j6m8d4bWgKz2lgLMRRIsZt8ieR8fxOW6rKsooy
+         zyoXiNMWFVKGyh7wKaZRiIZRwB8afOC4jnoyWOiTFVSw0fh6UM7nx3yXKD8cYSMHEXi/
+         EuxnjRLw9dcZNP6ea4pZRIFliwwTKQkFoCMg5FZolbi8h7EcHmHHk4UMje3KZUiUvpbQ
+         yB+A6J+lBmqYpAc9TDYvRaurM39b9tO8OIzOn534n2j4FV4zBiVv+kmDbpHPn0/1WW51
+         31wPzpPeJti4/BJ25DtVVNJ1Z8yqVj7k3JhD7iELGfybbsQ1mIksbnl4vUWo4dCJ1Htd
+         9xTg==
+X-Gm-Message-State: AOJu0YxUUoY0B26q7gxItGI0VA9JK+bTF7xmUF0uIbOX6mc2U/Vt2Wdw
+	QrRhIjknUVYDYpKzWJgCwdJGyielUOxmY96MQZ6AjZ+NVV9UbootZ+lBaUCv7kK6PQCx4uPOB5j
+	0jvHV
+X-Gm-Gg: AeBDietxQi9iOj51frMIa7fxbmCYdEKE5a+2JLmbwK9hbldEmgQ2Ok+UZpKckjgBxnT
+	BSGVOCVRIdu704ASZKSOVB6LnTLOgR/+PaTY1mEdH0LQ7IIC3GnP2BgMUCXKaiZ3MQD+bS8J9Ds
+	cJbkdEn14VfUq1NuKgJBYSJMGqrkwY+eXY9v7Kcldbwrnqwn0V5J8G8xtmulbcYAycIfbcSsLnZ
+	jUYV9bUr3dPMFsXVDXsPzQjEgPqxsSVy3WxSdaOyERvgM0KFs/VATUNUsr9nRPiSpELnohVkSzI
+	LznVKOClNZB6Esjv25fnAsvxr1sbSiwPQrRvcckAUGmY9AdjVK5HSGZQXM6489fa/oXVx0aY4OF
+	IqjCxMvI3Ej5vdUj7SwKHZuFJmy4OiHpZYFYnNNvqqDjznRx+eeJjKEFr4mIh7sKfW7ypWl/scH
+	d8jmxvM4GS0tuq+BAXitV1zzsDpcgQl7pzztWbLauiTq9gY18Ujscaykzg
+X-Received: by 2002:a05:6000:1789:b0:43c:fe66:43ec with SMTP id ffacd0b85a97d-450042a4b5fmr3072712f8f.14.1777961515160;
+        Mon, 04 May 2026 23:11:55 -0700 (PDT)
 Received: from localhost (46-13-72-179.customers.tmcz.cz. [46.13.72.179])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a824f9f0dsm357926655e9.15.2026.05.04.23.11.50
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45054b03df9sm1923926f8f.24.2026.05.04.23.11.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 23:11:51 -0700 (PDT)
+        Mon, 04 May 2026 23:11:54 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -86,10 +88,12 @@ Cc: jgg@ziepe.ca,
 	lirongqing@baidu.com,
 	huangjunxian6@hisilicon.com,
 	liuy22@mails.tsinghua.edu.cn
-Subject: [PATCH rdma-next 0/2] RDMA: detect and handle CoCo DMA bounce buffering
-Date: Tue,  5 May 2026 08:11:47 +0200
-Message-ID: <20260505061149.2361536-1-jiri@resnulli.us>
+Subject: [PATCH rdma-next 1/2] RDMA/uverbs: expose CoCo DMA bounce requirement to userspace
+Date: Tue,  5 May 2026 08:11:48 +0200
+Message-ID: <20260505061149.2361536-2-jiri@resnulli.us>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260505061149.2361536-1-jiri@resnulli.us>
+References: <20260505061149.2361536-1-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,14 +101,14 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: BC00A4C71A8
+X-Rspamd-Queue-Id: 9E6A24C71E9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -113,10 +117,10 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	TAGGED_FROM(0.00)[bounces-19984-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-19986-lists,linux-rdma=lfdr.de];
 	DMARC_NA(0.00)[resnulli.us];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	PRECEDENCE_BULK(0.00)[];
@@ -124,47 +128,101 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[11];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email,resnulli.us:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-In Confidential Computing (CoCo) guests, the DMA mapping layer
-redirects all device DMA through swiotlb bounce buffers to keep guest
-memory encrypted. This is transparent for regular devices because the
-CPU copies data between the bounce buffer and the real buffer on every
-DMA map/unmap cycle.
+In CoCo guests, device DMA to regular userspace memory does not work
+because the DMA mapping layer redirects all mappings through swiotlb
+bounce buffers. Since RDMA devices access registered memory directly
+without CPU involvement, there is no opportunity for swiotlb to
+synchronize between the bounce buffer and the original pages.
 
-RDMA breaks this model. Once a memory region is registered, the device
-accesses the underlying pages directly for an extended period without
-CPU involvement. The swiotlb layer never gets a chance to synchronize,
-so the device operates on bounce buffer memory while the application
-works with its own pages - the two never see each other's updates.
+Expose this condition to userspace as IB_UVERBS_DEVICE_CC_DMA_BOUNCE
+in device_cap_flags_exi.
 
-This series adds detection and handling of this condition. A new
-IB_UVERBS_DEVICE_CC_DMA_BOUNCE flag is exposed in device_cap_flags_ex
-so userspace libraries can detect the situation and switch to
-dmabuf-based memory registration using "system_cc_shared" heap
-where available. Plain __ib_umem_get_va() is made to fail early with
--EOPNOTSUPP to prevent silent misfunction.
-
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
-based on top of:
-https://lore.kernel.org/all/20260504135731.2345383-1-jiri@resnulli.us/
-
-Jiri Pirko (2):
-  RDMA/uverbs: expose CoCo DMA bounce requirement to userspace
-  RDMA/umem: block plain userspace memory registration under CoCo bounce
-
  drivers/infiniband/core/device.c     | 6 ++++++
- drivers/infiniband/core/umem.c       | 3 +++
  drivers/infiniband/core/uverbs_cmd.c | 2 ++
  include/rdma/ib_verbs.h              | 3 +++
  include/uapi/rdma/ib_user_verbs.h    | 2 ++
- 5 files changed, 16 insertions(+)
+ 4 files changed, 13 insertions(+)
 
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index b89efaaa81ec..ad3da92c9318 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -42,6 +42,8 @@
+ #include <linux/security.h>
+ #include <linux/notifier.h>
+ #include <linux/hashtable.h>
++#include <linux/cc_platform.h>
++#include <linux/swiotlb.h>
+ #include <rdma/rdma_netlink.h>
+ #include <rdma/ib_addr.h>
+ #include <rdma/ib_cache.h>
+@@ -1419,6 +1421,10 @@ int ib_register_device(struct ib_device *device, const char *name,
+ 	 */
+ 	WARN_ON(dma_device && !dma_device->dma_parms);
+ 	device->dma_device = dma_device;
++	if (dma_device &&
++	    cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
++	    is_swiotlb_force_bounce(dma_device))
++		device->cc_dma_bounce = 1;
+ 
+ 	ret = setup_device(device);
+ 	if (ret)
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 240f8a0cfd86..2a70774c639a 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -3655,6 +3655,8 @@ static int ib_uverbs_ex_query_device(struct uverbs_attr_bundle *attrs)
+ 	resp.timestamp_mask = attr.timestamp_mask;
+ 	resp.hca_core_clock = attr.hca_core_clock;
+ 	resp.device_cap_flags_ex = attr.device_cap_flags;
++	if (ib_dev->cc_dma_bounce)
++		resp.device_cap_flags_ex |= IB_UVERBS_DEVICE_CC_DMA_BOUNCE;
+ 	resp.rss_caps.supported_qpts = attr.rss_caps.supported_qpts;
+ 	resp.rss_caps.max_rwq_indirection_tables =
+ 		attr.rss_caps.max_rwq_indirection_tables;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 167fb924f0cf..d06071b87d96 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -275,6 +275,7 @@ enum ib_device_cap_flags {
+ 	IB_DEVICE_FLUSH_GLOBAL = IB_UVERBS_DEVICE_FLUSH_GLOBAL,
+ 	IB_DEVICE_FLUSH_PERSISTENT = IB_UVERBS_DEVICE_FLUSH_PERSISTENT,
+ 	IB_DEVICE_ATOMIC_WRITE = IB_UVERBS_DEVICE_ATOMIC_WRITE,
++	IB_DEVICE_CC_DMA_BOUNCE = IB_UVERBS_DEVICE_CC_DMA_BOUNCE,
+ };
+ 
+ enum ib_kernel_cap_flags {
+@@ -2950,6 +2951,8 @@ struct ib_device {
+ 	u16                          kverbs_provider:1;
+ 	/* CQ adaptive moderation (RDMA DIM) */
+ 	u16                          use_cq_dim:1;
++	/* CoCo guest with DMA bounce buffering required */
++	u16                          cc_dma_bounce:1;
+ 	u8                           node_type;
+ 	u32			     phys_port_cnt;
+ 	struct ib_device_attr        attrs;
+diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
+index 3b7bd99813e9..d2aeadb6d2f9 100644
+--- a/include/uapi/rdma/ib_user_verbs.h
++++ b/include/uapi/rdma/ib_user_verbs.h
+@@ -1368,6 +1368,8 @@ enum ib_uverbs_device_cap_flags {
+ 	IB_UVERBS_DEVICE_FLUSH_PERSISTENT = 1ULL << 39,
+ 	/* Atomic write attributes */
+ 	IB_UVERBS_DEVICE_ATOMIC_WRITE = 1ULL << 40,
++	/* CoCo guest with DMA bounce buffering required */
++	IB_UVERBS_DEVICE_CC_DMA_BOUNCE = 1ULL << 41,
+ };
+ 
+ enum ib_uverbs_raw_packet_caps {
 -- 
 2.53.0
 
