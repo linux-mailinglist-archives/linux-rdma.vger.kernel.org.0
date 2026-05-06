@@ -1,81 +1,80 @@
-Return-Path: <linux-rdma+bounces-20085-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20086-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OJ+ZNJ5N+2nWYwMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20085-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:18:06 +0200
+	id yP11FDxP+2lFZQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20086-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:25:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4663E4DBF68
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:18:06 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBB574DC194
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:24:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6BCCE3003D0C
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 14:18:05 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C644A301988C
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 14:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133753ED137;
-	Wed,  6 May 2026 14:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27DD47ECEF;
+	Wed,  6 May 2026 14:23:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="PrOECl8i"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="c5HFct//"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9170644E04A
-	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 14:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE99F4534AE
+	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 14:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778077083; cv=none; b=OCs2wIe1fOHk/7ZGcAtHeDZYUBMLyoPQszHH0R/98zx0vfJtQpGa+f9d9kXlYwY+qoYAynU1KOosRW1zhZxTQexykiNbV3uxQtEGiZk/InzELf9M98ohEkkF7jIndDXa+y+M6PGQ664b0f7hnxfkxowr15jSGBRumydi9yJ94lg=
+	t=1778077382; cv=none; b=H+dTtQMnZtm/s9zfsPKtjF0JnTRxGzDOoD8A0b4xtO6q95MNfBw+fmtPeX8DHXpD2ecZgOfewXgSMxv9MdyYdpPbXdsadPJ6hqypjJU/3W0IH+AwXunmBPKrfcGZN9cgS4MxlcVNoSRh7Mh2oDmVXt/+r6X5xy8L2cPbFPk9sdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778077083; c=relaxed/simple;
-	bh=RljFluWxz7hjoMd4ygRFN6xM+i6iK7ZuimWv9gXjLlY=;
+	s=arc-20240116; t=1778077382; c=relaxed/simple;
+	bh=g+6jgEk2tcYGGoaZ3VCO+WHzuXURtDW9FyRgyhaoAIs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tgOLfScerAolhGU8enNa8oAOsaIfPsIaic3aORo/6wbc3tEgNopOdW422COPdQ/yIzJPySCkR0YAr6h3TU5WS+xRUZW8FnZAsj5XqxYdJcagahPp7rfKPKD19/1ZczLOnY4XpwSv+SWjmbaBD1txpnJHmP5JNsBf/Tnp0yP8hV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=PrOECl8i; arc=none smtp.client-ip=209.85.128.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=ESmCogDBi7U0nptsYJ+DIr3ec40ZJMo8tq0uibjTDhWdo+FwfqSwmorJSVh/0Gh0ellOKC38A9IzKSB1vVWU2NJXb6haQ1MRKHzBxX/vhhbNr01g0ou+4kkPofx+pzULAOjLD+bK2Ykg04VHpHfNFNBH8rFQHilYaN4w9bTRXq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=c5HFct//; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4896c22fcbaso50329445e9.0
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 07:17:59 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-48896199cbaso57241775e9.1
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 07:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778077077; x=1778681877; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778077379; x=1778682179; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6bihndA/iAmt9/IG5Z3G+Btlq8iU85LP8GEw/3/N+9Y=;
-        b=PrOECl8ictWam8jRWBHlx/20iJtiJZ2PMgxbnBzj+uPB44KCMZEOwr7n0QepDzw/Tr
-         F8X4sPMD8YSo18wj3ksiqj3R5ywEZR1bIQUOaVhaD80PZnQ1Vgrjd5ZyzPXKFyGxkFY0
-         mLTTKPLNAtenfBISxhD75o8AMAAvQUQ2UPvO2EBTbUgYIpwmqgKqiax+8GtGYz0kjsFd
-         j76M1Fw3g0rmu+B1d1nH+Xt4EkruUBRkAcP+a1edzfo4OKmANt3tt22TaUkfThdgcvOR
-         ETJwdi9ZTKqA8mA40bHAXQ3iL1E2p9lulJOHaTZRUb7DUwtoYc5UnIEPciTzLhnxH80S
-         mI6Q==
+        bh=vhlJj6xp2MlOMSQCD3zAiRcufvDlKjQOGfOkqB9+fEA=;
+        b=c5HFct//0iSPH6OKyQPSyFtSh0jcbyi34ufKvqOjfi+ygrsADyzlSmN+W7hmVZg4lA
+         Pb2hVdiYUE5/+OhUvSSP5XkxuCnw8n3+MNNVyRhSpoH8ADrlZLMxGdCeF2h3oDIZMp2v
+         kF+QDQtZnt9rumNcnrnBeF15TR50H+yHBGlfRNrxUTzZ4SFwPLUsGxtLSTX9F1Xp1514
+         58WQi8Fsl/K1MoqdV0hGf35hDcHWDRvGDYXx/42/T0wtdcYoV7rFxiVM7UAt5FCRwHuZ
+         HRxAmqvfDGLzR/NfL2HlKel3I4M+jJ1JYtrV3Je5kL37d0AmQCXd+G4FLjpOJGCwt+tQ
+         ghPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778077077; x=1778681877;
+        d=1e100.net; s=20251104; t=1778077379; x=1778682179;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6bihndA/iAmt9/IG5Z3G+Btlq8iU85LP8GEw/3/N+9Y=;
-        b=kOsuiCWF7+Z/6Sc7whToF1mmbw630E1mn5kkGp8kWFDM33DlIZ+2karKh57LeXM3LP
-         LdLafRBJMNODb6DTSY1h9J73pITIKxhOFVyzk7sESOw3Jxy56TuZdmrWGUFsJz41pmgV
-         LryKwMMG6dJPk2EDkm/I0ILvGamyY1u2ksmkAC+GVeTjjKq5ANNyZjThzYnCRkH3C7lf
-         l5n3NDrQwAGQBOSiB8U4JNzvSkodA4RIVfaYkSxD1S3X/DS6XtSHlIsvAiv+nxCE/K8J
-         Qu9JJRkZ1zH5MxyGLOfGi4CGbcL2DoD6MST6Q65fEtD/H05uo0sSmFReW2B2VgfRfwyc
-         IvMw==
-X-Gm-Message-State: AOJu0Yxjw0DToYvA+qsYO6Kh4Uex3C6xZ09b87eeLDmB77Esb//6Siih
-	sWK+iBG2MJpkllDow2G6cwY0ie9RlfVup8qlmAR/4buN1k/WtscZeAlGNg3OZZO4fFDv7qMdZX4
-	FPgDx0i4=
-X-Gm-Gg: AeBDieu63B7ZyPR/6KOxL+GGfg5JhruLvxX+atEEsmscHgApEhmmY5s9Q6aiexEB819
-	hGa0znEho8Vj1/8m/f+TAKEJeY6bz0uDFKra78L2gqzG5sK9K6t8JnblkNr0YCQL8GeFay0CL/b
-	7VIpsF7G9cCjwrcWG4RaMqjjxI2aEdN7fJjd1VeUEGFh7MufPSj3UV5/ZmogMtO/RnE1nH8jwIJ
-	kmh5kjxaBDbFm/Hs3510Qacgmi9ksCh9vqILVPKbIwDLiHl+Rfxq8ql5mxhccr8HdpOsb1D5lvd
-	nnHV8XsLCHmwEoY8TxDrgcTOGE+vQaS3CW5q/KPpv+mZMuuwL8dYOCvVKKYEGoGsob0AOz9VGXL
-	MH4Fdflpjd+AC+BW99jVtteyu7kRx8k0UIJSIqQECtgCehJP/ziLxye/OlWMfqeuz4wD6JU4lgl
-	xddj6JFe4aelvfACLcDZypmEBDe87xzrBSeF9nlAjMOFWhEiZSK1oysw==
-X-Received: by 2002:a05:600c:4512:b0:488:c744:49b with SMTP id 5b1f17b1804b1-48e51f539b0mr60565325e9.7.1778077076916;
-        Wed, 06 May 2026 07:17:56 -0700 (PDT)
+        bh=vhlJj6xp2MlOMSQCD3zAiRcufvDlKjQOGfOkqB9+fEA=;
+        b=lYwQtqC8KpfrfASquJPde1f+0v12sbxfLrpnbmzCwgm4DOycrP9XAqBsT+chZpAc56
+         oGJloc7f0/oUlQ7F8xDVGkpyg1XcRT7IoFleSYMBCx5uujqHTyCYaJh2Ip0R/xWI+nT9
+         V09dCwXc5l0Jy3QvTw32OqPOXp+5ADp9YKDtzUBi23KLlT9idzELAjTkQ/jqQWdd1bAG
+         9Yy3kPbjBSB/MjQ793q2tt+lkiahtJ4yhFxfZoJkWaIrKl6JunySm5Con5iae+tjpiLB
+         vnevF3ik1dBrdgKknnuEe273zTBC2QJEt2fpTh7NeGM4o0ZujoyKIwN2Nl4KPOJIBQX4
+         FDgQ==
+X-Gm-Message-State: AOJu0Yy7PdOTzMxrRo7focGpCApCTdQ5pBagUZ81biI55/H4xUe2VzJS
+	LbOMh+YKC1qkM34CvhfXqdjUYSD4DpKoQWsFaqNqCwLoYI0nnO5AaF/IV0rPRlF/ENM=
+X-Gm-Gg: AeBDievEp9tYbS1J7T00DIqwaN0nwAO46RKwaUfY/AVrMB1O3UivDNesgD155xSnyRr
+	BogQJrPfTTZ758giN0qQE2fv8/VJhY3PtC5Ph2KjiQI3vTyrvqXfaBzmq3nwqBulMxo4nDStwT/
+	xaDZemZu2zs5h/FrcymtFR+JrCrMkTJQX8l3UwsYwGhRwThdZqlFEL75CC6547Pq3EWkgAkN+Fg
+	OC8ks9qS7OZMw0lhyY0IR4LZnnuQj/uglQX/TaKxCenodr+C76MLYuFR7J9xe42oDJeJ5iwHeXY
+	Aw7sX9jkmCfQVUr+iKvfnYAUnTeqJosC0rzGdOTmutkXF/G8aUmpUkrdc564L0rqdv7g9lbSro1
+	gpqnSQfNPh0GtTJRUAfxxMqKPyo9uYSvbHsMzGZCPM969PYoYNFOF9sgUe/UQMqqvvDE94MaoO1
+	G+Ma4hbc6JV3Fad0tCwpgQH2CU+Oe8Mu8aPjauZ85/fqbFV9SlU8euPg==
+X-Received: by 2002:a05:600c:3e05:b0:488:9ed3:1492 with SMTP id 5b1f17b1804b1-48e51f2a997mr68797335e9.10.1778077379148;
+        Wed, 06 May 2026 07:22:59 -0700 (PDT)
 Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:8c0b:afdd:3d9d:e976])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e538acbfcsm47058205e9.8.2026.05.06.07.17.55
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e53907e8asm50107515e9.13.2026.05.06.07.22.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2026 07:17:56 -0700 (PDT)
-Date: Wed, 6 May 2026 16:17:55 +0200
+        Wed, 06 May 2026 07:22:58 -0700 (PDT)
+Date: Wed, 6 May 2026 16:22:57 +0200
 From: Jiri Pirko <jiri@resnulli.us>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com, 
@@ -85,12 +84,12 @@ Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
 	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
 	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
 	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v3 13/17] RDMA/uverbs: Use UMEM attributes for
- QP creation
-Message-ID: <aftNP9hAAzqrPmiw@FV6GYCPJ69>
+Subject: Re: [PATCH rdma-next v3 17/17] RDMA/uverbs: Track attr consumption
+ and warn on unused attrs
+Message-ID: <aftNyC_XsZEMCD7G@FV6GYCPJ69>
 References: <20260504135731.2345383-1-jiri@resnulli.us>
- <20260504135731.2345383-14-jiri@resnulli.us>
- <aftFko47Y56Gvsf3@ziepe.ca>
+ <20260504135731.2345383-18-jiri@resnulli.us>
+ <aftIh+qQ0bl++qxM@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,14 +98,14 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aftFko47Y56Gvsf3@ziepe.ca>
-X-Rspamd-Queue-Id: 4663E4DBF68
+In-Reply-To: <aftIh+qQ0bl++qxM@ziepe.ca>
+X-Rspamd-Queue-Id: DBB574DC194
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -115,11 +114,11 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20085-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20086-lists,linux-rdma=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
@@ -129,30 +128,31 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim,ziepe.ca:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-Wed, May 06, 2026 at 03:43:46PM +0200, jgg@ziepe.ca wrote:
->On Mon, May 04, 2026 at 03:57:27PM +0200, Jiri Pirko wrote:
->> @@ -340,6 +340,12 @@ DECLARE_UVERBS_NAMED_METHOD(
->>  	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
->>  			   UVERBS_ATTR_TYPE(u32),
->>  			   UA_MANDATORY),
->> +	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_BUF_UMEM,
->> +			 UA_OPTIONAL),
->> +	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
->> +			 UA_OPTIONAL),
->> +	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
->> +			 UA_OPTIONAL),
->>  	UVERBS_ATTR_UHW());
+Wed, May 06, 2026 at 03:56:23PM +0200, jgg@ziepe.ca wrote:
+>On Mon, May 04, 2026 at 03:57:31PM +0200, Jiri Pirko wrote:
+>> From: Jiri Pirko <jiri@nvidia.com>
+>> 
+>> Catch userspace passing attributes that nothing in the kernel
+>> reads which would be a sign that the driver doesn't support
+>> a feature, an attr was forgotten in a refactor, or userspace is buggy.
+>> UHW and PTR_OUT attrs are exempt; destroy attrs are marked consumed by
+>> the framework. Gate on CONFIG_DEBUG_KERNEL to avoid overhead on
+>> production kernels.
 >
->could an ai make a summary of how each driver would map its existing
->umems to these - add it to the commit message?
+>This is maybe interesting debugging for a version matched rdma-core
 >
->Trying to guess if it is general? RQ/SQ seem reasonable, but I'm
->wondering what drivers will use QP_BUF for...
+>But the idea the kernel ignores an attribute is part of the protocol,
 
-BUF_UMEM is for shared RX/TX QP
-[RS]Q_BUF_UMEM are for separete ones, like raw QP in mlx5.
+I'm okay to drop this patch then.
 
-Will document it.
+
+>if the attribute is marked mandatory by userspace then the kernel will
+>fail the system call.
+>
+>I don't remember how often this ends up being used, and I think it is
+>a bit rare, but it is there.
+>
+>Jason
 
