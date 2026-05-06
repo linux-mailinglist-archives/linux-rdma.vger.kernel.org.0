@@ -1,688 +1,343 @@
-Return-Path: <linux-rdma+bounces-20052-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20053-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GQjKLZ7Z+mm7TQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20052-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 08:03:10 +0200
+	id ECqEHrLm+mnZTwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20053-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 08:58:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 480454D66F5
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 08:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF344D6E20
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 08:58:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3D391301DE56
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 06:03:09 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 196AB300788E
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 06:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7635270540;
-	Wed,  6 May 2026 06:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE51368282;
+	Wed,  6 May 2026 06:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="rY2rX3cL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from canpmsgout11.his.huawei.com (canpmsgout11.his.huawei.com [113.46.200.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3291E7C18;
-	Wed,  6 May 2026 06:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AE9367F5B;
+	Wed,  6 May 2026 06:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778047385; cv=none; b=IWHlQ4NsD3HBdRPXFLA/Zg3nYFhvODQJVxR9yguum8C1vEoefX6pnH4eZ9zJK0vyCnm8tpMjnxBWKvXGIjBKONNh0ULgXiEVxrpXVp04oxNbqDI/CcCDMzEw/OK22LpUpN6L5xCvctyPUmv+dWNu8JpMe8DAfPqb9M+gggzglQU=
+	t=1778050733; cv=none; b=HjX2dY1N22/jib2V/i4wAuddnG+nLSWFm0ZaQI/E+JBPFu+kM40EuwSkkbTS+nGfkR1PnlonBefqMXzwFDZ1RueVRMqa0I3ZxipuQ5Pkk11ffV2gf5XDUi6F3NdTslO0bSRuLg12dfIKmtSrDUdhKZZadN5GEKhrufmSWKcZYog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778047385; c=relaxed/simple;
-	bh=W1OWeDtE9wHpPOdowcAMXOFAHtBQ7KkGAQnsP7wF9kI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Sj62omiT2VrZOaAcbcegShvI5VUuwuPAijf0UG0W3v7zUqYNgpjCau/c4yoXZjd2viljzOngr1SyTybEU50FsVUPh4SXHhT5kNRe7o/58a/YEIDyniwlk1sVh57rYMIYlza6usIf7xW9gkXS7qcAnO+QchRzsUP6Nv58HXCW8Fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 392ca282491111f1aa26b74ffac11d73-20260506
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:baa850b1-05d6-4ef7-87f0-bf6980220065,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-10
-X-CID-INFO: VERSION:1.3.12,REQID:baa850b1-05d6-4ef7-87f0-bf6980220065,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:6ce05419626f38fa33e9a8cb2febf982,BulkI
-	D:2605061402569OEU5EGL,BulkQuantity:0,Recheck:0,SF:10|38|66|78|102|127|850
-	|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil
-	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
-	0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 392ca282491111f1aa26b74ffac11d73-20260506
-X-User: zhaochenguang@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <zhaochenguang@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 2012207202; Wed, 06 May 2026 14:02:54 +0800
-From: Chenguang Zhao <zhaochenguang@kylinos.cn>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Chenguang Zhao <zhaochenguang@kylinos.cn>,
-	linux-rdma@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v3] RDMA/CM: add RDMA CM observability regression scripts
-Date: Wed,  6 May 2026 14:03:05 +0800
-Message-Id: <20260506060305.891564-1-zhaochenguang@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1778050733; c=relaxed/simple;
+	bh=sY5tng38gcB9d6yfv3moDi7zkrwX/tSnnQN2YfeTxTA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BuhEV6eG7C9Mj80QlK/CYRAC/9qmiZgwRfb1/bQ3rDChvMY6O4FVMQJDBGUQU2svq577hwFtkbfMwklMP6gcvfEVPSmhR+sDhb20mB90Cxer3oj9GWYSxb9f/n0kjA6zFlWRuU+StpbFuwug+pGsHZzTFXshNpW1riB7NPeiAqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=rY2rX3cL; arc=none smtp.client-ip=113.46.200.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=G+HgQJkz+cXLEu0vkzPQS/AfVAtum3DymBhzhdmqjVs=;
+	b=rY2rX3cL84ykQx4bxmZDkhviFef06MCpPOpPN/6UkenY5nWH5h/U4p1LKj/2mpw0dC1/MB0HE
+	hqH2vyo0WbUM5fEsGK7zR5cE6xmrv0anu8sHiIWRifN57edlqcXoCcY838w05MWV0kTMzsmw/qG
+	u+PDj81kbdjK1hd/OUJbjwU=
+Received: from mail.maildlp.com (unknown [172.19.163.127])
+	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4g9QzT0pKszKm4C;
+	Wed,  6 May 2026 14:52:05 +0800 (CST)
+Received: from kwepemk500009.china.huawei.com (unknown [7.202.194.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1AEBB402AB;
+	Wed,  6 May 2026 14:58:38 +0800 (CST)
+Received: from [10.67.121.161] (10.67.121.161) by
+ kwepemk500009.china.huawei.com (7.202.194.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 6 May 2026 14:58:37 +0800
+Message-ID: <09995589-b81d-4cb7-a313-15a943d8b28d@huawei.com>
+Date: Wed, 6 May 2026 14:58:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 480454D66F5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] vfio: add dma-buf get_tph callback and DMA_BUF_TPH
+ feature
+To: Zhiping Zhang <zhipingz@meta.com>, Alex Williamson <alex@shazbot.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+CC: Bjorn Helgaas <helgaas@kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Keith Busch <kbusch@kernel.org>, Yochai
+ Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
+References: <20260430200704.352228-1-zhipingz@meta.com>
+ <20260430200704.352228-2-zhipingz@meta.com>
+Content-Language: en-US
+From: fengchengwen <fengchengwen@huawei.com>
+In-Reply-To: <20260430200704.352228-2-zhipingz@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ kwepemk500009.china.huawei.com (7.202.194.94)
+X-Rspamd-Queue-Id: 1FF344D6E20
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [3.54 / 15.00];
-	SORTED_RECIPS(3.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20052-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-20053-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[huawei.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[zhaochenguang@kylinos.cn,linux-rdma@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fengchengwen@huawei.com,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[rxe_socket_with_netns.sh:url,rdma_cm_trace_sequence.sh:url,kylinos.cn:mid,kylinos.cn:email,rdma_common.sh:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,rdma_cm_fault_injection.sh:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,huawei.com:dkim,huawei.com:mid,meta.com:email]
 
-This adds a minimal RDMA CM selftest suite that captures observability
-baselines and runs trace, counter-delta, and fault-injection-oriented
-checks, plus a review-loop helper for repeated validation rounds.
+On 5/1/2026 4:06 AM, Zhiping Zhang wrote:
+> Add a dma-buf callback that returns raw TPH metadata from the exporter
+> so peer devices can reuse the steering tag and processing hint
+> associated with a VFIO-exported buffer.
+> 
+> Add a new VFIO_DEVICE_FEATURE_DMA_BUF_TPH ioctl that takes the fd from
+> VFIO_DEVICE_FEATURE_DMA_BUF along with a steering tag and processing
+> hint, validates the fd is a vfio-exported dma-buf belonging to this
+> device, and stores the TPH values under memory_lock. This keeps the
+> existing VFIO_DEVICE_FEATURE_DMA_BUF uAPI completely unchanged.
+> 
+> The user sequences setting TPH on the dma-buf before the importer
+> consumes it.
+> 
+> Add an st_width parameter to get_tph() so the exporter can reject
+> steering tags that exceed the consumer's supported width (8 vs 16 bit).
+> When no TPH metadata was supplied, get_tph() returns -EOPNOTSUPP.
+> 
+> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -1534,6 +1534,9 @@ int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
+>  		return vfio_pci_core_feature_token(vdev, flags, arg, argsz);
+>  	case VFIO_DEVICE_FEATURE_DMA_BUF:
+>  		return vfio_pci_core_feature_dma_buf(vdev, flags, arg, argsz);
+> +	case VFIO_DEVICE_FEATURE_DMA_BUF_TPH:
+> +		return vfio_pci_core_feature_dma_buf_tph(vdev, flags, arg,
+> +							 argsz);
+>  	default:
+>  		return -ENOTTY;
+>  	}
+> diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
+> --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
+> +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
+> @@ -19,6 +19,9 @@ struct vfio_pci_dma_buf {
+>  	u32 nr_ranges;
+>  	struct kref kref;
+>  	struct completion comp;
+> +	u16 steering_tag;
+> +	u8 ph;
+> +	u8 tph_present : 1;
+>  	u8 revoked : 1;
+>  };
+>  
+> @@ -69,6 +72,22 @@ vfio_pci_dma_buf_map(struct dma_buf_attachment *attachment,
+>  	return ret;
+>  }
+>  
+> +static int vfio_pci_dma_buf_get_tph(struct dma_buf *dmabuf, u16 *steering_tag,
+> +				    u8 *ph, u8 st_width)
+> +{
+> +	struct vfio_pci_dma_buf *priv = dmabuf->priv;
+> +
+> +	if (!priv->tph_present)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (st_width < 16 && priv->steering_tag > ((1U << st_width) - 1))
+> +		return -EINVAL;
 
-Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
----
-v3:
- TARGET += rdma is already present, remove it 
- as suggested by Yanjun.
+The checker will failed in following cases:
+1. If the exporter passed 8bit st, and importer support 16bit st, then it will pass
+   the checker.
+2. The exporter enabled 16bit st and its st is < 256 (note: the pcie protocol doesn't
+   restrict 16bit-st must >=256), and importer only support 8bit st, then it will also
+   pass the checker
 
-v2:
- https://lore.kernel.org/all/20260428071216.1212775-1-zhaochenguang@kylinos.cn/
+Suggest userspace passing both st(8bit) and extend-st(16bit), and importer chose the
+right one.
 
-v1:
- https://lore.kernel.org/all/20260416062224.1546388-1-zhaochenguang@kylinos.cn/
----
- tools/testing/selftests/rdma/Makefile         |  10 ++
- tools/testing/selftests/rdma/config           |   6 +
- .../selftests/rdma/rdma_cm_baseline.sh        |  58 ++++++++
- .../selftests/rdma/rdma_cm_counter_delta.sh   |  72 ++++++++++
- .../selftests/rdma/rdma_cm_fault_injection.sh |  95 +++++++++++++
- .../selftests/rdma/rdma_cm_review_loop.sh     |  35 +++++
- .../selftests/rdma/rdma_cm_trace_sequence.sh  |  83 ++++++++++++
- tools/testing/selftests/rdma/rdma_common.sh   | 126 ++++++++++++++++++
- 8 files changed, 485 insertions(+)
- create mode 100755 tools/testing/selftests/rdma/rdma_cm_baseline.sh
- create mode 100755 tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
- create mode 100755 tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
- create mode 100755 tools/testing/selftests/rdma/rdma_cm_review_loop.sh
- create mode 100755 tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
- create mode 100755 tools/testing/selftests/rdma/rdma_common.sh
-
-diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
-index 7dd7cba7a73c..04c52db4b9d9 100644
---- a/tools/testing/selftests/rdma/Makefile
-+++ b/tools/testing/selftests/rdma/Makefile
-@@ -4,4 +4,14 @@ TEST_PROGS := rxe_rping_between_netns.sh \
- 		rxe_socket_with_netns.sh \
- 		rxe_test_NETDEV_UNREGISTER.sh
- 
-+TEST_PROGS += \
-+	rdma_cm_baseline.sh \
-+	rdma_cm_trace_sequence.sh \
-+	rdma_cm_counter_delta.sh \
-+	rdma_cm_fault_injection.sh
-+
-+TEST_FILES += \
-+	rdma_common.sh \
-+	rdma_cm_review_loop.sh
-+
- include ../lib.mk
-diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
-index 4ffb814e253b..e22141838c19 100644
---- a/tools/testing/selftests/rdma/config
-+++ b/tools/testing/selftests/rdma/config
-@@ -1,3 +1,9 @@
- CONFIG_TUN
- CONFIG_VETH
- CONFIG_RDMA_RXE
-+CONFIG_DEBUG_KERNEL
-+CONFIG_FAULT_INJECTION
-+CONFIG_SYSFS
-+CONFIG_DEBUG_FS
-+CONFIG_FAULT_INJECTION_DEBUG_FS
-+CONFIG_FAILSLAB
-diff --git a/tools/testing/selftests/rdma/rdma_cm_baseline.sh b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
-new file mode 100755
-index 000000000000..b0d8b3e46470
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
-@@ -0,0 +1,58 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -euo pipefail
-+
-+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-+source "${SCRIPT_DIR}/rdma_common.sh"
-+
-+require_root
-+require_cmd date
-+require_cmd uname
-+
-+trace_dir="$(tracefs_dir || true)"
-+counter_root="$(find_cm_counter_root || true)"
-+out_dir="/tmp/rdma_cm_baseline.$(date +%s)"
-+dmesg_lines=400
-+dmesg_pattern="ib_cm|infiniband|rdma|roce|mlx|hns_roce|irdma|siw|rxe"
-+
-+mkdir -p "${out_dir}"
-+
-+log_info "writing baseline to ${out_dir}"
-+
-+{
-+	echo "timestamp=$(date -u +%FT%TZ)"
-+	echo "kernel=$(uname -r)"
-+	echo "hostname=$(uname -n)"
-+	echo "dmesg_lines=${dmesg_lines}"
-+	echo "dmesg_pattern=${dmesg_pattern}"
-+} >"${out_dir}/env.txt"
-+
-+if [[ -n "${trace_dir}" && -d "${trace_dir}/events/ib_cma" ]]; then
-+	find "${trace_dir}/events/ib_cma" -maxdepth 2 -name enable -print \
-+		>"${out_dir}/trace_events.list" 2>/dev/null || true
-+else
-+	log_warn "tracefs or ib_cma trace events are unavailable"
-+fi
-+
-+if [[ -n "${counter_root}" ]]; then
-+	{
-+		echo "counter_root=${counter_root}"
-+		for group in "${RDMA_COUNTER_GROUPS[@]}"; do
-+			for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-+				value="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
-+				echo "${group}.${attr}=${value}"
-+			done
-+		done
-+	} >"${out_dir}/cm_counters.before"
-+else
-+	log_warn "cm counters are unavailable under /sys/class/infiniband"
-+fi
-+
-+if command -v dmesg >/dev/null 2>&1; then
-+	dmesg | tail -n "${dmesg_lines}" | grep -E "${dmesg_pattern}" \
-+		>"${out_dir}/dmesg.rdma.tail" || true
-+fi
-+
-+log_info "baseline collection completed"
-+exit 0
-diff --git a/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh b/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
-new file mode 100755
-index 000000000000..060adf9fe78a
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
-@@ -0,0 +1,72 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -euo pipefail
-+
-+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-+source "${SCRIPT_DIR}/rdma_common.sh"
-+
-+require_root
-+counter_root="$(find_cm_counter_root || true)"
-+counter_wait_sec=2
-+
-+if [[ -z "${counter_root}" ]]; then
-+	log_warn "cm counters are unavailable under /sys/class/infiniband"
-+	exit "${ksft_skip}"
-+fi
-+
-+declare -A before after
-+
-+for group in "${RDMA_COUNTER_GROUPS[@]}"; do
-+	for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-+		key="${group}.${attr}"
-+		before["${key}"]="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
-+	done
-+done
-+
-+if [[ "${counter_wait_sec}" != "0" ]]; then
-+	log_info "waiting ${counter_wait_sec}s before workload"
-+	sleep "${counter_wait_sec}"
-+fi
-+
-+workload_rc=0
-+run_workload || workload_rc=$?
-+if [[ "${workload_rc}" -eq "${ksft_skip}" ]]; then
-+	exit "${ksft_skip}"
-+fi
-+if [[ "${workload_rc}" -ne 0 ]]; then
-+	log_err "workload failed with rc=${workload_rc}"
-+	exit "${workload_rc}"
-+fi
-+
-+for group in "${RDMA_COUNTER_GROUPS[@]}"; do
-+	for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-+		key="${group}.${attr}"
-+		after["${key}"]="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
-+		delta=$((after["${key}"] - before["${key}"]))
-+		echo "${key}.delta=${delta}"
-+		if ((delta < 0)); then
-+			log_err "counter regressed: ${key}"
-+			exit 1
-+		fi
-+	done
-+done
-+
-+dup_limit=10
-+retry_limit=10
-+
-+for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
-+	dup_delta=$((after["cm_rx_duplicates.${attr}"] - before["cm_rx_duplicates.${attr}"]))
-+	retry_delta=$((after["cm_tx_retries.${attr}"] - before["cm_tx_retries.${attr}"]))
-+
-+	if ((dup_delta > dup_limit)); then
-+		log_err "duplicate counter exceeds limit: ${attr}=${dup_delta}"
-+		exit 1
-+	fi
-+	if ((retry_delta > retry_limit)); then
-+		log_err "retry counter exceeds limit: ${attr}=${retry_delta}"
-+		exit 1
-+	fi
-+done
-+
-+exit 0
-diff --git a/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh b/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
-new file mode 100755
-index 000000000000..0202ee901386
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
-@@ -0,0 +1,95 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -euo pipefail
-+
-+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-+source "${SCRIPT_DIR}/rdma_common.sh"
-+
-+require_root
-+
-+debugfs_fail="/sys/kernel/debug/failslab"
-+recovery_wait_sec=2
-+if [[ ! -d "${debugfs_fail}" ]]; then
-+	log_warn "failslab is unavailable: ${debugfs_fail}"
-+	exit "${ksft_skip}"
-+fi
-+
-+for knob in probability interval times task-filter; do
-+	if [[ ! -f "${debugfs_fail}/${knob}" ]]; then
-+		log_warn "failslab knob missing: ${knob}"
-+		exit "${ksft_skip}"
-+	fi
-+done
-+
-+orig_probability="$(cat "${debugfs_fail}/probability")"
-+orig_interval="$(cat "${debugfs_fail}/interval")"
-+orig_times="$(cat "${debugfs_fail}/times")"
-+orig_task_filter="$(cat "${debugfs_fail}/task-filter")"
-+
-+restore_knobs()
-+{
-+	echo "${orig_probability}" >"${debugfs_fail}/probability" || true
-+	echo "${orig_interval}" >"${debugfs_fail}/interval" || true
-+	echo "${orig_times}" >"${debugfs_fail}/times" || true
-+	echo "${orig_task_filter}" >"${debugfs_fail}/task-filter" || true
-+}
-+
-+trap restore_knobs EXIT
-+
-+log_failslab_state()
-+{
-+	local state="$1"
-+	local task_filter probability interval times
-+
-+	task_filter="$(cat "${debugfs_fail}/task-filter")"
-+	probability="$(cat "${debugfs_fail}/probability")"
-+	interval="$(cat "${debugfs_fail}/interval")"
-+	times="$(cat "${debugfs_fail}/times")"
-+
-+	log_info "failslab ${state}: task-filter=${task_filter} probability=${probability}"
-+	log_info "failslab ${state}: interval=${interval} times=${times}"
-+}
-+
-+echo 1 >"${debugfs_fail}/task-filter"
-+echo 1 >"${debugfs_fail}/probability"
-+echo 100 >"${debugfs_fail}/interval"
-+echo 1 >"${debugfs_fail}/times"
-+log_failslab_state "enabled"
-+
-+if [[ -z "${CM_WORKLOAD_CMD:-}" && -n "${CM_VALIDATE_RECOVERY_CMD:-}" ]]; then
-+	CM_WORKLOAD_CMD="${CM_VALIDATE_RECOVERY_CMD}"
-+	log_warn "CM_WORKLOAD_CMD is not set; fallback to CM_VALIDATE_RECOVERY_CMD"
-+fi
-+
-+injected_rc=0
-+run_workload || injected_rc=$?
-+if [[ "${injected_rc}" -eq "${ksft_skip}" ]]; then
-+	exit "${ksft_skip}"
-+fi
-+log_info "workload rc under injection=${injected_rc}"
-+
-+echo 0 >"${debugfs_fail}/probability"
-+echo 0 >"${debugfs_fail}/times"
-+echo 0 >"${debugfs_fail}/task-filter"
-+log_failslab_state "disabled"
-+
-+recovery_cmd="${CM_VALIDATE_RECOVERY_CMD:-${CM_WORKLOAD_CMD:-}}"
-+if [[ -z "${recovery_cmd}" ]]; then
-+	log_warn "CM_VALIDATE_RECOVERY_CMD and CM_WORKLOAD_CMD are both unset"
-+	exit "${ksft_skip}"
-+fi
-+
-+if [[ "${recovery_wait_sec}" != "0" ]]; then
-+	log_info "waiting ${recovery_wait_sec}s before recovery workload"
-+	sleep "${recovery_wait_sec}"
-+fi
-+
-+log_info "running recovery workload: ${recovery_cmd}"
-+if ! bash -c "${recovery_cmd}"; then
-+	log_err "recovery workload failed after disabling fault injection"
-+	log_err "hint: ensure remote server is restarted and listening for a second connection"
-+	exit 1
-+fi
-+
-+exit 0
-diff --git a/tools/testing/selftests/rdma/rdma_cm_review_loop.sh b/tools/testing/selftests/rdma/rdma_cm_review_loop.sh
-new file mode 100755
-index 000000000000..c156090b17e3
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_cm_review_loop.sh
-@@ -0,0 +1,35 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -euo pipefail
-+
-+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-+cd "${SCRIPT_DIR}"
-+
-+declare -A rc
-+
-+run_step()
-+{
-+	local name="$1"
-+	local cmd="$2"
-+
-+	echo "==== ${name} ===="
-+	if bash -c "${cmd}"; then
-+		rc["${name}"]=0
-+	else
-+		rc["${name}"]=$?
-+	fi
-+	echo "==== ${name} rc=${rc["${name}"]} ===="
-+}
-+
-+run_step baseline "./rdma_cm_baseline.sh"
-+run_step trace "./rdma_cm_trace_sequence.sh"
-+run_step counters "./rdma_cm_counter_delta.sh"
-+run_step fault_injection "./rdma_cm_fault_injection.sh"
-+
-+echo "==== summary ===="
-+for name in baseline trace counters fault_injection; do
-+	echo "${name}=${rc["${name}"]}"
-+done
-+
-+exit 0
-diff --git a/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh b/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
-new file mode 100755
-index 000000000000..7e68289345e8
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
-@@ -0,0 +1,83 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -euo pipefail
-+
-+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-+source "${SCRIPT_DIR}/rdma_common.sh"
-+
-+require_root
-+require_cmd bash
-+require_cmd grep
-+
-+trace_dir="$(tracefs_dir || true)"
-+if [[ -z "${trace_dir}" ]]; then
-+	log_warn "tracefs is unavailable"
-+	exit "${ksft_skip}"
-+fi
-+
-+if [[ ! -d "${trace_dir}/events/ib_cma" ]]; then
-+	log_warn "ib_cma trace events are unavailable"
-+	exit "${ksft_skip}"
-+fi
-+
-+workload_rc=0
-+
-+cleanup_trace()
-+{
-+	local event
-+
-+	for event in icm_send_req icm_send_rep icm_send_rtu icm_recv_unknown_attr; do
-+		[[ -f "${trace_dir}/events/ib_cma/${event}/enable" ]] && \
-+			echo 0 >"${trace_dir}/events/ib_cma/${event}/enable"
-+	done
-+	[[ -f "${trace_dir}/events/ib_cma/enable" ]] && echo 0 >"${trace_dir}/events/ib_cma/enable"
-+	echo 0 >"${trace_dir}/tracing_on"
-+}
-+
-+trap cleanup_trace EXIT
-+
-+echo 0 >"${trace_dir}/tracing_on"
-+echo >"${trace_dir}/trace"
-+echo 1 >"${trace_dir}/events/ib_cma/enable"
-+
-+for event in icm_send_req icm_send_rep icm_send_rtu; do
-+	if [[ -f "${trace_dir}/events/ib_cma/${event}/enable" ]]; then
-+		echo 1 >"${trace_dir}/events/ib_cma/${event}/enable"
-+	fi
-+done
-+
-+echo 1 >"${trace_dir}/tracing_on"
-+run_workload || workload_rc=$?
-+echo 0 >"${trace_dir}/tracing_on"
-+
-+if [[ "${workload_rc}" -eq "${ksft_skip}" ]]; then
-+	exit "${ksft_skip}"
-+fi
-+
-+trace_log="/tmp/rdma_cm_trace.$(date +%s).log"
-+cat "${trace_dir}/trace" >"${trace_log}"
-+log_info "captured trace at ${trace_log}"
-+
-+if ! grep -Eq "icm_send_(req|rep|rtu)" "${trace_log}"; then
-+	log_err "missing CM send trace events (req/rep/rtu)"
-+	exit 1
-+fi
-+
-+err_lines="$(grep "icm_.*_err" "${trace_log}" || true)"
-+if [[ -n "${err_lines}" ]]; then
-+	# DREP send failure while already in TIMEWAIT is a common teardown
-+	# race and is tolerated for this smoke-style validation script.
-+	untolerated_err_lines="$(
-+		printf '%s\n' "${err_lines}" | \
-+			grep -Ev "icm_send_drep_err: .*state=TIMEWAIT" || true
-+	)"
-+	if [[ -n "${untolerated_err_lines}" ]]; then
-+		log_err "error trace event detected in ib_cma path"
-+		printf '%s\n' "${untolerated_err_lines}" >&2
-+		exit 1
-+	fi
-+	log_warn "only tolerated TIMEWAIT drep errors observed"
-+fi
-+
-+exit 0
-diff --git a/tools/testing/selftests/rdma/rdma_common.sh b/tools/testing/selftests/rdma/rdma_common.sh
-new file mode 100755
-index 000000000000..ee3d8b0d86b2
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_common.sh
-@@ -0,0 +1,126 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+ksft_skip=4
-+RET=0
-+
-+RDMA_COUNTER_GROUPS=(
-+	cm_tx_msgs
-+	cm_tx_retries
-+	cm_rx_msgs
-+	cm_rx_duplicates
-+)
-+
-+RDMA_COUNTER_ATTRS=(
-+	req
-+	mra
-+	rej
-+	rep
-+	rtu
-+	dreq
-+	drep
-+	sidr_req
-+	sidr_rep
-+	lap
-+	apr
-+)
-+
-+log_info()
-+{
-+	echo "INFO: $*"
-+}
-+
-+log_warn()
-+{
-+	echo "WARN: $*" >&2
-+}
-+
-+log_err()
-+{
-+	echo "ERROR: $*" >&2
-+}
-+
-+require_root()
-+{
-+	if [[ "$(id -u)" -ne 0 ]]; then
-+		log_warn "this test requires root privileges"
-+		exit "${ksft_skip}"
-+	fi
-+}
-+
-+require_cmd()
-+{
-+	local cmd="$1"
-+
-+	command -v "${cmd}" >/dev/null 2>&1 || {
-+		log_warn "missing required command: ${cmd}"
-+		exit "${ksft_skip}"
-+	}
-+}
-+
-+tracefs_dir()
-+{
-+	if [[ -d /sys/kernel/tracing ]]; then
-+		echo /sys/kernel/tracing
-+	elif [[ -d /sys/kernel/debug/tracing ]]; then
-+		echo /sys/kernel/debug/tracing
-+	else
-+		return 1
-+	fi
-+}
-+
-+find_cm_counter_root()
-+{
-+	local base
-+	local port
-+	local candidate
-+
-+	for base in /sys/class/infiniband/*; do
-+		[[ -d "${base}" ]] || continue
-+
-+		for port in "${base}"/ports/*; do
-+			[[ -d "${port}" ]] || continue
-+			# RoCE / newer sysfs: cm_* groups live directly under ports/<N>/
-+			if [[ -d "${port}/cm_tx_msgs" ]]; then
-+				echo "${port}"
-+				return 0
-+			fi
-+			# Legacy layout: under counters/ or hw_counters/
-+			for candidate in "${port}/counters" "${port}/hw_counters"; do
-+				[[ -d "${candidate}/cm_tx_msgs" ]] || continue
-+				echo "${candidate}"
-+				return 0
-+			done
-+		done
-+	done
-+
-+	return 1
-+}
-+
-+read_cm_counter()
-+{
-+	local root="$1"
-+	local group="$2"
-+	local attr="$3"
-+	local path="${root}/${group}/${attr}"
-+
-+	if [[ -f "${path}" ]]; then
-+		cat "${path}" 2>/dev/null
-+	else
-+		echo 0
-+	fi
-+}
-+
-+run_workload()
-+{
-+	local cmd="${CM_WORKLOAD_CMD:-}"
-+
-+	if [[ -z "${cmd}" ]]; then
-+		log_warn "CM_WORKLOAD_CMD is not set"
-+		return "${ksft_skip}"
-+	fi
-+
-+	log_info "running workload: ${cmd}"
-+	bash -c "${cmd}"
-+}
-+
--- 
-2.25.1
+> +
+> +	*steering_tag = priv->steering_tag;
+> +	*ph = priv->ph;
+> +	return 0;
+> +}
+> +
+>  static void vfio_pci_dma_buf_unmap(struct dma_buf_attachment *attachment,
+>  				   struct sg_table *sgt,
+>  				   enum dma_data_direction dir)
+> @@ -101,6 +120,7 @@ static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
+>  
+>  static const struct dma_buf_ops vfio_pci_dmabuf_ops = {
+>  	.attach = vfio_pci_dma_buf_attach,
+> +	.get_tph = vfio_pci_dma_buf_get_tph,
+>  	.map_dma_buf = vfio_pci_dma_buf_map,
+>  	.unmap_dma_buf = vfio_pci_dma_buf_unmap,
+>  	.release = vfio_pci_dma_buf_release,
+> @@ -331,6 +351,55 @@ int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
+>  	return ret;
+>  }
+>  
+> +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
+> +				      u32 flags,
+> +				      struct vfio_device_feature_dma_buf_tph __user *arg,
+> +				      size_t argsz)
+> +{
+> +	struct vfio_device_feature_dma_buf_tph set_tph;
+> +	struct vfio_pci_dma_buf *priv;
+> +	struct dma_buf *dmabuf;
+> +	int ret;
+> +
+> +	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_SET,
+> +				 sizeof(set_tph));
+> +	if (ret != 1)
+> +		return ret;
+> +
+> +	if (copy_from_user(&set_tph, arg, sizeof(set_tph)))
+> +		return -EFAULT;
+> +
+> +	if (set_tph.reserved)
+> +		return -EINVAL;
+> +
+> +	dmabuf = dma_buf_get(set_tph.dmabuf_fd);
+> +	if (IS_ERR(dmabuf))
+> +		return PTR_ERR(dmabuf);
+> +
+> +	if (dmabuf->ops != &vfio_pci_dmabuf_ops) {
+> +		ret = -EINVAL;
+> +		goto out_put;
+> +	}
+> +
+> +	priv = dmabuf->priv;
+> +	down_write(&vdev->memory_lock);
+> +	if (priv->vdev != vdev) {
+> +		ret = -EINVAL;
+> +		goto out_unlock;
+> +	}
+> +
+> +	priv->steering_tag = set_tph.steering_tag;
+> +	priv->ph = set_tph.ph;
+> +	priv->tph_present = 1;
+> +	ret = 0;
+> +
+> +out_unlock:
+> +	up_write(&vdev->memory_lock);
+> +out_put:
+> +	dma_buf_put(dmabuf);
+> +	return ret;
+> +}
+> +
+>  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
+>  {
+>  	struct vfio_pci_dma_buf *priv;
+> diff --git a/drivers/vfio/pci/vfio_pci_priv.h b/drivers/vfio/pci/vfio_pci_priv.h
+> --- a/drivers/vfio/pci/vfio_pci_priv.h
+> +++ b/drivers/vfio/pci/vfio_pci_priv.h
+> @@ -118,6 +118,10 @@ static inline bool vfio_pci_is_vga(struct pci_dev *pdev)
+>  int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
+>  				  struct vfio_device_feature_dma_buf __user *arg,
+>  				  size_t argsz);
+> +int vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev,
+> +				      u32 flags,
+> +				      struct vfio_device_feature_dma_buf_tph __user *arg,
+> +				      size_t argsz);
+>  void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev);
+>  void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked);
+>  #else
+> @@ -128,6 +132,13 @@ vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
+>  {
+>  	return -ENOTTY;
+>  }
+> +static inline int
+> +vfio_pci_core_feature_dma_buf_tph(struct vfio_pci_core_device *vdev, u32 flags,
+> +				  struct vfio_device_feature_dma_buf_tph __user *arg,
+> +				  size_t argsz)
+> +{
+> +	return -ENOTTY;
+> +}
+>  static inline void vfio_pci_dma_buf_cleanup(struct vfio_pci_core_device *vdev)
+>  {
+>  }
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -113,6 +113,23 @@ struct dma_buf_ops {
+>  	 */
+>  	void (*unpin)(struct dma_buf_attachment *attach);
+>  
+> +	/**
+> +	 * @get_tph:
+> +	 * @dmabuf: DMA buffer for which to retrieve TPH metadata
+> +	 * @steering_tag: Returns the raw TPH steering tag
+> +	 * @ph: Returns the TPH processing hint
+> +	 * @st_width: Consumer's supported steering tag width in bits (8 or 16)
+> +	 *
+> +	 * Return the TPH (TLP Processing Hints) metadata associated with this
+> +	 * DMA buffer. Exporters that do not provide TPH metadata should return
+> +	 * -EOPNOTSUPP. If the steering tag exceeds @st_width bits, return
+> +	 * -EINVAL.
+> +	 *
+> +	 * This callback is optional.
+> +	 */
+> +	int (*get_tph)(struct dma_buf *dmabuf, u16 *steering_tag, u8 *ph,
+> +		       u8 st_width);
+> +
+>  	/**
+>  	 * @map_dma_buf:
+>  	 *
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -1534,6 +1534,28 @@ struct vfio_device_feature_dma_buf {
+>   */
+>  #define VFIO_DEVICE_FEATURE_MIG_PRECOPY_INFOv2  12
+>  
+> +/**
+> + * Upon VFIO_DEVICE_FEATURE_SET associate TPH (TLP Processing Hints) metadata
+> + * with a vfio-exported dma-buf. The dma-buf must have been created by
+> + * VFIO_DEVICE_FEATURE_DMA_BUF on this device.
+> + *
+> + * dmabuf_fd is the file descriptor returned by VFIO_DEVICE_FEATURE_DMA_BUF.
+> + * steering_tag and ph are the raw TPH values that importing drivers should use
+> + * when accessing the buffer.
+> + *
+> + * The user must set TPH on the dma-buf before the importer consumes it.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +#define VFIO_DEVICE_FEATURE_DMA_BUF_TPH 13
+> +
+> +struct vfio_device_feature_dma_buf_tph {
+> +	__s32	dmabuf_fd;
+> +	__u16	steering_tag;
+> +	__u8	ph;
+> +	__u8	reserved;
+> +};
+> +
+>  /* -------- API for Type1 VFIO IOMMU -------- */
+>  
+>  /**
+> 
+> 
 
 
