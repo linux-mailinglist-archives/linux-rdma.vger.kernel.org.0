@@ -1,277 +1,214 @@
-Return-Path: <linux-rdma+bounces-20054-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20055-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8EApGSHo+mlIUAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20054-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:05:05 +0200
+	id yDI7C4Tp+mlIUAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20055-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:11:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14EA34D6F84
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:05:00 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908724D70A0
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:10:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 57D7E303EEAB
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 07:04:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 79464302AF14
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 07:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBED836BCC3;
-	Wed,  6 May 2026 07:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF34936E498;
+	Wed,  6 May 2026 07:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Ew/DB68b"
+	dkim=pass (2048-bit key) header.d=ntu.edu.sg header.i=@ntu.edu.sg header.b="D/ANbBkp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout11.his.huawei.com (canpmsgout11.his.huawei.com [113.46.200.226])
+Received: from TYDPR03CU002.outbound.protection.outlook.com (mail-japaneastazon11013036.outbound.protection.outlook.com [52.101.127.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425F6369972;
-	Wed,  6 May 2026 07:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.226
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778051071; cv=none; b=FC6OgRArtGhhlY2m+e96O1tGaQcto+QcJ5z5EY1SSwKWhzZa8INIthnmluqEgcVuIQLtVplQWWpjcPPEC9s8WUE7kdQ+F3AFwZJqtXm4gr6B2xe/kf2jZZo4M/oEtwO2WnA9VPTdQYbBP+npWG5aV0pJVqIhRbp4EY3f6zKFVkQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778051071; c=relaxed/simple;
-	bh=Y/HHyV3Pag2vFHBzhqDfxLpfaC/x1YZ9aOJwU/NaxrY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HqZZZ1zkoEh71OE339mgF7y1rPGKmGDoHrByAuS2GwAJmc5pQI58mAjEzz+1ZkZyBznDlmzuPV6NBRLjLBU6V27LYvs1nWUAvwFIV0pqhuzJ8bIqeT604nJu8mLyEC7V3ziModUDPr5ZW1LHS4V1k32w/pQ/VnbDwe9NhejOIvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Ew/DB68b; arc=none smtp.client-ip=113.46.200.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=I4AmL4fvNpHMSVvocXatLftD8fJJA1bCgo9cY2QiSIw=;
-	b=Ew/DB68bHUrSMhBn5/hMtVsMFKu006BxiMFiG/N/kYcaJph0xKfstdQz6yH8GMWVGNimnU5P+
-	9jpxClX/XwWL12MleUz9H09yjPafzKAzBbYjrVhyN686xOBytdxGOZ9Ry4uzdkFlyqWw9a9tt5z
-	nQPJxUjeIBbD/1b5iR8YL0s=
-Received: from mail.maildlp.com (unknown [172.19.163.200])
-	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4g9R693VDZzKm5S;
-	Wed,  6 May 2026 14:57:53 +0800 (CST)
-Received: from kwepemk500009.china.huawei.com (unknown [7.202.194.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id 79D764055B;
-	Wed,  6 May 2026 15:04:26 +0800 (CST)
-Received: from [10.67.121.161] (10.67.121.161) by
- kwepemk500009.china.huawei.com (7.202.194.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 6 May 2026 15:04:25 +0800
-Message-ID: <a63179d7-28b1-4269-9ef2-c20368d0b91c@huawei.com>
-Date: Wed, 6 May 2026 15:04:25 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897B936DA0D;
+	Wed,  6 May 2026 07:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.127.36
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778051452; cv=fail; b=KMlp8aFjZIEECsEapgUS9mvILKhfXMa/MEB3TJNZSMW8ldij5zW4Shi3JsHEVxHo+2IRUkLUVkgVYLsv0LSbLmNk9zBojwc3+3IbppJsuuEovAEZJt/NkGIGoYOC2CwUP8y7AbDgRIKC8tYj43hmjdHNUZ6Bpey1uibF0X96PYI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778051452; c=relaxed/simple;
+	bh=mxQC6m9q5YTbH1rJhlVRLgPr3gc8AL27RxoRQtlMdi0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Htc8TVwYsK5VCMjjK23GiC1EMWW4KmemriSy4AteBDwMJJ2WYjt4ksmnIeD7fo/B36lCV7OoDPSY9rYUJMdXOPy1qRGNcAX4fTu7OGXdc2zbVGFBrXgbKo+H+J0yO9r9jaRhNaBnON+H8ivImnBLT8anerNIWu/LFJOpz9Hng4s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ntu.edu.sg; spf=pass smtp.mailfrom=ntu.edu.sg; dkim=pass (2048-bit key) header.d=ntu.edu.sg header.i=@ntu.edu.sg header.b=D/ANbBkp; arc=fail smtp.client-ip=52.101.127.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ntu.edu.sg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ntu.edu.sg
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=b50z987M7w6Ypggx/GyFV2ajuJoJyUxUwhcirPb6P0+pOB5wKd751QV1N62av9GEFxUsLYKiat+kGMvv5RzFzOauU3fAJ3p1xI/Sju9bzQsj+2vlWVOrnAhxfbDsgEp+wqruC7n9PkpAkpWEDiEq03iyZPXnGoyeAfEeyqmm2ECFrPNjsCyxrp9I7cfJHs3pyemuUxucDPhpzqWupV24Tv4kY5pkhk2wWDdx02+5o21rcSwL6ACh0b20zJdG5sbv4AUnatLfE6czBEdR7b1MMX577KXgsqLV41HnlOHjXN0kpzuLeyD01HON+XxdvKf0CBXDaFcTQjzRnWlKhXNFng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PIs9gerk/MjduIN/eh/+DBbnWpzlY00tLB7L8d27yGk=;
+ b=EEjn9XeLTIyCbMnTc/FPWJiaLmZCFNWx1Pugn7fDWSvZzKjEZjcSD+uuXhEhLEK/P47JVgaZbsokWylryh2OcbsuxIVPQoFv3vfwp7ZO95vcNNumgqn1PAemmPMrP00FHqVxswTFBnyjO9PPMewpY6Pny785cUR0QTFIWVpvMMm0cEOj6lsRsemsQosxbz69Zp+vocQJyXpkeeYS/E2zqRw3/cH3mhFXUG6N7JRxfxrfAwsTZuV4BggkHtof92ioQLxrN5PcDxIzB/0J92/dFSOptE+vnsj6Aro+Kw9xJIHvkxfmJ19qBQ1KLv6SR63XrsvYnzeRlVbP96Yx+I0pMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ntu.edu.sg; dmarc=pass action=none header.from=ntu.edu.sg;
+ dkim=pass header.d=ntu.edu.sg; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ntu.edu.sg;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PIs9gerk/MjduIN/eh/+DBbnWpzlY00tLB7L8d27yGk=;
+ b=D/ANbBkp3rTnr6jKSWmYUckGUEop5CfJ6RuUw0AEFy0XO4Xrea/lzizs+8Hsa1+I3FNF1A1WZt0ypMLxOeqayLz6paSRl5EcdkEiIjrXEE1QgNX6wFKiDvtigCZD6SpHMIwpCRc0UQdKhYUmOm38FZE4UQ2XDNzmU5xKKDzmL38xzLoqbjSo4SOAIvumshywu/oCugaGWrAhcIGogGreJulvMUoBh/Blsw0eUByK1b5e48ncmWFbcmbZ0KPXEMDR7ZC/xxeQsKHN3ERk3YbY6IuHJpvmSJCzqHfTuWiTYYrpZDRXxM5/FPy6IbIceEYfHLNdxW0kohwLaH0xb9dOVw==
+Received: from TYZPR01MB6758.apcprd01.prod.exchangelabs.com
+ (2603:1096:405:a2::6) by SEZPR01MB6107.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:21f::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.15; Wed, 6 May
+ 2026 07:10:43 +0000
+Received: from TYZPR01MB6758.apcprd01.prod.exchangelabs.com
+ ([fe80::bbb1:1ecd:fe69:9743]) by TYZPR01MB6758.apcprd01.prod.exchangelabs.com
+ ([fe80::bbb1:1ecd:fe69:9743%4]) with mapi id 15.20.9870.023; Wed, 6 May 2026
+ 07:10:43 +0000
+From: Xie Maoyi <maoyi.xie@ntu.edu.sg>
+To: Allison Henderson <achender@kernel.org>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
+Subject: Re: rds: possible cross netns leak via RDS_INFO_* getsockopt
+Thread-Topic: rds: possible cross netns leak via RDS_INFO_* getsockopt
+Thread-Index: AQHc3GmNFjglT8RFCkaEpGWQP2W0QbX//mWAgACXNTc=
+Date: Wed, 6 May 2026 07:10:43 +0000
+Message-ID:
+ <TYZPR01MB6758F66A06980DCE70C7F75CDC3F2@TYZPR01MB6758.apcprd01.prod.exchangelabs.com>
+References:
+ <TYZPR01MB6758F43459242F22946A8192DC3E2@TYZPR01MB6758.apcprd01.prod.exchangelabs.com>
+ <2962d0cbd5313ab482ece5543bafa0d2f0c32cc3.camel@kernel.org>
+In-Reply-To: <2962d0cbd5313ab482ece5543bafa0d2f0c32cc3.camel@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ntu.edu.sg;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR01MB6758:EE_|SEZPR01MB6107:EE_
+x-ms-office365-filtering-correlation-id: e8b568c7-9964-4ea6-a48d-08deab3e969d
+x-o365: NTU-OFF365
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|1800799024|786006|366016|38070700021|56012099003|18002099003|22082099003;
+x-microsoft-antispam-message-info:
+ tm2him3B0GNzkzk4JJt8SECgnEsF8PUALMY7KYFHBbQMdG95Jqrh4819x+RI+e1aAsicbyzgrB9nN/54kFVfONa1x5LDyejOUhQiuL4GNA6KPUwcb6k+r9e8LDA29tIrtmx32EjK0B8Aq79l8U/Uj2QA60Jqm04FADZeAqYWLoou3OEmGxa+fLMLE1ctgdYcF0gvmFTXImNUiD8DPpinOHOE0wsRO6+mXjPFxr4bA+PypnRo4S3mF92SekabvX71bZZzrzYYzHl7D5DEAn/TJzpDZNRoDwVr5JmgkhozU9wkMZZKn0CU1Ejz/lObnv+ylbJpeRgOKt3ZWPstBVhqpC+ZkeJGvjSaBiNBktth57YYUtIgdtk31iAHh62ecLvOk2BYhV687PmnD/R8UoC1k4hcJnMsx5rI3LlPoOnKJvuTi1BXPLYop7+fugvdceSCQTFx70OaZDgrKE7Zppfx/Ja7+QE0WZcUL5k/uoMek9FmfrU5Jom7ou7LzUcA9g3ucMF3+TeS8Chkh3zmO7EJm/EPaKFfB72I9MYnWLRctav1ALvYl0PLge/efQ3+7vDYxb8BS9ODbpAw6URdBfxKaf3K3Wt+jwxm98aabSCqna+KJ9QBJhJhdNAatByZ+2HB23BaDK+bYwJ0rtdpB9WKdg4dl4YTg765ccQTPCkg8X/o2saZ7NRAGOEJPx+W/vax
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR01MB6758.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(786006)(366016)(38070700021)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?WcGVIE/gIypcu0Sd+hjRug32y4+IQELY4m8YI0AJm8sCN1Jv7eVDr7fJOY?=
+ =?iso-8859-1?Q?niCfCL6wul7RvPBZYgUbNQOh0qSpD5SZvzIc66lV3KSTkVHDsbuEscB7K7?=
+ =?iso-8859-1?Q?cAlXxtj1FCpsDorlLVyw+AvWZr1mkn/tyK0Cij40twV2BOc6MlBLOV2/oE?=
+ =?iso-8859-1?Q?Mw3QMThk7/Db+Ummr8we7Zq11B58uk5tIOi2K1HutaXIinj+TcQ7/YcYFD?=
+ =?iso-8859-1?Q?Sc9HRDj4eW8QYlreaNVVaj/N1vDlcHpvsTLciruPwGmjHnozZ+2EDjE65c?=
+ =?iso-8859-1?Q?+LqavSC9JcqD3oWtdGCNt5WQ9Bl9WP7kRDpm1RQ5zf4tlVPp0VnjaRB2HR?=
+ =?iso-8859-1?Q?2GwwAfs5LoyIxzFn5+edRzwjwhFqBXvoIrmzNYukSnBN5k7ydK0HOo07z+?=
+ =?iso-8859-1?Q?TYnH5J5auLpwP+vHuEsvB2G1dnaBWhJ7ee+uetRUjRi7ppZex/mtxI8Mk7?=
+ =?iso-8859-1?Q?r5Fr7vfGER8F0ES+WKI2erF4a6nC+0DbdpNlzywWHGQe4lfMvGM5bmY+sq?=
+ =?iso-8859-1?Q?nXyd4msicOenaWmylbLcL8UDAmUn9TkrSyMh2VJwMy6Ey/G3YB/EygxP97?=
+ =?iso-8859-1?Q?bTeTCq/edficejixmNGCsXy+YY2xWUeYsrP0nyhlPLCFKf8/L8Ns5291JP?=
+ =?iso-8859-1?Q?v/UYlTCYdUYXMIZi0v+dwspPgmcqLxq9SozL3ufQHhWLSm/SQc8l1B4VS1?=
+ =?iso-8859-1?Q?92rRS9ZpDSbD1LpE04AcUaluReaFqriZl85q9jMEpTLoYRsVqulDJpv5ye?=
+ =?iso-8859-1?Q?JtrUQLsOYu/wcHwZsX4dFwLdLVAlb6ZLi+zDHd+Nan9GJuJSJ3dNZrr/iI?=
+ =?iso-8859-1?Q?OTGkX5lEyEDtkX3dNZ6qX/u2+s/t4O+4n73qwUCa4WhlYfa7Kuw2SY/oBc?=
+ =?iso-8859-1?Q?HhT5mk8B8iFyajISY2dz4AHY8Vw7nxZx/DGNG8Zro5r9W69CFcETvPzYjb?=
+ =?iso-8859-1?Q?47UnE3fSyWbDmp9auAfGs//4pPJtD4JTyjfTOJFoC+wE5iRlZiDQUDRiVX?=
+ =?iso-8859-1?Q?LmFMRRGYSMq8xP8BBXOBNb+vc5WJ5JST16gh/cDU29uplpgvdZIqGf04ac?=
+ =?iso-8859-1?Q?maZ2RNpPx5RP0C54cBQ9Es4ewcxj6unPgC8QqTjgOqI+38yv6G46PNpkpz?=
+ =?iso-8859-1?Q?Fxqxy7MMHNM9zDrBfJr9w4p3QYfzZVnl2KCd1sj9OHy1kGFGRWEZuKEyY1?=
+ =?iso-8859-1?Q?8/jmBbPJtX4O1E0EUEJBdYg6AzKxnEAQ72fEEOv6/8LVGXguQWYZzOCgHC?=
+ =?iso-8859-1?Q?i6FdKDlTt0J7L6kgP/38m8o8wfOP2dqQb1hQE92W8IFsol93HwDF6mb6bC?=
+ =?iso-8859-1?Q?LpIEf1pqZI36eoGpCJEyhgkS4ydUq6LG/Y+QOPQKz4SA5QS3LC4BrJf5sj?=
+ =?iso-8859-1?Q?dPjcO98KwCmqP8u+89ARzZgxbclaBhPujiy4q3ALcPGdUL3CLGtx1A2ozU?=
+ =?iso-8859-1?Q?5U9mfd7De19h0w7VXYnZfCx3u8Jn/sAhwUNrnjoexNyfrDuE9WDtmx+oUB?=
+ =?iso-8859-1?Q?weyXcW5+vyWaww+M+0Z/BSEpMEAxYAa1MMxBqn5UFQiZrrVDo7McmpIaEr?=
+ =?iso-8859-1?Q?v5/Ffc1d5T/LnLXiK0LoScz8DgnMd1Ar50zE/9hCj+WrBwV2vYwzj4DVWo?=
+ =?iso-8859-1?Q?L5biCe2pWLhNQ3/myWv3bSxKxNuvNOh8pqfelNtntU1I9B0foevQ9AHudF?=
+ =?iso-8859-1?Q?j48vEd/x5zt94quMA1D+cRQqRymGaCyfYWGVHq3qLpxY4zkUoSuhw8y5Tm?=
+ =?iso-8859-1?Q?ipE6idF6xFQll5PZXj9GlvFSYoowIDHDbK/MHKKlhL2Ue0GDJBuC1PwMbg?=
+ =?iso-8859-1?Q?KEu15dZzwuqfQzmKR+oc5UUQ3YgMb3U=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] RDMA/mlx5: get tph for p2p access when registering
- dma-buf mr
-To: Zhiping Zhang <zhipingz@meta.com>, Alex Williamson <alex@shazbot.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-CC: Bjorn Helgaas <helgaas@kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, Keith Busch <kbusch@kernel.org>, Yochai
- Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
-References: <20260430200704.352228-1-zhipingz@meta.com>
- <20260430200704.352228-3-zhipingz@meta.com>
-Content-Language: en-US
-From: fengchengwen <fengchengwen@huawei.com>
-In-Reply-To: <20260430200704.352228-3-zhipingz@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemk500009.china.huawei.com (7.202.194.94)
-X-Rspamd-Queue-Id: 14EA34D6F84
+X-OriginatorOrg: ntu.edu.sg
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB6758.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8b568c7-9964-4ea6-a48d-08deab3e969d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2026 07:10:43.5951
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 15ce9348-be2a-462b-8fc0-e1765a9b204a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZEVnSAR433LCqFNSDTMcyEzHUvodEzeW+q/sO1wINDICeYd/2xoIEB11YgbQeWopy3Kh0vn+r3hE9brEIOpsAxOkwgGU93BOCZwICgfNetY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR01MB6107
+X-Rspamd-Queue-Id: 908724D70A0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[ntu.edu.sg,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[ntu.edu.sg:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[huawei.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	TAGGED_FROM(0.00)[bounces-20054-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SEM_URIBL_UNKNOWN_FAIL(0.00)[meta.com:query timed out,huawei.com:query timed out];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fengchengwen@huawei.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20055-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[ntu.edu.sg:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[maoyi.xie@ntu.edu.sg,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	SEM_URIBL_FRESH15_UNKNOWN_FAIL(0.00)[huawei.com:query timed out,meta.com:query timed out];
-	RBL_SEM_IPV6_FAIL(0.00)[2600:3c04:e001:36c::12fc:5321:query timed out];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:dkim,huawei.com:mid]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ntu.edu.sg:dkim,maoyixie.com:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
-On 5/1/2026 4:06 AM, Zhiping Zhang wrote:
-> Query dma-buf TPH metadata when registering a dma-buf MR for peer to
-> peer access and translate the raw steering tag into an mlx5 steering tag
-> index. Factor mlx5_st_alloc_index() so callers that already have a raw
-> steering tag can allocate the corresponding mlx5 index directly. Keep the
-> DMAH path as the first priority and only fall back to dma-buf metadata when
-> no DMAH is supplied.
-> 
-> Pass the device's supported ST width (8 or 16 bit, derived from
-> pdev->tph_req_type) to get_tph() so the exporter can reject tags that
-> exceed the consumer's capability. Initialize ret in mlx5_st_create() so the
-> cached steering-tag path returns success cleanly under clang builds.
-> 
-> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> --- a/drivers/infiniband/hw/mlx5/mr.c
-> +++ b/drivers/infiniband/hw/mlx5/mr.c
-> @@ -46,6 +46,8 @@
->  #include "data_direct.h"
->  #include "dmah.h"
->  
-> +MODULE_IMPORT_NS("DMA_BUF");
-> +
->  static int mkey_max_umr_order(struct mlx5_ib_dev *dev)
->  {
->  	if (MLX5_CAP_GEN(dev->mdev, umr_extended_translation_offset))
-> @@ -899,6 +901,40 @@ static struct dma_buf_attach_ops mlx5_ib_dmabuf_attach_ops = {
->  	.invalidate_mappings = mlx5_ib_dmabuf_invalidate_cb,
->  };
->  
-> +static void get_tph_mr_dmabuf(struct mlx5_ib_dev *dev, int fd, u16 *st_index,
-> +			      u8 *ph)
-> +{
-> +	struct pci_dev *pdev = dev->mdev->pdev;
-> +	struct dma_buf *dmabuf;
-> +	u16 steering_tag;
-> +	u8 st_width;
-> +	int ret;
-> +
-> +	st_width = (pdev->tph_req_type == PCI_TPH_REQ_EXT_TPH) ? 16 : 8;
+Hi Allison,
 
-The tph_req_type is defined under CONFIG_PCIE_TPH, how about add a wrap function
-to query it.
+Thanks for confirming the direction.
 
-> +
-> +	dmabuf = dma_buf_get(fd);
-> +	if (IS_ERR(dmabuf))
-> +		return;
-> +
-> +	if (!dmabuf->ops->get_tph)
-> +		goto end_dbuf_put;
-> +
-> +	ret = dmabuf->ops->get_tph(dmabuf, &steering_tag, ph, st_width);
-> +	if (ret) {
-> +		mlx5_ib_dbg(dev, "get_tph failed (%d)\n", ret);
-> +		goto end_dbuf_put;
-> +	}
-> +
-> +	ret = mlx5_st_alloc_index_by_tag(dev->mdev, steering_tag, st_index);
-> +	if (ret) {
-> +		*ph = MLX5_IB_NO_PH;
-> +		mlx5_ib_dbg(dev, "st_alloc_index_by_tag failed (%d)\n", ret);
-> +	}
-> +
-> +end_dbuf_put:
-> +	dma_buf_put(dmabuf);
-> +}
-> +
->  static struct ib_mr *
->  reg_user_mr_dmabuf(struct ib_pd *pd, struct device *dma_device,
->  		   u64 offset, u64 length, u64 virt_addr,
-> @@ -941,6 +977,8 @@ reg_user_mr_dmabuf(struct ib_pd *pd, struct device *dma_device,
->  		ph = dmah->ph;
->  		if (dmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS))
->  			st_index = mdmah->st_index;
-> +	} else {
-> +		get_tph_mr_dmabuf(dev, fd, &st_index, &ph);
->  	}
->  
->  	mr = alloc_cacheable_mr(pd, &umem_dmabuf->umem, virt_addr,
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/st.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/st.c
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/st.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/st.c
-> @@ -29,7 +29,7 @@ struct mlx5_st *mlx5_st_create(struct mlx5_core_dev *dev)
->  	u8 direct_mode = 0;
->  	u16 num_entries;
->  	u32 tbl_loc;
-> -	int ret;
-> +	int ret = 0;
->  
->  	if (!MLX5_CAP_GEN(dev, mkey_pcie_tph))
->  		return NULL;
-> @@ -92,23 +92,18 @@ void mlx5_st_destroy(struct mlx5_core_dev *dev)
->  	kfree(st);
->  }
->  
-> -int mlx5_st_alloc_index(struct mlx5_core_dev *dev, enum tph_mem_type mem_type,
-> -			unsigned int cpu_uid, u16 *st_index)
-> +int mlx5_st_alloc_index_by_tag(struct mlx5_core_dev *dev, u16 tag,
-> +			       u16 *st_index)
->  {
->  	struct mlx5_st_idx_data *idx_data;
->  	struct mlx5_st *st = dev->st;
->  	unsigned long index;
->  	u32 xa_id;
-> -	u16 tag;
-> -	int ret;
-> +	int ret = 0;
->  
->  	if (!st)
->  		return -EOPNOTSUPP;
->  
-> -	ret = pcie_tph_get_cpu_st(dev->pdev, mem_type, cpu_uid, &tag);
-> -	if (ret)
-> -		return ret;
-> -
->  	if (st->direct_mode) {
->  		*st_index = tag;
->  		return 0;
-> @@ -152,6 +147,20 @@ int mlx5_st_alloc_index(struct mlx5_core_dev *dev, enum tph_mem_type mem_type,
->  	mutex_unlock(&st->lock);
->  	return ret;
->  }
-> +EXPORT_SYMBOL_GPL(mlx5_st_alloc_index_by_tag);
-> +
-> +int mlx5_st_alloc_index(struct mlx5_core_dev *dev, enum tph_mem_type mem_type,
-> +			unsigned int cpu_uid, u16 *st_index)
-> +{
-> +	u16 tag;
-> +	int ret;
-> +
-> +	ret = pcie_tph_get_cpu_st(dev->pdev, mem_type, cpu_uid, &tag);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return mlx5_st_alloc_index_by_tag(dev, tag, st_index);
-> +}
->  EXPORT_SYMBOL_GPL(mlx5_st_alloc_index);
->  
->  int mlx5_st_dealloc_index(struct mlx5_core_dev *dev, u16 st_index)
-> diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-> --- a/include/linux/mlx5/driver.h
-> +++ b/include/linux/mlx5/driver.h
-> @@ -1166,10 +1166,17 @@ int mlx5_dm_sw_icm_dealloc(struct mlx5_core_dev *dev, enum mlx5_sw_icm_type type
->  			   u64 length, u16 uid, phys_addr_t addr, u32 obj_id);
->  
->  #ifdef CONFIG_PCIE_TPH
-> +int mlx5_st_alloc_index_by_tag(struct mlx5_core_dev *dev, u16 tag,
-> +			       u16 *st_index);
->  int mlx5_st_alloc_index(struct mlx5_core_dev *dev, enum tph_mem_type mem_type,
->  			unsigned int cpu_uid, u16 *st_index);
->  int mlx5_st_dealloc_index(struct mlx5_core_dev *dev, u16 st_index);
->  #else
-> +static inline int mlx5_st_alloc_index_by_tag(struct mlx5_core_dev *dev,
-> +					     u16 tag, u16 *st_index)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  static inline int mlx5_st_alloc_index(struct mlx5_core_dev *dev,
->  				      enum tph_mem_type mem_type,
->  				      unsigned int cpu_uid, u16 *st_index)
-> 
-> 
+We will rewrite the patch as a per entry netns filter in each
+of the affected handlers, instead of the init_net gate in
+rds_info_getsockopt() that we mentioned. Concretely:
 
+  rds_sock_info / rds6_sock_info: skip rds_sock_list entries
+    whose socket netns does not match the caller's netns.
+  rds_tcp_tc_info / rds6_tcp_tc_info: skip rds_tcp_tc_list
+    entries the same way.
+  rds_conn_info / rds6_conn_info and the *_message_info_*
+    variants: skip rds_conn_hash[] entries whose c_net does
+    not match the caller's netns.
+
+This preserves the rds-tcp behaviour where a caller outside
+init_net with legitimate connections in their own netns can
+still see them.
+
+We will send the patch as a separate reply once it is ready
+and verified against the same PoC.
+
+Thanks,
+
+Maoyi Xie and Praveen Kakkolangara
+
+Maoyi Xie
+Nanyang Technological University
+https://maoyixie.com/
+________________________________
+
+CONFIDENTIALITY: This email is intended solely for the person(s) named and =
+may be confidential and/or privileged. If you are not the intended recipien=
+t, please delete it, notify us and do not copy, use, or disclose its conten=
+ts.
+Towards a sustainable earth: Print only when necessary. Thank you.
 
