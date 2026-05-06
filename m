@@ -1,230 +1,178 @@
-Return-Path: <linux-rdma+bounces-20088-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20089-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qAaPAzJR+2mSZQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20088-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:33:22 +0200
+	id 2J17NghS+2n+ZQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20089-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:36:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id E55C74DC41E
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 745914DC515
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 16:36:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4BF59305871A
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 14:29:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E86723034B1C
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 14:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F556481A93;
-	Wed,  6 May 2026 14:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892304657CC;
+	Wed,  6 May 2026 14:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZmrxhBnP"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="WE4ApCiK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D9648164A
-	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 14:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45832C21D9
+	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 14:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778077711; cv=none; b=U2u3IpNKaNXMDSgHkLGobyo/fLPM3omonJ/McjA/3XE2OPox0okrWChdSW9WKgcsURXCV0sGaaiSiRLcFeUztc2QnyW5CP7zwPhJWQWS2QJV4K/pqFVOHr20w4CMJK6ZJStx4uzAIR7S6W8jTb4yeyltECZmISyfuggGQo/qIgM=
+	t=1778077955; cv=none; b=YTn5VOgLXQQbmnoNYu9OLNUQYe73hbe+SQwnZy1/e5A/cPgsPoENOk9XiMZQ5Q3Ae21r+YryyX+DhsUdjG0LD3u7O2rOVmbxTleGEB+4MSa9QA0W+AiD/Ypy9UWvZT+wPhJzfAJpggVdTEm3n0OOs4fZzNA84JZgKFGsWBR75r0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778077711; c=relaxed/simple;
-	bh=5ZU21tRIlqXoH9jIFxronPOEdmNOHwLE03547/Jek1U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=VNBAElfJPoQiDgf9trL9+6FGdifDRgOFuyeGmzh6mhA2XYYDmH9xjYTHQa/3jkWfwPNpYtvdDqs7A82vPZP3jaO7KzemJivjPFLMDaK5JG2Uyl44fKpUlXeqL4ss9KXJnAhHQGxYo3Es3xk9JNQRsUwjugJB+ShBzB8GntYm0M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZmrxhBnP; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <78183562-ff83-4b7a-9c7b-b3cb92676ee8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778077696;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vuoq7yYRR946Z2PaAByJyOtutD5hvIdtunJIHpdgfA8=;
-	b=ZmrxhBnP6yTe33insjP4W9UIy+jxXJFkVZPd54uf85RoC/rbEvobOZhrLa6t/KPtTAr91/
-	v5n3n4meLok1Wh7lBsWjmu2JCRD6ERfbRu9u4uuwtB0uTWFlSbD5I1tLxDrzwR4KHI9nD8
-	iJn4H7Q5zmwuLCjpVxDI+Iu5T13XxDA=
-Date: Wed, 6 May 2026 07:28:10 -0700
+	s=arc-20240116; t=1778077955; c=relaxed/simple;
+	bh=acpxXy4xZJqrgFFB6+zduf5tuNxkeOl7e1WyZhRbkPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M6+K50qXE7DDB7Y5cefntEBQbIHtD+6+g/EC7LDKf9CJUMDLEDYZDIGsdwZ5r72ajGG29isqeBG+N+3QmaNPtRW0SsFzJUgcyiMIFeiMC7CmyXjSFEFJ3ds86b5rJXO33kV+Q4wGlinJ3FoPfXBgQHoAXBG4HN1MVaSxKXA9pq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=WE4ApCiK; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-488a9033b2cso58183555e9.2
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 07:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778077952; x=1778682752; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BauXOWgQwAdyupYUeYpEdkQ1i1e1EvpLEkDyfo36sjY=;
+        b=WE4ApCiKjxHcUpQWad7uc04eWaarBdIziv8bNF3TVFti5jkBpmamlCyIVzArcHyx0d
+         KprC5dGb1qNwdBhRgFU+6mIrJ6RpCIr/ilmyT3PmDgn5E5t/bbku67luX0o3XDMio30V
+         c62fTUdwThE7eHvj9KAla9Tz22f5Rb9/WkKSWUNFE8zQort3wopuliUt5IGJYC45yG3L
+         DccQpEIaD96EHOo65/GN6QBkO3l72ed5qOpH0SH/bpYVR5nmuXRC4wCgjBfioxmedAEq
+         mTfKbuirZqZtSFeWoxRGemEeAKuR1efs6GSoNrmSAV79h3XCQpwCd9hjrJqDB+n8J/1G
+         pqqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778077952; x=1778682752;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BauXOWgQwAdyupYUeYpEdkQ1i1e1EvpLEkDyfo36sjY=;
+        b=TdmDtI1RCkju7sDcvEqbh4S3MxhNmMezIwexC5Q8zEVsD3jb6cGrJkaHIaJsr0UdoS
+         UMbo+jo1VskfPgkRdK0NqiXf27Qftt1360zBor7zB0Hd+5szXm5JlZBFCQ3l/FGrOa7W
+         4dYrzj9YbFMdgwCxrbIr3mZKiFzucRDlEOuseUsRS9Pdu677XXcTCOdV+mxd0qyaA7Yc
+         aTpu0S3Y0tM25K4pivIjHU4z1PJi+UUTmQZ3r3+16aDivnWkVLfiu8osLEKttmnypY3K
+         HzpBT5c9uN3H2gHJqd2YVGkSw+og8E+DhF15knPjOGZBJtpobbRvYy7S6pTXTQ/LxxnL
+         1FZw==
+X-Gm-Message-State: AOJu0YyAKnHmkNcpcUCzIw29dywO4dOsBvLBUG3DK9WLKrX6DIQwJRMO
+	djgcJpy5i+HSmC60UOBam6sEvq7eZAwS/WPyN6ucvPFR4n0BZTa6rl6Rp9I7ARbOZws=
+X-Gm-Gg: AeBDiesJL555V1ZwpOBP5Hf9kHj5c8huS8jPT7KkAPy79GMQsj+jLHC0LvgNMMNbaNY
+	xZqHmuKSG/QlBkr0LBgNiykwtcQlqYThodGhop2Q5Pbf9f0Me+7n7Dpbw9DEm54EWTKj/X2Fp6d
+	nVWOlGMzYpJIdF8zUfJJbKWyZYF2VV9jINwdTjrrbVvpPcvd6vL0aiR75EVsSG5OJ/yBlaWWM6j
+	qt0SveW9nzbJ6rMhixsGa9MIaxqteTiHQ0+yzeTe1Pi+iqIBDMWFyLGZC3QnUm9c2jqbbclagNX
+	hE/epx1vZT9+gEwCWXive2k0TTnT2Ds0/TEix9jcBh4IdOrh5lEo1Fkme7/Nf3kd4J3BkvYbbyc
+	el76sBvn5cCLb1XkEbdKzy7pue+NDXS7eF14jpYeXJOa6yrfgszLXdV+dE4UOoYxGOkqeCU4n4V
+	082FSHVtSn7edKiTouvK7857rNqy+CCDkpgP1e4Macd+T3WF4g90D6rQ==
+X-Received: by 2002:a05:600c:4255:b0:489:1ff1:74df with SMTP id 5b1f17b1804b1-48e51e0c818mr33458725e9.1.1778077952007;
+        Wed, 06 May 2026 07:32:32 -0700 (PDT)
+Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:8c0b:afdd:3d9d:e976])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e5389da63sm50973885e9.4.2026.05.06.07.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2026 07:32:31 -0700 (PDT)
+Date: Wed, 6 May 2026 16:32:29 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com, 
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com, mbloch@nvidia.com, 
+	yanjun.zhu@linux.dev, marco.crivellari@suse.com, roman.gushchin@linux.dev, 
+	phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com, 
+	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com, 
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com, 
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next v3 08/17] RDMA/efa: Use ib_umem_get_cq_buf()
+ for user CQ buffer
+Message-ID: <aftP2M52w-9k7ck9@FV6GYCPJ69>
+References: <20260504135731.2345383-1-jiri@resnulli.us>
+ <20260504135731.2345383-9-jiri@resnulli.us>
+ <aftHa2trKKlO2c3v@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [rdma] general protection fault in kernel_sock_shutdown
- (4)
-To: syzbot <syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, arjan@linux.intel.com, davem@davemloft.net,
- dsahern@kernel.org, edumazet@google.com, horms@kernel.org, jgg@ziepe.ca,
- kuba@kernel.org, kuni1840@gmail.com, kuniyu@google.com, leon@kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
- zyjzyj2000@gmail.com
-References: <69fb46ae.a00a0220.387fc1.0002.GAE@google.com>
-Cc: Kuniyuki Iwashima <kuniyu@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <69fb46ae.a00a0220.387fc1.0002.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: E55C74DC41E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aftHa2trKKlO2c3v@ziepe.ca>
+X-Rspamd-Queue-Id: 745914DC515
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=59da38148f3a3d24];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20088-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[syzkaller.appspotmail.com,linux-foundation.org,linux.intel.com,davemloft.net,kernel.org,google.com,ziepe.ca,gmail.com,vger.kernel.org,redhat.com,googlegroups.com];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20089-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,storage.googleapis.com:url,syzkaller.appspot.com:url,appspotmail.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,ziepe.ca:email,resnulli-us.20251104.gappssmtp.com:dkim]
 
-
-在 2026/5/6 6:48, syzbot 写道:
-> syzbot has found a reproducer for the following issue on:
+Wed, May 06, 2026 at 03:51:39PM +0200, jgg@ziepe.ca wrote:
+>On Mon, May 04, 2026 at 03:57:22PM +0200, Jiri Pirko wrote:
 >
-> HEAD commit:    74fe02ce122a Merge tag 'wq-for-7.1-rc2-fixes' of git://git..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16e895ce580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=59da38148f3a3d24
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
-> compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a613ba580000
+>> @@ -1172,26 +1174,29 @@ int efa_create_user_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>>  	cq->ucontext = ucontext;
+>>  	cq->size = PAGE_ALIGN(cmd.cq_entry_size * entries * cmd.num_sub_cqs);
+>>  
+>> -	if (ibcq->umem) {
+>> -		if (ibcq->umem->length < cq->size) {
+>> -			ibdev_dbg(&dev->ibdev, "External memory too small\n");
+>> -			err = -EINVAL;
+>> -			goto err_out;
+>> -		}
+>> +	umem = ib_umem_get_cq_buf(ibcq->device, udata, cq->size,
+>> +				  IB_ACCESS_LOCAL_WRITE);
+>> +	if (IS_ERR(umem)) {
+>> +		err = PTR_ERR(umem);
+>> +		goto err_out;
+>> +	}
+>> +
+>> +	cq->umem = umem;
+>>  
+>> -		if (!ib_umem_is_contiguous(ibcq->umem)) {
+>> +	if (umem) {
+>> +		if (!ib_umem_is_contiguous(umem)) {
 >
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-74fe02ce.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/c0a591d96864/vmlinux-74fe02ce.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/9f94fb623cd1/bzImage-74fe02ce.xz
+>This is a little funny, I think umem should not be NULL?
+
+Yes it is null when there are no CQ umem attrs present. That is
+perfectly fine flow.
+
+
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+>I'd rather the ib_umem_get() not be called if the op is in kernel mode
+>(this is user_cq so it is never in kernel mode so it should never be
+>null)
 >
-> Oops: general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] SMP KASAN NOPTI
-> KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
-
-Thanks a lot. IIRC, this problem is in process. The link is 
-https://patchwork.kernel.org/project/linux-rdma/patch/20260424013759.728288-1-kuniyu@google.com/
-
-Hi, Kuniyuki Iwashima
-
-I think you are fixing this problem. I hope that we can see your commit 
-very soon.
-
-Zhu Yanjun
-
-> CPU: 3 UID: 0 PID: 5986 Comm: syz.3.20 Not tainted syzkaller #0 PREEMPT(full)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> RIP: 0010:kernel_sock_shutdown+0x47/0x70 net/socket.c:3785
-> Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 33 48 b8 00 00 00 00 00 fc ff df 4c 8b 63 20 49 8d 7c 24 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 1a 49 8b 44 24 68 89 ee 48 89 df 5b 5d 41 5c ff e0
-> RSP: 0018:ffffc9000391f180 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: ffff88802a2a0040 RCX: ffffffff8b8b72bd
-> RDX: 000000000000000d RSI: ffffffff89553b32 RDI: 0000000000000068
-> RBP: 0000000000000002 R08: 0000000000000001 R09: fffff52000723dfc
-> R10: ffffc9000391efe7 R11: 0000000000000000 R12: 0000000000000000
-> R13: ffff8880311b8000 R14: 0000000000000002 R15: 0000000000000018
-> FS:  00007f602d1fe6c0(0000) GS:ffff8880d6675000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000561c522a6000 CR3: 000000002e99e000 CR4: 0000000000352ef0
-> Call Trace:
->   <TASK>
->   udp_tunnel_sock_release+0x68/0x80 net/ipv4/udp_tunnel_core.c:202
->   rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
->   rxe_sock_put+0xae/0x130 drivers/infiniband/sw/rxe/rxe_net.c:639
->   rxe_net_del+0x83/0x120 drivers/infiniband/sw/rxe/rxe_net.c:660
->   rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
->   nldev_dellink+0x289/0x3c0 drivers/infiniband/core/nldev.c:1849
->   rdma_nl_rcv_msg+0x392/0x6f0 drivers/infiniband/core/netlink.c:195
->   rdma_nl_rcv_skb.constprop.0.isra.0+0x2cb/0x410 drivers/infiniband/core/netlink.c:239
->   netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
->   netlink_unicast+0x585/0x850 net/netlink/af_netlink.c:1344
->   netlink_sendmsg+0x8b0/0xda0 net/netlink/af_netlink.c:1894
->   sock_sendmsg_nosec net/socket.c:787 [inline]
->   __sock_sendmsg net/socket.c:802 [inline]
->   ____sys_sendmsg+0x9e1/0xb70 net/socket.c:2698
->   ___sys_sendmsg+0x190/0x1e0 net/socket.c:2752
->   __sys_sendmsg+0x170/0x220 net/socket.c:2784
->   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->   do_syscall_64+0x10b/0xf80 arch/x86/entry/syscall_64.c:94
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f602db9cdd9
-> Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f602d1fe028 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f602de16090 RCX: 00007f602db9cdd9
-> RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000007
-> RBP: 00007f602dc32d69 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007f602de16128 R14: 00007f602de16090 R15: 00007ffc1d89c428
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:kernel_sock_shutdown+0x47/0x70 net/socket.c:3785
-> Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 33 48 b8 00 00 00 00 00 fc ff df 4c 8b 63 20 49 8d 7c 24 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 1a 49 8b 44 24 68 89 ee 48 89 df 5b 5d 41 5c ff e0
-> RSP: 0018:ffffc9000391f180 EFLAGS: 00010202
+>Meaning return a valid umem or return ERR_PTR, never null?
 >
-> RAX: dffffc0000000000 RBX: ffff88802a2a0040 RCX: ffffffff8b8b72bd
-> RDX: 000000000000000d RSI: ffffffff89553b32 RDI: 0000000000000068
-> RBP: 0000000000000002 R08: 0000000000000001 R09: fffff52000723dfc
-> R10: ffffc9000391efe7 R11: 0000000000000000 R12: 0000000000000000
-> R13: ffff8880311b8000 R14: 0000000000000002 R15: 0000000000000018
-> FS:  00007f602d1fe6c0(0000) GS:ffff8880d6675000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000561c522a6000 CR3: 000000002e99e000 CR4: 0000000000352ef0
-> ----------------
-> Code disassembly (best guess):
->     0:	fc                   	cld
->     1:	ff                   	lcall  (bad)
->     2:	df 48 89             	fisttps -0x77(%rax)
->     5:	fa                   	cli
->     6:	48 c1 ea 03          	shr    $0x3,%rdx
->     a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
->     e:	75 33                	jne    0x43
->    10:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
->    17:	fc ff df
->    1a:	4c 8b 63 20          	mov    0x20(%rbx),%r12
->    1e:	49 8d 7c 24 68       	lea    0x68(%r12),%rdi
->    23:	48 89 fa             	mov    %rdi,%rdx
->    26:	48 c1 ea 03          	shr    $0x3,%rdx
-> * 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
->    2e:	75 1a                	jne    0x4a
->    30:	49 8b 44 24 68       	mov    0x68(%r12),%rax
->    35:	89 ee                	mov    %ebp,%esi
->    37:	48 89 df             	mov    %rbx,%rdi
->    3a:	5b                   	pop    %rbx
->    3b:	5d                   	pop    %rbp
->    3c:	41 5c                	pop    %r12
->    3e:	ff e0                	jmp    *%rax
->
->
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+>The case that is now NULL should be EINVAL (bad system call arguments)
 
--- 
-Best Regards,
-Yanjun.Zhu
-
+I was thinking about the ib_umem_get() return value scheme and went back
+and forth multiple times, I converged to PTR_ERR in case of something
+went wrong and null in case of attrs missing, which I believe is the
+best option. It is documented in ib_umem_get kdoc.
 
