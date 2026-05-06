@@ -1,214 +1,433 @@
-Return-Path: <linux-rdma+bounces-20055-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20056-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yDI7C4Tp+mlIUAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20055-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:11:00 +0200
+	id mHlWJOHy+mngUgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20056-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:50:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 908724D70A0
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:10:59 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E34EE4D7748
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 09:50:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 79464302AF14
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 07:10:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AC4573013A96
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 07:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF34936E498;
-	Wed,  6 May 2026 07:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624B23DF01C;
+	Wed,  6 May 2026 07:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ntu.edu.sg header.i=@ntu.edu.sg header.b="D/ANbBkp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ctEdym2u"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from TYDPR03CU002.outbound.protection.outlook.com (mail-japaneastazon11013036.outbound.protection.outlook.com [52.101.127.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897B936DA0D;
-	Wed,  6 May 2026 07:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.127.36
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778051452; cv=fail; b=KMlp8aFjZIEECsEapgUS9mvILKhfXMa/MEB3TJNZSMW8ldij5zW4Shi3JsHEVxHo+2IRUkLUVkgVYLsv0LSbLmNk9zBojwc3+3IbppJsuuEovAEZJt/NkGIGoYOC2CwUP8y7AbDgRIKC8tYj43hmjdHNUZ6Bpey1uibF0X96PYI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778051452; c=relaxed/simple;
-	bh=mxQC6m9q5YTbH1rJhlVRLgPr3gc8AL27RxoRQtlMdi0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Htc8TVwYsK5VCMjjK23GiC1EMWW4KmemriSy4AteBDwMJJ2WYjt4ksmnIeD7fo/B36lCV7OoDPSY9rYUJMdXOPy1qRGNcAX4fTu7OGXdc2zbVGFBrXgbKo+H+J0yO9r9jaRhNaBnON+H8ivImnBLT8anerNIWu/LFJOpz9Hng4s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ntu.edu.sg; spf=pass smtp.mailfrom=ntu.edu.sg; dkim=pass (2048-bit key) header.d=ntu.edu.sg header.i=@ntu.edu.sg header.b=D/ANbBkp; arc=fail smtp.client-ip=52.101.127.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ntu.edu.sg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ntu.edu.sg
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=b50z987M7w6Ypggx/GyFV2ajuJoJyUxUwhcirPb6P0+pOB5wKd751QV1N62av9GEFxUsLYKiat+kGMvv5RzFzOauU3fAJ3p1xI/Sju9bzQsj+2vlWVOrnAhxfbDsgEp+wqruC7n9PkpAkpWEDiEq03iyZPXnGoyeAfEeyqmm2ECFrPNjsCyxrp9I7cfJHs3pyemuUxucDPhpzqWupV24Tv4kY5pkhk2wWDdx02+5o21rcSwL6ACh0b20zJdG5sbv4AUnatLfE6czBEdR7b1MMX577KXgsqLV41HnlOHjXN0kpzuLeyD01HON+XxdvKf0CBXDaFcTQjzRnWlKhXNFng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PIs9gerk/MjduIN/eh/+DBbnWpzlY00tLB7L8d27yGk=;
- b=EEjn9XeLTIyCbMnTc/FPWJiaLmZCFNWx1Pugn7fDWSvZzKjEZjcSD+uuXhEhLEK/P47JVgaZbsokWylryh2OcbsuxIVPQoFv3vfwp7ZO95vcNNumgqn1PAemmPMrP00FHqVxswTFBnyjO9PPMewpY6Pny785cUR0QTFIWVpvMMm0cEOj6lsRsemsQosxbz69Zp+vocQJyXpkeeYS/E2zqRw3/cH3mhFXUG6N7JRxfxrfAwsTZuV4BggkHtof92ioQLxrN5PcDxIzB/0J92/dFSOptE+vnsj6Aro+Kw9xJIHvkxfmJ19qBQ1KLv6SR63XrsvYnzeRlVbP96Yx+I0pMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ntu.edu.sg; dmarc=pass action=none header.from=ntu.edu.sg;
- dkim=pass header.d=ntu.edu.sg; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ntu.edu.sg;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PIs9gerk/MjduIN/eh/+DBbnWpzlY00tLB7L8d27yGk=;
- b=D/ANbBkp3rTnr6jKSWmYUckGUEop5CfJ6RuUw0AEFy0XO4Xrea/lzizs+8Hsa1+I3FNF1A1WZt0ypMLxOeqayLz6paSRl5EcdkEiIjrXEE1QgNX6wFKiDvtigCZD6SpHMIwpCRc0UQdKhYUmOm38FZE4UQ2XDNzmU5xKKDzmL38xzLoqbjSo4SOAIvumshywu/oCugaGWrAhcIGogGreJulvMUoBh/Blsw0eUByK1b5e48ncmWFbcmbZ0KPXEMDR7ZC/xxeQsKHN3ERk3YbY6IuHJpvmSJCzqHfTuWiTYYrpZDRXxM5/FPy6IbIceEYfHLNdxW0kohwLaH0xb9dOVw==
-Received: from TYZPR01MB6758.apcprd01.prod.exchangelabs.com
- (2603:1096:405:a2::6) by SEZPR01MB6107.apcprd01.prod.exchangelabs.com
- (2603:1096:101:21f::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.15; Wed, 6 May
- 2026 07:10:43 +0000
-Received: from TYZPR01MB6758.apcprd01.prod.exchangelabs.com
- ([fe80::bbb1:1ecd:fe69:9743]) by TYZPR01MB6758.apcprd01.prod.exchangelabs.com
- ([fe80::bbb1:1ecd:fe69:9743%4]) with mapi id 15.20.9870.023; Wed, 6 May 2026
- 07:10:43 +0000
-From: Xie Maoyi <maoyi.xie@ntu.edu.sg>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BED13DEAC8
+	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 07:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778053839; cv=none; b=tGZ/JO5ybSMBdUUDqdd7q35h/ZKmTNLfopSKcoe7pmA+fT8kkeZgkN3z9JWDtXhC94TtvtUcQbw3LszpcK5BVe4OxxBK0boCCLM5lWfKuzyFurAt6O2JdvLTKA810fTlRY45t5oSHoMka4vD+STMi1J4c8uk3BKiwECZWuBo7V0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778053839; c=relaxed/simple;
+	bh=AXfowDW94GQ84w9SD+iMe+SMgDXxvdAMVAXykEpsl40=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Zljc/H7KyIOgIejn5FZWR93vBjI8LTjXiCALux3Smyj/T0jnQr6KJIDAybrTovIhYQO45Pgk8P8v21muTGU4aju7gZnuLvALNwdAoTiYrb6RtBPk//02I+81sJhvQ3R+Iduf1njRpG65LOXvJcTZ4qsuGzzuc5fiMAWG2MY1hEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ctEdym2u; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-8353c9f24d2so2305987b3a.3
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 00:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778053837; x=1778658637; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WqPluHqTq1AG7q33TUqAmZ7vQqpFPEBS5YBI5kwGkN4=;
+        b=ctEdym2uIt85uqCbd1QD27k0RMRVlaxj3PSg1UHVxVSBAD4qZ4jwpOw2Vh+5P9ql6K
+         2EX8sSO8FK9mkkDXXSiSFf/4+HdmePWYl/FItbLr35s3plAKKxbZPRPBwcefP6g7eo9r
+         O0RFtDDX0BwYPpGc33cUCPr/UGYd4YD93Ibg0umpXHFzdK+yZRV9OBxr/YI3TUR31kkj
+         jrz6Xtn5CmU3rhplYoByAdjN3TL1c2hLDfOKdpTON0+sYhTTdTObJc0jzh5kx29I3hB9
+         Ws5NQXag//V5d8cXjwrrDOhVwNKM80dxw5vUpidxzfMCzVi49tlHli+wsmI4eRZT59lb
+         aQgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778053837; x=1778658637;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WqPluHqTq1AG7q33TUqAmZ7vQqpFPEBS5YBI5kwGkN4=;
+        b=d3eri1m5MRCxIecpVZzkdx+VpWOVhOpIXEh2aGu4EjSaGwDPbyqJmt7+cyMTPBeThr
+         HSUC2TSCnwTwx5I4bsfKKK6aDQRQP/Hla8r5Q4bRBrTUG8pyaL3ae75w3OypP2ry5J4Q
+         pjblZM7gGIZB3GOm5RHKbJd/Ll2OA3qenUKv8fNpAT0KelKQNUjqnldYGPpsi0wTy3D0
+         73LUln1E9eS1nReaSwZ5R6xKDPhtKyiFpYGTY9oUNRY8hyNwaMVjwCCkSXV6QFN/RyBo
+         fWqxm9VW8JIvh6RF1Keisqv052r3Ue8paDrM4dLgsC2ONHOqvW4/p/GOqIF0d6G9ce/X
+         3LJQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8uW5hxdjLahQr9SWF/cJXOaxEq6HbZFQ0cjxPyyYqghV7VcN4nOXpnaeEBI/Gra4Yf/Hm3v0OYmjyS@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZMAJQNQGGc+DM/V5cIcAlyJMVczJ5fsEUvqOn8c4GQCFG97DG
+	pmAYnxNlcyfXwKCuhWNtXF2cmPlsBvHnoOLj+hzVH0F9LqlzRQ2LG0f+h797dw==
+X-Gm-Gg: AeBDiesxHfDtJIdckPRmpVhKfLUvdpqnAheKR3h4c63zqcGXz3ZR2Oab8T4RO0D0YVr
+	WQRNMy0S/yGFUIjqRfjXTu63kfiMHzgVUXvD3symDKILfXm67eDZlOk0PqWupikrx/ClmEFXqjQ
+	FwjO0Q2JtouhwQ9zfakXUtHBOwEY4yvckGfwWdMIWuULskgjtEFTYvxWf1RxkWmK48cVulGydZe
+	ML7tghacZ0pVMVuW4OzePbLkt3KUmzNOqJMjTNJNsbnWwXPKJlj7Z19XiTwe+givEcT0D6NXJDn
+	p7N31k2BD+6SWmocmWFEdfcGLI+KOhCiA2wmtDvwHCeUDiril8yhUCui9OIK7Y5iy5EwZeVw+PT
+	8/wQLiLplkUVQ7LDuuMPRCnsDOTkS5lKJWyZSofjGC2xz+KG4CAudG18eoHkTxBtLg6+4eBL2oF
+	6tuwSBTsQacvhRbcSezfCL2ReP+JRoIr48LI3Teb4Cze2sLEmV+xKtg5OkY34=
+X-Received: by 2002:a05:6a00:3e14:b0:835:6bdf:c87f with SMTP id d2e1a72fcca58-83a5b6c48e7mr2185626b3a.9.1778053836893;
+        Wed, 06 May 2026 00:50:36 -0700 (PDT)
+Received: from csl-conti-dell7858.ntu.edu.sg ([155.69.195.57])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-839681a9e33sm5358709b3a.50.2026.05.06.00.50.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2026 00:50:36 -0700 (PDT)
+From: Maoyi Xie <maoyixie.tju@gmail.com>
 To: Allison Henderson <achender@kernel.org>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
-Subject: Re: rds: possible cross netns leak via RDS_INFO_* getsockopt
-Thread-Topic: rds: possible cross netns leak via RDS_INFO_* getsockopt
-Thread-Index: AQHc3GmNFjglT8RFCkaEpGWQP2W0QbX//mWAgACXNTc=
-Date: Wed, 6 May 2026 07:10:43 +0000
-Message-ID:
- <TYZPR01MB6758F66A06980DCE70C7F75CDC3F2@TYZPR01MB6758.apcprd01.prod.exchangelabs.com>
-References:
- <TYZPR01MB6758F43459242F22946A8192DC3E2@TYZPR01MB6758.apcprd01.prod.exchangelabs.com>
- <2962d0cbd5313ab482ece5543bafa0d2f0c32cc3.camel@kernel.org>
-In-Reply-To: <2962d0cbd5313ab482ece5543bafa0d2f0c32cc3.camel@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=ntu.edu.sg;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR01MB6758:EE_|SEZPR01MB6107:EE_
-x-ms-office365-filtering-correlation-id: e8b568c7-9964-4ea6-a48d-08deab3e969d
-x-o365: NTU-OFF365
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|1800799024|786006|366016|38070700021|56012099003|18002099003|22082099003;
-x-microsoft-antispam-message-info:
- tm2him3B0GNzkzk4JJt8SECgnEsF8PUALMY7KYFHBbQMdG95Jqrh4819x+RI+e1aAsicbyzgrB9nN/54kFVfONa1x5LDyejOUhQiuL4GNA6KPUwcb6k+r9e8LDA29tIrtmx32EjK0B8Aq79l8U/Uj2QA60Jqm04FADZeAqYWLoou3OEmGxa+fLMLE1ctgdYcF0gvmFTXImNUiD8DPpinOHOE0wsRO6+mXjPFxr4bA+PypnRo4S3mF92SekabvX71bZZzrzYYzHl7D5DEAn/TJzpDZNRoDwVr5JmgkhozU9wkMZZKn0CU1Ejz/lObnv+ylbJpeRgOKt3ZWPstBVhqpC+ZkeJGvjSaBiNBktth57YYUtIgdtk31iAHh62ecLvOk2BYhV687PmnD/R8UoC1k4hcJnMsx5rI3LlPoOnKJvuTi1BXPLYop7+fugvdceSCQTFx70OaZDgrKE7Zppfx/Ja7+QE0WZcUL5k/uoMek9FmfrU5Jom7ou7LzUcA9g3ucMF3+TeS8Chkh3zmO7EJm/EPaKFfB72I9MYnWLRctav1ALvYl0PLge/efQ3+7vDYxb8BS9ODbpAw6URdBfxKaf3K3Wt+jwxm98aabSCqna+KJ9QBJhJhdNAatByZ+2HB23BaDK+bYwJ0rtdpB9WKdg4dl4YTg765ccQTPCkg8X/o2saZ7NRAGOEJPx+W/vax
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR01MB6758.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(786006)(366016)(38070700021)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?WcGVIE/gIypcu0Sd+hjRug32y4+IQELY4m8YI0AJm8sCN1Jv7eVDr7fJOY?=
- =?iso-8859-1?Q?niCfCL6wul7RvPBZYgUbNQOh0qSpD5SZvzIc66lV3KSTkVHDsbuEscB7K7?=
- =?iso-8859-1?Q?cAlXxtj1FCpsDorlLVyw+AvWZr1mkn/tyK0Cij40twV2BOc6MlBLOV2/oE?=
- =?iso-8859-1?Q?Mw3QMThk7/Db+Ummr8we7Zq11B58uk5tIOi2K1HutaXIinj+TcQ7/YcYFD?=
- =?iso-8859-1?Q?Sc9HRDj4eW8QYlreaNVVaj/N1vDlcHpvsTLciruPwGmjHnozZ+2EDjE65c?=
- =?iso-8859-1?Q?+LqavSC9JcqD3oWtdGCNt5WQ9Bl9WP7kRDpm1RQ5zf4tlVPp0VnjaRB2HR?=
- =?iso-8859-1?Q?2GwwAfs5LoyIxzFn5+edRzwjwhFqBXvoIrmzNYukSnBN5k7ydK0HOo07z+?=
- =?iso-8859-1?Q?TYnH5J5auLpwP+vHuEsvB2G1dnaBWhJ7ee+uetRUjRi7ppZex/mtxI8Mk7?=
- =?iso-8859-1?Q?r5Fr7vfGER8F0ES+WKI2erF4a6nC+0DbdpNlzywWHGQe4lfMvGM5bmY+sq?=
- =?iso-8859-1?Q?nXyd4msicOenaWmylbLcL8UDAmUn9TkrSyMh2VJwMy6Ey/G3YB/EygxP97?=
- =?iso-8859-1?Q?bTeTCq/edficejixmNGCsXy+YY2xWUeYsrP0nyhlPLCFKf8/L8Ns5291JP?=
- =?iso-8859-1?Q?v/UYlTCYdUYXMIZi0v+dwspPgmcqLxq9SozL3ufQHhWLSm/SQc8l1B4VS1?=
- =?iso-8859-1?Q?92rRS9ZpDSbD1LpE04AcUaluReaFqriZl85q9jMEpTLoYRsVqulDJpv5ye?=
- =?iso-8859-1?Q?JtrUQLsOYu/wcHwZsX4dFwLdLVAlb6ZLi+zDHd+Nan9GJuJSJ3dNZrr/iI?=
- =?iso-8859-1?Q?OTGkX5lEyEDtkX3dNZ6qX/u2+s/t4O+4n73qwUCa4WhlYfa7Kuw2SY/oBc?=
- =?iso-8859-1?Q?HhT5mk8B8iFyajISY2dz4AHY8Vw7nxZx/DGNG8Zro5r9W69CFcETvPzYjb?=
- =?iso-8859-1?Q?47UnE3fSyWbDmp9auAfGs//4pPJtD4JTyjfTOJFoC+wE5iRlZiDQUDRiVX?=
- =?iso-8859-1?Q?LmFMRRGYSMq8xP8BBXOBNb+vc5WJ5JST16gh/cDU29uplpgvdZIqGf04ac?=
- =?iso-8859-1?Q?maZ2RNpPx5RP0C54cBQ9Es4ewcxj6unPgC8QqTjgOqI+38yv6G46PNpkpz?=
- =?iso-8859-1?Q?Fxqxy7MMHNM9zDrBfJr9w4p3QYfzZVnl2KCd1sj9OHy1kGFGRWEZuKEyY1?=
- =?iso-8859-1?Q?8/jmBbPJtX4O1E0EUEJBdYg6AzKxnEAQ72fEEOv6/8LVGXguQWYZzOCgHC?=
- =?iso-8859-1?Q?i6FdKDlTt0J7L6kgP/38m8o8wfOP2dqQb1hQE92W8IFsol93HwDF6mb6bC?=
- =?iso-8859-1?Q?LpIEf1pqZI36eoGpCJEyhgkS4ydUq6LG/Y+QOPQKz4SA5QS3LC4BrJf5sj?=
- =?iso-8859-1?Q?dPjcO98KwCmqP8u+89ARzZgxbclaBhPujiy4q3ALcPGdUL3CLGtx1A2ozU?=
- =?iso-8859-1?Q?5U9mfd7De19h0w7VXYnZfCx3u8Jn/sAhwUNrnjoexNyfrDuE9WDtmx+oUB?=
- =?iso-8859-1?Q?weyXcW5+vyWaww+M+0Z/BSEpMEAxYAa1MMxBqn5UFQiZrrVDo7McmpIaEr?=
- =?iso-8859-1?Q?v5/Ffc1d5T/LnLXiK0LoScz8DgnMd1Ar50zE/9hCj+WrBwV2vYwzj4DVWo?=
- =?iso-8859-1?Q?L5biCe2pWLhNQ3/myWv3bSxKxNuvNOh8pqfelNtntU1I9B0foevQ9AHudF?=
- =?iso-8859-1?Q?j48vEd/x5zt94quMA1D+cRQqRymGaCyfYWGVHq3qLpxY4zkUoSuhw8y5Tm?=
- =?iso-8859-1?Q?ipE6idF6xFQll5PZXj9GlvFSYoowIDHDbK/MHKKlhL2Ue0GDJBuC1PwMbg?=
- =?iso-8859-1?Q?KEu15dZzwuqfQzmKR+oc5UUQ3YgMb3U=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kernel@vger.kernel.org,
+	Maoyi Xie <maoyi.xie@ntu.edu.sg>,
+	Praveen Kakkolangara <praveen.kakkolangara@aumovio.com>
+Subject: [PATCH net] rds: filter RDS_INFO_* getsockopt by caller's netns
+Date: Wed,  6 May 2026 15:50:31 +0800
+Message-Id: <20260506075031.2238596-1-maoyixie.tju@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: ntu.edu.sg
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB6758.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8b568c7-9964-4ea6-a48d-08deab3e969d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2026 07:10:43.5951
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 15ce9348-be2a-462b-8fc0-e1765a9b204a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZEVnSAR433LCqFNSDTMcyEzHUvodEzeW+q/sO1wINDICeYd/2xoIEB11YgbQeWopy3Kh0vn+r3hE9brEIOpsAxOkwgGU93BOCZwICgfNetY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR01MB6107
-X-Rspamd-Queue-Id: 908724D70A0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: E34EE4D7748
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[ntu.edu.sg,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[ntu.edu.sg:s=selector1];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20055-lists,linux-rdma=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20056-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[ntu.edu.sg:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[maoyi.xie@ntu.edu.sg,linux-rdma@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[maoyixietju@gmail.com,linux-rdma@vger.kernel.org];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ntu.edu.sg:dkim,maoyixie.com:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ntu.edu.sg:email]
 
-Hi Allison,
+From: Maoyi Xie <maoyi.xie@ntu.edu.sg>
 
-Thanks for confirming the direction.
+The RDS_INFO_* family of getsockopt(2) options reads several
+file-scope global lists that are not per-netns:
 
-We will rewrite the patch as a per entry netns filter in each
-of the affected handlers, instead of the init_net gate in
-rds_info_getsockopt() that we mentioned. Concretely:
+  rds_sock_info / rds6_sock_info,
+  rds_sock_inc_info / rds6_sock_inc_info        -> rds_sock_list
+  rds_tcp_tc_info / rds6_tcp_tc_info            -> rds_tcp_tc_list
+  rds_conn_info / rds6_conn_info,
+  rds_conn_message_info_cmn (for the *_SEND_MESSAGES and
+  *_RETRANS_MESSAGES variants),
+  rds_for_each_conn_info (for RDS_INFO_IB_CONNECTIONS)
+                                                -> rds_conn_hash[]
 
-  rds_sock_info / rds6_sock_info: skip rds_sock_list entries
-    whose socket netns does not match the caller's netns.
-  rds_tcp_tc_info / rds6_tcp_tc_info: skip rds_tcp_tc_list
-    entries the same way.
-  rds_conn_info / rds6_conn_info and the *_message_info_*
-    variants: skip rds_conn_hash[] entries whose c_net does
-    not match the caller's netns.
+The handlers do not filter by the caller's network namespace.
+rds_info_getsockopt() has no netns or capable() check, and
+rds_create() has no capable() check, so AF_RDS is reachable from
+an unprivileged user namespace. As a result, an unprivileged
+caller in a fresh user_ns plus netns can read the bound address
+and sock inode of every RDS socket on the host, the peer address
+of incoming messages on every RDS socket on the host, the peer
+address and TCP sequence numbers of every rds-tcp connection on
+the host, and the peer address and RDS sequence numbers of every
+RDS connection on the host.
 
-This preserves the rds-tcp behaviour where a caller outside
-init_net with legitimate connections in their own netns can
-still see them.
+The rds-tcp transport is reachable from a non-initial netns (see
+rds_set_transport()), so a one-shot init_net gate at
+rds_info_getsockopt() would deny legitimate per-netns visibility
+to rds-tcp callers. Instead, filter at each handler by comparing
+the netns of the caller's socket to the netns of the list entry,
+or to rds_conn_net(conn) for connection paths. Only copy entries
+whose netns matches the caller. Counters (RDS_INFO_COUNTERS) are
+aggregate statistics and remain global.
 
-We will send the patch as a separate reply once it is ready
-and verified against the same PoC.
+Reproducer (KASAN VM, rds and rds_tcp loaded): an AF_RDS socket
+binds 127.0.0.1:4242 in init_net as root. A child process enters
+a fresh user_ns plus netns and opens AF_RDS there, then calls
+getsockopt(SOL_RDS, RDS_INFO_SOCKETS). Before this change, the
+child sees the init_net socket. After this change, the child
+sees zero entries.
 
-Thanks,
+Suggested-by: Allison Henderson <achender@kernel.org>
+Co-developed-by: Praveen Kakkolangara <praveen.kakkolangara@aumovio.com>
+Signed-off-by: Praveen Kakkolangara <praveen.kakkolangara@aumovio.com>
+Signed-off-by: Maoyi Xie <maoyi.xie@ntu.edu.sg>
+---
+ net/rds/af_rds.c     | 24 ++++++++++++++++++++++--
+ net/rds/connection.c | 13 +++++++++++++
+ net/rds/tcp.c        | 25 +++++++++++++++++++++----
+ 3 files changed, 56 insertions(+), 6 deletions(-)
 
-Maoyi Xie and Praveen Kakkolangara
+diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+index b396c673d..469891131 100644
+--- a/net/rds/af_rds.c
++++ b/net/rds/af_rds.c
+@@ -729,6 +729,7 @@ static void rds_sock_inc_info(struct socket *sock, unsigned int len,
+ 			      struct rds_info_iterator *iter,
+ 			      struct rds_info_lengths *lens)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct rds_sock *rs;
+ 	struct rds_incoming *inc;
+ 	unsigned int total = 0;
+@@ -738,6 +739,9 @@ static void rds_sock_inc_info(struct socket *sock, unsigned int len,
+ 	spin_lock_bh(&rds_sock_lock);
+ 
+ 	list_for_each_entry(rs, &rds_sock_list, rs_item) {
++		/* Only show sockets in the caller's netns. */
++		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
++			continue;
+ 		/* This option only supports IPv4 sockets. */
+ 		if (!ipv6_addr_v4mapped(&rs->rs_bound_addr))
+ 			continue;
+@@ -768,6 +772,7 @@ static void rds6_sock_inc_info(struct socket *sock, unsigned int len,
+ 			       struct rds_info_iterator *iter,
+ 			       struct rds_info_lengths *lens)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct rds_incoming *inc;
+ 	unsigned int total = 0;
+ 	struct rds_sock *rs;
+@@ -777,6 +782,9 @@ static void rds6_sock_inc_info(struct socket *sock, unsigned int len,
+ 	spin_lock_bh(&rds_sock_lock);
+ 
+ 	list_for_each_entry(rs, &rds_sock_list, rs_item) {
++		/* Only show sockets in the caller's netns. */
++		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
++			continue;
+ 		read_lock(&rs->rs_recv_lock);
+ 
+ 		list_for_each_entry(inc, &rs->rs_recv_queue, i_item) {
+@@ -800,6 +808,7 @@ static void rds_sock_info(struct socket *sock, unsigned int len,
+ 			  struct rds_info_iterator *iter,
+ 			  struct rds_info_lengths *lens)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct rds_info_socket sinfo;
+ 	unsigned int cnt = 0;
+ 	struct rds_sock *rs;
+@@ -814,6 +823,9 @@ static void rds_sock_info(struct socket *sock, unsigned int len,
+ 	}
+ 
+ 	list_for_each_entry(rs, &rds_sock_list, rs_item) {
++		/* Only show sockets in the caller's netns. */
++		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
++			continue;
+ 		/* This option only supports IPv4 sockets. */
+ 		if (!ipv6_addr_v4mapped(&rs->rs_bound_addr))
+ 			continue;
+@@ -841,17 +853,24 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
+ 			   struct rds_info_iterator *iter,
+ 			   struct rds_info_lengths *lens)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct rds6_info_socket sinfo6;
++	unsigned int cnt = 0;
+ 	struct rds_sock *rs;
+ 
+ 	len /= sizeof(struct rds6_info_socket);
+ 
+ 	spin_lock_bh(&rds_sock_lock);
+ 
+-	if (len < rds_sock_count)
++	if (len < rds_sock_count) {
++		cnt = rds_sock_count;
+ 		goto out;
++	}
+ 
+ 	list_for_each_entry(rs, &rds_sock_list, rs_item) {
++		/* Only show sockets in the caller's netns. */
++		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
++			continue;
+ 		sinfo6.sndbuf = rds_sk_sndbuf(rs);
+ 		sinfo6.rcvbuf = rds_sk_rcvbuf(rs);
+ 		sinfo6.bound_addr = rs->rs_bound_addr;
+@@ -861,10 +880,11 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
+ 		sinfo6.inum = sock_i_ino(rds_rs_to_sk(rs));
+ 
+ 		rds_info_copy(iter, &sinfo6, sizeof(sinfo6));
++		cnt++;
+ 	}
+ 
+  out:
+-	lens->nr = rds_sock_count;
++	lens->nr = cnt;
+ 	lens->each = sizeof(struct rds6_info_socket);
+ 
+ 	spin_unlock_bh(&rds_sock_lock);
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index 412441aaa..a73554816 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -568,6 +568,7 @@ static void rds_conn_message_info_cmn(struct socket *sock, unsigned int len,
+ 				      struct rds_info_lengths *lens,
+ 				      int want_send, bool isv6)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct hlist_head *head;
+ 	struct list_head *list;
+ 	struct rds_connection *conn;
+@@ -590,6 +591,9 @@ static void rds_conn_message_info_cmn(struct socket *sock, unsigned int len,
+ 			struct rds_conn_path *cp;
+ 			int npaths;
+ 
++			/* Only show connections in the caller's netns. */
++			if (!net_eq(rds_conn_net(conn), net))
++				continue;
+ 			if (!isv6 && conn->c_isv6)
+ 				continue;
+ 
+@@ -688,6 +692,7 @@ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
+ 			  u64 *buffer,
+ 			  size_t item_len)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct hlist_head *head;
+ 	struct rds_connection *conn;
+ 	size_t i;
+@@ -700,6 +705,9 @@ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
+ 	for (i = 0, head = rds_conn_hash; i < ARRAY_SIZE(rds_conn_hash);
+ 	     i++, head++) {
+ 		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
++			/* Only show connections in the caller's netns. */
++			if (!net_eq(rds_conn_net(conn), net))
++				continue;
+ 
+ 			/* XXX no c_lock usage.. */
+ 			if (!visitor(conn, buffer))
+@@ -726,6 +734,7 @@ static void rds_walk_conn_path_info(struct socket *sock, unsigned int len,
+ 				    u64 *buffer,
+ 				    size_t item_len)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct hlist_head *head;
+ 	struct rds_connection *conn;
+ 	size_t i;
+@@ -740,6 +749,10 @@ static void rds_walk_conn_path_info(struct socket *sock, unsigned int len,
+ 		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
+ 			struct rds_conn_path *cp;
+ 
++			/* Only show connections in the caller's netns. */
++			if (!net_eq(rds_conn_net(conn), net))
++				continue;
++
+ 			/* XXX We only copy the information from the first
+ 			 * path for now.  The problem is that if there are
+ 			 * more than one underlying paths, we cannot report
+diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+index 654e23d13..ef9e958ca 100644
+--- a/net/rds/tcp.c
++++ b/net/rds/tcp.c
+@@ -235,20 +235,27 @@ static void rds_tcp_tc_info(struct socket *rds_sock, unsigned int len,
+ 			    struct rds_info_iterator *iter,
+ 			    struct rds_info_lengths *lens)
+ {
++	struct net *net = sock_net(rds_sock->sk);
+ 	struct rds_info_tcp_socket tsinfo;
+ 	struct rds_tcp_connection *tc;
++	unsigned int cnt = 0;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&rds_tcp_tc_list_lock, flags);
+ 
+-	if (len / sizeof(tsinfo) < rds_tcp_tc_count)
++	if (len / sizeof(tsinfo) < rds_tcp_tc_count) {
++		cnt = rds_tcp_tc_count;
+ 		goto out;
++	}
+ 
+ 	list_for_each_entry(tc, &rds_tcp_tc_list, t_list_item) {
+ 		struct inet_sock *inet = inet_sk(tc->t_sock->sk);
+ 
+ 		if (tc->t_cpath->cp_conn->c_isv6)
+ 			continue;
++		/* Only show connections in the caller's netns. */
++		if (!net_eq(rds_conn_net(tc->t_cpath->cp_conn), net))
++			continue;
+ 
+ 		tsinfo.local_addr = inet->inet_saddr;
+ 		tsinfo.local_port = inet->inet_sport;
+@@ -263,10 +270,11 @@ static void rds_tcp_tc_info(struct socket *rds_sock, unsigned int len,
+ 		tsinfo.tos = tc->t_cpath->cp_conn->c_tos;
+ 
+ 		rds_info_copy(iter, &tsinfo, sizeof(tsinfo));
++		cnt++;
+ 	}
+ 
+ out:
+-	lens->nr = rds_tcp_tc_count;
++	lens->nr = cnt;
+ 	lens->each = sizeof(tsinfo);
+ 
+ 	spin_unlock_irqrestore(&rds_tcp_tc_list_lock, flags);
+@@ -281,19 +289,27 @@ static void rds6_tcp_tc_info(struct socket *sock, unsigned int len,
+ 			     struct rds_info_iterator *iter,
+ 			     struct rds_info_lengths *lens)
+ {
++	struct net *net = sock_net(sock->sk);
+ 	struct rds6_info_tcp_socket tsinfo6;
+ 	struct rds_tcp_connection *tc;
++	unsigned int cnt = 0;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&rds_tcp_tc_list_lock, flags);
+ 
+-	if (len / sizeof(tsinfo6) < rds6_tcp_tc_count)
++	if (len / sizeof(tsinfo6) < rds6_tcp_tc_count) {
++		cnt = rds6_tcp_tc_count;
+ 		goto out;
++	}
+ 
+ 	list_for_each_entry(tc, &rds_tcp_tc_list, t_list_item) {
+ 		struct sock *sk = tc->t_sock->sk;
+ 		struct inet_sock *inet = inet_sk(sk);
+ 
++		/* Only show connections in the caller's netns. */
++		if (!net_eq(rds_conn_net(tc->t_cpath->cp_conn), net))
++			continue;
++
+ 		tsinfo6.local_addr = sk->sk_v6_rcv_saddr;
+ 		tsinfo6.local_port = inet->inet_sport;
+ 		tsinfo6.peer_addr = sk->sk_v6_daddr;
+@@ -306,10 +322,11 @@ static void rds6_tcp_tc_info(struct socket *sock, unsigned int len,
+ 		tsinfo6.last_seen_una = tc->t_last_seen_una;
+ 
+ 		rds_info_copy(iter, &tsinfo6, sizeof(tsinfo6));
++		cnt++;
+ 	}
+ 
+ out:
+-	lens->nr = rds6_tcp_tc_count;
++	lens->nr = cnt;
+ 	lens->each = sizeof(tsinfo6);
+ 
+ 	spin_unlock_irqrestore(&rds_tcp_tc_list_lock, flags);
 
-Maoyi Xie
-Nanyang Technological University
-https://maoyixie.com/
-________________________________
+base-commit: 028ef9c96e96197026887c0f092424679298aae8
+-- 
+2.34.1
 
-CONFIDENTIALITY: This email is intended solely for the person(s) named and =
-may be confidential and/or privileged. If you are not the intended recipien=
-t, please delete it, notify us and do not copy, use, or disclose its conten=
-ts.
-Towards a sustainable earth: Print only when necessary. Thank you.
 
