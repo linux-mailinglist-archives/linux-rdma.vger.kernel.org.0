@@ -1,176 +1,158 @@
-Return-Path: <linux-rdma+bounces-20078-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20079-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0GbBNKVE+2lPYgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20078-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:39:49 +0200
+	id AF7jHTZG+2lPYgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20079-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:46:30 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3904DB176
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:39:48 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E5C4DB463
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:46:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6E8CF3009CE0
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 13:39:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6A9093019328
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 13:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3F7477E37;
-	Wed,  6 May 2026 13:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AE8472776;
+	Wed,  6 May 2026 13:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U1dNim5o"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="heWbEG/i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7176B441021
-	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 13:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778074786; cv=pass; b=WPp51oVa2kxt6qB6pq+i1/URjeaPK2ZEV8rFzwhaDFbuk+cDLpgEADSFQ882PZK1Pfcc3gLsYr1xg23xG1HUNbbMLVnnnVFVBBuQBFXRhg6P1QYFy51lIcyDgxf+D5ruYSJoyIcDpppxdneO72PIiX6a4lAsKkDl3cLY2XhJVqU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778074786; c=relaxed/simple;
-	bh=UkuvYDsmxDz9txFM8gyMWzHbcPwDZX5ZsCBd55W2fyw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J9B+kQdCc3LRFDWz0gwNEAwh6k9dQcMJAkev2R/UNN6Jad/vuBUUlY3CT3KL3f5D8DNP2euKfZA5oP8tp0iK6ddTbQ1Epv3AtymBhe57OqHxmIfweTzBjZN0wupiCEm5TTAVmDf8ZspUl+gRAwnlEp3rsNDRuyXgxV3dkwbcE28=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U1dNim5o; arc=pass smtp.client-ip=209.85.167.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-479dd56d016so4610680b6e.3
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 06:39:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778074784; cv=none;
-        d=google.com; s=arc-20240605;
-        b=fdtUDRlpRGxC4ape3Z++5qLpbZCz1hNa2xTfQ8Dna/mayzrghvuyrl/VSlR2lsmIdW
-         PAipte//GF3rq+r8jFxDYajOTCqmiJ3Y3iadpmvJn6DbajtiLFPUJfaEtPOFz5XHOnXp
-         rxfLxJahy//VvQfw/YZNmgln9FbCT97QpvmvGQWYBxQa3hZpu0JFkl7lebcBznhp59xQ
-         NY0ghWOcTeI6502IYJgQ5odpGNR0KpvJ4akR0n0FE9/YJAxjPBFoz0nCUAItKU7TZKIx
-         NvgY3oFjCuS0VvOzO3h+Q9ADOP1V+4bLWAN4BfwlI7ApJqs/tauyy4xEnzqySBWegx6V
-         Spqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=UkuvYDsmxDz9txFM8gyMWzHbcPwDZX5ZsCBd55W2fyw=;
-        fh=O13cep/M3b/Q4gzoMSEXL0MPlvM722Wo5E1w+Gs3XNc=;
-        b=NYBz/b83Bs3XD1QKhpxd3lNNX2q3QtcHsh4pVKNCiUMsx+RoF9LZtSpIoN9UXOxoqE
-         MYuSDkBMOZ/Hx9npu33IWPDLkK66Fp3qAE07yrwCKplZGP/IrHF4FjlB3H68CB+T7Kia
-         RxmIZCRCrijgqia0ecMCtAasUdei+oYQ07NfjZCUQ2pWcv56YAgaUHZhkwL41jdb6YBN
-         yl9ntnXoQTb8DLEao5ggEhc8mFTf2cIV3KVUoXxcYFQJvI+60dz9SGlzCDvAF8kmq7OX
-         OkoNtL+M+OLbWwN6jGBTVkCFYRHTyTKS9WjAMlmIsJ5OP6nuVR57YsDfZIcKEbZaBPZX
-         9trA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04173EC2DB
+	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 13:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778075032; cv=none; b=DSsoeVSXO3osA799efDDrhm1FMGziPsTVWVdfG6zWVYJrGziI+fqUVFfSiqmY1g0LmjOfh7rX01BZEm8AYBmCt6bJ87JSMFfn54a96+hdI6opitekFhMaIvFEXRZjXFmkv67fHM8XVtZ+iFgQnbXSBdfIP1YVdB+LJifjjA3Fi8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778075032; c=relaxed/simple;
+	bh=BWFMVHoUI3TRBKjBIMiKfvbqC+I2eytXhaqrYhYFC/E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZAxy8V8F6lV0WX5AgvPJwLwD6+I1IqDVVGWp2U3sWutu8BdFDB9ezBgR3RReccA9ZlZPdI2tIAT8GSVrcpg3UFAJKnFKVjIBkHFbkJ19vuT2Nflbg8B+UykVUY88ZMkFb+WIIKqxxvd9xORdv6UgHsbso5xz6z0/4YSX7jO71Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=heWbEG/i; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4891d7164ddso35703545e9.3
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 06:43:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1778074784; x=1778679584; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UkuvYDsmxDz9txFM8gyMWzHbcPwDZX5ZsCBd55W2fyw=;
-        b=U1dNim5oZpFQsWhin5YZzVHsywyJLbQKynFiiXSQfMF1C2jRoBMIky5jLaMQip0eGH
-         MomT/kbYp7R5PVJH2QrIJxrA1Hgp9agOl6byF2WSeE6ZGt8lG5u/Hi8sOkxlMdpcwYiI
-         41M1gUiVMhF2cPUo5r0IKMjC6XZftyoylNshdeER1xrXthFejJgsxN87etK5uSG5j+2q
-         o3JPEfjzS44MtRGPikAKXJYBP0D3nSG9DET2m0z2jt14ifDdY4lHbkqJPhytW6ZuMVoj
-         s/I1waunYFcwckaE6PUehod3PFbmK0t1IlZXwLOwP9OEatb6YEmU7YWw2IPQhpBAZzpW
-         M5tg==
+        d=ziepe.ca; s=google; t=1778075029; x=1778679829; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OysEmakneUVxdThy830cjKfFF4mNDgLJCuzM5UUZCxk=;
+        b=heWbEG/ikPju203wqDBBN5aGSNdecF5wAe+FMqdwR1s+SjhwJIc9u9/wiUTflCZ3vn
+         /FsVuPYCJxouNyoRXPDbUQzCs66+doC7IRQglP+IZVLPu/diJXo/VeJpfXnEMVWQQjPX
+         S2ehOQ/ceZDtI3oZKWkbbTYot52ZUzKxCLjcrfl33cBQEVtytwpsyFhMSVcRPL8qLilI
+         op/cTxni3HbetfIeKDN+Fdm1Nx4LIuP2xC8Oqxts5KOWfDrfHrb2BmHjnQKH4RgQ7I9X
+         1WwIlzRtKJlTpe56zMdOLsQnDERkAOMyy9UomJtngQFHTOFBw7ITjYgPP9pJ8eqz1Hlf
+         kTaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778074784; x=1778679584;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UkuvYDsmxDz9txFM8gyMWzHbcPwDZX5ZsCBd55W2fyw=;
-        b=kvZKgAjfKny6I7ANKrpu5z1Cb6uqaWKkhfrqLDPyItVcV0msSEoG0T61obikCAXwEG
-         QY1n+Kj7ib7aDFkBz30SKjWZpuWHEOpcTfIu9aMVr5H0lO0ncsGzSj4arHXjsxstQ8y3
-         5RBcYVCqPYjaXuyzPEd8ABejpfVMsMKSNe4oX4bSxnT8fJwLWt58CNcEcEIj6uz9i+d/
-         OOImbrL+Wfbll9nDTMFNLx0KYM1oZjezZjaORaZYBTsayj6BG1jvl3f4WjlDJMmDzHVE
-         tnq7rig/OPRh+MVv002R5dgR9fo6ZdTfYZtt3ErCCXdvarXZ56LiX4CsUXZ4B/xsxkhm
-         +iRw==
-X-Forwarded-Encrypted: i=1; AFNElJ+KZDgz7LII72uMDkbzQwKvECWabyKtJPYzN1oXCG++b+Zawk04vOmp6ziDPXNrI7f9Udl2+t0H6zSz@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhH4I9Q68AvL6q/VzUTN8wk/Kci+NaSlb0j+QRg8qwwPzDBomk
-	E1oUVHsa4olbB4XIhDk6hsMteYjMWF7MjZTv8w5+SOUysR88aOH6yNWzl7lyvQwKsZJFd3xH4f7
-	Ga07nkvXUs5clQZwVdhYHRKLbWZm2myqE2pwkf9+5nylLqdL6rOUQqfil7MM=
-X-Gm-Gg: AeBDiesPOZsx5ohukhoFCs1VzIkMPlceyEFfHlj6ViZriaQ2M9gj4cM3xOWKkSl8A/r
-	dxnwkN+AshSJD2mTfJYBDwo1g4w0Hblp7HJC9r326TfLtWRJgeQzuZBUHtsliQ5/sYTOrwTCkTc
-	aRZTAiNwcRn5XbQaWQh9OebQwvQ0fAbTpP9kYErvAVqM4N0g4EmDQBgMxEruwbI13wdFOkvKksJ
-	o3zR/kEr/4x6qmXenA+cPx8QihX8hhEid+zntCry2g2pMEgmhDx7cZ3i0nHlXtlthCBDYNhuOi6
-	J42P8GbDNro1TJqWx0rg+UeW3P2zLoNBTLWyniQeNi33761rZ1Bac9v4jHIgsD5kF7KgZtE1
-X-Received: by 2002:a05:6808:3a17:b0:479:f776:f2ef with SMTP id
- 5614622812f47-480421e59demr1896899b6e.17.1778074783947; Wed, 06 May 2026
- 06:39:43 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1778075029; x=1778679829;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OysEmakneUVxdThy830cjKfFF4mNDgLJCuzM5UUZCxk=;
+        b=mjET8j9jTxzkA0tZUr4wlJEIRGVU9U6yymTeYBGcnL9LpCh4c+97D7PerQXf8C51I/
+         i1Xi7atAd2nIaekBWUJfMbzws2wWzKUQAB6Mab/gaTl6vEjAfbHq3RfC3qpS7Bp5r1mk
+         Tvf/wtOoCaakycNuJq7Pil19pX8gCI3L24eOjeK2u3xQbTBE2YbjvwovFQmjIrm7/xee
+         5IJuzvVXmdMbtrsyfXOK/Ik7acqJjvfy9oC//40kPjN0eZJZm++ier3dxgiDIkzH9sNI
+         iaGY1+kQbEYtmsitrHNarx9V1Q54NJDr90Ts0sQhSAvXa9zTruM+WVHimvO7AW2NXrbC
+         8gIg==
+X-Gm-Message-State: AOJu0YwLEtOiwM6JYcXoZ/6EL7v/Pgx+kAn/xDCz7MITD7Ik3krzvbNw
+	imRoLDDDd+hD6L4HzIzNc9CNz4WFjrRdAa6sCeEvwAyUy7nxQslJBDVzId0uS3iJUr0=
+X-Gm-Gg: AeBDieu9qccCTbOQH7r77K7eAKyuz56TfbInaJDik8gsaejqJ1Imvk6rlvPprFzm0Cn
+	/uwP977txCctTBqxHAj3BGXZPAHQlxJFPOkpSPgqgzVhQKxx8H0Dvy0GqrC4wZDwOhFYBbfMZTA
+	PjiYpZEPGbroCayUaDXzw9LL/Kx5glAQ9ce3LzbjJ/64oT3EPQrY/2tIseL2z+ToUh2/QSxVNol
+	eiEfDxYeYLDCOf9xcfLEFN08fqWduOqlUIYgkRPW7OvvfjZUOT68wto1ay10SV1btx8ttej0wnY
+	9xfyeuDPDdWfjpeuepc0TDQZW6aWi2qoyrAk+BGIwdNcmzqt8qK6p2MbNHIhSsfh0yX5OGKo3zi
+	Vy8ej2/2saZnl2bwmssgxdYlpmb161AWFk5pKS6LMPwestmAOUVpttXpsCUwOdwhTDhscM97D44
+	T8Lp/laAk=
+X-Received: by 2002:a05:600c:1e8a:b0:488:fd7e:1063 with SMTP id 5b1f17b1804b1-48e51f4cdcdmr61430085e9.29.1778075028774;
+        Wed, 06 May 2026 06:43:48 -0700 (PDT)
+Received: from ziepe.ca ([213.147.98.98])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45055960902sm14117068f8f.28.2026.05.06.06.43.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2026 06:43:48 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wKcXS-0001kD-Js;
+	Wed, 06 May 2026 10:43:46 -0300
+Date: Wed, 6 May 2026 10:43:46 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
+	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
+	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
+	ynachum@amazon.com, huangjunxian6@hisilicon.com,
+	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next v3 13/17] RDMA/uverbs: Use UMEM attributes for
+ QP creation
+Message-ID: <aftFko47Y56Gvsf3@ziepe.ca>
+References: <20260504135731.2345383-1-jiri@resnulli.us>
+ <20260504135731.2345383-14-jiri@resnulli.us>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260505061149.2361536-1-jiri@resnulli.us> <20260505061149.2361536-3-jiri@resnulli.us>
- <CAHYDg1SSkV42nfjakR1W=zu8-E7svsswxoTesXuLvpF6c5WvqA@mail.gmail.com>
- <afoUqiDgZmhE4Kog@ziepe.ca> <afsIsW7vKgJtdNA2@FV6GYCPJ69> <afsOtEeppBzxOGUB@ziepe.ca>
- <afsdvIvEdX85iCXE@FV6GYCPJ69>
-In-Reply-To: <afsdvIvEdX85iCXE@FV6GYCPJ69>
-From: Jacob Moroni <jmoroni@google.com>
-Date: Wed, 6 May 2026 09:39:32 -0400
-X-Gm-Features: AVHnY4L7DJcetDqqNTPo9ezownSUpx21Ss29E22MBQhA6ePJwx8nVcT3dVkqLnQ
-Message-ID: <CAHYDg1Tbrekfnd7RyHm07ctAP9DLtUHqQ5EsYMYJr=bjjHSMPg@mail.gmail.com>
-Subject: Re: [PATCH rdma-next 2/2] RDMA/umem: block plain userspace memory
- registration under CoCo bounce
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org, leon@kernel.org, 
-	edwards@nvidia.com, kees@kernel.org, parav@nvidia.com, mbloch@nvidia.com, 
-	yishaih@nvidia.com, lirongqing@baidu.com, huangjunxian6@hisilicon.com, 
-	liuy22@mails.tsinghua.edu.cn
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 2D3904DB176
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260504135731.2345383-14-jiri@resnulli.us>
+X-Rspamd-Queue-Id: 72E5C4DB463
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20079-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20078-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,ziepe.ca:dkim,ziepe.ca:mid]
 
-> transparent dmabuf-backed-VA pinning
+On Mon, May 04, 2026 at 03:57:27PM +0200, Jiri Pirko wrote:
+> @@ -340,6 +340,12 @@ DECLARE_UVERBS_NAMED_METHOD(
+>  	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
+>  			   UVERBS_ATTR_TYPE(u32),
+>  			   UA_MANDATORY),
+> +	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_BUF_UMEM,
+> +			 UA_OPTIONAL),
+> +	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
+> +			 UA_OPTIONAL),
+> +	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
+> +			 UA_OPTIONAL),
+>  	UVERBS_ATTR_UHW());
 
-Thanks! I took a look at your WIP code. It seems like it would really simplify
-things for irdma. Looking forward to it.
+could an ai make a summary of how each driver would map its existing
+umems to these - add it to the commit message?
 
-Is there a WIP you can share for any rdma-core changes? For example, I
-am wondering if there will be some generic allocation helper for drivers to
-allocate umems for internal use (for QP rings, etc.). This helper would
-detect if it's running in a CVM and use the cc_shared heap or something.
+Trying to guess if it is general? RQ/SQ seem reasonable, but I'm
+wondering what drivers will use QP_BUF for...
 
-I'm mainly just curious how you see it being used on the userspace side.
-
->>> Another idea was to just allocate them in the kernel using the DMA
->>> allocator and map them into userspace but it would be a larger change.
-
->>This isn't the pattern we are using in rdma..
-
-> Yeah, plus I'm missing the motivation, what that would help us to
-> achieve?
-
-This would have been a driver hack and doesn't make sense compared to
-your current plan, but the idea would have been to use the DMA allocator in
-the kernel to allocate the QP rings. This would give us a public buffer, which
-could then be mapped into the process with dma_mmap_coherent which
-sets the pages to decrypted. I imagine this scheme would be needed for
-NICs that require physically contiguous ring buffers (if any exist, not sure).
-
-Thanks,
-Jake
+Jason
 
