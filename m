@@ -1,73 +1,80 @@
-Return-Path: <linux-rdma+bounces-20051-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20052-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IKxxMALX+mkRTQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20051-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 07:52:02 +0200
+	id GQjKLZ7Z+mm7TQMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20052-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 08:03:10 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2597A4D65B4
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 07:52:02 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 480454D66F5
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 08:03:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 015DD3010C0B
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 05:51:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3D391301DE56
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 06:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13372EAD15;
-	Wed,  6 May 2026 05:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="fnFclocA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7635270540;
+	Wed,  6 May 2026 06:03:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100BB1F94F;
-	Wed,  6 May 2026 05:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3291E7C18;
+	Wed,  6 May 2026 06:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778046715; cv=none; b=JlIp3kiEcJHkDyenR8/d3jQIBiDo45N9icwJemkx58PJ7/7WJUkQd9bAz9MCHaXch/Tf0x2rzhwhLipCu+Qkb9KrbbACbr1Pfwo6S3hWfEiTbTlGz0SNLlOCEuiQt1ZzIU+B6C/h/8F/FwqEsfnYUR2A/LrKb8qtEM3R44ULmww=
+	t=1778047385; cv=none; b=IWHlQ4NsD3HBdRPXFLA/Zg3nYFhvODQJVxR9yguum8C1vEoefX6pnH4eZ9zJK0vyCnm8tpMjnxBWKvXGIjBKONNh0ULgXiEVxrpXVp04oxNbqDI/CcCDMzEw/OK22LpUpN6L5xCvctyPUmv+dWNu8JpMe8DAfPqb9M+gggzglQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778046715; c=relaxed/simple;
-	bh=441Bs0UO4rInYT8PIEv6n08YlhCJhONS6W0GguwghSw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=SzXWIo9ZPJLuHUSdjRSkcGbWvIiJuSZN7uT2mz5hBZ1U3o5QFvxcy01DPbPwScLP4zbD43Wsj2DrsbthG0eak24EFwZxllv8F+aIggnu/lUNLj55QoqhX0BP0ZKhjbrOCtkRF1wt79mzyGMqeyedOwR7x3RaWiHlvZADs51+SBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=fnFclocA; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 82A5120B7165; Tue,  5 May 2026 22:51:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 82A5120B7165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1778046711;
-	bh=GUfu2I1LmD0om4t0q130LxsaDD6WzeGgC5biY3ECyoU=;
-	h=From:To:Subject:Date:From;
-	b=fnFclocAe7cfB0RClyKbIJLtHUWGItLiJUQuELsXxzLpKVig9JaA8VaIyWyoEPOV4
-	 tozjXZpzInkMUav5Iq+/n6nTzk4tOyM5tdaak30/IydhiHotFqm5gzOIbBdXTgWz3T
-	 ALNU+2tRX/d50CqhHMva4T64A190NUENDFW0ZH1s=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	yury.norov@gmail.com,
-	kees@kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v8] net: mana: Expose hardware diagnostic info via debugfs
-Date: Tue,  5 May 2026 22:51:15 -0700
-Message-ID: <20260506055128.291494-1-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1778047385; c=relaxed/simple;
+	bh=W1OWeDtE9wHpPOdowcAMXOFAHtBQ7KkGAQnsP7wF9kI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Sj62omiT2VrZOaAcbcegShvI5VUuwuPAijf0UG0W3v7zUqYNgpjCau/c4yoXZjd2viljzOngr1SyTybEU50FsVUPh4SXHhT5kNRe7o/58a/YEIDyniwlk1sVh57rYMIYlza6usIf7xW9gkXS7qcAnO+QchRzsUP6Nv58HXCW8Fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 392ca282491111f1aa26b74ffac11d73-20260506
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:baa850b1-05d6-4ef7-87f0-bf6980220065,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-10
+X-CID-INFO: VERSION:1.3.12,REQID:baa850b1-05d6-4ef7-87f0-bf6980220065,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-10
+X-CID-META: VersionHash:e7bac3a,CLOUDID:6ce05419626f38fa33e9a8cb2febf982,BulkI
+	D:2605061402569OEU5EGL,BulkQuantity:0,Recheck:0,SF:10|38|66|78|102|127|850
+	|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil
+	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
+	0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 392ca282491111f1aa26b74ffac11d73-20260506
+X-User: zhaochenguang@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <zhaochenguang@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 2012207202; Wed, 06 May 2026 14:02:54 +0800
+From: Chenguang Zhao <zhaochenguang@kylinos.cn>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Chenguang Zhao <zhaochenguang@kylinos.cn>,
+	linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v3] RDMA/CM: add RDMA CM observability regression scripts
+Date: Wed,  6 May 2026 14:03:05 +0800
+Message-Id: <20260506060305.891564-1-zhaochenguang@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,382 +82,607 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 2597A4D65B4
+X-Rspamd-Queue-Id: 480454D66F5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [3.54 / 15.00];
+	SORTED_RECIPS(3.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20052-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20051-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.microsoft.com:dkim,linux.microsoft.com:mid]
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[zhaochenguang@kylinos.cn,linux-rdma@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[rxe_socket_with_netns.sh:url,rdma_cm_trace_sequence.sh:url,kylinos.cn:mid,kylinos.cn:email,rdma_common.sh:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,rdma_cm_fault_injection.sh:url]
 
-Add debugfs entries to expose hardware configuration and diagnostic
-information that aids in debugging driver initialization and runtime
-operations without adding noise to dmesg.
+This adds a minimal RDMA CM selftest suite that captures observability
+baselines and runs trace, counter-delta, and fault-injection-oriented
+checks, plus a review-loop helper for repeated validation rounds.
 
-The debugfs directory for each PCI device is named using pci_name()
-(the unique BDF address), and its creation and removal is integrated
-into mana_gd_setup() and mana_gd_cleanup_device() respectively, so
-that all callers (probe, remove, suspend, resume, shutdown) share a
-single code path.
-
-Device-level entries (under /sys/kernel/debug/mana/<BDF>/):
-  - num_msix_usable, max_num_queues: Max resources from hardware
-  - gdma_protocol_ver, pf_cap_flags1: VF version negotiation results
-  - num_vports, bm_hostmode: Device configuration
-
-Per-vPort entries (under /sys/kernel/debug/mana/<BDF>/vportN/):
-  - port_handle: Hardware vPort handle
-  - max_sq, max_rq: Max queues from vPort config
-  - indir_table_sz: Indirection table size
-  - steer_rx, steer_rss, steer_update_tab, steer_cqe_coalescing:
-    Last applied steering configuration parameters
-
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
 ---
-Changes in v8:
-* Move debugfs_create_u16("num_vports", ...) and
-  debugfs_create_u8("bm_hostmode", ...) to after ac->num_ports has been
-  assigned and clamped to MAX_PORTS_IN_MANA_DEV, so the value exposed
-  via debugfs always reflects the final, hardware-reported count
-  rather than a transient zero or unclamped value.
-* Update the stale comment above mana_gd_resume() to reflect the new
-  rollback-on-failure behavior.
-Changes in v7:
-* Rebase to latest main.
-Changes in v6:
-* Move out of patchset and create a separate patch.
-Changes in v5:
-* Update commit message.
-* Fix conflicts to align with the new patches.
-* Make it part of patchset.
-Changes in v4:
-* Rebase and fix conflicts.
-Changes in v3:
-* Rename mana_gd_cleanup to mana_gd_cleanup_device.
-* Add creation of debugfs entries in mana_gd_setup.
-* Add removal of debugfs entries in mana_gd_cleanup_device.
-* Remove bm_hostmode and num_vports from debugfs in mana_remove itself,
-  because "ac" gets freed before debugfs_remove_recursive, to avoid
-  Use-After-Free error.
-* Add "goto out:" in mana_cfg_vport_steering to avoid populating apc
-  values when resp.hdr.status is not NULL.
-Changes in v2:
-* Add debugfs_remove_recursice for gc>mana_pci_debugfs in
-  mana_gd_suspend to handle multiple duplicates creation in
-  mana_gd_setup and mana_gd_resume path.
-* Move debugfs creation for num_vports and bm_hostmode out of
-  if(!resuming) condition since we have to create it again even for
-  resume.
-* Recreate mana_pci_debugfs in mana_gd_resume.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 73 +++++++++++--------
- drivers/net/ethernet/microsoft/mana/mana_en.c | 33 +++++++++
- include/net/mana/gdma.h                       |  1 +
- include/net/mana/mana.h                       |  8 ++
- 4 files changed, 83 insertions(+), 32 deletions(-)
+v3:
+ TARGET += rdma is already present, remove it 
+ as suggested by Yanjun.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 098fbda0d128..9e9a97eef7f0 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -194,6 +194,11 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
- 	if (gc->max_num_queues > gc->num_msix_usable - 1)
- 		gc->max_num_queues = gc->num_msix_usable - 1;
+v2:
+ https://lore.kernel.org/all/20260428071216.1212775-1-zhaochenguang@kylinos.cn/
+
+v1:
+ https://lore.kernel.org/all/20260416062224.1546388-1-zhaochenguang@kylinos.cn/
+---
+ tools/testing/selftests/rdma/Makefile         |  10 ++
+ tools/testing/selftests/rdma/config           |   6 +
+ .../selftests/rdma/rdma_cm_baseline.sh        |  58 ++++++++
+ .../selftests/rdma/rdma_cm_counter_delta.sh   |  72 ++++++++++
+ .../selftests/rdma/rdma_cm_fault_injection.sh |  95 +++++++++++++
+ .../selftests/rdma/rdma_cm_review_loop.sh     |  35 +++++
+ .../selftests/rdma/rdma_cm_trace_sequence.sh  |  83 ++++++++++++
+ tools/testing/selftests/rdma/rdma_common.sh   | 126 ++++++++++++++++++
+ 8 files changed, 485 insertions(+)
+ create mode 100755 tools/testing/selftests/rdma/rdma_cm_baseline.sh
+ create mode 100755 tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
+ create mode 100755 tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
+ create mode 100755 tools/testing/selftests/rdma/rdma_cm_review_loop.sh
+ create mode 100755 tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
+ create mode 100755 tools/testing/selftests/rdma/rdma_common.sh
+
+diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
+index 7dd7cba7a73c..04c52db4b9d9 100644
+--- a/tools/testing/selftests/rdma/Makefile
++++ b/tools/testing/selftests/rdma/Makefile
+@@ -4,4 +4,14 @@ TEST_PROGS := rxe_rping_between_netns.sh \
+ 		rxe_socket_with_netns.sh \
+ 		rxe_test_NETDEV_UNREGISTER.sh
  
-+	debugfs_create_u32("num_msix_usable", 0400, gc->mana_pci_debugfs,
-+			   &gc->num_msix_usable);
-+	debugfs_create_u32("max_num_queues", 0400, gc->mana_pci_debugfs,
-+			   &gc->max_num_queues);
++TEST_PROGS += \
++	rdma_cm_baseline.sh \
++	rdma_cm_trace_sequence.sh \
++	rdma_cm_counter_delta.sh \
++	rdma_cm_fault_injection.sh
 +
- 	return 0;
- }
- 
-@@ -1264,6 +1269,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
- 		return err ? err : -EPROTO;
- 	}
- 	gc->pf_cap_flags1 = resp.pf_cap_flags1;
-+	gc->gdma_protocol_ver = resp.gdma_protocol_ver;
++TEST_FILES += \
++	rdma_common.sh \
++	rdma_cm_review_loop.sh
 +
-+	debugfs_create_x64("gdma_protocol_ver", 0400, gc->mana_pci_debugfs,
-+			   &gc->gdma_protocol_ver);
-+	debugfs_create_x64("pf_cap_flags1", 0400, gc->mana_pci_debugfs,
-+			   &gc->pf_cap_flags1);
+ include ../lib.mk
+diff --git a/tools/testing/selftests/rdma/config b/tools/testing/selftests/rdma/config
+index 4ffb814e253b..e22141838c19 100644
+--- a/tools/testing/selftests/rdma/config
++++ b/tools/testing/selftests/rdma/config
+@@ -1,3 +1,9 @@
+ CONFIG_TUN
+ CONFIG_VETH
+ CONFIG_RDMA_RXE
++CONFIG_DEBUG_KERNEL
++CONFIG_FAULT_INJECTION
++CONFIG_SYSFS
++CONFIG_DEBUG_FS
++CONFIG_FAULT_INJECTION_DEBUG_FS
++CONFIG_FAILSLAB
+diff --git a/tools/testing/selftests/rdma/rdma_cm_baseline.sh b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
+new file mode 100755
+index 000000000000..b0d8b3e46470
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_cm_baseline.sh
+@@ -0,0 +1,58 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
 +
- 	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
- 		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
- 		if (err) {
-@@ -1943,15 +1955,20 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	int err;
- 
-+	gc->mana_pci_debugfs = debugfs_create_dir(pci_name(pdev),
-+						  mana_debugfs_root);
++set -euo pipefail
 +
- 	err = mana_gd_init_registers(pdev);
- 	if (err)
--		return err;
-+		goto remove_debugfs;
- 
- 	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
- 
- 	gc->service_wq = alloc_ordered_workqueue("gdma_service_wq", 0);
--	if (!gc->service_wq)
--		return -ENOMEM;
-+	if (!gc->service_wq) {
-+		err = -ENOMEM;
-+		goto remove_debugfs;
++SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++source "${SCRIPT_DIR}/rdma_common.sh"
++
++require_root
++require_cmd date
++require_cmd uname
++
++trace_dir="$(tracefs_dir || true)"
++counter_root="$(find_cm_counter_root || true)"
++out_dir="/tmp/rdma_cm_baseline.$(date +%s)"
++dmesg_lines=400
++dmesg_pattern="ib_cm|infiniband|rdma|roce|mlx|hns_roce|irdma|siw|rxe"
++
++mkdir -p "${out_dir}"
++
++log_info "writing baseline to ${out_dir}"
++
++{
++	echo "timestamp=$(date -u +%FT%TZ)"
++	echo "kernel=$(uname -r)"
++	echo "hostname=$(uname -n)"
++	echo "dmesg_lines=${dmesg_lines}"
++	echo "dmesg_pattern=${dmesg_pattern}"
++} >"${out_dir}/env.txt"
++
++if [[ -n "${trace_dir}" && -d "${trace_dir}/events/ib_cma" ]]; then
++	find "${trace_dir}/events/ib_cma" -maxdepth 2 -name enable -print \
++		>"${out_dir}/trace_events.list" 2>/dev/null || true
++else
++	log_warn "tracefs or ib_cma trace events are unavailable"
++fi
++
++if [[ -n "${counter_root}" ]]; then
++	{
++		echo "counter_root=${counter_root}"
++		for group in "${RDMA_COUNTER_GROUPS[@]}"; do
++			for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
++				value="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
++				echo "${group}.${attr}=${value}"
++			done
++		done
++	} >"${out_dir}/cm_counters.before"
++else
++	log_warn "cm counters are unavailable under /sys/class/infiniband"
++fi
++
++if command -v dmesg >/dev/null 2>&1; then
++	dmesg | tail -n "${dmesg_lines}" | grep -E "${dmesg_pattern}" \
++		>"${out_dir}/dmesg.rdma.tail" || true
++fi
++
++log_info "baseline collection completed"
++exit 0
+diff --git a/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh b/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
+new file mode 100755
+index 000000000000..060adf9fe78a
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_cm_counter_delta.sh
+@@ -0,0 +1,72 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++source "${SCRIPT_DIR}/rdma_common.sh"
++
++require_root
++counter_root="$(find_cm_counter_root || true)"
++counter_wait_sec=2
++
++if [[ -z "${counter_root}" ]]; then
++	log_warn "cm counters are unavailable under /sys/class/infiniband"
++	exit "${ksft_skip}"
++fi
++
++declare -A before after
++
++for group in "${RDMA_COUNTER_GROUPS[@]}"; do
++	for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
++		key="${group}.${attr}"
++		before["${key}"]="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
++	done
++done
++
++if [[ "${counter_wait_sec}" != "0" ]]; then
++	log_info "waiting ${counter_wait_sec}s before workload"
++	sleep "${counter_wait_sec}"
++fi
++
++workload_rc=0
++run_workload || workload_rc=$?
++if [[ "${workload_rc}" -eq "${ksft_skip}" ]]; then
++	exit "${ksft_skip}"
++fi
++if [[ "${workload_rc}" -ne 0 ]]; then
++	log_err "workload failed with rc=${workload_rc}"
++	exit "${workload_rc}"
++fi
++
++for group in "${RDMA_COUNTER_GROUPS[@]}"; do
++	for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
++		key="${group}.${attr}"
++		after["${key}"]="$(read_cm_counter "${counter_root}" "${group}" "${attr}")"
++		delta=$((after["${key}"] - before["${key}"]))
++		echo "${key}.delta=${delta}"
++		if ((delta < 0)); then
++			log_err "counter regressed: ${key}"
++			exit 1
++		fi
++	done
++done
++
++dup_limit=10
++retry_limit=10
++
++for attr in "${RDMA_COUNTER_ATTRS[@]}"; do
++	dup_delta=$((after["cm_rx_duplicates.${attr}"] - before["cm_rx_duplicates.${attr}"]))
++	retry_delta=$((after["cm_tx_retries.${attr}"] - before["cm_tx_retries.${attr}"]))
++
++	if ((dup_delta > dup_limit)); then
++		log_err "duplicate counter exceeds limit: ${attr}=${dup_delta}"
++		exit 1
++	fi
++	if ((retry_delta > retry_limit)); then
++		log_err "retry counter exceeds limit: ${attr}=${retry_delta}"
++		exit 1
++	fi
++done
++
++exit 0
+diff --git a/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh b/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
+new file mode 100755
+index 000000000000..0202ee901386
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_cm_fault_injection.sh
+@@ -0,0 +1,95 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++source "${SCRIPT_DIR}/rdma_common.sh"
++
++require_root
++
++debugfs_fail="/sys/kernel/debug/failslab"
++recovery_wait_sec=2
++if [[ ! -d "${debugfs_fail}" ]]; then
++	log_warn "failslab is unavailable: ${debugfs_fail}"
++	exit "${ksft_skip}"
++fi
++
++for knob in probability interval times task-filter; do
++	if [[ ! -f "${debugfs_fail}/${knob}" ]]; then
++		log_warn "failslab knob missing: ${knob}"
++		exit "${ksft_skip}"
++	fi
++done
++
++orig_probability="$(cat "${debugfs_fail}/probability")"
++orig_interval="$(cat "${debugfs_fail}/interval")"
++orig_times="$(cat "${debugfs_fail}/times")"
++orig_task_filter="$(cat "${debugfs_fail}/task-filter")"
++
++restore_knobs()
++{
++	echo "${orig_probability}" >"${debugfs_fail}/probability" || true
++	echo "${orig_interval}" >"${debugfs_fail}/interval" || true
++	echo "${orig_times}" >"${debugfs_fail}/times" || true
++	echo "${orig_task_filter}" >"${debugfs_fail}/task-filter" || true
++}
++
++trap restore_knobs EXIT
++
++log_failslab_state()
++{
++	local state="$1"
++	local task_filter probability interval times
++
++	task_filter="$(cat "${debugfs_fail}/task-filter")"
++	probability="$(cat "${debugfs_fail}/probability")"
++	interval="$(cat "${debugfs_fail}/interval")"
++	times="$(cat "${debugfs_fail}/times")"
++
++	log_info "failslab ${state}: task-filter=${task_filter} probability=${probability}"
++	log_info "failslab ${state}: interval=${interval} times=${times}"
++}
++
++echo 1 >"${debugfs_fail}/task-filter"
++echo 1 >"${debugfs_fail}/probability"
++echo 100 >"${debugfs_fail}/interval"
++echo 1 >"${debugfs_fail}/times"
++log_failslab_state "enabled"
++
++if [[ -z "${CM_WORKLOAD_CMD:-}" && -n "${CM_VALIDATE_RECOVERY_CMD:-}" ]]; then
++	CM_WORKLOAD_CMD="${CM_VALIDATE_RECOVERY_CMD}"
++	log_warn "CM_WORKLOAD_CMD is not set; fallback to CM_VALIDATE_RECOVERY_CMD"
++fi
++
++injected_rc=0
++run_workload || injected_rc=$?
++if [[ "${injected_rc}" -eq "${ksft_skip}" ]]; then
++	exit "${ksft_skip}"
++fi
++log_info "workload rc under injection=${injected_rc}"
++
++echo 0 >"${debugfs_fail}/probability"
++echo 0 >"${debugfs_fail}/times"
++echo 0 >"${debugfs_fail}/task-filter"
++log_failslab_state "disabled"
++
++recovery_cmd="${CM_VALIDATE_RECOVERY_CMD:-${CM_WORKLOAD_CMD:-}}"
++if [[ -z "${recovery_cmd}" ]]; then
++	log_warn "CM_VALIDATE_RECOVERY_CMD and CM_WORKLOAD_CMD are both unset"
++	exit "${ksft_skip}"
++fi
++
++if [[ "${recovery_wait_sec}" != "0" ]]; then
++	log_info "waiting ${recovery_wait_sec}s before recovery workload"
++	sleep "${recovery_wait_sec}"
++fi
++
++log_info "running recovery workload: ${recovery_cmd}"
++if ! bash -c "${recovery_cmd}"; then
++	log_err "recovery workload failed after disabling fault injection"
++	log_err "hint: ensure remote server is restarted and listening for a second connection"
++	exit 1
++fi
++
++exit 0
+diff --git a/tools/testing/selftests/rdma/rdma_cm_review_loop.sh b/tools/testing/selftests/rdma/rdma_cm_review_loop.sh
+new file mode 100755
+index 000000000000..c156090b17e3
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_cm_review_loop.sh
+@@ -0,0 +1,35 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++cd "${SCRIPT_DIR}"
++
++declare -A rc
++
++run_step()
++{
++	local name="$1"
++	local cmd="$2"
++
++	echo "==== ${name} ===="
++	if bash -c "${cmd}"; then
++		rc["${name}"]=0
++	else
++		rc["${name}"]=$?
++	fi
++	echo "==== ${name} rc=${rc["${name}"]} ===="
++}
++
++run_step baseline "./rdma_cm_baseline.sh"
++run_step trace "./rdma_cm_trace_sequence.sh"
++run_step counters "./rdma_cm_counter_delta.sh"
++run_step fault_injection "./rdma_cm_fault_injection.sh"
++
++echo "==== summary ===="
++for name in baseline trace counters fault_injection; do
++	echo "${name}=${rc["${name}"]}"
++done
++
++exit 0
+diff --git a/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh b/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
+new file mode 100755
+index 000000000000..7e68289345e8
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_cm_trace_sequence.sh
+@@ -0,0 +1,83 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++source "${SCRIPT_DIR}/rdma_common.sh"
++
++require_root
++require_cmd bash
++require_cmd grep
++
++trace_dir="$(tracefs_dir || true)"
++if [[ -z "${trace_dir}" ]]; then
++	log_warn "tracefs is unavailable"
++	exit "${ksft_skip}"
++fi
++
++if [[ ! -d "${trace_dir}/events/ib_cma" ]]; then
++	log_warn "ib_cma trace events are unavailable"
++	exit "${ksft_skip}"
++fi
++
++workload_rc=0
++
++cleanup_trace()
++{
++	local event
++
++	for event in icm_send_req icm_send_rep icm_send_rtu icm_recv_unknown_attr; do
++		[[ -f "${trace_dir}/events/ib_cma/${event}/enable" ]] && \
++			echo 0 >"${trace_dir}/events/ib_cma/${event}/enable"
++	done
++	[[ -f "${trace_dir}/events/ib_cma/enable" ]] && echo 0 >"${trace_dir}/events/ib_cma/enable"
++	echo 0 >"${trace_dir}/tracing_on"
++}
++
++trap cleanup_trace EXIT
++
++echo 0 >"${trace_dir}/tracing_on"
++echo >"${trace_dir}/trace"
++echo 1 >"${trace_dir}/events/ib_cma/enable"
++
++for event in icm_send_req icm_send_rep icm_send_rtu; do
++	if [[ -f "${trace_dir}/events/ib_cma/${event}/enable" ]]; then
++		echo 1 >"${trace_dir}/events/ib_cma/${event}/enable"
++	fi
++done
++
++echo 1 >"${trace_dir}/tracing_on"
++run_workload || workload_rc=$?
++echo 0 >"${trace_dir}/tracing_on"
++
++if [[ "${workload_rc}" -eq "${ksft_skip}" ]]; then
++	exit "${ksft_skip}"
++fi
++
++trace_log="/tmp/rdma_cm_trace.$(date +%s).log"
++cat "${trace_dir}/trace" >"${trace_log}"
++log_info "captured trace at ${trace_log}"
++
++if ! grep -Eq "icm_send_(req|rep|rtu)" "${trace_log}"; then
++	log_err "missing CM send trace events (req/rep/rtu)"
++	exit 1
++fi
++
++err_lines="$(grep "icm_.*_err" "${trace_log}" || true)"
++if [[ -n "${err_lines}" ]]; then
++	# DREP send failure while already in TIMEWAIT is a common teardown
++	# race and is tolerated for this smoke-style validation script.
++	untolerated_err_lines="$(
++		printf '%s\n' "${err_lines}" | \
++			grep -Ev "icm_send_drep_err: .*state=TIMEWAIT" || true
++	)"
++	if [[ -n "${untolerated_err_lines}" ]]; then
++		log_err "error trace event detected in ib_cma path"
++		printf '%s\n' "${untolerated_err_lines}" >&2
++		exit 1
++	fi
++	log_warn "only tolerated TIMEWAIT drep errors observed"
++fi
++
++exit 0
+diff --git a/tools/testing/selftests/rdma/rdma_common.sh b/tools/testing/selftests/rdma/rdma_common.sh
+new file mode 100755
+index 000000000000..ee3d8b0d86b2
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_common.sh
+@@ -0,0 +1,126 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++ksft_skip=4
++RET=0
++
++RDMA_COUNTER_GROUPS=(
++	cm_tx_msgs
++	cm_tx_retries
++	cm_rx_msgs
++	cm_rx_duplicates
++)
++
++RDMA_COUNTER_ATTRS=(
++	req
++	mra
++	rej
++	rep
++	rtu
++	dreq
++	drep
++	sidr_req
++	sidr_rep
++	lap
++	apr
++)
++
++log_info()
++{
++	echo "INFO: $*"
++}
++
++log_warn()
++{
++	echo "WARN: $*" >&2
++}
++
++log_err()
++{
++	echo "ERROR: $*" >&2
++}
++
++require_root()
++{
++	if [[ "$(id -u)" -ne 0 ]]; then
++		log_warn "this test requires root privileges"
++		exit "${ksft_skip}"
++	fi
++}
++
++require_cmd()
++{
++	local cmd="$1"
++
++	command -v "${cmd}" >/dev/null 2>&1 || {
++		log_warn "missing required command: ${cmd}"
++		exit "${ksft_skip}"
 +	}
- 
- 	err = mana_gd_setup_hwc_irqs(pdev);
- 	if (err) {
-@@ -1992,11 +2009,14 @@ static int mana_gd_setup(struct pci_dev *pdev)
- free_workqueue:
- 	destroy_workqueue(gc->service_wq);
- 	gc->service_wq = NULL;
-+remove_debugfs:
-+	debugfs_remove_recursive(gc->mana_pci_debugfs);
-+	gc->mana_pci_debugfs = NULL;
- 	dev_err(&pdev->dev, "%s failed (error %d)\n", __func__, err);
- 	return err;
- }
- 
--static void mana_gd_cleanup(struct pci_dev *pdev)
-+static void mana_gd_cleanup_device(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 
-@@ -2008,6 +2028,10 @@ static void mana_gd_cleanup(struct pci_dev *pdev)
- 		destroy_workqueue(gc->service_wq);
- 		gc->service_wq = NULL;
- 	}
++}
 +
-+	debugfs_remove_recursive(gc->mana_pci_debugfs);
-+	gc->mana_pci_debugfs = NULL;
++tracefs_dir()
++{
++	if [[ -d /sys/kernel/tracing ]]; then
++		echo /sys/kernel/tracing
++	elif [[ -d /sys/kernel/debug/tracing ]]; then
++		echo /sys/kernel/debug/tracing
++	else
++		return 1
++	fi
++}
 +
- 	dev_dbg(&pdev->dev, "mana gdma cleanup successful\n");
- }
- 
-@@ -2065,9 +2089,6 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	gc->dev = &pdev->dev;
- 	xa_init(&gc->irq_contexts);
- 
--	gc->mana_pci_debugfs = debugfs_create_dir(pci_name(pdev),
--						  mana_debugfs_root);
--
- 	err = mana_gd_setup(pdev);
- 	if (err)
- 		goto unmap_bar;
-@@ -2096,16 +2117,8 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- cleanup_mana:
- 	mana_remove(&gc->mana, false);
- cleanup_gd:
--	mana_gd_cleanup(pdev);
-+	mana_gd_cleanup_device(pdev);
- unmap_bar:
--	/*
--	 * at this point we know that the other debugfs child dir/files
--	 * are either not yet created or are already cleaned up.
--	 * The pci debugfs folder clean-up now, will only be cleaning up
--	 * adapter-MTU file and apc->mana_pci_debugfs folder.
--	 */
--	debugfs_remove_recursive(gc->mana_pci_debugfs);
--	gc->mana_pci_debugfs = NULL;
- 	xa_destroy(&gc->irq_contexts);
- 	pci_iounmap(pdev, bar0_va);
- free_gc:
-@@ -2155,11 +2168,7 @@ static void mana_gd_remove(struct pci_dev *pdev)
- 	mana_rdma_remove(&gc->mana_ib);
- 	mana_remove(&gc->mana, false);
- 
--	mana_gd_cleanup(pdev);
--
--	debugfs_remove_recursive(gc->mana_pci_debugfs);
--
--	gc->mana_pci_debugfs = NULL;
-+	mana_gd_cleanup_device(pdev);
- 
- 	xa_destroy(&gc->irq_contexts);
- 
-@@ -2181,14 +2190,13 @@ int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
- 	mana_rdma_remove(&gc->mana_ib);
- 	mana_remove(&gc->mana, true);
- 
--	mana_gd_cleanup(pdev);
-+	mana_gd_cleanup_device(pdev);
- 
- 	return 0;
- }
- 
--/* In case the NIC hardware stops working, the suspend and resume callbacks will
-- * fail -- if this happens, it's safer to just report an error than try to undo
-- * what has been done.
-+/* If resume fails partway through, roll back any setup that completed so
-+ * the device is left in a clean state and resources are not leaked.
-  */
- int mana_gd_resume(struct pci_dev *pdev)
- {
-@@ -2201,13 +2209,18 @@ int mana_gd_resume(struct pci_dev *pdev)
- 
- 	err = mana_probe(&gc->mana, true);
- 	if (err)
--		return err;
-+		goto cleanup_gd;
- 
- 	err = mana_rdma_probe(&gc->mana_ib);
- 	if (err)
--		return err;
-+		goto cleanup_mana;
- 
- 	return 0;
-+cleanup_mana:
-+	mana_remove(&gc->mana, true);
-+cleanup_gd:
-+	mana_gd_cleanup_device(pdev);
-+	return err;
- }
- 
- /* Quiesce the device for kexec. This is also called upon reboot/shutdown. */
-@@ -2220,11 +2233,7 @@ static void mana_gd_shutdown(struct pci_dev *pdev)
- 	mana_rdma_remove(&gc->mana_ib);
- 	mana_remove(&gc->mana, true);
- 
--	mana_gd_cleanup(pdev);
--
--	debugfs_remove_recursive(gc->mana_pci_debugfs);
--
--	gc->mana_pci_debugfs = NULL;
-+	mana_gd_cleanup_device(pdev);
- 
- 	pci_disable_device(pdev);
- }
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index a654b3699c4c..26bd3d270b5e 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1276,6 +1276,9 @@ static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
- 	apc->port_handle = resp.vport;
- 	ether_addr_copy(apc->mac_addr, resp.mac_addr);
- 
-+	apc->vport_max_sq = *max_sq;
-+	apc->vport_max_rq = *max_rq;
++find_cm_counter_root()
++{
++	local base
++	local port
++	local candidate
 +
- 	return 0;
- }
- 
-@@ -1430,6 +1433,11 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 
- 	netdev_info(ndev, "Configured steering vPort %llu entries %u\n",
- 		    apc->port_handle, apc->indir_table_sz);
++	for base in /sys/class/infiniband/*; do
++		[[ -d "${base}" ]] || continue
 +
-+	apc->steer_rx = rx;
-+	apc->steer_rss = apc->rss_state;
-+	apc->steer_update_tab = update_tab;
-+	apc->steer_cqe_coalescing = req->cqe_coalescing_enable;
- out:
- 	kfree(req);
- 	return err;
-@@ -3161,6 +3169,23 @@ static int mana_init_port(struct net_device *ndev)
- 	eth_hw_addr_set(ndev, apc->mac_addr);
- 	sprintf(vport, "vport%d", port_idx);
- 	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
++		for port in "${base}"/ports/*; do
++			[[ -d "${port}" ]] || continue
++			# RoCE / newer sysfs: cm_* groups live directly under ports/<N>/
++			if [[ -d "${port}/cm_tx_msgs" ]]; then
++				echo "${port}"
++				return 0
++			fi
++			# Legacy layout: under counters/ or hw_counters/
++			for candidate in "${port}/counters" "${port}/hw_counters"; do
++				[[ -d "${candidate}/cm_tx_msgs" ]] || continue
++				echo "${candidate}"
++				return 0
++			done
++		done
++	done
 +
-+	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
-+			   &apc->port_handle);
-+	debugfs_create_u32("max_sq", 0400, apc->mana_port_debugfs,
-+			   &apc->vport_max_sq);
-+	debugfs_create_u32("max_rq", 0400, apc->mana_port_debugfs,
-+			   &apc->vport_max_rq);
-+	debugfs_create_u32("indir_table_sz", 0400, apc->mana_port_debugfs,
-+			   &apc->indir_table_sz);
-+	debugfs_create_u32("steer_rx", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_rx);
-+	debugfs_create_u32("steer_rss", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_rss);
-+	debugfs_create_u32("steer_update_tab", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_update_tab);
-+	debugfs_create_u32("steer_cqe_coalescing", 0400, apc->mana_port_debugfs,
-+			   &apc->steer_cqe_coalescing);
- 	debugfs_create_u32("current_speed", 0400, apc->mana_port_debugfs,
- 			   &apc->speed);
- 	return 0;
-@@ -3678,6 +3703,11 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
- 		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
- 
-+	debugfs_create_u16("num_vports", 0400, gc->mana_pci_debugfs,
-+			   &ac->num_ports);
-+	debugfs_create_u8("bm_hostmode", 0400, gc->mana_pci_debugfs,
-+			  &ac->bm_hostmode);
++	return 1
++}
 +
- 	ac->per_port_queue_reset_wq =
- 		create_singlethread_workqueue("mana_per_port_queue_reset_wq");
- 	if (!ac->per_port_queue_reset_wq) {
-@@ -3800,6 +3830,9 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	mana_gd_deregister_device(gd);
- 
-+	debugfs_lookup_and_remove("bm_hostmode", gc->mana_pci_debugfs);
-+	debugfs_lookup_and_remove("num_vports", gc->mana_pci_debugfs);
++read_cm_counter()
++{
++	local root="$1"
++	local group="$2"
++	local attr="$3"
++	local path="${root}/${group}/${attr}"
 +
- 	if (suspending)
- 		return;
- 
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 6d836060976a..70d62bc32837 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -442,6 +442,7 @@ struct gdma_context {
- 	struct gdma_dev		mana_ib;
- 
- 	u64 pf_cap_flags1;
-+	u64 gdma_protocol_ver;
- 
- 	struct workqueue_struct *service_wq;
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 8f721cd4e4a7..18215388d2c7 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -568,6 +568,14 @@ struct mana_port_context {
- 
- 	/* Debugfs */
- 	struct dentry *mana_port_debugfs;
++	if [[ -f "${path}" ]]; then
++		cat "${path}" 2>/dev/null
++	else
++		echo 0
++	fi
++}
 +
-+	/* Cached vport/steering config for debugfs */
-+	u32 vport_max_sq;
-+	u32 vport_max_rq;
-+	u32 steer_rx;
-+	u32 steer_rss;
-+	u32 steer_update_tab;
-+	u32 steer_cqe_coalescing;
- };
- 
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
++run_workload()
++{
++	local cmd="${CM_WORKLOAD_CMD:-}"
++
++	if [[ -z "${cmd}" ]]; then
++		log_warn "CM_WORKLOAD_CMD is not set"
++		return "${ksft_skip}"
++	fi
++
++	log_info "running workload: ${cmd}"
++	bash -c "${cmd}"
++}
++
 -- 
-2.34.1
+2.25.1
 
 
