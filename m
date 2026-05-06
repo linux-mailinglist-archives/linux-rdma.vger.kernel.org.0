@@ -1,85 +1,86 @@
-Return-Path: <linux-rdma+bounces-20073-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20075-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4FeQFDVD+2mzYgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20073-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:33:41 +0200
+	id EE+NGJBD+2lPYgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20075-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:35:12 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 470374DB057
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:33:40 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C20344DB0AE
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 15:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E5CF2301285D
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 13:33:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4D41B306CFDB
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 13:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35E5477E41;
-	Wed,  6 May 2026 13:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7604647CC70;
+	Wed,  6 May 2026 13:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gktlRKId"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KtYabjQ/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012031.outbound.protection.outlook.com [52.101.48.31])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012010.outbound.protection.outlook.com [52.101.43.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7642E3E8C71;
-	Wed,  6 May 2026 13:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F80947887E;
+	Wed,  6 May 2026 13:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.10
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778074410; cv=fail; b=Yp3hIs3PvLPY4oO3ehCxvtq2k895Zb7uHweKvL99XeNATspvQ9bkQZ+RA0x1iIv+PkFdWOtG7Z7AFG9lAmLffawJ2wPRweqK40hcjyyuTGC0FIWmYZiH9FUSlrSBP8tPph6udbIJdI+tBjB3DneYuJ7CaOFvwQQDiA2f2IJCkv8=
+	t=1778074420; cv=fail; b=m2wvWPZ+hT12z5/NkpA9kx6WZqTt9wRxhsdxXC96wf0Xl/DUuiVmuZoBCI+1V9k3snDWTNRhiyIT5VQEeKnWwrO4I5EKkKH0njIuOWhx11KT7MxBvPXPFlhi8TW8hPj/qNMwSGRQaFXDRa8DZiAwDeVxFVMRt/8GOHHjZJAHoa8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778074410; c=relaxed/simple;
-	bh=nDH2J9rlAa2YXfdeb6Prpqcna6WNy3VGSNKyvtVLbtw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qwIIfH8Hd7CwSrtG44D3yzZkfNSDFV3rLtH52DdT79jIG73B8fH4dphNyenB3NSD+mQYRZideBuwjts0qu+qKtVPl88XJb1I8H1+HFfFy0Tst01h1/eFWliqXfbUsbL3HTxO3Sd6uRJ5p8yeikm574bkEMXylLfwZU2V59BX6N4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gktlRKId; arc=fail smtp.client-ip=52.101.48.31
+	s=arc-20240116; t=1778074420; c=relaxed/simple;
+	bh=qRPLqSmTdL7RgFrpA39YtEfL8GmJqojniB9toq76cd4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RHPSutWvUyKHa9GP4Gjdprvth/EMu0tSu8pZlIvS/F4QHj86J1kloEcjndy9Kmqsq5n+6aOKFRmbnpi8Q+OKPzYWBiwpRdcORX0CM6aB67tjZzbm5e+b/FTG0I8w/2jK+MHIuiyy/CwE0YlLHFpou8vMkhkYar54BhxoqwDNtA4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KtYabjQ/; arc=fail smtp.client-ip=52.101.43.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dHn7ub1fvATWP+DeYhQak8Ddwh2ZnMDyMvm6Crxv/2w8DCz99txmzr1mhWO6G04Bq+7A1Zb9mOz6TXjIgngqDu8Simt6MRIPiKnXwNhgkhJRqbUs6ziqAzWGxsqimf3p1D2IwdY/cN4skXX1POyOXmU907KkZL13xb1dPEa+kh8wBA4A5dLDoVUttIQfFz4OCNM4ay/WDRyAQQ/tt0K/qr41n0Y2AfbZc275QPKhdCr/bF5YCfrDBTN2AgRqpZeIUH+F2HtTDaqBwtsl/BjE/6axtbVfshpZQfY2Nr3AW/bbmJNq9i7A8KUuWmyzSJvfuLtp3p7LIE3zbv4yYbEGKA==
+ b=foaXuChDLB/3q5FOv+M9zem9ZikbJ957Mn4t9wS8KTB3853MMzmxqcyIYl5zLL6ngWrAMj1alGhsg5iTj3xvErnhyFzteZhI5wqMfMoykL6PHYSbZEwoTOk30RBCx5XqkihStdc+JkOPoV62+c+ituft7Y2LOtJvz+EIA9rU+1Ms7I6PcwxGXUPAkX6+KuYQLCpADQ7zkt3UYJAWbDDqfZ0EIWa4BkcpT6ueTnYhmASC/HiIgGa9ZX8sdVNIh4STangsx12x3htbUhSRhqYdsQ/TnD4lzL3MYoT7sec1W5ixWR46fNy6wv7GM8AcMaZ8UvRoDlIKtWKil6GqR3NclA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5HQ2Q6CIhYwwvrBrPjbRHExq6czrDWWu9URbJluVLxY=;
- b=GrhIEFAJYQAVgEftTq/Ue+AawjeEt15Hg5sNdC2Zv8t8SqZz6ya1bPwFXlR9YabkA2mBuuv7Q2r3UVZVTF/3R3q5kowe2et2Howo3XlmqbSbQKdnn5qIqIHfM/B+Hpkby29ec+92nLG1tKLjSRNkeBwsRNxfjmWU2lygca1m+/c9OFR19ieCRLaMdlFRkuWT4P1DPEP2W80l+vFM6YSxd9KUgtNHavI23kzHi1g9tq/ctwQPVSzt+PV2q4lVHQW+UG114WR5w6Zc97YyIv/nkXeTjZiJxeSqEFn9TJdswv5odxluokZ6dTb6wvqIpPXi4rx0PhWNb9fz9zcHyoVbLw==
+ bh=hKAm1Kw0m1lZImrfB9XzU16kod3fBCXGquKUYeNU6xA=;
+ b=FiDp2S5bijMn+MBtuTzUPlbxkNYd9NJOtMsr/7VEXrWLi+mH+N6r0eYYHFsGxeh1F5kWtUj8j+Le2amwyqKc6OX1eWF+7+obz9c/c2a+Jxxs1hdb274f7gmwF6TwT3CuG8kvaxFNgVUeD2/45KEMPoPqzlN3zqcYThnK9lnL4osjr0eofPPi44rapqjXF77rhLeZEG1UtjBMAS4NYi+i8hyuMHhmzxJbHqCVzZOEXFA2IokblVW33LD7Og7TAvzig4VcQznDfxNvJ1ClXYlUc5DotGGqO4X0V29KrXmEYXo7bDxM0YWzOtHMWn060u/P6thkbf/GFxcRfGqhh/VrLg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5HQ2Q6CIhYwwvrBrPjbRHExq6czrDWWu9URbJluVLxY=;
- b=gktlRKId8qS1alwNj9riaFpsrljAP+gGrdaw+TTNJDL+t3JyMbC6sl2mRCuulJeouC8RnPJ2j1Dyr/EzEVnWfynW+KS5yDNatgqa6C9oO1gSQT9PXwotBkJ91ek04i/trGDTggcstRFTyqeDky3SyMq2G8L5C1PYKKfvm/qjTqtHzYBpGe23fHu33N0IC9SD0iRaqJdidAmreciOEAtOMK6u3DaJOrzG5dpL6ihFThLpOrRUJfgUMENntpmq3kg5fJZnDemZFBPxBBjrgYQ0sDLjce4Ukh5jIlaVm86IwwdXIItbCcRL9LE1SCg88mhnIhWJxDg1G6T7RI7V0rz7xA==
-Received: from BYAPR07CA0098.namprd07.prod.outlook.com (2603:10b6:a03:12b::39)
- by IA0PR12MB8745.namprd12.prod.outlook.com (2603:10b6:208:48d::11) with
+ bh=hKAm1Kw0m1lZImrfB9XzU16kod3fBCXGquKUYeNU6xA=;
+ b=KtYabjQ/c8zSaEQdaCxDSGCWHCylM+6avun4yWunPWyBpo06/BA1cTKUzgXOqOqhImqst8++JZQ5hqpwGjkCir2acwuiugLlA/2TjVFqGqeNgewvVJ8HN/6SyNs6vE9E3Zp22w/1FF+urVRn4u4enXaui4nS/I4eXMhs1X+HXWudshBl5iqcW+08Sgz9lGTr6Dk9OH43GwzYA2cNTDAVXMf4dFphGAkOmYE1nyOR0s7ytv4HjZ7UOE9w7su0W0w7ws+Iw+1ee55nEhOh/t6C43Q9VCm+cZivAhji740rj+A5uPOwqwmmP4OibDpQKiNzgiu6GWVA+LyunA5RL2xMFA==
+Received: from MN0P221CA0003.NAMP221.PROD.OUTLOOK.COM (2603:10b6:208:52a::6)
+ by DM4PR12MB7718.namprd12.prod.outlook.com (2603:10b6:8:102::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.25; Wed, 6 May
- 2026 13:33:19 +0000
-Received: from MWH0EPF000A6731.namprd04.prod.outlook.com
- (2603:10b6:a03:12b:cafe::11) by BYAPR07CA0098.outlook.office365.com
- (2603:10b6:a03:12b::39) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9891.15 via Frontend Transport; Wed,
- 6 May 2026 13:33:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.15; Wed, 6 May
+ 2026 13:33:21 +0000
+Received: from BN1PEPF00005FFE.namprd05.prod.outlook.com
+ (2603:10b6:208:52a:cafe::f3) by MN0P221CA0003.outlook.office365.com
+ (2603:10b6:208:52a::6) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9891.16 via Frontend Transport; Wed,
+ 6 May 2026 13:33:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- MWH0EPF000A6731.mail.protection.outlook.com (10.167.249.23) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BN1PEPF00005FFE.mail.protection.outlook.com (10.167.243.230) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9891.9 via Frontend Transport; Wed, 6 May 2026 13:33:19 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9891.9 via Frontend Transport; Wed, 6 May 2026 13:33:20 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 6 May
- 2026 06:32:54 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 06:32:59 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 6 May
- 2026 06:32:54 -0700
+ 2026 06:32:59 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Wed, 6 May
- 2026 06:32:50 -0700
+ 2026 06:32:55 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -90,10 +91,12 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
 	<dtatulea@nvidia.com>
-Subject: [PATCH net-next V2 0/3] net/mlx5: ICM page management in VHCA_ID mode
-Date: Wed, 6 May 2026 16:32:36 +0300
-Message-ID: <20260506133239.276237-1-tariqt@nvidia.com>
+Subject: [PATCH net-next V2 1/3] net/mlx5: Relax capability check for eswitch query paths
+Date: Wed, 6 May 2026 16:32:37 +0300
+Message-ID: <20260506133239.276237-2-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20260506133239.276237-1-tariqt@nvidia.com>
+References: <20260506133239.276237-1-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -105,31 +108,31 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000A6731:EE_|IA0PR12MB8745:EE_
-X-MS-Office365-Filtering-Correlation-Id: e85aeae1-c083-4f05-1b1f-08deab74094b
+X-MS-TrafficTypeDiagnostic: BN1PEPF00005FFE:EE_|DM4PR12MB7718:EE_
+X-MS-Office365-Filtering-Correlation-Id: a39212c8-331f-4b35-7eba-08deab740a4e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|1800799024|376014|36860700016|13003099007|56012099003|18002099003;
+	BCL:0;ARA:13230040|1800799024|376014|82310400026|36860700016|18002099003|56012099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	sANDeaC5Sfo8a2GwTloJyag84dIWDlzt6lKAMAVhXEDxu8zdXMz/yTcsLYYQ59kuEaDU/UY5KVHQ4OEXNjrDE18hQCRqbd0CJe8ByyV9YkVQSfCflAD6QYbErZKXu5utoYhoaW17cSVPCcIKW3EJx7g4Xz7j7/KoFzBPcGID0Ug+Oh0azdH2MOZBzEXdJFaiL7Styydw9ZLozR/LzM2NyvBpUdwTBeJajxRfvot1m7ez4aNqAX2hAwB5wsD20marbo8oAgldHmaKlURUlh5Pb/NjkmzjrGzWvGEqLwFDGvKcE5/FJC44GxWNPoxMJcMaIVPUzjDo1v/h4oHvK3XNZckJztBsewCVHnMfn0xAwvMuSxWV2KHNtjMf2s9RAH9GYrHJawQMRN+PpIxkDRMxBVp8c99rLJ2halKw1ncG+bgRnuVlLFbudZVXcKoHi33YHTsLAI1d3heKBcv/1GV4BxpXNMrhx9DI5q/KPeu+96FRRCEuiz1NFKi5uiJbi7qtNOkYESRhEnfOstdJG2tJiTOIhO+ZBxzoz1Su/rlKfgCA1xid35RvVycCpGRPUGHNdECrxVJOfj+LEYSJmqRgHrZy7I2/9kn2F2b3cWaKKuGsdld1ylywgdnW5FSJRJoF4243X9kZRLq3iLMQHE5riEg17cGt4Qxzvdl3HprYvXVGbUz9Pw474k7gzm+/pJsYcl2KtNQ/53UwCnAxuQnkT0CRlKboeEsNOuN7eo6cZ8LX6kfYzEGQ84TQ8facwwmq
+	D6tvWoRn5rsILQScaH/pZgwtlJhoL5wHydRtPZhOTBThUbthunu9SBFfXaBnVEbU9nzLTCDMXauCicrCfeiEAI5zMf7Z+kkMGfhXHHEhD6NqwJCjVoNDNTdLz4+EA2D6m8cU8641GkZvjbYSvsmdzBm+8/YsaYbgRT0lZTKq4fcVNYnTFOGW85f8SVNr6KiJn0WhiV7xu9gNi6xiTMIq3wqJVCm4dr3qB/zwggHwuho7NGBhhMuzvF14khiO36hINIM38TENmzUY/6XNEj0RSQJHWMUt5rARrj2PVqE46egFaajT5k4w5OL22eRVaxeT+2XrkXYE3bgRFSfLdyLrDSnrFYZEHV7zb9gvV7t1dp99aOVIyW3O2UVnKpTHKEzjlIerIDXAAh8hDYwWIWUTbc/Hf24WPM2dJAbNcgdfzdhPSL6l14+jxYMVQUPG5Ff4vk5pTqFvjKIx5Z6YkoyXs9Twupvr18E6dnEjPrMnYonufU3V68ffwsEAsBkuIzYkLqkkOg4aYkg/0lAHle+/+DftADV+aW9fFvn+a7pp+CPFrRYmQIGccd06akwhwX3oY4OeaxAi5I83G5p+TTdJU1X9rQMauQ9LGLf6AiM0FVYEOLQsd4k+mZckvyx8rrsqNczu0Mxd9u9Ejm7lk9BmG9C2fwPMfdB9wMfeQQzyDSq1b+3/AITvyb6Q38ho7NJhELSRCIvbkecYqmmemwKV/LQ8EXG9RF0P4K8o+JQQfnY=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(376014)(36860700016)(13003099007)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(82310400026)(36860700016)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	D9dnDfMpSINR5cJnq0R7N/0esGvu0qFOAzSQl5l9ePgXzptk2wR8tLvLhJZ7cT2IAH/qkJ526T9Cip7+Fq+IcoUOKer1KW9QK2ubz2wpPVG/N+p1sSvi1lpuhBY7ooFqYCxDb8EneevsPKp84qEwrn3UxLvOK+wxCEy3138YxCCrhG80Zw2xLGfY+gwI3nXnebGrC5wt/n/fmazi9u8+cqss0rXWUPrQNjLOGwpSW3a2t8qHD/0iYswSAzpt6fLr2M3ONzo1USTu07+4EavdTwfHyJo7s9/AzxDg2zrV8loGW7lkB8SyrCiK9DdBde9hunHUTCzUCF2tVUBxIAxJpg0Aps7ih+hm13nAliIfNlEpPqjm5YYRmidDJBh09RdS/zEqW98hoNnKdDs6+hPplkWGM5sQZH5NaP97hhZageeexkHpTPgSjx9HFsP2N4Fd
+	heD0EzfRfiHaoCcoPgqa5pPWoPic5i36QOUGDFc87xcTqsFNbUTWfEx0a2M3+m1wyZnWOQHGr6Q3jDtuX6x0SX3tURDcVRmA8A6WPP+Cj6X/p46b5Gz5KCsBJAQRqLdfwzxVfSHpnvrxHVZo46LUmlXPT3UW8q2MGuTD0b5F5+Ns987u9mxptZvI+AjAIknD7gYBRpiquqnVZDeLdnu+eUS+FSEMKH3xdyLJQfOZtN7KBK5Cr4vAko+8svsnYbX3Cv9V8gdj8O/Lo9ugVFv4ZV2ZmiTX6QDt5T7e5R0O8pkz3aO8NbmyH+SJ9FYhXx2ZMdygdSUeBNhOSvH9h4hpElsByf/N652S/7Kytkde8t513ajH3fR84O0SwrFFMU5XAFx1deMVpf9Fm3/QUQ8iurGAAOZgouXn5AbPL2dNPWqyN2HRMwAviAfwfgl/5dV8
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2026 13:33:19.2107
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2026 13:33:20.8876
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e85aeae1-c083-4f05-1b1f-08deab74094b
+X-MS-Exchange-CrossTenant-Network-Message-Id: a39212c8-331f-4b35-7eba-08deab740a4e
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000A6731.namprd04.prod.outlook.com
+	BN1PEPF00005FFE.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8745
-X-Rspamd-Queue-Id: 470374DB057
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7718
+X-Rspamd-Queue-Id: C20344DB0AE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.84 / 15.00];
@@ -139,7 +142,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -147,70 +150,134 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20073-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20075-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:mid,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,Nvidia.com:dkim];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
 
-Hi,
+From: Moshe Shemesh <moshe@nvidia.com>
 
-Find detailed description by Moshe below.
+Several eswitch functions that only query other functions' HCA
+capabilities or read cached vport state are guarded by the
+vhca_resource_manager capability. This capability is required for
+set_hca_cap operations but query_hca_cap of other functions only
+requires the vport_group_manager capability.
 
-Regards,
-Tariq
+Relax the capability check from vhca_resource_manager to
+vport_group_manager in the following query-only paths:
+- mlx5_esw_vport_caps_get() - queries other function general caps
+- esw_ipsec_vf_query_generic() - queries other function ipsec cap
+- mlx5_devlink_port_fn_migratable_get() - reads cached vport state
+- mlx5_devlink_port_fn_roce_get() - reads cached vport state
+- mlx5_devlink_port_fn_max_io_eqs_get() - queries other function caps
+- mlx5_esw_vport_enable/disable() - vhca_id map/unmap
 
-This series adds driver support for the VHCA_ID page management mode.
-When firmware and driver support this mode, ICM (Interconnect Context
-Memory) page management uses the device vhca_id as the function
-identifier in MANAGE_PAGES, QUERY_PAGES, and page request events instead
-of the legacy function_id + ec_function pair.
+Functions that perform also set_hca_cap (migratable_set, roce_set,
+max_io_eqs_set, esw_ipsec_vf_set_generic, esw_ipsec_vf_set_bytype)
+retain the vhca_resource_manager requirement.
 
-Background
-Firmware can operate page management in two modes:
-FUNC_ID mode (current): Function identity is (function_id, ec_function).
-This remains the default and is used for boot pages and when the new
-mode capability is not set.
-VHCA_ID mode (new): Function identity is vhca_id only; ec_function is
-ignored. This aligns page management with the vhca_id-based model used
-by other firmware commands and simplifies identification on SmartNIC and
-multi-function setups.
-
+Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Akiva Goldberger <agoldberger@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
+ .../net/ethernet/mellanox/mlx5/core/esw/ipsec.c    |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |  6 +++---
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c | 14 ++++++++------
+ 3 files changed, 12 insertions(+), 10 deletions(-)
 
-V2:
-- Cache vhca_id to type mapping to provide lockless lookup.
-- Store the resolved type on each fw_page at allocation time so reclaim
-  and release paths read it directly without any lookup.
-- Reorder erase old key and insert new key on migrate function.
-- Fixed comment on mlx5_satisfy_startup_pages.
-
-V1: https://lore.kernel.org/all/20260501044156.260875-1-tariqt@nvidia.com/
-
-Moshe Shemesh (3):
-  net/mlx5: Relax capability check for eswitch query paths
-  net/mlx5: Make debugfs page counters by function type dynamic
-  net/mlx5: Add VHCA_ID page management mode support
-
- .../net/ethernet/mellanox/mlx5/core/debugfs.c |  39 ++-
- .../ethernet/mellanox/mlx5/core/esw/ipsec.c   |   2 +-
- .../net/ethernet/mellanox/mlx5/core/eswitch.c |  49 +++-
- .../net/ethernet/mellanox/mlx5/core/eswitch.h |   8 +
- .../mellanox/mlx5/core/eswitch_offloads.c     |  14 +-
- .../net/ethernet/mellanox/mlx5/core/main.c    |  10 +-
- .../ethernet/mellanox/mlx5/core/pagealloc.c   | 250 +++++++++++++-----
- include/linux/mlx5/driver.h                   |   9 +
- 8 files changed, 304 insertions(+), 77 deletions(-)
-
-
-base-commit: 7e0cccae6b45b12eaf71fc3ab8eb133bb50b28ad
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c
+index 8b12c3ae0cf7..4811b60ea430 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec.c
+@@ -12,7 +12,7 @@ static int esw_ipsec_vf_query_generic(struct mlx5_core_dev *dev, u16 vport_num,
+ 	void *hca_cap, *query_cap;
+ 	int err;
+ 
+-	if (!MLX5_CAP_GEN(dev, vhca_resource_manager))
++	if (!MLX5_CAP_GEN(dev, vport_group_manager))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (!mlx5_esw_ipsec_vf_offload_supported(dev)) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+index 66a773a99876..e0eafcf0c52a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+@@ -806,7 +806,7 @@ static int mlx5_esw_vport_caps_get(struct mlx5_eswitch *esw, struct mlx5_vport *
+ 	void *hca_caps;
+ 	int err;
+ 
+-	if (!MLX5_CAP_GEN(esw->dev, vhca_resource_manager))
++	if (!MLX5_CAP_GEN(esw->dev, vport_group_manager))
+ 		return 0;
+ 
+ 	query_ctx = kzalloc(query_out_sz, GFP_KERNEL);
+@@ -938,7 +938,7 @@ int mlx5_esw_vport_enable(struct mlx5_eswitch *esw, struct mlx5_vport *vport,
+ 		vport->info.trusted = true;
+ 
+ 	if (!mlx5_esw_is_manager_vport(esw, vport_num) &&
+-	    MLX5_CAP_GEN(esw->dev, vhca_resource_manager)) {
++	    MLX5_CAP_GEN(esw->dev, vport_group_manager)) {
+ 		ret = mlx5_esw_vport_vhca_id_map(esw, vport);
+ 		if (ret)
+ 			goto err_vhca_mapping;
+@@ -976,7 +976,7 @@ void mlx5_esw_vport_disable(struct mlx5_eswitch *esw, struct mlx5_vport *vport)
+ 		arm_vport_context_events_cmd(esw->dev, vport_num, 0);
+ 
+ 	if (!mlx5_esw_is_manager_vport(esw, vport_num) &&
+-	    MLX5_CAP_GEN(esw->dev, vhca_resource_manager))
++	    MLX5_CAP_GEN(esw->dev, vport_group_manager))
+ 		mlx5_esw_vport_vhca_id_unmap(esw, vport);
+ 
+ 	if (vport->vport != MLX5_VPORT_HOST_PF &&
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index 69ddf56e2fc9..392d8f364db6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -4677,8 +4677,9 @@ int mlx5_devlink_port_fn_migratable_get(struct devlink_port *port, bool *is_enab
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	if (!MLX5_CAP_GEN(esw->dev, vhca_resource_manager)) {
+-		NL_SET_ERR_MSG_MOD(extack, "Device doesn't support VHCA management");
++	if (!MLX5_CAP_GEN(esw->dev, vport_group_manager)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Device doesn't support vport group management");
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+@@ -4753,8 +4754,9 @@ int mlx5_devlink_port_fn_roce_get(struct devlink_port *port, bool *is_enabled,
+ 	struct mlx5_eswitch *esw = mlx5_devlink_eswitch_nocheck_get(port->devlink);
+ 	struct mlx5_vport *vport = mlx5_devlink_port_vport_get(port);
+ 
+-	if (!MLX5_CAP_GEN(esw->dev, vhca_resource_manager)) {
+-		NL_SET_ERR_MSG_MOD(extack, "Device doesn't support VHCA management");
++	if (!MLX5_CAP_GEN(esw->dev, vport_group_manager)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Device doesn't support vport group management");
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+@@ -5076,9 +5078,9 @@ mlx5_devlink_port_fn_max_io_eqs_get(struct devlink_port *port, u32 *max_io_eqs,
+ 	int err;
+ 
+ 	esw = mlx5_devlink_eswitch_nocheck_get(port->devlink);
+-	if (!MLX5_CAP_GEN(esw->dev, vhca_resource_manager)) {
++	if (!MLX5_CAP_GEN(esw->dev, vport_group_manager)) {
+ 		NL_SET_ERR_MSG_MOD(extack,
+-				   "Device doesn't support VHCA management");
++				   "Device doesn't support vport group management");
+ 		return -EOPNOTSUPP;
+ 	}
+ 
 -- 
 2.44.0
 
