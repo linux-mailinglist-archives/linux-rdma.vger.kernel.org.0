@@ -1,354 +1,286 @@
-Return-Path: <linux-rdma+bounces-20099-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20100-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGjEGCx0+2m7bAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20099-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 19:02:36 +0200
+	id +PqVEul7+2n0bgMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20100-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 19:35:37 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6ED04DE89A
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 19:02:35 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id E213B4DEE73
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 19:35:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C677B30432FB
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 17:01:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5135E3021D35
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 17:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1450D4B8DCD;
-	Wed,  6 May 2026 17:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E6E4BC029;
+	Wed,  6 May 2026 17:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="B66HjENp"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="a5G49KzS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D0E306B3D;
-	Wed,  6 May 2026 17:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778086860; cv=none; b=PMuTNDZUk7sNMvXJCN22BIdE0KpwkXPB5874V1LTH10UNhhnUQn/K79RIo3OxmEwMt99GZxKJ2cjCGoCQCdb5txZoNJRq5XGN8zDbqqgsoYN3fVLSJgEY3aVRyjpO7kNiAXFHOwQVWhetFkAbXjm+9QTmENDYN+xI/vfXUlFdIM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778086860; c=relaxed/simple;
-	bh=5H8uv55CdIEjsgjwTREHfEmz2xCo418XDDD+GfJSn5U=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B+o+MmZCSs7vkF1PGtMgEZNwlcijQ7PkvQ0etn9+R6zt7196/SfU5a/tt/24m4kGvp8zQNBSLAlgFoClsgEBRhMwWTzAGb2bcSkBlxyy3tvs/exfOt/b1ooTz7fE0eFRNtzkukbL1O6ZK0cAZuFKbQVbqAGAL+L9OaYkplilQtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=B66HjENp; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 33A1F20B716B;
-	Wed,  6 May 2026 10:00:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 33A1F20B716B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1778086856;
-	bh=u74eADCno/AFCuSqkMUCWBI9VPUeluydwikYKABjQ0o=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=B66HjENpgRQ1OPoTD5Q5ztBtZv0zHZm8t9osyxWkzZiqmHTmWjYNg/SGGs93S014u
-	 e64uB0GvM8SitGum1UTR9tJXw2bUrMjJgr+uF+RRmDNsZk2lcwvIBIgJdfnR2KZB03
-	 TIxbTZOMOb2WjDEqxaOMEd5edX4BovCCDCEf7yAc=
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	stephen@networkplumber.org,
-	jacob.e.keller@intel.com,
-	dipayanroy@microsoft.com,
-	leitao@debian.org,
-	kees@kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	sdf@fomichev.me,
-	yury.norov@gmail.com
-Subject: [PATCH net-next v7 2/2] net: mana: force full-page RX buffers via ethtool private flag
-Date: Wed,  6 May 2026 09:58:58 -0700
-Message-ID: <20260506170034.327907-3-dipayanroy@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260506170034.327907-1-dipayanroy@linux.microsoft.com>
-References: <20260506170034.327907-1-dipayanroy@linux.microsoft.com>
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012023.outbound.protection.outlook.com [40.93.195.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E813F7A83;
+	Wed,  6 May 2026 17:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.23
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778088932; cv=fail; b=OW80T2N4OL5CFoxRWdq5+uOtUkNJk3a8QI/Rnd75S7neuojxuDDybm0AFYZa2+ufFa3X7avV/83KoKwTwvA2inNuR/2V/XJ8NLM63jPidw9fOs8ViHgvVqXTEQwfsbCe9w/PaKrpWIGuiWEeIkt/VEHPGoHURi3zaao6emjGBSU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778088932; c=relaxed/simple;
+	bh=fEE0ttaR7d1I8eSLXlAbPkzTBvB8qCgnKKJvyuCJvFY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=o0yr9p6NmvvPcvecm7c1YaCQAM/zkL//PEDBhQ0wZOa90i2/bm4L5IjCd809y5Hc/i+igEjdVv4pLDXD/jzGC1lWQ/MybCIZGqFABpVtzHUlpwxGvSTRWNo4j1N9Vu7pbzxdXS61QOogfhhfrl5eO8LTJ0CeusiouvhpI1RZblM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=a5G49KzS; arc=fail smtp.client-ip=40.93.195.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wloABKU7WEeRsozsCwBUwOAQDm/VSK/XeEYqlYRlkddpljOSOrcZwz5A3ZR1wtBKEzxoc8Zi6LUAPDT3eYwq6ZwwXhfe9EqUujgLPQUvS2iaGnIp1zpEizeo4wYFFFzlxTwXnGfRb5IzzM5uC7HNPHb28jP0kKM+CRHHiS092Hz0avJYXol9UlyJeDpbfDVlk7smshc20EfTUVKtYG2N94IN9RrRFWgQq2Uxr+kMvtbOTrEHRV7RLl5Gh6DpCqktDlIvvbNa3nWv4t21L7pRB8N5+y7qTVzzzNg2STGV/31MxM43WYd/eYpPbcIYDjJFNfrZtxmZByswYFpdX18M1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DbpixR2QX2IxfOqzV6FjG/PQYRqWrS+gWPCKQ+y6mX0=;
+ b=mmzey6lKmWBuBNWO5Bp6XHIAUIweUY4yvWPNkYZYKjztTFNgtouYinnqhpUR+FpNvEVopB8Pez42vBPrxQ/d7aTGkhEOf9bGTze4e2zXuTRBL5SZZOSIDVyjSRP219iUSQxGR3kE7kTuJipuCgYl9lCoyW9i/FkP43UVZ/PO88M2vh9+ASTeP+GVx3yi7E392RXzxSyEmPawPeB9HEb6bfq7xb1ezedXLUqojwc5iLFp/+Z1cQHcKkLw8qSp3xtJHPiARZ1BMCStIB2VrJNLW4NxXa/3FpzVmqJ/uX/mXrXq/E+qO5/FP1Tz0tKBvD9W0dFshNBejwa1WI8gW7xIkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DbpixR2QX2IxfOqzV6FjG/PQYRqWrS+gWPCKQ+y6mX0=;
+ b=a5G49KzSYREqWsdJ3q8ipKcmX3ow3DBe0I0Xa/Ox324a3JALUHPOUcyHOkTilbyMQpLAi5fst9ohOM4O5avhrSOu5ChwKWX+fmzkc+aFhWg5/OGwpLpJLynDngrc6+glya8oOpW5XNfOz/Yv+md4QObM1jHW2j2omi0iFm2s+iXJZ1ns/FttYl33pyuVTg/hu5vk2Mb5xBiscKEu2GUAeFdNsSExXrOoRPmpP0K1HGGbC93QbxMn/uyj89dtDH4+lPZEy0IhmipuwoP0VVo/IwG5M4D1+U+OY8UUq1sdECpgU2uxHPdapeu5l4dnciHa3D+4GHbx8AjAIYNxdnuBxQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB7548.namprd12.prod.outlook.com (2603:10b6:610:144::12)
+ by DM4PR12MB5985.namprd12.prod.outlook.com (2603:10b6:8:68::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.27; Wed, 6 May
+ 2026 17:35:19 +0000
+Received: from CH3PR12MB7548.namprd12.prod.outlook.com
+ ([fe80::b710:d6a1:ab16:76de]) by CH3PR12MB7548.namprd12.prod.outlook.com
+ ([fe80::b710:d6a1:ab16:76de%6]) with mapi id 15.20.9891.008; Wed, 6 May 2026
+ 17:35:16 +0000
+Message-ID: <3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
+Date: Wed, 6 May 2026 20:35:10 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, Randy Dunlap
+ <rdunlap@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Christian Brauner <brauner@kernel.org>, Petr Mladek <pmladek@suse.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Thomas Gleixner <tglx@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>,
+ Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
+ Li RongQing <lirongqing@baidu.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20260506123739.1959770-1-mbloch@nvidia.com>
+ <aftaW-irGmkfA7FS@FV6GYCPJ69>
+Content-Language: en-US
+From: Mark Bloch <mbloch@nvidia.com>
+In-Reply-To: <aftaW-irGmkfA7FS@FV6GYCPJ69>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TL2P290CA0020.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:3::9)
+ To CH3PR12MB7548.namprd12.prod.outlook.com (2603:10b6:610:144::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C6ED04DE89A
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB7548:EE_|DM4PR12MB5985:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3e9b58cb-1ecf-419a-5377-08deab95d61f
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|22082099003|18002099003|3023799003|3122999024|56012099003;
+X-Microsoft-Antispam-Message-Info:
+	mpbAvDbWA1sjl1H4sY9TEeFF/HjJIJ4LvUnOtBHxmId7YgVPW5Kyf/sU/N1uOGDeKoSNKPumleu6uZUIIb5bCI0EFfjReIg+FlQzpFOoOw1CCMYpN7PlJvIxbtIpa86xPB3vrI6xbLyHmJMdowDgnkmVEaqYiGJ6Gweh3hg8iHKp42OTJPZPz2vvZjBT+QOLtFa+sbxBf4u65zXacM0NSrSxRGaA90s19iuVO+SgZ+Bk+R9ZJI6aYI55YwSii3ssgyzyVV4QJEaLIw427o899cAQHjuN0n3p7YonYYDhuDhcq3YuG4fp+jfpIVVT3037oLv1gLBFqgkvyyLJj7xteqeWCrZso088zAwE2/3pfighRySVphf/sw5h0y+tM+wkmINcx8cNYXyLPwQolYX/tAoqLa0kxnOO7+6dTKbMe/tDgY1PopGGX3q8oEAkiAB+pPSB0zMID8rjqE9CDOqkGwV/oNnwHK1eq74Z9OyrkA98frt5iPl2BdQ+VhQGU/fnfhX6Z0dG4HfkMgGPAs5S3y/MYZ+MucTS1zBgzu1VfYH5VyZnnOMPBTmIgbKUY4tvWGuTLrNzlvNSgp2yxGgjAyoyWvl8kpSuZrBwR95aBQ6mKVY09wPiCbJ/C57eHuJsQT609Yp7LfQqx0Zh0fvgtf3jCrNj79Iyw0thBLcS7ypX9t7A0zveuuWksxtQyoU9vr3AVX9sCOJDMBVHU1D5gA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7548.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(22082099003)(18002099003)(3023799003)(3122999024)(56012099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WTBDTXJXUzkxUjBlZVNNcjJISm1zQjFSRmcrbFhzWGtBSmY4V3NLNnNPNGZB?=
+ =?utf-8?B?Y282UjhmRUxVU0NlbWN6Ry9kNDVFY2dZcXM4akZob3gxNy9tS3p2bTBIZmNR?=
+ =?utf-8?B?bk1FcXlSUWZhMlN3d1BRdFVZT3orc1haVzlHZkxrWkZ2Z1JTYU9uSHliOGND?=
+ =?utf-8?B?YnplM2xYNFZkSGNPbWFnOGkxaGE2WmZ1OXpXcElyT1ZnV05TSmovc2VPUmNP?=
+ =?utf-8?B?NW8wMUNaQmF1clFFbFhGWTlKbVY4MFRYWDFiQ0p1RzJrcWptd1ovd0FvdEhr?=
+ =?utf-8?B?Y1JYdGE0cS94UTRWWGg4czJCN0kzTTZ1VG04R0JXakdWb2RBWUJjL1h4UHAw?=
+ =?utf-8?B?am5pOGpBYmI4K20zYjJzMHh6QjlheEg2c1BRUDAzcWdWSUZJZ21PZEN2N0hw?=
+ =?utf-8?B?cmRmcW0wZG1HWWl2MUZ2MlRyT3NsRmcrdy9nU2xnTFVjeE9BWjRTUUJ0dWRS?=
+ =?utf-8?B?RnphVXVqbStyREtaNHpzOUFwNmtkcXFwWWxpaUxCVitnYkkxM3RHdWdrOWdD?=
+ =?utf-8?B?Wnk2Vnh2MldCRUlwS1B6N3RuS0h4OHZ0NzM0ZzBTSzV3Z1pmTHFsVmU3Vk1P?=
+ =?utf-8?B?ZSttek5Bd2RhQ1pxWXN1akpkeWtkL3pKYmtXV20yeUd6ZmhqQjdoQ3hwZmxm?=
+ =?utf-8?B?Qy9VaWh4dXFrUEFLRnB3K0wxbVF6Y0VvRFl1SFJOWmpGQnIvUmJGb2JiTFIy?=
+ =?utf-8?B?RStlVG5XMzZpZElLUy9LblQwT2thNkdPdHhseTBpYWtJcDJBTUhzbEV4K09l?=
+ =?utf-8?B?QXBEMjJ3VC9RcjlLZlUrL09tQnVhSFpYalova2UzNk83NndiVTh5bnhDTjB0?=
+ =?utf-8?B?Y3dKN1FWYUNVMDhWa2FhamNYdVQzRDUxU05JS1JqbkFvb3hKM1RkWWFPbzA0?=
+ =?utf-8?B?eG55UDRUOEMyNnZCUnptTkh0djVPNWY0cE02bDB6NVhYQ1VWU2dXR2Z6OG9X?=
+ =?utf-8?B?dGxWN0Z2SHZFN3ZlTmVJeW9ScHpOWXBCNWhPNnFZUUh5U3dKdVVXSUtWenU5?=
+ =?utf-8?B?bGQ3MGlJcmtOdEV2RUVrbWN0Yk9wOWxjUGlTdndBN1RVRUk3bzdiSG5SRmc4?=
+ =?utf-8?B?WmhEQ2VvZVBpZnBGWG80SkE4b3RTbzFhOXdWOUNDenQ1SkpFZ0JobkhGMGg3?=
+ =?utf-8?B?NWVRNU82WnNDL0VUU2U1cUc5NFN1bWJCbjVaK0xGdGtDY2pYN0d6aXRldTNJ?=
+ =?utf-8?B?TFFhUnlXYWdEcDREQmhhNnZDa2VWOVpTeTBMV3ovRjhBbHpKN2ZrVnQzMllZ?=
+ =?utf-8?B?MnBMc2wzeXBpdSsxNy8rL1NIUkRNcDFJOGhnSjZVUHd1d0hBMFlESTlqcnpI?=
+ =?utf-8?B?b3YxODBkcE9FbElDQlJzUzdFZUFKTWlWTy9tUDdTMDFjajR5cTBaUllJdjh6?=
+ =?utf-8?B?WnNrbkFBa1RoVVdYQ2hkOE04Snh2T3R5NUQvVFBOQ0haU0JaTWptVlh3b1N3?=
+ =?utf-8?B?V3QvVUVhYmVmYk1xUHltUy80WklKOHlzMjJOY1psVnVZblBMMXl1dmk5S3lS?=
+ =?utf-8?B?Mld2OGdLQlJrMkZ5c1JFMDBtVVdkZXhhTllQZmUxMEhWZS9CY0lxakxvejNh?=
+ =?utf-8?B?VXNFaWtENzFkMmQzaHVtSkpWeklNTkhGMTVsaHBDQThET2cwWThUckliYTNF?=
+ =?utf-8?B?aG5nY09UOFNZUWlxU0dxTkIyUmJYY1ptTkZsZ3NjZ0pYS0pwUWlqK2lRcFpF?=
+ =?utf-8?B?b3Z1cldQanJkNWZDZXVnUjZKb084TTQwVE5oNllPblRMeFViTjg3bnVNZHNB?=
+ =?utf-8?B?VHBla0QweXJUUXh6a1c3YW5UeG9aczBRRVBCZlJpYk5xRjROWmExK3pLS0xq?=
+ =?utf-8?B?bFBtdis2RlJzclZ3RWpNVWxQNnlkZ3FaY0dlZUNtd2gxVVhFMzhGUG5JaTUr?=
+ =?utf-8?B?KzZRbDZIblZPaFdvNzlOcTBHRCs3dkxyeTIrN2dqUFY3TFJtaWwvZDlhTU5R?=
+ =?utf-8?B?V05GWnEyRG01cnlka0t1MkJpTW5jUklmVXFjeEdMUHE3RElkSDdsWC9zcHZp?=
+ =?utf-8?B?SW5nQU0wR1FxZHlHRVdmQTdyR3I0Y3UyTGd6NG1rdWhYVThVei9sSms1Vy9l?=
+ =?utf-8?B?RjJqRDZoWHNzK1lBVmNkcUtYemdLSThTODNrd05OeE5UL3N2QTBDZDZxRWZV?=
+ =?utf-8?B?ZXpVeDkwelJrZjVuajFMbEV5YklwZERITWxUYmxFaE9ydmlZbzlTK0RaN1JN?=
+ =?utf-8?B?WXpPNnF2cHgzdGlkRXlOUG95QVRSaytHZzZpRVZjODJnbHd2ZjF6UjFVZ3Uy?=
+ =?utf-8?B?TWxIR0JiV0pNeUlDWGVvSlk2bTFMdzB2dm5vMW9DQTljZGxPQWtrTko4aEpm?=
+ =?utf-8?B?WUxFNThmQzlnYXdSSGFHTGovQ2pqQ1Q0bmNUbmFXa1czNjFnRFkwQT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e9b58cb-1ecf-419a-5377-08deab95d61f
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7548.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2026 17:35:16.5867
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cB/Ipal8yy9YUxtzvTPH7xx5WbvI7BX+EktEpr7vvdOiHjDAh+CCwY+PZQoHb4yrXuq/4gbPcwxCHc+6KQv4bg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5985
+X-Rspamd-Queue-Id: E213B4DEE73
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	TAGGED_FROM(0.00)[bounces-20100-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	TAGGED_FROM(0.00)[bounces-20099-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:dkim,linux.microsoft.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
-On some ARM64 platforms with 4K PAGE_SIZE, page_pool fragment
-allocation in the RX refill path can cause 15-20% throughput
-regression under high connection counts (>16 TCP streams).
 
-Add an ethtool private flag "full-page-rx" that allows the user to
-force one RX buffer per page, bypassing the page_pool fragment path.
-This restores line-rate (180+ Gbps) performance on affected platforms.
 
-Usage:
-  ethtool --set-priv-flags eth0 full-page-rx on
+On 06/05/2026 18:22, Jiri Pirko wrote:
+> Wed, May 06, 2026 at 02:37:35PM +0200, mbloch@nvidia.com wrote:
+>> This series adds a devlink= kernel command line parameter for applying
+>> selected devlink settings during device initialization.
+>>
+>> Following a discussion with Jakub[1], I am sending this RFC to get the
+>> conversation moving. I started from Jakub's example/request and extended
+>> it to cover requirements from production systems and configurations that
+>> customers use.
+>>
+>> One important caveat is that the parsing logic in this RFC was written
+>> with AI assistance. I am also not sure whether the resulting syntax and
+>> parser are too complex for a kernel command line interface. This is part
+>> of why I am sending it as an RFC: to understand what direction and level
+>> of complexity would be acceptable to people.
+>>
+>> The implementation is intended to support the following properties:
+>>
+>> - A system may have multiple devlink devices that usually need the same
+>>  configuration. For a configuration such as eswitch mode switchdev, a
+>>  user should be able to specify multiple devices to which that
+>>  configuration applies.
+>>
+>> - There may be ordering dependencies between options. For example, in
+>>  mlx5, flow_steering_mode should be set before moving to switchdev.
+>>  With this in mind, defaults are applied per device in the left-to-right
+>>  order in which they appear on the command line.
+>>
+>> The intent is to let deployments set devlink defaults before normal
+>> userspace orchestration runs, while still using devlink concepts and
+> 
+> "defaults before normal userspace orchestrarion". I read it as config
+> before config, which eventually could be skipped.
+> 
+> 
+>> driver callbacks rather than adding driver-specific module parameters.
+>> A default is scoped to one or more devlink handles, for example:
+>>
+>>  devlink=[pci/0000:08:00.0]:esw:mode:switchdev
+>>  devlink=[pci/0000:08:00.0]:param:flow_steering_mode:smfs
+>>  devlink=[pci/0000:08:00.0,pci/0000:08:00.1]:param:flow_steering_mode:hmfs,[pci/0000:08:00.0,pci/0000:08:00.1]:esw:mode:switchdev
+> 
+> I don't like this. What you do, you are basically introducing user
+> configuration tool on kernel cmdline.
+> 
+> The same you would achieve with a proper userspace tool/daemon.
+> I did try to come up with it and push it here:
+> https://github.com/systemd/systemd/pull/37393
+> That didn't get merged for unknown reason, but the idea is sound. You
+> provide configuration files for devlink object and systemd-devlinkd
+> will apply when they appear. Wouldn't this help your case?
 
-There is no behavioral change by default. The flag must be explicitly
-enabled by the user or udev rule.
+I agree that systemd-devlinkd is the right shape for normal
+devlink configuration, and it could probably replace the udev/devlink
+plumbing we use today.
 
-The existing single-buffer-per-page logic for XDP and jumbo frames is
-consolidated into a new helper mana_use_single_rxbuf_per_page() which
-is now the single decision point for both the automatic and
-user-controlled paths.
+The case I am trying to cover is earlier than that.
 
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 22 ++++-
- .../ethernet/microsoft/mana/mana_ethtool.c    | 89 +++++++++++++++++++
- include/net/mana/mana.h                       |  8 ++
- 3 files changed, 117 insertions(+), 2 deletions(-)
+On BlueField/ECPF/DPU systems, the host PF driver cannot always finish
+probing independently of the ECPF side. When the ECPF is the eswitch
+manager, the host PF is kept in initializing state until the ECPF eswitch
+side is set up and mlx5 enables the external host PF HCA. That happens as
+part of moving the ECPF to switchdev.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 49c65cc1697c..59a1626c2be1 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -744,6 +744,25 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
- 	return va;
- }
- 
-+static bool
-+mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
-+{
-+	/* On some platforms with 4K PAGE_SIZE, page_pool fragment allocation
-+	 * in the RX refill path (~2kB buffer) can cause significant throughput
-+	 * regression under high connection counts. Allow user to force one RX
-+	 * buffer per page via ethtool private flag to bypass the fragment
-+	 * path.
-+	 */
-+	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
-+		return true;
-+
-+	/* For xdp and jumbo frames make sure only one packet fits per page. */
-+	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
-+		return true;
-+
-+	return false;
-+}
-+
- /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
- static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 			       int mtu, u32 *datasize, u32 *alloc_size,
-@@ -754,8 +773,7 @@ static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 	/* Calculate datasize first (consistent across all cases) */
- 	*datasize = mtu + ETH_HLEN;
- 
--	/* For xdp and jumbo frames make sure only one packet fits per page */
--	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
-+	if (mana_use_single_rxbuf_per_page(apc, mtu)) {
- 		if (mana_xdp_get(apc)) {
- 			*headroom = XDP_PACKET_HEADROOM;
- 			*alloc_size = PAGE_SIZE;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index a28ca461c135..0547c903f613 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -133,6 +133,10 @@ static const struct mana_stats_desc mana_phy_stats[] = {
- 	{ "hc_tc7_tx_pause_phy", offsetof(struct mana_ethtool_phy_stats, tx_pause_tc7_phy) },
- };
- 
-+static const char mana_priv_flags[MANA_PRIV_FLAG_MAX][ETH_GSTRING_LEN] = {
-+	[MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF] = "full-page-rx"
-+};
-+
- static int mana_get_sset_count(struct net_device *ndev, int stringset)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -144,6 +148,10 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
- 		       ARRAY_SIZE(mana_phy_stats) +
- 		       ARRAY_SIZE(mana_hc_stats)  +
- 		       num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-+
-+	case ETH_SS_PRIV_FLAGS:
-+		return MANA_PRIV_FLAG_MAX;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -192,6 +200,14 @@ static void mana_get_strings_stats(struct mana_port_context *apc, u8 **data)
- 	}
- }
- 
-+static void mana_get_strings_priv_flags(u8 **data)
-+{
-+	int i;
-+
-+	for (i = 0; i < MANA_PRIV_FLAG_MAX; i++)
-+		ethtool_puts(data, mana_priv_flags[i]);
-+}
-+
- static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -200,6 +216,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 	case ETH_SS_STATS:
- 		mana_get_strings_stats(apc, &data);
- 		break;
-+	case ETH_SS_PRIV_FLAGS:
-+		mana_get_strings_priv_flags(&data);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -590,6 +609,74 @@ static int mana_get_link_ksettings(struct net_device *ndev,
- 	return 0;
- }
- 
-+static u32 mana_get_priv_flags(struct net_device *ndev)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+
-+	return apc->priv_flags;
-+}
-+
-+static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+	u32 changed = apc->priv_flags ^ priv_flags;
-+	u32 old_priv_flags = apc->priv_flags;
-+	bool schedule_port_reset = false;
-+	int err = 0;
-+
-+	if (!changed)
-+		return 0;
-+
-+	/* Reject unknown bits */
-+	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
-+		return -EINVAL;
-+
-+	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
-+		apc->priv_flags = priv_flags;
-+
-+		if (!apc->port_is_up) {
-+			/* Port is down, flag updated to apply on next up
-+			 * so just return.
-+			 */
-+			return 0;
-+		}
-+
-+		/* Pre-allocate buffers to prevent failure in mana_attach
-+		 * later
-+		 */
-+		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+		if (err) {
-+			netdev_err(ndev,
-+				   "Insufficient memory for new allocations\n");
-+			apc->priv_flags = old_priv_flags;
-+			return err;
-+		}
-+
-+		err = mana_detach(ndev, false);
-+		if (err) {
-+			netdev_err(ndev, "mana_detach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+			goto out;
-+		}
-+
-+		err = mana_attach(ndev);
-+		if (err) {
-+			netdev_err(ndev, "mana_attach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+			schedule_port_reset = true;
-+		}
-+	}
-+
-+out:
-+	mana_pre_dealloc_rxbufs(apc);
-+
-+	if (err && schedule_port_reset)
-+		queue_work(apc->ac->per_port_queue_reset_wq,
-+			   &apc->queue_reset_work);
-+
-+	return err;
-+}
-+
- const struct ethtool_ops mana_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_CQE_FRAMES,
- 	.get_ethtool_stats	= mana_get_ethtool_stats,
-@@ -608,4 +695,6 @@ const struct ethtool_ops mana_ethtool_ops = {
- 	.set_ringparam          = mana_set_ringparam,
- 	.get_link_ksettings	= mana_get_link_ksettings,
- 	.get_link		= ethtool_op_get_link,
-+	.get_priv_flags		= mana_get_priv_flags,
-+	.set_priv_flags		= mana_set_priv_flags,
- };
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 3336688fed5e..fd87e3d6c1f4 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -30,6 +30,12 @@ enum TRI_STATE {
- 	TRI_STATE_TRUE = 1
- };
- 
-+/* MANA ethtool private flag bit positions */
-+enum mana_priv_flag_bits {
-+	MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF = 0,
-+	MANA_PRIV_FLAG_MAX,
-+};
-+
- /* Number of entries for hardware indirection table must be in power of 2 */
- #define MANA_INDIRECT_TABLE_MAX_SIZE 512
- #define MANA_INDIRECT_TABLE_DEF_SIZE 64
-@@ -531,6 +537,8 @@ struct mana_port_context {
- 	u32 rxbpre_headroom;
- 	u32 rxbpre_frag_count;
- 
-+	u32 priv_flags;
-+
- 	struct bpf_prog *bpf_prog;
- 
- 	/* Create num_queues EQs, SQs, SQ-CQs, RQs and RQ-CQs, respectively. */
--- 
-2.43.0
+Today userspace observes the ECPF instance and then switches the
+mode through devlink, usually via udev or similar plumbing. That still
+leaves a window where the ECPF has probed, userspace has not applied the
+mode yet, and the host PF is waiting. With many ECPFs this becomes visible
+in host PF probe/boot time. A daemon reacting to the devlink object
+appearing can make the userspace side cleaner, but it still runs after the
+device has appeared and after userspace scheduling/uevent handling.
+
+Long term, for these DPU deployments, we would like mlx5 to initialize
+directly in switchdev. I am hesitant to make that unconditional because it
+changes existing behavior and there is no early opt-out before probe. The
+cmdline parameter was meant as an explicit opt-in middle step: ask the
+driver to apply the same devlink operation during init, before this path
+depends on userspace.
+
+We previously tried to address this with an mlx5 module parameter. By
+design, that was too coarse: it applied to all mlx5 devices handled by the
+module. That makes it usable only for narrow DPU-only configurations. The
+devlink-handle based cmdline syntax was intended to keep the opt-in scoped
+to the specific devices that need this early switchdev transition.
+
+Mark
+
+> 
+> [..]
 
 
