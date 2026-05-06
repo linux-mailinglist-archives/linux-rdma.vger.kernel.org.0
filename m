@@ -1,94 +1,100 @@
-Return-Path: <linux-rdma+bounces-20061-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20062-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YF9HOqsJ+2mbVQMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20061-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 11:28:11 +0200
+	id KNgeMcMO+2mrVwMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20062-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 11:49:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A21C4D89AB
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 11:28:11 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B134D8EBA
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 11:49:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00957300615E
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 09:25:27 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 59A823024A8B
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 09:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0D93E3DA0;
-	Wed,  6 May 2026 09:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548F53EBF33;
+	Wed,  6 May 2026 09:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="l31fB+wT"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="MErqLDso"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41DAE3DA5BC
-	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 09:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA952F3621
+	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 09:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778059522; cv=none; b=UbpxC3YY6kPmbhK/tVSP0wS91zFx0kb2UaitTSBdsnil9Jf1osHJH/PY+8s8tJFQVsIZ0Zza91TotNeXhSSByY82/d7gP0IAjhpp+HdXSq6pVCrZA9ORglkm62G2596clQ8uXCYHmJ8JRvdkIcyKwo1PTQl31bE8davjlwrxqgk=
+	t=1778060985; cv=none; b=YmUNThX71snUXgay7Ja9v4hEP8eHRT9eH7Tyze330NAoVOLLa5Oi/5NNBYnaZQyAQeioXLfClxOzmNFsHqXYjTmnEPYSUnE+t/cvqzYKTcO01dfgGURegwX5tn7+2fKzwTipB7ztf+ll8dFGeGp4pZrSZBCh48CNyTqbm5uL0I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778059522; c=relaxed/simple;
-	bh=sPzvgcbl2PYg2rwa94APsabPTgf2GtMyq0qHC8mtJuo=;
+	s=arc-20240116; t=1778060985; c=relaxed/simple;
+	bh=3J/IYDtx28vSJ4QqQveH8g/uo9l7rKqBLsCUyGgPzIs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g1wewT1M7AdJI9mkMYJnLMIE1Z2Af6DhabrsYEG/ZbX+uai6HQ4SwRzgHkBF55vOVQo3r7A53RHUs8v8pOw9nJbtYV6aCvV+5uV3z2Lcc+9b96kyN9nXISxHZmzX86s1HwnRfwg2i6KoBdQSS4vVPl1Q56aalNklEVvaq9WcTKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=l31fB+wT; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-488af96f6b2so78233565e9.0
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 02:25:17 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=hGliTDYag2ELx7aamXBIPDUe61mndltqczqgPaofai63j5qfoX08IVnzmkO1gRZ9mpEZs8SopBEd4vw24ofMWhb/wR/TCl56ORieoqVAuJ8RW/vzo4Q8F7G97yKFhaNjkX1ScrynU8//IBZuvuCNv8Ffm1R5iArgGeN5ZMubaxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=MErqLDso; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-44a786a9a35so3417352f8f.3
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 02:49:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778059516; x=1778664316; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1778060982; x=1778665782; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I5EV3DxjgEKvqBbROhIn7Y2DPgnYHSL37i/QOZyEcLU=;
-        b=l31fB+wTF4k8Fl33QdSjmMr9NMZyquV6tE9GGVZIFGi5hI94muA44/nmSanvAkG5Zg
-         aNCraoY0mP3ANuCG32DH/yLLJk5AtzncGEVNcnYris1IfSjZ8YSflMtj+LEyrO8Jm3Gv
-         HQkAjVwlm+tGRTCgtMVK/nbbbVRC/FuQ/FcMu4p1SE66tWcvAvjVC2rO8hvh3s4MjN5t
-         siSgTsJYRQnCPOKZE7EnJE3N/JFUFa2dkfXvA2LOxV97+z9h8ZhZGuE1gV828O/rgEV1
-         9OHNpWgsD+qBzUXA2V/05QFEcKRVLmMVvwgpBLIIQgrExd9qUWI8LGUsu9zCKska9CCP
-         hzyw==
+        bh=bnZS0xBSFdibsiuZVu6/d+lDIw/+4F1v4OqADXgc9+g=;
+        b=MErqLDsoBAp5P9wqD11yao80yUNzzzc5MXKorbIXIt4OtT34lOVlA/C61j6CyBVq53
+         oRRQrQhgTLRbamsZseTUufwh4vwsmV5tja37cfoIG0WMokp0T5BFoPnvg3kDIYjJD/3p
+         nNplJ9WQR956APdRy4WvB+ycQWzT20cFOiNL5JcSU5f5j5J60BuakdKHrMeuVXx3wRiV
+         3nDpOlZqNKoEBIg3vz2tupQvhQjyKu2VdgQHTekDyv8EQmkMaYy9MtQmusqnEvZr20OD
+         OKU6tLg8K7tegWfp+9suKOyzwxTHMKgEckk0SqrIZ4g4Y+BwweUDVYs07SVBPEVQ09i/
+         D0nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778059516; x=1778664316;
+        d=1e100.net; s=20251104; t=1778060982; x=1778665782;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I5EV3DxjgEKvqBbROhIn7Y2DPgnYHSL37i/QOZyEcLU=;
-        b=dFiMcYnvAZmNNZAwwgGevPIns875vFW90ifyqxb9T5EvwB53NlrAzl0MlmeS6Ljww2
-         lUUCHZszTrysEk83qEpMGxRB+wqucl84WidIP/zbaK58pSbbb5d6BDTlD2lwGshRltsh
-         AOaJQF5sn+a6ozzpGmKK/+k6KWLOh8Omr2Woga7BgXrLehjJDw/0Vi4TtqTYQipSfHav
-         vGR2bLqqoLZ770Y9OY/OJ8c9zedNeyyuvHle2zJQxSe4BIs72QiZo08MWPKR+yPtRVj2
-         6I4Nw+CgryoUrwOHkZnZZTkVL1edT8tFbGQQUUGozy6aFp0z8XXOWR9u9KVvvOsrOU9R
-         8c2A==
-X-Forwarded-Encrypted: i=1; AFNElJ+J1UrcN6/Yq57rAM78yrsOGYgwPThYPk5j6PpPfXWxw2NY0TCkacCA2kp+LTUvQCekvsRy133j3GNV@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywnu4iRDBUoxfh5raZ90cU42RtlfoqWIbSoJ3BgOMUsxeEhELxQ
-	gBY0Jw80iEWOq1jMwxhMxYZKeaPjvmoy9Ix6Ax1XZXTebYtxVZFMBoMEsLUA+pkKlVw=
-X-Gm-Gg: AeBDiet6jH2J86NA0snqLpk+Tdl/8TRfSGQM970TLfP0ggegUXp7rKbQyovQXz5nyLr
-	T1ZOrmfmgdvspSkLJPyNVRJ1kpg64si7o3VBwtmsIQ3siN79ljz+wVINfkFQSbxmNNRWqtBV9KL
-	SCCKgMPvdq/89OXT6oIbE5I2CWMFf3u7wN5qGMA3JRp3wy0zpGwgbJqqY/hOlu9bsHBrcIDC1Gt
-	wqa6MK8+BGtRBc3H4+QsGH5+tC9sYF1fbuMwx4lb54SVCH9tuhq47WgSF9DOMi/LH6k+usEY1EM
-	ixe6HaVJ4yWuKj0anw39Y+pVf6V8IP51kInLXm6IjsafVIlBWxzgUxKIUX22IT8oFWxBTppzCtc
-	ID5dhz/Svx3P11Jfm/x2rAO31pKw2zeWZyG3DQ8TVOcM7JoaCKa0jeS+IOfj7ovpiBwBkM7Q8qm
-	GF4y7HUZeILHEOIQiGSeoo6NQx+yUvx7DOUIX+5yZ8mg==
-X-Received: by 2002:a05:600c:a118:b0:486:d76c:fa57 with SMTP id 5b1f17b1804b1-48e51f37363mr33775185e9.17.1778059515792;
-        Wed, 06 May 2026 02:25:15 -0700 (PDT)
-Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e53895f0asm36508775e9.2.2026.05.06.02.25.14
+        bh=bnZS0xBSFdibsiuZVu6/d+lDIw/+4F1v4OqADXgc9+g=;
+        b=e+AnHLws9lxTh2rTeYWJ84VM0OrrEwUYCpUlSls6xTmoFD+KwDYAkknz1Mcgbzd22t
+         judVpnareQM4mBtk+ZP1H/RIiX/dnhA9PEiitRCw1QOnwTRNByGBphbQfXM5Lhv9GZO5
+         TtBlturbDoBZL2up0ghv/RcGlrUjyqu6GRQw63/6syv/YRWSZi1Y9xhAB88J5qZ0u6LG
+         LpqpD+a78Gr2icEamaU0nPCkN5TDlNap8cGwIPhwJSbbk7ia9PIgEU6WrThAcj2h7dHG
+         HQqk/ADYUMTMjdnEcK0ipAIL2+SQIwWxDjvKUJnSQRpdM2aLN5XdZrTd3PvvRH0ieiN9
+         63Gg==
+X-Forwarded-Encrypted: i=1; AFNElJ9nm35rdn689ssnsE6SRhMWXXfZ0WOtbIHrnKqJyQ6+1dBoE2JIk+q3OOvzRHRsZNPUnmaGyxhMig2B@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzr405D/oFMMoqbx/G7wSQPa8/Sj5M75DEq+FFsVM0UWZD/iYr7
+	2a5jTGssVPW4R0ItAALIP6QkXPaprQSu2gVz6b4rbgT84PGDpJ5bkDuk48h6ua406vY=
+X-Gm-Gg: AeBDievVTSHMxZvzpY3JfjgyI0CeCVKC03I38Dq7NvQDvDc1lrdU215rLbRsFbSKr6S
+	ugLA9axn8+5pLPqxDzDYqUMUUKDBHt+fbPFk9o59etXawDKPKxT6XWm9rtJ1F9z17/c6bFstqvg
+	kMtYbjaJj4B7iu+mrR8o9r0nfoKmfT/If4DjBa0LKYS3uVvnAKn26FcJt21CvnxQKEksdBk1rBd
+	ybSyUr8shZGmlsV8od40lFCVQWwXuBGUwO9C4JMBBwrwUjVM2043hqewRJKRQ3XF3miN0emtQh2
+	pUo3YNyK9uZl8GLO+/mkas5cez3VnYwvCl7RN9nUYxWOrFoUZ1dAYd2w73Ffds0N2yq1QvYoZ57
+	Niy97gl4qOPaiYBRkdsS0WQSrCkB1VZsQg1rOp/A3rMXPLI+OdGHTDEhJ9i7D48B4i30gJKs6dW
+	SsXfFUreA=
+X-Received: by 2002:a05:6000:3110:b0:44a:8880:ffd2 with SMTP id ffacd0b85a97d-4515b056b8fmr4429135f8f.4.1778060981421;
+        Wed, 06 May 2026 02:49:41 -0700 (PDT)
+Received: from ziepe.ca ([213.147.98.98])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45054b02802sm11280976f8f.17.2026.05.06.02.49.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2026 02:25:15 -0700 (PDT)
-Date: Wed, 6 May 2026 11:25:13 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Jacob Moroni <jmoroni@google.com>, linux-rdma@vger.kernel.org, 
-	leon@kernel.org, edwards@nvidia.com, kees@kernel.org, parav@nvidia.com, 
-	mbloch@nvidia.com, yishaih@nvidia.com, lirongqing@baidu.com, 
-	huangjunxian6@hisilicon.com, liuy22@mails.tsinghua.edu.cn
+        Wed, 06 May 2026 02:49:40 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wKYsu-0001ez-3r;
+	Wed, 06 May 2026 06:49:40 -0300
+Date: Wed, 6 May 2026 06:49:40 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: Jacob Moroni <jmoroni@google.com>, linux-rdma@vger.kernel.org,
+	leon@kernel.org, edwards@nvidia.com, kees@kernel.org,
+	parav@nvidia.com, mbloch@nvidia.com, yishaih@nvidia.com,
+	lirongqing@baidu.com, huangjunxian6@hisilicon.com,
+	liuy22@mails.tsinghua.edu.cn
 Subject: Re: [PATCH rdma-next 2/2] RDMA/umem: block plain userspace memory
  registration under CoCo bounce
-Message-ID: <afsIsW7vKgJtdNA2@FV6GYCPJ69>
+Message-ID: <afsOtEeppBzxOGUB@ziepe.ca>
 References: <20260505061149.2361536-1-jiri@resnulli.us>
  <20260505061149.2361536-3-jiri@resnulli.us>
  <CAHYDg1SSkV42nfjakR1W=zu8-E7svsswxoTesXuLvpF6c5WvqA@mail.gmail.com>
  <afoUqiDgZmhE4Kog@ziepe.ca>
+ <afsIsW7vKgJtdNA2@FV6GYCPJ69>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,49 +103,55 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <afoUqiDgZmhE4Kog@ziepe.ca>
-X-Rspamd-Queue-Id: 4A21C4D89AB
+In-Reply-To: <afsIsW7vKgJtdNA2@FV6GYCPJ69>
+X-Rspamd-Queue-Id: 65B134D8EBA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
+	TAGGED_FROM(0.00)[bounces-20062-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20061-lists,linux-rdma=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,ziepe.ca:email,ziepe.ca:dkim,ziepe.ca:mid]
 
-Tue, May 05, 2026 at 06:02:50PM +0200, jgg@ziepe.ca wrote:
->On Tue, May 05, 2026 at 09:20:01AM -0400, Jacob Moroni wrote:
->> Hi,
->> 
->> Out of curiosity, it seems like we set DMA_ATTR_REQUIRE_COHERENT, so
->> would that have caused these registrations to fail anyway since it would
->> be trying to use swiotlb if running in a CVM?
->
->It is supposed to, at least that is the intention. I think that
->new attribute overtook Jiri's patch here?
+On Wed, May 06, 2026 at 11:25:13AM +0200, Jiri Pirko wrote:
+> Tue, May 05, 2026 at 06:02:50PM +0200, jgg@ziepe.ca wrote:
+> >On Tue, May 05, 2026 at 09:20:01AM -0400, Jacob Moroni wrote:
+> >> Hi,
+> >> 
+> >> Out of curiosity, it seems like we set DMA_ATTR_REQUIRE_COHERENT, so
+> >> would that have caused these registrations to fail anyway since it would
+> >> be trying to use swiotlb if running in a CVM?
+> >
+> >It is supposed to, at least that is the intention. I think that
+> >new attribute overtook Jiri's patch here?
+> 
+> Hmm, don't we want rather -EOPNOTSUPP instead of very wide -EIO in this
+> case? I think that might be better for the user.
 
-Hmm, don't we want rather -EOPNOTSUPP instead of very wide -EIO in this
-case? I think that might be better for the user.
+Yeah, I would prefer that also, it is a good enough reason for this
+patch.
+
+Jason
 
