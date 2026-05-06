@@ -1,200 +1,191 @@
-Return-Path: <linux-rdma+bounces-20091-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20092-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MPaOBExc+2nHaAMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20091-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 17:20:44 +0200
+	id GFxJBhJe+2n2aAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20092-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 17:28:18 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B574DD12F
-	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 17:20:43 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4B84DD354
+	for <lists+linux-rdma@lfdr.de>; Wed, 06 May 2026 17:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D50D430071FA
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 15:20:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 364DB308243C
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 15:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E9C480DE4;
-	Wed,  6 May 2026 15:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5147A48C417;
+	Wed,  6 May 2026 15:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DYhBgUta"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="q1H8/0zx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-dl1-f54.google.com (mail-dl1-f54.google.com [74.125.82.54])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B6F48B39A
-	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 15:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778080798; cv=pass; b=DRz5dU/MZ4UnWNCjynp8ii4RCh4D3CZ6eKGc+Hl19XipiVS9TXonly4gvy+wSDPhyBzdFwiW3uW3gnw/JEy/u8jruqWNsfz6JujODI1zK6PnrRFgu1PR8qNhR1f+bZZ1+Dv1Mo7jCUkSePgnIEzF2pvLCuonVC/og3PWLsMo8Gs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778080798; c=relaxed/simple;
-	bh=m16fKxmhGhuJ7B3jLust56D9Y0CJQn0MnszLnnO7hjo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=keZPYukNTiswiH8oBUJJR2Hj4V5+SJGT/LcXYuvEhEl7rF9WxcRqxiZ7LP9JAkF367FrgO0D+O52bPOCK0vtm8MVgzu+Plp4oAdnQTqZGqwYZD9MyL5TSDOeumVEqc3ms3TRkXL0XwL6kVmuqX819SbVAlV51W59dmOgGtdgB6c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DYhBgUta; arc=pass smtp.client-ip=74.125.82.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-dl1-f54.google.com with SMTP id a92af1059eb24-130b2295ed0so5382790c88.0
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 08:19:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778080794; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Dz98X7puPTqxesg7zZQmdPqA0YQQB2us4FDYBb4eL5v0h3TWjzoDvPtzMEmkSmwqc2
-         LgiX22RIcZZSYDKbhKHMSOYs7/2sBMoVUdh9MdMZbHHnrUTYi0kQW0mLDW7QANuzC2/F
-         eLKxD8WvGhw9ibejvX1ate1on+NXMLWMj0YLPW1+eVGAHut1pWLHtVzNKIOspsRSD6ZN
-         WLLPpKufEfXD+yiBwHPMCGI7h6QJD6SU5GGfKK1jtjZdRy9CyKSRAoUpfj+iqgaBZR/J
-         fCjMcwmxRWBvCAvYpeSJuUrLaJz8Nsf3s1nbHUWVdTRKn9yoGYjBDd+ohglZgryFCl9X
-         FLoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=cpQKErwL5v1PeRSLbaPmQhFKaI4koIGbE+JbuMQEurY=;
-        fh=bv6uahmoCQJyU1AwVFW/QpeDRCvw3FzEifY8JXLFHmY=;
-        b=MnFStjyQQpAKVC1IdlCEz1iTmHuhEjgQB930A5YKAsO3Lt+9eC4bJkULAO6CSi790O
-         h6nHZR0BRRxvH1c92v8wm0IUZUpZ2xTtvIv50N7OmX7R57DMzk096dLBzoHp8qxCiia7
-         Ev7tH1pSUvi490PIrJ8D+9Lwn0/Pq4sYQm8LWtHRQol8+DD6a7qCwX/OQBSNT1Betc5G
-         ZGeMSvNTg3HklSwu0MdcKhgmCBuLjgxo3c20Xd9jDwbMnNyhhIkXOx8FaMuxuWY7PYqL
-         TmgoMWeB6pDF4TkVsr8gJO8SikkxMMw3ohV1lPhloaOw8m3rFI508Ge4jXHGj0/8o5Ov
-         BTKg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933BE48C3FD
+	for <linux-rdma@vger.kernel.org>; Wed,  6 May 2026 15:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778080936; cv=none; b=l4zxQs8L2W2ZI03Mykw1r49Uvaa+VVM2AEwMTqNZoKyKICNSkWcY1XDdpnDPocBV7i1hoemK4XGth9NVdr21i4zSI5Rzy+dBfpqGGrEuvsi0OUS9eCCo5cRJPW5uFkMxF9+DOp4OMo+AXtlG53eYATcBCanyFZSsmaBZH0LURxU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778080936; c=relaxed/simple;
+	bh=PZt87gsUS+Wgo4zfaqwWXZGdWegl3vlb2EK9YGH238M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lnxQhugULHrrB1PrQoyrFVaDNw4S4OEGNnLN67JNUvuwp+8ZT9fljkTk/8S7Jc0ENDWy0EFsn0H5EL4rIqY0s2Z4dCv5d4vatOGAbxOdfzgTKjNZIdwN0jEseV7nHk3hVLFe+PtZcL78BU1oF26lMPeB/11ErJQbwSkQtcfjRm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=q1H8/0zx; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-488b0e1b870so101132935e9.2
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 08:22:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1778080794; x=1778685594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cpQKErwL5v1PeRSLbaPmQhFKaI4koIGbE+JbuMQEurY=;
-        b=DYhBgUtapbuhKALL/2Ur/l1TYokrH3fgOa0B5vNdjOgrGm61JISOg7vgDxd7CdvoOY
-         AlOFP1K03mWPj1xJlIbj6sJoXcVeKvka53xHccbiBfjxKe9KiN4X+p2kSz5VxXeN7fxr
-         XJizDK9FWetAV31OFDo6wO0GeCXg8l6brJ4olPPE0XAc+78i/71C6OkJrjWCPhS+OOv7
-         ulh+/l96quRD4MdQ0GdbgI3hgppCZOk8KNnNhVw3Izg1YAtUq4KfV9XlUmV17/nomLNl
-         5s1qPWq7HEWOdLTr/47TcfJjKo4nhzKU4zvyGLEBen4tRotV+kkJ8Adl9X0X7nnxmsiX
-         X3Pw==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778080927; x=1778685727; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=f2otLqzL5UIwKJGEw7GU0/viRo2RnqRLXcAGMdCXHaA=;
+        b=q1H8/0zxTASA4aBVYQKqHcEePfrxTpKDgm7SM4meO4nF/VtG5mRlWWg769m8cnyJpd
+         UKNz0ti95hz5Bp8K+souRyejdRtmHNS5v/W9vE8bUi32krABp1iE1H7lxsuJxUzsBerh
+         oiYYHm2yR0nkl5on7Xm/zqLTaXq/J7M0OsyhmbiAMU6UAK/4nKNXeKzltC/Gcb3rVCcJ
+         ixD3vYj1DoWgY1/D+fL+q2jPvmAKkFI5J0lxZVxspIWkF2hn2cjNinY4QtKlPcW1SfZ9
+         OqzVonpDqa323pF2Cvjpc0hKhy+Q3syiuJD7ZRIqc9mudLk7m7eyDQ8nAyW2eF1t4/pu
+         zm3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778080794; x=1778685594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cpQKErwL5v1PeRSLbaPmQhFKaI4koIGbE+JbuMQEurY=;
-        b=S8MjioLSpqRGjlLgVTeqsnQHi4xEEpjU60KKLzHOYG05dvuAqoZKm5cspzWvY2k7gQ
-         YdRlhgCWHn73YLTEgVBKXZOkIyv6BObhjGZCg5Zwq6WU+siEh0E1EMsNajA2QZ9L5m4o
-         wQZUtOA9by955ctsUriycjZYCbsivQDL7zn67xON1XRL5zMUhocOF8Xobv/evXLz4sXw
-         jDUZl5YK/9bNXEDTR0yfrOLxR5tRl3Yc6odVh/J+KtYCGQUdA6iLGOZrb3xIwdu7u4ZS
-         Dfm+BCJ06+to38LJl//Wpsyo1+Cr7hui6Lp4LEjpxhY6ABaBDcp0xUyzOyUdo3lGe1zT
-         eogw==
-X-Forwarded-Encrypted: i=1; AFNElJ8SeaEL0kAWrg9xJOEp52aZ9ZkUGFM3s9dD9B4wt68n8OvWpA6mAA2o8WstZ8W4qhY+IFhO0iMnFx5g@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9AFBKSGM6F+WzAyyjQsQXEtHRNWipRBOaq7Tl95IOU34TlffU
-	rJ0dmKhcLo8nhk91dTSvb67sK/w7hunK55eZbubs6xYo5PTOYVxowMeEVM2iLSPv7fwXngjYbWN
-	vPOHZ5mUy/5Ykx1m+HXsMKnFyea+OxKToc9u/kIK3
-X-Gm-Gg: AeBDieshyTOjcQpekj8yQ7ZvFeepXVQaOGv1OG3NrDUWcz/EzA157GY7xOv3uXyuwCn
-	aH+WHM9CWBDcwgJgky0ClDYOug9LglvkRwKnBpEGrSr0kWwrKtztFYV6/iuWFMIB8TkSzOLsT+v
-	U8VLcT1Yi5Jl7bnK5Zl+w3VRPzxf1PbbYKmCBPpUK0TKIMled8ymy28PN9V/axG5Jyu+iPQbDUx
-	u4cBp09pwNaWmFxascOiQG4FpK8DJwGTzkwshyWco+lZQ4+C2irjXNJ2tI3UJiwFu3Moa+6P4yd
-	yqfAzuETMttB+OoAM6Q5cB2ivMRgSznFfAmseghDt9Hbf23l9I/auAYmgrWSn6WCcgMryI3QnI6
-	zUCLPxqI4nkhbSxymdg6xQPpTdv5XUaNtZt+n07SKm6BwvqLg/yQwPO2ZSKbYSE3zNv9Bz9Pc7w
-	==
-X-Received: by 2002:a05:7022:1b0e:b0:12a:72af:83d1 with SMTP id
- a92af1059eb24-131852e2bb5mr2101729c88.11.1778080793272; Wed, 06 May 2026
- 08:19:53 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1778080927; x=1778685727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f2otLqzL5UIwKJGEw7GU0/viRo2RnqRLXcAGMdCXHaA=;
+        b=Q15f1F/7RUl7xUWnOpl/fgkcnfeTQFZgPC4aDDL00qTavkVjr/Ooh4R5+riBuISLfi
+         k3qpaZpmBiL4eKkOL+p5VyB3PYPeymG3JyzgTBrAuUmWJPgFXjs6gSeeOi2xJsMYYBtu
+         9HRZlQfJ+GOv8kVe2YO5+xVCqdIIf7vqslMC2lJyDTALa73Fw08sQca4bW2IGGAh500e
+         2hxVFuGrESVOTzjvxl1Vo1dLFzjBiZmx6sTj7ISkOdDjitg8+U23ILQZhJ+coDZINBL9
+         XO33z6lQezvkD67pi7BpPBUtk/OKztG0v2pvMedOPwoOsN+WT+0P6AhRj/E/ZDJ1lHD9
+         lxhA==
+X-Forwarded-Encrypted: i=1; AFNElJ8rQ8u/A5IsMxJgbabXFXOkgumh2ICZxr5aV4o/INr+xqXKRLfqI33zICm4R0DLb29vnjrAhMsUNlgG@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzh2sblEiqftpiFHEa6mBXobwHBkX7TE/gnKqBVc+1WQyrd5wpE
+	L5Llc42eViUkEI2W6KJ9Nfemiy7UP2KrVz0so69dRStJMzfNLmDGk1IpSE9aEk7rPsc=
+X-Gm-Gg: AeBDieuwZ4byF+8Qay2yeG6DVCHQBK2Y51AD+UBIkQZNH7rnhYYU3jYNn5pjvjGJoIh
+	GJ+NMoQpNHc0YQkRU6KOfD41TmgguPMjOd+vRwSZCwidvnlQZ53kMGsoD174dSU7Zd8no4gTYHC
+	2eDo+Uff9lFin50erTAAXgG5hOXB5dvdeFRYMnb20HajEPMQhmMO5PbTOrVtmFaeYqkXFc/BBwA
+	dxv9dpUTWW5+zvRb/nXIWHFqZ0FjIptxvKWKrsUi0RolbgZULWXRIfAXWgqGx0xbUlfw8V7oAYm
+	OS+x6evZuhS8CA3E9ExphHOAqxpzX4uy0RzQxYYMyScXrAjqfrdJXhd4VLzEecAhzj8FVgLt2nG
+	b3pcJKPfDhNBGl/TyZKtDXL4u2HSWs6JhrOaAT8n/NSdq4ztQThYJqckolXoZETPzkCSNhErFs6
+	dRQh7lALnwdYcBRUHKlAiywn6gyhheYi7GeCnuF0u/mB5sk+133MMDsg==
+X-Received: by 2002:a05:600c:a111:b0:489:19e9:b139 with SMTP id 5b1f17b1804b1-48e51e0bb78mr54150665e9.1.1778080927453;
+        Wed, 06 May 2026 08:22:07 -0700 (PDT)
+Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:8c0b:afdd:3d9d:e976])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4504f4857ffsm12838076f8f.0.2026.05.06.08.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2026 08:22:06 -0700 (PDT)
+Date: Wed, 6 May 2026 17:22:03 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	"Borislav Petkov (AMD)" <bp@alien8.de>, Randy Dunlap <rdunlap@infradead.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Christian Brauner <brauner@kernel.org>, 
+	Petr Mladek <pmladek@suse.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>, Marco Elver <elver@google.com>, 
+	Eric Biggers <ebiggers@kernel.org>, Li RongQing <lirongqing@baidu.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
+Message-ID: <aftaW-irGmkfA7FS@FV6GYCPJ69>
+References: <20260506123739.1959770-1-mbloch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <69fb46ae.a00a0220.387fc1.0002.GAE@google.com> <78183562-ff83-4b7a-9c7b-b3cb92676ee8@linux.dev>
-In-Reply-To: <78183562-ff83-4b7a-9c7b-b3cb92676ee8@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Wed, 6 May 2026 08:19:41 -0700
-X-Gm-Features: AVHnY4JNtxJaB1nXkXSeADYgjNWogJRVGksEMWkM3mg3pHcGlY2h7MbXmMCHH2A
-Message-ID: <CAAVpQUA4kYQ0KTxdJ=xtWp6u7uBUR2B8ZcvwHNV7FDDRu0OHvA@mail.gmail.com>
-Subject: Re: [syzbot] [rdma] general protection fault in kernel_sock_shutdown (4)
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: syzbot <syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, arjan@linux.intel.com, davem@davemloft.net, 
-	dsahern@kernel.org, edumazet@google.com, horms@kernel.org, jgg@ziepe.ca, 
-	kuba@kernel.org, kuni1840@gmail.com, leon@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	zyjzyj2000@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 46B574DD12F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260506123739.1959770-1-mbloch@nvidia.com>
+X-Rspamd-Queue-Id: 7C4B84DD354
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=59da38148f3a3d24];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20091-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-20092-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuniyu@google.com,linux-rdma@vger.kernel.org];
-	FREEMAIL_CC(0.00)[syzkaller.appspotmail.com,linux-foundation.org,linux.intel.com,davemloft.net,kernel.org,google.com,ziepe.ca,gmail.com,vger.kernel.org,redhat.com,googlegroups.com];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,storage.googleapis.com:url,syzkaller.appspot.com:url]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email]
 
-On Wed, May 6, 2026 at 7:28=E2=80=AFAM Zhu Yanjun <yanjun.zhu@linux.dev> wr=
-ote:
+Wed, May 06, 2026 at 02:37:35PM +0200, mbloch@nvidia.com wrote:
+>This series adds a devlink= kernel command line parameter for applying
+>selected devlink settings during device initialization.
 >
+>Following a discussion with Jakub[1], I am sending this RFC to get the
+>conversation moving. I started from Jakub's example/request and extended
+>it to cover requirements from production systems and configurations that
+>customers use.
 >
-> =E5=9C=A8 2026/5/6 6:48, syzbot =E5=86=99=E9=81=93:
-> > syzbot has found a reproducer for the following issue on:
-> >
-> > HEAD commit:    74fe02ce122a Merge tag 'wq-for-7.1-rc2-fixes' of git://=
-git..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D16e895ce580=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D59da38148f3=
-a3d24
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd8f76778263ab=
-65c2b21
-> > compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for=
- Debian) 2.44
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13a613ba5=
-80000
-> >
-> > Downloadable assets:
-> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
-/d900f083ada3/non_bootable_disk-74fe02ce.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/c0a591d96864/vmli=
-nux-74fe02ce.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/9f94fb623cd1=
-/bzImage-74fe02ce.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-> >
-> > Oops: general protection fault, probably for non-canonical address 0xdf=
-fffc000000000d: 0000 [#1] SMP KASAN NOPTI
-> > KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
+>One important caveat is that the parsing logic in this RFC was written
+>with AI assistance. I am also not sure whether the resulting syntax and
+>parser are too complex for a kernel command line interface. This is part
+>of why I am sending it as an RFC: to understand what direction and level
+>of complexity would be acceptable to people.
 >
-> Thanks a lot. IIRC, this problem is in process. The link is
-> https://patchwork.kernel.org/project/linux-rdma/patch/20260424013759.7282=
-88-1-kuniyu@google.com/
+>The implementation is intended to support the following properties:
 >
-> Hi, Kuniyuki Iwashima
+>- A system may have multiple devlink devices that usually need the same
+>  configuration. For a configuration such as eswitch mode switchdev, a
+>  user should be able to specify multiple devices to which that
+>  configuration applies.
 >
-> I think you are fixing this problem. I hope that we can see your commit
-> very soon.
+>- There may be ordering dependencies between options. For example, in
+>  mlx5, flow_steering_mode should be set before moving to switchdev.
+>  With this in mind, defaults are applied per device in the left-to-right
+>  order in which they appear on the command line.
+>
+>The intent is to let deployments set devlink defaults before normal
+>userspace orchestration runs, while still using devlink concepts and
 
-Yes, I was sidetracked but will respin v3 this week.
+"defaults before normal userspace orchestrarion". I read it as config
+before config, which eventually could be skipped.
+
+
+>driver callbacks rather than adding driver-specific module parameters.
+>A default is scoped to one or more devlink handles, for example:
+>
+>  devlink=[pci/0000:08:00.0]:esw:mode:switchdev
+>  devlink=[pci/0000:08:00.0]:param:flow_steering_mode:smfs
+>  devlink=[pci/0000:08:00.0,pci/0000:08:00.1]:param:flow_steering_mode:hmfs,[pci/0000:08:00.0,pci/0000:08:00.1]:esw:mode:switchdev
+
+I don't like this. What you do, you are basically introducing user
+configuration tool on kernel cmdline.
+
+The same you would achieve with a proper userspace tool/daemon.
+I did try to come up with it and push it here:
+https://github.com/systemd/systemd/pull/37393
+That didn't get merged for unknown reason, but the idea is sound. You
+provide configuration files for devlink object and systemd-devlinkd
+will apply when they appear. Wouldn't this help your case?
+
+[..]
 
