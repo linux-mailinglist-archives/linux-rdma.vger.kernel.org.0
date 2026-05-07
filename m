@@ -1,204 +1,153 @@
-Return-Path: <linux-rdma+bounces-20190-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20191-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yF0XNufu/GkjVgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20190-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 21:58:31 +0200
+	id UPKnEKH6/GmxVwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20191-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 22:48:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A9D84EE321
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 21:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C956D4EEED7
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 22:48:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 45CF3302012E
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 19:58:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 81A5630082AC
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 20:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FE3481673;
-	Thu,  7 May 2026 19:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D9A2FFDE1;
+	Thu,  7 May 2026 20:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="fowFJ6Ps"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M3rXATF6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E3F3B7B9E
-	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 19:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778183909; cv=pass; b=gqZw0ZniVk1wbaWW1W44NKyMDpS4iq53iNJQkW5bMMEBhK+bn195Wbj3gqm1q+e0AqRVL1jm8LSzOQuQQP5tt4hw1Fw9lyP6yxrUBXrBi22ufLiM0vlRYFQzP5xc3qPQNbo49qo9u5rkbm2ESKaZ+1zCopoq9wITIalphsTxaIY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778183909; c=relaxed/simple;
-	bh=1jSX07oYV5nmDbjBLzM5NXog/gi/Cj1GqnNGlLxkTrY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ad7OHIwE+8a2T6rVQq2tWXScydKT4t4NF38CfkI8xV2plTz/AJFtwmtQbMyTVCiZTIJlaVjaphTa19lrmlx/zUl1ZVAObGL27jXPp8QldJFy4datC9lE5BTa53bie71gc7+SK7p+n6UITaf+iein9/RIEaXQOFQLHiNbv2NcCiY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=fowFJ6Ps; arc=pass smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5a85b30dd54so1367163e87.2
-        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2026 12:58:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778183906; cv=none;
-        d=google.com; s=arc-20240605;
-        b=XFWqfVXpwZMM3hMSI+zVIRCc0tl9vCFwbj/jrS1B7aqCEhi73URpaBwZLgrrt+Ig6g
-         EmlbHBamdVc5eLkD7MPIrbg7nPUvbHPFdn6rzVVSOWeZPHiPPfUrtLHTB05JqD7v236Y
-         npcZ7emCA2hw21VDmZ71eM7PikLCuS41CrmJn+hl+IXFxzOmL47mYI0XWfgQkyxtGlk3
-         R+5FQVJWNXUmjEyngrSV61itHuOLdUk0QGtW28OBPFQfXa4mjiXbjnEV3ADWvoaZUNA0
-         HcwwM6ZR0idcmMzVcrweXJxpDVLBpnkYW3Oa7m4jFo6bksN+M1ud22MfNVEBImje9Szm
-         itMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=C85H7yrmXDgU6/+EUppOZ9UDQs+w36vgGUBxNcUwSfA=;
-        fh=wbdyXA7MDaqxr1im+nqjSyChxGPBcSOPOZmBVHhwavo=;
-        b=SsVu9+Ln0LiwkfjPXsyEUEEFEnD6TXQosDqdlt4yk5jAqX/RYikq2x9/o7IRYNmVP3
-         xYNzcX7Zrukpkf4/EC/97V10+rHAW+GjdXOqBdjcwxE+tJifVs+sBVz4Dzdx1orHQOXN
-         vA0sJF87ReKH8jcZF0dxnZ5Q0OXtMLV3JLxXfqPFJHFLLgawUbWrTi7wj3hStNKrHVk0
-         q5wbWLaGpmgCL/MxWMO2WSg9DOexsTkhG0jkWGr18wMPvYoUjIEUf6kUEtPWtUixnmeQ
-         GflsS8TudB2d6ddUkdj6eZEUCQCQKs7clf8Sb4BB/ZQngt/uFPbBVS6Z1p9FuVWhpBiA
-         v+eg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1778183906; x=1778788706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C85H7yrmXDgU6/+EUppOZ9UDQs+w36vgGUBxNcUwSfA=;
-        b=fowFJ6PsFp9rOzFF3FwhggMrvlKZTEkumnuDWCcDfjCouzrMa0HwwzeojkFQg9F9nP
-         G/goXyTPanvIqY3oyKXtSuJJ59ACfogaRgTd0zexpBiWeKRg3mlt8xkiUam3uk/7XC30
-         6EThW9al2qA4dTEZRMecl+ZRgSwRpBJwtVkZ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778183906; x=1778788706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=C85H7yrmXDgU6/+EUppOZ9UDQs+w36vgGUBxNcUwSfA=;
-        b=Sbd+xwqfCbhK/uuvhosN5BvoRkwHd+gFEYOP21AT/QlNaDMrlqT7uaIb06NigTzHRe
-         JrYZkhmpEiwlh0O4IxzEaF/CZqetg7qo71IgTLAlzMY+fA4Mlw332TLBqdWIFTJus4NJ
-         UQJGZNCvLQoNcGbxmVi+FjTDQM3Xdb+JkUbLQpvN1osO4/p8IhbObUvZIxhKysNDGrpF
-         +RIMMyISzVEznpGRgFapbfcj7IR+Sp4vSK/BM0wypAVhA0PZMnD3nfG/w9emwDxePPC3
-         Vms+493t+WHGgA+iPEF3lvW1W+6H3YtCg083D0FrK7GNYmgnxDF5gVY3yLNyExST5fVE
-         PMfw==
-X-Forwarded-Encrypted: i=1; AFNElJ+J81PHNowMOAzlZruO42WyNayGkwgJyWFTPX7wrfargk/53X+hPkAC+p48c7ef0nXnCEbBec7HXJ/y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvxrQ7I1O8gt69FY6KXXLx1O0qf+iP/zm30y/nYBx3rC92mGsf
-	yIl1zUV0JBa9kk2jOzMdy+LZvQDQytlcwHeCVU6B1kxvmK4X/Fu4ztMnASmQiq/w0Ut9mXbLhFA
-	frFO845w6/r1dkFXfELX8QmVOb9rwF2ZBlZDHfdXEnQ==
-X-Gm-Gg: AeBDieuEDF3PzglS4mw17ZSjLeNqkrI938OUJo0s6B1N+8vL+nYoRbanKqBXnjwz50c
-	oqmunxNzDie41hMc83r1qOhf/FnLguHZN1M66y0XBlnVUA84XTiTWCC+w1nrukkCZ9v+ffOSxZp
-	HoZS6l7Kcr6mUKLXIExZFTU2mopr1RlkaYtGwSThPTH2CqMvHMZJtsj9rwtDZftc7oHTrFRPKPD
-	MNqFh+nTX26JaJI7ERPegH7SIGXVLnFpvzOsHL5Mz7SWPFBIgobYtZD4dcexynKTLQ5+EEznkGL
-	p/ZPxmNZKkPkAomgZgqiQQpzIk7z2dMHn4HBwB/QsJxxdeWKvaDl2IDYTmmOxyE=
-X-Received: by 2002:a05:6512:15a3:b0:5a8:837b:3d80 with SMTP id
- 2adb3069b0e04-5a887cde91fmr3430288e87.22.1778183906018; Thu, 07 May 2026
- 12:58:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4412C2DB780;
+	Thu,  7 May 2026 20:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778186817; cv=none; b=Dfg9PIiwE4TxeOAvasH98hqlMCFwkuDplK/5FDUYcmsLaBJwtjcKljORG1IgLnYb73e5nYkUag/KRjm4M8Urd2uu6ngqFTAEMd8jBwqZ8q7yGbtHUVzE3/iTqtsynfiZaY/VVZwjE1DB+kyu7CNT+Hnryt1rs80xPuQ2DSj2bjw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778186817; c=relaxed/simple;
+	bh=hb9//lof+vspQk+jPB4w0ydgX5sjYskjWWnapGZP7Uo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kfkdbo+DNVldFJTOmRPHFa6erhyrHy3SzVJKa98BoLjvt9hH+t16fwDH08+DMSbcqoD93GJqZCzR9Zygl0rub6i4q3CYwQI9hnVIRAxyWVK7/AbEWFgtq/qAHvdQ8FV9K8pQ4p18QbDW0VfFphlOaZMJv0qh1QrQ91nlAs4E2qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M3rXATF6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98F6FC2BCB2;
+	Thu,  7 May 2026 20:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778186816;
+	bh=hb9//lof+vspQk+jPB4w0ydgX5sjYskjWWnapGZP7Uo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M3rXATF6tSIZ0R3y96S7EGmpjMStlHVIePdEiiwKDd1l6RWmHvQeTBwqyQ/o24OAV
+	 VNwM8+b+Ejzl4hvt+z387GxeRrQ82pQsG5QJCfafl1bb3Owj+F75RocvqCbK9nSXka
+	 G7G6cLU+KGw6Dja00uHoGTJcGEhM5kr+TjlOmpf4SP0gOxb3sa9O03CgExhGCja4U/
+	 PCljhKtRA7Q/fTnq4kmRTJ+vAwdvP5vnntNzmQCMKN8eF/HFpfY8bPekYCDrgFzvYy
+	 ZPikTG60GnFifuGLrIhwRZvjAnNbjEH69Y269+f2A4V7B9nJydKmWp/0HQ1f/vOF18
+	 iZzg+aRhOfyTw==
+Date: Thu, 7 May 2026 16:46:55 -0400
+From: Mike Snitzer <snitzer@kernel.org>
+To: Chuck Lever <cel@kernel.org>,
+	Jonathan Flynn <jonathan.flynn@hammerspace.com>
+Cc: Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Chuck Lever <chuck.lever@oracle.com>,
+	ben.coddington@hammerspace.com
+Subject: Re: [PATCH 1/2] svcrdma: Release write chunk resources without
+ re-queuing
+Message-ID: <afz6PwRlpJFzoIQE@kernel.org>
+References: <20260506-svcrdma-next-v1-0-915fce8c4fbb@oracle.com>
+ <20260506-svcrdma-next-v1-1-915fce8c4fbb@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260507095330.318892-1-tariqt@nvidia.com>
-In-Reply-To: <20260507095330.318892-1-tariqt@nvidia.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Thu, 7 May 2026 12:58:15 -0700
-X-Gm-Features: AVHnY4JV4VWIWLKVs-gDS5YcsOQgok0n9OUPOC15YHITVJSjQyfs1wXaBTMWrbU
-Message-ID: <CADg4-L-K=PYju3pRYxxzH7yDTZY8Qig7ck84K_5PQxKh8SqV1A@mail.gmail.com>
-Subject: Re: [PATCH net-next V6 0/3] net/mlx5: Avoid payload in skb's linear
- part for better GRO-processing
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
-	Dragos Tatulea <dtatulea@nvidia.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Amery Hung <ameryhung@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 5A9D84EE321
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260506-svcrdma-next-v1-1-915fce8c4fbb@oracle.com>
+X-Rspamd-Queue-Id: C956D4EEED7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[openai.com,reject];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[openai.com:s=google];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20190-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,nvidia.com,vger.kernel.org,iogearbox.net,gmail.com,fomichev.me];
-	FROM_HAS_DN(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-20191-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cpaasch@openai.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[openai.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[snitzer@kernel.org,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-On Thu, May 7, 2026 at 2:54=E2=80=AFAM Tariq Toukan <tariqt@nvidia.com> wro=
-te:
->
-> Hi,
->
-> This is V6 of a series originally submitted by Christoph.
+On Wed, May 06, 2026 at 11:26:50AM -0400, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> Each RDMA Send completion triggers a cascade of work items on the
+> svcrdma_wq unbound workqueue:
+> 
+>   ib_cq_poll_work (on ib_comp_wq, per-CPU)
+>     -> svc_rdma_send_ctxt_put -> queue_work    [work item 1]
+>       -> svc_rdma_write_info_free -> queue_work [work item 2]
+> 
+> Every transition through queue_work contends on the unbound
+> pool's spinlock. Profiling an 8KB NFSv3 read/write workload
+> over RDMA shows about 4% of total CPU cycles spent on this
+> lock, with the cascading re-queue of write_info release
+> contributing roughly 1%.
+> 
+> The initial queue_work in svc_rdma_send_ctxt_put is needed to
+> move release work off the CQ completion context (which runs on
+> a per-CPU bound workqueue). However, once executing on
+> svcrdma_wq, there is no need to re-queue for each write_info
+> structure. svc_rdma_reply_chunk_release already calls
+> svc_rdma_cc_release inline from the same svcrdma_wq context,
+> and svc_rdma_recv_ctxt_put does the same from nfsd thread
+> context.
+> 
+> Release write chunk resources inline in
+> svc_rdma_write_info_free, removing the intermediate
+> svc_rdma_write_info_free_async work item and the wi_work
+> field from struct svc_rdma_write_info.
+> 
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 
-Sorry for having dropped the ball on this!
+You were correct: this patch alone eliminates the OOM (we tested with
+both 16K and then 4K read IO from 121 clients to 8 NFS servers, no
+measurable memory growth while testing).
 
-Thanks for pushing it forward!
+Feel free to add:
 
+Reviewed-by: Mike Snitzer <snitzer@kernel.org>
+Tested-by: Jonathan Flynn <jonathan.flynn@hammerspace.com>
 
-Christoph
+Thanks!
+Mike
 
->
-> When LRO is enabled on the MLX, mlx5e_skb_from_cqe_mpwrq_nonlinear
-> copies parts of the payload to the linear part of the skb.
->
-> This triggers suboptimal processing in GRO, causing slow throughput.
->
-> This patch series addresses this by using eth_get_headlen to compute the
-> size of the protocol headers and only copy those bits. This results in a
-> significant throughput improvement (detailed results in the specific
-> patch).
->
-> Regards,
-> Tariq
->
-> ---
->
-> V6:
-> - Rebase after Amery's changes.
-> - Address Amery's concern about header length after XDP pull.
-> - Add a small optimization to memcpy the header length aligned to cache
->   line.
->
-> V5: https://lore.kernel.org/all/20250904-cpaasch-pf-927-netmlx5-avoid-cop=
-ying-the-payload-to-the-malloced-area-v5-0-ea492f7b11ac@openai.com/
->
->
-> Christoph Paasch (2):
->   net/mlx5e: DMA-sync earlier in mlx5e_skb_from_cqe_mpwrq_nonlinear
->   net/mlx5e: Avoid copying payload to the skb's linear part
->
-> Dragos Tatulea (1):
->   net/mlx5e: Align header copy to cache line for Striding RQ non-linear
->
->  .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 31 +++++++++++++------
->  1 file changed, 22 insertions(+), 9 deletions(-)
->
->
-> base-commit: dacf281771a9aed1a723b196120a0de8637910b9
-> --
-> 2.44.0
->
+ps.
+So you are aware, couldn't test your 2nd patch at the customer site
+because the baseline kernel there is based on 6.12-stable but your
+2nd patch builds on your 7.1 svcrdma changes. I think your 2nd patch
+is ideal though, and will be able to pull it in to test in future, but
+won't have the ability to test at this customer's scale until we can
+role that newer kernel out there... might take a couple months.
 
