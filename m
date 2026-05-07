@@ -1,109 +1,117 @@
-Return-Path: <linux-rdma+bounces-20103-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20104-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oPw0EAfI+2m5EgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20103-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 01:00:23 +0200
+	id 6LOnAjfp+2nEHwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20104-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 03:21:59 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AF554E1721
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 01:00:22 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68F854E1E90
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 03:21:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 77E65300D441
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2026 22:59:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AD46630054C9
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 01:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C913D3301;
-	Wed,  6 May 2026 22:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fs1yCpp0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9DA2236453;
+	Thu,  7 May 2026 01:21:54 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12BCD35AC17;
-	Wed,  6 May 2026 22:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7A71E1C11
+	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 01:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778108396; cv=none; b=EO1YA3YfsjkXvS6v5IcfGda8syRlwszrypfrchzvV2ardZhKcLcCf2Lq+vxVXQBxSvRaFfsujuBWdIlU9C3NKl3ESNepoPvFUW8NemiJrJSz8msTs8Oekz9oOKAGdrhXDR+pmBOD1onbi2KIgEG9zf7SUVDJGHI9QQhY0IegSOo=
+	t=1778116914; cv=none; b=aDDj5MTwiqeDZHrBvViEccWMif/SjVD+5A0oiXRFeprthIk/Zqr5ZQWPQlSxHxI5vEq/7L4Pozn6qjt7zeOlP9HiaT5A/VwQYaD4Ai3dquOq1gJbnRxkrtdKtd8QEpa85rXBz5ICmfMwU/Jw6Cqo4Mymf5S/rCubPe4JT18NAvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778108396; c=relaxed/simple;
-	bh=r5Q+Ds2JoT4aJB1aVs4yY/mgwsf3hOF+TnKDvKgCx4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RGlbVNxlor5AmjfiEfzIm0bcamP+md8RvIyhlDhq68V/tSa90RLDRHbewR4N8sIDP9V/MOjv5tMbcD6p6n3eDHmfjcaU415KqU4BTT3WbS2Zsd9aQ+tR5B208YpyU/RTymz/nKmx6H4miPQYxVkffx4WPfQl7qeQ34lWktZrUpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fs1yCpp0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D04C2BCB0;
-	Wed,  6 May 2026 22:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778108395;
-	bh=r5Q+Ds2JoT4aJB1aVs4yY/mgwsf3hOF+TnKDvKgCx4Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fs1yCpp0kDmKt0JKDaVhrCEK2f4p6Gm5sQW/EO6YznR8KMt+Of9Z81rR8kxYSUWwX
-	 WM4nzaozr3l27tstrrZOSqsuN3t6p/stvlx7kMqYLcOSRbeNI3nBw2RNlspmdksOlr
-	 2hSJVyejNQlg8CumTFlCqiegqWrg9fAira+SVIsVCMJPo1J3ruIgYIYxw7SHY0VzSu
-	 I/BIZF7LuBpEIEvbS42W/gNIb3tc5fbjSjH6m4ylEMwNQJ84CY3ZR7Ow7ZLzonhFjv
-	 /qHmyQnHjPfHsvz3ubUJmbLIMLTOfk2e7YJGtHqbaRwPt2YM6Tnh5LBTpZHhYLCFrf
-	 OpqV+za7yn1EA==
-Date: Wed, 6 May 2026 15:59:54 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Eric Joyner <eric.joyner@amd.com>
-Cc: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>, Brett Creeley
- <brett.creeley@amd.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Abhijit Gangurde <abhijit.gangurde@amd.com>,
- Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon
- Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH net-next 0/4] RDMA/net/ionic: Misc updates
-Message-ID: <20260506155954.17e984c6@kernel.org>
-In-Reply-To: <20260506041935.1061-1-eric.joyner@amd.com>
-References: <20260506041935.1061-1-eric.joyner@amd.com>
+	s=arc-20240116; t=1778116914; c=relaxed/simple;
+	bh=OQRo/k6/4K8m4S9WCJaZFgg+7mCo/cMzfNC4EQazlkA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kbbQCqVNjVIBpMb6Ufy3FCnZKy2QPBw7Jl2dJ++9psLyZgYUtEdIuGpEKmHme2SdYgYlIBSU2l4fXyc69HZRlM1nmMWIHPuSqXgYFNsftnrQz1qartjtI+Ig9vl1vCwT2eiT4TvlyFhfh3d8PcrpHxPd1WM4/4LHD3i2XoZZQp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4g9vSM1gZxz1prLr;
+	Thu,  7 May 2026 09:15:15 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7E2A240569;
+	Thu,  7 May 2026 09:21:49 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Thu, 7 May 2026 09:21:49 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
+Subject: [PATCH v2 for-next 0/3] RDMA/hns: Support congestion control algorithm parameter configuration by debugfs
+Date: Thu, 7 May 2026 09:21:45 +0800
+Message-ID: <20260507012148.1079712-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 9AF554E1721
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
+X-Rspamd-Queue-Id: 68F854E1E90
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[hisilicon.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20103-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_FROM(0.00)[bounces-20104-lists,linux-rdma=lfdr.de];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[huangjunxian6@hisilicon.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-0.998];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[hisilicon.com:mid]
 X-Rspamd-Action: no action
 
-On Tue, 5 May 2026 21:19:31 -0700 Eric Joyner wrote:
-> Other smaller additions add a devlink parameter to the ionic ethernet
-> driver for enabling and disabling RDMA,
+This series adds support for congestion control algorithm parameter
+configuration by debugfs.
 
-My understanding is that the devlink param was expected to change 
-the configuration of the device. IOW user can enable/disable RDMA
-to save internal device resources. You seem to be purely preventing
-the auxbus device to be added. So there's nothing gained here compared
-to simply not loading the RDMA driver. What am I missing?
+v2:
+* Inline init_debugfs_seqfile()
+* Remove delayed_work and related logic
+* Add usage example to the commit log of patch 3
+v1: https://lore.kernel.org/linux-rdma/20260206103110.3414311-1-huangjunxian6@hisilicon.com/
+
+Chengchang Tang (1):
+  RDMA/hns: Support congestion control algorithm parameter configuration
+
+Junxian Huang (2):
+  RDMA/hns: Initialize seqfile before creating file
+  RDMA/hns: Add write support to debugfs
+
+ drivers/infiniband/hw/hns/hns_roce_debugfs.c | 288 ++++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_debugfs.h |  26 ++
+ drivers/infiniband/hw/hns/hns_roce_device.h  |  21 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c   |  54 ++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h   | 125 ++++++++
+ 5 files changed, 501 insertions(+), 13 deletions(-)
+
+--
+2.33.0
+
 
