@@ -1,170 +1,209 @@
-Return-Path: <linux-rdma+bounces-20135-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20136-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AHorLaJy/GkEQQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20135-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:08:18 +0200
+	id aE5XBsF1/GmdQQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20136-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:21:37 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B62574E73CC
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:08:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6355A4E75DC
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:21:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BC98A3006D64
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 11:08:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 171F130053DC
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 11:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5AC536CDFE;
-	Thu,  7 May 2026 11:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7AB388E61;
+	Thu,  7 May 2026 11:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="vjhgEdP4"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="Wj1Vo9wU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-010.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-010.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.12.53.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8823128B6
-	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 11:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1474C30BF68
+	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 11:21:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.12.53.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778152090; cv=none; b=C0AKayRJ4R70gvC1gyQL/fIG7Dgn1tLo1skJRYWK0bK0KQ3lFe3P0A8GnOWMV7B0Oxzp++PESrg4ThB7QzRvcLVMtGHknizyYeuvYch6V3Ao5T/OtdHGYJ7ZcukdSjWXjjT9ZAMTuTdaQ2Y25KB18Py2PaZAqkRWsMY3+DSDhIE=
+	t=1778152894; cv=none; b=UUTuslHQS1oyxy1V+tuxsPmm9k69CRQH/s5ynr0E8ZbEwZXoVsRD/pAo8TEUWHcCBb95jfcUlEwcxPbDvnl5TtgaSKUxwO1iy4ibfMcCSzgkvk++Xnnpk7ibWgvSItReQzZYN7x0zMfy+QryE77z3pGPKsXmqaUE3O+EGoj90sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778152090; c=relaxed/simple;
-	bh=Nsrc00XMPyX354SuXe3nqx7fE5fihqR3ZqDdgpTbxkw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ufCjZZtxI6lC7onmN/KNUUYZQgX+TZmsr+WmcykcA+hqHmbuhmUoap8Z0TLRDb1+LxW547pfhOwaoX84dnhwZCZHl/ZB/Wcf/HeU05hHc+a8F+aoTEJUy4Z1vJ3D8ceTcAQOSJMozzV9MogJl9jq62U7iZpFdpOj+Aqbmi4vUDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=vjhgEdP4; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-44e1ebb3122so395344f8f.2
-        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2026 04:08:09 -0700 (PDT)
+	s=arc-20240116; t=1778152894; c=relaxed/simple;
+	bh=F9+6oDIXQ9rdrQt2y0B2jTwhDXpYlx+y7GWke0yfK3U=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DmNU+ZpdU5Vz+kZDMhYwRDwqror8E1cQS3LxrmaLXO3IpFX6IV26NRrHIAZqeS9OFBraH0xQ6HiQXE6lloaQMdkzwEJzM9a8r7tbi4N/rwSe21x4hRPOUlXFPFb72MmmIR5pymjjUp92U8ux0+YrXh8IegsM7mTdTX31CakvjAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=Wj1Vo9wU; arc=none smtp.client-ip=52.12.53.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778152088; x=1778756888; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kgrq7ox95689Ig8vha0xiBqXHGOC+ZuPbRsEee974HA=;
-        b=vjhgEdP4XA6KSiKerw/89U6Z3XXtAo8tQ78KeMc9QWmjVF4e6YVKYWxt5tYkBJnFaU
-         P2zcDqAQdZfRk/Z3MbZAi0Ypr6nkx6IzwgYMAvy7/fwPWXFSV3eRc5pT5bqYyLlofl8O
-         uq8AnIAklk5MLvi6DQeEEtPXtnmIDL8dr8HADz2DAhE4QRJl7Iv3gjmHWJfwzn7QBzmx
-         FSwGSsV26p+a2GVUXVjhGKFT7c7igFfu/FIn+sObWqLJw5M0GU+JqBwkWwFjd/gTCJmm
-         mxT7IX3+uZKfWeN8x/7GjGrUlY3eyiJceB65Soe39Iqh0l+FPVIhauFzr/o7oL/G30lA
-         GBrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778152088; x=1778756888;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kgrq7ox95689Ig8vha0xiBqXHGOC+ZuPbRsEee974HA=;
-        b=hfhO7oPkXEzVpJduGtFZ8qphQopFWAa/JhY7NcdiN6tQLUYgAL34I9WE3wDG55MtCe
-         TngqE8c6hi9efayvS5QPbAbGdu1j+l+L+apoLSloiFk43G+pEG+N2B2AWnlZyA9X9yLf
-         6qif46rpMm7UmQyCKUgnPx3T0aD0tE6uVWnMCI4Yfs2mEaH1bs5kDjJ32QPSv3R4djuy
-         hK3ek3QsXLLcvOPW/k22Zm/yhFyDAtVm+E09Mkf9MFjWjjFYS70oCosdod7IuVYEkpdN
-         B8VHBCe9oy+Avq5kb1uMQbdmtCvSzlCmnUVVPHloo6OyEib9bcqrUH/QnDZGZEiFmuST
-         Kkrg==
-X-Forwarded-Encrypted: i=1; AFNElJ+YKn6ONSK7EijxfyTYnB6y78c7JBQH+8Py38ORG383dYTjq79Uic7Yr9O/y/Gf0BY+wtyzdRMajxFG@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHFPyE78Ww1KC+2neLnu6FM2d0eRMyIu9oKM4Bhp4u1IJwSeMA
-	+k6h4fnfbl+CDNz0lMaign7w86JR/KFj4ycSlx6mp9UMyDgAg6vYc6PDMobpjkrhjMM=
-X-Gm-Gg: AeBDiesRuWkaztzIJiWX9guS6BSMOGdS2uD+ywE/Ck0aoQCvUQ9mGPAzxy6+MYRcnl9
-	wWjQGFVbLOu0xa+qlcCkFwPsOz6Ne5RftwQhhthKTwFDJVGNGkvnQ53ZwnBVjb++gNW7US/8FaZ
-	cJcxF8+M9z0BlIL5vXKWVZHmNIMdQREYJL9cBakHh9cfR+kvKJ5J6GX2WmXOZHWUDXO76i75BO9
-	fbzc1sKFLd/yZ/zS1qOemDRf5/Cg370zzXYVVKL0Fy2zVg98Qw4HLN+BGXCSOthmvZjSw/4i7Z1
-	w/de6jRIYF9s5vCE3Qqo5P8460RYv9uPAa1ycEQXbk6Y0aYef8s+EwTtiPxa370jvqraFPj7KIN
-	dnIuyO3b07JTBlXOeQYddXNlyF51tQOsxlsdGyY9wHMToZmuE4lMpraaAKgKRGCD/DbX5W/QD2Z
-	N6FIfOkjDgduKhsu+R0vHSxuKwgmBbNUY9DGVkUwbQ3YBfu6epBvkINw==
-X-Received: by 2002:a05:6000:2c05:b0:44a:aa3c:5927 with SMTP id ffacd0b85a97d-4515d5c69b6mr12915400f8f.29.1778152087145;
-        Thu, 07 May 2026 04:08:07 -0700 (PDT)
-Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:6064:31aa:7680:7221])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45054b02abbsm18552017f8f.18.2026.05.07.04.08.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2026 04:08:06 -0700 (PDT)
-Date: Thu, 7 May 2026 13:08:04 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Ivan Vecera <ivecera@redhat.com>, netdev@vger.kernel.org, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>, 
-	"David S. Miller" <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, 
-	Michal Schmidt <mschmidt@redhat.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Pasi Vaananen <pvaanane@redhat.com>, Petr Oros <poros@redhat.com>, 
-	Prathosh Satish <Prathosh.Satish@microchip.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v3 1/2] dpll: add fractional frequency offset to
- pin-parent-device
-Message-ID: <afxyKwzMcnc4AEu7@FV6GYCPJ69>
-References: <20260504155340.411063-1-ivecera@redhat.com>
- <20260504155340.411063-2-ivecera@redhat.com>
- <20260506183342.767b5fbc@kernel.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1778152893; x=1809688893;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5Gg7SonK7SBMA5NkS/IxXFVLSCMYnvZ5Qb7otOX6+Ik=;
+  b=Wj1Vo9wUI47XXFMvtnr+djS54nw8Kn5L3lB+bQmO38EOKHth89o8FxZS
+   l4Zi8pbIYdPhh22HK9f5meNe1pDNmZ9O2GNd033A9KvydAa/Oa6UKzh2A
+   zNYFPfq+oimGsLIVjD6NqSzfQcYyS5pjToOYbjygdCgdaxKsQbOaeAZAp
+   +qXM3twjPFxnkAyV5qTN4y0/uK4+FXvygx4xA4MkFlTLr3MUE7/8okJp6
+   RJB56blqqhaa3JTK2StBVmgT3+X/UCLlffGYQDac2nL48ol7ItlKlKYGf
+   xE41LHQYsNRAMC/5+whov6D6/Svomzxhox6ZJQsDgVp/ChAr7Ghu6JZk1
+   A==;
+X-CSE-ConnectionGUID: tkR7HxDWR0WuA9OGqKJjQg==
+X-CSE-MsgGUID: Zk4bCZ87QvyTg5JqKbQyJg==
+X-IronPort-AV: E=Sophos;i="6.23,221,1770595200"; 
+   d="scan'208";a="18959073"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-010.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2026 11:21:29 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [205.251.233.51:3620]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.50.165:2525] with esmtp (Farcaster)
+ id c9af87e0-1cb4-4e01-8870-7b8f487fbf9b; Thu, 7 May 2026 11:21:29 +0000 (UTC)
+X-Farcaster-Flow-ID: c9af87e0-1cb4-4e01-8870-7b8f487fbf9b
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Thu, 7 May 2026 11:21:28 +0000
+Received: from dev-dsk-ynachum-1b-0ecf7b87.eu-west-1.amazon.com
+ (10.13.226.176) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Thu, 7 May 2026
+ 11:21:26 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Daniel Kranzdorf <dkkranzd@amazon.com>, "Yonatan
+ Nachum" <ynachum@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Validate SQ depth based on WQE size
+Date: Thu, 7 May 2026 11:21:10 +0000
+Message-ID: <20260507112110.869212-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260506183342.767b5fbc@kernel.org>
-X-Rspamd-Queue-Id: B62574E73CC
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D037UWC002.ant.amazon.com (10.13.139.250) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Rspamd-Queue-Id: 6355A4E75DC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20135-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
+	TAGGED_FROM(0.00)[bounces-20136-lists,linux-rdma=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,lunn.ch,intel.com,davemloft.net,gmail.com,google.com,lwn.net,kernel.org,nvidia.com,microchip.com,linuxfoundation.org,linux.dev];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-Thu, May 07, 2026 at 03:33:42AM +0200, kuba@kernel.org wrote:
->On Mon,  4 May 2026 17:53:39 +0200 Ivan Vecera wrote:
->> +          At top level this represents the RX vs TX symbol rate
->> +          offset on the media associated with the pin.
->
->Isn't this a hacky hack? I'd think that pin is in or out.
->Having a freq offset between two pins or pin and parent's
->ref lock makes sense. This new interpretation sounds like
->we are trying to shove a difference between two pins into one?
+From: Michael Margolin <mrgolin@amazon.com>
 
-The pin is in, but it is associated with SyncE port that has RX/TX
-symbol rate offset. As the doc says, the "offset on the media associated
-with the pin". Why is that hack?
+Change the SQ depth validation to take into account the SQ WQE size.
+This is needed since when using 128-byte WQE the max SQ depth is cut in
+half. On create QP command, userspace provides SQ ring size which is SQ
+depth X WQE size so we can calculate the requested WQE size in the
+kernel.
 
+Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_verbs.c | 39 ++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 12 deletions(-)
 
->
->> @@ -299,6 +299,10 @@ zl3073x_dpll_input_pin_ffo_get(const struct dpll_pin *dpll_pin, void *pin_priv,
->>  {
->>  	struct zl3073x_dpll_pin *pin = pin_priv;
->>  
->> +	/* Only rx vs tx symbol rate FFO is supported */
->> +	if (dpll)
->> +		return -ENODATA;
->> +
->>  	*ffo = pin->freq_offset;
->
->It's easy for driver authors to forget this sort of validation.
->We should fail close, so it's better to have some "capability"
->bits or something for the driver to opt into getting given format 
->of the call.
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 7bd0838ebc99..eb95ed4e25f7 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -612,14 +612,27 @@ static int qp_mmap_entries_setup(struct efa_qp *qp,
+ 	return -ENOMEM;
+ }
+ 
++static int efa_calc_sq_wqe_size(u32 sq_ring_size, u32 max_send_wr)
++{
++	return max_send_wr == 0 ? 0 : sq_ring_size / max_send_wr;
++}
++
++static u32 efa_calc_sq_max_depth(struct efa_dev *dev, u32 sq_wqe_size)
++{
++	return sq_wqe_size == 0 ? 0 :
++		rounddown_pow_of_two(dev->dev_attr.max_llq_size / sq_wqe_size);
++}
++
+ static int efa_qp_validate_cap(struct efa_dev *dev,
+-			       struct ib_qp_init_attr *init_attr)
++			       struct ib_qp_init_attr *init_attr,
++			       u32 sq_wqe_size)
+ {
+-	if (init_attr->cap.max_send_wr > dev->dev_attr.max_sq_depth) {
++	u32 sq_max_depth = efa_calc_sq_max_depth(dev, sq_wqe_size);
++
++	if (init_attr->cap.max_send_wr > sq_max_depth) {
+ 		ibdev_dbg(&dev->ibdev,
+ 			  "qp: requested send wr[%u] exceeds the max[%u]\n",
+-			  init_attr->cap.max_send_wr,
+-			  dev->dev_attr.max_sq_depth);
++			  init_attr->cap.max_send_wr, sq_max_depth);
+ 		return -EINVAL;
+ 	}
+ 	if (init_attr->cap.max_recv_wr > dev->dev_attr.max_rq_depth) {
+@@ -686,19 +699,12 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 	struct efa_qp *qp = to_eqp(ibqp);
+ 	struct efa_ucontext *ucontext;
+ 	u16 supported_efa_flags = 0;
++	u32 sq_wqe_size;
+ 	int err;
+ 
+ 	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
+ 					     ibucontext);
+ 
+-	err = efa_qp_validate_cap(dev, init_attr);
+-	if (err)
+-		goto err_out;
+-
+-	err = efa_qp_validate_attr(dev, init_attr);
+-	if (err)
+-		goto err_out;
+-
+ 	err = ib_copy_validate_udata_in_cm(udata, cmd, driver_qp_type, 0);
+ 	if (err)
+ 		goto err_out;
+@@ -720,6 +726,15 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 		goto err_out;
+ 	}
+ 
++	sq_wqe_size = efa_calc_sq_wqe_size(cmd.sq_ring_size, init_attr->cap.max_send_wr);
++	err = efa_qp_validate_cap(dev, init_attr, sq_wqe_size);
++	if (err)
++		goto err_out;
++
++	err = efa_qp_validate_attr(dev, init_attr);
++	if (err)
++		goto err_out;
++
+ 	create_qp_params.uarn = ucontext->uarn;
+ 	create_qp_params.pd = to_epd(ibqp->pd)->pdn;
+ 
+-- 
+2.50.1
+
 
