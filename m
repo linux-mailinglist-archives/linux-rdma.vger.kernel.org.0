@@ -1,93 +1,79 @@
-Return-Path: <linux-rdma+bounces-20139-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20140-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +El5JqaK/GleRAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20139-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:50:46 +0200
+	id UMtoJtuK/GleRAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20140-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:51:39 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D82254E879D
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CCE94E87FB
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:51:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D3DE13008C0F
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 12:50:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 177D73017E7B
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 12:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2CA3CFF6C;
-	Thu,  7 May 2026 12:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106F73F1646;
+	Thu,  7 May 2026 12:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="rr7OduyM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KmOTSwXF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45483B6BF0;
-	Thu,  7 May 2026 12:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700983AB275;
+	Thu,  7 May 2026 12:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778158241; cv=none; b=hhhbHWLTpNlg8eCtBObYuU3L/ZvXMol4sIgbfm2JRs/5RODkNhVjZ0LM4KJAN59B40bwK9EZni3vCBzIEt7dX854AqJS6xPkpwH9Sv+WRgSAk0IELUOXeAxNFBoXgSJ0SnVBXWTRe9tly0mSl1r9cVAw+iwLFxi8RLOMdTVsF9o=
+	t=1778158274; cv=none; b=fAVCMaeM+QMXeODoF7LnsU61z+fNKgDWLFYLEopNAYoddBG9ULChkvRp6+QqgHHbDyPlTBmKRo1y5MLizjyUxc/dsI+FgFHE8Ecd+HYnb/7zpU0NmvoAc7wTE2p9WcVwIThMkKxJFZoPx3X6zy0iJihqfg77K19Q0PltXNO2GlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778158241; c=relaxed/simple;
-	bh=uHD2uCjN1UTQoraWvVy/fg6kCqbQLIutJoDWTGlKUVM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=SmadXXDsSGY/h09N5atpi6bhJeVDM4g8MnccMAR0R9dn+FBv8JhEQBY0/j1sTPvb1qROOiR+qGxwfYQRM5I3eCXJBg1Bs2V9UsUqA6nyTpEfq+2R/8bO1Wo69LbFk8VWMh1WzOCCDIEsyvdQtjLdFWIooHTrXrTuO1ee2e8cRc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=rr7OduyM; arc=none smtp.client-ip=203.205.221.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1778158214; bh=5ub2YWhxmtbkh6ASBeqDgX465/eiGKDulnfevlmT57E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=rr7OduyMYU4DXf7DmYjESFygDNWM7qnufZc27RENxNvqlkwpby6oIZhvSGbd1KB5+
-	 OBtwMjCn8gjiOiRK8iN/KvdQgP0fgUXd42ryHHfR7CJM6/aQwelZUJ/uNqxBMMoL20
-	 yHYJxVI3WSmrSxLf3MY/isKmbZY6DVOiJdY3mr7s=
-Received: from lxu-ped-host.. ([111.198.231.89])
-	by newxmesmtplogicsvrsza73-0.qq.com (NewEsmtp) with SMTP
-	id C8A1B40D; Thu, 07 May 2026 20:50:10 +0800
-X-QQ-mid: xmsmtpt1778158210t5p0eskuj
-Message-ID: <tencent_611BEB4B141B1A2526BAA3BBB2335F9E9108@qq.com>
-X-QQ-XMAILINFO: OPDQNGCUQ3qLkaFh7YH4cP0ef7dTVev+OCC4NTAATZsdIfJe5MGyfHz+BKAuMe
-	 25RPII7oaKWNy97i06WpbHAUvoC5MxYIU5A3cshYS3tpyIPgpZZxsKICdfDMRSll03lCGDV4iH3h
-	 PeGYuJJGMbuhytycfvHEhmMorKD/h9ol3uLQUe0yiBhp9ptEzUS9wb15obY0FGrJ0B+5fGGhkOL0
-	 zpgFd+TJZ1BtJ2loj2+jiQ6hrCzDeJJnA5Z14C03O+Fsvgpsp0CNOqyLhmGahbZxktH83MJJBGEp
-	 ZyfBmNOHxAiv14RkSg4YiDlKoAa3uAPbwxPLdg/oF3WIdcLmL5S1vlvM6AP9aQaYaD2iF/hSJ2VG
-	 9C7O4DDZl2j6AfCEuekmU7c5ifXjGaZuaOeMhm5ifKc51s1SLZIXw6M4JeLQMTK0/sYrPyGfazMe
-	 IBzI+KOc2uWkP3Ka+LQyu62pdFcplBjlWWX0Q/2Hk/cGhuKVVj9ZgAKtY+4fxmeWkTVGsWHnzMmA
-	 j7Xa4kdm/7XkSqpC2iGBgo/3BZBdLAxuvInt8SKB+l5SSoyyX2VGen9ieUlxnoFrXpcHdu2++/dp
-	 +H1JlYMZTzEoAihrdgLN7hrrwS4dT+RDH/fXtFyarOvYxYWIvrpH5dAKP7B2/rbVPbzwsCnNl6gF
-	 AieCei0FZM34dGFURjSUPV4rZgR8ML3qrnptpvXhwFWmA30UOYnYrOglUo8efGEh4uymIeXaTx+L
-	 CJYUgTibcL4yI3cLXcqqXfcR01CnQMf4VsKRDHkHoDZlMfM53ZvvAGTVG2NhEpVK+JuxRsAyIA08
-	 +aaw5Lbv8wirV6EkLYzKPZG+HEezhBbmJbuyWnGUt4QTNwjUDro84KjM1tM6NeTq2nxzKMiZZ9EV
-	 XfyZSEofBSj7rG7zUKjEWRTpFfxydNLWBemMntq75imA+ZzEt/cERcStm5evq2yXQ+IkfH1U74Ns
-	 nsc7H5afldZoonbXWX3veCwtAFW6CO9h8yUKgT092qSz7Jlw2ti1E7HyEdH3HuXuQ8u3qu7ebAUJ
-	 EypQS8rYRR2AItdtmlOYlSl4qUKwI=
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Cc: akpm@linux-foundation.org,
-	arjan@linux.intel.com,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	hdanton@sina.com,
-	horms@kernel.org,
-	jgg@ziepe.ca,
-	kuba@kernel.org,
-	kuni1840@gmail.com,
-	kuniyu@google.com,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1778158274; c=relaxed/simple;
+	bh=1lnrq1fNp6vpO52lnRddsXLflsbrNwQL37aAeCzE3xM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=HLBK3ummZpwRZDYMjb8hygsFSlZ4Ue3TOoUvGJ6lbLt3ipdm5xuSgls/5CPUPqi/V4k5Z5l6hOPrqe1hNFcMEsGFYtZUdcb+GFQHtVW2yyiIeoRbV06TGAeV+qn73+kS74VgJP0iMQnzT5ZPGyV6lHQuxADifj63oxFW9rKG+aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KmOTSwXF; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1778158273; x=1809694273;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1lnrq1fNp6vpO52lnRddsXLflsbrNwQL37aAeCzE3xM=;
+  b=KmOTSwXFPwgnetc4ok2JrBWJ4eqmPo4v4NBybOOwtoCWZsf8cZuaLgw/
+   99NKu2FOWGWvV4eAWkxTlL7PRuIvri3iagQH+PTwcx6EByRK/D4HiKRT7
+   5xjD5KlohxA4+ioIJ0UhO4ys0ZLPJoOURJGOqqPAvwN1xtKbnbZPsGevl
+   bV2sZv6EGszTv1GPAcLxzL56Uzsg+cSdTIIkphPfOMXOjNlPBahI6Frsg
+   nNXA5UZtDw+bjpACAfWyq1pB8VKuNPPVyMbyUGH448JtUUtFU1DY47N24
+   xp/dtSOQwjtK73jsakq7AwY7DLAk3YoVpEeSQw+N5pGrpha5EzEnAEwR8
+   A==;
+X-CSE-ConnectionGUID: vkQwE2PtT8iMStqiVgvlOQ==
+X-CSE-MsgGUID: 4fel3f4nQTuxDimJDfMotQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11778"; a="78823039"
+X-IronPort-AV: E=Sophos;i="6.23,221,1770624000"; 
+   d="scan'208";a="78823039"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2026 05:51:12 -0700
+X-CSE-ConnectionGUID: xXtSLtBmSpGmWRbpO6dMZA==
+X-CSE-MsgGUID: ZdvvuSkKR8CXthyymtC8HA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,221,1770624000"; 
+   d="scan'208";a="236371396"
+Received: from ly-workstation.sh.intel.com ([10.239.182.64])
+  by orviesa008.jf.intel.com with ESMTP; 07 May 2026 05:51:09 -0700
+From: Yi Lai <yi1.lai@intel.com>
+To: Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
 	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	syzkaller-bugs@googlegroups.com,
-	yanjun.zhu@linux.dev,
-	zyjzyj2000@gmail.com
-Subject: [PATCH] RDMA/nldev: add mutual exclusion in nldev_dellink()
-Date: Thu,  7 May 2026 20:50:10 +0800
-X-OQ-MSGID: <20260507125009.109737-2-eadavis@qq.com>
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yi1.lai@linux.intel.com,
+	yi1.lai@intel.com
+Subject: [PATCH] selftests/rdma: explicitly skip tests when required modules are missing
+Date: Thu,  7 May 2026 20:51:06 +0800
+Message-ID: <20260507125106.3114167-1-yi1.lai@intel.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <69fc0c7c.a00a0220.387fc1.0006.GAE@google.com>
-References: <69fc0c7c.a00a0220.387fc1.0006.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -95,81 +81,149 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D82254E879D
+X-Rspamd-Queue-Id: 0CCE94E87FB
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20139-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,linux.intel.com,davemloft.net,kernel.org,google.com,sina.com,ziepe.ca,gmail.com,vger.kernel.org,redhat.com,googlegroups.com,linux.dev];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[qq.com];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[qq.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
-	MID_RHS_MATCH_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,linux.intel.com,intel.com];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20140-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
 	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yi1.lai@intel.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	FROM_HAS_DN(0.00)[]
 X-Rspamd-Action: no action
 
-We must serialize calls to nldev_dellink() or risk a crash as syzbot
-reported:
+Currently, the rdma rxe selftests fail with an exit code of 1 when
+required kernel modules are not present. This causes spurious failures
+in environments where these modules might not be compiled or available.
 
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-Call Trace:
- udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
- rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
- rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
- rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
- rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
- 
-Fixes: a60e3f3d6fba ("RDMA/nldev: Add dellink function pointer")
-Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
-Tested-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Include the standard kselftest 'ktap_helpers.sh' and replace the
+hardcoded error exits with '$KSFT_SKIP'. This ensures the tests are
+properly marked as skipped rather than failed.
+
+Signed-off-by: Yi Lai <yi1.lai@intel.com>
 ---
- drivers/infiniband/core/nldev.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/rdma/rxe_ipv6.sh                   | 6 ++++--
+ tools/testing/selftests/rdma/rxe_rping_between_netns.sh    | 7 +++++++
+ tools/testing/selftests/rdma/rxe_socket_with_netns.sh      | 6 ++++++
+ tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh | 6 ++++--
+ 4 files changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 96c745d5bac4..3cb3cb7629fe 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -1816,6 +1816,8 @@ static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	return err;
- }
+diff --git a/tools/testing/selftests/rdma/rxe_ipv6.sh b/tools/testing/selftests/rdma/rxe_ipv6.sh
+index b7059bfd6d7c..32dad687a044 100755
+--- a/tools/testing/selftests/rdma/rxe_ipv6.sh
++++ b/tools/testing/selftests/rdma/rxe_ipv6.sh
+@@ -8,6 +8,8 @@ RXE_NAME="rxe6"
+ PORT=4791
+ IP6_ADDR="2001:db8::1/64"
  
-+static DEFINE_MUTEX(nldev_dellink_mutex);
++source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
 +
- static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			  struct netlink_ext_ack *extack)
- {
-@@ -1846,7 +1848,9 @@ static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	 * implicitly scoped to the driver supporting dynamic link deletion like RXE.
- 	 */
- 	if (device->link_ops && device->link_ops->dellink) {
-+		mutex_lock(&nldev_dellink_mutex);
- 		err = device->link_ops->dellink(device);
-+		mutex_unlock(&nldev_dellink_mutex);
- 		if (err)
- 			return err;
- 	}
+ exec > /dev/null
+ 
+ # Cleanup function to run on exit (even on failure)
+@@ -21,8 +23,8 @@ trap cleanup EXIT
+ # 1. Prerequisites check
+ for mod in tun veth rdma_rxe; do
+     if ! modinfo "$mod" >/dev/null 2>&1; then
+-        echo "Error: Kernel module '$mod' not found."
+-        exit 1
++        echo "SKIP: Kernel module '$mod' not found." >&2
++        exit $KSFT_SKIP
+     fi
+ done
+ 
+diff --git a/tools/testing/selftests/rdma/rxe_rping_between_netns.sh b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+index e5b876f58c6e..e7554fbb8951 100755
+--- a/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
++++ b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+@@ -8,6 +8,8 @@ IP_A="1.1.1.1"
+ IP_B="1.1.1.2"
+ PORT=4791
+ 
++source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
++
+ exec > /dev/null
+ 
+ # --- Cleanup Routine ---
+@@ -27,6 +29,11 @@ if [[ $EUID -ne 0 ]]; then
+    exit 1
+ fi
+ 
++if ! modinfo rdma_rxe >/dev/null 2>&1; then
++    echo "SKIP: Kernel module 'rdma_rxe' not found." >&2
++    exit $KSFT_SKIP
++fi
++
+ modprobe rdma_rxe || { echo "Failed to load rdma_rxe"; exit 1; }
+ 
+ # --- Setup Network Topology ---
+diff --git a/tools/testing/selftests/rdma/rxe_socket_with_netns.sh b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+index 002e5098f751..9478657c02c1 100755
+--- a/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
++++ b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+@@ -4,6 +4,8 @@
+ PORT=4791
+ MODS=("tun" "rdma_rxe")
+ 
++source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
++
+ exec > /dev/null
+ 
+ # --- Helper: Cleanup Routine ---
+@@ -26,6 +28,10 @@ if [[ $EUID -ne 0 ]]; then
+ fi
+ 
+ for m in "${MODS[@]}"; do
++    if ! modinfo "$m" >/dev/null 2>&1; then
++        echo "SKIP: Kernel module '$m' not found." >&2
++        exit $KSFT_SKIP
++    fi
+     modprobe "$m" || { echo "Error: Failed to load $m"; exit 1; }
+ done
+ 
+diff --git a/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+index 021ca451499d..8c18cea7535c 100755
+--- a/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
++++ b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+@@ -5,6 +5,8 @@ DEV_NAME="tun0"
+ RXE_NAME="rxe0"
+ RDMA_PORT=4791
+ 
++source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
++
+ exec > /dev/null
+ 
+ # --- Cleanup Routine ---
+@@ -19,8 +21,8 @@ trap cleanup EXIT
+ 
+ # 1. Dependency Check
+ if ! modinfo rdma_rxe >/dev/null 2>&1; then
+-    echo "Error: rdma_rxe module not found."
+-    exit 1
++    echo "SKIP: rdma_rxe module not found." >&2
++    exit $KSFT_SKIP
+ fi
+ 
+ modprobe rdma_rxe
 -- 
 2.43.0
 
