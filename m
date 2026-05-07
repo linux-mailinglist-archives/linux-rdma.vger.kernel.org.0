@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-20154-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20155-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kJ04A2CL/GleRAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20154-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:53:52 +0200
+	id aOnBMmOL/GleRAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20155-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:53:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92F894E889E
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 735BD4E88A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:53:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 67CCC304423D
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 12:52:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 95FB8304502E
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 12:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B153F0AB2;
-	Thu,  7 May 2026 12:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E4F3EF65F;
+	Thu,  7 May 2026 12:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="wvd/HRk2"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="SF8a8Sci"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4431C3F0AA3
-	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 12:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FCE3F1651
+	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 12:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778158369; cv=none; b=rsdlU4E9TEGukVuYn5kruPZErXqEgfiH2n5pzXWk6ZmG4inXKFxCM9nTNPREvBXW7LZ6mC8MdTDYwRDgaz1/1h3DyYRDD9Di8qV5N4B7R1hpIRxLXuE3V7+bneVG6dnXdsWeW+5OG5vluaUzlmzuhVFFlDE8teNUMUCpsthfGcU=
+	t=1778158371; cv=none; b=kNrCSyCtf5ezvQe/sRAF6dO1BL2dkvoo09rYK432KXHtQJ0Vyi1+qhQZqL6Oeu10VpKTY3zlG38pbQDu2WUzwYc5y2FdJW7kwc4dLEKoSSu3SlvNIxCCI16N3UgNbNE/mjlhJSNGWY7zlu//JYsGbS7XXYv2N8TKzC4rUEfXRkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778158369; c=relaxed/simple;
-	bh=xARNfulnP+rmouuQuCXB+vq0yAL246mU/nb1xdrfzSg=;
+	s=arc-20240116; t=1778158371; c=relaxed/simple;
+	bh=gABPEPrINVsmNm2kPuoC4XU+FiIuPDV42sEnHT594Cs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UPyTfGm8PUuM5CqLOQyp3Ye+54GciWBL/AGecL7fxZyWHNfkO+x5Ub1/e04cM+2wUKdqvAl24aVgQNKyRC8pXDiK4JZwN4CO743DYDTU+MECgZmvcYOUUHoiba68NGZR2oLCMG7uGYt/E1tbKFhBlgzKaIFQV6SsTkH6q/XJTdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=wvd/HRk2; arc=none smtp.client-ip=209.85.128.43
+	 MIME-Version; b=CABkIHkrsPiRaqaTKnmPuin9/XKPkDhQm8qMuZPDSv6ObshbRNXEMGnKWvWOgtkhlCzRVQ+gv6V4kQmqObparak3vQmTgeAPfSLxVgimD2WYLySGOua3I2g6qNfwkbDU7i8x0AyiPPx7uv2fMRpheIp+AUOcZcDX+5qwotTDa7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=SF8a8Sci; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4891e86fabeso10123465e9.1
-        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2026 05:52:48 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-48374014a77so9830725e9.3
+        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2026 05:52:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778158367; x=1778763167; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778158368; x=1778763168; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o0KqJc5+lhPTjZ8eCqGu3r9/U4W15cw3IrlQEog7Uhg=;
-        b=wvd/HRk24DE6idhuEEEDfgzSm04zaja7Q+01uWiahNjZt5mCMLEKweTc2D/V6oO0UM
-         lGE4qQAVoJjQJEfN0JsPxfEnS2Q3wYRxire2A0i+L+doKXQ34Kjx27yh2z7g8rGaDncB
-         uiufWe2R2ZPZSzrINPE/edsTrkfJ76f4QBk4JabcAyI6K2o+L2FIJq5KkkNX4T9KExyj
-         scT/Wexj+7es+IveT4jeTDytV6YihJAJ+CpsQFNSoNEjVvSHJLhVelnQYo4LaF9/hpVK
-         yxVEGFqdXTLDQboctgxrnXbE7DHWaBVM+UXGQJbN9z7+AfsFW7cBOYXBb8IttCmGLnp/
-         eUHQ==
+        bh=ck/LWvFuXnQuEuDnYHrJV0AD8h/kdwztdGUOToGCZ4I=;
+        b=SF8a8SciRmK1QN0uNrQb5Dun//vxCB5kyrr0uzK8gTI95Yjnp8B9PX4E/LAkcReACd
+         fx/RWhnjmlGgLHgBUyz5cZPlRw6/tbbjN4Gwv+sHMe19iNFkzcbgUPCNjoJSnYeoP+YJ
+         QjZILZKQkdgTwemham+ctDqnChD/8QMDAhsiQNtECvzBhayRkCU/V5l7bUup/KE4zgLT
+         WBdZraQVL762UVrRtdfVJfhOrGzqZvzgFEKlJvflXyUSkAYKbJkZzyUOBk98z/v1F7Gp
+         Ym1cveAfWA285pNzPebvKcaT0DVwNqy2Z0wLI9FNm3+Tw0nmIRCI+RrHUYENCMfAbsuF
+         W32w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778158367; x=1778763167;
+        d=1e100.net; s=20251104; t=1778158368; x=1778763168;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=o0KqJc5+lhPTjZ8eCqGu3r9/U4W15cw3IrlQEog7Uhg=;
-        b=sqAAMJTrzE1Sbmh6Hs8tPopEyB6yu/isoq2ZC3fz326W7EcBNF0VBZQCUIksu6shFz
-         5fd88bZNioatsJuZbrLz2udrBF9WZ+s8U+p+wxrfV+tA0YTRUmyWN50E2GJAPKe7KP0l
-         7BX3VU7bQbcswbiczowNspDwHVax57/NwIQl1U0bNuCgmSIDBikh2fiGnNPTCygg/IZN
-         hCYbebkvzFAja49SwDv7qWW3N9uUXnydvyRKuYSY06OiGsU8RRWj8GE9DRZTA5eN4mO3
-         bY9PMxfl31ykxX/WoovvjtunO8BMi/gwQNn5kwHyAuGbJm2oy8Ai3Ym2vA8FjDOGXldn
-         l9qw==
-X-Gm-Message-State: AOJu0YzULeVRm5Ku0Pm12OXJZhiBlU1QtashFma8EF2Ipr2bVfBmnABA
-	FIsYJixhn1aGM0OOAlJTETelh5Wc6Zzby3i6Yr1f8aNAGAPAg2WQ9fcJVucgE86stIMn7N6cdd8
-	3ZDfP
-X-Gm-Gg: AeBDiesZssxilAIUTUz1XkXSBtr6RzBQnHoU66qU1pbiIMqY3kZDLLGkuZn8FXglz/L
-	gMgz1sN7yMGZvJnyRv4fQUmN9vSjq25pFaG9VzkHX5HbE/B6dyVgHcOVzeDUK+PrGfhuM7b84Zd
-	GXR+ZE99P1H8Z25/m69vifjwxXP18OKcxCSU/szTFExbpzTpMYRZ/3jqDR0kOEJ17mMZ5TkSmVl
-	p7IDfUTuwqpSArEFdVfoxe/wrC6fHFGNTGH313JTn9vRmbxCqR+85+a4wzj+Rk5Zv+uQLps1RyV
-	zcUoLzeu8ZfSBfoW1ve+FKeFJDI5yVHFt6rw5oLNNCsOyy0lhGfrZDd5Cmokvj68MsENZasEyU5
-	u8yRCICMLFjU+R7vhGKdc2jD1j5ItDhbnz66A8WlTJrKn4dTIKXmKlU/Ypbday76rp+tbnK/ewY
-	uwk7yhWrSVXT4bKXFAXTgnSQbm+RivCd1BNcOkvcEvEUht8QiA1g34wI/S
-X-Received: by 2002:a05:600c:a305:b0:48a:5970:2005 with SMTP id 5b1f17b1804b1-48e51e08362mr87007935e9.2.1778158366736;
-        Thu, 07 May 2026 05:52:46 -0700 (PDT)
+        bh=ck/LWvFuXnQuEuDnYHrJV0AD8h/kdwztdGUOToGCZ4I=;
+        b=SOo7nDxw8JL4juU/W3Px4WmMgDQWOL7zCA4VceDKOuladcWM0FVtOyKcaw18ETomUi
+         nYCU+vt4hmMe/r0sT3ey18Nf7NK4jjud+G595p4A/FOYzkKG53UpAKb3AuVsI37ka4au
+         wru2kgXy8DiCudSpZp+E8Q3mvw+rWtFkSQjPaW1eT2uW/ZZNJVVxa59sBtdPrPc3BZOw
+         R8lvzB7KT2kUa/c/a+uzn2hhLqNFL6c6BfvqRzZ8lVfl9A97ASTa3hpAm/1V3H5zWF8J
+         1ouakl0aawQD4c7sg8dNLTsDUDcwXiHJbAmJWiLJukQFKxSbWdZZnZRA0BvocBNKj/k3
+         glCg==
+X-Gm-Message-State: AOJu0Yy2xt/42giAgvKmGuDgkcIkbUOniCb0krTCObx3hFT23j0521Uv
+	J0rj0VbEFJtnpEXv6xUPL1NR8XhQ85hl5HKhDb/XTaCE4V4giobiIjLLILNGrJZdgvx+Sq+n44B
+	9klxq
+X-Gm-Gg: AeBDievygpdXsfA7REjzv/RZOZlUKEmt+OVB90bguXlFaEOlwmAfin7uLIBxVi3Gxof
+	0isLlw/p+XCJx8tBWhcet1bZvwNYAe425eSCcsOpbenM09j87EzuplD0i7Ae+ZxzoS96jk0kJPJ
+	a5IClmzSL/dS5kt5BSSvBE7LEhlShfGQkWUUV2uD5Jxdz3qqO4bOXaNgkGzCSVeTdaSa+Aq04Wf
+	RkRvvexcuduTjBEtLkieBZent9RPEKD0wOhm3lIu+SWa2Qs3VdDNJB7q/45uvTzGPSSRlZ6bs9x
+	4liljhGHFB0b3qPWL+Pm/uUAc+1A4cFZXLpeudK8wr0OTrJQ4IwW1YESvCUQX/MBgqzvRnNieGb
+	Ena57p0XA/0fPLhtES3ali3i9gK9qzfezh8fuHtNofk3c9u6N5kZEgs5BQ/FUKeu3MmknbEWuGO
+	DHooG48LiOpeI7futrkUxxf2bMZaA3UBINdRqTUXqMAx3aI5luZ7DYKJ86
+X-Received: by 2002:a05:600c:a404:b0:483:2c98:4368 with SMTP id 5b1f17b1804b1-48e51f3bc75mr114932045e9.18.1778158367837;
+        Thu, 07 May 2026 05:52:47 -0700 (PDT)
 Received: from localhost (46-13-72-179.customers.tmcz.cz. [46.13.72.179])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e538a517bsm132126855e9.4.2026.05.07.05.52.46
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45052953383sm19120949f8f.13.2026.05.07.05.52.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2026 05:52:46 -0700 (PDT)
+        Thu, 07 May 2026 05:52:47 -0700 (PDT)
 From: Jiri Pirko <jiri@resnulli.us>
 To: linux-rdma@vger.kernel.org
 Cc: jgg@ziepe.ca,
@@ -100,9 +100,9 @@ Cc: jgg@ziepe.ca,
 	sriharsha.basavapatna@broadcom.com,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: [PATCH rdma-next v4 13/16] RDMA/uverbs: Use UMEM attributes for QP creation
-Date: Thu,  7 May 2026 14:52:28 +0200
-Message-ID: <20260507125231.2950751-14-jiri@resnulli.us>
+Subject: [PATCH rdma-next v4 14/16] RDMA/mlx5: Use UMEM attributes for QP buffers in create_qp
+Date: Thu,  7 May 2026 14:52:29 +0200
+Message-ID: <20260507125231.2950751-15-jiri@resnulli.us>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260507125231.2950751-1-jiri@resnulli.us>
 References: <20260507125231.2950751-1-jiri@resnulli.us>
@@ -113,7 +113,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 92F894E889E
+X-Rspamd-Queue-Id: 735BD4E88A5
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -129,7 +129,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20154-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20155-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -146,93 +146,86 @@ X-Rspamd-Action: no action
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Apply the per-attribute UMEM model to the QP create method. Add
-three optional UMEM attributes that drivers pick from based on
-how their user ABI lays out the QP rings:
-
-- CREATE_QP_BUF_UMEM is a single user buffer that backs both
-  the SQ and RQ of one QP. This is the common case where
-  userspace pins one contiguous WQE region for the QP.
-- CREATE_QP_SQ_BUF_UMEM and CREATE_QP_RQ_BUF_UMEM are a pair
-  of user buffers backing the SQ and RQ independently, used
-  when the two rings live in physically distinct user
-  allocations and must be pinned and addressed separately.
-
-Existing drivers would map their current umems as follows:
-
-- mlx5: BUF for normal QPs (one ucmd->buf_addr covers SQ+RQ);
-  for IB_QPT_RAW_PACKET and IB_QP_CREATE_SOURCE_QPN, the RQ
-  side comes from ucmd->buf_addr (RQ-sized) via RQ_BUF and
-  the SQ from ucmd->sq_buf_addr via SQ_BUF.
-- mlx4: BUF, single ucmd.buf_addr covering SQ+RQ.
-- hns: BUF, single ucmd.buf_addr covering SQ + ext-SGE + RQ.
-- erdma: BUF, single ureq.qbuf_va sliced by the kernel into
-  SQ at offset 0 and RQ at rq_offset.
-- bnxt_re: SQ_BUF (ureq->qpsva) + RQ_BUF (ureq->qprva, the
-  RQ side is skipped when the QP uses an SRQ).
-- vmw_pvrdma: SQ_BUF (sbuf_addr) + RQ_BUF (rbuf_addr, the RQ
-  side is skipped when the QP uses an SRQ).
-- qedr: SQ_BUF (sq_addr) + RQ_BUF (rq_addr) for whichever
-  side the QP type actually has (no SQ for XRC_TGT/GSI; no
-  RQ for XRC_INI/XRC_TGT/SRQ).
-- ionic: SQ_BUF (req.sq.addr) + RQ_BUF (req.rq.addr); both
-  are skipped when the rings are placed in CMB instead of
-  host memory.
-- mana: raw-packet QP uses SQ_BUF (sq_buf_addr) only; the RC
-  path uses multiple per-queue user buffers (ucmd.queue_buf[])
-  that do not fit the SQ/RQ pair semantics of these attrs and
-  stays on the legacy UHW path.
-- efa, irdma, hfi1, ocrdma, mthca, cxgb4 and usnic do not pin
-  a QP WQE buffer via umem; none of these attributes apply.
+Use the per-attribute UMEM helpers to pin QP buffer umems on
+demand. The QP-type predicate selects between the BUF and RQ_BUF
+attrs; raw-packet SQ uses its own dedicated SQ_BUF attr.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
-v3->v4:
-- extended patch description with BUF vs SQ_BUF/RQ_BUF semantics
-  and per-driver attr usage mapping
 v2->v3:
-- replaced the array-form UVERBS_ATTR_BUFFERS attribute and its
-  uverbs_buf_qp_slots enum with per-attribute UMEM attrs
-- dropped qp->umem_list field, handler allocation, write-path NULL
-  arg, and the umem_list parameter on ib_create_qp_user()
-v1->v2:
-- fixed umem_list double free
+- changed to use ib_umem_get_attr_or_va() per-attr
+- added ubuffer->umem / sq->ubuffer.umem to store umem
+- renamed mlx5_qp_buf_slot() -> mlx5_qp_buf_attr()
+- replaced ib_umem_release_non_listed() with ib_umem_release()
 ---
- drivers/infiniband/core/uverbs_std_types_qp.c | 6 ++++++
- include/uapi/rdma/ib_user_ioctl_cmds.h        | 3 +++
- 2 files changed, 9 insertions(+)
+ drivers/infiniband/hw/mlx5/qp.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index be0730e8509e..e44974abc6b5 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -340,6 +340,12 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
- 			   UVERBS_ATTR_TYPE(u32),
- 			   UA_MANDATORY),
-+	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_BUF_UMEM,
-+			 UA_OPTIONAL),
-+	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
-+			 UA_OPTIONAL),
-+	UVERBS_ATTR_UMEM(UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
-+			 UA_OPTIONAL),
- 	UVERBS_ATTR_UHW());
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 1bc279d14749..1b764a573dd7 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -938,6 +938,14 @@ static int adjust_bfregn(struct mlx5_ib_dev *dev,
+ 				bfregn % MLX5_NON_FP_BFREGS_PER_UAR;
+ }
  
- static int UVERBS_HANDLER(UVERBS_METHOD_QP_DESTROY)(
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index 02835b7fd76d..839835bd4b23 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -159,6 +159,9 @@ enum uverbs_attrs_create_qp_cmd_attr_ids {
- 	UVERBS_ATTR_CREATE_QP_EVENT_FD,
- 	UVERBS_ATTR_CREATE_QP_RESP_CAP,
- 	UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
-+	UVERBS_ATTR_CREATE_QP_BUF_UMEM,
-+	UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM,
-+	UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
- };
++static u16 mlx5_qp_buf_attr(struct mlx5_ib_qp *qp)
++{
++	if (qp->type == IB_QPT_RAW_PACKET ||
++	    qp->flags & IB_QP_CREATE_SOURCE_QPN)
++		return UVERBS_ATTR_CREATE_QP_RQ_BUF_UMEM;
++	return UVERBS_ATTR_CREATE_QP_BUF_UMEM;
++}
++
+ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 			   struct mlx5_ib_qp *qp, struct ib_udata *udata,
+ 			   struct ib_qp_init_attr *attr, u32 **in,
+@@ -998,14 +1006,20 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	if (err)
+ 		goto err_bfreg;
  
- enum uverbs_attrs_destroy_qp_cmd_attr_ids {
+-	if (ucmd->buf_addr && ubuffer->buf_size) {
++	ubuffer->umem = NULL;
++	if (ubuffer->buf_size) {
+ 		ubuffer->buf_addr = ucmd->buf_addr;
+-		ubuffer->umem = ib_umem_get_va(&dev->ib_dev, ubuffer->buf_addr,
+-					       ubuffer->buf_size, 0);
++		ubuffer->umem = ib_umem_get_attr_or_va(&dev->ib_dev, udata,
++						       mlx5_qp_buf_attr(qp),
++						       ubuffer->buf_addr,
++						       ubuffer->buf_size, 0);
+ 		if (IS_ERR(ubuffer->umem)) {
+ 			err = PTR_ERR(ubuffer->umem);
++			ubuffer->umem = NULL;
+ 			goto err_bfreg;
+ 		}
++	}
++	if (ubuffer->umem) {
+ 		page_size = mlx5_umem_find_best_quantized_pgoff(
+ 			ubuffer->umem, qpc, log_page_size,
+ 			MLX5_ADAPTER_PAGE_SHIFT, page_offset, 64,
+@@ -1015,8 +1029,6 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 			goto err_umem;
+ 		}
+ 		ncont = ib_umem_num_dma_blocks(ubuffer->umem, page_size);
+-	} else {
+-		ubuffer->umem = NULL;
+ 	}
+ 
+ 	*inlen = MLX5_ST_SZ_BYTES(create_qp_in) +
+@@ -1352,8 +1364,10 @@ static int create_raw_packet_qp_sq(struct mlx5_ib_dev *dev,
+ 	if (ts_format < 0)
+ 		return ts_format;
+ 
+-	sq->ubuffer.umem = ib_umem_get_va(&dev->ib_dev, ubuffer->buf_addr,
+-					  ubuffer->buf_size, 0);
++	sq->ubuffer.umem = ib_umem_get_attr_or_va(&dev->ib_dev, udata,
++						  UVERBS_ATTR_CREATE_QP_SQ_BUF_UMEM,
++						  ubuffer->buf_addr,
++						  ubuffer->buf_size, 0);
+ 	if (IS_ERR(sq->ubuffer.umem))
+ 		return PTR_ERR(sq->ubuffer.umem);
+ 	page_size = mlx5_umem_find_best_quantized_pgoff(
 -- 
 2.53.0
 
