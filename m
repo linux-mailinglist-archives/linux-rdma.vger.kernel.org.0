@@ -1,214 +1,427 @@
-Return-Path: <linux-rdma+bounces-20113-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20114-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8USeF4UM/Gm8KQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20113-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 05:52:37 +0200
+	id CASOKYAg/GlcLwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20114-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 07:17:52 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E25A44E2B9E
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 05:52:36 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A8BC4E3101
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 07:17:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0B3A3300B9DF
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 03:52:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B3858301456A
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 05:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E9E2E6116;
-	Thu,  7 May 2026 03:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472F631E847;
+	Thu,  7 May 2026 05:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+hLmK3i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E9116132A
-	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 03:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A1926159E;
+	Thu,  7 May 2026 05:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778125951; cv=none; b=ZpfTvdVt4xSSD0inN8ICQNE/I72lxbOXUqZwqP7qG8grN+Lw+eN7KQIhsIHE6+j3Ddq19YfZjmtE2E3wuXHZ61fs1wGn+0HAOtd1R5sD0lPNUZdRxCjIg2DzNtFzChwhAMqbwFx+KXT3e5i/mTFVqsLtMJtNqLPGnXzHJvfXz9s=
+	t=1778131065; cv=none; b=diu0VVkYQZDtDbm9Iaxq2KxWWIPKuG8ziDlTkqp9jvolClZOay8StDuHvYITLrncooyur5U7xHWY2ftke2z14tEUjv+jxan4eqR0sC/E5soDfTu32cSubTZyoNUJOLu7Gs4Cbin3eXknvBTg+idpRppBXSVcuA3zBlpckqJ6D1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778125951; c=relaxed/simple;
-	bh=oMEUOwDU16568+OG0pwZfM+8KOgH72u9aq6R9tT6z/c=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=sFk6H2eJKBNmZxNNAa9axCrrF6bosTdW2ncDEuSuUDu9ek0Ifxwy1+XVAGSt93zqFy5SWQU9cYctFaz3HGfjoANRRAjGtTyWT8Ux5hcVdl/iMUvrwNrKGYeoNDA173Qp1VRuSaLVLl/JjZoRZM/uZsrIkbxcHCVTvqqxuNdTJQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-7dccbd50e3fso930274a34.2
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2026 20:52:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778125948; x=1778730748;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H0HSrMiYkrVuEd7IGCn11W+YArojUCdXH93mpX8mgVU=;
-        b=B1ANL4DozJ8MEog7BX5IWTDTiJcyzbRqKACT+/oDbBeHOzRwEFLLh4uHPJX2wD/XE6
-         fUd3Wm8wHJ5c6/7jtYuIWIW2ydUZlO9hbCge13hvDA/55ml5ycQvdXfC/yM+tpM5sLix
-         dyHQnt1NvESTt1hgYMxzvm50+D3AU/Wr12edIUbxKiuMu8eApiyhyt6uUGSgiMpk85V6
-         1jDkd7BOSaeKU6i3JboXU6GXUQa6TxHfb4lnC2ra6beaJOPLRtBFpFxPaRCy+StSDFn9
-         iX62ka01bjbYLNy2kfYFKCGsmo/pDH/zwzRLbv+iLPhqTcYZKd6T4Qkoxs7AvNPY+YCD
-         CVIA==
-X-Forwarded-Encrypted: i=1; AFNElJ/8YdmM1O+wZZBN34atOo5lA5RFG+QjY3nAww37Fg4udXEzgfxeqIwlwnIzaCtqPdHQMzXtf7QxRSZu@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHXgf9piP4JR/jtGQa2xDrNNY5wYCp7DLIGEpR7vBxgcaeuGRn
-	dHv68HrmI+pPBb0XhYG+MAg6b5Ls7zZxurCMuervUaxm31UaTqFgAPUOFyQvgPGlGyWk5dlTCAp
-	l/H3UEg6K5Jpr9eL4LYps+T7w2WXKphmnNvFxGZhkdEw4WuZFoNq3jNMx0zY=
+	s=arc-20240116; t=1778131065; c=relaxed/simple;
+	bh=9HijFHTjiPqacwwVBM8Z0Nsw1JZDw7iEzN3f7TEOl00=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PkbmqPmZVYdeGUQ+JeJTFqC0gOS9RaY7ltN3QZsFZ9QXloKa9oO0X90XtZJAeOKdFbU4RggC1mF79S5poUTIlVi4383vH56fe/GMYJsIe6FXFPdtaUiwnxvWpl9qSfx9XfB3rx3myrRqP1ToVSzgPyseq+l6vVFPiFdwoaOe7tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+hLmK3i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27026C2BCB8;
+	Thu,  7 May 2026 05:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778131064;
+	bh=9HijFHTjiPqacwwVBM8Z0Nsw1JZDw7iEzN3f7TEOl00=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=S+hLmK3iXFdQJcP4gdW3fc//TlDr12Jt9nFxWRV3ncmLK/QNymEoPDFJ6igCYs9SM
+	 eFKOyBkvf21EB0Ng4YscDtfclbNdZWDZQGhbBG1cx+o7mNZqIlOV3yIwBSwh9kdV7r
+	 VWSEwj/lH4U8y3/BNfmM0wlmbA+W0q8CrSP9jkY4v5zKxpbJT13+UManmwmy4wA19N
+	 UlTVtzwrhAPul1GbbJC+PYckIBYPgie7gLMci3bstOekP/yheaEiS6oIY85pMPoNEM
+	 7oziiwbT0HfH8pGTMHigcgLrIxPFTB3l5hiuLkNfDDMjHu8S/PPRbU8FrczwgaTrTv
+	 520ljBkSp+wbA==
+Message-ID: <4df3eb5dc608cf8b4649f1358cb74b9fbbfbbca6.camel@kernel.org>
+Subject: Re: [PATCH net] rds: filter RDS_INFO_* getsockopt by caller's netns
+From: Allison Henderson <achender@kernel.org>
+To: Maoyi Xie <maoyixie.tju@gmail.com>
+Cc: "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org, Maoyi Xie
+ <maoyi.xie@ntu.edu.sg>, Praveen Kakkolangara
+ <praveen.kakkolangara@aumovio.com>
+Date: Wed, 06 May 2026 22:17:43 -0700
+In-Reply-To: <20260506075031.2238596-1-maoyixie.tju@gmail.com>
+References: <20260506075031.2238596-1-maoyixie.tju@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:612:b0:696:7867:c3a6 with SMTP id
- 006d021491bc7-69998ccbf4amr3573196eaf.25.1778125948663; Wed, 06 May 2026
- 20:52:28 -0700 (PDT)
-Date: Wed, 06 May 2026 20:52:28 -0700
-In-Reply-To: <69ea344f.a00a0220.17a17.0040.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69fc0c7c.a00a0220.387fc1.0006.GAE@google.com>
-Subject: Re: [syzbot] [rdma] general protection fault in kernel_sock_shutdown (4)
-From: syzbot <syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, arjan@linux.intel.com, davem@davemloft.net, 
-	dsahern@kernel.org, edumazet@google.com, hdanton@sina.com, horms@kernel.org, 
-	jgg@ziepe.ca, kuba@kernel.org, kuni1840@gmail.com, kuniyu@google.com, 
-	leon@kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	yanjun.zhu@linux.dev, zyjzyj2000@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: E25A44E2B9E
+X-Rspamd-Queue-Id: 0A8BC4E3101
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=a88880f0f312e277];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20113-lists,linux-rdma=lfdr.de,d8f76778263ab65c2b21];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-20114-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[linux-foundation.org,linux.intel.com,davemloft.net,kernel.org,google.com,sina.com,ziepe.ca,gmail.com,vger.kernel.org,redhat.com,googlegroups.com,linux.dev];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,storage.googleapis.com:url,syzkaller.appspot.com:url]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,aumovio.com:email]
 X-Rspamd-Action: no action
 
-syzbot has found a reproducer for the following issue on:
+On Wed, 2026-05-06 at 15:50 +0800, Maoyi Xie wrote:
+> From: Maoyi Xie <maoyi.xie@ntu.edu.sg>
+>=20
+> The RDS_INFO_* family of getsockopt(2) options reads several
+> file-scope global lists that are not per-netns:
+>=20
+>   rds_sock_info / rds6_sock_info,
+>   rds_sock_inc_info / rds6_sock_inc_info        -> rds_sock_list
+>   rds_tcp_tc_info / rds6_tcp_tc_info            -> rds_tcp_tc_list
+>   rds_conn_info / rds6_conn_info,
+>   rds_conn_message_info_cmn (for the *_SEND_MESSAGES and
+>   *_RETRANS_MESSAGES variants),
+>   rds_for_each_conn_info (for RDS_INFO_IB_CONNECTIONS)
+>                                                 -> rds_conn_hash[]
+>=20
+> The handlers do not filter by the caller's network namespace.
+> rds_info_getsockopt() has no netns or capable() check, and
+> rds_create() has no capable() check, so AF_RDS is reachable from
+> an unprivileged user namespace. As a result, an unprivileged
+> caller in a fresh user_ns plus netns can read the bound address
+> and sock inode of every RDS socket on the host, the peer address
+> of incoming messages on every RDS socket on the host, the peer
+> address and TCP sequence numbers of every rds-tcp connection on
+> the host, and the peer address and RDS sequence numbers of every
+> RDS connection on the host.
+>=20
+> The rds-tcp transport is reachable from a non-initial netns (see
+> rds_set_transport()), so a one-shot init_net gate at
+> rds_info_getsockopt() would deny legitimate per-netns visibility
+> to rds-tcp callers. Instead, filter at each handler by comparing
+> the netns of the caller's socket to the netns of the list entry,
+> or to rds_conn_net(conn) for connection paths. Only copy entries
+> whose netns matches the caller. Counters (RDS_INFO_COUNTERS) are
+> aggregate statistics and remain global.
+>=20
+> Reproducer (KASAN VM, rds and rds_tcp loaded): an AF_RDS socket
+> binds 127.0.0.1:4242 in init_net as root. A child process enters
+> a fresh user_ns plus netns and opens AF_RDS there, then calls
+> getsockopt(SOL_RDS, RDS_INFO_SOCKETS). Before this change, the
+> child sees the init_net socket. After this change, the child
+> sees zero entries.
+>=20
+> Suggested-by: Allison Henderson <achender@kernel.org>
+> Co-developed-by: Praveen Kakkolangara <praveen.kakkolangara@aumovio.com>
+> Signed-off-by: Praveen Kakkolangara <praveen.kakkolangara@aumovio.com>
+> Signed-off-by: Maoyi Xie <maoyi.xie@ntu.edu.sg>
 
-HEAD commit:    735d2f48cada Add linux-next specific files for 20260506
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f0e56a580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a88880f0f312e277
-dashboard link: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125c9f6c580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166580ec580000
+Thanks Xie.  This looks good to me.  I notice that patchwork failed to appl=
+y this patch though.  So you may need to
+rebase a v2 onto net/main.  Other than that I think it looks good.  Thank y=
+ou!
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e65b731bdb98/disk-735d2f48.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/60db2f3d3f2f/vmlinux-735d2f48.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/55da282f7ab4/bzImage-735d2f48.xz
+Reviewed-by: Allison Henderson <achender@kernel.org>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+> ---
+>  net/rds/af_rds.c     | 24 ++++++++++++++++++++++--
+>  net/rds/connection.c | 13 +++++++++++++
+>  net/rds/tcp.c        | 25 +++++++++++++++++++++----
+>  3 files changed, 56 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+> index b396c673d..469891131 100644
+> --- a/net/rds/af_rds.c
+> +++ b/net/rds/af_rds.c
+> @@ -729,6 +729,7 @@ static void rds_sock_inc_info(struct socket *sock, un=
+signed int len,
+>  			      struct rds_info_iterator *iter,
+>  			      struct rds_info_lengths *lens)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct rds_sock *rs;
+>  	struct rds_incoming *inc;
+>  	unsigned int total =3D 0;
+> @@ -738,6 +739,9 @@ static void rds_sock_inc_info(struct socket *sock, un=
+signed int len,
+>  	spin_lock_bh(&rds_sock_lock);
+> =20
+>  	list_for_each_entry(rs, &rds_sock_list, rs_item) {
+> +		/* Only show sockets in the caller's netns. */
+> +		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
+> +			continue;
+>  		/* This option only supports IPv4 sockets. */
+>  		if (!ipv6_addr_v4mapped(&rs->rs_bound_addr))
+>  			continue;
+> @@ -768,6 +772,7 @@ static void rds6_sock_inc_info(struct socket *sock, u=
+nsigned int len,
+>  			       struct rds_info_iterator *iter,
+>  			       struct rds_info_lengths *lens)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct rds_incoming *inc;
+>  	unsigned int total =3D 0;
+>  	struct rds_sock *rs;
+> @@ -777,6 +782,9 @@ static void rds6_sock_inc_info(struct socket *sock, u=
+nsigned int len,
+>  	spin_lock_bh(&rds_sock_lock);
+> =20
+>  	list_for_each_entry(rs, &rds_sock_list, rs_item) {
+> +		/* Only show sockets in the caller's netns. */
+> +		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
+> +			continue;
+>  		read_lock(&rs->rs_recv_lock);
+> =20
+>  		list_for_each_entry(inc, &rs->rs_recv_queue, i_item) {
+> @@ -800,6 +808,7 @@ static void rds_sock_info(struct socket *sock, unsign=
+ed int len,
+>  			  struct rds_info_iterator *iter,
+>  			  struct rds_info_lengths *lens)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct rds_info_socket sinfo;
+>  	unsigned int cnt =3D 0;
+>  	struct rds_sock *rs;
+> @@ -814,6 +823,9 @@ static void rds_sock_info(struct socket *sock, unsign=
+ed int len,
+>  	}
+> =20
+>  	list_for_each_entry(rs, &rds_sock_list, rs_item) {
+> +		/* Only show sockets in the caller's netns. */
+> +		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
+> +			continue;
+>  		/* This option only supports IPv4 sockets. */
+>  		if (!ipv6_addr_v4mapped(&rs->rs_bound_addr))
+>  			continue;
+> @@ -841,17 +853,24 @@ static void rds6_sock_info(struct socket *sock, uns=
+igned int len,
+>  			   struct rds_info_iterator *iter,
+>  			   struct rds_info_lengths *lens)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct rds6_info_socket sinfo6;
+> +	unsigned int cnt =3D 0;
+>  	struct rds_sock *rs;
+> =20
+>  	len /=3D sizeof(struct rds6_info_socket);
+> =20
+>  	spin_lock_bh(&rds_sock_lock);
+> =20
+> -	if (len < rds_sock_count)
+> +	if (len < rds_sock_count) {
+> +		cnt =3D rds_sock_count;
+>  		goto out;
+> +	}
+> =20
+>  	list_for_each_entry(rs, &rds_sock_list, rs_item) {
+> +		/* Only show sockets in the caller's netns. */
+> +		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
+> +			continue;
+>  		sinfo6.sndbuf =3D rds_sk_sndbuf(rs);
+>  		sinfo6.rcvbuf =3D rds_sk_rcvbuf(rs);
+>  		sinfo6.bound_addr =3D rs->rs_bound_addr;
+> @@ -861,10 +880,11 @@ static void rds6_sock_info(struct socket *sock, uns=
+igned int len,
+>  		sinfo6.inum =3D sock_i_ino(rds_rs_to_sk(rs));
+> =20
+>  		rds_info_copy(iter, &sinfo6, sizeof(sinfo6));
+> +		cnt++;
+>  	}
+> =20
+>   out:
+> -	lens->nr =3D rds_sock_count;
+> +	lens->nr =3D cnt;
+>  	lens->each =3D sizeof(struct rds6_info_socket);
+> =20
+>  	spin_unlock_bh(&rds_sock_lock);
+> diff --git a/net/rds/connection.c b/net/rds/connection.c
+> index 412441aaa..a73554816 100644
+> --- a/net/rds/connection.c
+> +++ b/net/rds/connection.c
+> @@ -568,6 +568,7 @@ static void rds_conn_message_info_cmn(struct socket *=
+sock, unsigned int len,
+>  				      struct rds_info_lengths *lens,
+>  				      int want_send, bool isv6)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct hlist_head *head;
+>  	struct list_head *list;
+>  	struct rds_connection *conn;
+> @@ -590,6 +591,9 @@ static void rds_conn_message_info_cmn(struct socket *=
+sock, unsigned int len,
+>  			struct rds_conn_path *cp;
+>  			int npaths;
+> =20
+> +			/* Only show connections in the caller's netns. */
+> +			if (!net_eq(rds_conn_net(conn), net))
+> +				continue;
+>  			if (!isv6 && conn->c_isv6)
+>  				continue;
+> =20
+> @@ -688,6 +692,7 @@ void rds_for_each_conn_info(struct socket *sock, unsi=
+gned int len,
+>  			  u64 *buffer,
+>  			  size_t item_len)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct hlist_head *head;
+>  	struct rds_connection *conn;
+>  	size_t i;
+> @@ -700,6 +705,9 @@ void rds_for_each_conn_info(struct socket *sock, unsi=
+gned int len,
+>  	for (i =3D 0, head =3D rds_conn_hash; i < ARRAY_SIZE(rds_conn_hash);
+>  	     i++, head++) {
+>  		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
+> +			/* Only show connections in the caller's netns. */
+> +			if (!net_eq(rds_conn_net(conn), net))
+> +				continue;
+> =20
+>  			/* XXX no c_lock usage.. */
+>  			if (!visitor(conn, buffer))
+> @@ -726,6 +734,7 @@ static void rds_walk_conn_path_info(struct socket *so=
+ck, unsigned int len,
+>  				    u64 *buffer,
+>  				    size_t item_len)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct hlist_head *head;
+>  	struct rds_connection *conn;
+>  	size_t i;
+> @@ -740,6 +749,10 @@ static void rds_walk_conn_path_info(struct socket *s=
+ock, unsigned int len,
+>  		hlist_for_each_entry_rcu(conn, head, c_hash_node) {
+>  			struct rds_conn_path *cp;
+> =20
+> +			/* Only show connections in the caller's netns. */
+> +			if (!net_eq(rds_conn_net(conn), net))
+> +				continue;
+> +
+>  			/* XXX We only copy the information from the first
+>  			 * path for now.  The problem is that if there are
+>  			 * more than one underlying paths, we cannot report
+> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+> index 654e23d13..ef9e958ca 100644
+> --- a/net/rds/tcp.c
+> +++ b/net/rds/tcp.c
+> @@ -235,20 +235,27 @@ static void rds_tcp_tc_info(struct socket *rds_sock=
+, unsigned int len,
+>  			    struct rds_info_iterator *iter,
+>  			    struct rds_info_lengths *lens)
+>  {
+> +	struct net *net =3D sock_net(rds_sock->sk);
+>  	struct rds_info_tcp_socket tsinfo;
+>  	struct rds_tcp_connection *tc;
+> +	unsigned int cnt =3D 0;
+>  	unsigned long flags;
+> =20
+>  	spin_lock_irqsave(&rds_tcp_tc_list_lock, flags);
+> =20
+> -	if (len / sizeof(tsinfo) < rds_tcp_tc_count)
+> +	if (len / sizeof(tsinfo) < rds_tcp_tc_count) {
+> +		cnt =3D rds_tcp_tc_count;
+>  		goto out;
+> +	}
+> =20
+>  	list_for_each_entry(tc, &rds_tcp_tc_list, t_list_item) {
+>  		struct inet_sock *inet =3D inet_sk(tc->t_sock->sk);
+> =20
+>  		if (tc->t_cpath->cp_conn->c_isv6)
+>  			continue;
+> +		/* Only show connections in the caller's netns. */
+> +		if (!net_eq(rds_conn_net(tc->t_cpath->cp_conn), net))
+> +			continue;
+> =20
+>  		tsinfo.local_addr =3D inet->inet_saddr;
+>  		tsinfo.local_port =3D inet->inet_sport;
+> @@ -263,10 +270,11 @@ static void rds_tcp_tc_info(struct socket *rds_sock=
+, unsigned int len,
+>  		tsinfo.tos =3D tc->t_cpath->cp_conn->c_tos;
+> =20
+>  		rds_info_copy(iter, &tsinfo, sizeof(tsinfo));
+> +		cnt++;
+>  	}
+> =20
+>  out:
+> -	lens->nr =3D rds_tcp_tc_count;
+> +	lens->nr =3D cnt;
+>  	lens->each =3D sizeof(tsinfo);
+> =20
+>  	spin_unlock_irqrestore(&rds_tcp_tc_list_lock, flags);
+> @@ -281,19 +289,27 @@ static void rds6_tcp_tc_info(struct socket *sock, u=
+nsigned int len,
+>  			     struct rds_info_iterator *iter,
+>  			     struct rds_info_lengths *lens)
+>  {
+> +	struct net *net =3D sock_net(sock->sk);
+>  	struct rds6_info_tcp_socket tsinfo6;
+>  	struct rds_tcp_connection *tc;
+> +	unsigned int cnt =3D 0;
+>  	unsigned long flags;
+> =20
+>  	spin_lock_irqsave(&rds_tcp_tc_list_lock, flags);
+> =20
+> -	if (len / sizeof(tsinfo6) < rds6_tcp_tc_count)
+> +	if (len / sizeof(tsinfo6) < rds6_tcp_tc_count) {
+> +		cnt =3D rds6_tcp_tc_count;
+>  		goto out;
+> +	}
+> =20
+>  	list_for_each_entry(tc, &rds_tcp_tc_list, t_list_item) {
+>  		struct sock *sk =3D tc->t_sock->sk;
+>  		struct inet_sock *inet =3D inet_sk(sk);
+> =20
+> +		/* Only show connections in the caller's netns. */
+> +		if (!net_eq(rds_conn_net(tc->t_cpath->cp_conn), net))
+> +			continue;
+> +
+>  		tsinfo6.local_addr =3D sk->sk_v6_rcv_saddr;
+>  		tsinfo6.local_port =3D inet->inet_sport;
+>  		tsinfo6.peer_addr =3D sk->sk_v6_daddr;
+> @@ -306,10 +322,11 @@ static void rds6_tcp_tc_info(struct socket *sock, u=
+nsigned int len,
+>  		tsinfo6.last_seen_una =3D tc->t_last_seen_una;
+> =20
+>  		rds_info_copy(iter, &tsinfo6, sizeof(tsinfo6));
+> +		cnt++;
+>  	}
+> =20
+>  out:
+> -	lens->nr =3D rds6_tcp_tc_count;
+> +	lens->nr =3D cnt;
+>  	lens->each =3D sizeof(tsinfo6);
+> =20
+>  	spin_unlock_irqrestore(&rds_tcp_tc_list_lock, flags);
+>=20
+> base-commit: 028ef9c96e96197026887c0f092424679298aae8
 
-rdma_rxe: rxe_newlink: failed to add lo
-Oops: gen[  127.022080][ T5982] Oops: general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 1 UID: 0 PID: 5982 Comm: syz.3.20 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/18/2026
-RIP: 0010:kernel_sock_shutdown+0x2a/0x70 net/socket.c:3803
-Code: f3 0f 1e fa 41 57 41 56 41 54 53 89 f3 49 89 fe 49 bc 00 00 00 00 00 fc ff df e8 e1 25 c5 f8 4d 8d 7e 20 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 27 bf 2e f9 4d 8b 3f 49 83 c7 68
-RSP: 0018:ffffc900015ef090 EFLAGS: 00010202
-RAX: 0000000000000004 RBX: 0000000000000002 RCX: ffff88802dd89ec0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: dffffc0000000000 R11: ffffed1007cc8979 R12: dffffc0000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000020
-FS:  000055556d432500(0000) GS:ffff888125dca000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b34563fff CR3: 0000000042b1c000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
- rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
- rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
- rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
- rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
- nldev_dellink+0x304/0x3d0 drivers/infiniband/core/nldev.c:1849
- rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x6d7/0xa10 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x780/0x920 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1895
- sock_sendmsg_nosec+0x112/0x150 net/socket.c:797
- __sock_sendmsg net/socket.c:812 [inline]
- ____sys_sendmsg+0x55c/0x870 net/socket.c:2716
- ___sys_sendmsg+0x2a5/0x360 net/socket.c:2770
- __sys_sendmsg net/socket.c:2802 [inline]
- __do_sys_sendmsg net/socket.c:2807 [inline]
- __se_sys_sendmsg net/socket.c:2805 [inline]
- __x64_sys_sendmsg+0x1c3/0x2a0 net/socket.c:2805
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x15f/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f89172fcdd9
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe8bf8c018 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f8917575fa0 RCX: 00007f89172fcdd9
-RDX: 0000000000000000 RSI: 00002000000002c0 RDI: 0000000000000006
-RBP: 00007f8917392d69 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f8917575fac R14: 00007f8917575fa0 R15: 00007f8917575fa0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:kernel_sock_shutdown+0x2a/0x70 net/socket.c:3803
-Code: f3 0f 1e fa 41 57 41 56 41 54 53 89 f3 49 89 fe 49 bc 00 00 00 00 00 fc ff df e8 e1 25 c5 f8 4d 8d 7e 20 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 27 bf 2e f9 4d 8b 3f 49 83 c7 68
-RSP: 0018:ffffc900015ef090 EFLAGS: 00010202
-RAX: 0000000000000004 RBX: 0000000000000002 RCX: ffff88802dd89ec0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: dffffc0000000000 R11: ffffed1007cc8979 R12: dffffc0000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000020
-FS:  000055556d432500(0000) GS:ffff888125dca000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000008 CR3: 0000000042b1c000 CR4: 00000000003526f0
-----------------
-Code disassembly (best guess):
-   0:	f3 0f 1e fa          	endbr64
-   4:	41 57                	push   %r15
-   6:	41 56                	push   %r14
-   8:	41 54                	push   %r12
-   a:	53                   	push   %rbx
-   b:	89 f3                	mov    %esi,%ebx
-   d:	49 89 fe             	mov    %rdi,%r14
-  10:	49 bc 00 00 00 00 00 	movabs $0xdffffc0000000000,%r12
-  17:	fc ff df
-  1a:	e8 e1 25 c5 f8       	call   0xf8c52600
-  1f:	4d 8d 7e 20          	lea    0x20(%r14),%r15
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	4c 89 ff             	mov    %r15,%rdi
-  34:	e8 27 bf 2e f9       	call   0xf92ebf60
-  39:	4d 8b 3f             	mov    (%r15),%r15
-  3c:	49 83 c7 68          	add    $0x68,%r15
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
