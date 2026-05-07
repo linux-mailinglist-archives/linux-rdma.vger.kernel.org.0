@@ -1,186 +1,393 @@
-Return-Path: <linux-rdma+bounces-20132-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20133-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uH4pMdVv/GmkQAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20132-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 12:56:21 +0200
+	id 4J20Exhx/GmkQAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20133-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:01:44 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFA54E7184
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 12:56:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113F74E729C
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0D0A13010620
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 10:56:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 833ED3045A9E
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 10:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACC13ED120;
-	Thu,  7 May 2026 10:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nL0d5s49"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1766E2E7F25;
+	Thu,  7 May 2026 10:57:17 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012024.outbound.protection.outlook.com [40.107.200.24])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CD92DF136;
-	Thu,  7 May 2026 10:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778151371; cv=fail; b=N7mU/vEtb1urajls0nHyPZo7ikzEkrtygrR0Jfy1Pqrs9CWzXaxfYqlnkd+nTHWI81IOGNYixxuq1wEnLmXgKkG3EmB2RvDyBS5Jb7fuTgS68v05wk4uXB2G9O9QSx8cztfwQ/Jq0l+8zPM2+i1TPRRtrsCia6f6FNQ/InaqdOc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778151371; c=relaxed/simple;
-	bh=q7V88fgP0LO+AWiCawboINHkUxwUD1r79w4+kG/TEUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IMCt3FzGu+3obx+aBczhS1vEqzD2OThILiEpYxcOyXlR5Vq8RIhPPnrlUfdWXE3DIW+hq+m+o43V+T8jth8FhShD14APaavgyqLsYVwcv/+r5YWweVhl1AQYB5Ovlhvo1w+n8hQpRyOo+MswDxM57+BFQd33cSXYlBQjegjjNW4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nL0d5s49; arc=fail smtp.client-ip=40.107.200.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lWoDW+xso8Thxbkuob4fLCvIp7tCIOVzIFkvNWApJfdHQ3z6sH+dMbU6uuG6kI6BfvNkeL8SsAThLZeFP8cJOvgXhyV0Ic2VaBe70J7yGrCsA4T2cQT6lS7jcXrMCA1hm+Q25QfgBM/WBM8uuoToP5WN0QkPOSW6RDKkdLr5Zw8i9R50bXVRS+BxQDlX9SA3/D/YyW7EhuRtD6xVsbB2FQeaf0VSi9tUVpQxglQt5cedZKB2vf5EpcObFue3zz9VdZQzf0bOpRKt0wzydrn4Vww8fu0kM3+jVpSFWUBZYcGPR8l2fcmHvZnp16B9dVqCStdz0aQJI/BTMXBgyXJC9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vhj6ydLyNz93vJ5EO/izu11icAaFwK6uVJdyKuDKkGc=;
- b=IU5++pLSj1Nf8PIhBQ6nxlvQmR7LRJDziIriTl7I2d89RLEX6v7yBR1j77e9UG2EUcnsA3SAJ3pvmjE22WhwZotm44NnooCtFvKv3HbW3G2D7ECkK18QCAYymQqv1QU8jdxS02acbxvByWxeGPy5m5hfMW3bomlvwP+TkUJZb1DjkNSSGICENEXKSMNs3gaeA/HnlkehZw5Qvf25mtHD6vYa3b3EeqGtU2N0FXQF9itwwjKNqD9z+MzPbQW+bIhKU5kUOwWRrqm3A25E+Xfyl4WeSeBpuvGucdtNz6SDhP+VT0CfPuq8HS5lXX3vK7DdAUzcnKN4TVeqH0UFbrayWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vhj6ydLyNz93vJ5EO/izu11icAaFwK6uVJdyKuDKkGc=;
- b=nL0d5s49GQkQLeNz6JBjLaOqLnsy45dX6BoB9U2cuLdKFJjm3q2eIhjUBzBu0enCvCVmUuLsM4CCTMmSsm89NdFAXu7TAoSFLoTVh/LeoG79sHh45lM1gh54GCnhz3jcbCo30nFDesZS17C5u0xiNO/6XldPN/ApRU2RO9QAaFqB6btizpEd4fg12/G7VWHIARCiN3Mi+61BUqVtng6+xvxXUGxc5wg9MFN8OKvJ0PxHbwINkQSk/0kgrBabrEjYNPAriz+EGGAfRBeiryMLOPMVoJFiPrOhsjL+ezfo/7GOo+L/ejsouc+g9IbIYIbZqqFY8yDjdQQIMPYD/ygDPA==
-Received: from MN0PR05CA0017.namprd05.prod.outlook.com (2603:10b6:208:52c::21)
- by SA1PR12MB7270.namprd12.prod.outlook.com (2603:10b6:806:2b9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.17; Thu, 7 May
- 2026 10:55:49 +0000
-Received: from BN1PEPF00005FFD.namprd05.prod.outlook.com
- (2603:10b6:208:52c:cafe::71) by MN0PR05CA0017.outlook.office365.com
- (2603:10b6:208:52c::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9913.7 via Frontend Transport; Thu, 7
- May 2026 10:55:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN1PEPF00005FFD.mail.protection.outlook.com (10.167.243.229) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9891.9 via Frontend Transport; Thu, 7 May 2026 10:55:48 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 7 May
- 2026 03:55:29 -0700
-Received: from [10.242.157.67] (10.126.231.37) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 7 May
- 2026 03:55:27 -0700
-Message-ID: <1d7235ce-8354-44bd-8f2d-fb3eca35bb65@nvidia.com>
-Date: Thu, 7 May 2026 13:55:24 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858643EDAA0
+	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 10:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778151436; cv=none; b=mEK0Inu6eLO9fQoisVQfUQuqnI4hq3MIQPIGLOtLs4jfPRsbM1k547yjlCu+487HzsJiQWFREENy3arbz6JtiRJGug36zNpGb2ZmZ+rq9+m4iZxThNQSTgAf4YlkubWyYEcO8RXXIODWGdA2/KxxXowg2lDISnG7Nb/DFBiRGpA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778151436; c=relaxed/simple;
+	bh=WMCbfhuXrBYuEWLT18FkbVAMISdQACtlTz7psEBX2BA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DzWnxiKu9TojTCt2PQ02euh9eAMpaJ47800RNs+TYiUnwb96GmSudh4L4Z3rWrZzD/aXidA9v6PkP4pItq5C7dT+KzJd7XwSLCDEtslH1Df5reKeip4NHlNMilQR23JluDlSrGr9/PefsVx4Vh9q0R4mSMSn8jStIC+AAC9joeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wKwOz-0001uh-6W; Thu, 07 May 2026 12:56:21 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wKwOQ-000uFj-2Z;
+	Thu, 07 May 2026 12:55:47 +0200
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 2374E5302D0;
+	Thu, 07 May 2026 10:55:46 +0000 (UTC)
+Date: Thu, 7 May 2026 12:55:45 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
+Cc: Michael Grzeschik <mgr@kernel.org>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Vincent Mailhol <mailhol@kernel.org>, 
+	Krzysztof Halasa <khc@pm.waw.pl>, Johannes Berg <johannes@sipsolutions.net>, 
+	Steffen Klassert <klassert@kernel.org>, David Dillow <dave@thedillows.org>, 
+	Ion Badulescu <ionut@badula.org>, Mark Einon <mark.einon@gmail.com>, 
+	Rasesh Mody <rmody@marvell.com>, GR-Linux-NIC-Dev@marvell.com, 
+	Manish Chopra <manishc@marvell.com>, Potnuri Bharat Teja <bharat@chelsio.com>, 
+	Denis Kirjanov <kirjanov@gmail.com>, Jijie Shao <shaojijie@huawei.com>, 
+	Jian Shen <shenjian15@huawei.com>, Cai Huoqing <cai.huoqing@linux.dev>, 
+	Fan Gong <gongfan1@huawei.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Tariq Toukan <tariqt@nvidia.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Mark Bloch <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, 
+	Petr Machata <petrm@nvidia.com>, Yibo Dong <dong100@mucse.com>, 
+	Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com, Jiri Pirko <jiri@resnulli.us>, 
+	Francois Romieu <romieu@fr.zoreil.com>, Daniele Venzano <venza@brownhat.org>, 
+	Samuel Chessman <chessman@tux.org>, Jiawen Wu <jiawenwu@trustnetic.com>, 
+	Mengyuan Lou <mengyuanlou@net-swift.com>, Kevin Curtis <kevin.curtis@farsite.co.uk>, 
+	Arend van Spriel <arend.vanspriel@broadcom.com>, Stanislav Yakovlev <stas.yakovlev@gmail.com>, 
+	Richard Cochran <richardcochran@gmail.com>, Kees Cook <kees@kernel.org>, 
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>, Thomas Gleixner <tglx@kernel.org>, 
+	Jacob Keller <jacob.e.keller@intel.com>, Thomas Fourier <fourier.thomas@gmail.com>, 
+	Ingo Molnar <mingo@kernel.org>, Kory Maincent <kory.maincent@bootlin.com>, 
+	Zilin Guan <zilin@seu.edu.cn>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
+	Marco Crivellari <marco.crivellari@suse.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	David Arinzon <darinzon@amazon.com>, Yeounsu Moon <yyyynoom@gmail.com>, 
+	Denis Benato <benato.denis96@gmail.com>, Yonglong Liu <liuyonglong@huawei.com>, 
+	Andy Shevchenko <andriy.shevchenko@intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Yicong Hui <yiconghui@gmail.com>, MD Danish Anwar <danishanwar@ti.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Ethan Nelson-Moore <enelsonmoore@gmail.com>, 
+	Larysa Zaremba <larysa.zaremba@intel.com>, Ian Lin <ian.lin@infineon.com>, 
+	Colin Ian King <colin.i.king@gmail.com>, Double Lo <double.lo@cypress.com>, 
+	Markus Schneider-Pargmann <msp@baylibre.com>, Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, oss-drivers@corigine.com, 
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com
+Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
+ using named initializers
+Message-ID: <20260507-healthy-gainful-fox-500552-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
+References: <cover.1778149923.git.u.kleine-koenig@baylibre.com>
+ <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v1] net/mlx5: Fix HWS action unwind NULL dereference
-To: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-CC: Tariq Toukan <tariqt@nvidia.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20260504220725.46686-1-prathameshdeshpande7@gmail.com>
-Content-Language: en-US
-From: Moshe Shemesh <moshe@nvidia.com>
-In-Reply-To: <20260504220725.46686-1-prathameshdeshpande7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00005FFD:EE_|SA1PR12MB7270:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c3909e1-8de0-4a04-2ff7-08deac2732ed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|376014|82310400026|1800799024|18002099003|22082099003|56012099003;
-X-Microsoft-Antispam-Message-Info:
-	zhGhBTEu+CvEYmoxZwMb05PuUd7RDKEMKTkHKpueYRu+yMfVlp3/ULsYUAbNgW6Kr2I2C3PoMXZdzViY5hJISKEIJYOdgP8iDmWUpb9waYSaEJeRQtShyZd8oLuBMSgJBW6RJQe+CCCdpQeko0ey6EazCqGTWIZPPbDPYbClCXNiWKP4yXBI4zoSApCGX2N/+rj2837HISmaRFzsskRGOpQWRApzIsnly/p9Ra6LeKSxhhbgpI5OerNfTXTpi0rINXjK1ty0Key2XZkAewFAfVUxW9UIvmvgT6VC8hFdd2YQsGjfE9GdXuoKBcXAKZI/dIaS25AI3G9k34IKkFI7Yioa4mLUQqP7c9H3lpKeWKmGMahBIJG7Hfyp6P3qa7+fOdqpzy4JkUjSD5WRrhkT8gp8nPhjzAGCBKLgP1VLfxwEEpKUF6YcDRJbOLM5nn/qE9CppU2iJr1cd4AdxffAEpUPYlw+32MuO18+GG+0FXiVZUbbVvRBno1ps/vkAETNgGA9imW5fUaYHe/KTsZF+07fWDR6hxp1JHi3BufBuyt/wondSxuYP5NOKyREg6rVuo/XGW+NmHzhprEv+WujfnCCmhy+mLJv3tbu6OREPwbubZ527YYXBNjsTaSs+U7wpiwGqLvWdPnYntgdzvzNYQnAD1Ud0lHXh72smBOsTbBaZCgfbUHuiPtYL6lzTywe98WEGtbGrHptn9/v2oB1WIxOvOv4ASWaZC/U52BM3Jg=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(376014)(82310400026)(1800799024)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	a6QUC+Yn3o8LvjcD0Tt4/4MdD+7CxVWgblD6YcgsHeklzgHRNkzq/o6fZWc3HWq+u++Y6uRHqj6I4LfWGReocvWFOLcVbgb/DfIihCiMqhQ/mVSdYrD1qJpL9Cpl+DfVWeEbxD/HCabk2AvGmN2xOsWkppOMsTuvQ2WmDTyb19uv7y+AJcKC0hgexQMFlICahcljbUHuotXbAPTwXH+/+JkdpDczqcuaLyeJ+4Ye9P7MeAia0SB3/83TgjRMjFsc5Eb7tjEefuEGibZYm2dxoXgMsrBsKLnNmGfIhQpC2CvTGjBoHb59+ZC2K9U/91A3L1Aa75nYLcTIhpxLhxrV3eO3xVBHr6hH2JrqVZjIA84KavEFZzfuTRffnLGCa1Vj+ACEkcrumf1wJJCb81qL60idSJbz+YrkqONYLeXL/a3YO54mxN9NayKKHt7pl8oU
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2026 10:55:48.9351
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c3909e1-8de0-4a04-2ff7-08deac2732ed
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00005FFD.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7270
-X-Rspamd-Queue-Id: 6BFA54E7184
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bj6moo23k7mnjddb"
+Content-Disposition: inline
+In-Reply-To: <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-rdma@vger.kernel.org
+X-Rspamd-Queue-Id: 113F74E729C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+X-Spamd-Result: default: False [-1.06 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20132-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,nvidia.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,Nvidia.com:dkim];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,nvidia.com,kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[moshe@nvidia.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,pm.waw.pl,sipsolutions.net,thedillows.org,badula.org,gmail.com,marvell.com,chelsio.com,huawei.com,linux.dev,intel.com,nvidia.com,mucse.com,realtek.com,resnulli.us,fr.zoreil.com,brownhat.org,tux.org,trustnetic.com,net-swift.com,farsite.co.uk,broadcom.com,bootlin.com,seu.edu.cn,suse.com,amazon.com,infradead.org,ti.com,infineon.com,cypress.com,baylibre.com,vger.kernel.org,lists.osuosl.org,corigine.com,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-20133-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[pengutronix.de];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mkl@pengutronix.de,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_GT_50(0.00)[81];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,pengutronix.de:url,pengutronix.de:mid]
 X-Rspamd-Action: no action
 
 
+--bj6moo23k7mnjddb
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
+ using named initializers
+MIME-Version: 1.0
 
-On 5/5/2026 1:06 AM, Prathamesh Deshpande wrote:
-> mlx5_fs_fte_get_hws_actions() stores some destination actions in
-> fs_actions[] before checking whether action creation succeeded.
-> 
-> If creating a table-number or range destination action fails, or if
-> fetching a sampler destination action fails, dest_action is NULL but
-> num_fs_actions has already been incremented. The shared error path then
-> calls mlx5_fs_destroy_fs_action(), which dereferences fs_action->action
-> to get the HWS action type, causing a NULL pointer dereference while
-> unwinding the original failure.
-> 
-> Track whether the current destination action needs fs_actions[] cleanup,
-> but append it only after dest_action has been validated.
-> 
-> Fixes: 2ec6786ad0a6b ("net/mlx5: fs, add HWS fte API functions")
-> Fixes: 32e658c84b6d ("net/mlx5: fs, add support for dest flow sampler HWS action")
-> Signed-off-by: Prathamesh Deshpande<prathameshdeshpande7@gmail.com>
+> diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/=
+plx_pci.c
+> index 08183833c9bc..a03553b80a5d 100644
+> --- a/drivers/net/can/sja1000/plx_pci.c
+> +++ b/drivers/net/can/sja1000/plx_pci.c
+> @@ -272,124 +272,89 @@ static struct plx_pci_card_info plx_pci_card_info_=
+asem_dual_can =3D {
+>  static const struct pci_device_id plx_pci_tbl[] =3D {
+>  	{
+>  		/* Adlink PCI-7841/cPCI-7841 */
+> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
+> -		PCI_ANY_ID, PCI_ANY_ID,
+> -		PCI_CLASS_NETWORK_OTHER << 8, ~0,
+> -		(kernel_ulong_t)&plx_pci_card_info_adlink
+> -	},
+> -	{
+> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
+> +		.class =3D PCI_CLASS_NETWORK_OTHER << 8,
+> +		.class_mask =3D ~0,
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink,
+> +	}, {
+>  		/* Adlink PCI-7841/cPCI-7841 SE */
+> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
+> -		PCI_ANY_ID, PCI_ANY_ID,
+> -		PCI_CLASS_COMMUNICATION_OTHER << 8, ~0,
+> -		(kernel_ulong_t)&plx_pci_card_info_adlink_se
+> -	},
+> -	{
+> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
+> +		.class =3D PCI_CLASS_COMMUNICATION_OTHER << 8,
+> +		.class_mask =3D ~0,
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink_se,
+> +	}, {
+>  		/* esd CAN-PCI/200 */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9050,
+> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_esd200
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9050,
+> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
+> +	}, {
+>  		/* esd CAN-CPCI/200 */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
+> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_esd200
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
+> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
+> +	}, {
+>  		/* esd CAN-PCI104/200 */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
+> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_esd200
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
+> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
+> +	}, {
+>  		/* esd CAN-PCI/266 */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
+> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_esd266
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
+> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
+> +	}, {
+>  		/* esd CAN-PMC/266 */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
+> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_esd266
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
+> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
+> +	}, {
+>  		/* esd CAN-PCIE/2000 */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
+> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_esd2000
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
+> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd2000,
+> +	}, {
+>  		/* IXXAT PC-I 04/PCI card */
+> -		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
+> -		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_ixxat
+> -	},
+> -	{
+> +		PCI_DEVICE_SUB(IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
+> +			       PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_ixxat,
+> +	}, {
+>  		/* Marathon CAN-bus-PCI card */
+> -		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
+> -		PCI_ANY_ID, PCI_ANY_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pci
+> -	},
+> -	{
+> +		PCI_VDEVICE(PLX, MARATHON_PCI_DEVICE_ID),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pci,
+> +	}, {
+>  		/* Marathon CAN-bus-PCIe card */
+> -		PCI_VENDOR_ID_PLX, MARATHON_PCIE_DEVICE_ID,
+> -		PCI_ANY_ID, PCI_ANY_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pcie
+> -	},
+> -	{
+> +		PCI_VDEVICE(PLX, MARATHON_PCIE_DEVICE_ID),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pcie,
+> +	}, {
+>  		/* TEWS TECHNOLOGIES TPMC810 card */
+> -		TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810,
+> -		PCI_ANY_ID, PCI_ANY_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_tews
+> -	},
+> -	{
+> +		PCI_DEVICE(TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_tews,
+> +	}, {
+>  		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
+> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
+> -		PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_cti
+> -	},
+> -	{
+> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
+> +				PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_cti,
+> +	}, {
+>  		/* Elcus CAN-200-PCI */
+> -		CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
+> -		CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_elcus
+> -	},
+> -	{
+> +		PCI_DEVICE_SUB(CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
+> +			       CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_elcus,
+> +	}, {
+>  		/* moxa */
+> -		MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID,
+> -		PCI_ANY_ID, PCI_ANY_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_moxa
+> -	},
+> -	{
+> +		PCI_DEVICE(MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_moxa,
+> +	}, {
+>  		/* ASEM Dual CAN raw */
+> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
+> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
+> -	},
+> -	{
+> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
+> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
+> +	}, {
+>  		/* ASEM Dual CAN raw -new model */
+> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
+> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS,
+> -		0, 0,
+> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
+> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
+> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS),
+> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
+>  	},
+> -	{ 0,}
+> +	{ }
 
-Acked-by: Moshe Shemesh <moshe@nvidia.com>
+Nitpick: can you convert the terminating entry to follow the same style
+as the rest of the driver:
 
-> ---
->   .../mellanox/mlx5/core/steering/hws/fs_hws.c     | 16 +++++++++++-----
->   1 file changed, 11 insertions(+), 5 deletions(-)
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/pl=
+x_pci.c
+index a03553b80a5d..d69ff0ccfd94 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -353,8 +353,8 @@ static const struct pci_device_id plx_pci_tbl[] =3D {
+                 PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE=
+_ID,
+                                ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SU=
+B_DEVICE_ID_BIS),
+                 .driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_d=
+ual_can,
+-        },
+-        { }
++        }, {
++        }
+ };
+ MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--bj6moo23k7mnjddb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCafxvrQAKCRDMOmT6rpmt
+0pHeAP9XFcWG4TIkfsDgMbSsjB0BDeIaX/oOHy7GN10y7WrRXAD9HGFep6ozobs7
+Ky/tnJ+5OGyoiQeSoshTzXtNkIIEoQA=
+=kV9y
+-----END PGP SIGNATURE-----
+
+--bj6moo23k7mnjddb--
 
