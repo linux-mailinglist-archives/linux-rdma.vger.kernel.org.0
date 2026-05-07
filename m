@@ -1,59 +1,93 @@
-Return-Path: <linux-rdma+bounces-20138-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20139-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SMQjJYt//GkcQwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20138-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:03:23 +0200
+	id +El5JqaK/GleRAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20139-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:50:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A9F4E7F06
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:03:19 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id D82254E879D
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 14:50:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 514CF301025C
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 12:01:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D3DE13008C0F
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 12:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5BB3932F7;
-	Thu,  7 May 2026 12:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2CA3CFF6C;
+	Thu,  7 May 2026 12:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MKlUwDiT"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="rr7OduyM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAA236073E
-	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 12:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45483B6BF0;
+	Thu,  7 May 2026 12:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778155310; cv=none; b=P9VyLKeSiQi0q7QqhoAJtl4e5H0yHXqFx4hrGaDEKvg/UlIb2fQBEgaz0QAlJuF3aEGSFyN//t8Ov9ih/8a4jH/w97B1hwP78j7BuuOk62s1E1QD6aM299b9V1B52ui8qZaVIBs9uid98+QZmfZxQyc9gkjEQiGu7Hjeh2UrBTw=
+	t=1778158241; cv=none; b=hhhbHWLTpNlg8eCtBObYuU3L/ZvXMol4sIgbfm2JRs/5RODkNhVjZ0LM4KJAN59B40bwK9EZni3vCBzIEt7dX854AqJS6xPkpwH9Sv+WRgSAk0IELUOXeAxNFBoXgSJ0SnVBXWTRe9tly0mSl1r9cVAw+iwLFxi8RLOMdTVsF9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778155310; c=relaxed/simple;
-	bh=fy+gHvzrZrT5EKw0CJGQICO7ohf47KhOYHCcbpc7W4A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TouOerckVGT3+e10IJpx8nlYD0uXE+dTg/+yxf9gNYfxZrO8pAoivGin4hYmqyGD8UKY+8Vf6O3yvkNAAcJJllR2tXhmXqkgyNR9i38+8wiCREjJtUVl296Zjnx1D/Oizeq9ssKtsDEctEN8d1GB2MjsG5tTj/fN++vvidyxkZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MKlUwDiT; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778155306;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=eUHkfD5ZE4/5zh7t/d+bVLnz8aCDolTtBvyCjWYrScQ=;
-	b=MKlUwDiT+7fGzh0VTl/Ec/ak0iJ62Dlek9nEdBeYB9iCIL1rptfJfq9Nt+sMkjBOikESGM
-	pgP9zHdYpJkBu3/v3KCa1h1W5fi/T0QO9Zw50UOzHUNZ40mlkY8YHYeG3EOjVzI2MSF3SI
-	aKFHWcc24l+G9DmAL9LacojKZNkMcDw=
-From: bernard.metzler@linux.dev
-To: rosenp@gmail.com
-Cc: jgg@ziepe.ca,
+	s=arc-20240116; t=1778158241; c=relaxed/simple;
+	bh=uHD2uCjN1UTQoraWvVy/fg6kCqbQLIutJoDWTGlKUVM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=SmadXXDsSGY/h09N5atpi6bhJeVDM4g8MnccMAR0R9dn+FBv8JhEQBY0/j1sTPvb1qROOiR+qGxwfYQRM5I3eCXJBg1Bs2V9UsUqA6nyTpEfq+2R/8bO1Wo69LbFk8VWMh1WzOCCDIEsyvdQtjLdFWIooHTrXrTuO1ee2e8cRc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=rr7OduyM; arc=none smtp.client-ip=203.205.221.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1778158214; bh=5ub2YWhxmtbkh6ASBeqDgX465/eiGKDulnfevlmT57E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=rr7OduyMYU4DXf7DmYjESFygDNWM7qnufZc27RENxNvqlkwpby6oIZhvSGbd1KB5+
+	 OBtwMjCn8gjiOiRK8iN/KvdQgP0fgUXd42ryHHfR7CJM6/aQwelZUJ/uNqxBMMoL20
+	 yHYJxVI3WSmrSxLf3MY/isKmbZY6DVOiJdY3mr7s=
+Received: from lxu-ped-host.. ([111.198.231.89])
+	by newxmesmtplogicsvrsza73-0.qq.com (NewEsmtp) with SMTP
+	id C8A1B40D; Thu, 07 May 2026 20:50:10 +0800
+X-QQ-mid: xmsmtpt1778158210t5p0eskuj
+Message-ID: <tencent_611BEB4B141B1A2526BAA3BBB2335F9E9108@qq.com>
+X-QQ-XMAILINFO: OPDQNGCUQ3qLkaFh7YH4cP0ef7dTVev+OCC4NTAATZsdIfJe5MGyfHz+BKAuMe
+	 25RPII7oaKWNy97i06WpbHAUvoC5MxYIU5A3cshYS3tpyIPgpZZxsKICdfDMRSll03lCGDV4iH3h
+	 PeGYuJJGMbuhytycfvHEhmMorKD/h9ol3uLQUe0yiBhp9ptEzUS9wb15obY0FGrJ0B+5fGGhkOL0
+	 zpgFd+TJZ1BtJ2loj2+jiQ6hrCzDeJJnA5Z14C03O+Fsvgpsp0CNOqyLhmGahbZxktH83MJJBGEp
+	 ZyfBmNOHxAiv14RkSg4YiDlKoAa3uAPbwxPLdg/oF3WIdcLmL5S1vlvM6AP9aQaYaD2iF/hSJ2VG
+	 9C7O4DDZl2j6AfCEuekmU7c5ifXjGaZuaOeMhm5ifKc51s1SLZIXw6M4JeLQMTK0/sYrPyGfazMe
+	 IBzI+KOc2uWkP3Ka+LQyu62pdFcplBjlWWX0Q/2Hk/cGhuKVVj9ZgAKtY+4fxmeWkTVGsWHnzMmA
+	 j7Xa4kdm/7XkSqpC2iGBgo/3BZBdLAxuvInt8SKB+l5SSoyyX2VGen9ieUlxnoFrXpcHdu2++/dp
+	 +H1JlYMZTzEoAihrdgLN7hrrwS4dT+RDH/fXtFyarOvYxYWIvrpH5dAKP7B2/rbVPbzwsCnNl6gF
+	 AieCei0FZM34dGFURjSUPV4rZgR8ML3qrnptpvXhwFWmA30UOYnYrOglUo8efGEh4uymIeXaTx+L
+	 CJYUgTibcL4yI3cLXcqqXfcR01CnQMf4VsKRDHkHoDZlMfM53ZvvAGTVG2NhEpVK+JuxRsAyIA08
+	 +aaw5Lbv8wirV6EkLYzKPZG+HEezhBbmJbuyWnGUt4QTNwjUDro84KjM1tM6NeTq2nxzKMiZZ9EV
+	 XfyZSEofBSj7rG7zUKjEWRTpFfxydNLWBemMntq75imA+ZzEt/cERcStm5evq2yXQ+IkfH1U74Ns
+	 nsc7H5afldZoonbXWX3veCwtAFW6CO9h8yUKgT092qSz7Jlw2ti1E7HyEdH3HuXuQ8u3qu7ebAUJ
+	 EypQS8rYRR2AItdtmlOYlSl4qUKwI=
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+Cc: akpm@linux-foundation.org,
+	arjan@linux.intel.com,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	hdanton@sina.com,
+	horms@kernel.org,
+	jgg@ziepe.ca,
+	kuba@kernel.org,
+	kuni1840@gmail.com,
+	kuniyu@google.com,
 	leon@kernel.org,
-	kees@kernel.org,
-	gustavoars@kernel.org,
+	linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
-	Bernard Metzler <bernard.metzler@linux.dev>
-Subject: [RFC PATCH v2] RDMA/siw: use kzalloc_flex
-Date: Thu,  7 May 2026 14:01:15 +0200
-Message-ID: <20260507120115.2297-1-bernard.metzler@linux.dev>
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	syzkaller-bugs@googlegroups.com,
+	yanjun.zhu@linux.dev,
+	zyjzyj2000@gmail.com
+Subject: [PATCH] RDMA/nldev: add mutual exclusion in nldev_dellink()
+Date: Thu,  7 May 2026 20:50:10 +0800
+X-OQ-MSGID: <20260507125009.109737-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <69fc0c7c.a00a0220.387fc1.0006.GAE@google.com>
+References: <69fc0c7c.a00a0220.387fc1.0006.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,239 +95,82 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 38A9F4E7F06
+X-Rspamd-Queue-Id: D82254E879D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20138-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-20139-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,linux.intel.com,davemloft.net,kernel.org,google.com,sina.com,ziepe.ca,gmail.com,vger.kernel.org,redhat.com,googlegroups.com,linux.dev];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FROM_NO_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	FREEMAIL_FROM(0.00)[qq.com];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[qq.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-rdma,d8f76778263ab65c2b21];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Action: no action
 
-From: Bernard Metzler <bernard.metzler@linux.dev>
+We must serialize calls to nldev_dellink() or risk a crash as syzbot
+reported:
 
-Simplify umem allocation by using flexible array member.
-Add __counted_by to get extra runtime analysis.
-
-Suggested-by: Rosen Penev <rosenp@gmail.com>
-Signed-off-by: Bernard Metzler <bernard.metzler@linux.dev>
-
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+Call Trace:
+ udp_tunnel_sock_release+0x6d/0x80 net/ipv4/udp_tunnel_core.c:197
+ rxe_release_udp_tunnel drivers/infiniband/sw/rxe/rxe_net.c:294 [inline]
+ rxe_sock_put drivers/infiniband/sw/rxe/rxe_net.c:639 [inline]
+ rxe_net_del+0xfb/0x290 drivers/infiniband/sw/rxe/rxe_net.c:660
+ rxe_dellink+0x15/0x20 drivers/infiniband/sw/rxe/rxe.c:254
+ 
+Fixes: a60e3f3d6fba ("RDMA/nldev: Add dellink function pointer")
+Reported-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d8f76778263ab65c2b21
+Tested-by: syzbot+d8f76778263ab65c2b21@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
-v2:
-1. Considering comments from sashiko.dev to original patch regarding:
-	- avoiding allocation of extra empty page chunk entry,
-	  if number of pages is an exact multiplier
-	  of PAGES_PER_CHUNK,
-	- fix potential signed index overflow case for
-	  page list generation and access,
-	- restrict page list access in siw_get_upage() to
-	  allocated length.
+ drivers/infiniband/core/nldev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-2. Extend flexible array allocation to page list.
-
-3. Remove useless PAGE_CHUNK_SIZE definition.
----
- drivers/infiniband/sw/siw/siw.h     |  7 ++--
- drivers/infiniband/sw/siw/siw_mem.c | 59 ++++++++++++++---------------
- drivers/infiniband/sw/siw/siw_mem.h |  9 +++--
- 3 files changed, 37 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index f5fd71717b80..6ce30211d066 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -114,14 +114,15 @@ struct siw_ucontext {
-  */
- 
- struct siw_page_chunk {
--	struct page **plist;
-+	unsigned int nents;
-+	struct page *plist[] __counted_by(nents);
- };
- 
- struct siw_umem {
- 	struct ib_umem *base_mem;
--	struct siw_page_chunk *page_chunk;
--	int num_pages;
-+	unsigned int num_chunks;
- 	u64 fp_addr; /* First page base address */
-+	struct siw_page_chunk *page_chunk[] __counted_by(num_chunks);
- };
- 
- struct siw_pble {
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index 98c802b3ed72..d8075e44491a 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -41,16 +41,14 @@ struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index)
- 
- void siw_umem_release(struct siw_umem *umem)
- {
--	int i, num_pages = umem->num_pages;
-+	unsigned int i, num_chunks = umem->num_chunks;
- 
- 	if (umem->base_mem)
- 		ib_umem_release(umem->base_mem);
- 
--	for (i = 0; num_pages > 0; i++) {
--		kfree(umem->page_chunk[i].plist);
--		num_pages -= PAGES_PER_CHUNK;
--	}
--	kfree(umem->page_chunk);
-+	for (i = 0; i < num_chunks; i++)
-+		kfree(umem->page_chunk[i]);
-+
- 	kfree(umem);
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 96c745d5bac4..3cb3cb7629fe 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1816,6 +1816,8 @@ static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	return err;
  }
  
-@@ -188,7 +186,7 @@ int siw_check_mem(struct ib_pd *pd, struct siw_mem *mem, u64 addr,
-  * lookup is being done and mem is not released it check fails.
-  */
- int siw_check_sge(struct ib_pd *pd, struct siw_sge *sge, struct siw_mem *mem[],
--		  enum ib_access_flags perms, u32 off, int len)
-+		  enum ib_access_flags perms, u32 off, u32 len)
- {
- 	struct siw_device *sdev = to_siw_dev(pd->device);
- 	struct siw_mem *new = NULL;
-@@ -338,25 +336,20 @@ struct siw_umem *siw_umem_get(struct ib_device *base_dev, u64 start,
- 	struct sg_page_iter sg_iter;
- 	struct sg_table *sgt;
- 	u64 first_page_va;
--	int num_pages, num_chunks, i, rv = 0;
-+	unsigned int num_pages, num_chunks, i;
-+	int rv = 0;
- 
- 	if (!len)
- 		return ERR_PTR(-EINVAL);
- 
- 	first_page_va = start & PAGE_MASK;
- 	num_pages = PAGE_ALIGN(start + len - first_page_va) >> PAGE_SHIFT;
--	num_chunks = (num_pages >> CHUNK_SHIFT) + 1;
-+	num_chunks = ((num_pages - 1) >> CHUNK_SHIFT) + 1;
- 
--	umem = kzalloc_obj(*umem);
-+	umem = kzalloc_flex(*umem, page_chunk, num_chunks);
- 	if (!umem)
- 		return ERR_PTR(-ENOMEM);
- 
--	umem->page_chunk =
--		kzalloc_objs(struct siw_page_chunk, num_chunks);
--	if (!umem->page_chunk) {
--		rv = -ENOMEM;
--		goto err_out;
--	}
- 	base_mem = ib_umem_get(base_dev, start, len, rights);
- 	if (IS_ERR(base_mem)) {
- 		rv = PTR_ERR(base_mem);
-@@ -369,29 +362,33 @@ struct siw_umem *siw_umem_get(struct ib_device *base_dev, u64 start,
- 	sgt = &base_mem->sgt_append.sgt;
- 	__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
- 
--	if (!__sg_page_iter_next(&sg_iter)) {
--		rv = -EINVAL;
--		goto err_out;
--	}
--	for (i = 0; num_pages > 0; i++) {
--		int nents = min_t(int, num_pages, PAGES_PER_CHUNK);
--		struct page **plist =
--			kzalloc_objs(struct page *, nents);
-+	for (i = 0; i < num_chunks; i++) {
-+		struct siw_page_chunk *pchunk;
-+		unsigned int pix, nents = min(num_pages, PAGES_PER_CHUNK);
- 
--		if (!plist) {
-+		pchunk = kzalloc_flex(*pchunk, plist, nents);
-+		if (!pchunk) {
- 			rv = -ENOMEM;
- 			goto err_out;
- 		}
--		umem->page_chunk[i].plist = plist;
--		while (nents--) {
--			*plist = sg_page_iter_page(&sg_iter);
--			umem->num_pages++;
--			num_pages--;
--			plist++;
-+		umem->page_chunk[i] = pchunk;
++static DEFINE_MUTEX(nldev_dellink_mutex);
 +
-+		for (pix = 0; pix < nents; pix++) {
- 			if (!__sg_page_iter_next(&sg_iter))
- 				break;
-+			pchunk->plist[pix] = sg_page_iter_page(&sg_iter);
-+			num_pages--;
- 		}
+ static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 			  struct netlink_ext_ack *extack)
+ {
+@@ -1846,7 +1848,9 @@ static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	 * implicitly scoped to the driver supporting dynamic link deletion like RXE.
+ 	 */
+ 	if (device->link_ops && device->link_ops->dellink) {
++		mutex_lock(&nldev_dellink_mutex);
+ 		err = device->link_ops->dellink(device);
++		mutex_unlock(&nldev_dellink_mutex);
+ 		if (err)
+ 			return err;
  	}
-+	if (unlikely(num_pages)) {
-+		/*
-+		 * Unexpected end of sg list provided by ib_umem_get()
-+		 */
-+		siw_dbg(base_dev, "Short SG list, missing %u pages\n",
-+			num_pages);
-+		rv = -EINVAL;
-+		goto err_out;
-+	}
- 	return umem;
- err_out:
- 	siw_umem_release(umem);
-diff --git a/drivers/infiniband/sw/siw/siw_mem.h b/drivers/infiniband/sw/siw/siw_mem.h
-index 8e769d30e2ac..47ab38faad7c 100644
---- a/drivers/infiniband/sw/siw/siw_mem.h
-+++ b/drivers/infiniband/sw/siw/siw_mem.h
-@@ -17,7 +17,7 @@ int siw_check_mem(struct ib_pd *pd, struct siw_mem *mem, u64 addr,
- 		  enum ib_access_flags perms, int len);
- int siw_check_sge(struct ib_pd *pd, struct siw_sge *sge,
- 		  struct siw_mem *mem[], enum ib_access_flags perms,
--		  u32 off, int len);
-+		  u32 off, u32 len);
- void siw_wqe_put_mem(struct siw_wqe *wqe, enum siw_opcode op);
- int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
- 		   u64 start, u64 len, int rights);
-@@ -45,7 +45,6 @@ static inline void siw_unref_mem_sgl(struct siw_mem **mem, unsigned int num_sge)
- #define CHUNK_SHIFT 9 /* sets number of pages per chunk */
- #define PAGES_PER_CHUNK (_AC(1, UL) << CHUNK_SHIFT)
- #define CHUNK_MASK (~(PAGES_PER_CHUNK - 1))
--#define PAGE_CHUNK_SIZE (PAGES_PER_CHUNK * sizeof(struct page *))
- 
- /*
-  * siw_get_upage()
-@@ -60,9 +59,11 @@ static inline struct page *siw_get_upage(struct siw_umem *umem, u64 addr)
- 	unsigned int page_idx = (addr - umem->fp_addr) >> PAGE_SHIFT,
- 		     chunk_idx = page_idx >> CHUNK_SHIFT,
- 		     page_in_chunk = page_idx & ~CHUNK_MASK;
-+	struct siw_page_chunk *page_chunk = umem->page_chunk[chunk_idx];
- 
--	if (likely(page_idx < umem->num_pages))
--		return umem->page_chunk[chunk_idx].plist[page_in_chunk];
-+	if (likely(chunk_idx < umem->num_chunks &&
-+		   page_in_chunk < page_chunk->nents))
-+		return page_chunk->plist[page_in_chunk];
- 
- 	return NULL;
- }
 -- 
-2.50.0
+2.43.0
 
 
