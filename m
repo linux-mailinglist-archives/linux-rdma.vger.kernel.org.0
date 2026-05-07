@@ -1,393 +1,238 @@
-Return-Path: <linux-rdma+bounces-20133-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20134-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4J20Exhx/GmkQAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20133-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:01:44 +0200
+	id 2FFqNHxx/GkEQQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20134-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:03:24 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 113F74E729C
-	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:01:43 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F89D4E72D9
+	for <lists+linux-rdma@lfdr.de>; Thu, 07 May 2026 13:03:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 833ED3045A9E
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 10:57:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 22F6B301DEED
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2026 11:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1766E2E7F25;
-	Thu,  7 May 2026 10:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3266934F24E;
+	Thu,  7 May 2026 11:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="ReYzco9Z"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858643EDAA0
-	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 10:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69440308F07
+	for <linux-rdma@vger.kernel.org>; Thu,  7 May 2026 11:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778151436; cv=none; b=mEK0Inu6eLO9fQoisVQfUQuqnI4hq3MIQPIGLOtLs4jfPRsbM1k547yjlCu+487HzsJiQWFREENy3arbz6JtiRJGug36zNpGb2ZmZ+rq9+m4iZxThNQSTgAf4YlkubWyYEcO8RXXIODWGdA2/KxxXowg2lDISnG7Nb/DFBiRGpA=
+	t=1778151798; cv=none; b=M3EMuRn3aaXK2donUHaQfsyP9UYVOX0hpGeOQw4Cirtad5zEGERBr/xtl06/WnWk81fTyJi3HamSA0N0+XzlNbWHFiqyZ859IDV+3l8Z0xI0aXR3A8Fvb/nujn1TIVWjT8ht77mBUwKHHdNUru86jgv9f5D8NftxullEnPVKzS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778151436; c=relaxed/simple;
-	bh=WMCbfhuXrBYuEWLT18FkbVAMISdQACtlTz7psEBX2BA=;
+	s=arc-20240116; t=1778151798; c=relaxed/simple;
+	bh=980NOX7dWNrknY5Yk4nVOzgX46BS3p5+nFO0T7e/fJY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DzWnxiKu9TojTCt2PQ02euh9eAMpaJ47800RNs+TYiUnwb96GmSudh4L4Z3rWrZzD/aXidA9v6PkP4pItq5C7dT+KzJd7XwSLCDEtslH1Df5reKeip4NHlNMilQR23JluDlSrGr9/PefsVx4Vh9q0R4mSMSn8jStIC+AAC9joeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwOz-0001uh-6W; Thu, 07 May 2026 12:56:21 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwOQ-000uFj-2Z;
-	Thu, 07 May 2026 12:55:47 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2374E5302D0;
-	Thu, 07 May 2026 10:55:46 +0000 (UTC)
-Date: Thu, 7 May 2026 12:55:45 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-Cc: Michael Grzeschik <mgr@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Vincent Mailhol <mailhol@kernel.org>, 
-	Krzysztof Halasa <khc@pm.waw.pl>, Johannes Berg <johannes@sipsolutions.net>, 
-	Steffen Klassert <klassert@kernel.org>, David Dillow <dave@thedillows.org>, 
-	Ion Badulescu <ionut@badula.org>, Mark Einon <mark.einon@gmail.com>, 
-	Rasesh Mody <rmody@marvell.com>, GR-Linux-NIC-Dev@marvell.com, 
-	Manish Chopra <manishc@marvell.com>, Potnuri Bharat Teja <bharat@chelsio.com>, 
-	Denis Kirjanov <kirjanov@gmail.com>, Jijie Shao <shaojijie@huawei.com>, 
-	Jian Shen <shenjian15@huawei.com>, Cai Huoqing <cai.huoqing@linux.dev>, 
-	Fan Gong <gongfan1@huawei.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Tariq Toukan <tariqt@nvidia.com>, 
+	 Content-Type:Content-Disposition:In-Reply-To; b=HttlypKVek1hauLmCMQPmWPLSP9iBgdZxq7qQ7b6fZ3nzuL6OM0iyf4h8v0bswvZeik4FoTV3fXLxm2B6O+/UjXyxIxxyG6oyQTzDoHLrBohESm+LzI9QwOpGHsXa5rttxw8erES8cPLjXGCDdQPBjOjGZSZN20ETXIo5a3DkNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=ReYzco9Z; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4891c00e7aeso6104555e9.2
+        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2026 04:03:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778151794; x=1778756594; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WZHy3FEoaiutkBHBHyFqnRvVmB/IvEeWiPTq0EU2YHc=;
+        b=ReYzco9Zadvkvd1/0xCL0X4t83zAxYIGFgFCwVnkWHparVa6XuHv0DtzqblwgceSxK
+         oaSMlFf/YnT+9liQscEgO8Ygx6nBX69Oi97p580A8b2dJPrFdAISBzYeHLEBfTiyjMil
+         bbWLQv3eyqXk3NLHUjhwUv3ZR947uVqP/OnlOFowFE4aFhzgZ1mZyLZJ4S4+mGeVtv40
+         3Jm70zu3f4w2XtXPQreAjslzCaeeIKyLiyaDBigyoW2Mz8oP0s28xi91htIVOcwd5YoC
+         vXfFvFYR9TO+ErgYUmkyOX4OwyCEBv40DCeUfindB6RdcmwILWNkBRaJDsVpEPq+hfg6
+         Yb/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778151794; x=1778756594;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WZHy3FEoaiutkBHBHyFqnRvVmB/IvEeWiPTq0EU2YHc=;
+        b=GWkyHcxkl351A/ei0KsUiVdDMUCtvZooFbOtW2z9T92FtxvWRsPfxCmNhfJS0Qbr2a
+         F0PD7+tx+zelgX8Yd6kjLDnYUkwOD2zyU2Z7e2u3Rn81/muxE2CwbFoRLFi1UlWZBhz/
+         AE9uhFaSTA2jV5CIk4Mm2TJAXaapvHnwo1oZycBaA4sSAxRm5930RpA71Xx7oUQT5qRp
+         qSdVnas4EjPCQreHaV6LDpC2Fplwi281tXAAk9OQpiNE7SAEuJBe/JCFP48UtRO2L8xP
+         cWJVI2hbLPSgHr7hAhmkYZxrMVnkUbc3tzqghiNIP44L6TARu7MaQFDsHXm9BJ5/HS3c
+         FZxw==
+X-Forwarded-Encrypted: i=1; AFNElJ/Q4stOva9dBzqTqvvibeddi/PuOHrN+8L8HBraC5I7qhKIH6B4mKSBUrpiwWbGh6JDAmfj/qMLCCPP@vger.kernel.org
+X-Gm-Message-State: AOJu0YyB5bubKP6rKXWz2maBXuW37miusYkQtgjoBgMqtxNXC0IQM37I
+	nxASOJ32nknlGsu1ZF9l4EyGge+KkR23wTiGJlRqp9OyvSv5XHRL6ZUEy10SFaov1mU=
+X-Gm-Gg: AeBDieuYVzh4DKXao6oDQB1ORhSO2HXskapCWX1FrxL7dcCstsQAGwjVaQsx/tyXssb
+	e89bFJJHU1gLH3f47Zy//c31IxgZSda3kQVle/G7GTbloYDA4pXsvw3UEhFPCVI0yjKpRkL5iMS
+	GxEeSPrIYE5MsF5GWT5UcYBgGp16hhyO2zl372uqFLKjSjwuLAXR2F/dtH698GQP3spZF6Irq4g
+	ycnAhg8egj4mP4bIaBsr2N5MNmcb2nWKtARU52hTZAG49ZGT9HNXtmZo0w1uyIY/iIufo0GE6If
+	RPjjt8pAmaHK8IDbIRPe3lnnR7eInjKnfAF/ufmdgxJow9lCnqG6YdQnYI5UObJaQcvLmDq9Lkb
+	MuqZiWd4zmy96eMw4BvI1FBs2f92C4sI+ADYci8pvOgGcbIDSAz3WklXcjB7+DOLbagj9PTjFro
+	qZ5ENqr/Yr96OyChsFL78wJ+A5arsuuWkHlqjwyILyZcczoOniJZhqndNS50bnfm3E
+X-Received: by 2002:a05:600c:a30b:b0:489:1c1f:35f9 with SMTP id 5b1f17b1804b1-48e51e1773bmr90083345e9.9.1778151793380;
+        Thu, 07 May 2026 04:03:13 -0700 (PDT)
+Received: from FV6GYCPJ69 ([2001:1ae9:6084:ab00:6064:31aa:7680:7221])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e530b05d9sm53089215e9.3.2026.05.07.04.03.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2026 04:03:12 -0700 (PDT)
+Date: Thu, 7 May 2026 13:03:08 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>, 
 	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Mark Bloch <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, 
-	Petr Machata <petrm@nvidia.com>, Yibo Dong <dong100@mucse.com>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com, Jiri Pirko <jiri@resnulli.us>, 
-	Francois Romieu <romieu@fr.zoreil.com>, Daniele Venzano <venza@brownhat.org>, 
-	Samuel Chessman <chessman@tux.org>, Jiawen Wu <jiawenwu@trustnetic.com>, 
-	Mengyuan Lou <mengyuanlou@net-swift.com>, Kevin Curtis <kevin.curtis@farsite.co.uk>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Stanislav Yakovlev <stas.yakovlev@gmail.com>, 
-	Richard Cochran <richardcochran@gmail.com>, Kees Cook <kees@kernel.org>, 
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>, Thomas Gleixner <tglx@kernel.org>, 
-	Jacob Keller <jacob.e.keller@intel.com>, Thomas Fourier <fourier.thomas@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Kory Maincent <kory.maincent@bootlin.com>, 
-	Zilin Guan <zilin@seu.edu.cn>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
-	Marco Crivellari <marco.crivellari@suse.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	David Arinzon <darinzon@amazon.com>, Yeounsu Moon <yyyynoom@gmail.com>, 
-	Denis Benato <benato.denis96@gmail.com>, Yonglong Liu <liuyonglong@huawei.com>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Yicong Hui <yiconghui@gmail.com>, MD Danish Anwar <danishanwar@ti.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Ethan Nelson-Moore <enelsonmoore@gmail.com>, 
-	Larysa Zaremba <larysa.zaremba@intel.com>, Ian Lin <ian.lin@infineon.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, Double Lo <double.lo@cypress.com>, 
-	Markus Schneider-Pargmann <msp@baylibre.com>, Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, oss-drivers@corigine.com, 
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
- using named initializers
-Message-ID: <20260507-healthy-gainful-fox-500552-mkl@pengutronix.de>
-X-AI: stop_reason: "refusal"
-References: <cover.1778149923.git.u.kleine-koenig@baylibre.com>
- <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
+	Tariq Toukan <tariqt@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	"Borislav Petkov (AMD)" <bp@alien8.de>, Randy Dunlap <rdunlap@infradead.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Christian Brauner <brauner@kernel.org>, 
+	Petr Mladek <pmladek@suse.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>, Marco Elver <elver@google.com>, 
+	Eric Biggers <ebiggers@kernel.org>, Li RongQing <lirongqing@baidu.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
+Message-ID: <afxvzOjqw-vxUAED@FV6GYCPJ69>
+References: <20260506123739.1959770-1-mbloch@nvidia.com>
+ <aftaW-irGmkfA7FS@FV6GYCPJ69>
+ <3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bj6moo23k7mnjddb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-rdma@vger.kernel.org
-X-Rspamd-Queue-Id: 113F74E729C
+In-Reply-To: <3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
+X-Rspamd-Queue-Id: 3F89D4E72D9
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.06 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,pm.waw.pl,sipsolutions.net,thedillows.org,badula.org,gmail.com,marvell.com,chelsio.com,huawei.com,linux.dev,intel.com,nvidia.com,mucse.com,realtek.com,resnulli.us,fr.zoreil.com,brownhat.org,tux.org,trustnetic.com,net-swift.com,farsite.co.uk,broadcom.com,bootlin.com,seu.edu.cn,suse.com,amazon.com,infradead.org,ti.com,infineon.com,cypress.com,baylibre.com,vger.kernel.org,lists.osuosl.org,corigine.com,lists.linux.dev];
-	TAGGED_FROM(0.00)[bounces-20133-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20134-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[pengutronix.de];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
 	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkl@pengutronix.de,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_GT_50(0.00)[81];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,pengutronix.de:url,pengutronix.de:mid]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
 X-Rspamd-Action: no action
 
+Wed, May 06, 2026 at 07:35:10PM +0200, mbloch@nvidia.com wrote:
+>
+>
+>On 06/05/2026 18:22, Jiri Pirko wrote:
+>> Wed, May 06, 2026 at 02:37:35PM +0200, mbloch@nvidia.com wrote:
+>>> This series adds a devlink= kernel command line parameter for applying
+>>> selected devlink settings during device initialization.
+>>>
+>>> Following a discussion with Jakub[1], I am sending this RFC to get the
+>>> conversation moving. I started from Jakub's example/request and extended
+>>> it to cover requirements from production systems and configurations that
+>>> customers use.
+>>>
+>>> One important caveat is that the parsing logic in this RFC was written
+>>> with AI assistance. I am also not sure whether the resulting syntax and
+>>> parser are too complex for a kernel command line interface. This is part
+>>> of why I am sending it as an RFC: to understand what direction and level
+>>> of complexity would be acceptable to people.
+>>>
+>>> The implementation is intended to support the following properties:
+>>>
+>>> - A system may have multiple devlink devices that usually need the same
+>>>  configuration. For a configuration such as eswitch mode switchdev, a
+>>>  user should be able to specify multiple devices to which that
+>>>  configuration applies.
+>>>
+>>> - There may be ordering dependencies between options. For example, in
+>>>  mlx5, flow_steering_mode should be set before moving to switchdev.
+>>>  With this in mind, defaults are applied per device in the left-to-right
+>>>  order in which they appear on the command line.
+>>>
+>>> The intent is to let deployments set devlink defaults before normal
+>>> userspace orchestration runs, while still using devlink concepts and
+>> 
+>> "defaults before normal userspace orchestrarion". I read it as config
+>> before config, which eventually could be skipped.
+>> 
+>> 
+>>> driver callbacks rather than adding driver-specific module parameters.
+>>> A default is scoped to one or more devlink handles, for example:
+>>>
+>>>  devlink=[pci/0000:08:00.0]:esw:mode:switchdev
+>>>  devlink=[pci/0000:08:00.0]:param:flow_steering_mode:smfs
+>>>  devlink=[pci/0000:08:00.0,pci/0000:08:00.1]:param:flow_steering_mode:hmfs,[pci/0000:08:00.0,pci/0000:08:00.1]:esw:mode:switchdev
+>> 
+>> I don't like this. What you do, you are basically introducing user
+>> configuration tool on kernel cmdline.
+>> 
+>> The same you would achieve with a proper userspace tool/daemon.
+>> I did try to come up with it and push it here:
+>> https://github.com/systemd/systemd/pull/37393
+>> That didn't get merged for unknown reason, but the idea is sound. You
+>> provide configuration files for devlink object and systemd-devlinkd
+>> will apply when they appear. Wouldn't this help your case?
+>
+>I agree that systemd-devlinkd is the right shape for normal
+>devlink configuration, and it could probably replace the udev/devlink
+>plumbing we use today.
+>
+>The case I am trying to cover is earlier than that.
+>
+>On BlueField/ECPF/DPU systems, the host PF driver cannot always finish
+>probing independently of the ECPF side. When the ECPF is the eswitch
+>manager, the host PF is kept in initializing state until the ECPF eswitch
+>side is set up and mlx5 enables the external host PF HCA. That happens as
+>part of moving the ECPF to switchdev.
+>
+>Today userspace observes the ECPF instance and then switches the
+>mode through devlink, usually via udev or similar plumbing. That still
+>leaves a window where the ECPF has probed, userspace has not applied the
+>mode yet, and the host PF is waiting. With many ECPFs this becomes visible
+>in host PF probe/boot time. A daemon reacting to the devlink object
+>appearing can make the userspace side cleaner, but it still runs after the
+>device has appeared and after userspace scheduling/uevent handling.
+>
+>Long term, for these DPU deployments, we would like mlx5 to initialize
+>directly in switchdev. I am hesitant to make that unconditional because it
+>changes existing behavior and there is no early opt-out before probe. The
+>cmdline parameter was meant as an explicit opt-in middle step: ask the
+>driver to apply the same devlink operation during init, before this path
+>depends on userspace.
+>
+>We previously tried to address this with an mlx5 module parameter. By
+>design, that was too coarse: it applied to all mlx5 devices handled by the
+>module. That makes it usable only for narrow DPU-only configurations. The
+>devlink-handle based cmdline syntax was intended to keep the opt-in scoped
+>to the specific devices that need this early switchdev transition.
 
---bj6moo23k7mnjddb
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
- using named initializers
-MIME-Version: 1.0
+The switchdev mode was introduced at roughly the time CX4 was out. What
+stopped us from making it default for CX4+ ?
 
-> diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/=
-plx_pci.c
-> index 08183833c9bc..a03553b80a5d 100644
-> --- a/drivers/net/can/sja1000/plx_pci.c
-> +++ b/drivers/net/can/sja1000/plx_pci.c
-> @@ -272,124 +272,89 @@ static struct plx_pci_card_info plx_pci_card_info_=
-asem_dual_can =3D {
->  static const struct pci_device_id plx_pci_tbl[] =3D {
->  	{
->  		/* Adlink PCI-7841/cPCI-7841 */
-> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		PCI_CLASS_NETWORK_OTHER << 8, ~0,
-> -		(kernel_ulong_t)&plx_pci_card_info_adlink
-> -	},
-> -	{
-> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
-> +		.class =3D PCI_CLASS_NETWORK_OTHER << 8,
-> +		.class_mask =3D ~0,
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink,
-> +	}, {
->  		/* Adlink PCI-7841/cPCI-7841 SE */
-> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		PCI_CLASS_COMMUNICATION_OTHER << 8, ~0,
-> -		(kernel_ulong_t)&plx_pci_card_info_adlink_se
-> -	},
-> -	{
-> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
-> +		.class =3D PCI_CLASS_COMMUNICATION_OTHER << 8,
-> +		.class_mask =3D ~0,
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink_se,
-> +	}, {
->  		/* esd CAN-PCI/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9050,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9050,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-CPCI/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-PCI104/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-PCI/266 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd266
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
-> +	}, {
->  		/* esd CAN-PMC/266 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd266
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
-> +	}, {
->  		/* esd CAN-PCIE/2000 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd2000
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd2000,
-> +	}, {
->  		/* IXXAT PC-I 04/PCI card */
-> -		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_ixxat
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
-> +			       PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_ixxat,
-> +	}, {
->  		/* Marathon CAN-bus-PCI card */
-> -		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pci
-> -	},
-> -	{
-> +		PCI_VDEVICE(PLX, MARATHON_PCI_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pci,
-> +	}, {
->  		/* Marathon CAN-bus-PCIe card */
-> -		PCI_VENDOR_ID_PLX, MARATHON_PCIE_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pcie
-> -	},
-> -	{
-> +		PCI_VDEVICE(PLX, MARATHON_PCIE_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pcie,
-> +	}, {
->  		/* TEWS TECHNOLOGIES TPMC810 card */
-> -		TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_tews
-> -	},
-> -	{
-> +		PCI_DEVICE(TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_tews,
-> +	}, {
->  		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_cti
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_cti,
-> +	}, {
->  		/* Elcus CAN-200-PCI */
-> -		CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-> -		CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_elcus
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-> +			       CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_elcus,
-> +	}, {
->  		/* moxa */
-> -		MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_moxa
-> -	},
-> -	{
-> +		PCI_DEVICE(MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_moxa,
-> +	}, {
->  		/* ASEM Dual CAN raw */
-> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
-> +	}, {
->  		/* ASEM Dual CAN raw -new model */
-> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
-> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
->  	},
-> -	{ 0,}
-> +	{ }
+Introducing this horrible plumbing only bacause we were not able to
+change the default sounds so absurd.
 
-Nitpick: can you convert the terminating entry to follow the same style
-as the rest of the driver:
-
-diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/pl=
-x_pci.c
-index a03553b80a5d..d69ff0ccfd94 100644
---- a/drivers/net/can/sja1000/plx_pci.c
-+++ b/drivers/net/can/sja1000/plx_pci.c
-@@ -353,8 +353,8 @@ static const struct pci_device_id plx_pci_tbl[] =3D {
-                 PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE=
-_ID,
-                                ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SU=
-B_DEVICE_ID_BIS),
-                 .driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_d=
-ual_can,
--        },
--        { }
-+        }, {
-+        }
- };
- MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---bj6moo23k7mnjddb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCafxvrQAKCRDMOmT6rpmt
-0pHeAP9XFcWG4TIkfsDgMbSsjB0BDeIaX/oOHy7GN10y7WrRXAD9HGFep6ozobs7
-Ky/tnJ+5OGyoiQeSoshTzXtNkIIEoQA=
-=kV9y
------END PGP SIGNATURE-----
-
---bj6moo23k7mnjddb--
+Can we write the default mode as a bit in ASIC NV memory perhaps? Simple
+devlink cmode permanent param to write it, the driver can read this bit
+during init to decide the init flow path?
 
