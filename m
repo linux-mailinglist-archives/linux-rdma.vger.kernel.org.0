@@ -1,124 +1,149 @@
-Return-Path: <linux-rdma+bounces-20275-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20276-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mIqxA2Jj/mmoqAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20275-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:27:46 +0200
+	id QK2aExVl/mmoqAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20276-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:35:01 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54804FC59C
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:27:45 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F3B4FC61F
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 10E2A303E4F0
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 22:27:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C1532301CFF8
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 22:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02523921F6;
-	Fri,  8 May 2026 22:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D6A39E185;
+	Fri,  8 May 2026 22:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="arMMLK1g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnJD8Wpu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B1B32E743;
-	Fri,  8 May 2026 22:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7218828C2BF;
+	Fri,  8 May 2026 22:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778279231; cv=none; b=S8NlkJUlosb6NsLo5QV08qdW/MjNyxJkxzWj5G1B50ixPtGWTmjR0prnVIxmaH/XWnVyBpYNSM6VAKxvblNQu/xxrmC+41YOlX2G1lZqh5ZIKa8F+m8d3/orJlYODVkFkTFF4i1RvKgXgyJMPLK2uWqLvPobulE2oaz6v/QqFdE=
+	t=1778279696; cv=none; b=AVJNo7UPD/TUUAQ54fziw7bYMdsfors6uEvHfGNyqhzWbzjYN7+lVXML9G+r9J7ZQRr3YGbm0udAqA1FMC76egUNviIk1gpGdtXORQz7wZO51hYSgDLcGgnqaAGs2tXVRl5O4XGEt5/GttOfm1hBowWrs83mf/Vt0j3ii5WGJQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778279231; c=relaxed/simple;
-	bh=2aQvwbopJkerVMd5vnTCl8R5gei4pfbsadE3BwBNQh0=;
+	s=arc-20240116; t=1778279696; c=relaxed/simple;
+	bh=/FqJRBmfOok3Fl/V8liHSdXMD9qTqHxPKI6+SAyQksw=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s7oK+iSiqeQ1WhNVfwmNERdsm+CdOGGfOhF9ZxEM0UAUyzNeyvY2Bzqm5+YJ8uGJwcpTmps27lrWBtDawG9nNR8/BBjW7nj4+FhUWU1PTvzosAr399NJP1H7lskV+YgIFXmLe7FqYoP9jZyPQmk1FDMe6Ute63FDxwRa+KaSwy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=arMMLK1g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C57DC2BCB0;
-	Fri,  8 May 2026 22:27:09 +0000 (UTC)
+	 MIME-Version:Content-Type; b=FG+5USePfJOf2rNhGp8rZEIoYozGow4AtXAgXsSsR+cJrRBXF7Q7xJMbjaZ0J7XCQlpNl2QU3sKwEZt85aIEPG+XERZPt247QvYscoXHOpPb8rA1KJWLJtuXCVgngZ5v4SruE0CmB2TJIcf0YrQQYhKYde4NgyP8+2Ipceu07Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnJD8Wpu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF80FC2BCB0;
+	Fri,  8 May 2026 22:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778279231;
-	bh=2aQvwbopJkerVMd5vnTCl8R5gei4pfbsadE3BwBNQh0=;
+	s=k20201202; t=1778279696;
+	bh=/FqJRBmfOok3Fl/V8liHSdXMD9qTqHxPKI6+SAyQksw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=arMMLK1gfFFzLGdlBUX4gJ2OkPlSCte255mTL8fvjuX/um9qlIpbFgi+bXVKbQgO7
-	 jscCSO3yOHEvcHYDWdUWQMy2hLCUU7DVSf/MRl6+sC7KMeICay2j2AGqySKRAyLLB+
-	 rTHg5b20pnh5jkxZsS/VdF2ZDz7T0qmkLkHE4Vdrpf+M0EjM8JQ8m8ZGZtCiyVp8Zm
-	 zoA8hPwDeI7rhBjUo6HeahXxDk+aOghqIm+/S4SCit9PGUqhxhg4x87x4WobGvOfvr
-	 VtznzSOcBOE13k9vhNbf38xjgOhE4O3gmtse6VMUWqwFDUhlwP+CFl1l+PaQIc4zKe
-	 53Z2FNkE4xIUQ==
-Date: Fri, 8 May 2026 15:27:08 -0700
+	b=JnJD8WpuGcqHBCKs0Ts4elbdxBbuG1BwAgscLJuNVRziMOm4SDnzTqN3kx1yP6/X+
+	 GAdeAqIhI9nFlzVHTLX/S1mwIbo19SrwK0wfDhJeidejvlNcoYDlK1SrT/oiL3UYj0
+	 GIekbaJ56hBFjeEkBXBs+ZV1/MchvLrAP41b6RvmgIFAwNZnLqYwRd6dO+6HhbJbJd
+	 kxC8LBO1S3SVunqjOv2Wtp8A5+8SXmiVHrPTOd/+4hirtqSKiT2/3p3ywrNsL4bTOE
+	 TJfm7z3NUrn0fQCLaudtHO7mA8dPHCWP88gD1VhxYK4rvad70qNKJD/NatwmvbNDwF
+	 jyVcPI/fAlqow==
+Date: Fri, 8 May 2026 15:34:52 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Bobby Eshleman <bobbyeshleman@gmail.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Alex Shi
- <alexs@kernel.org>, Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu
- <dzm91@hust.edu.cn>, Michael Chan <michael.chan@broadcom.com>, Pavan Chebbi
- <pavan.chebbi@broadcom.com>, Joshua Washington <joshwash@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
- <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Alexander Duyck
- <alexanderduyck@fb.com>, kernel-team@meta.com, Daniel Borkmann
- <daniel@iogearbox.net>, Nikolay Aleksandrov <razor@blackwall.org>, Shuah
- Khan <shuah@kernel.org>, dw@davidwei.uk, sdf.kernel@gmail.com,
- mohsin.bashr@gmail.com, willemb@google.com, jiang.kun2@zte.com.cn,
- xu.xin16@zte.com.cn, wang.yaxin@zte.com.cn, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Stanislav Fomichev <sdf@fomichev.me>, Mina
- Almasry <almasrymina@google.com>, Bobby Eshleman <bobbyeshleman@meta.com>
-Subject: Re: [PATCH net-next v3 3/8] net: devmem: support TX over
- NETMEM_TX_NO_DMA devices
-Message-ID: <20260508152708.011a9687@kernel.org>
-In-Reply-To: <af5Vlwb5RctHym8D@devvm29614.prn0.facebook.com>
-References: <20260507-tcp-dm-netkit-v3-0-52821445867c@meta.com>
-	<20260507-tcp-dm-netkit-v3-3-52821445867c@meta.com>
-	<20260508134717.4ef87ab6@kernel.org>
-	<af5Vlwb5RctHym8D@devvm29614.prn0.facebook.com>
+To: "Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= (The Capable Hub)"
+ <u.kleine-koenig@baylibre.com>
+Cc: Michael Grzeschik <mgr@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Marc Kleine-Budde
+ <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, Krzysztof
+ Halasa <khc@pm.waw.pl>, Johannes Berg <johannes@sipsolutions.net>, Steffen
+ Klassert <klassert@kernel.org>, David Dillow <dave@thedillows.org>, Ion
+ Badulescu <ionut@badula.org>, Mark Einon <mark.einon@gmail.com>, Rasesh
+ Mody <rmody@marvell.com>, GR-Linux-NIC-Dev@marvell.com, Manish Chopra
+ <manishc@marvell.com>, Potnuri Bharat Teja <bharat@chelsio.com>, Denis
+ Kirjanov <kirjanov@gmail.com>, Jijie Shao <shaojijie@huawei.com>, Jian Shen
+ <shenjian15@huawei.com>, Cai Huoqing <cai.huoqing@linux.dev>, Fan Gong
+ <gongfan1@huawei.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
+ Kitszel <przemyslaw.kitszel@intel.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark
+ Bloch <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, Petr Machata
+ <petrm@nvidia.com>, Yibo Dong <dong100@mucse.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, nic_swsd@realtek.com, Jiri Pirko
+ <jiri@resnulli.us>, Francois Romieu <romieu@fr.zoreil.com>, Daniele Venzano
+ <venza@brownhat.org>, Samuel Chessman <chessman@tux.org>, Jiawen Wu
+ <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Kevin
+ Curtis <kevin.curtis@farsite.co.uk>, Arend van Spriel
+ <arend.vanspriel@broadcom.com>, Stanislav Yakovlev
+ <stas.yakovlev@gmail.com>, Richard Cochran <richardcochran@gmail.com>, Kees
+ Cook <kees@kernel.org>, Aleksandr Loktionov
+ <aleksandr.loktionov@intel.com>, Thomas Gleixner <tglx@kernel.org>, Jacob
+ Keller <jacob.e.keller@intel.com>, Thomas Fourier
+ <fourier.thomas@gmail.com>, Ingo Molnar <mingo@kernel.org>, Kory Maincent
+ <kory.maincent@bootlin.com>, Zilin Guan <zilin@seu.edu.cn>, Vadim Fedorenko
+ <vadim.fedorenko@linux.dev>, Marco Crivellari <marco.crivellari@suse.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, David Arinzon <darinzon@amazon.com>,
+ Yeounsu Moon <yyyynoom@gmail.com>, Denis Benato <benato.denis96@gmail.com>,
+ Yonglong Liu <liuyonglong@huawei.com>, Andy Shevchenko
+ <andriy.shevchenko@intel.com>, Randy Dunlap <rdunlap@infradead.org>, Yicong
+ Hui <yiconghui@gmail.com>, MD Danish Anwar <danishanwar@ti.com>, Nathan
+ Chancellor <nathan@kernel.org>, Ethan Nelson-Moore
+ <enelsonmoore@gmail.com>, Larysa Zaremba <larysa.zaremba@intel.com>, Ian
+ Lin <ian.lin@infineon.com>, Colin Ian King <colin.i.king@gmail.com>, Double
+ Lo <double.lo@cypress.com>, Markus Schneider-Pargmann <msp@baylibre.com>,
+ Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-parisc@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
+ linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+ brcm80211-dev-list.pdl@broadcom.com
+Subject: Re: [PATCH net-next v2 0/2] Rework pci_device_id initialisation
+Message-ID: <20260508153452.6a1a9044@kernel.org>
+In-Reply-To: <cover.1778149923.git.u.kleine-koenig@baylibre.com>
+References: <cover.1778149923.git.u.kleine-koenig@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: A54804FC59C
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: B7F3B4FC61F
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20275-lists,linux-rdma=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,pengutronix.de,pm.waw.pl,sipsolutions.net,thedillows.org,badula.org,gmail.com,marvell.com,chelsio.com,huawei.com,linux.dev,intel.com,nvidia.com,mucse.com,realtek.com,resnulli.us,fr.zoreil.com,brownhat.org,tux.org,trustnetic.com,net-swift.com,farsite.co.uk,broadcom.com,bootlin.com,seu.edu.cn,suse.com,amazon.com,infradead.org,ti.com,infineon.com,cypress.com,baylibre.com,vger.kernel.org,lists.osuosl.org,corigine.com,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-20276-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[40];
-	FREEMAIL_CC(0.00)[lunn.ch,davemloft.net,google.com,redhat.com,kernel.org,lwn.net,linuxfoundation.org,linux.dev,hust.edu.cn,broadcom.com,nvidia.com,fb.com,meta.com,iogearbox.net,blackwall.org,davidwei.uk,gmail.com,zte.com.cn,vger.kernel.org,fomichev.me];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[81];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Fri, 8 May 2026 14:28:55 -0700 Bobby Eshleman wrote:
-> My guess is this would probably be the simplest way?
+On Thu,  7 May 2026 12:50:18 +0200 Uwe Kleine-K=C3=B6nig (The Capable Hub)
+wrote:
+>   net: Consistently define pci_device_ids using named initializers
+>   net: nfp: Drop PCI class entries with .class_mask =3D 0
 
-IDK. Notifiers are so inelegant. Don't we have the same problem with
-the main ->dev on Tx binding?
+There's a transient build failure between these two patches,
+you should probably reorder them?
+--=20
+pw-bot: cr
 
