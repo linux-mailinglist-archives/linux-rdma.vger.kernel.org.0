@@ -1,248 +1,322 @@
-Return-Path: <linux-rdma+bounces-20257-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20258-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CMTDBlgh/mmunAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20257-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 19:46:00 +0200
+	id uEV5BpUk/mlTnQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20258-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 19:59:49 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7B3F4FA279
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 19:45:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA734FA4E7
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 19:59:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EAD843024AB4
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 17:45:01 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E025530598D8
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 17:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AC115B135;
-	Fri,  8 May 2026 17:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA270410D2E;
+	Fri,  8 May 2026 17:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kJxk7shN"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WBB8vOGM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012063.outbound.protection.outlook.com [40.93.195.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6257A421EE4
-	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 17:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEFD3D891C;
+	Fri,  8 May 2026 17:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.63
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778262275; cv=pass; b=CCPckjaIIfGxjMz6vohTdWuAW3Dfs/p+L6u6AzQg6dcTeZWrimVeLqi5PerwkxzfrJ5ao+6FeHNgUA1BDjtrGpY+sCrxZSXSbvdzh0n805eUBkJ+Ef/6c1boMw3aj+FlWSxTUcqKl69DWwwI0ANTEaQdirEXzu0wPxlE64RT9KI=
+	t=1778263158; cv=fail; b=ST+t7LVYdoK2/hNn4mm17Bb5TYYUDNBnydKU1zS5Ppky9F96fsTViT66bqO4JIHQEH5gDJXdRzpPZA8ACSrc/cXheEALQIj4lTf2kk8GEygjECm7iihkap5BMENDd94e0nbQcRESX1d+WwJcF80zFIRKqsiuqfRJ+v2eLFmMHb4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778262275; c=relaxed/simple;
-	bh=CcDKf/KmVKLfF4zmyDCx2R+wF06pamP8rhBWcPAGVxo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eh7Rd8jbgs4RMxYiMdOT57VEu3y/DR1rS0vzIYnHqAQUETNBCgoZcICkUMbn119ELDoz2a5Rim1uPOS1TnMg9gRWTzZbnoYFYOMqHXo2ioEqNq2S50ZATH8h+a20U4YdteeM5Slg7+prVBbdwIpXmeE3Ry1BlIpmgRItmFqS1S4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kJxk7shN; arc=pass smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-7bd5e373d07so25590637b3.2
-        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 10:44:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778262273; cv=none;
-        d=google.com; s=arc-20240605;
-        b=bSbM3fShgszk5ejJ5JbihNwsvQ4hDDrwZGoiiZwvV+qpfyWCVOEsYJSMKX/Qzq5rWi
-         0CJuGnNr4eaL2OvFweT5PzDzi6xBkL/TkEVlt83fPmLG8FqhYYOfvfHLAoU7pDiG/VmX
-         k6WEmToU9LesAMGHOYbWVr8EU07cdPvqbCZslCit18xjdqEh8HI13+RLC9HfEUOnp2yc
-         N9v5aAYvvVhvfaz/FgGhCvCYH7mzOY3Ey2dijZGNI1eAHyz0emZtLxkQSpIAQ6gF9/2t
-         gmCqw4fDDfQfjLzfsFAyu2+LzulEwAHceVgP/8A8miGEQ0BUQMQtNYz9TBHXtzowpqQR
-         TNPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=SegeXkJg0Qt295LoNImeq2zq+YRFqc6PexCOKts/PnE=;
-        fh=tT3t/ErsHr0hjbUJCgZPhn9SHUWZJ4iMPCkR3xAzgws=;
-        b=MtCThJFrjWEBMFccrbEc3I1cRBp4s0uM+RdlOIwfWwEL3Uz5hKgQt1clAX5I+6rFbV
-         R2n5cjxTHaso5LRrBl0A10OZ1IGmPILNCMwSqmQZjD+odRs36QpbH0KOvT3Uts8x6OCo
-         yxfq4wPVH6nH8iWrDIy2drIDDrZKYFuw1l5hm8gtmeSUoY+6wWiv+vqJGTJTfRAIlnFS
-         QBnv4PquL4mkATlrGFo0tH7JZ8f+6n/MejSgGELRUUFn5PXDY+SkXX3wgfNg0fET3h0R
-         4NQrh/VcpMn3quI/R2RwbOXYTbCnksZ+sYPu7bxPtoGgJGmYhE0dJnaJfKkCILtverzx
-         9+GA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778262273; x=1778867073; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SegeXkJg0Qt295LoNImeq2zq+YRFqc6PexCOKts/PnE=;
-        b=kJxk7shNyq27Pz2WNp+1S8KYqmQH+HwbB+wWeeNKrHykvqL0pXC6idcgjvebTS4YQl
-         eMde0TcbmctguWbvLjBkq81TPUGQXWYWo2wuNSyU35QNUhne0aAkbAO90OpyFHKZE70b
-         Fg3KEZuo08FcXbcEN3PxgBl+w+A9tpRBQWMIgyix1wf0kz32umgCdXpBE11QrprLo50g
-         5R32OUxOzcZ+9zcVlWlU3zOg6GcZ0iphKCQUFcHhKq894blAUG2VFlpNYChd/t6VYwqd
-         6fwpsr1osP35pxqw4k1xlT/hGJU5GbSF6klpo4tb9qHpXMxVa78UrgTiSOA4hlnEnLui
-         ZrCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778262273; x=1778867073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=SegeXkJg0Qt295LoNImeq2zq+YRFqc6PexCOKts/PnE=;
-        b=LP1eHhT4JjvqNf4tWPu/xBLgVwPEWB54xLTL6lp5BZmdvoe7rOiTBbjO1pTbuS1H/E
-         2oMuUBNtqpd8i//beN2y7R4zp8ghqyWNib3VDzIBmnUDLAI5ed6aw735m18nSG2B3HPn
-         6sgxJodZrk9G5j1nDm5GW6a4yKNuOtPfC+Ao1xBWo3b+17Ko3slxflV8cY8wPmhA3LjS
-         4GZXavMhrP3VJsoUP1dapvv+UydpE3/s3r2OI5nHpatNc0t81Z5gBw9zAHBOg8fxo+0r
-         lxs+Fjva4SNVCLsNy7ClwaDDIFQKd7RtHtq7xIcQ2RiexhEh96BgZnMW1eFBMwlvkqqw
-         iSnQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9gY3ohVzwlN93n5nwgVcsDkM5qWJSA8Gx1OC0J6QW8rqSv4wTh8uProfE7FVHzcC9lgjkmkkkhjO0D@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3stJTs4+5MGH7s5dcahiEUF61mbFW665VWzwUT3ujUtkeabHY
-	cDZbHAl+avxLfY8w+vUwR50ah9p8GcCdrUpz9vxuhHRV0RYcT0fari2AWluxPR5mqC9LfAolz+0
-	2E/U1U/rXI0Sxo9Kb10SCQL9HZDBaF0U=
-X-Gm-Gg: Acq92OGnRYmKVM8RfdiC2Y73ZTcptvi488BWWzNiX0wli1Dr4xrLBvGEgG3d7S97d4W
-	oWiDx9IXmQMX6W55dVdxnGFdSGaYKj7W+iFYEls8IO2PHZDZ1toem1ZXMIuC1RIaRg5cLSrVlBG
-	Dw48ffVWH7itoX0Y4x99/TUR+BS99+UAMTS2XkpHb2sOkD1f90813avDgMa/YQUeqJyfoKNBwLV
-	RlPN8hMZUyoBpiQ1XWO5Lj/2O+saJwj7TGKc90AuVeWX/8RgAOPBAyIa93V0Mhvg8bMCz0pQXd2
-	MODuJx0tJn2iyR2zuB+I+Kg=
-X-Received: by 2002:a05:690c:dd4:b0:7bd:a4dc:c23b with SMTP id
- 00721157ae682-7bdf5efad66mr147425427b3.49.1778262273164; Fri, 08 May 2026
- 10:44:33 -0700 (PDT)
+	s=arc-20240116; t=1778263158; c=relaxed/simple;
+	bh=mLb//v6M8jWWIODlwSTSTQ0nnhLZ8+OpSJh1t08b9JA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=X605z+lIXIm9v9+mGE9E06ptRT1lKl7K7IdgvDuUHeLSwdX8pKLQRd65BgNy2Gmr4YkmVva53sFFZNkKuAMyrrtvZwv8Y7FZVNgbsujc6J07P3DgAOX5WapljlvM5eF7X/jvmqtBqTzXL1I3+/iJKQ+lIbJRbWj/L27osrpR5as=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WBB8vOGM; arc=fail smtp.client-ip=40.93.195.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LL/FHeenTPm3uhB3xf9DALhqgYP8D1CpyZPDpRhb0ppuCG/zBGXXwgMfHZfgfc9/DHEbklxPWJZklJ7kcHPFCv285Z/HdGaTdTBCXKUW87mmUC4FmOD6KlGBs+KbIE3TneH7udCpJOCelxkU/0p78u+VE3SK224Ih0WHYjeIWRoAhppNGyIN1GJrOTTpmc9qydS2BtafSu8JZ6xtUi9MWEYj5r1a91237/DU0YuWk9uIgtMy4CvfMhV0q+HdSpZhVrWwOnofe4ASwgf9Q7HkNqG3ha6nTS284FK8iruatyeM2ldQak17bQw13g+38U4smiz4vy8n5K8bOB+m2Hj8gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vW83zg3kDEpFAByyv53bYOGAjqM5RkwAu/rv/m+Xqmw=;
+ b=q9lEw66K0JDQlnLW4MWX4H8QBEx8jLBhf1a9opXOfCWV7k9ffeb9sn7OHBTktnrKiK+RjT1pNv97WMmGO08o+OgjKos/6R+hCDNRLuEUNWsh3eXaBou9hl9Vee+u6lIZFmYeER9SKZs6gpXeK06jEZJqLEW8ytpNJG3XyPXsELiZVqSFnTty1jvyjBcwN4fipqlVi+u/XtPe18OzFQbY2cIMBjo4JdCtfYcFFu9RtRfTQKFpNty1G6sYgT4Y0TZzGAQ4rDLMeLo64OO58P7zv1k16GwTduiglv9TE0WvUIAratUsbG9moajzOybqHlxuc5BTXKHBafUcJMltzZIA/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vW83zg3kDEpFAByyv53bYOGAjqM5RkwAu/rv/m+Xqmw=;
+ b=WBB8vOGMBzZf/786AdbuPRCN03cDsVuFc95IS24TsTYAmiG36RNCu7e+byol6Ko3DE3PATrTypqEeGs9oZ3XiGTT9RqKwrifOiqYEY5EFGi4vSMbd0O7U+IU6AXNuVkNBFGNjuh+fvqL9qNTrzGgfOvBQpiSUicxoZT7JoGDSVK8v1VXoz3O5wJy6ieiL93H9tfJT2acxbT76g9uLuy5ZCETZGKjEtS7r7reoE0ulKQbZudnYgVyrlEd2fUtzPMoKN1DLC7nsquqQQvxvochwOGapP0K7GLm4CeUzf4BfvvuoSN8I/wz+oTBBUfGx7QSsezpD8buEk2OvJ2OquWIoQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB7541.namprd12.prod.outlook.com (2603:10b6:208:42f::13)
+ by IA0PR12MB9045.namprd12.prod.outlook.com (2603:10b6:208:406::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.20; Fri, 8 May
+ 2026 17:59:09 +0000
+Received: from IA1PR12MB7541.namprd12.prod.outlook.com
+ ([fe80::4445:7716:8576:62c7]) by IA1PR12MB7541.namprd12.prod.outlook.com
+ ([fe80::4445:7716:8576:62c7%5]) with mapi id 15.20.9891.019; Fri, 8 May 2026
+ 17:59:09 +0000
+Message-ID: <b6a9b568-dd09-4414-be57-6b9cd282a43c@nvidia.com>
+Date: Fri, 8 May 2026 20:59:04 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, Randy Dunlap
+ <rdunlap@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Christian Brauner <brauner@kernel.org>, Petr Mladek <pmladek@suse.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Thomas Gleixner <tglx@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>,
+ Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
+ Li RongQing <lirongqing@baidu.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20260506123739.1959770-1-mbloch@nvidia.com>
+ <aftaW-irGmkfA7FS@FV6GYCPJ69>
+ <3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
+ <afxvzOjqw-vxUAED@FV6GYCPJ69>
+Content-Language: en-US
+From: Mark Bloch <mbloch@nvidia.com>
+In-Reply-To: <afxvzOjqw-vxUAED@FV6GYCPJ69>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0173.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b7::16) To IA1PR12MB7541.namprd12.prod.outlook.com
+ (2603:10b6:208:42f::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260507095330.318892-1-tariqt@nvidia.com> <20260507095330.318892-3-tariqt@nvidia.com>
- <CAMB2axOFQN2f=veYgeJs+4tbZmb9PuNHk03TH_bmE8UL_REd7w@mail.gmail.com>
- <b1d3f9bc-a5d7-4236-8bda-49e6327ee533@nvidia.com> <CAMB2axPNhveQaDPs-ttu4uFcpvAfJCdzJ3d05HWQf4+p7uVUsg@mail.gmail.com>
- <70d0b319-178f-4233-b0da-9618489a1dd6@nvidia.com>
-In-Reply-To: <70d0b319-178f-4233-b0da-9618489a1dd6@nvidia.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 8 May 2026 19:44:21 +0200
-X-Gm-Features: AVHnY4LuhPNVOQMgrNqkEPKZxxuymUm4dL0F_gglKlMd8ExwxL5Tv9DtMUApznk
-Message-ID: <CAMB2axPdqBUORn7Qy35Xccqbn+8aArZ-weegZyz=j0STh+iPNA@mail.gmail.com>
-Subject: Re: [PATCH net-next V6 2/3] net/mlx5e: Avoid copying payload to the
- skb's linear part
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Christoph Paasch <cpaasch@openai.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: D7B3F4FA279
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB7541:EE_|IA0PR12MB9045:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1bfaf233-7020-4530-9561-08dead2b80c7
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|3023799003|56012099003|22082099003|3122999024|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	AO+BO6iLlbOTAXtCE3nfO/9PaUiRNmTfS4t9FWXVU77xA+r6Ch+btjg7gI3gwNdNaX2aOaq64MFze5wj1XshAFzk5pfE/GaMo0qJ3A8zY9Ju3NBcoA6sMkkAi7RFhF4id0HB98EO/ivRV+mHHV2I4pJcQIY91As5ocSc/z7GFNYr2KK7hcYaZ3rFc2zoZoO0QxUIbAOOfRWpwTMtqTkYYWYbERzBCq/SWcP/6c98qToNRW3iJrWptFqZK2tNEdFBcWrFWIVY1gYI5qUnzYrKP4Kx6sqZEXNiWhBqTqyguRoBTGtc9aUHMW1tcUyNRHjwJs695SeJ/Ic4Jl0CigpzgdLsAm0Dfy7mTmwVdQxZizyM3W01x/EsaPK5W4X6vsEHaOw+8XdyG+S+R30kvXp878Hk9RQPWcS7wBDaEtTRATpmX02T9juzXWIPyTbsBK/7dEZbhC97JpgWvRjQV9s1VvPjmExDygNt2jJe5/SFhil5n9PhAKT3ikSHMkrYqqjR6gv7Txi35wQkxaXZBhea7bEfkuiRNgymUVzKzghztnKcL/6li6Ud/49k2dEa5NiAYlEeF2IqYQYgijgRp2ExeDxDeR3hfmXy+i/efZ8O1e8qhkLAt3AxWvVUpCjNwi8A9caCtGIvJLccNvHckxfTDGrVj0pX/jWnw3SIUvz7TPgQZKM1+Y96J0fLMu5ls3N0a0EzAxrD4J7kcibvHsmqlg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7541.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(3023799003)(56012099003)(22082099003)(3122999024)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SXVLVmlSSG9ZYmRtODBEZ29NZ1ZZODJmVWZWVm9yaUltdkU2WHpFNEhnL3Vh?=
+ =?utf-8?B?SU5GMDFSOFNIMEJyM2NvV3ViOFlrNzZGWTRsQWpTT3diUEl2UWU3UUJzeFIz?=
+ =?utf-8?B?OURJZFdwN2FQcVIzVHRlSjkrSytJejVSNjNCbTBLdUlUb1FiazdybTBFVFAv?=
+ =?utf-8?B?a0E1RXNGUzFRMlZNZWRiMk9Sd0JLNkkzK2lEanczeHVpNVZydWlvTzlBbllT?=
+ =?utf-8?B?UlRiM0dLbHRwOXZibUJ6UXFoZUN5SFVVeXNFNVBSUk1weHpBamM2RUIzR2lH?=
+ =?utf-8?B?ZnFpeXgvQTA0MzBac3NwU3phSmQvM1lJOER5dkd5UWt5VUhXRmF2TTN0WjBG?=
+ =?utf-8?B?VG5GQWtiQUphTHJPWGlYaEVlU3cyWTFjT3Z4dSt2Z1h1L2pUQXM3SnJPL0s1?=
+ =?utf-8?B?S0hQZTU5MGlFYUw0NVRjRUdBK0Rza095dmoreFRBdFRHZU1QNXlRRVc3Mkpy?=
+ =?utf-8?B?KzRXTU1nNFNJMWJYYU5BS3lnbEIyaFhhdFBlU2J6Q2V3Qnl2YUZvN1pJZkpH?=
+ =?utf-8?B?TXQyQWc4TEtuRytPNXF5eitzN0NaWDhWQk5JYmxvem03RXIxeWxWZW9FbnRF?=
+ =?utf-8?B?dnZhakp3dmc4OUNHNVhEZ2tuQUhlYTRuYWtoR3JkZktaeXpoLzIvQ1I1TkJ6?=
+ =?utf-8?B?YVczQVVFOE1WWWN4b3FyRVF0MGtqTjdpc0Qza3NaK2JSNkJlQzFYMnNHZkdu?=
+ =?utf-8?B?K01LL3hRdU5ZL05CVHBLcSs1YkxlSkUrU0FuQjlYUXphOVc2R1VaWXhjWm5x?=
+ =?utf-8?B?TXhPNnVQSDlJSW1pVFJWeGRZZzlISmlFWmhFN3R4Y2VUR3AvanJjR0xPQ2h3?=
+ =?utf-8?B?RHI3NG0zbE1vV2xkOGt3WS96UVFSeGFicDNGUGlBUTNrcHl4N3B2OEllVkh6?=
+ =?utf-8?B?OWNNRVlyVDlRbFc5dElVSm9Db1lnTzFLc3NtK2lQRDZWNk9rSzhVZU1QSWIr?=
+ =?utf-8?B?MlJsQmpYZG1KTVprdGRNZGZvM0tMd0NoUFoxbUVaY3cvcnc2aG0wVjMya2po?=
+ =?utf-8?B?dExvU0NUZ2s3UHlUR3Z5bXBWZnBJdnFMOTdUa2poa1NVZVc5Tm90MzhnVzhF?=
+ =?utf-8?B?YVRyUXFkclFPeURZVkVVMXFXNVVWcVBoVmtLYSs2R1ZDOTl1S3dmdFNSdEM3?=
+ =?utf-8?B?Rkx5ZkhmVk9CZ3BvaENCVithOEJ3NHh5WXl0dW55Q292WmdYMkd4T1BFbDdo?=
+ =?utf-8?B?M3lLVTNRclY1UGtXZjZENnV2Yk5tUnd0K1RLNk5kYXJPaDlRQVJycEdyMW5r?=
+ =?utf-8?B?QmxzY3hVV3FhTzhFeFRhbzVkUFZsbEpCZXZqVDhTOWFsNU9Sc0p5S3o3cmI3?=
+ =?utf-8?B?L1I0WEVZNVdpMWJ0OEhrVnZrU0QydEJxVTRkc0l5K0tKS0lLbUV2OWpUcEt4?=
+ =?utf-8?B?NWw5MDRISC9FR0JxN1gybWZJaUx3bDF6NG9UaVNaS0hTVlh4VmtkTzNYZUV4?=
+ =?utf-8?B?cEFpQVkxamxmUXEzT3ZMVmphbEFValdYanVxRWpsd3VTYVJzdUdiT01Lb0Z3?=
+ =?utf-8?B?eXQxQXd1MFhUVC9OM3FJTHdYUGN0NDNOYkxVbSt3ZEhrd003T3VyU3daNEVt?=
+ =?utf-8?B?OC9DbjVRWDB3ejBlWkw4Z1A3Q290Wno0b2Vud3hlQUFRYVBhaHZTV3lyYnkx?=
+ =?utf-8?B?L05xVFVlYmZySXVFUUdQUTU2dHZGYmdtampTZ0k0WDBLeVBqRlRxR3VlWDdO?=
+ =?utf-8?B?U0x5T2libVdIU1B4NUVrSTFHUllSZlZoM2VjUndYUERZcWtNV05SbDRlaHZi?=
+ =?utf-8?B?SXNoaVNyc3NrRC9EQlFVY05DVEREVlJtTkk5QkhpMEQ0RnZLUVVvZFpiNUY2?=
+ =?utf-8?B?dUpsTExER0hsSm9lYXVkUGRYUHp5NHgxWmFPSTZJVWlKbHRFZGpNdnV0SlBk?=
+ =?utf-8?B?KzladUY3eDF6QmdQQ1htRDRKWkN5V0R0QTdROGVjUXFtVFVUdmpsSDFIVjhk?=
+ =?utf-8?B?c1JUSWtXbGFqQ3JCd0ZGcy9zOXArYzI2cFVZQmhEK2NqVVZmRUU1UkNmZjRY?=
+ =?utf-8?B?bThWMk9mdjBtV0tvVDQ1enVmbFRaM0h0M0ltR1Q1NTZHYkpKQTkvWXZBOU11?=
+ =?utf-8?B?NnZmS2ZIdkg4bmlLQ0ZrR0tXbVdudmtKRWwxZmhCZTdqc2N0NERHc1J1TURZ?=
+ =?utf-8?B?bEZqYVN0SmRnYmY2eEpUZVliMkkwM25zZU9hTXM4bEplNUtTNnJPdWZDVlZS?=
+ =?utf-8?B?UXFQUmhncjRqWWloR3Q1YXJITmlvc1VOYm5pb3RLcTZrc2ovNnFYV1dHenhR?=
+ =?utf-8?B?Z21TTzNtdCtGRU8wWER0MHZwR1AvTkhvd3dLWk9Xb3JVZHZEU3JWSVpocWNV?=
+ =?utf-8?B?Qy9LY3NhQVBPRG5TWFBXUFZNV2VTVFFSTkVOSExTTk1CZzN5a2hudz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1bfaf233-7020-4530-9561-08dead2b80c7
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB7541.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 17:59:09.1602
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vUmtVmq1W+IIHrsogdJsLAeCkrLXSqu4PgpP9A6bwr+dQYWLV4esDNjC700TxdDOKLVyLvWsVfc+NVVZetY4YA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9045
+X-Rspamd-Queue-Id: BEA734FA4E7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20257-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	TAGGED_FROM(0.00)[bounces-20258-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FREEMAIL_CC(0.00)[nvidia.com,openai.com,google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,vger.kernel.org,iogearbox.net,gmail.com,fomichev.me];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ameryhung@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid,nvidia.com:email]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email,nvidia.com:mid,Nvidia.com:dkim]
 X-Rspamd-Action: no action
 
-On Fri, May 8, 2026 at 2:15=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
- wrote:
->
->
->
-> On 07.05.26 22:50, Amery Hung wrote:
-> > On Thu, May 7, 2026 at 4:50=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.=
-com> wrote:
-> >>
-> >>
-> >> Hi Amery,
-> >>
-> >> On 07.05.26 15:53, Amery Hung wrote:
-> >>> [...]
-> >>> Am I understanding correctly that the better performance comes with
-> >>> the assumption that the XDP does not change headers?
-> >>>
-> >>> headlen is determined before the XDP program runs. If it push/pop
-> >>> headers, there could be headers in frags or data in the linear region
-> >>> after __pskb_pull_tail().
-> >>>
-> >> That's right.
-> >>
-> >>>>                         if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_X=
-MIT, rq->flags)) {
-> >>>>                                 struct mlx5e_frag_page *pfp;
-> >>>> @@ -2060,8 +2066,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5=
-e_rq *rq, struct mlx5e_mpw_info *w
-> >>>>                                 pagep->frags++;
-> >>>>                         while (++pagep < frag_page);
-> >>>>
-> >>>> -                       headlen =3D min_t(u16, MLX5E_RX_MAX_HEAD - l=
-en,
-> >>>> -                                       skb->data_len);
-> >>>> +                       headlen =3D min_t(u16, headlen - len, skb->d=
-ata_len);
-> >>>
-> >>> headlen - len can underflow but will be capped by skb->data_len, so
-> >>> this should be okay, right?
-> >> It is safe. But it might trigger an extra allocation in the pull when
-> >> len > headlen. We could also skip the pull in that case. Or do a
-> >> min(headlen - len, min(skb->data_len, MLX5E_RX_MAX_HEAD)). WDYT?
-> >
-> > Make sense, but this line took me a bit to understand. Maybe consider
-> > checking len < headlen first?
-> >
-> > if (len < headlen) {
-> >         headlen =3D min_t(u32, headlen - len, skb->data_len);
-> >         __pskb_pull_tail(skb, headlen);
-> > }
-> >
-> Yes, that's what I had in mind when skipping the pull. I would also
-> tag this as likely.
->
-> > Another clarifying question. So this patch will improve the
-> > performance when the XDP programs don't change header length. For
-> > those that encap/decap, they should precisely pull only headers into
-> > the linear area for optimal performance. Is it correct?
-> >
-> Right for encap, but for decap not quite:
->
-> Let's say that the XDP program pulls 64B header into the linear part
-> and snips 4B of the encap out. This would result in a pull of an
-> additional 4B (headlen (64B) - len (60B) =3D 4B) which are now
-> data bytes =3D> sub-optimal layout.
->
-> I don't see how we can improve this corner case though.
 
-I see. Thanks for the clarification.
 
-I think the "if (len < headlen)" makes too many assumptions about what
-the XDP program did.
+On 07/05/2026 14:03, Jiri Pirko wrote:
+> Wed, May 06, 2026 at 07:35:10PM +0200, mbloch@nvidia.com wrote:
+>>
+>>
+>> On 06/05/2026 18:22, Jiri Pirko wrote:
+>>> Wed, May 06, 2026 at 02:37:35PM +0200, mbloch@nvidia.com wrote:
+>>>> This series adds a devlink= kernel command line parameter for applying
+>>>> selected devlink settings during device initialization.
+>>>>
+>>>> Following a discussion with Jakub[1], I am sending this RFC to get the
+>>>> conversation moving. I started from Jakub's example/request and extended
+>>>> it to cover requirements from production systems and configurations that
+>>>> customers use.
+>>>>
+>>>> One important caveat is that the parsing logic in this RFC was written
+>>>> with AI assistance. I am also not sure whether the resulting syntax and
+>>>> parser are too complex for a kernel command line interface. This is part
+>>>> of why I am sending it as an RFC: to understand what direction and level
+>>>> of complexity would be acceptable to people.
+>>>>
+>>>> The implementation is intended to support the following properties:
+>>>>
+>>>> - A system may have multiple devlink devices that usually need the same
+>>>>  configuration. For a configuration such as eswitch mode switchdev, a
+>>>>  user should be able to specify multiple devices to which that
+>>>>  configuration applies.
+>>>>
+>>>> - There may be ordering dependencies between options. For example, in
+>>>>  mlx5, flow_steering_mode should be set before moving to switchdev.
+>>>>  With this in mind, defaults are applied per device in the left-to-right
+>>>>  order in which they appear on the command line.
+>>>>
+>>>> The intent is to let deployments set devlink defaults before normal
+>>>> userspace orchestration runs, while still using devlink concepts and
+>>>
+>>> "defaults before normal userspace orchestrarion". I read it as config
+>>> before config, which eventually could be skipped.
+>>>
+>>>
+>>>> driver callbacks rather than adding driver-specific module parameters.
+>>>> A default is scoped to one or more devlink handles, for example:
+>>>>
+>>>>  devlink=[pci/0000:08:00.0]:esw:mode:switchdev
+>>>>  devlink=[pci/0000:08:00.0]:param:flow_steering_mode:smfs
+>>>>  devlink=[pci/0000:08:00.0,pci/0000:08:00.1]:param:flow_steering_mode:hmfs,[pci/0000:08:00.0,pci/0000:08:00.1]:esw:mode:switchdev
+>>>
+>>> I don't like this. What you do, you are basically introducing user
+>>> configuration tool on kernel cmdline.
+>>>
+>>> The same you would achieve with a proper userspace tool/daemon.
+>>> I did try to come up with it and push it here:
+>>> https://github.com/systemd/systemd/pull/37393
+>>> That didn't get merged for unknown reason, but the idea is sound. You
+>>> provide configuration files for devlink object and systemd-devlinkd
+>>> will apply when they appear. Wouldn't this help your case?
+>>
+>> I agree that systemd-devlinkd is the right shape for normal
+>> devlink configuration, and it could probably replace the udev/devlink
+>> plumbing we use today.
+>>
+>> The case I am trying to cover is earlier than that.
+>>
+>> On BlueField/ECPF/DPU systems, the host PF driver cannot always finish
+>> probing independently of the ECPF side. When the ECPF is the eswitch
+>> manager, the host PF is kept in initializing state until the ECPF eswitch
+>> side is set up and mlx5 enables the external host PF HCA. That happens as
+>> part of moving the ECPF to switchdev.
+>>
+>> Today userspace observes the ECPF instance and then switches the
+>> mode through devlink, usually via udev or similar plumbing. That still
+>> leaves a window where the ECPF has probed, userspace has not applied the
+>> mode yet, and the host PF is waiting. With many ECPFs this becomes visible
+>> in host PF probe/boot time. A daemon reacting to the devlink object
+>> appearing can make the userspace side cleaner, but it still runs after the
+>> device has appeared and after userspace scheduling/uevent handling.
+>>
+>> Long term, for these DPU deployments, we would like mlx5 to initialize
+>> directly in switchdev. I am hesitant to make that unconditional because it
+>> changes existing behavior and there is no early opt-out before probe. The
+>> cmdline parameter was meant as an explicit opt-in middle step: ask the
+>> driver to apply the same devlink operation during init, before this path
+>> depends on userspace.
+>>
+>> We previously tried to address this with an mlx5 module parameter. By
+>> design, that was too coarse: it applied to all mlx5 devices handled by the
+>> module. That makes it usable only for narrow DPU-only configurations. The
+>> devlink-handle based cmdline syntax was intended to keep the opt-in scoped
+>> to the specific devices that need this early switchdev transition.
+> 
+> The switchdev mode was introduced at roughly the time CX4 was out. What
+> stopped us from making it default for CX4+ ?
+> 
+> Introducing this horrible plumbing only bacause we were not able to
+> change the default sounds so absurd.
+> 
+> Can we write the default mode as a bit in ASIC NV memory perhaps? Simple
+> devlink cmode permanent param to write it, the driver can read this bit
+> during init to decide the init flow path?
 
-How about this policy instead: If the XDP program did not create/pull
-data into the linear area, pull the parsed headers; otherwise, assume
-the XDP program owns the geometry. min() is still needed since the
-program can shrink the packet.
+I don't think switchdev by default should mean CX4+ in general. If we get
+there, I would expect it to be limited to the DPU/BlueField/ECPF case, where
+the host PF probe path can depend on the ECPF reaching switchdev. Changing the
+default for regular host NIC deployments feels like a much larger compatibility
+change.
 
-if (!len) {
-        headlen =3D min(headlen, skb->data_len);
-        __pskb_pull_tail(skb, headen);
-}
+For the ASIC/NV bit: maybe technically possible, but it feels like the wrong
+layer. This is boot/deployment policy, not a persistent hardware property, and
+storing it in NV memory would make the state persist across kernels/hosts in a
+surprising way.
 
-This preserves the optimization for the default no-modification case,
-and most importantly allow XDP program to get the optimal performance
-if it gets the final geometry right.
+I do agree the RFC probably went too far by making a generic devlink cmdline
+configuration language. Maybe the smaller thing to discuss is only:
 
->
-> Thanks,
-> Dragos
+devlink=[pci/...]:esw:mode:{legacy|switchdev|switchdev_inactive}
+
+No runtime params, no ordering between different operations, just early eswitch
+mode for explicitly selected handles.
+
+@Jakub, I know you wanted something more generic/extensible, but maybe the
+generic case belongs in the devlinkd/systemd direction Jiri pointed at, while
+the kernel cmdline handles only this early boot eswitch mode case.
+
+Mark
 
