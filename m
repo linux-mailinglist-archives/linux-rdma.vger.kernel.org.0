@@ -1,78 +1,61 @@
-Return-Path: <linux-rdma+bounces-20267-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20268-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SJQHK71d/mkWpgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20267-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:03:41 +0200
+	id 0HmqHxpg/mnhpwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20268-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:13:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F73F4FC221
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:03:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 291504FC398
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3798D306D614
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 22:01:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 389C83031CEC
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 22:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A452F8E8A;
-	Fri,  8 May 2026 22:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pz/hujLN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0A434AB00;
+	Fri,  8 May 2026 22:12:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8352028B4E2;
-	Fri,  8 May 2026 22:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6918733121F;
+	Fri,  8 May 2026 22:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778277676; cv=none; b=cvMaK4O5K2M1niL+42J+7gVVGckmTRByCfYrZRS0uvE2xyyCz0C+W9Ugbgacy/z3q+2luAX2tuKINqLT4mj+vzDdSdtpUqq8VbdGJvh/gPk6k0a/DgNUj2E8wNuGmsKcy77FW+9Ot92Sh1FXIl88iO2HZ8Btcdq/O4J9lBZhD8Q=
+	t=1778278339; cv=none; b=Hq5X53ifAtr1ky9Zp9JeX3/+SmK19Nl0LXZJF3M4nORaS+kiwC7Pel+FT/ueieI2GtLKV6dQbvGCGYb6a4OCkXvn81MWNUv1UYdj0QFhsPGtyQ+iQkYXRzC/ZUJKibEAdfFHX+qrjzogOJXXHbvJzjdy8Xaa7XLjCNP+2Us4Qp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778277676; c=relaxed/simple;
-	bh=dlC8DEal6+mRXnMYoeF8CMQ2mQkWznW4KNJd1nWPFQM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XniJ19IwQl67aoSb7LyitpyjVDlWEWcZyPwD/wAX2htivyskbyed/uig8akaYKHSfRjIP++wL/6O79sDItq4JBcqxU/uTPPVk5PeSAzCutpX9CFVOrZ6B4alDpXuGqXaBuemy+Wuq6v1+5YBBkdMnGM1cGvbMbAR9Wv/kXFW9fQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pz/hujLN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 546D4C2BCB0;
-	Fri,  8 May 2026 22:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778277676;
-	bh=dlC8DEal6+mRXnMYoeF8CMQ2mQkWznW4KNJd1nWPFQM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pz/hujLNL49drlwd018RK77gQJq2N1oJrh0BSaqLivLfeYA9ZtV4KhDTYYxA7nqsf
-	 91Vd6wzlrjr8sod6vjPQhJe1BdHlRuzFPIWQW6vva2b/kqEGZ05jw31lxx+8mHYKvZ
-	 xl+yfrv1aswFl5HjgLwn2hQbg7gbpRPRkClF6/3okLeu4ae46kCWKb8vmH4veLpzEb
-	 WEHPx4M+OKF2RpEJlzNHkkAsct9Hs5banunHfe0iEJ6AHjg+MhVT9gIZ4HgySnqfip
-	 DqwU6A4K9OdlN+on5/qjIdLYPYXeXuoqiJijywJCR5SoHMHA1Y4uaX+A9oWRrd5vei
-	 gmrH8Vsw6LT4g==
-From: Jakub Kicinski <kuba@kernel.org>
-To: ernis@linux.microsoft.com
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	longli@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	yury.norov@gmail.com,
-	kees@kernel.org,
-	linux-hyperv@vger.kernel.org,
+	s=arc-20240116; t=1778278339; c=relaxed/simple;
+	bh=rWXn8kZoCAfuI+9t6avOlyzcNEoHjXZd4IWN+0mlLlE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h15iYq/6sXn9/0nJpMvfGQcijBvlqamLLj3KZahhlI9cX0B/lExiRpNQGc6q6XBCrR/d8uHtgN9GAJlL6GoUovf5cntE8sedveIuqvYeDpwTAXg6TWbk+hiI4ivVx6i4OuEQ92WzuV+8ksk0SLS9o0nhnZi42W6Q6JNefKkjOZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id 14BED20B7168; Fri,  8 May 2026 15:12:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 14BED20B7168
+From: Long Li <longli@microsoft.com>
+To: Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K . Y . Srinivasan" <kys@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	shradhagupta@linux.microsoft.com
+Cc: Simon Horman <horms@kernel.org>,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v8] net: mana: Expose hardware diagnostic info via debugfs
-Date: Fri,  8 May 2026 15:01:14 -0700
-Message-ID: <20260508220114.3342627-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260506055128.291494-1-ernis@linux.microsoft.com>
-References: <20260506055128.291494-1-ernis@linux.microsoft.com>
+	linux-rdma@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v8 0/6] net: mana: Per-vPort EQ and MSI-X interrupt management
+Date: Fri,  8 May 2026 15:11:56 -0700
+Message-ID: <20260508221202.15725-1-longli@microsoft.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -80,116 +63,130 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0F73F4FC221
+X-Rspamd-Queue-Id: 291504FC398
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [3.54 / 15.00];
+	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20268-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20267-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,microsoft.com,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.310];
+	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FROM_HAS_DN(0.00)[]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
----
-net: mana: Expose hardware diagnostic info via debugfs
+This series moves EQ ownership from the shared mana_context to per-vPort
+mana_port_context, enabling each vPort to have dedicated MSI-X vectors
+when the hardware provides enough vectors. When vectors are limited, the
+driver falls back to sharing MSI-X among vPorts.
 
-Add debugfs entries to expose hardware configuration and diagnostic
-information that aids in debugging driver initialization and runtime
-operations without adding noise to dmesg.
+The series introduces a GDMA IRQ Context (GIC) abstraction with reference
+counting to manage interrupt context lifecycle. This allows both Ethernet
+and RDMA EQs to dynamically acquire dedicated or shared MSI-X vectors at
+vPort creation time rather than pre-allocating all vectors at probe time.
 
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-[ ... ]
-> @@ -2231,13 +2239,18 @@ int mana_gd_resume(struct pci_dev *pdev)
->  
->  	err = mana_probe(&gc->mana, true);
->  	if (err)
-> -		return err;
-> +		goto cleanup_gd;
->  
->  	err = mana_rdma_probe(&gc->mana_ib);
->  	if (err)
-> -		return err;
-> +		goto cleanup_mana;
->  
->  	return 0;
-> +cleanup_mana:
-> +	mana_remove(&gc->mana, true);
-> +cleanup_gd:
-> +	mana_gd_cleanup_device(pdev);
-> +	return err;
->  }
+Key changes:
+- Per-vPort EQ allocation with exported lifecycle functions for RDMA use
+- Device capability query to determine dedicated vs shared MSI-X mode
+- GIC context with refcounting for flexible interrupt management
+- On-demand interrupt context allocation when creating vPort EQs
+- RDMA EQ integration with the GIC framework
 
-Since mana_remove() called with true for suspending skips
-unregister_netdevice(), the network devices remain registered in the system.
+Changes in v8:
+- Fix comment to reference per-vPort queue count instead of
+  gc->max_num_queues (patch 2)
+- Remove duplicate irq_update_affinity_hint() calls from error paths
+  and mana_gd_remove_irqs(); the clearing is now centralized in
+  mana_gd_put_gic() (patch 4)
+- Note the IRQ name change (mana_q -> mana_msi) in the commit
+  message (patch 4)
+- Remove dead conditional write to spec.eq.msix_index (patch 5)
+- Document GIC ownership contract and msix_index invariant change
+  in commit message (patch 5)
+- Populate eq.irq on RDMA EQs for consistency with the Ethernet
+  path (patch 6)
+- Document BIT(6) relocation and capability flag semantics in
+  commit message (patch 6)
+- Fix checkpatch --strict alignment and line length warnings
 
-If mana_gd_cleanup_device() is then called, which destroys the hardware
-channel and clears gc->hwc.driver_data, could this lead to a NULL pointer
-dereference if userspace later interacts with the still-registered devices?
+Changes in v7:
+- Use rounddown_pow_of_two() instead of roundup_pow_of_two() when
+  computing per-vPort queue count to avoid unnecessarily forcing shared
+  MSI-X mode (patch 2)
+- Call mana_gd_setup_remaining_irqs() unconditionally to ensure
+  irq_contexts are populated in both dedicated and shared MSI-X modes,
+  fixing bisectability between patches 2 and 5 (patch 2)
+- Guard ibdev_dbg() in mana_ib_cfg_vport() with error check so the
+  vport handle is not logged on the failure path (patch 1)
+- Use cached gic->irq instead of pci_irq_vector() lookup in
+  mana_gd_put_gic() for consistency with the allocation path (patch 3)
+- Fix unsigned int* to int* pointer type mismatch when calling
+  mana_gd_get_gic() by using a local int variable for the MSI index
+  (patches 5, 6)
 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-[ ... ]
-> @@ -3161,6 +3169,23 @@ static int mana_init_port(struct net_device *ndev)
->  	eth_hw_addr_set(ndev, apc->mac_addr);
->  	sprintf(vport, "vport%d", port_idx);
->  	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
-> +
-> +	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
-> +			   &apc->port_handle);
+Changes in v6:
+- Rebased on net-next/main (v7.1-rc1)
 
-When the device suspends, mana_gd_suspend() calls mana_gd_cleanup_device(),
-which recursively removes the entire debugfs directory tree.
+Changes in v5:
+- Rebased on net-next/main
 
-During resume, the parent debugfs directory is recreated, but mana_probe()
-skips calling mana_init_port() for existing ports.
+Changes in v4:
+- Rebased on net-next/main 7.0-rc4
+- Patch 2: Use MANA_DEF_NUM_QUEUES instead of hardcoded 16 for
+  max_num_queues clamping
+- Patch 3: Track dyn_msix in GIC context instead of re-checking
+  pci_msix_can_alloc_dyn() on each call; improved remove_irqs iteration
+  to skip unallocated entries
 
-Does this mean the per-vPort debugfs entries are permanently lost after a
-suspend and resume cycle?
+Changes in v3:
+- Rebased on net-next/main
+- Patch 1: Added NULL check for mpc->eqs in mana_ib_create_qp_rss() to
+  prevent NULL pointer dereference when RSS QP is created before a raw QP
+  has configured the vport and allocated EQs
 
-[ ... ]
-> @@ -3800,6 +3830,9 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
->  
->  	mana_gd_deregister_device(gd);
->  
-> +	debugfs_lookup_and_remove("bm_hostmode", gc->mana_pci_debugfs);
-> +	debugfs_lookup_and_remove("num_vports", gc->mana_pci_debugfs);
-> +
->  	if (suspending)
->  		return;
+Changes in v2:
+- Rebased on net-next/main (adapted to kzalloc_objs/kzalloc_obj macros,
+  new GDMA_DRV_CAP_FLAG definitions)
+- Patch 2: Fixed misleading comment for max_num_queues vs
+  max_num_queues_vport in gdma.h
+- Patch 3: Fixed spelling typo in gdma_main.c ("difference" -> "different")
 
-Earlier in mana_remove(), free_netdev() is called, which frees the port
-context structure (apc) allocated via netdev_priv(ndev).
+Long Li (6):
+  net: mana: Create separate EQs for each vPort
+  net: mana: Query device capabilities and configure MSI-X sharing for
+    EQs
+  net: mana: Introduce GIC context with refcounting for interrupt
+    management
+  net: mana: Use GIC functions to allocate global EQs
+  net: mana: Allocate interrupt context for each EQ when creating vPort
+  RDMA/mana_ib: Allocate interrupt contexts on EQs
 
-Since the per-vPort debugfs files created in mana_init_port() directly
-reference memory within apc, and apc->mana_port_debugfs is not explicitly
-removed here, does this leave the debugfs files accessible but pointing to
-freed memory until the parent directory is finally removed in
-mana_gd_cleanup_device()?
+ drivers/infiniband/hw/mana/main.c             |  62 +++-
+ drivers/infiniband/hw/mana/qp.c               |  16 +-
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 316 +++++++++++++-----
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 169 ++++++----
+ include/net/mana/gdma.h                       |  33 +-
+ include/net/mana/mana.h                       |   7 +-
+ 6 files changed, 434 insertions(+), 169 deletions(-)
+
+-- 
+2.43.0
 
