@@ -1,246 +1,124 @@
-Return-Path: <linux-rdma+bounces-20274-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20275-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ALNaLt1g/mnCpwAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20274-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:17:01 +0200
+	id mIqxA2Jj/mmoqAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20275-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:27:46 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ACB94FC43A
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A54804FC59C
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 00:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 75B6C30277DB
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 22:13:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 10E2A303E4F0
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 22:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097BA38C2A5;
-	Fri,  8 May 2026 22:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02523921F6;
+	Fri,  8 May 2026 22:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="arMMLK1g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2882D3815EF;
-	Fri,  8 May 2026 22:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B1B32E743;
+	Fri,  8 May 2026 22:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778278344; cv=none; b=pubhvyOtIvrzJpUrwIsZVCepD3EHGMnWciuAmi1Ri/aMyF3meVqgycShbupNeCCox6TW00sWcQPN9Qp6lrsR28vX0o+9BNpkkQMNvysr95wf7Lz5+3wU41/R18N52rh8SVXnxYYw4+aSa8KfBZXny52YJ+XEZtVOcB8WA2f3/pY=
+	t=1778279231; cv=none; b=S8NlkJUlosb6NsLo5QV08qdW/MjNyxJkxzWj5G1B50ixPtGWTmjR0prnVIxmaH/XWnVyBpYNSM6VAKxvblNQu/xxrmC+41YOlX2G1lZqh5ZIKa8F+m8d3/orJlYODVkFkTFF4i1RvKgXgyJMPLK2uWqLvPobulE2oaz6v/QqFdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778278344; c=relaxed/simple;
-	bh=OVJXjr16NZ3xCxCAu3Y4vtG7kVRMj1m4IOMRee7iz/A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XjgMGRkPfNm/OVp03zmOZl3z+mfYYrqHFtgDPNqa78HnkNCc0LJfkYG22THco+qlRaTQvePT5Ct7E76AOvCfV0uhr8Rk7NxCtUob6uYwsPfMjMBMv8WGVP2rjIZCOhirsw1EbJD5BE8KTrzIQnotGkCUkgdCdGwf2DBlzud3bv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1202)
-	id E80FB20B7172; Fri,  8 May 2026 15:12:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E80FB20B7172
-From: Long Li <longli@microsoft.com>
-To: Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K . Y . Srinivasan" <kys@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	shradhagupta@linux.microsoft.com
-Cc: Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v8 6/6] RDMA/mana_ib: Allocate interrupt contexts on EQs
-Date: Fri,  8 May 2026 15:12:02 -0700
-Message-ID: <20260508221202.15725-7-longli@microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260508221202.15725-1-longli@microsoft.com>
-References: <20260508221202.15725-1-longli@microsoft.com>
+	s=arc-20240116; t=1778279231; c=relaxed/simple;
+	bh=2aQvwbopJkerVMd5vnTCl8R5gei4pfbsadE3BwBNQh0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=s7oK+iSiqeQ1WhNVfwmNERdsm+CdOGGfOhF9ZxEM0UAUyzNeyvY2Bzqm5+YJ8uGJwcpTmps27lrWBtDawG9nNR8/BBjW7nj4+FhUWU1PTvzosAr399NJP1H7lskV+YgIFXmLe7FqYoP9jZyPQmk1FDMe6Ute63FDxwRa+KaSwy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=arMMLK1g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C57DC2BCB0;
+	Fri,  8 May 2026 22:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778279231;
+	bh=2aQvwbopJkerVMd5vnTCl8R5gei4pfbsadE3BwBNQh0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=arMMLK1gfFFzLGdlBUX4gJ2OkPlSCte255mTL8fvjuX/um9qlIpbFgi+bXVKbQgO7
+	 jscCSO3yOHEvcHYDWdUWQMy2hLCUU7DVSf/MRl6+sC7KMeICay2j2AGqySKRAyLLB+
+	 rTHg5b20pnh5jkxZsS/VdF2ZDz7T0qmkLkHE4Vdrpf+M0EjM8JQ8m8ZGZtCiyVp8Zm
+	 zoA8hPwDeI7rhBjUo6HeahXxDk+aOghqIm+/S4SCit9PGUqhxhg4x87x4WobGvOfvr
+	 VtznzSOcBOE13k9vhNbf38xjgOhE4O3gmtse6VMUWqwFDUhlwP+CFl1l+PaQIc4zKe
+	 53Z2FNkE4xIUQ==
+Date: Fri, 8 May 2026 15:27:08 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Bobby Eshleman <bobbyeshleman@gmail.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Alex Shi
+ <alexs@kernel.org>, Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu
+ <dzm91@hust.edu.cn>, Michael Chan <michael.chan@broadcom.com>, Pavan Chebbi
+ <pavan.chebbi@broadcom.com>, Joshua Washington <joshwash@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+ <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Alexander Duyck
+ <alexanderduyck@fb.com>, kernel-team@meta.com, Daniel Borkmann
+ <daniel@iogearbox.net>, Nikolay Aleksandrov <razor@blackwall.org>, Shuah
+ Khan <shuah@kernel.org>, dw@davidwei.uk, sdf.kernel@gmail.com,
+ mohsin.bashr@gmail.com, willemb@google.com, jiang.kun2@zte.com.cn,
+ xu.xin16@zte.com.cn, wang.yaxin@zte.com.cn, netdev@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Stanislav Fomichev <sdf@fomichev.me>, Mina
+ Almasry <almasrymina@google.com>, Bobby Eshleman <bobbyeshleman@meta.com>
+Subject: Re: [PATCH net-next v3 3/8] net: devmem: support TX over
+ NETMEM_TX_NO_DMA devices
+Message-ID: <20260508152708.011a9687@kernel.org>
+In-Reply-To: <af5Vlwb5RctHym8D@devvm29614.prn0.facebook.com>
+References: <20260507-tcp-dm-netkit-v3-0-52821445867c@meta.com>
+	<20260507-tcp-dm-netkit-v3-3-52821445867c@meta.com>
+	<20260508134717.4ef87ab6@kernel.org>
+	<af5Vlwb5RctHym8D@devvm29614.prn0.facebook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 3ACB94FC43A
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: A54804FC59C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [3.54 / 15.00];
-	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_FROM(0.00)[bounces-20275-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[40];
+	FREEMAIL_CC(0.00)[lunn.ch,davemloft.net,google.com,redhat.com,kernel.org,lwn.net,linuxfoundation.org,linux.dev,hust.edu.cn,broadcom.com,nvidia.com,fb.com,meta.com,iogearbox.net,blackwall.org,davidwei.uk,gmail.com,zte.com.cn,vger.kernel.org,fomichev.me];
 	MIME_TRACE(0.00)[0:+];
-	R_DKIM_NA(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20274-lists,linux-rdma=lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
-	NEURAL_HAM(-0.00)[-0.165];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Use the GIC functions to allocate interrupt contexts for RDMA EQs. These
-interrupt contexts may be shared with Ethernet EQs when MSI-X vectors
-are limited.
+On Fri, 8 May 2026 14:28:55 -0700 Bobby Eshleman wrote:
+> My guess is this would probably be the simplest way?
 
-The driver now supports allocating dedicated MSI-X for each EQ. Indicate
-this capability through driver capability bits. The RDMA EQs pass
-use_msi_bitmap=false to share MSI-X vectors with Ethernet, while the
-capability flag advertises that the driver supports per-vPort EQ
-separation when hardware has sufficient vectors.
-
-Populate eq.irq on all RDMA EQs for consistency with the Ethernet path.
-
-Also relocate the GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE define to its
-numeric BIT(6) position among the other capability flags.
-
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/infiniband/hw/mana/main.c | 43 +++++++++++++++++++++++++------
- include/net/mana/gdma.h           |  7 +++--
- 2 files changed, 40 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 8000ab6e8beb..7adab0457a66 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -749,7 +749,8 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- {
- 	struct gdma_context *gc = mdev_to_gc(mdev);
- 	struct gdma_queue_spec spec = {};
--	int err, i;
-+	struct gdma_irq_context *gic;
-+	int err, i, msi;
- 
- 	spec.type = GDMA_EQ;
- 	spec.monitor_avl_buf = false;
-@@ -757,11 +758,19 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- 	spec.eq.callback = mana_ib_event_handler;
- 	spec.eq.context = mdev;
- 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
--	spec.eq.msix_index = 0;
-+
-+	msi = 0;
-+	gic = mana_gd_get_gic(gc, false, &msi);
-+	if (!gic)
-+		return -ENOMEM;
-+	spec.eq.msix_index = msi;
- 
- 	err = mana_gd_create_mana_eq(mdev->gdma_dev, &spec, &mdev->fatal_err_eq);
--	if (err)
-+	if (err) {
-+		mana_gd_put_gic(gc, false, 0);
- 		return err;
-+	}
-+	mdev->fatal_err_eq->eq.irq = gic->irq;
- 
- 	mdev->eqs = kzalloc_objs(struct gdma_queue *,
- 				 mdev->ib_dev.num_comp_vectors);
-@@ -771,32 +780,50 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- 	}
- 	spec.eq.callback = NULL;
- 	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++) {
--		spec.eq.msix_index = (i + 1) % gc->num_msix_usable;
-+		msi = (i + 1) % gc->num_msix_usable;
-+
-+		gic = mana_gd_get_gic(gc, false, &msi);
-+		if (!gic) {
-+			err = -ENOMEM;
-+			goto destroy_eqs;
-+		}
-+		spec.eq.msix_index = msi;
-+
- 		err = mana_gd_create_mana_eq(mdev->gdma_dev, &spec, &mdev->eqs[i]);
--		if (err)
-+		if (err) {
-+			mana_gd_put_gic(gc, false, msi);
- 			goto destroy_eqs;
-+		}
-+		mdev->eqs[i]->eq.irq = gic->irq;
- 	}
- 
- 	return 0;
- 
- destroy_eqs:
--	while (i-- > 0)
-+	while (i-- > 0) {
- 		mana_gd_destroy_queue(gc, mdev->eqs[i]);
-+		mana_gd_put_gic(gc, false, (i + 1) % gc->num_msix_usable);
-+	}
- 	kfree(mdev->eqs);
- destroy_fatal_eq:
- 	mana_gd_destroy_queue(gc, mdev->fatal_err_eq);
-+	mana_gd_put_gic(gc, false, 0);
- 	return err;
- }
- 
- void mana_ib_destroy_eqs(struct mana_ib_dev *mdev)
- {
- 	struct gdma_context *gc = mdev_to_gc(mdev);
--	int i;
-+	int i, msi;
- 
- 	mana_gd_destroy_queue(gc, mdev->fatal_err_eq);
-+	mana_gd_put_gic(gc, false, 0);
- 
--	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++)
-+	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++) {
- 		mana_gd_destroy_queue(gc, mdev->eqs[i]);
-+		msi = (i + 1) % gc->num_msix_usable;
-+		mana_gd_put_gic(gc, false, msi);
-+	}
- 
- 	kfree(mdev->eqs);
- }
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 6c138cc77407..d84e474309a3 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -615,6 +615,7 @@ enum {
- #define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
- #define GDMA_DRV_CAP_FLAG_1_GDMA_PAGES_4MB_1GB_2GB BIT(4)
- #define GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT BIT(5)
-+#define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
- 
- /* Driver can handle holes (zeros) in the device list */
- #define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
-@@ -631,7 +632,8 @@ enum {
- /* Driver detects stalled send queues and recovers them */
- #define GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY BIT(18)
- 
--#define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
-+/* Driver supports separate EQ/MSIs for each vPort */
-+#define GDMA_DRV_CAP_FLAG_1_EQ_MSI_UNSHARE_MULTI_VPORT BIT(19)
- 
- /* Driver supports linearizing the skb when num_sge exceeds hardware limit */
- #define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
-@@ -659,7 +661,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
- 	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
- 	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY | \
--	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY)
-+	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY | \
-+	 GDMA_DRV_CAP_FLAG_1_EQ_MSI_UNSHARE_MULTI_VPORT)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
--- 
-2.43.0
-
+IDK. Notifiers are so inelegant. Don't we have the same problem with
+the main ->dev on Tx binding?
 
