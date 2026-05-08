@@ -1,368 +1,296 @@
-Return-Path: <linux-rdma+bounces-20245-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20246-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8GxoMJnz/WlxlAAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20245-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 16:30:49 +0200
+	id 4F1rGrv6/WnYlQAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20246-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 17:01:15 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84D194F7BE2
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 16:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2283A4F83BE
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 17:01:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 443D4305B9AD
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 14:29:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E420A305B2FB
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 14:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B443F660E;
-	Fri,  8 May 2026 14:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADBDF3F789F;
+	Fri,  8 May 2026 14:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="QGOlt0y0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJi9pnPw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C692F8E99;
-	Fri,  8 May 2026 14:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77063F54C4
+	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 14:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778250594; cv=none; b=BYj2gYfaq5A2flOBO46DUaLbgd8e2umykZ5/3CEthKfB+80hbDo5ji7/LJ9NRuTjgO3mV8DqJiWMDeYI5/YH3Ik3Uf3hXhIxln1c8YMLnZD4lcErzvk4tu2krXy9OP+DEvvHHCCM5lFtN0EBFNEn3lf+9CAUH2N7hjCmfCGH++I=
+	t=1778252206; cv=none; b=m7uFgoGSQBEzSLLVM9wFyIcPA4pd/rXmAyuZM4fGhGlufFmAKounFLX/DJc3r7qb3r7vTakwpENh3g2nqqyjm1VYfzqkZAnNwTLFz6SscmGJgzXFynRqsN9B2h5BQEhEBZXVlX56wL4pLf1VmTMLkVhCw7kz8kdDzFJEhOKQYTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778250594; c=relaxed/simple;
-	bh=ixhGko3KP6MGbe+xFYPWKRjtnfXGBIWaB6JA+wdE5TY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aBwCdBMakASk96X3gTfJ0h4gksyj17VxVnXBFWdXgiSbzJlrL9jh+n2hi72SOI/UAZf82LiU75Zlx7qIrfS8W4YXqAykRHSupwrL4/YJBGBC23kug6iILv9xI6gC07FaTHW0sLMWptIzS1krrzCC8O6WLgSbvnHbKMnv2ARmbnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=QGOlt0y0; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id DBCC220B716A;
-	Fri,  8 May 2026 07:29:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DBCC220B716A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1778250587;
-	bh=ExDrhCj01hpnB5CStN7nAd/gSXoBHqwEqTU42oOuFXI=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=QGOlt0y0Fldlyz5ACD/PxFU67mv/YtCyUl6ikInvE0Q5dxf9R2Pd2G0LOPHXplQ54
-	 5bbe7IDD/qnxihMYYlDIPUscs+ZmQA0JmbhRRhJTYhSd/5JpvarASvZZLaIL7atODx
-	 la0GpMnszIPM/DLSrAbrXVXkHSJSlWHdAe1/HNpQ=
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	stephen@networkplumber.org,
-	jacob.e.keller@intel.com,
-	dipayanroy@microsoft.com,
-	leitao@debian.org,
-	kees@kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	sdf@fomichev.me,
-	yury.norov@gmail.com
-Subject: [PATCH net-next,v9 2/2] net: mana: force full-page RX buffers via ethtool private flag
-Date: Fri,  8 May 2026 07:27:45 -0700
-Message-ID: <20260508142921.497921-3-dipayanroy@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260508142921.497921-1-dipayanroy@linux.microsoft.com>
-References: <20260508142921.497921-1-dipayanroy@linux.microsoft.com>
+	s=arc-20240116; t=1778252206; c=relaxed/simple;
+	bh=ST5lkWfuyXox1p/2s668Qu5NvhdlAzM4i+LjigyNGwY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R8J6diWQ7+TallD+VaHo7NSyhZ1Lz9Qb3hm9brGzbn16D8bHnbP598P3ltaPNrNPypLBc8SVJZOw9Osk0BWBSq8c8oYrgzMdCvXBNFNQgJGDKfENP4n+we1Rih9GgLzWacTjymvGVrA1zKIb6rZjDHKThB5Kh2eDnzMpofl3Pbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJi9pnPw; arc=none smtp.client-ip=209.85.210.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-8383fb7143aso1008764b3a.3
+        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 07:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778252204; x=1778857004; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eSWJGa1a8P8ytmqmY0bXOJYZ37jgE6xppZF6e45wgEA=;
+        b=EJi9pnPwCM0Fj4/nh1cAAEl+iwcxt9GixmhXKLamW2OWananPT03KhbOBCMgpXKmXq
+         cdfWlERyxEOgtA4fMzlroijZ3BA8fOpMKruFISgfqQnlV9B608RjULm7DoIBRzq6l9iz
+         hy2Pah6XuFZlrWWRu9OX/BxP4d6cGVQvuf+2jNMSfgcfvl++RNJ8bfV3IcgvUC/usl5C
+         z0MCTH0lGyRAAO3oJH+1cXs1c03p2+yidjCY/yWMlQgJcQdRso5Vbonv071/jwMs8vb1
+         WV37vHkZQ4CAPIHIy3SuI0QgGMUDtspNECNwOkRsXCcO1CKHyD6k2NHkZ5DrCT5q54Ig
+         uZJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778252204; x=1778857004;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eSWJGa1a8P8ytmqmY0bXOJYZ37jgE6xppZF6e45wgEA=;
+        b=BLse1qPF/nSwwP+pDdHu5j6AzvOVXNlEMICy88z43CwVUtM3FDXFbn16XoKgxC+2IA
+         ZSOUvSFF2FMNjrUg9S0zsLeNeyf7xJ6BVXlVjqz6JFLEW87porLl9fEMO4byimjLfAh/
+         ixsOaAZRrGOpSsAronW23UQKK3GgA9wBM4bz93mJm4yPj/YFyxrqv6fShHmxd6bn+qOJ
+         zFygtX7LfvodDIeMA3JOBTyFocHahxwXe5/ZIkbfaKnlGHcJslKwwdM/XFw+/gQX99Wv
+         sN+CeoLqQFaKStHD14R9I1fD+1My1SMDBfspPCo+a/j3Osp1YYqB2+o6VehDNv/dFZqJ
+         2pPQ==
+X-Forwarded-Encrypted: i=1; AFNElJ95uObrSbE0buJCygMeEbDjXcci6fU5I9Y6yvbyyHTIHMx65L7UoTLo5uN5oIOHrdNSYPaTbnDe2+T8@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzc1QYrXox35A24stt99Twn6wo6oYqC//cJ+flZd7eyiki/NhRu
+	0wsa7M9YPUatLCZJT3TF0rlxb+e8LBuBoVGatQSfzFPb1gPkgG+3yNkG
+X-Gm-Gg: Acq92OEoIMJs1TRRy3JCn0tfLFjNFjF6pTG2yZYQH+iZr6t/s4BG2TrJ9D4ds0UkzGu
+	mXRn7upmzjqSQ8T5MUstmkVxG5LVWg3qkKj0GdBu51rCgRR4va8kAEXbNcm0kPwZvLro28NNDVt
+	JlPHjcW9UEB0LGFBbfG6fAxO4xo8pr1b5W/y4SxJuUV9l+KyJTyAWXKi/Yv7AQZKR85gZ/qYvKW
+	Hgq++36n0BBfPkCQk0zcXDWl8xL81Qucy+xr0dUZ+nOFnlgDHFN8Di2ZZcnUYdQ4vF++ZP0PQUQ
+	sDzRzwlARcr8QGcuiueule3gYYuimCfX0EgNpxysvqp8jnNSQAtOlZ/M/PllZAz8yPIQeg29PiC
+	Y/DoKKrzJwfKgVtps5DL1sP7xrXZuDpqYMaQLFhCBhxqPk3E1Dg3UvsDeI5h88Mrg9NzGbNp6z3
+	eBR7TpGBd2WoxRQcGZ
+X-Received: by 2002:a05:6a00:124d:b0:835:7c0e:b529 with SMTP id d2e1a72fcca58-83a5bcd244cmr12592060b3a.12.1778252204005;
+        Fri, 08 May 2026 07:56:44 -0700 (PDT)
+Received: from localhost ([2a03:2880:2ff:50::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-839682a272asm12835763b3a.54.2026.05.08.07.56.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2026 07:56:43 -0700 (PDT)
+Date: Fri, 8 May 2026 07:56:42 -0700
+From: Stanislav Fomichev <sdf.kernel@gmail.com>
+To: Bobby Eshleman <bobbyeshleman@gmail.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Alex Shi <alexs@kernel.org>, Yanteng Si <si.yanteng@linux.dev>, 
+	Dongliang Mu <dzm91@hust.edu.cn>, Michael Chan <michael.chan@broadcom.com>, 
+	Pavan Chebbi <pavan.chebbi@broadcom.com>, Joshua Washington <joshwash@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com, 
+	Daniel Borkmann <daniel@iogearbox.net>, Nikolay Aleksandrov <razor@blackwall.org>, 
+	Shuah Khan <shuah@kernel.org>, dw@davidwei.uk, mohsin.bashr@gmail.com, willemb@google.com, 
+	jiang.kun2@zte.com.cn, xu.xin16@zte.com.cn, wang.yaxin@zte.com.cn, 
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Stanislav Fomichev <sdf@fomichev.me>, Mina Almasry <almasrymina@google.com>, 
+	Bobby Eshleman <bobbyeshleman@meta.com>
+Subject: Re: [PATCH net-next v3 1/8] net: convert netmem_tx flag to enum
+Message-ID: <af35ekIjYDXIDWVR@devvm7509.cco0.facebook.com>
+References: <20260507-tcp-dm-netkit-v3-0-52821445867c@meta.com>
+ <20260507-tcp-dm-netkit-v3-1-52821445867c@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 84D194F7BE2
+In-Reply-To: <20260507-tcp-dm-netkit-v3-1-52821445867c@meta.com>
+X-Rspamd-Queue-Id: 2283A4F83BE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	TAGGED_FROM(0.00)[bounces-20245-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-20246-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[40];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[lunn.ch,davemloft.net,google.com,kernel.org,redhat.com,lwn.net,linuxfoundation.org,linux.dev,hust.edu.cn,broadcom.com,nvidia.com,fb.com,meta.com,iogearbox.net,blackwall.org,davidwei.uk,gmail.com,zte.com.cn,vger.kernel.org,fomichev.me];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sdfkernel@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_TWELVE(0.00)[33];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.microsoft.com:mid,linux.microsoft.com:dkim]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[fomichev.me:email,meta.com:email,devvm7509.cco0.facebook.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On some ARM64 platforms with 4K PAGE_SIZE, page_pool fragment
-allocation in the RX refill path can cause 15-20% throughput
-regression under high connection counts (>16 TCP streams).
+On 05/07, Bobby Eshleman wrote:
+> From: Bobby Eshleman <bobbyeshleman@meta.com>
+> 
+> Devices that support netmem TX previously set dev->netmem_tx = true.
+> This was checked in validate_xmit_unreadable_skb() to drop unreadable
+> skbs (skbs with dmabuf-backed frags) before they reach drivers that
+> would mishandle them or devices that would not have the iommu mappings
+> for them.
+> 
+> A subsequent patch will introduce a third state for virtual devices
+> that forward unreadable skbs without ever performing DMA on them. To
+> prepare for that, convert the boolean dev->netmem_tx into an enum:
+> 
+> NETMEM_TX_NONE   - no netmem TX support (drop unreadable skbs)
+> NETMEM_TX_DMA    - full support, device does DMA
+> 
+> Update the existing NIC drivers (bnxt, gve, mlx5, fbnic) and the
+> validators in net/core to use the new enum. No functional change.
+> 
+> Acked-by: Harshitha Ramamurthy <hramamurthy@google.com>
+> Signed-off-by: Bobby Eshleman <bobbyeshleman@meta.com>
+> ---
+> Changes in v3:
+> - Split NO_DMA changes into subsequent commit (Jakub)
+> - Move !netdev->netmem_tx -> netdev->netmem_tx ==
+>   NETMEM_TX_NONE conversions to this patch (Jakub)
+> 
+> Changes in v2:
+> - Squash driver conversion patches (2-5) into patch 1 (Jakub)
+> ---
+>  Documentation/networking/netmem.rst                    | 5 ++++-
+>  Documentation/translations/zh_CN/networking/netmem.rst | 4 +++-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.c              | 2 +-
+>  drivers/net/ethernet/google/gve/gve_main.c             | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c      | 2 +-
+>  drivers/net/ethernet/meta/fbnic/fbnic_netdev.c         | 2 +-
+>  include/linux/netdevice.h                              | 8 +++++++-
+>  net/core/dev.c                                         | 2 +-
+>  net/core/netdev-genl.c                                 | 2 +-
+>  9 files changed, 20 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/networking/netmem.rst b/Documentation/networking/netmem.rst
+> index b63aded46337..5ccadba4f373 100644
+> --- a/Documentation/networking/netmem.rst
+> +++ b/Documentation/networking/netmem.rst
+> @@ -95,4 +95,7 @@ Driver TX Requirements
+>     netdev@, or reach out to the maintainers and/or almasrymina@google.com for
+>     help adding the netmem API.
+>  
+> -2. Driver should declare support by setting `netdev->netmem_tx = true`
+> +2. Driver should declare support by setting `netdev->netmem_tx` to the
+> +   appropriate mode:
+> +
+> +   - `NETMEM_TX_DMA`: for physical devices that perform DMA.
+> diff --git a/Documentation/translations/zh_CN/networking/netmem.rst b/Documentation/translations/zh_CN/networking/netmem.rst
+> index fe351a240f02..9c84423b7528 100644
+> --- a/Documentation/translations/zh_CN/networking/netmem.rst
+> +++ b/Documentation/translations/zh_CN/networking/netmem.rst
+> @@ -89,4 +89,6 @@ dma-mapping API 去处理。
+>  使用某个还不存在的 netmem API，你可以自行添加并提交到 netdev@，也可以联系维护
+>  人员或者发送邮件至 almasrymina@google.com 寻求帮助。
+>  
+> -2. 驱动程序应通过设置 netdev->netmem_tx = true 来表明自身支持 netmem 功能。
+> +2. 驱动程序应将 `netdev->netmem_tx` 设置为适当的模式：
+> +
+> +   - `NETMEM_TX_DMA`：适用于执行 DMA 的物理设备。
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> index 8c55874f44ca..ed9c22dc4a5a 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> @@ -17120,7 +17120,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	dev->queue_mgmt_ops = &bnxt_queue_mgmt_ops_unsupp;
+>  	if (BNXT_SUPPORTS_QUEUE_API(bp))
+>  		dev->queue_mgmt_ops = &bnxt_queue_mgmt_ops;
+> -	dev->netmem_tx = true;
+> +	dev->netmem_tx = NETMEM_TX_DMA;
+>  
+>  	rc = register_netdev(dev);
+>  	if (rc)
+> diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+> index 424d973c97f2..dd2b8f087163 100644
+> --- a/drivers/net/ethernet/google/gve/gve_main.c
+> +++ b/drivers/net/ethernet/google/gve/gve_main.c
+> @@ -2894,7 +2894,7 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  		goto abort_with_wq;
+>  
+>  	if (!gve_is_gqi(priv) && !gve_is_qpl(priv))
+> -		dev->netmem_tx = true;
+> +		dev->netmem_tx = NETMEM_TX_DMA;
+>  
+>  	err = register_netdev(dev);
+>  	if (err)
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 5a46870c4b74..fc49aae38807 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -5924,7 +5924,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
+>  
+>  	netdev->priv_flags       |= IFF_UNICAST_FLT;
+>  
+> -	netdev->netmem_tx = true;
+> +	netdev->netmem_tx = NETMEM_TX_DMA;
+>  
+>  	netif_set_tso_max_size(netdev, GSO_MAX_SIZE);
+>  	mlx5e_set_xdp_feature(priv);
+> diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c b/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c
+> index c406a3b56b37..138e522ef9b9 100644
+> --- a/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c
+> +++ b/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c
+> @@ -752,7 +752,7 @@ struct net_device *fbnic_netdev_alloc(struct fbnic_dev *fbd)
+>  	netdev->netdev_ops = &fbnic_netdev_ops;
+>  	netdev->stat_ops = &fbnic_stat_ops;
+>  	netdev->queue_mgmt_ops = &fbnic_queue_mgmt_ops;
+> -	netdev->netmem_tx = true;
+> +	netdev->netmem_tx = NETMEM_TX_DMA;
+>  
+>  	fbnic_set_ethtool_ops(netdev);
+>  
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 0e1e581efc5a..580bccb118a0 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -1788,6 +1788,11 @@ enum netdev_stat_type {
+>  	NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
+>  };
+>  
+> +enum netmem_tx_mode {
+> +	NETMEM_TX_NONE,		/* no netmem TX support */
+> +	NETMEM_TX_DMA,		/* DMA-capable netmem TX (real HW) */
+> +};
+> +
+>  enum netdev_reg_state {
+>  	NETREG_UNINITIALIZED = 0,
+>  	NETREG_REGISTERED,	/* completed register_netdevice */
+> @@ -1809,7 +1814,8 @@ enum netdev_reg_state {
+>   *	@lltx:		device supports lockless Tx. Deprecated for real HW
+>   *			drivers. Mainly used by logical interfaces, such as
+>   *			bonding and tunnels
+> - *	@netmem_tx:	device support netmem_tx.
+> + *	@netmem_tx:	device netmem TX mode (NETMEM_TX_NONE or
+> + *			NETMEM_TX_DMA).
 
-Add an ethtool private flag "full-page-rx" that allows the user to
-force one RX buffer per page, bypassing the page_pool fragment path.
-This restores line-rate (180+ Gbps) performance on affected platforms.
 
-Usage:
-  ethtool --set-priv-flags eth0 full-page-rx on
+nit: if you happen to repost, listing enum values here seems too much?
 
-There is no behavioral change by default. The flag must be explicitly
-enabled by the user or udev rule.
+"device netmem TX mode" should be enough
 
-The existing single-buffer-per-page logic for XDP and jumbo frames is
-consolidated into a new helper mana_use_single_rxbuf_per_page() which
-is now the single decision point for both the automatic and
-user-controlled paths.
-
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c |  22 +++-
- .../ethernet/microsoft/mana/mana_ethtool.c    | 103 ++++++++++++++++++
- include/net/mana/mana.h                       |   8 ++
- 3 files changed, 131 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 462a457e7d53..c4bc8bf19d75 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -744,6 +744,25 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
- 	return va;
- }
- 
-+static bool
-+mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
-+{
-+	/* On some platforms with 4K PAGE_SIZE, page_pool fragment allocation
-+	 * in the RX refill path (~2kB buffer) can cause significant throughput
-+	 * regression under high connection counts. Allow user to force one RX
-+	 * buffer per page via ethtool private flag to bypass the fragment
-+	 * path.
-+	 */
-+	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
-+		return true;
-+
-+	/* For xdp and jumbo frames make sure only one packet fits per page. */
-+	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
-+		return true;
-+
-+	return false;
-+}
-+
- /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
- static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 			       int mtu, u32 *datasize, u32 *alloc_size,
-@@ -754,8 +773,7 @@ static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 	/* Calculate datasize first (consistent across all cases) */
- 	*datasize = mtu + ETH_HLEN;
- 
--	/* For xdp and jumbo frames make sure only one packet fits per page */
--	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
-+	if (mana_use_single_rxbuf_per_page(apc, mtu)) {
- 		if (mana_xdp_get(apc)) {
- 			*headroom = XDP_PACKET_HEADROOM;
- 			*alloc_size = PAGE_SIZE;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 7e79681634db..f22bbb325948 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -133,6 +133,10 @@ static const struct mana_stats_desc mana_phy_stats[] = {
- 	{ "hc_tc7_tx_pause_phy", offsetof(struct mana_ethtool_phy_stats, tx_pause_tc7_phy) },
- };
- 
-+static const char mana_priv_flags[MANA_PRIV_FLAG_MAX][ETH_GSTRING_LEN] = {
-+	[MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF] = "full-page-rx"
-+};
-+
- static int mana_get_sset_count(struct net_device *ndev, int stringset)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -144,6 +148,10 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
- 		       ARRAY_SIZE(mana_phy_stats) +
- 		       ARRAY_SIZE(mana_hc_stats)  +
- 		       num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-+
-+	case ETH_SS_PRIV_FLAGS:
-+		return MANA_PRIV_FLAG_MAX;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -192,6 +200,14 @@ static void mana_get_strings_stats(struct mana_port_context *apc, u8 **data)
- 	}
- }
- 
-+static void mana_get_strings_priv_flags(u8 **data)
-+{
-+	int i;
-+
-+	for (i = 0; i < MANA_PRIV_FLAG_MAX; i++)
-+		ethtool_puts(data, mana_priv_flags[i]);
-+}
-+
- static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -200,6 +216,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 	case ETH_SS_STATS:
- 		mana_get_strings_stats(apc, &data);
- 		break;
-+	case ETH_SS_PRIV_FLAGS:
-+		mana_get_strings_priv_flags(&data);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -590,6 +609,88 @@ static int mana_get_link_ksettings(struct net_device *ndev,
- 	return 0;
- }
- 
-+static u32 mana_get_priv_flags(struct net_device *ndev)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+
-+	return apc->priv_flags;
-+}
-+
-+static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+	u32 changed = apc->priv_flags ^ priv_flags;
-+	u32 old_priv_flags = apc->priv_flags;
-+	bool schedule_port_reset = false;
-+	int err = 0;
-+
-+	if (!changed)
-+		return 0;
-+
-+	/* Reject unknown bits */
-+	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
-+		return -EINVAL;
-+
-+	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
-+		apc->priv_flags = priv_flags;
-+
-+		if (!apc->port_is_up) {
-+			/* Port is down, flag updated to apply on next up
-+			 * so just return.
-+			 */
-+			return 0;
-+		}
-+
-+		/* Pre-allocate buffers to prevent failure in mana_attach
-+		 * later
-+		 */
-+		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+		if (err) {
-+			netdev_err(ndev,
-+				   "Insufficient memory for new allocations\n");
-+			apc->priv_flags = old_priv_flags;
-+			return err;
-+		}
-+
-+		err = mana_detach(ndev, false);
-+		if (err) {
-+			netdev_err(ndev, "mana_detach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+
-+			/* Port is in an inconsistent state. Restore
-+			 * 'port_is_up' so that queue reset work handler
-+			 * can properly detach and re-attach.
-+			 */
-+			apc->port_is_up = true;
-+			schedule_port_reset = true;
-+			goto out;
-+		}
-+
-+		err = mana_attach(ndev);
-+		if (err) {
-+			netdev_err(ndev, "mana_attach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+
-+			/* Restore 'port_is_up' so the reset work handler
-+			 * can properly detach/attach. Without this,
-+			 * the handler sees port_is_up=false and skips
-+			 * queue allocation, leaving the port dead.
-+			 */
-+			apc->port_is_up = true;
-+			schedule_port_reset = true;
-+		}
-+	}
-+
-+out:
-+	mana_pre_dealloc_rxbufs(apc);
-+
-+	if (schedule_port_reset)
-+		queue_work(apc->ac->per_port_queue_reset_wq,
-+			   &apc->queue_reset_work);
-+
-+	return err;
-+}
-+
- const struct ethtool_ops mana_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_CQE_FRAMES,
- 	.get_ethtool_stats	= mana_get_ethtool_stats,
-@@ -608,4 +709,6 @@ const struct ethtool_ops mana_ethtool_ops = {
- 	.set_ringparam          = mana_set_ringparam,
- 	.get_link_ksettings	= mana_get_link_ksettings,
- 	.get_link		= ethtool_op_get_link,
-+	.get_priv_flags		= mana_get_priv_flags,
-+	.set_priv_flags		= mana_set_priv_flags,
- };
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index aa90a858c8e3..1d44a78da520 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -30,6 +30,12 @@ enum TRI_STATE {
- 	TRI_STATE_TRUE = 1
- };
- 
-+/* MANA ethtool private flag bit positions */
-+enum mana_priv_flag_bits {
-+	MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF = 0,
-+	MANA_PRIV_FLAG_MAX,
-+};
-+
- /* Number of entries for hardware indirection table must be in power of 2 */
- #define MANA_INDIRECT_TABLE_MAX_SIZE 512
- #define MANA_INDIRECT_TABLE_DEF_SIZE 64
-@@ -531,6 +537,8 @@ struct mana_port_context {
- 	u32 rxbpre_headroom;
- 	u32 rxbpre_frag_count;
- 
-+	u32 priv_flags;
-+
- 	struct bpf_prog *bpf_prog;
- 
- 	/* Create num_queues EQs, SQs, SQ-CQs, RQs and RQ-CQs, respectively. */
--- 
-2.43.0
-
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
