@@ -1,198 +1,248 @@
-Return-Path: <linux-rdma+bounces-20256-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20257-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eBllIpsN/mk0mgAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20256-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 18:21:47 +0200
+	id CMTDBlgh/mmunAAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20257-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 19:46:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 226744F95E8
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 18:21:47 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7B3F4FA279
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 19:45:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6C4C2303714F
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 16:20:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id EAD843024AB4
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 17:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70ECB3ED12A;
-	Fri,  8 May 2026 16:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AC115B135;
+	Fri,  8 May 2026 17:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sPcdaAur"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kJxk7shN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B629F3CFF51
-	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 16:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778257207; cv=none; b=UzraDOT0LhlYVJ8xPzgbWbGMlNNlGKWr9FnyHGrZPo8AtGPRbrstVYFgGXJnLa+yQwEksCUMFVH8B5nQA87L6QQd2ij7tLtaqyxAxoT0wJq7dXA3Gfc4yuM6mWBucUXCEjUcW3T5Zara99/hq2KGXYtWCxCRZwO4ULt3Q2CDSZY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778257207; c=relaxed/simple;
-	bh=v647WHHmXcdLQIFhGfoT7NEbJ1k0sAZWFnTY5EXnBc4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kg6QYG0Yxq0sMm9TSusnmICW5JAtU0ZIXYyNnbh2UO6KfTWCcwaHuuuXkU7zza7EMgz+Fe9zvakOvSYLID0nUXpFt4siirXL+hvusm0OoEfO9K6fEBV8Zn0RaEhoClLydOlOyA2CWu5mFDFhROpwZvzGPDfl/5nGoOH+EvuVH80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sPcdaAur; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6257A421EE4
+	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 17:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.169
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778262275; cv=pass; b=CCPckjaIIfGxjMz6vohTdWuAW3Dfs/p+L6u6AzQg6dcTeZWrimVeLqi5PerwkxzfrJ5ao+6FeHNgUA1BDjtrGpY+sCrxZSXSbvdzh0n805eUBkJ+Ef/6c1boMw3aj+FlWSxTUcqKl69DWwwI0ANTEaQdirEXzu0wPxlE64RT9KI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778262275; c=relaxed/simple;
+	bh=CcDKf/KmVKLfF4zmyDCx2R+wF06pamP8rhBWcPAGVxo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Eh7Rd8jbgs4RMxYiMdOT57VEu3y/DR1rS0vzIYnHqAQUETNBCgoZcICkUMbn119ELDoz2a5Rim1uPOS1TnMg9gRWTzZbnoYFYOMqHXo2ioEqNq2S50ZATH8h+a20U4YdteeM5Slg7+prVBbdwIpXmeE3Ry1BlIpmgRItmFqS1S4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kJxk7shN; arc=pass smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-50d880e6fbbso29166831cf.0
-        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 09:20:05 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-7bd5e373d07so25590637b3.2
+        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 10:44:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778262273; cv=none;
+        d=google.com; s=arc-20240605;
+        b=bSbM3fShgszk5ejJ5JbihNwsvQ4hDDrwZGoiiZwvV+qpfyWCVOEsYJSMKX/Qzq5rWi
+         0CJuGnNr4eaL2OvFweT5PzDzi6xBkL/TkEVlt83fPmLG8FqhYYOfvfHLAoU7pDiG/VmX
+         k6WEmToU9LesAMGHOYbWVr8EU07cdPvqbCZslCit18xjdqEh8HI13+RLC9HfEUOnp2yc
+         N9v5aAYvvVhvfaz/FgGhCvCYH7mzOY3Ey2dijZGNI1eAHyz0emZtLxkQSpIAQ6gF9/2t
+         gmCqw4fDDfQfjLzfsFAyu2+LzulEwAHceVgP/8A8miGEQ0BUQMQtNYz9TBHXtzowpqQR
+         TNPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=SegeXkJg0Qt295LoNImeq2zq+YRFqc6PexCOKts/PnE=;
+        fh=tT3t/ErsHr0hjbUJCgZPhn9SHUWZJ4iMPCkR3xAzgws=;
+        b=MtCThJFrjWEBMFccrbEc3I1cRBp4s0uM+RdlOIwfWwEL3Uz5hKgQt1clAX5I+6rFbV
+         R2n5cjxTHaso5LRrBl0A10OZ1IGmPILNCMwSqmQZjD+odRs36QpbH0KOvT3Uts8x6OCo
+         yxfq4wPVH6nH8iWrDIy2drIDDrZKYFuw1l5hm8gtmeSUoY+6wWiv+vqJGTJTfRAIlnFS
+         QBnv4PquL4mkATlrGFo0tH7JZ8f+6n/MejSgGELRUUFn5PXDY+SkXX3wgfNg0fET3h0R
+         4NQrh/VcpMn3quI/R2RwbOXYTbCnksZ+sYPu7bxPtoGgJGmYhE0dJnaJfKkCILtverzx
+         9+GA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778257205; x=1778862005; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VVIaSjloZ3+LpxQTNssmJQh6h7Rks2diPWr6o44EUDI=;
-        b=sPcdaAurUpMDi10Sft6uGMJ2a/3e3HI1R+WovtJHcva09XXrP9E3WDtnvB/z/oOHmb
-         JZSTVv5xHeIplTuYpGYcaB3CcmK8Qfep7o5JhM0Mw2FecYi+Z/q9Zj/1BQB85HZg1bfb
-         pQcDeHRLUpHK5PIaeWLaA/WQaXfBunzXYk7nUXVtF/bPFy6o6Suz9ZM1SxO6tAiYtNmp
-         VKUjjzZWuvwyc+2htS0wdWQTjHDGHxEsHylrMQNZ0TV3utkRg0vFVp3nOfKelE5L67XF
-         StDhjMlr1oYCKZ7QttpiNCGrMptZMWMInB0T+Az6ELSTpP+QY6/IxarVExCL7vHhJLlT
-         ir6Q==
+        d=gmail.com; s=20251104; t=1778262273; x=1778867073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SegeXkJg0Qt295LoNImeq2zq+YRFqc6PexCOKts/PnE=;
+        b=kJxk7shNyq27Pz2WNp+1S8KYqmQH+HwbB+wWeeNKrHykvqL0pXC6idcgjvebTS4YQl
+         eMde0TcbmctguWbvLjBkq81TPUGQXWYWo2wuNSyU35QNUhne0aAkbAO90OpyFHKZE70b
+         Fg3KEZuo08FcXbcEN3PxgBl+w+A9tpRBQWMIgyix1wf0kz32umgCdXpBE11QrprLo50g
+         5R32OUxOzcZ+9zcVlWlU3zOg6GcZ0iphKCQUFcHhKq894blAUG2VFlpNYChd/t6VYwqd
+         6fwpsr1osP35pxqw4k1xlT/hGJU5GbSF6klpo4tb9qHpXMxVa78UrgTiSOA4hlnEnLui
+         ZrCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778257205; x=1778862005;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VVIaSjloZ3+LpxQTNssmJQh6h7Rks2diPWr6o44EUDI=;
-        b=PpSkhUd6wOC2ww5pLbC/nPm+jFA8RJzDI/6IzfWpTmQWyyC731zX1nJ8PwI+jEOrvV
-         b+44IXiyj/zn3tgFXQQb2Uuc/ZiSWxqZ77T/QaSb1l9L3qVolPhts44Sldxt71T6uO4X
-         brkILHhuqVWMNEQFZX8gEX1qZB741FyyVVZ1GZfVE4d5hCtcRKPdK/EpaNtjjE7ePpYW
-         KdSfFaZQHuu66kqSpPU7ZYeDWEcKR/5pwjBXn8jVSekpEDNugYa/0ORfAovP97u/kesn
-         w44QphkjHdYKnA0XuAr8Em6cBihhXxafsVQEQgj4URCQbPTnvI0yxtkGpLSHpbaDPLgI
-         D5cg==
-X-Forwarded-Encrypted: i=1; AFNElJ8WmiBiDlcrK6RuYQ0YvHb2ZTR5kRjQv+qJFPaDeEyqccS8vyB+CHJKIr1knDt2lMczNqKe0U0NlV80@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFM82Yojiq7LCamVV8L8AuxyXE7lxwLZXY9BRKzxyA2poRSiMu
-	JY85jBchHF/bzAjUuDL5kbDTqzRQ6rj0PgzPuzHaSx+wOHF9380UziHq
-X-Gm-Gg: AeBDieupm83x+MTZfHXbqKaS0c40vJcYz3Jx6aCGiKFhhJAg6OEQucBTEHw7xIKZdcg
-	zlP9TJsgKKQPbFT3kkZMd4Vwfrtr6ty/4wUutm/64zmp3DKtcE/z8m28PVnLdsuJTg+sdhC2Wp0
-	ceYUX0g60ob1d0yO8U5K6Jd2o9ajc3fbyOsAUjJm7L9DAqI0ifwucYAohLIWivHA+hLM6I1uu0X
-	N2aKE8SzA+cZ+8wDAZ+35mMqjP97T0yCt7YFUQYFFMiTbDMTEA/kaW+6JmCSL4409GQfaGscD2O
-	esSxuqdG8CGqQvZW8kRCplv/Ea8KGxQSWy5CZU6Lg5Jnc9rraxwRrvSdQPcpCcNwkR6i6MeEwor
-	qj6YEd09cTOG+j/WbjF2DfcamhQVyENTb/2pg/PNmg6CvmhJEzvWYe5Rf9zb36SCQd5ug8Bfr6Z
-	EbdJKO1k43MosBuKNPHxNJ2W/1XK6EMJxI84DwgFApkqqwUg==
-X-Received: by 2002:ac8:584d:0:b0:50f:ad91:8906 with SMTP id d75a77b69052e-51475c100cdmr95757961cf.20.1778257204178;
-        Fri, 08 May 2026 09:20:04 -0700 (PDT)
-Received: from devvm29614.prn0.facebook.com ([2a03:2880:f800:d::])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8b53d35787esm238874416d6.44.2026.05.08.09.19.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2026 09:20:03 -0700 (PDT)
-Date: Fri, 8 May 2026 09:19:57 -0700
-From: Bobby Eshleman <bobbyeshleman@gmail.com>
-To: Stanislav Fomichev <sdf.kernel@gmail.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>, Alex Shi <alexs@kernel.org>,
-	Yanteng Si <si.yanteng@linux.dev>, Dongliang Mu <dzm91@hust.edu.cn>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Joshua Washington <joshwash@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Shuah Khan <shuah@kernel.org>, dw@davidwei.uk,
-	mohsin.bashr@gmail.com, willemb@google.com, jiang.kun2@zte.com.cn,
-	xu.xin16@zte.com.cn, wang.yaxin@zte.com.cn, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Mina Almasry <almasrymina@google.com>,
-	Bobby Eshleman <bobbyeshleman@meta.com>
-Subject: Re: [PATCH net-next v3 6/8] selftests: drv-net: refactor devmem
- command builders into lib module
-Message-ID: <af4NLRXDN3nzEDce@devvm29614.prn0.facebook.com>
-References: <20260507-tcp-dm-netkit-v3-0-52821445867c@meta.com>
- <20260507-tcp-dm-netkit-v3-6-52821445867c@meta.com>
- <af37Eoq2TLjhI7kx@devvm7509.cco0.facebook.com>
+        d=1e100.net; s=20251104; t=1778262273; x=1778867073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=SegeXkJg0Qt295LoNImeq2zq+YRFqc6PexCOKts/PnE=;
+        b=LP1eHhT4JjvqNf4tWPu/xBLgVwPEWB54xLTL6lp5BZmdvoe7rOiTBbjO1pTbuS1H/E
+         2oMuUBNtqpd8i//beN2y7R4zp8ghqyWNib3VDzIBmnUDLAI5ed6aw735m18nSG2B3HPn
+         6sgxJodZrk9G5j1nDm5GW6a4yKNuOtPfC+Ao1xBWo3b+17Ko3slxflV8cY8wPmhA3LjS
+         4GZXavMhrP3VJsoUP1dapvv+UydpE3/s3r2OI5nHpatNc0t81Z5gBw9zAHBOg8fxo+0r
+         lxs+Fjva4SNVCLsNy7ClwaDDIFQKd7RtHtq7xIcQ2RiexhEh96BgZnMW1eFBMwlvkqqw
+         iSnQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9gY3ohVzwlN93n5nwgVcsDkM5qWJSA8Gx1OC0J6QW8rqSv4wTh8uProfE7FVHzcC9lgjkmkkkhjO0D@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3stJTs4+5MGH7s5dcahiEUF61mbFW665VWzwUT3ujUtkeabHY
+	cDZbHAl+avxLfY8w+vUwR50ah9p8GcCdrUpz9vxuhHRV0RYcT0fari2AWluxPR5mqC9LfAolz+0
+	2E/U1U/rXI0Sxo9Kb10SCQL9HZDBaF0U=
+X-Gm-Gg: Acq92OGnRYmKVM8RfdiC2Y73ZTcptvi488BWWzNiX0wli1Dr4xrLBvGEgG3d7S97d4W
+	oWiDx9IXmQMX6W55dVdxnGFdSGaYKj7W+iFYEls8IO2PHZDZ1toem1ZXMIuC1RIaRg5cLSrVlBG
+	Dw48ffVWH7itoX0Y4x99/TUR+BS99+UAMTS2XkpHb2sOkD1f90813avDgMa/YQUeqJyfoKNBwLV
+	RlPN8hMZUyoBpiQ1XWO5Lj/2O+saJwj7TGKc90AuVeWX/8RgAOPBAyIa93V0Mhvg8bMCz0pQXd2
+	MODuJx0tJn2iyR2zuB+I+Kg=
+X-Received: by 2002:a05:690c:dd4:b0:7bd:a4dc:c23b with SMTP id
+ 00721157ae682-7bdf5efad66mr147425427b3.49.1778262273164; Fri, 08 May 2026
+ 10:44:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af37Eoq2TLjhI7kx@devvm7509.cco0.facebook.com>
-X-Rspamd-Queue-Id: 226744F95E8
+References: <20260507095330.318892-1-tariqt@nvidia.com> <20260507095330.318892-3-tariqt@nvidia.com>
+ <CAMB2axOFQN2f=veYgeJs+4tbZmb9PuNHk03TH_bmE8UL_REd7w@mail.gmail.com>
+ <b1d3f9bc-a5d7-4236-8bda-49e6327ee533@nvidia.com> <CAMB2axPNhveQaDPs-ttu4uFcpvAfJCdzJ3d05HWQf4+p7uVUsg@mail.gmail.com>
+ <70d0b319-178f-4233-b0da-9618489a1dd6@nvidia.com>
+In-Reply-To: <70d0b319-178f-4233-b0da-9618489a1dd6@nvidia.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Fri, 8 May 2026 19:44:21 +0200
+X-Gm-Features: AVHnY4LuhPNVOQMgrNqkEPKZxxuymUm4dL0F_gglKlMd8ExwxL5Tv9DtMUApznk
+Message-ID: <CAMB2axPdqBUORn7Qy35Xccqbn+8aArZ-weegZyz=j0STh+iPNA@mail.gmail.com>
+Subject: Re: [PATCH net-next V6 2/3] net/mlx5e: Avoid copying payload to the
+ skb's linear part
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Christoph Paasch <cpaasch@openai.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: D7B3F4FA279
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20256-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-20257-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[lunn.ch,davemloft.net,google.com,kernel.org,redhat.com,lwn.net,linuxfoundation.org,linux.dev,hust.edu.cn,broadcom.com,nvidia.com,fb.com,meta.com,iogearbox.net,blackwall.org,davidwei.uk,gmail.com,zte.com.cn,vger.kernel.org,fomichev.me];
-	RCPT_COUNT_TWELVE(0.00)[40];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FREEMAIL_CC(0.00)[nvidia.com,openai.com,google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,vger.kernel.org,iogearbox.net,gmail.com,fomichev.me];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bobbyeshleman@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ameryhung@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[devvm29614.prn0.facebook.com:mid,meta.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid,nvidia.com:email]
 X-Rspamd-Action: no action
 
-On Fri, May 08, 2026 at 08:03:11AM -0700, Stanislav Fomichev wrote:
-> On 05/07, Bobby Eshleman wrote:
-> > From: Bobby Eshleman <bobbyeshleman@meta.com>
-> > 
-> > Adding netkit-based devmem tests is a straight-forward copy of devmem
-> > test commands plus some args for the nk cases, so this patch breaks out
-> > these command builders into helpers used by both.
-> > 
-> > Though we tried to avoid libraries to avoid increasing the barrier of
-> > entry/complexity (see selftests/drivers/net/README.md, section "Avoid
-> > libraries and frameworks"), factoring out these functions seemed like
-> > the lesser of two evils in this case of using the same commands, just
-> > with slightly different args per environment.
-> > 
-> > I experimented with just having all of the tests in the same file to
-> > avoid having helpers in a library file, but because ksft_run() is
-> > limited to a single call per file, and the new tests will require
-> > different environments (NetDrvContEnv/NetDrvEpEnv), it would have been
-> > necessary to have each test set up its own environment instead of
-> > sharing one for the entire ksft_run() run. This came at the cost of
-> > ballooning the test time (from under 5s to 30s on my test system), so to
-> > strike a balance these tests were placed in separate files so they could
-> > keep a shared environment across a single ksft_run() run shared across
-> > all tests using the same env type (introduced in subsequent patches).
-> > 
-> > The helpers work transparently with both plain and netkit environments
-> > by inspecting cfg for netkit-specific attributes (netns, nk_queue,
-> > etc...).
-> > 
-> > Signed-off-by: Bobby Eshleman <bobbyeshleman@meta.com>
-> > ---
-> 
-> [..]
-> 
-> > Changes in v4:
-> 
-> This is a v3, but you already have changes for v4 :-p
+On Fri, May 8, 2026 at 2:15=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
+ wrote:
+>
+>
+>
+> On 07.05.26 22:50, Amery Hung wrote:
+> > On Thu, May 7, 2026 at 4:50=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.=
+com> wrote:
+> >>
+> >>
+> >> Hi Amery,
+> >>
+> >> On 07.05.26 15:53, Amery Hung wrote:
+> >>> [...]
+> >>> Am I understanding correctly that the better performance comes with
+> >>> the assumption that the XDP does not change headers?
+> >>>
+> >>> headlen is determined before the XDP program runs. If it push/pop
+> >>> headers, there could be headers in frags or data in the linear region
+> >>> after __pskb_pull_tail().
+> >>>
+> >> That's right.
+> >>
+> >>>>                         if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_X=
+MIT, rq->flags)) {
+> >>>>                                 struct mlx5e_frag_page *pfp;
+> >>>> @@ -2060,8 +2066,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5=
+e_rq *rq, struct mlx5e_mpw_info *w
+> >>>>                                 pagep->frags++;
+> >>>>                         while (++pagep < frag_page);
+> >>>>
+> >>>> -                       headlen =3D min_t(u16, MLX5E_RX_MAX_HEAD - l=
+en,
+> >>>> -                                       skb->data_len);
+> >>>> +                       headlen =3D min_t(u16, headlen - len, skb->d=
+ata_len);
+> >>>
+> >>> headlen - len can underflow but will be capped by skb->data_len, so
+> >>> this should be okay, right?
+> >> It is safe. But it might trigger an extra allocation in the pull when
+> >> len > headlen. We could also skip the pull in that case. Or do a
+> >> min(headlen - len, min(skb->data_len, MLX5E_RX_MAX_HEAD)). WDYT?
+> >
+> > Make sense, but this line took me a bit to understand. Maybe consider
+> > checking len < headlen first?
+> >
+> > if (len < headlen) {
+> >         headlen =3D min_t(u32, headlen - len, skb->data_len);
+> >         __pskb_pull_tail(skb, headlen);
+> > }
+> >
+> Yes, that's what I had in mind when skipping the pull. I would also
+> tag this as likely.
+>
+> > Another clarifying question. So this patch will improve the
+> > performance when the XDP programs don't change header length. For
+> > those that encap/decap, they should precisely pull only headers into
+> > the linear area for optimal performance. Is it correct?
+> >
+> Right for encap, but for decap not quite:
+>
+> Let's say that the XDP program pulls 64B header into the linear part
+> and snips 4B of the encap out. This would result in a pull of an
+> additional 4B (headlen (64B) - len (60B) =3D 4B) which are now
+> data bytes =3D> sub-optimal layout.
+>
+> I don't see how we can improve this corner case though.
 
-oops, will change on respin.
+I see. Thanks for the clarification.
 
-Thanks,
-Bobby
+I think the "if (len < headlen)" makes too many assumptions about what
+the XDP program did.
+
+How about this policy instead: If the XDP program did not create/pull
+data into the linear area, pull the parsed headers; otherwise, assume
+the XDP program owns the geometry. min() is still needed since the
+program can shrink the packet.
+
+if (!len) {
+        headlen =3D min(headlen, skb->data_len);
+        __pskb_pull_tail(skb, headen);
+}
+
+This preserves the optimization for the default no-modification case,
+and most importantly allow XDP program to get the optimal performance
+if it gets the final geometry right.
+
+>
+> Thanks,
+> Dragos
 
