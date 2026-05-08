@@ -1,368 +1,237 @@
-Return-Path: <linux-rdma+bounces-20237-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20238-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kJNtMqXO/Wk9jQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20237-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 13:53:09 +0200
+	id GJaXKIza/Wl2jgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20238-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 14:43:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27CD94F5FDE
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 13:53:09 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6085E4F683C
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 14:43:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B10263062C36
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 11:51:27 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 804B3301E494
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 12:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12B33DCD9F;
-	Fri,  8 May 2026 11:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E7536166A;
+	Fri,  8 May 2026 12:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Mzju2xmO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AXT1anL4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2EB324718;
-	Fri,  8 May 2026 11:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2662A3DDDB0
+	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 12:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778241082; cv=none; b=JpxW3az/5e7d8THmtias0O858U7huzvAbdgJ1c05PNnR1LOXozQWMI81TR7It0r7PdqyG5gNClJncfaVAwZCERyjmh9jpJx2sIk6NZu8/TAA6HzrITxrBg8OXDOcyPQuuXqxH/3csbR0dC8k4P0Ufb3CbRI/Z6YeRTK3ae/jx/I=
+	t=1778244229; cv=none; b=Ny/ziqxkEhdvF0dFm8qVEaH5WAUPxeyQl4N6TH2DHbqjLeVz7bSHt+TaChMXn2ROF/ZY0WpglG5n3Uy5dDV4UKZcOY0ZC3ePmfNmXx15dP2D6Ddo9RN3tUGvwc61glA1nqFIk3h38S3s7u8+mOmnz4DSlL4n7dkhEqVHPVIZmnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778241082; c=relaxed/simple;
-	bh=ixhGko3KP6MGbe+xFYPWKRjtnfXGBIWaB6JA+wdE5TY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CQQ6U7aVgUDB2PEEwhMi12qIxebEQ+EbRWxxUkpO08B2sdVFYeClSvpr0hQpvOQLpbWgwBkwFpeY/V/onofMHdlq4KmEunIC+UjkDVDZI9R7N6/el+/tSE9L53vFqdqvd6GZhppYA+9rxwWOXerOghlCt0NDrS69+KUiJtA4Sjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Mzju2xmO; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id CE95420B716A;
-	Fri,  8 May 2026 04:51:16 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CE95420B716A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1778241076;
-	bh=ExDrhCj01hpnB5CStN7nAd/gSXoBHqwEqTU42oOuFXI=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Mzju2xmOTyaCihTrZ0yojW9v0FEg7Ouh1AKPkhEgahxBRvP2feOkDmxqpnoIqjEXA
-	 BYRsQse7D/2yZ7fY4iK+hO7cxikS3Rxf9OUl5Z226VnPD9AolbsZ003Lq5wR+yn8vs
-	 CVJPjQYhTqdLvX/sZ5VmUh7jWv3DmI6tNZKVS14o=
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	stephen@networkplumber.org,
-	jacob.e.keller@intel.com,
-	dipayanroy@microsoft.com,
-	leitao@debian.org,
-	kees@kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	sdf@fomichev.me,
-	yury.norov@gmail.com
-Subject: [PATCH v8 2/2] net: mana: force full-page RX buffers via ethtool private flag
-Date: Fri,  8 May 2026 04:46:35 -0700
-Message-ID: <20260508115100.488506-3-dipayanroy@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260508115100.488506-1-dipayanroy@linux.microsoft.com>
-References: <20260508115100.488506-1-dipayanroy@linux.microsoft.com>
+	s=arc-20240116; t=1778244229; c=relaxed/simple;
+	bh=DLlT5gJ88mWG0cJW0N7+9cR72wBKSizYhJaXd2JhuOk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ru8tEW4AMbz6oXu3omyPehJfe5DxgfhHwSv0dFCLR/1yvY66cj4yPGwlPLdatNoL4qjaJxCrrKpM1/g3WrhLkHf6YnXGX2tE0eCfusniVj0Q3nUnCTyYUWEYY4lucaAbHj+QyV2kZW+egmeef0qb5flpQ2gP68vOm0CTMgz3Z1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AXT1anL4; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-44c350a5b87so1249909f8f.3
+        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 05:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778244227; x=1778849027; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hHaDVqGuSgw1dOeDgbNYynn5tMPklJkBwGnBT4ff2H8=;
+        b=AXT1anL4AKNnlwziF3Q7sYLFiXkBWXLAHCCX9N0TdwRf9v3cfPnfs2FNAN57YIMrQ7
+         nSlf1ngjvt6pD5UprJQtl6paw6Mw0b8O5/TTzZsb1KE6omRqGSI6+jf+9Mih4Nycjcjw
+         IA79tlt195S0Xb6FhAcX5qltOndyWTlmFhB6Pv7lDz6SfsWbJk5lyAD4RE+N8s55wTFA
+         R286tN2KHbgnDPClJgup51n0iczaLRhcrlD8SWTpwYzVee42/kXaLGnuUAB/dqJRuiuH
+         gw4GV7Zkfg806tEpvLsslf000ce/SjScTOzhpv7aeEfkqcnFVMd1J5L8ec3yd9QPaM+K
+         bSmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778244227; x=1778849027;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=hHaDVqGuSgw1dOeDgbNYynn5tMPklJkBwGnBT4ff2H8=;
+        b=TJ03EJRuf+cE8SwSuK1snq2JfoKh2tFHUer0jG3i/HM2aq8dUwUkCLlevY5bUMK4UX
+         hY113cMtRHSrbMQvar33YvL00COYe/LCkkTpOwZ+9PmumGol29M35mroBKpL5YzLgYBK
+         sJ+QjSsuFCD1lYECEtnvQ2fHYEhLRymujqE4Fb0HE6bKEMgjcOb6IOx1TP05okO7QDx+
+         orgwYEyp9sNGpTqWgcSum3U2mPP39lOX64g4PH+mkXMkdtmer4TzXXOlrWcyvZu+K72r
+         /OE4/P4XCKSOGYPJA+sdZ6w5KvdwOZSCNF5srZYfLw87+zxII18SHKs/JPE4iHZqHVCV
+         Hccw==
+X-Forwarded-Encrypted: i=1; AFNElJ8xwOFmstmylGqQ79N1pxXInUO9ubEGBrKPE0XUNwJ9nhprqkDuEXEO/VPG2WzCcG3f0beKpp46a0DV@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxu4nA93OCj/SecbvaD82v1N6DG1IE9ryumrpqz+fI895T1twtu
+	Ey8jeLRTkunFLkD4D5rwIplZimrtoagNAdfsNAxPVTTZ1hBBQD9qR/sP
+X-Gm-Gg: Acq92OGiKTxpxeB+c9EZfHb7dhmI4Yplavcy/XxGjd2TzJ2jKA32o3Ui72pYkWSqxnZ
+	I/s6G2jtD/291qnQa+WTQ6LzrOnn4CkhUySV3+N5DZqn2NBE2cgFqxoal5Mi3dtOSlopa8g2kEj
+	Yk48dNLOludd7Y+tgt3tD9HqNm4Z4CraywwlapKj0/MKKYdtw50kzrYms2gDaRNu0l1bGRQWtMg
+	j7fTo0KQw4GT7EUeDy7bUqN3/6amkzKyS6VJYzJjy8R6L7ROw9hLdyTQb6Dj5oGl76V5rQylU6f
+	NKgAIBwthkutjPEMmHEHH3EjxmL1MWDq8Qa6uoCSVlRdn1qE3Gew3LSYMQyFNs3f1K6WiXJDj4/
+	xzZETm8q9SU/5jTz1K/scnQciEDhg/VpMTo7K924BlfZElAtl9T/jm0HL57F9XYLdBmSCptesxR
+	YU6NUhwD1JBOw9V0P1FCUiNE/WDfx74o8X7tcgU9aY5nmU5WwRS75OkKR2Deor0bzP
+X-Received: by 2002:a05:6000:4010:b0:44b:aca1:f480 with SMTP id ffacd0b85a97d-4515a6c3361mr19344538f8f.8.1778244226283;
+        Fri, 08 May 2026 05:43:46 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548eb75c29sm4514358f8f.9.2026.05.08.05.43.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2026 05:43:45 -0700 (PDT)
+Date: Fri, 8 May 2026 13:43:43 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Christoph Paasch <cpaasch@openai.com>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, "Andrew Lunn" <andrew+netdev@lunn.ch>, "David S.
+ Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, "Mark
+ Bloch" <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos
+ Tatulea <dtatulea@nvidia.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ "Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, Amery
+ Hung <ameryhung@gmail.com>, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH net-next V6 2/3] net/mlx5e: Avoid copying payload to the
+ skb's linear part
+Message-ID: <20260508134343.6651d7c6@pumpkin>
+In-Reply-To: <20260507095330.318892-3-tariqt@nvidia.com>
+References: <20260507095330.318892-1-tariqt@nvidia.com>
+	<20260507095330.318892-3-tariqt@nvidia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 27CD94F5FDE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 6085E4F683C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,vger.kernel.org,networkplumber.org,intel.com,debian.org,gmail.com,iogearbox.net,fomichev.me];
-	TAGGED_FROM(0.00)[bounces-20237-lists,linux-rdma=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dipayanroy@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-20238-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FREEMAIL_CC(0.00)[openai.com,google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,nvidia.com,vger.kernel.org,iogearbox.net,gmail.com,fomichev.me];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_TWELVE(0.00)[33];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.microsoft.com:mid,linux.microsoft.com:dkim]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,openai.com:email]
 X-Rspamd-Action: no action
 
-On some ARM64 platforms with 4K PAGE_SIZE, page_pool fragment
-allocation in the RX refill path can cause 15-20% throughput
-regression under high connection counts (>16 TCP streams).
+On Thu, 7 May 2026 12:53:29 +0300
+Tariq Toukan <tariqt@nvidia.com> wrote:
 
-Add an ethtool private flag "full-page-rx" that allows the user to
-force one RX buffer per page, bypassing the page_pool fragment path.
-This restores line-rate (180+ Gbps) performance on affected platforms.
+> From: Christoph Paasch <cpaasch@openai.com>
+> 
+> mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
+> bytes from the page-pool to the skb's linear part. Those 256 bytes
+> include part of the payload.
+> 
+> When attempting to do GRO in skb_gro_receive, if headlen > data_offset
+> (and skb->head_frag is not set), we end up aggregating packets in the
+> frag_list.
+> 
+> This is of course not good when we are CPU-limited. Also causes a worse
+> skb->len/truesize ratio,...
+> 
+> So, let's avoid copying parts of the payload to the linear part. We use
+> eth_get_headlen() to parse the headers and compute the length of the
+> protocol headers, which will be used to copy the relevant bits of the
+> skb's linear part.
+> 
+> We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
+> stack needs to call pskb_may_pull() later on, we don't need to reallocate
+> memory.
+> 
+> This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
+> LRO enabled):
+> 
+> BEFORE:
+> =======
+> (netserver pinned to core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.01    32547.82
+> 
+> (netserver pinned to adjacent core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.00    52531.67
+> 
+> AFTER:
+> ======
+> (netserver pinned to core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.00    52896.06
+> 
+> (netserver pinned to adjacent core receiving interrupts)
+>  $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.00    85094.90
+> 
+> Additional tests across a larger range of parameters w/ and w/o LRO, w/
+> and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
+> TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
+> better performance with this patch.
+> 
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> index 75ccf40a7f17..301b33419207 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+...
+> @@ -2060,8 +2066,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+>  				pagep->frags++;
+>  			while (++pagep < frag_page);
+>  
+> -			headlen = min_t(u16, MLX5E_RX_MAX_HEAD - len,
+> -					skb->data_len);
+> +			headlen = min_t(u16, headlen - len, skb->data_len);
 
-Usage:
-  ethtool --set-priv-flags eth0 full-page-rx on
+That looks entirely broken.
+skb->data_len can be larger than 65535 so (u16)skb->data_len can
+discard significant bits.
 
-There is no behavioral change by default. The flag must be explicitly
-enabled by the user or udev rule.
+I can't quite see why the subtract can't overflow either.
+It is entirely non-obvious.
 
-The existing single-buffer-per-page logic for XDP and jumbo frames is
-consolidated into a new helper mana_use_single_rxbuf_per_page() which
-is now the single decision point for both the automatic and
-user-controlled paths.
+There seem to be far too many u16 local variables in this code.
+Typically they just make the code larger because they require the
+compiler mask arithmetic results to 16bits all the time.
+(Only x86 and m68k have instructions for 8 and 16bit arithmetic.)
+The same is true for function parameters and results.
 
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c |  22 +++-
- .../ethernet/microsoft/mana/mana_ethtool.c    | 103 ++++++++++++++++++
- include/net/mana/mana.h                       |   8 ++
- 3 files changed, 131 insertions(+), 2 deletions(-)
+I think all the min_t() in this file can easily be changed to min().
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 462a457e7d53..c4bc8bf19d75 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -744,6 +744,25 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
- 	return va;
- }
- 
-+static bool
-+mana_use_single_rxbuf_per_page(struct mana_port_context *apc, u32 mtu)
-+{
-+	/* On some platforms with 4K PAGE_SIZE, page_pool fragment allocation
-+	 * in the RX refill path (~2kB buffer) can cause significant throughput
-+	 * regression under high connection counts. Allow user to force one RX
-+	 * buffer per page via ethtool private flag to bypass the fragment
-+	 * path.
-+	 */
-+	if (apc->priv_flags & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF))
-+		return true;
-+
-+	/* For xdp and jumbo frames make sure only one packet fits per page. */
-+	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc))
-+		return true;
-+
-+	return false;
-+}
-+
- /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
- static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 			       int mtu, u32 *datasize, u32 *alloc_size,
-@@ -754,8 +773,7 @@ static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
- 	/* Calculate datasize first (consistent across all cases) */
- 	*datasize = mtu + ETH_HLEN;
- 
--	/* For xdp and jumbo frames make sure only one packet fits per page */
--	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
-+	if (mana_use_single_rxbuf_per_page(apc, mtu)) {
- 		if (mana_xdp_get(apc)) {
- 			*headroom = XDP_PACKET_HEADROOM;
- 			*alloc_size = PAGE_SIZE;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 7e79681634db..f22bbb325948 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -133,6 +133,10 @@ static const struct mana_stats_desc mana_phy_stats[] = {
- 	{ "hc_tc7_tx_pause_phy", offsetof(struct mana_ethtool_phy_stats, tx_pause_tc7_phy) },
- };
- 
-+static const char mana_priv_flags[MANA_PRIV_FLAG_MAX][ETH_GSTRING_LEN] = {
-+	[MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF] = "full-page-rx"
-+};
-+
- static int mana_get_sset_count(struct net_device *ndev, int stringset)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -144,6 +148,10 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
- 		       ARRAY_SIZE(mana_phy_stats) +
- 		       ARRAY_SIZE(mana_hc_stats)  +
- 		       num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-+
-+	case ETH_SS_PRIV_FLAGS:
-+		return MANA_PRIV_FLAG_MAX;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -192,6 +200,14 @@ static void mana_get_strings_stats(struct mana_port_context *apc, u8 **data)
- 	}
- }
- 
-+static void mana_get_strings_priv_flags(u8 **data)
-+{
-+	int i;
-+
-+	for (i = 0; i < MANA_PRIV_FLAG_MAX; i++)
-+		ethtool_puts(data, mana_priv_flags[i]);
-+}
-+
- static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-@@ -200,6 +216,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 	case ETH_SS_STATS:
- 		mana_get_strings_stats(apc, &data);
- 		break;
-+	case ETH_SS_PRIV_FLAGS:
-+		mana_get_strings_priv_flags(&data);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -590,6 +609,88 @@ static int mana_get_link_ksettings(struct net_device *ndev,
- 	return 0;
- }
- 
-+static u32 mana_get_priv_flags(struct net_device *ndev)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+
-+	return apc->priv_flags;
-+}
-+
-+static int mana_set_priv_flags(struct net_device *ndev, u32 priv_flags)
-+{
-+	struct mana_port_context *apc = netdev_priv(ndev);
-+	u32 changed = apc->priv_flags ^ priv_flags;
-+	u32 old_priv_flags = apc->priv_flags;
-+	bool schedule_port_reset = false;
-+	int err = 0;
-+
-+	if (!changed)
-+		return 0;
-+
-+	/* Reject unknown bits */
-+	if (priv_flags & ~GENMASK(MANA_PRIV_FLAG_MAX - 1, 0))
-+		return -EINVAL;
-+
-+	if (changed & BIT(MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF)) {
-+		apc->priv_flags = priv_flags;
-+
-+		if (!apc->port_is_up) {
-+			/* Port is down, flag updated to apply on next up
-+			 * so just return.
-+			 */
-+			return 0;
-+		}
-+
-+		/* Pre-allocate buffers to prevent failure in mana_attach
-+		 * later
-+		 */
-+		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+		if (err) {
-+			netdev_err(ndev,
-+				   "Insufficient memory for new allocations\n");
-+			apc->priv_flags = old_priv_flags;
-+			return err;
-+		}
-+
-+		err = mana_detach(ndev, false);
-+		if (err) {
-+			netdev_err(ndev, "mana_detach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+
-+			/* Port is in an inconsistent state. Restore
-+			 * 'port_is_up' so that queue reset work handler
-+			 * can properly detach and re-attach.
-+			 */
-+			apc->port_is_up = true;
-+			schedule_port_reset = true;
-+			goto out;
-+		}
-+
-+		err = mana_attach(ndev);
-+		if (err) {
-+			netdev_err(ndev, "mana_attach failed: %d\n", err);
-+			apc->priv_flags = old_priv_flags;
-+
-+			/* Restore 'port_is_up' so the reset work handler
-+			 * can properly detach/attach. Without this,
-+			 * the handler sees port_is_up=false and skips
-+			 * queue allocation, leaving the port dead.
-+			 */
-+			apc->port_is_up = true;
-+			schedule_port_reset = true;
-+		}
-+	}
-+
-+out:
-+	mana_pre_dealloc_rxbufs(apc);
-+
-+	if (schedule_port_reset)
-+		queue_work(apc->ac->per_port_queue_reset_wq,
-+			   &apc->queue_reset_work);
-+
-+	return err;
-+}
-+
- const struct ethtool_ops mana_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_CQE_FRAMES,
- 	.get_ethtool_stats	= mana_get_ethtool_stats,
-@@ -608,4 +709,6 @@ const struct ethtool_ops mana_ethtool_ops = {
- 	.set_ringparam          = mana_set_ringparam,
- 	.get_link_ksettings	= mana_get_link_ksettings,
- 	.get_link		= ethtool_op_get_link,
-+	.get_priv_flags		= mana_get_priv_flags,
-+	.set_priv_flags		= mana_set_priv_flags,
- };
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index aa90a858c8e3..1d44a78da520 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -30,6 +30,12 @@ enum TRI_STATE {
- 	TRI_STATE_TRUE = 1
- };
- 
-+/* MANA ethtool private flag bit positions */
-+enum mana_priv_flag_bits {
-+	MANA_PRIV_FLAG_USE_FULL_PAGE_RXBUF = 0,
-+	MANA_PRIV_FLAG_MAX,
-+};
-+
- /* Number of entries for hardware indirection table must be in power of 2 */
- #define MANA_INDIRECT_TABLE_MAX_SIZE 512
- #define MANA_INDIRECT_TABLE_DEF_SIZE 64
-@@ -531,6 +537,8 @@ struct mana_port_context {
- 	u32 rxbpre_headroom;
- 	u32 rxbpre_frag_count;
- 
-+	u32 priv_flags;
-+
- 	struct bpf_prog *bpf_prog;
- 
- 	/* Create num_queues EQs, SQs, SQ-CQs, RQs and RQ-CQs, respectively. */
--- 
-2.43.0
+-- David
+
+>  			__pskb_pull_tail(skb, headlen);
+>  		}
+>  	} else {
 
 
