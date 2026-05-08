@@ -1,192 +1,119 @@
-Return-Path: <linux-rdma+bounces-20220-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20221-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kDhKKdmE/WmefQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20220-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 08:38:17 +0200
+	id YH4FF+Ck/Wl0ggAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20221-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 10:54:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A52E4F2875
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 08:38:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B04AC4F3EE7
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 10:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3BA473017EFB
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 06:38:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 664673037DCA
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 08:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288E23603D5;
-	Fri,  8 May 2026 06:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64768378D95;
+	Fri,  8 May 2026 08:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="JqwzEvEl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txiMh5cH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B9C36D9F6;
-	Fri,  8 May 2026 06:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2142330DEBA;
+	Fri,  8 May 2026 08:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778222268; cv=none; b=KHh8O2JDWitl98G7oZ5NCu7ULxd2w/nDPnbF5aIZ7XKsfttMGkRfILq+G5eJ+v6eKTpJ01j2qjs6da0DtTdmYBNBCiXoxb9cpOfG+dR6GX0Q0e0QGLlqp4A3n1/MB4u+nVWNZ72xURScXFw1LXXwNY7I+q2EOjwH9wO6mymhHDw=
+	t=1778230400; cv=none; b=blE+x3sFWGrDogZQB/FSAFcC7pQEjPDzAKUHgl0NNvInwzx/qiflaTC1dpWVQBNZYjjBdz6//RK5HeHBaQFKoLVYC4AnrN84Yq4HMd+ansfo/q3fOThPRtGz/iQJYeFMK+lLwvwImmrd1nTZBcC8m6Wvs7Z29kr7BTWvvi6XN0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778222268; c=relaxed/simple;
-	bh=qu4VFGnAD79k18X/nN8oI3lmAqYSeiOj6OqbG9omgFQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CAm4gHXYOyhJ9jYBqxWtxSwp1NN18XKiR1ZPnRYd7VCJMARBu52JFjbm9pu0e7Y3VpC/USRGFyqlhMb/NdZyhH4foB7XSYFHw1Ww2kU8/UGr3oDXOQLjKMuRKEHErJh7Khy64sY177RXiDkhMkg1QisXt+HWMxMAqbNYakhCVRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JqwzEvEl; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1778222249; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=SptUoC4xV9rNtAjrUWsmCR3aCnuNAMIlfsEk+oQEgVs=;
-	b=JqwzEvEl0yL2fhxU1vpxN8KGYJKG6SDr4nI1wR+DRiXEg7zTDQc8JR/yULL5ZYTWk98nMjkcynE6SRKFfVyyyKzQbTKx6YHoDc3whpyOVi6uzbg1kMiyIPZxFbYptPTGdpbxKrt3SYvYjXTbXgp//xVRoFQm358dphtX42C++9E=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X2WYxel_1778222248;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0X2WYxel_1778222248 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 14:37:28 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Dust Li <dust.li@linux.alibaba.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	oliver.yang@linux.alibaba.com,
-	pasic@linux.ibm.com
-Subject: [PATCH net-next 2/2] net/smc: reduce TX slot contention with exclusive wait
-Date: Fri,  8 May 2026 14:37:18 +0800
-Message-ID: <20260508063718.101622-3-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20260508063718.101622-1-alibuda@linux.alibaba.com>
-References: <20260508063718.101622-1-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1778230400; c=relaxed/simple;
+	bh=0Oc+nQErYflak7AM+05y0HqXVo7pIUyXWjUVlj9tC+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=brSat/fEdgClyd3bcU1nglxyqMf8I7RYHGrtSL2CcyRMOkXiEStDO5b0Z6M/SxOpY2uHOtGTgQTsBv6kFX2Qvvwa4MQjU6a9O61i2Hmq06i4dwMbSQq0Ncj/XlVTFV58ZY2H0FLf3Pl4LfzEHSWk8LGlS/++NBcyFi8D/X2CgOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txiMh5cH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D707CC2BCB0;
+	Fri,  8 May 2026 08:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778230399;
+	bh=0Oc+nQErYflak7AM+05y0HqXVo7pIUyXWjUVlj9tC+k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=txiMh5cHWkzob08XqHJFpZGd6NpjHWMfELATGg5SAo0eZzhi3lFiVzgBi09ZFWbAO
+	 MIiQg8QzRLcJB0KSu7dGa1sDXL3Qia6pMxP4+29xiRFcxZqbk3m47uEoC9RMxq9q7n
+	 Q5ItaEL4AZ8GBbnjn5i6rwVefHZslhBFg/2Fi7HdtM2Ea34OkXhS1qUTKsWFM5xg1s
+	 X2r7/U/zIp5nWET+vqdLVQbxv0hP8+Lh9UjkZgEXHT0UId9EzWHdC8P1hSgEHVUZM3
+	 yzKD0zXvVWET04xmUWsoU3smXTsscuZVzYUZFVUC7c6b3utRZBdoNZZxgqqlyhEaDD
+	 saOfNUQq5jiIQ==
+Date: Fri, 8 May 2026 09:53:15 +0100
+From: Simon Horman <horms@kernel.org>
+To: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Moshe Shemesh <moshe@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v1] net/mlx5: Fix HWS action unwind NULL dereference
+Message-ID: <20260508085315.GK15617@horms.kernel.org>
+References: <20260504220725.46686-1-prathameshdeshpande7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4A52E4F2875
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260504220725.46686-1-prathameshdeshpande7@gmail.com>
+X-Rspamd-Queue-Id: B04AC4F3EE7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20220-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20221-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alibuda@linux.alibaba.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-smc_wr_tx_get_free_slot() waits for a free TX slot with
-wait_event_interruptible_timeout(). Since the wait_event family
-enqueues waiters as non-exclusive, wake_up() may wake multiple
-waiters even though only one can use the slot, causing
-thundering-herd contention when slots are scarce.
+On Mon, May 04, 2026 at 11:06:46PM +0100, Prathamesh Deshpande wrote:
+> mlx5_fs_fte_get_hws_actions() stores some destination actions in
+> fs_actions[] before checking whether action creation succeeded.
+> 
+> If creating a table-number or range destination action fails, or if
+> fetching a sampler destination action fails, dest_action is NULL but
+> num_fs_actions has already been incremented. The shared error path then
+> calls mlx5_fs_destroy_fs_action(), which dereferences fs_action->action
+> to get the HWS action type, causing a NULL pointer dereference while
+> unwinding the original failure.
+> 
+> Track whether the current destination action needs fs_actions[] cleanup,
+> but append it only after dest_action has been validated.
+> 
+> Fixes: 2ec6786ad0a6b ("net/mlx5: fs, add HWS fte API functions")
+> Fixes: 32e658c84b6d ("net/mlx5: fs, add support for dest flow sampler HWS action")
+> Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
 
-Use an exclusive wait loop with prepare_to_wait_exclusive() so
-wake_up() wakes only one waiter per freed slot.
-smc_wr_wakeup_tx_wait() still uses wake_up_all() during link
-teardown, so teardown behavior is unchanged.
-
-Performance measured with netperf TCP_RR (63 flows, 200B write /
-1000B read, 60s duration):
-
-+-------------------------------+---------------+---------------+
-| smcr_max_conns_per_lgr        | 32            | 255           |
-|-------------------------------+---------------+---------------|
-| before                        | 4.85 Gb/s     | 657.95 Mb/s   |
-|-------------------------------+---------------+---------------|
-| after                         | 5.01 Gb/s     | 2.2 Gb/s      |
-+-------------------------------+---------------+---------------+
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- net/smc/smc_wr.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
-
-diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-index 48037a3d97a3..0a6f2befb0e2 100644
---- a/net/smc/smc_wr.c
-+++ b/net/smc/smc_wr.c
-@@ -159,9 +159,11 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
- 			    struct smc_rdma_wr **wr_rdma_buf,
- 			    struct smc_wr_tx_pend_priv **wr_pend_priv)
- {
-+	unsigned long timeout = SMC_WR_TX_WAIT_FREE_SLOT_TIME;
- 	struct smc_link_group *lgr = smc_get_lgr(link);
- 	struct smc_wr_tx_pend *wr_pend;
- 	u32 idx = link->wr_tx_cnt;
-+	DEFINE_WAIT(wait);
- 	int rc;
- 
- 	*wr_buf = NULL;
-@@ -171,17 +173,27 @@ int smc_wr_tx_get_free_slot(struct smc_link *link,
- 		if (rc)
- 			return rc;
- 	} else {
--		rc = wait_event_interruptible_timeout(
--			link->wr_tx_wait,
--			!smc_link_sendable(link) ||
--			lgr->terminating ||
--			(smc_wr_tx_get_free_slot_index(link, &idx) != -EBUSY),
--			SMC_WR_TX_WAIT_FREE_SLOT_TIME);
--		if (!rc) {
--			/* timeout - terminate link */
--			smcr_link_down_cond_sched(link);
--			return -EPIPE;
-+		rc = 0;
-+		for (;;) {
-+			prepare_to_wait_exclusive(&link->wr_tx_wait, &wait,
-+						  TASK_INTERRUPTIBLE);
-+			if (!smc_link_sendable(link) || lgr->terminating ||
-+			    smc_wr_tx_get_free_slot_index(link, &idx) != -EBUSY)
-+				break;
-+			timeout = schedule_timeout(timeout);
-+			if (!timeout) {
-+				/* timeout - terminate link */
-+				smcr_link_down_cond_sched(link);
-+				break;
-+			}
-+			if (signal_pending(current)) {
-+				rc = -ERESTARTSYS;
-+				break;
-+			}
- 		}
-+		finish_wait(&link->wr_tx_wait, &wait);
-+		if (rc)
-+			return rc;
- 		if (idx == link->wr_tx_cnt)
- 			return -EPIPE;
- 	}
--- 
-2.45.0
+Reviewed-by: Simon Horman <horms@kernel.org>
 
 
