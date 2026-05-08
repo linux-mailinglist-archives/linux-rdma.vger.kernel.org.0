@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-20247-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20248-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OKbdJX/6/WnYlQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20247-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 17:00:15 +0200
+	id iJ4tBsX9/Wl2lgAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20248-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 17:14:13 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ADBB4F8389
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 17:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD7A4F873D
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 17:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A2E7330A72EB
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 14:57:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 46D1630F44EB
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 15:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981483F7AA9;
-	Fri,  8 May 2026 14:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECD63F9F2D;
+	Fri,  8 May 2026 15:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3bMKqn/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k0GSFJJr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
+Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DCD3F65EC
-	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 14:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B5F3624B3
+	for <linux-rdma@vger.kernel.org>; Fri,  8 May 2026 15:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778252224; cv=none; b=siXiXm43k1g90BXGpXIoRbUfJjirZo6qs+jlvr5tXaj3mMXRlqbUVJX5pDmPcQdIO2wCF4TLdw3L/CE9ZwOTjhqLB82afJJ4OKvKmouyYOls8RtHI6zX/d8XXHr8bytwBwlHyiP06IFeDpbbPUylwjT9sTmsp1AyguG3yiT/VJw=
+	t=1778252488; cv=none; b=LDkF+v7/PVmdNkXl1h7B6otemezEiDQkEpGq13qo934/f1K4O5zEC/nSnMdWQ/I7rZHlxmilFrGtw7VBXzjDqHbjzbjEAxr0Z4CHX5jPo03c695CYBM1TgWqyiSJDA9e7Lye+OxD8uttzTqxYkQC+VCKAXCu9qI+ThbJM4SxdIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778252224; c=relaxed/simple;
-	bh=4/aVJnWaXKkXi45aVG/ghAkKHKmtNlgv64ubRDm3pNY=;
+	s=arc-20240116; t=1778252488; c=relaxed/simple;
+	bh=C4KEQYKYMt+jPGupFXeYgtyzFlnYTdxDs0//Owq2PWA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fZfWf97Vlwb2aSAcdYZkx+XyuhrPq/+ZKdXuCewl8gOj8GkDqHDwF6wJ7Dj+gep3pbjcQTNaWD1J5s90uPbagKRs5hoXOvr2zNUary+OyKGv0TKYhgzQv0rTMZiGFu2jJ4Zsivq05CI+jFVtIUe+YkgaqFyD82d9Zt5zNfreSkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A3bMKqn/; arc=none smtp.client-ip=209.85.210.194
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjRY9ouFS9r7DpuvbMbbRNkn/ly5QAg4CArPkTkCccaL6eEg88oOxRo/dl6fE87J4YOkt0/uh26ssTQ8IMHa1pBnnU9WvJ/UO7tL8H2AkFnmtWUnAAKUFJLm0OkCxZ7nxr8UDEBYaYoYZJow3WVbPeOVkkWNPoYPstTq90YI8t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k0GSFJJr; arc=none smtp.client-ip=209.85.216.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-82f8b60e54dso1540110b3a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 07:57:02 -0700 (PDT)
+Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-3664df32e91so658391a91.3
+        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2026 08:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778252222; x=1778857022; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1778252480; x=1778857280; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MKeh4P5RRX9HdRzyfTHqYV6PxblA4dDzAyEahLUA+Ik=;
-        b=A3bMKqn/Gk8Irboq+VjkYR/RT3AMkP+uqrEWN1i6QzdfkjeKQeFGPEHxQOcNgVVCfb
-         3BHfxwMeebOqbTkfNMbfaMt3dOOPBVmScJUowDz5LrgnEGB8ZWSB0vIJPKwqzkUk+Xek
-         bOrlfoBKysN3MkFH5GCsFBGcnSxFY1DeVT+6QWI8MmY4PAhaWQRyJY1F8lIguVJv1BYn
-         iwUUi2jv4WoQmeH8e5HLfsPdIEzbhIzTBE+wQrRzt+RT4vM3myf2jEOZSsZ7+pkrET1x
-         8aa0PJk9TPozZc9utIvBCoaExaFcJieMoMI/sY4H1CgAacVTRrL9XW0vdmBUeAfVOzco
-         /pww==
+        bh=VVsAIDWuXutjxalCznuSZJzmb8d2/FmjsiE/YFxHP1o=;
+        b=k0GSFJJrD1to0PbG8ZmvC0Y9LJNb3QkjjoZtb7wK/ZDczTYm3uWjZBFFtRLsX9t/eq
+         +s8uZdFUFfdJz/tkhb9zkkihV4X9ZiK+TI0oRe16kpl8iYbUDquIXDqeqzOGTwJS2vVI
+         5S1Jl/u0MS862SupdkPlckRMaUYyuej8xckw5Vm/alUJ3RY3tQms3rPS9lmbi1bxzblN
+         KPr74+xMjODE1ognAQZHD2wDXQhDTyidKirrffNRx4FR9wX9o2Q/hxjbNO32U1L9fLgQ
+         mbMr5b6mg/4oZBUt1XgFSBaygNFogyF3lxCq9TVhNSwvfPFBQV8mvBlj1bS7NjnNqhLa
+         r0GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778252222; x=1778857022;
+        d=1e100.net; s=20251104; t=1778252480; x=1778857280;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MKeh4P5RRX9HdRzyfTHqYV6PxblA4dDzAyEahLUA+Ik=;
-        b=aKaQI+voUkmNijYJOC7L18X4IiDRjYwWfcgvAOBhacaQSSmhfR7BSMBUHxzE7eaEDH
-         N6grN56dGg2L3k26o+/PW7kybPXRzGCLLATB6Sw5sFnMXZuBolYOfqnr0g8Adztvyymv
-         Xm7/Lgw8PyiNhOOyTzcUmN2KXZ9dQRhMEn1sXVGySUMPyANLEd7d8v6Jv68XR+EwA/g0
-         MBewr3oDrynmiK+GpT88LrO6M/q1Z7kio1MY9ns3Fb83yJXDSGRWhia50nk3fpP7PHh2
-         K+28HCmlYMASwvF2PNw0KXHpLguqD78dDw4iPfCoEJ2v4GWlEJv+iirZIa+mZ8qjLGk2
-         UW4Q==
-X-Forwarded-Encrypted: i=1; AFNElJ9BJ25l0x/UjYLwyZdNATda+tMueO03nCMB+MyGVkenw2BgLXZAB9xoYRULDogDx1rmwJYy4yKFLUR9@vger.kernel.org
-X-Gm-Message-State: AOJu0YymSglRNuth3+MS/JLXIA5UnMOqkwtxdGbXBAqVv+5EU5OYGl88
-	WWPdUc/BnEUXeMQxbjtDMRj4NunL+K/Y6J3IIE/DVjq3ajY9hDJXHjsT
-X-Gm-Gg: Acq92OFgWq7HWwX6e1RMUIDuOXCSQa+PgFQjycs7gCcQIdYmPaqCZ3TWAUsc8MPhCMy
-	RpjzNPx/CKxXr9pgD+skJXvMvq2PYzpkxP4BAxx4Tx1gIwkdO4LEGLW5XpePJkRnenUCvZ5Uyhs
-	Y2YW33B0gm8QIPCSaSWS53ysaE82zSxdHYN1Ldbrq6fmIBNmj7b4XPG7h9NJYAcUCKEKOPAcdbK
-	gphr8X/GSwSBrJmJlVz1PuPjxwe7XhpqiEL3rvTS3fXMWCffrn6HtvaICNQbA0SCxOKxnOyCNGQ
-	cjRvuSQPckbvU3FwB+mlhKOf6xEYN/xgCpN3WmPY3qqFtoX3zzz1XFErDZqKfMCoUdnjq2KShQ/
-	2FS+MAZnKgV+DDV6/kVvPQh1dqnsOLYh1T819SHNDWlqHtm8TcqSnyDDKWFKnRPji+EBesFkNwT
-	bBA9Vl6v01gEhHJ/y2
-X-Received: by 2002:a05:6a00:4195:b0:824:374a:1407 with SMTP id d2e1a72fcca58-83a5c4bd711mr13683272b3a.16.1778252221575;
-        Fri, 08 May 2026 07:57:01 -0700 (PDT)
-Received: from localhost ([2a03:2880:2ff:72::])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-839659498f1sm16492392b3a.17.2026.05.08.07.57.00
+        bh=VVsAIDWuXutjxalCznuSZJzmb8d2/FmjsiE/YFxHP1o=;
+        b=KFQ3yML7hbSd7CQIJIROOcezdduzElB/mPnpGmnkFO+nWVFFOvnufBZ2p22j91S5eR
+         pl7MEhzdt6BjMY+JBtPeWo+inhUn7fy+VF0gpPORiQfzZeiODiG37jS6DFAvPdFZt5vt
+         a9QYZ+1PicMZ2UQLoPyJE/uyZJcfAHAVhlSkpT7dswTZjc3UYNR0CY7/Mid+yNGyXxQc
+         c4lHmkZ7kzXQZp9i7hrz13sEJ38ZTyW6lRGDuB+DANfwfxwfDJMAGxVyFxuLo8tGtatJ
+         PHe24JnEfcTOoxvtY9orh/J65OQZZmEX7pQcnF/Z6oNMDOvemcsjIrtHK6dA6MGbON2c
+         0Cbw==
+X-Forwarded-Encrypted: i=1; AFNElJ/IS9tR6/ZYUmMJccAyqAS6xBunZXBT0Ej83l+B6zZ6EBP5n1jr18KndkP03zEBMSqQk+lrjH0WM0oP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9XksGO4XOLLgNxp6pudcbQzLj0sQ0BVADSo8kyWIsXljJwYFz
+	gYEIE7qYUhNEcE5hchJyS/plVLTWtOgnpuRm8WNw5hSlCHl3SbVQf8SJ
+X-Gm-Gg: Acq92OGBBQ/gy88UlbQee+dmHq91/d7SLwkJPMLLe7c5jbmdTHdAml2ge36WdrhaGz0
+	apNKmHtzMppdum84lmVQ9tHs4DKQL39brl//Ip6YqnS+yv5mB+2bKx6fvgh+M2jh0AxSUZ4hjWu
+	vCmGQrJuJ67zZmKXMaPrcbFo1j8780oFN2df8a/x7rP5rMNNM70BYObg4b5PyNl5ggOVZXPdMmu
+	q3Ph5JK5iACkjxIiiRyPPtuQFjyMTgsaPDzIiKmBWQ5IRyIpk9M5CnrQgJClyy+RzLh1se789q3
+	GRTkUqx2UZnjDit2eGEpVXafuJJK0/0PBx5SvnfrF13QmU3s5oRFTId5AMYyNk6Jl1cWTMiJjWg
+	ajAsffJ76XOaVNdV2N70moPBh39zR95QodIvwlxPFEzO9axeuqtf++z9MPRHUBWd/R1h/9UNJqg
+	h7NXAVQR4WsH04DmH5zgcVX5Fh4a40U5c0uOH0
+X-Received: by 2002:a17:90a:710:b0:366:159a:c228 with SMTP id 98e67ed59e1d1-36615b96cf0mr4284277a91.6.1778252479571;
+        Fri, 08 May 2026 08:01:19 -0700 (PDT)
+Received: from localhost ([2a03:2880:2ff:3::])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-367c119f372sm61912a91.2.2026.05.08.08.01.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2026 07:57:01 -0700 (PDT)
-Date: Fri, 8 May 2026 07:57:00 -0700
+        Fri, 08 May 2026 08:01:18 -0700 (PDT)
+Date: Fri, 8 May 2026 08:01:17 -0700
 From: Stanislav Fomichev <sdf.kernel@gmail.com>
 To: Bobby Eshleman <bobbyeshleman@gmail.com>
 Cc: Andrew Lunn <andrew+netdev@lunn.ch>, 
@@ -95,11 +95,11 @@ Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
 	Stanislav Fomichev <sdf@fomichev.me>, Mina Almasry <almasrymina@google.com>, 
 	Bobby Eshleman <bobbyeshleman@meta.com>
-Subject: Re: [PATCH net-next v3 2/8] net: netkit: declare NETMEM_TX_NO_DMA
- mode
-Message-ID: <af35tYOAr5Xymm20@devvm7509.cco0.facebook.com>
+Subject: Re: [PATCH net-next v3 3/8] net: devmem: support TX over
+ NETMEM_TX_NO_DMA devices
+Message-ID: <af3593dYeiEeMzC2@devvm7509.cco0.facebook.com>
 References: <20260507-tcp-dm-netkit-v3-0-52821445867c@meta.com>
- <20260507-tcp-dm-netkit-v3-2-52821445867c@meta.com>
+ <20260507-tcp-dm-netkit-v3-3-52821445867c@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -108,8 +108,8 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260507-tcp-dm-netkit-v3-2-52821445867c@meta.com>
-X-Rspamd-Queue-Id: 3ADBB4F8389
+In-Reply-To: <20260507-tcp-dm-netkit-v3-3-52821445867c@meta.com>
+X-Rspamd-Queue-Id: 7AD7A4F873D
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -121,7 +121,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20247-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20248-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -141,30 +141,72 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,devvm7509.cco0.facebook.com:mid,fomichev.me:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,fomichev.me:email,devvm7509.cco0.facebook.com:mid]
 X-Rspamd-Action: no action
 
 On 05/07, Bobby Eshleman wrote:
 > From: Bobby Eshleman <bobbyeshleman@meta.com>
 > 
-> Some virtual devices like netkit (or ifb) never DMA and never touch frag
-> contents, they just forward the skb to another device. They are unable
-> to forward unreadable skbs, however, because they fail to pass TX
-> validation checks on dev->netmem_tx. The existing two-state
-> NETMEM_TX_NONE / NETMEM_TX_DMA doesn't give the TX validator enough
-> information to differentiate devices that will attempt DMA on the
-> unreadable skb from those that will simply route it untouched.
+> When a netkit virtual device leases queues from a physical NIC, devmem
+> TX bindings created on the netkit device must still result in the dmabuf
+> being mapped for dma by the physical device. This patch accomplishes
+> this by teaching the bind handler to search for the underlying
+> DMA-capable device by looking it up via leased rx queues. The function
+> netdev_find_netmem_tx_dev(), used for finding the underlying DMA-capable
+> device, can be extended to support other non-netkit NETMEM_TX_NO_DMA
+> devices in the future if needed.
 > 
-> Add a third mode to the enum so drivers can indicate 1) if they have
-> netmem TX support, and 2) if they do, whether they are DMA-capable:
-> 
-> NETMEM_TX_NO_DMA - pass-through, device never DMAs
-> 
-> Widen dev->netmem_tx from a 1-bit field to 2 bits to fit the new value,
-> and declare netkit as NETMEM_TX_NO_DMA. Devmem TX support over these
-> devices comes in a follow-up patch.
+> Additionally, this patch extends validate_xmit_unreadable_skb() to
+> support the netkit case, where the skb is validated twice: once on the
+> netkit guest device and again on the physical NIC after BPF redirect or
+> ip forwarding.
 > 
 > Signed-off-by: Bobby Eshleman <bobbyeshleman@meta.com>
+> ---
+> Changes in v3:
+> - Fix validate_xmit_unreadable_skb() bug for non-devmem
+>   unreadable niovs (should not be dropped)
+> - Major simplification of validate_xmit_unreadable_skb()
+> - Fix prematurely released lock in bind-tx handler (Jakub)
+> 
+> Changes in v2:
+> - In validate_xmit_unreadable_skb() to check netmem_tx mode before
+>   inspecting frags (Jakub)
+> - Lock bind_dev around netdev_queue_get_dma_dev() when bind_dev !=
+>   netdev to fix lockdep (Sashiko)
+> ---
+>  net/core/dev.c         |  3 +++
+>  net/core/devmem.c      |  6 +++--
+>  net/core/devmem.h      |  9 ++++++--
+>  net/core/netdev-genl.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++----
+>  4 files changed, 72 insertions(+), 9 deletions(-)
+> 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index fbe4c328a367..268417c9ef22 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -3999,6 +3999,9 @@ static struct sk_buff *validate_xmit_unreadable_skb(struct sk_buff *skb,
+>  	if (dev->netmem_tx == NETMEM_TX_NONE)
+>  		goto out_free;
+>  
+> +	if (dev->netmem_tx == NETMEM_TX_NO_DMA)
+> +		goto out;
+> +
+
+Since this is a good case, maybe fold it into skb_frags_readable check above?
+
+	if (likely(skb_frags_readable() || netmem_tx == NETMEM_TX_NO_DMA))
+
+Otherwise it's a bit confusing to have:
+
+if (xxx)
+	goto out;
+if (yyy)
+	goto out_free;
+if (zzz)
+	goto out;
+
+(or, reorder to be out/out/out_free)
 
 Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
