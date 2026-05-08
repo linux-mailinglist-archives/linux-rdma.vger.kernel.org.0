@@ -1,199 +1,247 @@
-Return-Path: <linux-rdma+bounces-20233-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20234-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iKPmKX3H/WkpigAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20233-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 13:22:37 +0200
+	id wAKmFOvI/WkpigAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20234-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 13:28:43 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 726504F5B15
-	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 13:22:36 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE8794F5C42
+	for <lists+linux-rdma@lfdr.de>; Fri, 08 May 2026 13:28:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D3D88301AA7E
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 11:22:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DEB6130382AD
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2026 11:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9869397E92;
-	Fri,  8 May 2026 11:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511C639A063;
+	Fri,  8 May 2026 11:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="dCNo/pXx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jQeoPxec"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57542391837;
-	Fri,  8 May 2026 11:22:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C113539900C;
+	Fri,  8 May 2026 11:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778239353; cv=none; b=os/i5IPj9CT9Z50Q2rg8nYPHrw9xjxjuLigh1H0GxrqkpztsVQ10j1qCAFuJ5PRb6LyNYRv7k6C+RNkBQoKEi5ekAI7gNBSAuZbFKUdp+Fe1L5oNF2Hpt+9yBa1XR3f2TY4/K72diaS+QAcxuLKyJ8BEs+UplD8XI+VPDxZjoNA=
+	t=1778239490; cv=none; b=S52zQ5LGaTQ9BB4b4b4eKi7AjpkVB+py55NZN+euJatis+83xs3de3LZChaHFot2AKGJ5GvvBbBUsRHSuYgkXYEtzoXY+5BHS6bFDaIkrD9V9MGHPAFZ3Y7zqvXoI5TMRkKshb0J11M2fABlG3/w5rVpwX7M7t+YsL6YMLema10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778239353; c=relaxed/simple;
-	bh=TefaeVnDgO5HJw5krNA7gKg08j918DZOBjY3E/uSDL8=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=L5MzNVF5s/Xjch6waw3lklJTweUUrR/rQgmhHRYoSA9IxxlfUYJzyB2d8kQv18K/mfo3RkH9WAqk5UXoIMSWEDyxyzF6RoyWK8G6VDTwTqf1k9+WC+/aCxO/d6G1bas+dLv/BszGjbT/B6Ir8KA8noSTyFwV25nPVU/v3mUyrHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=dCNo/pXx; arc=none smtp.client-ip=113.46.200.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=mk8T4h2POm1Gh7v/THTjLkFeyRD4K+Mhi0S9q4bCysw=;
-	b=dCNo/pXxvVfaTcACa5UroQNo5tXlDbrIre1YJu694RHuZCQV80PJDLf4+FR4zsCaT+VPlTJMC
-	nqfRIaQ0P8j+BDT1rT0xJISfzwh2BJHt9kgw0NnUtXkIGPNHJBKmNmz6m7HVrHelVGGhubiyvAG
-	muo0A8DGm9Ry1X2QfaUvIKg=
-Received: from mail.maildlp.com (unknown [172.19.163.127])
-	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4gBmjf4s4dzmV8k;
-	Fri,  8 May 2026 19:14:46 +0800 (CST)
-Received: from kwepemk100013.china.huawei.com (unknown [7.202.194.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id E223D402AB;
-	Fri,  8 May 2026 19:22:21 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemk100013.china.huawei.com (7.202.194.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Fri, 8 May 2026 19:22:20 +0800
-Message-ID: <47530dd8-cba6-4282-ae80-4cabd52b08bc@huawei.com>
-Date: Fri, 8 May 2026 19:22:19 +0800
+	s=arc-20240116; t=1778239490; c=relaxed/simple;
+	bh=LmcXKGmix6NqzwFcXeQHOfXRs3XmSPEct8iSLJAkMJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YsQd+xsEUVBIz6YHX226lcwLi1ZyDEH6C+OZXGyAZcHeSmJESgmoMMu/9RyqZDIfSGKim+L0izaJVghn7rVhB3wchb/JxNcalVZWXuc0N++4L7cvkV4Dp5Wu0X0yHyqT/JZ9Se255czizd9KXDLEKXX98YUG1Y68QdiI1DwBgKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jQeoPxec; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1778239489; x=1809775489;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=LmcXKGmix6NqzwFcXeQHOfXRs3XmSPEct8iSLJAkMJQ=;
+  b=jQeoPxecYsf2bqW/Uh/OrHNjZjY7bZGjv4gXLzQSKiZERNstM2fdkmw+
+   WNNTiVg+8xApSJwmos2TiylqX+txF++sEzzPLkqKjEe6NLdmlhK1kFBoZ
+   tDraMxp9Hpl+6sF0hEm6gFm+7jXO1WRQQFnHo/908yFMuSwvFq/qzMOfS
+   86SisxrAkDRYaT1ZBqgTxKyLZOno+pKcejvbZexc8XB6PcTY0n+PbjzPu
+   ZwPljS8uN2Qs8SHT8kuA4r/EumzRElBZPvKvdKl3peZ2RyxziQy92nCJz
+   TyDV34TdUH/CWeaKw1wnAv3jS8uEHVvIogR/5MMBsd2j2rXUsfH/rkiKc
+   Q==;
+X-CSE-ConnectionGUID: ksSTN0FgSI6JjCkCrbcAwg==
+X-CSE-MsgGUID: /H84a1XUSryt491aOlCY7A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11779"; a="83076772"
+X-IronPort-AV: E=Sophos;i="6.23,223,1770624000"; 
+   d="scan'208";a="83076772"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2026 04:24:48 -0700
+X-CSE-ConnectionGUID: 2sIEqEivS8WgVEGEnW1aAg==
+X-CSE-MsgGUID: C0v1TcwcSAGEJrX9tV4Ykg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,223,1770624000"; 
+   d="scan'208";a="260472007"
+Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.182.64])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2026 04:24:46 -0700
+Date: Fri, 8 May 2026 19:24:43 +0800
+From: "Lai, Yi" <yi1.lai@intel.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, yi1.lai@linux.intel.com
+Subject: Re: [PATCH] selftests/rdma: explicitly skip tests when required
+ modules are missing
+Message-ID: <af3H+/9cdaUTEgi1@ly-workstation>
+References: <20260507125106.3114167-1-yi1.lai@intel.com>
+ <63aa67fb-5c8b-42be-a38f-cd5a92ac528a@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>
-Subject: Re: [PATCH v4 net 3/3] net: hns3: fix CWR handling in drivers to
- preserve ACE signal
-To: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>,
-	"linyunsheng@huawei.com" <linyunsheng@huawei.com>, "andrew+netdev@lunn.ch"
-	<andrew+netdev@lunn.ch>, "parav@nvidia.com" <parav@nvidia.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>, "mst@redhat.com"
-	<mst@redhat.com>, "shenjian15@huawei.com" <shenjian15@huawei.com>,
-	"salil.mehta@huawei.com" <salil.mehta@huawei.com>, "saeedm@nvidia.com"
-	<saeedm@nvidia.com>, "tariqt@nvidia.com" <tariqt@nvidia.com>,
-	"mbloch@nvidia.com" <mbloch@nvidia.com>, "leonro@nvidia.com"
-	<leonro@nvidia.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"horms@kernel.org" <horms@kernel.org>, "ij@kernel.org" <ij@kernel.org>,
-	"ncardwell@google.com" <ncardwell@google.com>, "Koen De Schepper (Nokia)"
-	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
-	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
-	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
-	<mirja.kuehlewind@ericsson.com>, "cheshire@apple.com" <cheshire@apple.com>,
-	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
-	<Jason_Livingood@comcast.com>, "vidhi_goel@apple.com" <vidhi_goel@apple.com>
-References: <20260417152642.71674-1-chia-yu.chang@nokia-bell-labs.com>
- <20260417152642.71674-4-chia-yu.chang@nokia-bell-labs.com>
- <6ae96ead-61b3-470a-a30b-3418350a45f0@huawei.com>
- <PAXPR07MB7984A31018E9B85DEC28B68CA3282@PAXPR07MB7984.eurprd07.prod.outlook.com>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <PAXPR07MB7984A31018E9B85DEC28B68CA3282@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemk100013.china.huawei.com (7.202.194.61)
-X-Rspamd-Queue-Id: 726504F5B15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63aa67fb-5c8b-42be-a38f-cd5a92ac528a@linux.dev>
+X-Rspamd-Queue-Id: EE8794F5C42
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20233-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[nokia-bell-labs.com,huawei.com,lunn.ch,nvidia.com,redhat.com,vger.kernel.org,davemloft.net,google.com,kernel.org,cablelabs.com,ericsson.com,apple.com,gmx.at,comcast.com];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[huawei.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shaojijie@huawei.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org,linux.intel.com];
+	TAGGED_FROM(0.00)[bounces-20234-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yi1.lai@intel.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,intel.com:dkim]
 X-Rspamd-Action: no action
 
-
-on 2026/4/25 22:30, Chia-Yu Chang (Nokia) wrote:
->> -----Original Message-----
->> From: Jijie Shao <shaojijie@huawei.com>
->> Sent: Saturday, April 25, 2026 11:35 AM
->> To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>; linyunsheng@huawei.com; andrew+netdev@lunn.ch; parav@nvidia.com; jasowang@redhat.com; mst@redhat.com; shenjian15@huawei.com; salil.mehta@huawei.com; saeedm@nvidia.com; tariqt@nvidia.com; mbloch@nvidia.com; leonro@nvidia.com; linux-rdma@vger.kernel.org; netdev@vger.kernel.org; davem@davemloft.net; edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; horms@kernel.org; ij@kernel.org; ncardwell@google.com; Koen De Schepper (Nokia) <koen.de_schepper@nokia-bell-labs.com>; g.white@cablelabs.com; ingemar.s.johansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshire@apple.com; rs.ietf@gmx.at; Jason_Livingood@comcast.com; vidhi_goel@apple.com
->> Cc: shaojijie@huawei.com
->> Subject: Re: [PATCH v4 net 3/3] net: hns3: fix CWR handling in drivers to preserve ACE signal
->>
->>
->> on 2026/4/17 23:26, chia-yu.chang@nokia-bell-labs.com wrote:
->>> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
->>>
->>> Currently, hns3 Rx paths use SKB_GSO_TCP_ECN flag when a TCP segment
->>> with the CWR flag set. This is wrong because SKB_GSO_TCP_ECN is only
->>> valid for RFC3168 ECN on Tx, and using it on Rx allows RFC3168 ECN
->>> offload to clear the CWR flag. As a result, incoming TCP segments lose
->>> their ACE signal integrity required for AccECN (RFC9768), especially
->>> when the packet is forwarded and later re-segmented by GSO.
->>>
->>> Fix this by setting SKB_GSO_TCP_ACCECN for any Rx segment with the CWR
->>> flag set. SKB_GSO_TCP_ACCECN ensure that RFC3168 ECN offload will not
->>> clear the CWR flag, therefore preserving the ACE signal.
->>>
->>> Fixes: d474d88f88261 ("net: hns3: add hns3_gro_complete for HW GRO
->>> process")
->>> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
->>> ---
->>>    drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->>> b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->>> index a3206c97923e..e1b0dba56182 100644
->>> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->>> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->>> @@ -3904,7 +3904,7 @@ static int hns3_gro_complete(struct sk_buff
->>> *skb, u32 l234info)
->>>    
->>>    	skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
->>>    	if (th->cwr)
->>> -		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ECN;
->>> +		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ACCECN;
->>>    
->>>    	if (l234info & BIT(HNS3_RXD_GRO_FIXID_B))
->>>    		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_FIXEDID;
->> I agree with Paolo's previous point;
->> for already released hardware, it is indeed not suitable to modify it.
->> During the hardware aggregation process, the ACE signal may have already been lost.
->>
->> Jijie Shao
-> Hi Jijie,
+On Thu, May 07, 2026 at 09:21:09PM -0700, Zhu Yanjun wrote:
+> 
+> 在 2026/5/7 5:51, Yi Lai 写道:
+> > Currently, the rdma rxe selftests fail with an exit code of 1 when
+> > required kernel modules are not present. This causes spurious failures
+> > in environments where these modules might not be compiled or available.
+> > 
+> > Include the standard kselftest 'ktap_helpers.sh' and replace the
+> > hardcoded error exits with '$KSFT_SKIP'. This ensures the tests are
+> > properly marked as skipped rather than failed.
+> tools/testing/selftests/rdma/rxe_rping_between_netns.sh:30:modprobe rdma_rxe
+> || { echo "Failed to load rdma_rxe"; exit 1; }
+> tools/testing/selftests/rdma/rxe_socket_with_netns.sh:29: modprobe "$m" || {
+> echo "Error: Failed to load $m"; exit 1; }
+> 
+> In the above script files, if modprobe fails, exit 1;
+> 
+> I am wondering if we need to replace error code 1 with $KSFT_SKIP.
 >
-> I would disagree with not fixing on released hardware. (Did Paolo explicit mention that?)
-> The ACCECN protocol is based on ACE signal, and a broken ACE signal might be due to SKB_GSO_TCP_ECN at the RX path.
-> You can see the explicit explanations and examples in the commit message.
-> There is already a fix in patch 4e4f7cefb130af6aba6a393b2d13930b49390df9 for tcp_gro_receive() of tcp_offload.c
->
-> And In this patch series, we would like to propose the similar fix on hns3 and mlx5e.
-> While one main issue is to confirm is how the GRO is done in the corresponding HW-GRO.
-> And if the driver can be safely changed from SKB_GSO_TCP_ECN to SKB_GSO_TCP_ACCECN, then we can ensure ECN and AccECN can be supported over existing hardware.
 
-Sorry for the late reply.
+Thanks for the review.
 
-It is confirmed that ACC_ECN is not supported.
-HW-GRO will set the TOS field to 0.
+At this point, the module's existence is already verified using modinfo.
+In my opinion, a failure at modprobe here implies an active operational
+error, so returning 1 to highlight the malfunction seems reasonable.
 
-Jijie Shao
-
-
+Regards,
+Yi Lai 
+> Except the above, I am fine with this commit.
+> 
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> Zhu Yanjun
+> 
+> > 
+> > Signed-off-by: Yi Lai <yi1.lai@intel.com>
+> > ---
+> >   tools/testing/selftests/rdma/rxe_ipv6.sh                   | 6 ++++--
+> >   tools/testing/selftests/rdma/rxe_rping_between_netns.sh    | 7 +++++++
+> >   tools/testing/selftests/rdma/rxe_socket_with_netns.sh      | 6 ++++++
+> >   tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh | 6 ++++--
+> >   4 files changed, 21 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/rdma/rxe_ipv6.sh b/tools/testing/selftests/rdma/rxe_ipv6.sh
+> > index b7059bfd6d7c..32dad687a044 100755
+> > --- a/tools/testing/selftests/rdma/rxe_ipv6.sh
+> > +++ b/tools/testing/selftests/rdma/rxe_ipv6.sh
+> > @@ -8,6 +8,8 @@ RXE_NAME="rxe6"
+> >   PORT=4791
+> >   IP6_ADDR="2001:db8::1/64"
+> > +source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
+> > +
+> >   exec > /dev/null
+> >   # Cleanup function to run on exit (even on failure)
+> > @@ -21,8 +23,8 @@ trap cleanup EXIT
+> >   # 1. Prerequisites check
+> >   for mod in tun veth rdma_rxe; do
+> >       if ! modinfo "$mod" >/dev/null 2>&1; then
+> > -        echo "Error: Kernel module '$mod' not found."
+> > -        exit 1
+> > +        echo "SKIP: Kernel module '$mod' not found." >&2
+> > +        exit $KSFT_SKIP
+> >       fi
+> >   done
+> > diff --git a/tools/testing/selftests/rdma/rxe_rping_between_netns.sh b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+> > index e5b876f58c6e..e7554fbb8951 100755
+> > --- a/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+> > +++ b/tools/testing/selftests/rdma/rxe_rping_between_netns.sh
+> > @@ -8,6 +8,8 @@ IP_A="1.1.1.1"
+> >   IP_B="1.1.1.2"
+> >   PORT=4791
+> > +source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
+> > +
+> >   exec > /dev/null
+> >   # --- Cleanup Routine ---
+> > @@ -27,6 +29,11 @@ if [[ $EUID -ne 0 ]]; then
+> >      exit 1
+> >   fi
+> > +if ! modinfo rdma_rxe >/dev/null 2>&1; then
+> > +    echo "SKIP: Kernel module 'rdma_rxe' not found." >&2
+> > +    exit $KSFT_SKIP
+> > +fi
+> > +
+> >   modprobe rdma_rxe || { echo "Failed to load rdma_rxe"; exit 1; }
+> >   # --- Setup Network Topology ---
+> > diff --git a/tools/testing/selftests/rdma/rxe_socket_with_netns.sh b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+> > index 002e5098f751..9478657c02c1 100755
+> > --- a/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+> > +++ b/tools/testing/selftests/rdma/rxe_socket_with_netns.sh
+> > @@ -4,6 +4,8 @@
+> >   PORT=4791
+> >   MODS=("tun" "rdma_rxe")
+> > +source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
+> > +
+> >   exec > /dev/null
+> >   # --- Helper: Cleanup Routine ---
+> > @@ -26,6 +28,10 @@ if [[ $EUID -ne 0 ]]; then
+> >   fi
+> >   for m in "${MODS[@]}"; do
+> > +    if ! modinfo "$m" >/dev/null 2>&1; then
+> > +        echo "SKIP: Kernel module '$m' not found." >&2
+> > +        exit $KSFT_SKIP
+> > +    fi
+> >       modprobe "$m" || { echo "Error: Failed to load $m"; exit 1; }
+> >   done
+> > diff --git a/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+> > index 021ca451499d..8c18cea7535c 100755
+> > --- a/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+> > +++ b/tools/testing/selftests/rdma/rxe_test_NETDEV_UNREGISTER.sh
+> > @@ -5,6 +5,8 @@ DEV_NAME="tun0"
+> >   RXE_NAME="rxe0"
+> >   RDMA_PORT=4791
+> > +source "$(dirname "$0")/../kselftest/ktap_helpers.sh"
+> > +
+> >   exec > /dev/null
+> >   # --- Cleanup Routine ---
+> > @@ -19,8 +21,8 @@ trap cleanup EXIT
+> >   # 1. Dependency Check
+> >   if ! modinfo rdma_rxe >/dev/null 2>&1; then
+> > -    echo "Error: rdma_rxe module not found."
+> > -    exit 1
+> > +    echo "SKIP: rdma_rxe module not found." >&2
+> > +    exit $KSFT_SKIP
+> >   fi
+> >   modprobe rdma_rxe
+> 
+> -- 
+> Best Regards,
+> Yanjun.Zhu
+> 
 
