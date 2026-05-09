@@ -1,188 +1,174 @@
-Return-Path: <linux-rdma+bounces-20278-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20279-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2DhaJkaF/mmBsQAAu9opvQ
-	(envelope-from <linux-rdma+bounces-20278-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 02:52:22 +0200
+	id pPm1KWCN/mkGswAAu9opvQ
+	(envelope-from <linux-rdma+bounces-20279-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 03:26:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B1A4FD1F9
-	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 02:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 144554FD466
+	for <lists+linux-rdma@lfdr.de>; Sat, 09 May 2026 03:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BF6133025F72
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 May 2026 00:52:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 028B830160FA
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 May 2026 01:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6155923BCF7;
-	Sat,  9 May 2026 00:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6E326F2AF;
+	Sat,  9 May 2026 01:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cxbmyloE"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="MzHKQbEN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2064F22CBE6;
-	Sat,  9 May 2026 00:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE1A2B2D7;
+	Sat,  9 May 2026 01:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778287935; cv=none; b=dydOLh6etGrTl9eiVPSBF8tN9riTFUuCdhkAWJUj5gXkO+EW5kW/gCPmYE8NkF+pBuWKxFhyfYefV1KrkstBnoIs5Wl9VR6gSSeJkWhWqpBnYNdGFlLcg3MDOOZKWgQF9PHx7dRoZBkpwOgP55RW891258l5jo+JI342OZWx3Qg=
+	t=1778290013; cv=none; b=S1jqjZmMAbH92HmJx0ZHcnSshf87Ijgi/r1i3cluIoXPNTs5g6o+5s0FojZcrL0se+HIhEVQBlsKuyDvb6vmFn+5taiCGQ7W/vVEtNf94I3eapodZlf7RqA7tXaCcFocmCEnNrsRUkU+xwV7+56qHxTLfysHjx4Ba6ypaWSxa8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778287935; c=relaxed/simple;
-	bh=tzx7ZwgL4qb9E7LiEim00qbYgEtsXeRU7mCgbW19k6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GjwB6afowpjeE+1vdgOiBgbig4/hkWTQkUuNMvr8EChzDinzFw2I5b3Y2iYcVGt29Qm0IID5ey0AYZ7STZf/iJNVi0CyErGJIPwfDAj6z4sPLbCnhYLNfyLAgwAYSemc5ku4tFc4u1FcTMYbQvrp65BP9Eci19ApURsbSj8hjlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cxbmyloE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6BC3C2BCB0;
-	Sat,  9 May 2026 00:52:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778287935;
-	bh=tzx7ZwgL4qb9E7LiEim00qbYgEtsXeRU7mCgbW19k6M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cxbmyloEO08k8n6A91Ub0EQs8QPp9FXDJCaF269871JqsS/tTFWF1ZAR1/IYmJmQJ
-	 WIAcvX75OsoH9C668Vyuga0z2wnL5ebyJudy2owBLJva0WrfsHvKCQYqUMs71671Mp
-	 /BcjaxY1Dy6fyLgVtvD3MdaVhxspItLv5A0IcbGmOhKd+JIHyfrKa1tJiI3uDn6TaM
-	 KtABzmVKJ6QaWVGn9nBQW+1M+zEfcPXyAFcOCablaxW+1/PneBfzyop5SRANApwTS0
-	 u3PubW9+JuPHP5rtT6Z1zVkFQPtfIjmj4VmNuizxrb3f/JBBSWsUv2g06+90KB9MRV
-	 i4fA4+V1ZaRgA==
-Date: Fri, 8 May 2026 17:52:13 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Mark Bloch <mbloch@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Morton
- <akpm@linux-foundation.org>, "Borislav Petkov (AMD)" <bp@alien8.de>, Randy
- Dunlap <rdunlap@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>,
- Christian Brauner <brauner@kernel.org>, Petr Mladek <pmladek@suse.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Gleixner
- <tglx@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Dapeng
- Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>, Marco Elver
- <elver@google.com>, Eric Biggers <ebiggers@kernel.org>, Li RongQing
- <lirongqing@baidu.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
-Message-ID: <20260508175213.1952097f@kernel.org>
-In-Reply-To: <af4lBIJdCuN5VKq_@FV6GYCPJ69>
-References: <20260506123739.1959770-1-mbloch@nvidia.com>
-	<aftaW-irGmkfA7FS@FV6GYCPJ69>
-	<3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
-	<afxvzOjqw-vxUAED@FV6GYCPJ69>
-	<b6a9b568-dd09-4414-be57-6b9cd282a43c@nvidia.com>
-	<af4lBIJdCuN5VKq_@FV6GYCPJ69>
+	s=arc-20240116; t=1778290013; c=relaxed/simple;
+	bh=o/pgEhujTgFW9ZrLOfE0EEkoxNHPRtp/uayciKrbSy8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ItRa1GQEaf6KtPLfh42MPSHTlgXcNUJN8Y5LW1lQNlsyk8T2GOFz9WpYIOnzrjXIznxTbK8nQ/eJDNYNgPszmnLPdQjhpiKcB2qzXoqChAcdB0sox/I2Bp77iNP/e7KKBL+/kJhqOgawaZkDpj5snYKuxeHHyMMUlwx9/Rm5S+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=MzHKQbEN; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1778290008; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=9UtXgVP0JZ98tn0yJorMvY+odKuLJcc0wOsPfDynW4E=;
+	b=MzHKQbENAHOKa+E4dz8w525oX9uUTE5vKK4/EsjO0pyAu4rm4lp7CLGjBk2U2jJIDaaRwGI2iWNlR4HZ+yxjBCw26a5ccdmbnHM6RS9GTOSscqfgwYLUhquN2HcfVGEv/UoN3TLXwAiiJjpAyhXs+6k+7FGCK1PUAXiFWy0I1pE=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0X2YvkY1_1778290006;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X2YvkY1_1778290006 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Sat, 09 May 2026 09:26:47 +0800
+Date: Sat, 9 May 2026 09:26:46 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: =?iso-8859-1?Q?Nicol=F2?= Coccia <n.coccia96@gmail.com>,
+	alibuda@linux.alibaba.com, sidraya@linux.ibm.com,
+	Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	mjambigi@linux.ibm.com,
+	=?iso-8859-1?Q?Nicol=F2?= Coccia <nicolo.coccia@leonardo.com>
+Subject: Re: [PATCH net] net/smc: fix sleep-inside-lock in __smc_setsockopt()
+ causing local DoS
+Message-ID: <af6NVrIetbLkENvu@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <CALSA8UaEKUHRqYaYqKFYbUQb4KHipDBDHfgMZHj2Tq0D1Ah7zw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 17B1A4FD1F9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALSA8UaEKUHRqYaYqKFYbUQb4KHipDBDHfgMZHj2Tq0D1Ah7zw@mail.gmail.com>
+X-Rspamd-Queue-Id: 144554FD466
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20278-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20279-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com,linux.alibaba.com,linux.ibm.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[31];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim,linux.alibaba.com:replyto]
 X-Rspamd-Action: no action
 
-On Fri, 8 May 2026 20:07:44 +0200 Jiri Pirko wrote:
-> >I don't think switchdev by default should mean CX4+ in general. If we get
-> >there, I would expect it to be limited to the DPU/BlueField/ECPF case, where
-> >the host PF probe path can depend on the ECPF reaching switchdev. Changing the
-> >default for regular host NIC deployments feels like a much larger compatibility
-> >change.  
-> 
-> We can't travel throught time, but if from CX5 onwards the default would
-> be switchdev, nobody would feel broken in terms of compatibility. That
-> is my point. Having "legacy" as default is simply wrong for never NIC
-> generations. That is why it is called "legacy" and it should have been
-> rotten through and out since CX4 times.
+On 2026-05-08 21:33:10, Nicolò Coccia wrote:
 
-legacy vs switchdev only describes the eswitch configuration.
-As a non-SR-IOV user I really don't want to see the extra representors
-hanging around my systems, confusing all daemons. IIRC mlx5 had some
-limitations around the uplink representor. Maybe that's the disconnect.
-But for a real, fully featured switchdev eswitches having the
-PHY and PF representors on boot, always, will not make sense.
+Hi Nicolò,
 
-IOW it's not a question of the generation of the card but of
-the deployment type / use case.
+This patch doesn't apply on net/main
 
-> >For the ASIC/NV bit: maybe technically possible, but it feels like the wrong
-> >layer. This is boot/deployment policy, not a persistent hardware property, and
-> >storing it in NV memory would make the state persist across kernels/hosts in a
-> >surprising way.  
-> 
-> Well, as any other nv config, it persists across kernels/hosts. Think
-> about it as "unbreak-my-not-legacy-device" bit.
+>A logic flaw in __smc_setsockopt() allows a local unprivileged user to
+>cause a Denial of Service (DoS) by holding the socket lock indefinitely.
+>
+>The function __smc_setsockopt() calls copy_from_sockptr() while holding
+>lock_sock(sk). By passing a userfaultfd-monitored memory page (or
+>FUSE-backed memory on systems where unprivileged userfaultfd is disabled)
+>as the optval, an attacker can halt execution during the copy operation,
+>keeping the lock held.
+>
+>Combined with asynchronous tear-down operations like shutdown(), this
+>exhausts the kernel wq (kworkers) and triggers the hung task watchdog.
+>
+>[  240.123456] INFO: task kworker/u8:2 blocked for more than 120 seconds.
+>[  240.123489] Call Trace:
+>[  240.123501]  smc_shutdown+...
+>[  240.123512]  lock_sock_nested+...
+>
+>This patch moves the user-space copy outside the lock_sock() critical
+>section to prevent the issue.
+>
 
-For most devices the switchdev mode does not change anything
-substantial about the device. It's purely a kernel / driver config. 
-It changes what objects and default rules kernel / driver installs. 
-So I don't get why it would make sense to flash into the device
-nvmem a Linux SW stack specific config.
+You should add a Fixes tag here.
+>Signed-off-by: Nicolò Coccia nicolo.coccia@leonardo.com>
+>---
+> net/smc/af_smc.c | 16 ++++++++--------
+> 1 file changed, 8 insertions(+), 8 deletions(-)
+>
+>diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>--- a/net/smc/af_smc.c
+>+++ b/net/smc/af_smc.c
+>@@ -XXXX,X +XXXX,X @@ static int __smc_setsockopt(struct socket *sock,
+>int level, int optname,
+>
+>  smc = smc_sk(sk);
+>
+>+ /* pre-fetch user data outside the lock */
+>+ if (optname == SMC_LIMIT_HS) {
+>+ if (optlen < sizeof(int))
+>+ return -EINVAL;
+>+ if (copy_from_sockptr(&val, optval, sizeof(int)))
+>+ return -EFAULT;
+>+ }
+>+
+>  lock_sock(sk);
+>  switch (optname) {
+>  case SMC_LIMIT_HS:
+>- if (optlen < sizeof(int)) {
+>- rc = -EINVAL;
+>- break;
+>- }
+>- if (copy_from_sockptr(&val, optval, sizeof(int))) {
+>- rc = -EFAULT;
+>- break;
+>- }
+>-
 
-> >I do agree the RFC probably went too far by making a generic devlink cmdline
-> >configuration language. Maybe the smaller thing to discuss is only:
-> >
-> >devlink=[pci/...]:esw:mode:{legacy|switchdev|switchdev_inactive}
-> >
-> >No runtime params, no ordering between different operations, just early eswitch
-> >mode for explicitly selected handles.  
+The indenting is all messed up
 
-Yes, let's cut this down, AI went too far :) As I said we should just
-document how we envision the format growing but for now we can literally
-implement just the global "esw mode".
+Best regards,
+Dust
 
-One note on the formatting, you mentioned:
-
-  devlink=[pci/0000:08:00.0,pci/0000:08:00.1]:param:flow_steering_mode:hmfs,[pci/0000:08:00.0,pci/0000:08:00.1]:esw:mode:switchdev
-
-TBH when I used the square brackets I meant that the field is optional.
-But I guess you used them like we use them for IPv6 addresses to
-separate the : signs, makes sense.
-
-Since AFAIU we only care about global default should we focus on
-supporting:
-
- devlink=*:esw:mode:switchdev
-
-meaning all devices default to switchdev?
-
-> FWIW, I'm still against this.
-
-One more option, tho IDK if it actually is good enough for Mark,
-would be to let user space "pause" devlink probing. So that the
-systemd daemon can configure the device before it populates all
-the netdev stuff. Basically make the devices probe into the reload_down
-state, until user space configures them. IDK how much of the time
-is spent building and tearing down the legacy mode on mlx5 but
-the thinking is that we'd at least stave that wasted effort.
 
