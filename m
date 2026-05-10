@@ -1,210 +1,153 @@
-Return-Path: <linux-rdma+bounces-20306-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20307-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iC++JfecAGoGLAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20306-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 16:57:59 +0200
+	id gLDlKtCiAGqTLAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20307-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 17:22:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2839504AC3
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 16:57:58 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 632E8504CE0
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 17:22:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A2CCD300D698
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 14:57:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0F2AF301586D
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 15:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8F239EF11;
-	Sun, 10 May 2026 14:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814B639E193;
+	Sun, 10 May 2026 15:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vKQwM30Q"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="B7gr0Djg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F290234CFD0;
-	Sun, 10 May 2026 14:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373E62F8E81;
+	Sun, 10 May 2026 15:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778425051; cv=none; b=qvO8/E+/JUa3z6vDGPFwu72E2pUPFDxwy6Y5u5kML9yqioSPBdQEWaspmu8UykV/xpqPoTulB3dgxGF+SL6rWvp2Jx63HHXHPUsOHYKOEpvS0WJV8FcKD+H5gl2QOqYs/2fUe2affpHp3QeXP34ELUIna1VGHy3rfEQk3JLSomA=
+	t=1778426365; cv=none; b=SgRmddCs2vQdq1Z+/od+TFlqzSaoK4cteI4oq+6XmrkyyaoKd+os4gajDe2Vssrj1mXQ6c9GIONVvnvGIxS3qJKzErF0TOiKKg5WFCK7MFmsF33qegh8VW6M6qmR25aXGyIDbdlvGA3A9wUC8m7KwqFMxCHroJA61gAsjI//4mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778425051; c=relaxed/simple;
-	bh=wOtHkB9Mlz3SS+ubzxZDx0L04GF9pzB1MyoMiNKCABA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EVwW5dNOSziCNq14P8zEDaSjcm9zmXl0ai3kkbCmYwKRchjpY+SSdGPp0lBfFLqYeQM1FKWvyrXgTHGrx93iQEDj1BfbvIEEftz1smA01flu+EP44cfHBG65tBppFKC/QSZxaN0qZErjvlg8OVUN32ig9CexsxbamgV/oZTmBDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vKQwM30Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E960C2BCB8;
-	Sun, 10 May 2026 14:57:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778425050;
-	bh=wOtHkB9Mlz3SS+ubzxZDx0L04GF9pzB1MyoMiNKCABA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vKQwM30QdHOP1Fqk81Ma/ZM4UMWfbKRsCYZ+AF735XLG3/yZ/YKYKtEBzHrcrXDKx
-	 KNESAXQTaLEjjhSFdZHu7tWbWJKxPe91VpFHmjK5PdFCv1xN+q0wMjTviV5yWQxOK4
-	 3rrgRc4fB+5H8GXp2a8aRJlfexlrsUiirCLZq60YBcYgRafaEk+jMLQPkNZBTLg57U
-	 Vanp9RyWXtQ4Am5mIKFWSNWEf4cCMYC3R6f1arrjvJnVWdfWfb0vzIpYfkYoOWEdE5
-	 mUokus49hpx1WVcPAmDPG4dJpbaOaUv0KFSRC/93CFpSaorC1EfrxFPk/7Y0i/edqB
-	 NFsNlgaBTtg0Q==
-From: Simon Horman <horms@kernel.org>
-To: maoyixie.tju@gmail.com
-Cc: 'Simon Horman' <horms@kernel.org>,
-	achender@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org,
-	maoyi.xie@ntu.edu.sg,
-	praveen.kakkolangara@aumovio.com
-Subject: Re: [PATCH net v2] rds: filter RDS_INFO_* getsockopt by caller's netns
-Date: Sun, 10 May 2026 15:54:27 +0100
-Message-ID: <20260510145425.1372018-3-horms@kernel.org>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260507081332.2868770-1-maoyixie.tju@gmail.com>
-References: <20260507081332.2868770-1-maoyixie.tju@gmail.com>
+	s=arc-20240116; t=1778426365; c=relaxed/simple;
+	bh=KA/p1RhujIaTAg1hTVqbE076u80O9x23DXASfs8gZPE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Eb0RIEX8WnYw4T2djRsmXzQTQBYz8IlyqMpVBA2Y4GpSPH/ZOT9pUbQkRrSefD5sagpY+zx81OtKUQ7sz+/gGaz1A88igEmFKn50Nabm22zJ2nZEcoyBf4rrVnLzhjqKARi4PoZ49le1M8CNEzPMEx/pvf2hYrgv4IvWw3vZwQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=B7gr0Djg; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1778426353; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=h8xm0ICWFyWAHAFUbZ2x6pFmPnB7nZ1XWtBXDMkVHTY=;
+	b=B7gr0DjgCvQaFFuoGvNTi4v0bV56JJQ1ykBne7gpROPhqkxEbvsQtyonu4J+LPsUZpGPrp1y9zFuBs4EOudwmheQ7jf/M71CZgp3zrTlIWU+A8tOPti3Tx/tj8dwde9OVAGWRcd3rkO55axfCAa44wl2hor9a+GgcSu+F+CB9Cw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0X2cvymd_1778426352;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X2cvymd_1778426352 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Sun, 10 May 2026 23:19:12 +0800
+Date: Sun, 10 May 2026 23:19:12 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: =?iso-8859-1?Q?Nicol=F2?= Coccia <n.coccia96@gmail.com>,
+	alibuda@linux.alibaba.com, sidraya@linux.ibm.com,
+	Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	mjambigi@linux.ibm.com,
+	=?iso-8859-1?Q?Nicol=F2?= Coccia <nicolo.coccia@leonardo.com>
+Subject: Re: [PATCH net] net/smc: fix sleep-inside-lock in __smc_setsockopt()
+ causing local DoS
+Message-ID: <agCh8NuM69sYSIRA@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <CALSA8UZaE8FR2K-60fPYE6uSUvUNuLnH=8pPq0Hak2ADQpp1Qw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: F2839504AC3
+In-Reply-To: <CALSA8UZaE8FR2K-60fPYE6uSUvUNuLnH=8pPq0Hak2ADQpp1Qw@mail.gmail.com>
+X-Rspamd-Queue-Id: 632E8504CE0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-20306-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20307-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com,linux.alibaba.com,linux.ibm.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.947];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,linux.alibaba.com:replyto,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-From: 'Simon Horman' <horms@kernel.org>
+On 2026-05-09 07:01:02, Nicolò Coccia wrote:
+>A logic flaw in __smc_setsockopt() allows a local unprivileged user to
+>cause a Denial of Service (DoS) by holding the socket lock indefinitely.
+>
+>The function __smc_setsockopt() calls copy_from_sockptr() while holding
+>lock_sock(sk). By passing a userfaultfd-monitored memory page (or
+>FUSE-backed memory on systems where unprivileged userfaultfd is disabled)
+>as the optval, an attacker can halt execution during the copy operation,
+>keeping the lock held.
+>
+>Combined with asynchronous tear-down operations like shutdown(), this
+>exhausts the kernel wq (kworkers) and triggers the hung task watchdog.
+>
+>[  240.123456] INFO: task kworker/u8:2 blocked for more than 120 seconds.
+>[  240.123489] Call Trace:
+>[  240.123501]  smc_shutdown+...
+>[  240.123512]  lock_sock_nested+...
+>
+>This patch moves the user-space copy outside the lock_sock() critical
+>section to prevent the issue.
+>
+>Fixes: a6a6fe27bab4 ("net/smc: Dynamic control handshake limitation by
+>socket options")
+>Signed-off-by: Nicolò Coccia <n.coccia96@gmail.com>
+>---
+>v1 -> v2:
+> - Rebased against netdev/net tree
+> - Added Fixes tag
+>
+> net/smc/af_smc.c | 17 ++++++++---------
+> 1 file changed, 8 insertions(+), 9 deletions(-)
+>
+>diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>index 185dbed7de5d..da28652f6810 100644
+>--- a/net/smc/af_smc.c
+>+++ b/net/smc/af_smc.c
+>@@ -3054,18 +3054,17 @@ static int __smc_setsockopt(struct socket
+>*sock, int level, int optname,
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
-Full review at: https://sashiko.dev
----
-rds: filter RDS_INFO_* getsockopt by caller's netns
 
-This commit updates the RDS_INFO_* getsockopt handlers to filter sockets and
-connections by the caller's network namespace. This prevents users in
-isolated namespaces from reading host-wide socket state.
+Still not apply, have you changed this manually ?
+You can produce the patch simply using `git format-patch `
 
-> diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-> index 76f625986a7f2..98f3cfd48b813 100644
-> --- a/net/rds/af_rds.c
-> +++ b/net/rds/af_rds.c
-[ ... ]
-> @@ -847,17 +859,24 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
->  			   struct rds_info_iterator *iter,
->  			   struct rds_info_lengths *lens)
->  {
-> +	struct net *net = sock_net(sock->sk);
->  	struct rds6_info_socket sinfo6;
-> +	unsigned int cnt = 0;
->  	struct rds_sock *rs;
->  
->  	len /= sizeof(struct rds6_info_socket);
->  
->  	spin_lock_bh(&rds_sock_lock);
->  
-> -	if (len < rds_sock_count)
-> +	if (len < rds_sock_count) {
-> +		cnt = rds_sock_count;
->  		goto out;
-> +	}
+Best regards,
+Dust
 
-Does this early-out check using the global rds_sock_count break the namespace
-isolation and force callers to over-allocate memory?
-
-If a user in an isolated network namespace provides a 0-length buffer to probe
-the required size, len < rds_sock_count evaluates to true and the global count
-is returned to userspace. Could this allow a user to track the exact host-wide
-number of RDS sockets?
-
-Additionally, if an isolated container has 1 socket but the host system has
-thousands, the kernel might reject a correctly sized buffer with -ENOSPC and
-demand a buffer large enough for all system-wide sockets. Is it possible to
-remove this global counter check and always iterate the list to return the
-exact netns-filtered count?
-
-Simon says: I'm not convinced that the issue flagged above is a bug.
-            But it does seem suboptimal to me.
-
->  	list_for_each_entry(rs, &rds_sock_list, rs_item) {
-> +		/* Only show sockets in the caller's netns. */
-> +		if (!net_eq(sock_net(rds_rs_to_sk(rs)), net))
-> +			continue;
-[ ... ]
-> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-> index 654e23d13e3df..ef9e958cafb4f 100644
-> --- a/net/rds/tcp.c
-> +++ b/net/rds/tcp.c
-[ ... ]
-> @@ -235,20 +235,27 @@ static void rds_tcp_tc_info(struct socket *rds_sock, unsigned int len,
->  			    struct rds_info_iterator *iter,
->  			    struct rds_info_lengths *lens)
->  {
-[ ... ]
->  	list_for_each_entry(tc, &rds_tcp_tc_list, t_list_item) {
->  		struct inet_sock *inet = inet_sk(tc->t_sock->sk);
-
-Simon says: As a pre-existing issue I don't think this needs to block
-            progress of this patch. But it does seem worth investigating
-	    (perhaps that is already happening?).
-
-Can concurrent getsockopt calls trigger a NULL pointer dereference here?
-
-While this isn't a regression introduced by this patch, it appears there is
-a race condition during list traversal. Looking at rds_tcp_set_callbacks(), a
-newly allocated connection tc is added to rds_tcp_tc_list under the lock, but
-the lock is released before tc->t_sock is assigned:
-
-rds_tcp_set_callbacks() {
-    spin_lock(&rds_tcp_tc_list_lock);
-    list_add_tail(&tc->t_list_item, &rds_tcp_tc_list);
-    ...
-    spin_unlock(&rds_tcp_tc_list_lock);
-    ...
-    tc->t_sock = sock;
-}
-
-If a caller concurrently executes this getsockopt handler during that window,
-it would acquire the lock, observe the new entry, and attempt to evaluate
-inet_sk(tc->t_sock->sk). Since tc->t_sock is still NULL, would dereferencing
-NULL->sk result in a panic?
-
->  		if (tc->t_cpath->cp_conn->c_isv6)
->  			continue;
-> +		/* Only show connections in the caller's netns. */
-> +		if (!net_eq(rds_conn_net(tc->t_cpath->cp_conn), net))
-> +			continue;
->  
->  		tsinfo.local_addr = inet->inet_saddr;
 
