@@ -1,58 +1,60 @@
-Return-Path: <linux-rdma+bounces-20302-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20303-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id E+JENTJkAGr5IQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20302-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 12:55:46 +0200
+	id GPp7HFVkAGr5IQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20303-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 12:56:21 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 518B6503AE6
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 12:55:45 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2807503AF5
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 12:56:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DB2D5300BC91
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 10:55:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 05F97300CBEF
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2026 10:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A64B365A0B;
-	Sun, 10 May 2026 10:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C7A35E958;
+	Sun, 10 May 2026 10:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCkFu7Lt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKFsq8mu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E048319EED3;
-	Sun, 10 May 2026 10:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5D11E5702;
+	Sun, 10 May 2026 10:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778410540; cv=none; b=sdLa+NN/Zuy78biPu313SV6TdjZh5gRQ8HBCu4nit6bWCW8kU1VHYAyKGdoVRlyKc3FU9nv6nnMD14iJ2rcxYTV4kbu/2WxPofqyf3n9D6Nlf0XqXyMzh8REts5MEEHMfXW8Jt88DSs25Pgc3Y06N3FJhJF0mY6JN3W8cqFqIGQ=
+	t=1778410576; cv=none; b=eKG7jX729+Gn8wcwq0ByqWqIMcjBQMxqdhG4Tpsz8xGr7/tf4jvZqJg1hnBHbn4LIVlWx2NqPOVGLTA6GMF3ri6j3lLwm4Y90scx6ZvSfNxkRlY0lK9upP5I27lNy6jGQatTLcD6BmhK/mnMwF0RFTT6QXMd2ZiD1hiQm2agdfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778410540; c=relaxed/simple;
-	bh=j5HsySVcF70zNJVNTswnKoGhsSWDStOXoEo5MwbBCaM=;
+	s=arc-20240116; t=1778410576; c=relaxed/simple;
+	bh=61H0Wt2jF9FMwCEYn+OqqvSm9V80Z8gHHYskzeZZ0CM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B5AjW8mBkLXBRYBSzW1fK5BojPCtM049G1tu9/8O7ICprSkGbsf+bNJ96q6b6KISDJezK3C6Wmoa2XVahQxtJv7ys2PkW4Ci8xb4HdgBoX03ktqyVu1WwWyr2Kr0mlEA/n7IsuFSF2g82W5oq746CuGLoP+3LNMN7BvKX4Y7YWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YCkFu7Lt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB1D0C2BCB8;
-	Sun, 10 May 2026 10:55:38 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ll8/PZhR3RzUcJMaF75+BJQOv+zAFfzmd6jzt8VIqkmP+/WbRnsLF9RZ0JYxQdZfapWIiO7ovs1eSTJcBN282rpeBnZklxQ2JVcR+fhLM+lx3f+sVr2wYclf4fw/itmW6MwfER/smo7QKHfkzocelZcFGlvfwKEue8gSMzZBU0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKFsq8mu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19C37C2BCB8;
+	Sun, 10 May 2026 10:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778410539;
-	bh=j5HsySVcF70zNJVNTswnKoGhsSWDStOXoEo5MwbBCaM=;
+	s=k20201202; t=1778410576;
+	bh=61H0Wt2jF9FMwCEYn+OqqvSm9V80Z8gHHYskzeZZ0CM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YCkFu7LtIJ1f7PhsTQeSdZKD89eHX66t02RqK7TrNCh/f/wtm1fd8KXklKwlG882v
-	 WPuQpP/JNAZqjkgGbFuTdDuF/Jd9ovjr6lVfieDXo+4sAxMCwv+pbbNSrGrjnOgtvy
-	 I75st8FIj8wouzxhc6TBQSKcSF76rNTwjV/Lc7p423BYTBtaIr2qagoITBvRsOrwmq
-	 Bl7lP71WA0YqZupl5AdWfV2C5Y1YmxEnGg9k839NqJ9bsCWUQouBVwSSSNIieJnZTs
-	 gMlr+3JdvFRbMiXzxkRhhrUleg5Ulu4H3GyQZV+KJsN3K8olWd+3djW4TFkX/ThIXP
-	 Vkx3/5eXQwfrA==
-Date: Sun, 10 May 2026 13:55:31 +0300
+	b=RKFsq8mukGkxY1K5didgWf2KKkPkqSXbHfaQ/q/aAuCotXFiQvxuZKy4otgVr+a3U
+	 qLm+3LXaBbhIZ2goJ+8jZU5RR621X6jmF5PL2qTK8dar2D48BVcxB6Kyo2ZairKz9u
+	 GkgEh8hizcHRcxv1MNrQKs2zHm/Pgbhs1d8EByCMcrLOWw41w2+o3s6fN8XyHhkLDI
+	 g2YrIy4VnpkbHyEeRNnCqsiCQ0d6W3F9E9wyTfuX2EBhM/oBKQIryNhaNthD4GLqrk
+	 J2NmVdP84xEFk0RtW3uJE7YqWjBEiil1CFUJDtbg27rVyePJHqNXJ/8ChdcbIp0h+N
+	 6KgyZDP1JjV8g==
+Date: Sun, 10 May 2026 13:56:09 +0300
 From: Leon Romanovsky <leon@kernel.org>
 To: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org, dledford@redhat.com,
 	haggaie@mellanox.com
-Subject: Re: [PATCH v9 0/2] IB/mlx5: Fix loopback rollback and locking
-Message-ID: <20260510105531.GD15586@unreal>
+Subject: Re: [PATCH v9 1/2] IB/mlx5: Fix transport-domain rollback and
+ initialize lb mutex earlier
+Message-ID: <20260510105609.GE15586@unreal>
 References: <20260410005219.5197-1-prathameshdeshpande7@gmail.com>
+ <20260410005219.5197-2-prathameshdeshpande7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,15 +63,15 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260410005219.5197-1-prathameshdeshpande7@gmail.com>
-X-Rspamd-Queue-Id: 518B6503AE6
+In-Reply-To: <20260410005219.5197-2-prathameshdeshpande7@gmail.com>
+X-Rspamd-Queue-Id: E2807503AF5
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -77,7 +79,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20302-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20303-lists,linux-rdma=lfdr.de];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -88,62 +90,71 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Fri, Apr 10, 2026 at 01:52:16AM +0100, Prathamesh Deshpande wrote:
-> This series fixes transport-domain rollback and loopback state
-> consistency in mlx5 IB.
+On Fri, Apr 10, 2026 at 01:52:17AM +0100, Prathamesh Deshpande wrote:
+> mlx5_ib_alloc_transport_domain() allocates a transport domain and then
+> may fail in mlx5_ib_enable_lb(). In that case, the allocated TD is leaked.
 > 
-> Patch 1 fixes TD rollback on mlx5_ib_enable_lb() failure, makes the
-> success return path explicit, and initializes lb.mutex earlier.
+> Fix this by deallocating the TD when mlx5_ib_enable_lb() returns an
+> error. Also return 0 explicitly in the no-loopback-capability success
+> branch, and move dev->lb.mutex initialization to mlx5_ib_stage_init_init().
 > 
-> Patch 2 serializes MP force-enable state updates with lb.mutex and
-> implements capability-aware thresholds (td_base) to ensure correct
-> loopback behavior on both TD-capable and no-TD hardware.
+> Fixes: 146d2f1af324 ("IB/mlx5: Allocate a Transport Domain for each ucontext")
+> Signed-off-by: Prathamesh Deshpande <prathameshdeshpande7@gmail.com>
+> ---
+>  drivers/infiniband/hw/mlx5/main.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> v9:
-> - Address race/state issues around force_enable and enabled.
-> - Fix TD leak on failure after successful allocation.
-> - Implement hardware-aware thresholds via mlx5_ib_lb_td_base() to
->   handle both TD-capable and no-TD hardware correctly.
-> - Serialize MP force-enable transitions under lb.mutex.
-> 
-> v8:
-> - Resubmitted as a fresh, independent thread per maintainer request.
-> - No functional changes since v7.
-> 
-> v7:
-> - Split the series into two patches to isolate the return-value/mutex 
->   initialization fix from the refcounting logic.
-> - Moved force_enable check after increments/decrements to fix leaks.
-> - Updated hardware disable condition to a strict zero-check.
-> 
-> v1-v6:
-> - Initial combined versions.
-> - Added deallocation of tdn on failure.
-> - Moved mutex_init to stage_init_init to prevent crashes on non-ETH.
-> - Implemented atomic rollback in enable/disable paths.
-> 
-> Prathamesh Deshpande (2):
->   IB/mlx5: Fix transport-domain rollback and initialize lb mutex earlier
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index e02bfb1479f5..6be198c0651c 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -2068,9 +2068,13 @@ static int mlx5_ib_alloc_transport_domain(struct mlx5_ib_dev *dev, u32 *tdn,
+>  	if ((MLX5_CAP_GEN(dev->mdev, port_type) != MLX5_CAP_PORT_TYPE_ETH) ||
+>  	    (!MLX5_CAP_GEN(dev->mdev, disable_local_lb_uc) &&
+>  	     !MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
+> -		return err;
+> +		return 0;
+> +
+> +	err = mlx5_ib_enable_lb(dev, true, false);
+> +	if (err)
+> +		mlx5_cmd_dealloc_transport_domain(dev->mdev, *tdn, uid);
+>  
+> -	return mlx5_ib_enable_lb(dev, true, false);
+> +	return err;
+>  }
+>  
+>  static void mlx5_ib_dealloc_transport_domain(struct mlx5_ib_dev *dev, u32 tdn,
+> @@ -4513,6 +4517,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+>  
+>  	mutex_init(&dev->cap_mask_mutex);
+>  	mutex_init(&dev->data_direct_lock);
+> +	mutex_init(&dev->lb.mutex);
 
-I agree that this patch is needed.
-
->   IB/mlx5: Serialize force-enable state and preserve loopback accounting
-
-This change does not appear to be justified. The commit message provides no
-clear explanation of why it is needed.
+There is also a need to call mutex_destroy() to ensure proper resource cleanup.
 
 Thanks
 
-> 
->  drivers/infiniband/hw/mlx5/main.c | 81 +++++++++++++++++++++++--------
->  1 file changed, 62 insertions(+), 19 deletions(-)
-> 
+>  	INIT_LIST_HEAD(&dev->qp_list);
+>  	spin_lock_init(&dev->reset_flow_resource_lock);
+>  	xa_init(&dev->odp_mkeys);
+> @@ -4786,11 +4791,6 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
+>  	if (err)
+>  		return err;
+>  
+> -	if ((MLX5_CAP_GEN(dev->mdev, port_type) == MLX5_CAP_PORT_TYPE_ETH) &&
+> -	    (MLX5_CAP_GEN(dev->mdev, disable_local_lb_uc) ||
+> -	     MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
+> -		mutex_init(&dev->lb.mutex);
+> -
+>  	if (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
+>  			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q) {
+>  		err = mlx5_ib_init_var_region(dev);
 > -- 
 > 2.43.0
 > 
