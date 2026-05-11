@@ -1,175 +1,160 @@
-Return-Path: <linux-rdma+bounces-20391-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20392-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mAzWKhfTAWqXkgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20391-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 15:01:11 +0200
+	id qFrOC0PTAWqokgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20392-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 15:01:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00DC050E683
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 15:01:05 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2626150E7AE
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 15:01:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4EC30302413A
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 12:50:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 62297300BCB8
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 12:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C3639FCDD;
-	Mon, 11 May 2026 12:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E4A3A3833;
+	Mon, 11 May 2026 12:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+DvyGKL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OPKTQvDP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f50.google.com (mail-yx1-f50.google.com [74.125.224.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAEB36AB61
-	for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 12:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778503830; cv=pass; b=INs+8nMNZuz5IhJYVdamSOj8vEriLpdAo4EEhr9XHeizWFS1b9ZxEvWj9b2SMUtJbIBkp0xmWWszP+SYIfpXkzxf8x0XbALKGIjMdasvGDc4E3Eo3wuyclWh1Bs3bTyCfZ5hCvF3q1M5OTMncpiiUKm02yWb7qadRbh5MZEIQa0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778503830; c=relaxed/simple;
-	bh=hfG0lTXFFFerQgdAwR6QjapncjrKeuHWYgYBjLOxmlM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bxx3yPTFCF3xkZEJ5g0gxwyNEwHxlH6t/DsQ+sPHuYB5Tegnm6dXMnxHBcZELRLYRLlL6EVbCYnsTtCqSuVzu8QleKvs3aIsfxgepISCdOXcaB09IEAQU1/3NK/bd6o7k48i+icNpMGUPEZ+PSjdLXjC+YqlzcBv2IpxtDW8cxA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+DvyGKL; arc=pass smtp.client-ip=74.125.224.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f50.google.com with SMTP id 956f58d0204a3-64eb84d1e37so3295865d50.2
-        for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 05:50:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778503828; cv=none;
-        d=google.com; s=arc-20240605;
-        b=kAnL6HEptnbyMB+x3ACCwgmOhOK37cypamTlkDtxeDpHkIRKpSOB9BUtrPxWkIGpua
-         LZd6m4V/Aq5QIDWMzzfoqo+pM/8MRREu/QQgN0kQLUzcQo5oPeNsY2xqXgejo0yAOO9n
-         X50JMi2zueeqWzU6AZp0adWGZyXp5kSVadBs4/f0133vQOlXz0ctC2OD8mjn5l4xSjPn
-         ac7t4HxYkp9I1qAu3XLrsJ4uAR6Mb2h5zDDHey9Kqs/AD1DqrxSFp6yw7O6gF7/+Nog7
-         aDOj1OGrKLh2EIP+1FFGrugHidChCVCKjHuOqtF3tJaGhDQoojx7V8wVonq6YQ6Rqt0Q
-         mMYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=hfG0lTXFFFerQgdAwR6QjapncjrKeuHWYgYBjLOxmlM=;
-        fh=fRIgihCnzDTu8ktqK5y+nN6bFoB5tLBZbd8CjniY7ag=;
-        b=UnfHxk7BfI3kEPLVjKyn4ZCzyeBxtdiHh6nyPQDaF94JLwuIvrZj99jFdr5wmZsmZq
-         VHnIHzNYSY5zASMQEbCOD5LC+tNBoWhga0iCTGwsPFAvdzFMunKIUWf3xDXD7wSV/7kQ
-         FnRkUe9NrrWXepWqLtXEWPfuAy2ZP6dTdQTJ7NqrV0ybM50hh28uFDw4IYramarnbqDC
-         CcjEFlmxQgpvKPSjc4BrGC/pn+ezoLq3uRA772Q7rJ2Pjvfn+1We3bDlFFeZW/ufSVgl
-         kb+KN9VBSo/D/PrBcHg0unO8wmEAWF6NaLmEyyOa6HAEcQXvsLjnudeA9DVQAj/Vb0+U
-         MOow==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778503828; x=1779108628; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hfG0lTXFFFerQgdAwR6QjapncjrKeuHWYgYBjLOxmlM=;
-        b=E+DvyGKL8oohOyCQFKgZGe9T9CN4whRstZbEl7sZokY1zLQYrxvwQzMwN06G46kaLM
-         jfS+AEj5Zwm4NuLcZIv0EgBZfHUZQhzaPgbX0W1d1chtMEklAnch5+0tv/7q+7G8u1QJ
-         n+03dquIG0nrUeLAM0YcIdz1h5nbIgkzPZeCc/IYTB/TfB/6YDt+EipH0kjrYvpxWhSV
-         McCylLQIxkDi8UjPokIEMBoWkcz0iz9qgSzwJ/s0w+bcREUgNf+xlKGI5H9NPSgFziUx
-         zwukzvcE9kFPvqwG8O/Mb5suuob/XbUrlhdnh0oDV3gaA8ZwgOPHh8io+q1ijw9kasgy
-         CGig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778503828; x=1779108628;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hfG0lTXFFFerQgdAwR6QjapncjrKeuHWYgYBjLOxmlM=;
-        b=Bx0I7rbUI0B1ie884M6vNGsISlJXRucl6eQMMFu66l5KC1R1682w4buC39dvYVvn0A
-         CNj1qZTKaaHlTD7vkFacFXbuXfAMJn6YiVd2Uk5xLqf80Q972bXiH9bGkrcdFFPpvfgj
-         ZCPsEpbjmDyst2mGGwPkeoH5lEH7/lpWNaRzASsjxbafG71PbXizEhdMeFZSbSNWo0j2
-         9ab5o4DZooGi1HwXjNu6z9nzcuVRxkl3didFu1qOTpaNUpwdMxwypnhES+EFNrVX9zMY
-         5AU2RdRjb2JIZLmm341YuVnm5LFCKu+zTFiJZYQ6yYXUF9YZyTVyfKTGjC2NhSq07ZGE
-         GOGg==
-X-Forwarded-Encrypted: i=1; AFNElJ/HP5aGt6razI87wfomYY5vZyVJNod75ETJLKKgR2t5kJ+uvmAl+bovm7X1x6P3nyvIhxzjRbMNg8s/@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxdY4P181zw5MoIlAnXoSSXJQGcMoCTIta6flMFyN8KSYYjkGK
-	4jykCDtaZFOJdH0FNXNaef9rNJ90JVqyrHCMYfqgqgUOr0sCSJ9HnWofOCZfUUWIVM+pdewNZct
-	GTem1+dkD252cTOCNfgSIDRYTjytw6eU68CceWgQ=
-X-Gm-Gg: Acq92OFgU5/VEZYFvPIPQXhAFnO2ShoDrN9RnTDFBOQTXMPb071OffG45d5nqDodk84
-	5489QSF4Ag8x25lG/3QghUmGUJDUEjzSRGNQriNfTJNRoFE/f/1+yb9xGwW2iJqD8MqoqZErZNS
-	wPE6NXxrGZ+t1iUUNvVg1jlYdxLUpKsmCkFZLXlMFRfqb+FQAYPBQdqGLzntSghnkeOI9DOKQao
-	1WUzwCgTqwJbumH1RQts1/D/OwH6+j6ImTXhMF1plPQrppferf5itwHbSFmyCLYzE3TDskXHNqS
-	aUFdv71H
-X-Received: by 2002:a05:690e:1504:b0:652:5567:b3ec with SMTP id
- 956f58d0204a3-65da84d5fcamr7917912d50.37.1778503827951; Mon, 11 May 2026
- 05:50:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D2236AB61;
+	Mon, 11 May 2026 12:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778503835; cv=none; b=l5wj9aK0T55iBjWgvx7JbWBFoyv8iQPehkmIfiyMggEB99rF3fWbXiWUWPSHlnaW0/0U/BVFeckV5uzKGEcH4eXuM2v0at3WBMYvBWuSxvhZEiyVDia+FCu5iWI2KhWZrpExMuVpH/xiSp8d0XxlNgzok8QXgTgd/ug7q3+HrRU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778503835; c=relaxed/simple;
+	bh=1Twa6uesN0szXFlZCM6LGRSYEhaOeIwnikAIuueSnxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bU4zReSuW4nC74NjT1fupMSQQF//wzLRVhLYe5g3gjJj9UjUhk5sozv3xwQlV0YdHLEbDPrbRdjQ1nrNi8v89R8D3GJS9SO/EoQfDdYb3wsxTeLZVnjBXGI3M1nj/LRn0mUqwgIHDPQlZpu7uliBGfkQhD0ucC8kld5nLfYHRLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OPKTQvDP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F817C2BCF7;
+	Mon, 11 May 2026 12:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778503835;
+	bh=1Twa6uesN0szXFlZCM6LGRSYEhaOeIwnikAIuueSnxo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OPKTQvDPQ06IKRcxLVqHptCyh4gYE3VvZTq/AEd6CLK+37fVUzKExgAotrOPsvtXe
+	 duQ5TYAERrWKHjQOxa/IQbLrzezsZyKS47I3pIo9QsyKxtPVMGtSITAX3IUEuaJEzu
+	 r0VCeMYetQdy7i1HrkWIsvzH4+W8M3YG3T29t/I5XSVFqmz5xYMEjukAJJQfOSBLs2
+	 ELHTPWSZWQsoQMzOx6ucrsKXbWLiXfF5rPCCQa+M4rio1EOoPefCD+r3wejRejAA9q
+	 3AB9HzYBkBUCRDLdvI779OawzgorYhqDy28xQtgQPyAqP5NRboSZjjxOu0In1THcEC
+	 LHa1gEIZoL1Ag==
+Date: Mon, 11 May 2026 15:50:28 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Abhijit Gangurde <abhijit.gangurde@amd.com>
+Cc: jgg@ziepe.ca, brett.creeley@amd.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, allen.hubbe@amd.com, nikhil.agarwal@amd.com,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] RDMA/ionic: Support QP transport mode selection in
+ create and modify
+Message-ID: <20260511125028.GJ15586@unreal>
+References: <20260430123931.3256130-1-abhijit.gangurde@amd.com>
+ <20260430123931.3256130-4-abhijit.gangurde@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260428105515.362051-1-lgs201920130244@gmail.com> <20260511113556.GH15586@unreal>
-In-Reply-To: <20260511113556.GH15586@unreal>
-From: Guangshuo Li <lgs201920130244@gmail.com>
-Date: Mon, 11 May 2026 20:50:16 +0800
-X-Gm-Features: AVHnY4KLRzlUmrPHUeRVKIxDjXlhTrNpjx-QgHfeD3GnLnTD_AraTJFEErroZvg
-Message-ID: <CANUHTR85p3p0a1QL=GOTOgwy9QtS4dDS8yHx_Rq7QFwSskZvMA@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rtrs: Fix use-after-free in path files cleanup
-To: Leon Romanovsky <leon@kernel.org>
-Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Vaishali Thakkar <vaishali.thakkar@ionos.com>, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 00DC050E683
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260430123931.3256130-4-abhijit.gangurde@amd.com>
+X-Rspamd-Queue-Id: 2626150E7AE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20392-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20391-lists,linux-rdma=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	ASN_FAIL(0.00)[1.2.3.5.c.f.2.1.0.0.0.0.0.0.0.0.b.d.0.0.1.0.0.e.a.0.c.3.0.0.6.2.asn6.rspamd.com:query timed out];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	FROM_NEQ_ENVFROM(0.00)[lgs201920130244@gmail.com,linux-rdma@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,amd.com:email]
 X-Rspamd-Action: no action
 
-Hi Leon,
+On Thu, Apr 30, 2026 at 06:09:31PM +0530, Abhijit Gangurde wrote:
+> Allow userspace to specify the QP transport mode and number of
+> reorder completion queue paths during QP creation and modification.
+> 
+> Extend ionic_qp_req with transport_mode, num_rcq_paths, and
+> ionic_flags fields. The transport mode selects the firmware QP type,
+> ionic_flags are forwarded in the upper bits of priv_flags during
+> QP creation, and num_rcq_paths is passed to firmware during QP
+> modify.
+> 
+> Co-developed-by: Allen Hubbe <allen.hubbe@amd.com>
+> Signed-off-by: Allen Hubbe <allen.hubbe@amd.com>
+> Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+> ---
+>  .../infiniband/hw/ionic/ionic_controlpath.c    | 16 +++++++++++-----
+>  drivers/infiniband/hw/ionic/ionic_fw.h         | 18 +++++++++++++++---
+>  drivers/infiniband/hw/ionic/ionic_ibdev.h      |  1 +
+>  include/uapi/rdma/ionic-abi.h                  |  5 ++++-
+>  4 files changed, 31 insertions(+), 9 deletions(-)
 
-Thanks for reviewing.
+<...>
 
-On Mon, 11 May 2026 at 19:36, Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Apr 28, 2026 at 06:55:15PM +0800, Guangshuo Li wrote:
-> > Once kobject_put() is called on srv_path->kobj, the release callback may
-> > be triggered and srv_path may be freed. Therefore, srv_path must not be
-> > dereferenced after kobject_put(&srv_path->kobj).
-> >
-> > However, both rtrs_srv_create_path_files() and
-> > rtrs_srv_destroy_path_files() call
-> > rtrs_srv_destroy_once_sysfs_root_folders() after
-> > kobject_put(&srv_path->kobj). The helper dereferences srv_path to get
-> > srv_path->srv, which can lead to a use-after-free.
-> >
-> > Fix this by calling the sysfs root folder cleanup helper before
-> > kobject_put(&srv_path->kobj), so srv_path is still valid when the helper
-> > accesses it.
->
-> This sentence is unclear. The srv_path reference appears many lines after
-> rtrs_srv_destroy_path_files(). What exactly is the issue you are addressing
-> here?
->
-> Thanks
+> +enum ionic_qp_transport_mode {
+> +	IONIC_QPT_TRANSPORT_ROCE_V2 = BIT(0),
+> +	IONIC_QPT_TRANSPORT_MRC = BIT(1),
+> +};
+> +
+>  /* admin queue qp type */
+>  enum ionic_qp_type {
+>  	IONIC_QPT_RC,
+> @@ -228,16 +235,21 @@ enum ionic_qp_type {
+>  	IONIC_QPT_XRC_INI,
+>  	IONIC_QPT_XRC_TGT,
+>  	IONIC_QPT_XRC_SRQ,
+> +	IONIC_QPT_MRC,
+>  };
+>  
+> -static inline int to_ionic_qp_type(enum ib_qp_type type)
+> +static inline int to_ionic_qp_type(enum ib_qp_type type,
+> +				   enum ionic_qp_transport_mode tm)
+>  {
+>  	switch (type) {
+>  	case IB_QPT_GSI:
+>  	case IB_QPT_UD:
+>  		return IONIC_QPT_UD;
+>  	case IB_QPT_RC:
+> -		return IONIC_QPT_RC;
+> +		if (tm == IONIC_QPT_TRANSPORT_MRC)
+> +			return IONIC_QPT_MRC;
+> +		else
+> +			return IONIC_QPT_RC;
 
-I agree the commit
-message is not clear enough; I will send a v2 to clarify this.
+We have historically treated vendor-specific QP types as special cases and
+routed them through IB_QPT_DRIVER.
+
+IB_QPT_RC represents a standard RC QP and is expected to follow the
+specification.
 
 Thanks
 
