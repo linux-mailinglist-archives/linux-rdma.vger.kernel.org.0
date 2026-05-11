@@ -1,215 +1,302 @@
-Return-Path: <linux-rdma+bounces-20375-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20376-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2KDTCHKaAWpxfwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20375-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 10:59:30 +0200
+	id 4BZKHnyhAWpKgwEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20376-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 11:29:32 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B9550A780
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 10:59:29 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5DEB50AE4F
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 11:29:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4C36B3030D4F
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 08:54:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 19D7631F49B5
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 09:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9265A3C061D;
-	Mon, 11 May 2026 08:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7805D3C9EF8;
+	Mon, 11 May 2026 09:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NQUq2ezw"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="zjyx8z06"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013013.outbound.protection.outlook.com [40.107.201.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095643BD63A;
-	Mon, 11 May 2026 08:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778489616; cv=fail; b=L0e2VnmQxKH00fmIoetJK2v2yHjp8V9q3r6Rrh17KjRbG6r9LEUzXX363q9fXtXNIAcPN10Tr49K9p+VZU6jjn17cGAZhRUxJBQXnjnmOhMQ956tYwyuZjeiHV6cxKJYm0Enlsqz1156cVJ2huHkzKgDIb6a2KUR3AVzsM0wlww=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778489616; c=relaxed/simple;
-	bh=amCW6mSlhZzSBBzUYAUIu0z7pjdMGi/GimaxwN9Bd4M=;
-	h=References:From:To:CC:Subject:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=nE9vS/hVk9DCN1KBTvlPiN/3u/pNpK/CJrB0qjBQWMhvUWnZ2m+wwKPBD9oJaVVZrstSEjoOkLkuHgHd9d/KaIG3QeEPZkUDbbNntZPHHQzdC5tZjITqaw8rKt630OJqOihgDZLshzOtad5WNiSL31/6IsqInazxplq2PYo4Cyw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=NQUq2ezw; arc=fail smtp.client-ip=40.107.201.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xqmqC4kA4MZBMMOZtRAVzCiYQXvy3kJIkvw6/rHJUJWM2IMmQzRSX1hFwf/6h8SeKXqNnXQ0jV3jFGogBQW6sxhrc96jjtOi8Bxs22DRY0Ywq85li+kXmefHFYE1VDkUacNh8F8/Vsg+3keiUcwxOZxQjSBNuFBBiFDUSIThrVpKOr5Wk7osP93e3BGOro7EWvKFwXMq8H9DteZy3kJYPfeoY2d0mek2C3etyGumTkHXA9qlPHt/KFJ5VxreIQhC4P3oORUKUxaJLIm3rXb2kGjt525zO8j5TgIIbBfbzpP+w68igB9GYX1xKOWtsbIu+goUetts8/zt2ZkK72CaEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1wgzCjs4oUlH1HTnxOUFAu9W2rMh9dV+Wbcp8gTlzZQ=;
- b=MmVFzQ03Kq7AYjtg0aUUpfKH2hUNzvLJE2uUt9r4bcNiJoG14AWZSopdIx9j2QPpKpV5zTQdhBq1Q1ApLqEBnTUrMx+149XW7PPBHk1KmOk32sCFldvY+ffgI/01Sx764rFMQrytbNhjteKYHxAbEO5U2IeDA1O5Nzr/zNT4/I306bivW6mF/ECSeQHgk5Bg+VJSh6dEpGIMXW/vQfpd+MjL+kWG4r/89QAcpnILcNCzXmR/7WN2ZAScdhsOTm8EKMt3z98D4eW1xxFRQMd8AjSfy0Tgb2n9xTIDABNFQGi67gvJclhnTM0nr7DE1dQj+Ge3/bOY1SOY8IOjVKEzlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linux.dev smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1wgzCjs4oUlH1HTnxOUFAu9W2rMh9dV+Wbcp8gTlzZQ=;
- b=NQUq2ezwTHNuFVyUYoL6WuecfrYQR1QheYIvZzzY+rKTiwXYsgmq9WSMlzf62/EIRQX8fXbUfDAlLV8qRk8Vp8hCahfnd3FN/Oq+rBJWI08MSy/PxdmYI7PGjxKxCGYmNODMF3IIFG76I7GHVW4l+6+chIuDg0oMfFVXIKN9YBNoCm9xeqpelD8HUwdx1nkEthdILDnKYaqjogc5NDWmpUizLfvwvkRpy7AysZa6vwKJj8iWANrt5d4GyfPUuSAWm/NLV/+gmUmLoZXbRx9Qb9aLIZQkldlnjCVB6cMoLYm3seWFZ0WrsGeL0xoCnyud3y8BSYX4CdfWz7mtfmp+YA==
-Received: from SJ0PR03CA0156.namprd03.prod.outlook.com (2603:10b6:a03:338::11)
- by CH3PR12MB7596.namprd12.prod.outlook.com (2603:10b6:610:14b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.22; Mon, 11 May
- 2026 08:53:24 +0000
-Received: from BY1PEPF0001AE19.namprd04.prod.outlook.com
- (2603:10b6:a03:338:cafe::fe) by SJ0PR03CA0156.outlook.office365.com
- (2603:10b6:a03:338::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9891.21 via Frontend Transport; Mon,
- 11 May 2026 08:53:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BY1PEPF0001AE19.mail.protection.outlook.com (10.167.242.101) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.13 via Frontend Transport; Mon, 11 May 2026 08:53:22 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 11 May
- 2026 01:53:09 -0700
-Received: from fedora (10.126.231.37) by rnnvmail201.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 11 May
- 2026 01:52:56 -0700
-References: <20260511033923.1301976-1-rkannoth@marvell.com>
- <20260511033923.1301976-4-rkannoth@marvell.com>
-User-agent: mu4e 1.8.14; emacs 30.2
-From: Petr Machata <petrm@nvidia.com>
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <oss-drivers@corigine.com>, <akiyano@amazon.com>,
-	<andrew+netdev@lunn.ch>, <anthony.l.nguyen@intel.com>,
-	<arkadiusz.kubalewski@intel.com>, <brett.creeley@amd.com>,
-	<darinzon@amazon.com>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
-	<edumazet@google.com>, <horms@kernel.org>, <idosch@nvidia.com>,
-	<ivecera@redhat.com>, <jiri@resnulli.us>, <kuba@kernel.org>,
-	<leon@kernel.org>, <mbloch@nvidia.com>, <michael.chan@broadcom.com>,
-	<pabeni@redhat.com>, <pavan.chebbi@broadcom.com>, <petrm@nvidia.com>,
-	<Prathosh.Satish@microchip.com>, <przemyslaw.kitszel@intel.com>,
-	<saeedm@nvidia.com>, <sgoutham@marvell.com>, <tariqt@nvidia.com>,
-	<vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH v13 net-next 3/9] devlink: pass param values by pointer
-Date: Mon, 11 May 2026 10:52:09 +0200
-In-Reply-To: <20260511033923.1301976-4-rkannoth@marvell.com>
-Message-ID: <875x4upbtn.fsf@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670003C9EF3
+	for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 09:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778490042; cv=none; b=fXULE0ucoQOBXTlJa5NnwT9E2nRC7RKYywV3G8wtfJOO8uD2OiqmGVsaGPxLCpaS9/dekMe8eXGTohThJ6p2SrRo2IIxJXY8IQjXqUbvgrOZU3jT/2aHnh6iah5ED0EjNk4hGga07VKFqqTVgfksNmQlu/A+IjhZvP+NTE3SBCk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778490042; c=relaxed/simple;
+	bh=ZYGinJLF1cDgGH/aGo4d1Hy0fwsOtdFNgDp8EWspf48=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=augHO3VjqlDCRxFx5twXokRFa6l6VtEwSsYge5oFylOLbdYuK9A3DekTsx0kCa7BHmyi/Uf3SCTI3LwFJ8Vq1HyQt0jYKowChAa9cx+H2NEHu4+9/SmQX9UiKNwfem8PI7bMAEfm1E+ij2gnMMmrC1ODh0OO0LmoEsmtIiMgLU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=zjyx8z06; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-45297094718so3194862f8f.3
+        for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 02:00:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778490038; x=1779094838; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zA2t05MaP/podHX+JpTZXPs7rW/q4RVQKoAjNccx6WY=;
+        b=zjyx8z06LW5isoT8LCSsXz+IFhYHTCiWyxWpyhQnuRjuxF2yJQkHA7pCKTR9CVv4yV
+         1eBHxsGm0obJ3tC+saBHhlRiU09Mm55lQIc7BnqeTKJkwIYBO0WoIpCpDplCe9cWKSYx
+         Ujn3uCjpcJsuYsrJ61DoJPPw7O9Ez3liNpKPyQBDaEnlwngLqDr76c5bMk9w5zA5gaAz
+         Gn5B0mW6DKzkZSqzk2ARFaS0DDNiSpAq7mbFSKS9viASh8q3Ubibs+uE3hJ2L4SVHS6s
+         zErl1L54vHW4glkpYJHJyvqjGfcir95CIXol8XdcDnNJQmnqgTliRKjS46BUvT0CoWlg
+         zgBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778490038; x=1779094838;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zA2t05MaP/podHX+JpTZXPs7rW/q4RVQKoAjNccx6WY=;
+        b=F+lEQxZ1dVKZNtu36MExpzK8HwmpOJ4qe+nOmAQaUu/nJ13HkCQLwIa6/wLsGzVe55
+         LUWPb+agrI7Jc5giH35pVxXA1Kk5fMXa+qeE+dZdLPJWEx3Pm+Gum2lyTgJk0q/tTu5C
+         3RQtWaDOJ7fJriwFAcmryjm9xKVvk4onFQGbnUHLSenq9POAxbLq1Nh+MM7s1sz26NNf
+         4bjeO++/dfWXPaKoEoPROpu4rJcVY7glfyQtUthGDdhTjhOhOp/0455rW+aUr/wTdIJF
+         6dReFOnJuhEMrzuSlzmWOy/Ldj9jrZslF+aImFT//onzozIoPXvV7kH8MizfSSkM4t5A
+         Q+rQ==
+X-Forwarded-Encrypted: i=1; AFNElJ95gdb38YjGcBBHOm3qGI1j5/+uN52oivBGXuaR7IWnyP4IRGKepsXSxWzcMQikcKbvvE99t1ceBwrQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhFYdYrKiVdjtAwucqHnZX10/HBNyoYqeKvKf14stxVQVz8h99
+	lE8BNlS1NWxzSUDZAWce54d++fEAlosncwSKnX5xaxfVlN5UiY9KefN8tNe4OTN1qQE=
+X-Gm-Gg: Acq92OH7yrwnQpuk8mJCWfwCLzdUQFgE0vGJFYx5B0LV02kPFlKUDGxOjNGWfpLiTO/
+	WZ5cq8O/i6q6Qht6fdu/woeG1T3/8s+yZcNlACphfBxWDXczQKiagtrOiYtG4efM/WFJVAd704W
+	todGfErTirlODtf5yx81shdIswGnL+tDQUkYVtpOZWmUsfEU0igRbs7fxjcRSWBgxd1vF6y4d8K
+	MI3Eeo7vQX3ELAQormOKS0Wg5zrVvggirT4X/wRK1AAz8eMmLAxIBIRN8Gv/qejj64k28mIr2rC
+	+nKHuxRtNdJJ7qnCXkBucK+27IYRMQ7d/JVVjXKW6ng0vy1mJim2fYwz+l1uj+DkAbXizEWwUBO
+	TGVdV6XM0Z5iPGis7hmWzqaO89uEN8bpV+4m+TiA2dn1eAhIUT2iola0kbOD/1Nbi9IlL76SBlD
+	GSWrMbhRBC/GcujSon+yGqBvqBpARvrHz4a0EVJLDh+deIY0NvjWcBrQ3t0M1zb1p950WYhNofZ
+	hji7Vw/g+7GYjtuqqgk1CRjOA==
+X-Received: by 2002:a5d:64e3:0:b0:449:cfea:ca91 with SMTP id ffacd0b85a97d-4515da96254mr34460937f8f.37.1778490037223;
+        Mon, 11 May 2026 02:00:37 -0700 (PDT)
+Received: from localhost (p200300f65f114e0841c796eda31a14b3.dip0.t-ipconnect.de. [2003:f6:5f11:4e08:41c7:96ed:a31a:14b3])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-4548e6a5b65sm25209225f8f.8.2026.05.11.02.00.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2026 02:00:36 -0700 (PDT)
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>
+To: Michael Grzeschik <mgr@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Steffen Klassert <klassert@kernel.org>,
+	David Dillow <dave@thedillows.org>,
+	Ion Badulescu <ionut@badula.org>,
+	Mark Einon <mark.einon@gmail.com>,
+	Rasesh Mody <rmody@marvell.com>,
+	GR-Linux-NIC-Dev@marvell.com,
+	Manish Chopra <manishc@marvell.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Denis Kirjanov <kirjanov@gmail.com>,
+	Jijie Shao <shaojijie@huawei.com>,
+	Jian Shen <shenjian15@huawei.com>,
+	Cai Huoqing <cai.huoqing@linux.dev>,
+	Fan Gong <gongfan1@huawei.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Petr Machata <petrm@nvidia.com>,
+	Yibo Dong <dong100@mucse.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	nic_swsd@realtek.com,
+	Jiri Pirko <jiri@resnulli.us>,
+	Francois Romieu <romieu@fr.zoreil.com>,
+	Daniele Venzano <venza@brownhat.org>,
+	Samuel Chessman <chessman@tux.org>,
+	Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Kevin Curtis <kevin.curtis@farsite.co.uk>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Kees Cook <kees@kernel.org>,
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Thomas Fourier <fourier.thomas@gmail.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Zilin Guan <zilin@seu.edu.cn>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	David Arinzon <darinzon@amazon.com>,
+	Yeounsu Moon <yyyynoom@gmail.com>,
+	Denis Benato <benato.denis96@gmail.com>,
+	Yonglong Liu <liuyonglong@huawei.com>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Yicong Hui <yiconghui@gmail.com>,
+	MD Danish Anwar <danishanwar@ti.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Larysa Zaremba <larysa.zaremba@intel.com>,
+	Ian Lin <ian.lin@infineon.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Double Lo <double.lo@cypress.com>,
+	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	oss-drivers@corigine.com,
+	linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com
+Subject: [PATCH net-next v3 0/2] Rework pci_device_id initialisation
+Date: Mon, 11 May 2026 11:00:22 +0200
+Message-ID: <20260511090023.1634387-4-u.kleine-koenig@baylibre.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY1PEPF0001AE19:EE_|CH3PR12MB7596:EE_
-X-MS-Office365-Filtering-Correlation-Id: 292b0bb3-4b8b-41e1-4a8b-08deaf3ac1be
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|1800799024|36860700016|82310400026|18002099003|3023799003|56012099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	zxd+WsW+5DLWx8RPzCfBexSf0ODcBNhmpS/ASt1Ie4mUueWA0kWJKz2shxACKLdgZLgvW42YlEzuGDWiiVKYZ9MkfevJ3Bj6x1jWDWsfjE8azcQpLWl79SwBY5EagmBBc8b7s9uE+3XuuRvVRSg1Y5qjBP8s/V8lIWOHmJyqCNuFn4Sbc2YEhTvYKxeQNB5lL8/Yu9QxK5YPknZVCUAZOMtLtiDXxY+g4Iinl7q8q76Eg+Xy7Jq3ae9ahhbWQuqGDCGPNFXDE8tKPqrpzSnC+85Hsf6sMpoxleBPgX77Ae+eEq3RaX47gW+yvj2DaVMHGwvnmxP9VmM5u40kdUqKYxQsVYgsPea/F31TwKSYNXwk2QlYAUJPmQ0Wo8mTIF/s/qql3AKEFvz1jY6gpTT1Eq0W8l03sSgGMWhFTeLZ4r4Npc9wKQHqd7heLvJTvjX6YPlV3pxZrBLcl3XkQY5Ey4zB4rdcaaeDhLyLY3I6pIGlB6d9Tjj01Pj8yZq0Mvb4JWOOeOGM3s2qZT+1ePK2vUcJ9FVLQ1qVdhQrdK5abNbqOQw+m4Bl5UhdZrm+JEUe306mbSW+6A1y/dAt6G2UkuptWklQDfmnk9S1sDt0rSniJMptzkg8+7xij5geD2B02+6wRRi6PQhaA4P1ueHuUUhY662MK9jtzzi4BLl8QnjsZaJcX2czsR094pcRz21GwCZPae1QuErh7IxGIMpQf2abhCnT2QrwK592zbUfJ1k=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(36860700016)(82310400026)(18002099003)(3023799003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	iq4uFMI/omVAf/HEIf4geZj5Q4M3F0nBQoaIPwM/vJFllToWK/5avJlILiO2uB/UjwvfA3AG62fNKgzetGu7XDU3ABXaUcEm/SFmjqsulnMhEBIfM4SAfr/S7YducH7r6Dhg8Hh8QBk94IO4ewZZpsAur0pr7xHddwutY0/IneUah6RTS2mBJX7vrQzt8eXadvIAHtaNPWxUQaDF/mkqhYvQQZUND+HNs1DvpH4wFTW6+QGRsV74TKWacYD+koL20TFUH3tK4hlulkzsb+EOoRpnRcaKcd40CkJYA/ldqcFXTTv7iIUHGaV5HPeGs9d7KtfRWgqvUhrs5OimSAM1PmMDawRfIdtJ5hEMoN2mnS8Sy0r/kd6ilIZaybX1utVqELn+qiB6cvWL6/3XBksYGtzYbwMfN2w9xtlDxNHWBsHzuClQfy37Tt6o643Dggnl
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2026 08:53:22.6186
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 292b0bb3-4b8b-41e1-4a8b-08deaf3ac1be
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BY1PEPF0001AE19.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7596
-X-Rspamd-Queue-Id: D5B9550A780
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4853; i=u.kleine-koenig@baylibre.com; h=from:subject; bh=ZYGinJLF1cDgGH/aGo4d1Hy0fwsOtdFNgDp8EWspf48=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBqAZqnnelkHiCtzmBC4y0fb7vJdPOE1eZ7YhPdE 2SrLv8jYlGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCagGapwAKCRCPgPtYfRL+ TjAaB/4oo4PlfsIbeG6MCk6KG/Z4+gxMxrSewie9L+e4GgVdrB4TOBKkquVHmIZGwKjcVZ4TTHb NefjSqaVMX4GAGFyvubu+IYDalSlSnAzan/1cuw698pTu8HJAZcUiXsULIZGAzyccgEjFzFRtOG 9zcX6kiJPNLHyc4KCm8r2nVxLqV6bD0Ra/lsh4CIqsXdKbNgT8R/zlx5qsBD4jv6XuZojWf/47T BGjl0kKv9jdWqI2IyZT+iFIbeMxYEcWSMZLzC6lnFeTSGLW7f1AVp8qVTep3xLTu5Qrh0AUeJ60 G6q8VibpIILN8q4yuUlgLX0vBjjeLn9Q8sKtPvNkz+TLgLBC
+X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C5DEB50AE4F
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.84 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[baylibre-com.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[31];
-	FREEMAIL_CC(0.00)[vger.kernel.org,corigine.com,amazon.com,lunn.ch,intel.com,amd.com,davemloft.net,gmail.com,google.com,kernel.org,nvidia.com,redhat.com,resnulli.us,broadcom.com,microchip.com,marvell.com,linux.dev];
+	TAGGED_FROM(0.00)[bounces-20376-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20375-lists,linux-rdma=lfdr.de];
+	DMARC_NA(0.00)[baylibre.com];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,thedillows.org,badula.org,gmail.com,marvell.com,chelsio.com,huawei.com,linux.dev,intel.com,nvidia.com,mucse.com,realtek.com,resnulli.us,fr.zoreil.com,brownhat.org,tux.org,trustnetic.com,net-swift.com,farsite.co.uk,broadcom.com,bootlin.com,seu.edu.cn,suse.com,google.com,amazon.com,infradead.org,ti.com,infineon.com,cypress.com,baylibre.com,vger.kernel.org,lists.osuosl.org,corigine.com,lists.linux.dev];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[petrm@nvidia.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[u.kleine-koenig@baylibre.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[baylibre-com.20251104.gappssmtp.com:+];
+	RCPT_COUNT_GT_50(0.00)[80];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,baylibre.com:mid,baylibre-com.20251104.gappssmtp.com:dkim,pm.waw.pl:email]
 X-Rspamd-Action: no action
 
+Hello,
 
-Ratheesh Kannoth <rkannoth@marvell.com> writes:
+the previous iteration of this series (v2) is available at
+https://lore.kernel.org/netdev/cover.1778149923.git.u.kleine-koenig@baylibre.com
 
-> union devlink_param_value grows substantially once U64 array
-> parameters are added to devlink (from 32 bytes to over 264 bytes).
-> devlink_nl_param_value_fill_one() and devlink_nl_param_value_put()
-> copy the union by value in several places. Passing two instances as
-> value arguments alone consumes over 528 bytes of stack; combined with
-> deeper call chains the parameter stack can approach 800 bytes and trip
-> CONFIG_FRAME_WARN more easily.
->
-> Switch internal helpers and exported driver APIs to pass pointers to
-> union devlink_param_value rather than passing the union by value.
->
-> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+Changes since v2:
 
-Reviewed-by: Petr Machata <petrm@nvidia.com> # for mlxsw
+ - swap patch order as Jakub Kicinski reported a build failure (that I
+   couldn't reproduce though)
+ - drop the change to drivers/net/can/m_can/m_can_pci.c on Markus
+   Schneider-Pargmann's (non-public) request as this patch conflicts
+   with a cleanup he has in his queue that will prepare this driver
+   for my quest to add a union to pci_device_id in a differnt way.
+ - drop a recipent from Cc: that bounced before (khc@pm.waw.pl).
 
-> diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
-> index d76246301f67..308d8a94865f 100644
-> --- a/drivers/net/ethernet/mellanox/mlxsw/core.c
-> +++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
-> @@ -1306,11 +1306,11 @@ static int mlxsw_core_fw_flash_update(struct mlxsw_core *mlxsw_core,
->  }
->  
->  static int mlxsw_core_devlink_param_fw_load_policy_validate(struct devlink *devlink, u32 id,
-> -							    union devlink_param_value val,
-> +							    union devlink_param_value *val,
->  							    struct netlink_ext_ack *extack)
->  {
-> -	if (val.vu8 != DEVLINK_PARAM_FW_LOAD_POLICY_VALUE_DRIVER &&
-> -	    val.vu8 != DEVLINK_PARAM_FW_LOAD_POLICY_VALUE_FLASH) {
-> +	if (val->vu8 != DEVLINK_PARAM_FW_LOAD_POLICY_VALUE_DRIVER &&
-> +	    val->vu8 != DEVLINK_PARAM_FW_LOAD_POLICY_VALUE_FLASH) {
->  		NL_SET_ERR_MSG_MOD(extack, "'fw_load_policy' must be 'driver' or 'flash'");
->  		return -EINVAL;
->  	}
-> @@ -1337,7 +1337,7 @@ static int mlxsw_core_fw_params_register(struct mlxsw_core *mlxsw_core)
->  	value.vu8 = DEVLINK_PARAM_FW_LOAD_POLICY_VALUE_DRIVER;
->  	devl_param_driverinit_value_set(devlink,
->  					DEVLINK_PARAM_GENERIC_ID_FW_LOAD_POLICY,
-> -					value);
-> +					&value);
->  	return 0;
->  }
->  
+Best regards
+Uwe
+
+Uwe Kleine-König (The Capable Hub) (2):
+  net: nfp: Drop PCI class entries with .class_mask = 0
+  net: Consistently define pci_device_ids using named initializers
+
+ drivers/net/arcnet/com20020-pci.c             | 242 +++------
+ drivers/net/can/sja1000/plx_pci.c             | 167 +++----
+ drivers/net/ethernet/3com/3c59x.c             |  80 +--
+ drivers/net/ethernet/3com/typhoon.c           |  75 ++-
+ drivers/net/ethernet/8390/ne2k-pci.c          |  24 +-
+ drivers/net/ethernet/adaptec/starfire.c       |   4 +-
+ drivers/net/ethernet/agere/et131x.c           |   6 +-
+ drivers/net/ethernet/broadcom/bnx2.c          |  62 ++-
+ .../net/ethernet/broadcom/bnx2x/bnx2x_main.c  |  50 +-
+ .../net/ethernet/cavium/liquidio/lio_main.c   |  10 +-
+ .../ethernet/cavium/liquidio/lio_vf_main.c    |   7 +-
+ drivers/net/ethernet/chelsio/cxgb/common.h    |   2 +-
+ drivers/net/ethernet/chelsio/cxgb/subr.c      |   2 +-
+ .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |   4 +-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |   4 +-
+ .../ethernet/chelsio/cxgb4vf/cxgb4vf_main.c   |   4 +-
+ drivers/net/ethernet/dec/tulip/de2104x.c      |   6 +-
+ drivers/net/ethernet/dec/tulip/dmfe.c         |  12 +-
+ drivers/net/ethernet/dec/tulip/tulip_core.c   |  78 +--
+ drivers/net/ethernet/dec/tulip/uli526x.c      |   6 +-
+ drivers/net/ethernet/dec/tulip/winbond-840.c  |  13 +-
+ drivers/net/ethernet/dlink/dl2k.h             |  12 +-
+ drivers/net/ethernet/dlink/sundance.c         |  14 +-
+ drivers/net/ethernet/fealnx.c                 |   8 +-
+ .../net/ethernet/hisilicon/hibmcge/hbg_main.c |   2 +-
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  50 +-
+ .../hisilicon/hns3/hns3pf/hclge_main.c        |  18 +-
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  12 +-
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  12 +-
+ .../net/ethernet/huawei/hinic3/hinic3_lld.c   |   7 +-
+ drivers/net/ethernet/intel/e100.c             |   9 +-
+ drivers/net/ethernet/intel/e1000e/netdev.c    | 471 +++++++++++++-----
+ drivers/net/ethernet/intel/fm10k/fm10k_pci.c  |  10 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  59 +--
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  10 +-
+ drivers/net/ethernet/intel/igb/igb_main.c     |  66 +--
+ drivers/net/ethernet/intel/igbvf/netdev.c     |   4 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |  34 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 106 ++--
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  49 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  26 +-
+ .../net/ethernet/mellanox/mlxsw/spectrum.c    |  16 +-
+ drivers/net/ethernet/micrel/ksz884x.c         |   8 +-
+ .../net/ethernet/mucse/rnpgbe/rnpgbe_main.c   |  10 +-
+ drivers/net/ethernet/natsemi/natsemi.c        |   4 +-
+ drivers/net/ethernet/netronome/nfp/nfp_main.c |  65 +--
+ .../ethernet/netronome/nfp/nfp_netvf_main.c   |  33 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |  20 +-
+ drivers/net/ethernet/realtek/8139too.c        |  52 +-
+ drivers/net/ethernet/realtek/r8169_main.c     |   8 +-
+ drivers/net/ethernet/rocker/rocker_main.c     |   4 +-
+ drivers/net/ethernet/sis/sis190.c             |   6 +-
+ drivers/net/ethernet/sis/sis900.c             |  10 +-
+ drivers/net/ethernet/smsc/epic100.c           |  18 +-
+ drivers/net/ethernet/sun/cassini.c            |   8 +-
+ drivers/net/ethernet/sun/sungem.c             |  26 +-
+ drivers/net/ethernet/ti/tlan.c                |  41 +-
+ drivers/net/ethernet/wangxun/ngbe/ngbe_main.c |  26 +-
+ .../net/ethernet/wangxun/ngbevf/ngbevf_main.c |  26 +-
+ .../net/ethernet/wangxun/txgbe/txgbe_main.c   |  18 +-
+ .../ethernet/wangxun/txgbevf/txgbevf_main.c   |  18 +-
+ drivers/net/wan/farsync.c                     |  24 +-
+ drivers/net/wan/pc300too.c                    |  14 +-
+ drivers/net/wan/pci200syn.c                   |   6 +-
+ drivers/net/wan/wanxl.c                       |  11 +-
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  17 +-
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c  |  52 +-
+ 68 files changed, 1285 insertions(+), 1099 deletions(-)
+
+
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+-- 
+2.47.3
+
 
