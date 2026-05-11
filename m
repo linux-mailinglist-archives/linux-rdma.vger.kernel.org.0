@@ -1,86 +1,86 @@
-Return-Path: <linux-rdma+bounces-20401-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20403-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8EfGEI0YAmognwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20401-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 19:57:33 +0200
+	id AP+bKA0TAmrangEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20403-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 19:34:05 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A48AC513ECF
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 19:57:32 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D0535138FB
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 19:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 418FA3045AB9
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 17:28:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0806330A0891
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 17:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E3244E040;
-	Mon, 11 May 2026 17:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0682B450906;
+	Mon, 11 May 2026 17:28:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qXgoG9QS"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="IHofl7XY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013044.outbound.protection.outlook.com [40.93.196.44])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010012.outbound.protection.outlook.com [52.101.193.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BBD144E051;
-	Mon, 11 May 2026 17:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A6544DB9D;
+	Mon, 11 May 2026 17:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.12
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778520497; cv=fail; b=XUNYL4nNkCdwPmd2gJSZY24PqLxgjN7DUlYN8U3lbgkv7Y7sn5910C8wYouxE/dP++6n7fC3wzhEAGbGDj5/f/qgNmdkNSqmPofhePHJ0kUeu04lV+vSZS/cxUKvuzFzfcyKW+ptj5fQr5v5X2l/q4scXWPYQtorKo1rhk9SJPk=
+	t=1778520509; cv=fail; b=EIEqo2zSFOFND/FaqChVrfD5kh2hLUztHy8b+gSMDwSd3e4KEo+U4BVry/omAekNahjcgNQPAvl5u6dZ2+EGqIiqT19IMK8EOVqDsuzi5Rkm7EwSWP5Xtb2tdvFhZFmlZnzsl/Ai5g9s9FdaSK4EyUw1IWBKYBpOm/SDuC2xsXY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778520497; c=relaxed/simple;
-	bh=L7PPq85gGNwYN3NbbrkHVJ0HzfH4oU3vlDa47c6RYZI=;
+	s=arc-20240116; t=1778520509; c=relaxed/simple;
+	bh=IKSmwJyYms1bnF+7tW/wZNKcD9IxdJGtd+Hw3bTnQDY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E88UNUMaAb6uaoQ3bU71PatZW1G8UZPG+7L6XWZiJnVriDlD2NBx7zPG4EekHtXR/6L4Dh9Tc2aMVyYB+679yggJ8F7+o80Lbr9h6EKP8rwCfYyqDKdsc1gPbZoyWY1DYYSufqSrLKmXNPvJ6Kx29n0PdsO92dSFwbehYU3qsV4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qXgoG9QS; arc=fail smtp.client-ip=40.93.196.44
+	 MIME-Version:Content-Type; b=MQK7WmtgqNgoLDnt0V3ct3VPFQPYMiKuKjS7b2fh8KfhBjNo5Qi3ECn36wWF4sfcwq0e+9oymzstELrFeG035snbGMPuqeKQ57RTsBW2Y06OTgludS1MMH8FvcY+/uOiIc4X615pyG1vHXQlRwsJpeLrBsUeIi/mIubIT2jucEo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=IHofl7XY; arc=fail smtp.client-ip=52.101.193.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QauO9PnAdYAz8/U2fE/RZhOyVtoacegRpH7Vv4RE0NKmqf1nD/HDz/Cl/Uh6ybBIskdMjeTj+2Gw4TMLbV5iDIkweXoqKeD5aV1yo7Rc8Dm1GM9KRElsBJggoNOgGsPUFW7jkx2O0brdq24UnPBnBD/vpFgjkTPM/GQunc2QpMPCuxGhh7bgflWavqfmllYRcAwLHOvtZuNoOcfr+iYQHr2ioWW9Jdc/gTroXoolwgRWnKYapAtocNighnwSZzFeQx9YyzWPyCk5DVMWv27HHHpRHcRzKPyDDuB25zMfK9j/vzP3yjI0XvKy1HWwjxAY9rAMZDiPQ7V2Cn0qIrI77g==
+ b=SoRQpqCizH69u8r1j8WjXLWAvkAgKuhMYPp5EqQpLXvT/UYiU5Zd/AgKM7IjariQ3CwsDxRQiK/r6lE6kX0k91vVK0CkiBc/Ei6Gc6sPrZZQcIuI/Rdt90pON7Ye4m8DTZo9kdBPZ9s5mdw0YsNPq6daQhzIDZK00AWxGQBjd0KGzr+nLhqp8U/UaR6exM6sN0ijHq9ZxktfPAkRCCgU4nxomzLrAe+7zwrY2z1F5BgQNK/BQBoQfCvMBsTSzJF1gksUX2fMoQ8Q+2qpAj+gJfwxRmDmDBb7oeigJ8a5RjO33d3Dhw/a+8ynmd+AcsRxlSPSMwJwC5uzFG4XcpRh8w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CTGuO8gm31U7x4ayHiOwEUdBTrDkKTaCy8ohhopqQdA=;
- b=UjKWm7aKGa6S4mzAbAE5lmD53LTX5Ir0z17mu2jnj2vTjS5EAqf2ADc8QFy4o8WuSP6x+PRH6fJFJyVlDUw3ypk/2OtLKQTDafELaYe9FsNSerfpX81MRwTryK3sKVqwPKr/lIOm0PiXSZGfFubTrWXBdvkVi95vHK9itcEEJklkXKqPsipyf60hfc0TRkzyy8bm5bXJ3wpVsmeAgWTRXVY0IwPR1GMLUSP+C74PwXPSM1NFIbC/xp4kXN2gFWby9yLIt4uukZdGa6i0lp1G+PrgsaaDNz+2XlP0NXZ6PEm3pFOx3i8TwIXN9VZZl29nzZtej3wRQjm8/VRNAhYs1A==
+ bh=0WE0X34nfjhCtoPVfgmCEfCTd+OyrXvk9zrgxozkSvs=;
+ b=IPU/uVHlACZ1smhkdWT1McDODrc5e0xeEZD3QdLt/g99k71yqWHZoKT41xXtjhGrXoMSA0CmYhcyL8dCXNolnQ4M97Wj15dmRPwrATwLefxZT/MLQXsACHcbHrTOpXtCZbersl/eIMXbbElF1ToeutsBcIULj/7kJ4J6kGjP4ICB4FGzm2y7Al+7GAjmDhYJkjfj7WVksEjj88KYscEA8Qs/yqqpqIdjqjouD+bQjsu6plrBYEV/0aeO3kmWtIqIvQqeOAdDVtlBiIJhmC1en/CYVwDU0SMGhA0e5yFx7ik68PPdaLXlqWWAuzURTkBwhpEhzj9h0KyNd7IyuQ2ORA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CTGuO8gm31U7x4ayHiOwEUdBTrDkKTaCy8ohhopqQdA=;
- b=qXgoG9QSOgLtfdrXzB2CtN3gdrwZ6c3geShQ6NfJnSk1a6Z6bMRktByvun7fDh16XvhPImsAQx1Ck2v6NqNY07AzMKz1q6TzIZHUNErEJIFaSKef40qDVfTote/J4/KYasuA+OahNXcoolCBMsEmYxsgP0QM4YKIpV2U6j6PuRfb/Q9TcNVAr3IrOFzQzRpshqJkUzzC4coM8ESoaK9PTybt7M75uDJjxt4PA6gtMvPW5kEVKL0KXTlgpc9g0xcHY6eSOvyPwvT/4/UEGvoy4x3KrpiHtQXmL7BVLonERobihOLZEr+ZLCcG+oyOK03kQ2rXZI7aej5+8RgME3LDFw==
-Received: from SJ0PR03CA0009.namprd03.prod.outlook.com (2603:10b6:a03:33a::14)
- by MN2PR12MB4077.namprd12.prod.outlook.com (2603:10b6:208:1da::15) with
+ bh=0WE0X34nfjhCtoPVfgmCEfCTd+OyrXvk9zrgxozkSvs=;
+ b=IHofl7XYmiKfrRDoSoEfbeISO4bhfLvqYuuduukl73zsvk9wsGO6C56ia/RDwoE/ysineV2GOXCKgSQV4nk8G4y4v+MsfPy5iBqO9Ozxb0vdQN/ikS7X4tKIU35UShUU0ckDJW8dCHH+pCtACGriPdFfv1TumZu/EIAXhlkLaDQAmhvLx60m5cG+p7Nl/5qpVdOKPaHPtzNQ2a7ZZjtn+Q9416rz/YZYbwLfl5FxRECaFf4NsDD1hqa1ljvlpYaQv6+XlRWD3knpJ5Jf/dQJJXE/D3iboCSutVwFO2/GOi5EuzPij4l0QSsO2ogcs7yHUnB1SDihRszgzM8VGVB6LQ==
+Received: from SN7PR04CA0073.namprd04.prod.outlook.com (2603:10b6:806:121::18)
+ by DS7PR12MB9474.namprd12.prod.outlook.com (2603:10b6:8:252::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.23; Mon, 11 May
- 2026 17:28:10 +0000
-Received: from SJ1PEPF00002326.namprd03.prod.outlook.com
- (2603:10b6:a03:33a:cafe::f6) by SJ0PR03CA0009.outlook.office365.com
- (2603:10b6:a03:33a::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.20; Mon, 11 May
+ 2026 17:28:18 +0000
+Received: from SA2PEPF000015CA.namprd03.prod.outlook.com
+ (2603:10b6:806:121:cafe::1) by SN7PR04CA0073.outlook.office365.com
+ (2603:10b6:806:121::18) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9891.23 via Frontend Transport; Mon,
- 11 May 2026 17:28:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 11 May 2026 17:28:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SJ1PEPF00002326.mail.protection.outlook.com (10.167.242.89) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF000015CA.mail.protection.outlook.com (10.167.241.200) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.13 via Frontend Transport; Mon, 11 May 2026 17:28:10 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.21.25.13 via Frontend Transport; Mon, 11 May 2026 17:28:18 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 11 May
- 2026 10:27:49 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 10:27:55 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 11 May
- 2026 10:27:49 -0700
+ 2026 10:27:54 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Mon, 11
- May 2026 10:27:44 -0700
+ May 2026 10:27:49 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -92,9 +92,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<gal@nvidia.com>, Kees Cook <kees@kernel.org>, Dragos Tatulea
 	<dtatulea@nvidia.com>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 2/5] net/mlx5e: advertise max RSS indirection table size to ethtool
-Date: Mon, 11 May 2026 20:27:16 +0300
-Message-ID: <20260511172719.330490-3-tariqt@nvidia.com>
+Subject: [PATCH net-next 3/5] net/mlx5e: resize non-default RSS indirection tables on channel change
+Date: Mon, 11 May 2026 20:27:17 +0300
+Message-ID: <20260511172719.330490-4-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20260511172719.330490-1-tariqt@nvidia.com>
 References: <20260511172719.330490-1-tariqt@nvidia.com>
@@ -109,31 +109,31 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002326:EE_|MN2PR12MB4077:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9ba9ea9c-27b8-428f-bee4-08deaf82ac72
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CA:EE_|DS7PR12MB9474:EE_
+X-MS-Office365-Filtering-Correlation-Id: 352fcfbc-ee04-4a96-0534-08deaf82b0fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700016|1800799024|7416014|376014|56012099003|18002099003|22082099003|11063799003;
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|7416014|376014|22082099003|56012099003|18002099003|11063799003;
 X-Microsoft-Antispam-Message-Info:
-	mW539ee9RctI5IPH4BLYZPvNYgguoy2IjEv4Iv71JTQXeM/ngKpi+fQkgWvEgJ2T91MTyheIV/Nj4tAR8x4uU9a5/O/vTLcmAc1U/l5usQe2v1hI8TDTvaKW/gQMf9NVzzRD2kKPi71Sv/Dfqj9XwRltbokxNzbFT4LVGdADiVM5eKpQXo+sybYB4aTXL8yGlGwpON/dzDj/7bwl1I0SDM7PkYMTIfo2wUoyuRZUiDElZlMs6obylj3j56kYdqBAvRDuAWAKv8ypUKIPL68auS/F7mZOb/9pASQjSde0DvKdF4VHg7Qf4PvQxeWYl6gzbVsP8vDmrFnvCBFJGU5LfDjkBIf/nvt9JJ72qLob2c20UcTvnNmOu1nNg58k6fS2Kdy70bbZfzm3DTLSVz2qBFY2+yyakj2OpmZY+pmuWMRWsz+RXcbsl8/pS9MCUkBpBN73GrxWSbnxnQCVlhGAhXpBhwuT8HKxjG4MjMHpusSdtbQbUsD7fkagKnpxEbNHr0XdZZvD7K+r8umk3cEwwmDUl4IAYJI0954XTLDvtUAi9H9DqNbCcmWRUCmayvKc58nOd1DSwhy9p2B8DSCmMlMYF1anA7XIMzbnJ/CvK/pkmKfoViKyd6YZvnUWt8CJeFMXo6qdrRTq3hgXNid5iszmN3w8968RSWz8MJ0QSzRTASdOePsRJrZEccEtYkpuK4MNgiq9fr6RHV8XeEEnMcsAxBCZeRPNTfnHtRiMgyQ=
+	pRz5jsJD0x3mu1/bXqdgypwSjHx85A2guWbQI0NHrFmZtZ5CZTT2aQHCFRpUEEQYjjy3BiCot6WcqQKYENDnzlcAPc/vL8pJZINY7AyHfzLk/ju3B5O2i/65gljVNzKFrOo223FNyiLQo5TOxpwmvLBd7oyvyYJzF9hXIkYcgzPB6Y89880zyk/Pi4JVe9eapkKgt9NC2ADeGWtFHj+3wtyF64EU9DoWgMvNtOQ6krOBwGpz5MrM3a9cLtztTPcX8JFG39gNTFAFdLlGC5Q9EXgm9xNW9JmXCow3rEaBT7K9CfJDrAVUMw5SBYdRWskdIzwNlIQ7nGCBByPwn/yj+fXE/GwEinjBG2Q/Ge4bgp86Fw/DR7+00CHbw+cBdhX0CuIBJihrp3gKJzhUdwklI//o65LBtwyveorXw9YA6+0dv4reK79NpqHdBl6WpVWgH7FAmidDGThAts92nK9aNqpc77sbmAHaVqYzTjqlvh3bp/r2bvH35kEY47OZs7YV0dbvA1e8vWgmm/IsycvXRFmMx0Ju51wp/ajMsiFeV5EeUGFSk9CKI7DzfpInqQjyODCyjLnjBHxS7iRFQerIYiq1G1gy3ZHhHY49gxPy3BFG/QyWnKACFxKWrbGG2cCgActoT4GCxMd8cu2frWb0Zms6KYtrwCKPtYTmnPFwvdLrmSIPLXtFkbVpWlR94tffoCYs2SQUo9O91tgGx6RUBPS85VilkpfAa7021rXLFAY=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(1800799024)(7416014)(376014)(56012099003)(18002099003)(22082099003)(11063799003);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(7416014)(376014)(22082099003)(56012099003)(18002099003)(11063799003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	pfqpu3Zt2VZNhSlcntrPW1bPSzpo0xBLFLHV+tORxLvBcGqxzE+BUJTgmLbV/oLsqb/hbtzusgsP5/LWMC0pPLXo4iMV0YZuDB9g7zSRHhStBuVk5m4LQPRxyvdDdjMDnvIJ1stu8jjkQMoReg44CZ6ICIHUP+dDykAFUsa2daGGKCXK1CsrV/vZe8S2GDvqUZwLPR79Eks0/3fUzxVDuMOddUA/yKXgOgH1pPgW/1dHj16ADOyPydfbIkMiKUSqaUHV4Bsm1WfctcURcx8ptybNuu8r0mJfgiyHeoC2qU66OjC1QoyeisQDr9UlegeT6iHNBO+2umiQICNY8IAKZJYsa1h82+VF34Vsmw/rabNevKpmyMTGBtWbiR3cU6dM4BggM6u0faRtvT5VNNU6xNHpBzdJUG8sn2cNtuZItNPFz6pEPLNQTL3XZfkDyLDS
+	Wqf7nWjEMahbQ0H+9vSbJbT2hiJdZ/tCYkDIIER2kCe6DCfiEniy0crvh3I5QQrEMMTOXqYRW3lSQsgTzwfXoAY6ZrYGDuXliMBV7AQs7uoCuCVV/VP8V9ATIvELrKp68Nt74cilRsP4lXCbHtKNEzJckGylkOgf6iqHtcHKPDJLJIsYiluQdD2PhWjX/z1jtFzK4JJ4ruPgPASc8zdH2sIR3sXuuoRaw+CxPoMCgNnyZHuyEv82tiA94OsM/8lQyAuYzYhOOpfRHDTpxw3KWfVfMDPcGucq6GGHqv+IoJ+5AiHGMzM/mkpnlKTzDROMGGDbkVsErJfRmVLm5uQ8mgg+elpr5Q1rroCeddvOF2ff/Qh2nEPsIN7tP1NLxMSzaBn/PIf7A4otic1t21DCx2odKC7chWhNueegMXYIuJc88uGTKz/dDsadLTY+IhI9
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2026 17:28:10.5669
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2026 17:28:18.1759
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ba9ea9c-27b8-428f-bee4-08deaf82ac72
+X-MS-Exchange-CrossTenant-Network-Message-Id: 352fcfbc-ee04-4a96-0534-08deaf82b0fc
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002326.namprd03.prod.outlook.com
+	SA2PEPF000015CA.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4077
-X-Rspamd-Queue-Id: A48AC513ECF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB9474
+X-Rspamd-Queue-Id: 1D0535138FB
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -142,7 +142,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
 	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -150,87 +150,205 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20401-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20403-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
 From: Yael Chemla <ychemla@nvidia.com>
 
-Set rxfh_indir_space to the maximum indirection table size the driver
-can support: the next power of two above MLX5E_MAX_NUM_CHANNELS times
-MLX5E_UNIFORM_SPREAD_RQT_FACTOR.
+When the channel count changes and the RQT size changes with it, a
+problem arise for non-default RSS contexts. The driver-side indirection
+table grows actual_table_size without filling the new entries; stale
+entries from a prior larger configuration may be re-exposed, causing
+mlx5e_calc_indir_rqns() to WARN on an out-of-range index.
 
-Without this, ethtool_rxfh_ctxs_can_resize() returns -EINVAL, blocking
-non-default RSS contexts from tracking indirection table size changes
-when the channel count changes.
+Replace mlx5e_rss_params_indir_modify_actual_size() with
+mlx5e_rss_ctx_resize(), which fills new entries by replicating
+the existing pattern, matching what ethtool_rxfh_ctxs_resize() does
+for the same case. And restrict the loop to non-default contexts.
+
+Call ethtool_rxfh_ctxs_can_resize() before acquiring state_lock to
+validate that all non-default contexts can be resized, and
+ethtool_rxfh_ctxs_resize() after releasing it to fold or unfold their
+indirection tables. Both functions acquire rss_lock internally and
+cannot be called under state_lock. RTNL, held by all set_channels
+callers, serialises context creation and deletion making the pre-lock
+check safe.
+
+Guard both ethtool calls on mlx5e_rx_res_rss_cnt() > 1: skip the
+validation and resize when no non-default contexts exist. This
+naturally covers representors and IPoIB, which share
+mlx5e_ethtool_set_channels() but cannot have non-default RSS contexts.
 
 Signed-off-by: Yael Chemla <ychemla@nvidia.com>
 Reviewed-by: Nimrod Oren <noren@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c     | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/en/rqt.h     | 1 +
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 5 +++++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/en/rss.c  | 16 +++++++--
+ .../net/ethernet/mellanox/mlx5/core/en/rss.h  |  3 +-
+ .../ethernet/mellanox/mlx5/core/en/rx_res.c   | 15 ++++++--
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 35 +++++++++++++++++--
+ 4 files changed, 60 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c
-index bcafb4bf9415..a3382f6a6b74 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.c
-@@ -168,8 +168,6 @@ int mlx5e_rqt_init_indir(struct mlx5e_rqt *rqt, struct mlx5_core_dev *mdev,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rss.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rss.c
+index a2ec67a122d9..992a78580a40 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/rss.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rss.c
+@@ -85,9 +85,21 @@ bool mlx5e_rss_get_inner_ft_support(struct mlx5e_rss *rss)
+ 	return rss->params.inner_ft_support;
+ }
+ 
+-void mlx5e_rss_params_indir_modify_actual_size(struct mlx5e_rss *rss, u32 num_channels)
++void mlx5e_rss_set_indir_actual_size(struct mlx5e_rss *rss, u32 size)
+ {
+-	rss->indir.actual_table_size = mlx5e_rqt_size(rss->mdev, num_channels);
++	rss->indir.actual_table_size = size;
++}
++
++/* Handles non-default contexts, replicate existing pattern into new entries,
++ * matching what ethtool_rxfh_ctxs_resize() does.
++ */
++void mlx5e_rss_ctx_resize(struct mlx5e_rss *rss, u32 new_size)
++{
++	u32 old_size = rss->indir.actual_table_size;
++	u32 i;
++
++	for (i = old_size; i < new_size; i++)
++		rss->indir.table[i] = rss->indir.table[i % old_size];
+ }
+ 
+ int mlx5e_rss_params_indir_init(struct mlx5e_rss_params_indir *indir,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rss.h b/drivers/net/ethernet/mellanox/mlx5/core/en/rss.h
+index 17664757a561..e48070e02979 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/rss.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rss.h
+@@ -34,7 +34,7 @@ struct mlx5e_rss;
+ int mlx5e_rss_params_indir_init(struct mlx5e_rss_params_indir *indir,
+ 				u32 actual_table_size, u32 max_table_size);
+ void mlx5e_rss_params_indir_cleanup(struct mlx5e_rss_params_indir *indir);
+-void mlx5e_rss_params_indir_modify_actual_size(struct mlx5e_rss *rss, u32 num_channels);
++void mlx5e_rss_ctx_resize(struct mlx5e_rss *rss, u32 new_size);
+ struct mlx5e_rss *
+ mlx5e_rss_init(struct mlx5_core_dev *mdev,
+ 	       const struct mlx5e_rss_params *params,
+@@ -46,6 +46,7 @@ void mlx5e_rss_refcnt_dec(struct mlx5e_rss *rss);
+ unsigned int mlx5e_rss_refcnt_read(struct mlx5e_rss *rss);
+ 
+ bool mlx5e_rss_get_inner_ft_support(struct mlx5e_rss *rss);
++void mlx5e_rss_set_indir_actual_size(struct mlx5e_rss *rss, u32 size);
+ u32 mlx5e_rss_get_tirn(struct mlx5e_rss *rss, enum mlx5_traffic_types tt,
+ 		       bool inner);
+ bool mlx5e_rss_valid_tir(struct mlx5e_rss *rss, enum mlx5_traffic_types tt, bool inner);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c
+index 92974b11ec75..d81a91eb7664 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c
+@@ -42,11 +42,20 @@ static u32 *get_vhca_ids(struct mlx5e_rx_res *res, int offset)
+ 
+ void mlx5e_rx_res_rss_update_num_channels(struct mlx5e_rx_res *res, u32 nch)
+ {
++	u32 new_size = mlx5e_rqt_size(res->mdev, nch);
+ 	int i;
+ 
+-	for (i = 0; i < MLX5E_MAX_NUM_RSS; i++) {
+-		if (res->rss[i])
+-			mlx5e_rss_params_indir_modify_actual_size(res->rss[i], nch);
++	WARN_ON_ONCE(res->rss_active);
++
++	/* Default context */
++	mlx5e_rss_set_indir_actual_size(res->rss[0], new_size);
++
++	/* Non-default contexts */
++	for (i = 1; i < MLX5E_MAX_NUM_RSS; i++) {
++		if (res->rss[i]) {
++			mlx5e_rss_ctx_resize(res->rss[i], new_size);
++			mlx5e_rss_set_indir_actual_size(res->rss[i], new_size);
++		}
+ 	}
+ }
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index c483008e33e9..4462cf29e977 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -499,11 +499,15 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ {
+ 	struct mlx5e_params *cur_params = &priv->channels.params;
+ 	unsigned int count = ch->combined_count;
++	int new_rqt_size, cur_rqt_size;
+ 	struct mlx5e_params new_params;
+ 	bool arfs_enabled;
++	bool has_rss_ctxs;
+ 	bool opened;
+ 	int err = 0;
+ 
++	ASSERT_RTNL();
++
+ 	if (!count) {
+ 		netdev_info(priv->netdev, "%s: combined_count=0 not supported\n",
+ 			    __func__);
+@@ -513,16 +517,33 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ 	if (cur_params->num_channels == count)
+ 		return 0;
+ 
++	new_rqt_size = mlx5e_rqt_size(priv->mdev, count);
++	/* Validate that all non-default RSS contexts can be resized before
++	 * committing to the channel count change.
++	 * ethtool_rxfh_ctxs_can_resize() acquires rss_lock internally and
++	 * cannot be called under state_lock (rss_lock -> state_lock ordering).
++	 */
++	has_rss_ctxs = priv->rx_res && mlx5e_rx_res_rss_cnt(priv->rx_res) > 1;
++	if (has_rss_ctxs) {
++		err = ethtool_rxfh_ctxs_can_resize(priv->netdev, new_rqt_size);
++		if (err)
++			return err;
++	}
++
+ 	mutex_lock(&priv->state_lock);
+ 
++	if (!priv->rx_res) {
++		err = -EINVAL;
++		goto out;
++	}
++
++	cur_rqt_size = mlx5e_rqt_size(priv->mdev, cur_params->num_channels);
++
+ 	/* If RXFH is configured, changing the channels number is allowed only if
+ 	 * it does not require resizing the RSS table. This is because the previous
+ 	 * configuration may no longer be compatible with the new RSS table.
+ 	 */
+ 	if (netif_is_rxfh_configured(priv->netdev)) {
+-		int cur_rqt_size = mlx5e_rqt_size(priv->mdev, cur_params->num_channels);
+-		int new_rqt_size = mlx5e_rqt_size(priv->mdev, count);
+-
+ 		if (new_rqt_size != cur_rqt_size) {
+ 			err = -EINVAL;
+ 			netdev_err(priv->netdev,
+@@ -577,6 +598,14 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ out:
+ 	mutex_unlock(&priv->state_lock);
+ 
++	/* After a successful channel count change that altered the RQT size,
++	 * fold or unfold the indirection tables of all non-default RSS
++	 * contexts. Must run after state_lock is released because
++	 * ethtool_rxfh_ctxs_resize() acquires rss_lock internally.
++	 */
++	if (!err && cur_rqt_size != new_rqt_size && has_rss_ctxs)
++		ethtool_rxfh_ctxs_resize(priv->netdev, new_rqt_size);
++
  	return err;
  }
  
--#define MLX5E_UNIFORM_SPREAD_RQT_FACTOR 2
--
- u32 mlx5e_rqt_size(struct mlx5_core_dev *mdev, unsigned int num_channels)
- {
- 	u32 rqt_size = max_t(u32, MLX5E_INDIR_MIN_RQT_SIZE,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.h b/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.h
-index e0bc30308c77..680700e7437f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rqt.h
-@@ -7,6 +7,7 @@
- #include <linux/kernel.h>
- 
- #define MLX5E_INDIR_MIN_RQT_SIZE (BIT(8))
-+#define MLX5E_UNIFORM_SPREAD_RQT_FACTOR 2
- 
- struct mlx5_core_dev;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index a6da0219723c..c483008e33e9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -45,6 +45,10 @@
- 
- #define LANES_UNKNOWN		 0
- 
-+#define MLX5E_MAX_INDIR_RQT_SIZE \
-+	roundup_pow_of_two(MLX5E_MAX_NUM_CHANNELS * \
-+			   MLX5E_UNIFORM_SPREAD_RQT_FACTOR)
-+
- void mlx5e_ethtool_get_drvinfo(struct mlx5e_priv *priv,
- 			       struct ethtool_drvinfo *drvinfo)
- {
-@@ -2692,6 +2696,7 @@ const struct ethtool_ops mlx5e_ethtool_ops = {
- 	.supported_input_xfrm = RXH_XFRM_SYM_OR_XOR,
- 	.supported_ring_params = ETHTOOL_RING_USE_TCP_DATA_SPLIT |
- 				 ETHTOOL_RING_USE_HDS_THRS,
-+	.rxfh_indir_space = MLX5E_MAX_INDIR_RQT_SIZE,
- 	.get_drvinfo       = mlx5e_get_drvinfo,
- 	.get_link          = ethtool_op_get_link,
- 	.get_link_ext_state  = mlx5e_get_link_ext_state,
 -- 
 2.44.0
 
