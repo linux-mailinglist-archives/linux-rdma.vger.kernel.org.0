@@ -1,78 +1,78 @@
-Return-Path: <linux-rdma+bounces-20412-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20413-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qG4eDMtLAmpaqQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20412-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 23:36:11 +0200
+	id qAdcCMhLAmpaqQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20413-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 23:36:08 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E912516572
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 23:36:10 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF20B51656B
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 23:36:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A4AFB300F280
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 21:36:01 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id EA2C73018FBE
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 21:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476EF4D90C2;
-	Mon, 11 May 2026 21:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920594D90C4;
+	Mon, 11 May 2026 21:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="DNI4V0Ga"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="pZte4uEk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.26.1.71])
+Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.162.73.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330A03B8920
-	for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 21:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.26.1.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882584D90C6
+	for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 21:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.162.73.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778535361; cv=none; b=PBQKPCrmQdr4d6sA4D3e4pBOIoPpn5mqObOm7sgqHKVZGlge5pxBupyU/Df984sPmCLdjTkHWX+gHA5csX3lD535gyHzpstF/K5izfcmUX0hGlg2jr/Sl+VvR0vSrce8JSkKmmqITiWXlTp5BB9lumUaGs8pBpiqrXDrYAjiCeE=
+	t=1778535363; cv=none; b=OAabuZVzRso65N8EK7RzpSruqtNi4AXE646smv/wYHHyZgfnQkFp+toygAbrIfxbxJaczboC1h4i4orEP7WT4XpqZJyDKG+HMZyWrc4MsF8pyTSmv7Fh86JP3LaSFgoPH4KuNZ5qlVudNmLgsetoxYmFbih1WDCaWqzaSJKxolU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778535361; c=relaxed/simple;
+	s=arc-20240116; t=1778535363; c=relaxed/simple;
 	bh=CwqAAZZEWYtgzRvKnVLXuMCM1Hx6zbj85VtDcROz6go=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CaVVdLa+qifKa6NIBd2bC1PpmL38WDS4wg0K9bLlWFlKflMbgF8uXhvI7jDA0pyBXzNWg6FE3INPoF/xcdHEm44aMNo7KI4y5Qz0W958QdI9O9Q6tlf8NRdFISe3DocxPet7aYMtMV7VBIDTOobaU4p8NKRCMtxikz2oMM6lOoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=DNI4V0Ga; arc=none smtp.client-ip=52.26.1.71
+	 MIME-Version:Content-Type; b=dX5sJwE9Hlcp1gyH0kg3lFNQh5IbxyBYD6svESI5KaewnaB9GmrUYGGArTEVanjUDhh4dFDf50RMbN0iTCEBzNq62QBGIv8M88S/86V+SKkUC23iUfTOOVWl350hKmtQsiKDW+xtYth+51yaP6VxeIK91zWAujO0/HQMg5CtC1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=pZte4uEk; arc=none smtp.client-ip=35.162.73.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1778535359; x=1810071359;
+  t=1778535361; x=1810071361;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
   bh=pZrcoij/+hm0TCa2sMXBdcfNLgi8OdvMiqkOCAG7CAs=;
-  b=DNI4V0GaNj52r58wFZrgRhoJkJW3QidUwLqmz9OBdX9lT17uLanf8iXI
-   Tx9/NSaMvhFiF+zdcp0Q+kyI6irdaujfm2MDT5kt1fd1PaFkNE9lpt7c8
-   ljcCNCNF6jcE4KdfIOu5xxvptmltUCZLPlalsxpBuLaGoMk5RnszaJAEL
-   4gBzZBNJirFjrcq+78rpdDX5cE07aPMfqXxX8ogLhHBW068dhe367fCeD
-   POyx0skTwPvwtdD2+EV//ZM5XSKHLdRjeBJDQROIeccQC4LIlRPvIZoPq
-   rbEIfDT3GuchQOg+MpqLSaKl0s1HQVHHq6JBsOEUIQX5dtHolmWVxeHGh
-   w==;
-X-CSE-ConnectionGUID: 015FhMcvRTCoSuRXhosZhw==
-X-CSE-MsgGUID: Cr2pnB5FS5qT+z1UQePx9g==
+  b=pZte4uEkrtUIBUFcGpzt4VuD3hgFD7/ZX6Y5XWOU85Q7JLkH0rgVUYxE
+   KaHxn5/aTub4BxUnXaSum7Rx187T7cc14qB9yXWtjFlWNLClsH1lkFMaL
+   ilkUhFxgJWqwVkRrhCd/dijh3Rh6+a8URBbSH0HwU7kRgC46Y0uTDsRxm
+   7jKZ51Y/lJiIaGfpw2IHBdrkX5Hjhh1qIqHjI+uKyyIPlMq4Xs7xHtbee
+   veRVwmVheYvGb+dpYwqk+yRjnIgqQVIpB616zOebK/xUpj4zoICe6JILk
+   Iw9qq5KraV2H+aDIh8suPgIsTJL6sLBgLPZLtzALSP6SAeZuqgovzdsvY
+   A==;
+X-CSE-ConnectionGUID: SzGUYuyfS7ypYqNqOSXdnQ==
+X-CSE-MsgGUID: 498DKWg/TW2uynCT33TY2Q==
 X-IronPort-AV: E=Sophos;i="6.23,229,1770595200"; 
-   d="scan'208";a="19415261"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2026 21:35:56 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:26490]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.140:2525] with esmtp (Farcaster)
- id f2ab7e9e-9728-49fb-88f6-bbc3329f4812; Mon, 11 May 2026 21:35:56 +0000 (UTC)
-X-Farcaster-Flow-ID: f2ab7e9e-9728-49fb-88f6-bbc3329f4812
+   d="scan'208";a="19194516"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2026 21:35:58 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.182:5498]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.24.221:2525] with esmtp (Farcaster)
+ id 7074327f-9188-4d28-b495-ff83ea12068c; Mon, 11 May 2026 21:35:58 +0000 (UTC)
+X-Farcaster-Flow-ID: 7074327f-9188-4d28-b495-ff83ea12068c
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 11 May 2026 21:35:55 +0000
+ Mon, 11 May 2026 21:35:57 +0000
 Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
  (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Mon, 11 May 2026
- 21:35:54 +0000
+ 21:35:55 +0000
 From: Michael Margolin <mrgolin@amazon.com>
 To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
 	"Yonatan Nachum" <ynachum@amazon.com>
-Subject: [PATCH for-next v3 1/5] RDMA/core: Add Completion Counters support
-Date: Mon, 11 May 2026 21:35:41 +0000
-Message-ID: <20260511213549.594-3-mrgolin@amazon.com>
+Subject: [PATCH for-next v3 2/5] RDMA/core: Add Completion Counters support
+Date: Mon, 11 May 2026 21:35:42 +0000
+Message-ID: <20260511213549.594-4-mrgolin@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260511213549.594-1-mrgolin@amazon.com>
 References: <20260511213549.594-1-mrgolin@amazon.com>
@@ -86,7 +86,7 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: EX19D040UWA003.ant.amazon.com (10.13.139.6) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
-X-Rspamd-Queue-Id: 2E912516572
+X-Rspamd-Queue-Id: DF20B51656B
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-7.66 / 15.00];
 	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
@@ -95,11 +95,11 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20412-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20413-lists,linux-rdma=lfdr.de];
 	FROM_NEQ_ENVFROM(0.00)[mrgolin@amazon.com,linux-rdma@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
@@ -107,12 +107,12 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[amazon.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
