@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-20364-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20365-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sC3CFAGEAWoFcAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20364-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 09:23:45 +0200
+	id eGmBKaeEAWoFcAEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20365-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 09:26:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F06A509142
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 09:23:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44E3A509265
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 09:26:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 249BD3008C2C
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3FE46303E4FE
 	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 07:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF9E37F72A;
-	Mon, 11 May 2026 07:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC8437FF50;
+	Mon, 11 May 2026 07:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IytD5vNM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lswJEIhq"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952A337E304;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83D437A4B8;
 	Mon, 11 May 2026 07:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778484202; cv=none; b=qyYjNCQQSPnYcfCeK/iJS7RFTxGo/V2EdK4VMn9LfGNpxL+tIyv/ml8WT9TcOdw1ICe3hZNyisIs9RhhSAJ3GeCBj/lkqZq1bF2lcxcjXGe1JDH+RP41Px0qjPiRZFyPdpkfPBPQL9pDTxIqdR4bhbEz3CjTcLxpBCL16dwnk1M=
+	t=1778484203; cv=none; b=aHgFVWbOcz+EDmWFOdC+Pglvsh+tYNnhBo2ZgGMEXybyDmVtqg6W4bgMQozuIk+ox245PqqxVl1WD/cJW3vkE+aJeh1J7flsD4ihnkqXkdtuXdBCBNhNExO5/RJIGSwPvA3dhFy3+p02zd7fOACnN9J/SY60h23chMDi/PnfukA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778484202; c=relaxed/simple;
-	bh=XkGvGrsW34CnyZuYL7NiQ+yLafte2JkU0JbkJ3MSh5g=;
+	s=arc-20240116; t=1778484203; c=relaxed/simple;
+	bh=TQxrHZChUalLNXFf5ym56IzqKtwdJZuCxLWbqgtd6fA=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iq851J5++ZikZnSgAYuPxfJSI6zK59X1weTgK82DDgF+oi5UaXrqetWYP0iGIJMW8Qget+O0bWPWxj7eFxKbHCZofhD0ou5jCjQIk2OKbpguKQF8wf7A60FID66iatjwSfYYYDiacDMLhPB9MXxufvigTwRp/8Sgra7ta8YNY9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IytD5vNM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50556C2BCF5;
+	 MIME-Version; b=nzWoNdZq6UomRN68jYGWImy1T2ESUZZmt5gKloLRkEskbtCD0WRbuDBBlKK+kUH8ZDNpSrce5Bf7Qq5kRLSAxtXHTFKZELkj1cW07TmdfbW29hQbtbBFB0VycjLm9R2qtOYxsskHKvikS5seyG2FllnLaQpQ7sT2h2+TASCK8og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lswJEIhq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A052C2BCFC;
 	Mon, 11 May 2026 07:23:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778484201;
-	bh=XkGvGrsW34CnyZuYL7NiQ+yLafte2JkU0JbkJ3MSh5g=;
+	s=k20201202; t=1778484202;
+	bh=TQxrHZChUalLNXFf5ym56IzqKtwdJZuCxLWbqgtd6fA=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=IytD5vNM6HQjWEVRQ/g2kRM7vKurZEmYxXoNd8xPW/ehrkpSkGFsXIroHezLPTvoW
-	 BSswaoPUd+azm1r9f2wShTFuX+DzTbTxfF6GGD7b6CgeVT5yOsXcRkELQ9NrNiag76
-	 an5nlNpsZmRho3zkRdmGX7Pr8theFqOWCMmSUlskzzdRWIug6czEXPkDcIbc9wSnV8
-	 J3BT6RrDb1aAKdBr1lDV8wS9yiRSi56mWSpgzqY7xnTmubkEBOlj55y25L4SVDf4DM
-	 ntIncxEdFQxkbtEA7q9U+sYyW/+N0c6Uyg61BLI6MBhwa13OQkuoje1CWri6C1yL50
-	 UT5g5CZl40TEg==
+	b=lswJEIhqdJA0uGgwLGVRBZ8G/EPjvmf0i6HyCl1VvMhqn6P1rUHMACCqUNQS62XPe
+	 lzQv9dBgYzkpGHelfsAIEFHc3wg02xhe2JWYpNcI1fbM/4kQrMTFKfv+Ge8oxMTcIc
+	 7yEKsOeNLYs7iS0IUbcsCfm/DrrdxojRVvI+nH9YqiinT1WJDU12htkW7Kj4fAvDrR
+	 5WtrnXikVa6ibWF9CdyILdvNe+iolPEkp+uBUdcvHB05dOd0B2VpFjKeoi3NVUQCyF
+	 5An47BB0SVYLWqv3BcwaDbhRBuCrU15ACBJ0TGXdTXlRovukpTQrU5EH3y94ag1PGI
+	 M8QMXPm/PFtDw==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	achender@kernel.org,
 	linux-kselftest@vger.kernel.org,
 	shuah@kernel.org
-Subject: [PATCH net-next v1 6/9] selftests: rds: Add helper function verify_hashes() in test.py
-Date: Mon, 11 May 2026 00:23:13 -0700
-Message-Id: <20260511072316.1174045-7-achender@kernel.org>
+Subject: [PATCH net-next v1 7/9] selftests: rds: Add helper function snd_rcv_packets() in test.py
+Date: Mon, 11 May 2026 00:23:14 -0700
+Message-Id: <20260511072316.1174045-8-achender@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260511072316.1174045-1-achender@kernel.org>
 References: <20260511072316.1174045-1-achender@kernel.org>
@@ -67,14 +67,14 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0F06A509142
+X-Rspamd-Queue-Id: 44E3A509265
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-20364-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20365-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -90,76 +90,155 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-0.997];
+	NEURAL_HAM(-0.00)[-0.998];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,test.py:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test.py:url]
 X-Rspamd-Action: no action
 
-Hoist the verify hashes logic in test.py into a helper function,
-verify_hashes().  This is a preparatory refactoring for the rds over
-ROCE series that helps modularize the send/recv logic. Breaking up the
-logic now will help avoid large function pylint errors later.  No
-functional changes are introduced in this patch.
+Hoist the send/recv logic in test.py into a helper function,
+snd_rcv_packets().  This is a preparatory refactoring for the
+rds over ROCE series which can use the same function to run
+the test over tcp, rdma, or both.  No functional changes are
+introduced in this patch.
 
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/test.py | 33 ++++++++++++-------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
+ tools/testing/selftests/net/rds/test.py | 99 ++++++++++++++-----------
+ 1 file changed, 54 insertions(+), 45 deletions(-)
 
 diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
-index 2e06e95827dd..6a7a5fe20034 100755
+index 6a7a5fe20034..38f6100a6e33 100755
 --- a/tools/testing/selftests/net/rds/test.py
 +++ b/tools/testing/selftests/net/rds/test.py
-@@ -152,6 +152,21 @@ def check_info(socks):
+@@ -167,6 +167,59 @@ def verify_hashes(snd_hashes, rcv_hashes):
+         ksft_pr(f"{key[0]}/{key[1]}: ok")
+     return 0
  
-     ksft_pr(f"getsockopt(): {nr_success}/{nr_error}")
- 
-+def verify_hashes(snd_hashes, rcv_hashes):
-+    """Compare send/recv hashes per (sender, receiver) pair."""
-+    for key, snd_hash in snd_hashes.items():
-+        rcv_hash = rcv_hashes.get(key)
-+        if rcv_hash is None:
-+            ksft_pr("FAIL: No data received")
-+            return 1
-+        if snd_hash.hexdigest() != rcv_hash.hexdigest():
-+            ksft_pr("FAIL: Send/recv mismatch")
-+            ksft_pr("hash expected:", snd_hash.hexdigest())
-+            ksft_pr("hash received:", rcv_hash.hexdigest())
-+            return 1
-+        ksft_pr(f"{key[0]}/{key[1]}: ok")
-+    return 0
++def snd_rcv_packets(addrs, netns_list):
++    """
++    Send packets on the given network interfaces
++
++    :param addrs: list of (ip, port) tuples matching the sockets
++    :param netns_list: list of network namespaces
++    """
++
++    sockets = [
++        netns_socket(netns_list[0], socket.AF_RDS, socket.SOCK_SEQPACKET),
++        netns_socket(netns_list[1], socket.AF_RDS, socket.SOCK_SEQPACKET),
++    ]
++
++    for s, addr in zip(sockets, addrs):
++        s.bind(addr)
++        s.setblocking(0)
++
++    send_hashes = {}
++    recv_hashes = {}
++
++    ep = select.epoll()
++
++    for s in sockets:
++        ep.register(s, select.EPOLLRDNORM)
++
++    NUM_PACKETS = 50000
++    nr_send = 0
++    nr_recv = 0
++
++    while nr_send < NUM_PACKETS:
++
++        # Send as much as we can without blocking
++        ksft_pr("sending...", nr_send, nr_recv)
++        nr_send = send_burst(sockets, addrs, send_hashes, nr_send, NUM_PACKETS)
++
++        # Receive as much as we can without blocking
++        ksft_pr("receiving...", nr_send, nr_recv)
++        while nr_recv < nr_send:
++            nr_recv = recv_burst(ep, sockets, addrs, recv_hashes, nr_recv)
++
++        # exercise net/rds/tcp.c:rds_tcp_sysctl_reset()
++        for net in netns_list:
++            ip(f"netns exec {net} /usr/sbin/sysctl net.rds.tcp.rds_tcp_rcvbuf=10000")
++            ip(f"netns exec {net} /usr/sbin/sysctl net.rds.tcp.rds_tcp_sndbuf=10000")
++
++    ksft_pr("done", nr_send, nr_recv)
++
++    check_info(sockets)
++
++    # We're done sending and receiving stuff, now let's check if what
++    # we received is what we sent.
++    return verify_hashes(send_hashes, recv_hashes)
 +
  def stop_pcaps():
      """Stop tcpdump processes.
  
-@@ -310,23 +325,7 @@ stop_pcaps()
+@@ -267,7 +320,6 @@ PACKET_CORRUPTION=str(args.corruption)+'%'
+ PACKET_DUPLICATE=str(args.duplicate)+'%'
  
- # We're done sending and receiving stuff, now let's check if what
- # we received is what we sent.
--RC = 0
--for (sender, receiver), send_hash in send_hashes.items():
--    recv_hash = recv_hashes.get((sender, receiver))
--
--    if recv_hash is None:
--        ksft_pr("FAIL: No data received")
--        RC = 1
--        break
--
--    if send_hash.hexdigest() != recv_hash.hexdigest():
--        ksft_pr("FAIL: Send/recv mismatch")
--        ksft_pr("hash expected:", send_hash.hexdigest())
--        ksft_pr("hash received:", recv_hash.hexdigest())
--        RC = 1
--        break
--
--    ksft_pr(f"{sender}/{receiver}: ok")
-+RC = verify_hashes(send_hashes, recv_hashes)
+ setup_tcp()
+-addrs = tcp_addrs
  
+ print("TAP version 13")
+ print("1..1")
+@@ -277,56 +329,13 @@ if args.timeout > 0:
+     signal.alarm(args.timeout)
+     signal.signal(signal.SIGALRM, signal_handler)
+ 
+-sockets = [
+-    netns_socket(NET0, socket.AF_RDS, socket.SOCK_SEQPACKET),
+-    netns_socket(NET1, socket.AF_RDS, socket.SOCK_SEQPACKET),
+-]
+-
+-for s, addr in zip(sockets, addrs):
+-    s.bind(addr)
+-    s.setblocking(0)
+-
+-send_hashes = {}
+-recv_hashes = {}
+-
+-ep = select.epoll()
+-
+-for s in sockets:
+-    ep.register(s, select.EPOLLRDNORM)
+-
+-NUM_PACKETS = 50000
+-nr_send = 0
+-nr_recv = 0
+-
+-while nr_send < NUM_PACKETS:
+-
+-    # Send as much as we can without blocking
+-    ksft_pr("sending...", nr_send, nr_recv)
+-    nr_send = send_burst(sockets, addrs, send_hashes, nr_send, NUM_PACKETS)
+-
+-    # Receive as much as we can without blocking
+-    ksft_pr("receiving...", nr_send, nr_recv)
+-    while nr_recv < nr_send:
+-        nr_recv = recv_burst(ep, sockets, addrs, recv_hashes, nr_recv)
+-
+-    # exercise net/rds/tcp.c:rds_tcp_sysctl_reset()
+-    for net in [NET0, NET1]:
+-        ip(f"netns exec {net} /usr/sbin/sysctl net.rds.tcp.rds_tcp_rcvbuf=10000")
+-        ip(f"netns exec {net} /usr/sbin/sysctl net.rds.tcp.rds_tcp_sndbuf=10000")
+-
+-ksft_pr("done", nr_send, nr_recv)
+-
+-check_info(sockets)
++RC = snd_rcv_packets(tcp_addrs, [NET0, NET1])
+ 
+ # cancel timeout
+ signal.alarm(0)
+ 
+ stop_pcaps()
+ 
+-# We're done sending and receiving stuff, now let's check if what
+-# we received is what we sent.
+-RC = verify_hashes(send_hashes, recv_hashes)
+-
  if RC == 0:
      ksft_pr("Success")
+     print("ok 1 rds selftest")
 -- 
 2.25.1
 
