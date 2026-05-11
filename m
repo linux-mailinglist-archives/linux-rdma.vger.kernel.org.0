@@ -1,243 +1,207 @@
-Return-Path: <linux-rdma+bounces-20351-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20352-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id XWfNMqBYAWqSVwEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20351-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 06:18:40 +0200
+	id wG7+LPBjAWrQXgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20352-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 07:06:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1251A507CAC
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 06:18:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 479B5507F5F
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 07:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 702673009155
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 04:18:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 24668300DF50
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2026 05:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58EA23E330;
-	Mon, 11 May 2026 04:18:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFAE3570DF;
+	Mon, 11 May 2026 05:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M0ooR6TO"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ex1rDnAZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC241684BE
-	for <linux-rdma@vger.kernel.org>; Mon, 11 May 2026 04:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EECC194C96;
+	Mon, 11 May 2026 05:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778473112; cv=none; b=uswwUO3KvLoLxPZLS21eK2Detit159F513JvdXJX19YWHyUtrPt2rRf+jXJ0n+VcSxhAt5GpN2FscBFV1ZlTW1ACgnPA+d+VIkZ470Vmg19usn0Cb91GW8yZJ0I8q0EtyR4bBJ5RhkgU8pHU/Q/tqNVOIPHMlWb/OPRC3sMsZHk=
+	t=1778476010; cv=none; b=WNYAv/tkrfmNgGXbXVvH4ISy1lo+3dcpQP8h/yQ11pkB73R92S4S3UMk7RSfq0bqMIcu7JMGr4Dn+99YuXfQx+6mp2DxBJGSpYZM8pYHiSB9Gv10sYKw9vDq7WCHq+AFYff8ISGJ3waBqtYpf/XKwHqvauy5xfOoSC5O/9oEo1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778473112; c=relaxed/simple;
-	bh=GzDBdO7Mp3oPEM8yFLGA/A2Bx3aZbV9XkMWYzloX1v8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hnZxCurOnFCMnAn/TsMUMLrhFpw/yC1GKrMaEmdOwd3g8eTKvMjHkOnLUWxlA5DPeY2OjVafUfQJy3ZPoeM2WCJe6W7d/byxV3FaR6G05PEKD8gl2+mqHoDoZP+cFsKCqd5ScDDVvLVnmNo385D8VGh4LBQ2HtAMimCmsz0FLxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M0ooR6TO; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-c80291e6237so2625000a12.0
-        for <linux-rdma@vger.kernel.org>; Sun, 10 May 2026 21:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778473110; x=1779077910; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s6BCQ7qOuFvI6WhevaP4A6Cx/p5unX86RC6LvwJNRnw=;
-        b=M0ooR6TOiZw33UDT+MWt3nh9uxciJKqq3ZUjBRsnuo/6QBGBz/7sXjku9LrjthOLyr
-         jtgaDijL+N+iIwWtfqwKdLTcoigfdEMN8O3qzHQHf6CRzxM96cLQBHccQk36WcADd6qE
-         s8xg8JkecwK3S2HnIEG86kLISBR85dekyjWthUTy8FI+vR/miGDM4RBQO5RQLzEVcz+j
-         aDpQPlIwWrZglDpBo2RK23VBl5+mp4+mb2ftXPie0NssHQQNBRLIcPLjRdI6zMaZpN/p
-         ElTl4xGTeBJVeMkumtS8rt20m7ZR7Svn1GcLSvRoUnc6KV2jyJdoA8q5QvWez9Reur3X
-         cbUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778473110; x=1779077910;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s6BCQ7qOuFvI6WhevaP4A6Cx/p5unX86RC6LvwJNRnw=;
-        b=Gi3ngDshmSdzZBDlTwNIEVA5hi8z0qFpn5i0t+vXcI8ugyH6gTt7ncp5NHfM52RBWi
-         zW39w69BDB69rBv+nOA2cTWs2F9qKv3VZPojx6jbYY+mTn0gSEvegHeYt9R1BXyOPT0u
-         obiSV7Tm1XIL+RcoN+BRzXKz9bXiSukc4/LDoDpq8Epo/vsIizZ8KUrpOqvxlNLNOMa2
-         y4XW1Ypz0WWzJW1V+Q22CPH6em/Ew/CWhru0T8Ae9PawV2j2VHDf6W/gzuYAZUb7Vo81
-         4xYCwRWiphDiy1c+utCpH3SSbdnFfesnWwOoqLLNdzu4G6nx9wGApmIfktM8UCLfWk6k
-         tNgw==
-X-Gm-Message-State: AOJu0Ywm816qkAUvDNiGNj1+dtReBPrDwHnbfCwj6anSGBLVcjJigxz6
-	gWNnpQORTM+984NS1ydCUn+6wNSz4RfW/JPFyFj+me/ZKPwre1M7O+SDnYsPl2uk
-X-Gm-Gg: Acq92OH++RvW5StHKjZ52viXYgXDqkttvO+vt1LPvXnS0eMxrg5gGZEaOmAigjWBR+g
-	orU9/4PdESrwDmnuILRdm3Vc0eDyxb+gieusWqSpQzd3nlU0qDd48kfiQN4O1M38j+WVj63h3KJ
-	a+WYfXsiLKhTfr/OXnQNETj3ck8zmfjWNdmZhrS0mIRL3eXKDy2UbfmwRHOrwwbOYQMizQaEAYE
-	6VadtYHgBtQofvSq9nbuAgTfBH9L5NBJ6L02rKxNQ723yloCCHBpLoW4x/ZAK2CITeYvald4EZd
-	gGmZgutRnNse7XAGaOg7iX1hAcglgh7vQBNIKSsuWdY4qKf6J+c30zDtlHu68v8u95FMOH3+9O1
-	QJtvdFChzHWQDlM+oQ73ssK/A21e7FAH7IdMa9aZ82fcqv7uqEgZ2iyaot+6KGRKy4lY7hA3HRg
-	P5Qu1Ho35TuNuZwe8KPhZtjmdeleHihpLAAkH1zKaHNKzMFNnc6/SaA69Nuk9naGBXpyuEfVoD3
-	RflocVXMLt3xF8HIEHOQQciLjzSHgvzU/2plPEcSOfgXA==
-X-Received: by 2002:a05:6a21:999b:b0:39b:9644:6e93 with SMTP id adf61e73a8af0-3aa5a8310aamr24089558637.6.1778473110139;
-        Sun, 10 May 2026 21:18:30 -0700 (PDT)
-Received: from ryzen ([2601:644:8000:5b5d:7285:c2ff:fe45:8a32])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c826771c6ddsm7492741a12.23.2026.05.10.21.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 May 2026 21:18:29 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-rdma@vger.kernel.org
-Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] RDMA/rtrs: Use flexible array for client path stats
-Date: Sun, 10 May 2026 21:18:12 -0700
-Message-ID: <20260511041812.378030-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.54.0
+	s=arc-20240116; t=1778476010; c=relaxed/simple;
+	bh=rXSD0fvdynYiCLT4eg+7mt9T9vNIATYsNTdjSgi4k+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LH/Kyx1EBKYQ+7O1EU5HvkojB93OguX8g001aY5+MGsiBzqcLITnlz9LMp753DlDzmqJ90iWGfXQU3kPuXo5EdSLjp65F6jnGcGj1YC0RlFMFtBBqvo9ECaMuh3fe+3/1A+zye/a9CKqqk3mlzbDtYjisnC9ElkYyAH5wYJRRq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ex1rDnAZ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64ANPBjK4107090;
+	Mon, 11 May 2026 05:06:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=B+jxpM
+	lReJQFMIHgQeZrD7D1fxNpSKN6r/vmsRKQ1IY=; b=Ex1rDnAZa34R0B8UZiB+N1
+	DUVvzRvUNSCGtuHzd5F2Mzcz40qSXdyhKJti3pELUZefC0IEfYth5qu+/y6e9MDG
+	CIGnU3DqZhXwRGv6ethtEymllFKW1kTIYq04XhUTNGRBGcYy7hBSCSZY13b3U2BU
+	XMWw4ZHv1IJXo/wUwcz6Vw4Ksn5+N0+woGEjK8Cq6YaA30piNFzQYJ8/MzReM35s
+	LE4xlq6TiHtCg2PTxaD7pxNndWASIFPXGy45/yDobg3AL6Ob+7c9KqbhwcuiQIe5
+	JNU8I5tnLbcSd0kF1QALZrCOIiq9tXjPkbKXu0keOLSmR+isXYMwCVFAreA3efWg
+	==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4e1vn4pmqu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 May 2026 05:06:47 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64B4sf6D024107;
+	Mon, 11 May 2026 05:06:46 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4e2fmvuw0t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 May 2026 05:06:46 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 64B56iT732833910
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 May 2026 05:06:44 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5799820043;
+	Mon, 11 May 2026 05:06:44 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id ACEC920040;
+	Mon, 11 May 2026 05:06:42 +0000 (GMT)
+Received: from [9.123.5.222] (unknown [9.123.5.222])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 May 2026 05:06:42 +0000 (GMT)
+Message-ID: <990d92d9-40ed-47bc-866f-51d386adcb41@linux.ibm.com>
+Date: Mon, 11 May 2026 10:36:41 +0530
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1251A507CAC
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: avoid NULL deref of conn->lnk in
+ smc_msg_event tracepoint
+To: Xiang Mei <xmei5@asu.edu>, netdev@vger.kernel.org
+Cc: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com, wenjia@linux.ibm.com,
+        tonylu@linux.alibaba.com, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, bestswngs@gmail.com
+References: <20260510222640.1230720-1-xmei5@asu.edu>
+Content-Language: en-US
+From: Sidraya Jayagond <sidraya@linux.ibm.com>
+In-Reply-To: <20260510222640.1230720-1-xmei5@asu.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Authority-Analysis: v=2.4 cv=BM+DalQG c=1 sm=1 tr=0 ts=6a0163e8 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=pGLkceISAAAA:8
+ a=VnNF1IyMAAAA:8 a=1CYBFmbjrI-9FY8DL4EA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTExMDA1MyBTYWx0ZWRfX41oWdKmQhcSe
+ OMy0byv7g2teWGX94oSjpfMuv8XN7HhUeG4Xoxgj+Dy9r+x0+n+ZF4uRu4bb+lfU7oWB83mDSIe
+ FhEnAkegD/gJ4DhNyQONF5m8nBHz7hlv5ZTicJLaXBUQDuMC+jNR5f/cfHPKa2iVwOPrZrhQgMR
+ nJNArNNoF+rbun8MwR4zhFeZYeTYbGyuP6+N8Mz45ScWl5xM3YwX+UnJHO1mDK7OmSGGONh9sRb
+ 1t6cztmTEAGQLjIJ3EPGVaPyDrPV+M9iwSDAOPU3oReRzYf0fzpMp1cUinO+pcQNmjyZjiu+fuz
+ Z0fn8ii72CvF5mtJHnAKYjYmUGKbmM+MfAhmwMR7fZnfzkJkM2tJNuOz9sVVHs/RhEAIAP2SEv6
+ ILMLqP8VGooh73xk+nyw944iqPT977KXyx1ZvONhBSxq6HyslnVSeY46SXrw3zmLpZjyIoF6Dgl
+ 2aKXw4Wl/r9X8qX/Wig==
+X-Proofpoint-GUID: G6QOa6yLXqsTUl76NowNFZE_wz0_kJGa
+X-Proofpoint-ORIG-GUID: OlUUaAHVRY7LzhNC12llpUP8PaUaXwF6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-11_01,2026-05-08_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 impostorscore=0 suspectscore=0 bulkscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 adultscore=0 malwarescore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2605110053
+X-Rspamd-Queue-Id: 479B5507F5F
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+X-Spamd-Result: default: False [3.34 / 15.00];
+	SEM_URIBL(3.50)[asu.edu:email];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-20351-lists,linux-rdma=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,asu.edu:email];
+	DMARC_POLICY_ALLOW(0.00)[ibm.com,none];
+	FREEMAIL_CC(0.00)[linux.alibaba.com,linux.ibm.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-20352-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	R_DKIM_ALLOW(0.00)[ibm.com:s=pp1];
+	DKIM_TRACE(0.00)[ibm.com:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[rosenp@gmail.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sidraya@linux.ibm.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.960];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCVD_COUNT_SEVEN(0.00)[11]
 X-Rspamd-Action: no action
 
-Store the client path statistics in the RTRS client path allocation
-instead of allocating them separately.
 
-This ties the stats lifetime directly to the path and removes a separate
-allocation failure path. Keep freeing the per-CPU stats data separately,
-but do not free the embedded stats object from error paths or the stats
-kobject release handler.
 
-Assisted-by: Codex:GPT-5.5
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |  2 --
- drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 13 ++-----------
- drivers/infiniband/ulp/rtrs/rtrs-clt.h       |  2 +-
- 3 files changed, 3 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-index 287e0ea43287..f8b833bd81ad 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -37,8 +37,6 @@ static void rtrs_clt_path_stats_release(struct kobject *kobj)
- 	stats = container_of(kobj, struct rtrs_clt_stats, kobj_stats);
- 
- 	free_percpu(stats->pcpu_stats);
--
--	kfree(stats);
- }
- 
- static struct kobj_type ktype_stats = {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index e351552733df..d34d7e5f34d6 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1536,7 +1536,7 @@ static struct rtrs_clt_path *alloc_path(struct rtrs_clt_sess *clt,
- 	int cpu;
- 	size_t total_con;
- 
--	clt_path = kzalloc_obj(*clt_path);
-+	clt_path = kzalloc_flex(*clt_path, stats, 1);
- 	if (!clt_path)
- 		goto err;
- 
-@@ -1552,10 +1552,6 @@ static struct rtrs_clt_path *alloc_path(struct rtrs_clt_sess *clt,
- 	clt_path->s.con_num = total_con;
- 	clt_path->s.irq_con_num = con_num + 1;
- 
--	clt_path->stats = kzalloc_obj(*clt_path->stats);
--	if (!clt_path->stats)
--		goto err_free_con;
--
- 	mutex_init(&clt_path->init_mutex);
- 	uuid_gen(&clt_path->s.uuid);
- 	memcpy(&clt_path->s.dst_addr, path->dst,
-@@ -1583,7 +1579,7 @@ static struct rtrs_clt_path *alloc_path(struct rtrs_clt_sess *clt,
- 
- 	clt_path->mp_skip_entry = alloc_percpu(typeof(*clt_path->mp_skip_entry));
- 	if (!clt_path->mp_skip_entry)
--		goto err_free_stats;
-+		goto err_free_con;
- 
- 	for_each_possible_cpu(cpu)
- 		INIT_LIST_HEAD(per_cpu_ptr(clt_path->mp_skip_entry, cpu));
-@@ -1596,8 +1592,6 @@ static struct rtrs_clt_path *alloc_path(struct rtrs_clt_sess *clt,
- 
- err_free_percpu:
- 	free_percpu(clt_path->mp_skip_entry);
--err_free_stats:
--	kfree(clt_path->stats);
- err_free_con:
- 	kfree(clt_path->s.con);
- err_free_path:
-@@ -2863,7 +2857,6 @@ struct rtrs_clt_sess *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 			list_del_rcu(&clt_path->s.entry);
- 			rtrs_clt_close_conns(clt_path, true);
- 			free_percpu(clt_path->stats->pcpu_stats);
--			kfree(clt_path->stats);
- 			free_path(clt_path);
- 			goto close_all_path;
- 		}
-@@ -2873,7 +2866,6 @@ struct rtrs_clt_sess *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 			list_del_rcu(&clt_path->s.entry);
- 			rtrs_clt_close_conns(clt_path, true);
- 			free_percpu(clt_path->stats->pcpu_stats);
--			kfree(clt_path->stats);
- 			free_path(clt_path);
- 			goto close_all_path;
- 		}
-@@ -3166,7 +3158,6 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt_sess *clt,
- 	rtrs_clt_remove_path_from_arr(clt_path);
- 	rtrs_clt_close_conns(clt_path, true);
- 	free_percpu(clt_path->stats->pcpu_stats);
--	kfree(clt_path->stats);
- 	free_path(clt_path);
- 
- 	return err;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-index 986239ed2d3b..1305601a6251 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-@@ -142,12 +142,12 @@ struct rtrs_clt_path {
- 	u32			flags;
- 	struct kobject		kobj;
- 	u8			for_new_clt;
--	struct rtrs_clt_stats	*stats;
- 	/* cache hca_port and hca_name to display in sysfs */
- 	u8			hca_port;
- 	char                    hca_name[IB_DEVICE_NAME_MAX];
- 	struct list_head __percpu
- 				*mp_skip_entry;
-+	struct rtrs_clt_stats	stats[];
- };
- 
- struct rtrs_clt_sess {
--- 
-2.54.0
-
+On 11/05/26 3:56 am, Xiang Mei wrote:
+> The smc_msg_event tracepoint class, shared by smc_tx_sendmsg and
+> smc_rx_recvmsg, unconditionally dereferences smc->conn.lnk:
+> 
+> 	__string(name, smc->conn.lnk->ibname)
+> 
+> conn->lnk is only set for SMC-R; for SMC-D it is NULL. Other code on
+> these paths already handles this (e.g. !conn->lnk in
+> SMC_STAT_RMB_TX_SIZE_SMALL()). With the tracepoint enabled, the first
+> sendmsg()/recvmsg() on an SMC-D socket crashes:
+> 
+>   Oops: general protection fault, probably for non-canonical address
+>   KASAN: null-ptr-deref in range [...]
+>   RIP: 0010:strlen+0x1e/0xa0
+>   Call Trace:
+>    trace_event_raw_event_smc_msg_event (net/smc/smc_tracepoint.h:44)
+>    smc_rx_recvmsg (net/smc/smc_rx.c:515)
+>    smc_recvmsg (net/smc/af_smc.c:2859)
+>    __sys_recvfrom (net/socket.c:2315)
+>    __x64_sys_recvfrom (net/socket.c:2326)
+>    do_syscall_64
+> 
+> The faulting address 0x3e0 is offsetof(struct smc_link, ibname),
+> confirming the NULL ->lnk deref. Enabling the tracepoint requires
+> root, but the trigger itself is unprivileged: socket(AF_SMC, ...) has
+> no capability check, and SMC-D negotiation needs no admin step on
+> s390 or on x86 with the loopback ISM device loaded.
+> 
+> Log an empty device name for SMC-D instead of dereferencing NULL.
+> 
+> Fixes: aff3083f10bf ("net/smc: Introduce tracepoints for tx and rx msg")
+> Reported-by: Weiming Shi <bestswngs@gmail.com>
+> Assisted-by: Claude:claude-opus-4-7
+> Signed-off-by: Xiang Mei <xmei5@asu.edu>
+> ---
+>  net/smc/smc_tracepoint.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/smc_tracepoint.h b/net/smc/smc_tracepoint.h
+> index a9a6e3c1113a..53da84f57fd6 100644
+> --- a/net/smc/smc_tracepoint.h
+> +++ b/net/smc/smc_tracepoint.h
+> @@ -51,7 +51,7 @@ DECLARE_EVENT_CLASS(smc_msg_event,
+>  				     __field(const void *, smc)
+>  				     __field(u64, net_cookie)
+>  				     __field(size_t, len)
+> -				     __string(name, smc->conn.lnk->ibname)
+> +				     __string(name, smc->conn.lnk ? smc->conn.lnk->ibname : "")
+>  		    ),
+>  
+>  		    TP_fast_assign(
+Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
 
