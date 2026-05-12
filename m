@@ -1,168 +1,170 @@
-Return-Path: <linux-rdma+bounces-20529-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20530-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cKi1BC2XA2pG7wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20529-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 23:10:05 +0200
+	id CLudFxmiA2qe8QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20530-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 23:56:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F723529F8A
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 23:10:04 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC7C652AAD0
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 23:56:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C5BC73043D4E
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 21:06:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 353C930ED401
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 21:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FDE43CB8E2;
-	Tue, 12 May 2026 21:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34546397691;
+	Tue, 12 May 2026 21:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BuaTpMoa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dp5/9DON"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B98C3CB2DB;
-	Tue, 12 May 2026 21:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980D6396D09
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 21:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778619990; cv=none; b=tZpdf3753YrUBLtxgYuytcBZnyVZS4n8dwI0mjLsgVOWKIjQkOd1KOUIUnfKZTxkBriifWoln1zW0HHhSAqqCPFhOHlXVnw3uT4oa4Ggrg8VXS+gLnylF5XlxUilVfraZg1PCJo06T30IFAXm2JeU61bmXiiScMtKS5oTVHSwtU=
+	t=1778622939; cv=none; b=tRNna67ONcWmh3lmD2+RT5PXEumlu/gprwUxRVYI/Uqp+4ko8Lfq7Rt/6+BmAyLdJqCFtj8TWzRQVF7VsXWGnxjykT8w9UA48wyb3p7x6pH+aaLNm4lTHPJRrSrefMrZyR8vfA7fO/csH6czVmBw/oDzVCy2p6Op3JQyWtgfom8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778619990; c=relaxed/simple;
-	bh=ZIvbTOv7mGv5YKH2y2r48OhIXZowIMwcRvdd3yekhRo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=C7WlHaeFQF6EY1lfzACLYyPtYcSPFxz/82HgKLjfsC2WTguRCKcuDiuhbTbpLhNu4vIkGJJtCMiyjPnvjo43SR67ucHWxkKPvPFZMoc+jfxHVa1RVy+Uzq29Pwbt/8EuVdul7WA4Eq1rkEtGih4ef56LKOF3NGZyiSz8ALySILk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BuaTpMoa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E12EC2BCB0;
-	Tue, 12 May 2026 21:06:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778619989;
-	bh=ZIvbTOv7mGv5YKH2y2r48OhIXZowIMwcRvdd3yekhRo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=BuaTpMoaimZlLD0h5HyetUagx3Z6y05iMPWCTL7D8sRv+nFXigTYVwmd4qgnaYTlr
-	 eozizX/kHqaU2DMt8WkbegIpJ3lji7USGrDfQcv+UK4wosnr29QedlEom3SXLqs1kn
-	 LQMLIAMZYoifH0AZ7hVGngZr/vGNiMM/I/m/XjDOLcmHDzbV1l3+ZDrJDCMTr7SqXt
-	 69lcjWRLHk21E88SMcIR8gZ/qfS8y1z4ssi6UJnPgk2D3ZGtP6pB+7MSdb1bKjyiBH
-	 6FdqC3AxKAOWHZs9KIWrS78rsNEbXjTBqd+xbfMVd3+pK6U2J0W6NRKer4cZk6okwt
-	 JTTUu8DwzYuAA==
-Message-ID: <fc16e29466dfeede64ec6c94bc7526aef13db2a1.camel@kernel.org>
-Subject: Re: [PATCH net] rds_tcp: close NULL deref window in
- rds_tcp_set_callbacks
-From: Allison Henderson <achender@kernel.org>
-To: Maoyi Xie <maoyixie.tju@gmail.com>, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: horms@kernel.org, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org, Maoyi Xie
-	 <maoyi.xie@ntu.edu.sg>
-Date: Tue, 12 May 2026 14:06:27 -0700
-In-Reply-To: <20260512142807.1855619-1-maoyi.xie@ntu.edu.sg>
-References: <20260512142807.1855619-1-maoyi.xie@ntu.edu.sg>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3-0ubuntu1.1 
+	s=arc-20240116; t=1778622939; c=relaxed/simple;
+	bh=TfUOE0sRmfRl4WaBLqCiwhevWqhrNiAtWeKBAdeEEFw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Whhi6F6+to0zKfLThytDspLMpRp5SExxCtvhFGMev9Myr6qhkJe9yHPjB+BjbsmaV6vr5N7QTHVX9uzDUuxYFqAeaA96Q58erGCf8RMNNjRbd4YHYifJP3Gg8VsI9WOX2J7X8GLerm/j39VofUctw8Oz4Kk+8pE1LbAECQuWNWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dp5/9DON; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-82748257f5fso4441512b3a.1
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 14:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778622938; x=1779227738; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Ya6QFCZNOXzUKI88H0bBRc+s+eKBTyGQU2y8sYXv9o=;
+        b=dp5/9DONYIGw6HZi07IarNl/mwDilc192b7C+fJZs+cdloEuuscOfTbOZjGVXaJ460
+         s7EnWBQU+oqsFOOQjGkPnocf8mN17mhzmC193yr1h1h78aAGLzQzNiCKZZIN4dZVJJwY
+         8SBSJVd7GqWNt1ENIVMi0ak7KeQkoKOaW1ccD9T0ZeT7LcfwnUqwcSq/u5DdZTuZDUzc
+         qLjoIBEP2zOMT2ZenNfwwMdNHnjyWmMdsgaKMKMM5n2g5phSNnl2zvWeTKEZG7AM1Gfw
+         QWgIhB6RlvROZSEItKVDEBZaRe3i8LLvEy8bLvhISz6lo6SMuWoWmmKWq4JUvLLuFHR2
+         iMyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778622938; x=1779227738;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9Ya6QFCZNOXzUKI88H0bBRc+s+eKBTyGQU2y8sYXv9o=;
+        b=jHTTg0Ewy05XAc6feGEwJ8GPPisRUPNC8fh0ylD0UW0brCOpYNTXuAQC/z5VT+psLE
+         SXvpbMRXBVExiJU7mYULCfhizvYcwuPTuI8BqF8h9qOIN8sLJHiHjFY2zMxHCoMny28N
+         Igrx0nP09Pa8hasPGhvmBdcRVAVfgehx45Ab6HjF3JAZ6RqCW6lEvUB/mg3UFBKSSxtS
+         aCyIAKUbyDFJ5t+mS+3J4LGQVI9mcMvxHttDCtPzTKHl3ZVhpy3fah+iCGzvfSU8hFc8
+         zo487mFY69UPdBMQuVfxwhjfOTkuypLbMGh9P0/tWyUSWxlEBHv5ePxjpi6VY7J4evnM
+         v1Dg==
+X-Forwarded-Encrypted: i=1; AFNElJ/DbYoOh9RJtSZL6AyC9nE27w2ufFtjnFFpOfQEymtjnNLnqNPppqRarWGG/hfi7i2i32NYhfOZt15l@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdZXJ71n8Iw7EVVN3qBK5ewGBwvsJ3Yobn7gP5j7BhN290pwko
+	14RgPY7qVUKRPdTy/sMS733YET8TcOxHbPlu6sOh0s/sANE9pq4Rqx96
+X-Gm-Gg: Acq92OHV2WW6n/3vgDSDXJ5hIYYfdo8Uv5m5krwuCnq0eyStv524noSBTK4t4kx2vXa
+	nJErsBXLa1U6zW6LtYaqvmiJpL0ug5HWoY8xZfzsMFjUFGKyCO+gsFvauZPYznCTQDw1bIVyuwz
+	Q9XE7tCsYdtFYgwCBRSXQ1NW/a4ELK7IVh+vOutuS3+tuE/qxzXPU6B3VBIPIU8r8aOdL8Ws8On
+	lUrNhP9DLidViVKsdBKYN2TeKo5zQo07TTyIZdcnk1kUgkjFTJD1NI+dZeVyu/ie1F+r+L6E+jw
+	8PsgwsNPxnNgrnklmdv2O5wI6f+rKMPfuQa1ywBthDjNuwawz0FWI2+Tu4r2GLJZwmVQUN/J5ue
+	wGxKXrCF56GjSljPzRKp0s1pm2VbTMnZvRJLrTFo/xdth3JtzP4gpNSEDZuIrAbc1yd1kDSp4E5
+	QQJAc4tQHoJqz7zJgLp2y9c6fvXvBKppuSvqlD4UoKzunf1Hnk3ZU5QIU2SPkyav+kk9grR6hQ
+X-Received: by 2002:a05:6a00:3a14:b0:835:447b:a2ac with SMTP id d2e1a72fcca58-83ee82d6237mr5485143b3a.5.1778622937778;
+        Tue, 12 May 2026 14:55:37 -0700 (PDT)
+Received: from r912.lan.4v1.in ([182.70.116.80])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-839682abd39sm25100038b3a.52.2026.05.12.14.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2026 14:55:37 -0700 (PDT)
+From: Avinash Duduskar <avinash.duduskar@gmail.com>
+To: netdev@vger.kernel.org
+Cc: achender@kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] rds: tcp_listen: fix typos in comments
+Date: Wed, 13 May 2026 03:25:31 +0530
+Message-ID: <20260512215531.1988662-1-avinash.duduskar@gmail.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 7F723529F8A
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: BC7C652AAD0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20529-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com,davemloft.net,google.com,kernel.org,redhat.com];
+	FROM_NEQ_ENVFROM(0.00)[avinashduduskar@gmail.com,linux-rdma@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20530-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[achender@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ntu.edu.sg:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Tue, 2026-05-12 at 22:28 +0800, Maoyi Xie wrote:
-> rds_tcp_set_callbacks() links a new rds_tcp_connection onto
-> rds_tcp_tc_list under rds_tcp_tc_list_lock. It releases the
-> lock, then assigns tc->t_sock =3D sock outside the lock.
->=20
-> rds_tcp_tc_info() and rds6_tcp_tc_info() walk rds_tcp_tc_list
-> under the same lock. Both dereference tc->t_sock->sk without
-> a NULL check.
->=20
-> A reader can acquire rds_tcp_tc_list_lock between the writer's
-> spin_unlock and the t_sock store. It then sees a list entry
-> whose t_sock is NULL. The dereference of tc->t_sock->sk is a
-> NULL access.
->=20
-> Move tc->t_sock =3D sock inside rds_tcp_tc_list_lock, before
-> list_add_tail. A reader holding the lock then observes the
-> linkage and the t_sock store together.
->=20
-> The restore path is safe. rds_tcp_restore_callbacks() does
-> list_del_init inside the lock. The matching tc->t_sock =3D NULL
-> after unlink is harmless to readers holding the lock.
->=20
-> Fixes: 70041088e3b9 ("RDS: Add TCP transport to RDS")
-> Suggested-by: Simon Horman <horms@kernel.org>
-> Signed-off-by: Maoyi Xie <maoyi.xie@ntu.edu.sg>
+Two typos in comments:
 
-Hi Maoyi,
-This fix looks fine to me.  Thanks for the catch.
+- "reconneect" -> "reconnect" (block comment above
+  rds_tcp_accept_one_path()).
+- "acccepted" -> "accepted" (block comment inside
+  rds_tcp_conn_slots_available()).
 
-Reviewed-by: Allison Henderson <achender@kernel.org>
+Signed-off-by: Avinash Duduskar <avinash.duduskar@gmail.com>
+---
+ net/rds/tcp_listen.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  net/rds/tcp.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-> index 654e23d13..5830b31a1 100644
-> --- a/net/rds/tcp.c
-> +++ b/net/rds/tcp.c
-> @@ -198,8 +198,13 @@ void rds_tcp_set_callbacks(struct socket *sock, stru=
-ct rds_conn_path *cp)
->  	rdsdebug("setting sock %p callbacks to tc %p\n", sock, tc);
->  	write_lock_bh(&sock->sk->sk_callback_lock);
-> =20
-> -	/* done under the callback_lock to serialize with write_space */
-> +	/* done under the callback_lock to serialize with write_space.
-> +	 * Set t_sock inside rds_tcp_tc_list_lock so readers walking
-> +	 * rds_tcp_tc_list under the same lock cannot observe an
-> +	 * entry whose t_sock is NULL.
-> +	 */
->  	spin_lock(&rds_tcp_tc_list_lock);
-> +	tc->t_sock =3D sock;
->  	list_add_tail(&tc->t_list_item, &rds_tcp_tc_list);
->  #if IS_ENABLED(CONFIG_IPV6)
->  	rds6_tcp_tc_count++;
-> @@ -211,8 +216,6 @@ void rds_tcp_set_callbacks(struct socket *sock, struc=
-t rds_conn_path *cp)
->  	/* accepted sockets need our listen data ready undone */
->  	if (sock->sk->sk_data_ready =3D=3D rds_tcp_listen_data_ready)
->  		sock->sk->sk_data_ready =3D sock->sk->sk_user_data;
-> -
-> -	tc->t_sock =3D sock;
->  	if (!tc->t_rtn)
->  		tc->t_rtn =3D net_generic(sock_net(sock->sk), rds_tcp_netid);
->  	tc->t_cpath =3D cp;
->=20
-> base-commit: b266bacba796ff5c4dcd2ae2fc08aacf7ab39153
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 08a506aa7ce7..a3db9b057084 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -69,7 +69,7 @@ rds_tcp_get_peer_sport(struct socket *sock)
+ 
+ /* rds_tcp_accept_one_path(): if accepting on cp_index > 0, make sure the
+  * client's ipaddr < server's ipaddr. Otherwise, close the accepted
+- * socket and force a reconneect from smaller -> larger ip addr. The reason
++ * socket and force a reconnect from smaller -> larger ip addr. The reason
+  * we special case cp_index 0 is to allow the rds probe ping itself to itself
+  * get through efficiently.
+  */
+@@ -143,7 +143,7 @@ void rds_tcp_conn_slots_available(struct rds_connection *conn, bool fan_out)
+ 	 *
+ 	 * Doing so is necessary to address the case where an
+ 	 * incoming connection on "rds_tcp_listen_sock" is ready
+-	 * to be acccepted prior to a free slot being available:
++	 * to be accepted prior to a free slot being available:
+ 	 * the -ENOBUFS case in "rds_tcp_accept_one".
+ 	 */
+ 	rds_tcp_accept_work(rtn);
+
+base-commit: 73d587ae684d176fac9db94173f77d78a794ea4f
+-- 
+2.54.0
 
 
