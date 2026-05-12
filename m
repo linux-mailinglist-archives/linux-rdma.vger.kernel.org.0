@@ -1,204 +1,182 @@
-Return-Path: <linux-rdma+bounces-20513-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20514-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6BYQIyV4A2pY6AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20513-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:57:41 +0200
+	id YJcyNWF4A2ri6AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20514-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:58:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4965284BE
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:57:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41112528503
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:58:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E22C4313D85B
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:38:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C1DC6309687B
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E89132BF41;
-	Tue, 12 May 2026 18:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B581F91D6;
+	Tue, 12 May 2026 18:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HC35Wb8m"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Mbr8gSwf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f202.google.com (mail-qt1-f202.google.com [209.85.160.202])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5682F8E9B
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 18:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E87625B081
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 18:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778611136; cv=none; b=NfZL+yuxqHWk1BQnJrjogZ5eUmQ9NRXaGTINgAnuoc8lMhA0IBaUZg3NHQzFVQ/JmiRt8CwcIoYYx1CHTvG7D3BjRUhwPVQC8Y1/C1Cf8G84zB/pnspDEI8Xkmw9R3SwKewBDFoJ1ubaCeIX4ndcCS9HEfSyG2RnQNYHi4jqnqE=
+	t=1778611233; cv=none; b=Bl8ze+u53F0DhEMQMpy0GljCbgvfHtHgpRTVV9PoYVgENsbuNu6L86W0QbxBVGzdi+bQGMFRcFi3dlMwfWbSt0+e0/wyXhLBTSQBOIJYsQ0neqHFIpXzJXTXjpoPQdJHDSI68ahqTfRtf8GlBHCEozD65HUWJuOQsUFn6GFVx5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778611136; c=relaxed/simple;
-	bh=I09O73/fy7BUccU0qJpAKW+nk+Ww74ueKo+uP9HGI4U=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=FkGdPHdqtgJZBYS0Atx7PONM6879BhoYyEPvR1yD/IpifveynBdmtEbFBgfwmtrXcvmmzhgfykQKler27+Dusu3TnW0LL0ZXcg3Ykcvvz2y97gn8We/GtjDzaR5rZ/YZStMOSH1cgOFiV+MdlCND9zPO7BHg0mTJR52xhL1KzMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HC35Wb8m; arc=none smtp.client-ip=209.85.160.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
-Received: by mail-qt1-f202.google.com with SMTP id d75a77b69052e-514cbe73d00so43201601cf.1
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:38:54 -0700 (PDT)
+	s=arc-20240116; t=1778611233; c=relaxed/simple;
+	bh=DRBAVSHpzeLNCUF84SVtfoGSH2yVaHZDhrZMhFCKT9w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ce6TVoqXHNk5upw1cKmyDOFm6JNbWniSFXhhKgQZW/vjZJf6beBJxDwYMUcCo6csLbVA2NGjXn4X6KcZEv8BhcMeVI9XA7jRapqOUq806GmJs6B0p4kG+uc/MtyeNwaoVbxFWxm4oLgG5Xev19jmZYOPnv1978Viu0a1HMKHXbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Mbr8gSwf; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-44c4cc7c1cfso4801784f8f.0
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:40:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1778611133; x=1779215933; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+DeT0rZ95QMZL9Xy3fdGQtSdSrj1lRMj5LlMafFEKQk=;
-        b=HC35Wb8m+r7H7SXDUh75+Y04D8pBDTrwerYLVtT2AahkustFokbPQ/BwKzarip12DC
-         2UcW5h876IIYO1hB9nYakDSUiJSBOsDlcYvptFlB0x66CiIaF5O976Ao9bEi7L3RsfH3
-         eIgHqqIbtegjX+v3yqPW74fUufX9+4IU7ZyI+dT7xByiHfJ8z1+ivF40gA+coUlp5xdM
-         +QAeSuyXeLERLugSxvBz5Wdubpj+yZ2V+WxplBMXmGd6tvx1aMWota56csGm19b//FM+
-         kjkUPDzWS8dC1TAWXwxhhJWV7k4b/DH8+YIjPq4R5tD8IjvvI/4v2Fa78cYFVSV3Nhsx
-         aYKA==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778611230; x=1779216030; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mC01vuD+AES2DJCrLU9aahGx2LTf0iNn7xFbdIleELI=;
+        b=Mbr8gSwf0kOtryKQkdRylejz21mqdZYFCS1gjJraadRU6qtVfPJdjnHj6eoq2k9cRx
+         QJqHVZla7pyOFy+/MzRYXOGkO9KqEOyFzupiyvdcdWOSckOF1PJLaNu7wnPqQBdcmF6w
+         XOC7rnUe0siWATpskyOpCT2sylyiynlqLHGXYHP2jWu4MsjgXEcgLVQkaUNmWy1lTriE
+         fykgKgodzmfEhoEe22wlz2TqC7iWPvuHfntAQ4wwKIDH+bIXXrnp1owKdCj1YhAoc4Nr
+         OQ41nUBqssqunB+4evydgT9TujQ5OAiT4I1oGTJ05+xWAR1bn34CLAjcgiBj2XxGz4O9
+         Re1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778611133; x=1779215933;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+DeT0rZ95QMZL9Xy3fdGQtSdSrj1lRMj5LlMafFEKQk=;
-        b=feL826HuG/kFmaaq/xGGyzfbUEH+BD8I8m5we2eW8WdngXyJgPG9x7VT63QP7v6D3W
-         DA8Y7BqR8OdpXaJbLEiLnQZ+jSvK14uKHemnlgZNclVX4XeeAXVzLbePO7rjFUokIFs0
-         Rf3Au2+aFjcqUS5Rsb83G0IkkLYxdi1Xw7K6NROj1UTljbOOwrub6YQuiM4HOGaHEom4
-         ACqHc1P8CLsP8GHjDivJZ42Wz44Zbnte8Z6MscOl1JEQb6zMr14VrMyd/HG27BOMwRz3
-         urOs+P4MOioV9UnvuLCTrYcTyFCbaEZN82Tmzf3ZHJELYPVcE08JkgVRPIn2vUOhoEo8
-         WgeA==
-X-Gm-Message-State: AOJu0Ywid6m2GXCZoCCK0G+IS7klef24rNanAx7ddatj43c2kYn2sWDn
-	ZhYIklUWKopwQv8sEOOqePJXx9YZgquuvaLntFT5DulP7X4ACAY2Ya1m4Vf6bWggxwYCHRtV/iS
-	Eifa2nkoe9Q==
-X-Received: from qvbgf2.prod.google.com ([2002:a05:6214:2502:b0:89c:df02:4050])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:622a:1e14:b0:50e:2b1e:9d14
- with SMTP id d75a77b69052e-5148e94fe9dmr237123461cf.29.1778611133110; Tue, 12
- May 2026 11:38:53 -0700 (PDT)
-Date: Tue, 12 May 2026 18:38:52 +0000
+        d=1e100.net; s=20251104; t=1778611230; x=1779216030;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mC01vuD+AES2DJCrLU9aahGx2LTf0iNn7xFbdIleELI=;
+        b=YIPSGSijRseIxny01PGOP6UTK2I0Z6SWShaVMPPwSNtTIbLCPVOpjRuslaoFgl2Y2L
+         1kFRXfFxwKH4KdDStp4qn1qdKZ9ktgp0N2PXG4+cjm8BGncEZNZT+mVTaKWqRlwp+06B
+         T09Z2KNAu2wsjlLlcWoobPknpNMWMJEVmawpMfXtp+WlcTufeYoIGvT7ZdCyihjHP927
+         yEhAz8zkL2fIxrLCftBw9wXuxq2EpVWKld57rkMOtb/70lxjcvDlw1WcClCjwS6AWcTn
+         aBCX1pnTkGgKOOc44SRjk44A+1aThCSkueYRiSVWODVD8qBdTihXfztlHUxE4gAfzEoh
+         2nww==
+X-Gm-Message-State: AOJu0YxYeHLYpHIzWMksDkND80AALXETpvci7+sLtW7V+DR3fUd68gA5
+	XN9lAMeWEtZf+Y60O4ReKi4YzIb0EwUEsyvkPxbhwmrb7muXjLsStTORUgO/goYmGJ4=
+X-Gm-Gg: Acq92OFbJS0TSk2iOOmWhdl1XiDWcCCE+/RYmzOiFBx1Or1G6FB1hLqwcM5chA/YFPB
+	mXPd0rjuoievvpJNkdZ4tHUpqx08m0Tw23M46j5slm9NrKSTxwmBbdtFlrZN54SUghEGZ/I/ew+
+	1csN90N0uD8lgtCE6RwMntE8Yk7SMjZVcNEbyEm/tjtWiQFYo0+efagG3ZaGC/0ueUfaeFkRays
+	Vjg02jirofJYWOJuFvHctD3TEztoiyR5Um+yJ5mvC8caU2zy8pE7qAZFor4yVbNQiyd/Pmxr47h
+	QPInFgWngwHybcjuV+0mPZEHcna3kL0V0rLRZTo2bBPLS3C0f6ZhPEbYhp/phNMxQFLRvLQ6gHT
+	IRY7LnWNcoHELSjoPD/rQfl4jXCwGeapJnO2DlT2dBWHjvMZBtF9AgKzgkt5sGTe4yl/csY7A6h
+	bUWSH4t+BnfpmZKlUtzNA/N/Rwt7SLODhXug==
+X-Received: by 2002:a05:6000:10cd:b0:452:8772:b36a with SMTP id ffacd0b85a97d-4528772b513mr31422082f8f.2.1778611230521;
+        Tue, 12 May 2026 11:40:30 -0700 (PDT)
+Received: from FV6GYCPJ69 ([140.209.211.203])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548ec6aea4sm39735162f8f.10.2026.05.12.11.40.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2026 11:40:29 -0700 (PDT)
+Date: Tue, 12 May 2026 20:40:26 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
+	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
+	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
+	ynachum@amazon.com, huangjunxian6@hisilicon.com,
+	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next v4 06/16] RDMA/uverbs: Push out CQ buffer umem
+ processing into a helper
+Message-ID: <agN0Gr4ul-a3DSvg@FV6GYCPJ69>
+References: <20260507125231.2950751-1-jiri@resnulli.us>
+ <20260507125231.2950751-7-jiri@resnulli.us>
+ <20260512180342.GI7702@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.54.0.563.g4f69b47b94-goog
-Message-ID: <20260512183852.614045-1-jmoroni@google.com>
-Subject: [PATCH] RDMA/irdma: Fix out-of-bounds write in irdma_copy_user_pgaddrs
-From: Jacob Moroni <jmoroni@google.com>
-To: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com, jgg@ziepe.ca, 
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 0A4965284BE
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260512180342.GI7702@ziepe.ca>
+X-Rspamd-Queue-Id: 41112528503
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20513-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20514-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jmoroni@google.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim,ziepe.ca:email]
 X-Rspamd-Action: no action
 
-The irdma_copy_user_pgaddrs function loops through all of the umem DMA
-blocks to populate the PBLEs and will stop when either the last DMA
-block is reached or palloc->total_cnt is reached. The issue is that
-the logic for checking palloc->total_cnt would only work for non-zero
-values.
+Tue, May 12, 2026 at 08:03:42PM CEST, jgg@ziepe.ca wrote:
+>On Thu, May 07, 2026 at 02:52:21PM +0200, Jiri Pirko wrote:
+>
+>> +static int uverbs_create_cq_get_buffer_desc(struct uverbs_attr_bundle *attrs,
+>> +					    struct ib_uverbs_buffer_desc *desc)
+>> +{
+>> +	struct ib_device *ib_dev = attrs->context->device;
+>> +	int ret;
+>> +
+>> +	if (uverbs_attr_is_valid(attrs,
+>> UVERBS_ATTR_CREATE_CQ_BUFFER_VA)) {
+>
+>I know this is just moving code, but I've always disliked this
+>function. I learned a trick using a case statement for this recently:
+>
+>	u32 present_attrs = 0;
+>	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_VA))
+>		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_VA);
+>	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH))
+>		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH);
+>	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_FD))
+>		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_FD);
+>	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_OFFSET))
+>		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_OFFSET);
+>
+>	switch (present_attrs) {
+>	case 0:
+>		return -ENODATA;
+>	case BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_VA) |
+>		BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH):
+>[..]
+>		return 0;
+>	case BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_FD) |
+>		BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_OFFSET) |
+>		BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH):
+>[..]
+>		return 0;
+>	default:
+>		return -EINVAL;
+>	}
+>
+>No need to build the complex tests to check in each branch if the
+>other branch attributes are presented.
 
-When irdma_setup_pbles is called with lvl==0, it
-calls irdma_copy_user_pgaddrs with palloc->total_cnt==0, which means
-the only way to break out of the loop is to reach the last umem DMA
-block, which means it could end up going beyond the fixed size of 4
-iwmr->pgaddrmem array that is used in the lvl==0 case.
-
-In the case of QP/CQ/SRQ rings, the value of lvl is determined by a
-separate input (for example, req.cq_pages in the case of a CQ). So,
-we must perform explicit checking to ensure we don't overflow the
-pgaddrmem array if the user provides a umem that consists of more
-blocks than their provided req.cq_pages.
-
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Signed-off-by: Jacob Moroni <jmoroni@google.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 17086048d2d7..b30e81d2b933 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -2781,10 +2781,11 @@ static inline u64 *irdma_next_pbl_addr(u64 *pbl, struct irdma_pble_info **pinfo,
-  * irdma_copy_user_pgaddrs - copy user page address to pble's os locally
-  * @iwmr: iwmr for IB's user page addresses
-  * @pbl: ple pointer to save 1 level or 0 level pble
-+ * @pbl_len: Max number of PBL entries to populate
-  * @level: indicated level 0, 1 or 2
-  */
- static void irdma_copy_user_pgaddrs(struct irdma_mr *iwmr, u64 *pbl,
--				    enum irdma_pble_level level)
-+				    u32 pbl_len, enum irdma_pble_level level)
- {
- 	struct ib_umem *region = iwmr->region;
- 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
-@@ -2792,7 +2793,9 @@ static void irdma_copy_user_pgaddrs(struct irdma_mr *iwmr, u64 *pbl,
- 	struct irdma_pble_info *pinfo;
- 	struct ib_block_iter biter;
- 	u32 idx = 0;
--	u32 pbl_cnt = 0;
-+
-+	if (!pbl_len)
-+		return;
- 
- 	pinfo = (level == PBLE_LEVEL_1) ? NULL : palloc->level2.leaf;
- 
-@@ -2801,7 +2804,7 @@ static void irdma_copy_user_pgaddrs(struct irdma_mr *iwmr, u64 *pbl,
- 
- 	rdma_umem_for_each_dma_block(region, &biter, iwmr->page_size) {
- 		*pbl = rdma_block_iter_dma_address(&biter);
--		if (++pbl_cnt == palloc->total_cnt)
-+		if (!--pbl_len)
- 			break;
- 		pbl = irdma_next_pbl_addr(pbl, &pinfo, &idx);
- 	}
-@@ -2877,6 +2880,7 @@ static int irdma_setup_pbles(struct irdma_pci_f *rf, struct irdma_mr *iwmr,
- 	u64 *pbl;
- 	int status;
- 	enum irdma_pble_level level = PBLE_LEVEL_1;
-+	u32 pbl_len;
- 
- 	if (lvl) {
- 		status = irdma_get_pble(rf->pble_rsrc, palloc, iwmr->page_cnt,
-@@ -2884,16 +2888,18 @@ static int irdma_setup_pbles(struct irdma_pci_f *rf, struct irdma_mr *iwmr,
- 		if (status)
- 			return status;
- 
-+		pbl_len = palloc->total_cnt;
- 		iwpbl->pbl_allocated = true;
- 		level = palloc->level;
- 		pinfo = (level == PBLE_LEVEL_1) ? &palloc->level1 :
- 						  palloc->level2.leaf;
- 		pbl = pinfo->addr;
- 	} else {
-+		pbl_len = IRDMA_MAX_SAVED_PHY_PGADDR;
- 		pbl = iwmr->pgaddrmem;
- 	}
- 
--	irdma_copy_user_pgaddrs(iwmr, pbl, level);
-+	irdma_copy_user_pgaddrs(iwmr, pbl, pbl_len, level);
- 
- 	if (lvl)
- 		iwmr->pgaddrmem[0] = *pbl;
--- 
-2.54.0.563.g4f69b47b94-goog
-
+As this patch is just moving existing code, could we do this in a
+follow-up? Patchset is already long enough. Will add that to my todo
+list if you are okay with it.
 
