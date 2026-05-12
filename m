@@ -1,171 +1,119 @@
-Return-Path: <linux-rdma+bounces-20517-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20518-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KKZpGE9+A2pV6QEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20517-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 21:23:59 +0200
+	id wFlTFb+AA2pB6gEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20518-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 21:34:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A945289CA
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 21:23:58 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC24A528AB4
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 21:34:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5D9C330316D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 19:23:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 278E73041A31
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 19:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E5938333C;
-	Tue, 12 May 2026 19:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888C3357D06;
+	Tue, 12 May 2026 19:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="c0+d3o5Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIZPbpWa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C927368D42
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 19:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3C635979;
+	Tue, 12 May 2026 19:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778613802; cv=none; b=vDdvaKtIkFlDXu8IHMAT7rk3t9/sxBViKpYBvk1AUKPpa2ZB6m+InBbaOUVBtb71yx9jYlpYqDOzClayBicZ+EAD/l/yCxI7YK22KMu8Pzkvl1JPDYn43t7dZm4yTLv3qRmdx/DcIvSPmTGsyar1T8n0YvoiOqR8QdgQ0kRcchg=
+	t=1778614455; cv=none; b=KnzVsO93fQS3Koz3Z+3UuD8LBrmOXa+FsczlbbjM9jKUjkVlTDGrtcPMgY8qqYwZ4/1oz322kMRTOHN3gnYVgf4yyaEku9wCfIgE8JsuTjehCmWUuDwzfRCcnKDHv/WJRP9Z621OR3PoI3d6yAeuTtu3424aPPjGqo5NiuyF9Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778613802; c=relaxed/simple;
-	bh=pdqW41VZmpw0mXcF+HArwZLLOTtlbncYfCHIegAJKxQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ULAhlVs718zdYx+oM/hLSrlXOI2cj3Xql8boevBzhW3Pvimw5xh+t4o1c6q0k3IG+UM/IxmT+D7jl6BjqPMz6PTVEyk1unr2DAw+SGrtGgx6cQdqqAaf8CWFVYbk0B80niXXlBl4c9RnNR2+qoJ579c1HhGM2uccf9+/kho7CpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=c0+d3o5Y; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-90d2e6b4fb4so111608185a.1
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 12:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1778613800; x=1779218600; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1YgSEbWoadG4nnUiOiVn0upSDxam1IO+ICxE+kKFjx4=;
-        b=c0+d3o5Yk98a/2wg2Vyg1LTRATWznQ3hqZqrykNKLw4R2xuhhS4sVN9jQbUDRX4Eh4
-         NqQdCSxIJciN1ZelmO++M5chzNRC5L7FoPwR+b7nnhMLyfB2Z3tlggaEboJC6tbpzD9m
-         0s5J+cuqHSzyGJk376q/gtAFC9HWiFNpcFU1KsECR5VuqLyIvj2I3sT9tpja5uk/eEw0
-         wBtbWQSCg6xBqePCavQhxtX73n0zY9mkfSTMpn4SoPBeW9mO+uO8ZJld01Dy/G9FZInq
-         rcbuTCCvIaHkiKvYlypnsnFL6CD1Jhc//1gCo9r9IpKjIfB8noQuS+/NUUaPFBVaQ2ES
-         eTRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778613800; x=1779218600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1YgSEbWoadG4nnUiOiVn0upSDxam1IO+ICxE+kKFjx4=;
-        b=do+B5M4flVclRmhILvPR5Oy5cpcmHBazeqkSaQv0YG1uOmINlstGUy2Fyb330IA+CV
-         QxO6X+HWo2zBIk1x9kcpCNdnMxxKrNNZoWwGyigivj6RfIqLlyTtpPmAiVg/2fnj7HO5
-         BAQ53UScS4DSqUuT8/cnsqIbUHHXrcsKSf+G9Hu0nKvN3AYPimBOLFq0bizqSKDlIZZg
-         bAPv3jKl4vWSCDAzlpaA4Nv9BN8+oiAvj+vbiK2cKdzftFMPypsbK104dzmqpjHzK/IM
-         80fpuN7Gkpd3wyFTXM1DQWh0bot0g54AeHfz0RHjBRkfIfUIs5spOyme3rVS+rbCphXq
-         2I3Q==
-X-Gm-Message-State: AOJu0YypMIvw1iUQbPuD+X8mPnzi/tAC835gpCO3iU3Xsf/ZhGFFG5J+
-	BR0231pl0B2Q0UBoxziAKMU5HlVvnFg1wb83k9hllAVqPf3nTF1BHv+0sRmJp7VQJDU=
-X-Gm-Gg: Acq92OEuq6Tb4nhMvzXG2Db9Qli1e89ZyO2SPdcobKBKELkPyrEZIKkrYvCwTAMxAy2
-	JUvCT2HQEEx/2pSHXZRHa6sCmnznkDVGzq1DhSd5ujDzOLJweAsuTSiQ4j+W3J+hoZcufRq0fnD
-	fpLTq2F7WOeqp6XAz2Z0nl7d2nJDSXUqbi7CbuEx1IINx490L8A6dBSHpKmWXM7mrxB9XxrcE+I
-	ZRRuF1djaVnj3mXi7FuamrGPgad0NmzrgpDIZFCXkyOGoAEhfgDNcu7AFkQvEShSdCS9glut7RC
-	Pl6JDL8hhpsLpL1h8xjOQ7GPIN5+n0Kg/rriSm2p8Kvjn7nLPBuZSMvMdnVUzM1BFQYGLBfbKKT
-	topulgKw0r+zcGYZVDHXqCtW1OzDlUjI0m195HfhwogNXT6u8qXy62I6VXXBDADFFDJA1i2ijp7
-	7DMbZUt+3C6PDVKpWs8J3XZU+ACw/37CBQUEuHKoSEmwezm/0MnzYUU4cx34a7bO20CGRAmX7sg
-	PmtSw==
-X-Received: by 2002:a05:620a:4044:b0:8cd:923a:87a0 with SMTP id af79cd13be357-90f88d9aa33mr56263085a.21.1778613800041;
-        Tue, 12 May 2026 12:23:20 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-907b918cffesm1507218285a.14.2026.05.12.12.23.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2026 12:23:19 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wMshL-00000000x0Q-0Z6o;
-	Tue, 12 May 2026 16:23:19 -0300
-Date: Tue, 12 May 2026 16:23:19 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
-	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
-	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
-	ynachum@amazon.com, huangjunxian6@hisilicon.com,
-	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v4 00/16] RDMA: Introduce generic buffer
- descriptor infrastructure for umem
-Message-ID: <20260512192319.GM7702@ziepe.ca>
-References: <20260507125231.2950751-1-jiri@resnulli.us>
+	s=arc-20240116; t=1778614455; c=relaxed/simple;
+	bh=2jqFxb+r9G9qQBI8MV2AR2FsQdB41PWdBe6RvNU3lsA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DqQjc+4Jwhco3Ie4R4HNb1dVI8dI+Z8Oom6sfFEnxqz4JE7mlTHWl3lzPOq+U02d/SpX4fdDZKcompDD2oFfy84RxBPtzLfNCOzg4obG+4U6uuhsFcAZIcMlTyTYLxYCgosthhHrDnxoLx0UVr2L2TTGVpUjzWE6lc7L3nz1mhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fIZPbpWa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A5ADC2BCB0;
+	Tue, 12 May 2026 19:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778614454;
+	bh=2jqFxb+r9G9qQBI8MV2AR2FsQdB41PWdBe6RvNU3lsA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fIZPbpWa5H11qjXWleK/NU1fS00u0jMkKlVvvizhyt8oSYqxm+fwmL6y3/XUqgbss
+	 VkqHuEUocCdbbMaihGyyDKV9KQLot8Ax+R7N5gL8YxIlQORJWj2UnRqhtmPxma2aYe
+	 jkdpUgPhaOyrAZF8iWPTq6eqsOuqGM75ll4EVkiXoR6sCZGdD+4cevNQz461s2Z9gN
+	 mqDLFBOMWY1QemB8Zq90sEXVRCVcfK9QjEoi3ShTR9EeBnd+WvFjToECebjmrLI/2A
+	 tM8icgsajU1Xt7BBN902X0Oyknc92kyo8t78ZlrZraHeOwXCG9ifezhvgj1CEEy4b5
+	 Gz2anS5q1ZQCw==
+From: David Ahern <dsahern@kernel.org>
+To: stephen@networkplumber.org
+Cc: netdev@vger.kernel.org,
+	leonro@nvidia.com,
+	linux-rdma@vger.kernel.org,
+	David Ahern <dahern@nvidia.com>
+Subject: [PATCH iproute2-next v2 0/4] Allow rdma dev netns to take a pid
+Date: Tue, 12 May 2026 13:34:03 -0600
+Message-ID: <20260512193412.32019-1-dsahern@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260507125231.2950751-1-jiri@resnulli.us>
-X-Rspamd-Queue-Id: C9A945289CA
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: CC24A528AB4
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20517-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	TAGGED_FROM(0.00)[bounces-20518-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[dsahern@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nvidia.com:email,ziepe.ca:mid,ziepe.ca:dkim]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email]
 X-Rspamd-Action: no action
 
-On Thu, May 07, 2026 at 02:52:15PM +0200, Jiri Pirko wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
-> 
-> This patchset introduces a generic buffer descriptor infrastructure
-> for passing memory buffers (dma-buf or user VA) to uverbs commands,
-> and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
-> bnxt_re and mlx4 drivers.
-> 
-> Instead of adding ad-hoc per-buffer UAPI attributes for each new buffer
-> type, each command declares dedicated UVERBS_ATTR_UMEM attributes that
-> carry one buffer descriptor each. Each descriptor specifies a buffer
-> type, covering both VA and dma-buf. A consumption check ensures
-> userspace and driver agree on which attributes are used.
-> 
-> The patchset:
-> 1-2,4. Plumbing: rename ib_umem_get() to ib_umem_get_va() and re-route
->    it through the new central ib_umem_get(); no behaviour change.
-> 3. Introduces the core buffer descriptor infrastructure and UAPI.
-> 5. Inlines the const attr helpers so ib_core can use them.
-> 6. Factors out CQ buffer umem processing into a helper.
-> 7. Adds the CQ buffer UMEM attribute and driver wrappers.
-> 8-11. Converts efa, mlx5, bnxt_re and mlx4 to use the new CQ helpers,
->    with drivers taking umem ownership.
-> 12. Removes the legacy umem field from struct ib_cq, now that all
->    drivers use the new helpers.
-> 13. Adds optional whole-QP, RQ and SQ UMEM attributes to QP creation.
-> 14. Converts mlx5 QP creation to use the new attributes.
-> 15-16. Adds mlx5 driver-namespace UMEM attributes for CQ and QP
->    doorbell records.
+From: David Ahern <dahern@nvidia.com>
 
-I think it is OK looking, Leon?
+Avoid the extra hurdle of creating an entry in /var/run/netns
+and allow the netns argument to be a name or a pid.
 
-Jason
+v2
+- update netns_get_fd to handle the pid fallback
+- update devlink code
+
+David Ahern (4):
+  namespace: Add fallback to netns by pid
+  iplink: Drop pid fallback code for netns
+  rdma: Allow netns to be specified by pid
+  devlink: Drop now duplicate pid fallback for netns
+
+ devlink/devlink.c   | 25 +++++++------------------
+ ip/iplink.c         | 10 +---------
+ lib/namespace.c     | 28 +++++++++++++++++++++-------
+ man/man8/rdma-dev.8 |  3 ++-
+ rdma/dev.c          | 11 ++++-------
+ 5 files changed, 35 insertions(+), 42 deletions(-)
+
+-- 
+2.43.0
+
 
