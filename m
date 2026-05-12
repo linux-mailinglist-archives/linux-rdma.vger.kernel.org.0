@@ -1,175 +1,226 @@
-Return-Path: <linux-rdma+bounces-20464-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20465-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4FUlGF3lAmpEyQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20464-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:31:25 +0200
+	id YFe0LxToAmpEyQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20465-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:43:00 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2FB051CBE3
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:31:24 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF1B51CDFC
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2733230208C7
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 08:31:20 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 52689301F7CE
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 08:42:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714F249550B;
-	Tue, 12 May 2026 08:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2522496908;
+	Tue, 12 May 2026 08:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LkFPHZ7c";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="iXM1Zubc"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="sY20+c4Q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00848494A0F
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 08:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFCF4968E8
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 08:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778574677; cv=none; b=hNCRIC5q5uh3l/fcBcuxJvEkwLvWhOjGOfT1yQcFn/hpceeyzDclidNu+Hjvvj7LOl9xmUz+pnL+l/GE2N+6n2fXob7YUb1XJNVyMBZLj5YOWJlFF6lQzl7w4RJC6Hugo22oPp+WrkP3v1//V47F6qjFYmvZLTXyIDOWlKjPqaM=
+	t=1778575368; cv=none; b=qIb+eRLvGKHWSmuOg7g4XHzzKHcKA77S7ZMrpZHQUbiMZdAfcAPQo22CrWlSS1W67oXt2cm1Mqinbn3H71sKtKjndOCQPguhSCa7FwoVI+GYY8WMAT4zgakvu0B6W44P9f0fnFirPrlr6CXqp+GxfY+QS3jtde3+/wN3wevsFxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778574677; c=relaxed/simple;
-	bh=fTGplt+watJ4CCJ48471v0saEF+Ue/1jSJxh0KQ0ZFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZS788vsVfg+lfUplNzONPnLY21UsNa0f9ZyRTkuAFcJkpMvFV1qFeyW41wVAl2XWDRonv3JtUS8Q1q/NMQFQvdOI4rmRz003mjaMCTgWGg/ZkJCy9ZFkTJ9dydJ+a0H5sLpUjrchyKRx/iIvWBYyUOME6Licw/a0NbcFU82NwgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LkFPHZ7c; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=iXM1Zubc; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778574675;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZaygQPrE3vEfN+hpcIqqhfjFYc4/KOM3g2S8tsFLr9s=;
-	b=LkFPHZ7c+/gk/YAVMm6Pr2aaTtFcqC2bQA2f+Vn06vQ1BF0h9P6T+zEtcUZXkJadkuXlfc
-	KfnvwFA40863m4fU/nhK8o/3xhP2Ohf1T3+Ggeb1Uikq8rMfZOancet9aDO1j8B4zANLha
-	Fdaj6IBNSoob+rKATKjVzDWB1h61uUI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-473-PfTIPm1qP-ea2yVeaTn0rQ-1; Tue, 12 May 2026 04:31:13 -0400
-X-MC-Unique: PfTIPm1qP-ea2yVeaTn0rQ-1
-X-Mimecast-MFC-AGG-ID: PfTIPm1qP-ea2yVeaTn0rQ_1778574672
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-48e5dfa8ec7so28896325e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 01:31:13 -0700 (PDT)
+	s=arc-20240116; t=1778575368; c=relaxed/simple;
+	bh=YsbKMtLsF8n757WsDejnc9PnHwNnAlr9Ml5HzNjnAY4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dj8rvfaIGpDDqEftEjC+lauIu3xt3/gUMPT38LizqL2Mmh5k/hfTsXTOBWTI8SeE6L9OYEgnFA+UTrmLUa9oRLeLgsAgodWvNebiadPNxkrVGP79BojdDKtVBUv1/8EDGZPc1dhybKdNSsaIce2a0dhOiJT9tjRtWFKhakddjOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=sY20+c4Q; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-488a9033b2cso48007495e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 01:42:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1778574672; x=1779179472; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZaygQPrE3vEfN+hpcIqqhfjFYc4/KOM3g2S8tsFLr9s=;
-        b=iXM1ZubcFs4fu4W/ayBLZWMiqMZOOKDTtDbyjHXofib5CIgcLwXfYibmfGFVw0n7nj
-         G7FR1UvhoKrgpdk+NEiXbQSTDKq3qMBwV3mXCC/w1mFfpQCQl/VG9ObcQqcZyAnLkOA/
-         ZtMqy0tIEpXOKXwMXd0YHAWNlEK0McZ74gsp20WS7Kq3lxDP/TAPqXoDCFEoZ4HGd3s3
-         xDNZ/4wMYlYzopEVu+N9PBtkJSzyuzQj0Es1CPznfTIwo+R+XIhYFAgL7VsjS05e90ZI
-         LBH8IiBXZHVCWq6QtfnsdXbk17nKPUVEM58ADc4dG2n5MgWMQ9YrVhFLDrkWYVGBQXOP
-         bAjA==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778575345; x=1779180145; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=22yyk03jobS7/yf02FbmawWzo9rxTI9n393P7VL0W2c=;
+        b=sY20+c4Q7FYmUxNrxfwNltQGQG/Q2Ncwgj7CINFni1jYq3boPZrA154ZIy9YKMR6BD
+         9tur3ntpLTCkxlDpPHiu4PRO5F9BedG/cGipgnQdOl1L7uN5QCTyuvcmdOojeWLZvnX9
+         8o+TDscy3ReFabiawRcyBWqnlI8ecwA/E7I5P3cw90Mu/ro6sYEK8V9sXadSH4TMTHfR
+         h7KhyTNgWTUvSPWsXygY+zeFGoimXrTMHq1GTynXwheC34ru7XjVUnf3B0lnnsRgKr1D
+         S48ktP3gapZNRMFSm23KLt40kHH78/7NdKWkFIQBuP/XTWMPYwqOfpaTJaeWuhevgaEa
+         RIgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778574672; x=1779179472;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZaygQPrE3vEfN+hpcIqqhfjFYc4/KOM3g2S8tsFLr9s=;
-        b=nSWLYotg7m/0gncG/19xa22/+A3lWXTIAugHCCmZmV4SfV4D8yUsCFgEUYRSybF+in
-         CBpVIWZ7rd+Rk/2wOZ0/nwNWryyiMBM+ydiuk1FekiRpb+MPkS3ms9+OV7AMZDv5ysxG
-         VZzrK6iKdmsL/p+yD2QCidBbxHp1WpJRQXM2oC20UfLvGWcmvQQfs6td13HwyqyYjvuw
-         /sqHX9FCAran7Cvbjuu1KWzgPyBEDFm9PrBKMvehR6ip+HaluI51QnVjfqw6khCwpPL7
-         8Oq4kF6dR651iFtF4kdwVBMbeC1fF4iVluMM8oZdU1MVVy44IotRGf2kTve1kgu5IyTN
-         CTJw==
-X-Forwarded-Encrypted: i=1; AFNElJ8IH/Sm2cK76LFSnGm9HlA6H3aizL36XXd0fo+d3gwjcEgKYtHinuicAQN/Se0zr5RwjTxe/0QCnn0f@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOkHVe84teyg6IST7YzoC9/xWeZnuLQq8N9ybdyhNdpM1VnY/N
-	0sSjFZcVGrC4T81HI2L28SpsN9o1xuQGZInfomgkpbN0FGhybtr6/fnZoBMY90q+Xoiw1wS/Pxj
-	WboETrLR8UYSzJBHFz6mHnT6S4F6WJbHTXf3M8PzEsMF7IG52BzF/+Ga7wwGgd7o=
-X-Gm-Gg: Acq92OGwyUXvBD5KbLKpxsZ00wjn1EmoU48Pd2u9O3An9Q0Z6Q+kPilHQIXsr58A72+
-	Yk/GtcoFaaifBIap0TFKtg5taMjR8jZ5Il1BKzFrbnXJ/z6e2fI4D2HaGIghdCWQ6GuJF66UNFj
-	Ht/V3MHJ4sa88HUAIDnHOb5nfCReOhWSQAu/OtZgKtib9JADzOyplDYHfIKM8GGr2l0tm/R/Dyo
-	s6V6hMwMNfYwM0/mGCrphaEjr/EHvlZpbolMvpKJYEdCWHKrO7EpPqT9+gXqss1hO+Q5Olbbbct
-	jSf5VhB4ajyFQ1bttdfUfGHjelWQETGj0qmVnGxh5uY75pGHHPNmSpMGEoUCWO0IzUb8WNI2Kz4
-	ErFeMLEAohWzJas/23kqjse7w9XqsoTOKMlVfpbGTRdH4ZEHlH9cxlwc=
-X-Received: by 2002:a05:600c:c112:b0:48e:89f9:9408 with SMTP id 5b1f17b1804b1-48e8fe7b8f4mr22343165e9.20.1778574672091;
-        Tue, 12 May 2026 01:31:12 -0700 (PDT)
-X-Received: by 2002:a05:600c:c112:b0:48e:89f9:9408 with SMTP id 5b1f17b1804b1-48e8fe7b8f4mr22342675e9.20.1778574671605;
-        Tue, 12 May 2026 01:31:11 -0700 (PDT)
-Received: from [192.168.88.32] ([216.128.9.106])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548e6a68ebsm29414592f8f.1.2026.05.12.01.31.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2026 01:31:11 -0700 (PDT)
-Message-ID: <7aeb534e-cf2a-4a3e-83eb-d98a3a5787f6@redhat.com>
-Date: Tue, 12 May 2026 10:31:09 +0200
+        d=1e100.net; s=20251104; t=1778575345; x=1779180145;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=22yyk03jobS7/yf02FbmawWzo9rxTI9n393P7VL0W2c=;
+        b=a07UHZmMRIWnxLu4LaVk8dT0vduwiXV7uT2x7OqYBQ2sLfDMKjYeGKVoMs22boPAx7
+         dVVodEb5RgM/BgS/N+ud1Kg3ao8QIqy9B+4TU+frwrsACP71afmFjjNp7iyln8413vZX
+         Qz/HQ+Ei8W14mUF68FvwgbAsF0SsKXq0BAbux7HzeRqZWlCZeWWnny4X85j6Fgtb2Kti
+         rxgnagrwTjtArBRY8lkgpfj3WRzUpLgt1dslQzu/Kmu9cEWfFXoIRfG1PNFaUFmEzJIQ
+         Rs0ZFzI73HI7Gppw0tN4hTQDi2iuGVD3NgPaYcSxKXIwUhkAh99tzyCRleUmF5i/WFfF
+         +07A==
+X-Forwarded-Encrypted: i=1; AFNElJ+cH25XpMNAWPXqi6SWolurOf4bW/D5G6+7rj5gUH05qhxJqYEeNCLea2VdN2QqkWjsNoqqVm8Fgv3+@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlySAfQ+6EQZUaIR/5fyJ2rW/cZQcn2LTAN9suIbHfBIOBBnLY
+	2r9Qtk12VGEIT/Wvyg6z3MOrFaqZvVKAYJHQUnuHhwa4UbxVbTghbHvnBT+1juhEMx8=
+X-Gm-Gg: Acq92OGp+R94bpJ4r+qCDcGraJl2hfU3L1nfxX45Rfu7HEBruFTzLs486BOp2rUAvXB
+	d35ozoZfeQNuNhu90J/+vOjH872wPT409tRbXLVG3eBvQRsXp94VudbqbLy5+Tihsi7ABIIWbce
+	hPTlNs0h0ZU6IgGgJaiKZZcwD7RQ8d8gZvU/H3IH9YkJlX0Q9tocTRU+1XADaQOwBvmoW0R/9IP
+	TtRMfLi3Tt4urQXDIp/QcUBK2jvXHT7WQXIV4gs7nTHgjKX3SCzZxJ+v3DD9U1XRj2oY6gvo2xN
+	GNss3+/pxcx9OtUvMydPIk1mavKcbxey2epd2flH1cBqSmHS9HQ3s5Ir8V/zIru6JseJTMIsVho
+	DT6B1lCjVI1irNVZSY66HnVD4MTg7y5JY2lePIgdV1A17JkLURUsmYDprzjgk5i3rMOG5MAfI51
+	8N17YOGArPhoj6+yLhj5kcY1nEP7zjymvf9bzAfjDPLrK8EQ==
+X-Received: by 2002:a05:600c:6299:b0:489:1f97:6b1d with SMTP id 5b1f17b1804b1-48e706edd0dmr212584825e9.28.1778575344445;
+        Tue, 12 May 2026 01:42:24 -0700 (PDT)
+Received: from FV6GYCPJ69 ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45491cab9c2sm32800055f8f.31.2026.05.12.01.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2026 01:42:23 -0700 (PDT)
+Date: Tue, 12 May 2026 10:42:20 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Mark Bloch <mbloch@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	"Borislav Petkov (AMD)" <bp@alien8.de>, Randy Dunlap <rdunlap@infradead.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Christian Brauner <brauner@kernel.org>, 
+	Petr Mladek <pmladek@suse.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>, Marco Elver <elver@google.com>, 
+	Eric Biggers <ebiggers@kernel.org>, Li RongQing <lirongqing@baidu.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
+Message-ID: <agLlIAX7EuYNuSNk@FV6GYCPJ69>
+References: <aftaW-irGmkfA7FS@FV6GYCPJ69>
+ <3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
+ <afxvzOjqw-vxUAED@FV6GYCPJ69>
+ <b6a9b568-dd09-4414-be57-6b9cd282a43c@nvidia.com>
+ <af4lBIJdCuN5VKq_@FV6GYCPJ69>
+ <20260508175213.1952097f@kernel.org>
+ <af7Y4AYv-XDCbK_8@FV6GYCPJ69>
+ <20260510093732.6ba47e54@kernel.org>
+ <agGOeqeNwJGJ_-2A@FV6GYCPJ69>
+ <20260511164132.2df9c5a1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/2] net/smc: transition to RDMA core CQ pooling
-To: "D. Wythe" <alibuda@linux.alibaba.com>,
- Dust Li <dust.li@linux.alibaba.com>, Sidraya Jayagond
- <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>, Simon Horman
- <horms@kernel.org>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, oliver.yang@linux.alibaba.com, pasic@linux.ibm.com,
- Eric Dumazet <edumazet@google.com>, Leon Romanovsky <leonro@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
-References: <20260508063718.101622-1-alibuda@linux.alibaba.com>
- <20260508063718.101622-2-alibuda@linux.alibaba.com>
-From: Paolo Abeni <pabeni@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20260508063718.101622-2-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: F2FB051CBE3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260511164132.2df9c5a1@kernel.org>
+X-Rspamd-Queue-Id: 6AF1B51CDFC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-20464-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20465-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,sashiko.dev:url]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On 5/8/26 8:37 AM, D. Wythe wrote:
-> -void smc_wr_rx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
-> -{
-> -	struct smc_ib_device *dev = (struct smc_ib_device *)cq_context;
-> +/***************************** init, exit, misc ******************************/
->  
-> -	tasklet_schedule(&dev->recv_tasklet);
-> +static inline void smc_wr_reg_init_cqe(struct ib_cqe *cqe)
+Tue, May 12, 2026 at 01:41:32AM +0200, kuba@kernel.org wrote:
+>On Mon, 11 May 2026 10:42:56 +0200 Jiri Pirko wrote:
+>> Sun, May 10, 2026 at 06:37:32PM +0200, kuba@kernel.org wrote:
+>> >On Sat, 9 May 2026 09:01:23 +0200 Jiri Pirko wrote:  
+>> >> Sat, May 09, 2026 at 02:52:13AM +0200, kuba@kernel.org wrote:  
+>> >> As "a non-SR-IOV user", what extra representors you talk about? When you
+>> >> have pfs only, you don't have anything extra. Just 1 netdev per-pf, one
+>> >> devlink port per-pf. What's extra about it? When you don't have VFs/SFs.
+>> >> Everyhing is the same:  
+>> >
+>> >Some devices have separate uplink ports and PF representors.
+>> >As I said, what you're proposing isn't going to work for all drivers.  
+>> 
+>> Well, the point is, mlx5 appears to the the one needing this, not other
+>> drivers. What I'm trying to point at, mlx5 should not need this.
+>> It makes things compicated, adding a ugly knob for no good reason.
+>> Legacy/switchdev mode, in both, the non-sriov/eswitch user should not
+>> see different behaviour. The mode is an eswitch attribute.
+>> 
+>>    devlink dev eswitch set - sets devlink device eswitch attributes
+>>        mode { legacy | switchdev }
+>>               Set eswitch mode
+>> 
+>>               legacy - Legacy SRIOV
+>> 
+>>               switchdev - SRIOV switchdev offloads
+>> 
+>> 
+>> Briefly looking over other drivers, looks like ice, bnxt, octeon, sfc,
+>> there is no new entity created in case of switching to switchdev mode.
+>> The only driver that creates separate pf entities seems to be nfp,
+>> but the mode seems to be determined by the app being run (loaded
+>> firmware).
+>> 
+>> Am I missing something?
+>
+>Hm. Okay, I wasn't aware that mlx5 was the only driver that did
+>heavy-duty reinit for switching modes.
+>
+>> >> I look at it from the perspective that from some CX generation,
+>> >> switchdev mode should be default. So that is a device-based decision.
+>> >> I believe as such it can optionally be permanenty configured (nv config)
+>> >> on older device. Why not?  
+>> >
+>> >Feels a bit arbitrary and won't cover all cases. The question should be  
+>> 
+>> What cases it does not cover? I don't follow.
+>
+>Other FW and HW versions. People are still using EOL devices (CX4/CX5),
+>IIUC the nvmem config path would require FW upgrade.
 
-This and the next 3 helpers are used at init time, hopefully not
-critical/fast path; the `inline` annotation should really be avoided.
+If user wants to have a new feature (a bit odd to call this feature,
+but ok), he is obliged to upgrade FW. What's wrong about it?
 
-Note that the sashiko gemini instance has more concerns on patch 1,
-please have a look:
+But, even without nvconfig knob, what's stopping us from fixing the
+behaviour (/bugs) and just make "switchdev" mode default in net-next for
+all in mlx5 driver? Again, perhaps I'm missing something.
 
-https://sashiko.dev/#/patchset/20260508063718.101622-1-alibuda%40linux.alibaba.com
 
-/P
+
+>
+>> >why you are nacking a more reasonable solution. Keeping Linux config in
+>> >Linux params.  
+>> 
+>> What's reasonable about adding basically a module option (kernel cmdline
+>> is pretty much the same) for no reason?
+>
+>The initial patch as posted added this to a mlx5-specific module param.
+>If we need a module param IMO generic one is much better.
+>Doesn't matter if other drivers take no time to reinit into switchdev
+>mode, having to switch mlx5 with a module param and all the rest in
+>runtime is not the best user experience?
+
+I still believe we don't need either, not module param, not cmdline
+devlink option. We just need to fix bugs and have proper defaults. The
+rest is shortcut.
+
 
 
