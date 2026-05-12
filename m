@@ -1,382 +1,180 @@
-Return-Path: <linux-rdma+bounces-20484-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20485-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eEEQNm0QA2qX0AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20484-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:35:09 +0200
+	id wAHdOG0RA2rD0AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20485-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:39:25 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A35551F698
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:35:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 532C851F7D5
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:39:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8F23130364B7
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:35:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 737733076F35
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20C64D90C7;
-	Tue, 12 May 2026 11:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4DE44D98F4;
+	Tue, 12 May 2026 11:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KT/IiXg9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jRfyD+IW";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="iNOR1zEY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E644CA29C
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8BD4D98EA
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778585698; cv=none; b=BuTzJOro9DIfrXMofJsfrVxkVr2H+YCy10vfVEqxfJPt68RT3xbwvlUq1rpXjRN6LxDqV9CI20tdVswLkLqpQtZnaA0GO7ORGeZRfk+ilVgrvyB52Q8eWRlFq+f7Kfc0LPp+Q8aXt+i1qPmHCAKOwL1/t4lpfwoZAYFDwsW4rcM=
+	t=1778585795; cv=none; b=soQdt7IplV/2/Y38KUsk8EflDD6ZlCARP6qgruyPp6UforZvpn9mh03oTpGdh1MS+EuuNVYjAv3tg1hv+yvZchUgSSEGfMvO32mxe9q8SGpZQoIG3IeA/Es3iJv2UXV9K2MNCPJLuNidkbfp/yYvGKMWpXlRGLTFSvbXxmW1jT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778585698; c=relaxed/simple;
-	bh=1IpsV88xPvhWRZi6mj/I6mhERZcG0HdszvNzOvfLg+8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I6ljzhFHqZvObe44+54kPxACUDZePxo3ZIXhdPOONgMYYauRHuotEWTgZBUX7ZwGhFuTUMxqLPapuMIVKp/9W8U+VfrT+Ut0YKq4za0XGq9Lpm3sYadhilNo9WUK+xXcwwx25eNQqtqmoXKj07E/MNJqS+O3kQm8iMC30/RNCTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KT/IiXg9; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1778585795; c=relaxed/simple;
+	bh=tD09wB0HSocpKa+1WEGTLBF7rc8s7bhV3jRNSldHa2o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R6q6zGEko9qmtiPEXSS0/3/BK9S+/X+JWwH7OxKiSTVuUMZ7iD+YoiiM6yB8Qp+Zqt9AmluskQz3MQgUHxLx5XljS+63TktbJjzlifySSAyvKosWncTIEbIYmDsKsvhUnmXWRDgHUfQiN9Ay6FkJVjRW/2KmIdMGQxIvI3IMFRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jRfyD+IW; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=iNOR1zEY; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778585696;
+	s=mimecast20190719; t=1778585790;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2T1P80e2ayXiD4FLmzXcH0SJv4nUG0BB/kIni+nI35U=;
-	b=KT/IiXg9ASZ9jZTIqFffxEssnnSFaxFsjNHVpa6nk9JPeWVBlvrmwiue09/Z7iilEVvI0A
-	O1met9El9rvacTB5TjqalVsfT8a2ERjdT4AUobUSQM7/rGsFpWRwpFbJBsOwhXxrv5BycD
-	EPg0eRcojnCucCcDDq8T7q3UW8Z4AhE=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-684-r2p_ab2aMVy41g7ch2XGkg-1; Tue,
- 12 May 2026 07:34:52 -0400
-X-MC-Unique: r2p_ab2aMVy41g7ch2XGkg-1
-X-Mimecast-MFC-AGG-ID: r2p_ab2aMVy41g7ch2XGkg_1778585690
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 17CA4195608B;
-	Tue, 12 May 2026 11:34:50 +0000 (UTC)
-Received: from gerbillo.redhat.com (unknown [10.44.48.142])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A466C1800465;
-	Tue, 12 May 2026 11:34:44 +0000 (UTC)
-From: Paolo Abeni <pabeni@redhat.com>
-To: longli@microsoft.com
-Cc: kotaranov@microsoft.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	andrew+netdev@lunn.ch,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	haiyangz@microsoft.com,
-	kys@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	shradhagupta@linux.microsoft.com,
-	horms@kernel.org,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v8 1/6] net: mana: Create separate EQs for each vPort
-Date: Tue, 12 May 2026 13:34:38 +0200
-Message-ID: <20260512113438.168454-1-pabeni@redhat.com>
-In-Reply-To: <20260508221202.15725-2-longli@microsoft.com>
-References: <20260508221202.15725-2-longli@microsoft.com>
+	bh=ph9gHYsx1MwJsXlOBpqpwZIJ5iQf/Q82Dt7OeJw2IpI=;
+	b=jRfyD+IW0W/Ibtt5+agFRZQ/tTj/wB7bs/FcLSqNNBKHFSzTJ1Y5UoCWc9PIe3YU1pKCEY
+	E7y6GC+zkLNqInN9zMOvKHZTeRda9HJM9U4vY2cjU83Qux5jRj99oh3yOVwq/g0aIoYFAL
+	EOXmyL/BxcSZlwxoKtU9VzGMRSURMKg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-711--GQOEwDuNXCtw_7lH-T_Ow-1; Tue, 12 May 2026 07:36:29 -0400
+X-MC-Unique: -GQOEwDuNXCtw_7lH-T_Ow-1
+X-Mimecast-MFC-AGG-ID: -GQOEwDuNXCtw_7lH-T_Ow_1778585788
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4891f97aef0so29372185e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 04:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1778585788; x=1779190588; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ph9gHYsx1MwJsXlOBpqpwZIJ5iQf/Q82Dt7OeJw2IpI=;
+        b=iNOR1zEY30kw1wXLvG4XGfDkPXMPNxWcqIj+P2vM45ZHyG5dfLGX58Ap9I/npdHI4A
+         bQqFi/d76Ktln5lcalAc0QMHNjmzwdPeIp6H0KHuKWy+KBWVnR0EZWinCitMFsrQl2iF
+         JfMQFtEZ73OLQBgcgH/elwE5qqif0srNSYHpwk4Nm/JatBUT9wYG4K8jTKawPxdLnlqO
+         EkGz3GYwwopHLYgCESE3I/sp8eTPh7U9op0ZPHynkb9kJbR+dU/EfW29FtywKD+3OhSy
+         EGMWlsy24uJjmzddHQ1Q0QbkwIY9J1Sldu1cqemEb0W42GrN6X6YjVEJ2DGXV0/b9/W3
+         bexQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778585788; x=1779190588;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ph9gHYsx1MwJsXlOBpqpwZIJ5iQf/Q82Dt7OeJw2IpI=;
+        b=Vm7x0K396NdR/WkR07BhekynhD7fEUqa0GlOR9LarCuLSwRKxYtbjLP6gHzS51rKQZ
+         r+lHN8Cl4TPfrRALQ99Q4I6RY3VQmiYvDwv+b5kv7Okndb9teibbpKSEVCL50LTrSyAr
+         JKIwDt3m2MEf6LdCg1+scsswX/sh2ZyEMS0N33v+DvONya7uOKEAlTOnI02ICzZDJFe/
+         T3/aPPMSB45RBbIe7jh+kX8eLpAfWGlIgN9nfbalOKCr2oEyOvMxKy6k4P7kd+DUy8rA
+         EnmCj1Ifs9Dz3zcSvug73BJYWL3D0cH19Abq7T9DNc1Rf9ZaqHqmRSiaZ9tRA86Z8svw
+         LIxw==
+X-Forwarded-Encrypted: i=1; AFNElJ9GGMHgO+4XhvGvniNq80hukFZn5SrjGxpN9R1wRQceptia0OMOaJfxuYzR71qOOq/vnKqwbnWxFkAH@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUvqwanMIbbwu9Udqbm3c5Njjn1+B3XJYrvjrYAtCW5ZamELiL
+	LOrpRU8T7/kdkEWPmgU0J8zjcvVeIkZtyCtOaSPhk27Q4FiV6jkx8AglYqZmPYdFXmmZezoBFT/
+	sUHnuHrSO42uMYtNo9o2wFI81FcURuP0K/fkpneBwpEJDENLL42zk2Woy2LmAKr8=
+X-Gm-Gg: Acq92OHGziwFtoQUOxpU7rpraCXsxJT3bd8arhy2vivyqVfbrvF+04rzf3xp/eJpPfY
+	AF1+R1e+0Yq4VJnDC+/nYg5qerKHezaOCEzh+41ibIjvPE3/rJ1heXwkDpJk63+33jDcURVj5P8
+	Fpa3pkgeT20fg+gc8J9BPoSit/A/pPIYtwnhPcfFBqvVK/Zt+hi83ZBnV4BH65Z1pvYfT7w6nIn
+	UBKSAUVNWNcQBoZ1i70JRqZi7rCVqCYEkToCH9QgPDYs7b9H95E4fOIMOQ2mEK/0Y3K6NpWnrCG
+	NRjRmDm6J0K5FF70SHURUpe9QAzDYvNIUfdds/ruJ4MqZI5VuCdBJY65cvhq2E82VV937IK7hrA
+	sBfctIZ2J2moirE6GCZc93HWJmUfON5EL097lpyvbigvdVft4LqOzy+4=
+X-Received: by 2002:a05:600c:8486:b0:48a:6fd4:d3d3 with SMTP id 5b1f17b1804b1-48e706be062mr230118655e9.20.1778585788031;
+        Tue, 12 May 2026 04:36:28 -0700 (PDT)
+X-Received: by 2002:a05:600c:8486:b0:48a:6fd4:d3d3 with SMTP id 5b1f17b1804b1-48e706be062mr230118195e9.20.1778585787633;
+        Tue, 12 May 2026 04:36:27 -0700 (PDT)
+Received: from [192.168.88.32] ([216.128.9.106])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e90681760sm40268075e9.12.2026.05.12.04.36.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 May 2026 04:36:27 -0700 (PDT)
+Message-ID: <259b0641-fba1-4977-adc7-fd4002412d7e@redhat.com>
+Date: Tue, 12 May 2026 13:36:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Rspamd-Queue-Id: 2A35551F698
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v8 3/6] net: mana: Introduce GIC context with
+ refcounting for interrupt management
+To: Long Li <longli@microsoft.com>,
+ Konstantin Taranov <kotaranov@microsoft.com>,
+ Jakub Kicinski <kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ "K . Y . Srinivasan" <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, shradhagupta@linux.microsoft.com
+Cc: Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260508221202.15725-1-longli@microsoft.com>
+ <20260508221202.15725-4-longli@microsoft.com>
+From: Paolo Abeni <pabeni@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20260508221202.15725-4-longli@microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 532C851F7D5
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20484-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20485-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.989];
-	TO_DN_NONE(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:url]
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-From: AI Reviewer <ai@example.com>
-
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
-Full review at: https://netdev-ai.bots.linux.dev/sashiko/
----
-Subject: net: mana: Create separate EQs for each vPort
-
-This patch moves EQ ownership from struct mana_context to
-struct mana_port_context, creates per-vPort EQs in mana_alloc_queues()
-and mana_ib_cfg_vport(), and exports mana_create_eq()/mana_destroy_eq()
-for use by the MANA RDMA driver.
-
-A few questions below about the new lifetime and ordering rules for
-mpc->eqs.
-
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index ac5e75dd3494..8000ab6e8beb 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -20,8 +20,10 @@ void mana_ib_uncfg_vport(struct mana_ib_dev *dev, struct mana_ib_pd *pd,
->  	pd->vport_use_count--;
->  	WARN_ON(pd->vport_use_count < 0);
->  
-> -	if (!pd->vport_use_count)
-> +	if (!pd->vport_use_count) {
-> +		mana_destroy_eq(mpc);
->  		mana_uncfg_vport(mpc);
-> +	}
->  
->  	mutex_unlock(&pd->vport_mutex);
+On 5/9/26 12:11 AM, Long Li wrote:
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 4673ff62e6d9..78cb89c46ff3 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -1618,6 +1618,164 @@ static irqreturn_t mana_gd_intr(int irq, void *arg)
+>  	return IRQ_HANDLED;
 >  }
-
-[High]
-After this change, mpc->eqs lifetime is governed by pd->vport_use_count,
-and only raw QPs call mana_ib_cfg_vport()/mana_ib_uncfg_vport().  RSS
-QPs in mana_ib_create_qp_rss() read mpc->eqs and latch eq->eq->id into
-the HW CQ via cq_spec.attached_eq, but they do not bump
-pd->vport_use_count.
-
-So if a user creates a raw QP on a PD (use_count=1, mpc->eqs allocated),
-then creates an RSS QP on the same PD whose CQs now reference those EQ
-ids, and finally destroys the raw QP first, this path runs with
-use_count dropping to 0 and calls mana_destroy_eq(mpc) -> kfree(apc->eqs)
-and mana_gd_destroy_queue() for each EQ while the surviving RSS QP's HW
-CQs are still attached to those EQs.
-
-Is there an intended rule that enforces destruction ordering between raw
-and RSS QPs on the same PD, or should RSS QPs also participate in the
-refcount that guards mpc->eqs?
-
-> @@ -55,15 +57,22 @@ int mana_ib_cfg_vport(struct mana_ib_dev *dev, u32 port, struct mana_ib_pd *pd,
->  		return err;
->  	}
 >  
-> -	mutex_unlock(&pd->vport_mutex);
->  
->  	pd->tx_shortform_allowed = mpc->tx_shortform_allowed;
->  	pd->tx_vp_offset = mpc->tx_vp_offset;
-> +	err = mana_create_eq(mpc);
-> +	if (err) {
-> +		mana_uncfg_vport(mpc);
-> +		pd->vport_use_count--;
-> +	}
->  
-> -	ibdev_dbg(&dev->ib_dev, "vport handle %llx pdid %x doorbell_id %x\n",
-> -		  mpc->port_handle, pd->pdn, doorbell_id);
-> +	mutex_unlock(&pd->vport_mutex);
->  
-> -	return 0;
-> +	if (!err)
-> +		ibdev_dbg(&dev->ib_dev, "vport handle %llx pdid %x doorbell_id %x\n",
-> +			  mpc->port_handle, pd->pdn, doorbell_id);
-> +
-> +	return err;
->  }
+> +void mana_gd_put_gic(struct gdma_context *gc, bool use_msi_bitmap, int msi)
+> +{
+> +	struct pci_dev *dev = to_pci_dev(gc->dev);
+> +	struct msi_map irq_map;
+> +	struct gdma_irq_context *gic;
+> +	int irq;
 
-[Low]
-pd->tx_shortform_allowed and pd->tx_vp_offset are written before
-mana_create_eq() is attempted.  On the mana_create_eq() failure branch,
-mana_uncfg_vport(mpc) is called and pd->vport_use_count is decremented
-back to 0, but pd->tx_shortform_allowed/pd->tx_vp_offset are left set to
-the values derived from a vport whose HW-side configuration has been
-reverted.  Should these fields only be committed to pd after
-mana_create_eq() succeeds?
+Since a new revision is needed, please fix the reverse christmas tree
+above and elsewhere, thanks!
 
-> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-> index 0fbcf449c134..6167742df9d2 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -171,7 +171,15 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  		cq_spec.gdma_region = cq->queue.gdma_region;
->  		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
->  		cq_spec.modr_ctx_id = 0;
-> -		eq = &mpc->ac->eqs[cq->comp_vector];
-> +		/* EQs are created when a raw QP configures the vport.
-> +		 * A raw QP must be created before creating rwq_ind_tbl.
-> +		 */
-> +		if (!mpc->eqs) {
-> +			ret = -EINVAL;
-> +			i--;
-> +			goto fail;
-> +		}
-> +		eq = &mpc->eqs[cq->comp_vector % mpc->num_queues];
->  		cq_spec.attached_eq = eq->eq->id;
-
-[Critical]
-mana_ib_create_qp_rss() does not acquire pd->vport_mutex and does not
-touch pd->vport_use_count.  The NULL check above reads mpc->eqs without
-synchronization; immediately after it, the same mpc->eqs is dereferenced
-and eq->eq->id is latched into cq_spec.attached_eq.
-
-Can the following sequence occur?
-
-  thread A (creating RSS QP on pd)        thread B (destroying last raw QP on pd)
-  mana_ib_create_qp_rss()
-    if (!mpc->eqs)  /* non-NULL */
-    ...                                   mana_ib_uncfg_vport()
-                                            mutex_lock(&pd->vport_mutex);
-                                            if (!--pd->vport_use_count)
-                                              mana_destroy_eq(mpc);
-                                                kfree(apc->eqs);
-    eq = &mpc->eqs[... % mpc->num_queues];
-    cq_spec.attached_eq = eq->eq->id;     /* reads freed memory */
-
-Is there something else serializing these paths that this reviewer is
-missing?
-
-[Medium]
-The off-by-one on the error path looks inconsistent with the other fail
-sites in this function.  Every other goto fail in this loop leaves i
-alone and relies on:
-
-  while (i-- > 0) {
-      ibwq = ind_tbl->ind_tbl[i];
-      ...
-      mana_ib_remove_cq_cb(mdev, cq);
-      mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
-  }
-
-Here the new branch does ret = -EINVAL; i--; goto fail, which drops one
-extra iteration of cleanup.  If this check ever fires at i > 0 (for
-example if the lifetime issue above is fixed by making mpc->eqs
-observable as NULL mid-loop), the WQ object and installed CQ callback
-created in the previous iteration are not torn down.  Should this match
-the other fail sites and omit the i--?
-
-[Medium]
-Before this patch ac->eqs was populated unconditionally in mana_probe()
-and existed for the lifetime of the device, so mana_ib_create_qp_rss()
-and mana_ib_create_qp_raw() always had EQs available regardless of
-whether any netdev was up or any raw QP had been created.
-
-After this patch, mpc->eqs is populated only by mana_alloc_queues()
-(netdev open) or by mana_ib_cfg_vport() (which is only invoked from
-mana_ib_create_qp_raw()).  An RDMA user who creates an RSS QP on a PD
-while the netdev is down and without a prior raw QP on the same PD will
-now see -EINVAL from this new check, where the same call succeeded
-before.
-
-The commit message describes this work as preparatory and does not
-mention this user-visible ordering requirement.  Should this semantic
-change be called out in the commit log, and should the implicit "a raw
-QP must be created first" rule be documented somewhere user-facing?
-
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index b2faa7cf398f..131a997e1083 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -1615,78 +1615,83 @@ void mana_destroy_wq_obj(struct mana_port_context *apc, u32 wq_type,
->  }
->  EXPORT_SYMBOL_NS(mana_destroy_wq_obj, "NET_MANA");
->  
-> -static void mana_destroy_eq(struct mana_context *ac)
-> +void mana_destroy_eq(struct mana_port_context *apc)
->  {
-> +	struct mana_context *ac = apc->ac;
->  	struct gdma_context *gc = ac->gdma_dev->gdma_context;
->  	struct gdma_queue *eq;
->  	int i;
->  
-> -	if (!ac->eqs)
-> +	if (!apc->eqs)
->  		return;
->  
-> -	debugfs_remove_recursive(ac->mana_eqs_debugfs);
-> -	ac->mana_eqs_debugfs = NULL;
-> +	debugfs_remove_recursive(apc->mana_eqs_debugfs);
-> +	apc->mana_eqs_debugfs = NULL;
->  
-> -	for (i = 0; i < gc->max_num_queues; i++) {
-> -		eq = ac->eqs[i].eq;
-> +	for (i = 0; i < apc->num_queues; i++) {
-> +		eq = apc->eqs[i].eq;
->  		if (!eq)
->  			continue;
->  
->  		mana_gd_destroy_queue(gc, eq);
->  	}
-
-[High]
-The loop bound is now apc->num_queues rather than the immutable
-gc->max_num_queues.  mana_create_eq() allocates apc->eqs sized to
-apc->num_queues, and mana_destroy_eq() walks the same count.
-
-When RDMA has called mana_ib_cfg_vport() -> mana_create_eq() while the
-netdev is down, apc->num_queues can still be mutated underneath it.
-mana_detach(false) skips mana_dealloc_queues() when port_st_save is
-false, and then mana_set_channels() (ethtool -L) writes
-apc->num_queues = new_count while mpc->eqs is already held by the RDMA
-side.  mana_attach() then also skips mana_alloc_queues().
-
-When the RDMA user later destroys the last raw QP and this function
-runs, i iterates 0..new_count-1.  If new_count is larger than the count
-used at kzalloc_objs() time, apc->eqs is read out of bounds and
-potentially passed to mana_gd_destroy_queue().  If new_count is smaller,
-the tail EQs (real gdma_queue objects with MSI-X and DMA regions) are
-leaked.
-
-Before this patch both sides used gc->max_num_queues so no mismatch was
-possible.  Should apc->num_queues be snapshotted into apc at
-mana_create_eq() time (or should changing num_queues be forbidden while
-mpc->eqs is populated by the RDMA path)?
-
-> -static int mana_create_eq(struct mana_context *ac)
-> +int mana_create_eq(struct mana_port_context *apc)
->  {
-> -	struct gdma_dev *gd = ac->gdma_dev;
-> +	struct gdma_dev *gd = apc->ac->gdma_dev;
->  	struct gdma_context *gc = gd->gdma_context;
->  	struct gdma_queue_spec spec = {};
->  	int err;
->  	int i;
->  
-> -	ac->eqs = kzalloc_objs(struct mana_eq, gc->max_num_queues);
-> -	if (!ac->eqs)
-> +	WARN_ON(apc->eqs);
-> +	apc->eqs = kzalloc_objs(struct mana_eq, apc->num_queues);
-> +	if (!apc->eqs)
->  		return -ENOMEM;
-
-[Low]
-WARN_ON(apc->eqs) here is advisory only; execution continues into
-apc->eqs = kzalloc_objs(...), which unconditionally overwrites any
-non-NULL pointer.  If the invariant is ever violated by a future caller
-or error path, the prior EQ array and its gdma_queue objects are
-orphaned (kernel memory and firmware EQ state leaked) with only a WARN
-splat as the signal.
-
-Would "if (WARN_ON(apc->eqs)) return -EEXIST;" express the intent more
-safely?
--- 
-This is an AI-generated review.
+/P
 
 
