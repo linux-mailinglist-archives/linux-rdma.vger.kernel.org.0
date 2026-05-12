@@ -1,163 +1,193 @@
-Return-Path: <linux-rdma+bounces-20495-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20496-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6IxJMuA8A2oq2AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20495-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:44:48 +0200
+	id ML1XLp06A2qh1wEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20496-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:35:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBFF1522D13
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:44:47 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B817522A21
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 07E0D303C9A2
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 14:08:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AB4323058D75
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 14:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04823A7D9B;
-	Tue, 12 May 2026 14:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D55C3B1015;
+	Tue, 12 May 2026 14:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="IikTLBYI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fewOg2eq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B6A3A59B7
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 14:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2188356769
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 14:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778594931; cv=none; b=KPgGtQi4PuIovNU6cSW9HyppVPA5ZE3xl7yPNJgxlho3vORakxaADkDLobzkvs5fGJ8NoHA8BDrQAiSV4Ob2bfTStQY7qDnu2vJW3umffwKu9y+w6MOx38yp1kWvWnbXift2ptoo4VxxCC6t+tFA8yFCVhvu9DCsGJTvETsiOBo=
+	t=1778596094; cv=none; b=R8vmm7yLazTO41c/XmIjnzNocPMvxeT8WU0Gv4fP+hsC/CgBvpf4oeXlT/IgFJIr4zBR3NAtXN8rJoUmiOv+kIYuhCIS/YxN4TGUZkkmcsprAryvXwmSx8wklYNhvS/g8HLIvrncjF1OkyWY0Zb/AWptpAapnTouP4UBnV0wHGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778594931; c=relaxed/simple;
-	bh=nFixi4/T3PqxWneEutYsxvxrO5Iqbo1HRj3m1GdYjtY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hdz6bCNoANMkSOIIYpWyHG9QIc+NYUfq+uFzgxnufhC+ilsB3yLG6fww7SipBjRp+ppW/TGjb5rfO4evC4qkAxuKWTEC0/2Bg1d7SZT5GQqBGO1yhRuY0IsDXj6vh72dCGorpxlaLUJJcKJqcXWNf0wQ6qTVEa6bTilJjG9BoXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=IikTLBYI; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4891c00e7aeso48041295e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 07:08:49 -0700 (PDT)
+	s=arc-20240116; t=1778596094; c=relaxed/simple;
+	bh=zPhyqa5u2KBrafywdFL39mOjSHIacaNselwTAm6H6R8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EtuI8kPpbKeq54ECa99iy48ya+QeWQgR9R9NdYZjsxAm1QHl0HF3dVC3ODx0hNSpBPqf5XrPLAbpQlZScPFvhYqDGznHNpyl0gDpMdVAlxl0i7xsGpWsjViQ/RQs0sdm9HMsPa0UEimuSXZEVMRa8dWNFp3/1jgtIrH1+r3rSmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fewOg2eq; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2bd2051167eso1090385ad.1
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 07:28:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778594928; x=1779199728; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z1PF3Clfdo+Tco3WNqFtoYy/JF/hr0CU+1k6e4Cd5uA=;
-        b=IikTLBYIJ3UzEZUOkfJOHUQMMAHVBUu/XfSXIWbKfOCLT5lHtMQwJg7p/Tex4pI4UE
-         KMDhIK8ycKaBG0BQkuG79sXLxQesdi+ua5JX9VqMMVZ6Tn5QCeE1aXAOafsJBS9FCE+U
-         5iVppExWbOj+k1RSS15gRii5AGopODkYiA/gTBqCc2KRjn9CUQkOP+WVCOxB0WGShpwp
-         o09SjqKQARalGUAuMGfCZmk4bq8q0DUsUWF8vFaI3GbpE3/Vm1VxQLuiLeD7je3a/1q+
-         LEATviFYHFJbeCahfAn/RJoDcCJ8RfEhvhAcEebI43QVcHaL4hf1zdrmfOqBghWeL5iP
-         Xp7Q==
+        d=gmail.com; s=20251104; t=1778596093; x=1779200893; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fDt9lvWWIss5l7S+jZrMRRKou8og9/yBAhB/HlvVJl4=;
+        b=fewOg2eqdKc0Q10UjI2QPP+VTwVPWFgN0dudhH0bAGuxZtmIQh0Wx9pg82vTLPjU+/
+         eCixib1CyOuddD/4RU1oQT7/bE/k3mN5ofdmwcq9J2TB44Re51vMlX/IJQbDqrhEnhxu
+         Kvp04ouUJSUACpUl4LmQIhudgkDMq2QnRQJ3txNL7qPfvBip5MA/pb+hQN10KMdcKGla
+         eWrCXleyjtfhlV00YJ+f1otj4YXd/69PuWDBa/cF+oFxQ9QRoVJG42uXI5FuDkbeJxQ8
+         wrhSUhbsr5Cseh+BNlx75aIcaUOT/CHD4/c8/4lykXfSo/t5UHe2UkNv66r7F7+3ol4Q
+         a5iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778594928; x=1779199728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z1PF3Clfdo+Tco3WNqFtoYy/JF/hr0CU+1k6e4Cd5uA=;
-        b=THQRjmotjh8MS6zLgVLdzke/ltW7ZnKRD1F1XCgVX2pWqLf+qstsf/9CLOtYYVGa0b
-         hDK0W/JseeZ0VA8jTfWfvo1vD+55GFLnahMCQqgbRJB2oe7GMK9xSZyyi/eG56+fI3dN
-         SW6ItKcVArPeFZpE+1cTAh5LJXP3+A/3TGiXYQ7DzXwS0JbdCtaraUiyjXgErEmL2Ckt
-         bVzo0VG4R2uYTPEzA8G8NW2a6K+EkeKt1vNn+4LfMF1s0kPUCAxElbVMyjwlelreBdoR
-         ioBT51rNJTSdNt1neT4Ep2bgn1MO0AmOo7dVLQev1bFNTUa8OHjRHeQcZHBP++80f4dd
-         +IwA==
-X-Forwarded-Encrypted: i=1; AFNElJ892enIkMOLyVVXeL11pYfk4O7S+ZGLh4QxB4OWrsMumSNLPEzr3vcfWqCS3FCIIbakwRl2QR/HYDmK@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZwYxZmmJeMmqtOK59oUgOqa4PnIt/UAdIy1NDgmtadvwHkU9Z
-	fUFROrHZzF9MEZ1JlFY3irc2qEsa1zst7pd5j9aPQ04DKLVSxk6oa0mvzDxnmlDSlAs=
-X-Gm-Gg: Acq92OGUyog9TtcyIFYQvvtgYZmrnys1my9rj2pxRDRYFJyHgUE6PY0yC9NO4uE8vSg
-	XLKsbkq+QSjKF7JGXFM0NunPf6LLxOO0jMI0H2X9KeEB7ALf1Q3aKGBcHaezR9cpOChciz1bunb
-	x1PIN1p8d35VfjnPOHxcBsTjVv7sjzDmoHO8jvWzDrViNOEL/vJPGJPht+s+xM/tWsYek6dJnUS
-	au7NrryMw1QaTKj6nt38fshiNCcE2Cz/5XoQJIYEFMweD9mHLYpsNO2XO3GXvwfDBkMfErGkV8E
-	e8E/Zr5oFO12BO0SD5u3IwGqZhXuOxZG4KyjquF4RX4Jv9MPA6vD/KP4S4D8eRn+SRyVbEmXWd/
-	peOnNjGqL5HVqW16SI0tWcmx6XTyXrUKSQvbsmF39y8S2HJz8vJdcVrdEB7NHrM1tLk7rW4RwgN
-	aMeSSBFrqQC0Mu6/0MsKFwGMDXmCcSFULGZ1ysmwQmOMc3MA==
-X-Received: by 2002:a05:600c:34c8:b0:48e:8741:fd3d with SMTP id 5b1f17b1804b1-48e8fe71c0amr6921865e9.14.1778594928368;
-        Tue, 12 May 2026 07:08:48 -0700 (PDT)
-Received: from FV6GYCPJ69 ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e8e5fd648sm19804935e9.4.2026.05.12.07.08.46
+        d=1e100.net; s=20251104; t=1778596093; x=1779200893;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fDt9lvWWIss5l7S+jZrMRRKou8og9/yBAhB/HlvVJl4=;
+        b=CjlQqap1DF4uMKHMa4vjAzjf5vTDQB2HAX2fLkCp1w1sSC/mqapuO33CXuguFhKyfO
+         jhk1U/1hqbIhg9i4rOmR8fkJNdLgoUYM8EZw6J8GjFDwQwdbejIt8WwBg8Az4RjwN+4w
+         ZHv0u6X+7W9MZimjHk7xGr8OU5Ke542PxMIy7/kTzvoN13907b06OcJ69PwPQSfCvS2e
+         DcrMKOiYt1juGJPy21UXAhnNw5Svaf1vaGN/N8Keh3hF3nLEL3pEE1x05q3cfJ1YWvLX
+         HjQJQsM3M8zaiCVMt/yrrcWxnp0T8Ddnk2lvu/QgsN43Q43H2jfd2CBPpcHTZZhj3HEW
+         +FqQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9P8M+pUFdNWHolCrzQ2YHDvfTZTfScPIRv5n3tM7IssinCdOvXud3lKXP+heSqZomDwK1s2Trn+ARR@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIrx1E03IHm4IwUzrKWDD5nZH95UrNb2eteC2gdVTraEVFSJ8f
+	0AYW4Nta/W2tpwwmTM0H94ETw9xLpBsY9nVSugK+RG383fWtKbfzpsGa
+X-Gm-Gg: Acq92OHRHzTxJAflW3lS+wLb9xkKpjmH8Ew+Bc4cLcOII8nExi5Pty8OLtjse26Uzze
+	JojqmwqNqj5nl5qwwzUtndRIt+xW6jTndhge4zMgQ4Ewt36XSejE+Frkp4kz/VJQaVkfY8CZFkS
+	nDN15T2daN/my5YFem3+tvxuIVfAJ82kj/cB993UZnXmCQe6VU/WJVzwfBZLXfUEkq0GxWzt7GD
+	ejIyJJdKxa3eJU9dkIPz8PfjqG62mVgvh13mrEtpyODMFqXq4xkNs58sP+BACPdsiPd9VyUY5L6
+	SwPAkA8WkLgcmwEOdHAh6jQIhivKO6oCQugNQHkA8PodAnfuCnjpqMkRpXyorvopWpnhqJC/rv6
+	y1/rQYtI8D7LVK9x1btiq2SA0uZUB6LOcZ1MDzOW79r37IUrsCnwYP6C5iXeaxLpON0v9Rb7IvN
+	yybFncvEi80PBHkTCeupGISg2psoTSJwNq3njbydH++EoQaA==
+X-Received: by 2002:a17:903:b46:b0:2b2:eb9d:1648 with SMTP id d9443c01a7336-2ba79c25ad9mr318963505ad.37.1778596092734;
+        Tue, 12 May 2026 07:28:12 -0700 (PDT)
+Received: from csl-conti-dell7858.ntu.edu.sg ([155.69.195.57])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2baf1d405adsm140861765ad.28.2026.05.12.07.28.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2026 07:08:47 -0700 (PDT)
-Date: Tue, 12 May 2026 16:08:44 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	edwards@nvidia.com, kees@kernel.org, parav@nvidia.com,
-	mbloch@nvidia.com, yishaih@nvidia.com, lirongqing@baidu.com,
-	huangjunxian6@hisilicon.com, liuy22@mails.tsinghua.edu.cn,
-	jmoroni@google.com
-Subject: Re: [PATCH rdma-next v2 1/2] RDMA/uverbs: expose CoCo DMA bounce
- requirement to userspace
-Message-ID: <agM0bHFFDnSBL8RK@FV6GYCPJ69>
-References: <20260506111447.2697789-1-jiri@resnulli.us>
- <20260506111447.2697789-2-jiri@resnulli.us>
- <20260512130329.GU15586@unreal>
- <agMzG-ZX6TRoikrI@FV6GYCPJ69>
- <20260512140510.GA7702@ziepe.ca>
+        Tue, 12 May 2026 07:28:12 -0700 (PDT)
+From: Maoyi Xie <maoyixie.tju@gmail.com>
+X-Google-Original-From: Maoyi Xie <maoyi.xie@ntu.edu.sg>
+To: achender@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: horms@kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kernel@vger.kernel.org,
+	Maoyi Xie <maoyi.xie@ntu.edu.sg>
+Subject: [PATCH net] rds_tcp: close NULL deref window in rds_tcp_set_callbacks
+Date: Tue, 12 May 2026 22:28:07 +0800
+Message-Id: <20260512142807.1855619-1-maoyi.xie@ntu.edu.sg>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260512140510.GA7702@ziepe.ca>
-X-Rspamd-Queue-Id: CBFF1522D13
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5B817522A21
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20495-lists,linux-rdma=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,ziepe.ca:email]
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20496-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[maoyixietju@gmail.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,ntu.edu.sg:email,ntu.edu.sg:mid]
 X-Rspamd-Action: no action
 
-Tue, May 12, 2026 at 04:05:10PM CEST, jgg@ziepe.ca wrote:
->On Tue, May 12, 2026 at 04:03:07PM +0200, Jiri Pirko wrote:
->> >> @@ -1419,6 +1421,10 @@ int ib_register_device(struct ib_device *device, const char *name,
->> >>  	 */
->> >>  	WARN_ON(dma_device && !dma_device->dma_parms);
->> >>  	device->dma_device = dma_device;
->> >> +	if (dma_device &&
->> >> +	    cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
->> >> +	    is_swiotlb_force_bounce(dma_device))
->> >
->> >It is the wrong place. When I worked on my DMA series, I tried something
->> >similar (a call into SWIOTLB) to notify users that RDMA would not work.
->> >
->> >The general feedback was that this is a layering violation, and that any
->> >knowledge of SWIOTLB (and its API) should not leak out of the DMA API.
->> >
->> >You shouldn't call to is_swiotlb_force_bounce() here.
->> 
->> What do you suggest as alternative? We need to somehow tell the user
->> what is the situation.
->
->For now CC_ATTR_GUEST_MEM_ENCRYPT is likely sufficient.
->
->Later we should be able to detect if the device is in T=1 mode
->directly.
+rds_tcp_set_callbacks() links a new rds_tcp_connection onto
+rds_tcp_tc_list under rds_tcp_tc_list_lock. It releases the
+lock, then assigns tc->t_sock = sock outside the lock.
 
-Okay, so we assume for now that every device is T=0 (which I believe is
-the reality). Once T=1 device appears, it changes this "if statement".
-Do I understand that correctly?
+rds_tcp_tc_info() and rds6_tcp_tc_info() walk rds_tcp_tc_list
+under the same lock. Both dereference tc->t_sock->sk without
+a NULL check.
+
+A reader can acquire rds_tcp_tc_list_lock between the writer's
+spin_unlock and the t_sock store. It then sees a list entry
+whose t_sock is NULL. The dereference of tc->t_sock->sk is a
+NULL access.
+
+Move tc->t_sock = sock inside rds_tcp_tc_list_lock, before
+list_add_tail. A reader holding the lock then observes the
+linkage and the t_sock store together.
+
+The restore path is safe. rds_tcp_restore_callbacks() does
+list_del_init inside the lock. The matching tc->t_sock = NULL
+after unlink is harmless to readers holding the lock.
+
+Fixes: 70041088e3b9 ("RDS: Add TCP transport to RDS")
+Suggested-by: Simon Horman <horms@kernel.org>
+Signed-off-by: Maoyi Xie <maoyi.xie@ntu.edu.sg>
+---
+ net/rds/tcp.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+index 654e23d13..5830b31a1 100644
+--- a/net/rds/tcp.c
++++ b/net/rds/tcp.c
+@@ -198,8 +198,13 @@ void rds_tcp_set_callbacks(struct socket *sock, struct rds_conn_path *cp)
+ 	rdsdebug("setting sock %p callbacks to tc %p\n", sock, tc);
+ 	write_lock_bh(&sock->sk->sk_callback_lock);
+ 
+-	/* done under the callback_lock to serialize with write_space */
++	/* done under the callback_lock to serialize with write_space.
++	 * Set t_sock inside rds_tcp_tc_list_lock so readers walking
++	 * rds_tcp_tc_list under the same lock cannot observe an
++	 * entry whose t_sock is NULL.
++	 */
+ 	spin_lock(&rds_tcp_tc_list_lock);
++	tc->t_sock = sock;
+ 	list_add_tail(&tc->t_list_item, &rds_tcp_tc_list);
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	rds6_tcp_tc_count++;
+@@ -211,8 +216,6 @@ void rds_tcp_set_callbacks(struct socket *sock, struct rds_conn_path *cp)
+ 	/* accepted sockets need our listen data ready undone */
+ 	if (sock->sk->sk_data_ready == rds_tcp_listen_data_ready)
+ 		sock->sk->sk_data_ready = sock->sk->sk_user_data;
+-
+-	tc->t_sock = sock;
+ 	if (!tc->t_rtn)
+ 		tc->t_rtn = net_generic(sock_net(sock->sk), rds_tcp_netid);
+ 	tc->t_cpath = cp;
+
+base-commit: b266bacba796ff5c4dcd2ae2fc08aacf7ab39153
+-- 
+2.34.1
+
 
