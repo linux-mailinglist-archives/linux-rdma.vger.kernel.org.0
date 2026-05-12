@@ -1,64 +1,64 @@
-Return-Path: <linux-rdma+bounces-20472-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20473-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AIzgOKjyAmrpywEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20472-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:28:08 +0200
+	id SOUUMZ7zAmrpywEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20473-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:32:14 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3691F51DAB3
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:28:07 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EFB351DC8F
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:32:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 96921302CBC0
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 09:27:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 192D530BCD52
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 09:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EA6496912;
-	Tue, 12 May 2026 09:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5B24963C9;
+	Tue, 12 May 2026 09:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EyNYaZPT"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hSi47p0x"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010012.outbound.protection.outlook.com [52.101.61.12])
+Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11013010.outbound.protection.outlook.com [40.93.201.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CEE495536;
-	Tue, 12 May 2026 09:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285B23A6EEF;
+	Tue, 12 May 2026 09:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.10
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778578020; cv=fail; b=d+uXK6jY1EzWZlF+Ddkhm/GdP2IiJMiD18a4mToJBxyve9pnwdUYgIt33bbwBQlHddd16qmHMyShpgdTZ28wkwzzRu0o+Op/Cyv30nJpiKM/pkymMJXr1wqPZbCfB1Zxue+qKdrtlPVNeDiyTKboDzI4iupREC2W1RHNfSGTPe8=
+	t=1778578027; cv=fail; b=FC4jzWNRVdC+pqjbQlGhv7fDDoTqb2sbeuknbUtRzKViO5XtOz6PaeRyZQvvg5B6t/3212TGwlLtThI+1NLXaUVIktN34kV1sERirJY7sLyekailn2TNI2Q7g6AIS7e/dAGw7s6YljXVWZ2r7qiNaJdqJs/hvl1e0g2+PUNc18U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778578020; c=relaxed/simple;
-	bh=fHHDICTr3QauDlGSuKegg3JeYTsmwhSBNipYjAUziMw=;
+	s=arc-20240116; t=1778578027; c=relaxed/simple;
+	bh=eMYNowOFUhuRcDDp73Hi3cFIYgTd17uUvVPQt5dokHU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tm/kVg8icuGrqMNX+ge9ioyPyKzb986lgXTI2SlTVUNCBuOMNx6RVAUe+juR3xE/sZYqfRUoGhUe8fY5Z04JWgq9rnIygN5kdYTCF4ZHXWNR2otIAru7nGeOIWUtI3XRog9CF3MeuNUKbXe2gKQmLyk59chKSglc5tMZ2FgyeEQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EyNYaZPT; arc=fail smtp.client-ip=52.101.61.12
+	 MIME-Version:Content-Type; b=uGuxGsOm9QpRAdINncqwIS4sSX9UhZaczsYLZtH29HdCCNNGmryVt0fPjTLl8InIFPAbsAnS9Dh5UomV799epSmEEpnVbrFotFnuldoRU/N0RzNIFpWKp8Qt3dJmqANGZoMIkVEmp9lG8ErQf/AcnE8agjzUZtzBTNj3bDBwkwM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hSi47p0x; arc=fail smtp.client-ip=40.93.201.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ctObjcaqr3QYyL9SIkksIKYYr0gU2p1PG/uu2ljwFAn42bziSFMI41QEoE3JwCYBeum/RilNxysCwBdJN4+SLYy9rZkaV5oW3fSOSz6wfsJML9lHHiUZYmtWgHJMGtoYGxRZIYYnebcwB56iR1ZFCQFz4DcHt5Bha+2B/ZIHTTiaa1NyZKikPegxP+QuWhWd+dbtTpHa/SE1+gmTPQyoKL6pdsgntmFkcggvv6RTXxmuP88ee3nlSSCvCDe5ETmfxx5fEbcz0vP5GuctiSZTQyAt1yIMi+GA+joaLAA/GPpATwHZuK9ElSnSDt9xQChTgq3EDTwRLVOeziMdITUwQw==
+ b=Wj8Qe5ipmibVmCRRnAE3tegajlKyo4yT3Y0mBa7AqQz/0hyx1NIpUI6XIDAi30M1nkoD1jXO++4+4RER/P4np8oE6QK/sR3eUI6u0nNQHfP10vYDPx4FPNINLwFCnzfdgrejymEHTjYXO3cSnUR5rn6pMlTVzQRoWlWjQ3WprUV+kHsynR8/2cOEsUzan+f7Nz1miGy53BI5lmOD7UCt+VKJO0sZRwo2QZNeo2CbKMkMEeVXNRwaM2ZNEQ16Z8s1D9elgGJdKgXe6WK/KLkDBKQai3bnheAgS0bL0L4Z4gC+ZLLrAB4x6akKbhJmNyW4E9wgvl8Q9BarUzydcFO7yg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1euzOzKj8BBLSvKPplBHbMvjen22ygwoXLFjJGRLhWM=;
- b=HPUV3FdmdS863xA0F9M5/4JJbDcEzGd58UDMLUP6HXP56eCuQ4MZZ+YTWNaukIXDm+UajBqZpnE9IQuJt+5Q9Zo7lqaqsZp0egYTxuAoAsi0Q3+17oHHZL0B2OyVgjO8YbmwqM1TzOhGFob0c+kTU5s4i8lUlduebotPv9ixhmNeFNEkxsB3XrFjjxroY4Lm6UYtZlHCplsFXyaxpMI1lopXQwwDtz0+iblwlmoiRj9FoVwcrwVRi6NJPnFSPdhe8ZOReI5a8SXJZkxo/SvtElaYHOjSEx2R5+9E2ntVH2oWGDGfs3LeoPdvecoJM17B4bCZsrkZOSwXCk4AJxO/Jg==
+ bh=yMe7Azw7JSxyTgI/jHxFnhhmL0JukzyPj2qiasOI90w=;
+ b=a2C6fpB3bDklX9TQZOkphIVEA7t49oJIgB386md62tJXCew+VSQ26OfsjmYKnB62tl960OglPTGgbJ9AwPXy+eThH5OWni7B6ex6bfii8YwlVsKKwYuc1FRpqqD3O6bBOawCRkMRrMapaV9XupEtILhqt8AviR/PlFKlOw2dIW1HnEl+GwHxAhOSfdrjJ98t2Aw1X4hm6l2r2EAGkeKvuh/X+c7uLpNMuf5vm4psC9/XajvmnMettDsk1/H8ygoXmq42TmmqgRk7RE0IU4WZvPymRhNPwgqgeQgwod+zuW4qZhSn7gxcjz16IQVx2PkKha0zZUZcMYGCCnJTWjfkSA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1euzOzKj8BBLSvKPplBHbMvjen22ygwoXLFjJGRLhWM=;
- b=EyNYaZPTYkolIO8FRjbFljkIpwvRLY+XSnb9HVOpHbK0LQr0Q1fPrZE6p5ncYH/1KeFu4nIvP6C1pjZg8StHZSlMrK9OxntTBrOQHg5mCJDK6ZLnm78RiElz7+qDtes3576JyfZ7Nn8rxyebXlwP6sLguSTNXT4TkO+FoNmxBto=
-Received: from BL0PR02CA0093.namprd02.prod.outlook.com (2603:10b6:208:51::34)
- by LV8PR12MB9133.namprd12.prod.outlook.com (2603:10b6:408:188::15) with
+ bh=yMe7Azw7JSxyTgI/jHxFnhhmL0JukzyPj2qiasOI90w=;
+ b=hSi47p0xjFK+u0/L2u5s9+SJVa/+MQTKQa/7mZTe6yTix/ESL6GGEBCJMeM2ic0Godt0C9NG33dCg+zrRheqWQ1HTFldZB53td5S4K3OAjzLHaeShJjGtE0nfBkYl58iP3y/Rq+R8IXDhj5O6D7/3D4NzvnqJeZXGhL+Z3HhdOI=
+Received: from BL0PR02CA0073.namprd02.prod.outlook.com (2603:10b6:208:51::14)
+ by DM4PR12MB6301.namprd12.prod.outlook.com (2603:10b6:8:a5::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.23; Tue, 12 May
- 2026 09:26:51 +0000
-Received: from BL02EPF00021F6F.namprd02.prod.outlook.com
- (2603:10b6:208:51:cafe::54) by BL0PR02CA0093.outlook.office365.com
- (2603:10b6:208:51::34) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9913.11 via Frontend Transport; Tue,
- 12 May 2026 09:26:51 +0000
+ 2026 09:26:55 +0000
+Received: from BL02EPF00021F6D.namprd02.prod.outlook.com
+ (2603:10b6:208:51:cafe::3b) by BL0PR02CA0073.outlook.office365.com
+ (2603:10b6:208:51::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9913.12 via Frontend Transport; Tue,
+ 12 May 2026 09:26:55 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -66,20 +66,20 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
 Received: from satlexmb08.amd.com (165.204.84.17) by
- BL02EPF00021F6F.mail.protection.outlook.com (10.167.249.11) with Microsoft
+ BL02EPF00021F6D.mail.protection.outlook.com (10.167.249.9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.13 via Frontend Transport; Tue, 12 May 2026 09:26:51 +0000
+ 15.21.25.13 via Frontend Transport; Tue, 12 May 2026 09:26:55 +0000
 Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb08.amd.com
  (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Tue, 12 May
- 2026 04:26:50 -0500
+ 2026 04:26:54 -0500
 Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb10.amd.com
  (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Tue, 12 May
- 2026 04:26:50 -0500
+ 2026 04:26:54 -0500
 Received: from xhdipdslab46.xilinx.com (10.180.168.240) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
- Transport; Tue, 12 May 2026 04:26:47 -0500
+ Transport; Tue, 12 May 2026 04:26:51 -0500
 From: Abhijit Gangurde <abhijit.gangurde@amd.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>, <brett.creeley@amd.com>,
 	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
@@ -87,9 +87,9 @@ To: <jgg@ziepe.ca>, <leon@kernel.org>, <brett.creeley@amd.com>,
 CC: <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
 	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Abhijit Gangurde <abhijit.gangurde@amd.com>
-Subject: [for-next v2 3/4] RDMA/ionic: map PHC state into user space
-Date: Tue, 12 May 2026 14:56:22 +0530
-Message-ID: <20260512092623.1157199-4-abhijit.gangurde@amd.com>
+Subject: [for-next v2 4/4] RDMA/ionic: add completion timestamp to CQE format
+Date: Tue, 12 May 2026 14:56:23 +0530
+Message-ID: <20260512092623.1157199-5-abhijit.gangurde@amd.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260512092623.1157199-1-abhijit.gangurde@amd.com>
 References: <20260512092623.1157199-1-abhijit.gangurde@amd.com>
@@ -103,31 +103,31 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF00021F6F:EE_|LV8PR12MB9133:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc951c5a-ea86-47cc-dfac-08deb008995e
+X-MS-TrafficTypeDiagnostic: BL02EPF00021F6D:EE_|DM4PR12MB6301:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f16eb7e-0063-46fb-66e7-08deb0089bc1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|36860700016|1800799024|82310400026|18002099003|22082099003|56012099003|11063799003;
+	BCL:0;ARA:13230040|1800799024|7416014|36860700016|82310400026|376014|22082099003|18002099003|11063799003|56012099003;
 X-Microsoft-Antispam-Message-Info:
-	zPBczXsnxU0gh+Q6H2T48UTW04X89ru82Su9F73RhoVWqZCZPwnC28lo16+WHgIvK6Uz47bkM61xgAq12A5qKrSSQ0vQ1WyvjRQf99KkztPtFRr/FFx2rp7U/TwLvx11umUXfWN/us1eMqrZuqoFZGoqF2GQTJ09DiPVv7TNp6c3MFQZtn+LA4YMd4jS78Ao6/dGyWDEaojgV+d92Tycd0xM6/jbjPIIeGIa3NYMjsB9j3YXq7eN+FkCH31+vLqPZXkuc8kf615cugc63ppTdVokee8cS+OM+yugQ+VsqpBdcr4jQUn9FQMTuspG1xP9fCWV5jroJfmIEErt/2FKbwSYpP/4BygK52KdKRpVNOWskblCsBJHn8UZvJWwJ7LhVKSflkB6RHicxW9lTouQ/IcvV/nfZk2K2erT5heCMJAtDAfDvzOrWbrD0XsfnpOkTgbNfuh69oWRL08qVG8dIXg8IaAAtlaagegFt2SwJBnS8oXAhYHNkqN/9XKpzJfw3h/rpvPj3HUHKEruJfhl8GEhkUp5QR7wyESlxgmco15wiZ4JpQeWsTLRDvTUE5T50tVbXoYaDQitIe04bBUNtNUsaH0hIEeO3ucJdV2YkJkFdenweXx+dTcb+UF/LbRbiw/gJA+/9E8uACWR3hcX2xXJ4UECeYnYm+J4w5OJ2zVxg6D2HBtgJja0cXTnif6FzFWS2OPSTLGHEUVTushCrbU5sCxFkQDxRMoWr9MPP5E=
+	/AK7AMLG6NzDhX3rW5wOyoFAaMmESYYj5/4sOMVCafA4veY5U0Mv7aEPxAA21Ur2dyaILl8FptLYaScJA5V6ywtvhYcr56hIm634tv+iCIx9uZAQwCEjxdTNznI40ppfNhg6B2DifDtARVc9gEd6HLue8wLcEj/+NcVs0XTeGyUEQ4BzH8uM+RYvibtaKh1BmCL1gyiwhfZnTs77NlJQUk1xO3AjwAtsFQZmRYQDvHb+uwrBEsE+0/T4qxqWQFhRVS1Ep6Bn7euDOuOSOhk0iF2rkavfldXPa8L77PI6XTLO2cj0TaGrxJaQ+tMxgjpgU7ULlC6/lbaSq1ESCp4Eg0L6JKeRMBbbmHQyTAv9jwLFDbcEFLmSzdMRhH+C7WAcV/LHnYr5+Oo55iqqDncD19Q7ckcUldvaz3OYsTasgPwxPY6yu1iJH0ubc1PPoFMxoBdJ7TR27lIZhmsbotvwHx2Lxd2CtrKBt3TKRIe7xdnskJ350S119vaCmQlDnQHL4AiYPvAwBcfRUshVd3jVOg/3YXrB+JPIu0VPG/8kxe1JJcVDhysD+4hiVwnE5lyK6Xb2K08mYLk+vCWzubOJQJSHcgynTiJbY2oOgVTJk/Cs/1RFMxNsAFS0qDBj5iKzCdYrGidruQ6E/P2h48o8f08vTkM0hDNIP0d7LYyS6Sri9ZUaRxR2TfSrC83/cMLmQJvHQwLhIS0R6RsEJq91oWItderuMKRjtBmcsZ5xuf4=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700016)(1800799024)(82310400026)(18002099003)(22082099003)(56012099003)(11063799003);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(36860700016)(82310400026)(376014)(22082099003)(18002099003)(11063799003)(56012099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	HxP9dKsl2je8eBv8u6eweYxidIamk/joyqmwxg0c4YyZ5e+cK5MQJkmTF8t7ovKZIEi9dAJI1dYlL8R1/h4UOxse79P/j5qtNwJtHdStfZtyY42sdd5VtbgntsaGdXF7smTFBt433Z9kx2tL8OHICuSSHU4YcciIrcVDJdpu/bg/DjkTnQnAOMUuW49kvxVecBUbVjYVmCcSGjJGnmB3LB6BwDou4VNCyBFcWtyGlinfDCqMPVbP/dWfranB2Btu5WSLMDyA7aHpNzg2du2t/GKHYivZNizqwnhQYnxI/V2kNppnc539K+9CzJAM6/E27VjogUQcZBWuhBfHu1Hnsgdmt5aXc/O2v59yLCzkzPm4bbmChJjmvpsHBQSl6UgQqLrsKXW9hbLVpiy3GDg6E/8V5zJP1lztQ+h11tTh4z8dqbK+lxpyc3wOsYPIbIIW
+	TbxN2K0I83j8ZPiBaEdyFre9xtmNYFwSaUustIhLF2QPW/0gR3qZA5j89o+SvfYQqjzsJdWECqmxSaPnNGr4PkyWYcbA5TMqDBxjlq3+eDVZGdjN47Nuy1z2ds+8aIiMQLdC619ifqLVfR9dqswBuYYJ6dei7993mtBJkmjuo2044oh3TxtvxMMq3nWR5WbVtUWHfM3g4G44A0yAO8VQte4iOPIsYK2c0qOPsmx6Uf8dqKvpE260+WDAD1TLs28AzayJiy08bTXDQzLDzXScAg207Otqp80+xq2sHFEFt8XSNHGOPigaQMICBOtsIOkhd04y4ugT0IrkHopEj5Pr5J0wQc/XyLgGqZ9QUv1hmlPD2mjZ7Y/ZLGe9KQXm/HkBYwiCJXZvGqv+PkVhWAOPqXyLj7wR9SW7wbNUy+qHZ4R0QkwMTLt3Ee7zMSLqs0Oq
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2026 09:26:51.2217
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2026 09:26:55.2128
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc951c5a-ea86-47cc-dfac-08deb008995e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f16eb7e-0063-46fb-66e7-08deb0089bc1
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF00021F6F.namprd02.prod.outlook.com
+	BL02EPF00021F6D.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9133
-X-Rspamd-Queue-Id: 3691F51DAB3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6301
+X-Rspamd-Queue-Id: 3EFB351DC8F
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -136,7 +136,7 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -144,175 +144,201 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20472-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20473-lists,linux-rdma=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[abhijit.gangurde@amd.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[amd.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,amd.com:email,amd.com:mid,amd.com:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,amd.com:mid,amd.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
-Enable user space applications to access the PHC state page when
-firmware RDMA completion timestamp is supported.
-
-This mapping allows user space to convert RDMA completion timestamps
-to system wall time without kernel transitions, minimizing latency
-overhead. Applications can directly read the PHC state through mmap,
-enabling efficient timestamp correlation for precision timing
-applications.
+Update the CQE structure to include hardware timestamp.
+When firmware supports RDMA completion timestamps,
+the hardware populates the timestamp field.
 
 Co-developed-by: Allen Hubbe <allen.hubbe@amd.com>
 Signed-off-by: Allen Hubbe <allen.hubbe@amd.com>
 Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
 ---
- .../infiniband/hw/ionic/ionic_controlpath.c   | 36 ++++++++++++++++++-
- drivers/infiniband/hw/ionic/ionic_ibdev.h     |  2 ++
- drivers/infiniband/hw/ionic/ionic_lif_cfg.c   |  2 ++
- drivers/infiniband/hw/ionic/ionic_lif_cfg.h   |  1 +
- include/uapi/rdma/ionic-abi.h                 |  1 +
- 5 files changed, 41 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/ionic/ionic_datapath.c | 43 ++++++++++----------
+ drivers/infiniband/hw/ionic/ionic_fw.h       | 12 ++++--
+ 2 files changed, 31 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/infiniband/hw/ionic/ionic_controlpath.c b/drivers/infiniband/hw/ionic/ionic_controlpath.c
-index 7051a81cca94..aceeea605acd 100644
---- a/drivers/infiniband/hw/ionic/ionic_controlpath.c
-+++ b/drivers/infiniband/hw/ionic/ionic_controlpath.c
-@@ -391,6 +391,16 @@ int ionic_alloc_ucontext(struct ib_ucontext *ibctx, struct ib_udata *udata)
- 		goto err_mmap_dbell;
+diff --git a/drivers/infiniband/hw/ionic/ionic_datapath.c b/drivers/infiniband/hw/ionic/ionic_datapath.c
+index aa2944887f23..3e2300f7ea10 100644
+--- a/drivers/infiniband/hw/ionic/ionic_datapath.c
++++ b/drivers/infiniband/hw/ionic/ionic_datapath.c
+@@ -32,6 +32,7 @@ static int ionic_flush_recv(struct ionic_qp *qp, struct ib_wc *wc)
+ {
+ 	struct ionic_rq_meta *meta;
+ 	struct ionic_v1_wqe *wqe;
++	u64 wqe_idx;
+ 
+ 	if (!qp->rq_flush)
+ 		return 0;
+@@ -40,21 +41,22 @@ static int ionic_flush_recv(struct ionic_qp *qp, struct ib_wc *wc)
+ 		return 0;
+ 
+ 	wqe = ionic_queue_at_cons(&qp->rq);
++	wqe_idx = le64_to_cpu(wqe->base.wqe_idx);
+ 
+-	/* wqe_id must be a valid queue index */
+-	if (unlikely(wqe->base.wqe_id >> qp->rq.depth_log2)) {
++	/* wqe_idx must be a valid queue index */
++	if (unlikely(wqe_idx >> qp->rq.depth_log2)) {
+ 		ibdev_warn(qp->ibqp.device,
+ 			   "flush qp %u recv index %llu invalid\n",
+-			   qp->qpid, (unsigned long long)wqe->base.wqe_id);
++			   qp->qpid, (unsigned long long)wqe_idx);
+ 		return -EIO;
  	}
  
-+	if (dev->lif_cfg.phc_state) {
-+		ctx->mmap_phc = ionic_mmap_entry_insert(ctx, PAGE_SIZE, 0,
-+							IONIC_MMAP_PHC,
-+							&resp.phc_offset);
-+		if (!ctx->mmap_phc) {
-+			rc = -ENOMEM;
-+			goto err_mmap_phc;
-+		}
-+	}
-+
- 	resp.page_shift = PAGE_SHIFT;
+-	/* wqe_id must indicate a request that is outstanding */
+-	meta = &qp->rq_meta[wqe->base.wqe_id];
++	/* wqe_idx must indicate a request that is outstanding */
++	meta = &qp->rq_meta[wqe_idx];
+ 	if (unlikely(meta->next != IONIC_META_POSTED)) {
+ 		ibdev_warn(qp->ibqp.device,
+ 			   "flush qp %u recv index %llu not posted\n",
+-			   qp->qpid, (unsigned long long)wqe->base.wqe_id);
++			   qp->qpid, (unsigned long long)wqe_idx);
+ 		return -EIO;
+ 	}
  
- 	resp.dbell_offset = db_phys & ~PAGE_MASK;
-@@ -414,13 +424,15 @@ int ionic_alloc_ucontext(struct ib_ucontext *ibctx, struct ib_udata *udata)
- 	if (dev->lif_cfg.rq_expdb)
- 		resp.expdb_qtypes |= IONIC_EXPDB_RQ;
- 
--	rc = ib_copy_to_udata(udata, &resp, sizeof(resp));
-+	rc = ib_respond_udata(udata, resp);
- 	if (rc)
- 		goto err_resp;
- 
- 	return 0;
- 
- err_resp:
-+	rdma_user_mmap_entry_remove(ctx->mmap_phc);
-+err_mmap_phc:
- 	rdma_user_mmap_entry_remove(ctx->mmap_dbell);
- err_mmap_dbell:
- 	ionic_put_dbid(dev, ctx->dbid);
-@@ -433,10 +445,26 @@ void ionic_dealloc_ucontext(struct ib_ucontext *ibctx)
- 	struct ionic_ibdev *dev = to_ionic_ibdev(ibctx->device);
- 	struct ionic_ctx *ctx = to_ionic_ctx(ibctx);
- 
-+	rdma_user_mmap_entry_remove(ctx->mmap_phc);
- 	rdma_user_mmap_entry_remove(ctx->mmap_dbell);
- 	ionic_put_dbid(dev, ctx->dbid);
- }
- 
-+static int ionic_mmap_phc_stage(struct ionic_ibdev *dev,
-+				struct vm_area_struct *vma)
-+{
-+	if (!(vma->vm_flags & VM_SHARED))
-+		return -EINVAL;
-+
-+	if (vma->vm_flags & (VM_WRITE | VM_EXEC))
-+		return -EPERM;
-+
-+	vm_flags_clear(vma, VM_MAYWRITE);
-+
-+	return vm_insert_page(vma, vma->vm_start,
-+			      virt_to_page(dev->lif_cfg.phc_state));
-+}
-+
- int ionic_mmap(struct ib_ucontext *ibctx, struct vm_area_struct *vma)
+@@ -133,8 +135,8 @@ static int ionic_poll_recv(struct ionic_ibdev *dev, struct ionic_cq *cq,
  {
- 	struct ionic_ibdev *dev = to_ionic_ibdev(ibctx->device);
-@@ -455,6 +483,12 @@ int ionic_mmap(struct ib_ucontext *ibctx, struct vm_area_struct *vma)
- 	ionic_entry = container_of(rdma_entry, struct ionic_mmap_entry,
- 				   rdma_entry);
+ 	struct ionic_qp *qp = NULL;
+ 	struct ionic_rq_meta *meta;
++	u16 vlan_tag, wqe_idx;
+ 	u32 src_qpn, st_len;
+-	u16 vlan_tag;
+ 	u8 op;
  
-+	if (ionic_entry->mmap_flags & IONIC_MMAP_PHC) {
-+		rc = ionic_mmap_phc_stage(dev, vma);
-+		rdma_user_mmap_entry_put(rdma_entry);
-+		return rc;
-+	}
+ 	if (cqe_qp->rq_flush)
+@@ -144,7 +146,7 @@ static int ionic_poll_recv(struct ionic_ibdev *dev, struct ionic_cq *cq,
+ 
+ 	st_len = be32_to_cpu(cqe->status_length);
+ 
+-	/* ignore wqe_id in case of flush error */
++	/* ignore wqe_idx in case of flush error */
+ 	if (ionic_v1_cqe_error(cqe) && st_len == IONIC_STS_WQE_FLUSHED_ERR) {
+ 		cqe_qp->rq_flush = true;
+ 		cq->flush = true;
+@@ -160,20 +162,19 @@ static int ionic_poll_recv(struct ionic_ibdev *dev, struct ionic_cq *cq,
+ 		return -EIO;
+ 	}
+ 
+-	/* wqe_id must be a valid queue index */
+-	if (unlikely(cqe->recv.wqe_id >> qp->rq.depth_log2)) {
++	wqe_idx = le64_to_cpu(cqe->recv.wqe_idx_timestamp) & IONIC_V1_CQE_WQE_IDX_MASK;
++	/* wqe_idx must be a valid queue index */
++	if (unlikely(wqe_idx >> qp->rq.depth_log2)) {
+ 		ibdev_warn(&dev->ibdev,
+-			   "qp %u recv index %llu invalid\n",
+-			   qp->qpid, (unsigned long long)cqe->recv.wqe_id);
++			   "qp %u recv index %u invalid\n", qp->qpid, wqe_idx);
+ 		return -EIO;
+ 	}
+ 
+-	/* wqe_id must indicate a request that is outstanding */
+-	meta = &qp->rq_meta[cqe->recv.wqe_id];
++	/* wqe_idx must indicate a request that is outstanding */
++	meta = &qp->rq_meta[wqe_idx];
+ 	if (unlikely(meta->next != IONIC_META_POSTED)) {
+ 		ibdev_warn(&dev->ibdev,
+-			   "qp %u recv index %llu not posted\n",
+-			   qp->qpid, (unsigned long long)cqe->recv.wqe_id);
++			   "qp %u recv index %u not posted\n", qp->qpid, wqe_idx);
+ 		return -EIO;
+ 	}
+ 
+@@ -408,7 +409,7 @@ static int ionic_comp_msn(struct ionic_qp *qp, struct ionic_v1_cqe *cqe)
+ static int ionic_comp_npg(struct ionic_qp *qp, struct ionic_v1_cqe *cqe)
+ {
+ 	struct ionic_sq_meta *meta;
+-	u16 cqe_idx;
++	u16 wqe_idx;
+ 	u32 st_len;
+ 
+ 	if (qp->sq_flush)
+@@ -430,8 +431,8 @@ static int ionic_comp_npg(struct ionic_qp *qp, struct ionic_v1_cqe *cqe)
+ 		return 0;
+ 	}
+ 
+-	cqe_idx = cqe->send.npg_wqe_id & qp->sq.mask;
+-	meta = &qp->sq_meta[cqe_idx];
++	wqe_idx = le64_to_cpu(cqe->send.npg_wqe_idx_timestamp) & qp->sq.mask;
++	meta = &qp->sq_meta[wqe_idx];
+ 	meta->local_comp = true;
+ 
+ 	if (ionic_v1_cqe_error(cqe)) {
+@@ -811,7 +812,7 @@ static void ionic_prep_base(struct ionic_qp *qp,
+ 	meta->signal = false;
+ 	meta->local_comp = false;
+ 
+-	wqe->base.wqe_id = qp->sq.prod;
++	wqe->base.wqe_idx = cpu_to_le64(qp->sq.prod);
+ 
+ 	if (wr->send_flags & IB_SEND_FENCE)
+ 		wqe->base.flags |= cpu_to_be16(IONIC_V1_FLAG_FENCE);
+@@ -1205,7 +1206,7 @@ static int ionic_prep_recv(struct ionic_qp *qp,
+ 
+ 	meta->wrid = wr->wr_id;
+ 
+-	wqe->base.wqe_id = meta - qp->rq_meta;
++	wqe->base.wqe_idx = cpu_to_le64(meta - qp->rq_meta);
+ 	wqe->base.num_sge_key = wr->num_sge;
+ 
+ 	/* total length for recv goes in base imm_data_key */
+diff --git a/drivers/infiniband/hw/ionic/ionic_fw.h b/drivers/infiniband/hw/ionic/ionic_fw.h
+index adfbb89d856c..ee23062a1762 100644
+--- a/drivers/infiniband/hw/ionic/ionic_fw.h
++++ b/drivers/infiniband/hw/ionic/ionic_fw.h
+@@ -332,7 +332,7 @@ struct ionic_v1_cqe {
+ 			__le16		old_rq_cq_cindex;
+ 		} admin;
+ 		struct {
+-			__u64		wqe_id;
++			__le64		wqe_idx_timestamp;
+ 			__be32		src_qpn_op;
+ 			__u8		src_mac[6];
+ 			__be16		vlan_tag;
+@@ -342,13 +342,19 @@ struct ionic_v1_cqe {
+ 			__u8		rsvd[4];
+ 			__be32		msg_msn;
+ 			__u8		rsvd2[8];
+-			__u64		npg_wqe_id;
++			__le64		npg_wqe_idx_timestamp;
+ 		} send;
+ 	};
+ 	__be32				status_length;
+ 	__be32				qid_type_flags;
+ };
+ 
++/* bits for cqe wqe_idx and timestamp */
++enum ionic_v1_cqe_wqe_idx_timestamp_bits {
++	IONIC_V1_CQE_WQE_IDX_MASK	= 0xffff,
++	IONIC_V1_CQE_TIMESTAMP_SHIFT	= 16,
++};
 +
- 	ibdev_dbg(&dev->ibdev, "writecombine? %d\n",
- 		  ionic_entry->mmap_flags & IONIC_MMAP_WC);
- 	if (ionic_entry->mmap_flags & IONIC_MMAP_WC)
-diff --git a/drivers/infiniband/hw/ionic/ionic_ibdev.h b/drivers/infiniband/hw/ionic/ionic_ibdev.h
-index 63828240d659..08655c4d8297 100644
---- a/drivers/infiniband/hw/ionic/ionic_ibdev.h
-+++ b/drivers/infiniband/hw/ionic/ionic_ibdev.h
-@@ -72,6 +72,7 @@ enum ionic_admin_flags {
+ /* bits for cqe recv */
+ enum ionic_v1_cqe_src_qpn_bits {
+ 	IONIC_V1_CQE_RECV_QPN_MASK	= 0xffffff,
+@@ -423,7 +429,7 @@ static inline u32 ionic_v1_cqe_qtf_qid(u32 qtf)
  
- enum ionic_mmap_flag {
- 	IONIC_MMAP_WC = BIT(0),
-+	IONIC_MMAP_PHC = BIT(1),
- };
- 
- struct ionic_mmap_entry {
-@@ -173,6 +174,7 @@ struct ionic_ctx {
- 	struct ib_ucontext	ibctx;
- 	u32			dbid;
- 	struct rdma_user_mmap_entry	*mmap_dbell;
-+	struct rdma_user_mmap_entry	*mmap_phc;
- };
- 
- struct ionic_tbl_buf {
-diff --git a/drivers/infiniband/hw/ionic/ionic_lif_cfg.c b/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
-index f3cd281c3a2f..e3f2df1f9e6a 100644
---- a/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
-+++ b/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
-@@ -40,6 +40,8 @@ void ionic_fill_lif_cfg(struct ionic_lif *lif, struct ionic_lif_cfg *cfg)
- 	cfg->dbid_count = le32_to_cpu(lif->ionic->ident.dev.ndbpgs_per_lif);
- 	cfg->dbpage = lif->kern_dbpage;
- 	cfg->intr_ctrl = lif->ionic->idev.intr_ctrl;
-+	if (ident->eth.config.features & cpu_to_le64(IONIC_ETH_HW_RDMA_TIMESTAMP))
-+		cfg->phc_state = lif->phc->state_page;
- 
- 	cfg->db_phys = lif->ionic->bars[IONIC_PCI_BAR_DBELL].bus_addr;
- 
-diff --git a/drivers/infiniband/hw/ionic/ionic_lif_cfg.h b/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
-index 20853429f623..2b29e646c193 100644
---- a/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
-+++ b/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
-@@ -23,6 +23,7 @@ struct ionic_lif_cfg {
- 	u64 __iomem *dbpage;
- 	struct ionic_intr __iomem *intr_ctrl;
- 	phys_addr_t db_phys;
-+	void *phc_state;
- 
- 	u64 page_size_supported;
- 	u32 npts_per_lif;
-diff --git a/include/uapi/rdma/ionic-abi.h b/include/uapi/rdma/ionic-abi.h
-index 7b589d3e9728..2c70ac149c4f 100644
---- a/include/uapi/rdma/ionic-abi.h
-+++ b/include/uapi/rdma/ionic-abi.h
-@@ -48,6 +48,7 @@ struct ionic_ctx_resp {
- 	__u8 expdb_qtypes;
- 
- 	__u8 rsvd2[3];
-+	__aligned_u64 phc_offset;
- };
- 
- struct ionic_qdesc {
+ /* v1 base wqe header */
+ struct ionic_v1_base_hdr {
+-	__u64				wqe_id;
++	__le64				wqe_idx;
+ 	__u8				op;
+ 	__u8				num_sge_key;
+ 	__be16				flags;
 -- 
 2.43.0
 
