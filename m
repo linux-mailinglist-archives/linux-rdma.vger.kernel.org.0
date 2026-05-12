@@ -1,108 +1,127 @@
-Return-Path: <linux-rdma+bounces-20476-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20477-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OL1gEw//AmrTzQEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20476-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:21:03 +0200
+	id aKArEn0CA2pczgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20477-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:35:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 349E951E72C
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:21:03 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01D9951EAF7
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:35:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 753D0305BFA4
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:18:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C439305A283
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:34:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE086349CF7;
-	Tue, 12 May 2026 10:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0C1385516;
+	Tue, 12 May 2026 10:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TB6biqgp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9011A349CE5;
-	Tue, 12 May 2026 10:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72CF3839A3;
+	Tue, 12 May 2026 10:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778581059; cv=none; b=mMtBleyae2Yd0xszi9jRI+w0K9hMlX2WHFKCVHvy3xqy/A8HIuTFP8i+bIBt9CSP1kP/Fo9G+hJHKmLaIPxT4Q+JvDaSEoDTQ17Qh0Rbbb850OxA5uNLNFxGJa93/xBK/5U61+yQnGcZrfQMeNlCvRT9u6NzB8PFSZ/jlVXruQc=
+	t=1778582072; cv=none; b=AZ+/Feh+ABYidpS9KmUVQ531IIqdZXRjPO1NsvT9GUm/gj0iALrwsIQAbTATw/oxwxRPaHrGJB6QTistuiXSaSXoLFKE7NWRP5hNBv1ASMMKwFJrEmURj6OT9r59GR5q4y1D6TVIXmhZ1rhgkEGNVW18AA4m6yQ2e5dNuuq5YXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778581059; c=relaxed/simple;
-	bh=hzU9k6HaHL1llKdrLAId26dy9cEGrc2zJdgulN8HJIo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=RttAd058Bw7aKol0Q+amH2zXUS3PfGE99KdEtqbUQErnnriDCBmmpeazv+Yzo99JkA0nYGez50SuUY1KCv75BGxZso+99Sk2taVuKVq5oHkdL8BlComEDgScH6HNsdpo6ytQNAI66Hja4Rxte3YfEUY4TvLV3uQjzJyH8byT4tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 2286392009C; Tue, 12 May 2026 12:17:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 1D9D592009B;
-	Tue, 12 May 2026 11:17:29 +0100 (BST)
-Date: Tue, 12 May 2026 11:17:29 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Leon Romanovsky <leon@kernel.org>, 
-    Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-cc: Bjorn Helgaas <bhelgaas@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-    =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-    linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: Export pci_parent_bus_reset() for drivers
- to use
-In-Reply-To: <20260512090006.GQ15586@unreal>
-Message-ID: <alpine.DEB.2.21.2605121104560.46195@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2605050042390.46195@angie.orcam.me.uk> <alpine.DEB.2.21.2605050051390.46195@angie.orcam.me.uk> <20260512090006.GQ15586@unreal>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1778582072; c=relaxed/simple;
+	bh=wJkRRJmvxRupR2yVHxSz5Mc/9Io6ZJ6HYHt995K3SyY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SHTwEBCOXhRgdYgHraTOCaHkDoaNv/iwcwjZk/ewj/c925jYhhhF0q0kiTV0WkpXu50koq9K+RlwlN/hhmpqgTaTpcTBdd7wrajJ3y2ST1+IQtQYixiqPFyw8xhVBnxYY7Lp5X7Ar0Hj7LF3OeGRfGwkC1IK/xhJG7igY6i2yP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TB6biqgp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB3E4C2BCB0;
+	Tue, 12 May 2026 10:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778582071;
+	bh=wJkRRJmvxRupR2yVHxSz5Mc/9Io6ZJ6HYHt995K3SyY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TB6biqgp/tkQI0aH6nDB5AkmATMuF2TXIp8WRkHCuLxcCd7fCE/WE7pKORNZER3Uo
+	 6e1NklaZRhigC0+mIinxo+iEGjBFyIQqzYqS0CoVoTSUfm1uuI3rwM4OtzZj6iAsKo
+	 7JVYavS0vKvqaEDIfYfnVCbURxMOwNO36K84UrfQwpKOK4wbr9V5ZbRSfybVK/jw42
+	 dF4JEuQ2VwLHfd2s5Lzil3bOQhTVuEK6qf8kS6cbLKjp9eY7eJpJZvG9FbgAd+XO7j
+	 e9XkdKPRjwP5bCN7zN0z1KbSkDhFGr1DgxwP7SGISgnuJwQVR0xcNlt+Vfh03Frz4j
+	 riTEfuuhcJxDg==
+Date: Tue, 12 May 2026 13:34:24 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Md Haris Iqbal <haris.iqbal@ionos.com>
+Cc: linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, axboe@kernel.dk, bvanassche@acm.org,
+	hch@lst.de, jgg@ziepe.ca, jinpu.wang@ionos.com
+Subject: Re: [LSF/MM/BPF RFC PATCH 00/13]
+Message-ID: <20260512103424.GR15586@unreal>
+References: <20260505074644.195453-1-haris.iqbal@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Queue-Id: 349E951E72C
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260505074644.195453-1-haris.iqbal@ionos.com>
+X-Rspamd-Queue-Id: 01D9951EAF7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [0.44 / 15.00];
+	SUBJ_ALL_CAPS(2.10)[28];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DMARC_NA(0.00)[orcam.me.uk];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20476-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20477-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[macro@orcam.me.uk,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.993];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Tue, 12 May 2026, Leon Romanovsky wrote:
-
-> > Export pci_parent_bus_reset() so that drivers do not duplicate it.  
-> > Document the interface.
-[...]
+On Tue, May 05, 2026 at 09:46:12AM +0200, Md Haris Iqbal wrote:
+> Following a conversation with Bart yesterday, I am sending the RMR+BRMR
+> code through patch for easier review.
 > 
-> I wouldn't recommend doing this solely for hfi1. The driver is likely to be
-> removed or significantly changed soon.
+> The patches apply over the for-next branch of the block tree over commit
+> 07dfa981ca3
 > 
-> https://lore.kernel.org/linux-rdma/177516078937.637585.1447184858924347033.stgit@awdrv-04.cornelisnetworks.com/
+> For context,
+> RMR (Reliable Multicast over RTRS) is a kernel module that provides
+> active-active block-level replication over RDMA. It guarantees delivery
+> of IO to a group of storage nodes and handles resynchronization of data
+> directly between storage nodes without involving the compute client.
+> 
+> BRMR (Block device over RMR) sits on top of RMR and exposes a standard
+> Linux block device (/dev/brmrX) backed by an RMR pool. Together, RMR and
+> BRMR provide a single-hop replication and resynchronization solution for
+> RDMA-connected storage clusters.
+> 
+> My session is on Wednesday, at 12 in the storage room (Istanbul).
 
- Thank you for the pointer.  FWIW as per the cover letter I have no own 
-interest in the driver and offered this cleanup as a general code quality 
-improvement.
+To summarize the discussion:
 
- Dennis, please clarify your position, and if you'd rather this change 
-wasn't made, then I'll drop the patches from my local verification setup 
-and won't offer them again.
+1. Move as much logic as possible into the block layer; RDMA should serve
+   strictly as a transport.
+2. Identify another in‑kernel user of this functionality, and add support for
+   it if required. At least accommodate potential users elsewhere in the
+   kernel.
 
-  Maciej
+Thanks
 
