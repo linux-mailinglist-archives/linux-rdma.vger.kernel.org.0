@@ -1,172 +1,117 @@
-Return-Path: <linux-rdma+bounces-20478-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20479-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cIOODyIEA2pczgEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20478-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:42:42 +0200
+	id qIoOAEMFA2r1zgEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20479-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:47:31 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE22351EC4A
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:42:41 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBD051ED23
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:47:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 92BF1303FDF1
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:37:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id CD9FA301D826
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03803839AA;
-	Tue, 12 May 2026 10:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754D2395AEE;
+	Tue, 12 May 2026 10:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="chFG42Pf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NHUFDdIo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A8D383995;
-	Tue, 12 May 2026 10:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3910C3839A5;
+	Tue, 12 May 2026 10:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778582272; cv=none; b=EqeecoGAB9XOIWDegmsIz2zp4qZgvJIZW78opPI9sUtlZuy67BWG5fX/2gpqYR9pvNggLn/NRVtdXgCKFLSpt13IBEnY1WDdgygjb4ICfBow+gHtLaZemu5GJG82TbJ1NOfb1A9w+Hvi8pph1J9TAin4l2I3lO+URSWhK1XFDkE=
+	t=1778582327; cv=none; b=NmiNcs5ASgdeGP1KV1dMhbDR8NM6/TOgMRk8TL3tgsw+bv+pqHCRzYfUtCFLslM+XWNLXI1z6fmUj0B5jC2zhvzxBgENWB3DaSEi0//w5gQDIalGN3j67QfzAiOB1LdCAFyU4R+NSuJV5SGvmrEjeg678mZUEAxS7Ua6qTwELfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778582272; c=relaxed/simple;
-	bh=GLgaYUx4BzRSrBv/2Xam7U8WQHjl9Q0D65xABqKs5pY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PL7bztbS8VrVHn+luVUu1QUtS29BguPV5oxKsYXPgS2AFCM3XwC1dQiFGE2j0V8zbwiv9Aj3SSdC3hoHuKWuxrbzTTi9ibyIFd//p3ZRcB9x4l4Bt7W35thhZ5XRlPfvJ0quWZCVUnc7tLxNk+TEc7qPh7/evr4tXUzFoyPejCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=chFG42Pf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CBC3C2BCB0;
-	Tue, 12 May 2026 10:37:49 +0000 (UTC)
+	s=arc-20240116; t=1778582327; c=relaxed/simple;
+	bh=hCRg/CtSTdb7nBAU6P+6OBRWflMXYRVMPQh+JQ9ovuU=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=ZQX6wHSgRNLJxk9KI6bKbnl2LrLT6+f1YUIlw4kNZTAZY1iQ4+JdoII7+prYWz0znK4TG5/tcVWtA/GVKJXgNJQPxxv6plMI52Ol0lwef7Yk5vepOQLbw7KowU6SqhAacTQYWhynZIRCh1JcXAUGH08MgBGsnrnN0yaUPdNBK+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NHUFDdIo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC67C2BCB0;
+	Tue, 12 May 2026 10:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778582272;
-	bh=GLgaYUx4BzRSrBv/2Xam7U8WQHjl9Q0D65xABqKs5pY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=chFG42Pf9BnHnsTkzNR0YSWepcisC4RHbxSVmzP0nRY4f4GiRn54O8g3XzUGT2UVm
-	 aa+Ix8d2yzQV9ohZevPEyG+5P7vuhdLsKkqK3adyoo7kowq25yaQehSEgA72rfZ4XR
-	 pKA1tU2HCzikESWte8w53iX8Hg47Yzlhb0gkk3/ctmvKJbFM1LWpFt70Va0ipEhELN
-	 CeG9KMNhcqGx6mjTzH22jUe3nrA1lTCE1N0BDbYn1WzqFTWpjfN0HshPpLXe/UdsQx
-	 5YedHXHJf0t5JGG+7DTwoJGHjFgz3ei3OqRD3NIIYf3n5igm5eu+uF8b9BTzlJWzqz
-	 ZWUcYMR8KjGzA==
-Date: Tue, 12 May 2026 11:37:47 +0100
-From: Simon Horman <horms@kernel.org>
-To: Maoyi Xie <maoyixie.tju@gmail.com>
-Cc: achender@kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org, maoyi.xie@ntu.edu.sg,
-	praveen.kakkolangara@aumovio.com
-Subject: Re: [PATCH net v2] rds: filter RDS_INFO_* getsockopt by caller's
- netns
-Message-ID: <20260512103747.GJ27589@horms.kernel.org>
-References: <20260507081332.2868770-1-maoyixie.tju@gmail.com>
- <20260510145425.1372018-3-horms@kernel.org>
- <CAHPEe=FDQUTZn5QVfYiqf_p1OwiUOehe49WLXHGWzB+hgnnWrw@mail.gmail.com>
+	s=k20201202; t=1778582326;
+	bh=hCRg/CtSTdb7nBAU6P+6OBRWflMXYRVMPQh+JQ9ovuU=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=NHUFDdIo5BP4SPROTB2K6Xz3ZBAv/nBuISx5vftKVjkauIA623xwdK17Hn1AEbtjs
+	 kLxbWt+bZZnuwY8LR+Y1hqLrb217UWhWKzFxW7QC5hS+pBIqO0FnZo2ovwH3L578tW
+	 FvYFAyySnknb3PhXknIik3QlEGmTBUAN+fSj8LjybggAcJ7SQX9mYe3Zh5U7gdpjP3
+	 kpdfMfSMB+Cc3DCQceFLYB9dXMFoGu4RwCjPPgO6tXnHQUKoxN2M6pJoh9eVzoSCnp
+	 fCVt78lgSu612XakrthZmwSGIFrRAf7uMQZgH2mBrNMfCTeH4x1vSnGZFENZ31ZWS/
+	 /Xg6uSNrZVj9A==
+From: Leon Romanovsky <leon@kernel.org>
+To: yishaih@nvidia.com, Jason Gunthorpe <jgg@ziepe.ca>, 
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Rohit Chavan <roheetchavan@gmail.com>
+In-Reply-To: <20260505075308.1754861-1-roheetchavan@gmail.com>
+References: <20260505075308.1754861-1-roheetchavan@gmail.com>
+Subject: Re: [PATCH] RDMA/mlx4: Use secs_to_jiffies() instead of
+ open-coding
+Message-Id: <177858232406.2277459.8653199587688444747.b4-ty@kernel.org>
+Date: Tue, 12 May 2026 06:38:44 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHPEe=FDQUTZn5QVfYiqf_p1OwiUOehe49WLXHGWzB+hgnnWrw@mail.gmail.com>
-X-Rspamd-Queue-Id: AE22351EC4A
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-18f8f
+X-Rspamd-Queue-Id: 4BBD051ED23
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20478-lists,linux-rdma=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	FREEMAIL_TO(0.00)[nvidia.com,ziepe.ca,vger.kernel.org,gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20479-lists,linux-rdma=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-rdma@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 02:41:58PM +0800, Maoyi Xie wrote:
-> Hi Simon,
-> 
-> Thanks for the review.
-> 
-> > Does this early-out check using the global rds_sock_count break the
-> > namespace isolation and force callers to over-allocate memory?
-> 
-> Both effects are present. The size returned via lens to a probing
-> caller is still the global count. A caller in an isolated ns that
-> sizes its buffer to that value can also see ENOSPC on the second
-> call. The precheck compares against the global count. The data
-> written only covers entries in the caller's ns.
-> 
-> v3 addresses this. Each handler now does a first pass to count
-> entries in the caller's ns. The precheck uses that count. A second
-> pass fills the buffer. The change applies to four handlers:
-> rds_sock_info and rds6_sock_info in net/rds/af_rds.c, plus
-> rds_tcp_tc_info and rds6_tcp_tc_info in net/rds/tcp.c. lens->nr
-> now reflects the ns scoped count on both probe and full reads.
-> 
-> Re-verified on a KASAN VM. One AF_RDS socket is bound in init_net
-> to 127.0.0.1:4242. The attacker is the same process after
-> unshare(CLONE_NEWUSER | CLONE_NEWNET) and uid_map "0 0 1".
-> 
->   [init]     count-probe rc=-1 errno=ENOSPC optlen_after=28 entries=1
->   [init]     full-read   rc=0  len=28 entries=1 (127.0.0.1:4242)
->   [attacker] count-probe rc=0  optlen_after=0 entries=0
->   [attacker] full-read   rc=0  len=0 entries=0
-> 
-> Pre-v3 the precheck returned the global count of 1 to the attacker
-> via lens->nr on the zero-length probe. v3 returns 0.
 
-Thanks. I will look over the updated code.
+On Tue, 05 May 2026 13:23:07 +0530, Rohit Chavan wrote:
+> The conversion from seconds to jiffies is currently performed by
+> multiplying the value by 1000 and passing it to msecs_to_jiffies().
+> 
+> Use the more direct secs_to_jiffies() helper instead. This simplifies the
+> code, improves readability, and avoids the manual multiplication step
+> by using the dedicated kernel API.
+> 
+> [...]
 
-> > Can concurrent getsockopt calls trigger a NULL pointer dereference
-> > here?
-> 
-> Yes, the window looks reachable.
-> 
-> The writer takes rds_tcp_tc_list_lock and calls list_add_tail. It
-> releases the lock. Only after that it assigns tc->t_sock = sock.
-> The reader takes the same lock, walks the list, and dereferences
-> inet_sk(tc->t_sock->sk). There is no NULL check on the read side.
-> A reader that enters between the writer's spin_unlock and the
-> t_sock store observes a list entry whose t_sock is still NULL.
-> 
-> The companion restore_callbacks path is safe. list_del_init is
-> inside the lock. A reader holding the lock cannot observe the
-> unlinked entry. The matching tc->t_sock = NULL outside the lock
-> is then harmless. Another reader in the same file at line 676
-> already checks !tc->t_sock before use.
-> 
-> The smallest fix is to move tc->t_sock = sock into the
-> rds_tcp_tc_list_lock critical section in rds_tcp_set_callbacks,
-> just before list_add_tail. The list insertion and the t_sock
-> store then become atomic from the reader's view. The diff is
-> one line moved. It does not affect the callback_lock side
-> effects below.
-> 
-> This is independent of the netns filter. I have not built a
-> runtime PoC. The window is short. Does the code analysis above
-> match your reading? If yes, I can send this as a separate patch
-> with a Fixes tag.
+Applied, thanks!
 
-Likewise, Thanks.
+[1/1] RDMA/mlx4: Use secs_to_jiffies() instead of open-coding
+      https://git.kernel.org/rdma/rdma/c/8b2a66cb49546c
 
-I agree that should be sufficient to address this problem.
-And that is is appropriate to post it as a separate patch for with a Fixes tag.
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
