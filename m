@@ -1,85 +1,85 @@
-Return-Path: <linux-rdma+bounces-20507-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20508-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aL79AztuA2pS5wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20507-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:15:23 +0200
+	id 8BTkArJtA2rF5gEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20508-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:13:06 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E8C852724B
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:15:22 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4627652709D
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 20:13:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B7A3931821CF
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:03:46 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id F16C83035106
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A1125FA29;
-	Tue, 12 May 2026 18:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9ED349AF5;
+	Tue, 12 May 2026 18:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="GNNiitkp"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="R7jS4paX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF51833D51A
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 18:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00401343D9D
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 18:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778609026; cv=none; b=AW+Hk+gUmFl+egqEeT70XibS5lqXMW8SleuszsK2L3DZp3DytFyiJ8nZ3O7VoNMuMha4xehmhCdv1yi8KzHfevV1RGsGeIlQn59sH+pmJWykTOyOkBxtXrVwF68t1zYrnvCoAHP1qCf5lwPWWEx9+BguF2eh0npiUqWWdBeiNMs=
+	t=1778609560; cv=none; b=TQOwiSJjCk4G5bsHAl08MHawkf5sx/fGFkrivRqbWXu8y8s8Xzc1LwvdTPPqwgudYAnKMvP8FYTRSEYWYTlLmVBSdSLJ3J8V80BLS+1FFRFU8jwE6U4rTTPHnUYPPKe+ZnrevjEShrh6JU3Mnmaf75dalDM7u2FXTDj2wdmEvlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778609026; c=relaxed/simple;
-	bh=4H89997f5CleTxkJJvU1aIQvOXlA8jRXTnp7wsrwARk=;
+	s=arc-20240116; t=1778609560; c=relaxed/simple;
+	bh=WEfLsbBNMLgYc1jmgvAe4SEz4JQn2zpnAAUrulEuGLs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mlg4nalQcNvhm/xJk652UXX4cZuwBI0Fvlhi5FJePBTm/amG/s2ifn1eVIjKbw5sjbMUtgK7uCP0Ex5OKK47gmZGkxDLbENWrqlPVQsgsL4Lprhm2L7vb6PV7berhI2lan9Nn4XkbKH0FHNgzDATbebbT8tmlEhGly2OopAl3dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=GNNiitkp; arc=none smtp.client-ip=209.85.167.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=q7WQeKHXgNH5+pMUgE9NelLDDNx8niGP6ioxmqv9vYfsn/RVrQGveKTgKVRFSo/H7sjbxpH9qLuNUbPDfFc2kwDvfg22A7q038+74SnWTsPUytsBfSYEIGn3cNikXlcRyLlGar8Ow/rjzg2AZiTqqPMiwXyvRzzOnr89zkIQcHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=R7jS4paX; arc=none smtp.client-ip=209.85.222.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-463f00cda04so3189990b6e.2
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:03:44 -0700 (PDT)
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-8f231f3b130so455417885a.3
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1778609023; x=1779213823; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1778609558; x=1779214358; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bXVpfXzT0jf/ZSOkmDiZcDjCT8XZgpZy6TPqRVEL8W8=;
-        b=GNNiitkpAdQB/EgBBXiIf/6fRa+vQAqmUGuLWFc2F2j9QB6zntdQj4MktkFOt3Xk0V
-         xkOp5udqyealdIJic5YtYQKDVuXAT9YZ7+a6V8WlvABWRUKs5gJW3z4SYg1vfUCiq24Y
-         upgwXM+0tdgbt7m0h9Gqnu2NFz9y1A4xbeGnGpSulXQJ3p3xBCmawEHRaBS4SGScRG2O
-         FqhWlKnaG73okgyFkeTLO9LuOwbAPAf+5r0VksU3Wd7yHX7vhCoeR1SZWsPaK7gk0EbO
-         qxOjwVKWSLQc8FhZz9eg/XfXX9wnoa6poBnnJBOxaMQnQby2wkfwPZWX9yqtdE74pMIx
-         UF+w==
+        bh=vyrCLrLpEbZKQ5jJ2xapqvdsTLWfB0DbXAPHigkioQc=;
+        b=R7jS4paXlNYKeIyjCKu1GIM2XRue9EhUMTeUBntAGpAGr9y8CIrnR0A728wbaW2Gql
+         Hkujlw7F/iGr0pXq0SwBlwXuV6WgeLIMobgMpdqrZ/BB7Lwf+QAsPtYios6rMMLcobsz
+         KFfpme78da/ejm5BtrdWw1l2iv026FnIQ/CVv0e42BCERzvzOU5x0GVI39OywQfO+oz7
+         5YgXjmXRWbEuWgzSfnrA9LQ2Z5QyThaaEQsOhwMj46Kctpg5bbi2GUVQRjnzrpDCS598
+         8UEbGQdziKkBWUOrS0KmMVi4girWZqnTnSzkNt0BStUcRTFD7XAS6r26aPmPEgyX14KU
+         rSFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778609023; x=1779213823;
+        d=1e100.net; s=20251104; t=1778609558; x=1779214358;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bXVpfXzT0jf/ZSOkmDiZcDjCT8XZgpZy6TPqRVEL8W8=;
-        b=Ymnx90Ph/u32nduJeQ/U+wYOCqnJzQ1BGm9OPbceyjCjEQSd0FyJQSDUSSD2gvIwRw
-         yUJTqknYRwgmr0cvYA55Rydx/Hi68Rv/PL5RlrB6+d4+8A2kVwbFjjkZZzTktDRdEY3i
-         Gd7PAgBaJiQm+4xSNN/T9vHDLjgmE/Im6FJdM209ESasvcChzgBDL3I1NQ9a2Dq/6Ayz
-         efg171rOH/KDVupbZLnIJxIU5bnsFh8qJko6RM171ADdm9ibgmkTu/gvD0yDvqoTuxww
-         j1cgzguX8qu3qbnFH98wRgd3BhcHKd3QgmLUdkFJDK24WS5vkOqrf/ja5WO8W296xjUW
-         H82Q==
-X-Gm-Message-State: AOJu0YzBT8gni3EMo6tDX6JzJbyeXIs38eGJfOyAZoeKN8JsjUprA9Ft
-	4sbfKHbbXy8km7cUX/bwdYMomMOhFcQAsCUECrUGuM/uZRAOPUEkbhxafulFPX71rIM=
-X-Gm-Gg: Acq92OGI0liWSY0aeuYrk8uXlSMmXErpHSqiNqGx1LBG34vrYHx4OPKuAWwHC5RlXNc
-	jIIMTUU68m1J63eQbf5Sl/QdgGEjz04TTF9Rt66JKd7YooBhpJyQLwTNnN93FSHfmoczjw/eVER
-	/r3oyUDlt0L7y9bTf5+TOmqyTq1BoSO2a2dDPZoCSyDLQWSvrxGZf3CRymiqE1AD1mhFvF00cVP
-	nDgcrrxZGhwW4o5J+AzMOGCjp+UhRCigwFGkv+EiX7vu4KrSgDXeVCa727NY7Ha0zFrVWK8xhUe
-	HdWxlaXAQZyVi7rnsVRUvn+nUU4/YD2ZyoYYjr3ZRoFwogigidy5heESRjc66xMmC15Idm4v3A7
-	2g4ykvyriHzHED32BWP5mZw5w+Y7bVZ4KfSabnwPizYdv7iTvnvNHSMdXnhpd2jrhm9a/5kYTO9
-	FPtsH88XESI9cYD/nGvaqGCvax8yOevzmaU8XWp7bo+jSt8rLpps0wbqyekJM+NBywNSqYcJB0F
-	Y3oZg==
-X-Received: by 2002:a05:6808:c14a:b0:479:72dc:bb6 with SMTP id 5614622812f47-482b2decfa2mr70445b6e.44.1778609023560;
-        Tue, 12 May 2026 11:03:43 -0700 (PDT)
+        bh=vyrCLrLpEbZKQ5jJ2xapqvdsTLWfB0DbXAPHigkioQc=;
+        b=jkH/nwU3Tf6a3kevspwLUsM/D9aE68jsh1FHdUuLAPlxVZLMSXSboYZ7+v1ihwxniq
+         RqH4GGvDycsxlndYdRsh7O4C/asT635SM3lPuUSyMA7I0l6wHW7P9hrYiORVDpIHT/vf
+         1WXhL7DaxfGT8duRtfQMtMKd3gpNS41/dlg3NLg5c34pVDElXNaDYeMHFNTEPx0YgYHL
+         KTGd4XDqO+s1gQ64xtZ8rz8XC8ffAKu3BJWvNPj/mrfmoiZecX+G8Q4zBs8NkFGro7y7
+         M9KJbiy1z0Si4XrtvbUASG6TN6zrTvtMNRHY8ydrCnYDIe5Qd5Cx93j4Un/6Q7w0PAdU
+         BrQw==
+X-Gm-Message-State: AOJu0Yx3CA7iH5XPnB3pVJFjfx72VNjfO+TkDT6decd6TjHLa/EbhN24
+	y+xKgaeP9stf8i/yomFJqzdTx8M1Ua//A1ucNF+iWNKXcB7iEgQexTfZR0qNLnK0syE=
+X-Gm-Gg: Acq92OEBvccK8RmRIh9Y3SGKhHOJ0kf/0rppmdFlvpC+gH5q7l7o7u/D4rIcH0Ub0nP
+	WrRZlvEYu+/1qcgwq1TrRFdtFpFr96Bx98Wd8FF+k6wF4WsTV6Jihw7Mmth0ykJHTIG3PofFsXj
+	yCzMlutTWp9uTiZBxi+hIglyLiySU/frDMlUjAJhyn70+spN1MoE3IP3btnRfRAsxn+QHSqswhy
+	6lexeMglMyPwFhH/CnEe1pU8zzEZikgRQ6gauAPR9OxP9vm5BgpJvwn5WhxluPb19VPbw/1PvMM
+	RWkuFIQ5IAQeVNROM4UOSraaUk+qbr4C1WXQO8OlLXoty61c5VyWAktB6bIOqzGnmVcttbu5I0d
+	HRRYIKGsZ2nVWz/VrSv8Kqlsp4VgOQ01QsZiTOGYwACrHKp/u2GWjb+KY6StxP9qCy7Zsyf1Vpi
+	88xqV+01SSEw1XJhIyNsXq57G8bv/XDOLhXVrFDwQWt6CGsqLq7PvvsPJt0z6rnuN+v0XGNvO+i
+	3GmZr4tEjScVNXO
+X-Received: by 2002:a05:620a:468f:b0:8de:c429:552d with SMTP id af79cd13be357-90f88da1cafmr9124185a.20.1778609557771;
+        Tue, 12 May 2026 11:12:37 -0700 (PDT)
 Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5148e85bf27sm128561771cf.30.2026.05.12.11.03.42
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8fc2c91cdfbsm3533145285a.34.2026.05.12.11.12.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2026 11:03:42 -0700 (PDT)
+        Tue, 12 May 2026 11:12:37 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1wMrSI-00000000j33-0eDi;
-	Tue, 12 May 2026 15:03:42 -0300
-Date: Tue, 12 May 2026 15:03:42 -0300
+	id 1wMrau-00000000jnj-0ciu;
+	Tue, 12 May 2026 15:12:36 -0300
+Date: Tue, 12 May 2026 15:12:36 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Jiri Pirko <jiri@resnulli.us>
 Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
@@ -91,11 +91,13 @@ Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
 	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
 	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v4 06/16] RDMA/uverbs: Push out CQ buffer umem
- processing into a helper
-Message-ID: <20260512180342.GI7702@ziepe.ca>
-References: <20260507125231.2950751-1-jiri@resnulli.us>
- <20260507125231.2950751-7-jiri@resnulli.us>
+Subject: Re: [PATCH rdma-next v3 03/17] RDMA/core: Introduce generic buffer
+ descriptor infrastructure for umem
+Message-ID: <20260512181236.GA175362@ziepe.ca>
+References: <20260504135731.2345383-1-jiri@resnulli.us>
+ <20260504135731.2345383-4-jiri@resnulli.us>
+ <aftENVgTr8AZVQnT@ziepe.ca>
+ <aftL-2sJb4JfyDIs@FV6GYCPJ69>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -104,18 +106,18 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260507125231.2950751-7-jiri@resnulli.us>
-X-Rspamd-Queue-Id: 6E8C852724B
+In-Reply-To: <aftL-2sJb4JfyDIs@FV6GYCPJ69>
+X-Rspamd-Queue-Id: 4627652709D
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20507-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20508-lists,linux-rdma=lfdr.de];
 	DKIM_TRACE(0.00)[ziepe.ca:+];
 	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -128,56 +130,64 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Thu, May 07, 2026 at 02:52:21PM +0200, Jiri Pirko wrote:
+On Wed, May 06, 2026 at 04:14:34PM +0200, Jiri Pirko wrote:
+> Wed, May 06, 2026 at 03:37:57PM +0200, jgg@ziepe.ca wrote:
+> >On Mon, May 04, 2026 at 03:57:17PM +0200, Jiri Pirko wrote:
+> >
+> >> +/**
+> >> + * ib_umem_get - Canonical on-demand umem getter.
+> >> + * @device:        IB device.
+> >> + * @udata:         uverbs udata bundle (may be NULL).
+> >> + * @attr_id:       per-command UMEM attribute id; consulted if @udata is set.
+> >> + * @legacy_filler: optional command-specific legacy attr filler.
+> >> + *                 invoked if @udata is set.
+> >> + * @va_fallback:   if true, build a VA-typed desc with @addr.
+> >> + * @addr:          user VA, used if @va_fallback is true.
+> >> + * @size:          driver-required minimum length.
+> >> + * @access:        IB access flags forwarded to ib_umem_get_desc().
+> >> + *
+> >> + * Return: valid umem on success, ERR_PTR(...) on error, NULL
+> >> + * if no source produced a buffer (only possible when @va_fallback is false).
+> >> + */
+> >> +struct ib_umem *ib_umem_get(struct ib_device *device, struct ib_udata *udata,
+> >> +			    u16 attr_id,
+> >> +			    ib_umem_buf_desc_filler_t legacy_filler,
+> >> +			    bool va_fallback, u64 addr, size_t size, int access)
+> >
+> >I didn't try to look at what the drivers actually do, but I'm slightly
+> >surprised not to see an addr_size here? Is it the case the drivers
+> >don't have have a uhw->size to go along with their uhw->va?
+> 
+> "size_t size". What am I missing?
 
-> +static int uverbs_create_cq_get_buffer_desc(struct uverbs_attr_bundle *attrs,
-> +					    struct ib_uverbs_buffer_desc *desc)
-> +{
-> +	struct ib_device *ib_dev = attrs->context->device;
-> +	int ret;
-> +
-> +	if (uverbs_attr_is_valid(attrs,
-> UVERBS_ATTR_CREATE_CQ_BUFFER_VA)) {
+size is the minimum length, not the actual length passed into the
+system call
 
-I know this is just moving code, but I've always disliked this
-function. I learned a trick using a case statement for this recently:
+> >> @@ -273,4 +273,27 @@ struct ib_uverbs_gid_entry {
+> >>  	__u32 netdev_ifindex; /* It is 0 if there is no netdev associated with it */
+> >>  };
+> >>  
+> >> +enum ib_uverbs_buffer_type {
+> >> +	IB_UVERBS_BUFFER_TYPE_DMABUF,
+> >> +	IB_UVERBS_BUFFER_TYPE_VA,
+> >> +};
+> >
+> >I've learned it helps backporters to add the =0, =1
+> 
+> Why do we care about backporters? I mean, the mainline code is what we
+> care of, and for that, enum default values are well defined and enough.
+> What am I missing?
 
-	u32 present_attrs = 0;
-	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_VA))
-		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_VA);
-	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH))
-		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH);
-	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_FD))
-		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_FD);
-	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CREATE_CQ_BUFFER_OFFSET))
-		present_attrs |= BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_OFFSET);
-
-	switch (present_attrs) {
-	case 0:
-		return -ENODATA;
-	case BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_VA) |
-		BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH):
-[..]
-		return 0;
-	case BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_FD) |
-		BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_OFFSET) |
-		BIT(UVERBS_ATTR_CREATE_CQ_BUFFER_LENGTH):
-[..]
-		return 0;
-	default:
-		return -EINVAL;
-	}
-
-No need to build the complex tests to check in each branch if the
-other branch attributes are presented.
+Well, just something I've thought about before. The rest of the uverbs
+is pretty agressively not doing this so leave it
 
 Jason
 
