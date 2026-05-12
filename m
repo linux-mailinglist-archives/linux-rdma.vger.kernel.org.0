@@ -1,180 +1,146 @@
-Return-Path: <linux-rdma+bounces-20485-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20487-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wAHdOG0RA2rD0AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20485-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:39:25 +0200
+	id 2BRIKlgmA2p21AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20487-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 15:08:40 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532C851F7D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:39:24 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63307520CB6
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 15:08:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 737733076F35
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:36:38 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6657B303D38C
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 13:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4DE44D98F4;
-	Tue, 12 May 2026 11:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1C739EB47;
+	Tue, 12 May 2026 12:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jRfyD+IW";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="iNOR1zEY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="klEKezKM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8BD4D98EA
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 11:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3134839E9C9;
+	Tue, 12 May 2026 12:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778585795; cv=none; b=soQdt7IplV/2/Y38KUsk8EflDD6ZlCARP6qgruyPp6UforZvpn9mh03oTpGdh1MS+EuuNVYjAv3tg1hv+yvZchUgSSEGfMvO32mxe9q8SGpZQoIG3IeA/Es3iJv2UXV9K2MNCPJLuNidkbfp/yYvGKMWpXlRGLTFSvbXxmW1jT4=
+	t=1778590707; cv=none; b=h9/WvXK3Yo5JaIEx9s2DDeEuOjYcHUVMtybmtiA0Q4FW5zr1jRccFHJQlCJqggtsifUgDK73fLmr1qIXx6RZyx+wvymWsiqkjqnJkVWFlSqyEpsi4KSqACwjB0lIleoHgQI137X6Muaeiq1ukWAZ0BIVdxECR0tn+5FtHQ1Nbw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778585795; c=relaxed/simple;
-	bh=tD09wB0HSocpKa+1WEGTLBF7rc8s7bhV3jRNSldHa2o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R6q6zGEko9qmtiPEXSS0/3/BK9S+/X+JWwH7OxKiSTVuUMZ7iD+YoiiM6yB8Qp+Zqt9AmluskQz3MQgUHxLx5XljS+63TktbJjzlifySSAyvKosWncTIEbIYmDsKsvhUnmXWRDgHUfQiN9Ay6FkJVjRW/2KmIdMGQxIvI3IMFRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jRfyD+IW; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=iNOR1zEY; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778585790;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ph9gHYsx1MwJsXlOBpqpwZIJ5iQf/Q82Dt7OeJw2IpI=;
-	b=jRfyD+IW0W/Ibtt5+agFRZQ/tTj/wB7bs/FcLSqNNBKHFSzTJ1Y5UoCWc9PIe3YU1pKCEY
-	E7y6GC+zkLNqInN9zMOvKHZTeRda9HJM9U4vY2cjU83Qux5jRj99oh3yOVwq/g0aIoYFAL
-	EOXmyL/BxcSZlwxoKtU9VzGMRSURMKg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-711--GQOEwDuNXCtw_7lH-T_Ow-1; Tue, 12 May 2026 07:36:29 -0400
-X-MC-Unique: -GQOEwDuNXCtw_7lH-T_Ow-1
-X-Mimecast-MFC-AGG-ID: -GQOEwDuNXCtw_7lH-T_Ow_1778585788
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4891f97aef0so29372185e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 04:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1778585788; x=1779190588; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ph9gHYsx1MwJsXlOBpqpwZIJ5iQf/Q82Dt7OeJw2IpI=;
-        b=iNOR1zEY30kw1wXLvG4XGfDkPXMPNxWcqIj+P2vM45ZHyG5dfLGX58Ap9I/npdHI4A
-         bQqFi/d76Ktln5lcalAc0QMHNjmzwdPeIp6H0KHuKWy+KBWVnR0EZWinCitMFsrQl2iF
-         JfMQFtEZ73OLQBgcgH/elwE5qqif0srNSYHpwk4Nm/JatBUT9wYG4K8jTKawPxdLnlqO
-         EkGz3GYwwopHLYgCESE3I/sp8eTPh7U9op0ZPHynkb9kJbR+dU/EfW29FtywKD+3OhSy
-         EGMWlsy24uJjmzddHQ1Q0QbkwIY9J1Sldu1cqemEb0W42GrN6X6YjVEJ2DGXV0/b9/W3
-         bexQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778585788; x=1779190588;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ph9gHYsx1MwJsXlOBpqpwZIJ5iQf/Q82Dt7OeJw2IpI=;
-        b=Vm7x0K396NdR/WkR07BhekynhD7fEUqa0GlOR9LarCuLSwRKxYtbjLP6gHzS51rKQZ
-         r+lHN8Cl4TPfrRALQ99Q4I6RY3VQmiYvDwv+b5kv7Okndb9teibbpKSEVCL50LTrSyAr
-         JKIwDt3m2MEf6LdCg1+scsswX/sh2ZyEMS0N33v+DvONya7uOKEAlTOnI02ICzZDJFe/
-         T3/aPPMSB45RBbIe7jh+kX8eLpAfWGlIgN9nfbalOKCr2oEyOvMxKy6k4P7kd+DUy8rA
-         EnmCj1Ifs9Dz3zcSvug73BJYWL3D0cH19Abq7T9DNc1Rf9ZaqHqmRSiaZ9tRA86Z8svw
-         LIxw==
-X-Forwarded-Encrypted: i=1; AFNElJ9GGMHgO+4XhvGvniNq80hukFZn5SrjGxpN9R1wRQceptia0OMOaJfxuYzR71qOOq/vnKqwbnWxFkAH@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUvqwanMIbbwu9Udqbm3c5Njjn1+B3XJYrvjrYAtCW5ZamELiL
-	LOrpRU8T7/kdkEWPmgU0J8zjcvVeIkZtyCtOaSPhk27Q4FiV6jkx8AglYqZmPYdFXmmZezoBFT/
-	sUHnuHrSO42uMYtNo9o2wFI81FcURuP0K/fkpneBwpEJDENLL42zk2Woy2LmAKr8=
-X-Gm-Gg: Acq92OHGziwFtoQUOxpU7rpraCXsxJT3bd8arhy2vivyqVfbrvF+04rzf3xp/eJpPfY
-	AF1+R1e+0Yq4VJnDC+/nYg5qerKHezaOCEzh+41ibIjvPE3/rJ1heXwkDpJk63+33jDcURVj5P8
-	Fpa3pkgeT20fg+gc8J9BPoSit/A/pPIYtwnhPcfFBqvVK/Zt+hi83ZBnV4BH65Z1pvYfT7w6nIn
-	UBKSAUVNWNcQBoZ1i70JRqZi7rCVqCYEkToCH9QgPDYs7b9H95E4fOIMOQ2mEK/0Y3K6NpWnrCG
-	NRjRmDm6J0K5FF70SHURUpe9QAzDYvNIUfdds/ruJ4MqZI5VuCdBJY65cvhq2E82VV937IK7hrA
-	sBfctIZ2J2moirE6GCZc93HWJmUfON5EL097lpyvbigvdVft4LqOzy+4=
-X-Received: by 2002:a05:600c:8486:b0:48a:6fd4:d3d3 with SMTP id 5b1f17b1804b1-48e706be062mr230118655e9.20.1778585788031;
-        Tue, 12 May 2026 04:36:28 -0700 (PDT)
-X-Received: by 2002:a05:600c:8486:b0:48a:6fd4:d3d3 with SMTP id 5b1f17b1804b1-48e706be062mr230118195e9.20.1778585787633;
-        Tue, 12 May 2026 04:36:27 -0700 (PDT)
-Received: from [192.168.88.32] ([216.128.9.106])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e90681760sm40268075e9.12.2026.05.12.04.36.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2026 04:36:27 -0700 (PDT)
-Message-ID: <259b0641-fba1-4977-adc7-fd4002412d7e@redhat.com>
-Date: Tue, 12 May 2026 13:36:24 +0200
+	s=arc-20240116; t=1778590707; c=relaxed/simple;
+	bh=2mUD8aSz8A/xxdCzNJDIipbswxB+izQNCTm0BuUOJik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dG5iWJDbkLsF2fPq5kLbJGVFfJU8EI0r6hcdr6b2ejoc+ZL3L1+Rk2fTkXDRRtshr28G6WRXyLCPEOrV7uXTxv1TQ5l76fIpN9oKR/Ca9DYMVPU76XoqNdIyzqct7klU13wysJOawVm+C4DA4Mo1i6nH0wGArWMSFB5eChU7sW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=klEKezKM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3079FC2BCB0;
+	Tue, 12 May 2026 12:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778590707;
+	bh=2mUD8aSz8A/xxdCzNJDIipbswxB+izQNCTm0BuUOJik=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=klEKezKM54n9S5hiFvHl8ohmTtbbrUdDA33zCV5yuuZAImPwhyf36nD1eVROotCyq
+	 RheEkVxw35vB/zalgtjXSueqs7AOldrcoKc0h08MDW19Cr1yLKAOyyPJugWsqsXFW1
+	 NB2tvImRjw4ikOZOKa+xelOQ5FSAmN2tglBh+CAmv3p1M2Z+artY+YjTFstyMZ7AaZ
+	 Gd7DdVZcZVua3cxQ4nm0F9tLbnNqMnw3nr9LcnOvF7fUcabOAZa06VsOB3mlpej8x3
+	 sefytCG3otZ/9X4qQvKSC29n0MZFPSVcqfMcprj2bkn7GgqCH61PccphfmOiQxzLDi
+	 4kQxHam9Se4/w==
+Date: Tue, 12 May 2026 15:58:19 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc: yishaih@nvidia.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, anand.a.khoje@oracle.com,
+	manjunath.b.patil@oracle.com
+Subject: Re: [PATCH] IB/mlx4: delete allocated id_map_entry while sending REJ
+Message-ID: <20260512125819.GT15586@unreal>
+References: <20260506090824.359239-1-praveen.kannoju@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 3/6] net: mana: Introduce GIC context with
- refcounting for interrupt management
-To: Long Li <longli@microsoft.com>,
- Konstantin Taranov <kotaranov@microsoft.com>,
- Jakub Kicinski <kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Haiyang Zhang <haiyangz@microsoft.com>,
- "K . Y . Srinivasan" <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, shradhagupta@linux.microsoft.com
-Cc: Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260508221202.15725-1-longli@microsoft.com>
- <20260508221202.15725-4-longli@microsoft.com>
-From: Paolo Abeni <pabeni@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20260508221202.15725-4-longli@microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 532C851F7D5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260506090824.359239-1-praveen.kannoju@oracle.com>
+X-Rspamd-Queue-Id: 63307520CB6
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20485-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20487-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pabeni@redhat.com,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,oracle.com:email]
 X-Rspamd-Action: no action
 
-On 5/9/26 12:11 AM, Long Li wrote:
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> index 4673ff62e6d9..78cb89c46ff3 100644
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> @@ -1618,6 +1618,164 @@ static irqreturn_t mana_gd_intr(int irq, void *arg)
->  	return IRQ_HANDLED;
->  }
+On Wed, May 06, 2026 at 09:08:24AM +0000, Praveen Kumar Kannoju wrote:
+> During scenarios where a REJ is sent after a REQ or REP, the allocated
+> is_map_entry remains in memory, resulting in a memory leak. Scheduling the
+> entry for deletion during REJ handling, if it is not NULL, resolves the
+> issue.
+
+Do you have kmemleak output to prove the leak?
+
+> 
+> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+> ---
+>  drivers/infiniband/hw/mlx4/cm.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
+> index 63a868a3822f..21f2f401ed61 100644
+> --- a/drivers/infiniband/hw/mlx4/cm.c
+> +++ b/drivers/infiniband/hw/mlx4/cm.c
+> @@ -321,10 +321,9 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  				__func__, slave_id, sl_cm_id);
+>  			return PTR_ERR(id);
+>  		}
+> -	} else if (mad->mad_hdr.attr_id == CM_REJ_ATTR_ID ||
+> -		   mad->mad_hdr.attr_id == CM_SIDR_REP_ATTR_ID) {
+> +	} else if (mad->mad_hdr.attr_id == CM_SIDR_REP_ATTR_ID)
+>  		return 0;
+> -	} else {
+> +	else {
+
+It is now similar to the "if (...  && REJ_REASON(mad) == IB_CM_REJ_TIMEOUT)"
+for active-side timeout above.
+
+Thanks
+
+>  		sl_cm_id = get_local_comm_id(mad);
+>  		id = id_map_get(ibdev, &pv_cm_id, slave_id, sl_cm_id);
+>  	}
+> @@ -338,7 +337,8 @@ int mlx4_ib_multiplex_cm_handler(struct ib_device *ibdev, int port, int slave_id
+>  cont:
+>  	set_local_comm_id(mad, id->pv_cm_id);
 >  
-> +void mana_gd_put_gic(struct gdma_context *gc, bool use_msi_bitmap, int msi)
-> +{
-> +	struct pci_dev *dev = to_pci_dev(gc->dev);
-> +	struct msi_map irq_map;
-> +	struct gdma_irq_context *gic;
-> +	int irq;
-
-Since a new revision is needed, please fix the reverse christmas tree
-above and elsewhere, thanks!
-
-/P
-
+> -	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID)
+> +	if (mad->mad_hdr.attr_id == CM_DREQ_ATTR_ID ||
+> +	    mad->mad_hdr.attr_id == CM_REJ_ATTR_ID)
+>  		schedule_delayed(ibdev, id);
+>  	return 0;
+>  }
+> -- 
+> 2.43.7
+> 
 
