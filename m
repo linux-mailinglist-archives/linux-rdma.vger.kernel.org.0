@@ -1,120 +1,96 @@
-Return-Path: <linux-rdma+bounces-20494-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20495-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MJDUEOZAA2ro2AEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20494-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 17:01:58 +0200
+	id 6IxJMuA8A2oq2AEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20495-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:44:48 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86D4E5232BC
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 17:01:52 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBFF1522D13
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:44:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8DF2A345055D
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 14:07:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 07E0D303C9A2
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 14:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C26C3A8742;
-	Tue, 12 May 2026 14:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04823A7D9B;
+	Tue, 12 May 2026 14:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="a1AKBlkb"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="IikTLBYI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7673A8385
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 14:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B6A3A59B7
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 14:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778594838; cv=none; b=CrYzrV+Wzan3BbrUsDtXoIBlVOXdeuu9sd4ad3wffWUCZ3rF8ZZP4WPHVT2XOQanBbja9EsyS8rzYVaw+7psbLhtnp525cAMR0/MGkzCYEIy7v0piLCnM1gr9RVEiuy8Ltg4oKo+ZddAfIOI32l0+EZ7+sLDoxnzrsNDZmK20Gs=
+	t=1778594931; cv=none; b=KPgGtQi4PuIovNU6cSW9HyppVPA5ZE3xl7yPNJgxlho3vORakxaADkDLobzkvs5fGJ8NoHA8BDrQAiSV4Ob2bfTStQY7qDnu2vJW3umffwKu9y+w6MOx38yp1kWvWnbXift2ptoo4VxxCC6t+tFA8yFCVhvu9DCsGJTvETsiOBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778594838; c=relaxed/simple;
-	bh=bgBCtNkJnsiY/BqSw+6iZ38DMKEEFC29v57mwpmfH+w=;
+	s=arc-20240116; t=1778594931; c=relaxed/simple;
+	bh=nFixi4/T3PqxWneEutYsxvxrO5Iqbo1HRj3m1GdYjtY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i8Gxt09LS8neQPTgTOLijfTW7GPGwKDdkb+1ZoLbUftrxIEgTOxiDj1cFzZczcvjjeEtU9/+Bsxr+v5DMYjvZS458Ru++XpAGYEtVGbpAkHdV772rrzRcKGAyIajqr1srIlITYNkOMpsiQaOiYqRoZ1c9H/3TALm0sZ+RmTjFkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=a1AKBlkb; arc=none smtp.client-ip=209.85.128.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=hdz6bCNoANMkSOIIYpWyHG9QIc+NYUfq+uFzgxnufhC+ilsB3yLG6fww7SipBjRp+ppW/TGjb5rfO4evC4qkAxuKWTEC0/2Bg1d7SZT5GQqBGO1yhRuY0IsDXj6vh72dCGorpxlaLUJJcKJqcXWNf0wQ6qTVEa6bTilJjG9BoXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=IikTLBYI; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-488b0e1b870so94741865e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 07:07:15 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4891c00e7aeso48041295e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 07:08:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778594834; x=1779199634; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778594928; x=1779199728; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vEuT8mU5zwj23z5tjg7/0cCroKq2YLlwPoM85Ob95Js=;
-        b=a1AKBlkb+zbjKzr07CAkgRAWlSxhhCfxvhMVUJtl54NRRR3SzBFMSHkFXqxZ0CvFH0
-         iykelWeVpz5jqx2sWOMkX1zpUKUqmUlJumpneggyJocP76N5ObtIS9wLFaMZLQnSKl8k
-         zJmnek8cMvX7V0a3vUCT5uJvmpMYaN59HhNaRy7kNyoV0MPtM7nUss9WAw10rjZrmLRE
-         3r0PYgcK320mAkTBC9fQHgzs+zijdiSji4Zus1qJNscR2/NJKgnQEEkQ29WeXLoVUpeC
-         ufbYJLvUIrXy+hXWSW8pOTc3Ss5xLcJLKC3A+e6iw3AMoIesVhAWwOgTbTmE/vMR97gq
-         anSw==
+        bh=Z1PF3Clfdo+Tco3WNqFtoYy/JF/hr0CU+1k6e4Cd5uA=;
+        b=IikTLBYIJ3UzEZUOkfJOHUQMMAHVBUu/XfSXIWbKfOCLT5lHtMQwJg7p/Tex4pI4UE
+         KMDhIK8ycKaBG0BQkuG79sXLxQesdi+ua5JX9VqMMVZ6Tn5QCeE1aXAOafsJBS9FCE+U
+         5iVppExWbOj+k1RSS15gRii5AGopODkYiA/gTBqCc2KRjn9CUQkOP+WVCOxB0WGShpwp
+         o09SjqKQARalGUAuMGfCZmk4bq8q0DUsUWF8vFaI3GbpE3/Vm1VxQLuiLeD7je3a/1q+
+         LEATviFYHFJbeCahfAn/RJoDcCJ8RfEhvhAcEebI43QVcHaL4hf1zdrmfOqBghWeL5iP
+         Xp7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778594834; x=1779199634;
+        d=1e100.net; s=20251104; t=1778594928; x=1779199728;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vEuT8mU5zwj23z5tjg7/0cCroKq2YLlwPoM85Ob95Js=;
-        b=oszLFRTs9cYjgN6sWV8FLR3rmB3R/wXXXY9SK3u5Iuj8BRM1SFEwSX+lpj9wjDmaEm
-         dMlAOvo7WH2nSUDnMIRab4SXGDHKg24C1NOCqlZItjQA0fEu3p8PjpHxojEHI9nUiL2W
-         7Y4VmZDnVkya9Yo9/3e+VaYmAtzz84jAiqEpSPb+1ie7cu6SP/4epobtJJ2wK/G2TBuZ
-         hTIe9pymrfhB5ZziSx4xgCUyT2AfVaA4zaNcHK/dgkzDmDH6NylUHKAspeb7Te7iE3rl
-         DDOcMZ7a027kKGXZCuPfqYaaUUdwwoSgdDQEM43yGtFxZwJdh6dI0RaXK8yf7wxi6RIE
-         ufzQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/komwaTiNc8vaZ6vxDxjuO4jNLJedvIjjBGovep/qc+AHGiiSc/BB4gcUf/f9s2m8A5EAheIzg7WYH@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRwsylakdbwOgw+aagDyzIgmVO3YZ48dTmWWsTq1RaDaMbTRRH
-	5WPo56ZAEzYIbQDOBpDc96U0F2S2YDGkjoR5MxVD+vhXQfkZeD+qrL3v8IK7J+nq7ZE=
-X-Gm-Gg: Acq92OHvmbggEwve/Oinj4SCb+75PBaEKtyQueooQWOyHAD2W5JYrmLcO8cf7I9oGHK
-	8rzo7cTtEM+csCIX3uzVUaCYAsYI92pZtPdwouoEiXQvDciOzRMiSuiHABMZj5I0A4joA/MWPqT
-	P+W3zWugbtRLrqRfucEIoAfH2IRaA2KDmVlH7kGvV2zABvpFMbnlGdejW9QD8JWf49eWThle2hh
-	j4s2P4vBtNRxccjHyfrWqj2gmbcSE8FV7EMsqA/MV+/fG5feci3hYaxj/DowlHJIbLWMCrCAzDK
-	t5JLDLNNRFs0vCNslBMwIRVmhCq72GB+gwyPJqHySzvZojXbVlzAl/eRJhdZSYGq3wW7MSEddWB
-	FXAHJ4D8zZNkEfA3FCQpSo3yebTEb4H1q9fb2v6dswVvvNozoK4YGLRflEnaTY4gJgDQa/eZ6tj
-	pdB8mNKcjh0L9z2irc4+xqMigvLR2HE2QNpWs=
-X-Received: by 2002:a05:600c:8115:b0:48a:9540:1a3a with SMTP id 5b1f17b1804b1-48e51e196f9mr466793535e9.8.1778594834461;
-        Tue, 12 May 2026 07:07:14 -0700 (PDT)
+        bh=Z1PF3Clfdo+Tco3WNqFtoYy/JF/hr0CU+1k6e4Cd5uA=;
+        b=THQRjmotjh8MS6zLgVLdzke/ltW7ZnKRD1F1XCgVX2pWqLf+qstsf/9CLOtYYVGa0b
+         hDK0W/JseeZ0VA8jTfWfvo1vD+55GFLnahMCQqgbRJB2oe7GMK9xSZyyi/eG56+fI3dN
+         SW6ItKcVArPeFZpE+1cTAh5LJXP3+A/3TGiXYQ7DzXwS0JbdCtaraUiyjXgErEmL2Ckt
+         bVzo0VG4R2uYTPEzA8G8NW2a6K+EkeKt1vNn+4LfMF1s0kPUCAxElbVMyjwlelreBdoR
+         ioBT51rNJTSdNt1neT4Ep2bgn1MO0AmOo7dVLQev1bFNTUa8OHjRHeQcZHBP++80f4dd
+         +IwA==
+X-Forwarded-Encrypted: i=1; AFNElJ892enIkMOLyVVXeL11pYfk4O7S+ZGLh4QxB4OWrsMumSNLPEzr3vcfWqCS3FCIIbakwRl2QR/HYDmK@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZwYxZmmJeMmqtOK59oUgOqa4PnIt/UAdIy1NDgmtadvwHkU9Z
+	fUFROrHZzF9MEZ1JlFY3irc2qEsa1zst7pd5j9aPQ04DKLVSxk6oa0mvzDxnmlDSlAs=
+X-Gm-Gg: Acq92OGUyog9TtcyIFYQvvtgYZmrnys1my9rj2pxRDRYFJyHgUE6PY0yC9NO4uE8vSg
+	XLKsbkq+QSjKF7JGXFM0NunPf6LLxOO0jMI0H2X9KeEB7ALf1Q3aKGBcHaezR9cpOChciz1bunb
+	x1PIN1p8d35VfjnPOHxcBsTjVv7sjzDmoHO8jvWzDrViNOEL/vJPGJPht+s+xM/tWsYek6dJnUS
+	au7NrryMw1QaTKj6nt38fshiNCcE2Cz/5XoQJIYEFMweD9mHLYpsNO2XO3GXvwfDBkMfErGkV8E
+	e8E/Zr5oFO12BO0SD5u3IwGqZhXuOxZG4KyjquF4RX4Jv9MPA6vD/KP4S4D8eRn+SRyVbEmXWd/
+	peOnNjGqL5HVqW16SI0tWcmx6XTyXrUKSQvbsmF39y8S2HJz8vJdcVrdEB7NHrM1tLk7rW4RwgN
+	aMeSSBFrqQC0Mu6/0MsKFwGMDXmCcSFULGZ1ysmwQmOMc3MA==
+X-Received: by 2002:a05:600c:34c8:b0:48e:8741:fd3d with SMTP id 5b1f17b1804b1-48e8fe71c0amr6921865e9.14.1778594928368;
+        Tue, 12 May 2026 07:08:48 -0700 (PDT)
 Received: from FV6GYCPJ69 ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48fc8d19854sm520285e9.1.2026.05.12.07.07.12
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e8e5fd648sm19804935e9.4.2026.05.12.07.08.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2026 07:07:13 -0700 (PDT)
-Date: Tue, 12 May 2026 16:07:10 +0200
+        Tue, 12 May 2026 07:08:47 -0700 (PDT)
+Date: Tue, 12 May 2026 16:08:44 +0200
 From: Jiri Pirko <jiri@resnulli.us>
-To: Parav Pandit <parav@nvidia.com>
-Cc: Mark Bloch <mbloch@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Petr Mladek <pmladek@suse.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>,
-	Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
-	"NBU-Contact-Li Rongqing (EXTERNAL)" <lirongqing@baidu.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
-Message-ID: <agM0DsiaAH8-Ox7N@FV6GYCPJ69>
-References: <3f9215c4-7c84-46d9-ba74-30dabe24db09@nvidia.com>
- <afxvzOjqw-vxUAED@FV6GYCPJ69>
- <b6a9b568-dd09-4414-be57-6b9cd282a43c@nvidia.com>
- <af4lBIJdCuN5VKq_@FV6GYCPJ69>
- <20260508175213.1952097f@kernel.org>
- <af7Y4AYv-XDCbK_8@FV6GYCPJ69>
- <580a774b-ba9e-4523-b43a-476f75dd5b12@nvidia.com>
- <SJ0PR12MB68068C50EE9776A3D9060635DC382@SJ0PR12MB6806.namprd12.prod.outlook.com>
- <agLoeZtsSizR-R24@FV6GYCPJ69>
- <SJ0PR12MB68061C61AA2BF5D81005984FDC392@SJ0PR12MB6806.namprd12.prod.outlook.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+	edwards@nvidia.com, kees@kernel.org, parav@nvidia.com,
+	mbloch@nvidia.com, yishaih@nvidia.com, lirongqing@baidu.com,
+	huangjunxian6@hisilicon.com, liuy22@mails.tsinghua.edu.cn,
+	jmoroni@google.com
+Subject: Re: [PATCH rdma-next v2 1/2] RDMA/uverbs: expose CoCo DMA bounce
+ requirement to userspace
+Message-ID: <agM0bHFFDnSBL8RK@FV6GYCPJ69>
+References: <20260506111447.2697789-1-jiri@resnulli.us>
+ <20260506111447.2697789-2-jiri@resnulli.us>
+ <20260512130329.GU15586@unreal>
+ <agMzG-ZX6TRoikrI@FV6GYCPJ69>
+ <20260512140510.GA7702@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -123,104 +99,65 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SJ0PR12MB68061C61AA2BF5D81005984FDC392@SJ0PR12MB6806.namprd12.prod.outlook.com>
-X-Rspamd-Queue-Id: 86D4E5232BC
+In-Reply-To: <20260512140510.GA7702@ziepe.ca>
+X-Rspamd-Queue-Id: CBFF1522D13
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20494-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RSPAMD_URIBL_FAIL(0.00)[resnulli-us.20251104.gappssmtp.com:query timed out,resnulli.us:query timed out,nvidia.com:query timed out];
-	RCPT_COUNT_TWELVE(0.00)[32];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20495-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,resnulli.us:email]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,ziepe.ca:email]
 X-Rspamd-Action: no action
 
-Tue, May 12, 2026 at 03:48:32PM CEST, parav@nvidia.com wrote:
->
->> From: Jiri Pirko <jiri@resnulli.us>
->> Sent: 12 May 2026 02:16 PM
+Tue, May 12, 2026 at 04:05:10PM CEST, jgg@ziepe.ca wrote:
+>On Tue, May 12, 2026 at 04:03:07PM +0200, Jiri Pirko wrote:
+>> >> @@ -1419,6 +1421,10 @@ int ib_register_device(struct ib_device *device, const char *name,
+>> >>  	 */
+>> >>  	WARN_ON(dma_device && !dma_device->dma_parms);
+>> >>  	device->dma_device = dma_device;
+>> >> +	if (dma_device &&
+>> >> +	    cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
+>> >> +	    is_swiotlb_force_bounce(dma_device))
+>> >
+>> >It is the wrong place. When I worked on my DMA series, I tried something
+>> >similar (a call into SWIOTLB) to notify users that RDMA would not work.
+>> >
+>> >The general feedback was that this is a layering violation, and that any
+>> >knowledge of SWIOTLB (and its API) should not leak out of the DMA API.
+>> >
+>> >You shouldn't call to is_swiotlb_force_bounce() here.
 >> 
->> Mon, May 11, 2026 at 08:21:37PM +0200, parav@nvidia.com wrote:
->> >
->> >> From: Mark Bloch <mbloch@nvidia.com>
->> >> Sent: 10 May 2026 06:02 PM
->> >>
->> >
->> >[..]
->> >
->> >> > I look at it from the perspective that from some CX generation,
->> >> > switchdev mode should be default. So that is a device-based decision.
->> >> > I believe as such it can optionally be permanenty configured (nv config)
->> >> > on older device. Why not?
->> >>
->> >Because sometimes switchdev_inactive is needed and sometimes not.
->> >Such knob is not device decision.
->> 
->> That is what I would call corner case. In that, user can use userspace
->> configuration to change the mode in runtime.
->> 
->Corner vs common depends on users one talks to. :)
->If fw has switchdev(active) as default, and then 
->And user needs to run switchdev_inactive, it will actually break their switching applications.
-
-Can you describe the actutal breakage please?
-
+>> What do you suggest as alternative? We need to somehow tell the user
+>> what is the situation.
 >
->So, one needs to invent switchdev_inactive in the FW.
+>For now CC_ATTR_GUEST_MEM_ENCRYPT is likely sufficient.
 >
->Jakub's suggestion in this RFC is covering both the scenarios uniformly without above problems.
->Single uapi for all the cases, so looks good to me.
->
->Moreover, do not understand how alternative solves such problems.
->i.e. user is unable to configure the fw because driver is not yet loaded/up.
+>Later we should be able to detect if the device is in T=1 mode
+>directly.
 
-See my other reply in this thread. I don't think there is a need to
-configure anything in FW. If we fix the behaviour in switchdev mode for
-non-sriov user and change the default, no fw knob needed. What am I
-missing?
-
-
->
->> 
->> >If it is placed in the device, orchestration needs to yet use additional vendor tool to configure in the device.
->> >And that theoretical tool cannot even run yet because driver is not yet loaded.
->> >
->> >That sort of defeats the purpose.
->> >
->> >> This is a deployment policy decision, not a permanent property of the card.
->> >+1
->> >
->> >> The same adapter can be used in a regular host/RDMA setup or in a
->> >> switchdev/offload setup. If we store this in NVM, that Linux switchdev policy
->> >> follows the device across hosts, kernels and use cases, and can surprise the
->> >> next deployment that just expects a normal NIC.
->> >>
->> >> I'll send another RFC v2 with support limited to:
->> >> devlink=[...]:esw:mode:{ switchdev | switchdev_inactive | legacy }
->> >> and let's see where we land with that.
->> >>
->> >This looks elegant to me as well covering all eswitch modes and still sw is in control.
+Okay, so we assume for now that every device is T=0 (which I believe is
+the reality). Once T=1 device appears, it changes this "if statement".
+Do I understand that correctly?
 
