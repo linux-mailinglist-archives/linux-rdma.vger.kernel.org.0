@@ -1,119 +1,108 @@
-Return-Path: <linux-rdma+bounces-20475-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20476-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iMgZHff1AmqvzAEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20475-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:42:15 +0200
+	id OL1gEw//AmrTzQEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20476-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:21:03 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23DC751DF47
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 11:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 349E951E72C
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 12:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9559A3008D77
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 09:42:14 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 753D0305BFA4
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 10:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AF93B7B75;
-	Tue, 12 May 2026 09:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PCPLz2ku"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE086349CF7;
+	Tue, 12 May 2026 10:17:39 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003C025B0B3;
-	Tue, 12 May 2026 09:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9011A349CE5;
+	Tue, 12 May 2026 10:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778578933; cv=none; b=s5AA3ygGTAtlhP8RwDxcjimR2n4ZBbv66KEVmwMU9LMBSlptuJNFrAzG7qel82vYEmmU2S2ipuwla1ZlzuKiFGH9hlvp/EPxyXVeRmvnO5wggbGz38PcUkxoChH8s/wdeN9SUU2SfdZQBXNy9YxN1yvcWKxOAZ36xNWYhyq0CfE=
+	t=1778581059; cv=none; b=mMtBleyae2Yd0xszi9jRI+w0K9hMlX2WHFKCVHvy3xqy/A8HIuTFP8i+bIBt9CSP1kP/Fo9G+hJHKmLaIPxT4Q+JvDaSEoDTQ17Qh0Rbbb850OxA5uNLNFxGJa93/xBK/5U61+yQnGcZrfQMeNlCvRT9u6NzB8PFSZ/jlVXruQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778578933; c=relaxed/simple;
-	bh=h01wSVlOKeL6zz90a+6NC126jPSw8lwXIHFZEz7QtI4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EwsAzBnfeAHnH1Xph7ln6DYP53fJmpp2e8Ppq62MRnk0M3/Ul2/wwk9RNxnJKrw3iL7cDQyyGOSzgHLKlTLOeIw3rl0PiQUrYnNc+C4XvIzGqIcUNI4jo1zNWBwmU3TY2/bpKBjTjSHrqiY7CCU3Ti6ikkAwiD0yVayClhn+cT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=PCPLz2ku; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id C059E20B7167; Tue, 12 May 2026 02:42:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C059E20B7167
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1778578929;
-	bh=Sx/71IeY0S0zRcEMYNngeq6KBWhOETCNBtFrzTg0f84=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PCPLz2kuxLtK0Ko9JavB0IoXoBvqFIxGD9ZvVQ1aF7t9FeJsoerbB2byY3lrxy77O
-	 g1MBlaXdDuV+3TJ1K0CvtKilj0iyHMbFJ6OQtcoG3Cd9VZ8ciQlpxMgwesn/hBOP6r
-	 8f+5eCQoGjVrwPxMFpQSMC1y25bVnANCcVETM1XQ=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	shirazsaleem@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/mana_ib: Report max_msg_sz in mana_ib_query_port
-Date: Tue, 12 May 2026 02:42:09 -0700
-Message-ID: <20260512094209.264955-1-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1778581059; c=relaxed/simple;
+	bh=hzU9k6HaHL1llKdrLAId26dy9cEGrc2zJdgulN8HJIo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=RttAd058Bw7aKol0Q+amH2zXUS3PfGE99KdEtqbUQErnnriDCBmmpeazv+Yzo99JkA0nYGez50SuUY1KCv75BGxZso+99Sk2taVuKVq5oHkdL8BlComEDgScH6HNsdpo6ytQNAI66Hja4Rxte3YfEUY4TvLV3uQjzJyH8byT4tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 2286392009C; Tue, 12 May 2026 12:17:29 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 1D9D592009B;
+	Tue, 12 May 2026 11:17:29 +0100 (BST)
+Date: Tue, 12 May 2026 11:17:29 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Leon Romanovsky <leon@kernel.org>, 
+    Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+cc: Bjorn Helgaas <bhelgaas@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+    =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] PCI: Export pci_parent_bus_reset() for drivers
+ to use
+In-Reply-To: <20260512090006.GQ15586@unreal>
+Message-ID: <alpine.DEB.2.21.2605121104560.46195@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2605050042390.46195@angie.orcam.me.uk> <alpine.DEB.2.21.2605050051390.46195@angie.orcam.me.uk> <20260512090006.GQ15586@unreal>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 23DC751DF47
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 349E951E72C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20475-lists,linux-rdma=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kotaranov@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-0.999];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DMARC_NA(0.00)[orcam.me.uk];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20476-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.microsoft.com:mid,linux.microsoft.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[macro@orcam.me.uk,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.993];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-From: Shiraz Saleem <shirazsaleem@microsoft.com>
+On Tue, 12 May 2026, Leon Romanovsky wrote:
 
-Report max_msg_sz for mana_ib, which is 16MB.
+> > Export pci_parent_bus_reset() so that drivers do not duplicate it.  
+> > Document the interface.
+[...]
+> 
+> I wouldn't recommend doing this solely for hfi1. The driver is likely to be
+> removed or significantly changed soon.
+> 
+> https://lore.kernel.org/linux-rdma/177516078937.637585.1447184858924347033.stgit@awdrv-04.cornelisnetworks.com/
 
-Fixes: 4bda1d5332ec ("RDMA/mana_ib: Implement port parameters")
-Signed-off-by: Shiraz Saleem <shirazsaleem@microsoft.com>
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/main.c | 1 +
- 1 file changed, 1 insertion(+)
+ Thank you for the pointer.  FWIW as per the cover letter I have no own 
+interest in the driver and offered this cleanup as a general code quality 
+improvement.
 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 9af92a4..4c211ac 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -638,6 +638,7 @@ int mana_ib_query_port(struct ib_device *ibdev, u32 port,
- 	if (mana_ib_is_rnic(dev)) {
- 		props->gid_tbl_len = 16;
- 		props->ip_gids = true;
-+		props->max_msg_sz = SZ_16M;
- 		if (port == 1)
- 			props->port_cap_flags = IB_PORT_CM_SUP;
- 	}
--- 
-2.43.0
+ Dennis, please clarify your position, and if you'd rather this change 
+wasn't made, then I'll drop the patches from my local verification setup 
+and won't offer them again.
 
+  Maciej
 
