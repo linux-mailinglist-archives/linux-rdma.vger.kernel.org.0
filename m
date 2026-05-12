@@ -1,177 +1,166 @@
-Return-Path: <linux-rdma+bounces-20504-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20505-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kHisCSJXA2qh4wEAu9opvQ
-	(envelope-from <linux-rdma+bounces-20504-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:36:50 +0200
+	id sO1gHz9cA2qE5QEAu9opvQ
+	(envelope-from <linux-rdma+bounces-20505-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:58:39 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D075B524D83
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:36:49 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F5B9525478
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 18:58:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 165F530A642E
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:31:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0B0E4307B02B
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2026 16:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EEAB3D0BEF;
-	Tue, 12 May 2026 16:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2BE3812E3;
+	Tue, 12 May 2026 16:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtX4F109"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="YCPSgTvZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8583CF94E
-	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 16:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.179
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778603470; cv=pass; b=VqcjclI5ST0GjYq+3XL4rp1OSPgpOjiZVlfxqiOT/DBgHqkLDfZUVSOkBBq6LKR9UtswVXnwK3VDF90q3iKlhQhn0DXCT90k7a7bvQwv2EGOdkKPmuJ45lGdluTAbG0IfqSUFQ4rgC+oDRF+RUnACgFR44MtaLb5d8k3VVV6yA8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778603470; c=relaxed/simple;
-	bh=KxbNz6KofZwplC6xddwMYtDl8wBQ5ksp1r4oiCLjhbM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o0Raq57ErEfouomlorYCSGm3PYjhm400znpch1kiBCD/fKlOgohPUPxVcL8gWIgCqRJD7sSETY9XdR2qzrhzPvYnX/e4KaX7eByNlQxtRCMCe6mPgwpQi55a1ipGT0tf3kliTTxixkIDD8hqGvL3Ndp7CZe4B1w5r7lr1ZeKOFA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtX4F109; arc=pass smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-7b4ee3a88e1so58896247b3.1
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 09:31:08 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778603467; cv=none;
-        d=google.com; s=arc-20240605;
-        b=F1MfJ7lxy3BjUG/fPUeDgSCCxO0JlxVIaRlisKAUOfydS0Kv5hDra64v9naNm2NRgO
-         Z0ueFaNazmd/4vyhaOE21rlrkmlzWdtLfUyrTb/BWMKgXDzfmLSTWEmD5dJOTOpygBVv
-         Rgz7ALOBQxTKzSsh3fCxjH2/Zl1vSoMZbbH2xFNpJy1M+FoTfxAZn7excZgDiwYA4g6R
-         pg2u+IKCK1vbrTm/BfDU9N4ZkFENrR8zeKIupEyjyAAI7teMRGloilDUClNRzTUdWDyj
-         JzM3jkGLz7gGL2Mewe4rGSIvUD1li+ts/8RHDZSnBO6Ram7Fo+4n/NjwV4+QTiHzP19S
-         kpOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=C1AfrbvRUgp18Ab7cnHdWQ5A8b69jjesb+Ro7fndglo=;
-        fh=m2FoEV9xZX/2zNZ8BidYb3ksl0OcB8+u5Dd79MbuR/M=;
-        b=cyVmB/AsuxDLfARlqJil6TcSby9QeWFLk2RALyB4mUXiCny287oqMNnHZujvw99FCM
-         g0NrX8XRk7o+bBUrWRC5ZGnuYq5k2WVBgoFRcQuBMOk0x+frhxqUIYOzJ6GWYE0mqegN
-         vAiX0Hmy77t617PypDQ1mhAlLmowjyFTYSdFh/XsHadkpvb3y2IIe/9pey3GIp5sUgiZ
-         7VOB3jHpxBe0z4xG9K05WYIMjoqg4ZL4kmWQP8x7EUHV6CQZs+7OTB6ZlwiqCYXNrYrL
-         g8trXfEntjRXJuQvL3cPXO6YIDSE7mQRNb3+AvybUSdHxaR5fAmAwIFGo64yXkv4bC/C
-         MS/g==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35AF3D45DE
+	for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 16:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778604817; cv=none; b=ByV//oyqei654V71IzisEd/TwyjErRNl5XdWoAF0tmdt400n+r034lXL59gdsyCxtwUKxYIgF6sVRaBZxG3CzCYL/+0wMNqGu4X03ioMBPE3KRJ5TZzY8+rj0pt+YNjmKdWG9q2zbDcCyRhXYOAumRcLx1Aij9iF02heXrZaGzw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778604817; c=relaxed/simple;
+	bh=rG9DO6/gmWHz28jvfSltCsLoBN4ZhvPxU8qy9LstV8E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N0ovFm4UE+ON5i8JYf3RuLd2m6O2dMsHIyMxt/B+Uy+xOMEb0YtP79J7zk5pp92OPBNNCNy/s6Pb8NS5zXJ2ZJ3bcejHfJBbfrfMP4V6ZMync/CZCkKo1dKe/AaP4rdUNql/0ooXiUsiY7Cu3gBskVeemALt6UCZ4NAa7VUMOqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=YCPSgTvZ; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-90eb7a63a30so32241485a.2
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2026 09:53:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778603467; x=1779208267; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1AfrbvRUgp18Ab7cnHdWQ5A8b69jjesb+Ro7fndglo=;
-        b=DtX4F109NAIvtCxbiu+RVbUwe794jH8DEbm28hqsVVUFSJqsh3DUjZ20RRgOmNg+tz
-         WZb7rPRZahtLObROKgD107KkE07uR6QVS8sDUrD4uD4dyB8Ywq6EX2RixGSlHI/n+56w
-         kQYaa2+L53VZg0YlXlrWxvF2MDUYfSkTpiz6KJlAa0RErIDb9jWxdM3okwPL4pwk6uOR
-         budZOwl7Wm+yapwb0+76fW/1Dx5+IHNtOmJDY/3FLvQ04/XlUe9KRXc0G3u7rci3Dql4
-         lfZKg/5cOkGviQj8Y9XnbHiW+5t9Q9vHT+Tt77A7V1FUl6aU1JPYjLEct9FXlB8En4iw
-         +24w==
+        d=ziepe.ca; s=google; t=1778604815; x=1779209615; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R2r5zIqJqLi1VU5+iH1+k500ZCWysCnfLC66P4+aXNI=;
+        b=YCPSgTvZdnkWUXxCA/o38A51cC8ToMtcuBwC3xoPP836wS6UfwzqmbZGPM0Hjj2KSZ
+         sQzAGTMiCzbtj6Xld99OVdD//XKTa2ofxaUrk0SACeBW4fwq2+KuNIKdWkAEW7xMdy5P
+         vRTZ9uQjAjOvKU890QIULf5ALqr3pIY6YzHeGOet0/qUrRY/bVR7yzCSJCGWf1si3UVR
+         BBW9N3FOcjFF6eghhlCCjFULAJKqgM2RRZwSTx/SCg5lfd7RxVI5CwuvVnNaW/97h4mY
+         5APE1we10nw3WCkhKAusWDcm9Gs5PNQ/qFVvaqDnAKOUOV+VrIhVDR79PAI5zac5FDYd
+         TiJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778603467; x=1779208267;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C1AfrbvRUgp18Ab7cnHdWQ5A8b69jjesb+Ro7fndglo=;
-        b=R6KbiJlKYcV7wGIs3W89HeCkUCcH7EBYtRciVZo195uekYzdbsLyNk+BnDyQOpocwJ
-         ZX9x30VfB/y4JKXoW/Lb5OMuHocGLn0InKZZ9+E988iSXyinw0N7kp0KXkxunb4iQf0d
-         yKOUShVXtzrJ3laSkuCGvHCeDpxxrNLHAxP2H2QtMM/8HV15fsrKUx4++gQAPw2NOV5w
-         STSGxAJ9BqhQoq6bKmK8FVRd8Js6QK5w1ur/FYQGtjo397fI2sreEOk9EvpdKj3yEk7Z
-         q95vJx9ciOv19Vf8BqMWjMDwr04m/HFvMtHmnmURSSVLhquyGuftuyP9ZZY+5HpvbBp0
-         +8Ng==
-X-Forwarded-Encrypted: i=1; AFNElJ9O9A3/lFtmtLBsfy4RZWia1tP+ZlGIy0U2cWvUE31UtByFmI5uU86Cznh8IJxEoL8Eixy3/9YSPe3X@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMCtAQg9P18UGpgY+id9nuWC4X2TyUJWR8wxh45RQTe89egaE7
-	GaO9mQESKC1EKRKYdqjqFutXKF52aClMr0whRfkpMZW/OdVBif1XxUDJzuXcDgH/uyAY3nckYHB
-	JDcaUkg9UAGYi/O1Lwm3vzE9wn0KRCcQ=
-X-Gm-Gg: Acq92OF6EkraJjhTT5sWjJQIP7DoD0tiRVCzby/7FkooAGDRTmMaO0weiukEdz2inBm
-	I8W9u959ZiXnThmt7EjXqkLjxNfGr//SMld7ixXccImqzW9NFpMw7TQtb9UV35VNFq6GRZ6gRAZ
-	JdB7ySyAYASEk1pl8YiUrtk455biHlbiL5TeOhstutKLxkyIgcB9+1uKQDNOIWibcDbhxBw+5qQ
-	Xi117+HG0T3nq0WHkS4Yn1TRFYffuKtCrytSdFufVs8vyEoIoEJtk/sFoS08BK4JLfCJJimHNGL
-	G5gBcIZ8
-X-Received: by 2002:a05:690c:c4d3:b0:7bd:6114:4002 with SMTP id
- 00721157ae682-7bdf5efc9a4mr317364907b3.40.1778603465678; Tue, 12 May 2026
- 09:31:05 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1778604815; x=1779209615;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R2r5zIqJqLi1VU5+iH1+k500ZCWysCnfLC66P4+aXNI=;
+        b=jysAqqD3xcoqqrGBl1R+gdgNUnjdiuu8YXcCRNON6Tqa6dZstVA3qmBVP70uw100sP
+         F5TsTuXkbkps0o/f9fr72FOkgVjIJEx5hOaKPWh8zfqXbmZ3qK7rKDwqbFsmzqYkWzbO
+         gre8f9LiDxTovaSOYp+0ZP6K3hWCeTa/EvrSVrYJ1+aXMb2leDtuEFfACrubRdV8zFRT
+         MyyOYtuaL96eUEiRKQZv31rhSuswJ3l94kcIxV2awT6w2Wz3ZfEWgU8wMOd8yp9kAtlT
+         46uP4qjyu0Z1UoJsV/6VaU5lpygsaadXHQ0CoFy82/RtCa59LTB2LeHjfBQRn7lE0qot
+         nEWA==
+X-Forwarded-Encrypted: i=1; AFNElJ+mrANn1QLT01bRrK579YeYZsBocew4h/dUgFqiHfIfy34Qf4NxUFy2X9MI5EceOJIxFgdDUYTAQM5K@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxx9UEYUUvh3l1gtRX6DG6W2FJ+CGAd/tjU/PfJbJLApYgHt1kz
+	E2ooF8PwBaPolzM1LSWsXa1V/hGsxpIMefkYQY92orEpsFXPb+51bmzLEhvJ0xGNnkg=
+X-Gm-Gg: Acq92OGvI2Fqw+AKzMQduYJPGzua92rigvzBKHxeNRX9OVxQRaeLsRpubhHUJZ4zgSf
+	xwh53qDpypoWwDW9yzHt0CkZ1R3gLAexrN+Zy5E0pJZZmd/JfgKWWxPaNVNGtWmzkbr6+Fn4MAL
+	PcSvH6pLzpcbyF2IUxCT2TY+tq9Y2zOYS3Y+5N3ud5nJRNTJtGHUvSRS4qRtDv2sAM2DM06Qkmf
+	Q10H2qMBsMW+xPMyBZ4wvYN0wKxwN0hQ4C4PQd1tkFoZomf/xuIuisOO2EjOheRGBaob86g4YVV
+	HNofjYGps/g4s98GxKSuJKUu9MnGEyqjmSkAFmEmESIgpEjEnaLw3KiFHwTADLaoepiuDMhj3Is
+	cZbZgvaFRRbMgmHNILemUY7Q+U6ivTjjOvDJRI2CE/WpLRHzi2ZHuSTBbdZBvplDKNSG1Rl1CrV
+	U7rn8NqEmw4sN1B9g4M3GmLAftVYFm0t/f7HdOoV7/caGC+HTn60+4+D5Y7KLzRZmJfjQiiIjJs
+	lDLqQ==
+X-Received: by 2002:a05:620a:4692:b0:90c:c513:2b1b with SMTP id af79cd13be357-90cc51330b0mr737690885a.16.1778604814673;
+        Tue, 12 May 2026 09:53:34 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-90cb4181d2esm335450985a.37.2026.05.12.09.53.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2026 09:53:34 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wMqMP-00000000K7Z-2LsX;
+	Tue, 12 May 2026 13:53:33 -0300
+Date: Tue, 12 May 2026 13:53:33 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH rdma-next v4 0/7] RDMA/bnxt_re: Support QP uapi extensions
+Message-ID: <20260512165333.GG7702@ziepe.ca>
+References: <20260508085858.21060-1-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260507095330.318892-1-tariqt@nvidia.com> <20260507095330.318892-3-tariqt@nvidia.com>
- <CAMB2axOFQN2f=veYgeJs+4tbZmb9PuNHk03TH_bmE8UL_REd7w@mail.gmail.com>
- <b1d3f9bc-a5d7-4236-8bda-49e6327ee533@nvidia.com> <CAMB2axPNhveQaDPs-ttu4uFcpvAfJCdzJ3d05HWQf4+p7uVUsg@mail.gmail.com>
- <70d0b319-178f-4233-b0da-9618489a1dd6@nvidia.com> <CAMB2axPdqBUORn7Qy35Xccqbn+8aArZ-weegZyz=j0STh+iPNA@mail.gmail.com>
- <6b7998e7-b2c1-4650-9564-679d647146cf@nvidia.com> <ef926d49-81d6-4d26-8d74-440d4a6bb8b1@nvidia.com>
- <CAMB2axN6USwsGaUQWkL52G=9V=kSe2La_gE-ppOFLWbPCnaVKQ@mail.gmail.com> <47630ed4-3028-4716-816e-d4f803423b37@nvidia.com>
-In-Reply-To: <47630ed4-3028-4716-816e-d4f803423b37@nvidia.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 12 May 2026 18:30:54 +0200
-X-Gm-Features: AVHnY4Iek3R7CeWvC2rdxFfQ-Vfu4nQJysvyR2_rH_vMG7nCcg0y19mJ0XmkmAg
-Message-ID: <CAMB2axMOWSsYGyuXOnCQUrpCTGJa_Yy5mKOxErX7N2x3BTLKbg@mail.gmail.com>
-Subject: Re: [PATCH net-next V6 2/3] net/mlx5e: Avoid copying payload to the
- skb's linear part
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Christoph Paasch <cpaasch@openai.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: D075B524D83
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260508085858.21060-1-sriharsha.basavapatna@broadcom.com>
+X-Rspamd-Queue-Id: 1F5B9525478
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20504-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20505-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FREEMAIL_CC(0.00)[nvidia.com,openai.com,google.com,kernel.org,redhat.com,lunn.ch,davemloft.net,vger.kernel.org,iogearbox.net,gmail.com,fomichev.me];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ameryhung@gmail.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid]
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,sashiko.dev:url]
 X-Rspamd-Action: no action
 
-> That would work, but maybe with one less conditional:
->
-> if (!len)
->         __pskb_pull_tail(skb, min(headlen, skb->data_len);
-> else if (len < ETH_HLEN)
->         __pskb_pull_tail(skb, min(ETH_LEN - len, skb->data_len));
->
-> Tariq suggested to make sure that we have an xdp selftest for this.
-> Will take it as a follow-up after this series.
->
+On Fri, May 08, 2026 at 02:28:51PM +0530, Sriharsha Basavapatna wrote:
 
-Sounds good. Make sense.
+> Sriharsha Basavapatna (7):
+>   RDMA/bnxt_re: Refactor bnxt_re_init_user_qp()
+>   RDMA/bnxt_re: Update rq depth for app allocated QPs
+>   RDMA/bnxt_re: Update sq depth for app allocated QPs
+>   RDMA/bnxt_re: Update msn table size for app allocated QPs
+>   RDMA/bnxt_re: Update hwq depth for app allocated QPs
+>   RDMA/bnxt_re: Support doorbells for app allocated QPs
+>   RDMA/bnxt_re: Enable app allocated QPs
 
-Thanks,
-Amery
+There are alot of scary sashiko warnings, I stopped at this one:
 
-> Thanks,
-> Dragos
->
+https://sashiko.dev/#/patchset/20260508085858.21060-1-sriharsha.basavapatna%40broadcom.com
+
+ If userspace passes 0 or 1 for req->sq_npsn, qplib_qp->msn_tbl_sz will
+ evaluate to 0.
+ When this QP is used, userspace could trigger the kernel's send path via
+ ib_uverbs_post_send(), which calls bnxt_re_post_send() and ultimately
+ bnxt_qplib_post_send().
+ In bnxt_qplib_fill_msn_search(), there is a modulo calculation:
+    qp->msn %= qp->msn_tbl_sz;
+ Could this unvalidated req->sq_npsn lead to a divide-by-zero kernel panic?
+
+Please go through them all. Fix the things newly added in this series,
+especially the uapi issues like the above
+
+It points out a bunch of pre-existing warnings too, please prepare a
+seperate series to fix them, it can go after this one.
+
+In future please be proactive to check sahsiko.dev don't wait for us
+to look on it.
+
+Jason
 
