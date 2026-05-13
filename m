@@ -1,233 +1,307 @@
-Return-Path: <linux-rdma+bounces-20574-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20575-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CENRJ29zBGprIQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20574-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 14:49:51 +0200
+	id MLQaLtN6BGrMKgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20575-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 15:21:23 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13EC553352E
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 14:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 724A3533EC8
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 15:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3FAF5301233A
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 12:46:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D1B6530B4672
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083CC421A04;
-	Wed, 13 May 2026 12:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A05026CE1E;
+	Wed, 13 May 2026 13:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SHWAuJwT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LyZ6H2/H"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012005.outbound.protection.outlook.com [40.107.200.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1743942189F;
-	Wed, 13 May 2026 12:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.5
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778676364; cv=fail; b=Qf3HbcsiAfP86XmTPOo+vkQFrE/QE1eezO4NvUDeoeNGtZwBFEoMBzTl6Y/QfWz5rBjbeBLbqoXO3xlp7I7po5qjn4U22IYOsBCZjEuhndKZwd91DOlNiLACtogoFeLViv7uQgxDhloUKoiCLaxrxbW0B9rVoe3G6YPXzX7e4eM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778676364; c=relaxed/simple;
-	bh=V15wS9spFkiWUx1/5Lqc7+r1TH5sa1C65lZ8iMdHxKM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rjgqSrQviLJIKot0UZgCmVZ7gNA/kAx9JSXbs/VVtO0aoPhI68c6VGZV7h/OnRatGPU+xmfRfdkuIi6U2bZ/tBOAOZ7o2iH1JkEJWlaF/erDMZ3N86OHe9+JgxeeE2d3lWTAexrONPOJtDjEO8ha+sLPrad5wGRT/AJKqvlpDtc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SHWAuJwT; arc=fail smtp.client-ip=40.107.200.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=uXNRYViPmFemEAusL4GHhKEu6b6T3BYpki87mGgyWi71pVITYPT1EsIIbKIgu1ndpC3eLmZGJAyDC8bag8xQbydeotodpvMCQVjSYBqB05I92CBtodft+0fvJWj/Qd/HC2Npg64ocC8YbJKQQ0+gMhVaEn9d0atCbF+rbOdFrcyIgUmS1GO7RDY4o+xLjL9mbeeVUX87wAP9UwkrmsECxn8nvirqiYzG11ErOOexCHakUPrWgBIZGCyucBONo20TL79j5iQ9vavDoVJfpsQGTDTgyX7P9txdd+7RjMPmUbBju1DlDBgprr36tFURV87ANHjUypL0eXt0lsQkKEQuGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hWfqBPBc7Ui74uY4hnkbq1n6JVGL2IGW0/e3F37VFGA=;
- b=VP2ZfaLaG7YwWqCnJUE+zJGwonc18rrmZFYy3mBi9gcvtz9EIFdsYU2dNMRWeEXgw6OhHfRyb03H9eqNw5aD34bb5q6lTWkad9wVvtkj50fq3qLUg8KG9zMzW17k+XH9RMRTgQwtCmW3PAeujLxXNED6/0+w1eh8OE2jjlZsdW+u71jBOI32K16QCUMJPdQJRQl8USIAESL88v6z0+7+mDbVbWujg+XMXiGcL7QeuyZFFVXRUE3qDHo65tsGYjoKzWSSIMOXAAGwSDPwFZlPx+V14EpL5oXmhk9O0uQWfPtrpW0/5/EVfVmJWKGIQLKabJ5MqOOL3MnI9j8ncS/KPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hWfqBPBc7Ui74uY4hnkbq1n6JVGL2IGW0/e3F37VFGA=;
- b=SHWAuJwTDUnjL6+p8A0FbTRjuiW+rj1FcqE8tK4n+0ApvnL0imjcmO0le4Tb3vaTGcW8a8/bbBFlpw2IgIgJV+KBCexikE5dSU+pWHnBXPO75W1Vztx7B+rq5H7iS/DbRrxIYvVAlyyJhb/b7QSzTBSD1mozdRLPNmdckL1qBCDMi/7OdAHQ1iMoh4hk0gnXOakoB/pO6+sWgYR39+EWMUNUVAQPzNu3G8djEIGbDMqp12Hri/QyWWSTAQCjc9b1o8zd/DUvL2iXl9ctLtMMr4wC4lippTKzwF1HTMHfpOekjG8/LQh+JI3gpbCgnGspAl9DsgjxFCmx3fwtZhRP+g==
-Received: from CH0PR03CA0246.namprd03.prod.outlook.com (2603:10b6:610:e5::11)
- by DM4PR12MB8475.namprd12.prod.outlook.com (2603:10b6:8:190::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Wed, 13 May
- 2026 12:45:52 +0000
-Received: from DS3PEPF000099DC.namprd04.prod.outlook.com
- (2603:10b6:610:e5:cafe::48) by CH0PR03CA0246.outlook.office365.com
- (2603:10b6:610:e5::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9913.12 via Frontend Transport; Wed,
- 13 May 2026 12:45:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS3PEPF000099DC.mail.protection.outlook.com (10.167.17.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.13 via Frontend Transport; Wed, 13 May 2026 12:45:52 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 13 May
- 2026 05:45:34 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Wed, 13 May 2026 05:45:33 -0700
-Received: from f43.com (10.127.8.9) by mail.nvidia.com (10.126.190.180) with
- Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Wed, 13 May
- 2026 05:45:30 -0700
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>, Stanislav Fomichev
-	<sdf.kernel@gmail.com>, Paolo Abeni <pabeni@redhat.com>
-CC: Dragos Tatulea <dtatulea@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
-	Stanislav Fomichev <sdf@fomichev.me>, <netdev@vger.kernel.org>, Cosmin Ratiu
-	<cratiu@nvidia.com>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH net] IB/IPoIB: ndo_set_rx_mode_async conversion
-Date: Wed, 13 May 2026 15:45:18 +0300
-Message-ID: <20260513124519.3357165-1-dtatulea@nvidia.com>
-X-Mailer: git-send-email 2.54.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF4A1F0E25;
+	Wed, 13 May 2026 13:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778677379; cv=none; b=Q9I6LgEXF/pFAfwvclGb8PgwIrBNH5b+VuvHh9mPteHeAj5bKIxF/0wixuGjjZrvgeDKbUB+lB3tOP7/BeczBN6FIBZL5N3ZgLScdz7Y+UZkzjdMQHCAqgK+1eW4Vk8oTTZIoU0pYXM7KjtCa74g6NDa6I+LAD710sVHEAWsNhc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778677379; c=relaxed/simple;
+	bh=w952/StbTzQQpvTv4IVGtb68QWI9Nein9ogKmCl+tws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZnJdgsJLpdJaUJH2OsCmZ+u+ado1A3UnQ5nDbR0QCb0W0PkX1X5ThhBIMPu4Z9oC4D3XCH53O1hfnpGX16O585U3qfADVKFnT/C2J0I/XI3eEpj7dOkmzze+UR9S6qWlmGNZyxjfM5ztmt0hs/COll1NzEYeZYo/wZEs3+Rp7P4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LyZ6H2/H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F06F4C2BCB7;
+	Wed, 13 May 2026 13:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778677379;
+	bh=w952/StbTzQQpvTv4IVGtb68QWI9Nein9ogKmCl+tws=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LyZ6H2/H0XwhRgDFLwozCZOLN2EiPvTtwDpX/dq/KctJfZrNZU0Yb1NL5rBKULsrZ
+	 jbUa1UFigmYYxEslnZPJFSFQ0Q0/9PYrAgAXc+BgPZlQSTLpfqhj/L09CSffY8WVX1
+	 xowoiIuBynVFBoupy5E/b30TuKbfNhMRxtSVhcICglhWbHL+46LEDl5T8W4moytKgf
+	 oNcgcEHEbUFBhg/WBMRKpzv+KANUEjI+V5nKtsVgfq4Ks5ZVfYbGwz87B/+lgQBcpU
+	 4LnI7IEFZxJbkOGQe8O5rsSp3qYCmn9uvqs+SUbNosbWfqTsnaBeJORpokAocL2Dbl
+	 Nmu/fqxw6905A==
+Message-ID: <627bb280-be44-4648-8771-5a479cda988f@kernel.org>
+Date: Wed, 13 May 2026 15:02:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DC:EE_|DM4PR12MB8475:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b3301ff-8938-40da-7339-08deb0ed915e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|376014|1800799024|82310400026|11063799003|18002099003|56012099003|3023799003;
-X-Microsoft-Antispam-Message-Info:
-	3rzxceY1rz1axvvj+2Wm794YwPzZOry2J80tlK2QYcaubLtq7pJ8NRIup7HzcXFMfFF5YhEWpMRTjjqUtrgniG2gpp6YWFmZgrCY5+1OZkz/8qfDQo4s+HkKmMhjk4c+kF5BrzWqd66HgVjB++ApDzo1f+v4QxiIhiKnqbr0lHo22L/2pe+5qReGWcRCVcbPF34qP4U8VexKu6scJC67oU66ZlOhKHqUqpWTcicVa8X1sbCxE9O2ewzynCjjl95eSo9awJ+Cdm8eBxnIhsyuHVrPRiSr/fnKiuqDcj0+UE4rs/UNFQMmPW5Hn5fZM2UIkfjcGTle8c0es4J+GulNX9PoNvTaU+vZDITV4sHRWDJBkjAeX+6bzjczqx2pmtxfMko+Kc5P9jVTk7rD4RxG/X9P040YZMgQhsOw5gzWcUjOhStzxXrhsxUvjATxyKH3+ogRswuqzg5deTXi9kMRNSqOSD187R2uGSic7EP3A9vuxIHq8bXUmGpFEz34uniqBtxQqZWs+FilwTptFCwA6gKcPn5IqNq3PLjfQXJNYqX3Ujf0UNYoYPxutIjOnP3D50fBHnbfjxXIn2XtKwXT1IputjDtAXoOiJ6Pct5FLrYm37uAmDlXciyhCOcSIUFrB9AyQoTiLyvoY3dhFIHhs4cBKeRktDbpq3oaWmYh06e/IzGUGNSh823CDrTkPMntWNFYXU7DquGvU/yhygNDR3TCgQmKLdV75LsYL3FZFko=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(376014)(1800799024)(82310400026)(11063799003)(18002099003)(56012099003)(3023799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	RNAT+BNIk6AVmw7pfFcWtL8azgxQOd6JnR1wAja09CKrHq9MgmWGHj1C/7ZNsRXNiEzPRdTmHmHb3Z8gH0ui27B/QiDjLc0x8VvxBQqTBFo7wu6g0Cg9RNQJNlc/orZ3DTmn/IQn+1fEfXWcWuoOyohtL7CHEjni6qKZn+4Km2wpfaR/Pus2d40M4FEvOG2CKIf1yvWeS7qk7TMilhA8ZKsuRHyQRnqXUmLQgN6+FlTz/bqWgy6pL2Aw0F9LCx51RxKqOvFLdQ9tQrx+hGpMWN4Wq7iwOpd23fZXiyZyibNGK0uLU7MLYS5QeUnZMfRJXvrO/LAzH7uO1SLMPn7GMbsg7lhCaKNTavxQ5jXkjlqD3PUTonKzaPNdNUhSEDlL/ySoi89ZEE3PrHsSXb07NGcvbid8ibV/4v7JXH2LXRVgznp9uwKBRvz+RO866FUR
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2026 12:45:52.4469
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b3301ff-8938-40da-7339-08deb0ed915e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099DC.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8475
-X-Rspamd-Queue-Id: 13EC553352E
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] mm: introduce a new page type for page pool in page
+ type
+To: Byungchul Park <byungchul@sk.com>
+Cc: Dragos Tatulea <dtatulea@nvidia.com>, linux-mm@kvack.org,
+ akpm@linux-foundation.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com,
+ ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+ hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+ saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
+ kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
+ baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
+ asml.silence@gmail.com, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com
+References: <20260224051347.19621-1-byungchul@sk.com>
+ <982b9bc1-0a0a-4fc5-8e3a-3672db2b29a1@nvidia.com>
+ <20260513121805.GA22430@system.software.com>
+ <8348d867-f8a1-432c-be2d-699ad96b2e93@kernel.org>
+ <20260513123920.GA51788@system.software.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260513123920.GA51788@system.software.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 724A3533EC8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.84 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_MISSING_CHARSET(0.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[ziepe.ca,kernel.org,intel.com,gmail.com,redhat.com];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-20575-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20574-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dtatulea@nvidia.com,linux-rdma@vger.kernel.org];
+	FREEMAIL_CC(0.00)[nvidia.com,kvack.org,linux-foundation.org,vger.kernel.org,skhynix.com,oracle.com,kernel.org,iogearbox.net,davemloft.net,gmail.com,fomichev.me,lunn.ch,google.com,redhat.com,suse.cz,suse.com,cmpxchg.org,linaro.org,infradead.org,linux.alibaba.com,canb.auug.org.au,davidwei.uk];
+	RCPT_COUNT_TWELVE(0.00)[47];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-The commit in the fixes tag added a warning for devices
-that are netdev ops locked that they should be converted
-to .ndo_set_rx_mode_async. IPoIB for mlx5 is such a
-driver which was missed during the conversion because the
-flow is more complex:
-- mlx5 part of IPoIB device was converted to ops-lock in commit [1].
-- ipoib_intf_init() then overrides netdev_ops with
-  ipoib_netdev_ops_{pf,vf}, which still wired ndo_set_rx_mode to the
-  legacy sync path -- tripping the new warning on every probe.
+On 5/13/26 14:39, Byungchul Park wrote:
+> On Wed, May 13, 2026 at 02:29:46PM +0200, David Hildenbrand (Arm) wrote:
+>  On 5/13/26 14:18, Byungchul Park wrote:
+>>>
+>>> Hi,
+>>>
+>>> The problem comes from the fact that page_type and _mapcount are
+>>> union'ed but there is a case where these two information should be kept
+>>> at the same time.
+>>>
+>>> Why don't we allow these two information can be kept in the 4 bytes at
+>>> the same time until Zi Yan's work on _mapcount and page_type will be
+>>> done, instead of taking a step back?
+>>>
+>>> It can be more optimized but I suggest the approach I just mentioned:
+>>> ---
+>>> diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+>>> index 64dc44832808..e5ec204866dc 100644
+>>> --- a/fs/proc/internal.h
+>>> +++ b/fs/proc/internal.h
+>>> @@ -185,8 +185,7 @@ static inline int folio_precise_page_mapcount(struct folio *folio,
+>>>  {
+>>>       int mapcount = atomic_read(&page->_mapcount) + 1;
+>>>
+>>> -     if (page_mapcount_is_type(mapcount))
+>>> -             mapcount = 0;
+>>> +     mapcount = page_mapcount_clear_type(mapcount);
+>>>       if (folio_test_large(folio))
+>>>               mapcount += folio_entire_mapcount(folio);
+>>>
+>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>> index 8260e28205e9..f45064796313 100644
+>>> --- a/include/linux/mm.h
+>>> +++ b/include/linux/mm.h
+>>> @@ -1865,8 +1865,7 @@ static inline int folio_mapcount(const struct folio *folio)
+>>>
+>>>       if (likely(!folio_test_large(folio))) {
+>>>               mapcount = atomic_read(&folio->_mapcount) + 1;
+>>> -             if (page_mapcount_is_type(mapcount))
+>>> -                     mapcount = 0;
+>>> +             mapcount = page_mapcount_clear_type(mapcount);
+>>>               return mapcount;
+>>>       }
+>>>       return folio_large_mapcount(folio);
+>>> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+>>> index 0e03d816e8b9..f3b0d1fa262d 100644
+>>> --- a/include/linux/page-flags.h
+>>> +++ b/include/linux/page-flags.h
+>>> @@ -934,9 +934,9 @@ static inline bool page_type_has_type(int page_type)
+>>>  }
+>>>
+>>>  /* This takes a mapcount which is one more than page->_mapcount */
+>>> -static inline bool page_mapcount_is_type(unsigned int mapcount)
+>>> +static inline unsigned int page_mapcount_clear_type(unsigned int mapcount)
+>>>  {
+>>> -     return page_type_has_type(mapcount - 1);
+>>> +     return (unsigned int)(((int)(mapcount << 8)) >> 8);
+>>>  }
+>>>
+>>>  static inline bool page_has_type(const struct page *page)
+>>> @@ -953,16 +953,20 @@ static __always_inline void __folio_set_##fname(struct folio *folio)    \
+>>>  {                                                                    \
+>>>       if (folio_test_##fname(folio))                                  \
+>>>               return;                                                 \
+>>> -     VM_BUG_ON_FOLIO(data_race(folio->page.page_type) != UINT_MAX,   \
+>>> +     VM_BUG_ON_FOLIO(page_type_has_type(data_race(folio->page.page_type)), \
+>>>                       folio);                                         \
+>>> -     folio->page.page_type = (unsigned int)PGTY_##lname << 24;       \
+>>> +     folio->page.page_type &= ~(PGTY_mapcount_underflow << 24);      \
+>>> +     folio->page.page_type |= (unsigned int)PGTY_##lname << 24;      \
+>>>  }                                                                    \
+>>>  static __always_inline void __folio_clear_##fname(struct folio *folio)       \
+>>>  {                                                                    \
+>>> -     if (folio->page.page_type == UINT_MAX)                          \
+>>> +     int mapcount;                                                   \
+>>> +                                                                     \
+>>> +     if (!page_type_has_type(folio->page.page_type))                 \
+>>>               return;                                                 \
+>>>       VM_BUG_ON_FOLIO(!folio_test_##fname(folio), folio);             \
+>>> -     folio->page.page_type = UINT_MAX;                               \
+>>> +     mapcount = atomic_read(&folio->page._mapcount);                 \
+>>> +     folio->page.page_type = page_mapcount_clear_type(mapcount);     \
+>>>  }
+>>>
+>>>  #define PAGE_TYPE_OPS(uname, lname, fname)                           \
+>>> @@ -975,15 +979,20 @@ static __always_inline void __SetPage##uname(struct page *page)         \
+>>>  {                                                                    \
+>>>       if (Page##uname(page))                                          \
+>>>               return;                                                 \
+>>> -     VM_BUG_ON_PAGE(data_race(page->page_type) != UINT_MAX, page);   \
+>>> -     page->page_type = (unsigned int)PGTY_##lname << 24;             \
+>>> +     VM_BUG_ON_PAGE(page_type_has_type(data_race(page->page_type)),  \
+>>> +                             page);                                  \
+>>> +     page->page_type &= ~(PGTY_mapcount_underflow << 24);            \
+>>> +     page->page_type |= (unsigned int)PGTY_##lname << 24;            \
+>>>  }                                                                    \
+>>>  static __always_inline void __ClearPage##uname(struct page *page)    \
+>>>  {                                                                    \
+>>> -     if (page->page_type == UINT_MAX)                                \
+>>> +     int mapcount;                                                   \
+>>> +                                                                     \
+>>> +     if (!page_type_has_type(page->page_type))                       \
+>>>               return;                                                 \
+>>>       VM_BUG_ON_PAGE(!Page##uname(page), page);                       \
+>>> -     page->page_type = UINT_MAX;                                     \
+>>> +     mapcount = atomic_read(&page->_mapcount);                       \
+>>> +     page->page_type = page_mapcount_clear_type(mapcount);           \
+>>>  }
+>>>
+>>>  /*
+>>> diff --git a/mm/debug.c b/mm/debug.c
+>>> index 77fa8fe1d641..9a932ded09d4 100644
+>>> --- a/mm/debug.c
+>>> +++ b/mm/debug.c
+>>> @@ -74,8 +74,7 @@ static void __dump_folio(const struct folio *folio, const struct page *page,
+>>>       int mapcount = atomic_read(&page->_mapcount) + 1;
+>>>       char *type = "";
+>>>
+>>> -     if (page_mapcount_is_type(mapcount))
+>>> -             mapcount = 0;
+>>> +     mapcount = page_mapcount_clear_type(mapcount);
+>>>
+>>>       pr_warn("page: refcount:%d mapcount:%d mapping:%p index:%#lx pfn:%#lx\n",
+>>>                       folio_ref_count(folio), mapcount, mapping,
+>>> ---
+>>>
+>>> Thoughts?
+>>
+>> God no.
+> 
+> This is not final patch, but for sharing the rough idea *with code* -
+> maybe there are more points in code that should be adjusted by the
+> change.  I just typed the draft patch quick just for sharing idea.
+> 
+> If we should allow pp type pages to be used in mapping as well, then
+> we should allow a page to keep both its type and mapcount at the same
+> time.  Am I missing something?
 
-So now we have the following splat:
-  netdevice: ib0 (uninitialized): ops-locked drivers should use ndo_set_rx_mode_async
-  WARNING: net/core/dev.c:11366 at register_netdevice+0x83c/0x21d0
-  ...
-  register_netdev+0x1f/0x40
-  ipoib_add_one+0x35c/0x880 [ib_ipoib]
+We don't want code to accidentally overflow mapcounts into these bits and have
+them wrongly be detected as page types.
 
-This patch implements .ndo_set_rx_mode_async but it simply schedules the
-multicast restart task like before. This is done to maintain the
-assumption that this task and others [2] must run on the same order
-workqueue to avoid racing with themselves. The race between
-ipoib_mcast_join_task() and ipoib_mcast_restart_task() would be the most
-obvious example.
+This is just very fragile.
 
-[1] 8f7b00307bf1, "net/mlx5e: Convert mlx5 netdevs to instance locking")
-[2] ipoib_mcast_join_task, ipoib_mcast_restart_task,
-    ipoib_mcast_carrier_on_task, ipoib_reap_ah, ipoib_reap_neigh
-
-Fixes: 3cbd22938877 ("net: warn ops-locked drivers still using ndo_set_rx_mode")
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 402671567736..3e1e1e861739 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -1297,7 +1297,9 @@ static int ipoib_hard_header(struct sk_buff *skb,
- 	return IPOIB_HARD_LEN;
- }
- 
--static void ipoib_set_mcast_list(struct net_device *dev)
-+static void ipoib_set_rx_mode_async(struct net_device *dev,
-+				    struct netdev_hw_addr_list *uc,
-+				    struct netdev_hw_addr_list *mc)
- {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
- 
-@@ -2160,7 +2162,7 @@ static const struct net_device_ops ipoib_netdev_ops_pf = {
- 	.ndo_fix_features	 = ipoib_fix_features,
- 	.ndo_start_xmit		 = ipoib_start_xmit,
- 	.ndo_tx_timeout		 = ipoib_timeout,
--	.ndo_set_rx_mode	 = ipoib_set_mcast_list,
-+	.ndo_set_rx_mode_async	 = ipoib_set_rx_mode_async,
- 	.ndo_get_iflink		 = ipoib_get_iflink,
- 	.ndo_set_vf_link_state	 = ipoib_set_vf_link_state,
- 	.ndo_get_vf_config	 = ipoib_get_vf_config,
-@@ -2183,7 +2185,7 @@ static const struct net_device_ops ipoib_netdev_ops_vf = {
- 	.ndo_fix_features	 = ipoib_fix_features,
- 	.ndo_start_xmit	 	 = ipoib_start_xmit,
- 	.ndo_tx_timeout		 = ipoib_timeout,
--	.ndo_set_rx_mode	 = ipoib_set_mcast_list,
-+	.ndo_set_rx_mode_async	 = ipoib_set_rx_mode_async,
- 	.ndo_get_iflink		 = ipoib_get_iflink,
- 	.ndo_get_stats64	 = ipoib_get_stats,
- 	.ndo_eth_ioctl		 = ipoib_ioctl,
 -- 
-2.54.0
+Cheers,
 
+David
 
