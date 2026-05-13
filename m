@@ -1,215 +1,214 @@
-Return-Path: <linux-rdma+bounces-20541-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20542-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QIUkDOQCBGrLCAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20541-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 06:49:40 +0200
+	id MMMaOAYPBGoMDAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20542-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 07:41:26 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D96252D401
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 06:49:39 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC25252DA3D
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 07:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 13F83307F6A0
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 04:49:38 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D9255300F2A3
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 05:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6159375AB5;
-	Wed, 13 May 2026 04:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DA53A641D;
+	Wed, 13 May 2026 05:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="EsVf3TWh"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LIvh9xI8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55155299923;
-	Wed, 13 May 2026 04:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778647776; cv=none; b=FbdU50hqR0UqEHYNp0wGxSEbPmFqMpMft+2RvR+HcF/5frgcZMjL1U/V8Q7tK6PMXxhyWL6G9l/wjtduMAb/U8wb25Gvx4pNi/5dC4PuUCPp6aUqcTBKYNeWMXQMyWuyWfTagMkgUCIeHsmUJVgLzQCW2TaFA5S54azTTW/a134=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778647776; c=relaxed/simple;
-	bh=dT77H9ORPste/t0zfSTlk15UTBP295wtZR/6wSlJ3A4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Js5k1N1SmkjNRvqMXxqNOx8SxsYmks8zLw/fbEiX5X8+xVgBPQHk7nzyjT26O3uWaRConUKlVjZevex6lWmqJg3gtkzCv9g2CPBegEvUGx+GHhfL9ILVPdjZG54J/O/a4g9/hmXfPsbsT2TeOgLXdemspw0tQDsx6U8GGrUJ480=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=EsVf3TWh; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 7EC0D20B7166; Tue, 12 May 2026 21:49:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7EC0D20B7166
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1778647771;
-	bh=Omuq11ywLwTC5q3IVHAFOC9whRswGzaRH2gtVx0YPH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EsVf3TWhP3f3icGssZBLG13b1+ZhIUVGdz8weHlOEC0XuepUUsVQTT3inEn8BIRgM
-	 3OnM9nYc854GL6hcpJh2yhN+75lpV5KV3JplTvixMIKFV18Ni9QfxF60I6zdHnDbve
-	 c87pcYaFriR1kQvueonMyzS/0ZKapiU8t0xLIf+c=
-Date: Tue, 12 May 2026 21:49:31 -0700
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com, yury.norov@gmail.com, kees@kernel.org,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v8] net: mana: Expose hardware diagnostic info
- via debugfs
-Message-ID: <agQC2/HG6FsCgFZn@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20260506055128.291494-1-ernis@linux.microsoft.com>
- <20260508220114.3342627-1-kuba@kernel.org>
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013046.outbound.protection.outlook.com [40.93.196.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A51E3A63E4;
+	Wed, 13 May 2026 05:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778650879; cv=fail; b=cAOlfzecghxvlEs+NP30k/rOIAClCUqzJgh9jRdpAheq240CiN5Ijx7iyv6pFI8K210MLTv1gRiqqWWkzNwFe7CCDWkNiuF05Fu651/2CJ7nbYRC1tAeMCXzLPmHMQT7AtFxKTebv/mn4STqY02WhMo98SMfG3mGjQGMFLk4dWk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778650879; c=relaxed/simple;
+	bh=ZTTWMndoWaxcFFuSbRBIATGykD/nmy4YDw0NRczlmG8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cndmTzzm8wOrkKrFCq22liSKXfX23C7THq6BN8tEeABJxUkaF2/bfHmTRYFJr6Rrfx4I0Oaomvu4YksOHgFGOT5YtfQyNp0KVigugsgRsbkDvKUA/QJ5Rx5WMAJ1oKpSjx9VfMAuY4jwVJ2ywSjeXy0Tued24JqFwUHOjzZ4SGY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LIvh9xI8; arc=fail smtp.client-ip=40.93.196.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=N40kxXPheWjchZ9PPmiUqmGaQ+AUh7+61Eo1i4yJ0/tLMy9VXtPmDiHOKniI4d6fp05+0mMtN3cInfUGCqJnRQLUGXArpb+jtMsqo3ZpIoL9Pcg+3FLOzrNdI14w9Sv9zgtchcdutSg4JCnRrTfcrWECMWc/1sbHuZg3oygVnBqJRBORmuV77wJx/gSDKfKCXGG29H2OQuh/nWyUctd9ZVdUsPWKnwv/BkLSgxeE9MqB2zWEoY4GTk4RaXVB3Himexe0qpMP44zVjmWT+gqvBbuc+pjIpYGdM1b5Mpldr9uQ7Tc2m69zZDazTCSxIFopctxHXJnfSWCmH+dsNG4BPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=S+ZT5XKq/vj3uKsNonKhHcit+O8kesdtnB3sxOHaFUg=;
+ b=udoOr7CQUgGQe1uxPygUU6PMPL3EaJDUZ7qfPEfAFkUPYtww/K/SCaD0YcEKgnokUsZYHiazv33U4jZFUwX4eYyk/lTEzpFl6600OI8bO6+pi8uKp5byWc+lRdj4WXPVnHNBy29bfn7GSH+6tkRWdd70mObcBO0w8XSSJjkQH2ziBNBFEPFO5xSe/l7+f86Ynkg8176/ujEkd0TzuRWK2NKBAiA/PPc5RZjreVYvfQV5nePe8UkLodOjI8sve6hNOJDE8JKwM9MGX06oWHlk7PxFPYYgl5NiHeIu8Mr+bolwn/1dTqPGycm97ypoR/gOIlft3nh+bcqeu1C3xMoWAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S+ZT5XKq/vj3uKsNonKhHcit+O8kesdtnB3sxOHaFUg=;
+ b=LIvh9xI8G3PayGGUh5boSPxcOFFcv020YM7qqQeswlBxcpYsQArIoIvPxm6BtNM5viRWvsTviuJoW46CdAn5X9Q1q87kdxU+hCj2zfBRRanSH1H9kQEncixKuY3IDazDvTpfR1dFtxlVZmvgRw9TmCL2vs4SsP9xCSdIzF5lrPiXrmWAa+tUXMLcoUMvWTrouNMW3mPvk9v1aM2inx9oMNYHs+uiKVlHpnR3ASgk80ELWEtxLQTuMxfnA1+ic5bFRmG6hEy1CnEm8O7OMQSV74VrVgwgKITa+K+1gDAHLoetAYEgW1UqUMmnjYOROrbuXfwWhTePuIq0IQe42L1Efw==
+Received: from DM6PR03CA0083.namprd03.prod.outlook.com (2603:10b6:5:333::16)
+ by MN2PR12MB4078.namprd12.prod.outlook.com (2603:10b6:208:1de::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Wed, 13 May
+ 2026 05:41:11 +0000
+Received: from DS1PEPF0001709A.namprd05.prod.outlook.com
+ (2603:10b6:5:333:cafe::23) by DM6PR03CA0083.outlook.office365.com
+ (2603:10b6:5:333::16) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9913.12 via Frontend Transport; Wed,
+ 13 May 2026 05:41:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS1PEPF0001709A.mail.protection.outlook.com (10.167.18.104) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.25.13 via Frontend Transport; Wed, 13 May 2026 05:41:10 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 12 May
+ 2026 22:40:54 -0700
+Received: from localhost (10.126.230.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 12 May
+ 2026 22:40:52 -0700
+Date: Wed, 13 May 2026 08:40:45 +0300
+From: Leon Romanovsky <leonro@nvidia.com>
+To: David Ahern <dsahern@kernel.org>
+CC: <stephen@networkplumber.org>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, David Ahern <dahern@nvidia.com>
+Subject: Re: [PATCH iproute2-next v2 4/4] devlink: Drop now duplicate pid
+ fallback for netns
+Message-ID: <20260513054045.GY15586@unreal>
+References: <20260512193412.32019-1-dsahern@kernel.org>
+ <20260512193412.32019-5-dsahern@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20260508220114.3342627-1-kuba@kernel.org>
-X-Rspamd-Queue-Id: 9D96252D401
+In-Reply-To: <20260512193412.32019-5-dsahern@kernel.org>
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF0001709A:EE_|MN2PR12MB4078:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8de02cf6-6d79-4e90-6c07-08deb0b23d38
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|1800799024|36860700016|11063799003|18002099003|56012099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	ytw0kQiGoLMGmTp2IM4shmaaIBCUlmedjpVibbJUFzFM/EevCKsObzReTocyb1zLzwQ6+W4VIKeKNvJOON9hkoKJED5C7U/7JCnko21kPVcPhYDuknr2YWUB40zRj/lNe12zfDdJ8duqWnJup436pOzdssaIhU9EccI/h+UYggNakMAGEKvjo4wlzAaAZ6Df+38YnQj54xDs7dlOw63qdlbl26KX1BQR0n0/Hce7QsxKAfwmqDjBpsY8D/UVngPwrsVcPNDEYuirTewgynGcS4y7eKwi5yKkJ/Ky1u9GzGSq45MiLlNA3W075J2m0h0V8mIzj02tPbsMT8zNDCGvUnfPniO0VJgvQIOih1VbzHZCyAyiM0WJiy0HeOuUvRpNkj8aeuyDyWpcmjuZb8FFBN0WTwxoXidb1DwNlodGjpXm/bjoJkEocEvriVNas58zt2jqMoH8pDz2F63XOB23d5X0ESYMnd+VoV71yn2q/P9/j8nn0/y/wcVGjy9R1/P02u/77Ex779ebgitZQS60MI2UPWOeVgj0JowlJ4AXdMnv+84IF3l0b4aTdIU12FznQMOAhv7gHo17PBkWZldOj01K9GYaIt9NOlYbUfl5o/wVLf4uXJ6/v0vl33sl0okleyLWuk0umlGpOxYpgOqnxer1t1GEhH/U5M1hMWfuw8gdUYyXAHhzxrv/OD2xP/cImY2QeTTnHGKYQI1hdb17SHBkCOMBQob4OXlb1bG4LeU=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(1800799024)(36860700016)(11063799003)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	5gHghlffytcD8kVieQ//74qCDBz8z4sDltj7lfUXb1vg4WaoIwzKaPEYQQ1SmVDV5d0iINQ0P2xqHLAxgXM78QtPrRccsKoMtfY5CVR1PTzmdRSKRr96h4AOMaH+rAAlgdi1AoXs3ykblqu9LWB4C5mpg0w7vXUZnZBZ/6bG5jHJfGxbCphUc1KJvobYNEP4zfOHXYES7CK4oPtzvIDxO8N1HW27A2AMugLZmxCPsxF59NLATwRBH423IxNV/Myw4Wo+8jLq4yXfxfaLQsn/bfdikd9Q9OnlAdWDuhjqe/VgYzqfdHOJ34mO6WmwBkMpc5ubNblsZ40qr2FMIMohYvgSYqS++F9LEe9hom85KAW1Nd+v0K1KYvkFo5ooeevoZS6463wVZUSzS+JXibKQuOER94F5uIlnrHwd2bC3sDwIw9DfTxRRsIcCuI0ukXLA
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2026 05:41:10.9588
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8de02cf6-6d79-4e90-6c07-08deb0b23d38
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS1PEPF0001709A.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4078
+X-Rspamd-Queue-Id: DC25252DA3D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20541-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-20542-lists,linux-rdma=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:email,Nvidia.com:dkim];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	FROM_NEQ_ENVFROM(0.00)[leonro@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
+	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Action: no action
 
-On Fri, May 08, 2026 at 03:01:14PM -0700, Jakub Kicinski wrote:
-> This is an AI-generated review of your patch. The human sending this
-> email has considered the AI review valid, or at least plausible.
+On Tue, May 12, 2026 at 01:34:07PM -0600, David Ahern wrote:
+> From: David Ahern <dahern@nvidia.com>
+> 
+> Now that netns_get_fd handles by name and pid, the special
+> handling in devlink to fallback to PID can be removed with
+> both cases handled by the FD attribute.
+> 
+> Signed-off-by: David Ahern <dahern@nvidia.com>
 > ---
-> net: mana: Expose hardware diagnostic info via debugfs
-> 
-> Add debugfs entries to expose hardware configuration and diagnostic
-> information that aids in debugging driver initialization and runtime
-> operations without adding noise to dmesg.
-> 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> [ ... ]
-> > @@ -2231,13 +2239,18 @@ int mana_gd_resume(struct pci_dev *pdev)
-> >  
-> >  	err = mana_probe(&gc->mana, true);
-> >  	if (err)
-> > -		return err;
-> > +		goto cleanup_gd;
-> >  
-> >  	err = mana_rdma_probe(&gc->mana_ib);
-> >  	if (err)
-> > -		return err;
-> > +		goto cleanup_mana;
-> >  
-> >  	return 0;
-> > +cleanup_mana:
-> > +	mana_remove(&gc->mana, true);
-> > +cleanup_gd:
-> > +	mana_gd_cleanup_device(pdev);
-> > +	return err;
-> >  }
-> 
-> Since mana_remove() called with true for suspending skips
-> unregister_netdevice(), the network devices remain registered in the system.
-> 
-> If mana_gd_cleanup_device() is then called, which destroys the hardware
-> channel and clears gc->hwc.driver_data, could this lead to a NULL pointer
-> dereference if userspace later interacts with the still-registered devices?
+>  devlink/devlink.c | 25 +++++++------------------
+>  1 file changed, 7 insertions(+), 18 deletions(-)
 
-Sorry for delayed response.
+<...>
 
-This is a valid concern. I will update it to mana_remove(&gc->mana, false) in
-the next version.
-> 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> [ ... ]
-> > @@ -3161,6 +3169,23 @@ static int mana_init_port(struct net_device *ndev)
-> >  	eth_hw_addr_set(ndev, apc->mac_addr);
-> >  	sprintf(vport, "vport%d", port_idx);
-> >  	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
-> > +
-> > +	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
-> > +			   &apc->port_handle);
-> 
-> When the device suspends, mana_gd_suspend() calls mana_gd_cleanup_device(),
-> which recursively removes the entire debugfs directory tree.
-> 
-> During resume, the parent debugfs directory is recreated, but mana_probe()
-> skips calling mana_init_port() for existing ports.
-> 
-> Does this mean the per-vPort debugfs entries are permanently lost after a
-> suspend and resume cycle?
-> 
-This is false positive.
-The per-vPort debugfs entries are recreated during resume. The flow is:
+>  static char *dl_argv_next(struct dl *dl)
+>  {
+>  	char *ret;
+> @@ -2153,14 +2147,12 @@ static int dl_argv_parse(struct dl *dl, uint64_t o_required,
+>  			err = dl_argv_str(dl, &netns_str);
+>  			if (err)
+>  				return err;
+> -			opts->netns = netns_get_fd(netns_str);
+> -			if ((int)opts->netns < 0) {
+> -				dl_arg_dec(dl);
+> -				err = dl_argv_uint32_t(dl, &opts->netns);
+> -				if (err)
+> -					return err;
+> -				opts->netns_is_pid = true;
+> -			}
+> +
+> +			err = netns_get_fd(netns_str);
+> +			if (err < 0)
+> +				return err;
+> +
+> +			opts->netns = err;
+>  			o_found |= DL_OPT_NETNS;
+>  		} else if (dl_argv_match(dl, "action") &&
+>  			   (o_all & DL_OPT_RELOAD_ACTION)) {
+> @@ -2725,10 +2717,7 @@ static void dl_opts_put(struct nlmsghdr *nlh, struct dl *dl)
+>  		mnl_attr_put_u8(nlh, DEVLINK_ATTR_TRAP_ACTION,
+>  				opts->trap_action);
+>  	if (opts->present & DL_OPT_NETNS)
+> -		mnl_attr_put_u32(nlh,
+> -				 opts->netns_is_pid ? DEVLINK_ATTR_NETNS_PID :
+> -						      DEVLINK_ATTR_NETNS_FD,
+> -				 opts->netns);
+> +		mnl_attr_put_u32(nlh, DEVLINK_ATTR_NETNS_FD, opts->netns);
 
-Suspend: mana_gd_cleanup_device() removes the entire debugfs tree.
+You can also remove netns_is_pid from struct dl_opts.
 
-Resume: mana_gd_setup() recreates the top-level mana_pci_debugfs
-directory. Then mana_probe(gd, true) takes the resuming=true path,
-which calls mana_attach() for each port. mana_attach() calls
-mana_init_port(), which recreates the vportN directory and all
-per-vPort debugfs files (port_handle, max_sq, max_rq, steer_*,
-current_speed).
+It is unfortunate that devlink implements DEVLINK_ATTR_NETNS_PID in  
+the kernel, given that user space can provide this functionality  
+with trivial effort.
 
-So the per-vPort entries are not permanently lost, they survive the
-suspend/resume cycle.
-> [ ... ]
-> > @@ -3800,6 +3830,9 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
-> >  
-> >  	mana_gd_deregister_device(gd);
-> >  
-> > +	debugfs_lookup_and_remove("bm_hostmode", gc->mana_pci_debugfs);
-> > +	debugfs_lookup_and_remove("num_vports", gc->mana_pci_debugfs);
-> > +
-> >  	if (suspending)
-> >  		return;
-> 
-> Earlier in mana_remove(), free_netdev() is called, which frees the port
-> context structure (apc) allocated via netdev_priv(ndev).
-> 
-> Since the per-vPort debugfs files created in mana_init_port() directly
-> reference memory within apc, and apc->mana_port_debugfs is not explicitly
-> removed here, does this leave the debugfs files accessible but pointing to
-> freed memory until the parent directory is finally removed in
-> mana_gd_cleanup_device()?
-
-This is a false positive.
-The per-vPort debugfs files are removed before free_netdev() frees apc.
-
-In mana_remove(gd, false), the sequence for each port is:
-
-mana_detach(ndev, false) -> mana_cleanup_port_context(apc)
--> debugfs_remove(apc->mana_port_debugfs).
-This removes the entire vportN directory and all its child files, since
-debugfs_remove() is recursive (simple_recursive_removal()).
-free_netdev(ndev) which frees apc.
-Because step 1 removes all debugfs files referencing apc fields before
-step 2 frees the memory, there is no window where the files point to
-freed memory.
+Thanks
 
