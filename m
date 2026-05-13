@@ -1,218 +1,193 @@
-Return-Path: <linux-rdma+bounces-20566-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20567-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id j4QyIrZfBGpxHgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20566-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:25:42 +0200
+	id yFKlMPhiBGq6HgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20567-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:39:36 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB9453230E
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:25:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2351653269B
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F41B031042AF
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:22:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A5BFE3035247
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F543401493;
-	Wed, 13 May 2026 11:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A943F7A86;
+	Wed, 13 May 2026 11:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b="W6VLL/Xj"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Boi2iGqx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57363FF8A7
-	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 11:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D42A3A5E64
+	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 11:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778671353; cv=none; b=swaqUvGWJc6IvXkE123EQaCqc01CMzWgCj1k5dQx/lD6LLRwgBpyio9OTdhUusPR1QNR9mCoHjIom3qMcY/l2/4Kd4vKbde3qzqSr2v1pqLpslhzeAybNJoZlSosGkx5VfcecgsE5lFRk1ChdZkL7b1ZBMgOZeOgCsbRsuY3gr8=
+	t=1778672295; cv=none; b=qRFQLlQRjP4j9YFQa5vIltaOzLJuDDd4hMFoAowYYLRU7xVfmAxkxeW4jViCfYWsOPvxDKdX+Z1gH374mUHPZESaTTgp9Ibx+XL3r+pyHYwt8q8TySx/Fl4v0srawa8NbA2bDQ6e8FJDvcxggtXsYukzUVj7videGiU1/wagHkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778671353; c=relaxed/simple;
-	bh=MaMJwaY1jyCxoJgJJwEYMbmhk/zTgU1mLcEV3YoPoKM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ghmKrszjb1fpAk9WtJDYIZJ6feRrkPpu9CN4wqWhLKhVsKVPSeKmUD9J0jF3+Z/EO55G4rU9EYrbpPRacxCJfprhLcQ6iHTyo0sYs2tyAH2s60jdQnrGXv9dlE5bEoDffLLU2qDA4EyoQ7jNit0hQ7Zh7OA4fvpTa2r7jYyvenU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b=W6VLL/Xj; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-48a3e9862f0so45092205e9.1
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 04:22:31 -0700 (PDT)
+	s=arc-20240116; t=1778672295; c=relaxed/simple;
+	bh=bi1LtDseZKiiExJUNCsTzHxTrPBCRAx15vc671Lf+aQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cbfTqYxIMspNQarefELlnR+AkHlVIs9I8JCC46Et0LKjCCsGOTrL91CxaL/PpfnNMjqiGFsHV9uCHyFTVp+JJMVPgWutu9qEIyxS/UWEs86LW35rZ0d8DGvTNPq7rp892avv5qsk/5UOB9iOPLLQKPKZgvVUPA2rVOD9I3UsIIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Boi2iGqx; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-44e1ebb3122so3481111f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 04:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=readmodwrite-com.20251104.gappssmtp.com; s=20251104; t=1778671350; x=1779276150; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/i2eA1a8q5KfMM5M8lDNpFGwLlluyiXuu0AO0XM8wY=;
-        b=W6VLL/XjxnMsOoECNbKj8rg9knujVe2qn9Sl2EB/jxDawvlh4qXqmihPKkE4d1CMVd
-         cYdpoPrVRlZxpxgcdf8lSPD4j+HT2GT/yHf/1RYrWWXgU84jVFpZYmaxrnjLEnBTVTDo
-         t40aAL3elX9y9qMd8Tw9eVysNuw2r3bZnOiMeCsInIDNWgKKp+7QhwnBCT+bQ/gHRce9
-         azhwL1zWTP3zTyQ29iAWy6EsqQ1rIMZ+/PfBkQB5U4fUgY5yWp4gX8u8hbxqF2yyFQwF
-         rARfTctHJn6/XJfIjFMLig+NqUOs+j1xcQrNViJBJqkanKSgCx1UW1zJwMexQxs8Lh2i
-         WJjQ==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778672292; x=1779277092; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CqPA2PDnvx8iqKIrh3ub2oUL9wez/Zu+0VoDfgG87F0=;
+        b=Boi2iGqxZjnrxD/uzwtkwsebAB1M6vyf0FHRTC0758zme5ZZul0sGqhx7MjfsJq9gY
+         O4eoCMKOjyhrZHLiK7fgehLx10wHMsl+BJVkWXa3f6WsDRMdWoXRXCEve+Soyf3p0uOa
+         mHGG0GeZUYPogQnUwlCft9CUsYhWseP8JEufB2IOQH3IIJK5ZXZZZT/QBb4lN+OPSUpy
+         ru86rOF++I+TRJ9EiJ0XPaA8ersPr0u0ishqObB7jPBHgWA2tR96dIiJVA9H9fmZCBbd
+         pDtBQ+jqJ16bSwhBAgSqgFR1rSxgUmsUoEg5rAl+YH0tuBeXEzpEMSr/+7HvxzWh+u2p
+         P12Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778671350; x=1779276150;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M/i2eA1a8q5KfMM5M8lDNpFGwLlluyiXuu0AO0XM8wY=;
-        b=eDzwjV/HwUkloteDBwHdpYU77dPK4jZaLQOXE7rmFheHXPUYn94dYKYBO2Hijq5i5k
-         LFmv9Oool3+2AdgJoAc9j38In9kFqstTpFliluLHm5XEUJNjE8zfQW5fEc+We52CSYpr
-         413LL+kOeXg6lUl5YY0XvUrSHbBQUbdYDKVPtCMZQSl9Xha5CoxRnIsh5+jGFiKdJHf/
-         t6QO8CTeYB/zPESdL5L10vWNiUeFkNzi3zw+rDyhfhEzu176ZNTRR+RkZN2XN/FWhoLi
-         BXOHEP9l3NM7qsEOB+qQWfe0joG4KJeyBWx8wYlo6A+ffWNswTVieaSGUnfn8+WGgNcS
-         GqBw==
-X-Forwarded-Encrypted: i=1; AFNElJ/LEFtg9M60FUQGA2nPYDE3i8nEsOz3BgQp8fzWSmjTcYtYP7xzGylmdFyLoqWUnAKHMKJVFHsPhz+Y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxM/6Vvbygm0ldlQWFWDwFrVGoZjP7uaPSViVrjMFcr62dqL6r0
-	FlHokodTNBbYSlfsWVsovwbaL4tCLG5oLtr0R9Ut5iuRyqgV3lhI9e/1Q70tSNYZ6W6dw/wTzqG
-	X8IJ7GY8=
-X-Gm-Gg: Acq92OH/b8XDliabxfMDNjddOKXjWQswVWb8XpBmdiOdSKpY9S99SXbPObNb71VaKRH
-	UmFlyHn0cLK/oMFwR+ubyRMBowbvcAS+V+OOrjokcBcPgUJUxnZjTDP7QE3aVQTF5U2yZ9x8GrE
-	2kitw1AyN25tPB10WcoOyH6td46JrB01D5GRs/PXYwYsdM/Ajl7MDYcpV8fbwFHJrSa05m0NYhO
-	LdD9hqH00o+Y/rzDjhfO0vl41QYeoy5AuLtx4iWly2FSClDPm8BqMd7eCVOMyjAzkaWUKXr01+Z
-	zPOCA4aMJUDnk/g1Qm4UI9cnDgL1G79U0/yCT/MpQ9tB4e9JhXD6AKaSXNUtvvSXfoQrNsnL/0e
-	xO+ceAg9+DWsuWg/V9/7unVqSyfrLf2U4iiqs4xHLTh11vqz3g1WimOtr3MbBuLwy54whASgOXC
-	7YNvOIBGkJG+LBEHNq5YWx1boNzAH8/fukZkI=
-X-Received: by 2002:a05:600c:4503:b0:48a:534a:eed8 with SMTP id 5b1f17b1804b1-48fc971f11bmr42812895e9.1.1778671349955;
-        Wed, 13 May 2026 04:22:29 -0700 (PDT)
-Received: from matt-Precision-5490.. ([104.28.20.66])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e8f438890sm47322865e9.23.2026.05.13.04.22.28
+        d=1e100.net; s=20251104; t=1778672292; x=1779277092;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CqPA2PDnvx8iqKIrh3ub2oUL9wez/Zu+0VoDfgG87F0=;
+        b=g/tDsI+Okw30kgoPN0/nqd8yvCUIxU5/OrfBiv2QYE+9j0nK0NUtShl8LFia7tLmIe
+         yjadK54yvLc6r49vpED4Lc4TZXoWZbiIKe2TaYyt2ctg+rgRjqVofkEHsCAzpfvmSImu
+         YCvheuq1qhLxNaUpHcRQoDLFGG9E5ZxosZzXpkz8mDzHkDfMVFAjLzAvbGzsn+gIlHQG
+         Ju8hd6t+tIzjQD8b4QsNvWKK72WFQIWArG4F2IMlShBPKj4TkqZYMA7ahDOpMxZJKWNU
+         on/WYN95zkBJyRWGlLxNZm3iY3o2r30th89xVLNuYc/FdAuadIqaGFObxjpC/TKw5ESH
+         RSFA==
+X-Gm-Message-State: AOJu0YyREky4tG/0L9QCx/p2gB+r3ydJuaQt5Gz8Z2yMMSKiRWkUG6G4
+	FsRqsnvXX05SBAYLuo1jV1S81s3T8Gixzs1l1BkU2V3RMotKdm5pP37uNRPGkR0G3eY=
+X-Gm-Gg: Acq92OGu3w7m9q31LR0a8NNX0IPNRwUg+CIgM1MocwNg0dXw1UuKvjCAk5/znslofpe
+	Zy7Iow19gzYWzEUV4bS2j0oWIf3KfLOjPBnBKTTRshJt7lYDgoLjdjFGNnadIpE9p5l2zM+XLn5
+	3cfqrJ5U8MHl5OJWMsZM+paRzA33m55BglWyELuJt9KOVlVRHdLLFVUxRGpEEnDk6AAc4V+GyfO
+	VvPMxMywNz75ecdqe3coTNIXV3eeUCWdxIaQiQiz5FMluMfncz/JJ1xgZN4+UBR/FRLh9qYyNC/
+	sm59QtnWgaj4euAtUxnTRJ3Y2ydMooezSXnvsGhcpS8/88nzg/vVF0wUf/h872Lk7bRHFM3sYQJ
+	RgX8kUeTR7ozPgwi57koMOg7jz82/pGFND9vXQXkXrzX6R2/Rd1KmsoLnuRtVfJ6HQK+ucX1CND
+	oFEYTeBeYmLVhJc2KssOj9bjC7mTpMcD/RP3T2Gbo44w==
+X-Received: by 2002:a05:6000:615:b0:441:36b7:7262 with SMTP id ffacd0b85a97d-45c58a70e04mr4969604f8f.13.1778672291728;
+        Wed, 13 May 2026 04:38:11 -0700 (PDT)
+Received: from FV6GYCPJ69 ([85.163.81.98])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4549120eb95sm38888282f8f.20.2026.05.13.04.38.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2026 04:22:29 -0700 (PDT)
-From: Matt Fleming <matt@readmodwrite.com>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>,
-	Carolina Jubran <cjubran@nvidia.com>,
-	Cosmin Ratiu <cratiu@nvidia.com>,
-	Shahar Shitrit <shshitrit@nvidia.com>,
-	Gal Pressman <gal@nvidia.com>,
-	Feng Liu <feliu@nvidia.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Moshe Shemesh <moshe@nvidia.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	kernel-team@cloudflare.com,
-	Matt Fleming <mfleming@cloudflare.com>
-Subject: [PATCH net v2] net/mlx5e: Fix use-after-free in mlx5e_tx_reporter_timeout_recover
-Date: Wed, 13 May 2026 12:22:26 +0100
-Message-ID: <20260513112226.140512-1-matt@readmodwrite.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 13 May 2026 04:38:11 -0700 (PDT)
+Date: Wed, 13 May 2026 13:38:07 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
+	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
+	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
+	ynachum@amazon.com, huangjunxian6@hisilicon.com,
+	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next v4 11/16] RDMA/mlx4: Use ib_umem_get_cq_buf()
+ for user CQ buffer
+Message-ID: <agRinwoVkaPujATb@FV6GYCPJ69>
+References: <20260507125231.2950751-1-jiri@resnulli.us>
+ <20260507125231.2950751-12-jiri@resnulli.us>
+ <20260512182927.GJ7702@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1CB9453230E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260512182927.GJ7702@ziepe.ca>
+X-Rspamd-Queue-Id: 2351653269B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[readmodwrite-com.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	TAGGED_FROM(0.00)[bounces-20566-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[readmodwrite.com];
-	DKIM_TRACE(0.00)[readmodwrite-com.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[matt@readmodwrite.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[resnulli.us];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20567-lists,linux-rdma=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,cloudflare.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,readmodwrite.com:mid,readmodwrite-com.20251104.gappssmtp.com:dkim]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-From: Matt Fleming <mfleming@cloudflare.com>
+Tue, May 12, 2026 at 08:29:27PM CEST, jgg@ziepe.ca wrote:
+>On Thu, May 07, 2026 at 02:52:26PM +0200, Jiri Pirko wrote:
+>> +	cq->umem = ib_umem_get_cq_buf(&dev->ib_dev, udata, entries * cqe_size,
+>> +				      IB_ACCESS_LOCAL_WRITE);
+>> +	if (IS_ERR(cq->umem)) {
+>> +		err = PTR_ERR(cq->umem);
+>>  		goto err_cq;
+>>  	}
+>> +	if (cq->umem) {
+>> +		if (dev->dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_SW_CQ_INIT) {
+>> +			err = -EOPNOTSUPP;
+>> +			goto err_umem;
+>
+>Huh. this is getting pretty hacky.. The driver wants to memset the
+>user buf to 0xcc for some reason, and it already has a nice flow that
+>if that fails it tells the FW it fails and presumably is Ok.
+>
+>The issue is it passes buf_addr around insead of having made an
+>ib_umem_memset() (which can reject dmabuf).
+>
+>Looks easy enough, change sg_zero_buffer() to sg_fill_buffer() to
+>accept the 0xcc, ib_umem_memset() trivially calls it, remove the
+>buf_addr from the call chain, directly use the umem in the
+>mlx4_init_user_cqes(), remove the if above, use the
+>ib_umem_get_cq_buf_or_va() in the driver..
+>
+>Leaving it like this just means the driver won't work with the new
+>uAPI with normal VA which is not desirable..
 
-mlx5e_tx_reporter_timeout_recover() accesses sq->netdev after
-mlx5e_safe_reopen_channels() has torn down and freed the channel (and
-its embedded SQs). Replace the three sq->netdev references with
-priv->netdev which is safe because priv outlives channel teardown.
+Agreed. I would like to fix this in a follow-up patchset which would
+look more or less like this (Claude generated):
 
-The netdev_err() call already used priv->netdev for this reason; make
-the trylock/unlock and health_channel_eq_recover calls consistent.
+ 1) lib/scatterlist: add sg_fill_buffer()
+    Generalize sg_zero_buffer() to take a fill byte. Keep
+    sg_zero_buffer() as a thin static inline wrapper around
+    sg_fill_buffer(..., 0) so existing callers (nvmet, scsi_debug,
+    ccree, jh7110-aes, krb5) don't have to change.
+ 2) RDMA/umem: add ib_umem_memset()
+    Walks the umem's sg list via sg_fill_buffer(). Rejects dmabuf and
+    ODP umems with -EOPNOTSUPP. Honors umem offset/length bounds.
+ 3) net/mlx4: drop buf_addr/user_cq from mlx4_cq_alloc()
+    Replace "void *buf_addr, bool user_cq" with
+    "struct mlx4_buf *kbuf, bool sw_cq_init". The function only owns
+    the kernel-side init via mlx4_init_kernel_cqes(); user-side init
+    becomes the caller's responsibility. mlx4_init_user_cqes() goes
+    away. mlx4_en and the kernel mlx4_ib path are updated to the new
+    signature.
+ 4) RDMA/mlx4: switch to ib_umem_get_cq_buf_or_va() and ib_umem_memset()
+    The user-CQ create path collapses to a single
+    ib_umem_get_cq_buf_or_va() followed by an
+    ib_umem_memset(cq->umem, 0xcc, ...) before mlx4_cq_alloc(). If the
+    memset succeeds, tell FW sw_cq_init=true; otherwise fall back to
+    FW-side init. dmabuf / ODP umems fall back naturally via
+    ib_umem_memset() returning -EOPNOTSUPP, and the explicit
+    MLX4_DEV_CAP_FLAG2_SW_CQ_INIT -EOPNOTSUPP branch goes away.
 
-This fixes the following KASAN splat:
+Makes sense?
 
-  BUG: KASAN: use-after-free in mlx5e_tx_reporter_timeout_recover+0x1dd/0x360 [mlx5_core]
-  Read of size 8 at addr ffff889860ed0b28 by task kworker/u113:2/5277
-
-  Call Trace:
-   mlx5e_tx_reporter_timeout_recover+0x1dd/0x360 [mlx5_core]
-   devlink_health_reporter_recover+0xa2/0x150
-   devlink_health_report+0x254/0x7c0
-   mlx5e_reporter_tx_timeout+0x297/0x380 [mlx5_core]
-   mlx5e_tx_timeout_work+0x109/0x170 [mlx5_core]
-   process_one_work+0x677/0xf20
-   worker_thread+0x51f/0xd90
-   kthread+0x3a5/0x810
-   ret_from_fork+0x208/0x400
-   ret_from_fork_asm+0x1a/0x30
-
-Fixes: 83ac0304a2d7 ("net/mlx5e: Fix deadlocks between devlink and netdev instance locks")
-Cc: stable@vger.kernel.org
-Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Matt Fleming <mfleming@cloudflare.com>
----
-Changes in v2:
-  - Add Cc: stable and Reviewed-by tags from Cosmin and Tariq.
-  - Add people from the Fixes: commit and related discussion to Cc.
----
-
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-index afdeb1b3d425..8409ae73768f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-@@ -160,13 +160,13 @@ static int mlx5e_tx_reporter_timeout_recover(void *ctx)
- 	 * channels are being closed for other reason and this work is not
- 	 * relevant anymore.
- 	 */
--	while (!netdev_trylock(sq->netdev)) {
-+	while (!netdev_trylock(priv->netdev)) {
- 		if (!test_bit(MLX5E_STATE_CHANNELS_ACTIVE, &priv->state))
- 			return 0;
- 		msleep(20);
- 	}
- 
--	err = mlx5e_health_channel_eq_recover(sq->netdev, eq, sq->cq.ch_stats);
-+	err = mlx5e_health_channel_eq_recover(priv->netdev, eq, sq->cq.ch_stats);
- 	if (!err) {
- 		to_ctx->status = 0; /* this sq recovered */
- 		goto out;
-@@ -186,7 +186,7 @@ static int mlx5e_tx_reporter_timeout_recover(void *ctx)
- 		   "mlx5e_safe_reopen_channels failed recovering from a tx_timeout, err(%d).\n",
- 		   err);
- out:
--	netdev_unlock(sq->netdev);
-+	netdev_unlock(priv->netdev);
- 	return err;
- }
- 
--- 
-2.43.0
 
