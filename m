@@ -1,322 +1,120 @@
-Return-Path: <linux-rdma+bounces-20579-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20580-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CDULOnWWBGpELwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20579-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 17:19:17 +0200
+	id wCW6KOSKBGoxLQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20580-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 16:29:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16580535F22
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 17:19:16 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62BA2535123
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 16:29:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B5A3F319774E
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 14:17:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1A0AD3094B72
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 14:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922D9391E7B;
-	Wed, 13 May 2026 14:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63FB41B35A;
+	Wed, 13 May 2026 14:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b6gSWtRb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mJtc/Hgf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AAD393DC1
-	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 14:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3A13E5ED8
+	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 14:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778681856; cv=none; b=CYBrYGYPkMm+BkBm5N0rywwXkd0tYgg/VzOjsr45KcyMm6L2QStz5W+ykQ02ceaclUu1Rql8DhR7rQdcICvnGVv6Uaph+BRGuLJ/YNv3qwUeB7czMgd1HwgXoWmD8O71xOoAJhBFKFc8mDqSPzRZB7AfKb28s8oZe6QdA/N0zNk=
+	t=1778682159; cv=none; b=FHCzuCz3uAUqJ41n46By1l2F12v2HKA40LII2bceuPNTKzjsZC23BGffKDLSlK64VeJSFgUesXxDW7qGQ8XNMV1pZcEWdYoYOnjMz0H/kSU8OX64VLMY6ro6nwc74Mn/1EPIfz8RGQIQSBa/cJL5bwogLM9xzl3C5uNUslJCVGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778681856; c=relaxed/simple;
-	bh=QtiSyCE8kqisjGYgGqfe6moTHsaEDh2xLdiy3R8xJd0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XTXMBDHGOROfL/l3KyfbBAfgAdTyvmqm8L6a/pz0JVGEOMkctySTShzbCGhS0tWKIwzsaJzrcPo9/Umgd4oqxHqPQpmzBzZYS6tNePQwFJK+BIH3Bl+AfEKX6NBgdLezLCk57CfeYqvtSCbTOAOVpUT/T+S1sckqn9X8iA6/UUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b6gSWtRb; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8226377c-0691-4368-bb82-48b620f784d2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778681846;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hLgOKn8Q4csZgJdaeSF8/209Id/N6IeL93JsqdJydu4=;
-	b=b6gSWtRbjRTcD41+YMsK9EGcArFapKqU+wJYFOlmQiltGfOsAHvJP7QCjHMce8muNiSwUn
-	1RJfGtHVXsqx07jSFpteex7nk0BncmpIwR7sF6VkotfEm6EhV9sZX1V0lwmGJHfB/uqCHR
-	9Ab7ozZIIJfT7zCD0KGmDEO3Mb4etMk=
-Date: Wed, 13 May 2026 16:17:03 +0200
+	s=arc-20240116; t=1778682159; c=relaxed/simple;
+	bh=eokDPabbJ4RytfG+q3hyVSJBHFBsujuwydBRjnzr5VQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UkZpbJ2ioKT6EYyYfqAZH9ubB3Xl6D7Kmce/2HdAl9OBo7hNdJYBIUIRqzNycrkCHKIuNUqYU4tiUYgCcgZXgeC/wfoI95oTsphJLveCspHYAfgZLQEcdtujT/T3wCO42xnBUGXl94GoYl69iHPQGGX/JybvImaQ3r9e4Jb78EM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mJtc/Hgf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78976C19425;
+	Wed, 13 May 2026 14:22:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778682159;
+	bh=eokDPabbJ4RytfG+q3hyVSJBHFBsujuwydBRjnzr5VQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mJtc/HgfBQu4D26OslKASqxWXjZV9P47KNx8IoLAVCcbGg4Hxg4OTCiOLMVLzty3Z
+	 FO1OQDkJkbJF1fGbsjkecamURIcDXGUdjMW14JWeHrRrhx/DD6XAaTRmZBy9h51SJO
+	 ZrrQbGIW8suFtUB2KFfjr3oTPUoZFafFsLaqK9u8lSWILmwwiA7hjgWhg9BLB48TfO
+	 gsvxiXZs+3+oBrRNz/JO6a5E6dLemBnkyNsYsCYddxDwxJzV6rL3mz0aibJBpTMmLy
+	 p5ckNnRxcAqMlII+GF19bSHXZUKoARoDY1gBD1kwO2NI2lvvaMWfV1lh/reSH/PsJs
+	 NmCuB0JqSfkNA==
+Date: Wed, 13 May 2026 17:22:34 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Chenguang Zhao <zhaochenguang@kylinos.cn>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+	Sean Hefty <shefty@nvidia.com>,
+	=?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
+	Kees Cook <kees@kernel.org>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/cm: fix timewait leak and AV cleanup on
+ ib_send_cm_req() errors
+Message-ID: <20260513142234.GG15586@unreal>
+References: <20260507094317.1018853-1-zhaochenguang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3] RDMA/siw: use kzalloc_flex
-To: rosenp@gmail.com
-Cc: jgg@ziepe.ca, leon@kernel.org, kees@kernel.org, gustavoars@kernel.org,
- linux-rdma@vger.kernel.org
-References: <20260511141149.52362-1-bernard.metzler@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Bernard Metzler <bernard.metzler@linux.dev>
-In-Reply-To: <20260511141149.52362-1-bernard.metzler@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 16580535F22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260507094317.1018853-1-zhaochenguang@kylinos.cn>
+X-Rspamd-Queue-Id: 62BA2535123
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20579-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-20580-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Before bothering the list with v4,5,6 patches, I hereby
-reach out for advise. Please see below my questions related
-to recent findings of sashiko, which are really useful
-and very relevant.
+On Thu, May 07, 2026 at 05:43:17PM +0800, Chenguang Zhao wrote:
+> cm_create_timewait_info() success was followed by error returns that
+> never freed cm_id_priv->timewait_info, leaking it and tripping the
+> WARN_ON(timewait_info) on a later ib_send_cm_req().
 
+Could you please include the kernel panic message printed by that WARN_ON()?
+I expect that the failed ib_send_cm_req() is handled and cleared later by
+its callers.
 
-On 11.05.2026 16:11, bernard.metzler@linux.dev wrote:
-> From: Bernard Metzler <bernard.metzler@linux.dev>
+Thanks
+
 > 
-> Simplify umem allocation by using flexible array member.
-> Add __counted_by to get extra runtime analysis.
+> After cm_move_av_from_path(), cm_alloc_priv_msg() and ib_post_send_mad()
+> failures must cm_destroy_av() the moved primary/alternate cm_id_priv
+> state before unlock; fold both cases into shared cleanup with kfree of
+> timewait_info.
 > 
-> Suggested-by: Rosen Penev <rosenp@gmail.com>
-> Signed-off-by: Bernard Metzler <bernard.metzler@linux.dev>
-> 
+> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
 > ---
-> v3:
-> Considering comments from sashiko.dev to v2:
-> - To minimize memory footprint of user page list, revert array
->    allocation to original kzalloc_objs(),
-> - Revert siw_get_upage() to original bounds check.
-> 
-> v2:
-> 1. Considering comments from sashiko.dev to original patch regarding:
-> 	- avoiding allocation of extra empty page chunk entry,
-> 	  if number of pages is an exact multiplier
-> 	  of PAGES_PER_CHUNK,
-> 	- fix potential signed index overflow case for
-> 	  page list generation and access,
-> 	- restrict page list access in siw_get_upage() to
-> 	  allocated length.
-> 
-> 2. Extend flexible array allocation to page list.
-> 
-> 3. Remove useless PAGE_CHUNK_SIZE definition.
-> ---
->   drivers/infiniband/sw/siw/siw.h     |  5 +--
->   drivers/infiniband/sw/siw/siw_mem.c | 54 ++++++++++++++---------------
->   drivers/infiniband/sw/siw/siw_mem.h |  3 +-
->   3 files changed, 30 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-> index f5fd71717b80..dbc998248b1e 100644
-> --- a/drivers/infiniband/sw/siw/siw.h
-> +++ b/drivers/infiniband/sw/siw/siw.h
-> @@ -119,9 +119,10 @@ struct siw_page_chunk {
->   
->   struct siw_umem {
->   	struct ib_umem *base_mem;
-> -	struct siw_page_chunk *page_chunk;
-> -	int num_pages;
-> +	unsigned int num_pages;
-> +	unsigned int num_chunks;
->   	u64 fp_addr; /* First page base address */
-> +	struct siw_page_chunk page_chunk[] __counted_by(num_chunks);
->   };
->   
->   struct siw_pble {
-> diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-> index 98c802b3ed72..88ec3cacfa00 100644
-> --- a/drivers/infiniband/sw/siw/siw_mem.c
-> +++ b/drivers/infiniband/sw/siw/siw_mem.c
-> @@ -41,16 +41,14 @@ struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index)
->   
->   void siw_umem_release(struct siw_umem *umem)
->   {
-> -	int i, num_pages = umem->num_pages;
-> +	unsigned int i, num_chunks = umem->num_chunks;
->   
->   	if (umem->base_mem)
->   		ib_umem_release(umem->base_mem);
->   
-> -	for (i = 0; num_pages > 0; i++) {
-> +	for (i = 0; i < num_chunks; i++)
->   		kfree(umem->page_chunk[i].plist);
-> -		num_pages -= PAGES_PER_CHUNK;
-> -	}
-> -	kfree(umem->page_chunk);
-> +
->   	kfree(umem);
->   }
->   
-> @@ -188,7 +186,7 @@ int siw_check_mem(struct ib_pd *pd, struct siw_mem *mem, u64 addr,
->    * lookup is being done and mem is not released it check fails.
->    */
->   int siw_check_sge(struct ib_pd *pd, struct siw_sge *sge, struct siw_mem *mem[],
-> -		  enum ib_access_flags perms, u32 off, int len)
-> +		  enum ib_access_flags perms, u32 off, u32 len)
->   {
->   	struct siw_device *sdev = to_siw_dev(pd->device);
->   	struct siw_mem *new = NULL;
-> @@ -338,25 +336,20 @@ struct siw_umem *siw_umem_get(struct ib_device *base_dev, u64 start,
->   	struct sg_page_iter sg_iter;
->   	struct sg_table *sgt;
->   	u64 first_page_va;
-> -	int num_pages, num_chunks, i, rv = 0;
-> +	unsigned int num_pages, num_chunks, i;
-> +	int rv = 0;
->   
->   	if (!len)
->   		return ERR_PTR(-EINVAL);
->   
->   	first_page_va = start & PAGE_MASK;
->   	num_pages = PAGE_ALIGN(start + len - first_page_va) >> PAGE_SHIFT;
-> -	num_chunks = (num_pages >> CHUNK_SHIFT) + 1;
-> +	num_chunks = ((num_pages - 1) >> CHUNK_SHIFT) + 1;
->   
-> -	umem = kzalloc_obj(*umem);
-> +	umem = kzalloc_flex(*umem, page_chunk, num_chunks);
->   	if (!umem)
->   		return ERR_PTR(-ENOMEM);
->   
-I got the following comment from sashiko:
-
-"Does umem->num_chunks need to be explicitly initialized here?"
-
-sashiko correctly points out that only newer compilers do that
-initialization (I checked: only supported since gcc >= 15,
-clang >= 19).
-
-The patch intentionally does not set that value, since I felt
-old compilers will not be used for v7 kernels. Shall we better
-do the redundant assignment? This maybe is a general question for
-the new alloc_flex api.
-
-
-> -	umem->page_chunk =
-> -		kzalloc_objs(struct siw_page_chunk, num_chunks);
-> -	if (!umem->page_chunk) {
-> -		rv = -ENOMEM;
-> -		goto err_out;
-> -	}
->   	base_mem = ib_umem_get(base_dev, start, len, rights);
->   	if (IS_ERR(base_mem)) {
->   		rv = PTR_ERR(base_mem);
-> @@ -365,33 +358,38 @@ struct siw_umem *siw_umem_get(struct ib_device *base_dev, u64 start,
->   	}
->   	umem->fp_addr = first_page_va;
->   	umem->base_mem = base_mem;
-> +	umem->num_pages = num_pages;
->   
->   	sgt = &base_mem->sgt_append.sgt;
->   	__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
->   
-> -	if (!__sg_page_iter_next(&sg_iter)) {
-> -		rv = -EINVAL;
-> -		goto err_out;
-> -	}
-> -	for (i = 0; num_pages > 0; i++) {
-> -		int nents = min_t(int, num_pages, PAGES_PER_CHUNK);
-> -		struct page **plist =
-> -			kzalloc_objs(struct page *, nents);
-> +	for (i = 0; i < num_chunks; i++) {
-> +		struct page **plist;
-> +		unsigned int pix, nents = min(num_pages, PAGES_PER_CHUNK);
->   
-> +		plist = kzalloc_objs(struct page *, nents);
->   		if (!plist) {
->   			rv = -ENOMEM;
->   			goto err_out;
->   		}
->   		umem->page_chunk[i].plist = plist;
-> -		while (nents--) {
-> -			*plist = sg_page_iter_page(&sg_iter);
-> -			umem->num_pages++;
-> -			num_pages--;
-> -			plist++;
-> +
-> +		for (pix = 0; pix < nents; pix++) {
->   			if (!__sg_page_iter_next(&sg_iter))
->   				break;
-> +			plist[pix] = sg_page_iter_page(&sg_iter);
-> +			num_pages--;
->   		}
->   	}
-> +	if (unlikely(num_pages)) {
-> +		/*
-> +		 * Unexpected size of sg list provided by ib_umem_get()
-> +		 */
-> +		siw_dbg(base_dev, "Short SG list, missing %u pages\n",
-> +			num_pages);
-> +		rv = -EINVAL;
-> +		goto err_out;
-> +	}
->   	return umem;
->   err_out:
->   	siw_umem_release(umem);
-> diff --git a/drivers/infiniband/sw/siw/siw_mem.h b/drivers/infiniband/sw/siw/siw_mem.h
-> index 8e769d30e2ac..2dff6640da5f 100644
-> --- a/drivers/infiniband/sw/siw/siw_mem.h
-> +++ b/drivers/infiniband/sw/siw/siw_mem.h
-> @@ -17,7 +17,7 @@ int siw_check_mem(struct ib_pd *pd, struct siw_mem *mem, u64 addr,
->   		  enum ib_access_flags perms, int len);
->   int siw_check_sge(struct ib_pd *pd, struct siw_sge *sge,
->   		  struct siw_mem *mem[], enum ib_access_flags perms,
-> -		  u32 off, int len);
-> +		  u32 off, u32 len);
-
-Sashiko says:
-
-"The parameter len in siw_check_sge() is changed to u32, but it looks like
-siw_check_mem() still takes an int for its len parameter."
-
-
-This is correct, but shall I correct code not related to that
-kzalloc_flex patch? I propose sending an extra patch fixing that
-broken signed buffer access len/offset treatment all over driver code
-in an extra patch. It is indeed broken and a great finding, but I'd
-like to keep things separately.
-
-Thanks very much!
-Bernard.
-
->   void siw_wqe_put_mem(struct siw_wqe *wqe, enum siw_opcode op);
->   int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
->   		   u64 start, u64 len, int rights);
-> @@ -45,7 +45,6 @@ static inline void siw_unref_mem_sgl(struct siw_mem **mem, unsigned int num_sge)
->   #define CHUNK_SHIFT 9 /* sets number of pages per chunk */
->   #define PAGES_PER_CHUNK (_AC(1, UL) << CHUNK_SHIFT)
->   #define CHUNK_MASK (~(PAGES_PER_CHUNK - 1))
-> -#define PAGE_CHUNK_SIZE (PAGES_PER_CHUNK * sizeof(struct page *))
->   
->   /*
->    * siw_get_upage()
-
+>  drivers/infiniband/core/cm.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
 
