@@ -1,136 +1,199 @@
-Return-Path: <linux-rdma+bounces-20555-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20556-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SFmFKTUnBGqDEwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20555-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 09:24:37 +0200
+	id UEHTGDcxBGo/FAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20556-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 10:07:19 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5474C52E976
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 09:24:36 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86C2B52F54A
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 10:07:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2B2D230041C4
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 07:21:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DED92300A644
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 08:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921903D5C1E;
-	Wed, 13 May 2026 07:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DvLNBXfw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1BB379C5D;
+	Wed, 13 May 2026 08:07:06 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5526938B130;
-	Wed, 13 May 2026 07:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD60326FDBF
+	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 08:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778656878; cv=none; b=NuWv3xcAynVEZAESL/Aqyfca++fsId3dKa9Ld0kkRRBlNnDRMHJ+XrwP7HNcLsG5urNR8tQwvs0Ff7vsihKlP2swMR647FxkfOCglmQNliWkImBX9id9fTYdWV+mJCyulZC8MpKEutxy4KaEQnStIfK7mTM9tRplHSXmkLClJZY=
+	t=1778659625; cv=none; b=FE6h7cHMvjE0Eg17Mq+ib2D21l/aC2ABSq2pIZDrzM5z168HkNtJ59bS4XOUvCASrKDwcsRVB76TTH29j2HjpqkduOPIAuBr5Zm5RBuL8hORMfs/+OhukeAXaREN56lHqwUV9lnb6P2/gxlj+78Vg62QFIAZhqr77nLlRX9x/Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778656878; c=relaxed/simple;
-	bh=Ro/6Yan4wzkoz45rJvdI0ZqKjoE6IvDotb3bzyFTqzU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mzjiLLH5VtUCLfVCKfBU2/KpoNqLHjpkOSptJkjTI9DZPHaC6zqu2zVoHX2ngjtErevYwWfMlZsz7fO7UeUAMxHoZpmCnyE8ch4JCzy5OrJ+e1eb9zTuxlPkxQGNbRhCzlkb/HhOzeySUdYrMqh3ntekuZPBYmgjfqQ1LaaauTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DvLNBXfw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29F63C2BCB7;
-	Wed, 13 May 2026 07:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778656878;
-	bh=Ro/6Yan4wzkoz45rJvdI0ZqKjoE6IvDotb3bzyFTqzU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DvLNBXfwOBhVOqd9Qry9LHxy2y8gmsfFQi7xLcW9o0ZIySpHvWIy/wfP7Z2ycUg0z
-	 7DSdewBaKcG/Ex5Z6vqfdBe8xxsX+X/7hc8JJ8Oz3iuXin6jck7787m0TKUW88S/+I
-	 NTwAqUo2/qGaZ3k8uZoJouzOxFuil+supCWUzQktV5xhLjopr37zQIwySA+FN+N6Of
-	 bJD8qWnDc61CRWIWFLFS+jltOONpI9ak+sL2HlIfBWMoGCJhNN2oRPQ9erRSoujvwC
-	 AeJ5lrCh05BEZUXjf/cHO0KyzZCxRoxesv4+MgRoU7whXEryqNis6rDxoa3LxAaVwK
-	 oh4rUjwhchGtQ==
-Date: Wed, 13 May 2026 10:21:13 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Eric Joyner <eric.joyner@amd.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	Brett Creeley <brett.creeley@amd.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH net-next 3/4] RDMA/ionic: Add debugfs support
-Message-ID: <20260513072113.GE15586@unreal>
-References: <20260506041935.1061-1-eric.joyner@amd.com>
- <20260506041935.1061-4-eric.joyner@amd.com>
+	s=arc-20240116; t=1778659625; c=relaxed/simple;
+	bh=tmqTPamkIQDLmmtU2g5kNTWed0VtOG5YqK9ehsaoojA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I2mVJ75RKUgpzjBsgwn5Uawt/cz7/kMRAO2GSroY9dkH/uTd078o7pcaNp+gBRT0tWt3ZVUWexd0pF+ZWmcam+v7qHaXgfbNpfUsMaJpk317W67LXtG1lq6lUzFkM+WFp4bpEe9rk3qzI+XbfpIWLV6MjkUHVTXLRgHQ5M1yQtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b3ada54c4ea211f1aa26b74ffac11d73-20260513
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
+	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
+	AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:b9bcf7cc-b098-431d-94df-7a2c217e88eb,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-20
+X-CID-INFO: VERSION:1.3.12,REQID:b9bcf7cc-b098-431d-94df-7a2c217e88eb,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-20
+X-CID-META: VersionHash:e7bac3a,CLOUDID:b2a0b949ebf2ce2628d15ea628679c2a,BulkI
+	D:260513160655UJ3NIIUJ,BulkQuantity:0,Recheck:0,SF:10|38|66|78|102|127|850
+	|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS
+	:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,A
+	RC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: b3ada54c4ea211f1aa26b74ffac11d73-20260513
+X-User: zhaochenguang@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <zhaochenguang@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 898377755; Wed, 13 May 2026 16:06:53 +0800
+From: Chenguang Zhao <zhaochenguang@kylinos.cn>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: Chenguang Zhao <zhaochenguang@kylinos.cn>,
+	Kees Cook <kees@kernel.org>,
+	Etienne AUJAMES <eaujames@ddn.com>,
+	zhenwei pi <zhenwei.pi@linux.dev>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Maor Gottlieb <maorg@nvidia.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH] IB/cache: Check GID table references before attempting deletion
+Date: Wed, 13 May 2026 16:07:07 +0800
+Message-Id: <20260513080707.3929955-1-zhaochenguang@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260506041935.1061-4-eric.joyner@amd.com>
-X-Rspamd-Queue-Id: 5474C52E976
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 86C2B52F54A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20555-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DMARC_NA(0.00)[kylinos.cn];
+	TAGGED_FROM(0.00)[bounces-20556-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RBL_SEM_FAIL(0.00)[104.64.211.4:query timed out];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	SEM_URIBL_UNKNOWN_FAIL(0.00)[kylinos.cn:query timed out];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,amd.com:email]
+	FROM_NEQ_ENVFROM(0.00)[zhaochenguang@kylinos.cn,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	SEM_URIBL_FRESH15_UNKNOWN_FAIL(0.00)[kylinos.cn:query timed out];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.968];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,kylinos.cn:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Tue, May 05, 2026 at 09:19:34PM -0700, Eric Joyner wrote:
-> From: Allen Hubbe <allen.hubbe@amd.com>
-> 
-> Adds a per-RDMA device debugfs folder under the parent ionic ethernet
-> device's folder for the LIF. Exports RDMA-specific debug information and
-> various queue information.
-> 
-> Signed-off-by: Allen Hubbe <allen.hubbe@amd.com>
-> Co-developed-by: Eric Joyner <eric.joyner@amd.com>
-> Signed-off-by: Eric Joyner <eric.joyner@amd.com>
-> ---
->  drivers/infiniband/hw/ionic/Makefile          |   2 +-
->  drivers/infiniband/hw/ionic/ionic_admin.c     |   4 +
->  .../infiniband/hw/ionic/ionic_controlpath.c   |  14 +
->  drivers/infiniband/hw/ionic/ionic_debugfs.c   | 750 ++++++++++++++++++
->  drivers/infiniband/hw/ionic/ionic_ibdev.c     |   3 +
->  drivers/infiniband/hw/ionic/ionic_ibdev.h     |  29 +
->  drivers/infiniband/hw/ionic/ionic_lif_cfg.c   |   3 +
->  drivers/infiniband/hw/ionic/ionic_lif_cfg.h   |   2 +
->  8 files changed, 806 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/infiniband/hw/ionic/ionic_debugfs.c
+In the NFS over RDMA environment, repeatedly performing frequent
+ifdown/ifup operations on the client may cause df -h to hang.
+The kernel log reports an error:
+  __ib_cache_gid_add: unable to add gid
+  0000:0000:0000:0000:0000:ffff:c0a8:0115 error=-28.
+Error code -28 indicates the GID table is full.
+The call stack during ifdown is as follows:
+  put_gid_entry_locked()
+  del_gid()
+  _ib_cache_gid_del()
+  update_gid()
+  update_gid_event_work_handler()
 
-I'll comment on this patch only, but the same issues apply to the whole
-series.
+In put_gid_entry_locked(), kref_put(&entry->kref) does not
+drop the reference count to zero, so free_gid_entry()
+is never invoked to release the entry. Subsequent ifup
+attempts keep adding new entries into the GID table,
+eventually exhausting the table capacity.
 
-1. This series should target rdma-next, not net-next.
-2. Jakub's feedback is valid and should be addressed.
-3. The patch is too large and exposes too many details that should be
-   gathered through the FW (fwctl).
-4. It exposes a large number of fields from general RDMA structures,
-   which suggests that this dump is placed in the wrong layer.
+To fix this, check whether the GID entry still has
+outstanding references in del_gid(), and only remove
+and release the entry when no other references remain.
 
-Thanks
+Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
+---
+ drivers/infiniband/core/cache.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 647a547e2d7f..c71522fbf89f 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -596,6 +596,34 @@ int ib_cache_gid_add(struct ib_device *ib_dev, u32 port,
+ 	return __ib_cache_gid_add(ib_dev, port, gid, attr, mask, false);
+ }
+ 
++/**
++ * gid_table_is_shared - Check if GID table has other reference owners
++ * @table: GID table to check
++ * @ix: index of entry
++ *
++ * Returns true if the gid table refcount is greater than 1,
++ */
++static bool gid_table_is_shared(struct ib_gid_table *table, int ix)
++{
++	unsigned int refcount;
++	struct ib_gid_table_entry *entry;
++
++	write_lock_irq(&table->rwlock);
++
++	entry = table->data_vec[ix];
++	refcount = kref_read(&entry->kref);
++
++	write_unlock_irq(&table->rwlock);
++
++	if (refcount > 1) {
++		pr_debug("%s: The GID table is still referenced and cannot be deleted.\n",
++			__func__);
++		return true;
++	} else {
++		return false;
++	}
++}
++
+ static int
+ _ib_cache_gid_del(struct ib_device *ib_dev, u32 port,
+ 		  union ib_gid *gid, struct ib_gid_attr *attr,
+@@ -615,6 +643,9 @@ _ib_cache_gid_del(struct ib_device *ib_dev, u32 port,
+ 		goto out_unlock;
+ 	}
+ 
++	if (gid_table_is_shared(table, ix))
++		goto out_unlock;
++
+ 	del_gid(ib_dev, port, table, ix);
+ 	dispatch_gid_change_event(ib_dev, port);
+ 
+-- 
+2.25.1
+
 
