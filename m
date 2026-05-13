@@ -1,427 +1,291 @@
-Return-Path: <linux-rdma+bounces-20563-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20564-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aA0KJhhJBGrNGgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20563-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:49:12 +0200
+	id wK96GihXBGq6HAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20564-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 12:49:12 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3824D530ED6
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:49:12 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60CFD5319F8
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 12:49:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 72CD2303D71A
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 09:42:44 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 897153002F7F
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 10:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EBB3EAC7D;
-	Wed, 13 May 2026 09:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80733E95AB;
+	Wed, 13 May 2026 10:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cr8uxAh+"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="rs0Dvgy6";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="a6Ribv+w"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CC33E9F61;
-	Wed, 13 May 2026 09:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778665362; cv=none; b=lGxSeZxlIrM7SZ8VrXRu/b+pVbuyv6BxatoFqBM0BNB4YCFfCPNAYNRRsxhji9R5Vi1jZxl6dlI/Xg+ByTR7jozR93Q9RSwl5fvRYkM21knNkVlHoNDzAmgF72fVuzjynaDWO0TTucPGjGlQ7adbZHZz5rvQXlISzzTghMATN2w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778665362; c=relaxed/simple;
-	bh=i+awaBjbzoGv+bzIIAVOHA5A0tzwaWXH1wgME3EZtME=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PaOgR2cAdHmCw9r+IeyPcVmXpG2WhVE99peiarqBNf6JS1RlCq8SlVnXZjsHLAwc2QCtYsTtOzmW6opXo3QsRxqjoWqqZ3tAaR65lkqZnY8m9n7X6NXeTkrZtWrKGQeTc4mlLB/xo+UKac21/z8wN0zOXJkNSfI0IfErwFuwez4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cr8uxAh+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B23B4C2BCB7;
-	Wed, 13 May 2026 09:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778665361;
-	bh=i+awaBjbzoGv+bzIIAVOHA5A0tzwaWXH1wgME3EZtME=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cr8uxAh+loQpjXmCoE2TaiGITt+TcZwPIbr+2RkfQvmH016d7LsS1fYXzAGa6tfaf
-	 9aDJgI4NZQWIIfDBz/fxuLE/C3bF1QUfjJm+eaXZpA2bd1iUEfFaidDc9+2lnQk7Q3
-	 fQJRqh1thkcoH/XcJKSphQ+kRTI9UCWbfmO7NEFJcIOb1DT9Y1d3+rxytyM6koiRnU
-	 o67Kghqz/3Sl1fwOV1noQq1Zz+1JhcTHzbgMwOwLPK3z3cP5r0vFt1ZXjSDshcLTta
-	 3mJYS/6/YKEFhO2y4qtuIGDtUUcWsUjMz9l5ZpGFjeP+r/soM1XXNhz2++NoEly8au
-	 TOmcMnI67TGGw==
-Date: Wed, 13 May 2026 10:42:38 +0100
-From: Lorenzo Stoakes <ljs@kernel.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, 
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, 
-	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch, edumazet@google.com, 
-	pabeni@redhat.com, david@kernel.org, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com, ilias.apalodimas@linaro.org, 
-	willy@infradead.org, brauner@kernel.org, kas@kernel.org, yuzhao@google.com, 
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com, almasrymina@google.com, 
-	toke@redhat.com, asml.silence@gmail.com, bpf@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com, 
-	dtatulea@nvidia.com
-Subject: Re: [PATCH v4] mm: introduce a new page type for page pool in page
- type
-Message-ID: <agRHF2EnFw-OZ2-u@lucifer>
-References: <20260224051347.19621-1-byungchul@sk.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815513F1670;
+	Wed, 13 May 2026 10:46:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778669207; cv=fail; b=ct6y2PwoetnvrZXKi2RJBN3vll3/lU9z0xkexP4XXkKV4/jfKwEbti73nG6bsFuM3nagRn10wYfIBEcCzmGTBGQHQWQh12VBogQ8itzEGbmLaNSA5FxCeoqRTqQXw0GfMZ5ouy9siA0nAHLviqOpQAuLEc+Oonq8/gxf110Cu3c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778669207; c=relaxed/simple;
+	bh=iKckcTRDRgeeT6PQnMp1u8hn4j9Pd1DMsryxTPoBLrI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=TRzotQrrbSM6mpi59nvlBuHNkJlxSXIuLQ65H8UaLfZ5gq5wZ44xSHhgFU0sY54We3blctfibVlfi/LF4NH7nqdMAdSFJi/yhZTx1/vGwSYqOjPfVMBY79k83gQb4lUkGZLVpI/dRUJH9mLN/49L8C2C5/pM4YzFz1c8HLvBrK0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=rs0Dvgy6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=a6Ribv+w; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64D7MfAp3637188;
+	Wed, 13 May 2026 10:46:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=iKckcTRDRgeeT6PQnMp1u8hn4j9Pd1DMsryxTPoBLrI=; b=
+	rs0Dvgy6d4Ka8RCbk7H0ERR605jebMjC/UivNGg1x5VEs0He8gHulkF5qvYivrxH
+	8preksQYtCF7+XNYy71eKJKbf/FTlNLuppVk70YXWXqiCKa/JpG5dj8IRxuOz1gF
+	Nw3uHOS5sk7d9CqGhONG0Tb9DAYrddp5zQWrdeL276e/ZHPI+jwpClsV7hU+cg1N
+	PIZsOLpPoocOn/0TkLjqs7tDDapWudKg4XF9/qNCPCqDIOVsq+05olBC+RLp6qPN
+	Ayao+lITLD58S16yHM7k97wk4qGW6+Il6ONr7h1mc7L2CRPZd72bDADqSumebKA+
+	yxVcd3FQhY+V7bqZSD426Q==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4e4c96gyv5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 13 May 2026 10:46:40 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 64DAdwB6027140;
+	Wed, 13 May 2026 10:46:39 GMT
+Received: from mw6pr02cu001.outbound.protection.outlook.com (mail-westus2azon11012070.outbound.protection.outlook.com [52.101.48.70])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4e3nebg816-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 13 May 2026 10:46:39 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=yOgaFVluFGbBO+jJsXPE1S694dtlJP0wlLx7tYk4nWY9SuL3Rp+goYR3AS3EuxwQb50rQqxIf40Mp6IxPevStsAYhTuEJS6o4brGhyQ+KFV/E0ZaoeZNlt85eHbRdfu5oxcJkRHZJFokiTJYk8F0O1b6Z4apT83yYcUI1EGUypO15OKpqX1tsiGSKOBMiEowjbLkSwlZNPk/01jZJEMAuVNZugNDNXUfPK3QU2sHd7CFcROOJ9nP+HBTpOPFZCD2OBZUB6RHETiYcQiCI8O2H5wc/3GzdU7lklDhUgVWcMbj7USqJF6ezVRiGx+t5bpJsP1ZFW9Gb6xzPf6ACoIALA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iKckcTRDRgeeT6PQnMp1u8hn4j9Pd1DMsryxTPoBLrI=;
+ b=Yp8PDag5rIU1F+6QCMcVJuy7qIMr01bq2U2p4nNY14TOb1ZSZcya8c8halaaa9QPNIZahPryWSrIBtTnQQX3O5hc7EL182GOQLNwuWWUJATvq7mrv7t8IZGjw9E4f1FIOMKRbSW95jotRTXV74wdJp9i5KwvK4vaiTGPw2FWmP2oavwXIQvrinuvD/dD/Np8XFZEp6ZfSXhBNZECSYhY8UBf3zjCsM1qw2Anydt0oP56bkW84P0/tGUJtQRMRduxKe3ybfQDTeZptLeqI/vZA67NZSxJuQwWcIwUXCcZ/2pbuuroIJvA1tJeOKneXtaevRYLY58CpVpVOtx8y2RzPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iKckcTRDRgeeT6PQnMp1u8hn4j9Pd1DMsryxTPoBLrI=;
+ b=a6Ribv+wX1LQw4VT8VvisNafAt9I9sSJQb3hOnsIG6vyU5oBYPFT0EFJvv0WrvopQqHeC/5JyjpdnoLtYfeUeOl0xITzsSaQ3ekiIQls+5LlNGld2OFACgTNQHbsu60zMwkeV9w85htjn/Gu4l8n6RiOwX5hP2DpQafgmy8IFIQ=
+Received: from BL0PR10MB2820.namprd10.prod.outlook.com (2603:10b6:208:75::10)
+ by CYYPR10MB7626.namprd10.prod.outlook.com (2603:10b6:930:bb::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Wed, 13 May
+ 2026 10:46:31 +0000
+Received: from BL0PR10MB2820.namprd10.prod.outlook.com
+ ([fe80::e0d8:3402:3fa7:260]) by BL0PR10MB2820.namprd10.prod.outlook.com
+ ([fe80::e0d8:3402:3fa7:260%6]) with mapi id 15.20.9913.009; Wed, 13 May 2026
+ 10:46:30 +0000
+From: Praveen Kannoju <praveen.kannoju@oracle.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: "yishaih@nvidia.com" <yishaih@nvidia.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Anand Khoje
+	<anand.a.khoje@oracle.com>,
+        Manjunath Patil <manjunath.b.patil@oracle.com>
+Subject: RE: [PATCH] IB/mlx4: delete allocated id_map_entry while sending REJ
+Thread-Topic: [PATCH] IB/mlx4: delete allocated id_map_entry while sending REJ
+Thread-Index: AQHc3TfomMZpIpF0xUu1l8BvfgDSAbYKY5KAgAFtRVA=
+Date: Wed, 13 May 2026 10:46:30 +0000
+Message-ID:
+ <BL0PR10MB2820D13E6889E9578A0AAE518C062@BL0PR10MB2820.namprd10.prod.outlook.com>
+References: <20260506090824.359239-1-praveen.kannoju@oracle.com>
+ <20260512125819.GT15586@unreal>
+In-Reply-To: <20260512125819.GT15586@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_94b7886c-3e74-443c-a58e-890de065ec46_Enabled=True;MSIP_Label_94b7886c-3e74-443c-a58e-890de065ec46_SiteId=4e2c6054-71cb-48f1-bd6c-3a9705aca71b;MSIP_Label_94b7886c-3e74-443c-a58e-890de065ec46_SetDate=2026-05-13T10:45:39.0000000Z;MSIP_Label_94b7886c-3e74-443c-a58e-890de065ec46_Name=Restricted-Including
+ External
+ Recipients;MSIP_Label_94b7886c-3e74-443c-a58e-890de065ec46_ContentBits=3;MSIP_Label_94b7886c-3e74-443c-a58e-890de065ec46_Method=Standard
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR10MB2820:EE_|CYYPR10MB7626:EE_
+x-ms-office365-filtering-correlation-id: 71bbfae3-2691-43b1-d43e-08deb0dce452
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|376014|1800799024|18002099003|56012099003|22082099003|38070700021|3023799003;
+x-microsoft-antispam-message-info:
+ UT6mDi7VIL2l5OPrfMzEyxbLu+MoFAZjVUhIHRnFLSLTYlRIaOcivd4V+XXaBf403K8uYqaVDJlrjlHiNTOs8tkUWHhgf62IjBo8Pa7opj77qJidH0SFOQE96tE3Es8WgrtBIR1ZnkKENLNt2niXbiB83Lrs+nNLnb5KEfSDg4VCmXqYYL3T4ZoMvkTHa7F0H9M2SzQ2jzECZ5WEEGZkBIU4x/c0m4dkEebqEGnAzt0e9RGcbXRwt52ScUgwHEuO8bbyaWKulbQ/3DrVRbLqpixqWRrX08OfsnpNni7V0iBTjKpEu/SBhKiwyATKB+Bli18ljgpu6VWzxdjSRpQkbMI3j+B0tdkwmZ58LJ9w4jKxnJ7FTtFpc90wD0b2Vke09hh+mp8iEunra8xfW4Al+G9Iz8+DGvT77lGMXqKwT5loQ59DhPfWZ0mHs9n8mFRSz3aC1mdJiusLfa7Kme4QWYVbe1W/xYpnxrkm4qfgafUEKZdktLZZuiRrTb3iuRHUQTbHJrkb5iDdA/GbNM9JUIJM2ecugGtLAT83wUBrAZc9qwD7xUsFghw8aZh+Ze+lCp9bv/LS8lO5mtJO6n3P8hhB1mgHuQoZWz41OTFGve9iyYVwv78uYsUXC1AA+v0J9uIUNTK/GOamAfGR8cJLw/PvCu4yaIxhWAVX3fjnnslx21LvFdG6o7twp0W6K/znI5mrrQLadz5aO3hun/qv1rPmkn4cRmF6M6LrjfoEJzaiR89ndcx5xV0h6MMLk3O1
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR10MB2820.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(18002099003)(56012099003)(22082099003)(38070700021)(3023799003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?STA1K0k3R2Q5UWRuVXFMeDRnMGJmQTcxRGR2dDJkbHk3amM0NVdrdnpKUTBt?=
+ =?utf-8?B?ODVON0JnaUZzcHFKWlJqS0NhUS9xVllSQlBmeW1CaWhYNzN1S1VKOXhBSmJ2?=
+ =?utf-8?B?bWpzRU1QK01NaTZ2L0tvTVBheWh6N1ZxSnM3ckdoWnN0aCtpNFF5ZERYRjBz?=
+ =?utf-8?B?NEkwWkZaQi9nM3U4ZStMUGxLR2ZyOHdPWUNRZldhYWZGc2ZDeHhOdktHSDEy?=
+ =?utf-8?B?aDRWeWhKK3NlQlFVaWtuNFVHTWphZFNBc1cyT1hFVU9NdC9tcVA2QnllMEpq?=
+ =?utf-8?B?OWtXeVRNenJ1bWJ6NjNDZnNraVA1aWRKZXdla3pxV0pJeStWQklCVlp4Znk4?=
+ =?utf-8?B?T29jRGNMVHU4c3JOQUFsa09JQ2dZMjVEK3dRbkR6SVNqWjJEMFREb25ncGVr?=
+ =?utf-8?B?dlMrMWt6TFhtYTNOZnBKRVg0d2RIOVN1aTBkZjFwQmNhSFlOZWxoVm0ray9m?=
+ =?utf-8?B?RFVyNUkvb2xjcEVEUEVEemRKMmJOS1JvalJ3WGdJUXRZby82bHpUakJtUmZX?=
+ =?utf-8?B?NU5xcUt4c1Btd0RHNFV0TVlmbXQzdkd4dlBrdzRGNmt5eGZaV3hCa1pFclEz?=
+ =?utf-8?B?RGZrTDFnNytESFRlTDRwYWg3QnR5SHdMZHRXeVJKZ1VLMEU0QXZMZUEyOUxk?=
+ =?utf-8?B?SUlpbjlzTnFIV3BmTjVRR0VpaHJDR1hIZXlYSEc5azlnM3N0L0tGS096RDh6?=
+ =?utf-8?B?WnBsNjdJQlZjbStyWDEzS0JLU1hBRVh2WEt1bi9ndjhONGE2TmYwYzdKTEJC?=
+ =?utf-8?B?THhpSVlaaDcvYkg1bXkwdjlEKzNTcFNHMm0yMVR5S0kralg3VCt4REF2bnNL?=
+ =?utf-8?B?a1o4bDhHMnZrTURVZEE4dThrbGNPTXFtQWRIdXBFMDNDakZrS0hRVW5SZ1hl?=
+ =?utf-8?B?alduTUMzZVBLVTRWZEtpQ1hyd08ydWdnMkR0K1BPMG5KZlhDRW96Wi8zbncw?=
+ =?utf-8?B?NENyU1lSazlTd1BBcktxb2xveUpDWkFCSi9vRDlXYXNJZDRxb0FXcFdZaXJn?=
+ =?utf-8?B?NVVnOG5kU2c1SUduU3YzcS94SGhEQWYyVG5JbUhNY2JmK0dIMDhTTEZBZERW?=
+ =?utf-8?B?WkdwVHhXL05jaWRGMVAvQUVJUWhMV2RJNXNzRFZCSGJNckxTZHpESEtjSDE5?=
+ =?utf-8?B?TmRFWjRqazZvd08xbUQyeHNwZkQ2cEpiZVJ1enA1NzFtcWcwMnc0bU9DcHpS?=
+ =?utf-8?B?TlNXbjdER0QxZEc5RHdlSEZQa003a01JVVRXUVNvMzU3T1F1QUVrcUFQZGZY?=
+ =?utf-8?B?MnlLY2ZKK3lnMUl0OE1xUFU4bGt1OXFKandSUEVSS2lrdTVUWS9ZSlBnYnA3?=
+ =?utf-8?B?SU5yRGdDZkdZS3I1Qy9TdU9uOWQ5WWFXdHFoL0N2dkllU29tY2FzVGdLc1dY?=
+ =?utf-8?B?amVNeUhjRjdRRlhTRWQzVWsyRDQ5L0J0R2lYYnVoVG1XVklvWlliZCtOckYv?=
+ =?utf-8?B?eXFqV0poamU0cGFvTnZJdDdZTjZHdmdJekc1ZHVTdkE5NytsRjR0SFJwbVZr?=
+ =?utf-8?B?NTBoMnNyU1hZVHl2bE9uY1NMNnBFOWY0VC9jK3h0ODM4R2xRc2tXU05CQTBE?=
+ =?utf-8?B?TGMrYlBoVC90YXl4aDlzYlNCT3I2S1VGaWZiMVFCL2RXVHhwM3ZPcmpYdVdF?=
+ =?utf-8?B?TWsyMndHUmRMbWZ1a2FONFBoTFZyOExwS1V0NTVHMlBLSzE2MHJSMUV6Q0FS?=
+ =?utf-8?B?NzJhUFdvdWZvVC9oczZSMVB3YmFqZ2lWWlNHQ3NzbWNsQ1NyMVZUY280Vmlh?=
+ =?utf-8?B?T1g5UFExdEdLM3ptT3RKTXZocEJBc3NDVEI2UjRaY09aU2dva3lOUVh5dEhP?=
+ =?utf-8?B?M2ZzeTF4S0VBLzE1ZENHS29lQ01KamdmZitQMHFRWTdDbkkrSU9pVW5yMEd6?=
+ =?utf-8?B?ek5vWTdsY290aWY4dHQzQnFUcUhab3NOWXFIc1pqMUppR2VGbTFJelV0a0Rk?=
+ =?utf-8?B?WC9mUFNKZU1Pd3JjbFRwZWlNR2ZMWGNhWEt3eXlLM25Fc3VTYUVkQmY1MGlK?=
+ =?utf-8?B?YURwTGVrSXIrMXM3cGNHdTk3SytWN3V2WUdYZnZScVB3V1VpeEphME5HcXhv?=
+ =?utf-8?B?S1FYY0tLLzkvZVNsSEhFY216UTg0eHU1eUhZTlowTENacjJkRk5hU1VuK0hC?=
+ =?utf-8?B?K1pabjN4M0kxR2luTWo0WDh2TDB4S3EyRVhtWmhudWN5K3h3dUdaVmphS0pQ?=
+ =?utf-8?B?cndaQzd1Y2YyUWVRSzBwdjBZSC9kTmlTNnorV05EWUJYUkFEMTQ3YkhCSzZy?=
+ =?utf-8?B?bTl0Y0s2WFdxU2I5bEd6U3VRcExhRkZaVENEaUo1NjZzaFpleXVhdkRSZjlZ?=
+ =?utf-8?B?cUhkQklmaFI5TXRIcEdPMHBZYUVJSnV5Y0hmc2pLNHJhTTU0aUVBZz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260224051347.19621-1-byungchul@sk.com>
-X-Rspamd-Queue-Id: 3824D530ED6
+X-Exchange-RoutingPolicyChecked:
+	GCXugr7SFX0Aqf42AnNXVee3k/JtcVYUZzDmZwnp49FQm+1m8dojVM/j0QZWFEI7cU79EgWkFGMfOyZSrC2/88DWivg411Tez0zud1qBtD4yU3jhHl1neK+n2AhLpzjmyUljiDUtVEEZ3Xl5z2P4yNpOTsSJKg6KWjo5yN3QwVMEN2DYNx/hKN+6lX+U5h6ftj1j6d+/jHIr9KN8AFf4nUIT7N9mcACHtJR4kGqlLqLUI7OQMO8do8lMPBLSnculP8dr8qGEurQ4xJXgbTByHj25dyX2YyPSvE1/GdaIt91XkaytYWl0UTRSOLM0Y4QS+Uo759CpCgCmRkPrg6A+5Q==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	b+B/ON+qpXK5CkMg9qyY8bThy9VgQbCstiw2xN8ItHTAgFCdu75iZTArYoa6Qa2Qzhk1mW6kHA9q69uZR/esugoHVYTuMG1+O5VKx+2/XzNM5CbQlOhn+kpO6mo/2RSlvX1IMfq9e/GCyVJ+mNsK2t4dNnQB1x7PgTmOrEBdREEkD3AAr3qnbhNuTK0ZIymURxsCH4bvYDcerILE2Utz/zdT7Yt5P1pFkW7U3a/cJXxCQIwNno4gpar9StPRLYTHe3lMgWBXQFiGPlY0z15dkk4mZWmAnEtdqRS2BJ6PH7UyswgESRmDTxvdvj2/cZhLBgabJJeTsP6CnAH+qhROecvKofbzWFXsvPr/oC4A3YvSAEpwlBeJgNRYWEAy5hg+eLORtg02blkBxBaVzrw7lQlBcJGq2oH1i625BbnU1TR1IxdiBU8nXX696rMOlrd4WfL6EYBR41NQ2WQaiddQ2hASidRlgd6TIqO22hB0Z/OqvMkOYnkjkICaSuoIqbKuLKDNcofWLpGm0nNwzcxQj5b6+Z0U1Vu9P6bX9v86UFnNxFgkQDmlGYp5urb0UMaWm5lxBXsRajf3mIErUg1hwRtmykHcQfSxJBqT2jBunGc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR10MB2820.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71bbfae3-2691-43b1-d43e-08deb0dce452
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2026 10:46:30.3033
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EHBeeIZh/FckxGkEkpTbuXypbntz2DwZu8kM8l4X8U6OGSsTyfieZfc6duqQkF8KkS3xM8ACGWwXETMI0PqAesEKWnQdwCRYjEyr7BXR3B4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR10MB7626
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-11_05,2026-05-08_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
+ mlxscore=0 suspectscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2605050000 definitions=main-2605130112
+X-Proofpoint-GUID: rsei0p5zngBguqPdzb7tpz_WiedUyqUS
+X-Proofpoint-ORIG-GUID: rsei0p5zngBguqPdzb7tpz_WiedUyqUS
+X-Authority-Analysis: v=2.4 cv=fvnsol4f c=1 sm=1 tr=0 ts=6a045690 b=1 cx=c_pps
+ a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+ a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19
+ a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=GoEa3M9JfhUA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22 a=o5oIOnhZENCTenyL_yNV:22
+ a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8 a=Ikd4Dj_1AAAA:8 a=9jRdOu3wAAAA:8
+ a=vnv3ECiJB2qDF86_QF0A:9 a=QEXdDO2ut3YA:10 a=ZE6KLimJVUuLrTuGpvhn:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTEzMDExMyBTYWx0ZWRfXwIaoXgEoiHDi
+ zA6kivL72LMaepiGmAAlda1/IyrehEq1RaHh/Xa3Qlg77jsp8GLxNdo9jIQYho87pT4yybbKnpM
+ hAbUmKDp7BbxwD5jxUFIWnIs4ZDuFkk/5JU8eYjlbvPMzyb68hR4BCUjbgp/Qm0qq8Gj6OqM++c
+ X50ZR8rWjBTZRzvxL4+dGMO+fniyeBWfDXwesxJy4+MHYtb1uccw52kmaiKy2dpKuqWHa2dI3vu
+ b9f3tZ1ACtWbTsAETFuWAmFk1guVBY/pvA34Q3OTGkv9BYOpbrX/e1V3d1g2n5vP8qlYeFRusqt
+ ZxTGidVg6PZPNor7viPS3SS2CvSK3wmZ8tjHz5zLnMRWjgxIU/e69gNzzpKk/x7zX+3jOfnpc+n
+ /zfeXKYGZ11JRppGwJudSKCix5i1ORohuEmvlMLfKupcWJV2gOhvVbsVsPO48gRRAS4bGcbtK5j
+ JCJq6Aem/qVAg5b2C+Q==
+X-Rspamd-Queue-Id: 60CFD5319F8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [0.94 / 15.00];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25,oracle.onmicrosoft.com:s=selector2-oracle-onmicrosoft-com];
 	MAILLIST(-0.15)[generic];
+	MIME_BASE64_TEXT(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20563-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20564-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[47];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,vger.kernel.org,skhynix.com,oracle.com,kernel.org,iogearbox.net,davemloft.net,gmail.com,fomichev.me,nvidia.com,lunn.ch,google.com,redhat.com,suse.cz,suse.com,cmpxchg.org,linaro.org,infradead.org,linux.alibaba.com,canb.auug.org.au,davidwei.uk];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:email,BL0PR10MB2820.namprd10.prod.outlook.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,nvidia.com:email,oracle.com:email,oracle.com:dkim,oracle.onmicrosoft.com:dkim];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[praveen.kannoju@oracle.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[oracle.com:+,oracle.onmicrosoft.com:+];
+	NEURAL_HAM(-0.00)[-0.992];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.cz:email,sk.com:email,nvidia.com:email]
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
--cc previous kernel mail address
--cc David's very previous kernel mail address
-+cc David's current mail address
-
-Hi,
-
-Just an annoying reminder to please check people's addresses via
-get_maintainer.pl, as otherwise stuff might get missed! :)
-
-Cheers, Lorenzo
-
-On Tue, Feb 24, 2026 at 02:13:47PM +0900, Byungchul Park wrote:
-> Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
-> determine if a page belongs to a page pool.  However, with the planned
-> removal of @pp_magic, we should instead leverage the page_type in struct
-> page, such as PGTY_netpp, for this purpose.
->
-> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
-> and __ClearPageNetpp() instead, and remove the existing APIs accessing
-> @pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
-> netmem_clear_pp_magic().
->
-> Plus, add @page_type to struct net_iov at the same offset as struct page
-> so as to use the page_type APIs for struct net_iov as well.  While at it,
-> reorder @type and @owner in struct net_iov to avoid a hole and
-> increasing the struct size.
->
-> This work was inspired by the following link:
->
->   https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
->
-> While at it, move the sanity check for page pool to on the free path.
->
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Acked-by: Zi Yan <ziy@nvidia.com>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
-> The following 'Acked-by's were given only for mm part:
->
->   Acked-by: David Hildenbrand <david@redhat.com>
->   Acked-by: Zi Yan <ziy@nvidia.com>
->   Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
-> This patch changes both mm and page-pool, but I'm currently targetting
-> mm tree because Jakub asked and I also think it's more about mm change.
-> See the following link:
->
->   https://lore.kernel.org/all/20250813075212.051b5178@kernel.org/
->
-> Changes from v3:
-> 	1. Rebase on mm-new as of Feb 24, 2026.
-> 	2. Fix an issue reported by kernel test robot due to incorrect
-> 	   type.
-> 	3. Add 'Acked-by: Vlastimil Babka <vbabka@suse.cz>'.  Thanks.
->
-> Changes from v2:
-> 	1. Fix an issue reported by kernel test robot due to incorrect
-> 	   type in argument of __netmem_to_page().
->
-> Changes from v1:
-> 	1. Drop the finalizing patch removing the pp fields of struct
-> 	   page since I found that there is still code accessing a pp
-> 	   field via struct page.  I will retry the finalizing patch
-> 	   after resolving the issue.
-> ---
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
->  include/linux/mm.h                            | 27 +++----------------
->  include/linux/page-flags.h                    |  6 +++++
->  include/net/netmem.h                          | 15 +++++++++--
->  mm/page_alloc.c                               | 11 +++++---
->  net/core/netmem_priv.h                        | 23 +++++++---------
->  net/core/page_pool.c                          | 24 +++++++++++++++--
->  7 files changed, 62 insertions(+), 46 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> index 80f9fc10877ad..7d90d2485c787 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> @@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
->  				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
->  				page = xdpi.page.page;
->
-> -				/* No need to check page_pool_page_is_pp() as we
-> +				/* No need to check PageNetpp() as we
->  				 * know this is a page_pool page.
->  				 */
->  				page_pool_recycle_direct(pp_page_to_nmdesc(page)->pp,
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 13336340612e2..0db764b3d6b84 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -4824,10 +4824,9 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
->   * DMA mapping IDs for page_pool
->   *
->   * When DMA-mapping a page, page_pool allocates an ID (from an xarray) and
-> - * stashes it in the upper bits of page->pp_magic. We always want to be able to
-> - * unambiguously identify page pool pages (using page_pool_page_is_pp()). Non-PP
-> - * pages can have arbitrary kernel pointers stored in the same field as pp_magic
-> - * (since it overlaps with page->lru.next), so we must ensure that we cannot
-> + * stashes it in the upper bits of page->pp_magic. Non-PP pages can have
-> + * arbitrary kernel pointers stored in the same field as pp_magic (since
-> + * it overlaps with page->lru.next), so we must ensure that we cannot
->   * mistake a valid kernel pointer with any of the values we write into this
->   * field.
->   *
-> @@ -4862,26 +4861,6 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
->  #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT - 1, \
->  				  PP_DMA_INDEX_SHIFT)
->
-> -/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magic is
-> - * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit 0 for
-> - * the head page of compound page and bit 1 for pfmemalloc page, as well as the
-> - * bits used for the DMA index. page_is_pfmemalloc() is checked in
-> - * __page_pool_put_page() to avoid recycling the pfmemalloc page.
-> - */
-> -#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
-> -
-> -#ifdef CONFIG_PAGE_POOL
-> -static inline bool page_pool_page_is_pp(const struct page *page)
-> -{
-> -	return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> -}
-> -#else
-> -static inline bool page_pool_page_is_pp(const struct page *page)
-> -{
-> -	return false;
-> -}
-> -#endif
-> -
->  #define PAGE_SNAPSHOT_FAITHFUL (1 << 0)
->  #define PAGE_SNAPSHOT_PG_BUDDY (1 << 1)
->  #define PAGE_SNAPSHOT_PG_IDLE  (1 << 2)
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 0426cac91c0bb..30c4eb24e4edf 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -939,6 +939,7 @@ enum pagetype {
->  	PGTY_zsmalloc		= 0xf6,
->  	PGTY_unaccepted		= 0xf7,
->  	PGTY_large_kmalloc	= 0xf8,
-> +	PGTY_netpp		= 0xf9,
->
->  	PGTY_mapcount_underflow = 0xff
->  };
-> @@ -1071,6 +1072,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
->  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
->  PAGE_TYPE_OPS(LargeKmalloc, large_kmalloc, large_kmalloc)
->
-> +/*
-> + * Marks page_pool allocated pages.
-> + */
-> +PAGE_TYPE_OPS(Netpp, netpp, netpp)
-> +
->  /**
->   * PageHuge - Determine if the page belongs to hugetlbfs
->   * @page: The page to test.
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index a96b3e5e5574c..85e3b26ec547f 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -110,10 +110,21 @@ struct net_iov {
->  			atomic_long_t pp_ref_count;
->  		};
->  	};
-> -	struct net_iov_area *owner;
-> +
-> +	unsigned int page_type;
->  	enum net_iov_type type;
-> +	struct net_iov_area *owner;
->  };
->
-> +/* Make sure 'the offset of page_type in struct page == the offset of
-> + * type in struct net_iov'.
-> + */
-> +#define NET_IOV_ASSERT_OFFSET(pg, iov)			\
-> +	static_assert(offsetof(struct page, pg) ==	\
-> +		      offsetof(struct net_iov, iov))
-> +NET_IOV_ASSERT_OFFSET(page_type, page_type);
-> +#undef NET_IOV_ASSERT_OFFSET
-> +
->  struct net_iov_area {
->  	/* Array of net_iovs for this area. */
->  	struct net_iov *niovs;
-> @@ -256,7 +267,7 @@ static inline unsigned long netmem_pfn_trace(netmem_ref netmem)
->   */
->  #define pp_page_to_nmdesc(p)						\
->  ({									\
-> -	DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));		\
-> +	DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));				\
->  	__pp_page_to_nmdesc(p);						\
->  })
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d88c8c67ac0b7..cae9f93271469 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1079,7 +1079,6 @@ static inline bool page_expected_state(struct page *page,
->  #ifdef CONFIG_MEMCG
->  			page->memcg_data |
->  #endif
-> -			page_pool_page_is_pp(page) |
->  			(page->flags.f & check_flags)))
->  		return false;
->
-> @@ -1106,8 +1105,6 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
->  	if (unlikely(page->memcg_data))
->  		bad_reason = "page still charged to cgroup";
->  #endif
-> -	if (unlikely(page_pool_page_is_pp(page)))
-> -		bad_reason = "page_pool leak";
->  	return bad_reason;
->  }
->
-> @@ -1416,9 +1413,15 @@ __always_inline bool __free_pages_prepare(struct page *page,
->  		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
->  		folio->mapping = NULL;
->  	}
-> -	if (unlikely(page_has_type(page)))
-> +	if (unlikely(page_has_type(page))) {
-> +		/* networking expects to clear its page type before releasing */
-> +		if (unlikely(PageNetpp(page))) {
-> +			bad_page(page, "page_pool leak");
-> +			return false;
-> +		}
->  		/* Reset the page_type (which overlays _mapcount) */
->  		page->page_type = UINT_MAX;
-> +	}
->
->  	if (is_check_pages_enabled()) {
->  		if (free_page_is_bad(page))
-> diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-> index 23175cb2bd866..3e6fde8f1726f 100644
-> --- a/net/core/netmem_priv.h
-> +++ b/net/core/netmem_priv.h
-> @@ -8,21 +8,18 @@ static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
->  	return netmem_to_nmdesc(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
->  }
->
-> -static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
-> -{
-> -	netmem_to_nmdesc(netmem)->pp_magic |= pp_magic;
-> -}
-> -
-> -static inline void netmem_clear_pp_magic(netmem_ref netmem)
-> -{
-> -	WARN_ON_ONCE(netmem_to_nmdesc(netmem)->pp_magic & PP_DMA_INDEX_MASK);
-> -
-> -	netmem_to_nmdesc(netmem)->pp_magic = 0;
-> -}
-> -
->  static inline bool netmem_is_pp(netmem_ref netmem)
->  {
-> -	return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-> +	struct page *page;
-> +
-> +	/* XXX: Now that the offset of page_type is shared between
-> +	 * struct page and net_iov, just cast the netmem to struct page
-> +	 * unconditionally by clearing NET_IOV if any, no matter whether
-> +	 * it comes from struct net_iov or struct page.  This should be
-> +	 * adjusted once the offset is no longer shared.
-> +	 */
-> +	page = (struct page *)((__force unsigned long)netmem & ~NET_IOV);
-> +	return PageNetpp(page);
->  }
->
->  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 265a729431bb7..877bbf7a19389 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -702,8 +702,18 @@ s32 page_pool_inflight(const struct page_pool *pool, bool strict)
->
->  void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
->  {
-> +	struct page *page;
-> +
->  	netmem_set_pp(netmem, pool);
-> -	netmem_or_pp_magic(netmem, PP_SIGNATURE);
-> +
-> +	/* XXX: Now that the offset of page_type is shared between
-> +	 * struct page and net_iov, just cast the netmem to struct page
-> +	 * unconditionally by clearing NET_IOV if any, no matter whether
-> +	 * it comes from struct net_iov or struct page.  This should be
-> +	 * adjusted once the offset is no longer shared.
-> +	 */
-> +	page = (struct page *)((__force unsigned long)netmem & ~NET_IOV);
-> +	__SetPageNetpp(page);
->
->  	/* Ensuring all pages have been split into one fragment initially:
->  	 * page_pool_set_pp_info() is only called once for every page when it
-> @@ -718,7 +728,17 @@ void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
->
->  void page_pool_clear_pp_info(netmem_ref netmem)
->  {
-> -	netmem_clear_pp_magic(netmem);
-> +	struct page *page;
-> +
-> +	/* XXX: Now that the offset of page_type is shared between
-> +	 * struct page and net_iov, just cast the netmem to struct page
-> +	 * unconditionally by clearing NET_IOV if any, no matter whether
-> +	 * it comes from struct net_iov or struct page.  This should be
-> +	 * adjusted once the offset is no longer shared.
-> +	 */
-> +	page = (struct page *)((__force unsigned long)netmem & ~NET_IOV);
-> +	__ClearPageNetpp(page);
-> +
->  	netmem_set_pp(netmem, NULL);
->  }
->
-> --
-> 2.17.1
->
+Q29uZmlkZW50aWFsIC0gT3JhY2xlIFJlc3RyaWN0ZWQgXEluY2x1ZGluZyBFeHRlcm5hbCBSZWNp
+cGllbnRzDQoNCkhJIExlb24uDQpUaGFuayB5b3UgZm9yIHRoZSByZXZpZXcuDQpXaWxsIHJlcHJv
+ZHVjZSB0aGUgaXNzdWUgdG8gY29sbGVjdCBrbWVtbGVhayBhbmQgcmVwbHkgeW91IGJhY2sgd2l0
+aCBpdHMgb3V0cHV0Lg0KDQotDQpQcmF2ZWVuLg0KDQoNCkNvbmZpZGVudGlhbCAtIE9yYWNsZSBS
+ZXN0cmljdGVkIFxJbmNsdWRpbmcgRXh0ZXJuYWwgUmVjaXBpZW50cw0KPiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4N
+Cj4gU2VudDogVHVlc2RheSwgTWF5IDEyLCAyMDI2IDY6MjggUE0NCj4gVG86IFByYXZlZW4gS2Fu
+bm9qdSA8cHJhdmVlbi5rYW5ub2p1QG9yYWNsZS5jb20+DQo+IENjOiB5aXNoYWloQG52aWRpYS5j
+b207IGpnZ0B6aWVwZS5jYTsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBr
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBBbmFuZCBLaG9qZSA8YW5hbmQuYS5raG9qZUBvcmFjbGUu
+Y29tPjsgTWFuanVuYXRoDQo+IFBhdGlsIDxtYW5qdW5hdGguYi5wYXRpbEBvcmFjbGUuY29tPg0K
+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBJQi9tbHg0OiBkZWxldGUgYWxsb2NhdGVkIGlkX21hcF9l
+bnRyeSB3aGlsZSBzZW5kaW5nIFJFSg0KPg0KPiBPbiBXZWQsIE1heSAwNiwgMjAyNiBhdCAwOTow
+ODoyNEFNICswMDAwLCBQcmF2ZWVuIEt1bWFyIEthbm5vanUgd3JvdGU6DQo+ID4gRHVyaW5nIHNj
+ZW5hcmlvcyB3aGVyZSBhIFJFSiBpcyBzZW50IGFmdGVyIGEgUkVRIG9yIFJFUCwgdGhlIGFsbG9j
+YXRlZA0KPiA+IGlzX21hcF9lbnRyeSByZW1haW5zIGluIG1lbW9yeSwgcmVzdWx0aW5nIGluIGEg
+bWVtb3J5IGxlYWsuIFNjaGVkdWxpbmcNCj4gPiB0aGUgZW50cnkgZm9yIGRlbGV0aW9uIGR1cmlu
+ZyBSRUogaGFuZGxpbmcsIGlmIGl0IGlzIG5vdCBOVUxMLA0KPiA+IHJlc29sdmVzIHRoZSBpc3N1
+ZS4NCj4NCj4gRG8geW91IGhhdmUga21lbWxlYWsgb3V0cHV0IHRvIHByb3ZlIHRoZSBsZWFrPw0K
+Pg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUHJhdmVlbiBLdW1hciBLYW5ub2p1IDxwcmF2ZWVu
+Lmthbm5vanVAb3JhY2xlLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3
+L21seDQvY20uYyB8IDggKysrKy0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9u
+cygrKSwgNCBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmlu
+aWJhbmQvaHcvbWx4NC9jbS5jDQo+ID4gYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NC9jbS5j
+IGluZGV4IDYzYTg2OGEzODIyZi4uMjFmMmY0MDFlZDYxDQo+ID4gMTAwNjQ0DQo+ID4gLS0tIGEv
+ZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDQvY20uYw0KPiA+ICsrKyBiL2RyaXZlcnMvaW5maW5p
+YmFuZC9ody9tbHg0L2NtLmMNCj4gPiBAQCAtMzIxLDEwICszMjEsOSBAQCBpbnQgbWx4NF9pYl9t
+dWx0aXBsZXhfY21faGFuZGxlcihzdHJ1Y3QgaWJfZGV2aWNlDQo+ICppYmRldiwgaW50IHBvcnQs
+IGludCBzbGF2ZV9pZA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBfX2Z1bmNfXywg
+c2xhdmVfaWQsIHNsX2NtX2lkKTsNCj4gPiAgICAgICAgICAgICAgICAgICAgIHJldHVybiBQVFJf
+RVJSKGlkKTsNCj4gPiAgICAgICAgICAgICB9DQo+ID4gLSAgIH0gZWxzZSBpZiAobWFkLT5tYWRf
+aGRyLmF0dHJfaWQgPT0gQ01fUkVKX0FUVFJfSUQgfHwNCj4gPiAtICAgICAgICAgICAgICBtYWQt
+Pm1hZF9oZHIuYXR0cl9pZCA9PSBDTV9TSURSX1JFUF9BVFRSX0lEKSB7DQo+ID4gKyAgIH0gZWxz
+ZSBpZiAobWFkLT5tYWRfaGRyLmF0dHJfaWQgPT0gQ01fU0lEUl9SRVBfQVRUUl9JRCkNCj4gPiAg
+ICAgICAgICAgICByZXR1cm4gMDsNCj4gPiAtICAgfSBlbHNlIHsNCj4gPiArICAgZWxzZSB7DQo+
+DQo+IEl0IGlzIG5vdyBzaW1pbGFyIHRvIHRoZSAiaWYgKC4uLiAgJiYgUkVKX1JFQVNPTihtYWQp
+ID09IElCX0NNX1JFSl9USU1FT1VUKSINCj4gZm9yIGFjdGl2ZS1zaWRlIHRpbWVvdXQgYWJvdmUu
+DQo+DQo+IFRoYW5rcw0KPg0KPiA+ICAgICAgICAgICAgIHNsX2NtX2lkID0gZ2V0X2xvY2FsX2Nv
+bW1faWQobWFkKTsNCj4gPiAgICAgICAgICAgICBpZCA9IGlkX21hcF9nZXQoaWJkZXYsICZwdl9j
+bV9pZCwgc2xhdmVfaWQsIHNsX2NtX2lkKTsNCj4gPiAgICAgfQ0KPiA+IEBAIC0zMzgsNyArMzM3
+LDggQEAgaW50IG1seDRfaWJfbXVsdGlwbGV4X2NtX2hhbmRsZXIoc3RydWN0IGliX2RldmljZQ0K
+PiA+ICppYmRldiwgaW50IHBvcnQsIGludCBzbGF2ZV9pZA0KPiA+ICBjb250Og0KPiA+ICAgICBz
+ZXRfbG9jYWxfY29tbV9pZChtYWQsIGlkLT5wdl9jbV9pZCk7DQo+ID4NCj4gPiAtICAgaWYgKG1h
+ZC0+bWFkX2hkci5hdHRyX2lkID09IENNX0RSRVFfQVRUUl9JRCkNCj4gPiArICAgaWYgKG1hZC0+
+bWFkX2hkci5hdHRyX2lkID09IENNX0RSRVFfQVRUUl9JRCB8fA0KPiA+ICsgICAgICAgbWFkLT5t
+YWRfaGRyLmF0dHJfaWQgPT0gQ01fUkVKX0FUVFJfSUQpDQo+ID4gICAgICAgICAgICAgc2NoZWR1
+bGVfZGVsYXllZChpYmRldiwgaWQpOw0KPiA+ICAgICByZXR1cm4gMDsNCj4gPiAgfQ0KPiA+IC0t
+DQo+ID4gMi40My43DQo+ID4NCg==
 
