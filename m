@@ -1,80 +1,80 @@
-Return-Path: <linux-rdma+bounces-20567-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20568-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yFKlMPhiBGq6HgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20567-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:39:36 +0200
+	id +B9qAO1jBGq6HgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20568-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:43:41 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2351653269B
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:39:36 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C89532759
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 13:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A5BFE3035247
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:38:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8250E303C9E9
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A943F7A86;
-	Wed, 13 May 2026 11:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894143FE655;
+	Wed, 13 May 2026 11:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="Boi2iGqx"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="mrFU5vO6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D42A3A5E64
-	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 11:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238E93FCB37
+	for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 11:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778672295; cv=none; b=qRFQLlQRjP4j9YFQa5vIltaOzLJuDDd4hMFoAowYYLRU7xVfmAxkxeW4jViCfYWsOPvxDKdX+Z1gH374mUHPZESaTTgp9Ibx+XL3r+pyHYwt8q8TySx/Fl4v0srawa8NbA2bDQ6e8FJDvcxggtXsYukzUVj7videGiU1/wagHkw=
+	t=1778672618; cv=none; b=NEhUZtJTp5YBHpJd6ntPjNOdkdtHS59Ix9IRWRuyYe0pGVvinMw/nGdwhpRRxhLKYAjS44gC+coKtQyYiqhqpPC3U2U/+ttCe/Cp34c/Z/Lt7a/acYFxBOLFS3tRIhqZBRqHiP1Q8F129U5Dpxcqjhc6q4VxZuuqnYCFrAkJ2Zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778672295; c=relaxed/simple;
-	bh=bi1LtDseZKiiExJUNCsTzHxTrPBCRAx15vc671Lf+aQ=;
+	s=arc-20240116; t=1778672618; c=relaxed/simple;
+	bh=MnK1f9iUL/q93xImgKEeAlAwrAhiCoBTsXzNpGyWRzU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cbfTqYxIMspNQarefELlnR+AkHlVIs9I8JCC46Et0LKjCCsGOTrL91CxaL/PpfnNMjqiGFsHV9uCHyFTVp+JJMVPgWutu9qEIyxS/UWEs86LW35rZ0d8DGvTNPq7rp892avv5qsk/5UOB9iOPLLQKPKZgvVUPA2rVOD9I3UsIIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=Boi2iGqx; arc=none smtp.client-ip=209.85.221.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=JOZ/ppx0cZtDE4MynW7VCW4YPecoiLRu5SIxf186xw2X5XbLntPgBhSxNPv+Pkpk4QRiXw2QCUTOswhTHAPX7B9eYSEKjvbL0KIdz8oGlvWkwC0LXToR7io6tntmCECAh/lWCM23UY36US2C6VLxUsTMVk8XtqfHUVMfP4TuvYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=mrFU5vO6; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-44e1ebb3122so3481111f8f.2
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 04:38:13 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-48e82c23840so30107135e9.3
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2026 04:43:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778672292; x=1779277092; darn=vger.kernel.org;
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778672613; x=1779277413; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CqPA2PDnvx8iqKIrh3ub2oUL9wez/Zu+0VoDfgG87F0=;
-        b=Boi2iGqxZjnrxD/uzwtkwsebAB1M6vyf0FHRTC0758zme5ZZul0sGqhx7MjfsJq9gY
-         O4eoCMKOjyhrZHLiK7fgehLx10wHMsl+BJVkWXa3f6WsDRMdWoXRXCEve+Soyf3p0uOa
-         mHGG0GeZUYPogQnUwlCft9CUsYhWseP8JEufB2IOQH3IIJK5ZXZZZT/QBb4lN+OPSUpy
-         ru86rOF++I+TRJ9EiJ0XPaA8ersPr0u0ishqObB7jPBHgWA2tR96dIiJVA9H9fmZCBbd
-         pDtBQ+jqJ16bSwhBAgSqgFR1rSxgUmsUoEg5rAl+YH0tuBeXEzpEMSr/+7HvxzWh+u2p
-         P12Q==
+        bh=a8Jnx2VqDbXRR941wxc2WBWuitrdRFHWzwhLID1lZtM=;
+        b=mrFU5vO6fjjMHvZkuatrcMGSywBkNC5x3sL01GTTqrHFECSZSLyyJ59vT12KLhUVwk
+         7IwA6iICfYSHkJF0AidrbltVyX3gXbIdQfADuhqJu1b8Zm2DejXa0/mB0WR6KoMkExqp
+         OKa0hB+JCvGfabjPEX9k/c7Y5xm+zYF9kJ/XrWdVMK1iWKQzoZIfnlwDwxC5LYW/d6pb
+         SaPmey7o96kDaPoC0f3AP3d3Jqr9Rlalca73dghljZFN8LUZw5Qghgsc95lKY/xI6f09
+         DeGZPelXHu+xgoZFnLXHT5CpP0a1JfG8O76oN/oFBONtQ+zaY608yEv3nNH7vVB7o8HW
+         Ng/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778672292; x=1779277092;
+        d=1e100.net; s=20251104; t=1778672613; x=1779277413;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CqPA2PDnvx8iqKIrh3ub2oUL9wez/Zu+0VoDfgG87F0=;
-        b=g/tDsI+Okw30kgoPN0/nqd8yvCUIxU5/OrfBiv2QYE+9j0nK0NUtShl8LFia7tLmIe
-         yjadK54yvLc6r49vpED4Lc4TZXoWZbiIKe2TaYyt2ctg+rgRjqVofkEHsCAzpfvmSImu
-         YCvheuq1qhLxNaUpHcRQoDLFGG9E5ZxosZzXpkz8mDzHkDfMVFAjLzAvbGzsn+gIlHQG
-         Ju8hd6t+tIzjQD8b4QsNvWKK72WFQIWArG4F2IMlShBPKj4TkqZYMA7ahDOpMxZJKWNU
-         on/WYN95zkBJyRWGlLxNZm3iY3o2r30th89xVLNuYc/FdAuadIqaGFObxjpC/TKw5ESH
-         RSFA==
-X-Gm-Message-State: AOJu0YyREky4tG/0L9QCx/p2gB+r3ydJuaQt5Gz8Z2yMMSKiRWkUG6G4
-	FsRqsnvXX05SBAYLuo1jV1S81s3T8Gixzs1l1BkU2V3RMotKdm5pP37uNRPGkR0G3eY=
-X-Gm-Gg: Acq92OGu3w7m9q31LR0a8NNX0IPNRwUg+CIgM1MocwNg0dXw1UuKvjCAk5/znslofpe
-	Zy7Iow19gzYWzEUV4bS2j0oWIf3KfLOjPBnBKTTRshJt7lYDgoLjdjFGNnadIpE9p5l2zM+XLn5
-	3cfqrJ5U8MHl5OJWMsZM+paRzA33m55BglWyELuJt9KOVlVRHdLLFVUxRGpEEnDk6AAc4V+GyfO
-	VvPMxMywNz75ecdqe3coTNIXV3eeUCWdxIaQiQiz5FMluMfncz/JJ1xgZN4+UBR/FRLh9qYyNC/
-	sm59QtnWgaj4euAtUxnTRJ3Y2ydMooezSXnvsGhcpS8/88nzg/vVF0wUf/h872Lk7bRHFM3sYQJ
-	RgX8kUeTR7ozPgwi57koMOg7jz82/pGFND9vXQXkXrzX6R2/Rd1KmsoLnuRtVfJ6HQK+ucX1CND
-	oFEYTeBeYmLVhJc2KssOj9bjC7mTpMcD/RP3T2Gbo44w==
-X-Received: by 2002:a05:6000:615:b0:441:36b7:7262 with SMTP id ffacd0b85a97d-45c58a70e04mr4969604f8f.13.1778672291728;
-        Wed, 13 May 2026 04:38:11 -0700 (PDT)
+        bh=a8Jnx2VqDbXRR941wxc2WBWuitrdRFHWzwhLID1lZtM=;
+        b=l7WnHrpfZdhkMGHQ4bDzrF/PJkMgxFgd+Pl2g/KqHompFMzXs6a5fBV8N6V/5KAPRx
+         SaCHI2GPaTTzCFoiLI1Uy6C90+/M+3QEpPnvbr1QjEy/KR2hTPsxs7Rul2xsySerlvRD
+         EjnSBwWQylS8foanVUuWeb4uzS1zkUkIDsDm1tUS4udgSg3RmeIMOLNNOAc+bJP70Mlu
+         C8q1FOdsy1mMNwDGzo852dVRV5Iy4+4UxGUO5cZawUO4E5fr1JntGYDir0iLtGRiBDVj
+         gs7AZT0Ieid5/f0EgDFLrltYzRiRbSNC4gOyHF+57UeoBkr94fdz1WcHEj1VFksoLb6I
+         S35g==
+X-Gm-Message-State: AOJu0YxIa7fRedCdiGGCEXYvc/fq0BjSqAneK/CvAe18tzRrX030V14j
+	tjzVIb+sNteCCEmKRlGcuS2fNQOkxzgsbLRETeImC3tdcDDpYd4mu+rTV5JkpFLrH4A=
+X-Gm-Gg: Acq92OHy5U1znL3pDXGIjNFO4YpsDOIgzcsJj9U4alyKRHF+Q1ZYqs3j4gzxgXD9P5x
+	Jz1wPtkuHP6ZGeBZzGGB1Pyba5S6WmksE99ugLAgDd0yMSwwETYp4mUem7WevjQxyDxBLBREriD
+	DXCwGuipA9abOeMT0Jz6oEGwLQT1N3WnmklXazZFfsOmu6JnqdbSOQjMgcoTRwTau2Sf4rJggHK
+	JwCGOn47gIsQRmo7m9YBPDDJjFwzSkmKn+AxJ6+WlLrGKOBMRJoMW50af+8ag2H+T3Ne0hRcJQ6
+	fMycR9S6IbVWbm5xlFEK/91zrfJSkAYleHX8KsyYidxI4c/iUvCXIrunk3K9yImUPDylvH9EvIq
+	+u1KkkB4Fdfc1LLJc8AFAGiP70/2KLMnwmZwHmiN3g8w+RacX8lp8lvNrH1ZW8CwcHSpKKBOj9T
+	D/cv5MqNg9IFMBiUV391Jpxa/S0W7eCs0=
+X-Received: by 2002:a05:600c:a318:b0:488:a977:8d6 with SMTP id 5b1f17b1804b1-48fc9a371e4mr30303665e9.19.1778672613342;
+        Wed, 13 May 2026 04:43:33 -0700 (PDT)
 Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4549120eb95sm38888282f8f.20.2026.05.13.04.38.10
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e8e566cf7sm68470505e9.0.2026.05.13.04.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2026 04:38:11 -0700 (PDT)
-Date: Wed, 13 May 2026 13:38:07 +0200
+        Wed, 13 May 2026 04:43:32 -0700 (PDT)
+Date: Wed, 13 May 2026 13:43:29 +0200
 From: Jiri Pirko <jiri@resnulli.us>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
@@ -86,12 +86,12 @@ Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
 	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
 	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v4 11/16] RDMA/mlx4: Use ib_umem_get_cq_buf()
- for user CQ buffer
-Message-ID: <agRinwoVkaPujATb@FV6GYCPJ69>
+Subject: Re: [PATCH rdma-next v4 05/16] RDMA/uverbs: Inline
+ _uverbs_get_const_{signed,unsigned}()
+Message-ID: <agRj4QyKHBUI6yum@FV6GYCPJ69>
 References: <20260507125231.2950751-1-jiri@resnulli.us>
- <20260507125231.2950751-12-jiri@resnulli.us>
- <20260512182927.GJ7702@ziepe.ca>
+ <20260507125231.2950751-6-jiri@resnulli.us>
+ <20260512175142.GH7702@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -100,13 +100,13 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260512182927.GJ7702@ziepe.ca>
-X-Rspamd-Queue-Id: 2351653269B
+In-Reply-To: <20260512175142.GH7702@ziepe.ca>
+X-Rspamd-Queue-Id: 91C89532759
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -115,11 +115,11 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DMARC_NA(0.00)[resnulli.us];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20567-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20568-lists,linux-rdma=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
@@ -129,65 +129,31 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli-us.20251104.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim,nvidia.com:email]
 X-Rspamd-Action: no action
 
-Tue, May 12, 2026 at 08:29:27PM CEST, jgg@ziepe.ca wrote:
->On Thu, May 07, 2026 at 02:52:26PM +0200, Jiri Pirko wrote:
->> +	cq->umem = ib_umem_get_cq_buf(&dev->ib_dev, udata, entries * cqe_size,
->> +				      IB_ACCESS_LOCAL_WRITE);
->> +	if (IS_ERR(cq->umem)) {
->> +		err = PTR_ERR(cq->umem);
->>  		goto err_cq;
->>  	}
->> +	if (cq->umem) {
->> +		if (dev->dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_SW_CQ_INIT) {
->> +			err = -EOPNOTSUPP;
->> +			goto err_umem;
+Tue, May 12, 2026 at 07:51:42PM CEST, jgg@ziepe.ca wrote:
+>On Thu, May 07, 2026 at 02:52:20PM +0200, Jiri Pirko wrote:
+>> From: Jiri Pirko <jiri@nvidia.com>
+>> 
+>> uverbs_get_raw_fd() and the related const helpers expand to
+>> out-of-line _uverbs_get_const_{signed,unsigned}() exported
+>> from ib_uverbs. Callers outside of drivers (for example the
+>> about to be introduced CQ buffer-desc filler in ib_core's umem.c)
+>> therefore cannot use them without unnecessary extra dependency.
 >
->Huh. this is getting pretty hacky.. The driver wants to memset the
->user buf to 0xcc for some reason, and it already has a nice flow that
->if that fails it tells the FW it fails and presumably is Ok.
+>oh. This is actually a systemic bug, the intention was no driver would
+>depend on ib_uverbs.ko because it was supposed to be loadable
+>independently of the drivers. This has become slowly messed up over
+>time.
 >
->The issue is it passes buf_addr around insead of having made an
->ib_umem_memset() (which can reject dmabuf).
+>The file ib_core_uverbs.c is supposed to have these functions. There
+>are many. So many..
 >
->Looks easy enough, change sg_zero_buffer() to sg_fill_buffer() to
->accept the 0xcc, ib_umem_memset() trivially calls it, remove the
->buf_addr from the call chain, directly use the umem in the
->mlx4_init_user_cqes(), remove the if above, use the
->ib_umem_get_cq_buf_or_va() in the driver..
->
->Leaving it like this just means the driver won't work with the new
->uAPI with normal VA which is not desirable..
+>I sent an AI off to fix it, lets imagine we won't need this patch..
 
-Agreed. I would like to fix this in a follow-up patchset which would
-look more or less like this (Claude generated):
+Plan to send it soon? I would like to respin the patchset and send v5 as
+early as possible.
 
- 1) lib/scatterlist: add sg_fill_buffer()
-    Generalize sg_zero_buffer() to take a fill byte. Keep
-    sg_zero_buffer() as a thin static inline wrapper around
-    sg_fill_buffer(..., 0) so existing callers (nvmet, scsi_debug,
-    ccree, jh7110-aes, krb5) don't have to change.
- 2) RDMA/umem: add ib_umem_memset()
-    Walks the umem's sg list via sg_fill_buffer(). Rejects dmabuf and
-    ODP umems with -EOPNOTSUPP. Honors umem offset/length bounds.
- 3) net/mlx4: drop buf_addr/user_cq from mlx4_cq_alloc()
-    Replace "void *buf_addr, bool user_cq" with
-    "struct mlx4_buf *kbuf, bool sw_cq_init". The function only owns
-    the kernel-side init via mlx4_init_kernel_cqes(); user-side init
-    becomes the caller's responsibility. mlx4_init_user_cqes() goes
-    away. mlx4_en and the kernel mlx4_ib path are updated to the new
-    signature.
- 4) RDMA/mlx4: switch to ib_umem_get_cq_buf_or_va() and ib_umem_memset()
-    The user-CQ create path collapses to a single
-    ib_umem_get_cq_buf_or_va() followed by an
-    ib_umem_memset(cq->umem, 0xcc, ...) before mlx4_cq_alloc(). If the
-    memset succeeds, tell FW sw_cq_init=true; otherwise fall back to
-    FW-side init. dmabuf / ODP umems fall back naturally via
-    ib_umem_memset() returning -EOPNOTSUPP, and the explicit
-    MLX4_DEV_CAP_FLAG2_SW_CQ_INIT -EOPNOTSUPP branch goes away.
-
-Makes sense?
-
+Thanks!
 
