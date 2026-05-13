@@ -1,136 +1,215 @@
-Return-Path: <linux-rdma+bounces-20540-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20541-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aIgFGeb0A2rKBAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20540-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 05:49:58 +0200
+	id QIUkDOQCBGrLCAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20541-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 06:49:40 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE20552CFDC
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 05:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D96252D401
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 06:49:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 615D430ED84E
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 03:46:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 13F83307F6A0
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 04:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CDC39D6FD;
-	Wed, 13 May 2026 03:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6159375AB5;
+	Wed, 13 May 2026 04:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o+GgzQUP"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="EsVf3TWh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1602E39BFE3;
-	Wed, 13 May 2026 03:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55155299923;
+	Wed, 13 May 2026 04:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778644001; cv=none; b=kcJ83+fz2sz43P13Vh2jIat2r6+iBh+aGrqnQW0vKuAWSk7ytxXc+BVLQSt83gXg1ms/AJ1sQwfYjcCcZo55vgKhzn7E0rezGoVP6kW2phA7v/JoxxY+zFR8uFW5s41MnAv4M2XJgwGTlH5E3m4MWqEllEePQZH0mSpJhRZ2xsw=
+	t=1778647776; cv=none; b=FbdU50hqR0UqEHYNp0wGxSEbPmFqMpMft+2RvR+HcF/5frgcZMjL1U/V8Q7tK6PMXxhyWL6G9l/wjtduMAb/U8wb25Gvx4pNi/5dC4PuUCPp6aUqcTBKYNeWMXQMyWuyWfTagMkgUCIeHsmUJVgLzQCW2TaFA5S54azTTW/a134=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778644001; c=relaxed/simple;
-	bh=wx8jql1ToDwOs5ShWi330sByxn+12rrcPbCFPrQs+Ms=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qFUSTwc8WyxX/S/HhhiraCCbDs3ggEngB4ebEs9/7jgpkm9Qk6mjnaxc6uB6t1NTXQdAWNO7Rbw5f4xwmofOfFv5RhbnCnLkm6R+9YB+rogIfKj0oPQi/hgzaVYFhFGXgQUQirgEnKKtuq97cY+RZC8bchehUVdRjdtof2U5nZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o+GgzQUP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC0E2C2BCC7;
-	Wed, 13 May 2026 03:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778644001;
-	bh=wx8jql1ToDwOs5ShWi330sByxn+12rrcPbCFPrQs+Ms=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=o+GgzQUPqxww6cRyn+lGLyXDkvjlniJPnsXpJpYyBDf3hI8oJLPT7c1YFUspotDRJ
-	 9xIQR1hU3n9WaF70tcSm5FS1o0GFnB0cosQ38btjgF/4ea4tRfvusAKAXRGNP9TQOQ
-	 rzgWlTGIw2PaUCtRAJiSqvYdjtLVRTORvK2WhYEV2EzqKO+Qc5RnMuzK/TBMpqnyA0
-	 AdkfXQzBTth4HhK+bDH4MQRmrG8RDT6L+PPJ8W6pSXBOJYvzPTqBbi5kCTQ8T+KRj0
-	 fptqmLIBvaApQPZM8N3EXDkmbXQxbmNPVDTc/ds7nayHxa9KIhNBXF9zp1QlRl7bQ7
-	 LSXxIOg5H9mLQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id E8ECC3822D60;
-	Wed, 13 May 2026 03:45:47 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1778647776; c=relaxed/simple;
+	bh=dT77H9ORPste/t0zfSTlk15UTBP295wtZR/6wSlJ3A4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Js5k1N1SmkjNRvqMXxqNOx8SxsYmks8zLw/fbEiX5X8+xVgBPQHk7nzyjT26O3uWaRConUKlVjZevex6lWmqJg3gtkzCv9g2CPBegEvUGx+GHhfL9ILVPdjZG54J/O/a4g9/hmXfPsbsT2TeOgLXdemspw0tQDsx6U8GGrUJ480=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=EsVf3TWh; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 7EC0D20B7166; Tue, 12 May 2026 21:49:31 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7EC0D20B7166
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1778647771;
+	bh=Omuq11ywLwTC5q3IVHAFOC9whRswGzaRH2gtVx0YPH0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EsVf3TWhP3f3icGssZBLG13b1+ZhIUVGdz8weHlOEC0XuepUUsVQTT3inEn8BIRgM
+	 3OnM9nYc854GL6hcpJh2yhN+75lpV5KV3JplTvixMIKFV18Ni9QfxF60I6zdHnDbve
+	 c87pcYaFriR1kQvueonMyzS/0ZKapiU8t0xLIf+c=
+Date: Tue, 12 May 2026 21:49:31 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, longli@microsoft.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+	shirazsaleem@microsoft.com, yury.norov@gmail.com, kees@kernel.org,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v8] net: mana: Expose hardware diagnostic info
+ via debugfs
+Message-ID: <agQC2/HG6FsCgFZn@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20260506055128.291494-1-ernis@linux.microsoft.com>
+ <20260508220114.3342627-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4 0/2] dpll: rework fractional frequency offset
- reporting
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177864394680.3173643.9892837998399060130.git-patchwork-notify@kernel.org>
-Date: Wed, 13 May 2026 03:45:46 +0000
-References: <20260511155816.99936-1-ivecera@redhat.com>
-In-Reply-To: <20260511155816.99936-1-ivecera@redhat.com>
-To: Ivan Vecera <ivecera@redhat.com>
-Cc: netdev@vger.kernel.org, andrew+netdev@lunn.ch,
- arkadiusz.kubalewski@intel.com, davem@davemloft.net, donald.hunter@gmail.com,
- edumazet@google.com, kuba@kernel.org, jiri@resnulli.us, corbet@lwn.net,
- leon@kernel.org, mbloch@nvidia.com, mschmidt@redhat.com, pabeni@redhat.com,
- pvaanane@redhat.com, poros@redhat.com, Prathosh.Satish@microchip.com,
- saeedm@nvidia.com, skhan@linuxfoundation.org, horms@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-X-Rspamd-Queue-Id: CE20552CFDC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260508220114.3342627-1-kuba@kernel.org>
+X-Rspamd-Queue-Id: 9D96252D401
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.microsoft.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.microsoft.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20540-lists,linux-rdma=lfdr.de,netdevbpf];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lunn.ch,intel.com,davemloft.net,gmail.com,google.com,kernel.org,resnulli.us,lwn.net,nvidia.com,redhat.com,microchip.com,linuxfoundation.org,linux.dev];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[25];
+	TAGGED_FROM(0.00)[bounces-20541-lists,linux-rdma=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_NO_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FREEMAIL_CC(0.00)[microsoft.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,linux.microsoft.com,gmail.com,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ernis@linux.microsoft.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.microsoft.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net:mid]
 X-Rspamd-Action: no action
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 11 May 2026 17:58:14 +0200 you wrote:
-> Rework how the fractional frequency offset (FFO) is reported in
-> the DPLL subsystem.
+On Fri, May 08, 2026 at 03:01:14PM -0700, Jakub Kicinski wrote:
+> This is an AI-generated review of your patch. The human sending this
+> email has considered the AI review valid, or at least plausible.
+> ---
+> net: mana: Expose hardware diagnostic info via debugfs
 > 
-> Both fractional-frequency-offset (PPM) and
-> fractional-frequency-offset-ppt (PPT) attributes are now present at
-> the top level of a pin and inside each pin-parent-device nest. They
-> carry the same measurement at different precisions.
+> Add debugfs entries to expose hardware configuration and diagnostic
+> information that aids in debugging driver initialization and runtime
+> operations without adding noise to dmesg.
 > 
-> [...]
+> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> [ ... ]
+> > @@ -2231,13 +2239,18 @@ int mana_gd_resume(struct pci_dev *pdev)
+> >  
+> >  	err = mana_probe(&gc->mana, true);
+> >  	if (err)
+> > -		return err;
+> > +		goto cleanup_gd;
+> >  
+> >  	err = mana_rdma_probe(&gc->mana_ib);
+> >  	if (err)
+> > -		return err;
+> > +		goto cleanup_mana;
+> >  
+> >  	return 0;
+> > +cleanup_mana:
+> > +	mana_remove(&gc->mana, true);
+> > +cleanup_gd:
+> > +	mana_gd_cleanup_device(pdev);
+> > +	return err;
+> >  }
+> 
+> Since mana_remove() called with true for suspending skips
+> unregister_netdevice(), the network devices remain registered in the system.
+> 
+> If mana_gd_cleanup_device() is then called, which destroys the hardware
+> channel and clears gc->hwc.driver_data, could this lead to a NULL pointer
+> dereference if userspace later interacts with the still-registered devices?
 
-Here is the summary with links:
-  - [net-next,v4,1/2] dpll: add fractional frequency offset to pin-parent-device
-    https://git.kernel.org/netdev/net-next/c/9c11fcb2e9a5
-  - [net-next,v4,2/2] dpll: zl3073x: report FFO as DPLL vs input reference offset
-    https://git.kernel.org/netdev/net-next/c/54e65df8cf18
+Sorry for delayed response.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This is a valid concern. I will update it to mana_remove(&gc->mana, false) in
+the next version.
+> 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> [ ... ]
+> > @@ -3161,6 +3169,23 @@ static int mana_init_port(struct net_device *ndev)
+> >  	eth_hw_addr_set(ndev, apc->mac_addr);
+> >  	sprintf(vport, "vport%d", port_idx);
+> >  	apc->mana_port_debugfs = debugfs_create_dir(vport, gc->mana_pci_debugfs);
+> > +
+> > +	debugfs_create_u64("port_handle", 0400, apc->mana_port_debugfs,
+> > +			   &apc->port_handle);
+> 
+> When the device suspends, mana_gd_suspend() calls mana_gd_cleanup_device(),
+> which recursively removes the entire debugfs directory tree.
+> 
+> During resume, the parent debugfs directory is recreated, but mana_probe()
+> skips calling mana_init_port() for existing ports.
+> 
+> Does this mean the per-vPort debugfs entries are permanently lost after a
+> suspend and resume cycle?
+> 
+This is false positive.
+The per-vPort debugfs entries are recreated during resume. The flow is:
 
+Suspend: mana_gd_cleanup_device() removes the entire debugfs tree.
 
+Resume: mana_gd_setup() recreates the top-level mana_pci_debugfs
+directory. Then mana_probe(gd, true) takes the resuming=true path,
+which calls mana_attach() for each port. mana_attach() calls
+mana_init_port(), which recreates the vportN directory and all
+per-vPort debugfs files (port_handle, max_sq, max_rq, steer_*,
+current_speed).
+
+So the per-vPort entries are not permanently lost, they survive the
+suspend/resume cycle.
+> [ ... ]
+> > @@ -3800,6 +3830,9 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+> >  
+> >  	mana_gd_deregister_device(gd);
+> >  
+> > +	debugfs_lookup_and_remove("bm_hostmode", gc->mana_pci_debugfs);
+> > +	debugfs_lookup_and_remove("num_vports", gc->mana_pci_debugfs);
+> > +
+> >  	if (suspending)
+> >  		return;
+> 
+> Earlier in mana_remove(), free_netdev() is called, which frees the port
+> context structure (apc) allocated via netdev_priv(ndev).
+> 
+> Since the per-vPort debugfs files created in mana_init_port() directly
+> reference memory within apc, and apc->mana_port_debugfs is not explicitly
+> removed here, does this leave the debugfs files accessible but pointing to
+> freed memory until the parent directory is finally removed in
+> mana_gd_cleanup_device()?
+
+This is a false positive.
+The per-vPort debugfs files are removed before free_netdev() frees apc.
+
+In mana_remove(gd, false), the sequence for each port is:
+
+mana_detach(ndev, false) -> mana_cleanup_port_context(apc)
+-> debugfs_remove(apc->mana_port_debugfs).
+This removes the entire vportN directory and all its child files, since
+debugfs_remove() is recursive (simple_recursive_removal()).
+free_netdev(ndev) which frees apc.
+Because step 1 removes all debugfs files referencing apc fields before
+step 2 frees the memory, there is no window where the files point to
+freed memory.
 
