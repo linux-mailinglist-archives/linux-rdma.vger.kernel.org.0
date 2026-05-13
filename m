@@ -1,51 +1,51 @@
-Return-Path: <linux-rdma+bounces-20561-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20562-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sKomLqRFBGowGgIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20561-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:34:28 +0200
+	id ILDXET1GBGp2GgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20562-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:37:01 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C3E530B52
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:34:28 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC26F530BF8
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 11:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 03A713087CCB
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 09:34:25 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9F7F130A347E
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2026 09:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5B83C3BE6;
-	Wed, 13 May 2026 09:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0823C3BE6;
+	Wed, 13 May 2026 09:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GLg+0KzZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOB/WQk7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FEF3019AA;
-	Wed, 13 May 2026 09:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7F8195811;
+	Wed, 13 May 2026 09:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778664861; cv=none; b=CMJG+BrX3dOxG3IR6DEBv+4H99uHtXwpmdUdqq6GVUR0m6QaWRegGyXgwJdcrQrqxPQ8d+0nlXQXU2MxfSQN3RGfpIYstoc/4Q1BtDiyfVFUYyt8p23/mAGcinDEAWYpZ7/gXgmeLG8s/T3/5xsk/Xbfyya8o23i/csL8e232eI=
+	t=1778664987; cv=none; b=bYZs5Pg8K4PBRlnVrxK/14i0Kh0YLv77pAoe+9UqLfM3r5YKTXzNvKbqW6Kepb8WEcVR5crTS4xxLLe8N3tgsJd9141W8+zE1X286ymiNxhG3AoNGMOCTYQTBIXrziPpVj1Svo5O2bh4kAOb176qNZ0Mqndh/ZuRYpFYgHxhq0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778664861; c=relaxed/simple;
-	bh=cwBcOAhw7XRGs1cBgzSo6PxgfXRn8QQsB24E7xZ/gvg=;
+	s=arc-20240116; t=1778664987; c=relaxed/simple;
+	bh=e7S5FKVZnfdO9f3BuUM+veIvX1upBGxQhmlrQe6K9Xs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fu+6k/0VIYxGs22RnbPmsJttM0U3nBwsBU8Wv6b9VDmAHvVdFf161tqFhN/S6ZU3LpVCFLFCURQ6Gsu2Bsd+O/ydyKsTYAymzWesMyk5mgZBdZeigmQ/QwD3Pv+AIHGhfxwPMm4AfvsAidEwqXVd+juWZMdPqLnglO8i3fOP28c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GLg+0KzZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3135EC2BCB7;
-	Wed, 13 May 2026 09:34:09 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=efCyHM23RTwUpLAafD779/yEez3STn7SaUmi5q73PlIpYMC3LIL4d+ASjbNvKFchYCF2ZcD0pZS6lmNvAuO9US/Sq7GqTUYEeoChR7vzUDCwebte1PPGfTiNIRODQV0nsRT8KLjnANc6qVYNg1IkUX1wDdgVrosEGQ2AiUq7qs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOB/WQk7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE08C2BCB7;
+	Wed, 13 May 2026 09:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778664860;
-	bh=cwBcOAhw7XRGs1cBgzSo6PxgfXRn8QQsB24E7xZ/gvg=;
+	s=k20201202; t=1778664987;
+	bh=e7S5FKVZnfdO9f3BuUM+veIvX1upBGxQhmlrQe6K9Xs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GLg+0KzZ6dVntq3/8ZFIx74+WBMQ00O4/y9y2xAt2h8GaaLD9B6Xjx/+quGrtiqQV
-	 YDpXVFEw3KFl/Pa/oGwSbzBONLgUKCD/Fi+BljLlMKpGqVWyILNaa6ywRQGDnVxg21
-	 QbfbLViqD8MiMJj/CYaXPpFQY6wsrklhRcJ+ke10SAQKpHgypqQftKnwaAtHPgQFPz
-	 UHs/WovtV9kL+uqoXn42RYuVrQqNiMnt7/PeFfbyJHLiicqoQfrmMF/LGYEQx5zkGV
-	 rPuB3HE3WAeqJbVs5cDeG181sardfUQoco+U4/KitEQYXr6ogxdND6eBgyWfiavlni
-	 SzcZRDT1I9cLg==
-Message-ID: <6f8793d2-80a9-4c8d-8154-5ec56a26499a@kernel.org>
-Date: Wed, 13 May 2026 11:34:08 +0200
+	b=cOB/WQk7lHbvv3FCDHPH3sKk008BkG7NPaJ/CIIqshJAAf142wOX8ZmjnfgvTSUgg
+	 FJ4RRpsrpm2Zs6/HAaYkicXl4T4bSpWSBQBU+hBTUYmpdB85uuchR2+HqBSdxkrJUw
+	 M3sccY0n1/o/LAzatWYhfq+2NREXZLvM1kL3l38LDzZgjNt8QZ1QAD5JQtJcUZjE6s
+	 l7gdJBie6n+0NAJCRuUCDyNc8CBTZRjrgHRsLPhIvTtzga2whS6CpKwZUSqAuJYtlF
+	 +7PCQquD080SqZ80j6gS4SwdT/OFlgXnylOE406GD+HHxIw68IFDxo+8+v1V4wI5EV
+	 JvC3IxZHSfkkw==
+Message-ID: <1817a749-8232-43ab-a0f5-350e5aade235@kernel.org>
+Date: Wed, 13 May 2026 11:36:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -55,13 +55,14 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4] mm: introduce a new page type for page pool in page
  type
-To: Dragos Tatulea <dtatulea@nvidia.com>, Byungchul Park <byungchul@sk.com>,
- linux-mm@kvack.org, akpm@linux-foundation.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+To: Pedro Falcato <pfalcato@suse.de>,
+ "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Cc: Dragos Tatulea <dtatulea@nvidia.com>, Byungchul Park <byungchul@sk.com>,
+ linux-mm@kvack.org, akpm@linux-foundation.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com,
+ ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+ hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+ saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
  andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
  lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
  rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
@@ -73,6 +74,8 @@ Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
  sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com
 References: <20260224051347.19621-1-byungchul@sk.com>
  <982b9bc1-0a0a-4fc5-8e3a-3672db2b29a1@nvidia.com>
+ <4af19eda-c29c-4302-92d5-c0915267fc0c@kernel.org>
+ <agRB2QTbzceRgpzX@pedro-suse>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -119,28 +122,28 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <982b9bc1-0a0a-4fc5-8e3a-3672db2b29a1@nvidia.com>
+In-Reply-To: <agRB2QTbzceRgpzX@pedro-suse>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 79C3E530B52
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: EC26F530BF8
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,skhynix.com,oracle.com,kernel.org,iogearbox.net,davemloft.net,gmail.com,fomichev.me,nvidia.com,lunn.ch,google.com,redhat.com,suse.cz,suse.com,cmpxchg.org,linaro.org,infradead.org,linux.alibaba.com,canb.auug.org.au,davidwei.uk];
+	FREEMAIL_CC(0.00)[nvidia.com,sk.com,kvack.org,linux-foundation.org,vger.kernel.org,skhynix.com,oracle.com,kernel.org,iogearbox.net,davemloft.net,gmail.com,fomichev.me,lunn.ch,google.com,redhat.com,suse.cz,suse.com,cmpxchg.org,linaro.org,infradead.org,linux.alibaba.com,canb.auug.org.au,davidwei.uk];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-20561-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20562-lists,linux-rdma=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
@@ -149,79 +152,61 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	RCPT_COUNT_TWELVE(0.00)[47];
+	RCPT_COUNT_TWELVE(0.00)[49];
 	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-On 5/13/26 11:00, Dragos Tatulea wrote:
-> 
-> 
-> On 24.02.26 06:13, Byungchul Park wrote:
->> Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
->> determine if a page belongs to a page pool.  However, with the planned
->> removal of @pp_magic, we should instead leverage the page_type in struct
->> page, such as PGTY_netpp, for this purpose.
+On 5/13/26 11:26, Pedro Falcato wrote:
+> On Wed, May 13, 2026 at 11:12:43AM +0200, Vlastimil Babka (SUSE) wrote:
+>> On 5/13/26 11:00, Dragos Tatulea wrote:
+>>>
+>>>
+>>>
+>>> Seems like this patch broke tcp_mmap because
+>>> validate_page_before_insert() returns -EINVAL due
+>>> to a page having a type. Here's the full flow:
+>>>
+>>> getsockopt(TCP_ZEROCOPY_RECEIVE) returns -EINVAL because of the
+>>> below flow in the kernel:
+>>>
+>>> tcp_zerocopy_receive()
+>>> -> tcp_zerocopy_vm_insert_batch()
+>>>   -> vm_insert_pages()
+>>>     -> insert_pages()
+>>>       -> insert_page_in_batch_locked()
+>>>         -> validate_page_before_insert() returns -EINVAL
+>>>            because page_has_type(page) is now true.
+>>>
+>>> The patch below fixes the issue. But is this a valid fix?
 >>
->> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
->> and __ClearPageNetpp() instead, and remove the existing APIs accessing
->> @pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
->> netmem_clear_pp_magic().
+>> Hmm the check traces back to commit 0ee930e6cafa0 "mm/memory.c: prevent
+>> mapping typed pages to userspace"
 >>
->> Plus, add @page_type to struct net_iov at the same offset as struct page
->> so as to use the page_type APIs for struct net_iov as well.  While at it,
->> reorder @type and @owner in struct net_iov to avoid a hole and
->> increasing the struct size.
+>>> Pages which use page_type must never be mapped to userspace as it would
+>>> destroy their page type.  Add an explicit check for this instead of
+>>> assuming that kernel drivers always get this right.
 >>
->> This work was inspired by the following link:
->>
->>   https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
->>
->> While at it, move the sanity check for page pool to on the free path.
->>
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
->> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> Signed-off-by: Byungchul Park <byungchul@sk.com>
->> Acked-by: David Hildenbrand <david@redhat.com>
->> Acked-by: Zi Yan <ziy@nvidia.com>
->> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> ---
+>> So uh, this doesn't look good I think.
 > 
-> Seems like this patch broke tcp_mmap because
-> validate_page_before_insert() returns -EINVAL due
-> to a page having a type. Here's the full flow:
+> Yep, you fundamentally can't map a page with a type as page type aliases with
+> mapcount. Even with the given diff, just mapping it will increment the mapcount
+> and wreak havoc. I think we need to revert this patch for now.
 > 
-> getsockopt(TCP_ZEROCOPY_RECEIVE) returns -EINVAL because of the
-> below flow in the kernel:
+> I'm not sure what the long term plan for this would be. If page types are moved
+> to memdesc types, then the two stop colliding and that could work. I don't know
+> if that's Willy's plan, however.
 > 
-> tcp_zerocopy_receive()
-> -> tcp_zerocopy_vm_insert_batch()
->   -> vm_insert_pages()
->     -> insert_pages()
->       -> insert_page_in_batch_locked()
->         -> validate_page_before_insert() returns -EINVAL
->            because page_has_type(page) is now true.
-> 
-> The patch below fixes the issue. But is this a valid fix?
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index ea6568571131..4cb12673f450 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -2326,7 +2326,7 @@ static int validate_page_before_insert(struct vm_area_struct *vma,
->                         return -EINVAL;
->                 return 0;
->         }
-> -       if (folio_test_anon(folio) || page_has_type(page))
-> +       if (folio_test_anon(folio) || (page_has_type(page) && !PageNetpp(page)))
->                 return -EINVAL;
+> (then there's the other question: are page pool pages really folios? not really.
+> they are mappable, but they aren't part of the page cache, or anon, nor are
+> they in the LRU or have rmap capabilities. perhaps we need a different memdesc
+> for those. we're one step away from reinventing class polymorphism from first
+> principles ;)
 
-That's wrong. The type is stored in page->_mapcount, and rmap code would corrupt
-that type.
+Zi Yan is working on this: non-folio pages would no longer mess with
+rmap/mapcounts, and page table walking code will identify them to be non-folio
+things to skip them.
 
-So if the pages should be mapped to user space, it wouldn't be possible like
-this. Today ...
+It will take a while, though ...
 
 -- 
 Cheers,
