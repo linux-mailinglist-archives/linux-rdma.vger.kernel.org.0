@@ -1,225 +1,299 @@
-Return-Path: <linux-rdma+bounces-20694-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20695-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gI4KCtS8BWpZaAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20694-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 14:15:16 +0200
+	id EE+3EYbBBWrXawIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20695-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 14:35:18 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96AE45417AE
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 14:15:14 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D929F541B1A
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 14:35:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EFE243067EC6
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 12:14:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2D08302C0CF
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 12:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFA13CAA53;
-	Thu, 14 May 2026 12:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE2C2F4A05;
+	Thu, 14 May 2026 12:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="T4EHx3mx"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="AmZyy+dc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010010.outbound.protection.outlook.com [52.101.56.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E63E3C9EED
-	for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 12:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778760854; cv=none; b=XAXSZV7MHeRlZcpt5OwGZlWZGhb4UKBB+XpsZzHAnhad3Uslp3LBQV2SB5o3r8oJMDSEmGjvF288jT7b1pKB67SHLpNAuMN5eedzTGfEkO3M8dLt0xKHLByrVBGCJdlM96e+1gSHZqliVSNGJ2afIl6PCDmBUPvEWK3OyqqqA48=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778760854; c=relaxed/simple;
-	bh=R6sGZF7vzTwTYdla5S2B+rw5X9Bbxny3sNjidz6ghO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pDUdv6IP6O72nndmQ96BL1aVCe40rEBDXifRbO5ZN4vv3Honv8l7gV38c5MwVF5M/kedBnIvf2T2zQ3Uh6LY+jgtOviiXR6BfGMYGrNyv6nieYo9mF9bUJ+cSpN+7B/JUKJiiVXr4Tsb04Fx7EJUXAkF7/IsLYSY9XiPfnVXyfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=T4EHx3mx; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-8bb4e8a5240so86357376d6.1
-        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 05:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1778760852; x=1779365652; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/MT0eJslCDNYE32pK1HudZRBK2yJc5vJCuALbEocNuU=;
-        b=T4EHx3mxT1rSGC54UaaGrM4Tz158dzhf1/N5f1WsFV2JqPbjXtFGDMID+J6yKmboo2
-         P8SoS89+gnuybFxQCtXz/ZhLaUvh7Cj1BRRpaR38p0ggSlyscsTP+xG8NvPIXCuo5AIi
-         D7SczbHNyeHmtDKZrh9RGwBDizVMaZ1NRoyG7nf4+jSHy7LydY/6djgQpqlLZlllqHl5
-         MGjNbylcfiBVZP1IqjnEDnv+aSeClC0Ykn/7yFEzakhzgVTeAZFd/mii/6nRzu5cybYh
-         YV/9CarlnZHfIfAL+D3+NuaeC1GA0agLDned/P+pU6SVB7AnptxTZ0DNYJJ/pdKGKZGF
-         pPVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778760852; x=1779365652;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/MT0eJslCDNYE32pK1HudZRBK2yJc5vJCuALbEocNuU=;
-        b=FLylV7b2KgMB4ji/cNSxOkr08n04wyq9ph8PkaGskNPie1p/bDQ8dIxWysuXxS+8Ot
-         wDGj/x0WllBpTymL2UYqa6oinQWyaYA+L4UmwMmPVf4YQ0s8UuENOHfECROGWxul+8a0
-         gfAyyese9XnYNd1bjA8JfdO1Pb0mMxgrN/bA7hvjVKCq11sjAiXTsMd3iGX03EIZ9uGL
-         DkVQuQ8dftj4QHc/ea93NeGyIANR5/KKHd+3eotFeVHUOZ/I4CmSpnKQ6JtOEK22v0nh
-         +q9IQjDN+7YwVGMGDqk5KpAWKu0+/zS+itFwgy5lkfjx41FmxHd/79GcVDhwkKEJ1xzs
-         1djA==
-X-Gm-Message-State: AOJu0YySJKrfOaiGqaoAJQ/GSh0v2CyZksaUtD7bqstylO/Z1Ml2ncmW
-	ldAJMbJUusDyXGaYVPBkm7upTbNcF8Qk5kBVq7tq9F4y0Ndmldbp7hPOcZh5f8/sZe0=
-X-Gm-Gg: Acq92OFGGAhbpSwr1zE6SUVrgIerFiTVjG+SscIEee1/Q2UtX//b3grCyrYTxosnnff
-	iO4qf2OvvBMpF4xYJHGyS2ixjFqk5Mhoy3BVRXb9v4FUgbS1L//6iLtZMkNItMuYDZ0ICDW9RZB
-	P4PcyjGcQKLypxehU3qHSKNSB3dVkfsbEx0RPWkIv4L3dSbThkxswW2d3e07LCTQloGUNJHwyFO
-	TNA28qi2okfx5S+Jz5S5Aw2KTLRi4hBAka7z/7YyWcga82Y26EhpG3eoFCjNe1ph1e+kb9jkF4k
-	f+wpqgblI0EyRRj8ylrIBderiSmfZtk7azmfI8qnTXFdOx3mH/XuSDTewMG6240AilceBGxYftI
-	oJfiJxEeZDAKNO1tr3xQXt5qkHzDKIWTTCGYj2G8Scy77bPfvHpvT9GOV0mcLngw/WnpKtsxu6d
-	1nyRgtbwKbPlnqwtbb1Y4UPELSd8IK7seQbebDefvWgDrusPnuG7c9EcuUfXUX0J/t1uMNLbI+S
-	ERfESzW2zYebtLe
-X-Received: by 2002:a05:6214:3481:b0:8c4:3588:ae19 with SMTP id 6a1803df08f44-8c7bdd7e54cmr113425866d6.48.1778760851418;
-        Thu, 14 May 2026 05:14:11 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8c908d1d2e7sm21799806d6.16.2026.05.14.05.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2026 05:14:10 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wNUx8-000000059Qi-1Led;
-	Thu, 14 May 2026 09:14:10 -0300
-Date: Thu, 14 May 2026 09:14:10 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E94E2D061D;
+	Thu, 14 May 2026 12:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778762078; cv=fail; b=iGa4YEGeyoqtCn7XujRfrS3CluVWQQEBTjmjM+tk+9SCemKpA7VZDpJLXpnRYV9jMQDZ9ne9HukAlXlcK1Bf8t6k2fODjoD/l4AE7oKjVpq3YIcjIH1aEd8XaJTr08UJJzio5nxDPAwcLV8bVZPPSjj/myoF3nkkytDnRYqR7IA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778762078; c=relaxed/simple;
+	bh=wGfgg2gTNgAj4/5F0CxDMybPLF77Kpp0cPchapolvYw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=l4vP11n7gh75w4VnU6ShykmL6QGCuifPhnuXmfTOTZJN86kpjPQ5S2b46Pdeq9mUu/EkQUdnnRjTM/YZJZfYDy8wOds9uUfxg/+XAJNSuNTjf0wYwNPO3ZVQdHo1WXpHkp3p3Lv0gWr0kfFRcrKWjoiHGoTfTw986Tv8lwK57Vc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=AmZyy+dc; arc=fail smtp.client-ip=52.101.56.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GpwsQJ1iLtNYy00WeEkQprKOHYxArO7xmN38ZEV2VJsR4ybk0I/NtEMYV0+nNisAvwPwPR2sMo70VY9u9wURuTTv6/e4SuDRt0WGzEClwqhqEEXh/KLck3JFwD3ecstc5rnPS1l2WPMbeL6EHbuYDf4S40TcysUCPrG/0BUzVgeO2HzwFYAryPSVkv865I1RnMtYKmK8w8jtabOZy9s8dMO4FpND5yhARJzhXTdjJqQHpiQpRXdJ2UzbLpcQr3CI+l6HYYdEpvG90PEsisoSaRqYJTGwe3tz+pEdH6HY+SyEdAmhmVm1uUSgSoQO6PmcUpaEEXIwqhT4AmqEO8CTvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g5sfSXPLcQ1ANbDo8QSA91us3WFSj4WsceAmLCnFtkY=;
+ b=itjb6LBaxj7TaK3W8Rqx+HXKhsMDzPtPY3H+qA4P4YoxK4dLI78OwXWoIZ9UygTJsXbroMXcntd2qYeODSYrKTxkIbQ8rjeCR6sFiBdj7VEK3NR7HKuuvJgO4Eb/cWtmlZwMe+6MNJ3/fSg2lBT+b4amGzfAJ06KiaCITyn0hcpFYQVH2oi+4KTeAWQruq76dExzyLumBgIyq4jgjJ0BucfACXDall5UoxzoOpVItgWW2khiskNw8L0FEzkSKFsqKVnun9HQiblAwYvAOy4FOc3ixaMv2TVY9jXYO6UOlPpgUBotozQGifqyS9bjGbLJN+8KoxY0N6G9Hk9js0bIXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g5sfSXPLcQ1ANbDo8QSA91us3WFSj4WsceAmLCnFtkY=;
+ b=AmZyy+dc4n+W3TSfe6QlNISGgajpuL5LzWKgPT+tqNTpBSypges13DEePZfNp85X3xoeEFz+4pr5xYNA/W3vEx/ewC7eHFuqiKyh5bO0u5L5MyDBpeyxhx0EYRwOLqRCY1+ojjTgGSotgDEWQR4uZgrrXZov9UMoRzMrRJGLnvjVzEeNqBWeP3DByHk0uzRbUu95okH+YGLvLl8AYrXmq2F6yAx3vhivHe44CJJz4CJYVOzGb2InLusTYaSNGWhxaLLskvp5jApjniRWjSUz2pbsek2NFcuiQlmRpPtKfycxIi7aQrnB+4+IKaNRvPO+Hxsw9KR/K4kWhXJcmYJ64A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB7548.namprd12.prod.outlook.com (2603:10b6:610:144::12)
+ by MN2PR12MB4175.namprd12.prod.outlook.com (2603:10b6:208:1d3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.18; Thu, 14 May
+ 2026 12:34:33 +0000
+Received: from CH3PR12MB7548.namprd12.prod.outlook.com
+ ([fe80::b710:d6a1:ab16:76de]) by CH3PR12MB7548.namprd12.prod.outlook.com
+ ([fe80::b710:d6a1:ab16:76de%6]) with mapi id 15.20.9913.009; Thu, 14 May 2026
+ 12:34:33 +0000
+Message-ID: <142134d1-5a69-4186-8f30-5b47c1b464ff@nvidia.com>
+Date: Thu, 14 May 2026 15:34:23 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC net-next 0/4] devlink: Add boot-time defaults
 To: Jiri Pirko <jiri@resnulli.us>
-Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
-	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
-	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
-	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
-	ynachum@amazon.com, huangjunxian6@hisilicon.com,
-	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
-	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
-	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v3 03/17] RDMA/core: Introduce generic buffer
- descriptor infrastructure for umem
-Message-ID: <20260514121410.GY7702@ziepe.ca>
-References: <20260504135731.2345383-1-jiri@resnulli.us>
- <20260504135731.2345383-4-jiri@resnulli.us>
- <aftENVgTr8AZVQnT@ziepe.ca>
- <aftL-2sJb4JfyDIs@FV6GYCPJ69>
- <20260512181236.GA175362@ziepe.ca>
- <agTNeYSOyMTbUbNt@FV6GYCPJ69>
- <20260513233447.GU7702@ziepe.ca>
- <agWOldIWkFI3i1xB@FV6GYCPJ69>
+Cc: Parav Pandit <parav@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, Simon Horman <horms@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, Randy Dunlap
+ <rdunlap@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Christian Brauner <brauner@kernel.org>, Petr Mladek <pmladek@suse.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Thomas Gleixner <tglx@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Dapeng Mi <dapeng1.mi@linux.intel.com>, Kees Cook <kees@kernel.org>,
+ Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
+ "NBU-Contact-Li Rongqing (EXTERNAL)" <lirongqing@baidu.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20260508175213.1952097f@kernel.org> <af7Y4AYv-XDCbK_8@FV6GYCPJ69>
+ <580a774b-ba9e-4523-b43a-476f75dd5b12@nvidia.com>
+ <SJ0PR12MB68068C50EE9776A3D9060635DC382@SJ0PR12MB6806.namprd12.prod.outlook.com>
+ <agLoeZtsSizR-R24@FV6GYCPJ69>
+ <SJ0PR12MB68061C61AA2BF5D81005984FDC392@SJ0PR12MB6806.namprd12.prod.outlook.com>
+ <agM0DsiaAH8-Ox7N@FV6GYCPJ69>
+ <SJ0PR12MB6806D8ADF943B30AD3B479CCDC392@SJ0PR12MB6806.namprd12.prod.outlook.com>
+ <agNy3RF9WCHBPev5@FV6GYCPJ69>
+ <29868c1b-5751-421a-9f2b-2ac0f3324904@nvidia.com>
+ <agRcYDkjsQuS7ArD@FV6GYCPJ69>
+Content-Language: en-US
+From: Mark Bloch <mbloch@nvidia.com>
+In-Reply-To: <agRcYDkjsQuS7ArD@FV6GYCPJ69>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0214.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ac::8) To CH3PR12MB7548.namprd12.prod.outlook.com
+ (2603:10b6:610:144::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <agWOldIWkFI3i1xB@FV6GYCPJ69>
-X-Rspamd-Queue-Id: 96AE45417AE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB7548:EE_|MN2PR12MB4175:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a1ea837-93ed-4d89-d609-08deb1b5266c
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|4143699003|11063799003|22082099003|18002099003|56012099003;
+X-Microsoft-Antispam-Message-Info:
+	bs6kqHDx1DmtVnn5IeMjdaa2XhyonxT4I3b/9/SGTUfqPX4nCVkoaqIYXN3G7Y0/+QShDPmiBTz2ZUc92VPqAsVE48hce1FdDLjkTiF9dVNJzVP9S7OkXUJGNgL/NT6Iut1dd9tBap+Xhge6n6CpaA+4ttvoPtIHRvDVIeRd0JFYWrBK7BOMVW7fpt3b43t8UU6v2udPQtLLHrjuPuLFzDQRWJbEEpakIV5H3PRo/9V6zvaB8B34sYnJw/2tUXFELRMns+RkWa9r1STMrFZ43oZnfK+TqeZJV7GlwJaCeC0U+56n4vcHuhEyavtJ/uj9OtP+m5TQRAaCjobp9MnA/6jUwCYhrs+KGZoJOCoy0bQB40UgrXI3rnLh+CIcGaNvY7dzpOv1tOPQJIzKZZR/4LkLT7cucQo0duas8hNJjJzb4OKIT3k770oc3xijMSznzHncjPjXbYF/X4IyMF3lnlwT0sdjbjnLVRZTjxLvnsVZ48wtb6rYT3ya/NICKAswGAyycmVc/tb5d3C3IUHnyf5oA4FWsMF5iN9+LdBmgPbCp4BOA/oaoK0xEJPRnOyyYzsjwpvWofuXsDKlSibgbidEJIYYFB79QGchepHWF8Z3ZI/G8/WwLycI2nhjb6CUapKbXO/tphVKeUuRIRkZyKfb1uMwHub293SANPfzaTWTohCtPfENxPvuds31jD/F
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7548.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(4143699003)(11063799003)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ejdOQURJVkF3UEVjTXJDaHZQNVA0c3lGOEFCaVdncno4VFJLc2l6cGh3V1hP?=
+ =?utf-8?B?a2hteVhHVVpaTEhqeTF3OEszdzZvK1U5R3gycjVURWh4dGxDSkEzeUk2VWRk?=
+ =?utf-8?B?K2V1R2RCMm5YUy9FQkYxNFp2WXR6SFduZkNUVGh4VjJxaThTRzd2YURtbVE2?=
+ =?utf-8?B?aFhlUjRiU1RMRE9aQndzZzlmcEVyYUpoREpOYlc0SlJMbVhtZXVDYXdWRS9K?=
+ =?utf-8?B?YzFLTThSVWdhR2E4V1ZiRnpmUVFkQVpXRnRWMHc0YUxSVUUyUUkvN0x0M01I?=
+ =?utf-8?B?UUY2VkszbHRnYkdPRnoyV1lvb09PdXAzK1dQaXBnKzZKc0VqK2g4eVlBNzk0?=
+ =?utf-8?B?QUVtZGt5Qk9VTUtvQlRrVS85b3liR3QzUUo1NCtFSWkweWUyRm9xOUw5NGJY?=
+ =?utf-8?B?aDkvS3hQTXFBUDBoREt2dE80OHBCQksyeC9wNjl6bmE3Mm9RbzVqbUZLa3lp?=
+ =?utf-8?B?V1pzTWpkR2k1S1NYQzZuU0VnVk92b0x3bnI2K0RpcW81UFg1KzYzOUtKaXB3?=
+ =?utf-8?B?MG9GK292MXAxNW10WTd1Z2d5Z2NhRUU1VkdTSUlFTGZXMWM1ZkE1MUxnVngv?=
+ =?utf-8?B?NjR1MzB3ai92aUNteVh3ZTErZ1huRWVOT3NDM0ZKMHNjeGlrRWdwUTZNSGh3?=
+ =?utf-8?B?SnJOSjh6OUJmdGdrdGRJQkUrTWtDZ1hzL3BsOEo0U2hqSWszaDIya1Q0dXJi?=
+ =?utf-8?B?Wk42cUsxYys5bXp3c2xNOExoZUZZYk53eDQ5dDhkcVEvNXVubkdwb1RDRzJr?=
+ =?utf-8?B?U2M3d2pUWTQwODBORmJ1UWFRZzhjd2hkbDZpNVhPYmFLdVZPWVA4MGx5TEpR?=
+ =?utf-8?B?eUdCZHA4V3NtWGpORFFBcjg3NHc3TVVmNE5ScElVSkRDUForTXJXbDVqd0s0?=
+ =?utf-8?B?aGkrbE1YWDE3UFNiZ2xwVnFick9KcUV1MVhmZ1BueGhCbTdOWjRkUmtPWkVq?=
+ =?utf-8?B?S0JqdVcvZGFBQ0p5SmJrWHBmMjRsczFMajJIZzJreUYrYkxFeldvVWxkZFRP?=
+ =?utf-8?B?aUN0SVFjR21jT3NSYmhQeWN6WnpIVXQ1ZUt1dGQ2OUJKaFFITWdnb2tYdkxU?=
+ =?utf-8?B?RTVCQnVLQ0RZMG9MRTNoSTRlRUpud0E5bFBqdEVEL25sVFlaM2VGdTlLQkFQ?=
+ =?utf-8?B?aTNwTHdQVmozNkRxWHNiY0VXc3h5bWdCRERiZzRQeUVTR2kvOGFXNzFxY2dV?=
+ =?utf-8?B?L01LZDRtS0x5c2VmQ1ZvUXJObEw1RjJzSU5sMWxpcmpuMWY4QktkS0ExTnpo?=
+ =?utf-8?B?ZVI0NzFPQ0lTb0hBRHdoQm9JbmJuZk1taXdRdS8rY0s3Zlk1RWlCN0xpazZi?=
+ =?utf-8?B?RG5EUWxFbllxZTRJT3hmU250K0pKZmQyVkNxRjRmdGpvUC9Kelg2K1YrL1ZR?=
+ =?utf-8?B?UU5IQzJjSysrMDB0SEdKTHJUUkFRRGs3YTZ4STR1UDJPT0F6d0FScm95ZnJ5?=
+ =?utf-8?B?bDRXOStOK2lhRTdWR1pGVjd0TUdFWWIrNEd4VE11R082aUVMSlRjUjFaN2Ry?=
+ =?utf-8?B?WGpubzZzMzhTeEh2NFBIa1JDaUtxcDVJUWZELzFzbFJQbi9kSlA4NWVldXQv?=
+ =?utf-8?B?OEtGYjVPZmNTMzhmSm9UamlpYzNEeHNpYnJRWDNYZVBtQ2ROMUlIMDl1WnRG?=
+ =?utf-8?B?Qkw0eXBpWnJkZXg3bDNOMjJhbVNwUldwOGpHMjUxZWo2WlVSSnV0MnVSR3lR?=
+ =?utf-8?B?ZVdiWXZGcm5ybm8yZk01cjVEV0F2TWprTzJuNitHek4wNGM0ZmxMamt0S0Z1?=
+ =?utf-8?B?UXVlK0hZa1ZpTGZ1OWQ3dUpzZHVQSjN2TmlBMDJvbktyc25rUUZIYXcyMnVU?=
+ =?utf-8?B?dVdpS2NEbVZucHF1WnU2dFdDYlNRV3plMHliZWwwc0pGV2l2aVV4M3pIUDRp?=
+ =?utf-8?B?djJPMlNyYWd2TnMwS0VkSmo3aE5GNHJVWEV4Yzcwd3VZcWpqSjNhNVQ3bW9a?=
+ =?utf-8?B?RHRtMjl5RGpKUjJWeFE4M3JKQVNKTE55dDJ4UkFVSU5hYUpXZmlsQjBzM2lM?=
+ =?utf-8?B?c3hnR1J5ZjNXWUpsWHlvcTAwYzQzTjBZZksvWlR1bVFmQUU1SGNDeUs2M2Fl?=
+ =?utf-8?B?WGpLb2NzZ29qVVVONEl3WnF3RDRoY3hZY0JVbG9pYmV2QjF3LzQwVmFwTmZZ?=
+ =?utf-8?B?aEZoZ1VDa0tNdTFSVVJUN0xTRmdjR0gzV2R3NzhMUTQ0amIxQW9vdkJiTVZV?=
+ =?utf-8?B?dkl5UHNrMlJDeFRwVnRyamNYZmxEOXJWTTV2aUJyNXpXSVBIOFljRkFuOVZa?=
+ =?utf-8?B?c3phSmJZUWtHYTRscWJNbnBJN2J4eFN2NDdTaFFDNnpSRW9ubTQzOElITDhH?=
+ =?utf-8?B?Y1lwM2JsMkJJeXBpcUUyQXZMcmJlTGxrQlFaK2ExL2w0TmhFTmVYUT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a1ea837-93ed-4d89-d609-08deb1b5266c
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7548.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2026 12:34:32.8763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3pqO+5NZtGEj/evGdgNKZu5u1P5qaNvz0Bbea0MPuWcNyqyEyexgxSgmyAjeMAdqPOyii2LvlOf0rSuPwAAd1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4175
+X-Rspamd-Queue-Id: D929F541B1A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20694-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
+	TAGGED_FROM(0.00)[bounces-20695-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[32];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
+	FROM_NEQ_ENVFROM(0.00)[mbloch@nvidia.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,Nvidia.com:dkim,resnulli.us:email,nvidia.com:email,nvidia.com:mid]
 X-Rspamd-Action: no action
 
-On Thu, May 14, 2026 at 11:02:45AM +0200, Jiri Pirko wrote:
-> >> There's no addr_size because no caller has a user-passed
-> >> length distinct from the driver-required minimum.
-> >> Drivers either have no length in their legacy ucmd (mlx4/mlx5 CQ, mlx5 QP,
-> >> the size is driver-computed from entries*cqe_size etc.) or they
-> >> pass ucmd.buf_size which serves as both (vmw_pvrdma, qedr, mlx5
-> >> SRQ, ...).
-> >
-> >This is what I was wondering about, so how does it work when there is
-> >a ucmd.buf_size and also a minimum size computed from
-> >entries*cqe_size? What does the driver write?
-> >
-> >I think the driver has to pass in both the minimum size computed from
-> >entries*cqe_size and also the uhw exact size? The minimum size is used
-> >if the uhw path isn't used to check the other attribute while the uhw
-> >exact size is used to pin the memory if the uhw path is used - and it
-> >should also be checked against the minimum?
+
+
+On 13/05/2026 14:11, Jiri Pirko wrote:
+> Wed, May 13, 2026 at 07:53:05AM CEST, mbloch@nvidia.com wrote:
+>>
+>>
+>> On 12/05/2026 21:35, Jiri Pirko wrote:
+>>> Tue, May 12, 2026 at 05:25:21PM CEST, parav@nvidia.com wrote:
+>>>>
+>>>>
+>>>>> From: Jiri Pirko <jiri@resnulli.us>
+>>>>> Sent: 12 May 2026 07:37 PM
+>>>>>
+>>>>> Tue, May 12, 2026 at 03:48:32PM CEST, parav@nvidia.com wrote:
+>>>>>>
+>>>>>>> From: Jiri Pirko <jiri@resnulli.us>
+>>>>>>> Sent: 12 May 2026 02:16 PM
+>>>>>>>
+>>>>>>> Mon, May 11, 2026 at 08:21:37PM +0200, parav@nvidia.com wrote:
+>>>>>>>>
+>>>>>>>>> From: Mark Bloch <mbloch@nvidia.com>
+>>>>>>>>> Sent: 10 May 2026 06:02 PM
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> [..]
+>>>>>>>>
+>>>>>>>>>> I look at it from the perspective that from some CX generation,
+>>>>>>>>>> switchdev mode should be default. So that is a device-based decision.
+>>>>>>>>>> I believe as such it can optionally be permanenty configured (nv config)
+>>>>>>>>>> on older device. Why not?
+>>>>>>>>>
+>>>>>>>> Because sometimes switchdev_inactive is needed and sometimes not.
+>>>>>>>> Such knob is not device decision.
+>>>>>>>
+>>>>>>> That is what I would call corner case. In that, user can use userspace
+>>>>>>> configuration to change the mode in runtime.
+>>>>>>>
+>>>>>> Corner vs common depends on users one talks to. :)
+>>>>>> If fw has switchdev(active) as default, and then
+>>>>>> And user needs to run switchdev_inactive, it will actually break their switching applications.
+>>>>>
+>>>>> Can you describe the actutal breakage please?
+>>>>>
+>>>> Driver default was switchdev so all the traffic is forwarded to the switch,
+>>>> and user didn't have chance to setup the fdb rules.
+>>>> So packets are dropped but user didn't expect the traffic to be forwarded.
+>>>
+>>> User may switch mode to switchdev_inactive early on, before any of the
+>>> representors are created. What's the issue then?
+>>
+>> That is the ordering problem I am trying to solve.
+>>
+>> On a DPU, the host PF cannot finish loading until the ECPF moves the eswitch to
+>> switchdev/switchdev_inactive. So we need to do that transition during ECPF
+>> driver init, as early as possible. Waiting for userspace means the host PF stays
+>> blocked until userspace is up and has the right logic.
+>>
+>> That is not always true in practice, the driver may be built in, loaded from an
+>> initramfs, or the initramfs may simply not contain the devlink policy we need.
+>>
+>> Also, after talking with Parav, my understanding is that we need to support both
+>> switchdev and switchdev_inactive, since different customers want different boot
+>> behavior. Once we do the transition, the host PF can load and may start sending
+>> packets. At that point the initial mode already matters: in switchdev_inactive
+>> packets are dropped until userspace programs the pipeline; in switchdev they may
+>> reach the FDB before the pipeline is ready.
+>>
+>> So I do not think an early userspace transition is equivalent here. The initial
+>> mode needs to be known by the kernel before userspace runs, which is why I am
+>> proposing the devlink= command line default.
 > 
-> I asked Claude to check every caller: At the moment of conversion
-> none of them would have addr_size != min_size. They split into
-> three groups:
-> 
->   1) Driver-computed total only (no user-passed length distinct from
->      min). addr_size == min_size by construction:
-> 
->        mlx4 CQ/QP/SRQ           entries * cqe_size, qp->buf_size, ...
->        mlx5 CQ/QP/SRQ           entries * cqe_size, rwq->buf_size, ...
->        bnxt_re QP/SRQ/CQ-resize max_wqe * wqe_size, entries * sizeof
->        mana CQ                  cq->cqe * COMP_ENTRY_SIZE
->        hns_roce MTR             mtr_bufs_size(buf_attr)
->        qedr SRQ producer pair   sizeof(struct rdma_srq_producers)
->        all DBR helpers          PAGE_SIZE
+> Okay fair enough. Could you please at least make sure this is mode only
+> config and noone would ever think about abusing this for any other
+> configuration? Perhaps call it "devlink_eswitch_mode=" to remove
+> the "devlink=" namespace flexibility?
 
-OK these make sense
+Sure, something along these lines:
+devlink_eswitch_mode=[*]:switchdev
+devlink_eswitch_mode=[pci/0000:08:00.0,pci/0000:09:00.1]:switchdev_inactive
 
->   2) MR registration / opaque user umem. The user-passed length *is*
->      the request; there's no separate driver minimum. addr_size ==
->      min_size by definition:
-> 
->        reg_user_mr in every driver
->        mlx5 devx user umem
+The proper (not RFC) series will have 3 patches:
 
-MR has to use the exact size passed in the top level system call, so
-it probably needs some special helper that does that instead of minimum
- 
->   3) User-passed length without a driver minimum cross-check today:
-> 
->        vmw_pvrdma CQ/QP/SRQ     derivable min (entries*sizeof, wqe_*),
->                                 not computed in the user path
->        qedr CQ/QP/SRQ           ureq.size, no min computed in wrapper
->        mana WQ, QP raw_sq,
->             QP RC queues        ucmd.{wq,sq}_buf_size, queue_size[],
->                                 no derivable min
->        ionic CQ, QP sq/rq       req_cq->size, sq->size, rq->size,
->                                 no derivable min
+- devlink: add the command-line default eswitch mode handling
+- mlx5: cleanup/prep patch
+- mlx5: use the devlink API to apply the early eswitch mode
 
-Yeah, these are exactly the ones I'd expect to have a second
-parameter. Something like ucmd.wq_buf_size should be entirely ignored
-if the user passes a new attribute, not silently used as a minimum
-check. That logic has to be done in the helper
+Since the mlx5 changes are part of the series, I suspect this will need to
+go through Tariq. The patches are ready, but are currently in
+our submission queue.
 
-So you imagine another helper for these four drivers with an
-additional parameter?
-
-> Given that, I'd prefer to keep the single size argument for now and
-> spell the contract out in the kdoc:
-> 
->   @size: minimum required umem length, validated post-pin against any
->          descriptor produced via @attr_id / @legacy_filler; also used
->          as the pin length on the VA fallback path. Callers that have
->          a distinct user-passed length must validate it against their
->          driver minimum before calling.
-
-> If/when a driver actually needs distinct values, splitting into
-> addr_size + min_size is mechanical.
-
-Ok, maybe mention in the commit message this has trouble for the four
-drivers in group 3
-
-Jason
+Mark
 
