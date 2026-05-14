@@ -1,134 +1,134 @@
-Return-Path: <linux-rdma+bounces-20662-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20663-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CC1IN3lwBWo5XAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20662-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 08:49:29 +0200
+	id IMzSGBl0BWpuXQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20663-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 09:04:57 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55CB653E827
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 08:49:29 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D39453EAE1
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 09:04:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 08D69301D06B
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 06:47:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B4940301B718
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 07:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4B43A4F5C;
-	Thu, 14 May 2026 06:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2159C3AF650;
+	Thu, 14 May 2026 07:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RSfgGCtE"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OcqEbTMl"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBCE34A76A
-	for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 06:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8283A4275;
+	Thu, 14 May 2026 07:04:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778741272; cv=none; b=gyPp9KONr0PNxDYEbquhPuh79v9xcit96y2/hJX01cXhZgBSmiRphSOwRkGzwTEsahGt4HwtXbicE6s9qyD5ktGLUt/fBvJNW4BtWOq5BShCS6J6xSAttBDd0DhyqCVMCo6j3nCmTjHE4jq60xwSLTc0hxGYaT/ksZC2fKrGN/s=
+	t=1778742293; cv=none; b=JCTtCPrx1kMDmJLsNgl8iv9AqO0ZcIfa5vv35XrWPgLcw5UTRLBm0j9PU5lIqEjCSoOZ3E3qaC73n6tNItnxIXlEmhvHoWJ65AX6vXdOIDR70Fa/ZuKfMPaEu8lMrIWCe4M3xebSAcSQOAFZbfwaZWG3I1ouzf3/+OyugDuV3YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778741272; c=relaxed/simple;
-	bh=Co+0IOPP+le/nJzxckVEEYymnBjnjLLVQ6EgAdRDDMQ=;
+	s=arc-20240116; t=1778742293; c=relaxed/simple;
+	bh=MnMUCQahNq7XdESoELwHe1zp1wOSV7M9N3l86rTZvBk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YHE3EodnTUlOAK3+D6M0ZXeTT/XGtmzHeY1cccZTjvYdrfXBg25u6kMvQF9qjJuCeZQy/dFtw3bLHjZZMHI0Z4i9scib+orvNAnMDLmZiiFL1yUmQ81U6vmkNibnH9oesIoEnOWd/Pi9fPLjg+Vhh7pKGdgvQG4/RAG1qYlvFJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RSfgGCtE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C404C2BCB7;
-	Thu, 14 May 2026 06:47:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778741271;
-	bh=Co+0IOPP+le/nJzxckVEEYymnBjnjLLVQ6EgAdRDDMQ=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=gDHnYxPr6lzQRQFKRA2cK2DrQn2M1/pHxb5qwB0DTCMuJ5KGlWZWcFnK/2+EhNLKEUvqJP2WmgRlT4xL8/hzpm0aNBiIOKHN3eBJhg74pbRTLpE/Ls5FSlZS9CY5+UP38ywtXOr/CkfuM97eQk3cbsbVX5tICQfSAVlBeT3stDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OcqEbTMl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F64AC2BCB7;
+	Thu, 14 May 2026 07:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1778742293;
+	bh=MnMUCQahNq7XdESoELwHe1zp1wOSV7M9N3l86rTZvBk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RSfgGCtEa5KYNcSSWIyUsIUjZmHuPjQU5lTW/qQ9cxA+ZUnGlAtlJGeVgKG06vOQ7
-	 L0JJ6gwhpxkULZHyfDb24uqN2Lj6mTluzHTfV2QEkxaBTONlqTOTC19sHJBXMeET1+
-	 D2zlsitU+wbhi/LQIqhWnH26OO7qvGY5cW8HF/gGv6RGtMHuyZayC1k++lhqtLaNE1
-	 tVJXiUfNhfP/iS/JkNJEFs64gYidB2qcQ8e/QP+wGvFckeoQmUsbG8t4QX0sOfJUFx
-	 KvNeQ+4SSG3DfqoDOgBsCvGWYl1vU+WyIdlft0DXyGvRzv02sc2x4N9EyoO1XvGzSe
-	 CvHN0jLj8llfw==
-Date: Thu, 14 May 2026 09:47:46 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Chenguang Zhao <zhaochenguang@kylinos.cn>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Sean Hefty <shefty@nvidia.com>,
-	=?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] IB/cm: unregister client groups when port registration
- fails in cm_add_one
-Message-ID: <20260514064746.GL15586@unreal>
-References: <20260511103204.1757106-1-zhaochenguang@kylinos.cn>
+	b=OcqEbTMlYwZqwiVxDTRSg2MQJURjEzZEVLWhQEcZovbj8KZseBgDHXeBf5zZsoeOl
+	 oJuBsxibAny7SgWyipU3812OM6qJO9Wg8tb9lmmYVSlR22dGwx1W7lreJoAuRhOmga
+	 eEuOHEf9Fi96DrFLyaX+ifGKpY4UYshzQiUUPzMU=
+Date: Thu, 14 May 2026 09:04:08 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>, Eric Joyner <eric.joyner@amd.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Brett Creeley <brett.creeley@amd.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH net-next 3/4] RDMA/ionic: Add debugfs support
+Message-ID: <2026051440-devourer-appendix-4326@gregkh>
+References: <20260506041935.1061-1-eric.joyner@amd.com>
+ <20260506041935.1061-4-eric.joyner@amd.com>
+ <20260513072113.GE15586@unreal>
+ <20260513172314.35e71e7b@kernel.org>
+ <20260514060048.GK15586@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260511103204.1757106-1-zhaochenguang@kylinos.cn>
-X-Rspamd-Queue-Id: 55CB653E827
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260514060048.GK15586@unreal>
+X-Rspamd-Queue-Id: 0D39453EAE1
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [3.84 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
+	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20662-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20663-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	NEURAL_HAM(-0.00)[-0.964];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linuxfoundation.org:+];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxfoundation.org:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 06:32:04PM +0800, Chenguang Zhao wrote:
-> If ib_port_register_client_groups() fails, jumping to error1 skips
-> ib_port_unregister_client_groups() for the current port because the
-> cleanup loop only runs for strictly smaller port indices after --i.
-> So jump to error2 to unregister the currently failed port.
+On Thu, May 14, 2026 at 09:00:48AM +0300, Leon Romanovsky wrote:
+> On Wed, May 13, 2026 at 05:23:14PM -0700, Jakub Kicinski wrote:
+> > On Wed, 13 May 2026 10:21:13 +0300 Leon Romanovsky wrote:
+> > > 3. The patch is too large and exposes too many details that should be
+> > >    gathered through the FW (fwctl).
+> > 
+> > Why? What's wrong with debugfs? Much easier for people to access.
+> 
+> There is nothing inherently wrong with debugfs. You can see recently
+> accepted debugfs patches from hns [1].
+> 
+> The issue here is what data is being dumped through debugfs, and in what
+> quantity. From a quick look, ionic_dev_info_show() appears to print
+> raw data coming straight from the FW.
+> 
+> In my view, debugfs should expose in‑kernel structures that are shaped
+> and controlled by the kernel itself. IMHO it is not the right place to
+> debug FW state. There can always be exceptions, of course, but in this
+> case the driver is effectively dumping everything from pds_core/FW in
+> the RDMA layer.
 
-Why? There is no need to call ib_port_unregister_client_groups() for the
-current port. A failure in ib_port_register_client_groups() does not create
-any sysfs groups that would require cleanup.
+debugfs is for anything you want, there is nothing wrong with doing
+this in debugfs, in fact, it's preferred.  Don't spread debug info out
+into other areas, that makes it harder for admins and users to properly
+secure things from stuff they don't want users to have access to.
 
-Thanks
+thanks,
 
-> 
-> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
-> ---
->  drivers/infiniband/core/cm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> index 6ab9a0aee1ec..bcd347c78376 100644
-> --- a/drivers/infiniband/core/cm.c
-> +++ b/drivers/infiniband/core/cm.c
-> @@ -4378,7 +4378,7 @@ static int cm_add_one(struct ib_device *ib_device)
->  		ret = ib_port_register_client_groups(ib_device, i,
->  						     cm_counter_groups);
->  		if (ret)
-> -			goto error1;
-> +			goto error2;
->  
->  		port->mad_agent = ib_register_mad_agent(ib_device, i,
->  							IB_QPT_GSI,
-> -- 
-> 2.25.1
-> 
-> 
+greg k-h
 
