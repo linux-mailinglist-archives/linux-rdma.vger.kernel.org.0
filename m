@@ -1,96 +1,91 @@
-Return-Path: <linux-rdma+bounces-20717-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20718-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OA14BqH7BWrFdwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20717-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 18:43:13 +0200
+	id 0OWBDjL7BWrFdwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20718-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 18:41:22 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99CCE544DE6
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 18:43:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BCA8544D95
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 18:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 202B830E7B35
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 16:36:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 19B4F3024137
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 16:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7349134214A;
-	Thu, 14 May 2026 16:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6778D34251D;
+	Thu, 14 May 2026 16:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nUefDRv0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PIOJnuHo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3311133C188;
-	Thu, 14 May 2026 16:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EE8340260;
+	Thu, 14 May 2026 16:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778776546; cv=none; b=r4t1Ozhny0TbBXKeklew+iT0yGCFtvXJV7gpmvAR5Zo1+9ai1aS99pvge6+j1pd2HKuy17bm0GgrvTEdQcG20ogNAArGbXoTryeC25GXSbZ3aUk+SAXpv5Oq1vKRwY+ab8fX3dK5XiZvR50T2dRQwgDcm4NpdGzz+ureINGLW2c=
+	t=1778776834; cv=none; b=i130ua8SHeYWTcPgOCTssg83fzMjNTCxY+AfLdRFqQ6IEoCEs4etOsn3k0TXyeIdrMQP8AJdbrnCAHuIp4ULsgHwncl5ccD3LfADmcgjbtEUknV2MIzrftwlyrN8OlkvfFPxZoe1OvMbP+YcdPe4lCV+fbVVXUfrvgUp2OE8NGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778776546; c=relaxed/simple;
-	bh=4CIiIZXYfKVFyeU61YSFxixJa7H7LcLfmxsAul2bCWw=;
+	s=arc-20240116; t=1778776834; c=relaxed/simple;
+	bh=hYwVxdsUNFBpETRiRK2LPmgL5E49ZdizfOForXyTEAI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p3MbFA51HaWdvazNiJQSqKIa6au1KcwWa/62xI0zsrnH9Jldv9I4rLImGglwAMIzlPuFWHe2zrdfpuTmuOtllHd3DQ5NRVub8vqVXRvidQPTbO2U7po6gkyPEQ5y0hQEjMS8LrneLBXGCPBR5MPQF7XdP1zsAo4jknduwcP02ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nUefDRv0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8BEBC2BCB7;
-	Thu, 14 May 2026 16:35:44 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=uRi0RvX6g97d/y6wgvueVUa6+UMHL9+SZS1Fv0cKO8bxf77ELir4u84rcUQxJr0JU6BuvzLugPnUavdvNFwqrBtPz4Q34dOtCB2ZXq4gY/MczVv4x3BObqqus0JN9xDTZlJK3GsU6ijhtgdLjHrHjqLiLYa6Chw5oInYjU6DT3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PIOJnuHo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203B8C2BCB3;
+	Thu, 14 May 2026 16:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778776545;
-	bh=4CIiIZXYfKVFyeU61YSFxixJa7H7LcLfmxsAul2bCWw=;
+	s=k20201202; t=1778776833;
+	bh=hYwVxdsUNFBpETRiRK2LPmgL5E49ZdizfOForXyTEAI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nUefDRv0In0PJ3Ep3BNH3Le4aHlzG1szmoLqrFuTjHi/3oXaIyG4Xk3XW4cISjO/l
-	 hFTGyqIOLiyzfNBnXroHS9JpOvMi8gkkxwI1cfH9s5qQ/yalb8FRbMhG/dKoHnhPHc
-	 2dmaFmwpVk249H5QQ1kO5SImM2KRGVAhujQZECBrpI4Ew398q3mfBMW7YgPWuiUAda
-	 dG5mF/Fg7r8TIY+N7yiZp1i1g8UoV/R9GhTBBhMmV1q9W4X6SFY/r3ys3Mc9/wXjps
-	 RXodYG4/BSCInFyXF5riz/DRGpzx9pSlsdjhU3jqA6wLinGW8UJHAjGea8QJsFAb0J
-	 9fFwfQMlniDCQ==
-Date: Thu, 14 May 2026 19:35:40 +0300
+	b=PIOJnuHoC13vgBF2KrCH/GoQshh4Z8ogbdCKCeQQNWfhsw9Z6/wdnWb7ZUUOP4q9O
+	 4832VyF8S1nsJvKw8Fd9xiodCFbPMdPigFzOf9NyNFwYGgFk9y3ufzXNpI8wgRnCMt
+	 gQdnJ3E16/1k/VKNXe22M5Clv9i1dqlcHPlz2MvYyt3go+80ul50wW0pjLbXYDd0zv
+	 Rry4lFv0cUnxlgq1Wg2+1NxKeTzQkvN07B65QHuQXKQrlUMoTxoI1Aj1qGh5R3YSd5
+	 B90aMyPTcSVPs3VdFvcwXIYu64dvVCNDGfnmEK5nJ5CwXf0Aro31BU5vCuQWVQmQIx
+	 L9lGjqLBx/fYw==
+Date: Thu, 14 May 2026 19:40:29 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jakub Kicinski <kuba@kernel.org>, Eric Joyner <eric.joyner@amd.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	Brett Creeley <brett.creeley@amd.com>,
+To: Abhijit Gangurde <abhijit.gangurde@amd.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Brett Creeley <brett.creeley@amd.com>,
 	Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH net-next 3/4] RDMA/ionic: Add debugfs support
-Message-ID: <20260514163540.GT15586@unreal>
+	Allen Hubbe <allen.hubbe@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Eric Joyner <eric.joyner@amd.com>
+Subject: Re: [PATCH net-next 0/4] RDMA/net/ionic: Misc updates
+Message-ID: <20260514164029.GU15586@unreal>
 References: <20260506041935.1061-1-eric.joyner@amd.com>
- <20260506041935.1061-4-eric.joyner@amd.com>
- <20260513072113.GE15586@unreal>
- <20260513172314.35e71e7b@kernel.org>
- <20260514060048.GK15586@unreal>
- <2026051440-devourer-appendix-4326@gregkh>
+ <20260506155954.17e984c6@kernel.org>
+ <4dc23648-7ec1-b68c-0e1b-282e014e534c@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2026051440-devourer-appendix-4326@gregkh>
-X-Rspamd-Queue-Id: 99CCE544DE6
+In-Reply-To: <4dc23648-7ec1-b68c-0e1b-282e014e534c@amd.com>
+X-Rspamd-Queue-Id: 8BCA8544D95
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20717-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20718-lists,linux-rdma=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -99,49 +94,41 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Thu, May 14, 2026 at 09:04:08AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, May 14, 2026 at 09:00:48AM +0300, Leon Romanovsky wrote:
-> > On Wed, May 13, 2026 at 05:23:14PM -0700, Jakub Kicinski wrote:
-> > > On Wed, 13 May 2026 10:21:13 +0300 Leon Romanovsky wrote:
-> > > > 3. The patch is too large and exposes too many details that should be
-> > > >    gathered through the FW (fwctl).
-> > > 
-> > > Why? What's wrong with debugfs? Much easier for people to access.
-> > 
-> > There is nothing inherently wrong with debugfs. You can see recently
-> > accepted debugfs patches from hns [1].
-> > 
-> > The issue here is what data is being dumped through debugfs, and in what
-> > quantity. From a quick look, ionic_dev_info_show() appears to print
-> > raw data coming straight from the FW.
-> > 
-> > In my view, debugfs should expose in‑kernel structures that are shaped
-> > and controlled by the kernel itself. IMHO it is not the right place to
-> > debug FW state. There can always be exceptions, of course, but in this
-> > case the driver is effectively dumping everything from pds_core/FW in
-> > the RDMA layer.
+On Thu, May 14, 2026 at 08:03:09PM +0530, Abhijit Gangurde wrote:
 > 
-> debugfs is for anything you want, there is nothing wrong with doing
-> this in debugfs, in fact, it's preferred.  Don't spread debug info out
-> into other areas, that makes it harder for admins and users to properly
-> secure things from stuff they don't want users to have access to.
+> On 5/7/26 04:29, Jakub Kicinski wrote:
+> > On Tue, 5 May 2026 21:19:31 -0700 Eric Joyner wrote:
+> > > Other smaller additions add a devlink parameter to the ionic ethernet
+> > > driver for enabling and disabling RDMA,
+> > My understanding is that the devlink param was expected to change
+> > the configuration of the device. IOW user can enable/disable RDMA
+> > to save internal device resources. You seem to be purely preventing
+> > the auxbus device to be added. So there's nothing gained here compared
+> > to simply not loading the RDMA driver. What am I missing?
+> You're right that the current implementation controls only the auxiliary bus
+> device registration and doesn't reconfigure firmware resource allocation.
+> The intent behind this devlink param is to provide per-device granularity
+> for enabling/disabling RDMA. In a system with multiple ionic NICs, an
+> administrator may want RDMA active on some devices but not others.
+> That said, if this per-device control justification is sufficient on its
+> own, or if firmware-side changes are a hard requirement for this to be
+> acceptable?
 
-We are not discussing a general principle here, but this specific patchset,
-which dumps information gathered and consumed by one subsystem into another.
+I'm confident that the administrator can vibe code an appropriate udev
+rule and disable autoprobing for this case.
 
-If netdev wants to print raw firmware data, they are free to do so. I do not
-want to see this in RDMA.
+The real advantage of a devlink knob here is the ability to control the
+firmware.
 
 Thanks
 
 > 
-> thanks,
-> 
-> greg k-h
+> Thanks,
+> Abhijit
 
