@@ -1,61 +1,107 @@
-Return-Path: <linux-rdma+bounces-20693-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20694-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +NcnDZ24BWpZaAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20693-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:57:17 +0200
+	id gI4KCtS8BWpZaAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20694-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 14:15:16 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C178E541477
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:57:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96AE45417AE
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 14:15:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E6056301744F
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 11:57:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EFE243067EC6
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 12:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D8F3C378F;
-	Thu, 14 May 2026 11:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFA13CAA53;
+	Thu, 14 May 2026 12:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="VarKm4WV"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="T4EHx3mx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E48838B7D4;
-	Thu, 14 May 2026 11:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E63E3C9EED
+	for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 12:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778759831; cv=none; b=kb/t+1FwyP/7q/hZnW0vjdtpRjDefyaw4GYOv9+7FaFzP3F3VlVQHUTKd2Oy+w1nu4agog7Ivd7a4sa+reHJAvd+e4Rd1wgpilhG7WDNb0m9y54QhXBHh2r8i034hjoDLRDsCnJKmFZibqqTVDkLAw9pso8XjrqBOtDciZ8suTo=
+	t=1778760854; cv=none; b=XAXSZV7MHeRlZcpt5OwGZlWZGhb4UKBB+XpsZzHAnhad3Uslp3LBQV2SB5o3r8oJMDSEmGjvF288jT7b1pKB67SHLpNAuMN5eedzTGfEkO3M8dLt0xKHLByrVBGCJdlM96e+1gSHZqliVSNGJ2afIl6PCDmBUPvEWK3OyqqqA48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778759831; c=relaxed/simple;
-	bh=MEnui99AOC05ZMNns0Dg5NkxafvMhTMW7fEeeHHtj+Q=;
+	s=arc-20240116; t=1778760854; c=relaxed/simple;
+	bh=R6sGZF7vzTwTYdla5S2B+rw5X9Bbxny3sNjidz6ghO8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SIsvfFBQ7Lx9h8xZB1UJwhBIUijlobgT7LMXvGHsz09NjrVs7xotEMepbTivfJK00Tjf2SY4NRYnfNAjgruIDl0ao467GiB3/V8d2cBzjv41xvQQLtdBIxHpBB0/u7B6m4cHW2upCB+Kca5c63R0w8p12TZmf/6v1tqKtUv8ZBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=VarKm4WV; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1778759826; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=oX5ZBN+zeOjBNWXh/1Siqm5vdi/Yhm3ou9XNJ8IS0Qs=;
-	b=VarKm4WVtCnKjp07ANXWtjvaBPJHTQiQEaztr05cpShEGYfeAS00wKDaky4w4ZMRrenFf/gJnu/+U6HKG6EcXycp5D0p5zipLgsktrUwVSlg0jCOuEsmU8PkOnWmT3MvERkEa4AOjFV18+mkjqkCz/V5wppXVmQDWpZsjFX6gwY=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0X2wk-cb_1778759825;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0X2wk-cb_1778759825 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 14 May 2026 19:57:05 +0800
-Date: Thu, 14 May 2026 19:57:05 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: Paolo Abeni <pabeni@redhat.com>, Xiang Mei <xmei5@asu.edu>,
-	netdev@vger.kernel.org
-Cc: alibuda@linux.alibaba.com, sidraya@linux.ibm.com, wenjia@linux.ibm.com,
-	ubraun@linux.ibm.com, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, bestswngs@gmail.com
-Subject: Re: [PATCH net] net/smc: reject CHID-0 ACCEPT that matches an empty
- ism_dev slot
-Message-ID: <agW4kfDB5JjpPD-r@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20260511062138.2839584-1-xmei5@asu.edu>
- <deb3e868-456c-43a6-886f-9d882d23975f@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pDUdv6IP6O72nndmQ96BL1aVCe40rEBDXifRbO5ZN4vv3Honv8l7gV38c5MwVF5M/kedBnIvf2T2zQ3Uh6LY+jgtOviiXR6BfGMYGrNyv6nieYo9mF9bUJ+cSpN+7B/JUKJiiVXr4Tsb04Fx7EJUXAkF7/IsLYSY9XiPfnVXyfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=T4EHx3mx; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-8bb4e8a5240so86357376d6.1
+        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 05:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1778760852; x=1779365652; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/MT0eJslCDNYE32pK1HudZRBK2yJc5vJCuALbEocNuU=;
+        b=T4EHx3mxT1rSGC54UaaGrM4Tz158dzhf1/N5f1WsFV2JqPbjXtFGDMID+J6yKmboo2
+         P8SoS89+gnuybFxQCtXz/ZhLaUvh7Cj1BRRpaR38p0ggSlyscsTP+xG8NvPIXCuo5AIi
+         D7SczbHNyeHmtDKZrh9RGwBDizVMaZ1NRoyG7nf4+jSHy7LydY/6djgQpqlLZlllqHl5
+         MGjNbylcfiBVZP1IqjnEDnv+aSeClC0Ykn/7yFEzakhzgVTeAZFd/mii/6nRzu5cybYh
+         YV/9CarlnZHfIfAL+D3+NuaeC1GA0agLDned/P+pU6SVB7AnptxTZ0DNYJJ/pdKGKZGF
+         pPVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778760852; x=1779365652;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/MT0eJslCDNYE32pK1HudZRBK2yJc5vJCuALbEocNuU=;
+        b=FLylV7b2KgMB4ji/cNSxOkr08n04wyq9ph8PkaGskNPie1p/bDQ8dIxWysuXxS+8Ot
+         wDGj/x0WllBpTymL2UYqa6oinQWyaYA+L4UmwMmPVf4YQ0s8UuENOHfECROGWxul+8a0
+         gfAyyese9XnYNd1bjA8JfdO1Pb0mMxgrN/bA7hvjVKCq11sjAiXTsMd3iGX03EIZ9uGL
+         DkVQuQ8dftj4QHc/ea93NeGyIANR5/KKHd+3eotFeVHUOZ/I4CmSpnKQ6JtOEK22v0nh
+         +q9IQjDN+7YwVGMGDqk5KpAWKu0+/zS+itFwgy5lkfjx41FmxHd/79GcVDhwkKEJ1xzs
+         1djA==
+X-Gm-Message-State: AOJu0YySJKrfOaiGqaoAJQ/GSh0v2CyZksaUtD7bqstylO/Z1Ml2ncmW
+	ldAJMbJUusDyXGaYVPBkm7upTbNcF8Qk5kBVq7tq9F4y0Ndmldbp7hPOcZh5f8/sZe0=
+X-Gm-Gg: Acq92OFGGAhbpSwr1zE6SUVrgIerFiTVjG+SscIEee1/Q2UtX//b3grCyrYTxosnnff
+	iO4qf2OvvBMpF4xYJHGyS2ixjFqk5Mhoy3BVRXb9v4FUgbS1L//6iLtZMkNItMuYDZ0ICDW9RZB
+	P4PcyjGcQKLypxehU3qHSKNSB3dVkfsbEx0RPWkIv4L3dSbThkxswW2d3e07LCTQloGUNJHwyFO
+	TNA28qi2okfx5S+Jz5S5Aw2KTLRi4hBAka7z/7YyWcga82Y26EhpG3eoFCjNe1ph1e+kb9jkF4k
+	f+wpqgblI0EyRRj8ylrIBderiSmfZtk7azmfI8qnTXFdOx3mH/XuSDTewMG6240AilceBGxYftI
+	oJfiJxEeZDAKNO1tr3xQXt5qkHzDKIWTTCGYj2G8Scy77bPfvHpvT9GOV0mcLngw/WnpKtsxu6d
+	1nyRgtbwKbPlnqwtbb1Y4UPELSd8IK7seQbebDefvWgDrusPnuG7c9EcuUfXUX0J/t1uMNLbI+S
+	ERfESzW2zYebtLe
+X-Received: by 2002:a05:6214:3481:b0:8c4:3588:ae19 with SMTP id 6a1803df08f44-8c7bdd7e54cmr113425866d6.48.1778760851418;
+        Thu, 14 May 2026 05:14:11 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8c908d1d2e7sm21799806d6.16.2026.05.14.05.14.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2026 05:14:10 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wNUx8-000000059Qi-1Led;
+	Thu, 14 May 2026 09:14:10 -0300
+Date: Thu, 14 May 2026 09:14:10 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, mrgolin@amazon.com,
+	gal.pressman@linux.dev, sleybo@amazon.com, parav@nvidia.com,
+	mbloch@nvidia.com, yanjun.zhu@linux.dev, marco.crivellari@suse.com,
+	roman.gushchin@linux.dev, phaddad@nvidia.com, lirongqing@baidu.com,
+	ynachum@amazon.com, huangjunxian6@hisilicon.com,
+	kalesh-anakkur.purayil@broadcom.com, ohartoov@nvidia.com,
+	michaelgur@nvidia.com, shayd@nvidia.com, edwards@nvidia.com,
+	sriharsha.basavapatna@broadcom.com, andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com
+Subject: Re: [PATCH rdma-next v3 03/17] RDMA/core: Introduce generic buffer
+ descriptor infrastructure for umem
+Message-ID: <20260514121410.GY7702@ziepe.ca>
+References: <20260504135731.2345383-1-jiri@resnulli.us>
+ <20260504135731.2345383-4-jiri@resnulli.us>
+ <aftENVgTr8AZVQnT@ziepe.ca>
+ <aftL-2sJb4JfyDIs@FV6GYCPJ69>
+ <20260512181236.GA175362@ziepe.ca>
+ <agTNeYSOyMTbUbNt@FV6GYCPJ69>
+ <20260513233447.GU7702@ziepe.ca>
+ <agWOldIWkFI3i1xB@FV6GYCPJ69>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,108 +110,116 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <deb3e868-456c-43a6-886f-9d882d23975f@redhat.com>
-X-Rspamd-Queue-Id: C178E541477
+In-Reply-To: <agWOldIWkFI3i1xB@FV6GYCPJ69>
+X-Rspamd-Queue-Id: 96AE45417AE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	SEM_URIBL(3.50)[asu.edu:email];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
-	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux.alibaba.com,linux.ibm.com,vger.kernel.org,gmail.com];
-	DMARC_POLICY_ALLOW(0.00)[linux.alibaba.com,none];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20693-lists,linux-rdma=lfdr.de];
-	R_DKIM_ALLOW(0.00)[linux.alibaba.com:s=default];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20694-lists,linux-rdma=lfdr.de];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	MISSING_XM_UA(0.00)[];
-	HAS_REPLYTO(0.00)[dust.li@linux.alibaba.com];
-	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.431];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dust.li@linux.alibaba.com,linux-rdma@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c09:e001:a7::/64:c];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,linux.alibaba.com:mid,linux.alibaba.com:dkim,linux.alibaba.com:replyto,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,asu.edu:email]
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
 X-Rspamd-Action: no action
 
-On 2026-05-14 12:19:46, Paolo Abeni wrote:
->On 5/11/26 8:21 AM, Xiang Mei wrote:
->> On the SMC-D client, slot 0 of ini->ism_dev[]/ini->ism_chid[] is
->> reserved for an SMC-Dv1 device. smc_find_ism_v2_device_clnt()
->> populates V2 entries starting at index 1, so when no V1 device is
->> selected slot 0 is left in its kzalloc()'ed state with ism_dev[0] ==
->> NULL and ism_chid[0] == 0.
->> 
->> smc_v2_determine_accepted_chid() then matches the peer's CHID against
->> the array starting from index 0 using the CHID alone. A malicious
->> peer replying to a SMC-Dv2-only proposal with d1.chid == 0 matches
->> the empty slot, ini->ism_selected becomes 0, and the subsequent
->> ism_dev[0]->lgr_lock dereference in smc_conn_create() faults at
->> offsetof(struct smcd_dev, lgr_lock) == 0x68:
->> 
->>   BUG: KASAN: null-ptr-deref in _raw_spin_lock_bh+0x79/0xe0
->>   Write of size 4 at addr 0000000000000068 by task exploit/144
->>   Call Trace:
->>    _raw_spin_lock_bh
->>    smc_conn_create (net/smc/smc_core.c:1997)
->>    __smc_connect (net/smc/af_smc.c:1447)
->>    smc_connect (net/smc/af_smc.c:1720)
->>    __sys_connect
->>    __x64_sys_connect
->>    do_syscall_64
->> 
->> Require ism_dev[i] to be non-NULL before accepting a CHID match.
->> 
->> Fixes: a7c9c5f4af7f ("net/smc: CLC accept / confirm V2")
->> Reported-by: Weiming Shi <bestswngs@gmail.com>
->> Assisted-by: Claude:claude-opus-4-7
->> Signed-off-by: Xiang Mei <xmei5@asu.edu>
->> ---
->>  net/smc/af_smc.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->> 
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 185dbed7de5d..12ea3b6dbc64 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -1400,7 +1400,8 @@ smc_v2_determine_accepted_chid(struct smc_clc_msg_accept_confirm *aclc,
->>  	int i;
->>  
->>  	for (i = 0; i < ini->ism_offered_cnt + 1; i++) {
->> -		if (ini->ism_chid[i] == ntohs(aclc->d1.chid)) {
->> +		if (ini->ism_dev[i] &&
->> +		    ini->ism_chid[i] == ntohs(aclc->d1.chid)) {
->>  			ini->ism_selected = i;
->>  			return 0;
->>  		}
->
->Patch LGTM, thanks!
->
->@smc maintainers, please note that sashiko reviews:
->
->https://sashiko.dev/#/patchset/20260511062138.2839584-1-xmei5%40asu.edu
->
->pointed to another pre-existing issue in this area you may want to address.
->
->/P
+On Thu, May 14, 2026 at 11:02:45AM +0200, Jiri Pirko wrote:
+> >> There's no addr_size because no caller has a user-passed
+> >> length distinct from the driver-required minimum.
+> >> Drivers either have no length in their legacy ucmd (mlx4/mlx5 CQ, mlx5 QP,
+> >> the size is driver-computed from entries*cqe_size etc.) or they
+> >> pass ucmd.buf_size which serves as both (vmw_pvrdma, qedr, mlx5
+> >> SRQ, ...).
+> >
+> >This is what I was wondering about, so how does it work when there is
+> >a ucmd.buf_size and also a minimum size computed from
+> >entries*cqe_size? What does the driver write?
+> >
+> >I think the driver has to pass in both the minimum size computed from
+> >entries*cqe_size and also the uhw exact size? The minimum size is used
+> >if the uhw path isn't used to check the other attribute while the uhw
+> >exact size is used to pin the memory if the uhw path is used - and it
+> >should also be checked against the minimum?
+> 
+> I asked Claude to check every caller: At the moment of conversion
+> none of them would have addr_size != min_size. They split into
+> three groups:
+> 
+>   1) Driver-computed total only (no user-passed length distinct from
+>      min). addr_size == min_size by construction:
+> 
+>        mlx4 CQ/QP/SRQ           entries * cqe_size, qp->buf_size, ...
+>        mlx5 CQ/QP/SRQ           entries * cqe_size, rwq->buf_size, ...
+>        bnxt_re QP/SRQ/CQ-resize max_wqe * wqe_size, entries * sizeof
+>        mana CQ                  cq->cqe * COMP_ENTRY_SIZE
+>        hns_roce MTR             mtr_bufs_size(buf_attr)
+>        qedr SRQ producer pair   sizeof(struct rdma_srq_producers)
+>        all DBR helpers          PAGE_SIZE
 
-I agree. Apologies, I overlooked your comments prior to replying to
-Xiang Mei's patch.
+OK these make sense
 
-Best regards,
-Dust
+>   2) MR registration / opaque user umem. The user-passed length *is*
+>      the request; there's no separate driver minimum. addr_size ==
+>      min_size by definition:
+> 
+>        reg_user_mr in every driver
+>        mlx5 devx user umem
+
+MR has to use the exact size passed in the top level system call, so
+it probably needs some special helper that does that instead of minimum
+ 
+>   3) User-passed length without a driver minimum cross-check today:
+> 
+>        vmw_pvrdma CQ/QP/SRQ     derivable min (entries*sizeof, wqe_*),
+>                                 not computed in the user path
+>        qedr CQ/QP/SRQ           ureq.size, no min computed in wrapper
+>        mana WQ, QP raw_sq,
+>             QP RC queues        ucmd.{wq,sq}_buf_size, queue_size[],
+>                                 no derivable min
+>        ionic CQ, QP sq/rq       req_cq->size, sq->size, rq->size,
+>                                 no derivable min
+
+Yeah, these are exactly the ones I'd expect to have a second
+parameter. Something like ucmd.wq_buf_size should be entirely ignored
+if the user passes a new attribute, not silently used as a minimum
+check. That logic has to be done in the helper
+
+So you imagine another helper for these four drivers with an
+additional parameter?
+
+> Given that, I'd prefer to keep the single size argument for now and
+> spell the contract out in the kdoc:
+> 
+>   @size: minimum required umem length, validated post-pin against any
+>          descriptor produced via @attr_id / @legacy_filler; also used
+>          as the pin length on the VA fallback path. Callers that have
+>          a distinct user-passed length must validate it against their
+>          driver minimum before calling.
+
+> If/when a driver actually needs distinct values, splitting into
+> addr_size + min_size is mechanical.
+
+Ok, maybe mention in the commit message this has trouble for the four
+drivers in group 3
+
+Jason
 
