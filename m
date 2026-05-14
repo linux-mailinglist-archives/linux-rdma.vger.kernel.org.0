@@ -1,100 +1,92 @@
-Return-Path: <linux-rdma+bounces-20682-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20683-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mMojC/OoBWrtZQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20682-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 12:50:27 +0200
+	id iEh3A2msBWrHZgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20683-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:05:13 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2C6D540987
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 12:50:26 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECE9540C12
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:05:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D35F8301573A
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 10:50:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4CF84300DF4F
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 11:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048D83B0AE1;
-	Thu, 14 May 2026 10:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178503A9DA4;
+	Thu, 14 May 2026 11:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ky/6UWlv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q5ATa12B"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010018.outbound.protection.outlook.com [52.101.61.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D611D3ACEFF;
-	Thu, 14 May 2026 10:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778755821; cv=fail; b=AMjcyDNwa5zorVSjeeOzzOl2xyGPcxKrgrFd3ZqVfQD8TqvegmJtfou4i/FQ+Mrg/C3LxsSL1oNYmGPcLD2HbT4gJecZRSKUCPFJANhnTAn/w5RTjT78njyrHq/dGo3wW+g8IJdAtJ1a6Wxe07Dpgy4P8pkeS81r/rsKwoKVt+g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778755821; c=relaxed/simple;
-	bh=z0NBJLTZASfwVqffgXEhLV5b2FaHSc94NHpb0wXRpO4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AOuXYeM/BYq3xWicDyyQC2rHIBVzYTmQR1VLZs8BtfMEOcegVuDLYWPjLiZghcwHwFK3rErD6tv5F7odcQDIW7Vdg5t46mpeSPOvu60+im+mMjx7wtfZI/3tIMotzfuISmtVM9bC7Ud7K1AF5bIf49cDLq0dBQDXpPEewtdAFAg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ky/6UWlv; arc=fail smtp.client-ip=52.101.61.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hr/zcawj08kiLmM8AjMRClQu2pq0jd6WlZnVJz89WZtt2WmRNdg4LVdF35B7Y9wASC2MCTGtJEyLhxGOW/+MscAo4c9njXjYL97bCoJVU4YN+mHIwMSNYhLFxcnTPf5TrpqVk2ZQQQ/LhRo3mYk7l1EM28uGoJh/j+KksJ7A9eYs81QnQUTWm/qK8ndkD5Wqdq4+ViTpgx8E+n7Jwf3cXPz2wh2xkcfNuZUJ4F5e3C5uaFN5gtYaJI8xe82wHjYtgoLH34el28p5QfbWJ8TQA8wV7SLznDx6Kpvhc1+nXXCfnAVUouc1bvxEFAgsTI5WdYOw9mYzh6G85uIpsFgF/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WhozOqRqFmtX7b4nTFMQDUEBIDvz91xDEgMn/fveeEo=;
- b=fYJDDZmaYoBp+WkedkhSpqBd/2HZeKdOX9hS6IV8ErqaRc6NPOFOkERKcRbIr5MZKa+EVXUbUJoSdBkzE0d9ciN2SCtHot5FcrVeYNrvJOz2JLJVtNRgiIqlFMSUQrnSGB1heelFhTNmBKt4BTFmjiYO4xYvyL6OSi205ooMDNhukboYRexCrEERsLvcdkp//0sjG/gAfU0i3c6+5s959VWFWGO3McnXeppacixUv4nMHJ4MtF4Xcw6is8U8DJNiSyN2oyQiUaoTIPovajhMugBblhzKH9LDdC+yC1HHPQBdAsnDd0v4zqQHoH7olf5851eYcYFiq/y24PSVN7jx1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WhozOqRqFmtX7b4nTFMQDUEBIDvz91xDEgMn/fveeEo=;
- b=ky/6UWlvzwQaf0c1I9GgJ+przaUORQ5kLQ1G35ixiYbPaXDJmQZ4ic5sPVxVTH+U1FDS7CKs0MphWJORmc7m+u9ziaAearEK6cP96c6Mg7Wg7Cpd+WtWF21GrVMW2yG26TksPUdrqWln0gR2PPA3udF8iJlIQiWAYMnKdBeVIVWx2FjE80yy5+kMrSsSKDxrIVOud3C9f/Zi6vpxhMnxzQ/B/VRG3kVK2lYJAy1IcWi0P0SCR6gHM2iBCgjDsHG3gL23sN4wMGUclTuDaVDFSPrIL57Ra2f9iO8qBRUfMQn66uv93Z+gyGkny+6ucvJ/SH1z8eMU/zClOutuPU3iSw==
-Received: from DM6PR10CA0005.namprd10.prod.outlook.com (2603:10b6:5:60::18) by
- MN0PR12MB5810.namprd12.prod.outlook.com (2603:10b6:208:376::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.18; Thu, 14 May 2026 10:50:07 +0000
-Received: from SN1PEPF0002BA52.namprd03.prod.outlook.com
- (2603:10b6:5:60:cafe::4f) by DM6PR10CA0005.outlook.office365.com
- (2603:10b6:5:60::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9913.12 via Frontend Transport; Thu,
- 14 May 2026 10:50:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SN1PEPF0002BA52.mail.protection.outlook.com (10.167.242.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.13 via Frontend Transport; Thu, 14 May 2026 10:50:06 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 14 May
- 2026 03:49:54 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 14 May
- 2026 03:49:53 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 14
- May 2026 03:49:50 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Nimrod Oren
-	<noren@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-Subject: [PATCH net-next 2/2] net/mlx5: add debugfs stats for frag buf dma pools
-Date: Thu, 14 May 2026 13:49:25 +0300
-Message-ID: <20260514104925.337570-3-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20260514104925.337570-1-tariqt@nvidia.com>
-References: <20260514104925.337570-1-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9158F37648D
+	for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 11:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778756708; cv=none; b=fRTjnfNzGtaci1a3O+l7moolO4vLpMDG52HrlyXDBALXcPSyZgsKGNnAotxa+SEWZRFX0h5d1kwbqb2RhYv44zlQO9P7tkMV+F6YMkUhG63ddUfmARp454oO+Oe9ywu34mz1toyHYppgiQBP6fkDrJQ7BsNGVrObEAtmqeV4mq8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778756708; c=relaxed/simple;
+	bh=2IJhF+iwhH0daRljtdGQOGv59DLUiPhUZ8llNuzuSB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r6IYFM05fHTyLGCS9HeASszJqVwrTFdg05+hAm9GBk6txrcN9P3z2aDcnWXYzXzoWdvfZrCNJcaevoMRQ6Jn1HrLr4hYvim00h8p3hEZCvM6TB/6VjLuLXa1GrLy6P1VaPW1UA9WmghuVUSRZgezzuVOyk1lhJISZkPnTywTW88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q5ATa12B; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-3664df30f53so4074101a91.1
+        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 04:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778756707; x=1779361507; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VdojlyrzhDEJxjpjW25tCjgmnw9si3YuJBr21UjVzKI=;
+        b=Q5ATa12BTvjjaJWCKNAHsP18b2kcS+fKC6JM+1IoEaiRP6sRRrlpqK4hEp6B6z1hSv
+         f6KbFQMMxp6KcAU/iJK992p0oMhfmKhdNoKT+rlvXtxUM8la7SGyi86F5F0O1C1k4gZo
+         yRCXEEpopn/ryUngDhuKA467Ln7I9k/EPFCdy/VSbaz+OJu4JjHdidMp1QsA7+wwG54e
+         yZYNpbpOABqFffBtjAd7XkJOFXlJlSVcjiDUllJyk+tU7593Ml8UCkbIpi2GZBIuEpWj
+         oa2/dUIaCegSO+ui9lrumujmmLRQ2zy3AcbW7AmOQ0bPlg35WgF7GMid8qbRlpovrI01
+         nAPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778756707; x=1779361507;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VdojlyrzhDEJxjpjW25tCjgmnw9si3YuJBr21UjVzKI=;
+        b=G+P0YrxdeSuxj+MxR9+FxMTENjuzQdaSrXVxDO6urT2zmi4rkNVScdYhF0fP0NJCG3
+         Q2aB2O/36eNDkTltIr2Ih5r8oDlzJBnoHE5l3/1wV2oOhLAWnPBomxn1bxu2D0gkX9o0
+         MPhm49rG/V/U/YofbtbBR4jLo/R3ytMUqBH+8aACYpunwSyAszsnBXWw+e7GXBTJqstC
+         2L3b8jdP1qgYw75QuqtGLuKqbGNHCT/HMaUMSkhs22P94Pt44wf8S2Qx0Wa1ydexRm5N
+         pHN3DLolo5F5aY/D2CY03bSSNaF0pMq4jv5Jbl/HmiqLlChJeShNph01GHhlZd0lakXQ
+         /9qg==
+X-Forwarded-Encrypted: i=1; AFNElJ9JxfLklgCXOTVxQgZG86rm5svd4nCY5ZthuXm5LooV8JWEfsFQaILe41rAN+TjTcaFefaUH9n2QT7y@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUc/55Fc30wjI6Dai+OVZ+4s/c2Q/whp5MgUZ5ivsvBDHAjxRz
+	TnRn9RZ1pU2r3cZhsDx/Md7KSOq0MhrQLPFmJWVvLC9H4cmnr5fPp4Q8
+X-Gm-Gg: Acq92OGaiYYH93zpvR8Cz4mVmkDy5HPfHSG4OOG1b1TShP7jZslCH8xbP2jCMOcprfU
+	ZG4dNkx4krRRfDmBYtEw+b1RtzAXSwXGuYm8gSg9ZCVf3MmI6jF7vMZnEjC7BsHm9oeiJG6zFIp
+	UrOocfJ5uVKm5e+OsDMmeSOaYWas0zedrVk8SFX1dnW34q9BZ38rheEuOVNQq73bVihArQJUFje
+	EDxPu7+LMlv9G7B5D/yHS7oJufFk76gf1JDNCZJqcglCUt7HxPcq9lqD3NPKJYZTdVppf5SgVeZ
+	4kW1YmRM3x15rJaVAv83Geoqib9ZfDhOLRZRRPq1EMi9tCodGmpRX1whVH5zOGt3TrBUcjK3Lez
+	TFLhsK3G3NTu89457WBBqysaj7bB31D9aI4B9kZzxvQ6f9i7dovv2suzsZUqRjfUDLKOzszZpcb
+	uBWZESYzZt2RBmwavw9FStpeIjWkw=
+X-Received: by 2002:a17:90a:d00e:b0:368:b724:6d53 with SMTP id 98e67ed59e1d1-368f398cc9dmr7642042a91.4.1778756706624;
+        Thu, 14 May 2026 04:05:06 -0700 (PDT)
+Received: from lgs.. ([2001:250:5800:1000::f280])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-368edf4d935sm6016880a91.5.2026.05.14.04.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2026 04:05:06 -0700 (PDT)
+From: Guangshuo Li <lgs201920130244@gmail.com>
+To: Yishai Hadas <yishaih@nvidia.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Jack Morgenstein <jackm@dev.mellanox.co.il>,
+	Roland Dreier <roland@purestorage.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Guangshuo Li <lgs201920130244@gmail.com>
+Subject: [PATCH v6] IB/mlx4: Fix refcount leak in add_port() error path
+Date: Thu, 14 May 2026 19:01:39 +0800
+Message-ID: <20260514110139.864340-1-lgs201920130244@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -102,233 +94,169 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA52:EE_|MN0PR12MB5810:EE_
-X-MS-Office365-Filtering-Correlation-Id: 91bd3da1-8802-4947-5696-08deb1a68f9c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700016|82310400026|376014|11063799003|56012099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	P9wE6xW4Imlkvh1kVBGTtrW0F2CB6ZU/K0YPsf5pRliT7fGJwaOwMTa6e8wslU/k1SdiRSR5P3DzhGKNTQ1FPWqbucO/rBNsybCpH8Ssi75GcnebeOWz6HZv07MVT8xCKuegyzOOA/n7jfGySi/xatJDLl6KzE2g02sZZIJtHb/8fgM57my3wSE6lKoSCKdA7xbD1jisEmZAlB7QTudTctcGQuCZqhch7p/b4kt54/k5fYtICHcdXXpTUwJcDlKZpdTcdzQd5T1JHToio/5BYQFt9hwMfdq4GA9FnM72zDLINj2g9ZU3bQU9O/hP7HsyRmHFnZlqPt1l/VIuvwC9VpmPLVOF9yMMBcEA33VOqpS+6hkZ+wQBzDHsSz45LT9LkSm16iVsxb4dFlS9fKAvP363VJeXoMISvahrvaDLPejZRAwO9Cl+cNQ114Us9Ol3sBtIlGAufOVCRMWNTvJGCSFOVY4YlNf5Xte649rNOKlQpfc/ACn4HEYvRvDWxilJ+udNkzm/UuZ+wXaBztoEi1abAu7roHB4Eevif0aY37CN4iBMENeA0PlYbYpQIl45suDZwOj7Ws+w+DZqHFEpu9/JoDV8Mmn2QmRTHcHZozoMuF0sCNfbXdS3hjg5+hsCv/JUtRtxuqDHSIe96EiAe2v/9KdFO0OY12PIpFglBD7rCGL8n8vNLeV34aeEBkAl/cPljdrMt3mWZpGE/Io7wdhcCqmmcdWRhSHIyqp9Il8=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700016)(82310400026)(376014)(11063799003)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	ilXrTKz3fH+jEaoSdqwqSCt34e/+spRzRU4q9JbtOPjJxAXZRLmFjxc2AS8zasD7QQonuwDT2FURffwb+xi16h1g6iXVW9LHYiIuawkP5L7KUnFVkEtsaVFNUi5Zup+rWI4Q7kwk4psHEiaiAR1sgoz2iHLP33DTv/ck1JPN59GBgqEWH+KCrTTJ12o/akplp6Jby2//Ej9gFplDAUgBKyoLWn66UEFNItrAFLtxk6NRTRlQByJ8Dc/+yQU5nxSsm3Ogi+OjXbiiloRIKRlgo28Kbh7XPwt4/bHROLTHz715SvzmePJIhQMSQYMZbWNwlNhatI7rJysOKdyCEsJV8sUfL8mPgJIw4NKrQUqEfJKTLihsTSkTZMP6nZ47hRPox8iUpadmg1frytG0PRW79ZTESOu37TGSlJsmmMlKACwGG1EhxhZuM9kYCNiWeUS6
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2026 10:50:06.4150
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91bd3da1-8802-4947-5696-08deb1a68f9c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA52.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5810
-X-Rspamd-Queue-Id: B2C6D540987
+X-Rspamd-Queue-Id: 4ECE9540C12
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_CC(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-20683-lists,linux-rdma=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20682-lists,linux-rdma=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tariqt@nvidia.com,linux-rdma@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:email,nvidia.com:mid];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	NEURAL_HAM(-0.00)[-0.997];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lgs201920130244@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-From: Nimrod Oren <noren@nvidia.com>
+After kobject_init_and_add(), the lifetime of the embedded struct
+kobject is expected to be managed through the kobject core reference
+counting.
 
-Add a debugfs file exposing per-node DMA pool usage for mlx5_frag_buf
-allocations.
+In add_port(), several failure paths after kobject_init_and_add() free
+struct mlx4_port directly instead of releasing the embedded kobject with
+kobject_put(). This leaves the kobject reference count unbalanced and can
+lead to incorrect lifetime handling.
 
-  # cat /sys/kernel/debug/mlx5/<dev>/frag_buf_dma_pools
-  node  block_size  used_blocks  allocated_blocks
-     0        4096            0                 0
-     0        8192            0                 0
-     0       16384            0                 0
-     0       32768            0                 0
-     0       65536            0                 0
-     1        4096            0                 0
-     1        8192            0                 0
-     1       16384            0                 0
-     1       32768            0                 0
-     1       65536            0                 0
+Allocate the pkey and gid attribute arrays before kobject_init_and_add(),
+so failures before kobject initialization can be handled by directly
+freeing the allocated memory. Once kobject_init_and_add() has been
+called, route failures through kobject_put(), and call kobject_del()
+before kobject_put() on later failure paths after the kobject has been
+successfully added.
 
-Signed-off-by: Nimrod Oren <noren@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Fixes: c1e7e466120b ("IB/mlx4: Add iov directory in sysfs under the ib device")
+Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/alloc.c   | 86 +++++++++++++++++++
- include/linux/mlx5/driver.h                   |  1 +
- 2 files changed, 87 insertions(+)
+v6:
+  - drop the Cc stable tag
+  - allocate pkey and gid attribute arrays before kobject_init_and_add()
+  - keep the release callback unchanged by ensuring the attribute arrays
+    are initialized before kobject_init_and_add()
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/alloc.c b/drivers/net/ethernet/mellanox/mlx5/core/alloc.c
-index 16d6b126a486..4fe9d7d4f143 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/alloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/alloc.c
-@@ -38,6 +38,8 @@
- #include <linux/dma-mapping.h>
- #include <linux/vmalloc.h>
- #include <linux/nodemask.h>
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
- #include <linux/mlx5/driver.h>
+v5:
+  - split the add_port() error paths after kobject_init_and_add()
+  - call kobject_del() before kobject_put() for failures after
+    kobject_init_and_add() succeeds
+
+v4:
+  - route all add_port() failures after kobject_init_and_add() through
+    a single kobject_put() based error path
+  - remove duplicated attribute array frees from add_port()
+  - keep mlx4_port_release() tolerant of partially initialized objects
+
+v3:
+  - make mlx4_port_release() tolerate NULL attribute arrays
+  - drop the parent kobject reference on the kobject_init_and_add()
+    failure path before putting the embedded kobject
+
+v2:
+  - note that the issue was identified by my static analysis tool
+  - and confirmed by manual review
+
+ drivers/infiniband/hw/mlx4/sysfs.c | 39 ++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx4/sysfs.c b/drivers/infiniband/hw/mlx4/sysfs.c
+index b8fa4ecfc961..e4c822c96ee6 100644
+--- a/drivers/infiniband/hw/mlx4/sysfs.c
++++ b/drivers/infiniband/hw/mlx4/sysfs.c
+@@ -636,12 +636,6 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
+ 	p->port_num = port_num;
+ 	p->slave = slave;
  
- #include "mlx5_core.h"
-@@ -74,6 +76,13 @@ struct mlx5_frag_buf_node_pools {
- 	struct mlx5_dma_pool *pools[MLX5_FRAG_BUF_POOLS_NUM];
- };
- 
-+struct mlx5_dma_pool_stats {
-+	int node;
-+	size_t block_size;
-+	size_t used_blocks;
-+	size_t allocated_blocks;
-+};
-+
- /* Handling for queue buffers -- we allocate a bunch of memory and
-  * register it in a memory region at HCA virtual address 0.
-  */
-@@ -225,6 +234,43 @@ static void mlx5_dma_pool_free(struct mlx5_dma_pool *pool,
- 	mutex_unlock(&pool->lock);
- }
- 
-+static void mlx5_dma_pool_debugfs_get_stats(struct mlx5_dma_pool *pool,
-+					    struct mlx5_dma_pool_stats *stats)
-+{
-+	int blocks_per_page = BIT(PAGE_SHIFT - pool->block_shift);
-+	struct mlx5_dma_pool_page *page;
-+	size_t free_blocks = 0;
-+	size_t pages = 0;
-+
-+	mutex_lock(&pool->lock);
-+	list_for_each_entry(page, &pool->page_list, pool_link) {
-+		pages++;
-+		free_blocks += bitmap_weight(page->bitmap, blocks_per_page);
-+	}
-+	mutex_unlock(&pool->lock);
-+
-+	stats->node = pool->node;
-+	stats->block_size = BIT(pool->block_shift);
-+	stats->allocated_blocks = pages * blocks_per_page;
-+	stats->used_blocks = stats->allocated_blocks - free_blocks;
-+}
-+
-+static void mlx5_dma_pool_debugfs_stats_print(struct seq_file *file,
-+					      struct mlx5_dma_pool *pool)
-+{
-+	struct mlx5_dma_pool_stats stats = {};
-+
-+	mlx5_dma_pool_debugfs_get_stats(pool, &stats);
-+	seq_printf(file, "%4d       %5zu      %7zu           %7zu\n",
-+		   stats.node, stats.block_size, stats.used_blocks,
-+		   stats.allocated_blocks);
-+}
-+
-+static void mlx5_dma_pools_debugfs_print_header(struct seq_file *file)
-+{
-+	seq_puts(file, "node  block_size  used_blocks  allocated_blocks\n");
-+}
-+
- static void
- mlx5_frag_buf_node_pools_destroy(struct mlx5_frag_buf_node_pools *node_pools)
- {
-@@ -257,11 +303,46 @@ mlx5_frag_buf_node_pools_create(struct mlx5_core_dev *dev, int node)
- 	return node_pools;
- }
- 
-+static int
-+mlx5_frag_buf_dma_pools_debugfs_show(struct seq_file *file, void *priv)
-+{
-+	struct mlx5_core_dev *dev = file->private;
-+	int node;
-+
-+	mlx5_dma_pools_debugfs_print_header(file);
-+
-+	if (!dev->priv.frag_buf_node_pools)
-+		return 0;
-+
-+	for_each_node_state(node, N_POSSIBLE) {
-+		struct mlx5_frag_buf_node_pools *node_pools;
-+
-+		node_pools = dev->priv.frag_buf_node_pools[node];
-+		if (!node_pools)
-+			continue;
-+
-+		for (int i = 0; i < MLX5_FRAG_BUF_POOLS_NUM; i++) {
-+			struct mlx5_dma_pool *pool = node_pools->pools[i];
-+
-+			if (!pool)
-+				continue;
-+
-+			mlx5_dma_pool_debugfs_stats_print(file, pool);
-+		}
-+	}
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(mlx5_frag_buf_dma_pools_debugfs);
-+
- void mlx5_frag_buf_pools_cleanup(struct mlx5_core_dev *dev)
- {
- 	struct mlx5_priv *priv = &dev->priv;
- 	int node;
- 
-+	debugfs_remove(priv->dbg.frag_buf_dma_pools_debugfs);
-+	priv->dbg.frag_buf_dma_pools_debugfs = NULL;
-+
- 	for_each_node_state(node, N_POSSIBLE) {
- 		struct mlx5_frag_buf_node_pools *node_pools;
- 
-@@ -296,6 +377,11 @@ int mlx5_frag_buf_pools_init(struct mlx5_core_dev *dev)
- 		priv->frag_buf_node_pools[node] = node_pools;
+-	ret = kobject_init_and_add(&p->kobj, &port_type,
+-				   kobject_get(dev->dev_ports_parent[slave]),
+-				   "%d", port_num);
+-	if (ret)
+-		goto err_alloc;
+-
+ 	p->pkey_group.name  = "pkey_idx";
+ 	p->pkey_group.attrs =
+ 		alloc_group_attrs(show_port_pkey,
+@@ -649,13 +643,9 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
+ 				  dev->dev->caps.pkey_table_len[port_num]);
+ 	if (!p->pkey_group.attrs) {
+ 		ret = -ENOMEM;
+-		goto err_alloc;
++		goto err_free_port;
  	}
  
-+	priv->dbg.frag_buf_dma_pools_debugfs =
-+		debugfs_create_file("frag_buf_dma_pools", 0444,
-+				    priv->dbg.dbg_root, dev,
-+				    &mlx5_frag_buf_dma_pools_debugfs_fops);
-+
- 	return 0;
- }
+-	ret = sysfs_create_group(&p->kobj, &p->pkey_group);
+-	if (ret)
+-		goto err_free_pkey;
+-
+ 	p->gid_group.name  = "gid_idx";
+ 	p->gid_group.attrs = alloc_group_attrs(show_port_gid_idx, NULL, 1);
+ 	if (!p->gid_group.attrs) {
+@@ -663,28 +653,41 @@ static int add_port(struct mlx4_ib_dev *dev, int port_num, int slave)
+ 		goto err_free_pkey;
+ 	}
  
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 8b4d384125d1..9a4bb25d8e0a 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -547,6 +547,7 @@ struct mlx5_debugfs_entries {
- 	struct dentry *eq_debugfs;
- 	struct dentry *cq_debugfs;
- 	struct dentry *cmdif_debugfs;
-+	struct dentry *frag_buf_dma_pools_debugfs;
- 	struct dentry *pages_debugfs;
- 	struct dentry *lag_debugfs;
- };
++	ret = kobject_init_and_add(&p->kobj, &port_type,
++				   kobject_get(dev->dev_ports_parent[slave]),
++				   "%d", port_num);
++	if (ret)
++		goto err_put;
++
++	ret = sysfs_create_group(&p->kobj, &p->pkey_group);
++	if (ret)
++		goto err_del;
++
+ 	ret = sysfs_create_group(&p->kobj, &p->gid_group);
+ 	if (ret)
+-		goto err_free_gid;
++		goto err_del;
+ 
+ 	ret = add_vf_smi_entries(p);
+ 	if (ret)
+-		goto err_free_gid;
++		goto err_del;
+ 
+ 	list_add_tail(&p->kobj.entry, &dev->pkeys.pkey_port_list[slave]);
+ 	return 0;
+ 
+-err_free_gid:
+-	kfree(p->gid_group.attrs[0]);
+-	kfree(p->gid_group.attrs);
++err_del:
++	kobject_del(&p->kobj);
++
++err_put:
++	kobject_put(dev->dev_ports_parent[slave]);
++	kobject_put(&p->kobj);
++	return ret;
+ 
+ err_free_pkey:
+ 	for (i = 0; i < dev->dev->caps.pkey_table_len[port_num]; ++i)
+ 		kfree(p->pkey_group.attrs[i]);
+ 	kfree(p->pkey_group.attrs);
+ 
+-err_alloc:
+-	kobject_put(dev->dev_ports_parent[slave]);
++err_free_port:
+ 	kfree(p);
+ 	return ret;
+ }
 -- 
-2.44.0
+2.43.0
 
 
