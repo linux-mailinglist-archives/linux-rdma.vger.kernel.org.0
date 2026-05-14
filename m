@@ -1,186 +1,154 @@
-Return-Path: <linux-rdma+bounces-20689-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20690-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ULKmC9G0BWqeZwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20689-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:41:05 +0200
+	id +MlHDzW2BWpZaAIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20690-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:47:01 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3EE5411D5
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F33A54131E
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 13:46:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 52686303A533
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 11:41:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5B675303A25C
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 11:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8817039A058;
-	Thu, 14 May 2026 11:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51063C2777;
+	Thu, 14 May 2026 11:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VlB2KeMb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tn6t9NSJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E6F23D7DC
-	for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 11:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879A7395AEC
+	for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 11:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778758862; cv=none; b=pg0m4BpToo8QrYDhEi1qmUgXskdcqisyobTNY2NW0Wm9TtBrFJ8MWAl48p0tIb1VvIVYNpew7oknPXVk1eXydt7sIITmf7GxQr1jUTa7umZaEEGlsATumb5rLQEHumJQOGecqjlpGzWX+HzQA80qzqCmeplXuCIca+kavjMURSo=
+	t=1778759062; cv=none; b=QnavqtFooVJK8XA3opTuIoHA382zd06Ox0alfrmgOIgJZhFU5qHAXQlf9RgYhpp+gEjdVlgaVra7J9f0TjPeh9RXmNC4gcB8T5j8WInzdD57VFOuN3oqYkceHGemorHPUd82KjF9IEYITUecT+W1VHcqGVYcsHqYMY3469BcLm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778758862; c=relaxed/simple;
-	bh=LJr59c/55DJC4Wsxi9rV58L2pCVOazI/rRq+AeCTc9Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c5sBpIYqSYcVVR6dy0Kcwvj0xkqtGVqsCT8tnhqY5a0eowzuCjxnEo8hdlBjcuBxI3XxoujvUtmxrM2VPCLRsEWYuXt4koForLh/ANo99Th5TFCIWa2kf1OI/MZuOEC2/rtwl1L4uHY4ZzN3zF0r9q9G3Nwdxhf20W+YY1PS/yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VlB2KeMb; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-834f1075805so5481821b3a.2
-        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2026 04:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778758860; x=1779363660; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FckyD5Kv4+O1B9NLxmiPkGiYd0Izvn80A7tr//y55g4=;
-        b=VlB2KeMb3xw0jFmkuy5IdF4L911jT7GSSQLDKjuDrbp1qhIb6Gid5ZgV8bNQhAnetV
-         d5mjENFIyWDkzwPeB8u9yJwORFwChHhARwLp2y2gYPeNtyfEuDQo5XHL85Y3aHILvXn6
-         WVQOQlRZZmuiiSbnLT95oLB58On2qgkAmjf0nld0ylXWhFQ3iW9h4bU3ggtnZX55EBC4
-         HtyJzkzonae5awTDDbJKWgl4Im2urq5kPKrv5LsTZhfPN6j6joF3f+ZzK3RCFw9pNEyC
-         4mkW4r39scK6TeRRzOz+Xnc38XkQNMvobsIeYrjyEH4NZfKVVrVT8itlSDz0R/bMNA0s
-         Qhmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778758860; x=1779363660;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FckyD5Kv4+O1B9NLxmiPkGiYd0Izvn80A7tr//y55g4=;
-        b=oD+QwC7x1Pb15b2HAsdDiPYC+lNmdjKgoRnQlkuE1jGdLkv2OW/w95rnKwXValjTke
-         2b2h52O1vVDrH3eA4iGHhdzuqrpUbR3vXssRHEhMUTsMm8vCpHyhi/RXa/BGUVoS8eGe
-         rcQfBKqsv/FQOr4lAVL7l8HThlSDAmiaFfzCZqOfQ9bYDw5CfhHGALpQHWBD+/JqMZ+0
-         YnaHwrHrhtbVYlL3WwTTF/e9p0XbM6Xi4g88xVY0aT6f8CiCRyfAlFD0b6KR/8HnvZs2
-         4je7tQxChcrB5ej29ApdAXuAgsvQilEETeSlziPvqmNXItASpG2pIZSnZVg1UBmlQJxY
-         cVmg==
-X-Forwarded-Encrypted: i=1; AFNElJ+hfvgAbGYte/L5cIga8yiKQLkcZ/m5tfzjp6M7Gu3njW/YQen/tQN4YquvhA8UqhtxWS9HSZm16610@vger.kernel.org
-X-Gm-Message-State: AOJu0YztZREP2bJahxf7VcmmBGCAEKMJKoz4BX+fFB7WyWRw8AkooxbH
-	l6HrxbM2IHSZATzQqcMjAjS0DHHsLSTs4AA1W/tmeVuI94S8xyLOzNop
-X-Gm-Gg: Acq92OE5Z1PHoudp/8JGXKTFCHeaDliXGkt0a7YdQ14tqTWa9lTMnAO/xD8HKTa5tcN
-	zyYIDdTx2cGq3MVlsxfLcFWjrGIESsun17PEfYt5QmMQXYMWimXiRksepAUuaJRazhA01dteIis
-	XBFKWkRWtQRuPfkKBMz52TcaDzjsKwWfclgtgxxrFVDvthgm0MdadM8SKVkRZPDqarAAblv1klX
-	eEuhO0iOZ7n3gooyOfQEyLdchv8vHWWxXhgDJJd5C9XaTt5+ddE6Hif/HPqUWLjrnXne9GWeF1G
-	ckcF7muQTqrHSXBZ9qhRq4JEEWpTbfgaB2VkyWiTTVPxnwB4XGQC8pzvbEkVHQiA6DcPaUUR3ZI
-	nVT5nB/Uj71OgFYC9BYiX0xLoj3Izwlge3pYtMiWOQzacF+beMNlB3fK5mzW0J6F1g7M8Kn97Dz
-	MmevRnxA==
-X-Received: by 2002:a05:6a00:3a1c:b0:83a:4846:90bf with SMTP id d2e1a72fcca58-83f05ae4d10mr7150460b3a.43.1778758860102;
-        Thu, 14 May 2026 04:41:00 -0700 (PDT)
-Received: from lgs.. ([2001:250:5800:1000::f280])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-83f19c7f202sm2415974b3a.43.2026.05.14.04.40.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 May 2026 04:40:59 -0700 (PDT)
-From: Guangshuo Li <lgs201920130244@gmail.com>
-To: "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Vaishali Thakkar <vaishali.thakkar@ionos.com>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Guangshuo Li <lgs201920130244@gmail.com>
-Subject: [PATCH v3] RDMA/rtrs: Fix use-after-free in path file creation cleanup
-Date: Thu, 14 May 2026 19:38:34 +0800
-Message-ID: <20260514113834.865530-1-lgs201920130244@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1778759062; c=relaxed/simple;
+	bh=FiZMLcrWrpA14uSJvq5MtW34T41AbUwzdQS/OLvrPd4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O1nhb9m6YglIlZmWJGSD6GBh7TLmhwJ/IC/U0cJwTlebJRq3TKI1mHJpqxxx49qHspMRDjt9sJ74GmGoa/slTd1J1ICU79oRGSmxbSQcGHQFoglhsq2njO8Dc/p7mZpyPCobEE2JKMWSF6Tz8stopUfcPQPntj24TFA9RVbj3pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tn6t9NSJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C757DC2BCB3;
+	Thu, 14 May 2026 11:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778759062;
+	bh=FiZMLcrWrpA14uSJvq5MtW34T41AbUwzdQS/OLvrPd4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tn6t9NSJYzCvTy3BnUR1Uz2umEuTxemt2i3Mj+i3Ecq+3s9lWHXAIL6FWwUgGoHBr
+	 AFiwN1l841uV/+WcEGjnx32ADWEOEf8bdUYvaTKb+xBalfkwKu+3r6M2oAG2a+udmB
+	 S7KcusT/nvxELc2CbwTjcAfQ1hr3WVFF36CTabeaTWhvuP1ZTaPAjJMdGsWRAc4D7T
+	 ry597iiZAoKZ/2WT7P//etGDMwq18HCvO/UjEVWdt5tnHlBOk4J4p0zyjWwuGrruUx
+	 YsR3irnh5cXbCgUekN9sbLWoe7wcDWxHyUbAPpTRa3Gh5JND9pNpyrvEvbABnqAQWo
+	 tkabB2cXrPtfA==
+Date: Thu, 14 May 2026 14:44:17 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Tao Cui <cuitao@kylinos.cn>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 1/2] RDMA/nldev: add resource summary max values for
+ usage rate display
+Message-ID: <20260514114417.GP15586@unreal>
+References: <20260423061352.359749-1-cuitao@kylinos.cn>
+ <20260511101258.GF15586@unreal>
+ <4ab73129-b690-497c-83b1-d2065f52e7bd@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8F3EE5411D5
+In-Reply-To: <4ab73129-b690-497c-83b1-d2065f52e7bd@kylinos.cn>
+X-Rspamd-Queue-Id: 9F33A54131E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-20689-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20690-lists,linux-rdma=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lgs201920130244@gmail.com,linux-rdma@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-In the error path of rtrs_srv_create_path_files(), the sysfs root folders
-may already have been created and srv_path->kobj may already have been
-initialized. If a later step fails, the cleanup currently calls
-kobject_put(&srv_path->kobj) before
-rtrs_srv_destroy_once_sysfs_root_folders(srv_path).
+On Tue, May 12, 2026 at 03:38:59PM +0800, Tao Cui wrote:
+> 
+> Hi，Leon
+> 
+> Thanks for the review. You're right that a percentage alone is not
+> very helpful to users.
+> 
+> 在 2026/5/11 18:12, Leon Romanovsky 写道:
+> > On Thu, Apr 23, 2026 at 02:13:51PM +0800, Tao Cui wrote:
+> >> Add RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX netlink attribute to expose
+> >> device resource limits (max_qp, max_cq, max_mr, max_pd, max_srq) in
+> >> the resource summary alongside the existing current count. This allows
+> >> userspace tools like iproute2's rdma to display resource usage rates.
+> > 
+> > While I'm fine with the overall idea, I think we should spend more time  
+> > determining the proper display format for this information. Once we agree  
+> > on how it should be presented, that output should be included in the commit  
+> > message.
+> > 
+> > Presenting utilization as a percentage seems too imprecise, and users would  
+> > likely prefer to see the maximum value instead.
+> > 
+> > Thanks
+> 
+> I originally chose the percentage format for its intuitiveness.
+> The expected output was described in the corresponding iproute2
+> patch [1], but I should have included it in this kernel commit
+> message as well.
+> 
+> [1] https://lore.kernel.org/all/20260423064711.360024-1-cuitao@kylinos.cn/
+> 
+> Here are the display formats I considered:
+> 1) qp 123 (0.0%)            -- percentage only, loses the actual max
+> 2) qp 123 (max 131072)      -- clear but verbose
+> 3) qp 123/131072            -- curr/max, concise and common in Linux tools
+> 4) qp 123/131072 (0.0%)     -- all info, but too crowded for one line
+> 
+> After comparing them, I think format 3 is the best fit. It is concise,
+> follows conventions used by other Linux tools (e.g. df, free), and
+> users can easily estimate the percentage from the curr/max values.
+> 
+>   Before: 0: mlx5_0: qp 123  cq 45  mr 200  pd 10
+>   After:  0: mlx5_0: qp 123/131072  cq 45/65536  mr 200/1000000  pd 10/32768
+> 
+> In JSON output, both "curr" and "max" fields will be provided so that
+> scripts can compute percentages if needed.
+> 
+> The kernel side change (exposing the max value) remains the same. I'll
+> update the commit messages to include the expected output format and
+> resubmit.
+> 
+> Does this look acceptable?
 
-kobject_put() may drop the last reference to srv_path->kobj and invoke the
-release callback, rtrs_srv_release(), which frees srv_path. The following
-call to rtrs_srv_destroy_once_sysfs_root_folders(srv_path) then
-dereferences srv_path internally to access srv_path->srv, resulting in a
-use-after-free.
+Yes, I agree that option number 3 appears to be the best choice.
 
-This failure path is reached before rtrs_srv_create_path_files() returns
-success, so the successful-path lifetime handling is not involved.
-
-Fix this by destroying the sysfs root folders before calling
-kobject_put(&srv_path->kobj), so srv_path is still valid while the helper
-accesses it.
-
-This issue was found by a static analysis tool I am developing.
-
-Fixes: ae4c81644e91 ("RDMA/rtrs-srv: Rename rtrs_srv_sess to rtrs_srv_path")
-Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
----
-v3:
-  - Clarify that the use-after-free is in the
-    rtrs_srv_create_path_files() error path.
-  - Explain that this path is before the function returns success, so the
-    successful-path lifetime handling is not involved.
-  - Drop the rtrs_srv_destroy_path_files() change.
-
-v2:
-  - Clarify that rtrs_srv_destroy_once_sysfs_root_folders() dereferences
-    srv_path internally.
-  - No code changes.
-
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 51727c7d710c..9dd9141c86a5 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -295,8 +295,8 @@ int rtrs_srv_create_path_files(struct rtrs_srv_path *srv_path)
- put_kobj:
- 	kobject_del(&srv_path->kobj);
- destroy_root:
--	kobject_put(&srv_path->kobj);
- 	rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
-+	kobject_put(&srv_path->kobj);
- 
- 	return err;
- }
--- 
-2.43.0
-
+Thanks
 
