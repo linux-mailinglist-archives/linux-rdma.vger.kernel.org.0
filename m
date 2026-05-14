@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-20640-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20641-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APswM9pQBWpRUwIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20640-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 06:34:34 +0200
+	id OFeDEO9QBWo+UwIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20641-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 06:34:55 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9277053DB21
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 06:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ECB8E53DB4C
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 06:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B3D7E305D382
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 04:33:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E43B93063C6B
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2026 04:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C323B83E3;
-	Thu, 14 May 2026 04:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BA33B9618;
+	Thu, 14 May 2026 04:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VUuSLAca"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PM5eOABZ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268B73B0ACE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033CF3B19C2;
 	Thu, 14 May 2026 04:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778733215; cv=none; b=oUDWhKjDgAxBShxZ23an6+epZvMr8WAnN+yLsdIhXRJoeGQpOn40F5rU1tI6zKLxey0VgJoXl4OvdZfNO5wegW2lK7Fznv7rcz0ovP1t6er6+iSZiOaH9YeFL66SSWnz5I9XduVXUMSAuIJBywkWbFSZAydWsKLUiSFaKu/QbyU=
+	t=1778733216; cv=none; b=kplf+HV3g2vQHwSA1RoLlreb5YyaEkQCDMTWKzEI+wcHfMvJ0NkKmd6vuZWG6dX+13w22Cwz2X1ll6xMgPM4G4nvJuJT8ZWdIfO1HmdcFNQm6eYUl7YmI5zQ+J0hRYaiC/O1niCzs+zklZFB6eKYWhNtgHtHxbcB7rrySGNjPAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778733215; c=relaxed/simple;
-	bh=1MS+y8yt3Mph4v3tJsrbiJz4dts1TO9yaQQzyrhwjjg=;
+	s=arc-20240116; t=1778733216; c=relaxed/simple;
+	bh=L9OZxjrvL82TT/99Sj3uFYKjWfF7N35xyZ++wFTfdoo=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TZ4xtdJG7dlt/rpf09id18xWavhkbsPMoZoShuNuhkNn/Ip0gEDqeP9DiEmlb1R15eyez3whU3FySfsJKaZ1i2ppU/PNY70hDUx7DkPrjaXJrCoPyJayl0RnphDcStWW9ofRH7Mhevd+i1G5ksaff7/5nFbD/Ps/sqEWZPAM4F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VUuSLAca; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 772FDC2BCC6;
-	Thu, 14 May 2026 04:33:34 +0000 (UTC)
+	 MIME-Version; b=uIhdeGWtZaoKpR1niyxtGkXshlaDHhHWCfxcABBO3D3F5Kq47ioAYQZzXlIEhZVgUI/D6VW+q4fh3khx0o73OksFW62CSXWst8XxZnvRPXvTxPzcEBPJWAXamJNRfdS7smSZqE4ehpNZLQToVFRYaUiGgqdmkQIBJ95sWyahlS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PM5eOABZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DA1C2BCC7;
+	Thu, 14 May 2026 04:33:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1778733215;
-	bh=1MS+y8yt3Mph4v3tJsrbiJz4dts1TO9yaQQzyrhwjjg=;
+	bh=L9OZxjrvL82TT/99Sj3uFYKjWfF7N35xyZ++wFTfdoo=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VUuSLAcaH6O0amhucU49+TPHiGKWOoi9mpa6ocduiaMfLm15TB/GVQaNx5Sy5aJ0/
-	 3xg9BE84X4n5GMHYnVeLoDXwFEopb6zyx36SS6XhUADaI20Bs1HShnh2KKga/Sy44H
-	 2QKu4AoKM5dQiKFvH3dnR35deJaVQ7Q1bo35UlLucIWSoaY9y6lSbskSZ+5+4mNAWL
-	 1hp0EJR4MhOme+rsKZKTKJiCqAWHcijKR2T77FzffykeA5r5/8UgfO1rpdBqs/o+cf
-	 yT+2ritcWZmW0H4Qdc1ZVx5sbGWAX/MeuOAxUH7r6px2ZjqQYUyj10g6OqG1Q5B7Q8
-	 JvdtVVnWeY/1Q==
+	b=PM5eOABZo0eDMaTwrjwDGXAHdembsXMgTPQ5uEFRW8PTU7DKb4U8YpF6inlMEHBq0
+	 08jwguVohc4bGqqpU2HcI5tRiYmlNmSZBFfjokgIdLAsLp9P/F2XGpexrc9UT9eCTM
+	 TB+xKT8KsmyIHNVNI8JF9IRvBnLzbPTYPDJAxZUUC5i6UPrfhDI9fNPpIzmPV8oFUb
+	 U2q4gaMAUqkbB4KiD+g/shXnDDoi9cuIjSMCNX4+hddF36phrGmwGKMP4BELellrme
+	 hmaVUFMAyFctPMhKntKm5CRLrlCrvqDmCutkyyztcwTqq3GRtmfg6i7J3NWEGgkUA4
+	 X5Wp1ElRxsmYA==
 From: Allison Henderson <achender@kernel.org>
 To: netdev@vger.kernel.org,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	achender@kernel.org,
 	linux-kselftest@vger.kernel.org,
 	shuah@kernel.org
-Subject: [PATCH net-next v2 4/9] selftests: rds: Add helper function recv_burst() in test.py
-Date: Wed, 13 May 2026 21:33:25 -0700
-Message-Id: <20260514043330.1718969-5-achender@kernel.org>
+Subject: [PATCH net-next v2 5/9] selftests: rds: Add helper function verify_hashes() in test.py
+Date: Wed, 13 May 2026 21:33:26 -0700
+Message-Id: <20260514043330.1718969-6-achender@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260514043330.1718969-1-achender@kernel.org>
 References: <20260514043330.1718969-1-achender@kernel.org>
@@ -67,7 +67,7 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9277053DB21
+X-Rspamd-Queue-Id: ECB8E53DB4C
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-20640-lists,linux-rdma=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20641-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -98,81 +98,68 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,test.py:url]
 X-Rspamd-Action: no action
 
-Hoist receive packet logic in test.py into a helper function,
-recv_burst().  This is a preparatory refactoring for the rds over ROCE
-series that helps modularize the send/recv logic. Breaking up the logic
-now will help avoid large function pylint errors later.  No functional
-changes are introduced in this patch.
+Hoist the verify hashes logic in test.py into a helper function,
+verify_hashes().  This is a preparatory refactoring for the rds over
+ROCE series that helps modularize the send/recv logic. Breaking up the
+logic now will help avoid large function pylint errors later.  No
+functional changes are introduced in this patch.
 
 Signed-off-by: Allison Henderson <achender@kernel.org>
 ---
- tools/testing/selftests/net/rds/test.py | 39 ++++++++++++-------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ tools/testing/selftests/net/rds/test.py | 33 ++++++++++++-------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 
 diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
-index d6e872af1360..ae74117b4174 100755
+index ae74117b4174..a3def413d84a 100755
 --- a/tools/testing/selftests/net/rds/test.py
 +++ b/tools/testing/selftests/net/rds/test.py
-@@ -104,6 +104,24 @@ def send_burst(socks, ip_addrs, snd_hashes, nr_sent, nr_total):
-         nr_sent += 1
-     return nr_sent
+@@ -152,6 +152,21 @@ def check_info(socks):
  
-+def recv_burst(epoll, socks, ip_addrs, rcv_hashes, nr_rcv):
-+    """Drain whatever's readable from epoll. Return updated nr_recv."""
-+    for filen, evntmask in epoll.poll():
-+        if not evntmask & select.EPOLLRDNORM:
-+            continue
-+        rcv = next(s for s in socks if s.fileno() == filen)
-+        while True:
-+            try:
-+                data, adr = rcv.recvfrom(1024)
-+            except BlockingIOError:
-+                break
-+            snd_idx = ip_addrs.index(adr)
-+            snd = socks[snd_idx]
-+            rcv_hashes.setdefault((snd.fileno(), rcv.fileno()),
-+                    hashlib.sha256()).update(f'<{data}>'.encode('utf-8'))
-+            nr_rcv += 1
-+    return nr_rcv
+     ksft_pr(f"getsockopt(): {nr_success}/{nr_error}")
+ 
++def verify_hashes(snd_hashes, rcv_hashes):
++    """Compare send/recv hashes per (sender, receiver) pair."""
++    for key, snd_hash in snd_hashes.items():
++        rcv_hash = rcv_hashes.get(key)
++        if rcv_hash is None:
++            ksft_pr("FAIL: No data received")
++            return 1
++        if snd_hash.hexdigest() != rcv_hash.hexdigest():
++            ksft_pr("FAIL: Send/recv mismatch")
++            ksft_pr("hash expected:", snd_hash.hexdigest())
++            ksft_pr("hash received:", rcv_hash.hexdigest())
++            return 1
++        ksft_pr(f"{key[0]}/{key[1]}: ok")
++    return 0
 +
- def check_info(socks):
-     """
-     Check all rds info pages for errors
-@@ -253,12 +271,6 @@ for s, addr in zip(sockets, addrs):
-     s.bind(addr)
-     s.setblocking(0)
+ def stop_pcaps():
+     """Stop tcpdump processes.
  
--fileno_to_socket = {
--    s.fileno(): s for s in sockets
--}
--
--addr_to_socket = dict(zip(addrs, sockets))
--
- send_hashes = {}
- recv_hashes = {}
+@@ -310,23 +325,7 @@ stop_pcaps()
  
-@@ -280,20 +292,7 @@ while nr_send < NUM_PACKETS:
-     # Receive as much as we can without blocking
-     ksft_pr("receiving...", nr_send, nr_recv)
-     while nr_recv < nr_send:
--        for fileno, eventmask in ep.poll():
--            receiver = fileno_to_socket[fileno]
+ # We're done sending and receiving stuff, now let's check if what
+ # we received is what we sent.
+-ret = 0
+-for (sender, receiver), send_hash in send_hashes.items():
+-    recv_hash = recv_hashes.get((sender, receiver))
 -
--            if eventmask & select.EPOLLRDNORM:
--                while True:
--                    try:
--                        recv_data, address = receiver.recvfrom(1024)
--                        sender = addr_to_socket[address]
--                        recv_hashes.setdefault((sender.fileno(),
--                            receiver.fileno()), hashlib.sha256()).update(
--                                    f'<{recv_data}>'.encode('utf-8'))
--                        nr_recv = nr_recv + 1
--                    except BlockingIOError:
--                        break
-+        nr_recv = recv_burst(ep, sockets, addrs, recv_hashes, nr_recv)
+-    if recv_hash is None:
+-        ksft_pr("FAIL: No data received")
+-        ret = 1
+-        break
+-
+-    if send_hash.hexdigest() != recv_hash.hexdigest():
+-        ksft_pr("FAIL: Send/recv mismatch")
+-        ksft_pr("hash expected:", send_hash.hexdigest())
+-        ksft_pr("hash received:", recv_hash.hexdigest())
+-        ret = 1
+-        break
+-
+-    ksft_pr(f"{sender}/{receiver}: ok")
++ret = verify_hashes(send_hashes, recv_hashes)
  
-     # exercise net/rds/tcp.c:rds_tcp_sysctl_reset()
-     for net in [NET0, NET1]:
+ if ret == 0:
+     ksft_pr("Success")
 -- 
 2.25.1
 
