@@ -1,191 +1,194 @@
-Return-Path: <linux-rdma+bounces-20765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SC3rNZTPBmqAoAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20765-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 09:47:32 +0200
+	id mCurGE3vBmrOowIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20766-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 12:02:53 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD5254ACCD
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 09:47:32 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD00854CF2F
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 12:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D4385306FC25
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 07:41:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D7AEC30EC777
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 09:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8533E3D88;
-	Fri, 15 May 2026 07:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5138343C07C;
+	Fri, 15 May 2026 09:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lxMdVq3+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011007.outbound.protection.outlook.com [40.107.208.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012E23D332C
-	for <linux-rdma@vger.kernel.org>; Fri, 15 May 2026 07:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778830892; cv=none; b=KJ9ZQPlzbAFG3o59fiDafu6EBej5GaUYKOPTxehnDGQKax8GMXpf5uQS9xuSxkkKcpNBXznBX+3RC/ABR/DO6t+tND6kM+YEanlUOvbp4km3kWAV5xbaXOW8ACSwnggSuat4wlKOIL3wF6lmnUOeT7WRMhTcYJigHQ3QecCeAbA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778830892; c=relaxed/simple;
-	bh=zcyrbcOw2Uzbn5Yu43viSLMmIvCjr4J9vbTZXcpxN64=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JROLf0Jom7Q5ucnGwZLSLxQcT4jxMCk3BLc0sCaV95XEHSob5ZFYjlWUR3rjG/uxQ8n8G66vatpj3m87r4cO6eHo/0h4fHS238njzywQFAt5t/DQKP4o0ggNeqq2tUoZGKygMjktuuDtQzrG/Ju0zEfepKPAJxJc4MdEH4amNqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 784dc3d4503111f1aa26b74ffac11d73-20260515
-X-CTIC-Tags:
-	HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS
-	GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:b9907c47-a84e-4746-8439-498ef8c7756f,IP:20,
-	URL:0,TC:0,Content:0,EDM:-20,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:0
-X-CID-INFO: VERSION:1.3.12,REQID:b9907c47-a84e-4746-8439-498ef8c7756f,IP:20,UR
-	L:0,TC:0,Content:0,EDM:-20,RT:0,SF:0,FILE:0,BULK:0,RULE:EDM_GE969F26,ACTIO
-	N:release,TS:0
-X-CID-META: VersionHash:e7bac3a,CLOUDID:08ce57b6ae995c583d6e8ea7b4b11d06,BulkI
-	D:2605151541241UI7S5LF,BulkQuantity:0,Recheck:0,SF:17|19|66|78|102|127|865
-	|898,TC:nil,Content:0|15|50,EDM:1|19,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,
-	QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-	,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_AEC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 784dc3d4503111f1aa26b74ffac11d73-20260515
-X-User: cuitao@kylinos.cn
-Received: from ctao-book.. [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <cuitao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 2077987943; Fri, 15 May 2026 15:41:22 +0800
-From: Tao Cui <cuitao@kylinos.cn>
-To: leon@kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH rdma-next v2] rdma: display resource limits in curr/max format
-Date: Fri, 15 May 2026 15:41:11 +0800
-Message-ID: <20260515074111.428882-1-cuitao@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD86341C2E9;
+	Fri, 15 May 2026 09:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778837852; cv=fail; b=KrQKPlEdGjjsEhpqH0R+aA5dPMxQeBRi7xpX4Rwmd36exHmPC0bYzcicmYHnLqQSbyKfTulNDgIGnhbtdQNacY8u7dpqqaJCONvMQnZGDXH4fbfkQWfjDhsrHG9GKNfn4XMRkv+xjn9i86Z7VD9zhrwi2abWj3NsG9DZ8zJ7GMw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778837852; c=relaxed/simple;
+	bh=iolVlogE8OVUncd0zDjescS+Qsn9oreUVPPuxmEr+qs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DTqABJ3ia5zqeT74We2UHyBbyMAPtTRG0cluQcjqu8Y4h1x81cmlTV62yS1kpJhB80GaKccsg0FrKYRgiMCDwRAAD4owuuCrsDx5MIfRtZpdDTYumYT+M6ihHAz/Q7W+MKT6nn7OeuUaTnWJjUrE6EiTlITil0pHMnUbKOZAAW0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lxMdVq3+; arc=fail smtp.client-ip=40.107.208.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GcbJ6YJIxktvcp5idwBpTi7t4IIMNHjSv7n2FfTzNpO5G64Tb2VeA9i/FIWtxwDSP0+xM31Ctr8n1lA/ZYxamwvesae2+wJh+KjpJBla6Ht9Fs++mNs0vhIxI7PsdrptcZa523J08riq57iqCu3QII8A/LwpNumVgCXv9YwDpmTnh3ZFe9kVfpQcLVboopJff9PIt3Iyh2nJ3SElwmYEyZaX0VICDx+spPnlRiOVJCLy0kUbTH75ztoZE+PRJs4YQ6k32cYoyVwAiNCnaz/cZc3OOQM4OKkOl2QPq0DF7wafk0KgjR6SLulngKzeuhmCI1/OWJpBK33Xo7eYf2l9hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5pUjtAEwWo7Clp2LrlCNgJnhV9jLsomaNaTo15P3lhg=;
+ b=Rs3NPRpKBMRbgT3ttwH1C0ti/ukikBpmaCXE39jtFBRyDHziNCY2LdFyRjk8e0j4qObFur6nAOm8IrC1zUd69xbyzl7a7MI0FKtd3kvm1t5RETBAViPN8dLYATzLtFrtT2sbz5VPmbzoTlK0WWQgEANwMCkSJ0Jp44NAk/ZnvAg20cYA7WcmO3pzmKS/HaJcQ3bMHp5RWnW/Br6OVTsW2S79bY77d0AMpTxqzZFbCkYyWqKVk2zk+eDHgEGM4ELeExd64i4ZtyejKxWAGLrFq3/b+ghSVvDKMUHQOPNu5QxeVgn5bl57L5CpTRxEB5Tb2WfAHC1Id3sdo79dj0FRAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5pUjtAEwWo7Clp2LrlCNgJnhV9jLsomaNaTo15P3lhg=;
+ b=lxMdVq3+DRx3jJp36yBpJ0oE5Izpi/+Uy9CTt1wVZDzMtBx37jPmxjo8aNpA+e1avWvaTZue4nQzi2fUQpfyurzx1hqz99lMGk63+9Db3Q0GVmXXONp+7Jh56myPHtTNxfPrSFpBxgxKjOSO8+NPxS8dmPOETCk5RwrijFelZt2AKXSdf7yltWqwqaNmq6P6u2Mwucfhh74/LobPdQSLQN6s1BoagQeQ7DxokHdh3ixXU+nXldsnrGvHtTu0iRagBc92gylRK+L+ZcACd9C1gEiK8jEF0jignxluZRYtyvG0l6GMiVHrfnXnUFdx0BGjjVD34eEki96EpnGMvy9H4A==
+Received: from BL1PR13CA0266.namprd13.prod.outlook.com (2603:10b6:208:2ba::31)
+ by CH3PR12MB7570.namprd12.prod.outlook.com (2603:10b6:610:149::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.19; Fri, 15 May
+ 2026 09:37:25 +0000
+Received: from BL02EPF0002992B.namprd02.prod.outlook.com
+ (2603:10b6:208:2ba:cafe::50) by BL1PR13CA0266.outlook.office365.com
+ (2603:10b6:208:2ba::31) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.48.9 via Frontend Transport; Fri, 15
+ May 2026 09:37:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BL02EPF0002992B.mail.protection.outlook.com (10.167.249.56) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.25.13 via Frontend Transport; Fri, 15 May 2026 09:37:22 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 15 May
+ 2026 02:37:02 -0700
+Received: from [10.221.212.38] (10.126.231.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 15 May
+ 2026 02:36:57 -0700
+Message-ID: <e5e1ae53-a458-4248-87b9-aa1e1a241571@nvidia.com>
+Date: Fri, 15 May 2026 12:36:50 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 3FD5254ACCD
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/8] net/mlx5: Prepare eswitch infrastructure for
+ satellite PF support
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, "Leon
+ Romanovsky" <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, "Akiva
+ Goldberger" <agoldberger@nvidia.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
+	<gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
+References: <20260510053448.326823-1-tariqt@nvidia.com>
+ <20260513192539.7fd96592@kernel.org>
+ <639580c8-f93f-4945-acfa-ff116b841f6a@nvidia.com>
+ <20260514161649.7a59a547@kernel.org>
+Content-Language: en-US
+From: Moshe Shemesh <moshe@nvidia.com>
+In-Reply-To: <20260514161649.7a59a547@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0002992B:EE_|CH3PR12MB7570:EE_
+X-MS-Office365-Filtering-Correlation-Id: f13094af-6787-4920-b1f5-08deb265913b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|36860700016|1800799024|82310400026|18002099003|56012099003|22082099003|4143699003|11063799003;
+X-Microsoft-Antispam-Message-Info:
+	qOx6UxUf0YTiuqWQitczDYpPtmXH4MA+W54BM3rvAGURL46SRzphff9m2yYmoygElE6gNmA8SqWLp7AySkYv/1bmrgnHLnPI6534HKdqDpe6xK6oUjXcVrTyNRuceSLpu+pvXT9iCTYLohEZb7FDhEXKG0sdktMTbszh9/VM0ZpSrZLcrxr6rjBxHXlsKV1eysJ72HlNkAmqVS4tJtP3naWjSCWq4t0Gs+0/rBgJwHM1EL6CiuH+Yd9/NqXYvTxP7pd2JH/tpPsUmZMvZFEzUFxX1Ypk9S+NQj74yhLXwlHTN0BnPo9T3InURwOBd+KGJ4Y/2g3l4++XW7LGD1nB24WFZCVY0xBHsOHA97BpEJ+qgjUz+cH5k3sFs6ES6bcKx9OBJHz3/BBzW1dySddRkJGSdD1q5gqxLdhFOKTiYW5SJKYj1EQ8Y5yPKtQMpcHhIGIoW6CcxZsACjfl02T7SinJL8uw25qJyWahZIJk0KuByTVQ5l6meuUbJZh51PCpjeA74+CEZanT+LfFM8XU1Zt1e+Ec+D/eF+cKQNImx1qLcRKIiv1XJD+rS3hMQ51CbnCR9uu6KMJxhFCsz6QnXypR3g7pRnbzD+SzxswAMevjl6fA24WzbiU8tzYqwxaHIZTLhdaoe0tODVI3msZDkjMmShaC0Doqs7oXcmkxqFX0oSJocwD0cku7lAW9q26edi1+KjTIIfQ4kfgrOc7MJDDXI8Y41ol5lhZnOTxdBF0=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(36860700016)(1800799024)(82310400026)(18002099003)(56012099003)(22082099003)(4143699003)(11063799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	TKrI10rAquoSb6kjwPD7DNV6PmDD3haCQR20LK4LIf+BEhHo4nlj9lqAkj+LK8mODzdpOj2LPrEVu6CIKxpoeNe5U1fHba35h5Kla0hkhCltyN8r4StRGkM67BA+iNl974sQ2hFplI8gbBR1dw74IDc+z5PE0XP4WOvRhhmnzpR0xLpyeqJmbYL4VuXtKE1s9ZL3gL/8Ou//AuX1f3U1N1IMalBuV638QtiD1K6QbuqGxGnbJeiNUq5HThvQueBNmStNVeeZLIlIHlVTVqY7+vIiU1U7xVbkUOvT9KGPHZNoOb3XAEWm6RjI4sb17/KrR7c8Iq7OQ2GRSE26LBot/wlL2BSb8/f6cOgWPeFwmdI6juxUdX8wRm4QGU4r0MPYQZG9y2Jf+GoqhurSATkVmzE/CCsty1QMMLct6APonNtQTsfLJPtSqvpbck0p4+ea
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2026 09:37:22.9203
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f13094af-6787-4920-b1f5-08deb265913b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0002992B.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7570
+X-Rspamd-Queue-Id: CD00854CF2F
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [1.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20766-lists,linux-rdma=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20765-lists,linux-rdma=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,linux-rdma@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.971];
-	RCPT_COUNT_THREE(0.00)[3];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email,kylinos.cn:mid]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[moshe@nvidia.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Action: no action
 
-Parse the new RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX netlink attribute
-to show resource limits alongside current counts in curr/max format:
 
-  Before: 0: mlx5_0: qp 123  cq 45  mr 200  pd 10
-  After:  0: mlx5_0: qp 123/131072  cq 45/65536  mr 200/1000000  pd 10/32768
 
-JSON output provides both current and max fields per resource type
-(e.g. "qp": 123, "qp-max": 131072). Backward compatible: no output
-change when kernel lacks the new attribute.
+On 5/15/2026 2:16 AM, Jakub Kicinski wrote:
+> On Thu, 14 May 2026 10:56:26 +0300 Moshe Shemesh wrote:
+>> Satellite PF is another type of Physical Function, its role and
+>> privileges are similar to the host PF, but unlike host PF the Satellite
+>> PF is on the DPU and not on another host. So it's kind of "Satellite"
+>> for the ECPF which is also on the DPU.
+> 
+> Do you genuinely think these 2 sentences explain anything?
+> 
+> Maybe it's just me. If anyone reading this thinks Moshe's explanation
+> clarifies things - please speak up..
 
-Signed-off-by: Tao Cui <cuitao@kylinos.cn>
----
- rdma/include/uapi/rdma/rdma_netlink.h |  5 +++++
- rdma/res.c                            | 22 +++++++++++++++++++++-
- rdma/utils.c                          |  1 +
- 3 files changed, 27 insertions(+), 1 deletion(-)
+OK, let me explain the idea of this feature:
+Currently in Smartnic configuration we have 2 Physical Functions : one 
+is the ECPF on the DPU, and it is the eswitch manager and page manager, 
+while the other is the host PF on the external host and it doesn't have 
+privileges of eswitch manager or page manager.
 
-diff --git a/rdma/include/uapi/rdma/rdma_netlink.h b/rdma/include/uapi/rdma/rdma_netlink.h
-index 8709e558..44b41787 100644
---- a/rdma/include/uapi/rdma/rdma_netlink.h
-+++ b/rdma/include/uapi/rdma/rdma_netlink.h
-@@ -604,6 +604,11 @@ enum rdma_nldev_attr {
- 	RDMA_NLDEV_ATTR_RES_FRMR_POOL_PINNED,		/* u32 */
- 	RDMA_NLDEV_ATTR_RES_FRMR_POOL_KEY_KERNEL_VENDOR_KEY, /* u64 */
- 
-+	/*
-+	 * Resource summary entry maximum value.
-+	 */
-+	RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX,		/* u64 */
-+
- 	/*
- 	 * Always the end
- 	 */
-diff --git a/rdma/res.c b/rdma/res.c
-index 062f0007..d8c97a00 100644
---- a/rdma/res.c
-+++ b/rdma/res.c
-@@ -55,7 +55,27 @@ static int res_print_summary(struct nlattr **tb)
- 
- 		name = mnl_attr_get_str(nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_NAME]);
- 		curr = mnl_attr_get_u64(nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]);
--		res_print_u64(name, curr, nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]);
-+
-+		if (nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX]) {
-+			uint64_t max;
-+			char max_name[64];
-+
-+			max = mnl_attr_get_u64(
-+				nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX]);
-+			snprintf(max_name, sizeof(max_name), "%s-max", name);
-+			print_u64(PRINT_JSON, name, NULL, curr);
-+			print_u64(PRINT_JSON, max_name, NULL, max);
-+			if (!is_json_context()) {
-+				char buf[64];
-+
-+				snprintf(buf, sizeof(buf), "%s %" PRIu64 "/%" PRIu64 " ",
-+					 name, curr, max);
-+				pr_out("%s", buf);
-+			}
-+		} else {
-+			res_print_u64(name, curr,
-+				      nla_line[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]);
-+		}
- 	}
- 	return 0;
- }
-diff --git a/rdma/utils.c b/rdma/utils.c
-index 87003b2c..90ea1c55 100644
---- a/rdma/utils.c
-+++ b/rdma/utils.c
-@@ -480,6 +480,7 @@ static const enum mnl_attr_data_type nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_EVENT_TYPE] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_SYS_ATTR_MONITOR_MODE] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_ATTR_STAT_OPCOUNTER_ENABLED] = MNL_TYPE_U8,
-+	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_MAX] = MNL_TYPE_U64,
- };
- 
- static int rd_attr_check(const struct nlattr *attr, int *typep)
--- 
-2.43.0
+Now we have a new Smartnic configuration that adds another physical 
+function, on the DPU, that is not eswitch manager and not page manager. 
+The new PF can have its own SFs and the customer can passthrough this 
+Satellite PF to a VM on the DPU and give it to a user that should not 
+have access to the ECPF privileged function.
+As will be shown in the next patchset, the ECPF handles the Satellite PF 
+and the Host PF in a similar way, using the same management framework.
 
 
