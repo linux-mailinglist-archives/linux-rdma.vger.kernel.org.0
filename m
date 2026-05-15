@@ -1,194 +1,556 @@
-Return-Path: <linux-rdma+bounces-20766-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20767-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mCurGE3vBmrOowIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20766-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 12:02:53 +0200
+	id 8PV0BBL+BmpiqgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20767-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 13:05:54 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD00854CF2F
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 12:02:52 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04B1F54E099
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 13:05:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D7AEC30EC777
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 09:37:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 455EE30EE699
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 10:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5138343C07C;
-	Fri, 15 May 2026 09:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A1E44CAC9;
+	Fri, 15 May 2026 10:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lxMdVq3+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XHbYhsu/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011007.outbound.protection.outlook.com [40.107.208.7])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD86341C2E9;
-	Fri, 15 May 2026 09:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778837852; cv=fail; b=KrQKPlEdGjjsEhpqH0R+aA5dPMxQeBRi7xpX4Rwmd36exHmPC0bYzcicmYHnLqQSbyKfTulNDgIGnhbtdQNacY8u7dpqqaJCONvMQnZGDXH4fbfkQWfjDhsrHG9GKNfn4XMRkv+xjn9i86Z7VD9zhrwi2abWj3NsG9DZ8zJ7GMw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778837852; c=relaxed/simple;
-	bh=iolVlogE8OVUncd0zDjescS+Qsn9oreUVPPuxmEr+qs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DTqABJ3ia5zqeT74We2UHyBbyMAPtTRG0cluQcjqu8Y4h1x81cmlTV62yS1kpJhB80GaKccsg0FrKYRgiMCDwRAAD4owuuCrsDx5MIfRtZpdDTYumYT+M6ihHAz/Q7W+MKT6nn7OeuUaTnWJjUrE6EiTlITil0pHMnUbKOZAAW0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lxMdVq3+; arc=fail smtp.client-ip=40.107.208.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GcbJ6YJIxktvcp5idwBpTi7t4IIMNHjSv7n2FfTzNpO5G64Tb2VeA9i/FIWtxwDSP0+xM31Ctr8n1lA/ZYxamwvesae2+wJh+KjpJBla6Ht9Fs++mNs0vhIxI7PsdrptcZa523J08riq57iqCu3QII8A/LwpNumVgCXv9YwDpmTnh3ZFe9kVfpQcLVboopJff9PIt3Iyh2nJ3SElwmYEyZaX0VICDx+spPnlRiOVJCLy0kUbTH75ztoZE+PRJs4YQ6k32cYoyVwAiNCnaz/cZc3OOQM4OKkOl2QPq0DF7wafk0KgjR6SLulngKzeuhmCI1/OWJpBK33Xo7eYf2l9hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5pUjtAEwWo7Clp2LrlCNgJnhV9jLsomaNaTo15P3lhg=;
- b=Rs3NPRpKBMRbgT3ttwH1C0ti/ukikBpmaCXE39jtFBRyDHziNCY2LdFyRjk8e0j4qObFur6nAOm8IrC1zUd69xbyzl7a7MI0FKtd3kvm1t5RETBAViPN8dLYATzLtFrtT2sbz5VPmbzoTlK0WWQgEANwMCkSJ0Jp44NAk/ZnvAg20cYA7WcmO3pzmKS/HaJcQ3bMHp5RWnW/Br6OVTsW2S79bY77d0AMpTxqzZFbCkYyWqKVk2zk+eDHgEGM4ELeExd64i4ZtyejKxWAGLrFq3/b+ghSVvDKMUHQOPNu5QxeVgn5bl57L5CpTRxEB5Tb2WfAHC1Id3sdo79dj0FRAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5pUjtAEwWo7Clp2LrlCNgJnhV9jLsomaNaTo15P3lhg=;
- b=lxMdVq3+DRx3jJp36yBpJ0oE5Izpi/+Uy9CTt1wVZDzMtBx37jPmxjo8aNpA+e1avWvaTZue4nQzi2fUQpfyurzx1hqz99lMGk63+9Db3Q0GVmXXONp+7Jh56myPHtTNxfPrSFpBxgxKjOSO8+NPxS8dmPOETCk5RwrijFelZt2AKXSdf7yltWqwqaNmq6P6u2Mwucfhh74/LobPdQSLQN6s1BoagQeQ7DxokHdh3ixXU+nXldsnrGvHtTu0iRagBc92gylRK+L+ZcACd9C1gEiK8jEF0jignxluZRYtyvG0l6GMiVHrfnXnUFdx0BGjjVD34eEki96EpnGMvy9H4A==
-Received: from BL1PR13CA0266.namprd13.prod.outlook.com (2603:10b6:208:2ba::31)
- by CH3PR12MB7570.namprd12.prod.outlook.com (2603:10b6:610:149::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.19; Fri, 15 May
- 2026 09:37:25 +0000
-Received: from BL02EPF0002992B.namprd02.prod.outlook.com
- (2603:10b6:208:2ba:cafe::50) by BL1PR13CA0266.outlook.office365.com
- (2603:10b6:208:2ba::31) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.48.9 via Frontend Transport; Fri, 15
- May 2026 09:37:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL02EPF0002992B.mail.protection.outlook.com (10.167.249.56) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.13 via Frontend Transport; Fri, 15 May 2026 09:37:22 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 15 May
- 2026 02:37:02 -0700
-Received: from [10.221.212.38] (10.126.231.37) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 15 May
- 2026 02:36:57 -0700
-Message-ID: <e5e1ae53-a458-4248-87b9-aa1e1a241571@nvidia.com>
-Date: Fri, 15 May 2026 12:36:50 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F3044BCA5
+	for <linux-rdma@vger.kernel.org>; Fri, 15 May 2026 10:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778841565; cv=none; b=jRQU8qj8k8+2TYlL8s0sNflY67ogCdItUsUP30gwI9a8HbdDYdBN6VPq6QE6c2b/MwabF8xDf9rcNRPsnJTK4qYd2zx9eNfYx1im2zhOa6lvEZD3m+DVRk1gip88HkYaWnlfrT5vQn7OU9TYjBmqW6tgsr/P55Jtrc/ZCZVmk1M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778841565; c=relaxed/simple;
+	bh=baX5yRwBjzcnqba5gTosTuzsmuc2+nJ1s5BXDiMfmm4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X+PlC1ioMk+avz4QAf7l5HjZmjnBWOjF69Fq0sFqEB3kG5SsAal9J2jPWhjis4hwVE2/g/smFpi8eCPjn7PRn6N2vUf7qMCwUKs0Ke3n2CYeEGnEVbJ7xluwbedGyBrkZk4yomLl5WCj/A9wVNGJRpq9DIdhOKkAWAcV4sAwOaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XHbYhsu/; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <aa21dc7c-1c68-4795-8de4-44e9021c5d04@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1778841560;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2Gr4p4PAo819SL88WyKwUkwyrgGI7wkH/U9BAuIThzg=;
+	b=XHbYhsu/KWxVwo7R7xkftdJbHWhWiBjSffPispZJdqr60eyw/nsKUDKFHLx+N/sGB2DQ9+
+	nv0BJKlc5swPSTU9hLcoz+W0sYV6fEtSxV9EUPp9QypSoW6MDME110sqgjc75yz0qTc38t
+	51Cf89+yNnt1e/Fmmn8t3rU8fnTxmfY=
+Date: Fri, 15 May 2026 12:39:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/8] net/mlx5: Prepare eswitch infrastructure for
- satellite PF support
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, "Leon
- Romanovsky" <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, "Akiva
- Goldberger" <agoldberger@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
-	<gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-References: <20260510053448.326823-1-tariqt@nvidia.com>
- <20260513192539.7fd96592@kernel.org>
- <639580c8-f93f-4945-acfa-ff116b841f6a@nvidia.com>
- <20260514161649.7a59a547@kernel.org>
-Content-Language: en-US
-From: Moshe Shemesh <moshe@nvidia.com>
-In-Reply-To: <20260514161649.7a59a547@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH 2/2] RDMA/siw: add KUnit tests for MPA receive parsing
+To: Michael Bommarito <michael.bommarito@gmail.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+References: <20260513175325.2042630-1-michael.bommarito@gmail.com>
+ <20260513175325.2042630-3-michael.bommarito@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20260513175325.2042630-3-michael.bommarito@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0002992B:EE_|CH3PR12MB7570:EE_
-X-MS-Office365-Filtering-Correlation-Id: f13094af-6787-4920-b1f5-08deb265913b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|36860700016|1800799024|82310400026|18002099003|56012099003|22082099003|4143699003|11063799003;
-X-Microsoft-Antispam-Message-Info:
-	qOx6UxUf0YTiuqWQitczDYpPtmXH4MA+W54BM3rvAGURL46SRzphff9m2yYmoygElE6gNmA8SqWLp7AySkYv/1bmrgnHLnPI6534HKdqDpe6xK6oUjXcVrTyNRuceSLpu+pvXT9iCTYLohEZb7FDhEXKG0sdktMTbszh9/VM0ZpSrZLcrxr6rjBxHXlsKV1eysJ72HlNkAmqVS4tJtP3naWjSCWq4t0Gs+0/rBgJwHM1EL6CiuH+Yd9/NqXYvTxP7pd2JH/tpPsUmZMvZFEzUFxX1Ypk9S+NQj74yhLXwlHTN0BnPo9T3InURwOBd+KGJ4Y/2g3l4++XW7LGD1nB24WFZCVY0xBHsOHA97BpEJ+qgjUz+cH5k3sFs6ES6bcKx9OBJHz3/BBzW1dySddRkJGSdD1q5gqxLdhFOKTiYW5SJKYj1EQ8Y5yPKtQMpcHhIGIoW6CcxZsACjfl02T7SinJL8uw25qJyWahZIJk0KuByTVQ5l6meuUbJZh51PCpjeA74+CEZanT+LfFM8XU1Zt1e+Ec+D/eF+cKQNImx1qLcRKIiv1XJD+rS3hMQ51CbnCR9uu6KMJxhFCsz6QnXypR3g7pRnbzD+SzxswAMevjl6fA24WzbiU8tzYqwxaHIZTLhdaoe0tODVI3msZDkjMmShaC0Doqs7oXcmkxqFX0oSJocwD0cku7lAW9q26edi1+KjTIIfQ4kfgrOc7MJDDXI8Y41ol5lhZnOTxdBF0=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(36860700016)(1800799024)(82310400026)(18002099003)(56012099003)(22082099003)(4143699003)(11063799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	TKrI10rAquoSb6kjwPD7DNV6PmDD3haCQR20LK4LIf+BEhHo4nlj9lqAkj+LK8mODzdpOj2LPrEVu6CIKxpoeNe5U1fHba35h5Kla0hkhCltyN8r4StRGkM67BA+iNl974sQ2hFplI8gbBR1dw74IDc+z5PE0XP4WOvRhhmnzpR0xLpyeqJmbYL4VuXtKE1s9ZL3gL/8Ou//AuX1f3U1N1IMalBuV638QtiD1K6QbuqGxGnbJeiNUq5HThvQueBNmStNVeeZLIlIHlVTVqY7+vIiU1U7xVbkUOvT9KGPHZNoOb3XAEWm6RjI4sb17/KrR7c8Iq7OQ2GRSE26LBot/wlL2BSb8/f6cOgWPeFwmdI6juxUdX8wRm4QGU4r0MPYQZG9y2Jf+GoqhurSATkVmzE/CCsty1QMMLct6APonNtQTsfLJPtSqvpbck0p4+ea
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2026 09:37:22.9203
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f13094af-6787-4920-b1f5-08deb265913b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0002992B.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7570
-X-Rspamd-Queue-Id: CD00854CF2F
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 04B1F54E099
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.34 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20766-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-20767-lists,linux-rdma=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,ziepe.ca,kernel.org,vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[moshe@nvidia.com,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
+	FROM_NEQ_ENVFROM(0.00)[bernard.metzler@linux.dev,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,arg.data:url]
 X-Rspamd-Action: no action
 
+On 13.05.2026 19:53, Michael Bommarito wrote:
+
+This is great code to create broken protocol headers and I
+regard it very useful for testing during code development.
+I am not sure though if it should become part of the siw
+driver. In fact, do we want to distribute code which assists
+in crashing remote systems which are running a non-fixed driver?
+I don't think we should.
+
+Furthermore, iWarp is a protocol running on top of TCP. So it is
+rather simple to feed a user land TCP socket with any broken or
+correct iWarp header without writing any extra kernel code.
+
+Thanks,
+Bernard.
 
 
-On 5/15/2026 2:16 AM, Jakub Kicinski wrote:
-> On Thu, 14 May 2026 10:56:26 +0300 Moshe Shemesh wrote:
->> Satellite PF is another type of Physical Function, its role and
->> privileges are similar to the host PF, but unlike host PF the Satellite
->> PF is on the DPU and not on another host. So it's kind of "Satellite"
->> for the ECPF which is also on the DPU.
+> Add a KUnit suite (CONFIG_SIW_MPA_RX_KUNIT_TEST) that exercises the
+> real siw_tcp_rx_data() path with three cases covering the MPA length
+> validation added in the previous patch:
 > 
-> Do you genuinely think these 2 sentences explain anything?
+>    - siw_mpa_write_underflow_rejected
+>        Constructs an sk_buff carrying a tagged RDMA WRITE FPDU whose
+>        mpa_len is one below iwarp_pktinfo[opcode].hdr_len -
+>        MPA_HDR_SIZE.  Registers a REMOTE_WRITE MR in mem_xa so the
+>        WRITE path would otherwise reach siw_proc_write(), and calls
+>        siw_tcp_rx_data() directly.  Asserts the FPDU is rejected with
+>        TERM(LLP/MPA/FPDU_START) and rx_suspend = 1.
 > 
-> Maybe it's just me. If anyone reading this thinks Moshe's explanation
-> clarifies things - please speak up..
-
-OK, let me explain the idea of this feature:
-Currently in Smartnic configuration we have 2 Physical Functions : one 
-is the ECPF on the DPU, and it is the eswitch manager and page manager, 
-while the other is the host PF on the external host and it doesn't have 
-privileges of eswitch manager or page manager.
-
-Now we have a new Smartnic configuration that adds another physical 
-function, on the DPU, that is not eswitch manager and not page manager. 
-The new PF can have its own SFs and the customer can passthrough this 
-Satellite PF to a VM on the DPU and give it to a user that should not 
-have access to the ECPF privileged function.
-As will be shown in the next patchset, the ECPF handles the Satellite PF 
-and the Host PF in a similar way, using the same management framework.
+>    - siw_mpa_write_minimum_valid_accepted
+>        Regression control with mpa_len = hdr_len - MPA_HDR_SIZE (the
+>        smallest legal value, i.e. a zero-length WRITE).  Asserts the
+>        new check does not fire: no terminate, rx_stream not
+>        suspended.
+> 
+>    - siw_mpa_write_underflow_rejected_live_socket
+>        Opens a loopback AF_INET socketpair via sock_create_kern(),
+>        attaches a struct siw_cep as sk_user_data so sk_to_qp()
+>        resolves to the test QP, and installs siw_qp_llp_data_ready as
+>        sk_data_ready on the victim socket.  Writes the malformed FPDU
+>        via kernel_sendmsg from the attacker side.  The kernel TCP
+>        stack delivers, sk_data_ready fires in softirq, and
+>        tcp_read_sock dispatches to siw_tcp_rx_data the same way a
+>        remote peer would.  Asserts the same terminate state as the
+>        first case.
+> 
+> The third case is the design driver: it confirms the bug-fix
+> codepath fires from a real softirq RX entry, not just a synthetic
+> direct call.  On a stock siw tree the same harness reproduces the
+> KASAN slab-out-of-bounds / use-after-free in skb_copy_bits.
+> 
+> Bringing siw's loopback netdev up (case 3 binds 127.0.0.1) is done
+> inline via dev_change_flags() under rtnl_lock since the KUnit
+> environment does not run init scripts.
+> 
+> Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
+> Assisted-by: Claude:claude-opus-4-7
+> ---
+>   drivers/infiniband/sw/siw/Kconfig            |  18 +
+>   drivers/infiniband/sw/siw/Makefile           |   2 +
+>   drivers/infiniband/sw/siw/siw_mpa_rx_kunit.c | 349 +++++++++++++++++++
+>   3 files changed, 369 insertions(+)
+>   create mode 100644 drivers/infiniband/sw/siw/siw_mpa_rx_kunit.c
+> 
+> diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
+> index 186f182b80e7..b137f5920271 100644
+> --- a/drivers/infiniband/sw/siw/Kconfig
+> +++ b/drivers/infiniband/sw/siw/Kconfig
+> @@ -18,3 +18,21 @@ config RDMA_SIW
+>   	space verbs API, libibverbs. To implement RDMA over
+>   	TCP/IP, the driver further interfaces with the Linux
+>   	in-kernel TCP socket layer.
+> +
+> +config SIW_MPA_RX_KUNIT_TEST
+> +	bool "KUnit tests for Soft-iWARP MPA receive parsing" if !KUNIT_ALL_TESTS
+> +	depends on KUNIT && RDMA_SIW
+> +	default KUNIT_ALL_TESTS
+> +	help
+> +	  Build KUnit regression tests for the Soft-iWARP MPA receive
+> +	  state machine. The tests cover the MPA length consistency
+> +	  check in siw_get_hdr(): malformed FPDUs whose mpa_len is
+> +	  below the opcode's fixed DDP/RDMAP header must be rejected
+> +	  with TERM(LLP/MPA/FPDU_START); the minimum-valid mpa_len
+> +	  (zero-length WRITE) must still be accepted. One case drives
+> +	  the real kernel TCP receive path via a loopback socketpair
+> +	  so the same softirq sk_data_ready -> tcp_read_sock ->
+> +	  siw_tcp_rx_data chain a remote peer would exercise is
+> +	  covered.
+> +
+> +	  If unsure, say N.
+> diff --git a/drivers/infiniband/sw/siw/Makefile b/drivers/infiniband/sw/siw/Makefile
+> index f5f7e3867889..09d4c90d8758 100644
+> --- a/drivers/infiniband/sw/siw/Makefile
+> +++ b/drivers/infiniband/sw/siw/Makefile
+> @@ -9,3 +9,5 @@ siw-y := \
+>   	siw_qp_tx.o \
+>   	siw_qp_rx.o \
+>   	siw_verbs.o
+> +
+> +siw-$(CONFIG_SIW_MPA_RX_KUNIT_TEST) += siw_mpa_rx_kunit.o
+> diff --git a/drivers/infiniband/sw/siw/siw_mpa_rx_kunit.c b/drivers/infiniband/sw/siw/siw_mpa_rx_kunit.c
+> new file mode 100644
+> index 000000000000..204b3213b840
+> --- /dev/null
+> +++ b/drivers/infiniband/sw/siw/siw_mpa_rx_kunit.c
+> @@ -0,0 +1,349 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +/*
+> + * KUnit harness for siw MPA receive-state length validation.
+> + *
+> + * Internal to the SIW_MPA_LEN_UNDERFLOW_RX_COPY disclosure validation tree.
+> + * Not part of the upstream patch.
+> + *
+> + *   case 1: short mpa_len triggers the new siw_get_hdr() check via direct
+> + *           siw_tcp_rx_data() call with a constructed sk_buff
+> + *           - expects: TERM(LLP/MPA/FPDU_START), rx_suspend=1
+> + *           - under stock siw: KASAN slab-out-of-bounds in skb_copy_bits()
+> + *           - under patched siw: no splat, terminate state set
+> + *
+> + *   case 2: minimum-valid mpa_len control (constructed sk_buff)
+> + *           - mpa_len = hdr_len - MPA_HDR_SIZE  ->  fpdu_part_rem = 0
+> + *             so siw_proc_write() takes the zero-length WRITE short path
+> + *             and returns 0 without calling skb_copy_bits().
+> + *           - expects: no TERM, state machine progressed normally
+> + *
+> + *   case 3: real loopback TCP socketpair (the "live two-node" analog)
+> + *           - opens AF_INET TCP sockets in-kernel via sock_create_kern()
+> + *           - binds/listens on 127.0.0.1:0, connects, accepts
+> + *           - installs siw_qp_llp_data_ready on the victim socket and
+> + *             attaches a struct siw_cep so sk_to_qp() resolves to our qp
+> + *           - writes the malformed FPDU bytes via kernel_sendmsg on the
+> + *             attacker socket
+> + *           - the kernel TCP stack delivers, sk_data_ready fires, and
+> + *             siw_qp_llp_data_ready -> tcp_read_sock -> siw_tcp_rx_data
+> + *             runs in the normal kernel receive path
+> + *           - expects: TERM(LLP/MPA/FPDU_START) on the qp
+> + */
+> +
+> +#include <kunit/test.h>
+> +#include <linux/inet.h>
+> +#include <linux/in.h>
+> +#include <linux/netdevice.h>
+> +#include <linux/rtnetlink.h>
+> +#include <linux/skbuff.h>
+> +#include <linux/tcp.h>
+> +#include <linux/wait.h>
+> +#include <linux/xarray.h>
+> +#include <net/sock.h>
+> +#include <net/tcp.h>
+> +#include <rdma/ib_verbs.h>
+> +
+> +#include "siw.h"
+> +#include "siw_cm.h"
+> +#include "siw_mem.h"
+> +
+> +static void siw_kunit_kfree_skb(void *skb)
+> +{
+> +	kfree_skb(skb);
+> +}
+> +
+> +struct siw_mpa_rx_ctx {
+> +	struct siw_device *sdev;
+> +	struct siw_qp *qp;
+> +	struct siw_mem *mem;
+> +	void *target;
+> +	u32 stag;
+> +};
+> +
+> +static void siw_mpa_rx_setup(struct kunit *test, struct siw_mpa_rx_ctx *c)
+> +{
+> +	void *xa_ret;
+> +
+> +	c->stag = 0x00000100;
+> +
+> +	c->sdev = kunit_kzalloc(test, sizeof(*c->sdev), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, c->sdev);
+> +	xa_init_flags(&c->sdev->mem_xa, XA_FLAGS_ALLOC1);
+> +
+> +	c->qp = kunit_kzalloc(test, sizeof(*c->qp), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, c->qp);
+> +	c->qp->sdev = c->sdev;
+> +	c->qp->pd = kunit_kzalloc(test, sizeof(*c->qp->pd), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, c->qp->pd);
+> +	c->qp->rx_stream.state = SIW_GET_HDR;
+> +
+> +	c->target = kunit_kzalloc(test, 64, GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, c->target);
+> +
+> +	c->mem = kunit_kzalloc(test, sizeof(*c->mem), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, c->mem);
+> +	kref_init(&c->mem->ref);
+> +	c->mem->sdev = c->sdev;
+> +	c->mem->stag = c->stag;
+> +	c->mem->stag_valid = 1;
+> +	c->mem->va = (u64)(uintptr_t)c->target;
+> +	c->mem->len = 64;
+> +	c->mem->pd = c->qp->pd;
+> +	c->mem->perms = IB_ACCESS_REMOTE_WRITE;
+> +
+> +	xa_ret = xa_store(&c->sdev->mem_xa, c->stag >> 8, c->mem, GFP_KERNEL);
+> +	KUNIT_ASSERT_FALSE(test, xa_is_err(xa_ret));
+> +}
+> +
+> +static void siw_mpa_rx_run(struct kunit *test, struct siw_mpa_rx_ctx *c,
+> +			   u16 mpa_len_val)
+> +{
+> +	struct iwarp_rdma_write write = { };
+> +	struct sk_buff *skb;
+> +	read_descriptor_t rd_desc = { };
+> +	u8 payload[sizeof(write) + 1];
+> +
+> +	write.ctrl.mpa_len = cpu_to_be16(mpa_len_val);
+> +	write.ctrl.ddp_rdmap_ctrl = DDP_FLAG_TAGGED | DDP_FLAG_LAST |
+> +		cpu_to_be16(DDP_VERSION << 8) |
+> +		cpu_to_be16(RDMAP_VERSION << 6) |
+> +		cpu_to_be16(RDMAP_RDMA_WRITE);
+> +	write.sink_stag = cpu_to_be32(c->stag);
+> +	write.sink_to = cpu_to_be64((u64)(uintptr_t)c->target);
+> +
+> +	memcpy(payload, &write, sizeof(write));
+> +	payload[sizeof(write)] = 0x41;
+> +
+> +	skb = alloc_skb(sizeof(payload), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, skb);
+> +	skb_put_data(skb, payload, sizeof(payload));
+> +	kunit_add_action_or_reset(test, siw_kunit_kfree_skb, skb);
+> +
+> +	rd_desc.arg.data = c->qp;
+> +	rd_desc.count = sizeof(payload);
+> +
+> +	siw_tcp_rx_data(&rd_desc, skb, 0, sizeof(payload));
+> +}
+> +
+> +static void siw_mpa_write_underflow_rejected(struct kunit *test)
+> +{
+> +	struct siw_mpa_rx_ctx c;
+> +
+> +	siw_mpa_rx_setup(test, &c);
+> +
+> +	/* mpa_len one byte short of the WRITE hdr_len - MPA_HDR_SIZE floor. */
+> +	siw_mpa_rx_run(test, &c,
+> +		       sizeof(struct iwarp_rdma_write) - MPA_HDR_SIZE - 1);
+> +
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->term_info.valid, 1);
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->term_info.layer,
+> +			(int)TERM_ERROR_LAYER_LLP);
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->term_info.etype,
+> +			(int)LLP_ETYPE_MPA);
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->term_info.ecode,
+> +			(int)LLP_ECODE_FPDU_START);
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->rx_stream.rx_suspend, 1);
+> +}
+> +
+> +static void siw_mpa_write_minimum_valid_accepted(struct kunit *test)
+> +{
+> +	struct siw_mpa_rx_ctx c;
+> +
+> +	siw_mpa_rx_setup(test, &c);
+> +
+> +	/*
+> +	 * mpa_len == hdr_len - MPA_HDR_SIZE is the smallest legal value;
+> +	 * it yields fpdu_part_rem = 0, i.e. a zero-length WRITE. The new
+> +	 * length check in siw_get_hdr() must accept this.
+> +	 */
+> +	siw_mpa_rx_run(test, &c,
+> +		       sizeof(struct iwarp_rdma_write) - MPA_HDR_SIZE);
+> +
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->term_info.valid, 0);
+> +	KUNIT_EXPECT_EQ(test, (int)c.qp->rx_stream.rx_suspend, 0);
+> +}
+> +
+> +static int siw_mpa_rx_bring_up_lo(struct kunit *test)
+> +{
+> +	struct net_device *lo;
+> +	int rv;
+> +
+> +	rtnl_lock();
+> +	lo = __dev_get_by_name(&init_net, "lo");
+> +	KUNIT_ASSERT_NOT_NULL(test, lo);
+> +	if (!(lo->flags & IFF_UP))
+> +		rv = dev_change_flags(lo, lo->flags | IFF_UP, NULL);
+> +	else
+> +		rv = 0;
+> +	rtnl_unlock();
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +	return 0;
+> +}
+> +
+> +static int siw_mpa_rx_make_pair(struct kunit *test, struct socket **listen,
+> +				struct socket **server, struct socket **client)
+> +{
+> +	struct sockaddr_in addr = { .sin_family = AF_INET, };
+> +	struct sockaddr_in bound = { };
+> +	struct socket *l = NULL, *s = NULL, *c = NULL;
+> +	int rv;
+> +
+> +	siw_mpa_rx_bring_up_lo(test);
+> +
+> +	rv = sock_create_kern(&init_net, AF_INET, SOCK_STREAM, IPPROTO_TCP, &l);
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+> +	addr.sin_port = 0;
+> +	rv = kernel_bind(l, (struct sockaddr_unsized *)&addr, sizeof(addr));
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	rv = l->ops->getname(l, (struct sockaddr *)&bound, 0);
+> +	KUNIT_ASSERT_GT(test, rv, 0);
+> +
+> +	rv = kernel_listen(l, 1);
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	rv = sock_create_kern(&init_net, AF_INET, SOCK_STREAM, IPPROTO_TCP, &c);
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	rv = kernel_connect(c, (struct sockaddr_unsized *)&bound,
+> +			    sizeof(bound), 0);
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	rv = kernel_accept(l, &s, 0);
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	*listen = l;
+> +	*server = s;
+> +	*client = c;
+> +	return 0;
+> +}
+> +
+> +static void siw_mpa_write_underflow_rejected_live_socket(struct kunit *test)
+> +{
+> +	struct siw_device *sdev;
+> +	struct siw_qp *qp;
+> +	struct siw_cep *cep;
+> +	struct siw_mem *mem;
+> +	struct socket *listen_sock = NULL, *server_sock = NULL, *client_sock = NULL;
+> +	struct iwarp_rdma_write write = { };
+> +	struct kvec iov;
+> +	struct msghdr msg = { };
+> +	void *xa_ret, *target;
+> +	u8 payload[sizeof(write) + 1];
+> +	u32 stag = 0x00000100;
+> +	int rv, i;
+> +
+> +	sdev = kunit_kzalloc(test, sizeof(*sdev), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, sdev);
+> +	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
+> +
+> +	qp = kunit_kzalloc(test, sizeof(*qp), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, qp);
+> +	qp->sdev = sdev;
+> +	qp->pd = kunit_kzalloc(test, sizeof(*qp->pd), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, qp->pd);
+> +	qp->rx_stream.state = SIW_GET_HDR;
+> +	init_rwsem(&qp->state_lock);
+> +	qp->attrs.state = SIW_QP_STATE_RTS;
+> +	qp->cep = NULL;
+> +
+> +	/* Register a valid REMOTE_WRITE memory object. On unpatched siw
+> +	 * this is what lets the negative-length copy reach skb_copy_bits;
+> +	 * without an MR the STag lookup in siw_proc_write() returns NULL
+> +	 * and the WRITE is terminated before the underflow primitive fires.
+> +	 * With this patch in place, the new siw_get_hdr() check rejects
+> +	 * the FPDU BEFORE STag lookup, so the MR is unused. We keep it in
+> +	 * the test so unpatched-kernel reruns also exercise the full path.
+> +	 */
+> +	target = kunit_kzalloc(test, 64, GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, target);
+> +	mem = kunit_kzalloc(test, sizeof(*mem), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, mem);
+> +	kref_init(&mem->ref);
+> +	mem->sdev = sdev;
+> +	mem->stag = stag;
+> +	mem->stag_valid = 1;
+> +	mem->va = (u64)(uintptr_t)target;
+> +	mem->len = 64;
+> +	mem->pd = qp->pd;
+> +	mem->perms = IB_ACCESS_REMOTE_WRITE;
+> +	xa_ret = xa_store(&sdev->mem_xa, stag >> 8, mem, GFP_KERNEL);
+> +	KUNIT_ASSERT_FALSE(test, xa_is_err(xa_ret));
+> +
+> +	/* siw_qp_llp_data_ready dereferences sk_user_data as siw_cep. */
+> +	cep = kunit_kzalloc(test, sizeof(*cep), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, cep);
+> +	cep->qp = qp;
+> +	spin_lock_init(&cep->lock);
+> +	kref_init(&cep->ref);
+> +
+> +	rv = siw_mpa_rx_make_pair(test, &listen_sock, &server_sock, &client_sock);
+> +	KUNIT_ASSERT_EQ(test, rv, 0);
+> +
+> +	write_lock_bh(&server_sock->sk->sk_callback_lock);
+> +	server_sock->sk->sk_user_data = cep;
+> +	server_sock->sk->sk_data_ready = siw_qp_llp_data_ready;
+> +	qp->attrs.sk = server_sock;
+> +	write_unlock_bh(&server_sock->sk->sk_callback_lock);
+> +
+> +	write.ctrl.mpa_len =
+> +		cpu_to_be16(sizeof(write) - MPA_HDR_SIZE - 1);
+> +	write.ctrl.ddp_rdmap_ctrl = DDP_FLAG_TAGGED | DDP_FLAG_LAST |
+> +		cpu_to_be16(DDP_VERSION << 8) |
+> +		cpu_to_be16(RDMAP_VERSION << 6) |
+> +		cpu_to_be16(RDMAP_RDMA_WRITE);
+> +	write.sink_stag = cpu_to_be32(stag);
+> +	write.sink_to = cpu_to_be64((u64)(uintptr_t)target);
+> +
+> +	memcpy(payload, &write, sizeof(write));
+> +	payload[sizeof(write)] = 0x41;
+> +
+> +	iov.iov_base = payload;
+> +	iov.iov_len = sizeof(payload);
+> +	rv = kernel_sendmsg(client_sock, &msg, &iov, 1, sizeof(payload));
+> +	KUNIT_ASSERT_EQ(test, rv, (int)sizeof(payload));
+> +
+> +	/* Wait for TCP to deliver bytes and sk_data_ready to fire. */
+> +	for (i = 0; i < 200; i++) {
+> +		if (qp->term_info.valid)
+> +			break;
+> +		msleep(20);
+> +	}
+> +
+> +	KUNIT_EXPECT_EQ(test, (int)qp->term_info.valid, 1);
+> +	KUNIT_EXPECT_EQ(test, (int)qp->term_info.layer,
+> +			(int)TERM_ERROR_LAYER_LLP);
+> +	KUNIT_EXPECT_EQ(test, (int)qp->term_info.etype,
+> +			(int)LLP_ETYPE_MPA);
+> +	KUNIT_EXPECT_EQ(test, (int)qp->term_info.ecode,
+> +			(int)LLP_ECODE_FPDU_START);
+> +	KUNIT_EXPECT_EQ(test, (int)qp->rx_stream.rx_suspend, 1);
+> +
+> +	/* Detach our handler before tearing down sockets so the TCP stack
+> +	 * cannot call into freed kunit memory after the test.
+> +	 */
+> +	write_lock_bh(&server_sock->sk->sk_callback_lock);
+> +	server_sock->sk->sk_user_data = NULL;
+> +	server_sock->sk->sk_data_ready = sock_def_readable;
+> +	write_unlock_bh(&server_sock->sk->sk_callback_lock);
+> +
+> +	sock_release(client_sock);
+> +	sock_release(server_sock);
+> +	sock_release(listen_sock);
+> +}
+> +
+> +static struct kunit_case siw_mpa_rx_cases[] = {
+> +	KUNIT_CASE(siw_mpa_write_underflow_rejected),
+> +	KUNIT_CASE(siw_mpa_write_minimum_valid_accepted),
+> +	KUNIT_CASE(siw_mpa_write_underflow_rejected_live_socket),
+> +	{ }
+> +};
+> +
+> +static struct kunit_suite siw_mpa_rx_suite = {
+> +	.name = "siw_mpa_rx",
+> +	.test_cases = siw_mpa_rx_cases,
+> +};
+> +
+> +kunit_test_suite(siw_mpa_rx_suite);
 
 
