@@ -1,163 +1,132 @@
-Return-Path: <linux-rdma+bounces-20787-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20788-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sEXWEJBmB2oF1wIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20787-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 20:31:44 +0200
+	id sG/JEdh1B2pL4QIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20788-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 21:36:56 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57AA05563F9
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 20:31:38 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 101AC556F3F
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 21:36:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2243B30F579D
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 18:25:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D22C13061EA2
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 19:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E43B3EEAE4;
-	Fri, 15 May 2026 18:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE1A413D84;
+	Fri, 15 May 2026 19:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k9Mq9SYL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dJBAo9Jz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB083EEAED
-	for <linux-rdma@vger.kernel.org>; Fri, 15 May 2026 18:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BCF413D61;
+	Fri, 15 May 2026 19:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778869509; cv=none; b=cNoamqcR5buNr1ahLYWkO2ckV8bj4BbOhUzejUp8esj59i+eOyNqVUeJwAxojrYpnkUkuzrBSu0ZpmVlg+21AFPDE2arpjO16pbAszsGFCIoGAsRGPrBkuGOR8pJh+O+nROxXlbncxxCp1z5+M73vRlkPj8bKab3gd7IkdKYyBc=
+	t=1778873398; cv=none; b=OzkpZ4dFul99o+Uzk6nv1qsuRuW6t1JRB1zmTXAvKGqW7ufWMHfmSUGthac8bN8z2AUIV7c0BXNd2FkQ+9TjQj/pNegbnh366T0kCD675tB0zHkM+u+mFUi80XWoisdgRhMnwn48y2g9qz3iyBdrmJOGpywlIf1cDEdU/8smp2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778869509; c=relaxed/simple;
-	bh=zEvMci9pxnTIa7WoY+kD0AnU5pBy99MDwm1K5SsIF78=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vol1yCRLQnShm+EKC/mByKMwLcprduqJslbrO1i49auuiggrFntHCJSgI56Htl0I6zcFYnj2s3/KZmfyH30Yoa9xWlpGuaTJdBU3Vrkyu5nD1qLt+CFzVusf+HE4HXJ++E5KwGOhyrqVBn6BQj5ABlP5aJ2IwWH0uzDiaEt0Sw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k9Mq9SYL; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1778869508; x=1810405508;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zEvMci9pxnTIa7WoY+kD0AnU5pBy99MDwm1K5SsIF78=;
-  b=k9Mq9SYLl2KV2sz6il+Y9+sVmGnK4YDIqkp0eC3cV8UIZWXN8VqBKn2g
-   pyt2+6CqhI5wa6xlW+UMFTOdJktND0Be/tVxJ3b0BF3KVwane5R5vjsoo
-   ciaEIEIUa+6x8pzRKORp1AzxHG0ycODzcdV6FgtIrT3VRxoH7S+9yWo9R
-   5a65OyJGOBP6DIWw9f61bV9ClY5u0LtwYS4J/qFyTI4TZ3ra0zOUq6ak+
-   u+fDWjNV8qK5X11j2EMAxKQ2lrfTS58tUUHMWu75/F7M304daq2LRv+A1
-   cNXpl+KqCagUKTPi7iqOQhbWwpvBBj8omFL1QLuMZrtiJIOWmtLmuxFOo
-   w==;
-X-CSE-ConnectionGUID: WceaN9DiRuyOrDnYGPy3cA==
-X-CSE-MsgGUID: Y6VSztZXQGyzLJ/4rrK7Qw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11787"; a="90525240"
-X-IronPort-AV: E=Sophos;i="6.23,236,1770624000"; 
-   d="scan'208";a="90525240"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2026 11:25:07 -0700
-X-CSE-ConnectionGUID: RL+DVIDDRHy+sE4xVGPatw==
-X-CSE-MsgGUID: 9V3VLIdnQ5mRy8Bcq/vpWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,236,1770624000"; 
-   d="scan'208";a="242757890"
-Received: from lkp-server02.sh.intel.com (HELO 7a33ad3e7d27) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 15 May 2026 11:25:06 -0700
-Received: from kbuild by 7a33ad3e7d27 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wNxD2-000000002X3-40Le;
-	Fri, 15 May 2026 18:24:36 +0000
-Date: Sat, 16 May 2026 02:23:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Jiri Pirko <jiri@resnulli.us>,
-	patches@lists.linux.dev,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: Re: [PATCH 6/6] RDMA/core: Move flow related functions to
- ib_uverbs_support.ko
-Message-ID: <202605160258.313mCXe3-lkp@intel.com>
-References: <6-v1-045258567bd6+9fe-ib_uverbs_support_ko_jgg@nvidia.com>
+	s=arc-20240116; t=1778873398; c=relaxed/simple;
+	bh=joDb/8rcMXnErFCCWSLgDu0tYliVVhs9gpThcz/uisc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=LeDGkB5LnpipAGA2fqkkgbnvJqerc1QKvzVSWhD9dPgGztjlk4aGUww/65zfoPW58LGhLQEQrzHopyO6PlF6kHuhvR9tuWTJZvMY8spJtW1KM+uf+6BbYbXKp+EPNy6WFaHctQaeXS80PgDd4+sA0FoTOcqTxFDCz0E1zWOnlck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dJBAo9Jz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 143FFC2BCB3;
+	Fri, 15 May 2026 19:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778873398;
+	bh=joDb/8rcMXnErFCCWSLgDu0tYliVVhs9gpThcz/uisc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=dJBAo9Jz9x2igEXixJPRBAem+bsxmDbmJ+rEuweAq6SAKCgLAV5O8JcpCxNSVVWDB
+	 NqyRkvVb2XEpIal7+bui7kcikQsqoDr+hJqyFJ2M0lKHHE05x6ZfnLOsJpvecaC/8v
+	 6Xe1YypILJPCY8srQqra5szYBNGrt9fbKKrvMzSu3YDuYR3Tf69pfjbtViz766/GyG
+	 RBdToBo45W+5OurcIXk/yJMMyiKDzJxS6om8hBX5hx980U6ZN8bFtZqTXspMTLYfd5
+	 M6qoKE0BRZgNsFVsgfIABQ0rkHqxBRIUMF0d3le6vBTFVLdS7Tb87ybQ5dbjRcDD7Y
+	 m3KOaBoleIg+Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 9398B3930A06;
+	Fri, 15 May 2026 19:30:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6-v1-045258567bd6+9fe-ib_uverbs_support_ko_jgg@nvidia.com>
-X-Rspamd-Queue-Id: 57AA05563F9
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH iproute2-next v2 0/4] Allow rdma dev netns to take a pid
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177887341139.127669.4836697961792204536.git-patchwork-notify@kernel.org>
+Date: Fri, 15 May 2026 19:30:11 +0000
+References: <20260512193412.32019-1-dsahern@kernel.org>
+In-Reply-To: <20260512193412.32019-1-dsahern@kernel.org>
+To: David Ahern <dsahern@kernel.org>
+Cc: stephen@networkplumber.org, netdev@vger.kernel.org, leonro@nvidia.com,
+ linux-rdma@vger.kernel.org, dahern@nvidia.com
+X-Rspamd-Queue-Id: 101AC556F3F
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20788-lists,linux-rdma=lfdr.de,netdevbpf];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	TAGGED_FROM(0.00)[bounces-20787-lists,linux-rdma=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_NO_DN(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,intel.com:mid,intel.com:dkim,01.org:url]
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Hi Jason,
+Hello:
 
-kernel test robot noticed the following build warnings:
+This series was applied to iproute2/iproute2-next.git (main)
+by David Ahern <dsahern@kernel.org>:
 
-[auto build test WARNING on 254f49634ee16a731174d2ae34bc50bd5f45e731]
+On Tue, 12 May 2026 13:34:03 -0600 you wrote:
+> From: David Ahern <dahern@nvidia.com>
+> 
+> Avoid the extra hurdle of creating an entry in /var/run/netns
+> and allow the netns argument to be a name or a pid.
+> 
+> v2
+> - update netns_get_fd to handle the pid fallback
+> - update devlink code
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Gunthorpe/RDMA-core-Move-the-_ib_copy_validate_udata-functions-to-ib_core_uverbs/20260515-124950
-base:   254f49634ee16a731174d2ae34bc50bd5f45e731
-patch link:    https://lore.kernel.org/r/6-v1-045258567bd6%2B9fe-ib_uverbs_support_ko_jgg%40nvidia.com
-patch subject: [PATCH 6/6] RDMA/core: Move flow related functions to ib_uverbs_support.ko
-config: x86_64-randconfig-123 (https://download.01.org/0day-ci/archive/20260516/202605160258.313mCXe3-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-sparse: v0.6.5-rc1
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260516/202605160258.313mCXe3-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - [iproute2-next,v2,1/4] namespace: Add fallback to netns by pid
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=d6a1612bacfe
+  - [iproute2-next,v2,2/4] iplink: Drop pid fallback code for netns
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=22061a6354c0
+  - [iproute2-next,v2,3/4] rdma: Allow netns to be specified by pid
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=2a8b53446ff5
+  - [iproute2-next,v2,4/4] devlink: Drop now duplicate pid fallback for netns
+    (no matching commit)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202605160258.313mCXe3-lkp@intel.com/
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/infiniband/core/ib_core_uverbs.c:429:16: sparse: sparse: incorrect type in return expression (different modifiers) @@     expected int ( * )( ... ) @@     got int ( [noderef] *__v )( ... ) @@
-   drivers/infiniband/core/ib_core_uverbs.c:429:16: sparse:     expected int ( * )( ... )
-   drivers/infiniband/core/ib_core_uverbs.c:429:16: sparse:     got int ( [noderef] *__v )( ... )
 
-vim +429 drivers/infiniband/core/ib_core_uverbs.c
-
-   419	
-   420	uverbs_api_ioctl_handler_fn uverbs_get_handler_fn(struct ib_udata *udata)
-   421	{
-   422		struct uverbs_attr_bundle *bundle =
-   423			rdma_udata_to_uverbs_attr_bundle(udata);
-   424		struct bundle_priv *pbundle =
-   425			container_of(&bundle->hdr, struct bundle_priv, bundle);
-   426	
-   427		lockdep_assert_held(&bundle->ufile->device->disassociate_srcu);
-   428	
- > 429		return srcu_dereference(pbundle->method_elm->handler,
-   430					&bundle->ufile->device->disassociate_srcu);
-   431	}
-   432	
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
