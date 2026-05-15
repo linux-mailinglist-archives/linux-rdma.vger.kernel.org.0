@@ -1,247 +1,174 @@
-Return-Path: <linux-rdma+bounces-20756-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20757-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AE8XNbicBmpLlQIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20756-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 06:10:32 +0200
+	id sD7mEZ+qBmoOmQIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20757-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 07:09:51 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383BD54920A
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 06:10:32 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F6254976E
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 07:09:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4B3C73047BF7
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 04:06:39 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B164E30167B8
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 05:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639B63D413D;
-	Fri, 15 May 2026 04:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0562E3DEAC9;
+	Fri, 15 May 2026 05:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ey7bwlA2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE20D3C09F4;
-	Fri, 15 May 2026 04:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879F43DEFE4
+	for <linux-rdma@vger.kernel.org>; Fri, 15 May 2026 05:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778817923; cv=none; b=KvyeEFenSQnqh0X2Pftku0gIKljVy1Xi3IwDupoxFpZjUoJ0obkvE759h1v5/r6lOqhX6NQLVXtMTY/bbAY5FBKHdM2unXbMNrVO44mJljYUCKvcArd4taCSZGLucXECPAcPFOTPkiG1t/lNRl6P7N96eIQ6Gna6e+lCZOYdctg=
+	t=1778821763; cv=none; b=uAb1l07mzCZt4wTxFD/o077++V5qA+92dyDVM/quqbLNMRU0eCjaDZsD2DQnnS5gqgd25Z7YfuQ9BGsTj4L1cq/4PEQQ71Ve+V2eA4AG1B5s5rCsuINwnqKYwFGYE5BLKolJ2uR/GbZLGUpzWFRQF+eFlR07aNhp4Zcnq3UndTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778817923; c=relaxed/simple;
-	bh=ww3iDhHqj2sZVRmFfdi5sIDnONKXle9ygwVgSzDwxfg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WwuH3n+1+fn69STOD2EPrq7KTFSeudZ9cznrvnUbmVnbqyXjsW6Vwgm/X4ZZfvkUaKbzlYs5XWiJs1wqrTvkDspVflxI9YObK+WGebMCtKcTmHxSp77vAQm4Dy7rFP7mXFtud++GX8R0aQUl0fkFtVhAmX6+Ye/KfM45YahJ9/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1202)
-	id 2967820B716C; Thu, 14 May 2026 21:05:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2967820B716C
-From: Long Li <longli@microsoft.com>
-To: Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K . Y . Srinivasan" <kys@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	shradhagupta@linux.microsoft.com
-Cc: Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v10 6/6] RDMA/mana_ib: Allocate interrupt contexts on EQs
-Date: Thu, 14 May 2026 21:05:08 -0700
-Message-ID: <20260515040508.491748-7-longli@microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260515040508.491748-1-longli@microsoft.com>
-References: <20260515040508.491748-1-longli@microsoft.com>
+	s=arc-20240116; t=1778821763; c=relaxed/simple;
+	bh=OwtjSsmh2bjZvbPpcCkLZmdhL8zYpHDC78+7skjJcIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZEnKWtMmYgc3Axi1/K5VE3G6C8ERVeAmrkzLqxy4T+iUgbwNz0aNiAwtG1Qf9MmXQ2vGOyCofe+QwN2b/2GPbQ4iFOrfL8imJxLx6HFh5q/RJ86SQoQSCzJpYKN68olABOmCbh6vHcOzpYkjEi6JUzhEZ4vNixJDCia73/yJ0jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ey7bwlA2; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ac4a8f98-7986-42d3-b6ca-28f514791b79@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1778821759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CRPxaxwfO/BvZYZRx9bZyW2jRCny4Mnqi4QzNGPMgNM=;
+	b=ey7bwlA2CrHTMnrV4pctiBCKR1qzPX4WWRMherY+ZkN3Y79hp/I9+Ai87dBc+gF18EE2dx
+	gdNJeDFTBZgxV2iIx6UuDlKBAhd6ui/E8ut+rpz+l/oyHC7ia++mvshDI9VjIDVLRUnoVY
+	JkE0u5Kx14U6lawUnfQOlYKaJwf+Ctg=
+Date: Thu, 14 May 2026 22:09:11 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH for-next v2 1/2] RDMA/efa: Add initialization of AH cache
+ rhashtable
+To: Yonatan Nachum <ynachum@amazon.com>,
+ "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
+Cc: jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+ mrgolin@amazon.com, sleybo@amazon.com, matua@amazon.com,
+ gal.pressman@linux.dev, Firas Jahjah <firasj@amazon.com>
+References: <20260512061121.2177521-1-ynachum@amazon.com>
+ <20260512061121.2177521-2-ynachum@amazon.com>
+ <346a4118-4902-46a6-9245-ef37322b30b1@linux.dev>
+ <20260514100214.GA22423@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20260514100214.GA22423@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 383BD54920A
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 10F6254976E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [3.54 / 15.00];
-	DMARC_POLICY_REJECT(2.00)[microsoft.com : SPF not aligned (relaxed), No valid DKIM,reject];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20756-lists,linux-rdma=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.844];
-	FROM_NEQ_ENVFROM(0.00)[longli@microsoft.com,linux-rdma@vger.kernel.org];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-20757-lists,linux-rdma=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,linux-rdma@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
 X-Rspamd-Action: no action
 
-Use the GIC functions to allocate interrupt contexts for RDMA EQs. These
-interrupt contexts may be shared with Ethernet EQs when MSI-X vectors
-are limited.
 
-The driver now supports allocating dedicated MSI-X for each EQ. Indicate
-this capability through driver capability bits. The RDMA EQs pass
-use_msi_bitmap=false to share MSI-X vectors with Ethernet, while the
-capability flag advertises that the driver supports per-vPort EQ
-separation when hardware has sufficient vectors.
+在 2026/5/14 3:02, Yonatan Nachum 写道:
+> On Wed, May 13, 2026 at 10:12:01PM -0700, Zhu Yanjun wrote:
+>> 在 2026/5/11 23:11, Yonatan Nachum 写道:
+>>> New EFA devices don't support the creation of multiple address handles
+>>> to the same remote on the same PD.
+>>> To overcome this limitation, introduce an AH cache rhashtable which will
+>>> store the refcounts of the same AH creation on the same PD and will
+>>> allow the driver to manage AH reuse. The hashtable key is the
+>>> combination of PD and GID. Add initialization and teardown logic for the
+>>> rhashtable.
+>>>
+>>> Reviewed-by: Firas Jahjah <firasj@amazon.com>
+>>> Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+>>> Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+>>> ---
+>>>   drivers/infiniband/hw/efa/Makefile       |  4 +--
+>>>   drivers/infiniband/hw/efa/efa_ah_cache.c | 30 ++++++++++++++++++++
+>>>   drivers/infiniband/hw/efa/efa_ah_cache.h | 36 ++++++++++++++++++++++++
+>>>   drivers/infiniband/hw/efa/efa_com.c      | 12 +++++++-
+>>>   drivers/infiniband/hw/efa/efa_com.h      |  5 +++-
+>>>   5 files changed, 83 insertions(+), 4 deletions(-)
+>>>   create mode 100644 drivers/infiniband/hw/efa/efa_ah_cache.c
+>>>   create mode 100644 drivers/infiniband/hw/efa/efa_ah_cache.h
+>>>
+>>> diff --git a/drivers/infiniband/hw/efa/efa_ah_cache.h b/drivers/infiniband/hw/efa/efa_ah_cache.h
+>>> new file mode 100644
+>>> index 000000000000..25288fdf778a
+>>> --- /dev/null
+>>> +++ b/drivers/infiniband/hw/efa/efa_ah_cache.h
+>>> @@ -0,0 +1,36 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+>>> +/*
+>>> + * Copyright 2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+>>> + */
+>>> +
+>>> +#ifndef _EFA_AH_CACHE_H_
+>>> +#define _EFA_AH_CACHE_H_
+>>> +
+>>> +#include <linux/refcount.h>
+>>> +#include <linux/rhashtable.h>
+>>> +
+>>> +#define EFA_AH_GID_SIZE 16
+>>> +
+>>> +struct efa_ah_cache_key {
+>>> +	u8 gid[EFA_AH_GID_SIZE];
+>>> +	u16 pd;
+>>> +};
+>> I am not sure if we add __packed to avoid memory hole.
+>>
+>> Zhu Yanjun
+> Currently there is no holes in the struct (verified using pahole) and we
+> Zero-initialize AH cache key so I don't think packed is really needed.
 
-Populate eq.irq on all RDMA EQs for consistency with the Ethernet path.
+I’m wondering whether you’ve tested this on all architectures.
 
-Also relocate the GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE define to its
-numeric BIT(6) position among the other capability flags.
+Explicitly using `__packed` or ensuring proper memory alignment
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/infiniband/hw/mana/main.c | 43 +++++++++++++++++++++++++------
- include/net/mana/gdma.h           |  7 +++--
- 2 files changed, 40 insertions(+), 10 deletions(-)
+would likely be a better solution to avoid memory holes in the key 
+structure.
 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index f8a9013f0ca3..df465a9078c1 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -764,7 +764,8 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- {
- 	struct gdma_context *gc = mdev_to_gc(mdev);
- 	struct gdma_queue_spec spec = {};
--	int err, i;
-+	struct gdma_irq_context *gic;
-+	int err, i, msi;
- 
- 	spec.type = GDMA_EQ;
- 	spec.monitor_avl_buf = false;
-@@ -772,11 +773,19 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- 	spec.eq.callback = mana_ib_event_handler;
- 	spec.eq.context = mdev;
- 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
--	spec.eq.msix_index = 0;
-+
-+	msi = 0;
-+	gic = mana_gd_get_gic(gc, false, &msi);
-+	if (!gic)
-+		return -ENOMEM;
-+	spec.eq.msix_index = msi;
- 
- 	err = mana_gd_create_mana_eq(mdev->gdma_dev, &spec, &mdev->fatal_err_eq);
--	if (err)
-+	if (err) {
-+		mana_gd_put_gic(gc, false, 0);
- 		return err;
-+	}
-+	mdev->fatal_err_eq->eq.irq = gic->irq;
- 
- 	mdev->eqs = kzalloc_objs(struct gdma_queue *,
- 				 mdev->ib_dev.num_comp_vectors);
-@@ -786,32 +795,50 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- 	}
- 	spec.eq.callback = NULL;
- 	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++) {
--		spec.eq.msix_index = (i + 1) % gc->num_msix_usable;
-+		msi = (i + 1) % gc->num_msix_usable;
-+
-+		gic = mana_gd_get_gic(gc, false, &msi);
-+		if (!gic) {
-+			err = -ENOMEM;
-+			goto destroy_eqs;
-+		}
-+		spec.eq.msix_index = msi;
-+
- 		err = mana_gd_create_mana_eq(mdev->gdma_dev, &spec, &mdev->eqs[i]);
--		if (err)
-+		if (err) {
-+			mana_gd_put_gic(gc, false, msi);
- 			goto destroy_eqs;
-+		}
-+		mdev->eqs[i]->eq.irq = gic->irq;
- 	}
- 
- 	return 0;
- 
- destroy_eqs:
--	while (i-- > 0)
-+	while (i-- > 0) {
- 		mana_gd_destroy_queue(gc, mdev->eqs[i]);
-+		mana_gd_put_gic(gc, false, (i + 1) % gc->num_msix_usable);
-+	}
- 	kfree(mdev->eqs);
- destroy_fatal_eq:
- 	mana_gd_destroy_queue(gc, mdev->fatal_err_eq);
-+	mana_gd_put_gic(gc, false, 0);
- 	return err;
- }
- 
- void mana_ib_destroy_eqs(struct mana_ib_dev *mdev)
- {
- 	struct gdma_context *gc = mdev_to_gc(mdev);
--	int i;
-+	int i, msi;
- 
- 	mana_gd_destroy_queue(gc, mdev->fatal_err_eq);
-+	mana_gd_put_gic(gc, false, 0);
- 
--	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++)
-+	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++) {
- 		mana_gd_destroy_queue(gc, mdev->eqs[i]);
-+		msi = (i + 1) % gc->num_msix_usable;
-+		mana_gd_put_gic(gc, false, msi);
-+	}
- 
- 	kfree(mdev->eqs);
- }
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 6c138cc77407..d84e474309a3 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -615,6 +615,7 @@ enum {
- #define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
- #define GDMA_DRV_CAP_FLAG_1_GDMA_PAGES_4MB_1GB_2GB BIT(4)
- #define GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT BIT(5)
-+#define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
- 
- /* Driver can handle holes (zeros) in the device list */
- #define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
-@@ -631,7 +632,8 @@ enum {
- /* Driver detects stalled send queues and recovers them */
- #define GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY BIT(18)
- 
--#define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
-+/* Driver supports separate EQ/MSIs for each vPort */
-+#define GDMA_DRV_CAP_FLAG_1_EQ_MSI_UNSHARE_MULTI_VPORT BIT(19)
- 
- /* Driver supports linearizing the skb when num_sge exceeds hardware limit */
- #define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
-@@ -659,7 +661,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
- 	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
- 	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY | \
--	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY)
-+	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECOVERY | \
-+	 GDMA_DRV_CAP_FLAG_1_EQ_MSI_UNSHARE_MULTI_VPORT)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
+Zhu Yanjun
+
+
+>
+> Thanks
+
 -- 
-2.43.0
+Best Regards,
+Yanjun.Zhu
 
 
