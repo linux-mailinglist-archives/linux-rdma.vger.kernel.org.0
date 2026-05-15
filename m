@@ -1,129 +1,124 @@
-Return-Path: <linux-rdma+bounces-20747-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20748-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uPQXDvh5BmqFkAIAu9opvQ
-	(envelope-from <linux-rdma+bounces-20747-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 03:42:16 +0200
+	id IGYRO2SGBmockgIAu9opvQ
+	(envelope-from <linux-rdma+bounces-20748-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 04:35:16 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E908C5487B9
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 03:42:15 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 940F0548C28
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 04:35:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BCF0E30684D2
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 01:41:13 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 47D03302DCFE
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2026 02:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DECD37F015;
-	Fri, 15 May 2026 01:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvPGwMZI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11983C09F6;
+	Fri, 15 May 2026 02:35:13 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DF837F72D;
-	Fri, 15 May 2026 01:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635E73BFE4C
+	for <linux-rdma@vger.kernel.org>; Fri, 15 May 2026 02:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778809265; cv=none; b=iHQjGKqZtq93/+r0OAHfR8yfOwRZ083X9s1PVFluBDYBD5Y9WtqLQJBBUobQ1Rik7D45CFp4RCpJWPYNddhm/LlD+ZYPDRNbryymE7KzJnPRt9spUQutymgqIrhGwFBaQiIwCrOXLV2KRGaSuEcHjIm4D7fCm05OA+BtLPtxMtk=
+	t=1778812513; cv=none; b=n7lqltLZYMUlGU5eKJl6CNQ66cxyuz1J0xtadCXAeoLl5ECdC+WoUq3B98LktuxzISgCilvFjRS2w1hlum9ERp1KsgaGLrn6aipCmccfw1R+LG0c1zGriPsljidVNfl3IyRmcJRvZw/TyDA+wFsJi4hi/PqhSURQTsKTQvkcjSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778809265; c=relaxed/simple;
-	bh=oEUaMmvcADAdYPlMPQctBp65BNDzmtVOpgPDJ3CMfxY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=T6VJjniB1Gj3bno1PTDwDy5w0M16mUjxOwaLJ5pyHPw4rp0Gh91S2HENAwxRx1Xf6JlMdL6ophOiHEpB1/26V0JfYu3h72NH0Cc59MuRjdfTigNWDN/h4AEvZADgG33ZVf7EnLxwEiNNSV/e/9OhwH6XXfjVx2kH9xCud8ZlOvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvPGwMZI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC856C2BCB3;
-	Fri, 15 May 2026 01:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778809264;
-	bh=oEUaMmvcADAdYPlMPQctBp65BNDzmtVOpgPDJ3CMfxY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fvPGwMZI5vO39diQXILPnwHSj2PIIupSG8bc8tjmeN5C/MC9CsBPGjU6yHggp5IkN
-	 8c5dRgy8gzdE2gMsiNKW6l5YxEbkPIgfM/cDG5TmDE6we8TjbqwjLJP5cMGy9uVvx/
-	 fdw29KqoHW7h0IZcpO2lFsc1Lf8rqHw+7W7tqfMLKWH+rRQpHskOJToH+Tp5/XiXFP
-	 ynpV3FpQ+wQ53f/er6VrECk31yNBD+ONSXV4F5MUvUJ2A2pfa/u6pYJdHeSN/9l/Oy
-	 BcBcIWEBN0Zk+ZIJmvCbcQg2eQG3r+QtNxHTv4+oIhFIJ8ETDDVtHYkn92JYugJIE7
-	 PDnqnQHTqz7Gg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CDE739E4DB8;
-	Fri, 15 May 2026 01:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1778812513; c=relaxed/simple;
+	bh=Plg4GfY5OEct04iVJf3ujXcV+BPqPQDlgKLByxcfJbI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m/82g0+9VxE3egpBO9XPY1M7P4TEnKpwnPLTbYcTf63HkFqj0q4tpvGrXU7Z7D0v5vjvUjLIhDAIWdjtNluo8OQ42cJsy9RtYNBBJbzqGT3knuSSl/FtUxbNk1ma+S/vCNbE/rbL3Xu3ZdeQ8iXEh1KhfJFkumrWreppNj+de8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: af277e0c500611f1aa26b74ffac11d73-20260515
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:13471e05-c8ee-4673-b9b5-401bc50c09c9,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-20
+X-CID-INFO: VERSION:1.3.12,REQID:13471e05-c8ee-4673-b9b5-401bc50c09c9,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-30,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-20
+X-CID-META: VersionHash:e7bac3a,CLOUDID:451121b720c32f14fbe9ff76ad6401a7,BulkI
+	D:2605141448004OK151BS,BulkQuantity:1,Recheck:0,SF:10|64|66|78|80|81|82|83
+	|102|127|841|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:0,File:nil,RT:nil
+	,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
+	R:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: af277e0c500611f1aa26b74ffac11d73-20260515
+X-User: zhaochenguang@kylinos.cn
+Received: from [192.168.111.102] [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <zhaochenguang@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
+	with ESMTP id 1418570460; Fri, 15 May 2026 10:35:06 +0800
+Message-ID: <5108c3fb-5b20-42a6-a904-064786c75e41@kylinos.cn>
+Date: Fri, 15 May 2026 10:35:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] IB/cm: unregister client groups when port registration
+ fails in cm_add_one
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Sean Hefty <shefty@nvidia.com>,
+ =?UTF-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>,
+ Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+ Marco Crivellari <marco.crivellari@suse.com>, linux-rdma@vger.kernel.org
+References: <20260511103204.1757106-1-zhaochenguang@kylinos.cn>
+ <20260514064746.GL15586@unreal>
+Content-Language: en-US
+From: Chenguang Zhao <zhaochenguang@kylinos.cn>
+In-Reply-To: <20260514064746.GL15586@unreal>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net/mlx5: Do not restore destination-less TC rules
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177880920904.156468.11629126127893686276.git-patchwork-notify@kernel.org>
-Date: Fri, 15 May 2026 01:40:09 +0000
-References: <20260513063302.333761-1-tariqt@nvidia.com>
-In-Reply-To: <20260513063302.333761-1-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, cratiu@nvidia.com, jmassar@nvidia.com,
- jianbol@nvidia.com, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, gal@nvidia.com
-X-Rspamd-Queue-Id: E908C5487B9
+X-Rspamd-Queue-Id: 940F0548C28
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20747-lists,linux-rdma=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma,netdev];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	NEURAL_HAM(-0.00)[-0.985];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
+	FROM_NEQ_ENVFROM(0.00)[zhaochenguang@kylinos.cn,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20748-lists,linux-rdma=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
 X-Rspamd-Action: no action
 
-Hello:
+Sorry, it's my mistake.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Thanks
 
-On Wed, 13 May 2026 09:33:02 +0300 you wrote:
-> From: Jeroen Massar <jmassar@nvidia.com>
-> 
-> After IPsec policy/state TX rules are added, any TC flow rule, which
-> forwards packets to uplink, is modified to forward to IPsec TX tables.
-> As these tables are destroyed dynamically, whenever there is no
-> reference to them, the destinations of this kind of rules must be
-> restored to uplink, unless there is no destination for that rule.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net] net/mlx5: Do not restore destination-less TC rules
-    https://git.kernel.org/netdev/net/c/8d0a5af8b1ba
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+在 2026/5/14 14:47, Leon Romanovsky 写道:
+> On Mon, May 11, 2026 at 06:32:04PM +0800, Chenguang Zhao wrote:
+>> If ib_port_register_client_groups() fails, jumping to error1 skips
+>> ib_port_unregister_client_groups() for the current port because the
+>> cleanup loop only runs for strictly smaller port indices after --i.
+>> So jump to error2 to unregister the currently failed port.
+> Why? There is no need to call ib_port_unregister_client_groups() for the
+> current port. A failure in ib_port_register_client_groups() does not create
+> any sysfs groups that would require cleanup.
+>
+> Thanks
 
