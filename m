@@ -1,132 +1,106 @@
-Return-Path: <linux-rdma+bounces-20793-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20794-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mLOTNIa6B2pjEgMAu9opvQ
-	(envelope-from <linux-rdma+bounces-20793-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2026 02:29:58 +0200
+	id 6CC7CL6+B2qYGAMAu9opvQ
+	(envelope-from <linux-rdma+bounces-20794-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2026 02:47:58 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9795598A0
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2026 02:29:58 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2FCC559994
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2026 02:47:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2C71B300ACBB
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2026 00:29:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C220300353F
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2026 00:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C33723C8AE;
-	Sat, 16 May 2026 00:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2H38OEl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27582236E3;
+	Sat, 16 May 2026 00:47:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C274F23504B;
-	Sat, 16 May 2026 00:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CBB2556E;
+	Sat, 16 May 2026 00:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778891394; cv=none; b=fQiaelIaEZ1rdiC0F/Q7CGbLHn+jKJxfMbCD0gqti1I6R9mxAQbsujUcl6LnrGceL9r7W6MXyR4yKPmZPZbR2YA4AXYk3PtTf/oEnLJD+WLjwy6Yceah5LhlRmeuvAYMzGb2hg/If3/YgIgykDWdbj7tQ0LyEex5homargq57N4=
+	t=1778892472; cv=none; b=EQza/AJp/IFvxbgIkEoldrhOOEwHwJtLW9X2/mGYXW/cEd1f7NiXgIR1Rd7AOatpHgQH5rZJVjh95wd2oOUCRFeDS1b5g6bxO+AXR5gKReAc12uomJyHIsoTnbud5dH35vMsE1w+9GyakTqhv7gx5uf5PaEfEa9aLP69UTQtJ/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778891394; c=relaxed/simple;
-	bh=uTepMk0K3F14iMTOK/Tlgs2iEIImTFgBRqDEkRQqDrw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=k2HUZdx/yj/yGwkFv4ULJwnozsUtmtpGhjNJ8YflHNiC3wLb5BBBs+FN5B15wY6Mv2CZ1C2DjDH5umQk6qOuZLnghzSQFOhNLBQWry8jXMKdTFnPRGR1a1q4hZZEjoazcWotK4FOblw2wZrC2u2a7yPA2p7XR5PY/oHn81/M/MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d2H38OEl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B9F9C2BCB0;
-	Sat, 16 May 2026 00:29:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778891394;
-	bh=uTepMk0K3F14iMTOK/Tlgs2iEIImTFgBRqDEkRQqDrw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=d2H38OEl8uH1WGxfFLMet1ZQUMDAphvjVFtnogcy29vqrLa7KWXc8BKm6tcBxDu5v
-	 IfnZDWqKgDcxM5XiZP88WQB0F4xVH1qox23MKFAooLj7zc/aBlqJ6bVW+wPrzHdwpD
-	 TGxvVd+1HdDqiXGo5N+dAns4jFSMicmCXeWOoeVmjE258Wb/gepWTQmuliDaY7P92q
-	 4bmh08zvswAwrXLcBzIrh+dmyuCMRchKD4X0WzVJv7nW55DCn6QxF0BKG53Oft1XFS
-	 W7H6qz2J+dV9bmCgs7yEYm2j7YX9KlR2EvZMXcvBt8+XuGABtjPq3pk0P8o1DimXxv
-	 YNVoO+tygEYcw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D09333930A23;
-	Sat, 16 May 2026 00:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1778892472; c=relaxed/simple;
+	bh=UvlHrH46vzsc5RaH9f9FrtHUELWltSASPe0q1qxZzr0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=oefH+ERfmnrqEhpPChzmFCaqqY3n7r0G0xEpIQXAWrlTOtr1+wawd0lFbIcf6LxyaHcnzzb5DDiIjEO+AW/+f9OvCuO3SeSeOEEtB2KIFfIvEnMBHBgNH+byFo6/C9AXz0ujM3Ah6zTp9ZwbqYXYzpGRqTm5PeDtM9Q4mXBm3Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 82A2492009C; Sat, 16 May 2026 02:47:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 7B02E92009B;
+	Sat, 16 May 2026 01:47:41 +0100 (BST)
+Date: Sat, 16 May 2026 01:47:41 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+    Leon Romanovsky <leon@kernel.org>
+cc: Bjorn Helgaas <bhelgaas@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+    =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] PCI: Export pci_parent_bus_reset() for drivers
+ to use
+In-Reply-To: <88ecd8d4-f3b4-4bdf-905f-a54c84ad8bce@cornelisnetworks.com>
+Message-ID: <alpine.DEB.2.21.2605160145500.22700@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2605050042390.46195@angie.orcam.me.uk> <alpine.DEB.2.21.2605050051390.46195@angie.orcam.me.uk> <20260512090006.GQ15586@unreal> <alpine.DEB.2.21.2605121104560.46195@angie.orcam.me.uk> <20260514153927.GQ15586@unreal>
+ <88ecd8d4-f3b4-4bdf-905f-a54c84ad8bce@cornelisnetworks.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] IB/IPoIB: ndo_set_rx_mode_async conversion
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177889140739.207359.8985306017569918471.git-patchwork-notify@kernel.org>
-Date: Sat, 16 May 2026 00:30:07 +0000
-References: <20260513124519.3357165-1-dtatulea@nvidia.com>
-In-Reply-To: <20260513124519.3357165-1-dtatulea@nvidia.com>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: jgg@ziepe.ca, leon@kernel.org, aleksandr.loktionov@intel.com,
- sdf.kernel@gmail.com, pabeni@redhat.com, tariqt@nvidia.com, sdf@fomichev.me,
- netdev@vger.kernel.org, cratiu@nvidia.com, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-X-Rspamd-Queue-Id: 7A9795598A0
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: A2FCC559994
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20793-lists,linux-rdma=lfdr.de,netdevbpf];
-	FREEMAIL_CC(0.00)[ziepe.ca,kernel.org,intel.com,gmail.com,redhat.com,nvidia.com,fomichev.me,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20794-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-rdma@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DMARC_NA(0.00)[orcam.me.uk];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-rdma];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	FROM_NEQ_ENVFROM(0.00)[macro@orcam.me.uk,linux-rdma@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	R_DKIM_NA(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,angie.orcam.me.uk:mid]
 X-Rspamd-Action: no action
 
-Hello:
+On Thu, 14 May 2026, Dennis Dalessandro wrote:
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 13 May 2026 15:45:18 +0300 you wrote:
-> The commit in the fixes tag added a warning for devices
-> that are netdev ops locked that they should be converted
-> to .ndo_set_rx_mode_async. IPoIB for mlx5 is such a
-> driver which was missed during the conversion because the
-> flow is more complex:
-> - mlx5 part of IPoIB device was converted to ops-lock in commit [1].
-> - ipoib_intf_init() then overrides netdev_ops with
->   ipoib_netdev_ops_{pf,vf}, which still wired ndo_set_rx_mode to the
->   legacy sync path -- tripping the new warning on every probe.
+> > >   Dennis, please clarify your position, and if you'd rather this change
+> > > wasn't made, then I'll drop the patches from my local verification setup
+> > > and won't offer them again.
+> > 
+> > Let me put on my RDMA maintainer hat.
+> > 
+> > Since hfi1 is the only user of this newly exported symbol,
+> > and it resides within RDMA, please drop this patch.
 > 
-> [...]
+> I would agree there.
 
-Here is the summary with links:
-  - [net] IB/IPoIB: ndo_set_rx_mode_async conversion
-    https://git.kernel.org/netdev/net/c/cfd08f09723c
+ OK, thank you both for the advice.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+  Maciej
 
