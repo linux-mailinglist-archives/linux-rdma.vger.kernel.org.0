@@ -1,258 +1,203 @@
-Return-Path: <linux-rdma+bounces-20826-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20827-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OODUF7pgCWrhXQQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20826-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 08:31:22 +0200
+	id aARvCx1pCWouYwQAu9opvQ
+	(envelope-from <linux-rdma+bounces-20827-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 09:07:09 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CED6B55F817
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 08:31:21 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880A355F99F
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 09:07:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 37A3330237E2
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 06:30:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 662CA3009B22
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 07:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 437A62D3A69;
-	Sun, 17 May 2026 06:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01D5305E1F;
+	Sun, 17 May 2026 07:06:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="UHaLAQWc"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="qvZ1A54T"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.155.198.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD57155C87
-	for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 06:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEEE305692
+	for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 07:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.155.198.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778999433; cv=none; b=UFjp+StqmG24p2rmSRpS5utFbIpCWQPxAQvHEKN18GzWKLZWohdqKP6vMZrbcntg8RzDjQc8arnUmiRWQmDad98yyaMRr1hGtfExtMBhgTd+rdhDPxnG9BsP5XTJpbq5Ky05A2jGOVop6/AfFupUgkHeoKj6r97nr106bQnb0qA=
+	t=1779001594; cv=none; b=jYDDedu885HYC+V6OWG5qJQ38g4pYbdHN3rBWg+ceY+s28t85OAdiD2V1o+y06IWwvBHXiQvgrU3ed9MbUh2Px7JzunFp5Cp0K39PvPDq3GfjOU5mFiJvMCzq5zNY3Tc7B9Yhkh1rrE9WGVspmiJd8i1o2eDv9bwxCXJvllOg3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778999433; c=relaxed/simple;
-	bh=RhbMZmPXzfiUAcAQHPBQJ/HZWCSLV9+wg7Hd3KtzPXg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DQMGYwBhWpw9aVI0ECljHgWms3Z9Wtc3tz3CmEDBODSgu42xdJmOPXHIxGdRWdoe7zox13IVP7NqMTqe1zxQ9oCcxi9ZKbpcuoMt2HSVCrD+cnH0gS33es/Hs8DuINQOVlC3VuB4f1BKXslW4l56+eAKMCRqx8BvsnNs22SOUUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=UHaLAQWc; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-48896199cbaso9031495e9.1
-        for <linux-rdma@vger.kernel.org>; Sat, 16 May 2026 23:30:31 -0700 (PDT)
+	s=arc-20240116; t=1779001594; c=relaxed/simple;
+	bh=rREgySsOCAARJjfm2aNTCDIRlVGRg6XzOAgvQ/UhduA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iwF4krB7pB8TdXkium6vLA7SXgwqY/0BUsL711ru9WQISlbOtk5IUP+tU7ddQ/d7PJGg0uvvUucuIRLkN/2Zd+IsgvedH/jmLBvGVcV/MEV8fZ2XG78BslS5aS0V+KpQQZJzmJvFX7xjinE4/jIPVUgTefDPJyLOoYVasBfmTRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=qvZ1A54T; arc=none smtp.client-ip=35.155.198.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1778999430; x=1779604230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dJPzlTSeugEp0HeQmb0eyRX7WDbUE5un4GKDtt29MI8=;
-        b=UHaLAQWcLGPEvulnkOtvpRX/S+XBgesPI2NeGfkk1E9Qe42rA2K/wHgtTu197E89Ug
-         07p4C2M5mH/atcUAYNsiQCmH3QJaUqXAahU3MkzttB2JPcwCnSC1HiVJxsX+l4C3k2/q
-         6YDFu7VI+U/96BKbsJLN9vmtJq/PXoeYZxPsEf5pYU03+Y5390tuA8Fn1SuGLaWYXWv6
-         RbUeadPSkMVCiRnADjOrPhBlzck0Eie71fbRa3eeOvKBWIiS37jDu8toZTPCEPBjjnLT
-         DE9hYaAi2gCIoXmSjRnopN6MhffVAKSwS5k+7/FkyWVi8Q/khbsRfv+el3IUXDRktFEW
-         kkFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778999430; x=1779604230;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=dJPzlTSeugEp0HeQmb0eyRX7WDbUE5un4GKDtt29MI8=;
-        b=mOZ7bmUouexpR03V9YpiXBWnRHp/iUKB5J9TxTHJ3BjuFSuYOp+eemFPMgP7O72YTR
-         /eOoK94jUwkgSgPwFAFjuY3bLGDTFmNbiaDWuGigYwMMTMscpdDZEC2sCymIS5S8wvls
-         cd1FxmLruW9x+CGsBdE+wvDGJWvdjiTIfBMI2jUeqgstuO/lwpSLmwN9UuL5sBwkNL8s
-         i00X+1t8dW8h3pnP8nt5mai5Le/TNBE0D1+Dfrc6yGO6fhZ1XUlkK6+hl0pQYgesS4bw
-         ksOh3mYmH+X/vLuP32Ql4fSQsVKpaEH0h91zMDRWdWBDuwgKEgC7vv8amdvi8UzMVgF4
-         7qhQ==
-X-Gm-Message-State: AOJu0Yzttju7aiI5GS3BlzXmlpjKTl0xqoP3Z7TTiSsObhk7rP5b+6BH
-	KhJPf/0ahEB/ZyizeEhiVqr7YAf28Jvui3jLRvDek3co+7JMGjJollCQNl1sI+eRUhmCBzt2z0U
-	tQmLkEW4G/acP
-X-Gm-Gg: Acq92OHIfrxiihHzbIIwD8+OHt+ZVVo1wEpWltLbO8hIAGlVogtaUALXb/R5vcHzejz
-	5sWCWViWwmQvvXq6ubTFK5NFKVlQ1X9wLwfLEbvJTM4CE7DbzQyxhZKT8hFgEcVuH3/A0Ce+DX3
-	26wSbeg7rUa1aKPX8j5vM1nCIn9tcww//lhQS4UXem0vBhgd766I8asN1hnMPMVjSdjPqguTosx
-	hFVfSTdSTXg2z6JRixAzHuAWLBgvTzRHU6DLRVgHv9ZzPoACLu9QL0585gCXK7HhwbPCkGF23Ko
-	uT7uiHGhWP1EvRafPqY24l+0veekOoYfpmdPYBikWSl4urnJm9d7jYJy2L1WeHYRqIpxU685AP8
-	NB/EIk2FNAiBpSO6SIdU4Kfra08uJuDIPYR4Yd3DtwXgMh7yGy9zpLiBnO0AuPfW5hz7B8r2IFb
-	A+YNqtWJIv00W/3sBGii0r9IlOpUm0zSfN0i5j3ZkOjVmIxw==
-X-Received: by 2002:a05:600c:a4f:b0:48f:e230:2a24 with SMTP id 5b1f17b1804b1-48fe66204e8mr134180995e9.31.1778999429933;
-        Sat, 16 May 2026 23:30:29 -0700 (PDT)
-Received: from localhost (46-13-72-179.customers.tmcz.cz. [46.13.72.179])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48fe5cab7c5sm177068135e9.12.2026.05.16.23.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 May 2026 23:30:29 -0700 (PDT)
-From: Jiri Pirko <jiri@resnulli.us>
-To: linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca,
-	leon@kernel.org,
-	mrgolin@amazon.com,
-	gal.pressman@linux.dev,
-	sleybo@amazon.com,
-	parav@nvidia.com,
-	mbloch@nvidia.com,
-	yanjun.zhu@linux.dev,
-	marco.crivellari@suse.com,
-	roman.gushchin@linux.dev,
-	phaddad@nvidia.com,
-	lirongqing@baidu.com,
-	ynachum@amazon.com,
-	huangjunxian6@hisilicon.com,
-	kalesh-anakkur.purayil@broadcom.com,
-	ohartoov@nvidia.com,
-	michaelgur@nvidia.com,
-	shayd@nvidia.com,
-	edwards@nvidia.com,
-	sriharsha.basavapatna@broadcom.com,
-	andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com
-Subject: [PATCH rdma-next v5 15/15] RDMA/mlx5: Use UMEM attribute for QP doorbell record
-Date: Sun, 17 May 2026 08:30:06 +0200
-Message-ID: <20260517063006.2200680-16-jiri@resnulli.us>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260517063006.2200680-1-jiri@resnulli.us>
-References: <20260517063006.2200680-1-jiri@resnulli.us>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1779001593; x=1810537593;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ThkKw0ovE2HoOGGLPIkmmsVTvI0dZ7xEB0bEIiDsEpE=;
+  b=qvZ1A54Ty82xOxFQsgZLpLtgTYf5PnIHDUE7RTgqvNCYdnPifoE7VmMi
+   z3ffHnOSZa8zmgjLYjg5Nawh6BwGhh/7IXvUfOgkdHxh5r+tt32YThU/q
+   ss4xyPnPMpoPk9rLJNX+w5ju4SO/lU2dddQz8FEl+DLAYWH6+i/YOvjPv
+   DWSjBMQSGB8I/UDHSwbISqLnKXdIBOZ3Vj0oPfgJ9q6a92FcTPTJCkKfC
+   Gk2AgAFpcoJW9XrlrLzYZtyrU6W5342HMPptP8QoR4wmiDmfvFoCKuGSJ
+   QES/k/DLLUwPsAMOfZfUjt47aPnnR+a874mqqLCLtH9XutgfaMibdlIyN
+   A==;
+X-CSE-ConnectionGUID: pzir0SVcTWqYH85MbgvssQ==
+X-CSE-MsgGUID: mrvHNe3OQzezQXSBWDtX/A==
+X-IronPort-AV: E=Sophos;i="6.23,239,1770595200"; 
+   d="scan'208";a="19707922"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2026 07:06:31 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:9663]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.0.241:2525] with esmtp (Farcaster)
+ id 2fc3efc2-56ec-4a4c-aeff-3ae87e615c36; Sun, 17 May 2026 07:06:30 +0000 (UTC)
+X-Farcaster-Flow-ID: 2fc3efc2-56ec-4a4c-aeff-3ae87e615c36
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Sun, 17 May 2026 07:06:30 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37; Sun, 17 May 2026
+ 07:06:28 +0000
+Date: Sun, 17 May 2026 07:06:14 +0000
+From: Yonatan Nachum <ynachum@amazon.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+CC: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+	<mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
+	<gal.pressman@linux.dev>, Firas Jahjah <firasj@amazon.com>
+Subject: Re: [PATCH for-next v2 1/2] RDMA/efa: Add initialization of AH cache
+ rhashtable
+Message-ID: <20260517070614.GA18352@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+References: <20260512061121.2177521-1-ynachum@amazon.com>
+ <20260512061121.2177521-2-ynachum@amazon.com>
+ <346a4118-4902-46a6-9245-ef37322b30b1@linux.dev>
+ <20260514100214.GA22423@dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com>
+ <ac4a8f98-7986-42d3-b6ca-28f514791b79@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: CED6B55F817
+In-Reply-To: <ac4a8f98-7986-42d3-b6ca-28f514791b79@linux.dev>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: EX19D043UWC002.ant.amazon.com (10.13.139.222) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Rspamd-Queue-Id: 880A355F99F
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20826-lists,linux-rdma=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_NA(0.00)[resnulli.us];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[amazon.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20827-lists,linux-rdma=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com:mid];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[resnulli.us:mid,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,resnulli-us.20251104.gappssmtp.com:dkim]
+	FROM_NEQ_ENVFROM(0.00)[ynachum@amazon.com,linux-rdma@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-From: Jiri Pirko <jiri@nvidia.com>
+On Thu, May 14, 2026 at 10:09:11PM -0700, Zhu Yanjun wrote:
+> 
+> 在 2026/5/14 3:02, Yonatan Nachum 写道:
+> >On Wed, May 13, 2026 at 10:12:01PM -0700, Zhu Yanjun wrote:
+> >>在 2026/5/11 23:11, Yonatan Nachum 写道:
+> >>>New EFA devices don't support the creation of multiple address handles
+> >>>to the same remote on the same PD.
+> >>>To overcome this limitation, introduce an AH cache rhashtable which will
+> >>>store the refcounts of the same AH creation on the same PD and will
+> >>>allow the driver to manage AH reuse. The hashtable key is the
+> >>>combination of PD and GID. Add initialization and teardown logic for the
+> >>>rhashtable.
+> >>>
+> >>>Reviewed-by: Firas Jahjah <firasj@amazon.com>
+> >>>Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+> >>>Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+> >>>---
+> >>>  drivers/infiniband/hw/efa/Makefile       |  4 +--
+> >>>  drivers/infiniband/hw/efa/efa_ah_cache.c | 30 ++++++++++++++++++++
+> >>>  drivers/infiniband/hw/efa/efa_ah_cache.h | 36 ++++++++++++++++++++++++
+> >>>  drivers/infiniband/hw/efa/efa_com.c      | 12 +++++++-
+> >>>  drivers/infiniband/hw/efa/efa_com.h      |  5 +++-
+> >>>  5 files changed, 83 insertions(+), 4 deletions(-)
+> >>>  create mode 100644 drivers/infiniband/hw/efa/efa_ah_cache.c
+> >>>  create mode 100644 drivers/infiniband/hw/efa/efa_ah_cache.h
+> >>>
+> >>>diff --git a/drivers/infiniband/hw/efa/efa_ah_cache.h b/drivers/infiniband/hw/efa/efa_ah_cache.h
+> >>>new file mode 100644
+> >>>index 000000000000..25288fdf778a
+> >>>--- /dev/null
+> >>>+++ b/drivers/infiniband/hw/efa/efa_ah_cache.h
+> >>>@@ -0,0 +1,36 @@
+> >>>+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+> >>>+/*
+> >>>+ * Copyright 2026 Amazon.com, Inc. or its affiliates. All rights reserved.
+> >>>+ */
+> >>>+
+> >>>+#ifndef _EFA_AH_CACHE_H_
+> >>>+#define _EFA_AH_CACHE_H_
+> >>>+
+> >>>+#include <linux/refcount.h>
+> >>>+#include <linux/rhashtable.h>
+> >>>+
+> >>>+#define EFA_AH_GID_SIZE 16
+> >>>+
+> >>>+struct efa_ah_cache_key {
+> >>>+	u8 gid[EFA_AH_GID_SIZE];
+> >>>+	u16 pd;
+> >>>+};
+> >>I am not sure if we add __packed to avoid memory hole.
+> >>
+> >>Zhu Yanjun
+> >Currently there is no holes in the struct (verified using pahole) and we
+> >Zero-initialize AH cache key so I don't think packed is really needed.
+> 
+> I’m wondering whether you’ve tested this on all architectures.
+> 
+> Explicitly using `__packed` or ensuring proper memory alignment
+> 
+> would likely be a better solution to avoid memory holes in the key
+> structure.
+> 
+> Zhu Yanjun
+> 
+> 
+> >Thanks
+> 
+> -- 
+> Best Regards,
+> Yanjun.Zhu
 
-Add an optional mlx5 driver-namespace UMEM attribute on QP
-create so userspace can supply the doorbell record umem
-explicitly, symmetric to the CQ side. Resolve it inside
-mlx5_ib_db_map_user() and use it as a private DBR page when
-present; otherwise take the existing UHW share-or-pin path
-that preserves per-page DBR sharing across CQ/QP/SRQ in the
-same process.
+It was tested on x86 and arm which are the supported architectures for
+EFA. Current implementation handles holes and I prefer to not add packed
+annotation.
 
-Add mlx5's first UVERBS_OBJECT_QP UAPI definition chain to
-attach the new attr.
-
-Signed-off-by: Jiri Pirko <jiri@nvidia.com>
----
-v2->v3:
-- moved QP DBR attr to mlx5 driver namespace
-- added new mlx5_ib_create_qp_defs[] UAPI chain (mlx5 had only a CQ one)
-- changed to use ib_umem_get_attr() to get umem inside
-  mlx5_ib_db_map_user()
----
- drivers/infiniband/hw/mlx5/main.c        |  1 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h     |  1 +
- drivers/infiniband/hw/mlx5/qp.c          | 19 ++++++++++++++++++-
- include/uapi/rdma/mlx5_user_ioctl_cmds.h |  4 ++++
- 4 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 45f5fcd9adf0..2125a01ba710 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -4453,6 +4453,7 @@ static const struct uapi_definition mlx5_ib_defs[] = {
- 	UAPI_DEF_CHAIN(mlx5_ib_std_types_defs),
- 	UAPI_DEF_CHAIN(mlx5_ib_dm_defs),
- 	UAPI_DEF_CHAIN(mlx5_ib_create_cq_defs),
-+	UAPI_DEF_CHAIN(mlx5_ib_create_qp_defs),
- 
- 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_DEVICE, &mlx5_ib_query_context),
- 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_MR, &mlx5_ib_reg_dmabuf_mr),
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 45bc8928523a..5ea0b755a000 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1511,6 +1511,7 @@ extern const struct uapi_definition mlx5_ib_flow_defs[];
- extern const struct uapi_definition mlx5_ib_qos_defs[];
- extern const struct uapi_definition mlx5_ib_std_types_defs[];
- extern const struct uapi_definition mlx5_ib_create_cq_defs[];
-+extern const struct uapi_definition mlx5_ib_create_qp_defs[];
- 
- static inline int is_qp1(enum ib_qp_type qp_type)
- {
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index f9f9bf1499d3..d59e4868711c 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -44,6 +44,9 @@
- #include "qp.h"
- #include "wr.h"
- 
-+#define UVERBS_MODULE_NAME mlx5_ib
-+#include <rdma/uverbs_named_ioctl.h>
-+
- enum {
- 	MLX5_IB_ACK_REQ_FREQ	= 8,
- };
-@@ -1052,7 +1055,9 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 		resp->bfreg_index = MLX5_IB_INVALID_BFREG;
- 	qp->bfregn = bfregn;
- 
--	err = mlx5_ib_db_map_user(context, NULL, 0, ucmd->db_addr, &qp->db);
-+	err = mlx5_ib_db_map_user(context, udata,
-+				  MLX5_IB_ATTR_CREATE_QP_DBR_BUF_UMEM,
-+				  ucmd->db_addr, &qp->db);
- 	if (err) {
- 		mlx5_ib_dbg(dev, "map failed\n");
- 		goto err_free;
-@@ -5867,3 +5872,15 @@ void mlx5_ib_qp_event_cleanup(void)
- {
- 	destroy_workqueue(mlx5_ib_qp_event_wq);
- }
-+
-+ADD_UVERBS_ATTRIBUTES_SIMPLE(
-+	mlx5_ib_qp_create,
-+	UVERBS_OBJECT_QP,
-+	UVERBS_METHOD_QP_CREATE,
-+	UVERBS_ATTR_UMEM(MLX5_IB_ATTR_CREATE_QP_DBR_BUF_UMEM,
-+			 UA_OPTIONAL));
-+
-+const struct uapi_definition mlx5_ib_create_qp_defs[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_QP, &mlx5_ib_qp_create),
-+	{},
-+};
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index b63e75034cda..ddb898afd813 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -277,6 +277,10 @@ enum mlx5_ib_create_cq_attrs {
- 	MLX5_IB_ATTR_CREATE_CQ_DBR_BUF_UMEM,
- };
- 
-+enum mlx5_ib_create_qp_attrs {
-+	MLX5_IB_ATTR_CREATE_QP_DBR_BUF_UMEM = UVERBS_ID_DRIVER_NS_WITH_UHW,
-+};
-+
- enum mlx5_ib_reg_dmabuf_mr_attrs {
- 	MLX5_IB_ATTR_REG_DMABUF_MR_ACCESS_FLAGS = (1U << UVERBS_ID_NS_SHIFT),
- };
--- 
-2.54.0
+Thanks
 
 
