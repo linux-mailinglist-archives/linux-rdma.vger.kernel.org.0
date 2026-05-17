@@ -1,191 +1,177 @@
-Return-Path: <linux-rdma+bounces-20842-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20843-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UDL2HZbMCWq2qAQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20842-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 16:11:34 +0200
+	id OEveFgTNCWq2qAQAu9opvQ
+	(envelope-from <linux-rdma+bounces-20843-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 16:13:24 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7EC656181C
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 16:11:33 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABA8B56182C
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 16:13:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 710B4301FA6D
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 14:11:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BFEAB300C907
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2026 14:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3927C2E1F02;
-	Sun, 17 May 2026 14:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06DF2F531F;
+	Sun, 17 May 2026 14:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CHemMt+k"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b="tCIvdjha"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197942D46CE
-	for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 14:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5862405C32
+	for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 14:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779027062; cv=none; b=Y2g8VmdiUmEfJcJQnAbGywpO81jsMaoxFBLwRbExsxyoLHhTzeDu4GjjpCl50ryUBdEuW58lBGqQPALAe3vdvtLFkp8kbdTi+bSoPO41IsP3zgH073X3hQqZyf+YFDLqZbTLEfE/Mkq9A7CDAYWrAjcnwFhYeRNp9K6/ZNtEXE4=
+	t=1779027200; cv=none; b=S3AytHbHJFJfkTwRyR+ZLHViB4cT9nD3isVr+bKhXTXGgJ/9FPBn7KXH3VYpiHZd0q/8l8Ec4FuGM7l2mg5Rt4yWMzObtx+0zsE9VcGIom4vXoSFSGQd9YoXEDGDUfj/23ApKCBlSs5q+qVrPcjGv6fQIze2wBkq/vf9b6G6B68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779027062; c=relaxed/simple;
-	bh=G2plrwZtxal/SI7IvH5/VW3UJ9hM6oqZnKxTcZP7/nk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MYGfERzH8p5tRCiSEQPkIT7LXfDcbgl5XlhWqc+rIsM77Rjcjjbtv2S/yPYXwi2xedYlHfHtG5ldfbb5HK0BmGtlQlJ/Nikxn6TUBUId3tODyI4cMxF8jNUcVbNKbqTq+8YMU04dhyO6Qn+rv8q3VTa9zz6D1yCzPPZ7f8CdQaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CHemMt+k; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-50e97863425so18441061cf.0
-        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 07:10:59 -0700 (PDT)
+	s=arc-20240116; t=1779027200; c=relaxed/simple;
+	bh=7Z2jQw1yVEAFTE/oIYhiiWYV3ZZ0CmIGLCrSAkPQMRQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KBveFn+4O+U/ztHjL1JQlu2quQnj87252BihMEfUOLq0yHLexx0ruxXX1C9nH1SsoCDJi6Aqz1xqsuvcfnoOj9IEYMY5AdFC741TyVznxuRT0GqOUpfd+84CP+4Zvd4WUF5OF5uNEnXMil6UcMAEI9xN057tfRhMWi1PVW9az2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20251104.gappssmtp.com header.i=@resnulli-us.20251104.gappssmtp.com header.b=tCIvdjha; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-488a8ca4aadso12715215e9.3
+        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2026 07:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779027059; x=1779631859; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HbsEGrjVMTax80UWydbFcmuVU8XwXlkCJp5AmXuZcNA=;
-        b=CHemMt+ku/WV1WaSqqBGo8v8Rwjua+Yv8ieyKg/0h1pmWq/xQfC9yDAuU3fJWZ5SlQ
-         ReFwzejLp/B3vy7IVIpkJKEHO9WQIkNPqwkoqeoLdykp9GuhCE1bcpefj88NaFgWd2gm
-         ua/QMapysa0zeexBWEobMbIVRrik0Ra4u9ii1cuUJlSzrYNjPPC6oZtDr43wclwTntTj
-         JtaaUW7GAA3NmLC4UWNdZC9rivJ78+kxBY2yE7zXgwWlJlV77z0QFXBYnMM4UiOwu5Yg
-         736ihTLYIPov+gmIWGRYEpQDsTWPT5iSzGsxnAGrZzJN/OY4qSbt73ZcWIbGfYl2XdyG
-         t62g==
+        d=resnulli-us.20251104.gappssmtp.com; s=20251104; t=1779027196; x=1779631996; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B6cglMBbWtUxIRrcnLtmdyzOFZg1eNtjCOcIv3cTjD0=;
+        b=tCIvdjhaSPEE7P9pKzncaFLPYGR9x+YSJrBpgGMKu2EEcCQpyV3R/24L5EWMsj3ZM0
+         9lhmR9EF9SjuHqW8Wuwh4px6s9lr3WGtrAa9dS2YAZWBbAfMbZ8wF+3MnCrGb5+ONK3q
+         +5SlP4yIFuBD/vpaiQphawuuxFSt3i/St1w7g40DgACQNHqdzadn6+NS4kuWD7Q6gdzZ
+         sJvKeQhpszxKFhu13pEGPocxlNmFQbot6r5sQE5/64EFjYyQw+Wwxj2mX1/yYkmEndCi
+         1uaRqIhUTh2tR71yf/1ZgsYU2HewGPLLg40y73latRPfhrNMiawpEo1nAKRtnI910d2X
+         ASyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779027059; x=1779631859;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HbsEGrjVMTax80UWydbFcmuVU8XwXlkCJp5AmXuZcNA=;
-        b=OQJlTTVkW6tqMojcLAyrLEMjkoZ2IJ0ujeROyScYoI8vP4Q2y+BRSMLzFCDRfXjcDl
-         3eusr6/lZK628TdN0OCuZD6pdqeJq8ak9EnzVKJK48J5fdfzTAuCRc3nR6RWDYtD3mtO
-         2WfCJs+qdqsFfhG7ldmfBn5XKaflobcO7dTeiDCTBBC9pEAVLwy1GjHVvyfKzIlO4pV8
-         tcXUl69L/b0izf3p9++x5JmGHDrSGWdmTZq8z2uSjyjiTmNzz49Wx1pd0/CK94CERDd1
-         SANP+2HK9DefZRmoaXfNJ1xtfI9FlSzLkzP5186oFm4S1zyD5OrS8425Y/8Hc9QM+YP9
-         b7SQ==
-X-Forwarded-Encrypted: i=1; AFNElJ836e89NbPjlpzOWT20dHTh7wg+uN1jsmzpQGHroMF4x6i2KY8PYife6MSIYIf8s1za+1asniZOcklC@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrFfCIJ9czSdAVOOOu/2Bk6dT1STbEUtBk6/I7UKvR3/RUmuM5
-	MVLjIR3SKjeMddHDidH1s7SL8jHLO9xOW/iN2+wXS3S9zcT333nbtaeDp06Sz9nwthi32NMmsc2
-	mQQRw
-X-Gm-Gg: Acq92OFC8aGW+CaIHotzoHMIWFIb49Vz1vaQPERjU5/FIBNZ2XKZvpglrKoHwRRxzli
-	snqG/XTTaIJ2Gjk8PXatCRiaP/XBGNErCaIRpalnSEjfNlbWJF3/teCXBOwKPsUblf2Z+x4WgT6
-	tlJeF43gO6v7ckl5YPLYgHUIJgOtJw3JYiD9duNr6RIHIgDOEEO7ciOwYhteZuhPTphKPQByon6
-	7NnlzKYgHYGqK9Ro6LFQbJS/LDDO9KIvC6Oyv7aATmNx1r4TGza1jeOzIDjl7e5gT9N1+sJ0wD6
-	TUqc+XRa/boGhsAwnvwwK5dWWULNNYjU6Wa/TtrahMnC1/Fe/aB3J+A4I9Nm1lovpLZk5uDtS05
-	XWumOUpjvxeVXa8FjLzf3cHp5wGm7m5js41VIpKXRdgp6nQ5ToeGyhNNAbMlo4oF2fnJITFM4mn
-	JYXN56brnDsuGLmwAh2+YAAJcpmyfzh9SPZzqpOqzCzU8cLCi9+HIAGfVCfgPy7BcyuX7W2y+zF
-	YXUEqjiYIOlTqbd
-X-Received: by 2002:a05:622a:59cc:b0:50e:feee:76c3 with SMTP id d75a77b69052e-5165a0255afmr160665761cf.18.1779027058550;
-        Sun, 17 May 2026 07:10:58 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51645856d4esm102856821cf.27.2026.05.17.07.10.57
+        d=1e100.net; s=20251104; t=1779027196; x=1779631996;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B6cglMBbWtUxIRrcnLtmdyzOFZg1eNtjCOcIv3cTjD0=;
+        b=JkTM7lTocHWYicX8eMOHE/rgXjULfHihwA8VezMYv6WUHSuNwLnefN1OPICsA5UZhX
+         7O/07Co7wkU/zdL8H4qg1mH9tZ9MekAtRfA2OAaCvItKylSCMW4++t1bPZ9xjYZRt96Y
+         wIQ7jZJK6iVZMRa/Hrpt8HE27nMx57nvgnDWfTL/Eq5UBtDKCvKQdwjDm/AbIpMLCidG
+         Jp4ulo5CiG5m+CMmAOU2n+tJCKDZTRY4wt7msv3hdz0FfyUXF74HwZ+vE9Q5EFZ29QLk
+         cn5chXCMnh8hUVEIAICicQSwwMIJ4J2PX+hGVBHb2OyK+VIUJHESrTcUlGAJHD5jH/h4
+         O1nw==
+X-Gm-Message-State: AOJu0YyG3sbOUPEnQC0P5VQW4bZMVtyA/Qq8fUGUKyIRsPGYsaF4lzY0
+	JOqOXzte4RW4Lv35/QTctcUOdGzy2jIfK3V6dpqp+vkM+GCvPS8YIeHX/GNPANTF7iMkQl4VDkT
+	+0VzF+b8cBj6BODA=
+X-Gm-Gg: Acq92OEOCA6GlztuntV99SKIvXLGY8AoTUbmbs0n5xKYIn3JPDmxGm0UGcTtW6EBTEW
+	XyqC9QZ17YNvf68MwvV8v9QE1LXPXHwhlGm/J/661PGyEU0f/aDqNyCCOArBr2JHUdmqCBa9QXB
+	eEE+MUC1lN7AeH3AGepiRjFuozw4MgSXlmXiwQB/KEFH0CAJ/5kIA0FppIYJULdOQIStLp1bct3
+	nCEV0F8ttZE9sNa/wxD2VGwObahuFl9NtxU76j6MF/0kqfrdwvyLX2DJWfRh1rGt+tH8qRxd7Zh
+	SxYohILGG6X+M9QFqGHAlceg0J7HYyiNCTti6W96xjcGCUhB6mCia5NqTThuv8BCBcDcbz+WvV4
+	RxAXv5kWHuMLlER3RkqEfAUTBV+iSH8w0GbtFRJ9Ufc8C3yTcJVCEV1C7fs2du7R2R0u1fRs92g
+	BA00ePXu/Q3ZsKVXnrM8BsajeSmf70Sd+T+hKCnibrW6U5T9kQsKIW
+X-Received: by 2002:a05:6000:1863:b0:441:1fa5:457f with SMTP id ffacd0b85a97d-45e5c5bf256mr16624335f8f.28.1779027195800;
+        Sun, 17 May 2026 07:13:15 -0700 (PDT)
+Received: from localhost ([2001:1ae9:6084:ab00:4146:8430:fb4a:baf5])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45d9ed2f738sm29945728f8f.16.2026.05.17.07.13.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2026 07:10:57 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wOcCm-0000000BKkA-3QP6;
-	Sun, 17 May 2026 11:10:56 -0300
-Date: Sun, 17 May 2026 11:10:56 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Jiri Pirko <jiri@resnulli.us>, linux-rdma@vger.kernel.org,
-	mrgolin@amazon.com, gal.pressman@linux.dev, sleybo@amazon.com,
-	parav@nvidia.com, mbloch@nvidia.com, yanjun.zhu@linux.dev,
-	marco.crivellari@suse.com, roman.gushchin@linux.dev,
-	phaddad@nvidia.com, lirongqing@baidu.com, ynachum@amazon.com,
-	huangjunxian6@hisilicon.com, kalesh-anakkur.purayil@broadcom.com,
-	ohartoov@nvidia.com, michaelgur@nvidia.com, shayd@nvidia.com,
-	edwards@nvidia.com, sriharsha.basavapatna@broadcom.com,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH rdma-next v4 00/16] RDMA: Introduce generic buffer
- descriptor infrastructure for umem
-Message-ID: <20260517141056.GR7702@ziepe.ca>
-References: <20260507125231.2950751-1-jiri@resnulli.us>
- <20260512192319.GM7702@ziepe.ca>
- <20260517114755.GF33515@unreal>
+        Sun, 17 May 2026 07:13:15 -0700 (PDT)
+From: Jiri Pirko <jiri@resnulli.us>
+To: linux-rdma@vger.kernel.org
+Cc: jgg@ziepe.ca,
+	leon@kernel.org,
+	edwards@nvidia.com,
+	kees@kernel.org,
+	parav@nvidia.com,
+	mbloch@nvidia.com,
+	yishaih@nvidia.com,
+	lirongqing@baidu.com,
+	huangjunxian6@hisilicon.com,
+	liuy22@mails.tsinghua.edu.cn,
+	jmoroni@google.com
+Subject: [PATCH rdma-next v3 0/2] RDMA: detect and handle CoCo DMA bounce buffering
+Date: Sun, 17 May 2026 16:13:09 +0200
+Message-ID: <20260517141311.2409230-1-jiri@resnulli.us>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260517114755.GF33515@unreal>
-X-Rspamd-Queue-Id: C7EC656181C
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: ABA8B56182C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[resnulli-us.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-20843-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20842-lists,linux-rdma=lfdr.de];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,linux-rdma@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DMARC_NA(0.00)[resnulli.us];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[resnulli-us.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jiri@resnulli.us,linux-rdma@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-rdma];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
+	TAGGED_RCPT(0.00)[linux-rdma];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,resnulli-us.20251104.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Sun, May 17, 2026 at 02:47:55PM +0300, Leon Romanovsky wrote:
-> On Tue, May 12, 2026 at 04:23:19PM -0300, Jason Gunthorpe wrote:
-> > On Thu, May 07, 2026 at 02:52:15PM +0200, Jiri Pirko wrote:
-> > > From: Jiri Pirko <jiri@nvidia.com>
-> > > 
-> > > This patchset introduces a generic buffer descriptor infrastructure
-> > > for passing memory buffers (dma-buf or user VA) to uverbs commands,
-> > > and wires it up for CQ and QP creation in the uverbs core, efa, mlx5,
-> > > bnxt_re and mlx4 drivers.
-> > > 
-> > > Instead of adding ad-hoc per-buffer UAPI attributes for each new buffer
-> > > type, each command declares dedicated UVERBS_ATTR_UMEM attributes that
-> > > carry one buffer descriptor each. Each descriptor specifies a buffer
-> > > type, covering both VA and dma-buf. A consumption check ensures
-> > > userspace and driver agree on which attributes are used.
-> > > 
-> > > The patchset:
-> > > 1-2,4. Plumbing: rename ib_umem_get() to ib_umem_get_va() and re-route
-> > >    it through the new central ib_umem_get(); no behaviour change.
-> > > 3. Introduces the core buffer descriptor infrastructure and UAPI.
-> > > 5. Inlines the const attr helpers so ib_core can use them.
-> > > 6. Factors out CQ buffer umem processing into a helper.
-> > > 7. Adds the CQ buffer UMEM attribute and driver wrappers.
-> > > 8-11. Converts efa, mlx5, bnxt_re and mlx4 to use the new CQ helpers,
-> > >    with drivers taking umem ownership.
-> > > 12. Removes the legacy umem field from struct ib_cq, now that all
-> > >    drivers use the new helpers.
-> > > 13. Adds optional whole-QP, RQ and SQ UMEM attributes to QP creation.
-> > > 14. Converts mlx5 QP creation to use the new attributes.
-> > > 15-16. Adds mlx5 driver-namespace UMEM attributes for CQ and QP
-> > >    doorbell records.
-> > 
-> > I think it is OK looking, Leon?
-> 
-> I have a strange feeling that we have too many ib_umem_get_*()
-> functions. For example ib_umem_get_cq_buf() which doesn't accept
-> anything CQ specific. Or this general ib_umem_get_attr_or_va().
+From: Jiri Pirko <jiri@nvidia.com>
 
-The cq function is needed to extract the CQ specific uattrs..
+In Confidential Computing (CoCo) guests, the DMA mapping layer
+redirects all device DMA through swiotlb bounce buffers to keep guest
+memory encrypted. This is transparent for regular devices because the
+CPU copies data between the bounce buffer and the real buffer on every
+DMA map/unmap cycle.
 
-So I imagine a couple over different per-object helpers for the
-different groups of driver needs.
+RDMA breaks this model. Once a memory region is registered, the device
+accesses the underlying pages directly for an extended period without
+CPU involvement. The swiotlb layer never gets a chance to synchronize,
+so the device operates on bounce buffer memory while the application
+works with its own pages - the two never see each other's updates.
 
-> IMHO, the in-kernel API started to be very messy.
+This series adds detection and handling of this condition. A new
+IB_UVERBS_DEVICE_CC_DMA_BOUNCE flag is exposed in device_cap_flags_ex
+so userspace libraries can detect the situation and switch to
+dmabuf-based memory registration using "system_cc_shared" heap
+where available. Plain ib_umem_get() is made to fail early with
+-EOPNOTSUPP to prevent silent misfunction.
 
-It reflects the uAPI :( We will have a helper function for each
-variation of combination of uAPI flow the driver supports.
+---
+See individual patches for changelog.
 
-Jason
+v2: https://lore.kernel.org/all/20260506111447.2697789-1-jiri@resnulli.us/
+v1: https://lore.kernel.org/all/20260505061149.2361536-1-jiri@resnulli.us/
+
+based on top of:
+https://lore.kernel.org/all/20260517063006.2200680-1-jiri@resnulli.us/
+
+Jiri Pirko (2):
+  RDMA/uverbs: expose CoCo DMA bounce requirement to userspace
+  RDMA/umem: block plain userspace memory registration under CoCo bounce
+
+ drivers/infiniband/core/device.c     | 9 +++++++++
+ drivers/infiniband/core/umem.c       | 3 +++
+ drivers/infiniband/core/uverbs_cmd.c | 2 ++
+ include/rdma/ib_verbs.h              | 3 +++
+ include/uapi/rdma/ib_user_verbs.h    | 2 ++
+ 5 files changed, 19 insertions(+)
+
+-- 
+2.54.0
+
 
