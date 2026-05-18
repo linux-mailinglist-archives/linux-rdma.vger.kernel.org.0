@@ -1,140 +1,129 @@
-Return-Path: <linux-rdma+bounces-20903-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-20904-lists+linux-rdma=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UL8jHeQBC2oH/QQAu9opvQ
-	(envelope-from <linux-rdma+bounces-20903-lists+linux-rdma=lfdr.de@vger.kernel.org>)
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 14:11:16 +0200
+	id AN98NREEC2qj/QQAu9opvQ
+	(envelope-from <linux-rdma+bounces-20904-lists+linux-rdma=lfdr.de@vger.kernel.org>)
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 14:20:33 +0200
 X-Original-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E290D56C524
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 14:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C16D56C80C
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 14:20:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5F88B306E691
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 12:02:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1C18F306E2E5
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2026 12:06:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A513FBEA6;
-	Mon, 18 May 2026 12:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F2D3FCB3B;
+	Mon, 18 May 2026 12:06:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VeMIMgiD"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="MZscewth"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B613FBB75
-	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 12:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B793FCB18
+	for <linux-rdma@vger.kernel.org>; Mon, 18 May 2026 12:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779105654; cv=none; b=hCyMJrH3UTShxJPsKVXzs17281OjtI/o77sr6W4oJ+hW6LP+lpmFFD/8gSZDkNamqFXrPPT3LaMu0OKzaxmBJV4r2hev35nMEO7Aro39/p3/NIYtvYmWwsLeJ9jojAFk9wvcpEarPUAHLveeQ8KrwXEU/qQXQMuzw/dsss/agfY=
+	t=1779106007; cv=none; b=IOH42SSC/xxeJBSwr3C2ze86DU2A6q7z9dF/Or5X+2eEuslMMmTlDsAEAiMYo8XV6AM4vvdoSh3EKgbF13b+ggnarhJA1rK1hVdv39/vgflztnHr3qFMHHOZ5sTg1TgqSJeAJf7/OfII5Se5CX/QZy2TfGix/+xwHdGDkmupums=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779105654; c=relaxed/simple;
-	bh=20RtVpEORJ/hLutZlvYCxQuHOKcldoGKPQ5Itvx+zP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g5skAwHNUZhUPb0ZyuPC/Rq/CiALMRGT8rPeUtenV1IER/Zb1OT/MlbMwcTHPkdgUcGT1Yx4Khcc9NpA7SQak0KYdiEf3QqvDZ3/JIYcRFmXlCPDJrdgtEXieBqO5TpRrmRmJ51iiYZUsAo4ndeTjNRt0y7Bba8xYTBpJb0rj+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VeMIMgiD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD551C2BCB7;
-	Mon, 18 May 2026 12:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779105654;
-	bh=20RtVpEORJ/hLutZlvYCxQuHOKcldoGKPQ5Itvx+zP0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VeMIMgiD29D67pgQPuAb985seQ+bCU7/YWtOoyMo0APYrT/ku2+b8xG+YLCFlXkDP
-	 ehUbce43NrmYRLLIPZiwYgp2LI/m2FNmQKoxAThMOG3RfhKDMUV5yThnK/mIFIIzfm
-	 8dqSx5uIk80IeWPRGBYFtbwu56xtLmzDiAvj76AOMUC6XvdxiqzIR6WndD4yIQWaf9
-	 PZg3kbIWemLKM1pY6YDIQ1mjrFwgZGp8aO2MOsnZ8tQa2+JKVLGY1mOG/dPFPV/j/7
-	 iqpuAdyLaWmGJPFJZRBQnK1Vn0dJeEdMoTPWN6bI+dUmmO8tWy3TL9fJRn66VUSoIy
-	 G7zV6MN6G/pKQ==
-Date: Mon, 18 May 2026 15:00:50 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Yonatan Nachum <ynachum@amazon.com>
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, mrgolin@amazon.com,
-	sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev,
-	Daniel Kranzdorf <dkkranzd@amazon.com>
-Subject: Re: [PATCH for-next v2] RDMA/efa: Validate SQ depth based on WQE size
-Message-ID: <20260518120050.GQ33515@unreal>
-References: <20260517175216.614494-1-ynachum@amazon.com>
+	s=arc-20240116; t=1779106007; c=relaxed/simple;
+	bh=wErdrGjRZ/jZZ3H53wlO+r28/G49wj/Lb82/nVjqR0M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KmuJkuVBDFjVQGjYAAypZuE4l3CMvC6ionjaWlGlQklLwyIf2Ro5btv7MuxbVWgtqyK7L4Tf2VZX+VWG+C0ujk8mAHv6QbyT3pZxs0AkXhN+9K7+w2GvSjWwvw27aDpIlxdPW+Own33M100oh60ES0ads1LhL3VSTKzm4qibwLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=MZscewth; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1779105998; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=EFDrNKAXcgEIZkOMoxjR8QG7oY8c9bOcl0rinCkws0M=;
+	b=MZscewthwPu4FhhqatfPl6p5Y/i+i0YOJRKEBY97EIBJTShgyQ5CDXPofiYP0JlAMEKnNPdjKRx/P1d7OAO71ea8kAyig2rVsFFIEyiMh12PR0lQoBaV60xl2NVf9nIMmpLL8qbOHUWCMNQCUqDj3BvCSPdsUQRcQdsdsHeS6Qk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=boshiyu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0X392coW_1779105998;
+Received: from localhost(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0X392coW_1779105998 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 18 May 2026 20:06:38 +0800
+From: Boshi Yu <boshiyu@linux.alibaba.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	chengyou@linux.alibaba.com,
+	kaishen@linux.alibaba.com
+Subject: [PATCH for-next v2 0/3] RDMA/erdma: Add DMA-BUF memory registration
+Date: Mon, 18 May 2026 20:06:25 +0800
+Message-ID: <20260518120637.16831-1-boshiyu@linux.alibaba.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260517175216.614494-1-ynachum@amazon.com>
-X-Rspamd-Queue-Id: E290D56C524
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 6C16D56C80C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20903-lists,linux-rdma=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-20904-lists,linux-rdma=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leon@kernel.org,linux-rdma@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[boshiyu@linux.alibaba.com,linux-rdma@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-rdma];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Action: no action
 
-On Sun, May 17, 2026 at 05:52:16PM +0000, Yonatan Nachum wrote:
-> Change the SQ depth validation to take into account the SQ WQE size.
-> This is needed since when using 128-byte WQE the max SQ depth is cut in
-> half. On create QP command, userspace provides SQ ring size which is SQ
-> depth X WQE size so we can calculate the requested WQE size in the
-> kernel.
-> 
-> Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
-> Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-> Reviewed-by: Michael Margolin <mrgolin@amazon.com>
-> Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
-> ---
-> Changelog:
-> v2:
->  * Add fixes line.
-> v1: https://lore.kernel.org/all/20260507112110.869212-1-ynachum@amazon.com/
-> 
->  drivers/infiniband/hw/efa/efa_verbs.c | 39 ++++++++++++++++++---------
->  1 file changed, 27 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-> index 395290ab0584..9a6cbb70581b 100644
-> --- a/drivers/infiniband/hw/efa/efa_verbs.c
-> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> @@ -597,14 +597,27 @@ static int qp_mmap_entries_setup(struct efa_qp *qp,
->  	return -ENOMEM;
->  }
->  
-> +static int efa_calc_sq_wqe_size(u32 sq_ring_size, u32 max_send_wr)
-> +{
-> +	return max_send_wr == 0 ? 0 : sq_ring_size / max_send_wr;
-> +}
-> +
-> +static u32 efa_calc_sq_max_depth(struct efa_dev *dev, u32 sq_wqe_size)
-> +{
-> +	return sq_wqe_size == 0 ? 0 :
-> +		rounddown_pow_of_two(dev->dev_attr.max_llq_size / sq_wqe_size);
-> +}
+Hi,
 
-Please review sashiko's findings:
-https://sashiko.dev/#/patchset/20260517175216.614494-1-ynachum@amazon.com
+This patch series adds DMA-BUF memory registration support to the erdma
+driver:
 
-It appears that a valid input can trigger rounddown_pow_of_two(0).
+- #1 renames get/put_mtt_entries to erdma_mem_init/uninit to better reflect
+     their purpose of initializing the struct erdma_mem.
+- #2 introduces struct erdma_mem_init_attr to pass parameters to
+     erdma_mem_init(), improving code maintainability and preparing for
+     DMA-BUF support.
+- #3 implements erdma_reg_user_mr_dmabuf() to enable DMA-BUF based user
+     memory registration using ib_umem_dmabuf_get_pinned().
 
-Thanks
+Thanks,
+Boshi Yu
+
+---
+
+v2:
+ - Patch#2: Add validation for the return value of ib_umem_find_best_pgsz().
+
+v1:
+  link: https://lore.kernel.org/all/20260507053437.46211-1-boshiyu@linux.alibaba.com/
+
+Boshi Yu (3):
+  RDMA/erdma: Rename get/put_mtt_entries to erdma_mem_init/uninit
+  RDMA/erdma: Introduce struct erdma_mem_init_attr
+  RDMA/erdma: Implement erdma_reg_user_mr_dmabuf
+
+ drivers/infiniband/hw/erdma/erdma_main.c  |   1 +
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 152 +++++++++++++++-------
+ drivers/infiniband/hw/erdma/erdma_verbs.h |  19 +++
+ 3 files changed, 123 insertions(+), 49 deletions(-)
+
+-- 
+2.46.0
+
 
